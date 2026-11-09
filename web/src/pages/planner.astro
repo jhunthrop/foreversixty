@@ -5,11 +5,13 @@
 // page (spec 2026-11-08): the head, the bar, the one Plate of trees and the rail, in the wide page
 // column (L3 Workbench). Its server render is the first paint: the head and the bar, the Plate's
 // skeleton at the ready trees' height, so the trees arriving move nothing.
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Planner from '../components/planner/Planner.svelte';
 import activeBuild from '../data/active-build.json';
 import { DEFAULT_CLASS_SLUG } from '../lib/planner/config';
 import { loadTalentFile } from '../lib/guides/build-tree';
+import type { GuideBuild } from '../lib/planner/guide-builds';
 import { searchCopy } from '../lib/search-copy';
 import { webApplicationLd } from '../lib/seo';
 
@@ -19,6 +21,21 @@ const openingArt = (loadTalentFile(activeBuild.build, DEFAULT_CLASS_SLUG)?.trees
   .sort((a, b) => a.position - b.position)
   .filter((tree) => tree.background)
   .map((tree) => `trees/${tree.background}.webp`);
+// Every spec guide's published builds (its levelling build, and its raid build where it has one):
+// the rail's Guide builds for the class on screen.
+const guideBuilds: GuideBuild[] = (await getCollection('guides')).flatMap((guide) => {
+  const specSlug = guide.id.split('/')[1];
+  if (guide.data.spec === undefined || specSlug === undefined) return [];
+  const base = { classSlug: guide.data.classSlug, specSlug };
+  return [
+    ...(guide.data.build === undefined
+      ? []
+      : [{ ...base, kind: 'leveling' as const, code: guide.data.build }]),
+    ...(guide.data.raidBuild === undefined
+      ? []
+      : [{ ...base, kind: 'raid' as const, code: guide.data.raidBuild }]),
+  ];
+});
 const jsonLd = [
   webApplicationLd({
     name: searchCopy.planner.appName,
@@ -41,6 +58,12 @@ const jsonLd = [
          server-rendered head is the page's largest contentful paint, and `client:load` put its
          whole chain ahead of that first paint (2026-11-02: a median score of 0.84 and LCP 4.1 s
          on a quiet machine, against the 0.90 budget). -->
-    <Planner client:after-paint treeVersion={activeBuild.build} classSlug={DEFAULT_CLASS_SLUG} {openingArt} />
+    <Planner
+      client:after-paint
+      treeVersion={activeBuild.build}
+      classSlug={DEFAULT_CLASS_SLUG}
+      {openingArt}
+      {guideBuilds}
+    />
   </main>
 </Base>

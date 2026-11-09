@@ -305,6 +305,13 @@
     color: var(--color-gold);
     border-radius: 2px;
   }
+  /* A 44 px target on a touch screen, taken back by the same margin so the head does not grow. */
+  @media (pointer: coarse) {
+    .trs {
+      padding: 13px 8px;
+      margin: -13px -8px;
+    }
+  }
   .trs:hover {
     color: var(--color-gold-hover);
   }

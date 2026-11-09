@@ -78,12 +78,15 @@ export function editorTrees({
         differs,
         now: rank > 0 ? (talent.ranks[rank - 1]?.description ?? '') : '',
         next: rank < talent.max_rank ? (talent.ranks[rank]?.description ?? '') : '',
+        // A maxed talent says nothing more, as the client's tooltip: its rank line is the answer.
         req:
-          capped && characterLevel !== null
-            ? plannerCopy.noPointsLeft(characterLevel)
-            : decision.ok
-              ? ''
-              : decision.reason,
+          rank >= talent.max_rank
+            ? ''
+            : capped && characterLevel !== null
+              ? plannerCopy.noPointsLeft(characterLevel)
+              : decision.ok
+                ? ''
+                : decision.reason,
         band:
           differs && bandDiff !== null
             ? bandCompareCopy.bandRankTooltipLine(

@@ -20,7 +20,7 @@ from html import escape
 from pathlib import Path
 
 from mocklib import CLASS_COLOR, ROOT
-from ws_prims import (Button as _Button, ClassPicker, CodeField, Figure, Link, Notice, OrderSlot, Ordered, Page, PageHeader, PointOrder,
+from ws_prims import (Button as _Button, ClassPicker, CodeField, Figure, Link, Notice, OrderSlot, Ordered, Page, PageHeader, PointOrder, Row, Rows,
                       Section, Skeleton, Switch, Tag, TalentCell2, TalentEditor, TalentTip, TextFor, build_page, control_bar, crest_img,
                       icon, sel, REGION)
 
@@ -116,7 +116,8 @@ def tree_foot(st: dict, status: str = '', status_tone: str = '', reset_open: boo
         rs = f'<span class="t-small">{e(P["resetAsk"])}</span>{Button(e(P["resetYes"]), small=True)}{Button(e(P["resetNo"]), small=True)}'
     else:
         rs = ActionLink(e(P['reset'])) if st['spent'] else ''
-    return s + f'<span class="t-small">{e(C["tree_source"])}</span><span class="rs">{rs}</span>'
+    src = f'<span class="t-small"{" style=\"visibility:hidden\"" if status else ""}>{e(C["tree_source"])}</span>'
+    return f'<div class="pl-foot-l">{s}{src}</div><span class="rs">{rs}</span>'
 
 
 def answer(st: dict, loading: bool = False) -> str:
@@ -188,7 +189,7 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
     body = ''
     if send is not None and plain_block and send.get('otherClass'):
         # Ruling MUST 5 (premium round): another class's build is one plain line above Copy for the game.
-        body += f'<p class="pl-line">{e(send["label"])}</p><div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(C["addon"]["addonCodeHint"])}</p>'
+        body += f'<p class="pl-line">{e(send["label"])}</p><div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(P["pasteHint"])}</p>'
     elif send is not None:
         btn = Button(e(send['label']), primary=not send.get('otherClass')).replace('class="btn', 'class="btn is-off' if send.get('disabled') else 'class="btn', 1)
         sec = send.get('secondary') or {}
@@ -201,9 +202,9 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
             role = ' role="alert"' if n['tone'] == 'error' else ' role="status"'
             note = f'<p class="pl-note {tone}"{role}>{e(n["text"])}{link}</p>' + (f'<p class="t-small">{e(n["detail"])}</p>' if n.get('detail') else '')
         body += f'<div class="pl-acts">{btn}{sec_btn}</div>{note}'
-        body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(C["addon"]["addonCodeHint"])}</p>'
+        body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(P["pasteHint"])}</p>'
     else:
-        body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(C["addon"]["addonCodeHint"])}</p>'
+        body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(P["pasteHint"])}</p>'
         body += f'<p>{Link(r(C["cta"]["getAddonAndCompanion"]))}</p>'
     return Section(e(P['inGameTitle']), f'<div class="pl-sec">{body}</div>')
 
@@ -214,7 +215,7 @@ def share(st: dict, mode: str = 'idle') -> str:
     off = st['spent'] == 0
     share_btn = Button(e(P['share'])).replace('class="btn', 'class="btn is-off' if off else 'class="btn', 1)
     body = f'<div class="pl-acts pl-end">{title}{share_btn}</div>'
-    body += f'<div class="pl-acts"><span class="t-small">{e(st["text_summary"])}</span>{Button(e(P["copyAsText"]), small=True)}</div>'
+    body += f'<div class="pl-acts"><span class="t-small">{e(st["text_summary"])}</span>{Button(e(P["copyAsText"]))}</div>'
     body += Switch(e(C['sim']['includeSimOnCard']), on=mode != 'nosim', disabled=off)
     if mode == 'confirm':
         items = ''.join(f'<li>{e(x)}</li>' for x in st['share_fields'] + [P['shareFieldSim']])
@@ -244,26 +245,31 @@ def importer(st: dict, mode: str = 'idle') -> str:
 
 
 def order(st: dict) -> str:
-    """Point order: rows of ten levels (10 to 19 ... 60), a socket per level, the next point's socket gold with its tooltip
-    (`Next point: level 31`); past a character's level the points read as planned ahead under the level line."""
-    pts, cap = st['points'], st['char_level']
-    rows, cap_after = [], -1
-    for r, lo in enumerate(range(10, 61, 10)):
+    """Point order: the planner's own rows (lib/planner/point-order.ts pointOrderRows, through the facts): rows of ten levels, a
+    socket per level, the next point's socket gold; past a character's level the points read as planned ahead, then the spec
+    guide's order fills the rest, dimmed (`ahead`), under the level line."""
+    view = st['order_view']
+    kinds = {'spent': '', 'planned': 'pl', 'ahead': 'ah', 'empty': 'em', 'next': 'nx'}
+    rows = []
+    for row in view['rows']:
         slots = []
-        for lvl in range(lo, min(lo + 9, 60) + 1):
-            i = lvl - 10
-            if i < len(pts):
-                p = pts[i]
-                slots.append(OrderSlot(icon(p['icon'], 36), p['tip'], f'{p["rank"]}', 'pl' if p['planned'] else ''))
-            elif i == len(pts) and st['next_point']:
-                slots.append(OrderSlot(name=st['next_point'], kind='nx'))
+        for slot in row['slots']:
+            kind = kinds[slot['kind']]
+            if kind in ('em', 'nx'):
+                slots.append(OrderSlot(name=slot['name'], kind=kind))
             else:
-                slots.append(OrderSlot(name=f'Level {lvl}', kind='em'))
-        rows.append((e(st['order_rows'][r]), slots))
-        if cap is not None and lo <= cap <= lo + 9:
-            cap_after = len(rows) - 1
-    body = PointOrder(rows, cap_after, e(st['level_line'])) if pts else f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>' + PointOrder(rows)
-    return Section(e(P['pointOrderTitle']), body, meta=e(st['point_meta']))
+                slots.append(OrderSlot(icon(slot['iconSrc'], 36), slot['name'], str(slot['rank']), kind))
+        rows.append((e(row['label']), slots))
+    body = PointOrder(rows, view['capAfter'], e(view['capText'])) if st['points'] else f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>' + PointOrder(rows)
+    return Section(e(P['pointOrderTitle']), body)
+
+
+def guide_builds(st: dict) -> str:
+    """Guide builds (GuideBuilds.svelte): the class's published guide builds, the spec icon, name, build and split; the build on
+    screen is the selected row."""
+    rows = [Row(e(b['name']), f'{e(b["label"])} &middot; {"/".join(str(x) for x in b["split"])}', lead=icon(b['icon'], 28) if b.get('icon') else '',
+                selected=b['current'], slim=True) for b in st['guide_builds']]
+    return Section(e(P['guideBuildsTitle']), Rows(rows, open_=True)) if rows else ''
 
 
 def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note: str = '', note_short: str = '', origin: bool = False,
@@ -275,7 +281,7 @@ def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note:
     plate = TalentEditor(trees(st), lead_tree, tree_foot(st, status, status_tone, reset_open))
     send = F['send'][send_key] if send_key else None
     main = Ordered(plate, 1, span=True) + Ordered(order(st), 6, span=True)
-    rail = (Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + Ordered(share(st, share_mode), 7)
+    rail = (Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + Ordered(guide_builds(st), 4) + Ordered(share(st, share_mode), 7)
             + Ordered(importer(st, import_mode), 8))
     # Ruling MUST 1: the build's origin is said once; the gold origin line drops whenever the note shows.
     body = (head(st, signed != 'out', st.get('origin', '') if origin and not note else '') + bar(st, open_m) + notes(note, note_short)
@@ -355,7 +361,8 @@ PAGE_CSS = '''<style>
 /* page-level layout only (no surfaces): the answer's figures, rail section spacing, rows of actions */
 @media(min-width:900px){.ans-box.pl-ans{min-width:0;min-height:0}}
 .pc:has(>.layout-wb){padding-bottom:var(--section-gap)}
-.pl-notes .notice{padding-top:4px;color:var(--text)}
+.pc:has(>.pl-notes){padding-top:16px}.pl-notes{max-width:var(--measure-reading)}.pl-notes .notice{padding-top:4px;color:var(--text)}
+.pl-foot-l{flex:1 1 auto;display:grid;min-width:0}.pl-foot-l>*{grid-area:1/1;align-self:center}
 @media(max-width:767px){main .btn.sm{height:44px}}
 
 .pl-sec{display:flex;flex-direction:column;gap:12px;padding-top:2px}.pl-pad{padding-top:2px}
@@ -365,12 +372,12 @@ PAGE_CSS = '''<style>
 .pl-field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px}.pl-field .field{height:44px}
 .pl-confirm{display:flex;flex-direction:column;gap:10px;padding:12px 0;border-top:1px solid var(--line-soft)}
 .pl-list{list-style:disc;padding-left:20px}.pl-url{font:600 14px/20px var(--font-body);color:var(--gold);overflow-wrap:anywhere}
-.pl-skel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:16px 20px;min-height:575px}
-@media(min-width:768px){.pl-skel{min-height:543px}}@media(min-width:1280px){.pl-skel{min-height:547px}}@media(min-width:1760px){.pl-skel{min-height:615px}}
+.pl-skel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:16px 20px;min-height:549px}
+@media(min-width:768px){.pl-skel{min-height:517px}}@media(min-width:1280px){.pl-skel{min-height:521px}}@media(min-width:1760px){.pl-skel{min-height:589px}}
 .pl-art{display:block;max-width:100%;height:384px;object-fit:cover;border-radius:4px;opacity:.5}.pl-skt{display:flex;flex-direction:column;align-items:center;gap:14px}
 @media(max-width:767px){.pl-skel{grid-template-columns:minmax(0,1fr)}.pl-skt+.pl-skt{display:none}}
-.pl-err{display:flex;flex-direction:column;gap:8px;padding:20px;min-height:575px}
-@media(min-width:768px){.pl-err{min-height:543px}}@media(min-width:1280px){.pl-err{min-height:547px}}@media(min-width:1760px){.pl-err{min-height:615px}}
+.pl-err{display:flex;flex-direction:column;gap:8px;padding:20px;min-height:549px}
+@media(min-width:768px){.pl-err{min-height:517px}}@media(min-width:1280px){.pl-err{min-height:521px}}@media(min-width:1760px){.pl-err{min-height:589px}}
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}
 .statesheet{display:grid;gap:40px}.st-b>h2{margin-bottom:12px}.st-row{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
 .st-c{display:flex;flex-direction:column;align-items:center;gap:10px;width:120px;text-align:center}

@@ -19,7 +19,6 @@ export const plannerCopy = {
   shareTitle: 'Share this build',
   pointOrderTitle: 'Point order',
   /** The point-order card's meta: "0 spent". */
-  pointOrderMeta: (spent: number): string => `${spent} spent`,
   share: 'Share',
   shareConfirmTitle: 'Share this build',
   shareConfirmIntro:
@@ -56,18 +55,17 @@ export const plannerCopy = {
   noTalentRanksNote: 'This link carries no talent ranks.',
   /** The record carries more points than any legal order reaches: name what the planner kept. */
   keptNote: (kept: number, total: number, name: string): string =>
-    `Loaded ${kept} of ${name}'s ${total} points; the rest cannot be reached in any legal order. The order is a reconstruction: the game does not record the order points were spent in.`,
+    `Loaded ${kept} of ${name}'s ${total} points; the rest cannot be reached in any legal order.`,
   /** A character's export or an addon import: the game records ranks, never the order. */
   reconstructedNote:
-    'Talents loaded from a character. The order points were spent in is not recorded in game, so this is one way to level into the same tree: the main tree first, each talent as soon as its row opens.',
+    'Talents loaded from a character. Point order: the main tree first, each talent as its row opens.',
   reconstructedDroppedNote: (dropped: number): string =>
-    `Talents loaded from a character, minus ${dropped} that no legal order reaches. The order is a reconstruction: the game does not record the order points were spent in.`,
+    `Talents loaded from a character, minus ${dropped} that no legal order reaches.`,
   olderBuildNote: 'This code is from an older client build; check the talents.',
   /** A code that names no character (a guide's Load this build, a shared ?code=), bug B1: the
    *  long sentence from 768, the short one on a phone, where the note is one line. */
-  linkedNote:
-    'Opened from a link. The game does not record the order points were spent in, so this is one way to level into it: the main tree first, each talent as soon as its row opens.',
-  linkedNoteShort: 'Opened from a link; the order below is one way to level into it.',
+  linkedNote: 'Opened from a link. Point order: the main tree first, each talent as its row opens.',
+  linkedNoteShort: 'Opened from a link.',
   /** A guide's link that names its spec: the build is spent in that guide's own levelling order. */
   guideOrderNote: (specName: string): string => `Loaded in the ${specName} guide's levelling order.`,
   /** A code for a class the planner has no talent data for. */
@@ -79,11 +77,17 @@ export const plannerCopy = {
   pointsOfUnit: (available: number): string => `of ${available} points`,
   /** The trees' panel heading. */
   talentsTitle: 'Talents',
+  /** The rail's guide builds for the class on screen. */
+  guideBuildsTitle: 'Guide builds',
+  /** In the game, under Copy for the game: the one thing to know. */
+  pasteHint: 'Paste in game with /fs.',
   /** Points spent past a character's level (decision P4). */
   plannedAhead: (n: number): string => `${n} planned ahead`,
   /** Point order's line after the character's level row (decision P4). */
-  levelLine: (name: string, level: number): string =>
-    `${name} is level ${level}: points after level ${level} are planned ahead.`,
+  levelLine: (name: string, level: number): string => `${name} is level ${level}.`,
+  /** The same line when the spec guide's order fills the sockets past the character's level. */
+  aheadLine: (name: string, level: number, specName: string): string =>
+    `${name} is level ${level}. Then the ${specName} guide's order.`,
   /** A talent cell whose last points are planned past the character's level: its accessible name's tail. */
   plannedCell: (level: number): string => `planned past level ${level}`,
   /** Point order's row labels: "Levels 20 to 29", "Level 60". */

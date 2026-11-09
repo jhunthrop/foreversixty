@@ -1002,7 +1002,304 @@
     "talents": "30303213132215201-050500050120000000-100000000000000000"
    },
    "text_summary": "Human Warrior · Arms 0/Fury 0/Protection 0 · Level 9",
-   "point_meta": "0 spent",
+   "order_view": {
+    "rows": [
+     {
+      "label": "Levels 10 to 19",
+      "slots": [
+       {
+        "kind": "next",
+        "name": "Next point: level 10"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 11"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 12"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 13"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 14"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 15"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 16"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 17"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 18"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 19"
+       }
+      ]
+     },
+     {
+      "label": "Levels 20 to 29",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 20"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 21"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 22"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 23"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 24"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 25"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 26"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 27"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 28"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 29"
+       }
+      ]
+     },
+     {
+      "label": "Levels 30 to 39",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 30"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 31"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 32"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 33"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 34"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 35"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 36"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 37"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 38"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 39"
+       }
+      ]
+     },
+     {
+      "label": "Levels 40 to 49",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 40"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 41"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 42"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 43"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 44"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 45"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 46"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 47"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 48"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 49"
+       }
+      ]
+     },
+     {
+      "label": "Levels 50 to 59",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 50"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 51"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 52"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 53"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 54"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 55"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 56"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 57"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 58"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 59"
+       }
+      ]
+     },
+     {
+      "label": "Level 60",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 60"
+       }
+      ]
+     }
+    ],
+    "capAfter": -1,
+    "capText": ""
+   },
+   "guide_builds": [
+    {
+     "key": "warrior-arms-leveling",
+     "name": "Arms",
+     "label": "Level 60 build",
+     "split": [
+      34,
+      10,
+      7
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Awarrior%3Anight-elf%3A13323213032215201%2F0505%2F205%3A&spec=warrior-arms",
+     "trees": "13323213032215201/0505/205",
+     "icon": "ability_rogue_eviscerate",
+     "current": false
+    },
+    {
+     "key": "warrior-arms-raid",
+     "name": "Arms",
+     "label": "Raid build",
+     "split": [
+      32,
+      18,
+      1
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Awarrior%3Anight-elf%3A30303213132215201%2F05050005012%2F1%3A&spec=warrior-arms",
+     "trees": "30303213132215201/05050005012/1",
+     "icon": "ability_rogue_eviscerate",
+     "current": false
+    },
+    {
+     "key": "warrior-fury-leveling",
+     "name": "Fury",
+     "label": "Level 60 build",
+     "split": [
+      17,
+      32,
+      2
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Awarrior%3Anight-elf%3A30323013002%2F050530025122100231%2F2%3A&spec=warrior-fury",
+     "trees": "30323013002/050530025122100231/2",
+     "icon": "ability_warrior_innerrage",
+     "current": false
+    },
+    {
+     "key": "warrior-protection-leveling",
+     "name": "Protection",
+     "label": "Level 60 build",
+     "split": [
+      14,
+      0,
+      37
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Awarrior%3Anight-elf%3A35300003%2F0%2F250533120330001351%3A&spec=warrior-protection",
+     "trees": "35300003//250533120330001351",
+     "icon": "inv_shield_06",
+     "current": false
+    }
+   ],
    "share_fields": [
     "Class and race",
     "Talent order"
@@ -2089,7 +2386,458 @@
     "talents": "0000000000000000-0000000000000000-500230100000000000"
    },
    "text_summary": "Night Elf Hunter · Beast Mastery 0/Marksmanship 0/Survival 20 · Level 29",
-   "point_meta": "20 spent",
+   "order_view": {
+    "rows": [
+     {
+      "label": "Levels 10 to 19",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 10: Improved Tracking 1",
+        "rank": 1,
+        "iconSrc": "inv_misc_head_dragon_black",
+        "tip": {
+         "name": "Improved Tracking",
+         "rankLine": "Rank 1 of 5",
+         "now": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 1%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 11: Improved Tracking 2",
+        "rank": 2,
+        "iconSrc": "inv_misc_head_dragon_black",
+        "tip": {
+         "name": "Improved Tracking",
+         "rankLine": "Rank 2 of 5",
+         "now": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 12: Improved Tracking 3",
+        "rank": 3,
+        "iconSrc": "inv_misc_head_dragon_black",
+        "tip": {
+         "name": "Improved Tracking",
+         "rankLine": "Rank 3 of 5",
+         "now": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 13: Improved Tracking 4",
+        "rank": 4,
+        "iconSrc": "inv_misc_head_dragon_black",
+        "tip": {
+         "name": "Improved Tracking",
+         "rankLine": "Rank 4 of 5",
+         "now": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 14: Improved Tracking 5",
+        "rank": 5,
+        "iconSrc": "inv_misc_head_dragon_black",
+        "tip": {
+         "name": "Improved Tracking",
+         "rankLine": "Rank 5 of 5",
+         "now": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 5%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 15: Savage Strikes 1",
+        "rank": 1,
+        "iconSrc": "ability_racial_bloodrage",
+        "tip": {
+         "name": "Savage Strikes",
+         "rankLine": "Rank 1 of 2",
+         "now": "Increases the critical strike chance of all your melee abilities by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 16: Savage Strikes 2",
+        "rank": 2,
+        "iconSrc": "ability_racial_bloodrage",
+        "tip": {
+         "name": "Savage Strikes",
+         "rankLine": "Rank 2 of 2",
+         "now": "Increases the critical strike chance of all your melee abilities by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 17: Survivalist 1",
+        "rank": 1,
+        "iconSrc": "spell_shadow_twilight",
+        "tip": {
+         "name": "Survivalist",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your total Health by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 18: Survivalist 2",
+        "rank": 2,
+        "iconSrc": "spell_shadow_twilight",
+        "tip": {
+         "name": "Survivalist",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your total Health by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 19: Survivalist 3",
+        "rank": 3,
+        "iconSrc": "spell_shadow_twilight",
+        "tip": {
+         "name": "Survivalist",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your total Health by 6%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 20 to 29",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 20: Clever Traps 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_timestop",
+        "tip": {
+         "name": "Clever Traps",
+         "rankLine": "Rank 1 of 2",
+         "now": "Increases the duration of Freezing and Frost trap effects by 15% and the damage of Immolation and Explosive trap effects by 15%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 21: Clever Traps 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_timestop",
+        "tip": {
+         "name": "Clever Traps",
+         "rankLine": "Rank 2 of 2",
+         "now": "Increases the duration of Freezing and Frost trap effects by 30% and the damage of Immolation and Explosive trap effects by 30%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 22: Surefooted 1",
+        "rank": 1,
+        "iconSrc": "ability_kick",
+        "tip": {
+         "name": "Surefooted",
+         "rankLine": "Rank 1 of 3",
+         "now": "Increases your hit chance by 1% and reduces the duration of movement impairing effects on you by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 23: Surefooted 2",
+        "rank": 2,
+        "iconSrc": "ability_kick",
+        "tip": {
+         "name": "Surefooted",
+         "rankLine": "Rank 2 of 3",
+         "now": "Increases your hit chance by 2% and reduces the duration of movement impairing effects on you by 20%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 24: Surefooted 3",
+        "rank": 3,
+        "iconSrc": "ability_kick",
+        "tip": {
+         "name": "Surefooted",
+         "rankLine": "Rank 3 of 3",
+         "now": "Increases your hit chance by 3% and reduces the duration of movement impairing effects on you by 30%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 25: Predator's Edge 1",
+        "rank": 1,
+        "iconSrc": "ability_dualwield",
+        "tip": {
+         "name": "Predator's Edge",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your melee ability critical strike damage by 6% and your Off Hand weapon damage by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 26: Predator's Edge 2",
+        "rank": 2,
+        "iconSrc": "ability_dualwield",
+        "tip": {
+         "name": "Predator's Edge",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your melee ability critical strike damage by 12% and your Off Hand weapon damage by 20%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 27: Predator's Edge 3",
+        "rank": 3,
+        "iconSrc": "ability_dualwield",
+        "tip": {
+         "name": "Predator's Edge",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your melee ability critical strike damage by 18% and your Off Hand weapon damage by 30%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 28: Predator's Edge 4",
+        "rank": 4,
+        "iconSrc": "ability_dualwield",
+        "tip": {
+         "name": "Predator's Edge",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your melee ability critical strike damage by 24% and your Off Hand weapon damage by 40%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 29: Predator's Edge 5",
+        "rank": 5,
+        "iconSrc": "ability_dualwield",
+        "tip": {
+         "name": "Predator's Edge",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases your melee ability critical strike damage by 30% and your Off Hand weapon damage by 50%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 30 to 39",
+      "slots": [
+       {
+        "kind": "next",
+        "name": "Next point: level 30"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 31"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 32"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 33"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 34"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 35"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 36"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 37"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 38"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 39"
+       }
+      ]
+     },
+     {
+      "label": "Levels 40 to 49",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 40"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 41"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 42"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 43"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 44"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 45"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 46"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 47"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 48"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 49"
+       }
+      ]
+     },
+     {
+      "label": "Levels 50 to 59",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 50"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 51"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 52"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 53"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 54"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 55"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 56"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 57"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 58"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 59"
+       }
+      ]
+     },
+     {
+      "label": "Level 60",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 60"
+       }
+      ]
+     }
+    ],
+    "capAfter": -1,
+    "capText": ""
+   },
+   "guide_builds": [
+    {
+     "key": "hunter-beast-mastery-leveling",
+     "name": "Beast Mastery",
+     "label": "Level 60 build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00524510012%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00524510012/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-beast-mastery-raid",
+     "name": "Beast Mastery",
+     "label": "Raid build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00523500014%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00523500014/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-leveling",
+     "name": "Marksmanship",
+     "label": "Level 60 build",
+     "split": [
+      15,
+      31,
+      5
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A53200005%2F005055200152105%2F5%3A&spec=hunter-marksmanship",
+     "trees": "53200005/005055200152105/5",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-raid",
+     "name": "Marksmanship",
+     "label": "Raid build",
+     "split": [
+      5,
+      33,
+      13
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F0052550011503051%2F50005003%3A&spec=hunter-marksmanship",
+     "trees": "5/0052550011503051/50005003",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-survival-leveling",
+     "name": "Survival",
+     "label": "Level 60 build",
+     "split": [
+      5,
+      13,
+      33
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F005005201%2F500230230050222151%3A&spec=hunter-survival",
+     "trees": "5/005005201/500230230050222151",
+     "icon": "ability_hunter_swiftstrike",
+     "current": false
+    }
+   ],
    "share_fields": [
     "Class and race",
     "Talent order"
@@ -3008,7 +3756,318 @@
     "talents": "5420001505001251-0052350001400000-000000000000000000"
    },
    "text_summary": "Human Hunter · Beast Mastery 0/Marksmanship 0/Survival 0 · Level 9",
-   "point_meta": "0 spent",
+   "order_view": {
+    "rows": [
+     {
+      "label": "Levels 10 to 19",
+      "slots": [
+       {
+        "kind": "next",
+        "name": "Next point: level 10"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 11"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 12"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 13"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 14"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 15"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 16"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 17"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 18"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 19"
+       }
+      ]
+     },
+     {
+      "label": "Levels 20 to 29",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 20"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 21"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 22"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 23"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 24"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 25"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 26"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 27"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 28"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 29"
+       }
+      ]
+     },
+     {
+      "label": "Levels 30 to 39",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 30"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 31"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 32"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 33"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 34"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 35"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 36"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 37"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 38"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 39"
+       }
+      ]
+     },
+     {
+      "label": "Levels 40 to 49",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 40"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 41"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 42"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 43"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 44"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 45"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 46"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 47"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 48"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 49"
+       }
+      ]
+     },
+     {
+      "label": "Levels 50 to 59",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 50"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 51"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 52"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 53"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 54"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 55"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 56"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 57"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 58"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 59"
+       }
+      ]
+     },
+     {
+      "label": "Level 60",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 60"
+       }
+      ]
+     }
+    ],
+    "capAfter": -1,
+    "capText": ""
+   },
+   "guide_builds": [
+    {
+     "key": "hunter-beast-mastery-leveling",
+     "name": "Beast Mastery",
+     "label": "Level 60 build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00524510012%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00524510012/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-beast-mastery-raid",
+     "name": "Beast Mastery",
+     "label": "Raid build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00523500014%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00523500014/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-leveling",
+     "name": "Marksmanship",
+     "label": "Level 60 build",
+     "split": [
+      15,
+      31,
+      5
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A53200005%2F005055200152105%2F5%3A&spec=hunter-marksmanship",
+     "trees": "53200005/005055200152105/5",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-raid",
+     "name": "Marksmanship",
+     "label": "Raid build",
+     "split": [
+      5,
+      33,
+      13
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F0052550011503051%2F50005003%3A&spec=hunter-marksmanship",
+     "trees": "5/0052550011503051/50005003",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-survival-leveling",
+     "name": "Survival",
+     "label": "Level 60 build",
+     "split": [
+      5,
+      13,
+      33
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F005005201%2F500230230050222151%3A&spec=hunter-survival",
+     "trees": "5/005005201/500230230050222151",
+     "icon": "ability_hunter_swiftstrike",
+     "current": false
+    }
+   ],
    "share_fields": [
     "Class and race",
     "Talent order"
@@ -4369,7 +5428,675 @@
     "talents": "5000000000000000-0050052010000000-500230230050222151"
    },
    "text_summary": "Night Elf Hunter · Beast Mastery 5/Marksmanship 13/Survival 33 · Level 60",
-   "point_meta": "51 spent",
+   "order_view": {
+    "rows": [
+     {
+      "label": "Levels 10 to 19",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 10: Improved Tracking 1",
+        "rank": 1,
+        "iconSrc": "inv_misc_head_dragon_black",
+        "tip": {
+         "name": "Improved Tracking",
+         "rankLine": "Rank 1 of 5",
+         "now": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 1%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 11: Improved Tracking 2",
+        "rank": 2,
+        "iconSrc": "inv_misc_head_dragon_black",
+        "tip": {
+         "name": "Improved Tracking",
+         "rankLine": "Rank 2 of 5",
+         "now": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 12: Improved Tracking 3",
+        "rank": 3,
+        "iconSrc": "inv_misc_head_dragon_black",
+        "tip": {
+         "name": "Improved Tracking",
+         "rankLine": "Rank 3 of 5",
+         "now": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 13: Improved Tracking 4",
+        "rank": 4,
+        "iconSrc": "inv_misc_head_dragon_black",
+        "tip": {
+         "name": "Improved Tracking",
+         "rankLine": "Rank 4 of 5",
+         "now": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 14: Improved Tracking 5",
+        "rank": 5,
+        "iconSrc": "inv_misc_head_dragon_black",
+        "tip": {
+         "name": "Improved Tracking",
+         "rankLine": "Rank 5 of 5",
+         "now": "While tracking Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids, or Undead, all damage you deal to the tracked creature type is increased by 5%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 15: Savage Strikes 1",
+        "rank": 1,
+        "iconSrc": "ability_racial_bloodrage",
+        "tip": {
+         "name": "Savage Strikes",
+         "rankLine": "Rank 1 of 2",
+         "now": "Increases the critical strike chance of all your melee abilities by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 16: Savage Strikes 2",
+        "rank": 2,
+        "iconSrc": "ability_racial_bloodrage",
+        "tip": {
+         "name": "Savage Strikes",
+         "rankLine": "Rank 2 of 2",
+         "now": "Increases the critical strike chance of all your melee abilities by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 17: Survivalist 1",
+        "rank": 1,
+        "iconSrc": "spell_shadow_twilight",
+        "tip": {
+         "name": "Survivalist",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your total Health by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 18: Survivalist 2",
+        "rank": 2,
+        "iconSrc": "spell_shadow_twilight",
+        "tip": {
+         "name": "Survivalist",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your total Health by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 19: Survivalist 3",
+        "rank": 3,
+        "iconSrc": "spell_shadow_twilight",
+        "tip": {
+         "name": "Survivalist",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your total Health by 6%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 20 to 29",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 20: Clever Traps 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_timestop",
+        "tip": {
+         "name": "Clever Traps",
+         "rankLine": "Rank 1 of 2",
+         "now": "Increases the duration of Freezing and Frost trap effects by 15% and the damage of Immolation and Explosive trap effects by 15%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 21: Clever Traps 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_timestop",
+        "tip": {
+         "name": "Clever Traps",
+         "rankLine": "Rank 2 of 2",
+         "now": "Increases the duration of Freezing and Frost trap effects by 30% and the damage of Immolation and Explosive trap effects by 30%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 22: Surefooted 1",
+        "rank": 1,
+        "iconSrc": "ability_kick",
+        "tip": {
+         "name": "Surefooted",
+         "rankLine": "Rank 1 of 3",
+         "now": "Increases your hit chance by 1% and reduces the duration of movement impairing effects on you by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 23: Surefooted 2",
+        "rank": 2,
+        "iconSrc": "ability_kick",
+        "tip": {
+         "name": "Surefooted",
+         "rankLine": "Rank 2 of 3",
+         "now": "Increases your hit chance by 2% and reduces the duration of movement impairing effects on you by 20%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 24: Surefooted 3",
+        "rank": 3,
+        "iconSrc": "ability_kick",
+        "tip": {
+         "name": "Surefooted",
+         "rankLine": "Rank 3 of 3",
+         "now": "Increases your hit chance by 3% and reduces the duration of movement impairing effects on you by 30%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 25: Predator's Edge 1",
+        "rank": 1,
+        "iconSrc": "ability_dualwield",
+        "tip": {
+         "name": "Predator's Edge",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your melee ability critical strike damage by 6% and your Off Hand weapon damage by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 26: Predator's Edge 2",
+        "rank": 2,
+        "iconSrc": "ability_dualwield",
+        "tip": {
+         "name": "Predator's Edge",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your melee ability critical strike damage by 12% and your Off Hand weapon damage by 20%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 27: Predator's Edge 3",
+        "rank": 3,
+        "iconSrc": "ability_dualwield",
+        "tip": {
+         "name": "Predator's Edge",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your melee ability critical strike damage by 18% and your Off Hand weapon damage by 30%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 28: Predator's Edge 4",
+        "rank": 4,
+        "iconSrc": "ability_dualwield",
+        "tip": {
+         "name": "Predator's Edge",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your melee ability critical strike damage by 24% and your Off Hand weapon damage by 40%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 29: Predator's Edge 5",
+        "rank": 5,
+        "iconSrc": "ability_dualwield",
+        "tip": {
+         "name": "Predator's Edge",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases your melee ability critical strike damage by 30% and your Off Hand weapon damage by 50%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 30 to 39",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 30: Strider Kick 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_pet_tallstrider",
+        "tip": {
+         "name": "Strider Kick",
+         "rankLine": "Rank 1 of 1",
+         "now": "A powerful kick that deals 100% melee weapon damage and increases movement speed by 30% for 3 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 31: Resourcefulness 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_resourcefulness",
+        "tip": {
+         "name": "Resourcefulness",
+         "rankLine": "Rank 1 of 2",
+         "now": "Reduces the Mana cost of your Trap and melee abilities by 30%, and grants your melee and ranged ability Critical Strikes a 50% chance to allow 50% of your Mana Regeneration to continue while casting for 30 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 32: Resourcefulness 2",
+        "rank": 2,
+        "iconSrc": "ability_hunter_resourcefulness",
+        "tip": {
+         "name": "Resourcefulness",
+         "rankLine": "Rank 2 of 2",
+         "now": "Reduces the Mana cost of your Trap and melee abilities by 60%, and grants your melee and ranged ability Critical Strikes a 100% chance to allow 50% of your Mana Regeneration to continue while casting for 30 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 33: Expose Prey 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_swiftstrike",
+        "tip": {
+         "name": "Expose Prey",
+         "rankLine": "Rank 1 of 2",
+         "now": "Grants your melee and ranged attacks against enemies afflicted by Hunter's Mark a 5% chance to allow an activation of Mongoose Bite. Lasts 10 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 34: Expose Prey 2",
+        "rank": 2,
+        "iconSrc": "ability_hunter_swiftstrike",
+        "tip": {
+         "name": "Expose Prey",
+         "rankLine": "Rank 2 of 2",
+         "now": "Grants your melee and ranged attacks against enemies afflicted by Hunter's Mark a 10% chance to allow an activation of Mongoose Bite. Lasts 10 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 35: Survivalist's Discipline 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_mastertactitian",
+        "tip": {
+         "name": "Survivalist's Discipline",
+         "rankLine": "Rank 1 of 2",
+         "now": "Reduces the cooldown of your Trap and Deterrence abilities by 20%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 36: Survivalist's Discipline 2",
+        "rank": 2,
+        "iconSrc": "ability_hunter_mastertactitian",
+        "tip": {
+         "name": "Survivalist's Discipline",
+         "rankLine": "Rank 2 of 2",
+         "now": "Reduces the cooldown of your Trap and Deterrence abilities by 40%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 37: Lightning Reflexes 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_invisibilty",
+        "tip": {
+         "name": "Lightning Reflexes",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your Agility by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 38: Lightning Reflexes 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_invisibilty",
+        "tip": {
+         "name": "Lightning Reflexes",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your Agility by 6%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 39: Lightning Reflexes 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_invisibilty",
+        "tip": {
+         "name": "Lightning Reflexes",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your Agility by 9%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 40 to 49",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 40: Lacerating Strikes 1",
+        "rank": 1,
+        "iconSrc": "ability_gouge",
+        "tip": {
+         "name": "Lacerating Strikes",
+         "rankLine": "Rank 1 of 1",
+         "now": "Your Mongoose Bite also causes the target to Bleed for damage equal to 40% of the damage done by Mongoose Bite over 21 sec"
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 41: Lightning Reflexes 4",
+        "rank": 4,
+        "iconSrc": "spell_nature_invisibilty",
+        "tip": {
+         "name": "Lightning Reflexes",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your Agility by 12%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 42: Lightning Reflexes 5",
+        "rank": 5,
+        "iconSrc": "spell_nature_invisibilty",
+        "tip": {
+         "name": "Lightning Reflexes",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases your Agility by 15%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 43: Deadly Aspects 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 1 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 2% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 2% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 44: Deadly Aspects 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 2 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 4% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 4% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 45: Deadly Aspects 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 3 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 6% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 6% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 46: Deadly Aspects 4",
+        "rank": 4,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 4 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 8% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 8% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 47: Deadly Aspects 5",
+        "rank": 5,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 5 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 10% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 10% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 48: Lethal Attacks 1",
+        "rank": 1,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your critical strike chance with all attacks by 1%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 49: Lethal Attacks 2",
+        "rank": 2,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your critical strike chance with all attacks by 2%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 50 to 59",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 50: Lethal Attacks 3",
+        "rank": 3,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your critical strike chance with all attacks by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 51: Lethal Attacks 4",
+        "rank": 4,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your critical strike chance with all attacks by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 52: Lethal Attacks 5",
+        "rank": 5,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases your critical strike chance with all attacks by 5%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 53: Careful Aim 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your Attack Power by 20% of your Intellect."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 54: Careful Aim 2",
+        "rank": 2,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your Attack Power by 40% of your Intellect."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 55: Careful Aim 3",
+        "rank": 3,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your Attack Power by 60% of your Intellect."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 56: Careful Aim 4",
+        "rank": 4,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your Attack Power by 80% of your Intellect."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 57: Careful Aim 5",
+        "rank": 5,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases your Attack Power by 100% of your Intellect."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 58: Rapid Killing 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_rapidkilling",
+        "tip": {
+         "name": "Rapid Killing",
+         "rankLine": "Rank 1 of 2",
+         "now": "Reduces the cooldown on your Rapid Fire ability by 1 min. In addition, when you kill a non-trivial enemy or it dies while afflicted by your Serpent Sting, you gain Rapid Killing, increasing the damage of your next Shot ability within 20 sec by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 59: Rapid Killing 2",
+        "rank": 2,
+        "iconSrc": "ability_hunter_rapidkilling",
+        "tip": {
+         "name": "Rapid Killing",
+         "rankLine": "Rank 2 of 2",
+         "now": "Reduces the cooldown on your Rapid Fire ability by 2 min. In addition, when you kill a non-trivial enemy or it dies while afflicted by your Serpent Sting, you gain Rapid Killing, increasing the damage of your next Shot ability within 20 sec by 20%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Level 60",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 60: Lone Wolf 1",
+        "rank": 1,
+        "iconSrc": "ability_mount_whitedirewolf",
+        "tip": {
+         "name": "Lone Wolf",
+         "rankLine": "Rank 1 of 1",
+         "now": "You deal 20% increased damage with all attacks while you do not have an active pet."
+        }
+       }
+      ]
+     }
+    ],
+    "capAfter": -1,
+    "capText": ""
+   },
+   "guide_builds": [
+    {
+     "key": "hunter-beast-mastery-leveling",
+     "name": "Beast Mastery",
+     "label": "Level 60 build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00524510012%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00524510012/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-beast-mastery-raid",
+     "name": "Beast Mastery",
+     "label": "Raid build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00523500014%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00523500014/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-leveling",
+     "name": "Marksmanship",
+     "label": "Level 60 build",
+     "split": [
+      15,
+      31,
+      5
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A53200005%2F005055200152105%2F5%3A&spec=hunter-marksmanship",
+     "trees": "53200005/005055200152105/5",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-raid",
+     "name": "Marksmanship",
+     "label": "Raid build",
+     "split": [
+      5,
+      33,
+      13
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F0052550011503051%2F50005003%3A&spec=hunter-marksmanship",
+     "trees": "5/0052550011503051/50005003",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-survival-leveling",
+     "name": "Survival",
+     "label": "Level 60 build",
+     "split": [
+      5,
+      13,
+      33
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F005005201%2F500230230050222151%3A&spec=hunter-survival",
+     "trees": "5/005005201/500230230050222151",
+     "icon": "ability_hunter_swiftstrike",
+     "current": true
+    }
+   ],
    "share_fields": [
     "Class and race",
     "Talent order"
@@ -5760,7 +7487,661 @@
     "talents": "005005031030000000-33505003030121431-00000000000000000"
    },
    "text_summary": "Human Priest · Discipline 17/Holy 34/Shadow 0 · Level 60",
-   "point_meta": "51 spent",
+   "order_view": {
+    "rows": [
+     {
+      "label": "Levels 10 to 19",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 10: Twilight Focus 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_healingfocus",
+        "tip": {
+         "name": "Twilight Focus",
+         "rankLine": "Rank 1 of 3",
+         "now": "Gives your spells a 23% chance to not lose casting time when you take damage."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 11: Twilight Focus 2",
+        "rank": 2,
+        "iconSrc": "spell_holy_healingfocus",
+        "tip": {
+         "name": "Twilight Focus",
+         "rankLine": "Rank 2 of 3",
+         "now": "Gives your spells a 47% chance to not lose casting time when you take damage."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 12: Twilight Focus 3",
+        "rank": 3,
+        "iconSrc": "spell_holy_healingfocus",
+        "tip": {
+         "name": "Twilight Focus",
+         "rankLine": "Rank 3 of 3",
+         "now": "Gives your spells a 70% chance to not lose casting time when you take damage."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 13: Improved Renew 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_renew",
+        "tip": {
+         "name": "Improved Renew",
+         "rankLine": "Rank 1 of 3",
+         "now": "Increases the amount healed by your Renew spell by 5%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 14: Improved Renew 2",
+        "rank": 2,
+        "iconSrc": "spell_holy_renew",
+        "tip": {
+         "name": "Improved Renew",
+         "rankLine": "Rank 2 of 3",
+         "now": "Increases the amount healed by your Renew spell by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 15: Divine Fury 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_sealofwrath",
+        "tip": {
+         "name": "Divine Fury",
+         "rankLine": "Rank 1 of 5",
+         "now": "Reduces the casting time of your Smite, Holy Fire, Heal, and Greater Heal spells by 0.1 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 16: Divine Fury 2",
+        "rank": 2,
+        "iconSrc": "spell_holy_sealofwrath",
+        "tip": {
+         "name": "Divine Fury",
+         "rankLine": "Rank 2 of 5",
+         "now": "Reduces the casting time of your Smite, Holy Fire, Heal, and Greater Heal spells by 0.2 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 17: Divine Fury 3",
+        "rank": 3,
+        "iconSrc": "spell_holy_sealofwrath",
+        "tip": {
+         "name": "Divine Fury",
+         "rankLine": "Rank 3 of 5",
+         "now": "Reduces the casting time of your Smite, Holy Fire, Heal, and Greater Heal spells by 0.3 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 18: Divine Fury 4",
+        "rank": 4,
+        "iconSrc": "spell_holy_sealofwrath",
+        "tip": {
+         "name": "Divine Fury",
+         "rankLine": "Rank 4 of 5",
+         "now": "Reduces the casting time of your Smite, Holy Fire, Heal, and Greater Heal spells by 0.4 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 19: Divine Fury 5",
+        "rank": 5,
+        "iconSrc": "spell_holy_sealofwrath",
+        "tip": {
+         "name": "Divine Fury",
+         "rankLine": "Rank 5 of 5",
+         "now": "Reduces the casting time of your Smite, Holy Fire, Heal, and Greater Heal spells by 0.5 sec."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 20 to 29",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 20: Inspiration 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_layonhands",
+        "tip": {
+         "name": "Inspiration",
+         "rankLine": "Rank 1 of 3",
+         "now": "Your non-periodic critical heals increase your target's Armor by 8% for 15 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 21: Inspiration 2",
+        "rank": 2,
+        "iconSrc": "spell_holy_layonhands",
+        "tip": {
+         "name": "Inspiration",
+         "rankLine": "Rank 2 of 3",
+         "now": "Your non-periodic critical heals increase your target's Armor by 17% for 15 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 22: Inspiration 3",
+        "rank": 3,
+        "iconSrc": "spell_holy_layonhands",
+        "tip": {
+         "name": "Inspiration",
+         "rankLine": "Rank 3 of 3",
+         "now": "Your non-periodic critical heals increase your target's Armor by 25% for 15 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 23: Improved Renew 3",
+        "rank": 3,
+        "iconSrc": "spell_holy_renew",
+        "tip": {
+         "name": "Improved Renew",
+         "rankLine": "Rank 3 of 3",
+         "now": "Increases the amount healed by your Renew spell by 15%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 24: Holy Specialization 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_sealofsalvation",
+        "tip": {
+         "name": "Holy Specialization",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the critical effect chance of your Holy spells by 1%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 25: Holy Binding 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_blindingheal",
+        "tip": {
+         "name": "Holy Binding",
+         "rankLine": "Rank 1 of 1",
+         "now": "Each time you heal a target other than yourself with Flash Heal, you are healed for 50% as much. This healing generates no threat."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 26: Improved Healing 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_heal02",
+        "tip": {
+         "name": "Improved Healing",
+         "rankLine": "Rank 1 of 3",
+         "now": "Reduces the Mana cost of your Lesser Heal, Heal, Greater Heal, Penance, and Prayer of Mending spells by 5%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 27: Improved Healing 2",
+        "rank": 2,
+        "iconSrc": "spell_holy_heal02",
+        "tip": {
+         "name": "Improved Healing",
+         "rankLine": "Rank 2 of 3",
+         "now": "Reduces the Mana cost of your Lesser Heal, Heal, Greater Heal, Penance, and Prayer of Mending spells by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 28: Improved Healing 3",
+        "rank": 3,
+        "iconSrc": "spell_holy_heal02",
+        "tip": {
+         "name": "Improved Healing",
+         "rankLine": "Rank 3 of 3",
+         "now": "Reduces the Mana cost of your Lesser Heal, Heal, Greater Heal, Penance, and Prayer of Mending spells by 15%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 29: Holy Specialization 2",
+        "rank": 2,
+        "iconSrc": "spell_holy_sealofsalvation",
+        "tip": {
+         "name": "Holy Specialization",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the critical effect chance of your Holy spells by 2%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 30 to 39",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 30: Spirit of Redemption 1",
+        "rank": 1,
+        "iconSrc": "inv_enchant_essenceeternallarge",
+        "tip": {
+         "name": "Spirit of Redemption",
+         "rankLine": "Rank 1 of 1",
+         "now": "Upon death, the priest becomes the Spirit of Redemption for 15 sec.  The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects.  While in this form the priest can cast any healing spell free of cost.  When the effect ends, the priest dies."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 31: Litany of Light 1",
+        "rank": 1,
+        "iconSrc": "inv_scroll_07",
+        "tip": {
+         "name": "Litany of Light",
+         "rankLine": "Rank 1 of 2",
+         "now": "When you cast a healing spell, gain Mana equal to 5% of the base cost of the spell if your previous heal was a different spell."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 32: Litany of Light 2",
+        "rank": 2,
+        "iconSrc": "inv_scroll_07",
+        "tip": {
+         "name": "Litany of Light",
+         "rankLine": "Rank 2 of 2",
+         "now": "When you cast a healing spell, gain Mana equal to 10% of the base cost of the spell if your previous heal was a different spell."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 33: Spiritual Guidance 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_spiritualguidence",
+        "tip": {
+         "name": "Spiritual Guidance",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your spell healing by up to 5% of your total Spirit and your spell damage by up to 1% of your total Spirit."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 34: Spiritual Guidance 2",
+        "rank": 2,
+        "iconSrc": "spell_holy_spiritualguidence",
+        "tip": {
+         "name": "Spiritual Guidance",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your spell healing by up to 10% of your total Spirit and your spell damage by up to 3% of your total Spirit."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 35: Spiritual Healing 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_moonglow",
+        "tip": {
+         "name": "Spiritual Healing",
+         "rankLine": "Rank 1 of 3",
+         "now": "Increases the amount healed by your spells by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 36: Spiritual Healing 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_moonglow",
+        "tip": {
+         "name": "Spiritual Healing",
+         "rankLine": "Rank 2 of 3",
+         "now": "Increases the amount healed by your spells by 7%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 37: Spiritual Healing 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_moonglow",
+        "tip": {
+         "name": "Spiritual Healing",
+         "rankLine": "Rank 3 of 3",
+         "now": "Increases the amount healed by your spells by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 38: Spiritual Guidance 3",
+        "rank": 3,
+        "iconSrc": "spell_holy_spiritualguidence",
+        "tip": {
+         "name": "Spiritual Guidance",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your spell healing by up to 15% of your total Spirit and your spell damage by up to 5% of your total Spirit."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 39: Spiritual Guidance 4",
+        "rank": 4,
+        "iconSrc": "spell_holy_spiritualguidence",
+        "tip": {
+         "name": "Spiritual Guidance",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your spell healing by up to 20% of your total Spirit and your spell damage by up to 6% of your total Spirit."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 40 to 49",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 40: Prayer of Mending 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_prayerofmendingtga",
+        "tip": {
+         "name": "Prayer of Mending",
+         "rankLine": "Rank 1 of 1",
+         "now": "Places a spell on the target that heals them for [(172 + (Healing * 0.42899999)) * (1 * 1)] the next time they take damage or receive non-periodic healing. When the heal occurs, Prayer of Mending jumps to a party or raid member within 20 yards. Jumps up to 5 times and lasts 30 sec after each jump. This spell can only be placed on one target at a time per caster."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 41: Holy Specialization 3",
+        "rank": 3,
+        "iconSrc": "spell_holy_sealofsalvation",
+        "tip": {
+         "name": "Holy Specialization",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases the critical effect chance of your Holy spells by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 42: Holy Specialization 4",
+        "rank": 4,
+        "iconSrc": "spell_holy_sealofsalvation",
+        "tip": {
+         "name": "Holy Specialization",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases the critical effect chance of your Holy spells by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 43: Holy Specialization 5",
+        "rank": 5,
+        "iconSrc": "spell_holy_sealofsalvation",
+        "tip": {
+         "name": "Holy Specialization",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases the critical effect chance of your Holy spells by 5%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 44: Twin Disciplines 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_sealofvengeance",
+        "tip": {
+         "name": "Twin Disciplines",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the damage and healing of your instant cast spells by 1%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 45: Twin Disciplines 2",
+        "rank": 2,
+        "iconSrc": "spell_holy_sealofvengeance",
+        "tip": {
+         "name": "Twin Disciplines",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the damage and healing of your instant cast spells by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 46: Twin Disciplines 3",
+        "rank": 3,
+        "iconSrc": "spell_holy_sealofvengeance",
+        "tip": {
+         "name": "Twin Disciplines",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases the damage and healing of your instant cast spells by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 47: Twin Disciplines 4",
+        "rank": 4,
+        "iconSrc": "spell_holy_sealofvengeance",
+        "tip": {
+         "name": "Twin Disciplines",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases the damage and healing of your instant cast spells by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 48: Twin Disciplines 5",
+        "rank": 5,
+        "iconSrc": "spell_holy_sealofvengeance",
+        "tip": {
+         "name": "Twin Disciplines",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases the damage and healing of your instant cast spells by 5%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 49: Mental Strength 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_enchantarmor",
+        "tip": {
+         "name": "Mental Strength",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your total Intellect by 2%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 50 to 59",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 50: Mental Strength 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_enchantarmor",
+        "tip": {
+         "name": "Mental Strength",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your total Intellect by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 51: Mental Strength 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_enchantarmor",
+        "tip": {
+         "name": "Mental Strength",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your total Intellect by 6%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 52: Mental Strength 4",
+        "rank": 4,
+        "iconSrc": "spell_nature_enchantarmor",
+        "tip": {
+         "name": "Mental Strength",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your total Intellect by 8%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 53: Mental Strength 5",
+        "rank": 5,
+        "iconSrc": "spell_nature_enchantarmor",
+        "tip": {
+         "name": "Mental Strength",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases your total Intellect by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 54: Inner Focus 1",
+        "rank": 1,
+        "iconSrc": "spell_frost_windwalkon",
+        "tip": {
+         "name": "Inner Focus",
+         "rankLine": "Rank 1 of 1",
+         "now": "When activated, reduces the Mana cost of your next spell by 100% and increases its critical effect chance by 25% if it is a non-periodic spell and capable of a critical effect."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 55: Mental Agility 1",
+        "rank": 1,
+        "iconSrc": "ability_hibernation",
+        "tip": {
+         "name": "Mental Agility",
+         "rankLine": "Rank 1 of 3",
+         "now": "Reduces the mana cost of your Smite, Holy Fire, and instant cast spells by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 56: Mental Agility 2",
+        "rank": 2,
+        "iconSrc": "ability_hibernation",
+        "tip": {
+         "name": "Mental Agility",
+         "rankLine": "Rank 2 of 3",
+         "now": "Reduces the mana cost of your Smite, Holy Fire, and instant cast spells by 7%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 57: Mental Agility 3",
+        "rank": 3,
+        "iconSrc": "ability_hibernation",
+        "tip": {
+         "name": "Mental Agility",
+         "rankLine": "Rank 3 of 3",
+         "now": "Reduces the mana cost of your Smite, Holy Fire, and instant cast spells by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 58: Meditation 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_sleep",
+        "tip": {
+         "name": "Meditation",
+         "rankLine": "Rank 1 of 3",
+         "now": "Allows 17% of your Mana regeneration to continue while casting."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 59: Meditation 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_sleep",
+        "tip": {
+         "name": "Meditation",
+         "rankLine": "Rank 2 of 3",
+         "now": "Allows 33% of your Mana regeneration to continue while casting."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Level 60",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 60: Meditation 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_sleep",
+        "tip": {
+         "name": "Meditation",
+         "rankLine": "Rank 3 of 3",
+         "now": "Allows 50% of your Mana regeneration to continue while casting."
+        }
+       }
+      ]
+     }
+    ],
+    "capAfter": -1,
+    "capText": ""
+   },
+   "guide_builds": [
+    {
+     "key": "priest-discipline-leveling",
+     "name": "Discipline",
+     "label": "Level 60 build",
+     "split": [
+      29,
+      22,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Apriest%3Ahuman%3A00500503133001143%2F3350500303%2F0%3A&spec=priest-discipline",
+     "trees": "00500503133001143/3350500303/",
+     "icon": "spell_holy_wordfortitude",
+     "current": false
+    },
+    {
+     "key": "priest-holy-leveling",
+     "name": "Holy",
+     "label": "Level 60 build",
+     "split": [
+      17,
+      34,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Apriest%3Ahuman%3A00500503103%2F33505003030121431%2F0%3A&spec=priest-holy",
+     "trees": "00500503103/33505003030121431/",
+     "icon": "spell_holy_guardianspirit",
+     "current": true
+    },
+    {
+     "key": "priest-shadow-leveling",
+     "name": "Shadow",
+     "label": "Level 60 build",
+     "split": [
+      20,
+      0,
+      31
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Apriest%3Ahuman%3A02510503103%2F0%2F52542001201300051%3A&spec=priest-shadow",
+     "trees": "02510503103//52542001201300051",
+     "icon": "spell_shadow_shadowwordpain",
+     "current": false
+    },
+    {
+     "key": "priest-shadow-raid",
+     "name": "Shadow",
+     "label": "Raid build",
+     "split": [
+      18,
+      0,
+      33
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Apriest%3Ahuman%3A00510503103%2F0%2F50052201211312251%3A&spec=priest-shadow",
+     "trees": "00510503103//50052201211312251",
+     "icon": "spell_shadow_shadowwordpain",
+     "current": false
+    }
+   ],
    "share_fields": [
     "Class and race",
     "Talent order"
@@ -7161,7 +9542,689 @@
     "talents": "050105200100000000-55500201230133031-003000000000000000"
    },
    "text_summary": "Human Mage · Arcane 14/Fire 34/Frost 3 · Level 60",
-   "point_meta": "51 spent",
+   "order_view": {
+    "rows": [
+     {
+      "label": "Levels 10 to 19",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 10: Incineration 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_flameshock",
+        "tip": {
+         "name": "Incineration",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the critical strike chance of your Fire Blast, Ice Lance, Arcane Blast, and Scorch spells by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 11: Incineration 2",
+        "rank": 2,
+        "iconSrc": "spell_fire_flameshock",
+        "tip": {
+         "name": "Incineration",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the critical strike chance of your Fire Blast, Ice Lance, Arcane Blast, and Scorch spells by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 12: Incineration 3",
+        "rank": 3,
+        "iconSrc": "spell_fire_flameshock",
+        "tip": {
+         "name": "Incineration",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases the critical strike chance of your Fire Blast, Ice Lance, Arcane Blast, and Scorch spells by 6%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 13: Incineration 4",
+        "rank": 4,
+        "iconSrc": "spell_fire_flameshock",
+        "tip": {
+         "name": "Incineration",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases the critical strike chance of your Fire Blast, Ice Lance, Arcane Blast, and Scorch spells by 8%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 14: Incineration 5",
+        "rank": 5,
+        "iconSrc": "spell_fire_flameshock",
+        "tip": {
+         "name": "Incineration",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases the critical strike chance of your Fire Blast, Ice Lance, Arcane Blast, and Scorch spells by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 15: Ignite 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_incinerate",
+        "tip": {
+         "name": "Ignite",
+         "rankLine": "Rank 1 of 5",
+         "now": "Your critical strikes from Fire damage spells cause the target to burn for an additional 8% of your spell's damage over 4 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 16: Ignite 2",
+        "rank": 2,
+        "iconSrc": "spell_fire_incinerate",
+        "tip": {
+         "name": "Ignite",
+         "rankLine": "Rank 2 of 5",
+         "now": "Your critical strikes from Fire damage spells cause the target to burn for an additional 16% of your spell's damage over 4 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 17: Ignite 3",
+        "rank": 3,
+        "iconSrc": "spell_fire_incinerate",
+        "tip": {
+         "name": "Ignite",
+         "rankLine": "Rank 3 of 5",
+         "now": "Your critical strikes from Fire damage spells cause the target to burn for an additional 24% of your spell's damage over 4 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 18: Ignite 4",
+        "rank": 4,
+        "iconSrc": "spell_fire_incinerate",
+        "tip": {
+         "name": "Ignite",
+         "rankLine": "Rank 4 of 5",
+         "now": "Your critical strikes from Fire damage spells cause the target to burn for an additional 32% of your spell's damage over 4 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 19: Ignite 5",
+        "rank": 5,
+        "iconSrc": "spell_fire_incinerate",
+        "tip": {
+         "name": "Ignite",
+         "rankLine": "Rank 5 of 5",
+         "now": "Your critical strikes from Fire damage spells cause the target to burn for an additional 40% of your spell's damage over 4 sec."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 20 to 29",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 20: Pyroblast 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_fireball02",
+        "tip": {
+         "name": "Pyroblast",
+         "rankLine": "Rank 1 of 1",
+         "now": "Hurls an immense fiery boulder that causes 101 to 131 Fire damage and an additional 44 Fire damage over 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 21: Burning Soul 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_fire",
+        "tip": {
+         "name": "Burning Soul",
+         "rankLine": "Rank 1 of 3",
+         "now": "Gives your Fire spells a 23% chance to not lose casting time when you take damage and reduces the threat caused by your Fire spells by 10%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 22: Burning Soul 2",
+        "rank": 2,
+        "iconSrc": "spell_fire_fire",
+        "tip": {
+         "name": "Burning Soul",
+         "rankLine": "Rank 2 of 3",
+         "now": "Gives your Fire spells a 47% chance to not lose casting time when you take damage and reduces the threat caused by your Fire spells by 20%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 23: Improved Fire Blast 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_lavaspawn",
+        "tip": {
+         "name": "Improved Fire Blast",
+         "rankLine": "Rank 1 of 2",
+         "now": "Reduces the cooldown of your Fire Blast spell by 1 sec and increases its range by 8 yards."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 24: Improved Fire Blast 2",
+        "rank": 2,
+        "iconSrc": "spell_fire_lavaspawn",
+        "tip": {
+         "name": "Improved Fire Blast",
+         "rankLine": "Rank 2 of 2",
+         "now": "Reduces the cooldown of your Fire Blast spell by 2 sec and increases its range by 15 yards."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 25: Heating Up 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_firebolt",
+        "tip": {
+         "name": "Heating Up",
+         "rankLine": "Rank 1 of 1",
+         "now": "Non-periodic critical strikes with Fireball, Frostfire Bolt, Fire Blast, and Scorch reduce the cast time of your next Pyroblast cast within 20 sec by 25%, stacking up to 3 times. Fire Blast grants an additional stack every time it deals damage."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 26: Improved Scorch 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_soulburn",
+        "tip": {
+         "name": "Improved Scorch",
+         "rankLine": "Rank 1 of 3",
+         "now": "Your Scorch spell has a 33% chance to cause your target to be vulnerable to Fire damage. This vulnerability increases all Fire damage you deal to your target by 3% and lasts 30 sec, stacking up to 5 times."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 27: Improved Scorch 2",
+        "rank": 2,
+        "iconSrc": "spell_fire_soulburn",
+        "tip": {
+         "name": "Improved Scorch",
+         "rankLine": "Rank 2 of 3",
+         "now": "Your Scorch spell has a 67% chance to cause your target to be vulnerable to Fire damage. This vulnerability increases all Fire damage you deal to your target by 3% and lasts 30 sec, stacking up to 5 times."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 28: Improved Scorch 3",
+        "rank": 3,
+        "iconSrc": "spell_fire_soulburn",
+        "tip": {
+         "name": "Improved Scorch",
+         "rankLine": "Rank 3 of 3",
+         "now": "Your Scorch spell has a 100% chance to cause your target to be vulnerable to Fire damage. This vulnerability increases all Fire damage you deal to your target by 3% and lasts 30 sec, stacking up to 5 times."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 29: Master of Elements 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_masterofelements",
+        "tip": {
+         "name": "Master of Elements",
+         "rankLine": "Rank 1 of 3",
+         "now": "Your Fire and Frost critical strikes will refund 10% of their base mana cost."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 30 to 39",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 30: Critical Mass 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_wispheal",
+        "tip": {
+         "name": "Critical Mass",
+         "rankLine": "Rank 1 of 3",
+         "now": "Increases the critical strike chance of your Fire spells by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 31: Critical Mass 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_wispheal",
+        "tip": {
+         "name": "Critical Mass",
+         "rankLine": "Rank 2 of 3",
+         "now": "Increases the critical strike chance of your Fire spells by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 32: Critical Mass 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_wispheal",
+        "tip": {
+         "name": "Critical Mass",
+         "rankLine": "Rank 3 of 3",
+         "now": "Increases the critical strike chance of your Fire spells by 6%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 33: Master of Elements 2",
+        "rank": 2,
+        "iconSrc": "spell_fire_masterofelements",
+        "tip": {
+         "name": "Master of Elements",
+         "rankLine": "Rank 2 of 3",
+         "now": "Your Fire and Frost critical strikes will refund 20% of their base mana cost."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 34: Master of Elements 3",
+        "rank": 3,
+        "iconSrc": "spell_fire_masterofelements",
+        "tip": {
+         "name": "Master of Elements",
+         "rankLine": "Rank 3 of 3",
+         "now": "Your Fire and Frost critical strikes will refund 30% of their base mana cost."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 35: Fire Power 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_immolation",
+        "tip": {
+         "name": "Fire Power",
+         "rankLine": "Rank 1 of 3",
+         "now": "Increases the damage done by your Fire spells by 1% per your Fire effects on the target, up to a maximum increase of 4%. Effects which mix multiple schools of magic do not qualify."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 36: Fire Power 2",
+        "rank": 2,
+        "iconSrc": "spell_fire_immolation",
+        "tip": {
+         "name": "Fire Power",
+         "rankLine": "Rank 2 of 3",
+         "now": "Increases the damage done by your Fire spells by 2% per your Fire effects on the target, up to a maximum increase of 8%. Effects which mix multiple schools of magic do not qualify."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 37: Fire Power 3",
+        "rank": 3,
+        "iconSrc": "spell_fire_immolation",
+        "tip": {
+         "name": "Fire Power",
+         "rankLine": "Rank 3 of 3",
+         "now": "Increases the damage done by your Fire spells by 3% per your Fire effects on the target, up to a maximum increase of 12%. Effects which mix multiple schools of magic do not qualify."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 38: Accelerant 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_flamebolt",
+        "tip": {
+         "name": "Accelerant",
+         "rankLine": "Rank 1 of 5",
+         "now": "Reduces the casting time of your Fireball, Frostfire Bolt, and Arcane Wrath spells by 0.1 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 39: Accelerant 2",
+        "rank": 2,
+        "iconSrc": "spell_fire_flamebolt",
+        "tip": {
+         "name": "Accelerant",
+         "rankLine": "Rank 2 of 5",
+         "now": "Reduces the casting time of your Fireball, Frostfire Bolt, and Arcane Wrath spells by 0.2 sec."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 40 to 49",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 40: Combustion 1",
+        "rank": 1,
+        "iconSrc": "spell_fire_sealoffire",
+        "tip": {
+         "name": "Combustion",
+         "rankLine": "Rank 1 of 1",
+         "now": "When activated, this spell causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%.  This effect lasts until you have caused 3 non-periodic critical strikes with Fire spells."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 41: Accelerant 3",
+        "rank": 3,
+        "iconSrc": "spell_fire_flamebolt",
+        "tip": {
+         "name": "Accelerant",
+         "rankLine": "Rank 3 of 5",
+         "now": "Reduces the casting time of your Fireball, Frostfire Bolt, and Arcane Wrath spells by 0.3 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 42: Accelerant 4",
+        "rank": 4,
+        "iconSrc": "spell_fire_flamebolt",
+        "tip": {
+         "name": "Accelerant",
+         "rankLine": "Rank 4 of 5",
+         "now": "Reduces the casting time of your Fireball, Frostfire Bolt, and Arcane Wrath spells by 0.4 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 43: Accelerant 5",
+        "rank": 5,
+        "iconSrc": "spell_fire_flamebolt",
+        "tip": {
+         "name": "Accelerant",
+         "rankLine": "Rank 5 of 5",
+         "now": "Reduces the casting time of your Fireball, Frostfire Bolt, and Arcane Wrath spells by 0.5 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 44: Improved Channeling 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_starfall",
+        "tip": {
+         "name": "Improved Channeling",
+         "rankLine": "Rank 1 of 5",
+         "now": "Gives your Arcane Missiles spell a 20% chance and your Arcane Blast and Arcane Wrath spells a 14% chance to not lose casting time when you take damage."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 45: Improved Channeling 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_starfall",
+        "tip": {
+         "name": "Improved Channeling",
+         "rankLine": "Rank 2 of 5",
+         "now": "Gives your Arcane Missiles spell a 40% chance and your Arcane Blast and Arcane Wrath spells a 28% chance to not lose casting time when you take damage."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 46: Improved Channeling 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_starfall",
+        "tip": {
+         "name": "Improved Channeling",
+         "rankLine": "Rank 3 of 5",
+         "now": "Gives your Arcane Missiles spell a 60% chance and your Arcane Blast and Arcane Wrath spells a 42% chance to not lose casting time when you take damage."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 47: Improved Channeling 4",
+        "rank": 4,
+        "iconSrc": "spell_nature_starfall",
+        "tip": {
+         "name": "Improved Channeling",
+         "rankLine": "Rank 4 of 5",
+         "now": "Gives your Arcane Missiles spell a 80% chance and your Arcane Blast and Arcane Wrath spells a 56% chance to not lose casting time when you take damage."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 48: Improved Channeling 5",
+        "rank": 5,
+        "iconSrc": "spell_nature_starfall",
+        "tip": {
+         "name": "Improved Channeling",
+         "rankLine": "Rank 5 of 5",
+         "now": "Gives your Arcane Missiles spell a 100% chance and your Arcane Blast and Arcane Wrath spells a 70% chance to not lose casting time when you take damage."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 49: Arcane Subtlety 1",
+        "rank": 1,
+        "iconSrc": "spell_holy_dispelmagic",
+        "tip": {
+         "name": "Arcane Subtlety",
+         "rankLine": "Rank 1 of 2",
+         "now": "Reduces your target's resistance to all your spells by 8 and reduces the threat caused by your Arcane spells by 15%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 50 to 59",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 50: Missile Barrage 1",
+        "rank": 1,
+        "iconSrc": "ability_mage_missilebarrage",
+        "tip": {
+         "name": "Missile Barrage",
+         "rankLine": "Rank 1 of 2",
+         "now": "Gives your Arcane Blast spell a 20% chance, and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a 10% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 51: Missile Barrage 2",
+        "rank": 2,
+        "iconSrc": "ability_mage_missilebarrage",
+        "tip": {
+         "name": "Missile Barrage",
+         "rankLine": "Rank 2 of 2",
+         "now": "Gives your Arcane Blast spell a 40% chance, and your Arcane Wrath, Fireball, Frostbolt, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 52: Arcane Concentration 1",
+        "rank": 1,
+        "iconSrc": "spell_shadow_manaburn",
+        "tip": {
+         "name": "Arcane Concentration",
+         "rankLine": "Rank 1 of 5",
+         "now": "Gives you a 2% chance of entering a Clearcasting state after any damage spell hits a target.  The Clearcasting state reduces the mana cost of your next damage spell by 100%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 53: Arcane Concentration 2",
+        "rank": 2,
+        "iconSrc": "spell_shadow_manaburn",
+        "tip": {
+         "name": "Arcane Concentration",
+         "rankLine": "Rank 2 of 5",
+         "now": "Gives you a 4% chance of entering a Clearcasting state after any damage spell hits a target.  The Clearcasting state reduces the mana cost of your next damage spell by 100%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 54: Arcane Blast 1",
+        "rank": 1,
+        "iconSrc": "spell_arcane_blast",
+        "tip": {
+         "name": "Arcane Blast",
+         "rankLine": "Rank 1 of 1",
+         "now": "Blasts the target with energy, dealing 34 to 38 Arcane damage. Each time you cast Arcane Blast, you gain 12% of your Intellect as Spell Damage and the mana cost of Arcane Blast is increased by 100%. Effect stacks up to 4 times and lasts 18 sec from time of initial application."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 55: Arcane Concentration 3",
+        "rank": 3,
+        "iconSrc": "spell_shadow_manaburn",
+        "tip": {
+         "name": "Arcane Concentration",
+         "rankLine": "Rank 3 of 5",
+         "now": "Gives you a 6% chance of entering a Clearcasting state after any damage spell hits a target.  The Clearcasting state reduces the mana cost of your next damage spell by 100%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 56: Arcane Concentration 4",
+        "rank": 4,
+        "iconSrc": "spell_shadow_manaburn",
+        "tip": {
+         "name": "Arcane Concentration",
+         "rankLine": "Rank 4 of 5",
+         "now": "Gives you a 8% chance of entering a Clearcasting state after any damage spell hits a target.  The Clearcasting state reduces the mana cost of your next damage spell by 100%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 57: Arcane Concentration 5",
+        "rank": 5,
+        "iconSrc": "spell_shadow_manaburn",
+        "tip": {
+         "name": "Arcane Concentration",
+         "rankLine": "Rank 5 of 5",
+         "now": "Gives you a 10% chance of entering a Clearcasting state after any damage spell hits a target.  The Clearcasting state reduces the mana cost of your next damage spell by 100%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 58: Precision 1",
+        "rank": 1,
+        "iconSrc": "spell_ice_magicdamage",
+        "tip": {
+         "name": "Precision",
+         "rankLine": "Rank 1 of 3",
+         "now": "Improves your chance to hit with all spells by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 59: Precision 2",
+        "rank": 2,
+        "iconSrc": "spell_ice_magicdamage",
+        "tip": {
+         "name": "Precision",
+         "rankLine": "Rank 2 of 3",
+         "now": "Improves your chance to hit with all spells by 4%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Level 60",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 60: Precision 3",
+        "rank": 3,
+        "iconSrc": "spell_ice_magicdamage",
+        "tip": {
+         "name": "Precision",
+         "rankLine": "Rank 3 of 3",
+         "now": "Improves your chance to hit with all spells by 6%."
+        }
+       }
+      ]
+     }
+    ],
+    "capAfter": -1,
+    "capText": ""
+   },
+   "guide_builds": [
+    {
+     "key": "mage-arcane-leveling",
+     "name": "Arcane",
+     "label": "Level 60 build",
+     "split": [
+      31,
+      4,
+      16
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Amage%3Agnome%3A141005213100301531%2F4%2F05350003%3A&spec=mage-arcane",
+     "trees": "141005213100301531/4/05350003",
+     "icon": "spell_holy_magicalsentry",
+     "current": false
+    },
+    {
+     "key": "mage-arcane-raid",
+     "name": "Arcane",
+     "label": "Raid build",
+     "split": [
+      32,
+      16,
+      3
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Amage%3Agnome%3A131205203100311531%2F525000012001%2F003%3A&spec=mage-arcane",
+     "trees": "131205203100311531/525000012001/003",
+     "icon": "spell_holy_magicalsentry",
+     "current": false
+    },
+    {
+     "key": "mage-fire-leveling",
+     "name": "Fire",
+     "label": "Level 60 build",
+     "split": [
+      14,
+      34,
+      3
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Amage%3Ahuman%3A2301052001000%2F55500201230133031%2F003%3A&spec=mage-fire",
+     "trees": "2301052001/55500201230133031/003",
+     "icon": "spell_fire_firebolt02",
+     "current": false
+    },
+    {
+     "key": "mage-fire-raid",
+     "name": "Fire",
+     "label": "Raid build",
+     "split": [
+      14,
+      34,
+      3
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Amage%3Ahuman%3A0501052001000%2F55500201230133031%2F003%3A&spec=mage-fire",
+     "trees": "0501052001/55500201230133031/003",
+     "icon": "spell_fire_firebolt02",
+     "current": true
+    },
+    {
+     "key": "mage-frost-leveling",
+     "name": "Frost",
+     "label": "Level 60 build",
+     "split": [
+      15,
+      5,
+      31
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Amage%3Agnome%3A230005203%2F5%2F253510130101301221%3A&spec=mage-frost",
+     "trees": "230005203/5/253510130101301221",
+     "icon": "spell_frost_frostbolt02",
+     "current": false
+    },
+    {
+     "key": "mage-frost-raid",
+     "name": "Frost",
+     "label": "Raid build",
+     "split": [
+      15,
+      5,
+      31
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Amage%3Agnome%3A230005203%2F5%2F253510130101301221%3A&spec=mage-frost",
+     "trees": "230005203/5/253510130101301221",
+     "icon": "spell_frost_frostbolt02",
+     "current": false
+    }
+   ],
    "share_fields": [
     "Class and race",
     "Talent order"
@@ -8253,7 +11316,675 @@
     "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
    "text_summary": "Dwarf Hunter · Beast Mastery 21/Marksmanship 0/Survival 0 · Level 34",
-   "point_meta": "21 spent",
+   "order_view": {
+    "rows": [
+     {
+      "label": "Levels 10 to 19",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 10: Endurance Training 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_reincarnation",
+        "tip": {
+         "name": "Endurance Training",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the Health and Armor of your pets by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 11: Endurance Training 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_reincarnation",
+        "tip": {
+         "name": "Endurance Training",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the Health and Armor of your pets by 6%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 12: Endurance Training 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_reincarnation",
+        "tip": {
+         "name": "Endurance Training",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases the Health and Armor of your pets by 9%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 13: Deadly Aspects 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 1 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 2% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 2% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 14: Deadly Aspects 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 2 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 4% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 4% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 15: Focused Fire 1",
+        "rank": 1,
+        "iconSrc": "inv_weapon_crossbow_10",
+        "tip": {
+         "name": "Focused Fire",
+         "rankLine": "Rank 1 of 2",
+         "now": "Increases all damage you and your pet deal by 1% while your pet is active."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 16: Focused Fire 2",
+        "rank": 2,
+        "iconSrc": "inv_weapon_crossbow_10",
+        "tip": {
+         "name": "Focused Fire",
+         "rankLine": "Rank 2 of 2",
+         "now": "Increases all damage you and your pet deal by 2% while your pet is active."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 17: Deadly Aspects 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 3 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 6% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 6% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 18: Deadly Aspects 4",
+        "rank": 4,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 4 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 8% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 8% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 19: Deadly Aspects 5",
+        "rank": 5,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 5 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 10% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 10% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 20 to 29",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 20: Unleashed Fury 1",
+        "rank": 1,
+        "iconSrc": "ability_bullrush",
+        "tip": {
+         "name": "Unleashed Fury",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the damage done by your pets and hawks by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 21: Unleashed Fury 2",
+        "rank": 2,
+        "iconSrc": "ability_bullrush",
+        "tip": {
+         "name": "Unleashed Fury",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the damage done by your pets and hawks by 6%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 22: Unleashed Fury 3",
+        "rank": 3,
+        "iconSrc": "ability_bullrush",
+        "tip": {
+         "name": "Unleashed Fury",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases the damage done by your pets and hawks by 9%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 23: Unleashed Fury 4",
+        "rank": 4,
+        "iconSrc": "ability_bullrush",
+        "tip": {
+         "name": "Unleashed Fury",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases the damage done by your pets and hawks by 12%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 24: Unleashed Fury 5",
+        "rank": 5,
+        "iconSrc": "ability_bullrush",
+        "tip": {
+         "name": "Unleashed Fury",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases the damage done by your pets and hawks by 15%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 25: Ferocity 1",
+        "rank": 1,
+        "iconSrc": "inv_misc_monsterclaw_04",
+        "tip": {
+         "name": "Ferocity",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the critical strike chance of your pets and hawks by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 26: Ferocity 2",
+        "rank": 2,
+        "iconSrc": "inv_misc_monsterclaw_04",
+        "tip": {
+         "name": "Ferocity",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the critical strike chance of your pets and hawks by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 27: Ferocity 3",
+        "rank": 3,
+        "iconSrc": "inv_misc_monsterclaw_04",
+        "tip": {
+         "name": "Ferocity",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases the critical strike chance of your pets and hawks by 6%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 28: Ferocity 4",
+        "rank": 4,
+        "iconSrc": "inv_misc_monsterclaw_04",
+        "tip": {
+         "name": "Ferocity",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases the critical strike chance of your pets and hawks by 8%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 29: Ferocity 5",
+        "rank": 5,
+        "iconSrc": "inv_misc_monsterclaw_04",
+        "tip": {
+         "name": "Ferocity",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases the critical strike chance of your pets and hawks by 10%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 30 to 39",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 30: Bestial Discipline 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_abolishmagic",
+        "tip": {
+         "name": "Bestial Discipline",
+         "rankLine": "Rank 1 of 2",
+         "now": "Increases the Focus regeneration of your pets by 10% and allows 25% of your Mana regeneration to continue while casting."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 31: Bestial Discipline 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_abolishmagic",
+        "tip": {
+         "name": "Bestial Discipline",
+         "rankLine": "Rank 2 of 2",
+         "now": "Increases the Focus regeneration of your pets by 20% and allows 50% of your Mana regeneration to continue while casting."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 32: Bestial Swiftness 1",
+        "rank": 1,
+        "iconSrc": "ability_druid_dash",
+        "tip": {
+         "name": "Bestial Swiftness",
+         "rankLine": "Rank 1 of 1",
+         "now": "Increases the movement speed of your pets by 30%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 33: Intimidation 1",
+        "rank": 1,
+        "iconSrc": "ability_devour",
+        "tip": {
+         "name": "Intimidation",
+         "rankLine": "Rank 1 of 1",
+         "now": "Command your pet to Stun the target for 3 sec on its next successful attack, which also gains 100% increased critical strike chance. Generates high threat."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 34: Endurance Training 4",
+        "rank": 4,
+        "iconSrc": "spell_nature_reincarnation",
+        "tip": {
+         "name": "Endurance Training",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases the Health and Armor of your pets by 12%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 35: Frenzy 1",
+        "rank": 1,
+        "iconSrc": "inv_misc_monsterclaw_03",
+        "tip": {
+         "name": "Frenzy",
+         "rankLine": "Rank 1 of 5",
+         "now": "Gives your pet a 20% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 36: Frenzy 2",
+        "rank": 2,
+        "iconSrc": "inv_misc_monsterclaw_03",
+        "tip": {
+         "name": "Frenzy",
+         "rankLine": "Rank 2 of 5",
+         "now": "Gives your pet a 40% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 37: Frenzy 3",
+        "rank": 3,
+        "iconSrc": "inv_misc_monsterclaw_03",
+        "tip": {
+         "name": "Frenzy",
+         "rankLine": "Rank 3 of 5",
+         "now": "Gives your pet a 60% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 38: Frenzy 4",
+        "rank": 4,
+        "iconSrc": "inv_misc_monsterclaw_03",
+        "tip": {
+         "name": "Frenzy",
+         "rankLine": "Rank 4 of 5",
+         "now": "Gives your pet a 80% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 39: Frenzy 5",
+        "rank": 5,
+        "iconSrc": "inv_misc_monsterclaw_03",
+        "tip": {
+         "name": "Frenzy",
+         "rankLine": "Rank 5 of 5",
+         "now": "Gives your pet a 100% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 40 to 49",
+      "slots": [
+       {
+        "kind": "ahead",
+        "name": "Level 40: Bestial Wrath 1",
+        "rank": 1,
+        "iconSrc": "ability_druid_ferociousbite",
+        "tip": {
+         "name": "Bestial Wrath",
+         "rankLine": "Rank 1 of 1",
+         "now": "Send your pet into a rage causing 50% additional damage for 18 sec.  While enraged, the beast does not feel pity or remorse or fear and it cannot be stopped unless killed."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 41: Lethal Attacks 1",
+        "rank": 1,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your critical strike chance with all attacks by 1%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 42: Lethal Attacks 2",
+        "rank": 2,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your critical strike chance with all attacks by 2%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 43: Lethal Attacks 3",
+        "rank": 3,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your critical strike chance with all attacks by 3%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 44: Lethal Attacks 4",
+        "rank": 4,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your critical strike chance with all attacks by 4%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 45: Lethal Attacks 5",
+        "rank": 5,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases your critical strike chance with all attacks by 5%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 46: Improved Stings 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_quickshot",
+        "tip": {
+         "name": "Improved Stings",
+         "rankLine": "Rank 1 of 3",
+         "now": "Increases the damage of your Serpent Sting ability by 6%, reduces the cooldown of your Viper Sting ability by 2 sec, and increases the duration of your Scorpid Sting ability by 15 sec."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 47: Improved Stings 2",
+        "rank": 2,
+        "iconSrc": "ability_hunter_quickshot",
+        "tip": {
+         "name": "Improved Stings",
+         "rankLine": "Rank 2 of 3",
+         "now": "Increases the damage of your Serpent Sting ability by 13%, reduces the cooldown of your Viper Sting ability by 4 sec, and increases the duration of your Scorpid Sting ability by 30 sec."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 48: Efficiency 1",
+        "rank": 1,
+        "iconSrc": "spell_frost_wizardmark",
+        "tip": {
+         "name": "Efficiency",
+         "rankLine": "Rank 1 of 5",
+         "now": "Reduces the Mana cost of your Shots, Stings, and melee abilities by 3%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 49: Efficiency 2",
+        "rank": 2,
+        "iconSrc": "spell_frost_wizardmark",
+        "tip": {
+         "name": "Efficiency",
+         "rankLine": "Rank 2 of 5",
+         "now": "Reduces the Mana cost of your Shots, Stings, and melee abilities by 6%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 50 to 59",
+      "slots": [
+       {
+        "kind": "ahead",
+        "name": "Level 50: Efficiency 3",
+        "rank": 3,
+        "iconSrc": "spell_frost_wizardmark",
+        "tip": {
+         "name": "Efficiency",
+         "rankLine": "Rank 3 of 5",
+         "now": "Reduces the Mana cost of your Shots, Stings, and melee abilities by 9%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 51: Efficiency 4",
+        "rank": 4,
+        "iconSrc": "spell_frost_wizardmark",
+        "tip": {
+         "name": "Efficiency",
+         "rankLine": "Rank 4 of 5",
+         "now": "Reduces the Mana cost of your Shots, Stings, and melee abilities by 12%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 52: Careful Aim 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your Attack Power by 20% of your Intellect."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 53: Careful Aim 2",
+        "rank": 2,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your Attack Power by 40% of your Intellect."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 54: Careful Aim 3",
+        "rank": 3,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your Attack Power by 60% of your Intellect."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 55: Careful Aim 4",
+        "rank": 4,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your Attack Power by 80% of your Intellect."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 56: Careful Aim 5",
+        "rank": 5,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases your Attack Power by 100% of your Intellect."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 57: Rapid Killing 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_rapidkilling",
+        "tip": {
+         "name": "Rapid Killing",
+         "rankLine": "Rank 1 of 2",
+         "now": "Reduces the cooldown on your Rapid Fire ability by 1 min. In addition, when you kill a non-trivial enemy or it dies while afflicted by your Serpent Sting, you gain Rapid Killing, increasing the damage of your next Shot ability within 20 sec by 10%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 58: Trueshot Aura 1",
+        "rank": 1,
+        "iconSrc": "ability_trueshot",
+        "tip": {
+         "name": "Trueshot Aura",
+         "rankLine": "Rank 1 of 1",
+         "now": "Increases the Ranged Attack Power of party or raid members within 45 yds by 20."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 59: Mortal Shots 1",
+        "rank": 1,
+        "iconSrc": "ability_piercedamage",
+        "tip": {
+         "name": "Mortal Shots",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the critical strike damage bonus on all ranged abilities by 6%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Level 60",
+      "slots": [
+       {
+        "kind": "ahead",
+        "name": "Level 60: Mortal Shots 2",
+        "rank": 2,
+        "iconSrc": "ability_piercedamage",
+        "tip": {
+         "name": "Mortal Shots",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the critical strike damage bonus on all ranged abilities by 12%."
+        }
+       }
+      ]
+     }
+    ],
+    "capAfter": 2,
+    "capText": ""
+   },
+   "guide_builds": [
+    {
+     "key": "hunter-beast-mastery-leveling",
+     "name": "Beast Mastery",
+     "label": "Level 60 build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00524510012%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00524510012/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-beast-mastery-raid",
+     "name": "Beast Mastery",
+     "label": "Raid build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00523500014%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00523500014/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-leveling",
+     "name": "Marksmanship",
+     "label": "Level 60 build",
+     "split": [
+      15,
+      31,
+      5
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A53200005%2F005055200152105%2F5%3A&spec=hunter-marksmanship",
+     "trees": "53200005/005055200152105/5",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-raid",
+     "name": "Marksmanship",
+     "label": "Raid build",
+     "split": [
+      5,
+      33,
+      13
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F0052550011503051%2F50005003%3A&spec=hunter-marksmanship",
+     "trees": "5/0052550011503051/50005003",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-survival-leveling",
+     "name": "Survival",
+     "label": "Level 60 build",
+     "split": [
+      5,
+      13,
+      33
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F005005201%2F500230230050222151%3A&spec=hunter-survival",
+     "trees": "5/005005201/500230230050222151",
+     "icon": "ability_hunter_swiftstrike",
+     "current": false
+    }
+   ],
    "share_fields": [
     "Class and race",
     "Talent order"
@@ -9161,7 +12892,318 @@
     "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
    "text_summary": "Dwarf Hunter · Beast Mastery 0/Marksmanship 0/Survival 0 · Level 34",
-   "point_meta": "0 spent",
+   "order_view": {
+    "rows": [
+     {
+      "label": "Levels 10 to 19",
+      "slots": [
+       {
+        "kind": "next",
+        "name": "Next point: level 10"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 11"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 12"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 13"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 14"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 15"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 16"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 17"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 18"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 19"
+       }
+      ]
+     },
+     {
+      "label": "Levels 20 to 29",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 20"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 21"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 22"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 23"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 24"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 25"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 26"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 27"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 28"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 29"
+       }
+      ]
+     },
+     {
+      "label": "Levels 30 to 39",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 30"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 31"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 32"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 33"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 34"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 35"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 36"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 37"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 38"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 39"
+       }
+      ]
+     },
+     {
+      "label": "Levels 40 to 49",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 40"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 41"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 42"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 43"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 44"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 45"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 46"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 47"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 48"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 49"
+       }
+      ]
+     },
+     {
+      "label": "Levels 50 to 59",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 50"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 51"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 52"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 53"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 54"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 55"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 56"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 57"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 58"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 59"
+       }
+      ]
+     },
+     {
+      "label": "Level 60",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 60"
+       }
+      ]
+     }
+    ],
+    "capAfter": 2,
+    "capText": ""
+   },
+   "guide_builds": [
+    {
+     "key": "hunter-beast-mastery-leveling",
+     "name": "Beast Mastery",
+     "label": "Level 60 build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00524510012%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00524510012/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-beast-mastery-raid",
+     "name": "Beast Mastery",
+     "label": "Raid build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00523500014%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00523500014/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-leveling",
+     "name": "Marksmanship",
+     "label": "Level 60 build",
+     "split": [
+      15,
+      31,
+      5
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A53200005%2F005055200152105%2F5%3A&spec=hunter-marksmanship",
+     "trees": "53200005/005055200152105/5",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-raid",
+     "name": "Marksmanship",
+     "label": "Raid build",
+     "split": [
+      5,
+      33,
+      13
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F0052550011503051%2F50005003%3A&spec=hunter-marksmanship",
+     "trees": "5/0052550011503051/50005003",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-survival-leveling",
+     "name": "Survival",
+     "label": "Level 60 build",
+     "split": [
+      5,
+      13,
+      33
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F005005201%2F500230230050222151%3A&spec=hunter-survival",
+     "trees": "5/005005201/500230230050222151",
+     "icon": "ability_hunter_swiftstrike",
+     "current": false
+    }
+   ],
    "share_fields": [
     "Class and race",
     "Talent order"
@@ -9207,7 +13249,7 @@
     "Level 60"
    ],
    "next_point": "",
-   "level_line": "Felsnap is level 34: points after level 34 are planned ahead.",
+   "level_line": "Felsnap is level 34.",
    "spec": "Beast Mastery Hunter",
    "spec_key": "hunter-beast-mastery",
    "spec_name": "Beast Mastery",
@@ -10312,7 +14354,675 @@
     "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
    "text_summary": "Dwarf Hunter · Beast Mastery 27/Marksmanship 0/Survival 0 · Level 34",
-   "point_meta": "27 spent",
+   "order_view": {
+    "rows": [
+     {
+      "label": "Levels 10 to 19",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 10: Endurance Training 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_reincarnation",
+        "tip": {
+         "name": "Endurance Training",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the Health and Armor of your pets by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 11: Endurance Training 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_reincarnation",
+        "tip": {
+         "name": "Endurance Training",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the Health and Armor of your pets by 6%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 12: Endurance Training 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_reincarnation",
+        "tip": {
+         "name": "Endurance Training",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases the Health and Armor of your pets by 9%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 13: Endurance Training 4",
+        "rank": 4,
+        "iconSrc": "spell_nature_reincarnation",
+        "tip": {
+         "name": "Endurance Training",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases the Health and Armor of your pets by 12%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 14: Deadly Aspects 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 1 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 2% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 2% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 15: Focused Fire 1",
+        "rank": 1,
+        "iconSrc": "inv_weapon_crossbow_10",
+        "tip": {
+         "name": "Focused Fire",
+         "rankLine": "Rank 1 of 2",
+         "now": "Increases all damage you and your pet deal by 1% while your pet is active."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 16: Focused Fire 2",
+        "rank": 2,
+        "iconSrc": "inv_weapon_crossbow_10",
+        "tip": {
+         "name": "Focused Fire",
+         "rankLine": "Rank 2 of 2",
+         "now": "Increases all damage you and your pet deal by 2% while your pet is active."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 17: Deadly Aspects 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 2 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 4% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 4% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 18: Deadly Aspects 3",
+        "rank": 3,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 3 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 6% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 6% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 19: Deadly Aspects 4",
+        "rank": 4,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 4 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 8% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 8% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 20 to 29",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 20: Bestial Swiftness 1",
+        "rank": 1,
+        "iconSrc": "ability_druid_dash",
+        "tip": {
+         "name": "Bestial Swiftness",
+         "rankLine": "Rank 1 of 1",
+         "now": "Increases the movement speed of your pets by 30%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 21: Unleashed Fury 1",
+        "rank": 1,
+        "iconSrc": "ability_bullrush",
+        "tip": {
+         "name": "Unleashed Fury",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the damage done by your pets and hawks by 3%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 22: Unleashed Fury 2",
+        "rank": 2,
+        "iconSrc": "ability_bullrush",
+        "tip": {
+         "name": "Unleashed Fury",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the damage done by your pets and hawks by 6%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 23: Unleashed Fury 3",
+        "rank": 3,
+        "iconSrc": "ability_bullrush",
+        "tip": {
+         "name": "Unleashed Fury",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases the damage done by your pets and hawks by 9%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 24: Unleashed Fury 4",
+        "rank": 4,
+        "iconSrc": "ability_bullrush",
+        "tip": {
+         "name": "Unleashed Fury",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases the damage done by your pets and hawks by 12%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 25: Ferocity 1",
+        "rank": 1,
+        "iconSrc": "inv_misc_monsterclaw_04",
+        "tip": {
+         "name": "Ferocity",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the critical strike chance of your pets and hawks by 2%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 26: Ferocity 2",
+        "rank": 2,
+        "iconSrc": "inv_misc_monsterclaw_04",
+        "tip": {
+         "name": "Ferocity",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the critical strike chance of your pets and hawks by 4%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 27: Ferocity 3",
+        "rank": 3,
+        "iconSrc": "inv_misc_monsterclaw_04",
+        "tip": {
+         "name": "Ferocity",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases the critical strike chance of your pets and hawks by 6%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 28: Ferocity 4",
+        "rank": 4,
+        "iconSrc": "inv_misc_monsterclaw_04",
+        "tip": {
+         "name": "Ferocity",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases the critical strike chance of your pets and hawks by 8%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 29: Ferocity 5",
+        "rank": 5,
+        "iconSrc": "inv_misc_monsterclaw_04",
+        "tip": {
+         "name": "Ferocity",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases the critical strike chance of your pets and hawks by 10%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 30 to 39",
+      "slots": [
+       {
+        "kind": "spent",
+        "name": "Level 30: Intimidation 1",
+        "rank": 1,
+        "iconSrc": "ability_devour",
+        "tip": {
+         "name": "Intimidation",
+         "rankLine": "Rank 1 of 1",
+         "now": "Command your pet to Stun the target for 3 sec on its next successful attack, which also gains 100% increased critical strike chance. Generates high threat."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 31: Bestial Discipline 1",
+        "rank": 1,
+        "iconSrc": "spell_nature_abolishmagic",
+        "tip": {
+         "name": "Bestial Discipline",
+         "rankLine": "Rank 1 of 2",
+         "now": "Increases the Focus regeneration of your pets by 10% and allows 25% of your Mana regeneration to continue while casting."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 32: Bestial Discipline 2",
+        "rank": 2,
+        "iconSrc": "spell_nature_abolishmagic",
+        "tip": {
+         "name": "Bestial Discipline",
+         "rankLine": "Rank 2 of 2",
+         "now": "Increases the Focus regeneration of your pets by 20% and allows 50% of your Mana regeneration to continue while casting."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 33: Unleashed Fury 5",
+        "rank": 5,
+        "iconSrc": "ability_bullrush",
+        "tip": {
+         "name": "Unleashed Fury",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases the damage done by your pets and hawks by 15%."
+        }
+       },
+       {
+        "kind": "spent",
+        "name": "Level 34: Deadly Aspects 5",
+        "rank": 5,
+        "iconSrc": "spell_nature_ravenform",
+        "tip": {
+         "name": "Deadly Aspects",
+         "rankLine": "Rank 5 of 5",
+         "now": "While Aspect of the Hawk is active, Auto Shot has a 10% chance of increasing ranged attack speed by 30% for 12 sec. While Aspect of the Beast is active, all melee auto attacks have a 10% chance of increasing melee attack speed by 30% for 12 sec."
+        }
+       },
+       {
+        "kind": "planned",
+        "name": "Level 35: Frenzy 1",
+        "rank": 1,
+        "iconSrc": "inv_misc_monsterclaw_03",
+        "tip": {
+         "name": "Frenzy",
+         "rankLine": "Rank 1 of 5",
+         "now": "Gives your pet a 20% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
+        }
+       },
+       {
+        "kind": "planned",
+        "name": "Level 36: Frenzy 2",
+        "rank": 2,
+        "iconSrc": "inv_misc_monsterclaw_03",
+        "tip": {
+         "name": "Frenzy",
+         "rankLine": "Rank 2 of 5",
+         "now": "Gives your pet a 40% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 37: Frenzy 3",
+        "rank": 3,
+        "iconSrc": "inv_misc_monsterclaw_03",
+        "tip": {
+         "name": "Frenzy",
+         "rankLine": "Rank 3 of 5",
+         "now": "Gives your pet a 60% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 38: Frenzy 4",
+        "rank": 4,
+        "iconSrc": "inv_misc_monsterclaw_03",
+        "tip": {
+         "name": "Frenzy",
+         "rankLine": "Rank 4 of 5",
+         "now": "Gives your pet a 80% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 39: Frenzy 5",
+        "rank": 5,
+        "iconSrc": "inv_misc_monsterclaw_03",
+        "tip": {
+         "name": "Frenzy",
+         "rankLine": "Rank 5 of 5",
+         "now": "Gives your pet a 100% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 40 to 49",
+      "slots": [
+       {
+        "kind": "ahead",
+        "name": "Level 40: Bestial Wrath 1",
+        "rank": 1,
+        "iconSrc": "ability_druid_ferociousbite",
+        "tip": {
+         "name": "Bestial Wrath",
+         "rankLine": "Rank 1 of 1",
+         "now": "Send your pet into a rage causing 50% additional damage for 18 sec.  While enraged, the beast does not feel pity or remorse or fear and it cannot be stopped unless killed."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 41: Lethal Attacks 1",
+        "rank": 1,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your critical strike chance with all attacks by 1%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 42: Lethal Attacks 2",
+        "rank": 2,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your critical strike chance with all attacks by 2%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 43: Lethal Attacks 3",
+        "rank": 3,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your critical strike chance with all attacks by 3%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 44: Lethal Attacks 4",
+        "rank": 4,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your critical strike chance with all attacks by 4%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 45: Lethal Attacks 5",
+        "rank": 5,
+        "iconSrc": "ability_searingarrow",
+        "tip": {
+         "name": "Lethal Attacks",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases your critical strike chance with all attacks by 5%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 46: Improved Stings 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_quickshot",
+        "tip": {
+         "name": "Improved Stings",
+         "rankLine": "Rank 1 of 3",
+         "now": "Increases the damage of your Serpent Sting ability by 6%, reduces the cooldown of your Viper Sting ability by 2 sec, and increases the duration of your Scorpid Sting ability by 15 sec."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 47: Improved Stings 2",
+        "rank": 2,
+        "iconSrc": "ability_hunter_quickshot",
+        "tip": {
+         "name": "Improved Stings",
+         "rankLine": "Rank 2 of 3",
+         "now": "Increases the damage of your Serpent Sting ability by 13%, reduces the cooldown of your Viper Sting ability by 4 sec, and increases the duration of your Scorpid Sting ability by 30 sec."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 48: Efficiency 1",
+        "rank": 1,
+        "iconSrc": "spell_frost_wizardmark",
+        "tip": {
+         "name": "Efficiency",
+         "rankLine": "Rank 1 of 5",
+         "now": "Reduces the Mana cost of your Shots, Stings, and melee abilities by 3%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 49: Efficiency 2",
+        "rank": 2,
+        "iconSrc": "spell_frost_wizardmark",
+        "tip": {
+         "name": "Efficiency",
+         "rankLine": "Rank 2 of 5",
+         "now": "Reduces the Mana cost of your Shots, Stings, and melee abilities by 6%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Levels 50 to 59",
+      "slots": [
+       {
+        "kind": "ahead",
+        "name": "Level 50: Efficiency 3",
+        "rank": 3,
+        "iconSrc": "spell_frost_wizardmark",
+        "tip": {
+         "name": "Efficiency",
+         "rankLine": "Rank 3 of 5",
+         "now": "Reduces the Mana cost of your Shots, Stings, and melee abilities by 9%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 51: Efficiency 4",
+        "rank": 4,
+        "iconSrc": "spell_frost_wizardmark",
+        "tip": {
+         "name": "Efficiency",
+         "rankLine": "Rank 4 of 5",
+         "now": "Reduces the Mana cost of your Shots, Stings, and melee abilities by 12%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 52: Careful Aim 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases your Attack Power by 20% of your Intellect."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 53: Careful Aim 2",
+        "rank": 2,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases your Attack Power by 40% of your Intellect."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 54: Careful Aim 3",
+        "rank": 3,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 3 of 5",
+         "now": "Increases your Attack Power by 60% of your Intellect."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 55: Careful Aim 4",
+        "rank": 4,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 4 of 5",
+         "now": "Increases your Attack Power by 80% of your Intellect."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 56: Careful Aim 5",
+        "rank": 5,
+        "iconSrc": "ability_hunter_zenarchery",
+        "tip": {
+         "name": "Careful Aim",
+         "rankLine": "Rank 5 of 5",
+         "now": "Increases your Attack Power by 100% of your Intellect."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 57: Rapid Killing 1",
+        "rank": 1,
+        "iconSrc": "ability_hunter_rapidkilling",
+        "tip": {
+         "name": "Rapid Killing",
+         "rankLine": "Rank 1 of 2",
+         "now": "Reduces the cooldown on your Rapid Fire ability by 1 min. In addition, when you kill a non-trivial enemy or it dies while afflicted by your Serpent Sting, you gain Rapid Killing, increasing the damage of your next Shot ability within 20 sec by 10%."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 58: Trueshot Aura 1",
+        "rank": 1,
+        "iconSrc": "ability_trueshot",
+        "tip": {
+         "name": "Trueshot Aura",
+         "rankLine": "Rank 1 of 1",
+         "now": "Increases the Ranged Attack Power of party or raid members within 45 yds by 20."
+        }
+       },
+       {
+        "kind": "ahead",
+        "name": "Level 59: Mortal Shots 1",
+        "rank": 1,
+        "iconSrc": "ability_piercedamage",
+        "tip": {
+         "name": "Mortal Shots",
+         "rankLine": "Rank 1 of 5",
+         "now": "Increases the critical strike damage bonus on all ranged abilities by 6%."
+        }
+       }
+      ]
+     },
+     {
+      "label": "Level 60",
+      "slots": [
+       {
+        "kind": "ahead",
+        "name": "Level 60: Mortal Shots 2",
+        "rank": 2,
+        "iconSrc": "ability_piercedamage",
+        "tip": {
+         "name": "Mortal Shots",
+         "rankLine": "Rank 2 of 5",
+         "now": "Increases the critical strike damage bonus on all ranged abilities by 12%."
+        }
+       }
+      ]
+     }
+    ],
+    "capAfter": 2,
+    "capText": "Felsnap is level 34. Then the Beast Mastery guide's order."
+   },
+   "guide_builds": [
+    {
+     "key": "hunter-beast-mastery-leveling",
+     "name": "Beast Mastery",
+     "label": "Level 60 build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00524510012%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00524510012/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-beast-mastery-raid",
+     "name": "Beast Mastery",
+     "label": "Raid build",
+     "split": [
+      31,
+      20,
+      0
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5420001505001251%2F00523500014%2F0%3A&spec=hunter-beast-mastery",
+     "trees": "5420001505001251/00523500014/",
+     "icon": "ability_hunter_beasttaming",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-leveling",
+     "name": "Marksmanship",
+     "label": "Level 60 build",
+     "split": [
+      15,
+      31,
+      5
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A53200005%2F005055200152105%2F5%3A&spec=hunter-marksmanship",
+     "trees": "53200005/005055200152105/5",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-marksmanship-raid",
+     "name": "Marksmanship",
+     "label": "Raid build",
+     "split": [
+      5,
+      33,
+      13
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F0052550011503051%2F50005003%3A&spec=hunter-marksmanship",
+     "trees": "5/0052550011503051/50005003",
+     "icon": "ability_marksmanship",
+     "current": false
+    },
+    {
+     "key": "hunter-survival-leveling",
+     "name": "Survival",
+     "label": "Level 60 build",
+     "split": [
+      5,
+      13,
+      33
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Ahunter%3Anight-elf%3A5%2F005005201%2F500230230050222151%3A&spec=hunter-survival",
+     "trees": "5/005005201/500230230050222151",
+     "icon": "ability_hunter_swiftstrike",
+     "current": false
+    }
+   ],
    "share_fields": [
     "Class and race",
     "Talent order"
@@ -11281,7 +15991,304 @@
     "talents": "30303213132215201-050500050120000000-100000000000000000"
    },
    "text_summary": "Human Warrior · Arms 0/Fury 0/Protection 0 · Level 9",
-   "point_meta": "0 spent",
+   "order_view": {
+    "rows": [
+     {
+      "label": "Levels 10 to 19",
+      "slots": [
+       {
+        "kind": "next",
+        "name": "Next point: level 10"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 11"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 12"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 13"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 14"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 15"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 16"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 17"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 18"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 19"
+       }
+      ]
+     },
+     {
+      "label": "Levels 20 to 29",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 20"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 21"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 22"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 23"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 24"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 25"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 26"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 27"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 28"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 29"
+       }
+      ]
+     },
+     {
+      "label": "Levels 30 to 39",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 30"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 31"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 32"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 33"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 34"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 35"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 36"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 37"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 38"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 39"
+       }
+      ]
+     },
+     {
+      "label": "Levels 40 to 49",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 40"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 41"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 42"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 43"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 44"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 45"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 46"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 47"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 48"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 49"
+       }
+      ]
+     },
+     {
+      "label": "Levels 50 to 59",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 50"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 51"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 52"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 53"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 54"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 55"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 56"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 57"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 58"
+       },
+       {
+        "kind": "empty",
+        "name": "Level 59"
+       }
+      ]
+     },
+     {
+      "label": "Level 60",
+      "slots": [
+       {
+        "kind": "empty",
+        "name": "Level 60"
+       }
+      ]
+     }
+    ],
+    "capAfter": -1,
+    "capText": ""
+   },
+   "guide_builds": [
+    {
+     "key": "warrior-arms-leveling",
+     "name": "Arms",
+     "label": "Level 60 build",
+     "split": [
+      34,
+      10,
+      7
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Awarrior%3Anight-elf%3A13323213032215201%2F0505%2F205%3A&spec=warrior-arms",
+     "trees": "13323213032215201/0505/205",
+     "icon": "ability_rogue_eviscerate",
+     "current": false
+    },
+    {
+     "key": "warrior-arms-raid",
+     "name": "Arms",
+     "label": "Raid build",
+     "split": [
+      32,
+      18,
+      1
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Awarrior%3Anight-elf%3A30303213132215201%2F05050005012%2F1%3A&spec=warrior-arms",
+     "trees": "30303213132215201/05050005012/1",
+     "icon": "ability_rogue_eviscerate",
+     "current": false
+    },
+    {
+     "key": "warrior-fury-leveling",
+     "name": "Fury",
+     "label": "Level 60 build",
+     "split": [
+      17,
+      32,
+      2
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Awarrior%3Anight-elf%3A30323013002%2F050530025122100231%2F2%3A&spec=warrior-fury",
+     "trees": "30323013002/050530025122100231/2",
+     "icon": "ability_warrior_innerrage",
+     "current": false
+    },
+    {
+     "key": "warrior-protection-leveling",
+     "name": "Protection",
+     "label": "Level 60 build",
+     "split": [
+      14,
+      0,
+      37
+     ],
+     "href": "/planner?code=FS1%3A1.60.1.70790%3Awarrior%3Anight-elf%3A35300003%2F0%2F250533120330001351%3A&spec=warrior-protection",
+     "trees": "35300003//250533120330001351",
+     "icon": "inv_shield_06",
+     "current": false
+    }
+   ],
    "share_fields": [
     "Class and race",
     "Talent order"
@@ -11471,12 +16478,12 @@
   }
  },
  "notes": {
-  "reconstructed": "Talents loaded from a character. The order points were spent in is not recorded in game, so this is one way to level into the same tree: the main tree first, each talent as soon as its row opens.",
-  "linked": "Opened from a link. The game does not record the order points were spent in, so this is one way to level into it: the main tree first, each talent as soon as its row opens.",
-  "linked_short": "Opened from a link; the order below is one way to level into it.",
+  "reconstructed": "Talents loaded from a character. Point order: the main tree first, each talent as its row opens.",
+  "linked": "Opened from a link. Point order: the main tree first, each talent as its row opens.",
+  "linked_short": "Opened from a link.",
   "guide": "Loaded in the Survival guide's levelling order.",
   "band60": "Loaded the 60 build. The order shown is one way to level into it: the main tree first, each talent as soon as its row opens.",
-  "kept": "Loaded 23 of Felsnap's 25 points; the rest cannot be reached in any legal order. The order is a reconstruction: the game does not record the order points were spent in.",
+  "kept": "Loaded 23 of Felsnap's 25 points; the rest cannot be reached in any legal order.",
   "gear_only": "This link carries no talent ranks.",
   "no_class": "That code names a class this planner does not have: monk.",
   "invalid": "That code is FS9; this site reads FS1."
@@ -11496,7 +16503,6 @@
    "unknownItem": "[fn]",
    "shareTitle": "Share this build",
    "pointOrderTitle": "Point order",
-   "pointOrderMeta": "[fn]",
    "share": "Share",
    "shareConfirmTitle": "Share this build",
    "shareConfirmIntro": "Sharing posts the following to a link anyone can open. Once created, that link cannot be edited:",
@@ -11515,19 +16521,22 @@
    "bandLoadedNote": "[fn]",
    "noTalentRanksNote": "This link carries no talent ranks.",
    "keptNote": "[fn]",
-   "reconstructedNote": "Talents loaded from a character. The order points were spent in is not recorded in game, so this is one way to level into the same tree: the main tree first, each talent as soon as its row opens.",
+   "reconstructedNote": "Talents loaded from a character. Point order: the main tree first, each talent as its row opens.",
    "reconstructedDroppedNote": "[fn]",
    "olderBuildNote": "This code is from an older client build; check the talents.",
-   "linkedNote": "Opened from a link. The game does not record the order points were spent in, so this is one way to level into it: the main tree first, each talent as soon as its row opens.",
-   "linkedNoteShort": "Opened from a link; the order below is one way to level into it.",
+   "linkedNote": "Opened from a link. Point order: the main tree first, each talent as its row opens.",
+   "linkedNoteShort": "Opened from a link.",
    "guideOrderNote": "[fn]",
    "noClassNote": "[fn]",
    "inGameTitle": "In the game",
    "barLabel": "Planner choices",
    "pointsOfUnit": "[fn]",
    "talentsTitle": "Talents",
+   "guideBuildsTitle": "Guide builds",
+   "pasteHint": "Paste in game with /fs.",
    "plannedAhead": "[fn]",
    "levelLine": "[fn]",
+   "aheadLine": "[fn]",
    "plannedCell": "[fn]",
    "decade": "[fn]",
    "nextPoint": "[fn]",

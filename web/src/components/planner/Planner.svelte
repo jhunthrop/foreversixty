@@ -78,6 +78,8 @@
   import ImportBox from './ImportBox.svelte';
   import InGame from './InGame.svelte';
   import PlannerAnswer from './PlannerAnswer.svelte';
+  import GuideBuilds from './GuideBuilds.svelte';
+  import type { GuideBuild } from '../../lib/planner/guide-builds';
   import PlannerOrder from './PlannerOrder.svelte';
   import SharePanel from './SharePanel.svelte';
   import SummaryBar from './SummaryBar.svelte';
@@ -95,6 +97,7 @@
     title = null,
     views = null,
     hideBar = false,
+    guideBuilds = [],
   }: {
     treeVersion: string;
     classSlug?: string;
@@ -125,6 +128,8 @@
     views?: number | null;
     /** No class and race bar (decision B3): a shared build's class and race are the record's. */
     hideBar?: boolean;
+    /** Every spec guide's published builds (planner.astro reads the guides): the rail's Guide builds. */
+    guideBuilds?: readonly GuideBuild[];
   } = $props();
 
   /** The shared build page (`/b/:id`, spec section 8): its own head, the Edit a copy line, no bar,
@@ -1055,18 +1060,24 @@
 </script>
 
 {#snippet foot()}
-  <p
-    class="st2"
-    class:wipe={store.refusal !== null}
-    role="status"
-    aria-live="polite"
-    data-testid="planner-status"
-  >
-    {store.refusal ?? ''}
-  </p>
-  <span class="text-small text-muted" data-testid="planner-tree-source"
-    >{treeSourceNotice(store.treeVersion)}</span
-  >
+  <!-- The status line and the source share one line: a refusal stands over the source while it
+       shows, so no empty line is held under the trees. -->
+  <div class="pl-foot-l">
+    <p
+      class="st2"
+      class:wipe={store.refusal !== null}
+      role="status"
+      aria-live="polite"
+      data-testid="planner-status"
+    >
+      {store.refusal ?? ''}
+    </p>
+    <span
+      class="text-small text-muted"
+      class:pl-veiled={store.refusal !== null}
+      data-testid="planner-tree-source">{treeSourceNotice(store.treeVersion)}</span
+    >
+  </div>
   <span class="rs">
     {#if store.readOnly}
       <!-- A shared build's Edit a copy sits in the notes line, not under the trees. -->
@@ -1288,8 +1299,9 @@
             plainOtherClass={shared}
           /></Ordered
         >
+        <Ordered order={4}><GuideBuilds builds={guideBuilds} {store} /></Ordered>
         {#if !store.readOnly}
-          <Ordered order={7}><SharePanel {store} {live} /></Ordered>
+          <Ordered order={7}><SharePanel {store} /></Ordered>
           <Ordered order={8}>{@render importSection()}</Ordered>
         {/if}
       {:else if status === 'loading'}
@@ -1330,25 +1342,25 @@
        stand the same height and nothing under the Plate moves when the trees arrive. */
     --cell: 44px;
     --cgap: 8px;
-    --chrome: 209px;
+    --chrome: 183px;
     min-height: calc(var(--tiers) * (var(--cell) + var(--cgap)) + var(--chrome));
   }
   @media (min-width: 768px) {
     .pl-reserve {
       --cell: 48px;
-      --chrome: 149px;
+      --chrome: 123px;
     }
   }
   @media (min-width: 1280px) {
     .pl-reserve {
-      --chrome: 153px;
+      --chrome: 127px;
     }
   }
   @media (min-width: 1760px) {
     .pl-reserve {
       --cell: 56px;
       --cgap: 10px;
-      --chrome: 151px;
+      --chrome: 125px;
     }
   }
   .pl-skel {
@@ -1397,6 +1409,20 @@
   }
   .pl-notes {
     padding-inline: var(--page-inset);
+    padding-block: 16px 0;
+    max-width: calc(var(--measure-reading) + 2 * var(--page-inset));
+  }
+  .pl-foot-l {
+    flex: 1 1 auto;
+    display: grid;
+    min-width: 0;
+  }
+  .pl-foot-l > :global(*) {
+    grid-area: 1 / 1;
+    align-self: center;
+  }
+  .pl-veiled {
+    visibility: hidden;
   }
   .pl-shared-note {
     display: flex;

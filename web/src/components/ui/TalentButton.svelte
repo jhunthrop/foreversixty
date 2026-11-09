@@ -9,6 +9,8 @@
     cellLabel,
     isPlaceholderIcon,
     LONG_PRESS_MS,
+    talentTipSide,
+    talentTipSideLeft,
     TIP_DELAY_MS,
     type EditorCell,
     type TalentEditorCopy,
@@ -43,11 +45,13 @@
 
   interface TipPlacement {
     left: number;
+    /** Beside the cell, top-aligned with it (the client's talent tooltip), when there is room. */
+    beside: boolean;
     below: boolean;
     maxHeightPx: number | null;
   }
   // Unshifted and unclamped: reset on every close so the next opening measures the natural box.
-  const NATURAL: TipPlacement = { left: 0, below: true, maxHeightPx: null };
+  const NATURAL: TipPlacement = { left: 0, beside: false, below: true, maxHeightPx: null };
   let placement = $state<TipPlacement>(NATURAL);
 
   $effect(() => {
@@ -57,6 +61,16 @@
     }
     const anchor = button.getBoundingClientRect();
     const root = document.documentElement;
+    const beside = talentTipSide(anchor.left, anchor.right, tipBox.offsetWidth, root.clientWidth);
+    if (beside !== null) {
+      placement = {
+        left: talentTipSideLeft(beside, anchor.width, tipBox.offsetWidth),
+        beside: true,
+        below: true,
+        maxHeightPx: null,
+      };
+      return;
+    }
     const { side, maxHeightPx } = tooltipVerticalPlacementFor(
       anchor.top,
       anchor.bottom,
@@ -65,6 +79,7 @@
     );
     placement = {
       left: tooltipLeftPx('start', anchor.left, anchor.width, root.clientWidth, tipBox.offsetWidth),
+      beside: false,
       below: side === 'below',
       maxHeightPx,
     };
@@ -205,6 +220,7 @@
   <div
     bind:this={tipBox}
     class="tc2-tip"
+    class:beside={placement.beside}
     class:above={!placement.below}
     class:scroll={placement.maxHeightPx !== null}
     style:left={`${placement.left}px`}
@@ -320,6 +336,10 @@
     top: auto;
     bottom: 100%;
     margin: 0 0 8px;
+  }
+  .tc2-tip.beside {
+    top: 0;
+    margin: 0;
   }
   .tc2-tip.scroll {
     overflow-y: auto;

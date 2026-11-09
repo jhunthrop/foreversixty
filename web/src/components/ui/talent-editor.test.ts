@@ -10,6 +10,8 @@ import {
   gridRows,
   moveCell,
   openTreeIndex,
+  talentTipSide,
+  talentTipSideLeft,
   sortedCells,
   tabStopId,
   type EditorCell,
@@ -220,6 +222,16 @@ describe('TalentTip', () => {
     expect(body).toMatch(/class="req[^"]*">Needs 5 points in Beast Mastery/);
     expect(body).toMatch(/data-testid="talent-band-line-4"[^>]*>The level 60 build takes 1\/1/);
     expect(body).not.toMatch(/<p>/);
+  });
+});
+
+describe('talent tooltip side', () => {
+  it('opens beside the cell, right first, else left, else neither (a phone)', () => {
+    expect(talentTipSide(500, 548, 300, 1440)).toBe('right');
+    expect(talentTipSide(1100, 1148, 300, 1440)).toBe('left');
+    expect(talentTipSide(40, 88, 300, 390)).toBeNull();
+    expect(talentTipSideLeft('right', 48, 300)).toBe(56);
+    expect(talentTipSideLeft('left', 48, 300)).toBe(-308);
   });
 });
 

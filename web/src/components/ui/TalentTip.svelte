@@ -31,7 +31,8 @@
 
 <!-- web/src/components/ui/TalentTip.svelte -->
 <!-- The talent tooltip (planner spec 2026-11-08 section 3A, the mock's TalentTip): the overlay
-     ground, 300 px; the name, `Rank n of m`, this rank's text, the next rank under its label, the
+     ground, 300 px; the name, `Rank n of m`, this rank's text and the next rank under its label in
+     the client's tooltip yellow, the
      requirement in --wipe when the point is refused, the band line in gold after a band load.
      Draws the box only: TalentButton positions it. `talentId` names the test ids
      (`talent-tip-<id>`, `talent-band-line-<id>`). -->
@@ -77,20 +78,19 @@
     color: var(--color-muted);
     font-variant-numeric: tabular-nums;
   }
+  /* The rank text in the client's tooltip yellow, as the game draws a talent's effect. */
   p {
     font-size: 13px;
     line-height: 19px;
-    color: var(--color-text);
+    color: var(--color-tooltip-yellow);
     margin: 0;
-  }
-  p.nx {
-    color: var(--color-muted);
   }
   .t-label {
     display: block;
     margin-bottom: 2px;
     font: 700 12px/16px var(--font-body);
     letter-spacing: 0;
+    color: var(--color-strong);
   }
   .req {
     color: var(--color-wipe);

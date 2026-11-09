@@ -144,3 +144,27 @@ export function tabStopId(tree: EditorTree, lastFocused: number | undefined): nu
 export function isPlaceholderIcon(image: EventTarget): boolean {
   return image instanceof HTMLImageElement && image.naturalWidth <= 1;
 }
+
+/** The side a talent's tooltip opens on, as the client draws it: beside the cell (right, else
+ *  left), so it never covers the tiles around it. Null when neither side has room (a phone),
+ *  where the tooltip falls back to below or above the cell. */
+export type TalentTipSide = 'right' | 'left';
+
+const TIP_GAP_PX = 8;
+const TIP_MARGIN_PX = 16;
+
+export function talentTipSide(
+  anchorLeft: number,
+  anchorRight: number,
+  tipWidth: number,
+  viewportWidth: number,
+): TalentTipSide | null {
+  if (anchorRight + TIP_GAP_PX + tipWidth <= viewportWidth - TIP_MARGIN_PX) return 'right';
+  if (anchorLeft - TIP_GAP_PX - tipWidth >= TIP_MARGIN_PX) return 'left';
+  return null;
+}
+
+/** The tooltip's left offset from its cell when it opens beside it. */
+export function talentTipSideLeft(side: TalentTipSide, anchorWidth: number, tipWidth: number): number {
+  return side === 'right' ? anchorWidth + TIP_GAP_PX : -(tipWidth + TIP_GAP_PX);
+}

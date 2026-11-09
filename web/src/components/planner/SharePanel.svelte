@@ -344,7 +344,6 @@
     <div class="pl-acts">
       <span class="text-small text-muted tabular-nums" data-testid="planner-text-summary">{textSummary}</span>
       <Button
-        size="sm"
         disabled={textSummary === ''}
         onclick={() => copyToClipboard(textSummary, 'text')}
         testid="copy-as-text"
