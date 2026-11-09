@@ -17,9 +17,9 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA_ROOT = Path(os.environ.get('FS_DATA_ROOT', ROOT))
 BUILD = json.loads((DATA_ROOT / 'web/src/data/active-build.json').read_text())['build']
 B = DATA_ROOT / 'data/builds' / BUILD
-# D1 (ruled 2026-11-07): every report mock reads a REAL Forever log. The only one reachable is the 17 Sept 2026 beta night on
-# Zephras Isle (client 1.60.1, 79 trash pulls, anonymised names), committed as the bundled sample and served at
-# /sample-report/sample; production's one public report (z2opt2x2gs5u) is the same log's first 42 pulls. It has no boss pull.
+# D1 (ruled 2026-11-07): every report mock reads a REAL Forever log: the bundled sample served at /sample-report/sample,
+# since 2026-11-09 the 8 Nov 2026 dungeon night in Excavation Site: Wetlands (104 pulls, six boss kills), cut by
+# api/cmd/samplecut with every name changed.
 SAMPLE_DIR = ROOT / 'web/public/sample-report/sample'
 MOCKDATA = Path(__file__).resolve().parent / 'data'
 FACTS = json.loads(Path(os.environ.get('FS_LOGS_FACTS') or MOCKDATA / 'logs-facts.json').read_text())   # FS_LOGS_FACTS: the parity specs' test-time facts
@@ -32,10 +32,10 @@ POWER = {0: 'Mana', 1: 'Rage', 2: 'Focus', 3: 'Energy'}
 # FS_REPORT_SAMPLE=1 (the parity spec's test-time render): every report mock is drawn as /reports/sample, the page the
 # spec serves on this same log (its Sample report Tag and note in place of Not credited).
 AS_SAMPLE = os.environ.get('FS_REPORT_SAMPLE') == '1'
-DEFAULT_PULL = 6       # the sample's default pull as the live page opens it (Trash, 12:43, 177 mobs died)
-EMPTY_PULL = 13        # 4 s, nobody of the group in it: the pull with no data
-COMPARE_PULL = 3       # the other pull the whole group is in
-VIEWER = 'Player-4184-00000038'   # SAMPLE (typed, marked): a signed-in owner of Soren Everhart, for the Coach tab only
+DEFAULT_PULL = 11      # the sample's default pull as the live page opens it (Saltspine #1, a kill, 0:39)
+DEATHS_PULL = 20       # the trash pull where the whole group died
+COMPARE_PULL = 40      # the second Saltspine kill, the whole group in it
+VIEWER = 'Player-4184-00000010'   # SAMPLE (typed, marked): a signed-in owner of Fenwick Silverlode, for the Coach tab only
 # The parse ladder, exactly lib/report/format.ts percentileToken over web/src/styles/tokens.css --color-parse-*.
 PARSE_TOKENS = {'gold': '#e5cc80', 'pink': '#e268a8', 'orange': '#ff8000', 'purple': '#a335ee', 'blue': '#0070ff', 'green': '#1eff00', 'grey': '#8c8c8c'}
 
@@ -81,7 +81,7 @@ class Report:
 
 def split_name(full: str) -> tuple[str, str]:
     """lib/report/names splitUnitName: "Baelgrim-Nightslayer" -> Baelgrim, Nightslayer; the sample's
-    "Soren-Everhart-ClassicBetaPvP-" -> "Soren Everhart" (the anonymiser's first and last name)."""
+    "Fenwick-Silverlode-ClassicBetaPvP-" -> "Fenwick Silverlode" (the anonymiser's first and last name)."""
     parts = [p for p in full.split('-') if p]
     if len(parts) >= 3:
         return f'{parts[0]} {parts[1]}', parts[2]
@@ -124,14 +124,47 @@ def spell(sid: int, logged: str = '') -> str:
     return SPELL_NAME.get(sid) or logged or f'Spell #{sid}'
 
 
-def sicon(sid: int, size: int = 28) -> str:
-    name = SPELL_ICON.get(str(sid))
-    p = B / 'icons' / f'{name}.webp' if name else None
-    if p is None or not p.exists():
-        return f'<span class="ic" style="width:{size}px;height:{size}px"></span>'
+# The report's icon chain (lib/guild/report-spell-icons.ts spellIconStem): melee, the client's override, the id table, a
+# same-named spell's icon, the school's base spell, a plain rune. Never an empty socket.
+FALLBACKS = json.loads((ROOT / 'web/src/data/spell-icon-fallbacks.json').read_text())
+ICON_BY_NAME: dict[str, str] = {}
+for _sp in json.loads((B / 'spells.json').read_text()):
+    if str(_sp['id']) in SPELL_ICON:
+        ICON_BY_NAME.setdefault(_sp['name'], SPELL_ICON[str(_sp['id'])])
+MELEE_NAMES = {'', 'Melee', 'Auto Attack'}
+
+
+def _real(stem: str | None) -> str | None:
+    return stem if stem and (B / 'icons' / f'{stem}.webp').exists() else None
+
+
+def icon_stem(sid: int, name: str = '', school: int | None = None) -> str:
+    if sid == 0 and name in MELEE_NAMES:
+        return FALLBACKS['melee']
+    by_school = FALLBACKS['schools'].get(str(school & -school)) if school and school > 0 else None
+    return (_real(FALLBACKS['client'].get(str(sid))) or _real(SPELL_ICON.get(str(sid)))
+            or _real(ICON_BY_NAME.get(name) if name else None) or by_school or (FALLBACKS['melee'] if sid == 0 else FALLBACKS['spell']))
+
+
+def role_icon(role: str | None, size: int = 14) -> str:
+    """The Players row's role icon (lib/report/role-icon.ts): the game's own icon, from the build's files."""
+    stem = FALLBACKS['roles'].get(role or '')
+    if stem is None:
+        return ''
+    label = {'tank': 'Tank', 'healer': 'Healer', 'dps': 'Damage'}[role]
+    return _icon_img(stem, size).replace('class="ic" src', 'class="role-ic" src', 1).replace('alt=""', f'alt="{label}" title="{label}"', 1)
+
+
+def _icon_img(name: str, size: int) -> str:
+    p = B / 'icons' / f'{name}.webp'
     if name not in _ic:
-        _ic[name] = 'data:image/webp;base64,' + base64.b64encode(p.read_bytes()).decode()
+        _ic[name] = 'data:image/webp;base64,' + base64.b64encode(p.read_bytes()).decode() if p.exists() else ''
     return f'<img class="ic" src="{_ic[name]}" alt="" width="{size}" height="{size}" style="width:{size}px;height:{size}px">'
+
+
+def sicon(sid: int, size: int = 28, name: str = '', school: int | None = None) -> str:
+    return _icon_img(icon_stem(sid, name, school), size)
+
 
 
 def n0(v: float) -> str:
@@ -282,7 +315,15 @@ def bar(R: Report, fi: int, tab: str, source: str, open_m: bool = False, compare
     src = f'<button type="button" class="sel" aria-expanded="false" aria-label="Source">{escape(source)}</button>' if many else sel(source)
     groups = [('Fight', sel(fight_label(f))), ('Source', src), ('Window', sel('Whole fight'))]
     if tab in TABLE_FILTERS:
-        groups += [('Target', sel('Every target')), ('Ability', sel('Every ability')),
+        # The Ability list (report/ReportBar.svelte abilityOptions over the tab's scope): past 15 it gains a filter field,
+        # and the shipped Select draws its button trigger, as the Source list does.
+        s = R.summary(fi)
+        fr = friendlies(R, s, source if source in SOURCES else 'Your group')
+        key = {'Damage done': 'damage_done', 'Healing': 'healing', 'Damage taken': 'damage_taken'}.get(tab, 'damage_done')
+        spells = {ab['spell_id'] for a in s[key] if a['guid'] in fr for ab in a['abilities']}
+        ability = ('<button type="button" class="sel" aria-expanded="false" aria-label="Ability">Every ability</button>'
+                   if len(spells) + 1 > SEARCHABLE_OVER else sel('Every ability'))
+        groups += [('Target', sel('Every target')), ('Ability', ability),
                    ('Filters', '<button type="button" class="sel" aria-haspopup="dialog" aria-expanded="false">Filters</button>')]
     if tab == 'Threat':
         groups.append(('Enemy', sel('Every enemy')))
@@ -292,16 +333,18 @@ def bar(R: Report, fi: int, tab: str, source: str, open_m: bool = False, compare
     return control_bar(groups, short, open_m=open_m, label='Report choices', labels_from=1920)
 
 
-def this_pull(R: Report, fi: int, source: str = 'All friendlies') -> str:
-    """This pull (directions b1, report/ThisPull.svelte): only what the band does not say, then Sim this fight and Copy link."""
+def this_pull(R: Report, fi: int, source: str = 'All friendlies', note: str = '') -> str:
+    """This pull (directions b1, report/ThisPull.svelte): only what the band does not say, then one muted line (`note`: on the
+    Summary of a pull with no rating, the honest state), then Sim this fight and Copy link."""
     f, s = R.fight(fi), R.summary(fi)
     fr = friendlies(R, s, source)
     scope = 'In range' if source.startswith('Everyone') else f'In {source.lower()}'
     items = [('Started', clock(f['start'])), (scope, f'{len(in_scope(R, s, source)):,}'),
              ('Deaths', str(sum(1 for d in s['deaths'] if d['guid'] in fr)))]
     items += [(escape(p['name']), f'{mmss(p["start_ms"])}&ndash;{mmss(p["end_ms"])}') for p in s.get('phases', [])]
+    line = f'<p class="t-small muted pull-note">{escape(note)}</p>' if note else ''
     acts = f'<div class="pull-acts">{_Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</div>'
-    return Section('This pull', Facts(items) + acts, panel=True)
+    return Section('This pull', Facts(items) + line + acts, panel=True)
 
 
 def chart(R: Report, fi: int, metric: str, source: str) -> str:

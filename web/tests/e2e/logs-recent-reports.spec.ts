@@ -34,9 +34,9 @@ test('the sample report is one row Tagged Sample report, with a date and its fig
   await expect(row).toHaveAttribute('href', `/reports/${SAMPLE_REPORT_ID}`);
   // The date the report page says (its first fight), not a second format (W.9); the zone and
   // count come from the sample's meta, the same source the page reads (L.7).
-  await expect(row.getByTestId('report-row-when')).toHaveText('17 Sept 2026');
+  await expect(row.getByTestId('report-row-when')).toHaveText('8 Nov 2026');
   await expect(row.getByTestId('report-row-summary')).toHaveText(
-    `${SAMPLE_REPORT_META.zone} · ${SAMPLE_REPORT_META.fights.length} fights`,
+    `${SAMPLE_REPORT_META.zone} · ${SAMPLE_REPORT_META.fights.filter((fight) => fight.kind === 'encounter').length} bosses · ${SAMPLE_REPORT_META.fights.length} fights`,
   );
   await expect(page.locator('.pill-sample')).toHaveCount(0);
 });

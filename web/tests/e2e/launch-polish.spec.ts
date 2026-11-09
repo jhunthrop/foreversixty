@@ -114,10 +114,8 @@ for (const size of SIZES) {
     }) => {
       await signedOut(page);
       await page.goto('/reports/sample');
-      await expect(page.getByTestId('report-title')).toHaveText('Sample raid night, 17 Sept 2026');
-      await expect(page.getByTestId('report-sample-note')).toHaveText(
-        'A real dungeon night, names changed.',
-      );
+      await expect(page.getByTestId('report-title')).toHaveText('Sample dungeon night, 8 Nov 2026');
+      await expect(page.getByTestId('report-sample-note')).toHaveText('A real dungeon night, names changed.');
       const rows = page.getByTestId('summary-tab').getByTestId(/^roster-Player-/);
       await expect(rows.first()).toBeVisible();
       await page.waitForLoadState('networkidle');
@@ -125,7 +123,7 @@ for (const size of SIZES) {
       // The band's meta line (directions b1): the zone and the pull on screen; the title carries the
       // date and the Fight list the pulls.
       await expect(page.getByTestId('report-subtitle')).toHaveText(
-        'Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died',
+        'Excavation Site: Wetlands · Pull 11, Saltspine #1 · Kill · 0:39 · 5 players',
       );
       if (size.width >= 768) {
         // From md up the sample draws the full chart, as a real report does (owner, 2026-10-30:
@@ -153,7 +151,7 @@ for (const size of SIZES) {
       await page.goto('/logs');
       const sample = page.getByTestId('recent-reports-sample');
       await sample.scrollIntoViewIfNeeded();
-      await expect(sample.getByTestId('report-row-when')).toHaveText('17 Sept 2026');
+      await expect(sample.getByTestId('report-row-when')).toHaveText('8 Nov 2026');
       await expect(sample.getByTestId('report-row-summary')).toContainText(
         `${SAMPLE_REPORT_META.fights.length} fights`,
       );

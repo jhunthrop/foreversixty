@@ -59,14 +59,13 @@ test('the sample report opens from /logs and shows fights, with no API', async (
   const sample = page.getByTestId('recent-reports-sample');
   await sample.scrollIntoViewIfNeeded();
   await expect(sample.getByTestId('report-row-summary')).toHaveText(
-    `${SAMPLE_REPORT_META.zone} · ${SAMPLE_REPORT_META.fights.length} fights`,
+    `${SAMPLE_REPORT_META.zone} · ${SAMPLE_REPORT_META.fights.filter((fight) => fight.kind === 'encounter').length} bosses · ${SAMPLE_REPORT_META.fights.length} fights`,
   );
-  await expect(sample.getByTestId('report-row-when')).toHaveText('17 Sept 2026');
+  await expect(sample.getByTestId('report-row-when')).toHaveText('8 Nov 2026');
   await sample.getByRole('link').first().click();
 
   await expect(page).toHaveURL(/\/reports\/sample$/);
-  await expect(page.getByTestId('report-title')).toHaveText('Sample raid night, 17 Sept 2026');
-  await expect(page.getByText('17 Sept 2026').first()).toBeVisible();
+  await expect(page.getByTestId('report-title')).toHaveText('Sample dungeon night, 8 Nov 2026');
   await expect(page.getByTestId('report-sample-badge')).toHaveText('Sample report');
   await expect(page.getByTestId('report-live')).toHaveCount(0);
   await expect(page.getByTestId('report-owner')).toHaveCount(0);
@@ -86,13 +85,10 @@ test('the sample report opens from /logs and shows fights, with no API', async (
   await expect(page.getByTestId('parse-unavailable')).toHaveCount(0);
   await expect(page.getByTestId('roster-percentile')).toHaveCount(0);
   await expect(page.getByTestId('roster-spec')).toHaveCount(0);
-  await expect(page.getByTestId('report-sample-note')).toContainText(
-    'A real dungeon night, names changed.',
-  );
+  await expect(page.getByTestId('report-sample-note')).toContainText('A real dungeon night, names changed.');
   await expect(page).not.toHaveURL(/fight=/);
-  // Opens on its first boss kill, else its longest boss attempt, else its longest pull. The
-  // sample has no boss, so that is its longest pull (fight 6, 12:43), not the first.
-  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('6');
+  // The sample opens on its boss pull: pull 11, Saltspine, a kill (a real report opens on its last kill).
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('11');
   // Class colours: no name keeps the plain text colour.
   const colours = await roster
     .getByTestId(/^roster-Player-/)
@@ -102,7 +98,7 @@ test('the sample report opens from /logs and shows fights, with no API', async (
   expect(new Set(colours).size).toBeGreaterThan(2);
   // A trash row prints its length once.
   const row1 = await page.locator('select[data-testid="report-fight"] option[value="1"]').innerText();
-  expect((row1.match(/3:26/g) ?? []).length).toBe(1);
+  expect((row1.match(/1:08/g) ?? []).length).toBe(1);
 
   if (SHOT_DIR !== undefined) {
     const width = info.project.name === 'mobile' ? 390 : 1280;
@@ -148,9 +144,9 @@ test.describe('the sample report’s chart', () => {
 test.describe('the brush on a fight that does not end on a whole second', () => {
   // 1 s, 2 s and 5 s points (lib/chart/buckets.ts); the 10 s case is OverviewBrush.test.ts's.
   const FIGHTS = [
-    { fight: 2, durationMs: 9_879, label: '0:09.9' },
-    { fight: 9, durationMs: 80_261, label: '1:20' },
-    { fight: 6, durationMs: 763_140, label: '12:43' },
+    { fight: 2, durationMs: 18_598, label: '0:18.6' },
+    { fight: 4, durationMs: 129_839, label: '2:10' },
+    { fight: 57, durationMs: 432_761, label: '7:13' },
   ];
   for (const { fight, durationMs, label } of FIGHTS) {
     test(`fight ${fight}: the whole-fight end handle sits on the track's end`, async ({ page }) => {
@@ -173,42 +169,39 @@ test.describe('the brush on a fight that does not end on a whole second', () => 
 });
 
 test.describe('the sample’s counts say what they count', () => {
-  // An open-world log sees every player in range: fight 6 has 265 of them and the logger's
-  // party is five of them (the pull's own flags, engine 0.6.0). The default scope is the group; Everyone in range is one pick away.
+  // An open-world log sees every player in range: pull 1 has 57 of them and the logger's party is
+  // four of them (the pull's own flags, engine 0.6.0). The default scope is the group; Everyone in range is one pick away.
   test('the default is the logger’s group, and nothing claims a raid', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/reports/sample');
     const source = page.getByTestId('source-scope');
     await expect(source.locator('option:checked')).toHaveText('Your group');
-    // Fight 6's own flags put five players in the group; the report-wide last-seen flags said four.
     await expect(page.getByTestId('report-this-pull')).toContainText(/In your group\s*5\s*Deaths\s*0/);
     const chart = page.getByTestId('time-chart');
     await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
     await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Group [\d.,]+ DPS over the whole fight$/);
     await expect(chart.getByTestId('chart-legend')).toContainText('Group median');
     await expect(chart).not.toContainText('Raid');
-    // The two deaths in fight 6 are outsiders': the group's chart does not mark them.
+    // Nobody died on the boss pull: the group's chart marks no death.
     await expect(chart.getByTestId('death-marker')).toHaveCount(0);
-    // The trash row's counts are true and say whose they are: every mob that died in range, and
-    // the group's own kills.
-    await expect(page.locator('select[data-testid="report-fight"] option[value="6"]')).toHaveAttribute(
+    // A trash row's counts are true and say whose they are: every mob that died in range.
+    await expect(page.locator('select[data-testid="report-fight"] option[value="1"]')).toHaveAttribute(
       'data-description',
-      /· 177 mobs died$/,
+      /· 10 mobs died/,
     );
     // The band (directions b1): the pull in the meta line, the group's DPS as its figure; This pull
-    // says the group's count and deaths (none: the two in fight 6 were outsiders', counted under
-    // Everyone in range).
+    // says the group's count and deaths.
     await expect(page.getByTestId('report-subtitle')).toHaveText(
-      'Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died',
+      'Excavation Site: Wetlands · Pull 11, Saltspine #1 · Kill · 0:39 · 5 players',
     );
-    await expect(page.getByTestId('report-answer')).toHaveText(/3\.1\s*group DPS/);
+    await expect(page.getByTestId('report-answer')).toHaveText(/345\s*group DPS/);
     await expect(page.getByTestId('report-this-pull')).toContainText(/In your group\s*5\s*Deaths\s*0/);
   });
 
   test('Everyone in range counts the players seen and totals, not a raid', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/reports/sample?source=everyone');
-    await expect(page.getByTestId('summary-tab')).toContainText('265 players');
+    await page.goto('/reports/sample?fight=1&source=everyone');
+    await expect(page.getByTestId('summary-tab').getByTestId(/^roster-Player-/)).toHaveCount(57);
     const chart = page.getByTestId('time-chart');
     await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
     await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Total [\d.,]+ DPS over the whole fight$/);
@@ -218,12 +211,26 @@ test.describe('the sample’s counts say what they count', () => {
     expect(await label.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
     await expect(chart.getByTestId('death-marker').first()).toBeVisible();
     await expect(chart.getByTestId('chart-legend')).toContainText('Median player');
-    await expect(page.getByTestId('report-this-pull')).toContainText(/In range\s*265\s*Deaths\s*2/);
+    await expect(page.getByTestId('report-this-pull')).toContainText(/In range\s*57\s*Deaths\s*2/);
   });
 
   test('a pull the group was not in is everyone in range, said so', async ({ page }) => {
+    // The logger is in every pull of this log: pull 7 is served as one the group missed.
+    await page.route('**/sample-report/sample/report.json', async (route) => {
+      const response = await route.fetch();
+      const file = (await response.json()) as {
+        fights: { index: number; players: string[]; group?: string[] | null }[];
+      };
+      const group = new Set(file.fights.flatMap((fight) => fight.group ?? []));
+      for (const fight of file.fights)
+        if (fight.index === 7) {
+          fight.players = fight.players.filter((guid) => !group.has(guid));
+          fight.group = [];
+        }
+      await route.fulfill({ response, json: file });
+    });
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/reports/sample?fight=2');
+    await page.goto('/reports/sample?fight=7');
     await expect(page.getByTestId('source-scope').locator('option:checked')).toHaveText('Everyone in range');
     await expect(page.getByTestId('report-this-pull')).toContainText('In range');
     await expect(page.getByTestId('report-group-missing')).toHaveText('Your group wasn’t in this pull.');

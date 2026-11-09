@@ -44,8 +44,10 @@ function withoutChartHeight(mock: RegionSnapshot[], build: RegionSnapshot[]): Re
   // Measured at the bottom edge: the regions below land where the mock's chart ends.
   const extra = b.box.y + b.box.height - (m.box.y + m.box.height);
   const bottom = b.box.y + b.box.height;
+  // Everything under it in the main column, both halves of the Summary's ability grid among them.
+  const inColumn = (r: RegionSnapshot): boolean => r.box.x >= b.box.x && r.box.x < b.box.x + b.box.width;
   return build.map((r) =>
-    r.box.y >= bottom && r.box.x === b.box.x ? { ...r, box: { ...r.box, y: r.box.y - extra } } : r,
+    r.box.y >= bottom && inColumn(r) ? { ...r, box: { ...r.box, y: r.box.y - extra } } : r,
   );
 }
 
