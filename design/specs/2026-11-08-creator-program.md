@@ -25,6 +25,26 @@ Memory rules applied: stripe-billing (Commish LLC's account, Managed Payments; k
 - A code gives a free month (owner ruling, section 2); the privacy sentence waits for the owner (section 2).
 - The migration takes the next free number on main at landing (0092 is taken by app-beta's `0092_app_testers`).
 
+## 0C. Build reviews, 2026-11-08 (ux-designer and wow-player on the build screenshots; security review)
+
+- ux-designer, SHIP WITH FIXES, all applied:
+  - the 390 statements layout (the month field at its text's width, the trail on its own line, a two-column figure grid, a disabled Approve in the secondary tone);
+  - the counter `{n} of 500 characters`;
+  - 44 px radio rows;
+  - the screenshots shot at the fixture clock (2026-12-09).
+- wow-player, SHIP WITH FIXES, applied:
+  - `Both add up: ...`;
+  - the 14-day fill-in line on the public and stats pages;
+  - the exact disclosure words;
+  - tax details and leaving the program;
+  - the disclosure checkbox;
+  - `import` for `bring in`;
+  - `an estimate until the month closes`;
+  - `once we approve it`.
+
+  Left for the owner: whether undisclosed links end a creator's place, a payout day or a minimum, a reapply cool-down, and a stats breakdown.
+- Security review: 0 critical. Every high and medium finding is fixed, with tests (review_test.go, creator_code_test.go), except disputes: `charge.dispute.*` is not booked as a negative line yet. That is a known gap, and payouts stay behind the owner's approval.
+
 ## 0. Files
 
 | What | Path |
@@ -104,7 +124,7 @@ PageHeader `Creators`, lead `If you stream or make videos about World of Warcraf
 
 ### 3f. `/creators/apply` (signed in; noindex)
 
-`Page layout="form"`, PageHeader `Apply to the creator program`. Section `Your channel`: Fields Channel (a Twitch or YouTube https address; the API checks the host is twitch.tv or youtube.com), Main platform (two radios), Viewers or subscribers (optional whole number), `What do you make about Forever?` (required, 1 to 500 characters, a counter `{n} of 500`), Contact email (optional, only the owner sees it; never in a URL or a log), the consent line `We review every application; we'll reply on your Forever Sixty account.`, primary `Send application`. One open application per account (409 otherwise), 5 sends an hour per address. States after sending, in a Section `Your application` with a Tag: Pending (`Sent {date}. We'll reply here.`), Approved (`You're in. Set up payouts so we can pay you.` and `Set up payouts` to `/creators/onboarding`), Not this time (`Not this time. Thank you for applying.`; the form comes back so they can apply again later). Already a creator: `You're already in the creator program.` and `Your stats ›`. Signed out: the sign-in prompt.
+`Page layout="form"`, PageHeader `Apply to the creator program`. Section `Your channel`: Fields Channel (a Twitch or YouTube https address; the API checks the host is twitch.tv or youtube.com), Main platform (two radios), Viewers or subscribers (optional whole number), `What do you make about Forever?` (required, 1 to 500 characters, a counter `{n} of 500 characters`), Contact email (optional, only the owner sees it; never in a URL or a log), a required checkbox `I'll say it's an affiliate link or sponsored wherever I share my link or code.` (unticked: `Tick this to apply: the FTC and Twitch require it.`), the consent line `We review every application; we'll reply on your Forever Sixty account.`, primary `Send application`. One open application per account (409 otherwise), 5 sends an hour per address. States after sending, in a Section `Your application` with a Tag: Pending (`Sent {date}. We'll reply here.`), Approved (`You're in. Set up payouts so we can pay you.` and `Set up payouts` to `/creators/onboarding`), Not this time (`Not this time. Thank you for applying.`; the form comes back so they can apply again later). Already a creator: `You're already in the creator program.` and `Your stats ›`. Signed out: the sign-in prompt.
 
 ### 3g. Requests on `/admin/creators`
 

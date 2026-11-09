@@ -66,7 +66,7 @@
       <Plate label={copy.summaryLabel}>
         <div class="flex flex-wrap items-start gap-x-5 gap-y-2 p-4" data-testid="stats-figures">
           {#each statsFigures(mine) as fig (fig.key)}
-            <span class={fig.lead ? 'w-[168px]' : 'w-[104px]'}
+            <span class={fig.lead ? 'w-[220px]' : 'w-[104px]'}
               ><Figure
                 value={fig.value}
                 label={fig.label}

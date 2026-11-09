@@ -33,7 +33,7 @@ CREATOR = OWNER
 CSS = '''<style>
 /* page-level layout only (no surfaces) */
 .stack{display:flex;flex-direction:column;gap:12px;min-width:0}.acts{display:flex;gap:10px 12px;flex-wrap:wrap;align-items:center}
-.figs5{display:flex;flex-wrap:wrap;gap:8px 20px}.figs5>span{width:104px;display:flex;flex-direction:column}.figs5>span.lead{width:168px}.btn[disabled]{opacity:.45;cursor:not-allowed}
+.figs5{display:flex;flex-wrap:wrap;gap:8px 20px}.figs5>span{width:104px;display:flex;flex-direction:column}.figs5>span.lead{width:220px}.btn[disabled]{opacity:.45;cursor:not-allowed}
 .f{display:flex;flex-direction:column;gap:6px;min-width:0}.f .t-small{font-size:12px;line-height:16px}
 .ro{font-size:15px;color:var(--strong)}.status{min-height:22px}.page-foot{padding-bottom:48px}
 .trail-end{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.amt{font-variant-numeric:tabular-nums}

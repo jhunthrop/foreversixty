@@ -208,7 +208,7 @@
                 {#snippet foot()}
                   <span class="grid min-w-0 grid-cols-2 items-start gap-x-5 gap-y-2 md:flex md:flex-wrap">
                     {#each statementFigures(s) as fig (fig.key)}
-                      <span class={fig.lead ? 'md:w-[168px]' : 'md:w-[104px]'}
+                      <span class={fig.lead ? 'md:w-[220px]' : 'md:w-[104px]'}
                         ><Figure
                           value={fig.value}
                           label={fig.label}

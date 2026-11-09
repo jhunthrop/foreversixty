@@ -522,7 +522,7 @@
     "id": "what-you-get",
     "title": "What you get",
     "paragraphs": [
-     "$2 for each player you send who comes back. A player comes back when they sign in with Battle.net, bring in at least one Forever character, and use the site again on a later day within 14 days of signing up.",
+     "$2 for each player you send who comes back. A player comes back when they sign in with Battle.net, import at least one Forever character, and use the site again on a later day within 14 days of signing up.",
      "Half of the Premium they pay, after Stripe’s fees and any refunds, for 12 months from their first payment. Guild plans count when the officer who pays came through you.",
      "Both add up: $2 once when a player comes back, then half of each of their payments for a year.",
      "Premium on your own account and the Raid guild plan for your guild while you are in the program."
@@ -540,7 +540,7 @@
     "id": "payouts",
     "title": "Payouts",
     "paragraphs": [
-     "We add up each month after it ends and pay it through Stripe, to a payout account you set up with them. We never see your bank details. Each creator has a monthly cap, $500 unless we agree another.",
+     "We add up each month after it ends and, once we approve it, pay it through Stripe to a payout account you set up with them. We never see your bank details. Each creator has a monthly cap, $500 unless we agree another.",
      "You can see your players by week, and what you have earned, on your own stats page. A player counts as coming back up to 14 days after signing up, so the latest weeks fill in late. We never show you who they are.",
      "Stripe asks for your tax details when you set up payouts. If you leave the program, your free Premium ends, and the months you already earned are still paid."
     ]
@@ -646,7 +646,7 @@
     "key": "month",
     "label": "Earned so far",
     "value": "$184.20",
-    "note": "December 2026, estimated, $500 cap max",
+    "note": "December 2026, an estimate until the month closes · $500 monthly cap",
     "lead": true
    },
    {

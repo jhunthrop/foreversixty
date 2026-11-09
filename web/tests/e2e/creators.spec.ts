@@ -184,7 +184,7 @@ test.describe('the creator', () => {
     );
     await page.goto('/creators/stats');
     await expect(page.getByRole('heading', { level: 1, name: 'Grimbrew' })).toBeVisible();
-    await expect(page.getByTestId('stats-figures')).toContainText('December 2026, estimated, $500 cap max');
+    await expect(page.getByTestId('stats-figures')).toContainText('December 2026, an estimate until the month closes · $500 monthly cap');
     await expect(page.getByTestId('stats-week-2026-12-07')).toHaveText('Week of 7 Dec: 18 signed up so far');
     await expect(page.getByTestId('stats-week-2026-11-23')).toHaveText(
       'Week of 23 Nov: 54 signed up · 36 returning · 10 paying',

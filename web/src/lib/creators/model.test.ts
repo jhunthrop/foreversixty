@@ -69,7 +69,7 @@ describe('the figures say what they cover', () => {
   it('gives the creator their month, all-time counts and who pays now', () => {
     const figs = statsFigures(mine);
     expect(figs.map((f) => f.note)).toEqual([
-      'December 2026, estimated, $500 cap max',
+      'December 2026, an estimate until the month closes · $500 monthly cap',
       creatorStatsCopy.allTime,
       creatorStatsCopy.allTime,
       creatorStatsCopy.payingNote,
