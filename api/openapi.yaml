@@ -1460,7 +1460,7 @@ components:
         creator_id: { type: integer, format: int64 }
         name: { type: string }
         month: { type: string }
-        status: { type: string, enum: [open, ready, nothing, blocked, paid] }
+        status: { type: string, enum: [open, ready, nothing, carry, blocked, paid], description: 'carry: owes less than the $10 minimum, which carries over.' }
         bounty_count: { type: integer, format: int64 }
         bounty_cents: { type: integer, format: int64 }
         share_cents: { type: integer, format: int64 }
@@ -10650,7 +10650,7 @@ paths:
                   - $ref: '#/components/schemas/Envelope'
                   - type: object
                     properties:
-                      data: { type: object, required: [status, created_at, creator], properties: { status: { type: string, enum: [pending, approved, declined], nullable: true }, created_at: { type: string, format: date-time, nullable: true }, creator: { type: boolean } } }
+                      data: { type: object, required: [status, created_at, creator], properties: { status: { type: string, enum: [pending, approved, declined], nullable: true }, created_at: { type: string, format: date-time, nullable: true }, creator: { type: boolean }, reapply_on: { type: string, format: date, nullable: true, description: 'The day a declined account may apply again (30 days), while ahead.' } } }
         '401':
           description: Not signed in
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }

@@ -48,7 +48,7 @@ export interface CreatorInput {
   cap_cents: number;
 }
 
-export type StatementStatus = 'open' | 'ready' | 'nothing' | 'blocked' | 'paid';
+export type StatementStatus = 'open' | 'ready' | 'nothing' | 'carry' | 'blocked' | 'paid';
 
 export interface StatementLine {
   kind: 'bounty' | 'share' | 'refund';

@@ -31,6 +31,8 @@ const (
 var (
 	// ErrApplicationOpen: the account already has an application waiting, or is a creator.
 	ErrApplicationOpen = errors.New("creators: an application is already open")
+	// ErrReapplyTooSoon: the account was declined less than ReapplyAfter ago.
+	ErrReapplyTooSoon = errors.New("creators: declined less than 30 days ago")
 	// ErrNotPending: the request was already approved or declined.
 	ErrNotPending = errors.New("creators: that request was already decided")
 )
@@ -99,6 +101,8 @@ type MyApplication struct {
 	Status    *string    `json:"status"`
 	CreatedAt *time.Time `json:"created_at"`
 	Creator   bool       `json:"creator"`
+	// ReapplyOn is the UTC day a declined account may apply again, while that day is still ahead.
+	ReapplyOn *string `json:"reapply_on"`
 }
 
 // Request is an open application as the owner sees it.
@@ -142,8 +146,14 @@ func Suggest(channelURL string) Suggested {
 	return Suggested{Name: name, Slug: slug, Code: code}
 }
 
-// Apply records an application; ErrApplicationOpen when one is waiting or the account is a creator.
-func (s *Store) Apply(ctx context.Context, userID int64, in ApplicationInput) error {
+// Apply records an application; ErrApplicationOpen when one is waiting or the account is a creator,
+// ErrReapplyTooSoon inside ReapplyAfter of a decline.
+func (s *Store) Apply(ctx context.Context, userID int64, in ApplicationInput, now time.Time) error {
+	if on, err := s.reapplyOn(ctx, userID, now); err != nil {
+		return err
+	} else if on != nil {
+		return ErrReapplyTooSoon
+	}
 	creator, err := s.IsCreator(ctx, userID)
 	if err != nil {
 		return err
@@ -163,9 +173,34 @@ func (s *Store) Apply(ctx context.Context, userID int64, in ApplicationInput) er
 	return nil
 }
 
+// reapplyOn is the day a declined account may apply again, nil when it may now.
+func (s *Store) reapplyOn(ctx context.Context, userID int64, now time.Time) (*time.Time, error) {
+	var decided *time.Time
+	err := s.Pool.QueryRow(ctx, `select max(decided_at) from creator_applications where user_id = $1 and status = 'declined'`, userID).Scan(&decided)
+	if err != nil {
+		return nil, fmt.Errorf("creators: reapply %d: %w", userID, err)
+	}
+	if decided == nil {
+		return nil, nil
+	}
+	on := decided.Add(ReapplyAfter)
+	if !now.Before(on) {
+		return nil, nil
+	}
+	return &on, nil
+}
+
 // Application is the account's latest application.
-func (s *Store) Application(ctx context.Context, userID int64) (MyApplication, error) {
+func (s *Store) Application(ctx context.Context, userID int64, now time.Time) (MyApplication, error) {
 	var out MyApplication
+	on, err := s.reapplyOn(ctx, userID, now)
+	if err != nil {
+		return out, err
+	}
+	if on != nil {
+		day := on.UTC().Format(time.DateOnly)
+		out.ReapplyOn = &day
+	}
 	creator, err := s.IsCreator(ctx, userID)
 	if err != nil {
 		return out, err
@@ -233,9 +268,9 @@ func (s *Store) PendingRequest(ctx context.Context, id int64) (Request, error) {
 }
 
 // Decide marks a waiting request approved (with the creator it made) or declined.
-func (s *Store) Decide(ctx context.Context, id int64, status string, creatorID *int64) error {
-	tag, err := s.Pool.Exec(ctx, `update creator_applications set status = $2, creator_id = $3, decided_at = now()
-		where id = $1 and status = 'pending'`, id, status, creatorID)
+func (s *Store) Decide(ctx context.Context, id int64, status string, creatorID *int64, now time.Time) error {
+	tag, err := s.Pool.Exec(ctx, `update creator_applications set status = $2, creator_id = $3, decided_at = $4
+		where id = $1 and status = 'pending'`, id, status, creatorID, now)
 	if err != nil {
 		return fmt.Errorf("creators: decide %d: %w", id, err)
 	}

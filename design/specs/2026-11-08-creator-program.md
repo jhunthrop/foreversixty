@@ -66,6 +66,14 @@ Memory rules applied: stripe-billing (Commish LLC's account, Managed Payments; k
   - The API checks the balance again before claiming anything.
 - **A transfer Stripe refuses with `balance_insufficient`** undoes the claim, so the statement stays unpaid with nothing recorded. The dialog stays open and says `Stripe didn't have enough in your balance for this payout. Nothing was paid; approve it again once the balance covers it.` The idempotency key is the same, so a retry is safe.
 
+## 0F. Program terms, 2026-11-08 (coordinator; on the /creators page, no new mocks)
+
+- Disclosure: the terms require it. The first time a creator's link or code runs without it, we warn them; a second time ends their place in the program (the owner uses Remove; nothing is automatic).
+- Statements close on the 1st of the month. The owner approves them during the first week.
+- Minimum payout $10 (`MinPayoutCents`). A month under it shows "Under the $10 minimum: it carries over to next month" (status `carry`), cannot be approved (409 `below_minimum`), and its lines stay unsettled so they count toward the next month.
+- Reapplying: 30 days after a decline (`ReapplyAfter`). Until then `GET /v1/creators/application` returns `reapply_on` (UTC day), the apply page says "You can apply again from {date}." with no form, and `POST` answers 409 `reapply_too_soon`.
+- No per-source stats breakdown for now.
+
 ## 0. Files
 
 | What | Path |

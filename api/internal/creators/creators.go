@@ -20,6 +20,8 @@ const (
 	BountyCents = 200
 	// SharePercent of a payment's net goes to the player's creator.
 	SharePercent = 50
+	// MinPayoutCents is the least a month pays out; a smaller total carries over to the next month.
+	MinPayoutCents = 1000
 	// DefaultCapCents is a new creator's monthly cap.
 	DefaultCapCents = 50000
 	// MaxCapCents bounds what the owner may type (the creators migration's check).
@@ -37,6 +39,8 @@ const (
 	ReturnWindow = 14 * 24 * time.Hour
 	// ShareMonths is how long after a player's first payment their payments earn a share.
 	ShareMonths = 12
+	// ReapplyAfter is how long after a decline an account may apply again.
+	ReapplyAfter = 30 * 24 * time.Hour
 	// InviteTTL is how long an owner's invite works.
 	InviteTTL = 14 * 24 * time.Hour
 	// PrivacyAge is how old a player must be before the creator sees whether they returned or pay.
@@ -65,7 +69,9 @@ const (
 	StatementReady   = "ready"
 	StatementNothing = "nothing"
 	StatementBlocked = "blocked"
-	StatementPaid    = "paid"
+	// StatementCarry: owes money, under MinPayoutCents; its lines stay for the next month.
+	StatementCarry = "carry"
+	StatementPaid  = "paid"
 )
 
 // Line kinds.

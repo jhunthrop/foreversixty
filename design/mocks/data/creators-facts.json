@@ -270,6 +270,7 @@
     "open": "Month still open",
     "ready": "Ready to approve",
     "nothing": "Nothing owed",
+    "carry": "Under the $10 minimum: it carries over to next month",
     "blocked": "Stripe can’t pay yet: onboarding not finished",
     "paid": "[fn]",
     "settled": "[fn]"
@@ -549,7 +550,7 @@
     "id": "payouts",
     "title": "Payouts",
     "paragraphs": [
-     "We add up each month after it ends and, once we approve it, pay it through Stripe to a payout account you set up with them. We never see your bank details. Each creator has a monthly cap, $500 unless we agree another.",
+     "Each month closes on the 1st. We approve it during the first week and pay it through Stripe to a payout account you set up with them. We never see your bank details. A month under $10 carries over to the next one. Each creator has a monthly cap, $500 unless we agree another.",
      "You can see your players by week, and what you have earned, on your own stats page. A player counts as coming back up to 14 days after signing up, so the latest weeks fill in late. We never show you who they are.",
      "Stripe asks for your tax details when you set up payouts. If you leave the program, your free Premium ends, and the months you already earned are still paid."
     ]
@@ -558,7 +559,7 @@
     "id": "disclosure",
     "title": "Saying it is sponsored",
     "paragraphs": [
-     "You earn money when people use your link or code, so you have to say so wherever you share it. Say “affiliate link” or “sponsored” on stream or in the video, and put the same words next to your link or code. The FTC and Twitch both require it."
+     "You earn money when people use your link or code, so you have to say so wherever you share it. Say “affiliate link” or “sponsored” on stream or in the video, and put the same words next to your link or code. The FTC and Twitch both require it, and so do these terms: the first time it is missing we warn you, and a second time ends your place in the program."
     ]
    }
   ],
@@ -612,6 +613,7 @@
    "approvedTag": "Approved",
    "setup": "Set up payouts",
    "declined": "Not this time. Thank you for applying.",
+   "reapplyOn": "[fn]",
    "declinedTag": "Not this time",
    "alreadyCreator": "You’re already in the creator program.",
    "statsLink": "Your stats"

@@ -83,7 +83,9 @@
   }
 
   const showForm = $derived(
-    mine !== null && !mine.creator && (mine.status === null || mine.status === 'declined'),
+    mine !== null &&
+      !mine.creator &&
+      (mine.status === null || (mine.status === 'declined' && !mine.reapply_on)),
   );
 </script>
 
@@ -119,6 +121,9 @@
           {:else}
             <div><Tag tone="muted">{copy.declinedTag}</Tag></div>
             <p>{copy.declined}</p>
+            {#if mine.reapply_on}<p class="text-muted text-[14px]" data-testid="apply-reapply">
+                {copy.reapplyOn(dayLabel(mine.reapply_on))}
+              </p>{/if}
           {/if}
         </div>
       </Section>

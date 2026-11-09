@@ -286,8 +286,9 @@ test.describe('/creators and /creators/apply', () => {
       '$2 for each player you send who comes back',
     );
     await expect(page.getByTestId('creators-section-disclosure')).toContainText(
-      'The FTC and Twitch both require it.',
+      'the first time it is missing we warn you, and a second time ends your place in the program.',
     );
+    await expect(page.getByTestId('creators-section-payouts')).toContainText('A month under $10 carries over');
     await expect(page.getByTestId('creators-apply-top')).toHaveAttribute('href', '/creators/apply');
     await expect(page.locator('footer a[href="/creators"]').first()).toBeVisible();
   });
@@ -345,11 +346,30 @@ test.describe('/creators and /creators/apply', () => {
     test(`shows ${status}`, async ({ page }) => {
       await signedIn(page);
       await page.route('**/v1/creators/application', (route) =>
-        route.fulfill(envelope({ status, created_at: '2026-12-08T16:20:00Z', creator: false })),
+        route.fulfill(
+          envelope({ status, created_at: '2026-12-08T16:20:00Z', creator: false, reapply_on: null }),
+        ),
       );
       await page.goto('/creators/apply');
       await expect(page.getByTestId(`apply-status-${status}`)).toContainText(words);
       await expect(page.getByTestId('apply-form')).toHaveCount(status === 'declined' ? 1 : 0);
     });
   }
+
+  test('a recent decline says when to apply again and holds the form', async ({ page }) => {
+    await signedIn(page);
+    await page.route('**/v1/creators/application', (route) =>
+      route.fulfill(
+        envelope({
+          status: 'declined',
+          created_at: '2026-12-08T16:20:00Z',
+          creator: false,
+          reapply_on: '2027-01-08',
+        }),
+      ),
+    );
+    await page.goto('/creators/apply');
+    await expect(page.getByTestId('apply-reapply')).toHaveText('You can apply again from 8 Jan 2027.');
+    await expect(page.getByTestId('apply-form')).toHaveCount(0);
+  });
 });

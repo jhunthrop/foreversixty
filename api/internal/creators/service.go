@@ -475,7 +475,7 @@ func (s *Service) Apply(ctx context.Context, userID int64, in ApplicationInput) 
 	if bad := in.Validate(); len(bad) > 0 {
 		return &FieldError{bad}
 	}
-	if err := s.Store.Apply(ctx, userID, in); err != nil {
+	if err := s.Store.Apply(ctx, userID, in, s.now()); err != nil {
 		return err
 	}
 	s.logger().Info("creators", "op", "apply", "user_id", userID, "platform", in.Platform)
@@ -492,7 +492,7 @@ func (s *Service) ApproveRequest(ctx context.Context, requestID int64, in Input)
 	if err != nil {
 		return Creator{}, err
 	}
-	if err := s.Store.Decide(ctx, requestID, ApplicationApproved, &c.ID); err != nil {
+	if err := s.Store.Decide(ctx, requestID, ApplicationApproved, &c.ID, s.now()); err != nil {
 		return Creator{}, err
 	}
 	return c, nil
@@ -500,5 +500,5 @@ func (s *Service) ApproveRequest(ctx context.Context, requestID int64, in Input)
 
 // DeclineRequest declines a waiting request.
 func (s *Service) DeclineRequest(ctx context.Context, requestID int64) error {
-	return s.Store.Decide(ctx, requestID, ApplicationDeclined, nil)
+	return s.Store.Decide(ctx, requestID, ApplicationDeclined, nil, s.now())
 }

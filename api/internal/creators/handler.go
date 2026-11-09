@@ -59,12 +59,16 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 		httpx.WriteError(w, r, http.StatusGone, "invite_used", "that invite has expired or was already used", nil)
 	case errors.Is(err, ErrTaken):
 		httpx.WriteError(w, r, http.StatusConflict, "taken", "that account or link is already a creator's", nil)
+	case errors.Is(err, ErrReapplyTooSoon):
+		httpx.WriteError(w, r, http.StatusConflict, "reapply_too_soon", "you can apply again 30 days after a decline", nil)
 	case errors.Is(err, ErrApplicationOpen):
 		httpx.WriteError(w, r, http.StatusConflict, "application_open", "an application is already open", nil)
 	case errors.Is(err, ErrNotPending):
 		httpx.WriteError(w, r, http.StatusConflict, "decided", "that request was already decided", nil)
 	case errors.Is(err, ErrMonthOpen):
 		httpx.WriteError(w, r, http.StatusConflict, "month_open", "the month is still open", nil)
+	case errors.Is(err, ErrBelowMinimum):
+		httpx.WriteError(w, r, http.StatusConflict, "below_minimum", "under the $10 minimum; it carries over to next month", nil)
 	case errors.Is(err, ErrNothingOwed):
 		httpx.WriteError(w, r, http.StatusConflict, "nothing_owed", "nothing is owed this month", nil)
 	case errors.Is(err, ErrNotPayable):
@@ -328,7 +332,7 @@ func (s *Service) dashboard(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) application(w http.ResponseWriter, r *http.Request) {
-	a, err := s.Store.Application(r.Context(), auth.ActorFrom(r.Context()).UserID)
+	a, err := s.Store.Application(r.Context(), auth.ActorFrom(r.Context()).UserID, s.now())
 	if err != nil {
 		s.fail(w, r, "application", err)
 		return

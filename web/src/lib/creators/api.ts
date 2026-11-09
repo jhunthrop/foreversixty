@@ -29,6 +29,8 @@ export interface MyApplicationRead {
   status: ApplicationStatus | null;
   created_at: string | null;
   creator: boolean;
+  /** The day a declined account may apply again, while it is ahead. */
+  reapply_on: string | null;
 }
 
 /** The data a call must answer; a 2xx with none is an error the page shows. */

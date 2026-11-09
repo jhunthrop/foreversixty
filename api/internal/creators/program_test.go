@@ -132,6 +132,7 @@ func TestACharacterQualifiesOneAccount(t *testing.T) {
 	ctx := context.Background()
 	c := h.ready(h.creator("grimbrew", "2026-11-08"))
 	first := h.returning(c, at("2026-11-10T10:00:00Z"), "us-normal-shared")
+	h.pays(first, "in_shared", at("2026-11-12T10:00:00Z"))
 	if _, err := h.svc.Approve(ctx, c.ID, mustMonth("2026-11")); err != nil {
 		t.Fatal(err)
 	}
@@ -213,7 +214,7 @@ func TestApproveIsIdempotentAndNeverAutomatic(t *testing.T) {
 	h := newHarness(t)
 	ctx := context.Background()
 	c := h.creator("grimbrew", "2026-11-08")
-	h.returning(c, at("2026-11-10T10:00:00Z"), "us-normal-a")
+	h.pays(h.returning(c, at("2026-11-10T10:00:00Z"), "us-normal-a"), "in_a", at("2026-11-12T10:00:00Z"))
 	nov := mustMonth("2026-11")
 
 	if _, err := h.svc.Approve(ctx, c.ID, nov); !errors.Is(err, ErrNotPayable) {
@@ -245,7 +246,7 @@ func TestApproveIsIdempotentAndNeverAutomatic(t *testing.T) {
 	if err != nil || h.gw.creates != 1 || *again.TransferID != *st.TransferID {
 		t.Fatalf("second approve: creates = %d, %+v %v", h.gw.creates, again, err)
 	}
-	if p := h.gw.transfers[TransferGroup(c.ID, nov)]; p.AmountCents != BountyCents || p.Destination != c.StripeAccountID {
+	if p := h.gw.transfers[TransferGroup(c.ID, nov)]; p.AmountCents != BountyCents+1000 || p.Destination != c.StripeAccountID {
 		t.Fatalf("transfer = %+v", p)
 	}
 	// The settled lines never come back.
@@ -333,7 +334,7 @@ func TestApplicationsOneOpenApproveAndDecline(t *testing.T) {
 	if err := h.svc.Apply(ctx, uid, in); !errors.Is(err, ErrApplicationOpen) {
 		t.Fatalf("a second open application = %v", err)
 	}
-	mine, _ := h.svc.Store.Application(ctx, uid)
+	mine, _ := h.svc.Store.Application(ctx, uid, h.now)
 	if mine.Status == nil || *mine.Status != ApplicationPending || mine.Creator {
 		t.Fatalf("pending = %+v", mine)
 	}
@@ -345,7 +346,7 @@ func TestApplicationsOneOpenApproveAndDecline(t *testing.T) {
 	if err != nil || c.UserID == nil || *c.UserID != uid {
 		t.Fatalf("approve request = %+v %v", c, err)
 	}
-	mine, _ = h.svc.Store.Application(ctx, uid)
+	mine, _ = h.svc.Store.Application(ctx, uid, h.now)
 	if *mine.Status != ApplicationApproved || !mine.Creator {
 		t.Fatalf("approved = %+v", mine)
 	}
@@ -362,12 +363,20 @@ func TestApplicationsOneOpenApproveAndDecline(t *testing.T) {
 	if err := h.svc.DeclineRequest(ctx, reqs[0].ID); err != nil {
 		t.Fatal(err)
 	}
-	mine, _ = h.svc.Store.Application(ctx, other)
+	mine, _ = h.svc.Store.Application(ctx, other, h.now)
 	if *mine.Status != ApplicationDeclined {
 		t.Fatalf("declined = %+v", mine)
 	}
-	// Declined, they may apply again later.
-	if err := h.svc.Apply(ctx, other, ApplicationInput{ChannelURL: "https://youtube.com/@salt", Platform: "youtube", About: "Guides, again"}); err != nil {
+	// Declined: not again for 30 days, then they may.
+	again := ApplicationInput{ChannelURL: "https://youtube.com/@salt", Platform: "youtube", About: "Guides, again"}
+	if err := h.svc.Apply(ctx, other, again); !errors.Is(err, ErrReapplyTooSoon) {
+		t.Fatalf("reapplying at once = %v", err)
+	}
+	if mine.ReapplyOn == nil || *mine.ReapplyOn != "2027-01-08" {
+		t.Fatalf("reapply_on = %v", mine.ReapplyOn)
+	}
+	h.now = h.now.Add(ReapplyAfter)
+	if err := h.svc.Apply(ctx, other, again); err != nil {
 		t.Fatal(err)
 	}
 }

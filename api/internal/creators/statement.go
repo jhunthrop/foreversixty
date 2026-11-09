@@ -12,6 +12,9 @@ import (
 // ErrNothingOwed: the month owes nothing, so there is nothing to approve.
 var ErrNothingOwed = errors.New("creators: nothing owed this month")
 
+// ErrBelowMinimum: the month owes less than MinPayoutCents; it carries over to the next month.
+var ErrBelowMinimum = errors.New("creators: under the minimum payout; it carries over")
+
 type querier interface {
 	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
 	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
@@ -168,6 +171,8 @@ func openStatus(c Creator, m Month, now time.Time, total int64) string {
 		return StatementOpen
 	case total == 0:
 		return StatementNothing
+	case total < MinPayoutCents:
+		return StatementCarry
 	case c.StripeStatus != StatusReady:
 		return StatementBlocked
 	default:
@@ -203,6 +208,9 @@ func (s *Store) Claim(ctx context.Context, creatorID int64, m Month, now time.Ti
 		if st.TotalCents == 0 {
 			return ErrNothingOwed
 		}
+		if st.TotalCents < MinPayoutCents {
+			return ErrBelowMinimum
+		}
 		if c.StripeStatus != StatusReady || c.StripeAccountID == "" {
 			return ErrNotPayable
 		}
@@ -215,7 +223,8 @@ func (s *Store) Claim(ctx context.Context, creatorID int64, m Month, now time.Ti
 		}
 		return settleLines(ctx, tx, out.ID, set)
 	})
-	if err != nil && !errors.Is(err, ErrMonthOpen) && !errors.Is(err, ErrNothingOwed) && !errors.Is(err, ErrNotPayable) &&
+	if err != nil && !errors.Is(err, ErrMonthOpen) && !errors.Is(err, ErrNothingOwed) && !errors.Is(err, ErrBelowMinimum) &&
+		!errors.Is(err, ErrNotPayable) &&
 		!errors.Is(err, ErrNotFound) {
 		return out, c, fmt.Errorf("creators: claim %d %s: %w", creatorID, m, err)
 	}

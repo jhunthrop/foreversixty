@@ -116,17 +116,17 @@ func TestApproveWhenTheBalanceCannotCoverIt(t *testing.T) {
 	ctx := context.Background()
 	c := h.ready(h.creator("grimbrew", "2026-11-08"))
 	h.returning(c, at("2026-11-10T10:00:00Z"), "us-normal-short1")
-	h.returning(c, at("2026-11-11T10:00:00Z"), "us-normal-short2")
+	h.pays(h.returning(c, at("2026-11-11T10:00:00Z"), "us-normal-short2"), "in_short", at("2026-11-12T10:00:00Z"))
 	nov := mustMonth("2026-11")
 
-	h.gw.available = 300 // $3.00 against a $4.00 statement
+	h.gw.available = 1300 // $13.00 against a $14.00 statement
 	if _, err := h.svc.Approve(ctx, c.ID, nov); !errors.Is(err, ErrInsufficientBalance) {
 		t.Fatalf("approve on a short balance = %v", err)
 	}
-	if st := h.statement(c, "2026-11"); st.Status != StatementReady || st.TotalCents != 400 || h.gw.creates != 0 {
+	if st := h.statement(c, "2026-11"); st.Status != StatementReady || st.TotalCents != 1400 || h.gw.creates != 0 {
 		t.Fatalf("after the refusal = %+v, creates %d", st, h.gw.creates)
 	}
-	if w := h.request("GET", "/v1/admin/creators/balance", owner, nil); !strings.Contains(w.Body.String(), `"available_cents":300`) {
+	if w := h.request("GET", "/v1/admin/creators/balance", owner, nil); !strings.Contains(w.Body.String(), `"available_cents":1300`) {
 		t.Fatalf("balance = %s", w.Body)
 	}
 	if w := h.request("GET", "/v1/admin/creators/balance", member(h.user(h.now)), nil); w.Code != 403 {
@@ -149,7 +149,7 @@ func TestApproveWhenTheBalanceCannotCoverIt(t *testing.T) {
 
 	// The same approve once the balance covers it: one transfer, the full amount.
 	st, err := h.svc.Approve(ctx, c.ID, nov)
-	if err != nil || st.Status != StatementPaid || h.gw.creates != 1 || h.gw.transfers[TransferGroup(c.ID, nov)].AmountCents != 400 {
+	if err != nil || st.Status != StatementPaid || h.gw.creates != 1 || h.gw.transfers[TransferGroup(c.ID, nov)].AmountCents != 1400 {
 		t.Fatalf("the retry = %+v %v creates %d", st, err, h.gw.creates)
 	}
 }
@@ -161,5 +161,26 @@ func TestALinkArrivalWithoutAClickTimeStillCounts(t *testing.T) {
 	uid := h.user(h.now.Add(-10 * time.Minute))
 	if ok, err := h.svc.Store.AttributeLink(context.Background(), uid, c.Slug, h.now); err != nil || !ok {
 		t.Fatalf("an arrival sent without a click time = %v %v", ok, err)
+	}
+}
+
+// A month under the $10 minimum owes money but pays nothing: it carries over, and the next
+// month's statement picks its lines up.
+func TestAMonthUnderTheMinimumCarriesOver(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	c := h.ready(h.creator("grimbrew", "2026-11-08"))
+	h.returning(c, at("2026-11-10T10:00:00Z"), "us-normal-carry")
+	if st := h.statement(c, "2026-11"); st.Status != StatementCarry || st.TotalCents != BountyCents {
+		t.Fatalf("november = %+v", st)
+	}
+	if _, err := h.svc.Approve(ctx, c.ID, mustMonth("2026-11")); !errors.Is(err, ErrBelowMinimum) {
+		t.Fatalf("approving under the minimum = %v", err)
+	}
+	h.pays(h.returning(c, at("2026-12-02T10:00:00Z"), "us-normal-carry2"), "in_dec", at("2026-12-04T10:00:00Z"))
+	h.now = at("2027-01-02T00:00:00Z")
+	dec := h.statement(c, "2026-12")
+	if dec.Status != StatementReady || dec.TotalCents != 2*BountyCents+1000 {
+		t.Fatalf("december with november carried = %+v", dec)
 	}
 }

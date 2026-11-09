@@ -225,6 +225,16 @@ func (h *harness) returning(c Creator, signup time.Time, key string) int64 {
 	return uid
 }
 
+// pays records a $20.00 net payment by the player in the month of at: a $10.00 share, so a month
+// with it clears the $10 minimum payout.
+func (h *harness) pays(uid int64, invoice string, paid time.Time) {
+	h.t.Helper()
+	h.gw.invoices[invoice] = InvoiceMoney{ChargeID: "ch_" + invoice, PaidAt: paid, AmountCents: 2100, FeeCents: 100, NetCents: 2000}
+	if err := h.svc.InvoicePaid(context.Background(), uid, invoice); err != nil {
+		h.t.Fatal(err)
+	}
+}
+
 func (h *harness) statement(c Creator, month string) Statement {
 	h.t.Helper()
 	m, _ := ParseMonth(month)
