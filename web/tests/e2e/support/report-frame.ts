@@ -2,6 +2,7 @@
 // Driving the report's frame (logs spec 2026-11-07 6.1): the Fight select in the control bar and
 // the one tab strip, whose tabs past the first seven sit in its More menu below 1760 px.
 import type { Page } from '@playwright/test';
+import { simCopy } from '../../../src/lib/sim/copy';
 import { choose } from './select';
 
 /** Picks a pull (or 'all', the night's boss pulls) on the bar's Fight select. */
@@ -46,4 +47,26 @@ export async function checkFilter(page: Page, which: 'boss'): Promise<void> {
   }
   await page.getByTestId('report-bar').locator('[data-control-bar-toggle]').click();
   await page.getByTestId(`stack-filter-${which}`).check();
+}
+
+/** Below 768 the report bar is one line with Change: opens its stack when it is folded. */
+export async function openReportBar(page: Page): Promise<void> {
+  const toggle = page.getByTestId('report-bar').locator('[data-control-bar-toggle]');
+  if (!(await toggle.isVisible())) return;
+  if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click();
+}
+
+/** "Sim this fight": a head button from 768, an item of the head's actions menu below. */
+export async function openSimThisFight(page: Page): Promise<void> {
+  const button = page.getByTestId('report-sim-fight');
+  await page
+    .locator('[data-testid="report-sim-fight"]:visible, [data-testid="report-actions"]:visible')
+    .first()
+    .waitFor();
+  if (await button.isVisible()) {
+    await button.click();
+    return;
+  }
+  await page.getByTestId('report-actions').click();
+  await page.getByRole('menuitem', { name: simCopy.simThisFight }).click();
 }

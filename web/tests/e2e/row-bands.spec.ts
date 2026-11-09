@@ -12,7 +12,7 @@ import { gotoHydrated } from './support/hydrated';
 import { GUILD_PAGE, litBandRooms, stubGuild } from './support/row-band-pages';
 
 const ROOM_PX = 12;
-const RADIUS = '8px';
+const RADIUS = '6px';
 const WIDTHS = [1440, 390] as const;
 
 test.use({ timezoneId: CHICAGO });
@@ -55,6 +55,6 @@ test('a planned raid row is square at rest and a ringed band on hover', async ({
   await expect(row).toHaveCSS('border-top-left-radius', '0px');
   await row.hover();
   await expect(row).toHaveCSS('border-top-left-radius', RADIUS);
-  await expect(row).toHaveCSS('background-color', 'rgb(26, 33, 48)');
-  await expect(row).toHaveCSS('box-shadow', /rgba\(229, 185, 85, 0\.22\) 0px 0px 0px 1px inset/);
+  await expect(row).toHaveCSS('background-color', 'rgb(36, 27, 21)');
+  await expect(row).toHaveCSS('box-shadow', /rgba\(255, 255, 255, 0\.12\) 0px 0px 0px 1px inset/);
 });

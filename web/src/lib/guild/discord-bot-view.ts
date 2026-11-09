@@ -31,7 +31,7 @@ export const guildBotState = (discord: BotFacts, changingChannel: boolean): Guil
  * Section heights per state, phone then desktop. `picker` is the §3.1 cap, held on the install
  * return until the read answers. The other four are measured on the fixture build (2026-11-07, the
  * flat Section; the guild parity state `settings-bot` and the bot specs' states): installed is
- * 284 px at 390 and 209 px from 768; nothing connected 262 / 243; removed in Discord 199 / 179
+ * 286 px at 390 and 211 px from 768 (re-measured 2026-11-09 under round 5 type); nothing connected 262 / 243; removed in Discord 199 / 179
  * (with the webhook's fallback line; 196 / 177 without); the can't-be-used notice is at most
  * 238 / 199, and its reserve sits 10 px under installed's, so choosing a channel from the notice
  * moves the page by 10 px at most (A.2, item 17). The old estimates still counted the Card head's
@@ -40,8 +40,8 @@ export const guildBotState = (discord: BotFacts, changingChannel: boolean): Guil
  */
 export const GUILD_BOT_RESERVE: Readonly<Record<Exclude<GuildBotState, 'webhook-only'>, string>> = {
   picker: 'min-h-[462px] md:min-h-[392px]',
-  installed: 'min-h-[284px] md:min-h-[209px]',
-  unusable: 'min-h-[274px] md:min-h-[199px]',
+  installed: 'min-h-[286px] md:min-h-[211px]',
+  unusable: 'min-h-[276px] md:min-h-[201px]',
   removed: 'min-h-[199px] md:min-h-[179px]',
   nothing: 'min-h-[262px] md:min-h-[243px]',
 };

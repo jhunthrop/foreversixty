@@ -284,15 +284,11 @@ const jsonLd = [
         {hasOverviewBlocks ? (
           <div class="guide-sw">
             <div>
-              <h3 class="text-label tracking-label text-muted guide-sw-head font-bold uppercase">
-                {guidesCopy.strengths}
-              </h3>
+              <h3 class="text-label text-muted guide-sw-head font-bold">{guidesCopy.strengths}</h3>
               <Prose html={overviewHtml.strengths} mods={['plus']} testid="guide-strengths" />
             </div>
             <div>
-              <h3 class="text-label tracking-label text-muted guide-sw-head font-bold uppercase">
-                {guidesCopy.weaknesses}
-              </h3>
+              <h3 class="text-label text-muted guide-sw-head font-bold">{guidesCopy.weaknesses}</h3>
               <Prose html={overviewHtml.weaknesses} mods={['minus']} testid="guide-weaknesses" />
             </div>
           </div>

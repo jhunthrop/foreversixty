@@ -11,9 +11,10 @@ import type { SimResult } from './types';
 const full = fullFixture as unknown as SimResult;
 const older = olderFixture as unknown as SimResult;
 
-/** The open sections measured on the fixture build at 390 and 1440, 2026-11-06 (sim spec §9). */
+/** The open sections measured on the fixture build at 390 and 1440, 2026-11-06 (sim spec §9);
+ *  the wide timeline re-measured 2026-11-09 under round 5 type. */
 const MEASURED_FULL = {
-  timeline: { phone: 1402, wide: 921 },
+  timeline: { phone: 1402, wide: 950 },
   resource: { phone: 1276, wide: 578 },
   buffs: { phone: 1776, wide: 1039 },
   gear: { phone: 1679, wide: 753 },

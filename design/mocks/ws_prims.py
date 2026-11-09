@@ -126,10 +126,12 @@ def Plate(inner: str, label: str = '') -> str:
     return f'<div class="plate" data-region="{REGION["plate"]}"{name}>{inner}</div>'
 
 
-def Section(title: str, body: str, action: str = '', meta: str = '') -> str:
+def Section(title: str, body: str, action: str = '', meta: str = '', boxed: bool = False) -> str:
     a = f'<span class="act">{action}</span>' if action else ''
     m = f'<span class="t-small">{meta}</span>' if meta else ''
-    return f'<section data-region="{region_slug(title)}"><div class="sec-h"><h2 class="t-h3">{title}</h2>{m}{a}</div>{body}</section>'
+    # round 5 (web ui/Section `boxed`): the body on the panel 12 px under the heading, unless it brings its own panel
+    inner = f'<div class="sbox">{body}</div>' if boxed else body
+    return f'<section data-region="{region_slug(title)}"><div class="sec-h"><h2 class="t-h3">{title}</h2>{m}{a}</div>{inner}</section>'
 
 
 def TabStrip(tabs: list[str], active: str, counts: dict | None = None) -> str:
@@ -140,7 +142,8 @@ def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[st
     m = f'<div class="ph-meta" data-region="{REGION["head_meta"]}">{"".join(f"<span class=\"t-small\">{x}</span>" for x in meta)}</div>' if meta else ''
     color = f' style="color:{title_color}"' if title_color else ''
     right = f'<div class="ans" data-region="{REGION["head_answer"]}">{answer}</div>' if answer else (f'<div class="ph-actions">{actions}</div>' if actions else '')
-    return (f'<div class="pc ph-wrap"><div data-region="{REGION["head"]}"><div class="head"><div class="ph-title" data-region="{REGION["head_title"]}">{crest}<div><h1 class="t-title"{color}>{title}</h1>{m}</div></div>{right}</div>{tabs}</div></div>')
+    # round 5: the title band (web ui/PageHeader): the painted band, full bleed, the head back in the column
+    return (f'<div class="band-r5 full-bleed"><div class="pc ph-wrap"><div data-region="{REGION["head"]}"><div class="head"><div class="ph-title" data-region="{REGION["head_title"]}">{crest}<div><h1 class="t-title"{color}>{title}</h1>{m}</div></div>{right}</div>{tabs}</div></div></div>')
 
 
 def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:

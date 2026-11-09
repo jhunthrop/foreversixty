@@ -8,7 +8,8 @@ import type { BisBandModel } from './page-model';
 import { MAX_BAND } from './page-state';
 import { SOURCE_FILTER_KINDS } from './source-filter';
 import type { SourceChoice } from './doll-view';
-import type { SourceFilterKind } from './types';
+import { PRE_RAID_SET_KEY, isPreRaidView } from './pre-raid';
+import type { BisFilteredSetKey, SourceFilterKind } from './types';
 
 /** The checklist's words for each kind. */
 export function sourceKindLabel(kind: SourceFilterKind): string {
@@ -48,6 +49,7 @@ function isLevelingDefault(on: readonly SourceFilterKind[], band: number): boole
 export function sourcesFieldLabel(on: readonly SourceFilterKind[], band: number): string {
   if (on.length === SOURCE_FILTER_KINDS.length) return 'All sources';
   if (isLevelingDefault(on, band)) return 'No rep above Friendly';
+  if (isPreRaidView(band, on)) return 'Pre-raid';
   if (on.length === 1) return `${sourceKindLabel(on[0]!)} only`;
   if (on.length === 0) return 'No sources';
   return `${on.length} of ${SOURCE_FILTER_KINDS.length} sources`;
@@ -61,6 +63,7 @@ export function sourcesButtonLabel(on: readonly SourceFilterKind[]): string {
 /** The words inside "Re-picked (…)". */
 export function choiceWords(on: readonly SourceFilterKind[], band: number): string {
   if (isLevelingDefault(on, band)) return 'no reputation above Friendly';
+  if (isPreRaidView(band, on)) return 'pre-raid';
   if (on.length === 1) return `${sourceKindLabel(on[0]!).toLowerCase()} only`;
   return 'your sources';
 }
@@ -81,11 +84,9 @@ export interface SetFigure {
   error?: number;
 }
 
-function filteredKey(
-  on: readonly SourceFilterKind[],
-  band: number,
-): 'all' | 'dungeon' | 'leveling_default' | undefined {
+function filteredKey(on: readonly SourceFilterKind[], band: number): BisFilteredSetKey | undefined {
   if (on.length === SOURCE_FILTER_KINDS.length) return 'all';
+  if (isPreRaidView(band, on)) return PRE_RAID_SET_KEY;
   if (isLevelingDefault(on, band)) return 'leveling_default';
   if (on.length === 1 && on[0] === 'dungeon') return 'dungeon';
   return undefined;

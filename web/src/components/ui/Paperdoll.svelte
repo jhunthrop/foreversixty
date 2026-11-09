@@ -451,9 +451,7 @@
     .ui-doll-label > span:first-child {
       font-size: 12px;
       line-height: 16px;
-      font-weight: 700;
-      letter-spacing: var(--tracking-label);
-      text-transform: uppercase;
+      font-weight: 600;
     }
     .ui-doll-icon {
       grid-column: 1;

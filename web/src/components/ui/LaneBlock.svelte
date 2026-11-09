@@ -19,7 +19,7 @@
 
 <div class="ui-lane-block" data-testid={testid}>
   <div class="ui-lane-head">
-    <h3 class="text-label tracking-label text-muted m-0 font-bold uppercase">{label}</h3>
+    <h3 class="text-label text-muted m-0 font-bold">{label}</h3>
     {#if meta}<span class="text-small text-muted ml-auto text-right">{meta}</span>{/if}
   </div>
   {@render children()}

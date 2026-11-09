@@ -38,9 +38,13 @@ export function classTone(classSlug: string): TitleTone {
   return isClassSlug(slug) ? { classSlug: slug } : 'strong';
 }
 
-/** The CSS colour a title tone paints with, always a token. */
+/** The art behind a title band (ui/PageHeader, Base.astro): the painted blue band, or home's hero. */
+export type BandArt = 'band' | 'hero';
+
+/** The CSS colour a title tone paints with, always a token: a heading's cream when it has no
+ *  class or faction (round 5). */
 export function titleColor(tone: TitleTone): string {
-  if (tone === 'strong') return 'var(--color-strong)';
+  if (tone === 'strong') return 'var(--color-cream)';
   if ('classSlug' in tone) return `var(--color-class-${tone.classSlug})`;
   return `var(--color-${tone.faction})`;
 }
@@ -178,4 +182,16 @@ export function basisText(basis: GainBasis): string {
 
 /** The Plate's surface (ui/Plate.svelte), for a static skeleton that draws the page's plate before
  *  its island mounts. The only place outside the component that may name it. */
-export const PLATE_SURFACE = 'ui-plate bg-raised border-line rounded-plate min-w-0 border';
+/** Round 5's panel: the card brown-black, a black hairline inside a warm outer ring, the 10 px
+ *  radius (ui/panel.css draws the ring and the framed and lead variants). */
+export const PLATE_SURFACE = 'ui-plate ui-surface min-w-0';
+
+/** A panel's emphasis (round 5: two or three featured panels a page, flourishes on the lead only):
+ *  `plain` the rounded panel, `framed` the cream inset line, `lead` the line and corner flourishes. */
+export type PanelFrame = 'plain' | 'framed' | 'lead';
+
+/** The class a frame adds to a surface. */
+export function frameClass(frame: PanelFrame): string {
+  if (frame === 'lead') return 'ui-framed ui-lead';
+  return frame === 'framed' ? 'ui-framed' : '';
+}

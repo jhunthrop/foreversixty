@@ -18,6 +18,11 @@ that exact commit when it is green. Target: 30 to 45 minutes from merge to main.
      2026-11-07, bnet-refresh: only companion ran). land.sh dispatches each missing workflow
      on the land branch (`gh workflow run`) and waits for it; one that still never starts is
      a timeout, never a landing;
+   - leaves out a workflow turned off on GitHub (`disabled_manually`, as the refresh hold keeps data,
+     bis and engine), saying "skipping <workflow>: disabled (disabled_manually); not gating this
+     landing" for each; any other disabled state fails the landing, so a workflow switched off by
+     mistake never lets a batch through quietly (2026-11-08: data.yml's `addon/**` path held every
+     addon batch);
    - stops at the first failed job and lists every failed job with its link (exit 1);
    - when all are green, runs `git push origin <sha>:main`, which only succeeds as a
      fast-forward. If main moved meanwhile it says so (exit 2): merge `origin/main` into the

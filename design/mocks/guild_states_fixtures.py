@@ -6,6 +6,7 @@ web/tests/e2e/fixtures/guild-parity/ (files `states-*.json`); ws_guild_states.py
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import guild_data as gd
 import guild_overview_data as D
 import guild_overview_fixtures as F
 from guild_data import GUILD, R, REGION, RULESET
@@ -84,11 +85,11 @@ def home(viewer: str, officer: bool, levels: dict, updated_at: str) -> dict:
     base = F.home(viewer, officer)
     roster = [{**F.roster_row(r), 'level': levels[r[0]], 'professions': PROFESSIONS.get(r[0], []), 'attendance': {'present': 0, 'nights': 0},
                'logged_at': updated_at} for r in R if levels[r[0]] is not None]
-    members = [{'name': name, 'character_key': D.key_of(name), 'state': 'approved', 'rank': 'officer' if name == D.OFFICER else 'member',
+    members = [{'name': name, 'character_key': D.key_of(name), 'state': 'approved', 'rank': gd.rank_of(name),
                 'class': cls, **({} if levels[name] is None else {'level': levels[name]})} for name, cls, *_ in R]
     return {**base, 'summary': {**base['summary'], 'waiting_for_approval': 0, 'tier': empty_tier(), 'named_encounters_down': 0, 'pulls_this_tier': 0,
                                 'updated_at': updated_at},
-            'reports': [], 'roster': roster, 'members': members, 'next_raid': None}
+            'reports': [], 'roster': roster, 'pending': [], 'members': members, 'next_raid': None}
 
 
 def officer_actions() -> dict:

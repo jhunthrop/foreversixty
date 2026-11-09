@@ -20,6 +20,7 @@
   import { readBisPageData } from '../../lib/bis/page-registry';
   import { bandModelKey } from '../../lib/bis/model-key';
   import {
+    defaultSources,
     isDefaultState,
     parseState,
     stateSearch,
@@ -46,6 +47,13 @@
   import { bisContext, presetLabel } from '../../lib/bis/page-context';
   import { bandSlug, bisBandPath } from '../../lib/bis/band-path';
   import { bisSeoCopy } from '../../lib/bis/seo-copy';
+  import {
+    PRE_RAID_KINDS,
+    PRE_RAID_SLUG,
+    isPreRaidView,
+    preRaidCopy,
+    preRaidOffered,
+  } from '../../lib/bis/pre-raid';
 
   let {
     spec,
@@ -54,6 +62,7 @@
     className,
     specName,
     pathBand,
+    pathPreRaid = false,
     preRaid,
     crestSrc,
     crestColor,
@@ -69,6 +78,8 @@
     specName: string;
     /** The band this page's URL names (lib/bis/band-path.ts); the server renders it. */
     pathBand: number;
+    /** The URL is the band's pre-raid list, /bis/<class>/<spec>/60/pre-raid (lib/bis/pre-raid.ts). */
+    pathPreRaid?: boolean;
     /** The level 60 list holds no raid drop: its h1 says Pre-Raid (lib/bis/seo-copy.ts). */
     preRaid: boolean;
     crestSrc: string;
@@ -82,10 +93,12 @@
 
   const inline = readBisPageData(spec);
   let data = $state.raw(inline);
-  const context = $derived(bisContext(data, raceOptions, pathBand));
+  const context = $derived(bisContext(data, raceOptions, pathBand, pathPreRaid));
   /** A band's own page: the spec's path for its first band, else /bis/<class>/<spec>/<band>. */
   const bandHref = (band: number): string => bisBandPath(classSlug, specSlug, band, data.bands[0] ?? band);
-  const seoSubject = { specName, className, preRaid };
+  /** A state's page: its band's, and /pre-raid under 60 for the pre-raid list. */
+  const stateHref = (next: Pick<BisPageState, 'band' | 'sources'>): string =>
+    `${bandHref(next.band)}${isPreRaidView(next.band, next.sources) ? `/${PRE_RAID_SLUG}` : ''}`;
   /** Settles once the full data is in (at once when the page inlined all of it). */
   let ready: Promise<void> = Promise.resolve();
 
@@ -101,7 +114,9 @@
     void ready.then(change, () => {});
   }
 
-  let state = $state<BisPageState>(parseState('', '', bisContext(inline, raceOptions, pathBand)));
+  let state = $state<BisPageState>(
+    parseState('', '', bisContext(inline, raceOptions, pathBand, pathPreRaid)),
+  );
   let selected = $state<string | null>(null);
   let character = $state<DollCharacter | undefined>(undefined);
   let root = $state<HTMLElement | undefined>(undefined);
@@ -124,6 +139,15 @@
   const groups = $derived(state.view === 'where' ? whereGroups(model, cells) : undefined);
   const figure = $derived(setFigureFor(model, state.sources, changed));
   const counts = $derived(sourceCounts(model));
+  const preRaidView = $derived(isPreRaidView(state.band, state.sources));
+  /** The Pre-raid toggle shows by itself once a level 60 band holds raid or PvP gear. */
+  const preRaidToggle = $derived(
+    preRaidOffered(
+      state.band,
+      model.rows.map((row) => row.filter),
+    ),
+  );
+  const seoSubject = $derived({ specName, className, preRaid: preRaid || preRaidView });
   const rowsBySlot = $derived(new Map(model.rows.map((row) => [row.slot, row])));
   const ruleLine = $derived(defaultRuleLine(state.sources, state.band));
   const raceName = (faction: Faction, slug: string) =>
@@ -190,7 +214,7 @@
       character = undefined;
     state = next;
     if (!push) return;
-    const url = `${bandHref(next.band)}${stateSearch(next, context)}`;
+    const url = `${stateHref(next)}${stateSearch(next, context)}`;
     window.history.replaceState(null, '', url);
   }
 
@@ -213,7 +237,7 @@
   function applyUrlState(): void {
     const params = new URLSearchParams(window.location.search);
     let initial = parseState(window.location.search, window.location.hash, context);
-    if (!params.has('sources')) {
+    if (!params.has('sources') && !pathPreRaid) {
       const stored = readStoredSources(initial.band);
       if (stored !== undefined) initial = { ...initial, sources: stored };
     }
@@ -328,6 +352,21 @@
               }}
               >Changes from {model.label}: see {nextBand >= 60 ? '60' : `${nextBand} to ${nextBand + 9}`} ›</a
             >
+          {:else if preRaidToggle}
+            {@const target = {
+              band: state.band,
+              sources: preRaidView ? defaultSources(state.band) : [...PRE_RAID_KINDS],
+            }}
+            <a
+              class="bis-link"
+              href={stateHref(target)}
+              data-testid="bis-pre-raid-toggle"
+              onclick={(event) => {
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
+                whenReady(() => apply(withChange(state, { sources: target.sources }, context)));
+              }}>{preRaidView ? preRaidCopy.turnOff : preRaidCopy.turnOn} ›</a
+            >
           {/if}
         </p>
         <Segmented
@@ -394,7 +433,7 @@
     flex-shrink: 0;
     border-radius: 999px;
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
-    background: var(--color-raised, #0d111a);
+    background: var(--color-bg);
   }
   .bis-summary {
     display: flex;

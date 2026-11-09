@@ -85,7 +85,7 @@
 {#snippet side(column: AuraColumn, heading: string, key: 'player' | 'target', note?: string)}
   {@const stayed = upAllFight(column)}
   <div class="min-w-0" data-testid={`aura-column-${key}`}>
-    <h3 class="text-label tracking-label text-muted pt-4 pb-1 font-bold uppercase">
+    <h3 class="text-label text-muted pt-4 pb-1 font-bold">
       {heading} · {copy.comeAndGo(column.bars.length)}
     </h3>
     {#if note !== undefined}<p class="text-muted text-[13px]" data-testid="aura-column-note">{note}</p>{/if}

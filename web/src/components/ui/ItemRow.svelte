@@ -87,7 +87,7 @@
       slotLabel ? 'ui-item-row--slot' : 'grid-cols-[auto_minmax(0,1fr)_auto]',
       onselect &&
         'hover:bg-hover active:bg-pressed focus-visible:outline-gold cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2',
-      selected && 'bg-selected shadow-[inset_3px_0_0_var(--color-gold)]',
+      selected && 'bg-selected shadow-[inset_3px_0_0_var(--color-accent)]',
     ]}
     data-testid={testid}
     data-item-id={item?.id}
@@ -164,7 +164,6 @@
       line-height: 16px;
       font-weight: 700;
       letter-spacing: var(--tracking-label);
-      text-transform: uppercase;
     }
     .ui-item-row--slot > :global(:nth-child(2)) {
       grid-row: 1 / span 2;

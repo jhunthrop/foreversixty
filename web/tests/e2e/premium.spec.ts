@@ -44,6 +44,18 @@ async function openAt(page: Page, time: string, options: { path?: string; stored
   await page.goto(path);
 }
 
+/** Below 768 the interval bar is one line with Change (ui/ControlBar): open it to reach its
+ *  radios and its guild link. */
+async function openIntervalBar(page: Page): Promise<void> {
+  const toggle = page.getByTestId('interval-bar').locator('[data-control-bar-toggle]');
+  if (!(await toggle.isVisible())) return;
+  // The bar's own script (ControlBar.astro) wires Change once it runs: click until it opens.
+  await expect(async () => {
+    if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 500 });
+  }).toPass();
+}
+
 const premiumButton = (page: Page) =>
   page.getByTestId('plan-premium').getByRole('link', { name: /^Subscribe · / });
 const radio = (page: Page, label: string) =>
@@ -79,6 +91,7 @@ test('Yearly is the default; Monthly changes every price and button, writes the 
   page,
 }) => {
   await openAt(page, DECEMBER);
+  await openIntervalBar(page);
   await expect(radio(page, 'Yearly')).toHaveAttribute('aria-checked', 'true');
   await expect(premiumButton(page)).toHaveAttribute('href', /plan=premium&interval=yearly/);
 
@@ -90,11 +103,15 @@ test('Yearly is the default; Monthly changes every price and button, writes the 
   }
   await expect(page).toHaveURL(/interval=monthly/);
   await page.reload();
+  await openIntervalBar(page);
   await expect(radio(page, 'Monthly')).toHaveAttribute('aria-checked', 'true');
   await expect(premiumButton(page)).toHaveText(`Subscribe · ${premiumPrice('monthly', true)}`);
 
+  await openIntervalBar(page);
   await radio(page, 'Monthly').focus();
   await page.keyboard.press('ArrowLeft');
+  // A choice closes the phone's open bar (ui/ControlBar): open it again to read the radios.
+  await openIntervalBar(page);
   await expect(radio(page, 'Yearly')).toHaveAttribute('aria-checked', 'true');
   await expect(premiumButton(page)).toHaveText(`Subscribe · ${premiumPrice('yearly', true)}`);
 });
@@ -124,6 +141,7 @@ test('at 390 Premium stacks first and its Subscribe is in the first screen (PR3)
 
 test('the bar link brings the guild plans to the top', async ({ page }) => {
   await openAt(page, DECEMBER);
+  await openIntervalBar(page);
   await page.getByTestId('band-guild-link').click();
   await expect(page).toHaveURL(/#guild-leaders$/);
   await expect(page.getByTestId('plan-guild')).toBeInViewport();

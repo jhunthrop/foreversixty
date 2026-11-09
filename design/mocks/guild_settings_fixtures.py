@@ -7,9 +7,10 @@ from pathlib import Path
 
 import guild_data as gd
 
-VIEWER = 'Dunmaro'
+VIEWER = gd.VIEWER
 SEAT_HOLDER = 'Frostquill'
-TRANSFER_TO = ['Ironbrand', 'Shiverknife']
+# The plan moves to another of the guild's council: the guild master or the other officer.
+TRANSFER_TO = [n for n in gd.COUNCIL if n != VIEWER]
 INVITE_MADE = '2026-12-01T18:00:00Z'
 INVITE_URL = '/guild/invite/k7Qm2v9XcLp4'
 VERIFIED = gd.RAIDERS
@@ -35,7 +36,7 @@ def _holder(name: str) -> dict:
 def settings() -> dict:
     """GET /v1/guilds/2/settings: claimed by the viewer, the kept invite link, a connected Discord channel (webhook, no bot)."""
     return {'default_visibility': 'guild', 'officer_max_rank_index': 1, 'claimed_by': _holder(VIEWER), 'claim_pending': None,
-            'claim': {'state': 'claimed', 'since': '2026-11-12T00:00:00Z', 'frozen': False},
+            'claim': {'state': 'claimed', 'since': gd.CLAIM_SINCE, 'frozen': False},
             'invite': {'rotated_at': INVITE_MADE, 'url': INVITE_URL, 'made_by': _holder(VIEWER)},
             'discord': {'available': True, 'connected': True, 'channel_id': CHANNEL_ID, 'discord_guild_id': DISCORD_SERVER_ID, 'disabled_reason': None,
                         'last_error': None, 'failures': 0, 'post_default': True}}

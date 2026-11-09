@@ -108,6 +108,16 @@
           : coachCopy.writing
         : '',
   );
+  /** The status words last shown: once the review swaps in, they stay as an invisible placeholder,
+   *  so on a narrow card (where the status wraps under the title) the head keeps its height and
+   *  nothing below moves (the in-place swap's promise). */
+  let lastStatus = $state('');
+  let lastDot = $state(false);
+  $effect(() => {
+    if (statusText === '') return;
+    lastStatus = statusText;
+    lastDot = view.state === 'writing' && !late;
+  });
   const showBody = $derived(
     full !== null &&
       ['writing', 'busy', 'ready_model', 'ready_rules', 'no_findings', 'raid_buffs_only'].includes(
@@ -135,6 +145,10 @@
             <span class="text-muted">{statusText}</span>
           {:else if swapped}
             <span class="sr-only">{coachCopy.ready}</span>
+            {#if lastStatus !== ''}
+              {#if lastDot}<span class="invisible h-2 w-2" aria-hidden="true"></span>{/if}
+              <span class="invisible" aria-hidden="true">{lastStatus}</span>
+            {/if}
           {/if}
         </span>
       {/snippet}

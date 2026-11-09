@@ -13,7 +13,7 @@ import guild_overview_data as O
 import guild_overview_fixtures as F
 import guild_tabs_fixtures as T
 from guild_data import C
-from ws_guild2 import hdr, band_line, _view, pad
+from ws_guild2 import hdr, band_line, _view, pad, guild_time, day_label
 
 WHO = ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60')
 SPLIT_GAP = '<div style="display:flex;flex-direction:column;gap:12px">{}</div>'
@@ -36,6 +36,10 @@ def _p8(text):
     return f'<p class="t-small" style="font-size:14px;line-height:20px;padding-bottom:8px">{text}</p>'
 
 
+def _hour(at):
+    return f"{at.hour % 12 or 12}:{at.minute:02d} {'am' if at.hour < 12 else 'pm'}"
+
+
 def _spec(r):
     return f"{r['spec']} {r['class'].title()} on the site"
 
@@ -47,7 +51,8 @@ def _chips(labels, on=''):
 
 def roster():
     home = T.roster_home()
-    rank = lambda r: Tag('Officer') if r['rank'] == 'officer' else '<span class="t-small">Member</span>'  # noqa: E731
+    words = {'leader': 'Leader', 'officer': 'Officer'}  # copy.ts guildRosterModelCopy.ranks
+    rank = lambda r: Tag(words[r['rank']]) if r['rank'] in words else '<span class="t-small">Member</span>'  # noqa: E731
     waiting = [Row(r['name'], _spec(r), lead=crest_img(r['class'], 36), title_color=C[r['class']], link=False,
                    trail=rank(r) + Button('Approve', small=True, act=True) + Button('Decline', small=True, tone='ghost', act=True)) for r in home['pending']]
     wait = Section('Waiting for approval', pad(_col(_p('Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.'),
@@ -81,16 +86,19 @@ def progression():
         nights = Rows([Row(f"{date.fromisoformat(n['date']):%a} {date.fromisoformat(n['date']).day} {date.fromisoformat(n['date']):%b}",
                            f"{n['pulls']} pulls", trail=Tag('Kill', 'kill') if n['killed'] else '', link=False, slim=True) for n in e['pulls_by_night']],
                      open_=True, list_=True)
-        main += Section(e['name'], pad(_col(_p('First kill Mon 7 Dec &middot; best kill 3:45', False), nights,
+        first = guild_time(e['first_kill_at'])
+        best = e['best_kill_ms'] // 1000
+        main += Section(e['name'], pad(_col(_p(f'First kill {day_label(first)} &middot; best kill {best // 60}:{best % 60:02d}', False), nights,
                                             _p(f"Deaths per pull: {e['deaths_per_pull']:.1f} on average."), gap=12)),
                         meta=f"{e['zone']} &middot; pulls to kill")
     tier = Section('This tier', pad(_col(Figure(f"{t['down']} of {t['named_encounters']}", '', size='sm').replace('</span></div>', '</span><span class="t-small" style="display:block">Named bosses down</span></div>', 1),
                                          Meter(t['down'] / t['named_encounters'], '', f"{t['down']} of {t['named_encounters']} named bosses down"), gap=8)),
                    meta=t['name'])
     zones = [z for z in page['unnamed'] if z['pulls'] > 0]
+    # Our to-do, drawn only when the guild has pulls it applies to (GuildProgression.svelte).
     unnamed = Section('Without an encounter list', pad(_p8('Barrow Deeps and Hyjal Summit have no encounter list yet. Their pulls count toward the tier total '
                                                           'but cannot be named or ranked per boss.')
-                                                       + Rows([Row(z['zone'], f"{z['pulls']} pulls logged", link=False, slim=True) for z in zones], open_=True, list_=True)))
+                                                       + Rows([Row(z['zone'], f"{z['pulls']} pulls logged", link=False, slim=True) for z in zones], open_=True, list_=True))) if zones else ''
     return _tab('Guild progression', 'Progression', Page('split', main, tier + unnamed))
 
 
@@ -107,8 +115,9 @@ def readiness():
         f'<span class="t-small">No upgrades</span><span class="kill">All enchanted</span><span class="{"kill" if r["consumables"]["state"] == "stocked" else "wipe"}">'
         f'{"Stocked" if r["consumables"]["state"] == "stocked" else "Short"}</span><span class="t-small">None unspent</span><span>{r["item_level"]}<span class="t-small" style="display:block">at the raid median</span></span>'
         f'<span class="gold">Synced today</span>{Button("Nudge", small=True, act=True)}</div>' for r in order)
-    toggle = Button('Next raid &middot; Thu 10 Dec', small=True, act=True)
-    showing = _p(f'Showing the {len(order)} signed In or Late for <a class="link" href="#">Onyxia&rsquo;s Lair</a>, Thu 10 Dec, 8:00 pm.')
+    at = guild_time(page['raid']['starts_at'])
+    toggle = Button(f'Next raid &middot; {day_label(at)}', small=True, act=True)
+    showing = _p(f'Showing the {len(order)} signed In or Late for <a class="link" href="#">Onyxia&rsquo;s Lair</a>, {day_label(at)}, {_hour(at)}.')
     body = _col(showing, Plate(head + f'<div class="ruled">{rows}</div>', 'Readiness board'),
                 _p('Sorted by the most checks to fix, then the biggest gear gap. Nudge copies a message you can paste to them.'), gap=12)
     return _tab('Guild readiness', 'Readiness', Page('ledger', Section('Readiness', pad(body), action=toggle)))

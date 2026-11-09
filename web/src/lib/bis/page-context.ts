@@ -16,12 +16,15 @@ export function bisContext(
   raceOptions: Readonly<Record<Faction, readonly { value: string }[]>>,
   /** The band the page's path names; the first band when the path names none. */
   pathBand: number = data.bands[0] ?? MAX_BAND,
+  /** The path is the band's pre-raid list (/60/pre-raid). */
+  pathPreRaid = false,
 ): BisStateContext {
   const presetsFor = (faction: Faction, band: number) => presetsOffered(data, faction, band);
   const racesFor = (faction: Faction) => raceOptions[faction].map((option) => option.value);
   return {
     bands: data.bands,
     pathBand,
+    pathPreRaid,
     presetsFor,
     racesFor,
     simRaceFor: (faction, band, preset) =>

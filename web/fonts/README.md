@@ -1,9 +1,10 @@
 # Font subsets
 
 `glyphs.txt` in this directory is the explicit glyph inventory for the five self-hosted font
-subsets committed under `web/src/assets/fonts/`: Marcellus 400 (the page title, web layout spec
-2026-11-05), Barlow 400/600/700 (body and headings) and JetBrains Mono 500 (literal code only).
-The fonts lane (2026-11-06) removed Barlow Condensed 700/800 (no condensed face anywhere) and
+subsets committed under `web/src/assets/fonts/`: Marcellus 400 (every heading), Open Sans
+400/600/700 (body, labels and figures), Archivo 600 (the navigation bar) and JetBrains Mono 500
+(literal code only), the round-5 faces (design/specs/2026-11-09-directions.md section 4).
+Barlow left with round 5. The fonts lane (2026-11-06) removed Barlow Condensed 700/800 (no condensed face anywhere) and
 Cinzel 700: the wordmark is now an SVG path, `src/components/wordmark-path.generated.ts`, drawn
 from `@fontsource/cinzel` by `scripts/wordmark-svg.py` (needs fontTools and HarfBuzz's
 `hb-shape`; `--check` fails if the committed path is stale). `web/src/styles/fonts.css` declares `@font-face` rules against those subset files
@@ -59,21 +60,25 @@ python3 -m venv /tmp/fonts-venv
 /tmp/fonts-venv/bin/pip install fonttools==4.61.1 brotli
 ```
 
-Then, from `web/`, for each of the five faces:
+Then, from `web/`, for each of the six faces:
 
 ```sh
 VENV=/tmp/fonts-venv/bin
-$VENV/pyftsubset node_modules/@fontsource/barlow/files/barlow-latin-400-normal.woff2 \
+$VENV/pyftsubset node_modules/@fontsource/open-sans/files/open-sans-latin-400-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
-  --output-file=src/assets/fonts/barlow-400-subset.woff2
+  --output-file=src/assets/fonts/open-sans-400-subset.woff2
 
-$VENV/pyftsubset node_modules/@fontsource/barlow/files/barlow-latin-600-normal.woff2 \
+$VENV/pyftsubset node_modules/@fontsource/open-sans/files/open-sans-latin-600-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
-  --output-file=src/assets/fonts/barlow-600-subset.woff2
+  --output-file=src/assets/fonts/open-sans-600-subset.woff2
 
-$VENV/pyftsubset node_modules/@fontsource/barlow/files/barlow-latin-700-normal.woff2 \
+$VENV/pyftsubset node_modules/@fontsource/open-sans/files/open-sans-latin-700-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
-  --output-file=src/assets/fonts/barlow-700-subset.woff2
+  --output-file=src/assets/fonts/open-sans-700-subset.woff2
+
+$VENV/pyftsubset node_modules/@fontsource/archivo/files/archivo-latin-600-normal.woff2 \
+  --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \
+  --output-file=src/assets/fonts/archivo-600-subset.woff2
 
 $VENV/pyftsubset node_modules/@fontsource/marcellus/files/marcellus-latin-400-normal.woff2 \
   --text-file=fonts/glyphs.txt --flavor=woff2 --layout-features='*' \

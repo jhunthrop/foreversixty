@@ -193,6 +193,7 @@ jobs:
             /design/mocks/*.py
             /design/mocks/*.mjs
             /design/mocks/data/chrome/
+            /design/mocks/data/fonts/
             !/docs/superpowers/reviews/
             !/apps/ios/
             !/apps/android/
@@ -320,6 +321,7 @@ jobs:
             /design/mocks/*.py
             /design/mocks/*.mjs
             /design/mocks/data/chrome/
+            /design/mocks/data/fonts/
             !/docs/superpowers/reviews/
             !/apps/ios/
             !/apps/android/

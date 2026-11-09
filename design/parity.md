@@ -104,7 +104,7 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 
 ## The guild states
 
-`design/mocks/web/guild-parity.json`, against the committed mocks from `design/mocks/ws_guild2.py` (the persona round, `design/specs/2026-11-05-web-layout.md` section 7). The roster and every figure both sides show live once in `design/mocks/guild_data.py`; `python3 design/mocks/guild_fixtures.py` writes them as the API's answers into `web/tests/e2e/fixtures/guild-parity/`, which `tests/e2e/support/guild-parity/` routes to the build. The clock is pinned to Tue 8 Dec 2026, 4:00 pm in America/Chicago (`support/guild-parity/clock.ts`), so "Starts in" and the raid times read as the mock's. After a change: `python3 design/mocks/guild_fixtures.py && python3 design/mocks/ws_guild2.py`.
+`design/mocks/web/guild-parity.json`, against the committed mocks from `design/mocks/ws_guild2.py` (the persona round, `design/specs/2026-11-05-web-layout.md` section 7). The roster and every figure both sides show live once in `design/mocks/guild_data.py`; `python3 design/mocks/guild_fixtures.py` writes them as the API's answers into `web/tests/e2e/fixtures/guild-parity/`, which `tests/e2e/support/guild-parity/` routes to the build. The clock is pinned to Sat 12 Dec 2026, 4:00 pm in America/Chicago (the first raid night was Wed 9 Dec; the next is Wed 16 Dec) (`support/guild-parity/clock.ts`), so "Starts in" and the raid times read as the mock's. After a change: `python3 design/mocks/guild_fixtures.py && python3 design/mocks/ws_guild2.py`.
 
 ## The admin links state and the billing references
 

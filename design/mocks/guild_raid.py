@@ -1,4 +1,4 @@
-"""Thursday's Onyxia's Lair as the API answers it (Go guilds.RaidView): the one raid view the raid planner mock
+"""The next Onyxia's Lair (Wed 16 Dec) as the API answers it (Go guilds.RaidView): the one raid view the raid planner mock
 (ws_guild2.raid_planner) draws and guild_fixtures.py writes for the build (web/tests/e2e/fixtures/guild-parity/raid-*.json).
 
 Built from guild_data.R (the sign-ups), the API's own Onyxia assignment template (api/internal/guilds/raid_assign_templates.go)
@@ -10,23 +10,23 @@ import math
 import re
 from pathlib import Path
 
+import guild_data as gd
 from guild_data import GUILD, GUILD_ID, R, REGION, RULESET, SLUG, ZONE
 
 ROOT = Path(__file__).resolve().parents[2]
 GUILDS_GO = ROOT / 'api/internal/guilds'
 
-RAID_ID = 41
+RAID_ID = gd.NEXT_RAID_ID
 RAID_ZONE_KEY = 'raid:onyxias-lair'
 RAID_ZONE_NAME = "Onyxia's Lair"
 ONYXIA_ENCOUNTER = 1084
-# Thu 10 Dec 2026, 8:00 pm CST, three hours.
-RAID_STARTS = '2026-12-11T02:00:00Z'
+# Wed 16 Dec 2026, 8:00 pm CST, three hours.
+RAID_STARTS = gd.NEXT_RAID_AT
 RAID_MINUTES = 180
 RAID_SIZE = 40
-# The raid post went out on Monday; nobody has pinged the non-signers yet.
-POSTED_AT = '2026-12-07T18:00:00Z'
-VIEWER = 'Dunmaro'
-OFFICERS = ('Thornwicke', 'Dunmaro')
+# The raid post went out the day after the first night; nobody has pinged the non-signers yet.
+POSTED_AT = gd.NEXT_POSTED_AT
+VIEWER = gd.VIEWER
 # Non-signers whose account has no Discord linked.
 NO_DISCORD = ('Skyarcana',)
 NOTES_MD = 'Fire resistance on the tanks. Flask and food for everyone.'
@@ -105,10 +105,11 @@ def _cover_icons() -> dict:
 
 
 def _provides(entry: dict, m: dict) -> str:
-    """raids_cover.go provides: the class, the spec when named, then a talent the sign-up cannot show is likely."""
+    """raids_cover.go provides: the class, the spec and the roster group when named, then a talent the sign-up cannot
+    show is likely."""
     best = ''
     for p in entry['providers']:
-        if p['class'] != m['class'] or ('spec' in p and p['spec'] != m['spec_key']):
+        if p['class'] != m['class'] or ('spec' in p and p['spec'] != m['spec_key']) or ('group' in p and p['group'] != m['group']):
             continue
         best = 'sure' if 'talent' not in p else (best or 'likely')
     return best
@@ -235,5 +236,5 @@ def guild_home() -> dict:
     """/v1/guilds/{id}/home as the planner reads it: the viewer's role, officer tools and the claim."""
     return {'guild': {'id': GUILD_ID, 'name': GUILD, 'region': REGION, 'ruleset': RULESET, 'faction': 'alliance', 'crest_url': None},
             'viewer': {'raid_guild_tools': True, 'role': 'officer', 'character_key': key_of(VIEWER), 'verified': True, 'officer_tools': True},
-            'claim': {'state': 'claimed', 'since': '2026-10-01T00:00:00Z', 'frozen': False, 'yours': False,
-                      'claimed_by': {'name': OFFICERS[0], 'class': member(OFFICERS[0])['class'], 'character_key': key_of(OFFICERS[0])}}}
+            'claim': {'state': 'claimed', 'since': gd.CLAIM_SINCE, 'frozen': False, 'yours': True,
+                      'claimed_by': {'name': VIEWER, 'class': member(VIEWER)['class'], 'character_key': key_of(VIEWER)}}}

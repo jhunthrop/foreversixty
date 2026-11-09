@@ -46,7 +46,7 @@
   ]}
   data-testid={testid}
 >
-  {#if label}<span class="text-label tracking-label text-muted font-bold uppercase">{label}</span>{/if}
+  {#if label}<span class="text-label text-muted font-bold">{label}</span>{/if}
   <span class={['font-bold tabular-nums', SIZE[size], TONE_TEXT[tone]]} style:color
     >{value}{#if unit}<span
         class={[

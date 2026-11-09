@@ -108,7 +108,7 @@
           />
         </div>
         <div class="list px-[18px]">
-          <p class="text-muted text-label tracking-label pt-2.5 pb-1 uppercase">{chartCopy.sheetDrawn}</p>
+          <p class="text-muted text-small pt-2.5 pb-1 font-semibold">{chartCopy.sheetDrawn}</p>
           {#each onMedians as median (median.id)}
             <Row title={median.label} density="slim" open>
               {#snippet lead()}<span class="swatch" aria-hidden="true"></span>{/snippet}
@@ -123,7 +123,7 @@
             {@render row(entry)}
           {/each}
           {#if notDrawn.length > 0}
-            <p class="text-muted text-label tracking-label pt-4 pb-1 uppercase">{chartCopy.sheetNotDrawn}</p>
+            <p class="text-muted text-small pt-4 pb-1 font-semibold">{chartCopy.sheetNotDrawn}</p>
             {#each notDrawn as entry (entry.id)}
               {@render row(entry)}
             {/each}
@@ -171,7 +171,7 @@
     flex-direction: column;
   }
   .sheet::backdrop {
-    background: rgb(0 0 0 / 0.65);
+    background: color-mix(in srgb, black 65%, transparent);
   }
   .sheet > :global(.ui-overlay) {
     display: flex;

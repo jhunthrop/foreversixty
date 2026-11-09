@@ -126,7 +126,8 @@ test('a brushed window reads standing and built from the series, measured', asyn
   const rows = page.getByTestId('threat-on-target').locator('[role="row"][data-testid^="threat-"]');
   await expect(rows.first()).toContainText('Baelgrim');
   await expect(rows.first().getByTestId('threat-standing')).not.toContainText('~');
-  await expect(rows.first().getByTestId('threat-built')).toBeVisible();
+  // Below 1024 only the primary figure shows (ui/StatTable's phone layout); built is in the row.
+  await expect(rows.first().getByTestId('threat-built')).toBeAttached();
   await expect(page.getByTestId('threat-share')).not.toHaveCount(0);
   await expect(page.getByTestId('threat-table').locator('[role="table"][data-bar="true"]')).toHaveCount(1);
   // Shares are of the players' standings, so no row reads past 100% and the top row reads less
@@ -170,8 +171,9 @@ test('the totals table shares the players to 100% and leaves the enemies out of 
   // allInnerTexts() reads whatever is on screen the instant it is called, with no wait of
   // its own -- a bare navigation racing the table's first paint can read zero rows and
   // pass a sum of 0 as "not yet 100%", never getting to fail loudly on a real regression.
-  await expect(shareCells.first()).toBeVisible();
-  const shares = await shareCells.allInnerTexts();
+  // Attached, not visible: below 1024 the share column is hidden (ui/StatTable's phone layout).
+  await expect(shareCells.first()).toBeAttached();
+  const shares = await shareCells.allTextContents();
   const sum = shares.reduce((total, text) => total + Number.parseFloat(text), 0);
   expect(Math.round(sum * 10) / 10).toBeCloseTo(100, 0);
   // The fixture's boss builds no threat row of its own; the sample log's bosses do, and

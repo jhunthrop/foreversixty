@@ -79,7 +79,7 @@ section>.sec-h+*{margin-top:12px}
 .dl{display:flex;flex-direction:column;gap:4px}.dl .acts{column-gap:16px;row-gap:8px}.dl-meta{min-height:20px}
 .dl-copy{gap:8px;align-items:flex-start}.ans-links~.dl-head{margin-top:8px}
 @media(min-width:900px){.head .ans .dl{align-items:flex-end}.head .ans .dl .acts{justify-content:flex-end}}
-.dl-other summary{cursor:pointer;color:var(--gold);display:inline-flex;align-items:center}.dl-other ul{margin-top:8px;display:flex;flex-direction:column;gap:4px;list-style:none;padding:0}
+.dl-other summary{cursor:pointer;color:var(--gold);display:inline-flex;align-items:center}@media(max-width:767px){.dl-other summary{min-height:44px}}.dl-other ul{margin-top:8px;display:flex;flex-direction:column;gap:4px;list-style:none;padding:0}
 .mark-ok{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 20px/40px var(--font-body);color:#07090d;background:var(--kill);flex:none}
 </style>'''
 

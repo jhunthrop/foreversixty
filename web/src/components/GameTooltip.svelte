@@ -40,7 +40,10 @@
     </div>
   {/each}
   {#if model.description !== ''}
-    <p class="text-gold text-[12px] leading-snug whitespace-pre-line" data-testid="game-tooltip-description">
+    <p
+      class="text-tooltip-yellow text-[12px] leading-snug whitespace-pre-line"
+      data-testid="game-tooltip-description"
+    >
       {model.description}
     </p>
   {/if}

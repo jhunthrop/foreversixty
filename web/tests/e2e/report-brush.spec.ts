@@ -5,7 +5,7 @@
 import { expect, test } from './support/test';
 import { openChartIfCollapsed } from './support/report-chart';
 import { choose } from './support/select';
-import { pickFight } from './support/report-frame';
+import { openReportBar, pickFight } from './support/report-frame';
 
 const FIGHT = '/reports/fixture2abcd?fight=3';
 const FIG = `${FIGHT}&tab=damage-done`;
@@ -120,18 +120,21 @@ test.describe('the chart on a phone', () => {
   }, testInfo) => {
     test.skip(testInfo.project.name !== 'mobile', 'phone layout');
     await page.goto(FIGHT);
-    // Collapsed by default (design review 2026-09-26 finding 1): a one-line strip with the
-    // window summary and a 44px toggle, not the chart, its sliders and six preset buttons.
+    // Collapsed by default (design review 2026-09-26 finding 1; the report frame's phone
+    // Disclosure, 2026-11-07): one line with the window's figure and a 44px summary, not the
+    // chart, its sliders and its presets.
     await expect(page.getByTestId('time-chart')).toHaveCount(0);
     const strip = page.getByTestId('chart-collapsed');
-    await expect(strip).toContainText('Whole fight');
-    const toggle = page.getByTestId('chart-toggle');
+    await expect(strip).toContainText(/whole fight/i);
+    const toggle = strip.locator('summary');
     const toggleBox = (await toggle.boundingBox())!;
     expect(toggleBox.height).toBeGreaterThanOrEqual(44);
 
     await toggle.click();
     const box = (await page.getByTestId('time-chart').boundingBox())!;
     expect(box.width).toBeLessThanOrEqual(360);
+    // The Window choice lives in the report bar, a 44px field in its open stack.
+    await openReportBar(page);
     const select = (await page.getByTestId('window-select').boundingBox())!;
     expect(select.height).toBeGreaterThanOrEqual(44);
     // The brush handles are named by type in the 44px rule. A range input drags from a
@@ -147,11 +150,11 @@ test.describe('the chart on a phone', () => {
   test('the choice to open the chart survives a reload', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== 'mobile', 'phone layout');
     await page.goto(FIGHT);
-    await page.getByTestId('chart-toggle').click();
+    await page.getByTestId('chart-collapsed').locator('summary').click();
     await expect(page.getByTestId('time-chart')).toBeVisible();
 
     await page.reload();
     await expect(page.getByTestId('time-chart')).toBeVisible();
-    await expect(page.getByTestId('chart-collapsed')).toHaveCount(0);
+    await expect(page.getByTestId('chart-collapsed')).toHaveAttribute('open', '');
   });
 });

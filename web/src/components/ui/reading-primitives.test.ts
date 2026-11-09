@@ -63,7 +63,8 @@ describe('LaneBlock', () => {
       children: text('<ol><li>Row</li></ol>'),
     });
     expect(body).toMatch(/data-testid="lane"/);
-    expect(body).toMatch(/<h3 class="[^"]*uppercase[^"]*">Priority<\/h3>/);
+    expect(body).toMatch(/<h3 class="[^"]*text-label[^"]*">Priority<\/h3>/);
+    expect(body).not.toContain('uppercase');
     expect(body).toMatch(/ml-auto[^"]*">Level 60<\/span>/);
     expect(body.indexOf('Priority')).toBeLessThan(body.indexOf('<ol>'));
     expect(html(LaneBlock, { label: 'L', children: text('<i></i>') })).not.toContain('ml-auto');
@@ -103,7 +104,8 @@ describe('PlateColumns, PlateColumn', () => {
       children: text('<div>TREES</div>'),
     });
     expect(column).toMatch(/data-testid="col"/);
-    expect(column).toMatch(/<h2 class="[^"]*uppercase[^"]*">Build<\/h2>/);
+    expect(column).toMatch(/<h2 class="[^"]*text-label[^"]*">Build<\/h2>/);
+    expect(column).not.toContain('uppercase');
     expect(column).toMatch(/ml-auto[^"]*">Level 60<\/span>/);
     expect(column).toMatch(/TREES<\/div>\s*<div class="ui-pcol-foot[^"]*"><a>Load<\/a>/);
     expect(html(PlateColumn, { label: 'X', children: text('<i></i>') })).not.toContain('ui-pcol-foot');

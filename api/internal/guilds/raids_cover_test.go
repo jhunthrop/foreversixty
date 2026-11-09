@@ -112,6 +112,32 @@ func TestCoverTalentsWhenKnown(t *testing.T) {
 	}
 }
 
+// Demoralizing Roar is cast in Bear Form: a bear-spec druid or a druid signed as a tank brings it, a
+// Restoration or Balance druid does not; any warrior brings Demoralizing Shout.
+func TestDemoralizingNeedsBearForm(t *testing.T) {
+	cases := []struct {
+		name string
+		sg   coverSignup
+		want int
+	}{
+		{"a restoration druid healing", signup("druid", "druid-restoration", raidspec.GroupHealer, SignupIn), 0},
+		{"a balance druid at range", signup("druid", "druid-balance", raidspec.GroupRanged, SignupIn), 0},
+		{"a bear-spec druid", signup("druid", "druid-feral-bear", raidspec.GroupTank, SignupIn), 1},
+		{"a feral druid signed as a tank", signup("druid", "druid-feral", raidspec.GroupTank, SignupIn), 1},
+		{"a feral cat druid in melee", signup("druid", "druid-feral", raidspec.GroupMelee, SignupIn), 0},
+		{"any warrior", signup("warrior", "warrior-fury", raidspec.GroupMelee, SignupIn), 1},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			for _, r := range computeCover(raidCoverCatalogue, []coverSignup{c.sg}) {
+				if r.Key == "demoralizing_shout" && r.ProvidersIn != c.want {
+					t.Fatalf("providers in = %d, want %d", r.ProvidersIn, c.want)
+				}
+			}
+		})
+	}
+}
+
 func TestRaidCoverIsForRaidsOnly(t *testing.T) {
 	if raidCover(ZoneDungeon, nil) != nil || raidCover(ZoneEvent, nil) != nil {
 		t.Fatal("a dungeon or event has no cover")

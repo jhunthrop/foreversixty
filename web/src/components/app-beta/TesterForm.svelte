@@ -25,6 +25,8 @@
 
   let email = $state('');
   let platform = $state<Platform>(DEFAULT_PLATFORM);
+  /** The visitor picked a phone themselves: the detected one never overrides it. */
+  let picked = false;
   let sending = $state(false);
   let emailError = $state('');
   let failure = $state('');
@@ -32,7 +34,7 @@
 
   // After hydration only: the server render cannot see the phone, so it draws the default.
   onMount(() => {
-    platform = detectPlatform(navigator.userAgent, navigator.maxTouchPoints);
+    if (!picked) platform = detectPlatform(navigator.userAgent, navigator.maxTouchPoints);
   });
 
   async function onSubmit(event: SubmitEvent): Promise<void> {
@@ -73,7 +75,10 @@
           options={PLATFORMS}
           value={platform}
           label={copy.platformLabel}
-          onChange={(next) => (platform = next)}
+          onChange={(next) => {
+            picked = true;
+            platform = next;
+          }}
           testid="app-beta-platform"
         />
       </div>

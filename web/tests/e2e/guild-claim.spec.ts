@@ -124,8 +124,8 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
   // The pointer still rests where the claim button was, which is where the primary now sits;
   // move it off so the resting colour is read, not the hover one.
   await page.mouse.move(0, 0);
-  await expect(page.getByTestId('guild-claim-next-roster')).toHaveCSS('background-image', /linear-gradient/);
-  await expect(page.getByTestId('guild-claim-next-invite')).toHaveCSS('background-image', 'none');
+  await expect(page.getByTestId('guild-claim-next-roster')).toHaveClass(/\bbg-teal\b/);
+  await expect(page.getByTestId('guild-claim-next-invite')).not.toHaveClass(/\bbg-teal\b/);
   await expect(page.getByTestId('guild-claim-next-invite')).toHaveAttribute(
     'href',
     '/guild/us/hardcore/the-last-watch/settings',
@@ -335,15 +335,12 @@ test('after a claim made for a plan, subscribe leads Next as the one gold fill',
   );
   await expect(page.getByTestId('guild-claim-next-roster')).toHaveText(guildClaimCopy.nextRoster);
 
-  // One fill: the subscribe button is gold, every other step an outline.
+  // One fill: the subscribe button is the primary teal, every other step a secondary.
   const ghosts = ['roster', 'invite', 'plan', 'discord'];
   await page.mouse.move(0, 0);
-  await expect(page.getByTestId('guild-claim-next-subscribe')).toHaveCSS(
-    'background-image',
-    /linear-gradient/,
-  );
+  await expect(page.getByTestId('guild-claim-next-subscribe')).toHaveClass(/\bbg-teal\b/);
   for (const ghost of ghosts) {
-    await expect(page.getByTestId(`guild-claim-next-${ghost}`)).toHaveCSS('background-image', 'none');
+    await expect(page.getByTestId(`guild-claim-next-${ghost}`)).not.toHaveClass(/\bbg-teal\b/);
   }
   for (const control of ['subscribe', ...ghosts]) {
     await expectTapHeight(page.getByTestId(`guild-claim-next-${control}`));

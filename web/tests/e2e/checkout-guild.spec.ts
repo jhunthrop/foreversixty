@@ -69,7 +69,7 @@ const ACCOUNT_PLAN_HREF = '/account#plan';
 const GUILD_NAME = OLYMPUS.name;
 const CLAIM_PATH = `**/v1/guilds/${GUILD_ID}/claim`;
 const CLAIM_CONFIRM_PATH = `**/v1/guilds/${GUILD_ID}/claim/confirm`;
-const FILL = '[class~="bg-gold"]';
+const FILL = '[class~="bg-teal"]';
 const fills = (page: Page) => page.getByTestId('checkout-guild-step').locator(FILL);
 const MAX_CLS = 0.02;
 const BAND_TOLERANCE_PX = 1;
@@ -170,7 +170,7 @@ test.describe('ready cards', () => {
     const button = page.getByTestId(id('subscribe'));
     await expect(button).toContainText(copy.ready.startTrial('').split(' · ')[0]);
     await expect(fills(page)).toHaveCount(1);
-    await expect(button).toHaveClass(/\bbg-gold\b/);
+    await expect(button).toHaveClass(/\bbg-teal\b/);
     await button.click();
     await page.waitForURL(STRIPE_CHECKOUT_URL);
     expect(posts).toEqual([{ plan: 'guild', interval: 'yearly', guild_id: GUILD_ID }]);

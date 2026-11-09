@@ -22,6 +22,7 @@ OUT = Path(os.environ.get('FS_MOCK_OUT') or Path(__file__).resolve().parent / 'w
 # emits them as data-region, the built primitives emit the same, and web/tests/e2e/support/parity.ts pairs them.
 REGION = {'site_header': 'site-header', 'site_footer': 'site-footer', 'head': 'head', 'head_title': 'head-title', 'head_meta': 'head-meta', 'head_answer': 'head-answer',
           'controls': 'controls', 'countdowns': 'countdowns', 'summary': 'summary', 'notes': 'notes', 'plate': 'plate', 'slots': 'slots',
+          'paperdoll_medallion': 'paperdoll-medallion', 'paperdoll_centre': 'paperdoll-centre',
           'inspector': 'inspector', 'inspector_inline': 'inspector-inline', 'footer_note': 'footer-note',
           'intro': 'intro', 'dialog': 'dialog'}
 
@@ -116,6 +117,53 @@ h1,h2,h3,p,ul,dl,dd{margin:0}ul{padding:0;list-style:none}
 .ic.fit,.fit>.ic{width:100%!important;height:auto!important;aspect-ratio:1}
 '''
 
+# Round 5 (design/specs/2026-11-09-directions.md; docs/design-system.md): the build's shared layer moved onto Blizzard's
+# Forever palette, Open Sans with Marcellus headings, the compact title band, nav-tab controls and the soft-cornered
+# panel. The parity references draw the same system: this block comes last in every mock (after PRIM_CSS), so each
+# shared primitive above takes the round-5 type, size and look in one place, as the built primitives do. The colours
+# are design/tokens/tokens.json's web values.
+ROUND5_CSS = '''
+:root{--bg:#100a06;--raised:#170e09;--hover:#241b15;--line:#3d342d;--line-soft:#2c241f;--text:#e3dfd9;--strong:#fff;
+--muted:#e2dcd3;--nav:#fff;--gold:#ffec71;--gold-hover:#f7b90a;--cream:#f3eee2;--accent:#0093b2;--teal:#0f6064;
+--teal-edge:#408076;--blue:#114f72;--blue-edge:#1d6a96;--band:#054562;--ground:#67563a;
+--font-body:'Open Sans','Open Sans Fallback',Arial,sans-serif}
+html,body{background:var(--ground)}
+.plate,.ui-surface{--muted:#8b8784}
+h1,h2{font-family:var(--font-title);font-weight:400;letter-spacing:-.015em;color:var(--cream)}
+.t-title{font-size:26px;line-height:30px;letter-spacing:-.015em}
+@media(max-width:767px){.t-title{font-size:21px;line-height:25px}}
+.t-h2{font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--cream)}
+@media(max-width:767px){.t-h2{font-size:22px;line-height:28px}}
+.sec-h .t-h3{font:400 22px/28px var(--font-title);letter-spacing:-.015em;color:var(--cream)}
+.sec-h{flex-wrap:wrap;column-gap:12px;row-gap:4px}
+section>.sec-h:has(+ .sbox){border-bottom:0}
+.sbox{margin-top:12px;padding:8px 20px;background:var(--raised);border:1px solid #000;border-radius:10px;box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
+.sbox:has(.plate,.ui-surface){padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.sbox>.plate:first-child,.sbox>.rows:first-child{margin-top:0}
+@media(max-width:767px){.sbox{padding:4px 14px}}
+.t-label,.gridm .h,.dlg-b h3,.menu .mg,.rprose .glabel,.cdn .eb,.cdn .clk>span>span,.frow .wh .k,.rprose th,.rgrp>h3,
+.insp-s h3,.irow.slot .lbl{font-family:var(--font-body);letter-spacing:0;text-transform:none}
+.head{padding-block:16px 14px}
+@media(min-width:900px){.head{padding-block:16px 14px}}
+.ph-tabs{margin-top:12px;border-top:1px solid rgba(255,255,255,.14)}
+.band-r5{background:var(--band);border-bottom:1px solid #000}
+.fs-chrome:not(.fs-foot){padding-top:16px;background:var(--band)}
+@media(max-width:1023px){.fs-chrome:not(.fs-foot){padding-top:8px}}
+.plate{background:var(--raised);border:1px solid #000;border-radius:10px;box-shadow:0 0 0 1px rgba(130,112,91,.55)}
+.cbar{background:var(--band);border-block:1px solid rgba(255,255,255,.14)}
+.cbar .pc{row-gap:12px}
+.seg{border:0;border-radius:0;gap:4px}
+.seg a{border-left:0;padding:0 12px;font:600 15px/16px var(--font-body);color:rgba(255,255,255,.72)}
+.seg a.on{background:none;color:var(--strong);box-shadow:inset 0 -3px 0 var(--accent)}
+.strip-tabs a.cur{border-bottom-color:var(--accent)}
+@media(min-width:768px){.cbar .seg a{flex:0 0 auto}}
+.seg a.on .n{color:var(--strong)}
+.btn{padding:0 20px;border-radius:6px;font:600 15px/16px var(--font-body);letter-spacing:0;background:var(--blue);border-color:var(--blue-edge)}
+.btn.primary{background:var(--teal);border-color:var(--teal-edge);color:var(--strong)}
+.btn.sm{padding:0 20px}
+'''
+
+
 def seg(items: list[tuple], extra: str = '', label: str = '') -> str:
     """items: (label, on, count|None, icon_html). A radiogroup of radios, as the built ControlBar and Segmented are."""
     a = ''.join(f'<a href="#" role="radio" aria-checked="{"true" if on else "false"}" class="{"on" if on else ""}">{ic}{lab}{f" <span class=\"n\">{n}</span>" if n is not None else ""}</a>' for lab, on, n, ic in items)
@@ -185,10 +233,10 @@ def page(title: str, body: str, nav: str = '', who: tuple | None = None, note: s
     mark = _CHROME_MARK % json.dumps({'who': list(who) if who else None, 'state': chrome_state, 'nav': nav})
     return ('<!doctype html><html lang="en"%%HTML_ATTRS%%><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>%s</title>'
             '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
-            '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Cinzel:wght@700&family=Marcellus&display=swap">'
+            '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600&family=Marcellus&family=Open+Sans:wght@400;600;700&display=swap">'
             '<style>%%CHROME_CSS%%</style><style>%s%s</style></head><body>%s<div class="fs-chrome"><div data-fs-body%%BODY_ATTRS%%>%%HEADER%%</div></div>'
-            '<main>%s</main><!-- %s --><div class="fs-chrome fs-foot"><div data-fs-body%%BODY_ATTRS%%>%%FOOTER%%</div></div></body></html>'
-            % (title, CSS, _BODY_CSS, mark, body, n))
+            '<main>%s</main><!-- %s --><style data-system="round5">%s</style><div class="fs-chrome fs-foot"><div data-fs-body%%BODY_ATTRS%%>%%FOOTER%%</div></div></body></html>'
+            % (title, CSS, _BODY_CSS, mark, body, n, ROUND5_CSS))
 
 
 def _fill_chrome(name: str, html: str) -> str:

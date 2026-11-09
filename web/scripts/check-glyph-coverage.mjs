@@ -1,7 +1,7 @@
 // web/scripts/check-glyph-coverage.mjs
 //
-// Verifies web/fonts/glyphs.txt (the explicit glyph inventory the five font subsets --
-// Barlow 400/600/700, JetBrains Mono 500, Marcellus 400 -- are generated from) against every
+// Verifies web/fonts/glyphs.txt (the explicit glyph inventory the six font subsets --
+// Open Sans 400/600/700, Archivo 600, JetBrains Mono 500, Marcellus 400 -- are generated from) against every
 // character the site can actually render:
 //
 //   - every HTML file in a fixture build of dist/ (the rendered text, after markdown and

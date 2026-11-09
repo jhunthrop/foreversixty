@@ -11,8 +11,17 @@ the ones this lists that never started, instead of landing on whatever did.
 
 Filter patterns follow GitHub's: `*` matches within one path segment, `**` across segments,
 `?` one character, and a leading `!` negates a pattern written after a match.
+
+A workflow someone turned off on GitHub (state `disabled_manually`: the refresh hold keeps
+data, bis and engine off) can start no run, so it cannot gate a landing: it is left out, with a
+loud line on stderr for each one. Any other state that is not `active` (disabled for
+inactivity, by a fork, or unknown) fails the whole listing, so a workflow switched off by
+mistake never lets a batch through quietly. The states come from `gh workflow list` (GH, as in
+tools/land.sh); a workflow GitHub does not list yet (a file new in this batch) counts as active.
 """
 
+import json
+import os
 import re
 import subprocess
 import sys
@@ -83,6 +92,52 @@ def expected(doc: dict, branch: str, changed: list[str]) -> bool:
     return True
 
 
+def workflow_states() -> dict[str, str]:
+    """Each workflow's state on GitHub by its file name: `gh workflow list --all`."""
+    out = subprocess.run(
+        [
+            os.environ.get("GH", "gh"),
+            "workflow",
+            "list",
+            "--all",
+            "--limit",
+            "500",
+            "--json",
+            "path,state",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    return {
+        entry["path"].removeprefix(WORKFLOW_DIR): entry["state"]
+        for entry in json.loads(out or "[]")
+    }
+
+
+class DisabledWorkflow(Exception):
+    """An expected workflow in a state that is neither active nor disabled_manually."""
+
+
+def gating(
+    found: list[tuple[str, str]], states: dict[str, str]
+) -> tuple[list[tuple[str, str]], list[str]]:
+    """The expected (file, name) pairs that gate the landing, and the loud lines for those skipped:
+    `active` (or not listed yet) gates; `disabled_manually` is skipped; anything else raises."""
+    kept, skipped = [], []
+    for file, name in found:
+        state = states.get(file, "active")
+        if state == "active":
+            kept.append((file, name))
+        elif state == "disabled_manually":
+            skipped.append(f"skipping {name}: disabled ({state}); not gating this landing")
+        else:
+            raise DisabledWorkflow(
+                f"{name} ({file}) is {state}: turn it on or off on purpose before landing"
+            )
+    return kept, skipped
+
+
 def main(argv: list[str]) -> int:
     if len(argv) != 4:
         print("usage: tools/land_workflows.py <sha> <branch> <base>", file=sys.stderr)
@@ -90,12 +145,22 @@ def main(argv: list[str]) -> int:
     sha, branch, base = argv[1:]
     changed = git("diff", "--name-only", f"{base}...{sha}").split()
     paths = git("ls-tree", "--name-only", sha, WORKFLOW_DIR).split()
+    found = []
     for path in sorted(paths):
         if not path.endswith((".yml", ".yaml")):
             continue
         doc = yaml.safe_load(git("show", f"{sha}:{path}")) or {}
         if expected(doc, branch, changed):
-            print(f"{path.removeprefix(WORKFLOW_DIR)}\t{doc.get('name', path)}")
+            found.append((path.removeprefix(WORKFLOW_DIR), str(doc.get("name", path))))
+    try:
+        kept, skipped = gating(found, workflow_states() if found else {})
+    except DisabledWorkflow as error:
+        print(f"land_workflows: {error}", file=sys.stderr)
+        return 1
+    for line in skipped:
+        print(f"land_workflows: {line}", file=sys.stderr)
+    for file, name in kept:
+        print(f"{file}\t{name}")
     return 0
 
 

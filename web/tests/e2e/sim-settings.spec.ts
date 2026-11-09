@@ -117,8 +117,9 @@ test('Raid-buffed is the full standard set: More settings lists it, Custom’s c
   await openMoreSettings(page);
   await expect(page.getByTestId('sim-buff-panel')).toBeVisible();
   const groupCount = async (group: string): Promise<number> => {
-    const text = await page.getByTestId(`sim-buff-group-${group}`).locator('span.numeric').textContent();
-    return Number((text ?? '0/0').split('/')[0]);
+    // The group's Disclosure summary ends with its "on/size" count (ui/Disclosure's meta).
+    const text = await page.getByTestId(`sim-buff-group-${group}`).locator('summary').textContent();
+    return Number(/(\d+)\/\d+/.exec(text ?? '')?.[1] ?? 0);
   };
   expect(await groupCount('raid-buffs')).toBeGreaterThan(4);
   expect(await groupCount('debuffs')).toBeGreaterThan(0);

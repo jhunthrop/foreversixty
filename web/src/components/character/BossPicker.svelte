@@ -60,7 +60,7 @@
   bind:this={strip}
   class="picker -mx-3 flex min-h-11 overflow-x-auto"
   style={moreToRight
-    ? `mask-image: linear-gradient(to right, #000 calc(100% - ${FADE_PX}px), transparent); -webkit-mask-image: linear-gradient(to right, #000 calc(100% - ${FADE_PX}px), transparent)`
+    ? `mask-image: linear-gradient(to right, black calc(100% - ${FADE_PX}px), transparent); -webkit-mask-image: linear-gradient(to right, black calc(100% - ${FADE_PX}px), transparent)`
     : undefined}
   role="tablist"
   aria-label={historyCopy.pickerLabel}

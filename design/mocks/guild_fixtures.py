@@ -31,7 +31,7 @@ def write(name: str, data: object) -> Path:
 
 
 def write_raid_planner() -> list[Path]:
-    """Lane B: Thursday's Onyxia's Lair planner as its officer (Dunmaro) reads it (guild_raid.py)."""
+    """Lane B: the next Onyxia's Lair planner as its officer (Dunmaro) reads it (guild_raid.py)."""
     import guild_raid
     return [write('raid-me.json', guild_raid.me()), write('raid-guild.json', guild_raid.guild_page()),
             write('raid-home.json', guild_raid.guild_home()), write('raid-onyxia.json', guild_raid.raid_view())]
@@ -76,12 +76,9 @@ def _parse(metric: str, value: float, percentile: int) -> dict:
 
 
 def recruit_card() -> dict:
-    officers = [{'name': n, 'class': gd.R[_index(n)][1], 'spec': gd.R[_index(n)][2], 'rank': 'officer'} for n in gd.OFFICERS]
-    return {'guild': {**_guild(), 'path': f'/guild/{gd.REGION}/{gd.RULESET}/{gd.SLUG}'}, 'members': gd.RAIDERS, 'open': True, 'pitch': gd.RECRUIT_PITCH,
-            'raid_nights': {'text': gd.RECRUIT_NIGHTS, 'upcoming': gd.RECRUIT_UPCOMING, 'timezone': gd.ZONE},
-            'progress': {'name': 'Tier 1', 'raids': ["Onyxia's Lair"], 'named_encounters': 1, 'down': 1, 'pulls_total': 2},
-            'wanted': [{'class': c, 'spec': k, 'spec_name': n, 'note': note} for c, k, n, note in gd.RECRUIT_WANTED],
-            'officers': officers, 'updated_at': '2026-12-01T18:00:00Z'}
+    """The public card: the Overview's own recruit answer (guild_overview_fixtures.recruit_card)."""
+    from guild_overview_fixtures import recruit_card as card
+    return card()
 
 
 def _applicant(name: str, cls: str, spec: str, ilvl: int | None, parse: tuple | None) -> dict:
@@ -110,13 +107,20 @@ def member_profile() -> dict:
                  'enchants': {'missing_slots': [], 'checked': True}, 'consumables': {'state': 'stocked'}, 'talent_points_unspent': 0, 'talent_points_read': True,
                  'item_level': ilvl, 'item_level_delta': 0, 'logged_at': gd.NOW, 'failing': 0}
     present = sum(1 for _, o in gd.PROFILE_NIGHTS if o == 'present')
-    nights = [{'raid_id': 9 + i, 'starts_at': at, 'outcome': o, 'excused': False} for i, (at, o) in enumerate(gd.PROFILE_NIGHTS)]
-    loot = [{'item_id': i, 'name': n, 'icon': ic, 'quality': q, 'raid_id': 12, 'awarded_at': at} for i, n, ic, q, at in gd.PROFILE_LOOT]
+    nights = [{'raid_id': gd.LAST_RAID_ID, 'starts_at': at, 'outcome': o, 'excused': False} for at, o in gd.PROFILE_NIGHTS]
+    loot = [{'item_id': d['item_id'], 'name': d['item_name'], 'icon': d['icon'], 'quality': d['quality'], 'raid_id': gd.LAST_RAID_ID, 'awarded_at': d['at']}
+            for d in profile_loot()]
     notes = [{'id': i, 'body': body, 'author': _ref(who), 'created_at': at, 'may_delete': mine} for i, body, who, at, mine in gd.PROFILE_NOTES]
     return {'account_key': gd.PROFILE_ACCOUNT, 'member': member, 'characters': [{'character_key': _char_key(name), 'name': name, 'class': cls, 'is_main': True}],
             'attendance': {'source': 'raids', 'last_4': {'present': present, 'nights': len(nights)},
                            'last_30': {'present': gd.PROFILE_LAST_30[0], 'nights': gd.PROFILE_LAST_30[1]}, 'nights': nights},
             'loot': {'count': len(loot), 'items': loot}, 'readiness': readiness, 'notes': notes}
+
+
+def profile_loot() -> list[dict]:
+    """The profile's items this tier: the loot council's awards to them (guild_overview_fixtures.decisions)."""
+    from guild_overview_fixtures import decisions
+    return [d for d in decisions() if d['name'] == gd.PROFILE]
 
 
 def recruit_guild_page() -> dict:

@@ -279,7 +279,7 @@
 <style>
   /* Forced states: the look the pointer and keyboard give a real field (§A5). */
   :global([data-force='hover'] .sel-face) {
-    border-color: rgb(229 185 85 / 0.45);
+    border-color: color-mix(in srgb, var(--color-gold) 45%, transparent);
     background: rgb(255 255 255 / 0.06);
   }
   :global([data-force='focus-visible'] .sel-face) {
@@ -297,6 +297,6 @@
   }
   :global([data-force='active'] .sel-face) {
     border-color: var(--color-gold);
-    background: #101624;
+    background: var(--color-hover);
   }
 </style>

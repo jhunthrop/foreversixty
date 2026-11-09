@@ -154,11 +154,7 @@ test.describe('connected', () => {
     page,
   }) => {
     await open(page, { discord: SWITCHED_OFF });
-    await expect(
-      section(page).locator(
-        'button.bg-gold, a.bg-gold, button[class*="linear-gradient"], a[class*="linear-gradient"]',
-      ),
-    ).toHaveCount(1);
+    await expect(section(page).locator('button.bg-teal, a.bg-teal')).toHaveCount(1);
     await expect(section(page).getByTestId('discord-test')).toHaveText(copy.testAndSwitchOn);
     await section(page).getByTestId('discord-test').click();
     await expect(section(page).getByRole('status')).toHaveText(copy.testSentSwitchedOn);

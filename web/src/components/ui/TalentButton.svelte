@@ -234,7 +234,7 @@
     height: var(--cell, 48px);
     border-radius: 5px;
     cursor: pointer;
-    background: #10141d;
+    background: var(--color-bg);
   }
   .tc2 img,
   .tc2 .ic {
