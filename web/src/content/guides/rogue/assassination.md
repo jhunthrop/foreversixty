@@ -110,7 +110,7 @@ Poisons and stones go on together in Forever: at 60, Instant Poison and a stone 
 
 ## Races
 
-Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds: free damage all fight, and nothing else a Horde rogue gets matches it. Orc's **Blood Fury** is next and Troll's **Berserking** last. On Alliance, Night Elf's **Elune's Light** (10% crit for 15 seconds every 3 minutes, which pairs with Seal Fate: more Mutilate crits, more third points), Dwarf's passive 1% hit and Human's passive 1% crit all land in the same place, so Night Elf wins only by a hair: play the one you like. Forever has no weapon-skill racials.
+Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds: free damage all fight, and nothing else a Horde rogue gets matches it. Orc's **Blood Fury** is next and Troll's **Berserking** last. On Alliance, Night Elf's **Elune's Light** (10% crit for 15 seconds every 3 minutes, which pairs with Seal Fate: more Mutilate crits, more third points), Dwarf's passive 1% hit and Human's passive 1% crit all land in the same place, so they are level: play the one you like. Forever has no weapon-skill racials.
 
 ## Professions
 

@@ -96,7 +96,7 @@ Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell po
 
 ## Races
 
-**Gnome** is the best Alliance Frost mage among the Classic races: Eureka! makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit and trails a Gnome by a hair. **Skyborne**, Alliance only for mages, edges a Gnome by a little through Wind Blessed's 2% haste. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Troll** and **Orc** are close behind: Berserking adds 10% cast speed for 15 seconds every 3 minutes and Blood Fury 10% spell power for 15 seconds every 2 minutes, so press either on the pull and on cooldown after that.
+**Gnome** is the best Alliance Frost mage among the Classic races: Eureka! makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit and plays about the same as a Gnome. **Skyborne**, Alliance only for mages, is level with a Gnome: Wind Blessed is 2% haste that never turns off, so pick either. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Troll** and **Orc** are close behind: Berserking adds 10% cast speed for 15 seconds every 3 minutes and Blood Fury 10% spell power for 15 seconds every 2 minutes, so press either on the pull and on cooldown after that.
 
 ## Professions
 

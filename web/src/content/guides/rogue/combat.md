@@ -109,7 +109,7 @@ Forever lets a sharpening stone sit on a weapon beside a poison, so use both: **
 
 ## Races
 
-Gnome on Alliance and Undead on Horde. **Eureka!** makes your non-periodic damaging abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** makes your energy bar 5% bigger. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc, Troll and Night Elf all land a step behind and within a hair of each other. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
+Gnome on Alliance and Undead on Horde. **Eureka!** makes your non-periodic damaging abilities cost 10% less and deal 10% more for 8 seconds every 2 minutes, and **Expansive Mind** makes your energy bar 5% bigger. Undead's **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, and that free damage puts it first for Horde. Orc, Troll and Night Elf all land a step behind, level with each other. Forever has no weapon-skill racials, so a Human gets nothing extra from swords.
 
 ## Professions
 

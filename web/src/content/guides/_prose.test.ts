@@ -110,6 +110,9 @@ export const BANNED_PROSE = {
     'this is why each stat',
     'middle of the pack',
   ],
+  // Feedback 2026-11-09: race advice is said the way a player says it ("level, pick either"),
+  // never as a measured margin.
+  margins: ['by a hair', 'a hair ahead', 'within a hair', 'by a little'],
   // Feedback 2026-11-09: a guide never advertises Blizzard's paid products.
   paidProducts: ['Heroic Pack', 'Epic Pack', 'paid unlock', 'paid race', 'paid option'],
 } as const satisfies Record<string, readonly (string | RegExp)[]>;
