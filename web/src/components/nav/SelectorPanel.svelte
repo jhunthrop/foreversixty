@@ -16,7 +16,8 @@
   import { FIELD_CONTROL, FIELD_FOCUS, fieldEdge } from '../../lib/ui/field';
   import Glyph from '../ui/Glyph.svelte';
   import Tag from '../ui/Tag.svelte';
-  import type { GlyphName } from '../../lib/ui/glyphs';
+  import Icon from '../ui/Icon.svelte';
+  import type { UiIconName } from '../../lib/ui/ui-icons';
   import SelectorPaste from './SelectorPaste.svelte';
   import SelectorRow from './SelectorRow.svelte';
 
@@ -26,18 +27,18 @@
 
   const SWIPE_CLOSE_PX = 40;
   const SKELETON_ROWS = 3;
-  /** The rows' tiles, from the shared glyph table (lib/ui/glyphs.ts). */
-  const TILE_GLYPHS = {
-    head: 'user',
-    paste: 'copy',
+  /** The rows' tiles: the owner's custom icon set (lib/ui/ui-icons.ts), tile ink at 20 px. */
+  const TILE_ICONS = {
+    head: 'account',
+    paste: 'paste-export',
     addon: 'download',
-    profile: 'chart',
-    account: 'gear',
-    plan: 'crown',
-    setUp: 'download',
-    signOut: 'signout',
-  } as const satisfies Record<string, GlyphName>;
-  const TILE_GLYPH_PX = 18;
+    profile: 'character',
+    account: 'manage',
+    plan: 'premium',
+    setUp: 'setup',
+    signOut: 'sign-out',
+  } as const satisfies Record<string, UiIconName>;
+  const TILE_ICON_PX = 20;
 
   let {
     model,
@@ -189,8 +190,8 @@
   }
 </script>
 
-{#snippet glyph(name: GlyphName)}
-  <Glyph {name} size={TILE_GLYPH_PX} />
+{#snippet glyph(name: UiIconName)}
+  <Icon {name} size={TILE_ICON_PX} />
 {/snippet}
 
 {#snippet chevron(gold = false)}
@@ -206,7 +207,7 @@
 {#snippet setUpRow()}
   {@const words = selectorCopy.account}
   <a class="csel-arow" href={words.setUpHref} data-testid="selector-row-setup">
-    <span class="csel-tile">{@render glyph(TILE_GLYPHS.setUp)}</span>
+    <span class="csel-tile">{@render glyph(TILE_ICONS.setUp)}</span>
     <span class="csel-arow-text">
       <span class="csel-arow-title">{words.setUp}</span>
     </span>
@@ -219,7 +220,7 @@
   <div class="csel-arows ui-overlay-rule-t" data-testid="selector-account-rows">
     {#if panel.profile !== null}
       <a class="csel-arow" href={panel.profile.href} data-testid="selector-row-profile">
-        <span class="csel-tile">{@render glyph(TILE_GLYPHS.profile)}</span>
+        <span class="csel-tile">{@render glyph(TILE_ICONS.profile)}</span>
         <span class="csel-arow-text">
           <span class="csel-arow-title">{words.profile}</span>
         </span>
@@ -227,14 +228,14 @@
       </a>
     {/if}
     <a class="csel-arow" href={words.accountHref} data-testid="selector-row-account">
-      <span class="csel-tile">{@render glyph(TILE_GLYPHS.account)}</span>
+      <span class="csel-tile">{@render glyph(TILE_ICONS.account)}</span>
       <span class="csel-arow-text">
         <span class="csel-arow-title">{words.account}</span>
       </span>
       {@render chevron()}
     </a>
     <a class="csel-arow" href={panel.plan.href} data-testid="selector-row-plan">
-      <span class="csel-tile">{@render glyph(TILE_GLYPHS.plan)}</span>
+      <span class="csel-tile">{@render glyph(TILE_ICONS.plan)}</span>
       <span class="csel-arow-text">
         <span class="csel-arow-line">
           <span class="csel-arow-title">{words.plan}</span>
@@ -262,7 +263,7 @@
     >
       <span class="csel-tile is-quiet">
         {#if signingOut}<i class="csel-spinner" aria-hidden="true"></i>{:else}{@render glyph(
-            TILE_GLYPHS.signOut,
+            TILE_ICONS.signOut,
           )}{/if}
       </span>
       <span class="csel-arow-text">
@@ -297,7 +298,7 @@
   </div>
   {#if account !== null}
     <div class="csel-acct-head ui-overlay-rule-b" data-testid="selector-account-head">
-      <span class="csel-tile">{@render glyph(TILE_GLYPHS.head)}</span>
+      <span class="csel-tile">{@render glyph(TILE_ICONS.head)}</span>
       <span class="csel-acct-id">
         <span class="csel-acct-name" data-testid="selector-account-name">{account.head.name}</span>
         <span class="csel-acct-via">{selectorCopy.account.signedInWith[account.head.via]}</span>
@@ -453,7 +454,7 @@
       data-testid="selector-paste"
       onclick={() => (pasteOpen = true)}
     >
-      <span class="csel-tile">{@render glyph(TILE_GLYPHS.paste)}</span>
+      <span class="csel-tile">{@render glyph(TILE_ICONS.paste)}</span>
       <span>
         <span class="csel-action-title">{selectorCopy.pasteTitle}</span>
       </span>
@@ -461,7 +462,7 @@
   {/if}
   {#if offerAddon}
     <a class="csel-action ui-overlay-rule-t" href={selectorCopy.addonHref} data-testid="selector-addon">
-      <span class="csel-tile">{@render glyph(TILE_GLYPHS.addon)}</span>
+      <span class="csel-tile">{@render glyph(TILE_ICONS.addon)}</span>
       <span>
         <span class="csel-action-title">{selectorCopy.addonTitle}</span>
       </span>

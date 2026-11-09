@@ -215,7 +215,7 @@ test.describe('the account panel, signed in', () => {
     expect(new Set(insets).size).toBe(1);
   });
 
-  test('the current row is the compact list\'s selection: the accent tint and the accent rail', async ({
+  test('the current row is the compact list\'s selection: the accent tint, the accent rail and a check', async ({
     page,
   }) => {
     await signedInPage(page);
@@ -225,6 +225,23 @@ test.describe('the account panel, signed in', () => {
     await expect(row).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
     const rail = await row.evaluate((element) => getComputedStyle(element, '::before').backgroundColor);
     expect(rail).toBe('rgb(0, 147, 178)');
+    await expect(row.locator('.csel-check')).toBeVisible();
+  });
+
+  test('the menu tiles draw the custom icon set', async ({ page }) => {
+    await signedInPage(page, PREMIUM_ME);
+    await control(page).click();
+    for (const [testid, icon] of [
+      ['selector-row-profile', 'character'],
+      ['selector-row-account', 'manage'],
+      ['selector-row-plan', 'premium'],
+      ['selector-row-setup', 'setup'],
+      ['selector-row-sign-out', 'sign-out'],
+    ] as const) {
+      await expect(panel(page).getByTestId(testid).locator(`svg[data-icon="${icon}"]`)).toBeVisible();
+    }
+    await expect(panel(page).getByTestId('selector-paste').locator('svg[data-icon="paste-export"]')).toBeVisible();
+    await expect(panel(page).getByTestId('selector-account-head').locator('svg[data-icon="account"]')).toBeVisible();
   });
 
   test('the floating bar sits on the page column, the control inside its right end', async ({ page }) => {

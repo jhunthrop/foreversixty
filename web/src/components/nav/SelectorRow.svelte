@@ -1,7 +1,7 @@
 <!-- web/src/components/nav/SelectorRow.svelte -->
 <!-- One character in the selector's list (spec 3.C): crest, name in class colour with a
-     faction mark, `{Spec} {Class} · {level} · {Ruleset}`, then source and age. The accent tint and rail mark the
-     current row only; stale and failed use text colour. The row button is one roving tab
+     faction mark, `{Spec} {Class} · {level} · {Ruleset}`, then source and age. The accent tint, rail and check mark
+     the current row only; stale and failed use text colour. The row button is one roving tab
      stop; Retry on a failed row is its own sibling button, never nested. -->
 <script lang="ts">
   import { FACTION_MARK_SIZE, factionLogoSmallSrc, factionName } from '../../lib/faction-mark';
@@ -9,6 +9,7 @@
   import { rowLineThree, rowLineTwo, type SelectorRow } from '../../lib/character-selector/rows';
   import { classColorVar } from '../../lib/report/format';
   import { button } from '../../lib/ui/button';
+  import Glyph from '../ui/Glyph.svelte';
   import SelectorCrest from './SelectorCrest.svelte';
 
   let {
@@ -70,6 +71,7 @@
         </span>
       {/if}
     </span>
+    {#if row.current}<Glyph name="check" size={18} class="csel-check" />{/if}
   </button>
   {#if row.status === 'failed'}
     <button

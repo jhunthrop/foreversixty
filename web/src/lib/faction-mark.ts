@@ -12,7 +12,7 @@
 export type Faction = 'alliance' | 'horde';
 
 /** The row-descriptor size of the emblem (design/DESIGN-SYSTEM.md: 16px in a row descriptor). */
-export const FACTION_MARK_SIZE = 16;
+export const FACTION_MARK_SIZE = 20;
 
 export function factionName(faction: Faction): string {
   return faction === 'alliance' ? 'Alliance' : 'Horde';

@@ -1055,6 +1055,9 @@
     text-align: left;
     color: inherit;
   }
+  .csel-row.is-current .csel-row-main {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+  }
   .csel-row-main:active {
     background: var(--color-pressed);
   }
@@ -1098,9 +1101,12 @@
   .csel-faction {
     display: inline-block;
     flex-shrink: 0;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     object-fit: contain;
+  }
+  .csel-check {
+    color: var(--color-accent);
   }
   .csel-r2 {
     line-height: 1.45;
