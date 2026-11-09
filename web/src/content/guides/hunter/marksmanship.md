@@ -116,7 +116,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because every miss throws away a whole shot, auto shots included, and auto shot is more of your damage than any button you press. Surefooted and good raid gear take you there, and past the cap hit adds nothing; if your character sheet is still short of it, hit matters until you reach it. Agility is attack power and crit together. Crit is strong with Mortal Shots, which makes your ranged crits hit harder. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
+Hit matters up to 9%, the cap against a raid boss, because every miss throws away a whole shot, auto shots included, and auto shot is more of your damage than any button you press. Surefooted and good raid gear take you there, and past the cap hit adds nothing; if your character sheet is still short of it, hit matters until you reach it. Agility is attack power and crit together. Crit is strong with Mortal Shots, which makes your ranged crits hit harder. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -136,7 +136,7 @@ Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds and lines u
 
 Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull, and more auto shots is what Marksmanship lives on. Orc is close behind: Blood Fury is 10% attack power for 15 seconds every two minutes, but Command does nothing for you with the pet dismissed.
 
-Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire, and it lands in the middle of the pack, so it is the paid option, never the pick.
+Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire.
 
 ## Professions
 

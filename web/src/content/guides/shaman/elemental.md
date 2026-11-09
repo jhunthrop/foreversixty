@@ -87,7 +87,7 @@ Drop Mana Spring Totem a few seconds before the pull, then time a Lightning Bolt
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: a bolt that misses does nothing. Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, and your gear has to find the rest. Spell power adds to every damage spell you cast. Nature power adds to Lightning Bolt, Chain Lightning and Earth Shock, which is nearly everything you cast, but Flame Shock and Searing Totem are fire, and it does nothing for them, where plain spell power covers both. Crit feeds Elemental Fury's doubled bonus, on top of the 5% Call of Thunder already gives your bolts. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. The table above gives the order for your level and gear. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
+Hit matters up to the cap and adds nothing past it: a bolt that misses does nothing. Spell hit caps at 16% against a raid boss. Tidal Focus gives you 5% and a Dwarf's Artisan's Precision 1%, and your gear has to find the rest. Spell power adds to every damage spell you cast. Nature power adds to Lightning Bolt, Chain Lightning and Earth Shock, which is nearly everything you cast, but Flame Shock and Searing Totem are fire, and it does nothing for them, where plain spell power covers both. Crit feeds Elemental Fury's doubled bonus, on top of the 5% Call of Thunder already gives your bolts. Intellect is your mana pool and your spell crit at once, and Ancestral Knowledge makes every point 10% bigger. Every caster stat lives on one hit and one crit rating in Forever, so a piece with hit or crit and no spell power still works on your spells.
 
 ## Best in slot
 
@@ -101,7 +101,7 @@ Your weapon imbues only proc on melee swings, so an Elemental's weapon carries B
 
 The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit is the racial that matters for Elemental, since every point of hit counts until your gear reaches the cap. Stoneform's physical damage cut is a nice extra on trash and in PvP.
 
-On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% for 15 seconds every 2 minutes. Press it with Lightning Mastery on the pull and on its own cooldown after that. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, goes outside Lightning Mastery: inside it your bolts are already a 1.5 second cast, and casting speed never shortens the 1.5 second global cooldown. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
+On the Horde, Orc is the damage pick: Blood Fury raises your spell power by 10% for 15 seconds every 2 minutes. Press it with Lightning Mastery on the pull and on its own cooldown after that. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, goes outside Lightning Mastery: inside it your bolts are already a 1.5 second cast, and casting speed never shortens the 1.5 second global cooldown. Windshaper Skyborne brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
 
 ## Professions
 

@@ -7,8 +7,8 @@
 export interface RankFigure {
   /** Final text: "1,063.2". */
   value: string;
-  /** "DPS", "taken / s": 12 px muted after the value. */
-  unit: string;
+  /** "DPS", "taken / s": 12 px muted after the value; left out where the column head names it. */
+  unit?: string;
   /** The column's name, read by assistive tech and shown beside an extra figure on a phone. */
   label: string;
   /** The best of its column: green, with `bestTitle` so colour is not the only signal. */
