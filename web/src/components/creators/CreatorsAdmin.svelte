@@ -36,6 +36,7 @@
     type CreatorRequest,
   } from '../../lib/creators/model';
   import { button } from '../../lib/ui/button';
+  import { FIELD_LABEL } from '../../lib/ui/field';
   import SignInPrompt from '../SignInPrompt.svelte';
   import Field from '../ui/Field.svelte';
   import Figure from '../ui/Figure.svelte';
@@ -237,7 +238,7 @@
                   </span>
                 {/snippet}
                 {#snippet foot()}
-                  <span class="text-muted text-[13px]">{r.about}{r.contact_email ? ` · ${r.contact_email}` : ''}</span>
+                  <span class="text-muted text-[12px] leading-4">{r.about}{r.contact_email ? ` · ${r.contact_email}` : ''}</span>
                 {/snippet}
               </Row>
             {/each}
@@ -283,7 +284,7 @@
               {#if fixed && (field.id === 'slug' || field.id === 'code')}
                 {#if field.id === 'slug'}
                   <div class="flex flex-col gap-1.5">
-                    <span class="t-label">{copy.fields.slug.label} · {copy.fields.code.label}</span>
+                    <span class={FIELD_LABEL}>{copy.fields.slug.label} · {copy.fields.code.label}</span>
                     <span class="text-strong text-[15px]" data-testid="creators-fixed">{copy.fixed(values.slug, values.code)}</span>
                   </div>
                 {/if}

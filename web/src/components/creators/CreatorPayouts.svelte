@@ -44,7 +44,8 @@
   const options = months.map((m, i) => ({ value: m, label: i === 0 ? copy.openMonth(monthLabel(m)) : monthLabel(m) }));
 
   let phase = $state<Phase>('loading');
-  let month = $state(months[1]);
+  /** The month on show: the API's answer, so the page and the API never disagree on which. */
+  let month = $state('');
   let statements = $state<Statement[]>([]);
   let payoutsEnabled = $state(true);
   let selected = $state<number | null>(null);
@@ -62,6 +63,7 @@
 
   async function read(m: string): Promise<void> {
     const page = await listStatements(m);
+    month = page.month;
     statements = page.statements;
     payoutsEnabled = page.payouts_enabled;
   }

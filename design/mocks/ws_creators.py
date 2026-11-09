@@ -37,7 +37,7 @@ CSS = '''<style>
 .f{display:flex;flex-direction:column;gap:6px;min-width:0}.f .t-small{font-size:12px;line-height:16px}
 .ro{font-size:15px;color:var(--strong)}.status{min-height:22px}.page-foot{padding-bottom:48px}
 .trail-end{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.amt{font-variant-numeric:tabular-nums}
-section>.sec-h+*{margin-top:12px}fieldset.fs{border:0;padding:0;margin:0}.radio{width:18px;height:18px;accent-color:var(--gold)}
+section:not(.rsec)>.sec-h+*{margin-top:12px!important}fieldset.fs{border:0;padding:0;margin:0}.radio{width:18px;height:18px;accent-color:var(--gold)}.rprose p:last-child{margin-bottom:0}
 </style>'''
 
 
@@ -181,9 +181,9 @@ def program() -> str:
     """The public page: a document (Page reading, no contents rail), its sections from programCopy, Apply in the head and at the end."""
     secs = ''.join(ReadingSection(e(s['title']), Prose(''.join(f'<p>{e(p)}</p>' for p in s['paragraphs'])), anchor=s['id'])
                    for s in G['sections'])
-    end = ReadingSection(e(G['applyTitle']), Prose(f'<p>{e(G["applyLead"])}</p>') + f'<div class="acts">{Btn(e(G["apply"]), primary=True, small=False)}</div>',
+    end = ReadingSection(e(G['applyTitle']), Prose(f'<p>{e(G["applyLead"])}</p>') + f'<div class="acts">{_Button(e(G["apply"]), True, False)}</div>',
                          anchor='apply')
-    head = PageHeader(e(G['pageTitle']), lead=e(G['lead']), actions=Btn(e(G['apply']), primary=True, small=False))
+    head = PageHeader(e(G['pageTitle']), lead=e(G['lead']), actions=_Button(e(G['apply']), True, False))
     body = head + f'<div class="page-foot">{Page("reading", secs + end, "", toc_from=0)}</div>'
     return render('Creators · Forever Sixty', body, None, '/creators mock (public, signed out); data creators-facts.json (programCopy).')
 
@@ -199,7 +199,7 @@ def apply(state: str) -> str:
                  + field(f['channel'])
                  + f'<fieldset class="f fs"><legend class="t-label">{e(f["platform"]["label"])}</legend><div class="acts">{radios}</div></fieldset>'
                  + field(f['audience'])
-                 + f'<label class="f"><span class="t-label">{e(f["about"]["label"])}</span><textarea class="field" rows="5" style="height:auto;padding-top:10px"></textarea>'
+                 + f'<label class="f"><span class="t-label">{e(f["about"]["label"])}</span><textarea class="field" rows="5" style="height:118px;padding-top:10px"></textarea>'
                    f'<span class="t-small">{e(f["about"]["hint"])} · {e(Y["counter"])}</span></label>'
                  + field(f['email'])
                  + f'<p class="t-small">{e(c["consent"])}</p>'

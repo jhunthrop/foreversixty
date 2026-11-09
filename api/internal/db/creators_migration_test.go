@@ -8,6 +8,10 @@ import (
 // creatorsVersion is the creator program's migration (design/specs/2026-11-08-creator-program.md).
 const creatorsVersion = 94
 
+// beforeCreators is the newest migration on main before ours (going down to it also takes back
+// any lane's migration numbered between, which the cleanup restores).
+const beforeCreators = 92
+
 // The creator program's migration adds its tables and the entitlements source 'creator', holds
 // one open application per account and the code and channel rules, and its down removes all of
 // it, turning a creator grant back into a plain grant.
@@ -52,7 +56,7 @@ func TestMigrationAddsTheCreatorProgram(t *testing.T) {
 	}
 	mustExec(`insert into entitlements (user_id, plan, source, status) values (9102, 'premium', 'creator', 'active')`)
 
-	migrateTo(t, url, creatorsVersion-1)
+	migrateTo(t, url, beforeCreators)
 	var tables int
 	if err := pool.QueryRow(ctx, `select count(*) from information_schema.tables where table_name like 'creator%'`).Scan(&tables); err != nil {
 		t.Fatal(err)

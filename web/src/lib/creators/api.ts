@@ -45,8 +45,9 @@ export const makeInvite = async (id: number): Promise<string> =>
   (await data<{ url: string }>(`${ADMIN}/${id}/invite`, { method: 'POST' })).url;
 export const refreshStripe = async (id: number): Promise<StripeStatus> =>
   (await data<{ stripe_status: StripeStatus }>(`${ADMIN}/${id}/stripe-status`, { method: 'POST' })).stripe_status;
-export const listStatements = (month: string): Promise<StatementsPage> =>
-  data<StatementsPage>(`${ADMIN}/statements?month=${encodeURIComponent(month)}`);
+/** A month's statements; with no month, the API's own default, the last closed month. */
+export const listStatements = (month = ''): Promise<StatementsPage> =>
+  data<StatementsPage>(`${ADMIN}/statements${month === '' ? '' : `?month=${encodeURIComponent(month)}`}`);
 export const approveStatement = (id: number, month: string): Promise<Statement> =>
   data<Statement>(`${ADMIN}/${id}/statements/${encodeURIComponent(month)}/approve`, { method: 'POST' });
 export const listRequests = async (): Promise<CreatorRequest[]> =>

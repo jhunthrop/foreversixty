@@ -9,6 +9,7 @@
   import { PLATFORMS, applyCopy as copy, type Platform } from '../../lib/creators/copy';
   import { ABOUT_MAX, dayLabel } from '../../lib/creators/model';
   import { button } from '../../lib/ui/button';
+  import { FIELD_LABEL } from '../../lib/ui/field';
   import { LINK } from '../../lib/ui/primitives';
   import SignInPrompt from '../SignInPrompt.svelte';
   import Field from '../ui/Field.svelte';
@@ -126,7 +127,7 @@
             testid="apply-channel"
           />
           <fieldset class="m-0 flex flex-col gap-1.5 border-0 p-0" data-testid="apply-platform">
-            <legend class="t-label">{copy.fields.platform.label}</legend>
+            <legend class={FIELD_LABEL}>{copy.fields.platform.label}</legend>
             <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
               {#each PLATFORMS as p (p)}
                 <label class="flex items-center gap-2 text-[15px]">

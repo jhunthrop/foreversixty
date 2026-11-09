@@ -227,7 +227,7 @@ test.describe('/creators and /creators/apply', () => {
     });
     await page.goto('/creators/apply');
     await page.getByTestId('apply-channel').fill('https://twitch.tv/emberfall');
-    await page.getByLabel('YouTube').check();
+    await page.getByRole('radio', { name: 'YouTube' }).check();
     await page.getByTestId('apply-audience').fill('1,200');
     await page.getByTestId('apply-about').fill('Hardcore runs three nights a week.');
     await expect(page.getByTestId('apply-form')).toContainText('34 of 500');
