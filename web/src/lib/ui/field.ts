@@ -16,4 +16,4 @@ export function fieldEdge(invalid: boolean): string {
   return invalid ? 'border-wipe' : 'border-line';
 }
 /** The label over it: 12 px caps, muted. */
-export const FIELD_LABEL = 'text-label tracking-label text-muted font-bold uppercase';
+export const FIELD_LABEL = 'text-label text-muted font-semibold';

@@ -8,22 +8,21 @@
 import '../styles/fonts.css';
 // The faces every page paints first are preloaded so the swap from the fallback face
 // happens before first paint on most connections; Vite gives them the same hashed URL
-// fonts.css's own @font-face rules reference (../assets/fonts/*-subset.woff2, since the
-// web-font-subsets lane), so no extra bytes are fetched. Barlow 600 joins 400 here for the
-// same reason: it is the weight the header and footer paint with on every page, so an
-// unpreloaded 600 arrives late enough to shift them (final whole-branch review, Lighthouse
-// rounds 1-3 — layout-shifts kept naming barlow-latin-600-normal.woff2's load as the
-// footer's own shift, on whichever page's font timing happened to expose it that run).
-// Barlow 700 is the heading face (every h1 and section title, tokens.css --font-heading), so
-// it is preloaded too. The wordmark is an SVG path (Wordmark.astro), so it loads no face.
+// fonts.css's own @font-face rules reference (../assets/fonts/*-subset.woff2), so no extra
+// bytes are fetched. Open Sans 400 and 600 are the body and the footer and selector weight on
+// every page; Archivo 600 is the bar's doors; Marcellus is the bar's name and every heading
+// (round 5), so all four are preloaded. An unpreloaded face arrives late enough to shift the
+// header or footer (the Lighthouse CLS budget).
 //
 // The data-og attributes are the selectors src/worker.ts rewrites through HTMLRewriter when
 // it serves a shell page for an id that did not exist at build time. Renaming one silently
 // stops that page's unfurl from updating, so src/pages/_shells.test.ts asserts they exist.
-import barlow400Url from '../assets/fonts/barlow-400-subset.woff2?url';
-import barlow600Url from '../assets/fonts/barlow-600-subset.woff2?url';
-import barlow700Url from '../assets/fonts/barlow-700-subset.woff2?url';
+import openSans400Url from '../assets/fonts/open-sans-400-subset.woff2?url';
+import openSans600Url from '../assets/fonts/open-sans-600-subset.woff2?url';
+import archivo600Url from '../assets/fonts/archivo-600-subset.woff2?url';
 import marcellus400Url from '../assets/fonts/marcellus-400-subset.woff2?url';
+import { artStyle, FAVICON } from '../lib/ui/assets';
+import type { BandArt } from '../lib/ui/primitives';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -63,8 +62,18 @@ interface Props {
   jsonLd?: object[];
   /** A page built from the ui/ primitives: from 1760 px its column widens (tokens.css, `data-column`). */
   wide?: boolean;
+  /** The art behind the bar: the painted band, or home's hero (with PageHeader's `art="hero"`). */
+  art?: BandArt;
 }
-const { title, description, path, canonicalPath = path, jsonLd = [], wide = false } = Astro.props;
+const {
+  title,
+  description,
+  path,
+  canonicalPath = path,
+  jsonLd = [],
+  wide = false,
+  art = 'band',
+} = Astro.props;
 const site = SITE_URL;
 const fullTitle = pageTitle(path, title);
 const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
@@ -75,7 +84,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" style={artStyle()}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -83,13 +92,15 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <meta name="description" content={description} data-og="description" />
     <link rel="canonical" href={`${site}${canonicalPath}`} data-og="canonical" />
     {noindex && <meta name="robots" content="noindex" />}
-    <link rel="preload" href={barlow400Url} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={barlow600Url} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={barlow700Url} as="font" type="font/woff2" crossorigin />
-    {/* A page built from the ui/ primitives (`wide`) paints its title in Marcellus (ui/PageHeader),
-        no other page does: preloading it there keeps the title off the LCP's critical chain. */}
-    {wide && <link rel="preload" href={marcellus400Url} as="font" type="font/woff2" crossorigin />}
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {/* The faces every page paints first (round 5): Open Sans body, Archivo in the bar, Marcellus
+        in the bar's name and every heading. */}
+    <link rel="preload" href={openSans400Url} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={openSans600Url} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={archivo600Url} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={marcellus400Url} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href={FAVICON.ico} sizes="any" />
+    <link rel="icon" href={FAVICON.png32} type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href={FAVICON.appleTouch} />
     <meta property="og:title" content={fullTitle} data-og="og-title" />
     <meta property="og:description" content={description} data-og="og-description" />
     <meta property="og:url" content={`${site}${canonicalPath}`} data-og="og-url" />
@@ -286,20 +297,23 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       }
     </script>
   </head>
-  <body class="min-h-screen flex flex-col bg-bg" data-column={wide ? 'wide' : undefined}>
+  <body class="min-h-screen flex flex-col" data-column={wide ? 'wide' : undefined}>
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:absolute focus:left-[18px] focus:top-[18px] focus:z-50 focus:inline-flex focus:items-center focus:h-11 focus:px-4 focus:rounded-control focus:bg-bg focus:text-gold focus:font-semibold focus:outline-2 focus:outline-gold"
     >
       Skip to content
     </a>
-    <Header path={path}>
-      {/* Every page carries the same character selector (owner 2026-10-04: "it should always
-          be on and always be the same"). The island hydrates after load
-          (src/directives/idle-after-load.ts); until then it is a link the scripts below have
-          already filled from the stored pointer. It also renders the phone Menu's first row. */}
-      <CharacterSelector client:idle-after-load slot="session" />
-    </Header>
+    {/* The band the floating bar sits over (nav.css .site-top); ui/PageHeader continues it. */}
+    <div class="site-top ui-band ui-band-end" data-art={art}>
+      <Header path={path}>
+        {/* Every page carries the same character selector (owner 2026-10-04: "it should always
+            be on and always be the same"). The island hydrates after load
+            (src/directives/idle-after-load.ts); until then it is a link the scripts below have
+            already filled from the stored pointer. It also renders the phone Menu's first row. */}
+        <CharacterSelector client:idle-after-load slot="session" />
+      </Header>
+    </div>
     <div class="page-column">
       <slot />
     </div>
@@ -357,6 +371,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
           document.querySelectorAll('[data-csel-sub]').forEach((el) => (el.textContent = full));
           document.querySelectorAll('[data-csel-sub-class]').forEach((el) => (el.textContent = classLine));
           document.querySelectorAll('[data-csel-sub-short]').forEach((el) => (el.textContent = short));
+          document.querySelectorAll('[data-csel-level]').forEach((el) => (el.textContent = level));
         }
       } catch {
         /* malformed pointer or cache: leave the link as rendered, hydration answers for real */

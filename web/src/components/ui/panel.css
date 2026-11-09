@@ -1,0 +1,71 @@
+/* web/src/components/ui/panel.css
+   Round 5's surfaces (design/specs/2026-11-09-directions.md, Corners and The frame): one panel,
+   drawn here once and worn by Plate, Section's boxed form, Frame, the overlays and any surface
+   that names `.ui-surface`. Imported by global.css, so the static pages and the API's island
+   pages carry it.
+
+     .ui-surface   the card brown-black, a black hairline inside a warm outer ring, the 10 px
+                   radius. Its muted ink is the card's (global.css).
+     .ui-framed    a 1 px cream line at 42 %, inset 6 px, following the radius: their bordered
+                   square elements, rounded. Two or three featured panels a page, never more.
+     .ui-lead      the page's one lead panel: the framed line plus the corner flourishes
+                   (ui/FrameCorners.svelte draws them; they sit in the 4 px inset). */
+
+@layer components {
+  .ui-surface {
+    position: relative;
+    border: 1px solid black;
+    border-radius: var(--radius-plate);
+    background: var(--color-raised);
+    box-shadow: 0 0 0 1px var(--color-panel-edge);
+  }
+  .ui-framed::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    z-index: 1;
+    border: 1px solid var(--color-frame-line);
+    border-radius: calc(var(--radius-plate) - 4px);
+    pointer-events: none;
+  }
+  .ui-frame-corner {
+    position: absolute;
+    z-index: 1;
+    width: 26px;
+    height: 26px;
+    color: var(--color-cream);
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  .ui-frame-corner[data-corner='tl'] {
+    top: 4px;
+    left: 4px;
+  }
+  .ui-frame-corner[data-corner='tr'] {
+    top: 4px;
+    right: 4px;
+    transform: rotate(90deg);
+  }
+  .ui-frame-corner[data-corner='br'] {
+    right: 4px;
+    bottom: 4px;
+    transform: rotate(180deg);
+  }
+  .ui-frame-corner[data-corner='bl'] {
+    bottom: 4px;
+    left: 4px;
+    transform: rotate(270deg);
+  }
+}
+
+/* Every surface drawn on the earth ground restores the card's muted ink (global.css's body sets
+   the ground's, white at .5 being 3.2:1 on the earth). Outside the layers, so it holds whatever
+   utilities the surface also carries. */
+.ui-surface,
+.ui-overlay,
+.ui-countdown,
+.bg-raised,
+.bg-bg,
+.bg-foot {
+  --color-muted: var(--color-muted-card);
+}

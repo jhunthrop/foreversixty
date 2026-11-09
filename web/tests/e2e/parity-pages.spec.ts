@@ -45,15 +45,22 @@ const MOCK_PHONE_BAR =
   "below 768 the mock library's ControlBar line is a details/summary (ws_lib.control_bar); the built " +
   "ControlBar's is a button with aria-expanded, the same disclosure (every lane's bar shares it)";
 const HAS_BAR = new Set(['changelog', 'changelog-game']);
-const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> =
-  Object.fromEntries(
+// Round 5 (design-system lane, 2026-11-09): with Open Sans the game changelog's last entries wrap
+// 9 px taller than ws_pages.py draws them, so the footer sits 9 px lower (no region above it moves
+// past the tolerance). The changelog lane (P15) redraws the page on the new system and clears it.
+const ROUND5_GAME_ROWS =
+  "Open Sans wraps the game changelog's entries 9 px taller than ws_pages.py (lane P15)";
+const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> = {
+  ...Object.fromEntries(
     STATES.map(({ id }) => [
       `${id}-390`,
       HAS_BAR.has(id)
         ? { failures: ['head:box', 'controls:inventory'], why: `${MOCK_HEAD_INSET}; ${MOCK_PHONE_BAR}` }
         : { failures: ['head:box'], why: MOCK_HEAD_INSET },
     ]),
-  );
+  ),
+  'changelog-game-1440': { failures: ['site-footer:box'], why: ROUND5_GAME_ROWS },
+};
 
 test.describe('changelog, legal and 404 mock parity', () => {
   test.skip(({ isMobile }) => isMobile, 'the parity mocks are desktop captures');

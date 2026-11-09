@@ -7,7 +7,6 @@ import {
   GUILD_OVERVIEW_TAB,
   NAV_GROUPS,
   PREMIUM_NAV_ITEM,
-  SETUP_NAV_ITEM,
   isNavGroupCurrent,
   isNavItemCurrent,
   navKey,
@@ -17,8 +16,8 @@ import { OPEN_SELECTOR_EVENT } from '../lib/character-selector/config';
 import { PREMIUM_SOURCE_KEY, STORED_SOURCES } from '../lib/account/premium-hint';
 import HeaderPanel from './HeaderPanel.astro';
 import HeaderSearch from './HeaderSearch.astro';
-import Wordmark from './Wordmark.astro';
 import Seal from './Seal.astro';
+import { SITE_NAME } from '../lib/seo';
 import { REGION } from '../lib/ui/regions';
 
 interface Props {
@@ -68,10 +67,8 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
     if (root.dataset.premium || root.dataset.serverSims) root.dataset.premiumNav = 'hide';
   </script>
   <a href="/" class="site-wordmark">
-    <Seal size={30} gradientId="header-seal" />
-    <span class="site-wordmark-type">
-      <Wordmark />
-    </span>
+    <Seal size={40} eager class="site-wordmark-seal" />
+    <span class="site-wordmark-type">{SITE_NAME}</span>
   </a>
   <div class="site-right">
     <HeaderSearch place="bar" />
@@ -105,6 +102,19 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
       {NAV_GROUPS.map((group, index) => {
         const key = navKey(group.label);
         const panel = { group, guideClasses: guideEntries, isGuild: index === GUILD_GROUP_INDEX };
+        if (!group.panel)
+          return (
+            <div class="site-group site-group-plain" data-group={key}>
+              <a
+                href={group.href}
+                class="site-door site-door-plain"
+                data-door={key}
+                aria-current={isNavGroupCurrent(group, path) ? 'page' : undefined}
+              >
+                {group.label}
+              </a>
+            </div>
+          );
         return (
           <div class="site-group" data-group={key}>
             <h2 class="site-menu-heading">{group.label}</h2>
@@ -148,21 +158,13 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
         );
       })}
       <a
-        href={SETUP_NAV_ITEM.href}
-        class="site-door site-door-setup"
-        data-door="setup"
-        aria-current={isNavItemCurrent(SETUP_NAV_ITEM, path) ? 'page' : undefined}
-      >
-        {SETUP_NAV_ITEM.label}
-      </a>
-      <a
         href={PREMIUM_NAV_ITEM.href}
         class="site-door site-door-premium"
         data-door="premium"
         data-testid="nav-premium"
         aria-current={isNavItemCurrent(PREMIUM_NAV_ITEM, path) ? 'page' : undefined}
       >
-        <span class="pill pill-site">{PREMIUM_NAV_ITEM.label}</span>
+        {PREMIUM_NAV_ITEM.label}
       </a>
     </nav>
   </div>

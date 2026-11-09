@@ -59,8 +59,7 @@
 
 <FormRow label={copy.apply.heading} onsubmit={send} testid="guild-recruit-form">
   <div class="flex min-w-[220px] flex-1 flex-col gap-[6px]">
-    <label class="text-label tracking-label text-muted font-bold uppercase" for="guild-recruit-character"
-      >{copy.apply.character}</label
+    <label class="text-label text-muted font-bold" for="guild-recruit-character">{copy.apply.character}</label
     >
     <Select
       id="guild-recruit-character"

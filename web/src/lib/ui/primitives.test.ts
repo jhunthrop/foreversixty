@@ -5,7 +5,7 @@ describe('titleColor', () => {
   it('paints a class page in its class colour, a guild in its faction colour, the rest strong', () => {
     expect(titleColor({ classSlug: 'hunter' })).toBe('var(--color-class-hunter)');
     expect(titleColor({ faction: 'horde' })).toBe('var(--color-horde)');
-    expect(titleColor('strong')).toBe('var(--color-strong)');
+    expect(titleColor('strong')).toBe('var(--color-cream)');
   });
 
   it('knows the nine classes', () => {

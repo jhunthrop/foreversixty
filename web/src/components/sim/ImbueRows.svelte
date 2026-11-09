@@ -29,7 +29,7 @@
 <div class="flex flex-col gap-3 p-3 pt-0">
   {#each sections as section (section.slot)}
     <section data-testid={`sim-imbue-slot-${section.slot}`}>
-      <h3 class="text-label tracking-label text-nav mb-1 font-bold uppercase">
+      <h3 class="text-label text-nav mb-1 font-bold">
         {simCopy.imbueSlotLabel[section.slot] ?? section.slot}
       </h3>
       {#each section.kinds as group (group.kind)}

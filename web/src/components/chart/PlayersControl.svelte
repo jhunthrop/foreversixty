@@ -107,7 +107,7 @@
 
 <Select
   {id}
-  class="{seen ? 'w-[260px]' : 'w-[196px]'} max-md:w-full"
+  class="{seen ? 'w-[272px]' : 'w-[196px]'} max-md:w-full"
   size="dense"
   align="end"
   multiple

@@ -43,11 +43,11 @@ function uncommented(body: string): string {
 }
 
 function filledControls(body: string): number {
-  return (body.match(/<(?:button|a)[^>]*bg-\[linear-gradient[^>]*>/g) ?? []).length;
+  return (body.match(/<(?:button|a)[^>]*bg-teal [^>]*>/g) ?? []).length;
 }
 
 function filledButtons(body: string): number {
-  return (body.match(/<button[^>]*bg-\[linear-gradient[^>]*>/g) ?? []).length;
+  return (body.match(/<button[^>]*bg-teal [^>]*>/g) ?? []).length;
 }
 
 /** The opening tag of the element carrying a data-testid. */
@@ -284,7 +284,7 @@ describe('connect off: the paste state', () => {
     const me = meWith(true, { connect: false, discord: null });
     const body = render(AccountDiscordBlock, { props: { me, quiet: true } }).body;
     expect(filledButtons(body)).toBe(0);
-    expect(tagOf(body, 'discord-save')).toContain('border-line-card');
+    expect(tagOf(body, 'discord-save')).toContain('bg-blue ');
   });
 
   it('has no connect control, disclosure or back link', () => {
@@ -311,7 +311,7 @@ describe('connect state', () => {
 
   it('is a plain same-tab link to the connect route, styled as the one filled control', () => {
     expect(body).toMatch(
-      /<a[^>]*href="https:\/\/api\.foreversixty\.gg\/v1\/notifications\/discord\/connect"[^>]*bg-\[linear-gradient[^>]*data-testid="discord-connect"/,
+      /<a[^>]*href="https:\/\/api\.foreversixty\.gg\/v1\/notifications\/discord\/connect"[^>]*bg-teal [^>]*data-testid="discord-connect"/,
     );
     expect(filledControls(body)).toBe(1);
     expect(body).not.toContain('target=');

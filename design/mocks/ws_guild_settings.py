@@ -95,7 +95,7 @@ def chooser_section() -> str:
                      f'<span class="t-small" style="display:block">{line}</span></span></label>' for i, (name, now, later, line) in enumerate(TIERS))
     seg = Segmented([('Yearly', True), ('Monthly', False)]).replace('role="radiogroup"', 'role="radiogroup" aria-label="Billing interval"', 1)
     # The ready blocks sit 12 px under the section body's top (GuildBillingSection's lower block); the control is 46 px with its rule.
-    inner = (f'<div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;max-width:780px;padding-top:12px">'
+    inner = (f'<div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;max-width:720px;padding-top:12px">'
              f'<span style="display:flex;align-items:center;min-height:46px">{seg}</span>'
              f'<div role="radiogroup" aria-label="Plan" style="display:flex;flex-direction:column;gap:4px;width:100%">{radios}</div>'
              f'{p(f"{S.VERIFIED} verified members today.")}<span class="sp-act">{Link("Compare Guild and Raid guild &rsaquo;")}</span>{Button("Start the 7-day trial", primary=True)}'

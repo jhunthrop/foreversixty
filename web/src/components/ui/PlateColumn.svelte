@@ -21,7 +21,7 @@
 
 <div class="ui-pcol" data-testid={testid}>
   <div class="ui-pcol-head">
-    <h2 class="text-label tracking-label text-muted m-0 font-bold uppercase">{label}</h2>
+    <h2 class="text-label text-muted m-0 font-bold">{label}</h2>
     {#if meta}<span class="text-small text-muted ml-auto text-right">{meta}</span>{/if}
   </div>
   {@render children()}

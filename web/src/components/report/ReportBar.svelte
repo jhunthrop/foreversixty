@@ -182,10 +182,7 @@
 </script>
 
 {#snippet group(label: string, id: string)}
-  <span
-    class="report-bar-label text-label tracking-label text-muted font-bold uppercase"
-    id={`${id}-bar-label`}>{label}</span
-  >
+  <span class="report-bar-label text-label text-muted font-bold" id={`${id}-bar-label`}>{label}</span>
 {/snippet}
 
 <ControlBar groups={[]} label="Report choices" {summary} labelsFrom={1920} testid="report-bar">

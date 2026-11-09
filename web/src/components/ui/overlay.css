@@ -20,20 +20,27 @@
 @layer components {
   .ui-overlay {
     min-width: 0;
-    border: 1px solid var(--color-line);
+    border: 1px solid black;
     border-radius: var(--radius-plate);
     background: var(--color-raised);
-    box-shadow: var(--shadow-overlay);
+    box-shadow:
+      0 0 0 1px var(--color-panel-edge),
+      var(--shadow-overlay);
   }
   .ui-overlay[data-kind='sheet'] {
     border-bottom: 0;
     border-radius: var(--radius-plate) var(--radius-plate) 0 0;
   }
-  /* The client's tooltip: a dark translucent ground and its thin light edge. */
+  /* The client's tooltip, exactly (round 4): its dark blue ground, the grey edge with a black
+     outer and a blue-grey inner line, the client's own 4 px corner. */
   .ui-overlay[data-kind='tooltip'] {
-    border-color: rgb(196 203 218 / 0.4);
-    background: rgb(8 11 20 / 0.97);
-    backdrop-filter: blur(3px);
+    border-color: var(--color-tooltip-edge);
+    border-radius: var(--radius-tooltip);
+    background: var(--color-tooltip);
+    box-shadow:
+      0 0 0 1px black,
+      inset 0 0 0 1px var(--color-tooltip-inner),
+      var(--shadow-overlay);
   }
 
   .ui-overlay .ui-overlay-rule-t {
@@ -48,7 +55,7 @@
     background: var(--color-hover);
   }
   .ui-overlay .ui-overlay-fade {
-    background: linear-gradient(180deg, rgb(13 17 26 / 0), var(--color-raised));
+    background: linear-gradient(180deg, transparent, var(--color-raised));
     pointer-events: none;
   }
   .ui-overlay .ui-overlay-grab {

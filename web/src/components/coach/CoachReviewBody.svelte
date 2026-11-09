@@ -81,7 +81,7 @@
   {#if review.fixFirst !== null}
     {@const fix = review.fixFirst}
     <section class="mt-6" data-testid="coach-fix-first">
-      <h3 class="text-label tracking-label text-gold font-bold uppercase">{coachCopy.labelFixFirst}</h3>
+      <h3 class="text-label text-gold font-bold">{coachCopy.labelFixFirst}</h3>
       <div class="mt-2 flex items-center gap-3">
         <SpellIcon url={names.iconUrl(firstSpellId(fix.anchors, answer.anchors))} size={36} />
         <p class="text-strong text-[20px] leading-7 font-bold" data-testid="coach-fix-title">
@@ -93,7 +93,7 @@
       </p>
       {@render linkLines(fix.links, 0)}
       <div class="mt-4">
-        <h4 class="text-label tracking-label text-muted font-bold uppercase">{coachCopy.labelPractice}</h4>
+        <h4 class="text-label text-muted font-bold">{coachCopy.labelPractice}</h4>
         <p
           class="text-text mt-1 max-w-[720px] text-[15px] leading-6 {slotClass('drill', held)}"
           data-testid="coach-drill"
@@ -107,7 +107,7 @@
 
   {#if thenSlots > 0}
     <section class="mt-8" data-testid="coach-then">
-      <h3 class="text-label tracking-label text-muted font-bold uppercase">{coachCopy.labelThen}</h3>
+      <h3 class="text-label text-muted font-bold">{coachCopy.labelThen}</h3>
       <ul class="mt-2 flex flex-col gap-5">
         {#each slots(thenSlots) as index (index)}
           {@const item = review.thenFix[index]}
@@ -141,7 +141,7 @@
 
   {#if wellSlots > 0}
     <section class="mt-8" data-testid="coach-well">
-      <h3 class="text-label tracking-label text-kill font-bold uppercase">{coachCopy.labelWell}</h3>
+      <h3 class="text-label text-kill font-bold">{coachCopy.labelWell}</h3>
       <ul class="mt-2 flex flex-col gap-1">
         {#each slots(wellSlots) as index (index)}
           {@const item = review.doingWell[index]}

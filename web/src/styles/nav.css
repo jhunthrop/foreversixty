@@ -14,49 +14,70 @@
 
 @layer components {
   /* ------------------------------------------------------------------ header */
+  /* The band the bar floats over (Base.astro's .site-top, a ui/band.css band starting at the top
+     of the page): --site-top-h is its height, the offset ui/PageHeader and ui/ControlBar continue
+     the band from. */
+  :root {
+    --site-top-h: 80px;
+  }
+  .site-top {
+    padding-top: 16px;
+  }
+  /* Round 5's floating bar (design/specs/2026-11-09-directions.md section 5): their rounded bar,
+     inset over the band and aligned to the page's content edge, 64 px, the nav-bar colour, one
+     faint light edge, the panel radius. Left: our seal and name; then the doors in Archivo; right:
+     search, the one-line account control and Premium as their teal Subscribe. */
   .site-header {
-    /* The page's content edge: the 1344 column's gutter, so the seal and the account control
-       sit where the page's own content does (spec 2026-10-28-polish 1.3). */
+    /* The page's content edge: the column's gutter, so the bar's ends sit where the page's own
+       content does. */
     --bar-inset: calc(max(0px, (100% - var(--page-max)) / 2) + var(--page-gutter));
     position: relative;
     z-index: 40;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    /* No hairline under the bar (the flat system: hierarchy by type and spacing); the extra pixel
-       of bottom padding keeps the bar the 81 px it was drawn at. */
-    padding: 18px var(--bar-inset) 19px;
-    background: var(--color-bg);
+    gap: 20px;
+    height: 64px;
+    margin: 0 var(--bar-inset);
+    padding: 0 8px 0 0;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    border-radius: var(--radius-plate);
+    background: var(--color-nav-bar);
+    font-family: var(--font-nav);
   }
   .site-wordmark {
     display: inline-flex;
+    align-self: stretch;
     align-items: center;
-    gap: 8px;
-    min-height: 44px;
+    gap: 10px;
     flex-shrink: 0;
+    margin-right: 2px;
+    padding: 0 18px;
+    border-right: 1px solid rgb(255 255 255 / 0.1);
   }
-  .site-wordmark > svg {
-    width: 30px;
-    height: 30px;
+  .site-wordmark-seal {
+    width: 40px;
+    height: 40px;
   }
-  /* The wordmark is Wordmark.astro's SVG path, sized in em, so font-size alone sizes it. */
   .site-wordmark-type {
-    display: inline-flex;
-    font-size: 20px;
+    font-family: var(--font-title);
+    font-size: 25px;
+    line-height: 1;
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-cream);
+    white-space: nowrap;
+  }
+  .site-wordmark:hover .site-wordmark-type {
     color: var(--color-strong);
   }
-  .site-menu {
+  .site-menu,
+  .site-doors {
     display: contents;
   }
-  .site-doors {
+  .site-doors > * {
     order: 2;
-    display: flex;
-    align-self: stretch;
-    margin: -18px 0 -19px;
-    gap: 22px;
-    /* Sentence case like the rest of the system (owner 2026-11-06): Barlow 600, no tracking. */
-    font-size: 15px;
+  }
+  .site-group {
+    font-size: 17px;
     font-weight: 600;
     white-space: nowrap;
   }
@@ -67,7 +88,12 @@
   .site-group {
     position: relative;
     display: flex;
+    align-self: stretch;
     align-items: center;
+  }
+  /* The current page: a cyan underline on the bar's bottom edge (their tab underline). */
+  .site-group:has(> .site-door[aria-current='page']) {
+    box-shadow: inset 0 -3px 0 var(--color-accent);
   }
   .site-menu-heading,
   .site-menu-list {
@@ -79,15 +105,12 @@
     min-height: 44px;
     color: var(--color-nav);
   }
-  /* The plain fifth door sits on the doors' row, not stretched to the groups' bar height. */
-  .site-door-setup {
-    align-self: center;
+  /* A plain door (no sub-pages) fills its group's bar height, as a door with a panel does. */
+  .site-door-plain {
+    align-self: stretch;
   }
   .site-door:hover,
   .site-door-toggle:hover {
-    color: var(--color-strong);
-  }
-  .site-door[aria-current='page'] {
     color: var(--color-gold);
   }
   .site-door-toggle {
@@ -99,7 +122,7 @@
     padding: 0;
     border: 0;
     background: none;
-    color: var(--color-muted);
+    color: rgb(255 255 255 / 0.7);
     cursor: pointer;
   }
   .site-door[aria-expanded='true'],
@@ -115,8 +138,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 2px;
-    background: var(--color-gold);
+    height: 3px;
+    background: var(--color-accent);
   }
   /* ------------------------------------------------------------- hover panels */
   /* A door's panel is the overlay surface (`ui-overlay`, kind menu: ui/overlay.css); this places it. */
@@ -151,7 +174,7 @@
   .site-panel-row:hover,
   .site-panel-class:hover,
   .site-panel-foot:hover {
-    background: #101624;
+    background: var(--color-hover);
   }
   .site-panel-row:focus-visible,
   .site-panel-class:focus-visible,
@@ -160,7 +183,7 @@
   .site-door-toggle:focus-visible {
     outline: 2px solid var(--color-gold);
     outline-offset: -2px;
-    background: #101624;
+    background: var(--color-hover);
   }
   .site-panel-icon {
     flex-shrink: 0;
@@ -235,52 +258,53 @@
     order: 3;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     flex-shrink: 0;
+    margin-left: auto;
+    font-family: var(--font-body);
   }
   .site-menu-character,
   .site-menu-button {
     display: none;
   }
 
-  /* 1280 to 1439: four doors (spec 2026-10-15 section 5) give the
-     row back the room the lookup took, so the gaps are the nav spec's again and the lookup
-     keeps its "/" hint. */
+  /* Narrower desktops: the doors and the name tighten so the bar keeps one 64 px row. */
   @media (max-width: 1439px) {
     .site-header {
       gap: 18px;
-      padding: 18px var(--bar-inset) 19px;
     }
-    .site-doors {
-      gap: 20px;
+    .site-wordmark {
+      padding: 0 14px;
+    }
+    .site-wordmark-type {
+      font-size: 22px;
+    }
+    .site-group {
+      font-size: 16px;
     }
   }
   @media (max-width: 1279px) {
     .site-header {
-      gap: 12px;
-      padding: 18px var(--bar-inset) 19px;
+      gap: 13px;
     }
     .site-wordmark {
-      gap: 7px;
+      gap: 8px;
+      padding: 0 12px;
     }
-    .site-wordmark > svg {
-      width: 28px;
-      height: 28px;
+    .site-wordmark-seal {
+      width: 34px;
+      height: 34px;
     }
+    /* Seven doors, the account and Premium need the room: the seal alone leads the bar here
+       (the name returns in the phone bar and from 1280). */
     .site-wordmark-type {
-      font-size: 17px;
+      display: none;
     }
-    .site-doors {
-      gap: 14px;
-      font-size: 14px;
+    .site-group {
+      font-size: 15px;
     }
     .site-right {
-      gap: 4px;
-    }
-  }
-  @media (max-width: 1099px) {
-    .site-doors {
-      gap: 13px;
+      gap: 6px;
     }
   }
 
@@ -292,16 +316,31 @@
       align-items: center;
       gap: 0 8px;
       height: 56px;
-      padding: 6px 18px;
+      margin: 0 8px;
+      padding: 5px 6px 5px 0;
+    }
+    :root {
+      --site-top-h: 64px;
+    }
+    .site-top {
+      padding-top: 8px;
     }
     .site-header[data-menu-open] {
       height: auto;
     }
     .site-wordmark {
       gap: 8px;
+      height: 44px;
+      padding: 0 12px;
+      border-right: 0;
+    }
+    .site-wordmark-seal {
+      width: 34px;
+      height: 34px;
     }
     .site-wordmark-type {
-      font-size: 16px;
+      display: inline;
+      font-size: 19px;
     }
     .site-right {
       display: contents;
@@ -329,7 +368,8 @@
       display: none;
       grid-column: 1 / -1;
       grid-row: 3;
-      padding: 12px 0 14px;
+      padding: 12px 12px 14px;
+      font-family: var(--font-body);
     }
     .site-header[data-menu-open] .site-menu {
       display: block;
@@ -354,7 +394,7 @@
       color: var(--color-strong);
     }
     .site-menu-character:hover {
-      background: #101624;
+      background: var(--color-hover);
     }
     .site-doors {
       display: block;
@@ -370,17 +410,21 @@
     .site-panel {
       display: none;
     }
-    /* Get set up: its own row after the groups, the Discord row's shape. */
-    .site-door-setup {
+    /* A plain door is its own row in the Menu, the heading's place taken by the link. */
+    .site-group-plain {
+      padding-top: 4px;
+    }
+    .site-group-plain > .site-door-plain {
       display: flex;
-      justify-content: center;
+      align-items: center;
       min-height: 44px;
-      margin-top: 12px;
-      border-radius: 4px;
-      color: var(--color-gold);
+      font-size: 16px;
+      color: var(--color-strong);
     }
     .site-menu-heading {
       display: block;
+      font-family: var(--font-body);
+      text-shadow: none;
       margin: 0 0 4px;
       font-size: 13px;
       font-weight: 600;
@@ -419,47 +463,44 @@
     }
   }
 
-  /* ------------------------------------------------------------ premium tag */
-  /* The Premium tag (spec 2026-10-29-premium-entry sections 3 to 5). One block after the bar's
-     own rules, so it wins over the shared .site-door rules at equal specificity; planner-island.css
-     carries it to the API's /b/{id} page with the rest of the header. Bar: a quiet tag (8 %
-     ground, 28 % border) on the doors' row; hover and current are stronger, and the open account
-     control stays the bar's strongest gold (section 9). */
+  /* ------------------------------------------------------------ premium */
+  /* Premium is Blizzard's teal Subscribe, exactly (owner 2026-11-08: "just copy the subscribe
+     button"): flat teal-edge, 47 px tall in the 64 px bar, 8 px in from the bar's right, the
+     control radius, a white semibold label. It sits last in the bar, after the account. One block
+     after the bar's own rules so it wins over the shared .site-door rules; planner-island.css
+     carries it to the API's /b/{id} page. */
+  .site-doors > .site-door-premium {
+    order: 4;
+  }
   .site-door-premium {
     display: inline-flex;
     align-self: center;
     align-items: center;
-    min-height: 40px;
-    padding: 0 4px;
-    border-radius: var(--radius-control);
+    height: 47px;
+    padding: 0 22px;
+    border-radius: var(--radius-field);
+    background: var(--color-teal-edge);
+    color: var(--color-strong);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
   }
-  .site-door-premium .pill {
-    color: var(--color-gold);
-    background: rgba(229, 185, 85, 0.08);
-    border-color: rgba(229, 185, 85, 0.28);
-    transition:
-      background-color 120ms,
-      border-color 120ms,
-      color 120ms;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .site-door-premium:hover .pill {
-      color: var(--color-gold-hover);
-      background: rgba(229, 185, 85, 0.22);
-      border-color: rgba(229, 185, 85, 0.6);
-    }
-  }
-  .site-door-premium:active .pill {
-    background: rgba(229, 185, 85, 0.3);
-  }
-  .site-door-premium[aria-current='page'] .pill {
-    background: rgba(229, 185, 85, 0.22);
-    border-color: var(--color-gold);
+  .site-door-premium:hover,
+  .site-door-premium:active,
+  .site-door-premium[aria-current='page'] {
+    color: var(--color-strong);
+    filter: brightness(1.08);
   }
   .site-door-premium:focus-visible {
     outline: 2px solid var(--color-gold);
     outline-offset: 2px;
-    background: none;
+  }
+  @media (max-width: 1279px) {
+    .site-door-premium {
+      padding: 0 16px;
+      font-size: 15px;
+    }
   }
   /* Section 5: below 1024 the same element shares the Menu's last row with Get set up: Get set
      up at the left as it was, the tag right-aligned, one 52 px row, no chevron. The groups keep
@@ -474,25 +515,12 @@
     .site-doors > .site-group {
       flex: 0 0 100%;
     }
-    .site-door-setup {
-      flex: 1 1 auto;
-      min-height: 52px;
-    }
     .site-door-premium {
       display: flex;
-      flex: none;
-      justify-content: flex-end;
-      min-height: 52px;
+      flex: 1 1 100%;
+      justify-content: center;
+      height: 52px;
       margin-top: 12px;
-      padding: 0 4px 0 8px;
-      border-radius: 4px;
-    }
-    .site-door-premium:hover,
-    .site-door-premium:active {
-      background: var(--row-hover);
-    }
-    .site-door-premium:focus-visible {
-      outline-offset: -2px;
     }
   }
   /* Section 4: hidden before paint from the stored hint (Header.astro's inline script, on the
@@ -511,23 +539,23 @@
   .csel-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
-    width: 232px;
-    height: 48px;
-    /* The pill is 4px taller than the 44px the bar was drawn around; the bar keeps its height. */
-    margin: -2px 0;
-    padding: 0 12px 0 5px;
-    /* No edge at rest: the account chip is its tint; hover and open draw the gold edge. */
+    gap: 8px;
+    /* A fixed slot, so the bar never moves when /v1/me answers; inside it the label and its chevron
+       sit together at the left (the mock's "Thandrel 60 ⌄") and the rest is the bar's gap. */
+    width: 220px;
+    height: 44px;
+    padding: 0 8px 0 4px;
+    /* Round 5's one-line account control: no chip at rest, the medallion, the name in its class
+       colour, the short line muted, a chevron; hover and open lift the ground. */
     border: 1px solid transparent;
-    border-radius: 999px;
-    background: rgb(255 255 255 / 0.035);
+    border-radius: var(--radius-field);
+    background: none;
     color: var(--color-strong);
     font: inherit;
     text-align: left;
     text-decoration: none;
   }
   .csel-btn:hover {
-    border-color: rgb(229 185 85 / 0.45);
     background: rgb(255 255 255 / 0.06);
     color: var(--color-strong);
   }
@@ -535,9 +563,8 @@
     color: var(--color-strong);
   }
   .csel-btn[aria-expanded='true'] {
-    border-color: var(--color-gold);
-    background: rgb(255 255 255 / 0.06);
-    box-shadow: var(--glow-gold);
+    border-color: rgb(255 255 255 / 0.14);
+    background: rgb(255 255 255 / 0.08);
   }
   .csel-btn:focus-visible {
     outline: 2px solid var(--color-gold);
@@ -548,19 +575,18 @@
     color: var(--color-strong);
   }
   .csel-btn:active {
-    border-color: var(--color-gold);
-    background: #101624;
+    background: rgb(255 255 255 / 0.1);
   }
   .csel-crestbox {
     position: relative;
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
   .csel-crest {
     display: block;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 999px;
     object-fit: cover;
     background-size: cover;
@@ -604,36 +630,50 @@
   }
   .csel-text {
     display: flex;
-    flex: 1;
-    flex-direction: column;
+    flex: 0 1 auto;
+    align-items: baseline;
+    gap: 6px;
     min-width: 0;
-    max-width: 168px;
-    line-height: 1.15;
+    line-height: 1.2;
   }
+  /* The name keeps its full width; the short line gives way first. */
   .csel-name {
-    font-size: 14px;
+    flex-shrink: 0;
+    max-width: 100%;
+    min-width: 0;
+    font-size: 16px;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  /* One line: the long sub line ("Fury Warrior · 60") is the tooltip's; the bar shows the short
+     one ("Fury · 60"). */
   .csel-sub {
-    font-size: 12px;
-    color: var(--color-muted);
+    display: none;
+  }
+  .csel-sub-short,
+  .csel-level {
+    flex-shrink: 1;
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgb(255 255 255 / 0.6);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .csel-sub-short {
-    display: none;
+  /* The level is two digits: it never gives way, the name and short line do. */
+  .csel-level {
+    flex-shrink: 0;
   }
   .csel-chev {
     flex-shrink: 0;
     color: var(--color-muted);
   }
   .csel-skeleton-ring {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 999px;
     flex-shrink: 0;
   }
@@ -641,21 +681,15 @@
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 999px;
-    background: rgb(229 185 85 / 0.14);
+    background: rgb(255 255 255 / 0.08);
     color: var(--color-gold);
   }
-  /* Signed out the whole pill is gold-edged, also in the pre-paint link before hydration. */
-  .csel-btn.is-signed-out,
-  html:not([data-pointer-class]):not([data-session]) .csel-btn.csel-pre {
-    border-color: rgb(229 185 85 / 0.45);
-    background: rgb(229 185 85 / 0.08);
-  }
   .csel-skeleton {
-    background: linear-gradient(90deg, #161c2a, #1c2433, #161c2a);
-    border-radius: 3px;
+    background: rgb(255 255 255 / 0.08);
+    border-radius: var(--radius-icon);
   }
   .csel-tip {
     display: none;
@@ -745,29 +779,27 @@
   }
 
   /* Signed out: one slot, two states, same width. */
+  .csel-btn.is-signed-out,
+  html:not([data-pointer-class]):not([data-session]) .csel-btn.csel-pre {
+    width: auto;
+  }
   .csel-btn.is-signed-out .csel-name {
     color: var(--color-strong);
   }
 
   @media (max-width: 1279px) {
     .csel-btn {
-      width: 176px;
+      width: 184px;
       gap: 6px;
-      padding: 0 8px 0 5px;
+      padding: 0 6px 0 4px;
     }
-    .csel-text {
-      max-width: 112px;
+    /* The bar's own 15px here: a 14-letter name fits whole beside the crest and the chevron. */
+    .csel-name {
+      font-size: 15px;
     }
-    .csel-sub {
+    .csel-sub-short,
+    .csel-level {
       display: none;
-    }
-    .csel-sub-short {
-      display: block;
-      font-size: 12px;
-      color: var(--color-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
     .csel-btn.is-signed-out {
       width: 122px;
@@ -827,8 +859,8 @@
     .csel-pre .csel-pre-out .csel-ghost {
       width: 36px;
       height: 36px;
-      box-shadow: 0 0 0 1px rgb(229 185 85 / 0.45);
-      background: rgb(229 185 85 / 0.1);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-gold) 45%, transparent);
+      background: color-mix(in srgb, var(--color-gold) 10%, transparent);
     }
     .csel-btn.is-signed-out .csel-ghost svg {
       width: 18px;
@@ -1002,12 +1034,12 @@
     grid-template-columns: 36px minmax(0, 1fr) auto;
   }
   .csel-row-main:active {
-    background: #0a0d15;
+    background: var(--color-bg);
   }
   .csel-row-main:focus-visible {
     outline: 2px solid var(--color-gold);
     outline-offset: -2px;
-    background: #101624;
+    background: var(--color-hover);
   }
   .csel-row-crest {
     width: 36px;
@@ -1046,7 +1078,7 @@
   .csel-r2 {
     line-height: 1.45;
     font-size: 13px;
-    color: #c9c2b2;
+    color: var(--color-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1089,10 +1121,10 @@
     color: inherit;
   }
   .csel-action:hover {
-    background: #101624;
+    background: var(--color-hover);
   }
   .csel-action:active {
-    background: #0a0d15;
+    background: var(--color-bg);
   }
   .csel-action:focus-visible {
     outline: 2px solid var(--color-gold);
@@ -1154,7 +1186,7 @@
   .csel-message-body {
     margin-top: 4px;
     font-size: 13px;
-    color: #c9c2b2;
+    color: var(--color-text);
   }
   .csel-message-links {
     display: flex;
@@ -1254,21 +1286,20 @@
     align-items: center;
     gap: 6px;
     padding: 4px 8px;
-    border: 1px solid rgb(229 185 85 / 0.45);
+    border: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
     border-radius: 6px;
-    background: rgb(229 185 85 / 0.12);
+    background: color-mix(in srgb, var(--color-gold) 12%, transparent);
     color: var(--color-gold);
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    letter-spacing: 0;
   }
   .csel-tag i {
     width: 6px;
     height: 6px;
     border-radius: 999px;
     background: var(--color-gold);
-    box-shadow: 0 0 8px rgb(229 185 85 / 0.8);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--color-gold) 80%, transparent);
   }
   .csel-tag.is-outline {
     background: none;
@@ -1294,7 +1325,7 @@
     background: var(--row-hover);
   }
   .csel-arow:active {
-    background: rgb(229 185 85 / 0.1);
+    background: color-mix(in srgb, var(--color-gold) 10%, transparent);
   }
   .csel-arow:focus-visible {
     outline: 2px solid var(--color-gold);
@@ -1372,13 +1403,12 @@
     align-items: center;
     justify-content: center;
     min-height: 44px;
-    border: 1px solid var(--color-gold);
+    border: 1px solid var(--color-teal-edge);
     border-radius: var(--radius-control);
-    background: linear-gradient(180deg, #f0c968, #d9a93c);
-    color: #1a1204;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.01em;
+    background: var(--color-teal);
+    color: var(--color-strong);
+    font-size: 15px;
+    font-weight: 600;
   }
   .csel-cta:hover {
     filter: brightness(1.06);
@@ -1481,11 +1511,11 @@
     border: 0;
     border-radius: 4px;
     background: none;
-    color: var(--color-gold);
+    color: var(--color-strong);
   }
   .site-search-button:hover,
   .site-search-button[aria-expanded='true'] {
-    color: var(--color-gold-hover);
+    color: var(--color-gold);
   }
   .site-search-kbd {
     /* The keycap is a tint, not an edge; 1 px more padding keeps its 20 px box. */
@@ -1511,10 +1541,36 @@
   .site-menu-search {
     display: none;
   }
-  @media (max-width: 1279px) {
+  /* The "/" hint shows only on the wide column's bar (from 1760), where it has the room; round 5's
+     seven doors take the rest. */
+  body:not([data-column='wide']) .site-search-kbd {
+    display: none;
+  }
+  @media (max-width: 1759px) {
     .site-search-kbd {
       display: none;
     }
+  }
+  /* The account control's short line ("Fury · 60") likewise: on the 1246 px bar it would end in
+     an ellipsis beside most names, so it shows only on the wide column's bar, which widens the
+     control to hold it whole. */
+  body:not([data-column='wide']) .csel-btn .csel-sub-short {
+    display: none;
+  }
+  @media (max-width: 1759px) {
+    .csel-btn .csel-sub-short {
+      display: none;
+    }
+  }
+  @media (min-width: 1760px) {
+    body[data-column='wide'] .csel-btn:not(.is-signed-out) {
+      width: 264px;
+    }
+    body[data-column='wide'] .csel-btn .csel-level {
+      display: none;
+    }
+  }
+  @media (max-width: 1279px) {
     .site-search-button {
       padding: 0;
     }

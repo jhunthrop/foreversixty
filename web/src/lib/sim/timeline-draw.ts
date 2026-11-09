@@ -20,6 +20,7 @@ import {
   type ZoomWindow,
 } from './timeline';
 import { timelineCopy } from './timeline-copy';
+import { CHART_INK, inkCss } from '../chart/theme';
 
 /** Axis steps (spec 3.7): 15 s on a wide plot, 30 s under 900 px of plot, 5 s in Close up. */
 const CLOSE_UP_STEP_S = 5;
@@ -39,16 +40,17 @@ const COLOUR = {
   missed: 'var(--color-muted)',
   buff: 'var(--color-text)',
   debuff: 'var(--color-gold-deep)',
-  grid: 'var(--color-line-soft)',
-  pullLine: 'var(--color-line-warm-strong)',
-  capLine: 'var(--color-line-warm-strong)',
-  gold: 'var(--color-gold)',
-  label: 'var(--color-muted)',
+  grid: inkCss(CHART_INK.grid),
+  pullLine: inkCss(CHART_INK.frame),
+  capLine: inkCss(CHART_INK.frame),
+  resource: inkCss(CHART_INK.accent),
+  pull: inkCss(CHART_INK.highlight),
+  label: inkCss(CHART_INK.label),
   ember: 'var(--color-ember)',
   stack: 'var(--color-strong)',
 } as const;
-const WASH = 'rgba(214,110,40,.07)';
-const LINE_AREA = 'rgba(229,185,85,.12)';
+const WASH = inkCss(CHART_INK.warn);
+const LINE_AREA = inkCss(CHART_INK.accentArea);
 const BUFF_OPACITY = 0.35;
 const DEBUFF_OPACITY = 0.78;
 const SWING_OPACITY = 0.8;
@@ -232,7 +234,7 @@ function resourceMarkup(line: ResourceLine, y: number, height: number, view: Plo
   return (
     cap +
     `<path d="${paths.area}" fill="${LINE_AREA}"/>` +
-    `<path d="${paths.line}" fill="none" stroke="${COLOUR.gold}" stroke-width="1.5"/>`
+    `<path d="${paths.line}" fill="none" stroke="${COLOUR.resource}" stroke-width="1.5"/>`
   );
 }
 
@@ -249,7 +251,7 @@ function axisMarkup(height: number, view: PlotView): string {
   if (view.window.startMs <= 0 && view.window.endMs > 0) {
     const x = xOf(0, view);
     marks += `<line x1="${round(x)}" x2="${round(x)}" y1="${GRID_TOP}" y2="${height}" stroke="${COLOUR.pullLine}" stroke-dasharray="3 3"/>`;
-    marks += `<text x="${round(x + 4)}" y="${AXIS_LABEL_Y}" font-size="13" font-weight="600" fill="${COLOUR.gold}">${timelineCopy.axisPull}</text>`;
+    marks += `<text x="${round(x + 4)}" y="${AXIS_LABEL_Y}" font-size="13" font-weight="600" fill="${COLOUR.pull}">${timelineCopy.axisPull}</text>`;
   }
   return marks;
 }
@@ -261,7 +263,7 @@ function washMarkup(executeAtMs: number | null, height: number, view: PlotView):
   const wash = `<rect x="${round(x)}" y="${ROW_HEIGHT.axis}" width="${round(view.width - x)}" height="${height - ROW_HEIGHT.axis}" fill="${WASH}"/>`;
   return (
     wash +
-    `<text x="${round(x + 6)}" y="${ROW_HEIGHT.axis + 14}" font-size="11" font-weight="700" letter-spacing="1.54" fill="${COLOUR.ember}">${timelineCopy.executeWash}</text>`
+    `<text x="${round(x + 6)}" y="${ROW_HEIGHT.axis + 14}" font-size="12" font-weight="600" fill="${COLOUR.ember}">${timelineCopy.executeWash}</text>`
   );
 }
 

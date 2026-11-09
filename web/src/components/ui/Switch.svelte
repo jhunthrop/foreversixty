@@ -50,14 +50,14 @@
 >
   <span
     class="group-[:not(:disabled)]:group-hover:border-gold/30 relative block h-6 w-11 rounded-full border transition-colors duration-[120ms] motion-reduce:transition-none {checked
-      ? 'border-gold-deep shadow-glow-gold bg-[linear-gradient(180deg,#f0cc6c,#c99a3a)]'
-      : 'border-[#303a50] bg-[#232a3a]'}"
+      ? 'border-teal-edge bg-teal'
+      : 'border-line bg-pressed'}"
     aria-hidden="true"
   >
     <span
       class="absolute top-1/2 block -translate-y-1/2 rounded-full transition-[left,width,background-color] duration-[120ms] group-active:w-5 motion-reduce:transition-none {checked
-        ? 'bg-bg left-[22px] h-[18px] w-[18px] group-active:left-[20px]'
-        : 'left-[2px] h-[18px] w-[18px] bg-[#8a8576]'}"
+        ? 'bg-strong left-[22px] h-[18px] w-[18px] group-active:left-[20px]'
+        : 'bg-muted left-[2px] h-[18px] w-[18px]'}"
     ></span>
   </span>
 </button>

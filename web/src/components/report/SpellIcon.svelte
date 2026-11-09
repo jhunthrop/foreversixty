@@ -22,7 +22,7 @@
   />
 {:else}
   <span
-    class="inline-block shrink-0 rounded-[4px] bg-white/[.04] shadow-[inset_0_0_0_1px_rgba(255,255,255,.06)]"
+    class="inline-block shrink-0 rounded-[4px] bg-white/[.04] ring-1 ring-white/6 ring-inset"
     style:width="{size}px"
     style:height="{size}px"
     aria-hidden="true"

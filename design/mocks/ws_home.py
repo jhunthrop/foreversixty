@@ -258,7 +258,9 @@ def upgrades_section(ups: list, items: dict) -> str:
         it = items.get(s['item_id']) or {}
         q = it.get('quality', 1)
         ic = icon(it.get('icon', ''), 32, {2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5'}.get(q, ''))
-        rows.append(ItemRow(s['item_name'], q, ic, f"{SLOT_LABELS[s['slot']]} &middot; {s['source']}", gain=(f'+{gain:,.1f}', 'DPS', '')))
+        # the build's source line (web/src/lib/home/source-line.ts): a crafted pick names it
+        source = f"{s['source']} &middot; crafted" if s.get('source_kind') == 'crafted' else s['source']
+        rows.append(ItemRow(s['item_name'], q, ic, f"{SLOT_LABELS[s['slot']]} &middot; {source}", gain=(f'+{gain:,.1f}', 'DPS', '')))
     total = sum(u[0] for u in ups)
     return sec('Your upgrades', ''.join(rows), 'Best in slot', f'+{total:,.1f} DPS')
 

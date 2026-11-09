@@ -33,8 +33,8 @@ const GRANT_ME = {
   }),
 };
 const FREE_ME = { user: { battletag: 'Hunthrop#1894' }, entitlements: mockEntitlements() };
-const DEFAULT_GROUND = 'rgba(229, 185, 85, 0.08)';
-const TINT = 'rgba(229, 185, 85, 0.08)';
+const SUBSCRIBE_TEAL = 'rgb(64, 128, 118)';
+const TINT = 'rgba(255, 236, 113, 0.12)';
 const MENU_ROW_MIN = 52;
 
 const tag = (page: Page) => page.getByTestId('nav-premium');
@@ -94,14 +94,14 @@ async function trackBarShift(page: Page): Promise<void> {
     // (a light timer, not a frame loop, so the page's idle-time hydration still runs).
     let lastLeft: number | null = null;
     const sampler = setInterval(() => {
-      const setup = document.querySelector('[data-door="setup"]');
+      const setup = document.querySelector('.site-right');
       if (setup !== null) lastLeft = setup.getBoundingClientRect().left;
     }, 40);
     setTimeout(() => clearInterval(sampler), 20_000);
     document.addEventListener('DOMContentLoaded', () => {
       new MutationObserver(() => {
         if (document.documentElement.dataset.premiumNav !== 'hold' || window.__holdMoved !== null) return;
-        const setup = document.querySelector('[data-door="setup"]');
+        const setup = document.querySelector('.site-right');
         if (setup !== null && lastLeft !== null)
           window.__holdMoved = setup.getBoundingClientRect().left - lastLeft;
       }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-premium-nav'] });
@@ -143,16 +143,15 @@ test.describe('the bar tag', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
   test.skip(() => test.info().project.name !== 'desktop', 'desktop bar only');
 
-  test('signed out: the quiet gold tag ends the doors, after Get set up, with no shift', async ({ page }) => {
+  test('signed out: Premium is their teal Subscribe, after Guild, with no shift', async ({ page }) => {
     await signedOut(page);
     const cls = await openHome(page);
     await expect(tag(page)).toBeVisible();
     const last = page.locator('#primary-nav > :last-child');
     await expect(last).toHaveAttribute('data-door', 'premium');
-    await expect(page.locator('#primary-nav > :nth-last-child(2)')).toHaveAttribute('data-door', 'setup');
-    const pill = tag(page).locator('.pill');
-    await expect(pill).toHaveText(/premium/i);
-    await expect(pill).toHaveCSS('background-color', DEFAULT_GROUND);
+    await expect(page.locator('#primary-nav > :nth-last-child(2)')).toHaveAttribute('data-group', 'guild');
+    await expect(tag(page)).toHaveText(/premium/i);
+    await expect(tag(page)).toHaveCSS('background-color', SUBSCRIBE_TEAL);
     await expect(tag(page).locator('svg')).toHaveCount(0);
     expect(cls).toBeLessThan(BAR_FONT_SWAP_FLOOR);
   });
@@ -213,7 +212,7 @@ test.describe('the bar tag', () => {
     await signedOut(page);
     await page.goto('/premium');
     await expect(tag(page)).toHaveAttribute('aria-current', 'page');
-    await expect(tag(page).locator('.pill')).toHaveCSS('border-color', 'rgb(229, 185, 85)');
+    await expect(tag(page)).toHaveCSS('background-color', SUBSCRIBE_TEAL);
   });
 });
 
@@ -235,60 +234,52 @@ test.describe('the bar widths', () => {
       await headerWired(page);
       if (shown) await expect(tag(page), `${width}`).toBeVisible();
       else await expect(tag(page), `${width}`).toBeHidden();
+      // The doors end at Guild; the search and account follow, then Premium.
       const fit = await page.evaluate(() => {
-        const nav = document.getElementById('primary-nav')!.getBoundingClientRect();
+        const doors = document.querySelector('.site-group[data-group="guild"]')!.getBoundingClientRect();
         const right = document.querySelector('.site-right')!.getBoundingClientRect();
         const header = document.querySelector('.site-header')!;
-        return { gap: right.left - nav.right, scroll: header.scrollWidth - header.clientWidth };
+        return { gap: right.left - doors.right, scroll: header.scrollWidth - header.clientWidth };
       });
       expect(fit.gap, `${width}`).toBeGreaterThan(0);
       expect(fit.scroll, `${width}`).toBe(0);
     }
   });
 
-  test('at 2000 the tag sits inside the 1344 column', async ({ page }) => {
+  test('at 2000 Premium sits inside the floating bar, 8 px in from its right end', async ({ page }) => {
     await signedOut(page);
     await page.setViewportSize({ width: 2000, height: 900 });
     await page.goto('/');
     const box = (await tag(page).boundingBox())!;
-    expect(box.x).toBeGreaterThan((2000 - 1344) / 2);
-    expect(box.x + box.width).toBeLessThan((2000 + 1344) / 2);
+    const bar = (await page.getByRole('banner').boundingBox())!;
+    expect(box.x).toBeGreaterThan(bar.x);
+    expect(Math.round(bar.x + bar.width - (box.x + box.width))).toBe(9);
   });
 });
 
 test.describe('the phone Menu row', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('free: the tag shares the last row with Get set up, right-aligned, 52 px, no chevron', async ({
-    page,
-  }) => {
+  test('free: Premium is the last row of the Menu, the full width, 52 px, no chevron', async ({ page }) => {
     await signIn(page, FREE_ME);
     await page.goto('/');
     await page.getByTestId('menu-button').click();
     await expect(tag(page)).toBeVisible();
     await expect(page.locator('#primary-nav > :last-child')).toHaveAttribute('data-door', 'premium');
-    const setup = (await page.locator('#primary-nav [data-door="setup"]').boundingBox())!;
     const row = (await tag(page).boundingBox())!;
     const menu = (await page.getByTestId('primary-nav').boundingBox())!;
-    // One row: the same top and height, Get set up at the menu's left edge, the tag at its right.
-    expect(Math.abs(row.y - setup.y)).toBeLessThanOrEqual(1);
     expect(row.height).toBeGreaterThanOrEqual(MENU_ROW_MIN);
-    expect(setup.height).toBeGreaterThanOrEqual(MENU_ROW_MIN);
-    expect(Math.abs(setup.x - menu.x)).toBeLessThanOrEqual(1);
+    expect(Math.abs(row.x - menu.x)).toBeLessThanOrEqual(1);
     expect(Math.abs(row.x + row.width - (menu.x + menu.width))).toBeLessThanOrEqual(1);
-    expect(setup.x + setup.width).toBeLessThan(row.x);
     await expect(tag(page).locator('svg')).toHaveCount(0);
   });
 
-  test('Premium: no tag; Get set up keeps the whole row', async ({ page }) => {
+  test('Premium: no Premium row in the Menu', async ({ page }) => {
     await storeHint(page, 'own');
     await signIn(page, GRANT_ME);
     await page.goto('/');
     await page.getByTestId('menu-button').click();
     await expect(tag(page)).toBeHidden();
-    const setup = (await page.locator('#primary-nav [data-door="setup"]').boundingBox())!;
-    const menu = (await page.getByTestId('primary-nav').boundingBox())!;
-    expect(Math.abs(setup.width - menu.width)).toBeLessThanOrEqual(1);
   });
 });
 
@@ -302,7 +293,7 @@ test.describe('the account panel Plan row', () => {
     await page.getByTestId('character-selector').click();
     const row = page.getByTestId('selector-row-plan');
     await expect(row).toHaveAccessibleName(/^Plan\s+Free\s+See plans$/);
-    await expect(row.getByTestId('selector-plan-see-plans')).toHaveCSS('color', 'rgb(229, 185, 85)');
+    await expect(row.getByTestId('selector-plan-see-plans')).toHaveCSS('color', 'rgb(255, 236, 113)');
     await row.click();
     await expect(page).toHaveURL(/\/premium#premium$/);
     await expect(page.locator('#premium')).toBeInViewport();

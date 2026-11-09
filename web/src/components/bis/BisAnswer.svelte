@@ -114,8 +114,7 @@
     color: var(--color-muted);
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    letter-spacing: 0;
   }
   .bis-tank-value {
     font-family: var(--font-figure, inherit);

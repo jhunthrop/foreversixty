@@ -69,20 +69,20 @@
     border-radius: 8px;
     background: var(--color-raised);
   }
-  .ui-countdown[data-tone='raid'] {
-    border-color: #3b2a4d;
-    background: radial-gradient(500px 200px at 100% 0, #5a1d7a33, transparent 70%), var(--color-raised);
-  }
+  /* Round 5's raid plaque (the guild's next raid): the cave mouth and its lava glow in the
+     plaque's right edge, under the cave veil (text 11.9:1). The first-raids countdown stays plain. */
   .ui-countdown[data-tone='guild'] {
-    background: radial-gradient(400px 200px at 100% 0, #e5b9551a, transparent 70%), var(--color-raised);
+    background:
+      linear-gradient(var(--color-veil-cave), var(--color-veil-cave)),
+      var(--art-cave, none) right center / 160% auto no-repeat,
+      var(--color-raised);
   }
   .ui-countdown-eyebrow {
     margin: 0;
     font-weight: 700;
     font-size: 12px;
     line-height: 16px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0;
     color: var(--color-muted);
   }
   .ui-countdown-live {
@@ -136,8 +136,7 @@
   .ui-countdown-part span {
     font-size: 12px;
     line-height: 16px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0;
     color: var(--color-muted);
   }
   /* Grows beside the clock and wraps its own lines (a long "your time" line on a viewer outside

@@ -440,9 +440,11 @@ def _votes(yes, no, total):
     return Votes(yes, no, total).replace('<span class="pill tag', '<button type="button" class="vote"><span class="pill tag').replace(' no</span>', ' no</span></button>', 1).replace(' yes</span>', ' yes</span></button>', 1)
 
 
-def _form(label, fields, submit):
-    """FormRow as the build renders it: a <form> of labelled text inputs and one submit Button."""
-    f = ''.join(f'<label class="f grow"><span class="t-label">{lab}</span><input class="field grow" placeholder="{hint}"></label>' for lab, hint in fields)
+def _form(label, fields, submit, floor=True):
+    """FormRow as the build renders it: a <form> of labelled text inputs and one submit Button. `floor` False is a field
+    that takes what the row leaves beside the button (OfficerNotes.svelte), not the Field's 220 px grow floor."""
+    cls = 'f grow' if floor else 'f" style="flex:1;min-width:0'
+    f = ''.join(f'<label class="{cls}"><span class="t-label">{lab}</span><input class="field grow" placeholder="{hint}"></label>' for lab, hint in fields)
     return f'<form class="formrow" aria-label="{label}">{f}<span>{_act(submit, submit=True)}</span></form>'
 
 
@@ -545,7 +547,7 @@ def member_profile():
            + f'<p style="padding-top:12px;font-size:14px;line-height:22px">{gd.PROFILE_LAST_30[0]} of {"1 raid" if gd.PROFILE_LAST_30[1] == 1 else f"the last {gd.PROFILE_LAST_30[1]} raids"}</p>')
     loot = '<ul>' + ''.join(f'<li>{ItemRow(n, q, icon(ic, 32, f"q{q}"), f"Awarded {_day(at)}")}</li>' for _i, n, ic, q, at in won) + '</ul>'
     notes = Rows([Row(body, f'{who} &middot; {_day(at)}', foot=Tag('Officers only', 'muted') + (f'<span style="margin-left:auto">{_act("Delete")}</span>' if mine else ''), link=False) for _i, body, who, at, mine in gd.PROFILE_NOTES], open_=True)
-    addn = f'<div style="padding-top:12px">{_form("Add a note", [("Add a note", "Only officers see notes")], "Save note")}</div>'
+    addn = f'<div style="padding-top:12px">{_form("Add a note", [("Add a note", "Only officers see notes")], "Save note", floor=False)}</div>'
     main = (Section('Gear gap', _body(gear), Link('Open their character'), meta='Same units as the BiS page') + Section('Attendance', _body(att))
             + Section('Loot this tier', _body(loot)))
     rail = Section('Officer notes', _body(notes + addn), meta='Private: members never see these')

@@ -9,6 +9,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { clockLabel } from '../../lib/chart/time-axis';
+  import { CHART_ACCENT } from '../../lib/chart/theme';
   import { withShardOverlay, type ActionNames } from '../../lib/sim/action-names';
   import {
     actionVisuals,
@@ -75,7 +76,7 @@
   const LABEL_WIDTH = 200;
   const LABEL_WIDTH_LONG = 240;
   const LABEL_WIDTH_PHONE = 44;
-  /** A name wider than the 200 px column's text room widens the column, by 14 px Barlow's average advance. */
+  /** A name wider than the 200 px column's text room widens the column, by 14 px of the body face's average advance. */
   const LABEL_TEXT_ROOM_PX = 142;
   const NAME_ADVANCE_PX = 6.6;
   const PHONE_QUERY = '(max-width: 767px)';
@@ -502,8 +503,8 @@
         {/if}
         {#if model.resource !== null}
           <li>
-            <i class="swatch" style:width="16px" style:height="2px" style:background="var(--color-gold)"
-            ></i>{model.resource.label}
+            <i class="swatch" style:width="16px" style:height="2px" style:background={CHART_ACCENT}></i>{model
+              .resource.label}
           </li>
         {/if}
       </ul>
@@ -747,7 +748,7 @@
     position: sticky;
     left: 0;
     z-index: 3;
-    background: #0d0f15;
+    background: var(--color-bg);
   }
   .axis-label,
   .group-label {
@@ -812,7 +813,7 @@
     position: relative;
     z-index: 4;
     padding-right: 6px;
-    background: #0d0f15;
+    background: var(--color-bg);
     font-size: 12px;
     white-space: nowrap;
   }
@@ -835,7 +836,7 @@
     top: 26px;
     bottom: 0;
     width: 1px;
-    background: var(--color-gold-hover);
+    background: var(--color-accent);
     pointer-events: none;
   }
   .time-chip {
@@ -847,9 +848,9 @@
     justify-content: center;
     width: 52px;
     height: 20px;
-    border-radius: 4px;
-    background: var(--color-gold-hover);
-    color: #1a1206;
+    border-radius: var(--radius-icon);
+    background: var(--color-accent);
+    color: var(--color-strong);
     font-size: 13px;
     font-weight: 700;
     pointer-events: none;
@@ -871,7 +872,7 @@
     left: 0;
     display: flex;
     align-items: center;
-    background: #0d0f15;
+    background: var(--color-bg);
     cursor: default;
   }
   .notice {
@@ -911,7 +912,7 @@
     right: 0;
     bottom: 0;
     width: 24px;
-    background: linear-gradient(90deg, rgba(13, 15, 21, 0), #0d0f15);
+    background: linear-gradient(90deg, transparent, var(--color-bg));
     pointer-events: none;
   }
   .brush-gutter {

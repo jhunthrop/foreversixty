@@ -433,7 +433,7 @@
     flex-shrink: 0;
     border-radius: 999px;
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
-    background: var(--color-raised, #0d111a);
+    background: var(--color-bg);
   }
   .bis-summary {
     display: flex;

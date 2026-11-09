@@ -55,7 +55,7 @@ export const timelineCopy = {
 
   axisTime: 'Time',
   axisPull: 'Pull',
-  executeWash: 'EXECUTE PHASE',
+  executeWash: 'Execute phase',
   resourcePeak: (peak: number, cap: number): string => `peak ${peak} of ${cap}`,
 
   aurasFallback: `Buff and debuff bars need a run from ${SAMPLE_AURAS_SINCE} or later. The casts and rage here are from this one.`,

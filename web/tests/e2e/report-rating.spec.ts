@@ -177,6 +177,16 @@ const apiError = (code: string, message: string) => ({
   body: JSON.stringify({ ok: false, data: null, error: { code, message }, request_id: 'r' }),
 });
 
+/** Whether an element's ink is the muted token where it sits (the ground's or the panel's muted). */
+function inkIsMuted(el: Element): boolean {
+  const probe = document.createElement('span');
+  probe.style.color = 'var(--color-muted)';
+  el.appendChild(probe);
+  const muted = getComputedStyle(probe).color;
+  probe.remove();
+  return getComputedStyle(el).color === muted;
+}
+
 test('a flagged report: the panel and the tab say it is flagged and not rated, not an error', async ({
   page,
 }) => {
@@ -186,14 +196,14 @@ test('a flagged report: the panel and the tab say it is flagged and not rated, n
   await page.goto(`${REPORT}?fight=3`);
   const panel = page.getByTestId('rating-panel-flagged');
   await expect(panel).toHaveText('This report is flagged and not rated.');
-  await expect(panel).toHaveCSS('color', 'rgb(154, 148, 132)');
+  expect(await panel.evaluate(inkIsMuted)).toBe(true);
   await expect(page.getByTestId('rating-panel-error')).toHaveCount(0);
   await expect(page.getByTestId('rating-panel').getByRole('alert')).toHaveCount(0);
 
   await page.getByRole('link', { name: 'Rating tab ›' }).click();
   const tab = page.getByTestId('rating-tab-flagged');
   await expect(tab).toHaveText('This report is flagged and not rated.');
-  await expect(tab).toHaveCSS('color', 'rgb(154, 148, 132)');
+  expect(await tab.evaluate(inkIsMuted)).toBe(true);
   await expect(page.getByTestId('rating-tab-error')).toHaveCount(0);
 });
 
