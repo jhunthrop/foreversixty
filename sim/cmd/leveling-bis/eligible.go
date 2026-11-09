@@ -83,6 +83,9 @@ func armorAvailableLevel(classSlug string, subclass int) (int, bool) {
 // exist" - see band.go's candidatesForBand, which calls this function
 // per item and then applies the source rule once per band.
 func eligible(c candidate, classSlug string, level int, faction string) bool {
+	if isNoveltyItem(c.ID) {
+		return false
+	}
 	if c.EffectiveRequiredLevel > level {
 		return false
 	}

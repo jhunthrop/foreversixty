@@ -560,6 +560,7 @@ PRIM_CSS += '''
 .cell .l1{display:flex;align-items:baseline;column-gap:10px;min-width:0}.cell .l1 .nm{flex:none;max-width:100%;font:700 15px/20px var(--font-body)}
 .cell .l1 .st{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:20px;color:var(--muted)}
 .cell .l2{font-size:13px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}
+.cell .l2 .fact{display:inline-block;max-width:100%}  /* Paperdoll.svelte .ui-doll-fact: the line wraps between facts */
 .cell .gn{display:flex;flex-direction:column;align-items:flex-end;width:144px;min-width:0;justify-self:end}
 .cell .gn .v{font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}.cell .gn .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
 .cell .gn .bs{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:16px;color:var(--muted);text-align:right}
@@ -574,26 +575,32 @@ def _colored(text: str, rarity: str) -> str:
     return f'<span style="color:{RARITY.get(rarity, RARITY["common"])}">{escape(text)}</span>'
 
 
+def facts(line: str) -> str:
+    """A source line as Paperdoll.svelte draws it: each fact whole, the trailing dot kept with it (factSegments)."""
+    parts = line.split(' · ')
+    return ' '.join(f'<span class="fact">{escape(p + (" ·" if i < len(parts) - 1 else ""))}</span>' for i, p in enumerate(parts))
+
+
 def PaperdollCell(c: dict) -> str:
     """One slot. c: slot facts (label, flag, state, name, quality, icon, stats, line2, gain, basis), as bis_facts.mjs reads them."""
     flag = f'<span class="fl">{escape(c["flag"]["text"])}</span>' if c['flag'] else ''
     lead = f'<span class="lb">{escape(c["label"])}{flag}</span>'
     if c['state'] == 'empty':
         return (f'<div class="cell" role="option" aria-disabled="true">{lead}<span class="ic0"></span><span class="bd">'
-                f'<span class="l1"><span class="nm muted" style="font-weight:400">{escape(c["name"])}</span></span><span class="l2">{escape(c["line2"])}</span></span><span></span></div>')
+                f'<span class="l1"><span class="nm muted" style="font-weight:400">{escape(c["name"])}</span></span><span class="l2">{facts(c["line2"])}</span></span><span></span></div>')
     ic = icon(c['icon'], 40, _RARITY_ICON.get(c['quality'], '')) if c['icon'] else '<span class="ic0"></span>'
     stats = f'<span class="st">{escape(c["stats"])}</span>' if c['stats'] else ''
     if c['gain'] is None and c['basis'] is None:   # `worn` mode (the sim): no gain column, as the built cell's empty auto track
         return (f'<div class="cell" role="option" aria-selected="false">{lead}{ic}<span class="bd"><span class="l1">'
                 f'<span class="nm" style="color:{RARITY.get(c["quality"], RARITY["common"])}">{escape(c["name"])}</span>{stats}</span>'
-                f'<span class="l2">{escape(c["line2"])}</span></span><span class="gn0"></span></div>')
+                f'<span class="l2">{facts(c["line2"])}</span></span><span class="gn0"></span></div>')
     g = c['gain'] or {'value': '', 'unit': ''}
     unit = f'<small>{escape(g["unit"])}</small>' if g['unit'] else ''
     b = c['basis']
     basis = f'<span class="bs">{escape(b["prefix"])} {_colored(b["item"], b["quality"]) if b["item"] else ""}</span>' if b else ''
     return (f'<div class="cell" role="option" aria-selected="false">{lead}{ic}<span class="bd"><span class="l1">'
             f'<span class="nm" style="color:{RARITY.get(c["quality"], RARITY["common"])}">{escape(c["name"])}</span>{stats}</span>'
-            f'<span class="l2">{escape(c["line2"])}</span></span><span class="gn"><span class="v">{escape(g["value"])}{unit}</span>{basis}</span></div>')
+            f'<span class="l2">{facts(c["line2"])}</span></span><span class="gn"><span class="v">{escape(g["value"])}{unit}</span>{basis}</span></div>')
 
 
 def Paperdoll(label: str, view: str, columns: tuple[list[dict], list[dict]] = ([], []), groups: list[dict] | None = None) -> str:

@@ -46,11 +46,15 @@ STANDING_ORDER = [REP_LEVELS[level] for level in sorted(REP_LEVELS)]
 #: Source kinds whose bosses carry an npc id a gate can split out.
 INSTANCE_KINDS = frozenset({"dungeon", "raid"})
 #: Key types in the order they are listed and warned about.
-_KEY_TYPES = ("npcs", "quests", "factions", "zones", "kinds", "items")
+_KEY_TYPES = ("npcs", "quests", "factions", "zones", "kinds", "items", "reagents")
 _KEY_LABELS = {
     "npcs": "npc", "quests": "quest", "factions": "faction",
-    "zones": "zone", "kinds": "kind", "items": "item",
+    "zones": "zone", "kinds": "kind", "items": "item", "reagents": "reagent",
 }  # fmt: skip
+#: Key types that gate what a source names. `reagents` gate the crafts that
+#: consume them instead (`pipeline.loot.sources.apply_crafted_opens_gate`),
+#: so no source is expected to name one.
+_SOURCE_KEY_TYPES = tuple(key_type for key_type in _KEY_TYPES if key_type != "reagents")
 
 
 class ContentPhaseError(SystemExit):
@@ -80,6 +84,10 @@ class ContentGate(BaseModel):
     zones: list[GateId] = []
     kinds: list[str] = []
     items: list[GateId] = []
+    #: Crafting reagents with no loot source: every craft that needs one is
+    #: gated to this phase (Malleable Essence of Nature, from disenchanting
+    #: Hyjal Summit and Barrow Deeps loot).
+    reagents: list[GateId] = []
 
     model_config = {"extra": "forbid"}
 
@@ -133,6 +141,15 @@ class ContentPhases:
         named = [value for value in values if value]
         return max(named, key=self.rank) if named else None
 
+    def closed_reagent_gates(self) -> dict[int, str]:
+        """reagent item id -> `opens`, for every reagent a closed gate lists."""
+        return {
+            entry.id: gate.phase
+            for gate in self.gates
+            if self.closed(gate.phase)
+            for entry in gate.reagents
+        }
+
     def index(self) -> GateIndex:
         index = GateIndex()
         for gate in self.gates:
@@ -181,7 +198,7 @@ def _check_gate(gate: ContentGate, dates: dict[str, str], where: str) -> None:
         )
     if not any(getattr(gate, key_type) for key_type in _KEY_TYPES):
         raise ContentPhaseError(f"{where} gate {gate.key!r} names no id")
-    for entry in [*gate.npcs, *gate.quests, *gate.zones, *gate.items]:
+    for entry in [*gate.npcs, *gate.quests, *gate.zones, *gate.items, *gate.reagents]:
         if entry.from_standing is not None:
             raise ContentPhaseError(
                 f"{where} gate {gate.key!r}: from_standing is for factions only"
@@ -456,7 +473,7 @@ def _missing(phases: ContentPhases, matched: _Matched) -> list[str]:
     for gate in phases.gates:
         if not phases.closed(gate.phase):
             continue
-        for key_type in _KEY_TYPES:
+        for key_type in _SOURCE_KEY_TYPES:
             for entry in getattr(gate, key_type):
                 if key_type == "kinds":
                     found = entry in matched.ids["kinds"]
