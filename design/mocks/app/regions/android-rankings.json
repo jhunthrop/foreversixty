@@ -42,30 +42,43 @@
     "segment": 2
    }
   },
-  "section-choose-an-encounter": {
+  "section-encounters": {
    "box": [
     16,
     184,
     380,
-    243
+    743
    ],
    "inventory": {
-    "row": 2
+    "row": 8,
+    "image": 6
    }
   },
   "plate": {
    "box": [
     16,
-    451,
+    2027,
     380,
     58
    ],
    "inventory": {}
   },
+  "section-leaders-by-spec": {
+   "box": [
+    16,
+    949,
+    380,
+    1054
+   ],
+   "inventory": {
+    "row": 12,
+    "image": 12
+   }
+  },
   "summary": {
    "box": [
     16,
-    451,
+    2027,
     380,
     58
    ],
