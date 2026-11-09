@@ -32,7 +32,7 @@ type Entitlements interface {
 var ErrPayoutsOff = errors.New("creators: payouts are switched off on this server")
 
 // ErrConnectDenied: the Stripe key cannot reach Connect (a restricted key without its permissions).
-var ErrConnectDenied = errors.New("creators: the stripe key lacks connect permissions")
+var ErrConnectDenied = errors.New("creators: the stripe payouts key is missing or lacks connect permissions")
 
 // Service is the program's operations over the store and Stripe.
 type Service struct {
@@ -182,7 +182,7 @@ func (s *Service) CheckConnect(ctx context.Context) {
 	}
 	if err := s.Gateway.CheckConnect(ctx); err != nil {
 		s.connectDenied.Store(true)
-		s.logger().Error("creators", "op", "connect_check", "state", "the stripe key lacks connect permissions", "err", err)
+		s.logger().Error("creators", "op", "connect_check", "state", "the stripe payouts key is missing or lacks connect permissions", "err", err)
 		return
 	}
 	s.connectDenied.Store(false)

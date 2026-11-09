@@ -10,13 +10,34 @@ import (
 	stripe "github.com/stripe/stripe-go/v82"
 )
 
-// StripeGateway is the real Gateway over stripe-go's client. It is never built in a test; the
+// StripeGateway is the real Gateway over stripe-go's clients, on two keys: the subscription key
+// (STRIPE_SECRET_KEY) reads a player's invoices and refunds, and the payouts key
+// (STRIPE_PAYOUTS_KEY, a restricted key with Connect and Transfers) makes every Connect and
+// transfer call, so the subscription key is never widened. It is never built in a test; the
 // sandbox check in stripe_sandbox_test.go runs it only when a sandbox key is in the environment.
-type StripeGateway struct{ client *stripe.Client }
+type StripeGateway struct {
+	client  *stripe.Client
+	payouts *stripe.Client
+}
 
-// NewStripeGateway binds the gateway to the deployment's key.
-func NewStripeGateway(secretKey string) *StripeGateway {
-	return &StripeGateway{client: stripe.NewClient(secretKey)}
+// ErrPayoutsKeyMissing: no STRIPE_PAYOUTS_KEY, so no Connect or transfer call can be made.
+var ErrPayoutsKeyMissing = errors.New("creators: STRIPE_PAYOUTS_KEY is not set")
+
+// NewStripeGateway binds the gateway to the subscription key and the payouts key (” when unset).
+func NewStripeGateway(secretKey, payoutsKey string) *StripeGateway {
+	g := &StripeGateway{client: stripe.NewClient(secretKey)}
+	if payoutsKey != "" {
+		g.payouts = stripe.NewClient(payoutsKey)
+	}
+	return g
+}
+
+// connect is the payouts key's client, or ErrPayoutsKeyMissing.
+func (g *StripeGateway) connect() (*stripe.Client, error) {
+	if g.payouts == nil {
+		return nil, ErrPayoutsKeyMissing
+	}
+	return g.payouts, nil
 }
 
 func resourceMissing(err error) bool {
@@ -25,6 +46,10 @@ func resourceMissing(err error) bool {
 }
 
 func (g *StripeGateway) CreateExpressAccount(ctx context.Context, creatorID int64) (string, error) {
+	c, err := g.connect()
+	if err != nil {
+		return "", err
+	}
 	params := &stripe.AccountCreateParams{
 		Type:    stripe.String(string(stripe.AccountTypeExpress)),
 		Country: stripe.String("US"),
@@ -34,7 +59,7 @@ func (g *StripeGateway) CreateExpressAccount(ctx context.Context, creatorID int6
 		Metadata: map[string]string{"fs_creator": strconv.FormatInt(creatorID, 10)},
 	}
 	params.SetIdempotencyKey("creator-account-" + strconv.FormatInt(creatorID, 10))
-	a, err := g.client.V1Accounts.Create(ctx, params)
+	a, err := c.V1Accounts.Create(ctx, params)
 	if err != nil {
 		return "", fmt.Errorf("creators: create account: %w", err)
 	}
@@ -42,7 +67,11 @@ func (g *StripeGateway) CreateExpressAccount(ctx context.Context, creatorID int6
 }
 
 func (g *StripeGateway) AccountLink(ctx context.Context, accountID, returnURL, refreshURL string) (string, error) {
-	l, err := g.client.V1AccountLinks.Create(ctx, &stripe.AccountLinkCreateParams{
+	c, err := g.connect()
+	if err != nil {
+		return "", err
+	}
+	l, err := c.V1AccountLinks.Create(ctx, &stripe.AccountLinkCreateParams{
 		Account:    stripe.String(accountID),
 		Type:       stripe.String("account_onboarding"),
 		ReturnURL:  stripe.String(returnURL),
@@ -55,7 +84,11 @@ func (g *StripeGateway) AccountLink(ctx context.Context, accountID, returnURL, r
 }
 
 func (g *StripeGateway) LoginLink(ctx context.Context, accountID string) (string, error) {
-	l, err := g.client.V1LoginLinks.Create(ctx, &stripe.LoginLinkCreateParams{Account: stripe.String(accountID)})
+	c, err := g.connect()
+	if err != nil {
+		return "", err
+	}
+	l, err := c.V1LoginLinks.Create(ctx, &stripe.LoginLinkCreateParams{Account: stripe.String(accountID)})
 	if err != nil {
 		return "", fmt.Errorf("creators: login link: %w", err)
 	}
@@ -63,9 +96,13 @@ func (g *StripeGateway) LoginLink(ctx context.Context, accountID string) (string
 }
 
 func (g *StripeGateway) CheckConnect(ctx context.Context) error {
+	c, err := g.connect()
+	if err != nil {
+		return err
+	}
 	params := &stripe.AccountListParams{}
 	params.Limit = stripe.Int64(1)
-	for _, err := range g.client.V1Accounts.List(ctx, params) {
+	for _, err := range c.V1Accounts.List(ctx, params) {
 		if err != nil {
 			return fmt.Errorf("creators: list connected accounts: %w", err)
 		}
@@ -75,7 +112,11 @@ func (g *StripeGateway) CheckConnect(ctx context.Context) error {
 }
 
 func (g *StripeGateway) Account(ctx context.Context, accountID string) (AccountFacts, error) {
-	a, err := g.client.V1Accounts.GetByID(ctx, accountID, nil)
+	c, err := g.connect()
+	if err != nil {
+		return AccountFacts{}, err
+	}
+	a, err := c.V1Accounts.GetByID(ctx, accountID, nil)
 	if err != nil {
 		return AccountFacts{}, fmt.Errorf("creators: read account: %w", err)
 	}
@@ -163,7 +204,11 @@ func (g *StripeGateway) Refunds(ctx context.Context, chargeID string) ([]Refund,
 }
 
 func (g *StripeGateway) FindTransfer(ctx context.Context, group string) (string, error) {
-	for t, err := range g.client.V1Transfers.List(ctx, &stripe.TransferListParams{TransferGroup: stripe.String(group)}) {
+	c, err := g.connect()
+	if err != nil {
+		return "", err
+	}
+	for t, err := range c.V1Transfers.List(ctx, &stripe.TransferListParams{TransferGroup: stripe.String(group)}) {
 		if err != nil {
 			return "", fmt.Errorf("creators: find transfer: %w", err)
 		}
@@ -173,6 +218,10 @@ func (g *StripeGateway) FindTransfer(ctx context.Context, group string) (string,
 }
 
 func (g *StripeGateway) CreateTransfer(ctx context.Context, p TransferParams) (string, error) {
+	c, err := g.connect()
+	if err != nil {
+		return "", err
+	}
 	params := &stripe.TransferCreateParams{
 		Amount:        stripe.Int64(p.AmountCents),
 		Currency:      stripe.String(string(stripe.CurrencyUSD)),
@@ -181,7 +230,7 @@ func (g *StripeGateway) CreateTransfer(ctx context.Context, p TransferParams) (s
 		Metadata:      p.Metadata,
 	}
 	params.SetIdempotencyKey(p.Group)
-	t, err := g.client.V1Transfers.Create(ctx, params)
+	t, err := c.V1Transfers.Create(ctx, params)
 	if err != nil {
 		return "", fmt.Errorf("creators: create transfer: %w", err)
 	}

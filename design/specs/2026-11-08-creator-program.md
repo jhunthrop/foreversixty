@@ -47,12 +47,16 @@ Memory rules applied: stripe-billing (Commish LLC's account, Managed Payments; k
 
 ## 0D. Go-live facts, 2026-11-08 (coordinator)
 
-- The live key is a restricted key (`rk_live_…`): Secret Manager project `foreversixty`, secret `STRIPE_SECRET_KEY`. The Connect sandbox key is `STRIPE_SANDBOX_SECRET_KEY` in project `trycommish`.
-- Before `CREATOR_PAYOUTS` is switched on, the owner gives that key Connect Accounts, Account Links and Login Links (write), Transfers (write), and read on Invoices, Invoice payments, PaymentIntents, Charges, Refunds and Balance transactions. The exact list is in `api/README.md`, "Creator program".
-- With `CREATOR_PAYOUTS` on, the API lists one connected account at startup. A key without Connect access:
-  - fails loudly: an ERROR log line, `Stripe key lacks Connect permissions. Payouts can't be made until the key is given them.` on both admin pages, and Approve answers 503 `connect_denied`;
+- **Two keys.** Subscriptions keep `STRIPE_SECRET_KEY`, a restricted `rk_live_…` key in Secret Manager project `foreversixty`, and it is never widened. It also reads players' invoices and refunds for the revenue share.
+  - Creator payouts use their own restricted key, `STRIPE_PAYOUTS_KEY`, in the same project. It is write on Connect Accounts, Account Links and Login Links, and on Transfers.
+  - Every Connect and transfer call goes through a gateway built on that key (`creators.NewStripeGateway(secret, payouts)`).
+  - In tests, the Connect sandbox key (`STRIPE_SANDBOX_SECRET_KEY`, project `trycommish`) stands for both.
+- **Startup check.** With `CREATOR_PAYOUTS` on, the API lists one connected account with the payouts key at startup. A missing key, or one without Connect access:
+  - fails loudly: an ERROR log line, `Stripe payouts key missing or lacks Connect permissions. Payouts can't be made until it's set.` on both admin pages, and Approve answering 503 `connect_denied`;
   - never fails silently at payout time.
-- Live Connect is enabled: an accounts list works and answers 0 accounts. The owner is finishing the platform profile.
+
+  Without the key, onboarding answers 503 `payouts_key_missing`.
+- **Live Connect is enabled.** An accounts list works, with 0 accounts. The owner is finishing the platform profile. The go-live checklist is in `api/README.md`, "Creator program".
 
 ## 0. Files
 

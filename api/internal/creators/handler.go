@@ -69,9 +69,11 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 	case errors.Is(err, ErrNotPayable):
 		httpx.WriteError(w, r, http.StatusConflict, "not_payable", "stripe cannot pay this creator yet", nil)
 	case errors.Is(err, ErrConnectDenied):
-		httpx.WriteError(w, r, http.StatusServiceUnavailable, "connect_denied", "the stripe key lacks connect permissions", nil)
+		httpx.WriteError(w, r, http.StatusServiceUnavailable, "connect_denied", "the stripe payouts key is missing or lacks connect permissions", nil)
 	case errors.Is(err, ErrPayoutsOff):
 		httpx.WriteError(w, r, http.StatusServiceUnavailable, "payouts_off", "payouts are switched off on the server", nil)
+	case errors.Is(err, ErrPayoutsKeyMissing):
+		httpx.WriteError(w, r, http.StatusServiceUnavailable, "payouts_key_missing", "the stripe payouts key is not configured", nil)
 	case errors.Is(err, ErrStripeOff):
 		httpx.WriteError(w, r, http.StatusServiceUnavailable, "stripe_off", "stripe is not configured", nil)
 	default:

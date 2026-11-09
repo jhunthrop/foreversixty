@@ -179,6 +179,9 @@ type Config struct {
 	// StripeConnectWebhookSecret (STRIPE_CONNECT_WEBHOOK_SECRET) is the Connect endpoint's secret on
 	// the same webhook URL: account.updated for creators' payout accounts. Optional.
 	StripeConnectWebhookSecret string
+	// StripePayoutsKey (STRIPE_PAYOUTS_KEY) is the creator program's own restricted key: Connect
+	// Accounts, Account Links and Login Links, and Transfers. Subscriptions never use it. Never logged.
+	StripePayoutsKey string
 	// CreatorPayouts (CREATOR_PAYOUTS=true) lets the owner approve creator payouts, which makes
 	// Stripe transfers. Off by default: statements read, nothing can be paid.
 	CreatorPayouts bool
@@ -349,6 +352,7 @@ func Load(getenv func(string) string) (Config, error) {
 	c.StripeSecretKey = getenv("STRIPE_SECRET_KEY")
 	c.StripeWebhookSecret = getenv("STRIPE_WEBHOOK_SECRET")
 	c.StripeConnectWebhookSecret = getenv("STRIPE_CONNECT_WEBHOOK_SECRET")
+	c.StripePayoutsKey = getenv("STRIPE_PAYOUTS_KEY")
 	c.CreatorPayouts = getenv("CREATOR_PAYOUTS") == "true"
 	c.StripeEnvironment = getenv("STRIPE_ENVIRONMENT")
 

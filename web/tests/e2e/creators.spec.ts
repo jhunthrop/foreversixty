@@ -172,7 +172,7 @@ test.describe('/admin/creators/payouts', () => {
     );
     await page.goto('/admin/creators/payouts');
     await expect(page.getByTestId('payouts-connect-denied')).toContainText(
-      'Stripe key lacks Connect permissions',
+      'Stripe payouts key missing or lacks Connect permissions',
     );
     await expect(page.getByTestId('payout-approve-1')).toBeDisabled();
   });

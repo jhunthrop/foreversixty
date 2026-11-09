@@ -38,9 +38,9 @@ func wireCreators(w creatorsWiring) {
 		PayoutsEnabled: w.cfg.CreatorPayouts, Log: w.log,
 	}
 	if w.cfg.StripeConfigured() {
-		svc.Gateway = creators.NewStripeGateway(w.cfg.StripeSecretKey)
+		svc.Gateway = creators.NewStripeGateway(w.cfg.StripeSecretKey, w.cfg.StripePayoutsKey)
 	}
-	w.log.Info("creators", "stripe", svc.Gateway != nil, "payouts", svc.PayoutsEnabled)
+	w.log.Info("creators", "stripe", svc.Gateway != nil, "payouts_key", w.cfg.StripePayoutsKey != "", "payouts", svc.PayoutsEnabled)
 	// Payouts on: check the key reaches Connect now, in the background so startup never waits on Stripe.
 	go func() {
 		ctx, cancel := context.WithTimeout(context.Background(), connectCheckBudget)

@@ -92,7 +92,7 @@ func TestTheStartupConnectCheck(t *testing.T) {
 	if w := h.request("GET", "/v1/admin/creators", owner, nil); !strings.Contains(w.Body.String(), `"connect_denied":true`) {
 		t.Fatalf("the list does not say so: %s", w.Body)
 	}
-	if !strings.Contains(h.logs.String(), "lacks connect permissions") {
+	if !strings.Contains(h.logs.String(), "missing or lacks connect permissions") {
 		t.Fatal("the startup check did not log loudly")
 	}
 	h.gw.connectErr = nil

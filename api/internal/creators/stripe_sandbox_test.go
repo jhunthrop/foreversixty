@@ -21,7 +21,8 @@ func TestStripeSandbox(t *testing.T) {
 		t.Fatal("refusing a key that is not a test key")
 	}
 	creator := os.Getenv("CREATORS_STRIPE_SANDBOX_ACCOUNT")
-	g := NewStripeGateway(key)
+	// In test the sandbox key stands for both the subscription key and the payouts key.
+	g := NewStripeGateway(key, key)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
