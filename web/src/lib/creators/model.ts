@@ -207,7 +207,12 @@ export function statementFigures(s: Statement): ShownFigure[] {
   const k = payoutsCopy.columns;
   return [
     shown('total', k.total, money(s.total_cents), '', true),
-    shown('bounties', k.bounties, money(s.bounty_cents), payoutsCopy.bounties(s.bounty_count, money(BOUNTY_CENTS))),
+    shown(
+      'bounties',
+      k.bounties,
+      money(s.bounty_cents),
+      payoutsCopy.bounties(s.bounty_count, money(BOUNTY_CENTS)),
+    ),
     shown('share', k.share, money(s.share_cents)),
     shown('refunds', k.refunds, money(s.refund_cents)),
     shown('cap', k.cap, money(s.capped_cents)),
@@ -219,7 +224,13 @@ export function statsFigures(me: CreatorMe): ShownFigure[] {
   const c = creatorStatsCopy;
   const k = c.figures;
   return [
-    shown('month', k.month, money(me.month_cents), c.monthNote(monthLabel(me.month), capDollars(me.cap_cents)), true),
+    shown(
+      'month',
+      k.month,
+      money(me.month_cents),
+      c.monthNote(monthLabel(me.month), capDollars(me.cap_cents)),
+      true,
+    ),
     shown('players', k.players, count(me.players), c.allTime),
     shown('returning', k.returning, count(me.returning), c.allTime),
     shown('paying', k.paying, count(me.paying), c.payingNote),

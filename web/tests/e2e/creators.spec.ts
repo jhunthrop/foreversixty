@@ -37,7 +37,9 @@ async function asOwner(page: Page, requests = read('requests.json')): Promise<vo
   await signedIn(page, 'admin');
   await page.route('**/v1/admin/creators', (route) =>
     route.request().method() === 'GET'
-      ? route.fulfill(envelope({ creators: read('creators.json'), stripe_enabled: true, payouts_enabled: true }))
+      ? route.fulfill(
+          envelope({ creators: read('creators.json'), stripe_enabled: true, payouts_enabled: true }),
+        )
       : route.fallback(),
   );
   await page.route('**/v1/admin/creators/requests', (route) => route.fulfill(envelope({ requests })));
@@ -87,8 +89,12 @@ test.describe('/admin/creators', () => {
     await expect(page.getByTestId('creators-fixed')).toHaveText('/go/grimbrew · code GRIMBREW');
     await expect(page.getByTestId('creators-slug')).toHaveCount(0);
     await page.getByTestId('creators-invite').click();
-    await expect(page.getByTestId('creators-notice')).toHaveText('Invite copied. It works once, for 14 days.');
-    expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('/creators/onboarding?invite=');
+    await expect(page.getByTestId('creators-notice')).toHaveText(
+      'Invite copied. It works once, for 14 days.',
+    );
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
+      '/creators/onboarding?invite=',
+    );
   });
 
   test('a field the API refuses shows under its field', async ({ page }) => {
@@ -125,7 +131,14 @@ test.describe('/admin/creators/payouts', () => {
     await page.route('**/v1/admin/creators/1/statements/2026-11/approve', async (route) => {
       calls++;
       const paid = { ...(read('statements.json') as { statements: object[] }).statements[0] };
-      await route.fulfill(envelope({ ...paid, status: 'paid', paid_at: '2026-12-09T12:00:00Z', transfer_id: 'tr_creator-1-2026-11' }));
+      await route.fulfill(
+        envelope({
+          ...paid,
+          status: 'paid',
+          paid_at: '2026-12-09T12:00:00Z',
+          transfer_id: 'tr_creator-1-2026-11',
+        }),
+      );
     });
     await page.goto('/admin/creators/payouts');
     await expect(page.getByTestId('payout-row-1')).toContainText('Ready to approve');
@@ -137,7 +150,9 @@ test.describe('/admin/creators/payouts', () => {
     expect(calls).toBe(0);
     await page.getByTestId('payout-approve-1').click();
     await page.getByTestId('pay-confirm').click();
-    await expect(page.getByTestId('payout-row-1')).toContainText('Paid 9 Dec 2026 · transfer tr_creator-1-2026-11');
+    await expect(page.getByTestId('payout-row-1')).toContainText(
+      'Paid 9 Dec 2026 · transfer tr_creator-1-2026-11',
+    );
     expect(calls).toBe(1);
   });
 
@@ -164,12 +179,16 @@ test.describe('the creator', () => {
   test('stats: weeks without names, payouts and the dashboard link', async ({ page }) => {
     await signedIn(page, 'user', { creator: true });
     await page.route('**/v1/creators/me', (route) => route.fulfill(envelope(read('me.json'))));
-    await page.route('**/v1/creators/me/dashboard', (route) => route.fulfill(envelope({ url: '/creators/stats?dash=1' })));
+    await page.route('**/v1/creators/me/dashboard', (route) =>
+      route.fulfill(envelope({ url: '/creators/stats?dash=1' })),
+    );
     await page.goto('/creators/stats');
     await expect(page.getByRole('heading', { level: 1, name: 'Grimbrew' })).toBeVisible();
     await expect(page.getByTestId('stats-figures')).toContainText('December 2026, estimated, $500 cap max');
     await expect(page.getByTestId('stats-week-2026-12-07')).toHaveText('Week of 7 Dec: 18 signed up so far');
-    await expect(page.getByTestId('stats-week-2026-11-23')).toHaveText('Week of 23 Nov: 54 signed up · 36 returning · 10 paying');
+    await expect(page.getByTestId('stats-week-2026-11-23')).toHaveText(
+      'Week of 23 Nov: 54 signed up · 36 returning · 10 paying',
+    );
     await expect(page.getByTestId('stats-payouts-empty')).toBeVisible();
     await page.getByTestId('stats-dashboard').click();
     await expect(page).toHaveURL(/dash=1/);
@@ -177,21 +196,31 @@ test.describe('the creator', () => {
 
   test('onboarding: accepting an invite goes on to Stripe', async ({ page }) => {
     await signedIn(page);
-    await page.route('**/v1/creators/invite/preview', (route) => route.fulfill(envelope({ name: 'Grimbrew' })));
+    await page.route('**/v1/creators/invite/preview', (route) =>
+      route.fulfill(envelope({ name: 'Grimbrew' })),
+    );
     await page.route('**/v1/creators/invite', (route) => route.fulfill(envelope({ name: 'Grimbrew' })));
-    await page.route('**/v1/creators/me/onboarding', (route) => route.fulfill(envelope({ url: '/creators/onboarding?done=1' })));
+    await page.route('**/v1/creators/me/onboarding', (route) =>
+      route.fulfill(envelope({ url: '/creators/onboarding?done=1' })),
+    );
     await page.route('**/v1/creators/me**', (route) =>
       route.request().method() === 'GET' ? route.fulfill(envelope(read('me.json'))) : route.fallback(),
     );
     await page.goto('/creators/onboarding?invite=tok');
-    await expect(page.getByTestId('onboarding-join')).toHaveText('You’re joining the creator program as Grimbrew.');
+    await expect(page.getByTestId('onboarding-join')).toHaveText(
+      'You’re joining the creator program as Grimbrew.',
+    );
     await page.getByTestId('onboarding-accept').click();
-    await expect(page.getByTestId('onboarding-ready')).toHaveText('You’re set up. Payouts arrive after each month is approved.');
+    await expect(page.getByTestId('onboarding-ready')).toHaveText(
+      'You’re set up. Payouts arrive after each month is approved.',
+    );
   });
 
   test('onboarding: a used invite says so', async ({ page }) => {
     await signedIn(page);
-    await page.route('**/v1/creators/invite/preview', (route) => route.fulfill(envelope(null, 410, 'invite_used')));
+    await page.route('**/v1/creators/invite/preview', (route) =>
+      route.fulfill(envelope(null, 410, 'invite_used')),
+    );
     await page.goto('/creators/onboarding?invite=old');
     await expect(page.getByTestId('onboarding-bad-invite')).toBeVisible();
   });
@@ -200,8 +229,12 @@ test.describe('the creator', () => {
 test.describe('/creators and /creators/apply', () => {
   test('the public page says what creators get and links Apply', async ({ page }) => {
     await page.goto('/creators');
-    await expect(page.getByTestId('creators-section-what-you-get')).toContainText('$2 for each player you send who comes back');
-    await expect(page.getByTestId('creators-section-disclosure')).toContainText('The FTC and Twitch both require it.');
+    await expect(page.getByTestId('creators-section-what-you-get')).toContainText(
+      '$2 for each player you send who comes back',
+    );
+    await expect(page.getByTestId('creators-section-disclosure')).toContainText(
+      'The FTC and Twitch both require it.',
+    );
     await expect(page.getByTestId('creators-apply-top')).toHaveAttribute('href', '/creators/apply');
     await expect(page.locator('footer a[href="/creators"]').first()).toBeVisible();
   });
@@ -223,16 +256,26 @@ test.describe('/creators and /creators/apply', () => {
         await route.fulfill(envelope({ status }, 201));
         return;
       }
-      await route.fulfill(envelope({ status, created_at: status ? '2026-12-08T16:20:00Z' : null, creator: false }));
+      await route.fulfill(
+        envelope({ status, created_at: status ? '2026-12-08T16:20:00Z' : null, creator: false }),
+      );
     });
     await page.goto('/creators/apply');
     await page.getByTestId('apply-channel').fill('https://twitch.tv/emberfall');
     await page.getByRole('radio', { name: 'YouTube' }).check();
     await page.getByTestId('apply-audience').fill('1,200');
     await page.getByTestId('apply-about').fill('Hardcore runs three nights a week.');
-    await expect(page.getByTestId('apply-form')).toContainText('34 of 500');
+    await expect(page.getByTestId('apply-form')).toContainText('34 of 500 characters');
     await page.getByTestId('apply-submit').click();
-    await expect(page.getByTestId('apply-status-pending')).toContainText('Sent 8 Dec 2026. We’ll reply here.');
+    await expect(page.getByTestId('apply-error')).toHaveText(
+      'Tick this to apply: the FTC and Twitch require it.',
+    );
+    expect(sent).toBeNull();
+    await page.getByTestId('apply-disclose').locator('input').check();
+    await page.getByTestId('apply-submit').click();
+    await expect(page.getByTestId('apply-status-pending')).toContainText(
+      'Sent 8 Dec 2026. We’ll reply here.',
+    );
     expect(sent).toEqual({
       channel_url: 'https://twitch.tv/emberfall',
       platform: 'youtube',

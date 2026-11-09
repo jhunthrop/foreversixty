@@ -38,7 +38,13 @@ export function formFromCreator(c: Creator): CreatorFormValues {
 
 /** A request's Approve form: the API's suggestions, starting today. */
 export function formFromRequest(r: CreatorRequest, now: Date): CreatorFormValues {
-  return { ...emptyForm(now), name: r.suggested.name, channel_url: r.channel_url, slug: r.suggested.slug, code: r.suggested.code };
+  return {
+    ...emptyForm(now),
+    name: r.suggested.name,
+    channel_url: r.channel_url,
+    slug: r.suggested.slug,
+    code: r.suggested.code,
+  };
 }
 
 /** The API input; a cap that is not a whole number of dollars goes as NaN cents for the API to refuse. */

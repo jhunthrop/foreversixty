@@ -21,7 +21,9 @@ const paragraphs = (lines: readonly string[]): string => lines.map((l) => `<p>${
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="creators-program">
     <Page layout="reading" tocFrom={0} testid="creators-program-body">
       <PageHeader slot="header" title={copy.pageTitle} lead={copy.lead}>
-        <a slot="actions" class={button('primary')} href={APPLY} data-testid="creators-apply-top">{copy.apply}</a>
+        <a slot="actions" class={button('primary')} href={APPLY} data-testid="creators-apply-top">
+          {copy.apply}
+        </a>
       </PageHeader>
       {copy.sections.map((section) => (
         <ReadingSection title={section.title} anchor={section.id} testid={`creators-section-${section.id}`}>
@@ -30,7 +32,11 @@ const paragraphs = (lines: readonly string[]): string => lines.map((l) => `<p>${
       ))}
       <ReadingSection title={copy.applyTitle} anchor="apply" testid="creators-section-apply">
         <Prose html={paragraphs([copy.applyLead])} />
-        <div class="mt-2"><a class={button('primary')} href={APPLY} data-testid="creators-apply-end">{copy.apply}</a></div>
+        <div class="mt-2">
+          <a class={button('primary')} href={APPLY} data-testid="creators-apply-end">
+            {copy.apply}
+          </a>
+        </div>
       </ReadingSection>
     </Page>
   </main>

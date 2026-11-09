@@ -49,7 +49,8 @@
   import Tag from '../ui/Tag.svelte';
 
   type Phase = 'loading' | 'signed-out' | 'not-owner' | 'failed' | 'ready';
-  type Mode = { kind: 'add' } | { kind: 'edit'; creator: Creator } | { kind: 'approve'; request: CreatorRequest };
+  type Mode =
+    { kind: 'add' } | { kind: 'edit'; creator: Creator } | { kind: 'approve'; request: CreatorRequest };
 
   let { now = () => new Date() }: { now?: () => Date } = $props();
 
@@ -128,7 +129,8 @@
         await editCreator(mode.creator.id, editable);
         notice = copy.saved;
       } else {
-        const made = mode.kind === 'approve' ? await approveRequest(mode.request.id, input) : await addCreator(input);
+        const made =
+          mode.kind === 'approve' ? await approveRequest(mode.request.id, input) : await addCreator(input);
         setMode({ kind: 'add' });
         notice = copy.added(made.name);
       }
@@ -192,10 +194,16 @@
 </script>
 
 {#snippet figures(c: Creator)}
-  <span class="flex min-w-0 flex-wrap items-start gap-x-5 gap-y-2">
+  <span class="grid min-w-0 grid-cols-2 items-start gap-x-5 gap-y-2 md:flex md:flex-wrap">
     {#each creatorFigures(c) as fig (fig.key)}
-      <span class={fig.lead ? 'w-[168px]' : 'w-[104px]'}
-        ><Figure value={fig.value} label={fig.label} caption={fig.note} size="sm" tone={fig.lead ? 'gold' : 'strong'} /></span
+      <span class={fig.lead ? 'md:w-[168px]' : 'md:w-[104px]'}
+        ><Figure
+          value={fig.value}
+          label={fig.label}
+          caption={fig.note}
+          size="sm"
+          tone={fig.lead ? 'gold' : 'strong'}
+        /></span
       >
     {/each}
   </span>
@@ -217,10 +225,20 @@
   <Page layout="split" testid="creators-page-body">
     <div class="flex flex-col gap-8">
       {#if requests.length > 0}
-        <Section title={requestsCopy.title} meta={requestsCopy.meta(requests.length)} testid="creators-requests">
+        <Section
+          title={requestsCopy.title}
+          meta={requestsCopy.meta(requests.length)}
+          testid="creators-requests"
+        >
           <div>
             {#each requests as r (r.id)}
-              <Row title={channelTitle(r.channel_url)} sub={requestSub(r)} open wrapTrail testid={`request-${r.id}`}>
+              <Row
+                title={channelTitle(r.channel_url)}
+                sub={requestSub(r)}
+                open
+                wrapTrail
+                testid={`request-${r.id}`}
+              >
                 {#snippet trail()}
                   <span class="flex shrink-0 items-center gap-2.5">
                     <button
@@ -238,7 +256,9 @@
                   </span>
                 {/snippet}
                 {#snippet foot()}
-                  <span class="text-muted text-[12px] leading-4">{r.about}{r.contact_email ? ` · ${r.contact_email}` : ''}</span>
+                  <span class="text-muted text-[12px] leading-4"
+                    >{r.about}{r.contact_email ? ` · ${r.contact_email}` : ''}</span
+                  >
                 {/snippet}
               </Row>
             {/each}
@@ -247,16 +267,25 @@
       {/if}
       <Section title={copy.tableTitle} meta={copy.tableMeta(creators.length)} testid="creators-table">
         <div>
-          {#if !stripeEnabled}<p class="text-wipe mb-3 text-[14px]" data-testid="creators-stripe-off">{copy.stripeOff}</p>{/if}
+          {#if !stripeEnabled}<p class="text-wipe mb-3 text-[14px]" data-testid="creators-stripe-off">
+              {copy.stripeOff}
+            </p>{/if}
           {#if creators.length === 0}
             <p data-testid="creators-empty">{copy.empty}</p>
           {:else}
             <Plate label={copy.tableTitle}>
               {#each creators as c (c.id)}
-                <Row title={c.name} sub={copy.sub(c.slug, c.code, dayLabel(c.starts_on))} testid={`creator-row-${c.slug}`}>
+                <Row
+                  title={c.name}
+                  sub={copy.sub(c.slug, c.code, dayLabel(c.starts_on))}
+                  wrapTrail
+                  testid={`creator-row-${c.slug}`}
+                >
                   {#snippet trail()}
                     <span class="flex shrink-0 items-center gap-2.5">
-                      <Tag tone={STATUS_TONE[c.stripe_status]} testid={`creator-status-${c.slug}`}>{stripeStatusCopy[c.stripe_status]}</Tag>
+                      <Tag tone={STATUS_TONE[c.stripe_status]} testid={`creator-status-${c.slug}`}
+                        >{stripeStatusCopy[c.stripe_status]}</Tag
+                      >
                       <button
                         type="button"
                         class={smallButton()}
@@ -271,21 +300,29 @@
               {/each}
             </Plate>
           {/if}
-          <p class="mt-3"><a class="link" href="/admin/creators/payouts" data-testid="creators-statements-link">{copy.statementsLink} ›</a></p>
+          <p class="mt-3">
+            <a class="link" href="/admin/creators/payouts" data-testid="creators-statements-link"
+              >{copy.statementsLink} ›</a
+            >
+          </p>
         </div>
       </Section>
     </div>
     {#snippet rail()}
       <Section title={railTitle} testid="creators-form-card">
         <div class="flex flex-col gap-3">
-          <p class="text-muted text-[13px] leading-5">{mode.kind === 'approve' ? requestsCopy.approveJob : copy.formJob}</p>
+          <p class="text-muted text-[13px] leading-5">
+            {mode.kind === 'approve' ? requestsCopy.approveJob : copy.formJob}
+          </p>
           <form class="flex flex-col gap-3" onsubmit={onSubmit} novalidate data-testid="creators-form">
             {#each FIELDS as field (field.id)}
               {#if fixed && (field.id === 'slug' || field.id === 'code')}
                 {#if field.id === 'slug'}
                   <div class="flex flex-col gap-1.5">
                     <span class={FIELD_LABEL}>{copy.fields.slug.label} · {copy.fields.code.label}</span>
-                    <span class="text-strong text-[15px]" data-testid="creators-fixed">{copy.fixed(values.slug, values.code)}</span>
+                    <span class="text-strong text-[15px]" data-testid="creators-fixed"
+                      >{copy.fixed(values.slug, values.code)}</span
+                    >
                   </div>
                 {/if}
               {:else}
@@ -304,29 +341,50 @@
               {/if}
             {/each}
             <div class="flex flex-wrap items-center gap-3">
-              <button type="submit" class={button('primary')} disabled={saving} aria-busy={saving} data-testid="creators-save">
+              <button
+                type="submit"
+                class={button('primary')}
+                disabled={saving}
+                aria-busy={saving}
+                data-testid="creators-save"
+              >
                 {saving ? copy.saving : mode.kind === 'edit' ? copy.save : copy.add}
               </button>
               {#if mode.kind !== 'add'}
-                <button type="button" class={button('secondary')} onclick={() => setMode({ kind: 'add' })} data-testid="creators-cancel"
-                  >{copy.cancelEdit}</button
+                <button
+                  type="button"
+                  class={button('secondary')}
+                  onclick={() => setMode({ kind: 'add' })}
+                  data-testid="creators-cancel">{copy.cancelEdit}</button
                 >
               {/if}
             </div>
             {#if mode.kind === 'edit'}
               {@const editing = mode.creator}
               <div class="flex flex-wrap items-center gap-2.5">
-                <button type="button" class={smallButton()} onclick={() => void onInvite(editing.id)} data-testid="creators-invite"
-                  >{copy.invite}</button
+                <button
+                  type="button"
+                  class={smallButton()}
+                  onclick={() => void onInvite(editing.id)}
+                  data-testid="creators-invite">{copy.invite}</button
                 >
-                <button type="button" class={smallButton()} onclick={() => void onRefresh(editing.id)} data-testid="creators-refresh"
-                  >{copy.refresh}</button
+                <button
+                  type="button"
+                  class={smallButton()}
+                  onclick={() => void onRefresh(editing.id)}
+                  data-testid="creators-refresh">{copy.refresh}</button
                 >
               </div>
             {/if}
             <div class="min-h-[22px]" aria-live="polite">
               {#if notice !== ''}<p class="text-[14px]" data-testid="creators-notice">{notice}</p>{/if}
-              {#if formError !== ''}<p class="text-wipe text-[14px]" role="alert" data-testid="creators-form-error">{formError}</p>{/if}
+              {#if formError !== ''}<p
+                  class="text-wipe text-[14px]"
+                  role="alert"
+                  data-testid="creators-form-error"
+                >
+                  {formError}
+                </p>{/if}
             </div>
           </form>
         </div>

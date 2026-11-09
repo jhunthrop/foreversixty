@@ -25,6 +25,7 @@
   let values = $state({ channel_url: '', audience: '', about: '', contact_email: '' });
   let platform = $state<Platform>('twitch');
   let sending = $state(false);
+  let disclosed = $state(false);
   let fieldErrors = $state<Readonly<Record<string, string>>>({});
   let formError = $state('');
 
@@ -56,9 +57,13 @@
 
   async function onSubmit(event: SubmitEvent): Promise<void> {
     event.preventDefault();
-    sending = true;
     fieldErrors = {};
     formError = '';
+    if (!disclosed) {
+      formError = copy.discloseNeeded;
+      return;
+    }
+    sending = true;
     try {
       await sendApplication({
         channel_url: values.channel_url.trim(),
@@ -70,13 +75,16 @@
       mine = await fetchApplication();
     } catch (error) {
       if (error instanceof AccountError && error.fields !== null) fieldErrors = error.fields;
-      else formError = error instanceof AccountError && error.message !== '' ? error.message : copy.sendFailed;
+      else
+        formError = error instanceof AccountError && error.message !== '' ? error.message : copy.sendFailed;
     } finally {
       sending = false;
     }
   }
 
-  const showForm = $derived(mine !== null && !mine.creator && (mine.status === null || mine.status === 'declined'));
+  const showForm = $derived(
+    mine !== null && !mine.creator && (mine.status === null || mine.status === 'declined'),
+  );
 </script>
 
 {#if phase === 'loading'}
@@ -103,7 +111,11 @@
           {:else if mine.status === 'approved'}
             <div><Tag tone="success">{copy.approvedTag}</Tag></div>
             <p>{copy.approved}</p>
-            <div><a class={button('primary')} href="/creators/onboarding" data-testid="apply-setup">{copy.setup}</a></div>
+            <div>
+              <a class={button('primary')} href="/creators/onboarding" data-testid="apply-setup"
+                >{copy.setup}</a
+              >
+            </div>
           {:else}
             <div><Tag tone="muted">{copy.declinedTag}</Tag></div>
             <p>{copy.declined}</p>
@@ -130,8 +142,14 @@
             <legend class={FIELD_LABEL}>{copy.fields.platform.label}</legend>
             <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
               {#each PLATFORMS as p (p)}
-                <label class="flex items-center gap-2 text-[15px]">
-                  <input type="radio" name="platform" value={p} bind:group={platform} class="accent-gold size-[18px]" />
+                <label class="flex min-h-11 items-center gap-2 text-[15px]">
+                  <input
+                    type="radio"
+                    name="platform"
+                    value={p}
+                    bind:group={platform}
+                    class="accent-gold size-[18px]"
+                  />
                   {copy.platforms[p]}
                 </label>
               {/each}
@@ -151,7 +169,7 @@
           <Field
             id="apply-about"
             label={copy.fields.about.label}
-            hint={`${copy.fields.about.hint} · ${copy.counter([...values.about].length, ABOUT_MAX)}`}
+            hint={copy.counter([...values.about].length, ABOUT_MAX)}
             rows={5}
             maxlength={ABOUT_MAX}
             required
@@ -170,13 +188,27 @@
             bind:value={values.contact_email}
             testid="apply-email"
           />
+          <label class="flex min-h-11 items-start gap-2 text-[15px]" data-testid="apply-disclose">
+            <input
+              type="checkbox"
+              bind:checked={disclosed}
+              class="accent-gold mt-[3px] size-[18px] shrink-0"
+            />
+            <span>{copy.disclose}</span>
+          </label>
           <p class="text-muted text-[14px]">{copy.consent}</p>
           <div>
-            <button type="submit" class={button('primary')} disabled={sending} aria-busy={sending} data-testid="apply-submit"
-              >{sending ? copy.sending : copy.submit}</button
+            <button
+              type="submit"
+              class={button('primary')}
+              disabled={sending}
+              aria-busy={sending}
+              data-testid="apply-submit">{sending ? copy.sending : copy.submit}</button
             >
           </div>
-          {#if formError !== ''}<p class="text-wipe text-[14px]" role="alert" data-testid="apply-error">{formError}</p>{/if}
+          {#if formError !== ''}<p class="text-wipe text-[14px]" role="alert" data-testid="apply-error">
+              {formError}
+            </p>{/if}
         </form>
       </Section>
     {/if}

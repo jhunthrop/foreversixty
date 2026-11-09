@@ -66,7 +66,12 @@
 >
   <Overlay kind="sheet" role="none" class="pay-box">
     <div class="flex flex-col gap-1 px-5 pt-5 pb-4">
-      <h2 bind:this={heading} id="pay-title" class="text-strong m-0 text-[20px] leading-6 font-bold outline-none" tabindex="-1">
+      <h2
+        bind:this={heading}
+        id="pay-title"
+        class="text-strong m-0 text-[20px] leading-6 font-bold outline-none"
+        tabindex="-1"
+      >
         {title}
       </h2>
       <p class="m-0 text-[15px] leading-[22px]">{copy.confirmBody(amount)}</p>
@@ -79,7 +84,8 @@
         disabled={busy}
         aria-busy={busy ? 'true' : undefined}
         onclick={onconfirm}
-        data-testid="pay-confirm">{#if busy}<Spinner />{copy.approving}{:else}{copy.confirmPay(amount)}{/if}</button
+        data-testid="pay-confirm"
+        >{#if busy}<Spinner />{copy.approving}{:else}{copy.confirmPay(amount)}{/if}</button
       >
     </div>
   </Overlay>

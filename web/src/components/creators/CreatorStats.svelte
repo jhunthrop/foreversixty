@@ -67,7 +67,13 @@
         <div class="flex flex-wrap items-start gap-x-5 gap-y-2 p-4" data-testid="stats-figures">
           {#each statsFigures(mine) as fig (fig.key)}
             <span class={fig.lead ? 'w-[168px]' : 'w-[104px]'}
-              ><Figure value={fig.value} label={fig.label} caption={fig.note} size="sm" tone={fig.lead ? 'gold' : 'strong'} /></span
+              ><Figure
+                value={fig.value}
+                label={fig.label}
+                caption={fig.note}
+                size="sm"
+                tone={fig.lead ? 'gold' : 'strong'}
+              /></span
             >
           {/each}
         </div>
@@ -88,7 +94,11 @@
       <Section title={copy.payoutsTitle} testid="stats-payouts">
         <div class="flex flex-col gap-4">
           {#if mine.stripe_status !== 'ready'}
-            <div><a class={button('primary')} href="/creators/onboarding" data-testid="stats-setup">{copy.setup}</a></div>
+            <div>
+              <a class={button('primary')} href="/creators/onboarding" data-testid="stats-setup"
+                >{copy.setup}</a
+              >
+            </div>
           {/if}
           {#if mine.payouts.length === 0}
             <p class="text-muted text-[14px]" data-testid="stats-payouts-empty">{copy.payoutsEmpty}</p>
@@ -103,8 +113,13 @@
           {/if}
           {#if mine.stripe_status === 'ready'}
             <div>
-              <button type="button" class={button('secondary')} disabled={opening} aria-busy={opening} onclick={() => void openDashboard()} data-testid="stats-dashboard"
-                >{opening ? copy.dashboardOpening : copy.dashboard}</button
+              <button
+                type="button"
+                class={button('secondary')}
+                disabled={opening}
+                aria-busy={opening}
+                onclick={() => void openDashboard()}
+                data-testid="stats-dashboard">{opening ? copy.dashboardOpening : copy.dashboard}</button
               >
             </div>
             {#if dashError !== ''}<p class="text-wipe text-[14px]" role="alert">{dashError}</p>{/if}

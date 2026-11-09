@@ -41,7 +41,10 @@
   let { now = () => new Date() }: { now?: () => Date } = $props();
 
   const months = recentMonths(now());
-  const options = months.map((m, i) => ({ value: m, label: i === 0 ? copy.openMonth(monthLabel(m)) : monthLabel(m) }));
+  const options = months.map((m, i) => ({
+    value: m,
+    label: i === 0 ? copy.openMonth(monthLabel(m)) : monthLabel(m),
+  }));
 
   let phase = $state<Phase>('loading');
   /** The month on show: the API's answer, so the page and the API never disagree on which. */
@@ -122,7 +125,9 @@
       confirming = null;
     } catch (error) {
       confirming = null;
-      payError = copy.approveFailed(error instanceof AccountError && error.message !== '' ? error.message : '');
+      payError = copy.approveFailed(
+        error instanceof AccountError && error.message !== '' ? error.message : '',
+      );
     } finally {
       paying = false;
     }
@@ -143,28 +148,52 @@
   </div>
 {:else}
   <Page layout="split" testid="payouts-page-body">
-    <Section title={copy.tableTitle(statements.length)} meta={copy.tableMeta(money(toPay(statements)))} testid="payouts-table">
+    <Section
+      title={copy.tableTitle(statements.length)}
+      meta={copy.tableMeta(money(toPay(statements)))}
+      testid="payouts-table"
+    >
       {#snippet head()}
-        <Select id="payouts-month" size="dense" label={copy.monthLabel} value={month} {options} onchange={onMonth} testid="payouts-month" />
+        <Select
+          id="payouts-month"
+          size="dense"
+          fit
+          label={copy.monthLabel}
+          value={month}
+          {options}
+          onchange={onMonth}
+          testid="payouts-month"
+        />
       {/snippet}
       <div>
-        {#if !payoutsEnabled}<p class="text-wipe mb-4 text-[15px]" data-testid="payouts-off">{copy.payoutsOff}</p>{/if}
+        {#if !payoutsEnabled}<p class="text-wipe mb-4 text-[15px]" data-testid="payouts-off">
+            {copy.payoutsOff}
+          </p>{/if}
         {#if statements.length === 0}
           <p data-testid="payouts-empty">{copy.empty}</p>
         {:else}
           <Plate label={monthLabel(month)}>
             {#each statements as s (s.creator_id)}
-              <Row title={s.name} sub={statementStatusLine(s)} selected={current?.creator_id === s.creator_id} testid={`payout-row-${s.creator_id}`}>
+              <Row
+                title={s.name}
+                sub={statementStatusLine(s)}
+                selected={current?.creator_id === s.creator_id}
+                wrapTrail
+                testid={`payout-row-${s.creator_id}`}
+              >
                 {#snippet trail()}
                   <span class="flex shrink-0 items-center gap-2.5">
-                    {#if s.status === 'blocked'}<Tag tone="warn" testid={`payout-blocked-${s.creator_id}`}>{copy.notReady}</Tag>{/if}
+                    {#if s.status === 'blocked'}<Tag tone="warn" testid={`payout-blocked-${s.creator_id}`}
+                        >{copy.notReady}</Tag
+                      >{/if}
                     {#if canApprove(s)}
                       <button
                         type="button"
-                        class={smallButton('primary')}
+                        class={smallButton(payoutsEnabled ? 'primary' : 'secondary')}
                         disabled={!payoutsEnabled}
                         onclick={() => (confirming = s)}
-                        data-testid={`payout-approve-${s.creator_id}`}>{copy.approve(money(s.total_cents))}</button
+                        data-testid={`payout-approve-${s.creator_id}`}
+                        >{copy.approve(money(s.total_cents))}</button
                       >
                     {/if}
                     <button
@@ -177,10 +206,16 @@
                   </span>
                 {/snippet}
                 {#snippet foot()}
-                  <span class="flex min-w-0 flex-wrap items-start gap-x-5 gap-y-2">
+                  <span class="grid min-w-0 grid-cols-2 items-start gap-x-5 gap-y-2 md:flex md:flex-wrap">
                     {#each statementFigures(s) as fig (fig.key)}
-                      <span class={fig.lead ? 'w-[168px]' : 'w-[104px]'}
-                        ><Figure value={fig.value} label={fig.label} caption={fig.note || undefined} size="sm" tone={fig.lead ? 'gold' : 'strong'} /></span
+                      <span class={fig.lead ? 'md:w-[168px]' : 'md:w-[104px]'}
+                        ><Figure
+                          value={fig.value}
+                          label={fig.label}
+                          caption={fig.note || undefined}
+                          size="sm"
+                          tone={fig.lead ? 'gold' : 'strong'}
+                        /></span
                       >
                     {/each}
                   </span>
@@ -189,7 +224,13 @@
             {/each}
           </Plate>
         {/if}
-        {#if payError !== ''}<p class="text-wipe mt-3 text-[14px]" role="alert" data-testid="payouts-error-line">{payError}</p>{/if}
+        {#if payError !== ''}<p
+            class="text-wipe mt-3 text-[14px]"
+            role="alert"
+            data-testid="payouts-error-line"
+          >
+            {payError}
+          </p>{/if}
       </div>
     </Section>
     {#snippet rail()}
@@ -202,7 +243,9 @@
               {#each current.lines as line, i (i)}
                 {@const shown = lineText(line)}
                 <Row title={shown.text} density="slim" open>
-                  {#snippet trail()}<span class="tabular-nums {shown.refund ? 'text-wipe' : ''}">{shown.amount}</span>{/snippet}
+                  {#snippet trail()}<span class="tabular-nums {shown.refund ? 'text-wipe' : ''}"
+                      >{shown.amount}</span
+                    >{/snippet}
                 </Row>
               {/each}
             </div>

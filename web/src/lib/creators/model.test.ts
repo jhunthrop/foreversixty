@@ -101,12 +101,21 @@ describe('statements', () => {
       payoutsCopy.status.blocked,
       payoutsCopy.status.nothing,
     ]);
-    const paid = { ...statements[0], status: 'paid' as const, paid_at: '2026-12-02T12:00:00Z', transfer_id: 'tr_1' };
+    const paid = {
+      ...statements[0],
+      status: 'paid' as const,
+      paid_at: '2026-12-02T12:00:00Z',
+      transfer_id: 'tr_1',
+    };
     expect(statementStatusLine(paid)).toBe('Paid 2 Dec 2026 · transfer tr_1');
   });
 
   it('signs a refund line', () => {
-    expect(lineText(statements[0].lines[3])).toEqual({ text: 'Player #10498 · refund 21 Nov 2026', amount: '−$2.50', refund: true });
+    expect(lineText(statements[0].lines[3])).toEqual({
+      text: 'Player #10498 · refund 21 Nov 2026',
+      amount: '−$2.50',
+      refund: true,
+    });
   });
 });
 
@@ -127,7 +136,14 @@ describe('the owner’s form', () => {
   const now = new Date('2026-12-09T12:00:00Z');
 
   it('starts empty from today at a $500 cap', () => {
-    expect(emptyForm(now)).toEqual({ name: '', channel_url: '', slug: '', code: '', starts_on: '2026-12-09', cap: '500' });
+    expect(emptyForm(now)).toEqual({
+      name: '',
+      channel_url: '',
+      slug: '',
+      code: '',
+      starts_on: '2026-12-09',
+      cap: '500',
+    });
   });
 
   it('round-trips a creator and prefills a request', () => {
@@ -139,7 +155,12 @@ describe('the owner’s form', () => {
       starts_on: '2026-11-12',
       cap_cents: 5000,
     });
-    expect(formFromRequest(waiting[0], now)).toMatchObject({ name: 'emberfall', slug: 'emberfall', code: 'EMBERFALL', starts_on: '2026-12-09' });
+    expect(formFromRequest(waiting[0], now)).toMatchObject({
+      name: 'emberfall',
+      slug: 'emberfall',
+      code: 'EMBERFALL',
+      starts_on: '2026-12-09',
+    });
   });
 
   it('uppercases the code and sends a bad cap for the API to refuse', () => {
@@ -151,8 +172,9 @@ describe('the owner’s form', () => {
 });
 
 describe('the words', () => {
-  const all = JSON.stringify([adminCreatorsCopy, payoutsCopy, creatorStatsCopy, programCopy, applyCopy], (_k, v: unknown) =>
-    typeof v === 'function' ? String(v) : v,
+  const all = JSON.stringify(
+    [adminCreatorsCopy, payoutsCopy, creatorStatsCopy, programCopy, applyCopy],
+    (_k, v: unknown) => (typeof v === 'function' ? String(v) : v),
   );
 
   it('uses no em dash and no exclamation mark', () => {

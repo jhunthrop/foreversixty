@@ -13,7 +13,9 @@ import { LINK } from '../../../lib/ui/primitives';
   <meta slot="head" name="robots" content="noindex" />
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="admin-payouts-page">
     <PageHeader title={copy.pageTitle} lead={copy.job}>
-      <a slot="actions" class={`${LINK} text-[15px]`} href="/admin/creators" data-testid="payouts-back">‹ {copy.back}</a>
+      <a slot="actions" class={`${LINK} text-[15px]`} href="/admin/creators" data-testid="payouts-back">
+        ‹ {copy.back}
+      </a>
     </PageHeader>
     <CreatorPayouts client:load />
   </main>

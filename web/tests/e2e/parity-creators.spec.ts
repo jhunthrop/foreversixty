@@ -35,23 +35,35 @@ function renderMocks(): string {
   const generators = path.join(REPO_ROOT, 'design/mocks');
   const env = { ...process.env, FS_CREATORS_FACTS: facts, FS_MOCK_OUT: dir };
   execFileSync('node', [path.join(generators, 'creators_facts.mjs'), facts], { cwd: REPO_ROOT, env });
-  execFileSync(process.env.PYTHON ?? 'python3', [path.join(generators, 'ws_creators.py')], { cwd: REPO_ROOT, env });
+  execFileSync(process.env.PYTHON ?? 'python3', [path.join(generators, 'ws_creators.py')], {
+    cwd: REPO_ROOT,
+    env,
+  });
   return dir;
 }
 
 const envelope = (data: unknown, status = 200) => ({
   status,
   contentType: 'application/json',
-  body: JSON.stringify({ ok: status < 400, data: status < 400 ? data : null, error: status < 400 ? null : { code: 'x', message: 'x' }, request_id: 'p' }),
+  body: JSON.stringify({
+    ok: status < 400,
+    data: status < 400 ? data : null,
+    error: status < 400 ? null : { code: 'x', message: 'x' },
+    request_id: 'p',
+  }),
 });
 
-const owner = JSON.parse(readFileSync(path.join(REPO_ROOT, 'web/tests/e2e/fixtures/home/me-60.json'), 'utf8')) as {
+const owner = JSON.parse(
+  readFileSync(path.join(REPO_ROOT, 'web/tests/e2e/fixtures/home/me-60.json'), 'utf8'),
+) as {
   user: Record<string, unknown>;
 };
 
 async function signedInAsOwner(page: Page, extra: Record<string, unknown> = {}): Promise<void> {
   await page.context().addCookies([{ name: 'fs_csrf', value: 'tok', domain: 'localhost', path: '/' }]);
-  await page.route('**/v1/me', (route) => route.fulfill(envelope({ ...owner, user: { ...owner.user, role: 'admin' }, ...extra })));
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(envelope({ ...owner, user: { ...owner.user, role: 'admin' }, ...extra })),
+  );
 }
 
 interface State {
@@ -69,9 +81,13 @@ const STATES: State[] = [
     setup: async (page) => {
       await signedInAsOwner(page);
       await page.route('**/v1/admin/creators', (route) =>
-        route.fulfill(envelope({ creators: read('creators.json'), stripe_enabled: true, payouts_enabled: true })),
+        route.fulfill(
+          envelope({ creators: read('creators.json'), stripe_enabled: true, payouts_enabled: true }),
+        ),
       );
-      await page.route('**/v1/admin/creators/requests', (route) => route.fulfill(envelope({ requests: read('requests.json') })));
+      await page.route('**/v1/admin/creators/requests', (route) =>
+        route.fulfill(envelope({ requests: read('requests.json') })),
+      );
     },
   },
   {
@@ -80,7 +96,9 @@ const STATES: State[] = [
     ready: 'payout-row-1',
     setup: async (page) => {
       await signedInAsOwner(page);
-      await page.route('**/v1/admin/creators/statements**', (route) => route.fulfill(envelope(read('statements.json'))));
+      await page.route('**/v1/admin/creators/statements**', (route) =>
+        route.fulfill(envelope(read('statements.json'))),
+      );
     },
   },
   {
@@ -98,7 +116,9 @@ const STATES: State[] = [
     ready: 'apply-form',
     setup: async (page) => {
       await signedInAsOwner(page);
-      await page.route('**/v1/creators/application', (route) => route.fulfill(envelope({ status: null, created_at: null, creator: false })));
+      await page.route('**/v1/creators/application', (route) =>
+        route.fulfill(envelope({ status: null, created_at: null, creator: false })),
+      );
     },
   },
   {

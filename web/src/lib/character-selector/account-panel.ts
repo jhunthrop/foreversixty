@@ -56,7 +56,8 @@ export interface AccountPanel {
 /** The creator program's menu rows: Creator stats for a creator, the requests badge for the owner. */
 export function creatorRowsOf(me: Me): CreatorRow[] {
   const rows: CreatorRow[] = [];
-  if (me.creator === true) rows.push({ href: '/creators/stats', title: creatorStatsCopy.menuItem, badge: null });
+  if (me.creator === true)
+    rows.push({ href: '/creators/stats', title: creatorStatsCopy.menuItem, badge: null });
   const waiting = me.creator_requests ?? 0;
   if (waiting > 0) rows.push({ href: '/admin/creators', title: requestsCopy.badge(waiting), badge: waiting });
   return rows;

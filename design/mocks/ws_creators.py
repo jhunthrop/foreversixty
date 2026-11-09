@@ -193,15 +193,16 @@ def apply(state: str) -> str:
     c = Y['copy']
     f = c['fields']
     if state == 'form':
-        radios = ''.join(f'<label class="acts"><input class="radio" type="radio" name="p"{" checked" if k == "twitch" else ""}> {e(v)}</label>'
+        radios = ''.join(f'<label class="acts" style="min-height:44px"><input class="radio" type="radio" name="p"{" checked" if k == "twitch" else ""}> {e(v)}</label>'
                          for k, v in c['platforms'].items())
         inner = ('<div class="stack">'
                  + field(f['channel'])
                  + f'<fieldset class="f fs"><legend class="t-label">{e(f["platform"]["label"])}</legend><div class="acts">{radios}</div></fieldset>'
                  + field(f['audience'])
                  + f'<label class="f"><span class="t-label">{e(f["about"]["label"])}</span><textarea class="field" rows="5" style="height:118px;padding-top:10px"></textarea>'
-                   f'<span class="t-small">{e(f["about"]["hint"])} · {e(Y["counter"])}</span></label>'
+                   f'<span class="t-small">{e(Y["counter"])}</span></label>'
                  + field(f['email'])
+                 + f'<label class="acts" style="align-items:flex-start;min-height:44px"><input type="checkbox" class="radio"> <span>{e(c["disclose"])}</span></label>'
                  + f'<p class="t-small">{e(c["consent"])}</p>'
                  + f'<div class="acts">{Btn(e(c["submit"]), primary=True, small=False)}</div></div>')
         section = Section(e(c['formTitle']), inner)

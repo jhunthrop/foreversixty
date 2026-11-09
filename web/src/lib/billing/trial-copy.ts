@@ -6,14 +6,7 @@
 // date ("15 Nov 2026"); every price comes from plans.ts. The API's billingmail mirrors the email
 // sentences and a test holds the two together.
 import { priceFor } from './plan-costs';
-import {
-  FOUNDER_LAST_DAY,
-  GUILD_TRIAL_DAYS,
-  PLANS,
-  formatPrice,
-  type Interval,
-  type PlanKey,
-} from './plans';
+import { FOUNDER_LAST_DAY, GUILD_TRIAL_DAYS, PLANS, formatPrice, type Interval, type PlanKey } from './plans';
 import { formatDayMonthYear } from '../dates';
 
 /** Premium's free trial without a code; a guild plan's is GUILD_TRIAL_DAYS. */
@@ -123,8 +116,10 @@ export const trialCopy = {
     codeApplied: (code: string): string => `${code} applied: your first month is free.`,
     remove: 'Remove',
     codeUnknown: 'That isn’t a creator’s code. Check the spelling, or start without one.',
-    trialUsed: 'This account already had its free trial, so a code can’t give another. You can still subscribe.',
-    guildTrialUsed: 'This guild already had its free trial, so a code can’t give another. You can still subscribe.',
+    trialUsed:
+      'This account already had its free trial, so a code can’t give another. You can still subscribe.',
+    guildTrialUsed:
+      'This guild already had its free trial, so a code can’t give another. You can still subscribe.',
     cardNote: 'Stripe asks for a card now and shows the same dates before you confirm.',
     start: (days: number): string => `Start ${days} free days`,
     subscribe: (price: string): string => `Subscribe · ${price}`,
@@ -161,7 +156,11 @@ export const trialCopy = {
 } as const;
 
 /** The reminder, by email and in the app (spec section 4). `link` is the one-click cancel page. */
-export function reminderEmail(endDate: string, price: string, link: string): { subject: string; text: string } {
+export function reminderEmail(
+  endDate: string,
+  price: string,
+  link: string,
+): { subject: string; text: string } {
   return {
     subject: `Your free Premium ends on ${endDate}`,
     text:

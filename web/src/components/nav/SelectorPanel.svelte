@@ -259,7 +259,11 @@
       {@render chevron(panel.plan.seePlans)}
     </a>
     {#each panel.creator as row (row.href)}
-      <a class="csel-arow" href={row.href} data-testid={row.badge === null ? 'selector-row-creator' : 'selector-row-creator-requests'}>
+      <a
+        class="csel-arow"
+        href={row.href}
+        data-testid={row.badge === null ? 'selector-row-creator' : 'selector-row-creator-requests'}
+      >
         <span class="csel-tile is-small">{@render glyph(GLYPHS.star)}</span>
         <span class="csel-arow-text">
           <span class="csel-arow-line">

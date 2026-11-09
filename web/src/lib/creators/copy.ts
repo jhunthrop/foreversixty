@@ -35,14 +35,22 @@ export const adminCreatorsCopy = {
   formJob: 'The link and the code are made once and can’t change after.',
   fields: {
     name: { label: 'Name', hint: 'What the creator goes by on stream.', placeholder: 'e.g. Grimbrew' },
-    channel: { label: 'Channel', hint: 'Their Twitch or YouTube address.', placeholder: 'https://twitch.tv/…' },
+    channel: {
+      label: 'Channel',
+      hint: 'Their Twitch or YouTube address.',
+      placeholder: 'https://twitch.tv/…',
+    },
     slug: { label: 'Link', hint: 'Becomes foreversixty.gg/go/your-slug.', placeholder: 'e.g. grimbrew' },
     code: {
       label: 'Creator code',
       hint: 'Capitals and digits, 4 to 20. It gets viewers a free month of Premium, or a free month for their guild.',
       placeholder: 'e.g. GRIMBREW',
     },
-    startsOn: { label: 'Starts on', hint: 'Players who signed up before this day never count.', placeholder: '2026-11-08' },
+    startsOn: {
+      label: 'Starts on',
+      hint: 'Players who signed up before this day never count.',
+      placeholder: '2026-11-08',
+    },
     cap: { label: 'Monthly cap', hint: 'Dollars a month at most, like 500.', placeholder: '500' },
   },
   add: 'Add creator',
@@ -99,12 +107,14 @@ export const payoutsCopy = {
   notReady: 'Stripe not ready',
   approve: (amount: string): string => `Approve ${amount}`,
   approving: 'Paying',
-  confirmTitle: (name: string, amount: string, month: string): string => `Pay ${name} ${amount} for ${month}?`,
+  confirmTitle: (name: string, amount: string, month: string): string =>
+    `Pay ${name} ${amount} for ${month}?`,
   confirmBody: (amount: string): string =>
     `Stripe transfers ${amount} to their account now. This can’t be undone here.`,
   confirmPay: (amount: string): string => `Pay ${amount}`,
   cancel: 'Cancel',
-  approveFailed: (reason: string): string => `Stripe didn’t take the transfer: ${reason}. Nothing was paid; try again.`,
+  approveFailed: (reason: string): string =>
+    `Stripe didn’t take the transfer: ${reason}. Nothing was paid; try again.`,
   lines: 'Lines',
   linesLabel: (name: string): string => `Show the lines for ${name}`,
   linesTitle: (name: string): string => `Lines · ${name}`,
@@ -153,7 +163,7 @@ export const creatorStatsCopy = {
   allTime: 'all time',
   payingNote: 'paying now',
   playersTitle: 'Your players',
-  playersMeta: 'by week · no names, by design',
+  playersMeta: 'by week · the latest weeks fill in over 14 days · no names',
   playersEmpty: 'No players yet. Share your link or your code.',
   /** One week of sign-ups. A week still running shows only its sign-ups (spec section 1, Privacy). */
   week: (week: string, signedUp: number, returning: number | null, paying: number | null): string =>
@@ -194,6 +204,7 @@ export const programCopy = {
       paragraphs: [
         '$2 for each player you send who comes back. A player comes back when they sign in with Battle.net, bring in at least one Forever character, and use the site again on a later day within 14 days of signing up.',
         'Half of the Premium they pay, after Stripe’s fees and any refunds, for 12 months from their first payment. Guild plans count when the officer who pays came through you.',
+        'Both add up: $2 once when a player comes back, then half of each of their payments for a year.',
         'Premium on your own account and the Raid guild plan for your guild while you are in the program.',
       ],
     },
@@ -210,14 +221,15 @@ export const programCopy = {
       title: 'Payouts',
       paragraphs: [
         'We add up each month after it ends and pay it through Stripe, to a payout account you set up with them. We never see your bank details. Each creator has a monthly cap, $500 unless we agree another.',
-        'You can see your players by week, and what you have earned, on your own stats page. We never show you who they are.',
+        'You can see your players by week, and what you have earned, on your own stats page. A player counts as coming back up to 14 days after signing up, so the latest weeks fill in late. We never show you who they are.',
+        'Stripe asks for your tax details when you set up payouts. If you leave the program, your free Premium ends, and the months you already earned are still paid.',
       ],
     },
     {
       id: 'disclosure',
       title: 'Saying it is sponsored',
       paragraphs: [
-        'You earn money when people use your link or code, so you have to say so wherever you share it: say it is an affiliate link or a sponsored mention, in the video or stream and next to the link. The FTC and Twitch both require it.',
+        'You earn money when people use your link or code, so you have to say so wherever you share it. Say “affiliate link” or “sponsored” on stream or in the video, and put the same words next to your link or code. The FTC and Twitch both require it.',
       ],
     },
   ] satisfies readonly ProgramSection[],
@@ -235,10 +247,18 @@ export const applyCopy = {
   formTitle: 'Your channel',
   signedOut: 'Sign in with Battle.net to apply.',
   fields: {
-    channel: { label: 'Channel', hint: 'Your Twitch or YouTube address.', placeholder: 'https://twitch.tv/…' },
+    channel: {
+      label: 'Channel',
+      hint: 'Your Twitch or YouTube address.',
+      placeholder: 'https://twitch.tv/…',
+    },
     platform: { label: 'Main platform' },
-    audience: { label: 'Viewers or subscribers', hint: 'Roughly. Leave it empty if you would rather not say.', placeholder: 'e.g. 1200' },
-    about: { label: 'What do you make about Forever?', hint: 'Up to 500 characters.' },
+    audience: {
+      label: 'Viewers or subscribers',
+      hint: 'Roughly. Leave it empty if you would rather not say.',
+      placeholder: 'e.g. 1200',
+    },
+    about: { label: 'What do you make about Forever?' },
     email: { label: 'Contact email', hint: 'Optional. Only we see it.', placeholder: 'you@example.com' },
   },
   platforms: { twitch: 'Twitch', youtube: 'YouTube' } satisfies Record<Platform, string>,
@@ -246,7 +266,9 @@ export const applyCopy = {
   submit: 'Send application',
   sending: 'Sending',
   sendFailed: 'That wasn’t sent; try again.',
-  counter: (used: number, max: number): string => `${used} of ${max}`,
+  counter: (used: number, max: number): string => `${used} of ${max} characters`,
+  disclose: 'I’ll say it’s an affiliate link or sponsored wherever I share my link or code.',
+  discloseNeeded: 'Tick this to apply: the FTC and Twitch require it.',
   statusTitle: 'Your application',
   pending: (date: string): string => `Sent ${date}. We’ll reply here.`,
   pendingTag: 'Pending',
