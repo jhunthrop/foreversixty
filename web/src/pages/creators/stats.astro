@@ -1,0 +1,16 @@
+---
+// web/src/pages/creators/stats.astro
+// /creators/stats: a creator's own players by week and payouts (design/specs/2026-11-08-creator-program.md
+// 3d). The whole body, title included, is one island: it is the signed-in creator's own page.
+// Never indexed, never in the sitemap.
+import Base from '../../layouts/Base.astro';
+import CreatorStats from '../../components/creators/CreatorStats.svelte';
+import { creatorStatsCopy as copy } from '../../lib/creators/copy';
+---
+
+<Base title={copy.menuItem} description={copy.pageDescription} path="/creators/stats" wide>
+  <meta slot="head" name="robots" content="noindex" />
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="creators-stats-page">
+    <CreatorStats client:load />
+  </main>
+</Base>

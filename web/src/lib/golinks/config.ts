@@ -23,12 +23,21 @@ export const LINK_PARAM = 'golink';
 /**
  * Where the landing page keeps the slug until the first signed-in page sends it. localStorage
  * rather than sessionStorage so an emailed sign-in link, which opens in a new tab, still
- * carries it; ARRIVAL_TTL_MS keeps it short-lived, and it is removed once sent.
+ * carries it; ARRIVAL_TTL_MS bounds it, and it is removed once sent.
  */
 export const ARRIVAL_KEY = 'fs.arrival';
 
-/** The API's own window (golinks.ArrivalWindow): an older stored arrival is dropped unsent. */
-export const ARRIVAL_TTL_MS = 60 * 60 * 1000;
+/**
+ * Where the inline capture puts the newest click. The first click stays in ARRIVAL_KEY until it
+ * goes stale (later.ts promoteArrival), so an account keeps the first link that brought it.
+ */
+export const ARRIVAL_NEXT_KEY = 'fs.arrival.next';
+
+/**
+ * How long a kept click waits for the sign-in: a creator's link counts for 30 days before sign-up
+ * (the API's golinks.ClickWindow and creators.LinkWindow). An older one is dropped unsent.
+ */
+export const ARRIVAL_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 export const ARRIVAL_PATH = '/v1/me/arrival';
 

@@ -1,0 +1,21 @@
+---
+// web/src/pages/creators/apply.astro
+// /creators/apply: apply to the creator program, then see where the application stands
+// (design/specs/2026-11-08-creator-program.md 3f). Signed out, the island asks for the Battle.net
+// sign-in and comes back here. Never indexed, never in the sitemap.
+import Base from '../../layouts/Base.astro';
+import Page from '../../components/ui/Page.svelte';
+import PageHeader from '../../components/ui/PageHeader.svelte';
+import CreatorApply from '../../components/creators/CreatorApply.svelte';
+import { applyCopy as copy } from '../../lib/creators/copy';
+---
+
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/creators/apply">
+  <meta slot="head" name="robots" content="noindex" />
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="creators-apply-page">
+    <PageHeader title={copy.pageTitle} />
+    <Page layout="form">
+      <CreatorApply client:load />
+    </Page>
+  </main>
+</Base>

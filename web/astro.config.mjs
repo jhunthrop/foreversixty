@@ -169,7 +169,9 @@ export default defineConfig({
         !page.endsWith('/character') &&
         !page.endsWith('/character/') &&
         !page.endsWith('/app/auth') &&
-        !page.includes('/admin/'),
+        !page.includes('/admin/') &&
+        // The creator program's own pages; the public /creators page stays.
+        !/\/creators\/(apply|onboarding|stats)\/?$/.test(page),
       // lastmod comes from each content file's `updated` field, so a page's sitemap entry
       // moves only when its facts do; pages without a content file carry no lastmod.
       serialize: (item) => {

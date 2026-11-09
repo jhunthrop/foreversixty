@@ -29,6 +29,7 @@
     sliders: 'M4 7h9M17 7h3M4 17h3M11 17h9M15 4v6M9 14v6',
     crown: 'M4 18l-1-10 5 4 4-7 4 7 5-4-1 10zM4 21h16',
     signOut: 'M10 4H5v16h5M14 8l-4 4 4 4M10 12h10',
+    star: 'M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z',
   } as const;
 
   let {
@@ -257,6 +258,18 @@
       {/if}
       {@render chevron(panel.plan.seePlans)}
     </a>
+    {#each panel.creator as row (row.href)}
+      <a class="csel-arow" href={row.href} data-testid={row.badge === null ? 'selector-row-creator' : 'selector-row-creator-requests'}>
+        <span class="csel-tile is-small">{@render glyph(GLYPHS.star)}</span>
+        <span class="csel-arow-text">
+          <span class="csel-arow-line">
+            <span class="csel-arow-title">{row.title}</span>
+            {#if row.badge !== null}<span class="csel-tag" aria-hidden="true">{row.badge}</span>{/if}
+          </span>
+        </span>
+        {@render chevron()}
+      </a>
+    {/each}
     <button
       type="button"
       class="csel-arow is-quiet"

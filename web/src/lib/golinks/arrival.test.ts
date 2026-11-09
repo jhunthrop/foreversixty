@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ARRIVAL_CAPTURE_SCRIPT } from './arrival';
-import { ARRIVAL_KEY, ARRIVAL_TTL_MS, BEACON_SRC, BEACON_TOKEN } from './config';
-import { loadBeacon, sendArrival } from './later';
+import { ARRIVAL_KEY, ARRIVAL_NEXT_KEY, ARRIVAL_TTL_MS, BEACON_SRC, BEACON_TOKEN } from './config';
+import { loadBeacon, promoteArrival, sendArrival } from './later';
 
 const API = 'https://api.foreversixty.test';
 type GlobalFetch = (...args: Parameters<typeof fetch>) => Promise<Response>;
@@ -16,8 +16,8 @@ function signIn(): void {
   document.cookie = 'fs_csrf=tok%2Ben';
 }
 
-function stored(): { slug: string; at: number } | null {
-  const raw = localStorage.getItem(ARRIVAL_KEY);
+function stored(key = ARRIVAL_KEY): { slug: string; at: number } | null {
+  const raw = localStorage.getItem(key);
   return raw === null ? null : (JSON.parse(raw) as { slug: string; at: number });
 }
 
@@ -38,7 +38,7 @@ describe('the inline capture', () => {
   it('keeps a valid slug and takes it out of the address bar', () => {
     history.replaceState(null, '', '/sim?spec=fury&golink=reddit-sim#top');
     capture();
-    expect(stored()?.slug).toBe('reddit-sim');
+    expect(stored(ARRIVAL_NEXT_KEY)?.slug).toBe('reddit-sim');
     expect(location.pathname + location.search + location.hash).toBe('/sim?spec=fury#top');
   });
 
@@ -82,7 +82,7 @@ describe('the arrival, after paint', () => {
     expect(init?.method).toBe('POST');
     expect(init?.credentials).toBe('include');
     expect(new Headers(init?.headers).get('x-csrf-token')).toBe('tok+en');
-    expect(JSON.parse(String(init?.body))).toEqual({ slug: 'reddit' });
+    expect(JSON.parse(String(init?.body))).toEqual({ slug: 'reddit', at: expect.any(Number) as number });
     expect(stored()).toBeNull();
   });
 
@@ -124,6 +124,43 @@ describe('the arrival, after paint', () => {
     await sendArrival(API);
     expect(upstream).not.toHaveBeenCalled();
     expect(stored()).toBeNull();
+  });
+});
+
+describe('first touch', () => {
+  it('keeps the first link a browser carried, not a later one', () => {
+    const t0 = Date.now() - 5 * 24 * 60 * 60 * 1000;
+    keep('grimbrew', t0);
+    history.replaceState(null, '', '/?golink=lunawick');
+    capture();
+    expect(promoteArrival(localStorage, Date.now())).toEqual({ slug: 'grimbrew', at: t0 });
+    expect(stored(ARRIVAL_NEXT_KEY)).toBeNull();
+  });
+
+  it('takes the newest click once the first has gone stale', () => {
+    keep('grimbrew', Date.now() - ARRIVAL_TTL_MS - 1);
+    history.replaceState(null, '', '/?golink=lunawick');
+    capture();
+    expect(promoteArrival(localStorage, Date.now())?.slug).toBe('lunawick');
+    expect(stored()?.slug).toBe('lunawick');
+  });
+
+  it('keeps a click for 30 days, the creator link window', () => {
+    expect(ARRIVAL_TTL_MS).toBe(30 * 24 * 60 * 60 * 1000);
+    keep('grimbrew', Date.now() - ARRIVAL_TTL_MS + 60_000);
+    expect(promoteArrival(localStorage, Date.now())?.slug).toBe('grimbrew');
+  });
+
+  it('sends the first click with its time', async () => {
+    const upstream = vi.fn<GlobalFetch>(async () => new Response('{}', { status: 200 }));
+    vi.stubGlobal('fetch', upstream);
+    const t0 = Date.now() - 3 * 24 * 60 * 60 * 1000;
+    keep('grimbrew', t0);
+    history.replaceState(null, '', '/?golink=lunawick');
+    capture();
+    signIn();
+    await sendArrival(API);
+    expect(JSON.parse(String(upstream.mock.calls[0][1]?.body))).toEqual({ slug: 'grimbrew', at: t0 });
   });
 });
 

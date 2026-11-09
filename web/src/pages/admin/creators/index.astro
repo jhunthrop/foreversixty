@@ -1,0 +1,18 @@
+---
+// web/src/pages/admin/creators/index.astro
+// /admin/creators: the owner's creator program (design/specs/2026-11-08-creator-program.md 3a, 3g).
+// The PageHeader is static; the body is one island, because every state follows one session read and
+// the API decides who is the owner. Never indexed, never in the sitemap.
+import Base from '../../../layouts/Base.astro';
+import PageHeader from '../../../components/ui/PageHeader.svelte';
+import CreatorsAdmin from '../../../components/creators/CreatorsAdmin.svelte';
+import { adminCreatorsCopy as copy } from '../../../lib/creators/copy';
+---
+
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/admin/creators" wide>
+  <meta slot="head" name="robots" content="noindex" />
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="admin-creators-page">
+    <PageHeader title={copy.pageTitle} lead={copy.job} />
+    <CreatorsAdmin client:load />
+  </main>
+</Base>
