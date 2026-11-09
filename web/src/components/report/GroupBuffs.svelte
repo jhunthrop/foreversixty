@@ -96,16 +96,15 @@
 {/if}
 
 <style>
-  /* In the rail: a short bar in the Buffs tab's gold, so a buff's name holds its one line. */
+  /* In the rail: a short bar in the Buffs tab's gold. A long name wraps onto a second line in its
+     own column, whole, never under the bar and never cut ("Power Word: Fortitude"). */
   .group-buffs :global(.ui-st) {
     --st-bar: minmax(0, 32px);
   }
-  /* The name cell itself clips, so a long name ends in an ellipsis before the bar. */
   .group-buffs :global(.ui-st-name),
   .group-buffs :global(.ui-st-name > *) {
     min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 </style>
