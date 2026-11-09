@@ -25,6 +25,37 @@ end
 
 local CODE = "FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30"
 
+-- The live entry for a hovered or grouped player (moved here from PlayerTooltip when the player
+-- tooltip's live line was cut, design/specs/2026-11-08-addon-ux.md section 2.5; the group panel
+-- reads it).
+describe("Comms.liveEntry", function()
+	local Comms
+	local NOW = 10000
+
+	before_each(function()
+		Comms = helper.load("Comms")
+	end)
+
+	it("finds a sender on this realm by full name while the hello is fresh", function()
+		local entry = { level = 24, spec = "marksmanship", gearGap = 12, time = NOW }
+		local seen = { ["Bow Jackzon-ClassicBetaPvP"] = entry }
+		assert.are.equal(entry, Comms.liveEntry(seen, "Bow Jackzon", nil, nil, "Classic Beta PvP", NOW))
+	end)
+
+	it("matches a sender heard by first name on a client with last names", function()
+		local entry = { level = 19, time = NOW }
+		local seen = { ["Smoke-ClassicBetaPvP"] = entry }
+		assert.are.equal(entry, Comms.liveEntry(seen, "Smoke Gouda", "Smoke", nil, "Classic Beta PvP", NOW))
+	end)
+
+	it("ignores a sender on another realm and one heard too long ago", function()
+		local seen = { ["Bow Jackzon-Whitemane"] = { level = 30, time = NOW } }
+		assert.is_nil(Comms.liveEntry(seen, "Bow Jackzon", nil, nil, "Classic Beta PvP", NOW))
+		seen = { ["Bow Jackzon-ClassicBetaPvP"] = { level = 24, time = NOW - Comms.SEEN_FOR - 1 } }
+		assert.is_nil(Comms.liveEntry(seen, "Bow Jackzon", nil, nil, "Classic Beta PvP", NOW))
+	end)
+end)
+
 describe("Comms, the FS1 protocol", function()
 	local Comms
 

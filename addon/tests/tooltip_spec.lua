@@ -108,7 +108,7 @@ describe("Tooltip", function()
 			assert.is_nil(Tooltip.itemLinkFrom({}))
 		end)
 
-		it("adds a Forever Sixty heading and the verdict onto the tooltip", function()
+		it("adds the verdict onto the tooltip directly, with no heading and no blank line", function()
 			startHook({
 				class = { name = "Paladin", token = "PALADIN" },
 				itemStats = {
@@ -122,10 +122,13 @@ describe("Tooltip", function()
 				Show = function() end,
 			}
 			Tooltip.onTooltip(tooltip, "item:111")
-			-- L3.3: a blank line, the header, then the verdict (nothing worn: it fills the slot).
-			assert.are.equal(" ", calls[1])
-			assert.is_truthy(calls[2]:find(L.addonName, 1, true))
-			assert.are.equal(string.format(L.tooltipFillsScore, 10), calls[3])
+			-- Nothing worn: it fills the slot, an upgrade behind the green arrow (spec 2.2 case 9).
+			assert.are.equal(Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, Tooltip.figure(10, "score")),
+				calls[1])
+			for _, text in ipairs(calls) do
+				assert.is_nil(text:find(L.addonName, 1, true))
+				assert.are_not.equal(" ", text)
+			end
 		end)
 
 		it("adds nothing when the tooltip pref is off", function()

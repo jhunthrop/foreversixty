@@ -5474,6 +5474,14 @@ public struct LootSource: Codable, Sendable, Equatable {
     public let icon: String?
     /// crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent.
     public let requiredSkill: [String: Int]?
+    /// vendor and rep: where the seller stands (Booty Bay, The Barrens), curated; absent when unknown.
+    public let place: String?
+    /// vendor only: item id -> its price when it is not gold; an item with no known price is absent.
+    public let itemCosts: [String: VendorCost]?
+    /// vendor only: the faction a quartermaster sells for, when every item it sells needs that faction's standing (faction_id beside it).
+    public let reputation: String?
+    /// vendor only, beside reputation: item id -> the standing the client requires.
+    public let itemStandings: [String: String]?
     public let rareSpawn: Bool?
     public let sourceOrigin: String?
     public let sourceNote: String?
@@ -5502,6 +5510,10 @@ public struct LootSource: Codable, Sendable, Equatable {
         levelMax: Int? = nil,
         icon: String? = nil,
         requiredSkill: [String: Int]? = nil,
+        place: String? = nil,
+        itemCosts: [String: VendorCost]? = nil,
+        reputation: String? = nil,
+        itemStandings: [String: String]? = nil,
         rareSpawn: Bool? = nil,
         sourceOrigin: String? = nil,
         sourceNote: String? = nil,
@@ -5529,6 +5541,10 @@ public struct LootSource: Codable, Sendable, Equatable {
         self.levelMax = levelMax
         self.icon = icon
         self.requiredSkill = requiredSkill
+        self.place = place
+        self.itemCosts = itemCosts
+        self.reputation = reputation
+        self.itemStandings = itemStandings
         self.rareSpawn = rareSpawn
         self.sourceOrigin = sourceOrigin
         self.sourceNote = sourceNote
@@ -9832,6 +9848,20 @@ public struct TrashGroup: Codable, Sendable, Equatable {
         zone = try c.decode(String.self, forKey: .zone)
         fights = try c.decodeIfPresent([Int].self, forKey: .fights) ?? []
         durationMs = try c.decode(Int64.self, forKey: .durationMs)
+    }
+}
+
+public struct VendorCost: Codable, Sendable, Equatable {
+    public let amount: Int
+    /// The currency's plural name: Tarnished Undermine Reals.
+    public let currency: String
+
+    public init(
+        amount: Int,
+        currency: String
+    ) {
+        self.amount = amount
+        self.currency = currency
     }
 }
 

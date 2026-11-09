@@ -1,0 +1,1572 @@
+{
+ "home-1440-dark-1x": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "home-1440-dark": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "bis-1440-dark": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "bis-paladin-1440-dark": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "tier-list-1440-dark": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "guides-1440-dark": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "sim-1440-dark": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "planner-1440-dark": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "home-390-dark": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "bis-390-dark": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "bis-paladin-390-dark": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "tier-list-390-dark": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "guides-390-dark": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "sim-390-dark": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "planner-390-dark": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "home-1440-light-1x": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "home-1440-light": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "bis-1440-light": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "bis-paladin-1440-light": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "tier-list-1440-light": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "guides-1440-light": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "sim-1440-light": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "planner-1440-light": {
+  "header": [
+   1440,
+   81
+  ],
+  "items": [
+   {
+    "text": "/",
+    "tag": "KBD",
+    "cls": "site-search-kbd",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "\"JetBrains Mono\", \"SF Mono\", Menlo, monospace",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1070,
+     30,
+     19,
+     20
+    ],
+    "chain": []
+   },
+   {
+    "text": "Sign in",
+    "tag": "SPAN",
+    "cls": "csel-name",
+    "fontSize": "14px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(242, 238, 228)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     25,
+     143,
+     16
+    ],
+    "chain": []
+   },
+   {
+    "text": "to see your characters",
+    "tag": "SPAN",
+    "cls": "csel-sub",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(154, 148, 132)",
+    "opacity": 1,
+    "letterSpacing": "normal",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     1164,
+     41,
+     143,
+     14
+    ],
+    "chain": []
+   },
+   {
+    "text": "Premium",
+    "tag": "SPAN",
+    "cls": "pill pill-site",
+    "fontSize": "12px",
+    "fontWeight": "600",
+    "fontFamily": "Barlow, \"Barlow Fallback\", \"Helvetica Neue\", Arial",
+    "color": "rgb(229, 185, 85)",
+    "opacity": 1,
+    "letterSpacing": "0.12px",
+    "textShadow": "none",
+    "textTransform": "none",
+    "smoothing": "antialiased",
+    "rect": [
+     852,
+     30,
+     66,
+     22
+    ],
+    "chain": []
+   }
+  ]
+ },
+ "home-390-light": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "bis-390-light": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "bis-paladin-390-light": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "tier-list-390-light": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "guides-390-light": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "sim-390-light": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ },
+ "planner-390-light": {
+  "header": [
+   390,
+   56
+  ],
+  "items": []
+ }
+}

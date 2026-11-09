@@ -166,6 +166,18 @@ export interface GainBasis {
 }
 
 /** A basis line's full words, for its title when the column ellipsizes it. */
+/** The middle dot every source line joins its facts with. */
+export const FACT_SEPARATOR = ' · ';
+
+/** A source line's facts, each kept whole on screen (coordinator ruling, 2026-11-09): every fact
+ *  but the last carries its trailing dot, so the line wraps only between facts and "100 Tarnished
+ *  Undermine Reals" or "The Barrens" never splits. Joined with single spaces the parts read back
+ *  as the line itself. */
+export function factSegments(line: string): string[] {
+  const facts = line.split(FACT_SEPARATOR);
+  return facts.map((fact, index) => (index < facts.length - 1 ? `${fact} ·` : fact));
+}
+
 export function basisText(basis: GainBasis): string {
   return basis.item ? `${basis.prefix} ${basis.item.name}` : basis.prefix;
 }

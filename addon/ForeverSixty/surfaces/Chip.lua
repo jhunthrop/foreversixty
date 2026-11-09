@@ -584,7 +584,7 @@ function Chip.tooltipLines(model)
 	-- leveling", the item tooltip's own header form), so even the idle chip says a build is followed.
 	local header = colored("gold", L.addonName)
 	if model.buildName ~= nil then
-		header = header .. colored("muted", L.tooltipHeaderSep .. model.buildName)
+		header = header .. colored("muted", L.exportTreeSeparator .. model.buildName)
 	end
 	local lines = { header }
 	for _, state in ipairs(model.states) do
