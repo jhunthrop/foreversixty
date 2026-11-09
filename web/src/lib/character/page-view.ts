@@ -39,6 +39,8 @@ export const characterPageCopy = {
   score: 'Forever Score',
   scoreFigure: 'Score',
   tier: 'Tier',
+  rating: 'Rating',
+  ratingValue: (overall: number): string => `${overall} of 100`,
   noLogsOwner: 'No logs yet. Upload a log to get a rating.',
   noLogs: 'No logs yet.',
   noScoreYet: 'No Forever Score yet. It is worked out from the rated fights below.',

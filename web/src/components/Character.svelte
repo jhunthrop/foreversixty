@@ -315,7 +315,7 @@
     {/snippet}
     {#snippet rail()}
       {#if data.score_hidden !== true}
-        <CharacterScore {forever} {owned} fought={data.best.length > 0} />
+        <CharacterScore path={resolved} {forever} {owned} fought={data.best.length > 0} />
       {/if}
       {#if data.builds_seen.length > 0}
         <Section title={copy.builds} panel testid="character-builds">
