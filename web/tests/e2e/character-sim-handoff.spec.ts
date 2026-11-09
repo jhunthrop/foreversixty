@@ -32,7 +32,6 @@ test.describe("Sim from another player's character page", () => {
   test('opens the character on screen in the sim and keeps the header character', async ({ page }) => {
     await routeCharacter(page, {
       id: 'no-score',
-      mock: '',
       path: '/character/us/normal/felsnap',
       character: 'character-34.json',
     });
