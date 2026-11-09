@@ -131,10 +131,13 @@ export interface SimStoreInit {
   request?: SimRequest;
   /** Overrides `runOnServer`'s poll interval. Tests pass a short one; production takes the default. */
   serverPollMs?: number;
+  /** The page was opened to view a character (`keep=1`): no load on it moves the reader's
+   *  header character. */
+  keep?: boolean;
 }
 
 export function createSimStore(init: SimStoreInit) {
-  const ctx = { treeVersion: init.treeVersion, apiBase: init.apiBase };
+  const ctx = { treeVersion: init.treeVersion, apiBase: init.apiBase, recordPointer: init.keep !== true };
 
   let phase = $state<SimPhase>('idle');
   let character = $state<SimCharacter | null>(null);

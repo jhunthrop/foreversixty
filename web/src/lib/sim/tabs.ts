@@ -91,11 +91,16 @@ export interface TabSource {
  * Falls back to `defaultSimState()` -- every href stays bare -- when there is no character,
  * or no source, or no usable ref and no usable fallback code.
  */
-export function tabStateFor(source: TabSource | null, fallbackCode: string | null = null): SimState {
+export function tabStateFor(
+  source: TabSource | null,
+  fallbackCode: string | null = null,
+  keep = false,
+): SimState {
   if (source === null) return defaultSimState();
-  if (source.ref !== '') return withSimState(defaultSimState(), { source: source.kind, ref: source.ref });
+  if (source.ref !== '')
+    return withSimState(defaultSimState(), { source: source.kind, ref: source.ref, keep });
   if (fallbackCode !== null && fallbackCode !== '' && fallbackCode.length <= MAX_CODE) {
-    return withSimState(defaultSimState(), { code: fallbackCode });
+    return withSimState(defaultSimState(), { code: fallbackCode, keep });
   }
   return defaultSimState();
 }
@@ -119,11 +124,12 @@ export function syncTabHrefs(
   source: TabSource | null,
   fallbackCode: string | null,
   root: ParentNode = document,
+  keep = false,
 ): void {
   for (const tab of SIM_TABS) {
     const anchor = root.querySelector<HTMLAnchorElement>(`[${SIM_TAB_ATTR}="${tab.id}"]`);
     if (anchor === null) continue;
-    const state = tabStateFor(source, tab.supportsCode ? fallbackCode : null);
+    const state = tabStateFor(source, tab.supportsCode ? fallbackCode : null, keep);
     anchor.href = tabHref(tab.href, state);
   }
 }

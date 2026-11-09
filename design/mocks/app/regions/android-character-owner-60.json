@@ -9,9 +9,10 @@
     16,
     0,
     380,
-    257
+    200
    ],
    "inventory": {
+    "button": 1,
     "image": 1
    }
   },
@@ -40,14 +41,16 @@
     16,
     148,
     380,
-    95
+    38
    ],
-   "inventory": {}
+   "inventory": {
+    "button": 1
+   }
   },
   "summary": {
    "box": [
     16,
-    257,
+    200,
     380,
     156
    ],
@@ -56,78 +59,44 @@
   "section-gear": {
    "box": [
     16,
-    433,
+    384,
     380,
-    1346
+    931
    ],
    "inventory": {
-    "row": 17,
-    "image": 16
+    "row": 6,
+    "button": 17,
+    "image": 24
    }
   },
   "plate": {
    "box": [
     16,
-    482,
+    3080,
     380,
-    1297
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 16
-   }
-  },
-  "slots": {
-   "box": [
-    17,
-    483,
-    378,
-    1295
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 16
-   }
-  },
-  "section-forever-score": {
-   "box": [
-    16,
-    1827,
-    380,
-    277
-   ],
-   "inventory": {
-    "row": 5
-   }
-  },
-  "section-best-per-encounter": {
-   "box": [
-    16,
-    2152,
-    380,
-    513
-   ],
-   "inventory": {
-    "row": 5
-   }
-  },
-  "section-builds-seen": {
-   "box": [
-    16,
-    2713,
-    380,
-    223
+    214
    ],
    "inventory": {
     "row": 3
    }
   },
+  "section-best-per-encounter": {
+   "box": [
+    16,
+    1337,
+    380,
+    488
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
   "section-activity": {
    "box": [
     16,
-    2984,
+    1847,
     380,
-    345
+    360
    ],
    "inventory": {
     "row": 4,
@@ -137,20 +106,42 @@
   "section-history": {
    "box": [
     16,
-    3377,
+    2229,
     380,
-    91
+    106
    ],
    "inventory": {}
   },
   "section-coach-history": {
    "box": [
     16,
-    3516,
+    2357,
     380,
-    91
+    106
    ],
    "inventory": {}
+  },
+  "section-forever-score": {
+   "box": [
+    16,
+    2487,
+    380,
+    571
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-builds-seen": {
+   "box": [
+    16,
+    3080,
+    380,
+    214
+   ],
+   "inventory": {
+    "row": 3
+   }
   }
  }
 }

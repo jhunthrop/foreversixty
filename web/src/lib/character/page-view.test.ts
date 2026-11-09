@@ -126,7 +126,7 @@ describe('fights and builds', () => {
       value: '1,012',
     });
     expect(rows[0].color).toBe('var(--color-parse-orange)');
-    expect(characterPageCopy.allFights(7)).toBe('All ranked fights (7)');
+    expect(characterPageCopy.allFights(7)).toBe('All fights (7)');
   });
 
   it('lists the three newest builds', () => {

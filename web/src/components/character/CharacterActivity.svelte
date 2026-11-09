@@ -1,10 +1,9 @@
 <!-- web/src/components/character/CharacterActivity.svelte -->
 <!-- The character's own activity (character spec 2026-11-06 section 6, C18, C20): its rows of the
-     site feed, newest first, five at most, each an icon, the sentence the API wrote, its age and
-     its tag. A session adds its guild's rows (a guild sim). No rows, or a failed read, and the
+     site feed, newest first, five at most, each an icon, the sentence the API wrote, its age. A session adds its guild's rows (a guild sim). No rows, or a failed read, and the
      section is left out: never an empty box, never a made-up row. -->
 <script lang="ts">
-  import { feedCopy, whenText, type FeedRow } from '../../lib/home/feed';
+  import { whenText, type FeedRow } from '../../lib/home/feed';
   import { fetchActivity, standingCopy } from '../../lib/character/standing';
   import FeedSentence from '../home/FeedSentence.svelte';
   import FeedRowUi from '../ui/FeedRow.svelte';
@@ -34,19 +33,14 @@
 </script>
 
 {#if rows.length > 0}
-  <Section title={standingCopy.activity} testid="character-activity">
+  <Section title={standingCopy.activity} panel testid="character-activity">
     {#each rows as row (row.id)}
-      <FeedRowUi
-        href={row.href}
-        when={whenText(row, now)}
-        kind={feedCopy.tags[row.tag]}
-        testid="character-activity-row"
-      >
+      <FeedRowUi href={row.href} when={whenText(row, now)} testid="character-activity-row">
         {#snippet lead()}
           {#if row.crest !== null}
-            <ClassCrestRing characterClass={row.crest} size={40} />
+            <ClassCrestRing characterClass={row.crest} size={32} />
           {:else}
-            <ItemIcon icon={row.icon ?? undefined} quality={row.quality ?? 1} {build} size={40} />
+            <ItemIcon icon={row.icon ?? undefined} quality={row.quality ?? 1} {build} size={32} />
           {/if}
         {/snippet}
         <FeedSentence segments={row.segments} />

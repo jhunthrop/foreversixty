@@ -9,9 +9,10 @@
     16,
     0,
     361,
-    231
+    174
    ],
    "inventory": {
+    "button": 1,
     "image": 1
    }
   },
@@ -40,14 +41,16 @@
     16,
     122,
     361,
-    95
+    38
    ],
-   "inventory": {}
+   "inventory": {
+    "button": 1
+   }
   },
   "summary": {
    "box": [
     16,
-    231,
+    174,
     361,
     100
    ],
@@ -56,45 +59,31 @@
   "section-gear": {
    "box": [
     16,
-    351,
+    302,
     361,
-    1366
+    943
    ],
    "inventory": {
-    "row": 17,
-    "image": 14
+    "row": 6,
+    "button": 15,
+    "image": 22
    }
   },
   "plate": {
    "box": [
     16,
-    400,
+    1269,
     361,
-    1317
+    98
    ],
-   "inventory": {
-    "row": 17,
-    "image": 14
-   }
-  },
-  "slots": {
-   "box": [
-    17,
-    401,
-    359,
-    1315
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 14
-   }
+   "inventory": {}
   },
   "section-forever-score": {
    "box": [
     16,
-    1765,
+    1269,
     361,
-    83
+    98
    ],
    "inventory": {}
   }

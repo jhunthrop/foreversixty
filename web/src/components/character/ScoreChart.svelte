@@ -65,7 +65,7 @@
 </script>
 
 <div
-  class="flex flex-col gap-3 xl:row-span-5 xl:grid xl:grid-rows-subgrid xl:gap-y-3"
+  class="wide:row-span-5 wide:grid wide:grid-rows-subgrid wide:gap-y-3 flex flex-col gap-3"
   data-testid="history-score"
 >
   <h3 class="text-strong font-body text-[15px] font-semibold">{historyCopy.scoreHeading}</h3>

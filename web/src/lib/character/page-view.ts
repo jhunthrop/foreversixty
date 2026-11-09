@@ -27,27 +27,29 @@ export const FIGHTS_SHOWN = 5;
 export const BUILDS_SHOWN = 3;
 
 export const characterPageCopy = {
-  answerLabel: 'Upgrades available',
-  scoreLabel: 'Forever Score',
-  openSim: 'Open in simulator',
-  openPlanner: 'Talents in planner',
+  /** The band's answer after its figure: "+128.9 HPS from upgrades". */
+  answerUnit: (unit: string): string => `${unit} from upgrades`,
+  /** The head's sim link: the character on screen, in the simulator. */
+  simThis: 'Sim this character',
+  upgrades: 'Upgrades',
+  allUpgrades: 'All upgrades',
+  /** "8 more, +23.5 HPS": the upgrades past the frame's centre and what they add. */
+  moreUpgrades: (count: number, gain: string): string => `${count} more, ${gain}`,
+  openBis: 'Open in best in slot',
   gear: 'Gear',
   gearAction: 'Best in slot',
   score: 'Forever Score',
   scoreFigure: 'Score',
   tier: 'Tier',
   rating: 'Rating',
-  ratingUnit: 'of 100',
-  ratedFights: (count: number): string => `${count} rated ${count === 1 ? 'fight' : 'fights'}`,
-  mostToGain: (part: string, gap: number): string => `Most to gain: ${part}, ${gap} points to the top.`,
-  howScored: 'How it is scored',
-  parts: 'Score parts',
-  partSub: (points: number, max: number): string => `${points} of ${max}`,
+  ratingValue: (overall: number): string => `${overall} of 100`,
+  /** The score trend's label: "Since 20 Oct". */
+  since: (date: string): string => `Since ${dayMonth(`${date}T00:00:00Z`)}`,
   noLogsOwner: 'No logs yet. Upload a log to get a rating.',
   noLogs: 'No logs yet.',
   noScoreYet: 'No Forever Score yet. It is worked out from the rated fights below.',
   best: 'Best per encounter',
-  allFights: (count: number): string => `All ranked fights (${count})`,
+  allFights: (count: number): string => `All fights (${count})`,
   builds: 'Builds seen',
   buildSub: (spec: string, date: string): string =>
     spec === '' ? `first seen ${date}` : `${spec} · first seen ${date}`,
@@ -58,7 +60,8 @@ export const characterPageCopy = {
   seePlans: 'See plans',
   coach: 'Coach history',
   coachLead: 'Every review the coach wrote for this character',
-  gearLevel: (band: number): string => (band >= 60 ? 'Level 60 raid' : `Levels ${band} to ${band + 9}`),
+  /** The paperdoll's title bar meta: "Level 60". */
+  levelMeta: (level: number): string => `Level ${level}`,
   failed: 'We could not load this character.',
   notFound: (name: string, region: string, ruleset: string): string =>
     `No character named ${name} on ${region.toUpperCase()} ${rulesetLabel(ruleset)}.`,
@@ -74,12 +77,10 @@ export const characterPageCopy = {
 } as const;
 
 export const characterHrefs = {
-  sim: '/sim',
   logs: '/logs',
   login: '/login',
   setup: '/setup',
   plans: PREMIUM_LINKS.history,
-  scoreHelp: '/ratings',
   lookup: (name: string): string => `/characters?q=${encodeURIComponent(name)}#lookup`,
   character: (region: string, ruleset: string, name: string): string =>
     `/character/${region}/${ruleset}/${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`,

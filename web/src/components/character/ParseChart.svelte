@@ -78,13 +78,13 @@
 </script>
 
 <div
-  class="flex flex-col gap-3 xl:row-span-5 xl:grid xl:grid-rows-subgrid xl:gap-y-3"
+  class="wide:row-span-5 wide:grid wide:grid-rows-subgrid wide:gap-y-3 flex flex-col gap-3"
   data-testid="history-parse"
 >
   <h3 class="text-strong font-body text-[15px] font-semibold">{historyCopy.parseHeading}</h3>
 
   {#if pill === undefined}
-    <p class="text-muted min-h-11 text-[14px] xl:row-span-4" data-testid="history-parse-empty">
+    <p class="text-muted wide:row-span-4 min-h-11 text-[14px]" data-testid="history-parse-empty">
       {historyCopy.parseNoKills}
     </p>
   {:else}
@@ -114,7 +114,7 @@
         {onstep}
       />
     {:else}
-      <p class="text-muted min-h-11 text-[14px] xl:row-span-2" data-testid="history-parse-one-kill">
+      <p class="text-muted wide:row-span-2 min-h-11 text-[14px]" data-testid="history-parse-one-kill">
         {historyCopy.parseOneKill}
       </p>
     {/if}

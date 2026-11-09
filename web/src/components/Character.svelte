@@ -25,12 +25,15 @@
     topUpgrade,
     upgradeTotal,
   } from '../lib/character/page-view';
+  import { upgradeRows } from '../lib/character/upgrades';
   import { STALE_SEPARATOR, syncText, syncView } from '../lib/character-header/sync';
-  import { bisHref } from '../lib/character-profile';
+  import { bisHref, specClassLabel } from '../lib/character-profile';
   import { characterKey, nameFromSlug, parseCharacterPath, type CharacterPath } from '../lib/characters';
   import { onCurrentCharacterChange, onCurrentCharacterSwitch, readCurrent } from '../lib/current-character';
   import { viewerFromMe } from '../lib/coach/viewer';
   import { premiumBlockCopy } from '../lib/billing/copy';
+  import { simViewedCharacterHref } from '../lib/handoff-links';
+  import { button as buttonClass } from '../lib/ui/button';
   import { bandPricer, UNPRICED } from '../lib/gear/gain-pricer';
   import { notReadCopy } from '../lib/gear/copy';
   import { paperdollNote, unknownCount } from '../lib/gear/paperdoll';
@@ -54,17 +57,18 @@
   import LoadError from './ui/LoadError.svelte';
   import Notice from './ui/Notice.svelte';
   import Page from './ui/Page.svelte';
-  import Paperdoll from './ui/Paperdoll.svelte';
+  import PaperdollFrame from './ui/PaperdollFrame.svelte';
   import PageHeader from './ui/PageHeader.svelte';
   import Plate from './ui/Plate.svelte';
   import Row from './ui/Row.svelte';
   import Section from './ui/Section.svelte';
-  import Tag from './ui/Tag.svelte';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
   const build = activeBuild.build;
   const CREST_PX = 56;
+  /** The band's crest: 44 px on a phone, 56 from 768 (the mock's title band). */
+  const CREST_CLASS = 'size-11 md:size-14';
   const resolved = $derived(
     path ?? (typeof window === 'undefined' ? null : parseCharacterPath(window.location.pathname)),
   );
@@ -244,12 +248,14 @@
     </p>
   </Page>
 {:else if status === 'loading'}
-  <Page layout="ledger" testid="character-skeleton">
+  <Page layout="split" panels splitFrom={1280} testid="character-skeleton">
     {#snippet header()}{@render headSkeleton()}{/snippet}
-    <Section title={copy.gear}>
-      <Plate label={copy.gear}>
-        <Paperdoll cells={[]} mode="worn" {build} loading label={copy.gear} testid="character-doll" />
-      </Plate>
+    <Section title={copy.gear} panel frame="framed">
+      <div class="flex justify-center" aria-busy="true">
+        <div class="w-full max-w-[640px]">
+          <PaperdollFrame cells={[]} {build} title="" label={copy.gear} testid="character-doll" />
+        </div>
+      </div>
     </Section>
   </Page>
 {:else if status === 'failed'}
@@ -262,7 +268,7 @@
 {:else if resolved !== null && (status === 'unlogged' || bare)}
   <CharacterMissing path={resolved} name={data?.character.name ?? unloggedName} {signedIn} />
 {:else if data !== null && resolved !== null}
-  <Page layout="ledger" testid="character">
+  <Page layout="split" panels splitFrom={1280} testid="character">
     {#snippet header()}
       <PageHeader
         title={data.character.name}
@@ -272,6 +278,7 @@
         {#snippet crest()}<ClassCrestRing
             characterClass={data.character.class ?? ''}
             size={CREST_PX}
+            class={CREST_CLASS}
           />{/snippet}
         {#snippet meta()}
           {#each headFacts(data, resolved, own) as fact (fact.key)}
@@ -279,7 +286,8 @@
                 >{fact.text}</a
               >{:else}<span data-testid={`character-fact-${fact.key}`}>{fact.text}</span>{/if}
           {/each}
-          {#if data.supporter === true}<Tag testid="supporter-chip">{premiumBlockCopy.supporterChip}</Tag
+          {#if data.supporter === true}<span data-testid="supporter-chip"
+              >{premiumBlockCopy.supporterChip}</span
             >{/if}
           {#if sync !== null}<span data-testid="character-sync"
               >{syncText(sync)}{#if sync.staleTail !== null}{STALE_SEPARATOR}<span class="text-wipe"
@@ -288,28 +296,21 @@
             >{/if}
         {/snippet}
         {#snippet answer()}
-          {#if total > 0}
-            <span class="character-answer-figures">
-              {#if scored}<Figure
-                  value={(forever.score ?? 0).toLocaleString('en-US')}
-                  label={copy.scoreLabel}
-                  size="sm"
+          <span class="flex flex-wrap items-center gap-x-5 gap-y-2">
+            {#if !unread}<a
+                class={buttonClass('secondary', 'sm')}
+                href={simViewedCharacterHref(characterKey(resolved.region, resolved.ruleset, resolved.slug))}
+                data-testid="character-sim">{copy.simThis}</a
+              >{/if}
+            {#if total > 0}<span class="shrink-0 whitespace-nowrap"
+                ><Figure
+                  value={signedFigure(total)}
+                  unit={copy.answerUnit(unit)}
                   align="end"
-                />{/if}
-              <Figure
-                value={signedFigure(total)}
-                {unit}
-                label={copy.answerLabel}
-                size="big"
-                align="end"
-                testid="character-answer"
-              />
-            </span>
-            <span class="character-answer-links">
-              <a class={LINK} href={characterHrefs.sim}>{copy.openSim} ›</a>
-              <a class={LINK} href={plannerHref(own)}>{copy.openPlanner} ›</a>
-            </span>
-          {/if}
+                  testid="character-answer"
+                /></span
+              >{/if}
+          </span>
         {/snippet}
       </PageHeader>
     {/snippet}
@@ -325,14 +326,35 @@
         </div>
       {/if}
     {/snippet}
+    {#snippet rail()}
+      {#if data.score_hidden !== true}
+        <CharacterScore
+          path={resolved}
+          {forever}
+          {owned}
+          fought={data.best.length > 0}
+          history={data.score_history ?? []}
+        />
+      {/if}
+      {#if data.builds_seen.length > 0}
+        <Section title={copy.builds} panel testid="character-builds">
+          {#each buildRows(data.character.class, data.builds_seen) as row (row.key)}
+            <Row title={row.split} sub={row.sub} href={plannerHref(own)} density="slim" open />
+          {/each}
+        </Section>
+      {/if}
+    {/snippet}
     {#if gear.length > 0}
       <CharacterGear
-        title={unread ? notReadCopy.bestInSlot(bandLevel) : copy.gear}
-        meta={unread || bandLevel === null ? undefined : copy.gearLevel(bandLevel)}
+        sectionTitle={unread ? notReadCopy.bestInSlot(bandLevel) : copy.gear}
+        title={specClassLabel(data.character.class, pageSpec(data, own))}
+        meta={level === null ? undefined : copy.levelMeta(level)}
+        avatar={data.character.avatar_url ?? own?.avatar_url ?? null}
         {cells}
         {gear}
         {band}
         {table}
+        upgrades={unread ? [] : upgradeRows(slots, classSlug ?? '')}
         {unit}
         {build}
         bisHref={specBis}
@@ -340,12 +362,10 @@
         {note}
       />
     {/if}
-    {#if data.score_hidden !== true}
-      <CharacterScore path={resolved} {forever} {owned} fought={data.best.length > 0} />
-    {/if}
     {#if data.best.length > 0}
       <Section
         title={copy.best}
+        panel
         action={{ label: copy.allFights(data.history.length), href: characterHrefs.logs }}
         testid="character-best"
       >
@@ -354,6 +374,7 @@
             title={row.boss}
             sub={row.sub}
             href={characterHrefs.encounter(encounterSlug(row.encounter))}
+            density="slim"
             open
           >
             {#snippet trail()}
@@ -365,13 +386,6 @@
               <Figure value={row.value} unit={row.unit} size="sm" align="end" />
             {/snippet}
           </Row>
-        {/each}
-      </Section>
-    {/if}
-    {#if data.builds_seen.length > 0}
-      <Section title={copy.builds} testid="character-builds">
-        {#each buildRows(data.character.class, data.builds_seen) as row (row.key)}
-          <Row title={row.split} sub={row.sub} href={plannerHref(own)} open />
         {/each}
       </Section>
     {/if}
@@ -404,18 +418,5 @@
   }
   .character-summary {
     padding-inline: var(--page-inset);
-  }
-  .character-answer-figures {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    gap: 24px;
-  }
-  .character-answer-links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 16px;
-    font-size: 14px;
   }
 </style>

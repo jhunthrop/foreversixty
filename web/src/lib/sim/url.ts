@@ -54,10 +54,13 @@ export interface SimState {
   /** `run=1`: start the run as soon as the character loads. A "View ranking sim" link (the tier
    *  list, the BiS band) opens a published number to see it reproduced, not to edit a setup. */
   run: boolean;
+  /** `keep=1`: the link opens a character the reader is viewing (another player's character
+   *  page, a report's player), so loading it leaves the reader's header character alone. */
+  keep: boolean;
 }
 
 export function defaultSimState(): SimState {
-  return { source: '', ref: '', code: '', req: '', mode: 'sim', fight: '', run: false };
+  return { source: '', ref: '', code: '', req: '', mode: 'sim', fight: '', run: false, keep: false };
 }
 
 function bounded(value: string | null, max: number): string {
@@ -77,6 +80,7 @@ export function parseSimState(search: string): SimState {
     mode: MODES.includes(mode as SimMode) ? (mode as SimMode) : 'sim',
     fight: bounded(params.get('fight'), MAX_REF),
     run: params.get('run') === '1',
+    keep: params.get('keep') === '1',
   };
 }
 
@@ -89,6 +93,7 @@ export function simSearch(state: SimState): string {
   if (state.mode !== 'sim') params.set('mode', state.mode);
   if (state.fight !== '') params.set('fight', state.fight);
   if (state.run) params.set('run', '1');
+  if (state.keep) params.set('keep', '1');
   const query = params.toString();
   return query === '' ? '' : `?${query}`;
 }

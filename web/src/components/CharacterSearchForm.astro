@@ -1,0 +1,197 @@
+---
+// web/src/components/CharacterSearchForm.astro
+// The lookup's body, drawn once inside CharacterSearch.astro's wrapper (the 404's open Section,
+// /characters' framed Plate): FormRow's look in static markup (a labelled 40 px name field that
+// grows, Region and Ruleset Selects, the one primary Look up), the 404's aside and hint, and the
+// status line. The name, region and ruleset (US and Normal to start) open
+// /character/<region>/<ruleset>/<name> through lib/character-search.ts; a plain form with a few
+// lines of script (lib/character-search-dom.ts, shared with the header's compact lookup: the
+// typeahead, the two validation lines), not a Svelte island. A "Look up another character" link
+// lands on /characters?character=<name>#lookup with the name filled in.
+import { DEFAULT_REGION, DEFAULT_RULESET } from '../lib/character-search';
+import { REGIONS, RULESETS } from '../lib/characters';
+import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
+import Select from './ui/Select.astro';
+import { BUTTON_PRIMARY } from '../lib/ui/button';
+import { FIELD_CONTROL, FIELD_FOCUS, FIELD_HEIGHT, FIELD_LABEL as LABEL, fieldEdge } from '../lib/ui/field';
+
+const FIELD = [FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(false)].join(' ');
+
+interface Props {
+  /** /characters (round 5, mock b2-characters): the lookup is the page's framed panel under the
+   *  title band, with no heading of its own (the band names the page), no aside and no hint: the
+   *  name field and Look up on one row, Region and Ruleset under them. Off (the 404), the open
+   *  Section with its heading and aside, exactly as before. */
+  panel?: boolean;
+}
+const { panel = false } = Astro.props;
+const HINT_ID = 'home-character-search-hint';
+const ERROR_ID = 'home-character-search-error';
+---
+
+<Fragment>
+  {!panel && (
+    <p class="text-small text-muted cs-aside" data-testid="home-character-search-aside">
+      {copy.aside}
+    </p>
+  )}
+</Fragment>
+<form
+  class:list={['cs-form flex flex-wrap items-end gap-3', panel && 'cs-panel']}
+  id={panel ? 'lookup' : undefined}
+  aria-label={copy.heading}
+  data-character-search
+  data-character-search-primary
+  data-status-id="home-character-search-error"
+  data-empty={copy.empty}
+  data-invalid={copy.invalid}
+  novalidate
+>
+  <div class="cs-name flex min-w-[220px] flex-1 flex-col gap-[6px]">
+    <label class={panel ? 'sr-only' : LABEL} for="home-character-search-name">
+      {copy.nameLabel}
+    </label>
+    <div class="relative">
+      <input
+        id="home-character-search-name"
+        name="name"
+        type="search"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder={copy.namePlaceholder}
+        aria-describedby={panel ? ERROR_ID : `${HINT_ID} ${ERROR_ID}`}
+        aria-keyshortcuts="/"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded="false"
+        aria-controls="home-character-search-listbox"
+        class={FIELD}
+      />
+      <div class="typeahead" data-typeahead>
+        <ul
+          id="home-character-search-listbox"
+          class="typeahead-list ui-overlay"
+          data-kind="menu"
+          role="listbox"
+          hidden
+        ></ul>
+      </div>
+    </div>
+  </div>
+  <div class="cs-selects">
+    <div class="cs-region flex flex-col gap-[6px]">
+      <label class={LABEL} for="home-character-search-region">
+        {copy.regionLabel}
+      </label>
+      <Select
+        id="home-character-search-region"
+        name="region"
+        size="compact"
+        fit
+        value={DEFAULT_REGION}
+        options={REGIONS.map((region) => ({ value: region, label: region.toUpperCase() }))}
+      />
+    </div>
+    <div class="cs-ruleset flex flex-col gap-[6px]">
+      <label class={LABEL} for="home-character-search-ruleset">
+        {copy.rulesetLabel}
+      </label>
+      <Select
+        id="home-character-search-ruleset"
+        name="ruleset"
+        size="compact"
+        fit
+        value={DEFAULT_RULESET}
+        options={RULESETS.map((ruleset) => ({ value: ruleset.id, label: ruleset.label }))}
+      />
+    </div>
+  </div>
+  <span class="cs-submit">
+    <button type="submit" class={`${BUTTON_PRIMARY} h-11 px-6`} data-testid="home-character-search-submit">
+      {copy.submit}
+    </button>
+  </span>
+</form>
+<Fragment>
+  {!panel && (
+    <p id={HINT_ID} class="text-small text-muted cs-hint">
+      {copy.hint}
+    </p>
+  )}
+</Fragment>
+<p id="home-character-search-error" class="text-wipe min-h-[1lh] text-[13px]" role="status"></p>
+
+<style>
+  .cs-aside {
+    margin: 0 0 16px;
+  }
+  .cs-hint {
+    margin: 10px 0 0;
+  }
+  input[type='search']::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    background-color: var(--color-muted);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  input[type='search']::-webkit-search-cancel-button:hover {
+    background-color: var(--color-gold-hover);
+  }
+  @media (max-width: 767px) {
+    .cs-form:not(.cs-panel) > *,
+    .cs-form:not(.cs-panel) .cs-selects > *,
+    .cs-form:not(.cs-panel) .cs-submit > button {
+      width: 100%;
+    }
+  }
+  /* The panel (mock b2-characters): the name and Look up on one row at every width, Region and
+     Ruleset under them at their own width. */
+  .cs-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'name submit'
+      'selects selects';
+  }
+  .cs-panel .cs-name {
+    grid-area: name;
+    min-width: 0;
+  }
+  .cs-panel .cs-submit {
+    grid-area: submit;
+  }
+  /* Region and Ruleset are one box: flat into the form's own row off the panel, as before. */
+  .cs-selects {
+    display: contents;
+  }
+  .cs-panel .cs-selects {
+    display: flex;
+    grid-area: selects;
+    gap: 12px;
+  }
+</style>
+
+<script>
+  import { afterPaint } from '../lib/after-paint';
+  import { holdSubmitUntilWired } from '../lib/held-submit';
+
+  // The form's submit and the "Look up another character" prefill; the "/" key that focuses
+  // this box lives in the site header (HeaderSearch.astro), which is on every page. Wired after
+  // first paint, or at the first pointer, key or focus event (src/lib/after-paint.ts). An Enter
+  // pressed before the wiring lands is held and replayed (src/lib/held-submit.ts).
+  const forms = [...document.querySelectorAll<HTMLFormElement>('form[data-character-search-primary]')];
+  const releases = forms.map((form) => holdSubmitUntilWired(form));
+  afterPaint(() => {
+    void import('../lib/character-search-dom').then(({ prefillFromQuery, wireLookupForm }) => {
+      forms.forEach((form, index) => {
+        wireLookupForm(form);
+        prefillFromQuery(form);
+        releases[index]?.();
+      });
+    });
+  });
+</script>

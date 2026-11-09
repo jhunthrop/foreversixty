@@ -24,7 +24,18 @@ describe('parseSimState', () => {
       mode: 'sim',
       fight: '',
       run: false,
+      keep: false,
     });
+  });
+
+  it("reads keep=1 as a view of someone else's character that leaves the header character alone", () => {
+    expect(parseSimState('?source=armory&ref=us%2Fhardcore%2Fthalrin&keep=1').keep).toBe(true);
+    expect(parseSimState('?keep=yes').keep).toBe(false);
+    expect(
+      simSearch(
+        withSimState(defaultSimState(), { source: 'armory', ref: 'us/hardcore/thalrin', keep: true }),
+      ),
+    ).toBe('?source=armory&ref=us%2Fhardcore%2Fthalrin&keep=1');
   });
 
   it('reads run=1 as start-on-load, and anything else as not', () => {
@@ -48,6 +59,7 @@ describe('parseSimState', () => {
       mode: 'compare',
       fight: 'fixture2abcd:3',
       run: false,
+      keep: false,
     });
   });
 
@@ -94,6 +106,7 @@ describe('simSearch', () => {
       mode: 'compare' as const,
       fight: 'fixture2abcd:3',
       run: true,
+      keep: true,
     };
     expect(parseSimState(simSearch(state))).toEqual(state);
   });

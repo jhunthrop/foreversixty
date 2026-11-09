@@ -82,7 +82,7 @@
   <p class="text-small text-muted" data-testid="history-caption">{historyCopy.caption}</p>
   <div>
     {#if source.status === 'loading'}
-      <div class="flex flex-col gap-7 xl:grid xl:grid-cols-2 xl:gap-x-8" data-testid="history-skeleton">
+      <div class="wide:grid wide:grid-cols-2 wide:gap-x-8 flex flex-col gap-7" data-testid="history-skeleton">
         <span class="sr-only" role="status">{historyCopy.loadingSr}</span>
         {#each [0, 1] as column (column)}
           <div class="flex flex-col gap-3" aria-hidden="true">
@@ -91,7 +91,7 @@
             <span class="skeleton-block h-[15px] w-[140px]"></span>
             <span class="skeleton-block h-11 w-3/4"></span>
             <span class="skeleton-block h-[28px] w-[120px]"></span>
-            <span class="skeleton-block aspect-[3/2] w-full sm:aspect-[16/5] xl:aspect-[2/1]"></span>
+            <span class="skeleton-block wide:aspect-[2/1] aspect-[3/2] w-full sm:aspect-[16/5]"></span>
             <span class="skeleton-block h-4 w-24"></span>
             <span class="skeleton-block h-4 w-1/3"></span>
             <span class="skeleton-block h-9 w-full"></span>
@@ -108,7 +108,7 @@
       <EmptyState message={historyCopy.empty} testid="history-empty" />
     {:else}
       <div
-        class="flex flex-col gap-7 xl:grid xl:grid-cols-2 xl:gap-x-8 xl:gap-y-0"
+        class="wide:grid wide:grid-cols-2 wide:gap-x-8 wide:gap-y-0 flex flex-col gap-7"
         data-testid="history-columns"
       >
         <ScoreChart history={source.history} {sizeOverride} />

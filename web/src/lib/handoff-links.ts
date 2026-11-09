@@ -43,3 +43,17 @@ export function simFightHref(reportId: string, fightIndex: number, guid?: string
 export function simArmoryHref(characterKey: string): string {
   return `/sim${simSearch(withSimState(defaultSimState(), { source: 'armory', ref: characterKey }))}`;
 }
+
+/** A character the reader is viewing (another player's character page), in the simulator: its
+ *  stored gear, talents, race, level and spec through the `?source=armory` bootstrap, with
+ *  `keep=1` so the load leaves the reader's own header character alone. */
+export function simViewedCharacterHref(characterKey: string): string {
+  return `/sim${simSearch(withSimState(defaultSimState(), { source: 'armory', ref: characterKey, keep: true }))}`;
+}
+
+/** A report's "Sim this fight": the fight in compare mode, scoped to the player on screen when
+ *  there is one (`guid`), else the fight's own first-DPS rule; `keep=1` as above. */
+export function simCompareFightHref(reportId: string, fightIndex: number, guid?: string): string {
+  const ref = guid === undefined ? `${reportId}:${fightIndex}` : `${reportId}:${fightIndex}:${guid}`;
+  return `/sim${simSearch(withSimState(defaultSimState(), { source: 'fight', ref, mode: 'compare', keep: true }))}`;
+}

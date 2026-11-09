@@ -9,9 +9,10 @@
     16,
     0,
     380,
-    257
+    200
    ],
    "inventory": {
+    "button": 1,
     "image": 1
    }
   },
@@ -40,63 +41,65 @@
     16,
     148,
     380,
-    95
+    38
    ],
-   "inventory": {}
+   "inventory": {
+    "button": 1
+   }
   },
   "section-gear": {
    "box": [
     16,
-    277,
+    228,
     380,
-    1326
+    931
    ],
    "inventory": {
-    "row": 17,
-    "image": 16
+    "row": 6,
+    "button": 17,
+    "image": 24
    }
   },
   "plate": {
    "box": [
     16,
-    326,
+    2577,
     380,
-    1277
+    214
    ],
    "inventory": {
-    "row": 17,
-    "image": 16
-   }
-  },
-  "slots": {
-   "box": [
-    17,
-    327,
-    378,
-    1275
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 16
-   }
-  },
-  "section-forever-score": {
-   "box": [
-    16,
-    1651,
-    380,
-    277
-   ],
-   "inventory": {
-    "row": 5
+    "row": 3
    }
   },
   "section-best-per-encounter": {
    "box": [
     16,
-    1976,
+    1181,
     380,
-    513
+    488
+   ],
+   "inventory": {
+    "row": 5
+   }
+  },
+  "section-activity": {
+   "box": [
+    16,
+    1691,
+    380,
+    269
+   ],
+   "inventory": {
+    "row": 3,
+    "image": 3
+   }
+  },
+  "section-forever-score": {
+   "box": [
+    16,
+    1984,
+    380,
+    571
    ],
    "inventory": {
     "row": 5
@@ -105,24 +108,12 @@
   "section-builds-seen": {
    "box": [
     16,
-    2537,
+    2577,
     380,
-    223
+    214
    ],
    "inventory": {
     "row": 3
-   }
-  },
-  "section-activity": {
-   "box": [
-    16,
-    2808,
-    380,
-    254
-   ],
-   "inventory": {
-    "row": 3,
-    "image": 3
    }
   }
  }

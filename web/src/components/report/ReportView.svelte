@@ -8,6 +8,7 @@
        open Sections after, and whose rail holds This pull and the tab's own rail Sections. -->
 <script lang="ts">
   import { untrack } from 'svelte';
+  import { simCompareFightHref } from '../../lib/handoff-links';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
@@ -1688,10 +1689,9 @@
   /** A pull a rating can exist for: a boss pull of a report the API keeps (never the bundled sample). */
   const rateable = $derived(!isTrashPull && !isSampleReport(reportId));
   const live = $derived<'live' | 'quiet' | null>(fightIsLive ? (quiet === null ? 'live' : 'quiet') : null);
+  // The player on screen when one is the Source, else the fight's own first-DPS rule.
   const simHref = $derived(
-    fight === null || nightMode
-      ? null
-      : `/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`,
+    fight === null || nightMode ? null : simCompareFightHref(reportId, state.fight, sourcePlayer),
   );
   /** The band's meta line: the pull on screen, or the night (zone, date, fight count). */
   const headLine = $derived(

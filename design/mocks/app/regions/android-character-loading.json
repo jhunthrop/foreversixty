@@ -16,34 +16,23 @@
   "section-gear": {
    "box": [
     16,
-    116,
+    124,
     380,
-    1205
+    589
    ],
    "inventory": {
-    "row": 17
+    "image": 1
    }
   },
   "plate": {
    "box": [
     16,
-    163,
+    124,
     380,
-    1158
+    589
    ],
    "inventory": {
-    "row": 17
-   }
-  },
-  "slots": {
-   "box": [
-    17,
-    164,
-    378,
-    1156
-   ],
-   "inventory": {
-    "row": 17
+    "image": 1
    }
   }
  }

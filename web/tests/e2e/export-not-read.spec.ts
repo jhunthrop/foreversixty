@@ -51,14 +51,17 @@ test.describe('character page with a gearless export', () => {
     await openCharacter(page, UNREAD_GEAR);
     const section = page.getByTestId('character-gear-section');
     await expect(section).toContainText('Best in slot for level 60');
-    const head = page.getByTestId('character-doll-slot-head');
-    await expect(head).toContainText('Halo of Transcendence');
-    await expect(page.getByTestId('character-doll-line2-head')).toHaveText("Onyxia's Lair: Onyxia");
+    const head = page.getByTestId('paperdoll-frame-slot-head');
+    await expect(head).toHaveAccessibleName('Head: Halo of Transcendence');
+    await head.click();
+    await expect(page.locator('.pdf-frame').getByTestId('character-inspector')).toContainText(
+      "Onyxia's Lair: Onyxia",
+    );
     // Nothing reads as a verdict on the character.
     await expect(section.getByText('Empty', { exact: true })).toHaveCount(0);
     await expect(page.getByText('No pick for your level range yet')).toHaveCount(0);
     await expect(page.getByTestId('character-answer')).toHaveCount(0);
-    await expect(page.getByTestId('character-doll-basis-head')).toHaveCount(0);
+    await expect(page.getByTestId('character-upgrades')).toHaveCount(0);
   });
 
   test('a character with gear still draws the worn paperdoll', async ({ page }) => {
@@ -66,7 +69,7 @@ test.describe('character page with a gearless export', () => {
     await expect(page.getByTestId('character-doll')).toBeVisible();
     await expect(page.getByTestId('character-gear-section')).toContainText('Gear');
     await expect(page.getByTestId('character-gear-section')).not.toContainText('Best in slot for level');
-    await expect(page.getByTestId('character-doll-slot-head')).toContainText('Green Lens');
+    await expect(page.getByTestId('paperdoll-frame-slot-head')).toHaveAccessibleName('Head: Green Lens');
   });
 
   test('the owner reads one neutral line: not read yet, and how to fix it in game', async ({ page }) => {

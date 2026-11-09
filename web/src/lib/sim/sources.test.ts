@@ -738,6 +738,28 @@ describe('current-character pointer writes', () => {
     await fromStoredCharacter(path, ctx, storage);
     expect(readCurrent(storage)).toMatchObject({ source: 'armory', ref: 'us/normal/thrallgar' });
   });
+
+  it("a load that keeps the pointer (someone else's character, opened from their page) never writes it", async () => {
+    const storage = fakeStorage();
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
+      respond: () =>
+        envelope({
+          spec: 'warrior-fury',
+          gear: { slots: [12640] },
+          talents: '31/0/20',
+          buffs: [],
+          race: 'orc',
+          captured_at: '2026-09-14T09:40:00Z',
+          source: 'fight',
+        }),
+    });
+    const path: CharacterPath = { region: 'us', ruleset: 'normal', slug: 'thrallgar' };
+    const result = await fromStoredCharacter(path, { ...ctx, recordPointer: false }, storage);
+    expect(result.ok).toBe(true);
+    expect(readCurrent(storage)).toBeNull();
+  });
 });
 
 describe('fightRefOf', () => {

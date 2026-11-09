@@ -1541,48 +1541,6 @@ def Split(rows: str, inspector: str) -> str:
     return f'<div class="split-insp">{rows}{inspector}</div>'
 
 
-# The panel form (web ui/Section `panel`, `frame`, `flush`; ui/Page `panels`): the logs and report mocks' prims.panel, the
-# heading row inside one Plate with the body. `frame` is the Plate's ('plain', 'framed', 'lead'); `flush` runs the body
-# edge to edge (a table that pads its own cells). Page(panels=True) sets them 22 px apart, the columns 28.
-PRIM_CSS += '''
-.plate>.sec-h.pn-h{padding:16px 20px 10px;border-bottom:0}.pn-b{padding:0 20px 16px}.pn-b.flush{padding:0 0 6px}
-.plate.framed{position:relative}.plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
-.layout-split.panels{column-gap:28px}.layout-split.panels>.main,.layout-split.panels>.rail{gap:22px}
-@media(max-width:767px){.plate>.sec-h.pn-h{padding:14px 14px 8px}.pn-b{padding:0 14px 14px}}
-'''
-
-_Section1 = Section
-
-
-def _named(html: str, title: str) -> str:
-    sid = region_slug(title)
-    return html.replace('<section ', f'<section id="{sid}" aria-labelledby="{sid}-title" ', 1).replace('<h2 ', f'<h2 id="{sid}-title" ', 1)
-
-
-def Section(title: str, body: str, action: str = '', meta: str = '', named: bool = False, boxed: bool = False,
-            panel: bool = False, frame: str = 'plain', flush: bool = False) -> str:
-    """panel: the heading row inside one Plate (its frame) with the body, as the built Section's `panel`."""
-    if not panel:
-        if not boxed:
-            return _Section1(title, body, action, meta, named)
-        html = _Section0(title, body, action, meta, boxed=True)
-        return _named(html, title) if named else html
-    a = f'<span class="act">{action}</span>' if action else ''
-    m = f'<span class="t-small">{meta}</span>' if meta else ''
-    cls = {'plain': '', 'framed': ' framed', 'lead': ' framed lead'}[frame]
-    html = (f'<section data-region="{region_slug(title)}"><div class="plate{cls}" data-region="{REGION["plate"]}">'
-            f'<div class="sec-h pn-h"><h2 class="t-h3">{title}</h2>{m}{a}</div>'
-            f'<div class="pn-b{" flush" if flush else ""}">{body}</div></div></section>')
-    return _named(html, title) if named else html
-
-
-_Page1 = Page
-
-
-def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, panels: bool = False, **kwargs: object) -> str:
-    """panels: main and rail hold Section panels (web ui/Page `panels`); every other keyword goes to the Page before."""
-    html = _Page1(layout, main, rail, sticky_rail, **kwargs)
-    return html.replace('class="layout-split"', 'class="layout-split panels"', 1) if panels else html
 # ------------------------------------------------ Frame (round 5; web ui/Frame.svelte): the featured panel, two or three a page
 # The panel (raised ground, black 1 px edge, 10 px radius, the warm outer ring) with the cream line inset 6 px; `ornate` marks the
 # page's one lead panel (the built corners are decoration on the inset line, no box of their own). Padding 22/24, 18/16 below 768.
@@ -1744,7 +1702,7 @@ PRIM_CSS += '''
 .pdf-figure{margin-left:auto;font:600 3.2cqw var(--font-body);color:#fff;text-shadow:0 1px 2px #000;white-space:nowrap}.pdf-figure small{font-size:.66em;color:#e3dfd9}
 .pdf-centre{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3cqw;padding:4cqw}
 .pdf-strip{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #000;border-radius:10px 10px 0 0;background:#0b2f3b}
-.pdf-strip img{width:40px;height:40px;border-radius:50%}.pdf-strip h1{min-width:0;margin:0;font:400 19px/1.2 var(--font-title);color:#f3eee2}
+.pdf-strip img{width:40px;height:40px;border-radius:50%}.pdf-strip :is(h1,h2){min-width:0;margin:0;font:400 19px/1.2 var(--font-title);color:#f3eee2}
 .pdf-strip .pdf-figure{font-size:17px}
 .pdf-items{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:0;padding:12px;list-style:none;border:1px solid #000;border-top:0;border-radius:0 0 10px 10px;background:#170e09}
 .pdf-item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:center;width:100%;min-height:44px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left}
@@ -1779,8 +1737,10 @@ def _icon_src(name: str | None) -> str:
 
 
 def PaperdollFrame(slots: list[dict], title: str, meta: str, figure: tuple[str, str] | None, centre: str, label: str,
-                   list_centre: str = '') -> str:
-    """slots: the filled sockets (slot, label (the button's name), covered, selected, icon, quality). centre: the centre's html."""
+                   list_centre: str = '', heading: str = 'h1') -> str:
+    """slots: the filled sockets (slot, label (the button's name), covered, selected, icon, quality). centre: the centre's html.
+    heading: the title bar's heading (the built `heading`): h1 where the bar is the page's title (BiS), h2 under a page title."""
+    tag = {'h1': 'h1', 'h2': 'h2'}[heading]
     by = {s['slot']: s for s in slots}
     fig = f'<b class="pdf-figure">{escape(figure[0])} <small>{escape(figure[1])}</small></b>' if figure else ''
     buttons = ''.join(
@@ -1791,7 +1751,7 @@ def PaperdollFrame(slots: list[dict], title: str, meta: str, figure: tuple[str, 
     w, h = _PD['size']
     frame = (f'<div class="pdf-frame" style="aspect-ratio:{w}/{h};--pd-frame:url({frame_bg})" data-region="{REGION["slots"]}">{buttons}'
              f'<span class="pdf-medal" style="{_pd_box("medallion")}" data-region="{REGION["paperdoll_medallion"]}"><img src="{_PD_SEAL}" alt=""></span>'
-             f'<div class="pdf-title" style="{_pd_box("title")}"><h1 style="margin:0;font:inherit">{escape(title)}</h1><small class="pdf-meta">{escape(meta)}</small>{fig}</div>'
+             f'<div class="pdf-title" style="{_pd_box("title")}"><{tag} style="margin:0;font:inherit">{escape(title)}</{tag}><small class="pdf-meta">{escape(meta)}</small>{fig}</div>'
              f'<div class="pdf-centre" style="{_pd_box("centre")}" data-region="{REGION["paperdoll_centre"]}">{centre}</div></div>')
     items = []
     for n in _PD_LIST:
@@ -1803,7 +1763,7 @@ def PaperdollFrame(slots: list[dict], title: str, meta: str, figure: tuple[str, 
         items.append(f'<li><button type="button" class="pdf-item" aria-pressed="{"true" if s["selected"] else "false"}">'
                      f'<span class="pdf-cell">{_pd_icon(s)}</span><span><span class="pdf-name">{escape(item)}</span>'
                      f'<span class="pdf-sub">{escape(slot_word)}</span></span></button></li>')
-    lst = (f'<div class="pdf-list"><div class="pdf-strip"><img src="{_PD_SEAL}" alt=""><h1>{escape(title)}</h1>{fig}</div>'
+    lst = (f'<div class="pdf-list"><div class="pdf-strip"><img src="{_PD_SEAL}" alt=""><{tag}>{escape(title)}</{tag}>{fig}</div>'
            f'<ul class="pdf-items">{"".join(items)}</ul>{f"<div class=pdf-list-centre>{list_centre}</div>" if list_centre else ""}</div>')
     return f'<div class="pdf" role="group" aria-label="{escape(label)}">{frame}{lst}</div>'
 
