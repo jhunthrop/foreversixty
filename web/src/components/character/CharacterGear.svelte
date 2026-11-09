@@ -7,6 +7,7 @@
      runners-up. A phone draws the frame's list form, the Upgrades under it. `cells` decides the
      words (lib/character/doll.ts); this lays them out. -->
 <script lang="ts">
+  import { isTie } from '../../lib/bis/doll-view';
   import type { BisBand } from '../../lib/bis/types';
   import { bandSlotFor, runnersUp } from '../../lib/character/gear-context';
   import { characterPageCopy } from '../../lib/character/page-view';
@@ -139,7 +140,7 @@
         <ItemRow
           item={ref(alt.id, alt.name)}
           {build}
-          source={`${alt.source} · ${signedFigure(alt.delta)} ${unit}`}
+          source={isTie(alt.delta) ? alt.source : `${alt.source} · ${signedFigure(alt.delta)} ${unit}`}
           iconSize={28}
           bare
         />
