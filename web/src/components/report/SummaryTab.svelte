@@ -12,7 +12,7 @@
 <script lang="ts">
   import { unitLabel } from '../../lib/report/names.svelte';
   import { specCell, type UnitClass } from '../../lib/report/roster-class';
-  import { classColorVar, formatAmount, formatPercent, wholeFightMark } from '../../lib/report/format';
+  import { classColorVar, formatAmount, wholeFightMark } from '../../lib/report/format';
   import { formatRate } from '../../lib/report/frame';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
@@ -20,6 +20,8 @@
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
+  import Meter from '../ui/Meter.svelte';
+  import { roleIcon, roleOf } from '../../lib/report/role-icon';
   import ClassIcon from './ClassIcon.svelte';
 
   let {
@@ -101,6 +103,8 @@
   });
   let showEveryone = $state(false);
   const shown = $derived(rows.length > CROWD && !showEveryone ? rows.slice(0, FIRST_ROWS) : rows);
+  /** The Damage column's share bar runs against the top damage, as Damage done's does. */
+  const topDamage = $derived(Math.max(1, ...rows.map((row) => row.damage_done)));
   const activeMark = $derived(wholeFightMark(approximate));
 
   function figures(row: RosterRow): StatFigure[] {
@@ -118,7 +122,7 @@
         { value: formatAmount(pair.amountOf(row)) },
         { value: formatRate(rateOf(pair, row)) },
       ]),
-      { value: `${activeMark}${formatPercent(row.activity_pct)}` },
+      { value: `${activeMark}${Math.round(row.activity_pct)}%` },
       { value: String(row.deaths), muted: row.deaths === 0 },
     ];
   }
@@ -142,12 +146,12 @@
   <!-- Up to eight figure columns: the name keeps a floor so it never folds letter by letter in
        the narrow main column (1024 to 1279); past that floor the table scrolls sideways. -->
   <div class="summary-roster" data-testid="summary-roster-card">
-    <StatTable {columns} nameHead="Player" bar={false} {sort} {onsort} label="Players">
+    <StatTable {columns} nameHead="Player" {sort} {onsort} label="Players">
       {#each shown as row (row.guid)}
         {@const display = unitLabel(row.name)}
         {@const cell = specCell(row, unitClasses)}
+        {@const role = roleOf(row.role)}
         <StatRow
-          bar={false}
           figures={figures(row)}
           phone={`damage · ${formatRate(row.damage_done / seconds)} DPS`}
           testid={`roster-${row.guid}`}
@@ -162,7 +166,20 @@
               onclick={(event) => follow(event, row.guid)}>{display.name}</a
             >{#if display.realm !== ''}<span class="text-muted ml-1 text-[12px]">· {display.realm}</span
               >{/if}{/snippet}
-          {#snippet sub()}{subOf(row) || ' '}{/snippet}
+          {#snippet sub()}{#if role !== null}{@const icon = roleIcon(role)}<img
+                src={icon.url}
+                alt={icon.label}
+                title={icon.label}
+                width="14"
+                height="14"
+                class="mr-1 inline-block rounded-[2px] align-[-2px]"
+                data-testid="roster-role"
+              />{/if}{subOf(row) || ' '}{/snippet}
+          {#snippet meter()}<Meter
+              value={row.damage_done / topDamage}
+              tone="class"
+              color={classColorVar(cell.class)}
+            />{/snippet}
         </StatRow>
       {/each}
     </StatTable>
@@ -188,8 +205,10 @@
     overflow-x: auto;
   }
   .summary-roster :global(.ui-st) {
-    --st-name: minmax(150px, 2fr);
-    min-width: max-content;
+    --st-name: minmax(120px, 2fr);
+    --st-bar: minmax(40px, 56px);
+    --st-fig: minmax(max-content, 54px);
+    min-width: min-content;
   }
   @media (max-width: 1023px) {
     .summary-roster :global(.ui-st) {

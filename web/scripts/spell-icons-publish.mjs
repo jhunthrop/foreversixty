@@ -84,6 +84,7 @@ export async function publishSpellIcons({ repoRoot, webRoot, build, publicDir, f
   for (const file of await reportFiles(webRoot)) reportSpells(await readJson(file), wanted);
   const stems = new Set([
     fallbacks.melee,
+    ...Object.values(fallbacks.roles),
     ...Object.values(fallbacks.client),
     ...Object.values(fallbacks.schools),
   ]);

@@ -1,5 +1,10 @@
 {
   "melee": "ability_meleedamage",
+  "roles": {
+    "tank": "ability_warrior_defensivestance",
+    "healer": "spell_holy_flashheal",
+    "dps": "ability_dualwield"
+  },
   "client": {
     "75": "ability_whirlwind"
   },

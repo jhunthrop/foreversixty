@@ -116,7 +116,7 @@ for (const size of SIZES) {
       await page.goto('/reports/sample');
       await expect(page.getByTestId('report-title')).toHaveText('Sample raid night, 17 Sept 2026');
       await expect(page.getByTestId('report-sample-note')).toHaveText(
-        'Level 10 to 30 players, names changed.',
+        'A real dungeon night, names changed.',
       );
       const rows = page.getByTestId('summary-tab').getByTestId(/^roster-Player-/);
       await expect(rows.first()).toBeVisible();

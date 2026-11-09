@@ -19,12 +19,15 @@
     reportId,
     fightIndex,
     roster,
+    rated = true,
     tabHref,
     apiBase = undefined,
   }: {
     reportId: string;
     fightIndex: number;
     roster: { guid: string; name: string; class?: string }[];
+    /** False where no rating can exist (a trash pull, the bundled sample): the one line, no fetch. */
+    rated?: boolean;
     /** The Rating tab's url, kept with the fight. */
     tabHref: string;
     apiBase?: string;
@@ -32,7 +35,7 @@
 
   const fetcher = createReportRatingsFetch(apiBase);
   $effect(() => {
-    fetcher.load(reportId, fightIndex);
+    if (rated) fetcher.load(reportId, fightIndex);
   });
 
   const rows = $derived(
@@ -42,11 +45,13 @@
 
 <Section
   title={ratingCopy.panelHeading}
-  action={{ label: ratingCopy.panelMore, href: tabHref }}
+  action={rated ? { label: ratingCopy.panelMore, href: tabHref } : undefined}
   testid="rating-panel"
   panel
 >
-  {#if fetcher.status === 'loading' || fetcher.status === 'idle'}
+  {#if !rated}
+    <EmptyLine text={ratingCopy.noRatingForTrash} testid="rating-panel-none" />
+  {:else if fetcher.status === 'loading' || fetcher.status === 'idle'}
     <div data-testid="rating-panel-loading" aria-hidden="true"><Skeleton minHeight="min-h-[58px]" /></div>
   {:else if fetcher.status === 'flagged'}
     <EmptyLine text={ratingCopy.flagged} testid="rating-panel-flagged" />

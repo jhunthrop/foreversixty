@@ -1,7 +1,8 @@
 <!-- web/src/components/report/SummaryPanels.svelte -->
-<!-- The Summary tab's panel under the chart (logs spec 2026-11-07 6.2; directions b1-report-summary):
-     Damage taken by ability, a StatTable of each ability that hit a player in the scope (spell
-     icon, name, a Meter, the share of the scope's damage taken, Per sec, Amount). -->
+<!-- The Summary tab's ability panels under the chart (logs spec 2026-11-07 6.2; owner review
+     2026-11-09): `metric="done"` Damage done by ability, every ability the scope's players hit
+     with; `metric="taken"` Damage taken by ability, every ability that hit them. Each a StatTable
+     (spell icon, name, a Meter, the share of the scope's total, Per sec, Amount), the top eight. -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
   import { formatAmount } from '../../lib/report/format';
@@ -15,12 +16,14 @@
   import SpellIcon from './SpellIcon.svelte';
 
   let {
+    metric,
     summary,
     approximate = false,
     durationMs,
     players,
     spellIcon,
   }: {
+    metric: 'done' | 'taken';
     summary: Summary;
     durationMs: number;
     players: ReadonlySet<string>;
@@ -59,8 +62,13 @@
     }
     return [...totals.values()].filter((row) => row.total > 0).sort((a, b) => b.total - a.total);
   }
-  const takenByAbility = $derived.by(() => {
-    const rows = abilityTotals(summary.damage_taken);
+  const TITLE = { done: 'Damage done by ability', taken: 'Damage taken by ability' } as const;
+  const EMPTY = {
+    done: 'Nobody did damage in this window.',
+    taken: 'Nobody took damage in this window.',
+  } as const;
+  const byAbility = $derived.by(() => {
+    const rows = abilityTotals(metric === 'done' ? summary.damage_done : summary.damage_taken);
     const total = rows.reduce((sum, row) => sum + row.total, 0);
     return rows.slice(0, ROWS).map((row) => ({ ...row, share: total === 0 ? 0 : row.total / total }));
   });
@@ -72,12 +80,12 @@
   ] as const;
 </script>
 
-<Section title="Damage taken by ability" panel flush testid="panel-taken">
-  {#if takenByAbility.length === 0}
-    <EmptyLine text="Nobody took damage in this window." />
+<Section title={TITLE[metric]} panel flush testid={metric === 'done' ? 'panel-done' : 'panel-taken'}>
+  {#if byAbility.length === 0}
+    <EmptyLine text={EMPTY[metric]} />
   {:else}
-    <StatTable columns={COLUMNS} nameHead="Ability" label="Damage taken by ability">
-      {#each takenByAbility as row (row.name)}
+    <StatTable columns={COLUMNS} nameHead="Ability" label={TITLE[metric]}>
+      {#each byAbility as row (row.name)}
         <StatRow
           figures={[
             { value: `${(row.share * 100).toFixed(1)}%` },
@@ -88,7 +96,10 @@
         >
           {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
           {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
-          {#snippet meter()}<Meter value={row.share} tone="muted" />{/snippet}
+          {#snippet meter()}<Meter
+              value={row.share}
+              tone={metric === 'done' ? 'accent' : 'muted'}
+            />{/snippet}
         </StatRow>
       {/each}
     </StatTable>

@@ -82,6 +82,9 @@
   import ReportHead from './ReportHead.svelte';
   import SummaryPanels from './SummaryPanels.svelte';
   import ThisPull from './ThisPull.svelte';
+  import SummaryDeaths from './SummaryDeaths.svelte';
+  import KeyMechanics from './KeyMechanics.svelte';
+  import GroupBuffs from './GroupBuffs.svelte';
   import TargetsRail from './TargetsRail.svelte';
   import Glossary from './Glossary.svelte';
   import EventsRail from './EventsRail.svelte';
@@ -216,7 +219,9 @@
     isSampleReport(reportId) ? sampleFightIndex(fights) : defaultFightIndex(fights),
   );
   /** A Parse column exists only on a report with a boss kill to rank; the sample has none. */
-  const showParse = $derived(hasRankedKill(fights));
+  // The bundled sample is no ranked night: it never asks the rankings, so no Parse column and no
+  // "could not be reached" line over a log that was never ranked.
+  const showParse = $derived(!isSampleReport(reportId) && hasRankedKill(fights));
   /**
    * The bundled sample paints its first table from the fight's own summary, before report.json
    * (half a megabyte of units) has arrived: on a phone on a slow line the serial pair kept
@@ -1944,13 +1949,16 @@
         {@render thisPull()}
         {#if !onePullTab && scoped !== null}
           {#if state.tab === 'summary' && !nightMode}
-            {#if !isTrashPull}
-              <RatingPanel
-                {reportId}
-                fightIndex={state.fight}
-                roster={scoped.roster.map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
-                tabHref={hrefWith({ tab: 'rating' })}
-              />
+            <RatingPanel
+              {reportId}
+              fightIndex={state.fight}
+              roster={scoped.roster.map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
+              rated={!isTrashPull && !isSampleReport(reportId)}
+              tabHref={hrefWith({ tab: 'rating' })}
+            />
+            <SummaryDeaths summary={scoped} tabHref={hrefWith({ tab: 'deaths' })} />
+            {#if !isTrashPull && summary !== null}
+              <KeyMechanics {summary} {spellIcon} tabHref={hrefWith({ tab: 'mechanics' })} />
             {/if}
             {#if fight?.kind === 'encounter' && scoped.combatants.length > 0}
               <Section title="At pull" panel testid="at-pull-card">
@@ -2046,12 +2054,30 @@
             onSelectPlayer={(guid) => patch({ source: guid })}
           />
           {@render chart('damage-done')}
-          <SummaryPanels
+          <div class="report-abilities">
+            <SummaryPanels
+              metric="done"
+              summary={scoped}
+              durationMs={scoped.duration_ms}
+              players={playerSet}
+              approximate={!windowIsWhole}
+              {spellIcon}
+            />
+            <SummaryPanels
+              metric="taken"
+              summary={scoped}
+              durationMs={scoped.duration_ms}
+              players={playerSet}
+              approximate={!windowIsWhole}
+              {spellIcon}
+            />
+          </div>
+          <GroupBuffs
             summary={scoped}
             durationMs={scoped.duration_ms}
             players={playerSet}
-            approximate={!windowIsWhole}
             {spellIcon}
+            tabHref={hrefWith({ tab: 'buffs' })}
           />
         {:else if ACTOR_TABS.has(state.tab) && playerView}
           <PlayerView
@@ -2397,6 +2423,35 @@
 {/if}
 
 <style>
+  /* Damage done and taken by ability side by side where the main column has the room (1440 up). */
+  .report-abilities {
+    display: grid;
+    gap: var(--section-gap);
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* The halves keep the ability's name readable at every width: a floor on the name, a cap on the bar. */
+  .report-abilities :global(.ui-st) {
+    --st-name: minmax(120px, 2fr);
+    --st-bar: minmax(0, 120px);
+  }
+  @media (min-width: 1440px) {
+    .report-abilities {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+  /* Side by side under 1760 the halves are narrow: the share figure stays, the share bar goes,
+     so the ability's name keeps its room. */
+  @media (min-width: 1440px) and (max-width: 1759px) {
+    .report-abilities :global(.ui-st) {
+      --st-bar: 0px;
+    }
+    .report-abilities :global(.ui-st-bar) {
+      visibility: hidden;
+      overflow: hidden;
+      min-width: 0;
+    }
+  }
   .report-queries :global(.ui-seg) {
     flex-wrap: wrap;
   }

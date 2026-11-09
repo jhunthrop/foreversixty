@@ -158,7 +158,7 @@ test.describe('a beta-log report', () => {
     await expect(page.getByTestId('rating-panel')).toHaveCount(0);
     await page.goto(`/reports/${ID}?fight=1&tab=rating`);
     const none = page.getByTestId('rating-tab-none');
-    await expect(none).toHaveText('No rating for trash. Ratings are made for boss fights.');
+    await expect(none).toHaveText('Ratings come with boss kills in raids.');
     await expect(page.getByTestId('rating-panel-error')).toHaveCount(0);
     await expect(none).not.toHaveAttribute('role', 'alert');
     if (CAPTURES)
