@@ -159,7 +159,8 @@ export const creatorStatsCopy = {
     returning: 'Returning',
     paying: 'Paying',
   },
-  monthNote: (month: string, cap: string): string => `${month}, an estimate until the month closes · ${cap} monthly cap`,
+  monthNote: (month: string, cap: string): string =>
+    `${month}, an estimate until the month closes · ${cap} monthly cap`,
   allTime: 'all time',
   payingNote: 'paying now',
   playersTitle: 'Your players',

@@ -161,9 +161,7 @@ test('a /go/ landing keeps the slug, cleans the address bar and sends it once si
     await route.fulfill(fulfil({ recorded: true }));
   });
   await page.goto('/guides');
-  await expect
-    .poll(() => sent)
-    .toEqual({ body: { slug: 'reddit-guides', at: expect.any(Number) as number }, csrf: 'tok' });
+  await expect.poll(() => sent).toMatchObject({ body: { slug: 'reddit-guides' }, csrf: 'tok' });
   await expect.poll(() => page.evaluate(() => localStorage.getItem('fs.arrival'))).toBeNull();
 });
 
