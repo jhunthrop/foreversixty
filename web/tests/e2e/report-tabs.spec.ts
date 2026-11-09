@@ -24,12 +24,13 @@ function summaryRosterRows(page: import('@playwright/test').Page): import('@play
 
 const FIGHT_SELECT = 'select[data-testid="report-fight"]';
 
-test('the report opens on its first fight with the chrome the spec sets', async ({ page }) => {
+test('the report opens on its last boss kill with the chrome the spec sets', async ({ page }) => {
   await page.goto(REPORT);
 
   await expect(page.getByTestId('report-title')).toHaveText('Sanguine Depths, fixture night');
-  // One fight select in the control bar (logs spec 6.1, decision R2), on the first boss pull.
-  await expect(page.locator(FIGHT_SELECT)).toHaveValue('3');
+  // One fight select in the control bar (logs spec 6.1, decision R2), on the last boss kill
+  // (owner review 2026-11-09): the night's last kill is the pull a raider opens a log for.
+  await expect(page.locator(FIGHT_SELECT)).toHaveValue('4');
   await expect(page.locator(`${FIGHT_SELECT} option[value="3"]`)).toHaveText(/Warden Kelthas #1 · Kill/);
   // One tab strip (decision R3): the modes and views of old are tabs, Rankings a link.
   const tabs = page.getByTestId('report-tabs');
@@ -48,7 +49,7 @@ test('the report opens on its first fight with the chrome the spec sets', async 
     'page',
   );
   await expect(page.getByTestId('mode-bar')).toHaveCount(0);
-  await expect(page.getByTestId('report-rankings-link')).toHaveText('Rankings for Warden Kelthas ›');
+  await expect(page.getByTestId('report-rankings-link')).toHaveText('Rankings for Skolex the Insatiable ›');
 });
 
 test('the fight list numbers boss pulls and hides trash that killed nothing', async ({ page }) => {
@@ -101,12 +102,13 @@ test('the source scope lists the fight’s players', async ({ page }) => {
 // design: it validates ?fight= as a run of digits and cannot know the report's fights,
 // so ?fight=0 parses even though fight_index is 1-based. The island resolves it against
 // report.json instead of asking the edge for fights/0/summary.json and failing the page.
-test('a fight the report does not have falls back to the first boss pull', async ({ page }) => {
+test('a fight the report does not have falls back to the last boss kill', async ({ page }) => {
   for (const search of ['?fight=7', '?fight=999']) {
     await page.goto(`${REPORT}${search}`);
     await expect(page.getByTestId('report-error')).toHaveCount(0);
-    await expect(page.locator(FIGHT_SELECT)).toHaveValue('3');
-    await expect(summaryRosterRows(page)).toHaveCount(5);
+    await expect(page.locator(FIGHT_SELECT)).toHaveValue('4');
+    // Skolex, the fixture's last kill, has one player in its roster.
+    await expect(summaryRosterRows(page)).toHaveCount(1);
   }
   // Fight 0 is the whole night, which every report with a boss pull has.
   await page.goto(`${REPORT}?fight=0`);

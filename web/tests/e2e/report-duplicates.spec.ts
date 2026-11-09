@@ -47,9 +47,9 @@ test('a fight whose events share timestamps still renders its timelines and deat
 test('a link to a fight the report does not have says so instead of swapping silently', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=99');
   await expect(page.getByTestId('report-missing-fight')).toContainText('no fight 99');
-  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3');
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('4');
   // Picking a fight clears the notice.
-  await pickFight(page, 4);
+  await pickFight(page, 3);
   await expect(page.getByTestId('report-missing-fight')).toHaveCount(0);
 });
 
@@ -88,13 +88,13 @@ test('the whole night folds every boss pull into one table, and each pull opens 
   await expect(page.getByTestId('summary-tab')).toBeVisible();
 });
 
-test('a bare report link opens on the first boss pull, and fight changes enter history', async ({ page }) => {
+test('a bare report link opens on the last boss kill, and fight changes enter history', async ({ page }) => {
   await page.goto('/reports/fixture2abcd');
-  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3');
-  await pickFight(page, 4);
-  await expect(page).toHaveURL(/fight=4/);
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('4');
+  await pickFight(page, 3);
+  await expect(page).toHaveURL(/fight=3/);
   await page.goBack();
-  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3');
+  await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('4');
 });
 
 test('picking a roster name narrows the page to that player', async ({ page }) => {
