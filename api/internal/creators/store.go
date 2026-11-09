@@ -13,7 +13,7 @@ import (
 
 const uniqueViolation = "23505"
 
-// Store is the program's tables (migration 0092).
+// Store is the program's tables (the creators migration).
 type Store struct{ Pool *pgxpool.Pool }
 
 // returningSQL is "player p is a returning player": signed in with Battle.net, a second UTC day

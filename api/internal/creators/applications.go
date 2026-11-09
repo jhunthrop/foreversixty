@@ -14,7 +14,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-// Application limits (migration 0092's checks).
+// Application limits (the creators migration's checks).
 const (
 	MaxAbout    = 500
 	MaxAudience = 100000000

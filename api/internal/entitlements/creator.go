@@ -7,8 +7,8 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-// SourceCreator marks the Premium the creator program gives a creator's own account (migration
-// 0092). It is written only by GrantCreatorPremium and ended only by EndCreatorPremium, so it never
+// SourceCreator marks the Premium the creator program gives a creator's own account (the creators
+// migration). It is written only by GrantCreatorPremium and ended only by EndCreatorPremium, so it never
 // replaces a live paid subscription or another grant, and ending it never touches one either.
 // The account page reads it as a grant (PersonalBilling).
 const SourceCreator = "creator"

@@ -6,7 +6,7 @@ import (
 )
 
 // creatorsVersion is the creator program's migration (design/specs/2026-11-08-creator-program.md).
-const creatorsVersion = 92
+const creatorsVersion = 94
 
 // The creator program's migration adds its tables and the entitlements source 'creator', holds
 // one open application per account and the code and channel rules, and its down removes all of

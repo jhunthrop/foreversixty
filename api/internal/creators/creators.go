@@ -22,7 +22,7 @@ const (
 	SharePercent = 50
 	// DefaultCapCents is a new creator's monthly cap.
 	DefaultCapCents = 50000
-	// MaxCapCents bounds what the owner may type (migration 0092's check).
+	// MaxCapCents bounds what the owner may type (the creators migration's check).
 	MaxCapCents = 1000000
 	// CodeTrialDays is the free month a creator's code gives at checkout, on Premium or a guild plan
 	// (billing reads it through CodeTrialDays()).
@@ -45,7 +45,7 @@ const (
 	RecentWeeks = 26
 )
 
-// Limits migration 0092's checks hold; the handler refuses past them first.
+// Limits the creators migration's checks hold; the handler refuses past them first.
 const (
 	MaxNameLen    = 60
 	MaxChannelLen = 200
