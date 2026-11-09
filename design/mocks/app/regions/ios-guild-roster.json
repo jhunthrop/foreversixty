@@ -39,7 +39,7 @@
   "section-waiting-for-approval": {
    "box": [
     16,
-    376,
+    396,
     361,
     439
    ],
@@ -52,26 +52,26 @@
   "section-roster": {
    "box": [
     16,
-    863,
+    883,
     361,
-    2614
+    2932
    ],
    "inventory": {
-    "row": 21,
+    "row": 24,
     "button": 9,
-    "image": 21
+    "image": 24
    }
   },
   "plate": {
    "box": [
     16,
-    1194,
+    1214,
     361,
-    2227
+    2545
    ],
    "inventory": {
-    "row": 21,
-    "image": 21
+    "row": 24,
+    "image": 24
    }
   }
  }
