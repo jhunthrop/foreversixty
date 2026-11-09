@@ -1,36 +1,33 @@
 ---
 // web/src/pages/index.astro
-// Home, layout B "the world is moving" (design/specs/2026-11-07-home-b.md), built from the ui/
-// primitives and matched to its mocks (design/mocks/web/web-home-*.html, the parity gate in
-// tests/e2e/parity-home.spec.ts). Signed out, server-rendered: the title and Sign in, "Pick your
-// class", the first raids countdown, "Forever right now" (All) and how to start. Signed in, the
-// HomeSignedIn island draws the selected character; the session hint hides the signed-out page
-// before paint (global.css, HOME_OUT_ATTR). The feed's floor of real dated site events is built
-// here, at build time. After an account deletion (`/?deleted=1`) a one-time notice sits under
-// the head (HomeDeletedNotice).
+// Home, round 5 (design/specs/2026-11-09-directions.md "Home"; mocks design/mocks/directions/png/
+// g-home-*; the parity gate in tests/e2e/parity-home.spec.ts). Signed out, server-rendered on the
+// camp-road hero: "Pick your class" with Sign in beside it, the nine classes leading, then Latest
+// on Forever with the rail beside it: How to start and the raid plaque (the first raids opening). Signed in, the HomeSignedIn island
+// draws the selected character; the session hint hides the signed-out page before paint
+// (global.css, HOME_OUT_ATTR). The feed's floor of real dated site events is built here, at build
+// time. After an account deletion (`/?deleted=1`) a one-time notice sits under the head.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { HOME_DESCRIPTION, SITE_NAME } from '../lib/seo';
 import { battlenetStartUrl } from '../lib/account/api';
-import { homeCopy, shortDate } from '../lib/home/home-view';
+import { homeCopy } from '../lib/home/home-view';
 import { FLOOR_MIN } from '../lib/home/feed';
 import { buildFloor } from '../lib/home/floor';
 import { floorInputs, raidsOpenIso } from '../lib/home/floor-load';
 import Button from '../components/ui/Button.svelte';
-import Page from '../components/ui/Page.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
-import Row from '../components/ui/Row.svelte';
-import Section from '../components/ui/Section.svelte';
 import HomeClassPicker from '../components/home/HomeClassPicker.svelte';
-import HomeCountdowns from '../components/home/HomeCountdowns.svelte';
 import HomeDeletedNotice from '../components/home/HomeDeletedNotice.svelte';
 import HomeFeed from '../components/home/HomeFeed.svelte';
+import HomeFirstRaids from '../components/home/HomeFirstRaids.svelte';
+import HomeGrid from '../components/home/HomeGrid.svelte';
+import HomeHowToStart from '../components/home/HomeHowToStart.svelte';
 import HomeSignedIn from '../components/home/HomeSignedIn.svelte';
 import activeBuild from '../data/active-build.json';
 
 const now = new Date();
 const raidsOpen = raidsOpenIso(now);
-const raidsLine = raidsOpen === null ? null : homeCopy.firstRaids(shortDate(raidsOpen.slice(0, 10)));
 const guides = (await getCollection('guides')).map((g) => ({
   classSlug: g.data.classSlug,
   spec: g.data.spec,
@@ -45,43 +42,26 @@ const floor = buildFloor(floorInputs(guides, changelog, now));
 const signInHref = battlenetStartUrl('/account?signed_in=1');
 ---
 
-<Base title={SITE_NAME} description={HOME_DESCRIPTION} path="/" wide>
+<Base title={SITE_NAME} description={HOME_DESCRIPTION} path="/" wide art="hero">
   <main id="main" tabindex="-1" data-testid="home">
     <div class="home-out" data-testid="home-signed-out">
-      <Page layout="ledger">
-        <PageHeader slot="header" title={homeCopy.signedOutTitle}>
-          <Fragment slot="meta">
-            <span>{homeCopy.signedOutMeta}</span>
-            {raidsLine !== null && <span data-testid="home-raids-line">{raidsLine}</span>}
-          </Fragment>
-          <Button slot="actions" tone="primary" href={signInHref} testid="home-sign-in">
-            {homeCopy.signIn}
-          </Button>
-        </PageHeader>
-        <HomeDeletedNotice client:idle-after-load />
-        <HomeClassPicker />
-      </Page>
-      <HomeCountdowns client:idle-after-load {raidsOpen} build={activeBuild.build} />
-      <Page layout="split">
+      <PageHeader title={homeCopy.pickClass} art="hero">
+        <Button slot="actions" tone="primary" href={signInHref} testid="home-sign-in">
+          {homeCopy.signIn}
+        </Button>
+      </PageHeader>
+      <HomeDeletedNotice client:idle-after-load />
+      <HomeGrid>
+        <HomeClassPicker slot="lead" headless />
         <HomeFeed
           client:idle-after-load
           signedIn={false}
           floor={floor.slice(0, FLOOR_MIN)}
           build={activeBuild.build}
         />
-        <Fragment slot="rail">
-          <Section title={homeCopy.howToStart} testid="home-how-to-start">
-            <Row
-              rank="1"
-              title={homeCopy.steps[0].title}
-              sub={homeCopy.steps[0].sub}
-              href={signInHref}
-              open
-            />
-            <Row rank="2" title={homeCopy.steps[1].title} sub={homeCopy.steps[1].sub} href="/setup" open />
-          </Section>
-        </Fragment>
-      </Page>
+        <HomeHowToStart slot="rail" {signInHref} />
+        <HomeFirstRaids slot="rail" client:idle-after-load {raidsOpen} build={activeBuild.build} />
+      </HomeGrid>
     </div>
     <HomeSignedIn client:idle-after-load {floor} {raidsOpen} />
   </main>
