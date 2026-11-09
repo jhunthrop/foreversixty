@@ -1834,6 +1834,9 @@
     <string name="shared_home_vsWorn">vs your %1$s</string>
     <string name="shared_home_vsEmpty">empty slot</string>
     <string name="shared_home_noCharacter">No character yet. Battle.net lists a character after you play it and log out.</string>
+    <string name="shared_home_noCharacterYet">No character yet</string>
+    <string name="shared_home_pasteAction">Paste export</string>
+    <string name="shared_home_setupAction">Get set up</string>
     <string name="shared_home_signedInAs">Signed in as %1$s</string>
     <string name="shared_home_getIn">Get your character in</string>
     <string name="shared_home_checkAgain">Check again</string>
@@ -1878,7 +1881,7 @@
     <string name="shared_home_movers">Top movers</string>
     <string name="shared_home_topThree">Top 3 for %1$s, %2$s</string>
     <string name="shared_home_rankings">Rankings</string>
-    <string name="shared_feed_title">Forever right now</string>
+    <string name="shared_feed_title">Latest on Forever</string>
     <string name="shared_feed_filterLabel">Show</string>
     <string name="shared_feed_filter_all">All</string>
     <string name="shared_feed_filter_spec">Your spec</string>

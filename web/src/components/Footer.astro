@@ -1,54 +1,35 @@
 ---
 // web/src/components/Footer.astro
-// Round 5's compact footer (design/specs/2026-11-09-directions.md, coordinator ruling
-// 2026-11-09): their brown-black under a black rule; one row of our painted seal and name in
-// Marcellus, Get set up, Premium, the Discord and Report a bug; then the legal links, the
-// not-affiliated sentence and the operator line. Copy lives in lib/footer-copy.ts. Every link is a
-// 44 px target on a phone (tenet 4).
-import {
-  FOOTER_DISCORD_BUTTON,
-  FOOTER_LEGAL_LINKS,
-  FOOTER_LINKS,
-  FOOTER_REPORT_BUG_BUTTON,
-  FOOTER_TRADEMARK,
-  footerOperatorLine,
-} from '../lib/footer-copy';
+// Round 5's footer, one row as the mock draws it (design/mocks/directions/png/g-home-1440.png):
+// their brown-black under a black rule; our painted seal and name in Marcellus, the seven links,
+// and at the right the fan-made line. The full trademark sentence and the operator line are on
+// /about and /terms (lib/legal-notice.ts). Copy lives in lib/footer-copy.ts. Below lg the row
+// wraps: the seal and name, the links, then the line. Every link is a 44 px target on a phone
+// (tenet 4).
+import { FOOTER_FAN_LINE, FOOTER_LINKS } from '../lib/footer-copy';
 import Seal from './Seal.astro';
 import { REGION } from '../lib/ui/regions';
 import { SITE_NAME } from '../lib/seo';
 
 const LINK_CLASS =
-  'inline-flex items-center min-h-11 lg:min-h-8 text-[14px] text-strong/70 transition-colors duration-[120ms] hover:text-gold active:text-gold-hover';
-const SITE_LINKS = [...FOOTER_LINKS, FOOTER_DISCORD_BUTTON, FOOTER_REPORT_BUG_BUTTON];
+  'inline-flex items-center min-h-11 lg:min-h-8 text-[14px] text-strong/80 transition-colors duration-[120ms] hover:text-gold active:text-gold-hover';
 ---
 
 <footer data-region={REGION.siteFooter} class="bg-foot mt-auto border-t border-black">
-  <div class="page-column px-[18px]">
-    <div class="flex flex-wrap items-center gap-x-8 gap-y-3 pt-7 pb-4 lg:pt-8">
-      <a href="/" class="inline-flex items-center gap-3.5">
-        <Seal size={88} class="size-16 lg:size-[88px]" />
-        <span class="font-title text-cream-2 text-[24px] leading-none">{SITE_NAME}</span>
-      </a>
-      <nav aria-label="Footer" class="flex flex-wrap gap-x-6">
-        {SITE_LINKS.map((link) => (
-          <a href={link.href} class={LINK_CLASS}>
-            {link.label}
-          </a>
-        ))}
-      </nav>
-    </div>
-    <div class="flex flex-col gap-1 pt-3 pb-7 lg:flex-row lg:items-center lg:justify-between">
-      <nav aria-label="Legal" class="-mx-3.5 flex lg:order-last lg:-mx-2">
-        {FOOTER_LEGAL_LINKS.map((link) => (
-          <a href={link.href} class={`${LINK_CLASS} px-3.5 text-[13px] lg:px-2`}>
-            {link.label}
-          </a>
-        ))}
-      </nav>
-      <div class="text-muted text-[13px] leading-5">
-        <p class="[text-wrap:pretty]">{FOOTER_TRADEMARK}</p>
-        <p>{footerOperatorLine(new Date().getFullYear())}</p>
-      </div>
-    </div>
+  <div class="page-column flex flex-wrap items-center gap-x-8 gap-y-3 px-[18px] pt-7 pb-8 lg:flex-nowrap lg:py-8">
+    <a href="/" class="inline-flex shrink-0 items-center gap-3.5">
+      <Seal size={88} class="size-16 lg:size-[88px]" />
+      <span class="font-title text-cream-2 text-[24px] leading-none">{SITE_NAME}</span>
+    </a>
+    <nav aria-label="Footer" class="flex flex-wrap gap-x-6 lg:gap-x-6">
+      {FOOTER_LINKS.map((link) => (
+        <a href={link.href} class={LINK_CLASS}>
+          {link.label}
+        </a>
+      ))}
+    </nav>
+    <p class="text-muted basis-full text-[13px] leading-5 lg:ml-auto lg:basis-auto lg:text-right">
+      {FOOTER_FAN_LINE}
+    </p>
   </div>
 </footer>

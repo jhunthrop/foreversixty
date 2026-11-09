@@ -24,6 +24,12 @@ export const sharedHomeVsWorn = 'vs your {name}';
 export const sharedHomeVsEmpty = 'empty slot';
 /** No character yet. Battle.net lists a character after you play it and log out. */
 export const sharedHomeNoCharacter = 'No character yet. Battle.net lists a character after you play it and log out.';
+/** No character yet */
+export const sharedHomeNoCharacterYet = 'No character yet';
+/** Paste export */
+export const sharedHomePasteAction = 'Paste export';
+/** Get set up */
+export const sharedHomeSetupAction = 'Get set up';
 /** Signed in as {tag} */
 export const sharedHomeSignedInAs = 'Signed in as {tag}';
 /** Get your character in */

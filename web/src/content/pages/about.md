@@ -12,6 +12,6 @@ Forever Sixty helps you play your class better in World of Warcraft: Forever. It
 
 Every page says when it was last updated, under its title. Where a fact comes from is shown where it matters: a source pill on each news row, a Sources list at the foot of a page, and a pill beside any claim that only one outlet has reported. The pill says whether it comes from Blizzard, from the game client, from player reports, or from this site's own work.
 
-The site is not affiliated with or endorsed by Blizzard Entertainment.
+Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc. Forever Sixty is a registered trade name of Commish LLC. © Commish LLC.
 
 To report an error, use Report a bug in the footer. To talk about a guide or offer to help write one, join the Discord from the footer.

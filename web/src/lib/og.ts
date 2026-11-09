@@ -1,9 +1,11 @@
 // web/src/lib/og.ts
 // The link preview (round 5, design/specs/2026-11-09-directions.md "Link preview"): the owner's
-// road-and-glow art under the night veil, our painted seal and "Forever Sixty" in Marcellus, the
-// page's title, its kicker, and the fan-made line, so a shared link can never read as an official
-// promo. Satori cannot read CSS custom properties, so the few colours it paints are the tokens'
-// values, named after them (design/tokens/tokens.json, color.forever and color.base).
+// road-and-glow art under the night veil, our painted seal and "Forever Sixty" in Marcellus, and
+// the fan-made line, so a shared link can never read as an official promo. Home's card is the
+// brand card (design/mocks/directions/png/og-home.png): the seal beside the name, the fan-made line
+// under it, at the foot of the road. Every other card leads with the seal and name, then the page's
+// title and its kicker on the fan-made line. Satori cannot read CSS custom properties, so the few
+// colours it paints are the tokens' values, named after them (design/tokens/tokens.json).
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import path from 'node:path';
@@ -34,12 +36,23 @@ const INK = {
   veil: 'rgba(7, 29, 46, 0.42)', // the preview's night veil (art_crops.OG_VEIL)
 } as const;
 
+/** The seal's size on a page card and on the brand card. */
+const SEAL_PX = { page: 88, brand: 116 } as const;
+
 /** Copy on every card: the fan-made line (owner rule: never mistakable for an official page). */
 export const OG_FAN_LINE = 'Fan-made player tool for WoW: Forever';
+
+/** The site's own name, which every card carries. */
+export const OG_BRAND = 'Forever Sixty';
 
 export interface OgContent {
   title: string;
   kicker: string;
+}
+
+/** A card titled with the site's own name (home's) is the brand card: the name is never drawn twice. */
+export function ogLayout({ title }: OgContent): 'brand' | 'page' {
+  return title === OG_BRAND ? 'brand' : 'page';
 }
 
 const text = (fontSize: number, color: string, children: string, extra: Record<string, unknown> = {}) => ({
@@ -47,7 +60,41 @@ const text = (fontSize: number, color: string, children: string, extra: Record<s
   props: { style: { fontSize, color, ...extra }, children },
 });
 
-export async function renderOg({ title, kicker }: OgContent): Promise<Uint8Array<ArrayBuffer>> {
+const box = (style: Record<string, unknown>, children: unknown[]) => ({
+  type: 'div',
+  props: { style: { display: 'flex', ...style }, children },
+});
+
+const sealImage = async (px: number) => ({ type: 'img', props: { src: await seal, width: px, height: px } });
+
+async function pageCard({ title, kicker }: OgContent): Promise<unknown[]> {
+  return [
+    box({ alignItems: 'center', gap: 22 }, [
+      await sealImage(SEAL_PX.page),
+      text(40, INK.cream2, OG_BRAND, { fontFamily: 'Marcellus' }),
+    ]),
+    box({ flexDirection: 'column' }, [
+      text(76, INK.cream, title, { fontFamily: 'Marcellus', lineHeight: 1.05, letterSpacing: -1 }),
+      // No eyebrow over the title: the page's kind rides the fan-made line (ai-slop, round 5).
+      text(24, INK.text, `${kicker} · ${OG_FAN_LINE}`, { marginTop: 22 }),
+    ]),
+  ];
+}
+
+async function brandCard(): Promise<unknown[]> {
+  return [
+    box({ flexGrow: 1 }, []),
+    box({ alignItems: 'center', gap: 26 }, [
+      await sealImage(SEAL_PX.brand),
+      box({ flexDirection: 'column' }, [
+        text(64, INK.cream2, OG_BRAND, { fontFamily: 'Marcellus', lineHeight: 1.1, letterSpacing: -1 }),
+        text(24, INK.text, OG_FAN_LINE, { marginTop: 8 }),
+      ]),
+    ]),
+  ];
+}
+
+export async function renderOg(content: OgContent): Promise<Uint8Array<ArrayBuffer>> {
   const svg = await satori(
     {
       type: 'div',
@@ -63,29 +110,7 @@ export async function renderOg({ title, kicker }: OgContent): Promise<Uint8Array
           backgroundSize: '1200px 630px',
           fontFamily: 'Open Sans',
         },
-        children: [
-          {
-            type: 'div',
-            props: {
-              style: { display: 'flex', alignItems: 'center', gap: 22 },
-              children: [
-                { type: 'img', props: { src: await seal, width: 88, height: 88 } },
-                text(40, INK.cream2, 'Forever Sixty', { fontFamily: 'Marcellus' }),
-              ],
-            },
-          },
-          {
-            type: 'div',
-            props: {
-              style: { display: 'flex', flexDirection: 'column' },
-              children: [
-                text(76, INK.cream, title, { fontFamily: 'Marcellus', lineHeight: 1.05, letterSpacing: -1 }),
-                // No eyebrow over the title: the page's kind rides the fan-made line (ai-slop, round 5).
-                text(24, INK.text, `${kicker} · ${OG_FAN_LINE}`, { marginTop: 22 }),
-              ],
-            },
-          },
-        ],
+        children: ogLayout(content) === 'brand' ? await brandCard() : await pageCard(content),
       },
     },
     {
