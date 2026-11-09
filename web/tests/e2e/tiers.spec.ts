@@ -2,6 +2,7 @@
 // The tier list (directions mock g-tiers, round 5, over the rules of 2026-10-09-tier-list.md): the
 // three role lists against the published BiS files, the faction choice, the S to D letter column,
 // the spec panel signed out and in, keyboard on the control bar and a row, and the phone.
+import { readFileSync } from 'node:fs';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import {
@@ -13,7 +14,22 @@ import {
   type TierRole,
 } from './support/tier-list';
 import { bisBand } from './support/bis-file';
-import { specFullName } from '../../src/lib/tiers/tier-copy';
+
+/** The catalogue's full spec name (web/src/data/specs.json), which every tier row links by. */
+const SPEC_NAMES = new Map(
+  (
+    JSON.parse(readFileSync(new URL('../../src/data/specs.json', import.meta.url), 'utf8')) as {
+      class_slug: string;
+      spec_slug: string;
+      full_name: string;
+    }[]
+  ).map((spec) => [`${spec.class_slug}/${spec.spec_slug}`, spec.full_name]),
+);
+function fullName(classSlug: string, specSlug: string): string {
+  const name = SPEC_NAMES.get(`${classSlug}/${specSlug}`);
+  if (!name) throw new Error(`no catalogue spec ${classSlug}/${specSlug}`);
+  return name;
+}
 
 const ROLE_PATH: Record<TierRole, string> = { dps: '/tiers', tank: '/tiers/tank', healer: '/tiers/healer' };
 const PHONE = { width: 390, height: 844 };
@@ -81,9 +97,7 @@ for (const role of ['dps', 'tank', 'healer'] as const) {
         'href',
         new RegExp(`^/bis/${row.entry.class_slug}/${row.entry.spec_slug}/60`),
       );
-      await expect(links).toContainText(
-        specFullName({ classSlug: row.entry.class_slug, specSlug: row.entry.spec_slug }),
-      );
+      await expect(links).toContainText(fullName(row.entry.class_slug, row.entry.spec_slug));
     }
   });
 }
