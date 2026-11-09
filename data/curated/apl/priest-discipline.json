@@ -2179,7 +2179,16 @@
     "13": "on a party member below 30% while mana holds",
     "14": "when 3 party members are below 85%",
     "15": "on the tank below 80% while mana % is over boss health %",
-    "16": "on the tank below 80% until Greater Heal at level 40",
+    "16": [
+      {
+        "from_level": 1,
+        "text": "on the tank below 80%"
+      },
+      {
+        "from_level": 40,
+        "text": "on the tank below 80% until Greater Heal at level 40"
+      }
+    ],
     "17": "on the tank below 80% while mana % is over boss health %",
     "18": "on a party member below 65% while mana holds",
     "19": "on a party member below 65% while mana holds",

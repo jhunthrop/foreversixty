@@ -295,11 +295,33 @@
   },
   "panel_when": {
     "1": "when the fight ends before a Wrath finishes",
-    "2": "when the fight ends before a Starfire finishes",
+    "2": [
+      {
+        "from_level": 1,
+        "text": "in the fight's last 3.5 s"
+      },
+      {
+        "from_level": 20,
+        "text": "when the fight ends before a Starfire finishes"
+      }
+    ],
     "3": "when Moonfire is not ticking on the target",
     "4": "when Insect Swarm is not ticking on the target",
     "5": "when you have no Eclipse charge",
-    "6": "when mana % is under boss health % and Innervate is down",
+    "6": [
+      {
+        "from_level": 1,
+        "text": "as your filler"
+      },
+      {
+        "from_level": 20,
+        "text": "when mana % is under boss health %"
+      },
+      {
+        "from_level": 40,
+        "text": "when mana % is under boss health % and Innervate is down"
+      }
+    ],
     "7": "as your filler"
   }
 }

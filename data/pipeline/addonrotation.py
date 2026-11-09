@@ -39,7 +39,7 @@ from typing import Any
 
 from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names, resolve_icon
-from pipeline.models import AddonRotationBand, AddonRotationLine, check_panel_when
+from pipeline.models import AddonRotationBand, AddonRotationLine, PanelWhen, check_panel_when
 from pipeline.spelltext import SpellText, load_spell_text
 from pipeline.talent_levels import (
     first_point_levels,
@@ -210,10 +210,12 @@ def _collect_cast_lines(action: dict, notes: str, lines: list[dict], line: int) 
                 _collect_cast_lines(step, notes, lines, line)
 
 
-def _cast_lines(rotation: dict, panel_when: Mapping[int, str] = MappingProxyType({})) -> list[dict]:
+def _cast_lines(
+    rotation: dict, panel_when: Mapping[int, tuple[PanelWhen, ...]] = MappingProxyType({})
+) -> list[dict]:
     """Every priority-list cast, in the curated file's own order, with the
     0-based index of the entry it sits under (a rank choice's "lines"), that
-    entry's condition (`_level_allows`) and its panel line (`panel_when`, the
+    entry's condition (`_level_allows`) and its panel lines (`panel_when`, the
     curated file's top-level map; None where the entry has none). A sequence's
     steps share their entry's line, as they share its notes."""
     lines: list[dict] = []
@@ -227,7 +229,7 @@ def _cast_lines(rotation: dict, panel_when: Mapping[int, str] = MappingProxyType
     return lines
 
 
-def _panel_when(curated: dict, apl_path: Path) -> dict[int, str]:
+def _panel_when(curated: dict, apl_path: Path) -> dict[int, tuple[PanelWhen, ...]]:
     """The curated file's `panel_when`, checked (`check_panel_when`), by step index."""
     raw = curated.get("panel_when", {})
     if not isinstance(raw, dict):
@@ -239,7 +241,7 @@ def _panel_when(curated: dict, apl_path: Path) -> dict[int, str]:
 
 
 def _check_panel_when_steps(
-    panel_when: Mapping[int, str], casts: list[dict], apl_path: Path
+    panel_when: Mapping[int, tuple[PanelWhen, ...]], casts: list[dict], apl_path: Path
 ) -> None:
     """Every `panel_when` key names a priority-list step that casts a spell: a line on any
     other step (out of range, or an autocast/seal helper) would never print."""
@@ -251,11 +253,21 @@ def _check_panel_when_steps(
         )
 
 
-def _condition_of(cast: dict) -> str:
-    """A line's panel condition: its curated `panel_when` line verbatim, else the
-    first sentence of its step's note (`_one_line`)."""
+def _condition_of(cast: dict, level: int, spec: str) -> str:
+    """A line's panel condition at `level`: its curated `panel_when` line verbatim (the
+    variant with the highest `from_level` at or below `level`), else the first sentence of
+    its step's note (`_one_line`). A step whose first variant starts above a band it prints
+    in is refused: that band would have no line."""
     when = cast.get("when")
-    return when if when is not None else _one_line(cast["notes"])
+    if when is None:
+        return _one_line(cast["notes"])
+    lines = [variant.text for variant in when if variant.from_level <= level]
+    if not lines:
+        raise AddonRotationError(
+            f"{spec}: panel_when[{cast['line']}] starts at level {when[0].from_level}, "
+            f"after the step's band at {level}"
+        )
+    return lines[-1]
 
 
 #: The engine's APLValueCompare ops a currentLevel clause can use.
@@ -394,6 +406,22 @@ def _talents_allow(
     starts = all(level >= _rank_floor(g, level, rank_levels) for g in _required_known(condition))
     ends = any(g in rank_levels and level >= rank_levels[g] for g in _excluded_ranks(condition))
     return starts and not ends
+
+
+def _trained_allow(
+    condition: object,
+    level: int,
+    families: Mapping[str, list[tuple[int, int]]],
+    id_to_family: Mapping[int, str],
+) -> bool:
+    """False while `condition` needs a trained spell known (a top-level spellIsKnown or
+    auraIsKnown on a spell a rank family tracks) that the character learns after `level`:
+    the engine's spellIsKnown is false until the first rank is learned."""
+    for spell_id, _ in _required_known(condition):
+        family = id_to_family.get(spell_id)
+        if family is not None and families[family] and families[family][0][0] > level:
+            return False
+    return True
 
 
 def apl_cast_spell_ids(rotation: object) -> set[int]:
@@ -649,6 +677,7 @@ def build_rotation(
             for cast in casts
             if _level_allows(cast.get("condition"), level)
             and _talents_allow(cast.get("condition"), level, rank_levels)
+            and _trained_allow(cast.get("condition"), level, families, id_to_family)
             and (line := _line_at(context, cast, level)) is not None
         ]
         if level in LEVEL_BANDS or not bands or lines != bands[-1].lines:
@@ -695,7 +724,7 @@ def _line_at(context: _SpecContext, cast: dict, level: int) -> AddonRotationLine
     return AddonRotationLine(
         spell_id=resolved_id,
         name=name,
-        condition=_condition_of(cast),
+        condition=_condition_of(cast, level, context.spec),
         icon=_resolve_icon(resolved_id, context.icon_of),
         race_spell_ids=_race_ids(pick, ranks, resolved_id),
     )

@@ -586,10 +586,37 @@
     "2": "on cooldown, from 3 s into the fight",
     "3": "on cooldown, from 3 s into the fight",
     "4": "while Presence of Mind is up",
-    "5": "while Presence of Mind is up, before Pyroblast at level 54",
-    "6": "while Presence of Mind is up and Arcane Wrath is not ready",
+    "5": [
+      {
+        "from_level": 1,
+        "text": "while Presence of Mind is up"
+      },
+      {
+        "from_level": 57,
+        "text": "while Presence of Mind is up, until you have Pyroblast"
+      }
+    ],
+    "6": [
+      {
+        "from_level": 1,
+        "text": "while Presence of Mind is up"
+      },
+      {
+        "from_level": 44,
+        "text": "while Presence of Mind is up and Arcane Wrath is not ready"
+      }
+    ],
     "7": "when Missile Barrage procs",
-    "8": "until you have both ranks of Missile Barrage",
+    "8": [
+      {
+        "from_level": 1,
+        "text": "as your filler"
+      },
+      {
+        "from_level": 21,
+        "text": "until you have both ranks of Missile Barrage"
+      }
+    ],
     "9": "at 3 Heating Up stacks",
     "10": "on cooldown, once you have Heating Up",
     "11": "at 3 Arcane Blast stacks",

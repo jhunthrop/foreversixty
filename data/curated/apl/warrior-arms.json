@@ -372,7 +372,16 @@
     "6": "on cooldown",
     "7": "on cooldown, after Mortal Strike",
     "8": "when the target is below 20%",
-    "9": "between Mortal Strikes, with Improved Slam",
+    "9": [
+      {
+        "from_level": 1,
+        "text": "only when Slam casts in under 1.5 s"
+      },
+      {
+        "from_level": 42,
+        "text": "between Mortal Strikes, with Improved Slam"
+      }
+    ],
     "10": "when nothing else is ready, in Battle Stance",
     "11": "with Windfury Totem up, target above 25%",
     "12": "at 90 rage"

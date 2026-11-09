@@ -410,7 +410,16 @@
     "5": "when the target is below 20%",
     "6": "on cooldown",
     "7": "on cooldown",
-    "8": "on cooldown, after Whirlwind",
+    "8": [
+      {
+        "from_level": 1,
+        "text": "on cooldown"
+      },
+      {
+        "from_level": 36,
+        "text": "on cooldown, after Whirlwind"
+      }
+    ],
     "9": "on cooldown under 80 rage",
     "10": "the moment it lights up",
     "11": "at 60 rage while the target is above 25%"

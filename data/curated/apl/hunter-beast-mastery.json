@@ -341,6 +341,15 @@
     "4": "on cooldown, shared with Multi-Shot",
     "5": "on cooldown, above 25% mana",
     "6": "when Serpent Sting has under 1.5 s left",
-    "7": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less"
+    "7": [
+      {
+        "from_level": 1,
+        "text": "when nothing else is ready"
+      },
+      {
+        "from_level": 18,
+        "text": "when Multi-Shot is 1.5+ s from ready or mana is 25% or less"
+      }
+    ]
   }
 }

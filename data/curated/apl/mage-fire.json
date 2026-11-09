@@ -489,9 +489,27 @@
     "6": "while Missile Barrage is up",
     "7": "when you have no Arcane Blast buff",
     "8": "when Fire Blast is ready before Scorch finishes",
-    "9": "as your filler until you learn Arcane Blast",
+    "9": [
+      {
+        "from_level": 1,
+        "text": "as your filler"
+      },
+      {
+        "from_level": 54,
+        "text": "as your filler until you learn Arcane Blast"
+      }
+    ],
     "10": "as your filler once you have Arcane Blast",
-    "11": "as your filler until you have Heating Up",
+    "11": [
+      {
+        "from_level": 1,
+        "text": "as your filler"
+      },
+      {
+        "from_level": 30,
+        "text": "as your filler until you have Heating Up"
+      }
+    ],
     "12": "when you are out of mana"
   }
 }

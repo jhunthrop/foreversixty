@@ -291,7 +291,16 @@
     "2": "when Shadow Word: Pain is not on the target",
     "3": "when Vampiric Embrace is not on the target",
     "4": "when Devouring Plague is not ticking",
-    "5": "on cooldown, Inner Focus first",
+    "5": [
+      {
+        "from_level": 1,
+        "text": "on cooldown"
+      },
+      {
+        "from_level": 56,
+        "text": "on cooldown, Inner Focus first"
+      }
+    ],
     "6": "on cooldown",
     "7": "on cooldown",
     "8": "when nothing else is ready",

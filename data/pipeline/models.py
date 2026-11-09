@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, Literal
 
 from pydantic import (
@@ -1088,12 +1089,15 @@ class AplDocument(BaseModel):
     #: target is below 20%", "on cooldown". Top level for the same reason as `level_notes`:
     #: the engine's APLListItem rejects any other key on a step. A step with no line here
     #: falls back to its note's first sentence (pipeline.addonrotation). The step's `notes`
-    #: stay the guides' prose; this is only the panel's line.
-    panel_when: dict[str, str] = {}
+    #: stay the guides' prose; this is only the panel's line. A value is one line for every
+    #: level, or level-scoped variants ([{"from_level": 1, "text": ...}, {"from_level": 18,
+    #: "text": ...}]) where a clause names a spell the character learns later
+    #: (pipeline.panelnames).
+    panel_when: dict[str, str | list[dict]] = {}
 
     @field_validator("panel_when")
     @classmethod
-    def _check_panel_when(cls, value: dict[str, str]) -> dict[str, str]:
+    def _check_panel_when(cls, value: dict[str, str | list[dict]]) -> dict[str, str | list[dict]]:
         check_panel_when(value)
         return value
 
@@ -1104,27 +1108,78 @@ PANEL_WHEN_MAX_CHARS = 60
 PANEL_WHEN_FORBIDDEN = ("\u2014",)
 
 
-def check_panel_when(lines: dict[str, str]) -> dict[int, str]:
-    """`panel_when` keyed by step index, or ValueError naming the first bad entry: a key
-    that is not a step index, or a line that is empty, padded, over PANEL_WHEN_MAX_CHARS or
-    holding an em dash."""
-    checked: dict[int, str] = {}
-    for key, line in lines.items():
+@dataclass(frozen=True)
+class PanelWhen:
+    """One panel condition line and the first level it prints at."""
+
+    from_level: int
+    text: str
+
+
+#: The level cap: a variant's `from_level` is a level a character can be.
+PANEL_WHEN_MAX_LEVEL = 60
+
+#: The keys of one level-scoped `panel_when` variant.
+PANEL_WHEN_VARIANT_KEYS = frozenset({"from_level", "text"})
+
+
+def check_panel_when(lines: dict[str, str | list[dict]]) -> dict[int, tuple[PanelWhen, ...]]:
+    """`panel_when` keyed by step index, each step's lines in ascending `from_level` (a plain
+    string is one line from level 1), or ValueError naming the first bad entry: a key that is
+    not a step index, a variant list that is empty, malformed or not strictly ascending, or a
+    line that is empty, padded, over PANEL_WHEN_MAX_CHARS or holding an em dash."""
+    checked: dict[int, tuple[PanelWhen, ...]] = {}
+    for key, value in lines.items():
         if not key.isdigit():
             raise ValueError(f"panel_when key {key!r} is not a priorityList index")
-        if not isinstance(line, str) or not line.strip():
-            raise ValueError(f"panel_when[{key}] is empty")
-        if line != line.strip():
-            raise ValueError(f"panel_when[{key}] {line!r} has leading or trailing space")
-        if len(line) > PANEL_WHEN_MAX_CHARS:
-            raise ValueError(
-                f"panel_when[{key}] {line!r} is {len(line)} characters; "
-                f"the panel line is at most {PANEL_WHEN_MAX_CHARS}"
-            )
-        if any(mark in line for mark in PANEL_WHEN_FORBIDDEN):
-            raise ValueError(f"panel_when[{key}] {line!r} has an em dash")
-        checked[int(key)] = line
+        variants = _panel_when_variants(key, value)
+        for variant in variants:
+            _check_panel_line(key, variant.text)
+        levels = [variant.from_level for variant in variants]
+        if levels != sorted(set(levels)):
+            raise ValueError(f"panel_when[{key}] from_level {levels} is not strictly ascending")
+        checked[int(key)] = variants
     return checked
+
+
+def _panel_when_variants(key: str, value: object) -> tuple[PanelWhen, ...]:
+    """One step's `panel_when` value as its variants: a string is one line from level 1."""
+    if isinstance(value, str):
+        return (PanelWhen(1, value),)
+    if not isinstance(value, list) or not value:
+        raise ValueError(f"panel_when[{key}] is empty")
+    variants = []
+    for variant in value:
+        if not isinstance(variant, dict) or set(variant) != PANEL_WHEN_VARIANT_KEYS:
+            raise ValueError(
+                f"panel_when[{key}] variant {variant!r} needs exactly from_level and text"
+            )
+        level = variant["from_level"]
+        if (
+            isinstance(level, bool)
+            or not isinstance(level, int)
+            or not 1 <= level <= PANEL_WHEN_MAX_LEVEL
+        ):
+            raise ValueError(
+                f"panel_when[{key}] from_level {level!r} is not a level 1 to {PANEL_WHEN_MAX_LEVEL}"
+            )
+        variants.append(PanelWhen(level, variant["text"]))
+    return tuple(variants)
+
+
+def _check_panel_line(key: str, line: object) -> None:
+    """ValueError when one panel line is empty, padded, too long or holds an em dash."""
+    if not isinstance(line, str) or not line.strip():
+        raise ValueError(f"panel_when[{key}] is empty")
+    if line != line.strip():
+        raise ValueError(f"panel_when[{key}] {line!r} has leading or trailing space")
+    if len(line) > PANEL_WHEN_MAX_CHARS:
+        raise ValueError(
+            f"panel_when[{key}] {line!r} is {len(line)} characters; "
+            f"the panel line is at most {PANEL_WHEN_MAX_CHARS}"
+        )
+    if any(mark in line for mark in PANEL_WHEN_FORBIDDEN):
+        raise ValueError(f"panel_when[{key}] {line!r} has an em dash")
 
 
 class SpellEffectConstant(BaseModel):

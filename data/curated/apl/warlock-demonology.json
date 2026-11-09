@@ -364,7 +364,16 @@
     "3": "when Curse of the Elements is not on the target",
     "4": "when Corruption is not on the target",
     "5": "when Bane of Doom is not on the target, with 60+ s left",
-    "6": "when no Bane is on the target",
+    "6": [
+      {
+        "from_level": 1,
+        "text": "when Bane of Agony is not on the target"
+      },
+      {
+        "from_level": 60,
+        "text": "when neither Bane of Agony nor Bane of Doom is up"
+      }
+    ],
     "7": "when Immolate has under 3 s left",
     "8": "as your filler",
     "9": "when you are out of mana and cannot Life Tap"

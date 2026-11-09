@@ -626,10 +626,28 @@
   "panel_when": {
     "1": "at 3 combo points or fewer, or under 50 energy",
     "2": "on cooldown at 4 combo points or fewer",
-    "3": "after every Ghostly Strike, at 4 combo points or fewer",
+    "3": [
+      {
+        "from_level": 1,
+        "text": "from Stealth, at 4 combo points or fewer"
+      },
+      {
+        "from_level": 26,
+        "text": "after every Ghostly Strike, at 4 combo points or fewer"
+      }
+    ],
     "4": "at 4 combo points when Rupture is not ticking",
     "5": "at 4 combo points while Rupture is ticking",
-    "6": "at 3 combo points while Rupture is ticking",
+    "6": [
+      {
+        "from_level": 1,
+        "text": "at 3 combo points while Slice and Dice is up"
+      },
+      {
+        "from_level": 20,
+        "text": "at 3 combo points while Rupture is ticking"
+      }
+    ],
     "7": "at 3 combo points when it has under 3 s left",
     "8": "as your builder, at 4 combo points or fewer",
     "9": "as your builder, from behind",

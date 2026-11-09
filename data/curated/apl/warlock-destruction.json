@@ -372,7 +372,16 @@
     "8": "when Immolate has under 6 s left",
     "9": "on cooldown",
     "10": "as your filler",
-    "11": "as your filler until Incinerate at level 40",
+    "11": [
+      {
+        "from_level": 1,
+        "text": "as your filler"
+      },
+      {
+        "from_level": 40,
+        "text": "as your filler until Incinerate at level 40"
+      }
+    ],
     "12": "when you are out of mana and cannot Life Tap"
   }
 }

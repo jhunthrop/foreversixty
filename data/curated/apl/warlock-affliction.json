@@ -426,12 +426,30 @@
     "3": "when Corruption is not on the target",
     "4": "when Bane of Doom is not on the target, with 60+ s left",
     "5": "right before Bane of Agony",
-    "6": "when no Bane is on the target",
+    "6": [
+      {
+        "from_level": 1,
+        "text": "when Bane of Agony is not on the target"
+      },
+      {
+        "from_level": 60,
+        "text": "when neither Bane of Agony nor Bane of Doom is up"
+      }
+    ],
     "7": "when Siphon Life is not on the target",
     "8": "when Immolate has under 3 s left",
     "9": "on a Shadow Trance proc",
     "10": "as your filler, with your DoTs up",
-    "11": "as your filler until Wrack at level 40",
+    "11": [
+      {
+        "from_level": 1,
+        "text": "as your filler"
+      },
+      {
+        "from_level": 40,
+        "text": "as your filler until Wrack at level 40"
+      }
+    ],
     "12": "when you are out of mana and cannot Life Tap"
   }
 }

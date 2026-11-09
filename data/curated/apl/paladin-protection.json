@@ -501,13 +501,49 @@
     "2": "below 25% health",
     "3": "below 20% health",
     "4": "below 70% health, Dwarf only",
-    "5": "under 2 s left on the seal, saving mana for Holy Shield",
+    "5": [
+      {
+        "from_level": 1,
+        "text": "under 2 s left on the seal"
+      },
+      {
+        "from_level": 30,
+        "text": "under 2 s left on the seal, saving mana for Holy Shield"
+      }
+    ],
     "6": "on cooldown",
     "7": "on cooldown",
-    "8": "on cooldown, saving mana for Holy Shield",
+    "8": [
+      {
+        "from_level": 1,
+        "text": "on cooldown"
+      },
+      {
+        "from_level": 30,
+        "text": "on cooldown, saving mana for Holy Shield"
+      }
+    ],
     "9": "on cooldown",
-    "10": "on cooldown, saving mana for Holy Shield",
-    "11": "on Undead and Demons, saving mana for Holy Shield",
+    "10": [
+      {
+        "from_level": 1,
+        "text": "on cooldown"
+      },
+      {
+        "from_level": 30,
+        "text": "on cooldown, saving mana for Holy Shield"
+      }
+    ],
+    "11": [
+      {
+        "from_level": 1,
+        "text": "on Undead and Demons"
+      },
+      {
+        "from_level": 30,
+        "text": "on Undead and Demons, saving mana for Holy Shield"
+      }
+    ],
     "12": "when mana lasts to the end of the fight, or below 35% health"
   }
 }

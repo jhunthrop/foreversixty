@@ -673,7 +673,16 @@
   "panel_when": {
     "1": "on cooldown",
     "2": "after the opening Crusader Judgement, with Unsealed Wrath",
-    "3": "after the opening Crusader Judgement, with no Unsealed Wrath",
+    "3": [
+      {
+        "from_level": 1,
+        "text": "after the opening Crusader Judgement"
+      },
+      {
+        "from_level": 40,
+        "text": "after the opening Crusader Judgement, with no Unsealed Wrath"
+      }
+    ],
     "4": "on cooldown against Undead and Demons",
     "5": "when the target is below 20%",
     "6": "at 3 Unsealed Wrath stacks while mana holds",
