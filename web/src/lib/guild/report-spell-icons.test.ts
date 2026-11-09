@@ -34,7 +34,15 @@ describe('spellIconStem', () => {
 });
 
 describe('spellIconOf', () => {
-  const iconOf = spellIconOf('1.60.1', TABLE, BY_NAME);
+  const iconOf = spellIconOf('1.60.1', TABLE, BY_NAME, true);
+
+  it("without the chain is the id table alone (the guild report's death causes)", () => {
+    const tableOnly = spellIconOf('1.60.1', TABLE, BY_NAME);
+    expect(tableOnly(133)).toBe('/data/1.60.1/icons/spell_fire_flamebolt.webp');
+    expect(tableOnly(0)).toBeNull();
+    expect(tableOnly(9)).toBeNull();
+    expect(tableOnly(11430, 'Slam')).toBeNull();
+  });
 
   it('is the build icon url, and the socket only before the tables load', () => {
     expect(iconOf(133)).toBe('/data/1.60.1/icons/spell_fire_flamebolt.webp');

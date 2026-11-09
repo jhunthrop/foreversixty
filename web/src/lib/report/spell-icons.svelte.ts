@@ -10,7 +10,7 @@ let table: Promise<SpellIconOf> | null = null;
 
 /** The active build's icon table, fetched on the first call. */
 export function reportSpellIcons(): Promise<SpellIconOf> {
-  table ??= loadSpellIcons(activeBuild.build).catch((error: unknown) => {
+  table ??= loadSpellIcons(activeBuild.build, { chain: true }).catch((error: unknown) => {
     table = null;
     throw error;
   });

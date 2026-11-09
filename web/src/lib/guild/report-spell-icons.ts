@@ -45,23 +45,33 @@ export function spellIconStem(
   );
 }
 
-/** The icon url of a spell in `build`, from its id table and its name table. */
+/** The icon url of a spell in `build`. With `chain` (the report) it goes down the whole chain and
+ *  is never null once loaded; without it (the guild report's death causes, as drawn) the id table
+ *  alone, null for an id it lacks. */
 export function spellIconOf(
   build: string,
   table: Readonly<Record<string, string>>,
   byName: Readonly<Record<string, string>> = {},
+  chain = false,
 ): SpellIconOf {
-  return (spellId, name, school) =>
-    spellId === null
-      ? null
-      : dataUrl(build, `icons/${spellIconStem(table, byName, spellId, name, school)}.webp`);
+  return (spellId, name, school) => {
+    if (spellId === null) return null;
+    if (!chain) {
+      const stem = table[String(spellId)];
+      return stem !== undefined && isRealIcon(stem) ? dataUrl(build, `icons/${stem}.webp`) : null;
+    }
+    return dataUrl(build, `icons/${spellIconStem(table, byName, spellId, name, school)}.webp`);
+  };
 }
 
 /** The one load: both tables, each optional (a build without them still draws the fallbacks). */
-export async function loadSpellIcons(build: string): Promise<SpellIconOf> {
+export async function loadSpellIcons(
+  build: string,
+  { chain = false }: { chain?: boolean } = {},
+): Promise<SpellIconOf> {
   const [table, byName] = await Promise.all([
     loadOptional<Record<string, string>>(dataUrl(build, 'spellicons.json'), {}),
     loadOptional<Record<string, string>>(dataUrl(build, 'spellicons-by-name.json'), {}),
   ]);
-  return spellIconOf(build, table, byName);
+  return spellIconOf(build, table, byName, chain);
 }

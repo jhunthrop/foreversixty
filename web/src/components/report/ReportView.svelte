@@ -1693,7 +1693,7 @@
   /** The tabs the sibling lane draws: their main content in the main column, This pull in the rail. */
   let spellIcon = $state<SpellIconOf>(NO_SPELL_ICONS);
   $effect(() => {
-    void loadSpellIcons(activeBuild.build).then((icons) => {
+    void loadSpellIcons(activeBuild.build, { chain: true }).then((icons) => {
       spellIcon = icons;
     });
   });
