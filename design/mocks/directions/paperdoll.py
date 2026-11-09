@@ -74,7 +74,7 @@ border-radius:0 0 10px 10px;box-shadow:inset 0 0 0 1px #000}
 .pdl .cell img{position:absolute;inset:3px;width:34px;height:34px;border:2px solid var(--qb,#000);border-radius:2px;box-sizing:border-box}
 .pdl .it.two .cell img{filter:grayscale(1) brightness(.55);border-color:#555}.pdl .it.sel .cell{outline:2px solid #f3eee2;outline-offset:1px}
 .pdl .it .n{display:block;font-weight:600;font-size:13px;line-height:16px}.pdl .it .s{display:block;font-size:12px;color:rgba(255,255,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pdl .hd .tb b{margin-left:auto;font:600 5cqw var(--body);color:#fff}.pdl .hd .tb b small{font-size:3.4cqw;color:rgba(255,255,255,.75)}.pdl .it .g{color:var(--gain,#32ae88);font-weight:700}.pdl .lead{padding:10px 12px;background:#2b1e12;border:2px solid #8a6a3a;border-top:0;font-size:14px}
-.pdl .tip{margin-top:10px}
+.pdl .tip{margin-top:10px}.pdl.nohd .ls{border-top:2px solid #8a6a3a;border-radius:var(--r-sm)}
 '''
 
 LIST_SLOTS = ['head', 'neck', 'shoulder', 'back', 'chest', 'wrist', 'hands', 'waist', 'legs', 'feet', 'finger1', 'finger2', 'trinket1', 'trinket2',
@@ -103,14 +103,14 @@ def _medallion_src(avatar: str) -> str:
 
 
 def frame(cells: dict, sel: str, two_hand: bool, title: str, sub: str, dps: str, centre: str,
-          avatar: str = '', render: str = '') -> str:
+          avatar: str = '', render: str = '', unit: str = 'DPS') -> str:
     """avatar and render: the character's Battle.net media URLs (referenced, never copied into the repo). The render stands
     behind the centre as the client's pane shows the model."""
     model = f'<i class="rd" style="--render:url({escape(render)})" aria-hidden="true"></i>' if render else ''
     slots = ''.join(slot_html(n, cells, sel, two_hand) for n in SPEC['slots'])
     return (f'<div class="pd" role="group" aria-label="{escape(title)} best in slot">{slots}'
             f'<span class="med" style="{_box(SPEC["medallion"])}"><img src="{_medallion_src(avatar)}" alt=""></span>'
-            f'<h1 class="tb" style="{_box(SPEC["title"])}">{escape(title)} <small>{sub}</small><b>{dps} <small>DPS</small></b></h1>'
+            f'<h1 class="tb" style="{_box(SPEC["title"])}">{escape(title)} <small>{sub}</small>{f"<b>{dps} <small>{unit}</small></b>" if dps else ""}</h1>'
             f'<div class="ctr{" model" if render else ""}" style="{_box(SPEC["centre"])}">{model}{centre}</div></div>')
 
 
@@ -122,7 +122,8 @@ def _gain(c: dict) -> str:
     return ' &middot; Worn' if g == 'worn' else f' &middot; <span class="g">{g} DPS</span>'
 
 
-def list_form(cells: dict, sel: str, two_hand: bool, title: str, dps: str, tip: str, lead: str = '', avatar: str = '') -> str:
+def list_form(cells: dict, sel: str, two_hand: bool, title: str, dps: str, tip: str, lead: str = '', avatar: str = '', unit: str = 'DPS',
+              head: bool = True) -> str:
     """Under MIN_FRAME_PX: the frame's header strip (medallion and title bar) and the slots as a two-column list."""
     items = []
     for n in LIST_SLOTS:
@@ -140,6 +141,9 @@ def list_form(cells: dict, sel: str, two_hand: bool, title: str, dps: str, tip: 
     hd_med = f'left:{m["x"]}%;top:{m["y"] / HEADER_SHARE:.2f}%;width:{m["w"]}%;height:{m["h"] / HEADER_SHARE:.2f}%'
     t = SPEC['title']  # the engraved bar, from the measured frame, in the strip's coordinates
     hd_tb = f'left:{t["x"]}%;top:{t["y"] / HEADER_SHARE:.2f}%;width:{t["w"]}%;height:{t["h"] / HEADER_SHARE:.2f}%'
-    return (f'<div class="pdl"><div class="hd"><span class="med" style="{hd_med}"><img src="{_medallion_src(avatar)}" alt=""></span>'
-            f'<h1 class="tb" style="{hd_tb}">{escape(title)}<b>{dps} <small>DPS</small></b></h1></div>'  # one line: the band and faction are the tabs above (reviews)
+    # one line: the band and faction are the tabs above (reviews); head=False drops the strip where the page band already
+    # names the spec and its figure (the sim's run)
+    hd = (f'<div class="hd"><span class="med" style="{hd_med}"><img src="{_medallion_src(avatar)}" alt=""></span>'
+          f'<h1 class="tb" style="{hd_tb}">{escape(title)}{f"<b>{dps} <small>{unit}</small></b>" if dps else ""}</h1></div>') if head else ''
+    return (f'<div class="pdl{"" if head else " nohd"}">{hd}'
             f'{f"<p class=lead>{lead}</p>" if lead else ""}<div class="ls">{"".join(items)}</div>{tip}</div>')
