@@ -1,23 +1,26 @@
 <!-- web/src/components/bis/BisSpecPage.svelte -->
-<!-- The Best in slot page (web layout spec 2026-11-05 §5): the page head with the set's figure,
-     the one control bar, the summary line with the By slot | Where to go toggle, the paperdoll on
-     its plate, What to stack, and the guide line. One island owns the state (band, faction,
-     preset, race, view, sources) from the URL; it is server-rendered at the default state so first
-     paint needs no script, and a deep link's non-default state is applied on mount behind
-     html[data-bis-pending] (geometry kept, content hidden) so nothing visibly swaps. -->
+<!-- The Best in slot page on the in-game paperdoll (design/specs/2026-11-09-directions.md,
+     Paperdoll and Best in slot): the band holds the nav and the one control bar; the frame's title
+     bar is the page's h1 (the spec, the band and faction, the set's figure), its centre the
+     selected slot's client tooltip, what it is worth and Open in the sim. Signed in, the
+     character's Battle.net render stands in the centre and those lines go in a bar under the frame.
+     Beside the frame: the set's figures (a tank, a healer), What to stack and Where to go; below
+     it the itinerary. Under 423 px the frame is its strip and two-column list. One island owns the
+     state (band, faction, preset, race, sources) from the URL; it is server-rendered at the
+     default state so first paint needs no script, and a deep link's non-default state is applied
+     on mount behind html[data-bis-pending] (geometry kept, content hidden) so nothing swaps. -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import Page from '../ui/Page.svelte';
-  import PageHeader from '../ui/PageHeader.svelte';
   import ControlBar from '../ui/ControlBar.svelte';
-  import Segmented from '../ui/Segmented.svelte';
+  import PaperdollFrame from '../ui/PaperdollFrame.svelte';
+  import ItemTooltip from '../ItemTooltip.svelte';
   import Plate from '../ui/Plate.svelte';
-  import Paperdoll from '../ui/Paperdoll.svelte';
-  import BisAnswer from './BisAnswer.svelte';
-  import BisSlotDetail from './BisSlotDetail.svelte';
   import BisSources from './BisSources.svelte';
-  import BisWeights from './BisWeights.svelte';
-  import { readBisPageData } from '../../lib/bis/page-registry';
+  import BisSlotLines from './BisSlotLines.svelte';
+  import BisSide from './BisSide.svelte';
+  import BisItinerary from './BisItinerary.svelte';
+  import { readBisPageData, readTooltipModels } from '../../lib/bis/page-registry';
   import { bandModelKey } from '../../lib/bis/model-key';
   import {
     defaultSources,
@@ -27,23 +30,23 @@
     withChange,
     type BisPageState,
   } from '../../lib/bis/page-state';
-  import { choiceWords, defaultRuleLine, setFigureFor, sourceChoiceFor } from '../../lib/bis/source-choice';
+  import { choiceWords, setFigureFor, sourceChoiceFor } from '../../lib/bis/source-choice';
   import {
     changedCount,
     dollCellsFor,
     dollSummary,
     filteredPicks,
     sourceCounts,
-    whereGroups,
     type DollCharacter,
   } from '../../lib/bis/doll-view';
+  import { itinerary, simWeightsHref, stackView } from '../../lib/bis/frame-view';
+  import { bisCopy } from '../../lib/bis/copy';
+  import { defaultSelection, type DollCell } from '../../lib/ui/paperdoll';
   import { BIS_SHOW_EVENT, takePendingShow, type BisShowDetail } from '../../lib/bis/show-event';
   import type { CompareSession } from '../../lib/bis/compare-session';
   import { readStoredSources, storeSources } from '../../lib/bis/source-store';
   import type { BisPresetId, Faction, SourceFilterKind } from '../../lib/bis/types';
   import type { ControlGroup, ControlOption } from '../../lib/ui/primitives';
-  import { SPECS } from '../../lib/sim/specs';
-  import { REGION } from '../../lib/ui/regions';
   import { bisContext, presetLabel } from '../../lib/bis/page-context';
   import { bandSlug, bisBandPath } from '../../lib/bis/band-path';
   import { bisSeoCopy } from '../../lib/bis/seo-copy';
@@ -63,11 +66,9 @@
     pathBand,
     pathPreRaid = false,
     preRaid,
-    crestSrc,
     crestColor,
     specOptions,
     raceOptions,
-    guideHref,
     dataHref,
   }: {
     spec: string;
@@ -79,16 +80,16 @@
     pathPreRaid?: boolean;
     /** The level 60 list holds no raid drop: its h1 says Pre-Raid (lib/bis/seo-copy.ts). */
     preRaid: boolean;
-    crestSrc: string;
+    /** The class colour, for the signed-in character's name in the centre. */
     crestColor: string;
     specOptions: readonly ControlOption[];
     raceOptions: Readonly<Record<Faction, readonly { value: string; label: string }[]>>;
-    guideHref: string;
     /** The page's full data (every band); the HTML carries only the default state's slice. */
     dataHref: string;
   } = $props();
 
   const inline = readBisPageData(spec);
+  const tooltips = readTooltipModels(spec);
   let data = $state.raw(inline);
   const context = $derived(bisContext(data, raceOptions, pathBand, pathPreRaid));
   /** A band's own page: the spec's path for its first band, else /bis/<class>/<spec>/<band>. */
@@ -133,7 +134,8 @@
   const changed = $derived(changedCount(model, picks));
   const deps = $derived({ items: data.items, unit: model.unit, character });
   const cells = $derived(dollCellsFor(model, deps, picks, choiceWords(state.sources, state.band)));
-  const groups = $derived(state.view === 'where' ? whereGroups(model, cells) : undefined);
+  const stops = $derived(itinerary(model, cells));
+  const stack = $derived(stackView(model));
   const figure = $derived(setFigureFor(model, state.sources, changed));
   const counts = $derived(sourceCounts(model));
   const preRaidView = $derived(isPreRaidView(state.band, state.sources));
@@ -147,14 +149,41 @@
   // The spec's full name, the catalogue's own ("Feral Druid (Bear)"): the h1, the list's label, the guide link.
   const fullName = $derived(specLabel(spec));
   const seoSubject = $derived({ fullName, preRaid: preRaid || preRaidView });
-  const rowsBySlot = $derived(new Map(model.rows.map((row) => [row.slot, row])));
-  const ruleLine = $derived(defaultRuleLine(state.sources, state.band));
-  const raceName = (faction: Faction, slug: string) =>
-    raceOptions[faction].find((option) => option.value === slug)?.label ?? slug;
-  const raceNote = $derived(
-    state.race === model.race ? undefined : `Picks simmed as ${raceName(state.faction, model.race)}`,
+  const notes = $derived(
+    [
+      model.weights.hitCap
+        ? { text: model.weights.hitCap.text, title: model.weights.hitCap.title, testid: 'bis-hit-cap' }
+        : undefined,
+      model.weights.expertiseCap
+        ? {
+            text: model.weights.expertiseCap.text,
+            title: model.weights.expertiseCap.title,
+            testid: 'bis-expertise-cap',
+          }
+        : undefined,
+    ].filter((note) => note !== undefined),
   );
-  const nextBand = $derived(data.bands[data.bands.indexOf(state.band) + 1]);
+  const factionWord = $derived(state.faction === 'horde' ? bisCopy.factionHorde : bisCopy.factionAlliance);
+  /** The selected slot, else the doll's default (the first upgrade, else the first pick). */
+  const shownSlot = $derived(
+    selected !== null && cells.some((cell) => cell.slot === selected) ? selected : defaultSelection(cells),
+  );
+  const preRaidAction = $derived.by(() => {
+    if (!preRaidToggle) return undefined;
+    const target = {
+      band: state.band,
+      sources: preRaidView ? defaultSources(state.band) : [...PRE_RAID_KINDS],
+    };
+    return {
+      label: preRaidView ? preRaidCopy.turnOff : preRaidCopy.turnOn,
+      href: stateHref(target),
+      onclick: (event: MouseEvent) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        whenReady(() => apply(withChange(state, { sources: target.sources }, context)));
+      },
+    };
+  });
 
   /** Fits "Night Elf"; the rare long race name ("High Order Skyborne") truncates in the field only. */
   const RACE_FIELD_PX = 112;
@@ -271,17 +300,31 @@
       compare?.stop();
     };
   });
-
-  /** The tallest answer variant measured at 1024 to 2000 px: a healer's figure with its metrics row
-   *  (183 px; its trust line wraps on the real run notes). Every spec of a class keeps its title and
-   *  control bar at the same y, so a class with a healer spec takes the healer floor; a class
-   *  without one keeps the mocks' 165 px. */
-  const HEAD_ROW_MIN_HEIGHT_DEFAULT = '165px';
-  const HEALER_HEAD_ROW_MIN_HEIGHT = '183px';
-  const HEAD_ROW_MIN_HEIGHT = SPECS.some((s) => s.class_slug === classSlug && s.role === 'healer')
-    ? HEALER_HEAD_ROW_MIN_HEIGHT
-    : HEAD_ROW_MIN_HEIGHT_DEFAULT;
 </script>
+
+{#snippet simLink()}
+  {#if model.answer.simHref}<a class="bis-sim-link" href={model.answer.simHref} data-testid="bis-sim-link"
+      >{bisCopy.openInSim} ›</a
+    >{/if}
+{/snippet}
+
+{#snippet centre(cell: DollCell | undefined, form: 'frame' | 'list')}
+  {@const shown = cell?.item ?? cell?.coveredBy}
+  {@const tip = shown ? tooltips.get(shown.id) : undefined}
+  {#if form === 'frame' && character?.render}
+    <p class="bis-who" style:--c={crestColor} data-testid="bis-who">
+      <b>{character.name}</b>
+      <small>{bisCopy.whoLine(character.level, character.raceClass)}</small>
+      <small class="bis-who-as">{bisCopy.asLastLoggedOut}</small>
+    </p>
+  {/if}
+  {#if tip}
+    <ItemTooltip model={tip} build={data.build} floating={false}>
+      {#snippet tail()}<BisSlotLines {cell} />{/snippet}
+    </ItemTooltip>
+  {/if}
+  {#if character === undefined}{@render simLink()}{/if}
+{/snippet}
 
 <div
   class="bis-root"
@@ -294,33 +337,6 @@
   data-testid="bis-page"
 >
   <Page layout="ledger" testid="bis-ledger">
-    {#snippet header()}
-      <PageHeader
-        title={bisSeoCopy.heading(seoSubject)}
-        tone={{ classSlug } as never}
-        minRowHeight={HEAD_ROW_MIN_HEIGHT}
-        testid="bis-page-head"
-      >
-        {#snippet crest()}
-          <img
-            src={crestSrc}
-            alt=""
-            width="56"
-            height="56"
-            class="bis-crest"
-            style={`--c: ${crestColor}`}
-            data-testid={`class-crest-${classSlug}`}
-          />
-        {/snippet}
-        {#snippet meta()}<span data-testid="bis-page-sub">{bisSeoCopy.meta(seoSubject, state.band)}</span
-          >{/snippet}
-        {#snippet answer()}
-          <div class="bis-pending-hide">
-            <BisAnswer answer={model.answer} {figure} unit={model.unit} {raceNote} />
-          </div>
-        {/snippet}
-      </PageHeader>
-    {/snippet}
     {#snippet bar()}
       <ControlBar
         groups={groupsBar}
@@ -336,144 +352,128 @@
     {/snippet}
 
     <div class="bis-pending-hide" data-testid={`bis-band-${state.faction}-${state.band}`}>
-      <div class="bis-summary" data-region={REGION.summary}>
-        <p class="bis-summary-line" data-testid="bis-summary">
-          {dollSummary(cells, character, model.unit)}
-          {#if character === undefined}<a href="/login" class="bis-gold">Sign in</a> to see them against your gear.{/if}
-          {#if nextBand !== undefined}
-            <a
-              class="bis-link"
-              href={bandHref(nextBand)}
-              onclick={(event) => {
-                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-                event.preventDefault();
-                onControl('band', String(nextBand));
-              }}
-              >Changes from {model.label}: see {nextBand >= 60 ? '60' : `${nextBand} to ${nextBand + 9}`} ›</a
-            >
-          {:else if preRaidToggle}
-            {@const target = {
-              band: state.band,
-              sources: preRaidView ? defaultSources(state.band) : [...PRE_RAID_KINDS],
-            }}
-            <a
-              class="bis-link"
-              href={stateHref(target)}
-              data-testid="bis-pre-raid-toggle"
-              onclick={(event) => {
-                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-                event.preventDefault();
-                whenReady(() => apply(withChange(state, { sources: target.sources }, context)));
-              }}>{preRaidView ? preRaidCopy.turnOff : preRaidCopy.turnOn} ›</a
-            >
+      <div class="bis-top">
+        <div class="bis-doll">
+          <PaperdollFrame
+            {cells}
+            build={data.build}
+            title={bisSeoCopy.heading(seoSubject)}
+            shortTitle={fullName}
+            meta={bisCopy.frameMeta(model.label, factionWord, state.band >= 60 && seoSubject.preRaid)}
+            figure={figure ? { value: figure.value, unit: model.unit } : undefined}
+            avatar={character?.avatar ?? null}
+            render={character?.render ?? null}
+            heading="h1"
+            selected={shownSlot}
+            onselect={(slot) => (selected = slot)}
+            {centre}
+            label={`${fullName} best in slot, ${model.label}`}
+            testid="bis-doll"
+          />
+          {#if character !== undefined}
+            <div class="bis-after" data-testid="bis-after">
+              <Plate flush={false}>
+                <div class="bis-after-row">
+                  <p data-testid="bis-summary">{dollSummary(cells, character, model.unit)}</p>
+                  {@render simLink()}
+                </div>
+              </Plate>
+            </div>
           {/if}
-        </p>
-        <Segmented
-          label="View"
-          options={[
-            { value: 'slot', label: 'By slot' },
-            { value: 'where', label: 'Where to go' },
-          ]}
-          value={state.view}
-          onChange={(value) => apply({ ...state, view: value === 'where' ? 'where' : 'slot' })}
-          testid="control-view"
+        </div>
+        <BisSide
+          {model}
+          {stack}
+          {stops}
+          {notes}
+          weightsHref={simWeightsHref(model.answer.simHref)}
+          whereAction={preRaidAction}
         />
       </div>
-      {#if ruleLine || model.weights.hitCap || model.weaponNote}
-        <div data-region={REGION.notes}>
-          {#if ruleLine}<p class="bis-note" data-testid="bis-default-rule">{ruleLine}</p>{/if}
-          {#if model.weights.hitCap}
-            <p class="bis-note" title={model.weights.hitCap.title} data-testid="bis-hit-cap">
-              {model.weights.hitCap.text}
-            </p>
-          {/if}
-          {#if model.weaponNote}<p class="bis-note" data-testid="bis-weapon-note">{model.weaponNote}</p>{/if}
-        </div>
-      {/if}
-
-      <Plate label="Gear" testid="bis-plate">
-        <Paperdoll
-          {cells}
-          mode={character ? 'compare' : 'pick'}
-          build={data.build}
-          bind:selected
-          {groups}
-          label={`${fullName} best in slot, ${model.label}`}
-          testid="bis-doll"
-        >
-          {#snippet detail(cell, placement)}
-            <BisSlotDetail
-              {cell}
-              row={rowsBySlot.get(cell.slot)}
-              items={{ ...data.items, ...(character?.items ?? {}) }}
-              unit={model.unit}
-              build={data.build}
-              simHref={model.answer.simHref}
-              {placement}
-            />
-          {/snippet}
-        </Paperdoll>
-      </Plate>
-
-      <div class="bis-stack">
-        <BisWeights weights={model.weights} testid={`bis-weights-${state.faction}-${state.band}`} />
+      <div class="bis-route">
+        <BisItinerary {stops} build={data.build} unit={model.unit} label={`${fullName}, where to go`} />
       </div>
     </div>
-
-    <p class="bis-guide-line" data-region={REGION.footerNote} data-testid="bis-guide-line">
-      Talents, rotation and stat priority for this spec: <a href={guideHref}>{fullName} guide ›</a>
-    </p>
   </Page>
 </div>
 
 <style>
-  .bis-crest {
-    flex-shrink: 0;
-    border-radius: 999px;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
-    background: var(--color-bg);
+  .bis-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
   }
-  .bis-summary {
+  .bis-doll {
+    width: 100%;
+    max-width: 640px;
+    justify-self: center;
+  }
+  @media (min-width: 1100px) {
+    .bis-top {
+      grid-template-columns: minmax(0, 640px) minmax(0, 1fr);
+      gap: 36px;
+    }
+    .bis-doll {
+      justify-self: start;
+    }
+  }
+  /* The wide column (from 1760): the frame grows, the side keeps a reading width, and the pair
+     sits centred over the itinerary. */
+  @media (min-width: 1760px) {
+    .bis-top {
+      grid-template-columns: minmax(0, 760px) minmax(0, 560px);
+      justify-content: center;
+      column-gap: 64px;
+    }
+    .bis-doll {
+      max-width: 760px;
+    }
+  }
+  /* The name stands at the top of the centre, the tooltip at its foot (the centre is a column
+     packed to the end), so the model's face shows between them. */
+  .bis-who {
+    margin-bottom: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: var(--c);
+    font-size: 15px;
+    line-height: 20px;
+    text-shadow:
+      0 1px 2px black,
+      0 0 6px black;
+  }
+  .bis-who small {
+    color: var(--color-text);
+    font-size: 13px;
+  }
+  .bis-who .bis-who-as {
+    font-style: italic;
+    color: var(--color-muted-card);
+  }
+  .bis-after {
+    margin-top: 12px;
+  }
+  .bis-after-row {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
-    gap: 10px 16px;
-    padding: 10px 0;
+    gap: 8px 16px;
+    font-size: 14px;
+    line-height: 20px;
   }
-  .bis-summary-line {
-    font-size: 15px;
-    line-height: 24px;
-    min-width: 0;
-  }
-  .bis-gold,
-  .bis-link,
-  .bis-guide-line a {
+  .bis-sim-link {
     color: var(--color-gold);
+    font-size: 14px;
     font-weight: 600;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px black;
   }
-  .bis-link {
-    margin-left: 6px;
-  }
-  .bis-link:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
-  }
-  .bis-note {
-    color: var(--color-muted);
-    font-size: 13px;
-    line-height: 20px;
-    margin-bottom: 8px;
-  }
-  .bis-stack {
-    margin-top: 32px;
-  }
-  /* The Page's section gap already sits above it (it is the ledger's last flex item). */
-  .bis-guide-line {
-    color: var(--color-muted);
-    font-size: 13px;
-    line-height: 20px;
-    margin: 0 0 8px;
+  .bis-route {
+    margin-top: var(--section-gap);
   }
   :global(html[data-bis-pending]) .bis-pending-hide {
     visibility: hidden;

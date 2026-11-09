@@ -162,6 +162,9 @@
         "source_kind": "rep",
         "verified": false,
         "standing": "revered",
+        "kind_standings": {
+          "rep": "revered"
+        },
         "not_with": [
           302
         ],
@@ -546,6 +549,9 @@
         "source_kind": "rep",
         "verified": false,
         "standing": "revered",
+        "kind_standings": {
+          "rep": "revered"
+        },
         "not_with": [
           302
         ],

@@ -73,7 +73,15 @@ export interface BisCandidate {
 /** The source-filter fields of one slot: the subset of `BisSlot` `source-filter.ts` reads. */
 export type BisFilterSlot = Pick<
   BisSlot,
-  'slot' | 'item_id' | 'source_kind' | 'kinds' | 'two_hand' | 'not_with' | 'by_kind' | 'standing'
+  | 'slot'
+  | 'item_id'
+  | 'source_kind'
+  | 'kinds'
+  | 'two_hand'
+  | 'not_with'
+  | 'by_kind'
+  | 'standing'
+  | 'kind_standings'
 >;
 
 export interface BisRowModel {
@@ -295,6 +303,7 @@ function rowModel(
       not_with: raw.not_with,
       by_kind: byKind,
       standing: raw.standing ?? sources[raw.item_id]?.standing,
+      ...(raw.kind_standings ? { kind_standings: raw.kind_standings } : {}),
     },
   };
 }

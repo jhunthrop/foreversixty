@@ -23,9 +23,15 @@ async function rowItemName(row: Locator): Promise<string> {
   return (await row.innerText()).trim();
 }
 
-/** The band table the BiS page shows first (the nightly's lowest band, alliance). */
+/** The BiS page's itinerary (round 5): every pick as a row whose name is a hover target. The
+ *  paperdoll frame shows its own slot's tooltip in place, so the floating one is the host's. */
 function firstVisibleBand(page: Page) {
-  return page.locator('[data-testid^="bis-band-alliance-"]:visible').first();
+  return page.getByTestId('bis-itinerary');
+}
+
+/** The page's one floating tooltip (BisTooltipHost's fixed id); the frame's centre is another. */
+function floatingTooltip(page: Page) {
+  return page.locator('#bis-item-tooltip');
 }
 
 test.describe('the BiS page shares one tooltip host across every row', () => {
@@ -43,13 +49,13 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     await expect(icon).toBeVisible();
     const itemName = await rowItemName(icon);
     expect(itemName.length).toBeGreaterThan(0);
-    await expect(page.getByTestId('item-tooltip')).toBeHidden();
+    await expect(floatingTooltip(page)).toBeHidden();
 
     // Hover the name text itself, not the host's own bounding-box centre (fix round 1: a
     // pick's host can carry alternatives below it, so its centre is not a safe hover point
     // to assume).
     await icon.hover();
-    const tooltip = page.getByTestId('item-tooltip');
+    const tooltip = floatingTooltip(page);
     await expect(tooltip).toBeVisible();
     await expect(tooltip).toContainText(itemName);
     await expect(tooltip).toContainText(/Requires Level \d+|Item Level \d+|\+\d+ /);
@@ -66,11 +72,11 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     // The shared host is a client:idle island; it opens for an already-focused row on
     // mount, but waiting for its ready marker keeps this test free of that race entirely.
     await page.locator('html[data-tooltip-host="ready"]').waitFor({ state: 'attached' });
-    // The doll is one tab stop: focusing its cell opens the tooltip of the item it holds.
-    const icon = firstVisibleBand(page).locator('[data-doll-slot][tabindex="0"]');
+    // A row's name is a tab stop: focusing it opens the tooltip of its item.
+    const icon = firstVisibleBand(page).locator('[data-testid^="item-hover-"][tabindex="0"]').first();
 
     await icon.focus();
-    const tooltip = page.getByTestId('item-tooltip');
+    const tooltip = floatingTooltip(page);
     await expect(tooltip).toBeVisible();
 
     await page.keyboard.press('Escape');
@@ -90,12 +96,12 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     expect(secondName).not.toBe(firstName);
 
     await firstIcon.hover();
-    await expect(page.getByTestId('item-tooltip')).toBeVisible();
-    await expect(page.getByTestId('item-tooltip')).toContainText(firstName);
+    await expect(floatingTooltip(page)).toBeVisible();
+    await expect(floatingTooltip(page)).toContainText(firstName);
 
     await secondIcon.hover();
-    await expect(page.getByTestId('item-tooltip')).toHaveCount(1);
-    await expect(page.getByTestId('item-tooltip')).toContainText(secondName);
+    await expect(floatingTooltip(page)).toHaveCount(1);
+    await expect(floatingTooltip(page)).toContainText(secondName);
   });
 
   // Tooltip-polish brief item 5 (owner screenshot 2026-09-29): the panel never extends below
@@ -121,7 +127,7 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     await icon.evaluate((el) => el.scrollIntoView({ block: 'end' }));
     await icon.hover();
 
-    const tooltip = page.getByTestId('item-tooltip');
+    const tooltip = floatingTooltip(page);
     await expect(tooltip).toBeVisible();
     const box = await tooltip.boundingBox();
     const viewport = page.viewportSize();

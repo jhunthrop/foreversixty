@@ -50,7 +50,7 @@ test.describe('one centred column at 2000px', () => {
   const EQUAL_MARGIN_TOLERANCE_PX = 2;
   const MIN_SIDE_MARGIN_PX = 100;
   const PAGES = [
-    { path: '/bis/hunter/marksmanship', content: '[data-testid="bis-plate"]' },
+    { path: '/bis/hunter/marksmanship', content: '[data-testid="bis-itinerary"]' },
     { path: '/bis', content: 'main' },
     // The tier list is a split page (list and spec panel side by side): its column is the page body.
     { path: '/tiers', content: '[data-testid="tier-body"]' },
