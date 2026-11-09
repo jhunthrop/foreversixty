@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  atLevel60,
   fillerOf,
   glanceRotation,
   glanceStatRows,
@@ -9,7 +10,6 @@ import {
   markCheapRanks,
   nextTalentPoint,
   racesByFaction,
-  specRowTag,
 } from './glance';
 import type { RotationItem } from './rotation-lists';
 import type { RailStatRow } from './rail-stats';
@@ -92,16 +92,6 @@ describe('nextTalentPoint', () => {
   });
 });
 
-describe('specRowTag', () => {
-  it('tags healers, tanks and the melee spec of a ranged class only', () => {
-    expect(specRowTag('priest', 'priest-holy', 'healer')).toBe('healer');
-    expect(specRowTag('warrior', 'warrior-protection', 'tank')).toBe('tank');
-    expect(specRowTag('hunter', 'hunter-survival', 'dps')).toBe('melee');
-    expect(specRowTag('hunter', 'hunter-marksmanship', 'dps')).toBeUndefined();
-    expect(specRowTag('druid', 'druid-feral', 'dps')).toBeUndefined();
-  });
-});
-
 describe('racesByFaction', () => {
   it('groups Alliance then Horde with the recommended races first', () => {
     const row = (name: string, faction: string, recommended: boolean): GuideRaceRow => ({
@@ -136,5 +126,21 @@ describe('cheap ranks', () => {
   it('marks every list', () => {
     const lists = { opener: [], priority: [item('Greater Heal', '', { rank: 1 })], cooldowns: [] };
     expect(markCheapRanks(lists, () => 5, prose).priority[0]?.cheapRank).toBe(true);
+  });
+});
+
+describe('atLevel60', () => {
+  it('drops the levelling rank swaps from every list, keeping each row one line', () => {
+    const row = (clause: string) => item('Raptor Strike', clause);
+    const lists = atLevel60({
+      opener: [row('20 s before the pull')],
+      priority: [
+        row('On every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and to 49'),
+      ],
+      cooldowns: [row('5 min cooldown')],
+    });
+    expect(lists.priority[0]?.clause).toBe('On every swing it is ready');
+    expect(lists.opener[0]?.clause).toBe('20 s before the pull');
+    expect(lists.cooldowns[0]?.clause).toBe('5 min cooldown');
   });
 });

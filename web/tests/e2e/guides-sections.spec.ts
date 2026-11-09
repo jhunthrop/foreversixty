@@ -4,7 +4,7 @@
 // (390) widths: the header facts, the Overview blocks, the builds and the key talents, the
 // rotation lists, the stat lane beside the plate's ranked stats, the one band of Best in slot
 // picks, the enchant and consumable rows, the racials and the leveling lane, and checks the page
-// never scrolls sideways. Then the contents: the rail from 1760, the On this page select below.
+// never scrolls sideways. Then the contents: the rail from 1024, the On this page select from 768 below it.
 //
 // The content comes from data/builds and the BiS ranker, not the planner fixture, so it is the
 // same under either FOREVER_DATA; only the check that icon files actually load needs the real
@@ -21,6 +21,7 @@ import { bisBand } from './support/bis-file';
 
 const DESKTOP = { width: 1280, height: 900 };
 const WIDE = { width: 1920, height: 1000 };
+const TABLET = { width: 900, height: 900 };
 const PHONE = { width: 390, height: 844 };
 const PAGE = '/guides/mage/frost';
 const BIS_SPEC = 'mage-frost';
@@ -100,7 +101,7 @@ for (const [label, viewport] of [
       await expect(page.locator('[data-region="head-meta"]')).toContainText(
         /DPS · Updated \d{1,2} [A-Z][a-z]{2}/,
       );
-      await expect(page.locator('.ui-page-header-lead')).toContainText(
+      await expect(page.getByTestId('guide-summary')).toContainText(
         'Frost casts Frostbolt behind Ice Barrier',
       );
       await noSidewaysScroll(page);
@@ -303,8 +304,8 @@ test.describe('the plate', () => {
 });
 
 test.describe('table of contents', () => {
-  test('from 1760: the contents rail jumps to a section, and the select is gone', async ({ page }) => {
-    await page.setViewportSize(WIDE);
+  test('from 1024: the contents rail jumps to a section, and the select is gone', async ({ page }) => {
+    await page.setViewportSize(DESKTOP);
     await page.goto(PAGE);
     const rail = page.getByTestId('guide-toc');
     await expect(rail).toBeVisible();
@@ -314,7 +315,7 @@ test.describe('table of contents', () => {
     await expect(page.locator('#best-in-slot')).toBeInViewport();
   });
 
-  test('from 1760: the rail marks the section you are in', async ({ page }) => {
+  test('from 1024: the rail marks the section you are in', async ({ page }) => {
     await page.setViewportSize(WIDE);
     await page.goto(PAGE);
     const rail = page.getByTestId('guide-toc');
@@ -334,10 +335,10 @@ test.describe('table of contents', () => {
     await expect(rail.locator('[aria-current="location"]')).toHaveCount(1);
   });
 
-  test('below 1760: the rail is hidden and the bar’s On this page select jumps to a section', async ({
+  test('below 1024: the rail is hidden and the bar’s On this page select jumps to a section', async ({
     page,
   }) => {
-    await page.setViewportSize(DESKTOP);
+    await page.setViewportSize(TABLET);
     await page.goto(PAGE);
     await expect(page.getByTestId('guide-toc')).toBeHidden();
     await expect(page.getByTestId('guide-toc-select')).toBeVisible();

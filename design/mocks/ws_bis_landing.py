@@ -17,7 +17,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_lib import page as chrome_page
-from ws_prims import (PRIM_CSS, assert_no_surface_styles, Button, Figure, Link, Meter, Page, PageHeader, Plate, Row, RowGrid, RowsSlim, Skeleton, Tag, build_page,
+from ws_prims import (PRIM_CSS, ClassSpecPicker, assert_no_surface_styles, Button, Figure, Link, Meter, Page, PageHeader, Plate, Row, RowsSlim, Skeleton, Tag, build_page,
                       control_bar, crest_img, icon, seg, write, REGION)
 
 HERE = Path(__file__).resolve().parent
@@ -91,16 +91,9 @@ def finished_line() -> str:
 
 
 def classes(yours: str = '') -> str:
-    groups = []
-    for c in F['classes']:
-        rows = []
-        for s in c['specs']:
-            mine = s['key'] == yours
-            role = C['roleWords'].get(s['role'])
-            trail = (Tag(e(C['yours'])) + ' ' if mine else '') + (Tag(e(role), 'muted') if role else '')
-            rows.append(Row(e(s['name']), lead=icon(s['icon'], 28), trail=trail, selected=mine))
-        groups.append(f'<div class="cgrp">{Row(e(c["name"]), lead=crest_img(c["slug"], 40), title_color=c["color"], link=False)}{RowsSlim(rows, open_=False)}</div>')
-    return Plate(RowGrid(groups, 3), e(C['plateLabel']))
+    """The class and spec picker /guides shares (ws_prims.ClassSpecPicker)."""
+    picks = [(c['slug'], e(c['name']), c['color'], [(s['key'], e(s['name']), icon(s['icon'], 28)) for s in c['specs']]) for c in F['classes']]
+    return ClassSpecPicker(picks, e(C['plateLabel']), yours=yours, yours_label=e(C['yours']))
 
 
 def landing(state: str) -> str:
@@ -109,8 +102,8 @@ def landing(state: str) -> str:
     acct = None if signed_out or state == 'loading' else F['accounts'][state]
     selected = int(state.split('-')[1]) if state.startswith('out-') else (acct or {}).get('band') or 20
     ans = '' if signed_out else answer(acct, loading=state == 'loading')
-    meta = [e(C['levels'])] + ([f'Updated {e(F["updated"])}'] if F['updated'] else [])
-    head = PageHeader(e(C['title']), '', '', meta, ans, lead=e(C['lead']))
+    meta = [f'Updated {e(F["updated"])}'] if F['updated'] else None
+    head = PageHeader(e(C['title']), '', '', meta, ans)
     yours = ''
     if acct and acct['answer']['state'] == 'ready':
         me = F['me'].get(state)
@@ -142,7 +135,7 @@ PAGE_CSS = '''<style>
 .bl-done{box-shadow:inset 2px 0 0 var(--gold)}
 .bl-done a{display:inline-flex;flex-wrap:wrap;gap:0 6px;align-items:center;min-height:44px;color:var(--text)}
 .bl-x{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;background:none;color:var(--muted);cursor:pointer}
-.cgrp{padding-bottom:20px;min-width:0}
+main{padding-bottom:40px}  /* the page's own bottom space (index.astro .bis-landing) */
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
 </style>'''
 

@@ -9,7 +9,7 @@
     16,
     0,
     380,
-    248
+    94
    ],
    "inventory": {
     "image": 1
@@ -20,7 +20,7 @@
     16,
     16,
     380,
-    218
+    64
    ],
    "inventory": {
     "image": 1
@@ -30,7 +30,7 @@
    "box": [
     88,
     60,
-    308,
+    103,
     20
    ],
    "inventory": {}
@@ -38,30 +38,30 @@
   "plate": {
    "box": [
     16,
-    268,
+    571,
     380,
-    420
+    146
    ],
    "inventory": {
-    "row": 3,
-    "image": 3
+    "row": 1,
+    "image": 1
    }
   },
   "section-what-changed-from-1-12": {
    "box": [
     16,
-    764,
+    745,
     380,
-    743
+    629
    ],
    "inventory": {}
   },
   "section-sources": {
    "box": [
     16,
-    1555,
+    1422,
     380,
-    320
+    308
    ],
    "inventory": {
     "row": 6
@@ -70,9 +70,9 @@
   "section-races": {
    "box": [
     16,
-    1899,
+    1754,
     380,
-    143
+    131
    ],
    "inventory": {}
   }

@@ -50,11 +50,22 @@ describe('PaperdollFrame', () => {
     expect(doll()).toContain('--qb: var(--color-rarity-rare)');
   });
 
-  it('puts the title, its meta and the figure with its unit alone on the one title bar', () => {
+  it('puts the title (the heading alone), its meta and the figure with its unit on the one title bar', () => {
     const body = doll({ heading: 'h1' });
     expect(body).toMatch(
-      /<h1 class="pdf-title[^"]*"[^>]*>[\s\S]*Beast Mastery Hunter[\s\S]*20 to 29 · Alliance[\s\S]*91\.0 <small[^>]*>DPS<\/small>/,
+      /class="pdf-title[^"]*"[^>]*>\s*<h1 class="pdf-title-text[^"]*">Beast Mastery Hunter<\/h1>[\s\S]*20 to 29 · Alliance[\s\S]*91\.0 <small[^>]*>DPS<\/small>/,
     );
+  });
+
+  it('stands the character render in the centre only when given', () => {
+    expect(doll()).not.toContain('pdf-model');
+    const body = doll({ render: '/fixtures/render-placeholder.png' });
+    expect(body).toMatch(/class="pdf-centre[^"]*pdf-modelled/);
+    expect(body).toContain('src="/fixtures/render-placeholder.png"');
+  });
+
+  it('marks itself as showing its tooltips in place', () => {
+    expect(doll()).toContain('data-inline-tip');
   });
 
   it('holds the seal in the medallion with no portrait, the portrait when given', () => {

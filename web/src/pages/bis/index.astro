@@ -1,7 +1,7 @@
 ---
 // web/src/pages/bis/index.astro
 // /bis in the flat system (design/specs/2026-11-07-bis-landing.md, mocks web-bis-landing*): the
-// PageHeader (Best in slot, the levels and the Updated stamp, the lead, the signed-in answer: the
+// PageHeader (Best in slot, the Updated stamp, the signed-in answer: the
 // header selector's character, how many of its range's pieces it wears, one button to its own
 // spec at its own range), the finished server sim line when one waits, the ControlBar's level
 // range (the character's own range by default, owner 2026-11-07) with the tier list link, the
@@ -9,15 +9,11 @@
 // that open at the selected range. Everything is prerendered; lib/bis/landing-client.ts follows
 // the bar and the header selector in place after paint.
 import Base from '../../layouts/Base.astro';
-import ClassCrest from '../../components/ClassCrest.astro';
-import GuideSpecRow from '../../components/guides/GuideSpecRow.astro';
+import ClassSpecPicker, { type PickerClass } from '../../components/guides/ClassSpecPicker.astro';
 import BisLandingAnswer from '../../components/bis/BisLandingAnswer.astro';
 import ControlBar from '../../components/ui/ControlBar.astro';
 import Page from '../../components/ui/Page.svelte';
 import PageHeader from '../../components/ui/PageHeader.svelte';
-import Plate from '../../components/ui/Plate.svelte';
-import Row from '../../components/ui/Row.svelte';
-import RowGrid from '../../components/ui/RowGrid.svelte';
 import activeBuild from '../../data/active-build.json';
 import { landingCopy } from '../../lib/bis/landing-copy';
 import { loadLandingData } from '../../lib/bis/landing-build';
@@ -27,7 +23,7 @@ import { specLinkHref } from '../../lib/bis/landing-links';
 import { dayMonth } from '../../lib/guides/guide-header';
 import { REGION } from '../../lib/ui/regions';
 import { searchCopy } from '../../lib/search-copy';
-import { LINK, type ClassSlug, type ControlGroup } from '../../lib/ui/primitives';
+import { LINK, type ControlGroup } from '../../lib/ui/primitives';
 
 const { cards, captions, raidLabel, updated, config } = loadLandingData(activeBuild.build);
 const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
@@ -42,20 +38,25 @@ const groups: ControlGroup[] = [
 ];
 const summaries = captions.map((caption) => ({
   band: caption.band,
-  text:
-    landingCopy.bandSummary(caption.text) +
-    (caption.band === LANDING_BANDS.at(-1) && raidLabel !== '' ? ` ${landingCopy.raidNote(raidLabel)}` : ''),
+  text: landingCopy.bandSummary(caption.band === LANDING_BANDS.at(-1), raidLabel),
 }));
-const roleWord = (role: string): string | undefined =>
-  role === 'tank' || role === 'healer' ? landingCopy.roleWords[role] : undefined;
+const pickerClasses: PickerClass[] = cards.map((card) => ({
+  slug: card.slug,
+  name: card.name,
+  specs: card.specs.map((spec) => ({
+    key: `${spec.classSlug}/${spec.specSlug}`,
+    name: spec.name,
+    href: specLinkHref({ classSlug: spec.classSlug, specSlug: spec.specSlug, band: DEFAULT_LANDING_BAND }),
+    icon: spec.iconSrc,
+  })),
+}));
 ---
 
 <Base title={searchCopy.bisIndex.title} description={searchCopy.bisIndex.description} path="/bis" wide>
-  <main id="main" tabindex="-1" data-testid="bis-landing">
+  <main id="main" tabindex="-1" class="bis-landing" data-testid="bis-landing">
     <Page layout="ledger">
-      <PageHeader slot="header" title={landingCopy.title} tone="strong" lead={landingCopy.lead}>
+      <PageHeader slot="header" title={landingCopy.title} tone="strong">
         <Fragment slot="meta">
-          <span>{landingCopy.levels}</span>
           {updated !== null && <span data-testid="bis-landing-updated">Updated {dayMonth(updated)}</span>}
         </Fragment>
         <BisLandingAnswer slot="answer" />
@@ -91,35 +92,14 @@ const roleWord = (role: string): string | undefined =>
           ></a>
         </p>
         <div id="bis-classes">
-          <Plate label={landingCopy.plateLabel} testid="bis-class-grid">
-            <RowGrid cols={3}>
-              {cards.map((card) => (
-                <div class="bis-class" data-testid={`bis-class-${card.slug}`}>
-                  <Row title={card.name} titleTone={{ classSlug: card.slug as ClassSlug }}>
-                    <ClassCrest slot="lead" slug={card.slug} size={40} />
-                  </Row>
-                  <div class="bis-class-specs">
-                    {card.specs.map((spec) => (
-                      <GuideSpecRow
-                        specKey={`${spec.classSlug}/${spec.specSlug}`}
-                        name={spec.name}
-                        href={specLinkHref({
-                          classSlug: spec.classSlug,
-                          specSlug: spec.specSlug,
-                          band: DEFAULT_LANDING_BAND,
-                        })}
-                        icon={spec.iconSrc}
-                        iconSize={28}
-                        tag={roleWord(spec.role)}
-                        testidPrefix={SPEC_ROW_PREFIX}
-                        yoursLabel={landingCopy.yours}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </RowGrid>
-          </Plate>
+          <ClassSpecPicker
+            classes={pickerClasses}
+            label={landingCopy.plateLabel}
+            testid="bis-class-grid"
+            classTestidPrefix="bis-class-"
+            rowTestidPrefix={SPEC_ROW_PREFIX}
+            yoursLabel={landingCopy.yours}
+          />
         </div>
       </div>
     </Page>
@@ -135,6 +115,10 @@ const roleWord = (role: string): string | undefined =>
 </Base>
 
 <style>
+  /* The page's own bottom space above the site footer, as the spec pages keep it. */
+  .bis-landing {
+    padding-bottom: 40px;
+  }
   .bis-tier {
     display: flex;
     flex-wrap: wrap;
@@ -147,16 +131,6 @@ const roleWord = (role: string): string | undefined =>
   }
   .bis-summary [hidden] {
     display: none;
-  }
-  .bis-class {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    padding-bottom: 20px;
-  }
-  .bis-class-specs {
-    display: flex;
-    flex-direction: column;
   }
   .bis-finished {
     --ch-foot-h: 44px;

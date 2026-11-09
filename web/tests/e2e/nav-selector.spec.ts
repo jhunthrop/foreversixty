@@ -195,20 +195,32 @@ test.describe('the bar at every width', () => {
     expect(Math.abs(premium.x + premium.width - 1824)).toBeLessThanOrEqual(1);
   });
 
-  test('a 22-character name keeps the bar one row and ends in an ellipsis, with the whole name in title', async ({
-    page,
-  }) => {
-    const long: FixtureCharacter = { ...OBNOXIOUS, name: 'Bartholomewtheunbearable' };
-    await signInWith(page, [long]);
-    await storePointer(page, armoryPointer(long));
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/guides');
-    await ready(page);
-    expect((await barBox(page))!.height).toBeLessThanOrEqual(82);
-    await expect(selector(page)).toHaveAttribute('title', long.name);
-    const clipped = await page.getByTestId('selector-name').evaluate((el) => el.scrollWidth > el.clientWidth);
-    expect(clipped).toBe(true);
-  });
+  // The full name at every width (owner 2026-10-10): never an ellipsis. A name and surname that
+  // will not fit on the bar breaks between its words inside the control; Premium stays on it.
+  for (const name of ['Frickin Laserbeams', 'Bartholomew Stormwhisper', 'Bartholomewtheunbearable']) {
+    for (const width of [1024, 1440, 2000]) {
+      test(`"${name}" shows whole at ${width}px, the bar one row and Premium on it`, async ({ page }) => {
+        const long: FixtureCharacter = { ...OBNOXIOUS, name };
+        await signInWith(page, [long]);
+        await storePointer(page, armoryPointer(long));
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto('/guides');
+        await ready(page);
+        expect((await barBox(page))!.height).toBeLessThanOrEqual(82);
+        await expect(selector(page)).toHaveAttribute('title', long.name);
+        const nameBox = page.getByTestId('selector-name');
+        await expect(nameBox).toHaveText(name);
+        const clipped = await nameBox.evaluate((el) => el.scrollWidth > el.clientWidth);
+        expect(clipped).toBe(false);
+        const premium = await page.getByTestId('nav-premium').boundingBox();
+        expect((premium?.x ?? 0) + (premium?.width ?? 0)).toBeLessThanOrEqual(width);
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        );
+        expect(overflow).toBeLessThanOrEqual(0);
+      });
+    }
+  }
 });
 
 test.describe('the list', () => {
