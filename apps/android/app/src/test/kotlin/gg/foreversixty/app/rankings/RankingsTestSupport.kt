@@ -40,6 +40,7 @@ object RankingsTestData {
     fun voltaris(): CharacterProfile = RaidFixture.load(CharacterProfile.serializer(), "character.card.ranked")
     fun yours(): CharacterProfile = RaidFixture.load(CharacterProfile.serializer(), "character.card.yours")
     fun noLogs(): CharacterProfile = RaidFixture.load(CharacterProfile.serializer(), "character.card.empty")
+    fun hidden(): CharacterProfile = RaidFixture.load(CharacterProfile.serializer(), "character.card.hidden")
     fun items(): ItemsFile = HomeFixtures.staticFile("cdn.items.shaman", ItemsFile.serializer())
     fun me(): Me = RaidFixture.load(Me.serializer(), "me.premium")
     fun specs() = SimsTestData.specs()

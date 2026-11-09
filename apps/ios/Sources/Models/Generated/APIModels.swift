@@ -1561,8 +1561,10 @@ public struct CharacterHome: Codable, Sendable, Equatable {
     }
 }
 
-/// GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0.
+/// GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0. When score_hidden is true the owner hid the Forever Score from everyone else: every score field is null, score_history is [], and the page shows no score block at all (no "no logs yet", no label, no blank row). The owner's own view carries the score as usual, and a hidden character's page is never shared-cached.
 public struct CharacterProfile: Codable, Sendable, Equatable {
+    /// True when the owner hid the Forever Score and the viewer is someone else; absent otherwise. Show no score block.
+    public let scoreHidden: Bool?
     public let character: CharacterProfileHeader
     public let best: [CharacterFight]
     public let history: [CharacterFight]
@@ -1582,6 +1584,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
     public let experience: ScoreExperience?
 
     public init(
+        scoreHidden: Bool? = nil,
         character: CharacterProfileHeader,
         best: [CharacterFight] = [],
         history: [CharacterFight] = [],
@@ -1599,6 +1602,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
         componentCaps: ScoreComponentCaps? = nil,
         experience: ScoreExperience? = nil
     ) {
+        self.scoreHidden = scoreHidden
         self.character = character
         self.best = best
         self.history = history
@@ -1619,6 +1623,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
 
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
+        scoreHidden = try c.decodeIfPresent(Bool.self, forKey: .scoreHidden)
         character = try c.decode(CharacterProfileHeader.self, forKey: .character)
         best = try c.decodeIfPresent([CharacterFight].self, forKey: .best) ?? []
         history = try c.decodeIfPresent([CharacterFight].self, forKey: .history) ?? []

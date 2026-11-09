@@ -89,7 +89,13 @@ type OutboxExport struct {
 	Character string `json:"character"`
 	Code      string `json:"code"`
 	SavedAt   string `json:"saved_at"`
+	// ScoreVisible is false when the player turned off "Show my Forever Score to others";
+	// absent (nil) is visible (contract 4, added 2026-11-08).
+	ScoreVisible *bool `json:"score_visible,omitempty"`
 }
+
+// scoreVisible is the export's choice: hidden only when it says false.
+func (e OutboxExport) scoreVisible() bool { return e.ScoreVisible == nil || *e.ScoreVisible }
 
 // RosterSnapshot is the guild tab's live roster as one member's addon saw it.
 type RosterSnapshot struct {
@@ -344,6 +350,9 @@ func (s *Service) applyOutbox(ctx context.Context, userID int64, ob *Outbox) (*O
 	}
 	res.Export = OutboxStored
 	key := character.Key(own.Region, character.RulesetFromRealm(own.Ruleset, ""), own.Name)
+	if err := s.Store.SetScoreVisible(ctx, userID, key, ob.Export.scoreVisible()); err != nil {
+		return nil, "", err
+	}
 
 	if ob.SimRequest != nil {
 		if res.SimRequest, err = s.simRequest(ctx, userID, exports, *ob.SimRequest); err != nil {
@@ -375,6 +384,18 @@ func (s *Service) simRequest(ctx context.Context, userID int64, exports []Export
 	}
 	key := character.Key(own.Region, character.RulesetFromRealm(own.Ruleset, ""), own.Name)
 	return s.SimRequests.RequestFromAddon(ctx, userID, key, req)
+}
+
+// SetScoreVisible stores whether the account's own character shows its Forever Score to others
+// (characters.score_visible, migration 0092); the score itself is gated where it is read
+// (api/internal/rating score_visibility.go).
+func (s *Store) SetScoreVisible(ctx context.Context, userID int64, characterKey string, visible bool) error {
+	if _, err := s.Pool.Exec(ctx,
+		`update characters set score_visible = $3 where key = $1 and user_id = $2 and score_visible <> $3`,
+		characterKey, userID, visible); err != nil {
+		return fmt.Errorf("addon: store score visibility for %s: %w", characterKey, err)
+	}
+	return nil
 }
 
 // PutRosterSnapshot stores snap as the newest roster of the guild
