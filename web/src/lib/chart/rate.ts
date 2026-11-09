@@ -5,6 +5,7 @@
 import { classColorVar } from '../report/format';
 import { BUCKET_MS, type TimeWindow } from '../report/window';
 import { bucketMeans, chartBucket, type ChartBucket } from './buckets';
+import { CHART_ACCENT } from './theme';
 import type { ScopeNoun } from '../report/group';
 import type { RateMetric } from './copy';
 import { chartCopy } from './copy';
@@ -50,7 +51,7 @@ export interface RateInput {
   /** The Compare group: the raid median, and the median of one class (a class name) or none. */
   compare: { raid: boolean; className: string | null };
   deadSpans?: ReadonlyMap<string, readonly DeadSpan[]>;
-  /** One player as the Source: their line is the gold area (today's look). */
+  /** One player as the Source: their line is the accent area (the chart theme). */
   single?: string;
   /** What the players are (lib/report/group.ts): it names the median line. A raid when absent. */
   noun?: ScopeNoun;
@@ -202,7 +203,7 @@ export function buildRateModel(input: RateInput): RateModel {
     return {
       id: guid,
       label: player.name,
-      colour: single ? 'var(--color-gold)' : (player.colour ?? classColorVar(player.className)),
+      colour: single ? CHART_ACCENT : (player.colour ?? classColorVar(player.className)),
       kind: single ? 'single' : 'player',
       values: stopAtDeath(averaged(player.series), spans, stepMs),
       figure: figures.get(guid) ?? 0,

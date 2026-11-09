@@ -26,9 +26,7 @@
 </script>
 
 <div class="sim-answer" data-testid="sim-answer" data-state={model.state}>
-  <span class="text-label tracking-label text-muted font-bold uppercase" data-testid="sim-answer-label"
-    >{model.label}</span
-  >
+  <span class="text-label text-muted font-bold" data-testid="sim-answer-label">{model.label}</span>
   {#if model.figure}
     <span data-testid="sim-dps">
       <Figure

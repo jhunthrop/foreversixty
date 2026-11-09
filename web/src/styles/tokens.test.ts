@@ -63,12 +63,60 @@ describe('contrastRatio', () => {
   });
 });
 
+/** One sRGB channel moved by `delta` (0 to 255), as hex. */
+function shift(hex: string, delta: number): string {
+  const value = Number.parseInt(hex.slice(1), 16);
+  const channels = [16, 8, 0].map((bit) => Math.min(255, Math.max(0, ((value >> bit) & 0xff) + delta)));
+  return `#${channels.map((c) => c.toString(16).padStart(2, '0')).join('')}`;
+}
+
+/** The painted ground's 200 px windows sit within 6.1 of its mean (art.ground_tile, spec round 5);
+ *  7 covers every window either way. */
+const GROUND_WINDOW = 7;
+
+describe('round 5 ink (design/specs/2026-11-09-directions.md)', () => {
+  const tokens = readColorTokens();
+  const card = tokens.get('raised') as string;
+  const ground = tokens.get('ground') as string;
+
+  it('reads the card and the earth ground out of tokens.css', () => {
+    expect(card).toBe('#170e09');
+    expect(ground).toBe('#67563a');
+  });
+
+  it.each(['text', 'muted-card', 'gold', 'cream', 'strong'])('%s clears AA on the card', (name) => {
+    expect(contrastRatio(tokens.get(name) as string, card)).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
+  });
+
+  it.each(['text', 'muted-ground', 'gold', 'cream'])(
+    '%s clears AA on the ground at its darkest and lightest window',
+    (name) => {
+      for (const window of [shift(ground, -GROUND_WINDOW), shift(ground, GROUND_WINDOW)]) {
+        expect(contrastRatio(tokens.get(name) as string, window), window).toBeGreaterThanOrEqual(
+          AA_NORMAL_TEXT,
+        );
+      }
+    },
+  );
+
+  it('cream clears AA on the blue band', () => {
+    expect(contrastRatio(tokens.get('cream') as string, tokens.get('band') as string)).toBeGreaterThanOrEqual(
+      AA_NORMAL_TEXT,
+    );
+  });
+
+  it('the client tooltip yellow clears AA on the tooltip ground', () => {
+    const yellow = tokens.get('tooltip-yellow') as string;
+    expect(contrastRatio(yellow, tokens.get('tooltip') as string)).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
+  });
+});
+
 describe('rarity text tokens', () => {
   const tokens = readColorTokens();
   const background = tokens.get('raised');
 
   it('reads --color-raised out of tokens.css', () => {
-    expect(background).toBe('#0d111a');
+    expect(background).toBe('#170e09');
   });
 
   it('covers all six rarities plus the level brackets', () => {

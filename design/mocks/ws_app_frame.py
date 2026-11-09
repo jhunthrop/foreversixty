@@ -203,6 +203,8 @@ def chrome(platform: str, tab: str | None, back: str = '', title: str = '', shar
 def _inject(html: str, platform: str, tab: str | None, back: str, title: str, share: bool, navbar: bool, extra_css: str = '',
             who: str | None = 'warrior', badges: dict | None = None, avatar=DEFAULT) -> str:
     style, top, bottom = chrome(platform, tab, back, title, share, navbar, who, badges, avatar)
+    # The apps keep the flat system until the mobile lane adopts round 5: the web mocks' round-5 layer stays out.
+    html = re.sub(r'<style data-system="round5">.*?</style>', '', html, count=1, flags=re.S)
     html = html.replace('</head>', f'<style>{APP_CSS}{extra_css}</style></head>', 1)
     html = re.sub(r'<body([^>]*)>', lambda m: f'<body{m.group(1)} data-platform="{platform}" style="{style}">{top}', html, count=1)
     return html.replace('</body>', f'{bottom}</body>', 1)

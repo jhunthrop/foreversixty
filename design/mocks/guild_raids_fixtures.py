@@ -1,19 +1,17 @@
 """Guild parity fixtures, Raids tab (list, plan form, log match) and the raid page (planner, assignments): the API answers
 web/tests/e2e/support/guild-parity/raids.ts routes, written by guild_fixtures.py into web/tests/e2e/fixtures/guild-parity/.
 
-The Raids tab as its officer (Dunmaro) reads it: Thursday's Onyxia's Lair (the Overview's next raid) and the Tuesday after,
-planned; Monday's logged night under them. The rest of the guild page reads the Overview's own answers (guild_overview_fixtures).
+The Raids tab as its officer (Dunmaro) reads it: Wednesday's Onyxia's Lair (the Overview's next raid) and the Wednesday after,
+planned; the first night (Wed 9 Dec), logged, under them. The rest of the guild page reads the Overview's own answers (guild_overview_fixtures).
 """
 import copy
 from pathlib import Path
 
 import guild_overview_data as D
 import guild_overview_fixtures as F
-from guild_data import ZONE
+from guild_data import SECOND_RAID_AT, SECOND_RAID_ID, ZONE
 
-# The second planned raid: the Tuesday after, 8:00 pm CST, a third of the guild in so far, the viewer not signed up.
-SECOND_RAID_ID = 42
-SECOND_RAID_AT = '2026-12-16T02:00:00Z'
+# The second planned raid: the Wednesday after, 8:00 pm CST, a third of the guild in so far, the viewer not signed up.
 SECOND_RAID_IN = ['Thornwicke', 'Ironbrand', 'Hollowmend', 'Mossveil', 'Frostquill', 'Doomwhisper', 'Shiverknife', 'Groundshock']
 
 _RAID = {'kind': 'raid', 'opens': '2026-12-09T00:00:00Z', 'min_level': None, 'max_level': None, 'key_item': None}

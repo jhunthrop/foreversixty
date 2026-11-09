@@ -47,7 +47,7 @@
   data-figure={figure === undefined ? undefined : ''}
   data-testid={testid}
 >
-  <span class="text-label tracking-label text-muted font-bold uppercase">{label}</span>
+  <span class="text-label text-muted font-bold">{label}</span>
   <div class="ui-cans-sk" data-answer-skeleton aria-hidden="true">
     <span class="ui-cans-row">
       <span class="skeleton-block ui-cans-sk-crest"></span>

@@ -13,53 +13,49 @@ const ALL = [BUTTON_PRIMARY, BUTTON_SECONDARY, BUTTON_GHOST, BUTTON_DANGER];
 
 describe('button recipes', () => {
   it.each(ALL)(
-    'every tone shares the label (13 px 700, sentence case), the ring and the 45 % disabled look',
+    'every tone shares the label (15 px 600, sentence case), the control radius, the ring and the 45 % disabled look',
     (recipe) => {
       expect(recipe).toContain('button-label');
       expect(recipe).toContain('focus-visible:outline-gold');
       expect(recipe).toContain('disabled:not-aria-busy:opacity-45');
       expect(recipe).toContain('disabled:cursor-not-allowed');
       expect(recipe).toContain('gap-2');
+      expect(recipe).toContain('rounded-field');
     },
   );
 
-  it('primary is the gold gradient with dark ink, the deep inset and the soft shadow', () => {
-    expect(BUTTON_PRIMARY).toContain('bg-[linear-gradient(180deg,#f0cc6c,#c99a3a)]');
-    expect(BUTTON_PRIMARY).toContain('text-bg');
-    expect(BUTTON_PRIMARY).toContain('var(--color-gold-deep)');
-    expect(BUTTON_PRIMARY).toContain('rgba(229,185,85,.22)');
-  });
-
-  it('primary hovers brighter, presses down darker and drops its shadow when disabled', () => {
-    expect(BUTTON_PRIMARY).toContain('hover:brightness-[1.08]');
-    expect(BUTTON_PRIMARY).toContain('active:brightness-[.92]');
+  it('primary is their flat teal with the teal edge and white ink (round 5, Buy Now)', () => {
+    expect(BUTTON_PRIMARY).toContain('bg-teal ');
+    expect(BUTTON_PRIMARY).toContain('border-teal-edge');
+    expect(BUTTON_PRIMARY).toContain('text-strong');
+    expect(BUTTON_PRIMARY).toContain('hover:bg-teal-edge');
     expect(BUTTON_PRIMARY).toContain('active:translate-y-px');
-    expect(BUTTON_PRIMARY).toContain('disabled:shadow-none');
   });
 
-  it('secondary has the card border, the strong ink and the three states', () => {
-    expect(BUTTON_SECONDARY).toContain('border-line-card');
+  it('secondary is their blue with its edge (Upgrade Now) and presses down darker', () => {
+    expect(BUTTON_SECONDARY).toContain('bg-blue ');
+    expect(BUTTON_SECONDARY).toContain('border-blue-edge');
     expect(BUTTON_SECONDARY).toContain('text-strong');
-    expect(BUTTON_SECONDARY).toContain('hover:border-gold/30');
-    expect(BUTTON_SECONDARY).toContain('hover:bg-white/[.08]');
-    expect(BUTTON_SECONDARY).toContain('active:bg-card-top');
+    expect(BUTTON_SECONDARY).toContain('active:brightness-[.92]');
   });
 
   it('ghost is gold ink on no ground with 10 px padding', () => {
     expect(BUTTON_GHOST).toContain('text-gold');
     expect(BUTTON_GHOST).toContain('bg-transparent');
     expect(BUTTON_GHOST).toContain('px-[10px]');
-    expect(BUTTON_GHOST).toContain('hover:bg-gold/[.06]');
     expect(BUTTON_GHOST).toContain('hover:text-gold-hover');
   });
 
-  it('danger is wipe ink on a 40 % wipe hairline, never filled; hover takes the full border and lighter ink', () => {
+  it('danger is wipe ink on a 40 % wipe hairline, never filled; hover takes the full border', () => {
     expect(BUTTON_DANGER).toContain('text-wipe');
     expect(BUTTON_DANGER).toContain('bg-transparent');
     expect(BUTTON_DANGER).toContain('border-wipe/40');
     expect(BUTTON_DANGER).toContain('hover:border-wipe');
-    expect(BUTTON_DANGER).toContain('hover:text-[#ff8f88]');
     expect(BUTTON_DANGER).not.toMatch(/bg-wipe/);
+  });
+
+  it('no tone keeps the retired gold gradient or glow', () => {
+    for (const recipe of ALL) expect(recipe).not.toMatch(/linear-gradient|glow|shadow-\[/);
   });
 
   it('hover applies only where a pointer can hover', () => {

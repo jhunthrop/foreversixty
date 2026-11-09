@@ -115,7 +115,7 @@
 {/snippet}
 
 {#snippet raidEyebrow()}
-  <span class="text-label tracking-label text-muted font-bold uppercase"
+  <span class="text-label text-muted font-bold"
     >{raid === null ? raidCopy.page.eyebrow : eyebrowOf(kindOf(raid))}</span
   >
 {/snippet}

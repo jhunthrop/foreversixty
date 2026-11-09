@@ -106,21 +106,24 @@ describe('planner-island.css', () => {
   // emitted fails here and so does one nobody meant to ship.
   it('declares a face for every family tokens.css names', () => {
     expect(declaredFontFamilies(css)).toEqual([
-      'Barlow',
-      'Barlow Fallback',
+      // Round 5's faces (design/specs/2026-11-09-directions.md section 4): the nav's Archivo, the
+      // literal-code mono, every heading's Marcellus and its two size-adjusted fallbacks, and the
+      // body's Open Sans with its fallback.
+      'Archivo',
       'JetBrains Mono',
-      // The page title's face and its two size-adjusted fallbacks (web layout spec 2026-11-05 §3.3).
       'Marcellus',
       'Marcellus Fallback',
       'Marcellus Fallback Times',
+      'Open Sans',
+      'Open Sans Fallback',
     ]);
   });
 
   // A fallback face without the metric overrides is just Arial under another name, and the
-  // CLS budget in lighthouserc.json depends on it matching Barlow's em-box.
-  it('keeps the size-adjusted metrics on the Barlow fallback face', () => {
-    expect(css).toMatch(/size-adjust:\s*95\.78%/);
-    expect(css).toMatch(/ascent-override:\s*104\.41%/);
+  // CLS budget in lighthouserc.json depends on it matching Open Sans's em-box.
+  it('keeps the size-adjusted metrics on the Open Sans fallback face', () => {
+    expect(css).toMatch(/size-adjust:\s*105\.15%/);
+    expect(css).toMatch(/ascent-override:\s*101\.65%/);
   });
 
   // Two regressions in one assertion. A relative `url()` would resolve against

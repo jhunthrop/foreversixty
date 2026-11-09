@@ -27,7 +27,7 @@ const groups = racesByFaction(rows);
 <LaneBlock label={guidesCopy.racialsColumn} testid="guide-race-table">
   {groups.map((group) => (
     <div class="guide-race-group" data-faction={group.faction}>
-      <h4 class="text-label tracking-label text-muted guide-race-sub font-bold uppercase">
+      <h4 class="text-label text-muted guide-race-sub font-bold">
         {group.faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading}
       </h4>
       <div class="guide-race-rows">

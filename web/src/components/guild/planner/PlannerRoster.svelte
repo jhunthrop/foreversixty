@@ -62,7 +62,7 @@
       {#each groups as group (group.id)}
         <div class="pb-1" data-testid={`raid-roster-${group.id}`}>
           <h3
-            class="text-label tracking-label text-muted flex items-baseline gap-2 px-4 pt-3 pb-1 font-bold uppercase"
+            class="text-label text-muted flex items-baseline gap-2 px-4 pt-3 pb-1 font-bold"
             data-testid={`raid-roster-${group.id}-heading`}
           >
             {group.label} <span class="tabular-nums">{group.rows.length}</span>

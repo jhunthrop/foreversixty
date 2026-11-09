@@ -233,7 +233,7 @@
     outline-offset: 3px;
   }
   :global([data-force='hover'] [role='switch'] > span:first-child) {
-    border-color: rgba(229, 185, 85, 0.3);
+    border-color: color-mix(in srgb, var(--color-gold) 30%, transparent);
   }
   :global([data-force='active'] [role='switch'] > span > span) {
     width: 20px;
@@ -246,6 +246,6 @@
     outline-offset: -2px;
   }
   :global([data-force='active'] a[href]) {
-    background: rgba(229, 185, 85, 0.1);
+    background: color-mix(in srgb, var(--color-gold) 10%, transparent);
   }
 </style>

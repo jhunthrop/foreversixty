@@ -61,9 +61,10 @@ test('a kill reads as a kill, with per-second figures beside the totals', async 
     /1 death/,
   );
   // MUST 1: each amount beside its rate.
-  const heads = page.getByTestId('summary-tab').getByRole('columnheader');
-  await expect(heads.filter({ hasText: 'Damage' }).first()).toBeVisible();
-  await expect(heads.filter({ hasText: 'DPS' })).toBeVisible();
+  // Below 1024 the head row is hidden (ui/StatTable's phone layout), still in the tree.
+  const heads = page.getByTestId('summary-tab').getByRole('columnheader', { includeHidden: true });
+  await expect(heads.filter({ hasText: 'Damage' }).first()).toBeAttached();
+  await expect(heads.filter({ hasText: 'DPS' })).toBeAttached();
 });
 
 test('the whole night folds every boss pull into one table, and each pull opens from it', async ({

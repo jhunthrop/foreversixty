@@ -21,6 +21,13 @@ func TestFilterSetAllowsByKindAndStanding(t *testing.T) {
 	if dungeon := publishedFilterSets[1]; dungeon.allows(rep) || !dungeon.allows(both) {
 		t.Error("dungeon filter set let a rep item through or dropped a dungeon drop")
 	}
+	preRaid := publishedFilterSets[3]
+	raidHelm := fixtureItem(4, "Raid Helm", fixtureHead, 9, src("raid", "Molten Core"))
+	pvpHelm := fixtureItem(5, "Marshal Helm", fixtureHead, 8, src("pvp", "PvP reward"))
+	if preRaid.Key != "pre_raid" || preRaid.allows(raidHelm) || preRaid.allows(pvpHelm) || !preRaid.allows(both) {
+		t.Errorf("pre_raid: raid allowed=%v, pvp allowed=%v, dungeon allowed=%v; want false, false, true",
+			preRaid.allows(raidHelm), preRaid.allows(pvpHelm), preRaid.allows(both))
+	}
 }
 
 // Every distinct filtered set is measured once under the guard harness;
@@ -59,10 +66,16 @@ func TestMeasureFilteredSetsMeasuresEachDistinctSetOnce(t *testing.T) {
 	if len(engine.Calls) != 2 {
 		t.Errorf("%d sims for 2 new distinct sets: %v", len(engine.Calls), engine.Calls)
 	}
+	if _, ok := got["pre_raid"]; ok {
+		t.Error("pre_raid measured below band 60")
+	}
 	in.Band = 60
 	at60, _ := measureFilteredSets(engine, in)
 	if _, ok := at60["leveling_default"]; ok {
 		t.Error("leveling_default measured at band 60")
+	}
+	if _, ok := at60["pre_raid"]; !ok {
+		t.Error("filtered_set_dps at band 60 has no pre_raid")
 	}
 
 	dungeonSet := repickFiltered("warrior-arms", picks, bySlot, publishedFilterSets[1].allows)

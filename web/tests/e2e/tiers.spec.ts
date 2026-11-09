@@ -353,7 +353,7 @@ test('keyboard: arrows choose the faction and the role, and a row link shows a f
   await link.focus();
   await expect(link).toBeFocused();
   await expect(link).toHaveCSS('outline-style', 'solid');
-  await expect(link).toHaveCSS('outline-color', 'rgb(229, 185, 85)');
+  await expect(link).toHaveCSS('outline-color', 'rgb(255, 236, 113)');
 });
 
 test('every row offers BiS, Guide and Planner at 44px', async ({ page }) => {
@@ -384,17 +384,15 @@ test('a DPS row links the ranking sim behind its number; a tank row, which /sim 
   await expect(tankRow.getByTestId('tier-sim-link')).toHaveCount(0);
 });
 
-test('Tier list is a Tools panel row and the Tools door is current, not Logs', async ({ page }) => {
+test('Tier list is a door of its own and current, not Logs', async ({ page }) => {
   await page.goto('/tiers');
   const nav = page.getByTestId('primary-nav');
-  await expect(nav.locator('a.site-door[data-door="tools"]')).toHaveAttribute('aria-current', 'page');
+  const tiers = nav.locator('a.site-door[data-door="tier-list"]');
+  await expect(tiers).toHaveAttribute('aria-current', 'page');
+  await expect(tiers).toHaveAttribute('href', '/tiers');
   await expect(nav.locator('a.site-door[data-door="logs"]')).not.toHaveAttribute('aria-current', 'page');
-  const rows = await page.locator('#site-panel-tools a.site-panel-row').allTextContents();
-  const titles = rows.map((row) => row.trim().toLowerCase());
-  expect(titles.findIndex((row) => row.startsWith('tier list'))).toBe(3);
   const logs = await page.locator('#site-panel-logs a.site-panel-row').allTextContents();
   expect(logs.some((row) => row.trim().toLowerCase().startsWith('tier list'))).toBe(false);
-  await expect(page.getByTestId('site-panel-row-tier-list')).toHaveAttribute('href', '/tiers');
 });
 
 test('the BiS index links to the tier list', async ({ page }) => {

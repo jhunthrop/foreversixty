@@ -79,6 +79,10 @@ export const selectorCopy = {
     account: 'Account',
     accountSub: 'Devices, Discord, notifications',
     accountHref: '/account',
+    /** The account menu's Get set up row, signed in or out (round 5: it left the bar's doors). */
+    setUp: 'Get set up',
+    setUpSub: 'The addon, the companion and Battle.net',
+    setUpHref: '/setup',
     plan: 'Plan',
     planSubFree: 'Free',
     /** The plan row's two lines for an account's own plan: `Premium · $50/yr` over `Renews 26 Oct 2027`. */

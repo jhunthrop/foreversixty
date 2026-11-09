@@ -172,10 +172,10 @@
     display: block;
   }
   .events .death {
-    color: #ffb4b0;
+    color: color-mix(in srgb, var(--color-death) 55%, var(--color-strong));
   }
   .icon {
-    background: rgb(255 255 255 / 0.06);
+    background: color-mix(in srgb, var(--color-strong) 6%, transparent);
     color: var(--color-text);
   }
   .death .icon {
@@ -183,7 +183,7 @@
     color: var(--color-death);
   }
   .row.hl {
-    background: rgba(229, 185, 85, 0.08);
+    background: color-mix(in srgb, var(--color-accent) 12%, transparent);
   }
   @media (prefers-reduced-motion: reduce) {
     .chart-tooltip {

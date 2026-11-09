@@ -45,7 +45,7 @@
     color: var(--color-text, inherit);
   }
   .ui-feed-row:hover {
-    background: linear-gradient(90deg, #ffffff06, transparent);
+    background: rgb(255 255 255 / 0.04);
   }
   .ui-feed-row:focus-visible {
     outline: 2px solid var(--color-gold);
@@ -69,10 +69,9 @@
     display: block;
     font-size: 12px;
     line-height: 16px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    letter-spacing: 0;
     font-weight: 700;
-    color: #7f7864;
+    color: var(--color-muted);
   }
   @media (prefers-reduced-motion: no-preference) {
     .ui-feed-row.fresh {

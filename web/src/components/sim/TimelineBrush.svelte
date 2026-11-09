@@ -7,6 +7,7 @@
      with two range inputs, and this window starts before the pull and moves by a 5 s model. -->
 <script lang="ts">
   import { clockLabel } from '../../lib/chart/time-axis';
+  import { CHART_INK, inkCss } from '../../lib/chart/theme';
   import {
     BRUSH_STEP_MS,
     panWindow,
@@ -92,7 +93,7 @@
   data-testid="timeline-brush"
 >
   <svg class="absolute inset-0" {width} height={STRIP_HEIGHT} aria-hidden="true">
-    {#if path !== ''}<path d={path} fill="none" stroke="#5d5849" stroke-width="1" />{/if}
+    {#if path !== ''}<path d={path} fill="none" stroke={inkCss(CHART_INK.quiet)} stroke-width="1" />{/if}
   </svg>
   {#if current !== null}
     <div
@@ -134,9 +135,9 @@
     position: absolute;
     top: 4px;
     bottom: 4px;
-    border: 1px solid var(--color-gold);
+    border: 1px solid var(--color-accent);
     border-radius: 4px;
-    background: rgba(229, 185, 85, 0.1);
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
     cursor: grab;
     touch-action: none;
   }
@@ -170,11 +171,11 @@
     width: 6px;
     height: 20px;
     border-radius: 2px;
-    background: var(--color-gold);
+    background: var(--color-accent);
   }
   @media (hover: hover) and (pointer: fine) {
     .grip:hover::after {
-      background: var(--color-gold-hover);
+      background: color-mix(in srgb, var(--color-accent) 80%, var(--color-strong));
     }
   }
   @media (pointer: coarse) {

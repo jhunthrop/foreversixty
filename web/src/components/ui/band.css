@@ -1,0 +1,46 @@
+/* web/src/components/ui/band.css
+   The section band (round 5, design/specs/2026-11-09-directions.md "The owner's art set"): the
+   owner's painted band, navy at the top into soft teal cloud, under one flat veil, stretched and
+   never tiled. It runs from the top of the page: Base.astro's .site-top (the floating bar's
+   ground), then ui/PageHeader's title band and ui/ControlBar's controls, each drawing the same
+   image at the same size offset by its own distance from the top (--band-y), so the three read as
+   one band. `data-art="hero"` is home's camp road under the night veil instead. A band's last
+   piece takes their black rule underneath. Imported by global.css. */
+
+@layer components {
+  .ui-band {
+    --band-size: max(100%, 1440px) auto;
+    background:
+      linear-gradient(var(--color-veil-band), var(--color-veil-band)),
+      var(--art-band, none) center calc(-96px - var(--band-y, 0px)) / var(--band-size) no-repeat,
+      var(--color-band);
+  }
+  .ui-band[data-art='hero'] {
+    background:
+      linear-gradient(var(--color-veil-night), var(--color-veil-night)),
+      var(--art-hero, none) 0 calc(-10vw - var(--band-y, 0px)) / 124% auto no-repeat,
+      var(--color-night);
+  }
+  .ui-band-end {
+    border-bottom: 1px solid black;
+  }
+  /* The bar's band hands its rule to a title band below it, the title band to the controls. */
+  .ui-band-end:has(+ .ui-band),
+  body:has(.ui-band:not(.site-top)) .site-top {
+    border-bottom: 0;
+  }
+  @media (max-width: 767px) {
+    .ui-band {
+      --band-size: cover;
+      background-image:
+        linear-gradient(var(--color-veil-band), var(--color-veil-band)), var(--art-band-phone, none);
+      background-position: center;
+    }
+    .ui-band[data-art='hero'] {
+      background:
+        linear-gradient(var(--color-veil-night), var(--color-veil-night)),
+        var(--art-hero-phone, none) 84% 60% / cover no-repeat,
+        var(--color-night);
+    }
+  }
+}

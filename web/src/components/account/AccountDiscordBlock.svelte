@@ -210,9 +210,7 @@
     data-testid="account-discord"
   >
     <span class="flex items-center gap-2">
-      <span class="text-label tracking-label text-muted font-bold uppercase"
-        >{notificationsCopy.headLabel}</span
-      >
+      <span class="text-label text-muted font-bold">{notificationsCopy.headLabel}</span>
       {#if stateTag !== null}<Tag tone={stateTag.tone} dot={stateTag.dot} testid="discord-state-tag"
           >{stateTag.text}</Tag
         >{/if}

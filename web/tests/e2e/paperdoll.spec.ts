@@ -92,7 +92,9 @@ test.describe('the report "At pull" at 1280', () => {
       await route.fulfill({ response, json: summary });
     });
     await page.goto('/reports/fixture2abcd?fight=3');
-    await page.getByTestId('combatant-gear').first().click();
+    // At pull's Gear link opens the combatant's own view, whose Gear at the pull is the paperdoll
+    // (the report frame, 2026-11-07: GearList inside PlayerView).
+    await page.getByTestId('at-pull-links').first().getByRole('link', { name: 'Gear ›' }).click();
     const frame = page.getByTestId('gear-list');
     await expect(frame.getByTestId('paperdoll-slot-head')).toHaveAttribute('data-state', 'item');
     await expect(frame.getByTestId('paperdoll-line2-head')).toHaveText('Item level 66 · Enchanted');

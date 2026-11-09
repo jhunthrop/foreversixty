@@ -195,7 +195,7 @@
     position: fixed;
     inset: 0;
     z-index: 60;
-    background: #05070bcc;
+    background: color-mix(in srgb, var(--color-bg) 80%, transparent);
   }
   .account-delete-dialog {
     position: fixed;
@@ -228,8 +228,7 @@
     font-size: 12px;
     line-height: 16px;
     font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0;
   }
   .account-delete-list {
     display: flex;

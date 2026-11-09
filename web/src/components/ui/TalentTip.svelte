@@ -90,8 +90,7 @@
     display: block;
     margin-bottom: 2px;
     font: 700 12px/16px var(--font-body);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0;
   }
   .req {
     color: var(--color-wipe);

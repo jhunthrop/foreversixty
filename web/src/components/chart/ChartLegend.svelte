@@ -203,7 +203,7 @@
   }
   .chip:hover,
   .chip.hl {
-    background: rgba(255, 255, 255, 0.04);
+    background: color-mix(in srgb, var(--color-strong) 5%, transparent);
   }
   .chip:focus-visible,
   .only:focus-visible,
@@ -236,9 +236,8 @@
     white-space: nowrap;
   }
   .you {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 600;
     color: var(--color-gold);
   }
   .value {
@@ -252,7 +251,7 @@
   }
   .unit {
     margin-left: 3px;
-    font-size: 11px;
+    font-size: 12px;
   }
   /* The fine pointer's chip reserves the slot its Only button appears in, so the button never
      covers the value and no chip moves on hover. */
@@ -266,7 +265,7 @@
     transform: translateY(-50%);
     padding: 2px 4px;
     border-radius: 4px;
-    background: rgb(255 255 255 / 0.06);
+    background: color-mix(in srgb, var(--color-strong) 6%, transparent);
     color: var(--color-gold);
     font-size: 12px;
     font-weight: 600;

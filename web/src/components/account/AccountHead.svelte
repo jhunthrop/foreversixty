@@ -96,6 +96,13 @@
   :global(html[data-session='1']) .account-meta-reserve {
     display: block;
   }
+  /* On a phone the ready meta line wraps: the battletag and sign-in line (20 px), then the Sign out
+     button under them (6 px gap, 44 px). */
+  @media (max-width: 767px) {
+    .account-meta-reserve {
+      height: 70px;
+    }
+  }
   /* A hinted visitor with a stored character before first paint (an account with characters): the
      answer's box, held until /v1/me answers (the ready answer's measured size), as /setup holds it.
      account.astro sets data-account-answer from data-pointer once, before paint: the header writing a

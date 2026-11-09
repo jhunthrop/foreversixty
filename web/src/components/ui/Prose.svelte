@@ -99,8 +99,7 @@
     font-size: 12px;
     line-height: 16px;
     font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0;
     color: var(--color-muted);
   }
   .ui-prose :global(.glabel:first-child) {
@@ -167,8 +166,7 @@
     font-size: 12px;
     line-height: 16px;
     font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0;
     color: var(--color-muted);
     padding: 0 16px 8px 0;
     border-bottom: 1px solid var(--color-line-soft);

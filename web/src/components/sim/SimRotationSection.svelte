@@ -106,7 +106,7 @@
     {#if lines === null}<p class="text-muted text-[14px]">{copy.noRotation(spec)}</p>{/if}
   {:else}
     {#if rows.prepull.length > 0}
-      <h3 class="text-label tracking-label text-muted pt-4 pb-1 font-bold uppercase">{copy.beforePull}</h3>
+      <h3 class="text-label text-muted pt-4 pb-1 font-bold">{copy.beforePull}</h3>
       <div data-testid="rotation-prepull">
         {#each rows.prepull as row (row.key)}
           <div
@@ -126,7 +126,7 @@
         {/each}
       </div>
     {/if}
-    <h3 class="text-label tracking-label text-muted pt-4 pb-1 font-bold uppercase">{copy.thenPriority}</h3>
+    <h3 class="text-label text-muted pt-4 pb-1 font-bold">{copy.thenPriority}</h3>
     <div data-testid="rotation-priority">
       {#each rows.priority as row (row.key)}
         <div class={row.dimmed ? 'opacity-50' : ''} data-testid="rotation-line" data-dimmed={row.dimmed}>

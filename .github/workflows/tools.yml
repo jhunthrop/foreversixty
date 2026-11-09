@@ -13,7 +13,8 @@
 # tools/tests/test_prod_smoke.sh (smoke.yml's launch-mode production smoke),
 # tools/tests/test_go_test_shard.sh (api.yml's go test shards),
 # tools/tests/test_apl_check.py (apl-check and apl-sync ignore the curated-only notes),
-# tools/tests/test_revert_check.py (the merge revert check) and
+# tools/tests/test_revert_check.py (the merge revert check),
+# tools/tests/test_land_workflows.py (a disabled_manually workflow never gates a landing) and
 # tools/tests/play-upload.test.ts
 # (its Play upload, against a stub of the API), then
 # shellcheck over every script and actionlint over every workflow. Plain bash with stubs
@@ -96,6 +97,9 @@ jobs:
       - name: the merge revert check
         if: vars.LAUNCH_MODE != 'true'
         run: python3 -m unittest discover -s tools/tests -p 'test_revert*.py'
+      - name: land_workflows skips a disabled_manually workflow, fails any other disabled one
+        if: vars.LAUNCH_MODE != 'true'
+        run: python3 -m unittest discover -s tools/tests -p 'test_land_workflows*.py'
       # 24 runs the TypeScript directly, with no packages.
       - uses: actions/setup-node@v4
         with: { node-version: 24 }

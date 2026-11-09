@@ -106,7 +106,7 @@
         >
           {#each spread.bars as bar, index (bar.low)}
             <span
-              class={`min-w-0 flex-1 rounded-t-[2px] ${index === active ? 'bg-gold-light' : bar.central ? 'bg-[rgba(229,185,85,.7)]' : 'bg-line'}`}
+              class={`min-w-0 flex-1 rounded-t-[2px] ${index === active ? 'bg-accent' : bar.central ? 'bg-accent/70' : 'bg-strong/20'}`}
               style:height={`${Math.max(1, (bar.count / spread.peak) * 100)}%`}
               data-testid="sim-spread-bar"
               onpointerenter={() => (active = index)}
@@ -114,7 +114,7 @@
             ></span>
           {/each}
           <span
-            class="bg-gold-light pointer-events-none absolute -top-1.5 bottom-0 w-[2px] -translate-x-1/2"
+            class="bg-gold pointer-events-none absolute -top-1.5 bottom-0 w-[2px] -translate-x-1/2"
             style:left={`${meanAt}%`}
             data-testid="sim-distribution-mean"
           ></span>
@@ -149,12 +149,12 @@
       <div class="flex flex-col gap-2 pt-2" data-testid="sim-spread-range">
         <div class="bg-line-soft relative h-2 rounded-[4px]">
           <span
-            class="absolute inset-y-0 bg-[rgba(229,185,85,.35)]"
+            class="bg-accent/35 absolute inset-y-0"
             style:left={`${Math.max(0, pct(estimate.mean - estimate.stddev))}%`}
             style:right={`${Math.max(0, 100 - pct(estimate.mean + estimate.stddev))}%`}
           ></span>
           <span
-            class="bg-gold-light absolute -inset-y-1 w-[2px] -translate-x-1/2"
+            class="bg-gold absolute -inset-y-1 w-[2px] -translate-x-1/2"
             style:left={`${pct(estimate.mean)}%`}
             data-testid="sim-distribution-mean"
           ></span>

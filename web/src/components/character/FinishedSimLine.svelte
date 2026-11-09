@@ -224,9 +224,9 @@
     color: var(--color-strong);
   }
   .fsl-dismiss:hover span {
-    background: rgb(255 255 255 / 6%);
+    background: color-mix(in srgb, var(--color-strong) 6%, transparent);
   }
   .fsl-dismiss:active span {
-    background: rgb(255 255 255 / 12%);
+    background: color-mix(in srgb, var(--color-strong) 12%, transparent);
   }
 </style>

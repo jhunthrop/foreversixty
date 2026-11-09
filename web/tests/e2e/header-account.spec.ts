@@ -57,7 +57,7 @@ test.describe('the account panel, signed in', () => {
     await expect(panel(page).getByTestId('selector-account-head')).toContainText('Signed in with Battle.net');
     await expect(panel(page).getByTestId('selector-premium-tag')).toHaveText('Premium');
     const labels = await rows(page).locator('.csel-arow-title').allTextContents();
-    expect(labels).toEqual(['Character page', 'Account', 'Plan', 'Sign out']);
+    expect(labels).toEqual(['Character page', 'Account', 'Plan', 'Get set up', 'Sign out']);
     await expect(rows(page).getByTestId('selector-row-profile')).toHaveAttribute(
       'href',
       '/character/us/normal/obnoxious-yell',
@@ -224,12 +224,13 @@ test.describe('the account panel, signed in', () => {
     await expect(row.locator('.csel-check')).toBeVisible();
   });
 
-  test('the bar sits on the page column: seal on the page edge, control on the other', async ({ page }) => {
+  test('the floating bar sits on the page column, the control inside its right end', async ({ page }) => {
     await signedInPage(page);
-    const seal = (await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox())!;
+    const banner = (await page.getByRole('banner').boundingBox())!;
     const bar = (await control(page).boundingBox())!;
-    expect(Math.round(seal.x)).toBe(96);
-    expect(Math.round(bar.x + bar.width)).toBe(1344);
+    expect(Math.round(banner.x)).toBe(96);
+    expect(Math.round(banner.x + banner.width)).toBe(1344);
+    expect(bar.x + bar.width).toBeLessThan(1344);
   });
 
   test('has no Discord link in the bar', async ({ page }) => {
@@ -275,7 +276,7 @@ test.describe('the account sheet on a phone', () => {
       expect(box.height).toBeGreaterThanOrEqual(MIN_TARGET);
       expect(box.x + box.width).toBeLessThanOrEqual(360);
     }
-    await expect(rows(page).locator('.csel-arow')).toHaveCount(4);
+    await expect(rows(page).locator('.csel-arow')).toHaveCount(5);
     const scroll = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
     expect(scroll).toBe(true);
   });

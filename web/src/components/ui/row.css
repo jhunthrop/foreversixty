@@ -26,8 +26,8 @@
 }
 .row-band-mark,
 .row-band-target:target {
-  background-color: rgba(229, 185, 85, 0.08);
-  box-shadow: inset 2px 0 0 var(--color-gold);
+  background-color: var(--color-selected);
+  box-shadow: inset 2px 0 0 var(--color-accent);
 }
 .row-band-hover:active {
   background-color: var(--color-card-top);

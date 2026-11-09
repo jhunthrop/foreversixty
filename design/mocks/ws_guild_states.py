@@ -10,6 +10,7 @@ as FeedRows. No Card, no caps title, no boxed tiles: the Overview's one Plate is
 from datetime import datetime
 
 import guild_overview_data as O
+import guild_overview_fixtures as F
 import guild_states_fixtures as S
 from guild_data import ALLIANCE, C, GUILD, TABS
 from ws_guild2 import _view, ch, pad
@@ -122,7 +123,8 @@ def activity(feed: dict, now: str) -> str:
 
 def last_raid(progression: str, logged: bool) -> str:
     if logged:
-        row = Row(f'{O.ZONE_NAME} &middot; raid night', 'Mon 7 Dec &middot; 1 boss (Onyxia) &middot; 1 kill &middot; 1 wipe',
+        n = O.last_raid_counts()
+        row = Row(f'{O.ZONE_NAME} &middot; raid night', f"{F.day_label(O.LAST_RAID_AT)} &middot; 1 boss ({O.BOSS}) &middot; {n['kills']} kill &middot; {n['wipes']} wipe",
                   trail='<span class="gold" style="font-weight:600">Report &rsaquo;</span>')
         body = pad(Rows([row], open_=True))
     else:
@@ -191,7 +193,8 @@ def public():
     notice = Notice(f'{GUILD} is recruiting.', Link('See what they look for &rsaquo;'))
     main = notice + last_raid('1 of 1 named bosses down: Onyxia.', True)
     gate = Section('Roster', '<p class="muted-line">Roster is for members of this guild. None of your characters is on it.</p>')
-    body = head(['PvP US', '1 boss down', '2 pulls'], True, tabs=['Overview', 'Raids', 'Progression']).replace(Button('Invite link', small=True), '')
+    t = F.tier()
+    body = head(['PvP US', f"{t['down']} boss down", f"{t['pulls_total']} pulls"], True, tabs=['Overview', 'Raids', 'Progression']).replace(Button('Invite link', small=True), '')
     body += Page('split', main, '', sticky_rail=False) + f'<div class="pc" style="padding-top:61px">{gate}</div>'
     return page('Guild, visitor', body, ('Felsnap', 'warrior', 'Fury Warrior &middot; 34'))
 

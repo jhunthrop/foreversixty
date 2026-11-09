@@ -12,7 +12,7 @@
 <div class="ui-rank-heads ui-rank-cols" aria-hidden="true" data-testid={testid}>
   {#each cells as cell, index (index)}
     <span
-      class="text-label tracking-label text-muted font-bold uppercase"
+      class="text-label text-muted font-bold"
       data-align={cell.align === 'end' ? 'end' : undefined}
       title={cell.label}>{cell.label}</span
     >

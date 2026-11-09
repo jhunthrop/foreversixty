@@ -135,7 +135,7 @@ describe('/setup', () => {
     expect(head).not.toContain('#f0cc6c');
   });
 
-  it('is reachable from the primary nav as "Get set up"', () => {
+  it('is reachable as "Get set up" from the account menu and the footer', () => {
     expect(SETUP_NAV_ITEM.href).toBe('/setup');
   });
 

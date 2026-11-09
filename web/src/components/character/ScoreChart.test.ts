@@ -27,7 +27,7 @@ describe('ScoreChart, the owner with data', () => {
     expect(html).toContain('role="group"');
     expect(html).toContain('tabindex="0"');
     expect(html).toContain('aria-label="Score chart. Use the arrow keys to move between points."');
-    expect(html).toMatch(/<path d="M[^"]+" fill="none" stroke="var\(--color-gold\)"/);
+    expect(html).toMatch(/<path d="M[^"]+" fill="none" stroke="var\(--color-accent\)"/);
     expect(html).toContain('data-testid="history-band-label"');
     expect(html).toContain('data-testid="history-gap"');
     expect(html).toContain('No rated');
@@ -42,7 +42,7 @@ describe('ScoreChart, the owner with data', () => {
   it('labels the x axis and breaks the line at the gap into two runs', () => {
     expect(html).toContain('>12 Oct<');
     expect(html).toContain('>11 Dec<');
-    expect(html.match(/<path d="M[^"]*" fill="none" stroke="var\(--color-gold\)"/g)).toHaveLength(2);
+    expect(html.match(/<path d="M[^"]*" fill="none" stroke="var\(--color-accent\)"/g)).toHaveLength(2);
   });
 
   it('writes the net change and the step buttons, the later one disabled at the newest point', () => {

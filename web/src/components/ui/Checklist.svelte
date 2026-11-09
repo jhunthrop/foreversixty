@@ -33,7 +33,7 @@
     >
       {#snippet lead()}
         <span
-          class="inline-flex size-[22px] flex-none items-center justify-center rounded-full text-[13px] leading-[22px] font-bold text-[#07090d] {MARK[
+          class="text-bg inline-flex size-[22px] flex-none items-center justify-center rounded-full text-[13px] leading-[22px] font-bold {MARK[
             item.tone
           ].ground}"
           role="img"

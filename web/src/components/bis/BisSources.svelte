@@ -92,9 +92,7 @@
 </script>
 
 <div class="ui-cbar-group bis-sources" data-kind="select" data-testid="bis-sources">
-  <span class="ui-cbar-label text-label tracking-label text-muted font-bold uppercase" id="bis-sources-label"
-    >Sources</span
-  >
+  <span class="ui-cbar-label text-label text-muted font-bold" id="bis-sources-label">Sources</span>
   <div class="bis-sources-pop" bind:this={wrap}>
     <button
       bind:this={button}

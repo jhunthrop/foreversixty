@@ -12,6 +12,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
 import { answerRaceQuestion } from './support/sim-race';
+import { openSimThisFight } from './support/report-frame';
 
 const meta = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'fixtures', 'report', 'meta.json'), 'utf8'),
@@ -73,9 +74,8 @@ test('the sentence and the ordinary results are gone in compare mode', async ({ 
 test('the report links to compare mode on its own current fight', async ({ page }) => {
   await stubReportMeta(page);
   await page.goto('/reports/fixture2abcd');
-  const link = page.getByTestId('report-sim-fight');
-  await expect(link).toBeVisible();
-  await link.click();
+  // A head button from 768, the head's actions menu below (ReportHead).
+  await openSimThisFight(page);
   await expect(page).toHaveURL(/\/sim\?source=fight&ref=fixture2abcd(?:%3A|:)3&mode=compare/);
 });
 

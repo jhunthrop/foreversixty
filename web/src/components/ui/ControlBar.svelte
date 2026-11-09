@@ -80,7 +80,7 @@
 </script>
 
 <div
-  class={['ui-cbar full-bleed', sticky && 'ui-cbar--sticky']}
+  class={['ui-cbar ui-band ui-band-end full-bleed', sticky && 'ui-cbar--sticky']}
   data-control-bar
   data-open={open ? '' : undefined}
   data-labels-from={labelsFrom}
@@ -112,9 +112,8 @@
     >
       {#each groups as group (group.param)}
         <div class="ui-cbar-group" data-kind={group.kind}>
-          <span
-            class="ui-cbar-label text-label tracking-label text-muted font-bold uppercase"
-            id={`${id}-${group.param}-label`}>{group.label}</span
+          <span class="ui-cbar-label text-label text-muted font-semibold" id={`${id}-${group.param}-label`}
+            >{group.label}</span
           >
           {#if group.kind === 'segmented'}
             <div
@@ -207,10 +206,11 @@
 </div>
 
 <style>
+  /* The controls sit on the band (round 5: their tab groups on the section band), continuing the
+     title band's image from about where it ends, under a faint light rule. */
   .ui-cbar {
-    border-block: 1px solid var(--color-line-soft);
-    background: color-mix(in srgb, var(--color-bg) 94%, transparent);
-    backdrop-filter: blur(6px);
+    --band-y: calc(var(--site-top-h, 80px) + 110px);
+    border-top: 1px solid rgb(255 255 255 / 0.14);
     z-index: 30;
   }
   .ui-cbar--sticky {

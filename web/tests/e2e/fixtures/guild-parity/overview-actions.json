@@ -1,7 +1,7 @@
 {
   "approvals": {
     "count": 3,
-    "names": ["Nightlatch", "Voidcall", "Skyarcana"]
+    "names": ["Brambleshot", "Mirelocke", "Oakhallow"]
   },
   "applications": {
     "count": 2,
@@ -14,9 +14,9 @@
   },
   "drops_to_award": {
     "tracked": true,
-    "count": 4,
-    "raid_id": 38,
-    "label": "Onyxia, Mon 7 Dec",
-    "awarded": 2
+    "count": 3,
+    "raid_id": 40,
+    "label": "Onyxia, Wed 9 Dec",
+    "awarded": 3
   }
 }

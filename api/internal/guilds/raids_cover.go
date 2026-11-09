@@ -44,11 +44,14 @@ const (
 // coverGroupSize is a party's size: a party buff reaches its own group of five.
 const coverGroupSize = 5
 
-// coverProvider is who can provide a row: a class, optionally only one spec (a specs.json key)
-// and a talent by its client name. Spell is the id the provider learns when it is not the row's.
+// coverProvider is who can provide a row: a class, optionally only one spec (a specs.json key),
+// optionally only one roster group (a druid's Demoralizing Roar needs Bear Form: the bear spec, or
+// a druid signed as a tank), and a talent by its client name. Spell is the id the provider learns
+// when it is not the row's.
 type coverProvider struct {
 	Class  string `json:"class"`
 	Spec   string `json:"spec"`
+	Group  string `json:"group"`
 	Talent string `json:"talent"`
 	Spell  int    `json:"spell"`
 }
@@ -240,10 +243,10 @@ func provides(e coverEntry, sg coverSignup) provision {
 	return best
 }
 
-// matches: the class, then the spec when the provider names one (an unknown spec is not
-// counted), then the talent, likely when the sign-up's talents are unknown.
+// matches: the class, then the spec and the roster group when the provider names them (an
+// unknown spec is not counted), then the talent, likely when the sign-up's talents are unknown.
 func (p coverProvider) matches(sg coverSignup) provision {
-	if !strings.EqualFold(p.Class, sg.Class) || (p.Spec != "" && p.Spec != sg.SpecKey) {
+	if !strings.EqualFold(p.Class, sg.Class) || (p.Spec != "" && p.Spec != sg.SpecKey) || (p.Group != "" && p.Group != sg.Group) {
 		return provideNone
 	}
 	if p.Talent == "" {

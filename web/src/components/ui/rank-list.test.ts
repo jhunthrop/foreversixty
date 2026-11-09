@@ -71,10 +71,10 @@ describe('RankList', () => {
 });
 
 describe('ColumnHeads', () => {
-  it('is one decorative row of caps labels, numeric heads at the end, each with its full text as a title', () => {
+  it('is one decorative row of sentence-case labels, numeric heads at the end, each with its full text as a title', () => {
     const body = html(ColumnHeads, { cells: [{ label: 'Spec' }, { label: 'Taken / s', align: 'end' }] });
     expect(body).toMatch(/^<div class="ui-rank-heads ui-rank-cols" aria-hidden="true"/);
-    expect(body).toContain('uppercase');
+    expect(body).not.toContain('uppercase');
     expect(body).toMatch(/data-align="end" title="Taken \/ s">Taken \/ s</);
     expect(body).not.toMatch(/data-align="end"[^>]*>Spec</);
   });

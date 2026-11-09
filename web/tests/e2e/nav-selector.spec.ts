@@ -21,9 +21,10 @@ import { ctaCopy } from '../../src/lib/addon/cta-copy';
 // Reads this spec does not answer go unanswered, as the API out of reach (support/test.ts).
 test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*', '**/v1/encounters*'));
 
-const GROUPS = ['Tools', 'Logs', 'Guild', 'Guides'];
-/** The bar's doors: the four groups, then Get set up as a plain fifth door. */
-const DOORS = [...GROUPS, 'Get set up', 'Premium'];
+/** The doors with sub-pages: headed sections in the phone Menu. */
+const GROUPS = ['Guides', 'Logs', 'Guild'];
+/** The bar's doors, the mock's flat set (round 5), then Premium. */
+const DOORS = ['Best in slot', 'Guides', 'Tier list', 'Sim', 'Planner', 'Logs', 'Guild', 'Premium'];
 const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 
 const FROSTBYTE: FixtureCharacter = {
@@ -91,14 +92,13 @@ test.describe('the doors', () => {
   test.skip(() => test.info().project.name !== 'desktop', 'desktop layout only');
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test('are the four groups in order, and BiS is a row of the Tools panel', async ({ page }) => {
+  test("are the mock's doors in order, and Best in slot is a door of its own", async ({ page }) => {
     await signedOut(page);
     await page.goto('/');
     await headerWired(page);
     await expect(page.getByTestId('primary-nav').locator('a.site-door')).toHaveText(DOORS);
     await expect(page.getByRole('banner')).not.toContainText('Leveling BiS');
-    await page.getByTestId('primary-nav').getByRole('link', { name: 'Tools', exact: true }).hover();
-    await page.getByTestId('site-panel-row-bis').click();
+    await page.getByTestId('primary-nav').getByRole('link', { name: 'Best in slot', exact: true }).click();
     await expect(page).toHaveURL(/\/bis$/);
     await expect(page.getByRole('heading', { name: 'Best in slot', level: 1 })).toBeVisible();
   });
@@ -121,12 +121,12 @@ test.describe('the bar at every width', () => {
   test.skip(() => test.info().project.name !== 'desktop', 'desktop layout only');
 
   const widths = [
-    { width: 2000, height: 81 },
-    { width: 1440, height: 81 },
-    { width: 1439, height: 81 },
-    { width: 1280, height: 81 },
-    { width: 1279, height: 81 },
-    { width: 1024, height: 81 },
+    { width: 2000, height: 64 },
+    { width: 1440, height: 64 },
+    { width: 1439, height: 64 },
+    { width: 1280, height: 64 },
+    { width: 1279, height: 64 },
+    { width: 1024, height: 64 },
     { width: 1023, height: 56 },
     { width: 768, height: 56 },
   ];
@@ -174,7 +174,7 @@ test.describe('the bar at every width', () => {
     await expect(page.getByTestId('selector-sub')).toBeHidden();
   });
 
-  test('the wordmark and the account control sit on the wide column content edges at 2000', async ({
+  test('the floating bar spans the wide column content edges at 2000, Premium closing it', async ({
     page,
   }) => {
     await signInWith(page, [OBNOXIOUS]);
@@ -184,11 +184,15 @@ test.describe('the bar at every width', () => {
     await page.goto('/bis');
     await ready(page);
     const mark = (await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox())!;
-    const account = (await selector(page).boundingBox())!;
+    const bar = (await barBox(page))!;
+    const premium = (await page.getByTestId('nav-premium').boundingBox())!;
     // At 2000 the wide column is clamp(1600, 100vw - 160, 1792) = 1792 px, so it starts at 104,
-    // and the wide gutter is 64 px: the content edges are 168 and 2000 - 168 = 1832.
+    // and the wide gutter is 64 px: the content edges are 168 and 2000 - 168 = 1832. Round 5's
+    // bar floats on those edges; the seal opens it and Premium (8 px in) closes it.
+    expect(Math.abs(bar.x - 168)).toBeLessThanOrEqual(1);
+    expect(Math.abs(bar.x + bar.width - 1832)).toBeLessThanOrEqual(1);
     expect(Math.abs(mark.x - 168)).toBeLessThanOrEqual(1);
-    expect(Math.abs(account.x + account.width - 1832)).toBeLessThanOrEqual(1);
+    expect(Math.abs(premium.x + premium.width - 1824)).toBeLessThanOrEqual(1);
   });
 
   test('a 22-character name keeps the bar one row and ends in an ellipsis, with the whole name in title', async ({
@@ -704,8 +708,8 @@ test.describe('before the island hydrates', () => {
     await expect(link.locator('.csel-pre-char .csel-name')).toHaveText('Obnoxious Yell');
     await expect(link.locator('.csel-pre-char .csel-sub')).toHaveText('Warrior');
     await expect(link.locator('.csel-pre-crest')).toHaveCSS('background-image', /crests\/warrior\.webp/);
-    expect((await barBox(page))!.height).toBeGreaterThanOrEqual(81);
-    expect((await link.boundingBox())!.width).toBe(232);
+    expect((await barBox(page))!.height).toBeGreaterThanOrEqual(64);
+    expect((await link.boundingBox())!.width).toBe(220);
   });
 });
 

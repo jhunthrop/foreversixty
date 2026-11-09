@@ -39,6 +39,11 @@ export const bisSeoCopy = {
     band >= MAX_BAND && subject.preRaid
       ? `${who(subject)} Pre-Raid BiS`
       : `${who(subject)} BiS, ${bandWords(band)}`,
+  /** The level 60 pre-raid list's own page (/60/pre-raid): "Fury Warrior Pre-Raid BiS, WoW Forever". */
+  preRaidTitle: (subject: BisSeoSubject): string => `${who(subject)} Pre-Raid BiS, ${GAME}`,
+  preRaidDescription: (subject: BisSeoSubject): string =>
+    `${who(subject)} pre-raid best in slot gear at level ${MAX_BAND} in ${GAME}: no raid or high-rank PvP pieces, every slot ranked by the simulator, with the dungeon, quest or vendor each item comes from.`,
+  preRaidCrumb: (subject: BisSeoSubject): string => `${who(subject)} Pre-Raid BiS`,
   specDescription: (subject: BisSeoSubject, firstBand: number): string =>
     `${who(subject)} best in slot gear for ${GAME}, from leveling ${firstBand} to ${MAX_BAND} to ${subject.preRaid ? 'pre-raid ' : ''}level ${MAX_BAND}: every slot ranked by the simulator, with where each item comes from.`,
   bandDescription: (subject: BisSeoSubject, band: number): string =>

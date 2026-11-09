@@ -234,22 +234,33 @@ function cssValue(t, value, resolve) {
   }
 }
 
+/** The value the web takes: `platformValue.web` where the site leads a change the apps have not
+ *  adopted yet (round 5's palette, type and radii), else the shared value. A typography override
+ *  merges over the shared role and may carry its own `phone`. */
+export function webValue(t) {
+  const web = t.ext.platformValue?.web;
+  if (web === undefined) return { value: t.value, phone: t.ext.phone ?? {} };
+  if (t.type !== 'typography') return { value: web, phone: t.ext.phone ?? {} };
+  const { phone, ...rest } = web;
+  return { value: { ...t.value, ...rest }, phone: phone ?? t.ext.phone ?? {} };
+}
+
 /** The custom properties a token defines: [name, value] pairs, aliases after. */
 function cssDeclarations(t, resolve) {
   const css = t.ext.css;
   if (!css) return [];
+  const { value, phone } = webValue(t);
   if (t.type === 'typography') {
-    const phone = t.ext.phone ?? {};
     return [
-      [css.fontSize, t.value.fontSize],
-      [css.lineHeight, t.value.lineHeight],
+      [css.fontSize, value.fontSize],
+      [css.lineHeight, value.lineHeight],
       [css.phoneFontSize, phone.fontSize],
       [css.phoneLineHeight, phone.lineHeight],
     ]
       .filter(([name]) => name)
-      .map(([name, value]) => [name, resolve(value)]);
+      .map(([name, v]) => [name, resolve(v)]);
   }
-  return [[css, cssValue(t, t.value, resolve)], ...(t.ext.cssAliases ?? []).map((a) => [a, `var(${css})`])];
+  return [[css, cssValue(t, value, resolve)], ...(t.ext.cssAliases ?? []).map((a) => [a, `var(${css})`])];
 }
 
 export function renderCss({ tokens, groups, resolve, byPath }) {

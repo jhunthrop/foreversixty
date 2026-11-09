@@ -4,9 +4,10 @@ import { entityStyle, withAlpha } from './palette';
 
 describe('entityStyle', () => {
   it('takes the palette in order and dashes the seventh line', () => {
-    expect(entityStyle(0)).toEqual({ colour: 'var(--color-gold)' });
-    expect(entityStyle(1).colour).toBe('var(--color-school-frost)');
-    expect(entityStyle(6)).toEqual({ colour: 'var(--color-gold)', dash: [4, 3] });
+    expect(entityStyle(0)).toEqual({ colour: 'var(--color-accent)' });
+    expect(entityStyle(1).colour).toBe('var(--color-school-nature)');
+    expect(entityStyle(5).colour).toBe('var(--color-school-frost)');
+    expect(entityStyle(6)).toEqual({ colour: 'var(--color-accent)', dash: [4, 3] });
   });
 });
 

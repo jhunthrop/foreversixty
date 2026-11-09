@@ -72,6 +72,23 @@ test('nothing DuckDB-related loads on page load, while browsing, or on opening Q
   expect(parquetFiles(fetched)).toEqual([]);
 });
 
+// 2026-11-08: on a phone the six starting points sat squeezed in one row, each label running into
+// the next button, so a tap on one picked its neighbour. Each is now its own row below 768.
+test('every starting point takes the tap aimed at it', async ({ page }) => {
+  await page.goto(QUERIES);
+  const items = page.locator('[data-testid^="template-"][role="radio"]');
+  await expect(items.first()).toBeVisible();
+  const misses = await items.evaluateAll((elements) =>
+    elements.flatMap((element) => {
+      element.scrollIntoView({ block: 'center' });
+      const box = element.getBoundingClientRect();
+      const hit = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2);
+      return hit !== null && element.contains(hit) ? [] : [element.getAttribute('data-testid')];
+    }),
+  );
+  expect(misses).toEqual([]);
+});
+
 test('a statement that is not a read is refused before anything loads', async ({ page }) => {
   const fetched = recordRequests(page);
   await page.goto(QUERIES);

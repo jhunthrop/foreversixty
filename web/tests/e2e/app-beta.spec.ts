@@ -32,6 +32,16 @@ async function answerSignup(
   return seen;
 }
 
+/** Opens /app once its form island has hydrated: before that a press on the platform or Send
+ *  reaches the server's static markup (a native submit, a choice the island then redraws), which
+ *  is what made these tests pass or fail by timing. */
+async function openApp(page: Page): Promise<void> {
+  await page.goto('/app');
+  await expect(page.locator('astro-island:has([data-testid="app-beta-form-body"]):not([ssr])')).toHaveCount(
+    1,
+  );
+}
+
 async function fillAndSend(page: Page, email: string): Promise<void> {
   await page.getByTestId('app-beta-email').fill(email);
   await page.getByTestId('app-beta-submit').click();
@@ -39,7 +49,7 @@ async function fillAndSend(page: Page, email: string): Promise<void> {
 
 test.describe('/app', () => {
   test('says the apps are coming, what they do, and offers the signup', async ({ page }) => {
-    await page.goto('/app');
+    await openApp(page);
     await expect(page.getByRole('heading', { level: 1, name: copy.heading })).toBeVisible();
     await expect(page.getByTestId('app-beta-soon')).toHaveText(copy.soon);
     for (const line of copy.features) await expect(page.getByText(line)).toBeVisible();
@@ -49,7 +59,7 @@ test.describe('/app', () => {
   test('signs an address up for the chosen phone, with no cookie sent', async ({ page, isMobile }) => {
     test.skip(isMobile, 'the desktop default and the switch');
     const seen = await answerSignup(page, 201);
-    await page.goto('/app');
+    await openApp(page);
     await page.getByTestId('app-beta-platform-android').click();
     await fillAndSend(page, '  Tester@Example.com ');
     await expect(page.getByTestId('app-beta-done')).toHaveText(copy.received('android'));
@@ -61,7 +71,7 @@ test.describe('/app', () => {
 
   test('reads the same whether or not the address was already on the list', async ({ page }) => {
     await answerSignup(page, 201);
-    await page.goto('/app');
+    await openApp(page);
     await page.getByTestId('app-beta-platform-ios').click();
     await fillAndSend(page, 'tester@example.com');
     await expect(page.getByTestId('app-beta-done')).toHaveText(copy.received('ios'));
@@ -72,7 +82,7 @@ test.describe('/app', () => {
     page,
   }) => {
     const seen = await answerSignup(page, 422, { email: 'enter one email address' });
-    await page.goto('/app');
+    await openApp(page);
     await fillAndSend(page, 'not-an-email');
     await expect(page.getByText(copy.invalidEmail)).toBeVisible();
     await expect(page.getByTestId('app-beta-email')).toHaveAttribute('aria-invalid', 'true');
@@ -84,7 +94,7 @@ test.describe('/app', () => {
 
   test('keeps the form and says to try again when the API fails', async ({ page }) => {
     await answerSignup(page, 500);
-    await page.goto('/app');
+    await openApp(page);
     await fillAndSend(page, 'tester@example.com');
     await expect(page.getByTestId('app-beta-failed')).toHaveText(copy.failed);
     await expect(page.getByTestId('app-beta-submit')).toBeEnabled();
@@ -92,7 +102,7 @@ test.describe('/app', () => {
 
   test('a desktop gets the QR for this page, iPhone chosen by default', async ({ page, isMobile }) => {
     test.skip(isMobile, 'desktop only');
-    await page.goto('/app');
+    await openApp(page);
     await expect(page.getByRole('img', { name: copy.qrAlt })).toBeVisible();
     await expect(page.getByText(copy.qrLine)).toBeVisible();
     await expect(page.getByTestId('app-beta-platform-ios')).toHaveAttribute('aria-checked', 'true');
@@ -100,7 +110,7 @@ test.describe('/app', () => {
 
   test('a phone gets no QR and its own platform chosen', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'the phone project (Pixel 7)');
-    await page.goto('/app');
+    await openApp(page);
     await expect(page.getByTestId('app-beta-qr')).toBeHidden();
     await expect(page.getByTestId('app-beta-platform-android')).toHaveAttribute('aria-checked', 'true');
   });

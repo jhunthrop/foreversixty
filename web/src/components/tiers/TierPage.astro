@@ -163,7 +163,7 @@ const linkCount = role === 'dps' ? 4 : 3;
             <span class="skeleton-block tier-sk-figure" aria-hidden="true"></span>
           </div>
           <div class="tier-answer-body" data-answer-body hidden data-testid="tier-answer-body">
-            <span class="text-label tracking-label text-muted font-bold uppercase" data-field="label"></span>
+            <span class="text-label text-muted font-bold" data-field="label"></span>
             <div class="tier-answer-who">
               <img class="tier-answer-crest" data-field="crest" src="" alt="" width="40" height="40" hidden />
               <span class="tier-answer-text">
@@ -286,7 +286,7 @@ const linkCount = role === 'dps' ? 4 : 3;
                 <div class="tier-read">
                   {readColumns(ctx).map((column) => (
                     <div class="tier-read-col">
-                      <h3 class="text-label tracking-label text-muted font-bold uppercase">{column.label}</h3>
+                      <h3 class="text-label text-muted font-bold">{column.label}</h3>
                       <p>
                         {column.body.map((segment) =>
                           segment.href !== undefined ? (
@@ -414,10 +414,14 @@ const linkCount = role === 'dps' ? 4 : 3;
   .tier-answer-skeleton[hidden] {
     display: none;
   }
+  /* The mock's row (web-tiers-you): 14 px between crest, name and figure, 8 more before the figure. */
   .tier-answer-who {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
+  }
+  .tier-answer-who > [data-field='figure'] {
+    margin-left: 8px;
   }
   .tier-answer-crest {
     width: 40px;

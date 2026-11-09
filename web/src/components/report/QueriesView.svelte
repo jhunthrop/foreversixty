@@ -160,6 +160,7 @@
         value={template}
         label="Starting points"
         size="sm"
+        stack
         onChange={pick}
         testid="template"
       />

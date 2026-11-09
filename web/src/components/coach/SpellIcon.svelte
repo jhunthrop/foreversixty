@@ -13,7 +13,7 @@
 
 {#if url !== null}
   <span
-    class="inline-flex shrink-0 overflow-hidden rounded-[4px] border border-black/80 bg-black/60 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]"
+    class="inline-flex shrink-0 overflow-hidden rounded-[4px] border border-black/80 bg-black/60 ring-1 ring-white/4"
     style:width="{size}px"
     style:height="{size}px"
   >

@@ -172,20 +172,21 @@
 
 <div class={['flex flex-col gap-3', plate && 'px-5 py-[18px]', !plate && 'pt-1']} data-testid="upload">
   <p class="max-w-[72ch] text-[15px] leading-6">
-    A whole <code class="font-mono text-[13px]">WoWCombatLog.txt</code>. Your report appears as soon as the
-    parse starts, usually within a minute or two; the fights fill in as they are read.
+    A whole <code class="font-mono text-[13px] leading-5">WoWCombatLog.txt</code>. Your report appears as soon
+    as the parse starts, usually within a minute or two; the fights fill in as they are read.
   </p>
 
   <p class="text-muted max-w-[72ch] text-[15px] leading-6">
-    The game writes it to its <code class="font-mono text-[13px]">Logs</code> folder, beside
-    <code class="font-mono text-[13px]">Interface</code> and <code class="font-mono text-[13px]">WTF</code>.
-    Up to 4 GB. Type
-    <code class="font-mono text-[13px]">/combatlog</code> again to stop logging first, so the file is whole.
+    The game writes it to its <code class="font-mono text-[13px] leading-5">Logs</code> folder, beside
+    <code class="font-mono text-[13px] leading-5">Interface</code> and
+    <code class="font-mono text-[13px] leading-5">WTF</code>. Up to 4 GB. Type
+    <code class="font-mono text-[13px] leading-5">/combatlog</code> again to stop logging first, so the file is
+    whole.
   </p>
 
   {#if signedOut}
     <DropZone off testid="upload-zone">
-      <span>Drop <code class="font-mono text-[13px]">WoWCombatLog.txt</code> here, or</span>
+      <span>Drop <code class="font-mono text-[13px] leading-5">WoWCombatLog.txt</code> here, or</span>
       <span class="font-semibold">choose a file</span>
     </DropZone>
     <p class="max-w-[72ch] text-[15px] leading-6" data-testid="upload-signed-out">{SIGNED_OUT_LINE}</p>
@@ -237,9 +238,7 @@
       />
 
       <div class="flex flex-col gap-2">
-        <span class="text-label tracking-label text-muted font-bold uppercase" id="upload-visibility-label"
-          >Who can open it</span
-        >
+        <span class="text-label text-muted font-bold" id="upload-visibility-label">Who can open it</span>
         <Segmented
           options={VISIBILITIES.map((option) => ({ value: option.id, label: option.label }))}
           value={visibility}
