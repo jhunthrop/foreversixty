@@ -35,22 +35,23 @@ export const CAVE_ART = art('cave', 800, 1600);
 /** The link preview's background, 1200 x 630 (lib/og.ts). */
 export const OG_ART = `${DIR}/og-art.jpg`;
 
-/** The LX seal: flat at 48 px and under (the nav, favicons), painted above (owner, round 5). */
+/** The LX seal: one logo, the painted seal, everywhere (owner 2026-11-09: "why do we use two
+ *  different logos?"); the flat seal is the favicon's alone, where the painted one blurs. */
 export const SEAL = {
   flat32: `${DIR}/seal-flat-32.webp`,
-  flat40: `${DIR}/seal-flat-40.webp`,
   painted88: `${DIR}/seal-88.webp`,
   painted128: `${DIR}/seal-128.webp`,
 } as const;
 
-/** The largest size the flat seal is drawn at; above it the painted seal. */
-export const FLAT_SEAL_MAX_PX = 48;
+/** Favicon sizes and under draw the flat seal. */
+const FAVICON_SEAL_MAX_PX = 16;
+/** The painted 88 file (176 px) covers up to 88 CSS px at 2x; above it the 128. */
+const PAINTED_88_MAX_PX = 88;
 
 /** The seal file for a rendered size in CSS px (2x density covered by each file). */
 export function sealFor(size: number): string {
-  if (size <= 16) return SEAL.flat32;
-  if (size <= FLAT_SEAL_MAX_PX) return SEAL.flat40;
-  return size <= 88 ? SEAL.painted88 : SEAL.painted128;
+  if (size <= FAVICON_SEAL_MAX_PX) return SEAL.flat32;
+  return size <= PAINTED_88_MAX_PX ? SEAL.painted88 : SEAL.painted128;
 }
 
 /** The paperdoll frame (paperdoll_asset.py: real alpha, the owner's band in the centre). */

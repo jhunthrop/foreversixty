@@ -32,8 +32,8 @@ ART = {
     'hero': ('art/hero-road-camp-wide.jpeg', (1200, 2400)),
     'cave': ('art/raid-panel-cave.jpeg', (800, 1600)),
 }
-# The flat seal at 48 px and under (nav, favicon), the painted seal above (footer, medallion, link preview).
-SEALS = {'seal-flat-40': ('logo/lx-seal-flat-256.png', 80), 'seal-flat-32': ('logo/lx-seal-flat-64.png', 64),
+# One logo (owner 2026-11-09): the painted seal everywhere; the flat seal only at favicon size.
+SEALS = {'seal-flat-32': ('logo/lx-seal-flat-64.png', 64),
          'seal-88': ('logo/lx-seal-256.png', 176), 'seal-128': ('logo/lx-seal-256.png', 256)}
 FAVICONS = {'favicon-32.png': ('logo/lx-seal-flat-32.png', 32), 'apple-touch-icon.png': ('logo/lx-seal-180.png', 180)}
 OG_SIZE, OG_BOX = (1200, 630), (1180, 480, 2600, 1225)  # art_crops.py: the glow over the pass, the road's head
