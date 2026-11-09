@@ -1539,3 +1539,20 @@ def Live() -> str:
 
 def Split(rows: str, inspector: str) -> str:
     return f'<div class="split-insp">{rows}{inspector}</div>'
+
+
+# ------------------------------------------------ Frame (round 5; web ui/Frame.svelte): the featured panel, two or three a page
+# The panel (raised ground, black 1 px edge, 10 px radius, the warm outer ring) with the cream line inset 6 px; `ornate` marks the
+# page's one lead panel (the built corners are decoration on the inset line, no box of their own). Padding 22/24, 18/16 below 768.
+PRIM_CSS += '''
+.frame{position:relative;min-width:0;overflow:hidden;padding:22px 24px;background:var(--raised);border:1px solid #000;border-radius:10px;
+box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
+.frame::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+@media(max-width:767px){.frame{padding:18px 16px}}
+'''
+
+
+def Frame(inner: str, ornate: bool = False, region: str = '') -> str:
+    """web ui/Frame: `region` is the parity region it carries, when it is one (REGION values)."""
+    r = f' data-region="{region}"' if region else ''
+    return f'<div class="frame{" ornate" if ornate else ""}"{r}>{inner}</div>'
