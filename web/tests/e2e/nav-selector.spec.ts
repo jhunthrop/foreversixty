@@ -430,7 +430,8 @@ test.describe('choosing a character', () => {
       'aria-current',
       'true',
     );
-    await expect(page.locator('[data-testid="tier-you-tag"]:visible')).toHaveCount(1);
+    // The tier list marks one row, the accent tint (round 5 dropped the "Your spec" tag).
+    await expect(page.locator('[data-rank-key][aria-current="true"]:visible')).toHaveCount(1);
     expect(await pageWasNotReloaded(page)).toBe(true);
   });
 

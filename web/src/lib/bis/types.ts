@@ -579,6 +579,8 @@ export interface SpecCatalogEntry {
   weight_stats: string[];
   /** The spec's icon from the generated spec-icon map (`lib/sim/specs.ts`), the file's base name. */
   icon: string;
+  /** The spec as a player names it in full ("Fury Warrior", "Feral Druid (Bear)"). */
+  full_name: string;
 }
 
 /** `data/builds/<build>/items/<class>.json`'s own per-item shape, the fields this lane's

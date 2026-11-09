@@ -57,13 +57,12 @@
     preRaidCopy,
     preRaidOffered,
   } from '../../lib/bis/pre-raid';
+  import { specLabel } from '../../lib/sim/spec-label';
 
   let {
     spec,
     classSlug,
     specSlug,
-    className,
-    specName,
     pathBand,
     pathPreRaid = false,
     preRaid,
@@ -75,8 +74,6 @@
     spec: string;
     classSlug: string;
     specSlug: string;
-    className: string;
-    specName: string;
     /** The band this page's URL names (lib/bis/band-path.ts); the server renders it. */
     pathBand: number;
     /** The URL is the band's pre-raid list, /bis/<class>/<spec>/60/pre-raid (lib/bis/pre-raid.ts). */
@@ -149,7 +146,9 @@
       model.rows.map((row) => row.filter),
     ),
   );
-  const seoSubject = $derived({ specName, className, preRaid: preRaid || preRaidView });
+  // The spec's full name, the catalogue's own ("Feral Druid (Bear)"): the h1, the list's label, the guide link.
+  const fullName = $derived(specLabel(spec));
+  const seoSubject = $derived({ fullName, preRaid: preRaid || preRaidView });
   const notes = $derived(
     [
       model.weights.hitCap
@@ -359,7 +358,7 @@
             {cells}
             build={data.build}
             title={bisSeoCopy.heading(seoSubject)}
-            shortTitle={`${specName} ${className}`}
+            shortTitle={fullName}
             meta={bisCopy.frameMeta(model.label, factionWord, state.band >= 60 && seoSubject.preRaid)}
             figure={figure ? { value: figure.value, unit: model.unit } : undefined}
             avatar={character?.avatar ?? null}
@@ -368,7 +367,7 @@
             selected={shownSlot}
             onselect={(slot) => (selected = slot)}
             {centre}
-            label={`${specName} ${className} best in slot, ${model.label}`}
+            label={`${fullName} best in slot, ${model.label}`}
             testid="bis-doll"
           />
           {#if character !== undefined}
@@ -396,7 +395,7 @@
           {stops}
           build={data.build}
           unit={model.unit}
-          label={`${specName} ${className}, where to go`}
+          label={`${fullName}, where to go`}
         />
       </div>
     </div>

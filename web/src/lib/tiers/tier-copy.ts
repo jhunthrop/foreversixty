@@ -5,6 +5,7 @@
 // files, never written here (the owner's "prose never quotes nightly numbers" rule).
 import { answerCopy } from '../account/answer-copy';
 import classes from '../../data/classes.json';
+import { SPEC_BY_KEY } from '../sim/specs';
 import type { BisRole, Faction } from '../bis/types';
 import { TIE_MARGIN_PERCENT, TIER_BANDS, type TierLetter } from './tier-rules';
 import type { TierRow } from './tier-list';
@@ -211,9 +212,13 @@ export function classNameOf(classSlug: string): string {
   return found.name;
 }
 
-/** "Fury Warrior". */
-export function specFullName(spec: Pick<TierRow, 'name' | 'classSlug'>): string {
-  return `${spec.name} ${classNameOf(spec.classSlug)}`;
+/** "Fury Warrior", "Feral Druid (Bear)": the catalogue's full name. Fails fast on a spec the
+ *  catalogue lacks. */
+export function specFullName(spec: Pick<TierRow, 'classSlug' | 'specSlug'>): string {
+  const key = `${spec.classSlug}-${spec.specSlug}`;
+  const found = SPEC_BY_KEY[key];
+  if (found === undefined) throw new Error(`tier list: no spec ${key} in the catalogue`);
+  return found.full_name;
 }
 
 const ORDINAL_SUFFIXES: Readonly<Record<number, string>> = { 1: 'st', 2: 'nd', 3: 'rd' };

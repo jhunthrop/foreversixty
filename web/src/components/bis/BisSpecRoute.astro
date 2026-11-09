@@ -55,7 +55,7 @@ const build = activeBuild.build;
 const server = bisServerPage(specEntry.spec, classSlug) ?? undefined;
 const firstBand = server?.data.bands[0];
 const band = pathBand ?? firstBand;
-const subject = { specName: specEntry.name, className, preRaid: bisPreRaid(specEntry.spec) };
+const subject = { fullName: specEntry.full_name, preRaid: bisPreRaid(specEntry.spec) };
 const isBandPage = pathBand !== undefined && pathBand !== firstBand;
 const bandPath =
   band === undefined || firstBand === undefined
@@ -136,7 +136,7 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
   <main id="main" tabindex="-1" class="bis-page">
     {server === undefined || band === undefined ? (
       <div class="bis-empty" data-testid="bis-empty-state">
-        <PageHeader title={`${specEntry.name} ${className}`} tone={{ classSlug } as never} />
+        <PageHeader title={specEntry.full_name} tone={{ classSlug } as never} />
         <Notice
           text={`${bisCopy.noDataYet} ${bisCopy.noDataYetBody}`}
           action={{ label: `${specEntry.name} guide`, href: guideHref }}
@@ -154,8 +154,6 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
           spec={specEntry.spec}
           classSlug={classSlug}
           specSlug={specEntry.spec_slug}
-          className={className}
-          specName={specEntry.name}
           pathBand={band}
           pathPreRaid={preRaidPage}
           preRaid={subject.preRaid}

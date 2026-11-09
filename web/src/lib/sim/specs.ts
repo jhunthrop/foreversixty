@@ -19,6 +19,9 @@ export interface Spec {
   /** The spec's icon from the active client: its tree's TalentTab icon, or its form spell's
    *  (Feral, Feral Bear). A lowercase file name, no extension. The one spec-icon map. */
   icon: string;
+  /** The spec as a player names it in full: 'Fury Warrior', 'Feral Druid (Bear)'. Read it;
+   *  never compose name and the class. */
+  full_name: string;
 }
 
 /** The build whose client data the icons were read from. */
@@ -47,6 +50,7 @@ export const SPECS: readonly Spec[] = [
       'mp5',
     ],
     icon: 'spell_nature_starfall',
+    full_name: 'Balance Druid',
   },
   {
     spec: 'druid-feral',
@@ -58,6 +62,7 @@ export const SPECS: readonly Spec[] = [
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'feral_attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
     icon: 'ability_druid_catform',
+    full_name: 'Feral Druid',
   },
   {
     spec: 'druid-feral-bear',
@@ -81,6 +86,7 @@ export const SPECS: readonly Spec[] = [
       'expertise',
     ],
     icon: 'ability_racial_bearform',
+    full_name: 'Feral Druid (Bear)',
   },
   {
     spec: 'druid-restoration',
@@ -92,6 +98,7 @@ export const SPECS: readonly Spec[] = [
     reference_stat: 'healing_power',
     weight_stats: ['healing_power', 'intellect', 'spirit', 'mp5', 'crit', 'spell_haste'],
     icon: 'spell_nature_healingtouch',
+    full_name: 'Restoration Druid',
   },
   {
     spec: 'hunter-beast-mastery',
@@ -112,6 +119,7 @@ export const SPECS: readonly Spec[] = [
     ],
     capstone_spell: 19574,
     icon: 'ability_hunter_beasttaming',
+    full_name: 'Beast Mastery Hunter',
   },
   {
     spec: 'hunter-marksmanship',
@@ -132,6 +140,7 @@ export const SPECS: readonly Spec[] = [
     ],
     capstone_spell: 1310786,
     icon: 'ability_marksmanship',
+    full_name: 'Marksmanship Hunter',
   },
   {
     spec: 'hunter-survival',
@@ -143,6 +152,7 @@ export const SPECS: readonly Spec[] = [
     reference_stat: 'attack_power',
     weight_stats: ['attack_power', 'agility', 'strength', 'crit', 'hit', 'melee_haste', 'intellect'],
     icon: 'ability_hunter_swiftstrike',
+    full_name: 'Survival Hunter',
   },
   {
     spec: 'mage-arcane',
@@ -165,6 +175,7 @@ export const SPECS: readonly Spec[] = [
     ],
     capstone_spell: 12042,
     icon: 'spell_holy_magicalsentry',
+    full_name: 'Arcane Mage',
   },
   {
     spec: 'mage-fire',
@@ -187,6 +198,7 @@ export const SPECS: readonly Spec[] = [
     ],
     capstone_spell: 11129,
     icon: 'spell_fire_firebolt02',
+    full_name: 'Fire Mage',
   },
   {
     spec: 'mage-frost',
@@ -209,6 +221,7 @@ export const SPECS: readonly Spec[] = [
     ],
     capstone_spell: 13033,
     icon: 'spell_frost_frostbolt02',
+    full_name: 'Frost Mage',
   },
   {
     spec: 'paladin-holy',
@@ -220,6 +233,7 @@ export const SPECS: readonly Spec[] = [
     reference_stat: 'healing_power',
     weight_stats: ['healing_power', 'intellect', 'spirit', 'mp5', 'crit', 'spell_haste'],
     icon: 'spell_holy_holybolt',
+    full_name: 'Holy Paladin',
   },
   {
     spec: 'paladin-protection',
@@ -245,6 +259,7 @@ export const SPECS: readonly Spec[] = [
       'expertise',
     ],
     icon: 'spell_holy_devotionaura',
+    full_name: 'Protection Paladin',
   },
   {
     spec: 'paladin-retribution',
@@ -265,6 +280,7 @@ export const SPECS: readonly Spec[] = [
       'spell_power',
     ],
     icon: 'spell_holy_auraoflight',
+    full_name: 'Retribution Paladin',
   },
   {
     spec: 'priest-discipline',
@@ -276,6 +292,7 @@ export const SPECS: readonly Spec[] = [
     reference_stat: 'healing_power',
     weight_stats: ['healing_power', 'intellect', 'spirit', 'mp5', 'crit', 'spell_haste'],
     icon: 'spell_holy_wordfortitude',
+    full_name: 'Discipline Priest',
   },
   {
     spec: 'priest-holy',
@@ -287,6 +304,7 @@ export const SPECS: readonly Spec[] = [
     reference_stat: 'healing_power',
     weight_stats: ['healing_power', 'intellect', 'spirit', 'mp5', 'crit', 'spell_haste'],
     icon: 'spell_holy_guardianspirit',
+    full_name: 'Holy Priest',
   },
   {
     spec: 'priest-shadow',
@@ -309,6 +327,7 @@ export const SPECS: readonly Spec[] = [
     ],
     capstone_spell: 15473,
     icon: 'spell_shadow_shadowwordpain',
+    full_name: 'Shadow Priest',
   },
   {
     spec: 'rogue-assassination',
@@ -321,6 +340,7 @@ export const SPECS: readonly Spec[] = [
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
     capstone_spell: 1241584,
     icon: 'ability_rogue_eviscerate',
+    full_name: 'Assassination Rogue',
   },
   {
     spec: 'rogue-combat',
@@ -333,6 +353,7 @@ export const SPECS: readonly Spec[] = [
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
     capstone_spell: 13750,
     icon: 'ability_backstab',
+    full_name: 'Combat Rogue',
   },
   {
     spec: 'rogue-subtlety',
@@ -345,6 +366,7 @@ export const SPECS: readonly Spec[] = [
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
     capstone_spell: 1325758,
     icon: 'ability_stealth',
+    full_name: 'Subtlety Rogue',
   },
   {
     spec: 'shaman-elemental',
@@ -366,6 +388,7 @@ export const SPECS: readonly Spec[] = [
       'mp5',
     ],
     icon: 'spell_nature_lightning',
+    full_name: 'Elemental Shaman',
   },
   {
     spec: 'shaman-enhancement',
@@ -386,6 +409,7 @@ export const SPECS: readonly Spec[] = [
       'spell_power',
     ],
     icon: 'spell_nature_lightningshield',
+    full_name: 'Enhancement Shaman',
   },
   {
     spec: 'shaman-restoration',
@@ -397,6 +421,7 @@ export const SPECS: readonly Spec[] = [
     reference_stat: 'healing_power',
     weight_stats: ['healing_power', 'intellect', 'spirit', 'mp5', 'crit', 'spell_haste'],
     icon: 'spell_nature_magicimmunity',
+    full_name: 'Restoration Shaman',
   },
   {
     spec: 'warlock-affliction',
@@ -419,6 +444,7 @@ export const SPECS: readonly Spec[] = [
     ],
     capstone_spell: 1316697,
     icon: 'spell_shadow_deathcoil',
+    full_name: 'Affliction Warlock',
   },
   {
     spec: 'warlock-demonology',
@@ -440,6 +466,7 @@ export const SPECS: readonly Spec[] = [
       'spirit',
     ],
     icon: 'spell_shadow_metamorphosis',
+    full_name: 'Demonology Warlock',
   },
   {
     spec: 'warlock-destruction',
@@ -462,6 +489,7 @@ export const SPECS: readonly Spec[] = [
     ],
     capstone_spell: 1293813,
     icon: 'spell_shadow_rainoffire',
+    full_name: 'Destruction Warlock',
   },
   {
     spec: 'warrior-arms',
@@ -474,6 +502,7 @@ export const SPECS: readonly Spec[] = [
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
     capstone_spell: 21553,
     icon: 'ability_rogue_eviscerate',
+    full_name: 'Arms Warrior',
   },
   {
     spec: 'warrior-fury',
@@ -486,6 +515,7 @@ export const SPECS: readonly Spec[] = [
     weight_stats: ['attack_power', 'strength', 'agility', 'crit', 'hit', 'melee_haste'],
     capstone_spell: 23894,
     icon: 'ability_warrior_innerrage',
+    full_name: 'Fury Warrior',
   },
   {
     spec: 'warrior-protection',
@@ -511,6 +541,7 @@ export const SPECS: readonly Spec[] = [
       'expertise',
     ],
     icon: 'inv_shield_06',
+    full_name: 'Protection Warrior',
   },
 ];
 

@@ -52,12 +52,28 @@ test.describe('one centred column at 2000px', () => {
   const PAGES = [
     { path: '/bis/hunter/marksmanship', content: '[data-testid="bis-itinerary"]' },
     { path: '/bis', content: 'main' },
-    { path: '/tiers/tank', content: '[data-testid="tier-faction-panel-alliance"]' },
+    // The tier list is a split page (list and spec panel side by side): its column is the page body.
+    { path: '/tiers', content: '[data-testid="tier-body"]' },
+    { path: '/tiers/tank', content: '[data-testid="tier-body"]' },
+    { path: '/tiers/healer', content: '[data-testid="tier-body"]' },
     { path: '/guides', content: '[data-testid="guides-class-picker"]' },
     { path: '/changelog', content: 'main' },
   ];
 
   test.use({ viewport: { width: VIEWPORT_WIDTH, height: 1000 } });
+
+  // The widest check (review focus 2): the tier list's split column stays centred at 2560 too.
+  for (const path of ['/tiers', '/tiers/tank', '/tiers/healer']) {
+    test(`${path} sits in a centred column at 2560`, async ({ page }) => {
+      const width = 2560;
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto(path);
+      const box = (await page.getByTestId('tier-body').boundingBox())!;
+      const right = width - (box.x + box.width);
+      expect(Math.abs(box.x - right)).toBeLessThanOrEqual(EQUAL_MARGIN_TOLERANCE_PX);
+      expect(box.x).toBeGreaterThan(MIN_SIDE_MARGIN_PX);
+    });
+  }
 
   for (const { path, content } of PAGES) {
     test(`${path} content sits in a centred column`, async ({ page }) => {
