@@ -77,7 +77,7 @@ def next_raid(officer):
     Bench / Out (the built sign-up's four states), and for an officer the In, Late, Bench and Not signed figures."""
     at = guild_time(O.NEXT_RAID_AT)
     top = Row(O.ZONE_NAME, f'{day_label(at)} &middot; {clock_label(at)}', lead=icon(RAID_ICON, 40, 'q5'),
-              trail=Figure(countdown_label(), 'Starts in', tone='gold', size='sm'), link=False)
+              trail=Figure(countdown_label(), '', tone='gold', size='sm'), link=False)
     you = ''
     if not officer:
         name = O.MEMBER
@@ -89,8 +89,8 @@ def next_raid(officer):
     if officer:
         view = F.raid_view(O.OFFICER, True)
         c = view['counts']
-        tally = '<div style="padding-top:12px">' + Figures([(str(c['in']), 'In', '', 'kill', 'sm'), (str(c['late']), 'Late', '', 'gold', 'sm'), (str(c['bench']), 'Bench', '', '', 'sm'),
-                                                           (str(len(view['not_signed_raiders'])), 'Not signed', '', 'wipe', 'sm')]) + '</div>'
+        tally = '<div style="padding-top:12px">' + Figures([(str(c['in']), 'In', '', 'kill', ''), (str(c['late']), 'Late', '', 'gold', ''), (str(c['bench']), 'Bench', '', '', ''),
+                                                           (str(len(view['not_signed_raiders'])), 'Not signed', '', 'wipe', '')]) + '</div>'
     return top + you + tally
 
 
@@ -169,12 +169,11 @@ def cover_rows_thinnest() -> list[dict]:
 
 
 def cover_grid() -> str:
-    per = {'raid': '', 'melee_group': 'per melee group', 'caster_group': 'per caster group'}
     rows = []
     for r in cover_rows_thinnest()[:COVER_SHOWN]:
         signed = r['providers_in'] + r['providers_late']
         tone = 'miss' if signed == 0 else ('ok' if signed - r['likely'] >= r['need'] else 'warn')
-        sub = ' &middot; '.join(x for x in (per[r['per']], f"{r['likely']} on a talent we cannot see" if r['likely'] else '',
+        sub = ' &middot; '.join(x for x in (f"{r['likely']} talent not confirmed" if r['likely'] else '',
                                              f"{r['providers_bench']} on the bench" if r['providers_bench'] else '') if x)
         rows.append((r['name'], sub, [('none', str(r['need'])), (tone, str(signed))], SpellIcon(r['name'], r['icon'])))
     return Grid(['Need', 'In'], rows, caption='Buff and debuff cover against signed-up raiders', edge=True)
@@ -294,7 +293,7 @@ def raid_planner(edited=None):
             + Section('Bench and swaps', Rows(bench, open_=True, list_=True), meta=str(len(bench)), panel=True)
             + Section(f"{enc['name']} assignments", assign, meta=f'Your job: {yours}', named=True, panel=True)
             + Section('Notes', Prose(raid['notes_html'], 'note'), named=True, panel=True))
-    actions = ''.join(Button(x, small=True, act=True) for x in ['Edit', 'Lock sign-ups', 'Copy the sign-up list', 'Cancel raid'])
+    actions = ''.join(Button(x, small=True, act=True) for x in ['Edit', 'Lock sign-ups', 'Copy the sign-up list']) + Button('Cancel raid', small=True, tone='ghost', act=True)
     head = (BackLink(f'&lsaquo; {GUILD} &middot; Raids')
             + PageHeader(raid['title'], ALLIANCE, meta=[Tag('Planned'), raid_when(raid), f"<b class=\"strong\">{signed} of {raid['size']} signed up</b> &middot; {n['in']} In &middot; {n['late']} Late &middot; {n['bench']} Bench"],
                          actions=actions, tabs=TabStrip(TABS, 'Raids')))
@@ -486,8 +485,7 @@ def recruitment():
              ('Next raid nights', upcoming), ('Progress', f"{t['down']} of {t['named_encounters']} named bosses down &middot; {t['name']}")]
     card = '<dl class="gfacts">' + ''.join(f'<dt>{k}</dt><dd>{v}</dd>' for k, v in facts) + '</dl>'
     # Signed out nobody can apply: the API takes one of the viewer's own characters, so the build asks them to sign in (SignInPrompt).
-    sign_in = (f'<div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px"><p {_PROSE}>Sign in to apply to {GUILD} with one of your characters.</p>'
-               + Button('Sign in with Battle.net') + '</div>')
+    sign_in = Button('Sign in with Battle.net to apply', primary=True)
     rank = {'leader': 'Guild master', 'officer': 'Officer'}  # recruit-copy card.leader / card.officer
     officers = Rows([Row(n, f'{_spec_class(n)} &middot; {rank[gd.rank_of(n)]}', lead=crest_img(ch(n)[1], 32), title_color=C[ch(n)[1]], link=False)
                      for n in gd.COUNCIL], open_=True)
@@ -514,7 +512,7 @@ def applications():
                         trail=_votes(y, n, gd.VOTERS) + _act('Accept') + Button('Decline', small=True, tone='ghost', act=True), link=False))
     main = Section('Open applications', f'<div role="region" aria-label="Open applications">{Rows(apps)}</div>', panel=True, frame='framed')
     card = Rows([Row('Looking for', _wanted_summary(), trail=_act('Edit'), link=False), Row('Raid nights', gd.RECRUIT_NIGHTS, trail=_act('Edit'), link=False)], open_=True)
-    decided = Rows([Row(f'{name} accepted', f'{y} yes, 0 no of {gd.VOTERS} officers &middot; by {by} &middot; Discord role granted &middot; No Discord message: they did not ask for one', link=False, slim=True)
+    decided = Rows([Row(f'{name} accepted', f'{y} yes, 0 no of {gd.VOTERS} officers &middot; by {by}', link=False, slim=True)
                     for _i, name, _c, _s, y, by, _r, _d in gd.DECIDED], open_=True)
     rail = Section('Your public card', card, Link('See it as a visitor'), panel=True) + Section('Recent decisions', decided, panel=True)
     views = TabStrip(['Members', 'Applications'], 'Applications').replace('strip-tabs ph-tabs', 'strip-tabs', 1)

@@ -86,7 +86,6 @@
      a click selects in place and the page routes the hash; link tabs to the guild page's hash
      off it (a raid page). It scrolls with the edge fades and keeps the current tab in view. -->
 <TabStrip
-  wrap
   {tabs}
   {active}
   label="Guild sections"

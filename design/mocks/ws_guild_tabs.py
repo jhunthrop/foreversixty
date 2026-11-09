@@ -42,7 +42,7 @@ def _hour(at):
 
 
 def _spec(r):
-    return f"{r['spec']} {r['class'].title()} on the site"
+    return f"{r['spec']} {r['class'].title()}"
 
 
 # ---------------------------------------------------------------- Roster
@@ -51,29 +51,36 @@ def _chips(labels, on=''):
 
 
 def roster():
-    """The Roster (batch 3, b3-guild-roster): Waiting for approval framed with Approve all, then the Roster panel with its
-    filters, sort, the addon line and the rows. No explaining lines."""
+    """The Roster (batch 3, b3-guild-roster): Waiting for approval framed with Approve all; the Roster panel with its filters and
+    sort on one line, the figure heads, then the rows: a rank tag only for an officer or the guild master, the figures bare in their
+    columns (item level, raids)."""
     home = T.roster_home()
-    words = {'leader': 'Leader', 'officer': 'Officer'}  # copy.ts guildRosterModelCopy.ranks
-    rank = lambda r: Tag(words[r['rank']]) if r['rank'] in words else '<span class="t-small">Member</span>'  # noqa: E731
+    words = {'leader': 'Guild master', 'officer': 'Officer'}  # copy.ts guildRosterModelCopy.ranks
+    rank = lambda r: Tag(words[r['rank']]) if r['rank'] in words else ''  # noqa: E731
     waiting = [Row(r['name'], _spec(r), lead=crest_img(r['class'], 36), title_color=C[r['class']], link=False,
-                   trail=rank(r) + Button('Approve', small=True, act=True) + Button('Decline', small=True, tone='ghost', act=True)) for r in home['pending']]
+                   trail=(Tag(words[r['rank']]) if r['rank'] in words else '<span class="t-small">Member</span>')
+                   + Button('Approve', small=True, act=True) + Button('Decline', small=True, tone='ghost', act=True)) for r in home['pending']]
     wait = Section('Waiting for approval', Rows(waiting, open_=True), action=Button('Approve all', primary=True, small=True, act=True), panel=True, frame='framed')
     verified = sorted(home['roster'], key=lambda r: (r['name'] != O.OFFICER, -r['item_level']))
+    cols = lambda r: (f'<span class="rcol" style="width:88px">{r["item_level"]}</span>'  # noqa: E731
+                      f'<span class="rcol" style="width:132px">{(str(r["attendance"]["present"]) + " of " + str(r["attendance"]["nights"])) if r["attendance"]["nights"] else ""}</span>')
     # The viewer's own name links to their member profile.
     rows = [Row(f'<a href="#">{r["name"]} (you)</a>' if r['name'] == O.OFFICER else r['name'], _spec(r), lead=crest_img(r['class'], 36), title_color=C[r['class']], link=False,
                 selected=r['name'] == O.OFFICER,
-                trail=f"<span style=\"display:flex;gap:12px;align-items:center;min-height:39px\">{rank(r)}</span><span class=\"t-small\">Item level {r['item_level']} &middot; {r['attendance']['present']} of {r['attendance']['nights']} raid nights</span>")
+                trail=f'<span style="display:flex;gap:12px;align-items:center;min-height:39px">{rank(r)}</span><span style="display:flex">{cols(r)}</span>')
             for r in verified]
-    controls = (f'<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span class="t-small">Filter</span>'
+    controls = (f'<div style="display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center">'
+                f'<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span class="t-small">Filter</span>'
                 f'{_chips(["Role: All", "Class: All", "Verified only", "No account", "Below rating floor"])}</div>'
                 f'<div role="group" aria-label="Sort" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span class="t-small">Sort</span>'
-                f'{_chips(["Rank", "Item level", "Attendance", "Last seen"], "Item level")}</div>')
-    body = _col(controls, _p('No roster from the addon yet. Log in with the addon on your guild master and it sends one.'),
-                f'<div role="region" aria-label="Roster">{Rows(rows)}</div>')
+                f'{_chips(["Rank", "Item level", "Attendance", "Last seen"], "Item level")}</div></div>')
+    heads = ('<div aria-hidden="true" style="display:flex;justify-content:flex-end;gap:12px;padding-bottom:8px;font:700 12px/16px var(--font-body);color:var(--muted)">'
+             '<span class="rcol" style="width:88px">Item level</span><span class="rcol" style="width:132px">Raids</span></div>')
+    body = _col(controls, f'<div role="region" aria-label="Roster">{heads}{Rows(rows)}</div>')
     n = len(home['roster']) + len(home['pending'])
     sec = Section('Roster', body, meta=f"{n} on the roster &middot; {len(home['pending'])} waiting for approval", panel=True)
-    return _tab('Guild roster', 'Roster', Page('ledger', _col(wait, sec, gap=22)).replace('padding-top:20px', 'padding-top:28px', 1))
+    css = '<style>.rcol{display:inline-block;text-align:right;font-size:14px;font-variant-numeric:tabular-nums}</style>'
+    return _tab('Guild roster', 'Roster', Page('ledger', _col(wait, sec, gap=22)).replace('padding-top:20px', 'padding-top:28px', 1) + css)
 
 
 # ---------------------------------------------------------------- Progression
@@ -116,18 +123,16 @@ def shortfalls(r: dict, raid: dict) -> list[str]:
     miss = len(r['enchants']['missing_slots']) if r['enchants']['checked'] else 0
     if miss:
         out.append(f"{miss} enchant{'' if miss == 1 else 's'} missing")
-    if r['consumables']['state'] == 'short':
+    ff = r.get('flask_food')
+    lacks = ([] if ff is None else (['no flask or raid elixir'] if not ff['flask_or_elixir'] else []) + (['no buff food'] if not ff['food'] else []))
+    if lacks:
+        out += lacks
+    elif r['consumables']['state'] == 'short':
         out.append('consumables short')
     if r['talent_points_unspent']:
         out.append(f"{r['talent_points_unspent']} talent point{'' if r['talent_points_unspent'] == 1 else 's'} unspent")
     if raid.get('attunement') and r.get('attuned') is False:
         out.append('not attuned')
-    ff = r.get('flask_food')
-    if ff is not None and r['consumables']['state'] != 'short':
-        if not ff['flask_or_elixir']:
-            out.append('no flask or raid elixir')
-        if not ff['food']:
-            out.append('no buff food')
     return out
 
 

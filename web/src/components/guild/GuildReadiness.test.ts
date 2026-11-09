@@ -238,7 +238,7 @@ describe('GuildReadiness by exception', () => {
 
   it('reads the raid asks: attunement, flask and food', () => {
     const asks = { ...clean, attuned: false, flask_food: { flask_or_elixir: false, food: true } };
-    expect(text(board([asks], true))).toContain('not attuned · no flask or raid elixir');
+    expect(text(board([asks], true))).toContain('no flask or raid elixir · not attuned');
   });
 
   it('puts the leveling characters on their own panel, never graded', () => {

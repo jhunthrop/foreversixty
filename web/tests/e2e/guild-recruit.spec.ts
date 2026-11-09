@@ -133,7 +133,8 @@ test.describe('applications, officers', () => {
       'Quillbright accepted. Discord role granted. Told them on Discord.',
     );
     await expect(page.getByTestId('guild-application-42')).toHaveCount(0);
-    await expect(page.getByTestId('guild-application-decided-42')).toContainText('Discord role granted');
+    // The record names a Discord outcome only when an officer must act on it; the notice above said it went.
+    await expect(page.getByTestId('guild-application-decided-42')).not.toContainText('Discord role granted');
     await expect(page.getByTestId('guild-application-decided-39')).toContainText('by Kraggor');
     await expectNoAxeViolations(page, '[data-testid="guild-applications-page"]');
   });

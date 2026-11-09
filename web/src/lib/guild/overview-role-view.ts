@@ -373,24 +373,17 @@ export function raidTimeLine(
   return `${guild} · ${clockText(at, viewerTz, locale)} ${zoneAbbreviation(viewerTz, at)} your time`;
 }
 
-const PER_WORDS: Readonly<Record<GuildRaidCoverRow['per'], string>> = {
-  raid: '',
-  melee_group: 'per melee group',
-  caster_group: 'per caster group',
-};
-
 /** The cover rows as Grid rows: what the raid needs, then who is signed In or Late to give it. */
 export function coverGridRows(
   rows: readonly GuildRaidCoverRow[],
 ): (GridRowModel & { row: GuildRaidCoverRow })[] {
   return rows.map((row) => {
-    const per = PER_WORDS[row.per];
-    const likely = row.likely > 0 ? `${row.likely} on a talent we cannot see` : '';
+    const likely = row.likely > 0 ? `${row.likely} talent not confirmed` : '';
     const bench = row.providers_bench > 0 ? `${row.providers_bench} on the bench` : '';
     return {
       key: row.key,
       label: row.name,
-      sub: [per, likely, bench].filter(Boolean).join(' · ') || undefined,
+      sub: [likely, bench].filter(Boolean).join(' · ') || undefined,
       row,
       cells: [
         { tone: 'none', text: String(row.need), label: `Needs ${row.need}` },

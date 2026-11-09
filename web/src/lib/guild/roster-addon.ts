@@ -4,7 +4,7 @@
 // component holds no formatting of its own.
 import { relativeTime } from '../dates';
 import { SPEC_BY_KEY } from '../sim/specs';
-import type { GuildAddonSnapshot, GuildRosterRow } from './api';
+import type { GuildRosterRow } from './api';
 import { guildRosterAddonCopy } from './copy';
 import { sameSpecName } from './spec-name';
 
@@ -69,28 +69,4 @@ export function addonSeen(
     label: guildRosterAddonCopy.seen(relativeTime(at, now)),
     hover: withheld ? guildRosterAddonCopy.withheldHover : guildRosterAddonCopy.seenHover(clock),
   };
-}
-
-/** The sender's name: `by_character` is a character key (`us/pvp/thorgrim`), so the name is
- *  that row's; a sender on no row reads as the key's last segment, capitalised. */
-export function snapshotSenderName(byCharacter: string, rows: readonly GuildRosterRow[]): string {
-  const row = rows.find((r) => r.character_key === byCharacter);
-  if (row !== undefined) return row.name;
-  const last = byCharacter.split('/').pop() ?? byCharacter;
-  return last.charAt(0).toUpperCase() + last.slice(1);
-}
-
-/** The line above the table: who sent the newest snapshot and when. A home without the field
- *  (before the addendum) reads as none. How many people are on the roster, and in what state,
- *  is the count line (roster-model.ts). */
-export function addonSnapshotLine(
-  snapshot: GuildAddonSnapshot | null | undefined,
-  rows: readonly GuildRosterRow[],
-  now: Date = new Date(),
-): string {
-  if (snapshot === undefined || snapshot === null) return guildRosterAddonCopy.noSnapshot;
-  return guildRosterAddonCopy.snapshotLine(
-    snapshotSenderName(snapshot.by_character, rows),
-    relativeTime(new Date(snapshot.received_at), now),
-  );
 }

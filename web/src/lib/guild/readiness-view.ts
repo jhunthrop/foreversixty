@@ -318,15 +318,17 @@ export function readinessShortfalls(
   if (upgrades > 0) out.push(counted(upgrades, 'upgrade'));
   const missing = row.enchants.checked ? row.enchants.missing_slots.length : 0;
   if (missing > 0) out.push(`${counted(missing, 'enchant')} missing`);
-  if (row.consumables.state === 'short') out.push('consumables short');
+  // What the bags lack, named when the export says (a flask or raid elixir, buff food); short
+  // without a name only when it does not.
+  const flaskFood = row.flask_food;
+  const lacks: string[] = [];
+  if (flaskFood != null && !flaskFood.flask_or_elixir) lacks.push('no flask or raid elixir');
+  if (flaskFood != null && !flaskFood.food) lacks.push('no buff food');
+  if (lacks.length > 0) out.push(...lacks);
+  else if (row.consumables.state === 'short') out.push('consumables short');
   if (row.talent_points_unspent > 0)
     out.push(`${counted(row.talent_points_unspent, 'talent point')} unspent`);
   if (raid?.attunement === true && row.attuned === false) out.push('not attuned');
-  const flaskFood = row.flask_food;
-  if (flaskFood != null && row.consumables.state !== 'short') {
-    if (!flaskFood.flask_or_elixir) out.push('no flask or raid elixir');
-    if (!flaskFood.food) out.push('no buff food');
-  }
   return out;
 }
 

@@ -2,7 +2,7 @@
 // Task L8.3: the Roster tab's "In game" column, read from the guild's latest addon roster
 // snapshot (Task L6.14's `roster[].addon` and `addon_snapshot` on the guild home).
 import { describe, expect, it } from 'vitest';
-import type { GuildAddonSnapshot, GuildRosterAddon, GuildRosterRow } from './api';
+import type { GuildRosterAddon, GuildRosterRow } from './api';
 import { guildRosterAddonCopy } from './copy';
 import {
   addonGapLabel,
@@ -10,9 +10,7 @@ import {
   addonSeen,
   addonSeenAt,
   addonSeenClock,
-  addonSnapshotLine,
   addonSpecName,
-  snapshotSenderName,
 } from './roster-addon';
 
 const ADDON: GuildRosterAddon = {
@@ -41,12 +39,6 @@ function row(overrides: Partial<GuildRosterRow> = {}): GuildRosterRow {
     ...overrides,
   };
 }
-
-const SNAPSHOT: GuildAddonSnapshot = {
-  received_at: '2026-12-22T21:43:00Z',
-  by_character: 'us/pvp/zulmara',
-  members: 4,
-};
 
 describe('addonSpecName', () => {
   it('names a spec slug the way the client names its talent tree', () => {
@@ -133,29 +125,5 @@ describe('addonSeen: how long ago, relative to now, in the viewer\u2019s own clo
   });
   it('takes the stamp as the viewer\u2019s local time', () => {
     expect(addonSeenAt('2026-12-22 21:40')?.getTime()).toBe(new Date(2026, 11, 22, 21, 40).getTime());
-  });
-});
-
-describe('snapshotSenderName', () => {
-  it('names the sender from the roster row with that character key', () => {
-    expect(snapshotSenderName('us/pvp/zulmara', [row()])).toBe('Zulmara');
-  });
-  it('falls back to the key’s last segment, capitalised, when the sender is not on the roster', () => {
-    expect(snapshotSenderName('us/pvp/brightwick', [row()])).toBe('Brightwick');
-  });
-});
-
-describe('addonSnapshotLine', () => {
-  const now = new Date('2026-12-22T21:46:00Z');
-  it('says who sent it and when; the counts have their own line', () => {
-    expect(addonSnapshotLine(SNAPSHOT, [row()], now)).toBe(
-      'Roster from the addon \u00b7 sent by Zulmara 3 minutes ago',
-    );
-  });
-  it('says no roster has arrived yet when there is none', () => {
-    expect(addonSnapshotLine(null, [row()], now)).toBe(
-      'No roster from the addon yet. Log in with the addon on your guild master and it sends one.',
-    );
-    expect(addonSnapshotLine(undefined, [row()], now)).toBe(guildRosterAddonCopy.noSnapshot);
   });
 });

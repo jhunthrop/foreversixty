@@ -24,26 +24,23 @@
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
   import { classColorVar } from '../../lib/report/format';
   import type { CharacterPath } from '../../lib/characters';
-  import type {
-    GuildAddonSnapshot,
-    GuildRosterCounts,
-    GuildRosterEntry,
-    GuildRosterRow,
-  } from '../../lib/guild/api';
+  import type { GuildRosterCounts, GuildRosterEntry, GuildRosterRow } from '../../lib/guild/api';
   import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
   import { focusOnMountIf } from '../../lib/guild/focus-now';
   import type { AttendanceSource } from '../../lib/guild/attendance-contract';
   import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
   import { professionName } from '../../lib/guild/professions';
-  import { addonSnapshotLine } from '../../lib/guild/roster-addon';
   import { rosterHoldsHandoff } from '../../lib/guild/roster-links';
   import {
     RANKS_PENDING_LINE,
     entrySpecLine,
     entryFacts,
     inGameFacts,
+    ROSTER_COLUMNS,
+    rosterColumns,
     rosterSpecLine,
     rosterStatChips,
+    type RosterColumnKey,
     type InGameFact,
   } from '../../lib/guild/roster-facts';
   import {
@@ -96,7 +93,6 @@
     onApproveAll,
     rowPath,
     profileHref = () => null,
-    addonSnapshot = null,
     mySiteSpec = null,
     now = new Date(),
     attendanceSource = 'reports',
@@ -129,8 +125,6 @@
     rowPath: (row: GuildRosterRow) => CharacterPath;
     /** The row's member profile, when the viewer may open it (an officer, or their own row). */
     profileHref?: (row: GuildRosterRow) => string | null;
-    /** The home's `addon_snapshot` (Task L6.14); absent on a home from before it, read as null. */
-    addonSnapshot?: GuildAddonSnapshot | null;
     /** The spec the site's own record (the account's character, `/v1/me`) holds for the viewer's
      *  character; the other rows carry only the roster's spec. Null when unknown. */
     mySiteSpec?: string | null;
@@ -191,7 +185,20 @@
   // Every roster row once (a pending row may also be in `roster`): the sender's name lookup
   // and the derived counts both read this.
   const allRows = $derived([...new Map([...roster, ...pending].map((r) => [r.character_key, r])).values()]);
-  const snapshotLine = $derived(addonSnapshotLine(addonSnapshot, allRows, now));
+  /** The figure columns some row fills: an empty column is not drawn. */
+  const shownColumns = $derived(
+    ROSTER_COLUMNS.filter((key) =>
+      ordered.some((row) =>
+        rosterColumns(row, attendanceSource).some((cell) => cell.key === key && cell.text !== ''),
+      ),
+    ),
+  );
+  /** A row's cells for the shown columns. */
+  function rowColumns(row: GuildRosterRow): { key: RosterColumnKey; text: string }[] {
+    return rosterColumns(row, attendanceSource).filter((cell) => shownColumns.includes(cell.key));
+  }
+  /** Any row the addon carried: only then does the In game slot take room on every row. */
+  const anyInGame = $derived(roster.some((row) => inGameFacts(row, now).length > 0));
   const countsView = $derived(counts ?? derivedCounts(allRows));
   const extras = $derived(
     filterEntries(entriesWithoutRow(members), {
@@ -291,6 +298,13 @@
   // the only `guild-roster-row`s.
   const ENTRY_ROW = 'guild-roster-entry flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5 xl:flex-nowrap';
   const MUTED_WORD = 'text-muted text-[12px]';
+  /** Each figure column's width from lg, the header's and every row's alike. */
+  const COLUMN_WIDTH: Readonly<Record<RosterColumnKey, string>> = {
+    level: 'w-[88px]',
+    raids: 'w-[132px]',
+    best: 'w-[104px]',
+    rating: 'w-[80px]',
+  };
 </script>
 
 {#snippet factList(facts: InGameFact[])}
@@ -319,22 +333,17 @@
        the addon knew: its text wraps inside it. Below xl it has a line of its own (at 1024 a 260 px
        slot beside the actions would leave the stats too little room), and a row
        the snapshot did not carry has none there at all (no lone "—"). -->
-  <div
-    class={`min-w-0 basis-full pl-12 text-[12px] break-words max-xl:order-2 xl:shrink-0 xl:basis-[260px] xl:pl-0 ${facts.length === 0 ? 'hidden xl:block' : ''}`}
-    data-testid="guild-roster-ingame-slot"
-  >
-    <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
-    {#if facts.length === 0}
-      <span
-        class="text-muted"
-        style="cursor:default"
-        title={guildRosterAddonCopy.notSeenHover}
-        data-testid="guild-roster-ingame-none">{guildRosterAddonCopy.notSeen}</span
-      >
-    {:else}
-      <span data-testid="guild-roster-ingame">{@render factList(facts)}</span>
-    {/if}
-  </div>
+  {#if anyInGame}
+    <div
+      class={`min-w-0 basis-full pl-12 text-[12px] break-words max-xl:order-2 xl:shrink-0 xl:basis-[260px] xl:pl-0 ${facts.length === 0 ? 'hidden xl:block' : ''}`}
+      data-testid="guild-roster-ingame-slot"
+    >
+      {#if facts.length > 0}
+        <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
+        <span data-testid="guild-roster-ingame">{@render factList(facts)}</span>
+      {/if}
+    </div>
+  {/if}
 {/snippet}
 
 {#snippet entryInGame(entry: GuildRosterEntry)}
@@ -343,10 +352,8 @@
     class={`text-nav min-w-0 basis-full pl-12 text-[12px] break-words max-xl:order-2 xl:shrink-0 xl:basis-[260px] xl:pl-0 ${facts.length === 0 ? 'hidden xl:block' : ''}`}
     data-testid="guild-roster-entry-ingame"
   >
-    <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
-    {#if facts.length === 0}
-      <span title={guildRosterModelCopy.states.not_seen}>{guildRosterAddonCopy.notSeen}</span>
-    {:else}
+    {#if facts.length > 0}
+      <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
       <span>{@render factList(facts)}</span>
     {/if}
   </div>
@@ -492,59 +499,59 @@
       testid="guild-roster-card"
     >
       <div class="flex flex-col gap-4">
-        <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-filters">
-          <span class="quiet-label">Filter</span>
-          <button class={FILTER_BTN} onclick={cycleRole} data-testid="guild-roster-filter-role">
-            Role: {filters.role === 'all' ? 'All' : filters.role}
-          </button>
-          <button class={FILTER_BTN} onclick={cycleClass} data-testid="guild-roster-filter-class">
-            Class: {filters.classFilter === 'all' ? 'All' : filters.classFilter}
-          </button>
-          <button
-            class={`${FILTER_BTN} ${filters.verifiedOnly ? FILTER_BTN_ON : ''}`}
-            onclick={() => toggle('verifiedOnly')}
-            data-testid="guild-roster-filter-verified"
-          >
-            Verified only
-          </button>
-          <button
-            class={`${FILTER_BTN} ${noAccountOnly ? FILTER_BTN_ON : ''}`}
-            onclick={() => (noAccountOnly = !noAccountOnly)}
-            data-testid="guild-roster-filter-noaccount"
-          >
-            {guildRosterModelCopy.noAccountFilter}
-          </button>
-          <button
-            class={`${FILTER_BTN} ${filters.belowFloorOnly ? FILTER_BTN_ON : ''}`}
-            onclick={() => toggle('belowFloorOnly')}
-            data-testid="guild-roster-filter-floor"
-          >
-            Below rating floor
-          </button>
-        </div>
-
-        <!-- The sort controls are chips under the filters, not a header row: the rows are blocks, not
-         columns, so there is nothing for a column heading to sit over. -->
-        <div
-          class="flex flex-wrap items-center gap-2"
-          role="group"
-          aria-label="Sort"
-          data-testid="guild-roster-sort"
-        >
-          <span class="quiet-label">Sort</span>
-          {#each sortChips as chip (chip.key)}
-            <button
-              class={`${FILTER_BTN} ${sortKey === chip.key ? FILTER_BTN_ON : ''}`}
-              onclick={() => (sortKey = chip.key)}
-              aria-pressed={sortKey === chip.key}
-              aria-sort={sortKey === chip.key ? 'descending' : undefined}
-              data-testid={`guild-roster-sort-${chip.key}`}
-            >
-              {chip.label}{sortKey === chip.key ? ' ▾' : ''}
+        <!-- Filter and Sort share one wrapping line (batch 3 review: the raiders start higher). -->
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-filters">
+            <span class="quiet-label">Filter</span>
+            <button class={FILTER_BTN} onclick={cycleRole} data-testid="guild-roster-filter-role">
+              Role: {filters.role === 'all' ? 'All' : filters.role}
             </button>
-          {/each}
+            <button class={FILTER_BTN} onclick={cycleClass} data-testid="guild-roster-filter-class">
+              Class: {filters.classFilter === 'all' ? 'All' : filters.classFilter}
+            </button>
+            <button
+              class={`${FILTER_BTN} ${filters.verifiedOnly ? FILTER_BTN_ON : ''}`}
+              onclick={() => toggle('verifiedOnly')}
+              data-testid="guild-roster-filter-verified"
+            >
+              Verified only
+            </button>
+            <button
+              class={`${FILTER_BTN} ${noAccountOnly ? FILTER_BTN_ON : ''}`}
+              onclick={() => (noAccountOnly = !noAccountOnly)}
+              data-testid="guild-roster-filter-noaccount"
+            >
+              {guildRosterModelCopy.noAccountFilter}
+            </button>
+            <button
+              class={`${FILTER_BTN} ${filters.belowFloorOnly ? FILTER_BTN_ON : ''}`}
+              onclick={() => toggle('belowFloorOnly')}
+              data-testid="guild-roster-filter-floor"
+            >
+              Below rating floor
+            </button>
+          </div>
+
+          <div
+            class="flex flex-wrap items-center gap-2"
+            role="group"
+            aria-label="Sort"
+            data-testid="guild-roster-sort"
+          >
+            <span class="quiet-label">Sort</span>
+            {#each sortChips as chip (chip.key)}
+              <button
+                class={`${FILTER_BTN} ${sortKey === chip.key ? FILTER_BTN_ON : ''}`}
+                onclick={() => (sortKey = chip.key)}
+                aria-pressed={sortKey === chip.key}
+                aria-sort={sortKey === chip.key ? 'descending' : undefined}
+                data-testid={`guild-roster-sort-${chip.key}`}
+              >
+                {chip.label}{sortKey === chip.key ? ' ▾' : ''}
+              </button>
+            {/each}
+          </div>
         </div>
-        <p class="text-muted text-[14px]" data-testid="guild-roster-addon-snapshot">{snapshotLine}</p>
         <!-- Only while no rank is known: a roster row's rank is the addon's, so the line would read
            over ranks it already sent (guild round 3). -->
         {#if allRows.length === 0 && extras.some((entry) => entry.state === 'no_account')}
@@ -558,6 +565,21 @@
           <div role="region" aria-label="Roster" data-testid="guild-roster-plate">
             <div>
               {#if ordered.length > 0}
+                <div
+                  class="text-label text-muted hidden items-center gap-3 pb-2 font-bold lg:flex"
+                  data-testid="guild-roster-heads"
+                  aria-hidden="true"
+                >
+                  <span class="w-9 shrink-0"></span>
+                  <span class="w-[240px] shrink-0">{guildRosterModelCopy.heads.raider}</span>
+                  <span class="flex flex-1 justify-end">
+                    {#each shownColumns as key (key)}<span class={`text-right ${COLUMN_WIDTH[key]}`}
+                        >{guildRosterModelCopy.heads[key]}</span
+                      >{/each}
+                  </span>
+                  {#if anyInGame}<span class="hidden shrink-0 basis-[260px] xl:block"></span>{/if}
+                  <span class="w-[216px] shrink-0"></span>
+                </div>
                 <Ruled testid="guild-roster-rows">
                   {#each ordered as row (row.character_key)}
                     {@const pinned = row.character_key === myCharacterKey}
@@ -610,15 +632,11 @@
                       >
                         <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 lg:flex-nowrap">
                           <!-- A 72 px slot at lg, whatever the word, so the stats after it share one left edge. -->
-                          <span class="lg:w-[72px] lg:shrink-0">
-                            {#if row.rank === 'member'}
-                              <span class={MUTED_WORD} data-testid="guild-roster-rank"
-                                >{rankWord(row.rank)}</span
-                              >
-                            {:else}
-                              <Tag testid="guild-roster-rank">{rankWord(row.rank)}</Tag>
-                            {/if}
-                          </span>
+                          <span class="empty:hidden lg:w-[104px] lg:shrink-0 lg:empty:block"
+                            >{#if row.rank !== 'member'}<Tag testid="guild-roster-rank"
+                                >{rankWord(row.rank)}</Tag
+                              >{/if}</span
+                          >
                           <!-- At lg the stats wrap inside their own box beside the rank slot, never under it,
                    so a long stat line starts at the same left edge as a short one. Below lg the box
                    is `contents` and the stats wrap with the rank as before. -->
@@ -626,9 +644,10 @@
                             class="contents lg:flex lg:min-w-0 lg:flex-1 lg:flex-wrap lg:items-center lg:gap-x-3 lg:gap-y-1"
                           >
                             {#if chips.length > 0}
-                              <!-- The stats as one sentence in the body face, " · " between them (P.1). -->
+                              <!-- Below lg the stats as one sentence in the body face, " · " between them (P.1);
+                                   from lg the columns under the header carry the units. -->
                               <FactLine
-                                class="tabular text-[12px]"
+                                class="tabular text-[12px] lg:hidden"
                                 facts={chips.map((chip, i) => ({
                                   text: chip,
                                   title: chipTitle(chip, row),
@@ -642,6 +661,17 @@
                                 {guildHomeCopy.loggedRecently}
                               </span>
                             {/if}
+                            <span
+                              class="hidden text-[14px] tabular-nums lg:ml-auto lg:flex lg:items-center"
+                              data-testid="guild-roster-columns"
+                            >
+                              {#each rowColumns(row) as cell (cell.key)}
+                                <span
+                                  class={`text-right ${COLUMN_WIDTH[cell.key]} ${cell.key === 'level' ? 'text-strong' : 'text-text'}`}
+                                  >{cell.text}</span
+                                >
+                              {/each}
+                            </span>
                           </div>
                         </div>
                         {#if row.professions !== undefined && row.professions.length > 0}

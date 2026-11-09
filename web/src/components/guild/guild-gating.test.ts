@@ -119,15 +119,13 @@ describe('GuildClaimedBy', () => {
 
 describe('GuildInviteLink', () => {
   const link = (rotatedAt: string | null, disabled = false): string =>
-    render(GuildInviteLink, { props: { guildId: 7, guildName: 'Olympus', rotatedAt, disabled } }).body;
+    render(GuildInviteLink, { props: { guildId: 7, rotatedAt, disabled } }).body;
 
-  it('sits under #invite and says what the link does', () => {
+  it('sits under #invite with no explaining paragraph', () => {
     const body = link(null);
     expect(body).toContain('id="invite"');
     expect(body).toContain('scroll-mt-20');
-    expect(text(body)).toContain(
-      'Anyone with this link joins Olympus as a verified member: no officer has to approve them, and they can sign up for raids and see the roster, loot and readiness at once. A character with an officer rank in game still waits for an officer.',
-    );
+    expect(text(body)).not.toContain('Anyone with this link');
   });
 
   it('no link yet: a secondary with no confirm, the plan card keeping the one fill', () => {
@@ -160,7 +158,6 @@ describe('GuildInviteLink', () => {
     render(GuildInviteLink, {
       props: {
         guildId: 7,
-        guildName: 'Olympus',
         rotatedAt: '2026-11-12T10:00:00Z',
         keptUrl: '/guild/invite/fsg_kept',
         madeBy,

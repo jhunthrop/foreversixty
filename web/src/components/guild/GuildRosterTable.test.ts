@@ -4,12 +4,7 @@
 // e2e spec guild-centre.spec.ts clicks the sort and reads the hovers in a browser.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import {
-  ADDON_SNAPSHOT,
-  VIEWER_MEMBER,
-  VIEWER_OFFICER,
-  buildMockHome,
-} from '../../fixtures/guild/mock-guild';
+import { VIEWER_MEMBER, VIEWER_OFFICER, buildMockHome } from '../../fixtures/guild/mock-guild';
 import type { GuildHome } from '../../lib/guild/api';
 import { guildRosterAddonCopy } from '../../lib/guild/copy';
 import GuildRosterTable from './GuildRosterTable.svelte';
@@ -17,7 +12,6 @@ import GuildRosterTable from './GuildRosterTable.svelte';
 // A local-time instant, so "today in the viewer's date" is 2026-12-22 in any time zone; the
 // snapshot's own received_at is derived from it (three minutes earlier).
 const NOW = new Date(2026, 11, 22, 21, 46);
-const RECEIVED = new Date(NOW.getTime() - 3 * 60_000).toISOString();
 
 function props(home: GuildHome) {
   return {
@@ -35,7 +29,6 @@ function props(home: GuildHome) {
     onDecline: () => {},
     onApproveAll: () => {},
     rowPath: () => ({ region: 'us' as const, ruleset: 'pvp' as const, slug: 'x' }),
-    addonSnapshot: home.addon_snapshot ? { ...home.addon_snapshot, received_at: RECEIVED } : null,
     now: NOW,
   };
 }
@@ -68,11 +61,12 @@ const withoutSnapshot = render(GuildRosterTable, {
 }).body;
 
 describe('GuildRosterTable: the In game column (L8.3)', () => {
-  it('sorts by chips under a SORT label: no header row, no "In game" heading', () => {
+  it('sorts by chips under a SORT label, no "In game" heading; the figure heads are for the eye only', () => {
     expect(withSnapshot).not.toContain('guild-roster-sort-header');
     expect(withSnapshot).not.toContain('columnheader');
+    expect(withSnapshot).toMatch(/data-testid="guild-roster-heads"[^>]*aria-hidden="true"/);
     const sort = withSnapshot.slice(withSnapshot.indexOf('data-testid="guild-roster-sort"'));
-    const row = sort.slice(0, sort.indexOf('data-testid="guild-roster-addon-snapshot"'));
+    const row = sort.slice(0, sort.indexOf('data-testid="guild-roster-heads"'));
     expect(text(row)).toContain('Sort Rank Item level');
     const labels = [...row.matchAll(/data-testid="guild-roster-sort-([a-z_]+)"/g)].map((m) => m[1]);
     expect(labels).toEqual(['rank', 'ilvl', 'rating', 'attendance', 'seen']);
@@ -155,24 +149,19 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(text(dusk)).not.toContain('· seen');
   });
 
-  it('a row the snapshot did not carry shows "—", hovering "Not seen by the addon in the last snapshot", on desktop only', () => {
+  it('a row the snapshot did not carry shows nothing in game, never a lone dash', () => {
     const windtalon = rows(withSnapshot).get('Windtalon') ?? '';
-    const cell = /<span[^>]*data-testid="guild-roster-ingame-none"[^>]*>[^<]*</.exec(windtalon)?.[0] ?? '';
-    expect(cell).toContain(`title="${guildRosterAddonCopy.notSeenHover}"`);
-    expect(guildRosterAddonCopy.notSeenHover).toBe('Not seen by the addon in the last snapshot');
-    expect(cell).toContain('>—<');
     expect(windtalon).not.toContain('data-testid="guild-roster-ingame"');
-    // No lone "—" while the slot has a line of its own: the whole slot is hidden below xl.
+    expect(windtalon).not.toContain('>—<');
+    // The slot keeps the column on desktop and has no line of its own below xl.
     const slot = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(windtalon)?.[0] ?? '';
     expect(slot).toMatch(/class="[^"]*\bhidden\b[^"]*xl:block/);
-    // A matched row's slot is shown on phones.
     const matched =
       /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(
         rows(withSnapshot).get('Zulmara') ?? '',
       )?.[0] ?? '';
     expect(matched).not.toMatch(/\bhidden\b/);
   });
-
   it('gives the In game text a fixed slot at the end of the row, before an actions group that never wraps', () => {
     for (const [name, part] of rows(withSnapshot)) {
       const slotAt = part.indexOf('data-testid="guild-roster-ingame-slot"');
@@ -224,7 +213,7 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
   it('gives every row the same fixed name block and rank slot at lg, so the stats line up', () => {
     for (const [name, part] of rows(withSnapshot)) {
       expect(part, name).toContain('lg:w-[240px]');
-      expect(part, name).toContain('lg:w-[72px]');
+      expect(part, name).toContain('lg:w-[104px]');
       const at = part.indexOf('data-testid="guild-roster-spec"');
       const subtitle = part.slice(part.lastIndexOf('<span', at), at + 400);
       expect(subtitle, name).toContain('lg:truncate');
@@ -256,29 +245,14 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(spec).not.toBeNull();
   });
 
-  it('names the column for a screen reader on every row', () => {
-    for (const part of rows(withSnapshot).values()) {
-      expect(part).toContain(`<span class="sr-only">${guildRosterAddonCopy.srLabel}</span>`);
-    }
+  it('names the In game facts for a screen reader on every row that has them', () => {
+    const zulmara = rows(withSnapshot).get('Zulmara') ?? '';
+    expect(zulmara).toContain(`<span class="sr-only">${guildRosterAddonCopy.srLabel}</span>`);
   });
-
-  it('puts the snapshot line above the table: who sent it and when (the counts have their own line)', () => {
-    const line = /data-testid="guild-roster-addon-snapshot"[^>]*>([^<]*)</.exec(withSnapshot)?.[1].trim();
-    expect(line).toBe('Roster from the addon · sent by Zulmara 3 minutes ago');
-    expect(withSnapshot.indexOf('guild-roster-addon-snapshot')).toBeLessThan(
-      withSnapshot.indexOf('data-testid="guild-roster-rows"'),
-    );
-    expect(ADDON_SNAPSHOT.by_character).toBe('us/pvp/zulmara');
+  it('with no snapshot: no addon line and no In game slot at all', () => {
+    expect(withoutSnapshot).not.toContain('guild-roster-addon-snapshot');
+    expect(withoutSnapshot).not.toContain('data-testid="guild-roster-ingame-slot"');
   });
-
-  it('with no snapshot: the null line, and every row "—"', () => {
-    const line = /data-testid="guild-roster-addon-snapshot"[^>]*>([^<]*)</.exec(withoutSnapshot)?.[1].trim();
-    expect(line).toBe(guildRosterAddonCopy.noSnapshot);
-    expect(withoutSnapshot).not.toContain('data-testid="guild-roster-ingame"');
-    const byName = rows(withoutSnapshot);
-    for (const part of byName.values()) expect(part).toContain('data-testid="guild-roster-ingame-none"');
-  });
-
   it('a home from before the addendum (no fields at all) reads as no snapshot', () => {
     const home = buildMockHome(VIEWER_MEMBER, undefined, null, false);
     const bare: GuildHome = {
@@ -286,9 +260,8 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
       roster: home.roster.map(({ addon: _addon, ...row }) => row),
     };
     delete bare.addon_snapshot;
-    const html = render(GuildRosterTable, { props: { ...props(bare), addonSnapshot: undefined } }).body;
-    expect(text(html)).toContain(guildRosterAddonCopy.noSnapshot);
-    expect(html).toContain('data-testid="guild-roster-ingame-none"');
+    const html = render(GuildRosterTable, { props: props(bare) }).body;
+    expect(html).not.toContain('data-testid="guild-roster-ingame-slot"');
   });
 });
 
@@ -367,13 +340,13 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     expect(strayhound.slice(0, strayhound.indexOf('guild-roster-entry-name'))).not.toContain('/crests/');
   });
 
-  it('gives every account row a rank word, Member included', () => {
+  it('tags an officer and the leader, and leaves a member’s rank blank', () => {
     const byName = rows(asOfficer);
     const rank = (name: string) =>
       text(/data-testid="guild-roster-rank"[^>]*>(.*?)<\/span>/.exec(byName.get(name) ?? '')?.[1] ?? '');
-    expect(rank('Kraggor')).toBe('Leader');
+    expect(rank('Kraggor')).toBe('Guild master');
     expect(rank('Sunderfel')).toBe('Officer');
-    expect(rank('Zulmara')).toBe('Member');
+    expect(byName.get('Zulmara')).not.toContain('data-testid="guild-roster-rank"');
   });
 
   it('prints no rank for a name only the addon saw: the state word alone, "Rank not known" on hover', () => {
@@ -428,7 +401,7 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     const waitingRows = asOfficer
       .slice(
         asOfficer.indexOf('data-testid="guild-roster-unverified-list"'),
-        asOfficer.indexOf('data-testid="guild-roster-addon-snapshot"'),
+        asOfficer.indexOf('data-testid="guild-roster-card"'),
       )
       .split('guild-roster-row ')
       .slice(1);
@@ -436,7 +409,7 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     for (const part of waitingRows) {
       // The card's head says it; the per-row state pill is gone (site alignment §5.10).
       expect(text(part)).not.toContain('Waiting for approval');
-      expect(part).toMatch(/data-testid="guild-roster-pending-rank"[^>]*>(Member|Officer|Leader)</);
+      expect(part).toMatch(/data-testid="guild-roster-pending-rank"[^>]*>(Member|Officer|Guild master)</);
       expect(part).toContain('data-testid="guild-roster-decline"');
       expect(part).toContain('data-testid="guild-roster-approve"');
     }

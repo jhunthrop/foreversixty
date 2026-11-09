@@ -1007,7 +1007,6 @@
           onApproveAll={() => void onApproveAll()}
           {rowPath}
           profileHref={(row) => rosterProfileHref(row, { officer: officerView, myCharacterKey, guildPath })}
-          addonSnapshot={home.addon_snapshot ?? null}
           mySiteSpec={myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)}
           attendanceSource={attendanceSourceOf(home)}
           {focusApproveAll}

@@ -26,7 +26,7 @@ export const seatsCopy = {
   withdrawing: 'Withdrawing…',
   accepted: (starts: string, zone?: string): string =>
     `Accepted · starts ${zonedDayMonth(starts, zone)}, when their own Premium ends`,
-  notGiven: 'Not given',
+  notGiven: 'Open seat',
   give: 'Give seat',
   giving: 'Giving…',
   freedSince: (date: string, name: string, zone?: string): string =>

@@ -15,7 +15,8 @@
   import { officerRows, realmLabel, wantedRows } from '../../../lib/guild/recruit-view';
   import { classTone } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
-  import SignInPrompt from '../../SignInPrompt.svelte';
+  import { battlenetStartUrl } from '../../../lib/account/api';
+  import Button from '../../ui/Button.svelte';
   import LoadError from '../../ui/LoadError.svelte';
   import Notice from '../../ui/Notice.svelte';
   import Page from '../../ui/Page.svelte';
@@ -147,7 +148,9 @@
       {:else}
         <Section title={copy.apply.heading} panel testid="guild-recruit-apply">
           {#if state.kind === 'signed-out'}
-            <SignInPrompt line={copy.apply.signIn(card.guild.name)} {next} testid="guild-recruit-sign-in" />
+            <Button tone="primary" href={battlenetStartUrl(next)} testid="guild-recruit-sign-in"
+              >{copy.apply.signIn}</Button
+            >
           {:else if state.kind === 'no-character'}
             <p class="text-text text-[14px]" data-testid="guild-recruit-no-character">
               {copy.apply.noCharacter(realmLabel(card))}

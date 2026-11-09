@@ -224,7 +224,6 @@
     {#if guildId !== null}
       <GuildInviteLink
         {guildId}
-        {guildName}
         rotatedAt={current.invite.rotated_at}
         keptUrl={current.invite.url}
         madeBy={current.invite.made_by}
@@ -234,7 +233,7 @@
         }}
       />
     {/if}
-    <SettingsRow open label={settingsWords.officerRank} sub={settingsWords.officerRankHelp} controlBelow>
+    <SettingsRow open label={settingsWords.officerRank} controlBelow>
       {#snippet control(labelId)}
         <div class="flex items-center gap-3">
           <input
@@ -269,12 +268,7 @@
         {/if}
       {/snippet}
     </SettingsRow>
-    <SettingsRow
-      open
-      label={guildSettingsCopy.defaultVisibility}
-      sub={settingsWords.visibilityHelp}
-      controlBelow
-    >
+    <SettingsRow open label={guildSettingsCopy.defaultVisibility} controlBelow>
       {#snippet control()}
         <div class="w-40">
           <Select

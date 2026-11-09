@@ -31,7 +31,7 @@ export const recruitCopy = {
   closedLine: (guild: string) => `${guild} is not recruiting right now.`,
   apply: {
     heading: 'Apply',
-    signIn: (guild: string) => `Sign in to apply to ${guild} with one of your characters.`,
+    signIn: 'Sign in with Battle.net to apply',
     character: 'Character',
     pickCharacter: 'Pick a character',
     noCharacter: (realm: string) =>

@@ -18,10 +18,6 @@ from ws_prims import Button, Emblem, Link, Page, PageHeader, Row, Rows, Section,
 # The built copy (lib/billing/guild-billing-copy, lib/billing/seats-copy, lib/guild/copy, lib/guild/settings-view), verbatim.
 WHO_PAYS_HELP = 'Hand the plan to another officer, for example when the guild leader changes. The founder price goes with it.'
 SEATS_HELP = 'A seat gives one verified member Premium while the plan lasts. A seat can move once every 30 days.'
-INVITE_HELP = (f'Anyone with this link joins {GUILD} as a verified member: no officer has to approve them, and they can sign up for raids and see the '
-               'roster, loot and readiness at once. A character with an officer rank in game still waits for an officer.')
-RANK_HELP = '0 is the guild master, 1 the rank under it, and so on. This rank and every rank above it can approve members and award loot.'
-VISIBILITY_HELP = 'Public, Unlisted (link only) or Guild only. Applies to new reports.'
 CREST_RULES = 'PNG, JPEG or WebP, up to 2 MB, at least 128 by 128; we crop to a square.'
 TIERS = [('Guild', '$120', '$150', 'Up to 25 verified members &middot; 1 Premium seat'),
          ('Raid guild', '$200', '$250', 'Any size &middot; loot council and readiness &middot; 3 Premium seats')]
@@ -66,7 +62,7 @@ def seat_rows() -> str:
     out = []
     for seat in S.billing()['seats']:
         if seat['holder'] is None:
-            who = f'<span class="sp-empty" aria-hidden="true"></span><span class="t-small" style="font-size:14px">Not given</span>'
+            who = f'<span class="sp-empty" aria-hidden="true"></span><span class="t-small" style="font-size:14px">Open seat</span>'
             give = _act('Give seat', small=False).replace('<button ', '<button aria-expanded="false" ', 1)
             out.append(f'<li class="sp-seat"><div class="sp-who">{who}</div><div></div><span>{give}</span></li>')
             continue
@@ -112,7 +108,7 @@ def discord_section() -> str:
     inner = (f'{p("Posts raids to <b class=\"strong\">a Discord channel</b>", small=False)}'
              f'<p class="t-small" style="font-size:13px;line-height:20px;margin:0">Channel <b class="strong">{short}</b> &middot; <a href="#" style="text-decoration:underline">Open in Discord</a></p>'
              f'<div class="sp-btns">{_act("Send test message")}{remove}</div>'
-             f'<div style="padding-top:40px"><a href="#" style="font-size:13px;text-decoration:underline">Connect a different channel</a></div>'
+             f'<div style="padding-top:26px"><a href="#" style="font-size:13px;text-decoration:underline">Connect a different channel</a></div>'
              f'<div style="padding-top:12px">{p("Connecting again replaces this channel and removes its webhook from Discord.")}</div>')
     return Section('Discord', body(f'<div style="display:flex;flex-direction:column;gap:4px;min-height:176px">{inner}</div>'),
                    action=Tag('Connected', 'kill'), panel=True)
@@ -136,13 +132,13 @@ def members_section() -> str:
     holder = s['claimed_by']
     claimed = (f'<p style="font-size:13px;line-height:20px;margin:0">Claimed by {crest_img(holder["class"], 20).replace("<img ", "<img aria-hidden=\"true\" ", 1)} '
                f'<b style="color:{C[holder["class"]]}">{holder["name"]}</b></p>')
-    invite = (Rows([Row('Invite link', INVITE_HELP, link=False)], open_=True)
+    invite = (Rows([Row('Invite link', link=False)], open_=True)
               + f'<div class="sp-col"><label style="display:flex;flex-direction:column;gap:4px;width:100%"><span class="t-small" style="font-size:13px;font-weight:600">Invite link</span>'
-              f'<input class="field sp-in" readonly value="https://foreversixty.gg{S.INVITE_URL}" style="height:29px"></label>{_act("Copy link", small=False)}'
+              f'<input class="field sp-in" readonly value="https://foreversixty.gg{S.INVITE_URL}" style="height:40px"></label>{_act("Copy link", small=False)}'
               f'{p(f"Made {day(S.INVITE_MADE)} by <b style=\"color:{C[holder["class"]]}\">{holder["name"]}</b>.")}{_act("Make a new link")}</div>')
-    rank = Row('Officer ranks', RANK_HELP, trail=f'<input class="field sp-in" type="number" aria-label="Officer ranks" value="{s["officer_max_rank_index"]}" style="width:72px">'
+    rank = Row('Officer ranks', trail=f'<input class="field sp-in" type="number" aria-label="Officer ranks" value="{s["officer_max_rank_index"]}" style="width:72px">'
                + _act('Save').replace('<button ', '<button disabled ', 1), link=False)
-    vis = Row('Default report visibility', VISIBILITY_HELP, trail=f'<span style="display:inline-block;width:160px">{_select("Guild only")}</span>', link=False)
+    vis = Row('Default report visibility', trail=f'<span style="display:inline-block;width:160px">{_select("Guild only")}</span>', link=False)
     return Section('Members and access', body(claimed + invite + Rows([rank, vis], open_=True)), panel=True)
 
 

@@ -54,7 +54,6 @@
     {#snippet trail()}
       <Figure
         value={countdown(startsAt, endsAt, now)}
-        label="Starts in"
         size="sm"
         tone="gold"
         align="end"
@@ -65,13 +64,12 @@
   {#if you}<div data-testid="guild-next-raid-you">{@render you()}</div>{/if}
   {#if officer && raid !== null}
     <div class="flex flex-wrap gap-x-8 gap-y-3 pt-3" data-testid="guild-next-raid-figures">
-      <Figure value={String(raid.counts.in)} label="In" size="sm" tone="kill" />
-      <Figure value={String(raid.counts.late)} label="Late" size="sm" tone="gold" />
-      <Figure value={String(raid.counts.bench)} label="Bench" size="sm" />
+      <Figure value={String(raid.counts.in)} label="In" tone="kill" />
+      <Figure value={String(raid.counts.late)} label="Late" tone="gold" />
+      <Figure value={String(raid.counts.bench)} label="Bench" />
       <Figure
         value={String(raid.not_signed_raiders?.length ?? raid.not_signed.length)}
         label="Not signed"
-        size="sm"
         tone="wipe"
       />
     </div>

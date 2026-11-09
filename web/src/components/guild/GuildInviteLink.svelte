@@ -23,7 +23,6 @@
 
   let {
     guildId,
-    guildName,
     rotatedAt = null,
     keptUrl = null,
     madeBy = null,
@@ -31,7 +30,6 @@
     onRotated = undefined,
   }: {
     guildId: number;
-    guildName: string;
     /** When the current link was made (the settings read); null when none exists. */
     rotatedAt?: string | null;
     /** The current link's site path when the API kept it; null when it cannot be shown again. */
@@ -96,7 +94,7 @@
 </script>
 
 <div bind:this={root} id="invite" class="flex scroll-mt-20 flex-col" data-testid={`${TESTID}-block`}>
-  <SettingsRow open label={copy.inviteHeading} sub={copy.inviteHelp(guildName)} />
+  <SettingsRow open label={copy.inviteHeading} />
   <div class="flex flex-col items-start gap-3 pb-3">
     {#if confirming}
       <!-- svelte-ignore a11y_no_static_element_interactions -->

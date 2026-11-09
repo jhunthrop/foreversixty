@@ -364,7 +364,7 @@ describe('raid time and cover rows', () => {
         state: 'ok',
       },
     ]);
-    expect(row?.sub).toBe('1 on a talent we cannot see · 1 on the bench');
+    expect(row?.sub).toBe('1 talent not confirmed · 1 on the bench');
     expect(row?.cells.map((c) => [c.tone, c.text])).toEqual([
       ['none', '1'],
       ['warn', '1'],

@@ -156,9 +156,7 @@ describe('the officers list', () => {
   it('says what happened on Discord in plain words', () => {
     const accepted = list.rows[2];
     expect(decisionTitle(accepted)).toBe('Hexmarrow accepted');
-    expect(decisionSub(accepted)).toBe(
-      '3 yes, 0 no of 3 officers · by Kraggor · Discord role granted · No Discord message: they did not ask for one',
-    );
+    expect(decisionSub(accepted)).toBe('3 yes, 0 no of 3 officers · by Kraggor');
     expect(discordLines({ status: 'accepted', role_outcome: 'no_role_set', dm_outcome: 'sent' })).toEqual([
       'No Discord role set, so none was granted',
       'Told them on Discord',
