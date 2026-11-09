@@ -23,6 +23,7 @@
     top,
     rail,
     stickyRail = false,
+    panels = false,
     tocFrom,
     tocLabel = 'Contents',
     testid,
@@ -41,6 +42,8 @@
     rail?: Snippet;
     /** The rail sticks below the bar from 1024. */
     stickyRail?: boolean;
+    /** Main and rail hold Section `panel`s (the logs and report mocks): 22 px apart, the columns 28. */
+    panels?: boolean;
     /** `reading` only, a document (the changelog, the content pages): the width the contents rail
      *  shows from (1760, 1024), or 0 for never, with the document's section gap above it. The
      *  guides leave it out (the rail from 1760 under their plate). */
@@ -57,6 +60,7 @@
 <div
   class="ui-page"
   data-layout={layout}
+  data-panels={panels ? 'true' : undefined}
   data-toc-from={layout === 'reading' ? tocFrom : undefined}
   data-testid={testid}
 >
@@ -92,6 +96,14 @@
   }
   .ui-page-rail {
     gap: 32px;
+  }
+  .ui-page[data-panels] {
+    --section-gap: 22px;
+    column-gap: 28px;
+    padding-top: 28px;
+  }
+  .ui-page[data-panels] > .ui-page-rail {
+    gap: var(--section-gap);
   }
   .ui-page-toc {
     display: none;
