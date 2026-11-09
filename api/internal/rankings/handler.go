@@ -336,7 +336,12 @@ func (s *Service) character(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character", nil)
 		return
 	}
-	CacheLive(w)
+	if c.scorePrivate() {
+		// The owner and everyone else read different pages: never one from a shared cache.
+		httpx.CachePrivate(w)
+	} else {
+		CacheLive(w)
+	}
 	httpx.WriteOK(w, r, http.StatusOK, c)
 }
 
@@ -353,9 +358,22 @@ func (s *Service) CharacterCard(ctx context.Context, region, ruleset, name strin
 		return Character{}, ok, err
 	}
 	s.addScoreAndGear(ctx, &c)
+	c.hideScoreFrom(auth.ActorFrom(ctx).UserID)
 	c.Supporter = s.supporterOf(ctx, c.ownerID)
 	return c, true, nil
 }
+
+// hideScoreFrom takes the Forever Score off the page for viewerID when the owner hid it and
+// viewerID is someone else; the owner sees their own page whole.
+func (c *Character) hideScoreFrom(viewerID int64) {
+	if c.scoreVisible || (c.ownerID != nil && *c.ownerID == viewerID) {
+		return
+	}
+	c.ForeverScore, c.ScoreHistory, c.ScoreHidden = ForeverScore{}, []ScorePoint{}, true
+}
+
+// scorePrivate reports whether the page's score depends on who asks: its owner hid it.
+func (c Character) scorePrivate() bool { return !c.scoreVisible }
 
 // addScoreAndGear fills the Forever Score and the gear panel; a failed read leaves them null.
 func (s *Service) addScoreAndGear(ctx context.Context, c *Character) {

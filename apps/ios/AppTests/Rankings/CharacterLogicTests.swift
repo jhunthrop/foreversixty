@@ -56,6 +56,14 @@ struct CharacterLogicTests {
         #expect(!CharacterPage.hasScore(try RankingsTestData.freshling()))
     }
 
+    @Test func hiddenScore_drawsNoScoreSection() throws {
+        let hidden = try RankingsTestData.hidden()
+        #expect(!CharacterPage.hasScore(hidden))
+        #expect(!CharacterPage.showsScoreSection(hidden))
+        #expect(CharacterPage.showsScoreSection(try RankingsTestData.freshling()))
+        #expect(CharacterPage.showsScoreSection(try RankingsTestData.voltaris()))
+    }
+
     @Test func sparkline_oldestFirst_normalized() throws {
         let points = CharacterPage.sparkline(try RankingsTestData.voltaris().scoreHistory.reversed())
         #expect(points.first == 0)

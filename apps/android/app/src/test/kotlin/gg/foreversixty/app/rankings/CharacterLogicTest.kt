@@ -49,6 +49,13 @@ class CharacterLogicTest {
         assertEquals(listOf(412f / 500, 620f / 700, 540f / 600, 180f / 200, 78f / 100), bars.map { it.fraction })
     }
 
+    @Test fun `a score the owner hid draws no score section at all`() {
+        val hidden = RankingsTestData.hidden()
+        assertFalse(CharacterCard.hasScore(hidden))
+        assertFalse(CharacterCard.showsScoreSection(hidden))
+        assertTrue(CharacterCard.showsScoreSection(RankingsTestData.noLogs()))
+    }
+
     @Test fun `no score has no bars, never a zero`() {
         val p = RankingsTestData.noLogs()
         assertFalse(CharacterCard.hasScore(p))

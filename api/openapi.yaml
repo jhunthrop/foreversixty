@@ -1737,9 +1737,14 @@ components:
       type: object
       description: >-
         GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score
-        field is null for a character with no rated fight: render "no logs yet", never 0.
+        field is null for a character with no rated fight: render "no logs yet", never 0. When
+        score_hidden is true the owner hid the Forever Score from everyone else: every score
+        field is null, score_history is [], and the page shows no score block at all (no "no logs
+        yet", no label, no blank row). The owner's own view carries the score as usual, and a
+        hidden character's page is never shared-cached.
       required: [character, best, history, builds_seen, score_history, gear, gear_gap_total, gear_spec, gear_spec_source, supporter, score, tier, as_of, components, component_caps, experience]
       properties:
+        score_hidden: { type: boolean, description: "True when the owner hid the Forever Score and the viewer is someone else; absent otherwise. Show no score block." }
         character:
           type: object
           title: CharacterProfileHeader
@@ -7810,7 +7815,7 @@ paths:
         '426': { $ref: '#/components/responses/UpdateRequired' }
         '200':
           description: "The character card"
-          x-fixtures: [character.card, character.card.empty, character.card.ranked, character.card.yours]
+          x-fixtures: [character.card, character.card.empty, character.card.ranked, character.card.yours, character.card.hidden]
           content:
             application/json:
               schema:
