@@ -187,10 +187,7 @@ for (const [label, viewport] of [
       await expect(bisPanel(page).locator('.ui-item-row[data-testid^="guide-bis-"]')).toHaveCount(BIS_SLOTS);
       await expect(bisPanel(page).getByTestId('guide-bis-head')).toContainText('Head');
       await expect(bisPanel(page).getByTestId('guide-bis-head').locator('img')).toHaveCount(1);
-      await expect(page.getByTestId('guide-bis-full-list')).toHaveAttribute(
-        'href',
-        '/bis/mage/frost/60',
-      );
+      await expect(page.getByTestId('guide-bis-full-list')).toHaveAttribute('href', '/bis/mage/frost/60');
       await expect(page.getByTestId('guide-bis-full-list')).toHaveText(`${guidesCopy.fullListLink} ›`);
       const horde30 = await page
         .locator('template[data-bis-panel="30-horde"]')
