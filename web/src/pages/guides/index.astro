@@ -1,9 +1,11 @@
 ---
 // web/src/pages/guides/index.astro
-// /guides (directions mock b2-guides, round 5): the title band (Guides, the signed-in answer),
+// /guides (directions mock b2-guides, round 5): the title band (Guides, the newest Updated stamp
+// over every guide, the signed-in answer),
 // then the class and spec picker the BiS landing shares (ClassSpecPicker): every class on its
 // panel, its crest and name a link to its landing, its specs in tree order as slim link rows; the
 // header character's spec is marked after load.
+import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ClassSpecPicker, { type PickerClass } from '../../components/guides/ClassSpecPicker.astro';
 import GuideAnswer from '../../components/guides/GuideAnswer.astro';
@@ -12,12 +14,27 @@ import PageHeader from '../../components/ui/PageHeader.svelte';
 import classes from '../../data/classes.json';
 import activeBuild from '../../data/active-build.json';
 import { readSpecCatalog } from '../../lib/bis/load';
+import { latest } from '../../lib/dates';
+import { rankedBisFile } from '../../lib/guides/class-dps';
+import { dayMonth, pageUpdatedAt } from '../../lib/guides/guide-header';
 import { guidesCopy } from '../../lib/guides/copy';
 import { dataUrl } from '../../lib/planner/load';
 import { searchCopy } from '../../lib/search-copy';
 
 const build = activeBuild.build;
 const catalog = readSpecCatalog();
+// The newest date any guide page shows: its own `updated`, or the day its ranked BiS file was
+// published (the nightly republishes the numbers the guide pages carry).
+const updated = latest(
+  (await getCollection('guides')).map((g) =>
+    pageUpdatedAt(
+      g.data.updated,
+      g.data.spec === undefined
+        ? undefined
+        : rankedBisFile(build, `${g.data.classSlug}-${g.data.spec}`)?.generated_at,
+    ),
+  ),
+);
 const groups: PickerClass[] = classes.map((c) => ({
   slug: c.slug,
   name: c.name,
@@ -43,6 +60,7 @@ const groups: PickerClass[] = classes.map((c) => ({
   <main id="main" tabindex="-1" class="guides-index" data-testid="guides-index">
     <Page layout="ledger">
       <PageHeader slot="header" title={guidesCopy.indexTitle} tone="strong">
+        <span slot="meta">Updated {dayMonth(updated)}</span>
         <GuideAnswer slot="answer" page={{}} />
       </PageHeader>
       <ClassSpecPicker

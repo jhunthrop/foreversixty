@@ -330,7 +330,7 @@ def index_page(kind: str = 'out', me_key: str = '') -> str:
              for c in F['index']['classes']]
     picker = ClassSpecPicker(picks, F['markup']['indexTitle'], class_links=True, yours=yours, yours_label=e(C['yourSpecPill']))
     ans = '' if kind == 'out' else answer(kind, me)
-    head = PageHeader(e(F['markup']['indexTitle']), '', '', None, ans)
+    head = PageHeader(e(F['markup']['indexTitle']), '', '', [f'Updated {e(F["index"]["updated"])}'], ans)
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     return build_page('Guides', head + Page('ledger', picker) + PAGE_CSS, 'Guides', who, f'Guides index mock (design/specs/2026-11-08-guides.md); data guides-facts.json, build {F["build"]}.')
 
