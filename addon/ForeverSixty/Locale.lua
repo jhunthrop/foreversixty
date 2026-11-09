@@ -1540,7 +1540,7 @@ L.panelPick = "Pick"
 L.panelPathFoot = "First talent point at level %d"
 L.homeRotationTitle = "Rotation at %d"
 L.panelShow = "show"
-L.panelAtLevelRow = "At level %d"
+L.panelAtLevelRow = "at level %d"
 
 
 

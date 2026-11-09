@@ -66,7 +66,11 @@ Codec.MESSAGE_TYPES[Panel.SIGNUP_KIND] = true
 --- Nominal heights the budget is counted in (the frame measures its own lines when it draws):
 --- `head` is the title band and the body's top padding, `foot` the body's bottom padding.
 Panel.H = { head = Theme.SIZES.titleBand + 12, foot = 14, heading = 22, rule = 9, line = 14, row = 34,
-	rotationRow = 20, button = 22, gap = 6 }
+	rotationName = 15, rotationClause = 13, rotationGap = 5, button = 22, gap = 6 }
+--- A rotation row's condition sits under the spell's name and wraps to a second line past this
+--- many characters (a 60-character panel line never runs past two); the budget counts it so.
+Panel.CLAUSE_WRAP_CHARS = 44
+Panel.CLAUSE_MAX_LINES = 2
 --- The body's side padding, and the gap between two buttons side by side.
 Panel.PAD = 14
 Panel.BUTTON_GAP = 6
@@ -377,7 +381,12 @@ function Panel.regionHeight(region)
 		if region.collapsed then
 			return H.heading + H.rule
 		end
-		height = height + H.rotationRow * (#region.rows + (region.nextRow and 1 or 0))
+		for _, row in ipairs(region.rows) do
+			height = height + Panel.rotationRowHeight(row)
+		end
+		if region.nextRow ~= nil then
+			height = height + Panel.rotationRowHeight(region.nextRow)
+		end
 	end
 	return height
 end
@@ -1121,6 +1130,16 @@ local function drawPath(content, region, y, width)
 	return y + wrapped(content, region.foot, "umberMuted", 0, y, width) + Panel.H.gap
 end
 
+--- One rotation row's height: the name, then its condition on one line or two. Pure.
+function Panel.rotationRowHeight(row)
+	local clause = type(row) == "table" and row.clause or nil
+	local lines = 0
+	if type(clause) == "string" and clause ~= "" then
+		lines = #clause > Panel.CLAUSE_WRAP_CHARS and Panel.CLAUSE_MAX_LINES or 1
+	end
+	return Panel.H.rotationName + Panel.H.rotationClause * lines + Panel.H.rotationGap
+end
+
 local function drawRotation(content, region, y, width)
 	local title = string.format(L.homeRotationTitle, region.level)
 	if region.collapsed then
@@ -1151,15 +1170,22 @@ local function drawRotation(content, region, y, width)
 		local label = text(content, row.name, entry.dim and "umberMuted" or "ink")
 		label:SetPoint("TOPLEFT", content, "TOPLEFT", 22, -y)
 		local clause = text(content, row.clause, "umberMuted")
-		clause:SetPoint("LEFT", label, "RIGHT", 6, 0)
-		clause:SetWidth(math.max(20, width - 28 - (label:GetStringWidth() or 0)))
+		clause:SetPoint("TOPLEFT", label, "BOTTOMLEFT", 0, -1)
+		clause:SetWidth(width - 22)
+		if clause.SetWordWrap ~= nil then
+			clause:SetWordWrap(true)
+		end
+		if clause.SetMaxLines ~= nil then
+			clause:SetMaxLines(Panel.CLAUSE_MAX_LINES)
+		end
+		local rowHeight = Panel.rotationRowHeight(row)
 		local over = hover(content, function()
 			return row.full ~= nil and { row.name, row.full } or nil
 		end)
 		over:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 		over:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
-		over:SetHeight(Panel.H.rotationRow)
-		y = y + Panel.H.rotationRow
+		over:SetHeight(rowHeight)
+		y = y + rowHeight
 	end
 	return y + Panel.H.gap
 end

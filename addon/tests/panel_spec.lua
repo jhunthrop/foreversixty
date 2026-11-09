@@ -245,6 +245,16 @@ describe("Panel, the pure model", function()
 			assert.is_nil(region.collapsed)
 		end)
 
+		it("counts a row as the name and its condition, a long condition on two lines", function()
+			local H = Panel.H
+			local one = H.rotationName + H.rotationClause + H.rotationGap
+			assert.are.equal(one, Panel.rotationRowHeight({ clause = "on cooldown" }))
+			assert.are.equal(one + H.rotationClause,
+				Panel.rotationRowHeight({ clause = string.rep("x", Panel.CLAUSE_WRAP_CHARS + 1) }))
+			assert.are.equal(H.rotationName + H.rotationGap, Panel.rotationRowHeight({ clause = "" }))
+			assert.are.equal("at level 26", string.format(L.panelAtLevelRow, 26))
+		end)
+
 		it("collapses at 60 unless opened, or a new rank was learned", function()
 			assert.is_true(Panel.rotation({ level = 60, rows = rows(3) }).collapsed)
 			assert.is_false(Panel.rotation({ level = 60, rows = rows(3), expanded = true }).collapsed)

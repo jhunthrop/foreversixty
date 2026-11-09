@@ -8,6 +8,7 @@
 - Upgrades list where each one drops, the level it needs when that is above yours, and an Equip button for one already in your bags.
 - Talents show how many points follow your plan, your next talent, and Change and Talents buttons side by side.
 - Under level 10 with no build, Pick your path loads a spec's leveling build. At 60 the rotation folds away until you open it.
+- Rotation lines say when to press each button in plain words under the spell, "when Serpent Sting has under 1.5 s left" (from the next nightly data).
 - The character pane's flyout is gone: its button opens the same panel, docked to the pane. Drag the top of the panel to move it; Reset positions puts it back.
 
 ## 2.0.37
