@@ -70,33 +70,16 @@
     (error: unknown) => console.error('sim: the rotation notes did not load', error),
   );
   const rotationSteps = $derived(rotationNotesFor(row.spec, notes));
+  const showRotation = $derived(!compact && rotationSteps.length > 0);
 </script>
 
-<Row
-  id={row.spec}
-  title={specLabel(row.spec)}
-  titleTone={classTone(classOfSpec(row.spec))}
-  testid={`spec-${row.spec}`}
-  open={false}
->
-  {#snippet subContent()}
-    <!-- A spec with no parses says so once, in its Tag; on the in-page card (compact) the line
-         stays, as the only status there. -->
-    {#if !noParses || compact}
-      <span class="flex flex-col">
-        <span class="text-strong tabular-nums" data-testid="spec-figure">{figure}</span>
-        {#if !noParses}<span>{specStateNote(row.state)}</span>{/if}
-      </span>
-    {/if}
-  {/snippet}
-  {#snippet trail()}
-    <Tag tone={row.state === 'validated' ? 'success' : 'muted'} testid="spec-state"
-      >{specStateLabel(row.state)}</Tag
-    >
-  {/snippet}
-  {#snippet foot()}
-    {#if !compact && rotationSteps.length > 0}
-      <div class="w-full">
+{#snippet title()}
+  <!-- What it does sits on the name's line (ux-designer, round 5); opened, its steps take the
+       line under the name. -->
+  <span class="flex flex-wrap items-center gap-x-4 [&_details[open]]:basis-full">
+    <span>{specLabel(row.spec)}</span>
+    {#if showRotation}
+      <span class="contents font-normal">
         <Disclosure
           summary={simCopy.rotationLink}
           testid={`spec-rotation-panel-${row.spec}`}
@@ -111,21 +94,50 @@
             {/each}
           </ol>
         </Disclosure>
-      </div>
-    {/if}
-    {#if !compact && row.worst_actions.length > 0}
-      <span class="text-small text-muted tabular-nums">
-        {simCopy.specWorstActions}:
-        {#each row.worst_actions.slice(0, 3) as action, index (action.name)}{index > 0
-            ? ' · '
-            : ''}{resolveActionName(action.name, actionNames)}
-          {action.actual_casts}
-          {simCopy.specCast}, {action.sim_casts}
-          {simCopy.specSimmed}{/each}
       </span>
     {/if}
-    {#if !compact && footer !== ''}
-      <span class="text-small text-muted tabular-nums" data-testid="spec-footer">{footer}</span>
-    {/if}
+  </span>
+{/snippet}
+
+{#snippet status()}
+  <!-- A spec with no parses says so once, in its Tag; on the in-page card (compact) the line
+       stays, as the only status there. -->
+  <span class="flex flex-col">
+    <span class="text-strong tabular-nums" data-testid="spec-figure">{figure}</span>
+    {#if !noParses}<span>{specStateNote(row.state)}</span>{/if}
+  </span>
+{/snippet}
+
+{#snippet details()}
+  {#if row.worst_actions.length > 0}
+    <span class="text-small text-muted tabular-nums">
+      {simCopy.specWorstActions}:
+      {#each row.worst_actions.slice(0, 3) as action, index (action.name)}{index > 0
+          ? ' · '
+          : ''}{resolveActionName(action.name, actionNames)}
+        {action.actual_casts}
+        {simCopy.specCast}, {action.sim_casts}
+        {simCopy.specSimmed}{/each}
+    </span>
+  {/if}
+  {#if footer !== ''}
+    <span class="text-small text-muted tabular-nums" data-testid="spec-footer">{footer}</span>
+  {/if}
+{/snippet}
+
+<Row
+  id={row.spec}
+  title={specLabel(row.spec)}
+  titleTone={classTone(classOfSpec(row.spec))}
+  titleContent={title}
+  subContent={!noParses || compact ? status : undefined}
+  foot={!compact && (row.worst_actions.length > 0 || footer !== '') ? details : undefined}
+  testid={`spec-${row.spec}`}
+  open={false}
+>
+  {#snippet trail()}
+    <Tag tone={row.state === 'validated' ? 'success' : 'muted'} testid="spec-state"
+      >{specStateLabel(row.state)}</Tag
+    >
   {/snippet}
 </Row>
