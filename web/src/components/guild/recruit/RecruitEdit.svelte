@@ -69,7 +69,7 @@
         {#snippet trail()}
           <Button
             size="sm"
-            tone="ghost"
+            tone="secondary"
             label={`${copy.card.edit}: ${field.title}`}
             onclick={() => (editing = true)}
             testid={`guild-recruit-edit-${field.key}-open`}>{copy.card.edit}</Button

@@ -1,5 +1,7 @@
 # Forever Sixty design system
 
+> **Round 5 (2026-11-09) replaced the look below.** The palette, type, radii, art, panels, buttons, controls, tooltip and paperdoll are in [`docs/design-system.md`](../docs/design-system.md), the reference page lanes build from (spec `design/specs/2026-11-09-directions.md`). Principles 1 to 5 still stand; principle 6 (atmosphere in the header only) and 7 (no textures) are retired by the owner's painted ground and bands. The colour, type and component sections that follow describe the flat system the apps still use until the mobile lane adopts round 5.
+
 Derived from the approved "Cinematic" direction and the live-game homepage mockup in this folder. Source of truth for tokens is `design/tokens/tokens.json` (W3C design tokens); `node design/tokens/build.mjs` generates `web/src/styles/tokens.css` and both apps' token files from it. Keep this document and that file in sync.
 
 ## Principles

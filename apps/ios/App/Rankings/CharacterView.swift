@@ -67,7 +67,7 @@ struct CharacterView: View {
             }
             if CharacterPage.hasScore(profile) {
                 ScoreCard(profile: profile, openHow: actions.openHow)
-            } else {
+            } else if CharacterPage.showsScoreSection(profile) {
                 ReportStateCard(title: Copy.charNoLogs, detail: Copy.charNoScore(name: profile.character.name), color: FSColor.strong)
             }
             let bests = CharacterPage.bests(profile, now: now)

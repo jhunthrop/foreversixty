@@ -83,7 +83,7 @@ describe('GuildClaimRow', () => {
     expect(text(body)).toContain('Claim Olympus');
     expect(body).toContain(`href="${GATE_CLAIM_HREF}"`);
     expect(body).toContain('border-gold');
-    expect(body).not.toContain('linear-gradient');
+    expect(body).not.toContain('bg-teal ');
   });
 
   it('an officer: the copy link, its href still the claim page', () => {
@@ -135,8 +135,8 @@ describe('GuildInviteLink', () => {
     expect(text(body)).toContain('Make a link to share in guild chat or Discord.');
     expect(text(body)).toContain('Make the invite link');
     const make = /<button[^>]*class="([^"]*)"[^>]*data-testid="guild-invite-make"/.exec(body)?.[1] ?? '';
-    expect(make).toContain('bg-white/[.045]');
-    expect(make).not.toContain('linear-gradient');
+    expect(make).toContain('bg-blue ');
+    expect(make).not.toContain('bg-teal ');
     expect(body).not.toContain('data-testid="guild-invite-rotate"');
     expect(body).not.toContain('data-testid="guild-invite-url"');
   });

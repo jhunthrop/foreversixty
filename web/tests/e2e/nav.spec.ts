@@ -6,10 +6,10 @@ import { expect, test } from './support/test';
 import { signedOut } from './support/selector';
 
 test.describe('aria-current', () => {
-  test('the Tools door carries aria-current=page on /sim', async ({ page }) => {
+  test('the Sim door carries aria-current=page on /sim', async ({ page }) => {
     await page.goto('/sim');
     await expect(
-      page.getByTestId('primary-nav').locator('a.site-door', { hasText: 'Tools' }),
+      page.getByTestId('primary-nav').locator('a.site-door', { hasText: /^Sim$/ }),
     ).toHaveAttribute('aria-current', 'page');
   });
 
@@ -25,13 +25,18 @@ test.describe('desktop header', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
   test.skip(() => test.info().project.name !== 'desktop', 'desktop layout only');
 
-  test('the wordmark, the doors and the session sit left to right, with no Menu button', async ({ page }) => {
+  test('the seal and name, the doors, the session and Premium sit left to right, with no Menu button', async ({
+    page,
+  }) => {
     await page.goto('/');
-    const mark = await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox();
-    const nav = await page.getByTestId('primary-nav').boundingBox();
-    const account = await page.getByTestId('selector-root').boundingBox();
-    expect(mark!.x + mark!.width).toBeLessThanOrEqual(nav!.x);
-    expect(nav!.x + nav!.width).toBeLessThanOrEqual(account!.x);
+    const mark = (await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox())!;
+    const firstDoor = (await page.locator('.site-group').first().boundingBox())!;
+    const lastDoor = (await page.locator('.site-group[data-group="guild"]').boundingBox())!;
+    const account = (await page.getByTestId('selector-root').boundingBox())!;
+    const premium = (await page.getByTestId('nav-premium').boundingBox())!;
+    expect(mark.x + mark.width).toBeLessThanOrEqual(firstDoor.x);
+    expect(lastDoor.x + lastDoor.width).toBeLessThanOrEqual(account.x);
+    expect(account.x + account.width).toBeLessThanOrEqual(premium.x);
     await expect(page.getByTestId('menu-button')).toBeHidden();
   });
 });
@@ -65,16 +70,9 @@ test.describe('phone nav', () => {
       clientWidth: element.clientWidth,
     }));
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
-    for (const label of [
-      'Planner',
-      'BiS',
-      'Simulator',
-      'Get set up',
-      'Upload a log',
-      'Rankings',
-      'Tier list',
-    ]) {
-      await expect(nav.getByRole('link', { name: label })).toBeVisible();
+    for (const label of ['Planner', 'Best in slot', 'Sim', 'Upload a log', 'Rankings', 'Tier list']) {
+      // Sim alone: the Logs rows' descriptions also say "simulated".
+      await expect(nav.getByRole('link', { name: label === 'Sim' ? /^Sim$/ : label })).toBeVisible();
     }
   });
 

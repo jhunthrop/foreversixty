@@ -106,7 +106,7 @@
     text-align: center;
     font-size: 11px;
     line-height: 14px;
-    color: #5d6577;
+    color: var(--color-rule);
     font-variant-numeric: tabular-nums;
   }
   .porder-r {
@@ -122,7 +122,7 @@
   }
   .lbl {
     font-size: 13px;
-    line-height: 18px;
+    line-height: 20px;
     color: var(--color-muted);
     font-variant-numeric: tabular-nums;
   }
@@ -149,7 +149,7 @@
     border-radius: 5px;
   }
   .porder-s .ic {
-    background: #10141d;
+    background: var(--color-bg);
   }
   .em {
     display: block;

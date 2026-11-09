@@ -1,8 +1,8 @@
-// The one source of the primary nav's structure (spec design/specs/2026-10-15-grouped-header.md,
-// which supersedes the eight doors of 2026-10-09-nav-character-selector.md section 2.2): the
-// four doors, their panel rows, the trailing Get set up door, and "is this page current" logic. Header.astro renders from
-// this; Header.test.ts asserts against it directly, so a reordering shows up as a data-level
-// test failure rather than a markup diff.
+// The one source of the primary nav's structure: round 5's doors (design/specs/2026-11-09-directions.md
+// section 5, coordinator ruling 2026-11-09: the mock's flat doors), their panel rows where a door
+// has sub-pages, and "is this page current" logic. Header.astro renders from this; Header.test.ts
+// asserts against it directly, so a reordering shows up as a data-level test failure rather than
+// a markup diff. Get set up left the bar for the account menu and the footer.
 
 import communityLinks from '../data/links.json' with { type: 'json' };
 
@@ -21,39 +21,33 @@ export interface NavRow extends NavItem {
 }
 
 export interface NavGroup extends NavItem {
-  /** The panel's rows. Empty for Guides: the header renders its class grid from classes.json. */
+  /** The panel's rows. Empty for Guides (the header renders its class grid from classes.json)
+   *  and for a plain door. */
   readonly rows: readonly NavRow[];
   readonly foot?: NavItem;
+  /** True for a door with sub-pages: a chevron and a panel. A plain door is its link alone. */
+  readonly panel: boolean;
 }
 
+/** A plain door: a link with no panel. */
+const door = (label: string, href: string): NavGroup => ({ label, href, rows: [], panel: false });
+
 /**
- * The four doors, in this order on every breakpoint. A door is a real link to its own href;
- * the rows are the panel behind it.
+ * The doors, in the mock's order on every breakpoint. A door is a real link to its own href; a
+ * door with sub-pages (Guides, Logs, Guild) has its rows behind a chevron panel.
  */
 export const NAV_GROUPS: readonly NavGroup[] = [
+  door('Best in slot', '/bis'),
   {
-    label: 'Tools',
-    href: '/planner',
-    rows: [
-      {
-        label: 'Planner',
-        href: '/planner',
-        description: 'Talents, the build you follow, and what to train next',
-      },
-      { label: 'BiS', href: '/bis', description: 'The gear to chase at your level, slot by slot' },
-      {
-        label: 'Simulator',
-        href: '/sim',
-        description: 'What your gear does, simulated fight by fight',
-      },
-      // A sim ranking, not a log one (it was under Logs, which lit Logs on /tiers).
-      {
-        label: 'Tier list',
-        href: '/tiers',
-        description: 'Where every DPS, tank and healer spec stands at 60, by our sim',
-      },
-    ],
+    label: 'Guides',
+    href: '/guides',
+    rows: [],
+    foot: { label: 'All guides', href: '/guides' },
+    panel: true,
   },
+  door('Tier list', '/tiers'),
+  door('Sim', '/sim'),
+  door('Planner', '/planner'),
   {
     label: 'Logs',
     href: '/logs',
@@ -74,6 +68,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         description: 'Parses by boss, spec and level range, from every log',
       },
     ],
+    panel: true,
   },
   {
     label: 'Guild',
@@ -107,17 +102,12 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       },
     ],
     foot: { label: 'Guild settings', href: '/guild#settings' },
-  },
-  {
-    label: 'Guides',
-    href: '/guides',
-    rows: [],
-    foot: { label: 'All guides', href: '/guides' },
+    panel: true,
   },
 ];
 
 /** Where the Guild group sits in NAV_GROUPS: the session fills its rows (spec section 2). */
-export const GUILD_GROUP_INDEX = 2;
+export const GUILD_GROUP_INDEX = NAV_GROUPS.findIndex((group) => group.label === 'Guild');
 
 /**
  * What the Guild panel's two member-only doors say for a visitor with no guild of their own
@@ -137,11 +127,11 @@ export const GUILDLESS_SWAPS: Readonly<Record<string, NavItem & { readonly descr
 /** The Guild row without a hash: the guild's overview (`data-guild-tab` in the header). */
 export const GUILD_OVERVIEW_TAB = 'overview';
 
-/** The bar's last door, after the four groups, with no panel of its own (owner, 2026-10-15:
- *  setup stays on the primary bar); also the guild claim flow's link. */
+/** Get set up: the account menu's row and the footer's link (round 5: off the bar's doors); also
+ *  the guild claim flow's link. */
 export const SETUP_NAV_ITEM: NavItem = { label: 'Get set up', href: '/setup' };
 
-/** The bar's gold Premium tag after Get set up: a link with no panel and no chevron, hidden for
+/** Premium, their teal Subscribe at the bar's end: a link with no panel and no chevron, hidden for
  *  an account with Premium from any source (spec 2026-10-29-premium-entry sections 3 and 4). */
 export const PREMIUM_NAV_ITEM: NavItem = { label: 'Premium', href: '/premium' };
 

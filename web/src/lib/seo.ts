@@ -5,8 +5,8 @@ export const SITE_URL = 'https://foreversixty.gg';
 export const SITE_NAME = 'Forever Sixty';
 export const SITE_ALTERNATE_NAME = 'foreversixty.gg';
 export const GAME_NAME = 'World of Warcraft: Forever';
-/** The short game name every inner page title ends with, so a search for the game finds us. */
-const TITLE_GAME_TAG = 'WoW Forever';
+/** The short game name every inner page title carries, so a search for the game finds us. */
+export const TITLE_GAME_TAG = 'WoW Forever';
 export const HOME_TITLE = `${SITE_NAME} · Play your class better in ${GAME_NAME}`;
 export const HOME_DESCRIPTION = `Best in slot gear, talent builds, a simulator, rankings and logs for ${GAME_NAME}. Play your class better.`;
 
@@ -20,6 +20,12 @@ export const TITLE_MAX_LENGTH = 60;
  */
 export function pageTitle(path: string, title: string): string {
   if (path === '/') return HOME_TITLE;
+  // A title written for search names the game itself ("WoW Forever Talent Calculator"): the
+  // brand goes after it while it fits, never a second game tag.
+  if (title.includes(TITLE_GAME_TAG)) {
+    const withBrand = `${title} · ${SITE_NAME}`;
+    return withBrand.length <= TITLE_MAX_LENGTH ? withBrand : title;
+  }
   const branded = `${title} · ${SITE_NAME} · ${TITLE_GAME_TAG}`;
   return branded.length <= TITLE_MAX_LENGTH ? branded : `${title} · ${TITLE_GAME_TAG}`;
 }
@@ -28,7 +34,7 @@ const publisher = {
   '@type': 'Organization',
   name: SITE_NAME,
   url: SITE_URL,
-  logo: { '@type': 'ImageObject', url: `${SITE_URL}/favicon.svg` },
+  logo: { '@type': 'ImageObject', url: `${SITE_URL}/apple-touch-icon.png` },
 };
 
 /** The site node, carried on the homepage. */
@@ -38,7 +44,7 @@ export const PUBLISHER = {
   name: SITE_NAME,
   legalName: 'Commish LLC',
   url: SITE_URL,
-  logo: `${SITE_URL}/favicon.svg`,
+  logo: `${SITE_URL}/apple-touch-icon.png`,
 } as const;
 
 export function websiteLd() {
@@ -81,19 +87,23 @@ export function articleLd(input: ArticleInput) {
 
 const sectionNames: Record<string, string> = {
   guides: 'Class guides',
+  bis: 'Best in slot',
   zones: 'Zones',
   dungeons: 'Dungeons',
 };
 
-/** Home › Section › Page, derived from the path so every page agrees with the nav. */
-export function breadcrumbLd(path: string, title: string) {
-  const parts = path.split('/').filter(Boolean);
-  const items = [{ name: 'Home', item: SITE_URL }];
-  if (parts.length > 1) {
-    const section = parts[0] as string;
-    items.push({ name: sectionNames[section] ?? section, item: `${SITE_URL}/${section}` });
-  }
-  items.push({ name: title, item: `${SITE_URL}${path}` });
+export interface Crumb {
+  name: string;
+  /** The site path, `/guides/hunter`. */
+  path: string;
+}
+
+/** Home › each crumb in order: the trail a page sits on, as the nav reaches it. */
+export function breadcrumbListLd(crumbs: readonly Crumb[]) {
+  const items = [
+    { name: 'Home', item: SITE_URL },
+    ...crumbs.map((c) => ({ name: c.name, item: `${SITE_URL}${c.path}` })),
+  ];
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -103,6 +113,39 @@ export function breadcrumbLd(path: string, title: string) {
       name: entry.name,
       item: entry.item,
     })),
+  };
+}
+
+/** Home › Section › Page, derived from the path so every page agrees with the nav. */
+export function breadcrumbLd(path: string, title: string) {
+  const parts = path.split('/').filter(Boolean);
+  const section = parts[0];
+  const crumbs: Crumb[] =
+    parts.length > 1 && section !== undefined
+      ? [{ name: sectionNames[section] ?? section, path: `/${section}` }]
+      : [];
+  return breadcrumbListLd([...crumbs, { name: title, path }]);
+}
+
+/** A free tool page (/sim, /planner): what it is, that it runs in the browser and costs nothing.
+ *  No rating or review: the site has none to report. */
+export function webApplicationLd(input: {
+  name: string;
+  description: string;
+  path: string;
+  category: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: input.name,
+    description: input.description,
+    url: `${SITE_URL}${input.path}`,
+    applicationCategory: input.category,
+    operatingSystem: 'Any (runs in the browser)',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    publisher: PUBLISHER,
   };
 }
 

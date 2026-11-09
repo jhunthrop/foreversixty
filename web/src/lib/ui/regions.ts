@@ -30,6 +30,10 @@ export const REGION = {
   plate: 'plate',
   /** Paperdoll: the slot cells. */
   slots: 'slots',
+  /** PaperdollFrame: the medallion socket (the Battle.net head render, else the seal). */
+  paperdollMedallion: 'paperdoll-medallion',
+  /** PaperdollFrame: the centre panel (the selected slot's tooltip). */
+  paperdollCentre: 'paperdoll-centre',
   /** Inspector at the side (from 1760). */
   inspector: 'inspector',
   /** Inspector expanded in place under its cell (below 1760). */

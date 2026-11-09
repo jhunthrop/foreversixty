@@ -338,7 +338,7 @@
     stroke-width: 2;
   }
   path.off {
-    stroke: #3a4256;
+    stroke: var(--color-line);
     stroke-width: 2;
   }
   [role='row'] {

@@ -1,6 +1,9 @@
 // web/src/lib/footer-copy.ts
-// The footer's copy and link set, one source for Footer.astro and its tests. Every string is a
-// row of design/specs/2026-10-28-polish.md section 2.6; an edit here edits that row too.
+// The footer's copy and link set, one source for Footer.astro and its tests: round 5's compact
+// footer (design/specs/2026-11-09-directions.md, coordinator ruling 2026-11-09): the seal and name,
+// Get set up, Premium, the Discord and Report a bug, the legal links, the not-affiliated sentence and
+// the operator line. FOOTER_COLUMNS is no longer drawn; it is the site's page list the 404 page
+// suggests from (lib/not-found/suggest.ts).
 import communityLinks from '../data/links.json';
 
 export interface FooterLink {
@@ -13,8 +16,11 @@ export interface FooterColumn {
   readonly links: readonly FooterLink[];
 }
 
-export const FOOTER_PROMISE =
-  'Play your class better: gear, talents, sims and logs for World of Warcraft: Forever.';
+/** The footer's site links, beside the seal: Get set up left the bar for here and the account menu. */
+export const FOOTER_LINKS: readonly FooterLink[] = [
+  { label: 'Get set up', href: '/setup' },
+  { label: 'Premium', href: '/premium' },
+];
 
 export const FOOTER_DISCORD_BUTTON: FooterLink = {
   label: 'Join the Discord',

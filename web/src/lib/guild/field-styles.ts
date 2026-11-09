@@ -24,7 +24,7 @@ export const SWITCH_CHROME =
   "before:absolute before:top-1/2 before:left-0.5 before:h-3.5 before:w-3.5 before:-translate-y-1/2 before:rounded-full before:bg-muted before:transition-transform motion-reduce:before:transition-none before:content-[''] " +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold disabled:cursor-not-allowed';
 export const SWITCH_ON =
-  'checked:border-gold checked:bg-gold checked:before:translate-x-4 checked:before:bg-bg';
+  'checked:border-teal-edge checked:bg-teal checked:before:translate-x-4 checked:before:bg-strong';
 
 /** The shared disabled look, for a row whose control cannot be used at all (not merely busy). */
 export const DISABLED_LOOK = 'cursor-not-allowed opacity-50';

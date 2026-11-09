@@ -33,4 +33,4 @@ Shaman is the totem class: a caster, a melee fighter and a healer who all bring 
 
 ## Races
 
-**Both factions get shamans now.** The Dwarf shaman is one of Forever's six new race and class pairs, and Dwarf is the only Alliance race that can be one. On the Horde, Orc, Tauren and Troll shamans are joined by the Windshaper Skyborne, a paid unlock. Alliance Skyborne cannot be shamans.
+**Both factions get shamans now.** The Dwarf shaman is one of Forever's six new race and class pairs, and Dwarf is the only Alliance race that can be one. On the Horde, Orc, Tauren and Troll shamans are joined by the Windshaper Skyborne. Alliance Skyborne cannot be shamans.

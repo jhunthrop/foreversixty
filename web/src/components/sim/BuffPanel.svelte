@@ -77,7 +77,7 @@
 </script>
 
 <div class="flex flex-col" data-testid="sim-buff-panel">
-  <h3 class="text-label tracking-label text-muted font-bold uppercase">{simCopy.buffPanel}</h3>
+  <h3 class="text-label text-muted font-bold">{simCopy.buffPanel}</h3>
   <p class="text-small text-muted mt-1 mb-2">{simCopy.buffPanelNote}</p>
 
   {#each BUFF_GROUPS as group (group)}

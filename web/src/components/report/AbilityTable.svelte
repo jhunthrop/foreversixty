@@ -213,9 +213,7 @@
   {/each}
   {#each petNames as pet (pet)}
     <div class="ui-st-r" role="row" data-testid="ability-pet-heading">
-      <span class="text-label tracking-label text-muted col-span-full font-bold uppercase" role="cell"
-        >{copy.pet(pet)}</span
-      >
+      <span class="text-label text-muted col-span-full font-bold" role="cell">{copy.pet(pet)}</span>
     </div>
     {#each sorted.filter((row) => row.pet === pet) as row (`${pet}:${row.key}`)}
       {@render abilityRow(row)}

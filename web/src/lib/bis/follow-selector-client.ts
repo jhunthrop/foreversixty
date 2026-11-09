@@ -21,12 +21,14 @@ const BAND_HASH = /^#band-(?:alliance|horde)-\d+$/;
 const BAND_PARAM = /^\d{1,2}$/;
 
 /**
- * The band a BiS page opens on when its URL names none: a shared link's `?band=` (or the legacy
+ * The band a BiS page opens on when its URL names none: a band page's path, a shared link's `?band=` (or the legacy
  * `#band-<faction>-<band>` hash) is the island's own to read, so this does nothing then; else the
  * selected character's own band and faction. The character lookup waits for the page to finish
  * loading and go idle, for the same LCP reason as mountBisFollow above.
  */
 export function applyBisDefaultBand(root: HTMLElement, win: Window = window): void {
+  // A band page (/bis/<class>/<spec>/<band>, lib/bis/band-path.ts) names its band in the path.
+  if (root.dataset.bisPathBand !== undefined) return;
   if (BAND_HASH.test(win.location.hash)) return;
   if (BAND_PARAM.test(new URLSearchParams(win.location.search).get('band') ?? '')) return;
   let stored: string | null = null;

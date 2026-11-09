@@ -12,18 +12,21 @@
     band,
     count,
     label,
+    title,
     testid,
     children,
   }: {
     letter: string;
-    /** The letter's colour and its rail's (a quality colour token). */
-    tone: string;
-    /** "Within 5% of the top". */
-    band: string;
+    /** The letter's colour and its rail's (a quality colour token); a compact list's letter is cream. */
+    tone?: string;
+    /** "Within 5% of the top"; a compact list's letter column carries the letter alone. */
+    band?: string;
     /** "8 specs". */
-    count: string;
+    count?: string;
     /** The group's accessible name ("Tier B"). */
     label: string;
+    /** The letter's hover title ("10 to 20% behind #1"), where the column carries the letter alone. */
+    title?: string;
     testid?: string;
     children: Snippet;
   } = $props();
@@ -31,11 +34,11 @@
 
 <li class="ui-rank-group" style:--rg-tone={tone} data-group={letter} data-testid={testid}>
   <div class="ui-rank-group-head" data-testid="rank-group-head">
-    <span class="ui-rg-letter" data-testid="rank-group-letter"
+    <span class="ui-rg-letter" {title} data-testid="rank-group-letter"
       ><span class="sr-only">{`${label}: `}</span><span aria-hidden="true">{letter}</span></span
     >
-    <span class="ui-rg-band">{band}</span>
-    <span class="ui-rg-count">{count}</span>
+    {#if band !== undefined}<span class="ui-rg-band">{band}</span>{/if}
+    {#if count !== undefined}<span class="ui-rg-count">{count}</span>{/if}
   </div>
   <ol class="ui-rank-group-rows" aria-label={label}>{@render children()}</ol>
 </li>

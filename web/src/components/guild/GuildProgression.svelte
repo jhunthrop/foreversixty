@@ -64,6 +64,32 @@
   const encounters = $derived((progression?.encounters ?? []).filter((encounter) => encounter.pulls > 0));
 </script>
 
+{#snippet rosterBests()}
+  {#if encounterBests.length > 0}
+    <Section title="Roster bests" testid="guild-roster-best">
+      <ul>
+        {#each encounterBests as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
+          {@const labels = rosterBestLabels(row)}
+          <li>
+            <Row
+              title={splitUnitName(row.player.name).name}
+              titleTone={classTone(row.player.class)}
+              sub={labels.execution === null ? labels.what : `${labels.what} · ${labels.execution}`}
+              href={characterHref(region, ruleset, row.player.name)}
+              density="slim"
+              open
+            >
+              {#snippet trail()}
+                <span class="text-[14px] font-bold tabular-nums" title={labels.hover}>{labels.value}</span>
+              {/snippet}
+            </Row>
+          </li>
+        {/each}
+      </ul>
+    </Section>
+  {/if}
+{/snippet}
+
 <div data-testid="guild-progression-tab">
   {#if progression === null || progression.tier.pulls_total === 0}
     <!-- Zero pulls: the tab's one block is the shared empty state under its heading (guild round 2). -->
@@ -76,6 +102,9 @@
           <EmptyState message={empty.message} action={empty.action} testid="guild-progression-empty" />
         {/if}
       </Section>
+      <!-- The public read's roster bests stand without the progression endpoint (tenet 10): a
+           guild with no tier pulls yet still shows who is best where. -->
+      {@render rosterBests()}
     </Page>
   {:else}
     {@const tier = progression.tier}
@@ -164,31 +193,7 @@
             </ul>
           </Section>
         {/if}
-        {#if encounterBests.length > 0}
-          <Section title="Roster bests" testid="guild-roster-best">
-            <ul>
-              {#each encounterBests as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
-                {@const labels = rosterBestLabels(row)}
-                <li>
-                  <Row
-                    title={splitUnitName(row.player.name).name}
-                    titleTone={classTone(row.player.class)}
-                    sub={labels.execution === null ? labels.what : `${labels.what} · ${labels.execution}`}
-                    href={characterHref(region, ruleset, row.player.name)}
-                    density="slim"
-                    open
-                  >
-                    {#snippet trail()}
-                      <span class="text-[14px] font-bold tabular-nums" title={labels.hover}
-                        >{labels.value}</span
-                      >
-                    {/snippet}
-                  </Row>
-                </li>
-              {/each}
-            </ul>
-          </Section>
-        {/if}
+        {@render rosterBests()}
       {/snippet}
     </Page>
   {/if}

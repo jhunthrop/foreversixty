@@ -10,6 +10,8 @@ import Planner from '../components/planner/Planner.svelte';
 import activeBuild from '../data/active-build.json';
 import { DEFAULT_CLASS_SLUG } from '../lib/planner/config';
 import { loadTalentFile } from '../lib/guides/build-tree';
+import { searchCopy } from '../lib/search-copy';
+import { webApplicationLd } from '../lib/seo';
 
 // The opening class's tree art, painted by the loading Plate (the page's largest paint).
 const openingArt = (loadTalentFile(activeBuild.build, DEFAULT_CLASS_SLUG)?.trees ?? [])
@@ -17,12 +19,21 @@ const openingArt = (loadTalentFile(activeBuild.build, DEFAULT_CLASS_SLUG)?.trees
   .sort((a, b) => a.position - b.position)
   .filter((tree) => tree.background)
   .map((tree) => `trees/${tree.background}.webp`);
+const jsonLd = [
+  webApplicationLd({
+    name: searchCopy.planner.appName,
+    description: searchCopy.planner.description,
+    path: '/planner',
+    category: 'GameApplication',
+  }),
+];
 ---
 
 <Base
-  title="Build planner"
-  description="Plan a World of Warcraft: Forever build: talents in the order you spend them, and a short link to share it."
+  title={searchCopy.planner.title}
+  description={searchCopy.planner.description}
   path="/planner"
+  {jsonLd}
   wide
 >
   <main id="main" tabindex="-1">

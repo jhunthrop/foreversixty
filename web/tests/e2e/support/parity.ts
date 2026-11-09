@@ -64,9 +64,10 @@ export function readParityConfig(file: string): ParityConfig {
 }
 
 const FONT_FILES: readonly [family: string, weight: number, file: string][] = [
-  ['Barlow', 400, 'barlow-400-subset.woff2'],
-  ['Barlow', 600, 'barlow-600-subset.woff2'],
-  ['Barlow', 700, 'barlow-700-subset.woff2'],
+  ['Open Sans', 400, 'open-sans-400-subset.woff2'],
+  ['Open Sans', 600, 'open-sans-600-subset.woff2'],
+  ['Open Sans', 700, 'open-sans-700-subset.woff2'],
+  ['Archivo', 600, 'archivo-600-subset.woff2'],
   ['Marcellus', 400, 'marcellus-400-subset.woff2'],
 ];
 

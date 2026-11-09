@@ -1,6 +1,8 @@
 /* web/src/styles/global.css */
 @import 'tailwindcss';
 @import './tokens.css';
+@import '../components/ui/panel.css';
+@import '../components/ui/band.css';
 @import '../components/ui/overlay.css';
 @import './nav.css';
 @import './typeahead.css';
@@ -21,14 +23,22 @@
   }
 
   html {
-    /* The themed scrollbar's thumb (below): a cool grey between the line and the muted text. */
-    --scrollbar-thumb: #343d52;
+    /* The themed scrollbar's thumb (below): a warm grey between the line and the muted text. */
+    --scrollbar-thumb: var(--color-rule-warm);
     background: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-body);
+    /* Marcellus has one weight: a heading asked for bold stays its own cut, never a smeared
+       synthetic bold. */
+    font-synthesis-weight: none;
   }
+  /* The page ground (round 5): the owner's painted earth, periodic and tiled at 1:1, over the
+     earth colour. Text set straight on it takes the ground's muted ink (white at .5 there is
+     3.2:1); every surface (.ui-surface: plates, panels, overlays, the footer) restores the card's. */
   body {
+    --color-muted: var(--color-muted-ground);
     margin: 0;
+    background: var(--color-ground) var(--art-ground, none) 0 0 / var(--art-ground-size, auto) repeat;
     -webkit-font-smoothing: antialiased;
   }
   a {
@@ -39,11 +49,19 @@
   a:active {
     color: var(--color-gold-hover);
   }
+  /* Page and section headings are Marcellus in cream, mixed case, a soft shadow (round 5, their
+     headings); ui/Section's title takes the same face at either level. An h3 is a row's or a
+     block's title (a changelog entry, a lane's label) and stays the body face's bold. */
   h1,
-  h2,
-  h3 {
+  h2 {
     font-family: var(--font-heading);
-    /* 700, the heaviest Barlow weight the site loads (fonts.css declares no 800). */
+    font-weight: 400;
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-cream);
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.45);
+  }
+  h3 {
+    font-family: var(--font-body);
     font-weight: 700;
     color: var(--color-strong);
   }
@@ -51,11 +69,10 @@
     outline: 2px solid var(--color-gold);
     outline-offset: 2px;
   }
-  /* Gold checkboxes, site-wide (spec 2026-10-25-discord-notifications 9.2): the checked box is
-     gold with the browser's dark tick, a disabled one is muted, and the focus ring is the
-     page's gold ring. Surfaces add no local accent-* of their own. */
+  /* Teal checkboxes, site-wide (round 5: the primary's teal edge): a disabled one is muted, and
+     the focus ring is the page's gold ring. Surfaces add no local accent-* of their own. */
   input[type='checkbox'] {
-    accent-color: var(--color-gold);
+    accent-color: var(--color-teal-edge);
     color-scheme: dark;
   }
   input[type='checkbox']:disabled {
@@ -119,20 +136,17 @@ label:has(input[type='checkbox']:disabled) {
   }
 }
 
-/* The heading face inline (Barlow 700, the case its copy has): a name set at its call site's own
-   size. The caps heading recipes (heading-hero, -page, -section, section-title, heading-plan), the
-   11 px `label` micro-caps, gold-text and surface-band retired on 2026-11-07 (web layout spec 3.3:
-   one Marcellus title, section heads in the body face in normal case, nothing under 12 px);
-   surface-guard.test.ts fails on any use. Headline figures take figure-stat (28) and
-   figure-price (44 / 52), the same face with tabular numerals. */
+/* A name inline (an item, a character, a plan): the body face's bold at its call site's own
+   size, the case its copy has. Headings are Marcellus (the base layer above); names and figures
+   are Open Sans. Headline figures take figure-stat (28) and figure-price (44 / 52), the body face
+   with tabular numerals. */
 @utility heading-name {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-weight: 700;
-  letter-spacing: var(--tracking-heading);
 }
 
 @utility figure-stat {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: var(--text-stat);
   line-height: 1;
@@ -140,7 +154,7 @@ label:has(input[type='checkbox']:disabled) {
 }
 
 @utility figure-price {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: var(--text-price-phone);
   line-height: 1;
@@ -150,12 +164,10 @@ label:has(input[type='checkbox']:disabled) {
   }
 }
 
-/* The button label: 13px 700 in the body face, in sentence case (web layout spec 2026-11-05 §3.5;
-   owner 2026-11-07: uppercase letter-spaced buttons are the old style). */
+/* The button label: 15 px 600 in the body face, in sentence case (round 5: their buttons). */
 @utility button-label {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 @utility tabular {
@@ -228,6 +240,11 @@ label:has(input[type='checkbox']:disabled) {
 }
 
 @layer components {
+  /* The 12 px label role is the body face even on a heading element (h1 to h3 are Marcellus). */
+  .text-label {
+    font-family: var(--font-body);
+    letter-spacing: 0;
+  }
   .pill {
     display: inline-flex;
     align-items: center;
@@ -258,13 +275,13 @@ label:has(input[type='checkbox']:disabled) {
   }
   .pill-site {
     color: var(--color-gold);
-    background: rgba(229, 185, 85, 0.14);
-    border-color: rgba(229, 185, 85, 0.35);
+    background: color-mix(in srgb, var(--color-gold) 12%, transparent);
+    border-color: color-mix(in srgb, var(--color-gold) 35%, transparent);
   }
   .pill-sample {
     color: var(--color-muted);
-    background: rgba(154, 148, 132, 0.12);
-    border-color: rgba(154, 148, 132, 0.3);
+    background: rgb(255 255 255 / 0.06);
+    border-color: rgb(255 255 255 / 0.18);
   }
   /* SECONDARY_BUTTON_FIXED and PRIMARY_BUTTON_FIXED (lib/planner/styles.ts), launch pricing
      spec 4 Disabled: off reads at 50 % with a not-allowed cursor. A busy button (aria-busy,
@@ -296,7 +313,7 @@ label:has(input[type='checkbox']:disabled) {
     font-size: 16px;
     margin: 20px 0 8px;
   }
-  /* Guide rebuild (spec §4.D): the article column is 820px wide, which at Barlow 16px/1.6
+  /* Guide rebuild (spec §4.D): the article column is 820px wide, which at 16px/1.6
      runs roughly 95-100 characters per line -- past the 60-75ch comfortable-reading range.
      Headings, the planted components (tree, pills, race row, the Leveling band strip) and
      the class landing's wider spec-card row all stay their own full column width; only

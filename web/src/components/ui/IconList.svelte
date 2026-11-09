@@ -15,7 +15,7 @@
   }: { items: readonly IconListItem[]; label?: string; iconSize?: number; testid?: string } = $props();
 </script>
 
-{#if label}<h3 class="text-label tracking-label text-muted mt-4 font-bold uppercase">{label}</h3>{/if}
+{#if label}<h3 class="text-label text-muted mt-4 font-bold">{label}</h3>{/if}
 <div class="flex flex-wrap gap-x-[18px] gap-y-2 pt-[10px]" data-testid={testid}>
   {#each items as item (item.id)}
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->

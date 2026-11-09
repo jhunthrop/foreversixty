@@ -173,7 +173,7 @@ private fun WatchStar(watch: WatchState, name: String, enabled: Boolean, toggle:
 @Composable
 private fun Profile(profile: CharacterProfile, state: CharacterScreenState, specs: SpecCatalog, now: Instant, copy: CharacterCopy, actions: CharacterActions) {
     Head(profile, state, CharacterCard.specName(profile, specs), copy)
-    ScoreCard(profile, copy, actions)
+    if (CharacterCard.showsScoreSection(profile)) ScoreCard(profile, copy, actions)
     if (profile.best.isNotEmpty()) Section(stringResource(R.string.char_bests)) { profile.best.forEachIndexed { i, f -> Divided(i) { BestRow(profile, f, now, copy) } } }
     if (profile.history.isNotEmpty()) {
         Section(stringResource(R.string.char_recent)) {

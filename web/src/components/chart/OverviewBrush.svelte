@@ -180,12 +180,12 @@
     <span class="text-muted absolute left-0">0:00</span>
     {#if zoomed}
       <span
-        class="text-gold absolute -translate-x-1/2 font-bold"
+        class="text-accent absolute -translate-x-1/2 font-bold"
         style:left="{pct(shown.startMs)}%"
         data-testid="brush-start-label">{clockLabel(shown.startMs)}</span
       >
       <span
-        class="text-gold absolute -translate-x-1/2 font-bold"
+        class="text-accent absolute -translate-x-1/2 font-bold"
         style:left="{pct(shown.endMs)}%"
         data-testid="brush-end-label">{edgeLabel(shown.endMs)}</span
       >
@@ -197,7 +197,7 @@
 
 <style>
   .strip {
-    background: rgba(255, 255, 255, 0.025);
+    background: color-mix(in srgb, var(--color-strong) 2%, transparent);
     border-color: color-mix(in srgb, var(--color-muted) 18%, transparent);
   }
   .shape {
@@ -207,18 +207,18 @@
     vector-effect: non-scaling-stroke;
   }
   .phase {
-    border-color: color-mix(in srgb, var(--color-gold) 50%, transparent);
+    border-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
   }
   .death {
     border-left: 1.5px solid var(--color-death);
   }
   .dim {
-    background: rgba(7, 9, 13, 0.6);
+    background: color-mix(in srgb, var(--color-bg) 60%, transparent);
     pointer-events: none;
   }
   .window {
-    background: rgba(229, 185, 85, 0.1);
-    border: 1px solid color-mix(in srgb, var(--color-gold) 80%, transparent);
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 80%, transparent);
   }
   /* The two range inputs lie over the whole strip; only their thumbs take the pointer, so the
      body under them stays draggable and a press on bare strip does nothing. */
@@ -251,9 +251,9 @@
     margin-top: 0;
     border: none;
     background:
-      linear-gradient(#0b0e14, #0b0e14) center 9px / 2px 1px no-repeat,
-      linear-gradient(#0b0e14, #0b0e14) center 26px / 2px 1px no-repeat,
-      linear-gradient(var(--color-gold), var(--color-gold)) center / 8px 24px no-repeat;
+      linear-gradient(var(--color-bg), var(--color-bg)) center 9px / 2px 1px no-repeat,
+      linear-gradient(var(--color-bg), var(--color-bg)) center 26px / 2px 1px no-repeat,
+      linear-gradient(var(--color-accent), var(--color-accent)) center / 8px 24px no-repeat;
     border-radius: 3px;
   }
   .handle::-moz-range-thumb {
@@ -263,7 +263,7 @@
     height: 24px;
     border: none;
     border-radius: 3px;
-    background: var(--color-gold);
+    background: var(--color-accent);
   }
   .handle:focus-visible::-webkit-slider-thumb {
     outline: 2px solid var(--color-gold);
@@ -277,6 +277,6 @@
   .overview[data-coarse='true'] .handle::-webkit-slider-thumb {
     width: 44px;
     height: 44px;
-    background: linear-gradient(var(--color-gold), var(--color-gold)) center / 12px 24px no-repeat;
+    background: linear-gradient(var(--color-accent), var(--color-accent)) center / 12px 24px no-repeat;
   }
 </style>

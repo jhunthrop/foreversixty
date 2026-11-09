@@ -13,7 +13,7 @@
 {#if devices.length > 0}
   <ul class="reveal flex flex-col gap-1" data-testid="companion-status">
     {#each devices as device (device.id)}
-      <li class="text-[13px]" style="color: #c9c2b2" data-testid="companion-status-line">
+      <li class="text-text text-[13px]" data-testid="companion-status-line">
         {deviceStatusLine(device)}
       </li>
     {/each}

@@ -196,7 +196,7 @@ describe('buildRateModel', () => {
     });
     const single = model.series.find((line) => line.id === 'Player-12')!;
     expect(single.kind).toBe('single');
-    expect(single.colour).toBe('var(--color-gold)');
+    expect(single.colour).toBe('var(--color-accent)');
   });
 
   it('ends a dead player’s line at their death', () => {

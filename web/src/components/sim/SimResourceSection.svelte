@@ -30,7 +30,7 @@
 
 {#snippet list(heading: string, total: string, rows: readonly ResourceRow[], testid: string)}
   <div class="min-w-0" data-testid={testid}>
-    <h3 class="text-label tracking-label text-muted pt-4 pb-1 font-bold uppercase">{heading} · {total}</h3>
+    <h3 class="text-label text-muted pt-4 pb-1 font-bold">{heading} · {total}</h3>
     <StatTable columns={AMOUNT} open label={heading}>
       {#each rows as row (row.action)}
         <ActionStatRow

@@ -31,15 +31,14 @@ describe('Switch', () => {
     expect(tag({ checked: true })).toContain('aria-checked="true"');
   });
 
-  it('draws the on track as the primary gradient with the gold glow, the off track dark', () => {
+  it('draws the on track in the primary teal with its edge, the off track dark (round 5)', () => {
     const on = render(Switch, { props: { checked: true, onchange: () => {}, label: 'x' } }).body;
     const off = render(Switch, { props: { checked: false, onchange: () => {}, label: 'x' } }).body;
-    expect(on).toContain('bg-[linear-gradient(180deg,#f0cc6c,#c99a3a)]');
-    expect(on).toContain('shadow-glow-gold');
-    expect(on).toContain('border-gold-deep');
-    expect(off).toContain('bg-[#232a3a]');
-    expect(off).toContain('border-[#303a50]');
-    expect(off).not.toContain('shadow-glow-gold');
+    expect(on).toContain('bg-teal');
+    expect(on).toContain('border-teal-edge');
+    expect(off).toContain('bg-pressed');
+    expect(off).toContain('border-line');
+    expect(`${on}${off}`).not.toMatch(/glow|linear-gradient/);
   });
 
   it('has a 44 x 44 hit area around the 44 x 24 track', () => {

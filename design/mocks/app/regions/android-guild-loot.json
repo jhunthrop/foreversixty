@@ -44,7 +44,7 @@
     62
    ],
    "inventory": {
-    "segment": 2
+    "segment": 1
    }
   },
   "section-onyxia-drops": {
@@ -77,25 +77,25 @@
     16,
     1150,
     380,
-    566
+    463
    ],
    "inventory": {
-    "row": 4,
-    "button": 12,
-    "image": 4
+    "row": 3,
+    "button": 9,
+    "image": 3
    }
   },
   "section-decision-record": {
    "box": [
     16,
-    1748,
+    1645,
     380,
-    166
+    225
    ],
    "inventory": {
-    "row": 2,
+    "row": 3,
     "button": 1,
-    "image": 2
+    "image": 3
    }
   }
  }

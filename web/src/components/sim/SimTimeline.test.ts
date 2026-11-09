@@ -73,7 +73,7 @@ describe('SimTimeline', () => {
     expect(count(body, '<rect ')).toBeGreaterThan(100);
     expect(body).toContain(timelineCopy.executeWash);
     expect(body).toContain(timelineCopy.axisPull);
-    expect(body).toContain('stroke="var(--color-gold)"');
+    expect(body).toContain('stroke="var(--color-accent)"');
     expect(body).toContain('peak ');
   });
 

@@ -52,7 +52,8 @@ def pad(html: str) -> str:
 
 def hdr_view(tabs_active='Overview'):
     """The head a guild view off the guild page draws (lane D's GuildViewHeader): its tabs are links to the guild page, a nav."""
-    return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 56), meta=['<b class="strong">US</b> &middot; PvP', '24 raiders', 'Next raid: Onyxia&rsquo;s Lair, Thu 10 Dec'],
+    nxt = day_label(guild_time(O.NEXT_RAID_AT))
+    return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 56), meta=['<b class="strong">US</b> &middot; PvP', f'{gd.RAIDERS} raiders', f'Next raid: Onyxia&rsquo;s Lair, {nxt}'],
                       tabs=TabStrip(TABS, tabs_active))
 
 
@@ -215,7 +216,7 @@ def landing_officer():
     main = (Section('Action needed', pad(action_rows())) + Section('Next raid', next_raid(True), Link('Open the planner &rsaquo;'))
             + Section('Comp against the target', comp_tally(), Link('Edit target &rsaquo;'), meta=comp_meta()))
     rail = (Section('Buff and debuff cover', cover_grids(), meta='Signed-up raiders') + Section('Raid-ready', raid_ready(), meta='Signed-up raiders')
-            + Section(f'Attendance, last {len(O.RECENT_RAIDS)} raids', attendance_grid(), Link('Roster &rsaquo;')) + last_raid(progression_line())
+            + Section('Attendance, last raid' if len(O.RECENT_RAIDS) == 1 else f'Attendance, last {len(O.RECENT_RAIDS)} raids', attendance_grid(), Link('Roster &rsaquo;')) + last_raid(progression_line())
             + Section('Recruitment', pad(rec)))
     return build_page('Guild, officer', _view(hdr(actions=Button('Invite link', small=True)) + Page('split', main, rail, sticky_rail=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
@@ -439,9 +440,11 @@ def _votes(yes, no, total):
     return Votes(yes, no, total).replace('<span class="pill tag', '<button type="button" class="vote"><span class="pill tag').replace(' no</span>', ' no</span></button>', 1).replace(' yes</span>', ' yes</span></button>', 1)
 
 
-def _form(label, fields, submit):
-    """FormRow as the build renders it: a <form> of labelled text inputs and one submit Button."""
-    f = ''.join(f'<label class="f grow"><span class="t-label">{lab}</span><input class="field grow" placeholder="{hint}"></label>' for lab, hint in fields)
+def _form(label, fields, submit, floor=True):
+    """FormRow as the build renders it: a <form> of labelled text inputs and one submit Button. `floor` False is a field
+    that takes what the row leaves beside the button (OfficerNotes.svelte), not the Field's 220 px grow floor."""
+    cls = 'f grow' if floor else 'f" style="flex:1;min-width:0'
+    f = ''.join(f'<label class="{cls}"><span class="t-label">{lab}</span><input class="field grow" placeholder="{hint}"></label>' for lab, hint in fields)
     return f'<form class="formrow" aria-label="{label}">{f}<span>{_act(submit, submit=True)}</span></form>'
 
 
@@ -472,7 +475,7 @@ _PROSE = 'style="font-size:14px;line-height:22px"'
 
 
 def _day(iso):
-    """'Thu 10 Dec' in the guild's zone (raid-time dateLabel)."""
+    """'Wed 16 Dec' in the guild's zone (raid-time dateLabel)."""
     d = datetime.fromisoformat(iso.replace('Z', '+00:00')).astimezone(ZoneInfo(gd.ZONE))
     return f'{d:%a} {d.day} {d:%b}'
 
@@ -499,13 +502,17 @@ def recruitment():
     facts = f'{gd.REGION.upper()} &middot; PvP &middot; {gd.FACTION.title()} &middot; {gd.RAIDERS} members'
     wanted = '; '.join(f'{n} ({note})' if note else n for _c, _k, n, note in gd.RECRUIT_WANTED)
     upcoming = ', '.join(f'{_day(at)}, {_clock(at)}' for at in gd.RECRUIT_UPCOMING)
+    t = F.tier()
     card = Plate(Rows([Row(GUILD, facts, lead=Emblem(gd.FACTION, 44), trail=Tag('Recruiting', 'kill'), link=False),
                        Row('Raids', gd.RECRUIT_NIGHTS, link=False), Row('Next raid nights', upcoming, link=False),
-                       Row('Progress', '1 of 1 named bosses down &middot; Tier 1', link=False), Row('Looking for', wanted, link=False)]), label='Public guild card')
+                       Row('Progress', f"{t['down']} of {t['named_encounters']} named bosses down &middot; {t['name']}", link=False),
+                       Row('Looking for', wanted, link=False)]), label='Public guild card')
     # Signed out nobody can apply: the API takes one of the viewer's own characters, so the build asks them to sign in (SignInPrompt).
     sign_in = (f'<div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px"><p {_PROSE}>Sign in to apply to {GUILD} with one of your characters.</p>'
                + Button('Sign in with Battle.net') + '</div>')
-    officers = Rows([Row(n, f'{_spec_class(n)} &middot; Officer', lead=crest_img(ch(n)[1], 32), title_color=C[ch(n)[1]], link=False) for n in gd.OFFICERS], open_=True)
+    rank = {'leader': 'Guild master', 'officer': 'Officer'}  # recruit-copy card.leader / card.officer
+    officers = Rows([Row(n, f'{_spec_class(n)} &middot; {rank[gd.rank_of(n)]}', lead=crest_img(ch(n)[1], 32), title_color=C[ch(n)[1]], link=False)
+                     for n in gd.COUNCIL], open_=True)
     main = Section(f'{GUILD} is recruiting', card) + Section('Apply', _body(sign_in))
     rail = Section('Why this guild', _body(f'<p {_PROSE}>{gd.RECRUIT_PITCH}</p>')) + Section('Officers', _body(officers))
     return build_page('Recruitment', _view(PageHeader(f'Join {GUILD}', ALLIANCE, Emblem(gd.FACTION, 56), meta=['Public guild card']) + Page('split', main, rail)), 'Guild', None)
@@ -527,17 +534,20 @@ def applications():
 
 def member_profile():
     name, cls, spec, _role, ilvl, _st = ch(gd.PROFILE)
+    from guild_fixtures import profile_loot
+    won = [(d['item_id'], d['item_name'], d['icon'], d['quality'], d['at']) for d in profile_loot()]
     present = sum(1 for _at, o in gd.PROFILE_NIGHTS if o == 'present')
     figs = Figures([(f'{present} of {len(gd.PROFILE_NIGHTS)}', 'Attendance', '', ''), (str(round(gd.PROFILE_PARSE[1])), f'Top {gd.PROFILE_PARSE[0].upper()}', '', ''),
-                    (str(ilvl), 'Item level', '', ''), (str(len(gd.PROFILE_LOOT)), 'Items this tier', '', '')])
+                    (str(ilvl), 'Item level', '', ''), (str(len(won)), 'Items this tier', '', '')])
     gap = gd.PROFILE_GAP
     gear = Rows([Row(f'{gap["upgrades"]} upgrades on their BiS list', link=False, slim=True), Row(f'+{gap["gain_dps"]:.1f} {gap["unit"].upper()} over what they wear', link=False, slim=True)], open_=True)
     mark = {'present': ('ok', '&#10003;'), 'late': ('warn', 'L'), 'absent': ('miss', '&times;')}
-    att = (_grid_table('Last 4 raids', [_day(at) for at, _o in gd.PROFILE_NIGHTS], [('Last 4 raids', [mark[o] for _at, o in gd.PROFILE_NIGHTS])])
-           + f'<p style="padding-top:12px;font-size:14px;line-height:22px">{gd.PROFILE_LAST_30[0]} of the last {gd.PROFILE_LAST_30[1]} raids</p>')
-    loot = '<ul>' + ''.join(f'<li>{ItemRow(n, q, icon(ic, 32, f"q{q}"), f"Awarded {_day(at)}")}</li>' for _i, n, ic, q, at in gd.PROFILE_LOOT) + '</ul>'
+    last = 'Last raid' if len(gd.PROFILE_NIGHTS) == 1 else f'Last {len(gd.PROFILE_NIGHTS)} raids'  # recruit-copy lastNights
+    att = (_grid_table(last, [_day(at) for at, _o in gd.PROFILE_NIGHTS], [(last, [mark[o] for _at, o in gd.PROFILE_NIGHTS])])
+           + f'<p style="padding-top:12px;font-size:14px;line-height:22px">{gd.PROFILE_LAST_30[0]} of {"1 raid" if gd.PROFILE_LAST_30[1] == 1 else f"the last {gd.PROFILE_LAST_30[1]} raids"}</p>')
+    loot = '<ul>' + ''.join(f'<li>{ItemRow(n, q, icon(ic, 32, f"q{q}"), f"Awarded {_day(at)}")}</li>' for _i, n, ic, q, at in won) + '</ul>'
     notes = Rows([Row(body, f'{who} &middot; {_day(at)}', foot=Tag('Officers only', 'muted') + (f'<span style="margin-left:auto">{_act("Delete")}</span>' if mine else ''), link=False) for _i, body, who, at, mine in gd.PROFILE_NOTES], open_=True)
-    addn = f'<div style="padding-top:12px">{_form("Add a note", [("Add a note", "Only officers see notes")], "Save note")}</div>'
+    addn = f'<div style="padding-top:12px">{_form("Add a note", [("Add a note", "Only officers see notes")], "Save note", floor=False)}</div>'
     main = (Section('Gear gap', _body(gear), Link('Open their character'), meta='Same units as the BiS page') + Section('Attendance', _body(att))
             + Section('Loot this tier', _body(loot)))
     rail = Section('Officer notes', _body(notes + addn), meta='Private: members never see these')

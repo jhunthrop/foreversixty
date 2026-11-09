@@ -90,7 +90,7 @@ Both builds go deep Enhancement for Stormstrike, Maelstrom Weapon and Rage of th
 
 ## Stat priority
 
-Strength is attack power twice over. Intellect does more for you than for any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Plain attack power adds to every swing, and plain spell power to your shocks. Hit covers your swings, your Stormstrike and your shocks at once. Your swings stop missing a raid boss at 9% hit and your spells at 16%, so past 9% hit only helps your shocks, Fire Nova, totems and free bolts, a small share of your damage. The table above gives the order for your level and gear.
+Strength is attack power twice over. Intellect does more for you than for any other melee: Mental Dexterity turns every point into one and a half attack power, Mental Quickness turns part of it into spell power for your shocks, and it is your mana and your spell crit. Crit keeps Flurry up. Agility gives crit and armor. Plain attack power adds to every swing, and plain spell power to your shocks. Hit covers your swings, your Stormstrike and your shocks at once. Your swings stop missing a raid boss at 9% hit and your spells at 16%, so past 9% hit only helps your shocks, Fire Nova, totems and free bolts, a small share of your damage.
 
 ## Best in slot
 
@@ -104,7 +104,7 @@ Your imbue is your weapon's temporary enchant, Rockbiter Weapon under a raid's W
 
 The Dwarf shaman is new in Forever and is the only Alliance shaman. Artisan's Precision's 1% hit with spells and attacks is your racial. Stoneform's physical damage cut is a free cooldown for cleaves and add phases.
 
-On the Horde, Orc is the pick: Blood Fury is 10% attack power for 15 seconds every 2 minutes. Press it with Rage of the Farseer on the pull and on its own cooldown after that. Troll's Berserking adds 10% attack speed for 15 seconds every 3 minutes and lines up with Rage of the Farseer just as well. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
+On the Horde, Orc is the pick: Blood Fury is 10% attack power for 15 seconds every 2 minutes. Press it with Rage of the Farseer on the pull and on its own cooldown after that. Troll's Berserking adds 10% attack speed for 15 seconds every 3 minutes and lines up with Rage of the Farseer just as well. Windshaper Skyborne brings Wind Blessed's 2% haste, always on. Tauren's racials do nothing for your damage.
 
 ## Professions
 

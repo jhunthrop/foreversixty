@@ -97,16 +97,16 @@
   }
   .ui-step-mark[data-mark='ok'] {
     background: var(--color-kill);
-    color: #07090d;
+    color: var(--color-bg);
   }
   .ui-step-mark[data-mark='next'],
   .ui-step-mark[data-mark='warn'] {
     background: var(--color-gold);
-    color: #17110a;
+    color: var(--color-bg);
   }
   .ui-step-mark[data-mark='miss'] {
     background: var(--color-wipe);
-    color: #07090d;
+    color: var(--color-bg);
   }
   .ui-step-mark[data-mark='todo'] {
     box-shadow: inset 0 0 0 1.5px var(--color-line);

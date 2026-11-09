@@ -7,7 +7,7 @@ Registered in ws_guild2.all_pages().
 - web-guild-raids-plan: the same tab with Plan an event's form open under the Planned head (no frame: open Fields).
 - web-guild-assignments: the raid planner with the Off tank slot's picker open under its row.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import guild_overview_data as O
@@ -93,7 +93,7 @@ def night_rows() -> str:
     out = []
     for i, night in enumerate(page['rows']):
         at = _local(night['created_at'])
-        facts = f"1 boss (Onyxia) &middot; 1 kill &middot; 1 wipe"
+        facts = f"1 boss (Onyxia) &middot; {night['kill_count']} kill &middot; {night['wipe_count']} wipe"
         head = (f'<button type="button" aria-expanded="{"true" if i == 0 else "false"}"><span><span class="zt">{night["zone"]}</span>'
                 f'<span class="zs">{at:%a} {at.day} {at:%b} &middot; {round(night["duration_ms"] / 60000)} min</span></span>'
                 f'<span class="facts">{facts}</span></button>')
@@ -117,7 +117,10 @@ def night_rows() -> str:
 
 def raid_form() -> str:
     """Plan an event's form, open (RaidForm create, as the built form reads with the guild's Discord channel connected): open
-    labelled fields, no frame; the defaults the build fills (the Tuesday after the last planned raid, 8:00 pm, 3 h, the guild's zone)."""
+    labelled fields, no frame; the defaults the build fills (a week after the last planned raid, 8:00 pm, 3 h, the guild's zone;
+    raid-form createDefaults) and the post day a week before it (raid-form weekBefore)."""
+    last = max(_local(r['starts_at']) for r in RF.raids_page()['planned'])
+    start, post = last + timedelta(days=7), last
     def f(label, control, extra=''):
         return f'<div class="f"><label>{label}</label>{control}{extra}</div>'
     combo = lambda v: f'<button type="button" class="sel" role="combobox" aria-haspopup="listbox" aria-expanded="false">{v}</button>'  # noqa: E731
@@ -125,12 +128,12 @@ def raid_form() -> str:
                                 f'style="width:36px;height:20px">{label}</label>')
     return ('<form class="rform">'
             f'<div class="g2">{f("What", combo(""))}{f("Title", "<input type=text>")}</div>'
-            f'<div class="g3">{f("Date", "<input type=text value=12/22/2026>")}{f("Time", "<input type=text value=08:00&nbsp;PM>")}{f("Duration", combo("3 h"))}</div>'
+            f'<div class="g3">{f("Date", f"<input type=text value={start:%m/%d/%Y}>")}{f("Time", "<input type=text value=08:00&nbsp;PM>")}{f("Duration", combo("3 h"))}</div>'
             + f("Guild time zone", '<button type="button" class="sel" aria-haspopup="listbox" aria-expanded="false">Central (Chicago) &middot; CST</button>',
                 '<p class="help">For you: same time.</p>')
             + f("Notes", "<textarea rows=6></textarea>", "<p class='help s'>Markdown: bold, lists and links. Members see this on the raid page.</p>")
             + '<div class="f">' + switch('Also plan the next 3 weeks at this time', False) + '</div>'
-            + '<div class="f">' + switch('Post to Discord', True) + '<p class="help">Posts to #raids on Tuesday 15 December, a week before the raid.</p>'
+            + '<div class="f">' + switch('Post to Discord', True) + f'<p class="help">Posts to #raids on {post:%A} {post.day} {post:%B}, a week before the raid.</p>'
             + '<div style="padding-left:16px">' + switch('Remind the day before', True) + '<p class="help">Posts a reminder 24 hours before the start.</p></div></div>'
             + '<div style="display:flex;flex-direction:column;gap:4px"><div class="acts">' + _act('Post the event', primary=True, small=False, submit=True)
             + '<button type="button" class="txt">Cancel</button></div><div style="min-height:20px"></div></div>'

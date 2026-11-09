@@ -161,8 +161,9 @@ export const profileCopy = {
   gain: (figure: string, unit: string) => `+${figure} ${unit} over what they wear`,
   notSimChecked: (n: number) => (n === 1 ? '1 not sim-checked' : `${n} not sim-checked`),
   attendance: 'Attendance',
-  lastFour: 'Last 4 raids',
-  lastThirty: (present: number, nights: number) => `${present} of the last ${nights} raids`,
+  lastNights: (n: number) => (n === 1 ? 'Last raid' : `Last ${n} raids`),
+  lastThirty: (present: number, nights: number) =>
+    nights === 1 ? `${present} of 1 raid` : `${present} of the last ${nights} raids`,
   noNights: 'No raid nights logged yet.',
   reportsMode: (present: number, nights: number) =>
     nights === 1 ? `${present} of 1 logged night` : `${present} of the last ${nights} logged nights`,

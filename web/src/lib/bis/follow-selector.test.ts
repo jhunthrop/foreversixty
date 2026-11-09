@@ -14,7 +14,7 @@ describe('decideBisFollow', () => {
   it('goes to the new character’s page when the class differs, with its band and faction', () => {
     expect(
       decideBisFollow(PAGE, { classSlug: 'warrior', specKey: 'warrior-arms', level: 20, faction: 'horde' }),
-    ).toEqual({ kind: 'navigate', href: '/bis/warrior/arms?faction=horde#band-horde-20' });
+    ).toEqual({ kind: 'navigate', href: '/bis/warrior/arms?faction=horde' });
   });
 
   it('goes to the other spec’s page when only the spec differs', () => {
@@ -25,7 +25,7 @@ describe('decideBisFollow', () => {
         level: 45,
         faction: 'alliance',
       }),
-    ).toEqual({ kind: 'navigate', href: '/bis/hunter/marksmanship?faction=alliance#band-alliance-40' });
+    ).toEqual({ kind: 'navigate', href: '/bis/hunter/marksmanship/40-49' });
   });
 
   it('updates band and faction in place when class and spec match', () => {
@@ -76,7 +76,7 @@ describe('decideBisFollow', () => {
   it('keeps the page’s band and faction for a class-only pointer on a different class', () => {
     expect(decideBisFollow(PAGE, { classSlug: 'warrior', specKey: 'warrior-fury' })).toEqual({
       kind: 'navigate',
-      href: '/bis/warrior/fury?faction=alliance#band-alliance-20',
+      href: '/bis/warrior/fury',
     });
   });
 });

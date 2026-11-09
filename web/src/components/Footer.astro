@@ -1,78 +1,51 @@
 ---
 // web/src/components/Footer.astro
-// design/specs/2026-10-28-polish.md section 2: a brand block beside four labelled link
-// columns, the trademark and operator lines small and last. Copy lives in lib/footer-copy.ts.
-// Phone: the columns stay a 2 x 2 grid of 44px rows, never one long column (tenet 4).
-// The two community links are the Button primitive's secondary small recipe; the legal bar is set
-// apart by spacing alone, no rule (web layout spec 2026-11-05 §2 P1, §3A.3: no surface drawn here).
+// Round 5's compact footer (design/specs/2026-11-09-directions.md, coordinator ruling
+// 2026-11-09): their brown-black under a black rule; one row of our painted seal and name in
+// Marcellus, Get set up, Premium, the Discord and Report a bug; then the legal links, the
+// not-affiliated sentence and the operator line. Copy lives in lib/footer-copy.ts. Every link is a
+// 44 px target on a phone (tenet 4).
 import {
-  FOOTER_COLUMNS,
   FOOTER_DISCORD_BUTTON,
   FOOTER_LEGAL_LINKS,
-  FOOTER_PROMISE,
+  FOOTER_LINKS,
   FOOTER_REPORT_BUG_BUTTON,
   FOOTER_TRADEMARK,
   footerOperatorLine,
 } from '../lib/footer-copy';
-import DiscordMark from './DiscordMark.astro';
-import Wordmark from './Wordmark.astro';
 import Seal from './Seal.astro';
 import { REGION } from '../lib/ui/regions';
-import { button } from '../lib/ui/button';
+import { SITE_NAME } from '../lib/seo';
 
 const LINK_CLASS =
-  'inline-flex items-center min-h-11 lg:min-h-8 text-[14px] text-nav transition-colors duration-[120ms] hover:text-strong active:text-gold-hover';
-const BUTTON_CLASS = button('secondary', 'sm');
+  'inline-flex items-center min-h-11 lg:min-h-8 text-[14px] text-strong/70 transition-colors duration-[120ms] hover:text-gold active:text-gold-hover';
+const SITE_LINKS = [...FOOTER_LINKS, FOOTER_DISCORD_BUTTON, FOOTER_REPORT_BUG_BUTTON];
 ---
 
-<footer
-  data-region={REGION.siteFooter}
-  class="mt-auto border-t border-white/[.06] bg-[linear-gradient(180deg,rgba(255,255,255,.025),transparent_70%)]"
->
+<footer data-region={REGION.siteFooter} class="bg-foot mt-auto border-t border-black">
   <div class="page-column px-[18px]">
-    <div class="grid gap-8 pt-9 pb-5 lg:grid-cols-[minmax(0,1.7fr)_repeat(4,minmax(0,1fr))] lg:pt-12 lg:pb-9">
-      <div class="flex flex-col">
-        <div class="inline-flex items-center gap-2.5">
-          <Seal size={30} gradientId="footer-seal" />
-          <span class="inline-flex text-[17px] text-strong">
-            <Wordmark />
-          </span>
-        </div>
-        <p class="mt-3.5 max-w-[340px] text-[15px] leading-[22px] text-text">{FOOTER_PROMISE}</p>
-        <div class="mt-5 flex flex-wrap gap-3">
-          <a href={FOOTER_DISCORD_BUTTON.href} class={BUTTON_CLASS}>
-            <span class="text-[#9aa4ff]">
-              <DiscordMark size={18} />
-            </span>
-            {FOOTER_DISCORD_BUTTON.label}
-          </a>
-          <a href={FOOTER_REPORT_BUG_BUTTON.href} class={BUTTON_CLASS}>
-            {FOOTER_REPORT_BUG_BUTTON.label}
-          </a>
-        </div>
-      </div>
-      <nav aria-label="Footer" class="grid grid-cols-2 gap-x-4 gap-y-7 md:grid-cols-4 lg:contents">
-        {FOOTER_COLUMNS.map((column) => (
-          <div class="flex min-w-0 flex-col">
-            <p class="mb-2 text-[13px] font-semibold text-muted">{column.heading}</p>
-            {column.links.map((link) => (
-              <a href={link.href} class={LINK_CLASS}>
-                {link.label}
-              </a>
-            ))}
-          </div>
-        ))}
-      </nav>
-    </div>
-    <div class="flex flex-col gap-1 pt-[19px] pb-7 lg:flex-row lg:items-center lg:justify-between">
-      <nav aria-label="Legal" class="-mx-3.5 lg:-mx-2 flex lg:order-last">
-        {FOOTER_LEGAL_LINKS.map((link) => (
-          <a href={link.href} class={`${LINK_CLASS} px-3.5 lg:px-2 text-[13px]`}>
+    <div class="flex flex-wrap items-center gap-x-8 gap-y-3 pt-7 pb-4 lg:pt-8">
+      <a href="/" class="inline-flex items-center gap-3.5">
+        <Seal size={88} class="size-16 lg:size-[88px]" />
+        <span class="font-title text-cream-2 text-[24px] leading-none">{SITE_NAME}</span>
+      </a>
+      <nav aria-label="Footer" class="flex flex-wrap gap-x-6">
+        {SITE_LINKS.map((link) => (
+          <a href={link.href} class={LINK_CLASS}>
             {link.label}
           </a>
         ))}
       </nav>
-      <div class="text-[12px] leading-[18px] text-muted">
+    </div>
+    <div class="flex flex-col gap-1 pt-3 pb-7 lg:flex-row lg:items-center lg:justify-between">
+      <nav aria-label="Legal" class="-mx-3.5 flex lg:order-last lg:-mx-2">
+        {FOOTER_LEGAL_LINKS.map((link) => (
+          <a href={link.href} class={`${LINK_CLASS} px-3.5 text-[13px] lg:px-2`}>
+            {link.label}
+          </a>
+        ))}
+      </nav>
+      <div class="text-muted text-[13px] leading-5">
         <p class="[text-wrap:pretty]">{FOOTER_TRADEMARK}</p>
         <p>{footerOperatorLine(new Date().getFullYear())}</p>
       </div>

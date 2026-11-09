@@ -1,13 +1,12 @@
 /* web/src/components/ui/segmented.css
-   The one segmented control's look (web layout spec 2026-11-05 §3.4, §7.3), shared by ControlBar's
-   groups and ui/Segmented, so the bar's choice and an in-row choice (sign-up In / Late / Bench) are
-   drawn by one set of rules. Lives inside ui/ because only the primitives draw a surface (§3A.3).
-   `.ui-seg--sm` is the in-row size from 768; phones keep 44 px. */
+   The one segmented control's look, shared by ControlBar's groups and ui/Segmented, so the bar's
+   choice and an in-row choice (sign-up In / Late / Bench) are drawn by one set of rules. Round 5
+   (design/specs/2026-11-09-directions.md): their nav tabs, a group of labels with the current one
+   white over a 3 px cyan underline, the rest white at .72; no box. `.ui-seg--sm` is the in-row
+   size from 768; phones keep 44 px. */
 .ui-seg {
   display: flex;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-field);
-  overflow: hidden;
+  gap: 0 4px;
 }
 .ui-seg-item {
   flex: 1;
@@ -16,28 +15,24 @@
   justify-content: center;
   gap: 8px;
   height: 44px;
-  padding: 0 14px;
-  font-size: 14px;
+  padding: 0 12px;
+  font-size: 15px;
   line-height: 16px;
   font-weight: 600;
-  color: var(--color-nav);
+  color: rgb(255 255 255 / 0.72);
   white-space: nowrap;
-  border-left: 1px solid var(--color-line-soft);
-}
-.ui-seg-item:first-child {
-  border-left: 0;
+  border-radius: var(--radius-field) var(--radius-field) 0 0;
 }
 .ui-seg-item:active {
-  background: var(--color-pressed);
+  background: rgb(255 255 255 / 0.06);
 }
 .ui-seg-item:focus-visible {
   outline: 2px solid var(--color-gold);
   outline-offset: -2px;
 }
 .ui-seg-item[aria-checked='true'] {
-  background: var(--color-selected);
-  color: var(--color-gold);
-  box-shadow: inset 0 -2px 0 var(--color-gold);
+  color: var(--color-strong);
+  box-shadow: inset 0 -3px 0 var(--color-accent);
 }
 .ui-seg-item[aria-disabled='true'] {
   opacity: 0.5;
@@ -49,12 +44,18 @@
   color: var(--color-muted);
 }
 .ui-seg-item[aria-checked='true'] .ui-seg-count {
-  color: var(--color-gold);
+  color: var(--color-strong);
 }
 @media (hover: hover) and (pointer: fine) {
   .ui-seg-item:not([aria-checked='true']):not([aria-disabled='true']):hover {
-    background: var(--color-hover);
-    color: var(--color-strong);
+    color: var(--color-gold);
+  }
+}
+/* From 768 an item is as wide as its label (one tab rhythm with ui/TabStrip: 12 px each side,
+   4 px between); phones share the row out evenly. */
+@media (min-width: 768px) {
+  .ui-seg-item {
+    flex: 0 0 auto;
   }
 }
 /* The in-row size is a pointer size: below 768 every item keeps the 44 px phone target (§3.4). */
@@ -102,5 +103,30 @@
 @media (min-width: 1760px) {
   .ui-seg--compact .ui-seg-item {
     padding: 0 12px;
+  }
+}
+
+/* A stacked group (ui/Segmented `stack`): below 768 one full-width row per option, its label
+   wrapping, the chosen one marked at its left edge. */
+@media (max-width: 767px) {
+  .ui-seg--stack {
+    flex-direction: column;
+    width: 100%;
+  }
+  .ui-seg--stack .ui-seg-item {
+    justify-content: flex-start;
+    height: auto;
+    min-height: 44px;
+    padding: 10px 14px;
+    text-align: left;
+    white-space: normal;
+    border-left: 0;
+    border-top: 1px solid var(--color-line-soft);
+  }
+  .ui-seg--stack .ui-seg-item:first-child {
+    border-top: 0;
+  }
+  .ui-seg--stack .ui-seg-item[aria-checked='true'] {
+    box-shadow: inset 2px 0 0 var(--color-gold);
   }
 }

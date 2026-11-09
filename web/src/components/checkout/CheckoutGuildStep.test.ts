@@ -122,7 +122,7 @@ describe('CheckoutGuildStep: empty states', () => {
     const body = html({ me: me([], []) });
     expect(text(body)).toContain(copy.emptyA.title);
     expect(text(body)).toContain(copy.emptyA.body);
-    expect(body).toMatch(new RegExp(`<a[^>]*href="${SETUP_NEXT.replace(/[?]/g, '\\?')}"[^>]*bg-gold`));
+    expect(body).toMatch(new RegExp(`<a[^>]*href="${SETUP_NEXT.replace(/[?]/g, '\\?')}"[^>]*bg-teal `));
     expect(body).not.toContain(copy.foot.missingGuild);
     expect(body).not.toMatch(/battle\.?net/i);
   });
@@ -201,7 +201,7 @@ const ON_PLAN = (id: number, name: string, covered: Partial<GuildCoveredView>): 
 describe('CheckoutGuildStep: ready card', () => {
   it('one ready guild: the only fill, labelled with the trial, named for the guild', () => {
     const body = html({ me: me([READY(1, 'Olympus')]) });
-    expect(body.match(/ bg-gold /g)).toHaveLength(1);
+    expect(body.match(/ bg-teal /g)).toHaveLength(1);
     expect(body).toMatch(
       /<button[^>]*data-step-action[^>]*>Start 7 free days · then \$120 a year<span class="sr-only">, Olympus</,
     );
@@ -222,7 +222,7 @@ describe('CheckoutGuildStep: ready card', () => {
 
   it('two ready guilds: both gold outline, no fill', () => {
     const body = html({ me: me([READY(1, 'Olympus'), READY(2, 'Millennials')]) });
-    expect(body).not.toMatch(/ bg-gold /);
+    expect(body).not.toMatch(/ bg-teal /);
     expect(body.match(/border-gold text-gold/g)).toHaveLength(2);
   });
 

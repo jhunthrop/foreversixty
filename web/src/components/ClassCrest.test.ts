@@ -16,7 +16,7 @@ describe('ClassCrest', () => {
   it('falls back to white for an unknown slug rather than guessing a colour', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(ClassCrest, { props: { slug: 'not-a-class', size: 36 } });
-    expect(html).toContain('--c: #ffffff');
+    expect(html).toContain('--c: var(--color-strong)');
   });
 
   it('accepts every one of the five sizes this page uses', async () => {

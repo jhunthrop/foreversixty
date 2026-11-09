@@ -5,7 +5,7 @@
   "zone_kind": "raid",
   "key_item": null,
   "title": "Onyxia's Lair",
-  "starts_at": "2026-12-11T02:00:00Z",
+  "starts_at": "2026-12-17T02:00:00Z",
   "duration_minutes": 180,
   "status": "planned",
   "size": 40,
@@ -365,7 +365,7 @@
     "channel_name": "raids"
   },
   "discord_post": {
-    "posted_at": "2026-12-07T18:00:00Z",
+    "posted_at": "2026-12-10T18:00:00Z",
     "post_at": null,
     "reminded_at": null,
     "remind": true
@@ -659,7 +659,7 @@
       "icon": "ability_warrior_warcry",
       "need": 1,
       "per": "raid",
-      "providers_in": 2,
+      "providers_in": 1,
       "providers_late": 0,
       "providers_bench": 0,
       "likely": 0,

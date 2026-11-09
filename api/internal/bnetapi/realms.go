@@ -54,12 +54,11 @@ const warmRealmsTimeout = 30 * time.Second
 
 // Realms lists every realm in region's dynamic namespace, with its type
 // and category, caching the result in memory for realmCacheTTL. An
-// unrecognised realm type is logged at WARN (spec §3) and mapped to
-// "normal" by RulesetOf. A list in which any realm's detail fetch failed
-// is never cached: Realms returns the error instead, so a caller's own
-// per-run fallback (bnetimport resolves an unknown realm to "normal" for
-// that run only) applies, rather than a bad result being cached for
-// realmCacheTTL.
+// unrecognised realm type is logged at WARN (spec §3) and resolves no
+// ruleset in RulesetOf. A list in which any realm's detail fetch failed
+// is never cached: Realms returns the error instead, so the caller falls
+// through to its next ruleset source for that run only, rather than a bad
+// result being cached for realmCacheTTL.
 func (c *Client) Realms(ctx context.Context, region string) ([]Realm, error) {
 	c.realmMu.Lock()
 	if entry, ok := c.realmCache[region]; ok && c.clock().Sub(entry.cachedAt) < realmCacheTTL {
@@ -121,7 +120,7 @@ func (c *Client) fetchRealmDetails(ctx context.Context, region string, realms []
 				realms[j.index].Category = detail.Category
 				if realms[j.index].Type != "" && !knownRealmTypes[strings.ToUpper(realms[j.index].Type)] {
 					c.logger().Warn("bnetapi", "op", "realm_type", "region", region, "realm", j.slug,
-						"type", realms[j.index].Type, "mapped_to", RulesetOf(realms[j.index]))
+						"type", realms[j.index].Type)
 				}
 			}
 		}()
@@ -157,18 +156,22 @@ func (c *Client) WarmRealms(ctx context.Context, regions []string) {
 
 // RulesetOf maps a realm's Blizzard type (and, for hardcore, its name or
 // category) onto one of the site's four rulesets. A pure function so it
-// can be table-tested with no client or network.
-func RulesetOf(realm Realm) string {
+// can be table-tested with no client or network. ok is false for a type it
+// does not know: an unknown realm is never guessed to be normal, since a
+// wrong ruleset keys the character and its guild wrongly (2026-11-08).
+func RulesetOf(realm Realm) (ruleset string, ok bool) {
 	if strings.Contains(strings.ToLower(realm.Category), "hardcore") ||
 		strings.Contains(strings.ToLower(realm.Name), "hardcore") {
-		return character.RulesetHardcore
+		return character.RulesetHardcore, true
 	}
 	switch strings.ToUpper(realm.Type) {
+	case "NORMAL":
+		return character.RulesetNormal, true
 	case "PVP":
-		return character.RulesetPvP
+		return character.RulesetPvP, true
 	case "RP", "RP_PVP", "PVP_RP": // Forever names its RP PvP realms PVP_RP (2026-11-04)
-		return character.RulesetRP
+		return character.RulesetRP, true
 	default:
-		return character.RulesetNormal
+		return "", false
 	}
 }

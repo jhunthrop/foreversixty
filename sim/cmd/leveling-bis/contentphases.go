@@ -54,6 +54,11 @@ type contentGate struct {
 	Zones         []contentGateID `json:"zones"`
 	Kinds         []string        `json:"kinds"`
 	Items         []contentGateID `json:"items"`
+	// Reagents gate the crafts that consume them. The pipeline applies
+	// them (apply_crafted_opens_gate) and writes the gated crafts into
+	// loot.json as a crafted source with opens set, so the ranker reads
+	// the result and never the reagent list itself.
+	Reagents []contentGateID `json:"reagents"`
 }
 
 type contentPhasesDocument struct {
@@ -163,7 +168,9 @@ func (g *contentGates) addGate(gate contentGate, seen map[string]string) error {
 	}
 	closed := phaseRank > g.rank[launchPhase]
 	g.gateClosed[gate.Key] = closed
-	lists := map[string][]contentGateID{"npc": gate.Npcs, "quest": gate.Quests, "faction": gate.Factions, "zone": gate.Zones, "item": gate.Items}
+	// "reagent" is validated and claimed here but never indexed (below):
+	// the pipeline applies reagent gates to the crafts that consume them.
+	lists := map[string][]contentGateID{"npc": gate.Npcs, "quest": gate.Quests, "faction": gate.Factions, "zone": gate.Zones, "item": gate.Items, "reagent": gate.Reagents}
 	count := len(gate.Kinds)
 	for keyType, ids := range lists {
 		count += len(ids)

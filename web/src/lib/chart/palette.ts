@@ -1,15 +1,17 @@
 // web/src/lib/chart/palette.ts
 // Series colours (controls and charts spec §B5.5). A player is their class token; enemies and
 // abilities take this palette in order, and a seventh line repeats it with a 4/3 dash. Every
-// colour is read from the tokens at draw time, never a hex in chart code.
+// colour is read from the tokens at draw time, never a hex in chart code. The first is the chart
+// theme's accent (theme.ts CHART_INK.accent); frost, the other blue, is last so the two never sit
+// side by side.
 
 export const ENTITY_PALETTE = [
-  'var(--color-gold)',
-  'var(--color-school-frost)',
+  'var(--color-accent)',
   'var(--color-school-nature)',
   'var(--color-school-arcane)',
   'var(--color-school-fire)',
   'var(--color-school-shadow)',
+  'var(--color-school-frost)',
 ] as const;
 
 /** The n-th entity line's colour and dash. */

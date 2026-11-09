@@ -29,6 +29,7 @@
     sliders: 'M4 7h9M17 7h3M4 17h3M11 17h9M15 4v6M9 14v6',
     crown: 'M4 18l-1-10 5 4 4-7 4 7 5-4-1 10zM4 21h16',
     signOut: 'M10 4H5v16h5M14 8l-4 4 4 4M10 12h10',
+    setUp: 'M12 3v12M7 10l5 5 5-5M5 21h14',
   } as const;
 
   let {
@@ -220,6 +221,18 @@
   </div>
 {/snippet}
 
+{#snippet setUpRow()}
+  {@const words = selectorCopy.account}
+  <a class="csel-arow" href={words.setUpHref} data-testid="selector-row-setup">
+    <span class="csel-tile is-small">{@render glyph(GLYPHS.setUp)}</span>
+    <span class="csel-arow-text">
+      <span class="csel-arow-title">{words.setUp}</span>
+      <span class="csel-arow-sub">{words.setUpSub}</span>
+    </span>
+    {@render chevron()}
+  </a>
+{/snippet}
+
 {#snippet accountRows(panel: AccountPanel)}
   {@const words = selectorCopy.account}
   <div class="csel-arows ui-overlay-rule-t" data-testid="selector-account-rows">
@@ -257,6 +270,7 @@
       {/if}
       {@render chevron(panel.plan.seePlans)}
     </a>
+    {@render setUpRow()}
     <button
       type="button"
       class="csel-arow is-quiet"
@@ -510,6 +524,8 @@
   {/if}
   {#if account !== null}
     {@render accountRows(account)}
+  {:else}
+    <div class="csel-arows ui-overlay-rule-t" data-testid="selector-setup-rows">{@render setUpRow()}</div>
   {/if}
 </div>
 

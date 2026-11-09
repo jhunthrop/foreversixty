@@ -86,7 +86,7 @@ Frostfire Bolt is not a Frost filler: it hits for less than Frostbolt, costs mor
 
 ## Stat priority
 
-The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: a missed Frostbolt is a missed Fingers of Frost chance and no chill on the boss. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Spell power goes into everything you cast. Frost power is full value for nearly everything you cast on a boss: only Missiles and the odd Fire Blast on the move miss out. Crit is where Frost's damage piles up: Ice Shards doubles the crit bonus of your Frost spells, and Shatter adds 50% crit to every spell cast on a Fingers of Frost charge. Intellect is your mana bar and a little spell crit, and Frost is the spec that does not run out.
+Hit matters up to the hit cap: a missed Frostbolt is a missed Fingers of Frost chance and no chill on the boss. Precision gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Spell power goes into everything you cast. Frost power is full value for nearly everything you cast on a boss: only Missiles and the odd Fire Blast on the move miss out. Crit is where Frost's damage piles up: Ice Shards doubles the crit bonus of your Frost spells, and Shatter adds 50% crit to every spell cast on a Fingers of Frost charge. Intellect is your mana bar and a little spell crit, and Frost is the spec that does not run out.
 
 ## Best in slot
 
@@ -96,7 +96,7 @@ Frost casts Frostbolt and Ice Lance for nearly all its damage, so Frost spell po
 
 ## Races
 
-**Gnome** is the best free Alliance Frost mage: Eureka! makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit and trails a Gnome by a hair. **Skyborne** is a paid unlock; Wind Blessed's 2% haste edges a Gnome by a little, which is not worth buying for. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Troll** and **Orc** are close behind: Berserking adds 10% cast speed for 15 seconds every 3 minutes and Blood Fury 10% spell power for 15 seconds every 2 minutes, so press either on the pull and on cooldown after that.
+**Gnome** is the best Alliance Frost mage among the Classic races: Eureka! makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and Expansive Mind adds 5% mana. **Human** adds 1% crit and plays about the same as a Gnome. **Skyborne**, Alliance only for mages, is level with a Gnome: Wind Blessed is 2% haste that never turns off, so pick either. On the Horde, **Undead** is the pick: Touch of the Grave gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and Will of the Forsaken breaks fears. **Troll** and **Orc** are close behind: Berserking adds 10% cast speed for 15 seconds every 3 minutes and Blood Fury 10% spell power for 15 seconds every 2 minutes, so press either on the pull and on cooldown after that.
 
 ## Professions
 

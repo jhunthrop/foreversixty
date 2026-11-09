@@ -8,12 +8,17 @@ stays and Your guilds leads the rail), `join` (a signed-in player with no guild 
 from pathlib import Path
 
 import guild_data as gd
+from guild_overview_fixtures import tier
 
 INVITE_TOKEN = 'fixtureinvitetoken1'  # web/src/lib/report/shell-paths.ts FIXTURE_GUILD_INVITE_TOKEN
 
-# The progression board's top five (GET /v1/rankings/guilds?kind=progress): name, region, ruleset, bosses down.
-TOP = [(gd.GUILD, 'us', 'pvp', 3), ('The Last Watch', 'us', 'hardcore', 3), ('Iron Vanguard', 'us', 'hardcore', 2),
+# The progression board's top five (GET /v1/rankings/guilds?kind=progress): name, region, ruleset, bosses down. The first tier
+# names one boss (Onyxia), so nobody has more than one down; Olympus XXVII's count is its own tier bar's
+# (guild_overview_fixtures.tier). The board ranks the earliest kill first: FOUGHT_AT, Olympus XXVII's on its first night.
+TOP = [(gd.GUILD, 'us', 'pvp', tier()['down']), ('The Last Watch', 'us', 'hardcore', 1), ('Iron Vanguard', 'us', 'hardcore', 1),
        ('Ashen Covenant', 'eu', 'normal', 1), ('Pinewood Wardens', 'us', 'normal', 1)]
+FOUGHT_AT = {gd.GUILD: '2026-12-10T03:45:00Z', 'The Last Watch': '2026-12-10T04:20:00Z', 'Iron Vanguard': '2026-12-11T03:10:00Z',
+             'Ashen Covenant': '2026-12-11T21:40:00Z', 'Pinewood Wardens': '2026-12-12T03:30:00Z'}
 RULESET_WORD = {'pvp': 'PvP', 'hardcore': 'Hardcore', 'normal': 'Normal'}
 
 # landing-in: the account's guilds (name, region, ruleset, rank) and the alt the header points at.
@@ -25,7 +30,7 @@ JOINER = ('Ashenveil', 'paladin', 'Human', 60)
 INVITER = 'Ironbrand'
 
 CLAIMANT = gd.VIEWER  # Dunmaro
-CLAIM_SINCE = '2026-11-20T18:00:00Z'
+CLAIM_SINCE = gd.CLAIM_SINCE
 
 
 def _key(name: str, region: str = gd.REGION, ruleset: str = gd.RULESET) -> str:
@@ -37,8 +42,8 @@ def _class_of(name: str) -> str:
 
 
 def rankings() -> dict:
-    return {'rows': [{'rank': i + 1, 'guild': {'name': n, 'region': r, 'ruleset': rs}, 'value': v, 'fought_at': '2026-12-03T04:00:00Z',
-                      'report_id': f'parity{i}'} for i, (n, r, rs, v) in enumerate(TOP)]}
+    return {'rows': [{'rank': i + 1, 'guild': {'name': n, 'region': r, 'ruleset': rs}, 'value': v, 'fought_at': FOUGHT_AT[n],
+                      'report_id': gd.LAST_REPORT_ID if n == gd.GUILD else f'parity{i}'} for i, (n, r, rs, v) in enumerate(TOP)]}
 
 
 def _user(uid: int, tag: str) -> dict:

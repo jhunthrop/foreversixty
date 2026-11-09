@@ -11,16 +11,21 @@ import Base from '../layouts/Base.astro';
 import IslandScript from '../components/IslandScript.astro';
 import SimLandingPage from '../components/sim/SimLandingPage.svelte';
 import { loadBisSetRail } from '../lib/sim/bis-set-rail';
+import { searchCopy } from '../lib/search-copy';
+import { webApplicationLd } from '../lib/seo';
 
 const bisSets = loadBisSetRail(activeBuild.build);
+const jsonLd = [
+  webApplicationLd({
+    name: searchCopy.sim.appName,
+    description: searchCopy.sim.description,
+    path: '/sim',
+    category: 'GameApplication',
+  }),
+];
 ---
 
-<Base
-  title="Simulator"
-  description="Simulate a World of Warcraft: Forever character: what your DPS is and why, free and in your own browser."
-  path="/sim"
-  wide
->
+<Base title={searchCopy.sim.title} description={searchCopy.sim.description} path="/sim" {jsonLd} wide>
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
   <main id="main" tabindex="-1" class="sim-page">
     <div id="sim" data-sim-mount data-bis-sets={JSON.stringify(bisSets)}>

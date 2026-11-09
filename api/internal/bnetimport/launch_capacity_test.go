@@ -64,8 +64,7 @@ func TestImportAccountStopsEnrichingOnA429(t *testing.T) {
 			 "playable_class":{"name":"Rogue"},"faction":{"type":"HORDE"},"level":20}
 		]}]}`))
 	}
-	f.json(http.MethodGet, "/data/wow/realm/index?namespace=dynamic-classic1x-us", http.StatusOK,
-		map[string]any{"realms": []any{}})
+	whitemaneNormal(f)
 	var profileCalls atomic.Int32
 	for _, name := range []string{"mainone", "alttwo"} {
 		f.handlers[http.MethodGet+" /profile/wow/character/whitemane/"+name+"?namespace=profile-classic1x-us"] =

@@ -23,6 +23,8 @@
     top,
     rail,
     stickyRail = false,
+    railFirst = false,
+    splitFrom = 1024,
     tocFrom,
     tocLabel = 'Contents',
     testid,
@@ -41,6 +43,12 @@
     rail?: Snippet;
     /** The rail sticks below the bar from 1024. */
     stickyRail?: boolean;
+    /** `split` only: below 1024, where main and rail stack, the rail comes first (the tier list's
+     *  spec panel above the list on a phone). */
+    railFirst?: boolean;
+    /** `split` only: the width main and rail sit side by side from; 1280 for a page whose main
+     *  column needs the room below it (the tier list), stacked and full width under it. */
+    splitFrom?: 1024 | 1280;
     /** `reading` only, a document (the changelog, the content pages): the width the contents rail
      *  shows from (1760, 1024), or 0 for never, with the document's section gap above it. The
      *  guides leave it out (the rail from 1760 under their plate). */
@@ -57,6 +65,7 @@
 <div
   class="ui-page"
   data-layout={layout}
+  data-split-from={layout === 'split' && splitFrom !== 1024 ? splitFrom : undefined}
   data-toc-from={layout === 'reading' ? tocFrom : undefined}
   data-testid={testid}
 >
@@ -66,7 +75,11 @@
     <div class="ui-page-main">{@render children()}</div>
   {:else if layout === 'split' || layout === 'workbench'}
     <div class="ui-page-main">{@render children()}</div>
-    {#if rail}<aside class="ui-page-rail" data-sticky={stickyRail ? 'true' : undefined}>
+    {#if rail}<aside
+        class="ui-page-rail"
+        data-sticky={stickyRail ? 'true' : undefined}
+        data-first={railFirst && layout === 'split' ? 'true' : undefined}
+      >
         {@render rail()}
       </aside>{/if}
   {:else}
@@ -95,6 +108,19 @@
   }
   .ui-page-toc {
     display: none;
+  }
+  @media (max-width: 1023px) {
+    .ui-page-rail[data-first='true'] {
+      order: -1;
+    }
+  }
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    .ui-page[data-layout='split'][data-split-from='1280'] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .ui-page[data-split-from='1280'] > .ui-page-rail[data-first='true'] {
+      order: -1;
+    }
   }
   /* L2 Reading (guides spec 2026-11-08 §3A): the plate full width, then the sections, the
      contents rail beside them from 1760. */

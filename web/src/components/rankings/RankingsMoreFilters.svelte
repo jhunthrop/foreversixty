@@ -100,10 +100,7 @@
 {#snippet fields(prefix: string)}
   {#each FIELDS as field (field.key)}
     <div class="flex flex-col gap-1">
-      <span
-        class="text-label tracking-label text-muted font-bold uppercase"
-        id={`${prefix}-${field.key}-label`}>{field.label}</span
-      >
+      <span class="text-label text-muted font-bold" id={`${prefix}-${field.key}-label`}>{field.label}</span>
       <Select
         id={`${prefix}-${field.key}`}
         label={field.label}
@@ -127,9 +124,7 @@
 {/snippet}
 
 <div class="ui-cbar-group rankings-more" data-kind="select" data-testid="rankings-more-filters">
-  <span class="ui-cbar-label text-label tracking-label text-muted font-bold uppercase"
-    >{rankingsCopy.filtersButton}</span
-  >
+  <span class="ui-cbar-label text-label text-muted font-bold">{rankingsCopy.filtersButton}</span>
   <div class="rankings-more-pop" bind:this={wrap}>
     <button
       bind:this={trigger}

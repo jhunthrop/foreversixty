@@ -12,6 +12,14 @@
   import { chartCursor, clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clusterRows, eventsNear, laneItems, type LaneItem } from '../../lib/chart/events';
   import { resolveColour, withAlpha } from '../../lib/chart/palette';
+  import {
+    CHART_FONT_PX,
+    CHART_INK,
+    chartFont,
+    inkCanvas,
+    inkCss,
+    type ChartRole,
+  } from '../../lib/chart/theme';
   import { clockLabel, TIME_STEP_FLOOR_S, timeTicks } from '../../lib/chart/time-axis';
   import { tooltipLines } from '../../lib/chart/tooltip';
   import type { ChartEvent, ChartPhase, ChartSeries } from '../../lib/chart/types';
@@ -98,8 +106,6 @@
   const owner = `chart-${Math.random().toString(36).slice(2)}`;
   /** A median is the reference every line is read against: 2 px, so it holds among 12 lines. */
   const MEDIAN_WIDTH = 2;
-  /** The axis frame and tick ink: a chart stroke, not a card edge. */
-  const FRAME = 'var(--color-line)';
   const AXIS_PX = CHART_AXIS_PX;
   const LANE_PX = CHART_LANE_PX;
   const EVENT_LINE_PX = CHART_EVENT_LINE_PX;
@@ -173,9 +179,14 @@
     const resolved = host === null ? token : resolveColour(host, token);
     return alpha === 1 ? resolved : withAlpha(resolved, alpha);
   }
+  /** A chart-theme role (lib/chart/theme.ts) resolved for the canvas. */
+  function themed(role: ChartRole): string {
+    return host === null ? inkCss(CHART_INK[role]) : inkCanvas(host, CHART_INK[role]);
+  }
 
   // ---- uPlot options ------------------------------------------------------------------
-  const font = '11px Barlow, system-ui, sans-serif';
+  /** The tick font: the body face, read from --font-body (the chart theme). */
+  const font = $derived(host === null ? `${CHART_FONT_PX}px sans-serif` : chartFont(host));
 
   /**
    * Every line over the whole fight, one value per point (a second unless the lines bucket wider).
@@ -221,7 +232,7 @@
           size: 7,
           width: 1.5,
           fill: (u, index) => colour(series[index - 1]?.colour ?? 'var(--color-text)'),
-          stroke: () => colour('var(--color-bg)'),
+          stroke: () => themed('surface'),
         },
       },
       scales: {
@@ -239,10 +250,10 @@
         {
           size: AXIS_PX,
           font,
-          stroke: () => colour('var(--color-muted)'),
+          stroke: () => themed('label'),
           grid: { show: false },
-          ticks: { show: true, size: 4, width: 1, stroke: () => colour(FRAME) },
-          border: { show: true, width: 1, stroke: () => colour(FRAME) },
+          ticks: { show: true, size: 4, width: 1, stroke: () => themed('frame') },
+          border: { show: true, width: 1, stroke: () => themed('frame') },
           splits: (u) =>
             timeTicks(u.scales.x.min ?? 0, u.scales.x.max ?? 0, u.bbox.width / devicePixelRatio, labelFloorS),
           values: (_u, splits) => splits.map((at) => clockLabel(at * 1000)),
@@ -251,10 +262,10 @@
         {
           size: gutter,
           font,
-          stroke: () => colour('var(--color-muted)'),
+          stroke: () => themed('label'),
           gap: 8,
           ticks: { show: false },
-          grid: { show: true, width: 1, stroke: () => colour('var(--color-line-soft)') },
+          grid: { show: true, width: 1, stroke: () => themed('grid') },
           splits: (u) => (scale === 'log' ? logTicks(u.scales.y.max ?? 10) : valueTicks(u.scales.y.max ?? 1)),
           values: (_u, splits) => splits.map((value) => valueLabel(value)),
         },
@@ -287,7 +298,7 @@
     const { ctx } = u;
     const { top, height } = u.bbox;
     ctx.save();
-    ctx.fillStyle = 'rgba(229,185,85,0.05)';
+    ctx.fillStyle = themed('band');
     phases.forEach((phase, index) => {
       if (index % 2 === 0) return;
       const from = u.valToPos(phase.startMs / 1000, 'x', true);
@@ -314,13 +325,12 @@
       ctx.stroke();
     };
     ctx.save();
-    for (const phase of phases)
-      if (phase.startMs > 0) line(phase.startMs, colour('var(--color-gold)', 0.7), [2, 3], 1);
+    for (const phase of phases) if (phase.startMs > 0) line(phase.startMs, themed('phase'), [2, 3], 1);
     for (const event of events) {
-      if (event.kind === 'death') line(event.atMs, colour('var(--color-death)'), [4, 3], 1.5);
+      if (event.kind === 'death') line(event.atMs, themed('death'), [4, 3], 1.5);
       else if (event.kind === 'target-change') line(event.atMs, colour('var(--color-text)', 0.35), [1, 3], 1);
       else if (event.kind === 'taunt' || event.kind === 'cast')
-        line(event.atMs, colour('var(--color-gold)', 0.35), [], 1);
+        line(event.atMs, themed('highlightLine'), [], 1);
     }
     ctx.setLineDash([]);
     series.forEach((entry, index) => {
@@ -333,7 +343,7 @@
       if (x < left || x > left + plotWidth) return;
       ctx.strokeStyle = colour(entry.colour);
       ctx.lineWidth = 1.5 * ratio;
-      ctx.fillStyle = colour('var(--color-bg)');
+      ctx.fillStyle = themed('surface');
       ctx.beginPath();
       ctx.arc(x, y, 3 * ratio, 0, Math.PI * 2);
       ctx.fill();
@@ -1012,7 +1022,7 @@
   .count {
     font-size: 11px;
     font-weight: 700;
-    color: #ffb4b0;
+    color: color-mix(in srgb, var(--color-death) 55%, var(--color-strong));
   }
   .marker.gold .count {
     color: var(--color-gold);
@@ -1029,35 +1039,33 @@
   }
   .plot:focus-visible {
     box-shadow: inset 0 0 0 2px var(--color-gold);
-    border-radius: 6px;
+    border-radius: var(--radius-field);
   }
   .phase-label {
     top: 12px;
     height: 16px;
     padding: 0 5px;
-    border-radius: 3px;
-    background: rgba(13, 15, 21, 0.9);
+    border-radius: var(--radius-icon);
+    background: color-mix(in srgb, var(--color-bg) 90%, transparent);
     color: var(--color-muted);
     font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
+    font-weight: 600;
     line-height: 16px;
-    text-transform: uppercase;
     pointer-events: none;
     white-space: nowrap;
   }
   .selection {
-    background: rgba(229, 185, 85, 0.13);
-    border-left: 1px solid var(--color-gold);
-    border-right: 1px solid var(--color-gold);
+    background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    border-left: 1px solid var(--color-accent);
+    border-right: 1px solid var(--color-accent);
     pointer-events: none;
   }
   .drag-label {
     top: 34px;
     padding: 3px 8px;
-    border-radius: 6px;
-    background: #0d0f15;
-    border: 1px solid color-mix(in srgb, var(--color-gold) 60%, transparent);
+    border-radius: var(--radius-field);
+    background: var(--color-bg);
+    border: 1px solid var(--color-panel-edge);
     color: var(--color-strong);
     font-size: 12px;
     font-weight: 600;
@@ -1081,7 +1089,7 @@
     color: var(--color-text);
   }
   .death-link {
-    color: #ffb4b0;
+    color: color-mix(in srgb, var(--color-death) 55%, var(--color-strong));
   }
   /* uPlot's own layout rules (its stylesheet, trimmed to what this chart uses). */
   .tsc :global(.uplot) {

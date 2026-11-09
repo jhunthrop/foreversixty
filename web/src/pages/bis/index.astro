@@ -26,6 +26,7 @@ import { BAND_PARAM, SPEC_ROW_PREFIX } from '../../lib/bis/landing-client';
 import { specLinkHref } from '../../lib/bis/landing-links';
 import { dayMonth } from '../../lib/guides/guide-header';
 import { REGION } from '../../lib/ui/regions';
+import { searchCopy } from '../../lib/search-copy';
 import { LINK, type ClassSlug, type ControlGroup } from '../../lib/ui/primitives';
 
 const { cards, captions, raidLabel, updated, config } = loadLandingData(activeBuild.build);
@@ -49,7 +50,7 @@ const roleWord = (role: string): string | undefined =>
   role === 'tank' || role === 'healer' ? landingCopy.roleWords[role] : undefined;
 ---
 
-<Base title={landingCopy.title} description={landingCopy.description} path="/bis" wide>
+<Base title={searchCopy.bisIndex.title} description={searchCopy.bisIndex.description} path="/bis" wide>
   <main id="main" tabindex="-1" data-testid="bis-landing">
     <Page layout="ledger">
       <PageHeader slot="header" title={landingCopy.title} tone="strong" lead={landingCopy.lead}>

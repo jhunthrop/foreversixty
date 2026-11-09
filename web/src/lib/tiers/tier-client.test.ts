@@ -27,20 +27,18 @@ const tank = rankRole(
 );
 const views = tierSpecViews({ dps, tank, healer: [] });
 
-/** The answer slot and rows as TierPage.astro renders them, reduced to what the script reads. */
-const ANSWER = `<div id="tier-answer"><div data-answer-skeleton></div><div data-answer-body hidden>
-  <span data-field="label"></span><img data-field="crest" hidden><span data-field="name"></span>
-  <span data-field="detail"></span>
-  <span data-field="figure"><span class="ui-figure"><span>0<span>of 0</span></span></span></span>
-  <span data-field="links"><a data-field="bis"></a><a data-field="guide"></a></span>
-  <a data-field="other" hidden></a>
-  <span data-field="message" hidden><span></span><button data-field="choose" hidden></button><button data-field="retry" hidden></button></span>
+/** The spec panel and rows as TierSpecCard.astro and TierPage.astro render them, reduced to what the
+ *  script reads. */
+const CARD = `<div id="tier-answer"><div data-answer-skeleton></div><div data-answer-body hidden>
+  <h2 data-field="name"></h2><p><span data-field="standing"></span><a data-field="other" hidden></a></p>
+  <div><a data-field="bis"></a><a data-field="guide"></a>
+  <button data-field="choose" hidden></button><button data-field="retry" hidden></button></div>
 </div></div>`;
 
 function renderPage(): void {
   document.documentElement.dataset.session = '1';
   const rows = Object.keys(views)
-    .map((key) => `<li data-rank-key="${key}"><span data-you-tag hidden></span></li>`)
+    .map((key) => `<li data-rank-key="${key}"></li>`)
     .join('');
   const config = JSON.stringify({
     role: 'dps',
@@ -48,7 +46,7 @@ function renderPage(): void {
     factionParam: 'faction',
     factionAttribute: 'data-faction',
   });
-  document.body.innerHTML = `${ANSWER}${rows}<script type="application/json" id="tier-client-config">${config}</script>`;
+  document.body.innerHTML = `${CARD}${rows}<script type="application/json" id="tier-client-config">${config}</script>`;
 }
 
 async function settle(): Promise<void> {
@@ -56,13 +54,13 @@ async function settle(): Promise<void> {
 }
 
 const field = (name: string) => document.querySelector<HTMLElement>(`[data-field="${name}"]`)!;
-const answerText = (): string =>
+const card = (): string =>
   document.querySelector<HTMLElement>('[data-answer-body]')!.hidden
     ? ''
-    : `${field('name').textContent} ${field('detail').textContent}`;
+    : `${field('name').textContent} | ${field('standing').textContent}`;
+const shown = () => ['bis', 'guide', 'other', 'choose', 'retry'].filter((name) => !field(name).hidden);
 const marked = () =>
   [...document.querySelectorAll('[aria-current="true"]')].map((n) => n.getAttribute('data-rank-key'));
-const shownTags = () => document.querySelectorAll('[data-you-tag]:not([hidden])').length;
 
 describe('mountTierPage', () => {
   beforeEach(() => {
@@ -75,35 +73,35 @@ describe('mountTierPage', () => {
     vi.resetModules();
   });
 
-  it('answers in the header and moves the mark when the selected character changes', async () => {
+  it('names the spec and where it stands, and moves the mark when the selected character changes', async () => {
     findTierMe.mockResolvedValue(spec('warrior/arms'));
     const { mountTierPage } = await import('./tier-client');
     mountTierPage();
     await settle();
-    expect(answerText()).toContain('Arms Warrior');
-    expect(field('figure').textContent).toBe('1stof 3');
-    expect(field('bis').getAttribute('href')).toBe('/bis/warrior/arms');
+    expect(card()).toBe('Arms Warrior | Tier S · #1 · 95.0 DPS');
+    expect(shown()).toEqual(['bis', 'guide']);
+    expect(field('bis').getAttribute('href')).toBe('/bis/warrior/arms/60');
+    expect(field('guide').getAttribute('href')).toBe('/guides/warrior/arms');
     expect(marked()).toEqual(['warrior/arms']);
 
     findTierMe.mockResolvedValue(spec('hunter/beast-mastery'));
     window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
     await settle();
 
-    expect(answerText()).toContain('Beast Mastery Hunter');
-    expect(field('figure').textContent).toBe('2ndof 3');
+    expect(card()).toBe('Beast Mastery Hunter | Tier A · #2 · 90.0 DPS');
     expect(marked()).toEqual(['hunter/beast-mastery']);
-    expect(shownTags()).toBe(1);
   });
 
-  it('points a spec on another role to its list, with no place and no marked row', async () => {
+  it('points a spec on another role to its list, with no marked row', async () => {
     findTierMe.mockResolvedValue(spec('paladin/protection'));
     const { mountTierPage } = await import('./tier-client');
     mountTierPage();
     await settle();
-    expect(field('detail').textContent).toBe('Protection Paladin is on the Tank list.');
-    expect(field('other').hidden).toBe(false);
+    expect(card()).toBe('Protection Paladin | ');
+    expect(shown()).toEqual(['bis', 'guide', 'other']);
+    expect(field('other').textContent).toBe('On the Tanks list ›');
+    expect(field('guide').getAttribute('href')).toBe('/guides/paladin/protection');
     expect(field('other').getAttribute('href')).toBe('/tiers/tank');
-    expect(field('figure').hidden).toBe(true);
     expect(marked()).toEqual([]);
   });
 
@@ -112,17 +110,16 @@ describe('mountTierPage', () => {
     const { mountTierPage } = await import('./tier-client');
     mountTierPage();
     await settle();
-    expect(field('message').textContent).toContain("Thandrel's spec is not known yet.");
-    expect(field('choose').hidden).toBe(false);
+    expect(card()).toBe("Your spec | Thandrel's spec is not known yet.");
+    expect(shown()).toEqual(['choose']);
     findTierMe.mockResolvedValue({ kind: 'error' });
     window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
     await settle();
-    expect(field('message').textContent).toContain('We could not load your character.');
-    expect(field('retry').hidden).toBe(false);
-    expect(field('choose').hidden).toBe(true);
+    expect(card()).toBe('Your spec | We could not load your character.');
+    expect(shown()).toEqual(['retry']);
   });
 
-  it('hides the answer when the new selection is no character', async () => {
+  it('offers the character choice when the new selection is no character', async () => {
     findTierMe.mockResolvedValue(spec('warrior/arms'));
     const { mountTierPage } = await import('./tier-client');
     mountTierPage();
@@ -130,7 +127,8 @@ describe('mountTierPage', () => {
     findTierMe.mockResolvedValue({ kind: 'none' });
     window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
     await settle();
-    expect(document.getElementById('tier-answer')!.hidden).toBe(true);
+    expect(card()).toBe('Your spec | No character chosen.');
+    expect(shown()).toEqual(['choose']);
     expect(marked()).toEqual([]);
   });
 

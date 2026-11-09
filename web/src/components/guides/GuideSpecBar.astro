@@ -51,9 +51,7 @@ const groups: ControlGroup[] = [
       />
     </span>
     <nav class="guide-toc-phone" aria-label={guidesCopy.tocBarLabel} data-testid="guide-toc-phone">
-      <span class="text-label tracking-label text-muted block pb-1 font-bold uppercase">
-        {guidesCopy.tocBarLabel}
-      </span>
+      <span class="text-label text-muted block pb-1 font-bold">{guidesCopy.tocBarLabel}</span>
       {sections.map((section) => (
         <Row
           title={section.title}
