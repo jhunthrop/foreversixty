@@ -68,8 +68,9 @@ def raid_strip(viewer: str) -> str:
     return f'<div class="card strip">{line}<span class="end">{answers(SIGNUP, state)}<a href="#">Open the raid &rsaquo;</a></span></div>'
 
 
-def plural(n: int, word: str) -> str:
-    return f'{n} {word}{"" if n == 1 else "s"}'
+def plural(n: int, word: str, many: str = '') -> str:
+    """'1 night', '3 nights'; `many` for a word that does not take an s ('boss', 'bosses')."""
+    return f'{n} {word if n == 1 else (many or word + "s")}'
 
 
 def quiet(label: str) -> str:
@@ -133,8 +134,10 @@ def overview() -> str:
     last = F.recent_attendance()
     main = (panel('Action needed', act, framed=True) + panel('Next raid', raid, action='<a href="#">Open the planner &rsaquo;</a>')
             + panel('Comp against the target', comp_grid(F.raid_view(O.MEMBER, False)['counts'], O.COMP_TARGET), action='<a href="#">Edit target &rsaquo;</a>', flush=True))
-    rail = (panel('Cover: missing or thin', cover_grid(cover_rows), action=f'<a href="#">All {len(cover_rows)} &rsaquo;</a>', flush=True)
-            + panel(f'Attendance, last {len(last["raids"])} raids', attendance_grid(last), action='<a href="#">Roster &rsaquo;</a>', flush=True))
+    # attendance needs two nights to show a pattern; after the first raid night the panel waits
+    attendance = (panel(f'Attendance, last {len(last["raids"])} raids', attendance_grid(last), action='<a href="#">Roster &rsaquo;</a>', flush=True)
+                  if len(last['raids']) > 1 else '')
+    rail = panel('Cover, thinnest first', cover_grid(cover_rows), action=f'<a href="#">All {len(cover_rows)} &rsaquo;</a>', flush=True) + attendance
     body = band('Overview') + f'<main class="w gd">{twocol(main, rail)}</main>'
     return guild_page('guild', body)
 
@@ -158,9 +161,9 @@ def roster() -> str:
                          f'<a class="btn2" href="#">Approve</a>{quiet("Decline")}') for r in home['pending']])
     rows = []
     for r in roster_rows(home):
-        rank = ' &middot; Officer' if r['rank'] == 'officer' else ''
+        rank = {'leader': ' &middot; Guild Master', 'officer': ' &middot; Officer'}.get(r['rank'], '')
         rows.append([player_cell(r['class'], r['name'] + (' (you)' if r['name'] == O.OFFICER else ''), f'{r["spec"]} {r["class"].title()}{rank}', 28),
-                     str(r['item_level']), f'{r["attendance"]["present"]} of {r["attendance"]["nights"]}'])
+                     str(r['item_level']), f'{r["attendance"]["present"]} of {r["attendance"]["nights"]}' if r['attendance']['nights'] else '&ndash;'])
     tbl = table([('Raider', False), ('Item level', True), ('Raids', True)], rows,
                 row_cls=['me' if r['name'] == O.OFFICER else '' for r in roster_rows(home)])
     main = (panel('Waiting for approval', waiting, action='<a class="btn" href="#">Approve all</a>', framed=True) + panel('Roster', tbl, flush=True))
@@ -217,7 +220,7 @@ def progression() -> str:
                      + (f' &middot; first kill {G.day_label(G.guild_time(first["date"] + "T20:00:00Z"))}' if first else ''),
                      tag('Killed', 'kill') if kills else tag('Progress', 'gold')))
     bar = f'<div style="margin:6px 0 4px">{meter(t["down"] / t["named_encounters"], "var(--gain)")}</div>'
-    body = band('Progression') + (f'<main class="w gd">{panel(O.ZONE_NAME, bar + row_list(rows), meta=f"{t["down"]} of {t["named_encounters"]} bosses down", framed=True)}</main>')
+    body = band('Progression') + (f'<main class="w gd">{panel(O.ZONE_NAME, bar + row_list(rows), meta=f"{t['down']} of {plural(t['named_encounters'], 'boss', 'bosses')} down", framed=True)}</main>')
     return guild_page('guild progression', body)
 
 
@@ -267,7 +270,9 @@ def loot() -> str:
     cands = []
     for c in drop['candidates']:
         won = f'{c["items_won"]} item{"" if c["items_won"] == 1 else "s"} this tier'
-        sub = f'+{c["gain_dps"]} DPS over {escape(c["replaces"])} &middot; {c["attendance"]["present"]} of {c["attendance"]["nights"]} nights &middot; {won}'
+        tank = G.ch(c['name'])[3] == 'Tank'
+        gain = f'Tank, replaces {escape(c["replaces"])}' if tank else f'+{c["gain_dps"]} DPS over {escape(c["replaces"])}'
+        sub = f'{gain} &middot; {c["attendance"]["present"]} of {plural(c["attendance"]["nights"], "night")} &middot; {won}'
         foot = f'{tag(c["ms_os"].upper(), "gold")} {tag("BiS for them", "gold") if c["bis_for_them"] else ""} {votes(c["votes"]["yes"], c["votes"]["no"], c["votes"]["voters"])}'
         cands.append(('', player_cell(c['class'], c['name'], '', 30), f'{sub}<br>{foot}', '<a class="btn" href="#">Award</a>'))
     record = ''.join(item_row(D.icon_uri(d['icon']), f'{d["item_name"]} to {d["name"]}', QUALITY_NAME[d['quality']],
@@ -288,7 +293,7 @@ def applications() -> str:
         sub = f'{spec} {cls.title()} &middot; item level {il} &middot; top {parse[0].upper()} {round(parse[1])}'
         line = escape(msg) + (f' &middot; can raid {escape(avail)}' if avail else '')
         apps.append(('', player_cell(cls, name, sub, 34), f'{line}<br>{votes(y, n, gd.VOTERS)}',
-                     f'<a class="btn" href="#">Accept</a>{quiet("Decline")}'))
+                     f'<a class="btn2" href="#">Accept</a>{quiet("Decline")}'))
     card = facts([('Looking for', escape(G._wanted_summary())), ('Raid nights', escape(gd.RECRUIT_NIGHTS))])
     decided = row_list([('', f'{escape(name)} accepted', f'{y} yes of {gd.VOTERS} &middot; by {escape(by)}', '') for _i, name, _c, _s, y, by, _r, _d in gd.DECIDED])
     main = panel('Open applications', row_list(apps), framed=True)
@@ -303,7 +308,7 @@ def recruitment() -> str:
     up = ', '.join(f'{G._day(at)}, {G._clock(at)}' for at in gd.RECRUIT_UPCOMING)
     card = facts([('Region', f'{gd.REGION.upper()} PvP'), ('Faction', gd.FACTION.title()), ('Members', str(gd.RAIDERS)),
                   ('Raids', escape(gd.RECRUIT_NIGHTS)), ('Next nights', escape(up))])
-    officers = row_list([(player_cell(G.ch(nm)[1], nm, G._spec_class(nm), 30), '', '', '') for nm in gd.OFFICERS])
+    officers = row_list([(player_cell(G.ch(nm)[1], nm, f'{G._spec_class(nm)} &middot; {"Guild Master" if nm == gd.GUILD_MASTER else "Officer"}', 30), '', '', '') for nm in gd.COUNCIL])
     main = panel('Looking for', wanted, framed=True) + panel('Apply', '<a class="btn" href="#">Sign in with Battle.net to apply</a>')
     rail = panel(gd.GUILD, card) + panel('Why this guild', f'<div class="prose" style="font-size:14.5px">{escape(gd.RECRUIT_PITCH)}</div>') + panel('Officers', officers)
     bandh = titlebar(None, f'Join {gd.GUILD}', tag('Recruiting', 'kill'), media=emb(), top=header('', 'warrior', None, 'Guild'))

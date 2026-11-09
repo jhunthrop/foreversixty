@@ -1,37 +1,25 @@
-"""The raid night report's data (design/parity.md, "The guild states"; state `report`): Onyxia, Tue 8 Dec, read by an officer
+"""The raid night report's data (design/parity.md, "The guild states"; state `report`): Onyxia, Wed 9 Dec (the first night), read by an officer
 (Dunmaro). One source for both sides: ws_guild2.raid_report draws the mock from `raid_view()` and guild_fixtures.py writes the
 same raid view into web/tests/e2e/fixtures/guild-parity/report-raid.json, which web/tests/e2e/support/guild-parity/report.ts
 routes. The viewer, guild and home reads are the raid planner's (guild_raid.py: the same officer on the same guild). Shapes:
 web/src/lib/guild/api.ts (GuildRaidView), attendance-contract.ts (RaidReport). Roster and sign-up states come from guild_data.R.
 """
+import guild_data as gd
 from guild_data import R, ZONE
 from guild_raid import ONYXIA_ENCOUNTER as ONYXIA, RAID_ZONE_KEY, RAID_ZONE_NAME as ZONE_NAME, VIEWER, counts, key_of as key, member
 
-# The Tuesday before the planner's Thursday raid (guild_raid.RAID_ID 41).
-RAID_ID = 40
+# The guild's first raid night, Wed 9 Dec, 8:00 pm CST (guild_data.LAST_RAID_*), the week before the planner's raid.
+RAID_ID = gd.LAST_RAID_ID
 TITLE = ZONE_NAME
-# Tue 8 Dec, 8:00 pm CST (the guild raids Tue and Thu at 8:00 pm).
-STARTS_AT = '2026-12-09T02:00:00Z'
-UPLOADED_AT = '2026-12-09T05:10:00Z'
-AWARDED_AT = '2026-12-09T04:30:00Z'
+STARTS_AT = gd.LAST_RAID_AT
+UPLOADED_AT = '2026-12-10T05:10:00Z'
 NIGHT_MS = 90 * 60_000
-# Not in the log: everyone else on the roster came.
-AWAY = ('Voidcall', 'Starnettle')
+AWAY = gd.NIGHT_AWAY
 SPELL = {'Flame Breath': 18435, 'Deep Breath': 17086, 'Tail Sweep': 15847}
-
-# fight index, name, boss pull number (None on trash), result, duration ms, deaths as (who, killing ability)
-PULLS = [
-    (1, 'Onyxian Whelp pack', None, 'clear', 60_000, []),
-    (2, 'Onyxia', 1, 'wipe', 240_000, [('Emberfall', 'Deep Breath'), ('Skytalon', 'Deep Breath'), ('Hexmarrow', 'Deep Breath'),
-                                       ('Shiverknife', 'Tail Sweep'), ('Blacktide', 'Tail Sweep'), ('Seraphine', 'Flame Breath')]),
-    (3, 'Onyxian Whelp pack', None, 'clear', 55_000, []),
-    (4, 'Onyxia', 2, 'kill', 225_000, [('Groundshock', 'Flame Breath')]),
-]
-KILL_FIGHT = 4
+PULLS = gd.NIGHT_PULLS
+KILL_FIGHT = next(p[0] for p in PULLS if p[3] == 'kill')
 # name, DPS on the kill, the fight's rating
 PARSES = [('Frostquill', 812, 96), ('Doomwhisper', 744, 88), ('Dunmaro', 618, 61)]
-# item id, name, quality, icon, winner
-LOOT = [(18813, 'Ring of Binding', 4, 'inv_jewelry_ring_13', 'Doomwhisper')]
 
 
 def row(name: str) -> tuple:
@@ -98,7 +86,8 @@ def report() -> dict:
                         'by_pull': [{'fight_index': p[0], 'name': p[1], 'attempt': p[2], 'reason': 'no_character_sheet', 'rows': None}
                                     for p in boss_pulls]},
         'loot': [{'encounter_id': ONYXIA, 'boss': kill[1], 'awards': [
-            {'item_id': i, 'item_name': n, 'quality': q, 'icon': ic, **who(w), 'by_name': VIEWER, 'at': AWARDED_AT} for i, n, q, ic, w in LOOT]}],
+            {'item_id': d['item_id'], 'item_name': d['item_name'], 'quality': d['quality'], 'icon': d['icon'], **who(d['name']), 'by_name': d['awarded_by'],
+             'at': d['at']} for d in awards()]}],
         'moves': {'previous': None, 'rows': []},
         'posted_at': None,
     }
@@ -125,7 +114,7 @@ def night() -> dict:
 
 
 def signups() -> list[dict]:
-    """Tuesday's sign-ups: the roster's states (guild_data.R), as the planner's Thursday reads them."""
+    """The first night's sign-ups: the roster's states (guild_data.R), as the planner's next raid reads them."""
     out = []
     for r in R:
         if r[5] == 'none':
@@ -150,10 +139,16 @@ def raid_view() -> dict:
         'discord': {'available': True, 'connected': True, 'post_default': True, 'remind_default': True, 'channel_name': 'raids'},
         'discord_post': None, 'cover': None, 'comp_target': None, 'assignments': None,
         'pre_done_status': 'locked',
-        'match': {'report_id': 'onyxia8dec', 'zone_name': ZONE_NAME, 'uploaded_at': UPLOADED_AT, 'uploaded_by_name': VIEWER,
+        'match': {'report_id': gd.LAST_REPORT_ID, 'zone_name': ZONE_NAME, 'uploaded_at': UPLOADED_AT, 'uploaded_by_name': VIEWER,
                   'pulls': len(PULLS), 'kills': headline()['kills'], 'duration_ms': NIGHT_MS, 'how': 'auto'},
         'night': night(), 'attendance': attendance(), 'report': report(),
     }
+
+
+def awards() -> list[dict]:
+    """The loot council's awards that night (guild_overview_fixtures.decisions: one source)."""
+    from guild_overview_fixtures import decisions
+    return decisions()
 
 
 def write_report_fixtures(write) -> list:

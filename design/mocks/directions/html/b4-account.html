@@ -141,7 +141,9 @@ border:1px solid rgba(255,255,255,.18);border-radius:var(--r-sm)}.chips a.on{col
 /* phone: the hover tooltip becomes the tap sheet (not drawn here); table heads may wrap rather than push a column off */
 @media(max-width:700px){.tc .ttip{display:none}.tb th{white-space:normal}
 /* a row whose trail is actions (Award, Accept and Decline) puts them under the row on a phone; a figure trail stays */
-.rl li:has(.tr .btn,.tr .btn2){grid-template-columns:auto 1fr}.rl li:has(.tr .btn,.tr .btn2) .tr{grid-column:1/-1;text-align:left}}
+.rl li:has(.tr .btn,.tr .btn2,.tr .ans){grid-template-columns:auto 1fr}.rl li:has(.tr .btn,.tr .btn2,.tr .ans) .tr{grid-column:1/-1;text-align:left}
+/* a panel's meta goes under its title on a phone */
+.pn>.hd{flex-wrap:wrap}.pn>.hd .m{flex-basis:100%;order:3}}
 /* point order: a row per ten levels, one socket per level with the talent taken there and its rank */
 .po li{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.07)}
 .po li:last-child{border-bottom:0}.po .lv{font-size:12.5px;color:var(--muted)}.po .sk{display:flex;flex-wrap:wrap;gap:4px}
@@ -149,7 +151,7 @@ border:1px solid rgba(255,255,255,.18);border-radius:var(--r-sm)}.chips a.on{col
 .po .s b{position:absolute;right:-3px;bottom:-4px;font:700 10px/1 var(--body);color:#1eff00;background:#000;border-radius:2px;padding:1px 2px}
 .po .s.e{border:1px dashed rgba(255,255,255,.2);border-radius:var(--r-ic)}
 /* reading section: a heading, the prose at a reading measure, and its side block (the facts that prose is about) */
-.rs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,380px);gap:28px;padding:22px 24px;align-items:start}
+.rs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,380px);gap:6px 28px;padding:22px 24px;align-items:start}
 .rs+.rs{border-top:1px solid rgba(255,255,255,.1)}.rs h2{font-size:24px;margin-bottom:10px;grid-column:1/-1}
 .prose{max-width:72ch;font-size:16px;line-height:1.65}.prose p+p{margin-top:12px}.prose b,.prose strong{color:#fff}
 .prose ul{list-style:none}.prose li{padding:3px 0 3px 18px;position:relative}.prose li::before{content:"";position:absolute;left:3px;top:13px;width:6px;height:6px;border-radius:50%;background:var(--rule-warm)}

@@ -158,7 +158,7 @@ def guild_landing_page() -> str:
     rows = row_list([(f'<img src="{emblem("alliance")}" width="30" height="30" alt="">', f'<a href="#" style="color:#fff">{escape(n)}</a>',
                       f'{reg.upper()} {GD.RULESET_WORD[rs]}', f'<span class="num">{k}</span> boss{"" if k == 1 else "es"} down')
                      for n, reg, rs, k in top])
-    find = field('Guild name', '<a class="btn" href="#">Open</a>') + settings_bar([('Region', 'US'), ('Ruleset', 'Normal')]).replace('card setb', 'setb" style="margin-top:6px;padding:8px 2px 0')
+    find = field('Guild name', '<a class="btn" href="#">Open</a>') + settings_bar([('Region', 'US'), ('Ruleset', 'Any')]).replace('card setb', 'setb" style="margin-top:6px;padding:8px 2px 0')
     main = panel('Open a guild', f'<div class="pick">{find}</div>', framed=True) + panel('Top guilds', rows)
     rail = panel('Your guilds', row_list([(f'<img src="{emblem("alliance")}" width="30" height="30" alt="">', '<a href="#" style="color:#fff">Olympus XXVII</a>', 'US PvP', tag('Officer', 'gold'))]))
     body = titlebar(None, 'Guilds', '', top=header(*VIEWER, 'Guild')) + f'<main class="w st"><div class="twocol"><div>{main}</div><aside>{rail}</aside></div></main>'

@@ -16,13 +16,13 @@
   },
   "claim": {
     "state": "claimed",
-    "since": "2026-10-01T00:00:00Z",
+    "since": "2026-11-12T00:00:00Z",
     "frozen": false,
-    "yours": false,
+    "yours": true,
     "claimed_by": {
-      "name": "Thornwicke",
-      "class": "warrior",
-      "character_key": "us/pvp/thornwicke"
+      "name": "Dunmaro",
+      "class": "hunter",
+      "character_key": "us/pvp/dunmaro"
     }
   }
 }
