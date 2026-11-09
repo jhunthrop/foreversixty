@@ -195,10 +195,11 @@
 <!-- Two open Sections (web layout spec 2026-11-05 §3A.2): Planned, whose rows are the tab's one
      Plate, with the officer's Plan an event at the head's right and the form open under it; then
      the logged raid nights as open rows, each opening its pulls in place. -->
-<Page layout="ledger" testid="guild-raids-tab">
+<Page layout="ledger" panels testid="guild-raids-tab">
   {#if showPlanned}
     <Section
       title={raidCopy.subheads.planned}
+      panel
       meta={(planned?.length ?? 0) > 0 ? String(planned?.length) : undefined}
       metaTestid="guild-planned-count"
       testid="guild-planned"
@@ -243,7 +244,7 @@
       </div>
     </Section>
   {/if}
-  <Section title={raidCopy.subheads.raidNights} testid="guild-raid-nights">
+  <Section title={raidCopy.subheads.raidNights} panel testid="guild-raid-nights">
     {#if rows.length === 0}
       <p class="text-muted text-[14px] leading-[22px]" data-testid="guild-raids-empty">
         {publicView ? NO_PUBLIC_RAID_NIGHTS : 'No raid nights logged yet. Upload a raid log to get started.'}

@@ -12,7 +12,7 @@ from datetime import datetime
 
 import guild_settings_fixtures as S
 from guild_data import ALLIANCE, C, GUILD
-from ws_guild2 import O, _act, _view, band_line, hdr
+from ws_guild2 import O, _act, _view, hdr
 from ws_prims import Button, Emblem, Link, Page, PageHeader, Row, Rows, Section, Segmented, Tag, build_page, crest_img
 
 # The built copy (lib/billing/guild-billing-copy, lib/billing/seats-copy, lib/guild/copy, lib/guild/settings-view), verbatim.
@@ -166,7 +166,7 @@ def settings_tab(bot: bool = False):
     main = plan_section() + (discord_bot_section() if bot else discord_section())
     rail = members_section() + records_section(crest=True)
     # The tab's own heading for screen readers (GuildSettings embedded): outside every region, as built.
-    head = hdr(tabs_active='Settings') + band_line(O.OFFICER) + '<h2 class="sp-sr">Guild settings</h2>'
+    head = hdr(tabs_active='Settings') + '<h2 class="sp-sr">Guild settings</h2>'
     return build_page('Guild settings', _view(head + Page('split', main, rail) + NOTICE_LINE + _CSS), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 

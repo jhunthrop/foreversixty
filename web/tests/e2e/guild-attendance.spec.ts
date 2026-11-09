@@ -469,7 +469,7 @@ test('officer-read-only: match, clear, the fix and Post disabled; Copy live', as
 });
 
 test.describe('the roster chip (§3.6)', () => {
-  test('raid mode: two windows, No raid nights yet and the footnote', async ({ page }) => {
+  test('raid mode: two windows and No raid nights yet, no footnote', async ({ page }) => {
     await stubGuildAttendance(page, { viewer: 'member', attendanceSource: 'raids' });
     await page.clock.install({ time: NOW });
     await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-roster-tab');
@@ -480,9 +480,7 @@ test.describe('the roster chip (§3.6)', () => {
     // One read for the roster and the guild line (WP 4): Kraggor, who led the raid, has raids.
     const { last8, last30 } = rosterAttendance('Kraggor');
     await expect(rows).toContainText(rosterChip(last8, last30));
-    await expect(page.getByTestId('guild-roster-attendance-footnote')).toHaveText(
-      attendanceCopy.roster.footnote,
-    );
+    await expect(page.getByTestId('guild-roster-attendance-footnote')).toHaveCount(0);
   });
 
   test('report mode: the nights chip and no footnote', async ({ page }) => {
@@ -566,9 +564,8 @@ test.describe('axe (§9)', () => {
     await stubGuildAttendance(page, { viewer: 'officer', attendanceSource: 'raids' });
     await page.clock.install({ time: NOW });
     await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-roster-tab');
-    // The rows and the footnote: the sort chips' aria-sort predates this lane (see the report).
+    // The rows: the sort chips' aria-sort predates this lane (see the report).
     await expectNoAxeViolations(page, '[data-testid="guild-roster-rows"]');
-    await expectNoAxeViolations(page, '[data-testid="guild-roster-attendance-footnote"]');
     await gotoHydrated(page, `${GUILD_URL}#readiness`, 'guild-readiness-next-raid');
     await expectNoAxeViolations(page, '[data-testid="guild-readiness-tab"]');
   });

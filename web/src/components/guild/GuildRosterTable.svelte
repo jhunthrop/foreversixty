@@ -33,7 +33,6 @@
   import { guildHomeCopy, guildRosterAddonCopy, guildRosterModelCopy } from '../../lib/guild/copy';
   import { focusOnMountIf } from '../../lib/guild/focus-now';
   import type { AttendanceSource } from '../../lib/guild/attendance-contract';
-  import { attendanceCopy } from '../../lib/guild/attendance-copy';
   import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
   import { professionName } from '../../lib/guild/professions';
   import { addonSnapshotLine } from '../../lib/guild/roster-addon';
@@ -73,7 +72,6 @@
   import { button } from '../../lib/ui/button';
   import { ROW_RULE, ownRowBand } from '../../lib/ui/row';
   import Page from '../ui/Page.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Ruled from '../ui/Ruled.svelte';
   import Section from '../ui/Section.svelte';
   import { BUSY_CLASS } from '../../lib/ui/busy';
@@ -445,16 +443,17 @@
 {/snippet}
 
 <div data-testid="guild-roster-tab">
-  <Page layout="ledger">
+  <Page layout="ledger" panels>
     {#if shownPending.length > 0}
       <Section
         title="Waiting for approval"
-        meta={String(shownPending.length)}
+        panel
+        frame="framed"
         testid={canApprove ? 'guild-roster-waiting' : undefined}
       >
         {#snippet head()}
           {#if canApprove}<button
-              class={button('secondary', 'sm')}
+              class={button('primary', 'sm')}
               onclick={askApproveAll}
               disabled={frozen}
               data-testid="guild-roster-approve-all"
@@ -480,9 +479,6 @@
               </button>
             </div>
           {/if}
-          <p class="text-muted text-[14px]" data-testid="guild-roster-approve-explains">
-            {guildRosterModelCopy.approveExplains}
-          </p>
           {@render pendingRows()}
         </div>
       </Section>
@@ -490,14 +486,12 @@
 
     <Section
       title="Roster"
+      panel
       meta={countLine(countsView)}
       metaTestid="guild-roster-counts"
       testid="guild-roster-card"
     >
       <div class="flex flex-col gap-4">
-        <p class="text-muted text-[14px]" data-testid="guild-roster-gear-note">
-          {guildRosterModelCopy.gearNote}
-        </p>
 
         <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-filters">
           <span class="quiet-label">Filter</span>
@@ -562,8 +556,8 @@
           <EmptyState message="No raiders match these filters." testid="guild-roster-empty" />
         {/if}
         {#if ordered.length > 0 || extras.length > 0}
-          <Plate label="Roster" testid="guild-roster-plate">
-            <div class="px-5">
+          <div role="region" aria-label="Roster" data-testid="guild-roster-plate">
+            <div>
               {#if ordered.length > 0}
                 <Ruled testid="guild-roster-rows">
                   {#each ordered as row (row.character_key)}
@@ -769,12 +763,7 @@
                 </Ruled>
               {/if}
             </div>
-          </Plate>
-        {/if}
-        {#if attendanceSource === 'raids' && ordered.length > 0}
-          <p class="text-muted text-[13px]" data-testid="guild-roster-attendance-footnote">
-            {attendanceCopy.roster.footnote}
-          </p>
+          </div>
         {/if}
         {#if rosterActionError !== ''}
           <p class="text-[14px]" role="alert" data-testid="guild-roster-action-error">{rosterActionError}</p>

@@ -36,7 +36,6 @@
   import { raidQuiet } from '../../../lib/guild/planned-row';
   import { clockText } from '../../../lib/guild/raid-time';
   import type { RaidStatusAction } from '../../../lib/guild/raids-api';
-  import BuffCover from '../overview/BuffCover.svelte';
   import CompTally from '../overview/CompTally.svelte';
   import GuildTabs from '../GuildTabs.svelte';
   import RaidDoneBand from '../RaidDoneBand.svelte';
@@ -188,7 +187,7 @@
 
 <!-- One block: the guild shell spaces its children, and the head, bar and page sit flush as the mock draws them. -->
 <div>
-  <Page layout="split" {header} {bar} testid="raid-page">
+  <Page layout="split" panels {header} {bar} testid="raid-page">
     {#if flags.cancelled && c.raceLine !== null}
       <p
         class="text-wipe text-[13px]"
@@ -248,7 +247,7 @@
       onSignup={c.signup}
       currentKey={c.currentKey}
     />
-    <Section title={raidCopy.subheads.signups} meta={count.ratio} testid="raid-signups">
+    <Section title={raidCopy.subheads.signups} panel frame="framed" meta={count.ratio} testid="raid-signups">
       <PlannerRoster
         {raid}
         {grouping}
@@ -322,8 +321,7 @@
           actions={c.assignments}
         />
       {/if}
-      {#if raid.cover && raid.cover.length > 0}<BuffCover cover={raid.cover} />{/if}
-      <Section title={raidCopy.subheads.notes} id="raid-notes" testid="raid-notes">
+      <Section title={raidCopy.subheads.notes} panel id="raid-notes" testid="raid-notes">
         {#if raid.notes_html.trim() === ''}
           <p class="text-muted text-[14px]" data-testid="raid-notes-empty">{notesEmptyOf(kind, officer)}</p>
         {:else}

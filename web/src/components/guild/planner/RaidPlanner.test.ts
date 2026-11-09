@@ -216,9 +216,9 @@ describe('officer sections', () => {
 });
 
 describe('the rail', () => {
-  it('draws the cover and the notes, or the empty line', () => {
-    expect(html()).toContain('data-testid="guild-cover"');
-    expect(html({ raid: full({ cover: null }) })).not.toContain('guild-overview-cover');
+  it('draws the notes, or the empty line, and no cover', () => {
+    // The cover is the Overview's (batch 3): the planner's rail is the comp, the jobs and the notes.
+    expect(html()).not.toContain('guild-overview-cover');
     expect(text(between(html(), 'raid-notes-empty', 'never'))).toContain(notesEmptyOf('raid', false));
     expect(html({ raid: full({ notes_html: '<p><strong>Flasks</strong></p>' }) })).toContain(
       '<strong>Flasks</strong>',

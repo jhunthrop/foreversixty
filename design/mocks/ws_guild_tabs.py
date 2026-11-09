@@ -6,21 +6,22 @@ Every tab is the guild head, the band line, then open Sections; the tab's primar
 readiness board. Progression has no Plate: each named encounter is an open Section, the tier and the zones with no encounter list
 sit in the rail.
 """
-from datetime import date
 
-from ws_prims import Page, Section, Plate, Rows, Row, Button, Figure, Meter, Tag, build_page, crest_img
+from ws_prims import Page, Section, Plate, Rows, Row, Button, Meter, Tag, build_page, crest_img, icon
 import guild_overview_data as O
 import guild_overview_fixtures as F
 import guild_tabs_fixtures as T
 from guild_data import C
-from ws_guild2 import hdr, band_line, _view, pad, guild_time, day_label
+from ws_guild2 import RAID_ICON, hdr, band_line, _view, pad, guild_time, day_label
 
 WHO = ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60')
 SPLIT_GAP = '<div style="display:flex;flex-direction:column;gap:12px">{}</div>'
 
 
 def _tab(title, active, body):
-    return build_page(title, _view(hdr(tabs_active=active) + band_line(O.OFFICER) + body), 'Guild', WHO)
+    strip = band_line(O.OFFICER) if active == 'Roster' else ''  # the next raid's strip on the Roster only (batch 3)
+    head = hdr(tabs_active=active, sub='Members' if active == 'Roster' else '')
+    return build_page(title, _view(head + strip + body), 'Guild', WHO)
 
 
 def _col(*parts, gap=16):
@@ -50,14 +51,14 @@ def _chips(labels, on=''):
 
 
 def roster():
+    """The Roster (batch 3, b3-guild-roster): Waiting for approval framed with Approve all, then the Roster panel with its
+    filters, sort, the addon line and the rows. No explaining lines."""
     home = T.roster_home()
     words = {'leader': 'Leader', 'officer': 'Officer'}  # copy.ts guildRosterModelCopy.ranks
     rank = lambda r: Tag(words[r['rank']]) if r['rank'] in words else '<span class="t-small">Member</span>'  # noqa: E731
     waiting = [Row(r['name'], _spec(r), lead=crest_img(r['class'], 36), title_color=C[r['class']], link=False,
                    trail=rank(r) + Button('Approve', small=True, act=True) + Button('Decline', small=True, tone='ghost', act=True)) for r in home['pending']]
-    wait = Section('Waiting for approval', pad(_col(_p('Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.'),
-                                                    Rows(waiting, open_=True), gap=12)),
-                   action=Button('Approve all', small=True, act=True), meta=str(len(home['pending'])))
+    wait = Section('Waiting for approval', Rows(waiting, open_=True), action=Button('Approve all', primary=True, small=True, act=True), panel=True, frame='framed')
     verified = sorted(home['roster'], key=lambda r: (r['name'] != O.OFFICER, -r['item_level']))
     # The viewer's own name links to their member profile.
     rows = [Row(f'<a href="#">{r["name"]} (you)</a>' if r['name'] == O.OFFICER else r['name'], _spec(r), lead=crest_img(r['class'], 36), title_color=C[r['class']], link=False,
@@ -68,38 +69,39 @@ def roster():
                 f'{_chips(["Role: All", "Class: All", "Verified only", "No account", "Below rating floor"])}</div>'
                 f'<div role="group" aria-label="Sort" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span class="t-small">Sort</span>'
                 f'{_chips(["Rank", "Item level", "Attendance", "Last seen"], "Item level")}</div>')
-    body = _col(_p('Loot and readiness list members with gear on the site.'), controls,
-                _p('No roster from the addon yet. Log in with the addon on your guild master and it sends one.'),
-                Plate(Rows(rows), 'Roster'),
-                _p('Raid nights each raider came to, of those they signed up for or came to, over this guild&rsquo;s last 8 and 30 logged raids.'))
+    body = _col(controls, _p('No roster from the addon yet. Log in with the addon on your guild master and it sends one.'),
+                f'<div role="region" aria-label="Roster">{Rows(rows)}</div>')
     n = len(home['roster']) + len(home['pending'])
-    sec = Section('Roster', pad(body), meta=f"{n} on the roster &middot; {len(home['pending'])} waiting for approval")
-    return _tab('Guild roster', 'Roster', Page('ledger', _col(wait, sec, gap=48)))
+    sec = Section('Roster', body, meta=f"{n} on the roster &middot; {len(home['pending'])} waiting for approval", panel=True)
+    return _tab('Guild roster', 'Roster', Page('ledger', _col(wait, sec, gap=22)).replace('padding-top:20px', 'padding-top:28px', 1))
 
 
 # ---------------------------------------------------------------- Progression
 def progression():
+    """Progression (batch 3, b3-guild-progression): one framed panel a zone, its bosses down over a meter, a Row per boss pulled."""
     page = F.progression()
-    t = page['tier']
+    zones: dict[str, list] = {}
+    for e in page['encounters']:
+        zones.setdefault(e['zone'], []).append(e)
     main = ''
-    for e in (x for x in page['encounters'] if x['pulls'] > 0):
-        nights = Rows([Row(f"{date.fromisoformat(n['date']):%a} {date.fromisoformat(n['date']).day} {date.fromisoformat(n['date']):%b}",
-                           f"{n['pulls']} pulls", trail=Tag('Kill', 'kill') if n['killed'] else '', link=False, slim=True) for n in e['pulls_by_night']],
-                     open_=True, list_=True)
-        first = guild_time(e['first_kill_at'])
-        best = e['best_kill_ms'] // 1000
-        main += Section(e['name'], pad(_col(_p(f'First kill {day_label(first)} &middot; best kill {best // 60}:{best % 60:02d}', False), nights,
-                                            _p(f"Deaths per pull: {e['deaths_per_pull']:.1f} on average."), gap=12)),
-                        meta=f"{e['zone']} &middot; pulls to kill")
-    tier = Section('This tier', pad(_col(Figure(f"{t['down']} of {t['named_encounters']}", '', size='sm').replace('</span></div>', '</span><span class="t-small" style="display:block">Named bosses down</span></div>', 1),
-                                         Meter(t['down'] / t['named_encounters'], '', f"{t['down']} of {t['named_encounters']} named bosses down"), gap=8)),
-                   meta=t['name'])
-    zones = [z for z in page['unnamed'] if z['pulls'] > 0]
-    # Our to-do, drawn only when the guild has pulls it applies to (GuildProgression.svelte).
-    unnamed = Section('Without an encounter list', pad(_p8('Barrow Deeps and Hyjal Summit have no encounter list yet. Their pulls count toward the tier total '
-                                                          'but cannot be named or ranked per boss.')
-                                                       + Rows([Row(z['zone'], f"{z['pulls']} pulls logged", link=False, slim=True) for z in zones], open_=True, list_=True))) if zones else ''
-    return _tab('Guild progression', 'Progression', Page('split', main, tier + unnamed))
+    for zone, encs in zones.items():
+        pulled = [e for e in encs if e['pulls'] > 0]
+        if not pulled:
+            continue
+        down = sum(1 for e in encs if e['kills'] > 0)
+        rows = []
+        for e in pulled:
+            first = f" &middot; first kill {day_label(guild_time(e['first_kill_at']))}" if e.get('first_kill_at') else ''
+            wipes = e['pulls'] - e['kills']
+            sub = (f"{e['pulls']} pull{'' if e['pulls'] == 1 else 's'} &middot; {wipes} wipe{'' if wipes == 1 else 's'} &middot; "
+                   f"{e['deaths_per_pull']:.1f} deaths a pull{first}")
+            rows.append(Row(e['name'], sub, lead=icon(RAID_ICON, 36, 'q5'), trail=Tag('Killed', 'kill') if e['kills'] else Tag('Progress'), link=False))
+        body = _col(Meter(down / len(encs), 'kill', f'{down} of {len(encs)} named bosses down'), Rows(rows, list_=True), gap=8)
+        main += Section(zone, body, meta=f"{down} of {len(encs)} boss{'' if len(encs) == 1 else 'es'} down", panel=True, frame='framed')
+    zones_unnamed = [z for z in page['unnamed'] if z['pulls'] > 0]
+    if zones_unnamed:
+        main += Section('Without an encounter list', Rows([Row(z['zone'], f"{z['pulls']} pulls logged", link=False, slim=True) for z in zones_unnamed], list_=True), panel=True)
+    return _tab('Guild progression', 'Progression', Page('ledger', _col(main, gap=22)).replace('padding-top:20px', 'padding-top:28px', 1))
 
 
 # ---------------------------------------------------------------- Readiness

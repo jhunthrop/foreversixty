@@ -258,9 +258,8 @@ test.describe('after a kill', () => {
 
     await expect(page.getByTestId('guild-overview-tab')).toBeVisible();
     await expect(page.getByTestId('guild-overview-card-week-one')).toHaveCount(0);
-    const { down, named_encounters: named, pulls_total: pulls } = progression.tier;
-    await expect(page.getByTestId('guild-header-facts')).toContainText(`${down} boss down`);
-    await expect(page.getByTestId('guild-header-facts')).toContainText(`${pulls} pulls`);
+    const { down, named_encounters: named } = progression.tier;
+    // The band is one line (batch 3): the region and ruleset, then the raiders; the tier's counts are the Last raid's.
     await expect(lastRaidLine(page, `${down} of ${named} named bosses down: Onyxia.`)).toBeVisible();
     await capture(page, 'overview-after-kill');
 

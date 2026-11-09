@@ -144,7 +144,8 @@ test.describe('the guild page', () => {
     await expect(page.getByTestId('guild-roster-tab')).toBeVisible();
     await expect(page.getByTestId('guild-roster-rows').locator('.guild-roster-row').first()).toBeVisible();
     await expect(page.getByTestId('guild-roster-gate')).toHaveCount(0);
-    await expect(page.getByTestId('guild-claim-note')).toHaveText(/Claimed by\s+Kraggor/);
+    // The band is one line (batch 3): who holds the claim reads in Settings, not here.
+    await expect(page.getByTestId('guild-claim-note')).toHaveCount(0);
     await expect(page.locator('body')).not.toContainText(/#[0-9]{4}/);
     await expect(page.getByTestId('guild-claim-entry')).toHaveCount(0);
   });

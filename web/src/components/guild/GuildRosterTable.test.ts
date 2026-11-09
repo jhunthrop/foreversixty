@@ -312,7 +312,8 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     expect(asOfficer.indexOf('guild-roster-counts')).toBeLessThan(
       asOfficer.indexOf('data-testid="guild-roster-filters"'),
     );
-    expect(text(asOfficer)).toContain('Loot and readiness list members with gear on the site.');
+    // No explaining lines under the head (batch 3): the gear note is gone.
+    expect(text(asOfficer)).not.toContain('Loot and readiness list members with gear on the site.');
   });
 
   it('leaves a zero part out of the count line, and derives the counts from the account rows when the home sends none', () => {
@@ -422,11 +423,8 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     }
   });
 
-  it('the waiting list names what Approve does, shows the rank the addon sent and the state word, and offers Decline', () => {
-    const list = asOfficer.slice(asOfficer.indexOf('data-testid="guild-roster-waiting"'));
-    expect(text(list)).toContain(
-      'Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.',
-    );
+  it('the waiting list shows the rank the addon sent and the state word, and offers Decline', () => {
+    expect(text(asOfficer)).not.toContain('Approving lets this character');
     const waitingRows = asOfficer
       .slice(
         asOfficer.indexOf('data-testid="guild-roster-unverified-list"'),
@@ -528,12 +526,12 @@ describe('GuildRosterTable attendance source', () => {
     })),
   };
 
-  it('reads the two-window chip and the one footnote in raid mode', () => {
+  it('reads the two-window chip in raid mode, with no footnote', () => {
     const body = text(
       render(GuildRosterTable, { props: { ...props(raidHome), attendanceSource: 'raids' } }).body,
     );
     expect(body).toContain('7 of 8 raid nights \u00b7 26 of the last 30');
-    expect(body.split('Raid nights each raider came to').length - 1).toBe(1);
+    expect(body).not.toContain('Raid nights each raider came to');
   });
 
   it('keeps report mode on nights with no footnote', () => {

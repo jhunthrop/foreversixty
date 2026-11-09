@@ -447,9 +447,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
     await expect(page.getByTestId('guild-roster-counts')).toHaveText(
       `${home.roster.length + 2} on the roster · 1 in game without an account · ${waiting} waiting for approval · 1 not seen in game yet`,
     );
-    await expect(page.getByTestId('guild-roster-gear-note')).toHaveText(
-      'Loot and readiness list members with gear on the site.',
-    );
+    await expect(page.getByTestId('guild-roster-gear-note')).toHaveCount(0);
     // Member is a word, not a blank: a plain member's row says so.
     const zulmara = page
       .getByTestId('guild-roster-rows')
@@ -487,9 +485,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
   }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
-    await expect(page.getByTestId('guild-roster-approve-explains')).toHaveText(
-      'Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.',
-    );
+    await expect(page.getByTestId('guild-roster-approve-explains')).toHaveCount(0);
     const list = page.getByTestId('guild-roster-unverified-list');
     await expect(list.getByTestId('guild-roster-pending-rank').first()).toHaveText('Member');
     // The card's head says it; there is no per-row state tag.
@@ -1331,7 +1327,7 @@ test.describe('guild facts read as sentences (P.1)', () => {
       const header = page.getByTestId('guild-header-facts');
       await expect(header).toBeVisible();
       expect(await words(header)).toMatch(
-        /^PvP US · \d+ bosse?s? down · \d+ pulls?( · Updated [^·]+)?( · Next raid: .+)?$/,
+        /^US PvP( · \d+ raiders?)?$/,
       );
       const raidFacts = page.getByTestId('guild-overview-raid-facts').first();
       expect(await words(raidFacts)).toMatch(/ · /);

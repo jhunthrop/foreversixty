@@ -399,11 +399,7 @@ export const guildRosterModelCopy = {
     ]
       .filter((part) => part !== '')
       .join(' · '),
-  gearNote: 'Loot and readiness list members with gear on the site.',
   noAccountFilter: 'No account',
-  /** Above the waiting list: what Approve gives the character. */
-  approveExplains:
-    'Approving lets this character see the roster, loot and readiness; officers can also remove members and change settings.',
   decline: 'Decline',
   /** Asked before a verified character is taken off the roster. */
   removeQuestion: (name: string): string => `Remove ${name} from the roster?`,

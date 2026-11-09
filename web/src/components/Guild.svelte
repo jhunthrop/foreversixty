@@ -14,6 +14,7 @@
   import { fetchMeFresh, type Me, type MeGuild } from '../lib/account/api';
   import {
     characterSlug,
+    guildApplicationsHref,
     guildClaimHref,
     guildHref,
     guildRaidHref,
@@ -93,6 +94,8 @@
   import GuildStatus from './GuildStatus.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import PageHeader from './ui/PageHeader.svelte';
+  import Plate from './ui/Plate.svelte';
+  import TabStrip from './ui/TabStrip.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import { findMyGuild } from '../lib/guild/my-guild';
   import { GUILD_LOADING } from '../lib/guild/layout';
@@ -412,7 +415,7 @@
     home !== null &&
       ((myLevelingLine === null && home.standing != null && standingSentence(home.standing) !== '') ||
         myLevelingLine !== null ||
-        (activeTab !== 'overview' && showsBandLine(myGuildMembership?.verified === true, role)) ||
+        (activeTab === 'roster' && showsBandLine(myGuildMembership?.verified === true, role)) ||
         (activeTab !== 'overview' && role === 'member' && needs !== null) ||
         (myGuildMembership !== null && !myGuildMembership.verified) ||
         home.claim.frozen),
@@ -862,6 +865,18 @@
           {/snippet}
           {#snippet tabs()}
             <GuildTabs active={activeTab} {role} onSelect={selectTab} />
+            {#if activeTab === 'roster' && officerView && guildPath !== ''}
+              <!-- The Roster's sub-views (batch 3): its members here, the applications on their own page. -->
+              <TabStrip
+                tabs={[
+                  { id: 'members', label: 'Members', href: '#roster' },
+                  { id: 'applications', label: 'Applications', href: guildApplicationsHref(guildPath) },
+                ]}
+                active="members"
+                label="Roster views"
+                testid="guild-roster-views"
+              />
+            {/if}
           {/snippet}
         </PageHeader>
 
@@ -907,8 +922,8 @@
                      the standing line and the needs line. Its chunk loads alongside /home; the box
                      it fills (the resting caps, 44 desktop, 112 phone) is held until it lands, and
                      a chunk that fails leaves the plain link in its place. -->
-              {#if activeTab !== 'overview' && showsBandLine(myGuildMembership?.verified === true, role)}
-                {@render bandLine()}
+              {#if activeTab === 'roster' && showsBandLine(myGuildMembership?.verified === true, role)}
+                <Plate testid="guild-raid-strip"><div class="px-5 py-2">{@render bandLine()}</div></Plate>
               {/if}
               {#if myLevelingLine !== null}
                 <!-- Week-one spec 3.2: under 60 this is the band's only viewer line, never green. -->

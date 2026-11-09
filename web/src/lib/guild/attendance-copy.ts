@@ -14,9 +14,6 @@ const HOUR_MS = 60 * MINUTE_MS;
 export const DAY_MS = 24 * HOUR_MS;
 /** The match picker lists logs uploaded within this many days. */
 export const PICKER_WINDOW_DAYS = 14;
-/** The roster's two attendance windows, in logged raids (spec 3.6). */
-export const ROSTER_SHORT_WINDOW = 8;
-export const ROSTER_LONG_WINDOW = 30;
 const MINUTES_PER_HOUR = 60;
 /** The auto-matcher's window after a raid ends; past it the page asks for an upload (spec 3.1). */
 export const ENDED_MATCH_WINDOW_MS = 6 * HOUR_MS;
@@ -145,7 +142,6 @@ export const attendanceCopy = {
   },
   roster: {
     noNights: NO_RAID_NIGHTS,
-    footnote: `Raid nights each raider came to, of those they signed up for or came to, over this guild's last ${ROSTER_SHORT_WINDOW} and ${ROSTER_LONG_WINDOW} logged raids.`,
   },
   readiness: {
     noExport: 'No export yet',

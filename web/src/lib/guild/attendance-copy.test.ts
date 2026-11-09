@@ -6,8 +6,6 @@ import {
   attendanceSummary,
   cameGuildLine,
   PICKER_WINDOW_DAYS,
-  ROSTER_LONG_WINDOW,
-  ROSTER_SHORT_WINDOW,
   cameAsOutcome,
   durationLabel,
   lateOutcome,
@@ -116,7 +114,6 @@ describe('constants, verbatim from spec 6.1', () => {
     expect([g.noShow, g.late, g.joined, g.present, g.benchOut]).toEqual(cell('Attendance').slice(2, 7));
     expect(c.attendance.notInLog).toBe(str('Attendance', 8));
     expect(c.attendance.excused).toBe(str('Attendance', 11));
-    expect(c.roster.footnote).toBe(str('Roster', 1));
     expect(c.roster.noNights).toBe(str('Roster', 4));
     expect(c.readiness.noExport).toBe(str('Readiness', 3));
     expect(c.readiness.nobodySigned).toBe(str('Readiness', 4));
@@ -201,7 +198,6 @@ describe('outcome words', () => {
   });
 
   it('writes the window constants into prose', () => {
-    expect(c.roster.footnote).toContain(`last ${ROSTER_SHORT_WINDOW} and ${ROSTER_LONG_WINDOW} logged`);
     expect(pickerHelper('Onyxia', true)).toContain(`${PICKER_WINDOW_DAYS} days`);
   });
 });

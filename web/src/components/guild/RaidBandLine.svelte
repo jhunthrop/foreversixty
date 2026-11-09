@@ -322,7 +322,7 @@
       <a
         href={guildRaidHref(guildPath, nextRaid.id)}
         class="text-gold col-start-2 row-start-1 inline-flex h-11 items-center text-[13px] font-bold whitespace-nowrap md:h-auto"
-        data-testid="guild-raid-line-link">{nextRaid.zone_name} →</a
+        data-testid="guild-raid-line-link">Open the raid ›</a
       >
     </div>
     {#if locked}

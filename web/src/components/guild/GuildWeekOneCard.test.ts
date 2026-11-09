@@ -158,15 +158,15 @@ describe('GuildProgression with pulls', () => {
       }),
     };
     const copy = text(progressionHtml(noKill));
-    expect(copy).toContain('0 of 1 Named bosses down');
-    expect(copy).toContain('pulls, no kill yet.');
+    expect(copy).toContain('0 of 1 boss down');
+    expect(copy).toContain('Progress');
     expect(copy).not.toContain('NaN');
     expect(copy).not.toContain('We do not track');
-    expect(copy).not.toContain('First kill');
+    expect(copy).not.toContain('first kill');
   });
 
-  it('shows the kill line with both figures', () => {
-    expect(text(progressionHtml(buildMockProgression()))).toMatch(/First kill .* · best kill \d+:\d\d/);
+  it('reads each boss in one line: pulls, wipes, deaths a pull, first kill', () => {
+    expect(text(progressionHtml(buildMockProgression()))).toMatch(/\d+ pulls? · \d+ wipes? · [\d.]+ deaths a pull · first kill \w{3} \d+ \w{3}/);
   });
 
   it('labels the role bests as output, never a parse, rounded as the roster writes them', () => {

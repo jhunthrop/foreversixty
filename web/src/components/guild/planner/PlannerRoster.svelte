@@ -11,7 +11,6 @@
   import type { OfficerLine } from '../../../lib/guild/raid-page-types';
   import { plannerGroups, type PlannerGrouping } from '../../../lib/guild/raid-planner-view';
   import type { RosterRow } from '../../../lib/guild/raid-roster';
-  import Plate from '../../ui/Plate.svelte';
   import PlannerRow from './PlannerRow.svelte';
 
   let {
@@ -53,22 +52,22 @@
 </script>
 
 <div class={closed ? 'opacity-60' : undefined} data-testid="raid-roster">
-  <Plate label="Sign-ups">
+  <div role="region" aria-label="Sign-ups">
     {#if empty}
-      <p class="text-muted px-4 py-5 text-[14px]" data-testid="raid-roster-empty">
+      <p class="text-muted py-3 text-[14px]" data-testid="raid-roster-empty">
         Nobody has signed up yet.
       </p>
     {:else}
       {#each groups as group (group.id)}
         <div class="pb-1" data-testid={`raid-roster-${group.id}`}>
           <h3
-            class="text-label text-muted flex items-baseline gap-2 px-4 pt-3 pb-1 font-bold"
+            class="text-label text-muted flex items-baseline gap-2 pt-3 pb-1 font-bold"
             data-testid={`raid-roster-${group.id}-heading`}
           >
             {group.label} <span class="tabular-nums">{group.rows.length}</span>
           </h3>
           {#if group.rows.length === 0}
-            <p class="text-muted px-4 pb-3 text-[13px]">{group.empty}</p>
+            <p class="text-muted pb-3 text-[13px]">{group.empty}</p>
           {:else}
             <ul>
               {#each group.rows as row (row.character_key)}
@@ -88,7 +87,7 @@
         </div>
       {/each}
     {/if}
-  </Plate>
+  </div>
   {#if line?.control === 'roster'}
     <p class="text-wipe mt-2 text-[13px]" role="alert" data-testid="raid-roster-error">{line.message}</p>
   {/if}

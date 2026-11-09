@@ -40,11 +40,12 @@ def band_facts(raiders: int | None = gd.RAIDERS) -> str:
     return ' &middot; '.join(['US PvP'] + ([f'{raiders} raider{"" if raiders == 1 else "s"}'] if raiders else []))
 
 
-def hdr(tabs_active='Overview', officer=True, tabs=None, raiders: int | None = gd.RAIDERS):
+def hdr(tabs_active='Overview', officer=True, tabs=None, raiders: int | None = gd.RAIDERS, sub: str = ''):
     """The guild's head as the built Guild.svelte draws it: the faction crest, the one band line, the role's tabs as a tablist
-    (hash tabs on one URL)."""
+    (hash tabs on one URL); `sub` is the Roster's sub-view row (Members, Applications: link tabs), its current view."""
     shown = tabs or (TABS if officer else [t for t in TABS if t != 'Settings'])
-    return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 64), meta=[band_facts(raiders)], tabs=TabStrip(shown, tabs_active, tablist=True))
+    views = TabStrip(['Members', 'Applications'], sub).replace('strip-tabs ph-tabs', 'strip-tabs', 1) if sub else ''
+    return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 64), meta=[band_facts(raiders)], tabs=TabStrip(shown, tabs_active, tablist=True) + views)
 
 
 def pad(html: str) -> str:
@@ -100,11 +101,12 @@ def next_raid(officer):
     return top + you + tally
 
 
-def comp_grid(counts: dict) -> str:
+def comp_grid(counts: dict, target: dict | None = None) -> str:
     """Comp against the target (CompTally, overview-role-view compGridRows): per role the seats, who is In, how many short."""
     rows = []
+    target = target or O.COMP_TARGET
     for role in ('tanks', 'healers', 'melee', 'ranged'):
-        have, want, late = counts[role], O.COMP_TARGET[role], counts['late_groups'][role]
+        have, want, late = counts[role], target[role], counts['late_groups'][role]
         tone = 'ok' if have >= want else ('warn' if have + late >= want else 'miss')
         short = want - have
         rows.append((role.title(), f'{late} late' if late else '', [('none', str(want)), (tone, str(have)), (tone, str(short)) if short > 0 else ('none', '&mdash;')]))
@@ -257,17 +259,6 @@ def raid_when(raid):
             f'<span class="gold">in {left.days} days {left.seconds // 3600} h</span>')
 
 
-def cover_rows(raid, kind):
-    per = {'raid': '', 'melee_group': 'per melee group', 'caster_group': 'per caster group'}
-    tone = {'ok': 'ok', 'short': 'warn', 'missing': 'miss'}
-    out = []
-    for r in (x for x in raid['cover'] if x['kind'] == kind):
-        sub = ' &middot; '.join(x for x in [per[r['per']], f"{r['likely']} on a talent we cannot see" if r['likely'] else '',
-                                              f"{r['providers_bench']} on the bench" if r['providers_bench'] else ''] if x)
-        out.append((r['name'], sub, [('none', str(r['need'])), (tone[r['state']], str(r['providers_in'] + r['providers_late']))], icon(r['icon'], 24, '').replace('<img ', f'<img title="{r["name"]}" ', 1)))
-    return out
-
-
 def assignment_rows(encounter, edited=None):
     """Each slot's Row; the `edited` slot (an officer's Edit) reads Done and opens its picker under the Row (AssignmentSlotRow)."""
     rows = []
@@ -294,38 +285,34 @@ def raid_planner(edited=None):
                              Select(f"{you['spec']} &middot; {ROLE_WORD[you['role']]}")) + '</ul>'
     not_signed = [planner_row({**by[r['name']], 'state': None}, planner_sub(by[r['name']]) + ('' if r['discord_linked'] else ' &middot; No Discord linked'))
                   for r in raid['not_signed_raiders']]
-    main = (Section('Your sign-up', own, named=True) + Section('Sign-ups', Plate(roster_groups(raid), 'Sign-ups'), meta=f"{signed}/{raid['size']}")
-            + Section('Not signed up', Rows(not_signed, open_=True, list_=True), action=Button('Ping on Discord', small=True, act=True), meta=str(len(not_signed))))
+    main = (Section('Your sign-up', own, named=True, panel=True)
+            + Section('Sign-ups', f'<div role="region" aria-label="Sign-ups">{roster_groups(raid)}</div>', meta=f"{signed}/{raid['size']}", panel=True, frame='framed')
+            + Section('Not signed up', Rows(not_signed, open_=True, list_=True), action=Button('Ping on Discord', small=True, act=True), meta=str(len(not_signed)), panel=True))
     t = raid['comp_target']
     late = n['late_groups']
-    comp = Tally([('', label, have, t[key], f'{late[key]} late' if late[key] else '') for key, label, have in
-                  [('tanks', 'Tanks', n['tanks']), ('healers', 'Healers', n['healers']), ('melee', 'Melee', n['melee']), ('ranged', 'Ranged', n['ranged'])]])
     bench = [Row(m['name'], planner_sub(m), lead=crest_img(m['class'], 24), title_color=C[m['class']], trail=Button('Swap in', small=True, act=True), link=False, slim=True)
              for m in sorted((by[s['name']] for s in raid['signups'] if s['state'] == 'bench'), key=lambda m: (CLASS_ORDER.index(m['class']), m['name']))]
     enc = raid['assignments']['encounters'][0]
     yours = ', '.join(s['label'] for s in enc['slots'] if any(x['own'] for x in s['names']))
     assign = (Rows(assignment_rows(enc, edited), open_=True, list_=True)
               + ButtonRow(Button('Copy as raid warning', small=True, act=True) + Button('Post to Discord', small=True, act=True)))
-    cover = (Grid(['Need', 'In'], cover_rows(raid, 'buff'), 'Buffs: need against signed-up raiders', 'Buffs')
-             + Grid(['Need', 'In'], cover_rows(raid, 'debuff'), 'Debuffs: need against signed-up raiders', 'Debuffs'))
-    rail = (Section('Comp against the target', comp + f'<div style="padding-top:16px">{Button("Change the target", small=True, act=True)}</div>', meta=f"{raid['zone_name']} default: {sum(t[k] for k in ('tanks', 'healers', 'melee', 'ranged'))} players")
-            + Section('Bench and swaps', Rows(bench, open_=True, list_=True), meta=str(len(bench)))
-            + Section(f"{enc['name']} assignments", assign, meta=f'Your job: {yours}', named=True)
-            + Section('Buff and debuff cover', cover, meta='Signed-up raiders')
-            + Section('Notes', Prose(raid['notes_html'], 'note'), named=True))
+    comp = comp_grid({**n, 'late_groups': late}, t) + f'<div style="padding:16px 20px 8px">{Button("Change the target", small=True, act=True)}</div>'
+    rail = (Section('Comp against the target', comp, panel=True, flush=True)
+            + Section('Bench and swaps', Rows(bench, open_=True, list_=True), meta=str(len(bench)), panel=True)
+            + Section(f"{enc['name']} assignments", assign, meta=f'Your job: {yours}', named=True, panel=True)
+            + Section('Notes', Prose(raid['notes_html'], 'note'), named=True, panel=True))
     actions = ''.join(Button(x, small=True, act=True) for x in ['Edit', 'Lock sign-ups', 'Copy the sign-up list', 'Cancel raid'])
     head = (BackLink(f'&lsaquo; {GUILD} &middot; Raids')
             + PageHeader(raid['title'], ALLIANCE, meta=[Tag('Planned'), raid_when(raid), f"<b class=\"strong\">{signed} of {raid['size']} signed up</b> &middot; {n['in']} In &middot; {n['late']} Late &middot; {n['bench']} Bench"],
                          actions=actions, tabs=TabStrip(TABS, 'Raids')))
     # The guild route's <main> ends 40 px under its view (pages/guild/[...path].astro pb-10).
-    body = f'<div style="padding-bottom:40px">{head + bar + Page("split", main, rail, sticky_rail=True)}</div>'
+    body = f'<div style="padding-bottom:40px">{head + bar + Page("split", main, rail, sticky_rail=True, panels=True)}</div>{GUILD_CSS}'
     return build_page('Raid planner, assignments' if edited else 'Raid planner', body, 'Guild', (guild_raid.VIEWER, you['class'], f"{you['spec']} {you['class'].title()} &middot; 60"))
 
 
 def band_line(viewer: str) -> str:
-    """The guild band's raid line under the head on every tab but the Overview (raids spec 3.4): the sentence with the state
-    word, the four sign-up buttons, the raid's link. Its padding is the built band's own room: the header's 12 px gap above,
-    and below the role line's and the guild view's gaps before the ControlBar."""
+    """The next raid's strip on the Roster only (batch 3 ruling; raids spec 3.4): on a panel under the head, the sentence with
+    the state word, the four sign-up buttons, Open the raid."""
     nxt = F.next_raid(viewer)
     at = guild_time(O.NEXT_RAID_AT)
     _, _, _, role, _, state = ch(viewer)
@@ -333,8 +320,8 @@ def band_line(viewer: str) -> str:
     n = nxt['counts']['in'] + nxt['counts']['late']
     sentence = f"<p class=\"t-small\">{at.strftime('%A')} {clock_label(at)}, you are <strong>{word}</strong> as {GROUP_ROLE_WORD[role]}, {n} of {nxt['size']} signed up.</p>"
     segs = Segmented([(w, w.lower() == state) for w in ('In', 'Late', 'Bench', 'Out')], small=True).replace('<a href="#" role="radio"', '<button type="button" role="radio"').replace('</a>', '</button>')
-    return (f'<div class="pc"><div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;padding:12px 0 25px">'
-            f'{sentence}<span style="display:flex;align-items:center;gap:16px">{segs}{Link(f"{O.ZONE_NAME} &rarr;")}</span></div></div>')
+    return (f'<div class="pc" style="padding-bottom:13px">' + Plate(f'<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;padding:8px 20px">'
+            f'{sentence}<span style="display:flex;align-items:center;gap:16px">{segs}{Link("Open the raid &rsaquo;")}</span></div>') + '</div>')
 
 
 def loot_council():
@@ -371,7 +358,7 @@ def loot_council():
     rail = (Section(f"Candidates for {drop['name']}", pad(Rows(cands, open_=True)), meta='Gain as on the BiS page')
             + Section('Decision record', pad(record), DisclosureButton('Export history')))
     bar = control_bar([('Raid night', seg([(day_label(guild_time(n['at'])), n is night, None, '') for n in nights]))], day_label(guild_time(night['at'])), label='Loot council choices')
-    return build_page('Loot council', _view(hdr(tabs_active='Loot') + band_line(O.OFFICER) + bar + Page('split', main, rail, sticky_rail=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    return build_page('Loot council', _view(hdr(tabs_active='Loot') + bar + Page('split', main, rail, sticky_rail=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
 def _section_body(html):
@@ -462,7 +449,11 @@ def _body(html):
 def _view(html):
     """GuildShell keeps every guild view one screen tall (GUILD_VIEW_MIN), so the footer starts below the fold; the guild page's
     main pads 40 px under it (pages/guild/[...path].astro pb-10)."""
-    return f'<div style="min-height:calc(100vh - 81px);margin-bottom:40px">{html}</div>'
+    return f'<div style="min-height:calc(100vh - 81px);margin-bottom:40px">{html}</div>{GUILD_CSS}'
+
+
+# The built ghost Button (lib/ui/button.ts BUTTON_GHOST): a gold label, no fill, 10 px each side.
+GUILD_CSS = '<style>.btn.ghost{background:transparent;border-color:transparent;color:var(--gold);padding:0 10px}</style>'
 
 
 _PROSE = 'style="font-size:14px;line-height:22px"'
