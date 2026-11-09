@@ -127,6 +127,30 @@ describe('Section', () => {
     expect(body).toContain('ui-surface ui-section-box');
     expect(body).not.toContain('ui-section-rule');
   });
+
+  it('puts the heading inside one Plate as a panel, with its frame and a flush body', () => {
+    const body = html(Section, {
+      title: 'Players',
+      panel: true,
+      frame: 'lead',
+      flush: true,
+      children: text('<table></table>'),
+    });
+    expect(body).toContain('data-region="section-players"');
+    expect(body).toContain('ui-framed ui-lead');
+    expect(body.indexOf('ui-surface')).toBeGreaterThan(body.indexOf('section-players'));
+    expect(body.match(/ui-frame-corner/g)).toHaveLength(4);
+    expect(body.indexOf('ui-section-title')).toBeGreaterThan(body.indexOf('ui-surface'));
+    expect(body).toContain('ui-section-panel-flush');
+    expect(body).not.toContain('ui-section-rule');
+    expect(body).not.toContain('ui-section-box');
+  });
+
+  it('leaves a panel unframed by default', () => {
+    const body = html(Section, { title: 'This pull', panel: true, children: text('<dl></dl>') });
+    expect(body).toContain('ui-section-panel-body');
+    expect(body).not.toContain('ui-framed');
+  });
 });
 
 describe('Row', () => {
