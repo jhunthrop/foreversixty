@@ -11,6 +11,12 @@ System: `design/specs/2026-11-05-web-layout.md`; the shipped premium, checkout a
 4. The guild trial reminder ships in this landing, so the existing guild trial copy (`plans-page-copy.ts` `trialEmail`, "We email you 3 days before the trial ends.") becomes true and is appended to the trial line, as its comment asks.
 5. Order: `land/creator-program` first, then `land/premium-trial`.
 
+## 0B. Coordinator copy rulings, 2026-11-08 (apply in the build, mocks follow)
+
+1. The chooser names the exact first charge for the chosen interval and its date, in one line under the existing sentence: `On 8 Dec 2026 you'll be charged $40 for a year of Premium` (yearly) or `On 8 Dec 2026 you'll be charged $5, then $5 each month` (monthly).
+2. While the founder price is open, a trial start says: `Start before 6 Jan 2027 and the founder price stays for as long as you stay subscribed, even though your first charge comes after the trial.` The build must prove it: the subscription's price is the founder price fixed at checkout (catalog.CheckoutLookupKey at the session's creation), and a test runs a trial that ends after the founder window closes and checks the first invoice is the founder amount.
+3. The reminder email names the plan and interval (`Premium, yearly: $40`); a yearly trial says `you'll be charged $40 for the next 12 months`. The email ends with one line saying why it was sent (`You're getting this because you started a free Premium trial on Forever Sixty.`) and the company name, Commish LLC. Never the owner's name.
+
 ## 1. Files
 
 | What | Path |
