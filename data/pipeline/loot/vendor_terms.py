@@ -1,0 +1,154 @@
+"""Where a vendor or a reputation quartermaster stands, and what a vendor
+charges when it is not gold (feedback 2026-11-09: a BiS line read "Vendor:
+Pix Xizzix" with no hint that the belt costs 100 Tarnished Undermine Reals).
+
+The facts are curated in curated/vendor-terms.json, with provenance: no
+client table names a vendor's subzone or its ItemExtendedCost, and wowhead's
+Forever sold-by rows carry no price for these. `apply_vendor_terms` writes
+them onto loot.json's own sources:
+
+- `place` on a `vendor:<npc_id>` source and on every `rep` source of a
+  curated faction;
+- `item_costs` on a vendor source, priced by each item's gear slot. An item
+  whose slot the file prices nothing for is left unpriced;
+- `reputation`, `faction_id` and `item_standings` on a quartermaster: a
+  vendor every one of whose items needs one faction's standing in the
+  client (items/<class>.json `reputation`). Creeg Bothunk sells the
+  Darkspear Raiders set this way, the Horde mirror of the Theramore
+  Expeditionary Force rep sources, so both sides read the same line.
+"""
+
+from __future__ import annotations
+
+import json
+from collections.abc import Mapping
+from pathlib import Path
+
+from pydantic import BaseModel
+
+from pipeline.curated import parse_sources
+from pipeline.models import ItemReputation, LootFile, LootSource, Source, VendorCost
+
+VENDOR_TERMS = "vendor-terms.json"
+
+
+class VendorTermsError(SystemExit):
+    """curated/vendor-terms.json says something the pipeline will not apply."""
+
+
+class VendorTerm(BaseModel):
+    npc_id: int
+    name: str
+    place: str
+    currency: str | None = None
+    cost_by_slot: dict[str, int] = {}
+    why: str
+
+    model_config = {"extra": "forbid"}
+
+
+class ReputationTerm(BaseModel):
+    faction_id: int
+    name: str
+    place: str
+    why: str
+
+    model_config = {"extra": "forbid"}
+
+
+class VendorTermsFile(BaseModel):
+    sources: list[Source]
+    notes: str
+    vendors: list[VendorTerm] = []
+    reputations: list[ReputationTerm] = []
+
+    model_config = {"extra": "forbid"}
+
+
+def _check(document: VendorTermsFile, where: str) -> None:
+    for vendor in document.vendors:
+        if vendor.cost_by_slot and not vendor.currency:
+            raise VendorTermsError(f"{where} prices {vendor.name} but names no currency")
+        if any(amount <= 0 for amount in vendor.cost_by_slot.values()):
+            raise VendorTermsError(f"{where} gives {vendor.name} a price that is not positive")
+    for terms, key in ((document.vendors, "npc_id"), (document.reputations, "faction_id")):
+        ids = [getattr(term, key) for term in terms]
+        if len(ids) != len(set(ids)):
+            raise VendorTermsError(f"{where} lists one {key} twice")
+
+
+def load_vendor_terms(curated_dir: Path) -> VendorTermsFile:
+    path = curated_dir / VENDOR_TERMS
+    if not path.exists():
+        raise VendorTermsError(f"missing {path}")
+    document = VendorTermsFile(**json.loads(path.read_text(encoding="utf-8")))
+    parse_sources([source.model_dump() for source in document.sources], str(path))
+    if not document.notes.strip():
+        raise VendorTermsError(f"{path} has no notes; say what the terms are for")
+    _check(document, str(path))
+    return document
+
+
+def _vendor_update(source: LootSource, term: VendorTerm, item_slots: Mapping[int, str]) -> dict:
+    costs = {
+        str(item_id): VendorCost(amount=term.cost_by_slot[slot], currency=term.currency or "")
+        for item_id in source.items or []
+        if (slot := item_slots.get(item_id)) in term.cost_by_slot
+    }
+    return {"place": term.place, **({"item_costs": costs} if costs else {})}
+
+
+#: A client requirement that gates nothing (`pipeline.loot.client_rep`).
+UNGATED_STANDING = "neutral"
+
+
+def _quartermaster_update(
+    source: LootSource, item_reputations: Mapping[int, ItemReputation]
+) -> dict:
+    """The reputation a vendor sells for, when every item it sells needs a
+    standing with the same named faction; empty otherwise."""
+    items = source.items or []
+    reputations = [item_reputations.get(item_id) for item_id in items]
+    if not items or any(
+        reputation is None or reputation.standing == UNGATED_STANDING for reputation in reputations
+    ):
+        return {}
+    factions = {(reputation.faction_id, reputation.faction_name) for reputation in reputations}
+    if len(factions) != 1:
+        return {}
+    ((faction_id, faction_name),) = factions
+    if not faction_name:
+        return {}
+    return {
+        "faction_id": faction_id,
+        "reputation": faction_name,
+        "item_standings": {
+            str(item_id): reputation.standing
+            for item_id, reputation in zip(items, reputations, strict=True)
+        },
+    }
+
+
+def apply_vendor_terms(
+    document: LootFile,
+    terms: VendorTermsFile,
+    item_slots: Mapping[int, str],
+    item_reputations: Mapping[int, ItemReputation],
+) -> LootFile:
+    """`document` with each curated vendor's and reputation's place, each
+    curated vendor's non-gold prices, and each quartermaster's reputation.
+    `item_slots` is item id -> gear slot; `item_reputations` is item id ->
+    its client reputation requirement."""
+    vendors = {term.npc_id: term for term in terms.vendors}
+    reputations = {term.faction_id: term for term in terms.reputations}
+    sources = []
+    for source in document.sources:
+        if source.kind == "vendor":
+            update = _quartermaster_update(source, item_reputations)
+            if source.npc_id in vendors:
+                update |= _vendor_update(source, vendors[source.npc_id], item_slots)
+            source = source.model_copy(update=update) if update else source
+        elif source.kind == "rep" and source.faction_id in reputations:
+            source = source.model_copy(update={"place": reputations[source.faction_id].place})
+        sources.append(source)
+    return document.model_copy(update={"sources": sources})

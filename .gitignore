@@ -125,6 +125,9 @@ data/builds/*/raw/wowhead/*
 !data/builds/*/raw/client/
 data/builds/*/raw/client/*
 !data/builds/*/raw/client/loot-classification.json
+# feedback 2026-11-09: the client's recipe chains for Forever-new crafts
+# (pipeline.client_crafted), written by `loot` and read by `loot-merge`.
+!data/builds/*/raw/client/crafted-recipes.json
 data/.icon-cache/
 
 # git worktrees for parallel plan execution

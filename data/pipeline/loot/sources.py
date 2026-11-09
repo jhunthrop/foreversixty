@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
+from collections.abc import Mapping
 from dataclasses import dataclass
 
 from pipeline.classic_quest_levels import item_level_proxy
@@ -726,7 +727,9 @@ def apply_quest_opens_gate(
     return document.model_copy(update={"quests": quests})
 
 
-def item_effective_gate(document: LootFile, item_id: int) -> str | None:
+def item_effective_gate(
+    document: LootFile, item_id: int, item_gates: Mapping[int, str] | None = None
+) -> str | None:
     """The SAME "does this item have even one un-gated way to get it"
     check `apply_quest_opens_gate`'s own `item_gate` closure runs
     mid-fixed-point-loop, but over the FINAL, fully-resolved `document`
@@ -750,7 +753,14 @@ def item_effective_gate(document: LootFile, item_id: int) -> str | None:
         if source.kind != "quest" and item_id in source_item_ids(source)
     ]
     ways += [entry.opens or "" for entry in document.quests.get(str(item_id), [])]
-    if not ways or any(not way for way in ways):
+    if not ways:
+        # No source in loot.json at all. A closed content-phase reagent
+        # gate (curated/content-phases.json) still says when it can be
+        # had: a reagent that only comes from disenchanting raid loot
+        # (Malleable Essence of Nature, 274030) has no source here but
+        # gates every craft that needs it.
+        return (item_gates or {}).get(item_id)
+    if any(not way for way in ways):
         return None
     return sorted(set(ways))[0]
 
@@ -794,7 +804,9 @@ def _most_restrictive_gate(gates: list[str]) -> str | None:
     return max(named, key=_opens_rank)
 
 
-def _crafted_item_gate(document: LootFile, recipe: ClassicDbCraftedRecipe) -> str | None:
+def _crafted_item_gate(
+    document: LootFile, recipe: ClassicDbCraftedRecipe, item_gates: Mapping[int, str]
+) -> str | None:
     """`opens` for one crafted item, per this lane's own brief: the most
     restrictive of (a) its recipe item(s) -- `None` outright when
     trainer-taught (`recipe_item_ids` empty, always open) -- and (b) its
@@ -803,7 +815,9 @@ def _crafted_item_gate(document: LootFile, recipe: ClassicDbCraftedRecipe) -> st
     exactly `item_effective_gate`'s own "no source" case; a reagent
     obtainable from even one un-gated place is likewise not a gate)."""
     if recipe.recipe_item_ids:
-        recipe_ways = [item_effective_gate(document, item_id) for item_id in recipe.recipe_item_ids]
+        recipe_ways = [
+            item_effective_gate(document, item_id, item_gates) for item_id in recipe.recipe_item_ids
+        ]
         recipe_gate = (
             None
             if any(way is None for way in recipe_ways)
@@ -811,13 +825,17 @@ def _crafted_item_gate(document: LootFile, recipe: ClassicDbCraftedRecipe) -> st
         )
     else:
         recipe_gate = None  # trainer-taught: no item stands in the way at all
-    reagent_gates = [item_effective_gate(document, item_id) for item_id in recipe.reagent_item_ids]
+    reagent_gates = [
+        item_effective_gate(document, item_id, item_gates) for item_id in recipe.reagent_item_ids
+    ]
     reagent_gate = _most_restrictive_gate(reagent_gates)
     return _most_restrictive_gate([recipe_gate, reagent_gate])
 
 
 def apply_crafted_opens_gate(
-    document: LootFile, classic_crafted: dict[int, ClassicDbCraftedRecipe]
+    document: LootFile,
+    classic_crafted: dict[int, ClassicDbCraftedRecipe],
+    item_gates: Mapping[int, str] | None = None,
 ) -> LootFile:
     """Splits each `crafted:<profession>` `LootSource` into its ungated
     items (kept on the original id, `opens` still unset) and, for every
@@ -841,7 +859,12 @@ def apply_crafted_opens_gate(
     id, or a Classic id classic-db's own dump names no create-item spell
     for -- `pipeline.audit.check_crafted`'s own finding) is left in its
     original, ungated bucket -- never invented into a gate.
+
+    `item_gates` is the closed content-phase reagent gates (item id ->
+    `opens`, `ContentPhases.closed_reagent_gates`), read for a recipe or
+    reagent item loot.json names no source for (`item_effective_gate`).
     """
+    gates = item_gates or {}
     if not classic_crafted:
         return document
     new_sources: list[LootSource] = []
@@ -854,7 +877,7 @@ def apply_crafted_opens_gate(
         ungated_items: list[int] = []
         for item_id in source.items:
             recipe = classic_crafted.get(item_id)
-            gate = _crafted_item_gate(document, recipe) if recipe is not None else None
+            gate = _crafted_item_gate(document, recipe, gates) if recipe is not None else None
             if gate:
                 gated[(source.profession or "", gate)].add(item_id)
                 changed = True

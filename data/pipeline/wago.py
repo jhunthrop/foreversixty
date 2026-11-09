@@ -27,6 +27,9 @@ TABLES = [
     "SpellName",
     "Spell",
     "SpellEffect",
+    # A craft spell's reagents (pipeline.client_crafted): a Forever-new
+    # craft is gated by its reagents' gates, as a classic-db one is.
+    "SpellReagents",
     "SpellDuration",
     # The proc, radius and range tokens in a description ($h, $n, $u, $a1, $r).
     "SpellAuraOptions",
