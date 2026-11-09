@@ -16,9 +16,11 @@
     specLeaders,
     topParses,
     type LandingRow,
+    type SpecLeaders,
   } from '../../lib/rankings/landing';
   import type { RankHead } from '../../lib/ui/rank-list';
   import RankList from '../ui/RankList.svelte';
+  import RankingsEncounters from './RankingsEncounters.svelte';
   import RankRow from '../ui/RankRow.svelte';
   import Row from '../ui/Row.svelte';
   import Ruled from '../ui/Ruled.svelte';
@@ -29,6 +31,7 @@
     encounters,
     phase,
     hrefFor,
+    specHref,
     onupdated,
   }: {
     /** The ranked encounters, most kills first. */
@@ -36,6 +39,8 @@
     /** The board's phase filter ('' for every phase). */
     phase: string;
     hrefFor: (slug: string) => string;
+    /** A spec's board on an encounter (a leader row's link). */
+    specHref: (slug: string, classSlug: string, specName: string) => string;
     /** The newest board's updated_at, once one answers. */
     onupdated?: (iso: string) => void;
   } = $props();
@@ -43,6 +48,8 @@
   type Board = { status: 'loading' } | { status: 'failed' } | { status: 'ready'; page: RankingsPage };
 
   const shown = $derived(encounters.slice(0, LANDING_ENCOUNTERS));
+  /** The encounters past the busiest few: a plain list under them, so every board is a link away. */
+  const more = $derived(encounters.slice(LANDING_ENCOUNTERS));
   const leaderAt = $derived(leaderEncounter(encounters));
   let boards = $state<Record<string, Board>>({});
   let hps = $state<Board>({ status: 'loading' });
@@ -85,56 +92,55 @@
     };
   });
 
-  const heads: RankHead[] = [
+  const headsOf = (first: string, amount: string): RankHead[] => [
     { label: '#' },
     { label: '' },
-    { label: 'Character' },
+    { label: first },
     { label: '' },
-    { label: 'Amount', align: 'end' },
+    { label: amount, align: 'end' },
     { label: rankingsCopy.percentileLabel, align: 'end' },
     { label: 'Date', align: 'end' },
     { label: '' },
   ];
+  const PARSE_HEADS = headsOf('Character', 'DPS');
 
   const leaderBoard = $derived(leaderAt === null ? undefined : boards[leaderAt.slug]);
-  const leaders = $derived.by((): LandingRow[] | null => {
-    if (leaderBoard?.status !== 'ready' || hps.status === 'loading') return null;
-    return specLeaders(leaderBoard.page, hps.status === 'ready' ? hps.page : null);
+  const leaders = $derived.by((): SpecLeaders | null => {
+    if (leaderAt === null || leaderBoard?.status !== 'ready' || hps.status === 'loading') return null;
+    const slug = leaderAt.slug;
+    return specLeaders(leaderBoard.page, hps.status === 'ready' ? hps.page : null, (cls, spec) =>
+      specHref(slug, cls, spec),
+    );
   });
 </script>
 
-{#snippet rows(list: readonly LandingRow[], testid: string, withHeads: boolean)}
-  <RankList
-    heads={withHeads ? heads : undefined}
-    figures={2}
-    figureWidth={72}
-    links={0}
-    compact
-    phoneFigures={1}
-    {testid}
-  >
-    {#each list as view (view.key)}
-      <RankRow
-        rank={view.rank}
-        rankColor={view.rankColor}
-        name={view.name}
-        href={view.href}
-        classSlug={view.classSlug}
-        sub={view.sub}
-        fraction={view.fraction}
-        figures={view.figures}
-        gap={view.gap}
-      >
-        {#snippet lead()}<img
-            src={classCrestSrc(view.classSlug)}
-            alt=""
-            width="28"
-            height="28"
-            class="rounded-full"
-          />{/snippet}
-      </RankRow>
-    {/each}
-  </RankList>
+{#snippet rows(list: readonly LandingRow[], testid: string, heads: readonly RankHead[] | undefined)}
+  <!-- clear of the panel's framed corners on a phone -->
+  <div class="pb-2 max-md:pr-[6px]">
+    <RankList {heads} figures={2} figureWidth={72} links={0} compact phoneFigures={1} {testid}>
+      {#each list as view (view.key)}
+        <RankRow
+          rank={view.rank}
+          rankColor={view.rankColor}
+          name={view.name}
+          href={view.href}
+          classSlug={view.classSlug}
+          sub={view.sub}
+          fraction={view.fraction}
+          figures={view.figures}
+          gap={view.gap}
+        >
+          {#snippet lead()}<img
+              src={classCrestSrc(view.classSlug)}
+              alt=""
+              width="28"
+              height="28"
+              class="rounded-full"
+            />{/snippet}
+        </RankRow>
+      {/each}
+    </RankList>
+  </div>
 {/snippet}
 
 {#snippet line(text: string, testid: string)}
@@ -155,7 +161,7 @@
           >
             {#snippet titleContent()}<span class="text-gold">{encounter.name}</span>{/snippet}
             {#snippet trail()}<span class="text-strong text-[14px] tabular-nums"
-                >{encounterPickerCopy.ranked(encounter.kills)}</span
+                >{encounterPickerCopy.ranked(encounter.kills)} <span class="text-gold">›</span></span
               >{/snippet}
           </Row>
         </div>
@@ -168,10 +174,20 @@
         {:else if board.page.rows.length === 0}
           {@render line(encounterPickerCopy.topNone, `rankings-top-${encounter.slug}`)}
         {:else}
-          {@render rows(topParses(board.page), `rankings-top-${encounter.slug}`, index === 0)}
+          {@render rows(
+            topParses(board.page),
+            `rankings-top-${encounter.slug}`,
+            index === 0 ? PARSE_HEADS : undefined,
+          )}
         {/if}
       </div>
     {/each}
+    {#if more.length > 0}
+      <div>
+        <p class="text-label text-muted px-5 pt-3 font-bold max-md:px-[14px]">{encounterPickerCopy.more}</p>
+        <RankingsEncounters encounters={more} {hrefFor} testid="rankings-more" />
+      </div>
+    {/if}
   </Ruled>
 </Section>
 
@@ -186,13 +202,26 @@
   >
     {#if leaders === null && (leaderBoard?.status ?? 'loading') !== 'failed'}
       <div class="px-5 pb-3"><Skeleton lines={4} rowHeight="h-9" testid="rankings-landing-skeleton" /></div>
-    {:else if leaders === null || leaders.length === 0}
+    {:else if leaders === null || leaders.damage.length + leaders.healing.length === 0}
       {@render line(
         leaders === null ? encounterPickerCopy.topFailed : encounterPickerCopy.topNone,
         'rankings-leaders-line',
       )}
     {:else}
-      {@render rows(leaders, 'rankings-leaders-list', true)}
+      {#if leaders.damage.length > 0}
+        {@render rows(
+          leaders.damage,
+          'rankings-leaders-damage',
+          headsOf(encounterPickerCopy.damageHead, 'DPS'),
+        )}
+      {/if}
+      {#if leaders.healing.length > 0}
+        {@render rows(
+          leaders.healing,
+          'rankings-leaders-healing',
+          headsOf(encounterPickerCopy.healingHead, 'HPS'),
+        )}
+      {/if}
     {/if}
   </Section>
 {/if}

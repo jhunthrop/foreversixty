@@ -1,6 +1,6 @@
 // web/tests/e2e/rankings-encounter-picker.spec.ts
 // Signed out, a bare /rankings is the encounter list (design/specs/2026-11-07-logs-reports.md
-// section 7, decision K4): "Choose an encounter", one row per encounter with ranked kills (GET
+// section 7, decision K4): "Encounters", one row per encounter with ranked kills (GET
 // /v1/rankings/encounters, most kills first), its zone, raid size and kill count, each a link to its
 // board. Signed in it opens the encounter the character last killed (rankings.spec.ts). When nothing
 // is ranked at all the list says so, says what fills it, and offers Upload a log.
@@ -40,7 +40,7 @@ test('signed out, bare /rankings lists the ranked encounters, each a link to its
   await expect(list).toBeVisible();
   await expect(page).toHaveURL(/\/rankings$/);
   await expect(page.getByTestId('page-title')).toHaveText('Rankings');
-  await expect(page.getByTestId('encounter-picker').locator('h2')).toHaveText('Choose an encounter');
+  await expect(page.getByTestId('encounter-picker').locator('h2')).toHaveText('Encounters');
   const links = list.getByTestId('rankings-encounter');
   await expect(links).toHaveCount(2);
   await expect(links.nth(0)).toContainText('Warden Kelthas');
@@ -134,12 +134,31 @@ test("the landing shows each encounter's top three and the spec leaders on the r
 
   const top = page.getByTestId('rankings-top-onyxia');
   await expect(top.locator('li')).toHaveCount(3);
-  await expect(top.locator('li').first()).toContainText('Reglitch');
-  await expect(top.locator('li').first()).toContainText('Shadow Priest');
+  await expect(top.locator('li').first()).toContainText('Vashrel');
+  await expect(top.locator('li').first()).toContainText('Combat Rogue');
+  // Each boss reads its own board: Warden Kelthas' top three are not Onyxia's.
+  await expect(page.getByTestId('rankings-top-warden-kelthas').locator('li').first()).toContainText(
+    'Reglitch',
+  );
   await expect(top.getByTestId('ranking-value').first()).toHaveAttribute('href', '/reports/report1?fight=1');
   await expect(page.locator('main header')).toContainText('Updated 13 Dec');
   const leaders = page.getByTestId('rankings-leaders');
   await expect(leaders.locator('h2')).toHaveText('Leaders by spec');
   await expect(leaders).toContainText('Onyxia');
-  await expect(page.getByTestId('rankings-leaders-list').locator('li')).toHaveCount(3);
+  // Damage by DPS, healing by HPS, each spec once, numbered within its list, the spec leading the row.
+  const damage = page.getByTestId('rankings-leaders-damage');
+  await expect(damage.locator('li')).toHaveCount(8);
+  await expect(damage.getByTestId('rank-rank')).toHaveText(['1', '2', '3', '4', '5', '6', '7', '8']);
+  await expect(damage.getByTestId('rank-name').first()).toHaveText('Combat Rogue');
+  await expect(damage.getByTestId('rank-name').first()).toHaveAttribute(
+    'href',
+    /\/rankings\/onyxia\?class=rogue&spec=Combat/,
+  );
+  const healing = page.getByTestId('rankings-leaders-healing');
+  await expect(healing.getByTestId('rank-name')).toHaveText([
+    'Holy Priest',
+    'Restoration Shaman',
+    'Holy Paladin',
+    'Restoration Druid',
+  ]);
 });

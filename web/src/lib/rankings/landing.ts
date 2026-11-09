@@ -4,14 +4,14 @@
 // the raid boss with the most ranked kills. Healers lead by HPS, every other spec by DPS, as a
 // raider reads a board. Pure functions over the boards the page reads; no record is made up, so
 // a spec with no ranked kill is simply not on the list.
-import { SPECS, type SpecRole } from '../sim/specs';
+import { SPECS, type Spec, type SpecRole } from '../sim/specs';
 import type { RankFigure } from '../ui/rank-list';
 import type { RankedEncounter, RankingRow, RankingsPage } from './api';
 import { rankingsCopy } from './copy';
 import { percentileLabel, rankRowView, type RankRowView } from './rank-row-view';
 
-/** How many encounters the landing reads a board for, most kills first. */
-export const LANDING_ENCOUNTERS = 8;
+/** How many encounters the landing shows with their top parses, most kills first; the rest are a list. */
+export const LANDING_ENCOUNTERS = 4;
 /** The parses shown under each encounter. */
 export const TOP_PARSES = 3;
 /** The smallest raid: a boss at this size or over is a raid boss. */
@@ -30,18 +30,22 @@ export function leaderEncounter(encounters: readonly RankedEncounter[]): RankedE
   return encounters.find((encounter) => (encounter.size ?? 0) >= RAID_SIZE) ?? encounters[0] ?? null;
 }
 
-/** A spec's role, from its class and spec name; DPS when the pair is unknown. */
-export function specRole(className: string, specName: string): SpecRole {
+/** The spec a ranking row names, by its class and spec name. */
+function specOf(className: string, specName: string): Spec | undefined {
   const classSlug = className.toLowerCase();
-  const spec = SPECS.find(
+  return SPECS.find(
     (entry) => entry.class_slug === classSlug && entry.name.toLowerCase() === specName.toLowerCase(),
   );
-  return spec?.role ?? 'dps';
+}
+
+/** A spec's role, from its class and spec name; DPS when the pair is unknown. */
+export function specRole(className: string, specName: string): SpecRole {
+  return specOf(className, specName)?.role ?? 'dps';
 }
 
 const UNIT: Readonly<Record<LandingMetric, string>> = { dps: 'DPS', hps: 'HPS' };
 
-/** A board row with the value (and its unit, the metrics mix on the leaders list) and the percentile. */
+/** A board row with the value (its column head names the metric) and the percentile. */
 export function landingRow(
   row: RankingRow,
   board: Pick<RankingsPage, 'total' | 'rows'>,
@@ -55,7 +59,8 @@ export function landingRow(
   });
   const value = view.figures[0];
   const figures: RankFigure[] = [
-    ...(value === undefined ? [] : [{ ...value, unit: UNIT[metric] }]),
+    // The column head names the metric (DPS, HPS): the figure carries no unit.
+    ...(value === undefined ? [] : [{ ...value, unit: undefined }]),
     { value: percentileLabel(row.rank, board.total), label: rankingsCopy.percentileLabel },
   ];
   return { ...view, key: row.player.key, figures };
@@ -69,26 +74,60 @@ export function topParses(
   return board.rows.slice(0, count).map((row) => landingRow(row, board, 'dps'));
 }
 
+/** The spec leaders, in two groups: damage by DPS, healing by HPS. */
+export interface SpecLeaders {
+  damage: LandingRow[];
+  healing: LandingRow[];
+}
+
+/** A spec's full name as a player says it ("Frost Mage"), from its class and spec. */
+export function specFullName(className: string, specName: string): string {
+  return specOf(className, specName)?.full_name ?? `${specName} ${className}`;
+}
+
+/** One group: each spec's best row on the board, best first, numbered 1 to N within the group, the
+ *  spec leading the row and the player under it; the row opens that spec's board on the boss. */
+function group(
+  board: Pick<RankingsPage, 'total' | 'rows'>,
+  metric: LandingMetric,
+  healers: boolean,
+  specHref: (classSlug: string, specName: string) => string,
+): LandingRow[] {
+  const best = new Map<string, RankingRow>();
+  for (const row of board.rows) {
+    if ((specRole(row.player.class, row.player.spec) === 'healer') !== healers) continue;
+    const key = `${row.player.class.toLowerCase()}/${row.player.spec}`;
+    if (!best.has(key)) best.set(key, row);
+  }
+  return [...best.values()]
+    .sort((a, b) => b.value - a.value)
+    .map((row, index) => {
+      const view = landingRow(row, board, metric);
+      const player = view.name;
+      return {
+        ...view,
+        rank: String(index + 1),
+        name: specFullName(row.player.class, row.player.spec),
+        href: specHref(row.player.class.toLowerCase(), row.player.spec),
+        sub: [player, row.guild?.name]
+          .filter((part): part is string => part !== undefined && part !== '')
+          .join(' · '),
+      };
+    });
+}
+
 /**
- * The best row of every spec on the boss: healers from the HPS board, everyone else from the DPS
- * board, each at its rank on its own board. Ordered by class, then spec, the way a raid sheet
- * reads. Only the boards' first pages are read, which hold every spec's best on today's boards.
+ * The best row of every spec on the boss: the damage specs (tanks among them, as a log site ranks
+ * them) from the DPS board, the healers from the HPS board. Only the boards' first pages are read,
+ * which hold every spec's best on today's boards.
  */
 export function specLeaders(
   dps: Pick<RankingsPage, 'total' | 'rows'>,
   hps: Pick<RankingsPage, 'total' | 'rows'> | null,
-): LandingRow[] {
-  const leaders = new Map<string, LandingRow>();
-  const take = (board: Pick<RankingsPage, 'total' | 'rows'>, metric: LandingMetric, healers: boolean) => {
-    for (const row of board.rows) {
-      const isHealer = specRole(row.player.class, row.player.spec) === 'healer';
-      if (isHealer !== healers) continue;
-      const key = `${row.player.class.toLowerCase()}/${row.player.spec}`;
-      if (!leaders.has(key)) leaders.set(key, landingRow(row, board, metric));
-    }
+  specHref: (classSlug: string, specName: string) => string,
+): SpecLeaders {
+  return {
+    damage: group(dps, 'dps', false, specHref),
+    healing: hps === null ? [] : group(hps, 'hps', true, specHref),
   };
-  take(dps, 'dps', false);
-  if (hps !== null) take(hps, 'hps', true);
-  const order = (row: LandingRow) => row.classSlug;
-  return [...leaders.values()].sort((a, b) => order(a).localeCompare(order(b)));
 }

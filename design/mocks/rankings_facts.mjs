@@ -57,7 +57,10 @@ export default {
   answer_unranked: answerOf(board(YOU_Q, { unranked: true })),
   // The landing (RankingsLanding.svelte): each encounter's top three and the spec leaders, from the stub's every-class board
   // (the stub answers every encounter and both metrics with it).
-  landing: (() => { const b = board('metric=dps'); return { top: topParses(b), leaders: specLeaders(b, board('metric=hps')) }; })(),
+  landing: {
+    top: Object.fromEntries([ONYXIA, KELTHAS].map((e) => [e.slug, topParses(board('encounter=' + e.slug + '&metric=dps'))])),
+    leaders: specLeaders(board('encounter=onyxia&metric=dps'), board('encounter=onyxia&metric=hps'), (c, s) => '/rankings/onyxia?class=' + c + '&spec=' + s),
+  },
   guilds: guilds.map((g) => guildRowView(g, { kind: 'speed', best: guilds[0].value })),
   own_key: OWN_KEY,
   legend: RANK_LEGEND,
@@ -74,6 +77,8 @@ export default {
     boardEmpty: rankingsEmptyCopy.board('Fury Warrior', 'Warden Kelthas'),
     noneYet: encounterPickerCopy.noneYet,
     leadersHeading: encounterPickerCopy.leadersHeading,
+    damageHead: encounterPickerCopy.damageHead,
+    healingHead: encounterPickerCopy.healingHead,
   },
 };`;
 const dir = mkdtempSync(join(tmpdir(), "rankings-facts-"));

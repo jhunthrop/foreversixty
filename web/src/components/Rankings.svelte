@@ -525,7 +525,14 @@
     {/snippet}
 
     {#if isIndex && aimed && encounters.length > 0}
-      <RankingsLanding {encounters} phase={state.phase} hrefFor={encounterHref} onupdated={stampUpdated} />
+      <RankingsLanding
+        {encounters}
+        phase={state.phase}
+        hrefFor={encounterHref}
+        specHref={(slug, cls, spec) =>
+          urlFor({ ...state, board: 'character', class: cls, spec, page: 1 }, slug)}
+        onupdated={stampUpdated}
+      />
     {:else if isIndex}
       <Section title={encounterPickerCopy.heading} panel frame="lead" flush testid="encounter-picker">
         {#if !aimed}

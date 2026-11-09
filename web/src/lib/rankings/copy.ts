@@ -2,7 +2,7 @@
 // Every visible string the /rankings encounter picker uses, in the site's own honest-copy
 // voice: never demands a choice the visitor cannot make.
 export const encounterPickerCopy = {
-  heading: 'Choose an encounter',
+  heading: 'Encounters',
   noneYet: 'No boss kills are ranked yet.',
   /** What fills it: the line under the empty sentence. */
   fill: 'A boss gets its board when the first log of its kill is uploaded.',
@@ -17,6 +17,11 @@ export const encounterPickerCopy = {
   topFailed: 'Top parses did not load.',
   topNone: 'No ranked kill on this board yet.',
   leadersHeading: 'Leaders by spec',
+  /** The leaders' two lists, by what each spec is ranked on. */
+  damageHead: 'Damage',
+  healingHead: 'Healing',
+  /** Over the encounters past the busiest few. */
+  more: 'More encounters',
 } as const;
 
 /** The home page's Rankings panel (spec 2026-09-23 §2 item 3): the top five guilds by

@@ -2080,184 +2080,522 @@
   "text": "Not ranked yet on Onyxia. Upload a log of a kill to get on the board."
  },
  "landing": {
-  "top": [
-   {
-    "rank": "1",
-    "rankColor": "var(--color-parse-gold)",
-    "name": "Reglitch",
-    "href": "/character/us/normal/reglitch",
-    "classSlug": "priest",
-    "sub": "Shadow Priest",
-    "fraction": 1,
-    "figures": [
-     {
-      "value": "888",
-      "label": "DPS",
-      "href": "/reports/report1?fight=1",
-      "title": "Open the kill in its report",
-      "testid": "ranking-value",
-      "unit": "DPS"
+  "top": {
+   "onyxia": [
+    {
+     "rank": "1",
+     "rankColor": "var(--color-parse-gold)",
+     "name": "Vashrel",
+     "href": "/character/us/normal/vashrel",
+     "classSlug": "rogue",
+     "sub": "Combat Rogue",
+     "fraction": 1,
+     "figures": [
+      {
+       "value": "888",
+       "label": "DPS",
+       "href": "/reports/report1?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "100",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "8 Nov",
+      "label": "Date"
      },
-     {
-      "value": "100",
-      "label": "Percentile"
-     }
-    ],
-    "gap": {
-     "text": "8 Nov",
-     "label": "Date"
+     "links": [],
+     "key": "us/normal/vashrel"
     },
-    "links": [],
-    "key": "us/normal/reglitch"
-   },
-   {
-    "rank": "2",
-    "rankColor": "var(--color-parse-blue)",
-    "name": "Thorgrim Ashveil",
-    "href": "/character/us/normal/thorgrim-ashveil",
-    "classSlug": "warrior",
-    "sub": "Olympus XXVII · Fury Warrior",
-    "fraction": 0.9864864864864865,
-    "figures": [
-     {
-      "value": "876",
-      "label": "DPS",
-      "href": "/reports/report2?fight=1",
-      "title": "Open the kill in its report",
-      "testid": "ranking-value",
-      "unit": "DPS"
+    {
+     "rank": "2",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Thorgrim Ashveil",
+     "href": "/character/us/normal/thorgrim-ashveil",
+     "classSlug": "warrior",
+     "sub": "Olympus XXVII · Fury Warrior",
+     "fraction": 0.9864864864864865,
+     "figures": [
+      {
+       "value": "876",
+       "label": "DPS",
+       "href": "/reports/report2?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "7 Nov",
+      "label": "Date"
      },
-     {
-      "value": "66",
-      "label": "Percentile"
-     }
-    ],
-    "gap": {
-     "text": "7 Nov",
-     "label": "Date"
+     "links": [],
+     "key": "us/normal/thorgrim-ashveil"
     },
-    "links": [],
-    "key": "us/normal/thorgrim-ashveil"
-   },
-   {
-    "rank": "3",
-    "rankColor": "var(--color-parse-green)",
-    "name": "Emberlyn",
-    "href": "/character/us/normal/emberlyn",
-    "classSlug": "mage",
-    "sub": "Frost Mage",
-    "fraction": 0.972972972972973,
-    "figures": [
-     {
-      "value": "864",
-      "label": "DPS",
-      "href": "/reports/report3?fight=1",
-      "title": "Open the kill in its report",
-      "testid": "ranking-value",
-      "unit": "DPS"
+    {
+     "rank": "3",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Ysolde",
+     "href": "/character/us/normal/ysolde",
+     "classSlug": "mage",
+     "sub": "Fire Mage",
+     "fraction": 0.972972972972973,
+     "figures": [
+      {
+       "value": "864",
+       "label": "DPS",
+       "href": "/reports/report3?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "6 Nov",
+      "label": "Date"
      },
-     {
-      "value": "33",
-      "label": "Percentile"
-     }
-    ],
-    "gap": {
-     "text": "6 Nov",
-     "label": "Date"
-    },
-    "links": [],
-    "key": "us/normal/emberlyn"
-   }
-  ],
-  "leaders": [
-   {
-    "rank": "3",
-    "rankColor": "var(--color-parse-green)",
-    "name": "Emberlyn",
-    "href": "/character/us/normal/emberlyn",
-    "classSlug": "mage",
-    "sub": "Frost Mage",
-    "fraction": 0.972972972972973,
-    "figures": [
-     {
-      "value": "864",
-      "label": "DPS",
-      "href": "/reports/report3?fight=1",
-      "title": "Open the kill in its report",
-      "testid": "ranking-value",
-      "unit": "DPS"
+     "links": [],
+     "key": "us/normal/ysolde"
+    }
+   ],
+   "warden-kelthas": [
+    {
+     "rank": "1",
+     "rankColor": "var(--color-parse-gold)",
+     "name": "Reglitch",
+     "href": "/character/us/normal/reglitch",
+     "classSlug": "priest",
+     "sub": "Shadow Priest",
+     "fraction": 1,
+     "figures": [
+      {
+       "value": "888",
+       "label": "DPS",
+       "href": "/reports/report1?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "100",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "8 Nov",
+      "label": "Date"
      },
-     {
-      "value": "33",
-      "label": "Percentile"
-     }
-    ],
-    "gap": {
-     "text": "6 Nov",
-     "label": "Date"
+     "links": [],
+     "key": "us/normal/reglitch"
     },
-    "links": [],
-    "key": "us/normal/emberlyn"
-   },
-   {
-    "rank": "1",
-    "rankColor": "var(--color-parse-gold)",
-    "name": "Reglitch",
-    "href": "/character/us/normal/reglitch",
-    "classSlug": "priest",
-    "sub": "Shadow Priest",
-    "fraction": 1,
-    "figures": [
-     {
-      "value": "888",
-      "label": "DPS",
-      "href": "/reports/report1?fight=1",
-      "title": "Open the kill in its report",
-      "testid": "ranking-value",
-      "unit": "DPS"
+    {
+     "rank": "2",
+     "rankColor": "var(--color-parse-blue)",
+     "name": "Thorgrim Ashveil",
+     "href": "/character/us/normal/thorgrim-ashveil",
+     "classSlug": "warrior",
+     "sub": "Olympus XXVII · Fury Warrior",
+     "fraction": 0.9864864864864865,
+     "figures": [
+      {
+       "value": "876",
+       "label": "DPS",
+       "href": "/reports/report2?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "66",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "7 Nov",
+      "label": "Date"
      },
-     {
-      "value": "100",
-      "label": "Percentile"
-     }
-    ],
-    "gap": {
-     "text": "8 Nov",
-     "label": "Date"
+     "links": [],
+     "key": "us/normal/thorgrim-ashveil"
     },
-    "links": [],
-    "key": "us/normal/reglitch"
-   },
-   {
-    "rank": "2",
-    "rankColor": "var(--color-parse-blue)",
-    "name": "Thorgrim Ashveil",
-    "href": "/character/us/normal/thorgrim-ashveil",
-    "classSlug": "warrior",
-    "sub": "Olympus XXVII · Fury Warrior",
-    "fraction": 0.9864864864864865,
-    "figures": [
-     {
-      "value": "876",
-      "label": "DPS",
-      "href": "/reports/report2?fight=1",
-      "title": "Open the kill in its report",
-      "testid": "ranking-value",
-      "unit": "DPS"
+    {
+     "rank": "3",
+     "rankColor": "var(--color-parse-green)",
+     "name": "Emberlyn",
+     "href": "/character/us/normal/emberlyn",
+     "classSlug": "mage",
+     "sub": "Frost Mage",
+     "fraction": 0.972972972972973,
+     "figures": [
+      {
+       "value": "864",
+       "label": "DPS",
+       "href": "/reports/report3?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "33",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "6 Nov",
+      "label": "Date"
      },
-     {
-      "value": "66",
-      "label": "Percentile"
-     }
-    ],
-    "gap": {
-     "text": "7 Nov",
-     "label": "Date"
+     "links": [],
+     "key": "us/normal/emberlyn"
+    }
+   ]
+  },
+  "leaders": {
+   "damage": [
+    {
+     "rank": "1",
+     "rankColor": "var(--color-parse-gold)",
+     "name": "Combat Rogue",
+     "href": "/rankings/onyxia?class=rogue&spec=Combat",
+     "classSlug": "rogue",
+     "sub": "Vashrel",
+     "fraction": 1,
+     "figures": [
+      {
+       "value": "888",
+       "label": "DPS",
+       "href": "/reports/report1?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "100",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "8 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/vashrel"
     },
-    "links": [],
-    "key": "us/normal/thorgrim-ashveil"
-   }
-  ]
+    {
+     "rank": "2",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Fury Warrior",
+     "href": "/rankings/onyxia?class=warrior&spec=Fury",
+     "classSlug": "warrior",
+     "sub": "Thorgrim Ashveil · Olympus XXVII",
+     "fraction": 0.9864864864864865,
+     "figures": [
+      {
+       "value": "876",
+       "label": "DPS",
+       "href": "/reports/report2?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "7 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/thorgrim-ashveil"
+    },
+    {
+     "rank": "3",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Fire Mage",
+     "href": "/rankings/onyxia?class=mage&spec=Fire",
+     "classSlug": "mage",
+     "sub": "Ysolde",
+     "fraction": 0.972972972972973,
+     "figures": [
+      {
+       "value": "864",
+       "label": "DPS",
+       "href": "/reports/report3?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "6 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/ysolde"
+    },
+    {
+     "rank": "4",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Destruction Warlock",
+     "href": "/rankings/onyxia?class=warlock&spec=Destruction",
+     "classSlug": "warlock",
+     "sub": "Corvane · Olympus XXVII",
+     "fraction": 0.9594594594594594,
+     "figures": [
+      {
+       "value": "852",
+       "label": "DPS",
+       "href": "/reports/report4?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "5 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/corvane"
+    },
+    {
+     "rank": "5",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Marksmanship Hunter",
+     "href": "/rankings/onyxia?class=hunter&spec=Marksmanship",
+     "classSlug": "hunter",
+     "sub": "Haldrik",
+     "fraction": 0.9459459459459459,
+     "figures": [
+      {
+       "value": "840",
+       "label": "DPS",
+       "href": "/reports/report5?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "4 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/haldrik"
+    },
+    {
+     "rank": "6",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Frost Mage",
+     "href": "/rankings/onyxia?class=mage&spec=Frost",
+     "classSlug": "mage",
+     "sub": "Emberlyn · Olympus XXVII",
+     "fraction": 0.9324324324324325,
+     "figures": [
+      {
+       "value": "828",
+       "label": "DPS",
+       "href": "/reports/report6?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "3 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/emberlyn"
+    },
+    {
+     "rank": "7",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Feral Druid",
+     "href": "/rankings/onyxia?class=druid&spec=Feral",
+     "classSlug": "druid",
+     "sub": "Tamsin Reed",
+     "fraction": 0.918918918918919,
+     "figures": [
+      {
+       "value": "816",
+       "label": "DPS",
+       "href": "/reports/report7?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "2 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/tamsin-reed"
+    },
+    {
+     "rank": "8",
+     "rankColor": "var(--color-parse-orange)",
+     "name": "Enhancement Shaman",
+     "href": "/rankings/onyxia?class=shaman&spec=Enhancement",
+     "classSlug": "shaman",
+     "sub": "Grenna · Olympus XXVII",
+     "fraction": 0.9054054054054054,
+     "figures": [
+      {
+       "value": "804",
+       "label": "DPS",
+       "href": "/reports/report8?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "98",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "1 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/grenna"
+    }
+   ],
+   "healing": [
+    {
+     "rank": "1",
+     "rankColor": "var(--color-parse-gold)",
+     "name": "Holy Priest",
+     "href": "/rankings/onyxia?class=priest&spec=Holy",
+     "classSlug": "priest",
+     "sub": "Lumen Ashby",
+     "fraction": 1,
+     "figures": [
+      {
+       "value": "888",
+       "label": "HPS",
+       "href": "/reports/report1?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "100",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "8 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/lumen-ashby"
+    },
+    {
+     "rank": "2",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Restoration Shaman",
+     "href": "/rankings/onyxia?class=shaman&spec=Restoration",
+     "classSlug": "shaman",
+     "sub": "Brannagh · Olympus XXVII",
+     "fraction": 0.9864864864864865,
+     "figures": [
+      {
+       "value": "876",
+       "label": "HPS",
+       "href": "/reports/report2?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "7 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/brannagh"
+    },
+    {
+     "rank": "3",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Holy Paladin",
+     "href": "/rankings/onyxia?class=paladin&spec=Holy",
+     "classSlug": "paladin",
+     "sub": "Oswin Hale",
+     "fraction": 0.972972972972973,
+     "figures": [
+      {
+       "value": "864",
+       "label": "HPS",
+       "href": "/reports/report3?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "6 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/oswin-hale"
+    },
+    {
+     "rank": "4",
+     "rankColor": "var(--color-parse-pink)",
+     "name": "Restoration Druid",
+     "href": "/rankings/onyxia?class=druid&spec=Restoration",
+     "classSlug": "druid",
+     "sub": "Mirethil · Olympus XXVII",
+     "fraction": 0.9594594594594594,
+     "figures": [
+      {
+       "value": "852",
+       "label": "HPS",
+       "href": "/reports/report4?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-value"
+      },
+      {
+       "value": "99",
+       "label": "Percentile"
+      }
+     ],
+     "gap": {
+      "text": "5 Nov",
+      "label": "Date"
+     },
+     "links": [],
+     "key": "us/normal/mirethil"
+    }
+   ]
+  }
  },
  "guilds": [
   {
@@ -2448,14 +2786,17 @@
    "elsewhere": "Bosses with ranked kills"
   },
   "encounterPickerCopy": {
-   "heading": "Choose an encounter",
+   "heading": "Encounters",
    "noneYet": "No boss kills are ranked yet.",
    "fill": "A boss gets its board when the first log of its kill is uploaded.",
    "where": "[fn]",
    "ranked": "[fn]",
    "topFailed": "Top parses did not load.",
    "topNone": "No ranked kill on this board yet.",
-   "leadersHeading": "Leaders by spec"
+   "leadersHeading": "Leaders by spec",
+   "damageHead": "Damage",
+   "healingHead": "Healing",
+   "more": "More encounters"
   },
   "homeTopGuildsCopy": {
    "placeholderLabel": "Top guilds",
@@ -2786,6 +3127,8 @@
   },
   "boardEmpty": "No Fury Warrior kills on Warden Kelthas yet.",
   "noneYet": "No boss kills are ranked yet.",
-  "leadersHeading": "Leaders by spec"
+  "leadersHeading": "Leaders by spec",
+  "damageHead": "Damage",
+  "healingHead": "Healing"
  }
 }

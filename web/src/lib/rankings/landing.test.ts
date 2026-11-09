@@ -54,7 +54,7 @@ describe('topParses', () => {
     const top = topParses(board);
     expect(top.map((r) => r.rank)).toEqual(['1', '2', '3']);
     expect(top[0]?.figures.map((f) => [f.value, f.unit ?? ''])).toEqual([
-      ['899', 'DPS'],
+      ['899', ''],
       ['100', ''],
     ]);
     expect(top[0]?.figures[0]?.href).toBe('/reports/r1?fight=1');
@@ -62,7 +62,9 @@ describe('topParses', () => {
 });
 
 describe('specLeaders', () => {
-  it('takes each spec best: healers from the HPS board, the rest from the DPS board, by class', () => {
+  const href = (cls: string, spec: string) => `/rankings/onyxia?class=${cls}&spec=${spec}`;
+
+  it('groups damage by DPS and healing by HPS, each spec once, best first, spec leading the row', () => {
     const dps = {
       total: 5,
       rows: [
@@ -76,15 +78,17 @@ describe('specLeaders', () => {
       total: 2,
       rows: [row(1, 'Holy1', 'Priest', 'Holy', 700), row(2, 'Fury9', 'Warrior', 'Fury', 5)],
     };
-    const leaders = specLeaders(dps, hps);
-    expect(leaders.map((r) => [r.name, r.figures[0]?.unit])).toEqual([
-      ['Mage1', 'DPS'],
-      ['Holy1', 'HPS'],
-      ['Fury1', 'DPS'],
+    const { damage, healing } = specLeaders(dps, hps, href);
+    expect(damage.map((r) => [r.rank, r.name, r.sub])).toEqual([
+      ['1', 'Fury Warrior', 'Fury1'],
+      ['2', 'Frost Mage', 'Mage1'],
     ]);
+    expect(damage[1]?.href).toBe('/rankings/onyxia?class=mage&spec=Frost');
+    expect(healing.map((r) => [r.name, r.figures[0]?.value])).toEqual([['Holy Priest', '700']]);
   });
 
-  it('reads the DPS board alone when the HPS board did not load', () => {
-    expect(specLeaders({ total: 1, rows: [row(1, 'Fury1', 'Warrior', 'Fury', 900)] }, null)).toHaveLength(1);
+  it('has no healing group when the HPS board did not load', () => {
+    const board = { total: 1, rows: [row(1, 'Fury1', 'Warrior', 'Fury', 900)] };
+    expect(specLeaders(board, null, href).healing).toEqual([]);
   });
 });

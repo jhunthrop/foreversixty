@@ -86,6 +86,27 @@ const MIXED: Seed[] = [
   MAGES[0]!,
 ];
 
+/** Every class on Onyxia's DPS board (the landing's top three and the spec leaders). */
+const ONYXIA_DAMAGE: Seed[] = [
+  { name: 'Vashrel', cls: 'Rogue', spec: 'Combat', key: 'us/normal/vashrel' },
+  WARRIORS[0]!,
+  { name: 'Ysolde', cls: 'Mage', spec: 'Fire', key: 'us/normal/ysolde' },
+  { name: 'Corvane', cls: 'Warlock', spec: 'Destruction', key: 'us/normal/corvane' },
+  { name: 'Haldrik', cls: 'Hunter', spec: 'Marksmanship', key: 'us/normal/haldrik' },
+  MAGES[0]!,
+  { name: 'Tamsin Reed', cls: 'Druid', spec: 'Feral', key: 'us/normal/tamsin-reed' },
+  { name: 'Grenna', cls: 'Shaman', spec: 'Enhancement', key: 'us/normal/grenna' },
+];
+/** Onyxia's HPS board: its healers. */
+const ONYXIA_HEALING: Seed[] = [
+  { name: 'Lumen Ashby', cls: 'Priest', spec: 'Holy', key: 'us/normal/lumen-ashby' },
+  { name: 'Brannagh', cls: 'Shaman', spec: 'Restoration', key: 'us/normal/brannagh' },
+  { name: 'Oswin Hale', cls: 'Paladin', spec: 'Holy', key: 'us/normal/oswin-hale' },
+  { name: 'Mirethil', cls: 'Druid', spec: 'Restoration', key: 'us/normal/mirethil' },
+];
+/** Onyxia's every-class board counts this many characters. */
+const ONYXIA_ALL = 640;
+
 function row(seed: Seed, rank: number): Record<string, unknown> {
   return {
     rank,
@@ -122,11 +143,22 @@ export interface BoardOptions {
 export function boardFor(url: URL, options: BoardOptions = {}): Record<string, unknown> {
   const cls = (url.searchParams.get('class') ?? '').toLowerCase();
   const character = url.searchParams.get('character');
-  const seeds = cls === 'warrior' ? WARRIORS : cls === 'mage' ? MAGES : MIXED;
+  const onyxiaAll = cls === '' && url.searchParams.get('encounter') === ONYXIA.slug;
+  const healing = url.searchParams.get('metric') === 'hps';
+  const seeds =
+    cls === 'warrior'
+      ? WARRIORS
+      : cls === 'mage'
+        ? MAGES
+        : onyxiaAll
+          ? healing
+            ? ONYXIA_HEALING
+            : ONYXIA_DAMAGE
+          : MIXED;
   const rows = rowsOf(seeds);
   const base = {
     rows,
-    total: cls === 'warrior' ? TOTAL : rows.length,
+    total: cls === 'warrior' ? TOTAL : onyxiaAll ? ONYXIA_ALL : rows.length,
     page: 1,
     per_page: 100,
     updated_at: '2026-12-13T09:00:00Z',
