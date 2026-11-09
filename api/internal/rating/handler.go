@@ -178,8 +178,9 @@ func (s *Service) characterRating(w http.ResponseWriter, r *http.Request) {
 var _ rankings.Scorer = (*Service)(nil)
 
 // ForeverScore is the character page's Forever Score (rankings.Scorer). A character with
-// no logs (ErrNoLogs) and one whose account asked to be anonymous both read as no score -
-// every field null - never as a zero, matching the rating endpoints' own anonymize rule.
+// no logs (ErrNoLogs), one whose account asked to be anonymous, and one whose owner hid the
+// score from this request's viewer (score_visibility.go) all read as no score - every field
+// null - never as a zero, matching the rating endpoints' own anonymize rule.
 func (s *Service) ForeverScore(ctx context.Context, key string) (rankings.ForeverScore, error) {
 	anon, err := s.Store.anonymized(ctx, key)
 	if err != nil {
@@ -187,6 +188,9 @@ func (s *Service) ForeverScore(ctx context.Context, key string) (rankings.Foreve
 	}
 	if anon {
 		return rankings.ForeverScore{}, nil
+	}
+	if hidden, err := s.Store.hiddenFromViewer(ctx, key); err != nil || hidden {
+		return rankings.ForeverScore{}, err
 	}
 	sc, err := s.Store.ScoreV2(ctx, key)
 	if errors.Is(err, ErrNoLogs) {

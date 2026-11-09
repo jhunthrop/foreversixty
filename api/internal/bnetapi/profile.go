@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 )
 
 // AccountCharacter is one character from GET /profile/user/wow — the
@@ -127,6 +129,10 @@ type CharacterProfile struct {
 	RaceName  string
 	RealmSlug string
 	RealmName string
+	// Ruleset is the site ruleset the profile's own ruleset names ("PvP" is
+	// pvp), empty when it names none. A Forever profile carries it; it is
+	// the one source left now Forever's realm index answers 404.
+	Ruleset   string
 	GuildName string
 	// GuildRealmSlug is the guild's own realm, empty when Blizzard names
 	// none (a Forever guild, like a Forever character, may be realmless).
@@ -158,6 +164,9 @@ type characterProfileResponse struct {
 		Slug string `json:"slug"`
 		Name string `json:"name"`
 	} `json:"realm"`
+	Ruleset struct {
+		Name string `json:"name"`
+	} `json:"ruleset"`
 	Guild *struct {
 		Name  string `json:"name"`
 		Realm struct {
@@ -194,6 +203,9 @@ func (c *Client) Character(ctx context.Context, region, realmSlug, name string) 
 		RealmSlug: res.Realm.Slug, RealmName: res.Realm.Name,
 		LastLoginTimestamp: res.LastLoginTimestamp,
 		AverageItemLevel:   res.AverageItemLevel, EquippedItemLevel: res.EquippedItemLevel,
+	}
+	if ruleset, ok := character.RulesetNamed(res.Ruleset.Name); ok {
+		p.Ruleset = ruleset
 	}
 	if res.Guild != nil {
 		p.GuildName = res.Guild.Name

@@ -20201,6 +20201,167 @@
         }
       }
     },
+    "widget.card.counts": {
+      "comment": "Arguments: 1 in (int), 2 late (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld in, %2$lld late"
+          }
+        }
+      }
+    },
+    "widget.card.daysHours": {
+      "comment": "Arguments: 1 days (int), 2 hours (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldd %2$lldh"
+          }
+        }
+      }
+    },
+    "widget.card.firstRaids": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First raids"
+          }
+        }
+      }
+    },
+    "widget.card.firstRaidsOn": {
+      "comment": "Arguments: 1 date (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First raids %1$@"
+          }
+        }
+      }
+    },
+    "widget.card.hoursMinutes": {
+      "comment": "Arguments: 1 hours (int), 2 minutes (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lldh %2$lldm"
+          }
+        }
+      }
+    },
+    "widget.card.item": {
+      "comment": "Arguments: 1 item (string), 2 source (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "widget.card.line": {
+      "comment": "Arguments: 1 when (string), 2 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "widget.card.lock": {
+      "comment": "Arguments: 1 big (string), 2 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "widget.card.nextUpgrade": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "next upgrade"
+          }
+        }
+      }
+    },
+    "widget.card.noRaid": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No raid planned yet"
+          }
+        }
+      }
+    },
+    "widget.card.now": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Now"
+          }
+        }
+      }
+    },
+    "widget.card.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open"
+          }
+        }
+      }
+    },
+    "widget.card.raidsOpen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raids open now"
+          }
+        }
+      }
+    },
+    "widget.card.upgrades": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upgrades"
+          }
+        }
+      }
+    },
     "widget.characterSetting": {
       "extractionState": "manual",
       "localizations": {

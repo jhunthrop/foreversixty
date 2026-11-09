@@ -26,12 +26,12 @@ func TestRulesetOf(t *testing.T) {
 		{"forever pvp_rp", Realm{Type: "PVP_RP"}, character.RulesetRP},
 		{"hardcore by category", Realm{Type: "PVP", Category: "Hardcore"}, character.RulesetHardcore},
 		{"hardcore by name", Realm{Type: "NORMAL", Name: "Doomhowl Hardcore"}, character.RulesetHardcore},
-		{"unknown type falls back to normal", Realm{Type: "SEASONAL"}, character.RulesetNormal},
+		{"unknown type resolves nothing", Realm{Type: "SEASONAL"}, ""},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			if got := RulesetOf(c.r); got != c.want {
-				t.Errorf("RulesetOf(%+v) = %q, want %q", c.r, got, c.want)
+			if got, ok := RulesetOf(c.r); got != c.want || ok != (c.want != "") {
+				t.Errorf("RulesetOf(%+v) = %q, %v; want %q", c.r, got, ok, c.want)
 			}
 		})
 	}
