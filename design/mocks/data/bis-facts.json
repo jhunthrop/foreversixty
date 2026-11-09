@@ -308,8 +308,7 @@
    ],
    "lines": [
     "1.00 = 0.891 DPS per point of Agility",
-    "Hit to cap: 1.1% for specials, 8.1% for spells",
-    "Legionite Glaive is a two-hander: the off hand stays empty."
+    "Hit to cap: 1.1% for specials, 8.1% for spells"
    ],
    "link": "All stat weights in the sim ›"
   },
@@ -371,7 +370,10 @@
        "name": "Cape of the Black Baron",
        "quality": "rare",
        "line": "Back · Baron Rivendare",
-       "gain": "+4.0DPS",
+       "gain": {
+        "value": "+4.0",
+        "unit": "DPS"
+       },
        "icon": "inv_misc_cape_20"
       },
       {
@@ -379,7 +381,10 @@
        "name": "Beaststalker's Boots",
        "quality": "rare",
        "line": "Feet · Nerub'enkan",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_boots_plate_07"
       }
      ]
@@ -393,7 +398,10 @@
        "name": "Black Dragonscale Helm",
        "quality": "epic",
        "line": "Head",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_helmet_09"
       },
       {
@@ -401,7 +409,10 @@
        "name": "Dawn Armor",
        "quality": "epic",
        "line": "Chest",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_chest_leather_08"
       }
      ]
@@ -415,7 +426,10 @@
        "name": "Frozen Heart of the Mountain",
        "quality": "rare",
        "line": "Trinket",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_misc_gem_sapphire_01"
       }
      ]
@@ -429,7 +443,10 @@
        "name": "Legionite Glaive",
        "quality": "rare",
        "line": "Main hand",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_spear_05"
       }
      ]
@@ -443,7 +460,10 @@
        "name": "Sentinel's Medallion",
        "quality": "rare",
        "line": "Neck · Honored",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_jewelry_necklace_13"
       },
       {
@@ -451,7 +471,10 @@
        "name": "Forest Stalker's Bracers",
        "quality": "epic",
        "line": "Wrist · Exalted",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_bracer_12"
       }
      ]
@@ -465,7 +488,10 @@
        "name": "Theramore Pauldrons",
        "quality": "epic",
        "line": "Shoulder · Exalted",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_shoulder_06"
       },
       {
@@ -473,7 +499,10 @@
        "name": "Theramore Gloves",
        "quality": "epic",
        "line": "Hands · Exalted",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_gauntlets_27"
       }
      ]
@@ -487,7 +516,10 @@
        "name": "Don Julio's Band",
        "quality": "epic",
        "line": "Ring · Exalted",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_jewelry_ring_35"
       }
      ]
@@ -501,7 +533,10 @@
        "name": "Masons Fraternity Ring",
        "quality": "rare",
        "line": "Ring · Quest: Divino-matic Rod · requires level 40",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_jewelry_ring_03"
       },
       {
@@ -509,7 +544,10 @@
        "name": "Devilsaur Eye",
        "quality": "rare",
        "line": "Trinket · Quest: The Green Drake · requires level 50",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_misc_eye_01"
       }
      ]
@@ -523,7 +561,10 @@
        "name": "Ranger's Belt",
        "quality": "epic",
        "line": "Waist · Vendor: Pix Xizzix",
-       "gain": "+4.1DPS",
+       "gain": {
+        "value": "+4.1",
+        "unit": "DPS"
+       },
        "icon": "inv_belt_25"
       },
       {
@@ -531,7 +572,10 @@
        "name": "Sentinel's Chain Leggings",
        "quality": "epic",
        "line": "Legs · Vendor: Illiyana Moonblaze",
-       "gain": "+7.2DPS",
+       "gain": {
+        "value": "+7.2",
+        "unit": "DPS"
+       },
        "icon": "inv_pants_03"
       }
      ]
@@ -545,7 +589,10 @@
        "name": "Eaglehorn Long Bow",
        "quality": "rare",
        "line": "Ranged · World drop (59-62) · BoE · on the AH",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_weapon_bow_11"
       }
      ]
@@ -880,8 +927,7 @@
     }
    ],
    "lines": [
-    "1.00 = 0.569 HPS per point of MP5",
-    "Glowing Brightwood Staff is a two-hander: the off hand stays empty."
+    "1.00 = 0.569 HPS per point of MP5"
    ],
    "link": ""
   },
@@ -931,7 +977,10 @@
        "name": "Devout Bracers",
        "quality": "rare",
        "line": "Wrist · Thuzadin Shadowcaster · 1%",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "HPS"
+       },
        "icon": "inv_belt_31"
       },
       {
@@ -939,7 +988,10 @@
        "name": "Devout Gloves",
        "quality": "rare",
        "line": "Hands · Archivist Galford",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "HPS"
+       },
        "icon": "inv_gauntlets_14"
       },
       {
@@ -947,7 +999,10 @@
        "name": "Devout Skirt",
        "quality": "rare",
        "line": "Legs · Baron Rivendare",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "HPS"
+       },
        "icon": "inv_pants_08"
       },
       {
@@ -955,7 +1010,10 @@
        "name": "Devout Sandals",
        "quality": "rare",
        "line": "Feet · Maleki the Pallid",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "HPS"
+       },
        "icon": "inv_boots_05"
       },
       {
@@ -963,7 +1021,10 @@
        "name": "Band of Mending",
        "quality": "rare",
        "line": "Ring · Balnazzar",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "HPS"
+       },
        "icon": "inv_jewelry_ring_05"
       }
      ]
@@ -977,7 +1038,10 @@
        "name": "Devout Crown",
        "quality": "rare",
        "line": "Head · Darkmaster Gandling",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "HPS"
+       },
        "icon": "inv_crown_01"
       }
      ]
@@ -991,7 +1055,10 @@
        "name": "Glowing Eye of Mordresh",
        "quality": "rare",
        "line": "Neck · Mordresh Fire Eye",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "HPS"
+       },
        "icon": "inv_misc_orb_03"
       }
      ]
@@ -1005,7 +1072,10 @@
        "name": "Mooncloth Shoulders",
        "quality": "rare",
        "line": "Shoulder",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "HPS"
+       },
        "icon": "inv_shoulder_02"
       },
       {
@@ -1013,7 +1083,10 @@
        "name": "Truefaith Vestments",
        "quality": "epic",
        "line": "Chest",
-       "gain": "+0.8HPS",
+       "gain": {
+        "value": "+0.8",
+        "unit": "HPS"
+       },
        "icon": "inv_chest_cloth_31"
       },
       {
@@ -1021,7 +1094,10 @@
        "name": "Wisdom of the Timbermaw",
        "quality": "rare",
        "line": "Waist",
-       "gain": "+3.4HPS",
+       "gain": {
+        "value": "+3.4",
+        "unit": "HPS"
+       },
        "icon": "inv_belt_09"
       }
      ]
@@ -1035,7 +1111,10 @@
        "name": "Dormant Heart of the Mountain",
        "quality": "rare",
        "line": "Trinket",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "HPS"
+       },
        "icon": "inv_misc_gem_diamond_01"
       },
       {
@@ -1043,7 +1122,10 @@
        "name": "Torch of Light",
        "quality": "epic",
        "line": "Ranged",
-       "gain": "+5.3HPS",
+       "gain": {
+        "value": "+5.3",
+        "unit": "HPS"
+       },
        "icon": "inv_torch_lit"
       }
      ]
@@ -1057,7 +1139,10 @@
        "name": "Drape of Recovery",
        "quality": "rare",
        "line": "Back · Vendor: Pix Xizzix",
-       "gain": "+3.9HPS",
+       "gain": {
+        "value": "+3.9",
+        "unit": "HPS"
+       },
        "icon": "inv_misc_cape_06"
       },
       {
@@ -1065,7 +1150,10 @@
        "name": "Blessed Band of Light",
        "quality": "rare",
        "line": "Ring · Vendor: Pix Xizzix",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "HPS"
+       },
        "icon": "inv_jewelry_ring_60"
       },
       {
@@ -1073,7 +1161,10 @@
        "name": "Serenity Field",
        "quality": "rare",
        "line": "Trinket · Vendor: Pix Xizzix",
-       "gain": "+8.3HPS",
+       "gain": {
+        "value": "+8.3",
+        "unit": "HPS"
+       },
        "icon": "inv_misc_enggizmos_36"
       }
      ]
@@ -1087,7 +1178,10 @@
        "name": "Glowing Brightwood Staff",
        "quality": "epic",
        "line": "Main hand · World drop (50-57) · BoE · on the AH",
-       "gain": "+21.1HPS",
+       "gain": {
+        "value": "+21.1",
+        "unit": "HPS"
+       },
        "icon": "inv_staff_29"
       }
      ]
@@ -1477,7 +1571,10 @@
        "name": "Boots of Valor",
        "quality": "rare",
        "line": "Feet · Kirtonos the Herald",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "inv_boots_plate_03"
       }
      ]
@@ -1491,7 +1588,10 @@
        "name": "Enchanted Thorium Helm",
        "quality": "rare",
        "line": "Head",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "inv_helmet_02"
       },
       {
@@ -1499,7 +1599,10 @@
        "name": "Heavy Thorium Gauntlets",
        "quality": "epic",
        "line": "Hands",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "inv_gauntlets_28"
       },
       {
@@ -1507,7 +1610,10 @@
        "name": "Greenhammer",
        "quality": "epic",
        "line": "Main hand",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "inv_mace_1h_raidhyjalc60_d_01"
       }
      ]
@@ -1521,7 +1627,10 @@
        "name": "Fel Cape",
        "quality": "epic",
        "line": "Back",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "inv_misc_cape_01"
       }
      ]
@@ -1535,7 +1644,10 @@
        "name": "Sentinel's Medallion",
        "quality": "rare",
        "line": "Neck · Honored",
-       "gain": "+125.9score",
+       "gain": {
+        "value": "+125.9",
+        "unit": "score"
+       },
        "icon": "inv_jewelry_necklace_13"
       },
       {
@@ -1543,7 +1655,10 @@
        "name": "Berserker Bracers",
        "quality": "epic",
        "line": "Wrist · Exalted",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "inv_bracer_06"
       },
       {
@@ -1551,7 +1666,10 @@
        "name": "Outrunner's Bow",
        "quality": "rare",
        "line": "Ranged · Revered",
-       "gain": "+137.7score",
+       "gain": {
+        "value": "+137.7",
+        "unit": "score"
+       },
        "icon": "inv_weapon_bow_02"
       }
      ]
@@ -1565,7 +1683,10 @@
        "name": "Highlander's Plate Spaulders",
        "quality": "epic",
        "line": "Shoulder · Revered",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "inv_shoulder_01"
       }
      ]
@@ -1579,7 +1700,10 @@
        "name": "The Immovable Object",
        "quality": "epic",
        "line": "Off hand · Exalted",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "spell_frost_chillingarmor"
       }
      ]
@@ -1593,7 +1717,10 @@
        "name": "Ornate Adamantium Breastplate",
        "quality": "rare",
        "line": "Chest · Quest: In Dreams · requires level 52",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "inv_chest_plate09"
       },
       {
@@ -1601,7 +1728,10 @@
        "name": "Stormpike Insignia Rank 6",
        "quality": "epic",
        "line": "Trinket · Quest: The Eye of Command · requires level 51",
-       "gain": "+1127.1score",
+       "gain": {
+        "value": "+1127.1",
+        "unit": "score"
+       },
        "icon": "inv_jewelry_stormpiketrinket_05"
       }
      ]
@@ -1615,7 +1745,10 @@
        "name": "Valiant's Waistguard",
        "quality": "epic",
        "line": "Waist · Vendor: Pix Xizzix",
-       "gain": "+259.3score",
+       "gain": {
+        "value": "+259.3",
+        "unit": "score"
+       },
        "icon": "inv_belt_33"
       },
       {
@@ -1623,7 +1756,10 @@
        "name": "Sentinel's Plate Legguards",
        "quality": "epic",
        "line": "Legs · Vendor: Illiyana Moonblaze",
-       "gain": "+213.2score",
+       "gain": {
+        "value": "+213.2",
+        "unit": "score"
+       },
        "icon": "inv_pants_plate_20"
       },
       {
@@ -1631,7 +1767,10 @@
        "name": "Ring of Awareness",
        "quality": "rare",
        "line": "Ring · Vendor: Pix Xizzix",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "inv_jewelry_ring_01"
       },
       {
@@ -1639,7 +1778,10 @@
        "name": "Cutthroat's Signet",
        "quality": "rare",
        "line": "Ring · Vendor: Pix Xizzix",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "score"
+       },
        "icon": "inv_jewelry_ring_01"
       },
       {
@@ -1647,7 +1789,10 @@
        "name": "Adaptive Combat Assistant",
        "quality": "rare",
        "line": "Trinket · Vendor: Pix Xizzix",
-       "gain": "+118.1score",
+       "gain": {
+        "value": "+118.1",
+        "unit": "score"
+       },
        "icon": "inv_engineering_90_lightningbox"
       }
      ]
@@ -1929,8 +2074,7 @@
    ],
    "lines": [
     "1.00 = 0.316 DPS per point of Agility",
-    "Hit to cap: 9% for specials, 16% for spells",
-    "Impaling Harpoon is a two-hander: the off hand stays empty."
+    "Hit to cap: 9% for specials, 16% for spells"
    ],
    "link": "All stat weights in the sim ›"
   },
@@ -1976,7 +2120,10 @@
        "name": "Serpent's Shoulders",
        "quality": "rare",
        "line": "Shoulder · Lady Anacondra · 40%",
-       "gain": "+0.1DPS",
+       "gain": {
+        "value": "+0.1",
+        "unit": "DPS"
+       },
        "icon": "inv_shoulder_08"
       },
       {
@@ -1984,7 +2131,10 @@
        "name": "Glowing Lizardscale Cloak",
        "quality": "rare",
        "line": "Back · Skum · 50%",
-       "gain": "+0.3DPS",
+       "gain": {
+        "value": "+0.3",
+        "unit": "DPS"
+       },
        "icon": "inv_chest_cloth_15"
       },
       {
@@ -1992,7 +2142,10 @@
        "name": "Gloves of the Fang",
        "quality": "rare",
        "line": "Hands · Druid of the Fang · 2%",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_gauntlets_18"
       },
       {
@@ -2000,7 +2153,10 @@
        "name": "Leggings of the Fang",
        "quality": "rare",
        "line": "Legs · Lord Cobrahn · 20%",
-       "gain": "",
+       "gain": {
+        "value": "Same",
+        "unit": "DPS"
+       },
        "icon": "inv_pants_11"
       }
      ]
@@ -2014,7 +2170,10 @@
        "name": "Blackened Defias Belt",
        "quality": "rare",
        "line": "Waist · Captain Greenskin · 30%",
-       "gain": "+0.1DPS",
+       "gain": {
+        "value": "+0.1",
+        "unit": "DPS"
+       },
        "icon": "inv_belt_26"
       },
       {
@@ -2022,7 +2181,10 @@
        "name": "Lavishly Jeweled Ring",
        "quality": "rare",
        "line": "Ring · Gilnid · 45%",
-       "gain": "+1.1DPS",
+       "gain": {
+        "value": "+1.1",
+        "unit": "DPS"
+       },
        "icon": "inv_jewelry_ring_09"
       },
       {
@@ -2030,7 +2192,10 @@
        "name": "Impaling Harpoon",
        "quality": "rare",
        "line": "Main hand · Captain Greenskin · 30%",
-       "gain": "+0.4DPS",
+       "gain": {
+        "value": "+0.4",
+        "unit": "DPS"
+       },
        "icon": "inv_spear_07"
       }
      ]
@@ -2044,7 +2209,10 @@
        "name": "Brawler's Leather Hood",
        "quality": "rare",
        "line": "Head",
-       "gain": "+1.0DPS",
+       "gain": {
+        "value": "+1.0",
+        "unit": "DPS"
+       },
        "icon": "inv_helmet_31"
       }
      ]
@@ -2058,7 +2226,10 @@
        "name": "Sentinel's Medallion",
        "quality": "rare",
        "line": "Neck · Honored",
-       "gain": "+1.2DPS",
+       "gain": {
+        "value": "+1.2",
+        "unit": "DPS"
+       },
        "icon": "inv_jewelry_necklace_13"
       },
       {
@@ -2066,7 +2237,10 @@
        "name": "Protector's Band",
        "quality": "rare",
        "line": "Ring · Honored",
-       "gain": "+0.8DPS",
+       "gain": {
+        "value": "+0.8",
+        "unit": "DPS"
+       },
        "icon": "inv_jewelry_ring_10"
       }
      ]
@@ -2080,7 +2254,10 @@
        "name": "Tunic of Westfall",
        "quality": "rare",
        "line": "Chest · Quest: The Defias Brotherhood · requires level 14",
-       "gain": "+0.3DPS",
+       "gain": {
+        "value": "+0.3",
+        "unit": "DPS"
+       },
        "icon": "inv_chest_leather_07"
       }
      ]
@@ -2094,7 +2271,10 @@
        "name": "Forest Leather Bracers",
        "quality": "uncommon",
        "line": "Wrist · World drop (20-26) · BoE · on the AH",
-       "gain": "+0.3DPS",
+       "gain": {
+        "value": "+0.3",
+        "unit": "DPS"
+       },
        "icon": "inv_bracer_06"
       },
       {
@@ -2102,7 +2282,10 @@
        "name": "Feet of the Lynx",
        "quality": "rare",
        "line": "Feet · World drop (20-27) · BoE · on the AH",
-       "gain": "+0.3DPS",
+       "gain": {
+        "value": "+0.3",
+        "unit": "DPS"
+       },
        "icon": "inv_boots_wolf"
       },
       {
@@ -2110,7 +2293,10 @@
        "name": "Ranger Bow",
        "quality": "rare",
        "line": "Ranged · World drop (21-28) · BoE · on the AH",
-       "gain": "+0.3DPS",
+       "gain": {
+        "value": "+0.3",
+        "unit": "DPS"
+       },
        "icon": "inv_weapon_bow_11"
       }
      ]
