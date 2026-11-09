@@ -174,6 +174,38 @@ describe('RankRow', () => {
   });
 });
 
+describe('the compact ranked list (round 5)', () => {
+  it('marks a compact list, and leaves every other list as it was', () => {
+    const compact = html(RankList, { compact: true, grouped: true, children: text('<li>r</li>') });
+    expect(compact).toContain('data-compact="true"');
+    expect(html(RankList, { children: text('<li>r</li>') })).not.toContain('data-compact');
+  });
+
+  it('draws a letter column with the letter alone when the group has no band or count', () => {
+    const body = html(RankGroup, { letter: 'B', label: 'Tier B', children: text('<li>r</li>') });
+    expect(body).toContain('<span aria-hidden="true">B</span>');
+    expect(body).not.toContain('ui-rg-band');
+    expect(body).not.toContain('ui-rg-count');
+    expect(body).not.toContain('--rg-tone');
+  });
+
+  it("fills the bar in the accent on request, and drops a figure's unit when the head names it", () => {
+    const body = html(RankRow, {
+      ...ROW,
+      sub: undefined,
+      links: [],
+      barTone: 'accent',
+      figures: [{ value: '942.2', label: 'Damage per second' }],
+    });
+    expect(body).toContain('bg-accent');
+    expect(body).not.toContain('background: var(--color-class-warrior)');
+    expect(body).not.toContain('<small>');
+    expect(body).not.toContain('ui-rr-sub');
+    // The class tone stays the default.
+    expect(html(RankRow, ROW)).toContain('background: var(--color-class-warrior)');
+  });
+});
+
 describe('Meter class tone', () => {
   it('fills in the colour it is given, and refuses the class tone without one', () => {
     expect(html(Meter, { value: 0.5, tone: 'class', color: 'var(--color-class-mage)' })).toContain(

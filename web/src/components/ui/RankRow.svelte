@@ -4,7 +4,7 @@
      under it), the figures, the gap and a strip of next-step links. The row itself is no link: its
      next steps are links inside it (the Row rule, a link or an action, never both). Hover is the S2
      ground and the row's slice of the rail in the class colour; `selected` the gold ground and a
-     gold slice. Below 1024 it is the four-area phone grid. -->
+     gold slice (in a `compact` RankList, the accent tint and a cyan slice). Below 1024 it is the four-area phone grid. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { titleColor } from '../../lib/ui/primitives';
@@ -23,6 +23,7 @@
     note,
     tie,
     fraction,
+    barTone = 'class',
     figures,
     gap,
     links = [],
@@ -50,6 +51,9 @@
     tie?: RankNote;
     /** The bar, 0 to 1. */
     fraction: number;
+    /** The bar's fill: the class colour (a log ranking's Details! bar) or the cyan accent (the tier
+     *  list's relative bar, round 5). */
+    barTone?: 'class' | 'accent';
     /** The sorted figure first. */
     figures: readonly RankFigure[];
     gap: RankGap;
@@ -84,7 +88,7 @@
         title={item.title}
         data-testid={item.testid}>{item.value}</a
       >{:else}<span class="ui-rr-fig-value" title={item.title} data-testid={item.testid}>{item.value}</span
-      >{/if}<small>{item.unit}</small></span
+      >{/if}{#if item.unit}<small>{item.unit}</small>{/if}</span
   >
 {/snippet}
 
@@ -109,7 +113,11 @@
     {#if note}<span class="ui-rr-note" title={note.title} data-testid="rank-note">{note.text}</span>{/if}
   </span>
   <span class="ui-rr-bar">
-    <Meter value={fraction} tone="class" color={tone} />
+    {#if barTone === 'accent'}<Meter value={fraction} />{:else}<Meter
+        value={fraction}
+        tone="class"
+        color={tone}
+      />{/if}
     {#if tie}<span class="ui-rr-tie" title={tie.title} data-testid="rank-tie">{tie.text}</span>{/if}
   </span>
   {#if figures[0]}{@render figure(figures[0], true)}{/if}

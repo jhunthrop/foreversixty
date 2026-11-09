@@ -1,19 +1,11 @@
 // web/src/lib/tiers/tier-row-view.ts
-// A tier row as the ui/RankRow preset reads it (tiers spec 2026-11-06 §4.4): the name, the sub
-// line, the figures with their units, the gap, the tie and its partners, and the four next steps.
-// Pure, so the row's text is tested once here and the page only places it.
-import type { RankFigure, RankGap, RankLink, RankNote } from '../ui/rank-list';
+// A tier row as the ui/RankRow preset reads it (directions mock g-tiers, round 5): the spec's
+// full name as the row's one link (its best in slot), the accent bar, the figures under heads
+// that name their units, and the gap to the top. Pure, so the row's text is tested once here and
+// the page only places it.
+import type { RankFigure, RankGap, RankNote } from '../ui/rank-list';
 import { specViewKey } from './tier-callout';
-import {
-  formatMetric,
-  gapText,
-  rowName,
-  rowSub,
-  specFullName,
-  tieText,
-  tieTitle,
-  tiersCopy,
-} from './tier-copy';
+import { formatMetric, gapText, specFullName, tiersCopy } from './tier-copy';
 import { hrefsFor, type TierRow } from './tier-list';
 
 export interface TierRankRowProps {
@@ -21,16 +13,26 @@ export interface TierRankRowProps {
   name: string;
   href: string;
   classSlug: string;
-  sub: string;
   fraction: number;
+  barTone: 'accent';
   figures: RankFigure[];
   gap: RankGap;
-  links: RankLink[];
   key: string;
   nameTestid: string;
   testid: string;
-  tie?: RankNote;
   note?: RankNote;
+}
+
+/** The bar starts at 90% of the lowest spec, so the field's spread shows (directions spec, Tier list). */
+const BAR_FLOOR = 0.9;
+
+/** Each row's bar on its list: 0 at 90% of the lowest spec's share, 1 at the top. */
+export function barFraction(
+  row: Pick<TierRow, 'fraction'>,
+  rows: readonly Pick<TierRow, 'fraction'>[],
+): number {
+  const floor = Math.min(...rows.map((r) => r.fraction)) * BAR_FLOOR;
+  return (row.fraction - floor) / (1 - floor);
 }
 
 function isLeader(row: TierRow): boolean {
@@ -41,12 +43,12 @@ function bestOf(on: boolean | undefined, title: string): Pick<RankFigure, 'best'
   return on === true ? { best: true, bestTitle: title } : {};
 }
 
-/** The sorted figure, then on a tank its effective health and threat, each green where best. */
+/** The sorted figure, then on a tank its effective health and threat, each green where best. The
+ *  column heads carry the units. */
 export function tierFigures(row: TierRow, count: number): RankFigure[] {
   const title = tiersCopy.bestTitle(count, row.role);
   const sorted: RankFigure = {
     value: formatMetric(row.role, row.metric),
-    unit: tiersCopy.units[row.role],
     label: tiersCopy.figureLabels[row.role],
     testid: 'tier-number',
     ...bestOf(row.role === 'tank' && isLeader(row), title),
@@ -56,14 +58,12 @@ export function tierFigures(row: TierRow, count: number): RankFigure[] {
     sorted,
     {
       value: formatMetric(row.role, row.effectiveHealth),
-      unit: tiersCopy.units.effectiveHealth,
       label: tiersCopy.figureLabels.effectiveHealth,
       testid: 'tier-effective-health',
       ...bestOf(row.isBestEffectiveHealth, title),
     },
     {
       value: formatMetric(row.role, row.threat),
-      unit: tiersCopy.units.threat,
       label: tiersCopy.figureLabels.threat,
       testid: 'tier-threat',
       ...bestOf(row.isBestThreat, title),
@@ -71,52 +71,39 @@ export function tierFigures(row: TierRow, count: number): RankFigure[] {
   ];
 }
 
-/** BiS, Guide, Planner and, where /sim can rerun the number, the ranking Sim. */
-export function tierLinks(row: TierRow): RankLink[] {
-  const href = hrefsFor(row);
-  const fullName = specFullName(row);
-  const { bis, guide, planner, sim } = tiersCopy.rowLinks;
-  const links: RankLink[] = [
-    { label: bis, href: href.bis, primary: true, ariaLabel: `${bis}: ${fullName}` },
-    { label: guide, href: href.guide, ariaLabel: `${guide}: ${fullName}` },
-    {
-      label: planner,
-      href: href.planner,
-      ariaLabel: `${planner}: ${fullName}`,
-      title: tiersCopy.plannerTitle(fullName),
-    },
-  ];
-  if (href.sim === undefined) return links;
-  return [
-    ...links,
-    {
-      label: sim,
-      href: href.sim,
-      ariaLabel: tiersCopy.simLinkLabel(fullName),
-      title: tiersCopy.simLinkTitle(fullName),
-      testid: 'tier-sim-link',
-    },
-  ];
-}
-
-export function rankRowProps(row: TierRow, count: number): TierRankRowProps {
-  const tie = tieText(row);
+export function rankRowProps(row: TierRow, rows: readonly TierRow[]): TierRankRowProps {
+  const count = rows.length;
   return {
     rank: tiersCopy.rankLabel(row),
-    name: rowName(row),
+    name: specFullName(row),
     href: hrefsFor(row).bis,
     classSlug: row.classSlug,
-    sub: rowSub(row),
-    fraction: row.fraction,
+    fraction: barFraction(row, rows),
+    barTone: 'accent',
     figures: tierFigures(row, count),
-    gap: { text: gapText(row), label: tiersCopy.gapLabel[row.role], leader: isLeader(row) },
-    links: tierLinks(row),
+    // The leader's gap is empty: the column reads against it (the mock's "vs #1").
+    gap: {
+      text: isLeader(row) ? '' : gapText(row),
+      label: tiersCopy.gapLabel[row.role],
+      leader: isLeader(row),
+    },
     key: specViewKey(row.classSlug, row.specSlug),
     nameTestid: 'tier-spec-link',
     testid: `tier-row-${row.classSlug}-${row.specSlug}`,
-    ...(tie === null ? {} : { tie: { text: tie, title: tieTitle(row) } }),
-    ...(row.lowConfidence
-      ? { note: { text: tiersCopy.lowConfidence, title: tiersCopy.lowConfidenceTitle } }
-      : {}),
+    ...noteOf(row),
+  };
+}
+
+/** The line under the name: a tied healer's partner (so a shared rank explains itself), and the
+ *  less-certain stat weights, joined when a row has both. */
+function noteOf(row: TierRow): Pick<TierRankRowProps, 'note'> {
+  const tie = tiersCopy.healerTie(row);
+  const low = row.lowConfidence
+    ? { text: tiersCopy.lowConfidence, title: tiersCopy.lowConfidenceTitle }
+    : null;
+  const notes = [tie, low].filter((note): note is RankNote => note !== null);
+  if (notes.length === 0) return {};
+  return {
+    note: { text: notes.map((n) => n.text).join(' · '), title: notes.map((n) => n.title).join('. ') },
   };
 }
