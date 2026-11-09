@@ -451,8 +451,6 @@ local L = {
 	-- The player tooltip's score line when the record is older than a week (spec 2.5):
 	-- "Forever Score 1240 (13 Oct)".
 	scoreDated = "Forever Score %d (%s)",
-	-- The fifth part's label under Shift on the player tooltip: what Preparation measures.
-	scoreDisciplineLong = "Preparation (flasks, food, enchants)",
 	-- The score before a message in chat, in the tier colour, then a muted badgeMark
 	-- (surfaces/ChatBadges.lua): "FS 1240 · testing". Fix round 2: never in square brackets,
 	-- which read as an item link.
@@ -580,29 +578,28 @@ local L = {
 	tooltipUnitHps = "HPS",
 	-- After the green arrow: "Upgrade +2.2 DPS"; a ring, trinket or a dual wielder's one-hander
 	-- names the worn item it replaces; one the character cannot wear yet names the level.
-	tooltipUpgrade = "Upgrade %s",
-	tooltipUpgradeOver = "Upgrade %s over %s",
-	tooltipUpgradeAt = "Upgrade at level %d: %s",
-	tooltipUpgradePair = "Upgrade %s as a pair with %s",
+	tooltipUpgrade = "%s",
+	tooltipUpgradeOver = "%s over %s",
+	tooltipUpgradeAt = "%s at level %d",
+	tooltipUpgradePair = "%s as a pair with %s",
 	tooltipSide = "Sidegrade",
-	tooltipDown = "Downgrade %s",
+	tooltipDown = "%s",
 	-- Gold: the band's pick (spec 2.2 cases 8, 11, 18).
-	tooltipYourBis = "Your best in slot",
-	tooltipYourBisUntil = "Your best in slot until level %d",
-	tooltipYourBisAt = "Your best in slot at level %d",
+	tooltipYourBis = "Best in slot",
+	tooltipYourBisUntil = "Best in slot until level %d",
+	tooltipYourBisAt = "Best in slot at level %d",
 	-- A worn item whose slot's pick gains under the floor (case 19).
 	tooltipNoUpgradeUntil = "No upgrade until level %d",
 	tooltipNoUpgradeSlot = "No upgrade for this slot",
 	-- Grey refusals (cases 4 to 6, 14, 21): the client's own red line already names the armor
 	-- or skill, so the reason waits under Shift.
-	tooltipNotUntil = "Not for you until level %d",
+	tooltipNotUntil = "%s at level %d",
 	tooltipNotFor = "Not for %s",
 	tooltipTwoHander = "Not with your two-hander",
 	tooltipNotForBuild = "Not for your build",
 	tooltipNoPick = "No pick for this slot yet",
-	-- The reason under Shift: "Mail armor at 40", "Rogues cannot use two-handed swords",
+	-- The reason under Shift: "Rogues cannot use two-handed swords",
 	-- "Shamans cannot dual wield".
-	tooltipReasonUntil = "%s at %d",
 	tooltipReasonNever = "%s cannot use %s",
 	tooltipReasonTwoWeapons = "%s cannot dual wield",
 	-- Below the spec's first gear band (the data's start at 20): a worn item and an empty slot.
@@ -640,23 +637,21 @@ local L = {
 	-- Shift (spec 2.3): the breakdown without brackets, "+7 Agi, +2 Sta, +6 Armor".
 	tooltipBreakdownPart = "%s %s",
 	tooltipBreakdownJoin = ", ",
+	-- The next upgrade's breakdown names the item it describes: "Ranger Bow: +1 Agility".
+	tooltipBreakdownOf = "%s: %s",
 	tooltipWeaponDps = "weapon DPS",
 	tooltipArmor = "Armor",
-	statAbbrev = { strength = "Str", agility = "Agi", stamina = "Sta", intellect = "Int", spirit = "Spi" },
 	-- Shift: alternatives, one per line, the second aligned under the first item's name.
 	tooltipAlternativesOne = "Also good: %s",
 	tooltipAlternativesLabel = "Also good:",
 	-- One alternative with its gain over what is worn: "Veteran's Chain Shirt +1.1".
 	tooltipAlternativeGain = "%s %s",
-	tooltipAltGain = "%s%.1f",
-	tooltipAltGainScore = "%s%d",
-	tooltipInBuildList = "In your build's gear list",
 	tooltipEnchantNote = "Enchant not counted",
 	-- A two-hander's figure is net of both worn hands.
 	tooltipCompared = "Compared with %s and %s",
 	-- The last Shift line, dimmer: where the weights came from.
 	tooltipAttribution = "Forever Sixty · %s",
-	tooltipAttrEstimate = "%s estimate",
+	tooltipAttrEstimate = "%s",
 	tooltipAttrSim = "%s, your sim",
 	tooltipAttrBuild = "%s, your build",
 	-- The worn item's enchant, read from its own tooltip (every comparison against it is
@@ -685,7 +680,7 @@ local L = {
 	-- The roll frame's short verdict: "+5.8 DPS · Best in slot".
 	rollBestJoin = " · ",
 	rollNotForYou = "Not for you",
-	rollDowngrade = "Downgrade",
+	rollDowngrade = "%s",
 	diagRewardMarksFailed = "The quest reward and roll marks failed once and turned themselves off until /reload: %s",
 	tooltipClassPlural = {
 		WARRIOR = "warriors", PALADIN = "paladins", HUNTER = "hunters", ROGUE = "rogues",
@@ -819,7 +814,7 @@ local L = {
 	-- L3.8: /fs diag's one line for the build in force (Follow.diagLine), and why there is none.
 	diagBuildDefault = "Build: %s (default for %s)",
 	diagBuildSaved = "Build: %s (saved)",
-	diagBuildNone = "Build: none — %s",
+	diagBuildNone = "Build: none: %s",
 	diagBuildNotYet = "not worked out yet",
 	diagBuildNoDefaults = "the addon's data carries no default builds",
 	diagBuildNoClass = "this class is not in the addon's data",
@@ -1470,7 +1465,7 @@ L.lootUsage = "Type /fs loot, then shift-click an item, to see what it is worth 
 L.lootNotInGroup = "You are not in a group."
 -- "Ranger Bow (Ranged): +3.5 DPS over Short Ash Bow, on your list"; the level gate is a prefix.
 L.lootCmdLine = "%s: %s over %s, %s"
-L.lootCmdNeeds = "%s: needs level %d — %s over %s, %s"
+L.lootCmdNeeds = "%s: needs level %d, %s over %s, %s"
 L.lootCmdSlot = "%s (%s)"
 L.lootOnYourList = "on your list"
 L.lootNotOnYourList = "not on your list"

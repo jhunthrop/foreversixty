@@ -206,7 +206,8 @@ function RewardMarks.rollLine(judged)
 		return nil
 	end
 	if judged.gain <= -Progress.MIN_GAIN then
-		return { text = paint("tooltipMuted", L.rollDowngrade) }
+		return { text = paint("tooltipMuted", string.format(L.rollDowngrade,
+			ItemTooltip.figure(judged.gain, judged.unit))) }
 	end
 	return { text = paint("tooltipMuted", L.tooltipSide) }
 end

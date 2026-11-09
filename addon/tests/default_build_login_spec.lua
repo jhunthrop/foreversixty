@@ -423,7 +423,7 @@ describe("one definition of a saved build", function()
 		for _, line in ipairs(Options.handle("diag")) do
 			found = found or line == string.format(L.diagBuildNone, L.diagBuildSavedRefused)
 		end
-		assert.is_true(found, "Build: none — the saved build does not load")
+		assert.is_true(found, "Build: none: the saved build does not load")
 	end)
 end)
 

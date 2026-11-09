@@ -73,8 +73,7 @@ function PlayerTooltip.section(record, shift, now)
 	end
 	if shift then
 		for _, part in ipairs(Score.components(record)) do
-			local label = part.label == L.scoreDiscipline and L.scoreDisciplineLong or part.label
-			out[#out + 1] = double(label, tostring(part.value), "tooltipMuted", "tooltipBody")
+			out[#out + 1] = double(part.label, tostring(part.value), "tooltipMuted", "tooltipBody")
 		end
 	end
 	return out

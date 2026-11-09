@@ -133,16 +133,15 @@ describe("PlayerTooltip", function()
 			assert.are.equal("Forever Score 900", PlayerTooltip.scoreText({ score = 900 }, midnight + 30 * day))
 		end)
 
-		it("lists the five parts as double lines while Shift is held, Preparation saying what it measures", function()
+		it("lists the five parts as double lines while Shift is held, in the parts' own words", function()
 			start(record())
 			shift = true
 			local lines = hover()
 			assert.are.equal(6, #lines)
 			local expected = {
 				{ "Gear", "380" }, { "Experience", "410" }, { "Parses", "300" }, { "Attendance", "100" },
-				{ L.scoreDisciplineLong, "50" },
+				{ L.scoreDiscipline, "50" },
 			}
-			assert.are.equal("Preparation (flasks, food, enchants)", L.scoreDisciplineLong)
 			for index, pair in ipairs(expected) do
 				local entry = lines[index + 1]
 				assert.are.same(pair, { entry.text, entry.right }, "component " .. index)

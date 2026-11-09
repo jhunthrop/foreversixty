@@ -845,7 +845,7 @@ describe("LootCouncil", function()
 		it("names the slot, and says what level an item needs when the character cannot use it yet", function()
 			start({ solo = true, level = 30 })
 			local lines = LootCouncil.command("106")
-			assert.is_truthy(lines[1]:find("Ranger Mail|r (Chest): needs level 40 — +8.0 DPS over Worn Robe, not on your list",
+			assert.is_truthy(lines[1]:find("Ranger Mail|r (Chest): needs level 40, +8.0 DPS over Worn Robe, not on your list",
 				1, true))
 			-- Beyond reach for good: the existing can't-score form.
 			assert.is_truthy(LootCouncil.command("102")[1]:find("can't score: " .. L.lootWhy.cantuse, 1, true))

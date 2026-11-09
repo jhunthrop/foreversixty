@@ -143,7 +143,7 @@ describe("Tooltip's slot hovers", function()
 			Tooltip.data = DATA
 			local tooltip, calls = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:111:link")
-			-- The worn item is the band's pick: "Your best in slot", gold (case 18). The next rung's
+			-- The worn item is the band's pick: "Best in slot", gold (case 18). The next rung's
 			-- pick has no name yet, so no At line; nothing else without Shift.
 			assert.are.same({ { kind = "line", text = L.tooltipYourBis } }, calls)
 		end)
@@ -169,7 +169,8 @@ describe("Tooltip's slot hovers", function()
 			-- Case 9: the bag item fills the empty slot, an upgrade; the band's pick beats it.
 			assert.are.equal(Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, Tooltip.figure(4, "score")),
 				calls[1].text)
-			assert.are.equal(string.format(L.tooltipBetterBare, "Helm of the Pathfinder", "+10"), calls[2].text)
+			assert.are.equal(string.format(L.tooltipBetterBare, "Helm of the Pathfinder", Tooltip.figure(10, "score")),
+				calls[2].text)
 			assert.are.equal(2, #calls)
 		end)
 
