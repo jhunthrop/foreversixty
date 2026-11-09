@@ -9,10 +9,9 @@
     16,
     0,
     361,
-    259
+    230
    ],
    "inventory": {
-    "button": 1,
     "image": 1
    }
   },
@@ -21,7 +20,7 @@
     16,
     16,
     361,
-    84
+    64
    ],
    "inventory": {
     "image": 1
@@ -31,17 +30,30 @@
    "box": [
     96,
     60,
-    281,
-    40
+    221,
+    20
    ],
    "inventory": {}
+  },
+  "plate": {
+   "box": [
+    16,
+    793,
+    361,
+    2857
+   ],
+   "inventory": {
+    "row": 24,
+    "button": 9,
+    "image": 24
+   }
   },
   "section-waiting-for-approval": {
    "box": [
     16,
-    396,
+    389,
     361,
-    439
+    382
    ],
    "inventory": {
     "row": 3,
@@ -52,25 +64,13 @@
   "section-roster": {
    "box": [
     16,
-    883,
+    793,
     361,
-    2932
+    2857
    ],
    "inventory": {
     "row": 24,
     "button": 9,
-    "image": 24
-   }
-  },
-  "plate": {
-   "box": [
-    16,
-    1214,
-    361,
-    2545
-   ],
-   "inventory": {
-    "row": 24,
     "image": 24
    }
   }

@@ -9,10 +9,9 @@
     16,
     0,
     380,
-    259
+    187
    ],
    "inventory": {
-    "button": 1,
     "image": 1
    }
   },
@@ -21,7 +20,7 @@
     16,
     16,
     380,
-    84
+    64
    ],
    "inventory": {
     "image": 1
@@ -31,17 +30,17 @@
    "box": [
     96,
     60,
-    300,
-    40
+    221,
+    20
    ],
    "inventory": {}
   },
   "section-planned": {
    "box": [
     16,
-    376,
+    215,
     380,
-    202
+    215
    ],
    "inventory": {
     "button": 1
@@ -50,18 +49,20 @@
   "plate": {
    "box": [
     16,
-    435,
+    452,
     380,
-    143
+    368
    ],
-   "inventory": {}
+   "inventory": {
+    "button": 1
+   }
   },
   "section-raid-nights": {
    "box": [
     16,
-    626,
+    452,
     380,
-    353
+    368
    ],
    "inventory": {
     "button": 1

@@ -49,7 +49,7 @@
     16,
     491,
     361,
-    147
+    162
    ],
    "inventory": {
     "segment": 4,
@@ -57,25 +57,21 @@
     "image": 1
    }
   },
-  "section-sign-ups": {
-   "box": [
-    16,
-    686,
-    361,
-    2380
-   ],
-   "inventory": {
-    "row": 21,
-    "segment": 84,
-    "image": 21
-   }
-  },
   "plate": {
    "box": [
     16,
-    733,
+    6038,
     361,
-    2333
+    107
+   ],
+   "inventory": {}
+  },
+  "section-sign-ups": {
+   "box": [
+    16,
+    675,
+    361,
+    2393
    ],
    "inventory": {
     "row": 21,
@@ -86,9 +82,9 @@
   "section-not-signed-up": {
    "box": [
     16,
-    3114,
+    3090,
     361,
-    361
+    376
    ],
    "inventory": {
     "row": 3,
@@ -100,9 +96,9 @@
   "section-comp-against-the-target": {
    "box": [
     16,
-    3499,
+    3490,
     361,
-    225
+    320
    ],
    "inventory": {
     "button": 1
@@ -111,9 +107,9 @@
   "section-bench-and-swaps": {
    "box": [
     16,
-    3756,
+    3832,
     361,
-    236
+    251
    ],
    "inventory": {
     "row": 2,
@@ -124,32 +120,21 @@
   "section-onyxia-assignments": {
    "box": [
     16,
-    4024,
+    4105,
     361,
-    1896
+    1911
    ],
    "inventory": {
     "row": 12,
     "button": 14
    }
   },
-  "section-buff-and-debuff-cover": {
-   "box": [
-    16,
-    5952,
-    361,
-    1264
-   ],
-   "inventory": {
-    "image": 24
-   }
-  },
   "section-notes": {
    "box": [
     16,
-    7248,
+    6038,
     361,
-    69
+    107
    ],
    "inventory": {}
   }
