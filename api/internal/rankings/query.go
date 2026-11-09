@@ -336,8 +336,15 @@ type Character struct {
 	// Supporter is true when the character's owning account shows the supporter mark
 	// (Service.supporterOf); false for an unowned character.
 	Supporter bool `json:"supporter"`
+	// ScoreHidden is true when the character's owner hid the Forever Score and the viewer is
+	// someone else (characters.score_visible, migration 0092): every score field is null and
+	// score_history empty, and the page shows no score block at all, not a "no logs" line.
+	// Absent otherwise, the owner's own view included.
+	ScoreHidden bool `json:"score_hidden,omitempty"`
 	// ownerID is characters.user_id, read to resolve Supporter and never marshaled.
 	ownerID *int64
+	// scoreVisible is characters.score_visible (true without a row), never marshaled.
+	scoreVisible bool
 	// GearSpec is the spec the gear picks are for and GearSpecSource where it came from
 	// ("fight", "talents" or "default"); null when the panel has no spec.
 	GearSpec       *string `json:"gear_spec"`
@@ -441,8 +448,11 @@ func (s *Store) CharacterFights(ctx context.Context, region, ruleset, name strin
 	}
 	var class *string
 	err := s.Pool.QueryRow(ctx,
-		`select name, class, coalesce(avatar_url, ''), coalesce(render_url, ''), user_id from characters where key = $1`, key).
-		Scan(&out.Character.Name, &class, &out.Character.AvatarURL, &out.Character.RenderURL, &out.ownerID)
+		`select name, class, coalesce(avatar_url, ''), coalesce(render_url, ''), user_id, score_visible from characters where key = $1`, key).
+		Scan(&out.Character.Name, &class, &out.Character.AvatarURL, &out.Character.RenderURL, &out.ownerID, &out.scoreVisible)
+	if err == pgx.ErrNoRows {
+		out.scoreVisible = true
+	}
 	if err == nil && class != nil {
 		out.Character.Class = *class
 	} else if err != nil && err != pgx.ErrNoRows {
