@@ -6,6 +6,9 @@ import { isTie } from '../bis/doll-view';
 import { slotLabel, type PaperdollSlot } from '../gear/paperdoll';
 import type { ItemRef } from '../ui/primitives';
 
+/** An item the data does not grade reads as common, as the doll draws it. */
+const PLAIN_QUALITY = 1;
+
 /** The frame's centre holds six rows; the rest are counted under them. */
 export const UPGRADES_SHOWN = 6;
 
@@ -35,7 +38,7 @@ export function upgradeRows(
         {
           slot: slot.slot,
           label: slotLabel(slot.slot, classSlug),
-          item: { id, name, quality, icon: icon ?? undefined },
+          item: { id, name, quality: quality ?? PLAIN_QUALITY, icon: icon ?? undefined },
           value,
         },
       ];
