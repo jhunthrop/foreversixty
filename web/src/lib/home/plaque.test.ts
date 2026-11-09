@@ -64,9 +64,9 @@ describe('the raid plaque', () => {
   });
 
   it("reads the raid's start whole, in the viewer's own 12-hour time with no zone", () => {
-    expect(raidWhen('2026-12-10T02:00:00Z', 'America/Chicago')).toBe('Wednesday 9 December · 8 pm');
-    expect(raidWhen('2026-12-10T02:30:00Z', 'America/Chicago')).toBe('Wednesday 9 December · 8:30 pm');
-    expect(raidWhen('2026-12-10T02:00:00Z', 'Europe/London')).toBe('Thursday 10 December · 2 am');
+    expect(raidWhen('2026-12-10T02:00:00Z', 'America/Chicago')).toBe('Wednesday 9 December · 8\u00a0pm');
+    expect(raidWhen('2026-12-10T02:30:00Z', 'America/Chicago')).toBe('Wednesday 9 December · 8:30\u00a0pm');
+    expect(raidWhen('2026-12-10T02:00:00Z', 'Europe/London')).toBe('Thursday 10 December · 2\u00a0am');
   });
 
   it('reads the first raids day whole', () => {

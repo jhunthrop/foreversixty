@@ -117,6 +117,7 @@ export function raidWhen(iso: string, timeZone: string): string {
       hour12: true,
       timeZone,
     })
-    .replace(/\s?([AP]M)$/, (_, half: string) => ` ${half.toLowerCase()}`);
+    // A no-break space: "8 pm" never splits across lines on a phone.
+    .replace(/\s?([AP]M)$/, (_, half: string) => `\u00a0${half.toLowerCase()}`);
   return `${dayIn(at, timeZone)} · ${time}`;
 }

@@ -117,12 +117,18 @@
       column-gap: 48px;
     }
   }
-  /* Two narrow columns, or one on a phone: the bar shortens and the gap gives way to it. */
+  /* Two narrow columns: the bar shortens and the gap gives way to it. */
   @media (max-width: 1099px) {
     .home-sims-bar {
       width: 56px;
     }
     .home-sims-gap {
+      display: none;
+    }
+  }
+  /* A phone keeps the name and the figure; the bar would sit on a long name. */
+  @media (max-width: 767px) {
+    .home-sims-bar {
       display: none;
     }
   }

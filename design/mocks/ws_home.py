@@ -71,6 +71,7 @@ HOME_CSS = f'''
 .lbox{{container-type:inline-size}}@container (min-width:900px){{.lad{{columns:2;column-gap:48px}}}}
 .strail{{display:flex;align-items:center;gap:14px}}.strail .meter{{width:120px}}.strail .sfig{{display:flex;justify-content:flex-end;min-width:104px}}.strail .gap{{width:96px;font-size:13px;line-height:18px;text-align:right;color:var(--muted)}}
 @media(max-width:1099px){{.strail .meter{{width:56px}}.strail .gap{{display:none}}}}
+@media(max-width:767px){{.strail .meter{{display:none}}}}
 .fpair{{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:var(--gap)}}@media(min-width:1100px){{.fpair{{grid-template-columns:minmax(0,1fr) 400px}}}}
 .sp h3{{margin:0;padding:8px 0 2px;font:600 13px/18px var(--font-body);color:var(--muted)}}
 .err{{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}}
