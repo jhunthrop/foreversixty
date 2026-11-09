@@ -24,6 +24,9 @@ enum RankingsTestData {
     static func lightningbolltz() throws -> CharacterProfile { try RaidFixture.load(CharacterProfile.self, "character.card.yours") }
     static func freshling() throws -> CharacterProfile { try RaidFixture.load(CharacterProfile.self, "character.card.empty") }
 
+    /// A character whose owner hid the Forever Score, read by someone else.
+    static func hidden() throws -> CharacterProfile { try RaidFixture.load(CharacterProfile.self, "character.card.hidden") }
+
     /// The shaman items file, by id, for the gear sockets.
     static func items() throws -> [Int: Item] {
         let file = try WireFormat.decoder().decode(ItemsFile.self, from: RaidFixture.data("cdn.items.shaman"))
