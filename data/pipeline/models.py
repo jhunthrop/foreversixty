@@ -452,6 +452,13 @@ class LootBoss(BaseModel):
     rare_spawn: bool | None = None
 
 
+class VendorCost(BaseModel):
+    """A vendor price in something other than gold."""
+
+    amount: int
+    currency: str
+
+
 class LootSource(BaseModel):
     """One place loot comes from (parity contract 6.1).
 
@@ -538,6 +545,14 @@ class LootSource(BaseModel):
     #: profession skill its recipe needs (`pipeline.loot.crafted_skill`).
     #: An item with no skill in the pinned classic-db dump is absent.
     required_skill: dict[str, int] | None = None
+    #: `vendor` and `rep` kinds (feedback 2026-11-09): where the seller
+    #: stands ("Booty Bay", "The Barrens"), from curated/vendor-terms.json
+    #: (`pipeline.loot.vendor_terms`). Absent when nothing curated says.
+    place: str | None = None
+    #: `vendor` kind only: item id (string key) -> its price when it is not
+    #: gold ("100 Tarnished Undermine Reals"), from the same curated file.
+    #: An item with no curated price is absent, never guessed.
+    item_costs: dict[str, VendorCost] | None = None
     #: "wowhead" or "classic-db" when this source exists ONLY because a
     #: scrape/dump named it for an item the engine fork's own database
     #: named no source for at all (night-item-sources lane, 2026-09-28;

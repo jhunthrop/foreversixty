@@ -1,0 +1,38 @@
+{
+  "sources": [
+    {
+      "label": "Wowhead Forever, Pix Xizzix (npc 227853): Undermine Trader, Stranglethorn Vale 28.4, 75.8 (Booty Bay)",
+      "url": "https://www.wowhead.com/forever/npc=227853/pix-xizzix",
+      "kind": "site"
+    },
+    {
+      "label": "questing.wiki, Pix Xizzix: sold for Tarnished Undermine Real",
+      "url": "https://questing.wiki/wow-forever/npcs/227853/",
+      "kind": "community"
+    },
+    {
+      "label": "Wowhead Forever, Theramore Gloves (271948): 'This item can be purchased in The Barrens'",
+      "url": "https://www.wowhead.com/forever/item=271948/theramore-gloves",
+      "kind": "site"
+    }
+  ],
+  "notes": "Where a vendor or a reputation's quartermaster stands, and what a vendor charges when it is not gold, so a BiS source line says what a player has to do (feedback 2026-11-09). Keys: vendors by npc id (loot.json's vendor:<npc_id> source), reputations by client faction id (a rep source's faction_id). A vendor's cost_by_slot prices its stock by the item's gear slot; a slot with no price stays unpriced, never guessed. data/pipeline/loot/vendor_terms.py writes place and item_costs into loot.json.",
+  "vendors": [
+    {
+      "npc_id": 227853,
+      "name": "Pix Xizzix",
+      "place": "Booty Bay",
+      "currency": "Tarnished Undermine Reals",
+      "cost_by_slot": {"waist": 100, "finger": 75, "back": 75, "trinket": 125},
+      "why": "Pix Xizzix sells for Tarnished Undermine Reals (currency 3469). The prices by slot are the beta vendor records on zockify.com and questing.wiki read on 2026-10-09 (content-phases.json gate undermine-reals). Relic prices were not recorded, so relics stay unpriced."
+    }
+  ],
+  "reputations": [
+    {
+      "faction_id": 2799,
+      "name": "Theramore Expeditionary Force",
+      "place": "The Barrens",
+      "why": "Wowhead Forever's pages for the faction's rewards say they can be purchased in The Barrens. No page names the quartermaster yet."
+    }
+  ]
+}

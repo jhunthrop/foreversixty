@@ -4896,10 +4896,18 @@ components:
         level_max: { type: integer }
         icon: { type: string, description: "dungeon and raid: the instance's icon, a name under /data/{build}/icons (the API's zoneicons table: inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for an instance with none of its own). Written by the nightly loot run; absent on a build generated before it." }
         required_skill: { type: object, additionalProperties: { type: integer }, description: "crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent." }
+        place: { type: string, description: "vendor and rep: where the seller stands (Booty Bay, The Barrens), curated; absent when unknown." }
+        item_costs: { type: object, additionalProperties: { $ref: '#/components/schemas/VendorCost' }, description: "vendor only: item id -> its price when it is not gold; an item with no known price is absent." }
         rare_spawn: { type: boolean }
         source_origin: { type: string }
         source_note: { type: string }
         reitemised_from: { type: object, additionalProperties: { type: integer } }
+    VendorCost:
+      type: object
+      required: [amount, currency]
+      properties:
+        amount: { type: integer }
+        currency: { type: string, description: "The currency's plural name: Tarnished Undermine Reals." }
     LootBoss:
       type: object
       required: [id, name, items]

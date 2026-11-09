@@ -229,7 +229,7 @@ var lootOptional = []string{
 	"sources[].npc_id", "sources[].opens", "sources[].profession", "sources[].faction_id", "sources[].standing",
 	"sources[].rank", "sources[].faction", "sources[].faction_source", "sources[].title", "sources[].title_rank",
 	"sources[].level_min", "sources[].level_max", "sources[].icon", "sources[].rare_spawn", "sources[].source_origin", "sources[].source_note",
-	"sources[].reitemised_from", "sources[].required_skill", "sources[].bosses[].item_chances", "sources[].bosses[].item_source_origin",
+	"sources[].reitemised_from", "sources[].required_skill", "sources[].place", "sources[].item_costs", "sources[].bosses[].item_chances", "sources[].bosses[].item_source_origin",
 	"sources[].bosses[].reitemised_from", "sources[].bosses[].rank", "sources[].bosses[].rare_spawn",
 }
 
@@ -238,7 +238,7 @@ func TestCDNLootFixtureMatchesTheGenerator(t *testing.T) {
 	got := readJSON(t, filepath.Join(activeBuildDir(t), "loot.json"))
 	opts := Options{
 		Optional: lootOptional,
-		Open:     []string{"quests", "factions", "sources[].item_chances", "sources[].reitemised_from", "sources[].required_skill", "sources[].bosses[].item_chances", "sources[].bosses[].item_source_origin", "sources[].bosses[].reitemised_from"},
+		Open:     []string{"quests", "factions", "sources[].item_chances", "sources[].reitemised_from", "sources[].required_skill", "sources[].item_costs", "sources[].bosses[].item_chances", "sources[].bosses[].item_source_origin", "sources[].bosses[].reitemised_from"},
 	}
 	if diffs := Compare(Load(t, "cdn.loot"), got, opts); len(diffs) > 0 {
 		t.Fatalf("loot.json: %v", diffs)

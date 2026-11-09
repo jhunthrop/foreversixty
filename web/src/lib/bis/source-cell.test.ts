@@ -241,6 +241,60 @@ describe('resolveSourceCell', () => {
     expect(cell).toEqual({ kind: 'vendor', npc: 'Gorn One Eye' });
   });
 
+  it("carries a vendor's curated place and the item's non-gold price", () => {
+    const loot: LootFile & LootQuestsFile = {
+      sources: [
+        {
+          id: 'vendor:227853',
+          kind: 'vendor',
+          name: 'Pix Xizzix',
+          items: [272403, 272434],
+          place: 'Booty Bay',
+          item_costs: { '272403': { amount: 100, currency: 'Tarnished Undermine Reals' } },
+        },
+      ],
+      quests: {},
+    };
+    const priced = resolveSourceCell(slot({ item_id: 272403, source_kind: 'vendor' }), 'alliance', loot, 'f');
+    expect(priced).toEqual({
+      kind: 'vendor',
+      npc: 'Pix Xizzix',
+      place: 'Booty Bay',
+      cost: { amount: 100, currency: 'Tarnished Undermine Reals' },
+    });
+    const unpriced = resolveSourceCell(
+      slot({ item_id: 272434, source_kind: 'vendor' }),
+      'alliance',
+      loot,
+      'f',
+    );
+    expect(unpriced).toEqual({ kind: 'vendor', npc: 'Pix Xizzix', place: 'Booty Bay' });
+  });
+
+  it("carries a reputation's curated place", () => {
+    const loot: LootFile & LootQuestsFile = {
+      sources: [
+        {
+          id: 'rep:theramore-expeditionary-force:exalted',
+          kind: 'rep',
+          name: 'Theramore Expeditionary Force',
+          faction_id: 2799,
+          standing: 'exalted',
+          items: [271948],
+          place: 'The Barrens',
+        },
+      ],
+      quests: {},
+    };
+    const cell = resolveSourceCell(slot({ item_id: 271948, source_kind: 'rep' }), 'alliance', loot, 'f');
+    expect(cell).toEqual({
+      kind: 'rep',
+      faction: 'Theramore Expeditionary Force',
+      standing: 'exalted',
+      place: 'The Barrens',
+    });
+  });
+
   it('resolves a rank quartermaster vendor row to its pvp rank/faction, never the bare npc name', () => {
     const cell = resolveSourceCell(
       slot({ item_id: 102, source_kind: 'vendor' }),

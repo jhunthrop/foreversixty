@@ -7,7 +7,7 @@
 // every other `/bis` input) and its `quests` map (`LootQuestsFile`, `./types.ts`), never a
 // fetch -- this runs in Astro's Node build step, the same boundary `load.ts`'s header
 // documents for the rest of this page's data.
-import { bossName, itemsOfSource, type LootFile, type LootSource } from '../sim/loot';
+import { bossName, itemsOfSource, type LootFile, type LootSource, type VendorCost } from '../sim/loot';
 import { bisCopy } from './copy';
 import { questMinLevelShown } from '../items/source-labels';
 import type { BisSlot, Faction, LootQuestOption, LootQuestsFile } from './types';
@@ -64,12 +64,18 @@ export interface CraftedSourceCell {
 export interface VendorSourceCell {
   kind: 'vendor';
   npc: string;
+  /** Where the vendor stands, when loot.json's curated `place` names it. */
+  place?: string;
+  /** The item's price when it is not gold ("100 Tarnished Undermine Reals"). */
+  cost?: VendorCost;
 }
 
 export interface RepSourceCell {
   kind: 'rep';
   faction: string;
   standing?: string;
+  /** Where the quartermaster stands, when loot.json's curated `place` names it. */
+  place?: string;
 }
 
 export interface ZoneSourceCell {
@@ -120,6 +126,17 @@ export type SourceCell =
 
 function findSource(sources: readonly LootSource[], kind: string, itemId: number): LootSource | undefined {
   return sources.find((source) => source.kind === kind && itemsOfSource(source).includes(itemId));
+}
+
+/** A vendor's cell, with its curated place and the item's non-gold price when known. */
+function vendorCell(source: LootSource, itemId: number): VendorSourceCell {
+  const cost = source.item_costs?.[String(itemId)];
+  return {
+    kind: 'vendor',
+    npc: source.name,
+    ...(source.place !== undefined ? { place: source.place } : {}),
+    ...(cost !== undefined ? { cost } : {}),
+  };
 }
 
 /** The rep source the row names (the ranker's faction-correct pick), else the first that sells it. */
@@ -278,14 +295,21 @@ export function resolveSourceCell(
     // than the bare NPC name.
     return source.rank !== undefined && (source.faction === 'alliance' || source.faction === 'horde')
       ? { kind: 'pvp', rank: source.rank, faction: source.faction }
-      : { kind: 'vendor', npc: source.name };
+      : vendorCell(source, itemId);
   }
 
   if (slot.source_kind === 'rep') {
     // An item both PvP factions sell (Don Julio's Band: Stormpike Guard and Frostwolf Clan) has
     // a rep source per faction; the ranker already named this band's own, so that one wins.
     const source = repSourceFor(loot.sources, itemId, slot.source);
-    return source === undefined ? fallback : { kind: 'rep', faction: source.name, standing: source.standing };
+    return source === undefined
+      ? fallback
+      : {
+          kind: 'rep',
+          faction: source.name,
+          standing: source.standing,
+          ...(source.place !== undefined ? { place: source.place } : {}),
+        };
   }
 
   if (slot.source_kind === 'zone' || slot.source_kind === 'world') {

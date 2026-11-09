@@ -2066,6 +2066,10 @@ data class LootSource(
     @SerialName("icon") val icon: String? = null,
     /** crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent. */
     @SerialName("required_skill") val requiredSkill: Map<String, Int>? = null,
+    /** vendor and rep: where the seller stands (Booty Bay, The Barrens), curated; absent when unknown. */
+    @SerialName("place") val place: String? = null,
+    /** vendor only: item id -> its price when it is not gold; an item with no known price is absent. */
+    @SerialName("item_costs") val itemCosts: Map<String, VendorCost>? = null,
     @SerialName("rare_spawn") val rareSpawn: Boolean? = null,
     @SerialName("source_origin") val sourceOrigin: String? = null,
     @SerialName("source_note") val sourceNote: String? = null,
@@ -3679,6 +3683,13 @@ data class TrashGroup(
     @SerialName("fights") val fights: List<Int> = emptyList(),
     /** The pulls' lengths summed */
     @SerialName("duration_ms") val durationMs: Long,
+)
+
+@Serializable
+data class VendorCost(
+    @SerialName("amount") val amount: Int,
+    /** The currency's plural name: Tarnished Undermine Reals. */
+    @SerialName("currency") val currency: String,
 )
 
 @Serializable

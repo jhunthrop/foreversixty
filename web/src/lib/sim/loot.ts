@@ -113,6 +113,19 @@ export interface LootSource {
   /** `crafted` kind only (2026-11-05): item id (string-keyed) -> the profession skill its
    *  recipe needs (`pipeline.loot.crafted_skill`). An item with no known skill is absent. */
   required_skill?: Record<string, number>;
+  /** `vendor` and `rep` kinds (feedback 2026-11-09): where the seller stands ("Booty Bay",
+   *  "The Barrens"), from data/curated/vendor-terms.json. Absent when nothing curated says. */
+  place?: string;
+  /** `vendor` kind only: item id (string-keyed) -> its price when it is not gold. An item
+   *  with no curated price is absent. */
+  item_costs?: Record<string, VendorCost>;
+}
+
+/** A vendor price in something other than gold. */
+export interface VendorCost {
+  amount: number;
+  /** The currency's plural name: "Tarnished Undermine Reals". */
+  currency: string;
 }
 
 /** One quest that rewards an item, from loot.json's `quests` map (contract 10.4: item id,

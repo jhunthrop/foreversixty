@@ -107,10 +107,12 @@ from pipeline.loot.sources import (
 )
 from pipeline.loot.supersede import apply_supersession, mark_superseded_items, superseded_pairs
 from pipeline.loot.vendor_cost import apply_vendor_cost_gate
+from pipeline.loot.vendor_terms import apply_vendor_terms, load_vendor_terms
 from pipeline.loot.weapons import apply_fork_weapon_damage, fork_weapon_damage
 from pipeline.manifest import refresh_manifest
 from pipeline.models import LootFile
 from pipeline.normalize import write_document, write_records
+from pipeline.normalize.gear import SLOT_BY_INVENTORY_TYPE
 from pipeline.normalize.sockets import check_no_sockets
 from pipeline.quest_levels import load_quest_levels
 
@@ -268,6 +270,16 @@ def _build_and_write_loot(
     # The dungeon and raid level ranges last, once every source (overlay
     # additions included) is final; a source with none fails the run.
     document = apply_instance_levels(document, load_instance_levels(curated_dir))
+    # Where a vendor or quartermaster stands and a vendor's non-gold prices.
+    document = apply_vendor_terms(
+        document,
+        load_vendor_terms(curated_dir),
+        {
+            item_id: SLOT_BY_INVENTORY_TYPE[inventory_type]
+            for item_id, inventory_type in item_inventory_types.items()
+            if inventory_type in SLOT_BY_INVENTORY_TYPE
+        },
+    )
     write_document(document, build_dir / LOOT)
     return _LootRun(
         document=document,
