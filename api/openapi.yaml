@@ -1445,7 +1445,7 @@ components:
             clicks: { type: integer, format: int64 }
             sign_ups: { type: integer, format: int64 }
             returning: { type: integer, format: int64 }
-            revenue_cents: { type: integer, format: int64, description: Net after Stripe fees, tax and refunds. }
+            revenue_cents: { type: integer, format: int64, description: 'Net after Stripe fees, tax and refunds.' }
             month: { type: string, pattern: '^[0-9]{4}-[0-9]{2}$' }
             owed_cents: { type: integer, format: int64 }
             capped: { type: boolean }
@@ -1524,7 +1524,7 @@ components:
         platform: { type: string, enum: [twitch, youtube] }
         audience: { type: integer, format: int64, nullable: true }
         about: { type: string, maxLength: 500 }
-        contact_email: { type: string, description: Optional; shown to the owner only, never logged. }
+        contact_email: { type: string, description: 'Optional; shown to the owner only, never logged.' }
     CreatorRequest:
       type: object
       description: A waiting application, for the owner; suggested prefills the Approve form.
@@ -1576,6 +1576,23 @@ components:
             sign_ins: { type: integer, format: int64 }
             linked: { type: integer, format: int64 }
             premium: { type: integer, format: int64 }
+    AppTesterInput:
+      type: object
+      required: [email, platform]
+      properties:
+        email:
+          type: string
+          maxLength: 254
+          description: One plain address; stored trimmed and lowercased.
+        platform: { type: string, enum: [ios, android] }
+    AppTester:
+      type: object
+      description: One phone-app beta signup, as the owner's list shows it.
+      required: [email, platform, created_at]
+      properties:
+        email: { type: string }
+        platform: { type: string, enum: [ios, android] }
+        created_at: { type: string, format: date-time }
     # ---------------------------------------------------------------------------------------
     # Native apps v1 (docs/contracts/app-v1.md). The iOS and Android models are generated from
     # these schemas (web/scripts/gen-mobile-api.mjs); api/internal/contract/openapi_test.go
@@ -1673,7 +1690,7 @@ components:
         discord_link_suggested: { type: [string, "null"] }
         main_character_key: { type: string, description: Omitted until the account picks a main. }
         creator: { type: boolean, description: True for an account in the creator program; omitted otherwise. }
-        creator_requests: { type: integer, format: int64, description: The owner only, creator applications waiting; omitted at none. }
+        creator_requests: { type: integer, format: int64, description: 'The owner only: creator applications waiting; omitted at none.' }
         bnet_imported_at:
           type: string
           format: date-time
@@ -10738,6 +10755,65 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '409':
           description: A link already has that slug
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+
+  /v1/app-testers:
+    post:
+      summary: Sign up to test the phone apps (foreversixty.gg/app)
+      operationId: signupAppTester
+      description: >-
+        No auth. A signed-in browser still sends X-CSRF-Token like any write; the site's form
+        sends no cookie. 5 an hour per IP on top of the router's budget. One row per address and
+        platform (unique), a repeat stores nothing. A new address and one already on the list get
+        the same 201, so the route cannot tell who signed up; the answer never carries a row.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/AppTesterInput' } } }
+      responses:
+        '201':
+          description: Received (a new signup or one already on the list, told apart by nothing)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [status], properties: { status: { type: string, enum: [received] } } }
+        '400':
+          description: The body is not JSON
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '422':
+          description: The email or the platform is refused; error.fields names which
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: This address's hour budget is spent
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/app-testers:
+    get:
+      summary: Every phone-app beta signup (the owner's /admin/testers page)
+      operationId: listAppTesters
+      description: Admin session only. private, no-store. Newest first.
+      responses:
+        '200':
+          description: The signups
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [testers]
+                        properties:
+                          testers: { type: array, items: { $ref: '#/components/schemas/AppTester' } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the admin
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
 
   /v1/guilds/{id}/recruit:

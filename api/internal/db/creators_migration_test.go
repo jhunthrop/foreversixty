@@ -10,7 +10,7 @@ const creatorsVersion = 94
 
 // beforeCreators is the newest migration on main before ours (going down to it also takes back
 // any lane's migration numbered between, which the cleanup restores).
-const beforeCreators = 92
+const beforeCreators = 93
 
 // The creator program's migration adds its tables and the entitlements source 'creator', holds
 // one open application per account and the code and channel rules, and its down removes all of

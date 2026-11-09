@@ -10,6 +10,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/activity"
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/app"
+	"github.com/jhunthrop/foreversixty/api/internal/apptesters"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
@@ -100,6 +101,9 @@ type Deps struct {
 	// Activity serves the site feed (GET /v1/feed) and the home blocks (GET /v1/home); nil
 	// leaves them unmounted.
 	Activity *activity.Service
+	// AppTesters serves the phone apps' beta signup (foreversixty.gg/app) and the owner's list
+	// of it; nil leaves them unmounted.
+	AppTesters *apptesters.Service
 
 	TrustedProxyHops int
 }
@@ -203,6 +207,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.Activity != nil {
 		activity.Mount(mux, d.Activity)
+	}
+	if d.AppTesters != nil {
+		apptesters.Mount(mux, d.AppTesters)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

@@ -67,6 +67,9 @@ class WidgetScreenshotTest {
 
     private val zone = ZoneId.of("America/Chicago")
     private val now = WidgetTestData.boardNow
+
+    /** A day after the first raids opened (mock `widgets-open`). */
+    private val raidsOpen: Instant = Instant.parse("2026-12-10T18:00:00Z")
     private val small = DpSize(170.dp, 170.dp)
     private val medium = DpSize(360.dp, 170.dp)
     private var shown by mutableStateOf<Pair<RemoteViews, DpSize>?>(null)
@@ -133,6 +136,7 @@ class WidgetScreenshotTest {
         raid("and-raid2x2-no-guild", WidgetTestData.snapshot("widget.get.no-guild"), medium = false)
         raid("and-raid2x2-no-raid", noRaid(), medium = false)
         raid("and-raid2x2-signed-out", null, medium = false)
+        raid("and-raid2x2-open", noRaid(), medium = false, at = raidsOpen)
     }
 
     @Test
@@ -149,6 +153,8 @@ class WidgetScreenshotTest {
             "and-raid4x2-not-saved", WidgetTestData.snapshot(), medium = true,
             overlay = SignupOverlay(7, "out", failedUntil = now.plusSeconds(10).toString()),
         )
+        raid("and-raid4x2-first-raids", WidgetTestData.snapshot("widget.get.no-guild"), medium = true)
+        raid("and-raid4x2-open", noRaid(), medium = true, at = raidsOpen)
     }
 
     @Test

@@ -49,6 +49,10 @@ Each run writes `web/test-results/parity/<page>-<state>.png`: mock | build at th
 
 `design/mocks/web/sim-parity.json`: `landing-out`, `landing-in`, `result`, `saved`. `design/mocks/ws_sim.py` draws them from `web/src/fixtures/sim/result-full.json` and `data/builds/<active build>`, the files `web/tests/e2e/support/sim-parity.ts` serves to the fixture build.
 
+## The app beta states
+
+`web/tests/e2e/parity-app-beta.spec.ts`: /app (the page the apps' QR codes open) as `web-app` (the signup), `web-app-done` (received: a new address and a repeat read the same), `web-app-invalid` (the address refused) and `web-app-failed` (the try-again line), each at 1440 and 390 (where the QR rail is gone on both sides; `head:box` is the known 390 inset drift), and the owner's /admin/testers as `web-admin-testers` at 1440. `design/mocks/app_beta_facts.mjs` bundles `web/src/lib/app-beta/copy.ts`, `admin.ts` and `qr.ts` (the same QR SVG the page inlines) over `web/tests/e2e/fixtures/app-beta/testers.json`; `design/mocks/ws_app_beta.py` draws them. The store buttons (`web/src/data/apps.json` with a link) have no mock while both links are null; they are covered by `components/app-beta/app-beta.test.ts`.
+
 ## The simulator tool states
 
 `design/mocks/web/simtools-parity.json`: `gear` (Top gear with a character), `gear-empty` (no character: the source switcher), `talents`, `drops` (the Droptimizer), `weights` and `specs` (Spec support, no parse measured yet). `design/mocks/ws_simtools.py` draws them in the quick sim's grammar from `data/builds/<active build>` (items, loot, stat weights), `sim/request/raid-consumes.json` and `web/src/data/phases.json`; the spec (`web/tests/e2e/parity-sim-tools.spec.ts`) loads the same character by `?code=` (`support/sim-parity.ts` `TOOL_CHARACTER`: a level 60 Orc Fury Warrior wearing Lionheart Helm and Arcanite Reaper) and serves the same build files. The Droptimizer's gates read the clock on both sides (`lib/sim/phase.ts` `hasOpened`, `ws_simtools.is_open`).

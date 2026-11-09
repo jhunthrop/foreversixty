@@ -228,6 +228,20 @@ func TestForeverDamageShieldMissedResistCarriesAmountAndTag(t *testing.T) {
 	}
 }
 
+// Forever's ENCOUNTER_END carries the fight time in milliseconds after the
+// success flag, seven fields where the retail-v22 row once allowed six. A
+// row that refused it kept every Forever kill open until the next pull.
+func TestForeverEncounterEndCarriesTheKillAndTheFightTime(t *testing.T) {
+	by, _ := decodeV22File(t, "testdata/forever-1.60-encounter.log")
+	end := one(t, by, "ENCOUNTER_END", 0)
+	if end.Kind != EncounterEnd || end.Encounter == nil {
+		t.Fatalf("end = %s %q", end.Kind, end.Error)
+	}
+	if end.Encounter.ID != 3480 || end.Encounter.Name != "Saltspine" || !end.Encounter.Kill {
+		t.Errorf("encounter = %+v, want the Saltspine kill", *end.Encounter)
+	}
+}
+
 func TestV22DamageSplitIsDamage(t *testing.T) {
 	by, _ := decodeV22File(t, "testdata/v22-shapes.log")
 	e := one(t, by, "DAMAGE_SPLIT", 0)

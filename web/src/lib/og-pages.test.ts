@@ -15,6 +15,7 @@ const NO_CARD = new Set([
   'admin/links',
   'admin/creators',
   'admin/creators/payouts',
+  'admin/testers',
   'app/auth',
   'creators/apply',
   'creators/onboarding',
