@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"log/slog"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -11,6 +13,9 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
 )
+
+// connectCheckBudget bounds the startup Connect check.
+const connectCheckBudget = 20 * time.Second
 
 // creatorsWiring is what wireCreators reads from serve.
 type creatorsWiring struct {
@@ -36,6 +41,12 @@ func wireCreators(w creatorsWiring) {
 		svc.Gateway = creators.NewStripeGateway(w.cfg.StripeSecretKey)
 	}
 	w.log.Info("creators", "stripe", svc.Gateway != nil, "payouts", svc.PayoutsEnabled)
+	// Payouts on: check the key reaches Connect now, in the background so startup never waits on Stripe.
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), connectCheckBudget)
+		defer cancel()
+		svc.CheckConnect(ctx)
+	}()
 	w.deps.Creators = svc
 	if w.deps.GoLinks != nil {
 		w.deps.GoLinks.Arrivals = svc

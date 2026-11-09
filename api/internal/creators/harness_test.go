@@ -22,14 +22,15 @@ import (
 
 // fakeGateway is Stripe in memory: accounts, invoices, refunds and transfers.
 type fakeGateway struct {
-	mu        sync.Mutex
-	accounts  map[string]AccountFacts
-	invoices  map[string]InvoiceMoney
-	refunds   map[string][]Refund
-	transfers map[string]TransferParams
-	creates   int
-	failNext  error
-	nextID    int
+	mu         sync.Mutex
+	accounts   map[string]AccountFacts
+	invoices   map[string]InvoiceMoney
+	refunds    map[string][]Refund
+	transfers  map[string]TransferParams
+	creates    int
+	failNext   error
+	connectErr error
+	nextID     int
 }
 
 func newFakeGateway() *fakeGateway {
@@ -57,6 +58,8 @@ func (g *fakeGateway) AccountLink(_ context.Context, account, ret, refresh strin
 func (g *fakeGateway) LoginLink(_ context.Context, account string) (string, error) {
 	return "https://connect.stripe.test/express/" + account, nil
 }
+
+func (g *fakeGateway) CheckConnect(context.Context) error { return g.connectErr }
 
 func (g *fakeGateway) Account(_ context.Context, id string) (AccountFacts, error) {
 	g.mu.Lock()

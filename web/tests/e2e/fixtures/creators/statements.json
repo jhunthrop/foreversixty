@@ -1,6 +1,7 @@
 {
   "month": "2026-11",
   "payouts_enabled": true,
+  "connect_denied": false,
   "statements": [
     {
       "creator_id": 1,

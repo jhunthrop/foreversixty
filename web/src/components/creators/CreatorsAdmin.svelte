@@ -58,6 +58,7 @@
   let creators = $state<Creator[]>([]);
   let requests = $state<CreatorRequest[]>([]);
   let stripeEnabled = $state(true);
+  let connectDenied = $state(false);
   let mode = $state<Mode>({ kind: 'add' });
   let values = $state<CreatorFormValues>(emptyForm(new Date()));
   let saving = $state(false);
@@ -75,6 +76,7 @@
     const [list, waiting] = await Promise.all([listCreators(), listRequests()]);
     creators = list.creators;
     stripeEnabled = list.stripe_enabled;
+    connectDenied = list.connect_denied;
     requests = waiting;
   }
 
@@ -267,6 +269,9 @@
       {/if}
       <Section title={copy.tableTitle} meta={copy.tableMeta(creators.length)} testid="creators-table">
         <div>
+          {#if connectDenied}<p class="text-wipe mb-3 text-[14px]" data-testid="creators-connect-denied">
+              {copy.connectDenied}
+            </p>{/if}
           {#if !stripeEnabled}<p class="text-wipe mb-3 text-[14px]" data-testid="creators-stripe-off">
               {copy.stripeOff}
             </p>{/if}

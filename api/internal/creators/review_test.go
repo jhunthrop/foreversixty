@@ -76,6 +76,38 @@ func TestATrialInvoiceRecordsNothing(t *testing.T) {
 	}
 }
 
+// With payouts on, a key that cannot reach Connect is found at startup: the admin reads say so and
+// nothing can be approved; a key that can clears it.
+func TestTheStartupConnectCheck(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	h.gw.connectErr = errors.New("stripe: this restricted key lacks connect_accounts_read")
+	h.svc.CheckConnect(ctx)
+	if !h.svc.ConnectDenied() {
+		t.Fatal("a key without Connect access was not caught")
+	}
+	if _, err := h.svc.Approve(ctx, 1, mustMonth("2026-11")); !errors.Is(err, ErrConnectDenied) {
+		t.Fatalf("approve = %v, want ErrConnectDenied", err)
+	}
+	if w := h.request("GET", "/v1/admin/creators", owner, nil); !strings.Contains(w.Body.String(), `"connect_denied":true`) {
+		t.Fatalf("the list does not say so: %s", w.Body)
+	}
+	if !strings.Contains(h.logs.String(), "lacks connect permissions") {
+		t.Fatal("the startup check did not log loudly")
+	}
+	h.gw.connectErr = nil
+	h.svc.CheckConnect(ctx)
+	if h.svc.ConnectDenied() {
+		t.Fatal("a key with Connect access stayed denied")
+	}
+	h.svc.PayoutsEnabled = false
+	h.gw.connectErr = errors.New("denied")
+	h.svc.CheckConnect(ctx)
+	if h.svc.ConnectDenied() {
+		t.Fatal("the check ran with payouts off")
+	}
+}
+
 // An arrival sent without a click time (an older page) counts as the sign-up's own moment.
 func TestALinkArrivalWithoutAClickTimeStillCounts(t *testing.T) {
 	h := newHarness(t)

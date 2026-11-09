@@ -62,6 +62,18 @@ func (g *StripeGateway) LoginLink(ctx context.Context, accountID string) (string
 	return l.URL, nil
 }
 
+func (g *StripeGateway) CheckConnect(ctx context.Context) error {
+	params := &stripe.AccountListParams{}
+	params.Limit = stripe.Int64(1)
+	for _, err := range g.client.V1Accounts.List(ctx, params) {
+		if err != nil {
+			return fmt.Errorf("creators: list connected accounts: %w", err)
+		}
+		break
+	}
+	return nil
+}
+
 func (g *StripeGateway) Account(ctx context.Context, accountID string) (AccountFacts, error) {
 	a, err := g.client.V1Accounts.GetByID(ctx, accountID, nil)
 	if err != nil {

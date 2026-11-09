@@ -165,6 +165,18 @@ test.describe('/admin/creators/payouts', () => {
     await expect(page.getByTestId('payout-approve-1')).toBeDisabled();
   });
 
+  test('a key without Connect permissions says so and blocks Approve', async ({ page }) => {
+    await signedIn(page, 'admin');
+    await page.route('**/v1/admin/creators/statements**', (route) =>
+      route.fulfill(envelope({ ...(read('statements.json') as object), connect_denied: true })),
+    );
+    await page.goto('/admin/creators/payouts');
+    await expect(page.getByTestId('payouts-connect-denied')).toContainText(
+      'Stripe key lacks Connect permissions',
+    );
+    await expect(page.getByTestId('payout-approve-1')).toBeDisabled();
+  });
+
   test('Lines shows a creator’s lines, a refund signed', async ({ page }) => {
     await statements(page);
     await page.goto('/admin/creators/payouts');

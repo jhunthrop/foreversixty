@@ -51,6 +51,7 @@
   let month = $state('');
   let statements = $state<Statement[]>([]);
   let payoutsEnabled = $state(true);
+  let connectDenied = $state(false);
   let selected = $state<number | null>(null);
   let confirming = $state<Statement | null>(null);
   let paying = $state(false);
@@ -69,6 +70,7 @@
     month = page.month;
     statements = page.statements;
     payoutsEnabled = page.payouts_enabled;
+    connectDenied = page.connect_denied;
   }
 
   async function load(): Promise<void> {
@@ -166,6 +168,9 @@
         />
       {/snippet}
       <div>
+        {#if connectDenied}<p class="text-wipe mb-4 text-[15px]" data-testid="payouts-connect-denied">
+            {adminCreatorsCopy.connectDenied}
+          </p>{/if}
         {#if !payoutsEnabled}<p class="text-wipe mb-4 text-[15px]" data-testid="payouts-off">
             {copy.payoutsOff}
           </p>{/if}
@@ -189,8 +194,8 @@
                     {#if canApprove(s)}
                       <button
                         type="button"
-                        class={smallButton(payoutsEnabled ? 'primary' : 'secondary')}
-                        disabled={!payoutsEnabled}
+                        class={smallButton(payoutsEnabled && !connectDenied ? 'primary' : 'secondary')}
+                        disabled={!payoutsEnabled || connectDenied}
                         onclick={() => (confirming = s)}
                         data-testid={`payout-approve-${s.creator_id}`}
                         >{copy.approve(money(s.total_cents))}</button

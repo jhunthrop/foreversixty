@@ -50,6 +50,9 @@ type Gateway interface {
 	AccountLink(ctx context.Context, accountID, returnURL, refreshURL string) (string, error)
 	// LoginLink is a one-time link into the account's Express dashboard. Never stored.
 	LoginLink(ctx context.Context, accountID string) (string, error)
+	// CheckConnect lists one connected account: it fails when the key lacks Connect access
+	// (a restricted key without Connect accounts read).
+	CheckConnect(ctx context.Context) error
 	// Account re-reads the account.
 	Account(ctx context.Context, accountID string) (AccountFacts, error)
 	// InvoiceMoney reads a paid invoice's charge and its balance transaction.

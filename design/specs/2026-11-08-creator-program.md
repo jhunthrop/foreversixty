@@ -45,6 +45,15 @@ Memory rules applied: stripe-billing (Commish LLC's account, Managed Payments; k
   Left for the owner: whether undisclosed links end a creator's place, a payout day or a minimum, a reapply cool-down, and a stats breakdown.
 - Security review: 0 critical. Every high and medium finding is fixed, with tests (review_test.go, creator_code_test.go), except disputes: `charge.dispute.*` is not booked as a negative line yet. That is a known gap, and payouts stay behind the owner's approval.
 
+## 0D. Go-live facts, 2026-11-08 (coordinator)
+
+- The live key is a restricted key (`rk_live_…`): Secret Manager project `foreversixty`, secret `STRIPE_SECRET_KEY`. The Connect sandbox key is `STRIPE_SANDBOX_SECRET_KEY` in project `trycommish`.
+- Before `CREATOR_PAYOUTS` is switched on, the owner gives that key Connect Accounts, Account Links and Login Links (write), Transfers (write), and read on Invoices, Invoice payments, PaymentIntents, Charges, Refunds and Balance transactions. The exact list is in `api/README.md`, "Creator program".
+- With `CREATOR_PAYOUTS` on, the API lists one connected account at startup. A key without Connect access:
+  - fails loudly: an ERROR log line, `Stripe key lacks Connect permissions. Payouts can't be made until the key is given them.` on both admin pages, and Approve answers 503 `connect_denied`;
+  - never fails silently at payout time.
+- Live Connect is enabled: an accounts list works and answers 0 accounts. The owner is finishing the platform profile.
+
 ## 0. Files
 
 | What | Path |

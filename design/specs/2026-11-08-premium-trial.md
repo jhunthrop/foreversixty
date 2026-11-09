@@ -17,6 +17,24 @@ System: `design/specs/2026-11-05-web-layout.md`; the shipped premium, checkout a
 2. While the founder price is open, a trial start says: `Start before 6 Jan 2027 and the founder price stays for as long as you stay subscribed, even though your first charge comes after the trial.` The build must prove it: the subscription's price is the founder price fixed at checkout (catalog.CheckoutLookupKey at the session's creation), and a test runs a trial that ends after the founder window closes and checks the first invoice is the founder amount.
 3. The reminder email names the plan and interval (`Premium, yearly: $40`); a yearly trial says `you'll be charged $40 for the next 12 months`. The email ends with one line saying why it was sent (`You're getting this because you started a free Premium trial on Forever Sixty.`) and the company name, Commish LLC. Never the owner's name.
 
+## 0C. The email split, decided against the owner's live Stripe settings (coordinator, 2026-11-08)
+
+- **Stripe sends:**
+  - the 7-day trial-ending reminder;
+  - upcoming renewals;
+  - expiring cards;
+  - failed payments;
+  - refunds;
+  - the manage-subscription link in its emails.
+- **We send:**
+  - our 3-day trial reminder, plus the in-app notification;
+  - the guild trial reminder;
+  - the first-charge receipt.
+
+  Stripe's "Successful payments" receipt stays off.
+- **No change to renewal email recipients.** Our renewal emails do not move to the Stripe customer's email, so the earlier side effect is dropped. Stripe owns renewals. Our renewal email (billing-daily's yearly renewal notice) sits behind a server switch, `OUR_RENEWAL_EMAILS`, which is off by default. Off, billing-daily sends no renewal notice. The spec and `api/README.md` both say so.
+- **Our reminder never contradicts Stripe's.** It gives the same dates and the same price, and says once: `You may also get a reminder from Stripe, our payment processor.`
+
 ## 1. Files
 
 | What | Path |

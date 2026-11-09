@@ -12,6 +12,7 @@ export const adminCreatorsCopy = {
   loadFailed: 'The creators didn’t load.',
   stripeOff: 'Stripe isn’t configured, so codes and payouts are off.',
   payoutsOff: 'Payouts are switched off on the server. Statements can be read but not paid.',
+  connectDenied: 'Stripe key lacks Connect permissions. Payouts can’t be made until the key is given them.',
   tableTitle: 'Your creators',
   tableMeta: (count: number): string => `${count} ${count === 1 ? 'creator' : 'creators'}`,
   empty: 'No creators yet. Add the first one.',

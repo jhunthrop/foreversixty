@@ -22,6 +22,7 @@ export interface CreatorsList {
   creators: Creator[];
   stripe_enabled: boolean;
   payouts_enabled: boolean;
+  connect_denied: boolean;
 }
 
 export interface MyApplicationRead {

@@ -77,6 +77,8 @@ export interface Statement {
 export interface StatementsPage {
   month: string;
   payouts_enabled: boolean;
+  /** The server's Stripe key cannot reach Connect (its startup check). */
+  connect_denied: boolean;
   statements: Statement[];
 }
 

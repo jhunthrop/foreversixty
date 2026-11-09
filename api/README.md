@@ -423,15 +423,31 @@ player when `checkout.session.completed` lands.
 
 Going live, in order (the owner's Stripe account, never a key in a shell history):
 
-1. Turn on Connect for the live account (Express, US recipients) and check that transfers work
-   under Managed Payments; the sandbox could not show it.
-2. Add `charge.refunded` to the live account endpoint's events (refunds of a creator's player's
+1. Turn on Connect for the live account (Express, US recipients) and finish the platform profile.
+   Live Connect is on (an accounts list answers, with 0 accounts); check that transfers work under
+   Managed Payments, which the sandbox could not show.
+2. Give the live key the program's permissions. The live key is the restricted key `rk_live_…` in
+   Secret Manager project `foreversixty`, secret `STRIPE_SECRET_KEY` (the Connect sandbox's key is
+   `STRIPE_SANDBOX_SECRET_KEY` in project `trycommish`). In the Dashboard, edit that restricted key
+   and set, besides what billing already has:
+   - Connect: **Accounts: Write** (makes the Express account, reads its status, lists accounts for
+     the startup check), **Account Links: Write** (the onboarding link), **Login Links: Write**
+     (the creator's Express dashboard link);
+   - **Transfers: Write** (the approved payout, and reading a transfer back by its group);
+   - read access to **Invoices**, **Invoice payments**, **PaymentIntents**, **Charges**,
+     **Refunds** and **Balance transactions** (each paid invoice's net after fees, and its refunds).
+
+   With `CREATOR_PAYOUTS=true` the API lists one connected account at startup; a key without
+   Connect access logs `creators op=connect_check state="the stripe key lacks connect permissions"`
+   at ERROR, both admin pages say `Stripe key lacks Connect permissions`, and Approve answers 503
+   `connect_denied` until the key is fixed and the service restarts.
+3. Add `charge.refunded` to the live account endpoint's events (refunds of a creator's player's
    payment become refund lines), keeping the six it has.
-3. Create a second endpoint for the same URL, `https://api.foreversixty.gg/v1/billing/webhook`,
+4. Create a second endpoint for the same URL, `https://api.foreversixty.gg/v1/billing/webhook`,
    with `connect: true`, the same `api_version` as the first (`2025-08-27.basil`) and the one event
    `account.updated`. Put its signing secret in Secret Manager as `STRIPE_CONNECT_WEBHOOK_SECRET`
    and wire it with `--update-secrets` as the first one was.
-4. Run a month with `CREATOR_PAYOUTS` off, compare its statements with the Dashboard, then
+5. Run a month with `CREATOR_PAYOUTS` off, compare its statements with the Dashboard, then
    `gcloud run services update api --region us-east1 --update-env-vars CREATOR_PAYOUTS=true`.
 
 Adding a creator (from the form or by approving an application) gives the creator's own account

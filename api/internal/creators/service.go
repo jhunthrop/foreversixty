@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -30,6 +31,9 @@ type Entitlements interface {
 // ErrPayoutsOff: the server's payout switch (CREATOR_PAYOUTS) is off.
 var ErrPayoutsOff = errors.New("creators: payouts are switched off on this server")
 
+// ErrConnectDenied: the Stripe key cannot reach Connect (a restricted key without its permissions).
+var ErrConnectDenied = errors.New("creators: the stripe key lacks connect permissions")
+
 // Service is the program's operations over the store and Stripe.
 type Service struct {
 	Store        *Store
@@ -39,8 +43,10 @@ type Service struct {
 	PublicBaseURL string
 	// PayoutsEnabled is CREATOR_PAYOUTS: off, a statement can be read but never approved.
 	PayoutsEnabled bool
-	Log            *slog.Logger
-	Now            func() time.Time
+	// connectDenied is CheckConnect's answer at startup: the key cannot reach Connect.
+	connectDenied atomic.Bool
+	Log           *slog.Logger
+	Now           func() time.Time
 
 	// visits is each account's last UTC day Visited stamped, so a busy account costs one write a day.
 	visits sync.Map
@@ -167,6 +173,24 @@ func (s *Service) endPrevious(ctx context.Context, creatorID int64, previous *in
 	}
 	return nil
 }
+
+// CheckConnect runs once at startup while payouts are on: a key that cannot list connected
+// accounts is logged at ERROR and every admin page says so, rather than payouts failing later.
+func (s *Service) CheckConnect(ctx context.Context) {
+	if !s.PayoutsEnabled || s.Gateway == nil {
+		return
+	}
+	if err := s.Gateway.CheckConnect(ctx); err != nil {
+		s.connectDenied.Store(true)
+		s.logger().Error("creators", "op", "connect_check", "state", "the stripe key lacks connect permissions", "err", err)
+		return
+	}
+	s.connectDenied.Store(false)
+	s.logger().Info("creators", "op", "connect_check", "state", "ok")
+}
+
+// ConnectDenied reports the startup check's answer.
+func (s *Service) ConnectDenied() bool { return s.connectDenied.Load() }
 
 func actor(creatorID int64) string { return "creator_program:" + strconv.FormatInt(creatorID, 10) }
 
@@ -332,9 +356,11 @@ func (s *Service) List(ctx context.Context) ([]Creator, error) {
 
 // StatementsPage is a month's statements and whether payouts are switched on.
 type StatementsPage struct {
-	Month          string      `json:"month"`
-	PayoutsEnabled bool        `json:"payouts_enabled"`
-	Statements     []Statement `json:"statements"`
+	Month          string `json:"month"`
+	PayoutsEnabled bool   `json:"payouts_enabled"`
+	// ConnectDenied: the server's Stripe key cannot reach Connect (checked at startup).
+	ConnectDenied bool        `json:"connect_denied"`
+	Statements    []Statement `json:"statements"`
 }
 
 // Statements is every creator's statement for the month, removed creators included.
@@ -344,7 +370,7 @@ func (s *Service) Statements(ctx context.Context, m Month) (StatementsPage, erro
 	if err != nil {
 		return StatementsPage{}, err
 	}
-	page := StatementsPage{Month: m.String(), PayoutsEnabled: s.PayoutsEnabled, Statements: []Statement{}}
+	page := StatementsPage{Month: m.String(), PayoutsEnabled: s.PayoutsEnabled, ConnectDenied: s.ConnectDenied(), Statements: []Statement{}}
 	for _, c := range list {
 		st, err := s.Store.Statement(ctx, c, m, now)
 		if err != nil {
@@ -365,6 +391,9 @@ func TransferGroup(creatorID int64, m Month) string {
 func (s *Service) Approve(ctx context.Context, creatorID int64, m Month) (Statement, error) {
 	if !s.PayoutsEnabled {
 		return Statement{}, ErrPayoutsOff
+	}
+	if s.connectDenied.Load() {
+		return Statement{}, ErrConnectDenied
 	}
 	if s.Gateway == nil {
 		return Statement{}, ErrStripeOff

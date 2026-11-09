@@ -68,6 +68,8 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 		httpx.WriteError(w, r, http.StatusConflict, "nothing_owed", "nothing is owed this month", nil)
 	case errors.Is(err, ErrNotPayable):
 		httpx.WriteError(w, r, http.StatusConflict, "not_payable", "stripe cannot pay this creator yet", nil)
+	case errors.Is(err, ErrConnectDenied):
+		httpx.WriteError(w, r, http.StatusServiceUnavailable, "connect_denied", "the stripe key lacks connect permissions", nil)
 	case errors.Is(err, ErrPayoutsOff):
 		httpx.WriteError(w, r, http.StatusServiceUnavailable, "payouts_off", "payouts are switched off on the server", nil)
 	case errors.Is(err, ErrStripeOff):
@@ -106,7 +108,8 @@ func (s *Service) list(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "list", err)
 		return
 	}
-	ok(w, r, http.StatusOK, map[string]any{"creators": list, "stripe_enabled": s.Gateway != nil, "payouts_enabled": s.PayoutsEnabled})
+	ok(w, r, http.StatusOK, map[string]any{"creators": list, "stripe_enabled": s.Gateway != nil, "payouts_enabled": s.PayoutsEnabled,
+		"connect_denied": s.ConnectDenied()})
 }
 
 func (s *Service) add(w http.ResponseWriter, r *http.Request) {
