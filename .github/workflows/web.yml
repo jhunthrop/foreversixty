@@ -73,6 +73,11 @@ on:
       - .github/actions/pin-engine/**
       - .github/workflows/web.yml
   workflow_dispatch:
+    inputs:
+      full:
+        description: Run the unit tests and the e2e suite even in launch mode (lanes use this instead of running the suites on a laptop)
+        type: boolean
+        default: false
   # The full 16-URL Lighthouse audit (web/lighthouserc.json, unchanged): same budgets, same
   # numberOfRuns, just off the push/PR critical path. Runs after data.yml's nightly regen
   # (addon-data-release.yml at 05:00 UTC, bis.yml at 06:23 UTC) so it audits the day's data.
@@ -124,7 +129,7 @@ jobs:
       - run: npm run format:check
       # `pretest` sets FOREVER_DATA=fixture, so the unit tests see the checked-in fixture
       # rather than whatever the data pipeline last emitted.
-      - if: vars.LAUNCH_MODE != 'true'
+      - if: vars.LAUNCH_MODE != 'true' || inputs.full
         run: npm test
       # tokens.css and both apps' token files against design/tokens/tokens.json (node:test).
       - name: the generated design tokens
@@ -298,7 +303,7 @@ jobs:
       - run: npm run build
   e2e:
     needs: build
-    if: vars.LAUNCH_MODE != 'true'
+    if: vars.LAUNCH_MODE != 'true' || inputs.full
     runs-on: ubuntu-latest
     timeout-minutes: 45
     defaults: { run: { working-directory: web } }
