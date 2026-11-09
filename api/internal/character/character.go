@@ -111,13 +111,33 @@ func Key(region, ruleset, name string) string {
 // hyphen is dropped and the last segment is the realm; the segments before it are the name,
 // joined with single spaces so Slug gives the export's key ("bow-jackzon"). A unit with one
 // segment is all name and has no realm.
+//
+// The launch client (1.60.1) writes the ruleset and the region instead of a realm
+// ("Bow-Jackzon-PvP-US"): when the last segment is a region code and the one before it is a
+// ruleset word, the realm is both of them ("PvP-US"), which RulesetFromRealm and
+// regionOfRealm read.
 func SplitUnit(unit string) (name, realm string) {
 	segments := strings.Split(strings.TrimSuffix(strings.TrimSpace(unit), "-"), "-")
 	if len(segments) == 1 {
 		return segments[0], ""
 	}
-	last := len(segments) - 1
-	return strings.Join(segments[:last], " "), segments[last]
+	cut := len(segments) - 1
+	if len(segments) > 2 && ValidRegion(strings.ToLower(segments[cut])) {
+		if _, ok := rulesetOfRealm(segments[cut-1]); ok {
+			cut--
+		}
+	}
+	return strings.Join(segments[:cut], " "), strings.Join(segments[cut:], "-")
+}
+
+// regionOfRealm is the region a launch-client realm segment ends in ("PvP-US" is us), if any.
+func regionOfRealm(realm string) (string, bool) {
+	_, tail, ok := strings.Cut(realm, "-")
+	if !ok {
+		return "", false
+	}
+	region := strings.ToLower(tail)
+	return region, ValidRegion(region)
 }
 
 // Realm is the realm a character lives on as the client names it, from the first source
@@ -158,6 +178,11 @@ func RulesetFromRealm(realm, fallback string) string {
 	return RulesetNormal
 }
 
+// RulesetNamed reads a ruleset Blizzard names in words ("PvP", "Normal", "Roleplay PvP" on
+// a Forever character profile), by the same words RulesetFromRealm reads. ok is false when
+// the name spells none, so a caller can tell "unknown" from "normal".
+func RulesetNamed(name string) (ruleset string, ok bool) { return rulesetOfRealm(name) }
+
 // rulesetWords are the words a realm name spells a ruleset with, longest first so a
 // camel-case suffix match tries "hardcore" before "hc".
 var rulesetWords = []struct{ word, ruleset string }{
@@ -195,9 +220,13 @@ func camelCase(word string) bool {
 }
 
 // KeyFromUnit builds the character key for a unit name out of a combat
-// log, in a report whose region and ruleset are region and ruleset.
+// log, in a report whose region and ruleset are region and ruleset. A
+// launch-client unit that names its own region and ruleset keys by them.
 func KeyFromUnit(region, ruleset, unit string) string {
 	name, realm := SplitUnit(unit)
+	if own, ok := regionOfRealm(realm); ok {
+		region = own
+	}
 	return Key(region, RulesetFromRealm(realm, ruleset), name)
 }
 

@@ -90,6 +90,35 @@ func jsonOf(t *testing.T, v any) string {
 	return string(b)
 }
 
+// A Forever dungeon boss kill closes at its ENCOUNTER_END as a kill, not at
+// the next pull: production's first stranger log had every boss kill=false
+// and running on until the next ENCOUNTER_START.
+func TestAForeverBossKillClosesAtItsEncounterEnd(t *testing.T) {
+	src, err := os.ReadFile("../event/testdata/forever-1.60-encounter.log")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, health := feed(t, opts(), src, len(src))
+	var enc *fight.Fight
+	for i := range got.Closed {
+		if got.Closed[i].Fight.Kind == fight.Encounter {
+			enc = &got.Closed[i].Fight
+		}
+	}
+	if enc == nil {
+		t.Fatalf("no encounter among %d fights", len(got.Closed))
+	}
+	if !enc.Kill || enc.BossHealthPct != 0 {
+		t.Errorf("kill=%v boss_health_pct=%v, want a kill", enc.Kill, enc.BossHealthPct)
+	}
+	if d := enc.Duration(); d < 36*time.Second || d > 40*time.Second {
+		t.Errorf("duration = %v, want the ~37s pull plus the trailing window", d)
+	}
+	if health.ParseErrors != 0 {
+		t.Errorf("parse errors = %d, want 0", health.ParseErrors)
+	}
+}
+
 func TestStreamingEquivalenceAtEveryChunkSize(t *testing.T) {
 	src := fixture(t)
 	want, wantHealth := feed(t, opts(), src, len(src))

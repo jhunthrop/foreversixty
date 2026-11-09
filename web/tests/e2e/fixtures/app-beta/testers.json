@@ -1,0 +1,5 @@
+[
+  { "email": "new@example.com", "platform": "ios", "created_at": "2026-11-08T12:00:00Z" },
+  { "email": "droid@example.com", "platform": "android", "created_at": "2026-11-07T09:00:00Z" },
+  { "email": "old@example.com", "platform": "ios", "created_at": "2026-11-01T23:30:00Z" }
+]

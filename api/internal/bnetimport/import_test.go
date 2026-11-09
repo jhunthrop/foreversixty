@@ -128,8 +128,7 @@ func TestImportAccountImportsALowLevelCharacter(t *testing.T) {
 			 "playable_class":{"name":"Mage"},"faction":{"type":"HORDE"},"level":5}
 		]}]}`))
 	}
-	f.json(http.MethodGet, "/data/wow/realm/index?namespace=dynamic-classic1x-us", http.StatusOK,
-		map[string]any{"realms": []any{}})
+	whitemaneNormal(f)
 	for _, sub := range []string{"", "/equipment", "/character-media"} {
 		f.json(http.MethodGet, "/profile/wow/character/whitemane/bankalt"+sub+"?namespace=profile-classic1x-us", http.StatusNotFound, nil)
 	}

@@ -18,6 +18,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/activity"
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/app"
+	"github.com/jhunthrop/foreversixty/api/internal/apptesters"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetbuild"
@@ -650,7 +651,10 @@ func serve(log *slog.Logger) error {
 			Store: ratingStore, Reports: reportStore, Accounts: authStore,
 			Owners: authStore, Entitlements: entStore, Log: log,
 		},
-		GoLinks:          &golinks.Service{Links: &golinks.Store{Pool: pool}, Log: log},
+		GoLinks: &golinks.Service{Links: &golinks.Store{Pool: pool}, Log: log},
+		AppTesters: &apptesters.Service{
+			Testers: &apptesters.Store{Pool: pool}, Log: log, TrustedProxyHops: cfg.TrustedProxyHops,
+		},
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 

@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forever Sixty Artifacts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Open+Sans:wght@400;600;700&display=swap">
+<style>
+:root{
+  --night:#0d1b26; --night-2:#12283a; --umber:#1d130c; --umber-2:#2a1c12;
+  --bone:#e9dcc2; --bone-dim:#b9ab8f; --brass:#c9a46a; --brass-dark:#7a5a2c;
+  --teal:#2f7a74; --teal-hi:#3f958d; --ink:#f3ecdc; --muted:#a69a85;
+  --q-poor:#9d9d9d; --q-common:#ffffff; --q-uncommon:#1eff00; --q-rare:#0070dd; --q-epic:#a335ee;
+  --tip-bg:#060914; --tip-edge:#8b8f9c;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--umber);color:var(--ink);font:16px/1.55 "Open Sans",Arial,sans-serif;padding:0 16px 80px}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:Marcellus,Georgia,serif;font-weight:400;color:var(--bone);text-shadow:0 1px 0 rgba(0,0,0,.6);margin:0;text-wrap:balance}
+.intro{padding:40px 0 8px;max-width:760px}
+.intro h1{font-size:34px}
+.intro p{color:var(--bone-dim);margin:10px 0 0}
+.note{font-size:13px;color:var(--muted)}
+section{margin-top:56px}
+.label{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.label h2{font-size:24px}
+.label .note{max-width:560px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:28px}
+/* textures (procedural, no images) */
+.leather{background:var(--umber-2);position:relative;isolation:isolate}
+.leather::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.55;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .16  0 0 0 0 .11  0 0 0 0 .07  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.nightsky{background:radial-gradient(120% 80% at 50% 0%,#17344b 0%,var(--night) 60%);position:relative;isolation:isolate}
+.stone{position:relative;isolation:isolate;background:#23201c}
+.stone::before{content:"";position:absolute;inset:0;z-index:-1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='s'><feTurbulence type='turbulence' baseFrequency='.012 .03' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 .2  0 0 0 0 .19  0 0 0 0 .17  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23s)'/></svg>");opacity:.35}
+/* frame */
+.frame{position:relative;padding:14px}
+.frame svg.edge{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.frame img{display:block;width:100%;height:auto}
+/* compact page title */
+.titlebar{display:flex;align-items:center;gap:14px;padding:12px 18px;border-top:1px solid #4a3a26;border-bottom:1px solid #0b0705}
+.titlebar h3{font-size:22px}
+.titlebar .crumbs{font-size:13px;color:var(--muted)}
+.titlebar .right{margin-left:auto;font-size:14px;color:var(--bone-dim);font-variant-numeric:tabular-nums}
+.titlebar .right b{color:var(--ink);font-size:18px}
+/* buttons */
+.btnrow{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.btn{font:600 15px "Open Sans",sans-serif;color:#f4fbf9;background:linear-gradient(#3a8a83,#2a6c66);border:1px solid #173f3b;border-radius:2px;padding:10px 20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -2px 0 rgba(0,0,0,.25);cursor:pointer}
+.btn:hover{background:linear-gradient(#43978f,#2f7a74)}
+.btn:focus-visible,.btn2:focus-visible,.link:focus-visible{outline:2px solid var(--bone);outline-offset:3px}
+.btn2{font:600 15px "Open Sans",sans-serif;color:var(--bone);background:transparent;border:1px solid var(--brass-dark);border-radius:2px;padding:9px 18px;cursor:pointer}
+.btn2:hover{border-color:var(--brass);color:var(--ink)}
+.link{color:var(--brass);text-decoration:none;font-weight:600}
+.link:hover{color:#e2c48c}
+/* tooltip */
+.tip{background:var(--tip-bg);border:1px solid var(--tip-edge);border-radius:4px;box-shadow:0 0 0 1px #000, inset 0 0 0 1px #2b3040;padding:9px 11px;width:300px;font:13.5px/1.42 "Open Sans",sans-serif;color:#fff}
+.tip .n{font-size:15px}
+.tip .row{display:flex;justify-content:space-between}
+.tip .g{color:var(--q-uncommon)} .tip .y{color:#ffd100}
+/* medallion */
+.med{display:flex;gap:26px;flex-wrap:wrap;align-items:center}
+.medallion{position:relative;width:96px;height:96px}
+.medallion img{position:absolute;inset:14px;width:68px;height:68px;border-radius:50%;object-fit:cover}
+.medallion svg{position:absolute;inset:0}
+.med .cap{font-size:13px;color:var(--muted);max-width:340px}
+/* gear row */
+.gear{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid #3a2a1b}
+.gear img{width:40px;height:40px;border:1px solid #000;box-shadow:0 0 0 1px #6b5a3a;border-radius:3px}
+.gear .src{font-size:13px;color:var(--muted)}
+.gear .d{font:600 14px "Open Sans";color:var(--q-uncommon);font-variant-numeric:tabular-nums}
+.panel{padding:20px 22px}
+/* plaque */
+.plaque{padding:22px 26px;border:1px solid #000;box-shadow:inset 0 0 0 1px #5d4a30,inset 0 0 40px rgba(0,0,0,.7)}
+.plaque .when{font-family:Marcellus,serif;font-size:28px;color:var(--bone)}
+.plaque .sub{color:var(--bone-dim);font-size:14px}
+.count{display:flex;gap:22px;margin-top:12px;font-variant-numeric:tabular-nums}
+.count b{font:400 40px Marcellus,serif;color:var(--ink);display:block;line-height:1}
+.count span{font-size:12px;color:var(--muted)}
+.road svg{width:100%;height:auto;display:block}
+.do{color:#9fd28a} .dont{color:#e3a07a}
+ul.rules{margin:8px 0 0;padding-left:18px;color:var(--bone-dim);font-size:14px}
+@media (max-width:640px){.intro h1{font-size:28px}.titlebar{flex-wrap:wrap}.titlebar .right{margin-left:0}}
+@media (prefers-reduced-motion:no-preference){.btn,.btn2,.link{transition:background .15s,color .15s,border-color .15s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="intro">
+  <h1>Artifacts for Forever Sixty</h1>
+  <p>Hand-built pieces drawn in the spirit of Blizzard's WoW: Forever page: warm leather and stone grounds, night-blue skies, bone-white titles, teal actions, scrollwork frames around real screenshots. Every piece here is CSS or SVG I wrote; nothing is generated art, nothing is copied from Blizzard's files. Icons are the game's own, served from our site.</p>
+  <p class="note">What I took from their page: Friz Quadrata titles in mixed case with a soft shadow (we use Marcellus, open licence), Open Sans body, teal buttons rather than gold, warm umber texture behind content, ornate bone frames only around imagery, and titles that sit in the layout instead of shouting.</p>
+</div>
+
+<!-- 1. compact title bar -->
+<section>
+  <div class="label"><h2>Page title, compact</h2><span class="note">Replaces the big hero H1. The title sits in a carved band with the one number that matters on the right.</span></div>
+  <div class="leather titlebar">
+    <div class="medallion" style="width:52px;height:52px">
+      <img src="https://foreversixty.gg/icons/hd/crests/hunter.webp" alt="" style="inset:8px;width:36px;height:36px">
+      <svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" fill="none" stroke="#7a5a2c" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="#c9a46a" stroke-width="1.2"/><circle cx="26" cy="26" r="19.5" fill="none" stroke="#000" stroke-width="1"/></svg>
+    </div>
+    <div>
+      <h3>Beast Mastery Hunter</h3>
+      <div class="crumbs">Best in slot · levels 30 to 39 · Alliance</div>
+    </div>
+    <div class="right"><b>212.4</b> DPS</div>
+  </div>
+</section>
+
+<!-- 2. frame -->
+<section>
+  <div class="label"><h2>Screenshot frame</h2><span class="note">Scrollwork corners and a knot at the foot, drawn in SVG. Only real in-game screenshots go inside it; this one is our addon's character tab.</span></div>
+  <div class="grid2">
+    <div class="frame nightsky">
+      <img src="https://foreversixty.gg/addon/character-panel-tab.jpg" alt="The Forever Sixty tab on the character panel, in game">
+      <svg class="edge" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+        <rect x="5" y="5" width="390" height="290" fill="none" stroke="#e9dcc2" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+        <rect x="9" y="9" width="382" height="282" fill="none" stroke="#7a5a2c" stroke-width="1" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <svg aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" style="position:absolute;left:0;top:0"><path d="M5 34 V12 Q5 5 12 5 H34 M9 26 q0-9 9-9 q-3 6 3 9 q-6 3-12 0z" fill="none" stroke="#e9dcc2" stroke-width="1.6"/></svg>
+      <svg aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" style="position:absolute;right:0;top:0;transform:scaleX(-1)"><path d="M5 34 V12 Q5 5 12 5 H34 M9 26 q0-9 9-9 q-3 6 3 9 q-6 3-12 0z" fill="none" stroke="#e9dcc2" stroke-width="1.6"/></svg>
+      <svg aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" style="position:absolute;left:0;bottom:0;transform:scaleY(-1)"><path d="M5 34 V12 Q5 5 12 5 H34 M9 26 q0-9 9-9 q-3 6 3 9 q-6 3-12 0z" fill="none" stroke="#e9dcc2" stroke-width="1.6"/></svg>
+      <svg aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" style="position:absolute;right:0;bottom:0;transform:scale(-1,-1)"><path d="M5 34 V12 Q5 5 12 5 H34 M9 26 q0-9 9-9 q-3 6 3 9 q-6 3-12 0z" fill="none" stroke="#e9dcc2" stroke-width="1.6"/></svg>
+      <svg aria-hidden="true" width="64" height="18" viewBox="0 0 64 18" style="position:absolute;left:50%;bottom:-2px;transform:translateX(-50%)"><rect x="6" y="5" width="52" height="10" fill="#0d1b26"/><path d="M8 10 q8-8 16 0 t16 0 t16 0" fill="none" stroke="#e9dcc2" stroke-width="1.8"/><path d="M8 12 q8 6 16 0 t16 0 t16 0" fill="none" stroke="#c9a46a" stroke-width="1"/></svg>
+    </div>
+    <div>
+      <h3 style="font-size:20px">Divider</h3>
+      <svg viewBox="0 0 600 24" width="100%" height="24" aria-hidden="true" style="margin:14px 0 22px">
+        <line x1="0" y1="12" x2="262" y2="12" stroke="#7a5a2c"/><line x1="338" y1="12" x2="600" y2="12" stroke="#7a5a2c"/>
+        <path d="M268 12 q8-10 16 0 q8 10 16 0 q8-10 16 0 q8 10 16 0" fill="none" stroke="#c9a46a" stroke-width="1.6"/>
+        <circle cx="300" cy="12" r="2.5" fill="#e9dcc2"/>
+      </svg>
+      <h3 style="font-size:20px">Actions</h3>
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn" type="button">Sign in with Battle.net</button>
+        <button class="btn2" type="button">Install the addon</button>
+        <a class="link" href="#">Open in the sim ›</a>
+      </div>
+      <p class="note" style="margin-top:14px">Teal for the one action, bone outline for the second, brass text links. No glow, no gradient beyond the bevel a pressed stone button has.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. tooltip + gear -->
+<section>
+  <div class="label"><h2>Item tooltip and gear rows</h2><span class="note">The tooltip is the client's own layout and colours; it is the one place the game's frame is copied exactly, because players read it without thinking.</span></div>
+  <div class="grid2">
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+      <div class="tip">
+        <div class="n" style="color:var(--q-rare)">Glowing Lizardscale Cloak</div>
+        <div>Binds when picked up</div>
+        <div class="row"><span>Back</span><span></span></div>
+        <div>20 Armor</div>
+        <div>+6 Agility</div>
+        <div>Requires Level 18</div>
+        <div class="y" style="margin-top:6px">Forever Sixty: Upgrade +0.3 DPS</div>
+      </div>
+    </div>
+    <div class="leather panel">
+      <h3 style="font-size:20px;margin-bottom:6px">Wailing Caverns <span class="note" style="font-family:'Open Sans'">15 to 24</span></h3>
+      <div class="gear"><img src="https://foreversixty.gg/data/1.60.1.70790/icons/inv_misc_cape_18.webp" alt=""><div><div style="color:#4a9cff;font-weight:600">Glowing Lizardscale Cloak</div><div class="src">Back · Skum · 50%</div></div><div class="d">+0.3</div></div>
+      <div class="gear"><img src="https://foreversixty.gg/data/1.60.1.70790/icons/inv_helmet_29.webp" alt=""><div><div style="color:#4a9cff;font-weight:600">Serpent's Shoulders</div><div class="src">Shoulder · Lady Anacondra · 40%</div></div><div class="d">+0.1</div></div>
+      <div class="gear" style="border-bottom:0"><img src="https://foreversixty.gg/data/1.60.1.70790/icons/inv_weapon_bow_08.webp" alt=""><div><div style="color:#4a9cff;font-weight:600">Ranger Bow</div><div class="src">Ranged · BoE · on the auction house</div></div><div class="d">+0.3</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. medallions -->
+<section>
+  <div class="label"><h2>Class medallion</h2><span class="note">Our crest set in a struck bronze ring with a faction notch, replacing the glossy disc. Same crest art, framed like an object from the world.</span></div>
+  <div class="med">
+    <div class="medallion">
+      <img src="https://foreversixty.gg/icons/hd/crests/hunter.webp" alt="Hunter">
+      <svg viewBox="0 0 96 96" aria-hidden="true">
+        <circle cx="48" cy="48" r="40" fill="none" stroke="#3b2a15" stroke-width="10"/>
+        <circle cx="48" cy="48" r="44.5" fill="none" stroke="#c9a46a" stroke-width="1.4"/>
+        <circle cx="48" cy="48" r="35.5" fill="none" stroke="#c9a46a" stroke-width="1"/>
+        <g stroke="#c9a46a" stroke-width="1.2">
+          <line x1="48" y1="3" x2="48" y2="12"/><line x1="48" y1="84" x2="48" y2="93"/><line x1="3" y1="48" x2="12" y2="48"/><line x1="84" y1="48" x2="93" y2="48"/>
+        </g>
+        <path d="M70 12 l8 0 l0 8 z" fill="#2f6fd6" stroke="#0d1b26"/>
+      </svg>
+    </div>
+    <div class="medallion">
+      <img src="https://foreversixty.gg/icons/hd/crests/druid.webp" alt="Druid">
+      <svg viewBox="0 0 96 96" aria-hidden="true">
+        <circle cx="48" cy="48" r="40" fill="none" stroke="#3b2a15" stroke-width="10"/>
+        <circle cx="48" cy="48" r="44.5" fill="none" stroke="#c9a46a" stroke-width="1.4"/>
+        <circle cx="48" cy="48" r="35.5" fill="none" stroke="#c9a46a" stroke-width="1"/>
+        <g stroke="#c9a46a" stroke-width="1.2">
+          <line x1="48" y1="3" x2="48" y2="12"/><line x1="48" y1="84" x2="48" y2="93"/><line x1="3" y1="48" x2="12" y2="48"/><line x1="84" y1="48" x2="93" y2="48"/>
+        </g>
+        <path d="M70 12 l8 0 l0 8 z" fill="#c0392b" stroke="#0d1b26"/>
+      </svg>
+    </div>
+    <p class="cap">The corner notch carries the faction colour (blue Alliance, red Horde), so the ring never needs a second badge.</p>
+  </div>
+</section>
+
+<!-- 5. road map -->
+<section class="road">
+  <div class="label"><h2>The road to 60</h2><span class="note">A surveyor's route drawn from zone level ranges, with your character marked. Exploration as data, not decoration. Ranges shown are the Classic map's; ours would come from the client.</span></div>
+  <div class="nightsky" style="padding:18px;border:1px solid #000;box-shadow:inset 0 0 0 1px #3a5a6e">
+    <svg viewBox="0 0 1100 300" role="img" aria-label="Route from level 1 to 60 through zones, the character at level 34 in Stranglethorn Vale">
+      <defs><pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#27465c"/></pattern></defs>
+      <rect width="1100" height="300" fill="url(#dots)"/>
+      <g font-family="Open Sans" font-size="12" fill="#7f9aab">
+        <text x="40" y="288">1</text><text x="210" y="288">10</text><text x="390" y="288">20</text><text x="570" y="288">30</text><text x="750" y="288">40</text><text x="930" y="288">50</text><text x="1060" y="288">60</text>
+      </g>
+      <path d="M44 230 C120 210 160 160 230 170 S330 220 400 180 S520 90 600 120 S700 200 780 150 S900 60 960 90 S1040 60 1066 40" fill="none" stroke="#c9a46a" stroke-width="2" stroke-dasharray="6 6"/>
+      <g font-family="Marcellus" font-size="15" fill="#e9dcc2">
+        <circle cx="44" cy="230" r="5" fill="#e9dcc2"/><text x="56" y="252">Elwynn Forest</text>
+        <circle cx="230" cy="170" r="5" fill="#e9dcc2"/><text x="190" y="158">Westfall</text>
+        <circle cx="400" cy="180" r="5" fill="#e9dcc2"/><text x="370" y="208">Duskwood</text>
+        <circle cx="600" cy="120" r="5" fill="#e9dcc2"/><text x="560" y="106">Arathi Highlands</text>
+        <circle cx="660" cy="150" r="9" fill="none" stroke="#e3584b" stroke-width="2"/><circle cx="660" cy="150" r="3.5" fill="#e3584b"/>
+        <text x="620" y="196" fill="#f3b0a8">Felsnap, 34 · Stranglethorn Vale</text>
+        <circle cx="780" cy="150" r="5" fill="#e9dcc2"/><text x="760" y="132">Tanaris</text>
+        <circle cx="960" cy="90" r="5" fill="#e9dcc2"/><text x="900" y="78">Eastern Plaguelands</text>
+        <circle cx="1066" cy="40" r="6" fill="#c9a46a"/><text x="990" y="30">Level 60</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- 6. raid plaque -->
+<section>
+  <div class="label"><h2>Raid night plaque</h2><span class="note">Carved stone, not a gradient card. The countdown is plain numbers; the sign-up count is the real content.</span></div>
+  <div class="stone plaque" style="max-width:640px">
+    <div class="when">Onyxia's Lair</div>
+    <div class="sub">Olympus XXVII · Wednesday 9 December · 20:00 guild time</div>
+    <div class="count"><div><b>29</b><span>days</span></div><div><b>23</b><span>hours</span></div><div><b>18</b><span>signed in</span></div><div><b>3</b><span>late</span></div></div>
+    <div class="btnrow" style="margin-top:16px"><button class="btn" type="button">I'm in</button><button class="btn2" type="button">Late</button><button class="btn2" type="button">Can't come</button></div>
+  </div>
+</section>
+
+<section>
+  <div class="label"><h2>Rules these follow</h2></div>
+  <ul class="rules">
+    <li><span class="do">Do:</span> warm umber and night blue grounds, bone titles in mixed case, teal for the single action, frames only around real screenshots, the client's own tooltip.</li>
+    <li><span class="dont">Don't:</span> Blizzard logos or key art, painted or generated illustrations, glowing gold, gradient cards, big hero headings, uppercase eyebrows everywhere.</li>
+  </ul>
+</section>
+
+</div>
+</body>
+</html>
