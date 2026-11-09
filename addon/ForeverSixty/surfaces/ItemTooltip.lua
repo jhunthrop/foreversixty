@@ -98,13 +98,12 @@ end
 --- (Progress.MIN_GAIN, 1.0 in the unit). `unit` is "dps", "hps" or "score"; `wornName` the worn
 --- item's name (nil while the client has not sent it). `opts` (optional):
 ---
---- - `over`: name the worn item ("Upgrade +2.2 DPS over <worn>": a ring, a trinket or a dual
----   wielder's one-hander, where the slot is ambiguous), in its quality colour `wornHex`;
---- - `requiredLevel`, `level`: an item above the character's level reads "Upgrade at level 27:
----   +3.5 DPS".
+--- - `over`: name the worn item ("+2.2 DPS over <worn>": a ring or a trinket, where the slot
+---   is ambiguous), in its quality colour `wornHex`;
+--- - `requiredLevel`, `level`: an item above the character's level reads "+3.5 DPS at level 27".
 ---
---- An upgrade (or any gain into an empty slot) leads with the green arrow, in green; a loss
---- from the floor reads "Downgrade −1.3 DPS" and anything between "Sidegrade" (its size kept
+--- An upgrade (or any gain into an empty slot) is the green arrow and its figure, in green; a
+--- loss from the floor is its figure, "−1.3 DPS", and anything between "Sidegrade" (its size kept
 --- as `sideFigure` for Shift), both grey. `match` says nothing (the client's compare tooltip
 --- says Equipped); `blocked` reads "Not with your two-hander".
 function ItemTooltip.verdictLine(verdict, unit, wornName, opts)
@@ -124,7 +123,7 @@ function ItemTooltip.verdictLine(verdict, unit, wornName, opts)
 		local shown = ItemTooltip.figure(gain, unit)
 		local line = { color = "tooltipGreen", upgrade = true, gain = gain }
 		if type(opts.requiredLevel) == "number" and type(opts.level) == "number" and opts.requiredLevel > opts.level then
-			line.text = Theme.arrowMarkup() .. string.format(L.tooltipUpgradeAt, opts.requiredLevel, shown)
+			line.text = Theme.arrowMarkup() .. string.format(L.tooltipUpgradeAt, shown, opts.requiredLevel)
 		elseif opts.over and wornName ~= nil and verdict.state ~= "empty" then
 			local function build(name)
 				return Theme.arrowMarkup() .. string.format(L.tooltipUpgradeOver, shown, colored(name, opts.wornHex))
@@ -290,12 +289,11 @@ local function classPlural(classToken)
 	return class or tostring(classToken)
 end
 
---- The grey verdict Rules.canEquip's refusal reads as (spec 2.2 cases 4 and 5): "Not for you
---- until level 40", "Not for shamans". The client's own red line already names the armor or
---- skill. nil for "ok".
-function ItemTooltip.untilLine(classToken, answer, level)
+--- The grey verdict Rules.canEquip's refusal reads as (spec 2.2 cases 4 and 5): "Mail armor at
+--- level 40" (`subclass` canEquip's own plain-words reason), "Not for shamans". nil for "ok".
+function ItemTooltip.untilLine(classToken, answer, level, subclass)
 	if answer == "until" then
-		return string.format(L.tooltipNotUntil, level)
+		return string.format(L.tooltipNotUntil, capitalised(subclass), level)
 	end
 	if answer == "never" then
 		return string.format(L.tooltipNotFor, classPlural(classToken))
@@ -303,13 +301,10 @@ function ItemTooltip.untilLine(classToken, answer, level)
 	return nil
 end
 
---- The refusal's reason, for Shift: "Mail armor at 40", "Rogues cannot use two-handed
---- swords", "Shamans cannot dual wield". `subclass` is canEquip's own plain-words reason. nil
---- for "ok".
-function ItemTooltip.refusalReason(classToken, answer, level, subclass)
-	if answer == "until" then
-		return string.format(L.tooltipReasonUntil, capitalised(subclass), level)
-	end
+--- The refusal's reason, for Shift: "Rogues cannot use two-handed swords", "Shamans cannot
+--- dual wield". `subclass` is canEquip's own plain-words reason. nil for "ok", and for "until"
+--- (its verdict line already names the reason).
+function ItemTooltip.refusalReason(classToken, answer, subclass)
 	if answer == "never" then
 		local class = capitalised(classPlural(classToken))
 		if subclass == "dual wielding" then
@@ -448,17 +443,13 @@ function ItemTooltip.fitSource(pick, measure, room, boe, prefix)
 	return { ItemTooltip.fitPlain(text(first, nil, percent), measure, room) }
 end
 
---- An alternative's gain as printed after its name, muted: "+1.1" ("+12" for
---- a score), the minus sign for a loss. nil with no gain.
+--- An alternative's gain as printed after its name, muted, with its unit: "+1.1 DPS" ("+12
+--- score"), the minus sign for a loss. nil with no gain.
 function ItemTooltip.alternativeGain(gain, unit)
 	if gain == nil then
 		return nil
 	end
-	local sign = gain < 0 and L.tooltipMinus or "+"
-	if unit == "score" then
-		return string.format(L.tooltipAltGainScore, sign, math.abs(gain))
-	end
-	return string.format(L.tooltipAltGain, sign, math.abs(gain))
+	return ItemTooltip.figure(gain, unit or "score")
 end
 
 --- One alternative as it is printed: its name in its quality colour (`name`
@@ -703,15 +694,11 @@ ItemTooltip.STAT_WORD_KEYS = {
 	crit = { "ITEM_MOD_CRIT_RATING_SHORT" },
 }
 
---- A stat in the player's words: "Str", "Agi", "Sta", "Int", "Spi" for the
---- five primary stats (Locale), "weapon DPS" for a weapon's own DPS, else the
---- client's own name for it (its ITEM_MOD_*_SHORT global: the generic one first
+--- A stat in the player's words: "weapon DPS" for a weapon's own DPS, else the
+--- client's own name for it ("Agility") (its ITEM_MOD_*_SHORT global: the generic one first
 --- where a stat has several, STAT_WORD_KEYS; else the alphabetical first), else
 --- Locale's. A caster never reads "Melee Hit Rating" for hit.
 function ItemTooltip.statWord(stat)
-	if L.statAbbrev[stat] ~= nil then
-		return L.statAbbrev[stat]
-	end
 	if stat == "weapon_dps" then
 		return L.tooltipWeaponDps
 	end
@@ -789,12 +776,17 @@ function ItemTooltip.breakdownText(contributions)
 	return #parts > 0 and table.concat(parts, L.tooltipBreakdownJoin) or nil
 end
 
---- The breakdown within `room`: as many parts on a line as fit, the rest on the next line
+--- The breakdown within `room` (led by `of`, the item it describes, when given): as many
+--- parts on a line as fit, the rest on the next line
 --- (nothing is dropped; the tooltip never widens). A part wider than the room alone is cut.
-function ItemTooltip.fitBreakdown(contributions, measure, room)
+function ItemTooltip.fitBreakdown(contributions, measure, room, of)
 	local fits = fitter(measure, room)
 	local rows, current = {}, nil
-	for _, part in ipairs(ItemTooltip.breakdownParts(contributions)) do
+	local parts = ItemTooltip.breakdownParts(contributions)
+	if of ~= nil and parts[1] ~= nil then
+		parts[1] = string.format(L.tooltipBreakdownOf, of, parts[1])
+	end
+	for _, part in ipairs(parts) do
 		local joined = current ~= nil and (current .. L.tooltipBreakdownJoin .. part) or part
 		if current == nil or fits(joined) then
 			current = joined
@@ -812,14 +804,17 @@ function ItemTooltip.fitBreakdown(contributions, measure, room)
 	return rows
 end
 
---- The breakdown line for a verdict that carries a figure, or nil.
-local function breakdownLine(verdict)
+--- The breakdown line for a verdict that carries a figure, or nil. `of` (optional): the
+--- coloured name of the item it describes when that is not the hovered one ("Ranger Bow:
+--- +1 Agility").
+local function breakdownLine(verdict, of)
 	local contributions = verdict ~= nil and verdict.contributions or nil
 	if contributions == nil or #contributions == 0 then
 		return nil
 	end
-	return { kind = "breakdown", role = "shift", contributions = contributions, color = "muted",
-		text = ItemTooltip.breakdownText(contributions) }
+	local text = ItemTooltip.breakdownText(contributions)
+	return { kind = "breakdown", role = "shift", contributions = contributions, color = "muted", of = of,
+		text = of ~= nil and string.format(L.tooltipBreakdownOf, of, text) or text }
 end
 
 --- "Next upgrade: <name> +6.1 DPS" (spec 2.2 case 16): the label in the line's white, the name
@@ -900,21 +895,9 @@ end
 --- arrow on a paper-doll slot, or nil. The slot hovers read it to lead with the bag fact.
 ItemTooltip.bagUpgradeFor = nil
 
-local function buildPlans(build, slots, itemId)
-	if type(build) ~= "table" then
-		return false
-	end
-	local wanted = {}
-	for _, slot in ipairs(slots) do
-		wanted[slot] = true
-	end
-	for _, entry in ipairs(build.gear or {}) do
-		if wanted[entry.slot] and entry.itemId == itemId then
-			return true
-		end
-	end
-	return false
-end
+--- The slots whose verdict names the worn item it replaces: two of each are worn, so "+2.2
+--- DPS" alone would not say which.
+local OVER_SLOTS = { finger1 = true, finger2 = true, trinket1 = true, trinket2 = true }
 
 --- The client reads `ctx` falls back to when a caller hands none in (Gear.itemStatsOf: the
 --- gear gap's own read).
@@ -1013,8 +996,8 @@ function ItemTooltip.judge(ctx, pending)
 		if answer == "ok" then
 			wearable[#wearable + 1] = slot
 		elseif refusal == nil then
-			refusal = ItemTooltip.untilLine(ctx.classToken, answer, unlock)
-			reason = ItemTooltip.refusalReason(ctx.classToken, answer, unlock, why)
+			refusal = ItemTooltip.untilLine(ctx.classToken, answer, unlock, why)
+			reason = ItemTooltip.refusalReason(ctx.classToken, answer, why)
 		end
 	end
 	local usable, blocked = {}, nil
@@ -1045,10 +1028,10 @@ function ItemTooltip.judge(ctx, pending)
 		if worn ~= nil and wornName == nil then
 			pending[worn.itemId] = true
 		end
-		-- "over <worn>" only where the slot is ambiguous: two slots take the item (rings,
-		-- trinkets, a dual wielder's one-hander).
+		-- "over <worn>" only for rings and trinkets, where two slots take the item.
 		primary = ItemTooltip.verdictLine(verdict, unit, wornName, {
-			over = #usable > 1, wornHex = worn ~= nil and qualityHex(worn.itemId) or nil,
+			over = #usable > 1 and OVER_SLOTS[slot] == true,
+			wornHex = worn ~= nil and qualityHex(worn.itemId) or nil,
 			requiredLevel = item.requiredLevel, level = ctx.level,
 		})
 		if primary ~= nil then
@@ -1206,10 +1189,6 @@ function ItemTooltip.section(ctx)
 			caps[#caps + 1] = { kind = "cap", text = text, color = "muted" }
 		end
 	end
-	local buildList
-	if buildPlans(ctx.build, slots, item.itemId) then
-		buildList = { kind = "buildList", text = L.tooltipInBuildList, color = "muted" }
-	end
 
 	local specBis = ctx.spec ~= nil and type(data.bis) == "table" and data.bis[ctx.spec] or nil
 	local currentBand = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
@@ -1260,7 +1239,7 @@ function ItemTooltip.section(ctx)
 				unparsed = worn ~= nil and worn.enchantUnparsed == true }
 			nextLine = { kind = "next", itemId = pick.item_id, upgrade = upgrade, color = "tooltipBody",
 				text = ItemTooltip.nextLine(colored(name, upgrade.hex), gain, unit, tag),
-				breakdown = breakdownLine(nextVerdict) }
+				breakdown = breakdownLine(nextVerdict, colored(name, upgrade.hex)) }
 			if isCached(pick.item_id) then
 				target = { itemId = pick.item_id, link = Compat.displayLink(pick.item_id), label = L.tooltipCompareLabel }
 			end
@@ -1292,11 +1271,12 @@ function ItemTooltip.section(ctx)
 		for _, alternative in ipairs(altSource.alternatives or {}) do
 			local id = alternative.item_id
 			if id ~= nil and id ~= item.itemId and #entries < 2 and not isMissing(id) then
-				local name = pickName(id)
+				local name, gain = pickName(id), gainOf(id)
 				if name == nil then
 					pending[id] = true
-				else
-					entries[#entries + 1] = { name = name, hex = qualityHex(id), gain = gainOf(id), unit = unit,
+				elseif gain == nil or gain >= Progress.MIN_GAIN then
+					-- Under the floor it is a sidegrade, never "good": left out, as on the verdict line.
+					entries[#entries + 1] = { name = name, hex = qualityHex(id), gain = gain, unit = unit,
 						flag = typeTagOf(id) }
 				end
 			end
@@ -1440,7 +1420,6 @@ function ItemTooltip.section(ctx)
 		shift(line)
 	end
 	shift(alternatives)
-	shift(buildList)
 	for _, line in ipairs(caps) do
 		shift(line)
 	end
@@ -1820,7 +1799,7 @@ function ItemTooltip.fitLine(line, measure, room)
 	elseif line.kind == "at" then
 		return ItemTooltip.fitAt(line, measure, room)
 	elseif line.kind == "breakdown" then
-		return ItemTooltip.fitBreakdown(line.contributions, measure, room)
+		return ItemTooltip.fitBreakdown(line.contributions, measure, room, line.of)
 	end
 	return { ItemTooltip.fitNamed(line, measure, room) }
 end

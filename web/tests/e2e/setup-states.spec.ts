@@ -106,6 +106,34 @@ test('a phone: the companion runs on a PC or Mac, Copy link copies this page, an
   await copy.click();
   await expect(copy).toHaveText(addonCopy.setupLinkCopied);
   expect(await page.evaluate(() => navigator.clipboard.readText())).toMatch(/\/setup$/);
+  // The head and The companion say the same and copy the same link.
+  for (const place of ['setup-head', 'setup-companion']) {
+    await expect(page.getByTestId(`${place}-copy`)).toContainText(addonCopy.setupCompanionMobile);
+    await expect(page.getByTestId(`${place}-action-copylink`)).toBeVisible();
+  }
+});
+
+test('the download sits at the top and right under The companion heading, the same build, never gold', async ({
+  page,
+}) => {
+  await openSetupState(page, 'out');
+  const own = downloadFor('windows');
+  if (own === null) throw new Error('companion.json lists no windows build');
+  const head = page.locator('[data-region="head-answer"]');
+  const section = page.getByTestId('setup-companion');
+  for (const [scope, place] of [
+    [head, 'setup-head'],
+    [section, 'setup-companion'],
+  ] as const) {
+    const button = scope.getByTestId(`${place}-action-download`);
+    await expect(button).toHaveText(addonCopy.setupCompanionDownload(own.platform));
+    await expect(button).toHaveAttribute('href', releasePath(own.asset));
+    await expect(scope.getByTestId(`${place}-download-meta`)).toHaveText(/^Version 0\.2\.37 · \d+\.\d MB$/);
+  }
+  // The plate keeps the page's one gold step (sign in); the copies are secondary.
+  const lead = await section.getByTestId('setup-companion-lead').boundingBox();
+  const download = await section.getByTestId('setup-companion-download').boundingBox();
+  expect(download?.y ?? Infinity).toBeLessThan(lead?.y ?? 0);
 });
 
 test('a pairing code out: row 3 waits with the code, no gold step', async ({ page }) => {
@@ -119,7 +147,10 @@ test('a pairing code out: row 3 waits with the code, no gold step', async ({ pag
 test('everything done: the quiet install links stay in the Sections (U4)', async ({ page }) => {
   await openSetupState(page, 'done');
   await expect(page.getByTestId('setup-curseforge-again')).toHaveAttribute('rel', 'noopener');
-  await expect(page.getByTestId('setup-download-another')).toHaveAttribute('rel', 'noopener');
+  // Done or not, the download stays at the top and in The companion (owner 2026-11-08).
+  for (const place of ['setup-head', 'setup-companion']) {
+    await expect(page.getByTestId(`${place}-action-download`)).toHaveAttribute('rel', 'noopener');
+  }
   await expect(page.getByTestId('setup-device-status')).toContainText('JHUNT-PC · Windows');
   await expect(page.getByTestId('setup-answer-open')).toHaveText('Open Felsnap ›');
 });

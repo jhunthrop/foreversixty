@@ -97,12 +97,14 @@ type Server struct {
 	posts        []ExportPost
 	simOutcome   string
 	refuseOutbox bool
-	refuseChars  bool
-	claimChars   bool
-	attempts     int
-	clock        func() time.Time
-	acks         map[string]ack
-	inboxReads   int
+	// raidAnswerStatus answers every raid answer; "" is accepted.
+	raidAnswerStatus string
+	refuseChars      bool
+	claimChars       bool
+	attempts         int
+	clock            func() time.Time
+	acks             map[string]ack
+	inboxReads       int
 
 	// The release feed (feed.go).
 	releases      []FeedRelease
@@ -691,11 +693,29 @@ type ack struct {
 // outboxResult is the API's per-part answer for an outbox
 // (api/internal/addon/outbox.go OutboxResult).
 type outboxResult struct {
-	Status         string `json:"status"`
-	Export         string `json:"export,omitempty"`
-	SimRequest     string `json:"sim_request,omitempty"`
-	RosterSnapshot string `json:"roster_snapshot,omitempty"`
-	DroppedMembers int    `json:"dropped_members,omitempty"`
+	Status         string             `json:"status"`
+	Export         string             `json:"export,omitempty"`
+	SimRequest     string             `json:"sim_request,omitempty"`
+	RosterSnapshot string             `json:"roster_snapshot,omitempty"`
+	DroppedMembers int                `json:"dropped_members,omitempty"`
+	RaidAnswer     []raidAnswerResult `json:"raid_answer,omitempty"`
+}
+
+// raidAnswerResult is the API's answer for one raid answer, echoing it
+// (api/internal/addon raid_answers.go RaidAnswerResult).
+type raidAnswerResult struct {
+	Character  string `json:"character"`
+	RaidID     int64  `json:"raid_id"`
+	AnsweredAt int64  `json:"answered_at"`
+	Status     string `json:"status"`
+}
+
+// SetRaidAnswerStatus is what every raid answer is answered from now
+// on: accepted (the default), refused or deferred.
+func (s *Server) SetRaidAnswerStatus(status string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.raidAnswerStatus = status
 }
 
 // ackState is a sim request outcome in the ack's words, or "" when the
@@ -786,12 +806,14 @@ func (s *Server) applyOutbox(chars []map[string]string, raw json.RawMessage) out
 		RosterSnapshot *struct {
 			Members []map[string]any `json:"members"`
 		} `json:"roster_snapshot"`
+		RaidAnswer []raidAnswerResult `json:"raid_answer"`
 	}
 	if json.Unmarshal(raw, &ob) != nil || ob.Format != 1 {
 		return outboxResult{Status: "ignored"}
 	}
+	res := s.answerRaidAnswers(ob.RaidAnswer)
 	hasSim := len(ob.SimRequest) > 0 && string(ob.SimRequest) != "null"
-	res := outboxResult{Status: "read", Export: "unknown_character"}
+	res.Status, res.Export = "read", "unknown_character"
 	name, _, _ := strings.Cut(ob.Export.Character, "-")
 	key := ""
 	for _, c := range chars {
@@ -827,6 +849,21 @@ func (s *Server) applyOutbox(chars []map[string]string, raw json.RawMessage) out
 				res.DroppedMembers++
 			}
 		}
+	}
+	return res
+}
+
+// answerRaidAnswers answers each raid answer with the status
+// SetRaidAnswerStatus set. The caller holds s.mu.
+func (s *Server) answerRaidAnswers(in []raidAnswerResult) outboxResult {
+	var res outboxResult
+	status := s.raidAnswerStatus
+	if status == "" {
+		status = "accepted"
+	}
+	for _, a := range in {
+		a.Status = status
+		res.RaidAnswer = append(res.RaidAnswer, a)
 	}
 	return res
 }

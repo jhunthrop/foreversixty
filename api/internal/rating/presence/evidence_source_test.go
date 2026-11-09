@@ -88,6 +88,8 @@ var predicate = regexp.MustCompile(`\b(EvidenceReport|NotFlagged)\(`)
 // notEvidence is every visibility condition that is not a reader of evidence: the file
 // (slash-separated, from the api module root), a substring of the expression, and why.
 var notEvidence = []struct{ file, expr, why string }{
+	{"internal/account/store.go", "visibility = '` + reports.Private + `'",
+		"account deletion picks the account's own private reports to erase, not a reader of evidence"},
 	{"internal/rating/presence/presence.go", `".visibility <> 'private' and "`,
 		"EvidenceReport itself"},
 	{"internal/reports/report.go", "visibility != Private",

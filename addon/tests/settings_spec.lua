@@ -72,20 +72,17 @@ describe("SettingsPage, the switches", function()
 			words[#words + 1] = { switch.label, switch.hint }
 		end
 		assert.are.same({
-			{ "Tooltips only", "Keeps the gear and score lines on tooltips and turns off the line by the minimap, "
-				.. "the marks and the welcome." },
-			{ "Show the Forever Sixty line", "Your next step beside the minimap. Click it to open Forever Sixty. "
-				.. "Shift-drag moves it." },
+			{ "Tooltips only", "Turns off everything but the tooltip lines." },
+			{ "Show the Forever Sixty line", "Beside the minimap. Shift-drag moves it." },
 			{ "Hide the Forever Sixty line in combat", "On: the line hides when combat starts. Off: it stays, faded to 25%." },
 			{ "Marks on the talent window",
 				"Numbers your build's talents in order, rings the next one and adds a progress strip." },
-			{ "Marks on your bags and character pane", "A green arrow on gear that beats what you wear, and a gold "
-				.. "corner on a slot with an upgrade to chase." },
+			{ "Marks on your bags and character pane",
+				"A green arrow on gear that beats yours, a gold corner on a slot with an upgrade to chase." },
 			{ "Show the minimap button", "Left-click pastes or copies a build; right-click opens this page. "
 				.. "Off: type /fs options or use Options > AddOns." },
 			{ "Gear tips on item tooltips",
-				"One line on gear saying what it means for you; hold Shift for the details. "
-				.. "Off: hides player scores and the quest reward and loot roll marks too." },
+				"Hold Shift for the details. Off also hides player scores and the quest and roll marks." },
 			{ "Score badges in chat",
 				"Shows a player's Forever Score before their message in LFG, Trade, guild chat and whispers." },
 			{ "Share my build with my guild",

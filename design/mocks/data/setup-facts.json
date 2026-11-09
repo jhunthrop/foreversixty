@@ -1287,7 +1287,6 @@
   "setupBis": "Best in slot",
   "setupHandInstall": "Installing by hand",
   "setupHandInstallBody": "Unzip both into World of Warcraft\\<your Forever game folder>\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.",
-  "setupDownloadAnother": "Download for another PC",
   "pasteFieldLabel": "Addon export",
   "setupCompanionLine": "[fn]",
   "setupCompanionWaiting": "No companion signed in yet",
