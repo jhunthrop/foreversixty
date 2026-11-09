@@ -6139,6 +6139,15 @@ enum Copy {
     /// No character yet. Battle.net lists a character after you play it and log out.
     static var sharedHomeNoCharacter: String { text("shared.home.noCharacter") }
 
+    /// No character yet
+    static var sharedHomeNoCharacterYet: String { text("shared.home.noCharacterYet") }
+
+    /// Paste export
+    static var sharedHomePasteAction: String { text("shared.home.pasteAction") }
+
+    /// Get set up
+    static var sharedHomeSetupAction: String { text("shared.home.setupAction") }
+
     /// Signed in as {tag}
     static func sharedHomeSignedInAs(tag: String) -> String {
         format("shared.home.signedInAs", tag)
@@ -6284,7 +6293,7 @@ enum Copy {
     /// Rankings
     static var sharedHomeRankings: String { text("shared.home.rankings") }
 
-    /// Forever right now
+    /// Latest on Forever
     static var sharedFeedTitle: String { text("shared.feed.title") }
 
     /// Show

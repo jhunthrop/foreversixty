@@ -398,6 +398,7 @@ right:0;left:0;bottom:0;max-height:88vh;border-radius:16px 16px 0 0}
 .cell .l1{display:flex;align-items:baseline;column-gap:10px;min-width:0}.cell .l1 .nm{flex:none;max-width:100%;font:700 15px/20px var(--font-body)}
 .cell .l1 .st{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:20px;color:var(--muted)}
 .cell .l2{font-size:13px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}
+.cell .l2 .fact{display:inline-block;max-width:100%}  /* Paperdoll.svelte .ui-doll-fact: the line wraps between facts */
 .cell .gn{display:flex;flex-direction:column;align-items:flex-end;width:144px;min-width:0;justify-self:end}
 .cell .gn .v{font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}.cell .gn .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
 .cell .gn .bs{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:16px;color:var(--muted);text-align:right}
@@ -698,4 +699,23 @@ button.tgl{all:unset;cursor:pointer;font:inherit;color:inherit}
 .insp-l{display:flex;flex-direction:column;gap:16px;margin:4px 0 0;padding:0;list-style:none;font-size:14px;line-height:22px}
 .insp-l li{display:flex;flex-direction:column;gap:4px;min-width:0}.insp-l p{margin:0}
 .live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.frame{position:relative;min-width:0;overflow:hidden;padding:22px 24px;background:var(--raised);border:1px solid #000;border-radius:10px;
+box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
+.frame::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+@media(max-width:767px){.frame{padding:18px 16px}}
+
+.rl.compact{--rr-name:minmax(170px,1fr);--rr-bar:minmax(48px,160px);--rr-gap:72px;--rr-links:0px}
+.rl.compact.grouped{--grp-w:44px}
+@media(min-width:1280px){.rl.compact.grouped{--grp-w:64px}}
+@media(min-width:1760px){.rl.compact{--rr-name:minmax(170px,1fr);--rr-bar:minmax(48px,160px)}}
+@media(max-width:1023px){.rl.compact .rr-heads{display:flex;justify-content:flex-end;padding:7px 10px}.rl.compact .rr-heads>span:not(:nth-child(5)){display:none}}
+.rl.compact .rg{grid-template-columns:var(--grp-w) minmax(0,1fr)}
+.rl.compact .rg-l{display:block;padding:10px 0 0;text-align:center;border-left:0;border-right:1px solid var(--line-soft);border-bottom:0}
+.rl.compact .rg-l .lt{font:400 40px/44px var(--font-title);color:var(--cream)}
+.rl.compact .rr{min-height:48px;padding-block:6px}.rl.compact .rr .meter>i{background:var(--accent)}
+.rl.compact .rr.cur{background:rgba(0,147,178,.16)}.rl.compact .rr.cur::before{background:var(--accent)}
+@media(max-width:1279px){.rl.compact .rg-l .lt{font-size:30px;line-height:36px}.rl.compact .rr.cols{padding:8px 14px}}
+@media(max-width:767px){.rl.compact .rr.cols{grid-template-areas:"rk ld nm f1" ". . xx xx";column-gap:8px;padding:6px 12px 6px 8px}
+ .rl.compact .rr .br,.rl.compact .rr .gp{display:none}.rl.compact .rr .fg.f1{align-self:center}}
 </style></main><!-- Native app mock (design/specs/2026-11-08-app-flows.md). --><div class="fs-chrome fs-foot"><div data-fs-body%BODY_ATTRS%>%FOOTER%</div></div><nav class="app-tabs" aria-label="Tabs"><a href="#" class="on" aria-current="page"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg><span>Home</span></a><a href="#" class=""><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3v18M6 4h12l-3 4 3 4H6"/></svg><span>Raid</span></a><a href="#" class=""><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Gear</span></a><a href="#" class=""><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="badge" aria-label="2 new">2</span><span>Activity</span></a></nav><span class="app-home" aria-hidden="true"></span></body></html>

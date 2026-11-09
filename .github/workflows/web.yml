@@ -114,6 +114,7 @@ jobs:
             !/data/diffs/
             !/design/reviews/
             !/design/mocks/
+            /design/mocks/ws_lib.py
             !/docs/superpowers/reviews/
       - uses: ./.github/actions/data-builds
       - uses: actions/setup-node@v4

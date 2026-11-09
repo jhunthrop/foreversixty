@@ -1,9 +1,9 @@
 // web/src/lib/footer-copy.ts
-// The footer's copy and link set, one source for Footer.astro and its tests: round 5's compact
-// footer (design/specs/2026-11-09-directions.md, coordinator ruling 2026-11-09): the seal and name,
-// Get set up, Premium, the Discord and Report a bug, the legal links, the not-affiliated sentence and
-// the operator line. FOOTER_COLUMNS is no longer drawn; it is the site's page list the 404 page
-// suggests from (lib/not-found/suggest.ts).
+// The footer's copy and link set, one source for Footer.astro and its tests: round 5's one-row
+// footer (the mock, design/mocks/directions/png/g-home-1440.png; coordinator ruling 2026-11-09):
+// the seal and name, the seven links and the fan-made line. FOOTER_LEGAL_LINKS are the legal pages'
+// own tabs (layouts/Content.astro). FOOTER_COLUMNS is not drawn; it is the site's page list the 404
+// page suggests from (lib/not-found/suggest.ts).
 import communityLinks from '../data/links.json';
 
 export interface FooterLink {
@@ -16,22 +16,23 @@ export interface FooterColumn {
   readonly links: readonly FooterLink[];
 }
 
-/** The footer's site links, beside the seal: Get set up left the bar for here and the account menu. */
+// Bugs are reported in the Discord's #bug-reports forum; the invite lands a newcomer there.
+/** The footer's one row of links, beside the seal (the round 5 mock, design/mocks/directions/png/
+ *  g-home-1440.png): Get set up left the bar for here and the account menu. */
 export const FOOTER_LINKS: readonly FooterLink[] = [
   { label: 'Get set up', href: '/setup' },
+  { label: 'Addon', href: '/setup#addon' },
+  { label: 'Discord', href: communityLinks.discordInvite },
   { label: 'Premium', href: '/premium' },
+  { label: 'Report a bug', href: communityLinks.discordInvite },
+  { label: 'Privacy', href: '/privacy' },
+  { label: 'Terms', href: '/terms' },
 ];
 
-export const FOOTER_DISCORD_BUTTON: FooterLink = {
-  label: 'Join the Discord',
-  href: communityLinks.discordInvite,
-};
-
-// Bugs are reported in the Discord's #bug-reports forum; the invite lands a newcomer there.
-export const FOOTER_REPORT_BUG_BUTTON: FooterLink = {
-  label: 'Report a bug',
-  href: communityLinks.discordInvite,
-};
+/** The footer's not-official line, at the right of the row (owner rule: never mistakable for
+ *  Blizzard's). The full trademark sentence and the operator line are on /about and /terms
+ *  (lib/legal-notice.ts). */
+export const FOOTER_FAN_LINE = 'A fan-made player tool. Not affiliated with Blizzard.';
 
 export const FOOTER_COLUMNS: readonly FooterColumn[] = [
   {
@@ -77,10 +78,3 @@ export const FOOTER_LEGAL_LINKS: readonly FooterLink[] = [
   { label: 'Privacy', href: '/privacy' },
   { label: 'Refunds', href: '/refunds' },
 ];
-
-export const FOOTER_TRADEMARK =
-  'Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.';
-
-export function footerOperatorLine(year: number): string {
-  return `Forever Sixty is a registered trade name of Commish LLC. © ${year} Commish LLC.`;
-}
