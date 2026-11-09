@@ -1,9 +1,9 @@
 <!-- web/src/components/guild/recruit/GuildRecruit.svelte -->
-<!-- /guild/{region}/{ruleset}/{slug}/recruit (web layout spec 2026-11-05 §7.2 Recruitment, "Should I
-     apply?"; mock web-guild-recruit): where a stranger meets the guild. The one Plate is the public
-     card, in its Section; under it what the
-     viewer can do (sign in, apply, their own application, or the line that the guild is closed);
-     the rail holds the officers' pitch and the officers. GuildShell loads this file as its own
+<!-- /guild/{region}/{ruleset}/{slug}/recruit (batch 3, b3-guild-recruit; web layout spec 2026-11-05
+     §7.2 Recruitment, "Should I apply?"): where a stranger meets the guild. The band reads Join and
+     whether they recruit; the framed panel is who they look for, then what the viewer can do (sign
+     in, apply, their own application, or the line that the guild is closed); the rail holds the
+     guild's facts, the officers' pitch and the officers. GuildShell loads this file as its own
      chunk; lib/guild/recruit-page.svelte.ts owns the reads and writes. -->
 <script lang="ts">
   import { untrack } from 'svelte';
@@ -12,7 +12,7 @@
   import { viewerLocale } from '../../../lib/guild/raid-time';
   import { recruitCopy as copy } from '../../../lib/guild/recruit-copy';
   import { RecruitPage } from '../../../lib/guild/recruit-page.svelte';
-  import { officerRows, realmLabel } from '../../../lib/guild/recruit-view';
+  import { officerRows, realmLabel, wantedRows } from '../../../lib/guild/recruit-view';
   import { classTone } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import SignInPrompt from '../../SignInPrompt.svelte';
@@ -22,6 +22,7 @@
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
   import Skeleton from '../../ui/Skeleton.svelte';
+  import Tag from '../../ui/Tag.svelte';
   import ApplyForm from './ApplyForm.svelte';
   import GuildViewHeader from './GuildViewHeader.svelte';
   import MyApplication from './MyApplication.svelte';
@@ -58,6 +59,7 @@
 <div>
   {#snippet rail()}
     {#if p.card !== null}
+      <RecruitCard card={p.card} {viewerTimezone} {locale} />
       {#if p.card.pitch !== ''}
         <Section title={copy.card.why} panel testid="guild-recruit-pitch">
           <p class="text-text text-[14px] leading-[22px] whitespace-pre-line">{p.card.pitch}</p>
@@ -85,25 +87,44 @@
     {@const state = p.state}
     {@const card = p.card}
     {@const context = p.context}
+    {#snippet status()}
+      <Tag tone={card.open ? 'success' : 'muted'} testid="guild-recruit-open"
+        >{card.open ? copy.card.recruiting : copy.card.closed}</Tag
+      >
+    {/snippet}
     {#snippet header()}
       <GuildViewHeader
         guild={context.guild}
         {guildPath}
         title={copy.page.title(card.guild.name)}
-        facts={[copy.card.label]}
+        meta={status}
         {tabRole}
         testid="guild-recruit-head"
       />
     {/snippet}
     <Page layout="split" panels {header} {rail} testid="guild-recruit-page">
-      <Section
-        title={copy.card.heading(card.guild.name, card.open)}
-        panel
-        frame="framed"
-        testid="guild-recruit-card-section"
-      >
-        <RecruitCard {card} mark={context.guild.mark} {viewerTimezone} {locale} />
-      </Section>
+      {#if card.open}
+        <Section title={copy.card.lookingFor} panel frame="framed" testid="guild-recruit-wanted">
+          {#if card.wanted.length === 0}
+            <p class="text-text text-[14px]">{copy.card.nobodyListed}</p>
+          {:else}
+            <ul>
+              {#each wantedRows(card.wanted) as line (line.key)}
+                <li>
+                  <Row
+                    title={line.title}
+                    titleTone={classTone(line.classSlug)}
+                    sub={line.note || undefined}
+                    open
+                  >
+                    {#snippet lead()}<ClassCrestRing characterClass={line.classSlug} size={30} />{/snippet}
+                  </Row>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </Section>
+      {/if}
       {#if state.kind === 'closed'}
         <Notice text={copy.closedLine(card.guild.name)} tone="neutral" testid="guild-recruit-closed" />
       {:else if state.kind === 'member'}

@@ -484,23 +484,31 @@ def _top(metric, value):
 
 
 def recruitment():
-    facts = f'{gd.REGION.upper()} &middot; PvP &middot; {gd.FACTION.title()} &middot; {gd.RAIDERS} members'
-    wanted = '; '.join(f'{n} ({note})' if note else n for _c, _k, n, note in gd.RECRUIT_WANTED)
+    """The public card (batch 3, b3-guild-recruit): Join and Recruiting on the band; Looking for framed, then Apply; the rail's
+    guild facts (ui/Facts), why this guild and the officers."""
+    wanted = Rows([Row(n, note, lead=crest_img(c, 30), title_color=C[c], link=False) for c, _k, n, note in gd.RECRUIT_WANTED], list_=True)
     upcoming = ', '.join(f'{_day(at)}, {_clock(at)}' for at in gd.RECRUIT_UPCOMING)
     t = F.tier()
-    card = ('<div role="region" aria-label="Public guild card">' + Rows([Row(GUILD, facts, lead=Emblem(gd.FACTION, 44), trail=Tag('Recruiting', 'kill'), link=False),
-                       Row('Raids', gd.RECRUIT_NIGHTS, link=False), Row('Next raid nights', upcoming, link=False),
-                       Row('Progress', f"{t['down']} of {t['named_encounters']} named bosses down &middot; {t['name']}", link=False),
-                       Row('Looking for', wanted, link=False)]) + '</div>')
+    facts = [('Region', f'{gd.REGION.upper()} PvP'), ('Faction', gd.FACTION.title()), ('Members', str(gd.RAIDERS)), ('Raids', gd.RECRUIT_NIGHTS),
+             ('Next raid nights', upcoming), ('Progress', f"{t['down']} of {t['named_encounters']} named bosses down &middot; {t['name']}")]
+    card = '<dl class="gfacts">' + ''.join(f'<dt>{k}</dt><dd>{v}</dd>' for k, v in facts) + '</dl>'
     # Signed out nobody can apply: the API takes one of the viewer's own characters, so the build asks them to sign in (SignInPrompt).
     sign_in = (f'<div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px"><p {_PROSE}>Sign in to apply to {GUILD} with one of your characters.</p>'
                + Button('Sign in with Battle.net') + '</div>')
     rank = {'leader': 'Guild master', 'officer': 'Officer'}  # recruit-copy card.leader / card.officer
     officers = Rows([Row(n, f'{_spec_class(n)} &middot; {rank[gd.rank_of(n)]}', lead=crest_img(ch(n)[1], 32), title_color=C[ch(n)[1]], link=False)
                      for n in gd.COUNCIL], open_=True)
-    main = Section(f'{GUILD} is recruiting', card, panel=True, frame='framed') + Section('Apply', sign_in, panel=True)
-    rail = Section('Why this guild', f'<p {_PROSE}>{gd.RECRUIT_PITCH}</p>', panel=True) + Section('Officers', officers, panel=True)
-    return build_page('Recruitment', _view(PageHeader(f'Join {GUILD}', ALLIANCE, Emblem(gd.FACTION, 56), meta=['Public guild card']) + Page('split', main, rail, panels=True)), 'Guild', None)
+    main = Section('Looking for', wanted, panel=True, frame='framed') + Section('Apply', sign_in, panel=True)
+    rail = (Section(GUILD, card, panel=True) + Section('Why this guild', f'<p {_PROSE}>{gd.RECRUIT_PITCH}</p>', panel=True)
+            + Section('Officers', officers, panel=True))
+    head = PageHeader(f'Join {GUILD}', ALLIANCE, Emblem(gd.FACTION, 56), meta=[Tag('Recruiting', 'kill')])
+    return build_page('Recruitment', _view(head + Page('split', main, rail, panels=True)) + _FACTS_CSS, 'Guild', None)
+
+
+# ui/Facts: the key muted at the left, the value strong at the right, a hairline between pairs.
+_FACTS_CSS = ('<style>.gfacts{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);margin:0}'
+              '.gfacts dt,.gfacts dd{margin:0;padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:14px;line-height:20px}'
+              '.gfacts dt{color:var(--muted);padding-right:16px}.gfacts dd{text-align:right;color:var(--strong);font-weight:600;font-variant-numeric:tabular-nums}</style>')
 
 
 def applications():

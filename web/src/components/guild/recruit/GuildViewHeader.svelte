@@ -26,6 +26,7 @@
     titleTone,
     lead,
     views,
+    meta: metaContent,
     testid,
   }: {
     guild: GuildViewGuild;
@@ -43,6 +44,8 @@
     lead?: Snippet;
     /** The Roster's sub-view row, its current view. */
     views?: 'members' | 'applications';
+    /** The meta line as markup (a Tag), in place of the facts. */
+    meta?: Snippet;
     testid: string;
   } = $props();
 
@@ -75,7 +78,7 @@
   title={title ?? guild.name}
   {tone}
   {crest}
-  meta={facts.length > 0 ? meta : undefined}
+  meta={metaContent ?? (facts.length > 0 ? meta : undefined)}
   {answer}
   tabs={tabRole === undefined ? undefined : tabs}
   {testid}

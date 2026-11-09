@@ -26,13 +26,13 @@ import { attendanceView, gearGapLines, lootRows, noteSub, profileFigures, profil
 import {
   applicationLine,
   applyErrorLine,
-  cardFacts,
   eligibleCharacters,
   officerRows,
   progressLine,
+  recruitFacts,
   recruitState,
   upcomingNights,
-  wantedLine,
+  wantedRows,
   wantedSummary,
 } from './recruit-view';
 
@@ -62,17 +62,25 @@ describe('the public card', () => {
   const card = buildMockRecruitCard();
 
   it('states the realm, faction and size, and the next nights in the viewer clock', () => {
-    expect(cardFacts(card)).toEqual(['US', 'PvP', 'Horde', '24 members']);
+    expect(recruitFacts(card, TZ, LOCALE).map((f) => [f.label, f.value])).toEqual([
+      ['Region', 'US PvP'],
+      ['Faction', 'Horde'],
+      ['Members', '24'],
+      ['Raids', card.raid_nights.text],
+      ['Next raid nights', 'Wed 9 Dec, 8 pm, Mon 14 Dec, 8 pm'],
+      ['Progress', '1 of 1 named bosses down · Tier 1'],
+    ]);
     expect(upcomingNights(card, TZ, LOCALE)).toEqual(['Wed 9 Dec, 8 pm', 'Mon 14 Dec, 8 pm']);
     expect(progressLine(card)).toBe('1 of 1 named bosses down · Tier 1');
     expect(progressLine({ ...card, progress: { ...card.progress, named_encounters: 0 } })).toBe('');
   });
 
   it('names what they look for, a class alone reading any spec', () => {
-    expect(wantedLine(card.wanted)).toBe(
-      'Holy Paladin (Two for the heal rotation); Protection Warrior (Off tank); Mage, any spec',
-    );
-    expect(wantedLine([])).toBe('Every class and spec welcome');
+    expect(wantedRows(card.wanted).map((r) => [r.title, r.note, r.classSlug])).toEqual([
+      ['Holy Paladin', 'Two for the heal rotation', 'paladin'],
+      ['Protection Warrior', 'Off tank', 'warrior'],
+      ['Mage, any spec', '', 'mage'],
+    ]);
     expect(wantedSummary(card.wanted)).toBe('Holy Paladin, Protection Warrior, Mage');
     expect(wantedSummary([])).toBe('Every class and spec welcome');
   });

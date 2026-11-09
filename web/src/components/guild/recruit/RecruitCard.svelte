@@ -1,48 +1,17 @@
 <!-- web/src/components/guild/recruit/RecruitCard.svelte -->
-<!-- The public recruiting card, in its framed panel (web layout spec 2026-11-05 §7.2 Recruitment;
-     mock web-guild-recruit): the guild with its mark, realm, faction and size and whether they
-     recruit; the raid nights in the officers' words and the next planned nights in the viewer's
-     clock; progress this tier; and one Looking for line (each class or spec with its note). -->
+<!-- The guild's public facts, the recruit rail's first panel (batch 3, b3-guild-recruit; web layout
+     spec 2026-11-05 §7.2 Recruitment): where it plays, its side and size, the raid nights in the
+     officers' words, the next planned nights in the viewer's clock, and its progress this tier. -->
 <script lang="ts">
   import type { RecruitCard } from '../../../lib/guild/recruit-api';
-  import { recruitCopy as copy } from '../../../lib/guild/recruit-copy';
-  import { cardFacts, progressLine, upcomingNights, wantedLine } from '../../../lib/guild/recruit-view';
-  import FactionCrest from '../../character/FactionCrest.svelte';
-  import Row from '../../ui/Row.svelte';
-  import Tag from '../../ui/Tag.svelte';
+  import { recruitFacts } from '../../../lib/guild/recruit-view';
+  import Facts from '../../ui/Facts.svelte';
+  import Section from '../../ui/Section.svelte';
 
-  let {
-    card,
-    mark,
-    viewerTimezone,
-    locale,
-  }: { card: RecruitCard; mark: string | null; viewerTimezone: string; locale: string } = $props();
-
-  const upcoming = $derived(upcomingNights(card, viewerTimezone, locale));
-  const progress = $derived(progressLine(card));
+  let { card, viewerTimezone, locale }: { card: RecruitCard; viewerTimezone: string; locale: string } =
+    $props();
 </script>
 
-<div role="region" aria-label={copy.card.label} data-testid="guild-recruit-card">
-  <Row title={card.guild.name} sub={cardFacts(card).join(' · ')} testid="guild-recruit-status">
-    {#snippet lead()}<FactionCrest faction={card.guild.faction} src={mark} small />{/snippet}
-    {#snippet trail()}
-      <Tag tone={card.open ? 'success' : 'muted'} dot testid="guild-recruit-open"
-        >{card.open ? copy.card.recruiting : copy.card.closed}</Tag
-      >
-    {/snippet}
-  </Row>
-  <Row
-    title={copy.card.raids}
-    sub={card.raid_nights.text ?? copy.card.noNights}
-    testid="guild-recruit-nights"
-  />
-  {#if upcoming.length > 0}
-    <Row title={copy.card.upcoming} sub={upcoming.join(', ')} testid="guild-recruit-upcoming" />
-  {/if}
-  {#if progress !== ''}
-    <Row title={copy.card.progress} sub={progress} testid="guild-recruit-progress" />
-  {/if}
-  {#if card.open}
-    <Row title={copy.card.lookingFor} sub={wantedLine(card.wanted)} testid="guild-recruit-wanted" />
-  {/if}
-</div>
+<Section title={card.guild.name} panel testid="guild-recruit-card">
+  <Facts items={recruitFacts(card, viewerTimezone, locale)} testid="guild-recruit-facts" />
+</Section>

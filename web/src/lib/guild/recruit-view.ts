@@ -9,17 +9,54 @@ import { GuildApiError } from './api';
 import { clockText, dateLabel } from './raid-time';
 import { recruitCopy as copy } from './recruit-copy';
 import { specClassName } from './spec-name';
+import type { Fact } from '../ui/facts';
 import type { GuildApplication, RecruitCard, RecruitOfficer, RecruitWanted } from './recruit-api';
 
 const SEP = ' · ';
 
-/** "US · PvP · Alliance · 24 members": the card's one fact line. */
-export function cardFacts(card: RecruitCard): string[] {
+/** The guild's facts on the public card (batch 3, the recruit rail): where it plays, its side, its
+ *  size, its raid nights in the officers' words and the next planned ones in the viewer's clock, and
+ *  its progress. A fact with nothing to say is left out. */
+export function recruitFacts(card: RecruitCard, viewerTz: string, locale: string): Fact[] {
   const { guild } = card;
-  const facts = [guild.region.toUpperCase(), rulesetLabel(guild.ruleset)];
-  if (guild.faction !== null) facts.push(guild.faction === 'alliance' ? 'Alliance' : 'Horde');
-  facts.push(copy.card.members(card.members));
+  const facts: Fact[] = [
+    {
+      id: 'region',
+      label: copy.card.region,
+      value: `${guild.region.toUpperCase()} ${rulesetLabel(guild.ruleset)}`,
+    },
+  ];
+  if (guild.faction !== null)
+    facts.push({
+      id: 'faction',
+      label: copy.card.faction,
+      value: guild.faction === 'alliance' ? 'Alliance' : 'Horde',
+    });
+  facts.push({ id: 'members', label: copy.card.membersLabel, value: String(card.members) });
+  facts.push({ id: 'raids', label: copy.card.raids, value: card.raid_nights.text ?? copy.card.noNights });
+  const upcoming = upcomingNights(card, viewerTz, locale);
+  if (upcoming.length > 0)
+    facts.push({ id: 'upcoming', label: copy.card.upcoming, value: upcoming.join(', ') });
+  const progress = progressLine(card);
+  if (progress !== '') facts.push({ id: 'progress', label: copy.card.progress, value: progress });
   return facts;
+}
+
+/** One Looking for row: the spec (or the class, any spec) in its class colour, and the officers' note. */
+export interface WantedRow {
+  key: string;
+  title: string;
+  note: string;
+  classSlug: string;
+}
+
+export function wantedRows(wanted: readonly RecruitWanted[]): WantedRow[] {
+  return wanted.map((line) => ({
+    key: line.spec ?? line.class,
+    title: line.spec_name ?? `${classDisplayName(line.class)}, ${copy.card.anySpec}`,
+    note: line.note,
+    classSlug: line.class,
+  }));
 }
 
 /** `Thu 10 Dec, 8 pm` in the viewer's own clock, one per planned raid. */
@@ -42,18 +79,6 @@ export function progressLine(card: RecruitCard): string {
 export function wantedSummary(wanted: readonly RecruitWanted[]): string {
   if (wanted.length === 0) return copy.card.nobodyListed;
   return wanted.map((line) => line.spec_name ?? classDisplayName(line.class)).join(', ');
-}
-
-/** The card's one Looking for line: each class or spec with the officers' note in brackets,
- *  "Protection Warrior (Off tank), Holy Priest". */
-export function wantedLine(wanted: readonly RecruitWanted[]): string {
-  if (wanted.length === 0) return copy.card.nobodyListed;
-  return wanted
-    .map((line) => {
-      const who = line.spec_name ?? `${classDisplayName(line.class)}, ${copy.card.anySpec}`;
-      return line.note === '' ? who : `${who} (${line.note})`;
-    })
-    .join('; ');
 }
 
 export interface OfficerRow {
