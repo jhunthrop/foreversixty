@@ -26,7 +26,7 @@
   {#snippet head()}
     {#if sorted.length > SHOWN}
       <Button tone="ghost" size="sm" onclick={() => (all = !all)} testid="guild-cover-all"
-        >{all ? 'Fewer' : `All ${sorted.length}`}</Button
+        >{all ? 'Fewer' : `All ${sorted.length} ›`}</Button
       >
     {/if}
   {/snippet}

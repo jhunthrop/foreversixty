@@ -75,6 +75,13 @@ describe('LootDrops', () => {
     onOpen: noop,
   };
 
+  it('draws the icon of a quest drop, never an empty socket', () => {
+    const quest = { ...rows[0], itemId: 18422, kind: 'quest' as const, icon: 'inv_misc_head_dragon_01' };
+    const body = html(LootDrops, { ...props, rows: [quest], selected: null });
+    expect(body).toContain('data-icon="inv_misc_head_dragon_01"');
+    expect(body).not.toContain('data-icon-socket');
+  });
+
   it('draws one Plate of drop buttons, the picked one pressed, each Open or Awarded', () => {
     const body = html(LootDrops, props);
     expect(body.match(/ui-plate/g)).toHaveLength(1);

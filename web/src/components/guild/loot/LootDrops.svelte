@@ -50,7 +50,7 @@
           id: row.itemId,
           name: row.name,
           quality: row.quality,
-          icon: row.kind === 'gear' ? row.icon : undefined,
+          icon: row.icon === '' ? undefined : row.icon,
         }}
         {build}
         source={row.sub}

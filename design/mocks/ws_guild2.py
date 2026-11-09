@@ -203,7 +203,7 @@ def landing_officer():
     main = (Section('Action needed', action_rows(), panel=True, frame='framed') + Section('Next raid', next_raid(True), Link('Open the planner &rsaquo;'), panel=True)
             + Section('Comp against the target', comp_grid(F.raid_view(O.MEMBER, False)['counts']), Link('Edit target &rsaquo;'), panel=True, flush=True))
     n = len(F.cover_rows())
-    rail = Section('Cover, thinnest first', cover_grid(), Button(f'All {n}', small=True, tone='ghost', act=True) if n > COVER_SHOWN else '', panel=True, flush=True)
+    rail = Section('Cover, thinnest first', cover_grid(), Button(f'All {n} &rsaquo;', small=True, tone='ghost', act=True) if n > COVER_SHOWN else '', panel=True, flush=True)
     if len(O.RECENT_RAIDS) > 1:
         rail += Section(f'Attendance, last {len(O.RECENT_RAIDS)} raids', attendance_grid(), Link('Roster &rsaquo;'), panel=True, flush=True)
     return build_page('Guild, officer', _view(hdr() + Page('split', main, rail, sticky_rail=True, panels=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
