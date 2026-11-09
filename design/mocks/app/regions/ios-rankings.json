@@ -26,26 +26,28 @@
    "box": [
     16,
     60,
-    291,
+    129,
     20
    ],
    "inventory": {}
   },
-  "summary": {
+  "controls": {
    "box": [
     0,
     94,
     393,
-    42
+    62
    ],
-   "inventory": {}
+   "inventory": {
+    "segment": 2
+   }
   },
   "section-choose-an-encounter": {
    "box": [
     16,
-    156,
+    184,
     361,
-    230
+    243
    ],
    "inventory": {
     "row": 2
@@ -54,13 +56,20 @@
   "plate": {
    "box": [
     16,
-    203,
+    451,
     361,
-    183
+    58
    ],
-   "inventory": {
-    "row": 2
-   }
+   "inventory": {}
+  },
+  "summary": {
+   "box": [
+    16,
+    451,
+    361,
+    58
+   ],
+   "inventory": {}
   }
  }
 }

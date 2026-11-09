@@ -9,11 +9,9 @@
     16,
     0,
     380,
-    231
+    94
    ],
-   "inventory": {
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
@@ -28,26 +26,15 @@
    "box": [
     16,
     60,
-    335,
+    129,
     20
    ],
    "inventory": {}
   },
-  "head-answer": {
-   "box": [
-    16,
-    96,
-    380,
-    121
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
   "controls": {
    "box": [
     0,
-    231,
+    94,
     412,
     62
    ],
@@ -57,43 +44,42 @@
     "field": 5
    }
   },
-  "summary": {
-   "box": [
-    0,
-    293,
-    412,
-    42
-   ],
-   "inventory": {}
-  },
   "section-fury-warriors": {
    "box": [
     16,
-    355,
+    184,
     380,
-    2197
+    1631
    ],
    "inventory": {
-    "row": 15
+    "row": 15,
+    "image": 15
    }
   },
   "plate": {
    "box": [
     16,
-    402,
+    2216,
     380,
-    2150
+    58
    ],
-   "inventory": {
-    "row": 15
-   }
+   "inventory": {}
   },
-  "footer-note": {
+  "section-your-rank": {
    "box": [
     16,
-    2600,
+    1839,
     380,
-    48
+    355
+   ],
+   "inventory": {}
+  },
+  "summary": {
+   "box": [
+    16,
+    2216,
+    380,
+    58
    ],
    "inventory": {}
   }
