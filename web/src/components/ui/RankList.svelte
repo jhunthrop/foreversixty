@@ -17,6 +17,7 @@
     leads = true,
     grouped = false,
     compact = false,
+    phoneFigures,
     label,
     testid,
     children,
@@ -34,6 +35,10 @@
      *  fit a split page's main column, 48 px rows, the 64 px letter column with the letter in the
      *  title face, and the accent tint on the selected row. */
     compact?: boolean;
+    /** `compact` only: below 768, keep this many of the extra figures and set them beside the sub
+     *  line, so a row stays two lines (the log rankings' percentile under the DPS). Left out, a
+     *  phone row shows every extra figure on its own line, as before. */
+    phoneFigures?: 1 | 2;
     /** The list's accessible name. */
     label?: string;
     testid?: string;
@@ -45,6 +50,7 @@
   class="ui-rank-list"
   data-grouped={grouped ? 'true' : undefined}
   data-compact={compact ? 'true' : undefined}
+  data-phone-figures={compact && phoneFigures !== undefined ? phoneFigures : undefined}
   data-leads={leads ? undefined : 'none'}
   style={rankListStyle({ figures, links, figureWidth })}
   data-testid={testid}

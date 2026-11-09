@@ -172,13 +172,13 @@
     )}
   </Section>
 
-  <Section title="What each component measures" testid="ratings-components">
+  <Section title="What each component measures" testid="ratings-components" boxed>
     {#each ratingsPageCopy.components as item (item.part)}
       <Row title={item.part} sub={item.body} open />
     {/each}
   </Section>
 
-  <Section title="Weights, by role">
+  <Section title="Weights, by role" boxed>
     <StatTable
       nameHead="Component"
       bar={false}

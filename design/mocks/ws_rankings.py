@@ -76,12 +76,13 @@ def board_list(b: dict, own_key: str = '') -> str:
     pin = ''
     if b['pinned']:   # captioned, its own list above the board (Rankings.svelte)
         pin = (f'<p class="t-label pin-l">{escape(RC["ownBest"])}</p>'
-               + RankList('', board_row(b['pinned'], you=True), 4, compact=True, fig_px=72))
+               + RankList(heads, board_row(b['pinned'], you=True), 4, compact=True, fig_px=72))
     rows = ''.join(board_row(r, you=r['key'] == own_key and not b['pinned']) for r in b['rows'])
     pages = -(-b['total'] // b['per_page'])
     pager = (f'<div class="pager"><span class="t-small">Page 1 of {pages}</span><span class="muted">Previous</span>{Link("Next")}</div>'
              if pages > 1 else '')
-    return legend() + pin + f'<div class="ruled">{RankList(heads, rows, 4, compact=True, fig_px=72)}</div>' + pager
+    board = RankList('' if b['pinned'] else heads, rows, 4, compact=True, fig_px=72)   # one column head serves both lists
+    return legend() + pin + f'<div class="ruled">{board}</div>' + pager
 
 
 def bar(groups: list[tuple[str, str]], summary: str) -> str:

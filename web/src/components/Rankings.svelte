@@ -610,13 +610,16 @@
         {:else}
           {@render legend()}
           {#if placement === 'pinned' && page.character_rank}
-            <!-- The viewer's best kill off this page: captioned, above the board, at its true rank. -->
+            <!-- The viewer's best kill off this page: captioned, above the board, at its true rank;
+                 the one column head serves both lists. -->
             <p class="text-label text-muted px-5 pb-1 font-bold max-md:px-[14px]">{rankingsCopy.ownBest}</p>
             <RankList
+              {heads}
               figures={4}
               figureWidth={72}
               links={0}
               compact
+              phoneFigures={1}
               label={rankingsCopy.ownBest}
               testid="ranking-pinned"
             >
@@ -630,11 +633,12 @@
           {/if}
           <Ruled>
             <RankList
-              {heads}
+              heads={placement === 'pinned' ? undefined : heads}
               figures={4}
               figureWidth={72}
               links={0}
               compact
+              phoneFigures={1}
               label={cohort}
               testid="ranking-board"
             >
@@ -723,7 +727,7 @@
 
 {#snippet legend()}
   <p
-    class="text-small text-muted flex flex-wrap items-baseline gap-x-[14px] gap-y-1 px-5 pb-3 max-md:px-[14px]"
+    class="text-small text-muted flex flex-wrap items-baseline gap-x-[14px] gap-y-1 px-5 pb-3 max-md:gap-x-[9px] max-md:px-[14px]"
     data-testid="rankings-legend"
   >
     <span>{rankingsCopy.legendLead}</span>

@@ -34,10 +34,9 @@ export const WEIGHTS: readonly RoleWeights[] = [
 ];
 
 export const ratingsPageCopy = {
-  visibility:
-    "A rating comes only from a public report, the same way a Warcraft Logs parse does. There is no leaderboard of ratings: a rating is one fight's roster or one character's own history.",
+  visibility: 'A rating comes only from a public report. There is no leaderboard of ratings.',
   oneNumberFirst: [
-    'Topping the meter while dying to avoidable damage with no flask on does not rate well: Output is one part of the score.',
+    'Topping the meter while dying to avoidable damage with no flask on does not rate well.',
     'A component that cannot be scored for a fight is left out and named, and its weight goes to the components that did score. That happens when an encounter has no mechanics table yet, the simulator does not model the spec yet, or too few logs exist to compare against.',
   ],
   components: [

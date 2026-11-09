@@ -85,9 +85,10 @@ def reference_panels() -> str:
     wrows = [StatRow('', f'<b>{w["component"]}</b>', '', [str(w['dps']), str(w['healer']), str(w['tank'])],
                      primary_phone=f'{w["dps"]} / {w["healer"]} / {w["tank"]}', bar=False) for w in R['weights']]
     weights = StatTable([('', False), ('Component', False), ('DPS', True), ('Healer', True), ('Tank', True)], wrows, 3, bar=False, open_=True)
-    # the reference sections sit open on the ground (ai-slop round 1: seven identical panels read as a template)
-    return (Section('What each component measures', comp)
-            + Section('Weights, by role', weights + prose([pc['roles'], pc['adjustable']], [True, True]))
+    # the lists boxed under their heading on the ground, the prose open (ai-slop round 1: seven identical panels read as a
+    # template; ux round 2: small text on the bare ground)
+    return (Section('What each component measures', comp, boxed=True)
+            + Section('Weights, by role', weights + prose([pc['roles'], pc['adjustable']], [True, True]), boxed=True)
             + Section('Ranked against your spec, or absolute', prose(pc['rankedOrAbsolute']))
             + Section('The cap', prose([RC['cappedRule']])))
 

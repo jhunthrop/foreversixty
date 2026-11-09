@@ -499,3 +499,33 @@
     align-self: center;
   }
 }
+
+/* `phoneFigures` (compact only): below 768 the first one or two extra figures sit at the right of
+   the sub line, under the sorted figure, and the rest go: the row stays two lines. */
+@media (max-width: 767px) {
+  .ui-rank-list[data-phone-figures] .ui-rank-row.ui-rank-cols {
+    grid-template-areas:
+      'rank lead name fig'
+      'rank lead name extra';
+    row-gap: 0;
+  }
+  .ui-rank-list[data-phone-figures] .ui-rr-fig[data-first='true'] {
+    align-self: end;
+  }
+  .ui-rank-list[data-phone-figures] .ui-rr-extra {
+    grid-area: extra;
+    align-self: start;
+    justify-content: flex-end;
+    gap: 0 10px;
+  }
+  .ui-rank-list[data-phone-figures] .ui-rr-extra:not(:empty) {
+    padding-top: 0;
+  }
+  .ui-rank-list[data-phone-figures] .ui-rr-extra .ui-rr-fig {
+    font-size: 13px;
+  }
+  .ui-rank-list[data-phone-figures='1'] .ui-rr-extra .ui-rr-fig:nth-child(n + 2),
+  .ui-rank-list[data-phone-figures='2'] .ui-rr-extra .ui-rr-fig:nth-child(n + 3) {
+    display: none;
+  }
+}
