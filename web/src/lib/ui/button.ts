@@ -11,7 +11,9 @@ const BASE =
   'rounded-field inline-flex items-center justify-center gap-2 border px-5 button-label whitespace-nowrap ' +
   'transition-[filter,background-color,border-color] duration-[120ms] ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold ' +
-  'disabled:cursor-not-allowed disabled:not-aria-busy:opacity-45 aria-disabled:cursor-not-allowed aria-disabled:not-aria-busy:opacity-45';
+  'disabled:cursor-not-allowed disabled:not-aria-busy:opacity-45 aria-disabled:cursor-not-allowed aria-disabled:not-aria-busy:opacity-45 ' +
+  // A pressed toggle (the current choice of a set) takes a white edge, 2 px with its ring.
+  'aria-pressed:border-strong aria-pressed:ring-1 aria-pressed:ring-strong';
 
 // Hover applies only where a pointer can hover, so a tap never leaves a stuck hover look. Each
 // hover class is written out whole, `[@media(hover:hover)_and_(pointer:fine)]:hover:<utility>`:

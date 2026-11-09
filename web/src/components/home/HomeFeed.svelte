@@ -1,5 +1,5 @@
 <!-- web/src/components/home/HomeFeed.svelte -->
-<!-- "Forever right now" (home B spec 2026-11-07 P1 to P11, F1): what is happening on Forever, from
+<!-- "Latest on Forever" (home B spec 2026-11-07 P1 to P11, F1): what is happening on Forever, from
      GET /v1/feed, with the filters a signed-in player gets (All, Your spec, Your guild, Logs; signed
      out All only), each line's time updating each minute, and below five lines the floor of real
      dated site events (lib/home/floor.ts, built at build time). Its own skeleton and its own error. -->
@@ -12,6 +12,7 @@
     feedFilters,
     feedPath,
     fetchFeed,
+    homeRows,
     whenText,
     withFloor,
     type FeedFilter,
@@ -33,6 +34,7 @@
     spec,
     band,
     inGuild = false,
+    raidOnPlaque = false,
     floor,
     build,
   }: {
@@ -41,10 +43,14 @@
     spec?: string;
     band?: number;
     inGuild?: boolean;
+    /** The guild's raid is on the plaque above: its post is left out here. */
+    raidOnPlaque?: boolean;
     floor: FeedRow[];
     build: string;
   } = $props();
 
+  /** The row's crest or icon (round 5 mock: 30 px leads on the boxed feed). */
+  const LEAD_PX = 32;
   /** A line this fresh slides in (when motion is allowed). */
   const FRESH_MS = 5 * 60_000;
   const clock = minuteClock(() => undefined);
@@ -77,12 +83,12 @@
     untrack(load);
   });
 
-  const shown = $derived(withFloor(rows, floor, filter, spec));
+  const shown = $derived(withFloor(homeRows(rows, raidOnPlaque), floor, filter, spec));
   const freshCut = $derived(clock.now.getTime() - FRESH_MS);
   const options = $derived(filters.map((value) => ({ value, label: feedCopy.filters[value] })));
 </script>
 
-<Section title={feedCopy.title} testid="home-feed">
+<Section title={feedCopy.title} boxed testid="home-feed">
   {#snippet head()}
     {#if options.length > 0}
       <Segmented
@@ -110,15 +116,14 @@
         <FeedRowUi
           href={row.href}
           when={whenText(row, clock.now)}
-          kind={feedCopy.tags[row.tag]}
           fresh={index === 0 && new Date(row.at).getTime() > freshCut}
           testid="home-feed-row"
         >
           {#snippet lead()}
             {#if row.crest !== null}
-              <ClassCrestRing characterClass={row.crest} size={40} />
+              <ClassCrestRing characterClass={row.crest} size={LEAD_PX} />
             {:else}
-              <ItemIcon icon={row.icon ?? undefined} quality={row.quality ?? 1} {build} size={40} />
+              <ItemIcon icon={row.icon ?? undefined} quality={row.quality ?? 1} {build} size={LEAD_PX} />
             {/if}
           {/snippet}
           <FeedSentence segments={row.segments} />

@@ -17,7 +17,8 @@
   }: {
     href: string;
     when: string;
-    kind: string;
+    /** The row's tag under the time ("Your guild"); absent, the time alone. */
+    kind?: string;
     fresh?: boolean;
     lead: Snippet;
     testid?: string;
@@ -29,7 +30,9 @@
 <a class="ui-feed-row" class:fresh {href} data-testid={testid}>
   <span class="ui-feed-lead">{@render lead()}</span>
   <span class="ui-feed-text">{@render children()}</span>
-  <span class="ui-feed-when">{when}<span class="ui-feed-kind">{kind}</span></span>
+  <span class="ui-feed-when"
+    >{when}{#if kind}<span class="ui-feed-kind">{kind}</span>{/if}</span
+  >
 </a>
 
 <style>

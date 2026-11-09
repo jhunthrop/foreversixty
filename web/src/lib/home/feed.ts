@@ -171,6 +171,29 @@ export function whenText(row: Pick<FeedRow, 'at' | 'date_only'>, now: Date): str
   return row.date_only ? dayText(row.at) : agoText(row.at, now);
 }
 
+/** A guild sim's tail the guild's own home already says: the guild, spec and band (ai-slop tell 22). */
+const GUILD_SIM_TAIL = /, #(\d+) of (\d+) DPS in [^,(]+ \([^)]*\)$/;
+
+/** The rows as home shows them: newest first, a guild sim reads `#2 of 14`, and with the guild's
+ *  raid on the plaque its post is left out (the plaque already shows it). */
+export function homeRows(rows: readonly FeedRow[], raidOnPlaque: boolean): FeedRow[] {
+  return [...rows]
+    .sort((a, b) => Date.parse(b.at) - Date.parse(a.at))
+    .filter((row) => !(raidOnPlaque && row.kind === 'guild_raid'))
+    .map((row) =>
+      row.kind !== 'guild_sim'
+        ? row
+        : {
+            ...row,
+            segments: row.segments.map((seg) =>
+              seg.style === undefined
+                ? { ...seg, text: seg.text.replace(GUILD_SIM_TAIL, ', #$1 of $2') }
+                : seg,
+            ),
+          },
+    );
+}
+
 /** The rows a filter shows: the API's, then (below FLOOR_MIN) real site events from the floor.
  *  Your guild never floors (it says it has nothing yet); Logs never floors (site events are not
  *  logs). Your spec floors with the viewer's spec only. */

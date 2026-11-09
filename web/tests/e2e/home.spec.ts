@@ -1,23 +1,26 @@
 // web/tests/e2e/home.spec.ts
-// Home, layout B (design/specs/2026-11-07-home-b.md): what each state offers and where it leads.
-// The layout is the parity gate's (parity-home.spec.ts); this spec is the behaviour.
+// Home, round 5 (design/specs/2026-11-09-directions.md, on home B's states): what each state offers
+// and where it leads. The layout is the parity gate's (parity-home.spec.ts); this spec is the behaviour.
 import { expect, test } from './support/test';
 import { homeEnvelope, openHome } from './support/home-page';
 
-test('signed out: the title, Sign in, the nine classes, the raid countdown, the feed and how to start', async ({
+const SIXTY = { me: 'me-60.json', feed: 'feed-60.json', home: 'home-60.json', guild: 'guild-home-60.json' };
+
+test('signed out: the title, Sign in, the first raids plaque, the feed, how to start and the nine classes', async ({
   page,
 }) => {
   await openHome(page, { feed: 'feed-out.json' });
   const out = page.getByTestId('home-signed-out');
-  await expect(out.getByRole('heading', { level: 1 })).toHaveText('Play your class better.');
+  await expect(out.getByRole('heading', { level: 1 })).toHaveText('Pick your class');
   await expect(page.getByTestId('home-sign-in')).toHaveAttribute(
     'href',
     /\/v1\/auth\/battlenet\/start\?next=/,
   );
   await expect(page.getByTestId('home-class-picker').getByRole('link')).toHaveCount(9);
-  await expect(out.getByTestId('home-raids-countdown').getByRole('timer')).toHaveAccessibleName(
-    '32 days, 6 hours, 0 min',
-  );
+  const plaque = out.getByTestId('home-raids-countdown');
+  await expect(plaque.getByRole('heading', { level: 2 })).toHaveText('First raids open');
+  await expect(plaque.getByRole('timer')).toHaveAccessibleName('32 days, 6 hours');
+  await expect(plaque.getByRole('listitem')).toHaveText(['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"]);
   await expect(out.getByTestId('home-feed-row')).toHaveCount(7);
   await expect(out.getByTestId('home-feed').getByRole('radiogroup')).toHaveCount(0);
   await expect(out.getByTestId('home-feed-row').first()).toContainText('4 min ago');
@@ -25,23 +28,23 @@ test('signed out: the title, Sign in, the nine classes, the raid countdown, the 
   await expect(page.getByTestId('home-signed-in-root')).toBeHidden();
 });
 
-test('signed in at 34: the three figures, the feed with its filters, upgrades, the grade and the movers', async ({
+test('signed in at 34: the sim, the first raids with Find a guild, the feed, upgrades and the grade', async ({
   page,
 }) => {
   await openHome(page, { me: 'me-34.json', feed: 'feed-34.json', home: 'home-34.json' });
   await expect(page.getByTestId('home-signed-out')).toBeHidden();
-  await expect(page.getByTestId('home-head').getByRole('heading', { level: 1 })).toHaveText('Felsnap');
-  await expect(page.getByTestId('home-figure-sim')).toContainText('58.4');
-  await expect(page.getByTestId('home-figure-sim')).toContainText('Simmed 6 Nov');
-  await expect(page.getByTestId('home-figure-band')).toContainText('To band 40');
-  await expect(page.getByTestId('home-guild-countdown')).toContainText('Find a guild');
+  const head = page.getByTestId('home-head');
+  await expect(head.getByRole('heading', { level: 1 })).toHaveText('Felsnap');
+  await expect(head).toContainText('Level 34 Dwarf Beast Mastery Hunter');
+  await expect(page.getByTestId('home-figure-sim')).toHaveText(/58\.4\s*DPS/);
+  const plaque = page.getByTestId('home-signed-in-root').getByTestId('home-raids-countdown');
+  await expect(plaque.getByRole('link', { name: /Guilds/ })).toHaveAttribute('href', '/guild');
   const filters = page.getByTestId('home-feed-filter').getByRole('radio');
   await expect(filters).toHaveText(['All', 'Your spec', 'Logs']);
-  await expect(page.getByTestId('home-upgrade')).toHaveCount(3);
+  await expect(page.getByTestId('home-upgrade')).toHaveCount(5);
   await expect(page.getByTestId('home-spec-week')).toContainText(
     'Up from B last week, #4 of 23 damage specs',
   );
-  await expect(page.getByTestId('home-mover')).toHaveCount(3);
   await expect(page.getByTestId('home-guild-sims')).toHaveCount(0);
 
   const asked = page.waitForRequest((request) => request.url().includes('filter=spec'));
@@ -51,27 +54,41 @@ test('signed in at 34: the three figures, the feed with its filters, upgrades, t
   expect(url.searchParams.get('band')).toBe('30');
 });
 
-test('signed in at 60 in a guild: the guild event, its sims ladder and the Your guild filter', async ({
+test('signed in at 60 in a guild: the raid plaque, the sims ladder with its tier line, the Your guild filter', async ({
   page,
 }) => {
-  await openHome(page, {
-    me: 'me-60.json',
-    feed: 'feed-60.json',
-    home: 'home-60.json',
-    guild: 'guild-home-60.json',
-  });
-  const guild = page.getByTestId('home-guild-countdown');
-  await expect(guild).toContainText("Onyxia's Lair");
-  await expect(guild).toContainText('you: late');
-  await expect(guild.getByRole('link', { name: /Sign up on the raid page/ })).toHaveAttribute(
-    'href',
-    /\/guild\/us\/normal\/.+\/raids\/41$/,
-  );
+  await openHome(page, SIXTY);
+  const plaque = page.getByTestId('home-raid');
+  await expect(plaque.getByRole('heading', { level: 2 })).toHaveText("Onyxia's Lair");
+  await expect(plaque.getByRole('timer')).toHaveAccessibleName('33 days, 8 hours');
+  await expect(plaque).toContainText('3 tanks');
+  await expect(page.getByTestId('home-raid-late')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByTestId('home-raid-in')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.getByTestId('home-raid-prep').getByRole('listitem')).toHaveCount(2);
   await expect(page.getByTestId('home-feed-filter').getByRole('radio')).toHaveCount(4);
+  const feed = page.getByTestId('home-signed-in-root').getByTestId('home-feed');
+  await expect(feed).not.toContainText('posted Onyxia');
+  await expect(feed.getByTestId('home-feed-row').first()).toContainText('4 min ago');
+  await expect(feed.getByTestId('home-feed-row').filter({ hasText: 'Thalrin' })).toContainText(
+    'simmed 987.1 DPS, #2 of 14',
+  );
   await expect(page.getByTestId('home-guild-sim')).toHaveCount(6);
   await expect(page.getByTestId('home-guild-sim').last()).toContainText('Thandrel');
-  await expect(page.getByTestId('home-figure-band')).toContainText('On best in slot');
-  await expect(page.getByTestId('home-movers')).toContainText('Top 3 for Fury Warrior, 60');
+  await expect(page.getByTestId('home-tier-line')).toContainText('Tier S');
+});
+
+test("the plaque signs up in place: I'm in saves and presses", async ({ page }) => {
+  await openHome(page, SIXTY);
+  let body: unknown = null;
+  const raid = (homeEnvelope('guild-home-60.json').json.data as { next_raid: object }).next_raid;
+  await page.route('**/v1/guilds/2/raids/41/signups/**', async (route) => {
+    body = route.request().postDataJSON();
+    await route.fulfill({ json: { ok: true, data: { raid, moved: null }, error: null, request_id: 'home' } });
+  });
+  await page.getByTestId('home-raid-in').click();
+  await expect(page.getByTestId('home-raid-in')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByTestId('home-raid-late')).toHaveAttribute('aria-pressed', 'false');
+  expect(body).toMatchObject({ state: 'in', role: 'dps' });
 });
 
 test('a quiet feed fills with real dated site events, the raid opening first', async ({ page }) => {
@@ -87,7 +104,7 @@ test('the feed fails on its own and comes back with Try again', async ({ page })
   const root = page.getByTestId('home-signed-in-root');
   const error = root.getByTestId('home-feed-error');
   await expect(error).toContainText('We could not load what is happening on Forever.');
-  await expect(page.getByTestId('home-upgrade')).toHaveCount(3);
+  await expect(page.getByTestId('home-upgrade')).toHaveCount(5);
   await page.unroute('**/v1/feed?**');
   await page.route('**/v1/feed?**', (route) => route.fulfill(homeEnvelope('feed-34.json')));
   await error.getByRole('button', { name: 'Try again' }).click();
@@ -96,7 +113,10 @@ test('the feed fails on its own and comes back with Try again', async ({ page })
 
 test('signed in with no character: check again, paste, the addon, and the classes', async ({ page }) => {
   await openHome(page, { me: 'me-new.json' });
-  await expect(page.getByTestId('home-next-step')).toContainText('No character yet.');
+  await expect(page.getByTestId('home-signed-in-root').getByRole('heading', { level: 1 })).toHaveText(
+    'Get your character in',
+  );
+  await expect(page.getByTestId('home-get-in')).toContainText('Battle.net lists a character');
   await expect(page.getByTestId('home-check-again')).toBeVisible();
   await expect(page.getByTestId('home-get-in').getByRole('link')).toHaveCount(2);
   await expect(

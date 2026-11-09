@@ -1,7 +1,7 @@
 // The signed-in home's facts and words (design/specs/2026-11-06-home.md §1).
 import { describe, expect, it } from 'vitest';
 import type { Me, MeCharacter } from '../account/api';
-import { bandWords, gainText, guildLinks, metaFacts, shortDate, upgradeLines } from './home-view';
+import { bandWords, gainText, guildLinks, shortDate, upgradeLine, whoLine } from './home-view';
 import type { SlotUpgrade } from './upgrades';
 
 function hunter(over: Partial<MeCharacter> = {}): MeCharacter {
@@ -62,19 +62,22 @@ describe('home view', () => {
     expect(shortDate('2026-12-09')).toBe('9 Dec');
   });
 
-  it('lists the known facts and leaves the unknown out', () => {
-    expect(metaFacts(hunter({ class: 'hunter', spec: 'Beast Mastery' }))[0]).toBe(
-      'Level 34 Beast Mastery Hunter',
+  it('reads the character in one line, the unknown left out', () => {
+    expect(whoLine(hunter({ class: 'hunter', spec: 'Beast Mastery' }))).toBe(
+      'Level 34 Dwarf Beast Mastery Hunter',
     );
-    expect(metaFacts(hunter())).toEqual(['Level 34 Beast Mastery Hunter', 'Alliance Dwarf', 'Item level 31']);
-    expect(metaFacts(hunter({ item_level: undefined, race: undefined, faction: undefined }))).toEqual([
-      'Level 34 Beast Mastery Hunter',
-    ]);
+    expect(whoLine(hunter({ race: undefined }))).toBe('Level 34 Beast Mastery Hunter');
+    expect(whoLine(hunter({ level: undefined, race: undefined }))).toBe('Beast Mastery Hunter');
   });
 
-  it('says what an upgrade is measured against', () => {
-    expect(upgradeLines(UPGRADE)).toEqual({ source: 'Fel Ancient', caption: 'vs your Armor Piercer' });
-    expect(upgradeLines({ ...UPGRADE, wornItemName: undefined }).caption).toBe('empty slot');
+  it('names an upgrade by its slot and where it comes from, as the game words it', () => {
+    expect(upgradeLine(UPGRADE)).toBe('Main hand · Fel Ancient');
+    const ring = {
+      ...UPGRADE,
+      slot: 'finger1',
+      pick: { ...UPGRADE.pick, source: 'Blacksmithing', source_kind: 'crafted' },
+    };
+    expect(upgradeLine(ring as typeof UPGRADE)).toBe('Finger · Blacksmithing');
   });
 
   it("links the guild and its raid from the account's guild entry", () => {

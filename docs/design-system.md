@@ -97,7 +97,7 @@ All in `web/src/components/ui/` unless named otherwise. Props marked `?` are opt
 
 ### Controls
 
-- **Buttons** (`lib/ui/button.ts`, `Button`): `tone: 'primary' | 'secondary' | 'ghost' | 'danger'`, `size: 'md' | 'sm'`. Primary is their flat teal with the teal edge, secondary their blue, ghost a gold text link, danger the wipe outline; 15 px 600, sentence case, the 6 px radius. One primary per view.
+- **Buttons** (`lib/ui/button.ts`, `Button`): `tone: 'primary' | 'secondary' | 'ghost' | 'danger'`, `size: 'md' | 'sm'`. Primary is their flat teal with the teal edge, secondary their blue, ghost a gold text link, danger the wipe outline; 15 px 600, sentence case, the 6 px radius. One primary per view. `pressed` (aria-pressed) marks the current choice of a set with a white edge (home's I'm in / Late / Can't come).
 - **`Segmented`**, **`TabStrip`**, **`Select`**, **`Switch`** (on is the teal), **`Field`**, **`Tag`** (`tone: 'gold' | 'success' | 'muted' | 'danger' | 'warn'`, `dot?`).
 - **One tab look.** `TabStrip` (in-page and link tabs) and `Segmented` (ControlBar groups, in-row choices) draw the same tab: label-wide items (12 to 14 px each side, 4 px apart; phones share a Segmented row evenly), the current one white over the cyan `--color-accent` underline, the rest white at .72. A filter that is on shows a count, never a different fill. Selects are the only boxed controls on a band.
 - **`Meter`**: `tone?: 'accent' | 'gold' | 'kill' | 'muted' | 'class'` (accent by default), `color?`, `segments?`, `label?`.
@@ -107,7 +107,8 @@ All in `web/src/components/ui/` unless named otherwise. Props marked `?` are opt
 - **The client tooltip**: `ItemTooltip`, `GameTooltip`, on `Overlay` `kind="tooltip"`: the client's ground, edge, inner line and 4 px corner; descriptions and the gain line in the client yellow.
 - **`ItemIcon`**, **`ItemRow`**, **`Row`**: real icons with the quality border on the 3 px icon radius; with no icon, a dark socket (never a dashed box); a selected row is the white lift and a cyan bar.
 - **`PaperdollFrame`** (on the owner's frame, `lib/ui/paperdoll-frame.ts` reads `paperdoll-slots.json`): `cells` (the `DollCell[]` the grid paperdoll takes), `build`, `title`, `meta?`, `figure?: { value, unit }`, `avatar?` (the Battle.net `-avatar.jpg`, else the painted seal, never the class crest), `heading?: 'h1' | 'h2'`, `selected` (bindable), `onselect?(slot)`, `centre?` snippet (the selected slot's tooltip), `label?`, `testid`. Under 423 px it is the one-line strip and a two-column list, and the frame image is never fetched. Regions `paperdoll-medallion` and `paperdoll-centre`.
-- **`Countdown`**: the raid plaque on the cave art.
+- **`Countdown`**: the countdown panel (the guild's first-raids card). Home's raid plaque is an ornate `Frame art="cave"` holding **`BigFigures`** (`groups` of `{ value, label }`, a hairline between groups, `timer?` naming the first group as one live clock): days and hours at 44 px, then signed up and late.
+- **`FeedRow`**: a dated feed line (`lead`, the sentence, `when`, `kind?`: the tag under the time, left out on home).
 
 ### Charts
 

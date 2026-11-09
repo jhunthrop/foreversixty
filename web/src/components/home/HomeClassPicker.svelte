@@ -1,7 +1,7 @@
 <!-- web/src/components/home/HomeClassPicker.svelte -->
 <!-- "Pick your class" (home spec 2026-11-06 H8): nine Rows, the crest, the class name in its colour
-     and its specs, three columns from 1024, each to the class guide. Signed out and signed in with no
-     character, one component. -->
+     and its specs, three columns from 1024, each to the class guide. Signed out it leads under the
+     title band that names it; signed in with no character it is its own boxed section. -->
 <script lang="ts">
   import classes from '../../data/classes.json';
   import { SPECS } from '../../lib/sim/specs';
@@ -10,7 +10,12 @@
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Row from '../ui/Row.svelte';
   import RowGrid from '../ui/RowGrid.svelte';
+  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
+
+  /** `headless`: the page's title already says "Pick your class" (signed out), so the grid stands
+   *  on its own plate with no heading of its own. */
+  let { headless = false }: { headless?: boolean } = $props();
 
   const CREST_PX = 44;
   const rows = classes.map((c) => ({
@@ -21,7 +26,7 @@
   }));
 </script>
 
-<Section title={homeCopy.pickClass} testid="home-class-picker">
+{#snippet grid()}
   <RowGrid cols={3}>
     {#each rows as c (c.slug)}
       <Row
@@ -36,4 +41,10 @@
       </Row>
     {/each}
   </RowGrid>
-</Section>
+{/snippet}
+
+{#if headless}
+  <Plate flush={false} label={homeCopy.pickClass} testid="home-class-picker">{@render grid()}</Plate>
+{:else}
+  <Section title={homeCopy.pickClass} boxed testid="home-class-picker">{@render grid()}</Section>
+{/if}

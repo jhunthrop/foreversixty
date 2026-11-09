@@ -1,17 +1,19 @@
 <!-- web/src/components/home/HomeCharacter.svelte -->
-<!-- The signed-in home for one character, direction B (spec 2026-11-07 §1): the compact head with its
-     three figures (the sim on import, what the upgrades add, the levels to the next band), the
-     countdowns (the first raids, the guild's next event), then "Forever right now" with the rail
-     beside it. Each read has its own state; none blocks another. -->
+<!-- The signed-in home for one character (round 5, design/mocks/directions/png/g-home-*.png): the
+     title band on the camp-road art (crest, name in the class colour, one line, the sim on import),
+     the raid plaque (the guild's next raid, else the first raids), Latest on Forever with Your
+     upgrades beside it, then Guild sims (or, with no guild, Your spec this week). Each read has its
+     own state; none blocks another. -->
 <script lang="ts">
   import { untrack } from 'svelte';
   import type { Me, MeCharacter } from '../../lib/account/api';
   import { fetchGuildHome, type GuildHome } from '../../lib/guild/api';
   import { fetchBisFileStrict } from '../../lib/bis/hover';
   import { cachedUpgradesFor, homeSpecKeyFor, type CachedUpgrades } from '../../lib/home/upgrades-loader';
-  import { bisLink, guildLinks, metaFacts } from '../../lib/home/home-view';
-  import { bandFigure, gainFigure, simFigure, type HeadFigure } from '../../lib/home/home-b-view';
+  import { bisLink, guildLinks, whoLine } from '../../lib/home/home-view';
+  import { homeBCopy, homeBHrefs, simFigure } from '../../lib/home/home-b-view';
   import { EMPTY_HOME, fetchHomeAnswer, type HomeAnswer } from '../../lib/home/home-answer';
+  import { signupRole } from '../../lib/home/plaque';
   import { bandOf, type FeedRow } from '../../lib/home/feed';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import type { ClassSlug } from '../../lib/ui/primitives';
@@ -19,11 +21,15 @@
   import activeBuild from '../../data/active-build.json';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Figure from '../ui/Figure.svelte';
-  import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
-  import HomeCountdowns from './HomeCountdowns.svelte';
   import HomeFeed from './HomeFeed.svelte';
-  import HomeRail from './HomeRail.svelte';
+  import HomeFirstRaids from './HomeFirstRaids.svelte';
+  import HomeGrid from './HomeGrid.svelte';
+  import HomeGuildSims from './HomeGuildSims.svelte';
+  import HomePlaqueSkeleton from './HomePlaqueSkeleton.svelte';
+  import HomeSpecWeek from './HomeSpecWeek.svelte';
+  import HomeUpgrades from './HomeUpgrades.svelte';
+  import HomeRaidPlaque from './HomeRaidPlaque.svelte';
 
   let {
     me,
@@ -32,18 +38,21 @@
     raidsOpen,
   }: { me: Me; character: MeCharacter; floor: FeedRow[]; raidsOpen: string | null } = $props();
 
-  const CREST_PX = 56;
+  const CREST_PX = 48;
 
   let upgrades = $state<CachedUpgrades | null>(null);
   let answer = $state<HomeAnswer>(EMPTY_HOME);
   let answered = $state(false);
   let guildHome = $state<GuildHome | null>(null);
+  /** The guild read is in flight: the plaque holds its place until it knows which plaque to draw. */
+  let guildPending = $state(false);
 
   $effect(() => {
     void character.key;
     untrack(() => {
       upgrades = null;
       guildHome = null;
+      guildPending = false;
       answer = EMPTY_HOME;
       answered = false;
       const target = character;
@@ -65,92 +74,104 @@
           if (target === character) answered = true;
         });
       const guildId = target.guild?.id;
-      if (guildId !== undefined)
+      if (guildId !== undefined) {
+        guildPending = true;
         fetchGuildHome(guildId)
-          .then((home) => (guildHome = home))
-          .catch(() => (guildHome = null));
+          .then((home) => {
+            if (target === character) guildHome = home;
+          })
+          .catch(() => {
+            if (target === character) guildHome = null;
+          })
+          .finally(() => {
+            if (target === character) guildPending = false;
+          });
+      }
     });
   });
 
   const classSlug = $derived(classSlugFromName(character.class ?? '') as ClassSlug);
   const bis = $derived(bisLink(character));
-  const list = $derived(upgrades?.result.upgrades ?? []);
   const raid = $derived(guildHome?.next_raid ?? null);
   const links = $derived(guildLinks(me, character.guild?.id ?? -1, raid?.id ?? null));
-  const onBis = $derived(upgrades === null ? null : upgrades.result.alreadyBis.length);
-  const figures = $derived(
-    [
-      answered ? simFigure(answer.import_sim) : null,
-      gainFigure(upgrades?.result.totalGainDps ?? 0, list.length),
-      bandFigure(character.level, onBis),
-    ].filter((figure): figure is HeadFigure => figure !== null),
-  );
+  const sim = $derived(answered ? simFigure(answer.import_sim) : null);
   const specKey = $derived(homeSpecKeyFor(character));
   const band = $derived(bandOf(character.level));
 </script>
 
-<Page layout="split" testid="home-signed-in">
-  {#snippet header()}
-    <PageHeader title={character.name} tone={{ classSlug }} testid="home-head">
-      {#snippet crest()}<ClassCrestRing characterClass={character.class ?? ''} size={CREST_PX} />{/snippet}
-      {#snippet meta()}
-        {#each metaFacts(character) as fact (fact)}<span>{fact}</span>{/each}
-        {#if character.guild}<span>&lt;{character.guild.name}&gt;</span>{/if}
-      {/snippet}
-      {#snippet answer()}
-        <div class="home-figures" data-testid="home-answer">
-          {#each figures as figure (figure.key)}
-            <span class="home-figure" data-testid={`home-figure-${figure.key}`}>
-              <Figure
-                value={figure.value}
-                unit={figure.unit}
-                label={figure.label}
-                caption={figure.caption}
-                tone={figure.tone}
-                align="end"
-              />
-              {#if figure.link}<a class="{LINK} text-[13px]" href={figure.link.href}>{figure.link.label} ›</a
+<div data-testid="home-signed-in">
+  <PageHeader title={character.name} tone={{ classSlug }} art="hero" testid="home-head">
+    {#snippet crest()}<ClassCrestRing characterClass={character.class ?? ''} size={CREST_PX} />{/snippet}
+    {#snippet meta()}
+      <span
+        >{whoLine(character)}{#if character.guild}&nbsp;· &lt;{character.guild.name}&gt;{/if}</span
+      >
+    {/snippet}
+    {#snippet answer()}
+      <div class="home-answer" data-testid="home-answer">
+        {#if sim !== null}
+          <span data-testid="home-figure-sim">
+            <Figure value={sim.value} unit={sim.unit} tone={sim.tone} align="end" />
+          </span>
+          {#if sim.link}<a class="{LINK} text-[13px]" href={sim.link.href}>{sim.link.label} ›</a>{/if}
+        {/if}
+      </div>
+    {/snippet}
+  </PageHeader>
+  <HomeGrid>
+    {#snippet lead()}
+      {#if guildPending}
+        <HomePlaqueSkeleton />
+      {:else if raid !== null && guildHome !== null && character.guild}
+        <HomeRaidPlaque
+          guildId={character.guild.id}
+          guild={character.guild.name}
+          {raid}
+          needs={guildHome.standing?.needs_before_next_raid ?? []}
+          characterKey={character.key}
+          role={signupRole(raid.own, character)}
+          raidHref={links.raid}
+        />
+      {:else}
+        <HomeFirstRaids {raidsOpen} build={activeBuild.build}>
+          {#snippet foot()}
+            {#if character.guild === undefined}
+              {homeBCopy.findGuildSub} <a class={LINK} href={homeBHrefs.guilds}>{homeBCopy.guildsLink} ›</a>
+            {:else if guildHome !== null}
+              {homeBCopy.guildNone(character.guild.name)}
+              {#if links.guild !== null}· <a class={LINK} href={links.guild}>{homeBCopy.raidPageLink} ›</a
                 >{/if}
-            </span>
-          {/each}
-        </div>
-      {/snippet}
-    </PageHeader>
-  {/snippet}
-  {#snippet bar()}
-    <HomeCountdowns
-      {raidsOpen}
+            {/if}
+          {/snippet}
+        </HomeFirstRaids>
+      {/if}
+    {/snippet}
+    {#snippet rail()}<HomeUpgrades {upgrades} {bis} build={activeBuild.build} />{/snippet}
+    {#snippet foot()}
+      {#if answer.guild_sims !== null}
+        <HomeGuildSims sims={answer.guild_sims} week={answer.spec_week} guildHref={links.guild} />
+      {:else if answer.spec_week !== null}
+        <HomeSpecWeek week={answer.spec_week} />
+      {/if}
+    {/snippet}
+    <HomeFeed
+      signedIn
+      spec={specKey}
+      {band}
+      inGuild={character.guild !== undefined}
+      raidOnPlaque={raid !== null}
+      {floor}
       build={activeBuild.build}
-      guild={character.guild?.name ?? null}
-      {raid}
-      raidHref={links.raid}
-      guildHref={links.guild}
     />
-  {/snippet}
-  {#snippet rail()}
-    <HomeRail {upgrades} {bis} {answer} guildHref={links.guild} build={activeBuild.build} />
-  {/snippet}
-  <HomeFeed
-    signedIn
-    spec={specKey}
-    {band}
-    inGuild={character.guild !== undefined}
-    {floor}
-    build={activeBuild.build}
-  />
-</Page>
+  </HomeGrid>
+</div>
 
 <style>
-  .home-figures {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 12px 36px;
-  }
-  .home-figure {
+  .home-answer {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 2px;
+    min-height: 40px;
   }
 </style>

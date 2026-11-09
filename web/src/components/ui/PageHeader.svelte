@@ -80,9 +80,10 @@
 </div>
 
 <style>
-  /* Home's hero: the title sits at the foot of the art. */
+  /* Home's hero: the title sits at the foot of the art, the band about 230 px under the bar
+     (the mock's g-home), no dead sky between the two. */
   [data-art='hero'] .ui-page-header-row {
-    min-height: 150px;
+    min-height: 120px;
   }
   .ui-page-header {
     padding: 16px var(--page-inset) 14px;
