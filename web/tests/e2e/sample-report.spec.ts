@@ -181,7 +181,7 @@ test.describe('the sample’s counts say what they count', () => {
     const source = page.getByTestId('source-scope');
     await expect(source.locator('option:checked')).toHaveText('Your group');
     // Fight 6's own flags put five players in the group; the report-wide last-seen flags said four.
-    await expect(page.getByTestId('summary-tab')).toContainText(/\b5 players · 0 deaths\b/);
+    await expect(page.getByTestId('report-this-pull')).toContainText(/In your group\s*5\s*Deaths\s*0/);
     const chart = page.getByTestId('time-chart');
     await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
     await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Group \d+ DPS over the whole fight$/);
@@ -195,10 +195,14 @@ test.describe('the sample’s counts say what they count', () => {
       'data-description',
       /· 177 mobs died$/,
     );
-    // The head's answer (decision R1, MUST 2): the mobs and the length, the group's deaths (none:
-    // the two in fight 6 were outsiders', counted under Everyone in range).
-    await expect(page.getByTestId('report-answer')).toHaveText(/177\s*mobs · 12:43/);
-    await expect(page.getByTestId('report-answer-caption')).toHaveText('Your group · 5 players · no deaths');
+    // The band (directions b1): the pull in the meta line, the group's DPS as its figure; This pull
+    // says the group's count and deaths (none: the two in fight 6 were outsiders', counted under
+    // Everyone in range).
+    await expect(page.getByTestId('report-subtitle')).toHaveText(
+      'Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died',
+    );
+    await expect(page.getByTestId('report-answer')).toHaveText(/3\.1\s*group DPS/);
+    await expect(page.getByTestId('report-this-pull')).toContainText(/In your group\s*5\s*Deaths\s*0/);
   });
 
   test('Everyone in range counts the players seen and totals, not a raid', async ({ page }) => {
@@ -214,16 +218,14 @@ test.describe('the sample’s counts say what they count', () => {
     expect(await label.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
     await expect(chart.getByTestId('death-marker').first()).toBeVisible();
     await expect(chart.getByTestId('chart-legend')).toContainText('Median player');
-    await expect(page.getByTestId('report-answer-caption')).toHaveText(
-      'Everyone in range · 265 players · 2 deaths',
-    );
+    await expect(page.getByTestId('report-this-pull')).toContainText(/In range\s*265\s*Deaths\s*2/);
   });
 
   test('a pull the group was not in is everyone in range, said so', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/reports/sample?fight=2');
     await expect(page.getByTestId('source-scope').locator('option:checked')).toHaveText('Everyone in range');
-    await expect(page.getByTestId('report-answer-caption')).toContainText('Everyone in range');
+    await expect(page.getByTestId('report-this-pull')).toContainText('In range');
     await expect(page.getByTestId('report-group-missing')).toHaveText('Your group wasn’t in this pull.');
     await expect(page.getByTestId('time-chart').getByTestId('chart-head-meta')).toHaveText(/^Total /);
   });

@@ -1,7 +1,8 @@
 <!-- web/src/components/report/ReportHead.svelte -->
 <!-- The report's title band (logs spec 2026-11-07 6.1; directions b1-report-*): the title, one meta
      line ("Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died", then Live or Quiet while the
-     companion logs, or who logged it), the one figure at the right that follows the tab (group DPS,
+     companion logs; the sample's Tag and its one line on why the numbers are small; who logged it, or Not
+     credited), the one figure at the right that follows the tab (group DPS,
      HPS or DTPS, deaths, the player's DPS; none where no one figure answers the tab), and the tab
      strip under it. Sim this fight and Copy link sit in the rail's This pull. -->
 <script lang="ts">
@@ -38,17 +39,23 @@
 {#snippet meta()}
   <span data-testid="report-subtitle">{line}</span>
   <span aria-live="polite" class="contents">
-    {#if live !== null}
+    {#if sample}
+      <Tag tone="muted" testid="report-sample-badge">{reportCopy.sampleBadge}</Tag>
+    {:else if live !== null}
       <Tag tone="success" testid="report-live"
         >{live === 'live' ? reportCopy.liveTag : reportCopy.quietBadge}</Tag
       >
     {/if}
   </span>
-  {#if !sample && credit.credited}
+  {#if sample}
+    <span class="max-md:hidden" data-testid="report-sample-note">{reportCopy.sampleNote}</span>
+  {:else if credit.credited}
     <span class="max-md:hidden" data-testid="report-credit"
       >Logged by {#if credit.href}<a class={LINK} href={credit.href}>{credit.name}</a
         >{:else}{credit.name}{/if}</span
     >
+  {:else}
+    <Tag tone="muted" title={credit.prefix} testid="report-not-credited">{reportCopy.notCreditedTag}</Tag>
   {/if}
 {/snippet}
 

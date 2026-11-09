@@ -78,13 +78,18 @@ const top = async (page: Page, selector: string): Promise<number> =>
 test.describe('signed in, desktop', () => {
   test.use({ viewport: DESKTOP });
 
-  test('the head answers with the latest report and opens it', async ({ page }) => {
+  test('the head is the title alone (directions b1); Your reports opens the newest report', async ({
+    page,
+  }) => {
     await openSignedIn(page);
-    await expect(page.getByTestId('logs-answer')).toContainText('Onyxia, wipes');
-    await expect(page.getByText('Your latest report · 1 day ago')).toBeVisible();
-    await expect(page.getByTestId('logs-answer-open')).toHaveAttribute(
+    await expect(page.getByTestId('logs-answer')).toHaveCount(0);
+    await expect(page.locator('#reports').getByTestId('report-row').first()).toHaveAttribute(
       'href',
       `/reports/${NEWEST_REPORT_ID}`,
+    );
+    await expect(page.locator('#reports').getByRole('link', { name: 'All ›' })).toHaveAttribute(
+      'href',
+      '/reports',
     );
     await expect(page.getByTestId('character-header')).toHaveCount(0);
     await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
@@ -120,11 +125,11 @@ test.describe('signed in, desktop', () => {
     await expect(page.getByTestId('upload-start')).toHaveCount(0);
   });
 
-  test('with reports, Your reports is the Plate and the upload is open below it', async ({ page }) => {
+  test('with reports, the upload still leads and Your reports is the panel under it', async ({ page }) => {
     await openSignedIn(page);
-    expect(await top(page, '#reports')).toBeLessThan(await top(page, '#upload'));
+    expect(await top(page, '#upload')).toBeLessThan(await top(page, '#reports'));
     await expect(page.locator('#reports [data-region="plate"]')).toHaveCount(1);
-    await expect(page.locator('#upload [data-region="plate"]')).toHaveCount(0);
+    await expect(page.locator('#upload [data-region="plate"]')).toHaveCount(1);
   });
 
   test('a paired device shows its status line in the companion rail', async ({ page }) => {
@@ -184,13 +189,13 @@ test.describe('signed out, desktop', () => {
 test.describe('signed in, phone', () => {
   test.use({ viewport: PHONE });
 
-  test('the answer opens the latest report, and reports come before the upload', async ({ page }) => {
+  test('the upload leads, then Your reports with the newest report', async ({ page }) => {
     await openSignedIn(page);
-    await expect(page.getByTestId('logs-answer-open')).toHaveAttribute(
+    await expect(page.locator('#reports').getByTestId('report-row').first()).toHaveAttribute(
       'href',
       `/reports/${NEWEST_REPORT_ID}`,
     );
     await expect(page.getByTestId('upload-start')).toHaveCount(0);
-    expect(await top(page, '#reports')).toBeLessThan(await top(page, '#upload'));
+    expect(await top(page, '#upload')).toBeLessThan(await top(page, '#reports'));
   });
 });

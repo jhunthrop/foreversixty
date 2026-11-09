@@ -183,14 +183,13 @@ test("the pairing code is on the page, and the companion's downloads point to /s
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
 });
 
-test('before a file is chosen the panel is the explanation and the zone, with no Upload button', async ({
-  page,
-}) => {
+test('before a file is chosen the panel is the drop zone alone, with no Upload button', async ({ page }) => {
   await signIn(page);
   await openLogs(page);
   const panel = page.getByTestId('upload');
   await expect(panel.getByTestId('upload-zone')).toContainText('WoWCombatLog.txt');
-  await expect(panel.getByText('choose a file', { exact: true })).toBeVisible();
+  await expect(panel.getByTestId('upload-zone')).toContainText("From the game's Logs folder, up to 4 GB.");
+  await expect(panel.getByText('Choose a file', { exact: true })).toBeVisible();
   await expect(page.getByTestId('upload-start')).toHaveCount(0);
   await expect(page.getByLabel('Title')).toHaveCount(0);
 

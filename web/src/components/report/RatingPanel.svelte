@@ -1,8 +1,7 @@
 <!-- web/src/components/report/RatingPanel.svelte -->
 <!-- The Summary rail's Performance rating (logs spec 2026-11-07 6.2): a Row per rated player,
      the crest, the name in its class colour and the score as "70 of 100", with the Rating tab ›
-     link. A trash pull is never asked (`trash`): its line is the shipped
-     ratingCopy.noRatingForTrash. A rating is not part of summary.json, so the panel fetches its
+     link. A boss pull's only: the report shows no rating panel on trash (directions b1). A rating is not part of summary.json, so the panel fetches its
      own (docs/superpowers/plans/2026-09-21-rating-web.md Ruling 8). -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
@@ -20,15 +19,12 @@
     reportId,
     fightIndex,
     roster,
-    trash = false,
     tabHref,
     apiBase = undefined,
   }: {
     reportId: string;
     fightIndex: number;
     roster: { guid: string; name: string; class?: string }[];
-    /** A trash pull: nothing to rate, nothing to ask. */
-    trash?: boolean;
     /** The Rating tab's url, kept with the fight. */
     tabHref: string;
     apiBase?: string;
@@ -36,7 +32,7 @@
 
   const fetcher = createReportRatingsFetch(apiBase);
   $effect(() => {
-    if (!trash) fetcher.load(reportId, fightIndex);
+    fetcher.load(reportId, fightIndex);
   });
 
   const rows = $derived(
@@ -46,12 +42,11 @@
 
 <Section
   title={ratingCopy.panelHeading}
-  action={trash ? undefined : { label: ratingCopy.panelMore, href: tabHref }}
+  action={{ label: ratingCopy.panelMore, href: tabHref }}
   testid="rating-panel"
+  panel
 >
-  {#if trash}
-    <EmptyLine text={ratingCopy.noRatingForTrash} testid="rating-panel-none" />
-  {:else if fetcher.status === 'loading' || fetcher.status === 'idle'}
+  {#if fetcher.status === 'loading' || fetcher.status === 'idle'}
     <div data-testid="rating-panel-loading" aria-hidden="true"><Skeleton minHeight="min-h-[58px]" /></div>
   {:else if fetcher.status === 'flagged'}
     <EmptyLine text={ratingCopy.flagged} testid="rating-panel-flagged" />

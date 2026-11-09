@@ -1948,7 +1948,6 @@
                 {reportId}
                 fightIndex={state.fight}
                 roster={scoped.roster.map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
-                trash={isTrashPull}
                 tabHref={hrefWith({ tab: 'rating' })}
               />
             {/if}

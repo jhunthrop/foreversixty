@@ -137,7 +137,9 @@ test.describe('a beta-log report', () => {
     }
   });
 
-  test('a trash fight’s rating panel says trash has none, in plain muted copy', async ({ page }) => {
+  test('a trash fight’s summary has no rating panel; the Rating tab says trash has none', async ({
+    page,
+  }) => {
     await serveBetaReport(page, { zone: '' });
     await page.route(`**/v1/reports/${ID}/fights/1/ratings`, (route) =>
       route.fulfill({
@@ -152,13 +154,16 @@ test.describe('a beta-log report', () => {
       }),
     );
     await page.goto(`/reports/${ID}?fight=1`);
-    const none = page.getByTestId('rating-panel-none');
+    await expect(page.getByTestId('summary-tab')).toBeVisible();
+    await expect(page.getByTestId('rating-panel')).toHaveCount(0);
+    await page.goto(`/reports/${ID}?fight=1&tab=rating`);
+    const none = page.getByTestId('rating-tab-none');
     await expect(none).toHaveText('No rating for trash. Ratings are made for boss fights.');
     await expect(page.getByTestId('rating-panel-error')).toHaveCount(0);
     await expect(none).not.toHaveAttribute('role', 'alert');
     if (CAPTURES)
       await page
-        .getByTestId('rating-panel')
+        .getByTestId('rating-tab')
         .screenshot({ path: path.join(CAPTURES, 'rating-panel-trash.png') });
   });
 

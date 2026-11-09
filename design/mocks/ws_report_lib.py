@@ -231,8 +231,13 @@ def head_line(R: Report, fi: int, source: str) -> str:
 
 def head(R: Report, fi: int, tab: str, source: str, viewer: str = '', sample: bool = False, tabs: bool = True, player: str = '') -> str:
     """The title band (directions b1): the title, one meta line, the figure that follows the tab, the tab strip."""
+    sample = sample or AS_SAMPLE
+    rc = COPY['reportCopy']
+    meta = [head_line(R, fi, source), Tag(rc['sampleBadge' if sample else 'notCreditedTag'], 'muted')]
+    if sample:   # the sample says why its numbers are small (launch polish), as ReportHead does
+        meta.append(f'<span class="ph-note">{escape(rc["sampleNote"])}</span>')
     strip = TabStripMore([t for t in TABS if t != 'Coach' or viewer], tab, TAB_MD, TAB_XL - (0 if viewer else 1)) if tabs else ''
-    return PageHeader(escape(R.title), meta=[head_line(R, fi, source)], answer=figure(R, fi, tab, source, player), tabs=strip)
+    return PageHeader(escape(R.title), meta=meta, answer=figure(R, fi, tab, source, player), tabs=strip)
 
 
 def fight_label(f: dict) -> str:

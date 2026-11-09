@@ -157,6 +157,7 @@
     title="Raid cooldowns"
     meta={`${rows.length} used${pulls.length > 0 ? `, ${pulls.length} pulls` : ''}`}
     testid="raid-cooldowns"
+    panel
   >
     {#snippet head()}
       {#if shownDeaths.length > 0}

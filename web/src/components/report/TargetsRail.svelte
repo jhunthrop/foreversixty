@@ -2,13 +2,12 @@
 <!-- The actor tabs' rail Section after This pull (logs spec 2026-11-07 6.2): Targets on Damage
      done, Healed on Healing, Sources on Damage taken. The scope's rows summed per unit name (a
      trash pack's six "Gluttonous Tick" GUIDs are one row), the top eight as Rows with their share
-     and amount and a Meter, then "and {n} more". -->
+     under the name and the amount at the right (directions b1), then "and {n} more". -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
   import { splitUnitName } from '../../lib/characters';
   import { formatAmount } from '../../lib/report/format';
   import type { Actor } from '../../lib/report/types';
-  import Meter from '../ui/Meter.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
 
@@ -37,10 +36,11 @@
       {#each units.slice(0, SHOWN) as [name, amount] (name)}
         <Row
           title={splitUnitName(name).name}
-          sub={`${total === 0 ? '0.0' : ((amount / total) * 100).toFixed(1)}% · ${formatAmount(amount)}`}
+          sub={`${total === 0 ? '0.0' : ((amount / total) * 100).toFixed(1)}%`}
           open
         >
-          {#snippet trail()}<span class="block w-24"><Meter value={total === 0 ? 0 : amount / total} /></span
+          {#snippet trail()}<span class="text-strong text-[15px] font-semibold tabular-nums"
+              >{formatAmount(amount)}</span
             >{/snippet}
         </Row>
       {/each}

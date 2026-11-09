@@ -33,7 +33,6 @@ interface RatingPanelProps {
   fightIndex: number;
   roster: { guid: string; name: string; class?: string }[];
   tabHref: string;
-  trash?: boolean;
   apiBase?: string;
 }
 
@@ -62,12 +61,6 @@ describe('RatingPanel', () => {
     expect(body).toMatch(/<a[^>]*href="\?tab=rating"[^>]*>Rating tab ›/);
   });
 
-  it('a trash pull is never asked: it reads the shipped trash line with no link', () => {
-    const body = renderPanel({ trash: true });
-    expect(body).toContain(ratingCopy.noRatingForTrash);
-    expect(body).not.toContain('Rating tab');
-  });
-
   it('the initial render is the loading skeleton, never a premature empty or error flash', () => {
     // $effect never runs under svelte/server's render() (confirmed empirically -- see the
     // file header), so the fetch this panel starts on mount has not run yet by the time
@@ -79,8 +72,8 @@ describe('RatingPanel', () => {
     expect(body).not.toContain('data-testid="rating-panel-rows"');
   });
 
-  it('renders with only the required props -- trash and apiBase are genuinely optional', () => {
-    expect(() => renderPanel({ trash: undefined, apiBase: undefined })).not.toThrow();
+  it('renders with only the required props -- apiBase is genuinely optional', () => {
+    expect(() => renderPanel({ apiBase: undefined })).not.toThrow();
   });
 
   it('renders with an empty roster without throwing', () => {

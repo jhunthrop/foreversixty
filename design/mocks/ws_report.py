@@ -107,7 +107,7 @@ def rating_rail(R, fi):
 def side_rows(pairs: dict[str, float], cap: int = 8) -> str:
     tot = sum(pairs.values()) or 1
     ranked = sorted(pairs.items(), key=lambda kv: -kv[1])
-    rows = [Row(f'<b>{escape(split_name(k)[0])}</b>', f'{v / tot * 100:.1f}% &middot; {n0(v)}', trail=f'<span style="width:96px;display:block">{Meter(v / tot)}</span>', link=False)
+    rows = [Row(f'<b>{escape(split_name(k)[0])}</b>', f'{v / tot * 100:.1f}%', trail=f'<span class="num">{n0(v)}</span>', link=False)
             for k, v in ranked[:cap]]
     more = f'<p class="t-small rail-p">and {plural(len(ranked) - cap, "more")}</p>' if len(ranked) > cap else ''
     return Rows(rows, open_=True) + more

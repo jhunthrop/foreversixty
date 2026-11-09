@@ -122,13 +122,11 @@ for (const size of SIZES) {
       await expect(rows.first()).toBeVisible();
       await page.waitForLoadState('networkidle');
 
-      // The report frame's meta line (ReportHead, 2026-11-07): the zone and the date, then the fight
-      // count from 768 up (the phone's head keeps one line; the fight list carries the count there).
-      const subtitle = page.getByTestId('report-subtitle');
-      await expect(subtitle).toContainText('17 Sept 2026');
-      const fights = subtitle.getByText(`${SAMPLE_REPORT_META.fights.length} fights`);
-      if (size.width >= 768) await expect(fights).toBeVisible();
-      else await expect(fights).toBeHidden();
+      // The band's meta line (directions b1): the zone and the pull on screen; the title carries the
+      // date and the Fight list the pulls.
+      await expect(page.getByTestId('report-subtitle')).toHaveText(
+        'Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died',
+      );
       if (size.width >= 768) {
         // From md up the sample draws the full chart, as a real report does (owner, 2026-10-30:
         // the 96 px strip was "still too small"). The report frame (2026-11-07) leads with the
