@@ -302,7 +302,7 @@ consent), `attendance_30`, `best_parse`, `rating`, `professions`. Draw Remove an
 when `may_remove` and `may_approve`.
 
 **Wave 3 W3-C16 (lane F16, the app's roster).** Each roster row also carries omitted `spec_name`
-(the full spec name, catalogue name then class: `Fury Warrior`, never a bare `Fury`) and
+(the full spec name, the catalogue's `full_name`: `Fury Warrior`, `Feral Druid (Bear)`, never a bare `Fury`) and
 `spec_icon` (the talent-tab icon stem), both withheld with `spec`. Each `members[]` entry carries
 `role` (`tank|healer|dps`), `spec_name` and `spec_icon`, always present and null when unknown:
 read from the entry's own `spec` (the addon snapshot's specs.json key), else from its roster row's

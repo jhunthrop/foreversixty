@@ -54,13 +54,12 @@
     preRaidCopy,
     preRaidOffered,
   } from '../../lib/bis/pre-raid';
+  import { specLabel } from '../../lib/sim/spec-label';
 
   let {
     spec,
     classSlug,
     specSlug,
-    className,
-    specName,
     pathBand,
     pathPreRaid = false,
     preRaid,
@@ -74,8 +73,6 @@
     spec: string;
     classSlug: string;
     specSlug: string;
-    className: string;
-    specName: string;
     /** The band this page's URL names (lib/bis/band-path.ts); the server renders it. */
     pathBand: number;
     /** The URL is the band's pre-raid list, /bis/<class>/<spec>/60/pre-raid (lib/bis/pre-raid.ts). */
@@ -147,7 +144,9 @@
       model.rows.map((row) => row.filter),
     ),
   );
-  const seoSubject = $derived({ specName, className, preRaid: preRaid || preRaidView });
+  // The spec's full name, the catalogue's own ("Feral Druid (Bear)"): the h1, the list's label, the guide link.
+  const fullName = $derived(specLabel(spec));
+  const seoSubject = $derived({ fullName, preRaid: preRaid || preRaidView });
   const rowsBySlot = $derived(new Map(model.rows.map((row) => [row.slot, row])));
   const ruleLine = $derived(defaultRuleLine(state.sources, state.band));
   const raceName = (faction: Faction, slug: string) =>
@@ -399,7 +398,7 @@
           build={data.build}
           bind:selected
           {groups}
-          label={`${specName} ${className} best in slot, ${model.label}`}
+          label={`${fullName} best in slot, ${model.label}`}
           testid="bis-doll"
         >
           {#snippet detail(cell, placement)}
@@ -422,8 +421,7 @@
     </div>
 
     <p class="bis-guide-line" data-region={REGION.footerNote} data-testid="bis-guide-line">
-      Talents, rotation and stat priority for this spec: <a href={guideHref}>{specName} {className} guide ›</a
-      >
+      Talents, rotation and stat priority for this spec: <a href={guideHref}>{fullName} guide ›</a>
     </p>
   </Page>
 </div>

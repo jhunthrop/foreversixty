@@ -197,7 +197,7 @@ func (s *Service) autocompleteSpec(_ context.Context, in Interaction) ([]Choice,
 	class, _ := in.Option(optClass)
 	out := []Choice{}
 	for _, sp := range specs.All {
-		name := sp.Name + " " + classLabel(sp.ClassSlug)
+		name := sp.FullName
 		if (class == "" || sp.ClassSlug == class) && matches(name, typed) && len(out) < maxChoices {
 			out = append(out, Choice{Name: name, Value: sp.Spec})
 		}

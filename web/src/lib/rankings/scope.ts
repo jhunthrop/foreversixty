@@ -16,7 +16,7 @@ export function cohortName(classSlug: string, specName: string): string {
   if (classSlug === '') return '';
   const className = classDisplayName(classSlug);
   if (specName === '') return className;
-  return `${specFor(classSlug, specName)?.name ?? specName} ${className}`;
+  return specFor(classSlug, specName)?.full_name ?? `${specName} ${className}`;
 }
 
 /** The board's heading: "Fury Warriors", "Warriors", or "Every class and spec". */

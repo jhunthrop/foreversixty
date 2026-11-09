@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { bisSeoCopy } from './seo-copy';
 
-const fury = { specName: 'Fury', className: 'Warrior', preRaid: true };
+const fury = { fullName: 'Fury Warrior', preRaid: true };
 const furyRaids = { ...fury, preRaid: false };
 
 describe('bisSeoCopy', () => {
