@@ -2051,7 +2051,6 @@
  },
  "answer_you": {
   "kind": "figures",
-  "label": "Your rank",
   "figures": [
    {
     "value": "14th",
@@ -2065,7 +2064,6 @@
  },
  "answer_off": {
   "kind": "figures",
-  "label": "Your rank",
   "figures": [
    {
     "value": "204th",

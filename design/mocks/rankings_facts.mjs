@@ -22,7 +22,8 @@ import { rankRowView } from ${JSON.stringify(WEB + "src/lib/rankings/rank-row-vi
 import { guildRowView } from ${JSON.stringify(WEB + "src/lib/rankings/guild-row-view.ts")};
 import { ownBestFacts } from ${JSON.stringify(WEB + "src/lib/rankings/own-best.ts")};
 import { RANK_LEGEND, showRowCrests } from ${JSON.stringify(WEB + "src/lib/rankings/row-view.ts")};
-import { ownRankAnswer } from ${JSON.stringify(WEB + "src/lib/rankings/own-rank.ts")};
+import { ordinal } from ${JSON.stringify(WEB + "src/lib/report/format.ts")};
+import { rankColor } from ${JSON.stringify(WEB + "src/lib/rankings/row-view.ts")};
 import { scoreCopy } from ${JSON.stringify(WEB + "src/lib/score/copy.ts")};
 import { ratingCopy } from ${JSON.stringify(WEB + "src/lib/rating/copy.ts")};
 import { SAMPLE_SCORE, SAMPLE_TREND, SAMPLE_WEAKEST, WEIGHTS, ratingsPageCopy } from ${JSON.stringify(WEB + "src/lib/score/ratings-page.ts")};
@@ -37,7 +38,12 @@ const view = (b) => {
     ? rankRowView({ ...b.character_rank.row, rank: b.character_rank.rank }, shape) : null;
   return { total: b.total, per_page: b.per_page, rows, pinned, best: ownBestFacts(b, shape) };
 };
-const scope = { encounterSlug: 'onyxia', encounterName: 'Onyxia', state: { ruleset: 'normal' }, own: { class: 'warrior', spec: 'Fury' } };
+// Your rank as lib/rankings/own-rank.ts ownRankAnswer reads it, from the same copy and colour helpers. own-rank.ts itself
+// reaches the planner's generated reference (through the cohort name), which the parity job's checkout does not build.
+const answerOf = (b) => b.character_rank
+  ? { kind: 'figures', figures: [{ value: ordinal(b.character_rank.rank), unit: rankingsCopy.answerUnit(b.total, 'Fury Warrior', true),
+      color: rankColor(b.character_rank.rank, b.total) }], note: { text: rankingsCopy.answerNote('Onyxia', 'Normal ruleset') } }
+  : { kind: 'sentence', text: rankingsCopy.answerUnranked('Onyxia') };
 const guilds = guildSpeedRows();
 export default {
   encounters: [ONYXIA, KELTHAS],
@@ -45,9 +51,9 @@ export default {
   board_you: view(board(YOU_Q)),
   board_you_off_page: view(board(YOU_Q, { ownOffPage: true })),
   board_you_unranked: view(board(YOU_Q, { unranked: true })),
-  answer_you: ownRankAnswer(board(YOU_Q), scope),
-  answer_off: ownRankAnswer(board(YOU_Q, { ownOffPage: true }), scope),
-  answer_unranked: ownRankAnswer(board(YOU_Q, { unranked: true }), scope),
+  answer_you: answerOf(board(YOU_Q)),
+  answer_off: answerOf(board(YOU_Q, { ownOffPage: true })),
+  answer_unranked: answerOf(board(YOU_Q, { unranked: true })),
   guilds: guilds.map((g) => guildRowView(g, { kind: 'speed', best: guilds[0].value })),
   own_key: OWN_KEY,
   legend: RANK_LEGEND,
