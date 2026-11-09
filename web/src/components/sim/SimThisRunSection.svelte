@@ -132,7 +132,7 @@
   });
 </script>
 
-<Section title={copy.title} meta={copy.meta} testid="sim-settings-card">
+<Section panel title={copy.title} meta={copy.meta} testid="sim-settings-card">
   <Facts items={facts} />
   {#each groups as group (group.id)}
     <IconList

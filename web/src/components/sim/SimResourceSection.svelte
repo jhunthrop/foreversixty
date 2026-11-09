@@ -49,7 +49,7 @@
 {/snippet}
 
 {#if card !== null}
-  <Section title={card.title} meta={copy.meta} testid="sim-resource-card">
+  <Section panel title={card.title} meta={copy.meta} testid="sim-resource-card">
     <div class="grid grid-cols-3 gap-x-6 gap-y-5">
       {#each card.tiles as tile (tile.label)}
         <Figure label={tile.label} value={tile.value} size="sm" testid="resource-tile" />

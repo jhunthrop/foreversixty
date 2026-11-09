@@ -311,7 +311,7 @@
   </div>
 {/if}
 
-<Page layout="split" {rail}>
+<Page layout="split" panels {rail}>
   {#if kind === 'weights'}
     {#if savedWeightsLazy.current}
       <savedWeightsLazy.current result={result as WeightsResult} />

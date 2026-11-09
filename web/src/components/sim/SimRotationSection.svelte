@@ -97,6 +97,7 @@
 {/snippet}
 
 <Section
+  panel
   title={copy.title}
   {meta}
   action={{ label: copy.guide(spec), href: `/guides/${classSpecPath(request.spec)}` }}

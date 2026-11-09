@@ -16,7 +16,6 @@
   import ExportNotRead from '../character/ExportNotRead.svelte';
   import BisTooltipHost from '../BisTooltipHost.svelte';
   import GearDoll from '../character/GearDoll.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import { simCharacterHasGear } from '../../lib/addon-export';
   import { gearCopy } from '../../lib/gear/copy';
@@ -215,7 +214,7 @@
 {/snippet}
 
 <div class="mx-[18px] md:mx-0">
-  <Section title={gearCopy.paperdoll.simHead} head={changeSource} testid="sim-character">
+  <Section title={gearCopy.paperdoll.simHead} head={changeSource} panel testid="sim-character">
     <div class="flex flex-col gap-4">
       <div class="flex flex-wrap items-center gap-3">
         <ClassCrestRing characterClass={character.class_slug} size={40} testid="sim-character-class-icon" />
@@ -246,7 +245,7 @@
           />
         {/snippet}
         {#if plated}
-          <Plate label={gearCopy.listLabel} testid="sim-gear">{@render doll()}</Plate>
+          <div role="region" aria-label={gearCopy.listLabel} data-testid="sim-gear">{@render doll()}</div>
         {:else}
           <div data-testid="sim-gear">{@render doll()}</div>
         {/if}

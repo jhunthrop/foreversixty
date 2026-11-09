@@ -418,7 +418,7 @@
   </div>
 {/snippet}
 
-<Section title={timelineCopy.title} {meta} testid="sim-timeline">
+<Section panel title={timelineCopy.title} {meta} testid="sim-timeline">
   {#if model === null}
     <p class="text-text text-[15px]" data-testid="timeline-no-sample">
       {timelineCopy.noSample}

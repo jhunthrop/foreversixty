@@ -49,6 +49,21 @@ LEADS = {
 TITLES = {'gear': 'Top gear', 'talents': 'Talents', 'drops': 'Droptimizer', 'weights': 'Weights', 'specs': 'Spec support'}
 
 
+# Round 5 (lane P6): every block is a Section panel (web ui/Section `panel`; tools/ToolSection), the page's primary object the
+# framed one, on a Page with `panels` (22 px apart, 28 px under the band).
+_Section = Section
+_Page = Page
+
+
+def Section(*args, **kw) -> str:
+    kw.setdefault('panel', True)
+    return _Section(*args, **kw)
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
+    html = _Page(layout, main, rail, sticky_rail, panels=layout == 'split')
+    return html.replace('style="padding-top:20px"', 'style="padding-top:28px"', 1) if layout == 'ledger' else html
+
 def ledger(*blocks: str) -> str:
     """The ledger page with the built Page's section gap between its blocks (the summary line included)."""
     return Page('ledger', f'<div class="col">{"".join(blocks)}</div>')
@@ -106,7 +121,7 @@ def candidate(slot_label: str, iid: int) -> str:
 
 
 def candidates() -> str:
-    return Section('Candidates', Plate('<div class="pad cands">' + candidate('Head', WORN['head']) + candidate('Main hand', WORN['main_hand']) + '</div>'))
+    return Section('Candidates', '<div class="cands">' + candidate('Head', WORN['head']) + candidate('Main hand', WORN['main_hand']) + '</div>', frame='framed')
 
 
 def item_search() -> str:
@@ -138,7 +153,7 @@ def whole_sets() -> str:
 def talent_builds(plated: bool = False) -> str:
     body = (f'<div class="tb"><label class="opt">{check()}Your current build</label><h3 class="t-h4">Your saved builds</h3>'
             f'<p class="t-small">Your saved builds could not be read; the rest of the page still works.</p><div class="bt">{btn("Add a build")}</div></div>')
-    return Section('Talent builds', Plate(f'<div class="pad">{body}</div>') if plated else body)
+    return Section('Talent builds', body, frame='framed' if plated else 'plain')
 
 
 def gear() -> str:
@@ -203,8 +218,8 @@ def drops() -> str:
             rows += '</div>'
         note = '<p class="t-small">Nothing has recorded this character&rsquo;s professions, so every profession is listed.</p>' if kind == 'crafted' else ''
         groups.append(f'<div class="src-g"><h3 class="t-h4">{label}</h3>{note}{rows}</div>')
-    body = f'<div class="pad"><div class="kinds">{toggles}</div>{"".join(groups)}</div>'
-    return finish('Droptimizer', head('drops') + run_bar('drops') + ledger(character_line(), Section('Sources', Plate(body)), '<p class="t-small">No source ticked yet.</p>'))
+    body = f'<div><div class="kinds">{toggles}</div>{"".join(groups)}</div>'
+    return finish('Droptimizer', head('drops') + run_bar('drops') + ledger(character_line(), Section('Sources', body, frame='framed'), '<p class="t-small">No source ticked yet.</p>'))
 
 
 # ---- Weights: the caution, the stats to weigh in the rail; the scale factors arrive with a run
@@ -222,14 +237,13 @@ def weights() -> str:
 # ---- a tool with no character (SourceSwitcher): the addon export on the Plate, the other ways in open
 def gear_empty() -> str:
     """SourceSwitcher, in the landing's own grammar (ws_sim.landing_out's Form, Input and Button)."""
-    paste = Plate('<div class="paste">' + S.Form('From the addon', [('From the addon', S.Input('FS1:&hellip;', 'From the addon', grow=True), True)], S.Button('Load', primary=True))
-                  + '<p class="t-small">Paste the export string from the Forever Sixty addon, or let the companion push it. <a class="link" href="#">Get the addon &rsaquo;</a></p></div>',
-                  label='From the addon')
+    paste = ('<div class="paste-b">' + S.Form('From the addon', [('From the addon', S.Input('FS1:&hellip;', 'From the addon', grow=True), True)], S.Button('Load', primary=True))
+                  + '<p class="t-small">Paste the export string from the Forever Sixty addon, or let the companion push it. <a class="link" href="#">Get the addon &rsaquo;</a></p></div>')
     form = lambda label, ph: S.Form(label, [('', S.Input(ph, label), False)], S.Button('Load'))
     ways = Rows([Row('From a build', 'Paste a planner link, saved or not, or a saved build id.', trail=form('From a build', 'foreversixty.gg/b/&hellip;'), link=False),
                  Row('From a logged fight', 'Paste a report link, or open a fight from a report and choose Sim this fight.', trail=form('From a logged fight', 'foreversixty.gg/reports/&hellip;?fight=2'), link=False),
                  Row('Your characters', 'Sign in with Battle.net to find your characters, with their gear and talents ready to sim.', trail=S.Button('Sign in with Battle.net'), link=False)], open_=True)
-    return finish('Top gear', head('gear') + ledger(Section('From the addon', paste), Section('Other ways in', ways)))
+    return finish('Top gear', head('gear') + ledger(Section('From the addon', paste, frame='framed'), Section('Other ways in', ways)))
 
 
 # ---- Spec support (SpecGrid): every damage spec on the Plate, "Not yet" until a parse is measured; healers and tanks open below
@@ -243,11 +257,11 @@ def specs() -> str:
                         trail='<span class="tag muted">Not yet</span>', title_color=CLASS_COLOR[s['class_slug']], link=False, foot=foot))
     others = [Row(f"{s['name']} {CLASS_NAME[s['class_slug']]}", 'Not simulated yet: damage specs first; healers and tanks come later',
                   title_color=CLASS_COLOR[s['class_slug']], link=False) for s in SPECS if s['role'] != 'dps']
-    return finish('Spec support', head('specs') + ledger(Section('Damage specs', Plate(Rows(rows))), Section('Healers and tanks', Rows(others, open_=True))))
+    return finish('Spec support', head('specs') + ledger(Section('Damage specs', Rows(rows), frame='framed', flush=True), Section('Healers and tanks', Rows(others, open_=True))))
 
 
 TOOL_CSS = '''<style>
-.col>p{margin:0}.col{display:flex;flex-direction:column;gap:48px;min-width:0}.rail-col{gap:32px}.col>.col{gap:48px}
+.col>p{margin:0}.col{display:flex;flex-direction:column;gap:22px;min-width:0}.rail-col{gap:22px}.col>.col{gap:22px}.paste-b{display:flex;flex-direction:column;gap:12px}
 .fld{box-sizing:border-box;height:40px;padding:0 12px;font:600 14px/20px var(--font-body);color:var(--text);background:transparent;border:1px solid var(--line);border-radius:4px}
 .fld.grow,.fl.grow{flex:1;min-width:220px}.fl.grow .fld{width:100%}.w24{width:96px}.w160,.fl.w160 .fld{width:160px}.w240{width:240px;text-align:left}
 .tb{display:flex;flex-direction:column;align-items:flex-start}.tb .t-h4{padding-top:12px;margin:0;font-size:15px;line-height:20px}.tb p{padding-top:4px;margin:0}.tb .bt{padding-top:12px}.rail-col .tb{padding-top:11px}
@@ -264,6 +278,7 @@ TOOL_CSS = '''<style>
 .wbody{padding-top:10px}.wbody p{margin:0}.opts{list-style:none;margin:0;padding:0}.opts.ce{padding-top:16px}.opts.two{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
 .sets-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;padding-top:19px}.pad{padding:16px}.kinds{display:flex;flex-wrap:wrap;gap:0 20px}
 .src-g{display:flex;flex-direction:column;gap:4px;padding-top:16px}.src{display:flex;flex-direction:column;padding:4px 0}.indent{padding-left:28px}.grow-n{flex:1}.src p.indent{margin:0;line-height:19.5px}.src .disc>summary{display:flex;align-items:center;height:44px;box-sizing:border-box}.src-g .t-h4{margin:0;font-size:15px;line-height:20px}
+.pn-b .hits{max-height:320px}.pn-b>.search-f{padding-bottom:16px}.rail-col .pn-b>.tb{padding-top:0}.pn-b>.opts.ce{padding-top:0}.pn-b .sets-f{padding-top:8px}.pn-b>.cands{padding-top:12px}
 .gated{display:flex;flex-direction:column;gap:4px;margin:0;padding-left:12px;list-style:none}.gated li{line-height:19.5px}.gb{padding-top:4px}</style>'''
 
 

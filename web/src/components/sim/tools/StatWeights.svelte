@@ -29,7 +29,6 @@
   import type { Snippet } from 'svelte';
   import Notice from '../../ui/Notice.svelte';
   import Page from '../../ui/Page.svelte';
-  import Plate from '../../ui/Plate.svelte';
   import Section from '../../ui/Section.svelte';
   import WeightsScaleTable from '../WeightsScaleTable.svelte';
   import BulkRunBar from './BulkRunBar.svelte';
@@ -62,7 +61,7 @@
   }
 </script>
 
-<Page layout="split" testid="sim-stat-weights">
+<Page layout="split" panels testid="sim-stat-weights">
   {#snippet bar()}<BulkRunBar {store} />{/snippet}
   {#if lead}{@render lead()}{/if}
   <Notice
@@ -73,6 +72,8 @@
   />
   {#if store.weights.length > 0}
     <Section
+      panel
+      frame="framed"
       title={bulkCopy.weightsResultsTitle}
       meta={specLabel(store.character?.spec ?? '')}
       testid="sim-weights"
@@ -81,7 +82,7 @@
       <p class="text-small text-muted m-0 pb-3" data-testid="sim-weights-error-caveat">
         {bulkCopy.weightsErrorCaveat(store.weights.map((row) => row.stat))}
       </p>
-      <Plate><WeightsScaleTable {view} /></Plate>
+      <WeightsScaleTable {view} />
       <!-- Contract 10.6: saved sims of every kind are public at /sim/<id>, saved through the one
            SaveSimForm Top Gear and talent compare use. -->
       <div class="pt-4">
@@ -90,7 +91,7 @@
     </Section>
   {/if}
   {#snippet rail()}
-    <Section title={bulkCopy.weightsPick} testid="sim-weights-pick">
+    <Section title={bulkCopy.weightsPick} panel testid="sim-weights-pick">
       {#if store.referenceStat}
         <p class="text-small text-muted m-0" data-testid="sim-weights-reference">
           {bulkCopy.weightsReference}: {statLabel(store.referenceStat)}

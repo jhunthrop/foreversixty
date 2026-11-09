@@ -25,7 +25,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, LanesLegend, Link, Meter, Notice,
-                      Page, PageHeader, Plate, Row, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
+                      Page, PageHeader, Plate, Row, RowGrid, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
                       control_bar, crest_img, seg, sel, write, Paperdoll)
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -73,6 +73,20 @@ HISTORY = [('Raid buffs', SPEC_ROW['name'], '3 Nov', '900'), ('No buffs', SPEC_R
 
 _icache: dict[str, str] = {}
 
+
+# Round 5 (lane P6): every section on the simulator is a Section panel, the heading inside its Plate (web ui/Section `panel`),
+# and the split page sets them as panels (ui/Page `panels`). The built components pass `panel` on every Section here.
+_Section = Section
+_Page = Page
+
+
+def Section(*args, **kw) -> str:
+    kw.setdefault('panel', True)
+    return _Section(*args, **kw)
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
+    return _Page(layout, main, rail, sticky_rail, panels=layout == 'split')
 
 # ------------------------------------------------------------------------------------------------ data helpers
 def Button(label: str, primary: bool = False, small: bool = False) -> str:
@@ -387,7 +401,7 @@ def rotation_drifted() -> bool:
 
 def rot_title(key: str, name: str, rank: int = 0) -> str:
     """The built rotation title (ActionMark): the 24 px icon, then the name and its rank."""
-    rk = f' <span class="rk-s">Rank {rank}</span>' if rank else ''
+    rk = f'<span class="rk-s">Rank {rank}</span>' if rank else ''   # glued, as the built ActionMark: the rank never takes a line alone
     return f'<span class="am">{act_icon(key, 24) if key else ""}<span>{name}{rk}</span></span>'
 
 
@@ -755,7 +769,7 @@ def answer_failed(label: str, reason: str, fix: str = '') -> str:
 
 def result_page_body(saved: bool) -> str:
     _, meta = ability_rows()
-    main = Section('Damage by ability', Plate(ability_table()), meta=meta) + timeline_section() + gear_section() + talents_section() + rage_section() + buffs_section()
+    main = Section('Damage by ability', ability_table(), meta=meta, frame='framed', flush=True) + timeline_section() + gear_section() + talents_section() + rage_section() + buffs_section()
     rail = spread_section() + this_run_section() + rotation_section() + ('' if saved else history_section(server=True))
     return Page('split', main, rail)
 
@@ -786,12 +800,17 @@ main{padding-bottom:40px}  /* the page's own bottom space (sim.astro .sim-page),
 button.link{background:none;border:0;padding:0;cursor:pointer;font:600 14px/20px var(--font-body);color:var(--gold)}
 input.field{font:400 14px/20px var(--font-body);color:var(--strong)}input.field::placeholder{color:var(--muted)}
 .bar-m summary{gap:8px}.bar-m summary>span:first-child{display:contents}.bar-m summary .sum-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar-m summary .chg{order:2;flex:none;margin-left:0}.bar-m summary .run-m{order:3;flex:none}.bar-m summary .run-m .btn{height:36px;padding:0 12px;font-size:12px}
-.paste{display:flex;flex-direction:column;gap:12px;padding:16px}
+.paste{display:flex;flex-direction:column;gap:12px;padding:16px}.paste-hint{margin-top:12px}
+.ledger-panels{display:flex;flex-direction:column;gap:22px}
 .way{display:flex;flex-direction:column;gap:10px;padding:16px 0}
 .cbar .grp>.t-label{display:none}@media(min-width:1920px){.cbar .grp>.t-label{display:block}}
 @media(max-width:1023px){.pc .layout-split{display:flex;flex-direction:column;align-items:stretch;gap:var(--section-gap)}.pc .layout-split section{min-width:0;max-width:100%}.pc .layout-split>.main,.pc .layout-split>.rail{display:contents}[data-region=section-damage-by-ability]{order:1}[data-region=section-dps-spread]{order:2}[data-region=section-timeline]{order:3}[data-region=section-gear]{order:4}[data-region=section-talents]{order:5}[data-region=section-rage]{order:6}[data-region=section-buffs-and-debuffs]{order:7}[data-region=section-this-run]{order:8}[data-region=section-rotation]{order:9}[data-region=section-your-sims]{order:10}}
 .statesheet{display:grid;gap:40px;grid-template-columns:minmax(0,1fr)}.statesheet>section{min-width:0}.statesheet>section>h2{margin-bottom:8px}
-.cls-links{display:flex;gap:4px 16px;flex-wrap:wrap;padding-top:2px}.cls-links .link{font-size:14px}
+.cls-links{display:flex;gap:4px 16px;flex-wrap:wrap;padding-top:2px}.cls-links .link{font-size:14px;line-height:18px}
+/* round 5 panels (ui/Section `panel`): the body starts right under the head row, so the open-section top gaps above go */
+.pn-b>.rail-body,.pn-b>.two{padding-top:0}.pn-b>.figs+.two{padding-top:8px}.pn-b>.tl-tools{margin-top:0}.rot .rows .row{border-bottom:0}.rk-s{white-space:nowrap}.am .rk-s{margin-left:4px}
+.formrow label.f>.t-label:empty{display:none}
+.rgrid .cls-links{flex-wrap:nowrap}.rgrid .cls-links .link{white-space:nowrap;flex:none}
 .bar-end{display:flex;gap:20px;align-items:center}.bar-end .link{font-size:14px}
 .bar-d.is-run .grp,.bar-d.is-run .bar-end .link{opacity:.5;pointer-events:none}
 .fig.muted .v{color:var(--muted)}
@@ -834,33 +853,37 @@ def finish(title: str, body: str, who) -> str:
 
 # ---- 1. /sim, signed out, no character
 def landing_out() -> str:
-    head = PageHeader('Simulator', meta=['Your character&rsquo;s DPS, simmed in your browser. Damage specs only; nothing is uploaded until you save.'],
-                      tabs=TabStrip(TOOLS, 'Quick sim'))
-    paste = Plate('<div class="paste">' + Form('Addon export or build code', [('Addon export or build code', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
-                  + f'<p class="t-small">In game, type /fs copy, press Ctrl+C, then paste it here. {Link("Get set up &rsaquo;")}</p></div>', label='Sim your character')
-    ways = Rows([Row('Your characters', 'Sign in with Battle.net to find your characters, with their gear and talents ready to sim.', trail=Button('Sign in with Battle.net'), link=False),
-                 Row('From a build', 'A planner link, saved or not, or a saved build id.', trail=Form('From a build', [('', Input('foreversixty.gg/b/&hellip;', 'From a build'), False)], Button('Load')), link=False),
-                 Row('From a logged fight', 'A report link, or open a fight from a report and choose Sim this fight.', trail=Form('From a logged fight', [('', Input('foreversixty.gg/reports/&hellip;?fight=2', 'From a logged fight'), False)], Button('Load')), link=False)], open_=True)
-    main = Section('Sim your character', paste) + Section('Other ways in', ways)
+    head = PageHeader('Simulator', meta=['Damage specs only. Nothing is uploaded until you save.'], tabs=TabStrip(TOOLS, 'Quick sim'))
+    paste = (Form('Addon export or build code', [('', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
+             + f'<p class="t-small paste-hint">In game, type /fs copy, then paste it here. {Link("Get set up &rsaquo;")}</p>')
+    ways = Rows([Row('Your characters', trail=Button('Sign in with Battle.net'), link=False),
+                 Row('A planner build', trail=Form('A planner build', [('', Input('foreversixty.gg/b/&hellip;', 'A planner build'), False)], Button('Load')), link=False),
+                 Row('A logged fight', trail=Form('A logged fight', [('', Input('foreversixty.gg/reports/&hellip;?fight=2', 'A logged fight'), False)], Button('Load')), link=False)], open_=True)
     rows = []
     for c in CLASSES:
         specs = [s for s in SPECS if s['class_slug'] == c['slug'] and s['role'] == 'dps']
         if specs:
             links = ''.join(f'<a class="link" href="#">{s["name"]} &rsaquo;</a>' for s in specs)
             rows.append(Row(c['name'], f'<span class="cls-links">{links}</span>', lead=crest_img(c['slug'], 32), title_color=CLASS_COLOR[c['slug']], link=False))
-    rail = Section('Sim a best-in-slot set', Rows(rows, open_=True), meta='The published BiS gear, not yours')
-    return finish('Simulator', head + Page('split', main, rail), None)
+    main = (Section('Sim your character', paste, panel=True, frame='framed') + Section('Other ways in', ways, panel=True)
+            + Section('Sim a best-in-slot set', RowGrid(rows, 3), panel=True))
+    return finish('Simulator', head + Ledger(main), None)
+
+
+def Ledger(main: str) -> str:
+    """ui/Page `panels` with the ledger layout: one column of Section panels, 28 px under the band, 22 px apart."""
+    return f'<div class="pc" style="padding-top:28px"><div class="ledger-panels">{main}</div></div>'
 
 
 # ---- 2. /sim, signed in, the header's character loaded, not run yet
 def landing_you() -> str:
-    main = Section('Gear', Plate(doll()), Link('Upgrades on Best in slot &rsaquo;'), meta=GEAR_META) + talents_section()
+    main = Section('Gear', doll(), Link('Upgrades on Best in slot &rsaquo;'), meta=GEAR_META) + talents_section()
     return finish('Simulator', you_header(answer_none()) + run_bar() + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
 
 
 # ---- 3. running in the browser
 def running() -> str:
-    main = Section('Damage by ability', Plate(table_skeleton()), meta='Draws when the run finishes') + gear_section(with_stats=False) + talents_section()
+    main = Section('Damage by ability', table_skeleton(), meta='Draws when the run finishes', frame='framed', flush=True) + gear_section(with_stats=False) + talents_section()
     return finish('Simulator, running', you_header(answer_running()) + run_bar('running') + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
 
 
@@ -880,7 +903,7 @@ def result_saved() -> str:
 
 # ---- 6. phone: the bar's choices open
 def bar_open() -> str:
-    main = Section('Gear', Plate(doll()), meta=GEAR_META)
+    main = Section('Gear', doll(), meta=GEAR_META)
     return finish('Simulator, choices', you_header(answer_none()) + run_bar(open_m=True) + Page('split', main, history_section()), YOU)
 
 
@@ -911,7 +934,7 @@ def states() -> str:
         blk('The character could not be read', Notice('<span>' + 'That character could not be read. <a class="link" href="#">Try again</a>' + '</span>', tone='neutral')),
         blk('No build recorded for the character', Notice('<span>' + 'No build yet for Thandrel. <a class="link" href="#">Paste the addon export</a>, or refresh from Battle.net on your <a class="link" href="#">account page</a>.' + '</span>', tone='neutral')),
         blk('A paste that does not decode', Plate('<div class="paste">' + FormRow([('Addon export or build code', Field('FS1:1.60.1.70790:warrior:troll:3032&hellip;', grow=True), True)], '<span class="btn primary is-off">Run</span>') + '<p class="t-small wipe">That does not look like an addon export or a build code.</p></div>')),
-        blk('Saved sim: loading (prerendered skeleton at the final geometry)', PageHeader('&nbsp;', meta=[Skeleton(260, 14)], answer=Skeleton(220, 60) + Skeleton(160, 14)) + Page('split', Section('Damage by ability', Plate(table_skeleton(6))), Section('DPS spread', Skeleton(300, 168)))),
+        blk('Saved sim: loading (prerendered skeleton at the final geometry)', PageHeader('&nbsp;', meta=[Skeleton(260, 14)], answer=Skeleton(220, 60) + Skeleton(160, 14)) + Page('split', Section('Damage by ability', table_skeleton(6), frame='framed', flush=True), Section('DPS spread', Skeleton(300, 168)))),
         blk('Saved sim: no such id', Plate('<p class="empty">No sim with that id. <a class="link" href="#">Open the simulator &rsaquo;</a></p>')),
         blk('Saved sim: the server did not answer', Plate(f'<p class="empty">This sim did not load. The server did not answer. Your link is fine; try again in a moment. {Link("Try again")}</p>')),
         blk('Saved sim: an older engine', Notice('<span>' + 'This run used an older engine. A run today may give a different number. <a class="link" href="#">Open in the sim &rsaquo;</a>' + '</span>', tone='neutral')),

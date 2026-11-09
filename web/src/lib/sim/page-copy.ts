@@ -5,13 +5,11 @@
 
 export const simPageCopy = {
   title: 'Simulator',
-  landingMeta:
-    "Your character's DPS, simmed in your browser. Damage specs only; nothing is uploaded until you save.",
+  landingMeta: 'Damage specs only. Nothing is uploaded until you save.',
   sections: {
     simYourCharacter: 'Sim your character',
     otherWaysIn: 'Other ways in',
     bisSet: 'Sim a best-in-slot set',
-    bisSetMeta: 'The published BiS gear, not yours',
     yourSims: 'Your sims',
     yourSimsAll: 'All',
   },
@@ -19,21 +17,17 @@ export const simPageCopy = {
     label: 'Addon export or build code',
     placeholder: 'FS1:…',
     run: 'Run',
-    hint: 'In game, type /fs copy, press Ctrl+C, then paste it here.',
+    hint: 'In game, type /fs copy, then paste it here.',
     setUp: 'Get set up ›',
     setUpHref: '/setup#paste',
     invalid: 'That does not look like an addon export or a build code.',
   },
   ways: {
     characters: 'Your characters',
-    charactersSub:
-      'Sign in with Battle.net to find your characters, with their gear and talents ready to sim.',
     signIn: 'Sign in with Battle.net',
-    build: 'From a build',
-    buildSub: 'A planner link, saved or not, or a saved build id.',
+    build: 'A planner build',
     buildPlaceholder: 'foreversixty.gg/b/…',
-    fight: 'From a logged fight',
-    fightSub: 'A report link, or open a fight from a report and choose Sim this fight.',
+    fight: 'A logged fight',
     fightPlaceholder: 'foreversixty.gg/reports/…?fight=2',
     load: 'Load',
   },

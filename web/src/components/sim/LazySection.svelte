@@ -73,7 +73,7 @@
   {#if ready}
     {@render children()}
   {:else}
-    <Section {title} {meta}>
+    <Section {title} {meta} panel>
       {#if lazy.error !== ''}
         <LoadError
           message={pageErrorCopy.partFailed}

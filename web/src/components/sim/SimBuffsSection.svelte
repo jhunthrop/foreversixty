@@ -119,7 +119,7 @@
   </div>
 {/snippet}
 
-<Section title={copy.title} meta={copy.meta} testid="sim-auras-card">
+<Section panel title={copy.title} meta={copy.meta} testid="sim-auras-card">
   <div class="grid grid-cols-1 gap-x-[var(--gap)] lg:grid-cols-2">
     {@render side(card.player, copy.onYou, 'player')}
     {@render side(

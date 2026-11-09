@@ -30,7 +30,7 @@
   const gearMode = $derived(store.tool === 'gear');
 </script>
 
-<Page layout={gearMode ? 'split' : 'ledger'} testid="sim-top-gear">
+<Page layout={gearMode ? 'split' : 'ledger'} panels testid="sim-top-gear">
   {#snippet bar()}<BulkRunBar {store} />{/snippet}
   {#if lead}{@render lead()}{/if}
   {#if store.result !== null}

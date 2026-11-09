@@ -1,9 +1,9 @@
 <!-- web/src/components/sim/RunReport.svelte -->
 <!-- The body of one `run` result (sim spec 2026-11-06 §4.5): everything under the page head and the
      control bar. Worth knowing as Notice lines, then the split page: Damage by ability on the
-     page's one Plate, Timeline, Gear, Talents, the resource and Buffs and debuffs in main; the DPS
+     page's framed panel, Timeline, Gear, Talents, the resource and Buffs and debuffs in main; the DPS
      spread, This run and Rotation in the rail, then whatever the page adds (`railTail`: Your sims).
-     Every Section is open. Each one under the fold is its own chunk, mounted as it nears the
+     Every Section is a panel (round 5), its heading inside. Each one under the fold is its own chunk, mounted as it nears the
      viewport with its head and a skeleton holding its ready height, so nothing shifts. Every file
      it reads is optional: a row without its icon or name still reads.
 
@@ -62,7 +62,6 @@
   import AbilityTable, { type AbilityDecoration, type AbilityWeapon } from '../report/AbilityTable.svelte';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import DpsDistribution from './DpsDistribution.svelte';
   import LazySection from './LazySection.svelte';
@@ -245,6 +244,7 @@
 
 {#snippet rail()}
   <Section
+    panel
     title={spreadCopy.title}
     meta={spreadCopy.meta(grouped(result.iterations_run))}
     testid="sim-spread-card"
@@ -313,11 +313,9 @@
     </div>
   {/if}
 
-  <Page layout="split" {rail}>
-    <Section title={damageCopy.title} meta={damageMeta} testid="sim-damage-card">
-      <Plate>
-        <AbilityTable {table} {decorate} />
-      </Plate>
+  <Page layout="split" panels {rail}>
+    <Section title={damageCopy.title} meta={damageMeta} panel frame="framed" flush testid="sim-damage-card">
+      <AbilityTable {table} {decorate} />
     </Section>
     {#if drawnRest}
       <LazySection

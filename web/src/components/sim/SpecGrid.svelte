@@ -15,7 +15,6 @@
   import { specSkeletonSlots } from '../../lib/sim/spec-skeleton';
   import Button from '../ui/Button.svelte';
   import Page from '../ui/Page.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import type { SpecFidelity } from '../../lib/sim/types';
@@ -55,9 +54,9 @@
   });
 </script>
 
-<Page layout="ledger">
-  <Section title={simCopy.specsSimulatedHeading} testid="specs-simulated">
-    <Plate>
+<Page layout="ledger" panels>
+  <Section title={simCopy.specsSimulatedHeading} panel frame="framed" flush testid="specs-simulated">
+    <div>
       <div data-testid="specs-grid">
         {#if rows === null}
           {#each skeletonSlots as slot, index (slot)}
@@ -86,9 +85,9 @@
           {/each}
         {/if}
       </div>
-    </Plate>
+    </div>
   </Section>
-  <Section title={simCopy.specsUnsimulatedHeading} testid="specs-unsimulated">
+  <Section title={simCopy.specsUnsimulatedHeading} panel testid="specs-unsimulated">
     <div data-testid="specs-grid-unsimulated">
       {#each unsimulatedSpecs as spec (spec.spec)}
         <UnsimulatedSpecCard {spec} />

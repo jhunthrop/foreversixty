@@ -98,6 +98,7 @@
 </script>
 
 <Section
+  panel
   title={copy.title}
   meta={split}
   action={{ label: copy.planner, href: plannerHref }}

@@ -25,7 +25,6 @@
   import { LINK } from '../../lib/ui/primitives';
   import GearDoll from '../character/GearDoll.svelte';
   import Figure from '../ui/Figure.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
 
   let {
@@ -107,6 +106,7 @@
 {/snippet}
 
 <Section
+  panel
   title={copy.title}
   {meta}
   action={plated && hasGear ? { label: copy.bisAction, href: bisHref } : undefined}
@@ -115,7 +115,7 @@
   {#if !hasGear}
     <p class="text-muted text-[14px]" data-testid="sim-gear-empty">{copy.noGear}</p>
   {:else if plated}
-    <Plate testid="sim-gear-paperdoll">{@render doll()}</Plate>
+    <div data-testid="sim-gear-paperdoll">{@render doll()}</div>
   {:else}
     <div data-testid="sim-gear-paperdoll">{@render doll()}</div>
     {#if stats !== null}
