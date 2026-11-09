@@ -5,7 +5,6 @@
 // read it, the unit tests pin it.
 import type { GuildRaidRole, GuildSignupState, NextRaidView } from '../guild/api';
 import { roleForSpec, rolesForClass } from '../guild/raid-roles';
-import type { SpecWeek } from './home-answer';
 
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
@@ -33,7 +32,6 @@ export const plaqueCopy = {
   raidsOpen: 'Raids open now',
   signUpFailed: 'Could not save your sign-up. Try again.',
   roles: { tanks: 'tanks', healers: 'healers', melee: 'melee', ranged: 'ranged' },
-  tierLine: (grade: string, place: number, of: number) => `Tier ${grade} · #${place} of ${of}`,
 } as const;
 
 /** The clock as the plaque reads it: days and hours, minutes in the final hour; empty once passed. */
@@ -119,12 +117,7 @@ export function raidWhen(iso: string, timeZone: string): string {
       hour12: true,
       timeZone,
     })
-    .replace(/\s?([AP]M)$/, (_, half: string) => ` ${half.toLowerCase()}`);
+    // A no-break space: "8 pm" never splits across lines on a phone.
+    .replace(/\s?([AP]M)$/, (_, half: string) => `\u00a0${half.toLowerCase()}`);
   return `${dayIn(at, timeZone)} · ${time}`;
-}
-
-/** The tier line under the guild sims: `Tier A · #2 of 20`; null with no grade. */
-export function tierLine(week: SpecWeek | null): string | null {
-  if (week === null || week.grade === null) return null;
-  return plaqueCopy.tierLine(week.grade, week.place, week.of);
 }

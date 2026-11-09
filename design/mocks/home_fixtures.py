@@ -87,9 +87,13 @@ def main() -> None:
                    'verified': True, 'verified_count': 18, 'faction': 'alliance'}] if state == '60' else []
         write(f'me-{state}.json', me([character(sample, gear, state == '60')], guilds))
     write('me-new.json', me([], []))
-    write('guild-home-60.json', {
+    guild_home = {
         'guild': {'id': GUILD['id'], 'name': GUILD['name'], 'region': 'us', 'ruleset': 'normal', 'slug': GUILD['slug'], 'faction': 'alliance'},
         'claim': {'state': 'claimed'}, 'reports': [], 'roster': [], 'pending': [],
+        'summary': {'raiders': 14, 'waiting_for_approval': 0, 'below_rating_floor': 0, 'named_encounters_down': 0, 'pulls_this_tier': 0,
+                    'tier': {'name': 'Tier 1', 'raids': ['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"], 'named_encounters': 9, 'down': 0,
+                             'pulls_total': 0},
+                    'updated_at': '2026-11-06T08:00:00Z'},
         'standing': {'spec': 'Fury', 'class': 'Warrior', 'same_spec_count': 4, 'rank_by_item_level': 2, 'item_level': 61,
                      'needs_before_next_raid': ['Enchant your chest and boots', 'Bring a Flask of the Titans or Elixir of the Mongoose'],
                      'needs_raid': {'title': "Onyxia's Lair", 'starts_at': '2026-12-10T02:00:00Z', 'character_key': 'us/normal/thandrel'}},
@@ -97,7 +101,10 @@ def main() -> None:
                       'starts_at': '2026-12-10T02:00:00Z', 'status': 'planned', 'size': 40, 'guild_timezone': 'America/Chicago',
                       'counts': {'in': 18, 'late': 3, 'tanks': 3, 'healers': 6, 'dps': 12, 'melee': 7, 'ranged': 5},
                       'own': {'character_key': 'us/normal/thandrel', 'state': 'late', 'role': 'dps'}},
-    })
+    }
+    write('guild-home-60.json', guild_home)
+    # The same guild with no raid planned (the plaque falls back to the first raids).
+    write('guild-home-none.json', {k: v for k, v in guild_home.items() if k != 'next_raid'})
     write_feeds()
     write('home-34.json', {
         'import_sim': {'state': 'done', 'dps': 58.4, 'simmed_at': '2026-11-06T09:04:00Z', 'sim_id': 'imp34'},
@@ -168,6 +175,8 @@ def write_feeds() -> None:
         feed_row('g3', 'guild_sim', 180, 'your_guild', [seg('Kaelra', 'name', **{'class': 'mage'}), seg(' simmed 1,012.3 DPS, #1 of 14 DPS in Olympus XXVII (Fire Mage, 60 raid)')], crest='mage', href='/sim/s8'),
     ]
     write('feed-60.json', page(guild + PUBLIC[:4]))
+    # The guild with no raid planned posts no raid.
+    write('feed-guild-none.json', page([g for g in guild if g['kind'] != 'guild_raid'] + PUBLIC[:5]))
     write('feed-empty.json', page([]))
 
 

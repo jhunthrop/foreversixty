@@ -26,6 +26,15 @@
       "guild": "guild-home-60.json"
     },
     {
+      "id": "guild-none",
+      "path": "/",
+      "mock": "web-home-guild-none.html",
+      "me": "me-60.json",
+      "feed": "feed-guild-none.json",
+      "home": "home-60.json",
+      "guild": "guild-home-none.json"
+    },
+    {
       "id": "new",
       "path": "/",
       "mock": "web-home-new.html",

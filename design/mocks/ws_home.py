@@ -5,7 +5,7 @@ cave: the guild's next raid, else the first raids); Latest on Forever with Your 
 columns (or Your spec this week). Signed out: How to start in the rail and Pick your class below.
 
 States (design/mocks/web/home-parity.json): out (signed out), 34 (a level 34 leveler, no guild), 60 (a level 60 raider in a
-guild with a raid planned and the guild's sims), new (signed in, no character), feed-empty (the feed floored with real site
+guild with a raid planned and the guild's sims), new (signed in, no character), guild-none (the level 60 raider's guild with no raid planned), feed-empty (the feed floored with real site
 events), feed-loading, loading (session hinted, /v1/me in flight), error (the feed failed). Every figure is read from
 web/tests/e2e/fixtures/home/ (home_fixtures.py writes them), the same files the parity spec routes; the floor rows are read
 from the same sources the build reads (the raid date, the site changelog, the BiS files).
@@ -19,8 +19,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_prims import (Button, FeedRow, FeedSkeleton, Frame, GradeTile, ItemRow, Link, Page, PageHeader, Plate, Row, RowGrid, Rows, Section,
-                      Skeleton, build_page, crest_img, icon, write)
+from ws_prims import (Button, FeedRow, FeedSkeleton, Frame, GradeTile, ItemRow, Link, MeterClass, Page, PageHeader, Plate, Row, RowGrid, Rows,
+                      Section, Skeleton, build_page, crest_img, icon, write)
 from ws_lib import REGION, QCOL, region_slug
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -62,8 +62,18 @@ HOME_CSS = f'''
 .fr ul{{display:flex;gap:18px;margin:0;padding:0;list-style:none}}
 .fr li{{display:flex;flex-direction:column;align-items:center;gap:8px;width:96px;font:600 14px/18px var(--font-body);text-align:center}}
 .fhd{{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:6px}}.fhd h2{{font:400 22px/28px var(--font-title);margin:0}}
-@media(min-width:700px){{.lad{{columns:2;column-gap:48px}}}}.lad>*{{break-inside:avoid}}
+.lad>*{{break-inside:avoid}}
 .simline{{padding:12px 0 8px;font-size:15px;line-height:22px}}
+.facts{{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;font-size:14px;line-height:20px}}.facts b{{font-weight:600;color:var(--strong)}}
+.upfoot{{padding-top:12px}}
+.irow .tr{{display:flex;align-items:center;gap:12px}}
+@media(max-width:767px){{.irow .worn{{display:none}}}}
+.lbox{{container-type:inline-size}}@container (min-width:900px){{.lad{{columns:2;column-gap:48px}}}}
+.strail{{display:flex;align-items:center;gap:14px}}.strail .meter{{width:120px}}.strail .sfig{{display:flex;justify-content:flex-end;min-width:104px}}.strail .gap{{width:96px;font-size:13px;line-height:18px;text-align:right;color:var(--muted)}}
+@media(max-width:1099px){{.strail .meter{{width:56px}}.strail .gap{{display:none}}}}
+@media(max-width:767px){{.strail .meter{{display:none}}}}
+.fpair{{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:var(--gap)}}@media(min-width:1100px){{.fpair{{grid-template-columns:minmax(0,1fr) 400px}}}}
+.sp h3{{margin:0;padding:8px 0 2px;font:600 13px/18px var(--font-body);color:var(--muted)}}
 .err{{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}}
 .empty-b{{padding-block:12px;font-size:15px;line-height:24px;color:var(--muted)}}
 .gap-sec{{height:var(--section-gap)}}
@@ -148,9 +158,38 @@ def plaque_title(title: str, sub: str = '') -> str:
     return f'<h2 class="pt">{title}</h2>' + (f'<p class="psub">{sub}</p>' if sub else '')
 
 
+def facts_line(facts: list[tuple[str, str]]) -> str:
+    """web components/home/HomeFacts: one line of facts, a strong figure and its words."""
+    return f'<p class="facts">{"".join(f"<span><b>{n}</b> {t}</span>" for n, t in facts)}</p>' if facts else ''
+
+
+def standing_facts(char: dict, guild_home: dict) -> list[tuple[str, str]]:
+    """web lib/home/home-facts.ts standingFacts: your item level place among your spec, the raids attended."""
+    st, att = guild_home.get('standing'), char.get('guild', {}).get('attendance')
+    out = []
+    if st and st['same_spec_count'] > 1:
+        out.append((f"#{st['rank_by_item_level']}", f"of {st['same_spec_count']} guild {st['spec']} {st['class']}s by item level"))
+    if att and att['nights'] > 0:
+        unit = 'raids' if guild_home.get('attendance_source') == 'raids' else 'raid nights'
+        out.append((str(att['present']), f"of {att['nights']} {unit} attended"))
+    return out
+
+
+def summary_facts(guild_home: dict) -> list[tuple[str, str]]:
+    """web lib/home/home-facts.ts guildSummaryFacts: the raiders, and the bosses down once the tier is pulled."""
+    sm = guild_home.get('summary')
+    if not sm:
+        return []
+    out = [(str(sm['raiders']), 'raider' if sm['raiders'] == 1 else 'raiders')]
+    if sm['tier']['pulls_total'] > 0:
+        out.append((str(sm['tier']['down']), f"of {sm['tier']['named_encounters']} bosses down"))
+    return out
+
+
 def guild_plaque(char: dict, guild_home: dict) -> str:
     r, needs = guild_home['next_raid'], guild_home['standing']['needs_before_next_raid']
     c = r['counts']
+    standing = standing_facts(char, guild_home)
     d = iso(r['starts_at']) - timedelta(hours=6)
     when = f"{d.strftime('%A')} {d.day} {d.strftime('%B')} &middot; 8 pm"  # web lib/home/plaque.ts raidWhen, the viewer's time
     roles = ''.join(f'<span><b>{c[k]}</b> {k}</span>' for k in ('tanks', 'healers', 'melee', 'ranged'))
@@ -160,7 +199,9 @@ def guild_plaque(char: dict, guild_home: dict) -> str:
     prep = (f'<div class="prep"><h3>Before the pull</h3><ul>{"".join(f"<li>{n}</li>" for n in needs)}</ul></div>') if needs else ''
     main = (f'<div style="min-width:0">{plaque_title(r["zone_name"], f"{char["guild"]["name"]} &middot; {when}")}'
             f'{big_figures([clock_to(r["starts_at"]), [(str(c["in"]), "signed up"), (str(c["late"]), "late")]], True)}'
-            f'<p class="roles">{roles}</p><div class="acts">{buttons}</div></div>')
+            f'<p class="roles">{roles}</p>'
+            + (f'<div style="margin-top:6px">{facts_line(standing)}</div>' if standing else '')
+            + f'<div class="acts">{buttons}</div></div>')
     return Frame(f'<div class="pq">{main}{prep}</div>', ornate=True, region=REGION['countdowns'])
 
 
@@ -301,7 +342,8 @@ def upgrades_of(char: dict) -> tuple[list[tuple], dict]:
 def who_line(char: dict) -> str:
     """web lib/home/home-view.ts whoLine, then the guild."""
     who = f"Level {char['level']} {char['race']} {char['spec']} {char['class']}"
-    return who + (f" &middot; &lt;{char['guild']['name']}&gt;" if 'guild' in char else '')
+    who += f" &middot; &lt;{char['guild']['name']}&gt;" if 'guild' in char else ''
+    return who + (f" &middot; Item level {char['item_level']}" if char.get('item_level') else '')
 
 
 def head_in(char: dict, home: dict) -> str:
@@ -312,39 +354,74 @@ def head_in(char: dict, home: dict) -> str:
 
 
 def plaque_in(char: dict, guild_home: dict | None) -> str:
-    if guild_home is not None:
+    if guild_home is not None and 'next_raid' in guild_home:
         return guild_plaque(char, guild_home)
+    if guild_home is not None:
+        facts = summary_facts(guild_home) + standing_facts(char, guild_home)
+        line = f'<div style="margin-top:8px">{facts_line(facts)}</div>' if facts else ''
+        return first_raids_plaque(f"{char['guild']['name']}: no raid planned &middot; "
+                                  f'<a class="link" href="#">Raid page &rsaquo;</a>{line}')
     return first_raids_plaque('Raid with a guild that plans its nights here. <a class="link" href="#">Guilds &rsaquo;</a>')
 
 
-def upgrades_section(ups: list, items: dict) -> str:
+def upgrades_section(char: dict, ups: list, items: dict, bis_slots: int) -> str:
+    """Your upgrades: each pick with the piece worn beside its gain, then the whole gap and the slots already best in slot."""
     rows = []
     for gain, s in ups[:UPGRADES_SHOWN]:
         it = items.get(s['item_id']) or {}
         q = it.get('quality', 1)
         ic = icon(it.get('icon', ''), 36, {2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5'}.get(q, ''))
-        # the build's source line (web/src/lib/home/source-line.ts): a crafted pick names it
-        source = f"{s['source']} &middot; crafted" if s.get('source_kind') == 'crafted' else s['source']
-        rows.append(ItemRow(s['item_name'], q, ic, f"{SLOT_LABELS[s['slot']]} &middot; {source}", gain=(f'+{gain:,.1f}', 'DPS', '')))
-    return frame_section('Your upgrades', ''.join(rows), 'Best in slot')
+        # web lib/home/home-view.ts upgradeLine: the slot (a ring is a Finger, whichever of the two) and the pick's source
+        slot = re.sub(r' \d$', '', SLOT_LABELS[s['slot']])
+        row = ItemRow(s['item_name'], q, ic, f"{slot} &middot; {s['source']}", gain=(f'+{gain:,.1f}', 'DPS', ''))
+        worn = items.get(char['build']['gear'].get(s['slot'])) or {}
+        if worn:
+            wq = {2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5'}.get(worn.get('quality', 1), '')
+            row = row.replace('<span class="tr">', f'<span class="tr"><span class="worn">{icon(worn.get("icon", ""), 28, wq)}</span>', 1)
+        rows.append(row)
+    facts = []
+    total = sum(g for g, _ in ups)
+    if total > 0:
+        facts.append((f'+{total:,.1f}', f"DPS in {len(ups)} {'upgrade' if len(ups) == 1 else 'upgrades'}"))
+    if bis_slots > 0:
+        facts.append((str(bis_slots), 'best in slot'))
+    foot = f'<div class="upfoot">{facts_line(facts)}</div>' if facts else ''
+    return frame_section('Your upgrades', f'<div>{"".join(rows)}</div>{foot}', 'Best in slot')
 
 
-def ladder_row(r: dict, unit: str) -> str:
-    trail = f'<span class="fig sm"><span class="v">{r["value"]:,.1f}<small>{unit}</small></span></span>'
+def ladder_row(r: dict, unit: str, top: float, you: dict | None) -> str:
+    """A guild sim: the bar in the class colour against the top of the ladder, the gap to your sim, the figure."""
+    gap = '' if you is None or r['you'] else f"{abs(r['value'] - you['value']):,.1f} {'ahead' if r['value'] >= you['value'] else 'behind'}"
+    trail = (f'<span class="strail">{MeterClass(r["value"] / top if top else 0, CLASS_COLOR[r["class"]])}<span class="gap">{gap}</span>'
+             f'<span class="sfig"><span class="fig sm"><span class="v">{r["value"]:,.1f}<small>{unit}</small></span></span></span></span>')
     return Row(r['name'], '', lead=crest_img(r['class'], 28), trail=trail, title_color=CLASS_COLOR[r['class']], rank=str(r['rank']),
                selected=r['you'], slim=True)
 
 
-def guild_sims_section(g: dict, week: dict | None) -> str:
-    rows = [ladder_row(r, g['unit']) for r in g['rows'][:GUILD_SHOWN]]
+def guild_sims_section(g: dict) -> str:
+    top = g['rows'][0]['value'] if g['rows'] else 0
+    you = next((r for r in g['rows'] if r['you']), None) or g['you']
+    rows = [ladder_row(r, g['unit'], top, you) for r in g['rows'][:GUILD_SHOWN]]
     if g['you'] is not None and not any(r['you'] for r in g['rows'][:GUILD_SHOWN]):
-        rows.append(ladder_row(g['you'], g['unit']))
-    tier = (f'<p class="simline">Tier {week["grade"]} &middot; #{week["place"]} of {week["of"]} &middot; '
-            f'<a class="link" href="#">Tier list &rsaquo;</a></p>') if week and week.get('grade') else ''
-    return sec('Guild sims', f'<div class="lad">{"".join(rows)}</div>{tier}')
+        rows.append(ladder_row(g['you'], g['unit'], top, you))
+    return sec('Guild sims', f'<div class="lbox"><div class="lad">{"".join(rows)}</div></div>')
 
 
-def spec_week_section(w: dict) -> str:
+def movers_block(m: dict | None) -> str:
+    """The spec's board this week (web lib/home/home-facts.ts): the climbers with a baseline, else the top three."""
+    if not m or not m['rows']:
+        return ''
+    rows = []
+    for r in m['rows']:
+        trail = (f'<span class="fig sm kill"><span class="v">+{r["delta"]}<small>places</small></span></span>'
+                 if r['delta'] and r['delta'] > 0 else '')
+        rows.append(Row(r['name'], '', lead=crest_img(r['class'], 28), trail=trail, title_color=CLASS_COLOR[r['class']],
+                        rank=str(r['rank']), slim=True))
+    title = 'Climbing this week' if m['baseline'] else 'Top this week'
+    return f'<div><h3>{title}</h3>{"".join(rows)}</div>'
+
+
+def spec_week_section(w: dict, movers: dict | None) -> str:
     place = f"#{w['place']} of {w['of']} damage specs"
     order = 'SABCD'
     if w['last_week_grade']:
@@ -354,19 +431,23 @@ def spec_week_section(w: dict) -> str:
     else:
         sub = place
     row = Row(f"{spec_name(w['spec'])} at {band_words(w['band'])}", sub, lead=GradeTile(w['grade']), link=False)
-    return sec('Your spec this week', Rows([row], open_=True), 'Tier list')
+    body = f'<div class="sp">{Rows([row], open_=True)}{movers_block(movers)}</div>'
+    return sec('Your spec this week', body, 'Tier list')
 
 
-def state_in(level: str, feed: str = 'ready', feed_file: str = '') -> str:
+def state_in(level: str, feed: str = 'ready', feed_file: str = '', guild_file: str = 'guild-home-60.json') -> str:
     me = J(f'me-{level}.json')
     char = me['characters'][0]
     home = J(f'home-{level}.json')
     ups, items = upgrades_of(char)
-    guild_home = J('guild-home-60.json') if 'guild' in char else None
-    rows = home_rows(J(feed_file or f'feed-{level}.json')['rows'], guild_home is not None) if feed == 'ready' else None
-    foot = (guild_sims_section(home['guild_sims'], home['spec_week']) if home['guild_sims']
-            else spec_week_section(home['spec_week']) if home['spec_week'] else '')
-    return head_in(char, home) + grid(plaque_in(char, guild_home), feed_section(rows, feed), upgrades_section(ups, items), foot)
+    bis_slots = sum(1 for s in J(f'bis-{spec_key(char)}.json')['bands'][0]['slots']
+                    if 'item_id' in s and char['build']['gear'].get(s['slot']) == s['item_id'])
+    guild_home = J(guild_file) if 'guild' in char else None
+    raid_on_plaque = guild_home is not None and 'next_raid' in guild_home
+    rows = home_rows(J(feed_file or f'feed-{level}.json')['rows'], raid_on_plaque) if feed == 'ready' else None
+    week = spec_week_section(home['spec_week'], home['movers']) if home['spec_week'] else ''
+    foot = (f'<div class="fpair">{guild_sims_section(home["guild_sims"])}{week}</div>' if home['guild_sims'] else week)
+    return head_in(char, home) + grid(plaque_in(char, guild_home), feed_section(rows, feed), upgrades_section(char, ups, items, bis_slots), foot)
 
 
 def state_new() -> str:
@@ -389,6 +470,7 @@ STATES = {
     'out': (state_out, None),
     '34': (lambda: state_in('34'), ('Felsnap', 'hunter', 'Level 34')),
     '60': (lambda: state_in('60'), ('Thandrel', 'warrior', 'Level 60')),
+    'guild-none': (lambda: state_in('60', feed_file='feed-guild-none.json', guild_file='guild-home-none.json'), ('Thandrel', 'warrior', 'Level 60')),
     'new': (state_new, ('Hunthrop', 'warrior', 'No character')),
     'feed-empty': (lambda: state_in('34', feed_file='feed-empty.json'), ('Felsnap', 'hunter', 'Level 34')),
     'feed-loading': (lambda: state_in('34', 'loading'), ('Felsnap', 'hunter', 'Level 34')),

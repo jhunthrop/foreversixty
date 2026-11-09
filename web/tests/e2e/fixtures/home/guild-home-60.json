@@ -13,6 +13,21 @@
   "reports": [],
   "roster": [],
   "pending": [],
+  "summary": {
+    "raiders": 14,
+    "waiting_for_approval": 0,
+    "below_rating_floor": 0,
+    "named_encounters_down": 0,
+    "pulls_this_tier": 0,
+    "tier": {
+      "name": "Tier 1",
+      "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"],
+      "named_encounters": 9,
+      "down": 0,
+      "pulls_total": 0
+    },
+    "updated_at": "2026-11-06T08:00:00Z"
+  },
   "standing": {
     "spec": "Fury",
     "class": "Warrior",
