@@ -17213,7 +17213,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Forever right now"
+            "value": "Latest on Forever"
           }
         }
       }
@@ -17431,6 +17431,17 @@
         }
       }
     },
+    "shared.home.noCharacterYet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No character yet"
+          }
+        }
+      }
+    },
     "shared.home.noGear": {
       "extractionState": "manual",
       "localizations": {
@@ -17494,6 +17505,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Paste an addon export"
+          }
+        }
+      }
+    },
+    "shared.home.pasteAction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste export"
           }
         }
       }
@@ -17583,6 +17605,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Run a sim"
+          }
+        }
+      }
+    },
+    "shared.home.setupAction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get set up"
           }
         }
       }

@@ -8,63 +8,40 @@ import { ctaCopy } from '../addon/cta-copy';
 import { bisHref } from '../character-profile';
 import { guildHref, guildRaidHref } from '../characters';
 import type { SlotUpgrade } from './upgrades';
-import { slotSourceLine } from './source-line';
-import { fillShared } from '../copy/shared';
+import { SLOT_LABELS } from '../planner/types';
 import {
   sharedHomeCheckAgain,
   sharedHomeCheckAgainSub,
-  sharedHomeFirstRaids,
   sharedHomeGetIn,
   sharedHomeHowToStart,
-  sharedHomeNoCharacter,
+  sharedHomeNoCharacterYet,
   sharedHomeOpenBis,
   sharedHomePaste,
-  sharedHomePasteSub,
+  sharedHomePasteAction,
   sharedHomePickClass,
+  sharedHomeSetupAction,
   sharedHomeSignIn,
-  sharedHomeSignedInAs,
-  sharedHomeSignedOutMeta,
-  sharedHomeSignedOutTitle,
-  sharedHomeStepAddonSub,
-  sharedHomeStepSignInSub,
-  sharedHomeVsEmpty,
-  sharedHomeVsWorn,
 } from '../copy/shared/home.generated';
 
-/** How many upgrades home lists (ruling R1). */
-export const UPGRADES_SHOWN = 3;
+/** How many upgrades home lists (round 5 mock: five in the framed rail). */
+export const UPGRADES_SHOWN = 5;
 const MAX_LEVEL = 60;
 const BAND_SPAN = 9;
 
 export const homeCopy = {
-  signedOutTitle: sharedHomeSignedOutTitle,
-  signedOutMeta: sharedHomeSignedOutMeta,
   signIn: sharedHomeSignIn,
   pickClass: sharedHomePickClass,
   howToStart: sharedHomeHowToStart,
-  steps: [
-    {
-      title: sharedHomeSignIn,
-      sub: sharedHomeStepSignInSub,
-    },
-    {
-      title: ctaCopy.installAddonAndCompanion,
-      sub: sharedHomeStepAddonSub,
-    },
-  ],
-  firstRaids: (date: string) => fillShared(sharedHomeFirstRaids, { date }),
+  steps: [{ title: sharedHomeSignIn }, { title: ctaCopy.installAddonAndCompanion }],
   openBis: sharedHomeOpenBis,
-  vsWorn: (name: string) => fillShared(sharedHomeVsWorn, { name }),
-  vsEmpty: sharedHomeVsEmpty,
-  noCharacter: sharedHomeNoCharacter,
-  signedInAs: (tag: string) => fillShared(sharedHomeSignedInAs, { tag }),
   getIn: sharedHomeGetIn,
   checkAgain: sharedHomeCheckAgain,
+  noCharacterYet: sharedHomeNoCharacterYet,
   checkAgainSub: sharedHomeCheckAgainSub,
   paste: sharedHomePaste,
-  pasteSub: sharedHomePasteSub,
+  pasteAction: sharedHomePasteAction,
   getAddon: ctaCopy.getAddonAndCompanion,
-  getAddonSub: sharedHomeStepAddonSub,
+  setupAction: sharedHomeSetupAction,
 } as const;
 
 export const homeHrefs = {
@@ -89,19 +66,17 @@ export function shortDate(iso: string, locale = 'en-GB'): string {
   });
 }
 
-/** The head's one fact line: level, spec and class; faction and race; item level. Unknown facts
- *  are left out, never a placeholder. */
-export function metaFacts(character: MeCharacter): string[] {
+/** The head's one line, as the client's character pane reads it: `Level 60 Human Fury Warrior`.
+ *  Unknown facts are left out, never a placeholder. */
+export function whoLine(character: MeCharacter): string {
   // The API may send the class in lower case ("hunter"); the page names it as a title.
-  const who = [character.spec, character.class]
-    .filter(Boolean)
-    .map((part) => titleCase(part ?? ''))
+  return [
+    character.level === undefined ? '' : `Level ${character.level}`,
+    character.race ?? '',
+    ...[character.spec, character.class].map((part) => titleCase(part ?? '')),
+  ]
+    .filter((part) => part !== '')
     .join(' ');
-  const level = character.level === undefined ? who : `Level ${character.level} ${who}`.trim();
-  const faction = character.faction === undefined ? '' : capitalise(character.faction);
-  const origin = [faction, character.race ?? ''].filter(Boolean).join(' ');
-  const itemLevel = character.item_level === undefined ? '' : `Item level ${character.item_level}`;
-  return [level, origin, itemLevel].filter((fact) => fact !== '');
 }
 
 export interface HomeLink {
@@ -115,12 +90,11 @@ export function bisLink(character: MeCharacter): HomeLink | null {
   return href === null ? null : { label: homeCopy.openBis, href };
 }
 
-/** An upgrade row's source and its basis caption. */
-export function upgradeLines(upgrade: SlotUpgrade): { source: string; caption: string } {
-  return {
-    source: slotSourceLine(upgrade.pick),
-    caption: upgrade.wornItemName === undefined ? homeCopy.vsEmpty : homeCopy.vsWorn(upgrade.wornItemName),
-  };
+/** An upgrade row's one line under the name, as the client and Wowhead word it: the slot (a ring
+ *  is a Finger, whichever of the two) and where the pick comes from (a profession says crafted). */
+export function upgradeLine(upgrade: Pick<SlotUpgrade, 'slot' | 'pick'>): string {
+  const slot = SLOT_LABELS[upgrade.slot].replace(/ \d$/, '');
+  return `${slot} · ${upgrade.pick.source}`;
 }
 
 /** `+5.1` */
