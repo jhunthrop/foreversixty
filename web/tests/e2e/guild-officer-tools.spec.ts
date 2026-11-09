@@ -156,7 +156,8 @@ test.describe('officer-read-only: every control in place and disabled (§3.4)', 
       'aria-describedby',
       'officer-tools-gate-readiness',
     );
-    await expect(page.getByText('Nudge copies a message you can paste to them.')).toBeVisible();
+    // No explaining footnote (batch 3): the button's own label and the gate sentence say it.
+    await expect(page.getByText('Nudge copies a message you can paste to them.')).toHaveCount(0);
     await page.close();
   });
 

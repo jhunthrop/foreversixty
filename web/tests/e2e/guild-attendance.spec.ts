@@ -17,7 +17,6 @@ import {
   MATCHED_REPORT,
   NO_EXPORT,
   SECOND_REPORT,
-  STALE_EXPORT,
   TAKEN_REPORT,
   allAttendance,
   bareReport,
@@ -493,7 +492,7 @@ test.describe('the roster chip (§3.6)', () => {
   });
 });
 
-test('readiness: Next raid is on by default, its rows are the sign-ups, and off shows the guild', async ({
+test('readiness: Next raid is on by default, its lists are the sign-ups, and off shows the guild', async ({
   page,
 }) => {
   const stub = await stubGuildAttendance(page, { viewer: 'officer' });
@@ -502,37 +501,29 @@ test('readiness: Next raid is on by default, its rows are the sign-ups, and off 
   const toggle = page.getByTestId('guild-readiness-next-raid');
   await expect(toggle).toHaveText('Next raid · Thu 10 Dec');
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-  const rowKeys = () =>
+  // By exception (batch 3): each raider is short of something, ready, or leveling, never two.
+  const listed = () =>
     page
-      .locator('[data-testid^="guild-readiness-row-"]:visible')
+      .locator(
+        '[data-testid^="guild-readiness-row-"]:visible, [data-testid^="guild-readiness-ready-"]:visible, [data-testid^="guild-readiness-level-"]:visible',
+      )
       .evaluateAll((nodes) =>
-        nodes.map((n) => (n.getAttribute('data-testid') ?? '').replace('guild-readiness-row-', '')),
+        nodes.map((n) =>
+          (n.getAttribute('data-testid') ?? '').replace(/^guild-readiness-(row|ready|level)-/, ''),
+        ),
       );
   const signed = signedKeys(stub);
-  await expect.poll(async () => (await rowKeys()).sort()).toEqual([...signed].sort());
-  await expect(page.getByTestId('guild-readiness-showing')).toContainText(`Showing the ${signed.length}`);
-  await expect(page.getByTestId('guild-readiness-stale').first()).toContainText('Synced');
-  await expect(
-    page
-      .getByTestId(`guild-readiness-row-${keyOf(STALE_EXPORT)}`)
-      .locator('[data-testid="guild-readiness-stale"]:visible'),
-  ).toBeVisible();
-  await expect(
-    page
-      .getByTestId(`guild-readiness-row-${keyOf(NO_EXPORT)}`)
-      .locator('[data-testid="guild-readiness-no-export"]:visible'),
-  ).toBeVisible();
+  await expect.poll(async () => (await listed()).sort()).toEqual([...signed].sort());
+  await expect(page.getByTestId('guild-readiness-read-only')).toContainText('In or Late for Thu 10 Dec');
   expect(stub.readinessReads).toContain(String(ONYXIA_ID));
-  // No export: Gear gap through Item level read a dash (UX 16, WP 14).
-  await expect(
-    page
-      .getByTestId(`guild-readiness-row-${keyOf(NO_EXPORT)}`)
-      .locator('[data-testid="guild-readiness-dash"]:visible'),
-  ).toHaveCount(5);
+  // No export: the raider is listed short of it, and nothing else about their gear.
+  const noExport = page.getByTestId(`guild-readiness-row-${keyOf(NO_EXPORT)}`);
+  await expect(noExport).toContainText('no export yet');
+  await expect(noExport).not.toContainText('upgrade');
 
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-  await expect.poll(async () => (await rowKeys()).length).toBeGreaterThan(signed.length);
+  await expect.poll(async () => (await listed()).length).toBeGreaterThan(signed.length);
 });
 
 test.describe('axe (§9)', () => {

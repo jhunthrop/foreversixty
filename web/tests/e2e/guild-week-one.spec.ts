@@ -264,7 +264,7 @@ test.describe('after a kill', () => {
     await capture(page, 'overview-after-kill');
 
     await page.getByRole('tab', { name: 'Progression' }).click();
-    await expect(page.getByTestId('guild-progression-down')).toContainText(`${down} of ${named}`);
+    await expect(page.getByTestId('guild-progression-zone')).toContainText(`${down} of ${named} boss`);
     await expect(page.locator('body')).not.toContainText('NaN');
     await capture(page, 'progression-one-kill');
   });
@@ -285,13 +285,13 @@ test.describe('readiness', () => {
     });
     await page.goto(`${GUILD_PATH}#readiness`);
 
-    const lowRow = page.getByTestId(`guild-readiness-row-${low.character_key}`).locator('visible=true');
-    await expect(lowRow).toContainText('Level 58 · 2 levels to 60');
-    await expect(lowRow).not.toContainText('upgrade');
+    // Leveling characters are never graded: their own panel, their level, no Nudge.
+    const leveling = page.getByTestId('guild-readiness-leveling-group');
+    await expect(leveling).toContainText('Level 58 · 2 levels to 60');
+    await expect(leveling).not.toContainText('upgrade');
     await expect(page.getByTestId(`guild-readiness-nudge-${low.character_key}`)).toHaveCount(0);
-    await expect(page.getByTestId('guild-readiness-leveling-group')).toBeVisible();
 
-    const healerRow = page.getByTestId(`guild-readiness-row-${healer.character_key}`).locator('visible=true');
+    const healerRow = page.getByTestId(`guild-readiness-row-${healer.character_key}`);
     await expect(healerRow).toContainText('4 upgrades');
     await expect(healerRow).not.toContainText('DPS');
     await capture(page, 'readiness-mixed');

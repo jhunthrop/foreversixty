@@ -234,7 +234,8 @@
       >
         <p class="text-[14px] leading-[23px]">
           {#each lists.ready as row, index (row.character_key)}<span
-              style={`color:${classColorVar(row.class)}`}>{row.name}</span
+              style={`color:${classColorVar(row.class)}`}
+              data-testid={`guild-readiness-ready-${row.character_key}`}>{row.name}</span
             >{#if index < lists.ready.length - 1}<span class="text-muted">,&#32;</span>{/if}{/each}
         </p>
       </Section>
@@ -244,7 +245,8 @@
       <Section title="Leveling" panel testid="guild-readiness-leveling-group">
         <p class="text-[14px] leading-[23px]">
           {#each lists.leveling as row, index (row.character_key)}<span
-              style={`color:${classColorVar(row.class)}`}>{row.name}</span
+              style={`color:${classColorVar(row.class)}`}
+              data-testid={`guild-readiness-level-${row.character_key}`}>{row.name}</span
             ><span class="text-muted">&#32;{levelingLabel(row.level ?? 0)}</span
             >{#if index < lists.leveling.length - 1}<span class="text-muted">,&#32;</span>{/if}{/each}
         </p>

@@ -941,7 +941,8 @@ test.describe('a 404 from an undeployed endpoint never crashes the page', () => 
 test.describe('the Overview last raid at 390', () => {
   test('every fact is visible and the page does not scroll sideways', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
-    await stubCore(page, VIEWER_OFFICER, 'leader');
+    // The last raid is a member's (batch 3: the officer rail is the cover and attendance).
+    await stubCore(page, VIEWER_MEMBER, 'member');
     await stubDepthEndpoints(page);
     await page.goto(GUILD_URL);
     const facts = page.getByTestId('guild-overview-raid-facts');
@@ -1321,7 +1322,7 @@ test.describe('guild facts read as sentences (P.1)', () => {
       page,
     }) => {
       await page.setViewportSize({ width, height: 900 });
-      await stubCore(page, VIEWER_OFFICER, 'leader');
+      await stubCore(page, VIEWER_MEMBER, 'member');
       await stubDepthEndpoints(page);
       await page.goto(GUILD_URL);
       const header = page.getByTestId('guild-header-facts');
@@ -1386,7 +1387,7 @@ test.describe('guild facts read as sentences (P.1)', () => {
   });
 
   test('the Overview prints no "no encounter list yet" line of ours', async ({ page }) => {
-    await stubCore(page, VIEWER_OFFICER, 'leader');
+    await stubCore(page, VIEWER_MEMBER, 'member');
     await stubDepthEndpoints(page);
     await page.goto(GUILD_URL);
     await expect(page.getByTestId('guild-overview-last-raid')).toBeVisible();
