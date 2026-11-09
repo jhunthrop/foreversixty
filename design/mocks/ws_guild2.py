@@ -453,7 +453,7 @@ def _view(html):
 
 
 # The built ghost Button (lib/ui/button.ts BUTTON_GHOST): a gold label, no fill, 10 px each side.
-GUILD_CSS = '<style>html :is(a,button).btn.ghost{background:transparent;border-color:transparent;color:var(--gold);padding:0 10px}</style>'
+GUILD_CSS = '<style>html :is(a,button).btn.ghost{background:transparent;border-color:transparent;color:var(--gold);padding:0 10px;font-size:15px}</style>'
 
 
 _PROSE = 'style="font-size:14px;line-height:22px"'

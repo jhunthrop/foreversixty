@@ -138,7 +138,7 @@ def members_section() -> str:
                f'<b style="color:{C[holder["class"]]}">{holder["name"]}</b></p>')
     invite = (Rows([Row('Invite link', INVITE_HELP, link=False)], open_=True)
               + f'<div class="sp-col"><label style="display:flex;flex-direction:column;gap:4px;width:100%"><span class="t-small" style="font-size:13px;font-weight:600">Invite link</span>'
-              f'<input class="field sp-in" readonly value="https://foreversixty.gg{S.INVITE_URL}"></label>{_act("Copy link", small=False)}'
+              f'<input class="field sp-in" readonly value="https://foreversixty.gg{S.INVITE_URL}" style="height:29px"></label>{_act("Copy link", small=False)}'
               f'{p(f"Made {day(S.INVITE_MADE)} by <b style=\"color:{C[holder["class"]]}\">{holder["name"]}</b>.")}{_act("Make a new link")}</div>')
     rank = Row('Officer ranks', RANK_HELP, trail=f'<input class="field sp-in" type="number" aria-label="Officer ranks" value="{s["officer_max_rank_index"]}" style="width:72px">'
                + _act('Save').replace('<button ', '<button disabled ', 1), link=False)
