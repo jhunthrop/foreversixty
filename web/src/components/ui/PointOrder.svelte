@@ -72,7 +72,7 @@
   </div>
   {#each rows as row, r (r)}
     <div class="porder-r">
-      <span class="lbl">{row.label}</span>
+      <span class={['lbl', row.slots.every((slot) => slot.kind === 'ahead') && 'ah']}>{row.label}</span>
       <div class="porder-s" role="list">
         {#each row.slots as slot, s (s)}
           {@const index = indices[r][s]}
@@ -202,6 +202,9 @@
   .pl img,
   .pl .ic {
     opacity: 0.55;
+  }
+  .lbl.ah {
+    opacity: 0.6;
   }
   .ah img,
   .ah .ic {

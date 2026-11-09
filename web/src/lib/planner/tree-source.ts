@@ -18,5 +18,5 @@ export const PREBETA_BUILD = 'forever-prebeta';
 export function treeSourceNotice(build: string): string {
   return build === PREBETA_BUILD
     ? 'Talent trees from a pre-beta Wowhead snapshot; the client’s own trees replace them at the beta.'
-    : `Talent trees read from the game client, build ${build}.`;
+    : `Client build ${build}`;
 }

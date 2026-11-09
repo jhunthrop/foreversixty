@@ -4,7 +4,7 @@
 // at build time from the guides' frontmatter (`build`, `raidBuild`). Each row names the spec, the
 // build, its split and opens it in the guide's own levelling order (lib/guides/build-links.ts).
 import { loadBuildHref } from '../guides/build-links';
-import { guidesCopy } from '../guides/copy';
+import { plannerCopy } from './copy';
 import { SPECS } from '../sim/specs';
 
 /** One published guide build, as planner.astro reads it from the guides collection. */
@@ -72,7 +72,7 @@ export function guideBuildRows(builds: readonly GuideBuild[], classSlug: string)
       const row: GuideBuildRow = {
         key: `${fullSpec}-${build.kind}`,
         name: spec?.name ?? build.specSlug,
-        label: build.kind === 'leveling' ? guidesCopy.levelingBuild : guidesCopy.raidBuild,
+        label: build.kind === 'leveling' ? plannerCopy.guideLevelingBuild : plannerCopy.guideRaidBuild,
         split: treesSplit(trees),
         href: loadBuildHref(build.code, fullSpec),
         trees,

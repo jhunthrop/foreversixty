@@ -238,11 +238,7 @@
     <div class="pl-sec">
       <p class="pl-line" data-testid="band-compare-differs">
         {#if coverage !== null}
-          {bandCompareCopy.coversFewer(
-            coverage.covered,
-            coverage.total,
-            bandRangeLabel(Math.min(60, band + 10)),
-          )}
+          {bandCompareCopy.coversFewer(coverage.covered, coverage.total)}
         {:else if status?.kind === 'matches'}
           <b class="text-kill">{bandCompareCopy.matches}</b>
         {:else if status?.kind === 'differs'}

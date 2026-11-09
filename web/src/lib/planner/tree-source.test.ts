@@ -4,9 +4,7 @@ import { PREBETA_BUILD, treeSourceNotice } from './tree-source';
 
 describe('treeSourceNotice', () => {
   it('names the client build the trees were read from', () => {
-    expect(treeSourceNotice('1.60.1.69893')).toBe(
-      'Talent trees read from the game client, build 1.60.1.69893.',
-    );
+    expect(treeSourceNotice('1.60.1.69893')).toBe('Client build 1.60.1.69893');
   });
 
   it('says so plainly while the trees are still the pre-beta snapshot', () => {

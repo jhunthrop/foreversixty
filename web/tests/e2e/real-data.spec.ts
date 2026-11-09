@@ -166,9 +166,7 @@ test('the trees are laid out in the order the client draws them', async ({ page 
 
 test('the banner names the build the trees were read from', async ({ page }) => {
   await openPlanner(page);
-  await expect(
-    page.getByText(`Talent trees read from the game client, build ${ACTIVE_BUILD}.`),
-  ).toBeVisible();
+  await expect(page.getByText(`Client build ${ACTIVE_BUILD}`)).toBeVisible();
 });
 
 test('a 31/20/0 warrior is spent and read back as 31/20/0', async ({ page }) => {

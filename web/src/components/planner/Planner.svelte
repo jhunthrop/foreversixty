@@ -1342,7 +1342,7 @@
        stand the same height and nothing under the Plate moves when the trees arrive. */
     --cell: 44px;
     --cgap: 8px;
-    --chrome: 183px;
+    --chrome: 157px;
     min-height: calc(var(--tiers) * (var(--cell) + var(--cgap)) + var(--chrome));
   }
   @media (min-width: 768px) {

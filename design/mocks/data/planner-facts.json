@@ -11311,7 +11311,7 @@
      "110861": 0,
      "110870": 0
     },
-    "line": "This build covers 21 of your 25 points; the next 4 follow the levels 40 to 49 build.",
+    "line": "Covers 21 of your 25 points.",
     "beyond": "",
     "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
@@ -14349,7 +14349,7 @@
      "110861": 0,
      "110870": 0
     },
-    "line": "This build covers 21 of your 25 points; the next 4 follow the levels 40 to 49 build.",
+    "line": "Covers 21 of your 25 points.",
     "beyond": "",
     "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
@@ -16478,8 +16478,8 @@
   }
  },
  "notes": {
-  "reconstructed": "Talents loaded from a character. Point order: the main tree first, each talent as its row opens.",
-  "linked": "Opened from a link. Point order: the main tree first, each talent as its row opens.",
+  "reconstructed": "Talents loaded from a character.",
+  "linked": "Opened from a link. Point order: the main tree first.",
   "linked_short": "Opened from a link.",
   "guide": "Loaded in the Survival guide's levelling order.",
   "band60": "Loaded the 60 build. The order shown is one way to level into it: the main tree first, each talent as soon as its row opens.",
@@ -16521,10 +16521,10 @@
    "bandLoadedNote": "[fn]",
    "noTalentRanksNote": "This link carries no talent ranks.",
    "keptNote": "[fn]",
-   "reconstructedNote": "Talents loaded from a character. Point order: the main tree first, each talent as its row opens.",
+   "reconstructedNote": "Talents loaded from a character.",
    "reconstructedDroppedNote": "[fn]",
    "olderBuildNote": "This code is from an older client build; check the talents.",
-   "linkedNote": "Opened from a link. Point order: the main tree first, each talent as its row opens.",
+   "linkedNote": "Opened from a link. Point order: the main tree first.",
    "linkedNoteShort": "Opened from a link.",
    "guideOrderNote": "[fn]",
    "noClassNote": "[fn]",
@@ -16533,6 +16533,7 @@
    "pointsOfUnit": "[fn]",
    "talentsTitle": "Talents",
    "guideBuildsTitle": "Guide builds",
+   "guideBuildLoaded": "Loaded",
    "pasteHint": "Paste in game with /fs.",
    "plannedAhead": "[fn]",
    "levelLine": "[fn]",
@@ -16649,7 +16650,7 @@
   },
   "rate_limit": "Too many saves from this connection; try again in an hour.",
   "save_failed": "The build could not be saved; try again.",
-  "tree_source": "Talent trees read from the game client, build 1.60.1.70790.",
+  "tree_source": "Client build 1.60.1.70790",
   "load_failed": "Talent data did not load",
   "load_failed_detail": "Build 1.60.1.70790 did not return the files the planner needs.",
   "read_only": "This build was opened from a share link; edit a copy to change it",

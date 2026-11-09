@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { guidesCopy } from '../guides/copy';
+import { plannerCopy } from './copy';
 import { codeTrees, guideBuildRows, ranksTrees, treesSplit, type GuideBuild } from './guide-builds';
 
 const SURVIVAL = 'FS1:1.60.1.70790:hunter:night-elf:5/005005201/500230230050222151:';
@@ -21,6 +23,11 @@ describe('guide builds', () => {
 
   it('puts a build ranks in the same form, so a loaded guide build compares equal', () => {
     expect(ranksTrees([[5, 0], [0], [0, 1, 0, 0]])).toBe('5//01');
+  });
+
+  it('names the builds as the guides do', () => {
+    expect(plannerCopy.guideLevelingBuild).toBe(guidesCopy.levelingBuild);
+    expect(plannerCopy.guideRaidBuild).toBe(guidesCopy.raidBuild);
   });
 
   it('sums each tree into the split', () => {

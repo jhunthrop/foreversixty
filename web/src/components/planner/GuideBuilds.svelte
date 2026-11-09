@@ -1,7 +1,7 @@
 <!-- web/src/components/planner/GuideBuilds.svelte -->
 <!-- Guide builds (lane P7): the class's published guide builds in the rail, one row per build,
      the spec's icon, its name, the build and its split; the row opens it in the guide's levelling
-     order. The build on screen is the selected row. Nothing draws when the class has no guide. -->
+     order. The build on screen carries a Loaded tag. Nothing draws when the class has no guide. -->
 <script lang="ts">
   import { ranksByTalent } from '../../lib/planner/derive';
   import { guideBuildRows, ranksTrees, type GuideBuild } from '../../lib/planner/guide-builds';
@@ -9,6 +9,7 @@
   import { dataUrl } from '../../lib/planner/load';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import Row from '../ui/Row.svelte';
+  import Tag from '../ui/Tag.svelte';
   import Section from '../ui/Section.svelte';
 
   let { builds, store }: { builds: readonly GuideBuild[]; store: PlannerStore } = $props();
@@ -31,7 +32,6 @@
           title={row.name}
           sub={`${row.label} · ${row.split.join('/')}`}
           href={row.href}
-          selected={row.trees === current}
           density="slim"
           open
           testid={`planner-guide-build-${row.key}`}
@@ -49,6 +49,13 @@
               />
             {/if}
           {/snippet}
+          {#snippet subContent()}
+            <span class="gb-sub"
+              >{`${row.label} · ${row.split.join('/')}`}{#if row.trees === current}<Tag tone="muted"
+                  >{plannerCopy.guideBuildLoaded}</Tag
+                >{/if}</span
+            >
+          {/snippet}
         </Row>
       {/each}
     </div>
@@ -59,6 +66,12 @@
   .gb-rows {
     display: flex;
     flex-direction: column;
+  }
+  .gb-sub {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 8px;
   }
   .gb-icon {
     display: block;

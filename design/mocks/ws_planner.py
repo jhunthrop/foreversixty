@@ -215,7 +215,7 @@ def share(st: dict, mode: str = 'idle') -> str:
     off = st['spent'] == 0
     share_btn = Button(e(P['share'])).replace('class="btn', 'class="btn is-off' if off else 'class="btn', 1)
     body = f'<div class="pl-acts pl-end">{title}{share_btn}</div>'
-    body += f'<div class="pl-acts"><span class="t-small">{e(st["text_summary"])}</span>{Button(e(P["copyAsText"]))}</div>'
+    body += f'<div class="pl-acts">{Button(e(P["copyAsText"]))}</div>'
     body += Switch(e(C['sim']['includeSimOnCard']), on=mode != 'nosim', disabled=off)
     if mode == 'confirm':
         items = ''.join(f'<li>{e(x)}</li>' for x in st['share_fields'] + [P['shareFieldSim']])
@@ -267,8 +267,10 @@ def order(st: dict) -> str:
 def guide_builds(st: dict) -> str:
     """Guide builds (GuideBuilds.svelte): the class's published guide builds, the spec icon, name, build and split; the build on
     screen is the selected row."""
-    rows = [Row(e(b['name']), f'{e(b["label"])} &middot; {"/".join(str(x) for x in b["split"])}', lead=icon(b['icon'], 28) if b.get('icon') else '',
-                selected=b['current'], slim=True) for b in st['guide_builds']]
+    def sub(b: dict) -> str:
+        loaded = Tag(e(P['guideBuildLoaded']), 'muted') if b['current'] else ''
+        return f'<span class="gb-sub">{e(b["label"])} &middot; {"/".join(str(x) for x in b["split"])}{loaded}</span>'
+    rows = [Row(e(b['name']), sub(b), lead=icon(b['icon'], 28) if b.get('icon') else '', slim=True) for b in st['guide_builds']]
     return Section(e(P['guideBuildsTitle']), Rows(rows, open_=True)) if rows else ''
 
 
@@ -362,7 +364,7 @@ PAGE_CSS = '''<style>
 @media(min-width:900px){.ans-box.pl-ans{min-width:0;min-height:0}}
 .pc:has(>.layout-wb){padding-bottom:var(--section-gap)}
 .pc:has(>.pl-notes){padding-top:16px}.pl-notes{max-width:var(--measure-reading)}.pl-notes .notice{padding-top:4px;color:var(--text)}
-.pl-foot-l{flex:1 1 auto;display:grid;min-width:0}.pl-foot-l>*{grid-area:1/1;align-self:center}
+.pl-foot-l{flex:1 1 auto;display:grid;min-width:0}.gb-sub{display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px 8px}.pl-foot-l>*{grid-area:1/1;align-self:center}
 @media(max-width:767px){main .btn.sm{height:44px}}
 
 .pl-sec{display:flex;flex-direction:column;gap:12px;padding-top:2px}.pl-pad{padding-top:2px}
@@ -372,11 +374,11 @@ PAGE_CSS = '''<style>
 .pl-field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px}.pl-field .field{height:44px}
 .pl-confirm{display:flex;flex-direction:column;gap:10px;padding:12px 0;border-top:1px solid var(--line-soft)}
 .pl-list{list-style:disc;padding-left:20px}.pl-url{font:600 14px/20px var(--font-body);color:var(--gold);overflow-wrap:anywhere}
-.pl-skel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:16px 20px;min-height:549px}
+.pl-skel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:16px 20px;min-height:523px}
 @media(min-width:768px){.pl-skel{min-height:517px}}@media(min-width:1280px){.pl-skel{min-height:521px}}@media(min-width:1760px){.pl-skel{min-height:589px}}
 .pl-art{display:block;max-width:100%;height:384px;object-fit:cover;border-radius:4px;opacity:.5}.pl-skt{display:flex;flex-direction:column;align-items:center;gap:14px}
 @media(max-width:767px){.pl-skel{grid-template-columns:minmax(0,1fr)}.pl-skt+.pl-skt{display:none}}
-.pl-err{display:flex;flex-direction:column;gap:8px;padding:20px;min-height:549px}
+.pl-err{display:flex;flex-direction:column;gap:8px;padding:20px;min-height:523px}
 @media(min-width:768px){.pl-err{min-height:517px}}@media(min-width:1280px){.pl-err{min-height:521px}}@media(min-width:1760px){.pl-err{min-height:589px}}
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}
 .statesheet{display:grid;gap:40px}.st-b>h2{margin-bottom:12px}.st-row{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
