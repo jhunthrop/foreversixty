@@ -2171,7 +2171,7 @@ components:
               spec: { type: string }
               seen_at: { type: string }
               role: { type: [string, "null"], enum: [tank, healer, dps, null], description: "W3-C16: the spec catalogue's role for spec, else for the character's roster row; null when neither is known or consent withholds it. The apps' role chips read it, never a spec word." }
-              spec_name: { type: [string, "null"], description: "W3-C16: the full spec name, catalogue name then class (\"Holy Priest\", \"Feral Bear Druid\"); null with role." }
+              spec_name: { type: [string, "null"], description: "W3-C16: the full spec name, the catalogue's full_name (\"Holy Priest\", \"Feral Druid (Bear)\"); null with role." }
               spec_icon: { type: [string, "null"], description: "W3-C16: the spec's talent-tab icon stem; null with role." }
         counts:
           type: object

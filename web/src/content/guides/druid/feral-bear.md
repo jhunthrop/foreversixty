@@ -1,5 +1,5 @@
 ---
-title: Feral Bear Druid in Forever
+title: Feral Druid (Bear) in Forever
 classSlug: druid
 spec: feral-bear
 role: tank

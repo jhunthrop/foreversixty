@@ -19,6 +19,7 @@ export function catalogEntry(
     reference_stat: 'attack_power',
     weight_stats: [],
     icon: 'inv_misc_questionmark',
+    full_name: `${name} ${classSlug.charAt(0).toUpperCase()}${classSlug.slice(1)}`,
   };
 }
 
