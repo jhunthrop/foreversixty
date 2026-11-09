@@ -83,13 +83,14 @@ describe("Theme", function()
 		assert.are.equal("UIPanelButtonTemplate", frame.template)
 	end)
 
-	it("ships with no stock templates save the real tooltip, so every other control is the addon's own", function()
+	it("ships with the real tooltip and the client's own red button and close X, nothing else", function()
 		start({ templates = ALL_TEMPLATES })
-		-- Theme.compareTooltip is the one caller that names a real
-		-- template: SetHyperlink and comparison are the GameTooltip frame
-		-- type's own behaviour, not something a flat texture can stand in
-		-- for the way a button or a tab can.
-		assert.are.same({ gameTooltip = "GameTooltipTemplate" }, Theme.TEMPLATES)
+		-- Theme.compareTooltip names a real template: SetHyperlink and comparison are the
+		-- GameTooltip frame type's own behaviour. The addon's own frames in the site's style (the
+		-- panel, the onboarding; owner, 2026-11-08) take the client's red button and close X
+		-- (Widgets.clientButton, Widgets.clientCloseButton); every other control is the addon's own.
+		assert.are.same({ gameTooltip = "GameTooltipTemplate", clientButton = "UIPanelButtonTemplate",
+			closeButton = "UIPanelCloseButton" }, Theme.TEMPLATES)
 	end)
 
 	it("builds a bare frame when the client does not", function()

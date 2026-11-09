@@ -3,10 +3,12 @@
 ## 2.0.38
 
 - A home in game: click the line beside the minimap (or the Forever Sixty button on your character pane, or your keybind) to open one panel with what to do next on this character: tonight's raid, your next upgrades, your next talent and your rotation at your level.
-- Raid day: the panel shows the raid, its start and your job. Once the companion app supports it, In, Late, Bench and Out answer right there; until then it says you are on the roster.
+- The panel wears the site's look: a warm dark frame, your class crest in a bronze ring with your faction's mark, your name, level and class, and your Forever Score at the top right.
+- Raid day: the panel shows the raid, its start, your role and your job. Once the companion app supports it, In, Late, Bench and Out answer right there and stay so you can change your mind; your answer's button is teal. Until then it says you are on the roster.
 - Upgrades list where each one drops, the level it needs when that is above yours, and an Equip button for one already in your bags.
+- Talents show how many points follow your plan, your next talent, and Change and Talents buttons side by side.
 - Under level 10 with no build, Pick your path loads a spec's leveling build. At 60 the rotation folds away until you open it.
-- The character pane's flyout is gone: its button opens the same panel, docked to the pane. Drag the panel's title to move it; Reset positions puts it back.
+- The character pane's flyout is gone: its button opens the same panel, docked to the pane. Drag the top of the panel to move it; Reset positions puts it back.
 
 ## 2.0.37
 

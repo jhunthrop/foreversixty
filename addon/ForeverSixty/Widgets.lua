@@ -982,5 +982,203 @@ function Widgets.openConfirm(frame, text, confirmLabel, onConfirm, textHeight)
 	return frame
 end
 
+-- The site's frame chrome (the panel, the onboarding; design/mocks/addon_ux.py) ------------------
+
+--- A frame on the site's umber ground: a vertical umberTop-to-umber fill, a 1 px umberEdge
+--- round it and a 1 px umberLine just inside that. `name` (optional) names the frame.
+function Widgets.umberFrame(parent, width, height, name)
+	local frame = CreateFrame("Frame", name, parent)
+	Theme.noteFrame(name or "Umber frame", "a window or panel built")
+	frame:SetSize(width, height)
+	local ground = frame:CreateTexture(nil, "BACKGROUND")
+	ground:SetAllPoints(frame)
+	Theme.verticalGradient(ground, "umberTop", "umber")
+	frame.foreverSixtyBackground = ground
+	frame.foreverSixtyBorder = Theme.outline(frame, Theme.SIZES.border, "umberEdge")
+	local inner = CreateFrame("Frame", nil, frame)
+	inner:SetPoint("TOPLEFT", frame, "TOPLEFT", Theme.SIZES.border, -Theme.SIZES.border)
+	inner:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -Theme.SIZES.border, Theme.SIZES.border)
+	frame.foreverSixtyInnerLine = Theme.outline(inner, Theme.SIZES.border, "umberLine")
+	return frame
+end
+
+--- The bronze-ring class medallion, `size` square: the class crest inset in the ring
+--- (media/medallion-ring) and the faction notch at one o'clock (media/medallion-notch). Paint it
+--- with Widgets.paintMedallion.
+function Widgets.medallion(parent, size)
+	local inset = math.floor(size * Theme.SIZES.medallionInset / Theme.SIZES.medallion + 0.5)
+	local holder = CreateFrame("Frame", nil, parent)
+	holder:SetSize(size, size)
+	local crest = holder:CreateTexture(nil, "ARTWORK")
+	crest:SetPoint("TOPLEFT", holder, "TOPLEFT", inset, -inset)
+	crest:SetPoint("BOTTOMRIGHT", holder, "BOTTOMRIGHT", -inset, inset)
+	local ring = holder:CreateTexture(nil, "OVERLAY")
+	ring:SetAllPoints(holder)
+	ring:SetTexture(Theme.MEDIA.medallionRing)
+	local notch = holder:CreateTexture(nil, "OVERLAY", nil, 1)
+	notch:SetAllPoints(holder)
+	notch:SetTexture(Theme.MEDIA.medallionNotch)
+	holder.foreverSixtyCrest, holder.foreverSixtyRing, holder.foreverSixtyNotch = crest, ring, notch
+	return holder
+end
+
+--- The notch's colour per Compat.playerFaction answer; no notch for a character with no side.
+Widgets.NOTCH_COLORS = { alliance = "notchAlliance", horde = "notchHorde" }
+
+--- Paints a medallion for `classToken` (the neutral tile for a class with no crest) and
+--- `faction` ("alliance", "horde", or nil for none).
+function Widgets.paintMedallion(medallion, classToken, faction)
+	medallion.foreverSixtyCrest:SetTexture(Theme.crestPath(classToken) or Theme.UNKNOWN_ICON)
+	local notchKey = Widgets.NOTCH_COLORS[faction or ""]
+	if notchKey ~= nil then
+		medallion.foreverSixtyNotch:SetVertexColor(Theme.rgb(Theme.HEX[notchKey]))
+		medallion.foreverSixtyNotch:Show()
+	else
+		medallion.foreverSixtyNotch:Hide()
+	end
+	return notchKey
+end
+
+--- The title band across the top of an umber frame: the medallion, a bone title in the title
+--- font over a one-line muted meta, and one number on the right (the number in its own colour,
+--- a bone-dim unit after it). Fill it with Widgets.setTitleBand. The band is the frame's drag
+--- handle; `onDragStop` (optional) runs after a move.
+function Widgets.titleBand(frame, onDragStop)
+	local S = Theme.SIZES
+	local band = CreateFrame("Frame", nil, frame)
+	band:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
+	band:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0)
+	band:SetHeight(S.titleBand)
+	band:EnableMouse(true)
+	band:RegisterForDrag("LeftButton")
+	band:SetScript("OnDragStart", function()
+		frame:StartMoving()
+	end)
+	band:SetScript("OnDragStop", function()
+		frame:StopMovingOrSizing()
+		if onDragStop ~= nil then
+			onDragStop()
+		end
+	end)
+	local medallion = Widgets.medallion(band, S.medallion)
+	medallion:SetPoint("LEFT", band, "LEFT", S.titleBandPad, 0)
+	local unit = Widgets.label(band, "", "boneDim", "small")
+	unit:SetPoint("RIGHT", band, "RIGHT", -S.titleBandPadRight, -2)
+	local number = Theme.titleFont(Widgets.label(band, "", "ink", "large"), S.titleNumber)
+	number:SetPoint("RIGHT", unit, "LEFT", -3, 2)
+	local left = S.titleBandPad + S.medallion + S.medallionGap
+	local title = Theme.titleFont(Widgets.label(band, "", "bone", "large"), S.titleText)
+	title:SetPoint("TOPLEFT", band, "TOPLEFT", left, -12)
+	title:SetPoint("RIGHT", number, "LEFT", -8, 0)
+	local meta = Widgets.label(band, "", "umberMuted", "small")
+	meta:SetPoint("TOPLEFT", band, "TOPLEFT", left, -36)
+	meta:SetPoint("RIGHT", number, "LEFT", -8, 0)
+	for _, region in ipairs({ title, meta }) do
+		if type(region.SetWordWrap) == "function" then
+			region:SetWordWrap(false)
+		end
+	end
+	local line = Theme.texture(band, "ARTWORK", "umberLine")
+	line:SetPoint("BOTTOMLEFT", band, "BOTTOMLEFT", S.border, 0)
+	line:SetPoint("BOTTOMRIGHT", band, "BOTTOMRIGHT", -S.border, 0)
+	line:SetHeight(1)
+	local edge = Theme.texture(band, "ARTWORK", "umberEdge")
+	edge:SetPoint("TOPLEFT", line, "BOTTOMLEFT", 0, 0)
+	edge:SetPoint("TOPRIGHT", line, "BOTTOMRIGHT", 0, 0)
+	edge:SetHeight(1)
+	band.foreverSixtyMedallion, band.foreverSixtyTitle, band.foreverSixtyMeta = medallion, title, meta
+	band.foreverSixtyNumber, band.foreverSixtyUnit = number, unit
+	return band
+end
+
+--- Fills a title band from `head`: { title, meta, classToken, faction, number (text or nil for
+--- none), numberColor ({ r, g, b } or nil for ink), unit (text after the number) }.
+function Widgets.setTitleBand(band, head)
+	Widgets.paintMedallion(band.foreverSixtyMedallion, head.classToken, head.faction)
+	band.foreverSixtyTitle:SetText(head.title or "")
+	band.foreverSixtyMeta:SetText(head.meta or "")
+	local number = head.number ~= nil and tostring(head.number) or ""
+	band.foreverSixtyNumber:SetText(number)
+	local color = head.numberColor
+	if color ~= nil then
+		band.foreverSixtyNumber:SetTextColor(color.r, color.g, color.b, 1)
+	else
+		band.foreverSixtyNumber:SetTextColor(Theme.rgb(Theme.HEX.ink))
+	end
+	band.foreverSixtyUnit:SetText(number ~= "" and (head.unit or "") or "")
+	return band
+end
+
+--- The client's own red close X (UIPanelCloseButton) where the client has it, else Widgets'
+--- flat X; either runs `onClick`.
+function Widgets.clientCloseButton(parent, onClick)
+	local button, templated = Theme.createFrame("Button", nil, parent, "closeButton")
+	if not templated then
+		button:Hide()
+		return Widgets.closeButton(parent, onClick)
+	end
+	button:SetScript("OnClick", function(self)
+		onClick(self)
+	end)
+	return button
+end
+
+--- The client's own red button (UIPanelButtonTemplate), `Theme.SIZES.clientButtonHeight` tall,
+--- where the client has it, else Widgets' flat button; either way with a teal face it shows while
+--- selected (Widgets.setSelected): the frame's one primary or chosen action. The click runs only
+--- while the button is enabled.
+function Widgets.clientButton(parent, text, onClick)
+	local button, templated = Theme.createFrame("Button", nil, parent, "clientButton")
+	if templated then
+		button:SetText(text or "")
+		button:SetScript("OnClick", function(self, ...)
+			if self:IsEnabled() then
+				onClick(self, ...)
+			end
+		end)
+		button.foreverSixtyLabel = type(button.GetFontString) == "function" and button:GetFontString() or nil
+	else
+		button:Hide()
+		button = Widgets.button(parent, text, onClick)
+	end
+	button:SetHeight(Theme.SIZES.clientButtonHeight)
+	local teal = button:CreateTexture(nil, "BORDER")
+	teal:SetPoint("TOPLEFT", button, "TOPLEFT", Theme.SIZES.border, -Theme.SIZES.border)
+	teal:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -Theme.SIZES.border, Theme.SIZES.border)
+	Theme.verticalGradient(teal, "tealTop", "tealBottom")
+	local tealEdges = Theme.outline(button, Theme.SIZES.border, "tealEdge")
+	button.foreverSixtyTeal = { teal }
+	for _, edge in ipairs(tealEdges) do
+		button.foreverSixtyTeal[#button.foreverSixtyTeal + 1] = edge
+	end
+	local label = button.foreverSixtyLabel
+	if label ~= nil and type(label.SetDrawLayer) == "function" then
+		label:SetDrawLayer("OVERLAY")
+	end
+	Widgets.setSelected(button, false)
+	return button
+end
+
+--- A client button's selected look: the teal face with an ink label, else the client's own
+--- face with its gold label. Returns `selected`.
+function Widgets.setSelected(button, selected)
+	button.foreverSixtySelected = selected == true
+	Theme.setShown(button.foreverSixtyTeal or {}, button.foreverSixtySelected)
+	local label = button.foreverSixtyLabel
+	if label ~= nil then
+		label:SetTextColor(Theme.rgb(Theme.HEX[button.foreverSixtySelected and "ink" or "clientGold"]))
+	end
+	return button.foreverSixtySelected
+end
+
+--- A client button sized to its label: `padding` (14 by default) past the text, never under `least`
+--- (36 by default).
+function Widgets.fitButton(button, least, padding)
+	local label = button.foreverSixtyLabel
+	local width = label ~= nil and label:GetStringWidth() or nil
+	button:SetWidth(math.max(least or 36, math.ceil(type(width) == "number" and width or 30) + (padding or 14)))
+	return button
+end
+
 ns.Widgets = Widgets
 return Widgets

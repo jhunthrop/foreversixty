@@ -3,9 +3,11 @@
 -- that answers "what should I do next on this character", opened from the chip, the character
 -- pane's button, the keybind and the addon compartment. It replaces the character pane's flyout.
 --
--- Head: the class crest, the name in its class colour, "Forever Score 1240" (the number in its
--- tier colour, absent with no record) and "Level 24 Hunter · <guild>". Then, in priority order,
--- each region only when it has something to say:
+-- The site's frame style (Widgets.umberFrame): umber ground, bone titles in the game's title
+-- font, the client's own red buttons, one teal button for the chosen answer. Head: the title band
+-- (Widgets.titleBand): the class medallion with its faction notch, the name in bone, "Level 24
+-- Hunter" muted under it, and "1240 score" on the right (the number in its tier colour, absent
+-- with no record). Then, in priority order, each region only when it has something to say:
 --   1. Tonight (a raid within 18 hours or running), or Last raid the day after one;
 --   2. Upgrades (at most three, the item tooltip's own Next lines);
 --   3. Talents (the next point), or Pick your path under 10 with no build;
@@ -61,8 +63,13 @@ Panel.ANSWERS = { "in", "late", "bench", "out" }
 Panel.SIGNUP_KIND = "raid_signup"
 Codec.MESSAGE_TYPES[Panel.SIGNUP_KIND] = true
 
---- Nominal heights the budget is counted in (the frame measures its own lines when it draws).
-Panel.H = { head = 54, heading = 22, rule = 9, line = 14, row = 34, rotationRow = 20, button = 22, gap = 6 }
+--- Nominal heights the budget is counted in (the frame measures its own lines when it draws):
+--- `head` is the title band and the body's top padding, `foot` the body's bottom padding.
+Panel.H = { head = Theme.SIZES.titleBand + 12, foot = 14, heading = 22, rule = 9, line = 14, row = 34,
+	rotationRow = 20, button = 22, gap = 6 }
+--- The body's side padding, and the gap between two buttons side by side.
+Panel.PAD = 14
+Panel.BUTTON_GAP = 6
 
 -- The pure model --------------------------------------------------------------------------------
 
@@ -124,15 +131,28 @@ local ANSWER_COLORS = { ["in"] = "tooltipGreen", late = "clientGold", bench = "t
 local BUTTON_KEYS = { ["in"] = "panelButtonIn", late = "panelButtonLate", bench = "panelButtonBench",
 	out = "panelButtonOut" }
 
+--- The raid row's sub line: the role alone ("Damage") for the logged-in character, nil with no
+--- role; "as <name>, <role>" (or "as <name>") only when the answer is for another character
+--- (`answeredAs`, a name other than `who`). Pure.
+function Panel.subLine(who, answeredAs, roleKey)
+	local role = roleKey ~= nil and L[roleKey] or nil
+	if answeredAs == nil or answeredAs == who then
+		return role
+	end
+	return role ~= nil and string.format(L.panelAsRole, answeredAs, role) or string.format(L.panelAs, answeredAs)
+end
+
 --- The Tonight region (spec 4.3 item 1), or nil. `input`: { tonight (RaidAssign.tonight's), signup
 --- (the raid's raid_signup, or nil), accepts (Panel.acceptsAnswers), pending (the queued outbox
---- entry for this raid, or nil), clock (epoch now), who (the character's name), clockText (the
---- start on the client's clock) }.
+--- entry for this raid, or nil), clock (epoch now), who (the character's name), answeredAs (the
+--- character the answer is for, nil for the logged-in one), clockText (the start on the client's
+--- clock) }.
 ---
 --- The answer reads, in order: a queued answer the inbox has not confirmed ("In, not sent yet",
---- white, with "Sends when the companion app runs"); the signup's answer ("You're In" green,
---- "Late" gold, "Bench" white, "Out" grey); "Not answered" (gold) with the four buttons when the
---- companion takes answers; with no signup at all, "On the roster" from the assignment alone.
+--- white); the signup's answer ("In" green, "Late" gold, "Bench" white, "Out" grey); "Not
+--- answered" (gold); with no signup at all, "On the roster" from the assignment alone. With a
+--- signup and a companion that takes answers, the four buttons stay whatever the answer, so it can
+--- be changed; `selected` names the current answer's (queued or confirmed), drawn teal.
 function Panel.tonight(input)
 	local tonight = input.tonight
 	if type(tonight) ~= "table" or type(tonight.start) ~= "number" or type(input.clock) ~= "number" then
@@ -147,22 +167,23 @@ function Panel.tonight(input)
 		note = string.format(L.panelTonightNote, input.clockText or "", Panel.countdown(tonight.start, input.clock)),
 	}
 	local signup, pending = input.signup, input.pending
-	local role = signup ~= nil and ROLE_KEYS[signup.role] or nil
-	region.who = role ~= nil and string.format(L.panelAsRole, input.who or "", L[role])
-		or string.format(L.panelAs, input.who or "")
+	region.who = Panel.subLine(input.who, input.answeredAs, signup ~= nil and ROLE_KEYS[signup.role] or nil)
 	local confirmedAt = signup ~= nil and RaidAssign.epochOf(signup.answered_at) or nil
 	if pending ~= nil and ANSWER_KEYS[pending.answer] ~= nil
 		and (confirmedAt == nil or confirmedAt < (pending.answered_at or 0)) then
 		region.answer = string.format(L.panelAnswerPending, L[BUTTON_KEYS[pending.answer]])
 		region.answerColor = "tooltipBody"
-		region.sending = L.panelSendsLater
+		region.selected = pending.answer
 	elseif signup ~= nil and ANSWER_KEYS[signup.answer] ~= nil then
 		region.answer, region.answerColor = L[ANSWER_KEYS[signup.answer]], ANSWER_COLORS[signup.answer]
-	elseif signup ~= nil and input.accepts then
+		region.selected = signup.answer
+	elseif signup ~= nil then
 		region.answer, region.answerColor = L.panelAnswerNone, "clientGold"
-		region.buttons = Panel.ANSWERS
 	else
 		region.answer, region.answerColor = L.panelOnRoster, "tooltipBody"
+	end
+	if signup ~= nil and input.accepts then
+		region.buttons = Panel.ANSWERS
 	end
 	local job = (tonight.jobs or {})[1]
 	if type(job) == "table" and type(job.label) == "string" then
@@ -213,7 +234,9 @@ end
 --- tooltip's own Next lines, or the bag item a slot's hover leads with), each { itemId, name, hex,
 --- gain, unit, detail, bag, link }, `detail` "<slot> · <source>" plus " · level 27" when the item
 --- asks for a higher level. `input`: { targets, level, sim (the note's parts: { age, queued } or
---- nil), picksStart }. The rest line under fewer rows. Never nil: the region always shows.
+--- nil), picksStart }. A rest line only with no rows ("Picks start at level 20" below the first
+--- band, else "Every slot is best for your build."); the sim note is the age alone, beside Sim
+--- again. Never nil: the region always shows.
 function Panel.upgrades(input)
 	local rows = {}
 	for _, target in ipairs(input.targets or {}) do
@@ -235,11 +258,9 @@ function Panel.upgrades(input)
 		region.rest = string.format(L.homePicksStart, input.picksStart)
 	elseif #rows == 0 then
 		region.rest = L.panelAllBest
-	elseif #rows < Panel.MAX_UPGRADES then
-		region.rest = L.panelOthersBest
 	end
 	if type(input.sim) == "table" then
-		region.note = input.sim.age ~= nil and string.format(L.panelSimNote, input.sim.age) or L.panelSimNoteBare
+		region.note = input.sim.age
 		region.simAgain = input.sim.queued and L.homeSimQueued or L.panelSimAgain
 		region.simQueued = input.sim.queued == true
 	end
@@ -247,8 +268,9 @@ function Panel.upgrades(input)
 end
 
 --- The Talents region (spec 4.3 item 3), or nil for a finished build on plan. `input`: { build,
---- buildName, progress (Progress.build's), level, unspent, pointName, pointIcon, pointRank,
---- offPlanTalents }.
+--- buildName, progress (Progress.build's), level, unspent, pointName, pointIcon, offPlanTalents }.
+--- The heading's note is "12 of 15 points", then "3 points off plan" (warning, hover names them);
+--- the row's sub line is the build's name alone.
 function Panel.talents(input)
 	local build, progress = input.build, input.progress
 	if build == nil or type(progress) ~= "table" then
@@ -257,14 +279,12 @@ function Panel.talents(input)
 	local offPlan = tonumber(progress.offPlan) or 0
 	local allowed = Progress.pointsAllowed(build, input.level)
 	local region = { kind = "talents", offPlanTalents = input.offPlanTalents }
-	local notes = {}
 	if allowed > 0 then
-		notes[#notes + 1] = string.format(L.panelOnPlan, math.min(progress.matched or 0, allowed), allowed)
+		region.note = string.format(L.panelOnPlan, math.min(progress.matched or 0, allowed), allowed)
 	end
 	if offPlan > 0 then
 		region.offPlan = string.format(L.panelOffPlanCount, offPlan)
 	end
-	region.note = #notes > 0 and notes[1] or nil
 	if progress.point == nil then
 		if offPlan == 0 then
 			return nil
@@ -282,25 +302,23 @@ function Panel.talents(input)
 	else
 		region.title = region.name
 	end
-	local rank = input.pointRank
-	if type(rank) == "table" and type(rank.want) == "number" and rank.want > 1 then
-		region.rank = string.format(L.panelRankOf, (rank.have or 0) + 1, rank.want)
-	end
 	region.buildName = input.buildName
 	return region
 end
 
---- Pick your path (spec 4.3 item 3): under 10 with no build, the class's specs with their
---- one-line playstyle (Chip.pathSpecs). nil otherwise.
+--- Pick your path (spec 4.3 item 3): under the first talent level (Progress.levelForPoint(1),
+--- 10) with no build, the class's specs with their one-line playstyle (Chip.pathSpecs), and
+--- "First talent point at level 10" under them. nil otherwise.
 function Panel.path(input)
-	if input.build ~= nil or type(input.level) ~= "number" or input.level >= 10 then
+	local first = Progress.levelForPoint(1).level
+	if input.build ~= nil or type(input.level) ~= "number" or input.level >= first then
 		return nil
 	end
 	local specs = input.specs or {}
 	if #specs == 0 then
 		return nil
 	end
-	return { kind = "path", specs = specs, foot = L.panelPathFoot }
+	return { kind = "path", specs = specs, foot = string.format(L.panelPathFoot, first) }
 end
 
 --- The first clause of a plain condition: up to the first ";" or ", and" or ", unless", so the
@@ -346,14 +364,13 @@ function Panel.regionHeight(region)
 	local H = Panel.H
 	local height = H.heading + H.rule
 	if region.kind == "tonight" then
-		height = height + H.row + H.line * (region.sending and 1 or 0) + H.line * (region.with and 2 or 1)
-			+ (region.buttons and H.button + H.gap or 0)
+		height = height + H.row + H.line * (region.with and 2 or 1) + (region.buttons and H.button + H.gap or 0)
 	elseif region.kind == "lastRaid" then
 		height = height + H.line * (#region.bosses + (region.loss and 1 or 0))
 	elseif region.kind == "upgrades" then
-		height = height + H.row * #region.rows + (region.rest and H.line * 2 or 0)
+		height = height + H.row * #region.rows + (region.rest and H.line or 0)
 	elseif region.kind == "talents" then
-		height = height + (region.finished and 0 or H.row + H.button)
+		height = height + (region.finished and 0 or H.row)
 	elseif region.kind == "path" then
 		height = height + H.row * #region.specs + H.line * 2
 	elseif region.kind == "rotation" then
@@ -367,7 +384,7 @@ end
 
 --- The whole panel's nominal height. Pure.
 function Panel.height(model)
-	local height = Panel.H.head
+	local height = Panel.H.head + Panel.H.foot
 	for _, region in ipairs(model.regions) do
 		height = height + Panel.regionHeight(region)
 	end
@@ -450,12 +467,21 @@ function Panel.model(input)
 	if rotation ~= nil then
 		regions[#regions + 1] = rotation
 	end
-	local head = { name = input.who or "", classToken = input.classToken, fact = input.fact }
+	return Panel.fit({ head = Panel.head(input), regions = regions })
+end
+
+--- The title band (Widgets.setTitleBand's shape): the name, the meta "Level 24 Hunter" (level
+--- and class only, `input.fact`), the class and faction for the medallion, and the Forever Score
+--- in its tier colour with the unit "score"; no number with no score. Pure.
+function Panel.head(input)
+	local head = { title = input.who or "", meta = input.fact or "", classToken = input.classToken,
+		faction = input.faction }
 	if type(input.score) == "table" and type(input.score.score) == "number" then
-		head.score = input.score.score
-		head.scoreColor = input.score.tierColor
+		head.number = input.score.score
+		head.numberColor = input.score.tierColor
+		head.unit = L.panelScoreUnit
 	end
-	return Panel.fit({ head = head, regions = regions })
+	return head
 end
 
 -- The raid answer, through the companion outbox ----------------------------------------------
@@ -491,16 +517,11 @@ end
 
 -- Reading the client ----------------------------------------------------------------------------
 
---- The localized class name and the guild for the fact line.
+--- The title band's meta: the level and the localized class name, no guild.
 local function factLine(level, classToken)
 	local className = type(UnitClass) == "function" and (UnitClass("player"))
 		or Talents.titleCase(tostring(classToken or ""))
-	local guild = Export.guildInfo()
-	local fact = string.format(L.panelFact, level or 0, className or "")
-	if guild ~= nil and type(guild.name) == "string" and guild.name ~= "" then
-		fact = fact .. L.exportTreeSeparator .. guild.name
-	end
-	return fact
+	return string.format(L.panelFact, level or 0, className or "")
 end
 
 --- The upgrade rows' extras the pure model wants: the slot's word, the item's required level and,
@@ -555,6 +576,7 @@ function Panel.inputs(data)
 	end
 	local input = {
 		level = level, classToken = classToken, who = name, fact = factLine(level, classToken),
+		faction = base.faction,
 		score = name ~= nil and Score.forCharacter(name) or nil,
 		clock = clock, tonight = tonight, accepts = accepts,
 		lastRaid = newestMessage("last_raid"),
@@ -589,7 +611,6 @@ function Panel.inputs(data)
 		local talent = Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column)
 		input.pointName = Chip.talentName(talent)
 		input.pointIcon = talent ~= nil and Talents.iconFor(talent) or nil
-		input.pointRank = Chip.pointRankAt(build, stagedRanks, data, point)
 	end
 	return input
 end
@@ -671,13 +692,19 @@ local function take(kind, build)
 	return part
 end
 
+--- A pooled line in `hexKey` (ink by default) on `fontKey`; fontKey "title" is the title face at
+--- a section heading's size.
 local function text(content, value, hexKey, fontKey)
 	local region = take("text", function()
-		return Widgets.label(content, "", "body", "small")
+		return Widgets.label(content, "", "ink", "small")
 	end)
-	Theme.applyFont(region, fontKey or "small")
+	if fontKey == "title" then
+		Theme.titleFont(region, Theme.SIZES.headingText)
+	else
+		Theme.applyFont(region, fontKey or "small")
+	end
 	region:SetText(value or "")
-	region:SetTextColor(Theme.rgb(Theme.HEX[hexKey or "body"]))
+	region:SetTextColor(Theme.rgb(Theme.HEX[hexKey or "ink"]))
 	region:SetJustifyH("LEFT")
 	region:SetWidth(0)
 	if type(region.SetWordWrap) == "function" then
@@ -695,27 +722,26 @@ local function icon(content, path, size)
 	return texture
 end
 
-local function button(content, label, onClick)
+--- A pooled client button (Widgets.clientButton) sized to `label`; `selected` draws it teal.
+local function button(content, label, onClick, selected)
 	local made = take("button", function()
-		local built = Widgets.button(content, "", function(self)
+		return Widgets.clientButton(content, "", function(self)
 			if self.foreverSixtyAction ~= nil then
 				self.foreverSixtyAction()
 			end
 		end)
-		built:SetHeight(Panel.H.button - 4)
-		return built
 	end)
 	made:SetText(label)
 	made.foreverSixtyAction = onClick
-	local width = made.foreverSixtyLabel:GetStringWidth()
-	made:SetWidth(math.max(36, math.ceil(type(width) == "number" and width or 30) + 14))
+	Widgets.fitButton(made)
 	Widgets.setEnabled(made, true)
+	Widgets.setSelected(made, selected)
 	return made
 end
 
 local function rule(content)
 	local texture = take("rule", function()
-		return Theme.texture(content, "ARTWORK", "border")
+		return Theme.texture(content, "ARTWORK", "umberEdge")
 	end)
 	texture:SetHeight(1)
 	return texture
@@ -788,43 +814,27 @@ function Panel.parseHex(percentile)
 	return Panel.PARSE_COLORS[#Panel.PARSE_COLORS][2]
 end
 
---- The frame: the dark panel, the gold title, the crest over the top-left corner, the close X.
---- Built on first open; movable by its title; Escape closes it (UISpecialFrames).
+--- The frame: the umber ground, the title band (the medallion, the name, the meta, the score;
+--- the band is the drag handle), the client's red close X top right. Built on first open;
+--- Escape closes it (UISpecialFrames).
 function Panel.ensure()
 	if Panel.frame ~= nil then
 		return Panel.frame
 	end
-	local frame = Widgets.panel(UIParent, Panel.WIDTH, 200, Panel.FRAME_NAME)
+	local frame = Widgets.umberFrame(UIParent, Panel.WIDTH, 200, Panel.FRAME_NAME)
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetClampedToScreen(true)
 	frame:SetMovable(true)
 	frame:EnableMouse(true)
 	frame:Hide()
-	local title = Widgets.label(frame, L.addonName, "clientGold", "normal")
-	title:SetPoint("TOP", frame, "TOP", 0, -6)
-	local drag = CreateFrame("Frame", nil, frame)
-	drag:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
-	drag:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -24, 0)
-	drag:SetHeight(24)
-	drag:EnableMouse(true)
-	drag:RegisterForDrag("LeftButton")
-	drag:SetScript("OnDragStart", function()
-		frame:StartMoving()
-	end)
-	drag:SetScript("OnDragStop", function()
-		frame:StopMovingOrSizing()
-		Panel.savePosition()
-	end)
-	local close = Widgets.closeButton(frame, function()
+	Panel.band = Widgets.titleBand(frame, Panel.savePosition)
+	local close = Widgets.clientCloseButton(frame, function()
 		Panel.close()
 	end)
-	close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4)
-	local crest, ring = Theme.buildCrest(frame, 44)
-	crest:SetPoint("TOPLEFT", frame, "TOPLEFT", -10, 10)
-	Panel.crest, Panel.ring = crest, ring
+	close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2)
 	local content = CreateFrame("Frame", nil, frame)
-	content:SetPoint("TOPLEFT", frame, "TOPLEFT", 14, -30)
-	content:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -14, 10)
+	content:SetPoint("TOPLEFT", frame, "TOPLEFT", Panel.PAD, -Panel.H.head)
+	content:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -Panel.PAD, Panel.H.foot)
 	Panel.content = content
 	if type(UISpecialFrames) == "table" then
 		table.insert(UISpecialFrames, Panel.FRAME_NAME)
@@ -895,16 +905,19 @@ end
 
 -- Drawing the regions ---------------------------------------------------------------------------
 
-local function heading(content, y, label, note, noteKey, width)
-	local title = text(content, label, "clientGold", "normal")
+--- A region's heading: the title in bone on the title face, and a muted note right (`note` may
+--- carry its own colour escapes), at most `width` minus the title.
+local function heading(content, y, label, note, width)
+	local title = text(content, label, "bone", "title")
 	title:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
+	local right
 	if note ~= nil then
-		local right = text(content, note, noteKey or "tooltipMuted")
+		right = text(content, note, "umberMuted")
 		right:SetJustifyH("RIGHT")
 		right:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y - 2)
 		right:SetWidth(width - (title:GetStringWidth() or 0) - 12)
 	end
-	return y + Panel.H.heading
+	return y + Panel.H.heading, right
 end
 
 local function ruleAt(content, y)
@@ -926,37 +939,37 @@ local function wrapped(content, value, hexKey, x, y, width)
 	return type(height) == "number" and height > 0 and math.ceil(height) or Panel.H.line
 end
 
+--- The row's text column: the icon's width and the gap after it.
+local ROW_TEXT = 36
+
 local function drawTonight(content, region, y, width)
-	y = heading(content, y, L.panelTonight, region.note, nil, width)
+	y = heading(content, y, L.panelTonight, region.note, width)
 	local mark = icon(content, Panel.RAID_ICONS[region.raid] or Panel.RAID_ICON_DEFAULT, 28)
 	mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-	local name = text(content, region.raid, "tooltipBody", "normal")
-	name:SetPoint("TOPLEFT", content, "TOPLEFT", 36, -y)
+	local name = text(content, region.raid, "ink", "normal")
+	name:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y)
 	local answer = text(content, region.answer, region.answerColor)
 	answer:SetJustifyH("RIGHT")
 	answer:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
-	local who = text(content, region.who, "tooltipMuted")
-	who:SetPoint("TOPLEFT", content, "TOPLEFT", 36, -y - Panel.H.line - 2)
-	y = y + Panel.H.row
-	if region.sending ~= nil then
-		local note = text(content, region.sending, "tooltipMuted")
-		note:SetPoint("TOPLEFT", content, "TOPLEFT", 36, -y + 2)
-		y = y + Panel.H.line
+	if region.who ~= nil then
+		local who = text(content, region.who, "umberMuted")
+		who:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y - Panel.H.line - 2)
 	end
+	y = y + Panel.H.row
 	if region.buttons ~= nil then
-		local x = 36
+		local x = ROW_TEXT
 		for _, answerKey in ipairs(region.buttons) do
 			local made = button(content, L[BUTTON_KEYS[answerKey]], function()
 				Panel.answer(region.raidId, answerKey)
-			end)
+			end, answerKey == region.selected)
 			made:SetPoint("TOPLEFT", content, "TOPLEFT", x, -y)
-			x = x + made:GetWidth() + 6
+			x = x + made:GetWidth() + Panel.BUTTON_GAP
 		end
 		y = y + Panel.H.button + Panel.H.gap
 	end
 	if region.job ~= nil then
-		local job = text(content, string.format(L.panelJob, region.job), "tooltipBody")
-		job:SetPoint("TOPLEFT", content, "TOPLEFT", 36, -y)
+		local job = text(content, string.format(L.panelJob, Theme.inlineColor("clientGold", region.job)), "ink")
+		job:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y)
 		local over = hover(content, function()
 			return region.purpose ~= nil and { region.purpose } or nil
 		end)
@@ -964,8 +977,8 @@ local function drawTonight(content, region, y, width)
 		over:SetPoint("BOTTOMRIGHT", job, "BOTTOMRIGHT")
 		y = y + Panel.H.line
 		if region.with ~= nil then
-			local with = text(content, region.with, "tooltipMuted")
-			with:SetPoint("TOPLEFT", content, "TOPLEFT", 36, -y)
+			local with = text(content, region.with, "umberMuted")
+			with:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y)
 			y = y + Panel.H.line
 		end
 	end
@@ -973,100 +986,126 @@ local function drawTonight(content, region, y, width)
 end
 
 local function drawLastRaid(content, region, y, width)
-	y = heading(content, y, L.panelLastRaidTitle, region.note, nil, width)
+	y = heading(content, y, L.panelLastRaidTitle, region.note, width)
 	for _, boss in ipairs(region.bosses) do
 		local line = text(content, boss.name .. " |cff" .. Panel.parseHex(boss.percentile)
-			.. Chip.ordinal(boss.percentile) .. "|r", "tooltipBody")
+			.. Chip.ordinal(boss.percentile) .. "|r", "ink")
 		line:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 		y = y + Panel.H.line
 	end
 	if region.loss ~= nil then
-		y = y + wrapped(content, region.loss, "tooltipMuted", 0, y, width)
+		y = y + wrapped(content, region.loss, "umberMuted", 0, y, width)
 	end
 	return y + Panel.H.gap
+end
+
+--- The Upgrades heading's right side: the sim's age beside Sim again (Sim queued, disabled, once
+--- queued).
+local function drawSimAgain(content, region, top)
+	local again = button(content, region.simAgain, function()
+		Panel.simAgain()
+	end)
+	again:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -top)
+	Widgets.setEnabled(again, not region.simQueued)
+	if region.note ~= nil then
+		local age = text(content, region.note, "umberMuted")
+		age:SetJustifyH("RIGHT")
+		age:SetPoint("RIGHT", again, "LEFT", -Panel.BUTTON_GAP, 0)
+	end
+end
+
+local function drawUpgradeRow(content, row, y, width)
+	local mark = icon(content, Compat.itemIcon(row.itemId), 28)
+	mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
+	local lead = row.bag and (Theme.arrowMarkup() .. Theme.inlineColor("tooltipGreen", L.panelInBags) .. " ") or ""
+	local name = text(content, lead .. "|cff" .. (row.hex or "ffffff") .. (row.name or "") .. "|r", "ink", "normal")
+	name:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y)
+	if type(row.gain) == "number" then
+		local gain = text(content, ItemTooltip.figure(row.gain, row.unit), "tooltipGreen")
+		gain:SetJustifyH("RIGHT")
+		gain:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
+	end
+	local detailHeight = Panel.H.line
+	if row.bag and row.link ~= nil then
+		local equip = button(content, L.panelEquip, function()
+			Panel.equip(row.link)
+		end)
+		equip:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y - Panel.H.line)
+		Widgets.setEnabled(equip, not Theme.inCombat())
+	else
+		detailHeight = wrapped(content, row.detail, "umberMuted", ROW_TEXT, y + Panel.H.line, width - ROW_TEXT)
+	end
+	local over = hover(content, itemHover(row.itemId))
+	over:SetPoint("TOPLEFT", mark, "TOPLEFT")
+	over:SetPoint("BOTTOMRIGHT", mark, "BOTTOMRIGHT")
+	return y + math.max(Panel.H.row, Panel.H.line + detailHeight + 4)
 end
 
 local function drawUpgrades(content, region, y, width)
-	local note = region.note
-	y = heading(content, y, L.panelUpgrades, note, nil, width - (region.simAgain and 70 or 0))
+	local top = y
+	y = heading(content, y, L.panelUpgrades, region.simAgain == nil and region.note or nil, width)
 	if region.simAgain ~= nil then
-		local again = button(content, region.simAgain, function()
-			Panel.simAgain()
-		end)
-		again:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y + Panel.H.heading - 2)
-		Widgets.setEnabled(again, not region.simQueued)
+		drawSimAgain(content, region, top)
 	end
 	for _, row in ipairs(region.rows) do
-		local mark = icon(content, Compat.itemIcon(row.itemId), 28)
-		mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-		local lead = row.bag and (Theme.arrowMarkup() .. Theme.inlineColor("tooltipGreen", L.panelInBags) .. " ") or ""
-		local name = text(content, lead .. "|cff" .. (row.hex or "ffffff") .. (row.name or "") .. "|r", "body", "normal")
-		name:SetPoint("TOPLEFT", content, "TOPLEFT", 36, -y)
-		if type(row.gain) == "number" then
-			local gain = text(content, ItemTooltip.figure(row.gain, row.unit), "tooltipGreen")
-			gain:SetJustifyH("RIGHT")
-			gain:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
-		end
-		local detailHeight = Panel.H.line
-		if row.bag and row.link ~= nil then
-			local equip = button(content, L.panelEquip, function()
-				Panel.equip(row.link)
-			end)
-			equip:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y - Panel.H.line)
-			Widgets.setEnabled(equip, not Theme.inCombat())
-		else
-			detailHeight = wrapped(content, row.detail, "tooltipMuted", 36, y + Panel.H.line, width - 36)
-		end
-		local over = hover(content, itemHover(row.itemId))
-		over:SetPoint("TOPLEFT", mark, "TOPLEFT")
-		over:SetPoint("BOTTOMRIGHT", mark, "BOTTOMRIGHT")
-		y = y + math.max(Panel.H.row, Panel.H.line + detailHeight + 4)
+		y = drawUpgradeRow(content, row, y, width)
 	end
 	if region.rest ~= nil then
-		y = y + wrapped(content, region.rest, "tooltipMuted", 0, y, width) + 2
+		y = y + wrapped(content, region.rest, "umberMuted", 0, y, width) + 2
 	end
 	return y + Panel.H.gap
 end
 
-local function drawTalents(content, region, y, width)
-	y = heading(content, y, L.panelTalents, region.note, nil, width)
+--- The Talents heading's note: "12 of 15 points", then " · 3 points off plan" in the warning
+--- colour. Pure.
+function Panel.talentsNote(region)
+	local parts = {}
+	if region.note ~= nil then
+		parts[#parts + 1] = region.note
+	end
 	if region.offPlan ~= nil then
-		local off = text(content, region.offPlan, "warning")
-		off:SetJustifyH("RIGHT")
-		off:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
+		parts[#parts + 1] = Theme.inlineColor("warning", region.offPlan)
+	end
+	return #parts > 0 and table.concat(parts, L.exportTreeSeparator) or nil
+end
+
+local function drawTalents(content, region, y, width)
+	local note
+	y, note = heading(content, y, L.panelTalents, Panel.talentsNote(region), width)
+	if region.offPlan ~= nil and note ~= nil then
 		local over = hover(content, function()
 			return region.offPlanTalents
 		end)
-		over:SetPoint("TOPLEFT", off, "TOPLEFT")
-		over:SetPoint("BOTTOMRIGHT", off, "BOTTOMRIGHT")
-		if region.finished then
-			return y + Panel.H.line + Panel.H.gap
-		end
-		y = y + Panel.H.line
+		over:SetPoint("TOPLEFT", note, "TOPLEFT")
+		over:SetPoint("BOTTOMRIGHT", note, "BOTTOMRIGHT")
+	end
+	if region.finished then
+		return y + Panel.H.gap
 	end
 	local mark = icon(content, region.icon, 28)
 	mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-	local title = text(content, region.title, "tooltipBody", "normal")
-	title:SetPoint("TOPLEFT", content, "TOPLEFT", 36, -y)
-	local right = region.spend or region.rank
-	if right ~= nil then
-		local count = text(content, right, region.spend and "clientGold" or "tooltipMuted")
-		count:SetJustifyH("RIGHT")
-		count:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
-	end
-	local sub = text(content, (region.buildName or "") .. L.exportTreeSeparator, "tooltipMuted")
-	sub:SetPoint("TOPLEFT", content, "TOPLEFT", 36, -y - Panel.H.line - 2)
-	local change = button(content, L.panelChange, Panel.change)
-	change:SetPoint("LEFT", sub, "RIGHT", 2, 0)
 	local open = button(content, L.panelTalentsButton, Theme.toggleTalents)
-	open:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y - Panel.H.line)
-	return y + Panel.H.row + Panel.H.button + Panel.H.gap - 14
+	open:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y - 4)
+	local change = button(content, L.panelChange, Panel.change)
+	change:SetPoint("RIGHT", open, "LEFT", -Panel.BUTTON_GAP, 0)
+	local textWidth = width - ROW_TEXT - open:GetWidth() - change:GetWidth() - Panel.BUTTON_GAP - 8
+	local title = text(content, region.title, "ink", "normal")
+	title:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y)
+	title:SetWidth(textWidth)
+	local sub = region.buildName or ""
+	if region.spend ~= nil then
+		sub = (sub ~= "" and sub .. L.exportTreeSeparator or "") .. Theme.inlineColor("clientGold", region.spend)
+	end
+	local line = text(content, sub, "umberMuted")
+	line:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y - Panel.H.line - 2)
+	line:SetWidth(textWidth)
+	return y + Panel.H.row + Panel.H.gap
 end
 
 local function drawPath(content, region, y, width)
-	y = heading(content, y, L.panelPickPath, L.panelPathNote, nil, width)
+	y = heading(content, y, L.panelPickPath, nil, width)
 	for _, spec in ipairs(region.specs) do
-		local name = text(content, spec.name, "tooltipBody", "normal")
+		local name = text(content, spec.name, "ink", "normal")
 		name:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 		local pick = button(content, L.panelPick, function()
 			Chip.choosePath(spec.slug)
@@ -1075,16 +1114,17 @@ local function drawPath(content, region, y, width)
 		pick:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
 		local lineHeight = Panel.H.line
 		if spec.playstyle ~= nil then
-			lineHeight = wrapped(content, spec.playstyle, "tooltipMuted", 0, y + Panel.H.line, width - 60)
+			lineHeight = wrapped(content, spec.playstyle, "umberMuted", 0, y + Panel.H.line, width - 60)
 		end
 		y = y + Panel.H.line + lineHeight + 6
 	end
-	return y + wrapped(content, region.foot, "tooltipMuted", 0, y, width) + Panel.H.gap
+	return y + wrapped(content, region.foot, "umberMuted", 0, y, width) + Panel.H.gap
 end
 
 local function drawRotation(content, region, y, width)
+	local title = string.format(L.homeRotationTitle, region.level)
 	if region.collapsed then
-		y = heading(content, y, string.format(L.homeRotationTitle, region.level), L.panelShow, "clientGold", width)
+		y = heading(content, y, title, L.panelShow, width)
 		local over = hover(content, nil)
 		over:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y + Panel.H.heading)
 		over:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y + Panel.H.heading)
@@ -1095,7 +1135,7 @@ local function drawRotation(content, region, y, width)
 		end)
 		return y
 	end
-	y = heading(content, y, string.format(L.homeRotationTitle, region.level), L.panelRotationNote, nil, width)
+	y = heading(content, y, title, nil, width)
 	local rows = {}
 	for _, row in ipairs(region.rows) do
 		rows[#rows + 1] = { row = row, dim = false }
@@ -1108,9 +1148,9 @@ local function drawRotation(content, region, y, width)
 		local mark = icon(content, spellIcon(row.spellId), 16)
 		mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 		mark:SetAlpha(entry.dim and Theme.ALPHA.dim or 1)
-		local label = text(content, row.name, entry.dim and "tooltipMuted" or "tooltipBody")
+		local label = text(content, row.name, entry.dim and "umberMuted" or "ink")
 		label:SetPoint("TOPLEFT", content, "TOPLEFT", 22, -y)
-		local clause = text(content, row.clause, "tooltipMuted")
+		local clause = text(content, row.clause, "umberMuted")
 		clause:SetPoint("LEFT", label, "RIGHT", 6, 0)
 		clause:SetWidth(math.max(20, width - 28 - (label:GetStringWidth() or 0)))
 		local over = hover(content, function()
@@ -1134,31 +1174,16 @@ function Panel.draw(model)
 	local frame = Panel.ensure()
 	local content = Panel.content
 	reset()
-	local width = Panel.WIDTH - 28
-	Theme.paintCrest(Panel.crest, Panel.ring, model.head.classToken)
-	local name = text(content, model.head.name, "tooltipBody", "large")
-	if model.head.classToken ~= nil then
-		name:SetTextColor(Theme.classColor(model.head.classToken))
-	end
-	name:SetPoint("TOPLEFT", content, "TOPLEFT", 26, 0)
-	if model.head.score ~= nil then
-		local color = model.head.scoreColor
-		local number = color ~= nil and ("|cff" .. Theme.hexOf(color.r, color.g, color.b) .. model.head.score .. "|r")
-			or tostring(model.head.score)
-		local score = text(content, string.format(L.panelScore, number), "tooltipMuted")
-		score:SetJustifyH("RIGHT")
-		score:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -2)
-	end
-	local fact = text(content, model.head.fact, "tooltipMuted")
-	fact:SetPoint("TOPLEFT", content, "TOPLEFT", 26, -18)
-	local y = Panel.H.head - 20
+	local width = Panel.WIDTH - 2 * Panel.PAD
+	Widgets.setTitleBand(Panel.band, model.head)
+	local y = 0
 	for index, region in ipairs(model.regions) do
 		if index > 1 then
 			y = ruleAt(content, y)
 		end
 		y = DRAW[region.kind](content, region, y, width)
 	end
-	frame:SetHeight(math.min(Panel.MAX_HEIGHT, y + 44))
+	frame:SetHeight(math.min(Panel.MAX_HEIGHT, Panel.H.head + y + Panel.H.foot))
 	Panel.current = model
 	return model
 end

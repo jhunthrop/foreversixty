@@ -70,6 +70,27 @@ Theme.HEX = {
 	--- grey wash out on it, so a dark gold and a dark brown-grey carry the same meanings.
 	parchmentGold = "7a5a0c",
 	parchmentMuted = "5c4f3c",
+	--- The site's style for the addon's own frames (the panel, the onboarding; design/mocks/addon_ux.py
+	--- U): an umber ground from umberTop to umber, a 1 px umberEdge round a 1 px umberLine, bone
+	--- mixed-case titles, ink body text, muted details, and one teal button for the frame's primary
+	--- or selected action (tealTop to tealBottom inside tealEdge).
+	umber = "1d130c",
+	umberTop = "2a1c12",
+	umberEdge = "4a3a26",
+	umberLine = "0b0705",
+	bone = "e9dcc2",
+	boneDim = "b9ab8f",
+	ink = "f3ecdc",
+	umberMuted = "a69a85",
+	brass = "c9a46a",
+	brassDark = "7a5a2c",
+	teal = "2f7a74",
+	tealTop = "3a8a83",
+	tealBottom = "2a6c66",
+	tealEdge = "173f3b",
+	--- The medallion's faction notch (media/medallion-notch, tinted at runtime).
+	notchAlliance = "2f6fd6",
+	notchHorde = "b8261c",
 }
 
 Theme.ALPHA = {
@@ -359,6 +380,21 @@ Theme.SIZES = {
 	lootPlannedWidth = 76,
 	lootColumnGap = 6,
 	lootMaxRows = 8,
+	--- The addon's own frames' title band (Widgets.titleBand): its height, the medallion's side,
+	--- the crest's inset inside the ring (13 % of the side, the mock's), the gap after the
+	--- medallion, the band's side padding (the right one clears the close button), the title's,
+	--- the right-hand number's and a section heading's sizes in the title font, and the height of
+	--- a small client button (the panel's rows).
+	titleBand = 64,
+	medallion = 44,
+	medallionInset = 6,
+	medallionGap = 12,
+	titleBandPad = 12,
+	titleBandPadRight = 42,
+	titleText = 19,
+	titleNumber = 17,
+	headingText = 15,
+	clientButtonHeight = 20,
 }
 
 --- The client's own font objects, and what to use when one is missing.
@@ -369,6 +405,9 @@ Theme.FONTS = {
 	large = "GameFontNormalLarge",
 }
 Theme.FALLBACK_FONT = { path = "Fonts\\FRIZQT__.TTF", size = 12 }
+--- The game's title face (the client's own quest and book titles): the addon's own frames' titles
+--- and headings, set by Theme.titleFont at a Theme.SIZES size with a 1 px black shadow.
+Theme.TITLE_FONT = "Fonts\\MORPHEUS.TTF"
 
 --- Every template this addon will ever ask for, by the key callers use.
 --- Empty save one entry, on purpose. The first in-game screenshots showed
@@ -384,7 +423,15 @@ Theme.FALLBACK_FONT = { path = "Fonts\\FRIZQT__.TTF", size = 12 }
 --- names a real one, gracefully bare on a client without it exactly like
 --- every other Theme.createFrame call. createFrame keeps the lookup so a
 --- template can be named here again without touching a caller.
-Theme.TEMPLATES = { gameTooltip = "GameTooltipTemplate" }
+---
+--- The addon's own frames in the site's style (the panel, the onboarding; owner, 2026-11-08) take
+--- the client's own red button and red close X, as the approved mocks draw them: `clientButton`
+--- and `closeButton` below. A client without them gets Widgets' flat button and X instead.
+Theme.TEMPLATES = {
+	gameTooltip = "GameTooltipTemplate",
+	clientButton = "UIPanelButtonTemplate",
+	closeButton = "UIPanelCloseButton",
+}
 
 Theme.MEDIA = {
 	minimapIcon = "Interface\\AddOns\\ForeverSixty\\media\\minimap",
@@ -396,6 +443,10 @@ Theme.MEDIA = {
 	--- runtime through SetVertexColor (Window.applyHeader), rather than
 	--- nine near-identical ring files.
 	crestRing = "Interface\\AddOns\\ForeverSixty\\media\\crests\\ring",
+	--- The title band's medallion (addon/tools/make_medallion.py): the bronze ring with its
+	--- brass rims, and the white faction notch at one o'clock tinted per faction.
+	medallionRing = "Interface\\AddOns\\ForeverSixty\\media\\medallion-ring",
+	medallionNotch = "Interface\\AddOns\\ForeverSixty\\media\\medallion-notch",
 	--- The Gear page's own green tick glyph (round-3 fix, section 4.5.4):
 	--- the client's own ready-check icon, already green, so this addon
 	--- ships no new art for it.
@@ -1014,6 +1065,35 @@ function Theme.outline(parent, thickness, hexKey)
 		edges[index] = texture
 	end
 	return edges
+end
+
+--- A texture filled from `topKey` at its top to `bottomKey` at its bottom: the client's own
+--- SetGradient where it takes colour objects (CreateColor), else the bottom colour flat.
+function Theme.verticalGradient(texture, topKey, bottomKey)
+	Theme.paintRGB(texture, 1, 1, 1, 1)
+	if type(CreateColor) == "function" and type(texture.SetGradient) == "function" then
+		local top, bottom = { Theme.rgb(Theme.HEX[topKey]) }, { Theme.rgb(Theme.HEX[bottomKey]) }
+		local ok = pcall(texture.SetGradient, texture, "VERTICAL", CreateColor(bottom[1], bottom[2], bottom[3], 1),
+			CreateColor(top[1], top[2], top[3], 1))
+		if ok then
+			return texture
+		end
+	end
+	return Theme.paint(texture, bottomKey)
+end
+
+--- A font string in the game's title face (Theme.TITLE_FONT) at `size`, with the 1 px black
+--- shadow the site's titles carry; the shipped font at that size where the client refuses it.
+function Theme.titleFont(region, size)
+	local ok, set = pcall(region.SetFont, region, Theme.TITLE_FONT, size, "")
+	if not ok or set == false then
+		pcall(region.SetFont, region, Theme.FALLBACK_FONT.path, size, "")
+	end
+	if type(region.SetShadowColor) == "function" then
+		region:SetShadowColor(0, 0, 0, 1)
+		region:SetShadowOffset(1, -1)
+	end
+	return region
 end
 
 --- Two stacked half-height textures standing in for a gradient. A real

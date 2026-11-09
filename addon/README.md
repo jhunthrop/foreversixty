@@ -252,6 +252,21 @@ Run on one character per role and tick here:
       button and the addon compartment entry each open the panel (design/specs/2026-11-08-addon-ux.md
       section 4); it never opens in combat, closes when combat starts, closes on Escape, and a dragged
       spot is kept until Reset positions.
+- [ ] The panel is on the umber ground with a bronze edge; its top is the title band: the class
+      crest in the bronze ring, the name in bone in the title font, "Level 24 Hunter" muted under it
+      on one line (no guild), "1240 score" on the right (the number in its tier colour, nothing for a
+      character with no score), and the client's red close X top right. Headings are bone, buttons
+      the client's own red ones.
+- [ ] The faction notch shows on the medallion at one o'clock: blue on an Alliance character, red
+      on a Horde one.
+- [ ] With the raid_signup fixture and `accepts = { "raid_answer" }`: In, Late, Bench and Out show
+      in the client's style while unanswered; after pressing In the answer reads "In, not sent yet",
+      the four buttons stay and In is teal; pressing Bench makes Bench teal and queues it instead.
+      The line under the raid name reads the role alone ("Damage"), the job reads "Job: <label>".
+- [ ] None of these lines show: "Your other slots are best for your level.", "your sim",
+      "hover for the full rule", "you can change it later", "Sends when the companion app runs";
+      the Talents row has no "1 of 5", only the build name under the talent, with Change and
+      Talents side by side on the right.
 - [ ] `/fs help` prints the command list, and `/fs help all` adds the two muted testers' lines.
 - [ ] With the data addon installed, a logged player's tooltip ends with "Forever Score <n>" in its
       tier colour (the date in brackets once the record is over a week old) and nothing else; Shift
