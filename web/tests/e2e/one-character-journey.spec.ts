@@ -205,7 +205,7 @@ test('the chosen character follows the player through every page', async ({ page
 
   // 7. On a later visit (a fresh tab session) the header says the character was restored, and
   // its Forget clears the pointer so the header falls back to the account's main.
-  await page.evaluate(() => window.sessionStorage.clear());
+  await page.evaluate(() => window.localStorage.removeItem('fs.lastActiveAt'));
   await page.goto('/sim');
   await expect(page.getByTestId('page-title')).toHaveText('Bow Jackzon');
   await page.getByTestId('character-selector').click();

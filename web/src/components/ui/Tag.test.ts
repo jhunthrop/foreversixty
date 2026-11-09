@@ -25,6 +25,7 @@ describe('Tag', () => {
     ['muted', 'text-muted'],
     ['danger', 'text-wipe'],
     ['warn', 'text-ember'],
+    ['premium', 'bg-teal-edge'],
   ])('%s tone uses %s', (tone, ink) => {
     const body = tag({ tone });
     expect(body).toContain(ink);

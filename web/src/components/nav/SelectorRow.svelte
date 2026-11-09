@@ -1,6 +1,6 @@
 <!-- web/src/components/nav/SelectorRow.svelte -->
 <!-- One character in the selector's list (spec 3.C): crest, name in class colour with a
-     faction mark, `{Spec} {Class} · {level} · {Realm}`, then source and age. Gold marks the
+     faction mark, `{Spec} {Class} · {level} · {Ruleset}`, then source and age. The accent tint and rail mark the
      current row only; stale and failed use text colour. The row button is one roving tab
      stop; Retry on a failed row is its own sibling button, never nested. -->
 <script lang="ts">
@@ -70,22 +70,6 @@
         </span>
       {/if}
     </span>
-    {#if row.current}
-      <svg
-        class="csel-check"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.6"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M5 12.5l4.5 4.5L19 7.5"></path>
-      </svg>
-    {/if}
   </button>
   {#if row.status === 'failed'}
     <button

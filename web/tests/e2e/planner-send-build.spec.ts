@@ -2,6 +2,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 
 import { ACTIVE_BUILD } from './support/active-build';
+import { markSessionSettled } from './support/selector';
 import { plannerCharacterCardCopy } from '../../src/lib/planner/copy';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 
@@ -67,7 +68,7 @@ test.describe('Send this build to the addon', () => {
   test('saves the build, queues it for the character, and reads Sent', async ({ page }) => {
     await signIn(page);
     // This test starts from an empty build: the session's pointer heal would load the main's own.
-    await page.addInitScript(() => window.sessionStorage.setItem('fs.pointerHealed', '1'));
+    await markSessionSettled(page);
     const saves: unknown[] = [];
     const queued: unknown[] = [];
     await page.route('**/v1/builds', (route) => {

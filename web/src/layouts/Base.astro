@@ -44,7 +44,13 @@ import { HISTORY_MAX_RESERVE_PX, HISTORY_RESERVE_KEY } from '../lib/character/hi
 import { ACCOUNT_RESERVE_KEY, ACCOUNT_RESERVE_MAX_PX } from '../lib/account/layout';
 import { API_BASE_URL } from '../lib/planner/config';
 import { ARRIVAL_CAPTURE_SCRIPT } from '../lib/golinks/arrival';
-import { SESSION_START_POINTER_KEY } from '../lib/character-selector/restored';
+import {
+  LAST_ACTIVE_KEY,
+  SESSION_FRESH_KEY,
+  SESSION_IDLE_MS,
+  SESSION_START_POINTER_KEY,
+} from '../lib/character-selector/restored';
+import { POINTER_HEALED_KEY } from '../lib/account/session-pointer';
 import { HEADER_GEARED, HEADER_GEAR_HINT_KEY } from '../lib/character-header/gear-hint';
 import {
   LIVE_STORAGE_KEY as SERVER_RUNS_LIVE_KEY,
@@ -125,6 +131,10 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       data-account-reserve-key={ACCOUNT_RESERVE_KEY}
       data-account-max-reserve={ACCOUNT_RESERVE_MAX_PX}
       data-session-start-pointer-key={SESSION_START_POINTER_KEY}
+      data-session-fresh-key={SESSION_FRESH_KEY}
+      data-last-active-key={LAST_ACTIVE_KEY}
+      data-session-idle-ms={SESSION_IDLE_MS}
+      data-pointer-healed-key={POINTER_HEALED_KEY}
       data-header-gear-key={HEADER_GEAR_HINT_KEY}
       data-header-geared={HEADER_GEARED}
     >
@@ -173,23 +183,35 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       } catch {
         /* storage unavailable: the skeleton takes the gearless box */
       }
-      // The character this tab session started with (lib/character-selector/restored.ts),
-      // recorded once per tab and before any island can write a pointer, as `source:ref` (its
-      // pointerIdentity), or '' for none: the selector says "Restored your last character"
-      // while the pointer still names it.
+      // The character this browser session started with (lib/character-selector/restored.ts),
+      // recorded before any island can write a pointer, as `source:ref` (its pointerIdentity),
+      // or '' for none: the selector says "Restored your last character" while the pointer
+      // still names it. A fresh session (isFreshBrowserSession: nothing recorded, or no page
+      // opened for SESSION_IDLE_MS) records the stored pointer and marks the tab fresh, so the
+      // session rule (account/session-pointer.ts) runs again; a tab opened mid-session records
+      // none, since its pointer was chosen in this visit.
       try {
-        const sessionKey = document.currentScript.dataset.sessionStartPointerKey;
-        if (sessionStorage.getItem(sessionKey) === null) {
+        const script = document.currentScript.dataset;
+        const sessionKey = script.sessionStartPointerKey;
+        const now = Date.now();
+        const last = Number(localStorage.getItem(script.lastActiveKey));
+        const fresh = !(last > 0) || now - last >= Number(script.sessionIdleMs);
+        localStorage.setItem(script.lastActiveKey, String(now));
+        if (fresh || sessionStorage.getItem(sessionKey) === null) {
           let identity = '';
           try {
             const stored = JSON.parse(localStorage.getItem('fs.currentCharacter'));
-            if (stored && typeof stored.source === 'string' && typeof stored.ref === 'string') {
+            if (fresh && stored && typeof stored.source === 'string' && typeof stored.ref === 'string') {
               identity = stored.source + ':' + stored.ref;
             }
           } catch {
             /* a malformed pointer: the session started with none */
           }
           sessionStorage.setItem(sessionKey, identity);
+        }
+        if (fresh) {
+          sessionStorage.setItem(script.sessionFreshKey, '1');
+          sessionStorage.removeItem(script.pointerHealedKey);
         }
       } catch {
         /* storage unavailable: the selector never claims a restore */

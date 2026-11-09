@@ -32,7 +32,6 @@ const PREMIUM_ME = {
   },
 };
 const MIN_TARGET = 44;
-const ROW_MIN = 52;
 
 const control = (page: Page) => page.getByTestId('character-selector');
 const panel = (page: Page) => page.getByTestId('selector-panel');
@@ -67,10 +66,11 @@ test.describe('the account panel, signed in', () => {
     await expect(rows(page).getByTestId('selector-row-plan')).toContainText('Founder');
     await expect(rows(page).getByTestId('selector-row-plan')).toContainText('Premium · $50/yr');
     await expect(rows(page).getByTestId('selector-row-plan')).toContainText(/Renews \d+ Oct 2027/);
-    await expect(rows(page).getByTestId('selector-row-account')).toContainText(
-      'Devices, Discord, notifications',
-    );
-    await expect(rows(page).getByTestId('selector-row-profile')).toContainText('Score, gear and fights');
+    // No explainer under a row (owner: no explanations); the rows carry their name and data only.
+    await expect(rows(page).getByTestId('selector-row-account')).toHaveText('Account');
+    await expect(rows(page).getByTestId('selector-row-profile')).toHaveText('Character page');
+    await expect(rows(page).getByTestId('selector-row-setup')).toHaveText('Get set up');
+    await expect(panel(page).getByTestId('selector-paste')).toHaveText('Paste an export');
     const head = (await panel(page).getByTestId('selector-account-head').boundingBox())!;
     const list = (await panel(page).getByTestId('selector-list').boundingBox())!;
     const account = (await rows(page).boundingBox())!;
@@ -117,12 +117,11 @@ test.describe('the account panel, signed in', () => {
     await expect(page).toHaveURL(/\/account$/);
   });
 
-  test('every account row is at least 52 px tall and a 44 px target', async ({ page }) => {
+  test('every account row is a 44 px target', async ({ page }) => {
     await signedInPage(page);
     await control(page).click();
     for (const row of await rows(page).locator('.csel-arow').all()) {
       const box = (await row.boundingBox())!;
-      expect(box.height).toBeGreaterThanOrEqual(ROW_MIN);
       expect(box.height).toBeGreaterThanOrEqual(MIN_TARGET);
     }
   });
@@ -186,14 +185,14 @@ test.describe('the account panel, signed in', () => {
     await expect(page.getByTestId('selector-sub')).toHaveText('Warrior · 60');
   });
 
-  test('the Founder tag sits on the Plan label line and the sub keeps one line each', async ({ page }) => {
+  test('the Founder tag sits on the Plan label line and the plan facts keep one line each', async ({ page }) => {
     await signedInPage(page, PREMIUM_ME);
     await control(page).click();
     const plan = rows(page).getByTestId('selector-row-plan');
     const label = (await plan.locator('.csel-arow-title').boundingBox())!;
-    const tag = (await plan.locator('.csel-tag').boundingBox())!;
+    const tag = (await plan.locator('[data-tone="gold"]').boundingBox())!;
     expect(Math.abs(label.y + label.height / 2 - (tag.y + tag.height / 2))).toBeLessThanOrEqual(6);
-    for (const line of await plan.locator('.csel-arow-sub').all()) {
+    for (const line of await plan.locator('.csel-arow-facts > span').all()) {
       const box = (await line.boundingBox())!;
       expect(box.height).toBeLessThanOrEqual(20);
     }
@@ -210,18 +209,22 @@ test.describe('the account panel, signed in', () => {
       left('.csel-acct-head .csel-tile'),
       left('.csel-head-title'),
       left('.csel-row-main .csel-row-crest'),
-      left('[data-testid="selector-paste"] .csel-action-icon'),
+      left('[data-testid="selector-paste"] .csel-tile'),
       left('.csel-arow .csel-tile'),
     ]);
     expect(new Set(insets).size).toBe(1);
   });
 
-  test('the current row carries a tint and a tick, no gold bar on its left edge', async ({ page }) => {
+  test('the current row is the compact list\'s selection: the accent tint and the accent rail', async ({
+    page,
+  }) => {
     await signedInPage(page);
     await control(page).click();
     const row = panel(page).locator('.csel-row.is-current');
     await expect(row).toHaveCSS('border-left-width', '0px');
-    await expect(row.locator('.csel-check')).toBeVisible();
+    await expect(row).not.toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    const rail = await row.evaluate((element) => getComputedStyle(element, '::before').backgroundColor);
+    expect(rail).toBe('rgb(0, 147, 178)');
   });
 
   test('the floating bar sits on the page column, the control inside its right end', async ({ page }) => {

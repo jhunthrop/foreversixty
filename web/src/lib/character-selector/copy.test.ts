@@ -11,9 +11,7 @@ describe('selector account copy', () => {
     });
     expect(account.premiumTag).toBe('Premium');
     expect(account.profile).toBe('Character page');
-    expect(account.profileSub).toBe('Score, gear and fights');
     expect(account.account).toBe('Account');
-    expect(account.accountSub).toBe('Devices, Discord, notifications');
     expect(account.plan).toBe('Plan');
     expect(account.planSubFree).toBe('Free');
     expect(account.founderTag).toBe(accountPlanCopy.founder.pill);

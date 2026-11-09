@@ -2,7 +2,7 @@
 <!-- A state tag: 22 px, 12 px 600 in sentence case, 1 px border on the control radius, five tones,
      an optional dot. For a state (Founder, Connected, Current, Main); source pills stay `pill`. -->
 <script lang="ts" module>
-  export type TagTone = 'gold' | 'success' | 'muted' | 'danger' | 'warn';
+  export type TagTone = 'gold' | 'success' | 'muted' | 'danger' | 'warn' | 'premium';
 </script>
 
 <script lang="ts">
@@ -15,6 +15,8 @@
     danger: 'text-wipe border-wipe/40 bg-wipe/10',
     // The site has no separate warning hue; ember is its amber (a state to look at, not a failure).
     warn: 'text-ember border-ember/40 bg-ember/12',
+    // Premium: the teal edge flat with white ink (design-system.md: "Premium is the edge colour flat").
+    premium: 'text-strong border-teal-edge bg-teal-edge',
   };
 
   let {

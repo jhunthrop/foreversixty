@@ -9,6 +9,7 @@ import type { Page } from '@playwright/test';
 import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import { buildMockGuildPage } from '../../src/fixtures/guild/mock-guild';
 import {
+  markSessionSettled,
   armoryPointer,
   keyOf,
   signInWith,
@@ -144,7 +145,7 @@ test.describe('guild and character pages follow the header selector', () => {
     };
     await storePointer(page, elyra);
     // This session's default already settled, so the stored character stays current on load.
-    await page.addInitScript(() => window.sessionStorage.setItem('fs.pointerHealed', '1'));
+    await markSessionSettled(page);
     await page.goto(ELYRA_PATH);
     await expect(page.getByTestId('character-selector')).toBeVisible();
 

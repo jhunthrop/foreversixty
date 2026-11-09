@@ -118,17 +118,42 @@ export interface StoredPointer {
   classSlug: string;
 }
 
-/** Writes `fs.currentCharacter` before any page script runs. */
-export async function storePointer(page: Page, pointer: StoredPointer): Promise<void> {
+/**
+ * Writes `fs.currentCharacter` before any page script runs. By default the pointer reads as
+ * chosen earlier in this visit (the browser was active a moment ago), so it stands; with
+ * `earlierVisit` it comes back from an earlier visit, a fresh browser session
+ * (character-selector/restored.ts), where it gives way to a character played since.
+ */
+export async function storePointer(
+  page: Page,
+  pointer: StoredPointer,
+  { earlierVisit = false }: { earlierVisit?: boolean } = {},
+): Promise<void> {
   // Only when none is stored yet: the script runs on every navigation, and a test that
   // chooses another character must keep its choice across the next page load.
-  await page.addInitScript((value) => {
-    if (window.localStorage.getItem('fs.currentCharacter') !== null) return;
-    window.localStorage.setItem(
-      'fs.currentCharacter',
-      JSON.stringify({ ...value, savedAt: new Date().toISOString() }),
-    );
-  }, pointer);
+  await page.addInitScript(
+    ({ value, earlier }) => {
+      if (window.localStorage.getItem('fs.currentCharacter') !== null) return;
+      window.localStorage.setItem(
+        'fs.currentCharacter',
+        JSON.stringify({ ...value, savedAt: new Date().toISOString() }),
+      );
+      if (!earlier) window.localStorage.setItem('fs.lastActiveAt', String(Date.now()));
+    },
+    { value: pointer, earlier: earlierVisit },
+  );
+}
+
+/**
+ * This browser session's default has already settled (as after Forget): the session rule
+ * (account/session-pointer.ts) has run, and the visit is under way, so no fresh session
+ * begins on the next load to run it again.
+ */
+export async function markSessionSettled(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    window.sessionStorage.setItem('fs.pointerHealed', '1');
+    window.localStorage.setItem('fs.lastActiveAt', String(Date.now()));
+  });
 }
 
 export function armoryPointer(character: FixtureCharacter): StoredPointer {

@@ -99,7 +99,7 @@ All in `web/src/components/ui/` unless named otherwise. Props marked `?` are opt
 ### Controls
 
 - **Buttons** (`lib/ui/button.ts`, `Button`): `tone: 'primary' | 'secondary' | 'ghost' | 'danger'`, `size: 'md' | 'sm'`. Primary is their flat teal with the teal edge, secondary their blue, ghost a gold text link, danger the wipe outline; 15 px 600, sentence case, the 6 px radius. One primary per view. `pressed` (aria-pressed) marks the current choice of a set with a white edge (home's I'm in / Late / Can't come).
-- **`Segmented`**, **`TabStrip`**, **`Select`**, **`Switch`** (on is the teal), **`Field`**, **`Tag`** (`tone: 'gold' | 'success' | 'muted' | 'danger' | 'warn'`, `dot?`).
+- **`Segmented`**, **`TabStrip`**, **`Select`**, **`Switch`** (on is the teal), **`Field`**, **`Tag`** (`tone: 'gold' | 'success' | 'muted' | 'danger' | 'warn' | 'premium'`, `dot?`; `premium` is the teal-edge pill).
 - **One tab look.** `TabStrip` (in-page and link tabs) and `Segmented` (ControlBar groups, in-row choices) draw the same tab: label-wide items (12 to 14 px each side, 4 px apart; phones share a Segmented row evenly), the current one white over the cyan `--color-accent` underline, the rest white at .72. A filter that is on shows a count, never a different fill. Selects are the only boxed controls on a band.
 - **`Meter`**: `tone?: 'accent' | 'gold' | 'kill' | 'muted' | 'class'` (accent by default), `color?`, `segments?`, `label?`.
 

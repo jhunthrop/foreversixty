@@ -10,7 +10,14 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { armoryPointer, keyOf, signInWith, storePointer, type FixtureCharacter } from './support/selector';
+import {
+  armoryPointer,
+  keyOf,
+  markSessionSettled,
+  signInWith,
+  storePointer,
+  type FixtureCharacter,
+} from './support/selector';
 
 const ACTIVE_BUILD = (
   JSON.parse(
@@ -133,7 +140,7 @@ test.describe('/sim and the header selector', () => {
   // run line's Run sim runs it.
   test('with no pointer the page loads the account main, and Run sim runs it', async ({ page }) => {
     await stubAccount(page, [IRONHIDE, OBNOXIOUS]);
-    await page.addInitScript(() => window.sessionStorage.setItem('fs.pointerHealed', '1'));
+    await markSessionSettled(page);
     await page.goto('/sim');
     await expect(page.getByTestId('page-title')).toHaveText('Ironhide');
 

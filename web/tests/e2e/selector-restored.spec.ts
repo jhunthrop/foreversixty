@@ -20,15 +20,21 @@ test.beforeEach(({ page }) => apiUnreachable(page, '**/v1/characters/*/*/*', '**
 
 const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 
-/** The account's main: the freshest build wins (main-character.ts), and Obnoxious Yell's is minutes old. */
+/** The account's chosen main; its build is minutes old. */
 const MAIN = OBNOXIOUS;
+/** Played after the main, so a fresh session keeps it when it is the restored character. */
 const ALT: FixtureCharacter = {
   name: 'Frostbyte',
   class: 'Mage',
   spec: 'Frost',
   level: 42,
-  buildDaysAgo: 3,
+  buildDaysAgo: 0.001,
 };
+/** The same alt last played days ago: a fresh session moves off it to the main. */
+const STALE_ALT: FixtureCharacter = { ...ALT, buildDaysAgo: 3 };
+
+const signInMainAnd = (page: Page, alt: FixtureCharacter) =>
+  signInWith(page, [MAIN, alt], [], { main_character_key: keyOf(MAIN) });
 
 const selector = (page: Page) => page.getByTestId('character-selector');
 const panel = (page: Page) => page.getByTestId('selector-panel');
@@ -61,8 +67,8 @@ test.describe('the selector’s restored line and Forget', () => {
   test('a character restored from an earlier visit shows the line; Forget falls back to the main', async ({
     page,
   }) => {
-    await signInWith(page, [MAIN, ALT]);
-    await storePointer(page, armoryPointer(ALT));
+    await signInMainAnd(page, ALT);
+    await storePointer(page, armoryPointer(ALT), { earlierVisit: true });
     await page.goto('/sim');
     await expect(page.getByTestId('selector-name')).toHaveText(ALT.name);
 
@@ -83,8 +89,8 @@ test.describe('the selector’s restored line and Forget', () => {
   });
 
   test('Forget is reachable and works from the keyboard', async ({ page }) => {
-    await signInWith(page, [MAIN, ALT]);
-    await storePointer(page, armoryPointer(ALT));
+    await signInMainAnd(page, ALT);
+    await storePointer(page, armoryPointer(ALT), { earlierVisit: true });
     await page.goto('/sim/gear');
     await expect(page.getByTestId('selector-name')).toHaveText(ALT.name);
     await selector(page).focus();
@@ -123,8 +129,8 @@ test.describe('the selector’s restored line and Forget', () => {
   });
 
   test('a restored main shows no line: forgetting it would change nothing', async ({ page }) => {
-    await signInWith(page, [MAIN, ALT]);
-    await storePointer(page, armoryPointer(MAIN));
+    await signInMainAnd(page, STALE_ALT);
+    await storePointer(page, armoryPointer(MAIN), { earlierVisit: true });
     await page.goto('/sim');
     await expect(page.getByTestId('selector-name')).toHaveText(MAIN.name);
     await openSelector(page);
@@ -139,7 +145,7 @@ test.describe('the selector’s restored line and Forget', () => {
       ref: FURY,
       label: 'Obnoxious Yell · Fury Warrior',
       classSlug: 'warrior',
-    });
+    }, { earlierVisit: true });
     await page.goto('/guides');
     await expect(page.getByTestId('selector-name')).toHaveText('Obnoxious Yell');
     await openSelector(page);
@@ -147,5 +153,29 @@ test.describe('the selector’s restored line and Forget', () => {
     await restoredLine(page).getByRole('button', { name: 'Forget Obnoxious Yell' }).click();
     expect(await storedPointer(page)).toBeNull();
     await expect(selector(page)).toHaveAttribute('aria-label', 'Sign in or choose a character');
+  });
+
+  test('a restored character gives way to the one played since, with no restored line', async ({ page }) => {
+    await signInMainAnd(page, STALE_ALT);
+    await storePointer(page, armoryPointer(STALE_ALT), { earlierVisit: true });
+    await page.goto('/tiers');
+    await expect(page.getByTestId('selector-name')).toHaveText(MAIN.name);
+    await openSelector(page);
+    await expect(panel(page).getByTestId('selector-list')).toBeVisible();
+    await expect(restoredLine(page)).toHaveCount(0);
+    expect(await storedPointer(page)).toContain(keyOf(MAIN));
+  });
+
+  test('a choice made earlier in the visit stands in a new tab', async ({ page, context }) => {
+    await signInMainAnd(page, STALE_ALT);
+    await storePointer(page, armoryPointer(STALE_ALT));
+    await page.goto('/tiers');
+    await expect(page.getByTestId('selector-name')).toHaveText(STALE_ALT.name);
+    const tab = await context.newPage();
+    await tab.goto('/rankings');
+    await expect(tab.getByTestId('selector-name')).toHaveText(STALE_ALT.name);
+    await tab.getByTestId('character-selector').click();
+    await expect(tab.getByTestId('selector-panel').getByTestId('selector-list')).toBeVisible();
+    await expect(tab.getByTestId('selector-restored')).toHaveCount(0);
   });
 });
