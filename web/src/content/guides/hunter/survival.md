@@ -118,7 +118,7 @@ Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, and Predat
 
 Orc and Troll are level for the Horde. Blood Fury is 10% attack power for 15 seconds every two minutes, so it goes on the pull with Rapid Fire and again at two and four minutes. Berserking is 10% attack speed for 15 seconds every three minutes and stacks with Rapid Fire on your swings.
 
-Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds both of your weapons, and it lands in the middle of the pack.
+Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds both of your weapons.
 
 ## Professions
 

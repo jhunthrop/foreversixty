@@ -130,7 +130,7 @@ Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, it lines u
 
 Orc for the Horde. Command makes your pet hit 5% harder all fight, and Blood Fury's two minute cooldown comes up with every Bestial Wrath, so you press them together twice in most boss fights. Troll is a fine second: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull.
 
-Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire, and it lands in the middle of the pack.
+Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire.
 
 ## Professions
 

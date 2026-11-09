@@ -136,7 +136,7 @@ Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds and lines u
 
 Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull, and more auto shots is what Marksmanship lives on. Orc is close behind: Blood Fury is 10% attack power for 15 seconds every two minutes, but Command does nothing for you with the pet dismissed.
 
-Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire, and it lands in the middle of the pack.
+Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire.
 
 ## Professions
 
