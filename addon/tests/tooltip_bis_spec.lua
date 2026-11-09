@@ -1,6 +1,7 @@
 -- addon/tests/tooltip_bis_spec.lua
 -- The character-frame equipment slot hovers. A slot holding an item is the
--- item hook's (the section with "Equipped", the plan, the next upgrade). An
+-- item hook's (design/specs/2026-11-08-addon-ux.md section 2: one verdict, at most one
+-- support line, no header, no blank row). An
 -- EMPTY slot (L4.1 ruling 5) shows the same section with the band's pick for
 -- that slot, printed as the worn item's Next line and source line with no gain
 -- (ItemTooltip.emptySlotSection); the old empty-slot section (bisLines, its
@@ -132,7 +133,7 @@ describe("Tooltip's slot hovers", function()
 	end)
 
 	describe("the item hook, for an equipped slot", function()
-		it("appends the section after the brand header", function()
+		it("appends the verdict straight after the client's lines, with no blank row and no header", function()
 			start({
 				level = 20,
 				equipped = { [1] = "item:111:link" }, -- slot id 1 is head
@@ -142,16 +143,9 @@ describe("Tooltip's slot hovers", function()
 			Tooltip.data = DATA
 			local tooltip, calls = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:111:link")
-			-- L3.3 fix round 1: a blank line, the header with "Equipped" on its
-			-- right, then "Best until level 30" (the worn item is the band's pick) and
-			-- the plan. L3.3 fix round 4: the blank row is a double line too, so
-			-- "Equipped" can only ever sit on the header's own row.
-			assert.are.same({ kind = "doubleline", left = " ", right = " " }, calls[1])
-			assert.are.equal("doubleline", calls[2].kind)
-			assert.is_truthy(calls[2].left:find(L.addonName, 1, true))
-			assert.are.equal(L.tooltipEquipped, calls[2].right)
-			assert.are.equal(string.format(L.tooltipBestUntil, 30), calls[3].text)
-			assert.are.equal(string.format(L.tooltipPlanned, "Holy", 20), calls[4].text)
+			-- The worn item is the band's pick: "Best in slot", gold (case 18). The next rung's
+			-- pick has no name yet, so no At line; nothing else without Shift.
+			assert.are.same({ { kind = "line", text = L.tooltipYourBis } }, calls)
 		end)
 
 		-- Round-2 ruling 1, adopted: a bag item gets the slot's next pick too.
@@ -159,7 +153,7 @@ describe("Tooltip's slot hovers", function()
 			start({
 				level = 20,
 				itemStats = {
-					["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD" },
+					["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD", ITEM_MOD_INTELLECT_SHORT = 4 },
 					["item:111:link"] = { __itemId = 111, __slot = "INVTYPE_HEAD", ITEM_MOD_INTELLECT_SHORT = 10 },
 				},
 				globals = { GetItemInfo = function(id)
@@ -172,11 +166,12 @@ describe("Tooltip's slot hovers", function()
 			Tooltip.data = WEIGHTED
 			local tooltip, calls = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:bag:link")
-			-- L3.3 fix round 2: a blank line, the header, then the slot's next
-			-- upgrade with its gain (a next upgrade is never printed without one).
-			assert.are.equal(" ", calls[1].text)
-			assert.is_truthy(calls[2].text:find(L.addonName, 1, true))
-			assert.are.equal(Tooltip.nextLine("Helm of the Pathfinder", 10, "score"), calls[3].text)
+			-- Case 9: the bag item fills the empty slot, an upgrade; the band's pick beats it.
+			assert.are.equal(Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, Tooltip.figure(4, "score")),
+				calls[1].text)
+			assert.are.equal(string.format(L.tooltipBetterBare, "Helm of the Pathfinder", Tooltip.figure(10, "score")),
+				calls[2].text)
+			assert.are.equal(2, #calls)
 		end)
 
 		it("still adds nothing for an item whose equip location this band does not track at all", function()
@@ -225,7 +220,7 @@ describe("Tooltip's slot hovers", function()
 			assert.are.equal(17, total)
 		end)
 
-		it("draws the section onto GameTooltip: the slot's name, a blank line, the header, the Next line", function()
+		it("draws the section onto GameTooltip: the slot's name, then the Next line", function()
 			start({ level = 20, globals = { GetItemInfo = namedItems, HEADSLOT = "Head" } })
 			Tooltip.data = DATA
 			local button = headButton()
@@ -235,11 +230,9 @@ describe("Tooltip's slot hovers", function()
 			assert.are.equal(1, mock.countCalls(_G.GameTooltip, "Show"))
 			local lines = addedLines()
 			assert.are.equal("Head", lines[1])
-			assert.are.equal(" ", lines[2])
-			assert.is_truthy(lines[3]:find(L.addonName, 1, true))
 			-- Exactly as the worn item prints its Next line, with no gain: nothing is worn.
-			assert.are.equal(Tooltip.nextLine("Helm of the Pathfinder"), lines[4])
-			assert.are.equal(4, #lines)
+			assert.are.equal(Tooltip.nextLine("Helm of the Pathfinder"), lines[2])
+			assert.are.equal(2, #lines)
 		end)
 
 		it("prints the pick's source on its own muted line under the Next line", function()
@@ -249,12 +242,12 @@ describe("Tooltip's slot hovers", function()
 			Tooltip.registerSlotButtons()
 			mock.firstCall(button, "HookScript")[2](button)
 			local lines = addedLines()
-			assert.are.equal(Tooltip.nextLine("Mutant Scale Breastplate"), lines[3])
-			assert.are.equal(string.format(L.tooltipSourceDrop, "Wailing Caverns", "Mutanus the Devourer", 14), lines[4])
+			assert.are.equal(Tooltip.nextLine("Mutant Scale Breastplate"), lines[1])
+			assert.are.equal(string.format(L.tooltipSourceDrop, "Wailing Caverns", "Mutanus the Devourer", 14), lines[2])
 		end)
 
 		-- L4.1 fix round 1 (the hunter's empty trinkets showed nothing): never silence.
-		it("draws the header and No pick for your band yet on an empty slot the band names no pick for", function()
+		it("draws No pick for this slot yet on an empty slot the band names no pick for", function()
 			start({ level = 20, globals = { GetItemInfo = namedItems, TRINKET0SLOT = "Trinket" } })
 			Tooltip.data = DATA
 			local button = _G.CreateFrame("Button", "CharacterTrinket0Slot")
@@ -262,10 +255,8 @@ describe("Tooltip's slot hovers", function()
 			mock.firstCall(button, "HookScript")[2](button)
 			local lines = addedLines()
 			assert.are.equal("Trinket", lines[1])
-			assert.are.equal(" ", lines[2])
-			assert.is_truthy(lines[3]:find(L.addonName, 1, true))
-			assert.are.equal(L.tooltipNoPick, lines[4])
-			assert.are.equal(4, #lines)
+			assert.are.equal(L.tooltipNoPick, lines[2])
+			assert.are.equal(2, #lines)
 		end)
 
 		it("keeps the client's own tooltip when the client already drew it for this slot", function()
@@ -452,7 +443,7 @@ describe("Tooltip's slot hovers", function()
 			start({
 				level = 20,
 				itemStats = {
-					["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD" },
+					["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD", ITEM_MOD_INTELLECT_SHORT = 4 },
 					["item:111:link"] = { __itemId = 111, __slot = "INVTYPE_HEAD", ITEM_MOD_INTELLECT_SHORT = 10 },
 				},
 				globals = { GetItemInfo = function(id)

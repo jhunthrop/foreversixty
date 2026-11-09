@@ -98,7 +98,7 @@ Mutilate costs 60, so you will often sit on four points waiting for energy. That
 
 ## Stat priority
 
-Hit counts until your attacks stop missing, and adds nothing past that: a missed Mutilate is a wasted global and two combo points you did not get, and your white swings with two weapons miss far more often than your specials, so they keep wanting hit after Mutilate stops missing. Agility gives attack power and crit together. Crit counts for more in this tree than for most melee, since every builder crit is a Seal Fate point and Lethality makes it bigger. Strength and attack power add straight damage to every hit, and in Forever to every poison hit and tick as well. Haste is rare on gear; take it when it comes. The table above gives the order for your gear.
+Hit counts until your attacks stop missing, and adds nothing past that: a missed Mutilate is a wasted global and two combo points you did not get, and your white swings with two weapons miss far more often than your specials, so they keep wanting hit after Mutilate stops missing. Agility gives attack power and crit together. Crit counts for more in this tree than for most melee, since every builder crit is a Seal Fate point and Lethality makes it bigger. Strength and attack power add straight damage to every hit, and in Forever to every poison hit and tick as well. Haste is rare on gear; take it when it comes.
 
 ## Best in slot
 
@@ -110,7 +110,7 @@ Poisons and stones go on together in Forever: at 60, Instant Poison and a stone 
 
 ## Races
 
-Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds: free damage all fight, and nothing else a Horde rogue gets matches it. Orc's **Blood Fury** is next and Troll's **Berserking** last. On Alliance, Night Elf's **Elune's Light** (10% crit for 15 seconds every 3 minutes, which pairs with Seal Fate: more Mutilate crits, more third points), Dwarf's passive 1% hit and Human's passive 1% crit all land in the same place, so Night Elf wins only by a hair: play the one you like. Forever has no weapon-skill racials.
+Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds: free damage all fight, and nothing else a Horde rogue gets matches it. Orc's **Blood Fury** is next and Troll's **Berserking** last. On Alliance, Night Elf's **Elune's Light** (10% crit for 15 seconds every 3 minutes, which pairs with Seal Fate: more Mutilate crits, more third points), Dwarf's passive 1% hit and Human's passive 1% crit all land in the same place, so they are level: play the one you like. Forever has no weapon-skill racials.
 
 ## Professions
 

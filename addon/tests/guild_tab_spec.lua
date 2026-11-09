@@ -1790,10 +1790,9 @@ describe("GuildTab", function()
 			local nextLine, byKind = wornBowNext(data)
 			assert.are.equal(RANGER_BOW, nextLine.itemId)
 			-- L3.7 item 6: the bow is cold (priced from the data's DPS alone), so the hover names it
-			-- with "stats pending" and no figure; the row's +3.5 is the same lower bound, kept there
+			-- with no figure; the row's +3.5 is the same lower bound, kept there
 			-- because nothing on the gap's path asks the client for the item.
 			assert.is_nil(nextLine.upgrade.gain)
-			assert.is_true(nextLine.upgrade.statsPending)
 			assert.are.equal(RANGER_BOW, byKind.source.pick.item_id)
 			assert.is_truthy(byKind.source.text:find("Wenna Silkbeard", 1, true))
 			assert.is_truthy(byKind.alternatives.text:find("Hunting Longbow", 1, true))
@@ -1896,10 +1895,10 @@ describe("GuildTab", function()
 
 		it("shows and sends a gain between 0 and 0.5 as 1, never on plan while behind", function()
 			-- 4.3 weapon DPS over 4, at the band's 1 DPS a weapon DPS: +0.3 DPS, under the 1.0 floor
-			-- the hover will apply once the bow's stats arrive (until then it says "stats pending"),
+			-- the hover will apply once the bow's stats arrive (until then it names the bow with no figure),
 			-- still behind.
 			local data = hunter(nil, { [RANGER_BOW] = 4.3 })
-			assert.is_true(wornBowNext(data).upgrade.statsPending)
+			assert.is_nil(wornBowNext(data).upgrade.gain)
 			assert.are.equal(0.3, rangedTarget(data).gain)
 			assert.are.same({ 1, "dps" }, { Comms.gearGap(data, "hunter-marksmanship") })
 			open()
