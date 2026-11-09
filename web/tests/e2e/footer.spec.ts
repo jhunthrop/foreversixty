@@ -24,7 +24,7 @@ test('on a phone the four columns stack two-up with 44px link rows', async ({ pa
   expect(heads[2].y).toBeGreaterThan(heads[0].y + 100);
 
   const links = await nav.getByRole('link').all();
-  expect(links.length).toBe(16);
+  expect(links.length).toBe(17);
   for (const link of links) {
     expect((await box(link)).height).toBeGreaterThanOrEqual(HIT_TARGET_PX);
   }
