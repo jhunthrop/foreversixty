@@ -270,7 +270,7 @@
 
 {#snippet crossing()}{#if syncKey !== ''}<SyncedCrosshair {syncKey} window={current} />{/if}{/snippet}
 
-<Section title="Timeline" testid="timelines-section" panel frame="framed" flush>
+<Section title="Timeline" testid="timelines-section" panel flush>
   <div>
     {#if lanes.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">Nothing in this window.</p>

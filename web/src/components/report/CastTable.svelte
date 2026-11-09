@@ -215,14 +215,8 @@
   const SEPARATOR = ' · ';
 </script>
 
-<Section
-  title="Casts"
-  meta={`Every caster, ${formatDuration(durationMs)}`}
-  testid="cast-section"
-  panel
-  frame="framed"
-  flush
->
+<Section title="Casts" meta={`Every caster, ${formatDuration(durationMs)}`} testid="cast-section" panel flush>
+  {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">No casts in this window.</p>
@@ -301,7 +295,6 @@
           Failed and cancelled casts are only known from the client that wrote this log; other players' rows
           read a dash where the log is silent.{/if}
       </p>
-      <CopyCsv lines={csvLines} />
     </div>
   {/if}
 </Section>

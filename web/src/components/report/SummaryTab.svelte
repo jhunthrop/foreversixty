@@ -1,5 +1,5 @@
 <!-- web/src/components/report/SummaryTab.svelte -->
-<!-- The Summary tab's lead (logs spec 2026-11-07 6.2; directions b1): the Players panel, framed, over one StatTable, a row
+<!-- The Summary tab's lead (logs spec 2026-11-07 6.2; directions b1): the Players panel over one StatTable, a row
      per player in the scope: the crest, the name in its class colour (the link that opens the
      player's own view), its spec (and a cross-realm player's realm), then each amount beside its rate
      (MUST 1: Damage and DPS, Healing and HPS, Taken and Taken / s; a pair whose rate is 0.0 on
@@ -107,21 +107,26 @@
   const topDamage = $derived(Math.max(1, ...rows.map((row) => row.damage_done)));
   const activeMark = $derived(wholeFightMark(approximate));
 
+  /** An empty cell: no parse yet, or none of that amount (a healer's damage, a tank's healing). */
+  const NO_FIGURE = '–';
+  const amountCell = (value: number, text: string): StatFigure =>
+    value === 0 ? { value: NO_FIGURE, muted: true } : { value: text };
+
   function figures(row: RosterRow): StatFigure[] {
     const placed = percentiles.get(row.guid);
     const parse: StatFigure[] = showParse
       ? [
           placed === undefined
-            ? { value: parseFallback || '–', muted: true }
+            ? { value: parseFallback || NO_FIGURE, muted: true }
             : { value: String(Math.floor(placed.percentile)) },
         ]
       : [];
     return [
       ...parse,
-      ...pairs.flatMap((pair) => [
-        { value: formatAmount(pair.amountOf(row)) },
-        { value: formatRate(rateOf(pair, row)) },
-      ]),
+      ...pairs.flatMap((pair) => {
+        const amount = pair.amountOf(row);
+        return [amountCell(amount, formatAmount(amount)), amountCell(amount, formatRate(rateOf(pair, row)))];
+      }),
       { value: `${activeMark}${Math.round(row.activity_pct)}%` },
       { value: String(row.deaths), muted: row.deaths === 0, tone: row.deaths > 0 ? 'wipe' : undefined },
     ];

@@ -2,7 +2,7 @@
 <!-- The Rating tab (logs spec 2026-11-07 section 6.2): Section `Performance rating` holding the
      tab's one Plate. A trash pull reads the shipped `noRatingForTrash` line. A boss pull draws,
      per rated player in the source scope, a first row (crest, `{name}'s rating`, the basis
-     sentence, the overall as a big gold `70 of 100`), then a StatTable row per part: its name and
+     sentence, the overall as a big `70 of 100` in its parse colour), then a StatTable row per part: its name and
      one-line definition, a score Meter (green from 75), `Of 100`, `Weight`, `Basis`; an excluded
      part reads `ratingCopy.excludedReason` with dashes. A part's moments link into the tab that
      shows them. The rail's rated players and The cap live in RatingRail.svelte; `onRatings`
@@ -24,6 +24,7 @@
     orderedComponents,
     partDefinition,
     playerRating,
+    ratingColour,
     scoreTone,
   } from '../../lib/report/rating-card';
   import type { RatingCardPlayer, RatingComponent, ReportRatings } from '../../lib/rating/types';
@@ -168,7 +169,7 @@
           <Figure
             value={String(Math.round(player.overall))}
             unit="of 100"
-            tone="gold"
+            color={ratingColour(player.overall)}
             size="big"
             testid="rating-overall"
           />
@@ -203,7 +204,6 @@
   action={{ label: ratingCopy.explainLink, href: '/ratings' }}
   testid="rating-tab"
   panel
-  frame="framed"
   flush
 >
   <div>

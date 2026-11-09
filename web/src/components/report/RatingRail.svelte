@@ -14,6 +14,7 @@
   import { classTone } from '../../lib/ui/primitives';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Figure from '../ui/Figure.svelte';
+  import { ratingColour } from '../../lib/report/rating-card';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
 
@@ -65,7 +66,12 @@
               {#if player.insufficient}
                 <span class="text-muted text-[13px]">{ratingCopy.insufficient}</span>
               {:else}
-                <Figure value={String(Math.round(player.overall))} unit="of 100" size="sm" tone="gold" />
+                <Figure
+                  value={String(Math.round(player.overall))}
+                  unit="of 100"
+                  size="sm"
+                  color={ratingColour(player.overall)}
+                />
               {/if}
             {/snippet}
           </Row>

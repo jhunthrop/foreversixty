@@ -70,9 +70,7 @@ export const reportCopy = {
   groupMissing: 'Your group wasn’t in this pull.',
   ratingNight: 'Ratings are one pull’s. Pick a boss pull from the list to see one.',
   /** The Parse column's one line when the rankings did not answer (boss pulls only). */
-  parsesUnknown:
-    'The rankings could not be reached, so the Parse column is unknown; every other figure is from the log.',
-  parsesUnknownShort: 'Parses unknown: the rankings did not answer.',
+  parsesUnknown: 'Parses didn’t load.',
   /** The Live tag while the companion logs. */
   liveTag: 'Live',
   loggingNow: 'Logging now',

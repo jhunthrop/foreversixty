@@ -3,7 +3,7 @@
 // 6.2, Rating row; copy section 10): the parts in the weight table's order, each part's one-line
 // definition without its `{Part}: ` prefix, the basis sentence and column, the score Meter's tone
 // (green from 75) and a moment's link text. Browser safe.
-import { formatDuration } from './format';
+import { formatDuration, percentileToken } from './format';
 import { ratingCopy } from '../rating/copy';
 import { RATING_COMPONENT_ORDER } from '../rating/types';
 import type { RatingCardPlayer, RatingComponent, RatingMoment } from '../rating/types';
@@ -66,6 +66,12 @@ export function basisSentence(player: RatingCardPlayer): string {
 
 export function scoreTone(score: number): 'kill' | 'gold' {
   return score >= GOOD_SCORE ? 'kill' : 'gold';
+}
+
+/** An overall's colour: the parse ladder (grey, green, blue, purple, orange, pink, gold), the
+ *  scale a raider reads a number out of 100 on at a glance. */
+export function ratingColour(score: number): string {
+  return percentileToken(score);
 }
 
 /** `0:12 · Kick`, or the spell alone when the moment has no time. */

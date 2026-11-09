@@ -64,7 +64,7 @@
         {#each [0, 1, 2] as line (line)}<p class="py-3">{@render block('w-[300px]', 'h-4')}</p>{/each}
       </Section>
     {/snippet}
-    <Section title="Players" panel frame="framed" flush>
+    <Section title="Players" panel flush>
       <div role="region" aria-label="Loading the report.">
         {#each ROWS as row (row)}
           <div class="flex h-14 items-center gap-3 px-4" aria-hidden="true">

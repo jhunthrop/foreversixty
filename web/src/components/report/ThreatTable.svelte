@@ -430,6 +430,7 @@
     testid="threat-table-card"
     panel
   >
+    {#snippet head()}{#if lines.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
     {#if !showChart}
       <div class="flex flex-col gap-2 pb-3">
         <p class="text-small text-muted" data-testid="threat-chart-note">
@@ -508,7 +509,6 @@
             pull is exact.
           </p>
         {/if}
-        <CopyCsv lines={csvLines} />
       </div>
     {/if}
   </Section>

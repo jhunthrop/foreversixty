@@ -299,9 +299,7 @@ def this_pull(R: Report, fi: int, source: str = 'All friendlies') -> str:
     scope = 'In range' if source.startswith('Everyone') else f'In {source.lower()}'
     items = [('Started', clock(f['start'])), (scope, f'{len(in_scope(R, s, source)):,}'),
              ('Deaths', str(sum(1 for d in s['deaths'] if d['guid'] in fr)))]
-    phases = ' &middot; '.join(f'{escape(p["name"])} {mmss(p["start_ms"])}&ndash;{mmss(p["end_ms"])}' for p in s.get('phases', []))
-    if phases:
-        items.append(('Phases', phases))
+    items += [(escape(p['name']), f'{mmss(p["start_ms"])}&ndash;{mmss(p["end_ms"])}') for p in s.get('phases', [])]
     acts = f'<div class="pull-acts">{_Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</div>'
     return Section('This pull', Facts(items) + acts, panel=True)
 
@@ -335,8 +333,7 @@ def notices(lines: list[str]) -> str:
     return f'<div class="pc"><div data-region="summary">{inner}</div></div>'
 
 
-# Boss pulls only. The phone reads one line (ruled SHOULD): the short form; 768 px and up the full sentence.
-PARSES_MISSING = ('<span class="lc-only-d">The rankings could not be reached, so the Parse column is unknown; every other figure is from the log.</span>'
-                  '<span class="lc-only-m">Parses unknown: the rankings did not answer.</span> <a class="link" href="#">Try again</a>')
+# Boss pulls only: one short line at every width, and Try again.
+PARSES_MISSING = 'Parses didn&rsquo;t load. <a class="link" href="#">Try again</a>'
 
 

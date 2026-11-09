@@ -234,20 +234,16 @@ function scopeLabel(scope: string): string {
 }
 
 /** The rail's This pull (directions b1): only what the band does not say, when it started, the
- *  scope's count and its deaths; a boss pull's phases. */
+ *  scope's count and its deaths; then a boss pull's phases, one line each with its span. */
 export function thisPullFacts({ fight, scope, players, deaths, phases }: PullFacts): Fact[] {
-  const facts: Fact[] = [
+  return [
     { id: 'started', label: 'Started', value: formatClock(fight.start) },
     { id: 'players', label: scopeLabel(scope), value: players.toLocaleString('en-US') },
     { id: 'deaths', label: 'Deaths', value: String(deaths) },
+    ...phases.map((phase, index) => ({
+      id: `phase-${index}`,
+      label: phase.name,
+      value: `${pullLength(phase.start_ms)}–${pullLength(phase.end_ms)}`,
+    })),
   ];
-  if (phases.length > 0)
-    facts.push({
-      id: 'phases',
-      label: 'Phases',
-      value: phases
-        .map((phase) => `${phase.name} ${pullLength(phase.start_ms)}–${pullLength(phase.end_ms)}`)
-        .join(' · '),
-    });
-  return facts;
 }

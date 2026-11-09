@@ -87,6 +87,8 @@ export function selectDrawn({
       .map((entry) => entry.id);
   let base: string[];
   if (chosen !== null) base = [...chosen];
+  // A roster the preset covers is drawn whole: the Players field reads `All N`, so is the chart.
+  else if (ranked.length <= topN) base = ranked.map((entry) => entry.id);
   else if (preset === 'top') base = ranked.slice(0, topN).map((entry) => entry.id);
   else if (preset === 'bottom') base = bottom(topN, new Set());
   else {

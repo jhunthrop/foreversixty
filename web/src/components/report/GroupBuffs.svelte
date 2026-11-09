@@ -1,5 +1,5 @@
 <!-- web/src/components/report/GroupBuffs.svelte -->
-<!-- The Summary's buffs (owner review 2026-11-09): the group's buffs over the pull, compact, with
+<!-- The Summary rail's buffs (owner review 2026-11-09): the group's buffs over the pull, compact, with
      the Buffs › link. One row per buff the scope's players held: its uptime on the players
      who had it, the pull's full length counting as 100%. The buffs most of the group held
      come first (flasks, food, the class buffs), then by uptime. The top eight. -->
@@ -81,14 +81,31 @@
 
 {#if rows.length > 0}
   <Section title="Buffs" action={{ label: 'Buffs', href: tabHref }} panel flush testid="panel-buffs">
-    <StatTable columns={COLUMNS} nameHead="Buff" label="Buffs">
-      {#each rows as row (row.name)}
-        <StatRow figures={[{ value: formatPercent(row.share * 100) }]} phone={formatPercent(row.share * 100)}>
-          {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
-          {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
-          {#snippet meter()}<Meter value={row.share} tone="kill" />{/snippet}
-        </StatRow>
-      {/each}
-    </StatTable>
+    <div class="group-buffs">
+      <StatTable columns={COLUMNS} nameHead="Buff" label="Buffs">
+        {#each rows as row (row.name)}
+          <StatRow
+            figures={[{ value: formatPercent(row.share * 100) }]}
+            phone={formatPercent(row.share * 100)}
+          >
+            {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
+            {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
+            {#snippet meter()}<Meter value={row.share} tone="kill" />{/snippet}
+          </StatRow>
+        {/each}
+      </StatTable>
+    </div>
   </Section>
 {/if}
+
+<style>
+  /* In the rail: a short bar, so a buff's name holds its one line. */
+  .group-buffs :global(.ui-st) {
+    --st-bar: minmax(0, 44px);
+  }
+  .group-buffs :global(.ui-st-name > *) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

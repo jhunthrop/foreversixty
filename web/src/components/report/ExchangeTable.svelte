@@ -238,7 +238,8 @@
   );
 </script>
 
-<Section {title} meta={`${mark}${total} in this fight`} testid="exchange-section" panel frame="framed" flush>
+<Section {title} meta={`${mark}${total} in this fight`} testid="exchange-section" panel flush>
+  {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">{emptyText}</p>
@@ -283,7 +284,6 @@
         Count is marked {mark}: interrupts and dispels are the whole fight's totals, because the summary keeps
         no timestamp for them and a brushed window cannot cut them down.
       </p>
-      <CopyCsv lines={csvLines} />
     </div>
   {/if}
 </Section>

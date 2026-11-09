@@ -597,7 +597,7 @@
 
 <div class="flex flex-col gap-4" data-testid="compare-mode">
   {#if controls}{@render pickers()}{/if}
-  <Section title="Compare" meta={sectionMeta} panel frame="framed" flush>
+  <Section title="Compare" meta={sectionMeta} panel flush>
     <div>
       {#if error !== ''}
         <p class="px-4 py-4 text-[14px]" role="alert">{error}</p>

@@ -599,6 +599,8 @@
     scoped === null ? [] : windowPresets(scoped, base?.duration_ms ?? scoped.duration_ms),
   );
   /** The main chart's metric: the table's own on the three rate tabs, damage done elsewhere (spec §B5.2). */
+  /** The by-ability panel each amount tab shows under its chart. */
+  const ABILITY_METRIC = { 'damage-done': 'done', healing: 'healing', 'damage-taken': 'taken' } as const;
   const chartMetric = $derived<'damage-done' | 'healing' | 'damage-taken'>(
     state.tab === 'damage-taken' ? 'damage-taken' : state.tab === 'healing' ? 'healing' : 'damage-done',
   );
@@ -1941,9 +1943,7 @@
             {/each}
             {#if percentilesUnavailable && showParse && fight?.kind === 'encounter'}
               <p class="px-[var(--page-inset)] pt-2 text-[15px]" data-testid="parse-unavailable">
-                <span class="max-md:hidden">{reportCopy.parsesUnknown}</span><span class="md:hidden"
-                  >{reportCopy.parsesUnknownShort}</span
-                >
+                {reportCopy.parsesUnknown}
                 <button type="button" class="text-gold ml-2 font-semibold" onclick={() => (parseAttempt += 1)}
                   >{reportCopy.tryAgain}</button
                 >
@@ -1970,6 +1970,13 @@
             {#if !isTrashPull && summary !== null}
               <KeyMechanics {summary} {spellIcon} tabHref={hrefWith({ tab: 'mechanics' })} />
             {/if}
+            <GroupBuffs
+              summary={scoped}
+              durationMs={scoped.duration_ms}
+              players={playerSet}
+              {spellIcon}
+              tabHref={hrefWith({ tab: 'buffs' })}
+            />
             {#if fight?.kind === 'encounter' && scoped.combatants.length > 0}
               <Section title="At pull" panel testid="at-pull-card">
                 {#each scoped.combatants as combatant (combatant.guid)}
@@ -2022,6 +2029,9 @@
             <QueriesRail />
           {:else if state.tab === 'rating'}
             <RatingRail ratings={ratingState.data} status={ratingState.status} {roster} />
+          {:else if state.tab === 'deaths' && !isTrashPull && summary !== null}
+            <!-- Beside the deaths: the boss abilities that did the hurting, with the Mechanics › link. -->
+            <KeyMechanics {summary} {spellIcon} tabHref={hrefWith({ tab: 'mechanics' })} />
           {/if}
           {#if state.tab === 'mechanics' && base !== null}
             <MechanicsRail summary={base} {classOf} />
@@ -2064,6 +2074,7 @@
             onSelectPlayer={(guid) => patch({ source: guid })}
           />
           {@render chart('damage-done')}
+          <!-- Two columns from 1440: the long list on the left, the two short ones stacked on the right. -->
           <div class="report-abilities">
             <SummaryPanels
               metric="done"
@@ -2074,33 +2085,28 @@
               approximate={!windowIsWhole}
               {spellIcon}
             />
-            <SummaryPanels
-              metric="taken"
-              tabHref={hrefWith({ tab: 'damage-taken' })}
-              summary={scoped}
-              durationMs={scoped.duration_ms}
-              players={playerSet}
-              approximate={!windowIsWhole}
-              {spellIcon}
-            />
-            {#if scoped.healing.some((actor) => playerSet.has(actor.guid) && actor.effective > 0)}
+            <div class="report-abilities-stack">
               <SummaryPanels
-                metric="healing"
-                tabHref={hrefWith({ tab: 'healing' })}
+                metric="taken"
+                tabHref={hrefWith({ tab: 'damage-taken' })}
                 summary={scoped}
                 durationMs={scoped.duration_ms}
                 players={playerSet}
                 approximate={!windowIsWhole}
                 {spellIcon}
               />
-            {/if}
-            <GroupBuffs
-              summary={scoped}
-              durationMs={scoped.duration_ms}
-              players={playerSet}
-              {spellIcon}
-              tabHref={hrefWith({ tab: 'buffs' })}
-            />
+              {#if scoped.healing.some((actor) => playerSet.has(actor.guid) && actor.effective > 0)}
+                <SummaryPanels
+                  metric="healing"
+                  tabHref={hrefWith({ tab: 'healing' })}
+                  summary={scoped}
+                  durationMs={scoped.duration_ms}
+                  players={playerSet}
+                  approximate={!windowIsWhole}
+                  {spellIcon}
+                />
+              {/if}
+            </div>
           </div>
         {:else if ACTOR_TABS.has(state.tab) && playerView}
           <PlayerView
@@ -2166,6 +2172,17 @@
             </p>
           {/if}
           {@render chart(chartMetric)}
+          {#if !filtersScale && !nightMode}
+            <!-- What the amount was made of: the scope's abilities, as the Summary lists them. -->
+            <SummaryPanels
+              metric={ABILITY_METRIC[chartMetric]}
+              summary={scoped}
+              durationMs={scoped.duration_ms}
+              players={playerSet}
+              approximate={!windowIsWhole}
+              {spellIcon}
+            />
+          {/if}
         {:else if state.tab === 'buffs' || state.tab === 'debuffs'}
           {#if auraTabLazy.current}
             <auraTabLazy.current
@@ -2446,11 +2463,13 @@
 {/if}
 
 <style>
-  /* Damage done and taken by ability side by side where the main column has the room (1440 up). */
-  .report-abilities {
+  /* Damage done by ability beside taken and healing (stacked) where the main column has the room (1440 up). */
+  .report-abilities,
+  .report-abilities-stack {
     display: grid;
     gap: var(--section-gap);
     grid-template-columns: minmax(0, 1fr);
+    align-content: start;
   }
   /* The halves keep the ability's name readable at every width: a floor on the name, a cap on the bar. */
   .report-abilities :global(.ui-st) {

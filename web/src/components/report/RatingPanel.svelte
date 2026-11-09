@@ -7,6 +7,7 @@
   import EmptyLine from './EmptyLine.svelte';
   import { unitLabel } from '../../lib/report/names.svelte';
   import { classColorVar } from '../../lib/report/format';
+  import { ratingColour } from '../../lib/report/rating-card';
   import { createReportRatingsFetch } from '../../lib/rating/report-ratings.svelte';
   import { ratingCopy } from '../../lib/rating/copy';
   import { classForPlayer, guidForPlayer } from '../../lib/rating/roster-join';
@@ -68,7 +69,8 @@
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(player.player_name).text}</span
             >{/snippet}
           {#snippet trail()}<span
-              class="text-[15px] font-bold tabular-nums {player.insufficient ? 'text-muted' : 'text-gold'}"
+              class={['text-[15px] font-bold tabular-nums', player.insufficient && 'text-muted']}
+              style:color={player.insufficient ? undefined : ratingColour(player.overall)}
               data-testid="rating-panel-overall"
               title={player.insufficient
                 ? ratingCopy.insufficientNote(player.insufficient_reason)

@@ -107,6 +107,15 @@ describe('selectDrawn', () => {
     ]);
   });
 
+  it('draws everyone when the preset covers the roster, even a healer outside the bottom pool', () => {
+    const few = candidates.slice(0, 5);
+    const pool = new Set(few.slice(0, 4).map((entry) => entry.id));
+    for (const preset of ['split', 'top', 'bottom'] as const)
+      expect(
+        selectDrawn({ candidates: few, pinned: new Set(), chosen: null, preset, bottomPool: pool }),
+      ).toEqual(['p0', 'p1', 'p2', 'p3', 'p4']);
+  });
+
   it('ignores a pinned player who is not in the fight', () => {
     expect(selectDrawn({ candidates, pinned: new Set(['ghost']), chosen: null })).not.toContain('ghost');
   });

@@ -8,6 +8,7 @@ import {
   orderedComponents,
   partDefinition,
   playerRating,
+  ratingColour,
   scoreTone,
 } from './rating-card';
 
@@ -66,5 +67,11 @@ describe('rating card', () => {
     expect(playerRating('Simfury')).toBe('Simfury’s rating');
     expect(momentText({ kind: 'cast', at_ms: 12_000, spell_name: 'Kick' })).toBe('12.0s · Kick');
     expect(momentText({ kind: 'cast' })).toBe('Unnamed');
+  });
+
+  it('colours an overall on the parse ladder every raider reads', () => {
+    expect(ratingColour(84)).toBe('var(--color-parse-purple)');
+    expect(ratingColour(58)).toBe('var(--color-parse-blue)');
+    expect(ratingColour(96)).toBe('var(--color-parse-orange)');
   });
 });

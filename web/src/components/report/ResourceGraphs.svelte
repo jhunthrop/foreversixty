@@ -220,9 +220,13 @@
   title="Resources"
   meta={`Mana, rage, energy and focus, ${capSpan === 'window' ? 'this window' : 'whole fight'}`}
   panel
-  frame="framed"
   flush
 >
+  {#snippet head()}{#if rows.some((track) => track.series.length > 0)}<CopyCsv
+        lines={seriesCsv}
+        label="Copy every line as CSV"
+        inHead
+      />{/if}{/snippet}
   <div>
     {#if rows.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
@@ -352,10 +356,6 @@
         Gained, spent, wasted and time empty are marked {mark} because the summary tracks them for the whole fight
         only; the line, the cap and the time at the cap are this window's own.
       </p>
-      {#if rows.some((track) => track.series.length > 0)}<CopyCsv
-          lines={seriesCsv}
-          label="Copy every line as CSV"
-        />{/if}
     </div>
   {/if}
 </Section>

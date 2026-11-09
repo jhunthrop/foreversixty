@@ -150,7 +150,7 @@
   }
 </script>
 
-<Section title="Queries" testid="queries-view" panel frame="framed" flush>
+<Section title="Queries" testid="queries-view" panel flush>
   <div>
     <div class="flex flex-col gap-2 px-4 py-[14px]">
       <span class={FIELD_LABEL} id="query-starts">Starting points</span>

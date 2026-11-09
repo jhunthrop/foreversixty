@@ -327,7 +327,7 @@
 {/snippet}
 
 <div class="flex flex-col gap-[var(--section-gap)]" data-testid="mechanics-mode">
-  <Section title="Mechanics" panel frame="framed" flush>
+  <Section title="Mechanics" panel flush>
     <div>
       {#if beforeMechanics}
         {@render line(

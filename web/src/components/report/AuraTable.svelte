@@ -94,10 +94,14 @@
   const keyOf = (track: AuraTrack, column: AuraSortColumn): number =>
     column === 'up' ? shareOf(track) : track.applications;
 
+  const isUnnamed = (name: string): boolean => name.startsWith('Spell #');
   const rows = $derived(
     nameAuras(tracks, spellNames)
       .filter((track) => track.type === kind)
       .sort((a, b) => {
+        // The log's unnamed spells ("Spell #1") go last whatever the sort: a raider reads the named ones.
+        const unnamed = Number(isUnnamed(a.name)) - Number(isUnnamed(b.name));
+        if (unnamed !== 0) return unnamed;
         const column = sort.column as AuraSortColumn;
         const order = keyOf(b, column) - keyOf(a, column);
         return (sort.direction === 'desc' ? order : -order) || a.name.localeCompare(b.name);
@@ -182,7 +186,8 @@
   const SEPARATOR = ' · ';
 </script>
 
-<Section {title} {meta} testid="aura-section" panel frame="framed" flush>
+<Section {title} {meta} testid="aura-section" panel flush>
+  {#snippet head()}{#if rows.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if rows.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
@@ -231,7 +236,6 @@
       </StatTable>
     {/if}
   </div>
-  {#if rows.length > 0}<CopyCsv lines={csvLines} />{/if}
 </Section>
 
 {#if bySpell.length > 0}

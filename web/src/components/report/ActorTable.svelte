@@ -247,7 +247,7 @@
     >{/if}{#if absentLine !== ''}<span class="block" data-testid="actor-absent">{absentLine}</span
     >{/if}{/snippet}
 
-<Section title={TITLE[tab]} testid="report-table-card" panel frame="framed" flush>
+<Section title={TITLE[tab]} testid="report-table-card" panel flush>
   {#snippet head()}{#if actors.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if actors.length === 0}

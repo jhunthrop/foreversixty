@@ -337,14 +337,7 @@
   }
 </script>
 
-<Section
-  title="Deaths"
-  meta={`${ordered.length} in this fight`}
-  testid="deaths-tab"
-  panel
-  frame="framed"
-  flush
->
+<Section title="Deaths" meta={`${ordered.length} in this fight`} testid="deaths-tab" panel flush>
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}

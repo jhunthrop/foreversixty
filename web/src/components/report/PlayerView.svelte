@@ -237,7 +237,6 @@
       .join(' · ')}
     testid="report-table-card"
     panel
-    frame="framed"
     flush
   >
     {#snippet head()}{#if rows.length > 0}<CopyCsv lines={abilityCsv} inHead />{/if}{/snippet}

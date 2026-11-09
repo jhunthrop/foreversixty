@@ -20,6 +20,7 @@
     inkCss,
     type ChartRole,
   } from '../../lib/chart/theme';
+  import { valueAt } from '../../lib/chart/buckets';
   import { clockLabel, TIME_STEP_FLOOR_S, timeTicks } from '../../lib/chart/time-axis';
   import { tooltipLines } from '../../lib/chart/tooltip';
   import type { ChartEvent, ChartPhase, ChartSeries } from '../../lib/chart/types';
@@ -498,6 +499,25 @@
       })),
   );
 
+  /** Each drawn median's name at the plot's right end, just above where the line ends, so the
+   *  dashed line reads without the legend. Held inside the plot's height. */
+  const MEDIAN_LABEL_PX = 16;
+  const medianLabels = $derived.by(() => {
+    void layout;
+    const u = chart;
+    if (u === null) return [];
+    const plotTop = u.bbox.top / devicePixelRatio;
+    const plotBottom = plotTop + u.bbox.height / devicePixelRatio;
+    return series
+      .filter((line) => line.kind === 'median' && !hidden.has(line.id))
+      .map((line) => {
+        const value = valueAt(line, Math.max(current.startMs, current.endMs - 1)) ?? 0;
+        const y = u.valToPos(value, 'y');
+        const top = Math.min(plotBottom - MEDIAN_LABEL_PX, Math.max(plotTop, y - MEDIAN_LABEL_PX - 2));
+        return { id: line.id, label: line.label, top, right: width - plotLeft - plotWidth + 4 };
+      });
+  });
+
   // ---- the drag selection (fine pointer) ---------------------------------------------------
   let dragFrom = $state<number | null>(null);
   let dragTo = $state<number | null>(null);
@@ -844,6 +864,15 @@
       {#each phaseLabels as { phase, left } (phase.name + phase.startMs)}
         <span class="phase-label absolute" style:left="{left}px" data-testid="phase-band">{phase.name}</span>
       {/each}
+      {#each medianLabels as median (median.id)}
+        <span
+          class="median-label absolute"
+          style:right="{median.right}px"
+          style:top="{median.top}px"
+          aria-hidden="true"
+          data-testid="median-label">{median.label}</span
+        >
+      {/each}
       {#if empty}
         <p
           class="text-muted pointer-events-none absolute inset-x-0 text-center text-[14px]"
@@ -1040,6 +1069,18 @@
   .plot:focus-visible {
     box-shadow: inset 0 0 0 2px var(--color-gold);
     border-radius: var(--radius-field);
+  }
+  .median-label {
+    height: 16px;
+    padding: 0 5px;
+    border-radius: var(--radius-icon);
+    background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+    color: var(--color-strong);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+    white-space: nowrap;
+    pointer-events: none;
   }
   .phase-label {
     top: 12px;

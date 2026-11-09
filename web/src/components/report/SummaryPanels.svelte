@@ -4,7 +4,7 @@
      with; `metric="taken"` Damage taken by ability, every ability that hit them; `metric="healing"`
      Healing by ability, every heal they cast (effective healing, overheal left out). Each a
      StatTable (spell icon, name, a Meter, the share of the scope's total, Per sec, Amount), the
-     top eight, with the full tab's link in the head. -->
+     top eight, with the full tab's link in the head. The amount tabs show their own under the chart. -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
   import { formatAmount } from '../../lib/report/format';
@@ -29,8 +29,8 @@
     spellIcon,
   }: {
     metric: Metric;
-    /** The full tab's url (Damage done, Damage taken, Healing). */
-    tabHref: string;
+    /** The full tab's url (Damage done, Damage taken, Healing); none on that tab itself. */
+    tabHref?: string;
     summary: Summary;
     durationMs: number;
     players: ReadonlySet<string>;
@@ -108,7 +108,7 @@
 
 <Section
   title={TITLE[metric]}
-  action={{ label: TAB[metric], href: tabHref }}
+  action={tabHref === undefined ? undefined : { label: TAB[metric], href: tabHref }}
   panel
   flush
   testid={`panel-${metric}`}

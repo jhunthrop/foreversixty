@@ -152,16 +152,24 @@ describe('This pull (directions b1)', () => {
     ]);
   });
 
-  it('adds a boss pull’s phases', () => {
+  it('adds a boss pull’s phases, one line each', () => {
     const facts = thisPullFacts({
       fight: BOSS,
       scope: 'Group',
       players: 5,
       deaths: 1,
-      phases: [{ name: 'Phase 1', start_ms: 0, end_ms: 14_000 }],
+      phases: [
+        { name: 'Phase 1', start_ms: 0, end_ms: 14_000 },
+        { name: 'Phase 2', start_ms: 14_000, end_ms: 60_000 },
+      ],
     });
-    expect(facts.map((fact) => fact.label)).toEqual(['Started', 'In group', 'Deaths', 'Phases']);
-    expect(facts.at(-1)?.value).toBe('Phase 1 0:00–0:14');
+    expect(facts.map((fact) => [fact.label, fact.value])).toEqual([
+      ['Started', expect.any(String)],
+      ['In group', '5'],
+      ['Deaths', '1'],
+      ['Phase 1', '0:00–0:14'],
+      ['Phase 2', '0:14–1:00'],
+    ]);
   });
 
   it('reads everyone the logger saw as In range', () => {
