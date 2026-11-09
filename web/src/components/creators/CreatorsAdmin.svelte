@@ -284,7 +284,7 @@
                 {#if field.id === 'slug'}
                   <div class="flex flex-col gap-1.5">
                     <span class="t-label">{copy.fields.slug.label} · {copy.fields.code.label}</span>
-                    <span class="font-mono text-[14px]" data-testid="creators-fixed">{copy.fixed(values.slug, values.code)}</span>
+                    <span class="text-strong text-[15px]" data-testid="creators-fixed">{copy.fixed(values.slug, values.code)}</span>
                   </div>
                 {/if}
               {:else}

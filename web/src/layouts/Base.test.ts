@@ -33,7 +33,7 @@ describe('Base layout', () => {
     const html = await container.renderToString(Base, {
       props: { title: 'Guides', description: 'x', path: '/guides' },
     });
-    expect(html).toContain('localStorage.setItem("fs.arrival"');
+    expect(html).toContain('localStorage.setItem("fs.arrival.next"');
     // The beacon is added after paint by lib/golinks/later.ts on the production host, never as markup.
     expect(html).not.toContain('cloudflareinsights');
   });

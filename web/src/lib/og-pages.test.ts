@@ -10,7 +10,19 @@ import { STATIC_OG_PAGES } from './og-pages';
 const pagesRoot = fileURLToPath(new URL('../pages', import.meta.url));
 
 /** Pages nobody shares: never in the sitemap, plumbing, or the owner's admin. */
-const NO_CARD = new Set(['404', 'admin/links', 'app/auth', 'design-sheet', 'report-shell', 'reports']);
+const NO_CARD = new Set([
+  '404',
+  'admin/links',
+  'admin/creators',
+  'admin/creators/payouts',
+  'app/auth',
+  'creators/apply',
+  'creators/onboarding',
+  'creators/stats',
+  'design-sheet',
+  'report-shell',
+  'reports',
+]);
 
 /** The card path of every static (non-dynamic) .astro page under src/pages. */
 function staticPagePaths(dir: string): string[] {

@@ -27,14 +27,15 @@ F = json.loads(Path(os.environ.get('FS_CREATORS_FACTS') or HERE / 'data' / 'crea
 A, P, O, S = F['admin'], F['payouts'], F['onboarding'], F['stats']
 R, G, Y = F['requests'], F['program'], F['apply']
 OWNER = ('Thandrel', 'warrior', 'Level 60')
-CREATOR = ('Grimbrew', 'mage', 'Level 60')
+# The creator's pages are drawn signed in as the e2e owner fixture (me-60.json), so the chrome matches the build's.
+CREATOR = OWNER
 
 CSS = '''<style>
 /* page-level layout only (no surfaces) */
 .stack{display:flex;flex-direction:column;gap:12px;min-width:0}.acts{display:flex;gap:10px 12px;flex-wrap:wrap;align-items:center}
 .figs5{display:flex;flex-wrap:wrap;gap:8px 20px}.figs5>span{width:104px;display:flex;flex-direction:column}.figs5>span.lead{width:168px}.btn[disabled]{opacity:.45;cursor:not-allowed}
 .f{display:flex;flex-direction:column;gap:6px;min-width:0}.f .t-small{font-size:12px;line-height:16px}
-.ro{font-family:var(--mono,monospace);font-size:14px}.status{min-height:22px}.page-foot{padding-bottom:48px}
+.ro{font-size:15px;color:var(--strong)}.status{min-height:22px}.page-foot{padding-bottom:48px}
 .trail-end{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.amt{font-variant-numeric:tabular-nums}
 section>.sec-h+*{margin-top:12px}fieldset.fs{border:0;padding:0;margin:0}.radio{width:18px;height:18px;accent-color:var(--gold)}
 </style>'''
@@ -63,7 +64,7 @@ def figures(items: list[dict]) -> str:
         f'<span{" class=\"lead\"" if f["lead"] else ""}>{Figure(e(f["value"]), e(f["label"]), size="sm", tone="gold" if f["lead"] else "")}<span class="t-small">{e(f["note"])}</span></span>' for f in items) + '</span>'
 
 
-def render(title: str, body: str, who: tuple, note: str) -> str:
+def render(title: str, body: str, who: tuple | None, note: str) -> str:
     assert_no_surface_styles(body)
     return _page(title, body + CSS + f'<style>{ws_prims.PRIM_CSS}</style>', '', who, note, '')
 
@@ -184,7 +185,7 @@ def program() -> str:
                          anchor='apply')
     head = PageHeader(e(G['pageTitle']), lead=e(G['lead']), actions=Btn(e(G['apply']), primary=True, small=False))
     body = head + f'<div class="page-foot">{Page("reading", secs + end, "", toc_from=0)}</div>'
-    return render('Creators · Forever Sixty', body, CREATOR, '/creators mock (public, signed in); data creators-facts.json (programCopy).')
+    return render('Creators · Forever Sixty', body, None, '/creators mock (public, signed out); data creators-facts.json (programCopy).')
 
 
 # ================================================================================================ /creators/apply

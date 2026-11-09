@@ -18,6 +18,7 @@ export const STATIC_OG_PAGES: Readonly<Record<string, OgContent>> = {
   guides: { title: 'Guides by class', kicker: 'Leveling · talents · gear' },
   changelog: { title: 'What changed', kicker: 'Dated and sourced' },
   planner: { title: 'Build planner', kicker: 'Talents · order · share' },
+  creators: { title: 'Creators', kicker: 'Earn from the players you send' },
   bis: { title: 'BiS', kicker: 'Best gear, levels 20 to 60' },
   'b-unavailable': { title: 'Build unavailable', kicker: SITE_KICKER },
   tiers: { title: tiersCopy.pageTitle('dps'), kicker: TIERS_KICKER },
