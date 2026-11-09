@@ -88,7 +88,7 @@ When you cast Healing Touch to fill a hole, a lower rank often heals more for yo
 
 ## Stat priority
 
-The table above gives the order for your gear. A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count for you. Healing power is every heal except Bloom and a rank far below your level, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
+A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count for you. Healing power is every heal except Bloom and a rank far below your level, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
 
 ## Best in slot
 
@@ -98,7 +98,7 @@ Potions and runes work in any form in Forever, though you heal in caster form an
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths and Healing Touches alike. Tauren is the free Horde pick: Endurance is 5% more health, which keeps you alive through raid damage. If you already own the paid Skyborne Heroic Pack, Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, which is faster casts, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour: Attuned doubles Read Leyline's regeneration wherever you are, but entering a raid removes it for good. Press it every time it is ready on a long fight. Innervate is the bigger effect and replaces it, and Read Leyline will not cast while Innervate is up.
+Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths and Healing Touches alike. Tauren is the Horde pick: Endurance is 5% more health, which keeps you alive through raid damage. Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, which is faster casts, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour: Attuned doubles Read Leyline's regeneration wherever you are, but entering a raid removes it for good. Press it every time it is ready on a long fight. Innervate is the bigger effect and replaces it, and Read Leyline will not cast while Innervate is up.
 
 ## Professions
 

@@ -1,0 +1,110 @@
+---
+// web/src/components/tiers/TierSpecCard.astro
+// The spec panel beside the tier list (directions mock g-tiers; a framed panel, as the mock draws it): signed
+// out, the sign-in line; signed in, the visitor's spec, where it stands ("Tier A · #2 ·
+// 1,004.2 DPS") or, for a spec on another role, a link to that list, then its Best in slot and
+// Guide. The signed-in half is a template lib/tiers/tier-client.ts fills after load, reserved at its final size while the
+// account loads, so nothing under it moves.
+import Frame from '../ui/Frame.svelte';
+import { button } from '../../lib/ui/button';
+import { LINK } from '../../lib/ui/primitives';
+import { REGION } from '../../lib/ui/regions';
+import { tiersCopy } from '../../lib/tiers/tier-copy';
+
+interface Props {
+  /** The page's own path, where sign-in returns. */
+  path: string;
+}
+
+const { path } = Astro.props;
+const copy = tiersCopy.card;
+const PRIMARY = button('primary');
+const SECONDARY = button('secondary');
+---
+
+<Frame region={REGION.headAnswer} testid="tier-card">
+  <div class="tier-card" id="tier-answer">
+    <div class="tier-card-body" data-signed-out-only data-testid="tier-card-signed-out">
+      <h2 class="text-section">{copy.heading}</h2>
+      <p class="tier-card-line">{copy.signedOut}</p>
+      <div class="tier-card-actions">
+        <a class={PRIMARY} href={copy.signInHref(path)}>
+          {copy.signIn}
+        </a>
+      </div>
+    </div>
+    <div class="tier-card-in" data-signed-in-only>
+      <div class="tier-card-skeleton" role="status" aria-busy="true" data-answer-skeleton>
+        <span class="sr-only">Loading</span>
+        <span class="skeleton-block tier-sk-name" aria-hidden="true"></span>
+        <span class="skeleton-block tier-sk-line" aria-hidden="true"></span>
+        <span class="skeleton-block tier-sk-actions" aria-hidden="true"></span>
+      </div>
+      <div class="tier-card-body" data-answer-body hidden data-testid="tier-answer-body">
+        <h2 class="text-section" data-field="name" data-testid="tier-answer-name"></h2>
+        <p class="tier-card-line">
+          <span data-field="standing" data-testid="tier-answer-standing"></span>
+          <a class={LINK} data-field="other" href="/tiers" hidden data-testid="tier-answer-other"></a>
+        </p>
+        <div class="tier-card-actions" data-field="links">
+          <a class={PRIMARY} data-field="bis" href="/bis" data-testid="tier-answer-bis">
+            {copy.bis}
+          </a>
+          <a class={SECONDARY} data-field="guide" href="/guides" data-testid="tier-answer-guide">
+            {copy.guide}
+          </a>
+          <button type="button" class={SECONDARY} data-field="choose" hidden>
+            {copy.choose}
+          </button>
+          <button type="button" class={SECONDARY} data-field="retry" hidden>
+            {copy.retry}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Frame>
+
+<style>
+  .tier-card-body,
+  .tier-card-skeleton {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    /* The panel holds its final size in every state: heading, line, then the 44 px buttons. */
+    min-height: 114px;
+  }
+  .tier-card-body[hidden],
+  .tier-card-skeleton[hidden],
+  .tier-card-actions [hidden],
+  .tier-card-line [hidden] {
+    display: none;
+  }
+  .tier-card-line {
+    margin: 0;
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 600;
+    color: var(--color-strong);
+  }
+  .tier-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .tier-sk-name {
+    width: 180px;
+    height: 28px;
+  }
+  .tier-sk-line {
+    width: 220px;
+    height: 24px;
+  }
+  .tier-sk-actions {
+    width: 230px;
+    height: 44px;
+    margin-top: 10px;
+  }
+</style>

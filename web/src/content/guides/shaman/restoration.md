@@ -89,7 +89,7 @@ Ancestral Healing is three points for 25% more armor on your target for 15 secon
 
 ## Stat priority
 
-Healing power makes every heal bigger, from any source, including items that add damage and healing; damage-only spell power and Nature power do nothing for a heal. Mp5 keeps you casting through a long fight. Intellect is your mana pool, and Water Shield returns a share of that pool with every globe. Crit fires Water Shield on top of the bigger heal. Spirit only adds mana regeneration, and Mindfulness keeps half of that running while you heal. The table above gives the order for your level and gear.
+Healing power makes every heal bigger, from any source, including items that add damage and healing; damage-only spell power and Nature power do nothing for a heal. Mp5 keeps you casting through a long fight. Intellect is your mana pool, and Water Shield returns a share of that pool with every globe. Crit fires Water Shield on top of the bigger heal. Spirit only adds mana regeneration, and Mindfulness keeps half of that running while you heal.
 
 ## Best in slot
 
@@ -103,7 +103,7 @@ Brilliant Mana Oil on your weapon: mp5 and healing in one. Use your Major Mana P
 
 The Dwarf shaman is new in Forever and is the only Alliance shaman. Stoneform cuts physical damage by 10% and clears poisons, diseases and bleeds, which keeps you alive through a cleave or a stray add.
 
-On the Horde, Orc is the healing pick: Blood Fury increases attack power and spell power by 10% for 15 seconds every 2 minutes, and its spell power covers your heals. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, heals a little less. Tauren's Endurance, 5% more health, is the pick when you are the one taking the damage. Windshaper Skyborne, the paid Heroic Pack race, brings Wind Blessed's 2% haste, always on.
+On the Horde, Orc is the healing pick: Blood Fury increases attack power and spell power by 10% for 15 seconds every 2 minutes, and its spell power covers your heals. Troll's Berserking, 10% casting speed for 15 seconds every 3 minutes, heals a little less. Tauren's Endurance, 5% more health, is the pick when you are the one taking the damage. Windshaper Skyborne brings Wind Blessed's 2% haste, always on.
 
 ## Professions
 
