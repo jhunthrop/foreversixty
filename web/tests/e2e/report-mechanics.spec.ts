@@ -61,9 +61,10 @@ test('a player card says what to tell them: what hit them, and what did not', as
   await expect(spared).toContainText('Never hit by: Anima Lash, Anima Cascade.');
 });
 
-test('a boss without a table says so and offers the draft', async ({ page }) => {
+test('a boss without a table says so in one line, with no operator command', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=4&mode=mechanics');
-  await expect(page.getByTestId('mechanics-no-table')).toContainText('No mechanics table');
+  await expect(page.getByTestId('mechanics-no-table')).toHaveText('No mechanics for this boss yet.');
+  await expect(page.getByTestId('mechanics-no-table')).not.toContainText('forever-logs');
 });
 
 test('the night rolls mechanics up per boss, out of that boss’s pulls', async ({ page }) => {

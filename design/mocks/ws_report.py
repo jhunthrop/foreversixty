@@ -167,7 +167,7 @@ def group_buffs(R, fi, source) -> str:
                     key=lambda x: (-x[4], -x[5], x[0]))[:8]
     if not ranked:
         return ''
-    rows = [StatRow(sicon(sid, 24, n, sch), f'<b>{escape(n)}</b>', '', [f'{share * 100:.1f}%'], Meter(share, 'kill'), primary_phone=f'{share * 100:.1f}%')
+    rows = [StatRow(sicon(sid, 24, n, sch), f'<b>{escape(n)}</b>', '', [f'{share * 100:.1f}%'], Meter(share, 'gold'), primary_phone=f'{share * 100:.1f}%')
             for n, sid, sch, _, _, share in ranked]
     return Section('Buffs', f'<div class="group-buffs">{StatTable([("", False), ("Buff", False), ("", False), ("Uptime", True)], rows, 1)}</div>',
                    action=Link('Buffs &rsaquo;'), panel=True, flush=True)
@@ -487,9 +487,7 @@ def tab_mechanics(R, fi, source):
     raise NotImplementedError('a boss pull with a mechanics table: no real log has one yet (D1)')
 
 
-MECH_NO_TABLE = ('No mechanics table for this boss yet. A table says which of its abilities are avoidable, which casts to interrupt '
-                 'and which debuffs to dispel; without one this page has nothing to judge. Run '
-                 '<code>forever-logs mechanics-draft</code> on the log for a draft to review.')
+MECH_NO_TABLE = 'No mechanics for this boss yet.'
 
 
 def events(R, fi, names: set[str] | None = None):

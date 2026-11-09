@@ -124,23 +124,15 @@
       ),
   );
   const footer = $derived(full === null ? '' : footerLine(full.reviewed_at, full.basis_labels));
-  /** The Section's meta: who the review is for, then the card line (spec, boss, result). */
-  const meta = $derived(cardLine === '' ? displayName : `${displayName}${COACH_SEPARATOR}${cardLine}`);
+  /** The Section's meta: who the review is for, then the card line (spec, boss, result); an empty part is left out. */
+  const meta = $derived([displayName, cardLine].filter((part) => part !== '').join(COACH_SEPARATOR));
 </script>
 
 <div class="@container" data-testid="coach-panel" data-state={view.state}>
   <div
     class="flex flex-col gap-[var(--section-gap)] @min-[1120px]:grid @min-[1120px]:grid-cols-[minmax(0,1fr)_320px] @min-[1120px]:items-start @min-[1120px]:gap-x-10"
   >
-    <Section
-      {title}
-      {meta}
-      focusId="coach-panel-heading"
-      titleTestid="coach-title"
-      testid="coach-card"
-      panel
-      frame="lead"
-    >
+    <Section {title} {meta} focusId="coach-panel-heading" titleTestid="coach-title" testid="coach-card" panel>
       {#snippet head()}
         <span class="flex h-5 items-center gap-2 text-[13px]" aria-live="polite" data-testid="coach-status">
           {#if view.officer}

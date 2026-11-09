@@ -33,6 +33,7 @@
     players = new Set<string>(),
     classOf = new Map<string, string>(),
     kind: kindProp,
+    windowed = false,
   }: {
     rows: ExchangeRow[];
     emptyText: string;
@@ -50,6 +51,8 @@
     classOf?: ReadonlyMap<string, string>;
     /** Which tab this is; by default the rows' own kind, else Dispels when aura tracks came. */
     kind?: 'interrupt' | 'dispel';
+    /** A brushed window: the counts stay the whole fight's, so they are marked and a line says so. */
+    windowed?: boolean;
   } = $props();
 
   const kind = $derived(
@@ -206,7 +209,7 @@
       ...course,
     ];
   }
-  const mark = wholeFightMark(true);
+  const mark = $derived(wholeFightMark(windowed));
   const total = $derived(rows.reduce((sum, row) => sum + row.count, 0));
 
   /** One line per source, most first: who did the interrupting or dispelling tonight. */
@@ -272,18 +275,18 @@
       </StatTable>
     {/if}
   </div>
-  {#if ordered.length > 0}
-    <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
-      <p data-testid="exchange-by-source">
-        {#each bySource as entry, index (entry.name)}{#if index > 0}{SEPARATOR}{/if}<span
-            ><span class="text-text font-semibold">{splitUnitName(entry.name).name}</span>
-            <span class="tabular-nums">{mark}{entry.count}</span></span
-          >{/each}
-      </p>
-      <p data-testid="exchange-wholefight-note">
-        Count is marked {mark}: interrupts and dispels are the whole fight's totals, because the summary keeps
-        no timestamp for them and a brushed window cannot cut them down.
-      </p>
+  {#if ordered.length > 0 && (bySource.length > 1 || windowed)}
+    <div class="text-muted flex flex-col gap-1 px-5 pt-3 pb-4 text-[13px] leading-[18px]">
+      {#if bySource.length > 1}<p data-testid="exchange-by-source">
+          {#each bySource as entry, index (entry.name)}{#if index > 0}{SEPARATOR}{/if}<span
+              ><span class="text-text font-semibold">{splitUnitName(entry.name).name}</span>
+              <span class="tabular-nums">{mark}{entry.count}</span></span
+            >{/each}
+        </p>{/if}
+      {#if windowed}<p data-testid="exchange-wholefight-note">
+          Count is marked {mark}: interrupts and dispels are the whole fight's totals, because the summary
+          keeps no timestamp for them and a brushed window cannot cut them down.
+        </p>{/if}
     </div>
   {/if}
 </Section>

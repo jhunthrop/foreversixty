@@ -95,9 +95,12 @@
     column === 'up' ? shareOf(track) : track.applications;
 
   const isUnnamed = (name: string): boolean => name.startsWith('Spell #');
+  /** Carried in and never up, or carried in under no name the log or the build knows: nothing to read. */
+  const isDead = (track: { applications: number; uptime_ms: number; name: string }): boolean =>
+    track.applications === 0 && (track.uptime_ms === 0 || isUnnamed(track.name));
   const rows = $derived(
     nameAuras(tracks, spellNames)
-      .filter((track) => track.type === kind)
+      .filter((track) => track.type === kind && !isDead(track))
       .sort((a, b) => {
         // The log's unnamed spells ("Spell #1") go last whatever the sort: a raider reads the named ones.
         const unnamed = Number(isUnnamed(a.name)) - Number(isUnnamed(b.name));

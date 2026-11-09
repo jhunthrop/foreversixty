@@ -13,7 +13,6 @@ describe('RatingRail', () => {
   it('names each rated player with their score, then The cap', () => {
     const body = render(RatingRail, {
       props: {
-        status: 'ready',
         roster: ROSTER,
         ratings: {
           fight_index: 3,
@@ -46,9 +45,11 @@ describe('RatingRail', () => {
     expect(body).toContain(ratingCopy.cappedRule);
   });
 
-  it('says trash has no rating', () => {
-    const body = render(RatingRail, { props: { status: 'none', roster: ROSTER, ratings: null } }).body;
-    expect(body).toContain(ratingCopy.noRatingForTrash);
+  it('draws nothing without ratings: the Rating panel beside it already says why', () => {
+    const body = render(RatingRail, { props: { roster: ROSTER, ratings: null } }).body;
+    expect(body).not.toContain(ratingCopy.noRatingForTrash);
+    expect(body).not.toContain(ratingCopy.cappedRule);
+    expect(body).not.toContain('data-testid="rating-rail"');
   });
 });
 

@@ -38,11 +38,8 @@
     measureError = '',
     whole = undefined,
     names = new Map<string, string>(),
-    simulated = false,
   }: {
     rows: CastRow[];
-    /** True for a simulated fight: one player, no log, so the note about other players' rows would be false. */
-    simulated?: boolean;
     /** Every caster's whole-fight rows: who recorded failures is a fact about the log, not the scope or the window. */
     everyone?: CastRow[];
     durationMs: number;
@@ -193,7 +190,7 @@
 
   const mark = $derived(approximateMark(scaled));
   /** Cast time is the whole fight's total under every window, never just this one's. */
-  const castTimeMark = wholeFightMark(true);
+  const castTimeMark = $derived(wholeFightMark(approximate));
 
   function castTimeText(ms: number): string {
     return ms === 0 ? 'instant' : formatDuration(ms);
@@ -261,7 +258,7 @@
     {/if}
   </div>
   {#if ordered.length > 0}
-    <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
+    <div class="text-muted flex flex-col gap-1 px-5 pt-3 pb-4 text-[13px] leading-[18px]">
       {#if rhythm !== null}
         <p
           data-testid="cast-rhythm"
@@ -289,12 +286,10 @@
           Casts, Failed and cancelled casts are this window’s own counts, read from the fight’s cast lines.
         </p>
       {/if}
-      <p data-testid="cast-time-note">
-        Casting time is marked {castTimeMark} because it is the whole fight's accumulated casting time for that
-        spell, even inside a shorter window.{#if !simulated}
-          Failed and cancelled casts are only known from the client that wrote this log; other players' rows
-          read a dash where the log is silent.{/if}
-      </p>
+      {#if approximate}<p data-testid="cast-time-note">
+          Casting time is marked {castTimeMark} because it is the whole fight's accumulated casting time for that
+          spell, even inside a shorter window.
+        </p>{/if}
     </div>
   {/if}
 </Section>

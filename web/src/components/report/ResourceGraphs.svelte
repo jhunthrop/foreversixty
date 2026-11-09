@@ -191,7 +191,7 @@
     tracks.filter(hadActivity).sort((a, b) => a.name.localeCompare(b.name) || a.power_type - b.power_type),
   );
 
-  const mark = wholeFightMark(true);
+  const mark = $derived(wholeFightMark(windowed));
   const hasCap = (track: ResourceTrack): boolean => track.max !== undefined && track.max > 0;
 
   const columns: readonly StatColumn[] = [
@@ -349,8 +349,8 @@
       </StatTable>
     {/if}
   </div>
-  {#if rows.length > 0}
-    <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
+  {#if rows.length > 0 && windowed}
+    <div class="text-muted flex flex-col gap-1 px-5 pt-3 pb-4 text-[13px] leading-[18px]">
       <p>Fight length in this window: <span class="tabular-nums">{formatDuration(durationMs)}</span>.</p>
       <p data-testid="resource-wholefight-note">
         Gained, spent, wasted and time empty are marked {mark} because the summary tracks them for the whole fight

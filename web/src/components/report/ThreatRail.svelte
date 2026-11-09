@@ -11,7 +11,6 @@
   import { noTauntsLine, orderedTaunts, pickedEnemyName } from '../../lib/report/threat-taunts';
   import type { Taunt, ThreatPair } from '../../lib/report/types';
   import { aroundWindow, type TimeWindow } from '../../lib/report/window';
-  import Button from '../ui/Button.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -93,12 +92,13 @@
           {/snippet}
           {#snippet trail()}
             {#if scopeNoun !== 'night'}
-              <Button
-                tone="ghost"
-                size="sm"
-                testid="taunt-window"
-                label="Set the window to the span around this taunt"
-                onclick={() => onWindow(aroundWindow(taunt.at_ms, durationMs))}>Around it</Button
+              <!-- A quiet link, not a button: the taunt's sentence keeps the rail's width. -->
+              <button
+                type="button"
+                class="text-gold shrink-0 text-[13px] font-semibold whitespace-nowrap hover:underline [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
+                data-testid="taunt-window"
+                aria-label="Set the window to the span around this taunt"
+                onclick={() => onWindow(aroundWindow(taunt.at_ms, durationMs))}>Around it ›</button
               >
             {/if}
           {/snippet}

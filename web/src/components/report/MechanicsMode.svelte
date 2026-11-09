@@ -343,9 +343,7 @@
         {@render line('No boss of the night has a table yet.', 'mechanics-no-table')}
       {:else if !block.table_found}
         <p class="text-muted px-4 py-4 text-[14px]" data-testid="mechanics-no-table">
-          No mechanics table for this boss yet. A table says which of its abilities are avoidable, which casts
-          to interrupt and which debuffs to dispel; without one this page has nothing to judge. Run
-          <code class="font-mono text-[13px]">forever-logs mechanics-draft</code> on the log for a draft to review.
+          No mechanics for this boss yet.
         </p>
       {:else if table.length === 0}
         {@render line('Nothing the table lists went wrong.', 'mechanics-table-empty')}
@@ -381,7 +379,7 @@
       {/if}
     </div>
     {#if !beforeMechanics && block.table_found}
-      <p class="text-muted pt-3 text-[13px]">
+      <p class="text-muted px-5 pt-3 pb-4 text-[13px]">
         Whole {nightMode ? 'night' : 'fight'}, from the encounter’s mechanics table. {nightMode
           ? `${judgedSummary} A source pick does not apply here.`
           : 'Whole fight: a brushed time window does not apply here, so none is offered.'}
@@ -563,9 +561,7 @@
     {#if unclassified.length > 0}
       <Section title="Not yet classified" testid="mechanics-unclassified" panel>
         <p class="text-muted text-[13px]">
-          These enemy abilities hit someone and the table does not list them, so it does not say whether they
-          were avoidable. Run <code class="font-mono text-[13px]">forever-logs mechanics-draft</code> on the
-          log for a draft that classifies them.{nightMode
+          These enemy abilities hit someone and the table does not list them yet.{nightMode
             ? ' Over the night they are pooled across every boss: a folded ability no longer says which pull it came from.'
             : ''}
         </p>

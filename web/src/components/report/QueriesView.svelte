@@ -243,9 +243,7 @@
       {/if}
     {/if}
   </div>
-  <p class="text-muted mt-3 text-[13px] leading-5">
-    The file downloads the first time you run a query and nothing leaves the page. These figures are measured,
-    not scaled: a query answers the window it asks about exactly, where the tables mark a rescaled split with
-    a tilde.
+  <p class="text-muted px-5 pt-3 pb-4 text-[13px] leading-5">
+    Runs in your browser; nothing leaves the page. A query answers its window exactly, never scaled.
   </p>
 </Section>

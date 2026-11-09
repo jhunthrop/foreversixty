@@ -9,10 +9,10 @@
     16,
     0,
     380,
-    296
+    267
    ],
    "inventory": {
-    "button": 2
+    "button": 1
    }
   },
   "head-title": {
@@ -20,7 +20,7 @@
     16,
     16,
     380,
-    102
+    128
    ],
    "inventory": {}
   },
@@ -29,79 +29,76 @@
     16,
     98,
     380,
-    20
+    46
    ],
    "inventory": {}
   },
   "head-answer": {
    "box": [
     16,
-    134,
+    160,
     380,
-    93
+    38
    ],
-   "inventory": {
-    "button": 1
-   }
+   "inventory": {}
   },
   "controls": {
    "box": [
     0,
-    296,
+    267,
     412,
     62
    ],
    "inventory": {
-    "button": 1,
+    "button": 2,
     "field": 6
    }
   },
-  "section-soren-everhart-rsquo-s-damage": {
+  "section-fenwick-silverlode-rsquo-s-damage": {
    "box": [
     16,
-    386,
+    357,
     380,
-    283
+    501
    ],
    "inventory": {
-    "button": 4,
-    "image": 1
+    "button": 8,
+    "image": 7
    }
   },
   "plate": {
    "box": [
     16,
-    473,
+    1125,
     380,
-    196
+    237
    ],
    "inventory": {
-    "button": 3,
-    "image": 1
+    "button": 2
    }
   },
   "section-damage-over-the-fight": {
    "box": [
     16,
-    717,
+    880,
     380,
-    79
+    106
    ],
    "inventory": {}
   },
   "section-gear-at-the-pull": {
    "box": [
     16,
-    844,
+    1008,
     380,
-    115
+    35
    ],
    "inventory": {}
   },
   "footer-note": {
    "box": [
     16,
-    1007,
+    1065,
     380,
     36
    ],
@@ -110,21 +107,23 @@
   "section-this-pull": {
    "box": [
     16,
-    1067,
+    1125,
     380,
-    240
+    237
    ],
-   "inventory": {}
+   "inventory": {
+    "button": 2
+   }
   },
   "section-targets": {
    "box": [
     16,
-    1339,
+    1384,
     380,
-    484
+    125
    ],
    "inventory": {
-    "row": 6
+    "row": 1
    }
   }
  }

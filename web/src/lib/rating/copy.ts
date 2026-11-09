@@ -70,7 +70,7 @@ export const ratingCopy = {
   noMatchingRow: 'This player has no rating for this fight.',
   /** Spec §1.2's two exact basis sentences. */
   percentileBasis: (spec: string, klass: string, role: string, pct: number, n: number): string =>
-    `Compared with other ${spec} ${roleNoun(klass, role)} on this fight (${n} logs).`,
+    `Compared with other ${[spec, roleNoun(klass, role)].filter((part) => part !== '').join(' ')} on this fight (${n} logs).`,
   absoluteBasis: 'Measured against the encounter’s own numbers — not enough logs yet to compare players.',
   /** Spec §7.4's fixed excluded-reason strings, by the `reason` code the API returns. */
   excludedReason: (componentLabel: string, reason: string): string => {
@@ -144,5 +144,5 @@ const COMPONENT_DEFINITIONS: Record<string, string> = {
  *  so a future copy revision that needs it has no signature to change. */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- kept for the reason above
 function roleNoun(klass: string, _role: string): string {
-  return `${klass}s`;
+  return klass === '' ? 'players' : `${klass}s`;
 }

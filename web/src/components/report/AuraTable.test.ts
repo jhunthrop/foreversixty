@@ -48,6 +48,23 @@ describe('AuraTable', () => {
     expect(body).toContain('>50.0%<');
   });
 
+  it('leaves out what was never applied in the pull and was never up, or that the log could not name', () => {
+    const body = renderBuffs(
+      [
+        track({ spell_id: 6673, name: 'Battle Shout' }),
+        track({ spell_id: 1459, name: 'Arcane Intellect', applications: 0, uptime_ms: 0 }),
+        track({ spell_id: 71, name: 'Spell #71', applications: 0, uptime_ms: 179_000 }),
+        track({ spell_id: 72, name: 'Spell #72', applications: 2, uptime_ms: 20_000 }),
+      ],
+      180_000,
+    );
+    expect(body).toContain('Battle Shout');
+    expect(body).not.toContain('Arcane Intellect');
+    expect(body).not.toContain('Spell #71');
+    // Applied in the pull: a real aura the build has no name for, still listed (last).
+    expect(body).toContain('Spell #72');
+  });
+
   it('every row carries an aura-<guid>-<spellId> anchor id for a rating moment to jump to', () => {
     // src/lib/rating/moments.ts already builds hrefs against this exact convention
     // (aura-<targetGuid>-<spellId>); this row-side id is what those links land on.

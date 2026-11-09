@@ -192,6 +192,11 @@ test('interrupts and dispels state their counts are the whole fight’s, unaffec
   await page.goto('/reports/fixture2abcd?fight=1&tab=interrupts&start=0&end=1000');
   await expect(page.getByTestId('exchange-wholefight-note')).toContainText("whole fight's totals");
   await expect(page.getByTestId('exchange-table')).toContainText('†');
+  // The whole fight is the figure itself: no mark, no line.
+  await page.goto('/reports/fixture2abcd?fight=1&tab=interrupts');
+  await expect(page.getByTestId('exchange-table')).toContainText('Pummel');
+  await expect(page.getByTestId('exchange-table')).not.toContainText('†');
+  await expect(page.getByTestId('exchange-wholefight-note')).toHaveCount(0);
 });
 
 test('a brushed window marks cast counts as approximate', async ({ page }) => {

@@ -1557,19 +1557,23 @@
         id: 'report-missing-fight',
         text:
           missingFight === MISSING_FIGHT
-            ? 'This link names a fight the page cannot read, so the first fight is showing.'
+            ? 'This link names a fight the page cannot read, so its opening pull is showing.'
             : trashScopeKey(missingFight) !== null
-              ? `This report has no trash group starting at fight ${trashScopeKey(missingFight)}, so the first fight is showing.`
-              : `This report has no fight ${missingFight}, so the first fight is showing.`,
+              ? `This report has no trash group starting at fight ${trashScopeKey(missingFight)}, so its opening pull is showing.`
+              : `This report has no fight ${missingFight}, so its opening pull is showing.`,
       });
     // A pull the logger's group was not in reads everyone in range (lib/report/group.ts), and
     // says so, so the scope word over the table is never a surprise.
     if (groupMissing) out.push({ id: 'report-group-missing', text: reportCopy.groupMissing });
     if (error !== '') out.push({ id: 'report-fight-error', text: error });
-    if (percentilesUnavailable && showParse && fight?.kind === 'encounter')
-      out.push({ id: 'parse-unavailable-line', text: '' });
+    if (parsesUnknownHere) out.push({ id: 'parse-unavailable-line', text: '' });
     return out.filter((notice) => notice.text !== '' || notice.id === 'parse-unavailable-line');
   });
+  /** The tabs with a Parse column: the line that parses did not load shows on them alone. */
+  const PARSE_TABS: ReadonlySet<string> = new Set(['summary', 'damage-done', 'healing']);
+  const parsesUnknownHere = $derived(
+    percentilesUnavailable && showParse && fight?.kind === 'encounter' && PARSE_TABS.has(state.tab),
+  );
   /** The report has a logger's group, and this pull ran without any of it. */
   const groupMissing = $derived(
     !nightMode &&
@@ -1941,7 +1945,7 @@
                 <Notice text={notice.text} tone="neutral" testid={notice.id} />
               </div>
             {/each}
-            {#if percentilesUnavailable && showParse && fight?.kind === 'encounter'}
+            {#if parsesUnknownHere}
               <p class="px-[var(--page-inset)] pt-2 text-[15px]" data-testid="parse-unavailable">
                 {reportCopy.parsesUnknown}
                 <button type="button" class="text-gold ml-2 font-semibold" onclick={() => (parseAttempt += 1)}
@@ -2028,7 +2032,7 @@
           {:else if state.tab === 'queries'}
             <QueriesRail />
           {:else if state.tab === 'rating'}
-            <RatingRail ratings={ratingState.data} status={ratingState.status} {roster} />
+            <RatingRail ratings={ratingState.data} {roster} />
           {:else if state.tab === 'deaths' && !isTrashPull && summary !== null}
             <!-- Beside the deaths: the boss abilities that did the hurting, with the Mechanics › link. -->
             <KeyMechanics {summary} {spellIcon} tabHref={hrefWith({ tab: 'mechanics' })} />
@@ -2235,6 +2239,7 @@
                 rows={scoped.interrupts}
                 everyone={windowed?.interrupts ?? scoped.interrupts}
                 emptyText={exchangeEmpty('interrupted')}
+                windowed={!windowIsWhole}
                 casts={base?.casts ?? []}
                 players={playerSet}
                 {classOf}
@@ -2245,6 +2250,7 @@
                 rows={scoped.dispels}
                 everyone={windowed?.dispels ?? scoped.dispels}
                 emptyText={exchangeEmpty('dispelled')}
+                windowed={!windowIsWhole}
                 auras={base?.auras ?? []}
                 players={playerSet}
                 {classOf}

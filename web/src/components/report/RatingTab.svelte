@@ -108,15 +108,18 @@
     phone={part.excluded ? undefined : 'of 100'}
     testid={`rating-component-${part.name}`}
   >
-    {#snippet name()}{componentLabel(part.name)}{/snippet}
-    {#snippet sub()}
-      <div>
-        {part.excluded
-          ? ratingCopy.excludedReason(componentLabel(part.name), part.reason)
+    <!-- What a part measures is its name's hover (logs lane review 2026-11-09): the row carries the
+         score, and a line only when the part was not scored or has moments to open. -->
+    {#snippet name()}<span
+        title={part.name === 'utility' && !part.excluded
+          ? `${partDefinition(part.name)} ${ratingCopy.threatNotModeled}`
           : partDefinition(part.name)}
-      </div>
-      {#if part.name === 'utility' && !part.excluded}
-        <div data-testid="rating-threat-note">{ratingCopy.threatNotModeled}</div>
+        data-testid={part.name === 'utility' && !part.excluded ? 'rating-threat-note' : undefined}
+        >{componentLabel(part.name)}</span
+      >{/snippet}
+    {#snippet sub()}
+      {#if part.excluded}
+        <div>{ratingCopy.excludedReason(componentLabel(part.name), part.reason)}</div>
       {/if}
       {#if part.moments.length > 0}
         <ul class="flex flex-wrap gap-x-3" data-testid={`rating-moments-${part.name}`}>

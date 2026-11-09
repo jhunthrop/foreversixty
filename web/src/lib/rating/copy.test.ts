@@ -31,4 +31,13 @@ describe('ratingCopy.percentileBasis', () => {
       'Compared with other Fury Warriors on this fight (12 logs).',
     );
   });
+
+  it('reads a player the log could not place as one of the other players, never "other s"', () => {
+    expect(ratingCopy.percentileBasis('', '', 'tank', 58, 40)).toBe(
+      'Compared with other players on this fight (40 logs).',
+    );
+    expect(ratingCopy.percentileBasis('', 'Mage', 'dps', 71, 40)).toBe(
+      'Compared with other Mages on this fight (40 logs).',
+    );
+  });
 });

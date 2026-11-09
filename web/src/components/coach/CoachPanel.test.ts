@@ -227,7 +227,8 @@ describe('CoachPanel', () => {
   it('the review and each rail block are Section panels (directions b1), never the old card', () => {
     const body = panel(coachModelReview());
     expect(body.match(/data-region="plate"/g)?.length).toBe(3);
-    expect(body).toContain('ui-framed ui-lead');
+    // One plain panel, as every report tab draws (logs lane review 2026-11-09).
+    expect(body).not.toContain('ui-lead');
     expect(body).not.toContain('card-surface');
     for (const id of ['coach-cannot', 'coach-footer-card']) {
       expect(body).toMatch(new RegExp(`class="ui-section[^"]*"[^>]*data-testid="${id}"`));

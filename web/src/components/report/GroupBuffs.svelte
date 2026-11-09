@@ -90,7 +90,7 @@
           >
             {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
             {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
-            {#snippet meter()}<Meter value={row.share} tone="kill" />{/snippet}
+            {#snippet meter()}<Meter value={row.share} tone="gold" />{/snippet}
           </StatRow>
         {/each}
       </StatTable>
@@ -99,11 +99,14 @@
 {/if}
 
 <style>
-  /* In the rail: a short bar, so a buff's name holds its one line. */
+  /* In the rail: a short bar in the Buffs tab's gold, so a buff's name holds its one line. */
   .group-buffs :global(.ui-st) {
     --st-bar: minmax(0, 44px);
   }
+  /* The name cell itself clips, so a long name ends in an ellipsis before the bar. */
+  .group-buffs :global(.ui-st-name),
   .group-buffs :global(.ui-st-name > *) {
+    min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
