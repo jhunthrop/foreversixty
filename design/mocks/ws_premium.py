@@ -563,12 +563,11 @@ def b_page(state: str) -> str:
     st = WP.S[key]
     heading = f'{st["race"]} {st["className"]}'
     h1 = title or heading
-    score = WP.SAMPLE_SCORE.get(key)
     split = '/'.join(str(x) for x in st['split'])
     SH = F['shared']
     # Ruling Q10: `Shared by {name}` only when the share record names the sharer; the record carries no sharer today.
     meta = [e(SH['meta']), e(st['meta']), e(split), e(SH['views'][str(views)])]
-    head = PageHeader(e(h1), CLASS_COLOR[st['cls']], crest_img(st['cls'], 56), meta, WP.answer(st, score))
+    head = PageHeader(e(h1), CLASS_COLOR[st['cls']], crest_img(st['cls'], 56), meta, WP.answer(st))
     send = WP.F['send'][send_key] if send_key else None
     fork = f'{Btn(e(SH["fork"]))}'
     note = f'<div class="pc"><div data-region="{REGION["notes"]}"><p class="notice neutral">{e(SH["note"])} {fork}</p></div></div>'
