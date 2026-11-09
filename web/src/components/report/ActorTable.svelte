@@ -12,7 +12,6 @@
   import { formatRate } from '../../lib/report/frame';
   import type { Actor, RosterRow } from '../../lib/report/types';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
@@ -248,9 +247,9 @@
     >{/if}{#if absentLine !== ''}<span class="block" data-testid="actor-absent">{absentLine}</span
     >{/if}{/snippet}
 
-<Section title={TITLE[tab]} meta="Click a player to see their abilities" testid="report-table-card">
+<Section title={TITLE[tab]} testid="report-table-card" panel frame="framed" flush>
   {#snippet head()}{#if actors.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
-  <Plate label={TITLE[tab]}>
+  <div>
     {#if actors.length === 0}
       <EmptyLine text="Nothing in this window." testid="table-empty" />
     {:else}
@@ -276,5 +275,5 @@
         />
       </StatTable>
     {/if}
-  </Plate>
+  </div>
 </Section>

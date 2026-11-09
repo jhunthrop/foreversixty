@@ -18,7 +18,6 @@
   import { classColorVar, wholeFightMark } from '../../lib/report/format';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { AuraTrack, CastRow, ExchangeRow } from '../../lib/report/types';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -239,8 +238,8 @@
   );
 </script>
 
-<Section {title} meta={`${mark}${total} in this fight`} testid="exchange-section">
-  <Plate label={title}>
+<Section {title} meta={`${mark}${total} in this fight`} testid="exchange-section" panel frame="framed" flush>
+  <div>
     {#if ordered.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">{emptyText}</p>
     {:else}
@@ -267,7 +266,7 @@
         {/each}
       </StatTable>
     {/if}
-  </Plate>
+  </div>
   {#if ordered.length > 0}
     <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
       <p data-testid="exchange-by-source">
@@ -292,6 +291,7 @@
       ? 'Debuffs someone dispelled at least once'
       : 'Casts someone stopped at least once'}
     testid={kind === 'dispel' ? 'dispels-uncured' : 'interrupts-missed'}
+    panel
   >
     <StatTable
       columns={[{ id: 'left', label: kind === 'dispel' ? 'Ran their course' : 'Went through' }]}

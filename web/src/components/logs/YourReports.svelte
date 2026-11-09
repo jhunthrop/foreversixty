@@ -1,6 +1,6 @@
 <!-- web/src/components/logs/YourReports.svelte -->
-<!-- /reports, "Your reports" (logs spec 2026-11-07 section 5): the PageHeader (title, the job line,
-     the count once listed, `Upload a log` signed in), then the ledger Page's one Plate holding
+<!-- /reports, "Your reports" (logs spec 2026-11-07 section 5): the PageHeader (the title and,
+     signed in, `Upload a log`), then the ledger Page's one Plate holding
      every state: signed out, the sign-in sentence over the primary and the sample report; signed
      in, MyReports (rows, `No logs yet` with Upload a log and the sample, or the failed line); a
      session that will not load says so and retries in place.
@@ -9,7 +9,7 @@
      a visitor with no session hint paints it at once; a hinted visitor's Plate keeps the list's
      reserve until the answer. -->
 <script lang="ts">
-  import { battlenetStartUrl, fetchMeOnce, listMyReports, type Me } from '../../lib/account/api';
+  import { battlenetStartUrl, fetchMeOnce, type Me } from '../../lib/account/api';
   import { SAMPLE_REPORT_PATH } from '../../lib/report/sample';
   import { myReportsCopy, yourReportsPageCopy as copy } from '../../lib/reports/my-reports-copy';
   import { LINK } from '../../lib/ui/primitives';
@@ -25,8 +25,6 @@
   /** Undefined until the session answers; null signed out. */
   let me = $state<Me | null | undefined>(undefined);
   let failed = $state(false);
-  /** The list's total once it answers, for the head's count. */
-  let total = $state<number | null>(null);
 
   async function load(): Promise<void> {
     failed = false;
@@ -36,7 +34,6 @@
       failed = true;
       return;
     }
-    if (me !== null) total = (await listMyReports(1).catch(() => null))?.total ?? null;
   }
 
   $effect(() => {
@@ -48,14 +45,7 @@
 
 <Page layout="ledger" testid="your-reports">
   {#snippet header()}
-    <PageHeader title={copy.title} actions={signedIn ? upload : undefined}>
-      {#snippet meta()}
-        <span>{copy.job}</span>
-        {#if total !== null && total > 0}<span data-testid="your-reports-count"
-            >{total} report{total === 1 ? '' : 's'}</span
-          >{/if}
-      {/snippet}
-    </PageHeader>
+    <PageHeader title={copy.title} actions={signedIn ? upload : undefined} />
   {/snippet}
 
   {#if signedIn}
@@ -92,7 +82,7 @@
 </Page>
 
 {#snippet upload()}
-  <Button href={UPLOAD_LINK.href} testid="your-reports-upload">{UPLOAD_LINK.label}</Button>
+  <Button tone="primary" href={UPLOAD_LINK.href} testid="your-reports-upload">{UPLOAD_LINK.label}</Button>
 {/snippet}
 
 <style>

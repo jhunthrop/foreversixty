@@ -22,9 +22,9 @@ function body(props: Record<string, unknown> = {}): string {
 }
 
 describe('ThreatTable', () => {
-  it('draws one Plate holding a StatTable with Threat, Share and Of the top', () => {
+  it('draws the table panel (and the chart panel) holding a StatTable with Threat, Share and Of the top', () => {
     const html = body();
-    expect(html.match(/data-region="plate"/g)).toHaveLength(1);
+    expect(html.match(/data-region="plate"/g)).toHaveLength(2);
     expect(html).toContain('role="table"');
     expect(html).toContain('Of the top');
     expect(html).toContain('data-testid="threat-Player-1"');

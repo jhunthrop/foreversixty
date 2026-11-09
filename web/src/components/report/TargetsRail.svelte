@@ -29,11 +29,11 @@
   const total = $derived(units.reduce((sum, [, amount]) => sum + amount, 0));
 </script>
 
-<Section {title} testid="report-targets">
+<Section {title} testid="report-targets" panel>
   {#if units.length === 0}
-    <EmptyLine text="Nothing in this window." section />
+    <EmptyLine text="Nothing in this window." />
   {:else}
-    <div class="-mt-3">
+    <div>
       {#each units.slice(0, SHOWN) as [name, amount] (name)}
         <Row
           title={splitUnitName(name).name}

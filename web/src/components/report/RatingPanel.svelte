@@ -50,17 +50,17 @@
   testid="rating-panel"
 >
   {#if trash}
-    <EmptyLine text={ratingCopy.noRatingForTrash} section testid="rating-panel-none" />
+    <EmptyLine text={ratingCopy.noRatingForTrash} testid="rating-panel-none" />
   {:else if fetcher.status === 'loading' || fetcher.status === 'idle'}
     <div data-testid="rating-panel-loading" aria-hidden="true"><Skeleton minHeight="min-h-[58px]" /></div>
   {:else if fetcher.status === 'flagged'}
-    <EmptyLine text={ratingCopy.flagged} section testid="rating-panel-flagged" />
+    <EmptyLine text={ratingCopy.flagged} testid="rating-panel-flagged" />
   {:else if fetcher.status === 'none'}
-    <EmptyLine text={ratingCopy.noRatingForTrash} section testid="rating-panel-none" />
+    <EmptyLine text={ratingCopy.noRatingForTrash} testid="rating-panel-none" />
   {:else if fetcher.status === 'failed'}
-    <EmptyLine text={ratingCopy.fetchFailed} section role="alert" testid="rating-panel-error" />
+    <EmptyLine text={ratingCopy.fetchFailed} role="alert" testid="rating-panel-error" />
   {:else if rows.length === 0}
-    <EmptyLine text={ratingCopy.panelEmpty} section testid="rating-panel-empty" />
+    <EmptyLine text={ratingCopy.panelEmpty} testid="rating-panel-empty" />
   {:else}
     <div data-testid="rating-panel-rows">
       {#each rows as { player, guid } (player.player_key)}

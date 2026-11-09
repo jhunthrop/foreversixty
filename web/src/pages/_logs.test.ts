@@ -93,13 +93,12 @@ describe('/logs', () => {
     expect(html).toContain('data-region="plate"');
   });
 
-  it('leads with the PageHeader (h1 and the job line), no eyebrow and no character band', async () => {
+  it('leads with the title band (the h1 alone, directions b1), no eyebrow and no character band', async () => {
     const html = await container.renderToString(Logs);
     const mainAt = html.indexOf('id="main"');
     const h1At = html.indexOf('>Logs</h1>');
-    const jobAt = html.indexOf('Upload a combat log or log live, then read every pull.');
     expect(h1At).toBeGreaterThan(mainAt);
-    expect(jobAt).toBeGreaterThan(h1At);
+    expect(html).not.toContain('Upload a combat log or log live, then read every pull.');
     expect(html).not.toContain('Combat logs');
     expect(html).not.toContain('character-header');
   });

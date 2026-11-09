@@ -2,7 +2,8 @@
 <!-- /logs' "Recent public reports" Section (logs spec 2026-11-07 section 4): the public feed as open
      report Rows, or its empty sentence, then the one sample report as its own Row with the
      `Sample report` Tag (bundled with the site, read from its static meta; never a feed entry,
-     so the feed's own empty state stays reachable). `Older reports` pages the feed in place. -->
+     so the feed's own empty state stays reachable). `Older reports` pages the feed in place. The
+     viewer's own reports (`exclude`) sit in Your reports above and are left out here. -->
 <script lang="ts">
   import { recentReportsCopy } from '../lib/reports/copy';
   import { reportCopy } from '../lib/report/copy';
@@ -14,6 +15,9 @@
   import Button from './ui/Button.svelte';
   import Section from './ui/Section.svelte';
   import Skeleton from './ui/Skeleton.svelte';
+
+  /** The viewer's own report ids: listed just above on /logs, so the feed leaves them out. */
+  let { exclude = new Set<string>() }: { exclude?: ReadonlySet<string> } = $props();
 
   let rows = $state<RecentReport[]>([]);
   let nextCursor = $state<string | undefined>(undefined);
@@ -37,6 +41,8 @@
     }
   }
 
+  const shown = $derived(rows.filter((row) => !exclude.has(row.id)));
+
   $effect(() => {
     void load();
     void loadSampleRow().then((row) => {
@@ -45,7 +51,7 @@
   });
 </script>
 
-<Section title={recentReportsCopy.heading} testid="recent-reports">
+<Section title={recentReportsCopy.heading} panel testid="recent-reports">
   {#if status === 'loading' && rows.length === 0}
     <Skeleton
       lines={1}
@@ -59,12 +65,12 @@
       <div class="mt-3"><Button size="sm" onclick={() => void load(attemptedCursor)}>Try again</Button></div>
     </div>
   {:else if rows.length === 0}
-    <p class="text-muted p-4 text-[14px] leading-5" data-testid="recent-reports-empty">
+    <p class="text-muted py-2 text-[14px] leading-5" data-testid="recent-reports-empty">
       {recentReportsCopy.empty}
     </p>
   {/if}
   <div class="flex flex-col" data-testid="recent-reports-list">
-    {#each rows as report (report.id)}
+    {#each shown as report (report.id)}
       {@const row = publicReportRow({
         title: report.title,
         zone: report.zone,

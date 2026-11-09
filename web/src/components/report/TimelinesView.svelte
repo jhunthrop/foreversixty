@@ -19,9 +19,9 @@
   import type { TimeWindow } from '../../lib/report/window';
   import { clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clockLabel, timeTicks } from '../../lib/chart/time-axis';
+  import { CHART_INK, inkCss } from '../../lib/chart/theme';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
 
   let {
@@ -53,6 +53,13 @@
   const owner = 'timelines';
 
   const span = $derived(Math.max(current.endMs - current.startMs, 1));
+  /** The boss's phase changes inside the window: a dashed line down every lane, as the charts draw them. */
+  const PHASE_INK = inkCss(CHART_INK.phase);
+  const phaseStarts = $derived(
+    (summary.phases ?? []).filter(
+      (phase) => phase.start_ms > current.startMs && phase.start_ms < current.endMs,
+    ),
+  );
   const pct = (ms: number): number => ((ms - current.startMs) / span) * 100;
 
   /** The time axis's ticks (lib/chart/time-axis: the step that keeps labels 64 px apart). */
@@ -263,12 +270,8 @@
 
 {#snippet crossing()}{#if syncKey !== ''}<SyncedCrosshair {syncKey} window={current} />{/if}{/snippet}
 
-<Section
-  title="Timeline"
-  meta={`Every player, ${formatDuration(span)} · hover for the event`}
-  testid="timelines-section"
->
-  <Plate label="Timeline">
+<Section title="Timeline" testid="timelines-section" panel frame="framed" flush>
+  <div>
     {#if lanes.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">Nothing in this window.</p>
     {:else}
@@ -299,7 +302,7 @@
               >{picked.name} · at {formatDuration(picked.at)}</span
             >
           {:else}
-            Tap or hover a tick for the spell, or an aura band for what was up.
+            <span aria-hidden="true">&nbsp;</span>
           {/if}
         </p>
         <div class="grid grid-cols-[96px_minmax(0,1fr)] md:grid-cols-[160px_minmax(0,1fr)]">
@@ -327,7 +330,16 @@
             {/each}
           </ul>
           <div class="min-w-0 overflow-x-auto">
-            <div class="min-w-[560px] md:min-w-0" aria-hidden="true">
+            <div class="relative min-w-[560px] md:min-w-0" aria-hidden="true">
+              {#each phaseStarts as phase (phase.name + phase.start_ms)}
+                <span
+                  class="pointer-events-none absolute inset-y-0 z-[1] w-0 border-l border-dashed"
+                  style:left="{pct(phase.start_ms)}%"
+                  style:border-color={PHASE_INK}
+                  data-testid="timeline-phase"
+                  title={phase.name}
+                ></span>
+              {/each}
               <ul class="flex flex-col">
                 {#each enemyLanes as lane (lane.name)}
                   <li class="flex items-center" style:height="{rowHeight(ENEMY_LANE_PX)}px">
@@ -426,8 +438,9 @@
                 data-testid="timeline-axis"
               >
                 {#each axis as at (at)}
-                  <span class="absolute top-0 -translate-x-1/2 whitespace-nowrap" style:left="{pct(at)}%"
-                    >{clockLabel(at)}</span
+                  <span
+                    class={['absolute top-0 whitespace-nowrap', at !== axis[0] && '-translate-x-1/2']}
+                    style:left="{pct(at)}%">{clockLabel(at)}</span
                   >
                 {/each}
               </span>
@@ -453,5 +466,5 @@
         {/if}
       </div>
     {/if}
-  </Plate>
+  </div>
 </Section>

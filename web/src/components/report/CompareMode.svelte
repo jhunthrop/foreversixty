@@ -51,7 +51,6 @@
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Notice from '../ui/Notice.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import Select from '../ui/Select.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -598,8 +597,8 @@
 
 <div class="flex flex-col gap-4" data-testid="compare-mode">
   {#if controls}{@render pickers()}{/if}
-  <Section title="Compare" meta={sectionMeta}>
-    <Plate label="Compare">
+  <Section title="Compare" meta={sectionMeta} panel frame="framed" flush>
+    <div>
       {#if error !== ''}
         <p class="px-4 py-4 text-[14px]" role="alert">{error}</p>
       {:else if versusPlayer}
@@ -641,7 +640,7 @@
           {/each}
         </StatTable>
       {/if}
-    </Plate>
+    </div>
     <div class="flex flex-col gap-2 pt-2">
       {#if error === '' && versusPlayer}
         <p class="text-muted text-[13px]" data-testid="compare-players-scope">

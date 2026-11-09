@@ -48,7 +48,7 @@
 </script>
 
 <div class="flex flex-col gap-[var(--section-gap)]" data-testid="rating-rail">
-  <Section title={ratingCopy.panelHeading}>
+  <Section title={ratingCopy.panelHeading} panel>
     {#if rows.length > 0}
       <div data-testid="rating-rail-rows">
         {#each rows as { player, className } (player.player_key)}
@@ -75,7 +75,7 @@
       <p class="text-muted text-[14px]" data-testid="rating-rail-empty">{emptyLine}</p>
     {/if}
   </Section>
-  <Section title="The cap">
+  <Section title="The cap" panel>
     <p class="text-muted text-[14px] leading-5">{ratingCopy.cappedRule}</p>
   </Section>
 </div>

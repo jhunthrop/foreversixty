@@ -64,7 +64,7 @@
       .join(' · ');
 </script>
 
-<Section title="Taunts" testid="threat-taunts">
+<Section title="Taunts" testid="threat-taunts" panel>
   {#if taunts === undefined}
     <p class="text-small text-muted">This report was parsed before taunts were kept; parse it again.</p>
   {:else if rows.length === 0}

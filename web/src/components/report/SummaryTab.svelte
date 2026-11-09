@@ -1,5 +1,5 @@
 <!-- web/src/components/report/SummaryTab.svelte -->
-<!-- The Summary tab's Plate (logs spec 2026-11-07 6.2): Section Players over one StatTable, a row
+<!-- The Summary tab's lead (logs spec 2026-11-07 6.2; directions b1): the Players panel, framed, over one StatTable, a row
      per player in the scope: the crest, the name in its class colour (the link that opens the
      player's own view), "{spec} {class} · item level {n}", then each amount beside its rate
      (MUST 1: Damage and DPS, Healing and HPS, Taken and Taken / s; a pair whose rate is 0.0 on
@@ -13,11 +13,10 @@
   import { unitLabel } from '../../lib/report/names.svelte';
   import { specCell, type UnitClass } from '../../lib/report/roster-class';
   import { classColorVar, formatAmount, formatPercent, wholeFightMark } from '../../lib/report/format';
-  import { formatRate, pullLength } from '../../lib/report/frame';
+  import { formatRate } from '../../lib/report/frame';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
@@ -132,15 +131,6 @@
       .join(' · ');
   }
 
-  const deaths = $derived(summary.deaths.length);
-  const meta = $derived(
-    [
-      `${rows.length} ${rows.length === 1 ? 'player' : 'players'}`,
-      `${deaths} ${deaths === 1 ? 'death' : 'deaths'}`,
-      pullLength(durationMs),
-    ].join(' · '),
-  );
-
   function follow(event: MouseEvent, guid: string): void {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
     event.preventDefault();
@@ -148,8 +138,8 @@
   }
 </script>
 
-<Section title="Players" {meta} testid="summary-tab">
-  <Plate label="Players" testid="summary-roster-card">
+<Section title="Players" panel frame="framed" flush testid="summary-tab">
+  <div data-testid="summary-roster-card">
     <StatTable {columns} nameHead="Player" bar={false} {sort} {onsort} label="Players">
       {#each shown as row (row.guid)}
         {@const display = unitLabel(row.name)}
@@ -182,9 +172,9 @@
         onclick={() => (showEveryone = true)}>Show all {rows.length} players</button
       >
     {/if}
-  </Plate>
+  </div>
   {#if approximate}
-    <p class="text-small text-muted pt-2" data-testid="summary-wholefight-note">
+    <p class="text-small text-muted px-5 pt-2" data-testid="summary-wholefight-note">
       Active is marked {activeMark} because the summary does not track it over time: it is the whole fight's figure
       even inside a shorter window. Damage, healing, taken and deaths are this window's own numbers.
     </p>

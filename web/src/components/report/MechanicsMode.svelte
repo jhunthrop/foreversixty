@@ -27,7 +27,6 @@
   import { classSlugOf } from '../../lib/report/planner-link';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -328,8 +327,8 @@
 {/snippet}
 
 <div class="flex flex-col gap-[var(--section-gap)]" data-testid="mechanics-mode">
-  <Section title="Mechanics" meta="Problems first, then what went right">
-    <Plate label="Mechanics">
+  <Section title="Mechanics" panel frame="framed" flush>
+    <div>
       {#if beforeMechanics}
         {@render line(
           'This report was parsed before Mechanics mode existed; parse it again to see mechanics.',
@@ -376,7 +375,7 @@
           {/each}
         </div>
       {/if}
-    </Plate>
+    </div>
     {#if !beforeMechanics && block.table_found}
       <p class="text-muted pt-3 text-[13px]">
         Whole {nightMode ? 'night' : 'fight'}, from the encounter’s mechanics table. {nightMode
@@ -387,7 +386,7 @@
   </Section>
 
   {#if !beforeMechanics && block.table_found}
-    <Section title="Problems" meta="Deaths first, then most costly" testid="mechanics-problems">
+    <Section title="Problems" meta="Deaths first, then most costly" testid="mechanics-problems" panel>
       {#if problems.length === 0}
         <p class="text-[14px]">Nothing the table lists went wrong.</p>
       {:else}
@@ -418,7 +417,7 @@
     </Section>
 
     {#if nightMode}
-      <Section title="Over the night" testid="mechanics-night">
+      <Section title="Over the night" testid="mechanics-night" panel>
         {#if nightBosses.length === 0}
           <p class="text-[14px]">Nothing the table lists hit anyone on any pull.</p>
         {:else}
@@ -453,7 +452,7 @@
     {/if}
 
     {#if melee.damage > 0}
-      <Section title="Melee swings" testid="mechanics-melee">
+      <Section title="Melee swings" testid="mechanics-melee" panel>
         <p class="text-muted text-[14px] leading-6">
           <span class="text-text tabular-nums">{formatAmount(melee.damage)}</span> damage to
           <span class="tabular-nums">{melee.players}</span>
@@ -476,7 +475,7 @@
     {/if}
 
     {#if showPlayerCards}
-      <Section title="By player" meta="What hit them, and what did not" testid="mechanics-players">
+      <Section title="By player" meta="What hit them, and what did not" testid="mechanics-players" panel>
         {#each players as player (player.guid)}
           <Row title={splitUnitName(player.name).name} open testid={`mechanics-player-${player.guid}`}>
             {#snippet lead()}<ClassCrestRing
@@ -555,7 +554,7 @@
     {/if}
 
     {#if unclassified.length > 0}
-      <Section title="Not yet classified" testid="mechanics-unclassified">
+      <Section title="Not yet classified" testid="mechanics-unclassified" panel>
         <p class="text-muted text-[13px]">
           These enemy abilities hit someone and the table does not list them, so it does not say whether they
           were avoidable. Run <code class="font-mono text-[13px]">forever-logs mechanics-draft</code> on the
@@ -584,7 +583,7 @@
     {/if}
 
     {#if unjudged.length > 0}
-      <Section title="Deaths the table does not explain" testid="mechanics-unjudged-deaths">
+      <Section title="Deaths the table does not explain" testid="mechanics-unjudged-deaths" panel>
         <p class="text-muted text-[13px]">
           Killed by a swing, by an ability the table does not list, or by nothing the log named: the problems
           above cannot say whether these were avoidable. The Deaths tab has each one in full.

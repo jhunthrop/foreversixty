@@ -19,7 +19,6 @@
   import type { AuraTrack } from '../../lib/report/types';
   import type { StatColumn, StatSort } from '../../lib/ui/stat-table';
   import Meter from '../ui/Meter.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -183,8 +182,8 @@
   const SEPARATOR = ' · ';
 </script>
 
-<Section {title} {meta} testid="aura-section">
-  <Plate label={title}>
+<Section {title} {meta} testid="aura-section" panel frame="framed" flush>
+  <div>
     {#if rows.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
         {emptyMessage ?? `No ${kind === 'BUFF' ? 'buffs' : 'debuffs'} in this window.`}
@@ -231,7 +230,7 @@
         {/each}
       </StatTable>
     {/if}
-  </Plate>
+  </div>
   {#if rows.length > 0}<CopyCsv lines={csvLines} />{/if}
 </Section>
 
@@ -240,6 +239,7 @@
     title={kind === 'DEBUFF' ? 'On the bosses, across the night' : 'Across the night'}
     meta={kind === 'DEBUFF' ? 'Uptime over the time the bosses were up' : 'Over everyone who had it'}
     testid="aura-by-spell"
+    panel
   >
     <StatTable columns={[{ id: 'up', label: 'Up' }]} open label="Uptime across the night">
       {#each bySpell as entry (entry.name)}

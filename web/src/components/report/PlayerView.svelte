@@ -23,7 +23,6 @@
   } from '../../lib/report/types';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
   import Meter from '../ui/Meter.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
@@ -237,9 +236,12 @@
       .filter((part) => part !== '')
       .join(' · ')}
     testid="report-table-card"
+    panel
+    frame="framed"
+    flush
   >
     {#snippet head()}{#if rows.length > 0}<CopyCsv lines={abilityCsv} inHead />{/if}{/snippet}
-    <Plate label="Abilities">
+    <div>
       {#if rows.length === 0}
         <EmptyLine text="Nothing in this window." testid="table-empty" />
       {:else}
@@ -276,9 +278,9 @@
           {/each}
         </StatTable>
       {/if}
-    </Plate>
+    </div>
     {#if measureError !== ''}
-      <p class="text-small text-wipe pt-2" role="alert">{measureError}</p>
+      <p class="text-small text-wipe px-5 pt-2" role="alert">{measureError}</p>
     {/if}
   </Section>
 {:else}
@@ -287,9 +289,10 @@
     meta={gearMeta || undefined}
     action={plannerHref ? { label: 'Open in the planner', href: plannerHref } : undefined}
     testid="report-gear"
+    panel
   >
     {#if combatant === undefined || combatant.gear.every((item) => item.ID <= 0)}
-      <EmptyLine text={NO_GEAR} section testid="report-no-gear" />
+      <EmptyLine text={NO_GEAR} testid="report-no-gear" />
     {:else}
       <GearList gear={combatant.gear} className={row?.class} {dataBuild} {name} framed={false} />
     {/if}

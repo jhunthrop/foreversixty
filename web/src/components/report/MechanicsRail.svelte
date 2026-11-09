@@ -21,7 +21,7 @@
 </script>
 
 {#if judged}
-  <Section title="Clean" meta="No avoidable damage" testid="mechanics-rail">
+  <Section title="Clean" meta="No avoidable damage" testid="mechanics-rail" panel>
     {#if clean.length === 0}
       <p class="text-muted text-[14px]">Everyone took avoidable damage.</p>
     {:else}

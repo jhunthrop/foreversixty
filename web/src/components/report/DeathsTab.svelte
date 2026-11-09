@@ -22,7 +22,6 @@
   import { plannerLinkFor } from '../../lib/report/planner-link';
   import type { StatFigure } from '../../lib/ui/stat-table';
   import Meter from '../ui/Meter.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -338,9 +337,16 @@
   }
 </script>
 
-<Section title="Deaths" meta={`${ordered.length} in this fight`} testid="deaths-tab">
+<Section
+  title="Deaths"
+  meta={`${ordered.length} in this fight`}
+  testid="deaths-tab"
+  panel
+  frame="framed"
+  flush
+>
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
-  <Plate label="Deaths">
+  <div>
     {#if ordered.length === 0}
       <EmptyLine text="Nobody died." testid="table-empty" />
     {/if}
@@ -426,5 +432,5 @@
         {/if}
       </div>
     {/each}
-  </Plate>
+  </div>
 </Section>

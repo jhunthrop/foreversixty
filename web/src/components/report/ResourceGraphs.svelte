@@ -27,7 +27,6 @@
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import Spark from '../ui/Spark.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -220,8 +219,11 @@
 <Section
   title="Resources"
   meta={`Mana, rage, energy and focus, ${capSpan === 'window' ? 'this window' : 'whole fight'}`}
+  panel
+  frame="framed"
+  flush
 >
-  <Plate label="Resources">
+  <div>
     {#if rows.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
         No resource changes in this window.
@@ -342,7 +344,7 @@
         {/each}
       </StatTable>
     {/if}
-  </Plate>
+  </div>
   {#if rows.length > 0}
     <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
       <p>Fight length in this window: <span class="tabular-nums">{formatDuration(durationMs)}</span>.</p>

@@ -306,6 +306,7 @@
   meta={wide.current ? meta : undefined}
   metaTestid="chart-head-meta"
   {testid}
+  panel
 >
   {#snippet head()}{#if wide.current}{@render controls()}{/if}{/snippet}
   {#if wide.current}

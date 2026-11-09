@@ -80,41 +80,28 @@ def tab_summary(R, fi, source):
         rows.append(StatRow(crest(r, 28), plink(r), player_sub(r) or '&nbsp;', figs,
                             primary_phone=f'damage &middot; {rate(r["dps"])} DPS', bar=False))
     table = StatTable(heads, rows, len(heads) - 2, bar=False, sort='Damage', sortable=tuple(h for h, _ in heads[2:]))
-    nd = sum(1 for d in s['deaths'] if d['guid'] in fr)
-    plate = Section('Players', Plate(table, 'Players'), meta=f'{plural(len(rs), "player")} &middot; {plural(nd, "death")} &middot; {mmss(s["duration_ms"])}')
+    # directions b1: the Players panel leads, framed; the band already says the count, the deaths and the length
+    plate = Section('Players', table, panel=True, frame='framed', flush=True)
     abil: dict[str, list] = {}
     for a in s['damage_taken']:
         if a['guid'] in fr:
             for ab in a['abilities']:
                 abil.setdefault(ab['name'] or 'Melee', [ab.get('spell_id', 0), 0])[1] += ab.get('effective', ab['total'])
-    # Share is of everything every player took in this window, whatever the source scope shows (the shipped caption)
-    tot = sum(ab.get('effective', ab['total']) for a in s['damage_taken'] if a['guid'] in roster(s) for ab in a['abilities']) or 1
+    # Share is of the scope's damage taken (report/SummaryPanels.svelte), so the column adds up to 100%
+    tot = sum(v for _, v in abil.values()) or 1
     dur = s['duration_ms'] / 1000
-    trows = [StatRow(sicon(sid, 24), f'<b>{escape(melee(sid, k))}</b>', '', [f'{v / tot * 100:.1f}%', n0(v), rate(v / dur)], Meter(v / tot), primary_phone=f'{v / tot * 100:.1f}%')
-             for k, (sid, v) in sorted(abil.items(), key=lambda kv: -kv[1][1])]
-    taken = Section('Damage taken by ability', StatTable([('', False), ('Ability', False), ('', False), ('Share', True), ('Amount', True), ('Per sec', True)], trows, 3, open_=True)
-                    + '<p class="t-small" style="padding-top:8px">Share is of everything every player took in this window, whatever the source scope shows.</p>'
-                    if trows else '<p class="empty">Nobody took damage in this window.</p>', action=Link('Damage taken &rsaquo;'))
+    trows = [StatRow(sicon(sid, 24), f'<b>{escape(melee(sid, k))}</b>', '', [f'{v / tot * 100:.1f}%', rate(v / dur), n0(v)], Meter(v / tot), primary_phone=f'{v / tot * 100:.1f}%')
+             for k, (sid, v) in sorted(abil.items(), key=lambda kv: -kv[1][1])[:8]]
+    taken = Section('Damage taken by ability', StatTable([('', False), ('Ability', False), ('', False), ('Share', True), ('Per sec', True), ('Amount', True)], trows, 3)
+                    if trows else '<p class="empty">Nobody took damage in this window.</p>', panel=True, flush=True)
     main = plate + chart(R, fi, 'damage', source) + taken   # R4: the table first, the chart under it
-    rail = this_pull(R, fi, source) + deaths_rail(R, fi, source) + rating_rail(R, fi)
+    rail = this_pull(R, fi, source) + (rating_rail(R, fi) if boss else '')
     return main, rail, ([PARSES_MISSING] if boss else [])
-
-
-def deaths_rail(R, fi, source):
-    s = R.summary(fi)
-    ros = roster(s)
-    fr = friendlies(R, s, source)
-    dd = [d for d in s['deaths'] if d['guid'] in fr]
-    if not dd:
-        return Section('Deaths', '<p class="empty">Nobody died.</p>')
-    rows = [Row(pname(ros.get(d['guid']), d['name']), f'{escape(melee(d["killing_blow"]["spell_id"], d["killing_blow"]["spell_name"]))} &middot; {escape(d["killing_blow"]["source_name"])} &middot; {n0(d["killing_blow"]["amount"])}',
-                lead=f'<span class="num muted">{at(d["at_ms"])}</span>{crest(ros.get(d["guid"]), 28)}') for d in dd]
-    return Section('Deaths', Rows(rows, open_=True), action=Link('Deaths &rsaquo;'))
 
 
 def rating_rail(R, fi):
     rc = COPY['ratingCopy']
-    return Section(rc['panelHeading'], f'<p class="empty">{escape(rc["noRatingForTrash"] if R.fight(fi)["kind"] == "trash" else rc["panelEmpty"])}</p>')
+    return Section(rc['panelHeading'], f'<p class="empty">{escape(rc["panelEmpty"])}</p>', panel=True)
 
 
 def side_rows(pairs: dict[str, float], cap: int = 8) -> str:
@@ -153,8 +140,7 @@ def tab_actor(R, fi, source, which):
                                      'Healing': ('healing', 'HPS', 'Effective', 'healing', 'Healing'),
                                      'Damage taken': ('damage_taken', 'Taken / s', 'Amount', 'taken', 'Damage taken')}[which]
     has_rows = any(a['guid'] in friendlies(R, s, source) and a['effective'] > 0 for a in s[key])
-    plate = Section(title, Plate(actor_table(R, fi, source, key, unit, amt), title), meta='Click a player to see their abilities',
-                    action=COPY_CSV if has_rows else '')
+    plate = Section(title, actor_table(R, fi, source, key, unit, amt), action=COPY_CSV if has_rows else '', panel=True, frame='framed', flush=True)
     fr = friendlies(R, s, source)
     side: dict[str, float] = {}
     for a in s[key]:
@@ -162,7 +148,7 @@ def tab_actor(R, fi, source, which):
             for t in a.get('targets', []):
                 side[t['name']] = side.get(t['name'], 0) + t['total']
     rail_title = {'Damage done': 'Targets', 'Healing': 'Healed', 'Damage taken': 'Sources'}[which]
-    rail = this_pull(R, fi, source) + Section(rail_title, side_rows(side) if side else '<p class="empty">Nothing in this window.</p>')
+    rail = this_pull(R, fi, source) + Section(rail_title, side_rows(side) if side else '<p class="empty">Nothing in this window.</p>', panel=True)
     return plate + chart(R, fi, metric, source), rail, []
 
 
@@ -276,8 +262,8 @@ def tab_deaths(R, fi, source):
         foot = ' '.join(x for x in (f'Holding: {held}.' if held else '', '' if healed else 'No healing landed in the last 10 seconds.') if x)
         body = StatTable([('', False), ('Last hits and heals', False), ('Health after', False), ('Amount', True), ('Health', True)], lines, 2, sort='', sortable=())
         blocks.append(f'<div class="dblock">{Rows([head_row])}{body}' + (f'<p class="t-small dfoot">{foot}</p>' if foot else '') + '</div>')
-    plate = Section('Deaths', Plate(''.join(blocks), 'Deaths') if blocks else Plate('<p class="empty">Nobody died.</p>', 'Deaths'), meta=f'{len(blocks)} in this fight',
-                    action=COPY_CSV if blocks else '')
+    plate = Section('Deaths', ''.join(blocks) if blocks else '<p class="empty">Nobody died.</p>', meta=f'{len(blocks)} in this fight',
+                    action=COPY_CSV if blocks else '', panel=True, frame='framed', flush=True)
     return plate + chart(R, fi, 'taken', source), this_pull(R, fi, source), []
 
 
@@ -478,12 +464,13 @@ FACTS_CHART = {'threatCaveat': 'An estimate: 1 threat per point of damage and 0.
 
 
 PAGE_CSS = '''<style>
+.pull-acts{display:flex;flex-wrap:wrap;gap:8px;padding-top:16px}
+p.skp{padding:12px 0}
 button.sel{background:none;cursor:pointer}
 .gloss>summary{list-style:none;cursor:pointer;min-height:36px;display:inline-flex;align-items:center;font-size:14px;font-weight:600}.gloss>summary::-webkit-details-marker{display:none}
 .chart-t{margin-left:8px;font-size:13px;font-weight:600}
 .ans-act{display:flex;gap:8px;margin-top:6px}@media(min-width:900px){.ans-act{justify-content:flex-end}}
 .ans-more{display:none}
-.head .ans{min-width:0}@media(min-width:900px){.head .ans{min-width:360px}}
 .dblock+.dblock{border-top:1px solid var(--line)}.dblock .st-h{padding-top:6px}.dfoot{padding:8px 16px 12px}
 b.kill,.f .kill{color:var(--kill)}
 .rail-l{display:flex;flex-direction:column;gap:8px;padding-top:10px;font-size:14px;line-height:20px}.rail-p{padding-top:10px}
@@ -554,8 +541,8 @@ def report_page(tab: str, fi: int = DEFAULT_PULL, source: str = 'Your group', vi
     if viewer:
         me = roster(R.summary(fi))[viewer]
         who = (split_name(me['name'])[0], me['class'].lower(), escape(me['class']))
-    body = (head(R, fi, tab, source, viewer, sample) + bar(R, fi, tab, bar_source, open_m, compare) + menu_html + notices(nts)
-            + Page('split', main, rail) + PAGE_CSS)
+    body = (head(R, fi, tab, source, viewer, sample, player=player) + bar(R, fi, tab, bar_source, open_m, compare) + menu_html + notices(nts)
+            + Page('split', main, rail, panels=True) + PAGE_CSS)
     note = (f'Report mock (design/specs/2026-11-07-logs-reports.md), built only from ws_prims. Data: {DATA_NOTE}, pull {fi}, source {escape(source)}'
             + ('; SAMPLE viewer: an owner of Soren Everhart' if viewer else '') + f'; build {BUILD} names and icons.')
     return build_page(f'{R.title}: {tab}', body, 'Logs', who, note)
@@ -582,11 +569,11 @@ def state_page(state: str) -> str:
     rc = COPY['reportCopy']
     if state == 'loading':
         # The sample's shell knows its title (the parity render, FS_REPORT_SAMPLE): the heading is the text, not a block.
-        head_html = PageHeader(escape(R.title) if AS_SAMPLE else Skeleton(520, 40), meta=[Skeleton(320, 16)], answer=f'{Skeleton(200, 16)}{Skeleton(160, 40)}{Skeleton(220, 16)}',
+        head_html = PageHeader(escape(R.title) if AS_SAMPLE else Skeleton(520, 40), meta=[Skeleton(320, 16)], answer=Skeleton(110, 32),
                                tabs=TabStripMore(['Summary'], '', 1, 1).replace('>Summary<', ' aria-disabled="true">Summary<'))
-        main = Section('Players', Plate(f'<div class="st" style="--n:4">{skeleton_rows(6)}</div>', 'Players'))
-        rail = Section('This pull', ''.join(f'<p>{Skeleton(300, 16)}</p>' for _ in range(5)))
-        body = head_html + bar(R, DEFAULT_PULL, 'Summary', 'Your group') + Page('split', main, rail)
+        main = Section('Players', f'<div class="st" style="--n:4" role="region" aria-label="Loading the report.">{skeleton_rows(6)}</div>', panel=True, frame='framed', flush=True)
+        rail = Section('This pull', ''.join(f'<p class="skp">{Skeleton(300, 16)}</p>' for _ in range(3)), panel=True)
+        body = head_html + bar(R, DEFAULT_PULL, 'Summary', 'Your group') + Page('split', main, rail, panels=True)
     elif state in ('error', 'missing'):
         msg = 'Report data did not load' if state == 'error' else 'No report with that id'
         act = Button('Try again', small=True) if state == 'error' else Link('Open your reports &rsaquo;')

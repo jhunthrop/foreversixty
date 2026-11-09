@@ -8,7 +8,7 @@
   let { columns = EVENT_COLUMNS }: { columns?: readonly string[] } = $props();
 </script>
 
-<Section title="Columns" meta={`${columns.length} in events.parquet`} testid="queries-rail">
+<Section title="Columns" meta={`${columns.length} in events.parquet`} testid="queries-rail" panel>
   <ul class="text-text flex flex-wrap gap-x-3 gap-y-1 font-mono text-[13px] leading-5" aria-label="Columns">
     {#each columns as column (column)}<li>{column}</li>{/each}
   </ul>

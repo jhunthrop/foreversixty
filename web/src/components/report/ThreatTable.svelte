@@ -30,7 +30,6 @@
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Meter from '../ui/Meter.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import Select from '../ui/Select.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -429,6 +428,7 @@
       ? undefined
       : chartCopy.threatTableMeta(picked.name, standingAtMs, lines.length)}
     testid="threat-table-card"
+    panel
   >
     {#if !showChart}
       <div class="flex flex-col gap-2 pb-3">
@@ -444,7 +444,7 @@
         {@render enemyPicker()}
       </div>
     {/if}
-    <Plate label={chartCopy.threatTableTitle}>
+    <div>
       {#if lines.length === 0}
         <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">No threat in this window.</p>
       {:else}
@@ -484,7 +484,7 @@
           {/each}
         </StatTable>
       {/if}
-    </Plate>
+    </div>
     {#if lines.length > 0}
       <div class="flex flex-col gap-1 pt-2">
         {#if ranked}

@@ -27,7 +27,6 @@
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import Button from '../ui/Button.svelte';
   import Field from '../ui/Field.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -144,6 +143,7 @@
   title="Events"
   meta={`${matching.length.toLocaleString()} events in this window, in order`}
   testid="events-view"
+  panel
 >
   <div class="flex flex-col gap-3">
     <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -162,7 +162,7 @@
       </div>
     </div>
 
-    <Plate label="Events">
+    <div>
       {#if shown.length === 0}
         <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
           No rows matched.{stream === null && search.trim() !== ''
@@ -200,7 +200,7 @@
           </div>
         {/if}
       {/if}
-    </Plate>
+    </div>
 
     <p class="text-muted text-[13px] leading-5">
       {#if stream === null}

@@ -1532,3 +1532,47 @@ def Live() -> str:
 
 def Split(rows: str, inspector: str) -> str:
     return f'<div class="split-insp">{rows}{inspector}</div>'
+
+
+# The panel form (web ui/Section `panel`, `frame`, `flush`; ui/Page `panels`): the logs and report mocks' prims.panel, the
+# heading row inside one Plate with the body. `frame` is the Plate's ('plain', 'framed', 'lead'); `flush` runs the body
+# edge to edge (a table that pads its own cells). Page(panels=True) sets them 22 px apart, the columns 28.
+PRIM_CSS += '''
+.plate>.sec-h.pn-h{padding:16px 20px 10px;border-bottom:0}.pn-b{padding:0 20px 16px}.pn-b.flush{padding:0 0 6px}
+.plate.framed{position:relative}.plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+.layout-split.panels{column-gap:28px}.layout-split.panels>.main,.layout-split.panels>.rail{gap:22px}
+@media(max-width:767px){.plate>.sec-h.pn-h{padding:14px 14px 8px}.pn-b{padding:0 14px 14px}}
+'''
+
+_Section1 = Section
+
+
+def _named(html: str, title: str) -> str:
+    sid = region_slug(title)
+    return html.replace('<section ', f'<section id="{sid}" aria-labelledby="{sid}-title" ', 1).replace('<h2 ', f'<h2 id="{sid}-title" ', 1)
+
+
+def Section(title: str, body: str, action: str = '', meta: str = '', named: bool = False, boxed: bool = False,
+            panel: bool = False, frame: str = 'plain', flush: bool = False) -> str:
+    """panel: the heading row inside one Plate (its frame) with the body, as the built Section's `panel`."""
+    if not panel:
+        if not boxed:
+            return _Section1(title, body, action, meta, named)
+        html = _Section0(title, body, action, meta, boxed=True)
+        return _named(html, title) if named else html
+    a = f'<span class="act">{action}</span>' if action else ''
+    m = f'<span class="t-small">{meta}</span>' if meta else ''
+    cls = {'plain': '', 'framed': ' framed', 'lead': ' framed lead'}[frame]
+    html = (f'<section data-region="{region_slug(title)}"><div class="plate{cls}" data-region="{REGION["plate"]}">'
+            f'<div class="sec-h pn-h"><h2 class="t-h3">{title}</h2>{m}{a}</div>'
+            f'<div class="pn-b{" flush" if flush else ""}">{body}</div></div></section>')
+    return _named(html, title) if named else html
+
+
+_Page1 = Page
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, panels: bool = False) -> str:
+    """panels: main and rail hold Section panels (web ui/Page `panels`)."""
+    html = _Page1(layout, main, rail, sticky_rail)
+    return html.replace('class="layout-split"', 'class="layout-split panels"', 1) if panels else html

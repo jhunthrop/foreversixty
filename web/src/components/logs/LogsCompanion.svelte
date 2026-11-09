@@ -1,6 +1,6 @@
 <!-- web/src/components/logs/LogsCompanion.svelte -->
-<!-- /logs' rail Section "The companion" (logs spec 2026-11-07 section 4): one line and the secondary
-     button to the companion's own step on /setup; signed in, the pairing block under it (a label,
+<!-- /logs' rail panel "The companion" (logs spec 2026-11-07 section 4; directions b1-logs): one line and
+     the button (the primary once signed in; signed out, Sign in is) to the companion's own step on /setup; signed in, the pairing block under it (a label,
      `pairingCopy.companionFirst`, `Get a pairing code`). A paired device's status line sits over
      the pointer. The pairing block is companion/PairingBlock.svelte, shared with /setup. -->
 <script lang="ts">
@@ -14,12 +14,14 @@
   let { signedIn, devices }: { signedIn: boolean; devices: readonly Device[] } = $props();
 </script>
 
-<Section title="The companion" meta="Live, while you raid" anchor="companion" testid="logs-companion">
-  <div class="flex flex-col items-start gap-3 pt-1">
+<Section title="The companion" anchor="companion" panel testid="logs-companion">
+  <div class="flex flex-col items-start gap-3">
     <CompanionStatus {devices} />
     <p class="text-[15px] leading-6" data-testid="logs-companion-pointer">{logsCompanionCopy.pointer}</p>
-    <Button href={logsCompanionCopy.pointerHref} testid="logs-companion-link"
-      >{logsCompanionCopy.pointerLink}</Button
+    <Button
+      tone={signedIn ? 'primary' : 'secondary'}
+      href={logsCompanionCopy.pointerHref}
+      testid="logs-companion-link">{logsCompanionCopy.pointerLink}</Button
     >
     {#if signedIn}
       <PairingBlock {devices} />

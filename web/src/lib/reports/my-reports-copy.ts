@@ -13,7 +13,6 @@ export const myReportsCopy = {
 /** The /reports page ("Your reports"): its head and the words its states add. */
 export const yourReportsPageCopy = {
   title: 'Your reports',
-  job: 'Every fight you logged, newest first.',
   empty: 'No logs yet. Upload a log, or let the companion send your next raid.',
   signedOut: 'Sign in to see every report you logged.',
   sessionFailed: 'Your account did not load.',

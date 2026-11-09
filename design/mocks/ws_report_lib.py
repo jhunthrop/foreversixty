@@ -198,39 +198,41 @@ def Button(label: str, primary: bool = False, small: bool = False) -> str:
     return _Button(label, primary, small).replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
 
 
-def answer(R: Report, fi: int, source: str, viewer: str = '') -> str:
-    """Decision R1 as ruled: a trash pull leads with its mobs and length ("177 mobs · 12:43"), never a DPS figure. A boss pull
-    (none in the real log: blocked on D1) leads with the viewer's DPS and parse when their character is in it, else the group's DPS."""
-    f, s = R.fight(fi), R.summary(fi)
-    nd = sum(1 for d in s['deaths'] if d['guid'] in friendlies(R, s, source))
-    scope = 'Your group' if source == 'Your group' else ('Everyone in range' if source == 'Everyone in range' else 'Group')
-    n = len(in_scope(R, s, source))
-    if f['kind'] == 'trash':
-        label = f'Trash pull &middot; started {clock(f["start"])}'
-        fig = Figure(f'{f.get("mob_deaths", 0):,}', unit=f'{"mob" if f.get("mob_deaths") == 1 else "mobs"} &middot; {mmss(f["duration_ms"])}', size='big')
-        cap = f'{scope} &middot; {plural(n, "player")} &middot; {"no deaths" if nd == 0 else plural(nd, "death")}'
-    else:   # spec 6.1; not rendered from real data until a real boss pull exists (D1)
-        label = f'{escape(f["name"])} #{f.get("attempt", 1)} &middot; {"Kill" if f.get("kill") else "Wipe"} &middot; {mmss(f["duration_ms"])}'
-        fig = Figure(n0(group_dps(R, s, source)), unit='DPS', size='big')
-        cap = f'{scope} damage &middot; {plural(nd, "death")}'
-    # Sim this fight opens the simulator (a link styled as a button); Copy link acts in place (a button).
-    acts = (f'<span class="ans-act">{_Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</span>'
-            f'<span class="ans-more"><button type="button" class="btn sm" aria-haspopup="menu" aria-expanded="false" aria-label="Report actions">&middot;&middot;&middot;</button></span>')
-    return f'<span class="t-label">{label}</span>{fig}<span class="t-small">{cap}</span>{acts}'
+RATE_TABS = {'Summary': ('damage_done', 'DPS'), 'Damage done': ('damage_done', 'DPS'), 'Healing': ('healing_done', 'HPS'),
+             'Damage taken': ('damage_taken', 'DTPS')}
 
 
-def head(R: Report, fi: int, tab: str, source: str, viewer: str = '', sample: bool = False, tabs: bool = True) -> str:
-    sample = sample or AS_SAMPLE
+def figure(R: Report, fi: int, tab: str, source: str, player: str = '') -> str:
+    """The band's one figure follows the tab (directions b1, lib/report/frame.ts reportFigure): group DPS, HPS or DTPS on the
+    rate tabs, the player's own on their view, deaths on Deaths and Mechanics, none elsewhere."""
+    s = R.summary(fi)
+    fr = friendlies(R, s, source)
+    if tab in ('Deaths', 'Mechanics'):
+        n = sum(1 for d in s['deaths'] if d['guid'] in fr)
+        return Figure(f'{n:,}', unit='death' if n == 1 else 'deaths')
+    if tab not in RATE_TABS:
+        return ''
+    key, unit = RATE_TABS[tab]
+    rows = [r for r in in_scope(R, s, source) if not player or r['guid'] == player]
+    total = sum(r[key] for r in rows) / (s['duration_ms'] / 1000)
+    return Figure(rate(total), unit=unit if player else f'group {unit}')
+
+
+def head_line(R: Report, fi: int, source: str) -> str:
+    """"Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died" (lib/report/frame.ts reportMeta)."""
     f = R.fight(fi)
-    y, m, d = f['start'][:10].split('-')
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-    nf = len(R.meta['fights'])
-    tag = Tag(COPY['reportCopy']['sampleBadge'], 'muted') if sample else Tag(COPY['reportCopy']['notCreditedTag'], 'muted')
-    meta = [f'{escape(R.zone)} &middot; {int(d)} {months[int(m) - 1]} {y}<span class="ph-fights"> &middot; {nf} fights</span>', tag]
-    if sample:
-        meta.append(f'<span class="ph-note">{escape(COPY["reportCopy"]["sampleNote"])}</span>')
+    if f['kind'] == 'trash':
+        mobs = f.get('mob_deaths', 0)
+        return f'{escape(R.zone)} &middot; Pull {fi}, {escape(f["name"])} &middot; {mmss(f["duration_ms"])} &middot; {plural(mobs, "mob")} died'
+    n = len(in_scope(R, R.summary(fi), source))
+    return (f'{escape(R.zone)} &middot; Pull {fi}, {escape(f["name"])} #{f.get("attempt", 1)} &middot; {outcome(f)} &middot; '
+            f'{mmss(f["duration_ms"])} &middot; {plural(n, "player")}')
+
+
+def head(R: Report, fi: int, tab: str, source: str, viewer: str = '', sample: bool = False, tabs: bool = True, player: str = '') -> str:
+    """The title band (directions b1): the title, one meta line, the figure that follows the tab, the tab strip."""
     strip = TabStripMore([t for t in TABS if t != 'Coach' or viewer], tab, TAB_MD, TAB_XL - (0 if viewer else 1)) if tabs else ''
-    return PageHeader(escape(R.title), meta=meta, answer=answer(R, fi, source, viewer), tabs=strip)
+    return PageHeader(escape(R.title), meta=[head_line(R, fi, source)], answer=figure(R, fi, tab, source, player), tabs=strip)
 
 
 def fight_label(f: dict) -> str:
@@ -286,20 +288,17 @@ def bar(R: Report, fi: int, tab: str, source: str, open_m: bool = False, compare
 
 
 def this_pull(R: Report, fi: int, source: str = 'All friendlies') -> str:
-    """Decision R7 as ruled: a trash pull reads Mobs died, never "Result: Trash"; Result and Phases are a boss pull's."""
+    """This pull (directions b1, report/ThisPull.svelte): only what the band does not say, then Sim this fight and Copy link."""
     f, s = R.fight(fi), R.summary(fi)
     fr = friendlies(R, s, source)
-    items = [('Pull', escape(f['name']))]
-    if f['kind'] != 'trash':
-        items.append(('Result', outcome(f)))
-    items += [('Length', mmss(f['duration_ms']))]
-    if f['kind'] == 'trash':
-        items.append(('Mobs died', f'{f.get("mob_deaths", 0):,}'))
-    items += [('Players', f'{len(in_scope(R, s, source)):,}'), ('Deaths', str(sum(1 for d in s['deaths'] if d['guid'] in fr)))]
+    scope = 'In range' if source.startswith('Everyone') else f'In {source.lower()}'
+    items = [('Started', clock(f['start'])), (scope, f'{len(in_scope(R, s, source)):,}'),
+             ('Deaths', str(sum(1 for d in s['deaths'] if d['guid'] in fr)))]
     phases = ' &middot; '.join(f'{escape(p["name"])} {mmss(p["start_ms"])}&ndash;{mmss(p["end_ms"])}' for p in s.get('phases', []))
     if phases:
         items.append(('Phases', phases))
-    return Section('This pull', Facts(items), meta=f'Started {clock(f["start"])}')
+    acts = f'<div class="pull-acts">{_Button("Sim this fight", small=True)}{Button("Copy link", small=True)}</div>'
+    return Section('This pull', Facts(items) + acts, panel=True)
 
 
 def chart(R: Report, fi: int, metric: str, source: str) -> str:
@@ -315,12 +314,12 @@ def chart(R: Report, fi: int, metric: str, source: str) -> str:
     title = {'damage': 'Damage over the fight', 'healing': 'Healing over the fight', 'taken': 'Damage taken over the fight'}[metric]
     meta = f'{"Your group" if source == "Your group" else "Group"} {rate(total)} {unit} over the whole fight'
     if not rows:
-        return Section(title, f'<p class="empty">Nothing in this window.</p>', meta=meta)
+        return Section(title, f'<p class="empty">Nothing in this window.</p>', meta=meta, panel=True)
     phases = [(p['name'], p['start_ms'] / 1000, p['end_ms'] / 1000) for p in s.get('phases', [])]
     marks = [(d['at_ms'] / 1000, '#f0736b') for d in s['deaths'] if d['guid'] in fr]
     lc = LineChart(series, dur, 180, phases, marks, label=f'{title}, per player', step_ms=1000)
     phone = Disclosure(f'<span class="t-small">{meta}</span>', LineChart(series, dur, 140, phases, marks, label=title, step_ms=1000))
-    return Section(title, f'<div class="lc-only-d">{lc}</div><div class="lc-only-m">{phone}</div>', meta=f'<span class="lc-only-d">{meta}</span>')
+    return Section(title, f'<div class="lc-only-d">{lc}</div><div class="lc-only-m">{phone}</div>', meta=f'<span class="lc-only-d">{meta}</span>', panel=True)
 
 
 def notices(lines: list[str]) -> str:

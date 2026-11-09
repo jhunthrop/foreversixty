@@ -8,7 +8,6 @@
        open Sections after, and whose rail holds This pull and the tab's own rail Sections. -->
 <script lang="ts">
   import { untrack } from 'svelte';
-  import Facts from '../ui/Facts.svelte';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
@@ -38,7 +37,7 @@
     sampleFightIndex,
   } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
-  import { formatClock, schoolToken, TRASH_PARSE } from '../../lib/report/format';
+  import { schoolToken, TRASH_PARSE } from '../../lib/report/format';
   import {
     FLAG_LETTERS,
     MISSING_FIGHT,
@@ -82,6 +81,7 @@
   import ReportBar from './ReportBar.svelte';
   import ReportHead from './ReportHead.svelte';
   import SummaryPanels from './SummaryPanels.svelte';
+  import ThisPull from './ThisPull.svelte';
   import TargetsRail from './TargetsRail.svelte';
   import Glossary from './Glossary.svelte';
   import EventsRail from './EventsRail.svelte';
@@ -161,7 +161,8 @@
     TABS_MD,
     TABS_XL,
     listedTabs,
-    reportAnswer,
+    reportFigure,
+    reportMeta,
     thisPullFacts,
   } from '../../lib/report/frame';
   import { pullNumbers } from '../../lib/report/fights';
@@ -1621,18 +1622,21 @@
   const scopeDeaths = $derived(
     (wholeScoped?.deaths ?? []).filter((death) => inSource(death.guid, scopeKey, scopePlayers, friendlySet)),
   );
-  const answer = $derived(
+  /** The rows the band's figure sums: the source player alone on their view, else the scope. */
+  const figureRows = $derived(
+    sourcePlayer !== undefined ? scopeRoster.filter((row) => row.guid === sourcePlayer) : scopeRoster,
+  );
+  const figure = $derived(
     fight === null || nightMode || summary === null
       ? null
-      : reportAnswer({
-          fight,
-          attempt: pullNumbers(fights).get(fight.index)?.pull,
-          scope: scopeWord,
-          players: scopeRoster.length,
+      : reportFigure({
+          tab: state.tab,
+          player: playerView,
+          damageDone: figureRows.reduce((sum, row) => sum + row.damage_done, 0),
+          healing: figureRows.reduce((sum, row) => sum + row.healing_done, 0),
+          damageTaken: figureRows.reduce((sum, row) => sum + row.damage_taken, 0),
           deaths: scopeDeaths.length,
-          groupDps:
-            scopeRoster.reduce((sum, row) => sum + row.damage_done, 0) /
-            (Math.max(summary.duration_ms, 1) / 1000),
+          durationMs: summary.duration_ms,
         }),
   );
   const pullFacts = $derived(
@@ -1640,6 +1644,7 @@
       ? []
       : thisPullFacts({
           fight,
+          scope: scopeWord,
           players: scopeRoster.length,
           deaths: scopeDeaths.length,
           phases: summary?.phases ?? [],
@@ -1652,8 +1657,13 @@
       ? null
       : `/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`,
   );
-  const where = $derived(
-    [facts.zone, fights.length > 0 ? facts.date : ''].filter((part) => part !== '').join(' · '),
+  /** The band's meta line: the pull on screen, or the night (zone, date, fight count). */
+  const headLine = $derived(
+    fight !== null && !nightMode
+      ? reportMeta(facts.zone, fight, pullNumbers(fights).get(fight.index)?.pull, scopeRoster.length)
+      : [facts.zone, fights.length > 0 ? facts.date : '', facts.fights]
+          .filter((part) => part !== '')
+          .join(' · '),
   );
   /** One player as the Source on an actor tab: the player's own view (decision R5). */
   const playerView = $derived(sourcePlayer !== undefined && ACTOR_TABS.has(state.tab) && !nightMode);
@@ -1717,10 +1727,7 @@
 
 {#snippet thisPull()}
   {#if fight !== null && !nightMode}
-    <Section title="This pull" meta={`Started ${formatClock(fight.start)}`} testid="report-this-pull">
-      <!-- The facts' own first hairline sits on the head's (the mock's Facts under a Section head). -->
-      <div class="-mt-3"><Facts items={pullFacts} /></div>
-    </Section>
+    <ThisPull facts={pullFacts} {simHref} />
   {/if}
 {/snippet}
 
@@ -1871,17 +1878,15 @@
        it moves in place (followInPage). -->
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
   <div class="reveal" onclick={followInPage}>
-    <Page layout="split" testid="report-page">
+    <Page layout="split" panels testid="report-page">
       {#snippet header()}
         <ReportHead
           title={heading}
-          {where}
-          fightCount={facts.fights}
+          line={headLine}
           sample={isSampleReport(reportId)}
           {credit}
           {live}
-          {answer}
-          {simHref}
+          {figure}
         >
           {#snippet tabs()}
             <TabStripMore
@@ -1938,23 +1943,17 @@
         {@render thisPull()}
         {#if !onePullTab && scoped !== null}
           {#if state.tab === 'summary' && !nightMode}
-            <SummaryPanels
-              part="deaths"
-              summary={scoped}
-              durationMs={scoped.duration_ms}
-              players={playerSet}
-              tabHref={(tab) => hrefWith({ tab })}
-              {spellIcon}
-            />
-            <RatingPanel
-              {reportId}
-              fightIndex={state.fight}
-              roster={scoped.roster.map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
-              trash={isTrashPull}
-              tabHref={hrefWith({ tab: 'rating' })}
-            />
+            {#if !isTrashPull}
+              <RatingPanel
+                {reportId}
+                fightIndex={state.fight}
+                roster={scoped.roster.map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
+                trash={isTrashPull}
+                tabHref={hrefWith({ tab: 'rating' })}
+              />
+            {/if}
             {#if fight?.kind === 'encounter' && scoped.combatants.length > 0}
-              <Section title="At pull" testid="at-pull-card">
+              <Section title="At pull" panel testid="at-pull-card">
                 {#each scoped.combatants as combatant (combatant.guid)}
                   {@const label = unitLabel(combatant.name).text}
                   <Row
@@ -2048,13 +2047,10 @@
           />
           {@render chart('damage-done')}
           <SummaryPanels
-            part="taken"
             summary={scoped}
-            everyone={windowed ?? scoped}
             durationMs={scoped.duration_ms}
             players={playerSet}
             approximate={!windowIsWhole}
-            tabHref={(tab) => hrefWith({ tab })}
             {spellIcon}
           />
         {:else if ACTOR_TABS.has(state.tab) && playerView}

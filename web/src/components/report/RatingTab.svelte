@@ -32,7 +32,6 @@
   import Divided from '../ui/Divided.svelte';
   import Figure from '../ui/Figure.svelte';
   import Meter from '../ui/Meter.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -203,8 +202,11 @@
   title={ratingCopy.panelHeading}
   action={{ label: ratingCopy.explainLink, href: '/ratings' }}
   testid="rating-tab"
+  panel
+  frame="framed"
+  flush
 >
-  <Plate label="Rating">
+  <div>
     {#if fetcher.status === 'loading' || fetcher.status === 'idle'}
       {@render line(RATING_LOADING, 'rating-tab-loading')}
     {:else if fetcher.status === 'flagged'}
@@ -225,5 +227,5 @@
         {:else}<Divided gap={0}>{@render card(player, guid)}</Divided>{/if}
       {/each}
     {/if}
-  </Plate>
+  </div>
 </Section>

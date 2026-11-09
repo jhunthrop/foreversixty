@@ -20,7 +20,6 @@
   import type { CastCounts } from '../../lib/report/exact';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import Spark from '../ui/Spark.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -216,8 +215,15 @@
   const SEPARATOR = ' · ';
 </script>
 
-<Section title="Casts" meta={`Every caster, ${formatDuration(durationMs)}`} testid="cast-section">
-  <Plate label="Casts">
+<Section
+  title="Casts"
+  meta={`Every caster, ${formatDuration(durationMs)}`}
+  testid="cast-section"
+  panel
+  frame="framed"
+  flush
+>
+  <div>
     {#if ordered.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">No casts in this window.</p>
     {:else}
@@ -255,7 +261,7 @@
         {/each}
       </StatTable>
     {/if}
-  </Plate>
+  </div>
   {#if ordered.length > 0}
     <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
       {#if rhythm !== null}

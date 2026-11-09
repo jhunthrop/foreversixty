@@ -18,7 +18,6 @@
   import { LINK } from '../../lib/ui/primitives';
   import { splitUnitName } from '../../lib/characters';
   import Button from '../ui/Button.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import Tag from '../ui/Tag.svelte';
   import CoachReviewBody from './CoachReviewBody.svelte';
@@ -133,7 +132,15 @@
   <div
     class="flex flex-col gap-[var(--section-gap)] @min-[1120px]:grid @min-[1120px]:grid-cols-[minmax(0,1fr)_320px] @min-[1120px]:items-start @min-[1120px]:gap-x-10"
   >
-    <Section {title} {meta} focusId="coach-panel-heading" titleTestid="coach-title" testid="coach-card">
+    <Section
+      {title}
+      {meta}
+      focusId="coach-panel-heading"
+      titleTestid="coach-title"
+      testid="coach-card"
+      panel
+      frame="lead"
+    >
       {#snippet head()}
         <span class="flex h-5 items-center gap-2 text-[13px]" aria-live="polite" data-testid="coach-status">
           {#if view.officer}
@@ -152,7 +159,7 @@
           {/if}
         </span>
       {/snippet}
-      <Plate flush={false}>
+      <div>
         {#if view.starter}
           <p class="text-small text-muted mb-3" data-testid="coach-starter-hint">
             {fill(coachCopy.starterHint, { Spec: specName })}
@@ -209,13 +216,13 @@
             </span>
           {/if}
         </div>
-      </Plate>
+      </div>
     </Section>
 
     {#if full !== null && showBody}
       <aside class="flex flex-col gap-[var(--section-gap)]" data-testid="coach-rail">
         {#if full.review.couldntCheck.length > 0}
-          <Section title={coachCopy.labelCannot} level={3} testid="coach-cannot">
+          <Section title={coachCopy.labelCannot} level={3} testid="coach-cannot" panel>
             <ul class="flex flex-col gap-1">
               {#each full.review.couldntCheck as line, index (index)}
                 <li class="text-small text-muted">
@@ -225,7 +232,7 @@
             </ul>
           </Section>
         {/if}
-        <Section title={coachCopy.labelBasis} level={3} testid="coach-footer-card">
+        <Section title={coachCopy.labelBasis} level={3} testid="coach-footer-card" panel>
           <p class="text-small text-muted" data-testid="coach-footer">{footer}</p>
           {#if historyHref !== null && !view.officer}
             <a

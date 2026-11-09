@@ -49,11 +49,11 @@ describe('EventsView', () => {
 });
 
 describe('EventsRail', () => {
-  it('is the Show Section with the chips checked by the url', () => {
+  it('is the Show panel with the chips checked by the url', () => {
     const body = html(EventsRail, { off: ['aura-removed'] });
     expect(body).toContain('>Show</h2>');
     expect(body).toMatch(/events-chip-auras"/);
-    expect(plates(body)).toBe(0);
+    expect(plates(body)).toBe(1);
   });
 });
 
@@ -100,5 +100,22 @@ describe('TimelinesView', () => {
       window: { startMs: 0, endMs: 1000 },
     });
     expect(empty).toContain('Nothing in this window.');
+  });
+
+  it('marks each phase change inside the window down the lanes, never the pull start', () => {
+    const half = Math.round(summary.duration_ms / 2);
+    const phased = html(TimelinesView, {
+      summary: {
+        ...summary,
+        phases: [
+          { name: 'Phase 1', start_ms: 0, end_ms: half },
+          { name: 'Phase 2', start_ms: half, end_ms: summary.duration_ms },
+        ],
+      },
+      classOf,
+      window: { startMs: 0, endMs: summary.duration_ms },
+    });
+    expect(phased.match(/data-testid="timeline-phase"/g)).toHaveLength(1);
+    expect(phased).toContain('title="Phase 2"');
   });
 });

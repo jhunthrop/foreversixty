@@ -12,7 +12,8 @@ import {
   idleToggleLabel,
   listedTabs,
   pullLength,
-  reportAnswer,
+  reportFigure,
+  reportMeta,
   thisPullFacts,
 } from './frame';
 import type { FightEntry } from './types';
@@ -77,32 +78,51 @@ describe('the Fight list (decision R2)', () => {
   });
 });
 
-describe('the head’s answer (decision R1 as ruled)', () => {
-  it('leads a trash pull with its mobs and length, never a DPS', () => {
-    const answer = reportAnswer({ fight: PULL_6, scope: 'Your group', players: 5, deaths: 0, groupDps: 3 });
-    expect(answer).toMatchObject({
-      label: 'Trash pull · started 21:07:51',
-      value: '177',
-      unit: 'mobs · 12:43',
-      caption: 'Your group · 5 players · no deaths',
+describe('the band’s meta line (directions b1)', () => {
+  it('reads a trash pull as zone, pull, length and mobs died', () => {
+    expect(reportMeta('Zephras Isle', PULL_6, undefined, 5)).toBe(
+      'Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died',
+    );
+  });
+
+  it('reads a boss pull with its attempt, outcome, length and players', () => {
+    expect(reportMeta('', BOSS, 2, 40)).toBe('Pull 90, Warden Kelthas #2 · Wipe 34% · 1:12 · 40 players');
+  });
+});
+
+describe('the band’s figure follows the tab (directions b1)', () => {
+  const totals = { damageDone: 2_400, healing: 142, damageTaken: 737, deaths: 2, durationMs: 763_000 };
+
+  it('is the group’s rate on the rate tabs', () => {
+    expect(reportFigure({ ...totals, tab: 'summary', player: false })).toEqual({
+      value: '3.1',
+      unit: 'group DPS',
+    });
+    expect(reportFigure({ ...totals, tab: 'healing', player: false })).toEqual({
+      value: '0.2',
+      unit: 'group HPS',
+    });
+    expect(reportFigure({ ...totals, tab: 'damage-taken', player: false })).toEqual({
+      value: '1.0',
+      unit: 'group DTPS',
     });
   });
 
-  it('leads a boss pull with the DPS', () => {
-    const answer = reportAnswer({
-      fight: BOSS,
-      attempt: 2,
-      scope: 'Group',
-      players: 5,
-      deaths: 1,
-      groupDps: 1374.4,
-    });
-    expect(answer).toMatchObject({
-      label: 'Warden Kelthas #2 · Wipe at 34% · 1:12',
-      value: '1,374',
+  it('is the player’s own rate on their view, and deaths on Deaths and Mechanics', () => {
+    expect(reportFigure({ ...totals, tab: 'damage-done', player: true })).toEqual({
+      value: '3.1',
       unit: 'DPS',
     });
-    expect(answer.caption).toBe('Group damage · 1 death');
+    expect(reportFigure({ ...totals, tab: 'deaths', player: false })).toEqual({ value: '2', unit: 'deaths' });
+    expect(reportFigure({ ...totals, tab: 'mechanics', player: false, deaths: 1 })).toEqual({
+      value: '1',
+      unit: 'death',
+    });
+  });
+
+  it('is absent where no one figure answers the tab', () => {
+    for (const tab of ['timeline', 'threat', 'resources', 'queries', 'coach'] as const)
+      expect(reportFigure({ ...totals, tab, player: false })).toBeNull();
   });
 
   it('reads a rate with one decimal under 100 and whole from 100', () => {
@@ -112,32 +132,35 @@ describe('the head’s answer (decision R1 as ruled)', () => {
   });
 });
 
-describe('This pull (decision R7 as ruled)', () => {
-  it('reads Mobs died on trash, never a Result', () => {
-    const facts = thisPullFacts({ fight: PULL_6, players: 5, deaths: 0, phases: [] });
+describe('This pull (directions b1)', () => {
+  it('says only what the band does not: the start, the scope’s count and its deaths', () => {
+    const facts = thisPullFacts({ fight: PULL_6, scope: 'Your group', players: 5, deaths: 0, phases: [] });
     expect(facts.map((fact) => [fact.label, fact.value])).toEqual([
-      ['Pull', 'Trash'],
-      ['Length', '12:43'],
-      ['Mobs died', '177'],
-      ['Players', '5'],
+      ['Started', '21:07:51'],
+      ['In your group', '5'],
       ['Deaths', '0'],
     ]);
   });
 
-  it('reads Result and Phases on a boss pull', () => {
+  it('adds a boss pull’s phases', () => {
     const facts = thisPullFacts({
       fight: BOSS,
+      scope: 'Group',
       players: 5,
       deaths: 1,
       phases: [{ name: 'Phase 1', start_ms: 0, end_ms: 14_000 }],
     });
-    expect(facts.map((fact) => fact.label)).toEqual([
-      'Pull',
-      'Result',
-      'Length',
-      'Players',
-      'Deaths',
-      'Phases',
-    ]);
+    expect(facts.map((fact) => fact.label)).toEqual(['Started', 'In group', 'Deaths', 'Phases']);
+  });
+
+  it('reads everyone the logger saw as In range', () => {
+    const facts = thisPullFacts({
+      fight: PULL_6,
+      scope: 'Everyone in range',
+      players: 265,
+      deaths: 2,
+      phases: [],
+    });
+    expect(facts[1]).toMatchObject({ label: 'In range', value: '265' });
   });
 });

@@ -16,7 +16,7 @@ const STYLED_EXTENSIONS = new Set(['.astro', '.svelte', '.ts', '.css']);
 const ALLOWED = new Map<string, number>([
   ['styles/nav.css', 2], // the header export paste box and the search box's "/" key hint
   ['components/Guild.svelte', 1], // <code> a guild address
-  ['components/Upload.svelte', 8], // file and folder names, /combatlog, the chosen file name, both drop zones
+  ['components/Upload.svelte', 3], // WoWCombatLog.txt in both drop zones, the chosen file name
   ['components/AddonPasteBox.svelte', 1], // the addon export paste box
   ['components/ui/CopyLinkField.svelte', 1], // a link to copy
   ['components/ui/Prose.svelte', 1], // inline code in rendered markdown (a command, a path)

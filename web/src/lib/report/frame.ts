@@ -1,6 +1,6 @@
 // web/src/lib/report/frame.ts
 // The report page's frame in words (design/specs/2026-11-07-logs-reports.md section 6.1): the one
-// tab strip, the Fight select's rows, the head's answer and the rail's This pull facts. Pure, so
+// tab strip, the Fight select's rows, the band's meta and figure and the rail's This pull facts. Pure, so
 // the island and its tests read the same rules.
 import type { SelectOption } from '../ui/listbox-model';
 import type { Fact } from '../ui/facts';
@@ -142,16 +142,6 @@ export function fightOptions(
   return [...bossRows, ...zoneRows, ...trashRows];
 }
 
-/** The head's answer (decision R1 as ruled). A trash pull leads with its mobs and length, never a DPS. */
-export interface ReportAnswer {
-  label: string;
-  value: string;
-  unit: string;
-  caption: string;
-  /** The value's tone: strong on trash and the group's DPS, gold for the viewer's own. */
-  tone: 'strong' | 'gold';
-}
-
 /** A per-second figure: one decimal under 100 (1.8), whole from 100 (1,374). */
 export function formatRate(perSecond: number): string {
   const safe = Number.isFinite(perSecond) ? perSecond : 0;
@@ -160,72 +150,95 @@ export function formatRate(perSecond: number): string {
     : Math.round(safe).toLocaleString('en-US');
 }
 
-export interface AnswerFacts {
-  fight: FightEntry;
-  attempt?: number;
-  /** "Your group", "Group" or "Everyone in range". */
-  scope: string;
-  players: number;
-  deaths: number;
-  /** The scope's damage per second over the pull (boss pulls). */
-  groupDps: number;
-}
-
-export function reportAnswer(facts: AnswerFacts): ReportAnswer {
-  const { fight } = facts;
+/** The band's meta line (directions b1): "Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died",
+ *  "Pull 2, Onyxia #1 · Wipe at 34% · 4:10 · 40 players". */
+export function reportMeta(
+  zone: string,
+  fight: FightEntry,
+  attempt: number | undefined,
+  players: number,
+): string {
   if (fight.kind !== 'encounter') {
     const mobs = fight.mob_deaths ?? 0;
-    return {
-      label: `Trash pull · started ${formatClock(fight.start)}`,
-      value: mobs.toLocaleString('en-US'),
-      unit: `${mobs === 1 ? 'mob' : 'mobs'} · ${pullLength(fight.duration_ms)}`,
-      caption: joinFacts(
-        facts.scope,
-        plural(facts.players, 'player'),
-        facts.deaths === 0 ? 'no deaths' : plural(facts.deaths, 'death'),
-      ),
-      tone: 'strong',
-    };
+    return joinFacts(
+      zone,
+      `Pull ${fight.index}, ${fight.name}`,
+      pullLength(fight.duration_ms),
+      `${plural(mobs, 'mob')} died`,
+    );
   }
-  // The viewer's own DPS and parse lead once a boss pull with their character is reachable (G14).
-  const outcome = fight.in_progress
-    ? 'Live'
-    : fight.kill
-      ? 'Kill'
-      : `Wipe${fight.boss_health_pct === undefined ? '' : ` at ${Math.round(fight.boss_health_pct)}%`}`;
+  const outcome = fight.in_progress ? 'Live' : fight.kill ? 'Kill' : outcomeLabel(fight);
+  return joinFacts(
+    zone,
+    `Pull ${fight.index}, ${fight.name} #${attempt ?? 1}`,
+    outcome,
+    pullLength(fight.duration_ms),
+    plural(players, 'player'),
+  );
+}
+
+/** The band's one figure and its unit (directions b1: the figure follows the tab). */
+export interface ReportFigure {
+  value: string;
+  unit: string;
+}
+
+export interface FigureFacts {
+  tab: Tab;
+  /** One player's own view: their DPS, HPS or DTPS, not the group's. */
+  player: boolean;
+  /** The scope's totals over the pull (or the window). */
+  damageDone: number;
+  healing: number;
+  damageTaken: number;
+  deaths: number;
+  durationMs: number;
+}
+
+const RATE_UNIT: Partial<Record<Tab, { key: 'damageDone' | 'healing' | 'damageTaken'; unit: string }>> = {
+  summary: { key: 'damageDone', unit: 'DPS' },
+  'damage-done': { key: 'damageDone', unit: 'DPS' },
+  healing: { key: 'healing', unit: 'HPS' },
+  'damage-taken': { key: 'damageTaken', unit: 'DTPS' },
+};
+
+/** Group DPS, HPS or DTPS on the rate tabs, the player's own on their view, deaths on Deaths and
+ *  Mechanics; null where no single figure answers the tab (Timeline, Threat, Resources, Queries,
+ *  Coach and the rest). */
+export function reportFigure(facts: FigureFacts): ReportFigure | null {
+  if (facts.tab === 'deaths' || facts.tab === 'mechanics')
+    return { value: facts.deaths.toLocaleString('en-US'), unit: facts.deaths === 1 ? 'death' : 'deaths' };
+  const rate = RATE_UNIT[facts.tab];
+  if (rate === undefined) return null;
+  const seconds = Math.max(facts.durationMs, 1) / 1000;
   return {
-    label: joinFacts(`${fight.name} #${facts.attempt ?? 1}`, outcome, pullLength(fight.duration_ms)),
-    value: formatRate(facts.groupDps),
-    unit: 'DPS',
-    caption: `${facts.scope} damage · ${plural(facts.deaths, 'death')}`,
-    tone: 'strong',
+    value: formatRate(facts[rate.key] / seconds),
+    unit: facts.player ? rate.unit : `group ${rate.unit}`,
   };
 }
 
 export interface PullFacts {
   fight: FightEntry;
+  /** "Your group", "Your raid", "Everyone in range". */
+  scope: string;
   players: number;
   deaths: number;
   phases: readonly { name: string; start_ms: number; end_ms: number }[];
 }
 
-/** The rail's This pull (decision R7 as ruled): trash reads Mobs died, never "Result: Trash". */
-export function thisPullFacts({ fight, players, deaths, phases }: PullFacts): Fact[] {
-  const trash = fight.kind !== 'encounter';
-  const facts: Fact[] = [{ id: 'pull', label: 'Pull', value: fight.name }];
-  if (!trash)
-    facts.push({
-      id: 'result',
-      label: 'Result',
-      value: fight.in_progress ? 'Live' : fight.kill ? 'Kill' : outcomeLabel(fight),
-    });
-  facts.push({ id: 'length', label: 'Length', value: pullLength(fight.duration_ms) });
-  if (trash)
-    facts.push({ id: 'mobs', label: 'Mobs died', value: (fight.mob_deaths ?? 0).toLocaleString('en-US') });
-  facts.push(
-    { id: 'players', label: 'Players', value: players.toLocaleString('en-US') },
+/** "In your group", "In your raid"; everyone the logger saw reads "In range". */
+function scopeLabel(scope: string): string {
+  return /^everyone/i.test(scope) ? 'In range' : `In ${scope.toLowerCase()}`;
+}
+
+/** The rail's This pull (directions b1): only what the band does not say, when it started, the
+ *  scope's count and its deaths; a boss pull's phases. */
+export function thisPullFacts({ fight, scope, players, deaths, phases }: PullFacts): Fact[] {
+  const facts: Fact[] = [
+    { id: 'started', label: 'Started', value: formatClock(fight.start) },
+    { id: 'players', label: scopeLabel(scope), value: players.toLocaleString('en-US') },
     { id: 'deaths', label: 'Deaths', value: String(deaths) },
-  );
+  ];
   if (phases.length > 0)
     facts.push({
       id: 'phases',
