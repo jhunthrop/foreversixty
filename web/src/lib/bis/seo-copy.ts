@@ -6,16 +6,16 @@ import { bandWords } from './band-path';
 import { MAX_BAND } from './band-levels';
 
 export interface BisSeoSubject {
-  specName: string;
-  className: string;
+  /** The spec as a player names it in full, the catalogue's `full_name` ("Fury Warrior"). */
+  fullName: string;
   /** The level 60 list holds no raid drop. */
   preRaid: boolean;
 }
 
 const GAME = 'WoW Forever';
 
-function who({ specName, className }: BisSeoSubject): string {
-  return `${specName} ${className}`;
+function who({ fullName }: BisSeoSubject): string {
+  return fullName;
 }
 
 export const bisSeoCopy = {

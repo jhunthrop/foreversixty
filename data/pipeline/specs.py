@@ -148,6 +148,12 @@ def spec_icons(specs: list[SpecRecord], build_dir: Path) -> dict[str, str]:
     return icons
 
 
+def full_name(spec: SpecRecord) -> str:
+    """The spec as a player names it in full: the curated override, else the catalogue
+    name then the class ("Fury Warrior"). The one place a full spec name is composed."""
+    return spec.full_name or f"{spec.name} {spec.class_slug.capitalize()}"
+
+
 def _source(build: str) -> str:
     return (
         f"// Source: data/curated/specs.json; icons from data/builds/{build} "
@@ -164,7 +170,8 @@ def render_go(specs: list[SpecRecord], icons: dict[str, str], build: str) -> str
         f'\t{{Spec: "{s.spec}", ClassSlug: "{s.class_slug}", SpecSlug: "{s.spec_slug}", '
         f'Name: "{s.name}", Role: "{s.role}", TreeIndex: {s.tree_index}, '
         f'ReferenceStat: "{s.reference_stat}", '
-        f'WeightStats: {weight_stats_literal(s.weight_stats)}, Icon: "{icons[s.spec]}"}},'
+        f'WeightStats: {weight_stats_literal(s.weight_stats)}, Icon: "{icons[s.spec]}", '
+        f'FullName: "{full_name(s)}"}},'
         for s in specs
     )
     return f"""{GENERATED}
@@ -192,6 +199,9 @@ type Spec struct {{
 \t// icon, or its form spell's (Feral, Feral Bear). A lowercase file name
 \t// with no extension, served under /data/<build>/icons/.
 \tIcon string `json:"icon"`
+\t// FullName is the spec as a player names it in full: "Fury Warrior",
+\t// "Feral Druid (Bear)". Read it; never compose Name and the class.
+\tFullName string `json:"full_name"`
 }}
 
 // All is every spec, ordered by class slug then talent tree position.
@@ -233,6 +243,7 @@ def render_ts(specs: list[SpecRecord], icons: dict[str, str], build: str) -> str
         f"    weight_stats: {weight_stats_literal(s.weight_stats)},\n"
         + (f"    capstone_spell: {s.capstone_spell},\n" if s.capstone_spell is not None else "")
         + f"    icon: '{icons[s.spec]}',\n"
+        f"    full_name: '{full_name(s)}',\n"
         f"  }},"
         for s in specs
     )
@@ -257,6 +268,9 @@ export interface Spec {{
   /** The spec's icon from the active client: its tree's TalentTab icon, or its form spell's
    *  (Feral, Feral Bear). A lowercase file name, no extension. The one spec-icon map. */
   icon: string;
+  /** The spec as a player names it in full: 'Fury Warrior', 'Feral Druid (Bear)'. Read it;
+   *  never compose name and the class. */
+  full_name: string;
 }}
 
 /** The build whose client data the icons were read from. */
@@ -277,7 +291,11 @@ export const SPEC_BY_KEY: Readonly<Record<string, Spec>> = Object.fromEntries(
 def render_json(specs: list[SpecRecord], icons: dict[str, str]) -> str:
     """curated/specs.json's own row shape with the resolved icon, one row a line."""
     rows = [
-        {**spec.model_dump(exclude={"form_spell"}, exclude_none=True), "icon": icons[spec.spec]}
+        {
+            **spec.model_dump(exclude={"form_spell", "full_name"}, exclude_none=True),
+            "icon": icons[spec.spec],
+            "full_name": full_name(spec),
+        }
         for spec in specs
     ]
     return "[\n" + ",\n".join(f"  {json.dumps(row)}" for row in rows) + "\n]\n"
