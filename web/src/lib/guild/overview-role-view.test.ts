@@ -4,6 +4,7 @@ import type { GuildChecklist, GuildOfficerActions } from './overview-api';
 import {
   actionRows,
   attendanceGridRows,
+  attendanceTitle,
   checklistRows,
   compTallyRows,
   compTargetLine,
@@ -303,6 +304,13 @@ describe('comp against the target', () => {
     expect(compTargetLine("Onyxia's Lair", { ...target, source: 'raid', ranged: 18 })).toBe(
       'Set for this raid: 38 players',
     );
+  });
+});
+
+describe('attendanceTitle', () => {
+  it('says one raid in the singular and counts several', () => {
+    expect(attendanceTitle(1)).toBe('Attendance, last raid');
+    expect(attendanceTitle(4)).toBe('Attendance, last 4 raids');
   });
 });
 

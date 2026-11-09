@@ -3,10 +3,10 @@ overview-api.ts, loot-council-api.ts and recruit-api.ts declare, built from guil
 guild_fixtures.py writes them into web/tests/e2e/fixtures/guild-parity; web/tests/e2e/support/guild-parity/overview.ts routes them.
 """
 import json
-import math
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import guild_data as gd
 import guild_overview_data as D
 from guild_data import ALLIANCE, GUILD, GUILD_ID, NOW, R, REGION, RULESET, SLUG, ZONE  # noqa: F401
 
@@ -29,16 +29,22 @@ def iso_minus(at: str, seconds: int) -> str:
 
 
 def attendance(name: str) -> dict:
-    cells = next((c for n, _, c in D.RECENT_ROWS if n == name), None)
-    nights = len(D.RECENT_RAIDS)
-    if cells is not None:
-        return {'present': cells.count('present'), 'nights': nights}
-    return {'present': nights - (1 if name in D.LAST_ABSENT or name == D.MEMBER else 0), 'nights': nights}
+    """The roster's figure: the logged nights `name` came to, of those they signed In or Late for or came to."""
+    return {'present': int(D.came(name)), 'nights': int(D.expected(name))}
+
+
+def unnamed_zones() -> list[dict]:
+    """The tier's raids with no encounter list (progression unnamedZones): nothing logged in them yet."""
+    return [{'zone': z, 'pulls': 0, 'nights': 0} for z in FIRST_TIER if z != D.ZONE_NAME]
 
 
 def tier() -> dict:
+    """The tier bar (progression.go): pulls_total is every named encounter's pulls plus the unnamed zones', so the head's pull
+    count and Progression's encounter read the same number."""
     counts = D.last_raid_counts()
-    return {'name': 'First tier', 'raids': FIRST_TIER, 'named_encounters': 1, 'down': 1 if counts['kills'] else 0, 'pulls_total': counts['pulls']}
+    unnamed = sum(z['pulls'] for z in unnamed_zones())
+    return {'name': 'First tier', 'raids': FIRST_TIER, 'named_encounters': 1, 'down': 1 if counts['kills'] else 0,
+            'pulls_total': counts['kills'] + counts['wipes'] + unnamed}
 
 
 # ------------------------------------------------------------------ the guild page, the session and the home
@@ -74,9 +80,15 @@ def me(name: str, officer: bool) -> dict:
 def roster_row(r: tuple) -> dict:
     name, cls, spec, role, ilvl, _ = r
     return {'character_key': D.key_of(name), 'region': REGION, 'ruleset': RULESET, 'name': name, 'class': cls, 'spec': spec,
-            'role': ROLE[role], 'rank': 'officer' if name == D.OFFICER else 'member', 'verified': True, 'logged_recently': True,
+            'role': ROLE[role], 'rank': gd.rank_of(name), 'verified': True, 'logged_recently': True,
             'logged_at': D.UPDATED_AT, 'item_level': ilvl, 'level': 60, 'consent': 'gear_bags', 'attendance': attendance(name),
             'best_parse': None, 'rating': None, 'account_key': f'acct-{name.lower()}', 'may_remove': False, 'addon': None}
+
+
+def pending_row(p: tuple) -> dict:
+    """A character waiting for approval: unverified, no attendance, which the officer may turn away."""
+    name, cls, spec, role, ilvl = p
+    return {**roster_row((name, cls, spec, role, ilvl, 'none')), 'verified': False, 'may_remove': True, 'attendance': None}
 
 
 def next_raid(viewer: str) -> dict:
@@ -94,14 +106,14 @@ def home(viewer: str, officer: bool) -> dict:
         'guild': guild(),
         'viewer': {'role': 'officer' if officer else 'member', 'character_key': D.key_of(viewer), 'verified': True, 'officer_tools': True,
                    'raid_guild_tools': True, 'verify': {'has_approver': True}},
-        'claim': {'state': 'claimed', 'since': '2026-11-12T00:00:00Z', 'frozen': False, 'yours': officer,
+        'claim': {'state': 'claimed', 'since': gd.CLAIM_SINCE, 'frozen': False, 'yours': officer,
                   'claimed_by': {'name': D.OFFICER, 'class': 'hunter', 'character_key': D.key_of(D.OFFICER)}},
         'summary': {'raiders': len(R), 'waiting_for_approval': len(D.APPROVALS), 'below_rating_floor': 0, 'tier': tier(),
                     'named_encounters_down': tier()['down'], 'pulls_this_tier': tier()['pulls_total'], 'updated_at': D.UPDATED_AT},
         'standing': None,
         'reports': [last_report()],
         'roster': [roster_row(r) for r in R],
-        'pending': [],
+        'pending': [pending_row(p) for p in D.PENDING] if officer else [],
         'addon_snapshot': None,
         'next_raid': next_raid(viewer),
         'attendance_source': 'raids',
@@ -110,11 +122,13 @@ def home(viewer: str, officer: bool) -> dict:
 
 # ------------------------------------------------------------------ the depth reads the Overview makes
 def raids_page() -> dict:
-    fights = [{'index': i, 'name': name, 'encounter_id': D.ENCOUNTER_ID if name else None, 'kill': kill, 'duration_ms': secs * 1000,
-               'deaths': deaths, 'players': len(R) - len(D.LAST_ABSENT)} for i, (name, kill, secs, deaths) in enumerate(D.LAST_PULLS)]
+    players = sum(1 for r in R if D.came(r[0]))
+    fights = [{'index': i, 'name': None if attempt is None else name, 'encounter_id': None if attempt is None else D.ENCOUNTER_ID,
+               'kill': result != 'wipe', 'duration_ms': ms, 'deaths': len(deaths), 'players': players}
+              for i, (_, name, attempt, result, ms, deaths) in enumerate(gd.NIGHT_PULLS)]
     counts = D.last_raid_counts()
     night = {**last_report(), 'duration_ms': sum(f['duration_ms'] for f in fights), 'wipe_count': counts['wipes'],
-             'raiders': len(R) - len(D.LAST_ABSENT), 'deaths': sum(f['deaths'] for f in fights), 'top_hps': None, 'top_dps': None,
+             'raiders': players, 'deaths': sum(f['deaths'] for f in fights), 'top_hps': None, 'top_dps': None,
              'fights': fights, 'present': [], 'raid_id': D.LAST_RAID_ID}
     return {'rows': [night], 'next_cursor': None}
 
@@ -122,9 +136,9 @@ def raids_page() -> dict:
 def progression() -> dict:
     counts = D.last_raid_counts()
     boss_pulls = counts['kills'] + counts['wipes']
-    kill_ms = next(secs for name, kill, secs, _ in D.LAST_PULLS if name and kill) * 1000
-    deaths = sum(d for name, _, _, d in D.LAST_PULLS if name)
-    return {'tier': tier(), 'unnamed': [{'zone': D.ZONE_NAME, 'pulls': counts['trash'], 'nights': 1}],
+    kill_ms = next(ms for _, _, _, result, ms, _ in gd.NIGHT_PULLS if result == 'kill')
+    deaths = sum(len(d) for _, _, attempt, _, _, d in gd.NIGHT_PULLS if attempt is not None)
+    return {'tier': tier(), 'unnamed': unnamed_zones(),
             'encounters': [{'encounter_id': D.ENCOUNTER_ID, 'name': D.BOSS, 'zone': D.ZONE_NAME, 'first_kill_at': D.LAST_RAID_AT,
                             'pulls': boss_pulls, 'kills': counts['kills'], 'best_kill_ms': kill_ms,
                             'pulls_by_night': [{'report_id': D.LAST_REPORT_ID, 'date': D.LAST_RAID_DATE, 'pulls': boss_pulls, 'killed': True}],
@@ -132,33 +146,10 @@ def progression() -> dict:
 
 
 def cover_rows() -> list[dict]:
-    """The buff and debuff cover the API computes from the curated catalogue over the In, Late and Bench sign-ups."""
-    catalogue = json.loads((ROOT / 'data/curated/raid-cover.json').read_text())['entries']
-    icons = json.loads((ROOT / f'data/builds/{BUILD}/spellicons.json').read_text())
-    signed_in_late = [r for r in R if r[5] in ('in', 'late')]
-    melee = sum(1 for r in signed_in_late if r[3] in ('Tank', 'Melee'))
-    casters = len(signed_in_late) - melee
-    out = []
-    for entry in catalogue:
-        classes = {p['class'] for p in entry['providers']}
-        specs = {p['spec'] for p in entry['providers'] if 'spec' in p}
-        talent = any('talent' in p for p in entry['providers'])
-
-        def gives(r: tuple) -> bool:
-            return r[1] in classes and (not specs or D.spec_key(r[1], r[2]) in specs)
-
-        per = entry['need']['per']
-        base = entry['need']['count']
-        need = base if per == 'raid' else max(base, math.ceil((melee if per == 'melee_group' else casters) / 5))
-        providers = {state: sum(1 for r in R if r[5] == state and gives(r)) for state in ('in', 'late', 'bench')}
-        likely = providers['in'] + providers['late'] if talent else 0
-        signed = providers['in'] + providers['late']
-        state = 'missing' if signed == 0 else ('ok' if signed - likely >= need else 'short')
-        icon = icons.get(str(entry.get('spell', entry['spell_id']))) or icons.get(str(entry['spell_id'])) or ''
-        out.append({'key': entry['key'], 'name': entry['name'], 'kind': entry['kind'], 'spell_id': entry['spell_id'], 'icon': icon,
-                    'need': need, 'per': per, 'providers_in': providers['in'], 'providers_late': providers['late'],
-                    'providers_bench': providers['bench'], 'likely': likely, 'state': state})
-    return out
+    """The buff and debuff cover the API computes over the next raid's sign-ups: the planner's own (guild_raid.cover, the
+    raids_cover.go twin), so the Overview and the planner count the same providers."""
+    from guild_raid import cover
+    return cover()
 
 
 def signup(r: tuple, viewer: str) -> dict:
@@ -189,7 +180,7 @@ def raid_view(viewer: str, officer: bool) -> dict:
                                    'state': vstate, 'role': ROLE[vrole], 'raid_spec': None, 'spec_key': D.spec_key(vcls, vspec),
                                    'default_spec': D.spec_key(vcls, vspec)}]},
         'discord': {'available': True, 'connected': True, 'post_default': True, 'remind_default': True, 'channel_name': 'raids'},
-        'discord_post': {'posted_at': '2026-12-06T18:00:00Z', 'post_at': None, 'reminded_at': None, 'remind': True},
+        'discord_post': {'posted_at': gd.NEXT_POSTED_AT, 'post_at': None, 'reminded_at': None, 'remind': True},
         'cover': cover_rows(),
         'comp_target': {**D.COMP_TARGET, 'source': 'default'},
         'assignments': None,
@@ -225,14 +216,37 @@ def officer_actions() -> dict:
     return {'approvals': {'count': len(D.APPROVALS), 'names': D.APPROVALS},
             'applications': {'count': len(D.APPLICATIONS), 'names': D.APPLICATIONS},
             'not_signed': {'raid_id': D.NEXT_RAID_ID, 'count': len(none), 'names': none},
-            'drops_to_award': {'tracked': True, 'count': len(open_drops), 'raid_id': D.LAST_RAID_ID, 'label': f'{D.BOSS}, Mon 7 Dec',
+            'drops_to_award': {'tracked': True, 'count': len(open_drops), 'raid_id': D.LAST_RAID_ID, 'label': f'{D.BOSS}, {day_label(D.LAST_RAID_AT)}',
                                'awarded': len(D.DROPS) - len(open_drops)}}
 
 
+def day_label(iso: str) -> str:
+    """`Wed 9 Dec` on the guild's calendar."""
+    from zoneinfo import ZoneInfo
+    at = datetime.fromisoformat(iso.replace('Z', '+00:00')).astimezone(ZoneInfo(ZONE))
+    return f'{at:%a} {at.day} {at:%b}'
+
+
+SLIPPING_MISSES = 2  # attendance_recent.go slippingMisses
+
+
+def attendance_cells(name: str) -> list[str]:
+    """attendance_recent.go gridRow over the logged nights (the first night only)."""
+    state = D.row(name)[5]
+    return ['present' if D.came(name) else 'bench' if state == 'bench' else 'absent' for _ in D.RECENT_RAIDS]
+
+
 def recent_attendance() -> dict:
+    """The officer's grid: the slipping rows and the rows with a Bench night (attendance_recent.go's default listing)."""
+    rows = []
+    for r in R:
+        cells = attendance_cells(r[0])
+        missed = sum(1 for c in cells if c == 'absent') if D.expected(r[0]) else 0
+        slipping = missed >= SLIPPING_MISSES
+        if slipping or 'bench' in cells:
+            rows.append({'name': r[0], 'class': r[1], 'account_key': f'acct-{r[0].lower()}', 'cells': cells, 'slipping': slipping})
     return {'raids': [{'id': rid, 'starts_at': at, 'zone_name': D.ZONE_NAME} for rid, at in D.RECENT_RAIDS],
-            'rows': [{'name': n, 'class': D.row(n)[1], 'account_key': f'acct-{n.lower()}', 'cells': cells, 'slipping': slipping}
-                     for n, slipping, cells in D.RECENT_ROWS]}
+            'rows': sorted(rows, key=lambda x: x['name'])}
 
 
 def readiness_row(r: tuple) -> dict:
@@ -258,12 +272,12 @@ def readiness(for_raid: bool) -> dict:
 
 
 def recruit_card() -> dict:
-    officers = [D.OFFICER, 'Ironbrand']
-    return {'guild': {**guild(), 'path': f'/guild/{REGION}/{RULESET}/{SLUG}'}, 'members': len(R), 'open': True,
-            'pitch': 'We raid two nights a week and split loot by council with the numbers shown.',
-            'raid_nights': {'text': 'Thu and Mon, 8 to 11 pm', 'upcoming': [D.NEXT_RAID_AT], 'timezone': ZONE},
-            'progress': tier(), 'wanted': [], 'updated_at': D.UPDATED_AT,
-            'officers': [{'name': n, 'class': D.row(n)[1], 'spec': D.row(n)[2], 'rank': 'leader' if n == D.OFFICER else 'officer'} for n in officers]}
+    """GET .../recruit: the guild's public card, one answer for the Overview and the recruit page."""
+    officers = [{'name': n, 'class': D.row(n)[1], 'spec': D.row(n)[2], 'rank': gd.rank_of(n)} for n in gd.COUNCIL]
+    return {'guild': {**guild(), 'path': f'/guild/{REGION}/{RULESET}/{SLUG}'}, 'members': gd.RAIDERS, 'open': True, 'pitch': gd.RECRUIT_PITCH,
+            'raid_nights': {'text': gd.RECRUIT_NIGHTS, 'upcoming': gd.RECRUIT_UPCOMING, 'timezone': ZONE},
+            'progress': tier(), 'wanted': [{'class': c, 'spec': k, 'spec_name': n, 'note': note} for c, k, n, note in gd.RECRUIT_WANTED],
+            'officers': officers, 'updated_at': D.UPDATED_AT}
 
 
 # ------------------------------------------------------------------ the loot council
@@ -271,7 +285,7 @@ def decision(award_id: int, drop: tuple) -> dict:
     item_id, name, icon, quality, _, (winner, by, yes) = drop
     return {'award_id': award_id, 'item_id': item_id, 'item_name': name, 'icon': icon, 'quality': quality, 'character_key': D.key_of(winner),
             'name': winner, 'class': D.row(winner)[1], 'ms_os': 'ms', 'reason': None, 'votes_yes': yes, 'votes_no': 0,
-            'votes_officers': D.OFFICERS, 'awarded_by': by, 'at': iso_minus(D.LAST_RAID_AT, -3600 - award_id * 60)}
+            'votes_officers': D.VOTERS, 'awarded_by': by, 'at': iso_minus(D.LAST_RAID_AT, -3600 - award_id * 60)}
 
 
 def decisions() -> list[dict]:
@@ -285,10 +299,7 @@ def loot_nights() -> dict:
              for item_id, name, icon, quality, kind, award in D.DROPS]
     current = {'night': D.LOOT_NIGHT, 'raid_id': D.LAST_RAID_ID, 'report_id': D.LAST_REPORT_ID, 'date': D.LAST_RAID_DATE, 'at': D.LAST_RAID_AT,
                'zone': D.ZONE_NAME, 'current': True, 'drops': drops, 'decisions': decisions()}
-    earlier_id, earlier_at = D.RECENT_RAIDS[-2]
-    earlier = {'night': f'raid:{earlier_id}', 'raid_id': earlier_id, 'report_id': None, 'date': '2026-12-03', 'at': earlier_at,
-               'zone': D.ZONE_NAME, 'current': False, 'drops': [], 'decisions': []}
-    return {'officers': D.OFFICERS, 'nights': [current, earlier]}
+    return {'officers': D.VOTERS, 'nights': [current]}
 
 
 def worn_item(worn: tuple) -> dict:
@@ -297,7 +308,8 @@ def worn_item(worn: tuple) -> dict:
 
 
 def table_candidate(c: tuple) -> dict:
-    name, gain, worn, _, attended, won, _, _ = c
+    name, gain, worn, *_ = c
+    attended, won = int(D.came(name)), len(D.awards_to(name))
     return {'character_key': D.key_of(name), 'name': name, 'class': D.row(name)[1], 'spec': D.row(name)[2], 'gain_dps': gain, 'gain_unit': 'dps',
             'tier': 0, 'not_sim_checked': False, 'ilvl_delta': None, 'attendance': {'present': attended, 'nights': len(D.RECENT_RAIDS)},
             'already_equivalent': False, 'fills_empty_slot': False, 'replaces': worn[1], 'replaces_item': worn_item(worn), 'items_won': won}
@@ -306,9 +318,9 @@ def table_candidate(c: tuple) -> dict:
 def council_drop() -> dict:
     item_id, name, icon, quality, kind, _ = next(d for d in D.DROPS if d[0] == D.SELECTED_DROP)
     cands = [{**table_candidate(c), 'bis_for_them': bis, 'ms_os': ms_os, 'ms_os_source': 'declared',
-              'votes': {'yes': yes, 'no': 0, 'voters': D.OFFICERS, 'mine': None}}
-             for c in D.CANDIDATES for (_, _, _, bis, _, _, ms_os, yes) in [c]]
-    return {'night': D.LOOT_NIGHT, 'item_id': item_id, 'name': name, 'icon': icon, 'quality': quality, 'kind': kind, 'officers': D.OFFICERS,
+              'votes': {'yes': yes, 'no': 0, 'voters': D.VOTERS, 'mine': None}}
+             for c in D.CANDIDATES for (_, _, _, bis, ms_os, yes) in [c]]
+    return {'night': D.LOOT_NIGHT, 'item_id': item_id, 'name': name, 'icon': icon, 'quality': quality, 'kind': kind, 'officers': D.VOTERS,
             'closed': False, 'award': None, 'candidates': cands}
 
 

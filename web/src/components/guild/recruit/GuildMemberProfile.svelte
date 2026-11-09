@@ -161,7 +161,7 @@
         {:else}
           {#if attendance.rows.length > 0}
             <Grid
-              caption={copy.lastFour}
+              caption={copy.lastNights(attendance.columns.length)}
               columns={attendance.columns}
               rows={attendance.rows}
               testid="guild-profile-attendance-grid"

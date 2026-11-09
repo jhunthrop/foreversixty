@@ -9,7 +9,7 @@
   "claim_pending": null,
   "claim": {
     "state": "claimed",
-    "since": "2026-11-20T18:00:00Z",
+    "since": "2026-11-12T00:00:00Z",
     "frozen": false,
     "yours": true
   },
