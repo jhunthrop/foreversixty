@@ -109,9 +109,19 @@ describe('setupSteps: signed out', () => {
   it('web-setup-loading: row 1 ok from the hint, every line a reserved skeleton, no action', () => {
     const rows = steps({ session: 'loading', devices: null });
     expect(marks(rows)).toEqual(['ok', 'todo', 'todo']);
-    expect(rows.every((r) => r.action === null && r.lines.length === 1 && r.lines[0].skeleton === true)).toBe(
-      true,
-    );
+    expect(rows.every((r) => r.action === null && r.lines.every((l) => l.skeleton === true))).toBe(true);
+  });
+
+  it('web-setup-loading: rows 1 and 3 reserve the second line their answer wraps to on a phone', () => {
+    // A returning visitor's answer ("Signed in as ... · Updated from Battle.net ...", "JHUNT-PC ·
+    // Windows ...") takes two lines on a phone: one reserved line moved the plate 20 px twice
+    // (setup-states.spec.ts, layout shift 0.076 against 0.05).
+    const rows = steps({ session: 'loading', devices: null });
+    expect(rows.map((r) => r.lines.length)).toEqual([2, 1, 2]);
+    for (const n of [0, 2]) {
+      expect(rows[n].lines[0].phoneOnly).toBeUndefined();
+      expect(rows[n].lines[1]).toMatchObject({ skeleton: true, phoneOnly: true });
+    }
   });
 });
 

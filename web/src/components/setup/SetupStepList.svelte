@@ -2,7 +2,7 @@
 <!-- /setup's three steps (setup spec 2026-11-07 sections 4 and 5) drawn from lib/setup/steps.ts's
      rows: each row's mark, its lines (the done line in --color-text, a warning in gold, a failure in
      the wipe colour with role="alert", a pairing code as Code, a reserved Skeleton line while the
-     reads are in flight) and its one action. A link action is the system Button with its href, a
+     reads are in flight, and on a phone the second line an answer wraps to there) and its one action. A link action is the system Button with its href, a
      button action calls back (Try again, Refresh from Battle.net, Copy link), a text link is gold
      with `›`, and the Download step is the visitor's own build (CompanionDownload). -->
 <script lang="ts">
@@ -60,7 +60,7 @@
 {#snippet sub(item: { key: string })}
   {#each byKey.get(item.key)?.lines ?? [] as line, index (index)}
     {#if line.skeleton === true}
-      <span class="flex h-5 items-center"
+      <span class={['flex h-5 items-center', line.phoneOnly === true && 'md:hidden']}
         ><span
           class="skeleton-block h-[14px] rounded-[3px]"
           style:width="{SKELETON_WIDTH_PX}px"
