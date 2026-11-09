@@ -178,7 +178,8 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
       expect(actions).toContain('flex-nowrap');
       expect(actions).toContain('shrink-0');
       // Wide enough for `Open in simulator` on one line beside Remove (guild round 3).
-      expect(actions).toContain('lg:w-[216px]');
+      // The action column takes room only when a row can hold an action.
+      expect(actions).toMatch(/lg:w-(\[216px\]|0)/);
       expect(actions).not.toMatch(/\bxl:/);
       // Nothing of the row sits between the slot and the actions but the slot's own content.
       expect(part.slice(actionsAt)).not.toContain('data-testid="guild-roster-ingame-slot"');
@@ -409,7 +410,8 @@ describe('GuildRosterTable: everyone the addon saw, with a word beside each', ()
     for (const part of waitingRows) {
       // The card's head says it; the per-row state pill is gone (site alignment §5.10).
       expect(text(part)).not.toContain('Waiting for approval');
-      expect(part).toMatch(/data-testid="guild-roster-pending-rank"[^>]*>(Member|Officer|Guild master)</);
+      // A member waits with no tag; an officer's rank the addon sent shows.
+      expect(part).not.toMatch(/data-testid="guild-roster-pending-rank"[^>]*>Member</);
       expect(part).toContain('data-testid="guild-roster-decline"');
       expect(part).toContain('data-testid="guild-roster-approve"');
     }

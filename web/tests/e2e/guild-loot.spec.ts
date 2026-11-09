@@ -38,9 +38,7 @@ test.describe('officer', () => {
     });
     await openLoot(page, 'officer');
     const night = buildMockLootNights().nights[0];
-    await expect(page.getByTestId('guild-loot-night-summary')).toHaveText(
-      'Tue 15 Dec · 3 drops, 2 open · 2 recorded by the addon',
-    );
+    await expect(page.getByTestId('guild-loot-night-summary')).toHaveText('Tue 15 Dec · 2 open');
     await expect(page.getByTestId('guild-loot-drops').getByText('Open', { exact: true })).toHaveCount(2);
 
     const { itemId, characterKey } = unawardedItem();
@@ -86,7 +84,7 @@ test.describe('officer', () => {
     const change = page.locator('#guild-loot-bar-groups').locator('..').locator('[data-control-bar-toggle]');
     if (await change.isVisible()) await change.click();
     await page.getByTestId('control-night').getByRole('radio', { name: 'Tue 8 Dec' }).click();
-    await expect(page.getByTestId('guild-loot-night-summary')).toHaveText('Tue 8 Dec · 1 drop, 0 open');
+    await expect(page.getByTestId('guild-loot-night-summary')).toHaveText('Tue 8 Dec · 0 open');
     await expect(page.getByTestId('guild-loot-open-drop')).toHaveCount(0);
     await expect(page.getByTestId('guild-loot-decisions')).toContainText('by Kraggor');
   });

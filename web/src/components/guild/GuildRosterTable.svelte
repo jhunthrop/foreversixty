@@ -197,6 +197,8 @@
   function rowColumns(row: GuildRosterRow): { key: RosterColumnKey; text: string }[] {
     return rosterColumns(row, attendanceSource).filter((cell) => shownColumns.includes(cell.key));
   }
+  /** Any row that can carry an action (Remove, the handoff): only then does the action column take room. */
+  const anyActions = $derived(canRemove || ordered.some((row) => rosterHoldsHandoff(row)));
   /** Any row the addon carried: only then does the In game slot take room on every row. */
   const anyInGame = $derived(roster.some((row) => inGameFacts(row, now).length > 0));
   const countsView = $derived(counts ?? derivedCounts(allRows));
@@ -297,7 +299,6 @@
   // A name with no account row: the same shape, a different class so the account rows stay
   // the only `guild-roster-row`s.
   const ENTRY_ROW = 'guild-roster-entry flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5 xl:flex-nowrap';
-  const MUTED_WORD = 'text-muted text-[12px]';
   /** Each figure column's width from lg, the header's and every row's alike. */
   const COLUMN_WIDTH: Readonly<Record<RosterColumnKey, string>> = {
     level: 'w-[88px]',
@@ -400,9 +401,7 @@
           </span>
           <span class="text-muted text-[12px]">{specLineOf(row)}</span>
         </div>
-        {#if row.rank === 'member'}
-          <span class={MUTED_WORD} data-testid="guild-roster-pending-rank">{rankWord(row.rank)}</span>
-        {:else}
+        {#if row.rank !== 'member'}
           <Tag testid="guild-roster-pending-rank">{rankWord(row.rank)}</Tag>
         {/if}
         <div class="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-3">
@@ -578,7 +577,7 @@
                       >{/each}
                   </span>
                   {#if anyInGame}<span class="hidden shrink-0 basis-[260px] xl:block"></span>{/if}
-                  <span class="w-[216px] shrink-0"></span>
+                  {#if anyActions}<span class="w-[216px] shrink-0"></span>{/if}
                 </div>
                 <Ruled testid="guild-roster-rows">
                   {#each ordered as row (row.character_key)}
@@ -684,7 +683,9 @@
                       </div>
                       {@render inGame(row)}
                       <div
-                        class="contents lg:ml-auto lg:flex lg:w-[216px] lg:shrink-0 lg:flex-nowrap lg:items-center lg:justify-end lg:gap-3"
+                        class="contents lg:ml-auto lg:flex lg:shrink-0 lg:flex-nowrap lg:items-center lg:justify-end lg:gap-3 {anyActions
+                          ? 'lg:w-[216px]'
+                          : 'lg:w-0'}"
                         data-testid="guild-roster-actions"
                       >
                         {#if rosterHoldsHandoff(row)}

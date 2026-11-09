@@ -58,7 +58,7 @@ def roster():
     words = {'leader': 'Guild master', 'officer': 'Officer'}  # copy.ts guildRosterModelCopy.ranks
     rank = lambda r: Tag(words[r['rank']]) if r['rank'] in words else ''  # noqa: E731
     waiting = [Row(r['name'], _spec(r), lead=crest_img(r['class'], 36), title_color=C[r['class']], link=False,
-                   trail=(Tag(words[r['rank']]) if r['rank'] in words else '<span class="t-small">Member</span>')
+                   trail=(Tag(words[r['rank']]) if r['rank'] in words else '')
                    + Button('Approve', small=True, act=True) + Button('Decline', small=True, tone='ghost', act=True)) for r in home['pending']]
     wait = Section('Waiting for approval', Rows(waiting, open_=True), action=Button('Approve all', primary=True, small=True, act=True), panel=True, frame='framed')
     verified = sorted(home['roster'], key=lambda r: (r['name'] != O.OFFICER, -r['item_level']))
@@ -148,7 +148,7 @@ def readiness():
     listed = Rows([Row(r['name'], f"{r['spec']} {r['class'].title()} &middot; item level {r['item_level']}", lead=crest_img(r['class'], 30), title_color=C[r['class']],
                        foot=f'<span class="gold" style="font-size:13px;line-height:20px">{" &middot; ".join(why)}</span>', trail=Button('Nudge', small=True, act=True), link=False)
                    for r, why in short], list_=True)
-    toggle = Button(f'Next raid &middot; {day_label(at)}', small=True, act=True)
+    toggle = Button('Next raid only', small=True, act=True)
     body = Section('Short of something', listed, toggle, meta=f'In or Late for {day_label(at)}', panel=True, frame='framed')
     if raid.get('fire_resistance'):
         signups = F.raid_view(O.OFFICER, True)['signups']
@@ -157,7 +157,7 @@ def readiness():
         trows = Rows([Row(t['name'], title_color=C[t['class']], link=False, slim=True,
                           trail=f'<span style="font-size:14px;font-weight:600">{fire[t["name"]]} fire resistance</span>' if fire.get(t['name']) is not None
                           else '<span>Fire resistance not shared</span>') for t in tanks], list_=True)
-        body += Section('Fire resistance on tanks', trows, meta=f"{len(tanks)} tank{'' if len(tanks) == 1 else 's'}", panel=True)
+        body += Section('Fire resistance on tanks', trows, panel=True)
     names = '<span class="t-small">, </span>'.join(f'<span style="color:{C[r["class"]]}">{r["name"]}</span>' for r in ready)
     body += Section(f'{len(ready)} ready', f'<p style="font-size:14px;line-height:23px">{names}</p>',
                     meta='Best in slot or no upgrades, enchanted, stocked, every point spent', panel=True)

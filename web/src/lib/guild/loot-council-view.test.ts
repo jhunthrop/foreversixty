@@ -25,7 +25,6 @@ import {
   tableDrop,
   pickOptions,
   NOT_IN_CLIENT,
-  RECORDED_BY_ADDON,
 } from './loot-council-view';
 
 const table = buildMockLoot().items;
@@ -48,14 +47,14 @@ describe('nights', () => {
     expect(defaultNight(nights)?.night).toBe('raid:12');
     expect(defaultNight([past])?.night).toBe('raid:11');
     expect(defaultNight([])).toBeNull();
-    expect(nightSummary(current)).toBe('3 drops, 2 open · 2 recorded by the addon');
-    expect(nightSummary(past)).toBe('1 drop, 0 open');
+    expect(nightSummary(current)).toBe('2 open');
+    expect(nightSummary(past)).toBe('0 open');
     expect(nightSummary({ ...current, drops: [] })).toBe('No drops yet');
   });
 
   it('says the addon recorded the night when it saw every drop', () => {
     const drops = current.drops.map((drop) => ({ ...drop, recorded: true, count: 1 }));
-    expect(nightSummary({ ...current, drops })).toBe(`3 drops, 2 open · ${RECORDED_BY_ADDON}`);
+    expect(nightSummary({ ...current, drops })).toBe('2 open');
   });
 });
 
@@ -163,12 +162,15 @@ describe('the decision record', () => {
 
   it('reads the item to whom, MS/OS, the votes, by whom and the day', () => {
     expect(decisionTitle(d)).toBe(`${d.item_name} to ${d.name}`);
-    expect(decisionSub(d, 'UTC')).toBe('Main spec · 3 yes, 0 no of 4 · by Kraggor · Tue 15 Dec');
+    expect(decisionSub(d, 'UTC')).toBe('3 yes, 0 no of 4 · by Kraggor · Tue 15 Dec');
+    expect(decisionSub({ ...d, ms_os: 'os' }, 'UTC')).toBe(
+      'Off spec · 3 yes, 0 no of 4 · by Kraggor · Tue 15 Dec',
+    );
   });
 
   it('leaves out what an award never kept, and the votes for a member', () => {
     const member = buildMockLootNights(false).nights[0].decisions[0];
-    expect(decisionSub(member, 'UTC')).toBe('Main spec · by Kraggor · Tue 15 Dec');
+    expect(decisionSub(member, 'UTC')).toBe('by Kraggor · Tue 15 Dec');
     expect(decisionSub({ ...d, ms_os: null, votes_yes: null, votes_no: null, awarded_by: '' }, 'UTC')).toBe(
       'Tue 15 Dec',
     );

@@ -103,7 +103,7 @@
 </script>
 
 <div bind:this={rootEl} data-testid="guild-whopays">
-  <SettingsRow open label={copy.heading} sub={copy.help} testid="guild-whopays-row" controlBelow>
+  <SettingsRow open label={copy.heading} testid="guild-whopays-row" controlBelow>
     {#snippet below()}
       {#if waiting && transfer !== null}
         <span class="text-[14px]" data-testid="guild-transfer-waiting">

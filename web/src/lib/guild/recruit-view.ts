@@ -67,12 +67,15 @@ export function upcomingNights(card: RecruitCard, viewerTz: string, locale: stri
   });
 }
 
-/** "1 of 1 named bosses down, Onyxia's Lair", or none before anything is down. */
+/** "Onyxia's Lair · 1 of 1 boss down": the raid (the tier's name when it holds several), then how far;
+ *  none before a boss is named. */
 export function progressLine(card: RecruitCard): string {
-  const { down, named_encounters: named, name } = card.progress;
+  const { down, named_encounters: named, raids, name } = card.progress;
   if (named === 0) return '';
-  const head = down === 0 ? 'No boss down yet' : `${down} of ${named} named bosses down`;
-  return name === '' ? head : `${head}${SEP}${name}`;
+  const head =
+    down === 0 ? 'No boss down yet' : `${down} of ${named} ${named === 1 ? 'boss' : 'bosses'} down`;
+  const where = raids.length === 1 ? raids[0] : name;
+  return where === '' ? head : `${where}${SEP}${head}`;
 }
 
 /** "1 tank, 2 healers" is the officers' own note; the card's summary is the classes it names. */

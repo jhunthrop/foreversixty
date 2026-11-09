@@ -156,7 +156,7 @@ describe('GuildReadiness next-raid filter', () => {
     const markup = filtered(true);
     expect(markup).toContain('aria-pressed="true"');
     const copy = text(markup).replace(/&#39;/g, "'");
-    expect(copy).toContain('Next raid \u00b7 Thu 10 Dec');
+    expect(copy).toContain('Next raid only');
     expect(copy).toContain('Short of something In or Late for Thu 10 Dec');
   });
 

@@ -228,7 +228,6 @@ export const guildSettingsCopy = {
 // Guild crest round (docs/contracts/2026-10-05-guild-crest-api.md), Settings tab block.
 export const guildCrestCopy = {
   heading: 'Guild crest',
-  defaultCaption: "Default: your faction's logo",
   pickerLabel: 'Choose a crest image',
   /** The styled picker button (P.1): a ghost button, never the browser's own file control. */
   chooseButton: 'Choose an image',

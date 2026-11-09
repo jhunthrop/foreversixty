@@ -161,7 +161,7 @@ describe('LootCandidates', () => {
   it('heads the rail with the item and lists every candidate', () => {
     const body = html(LootCandidates, railProps);
     expect(body).toContain(`Candidates for ${open.name}`);
-    expect(body).toContain('Gain as on the BiS page');
+    expect(body).not.toContain('Gain as on the BiS page');
     expect(body.match(/data-testid="guild-loot-candidate-/g)).toHaveLength(open.candidates.length);
   });
 

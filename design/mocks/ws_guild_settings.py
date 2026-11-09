@@ -16,9 +16,6 @@ from ws_guild2 import O, _act, _view, hdr
 from ws_prims import Button, Emblem, Link, Page, PageHeader, Row, Rows, Section, Segmented, Tag, build_page, crest_img
 
 # The built copy (lib/billing/guild-billing-copy, lib/billing/seats-copy, lib/guild/copy, lib/guild/settings-view), verbatim.
-WHO_PAYS_HELP = 'Hand the plan to another officer, for example when the guild leader changes. The founder price goes with it.'
-SEATS_HELP = 'A seat gives one verified member Premium while the plan lasts. A seat can move once every 30 days.'
-CREST_RULES = 'PNG, JPEG or WebP, up to 2 MB, at least 128 by 128; we crop to a square.'
 TIERS = [('Guild', '$120', '$150', 'Up to 25 verified members &middot; 1 Premium seat'),
          ('Raid guild', '$200', '$250', 'Any size &middot; loot council and readiness &middot; 3 Premium seats')]
 
@@ -78,9 +75,9 @@ def plan_section() -> str:
     view = S.billing()
     given = sum(1 for s in view['seats'] if s['holder'] is not None)
     rows = Rows([Row(renews_line(), trail=Tag('Founder'), link=False), Row('Billed to you.', link=False)], open_=True)
-    who = Rows([Row('Who pays', WHO_PAYS_HELP, trail=_act('Transfer the plan'), link=False)], open_=True)
+    who = Rows([Row('Who pays', trail=_act('Transfer the plan'), link=False)], open_=True)
     seats = (f'<div style="display:flex;flex-direction:column;gap:8px;padding-top:20px"><h3 class="sp-h3">Premium seats '
-             f'<span class="t-small" style="font-weight:400;font-size:13px">{given} of {len(view["seats"])} given</span></h3>{p(SEATS_HELP)}{seat_rows()}</div>')
+             f'<span class="t-small" style="font-weight:400;font-size:13px">{given} of {len(view["seats"])} given</span></h3>{seat_rows()}</div>')
     return Section('Guild plan', body(rows + f'<div class="sp-btns" style="padding-bottom:12px">{_act("Manage billing")}</div>' + who + seats), meta='Raid guild', panel=True, frame='framed')
 
 
@@ -152,9 +149,9 @@ def records_section(crest: bool) -> str:
     if crest:
         mark = Emblem('alliance', 40).replace('<img ', '<img aria-hidden="true" ', 1)
         choose = (f'<label class="btn sm" style="cursor:pointer">Choose an image<input class="sp-file" type="file" aria-label="Choose a crest image"></label>')
-        html += (Rows([Row('Guild crest', 'Default: your faction&rsquo;s logo', lead=mark, trail=choose, link=False)], open_=True)
+        html += (Rows([Row('Guild crest', lead=mark, trail=choose, link=False)], open_=True)
                  + f'<div class="sp-col" style="gap:12px"><div><span class="t-small" style="font-size:13px">No image chosen</span>'
-                 f'<p class="t-small" style="font-size:12px;margin:0">{CREST_RULES}</p></div>{_act("Save").replace("<button ", "<button disabled ", 1)}</div>')
+                 f'</div>{_act("Save").replace("<button ", "<button disabled ", 1)}</div>')
     return Section('Records and crest' if crest else 'Records', body(html), panel=True)
 
 

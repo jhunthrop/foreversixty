@@ -68,10 +68,10 @@ describe('the public card', () => {
       ['Members', '24'],
       ['Raids', card.raid_nights.text],
       ['Next raid nights', 'Wed 9 Dec, 8 pm, Mon 14 Dec, 8 pm'],
-      ['Progress', '1 of 1 named bosses down · Tier 1'],
+      ['Progress', "Onyxia's Lair · 1 of 1 boss down"],
     ]);
     expect(upcomingNights(card, TZ, LOCALE)).toEqual(['Wed 9 Dec, 8 pm', 'Mon 14 Dec, 8 pm']);
-    expect(progressLine(card)).toBe('1 of 1 named bosses down · Tier 1');
+    expect(progressLine(card)).toBe("Onyxia's Lair · 1 of 1 boss down");
     expect(progressLine({ ...card, progress: { ...card.progress, named_encounters: 0 } })).toBe('');
   });
 

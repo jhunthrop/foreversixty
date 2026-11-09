@@ -333,9 +333,9 @@ def loot_council():
         drops.append(Row(f'<span role="button" tabindex="0">{d["name"]}</span>', f'{what} &middot; {tail}', lead=icon(d['icon'], 40, f"q{d['quality']}"),
                          trail=Tag('Open', 'gold') if d['state'] == 'open' else Tag('Awarded', 'kill'), selected=d['item_id'] == O.SELECTED_DROP,
                          title_color='#b866f5', link=False))
-    picker = (f'<div style="display:flex;flex-direction:column;gap:6px;max-width:360px;margin-top:12px"><span class="t-label">Open a drop from the loot table</span>'
+    picker = (f'<div style="display:flex;flex-direction:column;gap:6px;max-width:360px;margin-top:12px"><span class="sr-only-mock">Open a drop from the loot table</span>'
               f'{Select("Pick a drop")}</div>')
-    main = Section(f'{O.BOSS} drops', f'<div>{Rows(drops)}</div>' + picker, meta=f"{day_label(guild_time(night['at']))} &middot; {len(night['drops'])} drops, {open_n} open &middot; Recorded by the addon", panel=True)
+    main = Section(f'{O.BOSS} drops', f'<div>{Rows(drops)}</div>' + picker, meta=f"{day_label(guild_time(night['at']))} &middot; {open_n} open", panel=True)
     drop = F.council_drop()
     cands = []
     for c in drop['candidates']:
@@ -345,9 +345,9 @@ def loot_council():
                 + VoteButtons(c['votes']['yes'], c['votes']['no'], c['votes']['voters']) + f'<span style="margin-left:auto">{Button("Award", small=True, act=True)}</span>')
         cands.append(Row(c['name'], sub, lead=crest_img(c['class'], 32), title_color=C[c['class']], foot=foot, link=False))
     record = Rows([Row(f"{d['item_name']} to {d['name']}",
-                       f"Main spec &middot; {d['votes_yes']} yes, {d['votes_no']} no of {d['votes_officers']} &middot; by {d['awarded_by']} &middot; {day_label(guild_time(d['at']))}",
+                       f"{d['votes_yes']} yes, {d['votes_no']} no of {d['votes_officers']} &middot; by {d['awarded_by']} &middot; {day_label(guild_time(d['at']))}",
                        lead=icon(d['icon'], 32, f"q{d['quality']}"), link=False) for d in F.decisions()], open_=True)
-    rail = (Section(f"Candidates for {drop['name']}", Rows(cands, open_=True), meta='Gain as on the BiS page', panel=True, frame='framed')
+    rail = (Section(f"Candidates for {drop['name']}", Rows(cands, open_=True), panel=True, frame='framed')
             + Section('Decision record', record, DisclosureButton('Export history'), panel=True))
     bar = control_bar([('Raid night', seg([(day_label(guild_time(n['at'])), n is night, None, '') for n in nights]))], day_label(guild_time(night['at'])), label='Loot council choices')
     return build_page('Loot council', _view(hdr(tabs_active='Loot') + bar + Page('split', main, rail, sticky_rail=True, panels=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
@@ -445,7 +445,7 @@ def _view(html):
 
 
 # The built ghost Button (lib/ui/button.ts BUTTON_GHOST): a gold label, no fill, 10 px each side.
-GUILD_CSS = '<style>html :is(a,button).btn.ghost{background:transparent;border-color:transparent;color:var(--gold);padding:0 10px;font-size:15px}</style>'
+GUILD_CSS = '<style>.sr-only-mock{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}html :is(a,button).btn.ghost{background:transparent;border-color:transparent;color:var(--gold);padding:0 10px;font-size:15px}</style>'
 
 
 _PROSE = 'style="font-size:14px;line-height:22px"'
@@ -479,11 +479,13 @@ def recruitment():
     """The public card (batch 3, b3-guild-recruit): Join and Recruiting on the band; Looking for framed, then Apply; the rail's
     guild facts (ui/Facts), why this guild and the officers."""
     wanted = Rows([Row(n, note, lead=crest_img(c, 30), title_color=C[c], link=False) for c, _k, n, note in gd.RECRUIT_WANTED], list_=True)
-    upcoming = ', '.join(f'{_day(at)}, {_clock(at)}' for at in gd.RECRUIT_UPCOMING)
+    # The viewer's clock as the build prints it (raid-time clockText): the minutes only when they are not :00.
+    upcoming = ', '.join(f"{_day(at)}, {clock_label(guild_time(at)).rsplit(' ', 1)[0]}" for at in gd.RECRUIT_UPCOMING)
     t = F.tier()
     facts = [('Region', f'{gd.REGION.upper()} PvP'), ('Faction', gd.FACTION.title()), ('Members', str(gd.RAIDERS)), ('Raids', gd.RECRUIT_NIGHTS),
-             ('Next raid nights', upcoming), ('Progress', f"{t['down']} of {t['named_encounters']} named bosses down &middot; {t['name']}")]
-    card = '<dl class="gfacts">' + ''.join(f'<dt>{k}</dt><dd>{v}</dd>' for k, v in facts) + '</dl>'
+             ('Next raid nights', upcoming), ('Progress', f"{t['name']} &middot; {t['down']} of {t['named_encounters']} boss{'' if t['named_encounters'] == 1 else 'es'} down")]
+    # The progress line sits on one line in the build at 1440 (its face sets a hair narrower than the mock's).
+    card = '<dl class="gfacts">' + ''.join(f'<dt>{k}</dt><dd{" style=white-space:nowrap" if k == "Progress" else ""}>{v}</dd>' for k, v in facts) + '</dl>'
     # Signed out nobody can apply: the API takes one of the viewer's own characters, so the build asks them to sign in (SignInPrompt).
     sign_in = Button('Sign in with Battle.net to apply', primary=True)
     rank = {'leader': 'Guild master', 'officer': 'Officer'}  # recruit-copy card.leader / card.officer
@@ -499,7 +501,8 @@ def recruitment():
 # ui/Facts: the key muted at the left, the value strong at the right, a hairline between pairs.
 _FACTS_CSS = ('<style>.gfacts{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);margin:0}'
               '.gfacts dt,.gfacts dd{margin:0;padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:14px;line-height:20px}'
-              '.gfacts dt{color:var(--muted);padding-right:16px}.gfacts dd{text-align:right;color:var(--strong);font-weight:600;font-variant-numeric:tabular-nums}</style>')
+              '.gfacts dt{color:var(--muted);padding-right:16px;font:400 14px/20px var(--font-body)}'
+              '.gfacts dd{text-align:right;color:var(--strong);font:600 14px/20px var(--font-body);font-variant-numeric:tabular-nums}</style>')
 
 
 def applications():

@@ -50,22 +50,10 @@ export function defaultNight(nights: readonly LootNight[]): LootNight | null {
   return nights.find((night) => night.current) ?? nights[0] ?? null;
 }
 
-/** The night's source hint: "Recorded by the addon" when the addon saw every drop, else how many it saw. */
-function recordedHint(night: LootNight): string {
-  const recorded = night.drops.filter((drop) => drop.recorded).length;
-  if (recorded === 0) return '';
-  return recorded === night.drops.length ? RECORDED_BY_ADDON : `${recorded} recorded by the addon`;
-}
-
-/** The hint beside a night whose drops a raider's addon recorded from the loot window. */
-export const RECORDED_BY_ADDON = 'Recorded by the addon';
-
-/** "6 drops, 4 open" for a night, then where its drops came from when the addon recorded any. */
+/** "3 open" for a night (batch 3: the date and how many wait for an award). */
 export function nightSummary(night: LootNight): string {
-  const open = night.drops.filter((drop) => drop.state === 'open').length;
   if (night.drops.length === 0) return 'No drops yet';
-  const hint = recordedHint(night);
-  return `${counted(night.drops.length, 'drop')}, ${open} open${hint === '' ? '' : ` · ${hint}`}`;
+  return `${night.drops.filter((drop) => drop.state === 'open').length} open`;
 }
 
 /** One row of the drops Plate. */
@@ -259,10 +247,11 @@ export function decisionTitle(decision: LootDecision): string {
   return `${decision.item_name} to ${decision.name}`;
 }
 
-/** "Main spec · 3 yes, 0 no of 4 · by Ironbrand · Tue 8 Dec"; parts the award never kept are left out. */
+/** "3 yes, 0 no of 4 · by Ironbrand · Tue 8 Dec" ("Off spec · ..." when it went off spec); parts the award never kept are left out. */
 export function decisionSub(decision: LootDecision, timeZone?: string): string {
   const parts: string[] = [];
-  if (decision.ms_os !== null) parts.push(capitalized(MS_OS_WORD[decision.ms_os]));
+  // Main spec is the rule; the record names the spec only when it went off spec.
+  if (decision.ms_os === 'os') parts.push(capitalized(MS_OS_WORD[decision.ms_os]));
   if (decision.votes_yes !== null && decision.votes_no !== null) {
     const of = decision.votes_officers === null ? '' : ` of ${decision.votes_officers}`;
     parts.push(`${decision.votes_yes} yes, ${decision.votes_no} no${of}`);

@@ -57,7 +57,6 @@
   frame="framed"
   anchor="guild-loot-candidates"
   title={`Candidates for ${itemName}`}
-  meta="Gain as on the BiS page"
   testid="guild-loot-candidates"
 >
   {#if notice !== ''}<p

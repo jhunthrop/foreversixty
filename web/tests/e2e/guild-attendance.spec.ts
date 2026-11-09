@@ -499,7 +499,7 @@ test('readiness: Next raid is on by default, its lists are the sign-ups, and off
   await page.clock.install({ time: NOW });
   await gotoHydrated(page, `${GUILD_URL}#readiness`, 'guild-readiness-tab');
   const toggle = page.getByTestId('guild-readiness-next-raid');
-  await expect(toggle).toHaveText('Next raid · Thu 10 Dec');
+  await expect(toggle).toHaveText('Next raid only');
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
   // By exception (batch 3): each raider is short of something, ready, or leveling, never two.
   const listed = () =>

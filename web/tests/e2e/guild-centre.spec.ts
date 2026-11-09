@@ -478,7 +478,8 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
     await page.goto(`${GUILD_URL}#roster`);
     await expect(page.getByTestId('guild-roster-approve-explains')).toHaveCount(0);
     const list = page.getByTestId('guild-roster-unverified-list');
-    await expect(list.getByTestId('guild-roster-pending-rank').first()).toHaveText('Member');
+    // A member waits with no rank tag (batch 3).
+    await expect(list.getByTestId('guild-roster-pending-rank')).toHaveCount(0);
     // The card's head says it; there is no per-row state tag.
     await expect(page.getByTestId('guild-roster-waiting')).toContainText('Waiting for approval');
     await expect(list.getByTestId('guild-roster-state')).toHaveCount(0);
@@ -1171,7 +1172,7 @@ test.describe('guild crest (Settings tab, officer only)', () => {
     await page.goto(`${GUILD_URL}#settings`);
     await expect(page.getByTestId('guild-crest-settings')).toBeVisible();
     await expect(page.getByTestId('guild-crest-current')).toHaveAttribute('src', /horde-logo-512\.webp$/);
-    await expect(page.getByTestId('guild-crest-default-caption')).toHaveText("Default: your faction's logo");
+    await expect(page.getByTestId('guild-crest-default-caption')).toHaveCount(0);
   });
 
   test('a member never sees the block', async ({ page }) => {

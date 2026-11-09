@@ -20,11 +20,11 @@
   import { FACTION_BAR_COLOR } from '../../lib/faction-mark';
   import { deleteGuildCrest, GuildApiError, putGuildCrest } from '../../lib/guild/api';
   import { guildCrestCopy, guildHomeCopy } from '../../lib/guild/copy';
-  import { CREST_ACCEPT_ATTR, CREST_RULES_LINE, precheckCrestFile } from '../../lib/guild/crest';
+  import { CREST_ACCEPT_ATTR, precheckCrestFile } from '../../lib/guild/crest';
   import { guildMarkSrc } from '../../lib/guild/mark';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { button } from '../../lib/ui/button';
-  import { ROW_LABEL, ROW_OPEN, ROW_SUB } from '../../lib/ui/row';
+  import { ROW_LABEL, ROW_OPEN } from '../../lib/ui/row';
   import { CONFIRM_BLOCK } from '../../lib/guild/billing-styles';
 
   let {
@@ -160,11 +160,6 @@
     {/if}
     <span class="flex min-w-0 flex-1 flex-col">
       <span class="{ROW_LABEL} text-strong">{guildCrestCopy.heading}</span>
-      {#if !hasCrest}
-        <span class={ROW_SUB} data-testid="guild-crest-default-caption">
-          {guildCrestCopy.defaultCaption}
-        </span>
-      {/if}
     </span>
     <!-- The browser's own file control is hidden (it stays in the page for the file dialog, a keyboard and
          a screen reader); the secondary button is its label, and the focus ring shows on the label. -->
@@ -198,7 +193,6 @@
       <span class="text-muted min-w-0 truncate text-[13px]" data-testid="guild-crest-file-name"
         >{selectedFile === null ? guildCrestCopy.noneChosen : selectedFile.name}</span
       >
-      <p class="text-muted text-[12px]">{CREST_RULES_LINE}</p>
     </div>
 
     {#if fileError !== ''}

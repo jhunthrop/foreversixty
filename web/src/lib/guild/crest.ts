@@ -12,8 +12,6 @@ export const CREST_ACCEPTED_TYPES = ['image/png', 'image/jpeg', 'image/webp'] as
  *  own check can never drift apart. */
 export const CREST_ACCEPT_ATTR = CREST_ACCEPTED_TYPES.join(',');
 
-export const CREST_RULES_LINE = 'PNG, JPEG or WebP, up to 2 MB, at least 128 by 128; we crop to a square.';
-
 /**
  * `null` when the file passes both checks; otherwise the plain message to show in place,
  * matching the contract's own server-side wording for the size case ("That file is 3.1 MB;

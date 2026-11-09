@@ -12,7 +12,7 @@
   import { classTone } from '../../lib/ui/primitives';
   import type { GuildRaidSignup, GuildReadinessRow } from '../../lib/guild/api';
   import type { ReadinessRaid } from '../../lib/guild/attendance-contract';
-  import { attendanceCopy, nextRaidToggle } from '../../lib/guild/attendance-copy';
+  import { attendanceCopy } from '../../lib/guild/attendance-copy';
   import { FILTER_BTN, FILTER_BTN_ON } from '../../lib/guild/filter-styles';
   import { dateLabel } from '../../lib/guild/raid-time';
   import { fetchGuildRaid } from '../../lib/guild/raids-api';
@@ -23,9 +23,9 @@
   import { button } from '../../lib/ui/button';
   import { guildGateCopy } from '../../lib/guild/copy';
   import type { GateFacts } from '../../lib/guild/plan-gate';
-  import { counted } from '../../lib/plural';
   import {
     READINESS_EMPTY,
+    NEXT_RAID_ONLY,
     READY_MEANS,
     levelingLabel,
     nudgeText,
@@ -147,7 +147,7 @@
             onclick={onToggleNextRaid}
             data-testid="guild-readiness-next-raid"
           >
-            {nextRaidToggle(raidDay)}
+            {NEXT_RAID_ONLY}
           </button>
         {/if}
       {/snippet}
@@ -201,12 +201,7 @@
     </Section>
 
     {#if tanks !== null}
-      <Section
-        title="Fire resistance on tanks"
-        panel
-        meta={counted(tanks.length, 'tank')}
-        testid="guild-readiness-fire"
-      >
+      <Section title="Fire resistance on tanks" panel testid="guild-readiness-fire">
         {#if tanks.length === 0}
           <p class="text-muted text-[14px]">No tank signed yet.</p>
         {:else}

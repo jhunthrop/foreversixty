@@ -14,7 +14,6 @@ import {
   matchedElsewhereParts,
   moveDelta,
   nightLine,
-  nextRaidToggle,
   pickerEmpty,
   pickerFigures,
   pickerHelper,
@@ -241,7 +240,6 @@ describe('attendance, roster and readiness', () => {
   });
 
   it('readiness lines', () => {
-    expect(nextRaidToggle('Thu 10 Dec')).toBe('Next raid · Thu 10 Dec');
     const p = showingParts(23, "Onyxia's Lair", 'Thu 10 Dec, 8:00 pm');
     expect(`${p.lead}${p.title}${p.tail}`).toBe(
       "Showing the 23 signed In or Late for Onyxia's Lair, Thu 10 Dec, 8:00 pm.",

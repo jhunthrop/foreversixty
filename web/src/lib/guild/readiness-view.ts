@@ -357,6 +357,8 @@ export function readinessLists(
 /** A graded raider with nothing shared: Gear, bags and talents all unread. */
 export const NOTHING_SHARED = 'nothing shared';
 export const NO_EXPORT = 'no export yet';
+/** The board's toggle: the next raid's In and Late sign-ups alone. */
+export const NEXT_RAID_ONLY = 'Next raid only';
 /** The ready panel's meta: what ready means. */
 export const READY_MEANS = 'Best in slot or no upgrades, enchanted, stocked, every point spent';
 

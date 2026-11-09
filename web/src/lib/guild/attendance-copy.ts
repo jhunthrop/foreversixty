@@ -323,8 +323,6 @@ export const cameGuildClause = (present: number, nights: number): string =>
 export const cameGuildLine = (present: number, nights: number): string =>
   `${SEP}${cameGuildClause(present, nights)}`;
 
-export const nextRaidToggle = (date: string): string => `Next raid${SEP}${date}`;
-
 /** `Showing the 23 signed In or Late for {Title}, Thu 10 Dec, 8:00 pm (9:00 pm guild time).`, the
  *  title apart so the page links it. */
 export function showingParts(
