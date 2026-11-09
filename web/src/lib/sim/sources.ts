@@ -47,6 +47,9 @@ export interface LoadContext {
   /** The active data build; every /data/<build>/ fetch and every character carries it. */
   treeVersion: string;
   apiBase?: string;
+  /** False for a load that views a character rather than choosing one (a `keep=1` link):
+   *  the header's current character is left as it was. True when omitted. */
+  recordPointer?: boolean;
 }
 
 export type SourceResult = { ok: true; character: SimCharacter } | { ok: false; message: string };
@@ -232,7 +235,8 @@ export async function fromStoredCharacter(
       { kind: input.source, ref: characterKey, captured_at: input.captured_at },
       accountName ?? decoded.build.character?.name ?? nameFromSlug(path.slug),
     );
-    if (result.ok) recordCurrentCharacter(result.character, 'armory', characterKey, storage);
+    if (result.ok && ctx.recordPointer !== false)
+      recordCurrentCharacter(result.character, 'armory', characterKey, storage);
     return result;
   }
 
@@ -307,7 +311,7 @@ export async function fromStoredCharacter(
     // resolves that key straight back through this same function. Stamping the API's literal
     // `input.source` ("fight", say) here would write a pointer no loader can resume: nothing
     // reads `?source=fight&ref=<region>/<ruleset>/<slug>` as a character key.
-    recordCurrentCharacter(character, 'armory', characterKey, storage);
+    if (ctx.recordPointer !== false) recordCurrentCharacter(character, 'armory', characterKey, storage);
     return { ok: true, character };
   } catch {
     return { ok: false, message: simCopy.characterFailed };
@@ -520,7 +524,7 @@ export async function fromLoggedFight(
       consumables: [],
       source: { kind: 'fight', ref, captured_at: meta.created_at },
     };
-    recordCurrentCharacter(character, 'fight', ref, storage);
+    if (ctx.recordPointer !== false) recordCurrentCharacter(character, 'fight', ref, storage);
     return { ok: true, character };
   } catch {
     return { ok: false, message: simCopy.fightNoCombatant };

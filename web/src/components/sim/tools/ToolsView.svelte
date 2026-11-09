@@ -28,13 +28,14 @@
   let { tool }: { tool: SimTool } = $props();
 
   const bootstrap = untrack(() => {
-    const { source, ref, code } = parseSimState(window.location.search);
+    const { source, ref, code, keep } = parseSimState(window.location.search);
     const params = new URLSearchParams(window.location.search);
     const mount = document.getElementById('sim-tools');
     return {
       source,
       ref,
       code,
+      keep,
       // /sim/drops's own preselect (Task 4): a Droptimizer's zone slug, matched against a
       // LootSource.id once the loot file has loaded (the instance $effect below).
       instance: params.get('instance') ?? '',
@@ -57,6 +58,7 @@
       tool,
       treeVersion: bootstrap.treeVersion,
       hardwareConcurrency: navigator.hardwareConcurrency,
+      keep: bootstrap.keep,
     }),
   );
 
@@ -85,7 +87,7 @@
     // `characterSpecOrNull`), read only when `source.ref` is empty and there is actually a
     // fallback to try -- the same guard SimView.svelte's own effect applies.
     const fallbackCode = source !== null && source.ref === '' ? store.characterCode : null;
-    syncTabHrefs(source, fallbackCode);
+    syncTabHrefs(source, fallbackCode, document, bootstrap.keep);
   });
 
   /**

@@ -87,12 +87,12 @@
 
   // The page's one-shot bootstrap values, read once (not bindings kept in sync with the URL).
   const bootstrap = untrack(() => {
-    const { source, ref, code, req, mode, run } = parseSimState(window.location.search);
+    const { source, ref, code, req, mode, run, keep } = parseSimState(window.location.search);
     const mount = document.getElementById('sim');
     const treeVersion = mount?.dataset.treeVersion ?? activeBuild.build;
     // specs.astro stamps `data-sim-view="specs"`; every other page is the ordinary simulator.
     const view: 'sim' | 'specs' = mount?.dataset.simView === 'specs' ? 'specs' : 'sim';
-    return { treeVersion, source, ref, code, request: decodeRequestParam(req), mode, view, run };
+    return { treeVersion, source, ref, code, request: decodeRequestParam(req), mode, view, run, keep };
   });
 
   // Compare mode loads its character through `enterCompare`, never through the store's own URL
@@ -104,6 +104,7 @@
       source: bootstrap.mode === 'compare' ? undefined : bootstrap.source,
       ref: bootstrap.mode === 'compare' ? undefined : bootstrap.ref,
       code: bootstrap.code,
+      keep: bootstrap.keep,
     }),
   );
 
@@ -330,7 +331,7 @@
   const topGearHref = $derived(
     tabHref(
       SIM_TABS.find((tab) => tab.id === 'gear')?.href ?? '/sim/gear',
-      tabStateFor(tabSource, fallbackCode),
+      tabStateFor(tabSource, fallbackCode, bootstrap.keep),
     ),
   );
 
@@ -610,7 +611,7 @@
       classSlug={character.class_slug}
       lines={headLines}
     >
-      {#snippet tabs()}<SimToolTabs source={tabSource} {fallbackCode} />{/snippet}
+      {#snippet tabs()}<SimToolTabs source={tabSource} {fallbackCode} keep={bootstrap.keep} />{/snippet}
       {#snippet answer()}
         <SimAnswer model={answerModel}>
           {#snippet extra()}

@@ -129,10 +129,17 @@ export interface BulkStoreInit {
   serverPollLimit?: number;
   /** Injected by tests, so the phase gate is not a clock-dependent assertion. */
   now?: () => Date;
+  /** The page was opened to view a character (`keep=1`): no load on it moves the reader's
+   *  header character. */
+  keep?: boolean;
 }
 
 export function createBulkStore(init: BulkStoreInit) {
-  const ctx: LoadContext = { treeVersion: init.treeVersion, apiBase: init.apiBase };
+  const ctx: LoadContext = {
+    treeVersion: init.treeVersion,
+    apiBase: init.apiBase,
+    recordPointer: init.keep !== true,
+  };
   const clock = init.now ?? now;
   const mode: BulkMode | null = init.tool === 'weights' ? null : MODE_OF_TOOL[init.tool];
 

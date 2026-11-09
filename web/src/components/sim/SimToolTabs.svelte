@@ -18,6 +18,7 @@
     active = 'quick-sim',
     source = null,
     fallbackCode = null,
+    keep = false,
   }: {
     /** The tab this page is. */
     active?: SimTabId;
@@ -25,13 +26,15 @@
     source?: TabSource | null;
     /** An FS1 code for a source with no ref (a paste). */
     fallbackCode?: string | null;
+    /** The page views a character (`keep=1`): every tab keeps the reader's header character. */
+    keep?: boolean;
   } = $props();
 
   const tabs = $derived(
     SIM_TABS.map((tab) => ({
       id: tab.id,
       label: tab.label,
-      href: tabHref(tab.href, tabStateFor(source, tab.supportsCode ? fallbackCode : null)),
+      href: tabHref(tab.href, tabStateFor(source, tab.supportsCode ? fallbackCode : null, keep)),
       testid: `sim-nav-tab-${tab.id}`,
       attrs: { [SIM_TAB_ATTR]: tab.id },
     })),

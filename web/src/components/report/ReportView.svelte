@@ -8,6 +8,7 @@
        open Sections after, and whose rail holds This pull and the tab's own rail Sections. -->
 <script lang="ts">
   import { untrack } from 'svelte';
+  import { simCompareFightHref } from '../../lib/handoff-links';
   import Facts from '../ui/Facts.svelte';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
@@ -1647,10 +1648,9 @@
   );
   const isTrashPull = $derived(fight !== null && fight.kind !== 'encounter');
   const live = $derived<'live' | 'quiet' | null>(fightIsLive ? (quiet === null ? 'live' : 'quiet') : null);
+  // The player on screen when one is the Source, else the fight's own first-DPS rule.
   const simHref = $derived(
-    fight === null || nightMode
-      ? null
-      : `/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`,
+    fight === null || nightMode ? null : simCompareFightHref(reportId, state.fight, sourcePlayer),
   );
   const where = $derived(
     [facts.zone, fights.length > 0 ? facts.date : ''].filter((part) => part !== '').join(' · '),

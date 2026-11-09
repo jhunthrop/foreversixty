@@ -56,6 +56,12 @@ describe('tabStateFor', () => {
     expect(state).toEqual({ ...defaultSimState(), source: 'armory', ref: 'region/ruleset/slug' });
   });
 
+  it("carries keep, so another tool still leaves the reader's header character alone", () => {
+    const state = tabStateFor({ kind: 'armory', ref: 'us/hardcore/thalrin' }, null, true);
+    expect(state).toEqual({ ...defaultSimState(), source: 'armory', ref: 'us/hardcore/thalrin', keep: true });
+    expect(tabStateFor(null, null, true)).toEqual(defaultSimState());
+  });
+
   it('ignores a fallback code when the source already carries a usable ref', () => {
     const state = tabStateFor({ kind: 'build', ref: 'b1' }, 'FS1:1:warrior:orc:0/0/0:');
     expect(state).toEqual({ ...defaultSimState(), source: 'build', ref: 'b1' });
