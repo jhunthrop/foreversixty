@@ -7,11 +7,19 @@
      says how to get a rating). -->
 <script lang="ts">
   import { characterPageCopy as copy } from '../../lib/character/page-view';
+  import { signedFigure } from '../../lib/ui/primitives';
+  import Spark from '../ui/Spark.svelte';
   import type { CharacterPath } from '../../lib/characters';
-  import { scorePartRows } from '../../lib/character/score-parts';
+  import { scorePartRows, scoreTrend } from '../../lib/character/score-parts';
   import { fetchCharacterRating } from '../../lib/rankings/api';
   import type { CharacterRating } from '../../lib/rating/types';
-  import { hasScore, tierLabel, tierTextColor, type ForeverScore } from '../../lib/score/score';
+  import {
+    hasScore,
+    tierLabel,
+    tierTextColor,
+    type ForeverScore,
+    type ScorePoint,
+  } from '../../lib/score/score';
   import type { Fact } from '../../lib/ui/facts';
   import Facts from '../ui/Facts.svelte';
   import Meter from '../ui/Meter.svelte';
@@ -23,13 +31,19 @@
     forever,
     owned,
     fought = false,
+    history = [],
   }: {
     path: CharacterPath;
     forever: ForeverScore;
     owned: boolean;
     /** Ranked fights are on the page: the line says the score is not in yet, never "no logs". */
     fought?: boolean;
+    /** The score over time (`score_history`): its trend under the score. */
+    history?: readonly ScorePoint[];
   } = $props();
+
+  /** The sparks' width beside a fact's figure. */
+  const SPARK_PX = 64;
 
   /** Every bar is one track on one scale, the longest part's maximum (Experience, 700 points). */
   const TRACK_PX = 120;
@@ -49,6 +63,7 @@
       });
   });
   const overall = $derived(rating?.latest?.overall ?? null);
+  const trend = $derived(scoreTrend(history));
   const facts = $derived<Fact[]>([
     {
       id: 'score',
@@ -56,20 +71,35 @@
       value: (forever.score ?? 0).toLocaleString('en-US'),
       testid: 'character-score-figure',
     },
-    { id: 'tier', label: copy.tier, content: tierValue, testid: 'character-tier' },
-    ...(overall === null
+    ...(trend === null
       ? []
       : [
           {
-            id: 'rating',
-            label: copy.rating,
-            value: copy.ratingValue(overall),
-            testid: 'character-rating',
+            id: 'trend',
+            label: copy.since(trend.since),
+            content: trendValue,
+            testid: 'character-score-trend',
           },
         ]),
+    { id: 'tier', label: copy.tier, content: tierValue, testid: 'character-tier' },
+    ...(overall === null
+      ? []
+      : [{ id: 'rating', label: copy.rating, value: copy.ratingValue(overall), testid: 'character-rating' }]),
   ]);
   const parts = $derived(scorePartRows(forever.components));
 </script>
+
+{#snippet withSpark(values: readonly number[], text: string)}
+  <span class="inline-flex items-center justify-end gap-3">
+    {#if values.length > 1}<span style:width={`${SPARK_PX}px`}><Spark {values} /></span>{/if}
+    <span>{text}</span>
+  </span>
+{/snippet}
+
+{#snippet trendValue()}{#if trend !== null}{@render withSpark(
+      trend.values,
+      signedFigure(trend.change, 0),
+    )}{/if}{/snippet}
 
 {#snippet tierValue()}
   <span style:color={tierTextColor(forever.tier) ?? undefined}>{tierLabel(forever.tier) ?? ''}</span>

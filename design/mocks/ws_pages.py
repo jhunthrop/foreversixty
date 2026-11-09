@@ -209,9 +209,29 @@ def not_found_page(kind: str = 'out', suggest: bool = False, character: bool = F
 
 
 # ------------------------------------------------------------------------------------------------ sign in
+def lookup_panel() -> str:
+    """/characters' lookup (round 5, directions mock b2-characters; web CharacterSearch `panel`): the page's framed Plate under
+    the title band, no heading of its own, no aside or hint: the name (its label for assistive tech) and Look up on one row,
+    Region and Ruleset under them, then the status line."""
+    L = C['lookup']
+    ruleset = next(r['label'] for r in C['rulesets'] if r['id'] == 'normal') if isinstance(C['rulesets'][0], dict) else 'Normal'
+    name = f'<span class="field grow" role="combobox" aria-label="{e(L["nameLabel"])}">{e(L["namePlaceholder"])}</span>'
+    field = lambda lab, html: f'<label class="f"><span class="t-label">{lab}</span>{html}</label>'  # noqa: E731
+    form = (f'<form class="cs-p" aria-label="{e(L["heading"])}"><label class="f grow cs-n">{name}</label>'
+            f'<button type="submit" class="btn primary cs-b">{e(L["submit"])}</button>'
+            f'<div class="cs-s">{field(e(L["regionLabel"]), Select(C["regions"][0].upper()))}{field(e(L["rulesetLabel"]), Select(e(ruleset)))}</div></form>')
+    inner = f'<div class="cs-panel">{form}<p class="t-small nf-status" role="status"></p></div>'
+    return Plate(inner, e(L['heading']))
+
+
 def characters_page() -> str:
-    """/characters (design/specs/2026-11-07-bis-landing.md section 8): the PageHeader names the page, the lookup is its Section."""
-    body = PageHeader(e(C['lookup']['pageTitle'])) + Page('ledger', lookup()) + PAGE_CSS
+    """/characters, signed out (round 5, directions mock b2-characters): the title band names the page; main holds the lookup's
+    framed panel. Signed in, the rail lists the account's characters (character/YourCharacters); signed out it draws nothing."""
+    body = PageHeader(e(C['lookup']['pageTitle'])) + Page('split', lookup_panel(), panels=True) + PAGE_CSS
+    body += ('<style>.cs-panel{padding:22px 24px}.cs-panel .nf-status{min-height:20px;margin:0}.cs-p{display:grid;grid-template-columns:minmax(0,1fr) auto;'
+             'grid-template-areas:"n b" "s s";gap:12px;align-items:end}.cs-n{grid-area:n}.cs-b{grid-area:b}'
+             '.cs-s{grid-area:s;display:flex;gap:12px}.cs-s .f{display:flex;flex-direction:column;gap:6px}'
+             '.cs-p .btn,.cs-s .sel{min-height:44px;box-sizing:border-box}</style>')
     return build_page(e(C['lookup']['heading']), body, '', None, '/characters mock; data pages-facts.json.')
 
 

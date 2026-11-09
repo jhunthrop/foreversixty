@@ -27,8 +27,10 @@ export const FIGHTS_SHOWN = 5;
 export const BUILDS_SHOWN = 3;
 
 export const characterPageCopy = {
-  /** The band's answer after its figure: "+128.9 HPS in upgrades". */
-  answerUnit: (unit: string): string => `${unit} in upgrades`,
+  /** The band's answer after its figure: "+128.9 HPS from upgrades". */
+  answerUnit: (unit: string): string => `${unit} from upgrades`,
+  /** The head's sim link: the character on screen, in the simulator. */
+  simThis: 'Sim this character',
   upgrades: 'Upgrades',
   allUpgrades: 'All upgrades',
   /** "8 more, +23.5 HPS": the upgrades past the frame's centre and what they add. */
@@ -41,6 +43,8 @@ export const characterPageCopy = {
   tier: 'Tier',
   rating: 'Rating',
   ratingValue: (overall: number): string => `${overall} of 100`,
+  /** The score trend's label: "Since 20 Oct". */
+  since: (date: string): string => `Since ${dayMonth(`${date}T00:00:00Z`)}`,
   noLogsOwner: 'No logs yet. Upload a log to get a rating.',
   noLogs: 'No logs yet.',
   noScoreYet: 'No Forever Score yet. It is worked out from the rated fights below.',
@@ -73,7 +77,6 @@ export const characterPageCopy = {
 } as const;
 
 export const characterHrefs = {
-  sim: '/sim',
   logs: '/logs',
   login: '/login',
   setup: '/setup',

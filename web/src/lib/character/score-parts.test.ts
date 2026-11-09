@@ -1,6 +1,33 @@
 // The Forever Score panel's parts (directions mock b2-character): one scale, the quality ladder.
 import { describe, expect, it } from 'vitest';
-import { partQuality, scorePartRows } from './score-parts';
+import { fromLowest, partQuality, scorePartRows, scoreTrend } from './score-parts';
+
+describe('scoreTrend', () => {
+  const history = [
+    { date: '2026-10-20', score: 1520, tier: 'epic' },
+    { date: '2026-10-27', score: 1690, tier: 'epic' },
+    { date: '2026-11-03', score: 1830, tier: 'epic' },
+  ] as const;
+
+  it('is the series oldest first, the change since its first point and that date', () => {
+    expect(scoreTrend([...history].reverse())).toEqual({
+      values: [0, 170, 310],
+      change: 310,
+      since: '2026-10-20',
+    });
+  });
+
+  it('is null with fewer than two points: one week is not a trend', () => {
+    expect(scoreTrend(history.slice(0, 1))).toBeNull();
+    expect(scoreTrend(undefined)).toBeNull();
+  });
+});
+
+describe('fromLowest', () => {
+  it('draws the movement: every point over the lowest', () => {
+    expect(fromLowest([63, 60, 65])).toEqual([3, 0, 5]);
+  });
+});
 
 describe('partQuality', () => {
   it('reads how full a part is on the item quality ladder', () => {

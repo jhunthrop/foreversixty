@@ -32,6 +32,8 @@
   import { onCurrentCharacterChange, onCurrentCharacterSwitch, readCurrent } from '../lib/current-character';
   import { viewerFromMe } from '../lib/coach/viewer';
   import { premiumBlockCopy } from '../lib/billing/copy';
+  import { simViewedCharacterHref } from '../lib/handoff-links';
+  import { button as buttonClass } from '../lib/ui/button';
   import { bandPricer, UNPRICED } from '../lib/gear/gain-pricer';
   import { notReadCopy } from '../lib/gear/copy';
   import { paperdollNote, unknownCount } from '../lib/gear/paperdoll';
@@ -294,12 +296,21 @@
             >{/if}
         {/snippet}
         {#snippet answer()}
-          {#if total > 0}<Figure
-              value={signedFigure(total)}
-              unit={copy.answerUnit(unit)}
-              align="end"
-              testid="character-answer"
-            />{/if}
+          <span class="flex flex-wrap items-center gap-x-5 gap-y-2">
+            {#if !unread}<a
+                class={buttonClass('secondary', 'sm')}
+                href={simViewedCharacterHref(characterKey(resolved.region, resolved.ruleset, resolved.slug))}
+                data-testid="character-sim">{copy.simThis}</a
+              >{/if}
+            {#if total > 0}<span class="shrink-0 whitespace-nowrap"
+                ><Figure
+                  value={signedFigure(total)}
+                  unit={copy.answerUnit(unit)}
+                  align="end"
+                  testid="character-answer"
+                /></span
+              >{/if}
+          </span>
         {/snippet}
       </PageHeader>
     {/snippet}
@@ -317,7 +328,13 @@
     {/snippet}
     {#snippet rail()}
       {#if data.score_hidden !== true}
-        <CharacterScore path={resolved} {forever} {owned} fought={data.best.length > 0} />
+        <CharacterScore
+          path={resolved}
+          {forever}
+          {owned}
+          fought={data.best.length > 0}
+          history={data.score_history ?? []}
+        />
       {/if}
       {#if data.builds_seen.length > 0}
         <Section title={copy.builds} panel testid="character-builds">

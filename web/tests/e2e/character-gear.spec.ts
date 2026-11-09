@@ -125,7 +125,7 @@ test.describe('the Gear frame at 1440', () => {
       '1 item is not in our item data yet. It is new in the beta, and it gets a name and icon when the client lists it. Item level shows once every item is known.',
     );
     // The band's answer is the sum of the priced gains.
-    await expect(page.getByTestId('character-answer')).toHaveText('+3.8DPS in upgrades');
+    await expect(page.getByTestId('character-answer')).toHaveText('+3.8DPS from upgrades');
     await noSidewaysScroll(page);
     expect(errors).toEqual([]);
   });
@@ -189,12 +189,14 @@ test.describe('the Gear frame at 1440', () => {
     );
   });
 
-  test('a worn item opens its client tooltip on hover', async ({ page }) => {
+  // The frame shows its items in place (ui/PaperdollFrame `data-inline-tip`, lane P2): a hovered slot
+  // is the centre's, never a floating tooltip over the frame.
+  test('hovering a worn item shows it in the centre', async ({ page }) => {
     await open(page);
     await drawn(page);
     await page.waitForLoadState('networkidle');
     await frameSlot(page, 'head').hover();
-    await expect(page.getByTestId('item-tooltip').first()).toContainText('Green Lens');
+    await expect(page.locator('.pdf-frame').getByTestId('character-inspector')).toContainText('Green Lens');
   });
 });
 

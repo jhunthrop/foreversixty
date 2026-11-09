@@ -27,6 +27,17 @@ describe('yourCharacterRows', () => {
     ]);
   });
 
+  it('adds the guild and the item level the account already has', () => {
+    const geared = {
+      ...thandrel,
+      item_level: 61,
+      guild: { id: 2, name: 'Cx66 Olympus', verified: true },
+    } as MeCharacter;
+    expect(yourCharacterRows([geared])[0]?.line).toBe(
+      'Level 60 Fury Warrior · <Cx66 Olympus> · Item level 61',
+    );
+  });
+
   it('leaves out what the Battle.net import has not learned', () => {
     const bare = {
       key: 'eu/hardcore/felsnap',
