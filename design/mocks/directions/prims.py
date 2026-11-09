@@ -3,6 +3,7 @@ citizen"). Every directions surface draws its panels, tables, player cells, mete
 here, once; a surface that needs something new adds it here first. The inventory and the web component each one
 becomes are in docs/superpowers/plans/2026-11-09-redesign.md, "Shared component inventory".
 """
+import math
 from html import escape
 
 import data as D
@@ -16,19 +17,22 @@ CHART_W = 1000  # the SVG's own coordinate width; it scales to the panel
 
 PRIMS_CSS = '''
 /* panel: the one card with a heading row (title, one meta line, one action at the right) */
-.pn{margin-top:22px}.pn>.hd{display:flex;align-items:baseline;gap:12px;padding:16px 20px 10px}
+.pn{margin-top:22px;overflow:clip}.pn>.hd{display:flex;align-items:baseline;gap:12px;padding:16px 20px 10px}
 .pn>.hd h2{font-size:21px;line-height:26px}.pn>.hd .m{font-size:13px;color:var(--muted)}.pn>.hd .a{margin-left:auto;font-size:14px;white-space:nowrap}
 .pn>.bd{padding:0 20px 16px}.pn>.bd.flush{padding:0 0 6px}
-/* data table: tabular figures right-aligned; the first column a player or ability cell */
+/* data table: tabular figures right-aligned; the first column a player or ability cell; the header sticks (the panel clips,
+   not hides, so it sticks to the viewport) */
 .tb{width:100%;border-collapse:collapse;font-size:14px}
-.tb th{font:600 12px var(--body);color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.14);white-space:nowrap}
+.tb th{position:sticky;top:0;z-index:2;background:var(--card);font:600 12px var(--body);color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.14);white-space:nowrap}
 .tb th.n,.tb td.n{text-align:right;font-variant-numeric:tabular-nums lining-nums;white-space:nowrap}
 .tb th.on{color:#fff}
 .tb td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.07);color:var(--text);vertical-align:middle}
 .tb tr:last-child td{border-bottom:0}.tb td.strong{color:#fff;font-weight:600}
 .tb tr.tot td{color:#fff;font-weight:600;border-top:1px solid rgba(255,255,255,.14)}
 .tb .first{padding-left:20px}.tb .last{padding-right:20px}
-.tb tr.me td{background:rgba(14,134,202,.14)}
+.tb tr.me td{background:rgba(14,134,202,.14)}.tb tr.me td.first{box-shadow:inset 3px 0 0 var(--blue)}
+/* a table with a meter column (bar_col): the meter and the name column take one width on every tab, so bars never jump */
+.tb td.mc{width:168px}.tb td.mc .mt{width:148px}.tb th.first:has(+ th.mc),.tb td.first:has(+ td.mc){width:250px}
 /* a player (or ability) cell: medallion or icon, the name in class colour, one sub line */
 .pc{display:flex;align-items:center;gap:10px;min-width:0}.pc .nm{display:block;font-weight:600;line-height:19px;white-space:nowrap}
 .pc .sb{display:block;font-size:12.5px;color:var(--muted);line-height:17px;white-space:nowrap}
@@ -48,6 +52,12 @@ PRIMS_CSS = '''
 /* chips: a panel's own filter row (what a chart or lane view shows), toggles in the control style */
 .chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 12px}.chips a{font:600 13px var(--body);color:var(--text);padding:4px 11px;
 border:1px solid rgba(255,255,255,.18);border-radius:var(--r-sm)}.chips a.on{color:#fff;border-color:var(--blue);background:rgba(0,147,178,.16)}
+.chips a i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:7px;vertical-align:-1px}
+/* code: SQL and file names, on the panel's own black */
+.code{margin:0;padding:12px 14px;background:#0b0705;border:1px solid rgba(255,255,255,.12);border-radius:var(--r-sm);
+font:13px/1.6 ui-monospace,Menlo,monospace;color:#fff;white-space:pre-wrap;overflow-x:auto}
+/* the rank colour ladder's one-line legend */
+.plg{display:flex;flex-wrap:wrap;gap:4px 12px;font:700 13px var(--body)}
 .om{display:none}@media(max-width:700px){.od{display:none}.om{display:block}}
 /* ability icon: a spell or item icon at row size, the client's thin black edge */
 .ai{display:inline-block;flex:none;border-radius:var(--r-ic);border:1px solid #000;box-shadow:0 0 0 1px var(--rule);vertical-align:middle}
@@ -107,7 +117,12 @@ border:1px solid rgba(255,255,255,.18);border-radius:var(--r-sm)}.chips a.on{col
 .ir:last-child{border-bottom:0}.ir img{width:36px;height:36px;border-radius:var(--r-ic);border:1px solid #000;box-shadow:0 0 0 1px var(--qb,var(--rule))}
 .ir .n{display:block;font-weight:600;line-height:19px}.ir .s{display:block;font-size:12.5px;color:var(--muted);line-height:17px}.ir .t{font-size:13px;color:var(--muted);white-space:nowrap}
 .twocol{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start}
-@media(max-width:1100px){.twocol{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:1100px){.twocol{grid-template-columns:minmax(0,1fr)}.twocol.ans>aside{order:-1}}
+/* a report or rankings band (.rb) on a phone: its tab group and its pickers scroll as one strip, opening on the selected
+   tab (strip_into_view), so the band stays three short lines */
+@media(max-width:700px){.rb .ctl{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);
+mask-image:linear-gradient(90deg,#000 85%,transparent)}.rb .ctl .g{flex:none;overflow:visible;max-width:none;-webkit-mask-image:none;mask-image:none}
+.pc .sb{white-space:normal}.pc .sb .om{display:inline}}
 @media(max-width:700px){.pn>.hd{padding:14px 14px 8px}.pn>.bd{padding:0 14px 14px}.tb .first{padding-left:14px}.tb .last{padding-right:14px}
 .tb .hp{display:none}.cf .lg{font-size:12px}}
 '''
@@ -141,13 +156,14 @@ def meter(frac: float, colour: str = 'var(--blue)') -> str:
 
 
 def table(heads: list[tuple[str, bool]], rows: list[list[str]], sort: str = '', row_cls: list[str] | None = None,
-          hide_phone: set[int] | None = None) -> str:
+          hide_phone: set[int] | None = None, bar_col: int | None = None) -> str:
     """heads: (label, numeric). rows: cells as HTML. The first and last columns take the panel's edge padding;
-    hide_phone: column indexes dropped under 700 px."""
+    hide_phone: column indexes dropped under 700 px; bar_col: the meter column, one fixed width on every table."""
     hide_phone = hide_phone or set()
 
     def cls(i: int, numeric: bool, n: int) -> str:
-        c = ['n' if numeric else '', 'first' if i == 0 else '', 'last' if i == n - 1 else '', 'hp' if i in hide_phone else '']
+        c = ['n' if numeric else '', 'first' if i == 0 else '', 'last' if i == n - 1 else '', 'hp' if i in hide_phone else '',
+             'mc' if i == bar_col else '']
         return ' '.join(x for x in c if x)
 
     n = len(heads)
@@ -186,8 +202,11 @@ def _smooth(values: list[float], k: int) -> list[float]:
     return out
 
 
-def chips(items: list[tuple[str, bool]]) -> str:
-    return '<nav class="chips">' + ''.join(f'<a class="{"on" if on else ""}" href="#">{escape(t)}</a>' for t, on in items) + '</nav>'
+def chips(items: list[tuple[str, bool]], swatches: dict[str, str] | None = None) -> str:
+    """A filter row. swatches: a chip's mark colour, so the filter is its own legend (no separate key to repeat it)."""
+    sw = swatches or {}
+    return '<nav class="chips">' + ''.join(f'<a class="{"on" if on else ""}" href="#">'
+                                           + (f"<i style='background:{sw[t]}'></i>" if t in sw else '') + f'{escape(t)}</a>' for t, on in items) + '</nav>'
 
 
 def repeats(colours: list[str]) -> list[bool]:
@@ -200,7 +219,7 @@ def repeats(colours: list[str]) -> list[bool]:
     return out
 
 
-SHADE_STEPS = (1.0, 1.45, .62, 1.8, .4)  # the class colour, then lighter and darker turns for each further player of it
+SHADE_STEPS = (1.0, 1.7, .5, 1.85, .35)  # the class colour, then lighter and darker turns for each further player of it
 
 
 def shades(colours: list[str]) -> list[str]:
@@ -223,46 +242,120 @@ def _scale(hex_colour: str, k: float) -> str:
     return '#' + ''.join(f'{max(0, min(255, v)):02x}' for v in rgb)
 
 
-def line_chart(series: list[tuple[str, str, list[float]]], duration_s: float, height: int = 220,
-               marks: list[float] | None = None, smooth: int = 10, label: str = '', width: int = CHART_W) -> str:
-    """series: (name, colour, per-second values). Gridlines and axis in the page's rule colours, minute ticks in mm:ss,
-    deaths as short red ticks on the axis. The values are smoothed over `smooth` seconds, as the live chart does.
-    `width` is the drawing's own width: the phone drawing is narrower so its type stays readable when it scales."""
-    pad_l, pad_r, pad_t, pad_b = 46, 12, 10, 24
-    w, h = width, height
-    pw, ph = w - pad_l - pad_r, h - pad_t - pad_b
-    sm = [(n, c, _smooth(v, smooth)) for n, c, v in series]
-    top = max((max(v) for _, _, v in sm if v), default=1) or 1
-    step = 10 ** max(0, len(str(int(top))) - 1)
-    ymax = (int(top / step) + 1) * step
-    y = lambda v: pad_t + ph - v / ymax * ph
-    x = lambda t: pad_l + t / duration_s * pw
-    grid = ''.join(f'<line x1="{pad_l}" x2="{w - pad_r}" y1="{y(ymax * i / 4):.1f}" y2="{y(ymax * i / 4):.1f}" stroke="{GRID}"/>'
-                   f'<text x="{pad_l - 8}" y="{y(ymax * i / 4) + 4:.1f}" text-anchor="end" fill="{AXIS}" font-size="12">{int(ymax * i / 4):,}</text>'
-                   for i in range(5))
-    tick_every = (60 if duration_s > 240 else 30) * (3 if width < CHART_W / 2 else 1)
-    ticks = ''.join(f'<text x="{x(t):.1f}" y="{h - 6}" text-anchor="middle" fill="{AXIS}" font-size="12">{mmss(t)}</text>'
-                    for t in range(0, int(duration_s) + 1, tick_every))
+# ------------------------------------------------------------------------------------------------ charts
+# One axis for every chart (reviewers, batch 1: "one tick scheme for all charts"): round minute ticks from TICK_STEPS,
+# the y unit above the value labels, gridlines in GRID, crisp 1 px rules. Line, area and column charts all draw on it.
+TICK_STEPS = (15, 30, 60, 120, 180, 300, 600, 900)
+MAX_TICKS, MAX_TICKS_PHONE = 8, 4
+PAD = {'l': 46, 'r': 14, 't': 24, 'b': 24}
+NICE = (1, 2, 4, 8, 10)  # each top divides into four round quarters (0.25, 0.5, 1, 2, 2.5 of the magnitude)
+
+
+def tick_step(duration_s: float, phone: bool) -> int:
+    cap = MAX_TICKS_PHONE if phone else MAX_TICKS
+    return next((s for s in TICK_STEPS if duration_s / s <= cap), TICK_STEPS[-1])
+
+
+def nice_max(top: float) -> float:
+    """The y axis's top: the next NICE step above the data, so the four gridlines read as round numbers."""
+    top = top or 1
+    mag = 10 ** math.floor(math.log10(top))
+    return next(m * mag for m in NICE if top <= m * mag)
+
+
+def _fmt(v: float) -> str:
+    return f'{v:,.0f}' if v >= 10 or v == int(v) else f'{v:.2f}'.rstrip('0')
+
+
+class Axis:
+    """The drawing box of one chart: x is seconds into the fight (or a column index), y the series' own unit."""
+
+    def __init__(self, width: int, height: int, duration_s: float, ymax: float, unit: str):
+        self.w, self.h, self.dur, self.ymax, self.unit = width, height, duration_s, ymax, unit
+        self.pw, self.ph = width - PAD['l'] - PAD['r'], height - PAD['t'] - PAD['b']
+        self.base = PAD['t'] + self.ph
+        self.phone = width < CHART_W / 2
+
+    def x(self, t: float) -> float:
+        return PAD['l'] + t / self.dur * self.pw
+
+    def y(self, v: float) -> float:
+        return self.base - min(v, self.ymax) / self.ymax * self.ph
+
+    def frame(self, time_axis: bool = True) -> str:
+        grid = ''.join(f'<line x1="{PAD["l"]}" x2="{self.w - PAD["r"]}" y1="{self.y(self.ymax * i / 4):.1f}" y2="{self.y(self.ymax * i / 4):.1f}" '
+                       f'stroke="{GRID}" shape-rendering="crispEdges"/><text x="{PAD["l"] - 8}" y="{self.y(self.ymax * i / 4) + 4:.1f}" '
+                       f'text-anchor="end" fill="{AXIS}" font-size="12">{_fmt(self.ymax * i / 4)}</text>' for i in range(1, 5))
+        unit = (f'<text x="{PAD["l"] - 8}" y="{self.base + 4:.1f}" text-anchor="end" fill="{AXIS}" font-size="12">0</text>'
+                f'<text x="{PAD["l"]}" y="11" fill="{AXIS}" font-size="12" font-weight="600">{escape(self.unit)}</text>')
+        ticks = ''
+        if time_axis:
+            step = tick_step(self.dur, self.phone)
+            ticks = ''.join(f'<text x="{self.x(t):.1f}" y="{self.h - 6}" text-anchor="{"start" if t == 0 else "middle"}" fill="{AXIS}" '
+                            f'font-size="12">{mmss(t)}</text>' for t in range(0, int(self.dur) + 1, step))
+        base = (f'<line x1="{PAD["l"]}" x2="{self.w - PAD["r"]}" y1="{self.base}" y2="{self.base}" stroke="{AXIS}" stroke-opacity=".5" '
+                f'shape-rendering="crispEdges"/>')
+        return grid + unit + ticks + base
+
+    def svg(self, inner: str, label: str) -> str:
+        return (f'<svg viewBox="0 0 {self.w} {self.h}" role="img" aria-label="{escape(label)}" font-family="Open Sans,Arial,sans-serif">'
+                f'{inner}</svg>')
+
+
+def _points(ax: Axis, vals: list[float]) -> list[tuple[float, float]]:
     # a series spans the whole fight whatever its sample count, so its index maps onto the fight's length
+    return [(ax.x(i * ax.dur / max(len(vals) - 1, 1)), ax.y(v)) for i, v in enumerate(vals)]
+
+
+def _death_marks(ax: Axis, marks: list[float] | None) -> str:
+    return ''.join(f'<line x1="{ax.x(t):.1f}" x2="{ax.x(t):.1f}" y1="{ax.base - 8}" y2="{ax.base + 2}" stroke="{DEATH}" stroke-width="2.5"/>'
+                   for t in marks or [])
+
+
+def line_chart(series: list[tuple[str, str, list[float]]], duration_s: float, height: int = 240, marks: list[float] | None = None,
+               smooth: int = 10, label: str = '', width: int = CHART_W, unit: str = '', area: bool = False,
+               ymax: float | None = None) -> str:
+    """series: (name, colour, per-second values), colours already through shades(). Deaths are short red ticks on the axis.
+    The values are smoothed over `smooth` seconds, as the live chart does. `area` fills under each line at a low alpha
+    (one-series charts: resources, a single player's output). `width` is the drawing's own width: the phone drawing is
+    narrower so its type stays readable when it scales."""
+    sm = [(n, c, _smooth(v, smooth)) for n, c, v in series]
+    ax = Axis(width, height, duration_s, ymax or nice_max(max((max(v) for _, _, v in sm if v), default=1)), unit)
     dashed = repeats([c for _, c, _ in sm])
-    dash = ' stroke-dasharray="7 4"'
-    lines = ''.join(f'<polyline fill="none" stroke="{c}" stroke-width="2" stroke-linejoin="round"{dash if d else ""} points="'
-                    + ' '.join(f'{x(i * duration_s / max(len(vals) - 1, 1)):.1f},{y(v):.1f}' for i, v in enumerate(vals)) + '"/>'
-                    for (_, c, vals), d in zip(sm, dashed) if vals)
-    dm = ''.join(f'<line x1="{x(t):.1f}" x2="{x(t):.1f}" y1="{pad_t + ph - 8}" y2="{pad_t + ph + 2}" stroke="{DEATH}" stroke-width="2.5"/>'
-                 for t in marks or [])
-    return (f'<svg viewBox="0 0 {w} {h}" role="img" aria-label="{escape(label)}" font-family="Open Sans,Arial,sans-serif">{grid}{ticks}'
-            f'<line x1="{pad_l}" x2="{w - pad_r}" y1="{pad_t + ph}" y2="{pad_t + ph}" stroke="{AXIS}" stroke-opacity=".5"/>{lines}{dm}</svg>')
+    out = ''
+    for (_, c, vals), d in zip(sm, dashed):
+        if not vals:
+            continue
+        pts = _points(ax, vals)
+        path = ' '.join(f'{px:.1f},{py:.1f}' for px, py in pts)
+        if area:
+            out += f'<polygon fill="{c}" fill-opacity=".16" points="{pts[0][0]:.1f},{ax.base} {path} {pts[-1][0]:.1f},{ax.base}"/>'
+        dash = ' stroke-dasharray="7 4"' if d else ''
+        out += f'<polyline fill="none" stroke="{c}" stroke-width="{1.5 if area else 2}" stroke-linejoin="round"{dash} points="{path}"/>'
+    return ax.svg(ax.frame() + out + _death_marks(ax, marks), label)
 
 
-PHONE_CHART_W, PHONE_CHART_H = 380, 200
+def column_chart(bars: list[tuple[str, float, str]], unit: str, height: int = 200, label: str = '', width: int = CHART_W,
+                 every: int = 1) -> str:
+    """bars: (x label, value, colour). Square-topped columns with a 2 px gap; a label under every `every`th column."""
+    n = len(bars) or 1
+    ax = Axis(width, height, 1, nice_max(max((v for _, v, _ in bars), default=1)), unit)
+    slot = ax.pw / n
+    cols = ''.join(f'<rect x="{PAD["l"] + i * slot + 1:.1f}" y="{ax.y(v):.1f}" width="{max(slot - 2, 1):.1f}" height="{ax.base - ax.y(v):.1f}" '
+                   f'fill="{c}" shape-rendering="crispEdges"/>' for i, (_, v, c) in enumerate(bars))
+    labels = ''.join(f'<text x="{PAD["l"] + (i + .5) * slot:.1f}" y="{height - 6}" text-anchor="middle" fill="{AXIS}" font-size="12">'
+                     f'{escape(t)}</text>' for i, (t, _, _) in enumerate(bars) if i % every == 0)
+    return ax.svg(ax.frame(time_axis=False) + cols + labels, label)
+
+
+PHONE_CHART_W, PHONE_CHART_H = 380, 230  # renders about 215 px tall on a 390 phone, its 12 px type at about 11 px
 
 
 def responsive_chart(series: list[tuple[str, str, list[float]]], duration_s: float, marks: list[float] | None = None,
-                     label: str = '') -> str:
+                     label: str = '', unit: str = '', area: bool = False, height: int = 240, ymax: float | None = None) -> str:
     """The desktop drawing and the phone drawing of one chart; CSS shows the one that fits."""
-    return (f'<div class="od">{line_chart(series, duration_s, marks=marks, label=label)}</div>'
-            f'<div class="om">{line_chart(series, duration_s, PHONE_CHART_H, marks, label=label, width=PHONE_CHART_W)}</div>')
+    return (f'<div class="od">{line_chart(series, duration_s, height, marks, label=label, unit=unit, area=area, ymax=ymax)}</div>'
+            f'<div class="om">{line_chart(series, duration_s, PHONE_CHART_H, marks, label=label, width=PHONE_CHART_W, unit=unit, area=area, ymax=ymax)}</div>')
 
 
 def chart_frame(chart_svg: str, legend: list[tuple[str, str, str]]) -> str:
@@ -385,3 +478,29 @@ def lanes(rows: list[tuple[str, str]], duration_s: float, ticks: int = 60) -> st
     # each tick sits at its own time on the lane's scale, not spread evenly
     axis = ''.join(f'<span style="left:{t / duration_s * 100:.2f}%">{mmss(t)}</span>' for t in range(0, int(duration_s) + 1, ticks))
     return f'<div class="ln"><div>{labels}</div><div>{svgs}</div><div class="ax">{axis}</div></div>'
+
+
+# ------------------------------------------------------------------------------------------------ small marks
+PARSE = {'gold': '#e5cc80', 'pink': '#e268a8', 'orange': '#ff8000', 'purple': '#a335ee', 'blue': '#0070ff', 'green': '#1eff00', 'grey': '#8c8c8c'}
+PARSE_STEPS = ((100, 'gold'), (99, 'pink'), (95, 'orange'), (75, 'purple'), (50, 'blue'), (25, 'green'), (0, 'grey'))
+PARSE_LEGEND = (('100', 'gold'), ('99+', 'pink'), ('95+', 'orange'), ('75+', 'purple'), ('50+', 'blue'), ('25+', 'green'), ('under 25', 'grey'))
+
+
+def parse_colour(pct: float) -> str:
+    """The rank colour ladder (lib/report/format.ts percentileToken): gold 100, pink 99+, orange 95+, ... grey under 25."""
+    return PARSE[next(name for floor, name in PARSE_STEPS if pct >= floor)]
+
+
+def parse_legend(lead: str = '') -> str:
+    lead_html = f'<span style="color:var(--muted);font-weight:400">{escape(lead)}</span>' if lead else ''
+    return '<p class="plg">' + lead_html + ''.join(f'<b style="color:{PARSE[c]}">{t}</b>' for t, c in PARSE_LEGEND) + '</p>'
+
+
+def strip_into_view() -> str:
+    """On a phone the band's control strip scrolls; the selected tab starts in view (a tab past the fold would be hidden)."""
+    return ('<script>if(innerWidth<700)for(const n of document.querySelectorAll(".rb .ctl")){const a=n.querySelector("a.on");'
+            'if(a)n.scrollLeft=Math.max(0,a.offsetLeft-n.offsetLeft)}</script>')
+
+
+def code_block(text: str) -> str:
+    return f'<pre class="code">{escape(text)}</pre>'
