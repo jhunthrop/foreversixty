@@ -176,6 +176,12 @@ type Config struct {
 	// exist yet).
 	StripeSecretKey     string
 	StripeWebhookSecret string
+	// StripeConnectWebhookSecret (STRIPE_CONNECT_WEBHOOK_SECRET) is the Connect endpoint's secret on
+	// the same webhook URL: account.updated for creators' payout accounts. Optional.
+	StripeConnectWebhookSecret string
+	// CreatorPayouts (CREATOR_PAYOUTS=true) lets the owner approve creator payouts, which makes
+	// Stripe transfers. Off by default: statements read, nothing can be paid.
+	CreatorPayouts bool
 	// StripeEnvironment is "test" or "live", from STRIPE_ENVIRONMENT. It
 	// must be "live" exactly when PublicBaseURL is the production origin
 	// (see ValidateStripeKeyEnvironment) — this is a separate value from
@@ -342,6 +348,8 @@ func Load(getenv func(string) string) (Config, error) {
 
 	c.StripeSecretKey = getenv("STRIPE_SECRET_KEY")
 	c.StripeWebhookSecret = getenv("STRIPE_WEBHOOK_SECRET")
+	c.StripeConnectWebhookSecret = getenv("STRIPE_CONNECT_WEBHOOK_SECRET")
+	c.CreatorPayouts = getenv("CREATOR_PAYOUTS") == "true"
 	c.StripeEnvironment = getenv("STRIPE_ENVIRONMENT")
 
 	key, err := decodeNotifyKey(getenv("NOTIFY_ENCRYPTION_KEY"))

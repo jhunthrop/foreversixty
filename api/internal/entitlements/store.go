@@ -181,7 +181,7 @@ func (s *Store) PersonalBilling(ctx context.Context, userID int64) (*Billing, er
 	var b Billing
 	err := s.Pool.QueryRow(ctx, `
 		select e.plan, e.status, e.current_period_end, e.cancel_at_period_end, (`+activeClause+`) as active,
-		       e.source, coalesce(e.stripe_subscription_id, ''), coalesce(e.price_lookup_key, ''),
+		       case e.source when 'creator' then 'grant' else e.source end, coalesce(e.stripe_subscription_id, ''), coalesce(e.price_lookup_key, ''),
 		       coalesce(e.unit_amount_cents, 0)
 		from entitlements e where e.user_id = $1 and e.plan = 'premium'`, userID).
 		Scan(&b.Plan, &b.Status, &b.CurrentPeriodEnd, &b.CancelAtPeriodEnd, &b.Active,

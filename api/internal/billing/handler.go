@@ -106,7 +106,12 @@ type Service struct {
 	Events        events.Publisher
 	PublicBaseURL string
 	WebhookSecret string
-	Log           *slog.Logger
+	// ConnectWebhookSecret is the Connect endpoint's secret (account.updated for creators' payout
+	// accounts) on the same URL; empty accepts the account endpoint alone.
+	ConnectWebhookSecret string
+	// Creators is the creator program (creator_code.go); nil refuses codes.
+	Creators Creators
+	Log      *slog.Logger
 	// Now is the clock; nil means time.Now.
 	Now func() time.Time
 }

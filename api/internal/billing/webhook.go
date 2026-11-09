@@ -12,7 +12,6 @@ import (
 	"time"
 
 	stripe "github.com/stripe/stripe-go/v82"
-	"github.com/stripe/stripe-go/v82/webhook"
 
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
@@ -36,7 +35,7 @@ func (s *Service) webhook(w http.ResponseWriter, r *http.Request) {
 	// Signature verified on the raw body before anything else runs
 	// against it (spec §3). The library's default 5-minute replay
 	// tolerance is used unmodified.
-	event, err := webhook.ConstructEvent(payload, r.Header.Get("Stripe-Signature"), s.WebhookSecret)
+	event, err := constructEvent(payload, r.Header.Get("Stripe-Signature"), s.verifySecrets())
 	if err != nil {
 		// The library also refuses an event whose API version is not the
 		// one it was built for (stripe.APIVersion), so the endpoint is
@@ -84,6 +83,10 @@ func (s *Service) handleEvent(ctx context.Context, event stripe.Event) error {
 		return s.onSubscriptionDeleted(ctx, event, actor)
 	case "invoice.paid", "invoice.payment_failed":
 		return s.onInvoiceEvent(ctx, event, actor)
+	case "charge.refunded":
+		return s.onChargeRefunded(ctx, event)
+	case "account.updated":
+		return s.onAccountUpdated(ctx, event)
 	default:
 		// Not in this endpoint's enabled_events list in practice; kept
 		// as a safety net if the Dashboard config ever drifts.
@@ -124,6 +127,9 @@ func (s *Service) onCheckoutCompleted(ctx context.Context, event stripe.Event, a
 		}
 	}
 	if err := s.upsertSubscription(ctx, subID, actor); err != nil {
+		return err
+	}
+	if err := s.creatorsCheckoutCompleted(ctx, event, sub); err != nil {
 		return err
 	}
 	// A completed Checkout Session no longer needs to block a later,
@@ -168,8 +174,9 @@ func (s *Service) onInvoiceEvent(ctx context.Context, event stripe.Event, actor 
 	}
 	if event.Type == "invoice.payment_failed" {
 		s.publishPaymentFailed(ctx, subject.billingUserID, stripeRefID(event.Data.Object["id"]), event.ID)
+		return nil
 	}
-	return nil
+	return s.creatorsInvoicePaid(ctx, subject.billingUserID, stripeRefID(event.Data.Object["id"]))
 }
 
 // metadataUserID reads sub.Metadata["user_id"] — always the buying
@@ -456,6 +463,9 @@ func (s *Service) afterWritten(ctx context.Context, p entitlements.StripeUpsert,
 			return s.Store.RecordGuildTrial(ctx, *p.GuildID, sub.ID)
 		}
 		return nil
+	}
+	if err := s.recordPremiumTrial(ctx, p, sub); err != nil {
+		return err
 	}
 	raw, ok := sub.Metadata["comeback_id"]
 	if !ok {

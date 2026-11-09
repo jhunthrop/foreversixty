@@ -43,6 +43,26 @@ type links interface {
 type Service struct {
 	Links links
 	Log   *slog.Logger
+	// Arrivals hears each recorded first link with its click time (the creator program); nil hears none.
+	Arrivals ArrivalHook
+}
+
+// ArrivalHook hears an account's recorded first link and when the click was.
+type ArrivalHook interface {
+	LinkArrival(ctx context.Context, userID int64, slug string, clickedAt time.Time) error
+}
+
+// ClickedAt is when the kept click happened: the arrival's own `at` (ms since the epoch) when it is
+// a moment inside the last ClickWindow, else now. A click time is never in the future.
+func ClickedAt(atMillis int64, now time.Time) time.Time {
+	if atMillis <= 0 {
+		return now
+	}
+	at := time.UnixMilli(atMillis).UTC()
+	if at.After(now) || now.Sub(at) > ClickWindow {
+		return now
+	}
+	return at
 }
 
 // Mount registers the links' routes: the Worker's resolve and click, the site's arrival, and
@@ -131,15 +151,23 @@ func (s *Service) click(w http.ResponseWriter, r *http.Request) {
 func (s *Service) arrival(w http.ResponseWriter, r *http.Request) {
 	var in struct {
 		Slug string `json:"slug"`
+		At   int64  `json:"at"`
 	}
 	if err := decode(w, r, &in); err != nil || !ValidSlug(in.Slug) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "body must be JSON with a link's slug", nil)
 		return
 	}
-	recorded, err := s.Links.RecordArrival(r.Context(), auth.ActorFrom(r.Context()).UserID, in.Slug)
+	userID := auth.ActorFrom(r.Context()).UserID
+	recorded, err := s.Links.RecordArrival(r.Context(), userID, in.Slug)
 	if err != nil {
 		s.fail(w, r, "arrival", err)
 		return
+	}
+	if recorded && s.Arrivals != nil {
+		if err := s.Arrivals.LinkArrival(r.Context(), userID, in.Slug, ClickedAt(in.At, time.Now().UTC())); err != nil {
+			s.fail(w, r, "arrival_creator", err)
+			return
+		}
 	}
 	httpx.CachePrivateNoStore(w)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]bool{"recorded": recorded})
