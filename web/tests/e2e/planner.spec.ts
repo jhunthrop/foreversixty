@@ -1,16 +1,16 @@
 import { expect, test } from './support/test';
 import { collectPageErrors } from './support/console';
 
+import { plannerCopy } from '../../src/lib/planner/copy';
 import { treeSourceNotice } from '../../src/lib/planner/tree-source';
 import { ACTIVE_BUILD } from './support/active-build';
 import {
-  bareSpentLine,
   chooseClass,
   chooseRace,
   expectClass,
-  pointsLeft,
+  pointsSpent,
+  spentIs,
   raceSelect,
-  spentLine,
   treePanel,
 } from './support/planner';
 
@@ -26,7 +26,7 @@ test('the planner opens on the default class with an empty build', async ({ page
   // bare build already computes (9, the base level, before any point is spent). Spec
   // 2026-11-08 4.1: it lives in the head's meta line, the spent count under Points left.
   await expect(page.getByTestId('planner-meta')).toContainText('Level 9');
-  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
+  await expect(pointsSpent(page)).toHaveText(spentIs(0));
   await expectClass(page, 'warrior');
   await expect(page.getByText(ACTIVE_BUILD_NOTICE)).toBeVisible();
   await expect(treePanel(page, 'Arms')).toBeVisible();
@@ -40,7 +40,7 @@ test('the planner opens on the default class with an empty build', async ({ page
 test('Level climbs with the points spent in a build opened from an addon code', async ({ page }) => {
   await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
   await expect(page.getByTestId('planner-meta')).toContainText('Level 12');
-  await expect(spentLine(page)).toHaveText(bareSpentLine(3));
+  await expect(pointsSpent(page)).toHaveText(spentIs(3));
 });
 
 test('a prerequisite link is drawn and turns gold when the rank is met', async ({ page }) => {
@@ -71,7 +71,7 @@ test('reset says it will ask before it clears the build', async ({ page }) => {
   await page.getByTestId('planner-reset').click();
   await expect(page.getByText('Clear every point in this build?')).toBeVisible();
   await page.getByTestId('planner-reset-keep').click();
-  await expect(spentLine(page)).toHaveText(bareSpentLine(1));
+  await expect(pointsSpent(page)).toHaveText(spentIs(1));
 });
 
 test('?class and ?race preselect the build', async ({ page }) => {
@@ -190,8 +190,7 @@ test('clicking a talent spends points and the counters follow', async ({ page })
   await improvedHeroicStrike.click();
   await improvedHeroicStrike.click();
   await expect(improvedHeroicStrike).toHaveAttribute('data-rank', '3');
-  await expect(spentLine(page)).toHaveText(bareSpentLine(3));
-  await expect(pointsLeft(page)).toHaveText('48');
+  await expect(pointsSpent(page)).toHaveText(spentIs(3));
   // The split lives, labelled, on each tree's own head.
   await expect(page.getByTestId('tree-points-161')).toHaveText('3');
   // The level is always shown (the head's meta line) and climbs by one per point.
@@ -205,7 +204,7 @@ test('a locked tier refuses the point and says why', async ({ page }) => {
   await page.getByTestId('talent-1003').click({ force: true });
   await expect(page.getByTestId('planner-status')).toHaveText('Needs 5 points in Arms. You have 0.');
   await expect(page.getByTestId('talent-1003')).toHaveAttribute('data-rank', '0');
-  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
+  await expect(pointsSpent(page)).toHaveText(spentIs(0));
 });
 
 test('a full talent refuses a fourth point with its own reason', async ({ page }) => {
@@ -259,7 +258,7 @@ test('a keyboard-only visitor can spend and remove points', async ({ page }) => 
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '1');
   await page.keyboard.press('Backspace');
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '0');
-  await expect(spentLine(page)).toHaveText(bareSpentLine(2));
+  await expect(pointsSpent(page)).toHaveText(spentIs(2));
 });
 
 // Touch-and-hold raises a native contextmenu at roughly the same 500ms threshold as the
@@ -296,7 +295,7 @@ test('a long press that also raises a context menu removes one point, not two', 
   await talent.dispatchEvent('contextmenu');
   await talent.dispatchEvent('pointerup', { button: 2 });
   await expect(talent).toHaveAttribute('data-rank', '0');
-  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
+  await expect(pointsSpent(page)).toHaveText(spentIs(0));
 });
 
 // Spec 2026-11-08 4.5: Point order is rows of ten levels, a socket per level; a spent socket
@@ -328,15 +327,15 @@ test('reset asks before it clears the build', async ({ page }) => {
   await page.goto('/planner');
   for (let i = 0; i < 2; i += 1) await page.getByTestId('talent-1001').click();
   await page.getByTestId('planner-reset').click();
-  await expect(spentLine(page)).toHaveText(bareSpentLine(2));
+  await expect(pointsSpent(page)).toHaveText(spentIs(2));
   // The safe answer takes the focus, so a second Enter out of habit keeps the build.
   await expect(page.getByTestId('planner-reset-keep')).toBeFocused();
   await page.getByTestId('planner-reset-keep').click();
-  await expect(spentLine(page)).toHaveText(bareSpentLine(2));
+  await expect(pointsSpent(page)).toHaveText(spentIs(2));
 
   await page.getByTestId('planner-reset').click();
   await page.getByTestId('planner-reset-confirm').click();
-  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
+  await expect(pointsSpent(page)).toHaveText(spentIs(0));
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '0');
   await expect(page.getByTestId('planner-order').locator('[data-kind="spent"]')).toHaveCount(0);
   await expect(page.getByTestId('planner-point-order')).toContainText('No points spent yet.');
@@ -393,7 +392,7 @@ test('a class switch drops a reset confirm that is still open', async ({ page })
   await chooseClass(page, 'warrior');
   await expect(treePanel(page, 'Arms')).toBeVisible();
 
-  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
+  await expect(pointsSpent(page)).toHaveText(spentIs(0));
   await expect(page.getByTestId('planner-reset-confirm')).toBeHidden();
   // Reset hides at 0 spent (spec 4.4), so a point brings it back: the plain link, not the confirm.
   await page.getByTestId('talent-1001').click();
@@ -410,7 +409,7 @@ test('a build opens from an addon code in the URL, with the order noted as recon
 
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('tree-points-161')).toHaveText('3');
-  await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');
+  await expect(page.getByTestId('planner-code-note')).toContainText(plannerCopy.reconstructedNote);
 });
 
 test('a code from another format is refused by name rather than ignored', async ({ page }) => {
@@ -447,7 +446,7 @@ test('a code naming a class with no talent data fails clean, and switching class
   // reinterpreted against warrior's own talent tab positions.
   await chooseClass(page, 'warrior');
   await expect(treePanel(page, 'Arms')).toBeVisible();
-  await expect(spentLine(page)).toHaveText(bareSpentLine(0));
+  await expect(pointsSpent(page)).toHaveText(spentIs(0));
 
   // The paladin message is now stale and, worse, no longer true -- warrior's build is working
   // fine -- so switching class must clear it rather than leave it sitting under the new build.
@@ -473,7 +472,7 @@ test('a good code survives a transient failure on its own class, and still appli
   await page.getByRole('button', { name: 'Reload talents' }).click();
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('tree-points-161')).toHaveText('3');
-  await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');
+  await expect(page.getByTestId('planner-code-note')).toContainText(plannerCopy.reconstructedNote);
 });
 
 test('each tree draws its own art and counts its own points', async ({ page }) => {
@@ -484,10 +483,10 @@ test('each tree draws its own art and counts its own points', async ({ page }) =
   await expect.poll(() => art.evaluate((node: HTMLImageElement) => node.naturalWidth)).toBeGreaterThan(0);
 
   await expect(page.getByTestId('tree-points-161')).toHaveText('0');
-  await expect(pointsLeft(page)).toHaveText('51');
+  await expect(pointsSpent(page)).toHaveText(spentIs(0));
   await page.getByTestId('talent-1001').click();
   await expect(page.getByTestId('tree-points-161')).toHaveText('1');
-  await expect(pointsLeft(page)).toHaveText('50');
+  await expect(pointsSpent(page)).toHaveText(spentIs(1));
 });
 
 test('opening /planner bare with a stored, non-restorable (armory) pointer still loads cleanly', async ({

@@ -19,7 +19,6 @@ export const plannerCopy = {
   shareTitle: 'Share this build',
   pointOrderTitle: 'Point order',
   /** The point-order card's meta: "0 spent". */
-  pointOrderMeta: (spent: number): string => `${spent} spent`,
   share: 'Share',
   shareConfirmTitle: 'Share this build',
   shareConfirmIntro:
@@ -56,18 +55,16 @@ export const plannerCopy = {
   noTalentRanksNote: 'This link carries no talent ranks.',
   /** The record carries more points than any legal order reaches: name what the planner kept. */
   keptNote: (kept: number, total: number, name: string): string =>
-    `Loaded ${kept} of ${name}'s ${total} points; the rest cannot be reached in any legal order. The order is a reconstruction: the game does not record the order points were spent in.`,
+    `Loaded ${kept} of ${name}'s ${total} points; the rest cannot be reached in any legal order.`,
   /** A character's export or an addon import: the game records ranks, never the order. */
-  reconstructedNote:
-    'Talents loaded from a character. The order points were spent in is not recorded in game, so this is one way to level into the same tree: the main tree first, each talent as soon as its row opens.',
+  reconstructedNote: 'Talents loaded from a character.',
   reconstructedDroppedNote: (dropped: number): string =>
-    `Talents loaded from a character, minus ${dropped} that no legal order reaches. The order is a reconstruction: the game does not record the order points were spent in.`,
+    `Talents loaded from a character, minus ${dropped} that no legal order reaches.`,
   olderBuildNote: 'This code is from an older client build; check the talents.',
   /** A code that names no character (a guide's Load this build, a shared ?code=), bug B1: the
    *  long sentence from 768, the short one on a phone, where the note is one line. */
-  linkedNote:
-    'Opened from a link. The game does not record the order points were spent in, so this is one way to level into it: the main tree first, each talent as soon as its row opens.',
-  linkedNoteShort: 'Opened from a link; the order below is one way to level into it.',
+  linkedNote: 'Opened from a link. Point order: the main tree first.',
+  linkedNoteShort: 'Opened from a link.',
   /** A guide's link that names its spec: the build is spent in that guide's own levelling order. */
   guideOrderNote: (specName: string): string => `Loaded in the ${specName} guide's levelling order.`,
   /** A code for a class the planner has no talent data for. */
@@ -75,18 +72,27 @@ export const plannerCopy = {
   inGameTitle: 'In the game',
   /** The ControlBar's accessible name. */
   barLabel: 'Planner choices',
-  pointsLeft: 'Points left',
-  /** Under Points left with no character: "20 of 51 spent · level 29" (the level once a point is spent). */
-  spentOf: (spent: number, available: number, level: number | null): string =>
-    level === null ? `${spent} of ${available} spent` : `${spent} of ${available} spent · level ${level}`,
-  /** Under Points left for a character: "21 of 25 spent at level 34". */
-  spentAtLevel: (spent: number, available: number, level: number): string =>
-    `${spent} of ${available} spent at level ${level}`,
+  /** The head answer's unit after the points spent: "51 of 51 points". */
+  pointsOfUnit: (available: number): string => `of ${available} points`,
+  /** The trees' panel heading. */
+  talentsTitle: 'Talents',
+  /** The rail's guide builds for the class on screen. */
+  guideBuildsTitle: 'Guide builds',
+  /** The guide build row that is the build on screen. */
+  guideBuildLoaded: 'Loaded',
+  /** The guide's own build names (guidesCopy.levelingBuild, raidBuild; guide-builds.test.ts holds them equal):
+   *  repeated here so the planner island does not carry the guides' whole copy. */
+  guideLevelingBuild: 'Level 60 build',
+  guideRaidBuild: 'Raid build',
+  /** In the game, under Copy for the game: the one thing to know. */
+  pasteHint: 'Paste in game with /fs.',
   /** Points spent past a character's level (decision P4). */
   plannedAhead: (n: number): string => `${n} planned ahead`,
   /** Point order's line after the character's level row (decision P4). */
-  levelLine: (name: string, level: number): string =>
-    `${name} is level ${level}: points after level ${level} are planned ahead.`,
+  levelLine: (name: string, level: number): string => `${name} is level ${level}.`,
+  /** The same line when the spec guide's order fills the sockets past the character's level. */
+  aheadLine: (name: string, level: number, specName: string): string =>
+    `${name} is level ${level}. Then the ${specName} guide's order.`,
   /** A talent cell whose last points are planned past the character's level: its accessible name's tail. */
   plannedCell: (level: number): string => `planned past level ${level}`,
   /** Point order's row labels: "Levels 20 to 29", "Level 60". */
@@ -122,17 +128,11 @@ export const plannerCopy = {
   retry: 'Retry',
   loadFailedDetail: (build: string): string => `Build ${build} did not return the files the planner needs.`,
   reloadTalents: 'Reload talents',
-  /** The score's caption after its error: the gear the estimate runs on (decision P1). */
-  scoreBasis: (bandLabel: string): string => `with the ${lowerBandPhrase(bandLabel)} gear set`,
 } as const;
 
 /** Rebuild spec §4.A: the header's own copy -- crest, h1, suffix. */
 export const plannerHeaderCopy = {
   h1: (className: string): string => `${className} talents`,
-  /** Sits beside the race select: the planner has no separate FactionToggle (§4.A's own
-   *  reasoning -- a second faction control would ask the visitor to agree with their race
-   *  twice), and the mock names that choice explicitly rather than leaving it unsaid. */
-  factionFollowsRace: 'Faction follows your race',
 } as const;
 
 /** The planner's action on the shared character header (spec 2026-10-11 section 4). */
@@ -258,8 +258,7 @@ export const bandCompareCopy = {
     return `Differs by ${count} point${count === 1 ? '' : 's'}: ${sides.join('; ')}.`;
   },
   /** A band build that covers fewer points than the character has (ruling MUST 3): never "Matches". */
-  coversFewer: (covered: number, total: number, nextBandLabel: string): string =>
-    `This build covers ${covered} of your ${total} points; the next ${total - covered} follow the ${lowerBandPhrase(nextBandLabel)} build.`,
+  coversFewer: (covered: number, total: number): string => `Covers ${covered} of your ${total} points.`,
   loadButton: (bandLabel: string): string => `Load the ${lowerBandPhrase(bandLabel)} build`,
   /** The line under the panel after a load: cut at a character's level, or the band's whole build. */
   loadedLine: (level: number, points: number, of: number): string =>

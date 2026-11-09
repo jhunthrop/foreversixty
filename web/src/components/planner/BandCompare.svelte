@@ -41,7 +41,10 @@
     onloaded,
     onband,
     heading,
+    panel = false,
   }: {
+    /** The heading inside its panel (the standalone planner's rail and column). */
+    panel?: boolean;
     store: PlannerStore;
     /** `?spec=` (spec §4.I): names which spec's `bis/<spec>.json` this panel reads,
      *  overriding the points-based inference for the life of this mount. */
@@ -217,7 +220,7 @@
   }
 </script>
 
-<Section title={heading ?? bandCompareCopy.heading(bandLabel)} testid="band-compare">
+<Section title={heading ?? bandCompareCopy.heading(bandLabel)} {panel} testid="band-compare">
   {#if file === undefined}
     <div class="pl-sec" data-testid="band-compare-skeleton" aria-busy="true">
       <span class="skeleton-block block max-w-full" style="width:260px;height:20px"></span>
@@ -235,11 +238,7 @@
     <div class="pl-sec">
       <p class="pl-line" data-testid="band-compare-differs">
         {#if coverage !== null}
-          {bandCompareCopy.coversFewer(
-            coverage.covered,
-            coverage.total,
-            bandRangeLabel(Math.min(60, band + 10)),
-          )}
+          {bandCompareCopy.coversFewer(coverage.covered, coverage.total)}
         {:else if status?.kind === 'matches'}
           <b class="text-kill">{bandCompareCopy.matches}</b>
         {:else if status?.kind === 'differs'}

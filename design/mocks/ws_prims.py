@@ -1829,3 +1829,37 @@ def ClassSpecPicker(classes: list[tuple[str, str, str, list[tuple[str, str, str]
         head = Row(name, lead=crest_img(slug, 40), title_color=colour, link=class_links)
         groups.append(Plate(f'<div class="cspick-c">{head}{RowsSlim(rows, open_=False)}</div>'))
     return f'<div class="cspick" role="region" aria-label="{label}">{"".join(groups)}</div>'
+
+
+# ------------------------------------------------ the panelled workbench (lane P7; web ui/Page `panels` on 'workbench', ui/TalentEditor
+# `title`, `frame`): the planner's panels 22 px apart and the columns 28 from 1280; the trees in a Section panel with its heading
+# inside ("Talents", framed) instead of a bare Plate. Additive: Page(panels=False) and TalentEditor(title='') emit what they did.
+PRIM_CSS += '''
+.layout-wb.panels{--section-gap:22px}
+.porder-s .ah img,.porder-s .ah .ic{opacity:.5}.porder-s .ah b{opacity:.7}
+.porder-s .ah::after{content:"";position:absolute;inset:0;border-radius:5px;border:1px dashed var(--line)}
+@media(min-width:1280px){.layout-wb.panels{column-gap:28px}.layout-wb.panels>.main,.layout-wb.panels>.rail{gap:22px}}
+'''
+# The built PointOrder's phone sockets: 30 px, shrinking with the column below 336 px so a row never runs past it (ui/PointOrder).
+PRIM_CSS += '''
+@media(max-width:767px){.porder-r .porder-s>span,.porder-r .porder-s img,.porder-r .porder-s .ic,.porder-r .porder-s .em{width:100%!important;max-width:30px;height:auto!important;aspect-ratio:1}.porder-r .porder-s img,.porder-r .porder-s .ic{display:block}}
+'''
+
+_Page2, _TalentEditor0 = Page, TalentEditor
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, panels: bool = False, **kwargs: object) -> str:
+    """Page; `panels` on 'workbench' sets the workbench's panels apart as the split's (web ui/Page `panels`)."""
+    if layout != 'workbench' or not panels:
+        return _Page2(layout, main, rail, sticky_rail, panels, **kwargs)
+    html = _Page2(layout, main, rail, sticky_rail)
+    return html.replace('style="padding-top:20px"><div class="layout-wb"', 'style="padding-top:28px"><div class="layout-wb panels"', 1)
+
+
+def TalentEditor(trees: list[dict], active: int = 0, foot: str = '', label: str = 'Talent trees', title: str = '', frame: str = 'plain') -> str:
+    """TalentEditor; `title` puts the trees in a Section panel (its heading inside, its `frame`), as the built `title`."""
+    html = _TalentEditor0(trees, active, foot, label)
+    if not title:
+        return html
+    inner = html[html.index('<div class="tedit">'):html.rindex('</div>')]
+    return Section(title, inner, panel=True, frame=frame, flush=True)

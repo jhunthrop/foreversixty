@@ -1,12 +1,5 @@
 import { expect, test } from './support/test';
-import {
-  LAST_TALENT,
-  NEARLY_FINISHED_BUILD,
-  finishBuild,
-  scoreFigure,
-  shareBuild,
-  showTree,
-} from './support/planner';
+import { LAST_TALENT, NEARLY_FINISHED_BUILD, finishBuild, shareBuild, showTree } from './support/planner';
 
 import { heldRoute } from './support/held-route';
 
@@ -41,7 +34,6 @@ test('a saved build sims itself for the card, without blocking the link', async 
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
-  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   const checkbox = page.getByLabel('Include a simmed DPS on the card');
   await expect(checkbox).toBeChecked();
@@ -80,7 +72,6 @@ test('a failed card sim never breaks the share link', async ({ page }) => {
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
-  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   await shareBuild(page);
 
@@ -106,7 +97,6 @@ test('unchecking the box skips the card sim entirely', async ({ page }) => {
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
-  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   const checkbox = page.getByLabel('Include a simmed DPS on the card');
   await expect(checkbox).toBeChecked();
@@ -146,7 +136,6 @@ test('unticking the box after a failed save drops Retry and reopens a fresh conf
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
-  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   const checkbox = page.getByLabel('Include a simmed DPS on the card');
   await expect(checkbox).toBeChecked();
@@ -229,7 +218,6 @@ test("a second save while the first build's sim is still running never overwrite
 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
-  await expect(scoreFigure(page)).not.toHaveText('—', { timeout: 3000 });
 
   await shareBuild(page);
   await expect(page.getByTestId('share-link')).toHaveText(`https://foreversixty.gg/b/${firstBuildId}`);
@@ -246,11 +234,8 @@ test("a second save while the first build's sim is still running never overwrite
   await showTree(page, 'Fury');
   await page.getByTestId(LAST_TALENT).click();
   await expect(page.getByTestId('share-link')).not.toBeVisible();
-  // Task 11 fix round 1: the confirm's sim line, and whether attachSim actually runs, both
-  // read the live estimate at the moment "Share anyway" is clicked -- not the checkbox
-  // alone -- so this waits for the debounced re-estimate the talent edit just triggered to
-  // finish (the box unchecks itself while the estimate is merely pending) before sharing
-  // again, the same way the DPS estimate is awaited after the very first edit above.
+  // The confirm's sim line, and whether attachSim runs, read the box at the moment "Share
+  // anyway" is clicked: the build is whole again, so the box is on.
   await expect(page.getByLabel('Include a simmed DPS on the card')).toBeChecked();
   await shareBuild(page);
 

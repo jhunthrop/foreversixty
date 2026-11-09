@@ -14,7 +14,7 @@
 //  - the signed-in character: web/tests/e2e/fixtures/home/me-34.json (Felsnap, a level 34 Dwarf Beast Mastery hunter).
 // The live estimate (PlannerDps) runs the engine in the browser; the mocks carry SAMPLE figures (marked in each mock).
 import { createRequire } from "node:module";
-import { existsSync, mkdtempSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -29,6 +29,17 @@ const { build } = require(join(WEB, "src/data/active-build.json"));
 const data = (p) => JSON.stringify(`${REPO}data/builds/${build}/${p}`);
 const CLASSES = ["warrior", "hunter", "priest", "mage"];
 const BIS = ["warrior-arms", "hunter-survival", "hunter-beast-mastery", "priest-holy", "mage-fire"];
+// Every spec guide's published builds (the guides' frontmatter `build` and `raidBuild`), as planner.astro reads them:
+// the rail's Guide builds and, for a character, the guide's order past its build (lib/planner/guide-builds.ts, point-order.ts).
+const GUIDES_DIR = join(WEB, "src/content/guides");
+const front = (text, key) => text.match(new RegExp(`^${key}: '([^']+)'`, "m"))?.[1];
+const GUIDE_BUILDS = readdirSync(GUIDES_DIR, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name).flatMap((classSlug) =>
+  readdirSync(join(GUIDES_DIR, classSlug)).filter((f) => f.endsWith(".md") && f !== "index.md").flatMap((f) => {
+    const text = readFileSync(join(GUIDES_DIR, classSlug, f), "utf8");
+    const specSlug = f.replace(/\.md$/, "");
+    return [["leveling", front(text, "build")], ["raid", front(text, "raidBuild")]]
+      .filter(([, code]) => code !== undefined).map(([kind, code]) => ({ classSlug, specSlug, kind, code }));
+  }));
 
 const entry = `
 ${CLASSES.map((c) => `import t_${c} from ${data(`talents/${c}.json`)};`).join("\n")}
@@ -37,6 +48,8 @@ import classes from ${data("classes.json")};
 import races from ${data("races.json")};
 import combos from ${data("combos.json")};
 import me34 from ${src("tests/e2e/fixtures/home/me-34.json")};
+import { guideBuildRows, ranksTrees } from ${src("src/lib/planner/guide-builds.ts")};
+import { aheadOf, pointOrderRows } from ${src("src/lib/planner/point-order.ts")};
 import { decodeFS1, orderFromRanks } from ${src("src/lib/planner/fs1.ts")};
 import { indexTalents, canAddPoint, messages } from ${src("src/lib/planner/rules.ts")};
 import { gridCells, gridSize } from ${src("src/lib/planner/grid.ts")};
@@ -51,7 +64,6 @@ import { bandRangeLabel } from ${src("src/lib/planner/band-title.ts")};
 import { plannerCopy, plannerHeaderCopy, plannerCharacterCardCopy, bandCompareCopy } from ${src("src/lib/planner/copy.ts")};
 import { addonCopy } from ${src("src/lib/addon/copy.ts")};
 import { ctaCopy } from ${src("src/lib/addon/cta-copy.ts")};
-import { plannerScoreCopy, scoreUnitForBuild } from ${src("src/lib/planner/score-unit.ts")};
 import { plannerSimCopy } from ${src("src/lib/sim/planner-copy.ts")};
 import { RATE_LIMIT_MESSAGE, SAVE_FAILED_MESSAGE, sharedFields } from ${src("src/lib/planner/share.ts")};
 import { treeSourceNotice } from ${src("src/lib/planner/tree-source.ts")};
@@ -63,6 +75,7 @@ import { SPECS } from ${src("src/lib/sim/specs.ts")};
 import { specLabel, specDisplayName, siblingSpecNames, classDisplayName } from ${src("src/lib/sim/spec-label.ts")};
 
 const BUILD = ${JSON.stringify(build)};
+const GUIDE_BUILDS = ${JSON.stringify(GUIDE_BUILDS)};
 const TALENTS = { ${CLASSES.map((c) => `${c}: t_${c}`).join(", ")} };
 const BISF = { ${BIS.map((s) => `'${s}': b_${s.replace(/-/g, "_")}`).join(", ")} };
 const strip = (o) => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'function' ? '[fn]' : v)));
@@ -86,9 +99,9 @@ function state({ cls, race, order = [], level = null, spec = null }) {
   const planned = level === null ? 0 : Math.max(0, spent - available);
   const atCap = spent >= available;
   const shownLevel = level ?? levelReached(order);
-  const spentLine = level === null
-    ? plannerCopy.spentOf(spent, available, spent > 0 ? levelReached(order) : null)
-    : [plannerCopy.spentAtLevel(Math.min(spent, available), available, level), planned > 0 ? plannerCopy.plannedAhead(planned) : ''].filter(Boolean).join(' · ');
+  // The head answer (PlannerAnswer): the points spent of those there are, and any planned past the level.
+  const pointsUnit = plannerCopy.pointsOfUnit(available);
+  const plannedLine = planned > 0 ? plannerCopy.plannedAhead(planned) : '';
   const plannedRanks = new Map();
   order.forEach((id, i) => { if (level !== null && i >= available) plannedRanks.set(id, (plannedRanks.get(id) ?? 0) + 1); });
   const leads = Math.max(...split) > 0 && split.filter((p) => p === Math.max(...split)).length === 1;
@@ -104,7 +117,7 @@ function state({ cls, race, order = [], level = null, spec = null }) {
     const status = bandDiffStatus(diff);
     const names = bandDiffNames(index, ranks, entry.talents);
     const covers = bandCoverage(status, bandPointTotal(index, entry.talents), level === null ? null : available);
-    const line = covers !== null ? bandCompareCopy.coversFewer(covers.covered, covers.total, bandRangeLabel(Math.min(60, band + 10)))
+    const line = covers !== null ? bandCompareCopy.coversFewer(covers.covered, covers.total)
       : status.kind === 'matches' ? bandCompareCopy.matches
       : status.kind === 'differs' ? bandCompareCopy.differsNamed(status.count, names.mine, names.theirs, bandLabel)
       : bandCompareCopy.toTakeSuffix;
@@ -129,13 +142,20 @@ function state({ cls, race, order = [], level = null, spec = null }) {
           now: rank > 0 ? t.ranks[rank - 1].description : '', next: rank < t.max_rank ? t.ranks[rank].description : '',
           refusal: capped ? plannerCopy.noPointsLeft(level) : check.ok ? '' : check.reason }; }) };
   });
+  // Point order as PlannerOrder draws it: for a character, the spec guide's order past its build (aheadOf).
+  const specRow = SPECS.find((s) => s.spec === specKey);
+  const guideBuild = GUIDE_BUILDS.find((g) => g.kind === 'leveling' && g.classSlug + '-' + g.specSlug === specKey);
+  const ladder = level !== null && order.length > 0 && guideBuild && specRow ? guideLadderOrder(BUILD, cls, specKey, specRow.tree_index, guideBuild.code) : [];
+  const aheadPoints = ladder.length > 0 ? aheadOf(index, order, ladder) : [];
+  const orderView = pointOrderRows(index, order, level, me34.characters[0].name, (icon) => icon,
+    aheadPoints.length > 0 ? { specName: specRow.name, points: aheadPoints } : null);
+  const currentTrees = order.length > 0 ? ranksTrees(index.trees.map((tree) => tree.talents.map((t) => ranks.get(t.id) ?? 0))) : null;
+  const guideBuilds = guideBuildRows(GUIDE_BUILDS, cls).map((row) => ({ ...row, current: row.trees === currentTrees }));
   const points = order.map((id, i) => { const t = index.byId.get(id); const r = order.slice(0, i + 1).filter((x) => x === id).length;
     return { level: levelForIndex(i), name: t.name, icon: t.icon, rank: r, max: t.max_rank, planned: level !== null && i >= available, tip: plannerCopy.pointAt(levelForIndex(i), t.name, r) }; });
-  const unit = scoreUnitForBuild(cls, split);
   return {
     cls, className: classRow(cls).name, title: plannerHeaderCopy.h1(classRow(cls).name), race: raceRow(race).name, race_slug: race, faction,
-    races: legalRaces(cls).map((r) => r.name), level: shownLevel, char_level: level, spent, available, left: Math.max(0, available - spent), planned, spent_line: spentLine, split,
-    score_basis: plannerCopy.scoreBasis(bandLabel),
+    races: legalRaces(cls).map((r) => r.name), level: shownLevel, char_level: level, spent, available, left: Math.max(0, available - spent), planned, points_unit: pointsUnit, planned_line: plannedLine, split,
     planned_cell: level === null ? '' : plannerCopy.plannedCell(level),
     order_rows: [10, 20, 30, 40, 50, 60].map((lo) => plannerCopy.decade(lo)),
     next_point: spent < 51 && (level === null || spent < available) ? plannerCopy.nextPoint(levelForIndex(spent)) : '',
@@ -144,9 +164,9 @@ function state({ cls, race, order = [], level = null, spec = null }) {
     meta: [raceRow(race).name, 'Level ' + shownLevel, leads ? specLabel(specKey) : ''].filter(Boolean).join(' · '),
     trees, points, band: { band, label: bandLabel, heading: bandCompareCopy.heading(bandLabel), load: bandCompareCopy.loadButton(bandLabel),
       gear: bandCompareCopy.gearRowLabel(bandLabel), none: entry ? '' : bandCompareCopy.noLevelBuild(shownLevel, specDisplayName(specKey), siblingSpecNames(specKey)) },
-    compare, unit, unit_label: plannerScoreCopy.label(unit), unit_show: plannerScoreCopy.show(unit), unit_failed: plannerScoreCopy.failed(unit),
+    compare,
     text_summary: plannerCopy.shareTextSummary(raceRow(race).name, classRow(cls).name, trees.map((t) => ({ name: t.name, points: t.points })), shownLevel),
-    point_meta: plannerCopy.pointOrderMeta(spent),
+    order_view: orderView, guide_builds: guideBuilds,
     share_fields: sharedFields({ title: '', gear: {} }, false),
   };
 }
@@ -222,7 +242,7 @@ export default {
   },
   band_tip: bandCompareCopy.bandRankTooltipLine('60', 5, 5),
   refusals: refusals(),
-  copy: { planner: strip(plannerCopy), header: strip(plannerHeaderCopy), card: strip(CH), band: strip(bandCompareCopy), score: strip(plannerScoreCopy), sim: strip(plannerSimCopy),
+  copy: { planner: strip(plannerCopy), header: strip(plannerHeaderCopy), card: strip(CH), band: strip(bandCompareCopy), sim: strip(plannerSimCopy),
     addon: { copyForGame: addonCopy.copyForGame, copiedForGame: addonCopy.copiedForGame, copyFailed: addonCopy.copyFailed, buildCodeLabel: addonCopy.buildCodeLabel, addonCodeHint: addonCopy.addonCodeHint,
       importTitle: addonCopy.importTitle, importPlaceholder: addonCopy.importPlaceholder, importAction: addonCopy.importAction, importNoExport: addonCopy.importNoExport, importGetAddon: addonCopy.importGetAddon,
       importOrderApproximated: addonCopy.importOrderApproximated, importSwitching: addonCopy.importSwitchingClass('Priest'), importOlder: addonCopy.importOlderBuild('1.60.1.70630', BUILD), importDropped: addonCopy.importDropped('Lacerate') },

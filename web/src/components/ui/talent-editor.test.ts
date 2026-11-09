@@ -10,6 +10,8 @@ import {
   gridRows,
   moveCell,
   openTreeIndex,
+  talentTipSide,
+  talentTipSideLeft,
   sortedCells,
   tabStopId,
   type EditorCell,
@@ -223,6 +225,16 @@ describe('TalentTip', () => {
   });
 });
 
+describe('talent tooltip side', () => {
+  it('opens beside the cell, right first, else left, else neither (a phone)', () => {
+    expect(talentTipSide(500, 548, 300, 1440)).toBe('right');
+    expect(talentTipSide(1100, 1148, 300, 1440)).toBe('left');
+    expect(talentTipSide(40, 88, 300, 390)).toBeNull();
+    expect(talentTipSideLeft('right', 48, 300)).toBe(56);
+    expect(talentTipSideLeft('left', 48, 300)).toBe(-308);
+  });
+});
+
 describe('TalentEditor', () => {
   const base = { trees: TREES, copy: COPY, onadd: noop, onremove: noop };
 
@@ -230,6 +242,14 @@ describe('TalentEditor', () => {
     const body = html(TalentEditor, base);
     expect(body).toContain('data-region="plate"');
     expect(body).toContain('role="region" aria-label="Talent trees"');
+  });
+
+  it('with a title, sits in a Section panel with its heading inside and its frame', () => {
+    const body = html(TalentEditor, { ...base, title: 'Talents', frame: 'framed', testid: 'trees' });
+    expect(body).toMatch(/<section class="ui-section[^"]*ui-section-panel[^"]*" data-testid="trees"/);
+    expect(body).toMatch(/<h2 class="ui-section-title[^"]*">Talents<\/h2>/);
+    expect(body).toMatch(/data-region="plate"[\s\S]*class="tedit"/);
+    expect(body).not.toContain('role="region"');
   });
 
   it('renders a tablist of the trees with the active one selected', () => {

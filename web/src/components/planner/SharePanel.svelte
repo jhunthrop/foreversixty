@@ -1,6 +1,6 @@
 <!-- web/src/components/planner/SharePanel.svelte -->
 <!-- Share this build (spec 2026-11-08 section 4.8): the title, Share (which asks first, naming
-     what goes public), the plain-text summary with Copy as text, and the switch that sims a DPS
+     what goes public), Copy as text (the build as one line of text), and the switch that sims a DPS
      onto the card. Saved: the link, Copy link, the card line and the 600 x 315 card. The build
      stays in the store whatever the API says, so a failed save costs nothing but a retry. Copy
      for the game left for In the game. Task 21: a saved build's card can carry a simmed DPS; the
@@ -12,7 +12,6 @@
   import { plannerCopy } from '../../lib/planner/copy';
   import { ensureItems } from '../../lib/planner/items-ready';
   import { unsavedPlannerHref } from '../../lib/planner/current-character-planner';
-  import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import {
     cardUrlFor,
     saveBuild,
@@ -35,7 +34,7 @@
   import Field from '../ui/Field.svelte';
   import Section from '../ui/Section.svelte';
 
-  let { store, live }: { store: PlannerStore; live: LiveDps } = $props();
+  let { store }: { store: PlannerStore } = $props();
 
   // Per-instance, not a literal id: Top Gear mounts a second, inline Planner (and so a
   // second SharePanel) on the same page, and two static `id="share-confirm-heading"`
@@ -118,18 +117,15 @@
   const saved = $derived(outcome !== null && outcome.ok ? outcome.build : null);
   const failure = $derived(outcome !== null && !outcome.ok ? outcome : null);
 
-  // The checkbox reads true only while a live estimate is actually ready: a run that never
-  // started, is mid-debounce, or failed (most often an unsupported spec) has nothing worth
-  // running the card sim from, so the box shows unchecked and disabled rather than checked
-  // against a build the engine cannot run.
-  const canIncludeSim = $derived(live.state === 'ready');
+  /** A finished build can carry a simmed DPS on its card (the sim runs after the save, below). */
+  const canIncludeSim = $derived(
+    store.talentIndex !== null && store.spent > 0 && store.spent >= store.pointsAvailable,
+  );
   const includeSimChecked = $derived(canIncludeSim && includeSim);
 
   /**
    * One pool for the life of the panel, created on the first save and not before: the
    * planner's own Lighthouse budget is the reason the engine is never touched on mount.
-   * `live` already holds one for the inline estimate, but it is private to that factory
-   * and a shared handle would couple two features that cancel each other's runs.
    */
   let pool: SimPool | null = null;
   function poolOnce(): SimPool {
@@ -154,9 +150,8 @@
   // is treated as an edit too, so a failed save's Retry (which would otherwise reuse
   // whatever `confirmedIncludeSim` the earlier confirm captured) disappears, and the next
   // Share opens a fresh confirm that names what will actually happen. `includeSimChecked`
-  // would also flip -- silently, with no click of the box at all -- the moment a pending
-  // live estimate becomes ready, which would close a confirm the visitor had just opened
-  // to read; `includeSim` only ever changes from the checkbox's own `onchange` below, so
+  // would also flip -- silently, with no click of the box at all -- the moment the last
+  // point is spent, which would close a confirm the visitor had just opened to read; `includeSim` only ever changes from the checkbox's own `onchange` below, so
   // that false trigger cannot happen. This still runs once on mount, harmlessly, since
   // `outcome`/`confirmOpen` already hold these exact values then.
   $effect(() => {
@@ -244,8 +239,8 @@
 
   /**
    * Whether a sim will be attached, captured the instant "Share anyway" runs rather than
-   * re-read live afterward. `attachSim` reads this, not `includeSim`/`live.state` directly:
-   * a live estimate that leaves 'ready' between the confirm and the save resolving (or a
+   * re-read afterward. `attachSim` reads this, not `includeSim` directly: a build that
+   * changes between the confirm and the save resolving (or a
    * later Retry of the same failed save) can then neither attach a sim the confirm never
    * listed nor skip one it did -- what the visitor confirmed is what actually happens.
    * Retry reuses it unchanged, for the same reason: it re-attempts the save the visitor
@@ -329,7 +324,7 @@
 
 <svelte:window onkeydown={confirmOpen ? onConfirmKeydown : undefined} />
 
-<Section title={plannerCopy.shareTitle} testid="share-panel">
+<Section title={plannerCopy.shareTitle} panel testid="share-panel">
   <div class="pl-sec">
     <div class="pl-acts pl-end">
       <div class="pl-field">
@@ -347,9 +342,7 @@
       >
     </div>
     <div class="pl-acts">
-      <span class="text-small text-muted tabular-nums" data-testid="planner-text-summary">{textSummary}</span>
       <Button
-        size="sm"
         disabled={textSummary === ''}
         onclick={() => copyToClipboard(textSummary, 'text')}
         testid="copy-as-text"

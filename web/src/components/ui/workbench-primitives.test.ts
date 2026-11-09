@@ -4,7 +4,13 @@ import type { Component } from 'svelte';
 import { createRawSnippet } from 'svelte';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import { holdsPoint, ORDER_MARKERS, orderIndices, type PointOrderRow } from '../../lib/ui/point-order';
+import {
+  drawsTalent,
+  holdsPoint,
+  ORDER_MARKERS,
+  orderIndices,
+  type PointOrderRow,
+} from '../../lib/ui/point-order';
 import CodeField from './CodeField.svelte';
 import ControlBar from './ControlBar.svelte';
 import Ordered from './Ordered.svelte';
@@ -85,6 +91,29 @@ describe('PointOrder', () => {
     );
     expect(body.match(/tabindex="0"/g)).toHaveLength(3);
     expect(body).toMatch(/data-testid="order-point-2"><span class="ic[^"]*" aria-hidden="true"><\/span>/);
+  });
+
+  it('draws a guide point ahead dimmed on its own test id, and a tipped point without a title', () => {
+    const rows = [
+      {
+        label: 'Levels 10 to 19',
+        slots: [
+          {
+            kind: 'spent' as const,
+            name: 'Level 10: Deflection 1',
+            iconSrc: '/i/d.webp',
+            rank: 1,
+            tip: { name: 'Deflection', rankLine: 'Rank 1 of 5', now: 'Parry 1%' },
+          },
+          { kind: 'ahead' as const, name: 'Level 11: Deflection 2', iconSrc: '/i/d.webp', rank: 2 },
+        ],
+      },
+    ];
+    const body = html(PointOrder, { rows });
+    expect(body).toMatch(/aria-label="Level 10: Deflection 1" data-kind="spent" data-testid="order-point-0"/);
+    expect(body).toMatch(/class="ah[^"]*" tabindex="0"[^>]*data-kind="ahead" data-testid="order-ahead-1"/);
+    expect(drawsTalent({ kind: 'ahead', name: '' })).toBe(true);
+    expect(holdsPoint({ kind: 'ahead', name: '' })).toBe(false);
   });
 
   it('puts the gold cap line after row capAfter only when it has text', () => {

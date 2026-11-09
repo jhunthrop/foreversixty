@@ -26,6 +26,7 @@
     panels = false,
     railFirst = false,
     splitFrom = 1024,
+    panels = false,
     tocFrom,
     tocLabel = 'Contents',
     testid,
@@ -52,6 +53,8 @@
     /** `split` only: the width main and rail sit side by side from; 1280 for a page whose main
      *  column needs the room below it (the tier list), stacked and full width under it. */
     splitFrom?: 1024 | 1280;
+    /** Main and rail hold Section `panel`s (the logs and report mocks): 22 px apart, the columns 28. */
+    panels?: boolean;
     /** `reading` only, a document (the changelog, the content pages): the width the contents rail
      *  shows from (1760, 1024), or 0 for never, with the document's section gap above it. The
      *  guides leave it out (the rail from 1760 under their plate). */
@@ -70,6 +73,7 @@
   data-layout={layout}
   data-panels={panels ? 'true' : undefined}
   data-split-from={layout === 'split' && splitFrom !== 1024 ? splitFrom : undefined}
+  data-panels={panels ? 'true' : undefined}
   data-toc-from={layout === 'reading' ? tocFrom : undefined}
   data-testid={testid}
 >
@@ -186,6 +190,14 @@
     }
     .ui-page[data-layout='workbench'] > .ui-page-rail {
       gap: 40px;
+    }
+    /* A workbench of panels (the planner): the panels 22 px apart, the columns 28. */
+    .ui-page[data-layout='workbench'][data-panels] {
+      column-gap: 28px;
+    }
+    .ui-page[data-layout='workbench'][data-panels] > .ui-page-main,
+    .ui-page[data-layout='workbench'][data-panels] > .ui-page-rail {
+      gap: var(--section-gap);
     }
   }
   @media (min-width: 1024px) {

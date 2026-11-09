@@ -1,7 +1,7 @@
 // web/src/lib/planner/point-order.test.ts
 import { describe, expect, it } from 'vitest';
 import fixtureTalents from '../../fixtures/planner/talents/warrior.json';
-import { pointOrderRows } from './point-order';
+import { aheadOf, pointOrderRows } from './point-order';
 import { indexTalents } from './rules';
 import type { TalentFile } from './types';
 
@@ -45,7 +45,45 @@ describe('pointOrderRows', () => {
       'empty',
     ]);
     expect(view.capAfter).toBe(0);
-    expect(view.capText).toBe('Felsnap is level 11: points after level 11 are planned ahead.');
+    expect(view.capText).toBe('Felsnap is level 11.');
+  });
+
+  it('gives each point the talent tooltip: its name, the rank it reached and that rank text', () => {
+    const view = pointOrderRows(index, [1001, 1001], null, null, icon);
+    const talent = index.byId.get(1001)!;
+    expect(view.rows[0].slots[1].tip).toEqual({
+      name: talent.name,
+      rankLine: `Rank 2 of ${talent.max_rank}`,
+      now: talent.ranks[1].description,
+    });
+  });
+
+  it("fills a character's sockets past its build with the guide's order, dimmed, under its line", () => {
+    const ahead = aheadOf(index, [1001, 1001, 1002], [1001, 1002, 1001, 1001, 1002]);
+    expect(ahead).toEqual([1001, 1002]);
+    const view = pointOrderRows(index, [1001, 1001, 1002], 11, 'Felsnap', icon, {
+      specName: 'Arms',
+      points: ahead,
+    });
+    expect(view.rows[0].slots.map((slot) => slot.kind).slice(0, 6)).toEqual([
+      'spent',
+      'spent',
+      'planned',
+      'ahead',
+      'ahead',
+      'empty',
+    ]);
+    expect(view.rows[0].slots[3].rank).toBe(3);
+    expect(view.capText).toBe("Felsnap is level 11. Then the Arms guide's order.");
+    // A bare build has no guide plan: its next socket stays.
+    expect(
+      pointOrderRows(index, [1001], null, null, icon, { specName: 'Arms', points: [1001] }).rows[0].slots[1]
+        .kind,
+    ).toBe('next');
+  });
+
+  it('skips a guide point that is not legal on top of the build', () => {
+    expect(aheadOf(index, [], [9999, 1001])).toEqual([1001]);
   });
 
   it('shows no level line before the build reaches the character level', () => {

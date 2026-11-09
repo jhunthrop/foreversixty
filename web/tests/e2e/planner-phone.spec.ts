@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { fieldBox } from './support/select';
-import { openPlannerBar, pointsLeft, treePanel } from './support/planner';
+import { openPlannerBar, pointsSpent, treePanel } from './support/planner';
 
 /**
  * Holds the talent request open so the planner's loading state can be measured, and returns
@@ -109,13 +109,13 @@ test.describe('planner on a phone', () => {
   // The head is a PageHeader on the page ground (spec 2026-11-08 4.1): points left is on the
   // first screen, and loading the trees never moves the page (the open tab used to pull the
   // page down 95 px).
-  test('opens on the first screen with points left, and loading the trees never scrolls the page', async ({
+  test('opens on the first screen with the points, and loading the trees never scrolls the page', async ({
     page,
   }) => {
     await page.goto('/planner');
     await page.getByRole('grid', { name: 'Arms talents' }).waitFor();
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
-    const box = await pointsLeft(page).boundingBox();
+    const box = await pointsSpent(page).boundingBox();
     const viewport = page.viewportSize();
     expect(box?.y ?? -1).toBeGreaterThanOrEqual(0);
     expect((box?.y ?? 9999) + (box?.height ?? 0)).toBeLessThanOrEqual(viewport?.height ?? 0);
@@ -138,8 +138,9 @@ test.describe('planner on a phone', () => {
   // trees' Plate itself: loading, failed and ready stand the same height, so the Plate and the
   // section under it hold still; the sections that only a ready planner draws (Point order,
   // Share, Import) arrive below the first screen, where no shift is visible. These two tests
-  // hold the request open and measure across the swap.
-  const plate = (page: Page): Locator => page.getByRole('region', { name: 'Talent trees' });
+  // hold the request open and measure across the swap. The trees' panel is the Talents section
+  // in every state (loading, failed, ready).
+  const plate = (page: Page): Locator => page.locator('[data-region="section-talents"]');
   const boxOf = async (locator: Locator): Promise<{ y: number; height: number }> => {
     const box = await locator.boundingBox();
     return { y: box?.y ?? -1, height: box?.height ?? -1 };

@@ -2,8 +2,9 @@
 
 Spec: design/specs/2026-11-08-planner.md. Every talent, tree, rank, description, arrow, point order, compare line and
 string is read from design/mocks/data/planner-facts.json, which design/mocks/planner_facts.mjs writes by running the
-planner's own models (lib/planner/*, its copy modules) on build 1.60.1.70790. Typed in: the live estimate's figures
-(SAMPLE: it runs the engine in the browser), the saved link id, and the layout. Rulings 0A (2026-11-08) applied.
+planner's own models (lib/planner/*, its copy modules) on build 1.60.1.70790. Typed in: the saved link id and the layout.
+Rulings 0A (2026-11-08) applied; round 5 (lane P7) puts it on the directions mock b2-planner: panels, the framed Talents panel,
+and the head's points with Sim this build (the simulator owns the numbers).
 
   node design/mocks/planner_facts.mjs && python3 design/mocks/ws_planner.py
   python3 design/mocks/ws_planner.py [mock ...]                 (every mock, or just those named)
@@ -19,7 +20,7 @@ from html import escape
 from pathlib import Path
 
 from mocklib import CLASS_COLOR, ROOT
-from ws_prims import (Button as _Button, ClassPicker, CodeField, Figure, Link, Notice, OrderSlot, Ordered, Page, PageHeader, PointOrder,
+from ws_prims import (Button as _Button, ClassPicker, CodeField, Figure, Link, Notice, OrderSlot, Ordered, Page, PageHeader, PointOrder, Row, Rows,
                       Section, Skeleton, Switch, Tag, TalentCell2, TalentEditor, TalentTip, TextFor, build_page, control_bar, crest_img,
                       icon, sel, REGION)
 
@@ -40,6 +41,25 @@ def Field(placeholder: str, label: str = '') -> str:
     return f'<input class="field" type="text" placeholder="{placeholder}" aria-label="{label}">'
 
 
+# Round 5 (lane P7, directions mock b2-planner): every section is a Section panel, the heading inside its Plate (web ui/Section
+# `panel`), the workbench sets them as panels (ui/Page `panels`), and the trees sit in the framed "Talents" panel (ui/TalentEditor
+# `title`, `frame`).
+_Section, _Page, _TalentEditor = Section, Page, TalentEditor
+
+
+def Section(*args, **kw) -> str:
+    kw.setdefault('panel', True)
+    return _Section(*args, **kw)
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
+    return _Page(layout, main, rail, sticky_rail, panels=layout == 'workbench')
+
+
+def TalentEditor(trees: list[dict], active: int = 0, foot: str = '') -> str:
+    return _TalentEditor(trees, active, foot, title=e(P['talentsTitle']), frame='framed')
+
+
 HERE = Path(__file__).resolve().parent
 F = json.loads(Path(os.environ.get('FS_PLANNER_FACTS') or HERE / 'data' / 'planner-facts.json').read_text())
 S = F['states']
@@ -47,10 +67,8 @@ C = F['copy']
 WHO = ('Felsnap', 'hunter', 'Level 34')
 
 # Every string is the committed copy (lib/planner/copy.ts plannerCopy, read through the facts); the function keys arrive
-# evaluated per state (spent_line, score_basis, order_rows, next_point, level_line, the notes).
+# evaluated per state (points_unit, planned_line, order_rows, next_point, level_line, the notes).
 P = C['planner']
-# SAMPLE: the live estimate (PlannerDps runs the engine in the browser; no file carries a figure).
-SAMPLE_SCORE = {'guide': ('612', '± 4'), 'holy': ('419', '± 1'), 'fire': ('655', '± 5'), 'you_cap': ('171', '± 2')}
 
 
 def e(t) -> str:
@@ -98,30 +116,26 @@ def tree_foot(st: dict, status: str = '', status_tone: str = '', reset_open: boo
         rs = f'<span class="t-small">{e(P["resetAsk"])}</span>{Button(e(P["resetYes"]), small=True)}{Button(e(P["resetNo"]), small=True)}'
     else:
         rs = ActionLink(e(P['reset'])) if st['spent'] else ''
-    return s + f'<span class="t-small">{e(C["tree_source"])}</span><span class="rs">{rs}</span>'
+    src = f'<span class="t-small"{" style=\"visibility:hidden\"" if status else ""}>{e(C["tree_source"])}</span>'
+    return f'<div class="pl-foot-l">{s}{src}</div><span class="rs">{rs}</span>'
 
 
-def answer(st: dict, score: tuple | None, loading: bool = False) -> str:
-    """The head answer: Points left (gold) and the role's live score, then Sim this build."""
+def answer(st: dict, loading: bool = False) -> str:
+    """The head answer (PlannerAnswer): the points spent of those there are, any planned past the level, then Sim this build. The
+    planner owns the talents and the simulator the numbers (one job per page): no sim figure here, the link carries the build."""
     if loading:
-        ans = f'<div class="ans-box pl-ans ld">{Skeleton(150, 64)}{Skeleton(150, 64)}</div>'
-    else:
-        left = f'<div class="pl-fig">{Figure(str(st["left"]), e(P["pointsLeft"]), tone="gold", size="big")}<span class="t-small">{e(st["spent_line"])}</span></div>'
-        if score is None:
-            sc = f'<div class="pl-fig">{Figure("&mdash;", e(st["unit_label"]), size="big")}<span class="t-small">{e(C["score"]["waiting"])}</span></div>'
-        else:
-            v, err = score
-            sc = f'<div class="pl-fig">{Figure(v, e(st["unit_label"]), size="big")}<span class="t-small">{err} &middot; {e(st["score_basis"])}</span></div>'
-        # Spec 5.2: `Sim this build ›` holds its line while nothing is spent (hidden, not removed).
-        sim = Link(r(C['sim']['simThisBuild'])) if st['spent'] else Link(r(C['sim']['simThisBuild'])).replace('<a ', '<a aria-hidden="true" tabindex="-1" style="visibility:hidden" ', 1)
-        ans = f'<div class="ans-box pl-ans"><div class="pl-figs">{left}{sc}</div>{sim}</div>'
-    return ans
+        return f'<div class="ans-box pl-ans ld">{Skeleton(150, 68)}</div>'
+    pts = Figure(str(min(st['spent'], st['available'])), unit=e(st['points_unit']))
+    planned = f'<span class="t-small">{e(st["planned_line"])}</span>' if st['planned_line'] else ''
+    # `Sim this build` holds its line while nothing is spent (hidden, not removed).
+    sim = Link(r(C['sim']['simThisBuild'])) if st['spent'] else Link(r(C['sim']['simThisBuild'])).replace('<a ', '<a aria-hidden="true" tabindex="-1" style="visibility:hidden" ', 1)
+    return f'<div class="ans-box pl-ans">{pts}{planned}{sim}</div>'
 
 
-def head(st: dict, score: tuple | None, signed: bool, origin: str = '', loading: bool = False) -> str:
-    """PageHeader: crest, "{Class} talents" in the class colour, the meta line; the answer: Points left and the role's score."""
+def head(st: dict, signed: bool, origin: str = '', loading: bool = False) -> str:
+    """PageHeader: crest, "{Class} talents" in the class colour, the meta line; the answer: the points and Sim this build."""
     cls = st['cls']
-    ans = answer(st, score, loading)
+    ans = answer(st, loading)
     meta = [e(st['meta'])] + ([f'<span class="gold">{e(origin)}</span>'] if origin else [])
     return PageHeader(e(st['title']), CLASS_COLOR[cls], crest_img(cls, 56), meta, ans)
 
@@ -129,8 +143,7 @@ def head(st: dict, score: tuple | None, signed: bool, origin: str = '', loading:
 def bar(st: dict, open_m: bool = False) -> str:
     picks = ClassPicker([(crest_img(c['slug'], 22), c['name'], c['slug'] == st['cls']) for c in F['classes']])
     race = sel(e(st['race']))
-    end = f'<span class="t-small">{e(C["header"]["factionFollowsRace"])}</span>'
-    return control_bar([('Class', picks), ('Race', race)], f'{e(st["className"])} &middot; {e(st["race"])}', end, open_m=open_m, label='Planner choices')
+    return control_bar([('Class', picks), ('Race', race)], f'{e(st["className"])} &middot; {e(st["race"])}', '', open_m=open_m, label='Planner choices')
 
 
 def notes(text: str, short: str = '') -> str:
@@ -176,7 +189,7 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
     body = ''
     if send is not None and plain_block and send.get('otherClass'):
         # Ruling MUST 5 (premium round): another class's build is one plain line above Copy for the game.
-        body += f'<p class="pl-line">{e(send["label"])}</p><div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(C["addon"]["addonCodeHint"])}</p>'
+        body += f'<p class="pl-line">{e(send["label"])}</p><div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(P["pasteHint"])}</p>'
     elif send is not None:
         btn = Button(e(send['label']), primary=not send.get('otherClass')).replace('class="btn', 'class="btn is-off' if send.get('disabled') else 'class="btn', 1)
         sec = send.get('secondary') or {}
@@ -189,9 +202,9 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
             role = ' role="alert"' if n['tone'] == 'error' else ' role="status"'
             note = f'<p class="pl-note {tone}"{role}>{e(n["text"])}{link}</p>' + (f'<p class="t-small">{e(n["detail"])}</p>' if n.get('detail') else '')
         body += f'<div class="pl-acts">{btn}{sec_btn}</div>{note}'
-        body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(C["addon"]["addonCodeHint"])}</p>'
+        body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(P["pasteHint"])}</p>'
     else:
-        body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(C["addon"]["addonCodeHint"])}</p>'
+        body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(P["pasteHint"])}</p>'
         body += f'<p>{Link(r(C["cta"]["getAddonAndCompanion"]))}</p>'
     return Section(e(P['inGameTitle']), f'<div class="pl-sec">{body}</div>')
 
@@ -202,7 +215,7 @@ def share(st: dict, mode: str = 'idle') -> str:
     off = st['spent'] == 0
     share_btn = Button(e(P['share'])).replace('class="btn', 'class="btn is-off' if off else 'class="btn', 1)
     body = f'<div class="pl-acts pl-end">{title}{share_btn}</div>'
-    body += f'<div class="pl-acts"><span class="t-small">{e(st["text_summary"])}</span>{Button(e(P["copyAsText"]), small=True)}</div>'
+    body += f'<div class="pl-acts">{Button(e(P["copyAsText"]))}</div>'
     body += Switch(e(C['sim']['includeSimOnCard']), on=mode != 'nosim', disabled=off)
     if mode == 'confirm':
         items = ''.join(f'<li>{e(x)}</li>' for x in st['share_fields'] + [P['shareFieldSim']])
@@ -232,26 +245,33 @@ def importer(st: dict, mode: str = 'idle') -> str:
 
 
 def order(st: dict) -> str:
-    """Point order: rows of ten levels (10 to 19 ... 60), a socket per level, the next point's socket gold with its tooltip
-    (`Next point: level 31`); past a character's level the points read as planned ahead under the level line."""
-    pts, cap = st['points'], st['char_level']
-    rows, cap_after = [], -1
-    for r, lo in enumerate(range(10, 61, 10)):
+    """Point order: the planner's own rows (lib/planner/point-order.ts pointOrderRows, through the facts): rows of ten levels, a
+    socket per level, the next point's socket gold; past a character's level the points read as planned ahead, then the spec
+    guide's order fills the rest, dimmed (`ahead`), under the level line."""
+    view = st['order_view']
+    kinds = {'spent': '', 'planned': 'pl', 'ahead': 'ah', 'empty': 'em', 'next': 'nx'}
+    rows = []
+    for row in view['rows']:
         slots = []
-        for lvl in range(lo, min(lo + 9, 60) + 1):
-            i = lvl - 10
-            if i < len(pts):
-                p = pts[i]
-                slots.append(OrderSlot(icon(p['icon'], 36), p['tip'], f'{p["rank"]}', 'pl' if p['planned'] else ''))
-            elif i == len(pts) and st['next_point']:
-                slots.append(OrderSlot(name=st['next_point'], kind='nx'))
+        for slot in row['slots']:
+            kind = kinds[slot['kind']]
+            if kind in ('em', 'nx'):
+                slots.append(OrderSlot(name=slot['name'], kind=kind))
             else:
-                slots.append(OrderSlot(name=f'Level {lvl}', kind='em'))
-        rows.append((e(st['order_rows'][r]), slots))
-        if cap is not None and lo <= cap <= lo + 9:
-            cap_after = len(rows) - 1
-    body = PointOrder(rows, cap_after, e(st['level_line'])) if pts else f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>' + PointOrder(rows)
-    return Section(e(P['pointOrderTitle']), body, meta=e(st['point_meta']))
+                slots.append(OrderSlot(icon(slot['iconSrc'], 36), slot['name'], str(slot['rank']), kind))
+        rows.append((e(row['label']), slots))
+    body = PointOrder(rows, view['capAfter'], e(view['capText'])) if st['points'] else f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>' + PointOrder(rows)
+    return Section(e(P['pointOrderTitle']), body)
+
+
+def guide_builds(st: dict) -> str:
+    """Guide builds (GuideBuilds.svelte): the class's published guide builds, the spec icon, name, build and split; the build on
+    screen is the selected row."""
+    def sub(b: dict) -> str:
+        loaded = Tag(e(P['guideBuildLoaded']), 'muted') if b['current'] else ''
+        return f'<span class="gb-sub">{e(b["label"])} &middot; {"/".join(str(x) for x in b["split"])}{loaded}</span>'
+    rows = [Row(e(b['name']), sub(b), lead=icon(b['icon'], 28) if b.get('icon') else '', slim=True) for b in st['guide_builds']]
+    return Section(e(P['guideBuildsTitle']), Rows(rows, open_=True)) if rows else ''
 
 
 def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note: str = '', note_short: str = '', origin: bool = False,
@@ -259,21 +279,18 @@ def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note:
             loaded: str = '', open_m: bool = False, status: str = '', status_tone: str = '', active: int | None = None,
             title_note: str = '') -> str:
     st = S[key]
-    score = SAMPLE_SCORE.get(key) if st['left'] == 0 or key in SAMPLE_SCORE else None
-    if key == 'you_cap':
-        score = SAMPLE_SCORE['you_cap']
     lead_tree = active if active is not None else max(range(len(st['split'])), key=lambda i: st['split'][i]) if st['spent'] else 0
     plate = TalentEditor(trees(st), lead_tree, tree_foot(st, status, status_tone, reset_open))
     send = F['send'][send_key] if send_key else None
     main = Ordered(plate, 1, span=True) + Ordered(order(st), 6, span=True)
-    rail = (Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + Ordered(share(st, share_mode), 7)
+    rail = (Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + Ordered(guide_builds(st), 4) + Ordered(share(st, share_mode), 7)
             + Ordered(importer(st, import_mode), 8))
     # Ruling MUST 1: the build's origin is said once; the gold origin line drops whenever the note shows.
-    body = (head(st, score, signed != 'out', st.get('origin', '') if origin and not note else '') + bar(st, open_m) + notes(note, note_short)
+    body = (head(st, signed != 'out', st.get('origin', '') if origin and not note else '') + bar(st, open_m) + notes(note, note_short)
             + Page('workbench', main, rail) + PAGE_CSS)
     who = WHO if signed == 'in' else None
     return build_page(f'{st["title"]} · Forever Sixty', body, 'Tools', who,
-                      f'Planner mock ({key}). Data: planner-facts.json (lib/planner/* on build {F["build"]}). SAMPLE: the live {st["unit_label"]} figure. {title_note} Spec: design/specs/2026-11-08-planner.md.')
+                      f'Planner mock ({key}). Data: planner-facts.json (lib/planner/* on build {F["build"]}). {title_note} Spec: design/specs/2026-11-08-planner.md.')
 
 
 def loading_page(failed: bool = False) -> str:
@@ -288,12 +305,11 @@ def loading_page(failed: bool = False) -> str:
         inner = '<div class="pl-skel" role="status" aria-busy="true" aria-label="Loading talent data">' + ''.join(
             f'<div class="pl-skt">{Skeleton(180, 24)}<img class="pl-art" src="{art(t["background"])}" alt="" width="216" height="384"></div>'
             for t in st['trees']) + '</div>'
-    from ws_prims import Plate
-    plate = Plate(inner, 'Talent trees')
+    plate = Section(e(P['talentsTitle']), inner, frame='framed', flush=True)
     rail_sk = lambda t: Section(t, f'<div class="pl-sec">{Skeleton(260, 20)}{Skeleton(200, 44)}</div>')
     main = Ordered(plate, 1, span=True)
     rail = '' if failed else Ordered(rail_sk(e(st['band']['heading'])), 2) + Ordered(rail_sk(e(P['inGameTitle'])), 3)
-    body = head(st, None, False, loading=not failed) + bar(st) + Page('workbench', main, rail) + PAGE_CSS
+    body = head(st, False, loading=not failed) + bar(st) + Page('workbench', main, rail) + PAGE_CSS
     return build_page('Warrior talents · Forever Sixty', body, 'Tools', None, f'Planner mock ({"error" if failed else "loading"}). Spec: design/specs/2026-11-08-planner.md.')
 
 
@@ -334,10 +350,9 @@ def states_page() -> str:
     block('Share: the confirm, saved, failed, rate limited; nothing spent (Share off)', '<div class="st-grid">' + ''.join(f'<div class="st-cell">{share(g, m)}</div>' for m in ('confirm', 'saved', 'failed', 'ratelimit'))
           + f'<div class="st-cell">{share(S["empty"])}</div></div>')
     block('Import from addon: empty, a code for another class (the planner switches), an unreadable code', '<div class="st-grid">' + ''.join(f'<div class="st-cell">{importer(g, m)}</div>' for m in ('idle', 'switch', 'bad')) + '</div>')
-    block('Head answer: unfinished build, finished, loading (reserved), on a phone the estimate is asked for, the estimate failed', '<div class="st-grid">'
-          + f'<div class="st-cell">{answer(S["progress"], None)}</div><div class="st-cell">{answer(g, SAMPLE_SCORE["guide"])}</div><div class="st-cell">{answer(g, None, loading=True)}</div>'
-          + f'<div class="st-cell"><div class="pl-fig">{Figure("&mdash;", "DPS", size="big")}{Button(e(C["sim"]["plannerDpsShow"]), small=True)}<span class="t-small">{e(C["sim"]["plannerDpsShowNote"])}</span></div></div>'
-          + f'<div class="st-cell"><div class="pl-fig">{Figure("&mdash;", "DPS", size="big")}<span class="t-small">{e(g["unit_failed"])}</span></div></div></div>')
+    block('Head answer: unfinished build, finished, planned past the level, loading (reserved)', '<div class="st-grid">'
+          + f'<div class="st-cell">{answer(S["progress"])}</div><div class="st-cell">{answer(g)}</div><div class="st-cell">{answer(S["you_cap"])}</div>'
+          + f'<div class="st-cell">{answer(g, loading=True)}</div></div>')
     block('Plate foot: Reset asks first', f'<div class="st-foot">{tree_foot(g, reset_open=True)}</div>')
     block('Phone tree tabs (below 768): Survival open', TalentEditor(trees(g), 2, '')[:0] + f'<div class="st-tabs">{TalentEditor(trees(g), 2)}</div>')
     body = '<div class="pc" style="padding-top:24px"><h1 class="t-title">Planner: element states</h1></div>' + Page('ledger', f'<div class="statesheet">{"".join(blocks)}</div>') + PAGE_CSS
@@ -346,26 +361,25 @@ def states_page() -> str:
 
 PAGE_CSS = '''<style>
 /* page-level layout only (no surfaces): the answer's figures, rail section spacing, rows of actions */
-.pl-ans{gap:10px}.pl-figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.pl-fig{display:flex;flex-direction:column;gap:2px;min-width:0}
-@media(min-width:900px){.pl-figs{display:flex;gap:32px}.pl-fig{max-width:300px}}
-@media(min-width:900px){.pl-figs{justify-content:flex-end}.pl-fig{align-items:flex-end}}
-.pl-notes .notice{padding-top:4px;color:var(--text)}
-@media(max-width:899px){.pl-fig .t-small{min-height:40px}}
+@media(min-width:900px){.ans-box.pl-ans{min-width:0;min-height:0}}
+.pc:has(>.layout-wb){padding-bottom:var(--section-gap)}
+.pc:has(>.pl-notes){padding-top:16px}.pl-notes{max-width:var(--measure-reading)}.pl-notes .notice{padding-top:4px;color:var(--text)}
+.pl-foot-l{flex:1 1 auto;display:grid;min-width:0}.gb-sub{display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px 8px}.pl-foot-l>*{grid-area:1/1;align-self:center}
 @media(max-width:767px){main .btn.sm{height:44px}}
-.pl-ans.ld{flex-direction:row;gap:24px;min-height:130px}@media(min-width:900px){.pl-ans.ld{min-height:110px}}
-.pl-sec{display:flex;flex-direction:column;gap:12px;padding-top:14px}.pl-pad{padding-top:14px}
+
+.pl-sec{display:flex;flex-direction:column;gap:12px;padding-top:2px}.pl-pad{padding-top:2px}
 .pl-acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.pl-acts.pl-end{align-items:flex-end}
 .pl-line{font-size:15px;line-height:22px}.pl-note{font-size:14px;line-height:20px}.pl-note.muted{color:var(--muted)}
 .pl-gear{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding-top:10px;border-top:1px solid var(--line-soft)}
 .pl-field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px}.pl-field .field{height:44px}
 .pl-confirm{display:flex;flex-direction:column;gap:10px;padding:12px 0;border-top:1px solid var(--line-soft)}
 .pl-list{list-style:disc;padding-left:20px}.pl-url{font:600 14px/20px var(--font-body);color:var(--gold);overflow-wrap:anywhere}
-.pl-skel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:16px 20px;min-height:575px}
-@media(min-width:768px){.pl-skel{min-height:543px}}@media(min-width:1280px){.pl-skel{min-height:547px}}@media(min-width:1760px){.pl-skel{min-height:615px}}
+.pl-skel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:16px 20px;min-height:523px}
+@media(min-width:768px){.pl-skel{min-height:517px}}@media(min-width:1280px){.pl-skel{min-height:521px}}@media(min-width:1760px){.pl-skel{min-height:589px}}
 .pl-art{display:block;max-width:100%;height:384px;object-fit:cover;border-radius:4px;opacity:.5}.pl-skt{display:flex;flex-direction:column;align-items:center;gap:14px}
 @media(max-width:767px){.pl-skel{grid-template-columns:minmax(0,1fr)}.pl-skt+.pl-skt{display:none}}
-.pl-err{display:flex;flex-direction:column;gap:8px;padding:20px;min-height:575px}
-@media(min-width:768px){.pl-err{min-height:543px}}@media(min-width:1280px){.pl-err{min-height:547px}}@media(min-width:1760px){.pl-err{min-height:615px}}
+.pl-err{display:flex;flex-direction:column;gap:8px;padding:20px;min-height:523px}
+@media(min-width:768px){.pl-err{min-height:517px}}@media(min-width:1280px){.pl-err{min-height:521px}}@media(min-width:1760px){.pl-err{min-height:589px}}
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}
 .statesheet{display:grid;gap:40px}.st-b>h2{margin-bottom:12px}.st-row{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
 .st-c{display:flex;flex-direction:column;align-items:center;gap:10px;width:120px;text-align:center}

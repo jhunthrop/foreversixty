@@ -26,6 +26,8 @@ describe('editorTrees', () => {
     expect(cell({}, 1001).state).toBe('avail');
     expect(cell({ order: [1001] }, 1001).state).toBe('part');
     expect(cell({ order: [1001, 1001, 1001] }, 1001).state).toBe('max');
+    // A maxed talent's tooltip says nothing past its rank, as the client's.
+    expect(cell({ order: [1001, 1001, 1001] }, 1001).req).toBe('');
     const locked = cell({}, 1003);
     expect(locked.state).toBe('lock');
     expect(locked.req).not.toBe('');

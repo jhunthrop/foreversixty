@@ -3,22 +3,18 @@
 // controls are spelled out in one place: the ControlBar's class crests and race select (one
 // line that opens on a phone), the head's figures, the tree tabs below 768.
 import { expect, type Locator, type Page } from '@playwright/test';
-import { plannerCopy } from '../../../src/lib/planner/copy';
 import { MAX_POINTS } from '../../../src/lib/planner/types';
 import { choose } from './select';
 
 /** Tailwind's `md`. Below it the planner shows one tree at a time behind the tree tabs. */
 const MD_BREAKPOINT = 768;
 
-/** The level a bare build stands at before its first point (the first point is level 10). */
-const BASE_LEVEL = 9;
-
 const isPhone = (page: Page): boolean => (page.viewportSize()?.width ?? MD_BREAKPOINT) < MD_BREAKPOINT;
 
 /**
  * The fixture warrior one point short of a whole build: Arms full (24), Fury at 26 with
- * Flurry (talent 2007) empty. The live estimate waits for all 51 points, so a spec that
- * wants a figure starts here and spends the last point with `finishBuild`.
+ * Flurry (talent 2007) empty. A spec that wants a whole build starts here and spends the last
+ * point with `finishBuild`.
  */
 export const NEARLY_FINISHED_BUILD = `/planner?code=${encodeURIComponent(
   'FS1:1.15.9.69722:warrior:human:3535125/5555510/0:',
@@ -53,36 +49,26 @@ export function figureValue(page: Page, testid: string): Locator {
   return page.getByTestId(testid).locator('span.tabular-nums');
 }
 
-/** The head's `Points left` number. */
-export function pointsLeft(page: Page): Locator {
-  return figureValue(page, 'planner-points-left');
+/** The head's points spent: its figure reads `51` then its unit, `of 51 points`. */
+export function pointsSpent(page: Page): Locator {
+  return figureValue(page, 'planner-points');
 }
 
-/** The head's live score number (`—` until an estimate is on screen). */
-export function scoreFigure(page: Page): Locator {
-  return figureValue(page, 'planner-dps');
+/** `pointsSpent` reading `spent` points (the number, then the unit glued after it). */
+export function spentIs(spent: number): RegExp {
+  return new RegExp(`^${spent}of \\d+ points$`);
 }
 
-/** The line under Points left. */
-export function spentLine(page: Page): Locator {
+/** The line under the points: the points a character has planned past its level. */
+export function plannedLine(page: Page): Locator {
   return page.getByTestId('planner-spent-line');
 }
 
-/** The spent line of a build with no character: `3 of 51 spent · level 12`, `0 of 51 spent`. */
-export function bareSpentLine(spent: number): string {
-  return plannerCopy.spentOf(spent, MAX_POINTS, spent === 0 ? null : BASE_LEVEL + spent);
-}
-
-/**
- * Spends the last point and brings the estimate on. A touch-first device (the mobile
- * project) is asked before anything runs, so it presses "Show DPS"; a desktop is not.
- */
+/** Spends the last point: the build is whole. */
 export async function finishBuild(page: Page): Promise<void> {
   await showLastTalent(page);
   await page.getByTestId(LAST_TALENT).click();
-  await expect(pointsLeft(page)).toHaveText('0');
-  const show = page.getByTestId('planner-dps-show');
-  if (await show.isVisible()) await show.click();
+  await expect(pointsSpent(page)).toHaveText(spentIs(MAX_POINTS));
 }
 
 /**

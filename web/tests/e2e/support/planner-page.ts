@@ -76,11 +76,28 @@ export async function routePlannerState(page: Page, state: PlannerState): Promis
   await page.route('**/v1/me', (route) => route.fulfill(envelope(account)));
 }
 
+/**
+ * Waits for the planner's own ready signals in order, each a thing that happened rather than a
+ * longer clock: the island hydrated (Astro drops `ssr` from it; `client:after-paint` starts it
+ * after the first paint, so a cold runner can spend most of a default wait before it begins),
+ * then the trees drawn or the load failed. A failed load stops here with its message instead of
+ * timing out on trees that are never coming (the 1440 flake on CI).
+ */
+export async function plannerReady(page: Page): Promise<void> {
+  await expect(page.getByTestId('planner')).toBeAttached();
+  await expect(page.locator('astro-island[ssr]:has([data-testid="planner"])')).toHaveCount(0);
+  const trees = page.getByTestId('planner-trees');
+  const failed = page.getByTestId('planner-load-error');
+  await expect(trees.or(failed)).toBeVisible();
+  if (await failed.isVisible())
+    throw new Error(`the planner's talent data failed to load: ${await failed.innerText()}`);
+}
+
 /** Opens `url` in `state` and waits for the trees (or, signed in, the character's level) to settle. */
 export async function openPlanner(page: Page, url: string, state: PlannerState = 'out'): Promise<void> {
   await routePlannerState(page, state);
   await page.goto(url);
-  await expect(page.getByTestId('planner-trees')).toBeVisible();
+  await plannerReady(page);
   await expect(
     page.getByTestId('band-compare-differs').or(page.getByTestId('band-compare-empty')),
   ).toBeVisible();

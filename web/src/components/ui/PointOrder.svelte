@@ -3,8 +3,16 @@
 <svelte:options css="injected" />
 
 <script lang="ts">
-  import { holdsPoint, ORDER_MARKERS, orderIndices, type PointOrderRow } from '../../lib/ui/point-order';
-  import { isPlaceholderIcon } from '../../lib/ui/talent-editor';
+  import { tooltipLeftPx } from '../../lib/items/tooltip-position';
+  import {
+    drawsTalent,
+    holdsPoint,
+    ORDER_MARKERS,
+    orderIndices,
+    type PointOrderRow,
+  } from '../../lib/ui/point-order';
+  import { isPlaceholderIcon, talentTipSide, talentTipSideLeft } from '../../lib/ui/talent-editor';
+  import TalentTip from './TalentTip.svelte';
 
   let {
     rows,
@@ -26,15 +34,34 @@
   function markBroken(index: number): void {
     broken = new Set([...broken, index]);
   }
+
+  // The open talent tooltip: its socket (`r-s`) and where it sits, beside the socket when there is
+  // room (as the client's), else under it inside the viewport.
+  const TIP_WIDTH = 300;
+  let tip = $state<{ key: string; left: number; beside: boolean } | null>(null);
+  function openTip(key: string, event: Event): void {
+    const box = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const width = document.documentElement.clientWidth;
+    const side = talentTipSide(box.left, box.right, TIP_WIDTH, width);
+    tip =
+      side === null
+        ? { key, left: tooltipLeftPx('start', box.left, box.width, width, TIP_WIDTH), beside: false }
+        : { key, left: talentTipSideLeft(side, box.width, TIP_WIDTH), beside: true };
+  }
+  function closeTip(key: string): void {
+    if (tip?.key === key) tip = null;
+  }
 </script>
 
 <!-- web/src/components/ui/PointOrder.svelte -->
 <!-- The build's spend order (planner spec 2026-11-08 section 3A, 4.5; the mock's PointOrder): a
      faint 0 to 9 marker over the first row (the last digit of each socket's level), then rows of
      ten levels, a 120 px label column and ten 36 px sockets (30 below 768). A spent point is its
-     icon with the rank it reached, a tab stop with its name as title; a planned one (past the
-     character's level) dims; an empty level is dashed --line, the next point dashed gold. The gold
-     cap line follows row `capAfter` when `capText` is given. Nothing scrolls sideways. -->
+     icon with the rank it reached, a tab stop with its name; with a `tip`, the game's talent
+     tooltip opens beside it on hover and focus. A planned one (past the character's level) dims;
+     an `ahead` one (the guide's point past the build) dims further on a dashed ring; an empty
+     level is dashed --line, the next point dashed gold. The gold cap line follows row `capAfter`
+     when `capText` is given. Nothing scrolls sideways. -->
 
 <div class="porder" data-testid={testid}>
   <div class="porder-m" aria-hidden="true">
@@ -45,38 +72,54 @@
   </div>
   {#each rows as row, r (r)}
     <div class="porder-r">
-      <span class="lbl">{row.label}</span>
+      <span class={['lbl', row.slots.every((slot) => slot.kind === 'ahead') && 'ah']}>{row.label}</span>
       <div class="porder-s" role="list">
         {#each row.slots as slot, s (s)}
           {@const index = indices[r][s]}
-          {#if holdsPoint(slot) && index !== null}
-            <!-- Each point is a tab stop so its title (the talent and the level) reaches the keyboard (spec 5.4). -->
+          {#if drawsTalent(slot)}
+            {@const key = `${r}-${s}`}
+            {@const iconKey = index ?? 1000 + r * 10 + s}
+            <!-- Each point is a tab stop so its name (the talent and the level) and its tooltip reach the keyboard (spec 5.4). -->
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <span
               role="listitem"
-              class={slot.kind === 'planned' ? 'pl' : undefined}
+              class={slot.kind === 'planned' ? 'pl' : slot.kind === 'ahead' ? 'ah' : undefined}
               tabindex="0"
               aria-label={slot.name}
-              title={slot.name}
+              title={slot.tip === undefined ? slot.name : undefined}
               data-kind={slot.kind}
-              data-testid={`order-point-${index}`}
+              data-testid={holdsPoint(slot) ? `order-point-${index}` : `order-ahead-${r * 10 + s}`}
+              onmouseenter={(event) => slot.tip && openTip(key, event)}
+              onmouseleave={() => closeTip(key)}
+              onfocus={(event) => slot.tip && openTip(key, event)}
+              onblur={() => closeTip(key)}
             >
-              {#if slot.iconSrc && !broken.has(index)}
+              {#if slot.iconSrc && !broken.has(iconKey)}
                 <img
                   src={slot.iconSrc}
                   alt=""
                   width="36"
                   height="36"
                   decoding="async"
-                  onerror={() => markBroken(index)}
+                  onerror={() => markBroken(iconKey)}
                   onload={(event) => {
-                    if (isPlaceholderIcon(event.currentTarget)) markBroken(index);
+                    if (isPlaceholderIcon(event.currentTarget)) markBroken(iconKey);
                   }}
                 />
               {:else}
                 <span class="ic" aria-hidden="true"></span>
               {/if}
               {#if slot.rank !== undefined}<b>{slot.rank}</b>{/if}
+              {#if slot.tip && tip?.key === key}
+                <span class="po-tip" class:beside={tip.beside} style:left={`${tip.left}px`}>
+                  <TalentTip
+                    name={slot.tip.name}
+                    rankLine={slot.tip.rankLine}
+                    now={slot.tip.now}
+                    nextLabel=""
+                  />
+                </span>
+              {/if}
             </span>
           {:else}
             <span role="listitem" aria-label={slot.name} title={slot.name} data-kind={slot.kind}
@@ -164,6 +207,35 @@
   .pl img,
   .pl .ic {
     opacity: 0.55;
+  }
+  /* Dimmed, still 4.5:1 on the panel. */
+  .lbl.ah {
+    opacity: 0.9;
+  }
+  .ah img,
+  .ah .ic {
+    opacity: 0.5;
+  }
+  .ah::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 5px;
+    border: 1px dashed var(--color-line);
+  }
+  .ah b {
+    color: var(--color-muted);
+    opacity: 0.7;
+  }
+  .po-tip {
+    position: absolute;
+    top: calc(100% + 8px);
+    z-index: 30;
+    width: 300px;
+    text-align: left;
+  }
+  .po-tip.beside {
+    top: 0;
   }
   .pl::after {
     content: '';

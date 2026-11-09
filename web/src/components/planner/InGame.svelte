@@ -9,7 +9,6 @@
      plain line above Copy for the game instead of the disabled send (premium spec ruling MUST 5). -->
 <script lang="ts">
   import type { MeCharacter } from '../../lib/account/api';
-  import { addonCopy } from '../../lib/addon/copy';
   import { ctaCopy } from '../../lib/addon/cta-copy';
   import { plannerCharacterCardCopy as cardCopy, plannerCopy } from '../../lib/planner/copy';
   import { plannerAddonCode } from '../../lib/planner/current-character-planner';
@@ -119,7 +118,7 @@
   );
 </script>
 
-<Section title={plannerCopy.inGameTitle} testid="planner-in-game">
+<Section title={plannerCopy.inGameTitle} panel testid="planner-in-game">
   <div class="pl-sec">
     {#if character !== null && otherClass && plainOtherClass}
       <p class="pl-line" data-testid="planner-send-other">{action.label}</p>
@@ -155,7 +154,7 @@
       {/if}
     {/if}
     <CopyForGame code={store.spent === 0 ? '' : addonCode} primary={character === null || otherClass} />
-    <p class="text-small text-muted">{addonCopy.addonCodeHint}</p>
+    <p class="text-small text-muted">{plannerCopy.pasteHint}</p>
     {#if character === null}
       <p>
         <a class={LINK} href={cardCopy.getTheAddonHref} data-testid="planner-get-addon"

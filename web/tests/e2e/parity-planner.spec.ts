@@ -67,13 +67,11 @@ const STATES: readonly {
     state: 'felsnap',
     mock: 'web-planner-you-cap',
     then: async (page) => {
-      await expect(page.getByTestId('planner-points-left')).toContainText('0');
+      await expect(page.getByTestId('planner-points')).toContainText('25');
       // Decision P4: two clicks past the cap plan ahead.
       await addTalent(page, 'Frenzy');
       await addTalent(page, 'Frenzy');
       await expect(page.getByTestId('planner-spent-line')).toContainText('2 planned ahead');
-      // The live estimate sims the character's level (gap G7): wait for it to answer.
-      await expect(page.getByTestId('planner-dps-note')).toContainText('±');
       await page.mouse.move(0, 0);
     },
   },
@@ -92,9 +90,6 @@ const MOCK_HEAD_INSET =
 const MOCK_PHONE_BAR =
   "below 768 the mock library's ControlBar line is a details/summary (ws_lib.control_bar); the built " +
   "ControlBar's is a button with aria-expanded, the same disclosure (every lane's bar shares it)";
-const SAMPLE_SCORE =
-  "the live score's figure and its error are the mock's SAMPLE (171 ± 2) and the fixture build's " +
-  'test engine figure in the build; the right-aligned answer is as wide as its caption';
 const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> = {
   ...Object.fromEntries(
     STATES.map(({ id }) => [
@@ -102,7 +97,6 @@ const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why
       { failures: ['head:box', 'controls:inventory'], why: `${MOCK_HEAD_INSET}; ${MOCK_PHONE_BAR}` },
     ]),
   ),
-  'planner-you-cap-1440': { failures: ['head-answer:box'], why: SAMPLE_SCORE },
 };
 
 test.describe('/planner mock parity', () => {

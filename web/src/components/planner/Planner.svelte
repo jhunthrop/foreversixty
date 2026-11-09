@@ -2,11 +2,12 @@
 <!-- The planner island (spec 2026-11-08, mocks design/mocks/web/web-planner*). Mounted by
      src/pages/planner.astro (client:after-paint) and by src/planner-island.ts on the API-rendered
      /b/:id page, where `record` is supplied and the build starts read-only; Top Gear's inline "add a
-     build" mounts it with `standalone` false. The page is L3 Workbench: the PageHeader (crest,
-     "{Class} talents", the meta line, the answer: Points left and the live score), the ControlBar
-     (the nine class crests, the race), one note line, then the one Plate (the trees, TalentEditor)
-     and Point order in main, and in the rail the Level build, In the game, Share and Import. Below
-     1280 the regions flow in one column in phone order (Ordered). -->
+     build" mounts it with `standalone` false. The page is L3 Workbench of panels (directions mock
+     b2-planner): the PageHeader (crest, "{Class} talents", the meta line, the answer: the points
+     and Sim this build; the simulator owns the numbers, so the live estimate runs only in the
+     embed), the ControlBar (the nine class crests, the race), one note line, then the framed
+     Talents panel (TalentEditor) and Point order in main, and in the rail the Level build, In the
+     game, Share and Import. Below 1280 the regions flow in one column in phone order (Ordered). -->
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
@@ -56,7 +57,6 @@
   import { bandCompareCopy, plannerCharacterCardCopy, plannerHeaderCopy } from '../../lib/planner/copy';
   import { editorTrees, GAME_TIERS } from '../../lib/planner/editor-trees';
   import { bandCodeGear, earnedOrder, estimateCharacter } from '../../lib/planner/estimate';
-  import { scoreUnitForBuild } from '../../lib/planner/score-unit';
   import type { LadderOrderFor, LadderOrderForRanks } from '../../lib/planner/ladder-load';
   import { dataUrl } from '../../lib/planner/load';
   import { classTone, LINK, type ControlGroup } from '../../lib/ui/primitives';
@@ -78,6 +78,8 @@
   import ImportBox from './ImportBox.svelte';
   import InGame from './InGame.svelte';
   import PlannerAnswer from './PlannerAnswer.svelte';
+  import GuideBuilds from './GuideBuilds.svelte';
+  import type { GuideBuild } from '../../lib/planner/guide-builds';
   import PlannerOrder from './PlannerOrder.svelte';
   import SharePanel from './SharePanel.svelte';
   import SummaryBar from './SummaryBar.svelte';
@@ -95,6 +97,7 @@
     title = null,
     views = null,
     hideBar = false,
+    guideBuilds = [],
   }: {
     treeVersion: string;
     classSlug?: string;
@@ -125,6 +128,8 @@
     views?: number | null;
     /** No class and race bar (decision B3): a shared build's class and race are the record's. */
     hideBar?: boolean;
+    /** Every spec guide's published builds (planner.astro reads the guides): the rail's Guide builds. */
+    guideBuilds?: readonly GuideBuild[];
   } = $props();
 
   /** The shared build page (`/b/:id`, spec section 8): its own head, the Edit a copy line, no bar,
@@ -540,7 +545,6 @@
   /** The band the Level build section compares against, once its file has answered: the live
    *  estimate sims that band's gear (decision P1, gap G1). Undefined until the section reports. */
   let estimateBand = $state<{ band: BisBand | null; label: string } | undefined>(undefined);
-  const unit = $derived(scoreUnitForBuild(store.classSlug, store.split));
 
   // A figure from another class is not a stale answer to this build. Declared BEFORE the
   // request effect below on purpose: effects flush in declaration order, and a build pasted
@@ -557,7 +561,9 @@
     const index = store.talentIndex;
     const base = gate === 'run' && index !== null ? characterFromPlanner(store) : null;
     // Gap G7: a character's estimate is simmed at its level with only the points it has earned.
-    if (base !== null && index !== null && (estimateBand !== undefined || !standalone))
+    // Only where the sim tools embed the planner: the standalone page links to the simulator
+    // instead of showing its number (one job per page), so it never wakes the engine.
+    if (!standalone && base !== null && index !== null)
       live.request(estimateCharacter(base, index, estimateBand?.band ?? null, store.characterLevel), index);
     else live.request(null, null);
   });
@@ -1054,18 +1060,24 @@
 </script>
 
 {#snippet foot()}
-  <p
-    class="st2"
-    class:wipe={store.refusal !== null}
-    role="status"
-    aria-live="polite"
-    data-testid="planner-status"
-  >
-    {store.refusal ?? ''}
-  </p>
-  <span class="text-small text-muted" data-testid="planner-tree-source"
-    >{treeSourceNotice(store.treeVersion)}</span
-  >
+  <!-- The status line and the source share one line: a refusal stands over the source while it
+       shows, so no empty line is held under the trees. -->
+  <div class="pl-foot-l">
+    <p
+      class="st2"
+      class:wipe={store.refusal !== null}
+      role="status"
+      aria-live="polite"
+      data-testid="planner-status"
+    >
+      {store.refusal ?? ''}
+    </p>
+    <span
+      class="text-small text-muted"
+      class:pl-veiled={store.refusal !== null}
+      data-testid="planner-tree-source">{treeSourceNotice(store.treeVersion)}</span
+    >
+  </div>
   <span class="rs">
     {#if store.readOnly}
       <!-- A shared build's Edit a copy sits in the notes line, not under the trees. -->
@@ -1096,6 +1108,51 @@
   </span>
 {/snippet}
 
+{#snippet treesReserve()}
+  <div class="pl-reserve" style:--tiers={reserveTiers}>
+    {#if status === 'failed'}
+      <div class="pl-err" role="alert" data-testid="planner-load-error">
+        <p class="text-strong">{DATA_LOAD_FAILED}</p>
+        <p class="text-small text-muted">{plannerCopy.loadFailedDetail(store.treeVersion)}</p>
+        <div class="pl-acts">
+          <Button onclick={() => (attempt += 1)} label={plannerCopy.reloadTalents} testid="planner-retry"
+            >{plannerCopy.retry}</Button
+          >
+        </div>
+      </div>
+    {:else}
+      <div
+        class="pl-skel"
+        role="status"
+        aria-busy="true"
+        aria-label="Loading talent data"
+        data-testid="planner-talent-skeleton"
+      >
+        {#each [0, 1, 2] as tree (tree)}
+          <div class="pl-skt">
+            <span class="skeleton-block block" style="width:180px;height:24px"></span>
+            {#if openingArt[tree] !== undefined && store.classSlug === classSlug}
+              <!-- The opening class's tree art in the server render: the page's largest paint
+                       arrives with the first paint instead of after the island and the trees. -->
+              <img
+                class="pl-art"
+                src={dataUrl(store.treeVersion, openingArt[tree])}
+                alt=""
+                width="216"
+                height="384"
+                loading="eager"
+                fetchpriority={tree === 0 ? 'high' : 'auto'}
+              />
+            {:else}
+              <span class="skeleton-block block max-w-full" style="width:216px;height:384px"></span>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    {/if}
+  </div>
+{/snippet}
+
 {#snippet plate()}
   {#if status === 'ready' && store.talentIndex}
     <!-- Never the editor's readOnly: a shared build's press reaches the store, which refuses and
@@ -1109,53 +1166,17 @@
       onremove={(id) => store.removePoint(id)}
       onresettree={store.readOnly ? undefined : (i) => store.resetTree(i)}
       {foot}
+      title={standalone ? plannerCopy.talentsTitle : undefined}
+      frame="framed"
       testid="planner-trees"
     />
+  {:else if standalone}
+    <!-- The ready trees' panel, its heading included, so the trees arriving move nothing. -->
+    <Section title={plannerCopy.talentsTitle} panel frame="framed" flush testid="planner-trees-loading">
+      {@render treesReserve()}
+    </Section>
   {:else}
-    <Plate label={TREES_LABEL}>
-      <div class="pl-reserve" style:--tiers={reserveTiers}>
-        {#if status === 'failed'}
-          <div class="pl-err" role="alert" data-testid="planner-load-error">
-            <p class="text-strong">{DATA_LOAD_FAILED}</p>
-            <p class="text-small text-muted">{plannerCopy.loadFailedDetail(store.treeVersion)}</p>
-            <div class="pl-acts">
-              <Button onclick={() => (attempt += 1)} label={plannerCopy.reloadTalents} testid="planner-retry"
-                >{plannerCopy.retry}</Button
-              >
-            </div>
-          </div>
-        {:else}
-          <div
-            class="pl-skel"
-            role="status"
-            aria-busy="true"
-            aria-label="Loading talent data"
-            data-testid="planner-talent-skeleton"
-          >
-            {#each [0, 1, 2] as tree (tree)}
-              <div class="pl-skt">
-                <span class="skeleton-block block" style="width:180px;height:24px"></span>
-                {#if openingArt[tree] !== undefined && store.classSlug === classSlug}
-                  <!-- The opening class's tree art in the server render: the page's largest paint
-                       arrives with the first paint instead of after the island and the trees. -->
-                  <img
-                    class="pl-art"
-                    src={dataUrl(store.treeVersion, openingArt[tree])}
-                    alt=""
-                    width="216"
-                    height="384"
-                    loading="eager"
-                    fetchpriority={tree === 0 ? 'high' : 'auto'}
-                  />
-                {:else}
-                  <span class="skeleton-block block max-w-full" style="width:216px;height:384px"></span>
-                {/if}
-              </div>
-            {/each}
-          </div>
-        {/if}
-      </div>
-    </Plate>
+    <Plate label={TREES_LABEL}>{@render treesReserve()}</Plate>
   {/if}
 {/snippet}
 
@@ -1185,6 +1206,7 @@
 {#snippet bandSection()}
   <BandCompare
     {store}
+    panel={standalone}
     heading={shared ? bandCompareCopy.sharedHeading : undefined}
     characterLevel={store.characterLevel}
     specOverride={specParam ?? undefined}
@@ -1197,6 +1219,7 @@
 {#snippet importSection()}
   {#if store.talentIndex}
     <ImportBox
+      panel={standalone}
       talents={store.talentIndex}
       activeBuild={activeBuild.build}
       onimport={(build, pastedCode) => {
@@ -1211,7 +1234,7 @@
 {/snippet}
 
 {#snippet railSkeleton(title: string)}
-  <Section {title}>
+  <Section {title} panel>
     <div class="pl-sec" aria-busy="true">
       <span class="skeleton-block block max-w-full" style="width:260px;height:20px"></span>
       <span class="skeleton-block block max-w-full" style="width:200px;height:44px"></span>
@@ -1220,7 +1243,7 @@
 {/snippet}
 
 {#if standalone}
-  <Page layout="workbench" testid="planner">
+  <Page layout="workbench" panels testid="planner">
     {#snippet header()}
       <PageHeader title={headTitle} tone={classTone(store.classSlug)} testid="planner-head">
         {#snippet crest()}
@@ -1244,19 +1267,10 @@
         {#snippet answer()}
           {#if status === 'loading'}
             <div class="pl-ans-skel" aria-busy="true">
-              <span class="skeleton-block block" style="width:150px;height:64px"></span>
-              <span class="skeleton-block block" style="width:150px;height:64px"></span>
+              <span class="skeleton-block block" style="width:150px;height:68px"></span>
             </div>
           {:else}
-            <PlannerAnswer
-              {store}
-              {live}
-              {gate}
-              {unit}
-              bandLabel={estimateBand?.band ? estimateBand.label : null}
-              simHref={simLinkShown ? simHref : undefined}
-              onshow={() => (dpsOptedIn = true)}
-            />
+            <PlannerAnswer {store} simHref={simLinkShown ? simHref : undefined} />
           {/if}
         {/snippet}
       </PageHeader>
@@ -1269,11 +1283,7 @@
           onchange={chooseFromBar}
           testid="planner-bar"
           id="planner-bar"
-        >
-          {#snippet end()}<span class="text-small text-muted max-md:hidden"
-              >{plannerHeaderCopy.factionFollowsRace}</span
-            >{/snippet}
-        </ControlBar>
+        ></ControlBar>
       {/if}
       {@render notes()}
     {/snippet}
@@ -1289,8 +1299,9 @@
             plainOtherClass={shared}
           /></Ordered
         >
+        <Ordered order={4}><GuideBuilds builds={guideBuilds} {store} /></Ordered>
         {#if !store.readOnly}
-          <Ordered order={7}><SharePanel {store} {live} /></Ordered>
+          <Ordered order={7}><SharePanel {store} /></Ordered>
           <Ordered order={8}>{@render importSection()}</Ordered>
         {/if}
       {:else if status === 'loading'}
@@ -1305,7 +1316,9 @@
     {/snippet}
     <Ordered order={1} span>{@render plate()}</Ordered>
     {#if status === 'ready'}
-      <Ordered order={6} span><PlannerOrder {store} characterName={sendCharacter?.name ?? null} /></Ordered>
+      <Ordered order={6} span
+        ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
+      >
     {/if}
   </Page>
 {:else}
@@ -1329,25 +1342,25 @@
        stand the same height and nothing under the Plate moves when the trees arrive. */
     --cell: 44px;
     --cgap: 8px;
-    --chrome: 209px;
+    --chrome: 157px;
     min-height: calc(var(--tiers) * (var(--cell) + var(--cgap)) + var(--chrome));
   }
   @media (min-width: 768px) {
     .pl-reserve {
       --cell: 48px;
-      --chrome: 149px;
+      --chrome: 123px;
     }
   }
   @media (min-width: 1280px) {
     .pl-reserve {
-      --chrome: 153px;
+      --chrome: 127px;
     }
   }
   @media (min-width: 1760px) {
     .pl-reserve {
       --cell: 56px;
       --cgap: 10px;
-      --chrome: 151px;
+      --chrome: 125px;
     }
   }
   .pl-skel {
@@ -1387,18 +1400,29 @@
   /* The ready answer's height (spec 5.2): the trees arriving move nothing under the head. */
   .pl-ans-skel {
     display: flex;
-    gap: 24px;
-    min-height: 130px;
     align-items: flex-start;
   }
   @media (min-width: 900px) {
     .pl-ans-skel {
-      min-height: 110px;
       align-items: flex-end;
     }
   }
   .pl-notes {
     padding-inline: var(--page-inset);
+    padding-block: 16px 0;
+    max-width: calc(var(--measure-reading) + 2 * var(--page-inset));
+  }
+  .pl-foot-l {
+    flex: 1 1 auto;
+    display: grid;
+    min-width: 0;
+  }
+  .pl-foot-l > :global(*) {
+    grid-area: 1 / 1;
+    align-self: center;
+  }
+  .pl-veiled {
+    visibility: hidden;
   }
   .pl-shared-note {
     display: flex;
