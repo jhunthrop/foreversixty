@@ -7,6 +7,7 @@
      runners-up. A phone draws the frame's list form, the Upgrades under it. `cells` decides the
      words (lib/character/doll.ts); this lays them out. -->
 <script lang="ts">
+  import { isTie } from '../../lib/bis/doll-view';
   import type { BisBand } from '../../lib/bis/types';
   import { bandSlotFor, runnersUp } from '../../lib/character/gear-context';
   import { characterPageCopy } from '../../lib/character/page-view';
@@ -113,7 +114,13 @@
     testid="character-inspector"
   >
     <h3 class="text-strong mb-1 text-[13px] leading-5 font-semibold">{cell.label}</h3>
-    {#if cell.item}<ItemRow item={cell.item} {build} source={cell.source} iconSize={28} bare />{/if}
+    {#if cell.item}<ItemRow
+        item={cell.item}
+        {build}
+        source={pick !== null && pick.id === cell.item.id ? pick.source : undefined}
+        iconSize={28}
+        bare
+      />{/if}
     {#if pick !== null && pick.id !== cell.item?.id}
       <p class="text-muted mt-2 text-[12px] leading-4 font-semibold">{characterPageCopy.gearAction}</p>
       <ItemRow
@@ -129,7 +136,9 @@
           item={ref(alt.id, alt.name)}
           {build}
           source={alt.source}
-          gain={{ value: signedFigure(alt.delta), unit, tone: alt.delta < 0 ? 'wipe' : 'muted' }}
+          gain={isTie(alt.delta)
+            ? { value: characterPageCopy.same, unit: '', tone: 'muted' }
+            : { value: signedFigure(alt.delta), unit, tone: alt.delta < 0 ? 'wipe' : 'muted' }}
           iconSize={28}
           bare
         />

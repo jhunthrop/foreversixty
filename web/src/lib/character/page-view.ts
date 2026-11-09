@@ -31,6 +31,8 @@ export const characterPageCopy = {
   answerUnit: (unit: string): string => `${unit} in upgrades`,
   upgrades: 'Upgrades',
   allUpgrades: 'All upgrades',
+  /** A runner-up within a tie of the pick. */
+  same: 'Same',
   moreUpgrades: (count: number): string => `${count} more in best in slot`,
   openBis: 'Open in best in slot',
   gear: 'Gear',

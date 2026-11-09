@@ -83,31 +83,33 @@ const wrapperProps = panel
         </div>
       </div>
     </div>
-    <div class="cs-region flex flex-col gap-[6px]">
-      <label class={LABEL} for="home-character-search-region">
-        {copy.regionLabel}
-      </label>
-      <Select
-        id="home-character-search-region"
-        name="region"
-        size="compact"
-        fit
-        value={DEFAULT_REGION}
-        options={REGIONS.map((region) => ({ value: region, label: region.toUpperCase() }))}
-      />
-    </div>
-    <div class="cs-ruleset flex flex-col gap-[6px]">
-      <label class={LABEL} for="home-character-search-ruleset">
-        {copy.rulesetLabel}
-      </label>
-      <Select
-        id="home-character-search-ruleset"
-        name="ruleset"
-        size="compact"
-        fit
-        value={DEFAULT_RULESET}
-        options={RULESETS.map((ruleset) => ({ value: ruleset.id, label: ruleset.label }))}
-      />
+    <div class="cs-selects">
+      <div class="cs-region flex flex-col gap-[6px]">
+        <label class={LABEL} for="home-character-search-region">
+          {copy.regionLabel}
+        </label>
+        <Select
+          id="home-character-search-region"
+          name="region"
+          size="compact"
+          fit
+          value={DEFAULT_REGION}
+          options={REGIONS.map((region) => ({ value: region, label: region.toUpperCase() }))}
+        />
+      </div>
+      <div class="cs-ruleset flex flex-col gap-[6px]">
+        <label class={LABEL} for="home-character-search-ruleset">
+          {copy.rulesetLabel}
+        </label>
+        <Select
+          id="home-character-search-ruleset"
+          name="ruleset"
+          size="compact"
+          fit
+          value={DEFAULT_RULESET}
+          options={RULESETS.map((ruleset) => ({ value: ruleset.id, label: ruleset.label }))}
+        />
+      </div>
     </div>
     <span class="cs-submit">
       <button type="submit" class={`${BUTTON_PRIMARY} h-11 px-6`} data-testid="home-character-search-submit">
@@ -145,6 +147,7 @@ const wrapperProps = panel
   }
   @media (max-width: 767px) {
     .cs-form:not(.cs-panel) > *,
+    .cs-form:not(.cs-panel) .cs-selects > *,
     .cs-form:not(.cs-panel) .cs-submit > button {
       width: 100%;
     }
@@ -153,10 +156,10 @@ const wrapperProps = panel
      Ruleset under them at their own width. */
   .cs-panel {
     display: grid;
-    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      'name name name submit'
-      'region ruleset . .';
+      'name submit'
+      'selects selects';
   }
   .cs-panel .cs-name {
     grid-area: name;
@@ -165,11 +168,14 @@ const wrapperProps = panel
   .cs-panel .cs-submit {
     grid-area: submit;
   }
-  .cs-panel .cs-region {
-    grid-area: region;
+  /* Region and Ruleset are one box: flat into the form's own row off the panel, as before. */
+  .cs-selects {
+    display: contents;
   }
-  .cs-panel .cs-ruleset {
-    grid-area: ruleset;
+  .cs-panel .cs-selects {
+    display: flex;
+    grid-area: selects;
+    gap: 12px;
   }
 </style>
 
