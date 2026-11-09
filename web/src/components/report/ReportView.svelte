@@ -1569,6 +1569,21 @@
     if (parsesUnknownHere) out.push({ id: 'parse-unavailable-line', text: '' });
     return out.filter((notice) => notice.text !== '' || notice.id === 'parse-unavailable-line');
   });
+  /** The tabs whose tables use the glossary's words (Parse, Active, Share, threat, uptime). */
+  const GLOSSARY_TABS: ReadonlySet<string> = new Set([
+    'summary',
+    'damage-done',
+    'healing',
+    'damage-taken',
+    'deaths',
+    'threat',
+    'casts',
+    'buffs',
+    'debuffs',
+    'interrupts',
+    'dispels',
+    'resources',
+  ]);
   /** The tabs with a Parse column: the line that parses did not load shows on them alone. */
   const PARSE_TABS: ReadonlySet<string> = new Set(['summary', 'damage-done', 'healing']);
   const parsesUnknownHere = $derived(
@@ -2462,8 +2477,9 @@
       {:else if state.tab === 'mechanics' && nightMode && nightLoading}
         <p class="text-muted text-[14px]" data-testid="mechanics-night-loading">Folding the night’s pulls…</p>
       {/if}
-      <!-- Last in the column: a glossary is a footnote, read when a word stops someone. -->
-      <Glossary />
+      <!-- Last in the column: a glossary is a footnote, read when a word stops someone; only under
+           the tabs whose tables use its words (logs lane review 2026-11-09). -->
+      {#if GLOSSARY_TABS.has(state.tab)}<Glossary />{/if}
     </Page>
   </div>
 {/if}

@@ -329,4 +329,8 @@ test('the glossary is one quiet line that opens the words the tables use', async
   await glossary.locator('summary').click();
   await expect(glossary).toContainText('Standing threat');
   await expect(glossary).toContainText('Threat built in a window');
+  // A tab with no table of those words leaves it out (Coach, Rating, Compare, Queries).
+  await page.goto(`${REPORT}?fight=3&tab=compare`);
+  await expect(page.getByTestId('compare-mode')).toBeVisible();
+  await expect(page.getByTestId('glossary')).toHaveCount(0);
 });

@@ -681,6 +681,8 @@ def body_for(R, fi, tab, source, viewer=''):
     }[tab]()
 
 
+GLOSSARY_TABS = {'Summary', 'Damage done', 'Healing', 'Damage taken', 'Deaths', 'Threat', 'Casts', 'Buffs', 'Debuffs', 'Interrupts',
+                 'Dispels', 'Resources'}
 DATA_NOTE = 'web/public/sample-report/sample (the real 8 Nov 2026 dungeon night, Excavation Site: Wetlands, names changed)'
 
 
@@ -694,7 +696,8 @@ def report_page(tab: str, fi: int = DEFAULT_PULL, source: str = 'Your group', vi
     else:
         main, rail, nts = body_for(R, fi, tab, source, viewer)
     nts = (extra_notices or []) + nts
-    main += GLOSSARY
+    if tab in GLOSSARY_TABS or player:   # report/ReportView.svelte GLOSSARY_TABS: only under the tables that use its words
+        main += GLOSSARY
     compare = fight_label(R.fight(COMPARE_PULL)) if tab == 'Compare' else ''
     menu_html = fight_menu(R, fi) if menu else ''
     who = None
