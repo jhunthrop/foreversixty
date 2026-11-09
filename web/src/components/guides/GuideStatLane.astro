@@ -81,6 +81,10 @@ const notes =
     color: var(--color-text);
     overflow-wrap: normal;
   }
+  /* A stat's name stays on one line ("Healing power"); the bar takes what is left of the lane. */
+  :global([data-testid='guide-stat-table'] .ui-st) {
+    --st-name: minmax(max-content, 2fr);
+  }
   :global([data-testid='guide-stat-table'] .ui-st-icon) {
     height: auto;
   }

@@ -1,0 +1,108 @@
+---
+// web/src/components/guides/ClassSpecPicker.astro
+// The class and spec picker /guides and /bis share (directions mocks b2-guides and the BiS
+// landing, round 5): one panel per class, three across from 1024 and two from 768, each with the
+// class crest and name in the class colour, then its specs in tree order as slim link rows
+// (GuideSpecRow: the spec icon and name, and the hidden "Your spec" Tag the page's answer shows).
+// The class and spec colours sit on the panel, where they clear contrast.
+import ClassCrest from '../ClassCrest.astro';
+import GuideSpecRow from './GuideSpecRow.astro';
+import Plate from '../ui/Plate.svelte';
+import Row from '../ui/Row.svelte';
+import type { ClassSlug } from '../../lib/ui/primitives';
+
+export interface PickerSpec {
+  /** `<class>/<spec>`: what the page's answer matches. */
+  key: string;
+  name: string;
+  href: string;
+  icon: string;
+}
+
+export interface PickerClass {
+  slug: string;
+  name: string;
+  /** The class's own page (/guides/<class>); none on /bis. */
+  href?: string;
+  specs: readonly PickerSpec[];
+}
+
+interface Props {
+  classes: readonly PickerClass[];
+  /** The picker's accessible name. */
+  label: string;
+  testid: string;
+  /** Each class panel's testid before its slug (`guides-class-`). */
+  classTestidPrefix: string;
+  /** The class row's link testid before its slug, when the class links to its page. */
+  classLinkTestidPrefix?: string;
+  /** Each spec row's testid before its key; the page's answer marks rows by it. */
+  rowTestidPrefix?: string;
+  /** The hidden tag the answer shows on the header character's spec. */
+  yoursLabel?: string;
+}
+const { classes, label, testid, classTestidPrefix, classLinkTestidPrefix, rowTestidPrefix, yoursLabel } =
+  Astro.props;
+---
+
+<div class="class-spec-picker" role="region" aria-label={label} data-testid={testid}>
+  {classes.map((group) => (
+    <Plate>
+      <div class="class-spec-picker-class" data-testid={`${classTestidPrefix}${group.slug}`}>
+        <Row
+          title={group.name}
+          titleTone={{ classSlug: group.slug as ClassSlug }}
+          href={group.href}
+          testid={
+            group.href !== undefined && classLinkTestidPrefix !== undefined
+              ? `${classLinkTestidPrefix}${group.slug}`
+              : undefined
+          }
+        >
+          <ClassCrest slot="lead" slug={group.slug} size={40} />
+        </Row>
+        <div class="class-spec-picker-specs">
+          {group.specs.map((spec) => (
+            <GuideSpecRow
+              specKey={spec.key}
+              name={spec.name}
+              href={spec.href}
+              icon={spec.icon}
+              iconSize={28}
+              testidPrefix={rowTestidPrefix}
+              yoursLabel={yoursLabel}
+            />
+          ))}
+        </div>
+      </div>
+    </Plate>
+  ))}
+</div>
+
+<style>
+  .class-spec-picker {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  @media (min-width: 768px) {
+    .class-spec-picker {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .class-spec-picker {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .class-spec-picker-class {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding-bottom: 8px;
+  }
+  .class-spec-picker-specs {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

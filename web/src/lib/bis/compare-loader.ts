@@ -69,5 +69,15 @@ export async function loadDollCharacter(
     const item = id === undefined ? undefined : items.get(id);
     if (item !== undefined) wornItems[item.id] = bisItem(item);
   }
-  return { name: character.name, level: character.level ?? 0, worn: gear, gains, items: wornItems };
+  const raceClass = [character.race, character.class].filter(Boolean).join(' ');
+  return {
+    name: character.name,
+    level: character.level ?? 0,
+    worn: gear,
+    gains,
+    items: wornItems,
+    ...(raceClass === '' ? {} : { raceClass }),
+    ...(character.avatar_url ? { avatar: character.avatar_url } : {}),
+    ...(character.render_url ? { render: character.render_url } : {}),
+  };
 }

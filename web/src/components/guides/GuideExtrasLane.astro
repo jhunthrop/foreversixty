@@ -68,7 +68,6 @@ const lines = consumableLines(extras.consumables);
 )}
 {extras.consumables.length > 0 && (
   <LaneBlock label={guidesCopy.consumables} testid="guide-consumables">
-    <p class="text-small text-muted m-0">{guidesCopy.consumablesNote}</p>
     <div class="guide-extras-rows">
       {lines.map((line) =>
         'header' in line ? (
@@ -120,7 +119,7 @@ const lines = consumableLines(extras.consumables);
     display: block;
     width: 28px;
     height: 28px;
-    border-radius: 4px;
+    border-radius: var(--radius-icon);
   }
   .guide-extras-sub {
     margin: 0;

@@ -6,27 +6,27 @@
   {
    "band": 20,
    "label": "20 to 29",
-   "summary": "Top sources: crafting, dungeons. Each list is the best you can wear inside one level range; gear changes about every ten levels."
+   "summary": ""
   },
   {
    "band": 30,
    "label": "30 to 39",
-   "summary": "Top sources: world drops, dungeons. Each list is the best you can wear inside one level range; gear changes about every ten levels."
+   "summary": ""
   },
   {
    "band": 40,
    "label": "40 to 49",
-   "summary": "Top sources: world drops, crafting. Each list is the best you can wear inside one level range; gear changes about every ten levels."
+   "summary": ""
   },
   {
    "band": 50,
    "label": "50 to 59",
-   "summary": "Top sources: crafting, world drops. Each list is the best you can wear inside one level range; gear changes about every ten levels."
+   "summary": ""
   },
   {
    "band": 60,
    "label": "60",
-   "summary": "Top sources: crafting, vendors. Each list is the best you can wear inside one level range; gear changes about every ten levels. 60: full raid-ready, Phase 1 gear."
+   "summary": "60: full raid-ready, Phase 1 gear."
   }
  ],
  "classes": [
@@ -338,7 +338,7 @@
     },
     "action": {
      "label": "Beast Mastery gear for 20 to 29",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-20"
+     "href": "/bis/hunter/beast-mastery"
     }
    },
    "band": 20,
@@ -364,7 +364,7 @@
     },
     "action": {
      "label": "Beast Mastery gear for 30 to 39",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "band": 30,
@@ -389,7 +389,7 @@
     },
     "action": {
      "label": "Fury gear for 60",
-     "href": "/bis/warrior/fury?faction=alliance#band-alliance-60"
+     "href": "/bis/warrior/fury/60"
     }
    },
    "band": 60,
@@ -426,7 +426,7 @@
     },
     "action": {
      "label": "Beast Mastery gear for 30 to 39",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "band": 30,
@@ -452,7 +452,7 @@
     },
     "action": {
      "label": "Beast Mastery gear for 30 to 39",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "band": 30,
@@ -799,18 +799,12 @@
  },
  "copy": {
   "title": "Best in slot",
-  "levels": "Levels 20 to 60",
-  "lead": "The best gear you can wear at your level, for every spec. Open yours.",
   "tierQuestion": "Which spec is strongest?",
   "tierLink": "Tier list",
   "answerLabel": "Your character",
   "bandGroupLabel": "Level range",
   "plateLabel": "Classes and specs",
   "yours": "Yours",
-  "roleWords": {
-   "tank": "Tank",
-   "healer": "Healer"
-  },
   "yourRange": {
    "20": "Your range: 20 to 29",
    "30": "Your range: 30 to 39",

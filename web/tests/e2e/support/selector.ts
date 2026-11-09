@@ -22,6 +22,9 @@ export interface FixtureCharacter {
   gear?: Record<string, number>;
   /** The character's guild line in `/v1/me`. */
   guild?: { id: number; name: string; verified: boolean };
+  /** Battle.net media URLs (stub images in tests, never Blizzard's). */
+  avatarUrl?: string;
+  renderUrl?: string;
 }
 
 export const OBNOXIOUS: FixtureCharacter = {
@@ -50,6 +53,8 @@ function meCharacter(character: FixtureCharacter): Record<string, unknown> {
     spec: character.spec,
     ...(character.race === undefined ? {} : { race: character.race }),
     ...(character.guild === undefined ? {} : { guild: character.guild }),
+    ...(character.avatarUrl === undefined ? {} : { avatar_url: character.avatarUrl }),
+    ...(character.renderUrl === undefined ? {} : { render_url: character.renderUrl }),
     level: character.level ?? 60,
     realm: character.realm ?? 'Living Flame',
     faction: character.faction ?? 'alliance',

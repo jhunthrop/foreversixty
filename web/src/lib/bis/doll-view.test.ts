@@ -214,6 +214,11 @@ describe('dollCellFor, signed in', () => {
     expect(worn.gain?.basis).toEqual({ prefix: 'You have this' });
   });
 
+  it('never says a character wears every pick when none of its gear is known', () => {
+    const bare = dollCellFor(ROW, { ...OUT, character: { ...character, worn: {} } });
+    expect(dollSummary([bare], { ...character, worn: {} }, 'DPS')).toBe("Felsnap's gear isn't imported.");
+  });
+
   it('counts the upgrades and their sum in the summary line', () => {
     expect(dollSummary([cell], character, 'DPS')).toBe(
       'Felsnap (level 19) has 0 of 1 picks. 1 upgrade, +0.8 DPS available.',
@@ -245,6 +250,77 @@ describe('source filters re-pick, never hide', () => {
     expect(cell.empty).toMatch(
       /^No option from the sources you chose\. Best overall: Serpent's Shoulders \(dungeon\)\.$/,
     );
+  });
+
+  it("caps every kind at the leveling default's standing, not only the rep kind (P2 review, 2026-11-09)", () => {
+    // Protector's Band: Silverwing Sentinels Honored, sold by their quartermaster at the same
+    // standing, so its kinds are rep and vendor and both are above Friendly.
+    const ring = {
+      ...ROW,
+      slot: 'finger1',
+      id: 20439,
+      filter: {
+        slot: 'finger1',
+        item_id: 20439,
+        source_kind: 'rep',
+        kinds: ['rep', 'vendor'],
+        standing: 'honored',
+        kind_standings: { rep: 'honored', vendor: 'honored' },
+        by_kind: { dungeon: { item_id: 1156, rank: 2, source: 'The Deadmines: Gilnid' } },
+      },
+    } as unknown as BisRowModel;
+    const model = { band: 20, unit: 'DPS', rows: [ring] } as unknown as BisBandModel;
+    const all = ['dungeon', 'raid', 'world', 'quest', 'crafted', 'vendor', 'pvp'] as const;
+    const picks = filteredPicks(model, { on: [...all], repCap: 'friendly' });
+    expect(picks.get('finger1')?.item_id).toBe(1156);
+  });
+
+  it('never lets a by_kind entry above the cap stand in, whatever its kind', () => {
+    const ring = {
+      ...ROW,
+      slot: 'finger1',
+      id: 9001,
+      filter: {
+        slot: 'finger1',
+        item_id: 9001,
+        source_kind: 'rep',
+        standing: 'revered',
+        by_kind: {
+          vendor: {
+            item_id: 20439,
+            rank: 2,
+            source: 'Illiyana Moonblaze',
+            standing: 'honored',
+            next: { item_id: 2246, rank: 4, source: 'Some Vendor' },
+          },
+        },
+      },
+    } as unknown as BisRowModel;
+    const model = { band: 20, unit: 'DPS', rows: [ring] } as unknown as BisBandModel;
+    const all = ['dungeon', 'raid', 'world', 'quest', 'crafted', 'vendor', 'pvp'] as const;
+    const picks = filteredPicks(model, { on: [...all], repCap: 'friendly' });
+    expect(picks.get('finger1')?.item_id).toBe(2246);
+  });
+
+  it('keeps a vendor kind no standing gates under the cap', () => {
+    const ring = {
+      ...ROW,
+      slot: 'finger1',
+      id: 20440,
+      filter: {
+        slot: 'finger1',
+        item_id: 20440,
+        source_kind: 'rep',
+        kinds: ['rep', 'vendor'],
+        standing: 'honored',
+        kind_standings: { rep: 'honored' },
+        by_kind: { dungeon: { item_id: 1156, rank: 2, source: 'The Deadmines: Gilnid' } },
+      },
+    } as unknown as BisRowModel;
+    const model = { band: 20, unit: 'DPS', rows: [ring] } as unknown as BisBandModel;
+    const all = ['dungeon', 'raid', 'world', 'quest', 'crafted', 'vendor', 'pvp'] as const;
+    const picks = filteredPicks(model, { on: [...all], repCap: 'friendly' });
+    expect(picks.get('finger1')?.item_id).toBe(20440);
   });
 
   it('counts slots with an option per kind', () => {

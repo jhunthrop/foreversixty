@@ -1583,4 +1583,63 @@
       margin-bottom: 12px;
     }
   }
+
+  /* The full name at every width (owner, 2026-10-10: one way to switch, the full name always).
+     The account control's slot is a floor, not a cap: a long name ("Frickin Laserbeams 60")
+     widens it instead of ending in an ellipsis. The pre-painted label carries the same name, so
+     the bar takes its width before first paint and nothing moves when /v1/me answers. */
+  @media (min-width: 1024px) {
+    .csel-btn:not(.is-signed-out) {
+      width: auto;
+      min-width: 220px;
+    }
+    /* Never an ellipsis: on a bar too short for a very long name (24 letters at 1024 to 1439),
+       the account side gives way first and the name breaks between its words onto a second
+       line inside the 44 px control, so Premium stays on the bar. */
+    .site-right {
+      flex-shrink: 1;
+      min-width: 0;
+    }
+    .csel-btn:not(.is-signed-out) {
+      flex-shrink: 1;
+      height: auto;
+      min-height: 44px;
+    }
+    .csel-btn .csel-text {
+      flex-shrink: 1;
+    }
+    .csel-btn .csel-name {
+      flex-shrink: 1;
+      max-width: none;
+      overflow: visible;
+      text-overflow: clip;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      line-height: 1.15;
+    }
+  }
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    .csel-btn:not(.is-signed-out) {
+      min-width: 184px;
+    }
+  }
+  @media (min-width: 1760px) {
+    body[data-column='wide'] .csel-btn:not(.is-signed-out) {
+      width: auto;
+      min-width: 264px;
+    }
+  }
+  /* The short line gives way long before the name does. */
+  @media (min-width: 1024px) {
+    .csel-btn .csel-sub-short {
+      flex-shrink: 100;
+    }
+  }
+  /* On the 1280 to 1759 bar the doors sit 16 px apart instead of 20: an 18-letter name with its
+     level ("Frickin Laserbeams 60") then holds one line beside Premium. */
+  @media (min-width: 1280px) and (max-width: 1759px) {
+    .site-header {
+      gap: 16px;
+    }
+  }
 }

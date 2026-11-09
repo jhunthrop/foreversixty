@@ -22,13 +22,20 @@ EPSILON = 1.2            # contour simplification, in source pixels
 MARGIN = 0.06            # empty border around each glyph, as a share of its box
 
 SHEET_ORDER = [
-    "home", "bis", "guides", None, "sim",
-    "planner", "logs", "rankings", "guild", "search",
+    "home", "bis", "guides", None, None,
+    None, "logs", None, None, "search",
     None,                                   # the stray mountain in row 3
     "account", "premium", "setup", "character", None,
     "sign-out", "manage", "upload", "link", "download",
 ]
-SINGLES = {"tier-list": "tier-list.jpeg", "paste-export": "paste-export.jpeg"}
+SINGLES = {
+    "tier-list": "tier-list.jpeg",
+    "paste-export": "paste-export.jpeg",
+    "sim": "sim.jpeg",
+    "guild": "guild.jpeg",
+    "rankings": "rankings.jpeg",
+    "planner": "planner.jpeg",
+}
 
 
 def glyph_mask(path: Path) -> np.ndarray:

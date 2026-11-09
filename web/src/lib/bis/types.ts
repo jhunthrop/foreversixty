@@ -143,6 +143,10 @@ export interface BisSlot {
   two_hand?: boolean;
   /** The reputation standing the pick's source needs. */
   standing?: string;
+  /** The standing each of the pick's own kinds needs, for the kinds a standing gates (a rep
+   *  item its quartermaster also sells: `{ rep: 'honored', vendor: 'honored' }`). The
+   *  leveling default's Friendly cap reads it so no kind keeps the pick past the cap. */
+  kind_standings?: Partial<Record<SourceFilterKind, string>>;
   /** Second slot of a pair (finger2, trinket2, off_hand): the first slot's possible filtered
    *  items this pick cannot be worn beside. */
   not_with?: number[];

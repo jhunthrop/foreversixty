@@ -47,67 +47,41 @@ function readFacts() {
     const m = (el?.className ?? "").match(/text-rarity-(\w+)/);
     return m ? m[1] : "common";
   };
-  const figureOf = (root) => {
-    if (!root) return null;
-    const spans = root.children;
-    const label = q(".text-label", root);
-    const valueSpan = [...spans].find((s) => s.classList.contains("tabular-nums"));
-    const unit = valueSpan?.querySelector("span");
-    const value = valueSpan ? text(valueSpan).replace(text(unit), "").trim() : "";
-    const caption = [...spans].find((s) => s.classList.contains("text-[12px]"));
-    return { label: text(label), value, unit: text(unit), caption: text(caption) };
-  };
-  const cell = (c) => {
-    const flag = q(".ui-doll-flag", c);
-    const name = q(".ui-doll-line1 > span:first-child", c);
-    const basis = q(".ui-doll-basis", c);
-    const basisItem = basis?.querySelector("span");
-    const fig = q(".ui-doll-figure .ui-figure", c);
-    return {
-      slot: c.dataset.dollSlot,
-      state: c.dataset.state,
-      label: text(q(".ui-doll-label > span:first-child", c)),
-      flag: flag ? { text: text(flag), tone: flag.dataset.tone ?? "" } : null,
-      item: c.dataset.bisItem ? Number(c.dataset.bisItem) : null,
-      name: text(name),
-      quality: rarity(name),
-      stats: text(q(".ui-doll-stats", c)),
-      line2: text(q(".ui-doll-line2", c)),
-      gain: fig ? figureOf(fig) : null,
-      basis: basis
-        ? { prefix: text(basis).replace(text(basisItem), "").trim(), item: text(basisItem), quality: rarity(basisItem) }
-        : null,
-    };
-  };
-  const answer = q('[data-testid="bis-this-set"]');
-  const tank = qa('[data-testid^="bis-tank-figure-"]').map((f) => ({
-    id: f.dataset.testid.replace("bis-tank-figure-", ""),
-    label: text(q("dt", f)),
-    value: text(q("dd", f)),
-  }));
-  const healer = qa('[data-testid="bis-healer-metrics"] > div').map((m) => ({
-    key: m.dataset.testid.replace("bis-healer-", ""),
-    label: text(q("dt", m)),
-    value: text(q("dd:not(.sr-only)", m)),
-    line: text(q("dd.sr-only", m)),
-  }));
-  const trust = q('[data-testid="bis-trust-line"]');
   const doll = q('[data-testid="bis-doll"]');
-  const summary = q('[data-testid="bis-summary"]');
-  const weights = q('[data-testid^="bis-weights-"][data-region^="section-"]');
-  const guide = q('[data-testid="bis-guide-line"]');
+  const frame = q(".pdf-frame", doll);
+  const title = q(".pdf-title", frame);
+  const slots = qa(".pdf-slot", frame).map((b) => ({
+    slot: b.dataset.testid.replace("paperdoll-frame-slot-", ""),
+    item: Number(b.dataset.bisItem),
+    label: b.getAttribute("aria-label"),
+    covered: q(".pdf-covered", b) !== null,
+    selected: b.getAttribute("aria-pressed") === "true",
+  }));
+  const tip = q('.pdf-centre [data-testid="item-tooltip"]', frame);
+  const side = (testid) => q(`[data-testid="${testid}"]`);
+  const facts = (root) =>
+    qa("dt", root).map((dt) => ({ label: text(dt), value: text(dt.nextElementSibling) }));
+  const stack = side("bis-weights");
+  const where = side("bis-where");
+  const set = side("bis-set");
   return {
-    title: text(q('[data-testid="page-title"]')),
-    meta: text(q('[data-testid="bis-page-sub"]')),
-    answer: {
-      figure: figureOf(q('[data-testid="bis-answer-figure"]')),
-      tank,
-      tankLine: text(q('[data-testid="bis-tank-secondary"]', answer)),
-      healer,
-      trust: text(trust).replace(text(q("a", trust)), "").replace(/\s*·\s*$/, ""),
-      rankingSim: text(q('[data-testid="bis-ranking-sim-link"]', answer)),
-      simLink: text(q('[data-testid="bis-sim-link"]', answer)),
-      plannerLink: text(q('[data-testid="bis-planner-link"]', answer)),
+    title: text(q(".pdf-title-text", title)),
+    meta: text(q(".pdf-meta", title)),
+    figure: q(".pdf-figure", title)
+      ? { value: text(q(".pdf-figure", title).firstChild), unit: text(q(".pdf-figure small", title)) }
+      : null,
+    frameLabel: doll.getAttribute("aria-label"),
+    slots,
+    centre: {
+      tip: tip
+        ? {
+            name: tip.getAttribute("aria-label"),
+            lines: qa(":scope > div:first-child > *", tip).map(text).filter(Boolean),
+            tail: qa('[data-testid^="bis-slot-"]', tip).map(text),
+            foot: text(q(":scope > .ui-overlay-rule-t", tip)),
+          }
+        : null,
+      sim: text(q('.pdf-centre [data-testid="bis-sim-link"]', frame)),
     },
     controls: {
       label: q('[data-testid="bis-controls"]').getAttribute("aria-label"),
@@ -123,41 +97,38 @@ function readFacts() {
       })),
       sources: text(q('[data-testid="bis-sources"] button')),
     },
-    summary: {
-      lead: text(summary?.firstChild),
-      signIn: text(q('a[href="/login"]', summary)),
-      after: (text(summary).split(text(q('a[href="/login"]', summary)))[1] ?? "").replace(text(q("a.bis-link", summary)), "").trim(),
-      next: text(q("a.bis-link", summary)),
-      view: qa('[data-testid="control-view"] [role="radio"]').map((r) => ({ label: text(r), on: r.getAttribute("aria-checked") === "true" })),
+    set: set ? { title: text(q("h2", set)), facts: facts(set), line: text(q(".bis-side-line", set)) } : null,
+    stack: {
+      title: text(q("h2", stack)),
+      facts: facts(stack),
+      lines: qa(".bis-side-line", stack).map(text),
+      link: text(q('[data-testid="bis-weights-sim-link"]', stack)),
     },
-    notes: qa('[data-region="notes"] p').map(text),
-    doll: {
-      label: q('[role="listbox"]', doll).getAttribute("aria-label"),
-      view: doll.dataset.view,
-      groups: qa(".ui-doll-group", doll).map((g) => ({
-        title: text(q(".ui-doll-group-head > span:first-child", g)),
-        count: text(q(".ui-doll-group-head > span:last-child", g)),
-        cells: qa(".ui-doll-cell", g).map(cell),
+    where: where
+      ? {
+          title: text(q("h2", where)),
+          stops: qa(".bis-stop-link", where).map((p) => ({ title: text(q("a", p)), count: text(q("span", p)) })),
+          action: text(q('[data-testid="bis-pre-raid-toggle"]', where)),
+        }
+      : null,
+    itinerary: {
+      label: q('[data-testid="bis-itinerary"]').getAttribute("aria-label"),
+      stops: qa(".bis-stop").map((s) => ({
+        title: text(q(".bis-stop-title", s)).replace(text(q(".bis-stop-range", s)), "").trim(),
+        range: text(q(".bis-stop-range", s)),
+        rows: qa(".ui-item-row", s).map((r) => {
+          const name = q("[data-item-id] [data-testid^='item-hover-'], [data-testid^='item-hover-']", r);
+          const fig = q(".ui-figure", r);
+          return {
+            item: Number(r.dataset.itemId),
+            name: text(name),
+            quality: rarity(name),
+            line: text(q(".ui-item-row-src", r)),
+            gain: fig ? { value: text(q(".tabular-nums", fig)?.firstChild), unit: text(q(".tabular-nums > span", fig)) } : null,
+          };
+        }),
       })),
-      left: qa('[data-column="left"] .ui-doll-cell', doll).map(cell),
-      right: qa('[data-column="right"] .ui-doll-cell', doll).map(cell),
     },
-    weights: {
-      title: text(q("h2, h3", weights)),
-      sentence: text(q('[data-testid="bis-weights-sentence"]', weights)),
-      caption: text(q(".bis-weights-caption", weights)),
-      rows: qa(".bis-weight", weights).map((w) => ({
-        name: text(q(".bis-weight-name", w)),
-        scale: text(q(".ui-figure", w)),
-        bar: Number.parseFloat(q(".bar [style*='width']", w)?.style.width ?? "0") / 100,
-        line: text(q(":scope > .muted", w)),
-        faint: w.classList.contains("faint"),
-      })),
-      expertise: text(q('[data-testid$="-expertise-cap"]', weights)),
-      addon: text(q(".bis-weights-line", weights)).replace(text(q(".bis-weights-line a", weights)), "").trim(),
-      addonLink: text(q(".bis-weights-line a", weights)),
-    },
-    guide: { lead: text(guide).replace(text(q("a", guide)), "").trim(), link: text(q("a", guide)) },
   };
 }
 
@@ -168,24 +139,18 @@ for (const state of config.states) {
   await page.goto(base + state.path, { waitUntil: "networkidle" });
   await page.waitForSelector("html:not([data-bis-pending])", { state: "attached" });
   await page.waitForSelector("astro-island:has([data-testid=bis-page]):not([ssr])", { state: "attached" });
-  // Every icon is deferred until it nears the viewport: scroll through so each cell names its icon.
-  for (let y = 0; y < 4000; y += 600) {
-    await page.evaluate((top) => window.scrollTo(0, top), y);
-    await page.waitForTimeout(120);
-  }
   const read = await page.evaluate(readFacts);
-  // The item icons, from the page's own data (a fixture build ships no icon files, so the DOM shows frames).
+  // The item icons, from the page's own data (a fixture build ships no icon files, so the DOM shows sockets).
   const items = await page.evaluate(async () => {
     const inline = JSON.parse(document.getElementById("bis-page-data")?.textContent ?? "{}").items ?? {};
     const res = await fetch(location.pathname + ".json");
     return { ...inline, ...(res.ok ? ((await res.json()).items ?? {}) : {}) };
   });
-  const withIcon = (c) => ({ ...c, icon: c.item === null ? null : (items[c.item]?.icon ?? null) });
-  read.doll.left = read.doll.left.map(withIcon);
-  read.doll.right = read.doll.right.map(withIcon);
-  read.doll.groups = read.doll.groups.map((g) => ({ ...g, cells: g.cells.map(withIcon) }));
+  const withItem = (c) => ({ ...c, icon: items[c.item]?.icon ?? null, quality: c.quality ?? items[c.item]?.quality ?? 1 });
+  read.slots = read.slots.map(withItem);
+  read.itinerary.stops = read.itinerary.stops.map((s) => ({ ...s, rows: s.rows.map(withItem) }));
   facts[state.id] = { ...state, ...read };
-  console.log(state.id, facts[state.id].title, facts[state.id].doll.left.length + facts[state.id].doll.groups.length);
+  console.log(state.id, read.title, read.slots.length, read.itinerary.stops.length);
 }
 await browser.close();
 writeFileSync(OUT, JSON.stringify(facts, null, 1) + "\n");

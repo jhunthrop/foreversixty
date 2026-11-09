@@ -4,50 +4,10 @@
   "height": 852
  },
  "regions": {
-  "head": {
-   "box": [
-    16,
-    0,
-    361,
-    301
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
-  "head-title": {
-   "box": [
-    16,
-    16,
-    361,
-    102
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
-  "head-meta": {
-   "box": [
-    88,
-    98,
-    289,
-    20
-   ],
-   "inventory": {}
-  },
-  "head-answer": {
-   "box": [
-    16,
-    134,
-    361,
-    153
-   ],
-   "inventory": {}
-  },
   "controls": {
    "box": [
     0,
-    301,
+    0,
     393,
     62
    ],
@@ -57,67 +17,35 @@
     "field": 2
    }
   },
-  "summary": {
+  "section-what-to-stack": {
    "box": [
     16,
-    383,
+    1077,
     361,
-    124
+    319
    ],
-   "inventory": {
-    "segment": 2
-   }
+   "inventory": {}
   },
-  "notes": {
+  "section-where-to-go": {
    "box": [
     16,
-    507,
+    1424,
     361,
-    48
+    509
    ],
    "inventory": {}
   },
   "plate": {
    "box": [
     16,
-    563,
+    1981,
     361,
-    1656
+    1668
    ],
    "inventory": {
-    "row": 17,
+    "row": 16,
     "image": 16
    }
-  },
-  "slots": {
-   "box": [
-    17,
-    564,
-    359,
-    1654
-   ],
-   "inventory": {
-    "row": 17,
-    "image": 16
-   }
-  },
-  "section-what-to-stack": {
-   "box": [
-    16,
-    2251,
-    361,
-    480
-   ],
-   "inventory": {}
-  },
-  "footer-note": {
-   "box": [
-    16,
-    2779,
-    361,
-    40
-   ],
-   "inventory": {}
   }
  }
 }

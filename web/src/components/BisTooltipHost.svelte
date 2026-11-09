@@ -40,10 +40,11 @@
   import type { ItemTooltipModel } from '../lib/items/tooltip';
   import { positionTooltipPanel } from '../lib/items/tooltip-position';
   import type { GameTipModel } from '../lib/tooltips/game-tip';
+  import { BIS_TOOLTIP_MODELS_ID, readTooltipModels } from '../lib/bis/page-registry';
 
   let {
     build,
-    modelsElementId = 'bis-tooltip-models',
+    modelsElementId = BIS_TOOLTIP_MODELS_ID,
     resolve = undefined,
     resolveTip = undefined,
   }: {
@@ -101,20 +102,15 @@
   }
 
   function loadModels(): void {
-    const script = document.getElementById(modelsElementId);
-    const text = script?.textContent;
-    if (text === undefined || text === null || text === '') return;
-    try {
-      const parsed = JSON.parse(text) as Record<string, ItemTooltipModel>;
-      models = new Map(Object.entries(parsed).map(([id, model]) => [Number(id), model]));
-    } catch {
-      models = new Map(); // malformed JSON never breaks the page over a tooltip
-    }
+    models = new Map(readTooltipModels(undefined, modelsElementId));
   }
 
+  /** A trigger, unless it sits in a surface that shows its item's tooltip in place
+   *  (`data-inline-tip`: the paperdoll frame's centre). */
   function hostFor(target: EventTarget | null): HTMLElement | null {
     if (!(target instanceof Element)) return null;
-    return target.closest<HTMLElement>('[data-bis-item], [data-game-tip]');
+    const host = target.closest<HTMLElement>('[data-bis-item], [data-game-tip]');
+    return host?.closest('[data-inline-tip]') ? null : host;
   }
 
   /** The row/pill the pointer or focus is moving TO, so a move between two elements still

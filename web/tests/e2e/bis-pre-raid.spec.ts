@@ -52,7 +52,7 @@ test('a level 60 list with a raid pick offers Pre-raid only, which moves to its 
   await expect(toggle).toHaveAttribute('href', `${SPEC_PATH}/60/pre-raid`);
   await toggle.click();
   await expect(page).toHaveURL(new RegExp(`${SPEC_PATH}/60/pre-raid$`));
-  await expect(page.getByTestId('bis-page-sub')).toHaveText('Pre-raid best in slot · Level 60');
+  await expect(page.locator('.pdf-frame .pdf-meta')).toHaveText('Pre-raid 60 · Alliance');
   await expect(toggle).toHaveText('Include raid and PvP gear ›');
   await toggle.click();
   await expect(page).toHaveURL(new RegExp(`${SPEC_PATH}/60$`));
@@ -75,7 +75,7 @@ test.describe('without JavaScript, as a crawler fetches', () => {
   }) => {
     await page.goto(`${SPEC_PATH}/60/pre-raid`);
     await expect(page).toHaveTitle(/^Fury Warrior Pre-Raid BiS, WoW Forever/);
-    await expect(page.getByTestId('bis-page-sub')).toHaveText('Pre-raid best in slot · Level 60');
+    await expect(page.locator('.pdf-frame .pdf-meta')).toHaveText('Pre-raid 60 · Alliance');
     const crumbs = JSON.parse(
       (await page.locator('script[type="application/ld+json"]').first().textContent()) ?? '{}',
     ) as { itemListElement: { name: string; item: string }[] };

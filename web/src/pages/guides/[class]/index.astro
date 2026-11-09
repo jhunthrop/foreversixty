@@ -1,22 +1,22 @@
 ---
 // web/src/pages/guides/[class]/index.astro
-// The class landing in the flat system (design/specs/2026-11-08-guides.md §4.2): the PageHeader
-// (the crest, the class name in its colour, the Updated stamp, the identity line, the signed-in
-// answer), the one Plate (a link Row per spec: icon, name, role or Melee Tag, its one line, Read
-// the guide ›; the header character's spec marked after load), then What changed from 1.12 as
-// a ruled two-column list and the Sources, with the Races and the raid or leveling notes as open
-// rail sections. index.md is split by its fixed heading vocabulary (class-landing.ts).
+// The class landing (directions mock b2-guide-class, round 5): the title band (the crest, the
+// class name in its colour, the Updated stamp, the signed-in answer), the identity line on the
+// ground, a panel per spec (a link Row: icon, name, its one line, Read the guide ›; the header
+// character's spec marked after load), then What changed from 1.12 and the Sources on their
+// panels, with the Races and the raid or leveling notes boxed in the rail. index.md is split by
+// its fixed heading vocabulary (class-landing.ts).
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import ClassCrest from '../../../components/ClassCrest.astro';
 import GuideAnswer from '../../../components/guides/GuideAnswer.astro';
+import GuideLede from '../../../components/guides/GuideLede.astro';
 import GuideSources from '../../../components/guides/GuideSources.astro';
 import GuideSpecRow from '../../../components/guides/GuideSpecRow.astro';
 import Page from '../../../components/ui/Page.svelte';
 import PageHeader from '../../../components/ui/PageHeader.svelte';
 import Plate from '../../../components/ui/Plate.svelte';
 import Prose from '../../../components/ui/Prose.svelte';
-import RowGrid from '../../../components/ui/RowGrid.svelte';
 import Section from '../../../components/ui/Section.svelte';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
@@ -33,7 +33,6 @@ import {
 import { dayMonth } from '../../../lib/guides/guide-header';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { slugify } from '../../../lib/guides/sections';
-import { specRowTag } from '../../../lib/guides/glance';
 import { readSpecCatalog } from '../../../lib/bis/load';
 import { dataUrl } from '../../../lib/planner/load';
 
@@ -76,7 +75,6 @@ const specs = readSpecCatalog()
   .flatMap((s) => {
     const guide = specGuideBySlug.get(s.spec_slug);
     if (guide === undefined || guide.data.role === undefined) return [];
-    const tag = specRowTag(classSlug, s.spec, guide.data.role);
     return [
       {
         key: `${classSlug}/${s.spec_slug}`,
@@ -84,7 +82,6 @@ const specs = readSpecCatalog()
         line: cardLineFor(guide.body ?? '', `guides/${guide.id}.md`),
         icon: dataUrl(build, `icons/${s.icon}.webp`),
         href: `/guides/${classSlug}/${s.spec_slug}`,
-        tag: tag === undefined ? undefined : guidesCopy.specRowTag[tag],
       },
     ];
   });
@@ -105,15 +102,22 @@ const tone = { classSlug: classSlug as ClassSlug };
   <meta slot="head" property="article:modified_time" content={entry.data.updated.toISOString()} />
   <main id="main" tabindex="-1" class="guide-landing" data-testid="guide-class-landing">
     <Page layout="ledger">
-      <PageHeader slot="header" title={classEntry.name} tone={tone} lead={landing.identity}>
+      <PageHeader slot="header" title={classEntry.name} tone={tone}>
         <ClassCrest slot="crest" slug={classSlug} size={56} priority />
         <span slot="meta">Updated {dayMonth(entry.data.updated)}</span>
         <GuideAnswer slot="answer" page={{ classSlug }} />
       </PageHeader>
-      <div class="guide-landing-plate">
-        <Plate label={guidesCopy.classLandingSpecsHeading} testid="guide-class-spec-cards">
-          <RowGrid cols={specs.length as 2 | 3 | 4}>
-            {specs.map((spec) => (
+      <div class="guide-landing-top">
+        <GuideLede text={landing.identity} testid="guide-class-identity" />
+        <div
+          class="guide-landing-specs"
+          role="region"
+          aria-label={guidesCopy.classLandingSpecsHeading}
+          data-testid="guide-class-spec-cards"
+          style={`--specs: ${specs.length}`}
+        >
+          {specs.map((spec) => (
+            <Plate>
               <GuideSpecRow
                 specKey={spec.key}
                 name={spec.name}
@@ -121,25 +125,24 @@ const tone = { classSlug: classSlug as ClassSlug };
                 icon={spec.icon}
                 iconSize={40}
                 tone={tone}
-                tag={spec.tag}
                 sub={spec.line}
                 foot={`${guidesCopy.readTheGuide} ›`}
               />
-            ))}
-          </RowGrid>
-        </Plate>
+            </Plate>
+          ))}
+        </div>
       </div>
     </Page>
     <Page layout="split">
       {mainSections.map((section) => (
-        <Section title={section.heading} anchor={section.id} testid={`class-landing-${section.id}`}>
-          <Prose html={section.html} mods={['ruled', 'cols']} />
+        <Section title={section.heading} anchor={section.id} boxed testid={`class-landing-${section.id}`}>
+          <Prose html={section.html} />
         </Section>
       ))}
       <GuideSources sources={entry.data.sources} />
       <Fragment slot="rail">
         {railSections.map((section) => (
-          <Section title={section.heading} anchor={section.id} testid={`class-landing-${section.id}`}>
+          <Section title={section.heading} anchor={section.id} boxed testid={`class-landing-${section.id}`}>
             <Prose html={section.html} mods={['lane']} />
           </Section>
         ))}
@@ -149,14 +152,22 @@ const tone = { classSlug: classSlug as ClassSlug };
 </Base>
 
 <style>
-  .guide-landing-plate {
-    padding-bottom: var(--section-gap);
+  .guide-landing {
+    padding-bottom: 40px;
   }
-  /* The sections start where the mock's split page does below 1024 (its 28 px top, the split
-     Page's 20 px here). */
-  @media (max-width: 1023px) {
-    .guide-landing-plate {
-      padding-bottom: calc(var(--section-gap) + 8px);
+  .guide-landing-top {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .guide-landing-specs {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  @media (min-width: 1024px) {
+    .guide-landing-specs {
+      grid-template-columns: repeat(var(--specs), minmax(0, 1fr));
     }
   }
 </style>

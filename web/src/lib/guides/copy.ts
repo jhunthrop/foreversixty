@@ -20,8 +20,6 @@ export const guidesCopy = {
   /** `/guides` index's own signed-in callout (spec §4.A/§6): `{specName}` and `{className}`
    *  come from the visitor's own character, e.g. "Your guide: Fury Warrior ›". */
   signedInCallout: (specName: string, className: string): string => `Your guide: ${specName} ${className} ›`,
-  /** The /guides index line, under the title: what every guide gives, for launch day on. */
-  indexLine: 'Talents, rotation and gear for every spec, from your first talent point to the raid at 60.',
   readTheGuide: 'Read the guide',
   yourSpecPill: 'Your spec',
   /** The class landing's spec plate's accessible name. */
@@ -76,16 +74,14 @@ export const guidesCopy = {
   bisByLevelLabel: 'Best in slot by level:',
   /** The BiS lane's link to the spec's role tier list. */
   tierListLink: 'Where it ranks at 60',
-  preRaidNote:
-    'These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.',
+  /** Under the level 60 list: what it is, in a player's words (no talk about the site). */
+  preRaidNote: 'Your best gear before the first raid opens.',
   notSimChecked: 'Ranked by stats only',
   enchants: 'Enchants',
   consumables: 'Consumables',
-  /** What the enchant table is: each slot's best flat-stat enchant by the band's weights
-   *  (gear-extras.ts); crit, hit and haste enchants are not scored. wow-player SHIP 2026-11-04. */
-  enchantsNote:
-    'The enchant for each slot that adds the most of your weighted stats. Crit, hit and haste enchants are not included.',
-  consumablesNote: 'What to bring to a raid.',
+  /** The one thing the enchant table leaves out: each slot's best flat-stat enchant by the band's
+   *  weights (gear-extras.ts) never scores crit, hit or haste (ai-slop P8: no explainer line). */
+  enchantsNote: 'Crit, hit and haste enchants are not listed.',
   racialsColumn: 'Racials',
 
   recommendedTag: 'Recommended',
@@ -201,8 +197,6 @@ export const guidesCopy = {
   indexTitle: 'Guides',
   indexDescription:
     'Class and spec guides for World of Warcraft: Forever: talents, rotation, stat weights and best in slot for every spec.',
-  /** The muted Tag on a spec row (glance.ts specRowTag): a healer, a tank, the melee spec of a ranged class. */
-  specRowTag: { healer: 'Healer', tank: 'Tank', melee: 'Melee' } as const,
   recommendedRacesLine: (name: string, faction: string, article: string, racials: string): string =>
     `${name} is ${article} ${faction} pick: ${racials}.`,
 } as const;
