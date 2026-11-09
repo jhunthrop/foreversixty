@@ -43,8 +43,7 @@ bars is a design-lane call.
 
 ## What reads as AI-made (input to the design lane)
 
-Ranked, from the captures. The reviewer pair (ux-designer, wow-player) still has to give its own
-read on these captures before the design lane commits to a direction.
+Ranked, from the captures. The reviewer pair's own read follows the list.
 
 1. Glowing gold primary buttons. "Sign in with Battle.net" and "Look up" carry an outer gold glow
    and a gradient fill: the most common AI-template tell on the page.
@@ -66,3 +65,25 @@ read on these captures before the design lane commits to a direction.
 What a veteran player trusts instead: real game icons at their native look, item names in quality
 colours with Wowhead-style tooltips, numbers up front (the tier list is the strongest page for this
 reason), plain sentence-case labels, flat buttons, and no hero slogan above the data.
+
+## The reviewer pair's read (ux-designer, wow-player, on the before captures)
+
+Both agree on 1 to 5 above. Their corrections and additions:
+
+- Item 6, partly wrong: the countdown's raid icons (Barrow Deeps, Hyjal Summit, Onyxia's Lair) are
+  native game icons. The mismatch between crests and icons shows most on /bis and /guides, where a
+  crest sits above identical spec icons. The wow-player reads the glossy discs as generated art.
+  Proposal only (tenet): trial the in-game class icon at the same ring size there.
+- Item 7 is a symptom of the blur, not a separate tell. The real header problem is hierarchy: three
+  gold calls to action compete (Sign in, the Tools highlight, Premium).
+- Missing, and ranked high: the home feed. Three identical "Best in slot refreshed for Combat
+  Rogue..." rows, each with a caps BEST IN SLOT tag, read as a templated changelog, not play.
+- Missing: the same nine-class grid repeats on home, /bis, /guides and the /sim rail. It is the
+  most template-like pattern on the site.
+- Missing: /bis opens on a class index with no item on screen. Wowhead and AtlasLoot open on gear,
+  with quality-coloured names and tooltips.
+- Smaller: the S/A/B gradient letter badges on the tier list, the muddy Run button on /sim (it
+  reads as disabled), and the "How to start" and "Other ways in" filler copy.
+- "Play your class better." is the owner's line. Demote it below the player's next step, do not
+  drop it.
+- Most trusted as is: the planner (real talent icons) and the tier list (numbers first).
