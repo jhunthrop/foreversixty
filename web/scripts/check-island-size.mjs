@@ -136,7 +136,11 @@ const PAGE_ISLAND_BUDGETS = [
   // real-data build; lazy-loading the tooltip would paint the centre empty and fill it a beat
   // later. The retired head answer, inspector and weight columns paid for most of it.
   // The catalogue full name (spec-name-feral-bear, batch A) adds a few bytes on top.
-  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 79700 },
+  // 79,700 -> 80,600 (lane P9, the character page, 2026-11-09): the character island now draws the
+  // same ui/PaperdollFrame, so the frame, its copy and drop-chance leave the BiS chunk for shared
+  // chunks of their own (44 -> 46 files, the same code). Measured 80,065 bytes gzipped on the
+  // real-data build (79,241 before): the cost is the two chunks' module boundaries, not new weight.
+  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 80600 },
   // The shared dropdown's lazy chunk (design/specs/2026-10-30-controls-charts.md §A11.2):
   // lib/ui/listbox.ts with its list renderer, the popover core and Floating UI, loaded after
   // first paint on a fine pointer only. The spec asked for 9 KB; it measures 10,221 bytes
