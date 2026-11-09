@@ -78,7 +78,7 @@
             { value: formatRate(row.total / seconds) },
             { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
           ]}
-          phone={`${(row.share * 100).toFixed(1)}%`}
+          phone={`${formatAmount(row.total)} damage`}
         >
           {#snippet icon()}<SpellIcon url={spellIcon(row.spellId)} />{/snippet}
           {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}

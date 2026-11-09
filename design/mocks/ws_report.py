@@ -90,7 +90,7 @@ def tab_summary(R, fi, source):
     # Share is of the scope's damage taken (report/SummaryPanels.svelte), so the column adds up to 100%
     tot = sum(v for _, v in abil.values()) or 1
     dur = s['duration_ms'] / 1000
-    trows = [StatRow(sicon(sid, 24), f'<b>{escape(melee(sid, k))}</b>', '', [f'{v / tot * 100:.1f}%', rate(v / dur), n0(v)], Meter(v / tot), primary_phone=f'{v / tot * 100:.1f}%')
+    trows = [StatRow(sicon(sid, 24), f'<b>{escape(melee(sid, k))}</b>', '', [f'{v / tot * 100:.1f}%', rate(v / dur), n0(v)], Meter(v / tot), primary_phone=f'{n0(v)} damage')
              for k, (sid, v) in sorted(abil.items(), key=lambda kv: -kv[1][1])[:8]]
     taken = Section('Damage taken by ability', StatTable([('', False), ('Ability', False), ('', False), ('Share', True), ('Per sec', True), ('Amount', True)], trows, 3)
                     if trows else '<p class="empty">Nobody took damage in this window.</p>', panel=True, flush=True)

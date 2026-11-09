@@ -139,7 +139,9 @@
 </script>
 
 <Section title="Players" panel frame="framed" flush testid="summary-tab">
-  <div data-testid="summary-roster-card">
+  <!-- Up to eight figure columns: the name keeps a floor so it never folds letter by letter in
+       the narrow main column (1024 to 1279); past that floor the table scrolls sideways. -->
+  <div class="summary-roster" data-testid="summary-roster-card">
     <StatTable {columns} nameHead="Player" bar={false} {sort} {onsort} label="Players">
       {#each shown as row (row.guid)}
         {@const display = unitLabel(row.name)}
@@ -180,3 +182,18 @@
     </p>
   {/if}
 </Section>
+
+<style>
+  .summary-roster {
+    overflow-x: auto;
+  }
+  .summary-roster :global(.ui-st) {
+    --st-name: minmax(150px, 2fr);
+    min-width: max-content;
+  }
+  @media (max-width: 1023px) {
+    .summary-roster :global(.ui-st) {
+      min-width: 0;
+    }
+  }
+</style>

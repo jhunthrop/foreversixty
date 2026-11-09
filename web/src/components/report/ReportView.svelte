@@ -1336,7 +1336,7 @@
     if (status === 'processing' || status === 'waiting' || status === 'unparsed') {
       document
         .getElementById('report')
-        ?.classList.remove('min-h-[1900px]', 'md:min-h-[2200px]', 'lg:min-h-[1420px]');
+        ?.classList.remove('min-h-[1420px]', 'md:min-h-[1780px]', 'lg:min-h-[1480px]');
     }
   });
 
