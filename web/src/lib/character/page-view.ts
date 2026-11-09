@@ -31,9 +31,8 @@ export const characterPageCopy = {
   answerUnit: (unit: string): string => `${unit} in upgrades`,
   upgrades: 'Upgrades',
   allUpgrades: 'All upgrades',
-  /** A runner-up within a tie of the pick. */
-  same: 'Same',
-  moreUpgrades: (count: number): string => `${count} more in best in slot`,
+  /** "8 more, +23.5 HPS": the upgrades past the frame's centre and what they add. */
+  moreUpgrades: (count: number, gain: string): string => `${count} more, ${gain}`,
   openBis: 'Open in best in slot',
   gear: 'Gear',
   gearAction: 'Best in slot',
@@ -44,7 +43,7 @@ export const characterPageCopy = {
   noLogs: 'No logs yet.',
   noScoreYet: 'No Forever Score yet. It is worked out from the rated fights below.',
   best: 'Best per encounter',
-  allFights: (count: number): string => `All ranked fights (${count})`,
+  allFights: (count: number): string => `All fights (${count})`,
   builds: 'Builds seen',
   buildSub: (spec: string, date: string): string =>
     spec === '' ? `first seen ${date}` : `${spec} · first seen ${date}`,

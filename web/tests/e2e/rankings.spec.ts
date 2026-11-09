@@ -782,7 +782,7 @@ test('a character page shows the best per encounter and the builds they were see
   await expect(best).toContainText('1,840');
   await expect(page.getByTestId('character')).not.toContainText('NaN');
   // Every ranked fight lives on /logs, counted from the history.
-  await expect(best.getByRole('link', { name: 'All ranked fights (1) ›' })).toHaveAttribute('href', '/logs');
+  await expect(best.getByRole('link', { name: 'All fights (1) ›' })).toHaveAttribute('href', '/logs');
   const builds = page.getByTestId('character-builds');
   await expect(builds).toContainText('31/20/0');
   await expect(builds).toContainText('Discipline · first seen 9 Dec 2026');

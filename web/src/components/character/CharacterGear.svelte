@@ -7,7 +7,6 @@
      runners-up. A phone draws the frame's list form, the Upgrades under it. `cells` decides the
      words (lib/character/doll.ts); this lays them out. -->
 <script lang="ts">
-  import { isTie } from '../../lib/bis/doll-view';
   import type { BisBand } from '../../lib/bis/types';
   import { bandSlotFor, runnersUp } from '../../lib/character/gear-context';
   import { characterPageCopy } from '../../lib/character/page-view';
@@ -71,6 +70,8 @@
   }
 
   const bySlot = $derived(new Map(gear.map((slot) => [slot.slot, slot])));
+  /** What the rows past the centre's six add, so the list and the band's total agree on screen. */
+  const hiddenGain = $derived(upgrades.slice(UPGRADES_SHOWN).reduce((sum, row) => sum + row.value, 0));
 </script>
 
 {#snippet gainText(value: number)}
@@ -97,7 +98,10 @@
         class="{LINK} mt-1 inline-block text-[13px]"
         href={bisHref}
         data-testid="character-upgrades-more"
-        >{characterPageCopy.moreUpgrades(upgrades.length - UPGRADES_SHOWN)} ›</a
+        >{characterPageCopy.moreUpgrades(
+          upgrades.length - UPGRADES_SHOWN,
+          `${signedFigure(hiddenGain)} ${unit}`,
+        )} ›</a
       >{/if}
   </Overlay>
 {/snippet}
@@ -135,10 +139,7 @@
         <ItemRow
           item={ref(alt.id, alt.name)}
           {build}
-          source={alt.source}
-          gain={isTie(alt.delta)
-            ? { value: characterPageCopy.same, unit: '', tone: 'muted' }
-            : { value: signedFigure(alt.delta), unit, tone: alt.delta < 0 ? 'wipe' : 'muted' }}
+          source={`${alt.source} · ${signedFigure(alt.delta)} ${unit}`}
           iconSize={28}
           bare
         />
