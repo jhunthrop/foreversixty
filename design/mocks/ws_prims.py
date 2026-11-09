@@ -1583,3 +1583,71 @@ def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False,
     """panels: main and rail hold Section panels (web ui/Page `panels`); every other keyword goes to the Page before."""
     html = _Page1(layout, main, rail, sticky_rail, **kwargs)
     return html.replace('class="layout-split"', 'class="layout-split panels"', 1) if panels else html
+# ------------------------------------------------ Frame (round 5; web ui/Frame.svelte): the featured panel, two or three a page
+# The panel (raised ground, black 1 px edge, 10 px radius, the warm outer ring) with the cream line inset 6 px; `ornate` marks the
+# page's one lead panel (the built corners are decoration on the inset line, no box of their own). Padding 22/24, 18/16 below 768.
+PRIM_CSS += '''
+.frame{position:relative;min-width:0;overflow:hidden;padding:22px 24px;background:var(--raised);border:1px solid #000;border-radius:10px;
+box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
+.frame::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+@media(max-width:767px){.frame{padding:18px 16px}}
+'''
+
+
+def Frame(inner: str, ornate: bool = False, region: str = '') -> str:
+    """web ui/Frame: `region` is the parity region it carries, when it is one (REGION values)."""
+    r = f' data-region="{region}"' if region else ''
+    return f'<div class="frame{" ornate" if ornate else ""}"{r}>{inner}</div>'
+
+
+# ------------------------------------------------ the compact ranked list (round 5; web ui RankList `compact`, RankRow `barTone`)
+# The tier list beside its rail (directions mock g-tiers): elastic name and bar tracks, 48 px rows, the letter column at every
+# width (44 px, 64 px from 1280) with the letter alone in the title face, the accent bar and the accent tint on the selected row.
+# Additive: RankList(compact=True), RankGroup with no band or count, RankRow(accent=True) with no sub line and no links.
+PRIM_CSS += '''
+.rl.compact{--rr-name:minmax(170px,1fr);--rr-bar:minmax(48px,160px);--rr-gap:72px;--rr-links:0px}
+.rl.compact.grouped{--grp-w:44px}
+@media(min-width:1280px){.rl.compact.grouped{--grp-w:64px}}
+@media(min-width:1760px){.rl.compact{--rr-name:minmax(170px,1fr);--rr-bar:minmax(48px,160px)}}
+@media(max-width:1023px){.rl.compact .rr-heads{display:flex;justify-content:flex-end;padding:7px 10px}.rl.compact .rr-heads>span:not(:nth-child(5)){display:none}}
+.rl.compact .rg{grid-template-columns:var(--grp-w) minmax(0,1fr)}
+.rl.compact .rg-l{display:block;padding:10px 0 0;text-align:center;border-left:0;border-right:1px solid var(--line-soft);border-bottom:0}
+.rl.compact .rg-l .lt{font:400 40px/44px var(--font-title);color:var(--cream)}
+.rl.compact .rr{min-height:48px;padding-block:6px}.rl.compact .rr .meter>i{background:var(--accent)}
+.rl.compact .rr.cur{background:rgba(0,147,178,.16)}.rl.compact .rr.cur::before{background:var(--accent)}
+@media(max-width:1279px){.rl.compact .rg-l .lt{font-size:30px;line-height:36px}.rl.compact .rr.cols{padding:8px 14px}}
+@media(max-width:767px){.rl.compact .rr.cols{grid-template-areas:"rk ld nm f1" ". . xx xx";column-gap:8px;padding:6px 12px 6px 8px}
+ .rl.compact .rr .br,.rl.compact .rr .gp{display:none}.rl.compact .rr .fg.f1{align-self:center}}
+'''
+
+_RankRow0, _RankGroup0, _RankList0 = RankRow, RankGroup, RankList
+
+
+def RankRow(rank: str, crest: str, color: str, name: str, sub: str, frac: float, figures: list[tuple], gap: str,
+            links: list[tuple[str, bool]], gap_top: bool = False, tie: str = '', low: str = '', you: str = '',
+            selected: bool = False, state: str = '', accent: bool = False) -> str:
+    """RankRow; `accent` is the compact row: the accent bar, no sub line, no link strip (the name is the row's one link)."""
+    html = _RankRow0(rank, crest, color, name, sub, frac, figures, gap, links, gap_top, tie, low, you, selected, state)
+    if not accent:
+        return html
+    html = html.replace(MeterClass(frac, color), Meter(frac)).replace('<span class="sub"></span>', '')
+    return html.replace('<span class="lk"></span>', '')
+
+
+def RankGroup(letter: str, color: str, band: str, count: str, rows: list[str]) -> str:
+    """RankGroup; with no band and no count, the compact letter column (the letter alone)."""
+    if band or count:
+        return _RankGroup0(letter, color, band, count, rows)
+    return (f'<div class="rg" role="listitem"><div class="rg-l"><span class="lt">{letter}</span></div>'
+            f'<div class="rg-rows" role="list" aria-label="Tier {letter}">{"".join(rows)}</div></div>')
+
+
+def RankList(heads: str, body: str, n_figs: int = 1, grouped: bool = False, links3: bool = False, tank: bool = False,
+             compact: bool = False, fig_px: int = 0) -> str:
+    """RankList; `compact` is web RankList `compact`, `fig_px` its `figureWidth`."""
+    html = _RankList0(heads, body, n_figs, grouped, links3, tank)
+    if compact:
+        html = html.replace('<div class="rl', '<div class="rl compact', 1)
+    if fig_px:
+        html = html.replace(f'style="--n:{n_figs}"', f'style="--n:{n_figs};--rr-fig:{fig_px}px"', 1)
+    return html

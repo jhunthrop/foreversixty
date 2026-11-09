@@ -15,7 +15,7 @@ The mock library (`design/mocks/ws_lib.py` `REGION`, emitted by `ws_lib` and `ws
 | `head` | `PageHeader` | The whole page head |
 | `head-title` | `PageHeader` | Crest, title, meta line |
 | `head-meta` | `PageHeader` | The one meta line under the title |
-| `head-answer` | `PageHeader` (its `answer` slot) | BiS: one figure with its unit, the trust line, the links. Nothing else |
+| `head-answer` | `PageHeader` (its `answer` slot); `Frame` (`region`) on the tier list | BiS: one figure with its unit, the trust line, the links. Nothing else. The tier list: its spec panel in the split rail (signed out, the sign-in line; signed in, the spec, where it stands and its two buttons) |
 | `controls` | `ControlBar` | The control bar |
 | `countdowns` | the page (home) | The countdown panels under the head: the first raids and the guild's next event |
 | `summary` | the page (BiS: `BisSpecPage`) | The summary line and the view toggle |
@@ -100,7 +100,7 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 
 ## The tier list states
 
-`design/mocks/web/tiers-parity.json`: `dps` (signed out), `dps-you` (Thandrel, Fury Warrior 60), `dps-horde` (`?faction=horde`), `healer`, `tank`, `tank-you` (a DPS spec on the Tank list), at 1440. Mocks `web-tiers*.html` from `design/mocks/ws_tiers.py` (spec `design/specs/2026-11-06-tiers.md`), rendered at test time (`renderTiersMocks`) from `data/builds/<active build>/bis`, the files the fixture build prerenders `/tiers` from, so a re-rank moves both sides alike. `web-tiers-bar` (phone, controls open) and `web-tiers-states` (the states sheet) are references, not page states.
+`design/mocks/web/tiers-parity.json`: `dps` (signed out), `dps-you` (Thandrel, Fury Warrior 60), `dps-horde` (`?faction=horde`), `healer`, `tank`, `tank-you` (a DPS spec on the Tank list), at 1440. Mocks `web-tiers*.html` from `design/mocks/ws_tiers.py` (the look is the directions mock `g-tiers`, round 5: the compact RankList on the Plate and the spec panel, region `head-answer`, in the split rail; the rules are `design/specs/2026-11-06-tiers.md`), rendered at test time (`renderTiersMocks`) from `data/builds/<active build>/bis`, the files the fixture build prerenders `/tiers` from, so a re-rank moves both sides alike. `web-tiers-bar` (phone, controls open) and `web-tiers-states` (the states sheet) are references, not page states.
 
 ## The guild states
 

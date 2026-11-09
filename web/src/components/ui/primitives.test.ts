@@ -50,6 +50,26 @@ describe('Page', () => {
     expect(ledger).not.toContain('ui-page-rail');
   });
 
+  it('split with railFirst marks the rail to come first where the two stack; never on another layout', () => {
+    const split = html(Page, {
+      layout: 'split',
+      railFirst: true,
+      rail: text('<div>R</div>'),
+      children: text('<div>M</div>'),
+    });
+    expect(split).toMatch(/<aside[^>]*data-first="true"/);
+    expect(
+      html(Page, { layout: 'split', rail: text('<div>R</div>'), children: text('<div>M</div>') }),
+    ).not.toContain('data-first');
+    const bench = html(Page, {
+      layout: 'workbench',
+      railFirst: true,
+      rail: text('<div>R</div>'),
+      children: text('<div>M</div>'),
+    });
+    expect(bench).not.toContain('data-first');
+  });
+
   it('form: one main column and no rail, whatever the caller passes', () => {
     const form = html(Page, {
       layout: 'form',
