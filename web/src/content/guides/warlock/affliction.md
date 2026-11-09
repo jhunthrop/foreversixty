@@ -85,7 +85,7 @@ Adds and AoE: put Corruption and Agony on each of two or three adds that live 15
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a missed bane or Corruption is a whole DoT lost. Spell power feeds every spell you cast, and Shadow power feeds nearly all of them, since almost everything Affliction casts is Shadow. Crit is good for Affliction because DoT ticks crit too, and Pandemic doubles the bonus on all but Immolate's. Intellect is mana, plus a little crit: about 1% for every 60 points. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces. The table above gives the order for your gear.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a missed bane or Corruption is a whole DoT lost. Spell power feeds every spell you cast, and Shadow power feeds nearly all of them, since almost everything Affliction casts is Shadow. Crit is good for Affliction because DoT ticks crit too, and Pandemic doubles the bonus on all but Immolate's. Intellect is mana, plus a little crit: about 1% for every 60 points. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces.
 
 ## Best in slot
 

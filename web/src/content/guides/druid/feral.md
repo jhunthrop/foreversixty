@@ -86,7 +86,7 @@ The raid build skips Furor. In Forever it no longer hands you 40 energy on a shi
 
 ## Stat priority
 
-Weapon DPS matters in Forever. Your Cat Form paw swings at a fixed 1.0 speed and hits for your weapon's DPS, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. The table above gives the order for your gear. Agility is crit and attack power at once. Strength is attack power, and Heart of the Wild adds 10% to it. Hit keeps Shred landing: a missed or dodged Shred hands back most of its energy, but you still lose the global and the combo point. It counts up to the hit cap and adds nothing past it. Crit is bigger hits, and through Blood Frenzy it is combo points too. Attack power from gear is plain attack power, without the crit that Agility carries.
+Weapon DPS matters in Forever. Your Cat Form paw swings at a fixed 1.0 speed and hits for your weapon's DPS, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. Agility is crit and attack power at once. Strength is attack power, and Heart of the Wild adds 10% to it. Hit keeps Shred landing: a missed or dodged Shred hands back most of its energy, but you still lose the global and the combo point. It counts up to the hit cap and adds nothing past it. Crit is bigger hits, and through Blood Frenzy it is combo points too. Attack power from gear is plain attack power, without the crit that Agility carries.
 
 ## Best in slot
 
@@ -98,7 +98,7 @@ Forever changed the old cat rules: almost every potion works in Cat Form without
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and it works in Cat Form. Racials are usable while shapeshifted in Forever, so line it up with your potion and trinkets. Tauren is the free Horde pick: Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds, which is for trash, not damage. If you already own the paid Skyborne Heroic Pack, Skyborne bring Wind Blessed on either faction: 2% haste that never turns off, which in Cat Form is faster swings.
+Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and it works in Cat Form. Racials are usable while shapeshifted in Forever, so line it up with your potion and trinkets. Tauren is the Horde pick: Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds, which is for trash, not damage. Skyborne bring Wind Blessed on either faction: 2% haste that never turns off, which in Cat Form is faster swings.
 
 ## Professions
 

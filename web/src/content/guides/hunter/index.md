@@ -38,4 +38,4 @@ Hunter is a pure damage class in Forever. All three specs deal damage, and they 
 
 ## Races
 
-**Human Hunter** is one of the six new race and class pairs, so the Alliance has a Human Hunter for the first time. Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction.
+Alliance hunters are Dwarf, Night Elf and, new in Forever, Human. Horde hunters are Orc, Troll and Tauren. Skyborne can be hunters on either faction, as the High Order on the Alliance and the Windshapers on the Horde.
