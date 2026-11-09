@@ -50,6 +50,7 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 		"/v1/phases",
 		"/v1/me/widget", "/v1/me/live-activities", "/v1/me/live-activities/{id}",
 		"/v1/golinks/{slug}", "/v1/golinks/{slug}/clicks", "/v1/me/arrival", "/v1/admin/golinks",
+		"/v1/app-testers", "/v1/admin/app-testers",
 	}
 	for _, p := range requiredPaths {
 		if _, ok := paths[p]; !ok {

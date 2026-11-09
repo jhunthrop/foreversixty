@@ -32,7 +32,8 @@ import Toc from '../../../components/ui/Toc.svelte';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
 import { readSpecCatalog } from '../../../lib/bis/load';
-import { articleLd, breadcrumbLd } from '../../../lib/seo';
+import { articleLd, breadcrumbListLd } from '../../../lib/seo';
+import { searchCopy } from '../../../lib/search-copy';
 import { REGION } from '../../../lib/ui/regions';
 import type { ClassSlug } from '../../../lib/ui/primitives';
 import { decodeBuildTrees } from '../../../lib/guides/build-tree';
@@ -219,11 +220,15 @@ const path = `/guides/${entry.id}`;
 const description = entry.data.description ?? '';
 const jsonLd = [
   articleLd({ title: entry.data.title, description, path, updated: entry.data.updated }),
-  breadcrumbLd(path, entry.data.title),
+  breadcrumbListLd([
+    { name: 'Class guides', path: '/guides' },
+    { name: className, path: `/guides/${classSlug}` },
+    { name: searchCopy.specGuideCrumb(specName, className), path },
+  ]),
 ];
 ---
 
-<Base title={entry.data.title} {description} {path} {jsonLd} wide>
+<Base title={searchCopy.specGuideTitle(specName, className)} {description} {path} {jsonLd} wide>
   <meta slot="head" property="article:modified_time" content={entry.data.updated.toISOString()} />
   <main id="main" tabindex="-1" class="guide-page" data-testid="guide-page">
     <Page layout="reading" testid="guide-body">
@@ -332,7 +337,7 @@ const jsonLd = [
       <ReadingSection title="Best in slot" anchor="best-in-slot">
         <Fragment slot="lane">
           <GlyphSheet />
-          <GuideBisLane build={build} classSlug={classSlug} bis={guideBis} specSlug={specSlug} />
+          <GuideBisLane build={build} classSlug={classSlug} bis={guideBis} specSlug={specSlug} {role} />
         </Fragment>
         <Prose html={await prose(proseOnly('Best in slot'))} />
       </ReadingSection>

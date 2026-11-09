@@ -1,33 +1,9 @@
 ---
 // web/src/pages/guild.astro
-// The shell src/worker.ts serves for /guild/<region>/<ruleset>/<name>. The island reads
-// the three segments out of the path.
-import Base from '../layouts/Base.astro';
-import GuildShell from '../components/GuildShell.svelte';
+// The bare /guild page, Find a guild (components/guild/GuildRoute.astro): the landing is the
+// server markup, so the page has real content before any script. Every /guild/<...> URL is
+// guild-shell.astro, served by src/worker.ts.
+import GuildRoute from '../components/guild/GuildRoute.astro';
 ---
 
-<Base
-  title="Guild"
-  description="A World of Warcraft: Forever guild: progression per boss, pull counts, kill dates and roster bests."
-  path="/guild"
->
-  <main
-    id="main"
-    tabindex="-1"
-    class="guild-main flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-0"
-  >
-    <GuildShell client:after-paint />
-  </main>
-</Base>
-
-<style>
-  /* The guild views not yet on the primitives keep main's own 18 px phone gutter; the primitives'
-     Page and PageHeader would add their phone inset on top of it (36 px). The full-bleed
-     ControlBar escapes main's padding, so it keeps its inset and lines up at 18 px. */
-  @media (max-width: 767.98px) {
-    .guild-main :global(.ui-page),
-    .guild-main :global(.ui-page-header) {
-      padding-inline: 0;
-    }
-  }
-</style>
+<GuildRoute landing />

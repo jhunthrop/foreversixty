@@ -102,7 +102,9 @@ var maxCharacterFailures = 50
 // every verified guild member:
 //
 //   - a character whose account asked to be anonymous gets no record and is listed in no
-//     guild (the endpoint's own rule, rating.Store.Anonymized): the file is public;
+//     guild (the endpoint's own rule, rating.Store.Anonymized): the file is public; nor does
+//     one whose owner hid its Forever Score (rating.Store.ScoreHidden, contract 4's
+//     export.score_visible false);
 //   - otherwise rating.ScoreV2 alone decides: a score is a scored record, with the best
 //     parse per boss in the window; ErrNoLogs is a no-logs record (score = nil), so the
 //     guild's roster still lists the character;
@@ -192,6 +194,18 @@ func collect(ctx context.Context, d Deps) (Data, int, error) {
 			continue
 		}
 		if anon {
+			continue
+		}
+		// A character whose owner hid its Forever Score is left out the same way: the file is
+		// every other player's tooltip, and the owner reads their own from the inbox's own_score.
+		hidden, err := scores.ScoreHidden(ctx, key)
+		if err != nil {
+			if err := fail(key, "score_hidden", err); err != nil {
+				return Data{}, 0, err
+			}
+			continue
+		}
+		if hidden {
 			continue
 		}
 		region, ruleset, slug, ok := splitCharacterKey(key)

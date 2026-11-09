@@ -14,7 +14,6 @@ import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.widgets.data.WidgetStore
 import gg.foreversixty.app.widgets.logic.RaidFigures
 import gg.foreversixty.app.widgets.logic.RaidSurfaceState
-import gg.foreversixty.app.widgets.logic.TagKind
 import gg.foreversixty.app.widgets.logic.WidgetFigures
 import java.time.Instant
 import kotlinx.coroutines.CoroutineScope
@@ -24,18 +23,18 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** What the tile shows: active with `Thu 8 pm · In` when a raid is planned, else inactive `No raid planned`. */
+/**
+ * What the tile shows: the card's label and its one line (mocks `widgets-*` lock row), `OLYMPUS XXVII`
+ * over `2d 3h · Onyxia's Lair`, `First raids` over `6h 21m · Wed 9 Dec`; active while a raid is
+ * planned and not cancelled. Signed out or on an old snapshot, `Next raid` over the widget's words.
+ */
 data class TileFigures(val label: String, val subtitle: String, val active: Boolean, val link: String?) {
     companion object {
         fun of(figures: RaidFigures, res: Resources): TileFigures {
-            val label = res.getString(R.string.live_tile_title)
-            val time = figures.timeShort
-            val answer = figures.inlineAnswer
-            if (figures.state != RaidSurfaceState.Raid || time == null || answer == null) {
-                return TileFigures(label, figures.title, active = false, link = null)
-            }
+            val card = figures.card ?: return TileFigures(res.getString(R.string.live_tile_title), figures.title, active = false, link = null)
             val link = figures.guildId?.let { g -> figures.raidId?.let { r -> DeepLink.Raid(g, r).url() } }
-            return TileFigures(label, res.getString(R.string.live_tile_sub, time, answer), active = figures.tagKind != TagKind.Cancelled, link = link)
+            val active = figures.state == RaidSurfaceState.Raid && !card.cancelled
+            return TileFigures(card.key, card.lock, active = active, link = link)
         }
     }
 }

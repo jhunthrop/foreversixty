@@ -104,3 +104,28 @@
     padding: 0 12px;
   }
 }
+
+/* A stacked group (ui/Segmented `stack`): below 768 one full-width row per option, its label
+   wrapping, the chosen one marked at its left edge. */
+@media (max-width: 767px) {
+  .ui-seg--stack {
+    flex-direction: column;
+    width: 100%;
+  }
+  .ui-seg--stack .ui-seg-item {
+    justify-content: flex-start;
+    height: auto;
+    min-height: 44px;
+    padding: 10px 14px;
+    text-align: left;
+    white-space: normal;
+    border-left: 0;
+    border-top: 1px solid var(--color-line-soft);
+  }
+  .ui-seg--stack .ui-seg-item:first-child {
+    border-top: 0;
+  }
+  .ui-seg--stack .ui-seg-item[aria-checked='true'] {
+    box-shadow: inset 2px 0 0 var(--color-gold);
+  }
+}

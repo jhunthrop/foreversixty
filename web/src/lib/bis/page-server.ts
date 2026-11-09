@@ -11,6 +11,8 @@ import { buildBisPageData, type BisServerPage } from './page-data';
 import { bandModelKey } from './model-key';
 import { modelItemIds, type BisPageData } from './page-model';
 import { presetsOffered } from './page-context';
+import { MAX_BAND } from './band-levels';
+import { listIsPreRaid } from './pre-raid';
 
 const memo = new Map<string, BisServerPage | null>();
 
@@ -34,9 +36,25 @@ function buildFor(spec: string, classSlug: string): BisServerPage | null {
   return buildBisPageData({ spec, classSlug, build, file, talentIndex: indexTalents(talentFile) });
 }
 
-/** The default state's models alone (first band, Alliance, each preset) with their items. */
-export function defaultSlice(data: BisPageData): BisPageData {
-  const band = data.bands[0];
+const preRaidMemo = new Map<string, boolean>();
+
+/** Whether the spec's level 60 list holds no raid or PvP pick, read off the ranked file itself
+ *  (pre-raid.ts listIsPreRaid): then it is the pre-raid list, the page's title says so
+ *  (seo-copy.ts) and /60/pre-raid is canonical to /60. Raids opening put raid drops in the list on
+ *  the next nightly run, and the next build drops the word and gives /60/pre-raid its own page. */
+export function bisPreRaid(spec: string): boolean {
+  const key = `${activeBuild.build}:${spec}`;
+  if (!preRaidMemo.has(key)) {
+    const file = loadBisFile(spec, activeBuild.build);
+    const sixty = file?.bands.filter((band) => band.band >= MAX_BAND) ?? [];
+    preRaidMemo.set(key, sixty.length > 0 && listIsPreRaid(sixty.flatMap((band) => band.slots)));
+  }
+  return preRaidMemo.get(key)!;
+}
+
+/** The default state's models alone (the page's band, Alliance, each preset) with their items:
+ *  the first band on /bis/<class>/<spec>, a band page's own band (lib/bis/band-path.ts). */
+export function defaultSlice(data: BisPageData, band: number | undefined = data.bands[0]): BisPageData {
   if (band === undefined) return data;
   // Every preset of the default band, so the Profile control renders the same with either set.
   const keys = presetsOffered(data, 'alliance', band).map((preset) => bandModelKey('alliance', band, preset));

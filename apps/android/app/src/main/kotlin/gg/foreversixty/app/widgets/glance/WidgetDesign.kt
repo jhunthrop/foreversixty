@@ -11,9 +11,7 @@ import androidx.glance.text.FontFamily
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
-import gg.foreversixty.app.widgets.logic.TagKind
 
 /**
  * The home-screen widget container and its type at widget sizes (spec §4 `Home-screen widget`):
@@ -28,6 +26,9 @@ internal object WidgetDesign {
     val buttonHeight: Dp = 48.dp
     val sealSize: Dp = 16.dp
 
+    /** The gap between the card's lines. */
+    val cardGap: Dp = 3.dp
+
     fun color(color: Color): ColorProvider = ColorProvider(color)
 
     /**
@@ -36,15 +37,7 @@ internal object WidgetDesign {
      */
     private const val MAX_SCALE = 1.3f
 
-    fun styles(fontScale: Float): WidgetStyles = WidgetStyles(if (fontScale > MAX_SCALE) MAX_SCALE / fontScale else 1f)
-
-    fun tagColor(kind: TagKind): Color = when (kind) {
-        // Kill is for `In · DPS` alone; Late, Bench and Out are muted words (spec §5.6).
-        TagKind.In -> FsColor.kill
-        TagKind.NotSignedUp, TagKind.ChooseSpec -> FsColor.gold
-        TagKind.Cancelled -> FsColor.wipe
-        TagKind.Late, TagKind.Bench, TagKind.Out, TagKind.Locked -> FsColor.muted
-    }
+    fun styles(fontScale: Float): WidgetStyles = WidgetStyles(if (fontScale > MAX_SCALE) MAX_SCALE / fontScale else 1f, 1f / fontScale)
 
     /**
      * Tracked caps for the micro labels (`N E X T  R A I D` on the board): Glance's TextStyle has
@@ -52,39 +45,39 @@ internal object WidgetDesign {
      * the plain words for TalkBack.
      */
     fun tracked(text: String): String = text.uppercase().toList().joinToString("\u200A")
-
-    fun tagBackground(kind: TagKind): Int = when (kind) {
-        TagKind.In -> R.drawable.widget_tag_kill
-        TagKind.NotSignedUp, TagKind.ChooseSpec -> R.drawable.widget_tag_gold
-        TagKind.Cancelled -> R.drawable.widget_tag_wipe
-        TagKind.Late, TagKind.Bench, TagKind.Out, TagKind.Locked -> R.drawable.widget_tag_muted
-    }
 }
 
-/** The widget type roles at one scale ([fit] shrinks sp so the system scale stops at the cap). */
-internal class WidgetStyles(private val fit: Float) {
+/**
+ * The widget type roles at one scale ([fit] shrinks sp so the system scale stops at the cap;
+ * [unscaled] undoes the system scale for the big figure, already 30 and the one line that would
+ * otherwise push the card's line out of a 4 x 2).
+ */
+internal class WidgetStyles(private val fit: Float, private val unscaled: Float) {
     private fun style(size: Float, color: Color, weight: FontWeight = FontWeight.Normal, family: FontFamily = FontFamily.SansSerif) =
         TextStyle(color = WidgetDesign.color(color), fontSize = (size * fit).sp, fontWeight = weight, fontFamily = family)
 
     /** `NEXT RAID`: micro, gold, tracked caps. */
     val micro = style(11f, FsColor.gold, FontWeight.Bold)
 
-    /** The zone: `sec` 22, condensed caps. */
-    val zone = style(22f, FsColor.strong, FontWeight.Bold, FontFamily("sans-serif-condensed"))
     val title = style(16f, FsColor.strong, FontWeight.Medium)
     val body = style(13f, FsColor.text)
     val muted = style(12f, FsColor.muted)
-    val countdown = style(14f, FsColor.gold, FontWeight.Medium, FontFamily.Monospace)
-    val count = style(16f, FsColor.strong, FontWeight.Medium, FontFamily.Monospace)
-    val gain = style(13f, FsColor.text, FontWeight.Medium, FontFamily.Monospace)
     val link = style(14f, FsColor.gold, FontWeight.Medium)
 
-    fun tag(kind: TagKind): TextStyle = style(11f, WidgetDesign.tagColor(kind), FontWeight.Bold)
+    /** The card's four lines (mocks `widgets-guild`, `-noguild`, `-open`): label 12, big 30, name 15, line 13. */
+    val cardKey = style(12f, FsColor.muted, FontWeight.Bold)
+    val cardName = style(15f, FsColor.strong, FontWeight.Bold)
+    val cardLine = style(13f, FsColor.muted)
+
+    fun cardBig(color: Color = FsColor.strong): TextStyle =
+        TextStyle(color = WidgetDesign.color(color), fontSize = (BIG * unscaled).sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
 
     fun button(checked: Boolean, failed: Boolean): TextStyle =
         style(14f, if (failed) FsColor.wipe else if (checked) FsColor.strong else FsColor.nav, FontWeight.Medium)
 
-    fun quality(color: Color, size: Float = 14f): TextStyle = style(size, color, FontWeight.Medium)
+    private companion object {
+        const val BIG = 30f
+    }
 }
 
 /** The type roles at the device's font scale, capped for the widget's fixed cells. */

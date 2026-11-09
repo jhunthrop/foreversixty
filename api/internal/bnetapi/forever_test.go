@@ -144,7 +144,7 @@ func TestForeverRealmsResolveRulesets(t *testing.T) {
 	}
 	want := map[int64]string{6794: "normal", 6798: "pvp", 6928: "rp"}
 	for _, r := range realms {
-		if got := RulesetOf(r); got != want[r.ID] {
+		if got, _ := RulesetOf(r); got != want[r.ID] {
 			t.Errorf("realm %d (%s) ruleset = %q, want %q", r.ID, r.Slug, got, want[r.ID])
 		}
 	}

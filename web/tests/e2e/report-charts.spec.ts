@@ -6,6 +6,12 @@ import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { BROKK, beLightningbolltz, guidOf, raid40DpsSum, RAID40_URL, serveRaid40 } from './support/raid40';
 import { fieldBox, listOf } from './support/select';
+import { openReportBar, openTab } from './support/report-frame';
+
+/** Below 768 the main chart folds into a Disclosure (TimeChart): open it. */
+async function openPhoneChart(page: Page): Promise<void> {
+  await page.getByTestId('chart-collapsed').locator('summary').click();
+}
 
 /** The Players field's closed text (`Top 8 of 40`). */
 const playersField = (chart: Locator): Locator => fieldBox(chart, 'players').locator('.sel-label');
@@ -71,8 +77,7 @@ test.describe('overlays never sit under a chart (spec §C)', () => {
 
 test('a death marker opens that death on the Deaths tab, open and in view', async ({ page }) => {
   await page.goto(`${FIXTURE}&tab=damage-done`);
-  const toggle = page.getByTestId('chart-toggle');
-  if (isPhone(page)) await toggle.click();
+  if (isPhone(page)) await openPhoneChart(page);
   const chart = page.getByTestId('time-chart');
   await ready(chart);
   const marker = chart.getByTestId('death-marker');
@@ -100,7 +105,7 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     page,
   }) => {
     await page.goto(`${RAID40_URL}&tab=damage-done`);
-    if (isPhone(page)) await page.getByTestId('chart-toggle').click();
+    if (isPhone(page)) await openPhoneChart(page);
     const chart = page.getByTestId('time-chart');
     await ready(chart);
     const chips = chart.getByTestId('legend-chip');
@@ -114,10 +119,12 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     const you = chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(13)}"]`);
     await expect(you).toContainText('Lightningbolltz');
     await expect(you).toContainText('YOU');
-    // The head's raid figure is the sum of all 40 players' rounded DPS.
-    await expect(chart.getByTestId('chart-head-meta')).toHaveText(
-      `Raid ${raid40DpsSum().toLocaleString('en-US')} DPS over the whole fight`,
-    );
+    // The head's raid figure is the sum of all 40 players' rounded DPS: the Section's meta from
+    // 768, the folded chart's summary below it (TimeChart).
+    const figure = `Raid ${raid40DpsSum().toLocaleString('en-US')} DPS over the whole fight`;
+    if (isPhone(page))
+      await expect(page.getByTestId('chart-collapsed').locator('summary')).toContainText(figure);
+    else await expect(chart.getByTestId('chart-head-meta')).toHaveText(figure);
   });
 
   test('the submerge draws flat at zero for every line', async ({ page }) => {
@@ -203,7 +210,7 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
 
   test('the cast lane marks Power Infusion and Rebirth by spell id', async ({ page }) => {
     await page.goto(`${RAID40_URL}&tab=damage-done`);
-    if (isPhone(page)) await page.getByTestId('chart-toggle').click();
+    if (isPhone(page)) await openPhoneChart(page);
     const chart = page.getByTestId('time-chart');
     await ready(chart);
     const casts = chart.locator('[data-testid="lane-marker"][data-kind="cast"]');
@@ -253,12 +260,16 @@ test.describe('the 40-player threat chart (spec §B12, capture 9)', () => {
     test.skip(!isPhone(page), 'the phone fold stack');
     await page.setViewportSize({ width: 360, height: 640 });
     await page.goto(`${RAID40_URL}&tab=damage-done`);
-    await page.locator('#report-tab-select').selectOption('threat', { force: true });
+    await openTab(page, 'threat');
     const chart = page.getByTestId('threat-chart');
     await ready(chart);
     await page.waitForTimeout(800);
+    // The report frame (2026-11-07) leads each tab with its table, the chart under it: the chart
+    // fits the phone's screen once it is scrolled to, never wider or taller than it.
+    await chart.scrollIntoViewIfNeeded();
     const box = (await chart.boundingBox())!;
-    expect(box.y + box.height).toBeLessThanOrEqual(640);
+    expect(box.height).toBeLessThanOrEqual(640);
+    expect(box.width).toBeLessThanOrEqual(360);
     // The legend is one row ending in +n, and +n opens the legend sheet.
     await chart.getByTestId('legend-more').click();
     const sheet = page.getByTestId('legend-sheet');
@@ -274,24 +285,27 @@ test('on a phone every head field shows its value whole, one field to a row', as
   await page.setViewportSize({ width: 390, height: 844 });
   await serveRaid40(page);
   await page.goto(`${RAID40_URL}&tab=damage-done`);
-  await page.getByTestId('chart-toggle').click();
+  await openPhoneChart(page);
   const chart = page.getByTestId('time-chart');
   await ready(chart);
+  // The chart's own field, Players, one to a row; the Window field is the report bar's, one to a
+  // row in its open stack (the report frame, 2026-11-07).
+  const players = (await fieldBox(chart, 'players').boundingBox())!;
+  expect(players.width).toBeGreaterThanOrEqual(240);
+  await openReportBar(page);
   const windowField = page.getByTestId('window-select');
   await expect(windowField).toHaveValue('0');
   const field = (await fieldBox(page, 'window-select').boundingBox())!;
   expect(field.width).toBeGreaterThanOrEqual(240);
-  const players = (await fieldBox(chart, 'players').boundingBox())!;
-  expect(players.width).toBeGreaterThanOrEqual(240);
-  expect(Math.abs(players.x - field.x)).toBeLessThanOrEqual(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
 test('the Resources tab draws no damage chart and heads its rows', async ({ page }) => {
   await page.goto(`${FIXTURE}&tab=resources`);
   await expect(page.getByTestId('resource-graphs')).toBeVisible();
-  await expect(page.getByRole('columnheader', { name: 'Player' })).toBeAttached();
-  await expect(page.getByRole('columnheader', { name: 'Time empty' })).toBeAttached();
+  // Below 1024 the table's head row is hidden (ui/StatTable's phone layout), still in the tree.
+  await expect(page.getByRole('columnheader', { name: 'Player', includeHidden: true })).toBeAttached();
+  await expect(page.getByRole('columnheader', { name: 'Time empty', includeHidden: true })).toBeAttached();
   await expect(page.getByTestId('time-chart')).toHaveCount(0);
-  await expect(page.getByTestId('chart-toggle')).toHaveCount(0);
+  await expect(page.getByTestId('chart-collapsed')).toHaveCount(0);
 });

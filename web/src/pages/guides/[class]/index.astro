@@ -20,7 +20,8 @@ import RowGrid from '../../../components/ui/RowGrid.svelte';
 import Section from '../../../components/ui/Section.svelte';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
-import { articleLd, breadcrumbLd } from '../../../lib/seo';
+import { articleLd, breadcrumbListLd } from '../../../lib/seo';
+import { searchCopy } from '../../../lib/search-copy';
 import type { ClassSlug } from '../../../lib/ui/primitives';
 import { guidesCopy } from '../../../lib/guides/copy';
 import {
@@ -92,12 +93,15 @@ const path = `/guides/${classSlug}`;
 const description = entry.data.description ?? '';
 const jsonLd = [
   articleLd({ title: entry.data.title, description, path, updated: entry.data.updated }),
-  breadcrumbLd(path, entry.data.title),
+  breadcrumbListLd([
+    { name: 'Class guides', path: '/guides' },
+    { name: classEntry.name, path },
+  ]),
 ];
 const tone = { classSlug: classSlug as ClassSlug };
 ---
 
-<Base title={entry.data.title} {description} {path} {jsonLd} wide>
+<Base title={searchCopy.classGuideTitle(classEntry.name)} {description} {path} {jsonLd} wide>
   <meta slot="head" property="article:modified_time" content={entry.data.updated.toISOString()} />
   <main id="main" tabindex="-1" class="guide-landing" data-testid="guide-class-landing">
     <Page layout="ledger">

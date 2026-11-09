@@ -42,4 +42,5 @@ export const STATIC_OG_PAGES: Readonly<Record<string, OgContent>> = {
   connect: { title: 'Connect your companion', kicker: SITE_KICKER },
   account: { title: 'Your account', kicker: SITE_KICKER },
   login: { title: 'Sign in', kicker: SITE_KICKER },
+  app: { title: 'Forever Sixty on your phone', kicker: 'iPhone · Android · coming soon' },
 };

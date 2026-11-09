@@ -381,7 +381,7 @@ const SHELL_ROUTES = [
   { prefix: '/reports/', asset: '/report-shell.html' },
   { prefix: '/rankings/', asset: '/rankings.html' },
   { prefix: '/character/', asset: '/character.html' },
-  { prefix: '/guild/', asset: '/guild.html' },
+  { prefix: '/guild/', asset: '/guild-shell.html' },
   { prefix: '/sim/', asset: '/sim.html' },
 ] as const;
 

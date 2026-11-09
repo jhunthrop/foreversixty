@@ -79,6 +79,9 @@ object CharacterCard {
 
     fun hasScore(profile: CharacterProfile): Boolean = profile.score != null
 
+    /** False when the owner hid the Forever Score from this viewer: no score card at all, not a "no logs" one. */
+    fun showsScoreSection(profile: CharacterProfile): Boolean = profile.scoreHidden != true
+
     fun isYours(profile: CharacterProfile, viewer: RankingsViewer): Boolean = profile.character.key in viewer.accountKeys
 
     /** `Parse history` shows only on your own character with `entitlements.history`. */

@@ -41,13 +41,17 @@ Each run writes `web/test-results/parity/<page>-<state>.png`: mock | build at th
 
 ## The BiS states
 
-`design/mocks/web/bis-parity.json`: `dps-60` (marksmanship hunter, raid), `healer-60` (holy priest), `tank-60` (protection warrior), `low-20` (beast mastery hunter, 20 to 29, Where to go). Mocks `web-bis-<state>.html`, rev 4 of `design/mocks/ws_bis.py` (spec 5 and the 5.13 build decisions).
+`design/mocks/web/bis-parity.json`: `dps-60` (marksmanship hunter, raid), `healer-60` (holy priest), `tank-60` (protection warrior), `low-20` (beast mastery hunter, 20 to 29, Where to go). Each band is its own page (`web/src/lib/bis/band-path.ts`): the 60 states open `/bis/<class>/<spec>/60`, `low-20` the spec's own path, so the band pages are held to the same mocks. Mocks `web-bis-<state>.html`, rev 4 of `design/mocks/ws_bis.py` (spec 5 and the 5.13 build decisions).
 
 `design/mocks/bis_facts.mjs` reads names, numbers, sources and group membership from a running build; `design/mocks/ws_bis.py` renders the mocks from those facts. The facts carry no structure, so a block the build grows never reaches the mock.
 
 ## The simulator states
 
 `design/mocks/web/sim-parity.json`: `landing-out`, `landing-in`, `result`, `saved`. `design/mocks/ws_sim.py` draws them from `web/src/fixtures/sim/result-full.json` and `data/builds/<active build>`, the files `web/tests/e2e/support/sim-parity.ts` serves to the fixture build.
+
+## The app beta states
+
+`web/tests/e2e/parity-app-beta.spec.ts`: /app (the page the apps' QR codes open) as `web-app` (the signup), `web-app-done` (received: a new address and a repeat read the same), `web-app-invalid` (the address refused) and `web-app-failed` (the try-again line), each at 1440 and 390 (where the QR rail is gone on both sides; `head:box` is the known 390 inset drift), and the owner's /admin/testers as `web-admin-testers` at 1440. `design/mocks/app_beta_facts.mjs` bundles `web/src/lib/app-beta/copy.ts`, `admin.ts` and `qr.ts` (the same QR SVG the page inlines) over `web/tests/e2e/fixtures/app-beta/testers.json`; `design/mocks/ws_app_beta.py` draws them. The store buttons (`web/src/data/apps.json` with a link) have no mock while both links are null; they are covered by `components/app-beta/app-beta.test.ts`.
 
 ## The simulator tool states
 

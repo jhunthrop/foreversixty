@@ -5,6 +5,8 @@
 // published band at build time and nothing here is typed in.
 import type { BisBand, BisRole, SpecCatalogEntry, TankMetrics } from '../bis/types';
 import { isTankMetrics } from '../bis/tank-view';
+import { bisBandPath } from '../bis/band-path';
+import { MAX_BAND, MIN_BAND } from '../bis/band-levels';
 import { HEALER_ERROR_Z, TIE_MARGIN_PERCENT, TIER_BANDS, type TierBand, type TierLetter } from './tier-rules';
 
 /** The roles, in the order of the page's tabs. */
@@ -351,7 +353,7 @@ export function hrefsFor(
 ): TierRowHrefs {
   const path = `${row.classSlug}/${row.specSlug}`;
   return {
-    bis: `/bis/${path}`,
+    bis: bisBandPath(row.classSlug, row.specSlug, MAX_BAND, MIN_BAND),
     guide: `/guides/${path}`,
     planner: `/planner?spec=${row.spec}&talents=${encodeURIComponent(row.talents)}`,
     sim: row.simHref,

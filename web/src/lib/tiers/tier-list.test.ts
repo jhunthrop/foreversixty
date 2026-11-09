@@ -515,7 +515,7 @@ describe('hrefsFor', () => {
   it('links the BiS page, the guide and the level 60 build in the planner', () => {
     const [row] = rankRole([dpsInput('warrior', 'fury', 'Fury', 100)], 'dps');
     expect(hrefsFor({ ...row!, talents: '1-2-3' })).toEqual({
-      bis: '/bis/warrior/fury',
+      bis: '/bis/warrior/fury/60',
       guide: '/guides/warrior/fury',
       planner: '/planner?spec=warrior-fury&talents=1-2-3',
       sim: undefined,
