@@ -22,14 +22,14 @@ import guild_directory_fixtures as GD  # noqa: E402
 from mocklib import emblem  # noqa: E402
 import data as D  # noqa: E402
 from common import write  # noqa: E402
-from prims import PRIMS_CSS, field, panel, reading_section, row_list, settings_bar, tag, toc  # noqa: E402
+from prims import PRIMS_CSS, field, meter, panel, reading_section, row_list, settings_bar, table, tag, toc  # noqa: E402
 from style import footer, header, page, titlebar  # noqa: E402
 
 MOCKS = Path(__file__).resolve().parent.parent
 SETUP = json.loads((MOCKS / 'data/setup-facts.json').read_text())
 PAGES = json.loads((MOCKS / 'data/pages-facts.json').read_text())
 HANDOFF = dict(re.findall(r"^\s+(\w+): ['\"](.+?)['\"],$", (D.ROOT / 'web/src/lib/app-links/handoff-copy.ts').read_text(), re.M))
-UNAVAILABLE = ''.join(re.findall(r"'([^']+)'", (D.ROOT / 'web/src/pages/b-unavailable.astro').read_text().split('const sentence =', 1)[1].split(';', 1)[0]))
+UNAVAILABLE = ''.join(re.findall(r"'([^']+)'", (D.ROOT / 'web/src/pages/b-unavailable.astro').read_text().split('const sentence =', 1)[1].split("';", 1)[0] + "'"))
 VIEWER = ('Thandrel', 'warrior', 60)
 SIGNED_OUT = ('', 'warrior', None)
 
@@ -49,13 +49,14 @@ SITE_CSS = PRIMS_CSS + '''
 .steps li:last-child{border-bottom:0}.steps .n{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 15px var(--body);
 border:1px solid var(--rule);color:var(--text)}.steps .n.next{background:var(--teal);border-color:var(--teal-edge);color:#fff}.steps .n.done{background:var(--gain);border-color:var(--gain);color:#000}
 .steps b{display:block;color:#fff;font-size:16px}.steps span.l{display:block;font-size:14px;color:var(--muted)}
-.msg{max-width:620px;margin:40px auto 0}.msg .bd{padding-top:4px}.msg p+p{margin-top:10px}
+.msg{max-width:620px;margin:22px 0 0}.msg .bd{padding-top:4px}.msg p+p{margin-top:10px}
 .code{font:600 30px ui-monospace,Menlo,monospace;letter-spacing:.12em;color:#fff;margin:6px 0 10px}
 .cl .ent{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}.cl .ent:last-child{border-bottom:0}.cl .ent h3{font:600 16px var(--body);color:#fff;margin:2px 0 4px}
 .cl .d{font-size:12.5px;color:var(--muted)}.cl .ent p{font-size:14.5px}.cl .ent a{font-size:14px}.page3{display:grid;grid-template-columns:200px minmax(0,1fr);gap:28px;margin-top:22px;align-items:start}
-.page3 .toc{position:sticky;top:16px}.lg .prose{max-width:76ch}.lg h2{font-size:24px;margin:22px 0 8px}.lg h2:first-child{margin-top:0}
+.page3 .toc{position:sticky;top:16px}.lg .prose{max-width:76ch}.page3>section{max-width:860px}.lg h2{font-size:24px;margin:22px 0 8px}.lg h2:first-child{margin-top:0}
 .figs{display:flex;gap:32px;flex-wrap:wrap}.figs div{display:flex;flex-direction:column}.figs b{font:600 28px var(--body);color:#fff}.figs span{font-size:12.5px;color:var(--muted)}
-.figs .lead b{color:var(--gold)}
+.figs .lead b{color:var(--gold)}.figs{flex-wrap:nowrap;gap:24px}.lede{margin-top:22px;max-width:80ch}
+.pick .setb .f b{border:1px solid var(--rule);border-radius:var(--r-sm);padding:5px 10px;margin-top:3px;display:inline-block}
 @media(max-width:1100px){.page3{grid-template-columns:minmax(0,1fr)}.page3 .toc{display:none}}
 @media(max-width:700px){.steps li{grid-template-columns:32px minmax(0,1fr)}.steps li>:last-child{grid-column:2}}
 '''
@@ -75,11 +76,10 @@ def setup_page() -> str:
                     for r in SETUP['rows']['out'])
     own = SETUP['download_for']['windows']['own']
     others = SETUP['download_for']['windows']['others']
-    comp = (f'<p><a class="btn2" href="#">{escape(own["label"])}</a></p><p class="muted" style="font-size:13.5px;margin-top:8px">{escape(own["meta"])}</p>'
-            f'<p style="font-size:14px;margin-top:10px">{escape(own["firstRun"])}</p>'
+    comp = (f'<p style="font-size:14px">{escape(own["firstRun"])}</p>'
             + ''.join(f'<p style="margin-top:10px"><a href="#">{escape(o["platform"])} &rsaquo;</a></p>' for o in others))
     main = panel('', f'<ul class="steps">{steps}</ul>', framed=True)
-    rail = panel('The companion', comp, meta=escape(SETUP['version_line'])) + panel('The addon', f'<p><a href="#">CurseForge &rsaquo;</a></p><p style="margin-top:8px"><a href="#">Wago &rsaquo;</a></p>')
+    rail = panel('The companion', comp, meta=escape(own['meta']))
     body = titlebar(None, PAGES['copy']['setupTitle'], '', top=header(*SIGNED_OUT, '')) + f'<main class="w st"><div class="twocol"><div>{main}</div><aside>{rail}</aside></div></main>'
     return site_page('setup', body)
 
@@ -106,10 +106,12 @@ def content_page(key: str, legal: bool) -> str:
     """About and the legal pages: the text exactly as rendered (never edited), in the reading column with its contents."""
     pg = PAGES['pages'][key]
     heads = re.findall(r'<h2[^>]*id="([^"]+)"[^>]*>(.*?)</h2>', pg['html'])
-    contents = toc([(re.sub('<[^>]+>', '', t), a) for a, t in heads], heads[0][0]) if heads else ''
     tabs = [[(lk['label'], lk['label'].lower() == key) for lk in PAGES['copy']['legalLinks']]] if legal else None
-    body = (titlebar(None, pg['title'], f'Updated {escape(pg["updated"])}', ctl=tabs, top=header(*VIEWER, ''))
-            + f'<main class="w st"><div class="page3"><aside>{contents}</aside><section class="card pad lg"><div class="prose">{pg["html"]}</div></section></div></main>')
+    text = f'<section class="card pad lg" style="max-width:860px;margin-top:22px"><div class="prose">{pg["html"]}</div></section>'
+    if heads:
+        contents = toc([(re.sub('<[^>]+>', '', t), a) for a, t in heads], heads[0][0])
+        text = f'<div class="page3"><aside>{contents}</aside>{text.replace("margin-top:22px", "margin-top:0")}</div>'
+    body = titlebar(None, pg['title'], f'Updated {escape(pg["updated"])}', ctl=tabs, top=header(*VIEWER, '')) + f'<main class="w st">{text}</main>'
     return site_page(pg['title'], body)
 
 
@@ -137,7 +139,7 @@ def not_found_page() -> str:
     picks = row_list([(f'<img class="ai" src="{D.crest_uri(c["slug"])}" width="30" height="30" alt="" style="border-radius:50%">',
                        f'<a href="#" style="color:{D.CLASS_COLOR[c["slug"]]}">{escape(c["name"])}</a>', '', '') for c in classes])
     did = panel(nf['didYouMean'], f'<p><a href="#">{escape(sug["page"][1])} &rsaquo;</a></p>', framed=True)
-    body = (titlebar(None, nf['title'], escape(nf['job']), top=header(*VIEWER, ''))
+    body = (titlebar(None, nf['title'], escape(nf['job'].split('. ', 1)[0] + '.'), top=header(*VIEWER, ''))
             + f'<main class="w st" style="max-width:980px">{did}{panel(nf["pick"], "<div style=columns:3;column-gap:24px>" + picks + "</div>")}</main>')
     return site_page('page not found', body)
 
@@ -157,7 +159,7 @@ def guild_landing_page() -> str:
                       f'{reg.upper()} {GD.RULESET_WORD[rs]}', f'<span class="num">{k}</span> boss{"" if k == 1 else "es"} down')
                      for n, reg, rs, k in top])
     find = field('Guild name', '<a class="btn" href="#">Open</a>') + settings_bar([('Region', 'US'), ('Ruleset', 'Normal')]).replace('card setb', 'setb" style="margin-top:6px;padding:8px 2px 0')
-    main = panel('Open a guild', find, framed=True) + panel('Top guilds', rows)
+    main = panel('Open a guild', f'<div class="pick">{find}</div>', framed=True) + panel('Top guilds', rows)
     rail = panel('Your guilds', row_list([(f'<img src="{emblem("alliance")}" width="30" height="30" alt="">', '<a href="#" style="color:#fff">Olympus XXVII</a>', 'US PvP', tag('Officer', 'gold'))]))
     body = titlebar(None, 'Guilds', '', top=header(*VIEWER, 'Guild')) + f'<main class="w st"><div class="twocol"><div>{main}</div><aside>{rail}</aside></div></main>'
     return site_page('guilds', body)
@@ -168,19 +170,33 @@ def creators_page() -> str:
     pr = creators_facts()['program']
     secs = ''.join(reading_section(s['title'], ''.join(f'<p>{escape(p)}</p>' for p in s['paragraphs']), [], s['id']) for s in pr['sections'])
     contents = toc([(s['title'], s['id']) for s in pr['sections']], pr['sections'][0]['id'])
-    body = (titlebar(None, pr['pageTitle'], escape(pr['lead']), top=header(*VIEWER, ''))
-            + f'<main class="w st"><p style="margin-top:22px"><a class="btn" href="#">{escape(pr["apply"])}</a></p>'
-            f'<div class="page3"><aside>{contents}</aside><section class="card">{secs}</section></div></main>')
+    body = (titlebar(None, pr['pageTitle'], '', right=f'<a class="btn" href="#">{escape(pr["apply"])}</a>', top=header(*VIEWER, ''))
+            + f'<main class="w st"><p class="lede">{escape(pr["lead"])}</p><div class="page3"><aside>{contents}</aside><section class="card">{secs}</section></div></main>')
     return site_page('creators', body)
+
+
+def weeks_table(lines: list[str]) -> str:
+    """'Week of 30 Nov: 61 signed up · 38 returning · 11 paying' as a table row; the newest week fills in over 14 days."""
+    rows = []
+    parsed = []
+    for ln in lines:
+        week, rest = ln.split(':', 1)
+        nums = {k: int(v) for v, k in re.findall(r'(\d+) (signed up|returning|paying)', rest)}
+        parsed.append((week, nums, 'so far' in rest))
+    top = max((n.get('signed up', 0) for _, n, _ in parsed), default=1) or 1
+    for week, n, partial in parsed:
+        rows.append([escape(week) + (' <span class="muted">so far</span>' if partial else ''), meter(n.get('signed up', 0) / top),
+                     str(n.get('signed up', 0)), str(n['returning']) if 'returning' in n else '&ndash;', str(n['paying']) if 'paying' in n else '&ndash;'])
+    return table([('Week', False), ('', False), ('Signed up', True), ('Returning', True), ('Paying', True)], rows, hide_phone={1})
 
 
 def creator_stats_page() -> str:
     st = creators_facts()['stats']
-    figs = '<div class="figs">' + ''.join(f'<div class="{"lead" if f["lead"] else ""}"><b class="num">{escape(f["value"])}</b><span>{escape(f["label"])} &middot; {escape(f["note"])}</span></div>'
-                                          for f in st['figures']) + '</div>'
-    weeks = row_list([('', escape(w.split(':', 1)[0]), escape(w.split(':', 1)[1].strip()), '') for w in st['weeks']])
+    figs = '<div class="figs">' + ''.join(f'<div class="{"lead" if f["lead"] else ""}"><b class="num">{escape(f["value"])}</b><span>{escape(f["label"])}'
+                                          + (' &middot; estimate' if f['lead'] else '') + '</span></div>' for f in st['figures']) + '</div>'
+    weeks = weeks_table(st['weeks'])
     c = st['copy']
-    main = panel(c['summaryLabel'], figs, framed=True) + panel(c['playersTitle'], weeks)
+    main = panel(c['summaryLabel'], figs, framed=True) + panel(c['playersTitle'], weeks, flush=True)
     rail = panel(c['payoutsTitle'], f'<p class="muted" style="font-size:14px">{escape(st["payoutsEmpty"])}</p><p style="margin-top:12px"><a class="btn2" href="#">{escape(st["dashboard"])}</a></p>')
     body = titlebar(None, st['name'], escape(st['meta']), top=header(*VIEWER, '')) + f'<main class="w st"><div class="twocol"><div>{main}</div><aside>{rail}</aside></div></main>'
     return site_page('creator stats', body)

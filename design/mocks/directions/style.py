@@ -227,7 +227,7 @@ def tooltip(class_slug: str, item_id: int, ours: str = '') -> str:
 
 
 def footer() -> str:
-    links = ''.join(f'<a href="#">{n}</a>' for n in ('Get set up', 'Addon', 'Discord', 'Premium', 'Privacy', 'Terms'))
+    links = ''.join(f'<a href="#">{n}</a>' for n in ('Get set up', 'Addon', 'Discord', 'Premium', 'Report a bug', 'Privacy', 'Terms'))
     return (f'<footer class="foot"><div class="w"><span class="seal"><img src="{logo_uri(256)}" alt="">Forever Sixty</span>{links}'
             f'<span class="nb">A fan-made player tool. Not affiliated with Blizzard.</span></div></footer>')
 
