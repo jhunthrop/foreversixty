@@ -316,7 +316,9 @@ export function compGridRows(counts: GuildRaidCounts, target: GuildCompTarget): 
       cells: [
         { tone: 'none', text: String(want), label: `Needs ${want}` },
         { tone, text: String(have), label: `${have} in` },
-        short > 0 ? { tone, text: String(short), label: `${short} short` } : { tone: 'none', text: '—', label: 'None short' },
+        short > 0
+          ? { tone, text: String(short), label: `${short} short` }
+          : { tone: 'none', text: '—', label: 'None short' },
       ],
     };
   });

@@ -25,15 +25,18 @@
 <Section title="Cover, thinnest first" panel flush testid="guild-overview-cover">
   {#snippet head()}
     {#if sorted.length > SHOWN}
-      <Button
-        tone="ghost"
-        size="sm"
-        onclick={() => (all = !all)}
-        testid="guild-cover-all">{all ? 'Fewer' : `All ${sorted.length}`}</Button
+      <Button tone="ghost" size="sm" onclick={() => (all = !all)} testid="guild-cover-all"
+        >{all ? 'Fewer' : `All ${sorted.length}`}</Button
       >
     {/if}
   {/snippet}
-  <Grid caption="Buff and debuff cover against signed-up raiders" columns={['Need', 'In']} {rows} edge testid="guild-cover">
+  <Grid
+    caption="Buff and debuff cover against signed-up raiders"
+    columns={['Need', 'In']}
+    {rows}
+    edge
+    testid="guild-cover"
+  >
     {#snippet lead(row)}
       <SpellIcon url={coverIconUrl(activeBuild.build, row.row)} size={24} name={row.row.name} />
     {/snippet}

@@ -371,4 +371,3 @@ describe('raid time and cover rows', () => {
     ]);
   });
 });
-

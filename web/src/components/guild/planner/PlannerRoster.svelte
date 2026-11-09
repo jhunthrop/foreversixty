@@ -54,9 +54,7 @@
 <div class={closed ? 'opacity-60' : undefined} data-testid="raid-roster">
   <div role="region" aria-label="Sign-ups">
     {#if empty}
-      <p class="text-muted py-3 text-[14px]" data-testid="raid-roster-empty">
-        Nobody has signed up yet.
-      </p>
+      <p class="text-muted py-3 text-[14px]" data-testid="raid-roster-empty">Nobody has signed up yet.</p>
     {:else}
       {#each groups as group (group.id)}
         <div class="pb-1" data-testid={`raid-roster-${group.id}`}>

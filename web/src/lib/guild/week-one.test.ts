@@ -240,7 +240,12 @@ describe('progression view', () => {
 
   it('a boss line counts pulls, wipes and deaths, and the first kill only when the API sent it', () => {
     const now = new Date(2026, 11, 20);
-    const onyxia = encounter({ pulls: 2, kills: 1, deaths_per_pull: 3.5, first_kill_at: '2026-12-16T19:00:00Z' });
+    const onyxia = encounter({
+      pulls: 2,
+      kills: 1,
+      deaths_per_pull: 3.5,
+      first_kill_at: '2026-12-16T19:00:00Z',
+    });
     expect(bossLine(onyxia, now)).toBe('2 pulls · 1 wipe · 3.5 deaths a pull · first kill Wed 16 Dec');
     expect(bossLine({ ...onyxia, first_kill_at: null, kills: 0, pulls: 1 }, now)).toBe(
       '1 pull · 1 wipe · 3.5 deaths a pull',

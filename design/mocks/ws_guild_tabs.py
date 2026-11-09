@@ -105,24 +105,58 @@ def progression():
 
 
 # ---------------------------------------------------------------- Readiness
+def shortfalls(r: dict, raid: dict) -> list[str]:
+    """What a raider is short of (readiness-view readinessShortfalls), worst first."""
+    if r['no_export']:
+        return ['no export yet']
+    out = []
+    n = (r['gear_gap'] or {}).get('upgrades') or 0
+    if n:
+        out.append(f"{n} upgrade{'' if n == 1 else 's'}")
+    miss = len(r['enchants']['missing_slots']) if r['enchants']['checked'] else 0
+    if miss:
+        out.append(f"{miss} enchant{'' if miss == 1 else 's'} missing")
+    if r['consumables']['state'] == 'short':
+        out.append('consumables short')
+    if r['talent_points_unspent']:
+        out.append(f"{r['talent_points_unspent']} talent point{'' if r['talent_points_unspent'] == 1 else 's'} unspent")
+    if raid.get('attunement') and r.get('attuned') is False:
+        out.append('not attuned')
+    ff = r.get('flask_food')
+    if ff is not None and r['consumables']['state'] != 'short':
+        if not ff['flask_or_elixir']:
+            out.append('no flask or raid elixir')
+        if not ff['food']:
+            out.append('no buff food')
+    return out
+
+
 def readiness():
+    """Readiness by exception (batch 3, b3-guild-readiness): who is short of what first, the tanks' fire resistance on its own
+    panel (a raid that asks for it), then who is ready."""
     page = F.readiness(True)
-    order = page['rows']  # worst first; no raider has a failing check, so the roster's order holds
-    heads = ['Raider', 'Gear gap', 'Enchants', 'Consumables', 'Talent points', 'Avg item level', 'Last synced', '']
-    cols = 'grid-template-columns:minmax(120px,170px) minmax(120px,170px) minmax(120px,170px) 100px 100px 140px 128px 84px'
-    head = f'<div style="display:grid;{cols};gap:8px;padding:12px 16px 8px">' + ''.join(f'<span class="t-small">{h}</span>' for h in heads) + '</div>'
-    rows = ''.join(
-        f'<div style="display:grid;{cols};gap:8px;align-items:center;min-height:56px;padding:0 12px;margin:0 4px" class="rrow">'
-        f'<span style="display:flex;gap:8px;align-items:center">{crest_img(r["class"], 26)}<b style="color:{C[r["class"]]}">{r["name"]}{" (you)" if r["name"] == O.OFFICER else ""}</b></span>'
-        f'<span class="t-small">No upgrades</span><span class="kill">All enchanted</span><span class="{"kill" if r["consumables"]["state"] == "stocked" else "wipe"}">'
-        f'{"Stocked" if r["consumables"]["state"] == "stocked" else "Short"}</span><span class="t-small">None unspent</span><span>{r["item_level"]}<span class="t-small" style="display:block">at the raid median</span></span>'
-        f'<span class="gold">Synced today</span>{Button("Nudge", small=True, act=True)}</div>' for r in order)
-    at = guild_time(page['raid']['starts_at'])
+    raid = page['raid']
+    rows = sorted(page['rows'], key=lambda r: -r['failing'])  # worst first; the board's sort holds ties in the API's order
+    short = [(r, shortfalls(r, raid)) for r in rows if shortfalls(r, raid)]
+    ready = [r for r in rows if not shortfalls(r, raid)]
+    at = guild_time(raid['starts_at'])
+    listed = Rows([Row(r['name'], f"{r['spec']} {r['class'].title()} &middot; item level {r['item_level']}", lead=crest_img(r['class'], 30), title_color=C[r['class']],
+                       foot=f'<span class="gold" style="font-size:13px">{" &middot; ".join(why)}</span>', trail=Button('Nudge', small=True, act=True), link=False)
+                   for r, why in short], list_=True)
     toggle = Button(f'Next raid &middot; {day_label(at)}', small=True, act=True)
-    showing = _p(f'Showing the {len(order)} signed In or Late for <a class="link" href="#">Onyxia&rsquo;s Lair</a>, {day_label(at)}, {_hour(at)}.')
-    body = _col(showing, Plate(head + f'<div class="ruled">{rows}</div>', 'Readiness board'),
-                _p('Sorted by the most checks to fix, then the biggest gear gap. Nudge copies a message you can paste to them.'), gap=12)
-    return _tab('Guild readiness', 'Readiness', Page('ledger', Section('Readiness', pad(body), action=toggle)))
+    body = Section('Short of something', listed, toggle, meta=f'In or Late for {day_label(at)}', panel=True, frame='framed')
+    if raid.get('fire_resistance'):
+        signups = F.raid_view(O.OFFICER, True)['signups']
+        tanks = [x for x in signups if x['role'] == 'tank' and x['state'] in ('in', 'late')]
+        fire = {r['name']: (r.get('resistances') or {}).get('fire') for r in page['rows']}
+        trows = Rows([Row(t['name'], title_color=C[t['class']], link=False, slim=True,
+                          trail=f'<span style="font-size:14px;font-weight:600">{fire[t["name"]]} fire resistance</span>' if fire.get(t['name']) is not None
+                          else '<span>Fire resistance not shared</span>') for t in tanks], list_=True)
+        body += Section('Fire resistance on tanks', trows, meta=f"{len(tanks)} tank{'' if len(tanks) == 1 else 's'}", panel=True)
+    names = '<span class="t-small">, </span>'.join(f'<span style="color:{C[r["class"]]}">{r["name"]}</span>' for r in ready)
+    body += Section(f'{len(ready)} ready', f'<p style="font-size:14px;line-height:23px">{names}</p>',
+                    meta='Best in slot or no upgrades, enchanted, stocked, every point spent', panel=True)
+    return _tab('Guild readiness', 'Readiness', Page('ledger', _col(body, gap=22)).replace('padding-top:20px', 'padding-top:28px', 1))
 
 
 PAGES: dict = {'web-guild-roster': roster, 'web-guild-progression': progression, 'web-guild-readiness': readiness}

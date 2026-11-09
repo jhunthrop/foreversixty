@@ -860,7 +860,9 @@
           {/snippet}
           {#snippet meta()}
             <span data-testid="guild-header-facts">
-              <FactLine facts={bandFacts(rulesetLabel(resolved.ruleset), resolved.region, home?.summary?.raiders)} />
+              <FactLine
+                facts={bandFacts(rulesetLabel(resolved.ruleset), resolved.region, home?.summary?.raiders)}
+              />
             </span>
           {/snippet}
           {#snippet tabs()}
@@ -1087,7 +1089,7 @@
           raid={readinessView.raid}
           nextRaidOnly={readinessNextRaidOnly}
           onToggleNextRaid={() => (readinessNextRaidOnly = !readinessNextRaidOnly)}
-          raidHref={readinessView.raidId === null ? null : guildRaidHref(guildPath, readinessView.raidId)}
+          {guildId}
           guildTimezone={readinessView.guildTimezone}
           officer={officerView}
           {officerTools}

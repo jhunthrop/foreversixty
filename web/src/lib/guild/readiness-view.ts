@@ -303,3 +303,63 @@ export function nudgeText(row: GuildReadinessRow): string {
 function capitalize(value: string): string {
   return value.length === 0 ? value : value[0].toUpperCase() + value.slice(1);
 }
+
+/** The board by exception (batch 3): what a raider is short of, in a raid leader's words, worst
+ *  first: gear, enchants, consumables, talents, then the raid's own asks (attunement, flask and
+ *  food) and an export too old or missing. Empty for a raider short of nothing. `raid` is the
+ *  next raid's board header when the board is cut to it. */
+export function readinessShortfalls(
+  row: GuildReadinessRow,
+  raid: { attunement?: boolean } | null = null,
+): string[] {
+  if (row.no_export) return [NO_EXPORT];
+  const out: string[] = [];
+  const upgrades = row.gear_gap?.upgrades ?? 0;
+  if (upgrades > 0) out.push(counted(upgrades, 'upgrade'));
+  const missing = row.enchants.checked ? row.enchants.missing_slots.length : 0;
+  if (missing > 0) out.push(`${counted(missing, 'enchant')} missing`);
+  if (row.consumables.state === 'short') out.push('consumables short');
+  if (row.talent_points_unspent > 0)
+    out.push(`${counted(row.talent_points_unspent, 'talent point')} unspent`);
+  if (raid?.attunement === true && row.attuned === false) out.push('not attuned');
+  const flaskFood = row.flask_food;
+  if (flaskFood != null && row.consumables.state !== 'short') {
+    if (!flaskFood.flask_or_elixir) out.push('no flask or raid elixir');
+    if (!flaskFood.food) out.push('no buff food');
+  }
+  if (row.synced_before_cutoff === true) out.push('export out of date');
+  return out;
+}
+
+/** The board's three lists: who is short of something (worst first), who is ready, and who is still
+ *  leveling. A raider the site could read nothing for is short of their export. */
+export function readinessLists(
+  rows: readonly GuildReadinessRow[],
+  raid: { attunement?: boolean } | null = null,
+): {
+  short: { row: GuildReadinessRow; shortfalls: string[] }[];
+  ready: GuildReadinessRow[];
+  leveling: GuildReadinessRow[];
+} {
+  const { graded, leveling } = readinessGroups(sortReadinessWorstFirst(rows));
+  const short: { row: GuildReadinessRow; shortfalls: string[] }[] = [];
+  const ready: GuildReadinessRow[] = [];
+  for (const row of graded) {
+    const shortfalls = readinessShortfalls(row, raid);
+    if (shortfalls.length > 0) short.push({ row, shortfalls });
+    else if (anyCheckRead(row)) ready.push(row);
+    else short.push({ row, shortfalls: [NOTHING_SHARED] });
+  }
+  return { short, ready, leveling };
+}
+
+/** A graded raider with nothing shared: Gear, bags and talents all unread. */
+export const NOTHING_SHARED = 'nothing shared';
+export const NO_EXPORT = 'no export yet';
+/** The ready panel's meta: what ready means. */
+export const READY_MEANS = 'Best in slot or no upgrades, enchanted, stocked, every point spent';
+
+/** A signed tank's fire resistance on the board (a raid that asks for it), or not shared. */
+export function tankFireLine(fire: number | null | undefined): string {
+  return typeof fire === 'number' ? `${fire} fire resistance` : 'Fire resistance not shared';
+}

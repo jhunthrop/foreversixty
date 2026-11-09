@@ -31,7 +31,13 @@ describe('coverThinnestFirst', () => {
       row({ key: 'trueshot', providers_in: 1, likely: 1 }),
       row({ key: 'sunder', kind: 'debuff' }),
     ];
-    expect(coverThinnestFirst(rows).map((r) => r.key)).toEqual(['lotp', 'sunder', 'trueshot', 'motw', 'kings']);
+    expect(coverThinnestFirst(rows).map((r) => r.key)).toEqual([
+      'lotp',
+      'sunder',
+      'trueshot',
+      'motw',
+      'kings',
+    ]);
   });
 
   it('reads nothing as an empty list and never reorders its input', () => {

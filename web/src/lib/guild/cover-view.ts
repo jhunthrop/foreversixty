@@ -15,7 +15,9 @@ const TONE_ORDER: Readonly<Record<CoverTone, number>> = { miss: 0, warn: 1, ok: 
 
 /** The cover, thinnest first: nobody, then too few or only on a talent we cannot see, then covered;
  *  within each the fewest signed first, else the API's order (party buffs, raid buffs, debuffs). */
-export function coverThinnestFirst(rows: readonly GuildRaidCoverRow[] | null | undefined): GuildRaidCoverRow[] {
+export function coverThinnestFirst(
+  rows: readonly GuildRaidCoverRow[] | null | undefined,
+): GuildRaidCoverRow[] {
   return [...(rows ?? [])].sort(
     (a, b) => TONE_ORDER[coverTone(a)] - TONE_ORDER[coverTone(b)] || coverSigned(a) - coverSigned(b),
   );

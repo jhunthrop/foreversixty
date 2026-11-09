@@ -35,7 +35,8 @@ export interface ProgressionZone {
 /** One panel per zone with a boss pulled: the zone's bosses down of its named bosses. */
 export function progressionZones(encounters: readonly GuildProgressionEncounter[]): ProgressionZone[] {
   const zones = new Map<string, GuildProgressionEncounter[]>();
-  for (const encounter of encounters) zones.set(encounter.zone, [...(zones.get(encounter.zone) ?? []), encounter]);
+  for (const encounter of encounters)
+    zones.set(encounter.zone, [...(zones.get(encounter.zone) ?? []), encounter]);
   return [...zones.entries()]
     .map(([zone, list]) => ({
       zone,

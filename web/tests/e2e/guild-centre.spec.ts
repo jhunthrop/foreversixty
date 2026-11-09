@@ -1326,9 +1326,7 @@ test.describe('guild facts read as sentences (P.1)', () => {
       await page.goto(GUILD_URL);
       const header = page.getByTestId('guild-header-facts');
       await expect(header).toBeVisible();
-      expect(await words(header)).toMatch(
-        /^US PvP( · \d+ raiders?)?$/,
-      );
+      expect(await words(header)).toMatch(/^US PvP( · \d+ raiders?)?$/);
       const raidFacts = page.getByTestId('guild-overview-raid-facts').first();
       expect(await words(raidFacts)).toMatch(/ · /);
       for (const line of [header, raidFacts]) {

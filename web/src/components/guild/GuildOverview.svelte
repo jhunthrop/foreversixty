@@ -183,7 +183,15 @@
 
 {#snippet plate()}
   {#if nextRaid !== null}
-    <NextRaidPlate next={nextRaid} {raid} {officer} {planHref} {viewerTz} now={clock.now} you={officer ? undefined : you} />
+    <NextRaidPlate
+      next={nextRaid}
+      {raid}
+      {officer}
+      {planHref}
+      {viewerTz}
+      now={clock.now}
+      you={officer ? undefined : you}
+    />
   {:else if member && lead === undefined}
     <Notice
       text="No raid planned yet."

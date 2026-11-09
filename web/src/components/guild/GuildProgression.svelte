@@ -115,7 +115,13 @@
   {:else}
     <Page layout="ledger" panels testid="guild-progression-page">
       {#each zones as zone (zone.zone)}
-        <Section title={zone.zone} panel frame="framed" meta={bossesDownMeta(zone)} testid="guild-progression-zone">
+        <Section
+          title={zone.zone}
+          panel
+          frame="framed"
+          meta={bossesDownMeta(zone)}
+          testid="guild-progression-zone"
+        >
           <div class="flex flex-col gap-2">
             <Meter
               value={zone.named === 0 ? 0 : zone.down / zone.named}
@@ -125,7 +131,12 @@
             <ul>
               {#each zone.pulled as encounter (encounter.encounter_id)}
                 <li>
-                  <Row title={encounter.name} sub={bossLine(encounter, now)} open testid="guild-progression-encounter">
+                  <Row
+                    title={encounter.name}
+                    sub={bossLine(encounter, now)}
+                    open
+                    testid="guild-progression-encounter"
+                  >
                     {#snippet lead()}<ItemIcon
                         icon={raidZoneIcon(encounter.zone)}
                         quality={5}
@@ -140,7 +151,9 @@
                           {#each best as { role, parse }, index (role)}
                             {#if index > 0}<span aria-hidden="true">&nbsp;·&nbsp;</span>{/if}
                             <span class="text-muted">{topOutputLabel(parse.metric, role)}</span>
-                            <span style={`color:${classColorVar(parse.class)};font-weight:700`}>{parse.name}</span>
+                            <span style={`color:${classColorVar(parse.class)};font-weight:700`}
+                              >{parse.name}</span
+                            >
                             <span class="tabular-nums">{outputFigure(parse.value)}</span>
                           {/each}
                         </span>

@@ -492,7 +492,6 @@
       testid="guild-roster-card"
     >
       <div class="flex flex-col gap-4">
-
         <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-filters">
           <span class="quiet-label">Filter</span>
           <button class={FILTER_BTN} onclick={cycleRole} data-testid="guild-roster-filter-role">

@@ -84,7 +84,6 @@ describe('GuildUnverifiedNote', () => {
   });
 });
 
-
 describe('joinedPlanLine', () => {
   const covered = (over: Partial<GuildCoveredView>): GuildCoveredView => ({
     tier: 'raid_guild',

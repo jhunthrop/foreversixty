@@ -396,7 +396,7 @@ test.describe('every control is at least 44 px tall at 360', () => {
     });
   }
 
-  test('the Raids tab and the Roster\'s raid strip', async ({ page }) => {
+  test("the Raids tab and the Roster's raid strip", async ({ page }) => {
     await openRaidsTab(page, { viewer: 'officer', raids: threePlanned() });
     expect(await shortControls(page.getByTestId('guild-raids-tab'))).toEqual([]);
     await page.getByTestId('guild-tab-roster').click();
