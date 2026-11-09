@@ -287,7 +287,9 @@ CREATE TABLE `gameobject_template` (
 ) ENGINE=MyISAM;
 INSERT INTO `gameobject_template` VALUES
   (179703,3,'Cache of the Firelord',16719),
-  (400,3,'Locked Chest',0);
+  (400,3,'Locked Chest',0),
+  (17280,7,'Wooden Chair',1),
+  (180248,25,'School of Tastyfish',17280);
 
 CREATE TABLE `gameobject` (
   `guid` int,
@@ -299,7 +301,8 @@ INSERT INTO `gameobject` VALUES (1,179703,409),(2,400,409);
 CREATE TABLE `gameobject_loot_template` ({_CHEST_OWNER_LOOT_COLUMNS}) ENGINE=MyISAM;
 INSERT INTO `gameobject_loot_template` VALUES
   (16719,18803,0,0,1,1,0,'Cache loot'),
-  (400,90050,50,0,1,1,0,'Chest loot');
+  (400,90050,50,0,1,1,0,'Chest loot'),
+  (17280,19808,0.1,0,1,1,0,'Tastyfish loot');
 
 CREATE TABLE `npc_vendor` (
   `entry` mediumint, `item` mediumint, `maxcount` tinyint, `incrtime` int,
@@ -342,6 +345,15 @@ def test_an_ordinary_chest_with_no_data1_keeps_its_own_entry_and_is_not_a_reward
     assert record.object_id == 400
     assert record.name == "Locked Chest"
     assert record.is_reward_chest is False
+
+
+def test_a_fishing_pools_loot_is_a_catch_not_the_chair_that_shares_its_number():
+    """Loot key 17280 is the School of Tastyfish pool's `data1`; the Wooden
+    Chair is gameobject 17280 by coincidence (feedback 2026-11-09: Rockhide
+    Strongfish published as a "Wooden Chair" drop)."""
+    items = cs.parse_classic_db_sources(_CHEST_OWNER_SQL)
+    assert [(r.kind, r.name, r.chance) for r in items[19808]] == [("fishing", "Fishing", 0.1)]
+    assert cs.fishing_hole_loot_ids(_CHEST_OWNER_SQL) == frozenset({17280})
 
 
 def test_chest_owner_by_loot_id_inverts_data1_to_the_owning_entry():

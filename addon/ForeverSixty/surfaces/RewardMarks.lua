@@ -1,24 +1,26 @@
 -- addon/ForeverSixty/surfaces/RewardMarks.lua
--- The quest reward and roll marks (spec section 4.4, task L4.2): which one is for me?
+-- The quest reward and roll marks (design/specs/2026-11-08-addon-ux.md section 2.4): which one
+-- is for me?
 --
--- On the quest frame's reward choices, "Best for Arms" in gold on the choice the weights
--- prefer, and "Vendor", muted, on each choice when none is of any use to the character now
--- (every one scores nothing over what is worn, or cannot be worn yet). On a group loot roll
--- frame, the item tooltip's own verdict line beside the item ("Upgrade +4.2 DPS over Worn
--- Chest", "Sidegrade", "Downgrade ...", "Not for you until 40: plate armor", "Not with your
--- two-hander").
+-- On the quest frame's reward choices: the green arrow on the icon of the reward with the best
+-- gain from the 1.0 floor (only one), "Best in slot" in gold under the name of the reward that
+-- is the band's pick (it may be the same one), and, when no reward helps, "Sells for most",
+-- muted, under the reward with the highest sell price (the client's own GetItemInfo price, so
+-- it is exact); nothing on the others. A reward the character cannot use gets no label: its
+-- hover says why. On a group loot roll frame, the green arrow on the item's icon when it is an
+-- upgrade and one short line under the item's name: "+5.8 DPS", "+5.8 DPS · Best in slot",
+-- "Best in slot", "Sidegrade", "Downgrade", "Not for you". No source: the item is dropping in
+-- front of the player.
 --
--- One verdict source (ruling 1): every item is judged by ItemTooltip.judge, the part of the
--- tooltip's own section that scores it (Gear.currentWeights through Progress.itemVerdict,
--- the Rules.canEquip gate, the two-hander pair rule, the empty-slot fill and the 1.0 floor),
--- so a reward's label, a roll's line and the item's tooltip can never disagree.
+-- One verdict source: every item is judged by ItemTooltip.judge, the part of the tooltip's own
+-- section that scores it, so a reward's label, a roll's line and the item's tooltip can never
+-- disagree.
 --
--- The L4.1 taint rule: nothing is ever written into a client frame. Each label and line is
--- drawn on an addon-owned overlay frame parented to the client's reward button or roll
--- frame (no name, no scripts), so it shows and hides with it; the overlays are made the
--- first time one is needed, never at load. The only client hook is a hooksecurefunc on
--- QuestInfo_Display (the reward list redrawn, for the quest frame or the quest log).
--- Nothing polls. The marks follow the "Gear tips on item tooltips" switch (ruling 6).
+-- The taint rule: nothing is ever written into a client frame. Each label, line and arrow is
+-- drawn on an addon-owned overlay frame parented to the client's reward button or roll frame
+-- (no name, no scripts), so it shows and hides with it; the overlays are made the first time
+-- one is needed, never at load. The only client hook is a hooksecurefunc on QuestInfo_Display.
+-- Nothing polls. The marks follow the "Gear tips on item tooltips" switch.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -65,40 +67,52 @@ local function scorable(base)
 	return type(base) == "table" and type(base.current) == "table" and type(base.current.weights) == "table"
 end
 
---- One item judged as the tooltip judges it: { itemId, gear, pending, wearable, gain,
---- upgrade, primary, waits }. `gear`: it goes in a slot the plan covers; `pending`: the
---- client has not sent it yet (nothing else is said); `wearable`: the character can put it
---- on now (Rules allow it and no worn two-hander holds the hand); `gain`: its gain over
---- what is worn, rounded as shown (ItemTooltip.verdictLine's own figure; nil where it
---- cannot be scored); `upgrade`: its tooltip calls it one (fix round 1: from the 1.0 floor
---- over a worn item, at any gain that shows into an empty slot: the line in the success
---- colour); `primary`: the tooltip's own verdict line ({ text, color, kind?, ... });
---- `waits`: the item ids that line still waits on (a worn item's name not sent yet).
+--- Whether `ctx`'s item is the band's own pick at the character's level (ItemTooltip.plannedBand
+--- at the current band).
+local function isBandPick(ctx)
+	local data = ctx.data or {}
+	local specBis = ctx.spec ~= nil and type(data.bis) == "table" and data.bis[ctx.spec] or nil
+	local band = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
+	if band == nil then
+		return false
+	end
+	return ItemTooltip.plannedBand(data, ctx.spec, ctx.faction, Gear.slotsFor(ctx.item.equipLocation),
+		ctx.item.itemId, ctx.level) == band
+end
+
+--- One item judged as the tooltip judges it: { itemId, gear, pending, wearable, gain, upgrade,
+--- isPick, sellPrice, primary, waits }. `gear`: it goes in a slot the plan covers; `pending`:
+--- the client has not sent it yet (nothing else is said); `wearable`: the character can put it
+--- on now; `gain`: its gain over what is worn, rounded as shown (nil where it cannot be
+--- scored); `upgrade`: its tooltip calls it one; `isPick`: it is the band's pick; `sellPrice`:
+--- the client's vendor price in copper (0 or nil: none); `primary`: the tooltip's own verdict
+--- line; `waits`: the item ids that line still waits on.
 function RewardMarks.judge(link, base)
 	local ctx = ItemTooltip.withItem(base, link)
 	local itemId = ctx.item.itemId
-	-- The item itself first (fix round 1): gear the client has not sent is not judged at all.
+	-- The item itself first: gear the client has not sent is not judged at all.
 	if itemId ~= nil and #Gear.slotsFor(ctx.item.equipLocation) > 0 and not Compat.isItemCached(itemId) then
 		return { itemId = itemId, gear = true, pending = true, waits = {} }
 	end
 	local waits = {}
 	local judged = ItemTooltip.judge(ctx, waits)
-	local result = { itemId = itemId, gear = judged.gear, primary = judged.primary, waits = waits }
+	local result = { itemId = itemId, gear = judged.gear, primary = judged.primary, waits = waits,
+		sellPrice = Compat.itemSellPrice(link) }
 	if not judged.gear then
 		return result
 	end
 	result.wearable = #judged.usable > 0
+	result.isPick = result.wearable and isBandPick(ctx)
 	local verdict = judged.verdict
 	if verdict ~= nil and verdict.delta ~= nil then
 		local gain = Progress.roundedGain(-verdict.delta, judged.unit == "score" and "score" or "dps")
-		result.gain = gain
+		result.gain, result.unit = gain, judged.unit
 		result.upgrade = (verdict.state == "empty" and gain > 0) or gain >= Progress.MIN_GAIN
 	elseif judged.wornSlot ~= nil then
 		result.gain = 0
 	end
 	return result
 end
-
 --- Every id a judgement waits on goes to RewardMarks.waiting: its GET_ITEM_INFO_RECEIVED
 --- redraws the label or the line (fix round 1: a worn item's name too).
 local function noteWaits(judged)
@@ -111,44 +125,91 @@ local function noteWaits(judged)
 end
 
 --- The labels for `count` reward choices from their judgements (RewardMarks.judge's, by
---- choice index): { [index] = { text, color, kind } }.
+--- choice index): { [index] = { text?, color?, kind, arrow? } }.
 ---
---- - "Best for <specWord>" (gold) on the choice with the biggest gain that the character
----   can wear now and that its tooltip calls an upgrade (the first on a tie): a plate choice
----   at 21 never is, nor a +0.3 Sidegrade (fix round 1: that one gets no label at all);
---- - "Vendor" (muted) on every choice only when none is of any use: each is gear that
----   scores nothing over what is worn (a gain of 0 or less as shown) or cannot be worn
----   now. A choice that is not gear, or gear the weights cannot price, may be of use: no
----   Vendor then;
+--- - the arrow on the choice with the biggest gain the character can wear now that its
+---   tooltip calls an upgrade (the first on a tie): never a plate choice at 21, never a +0.3
+---   Sidegrade;
+--- - "Best in slot" (gold) under the choice that is the band's pick, wearable now;
+--- - with neither, and only when no choice is of any use (each is gear that scores nothing over
+---   what is worn, or cannot be worn now; a choice that is not gear, or that the weights cannot
+---   price, may be of use): "Sells for most" (muted) under the choice with the highest sell
+---   price, none when no choice sells;
 --- - nothing at all while a choice is still on its way from the client.
-function RewardMarks.rewardLabels(judgements, count, specWord)
+function RewardMarks.rewardLabels(judgements, count)
 	local labels = {}
 	local best, bestGain
 	local useless = count > 0
 	for index = 1, count do
 		local judged = judgements[index]
 		if type(judged) ~= "table" or judged.pending then
-			return labels
+			return {}
 		end
 		if not judged.gear or (judged.wearable and judged.gain == nil) then
 			useless = false
-		elseif judged.wearable and judged.gain > 0 then
+		elseif judged.wearable and (judged.gain > 0 or judged.isPick) then
 			useless = false
 			if judged.upgrade and (bestGain == nil or judged.gain > bestGain) then
 				best, bestGain = index, judged.gain
 			end
 		end
+		if judged.isPick then
+			labels[index] = { kind = "best", text = L.rewardBest, color = "parchmentGold" }
+		end
 	end
 	if best ~= nil then
-		if specWord ~= nil then
-			labels[best] = { text = string.format(L.rewardBest, specWord), color = "gold", kind = "best" }
-		end
-	elseif useless then
+		labels[best] = labels[best] or { kind = "upgrade" }
+		labels[best].arrow = true
+	end
+	if next(labels) == nil and useless then
+		local richest, price
 		for index = 1, count do
-			labels[index] = { text = L.rewardVendor, color = "muted", kind = "vendor" }
+			-- A reward the character cannot use gets no label (its hover says why).
+			local sell = judgements[index].wearable and tonumber(judgements[index].sellPrice) or 0
+			if sell > 0 and (price == nil or sell > price) then
+				richest, price = index, sell
+			end
+		end
+		if richest ~= nil then
+			labels[richest] = { kind = "vendor", text = L.rewardSellsForMost, color = "parchmentMuted" }
 		end
 	end
 	return labels
+end
+
+--- The roll frame's short verdict for a judgement (spec 2.4): { text, arrow? } with the colours
+--- inline: "+5.8 DPS" green with the arrow, "+5.8 DPS · Best in slot" (green, gold), "Best in
+--- slot" (gold), "Sidegrade", "Downgrade", "Not for you" (grey). nil for an item that is not gear,
+--- is still on its way, or cannot be priced. Pure.
+function RewardMarks.rollLine(judged)
+	if type(judged) ~= "table" or not judged.gear or judged.pending then
+		return nil
+	end
+	local function paint(key, text)
+		return Theme.inlineColor(key, text)
+	end
+	local best = paint("clientGold", L.rewardBest)
+	if judged.wearable == false or (judged.primary ~= nil and judged.primary.kind == "refusal") then
+		return { text = paint("tooltipMuted", L.rollNotForYou) }
+	end
+	if judged.upgrade then
+		local text = paint("tooltipGreen", ItemTooltip.figure(judged.gain, judged.unit))
+		if judged.isPick then
+			text = text .. paint("tooltipMuted", L.rollBestJoin) .. best
+		end
+		return { text = text, arrow = true }
+	end
+	if judged.isPick then
+		return { text = best }
+	end
+	if judged.gain == nil then
+		return nil
+	end
+	if judged.gain <= -Progress.MIN_GAIN then
+		return { text = paint("tooltipMuted", string.format(L.rollDowngrade,
+			ItemTooltip.figure(judged.gain, judged.unit))) }
+	end
+	return { text = paint("tooltipMuted", L.tooltipSide) }
 end
 
 -- Reading the client ---------------------------------------------------------
@@ -265,85 +326,119 @@ local function overlayFor(owner)
 	return overlay
 end
 
---- A dark plate and a small font string on a new overlay of `owner`.
-local function labelParts(owner)
-	local overlay = overlayFor(owner)
-	local plate = Theme.paint(overlay:CreateTexture(nil, "ARTWORK"), "background", Theme.ALPHA.plate)
-	local text = Theme.fontString(overlay, "OVERLAY", "small")
-	return { overlay = overlay, plate = plate, text = text }
-end
-
 local function paintText(text, color)
 	text:SetTextColor(Theme.rgb(Theme.HEX[color] or Theme.HEX.body))
 end
 
---- The label at the reward button's bottom right, on its overlay: made the first time it
---- shows, hidden with `line` nil.
+--- A small font string on a new overlay of `owner`, and the green arrow (hidden) on it.
+local function labelParts(owner)
+	local overlay = overlayFor(owner)
+	local text = Theme.fontString(overlay, "OVERLAY", "small")
+	local arrow = overlay:CreateTexture(nil, "OVERLAY")
+	arrow:SetTexture(Theme.MEDIA.arrowInline)
+	arrow:SetSize(Theme.SIZES.mark, Theme.SIZES.mark)
+	arrow:Hide()
+	return { overlay = overlay, text = text, arrow = arrow }
+end
+
+--- A child region of a client frame by key or by its global name's suffix, or nil.
+local function partOf(frame, key, suffix)
+	if type(frame[key]) == "table" then
+		return frame[key]
+	end
+	local name = ask(frame, "GetName")
+	return type(name) == "string" and Compat.clientGlobal(name .. suffix, "table") or nil
+end
+
+--- The reward button's icon and name: the QuestInfo template's `Icon` and `Name`, else the
+--- classic frame's <name>IconTexture and <name>Name.
+local function rewardParts(button)
+	return partOf(button, "Icon", "IconTexture"), partOf(button, "Name", "Name")
+end
+
+--- The roll frame's icon and item name: the modern frame's `IconFrame.Icon` and `Name`, else the
+--- classic <name>IconFrameIcon and <name>Name.
+local function rollParts(frame)
+	local iconFrame = partOf(frame, "IconFrame", "IconFrame")
+	local icon = iconFrame ~= nil and partOf(iconFrame, "Icon", "Icon") or partOf(frame, "Icon", "IconFrameIcon")
+	return icon or iconFrame, partOf(frame, "Name", "Name")
+end
+
+--- Places a label's text under `name` (the client's name text) and its arrow at `icon`'s top
+--- right; with no name found, the text sits at the owner's bottom right instead.
+local function place(drawn, icon, name)
+	drawn.text:ClearAllPoints()
+	if name ~= nil then
+		drawn.text:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -1)
+	else
+		local pad = Theme.SIZES.labelPad
+		drawn.text:SetPoint("BOTTOMRIGHT", drawn.overlay, "BOTTOMRIGHT", -pad * 2, pad * 2)
+	end
+	if type(drawn.text.SetJustifyH) == "function" then
+		drawn.text:SetJustifyH("LEFT")
+	end
+	drawn.arrow:ClearAllPoints()
+	drawn.arrow:SetPoint("TOPRIGHT", icon or drawn.overlay, "TOPRIGHT", 2, 2)
+end
+
+--- Shows `line` ({ text?, color?, arrow? }) on `drawn`, or hides it all with nil.
+local function show(drawn, line)
+	if line == nil then
+		drawn.text:Hide()
+		drawn.arrow:Hide()
+		return
+	end
+	if line.text ~= nil then
+		drawn.text:SetText(line.text)
+		if line.color ~= nil then
+			paintText(drawn.text, line.color)
+		end
+		drawn.text:Show()
+	else
+		drawn.text:Hide()
+	end
+	if line.arrow then
+		drawn.arrow:Show()
+	else
+		drawn.arrow:Hide()
+	end
+end
+
+--- The reward button's label and arrow, on its overlay: made the first time one shows, hidden
+--- with `line` nil.
 local function setLabel(button, line)
 	local label = labels[button]
 	if line == nil then
 		if label ~= nil then
-			label.text:Hide()
-			label.plate:Hide()
+			show(label, nil)
 		end
 		return
 	end
 	if label == nil then
 		label = labelParts(button)
-		local pad = Theme.SIZES.labelPad
-		label.text:SetPoint("BOTTOMRIGHT", label.overlay, "BOTTOMRIGHT", -pad * 2, pad * 2)
-		label.plate:SetPoint("TOPLEFT", label.text, "TOPLEFT", -pad, pad)
-		label.plate:SetPoint("BOTTOMRIGHT", label.text, "BOTTOMRIGHT", pad, -pad)
 		labels[button] = label
 	end
-	label.text:SetText(line.text)
-	paintText(label.text, line.color)
-	label.text:Show()
-	label.plate:Show()
+	place(label, rewardParts(button))
+	show(label, line)
 end
 
---- The verdict `line` beside the roll frame's right edge, on its overlay, fitted to
---- Theme.SIZES.rollLineWidth as the tooltip fits it (the compared name on a second line
---- before it is shortened); hidden with `line` nil.
+--- The roll frame's short verdict under the item's name and the arrow on its icon, on its
+--- overlay; hidden with `line` nil.
 local function setLine(frame, line)
 	local drawn = lines[frame]
 	if line == nil then
 		if drawn ~= nil then
-			drawn.text:Hide()
-			drawn.plate:Hide()
+			show(drawn, nil)
 		end
 		return
 	end
-	local S = Theme.SIZES
 	if drawn == nil then
 		drawn = labelParts(frame)
-		drawn.plate:SetPoint("LEFT", drawn.overlay, "RIGHT", S.rollGap, 0)
-		drawn.text:SetPoint("LEFT", drawn.plate, "LEFT", S.labelPad * 2, 0)
-		if type(drawn.text.SetJustifyH) == "function" then
-			drawn.text:SetJustifyH("LEFT")
-		end
 		lines[frame] = drawn
 	end
-	local text = drawn.text
-	local function measure(value)
-		text:SetText(value)
-		return text:GetStringWidth()
-	end
-	local fitted
-	if line.kind == "verdict" then
-		fitted = ItemTooltip.fitVerdict(line.verdict, line.unit, line.wornName, measure, S.rollLineWidth)
-	end
-	fitted = fitted or { ItemTooltip.fitPlain(line.text, measure, S.rollLineWidth) }
-	text:SetText(table.concat(fitted, "\n"))
-	paintText(text, line.color)
-	local width, height = text:GetStringWidth(), text:GetStringHeight()
-	width = type(width) == "number" and math.min(S.rollLineWidth, math.ceil(width)) or S.rollLineWidth
-	height = type(height) == "number" and math.ceil(height) or 12 * #fitted
-	drawn.plate:SetSize(width + S.labelPad * 4, height + S.labelPad * 4)
-	text:Show()
-	drawn.plate:Show()
+	place(drawn, rollParts(frame))
+	show(drawn, line)
 end
-
 local function enabled()
 	return not RewardMarks.disabled and Prefs.flag("tooltip") ~= false
 end
@@ -384,7 +479,7 @@ local function drawRewards()
 		return
 	end
 	local count = tonumber((call("GetNumQuestChoices"))) or 0
-	local base, data = baseContext()
+	local base = baseContext()
 	local shown = {}
 	if count > 0 and scorable(base) then
 		local judgements = {}
@@ -396,7 +491,7 @@ local function drawRewards()
 				judgements[index] = judged
 			end
 		end
-		shown = RewardMarks.rewardLabels(judgements, count, ItemTooltip.specName(data or {}, base.spec))
+		shown = RewardMarks.rewardLabels(judgements, count)
 	end
 	local buttons = RewardMarks.choiceButtons(count)
 	for button in pairs(labels) do
@@ -452,8 +547,9 @@ local function drawRoll(rollId, retried)
 		local base = baseContext()
 		local judged = RewardMarks.judge(link, base)
 		noteWaits(judged)
-		line = judged.primary
+		line = RewardMarks.rollLine(judged)
 	end
+
 	setLine(frame, line)
 	if lines[frame] ~= nil then
 		lines[frame].rollId = line ~= nil and rollId or nil

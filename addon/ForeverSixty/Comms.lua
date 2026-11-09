@@ -612,5 +612,30 @@ function Comms.seenLines()
 	return lines
 end
 
+--- A realm with its spaces and hyphens gone, the form addon-message senders carry.
+local function compactRealm(realm)
+	return ((realm or ""):gsub("[%s%-]", ""))
+end
+
+--- The Comms.seen entry for a player: a sender on the same realm whose name is the player's
+--- full name, or their first name alone (a client with last names may send either), heard
+--- within Comms.SEEN_FOR of `now`. `realm` nil is this client's own (`ownRealm`). Pure.
+function Comms.liveEntry(seen, fullName, firstName, realm, ownRealm, now)
+	local wanted = compactRealm(realm or ownRealm)
+	for sender, entry in pairs(seen or {}) do
+		local name, senderRealm = sender:match("^(.-)%-([^%-]+)$")
+		if name == nil or name == "" then
+			name, senderRealm = sender, nil
+		end
+		local sameRealm = compactRealm(senderRealm or ownRealm) == wanted
+		local sameName = name == fullName or (firstName ~= nil and name == firstName)
+		if sameRealm and sameName and type(entry) == "table" and type(entry.time) == "number"
+			and now - entry.time <= Comms.SEEN_FOR then
+			return entry
+		end
+	end
+	return nil
+end
+
 ns.Comms = Comms
 return Comms

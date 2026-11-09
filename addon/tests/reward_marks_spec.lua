@@ -1,12 +1,11 @@
 -- addon/tests/reward_marks_spec.lua
--- Quest reward, roll window and dungeon line (spec sections 4.1 and 4.4, task L4.2).
--- "Best for Arms" on the quest reward the weights prefer, "Vendor" on each when none
--- is of any use; the roll frame carries the tooltip's verdict line beside the item;
--- the chip's "here" line names the band's picks that drop in the instance entered.
--- One verdict source (ruling 1): the reward label, the roll line and the tooltip's
--- verdict read ItemTooltip.judge, the part of the section that scores the item, so
--- they agree on one fixture. Client-mocked: the reward buttons, the roll frames,
--- GetQuestItemLink, GetLootRollItemLink and GetInstanceInfo are plain tables.
+-- Quest reward, roll window and dungeon line (design/specs/2026-11-08-addon-ux.md section 2.4,
+-- and the chip's dungeon line). On the quest frame: the green arrow on the best upgrade's icon,
+-- "Best in slot" under the band's pick, "Sells for most" under the reward that sells for the
+-- most when none helps. On the roll frame: the arrow on an upgrade's icon and one short line
+-- under the item's name. One verdict source: the reward marks, the roll line and the tooltip
+-- read ItemTooltip.judge, so they agree on one fixture. Client-mocked: the reward buttons, the
+-- roll frames, GetQuestItemLink, GetLootRollItemLink and GetInstanceInfo are plain tables.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
@@ -85,7 +84,7 @@ local ITEMS = {
 		stats = { ITEM_MOD_STRENGTH_SHORT = 20 } },
 	[BUCKLER] = { id = 241, slot = "INVTYPE_SHIELD", class = 4, sub = 6, name = "Buckler",
 		stats = { ITEM_MOD_STRENGTH_SHORT = 3 } },
-	[POTION] = { id = 250, slot = "", class = 0, sub = 1, name = "Healing Potion", stats = {} },
+	[POTION] = { id = 250, slot = "", class = 0, sub = 1, name = "Healing Potion", stats = {}, sell = 25 },
 	[PICK_CHEST] = { id = 300, slot = "INVTYPE_CHEST", class = 4, sub = 3, name = "Mutant Scale Breastplate",
 		stats = { ITEM_MOD_STRENGTH_SHORT = 10 } },
 }
@@ -163,7 +162,8 @@ describe("RewardMarks", function()
 				if info == nil or HIDDEN[info.id] then
 					return nil
 				end
-				return info.name, info.link, 2
+				-- GetItemInfo's eleventh value is the vendor price in copper.
+				return info.name, info.link, 2, nil, nil, nil, nil, nil, nil, nil, info.sell or 0
 			end,
 			hooksecurefunc = hooksecurefunc,
 		}
@@ -242,6 +242,7 @@ describe("RewardMarks", function()
 		return frame
 	end
 
+	--- The label's text under a reward's name, or nil when none shows.
 	local function labelText(button)
 		local label = RewardMarks.labelOn(button)
 		if label == nil or not label.text:IsShown() or not label.overlay:IsShown() then
@@ -250,12 +251,24 @@ describe("RewardMarks", function()
 		return label.text:GetText()
 	end
 
+	--- Whether the green arrow shows on a reward button's or roll frame's overlay.
+	local function arrowOn(owner)
+		local drawn = RewardMarks.labelOn(owner) or RewardMarks.lineOn(owner)
+		return drawn ~= nil and drawn.arrow:IsShown() and drawn.overlay:IsShown() or false
+	end
+
+	--- The roll line's visible text (its colours inline), or nil when none shows.
 	local function lineText(frame)
 		local line = RewardMarks.lineOn(frame)
 		if line == nil or not line.text:IsShown() then
 			return nil
 		end
-		return line.text:GetText()
+		return ItemTooltip.stripEscapes(line.text:GetText())
+	end
+
+	--- A reward's sell price, as the client would answer it.
+	local function sells(itemLink, copper)
+		ITEMS[itemLink].sell = copper
 	end
 
 	after_each(function()
@@ -265,23 +278,25 @@ describe("RewardMarks", function()
 		end
 	end)
 
-	-- Ruling 1: the reward label, the roll line and the tooltip's verdict agree.
+	-- One verdict source: the reward marks, the roll line and the tooltip's verdict agree.
 	describe("one verdict source", function()
-		it("agrees on a chest: the tooltip's Upgrade, the roll line, and Best on the reward", function()
+		it("agrees on a chest: the tooltip's Upgrade, the roll line's gain, and the arrow on the reward", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK, feet = WORN_FEET })
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, BAG_CHEST))
-			local verdict = string.format(L.tooltipVerdictDps, 2, "Worn Chest")
+			local verdict = require("Theme").arrowMarkup() .. string.format(L.tooltipUpgrade, ItemTooltip.figure(2, "dps"))
 			assert.are.equal(verdict, lines[1].text)
 			local judged = RewardMarks.judge(BAG_CHEST, ItemTooltip.baseContext(DATA))
 			assert.are.equal(verdict, judged.primary.text)
 			assert.are.equal(2, judged.gain)
 			local frame = rollFrame(7, BAG_CHEST)
 			RewardMarks.onEvent("START_LOOT_ROLL", 7, 60)
-			assert.are.equal(verdict, lineText(frame))
+			assert.are.equal("+2.0 DPS", lineText(frame))
+			assert.is_true(arrowOn(frame))
 			local buttons = offer({ THIN_CLOAK, BAG_CHEST, SOFT_BOOTS })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.are.equal(string.format(L.rewardBest, "Arms"), labelText(buttons[2]))
+			assert.is_true(arrowOn(buttons[2]))
+			assert.is_nil(labelText(buttons[2]))
 		end)
 
 		it("reads the section's own scoring: ItemTooltip.judge is what the section prints first", function()
@@ -289,109 +304,162 @@ describe("RewardMarks", function()
 			local ctx = ItemTooltip.contextFor(DATA, PLATE_CHEST)
 			local judged = ItemTooltip.judge(ctx, {})
 			local lines = ItemTooltip.section(ctx)
-			assert.are.equal(string.format(L.tooltipUntil, 40, "plate armor"), judged.primary.text)
+			assert.are.equal(string.format(L.tooltipNotUntil, "Plate armor", 40), judged.primary.text)
 			assert.are.equal(lines[1].text, judged.primary.text)
 			assert.is_true(judged.gear)
 			assert.are.equal(0, #judged.wearable)
 		end)
 	end)
 
-	-- Ruling 2: the quest reward labels.
 	describe("the quest reward", function()
-		it("labels the one upgrade among three Best for Arms, and nothing else", function()
+		it("puts the arrow on the one upgrade among three, and nothing else", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK, feet = WORN_FEET })
 			local buttons = offer({ THIN_CLOAK, BAG_CHEST, SOFT_BOOTS })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.is_nil(labelText(buttons[1]))
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
-			assert.is_nil(labelText(buttons[3]))
-			local label = RewardMarks.labelOn(buttons[2])
-			assert.are.same(rgb3("gold"), { table.unpack(mock.lastCall(label.text, "SetTextColor"), 1, 3) })
+			assert.is_false(arrowOn(buttons[1]))
+			assert.is_true(arrowOn(buttons[2]))
+			assert.is_false(arrowOn(buttons[3]))
+			for index = 1, 3 do
+				assert.is_nil(labelText(buttons[index]))
+			end
 		end)
 
-		it("says Vendor on each of three when none is of any use", function()
+		it("writes Best in slot in the parchment gold under the band's pick, with the arrow when it is an upgrade",
+			function()
+				start({ chest = WORN_CHEST, back = WORN_BACK })
+				local buttons = offer({ THIN_CLOAK, PICK_CHEST })
+				RewardMarks.onEvent("QUEST_COMPLETE")
+				mock.runTimers(state)
+				assert.are.equal(L.rewardBest, labelText(buttons[2]))
+				assert.are.equal("Best in slot", L.rewardBest)
+				local label = RewardMarks.labelOn(buttons[2])
+				assert.are.same(rgb3("parchmentGold"), { table.unpack(mock.lastCall(label.text, "SetTextColor"), 1, 3) })
+				assert.is_true(arrowOn(buttons[2]))
+				assert.is_nil(labelText(buttons[1]))
+			end)
+
+		it("puts the arrow on the bigger upgrade and Best in slot on the pick when they differ", function()
+			start({ chest = WORN_CHEST, back = WORN_BACK })
+			-- The bag chest (+2.0) beats the band's pick (+1.0) over the worn chest.
+			local buttons = offer({ PICK_CHEST, BAG_CHEST })
+			RewardMarks.onEvent("QUEST_COMPLETE")
+			mock.runTimers(state)
+			assert.are.equal(L.rewardBest, labelText(buttons[1]))
+			assert.is_false(arrowOn(buttons[1]))
+			assert.is_true(arrowOn(buttons[2]))
+			assert.is_nil(labelText(buttons[2]))
+		end)
+
+		it("says Sells for most, muted, under the one that sells for the most when none is of any use", function()
+			start({ chest = WORN_CHEST, back = WORN_BACK, feet = WORN_FEET })
+			sells(THIN_CLOAK, 50)
+			sells(RAG_CHEST, 120)
+			sells(SOFT_BOOTS, 80)
+			local buttons = offer({ THIN_CLOAK, RAG_CHEST, SOFT_BOOTS })
+			RewardMarks.onEvent("QUEST_COMPLETE")
+			mock.runTimers(state)
+			assert.is_nil(labelText(buttons[1]))
+			assert.are.equal(L.rewardSellsForMost, labelText(buttons[2]))
+			assert.is_nil(labelText(buttons[3]))
+			local label = RewardMarks.labelOn(buttons[2])
+			assert.are.same(rgb3("parchmentMuted"), { table.unpack(mock.lastCall(label.text, "SetTextColor"), 1, 3) })
+			sells(THIN_CLOAK, nil)
+			sells(RAG_CHEST, nil)
+			sells(SOFT_BOOTS, nil)
+		end)
+
+		it("says nothing when none is of use and none sells", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK, feet = WORN_FEET })
 			local buttons = offer({ THIN_CLOAK, RAG_CHEST, SOFT_BOOTS })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
 			for index = 1, 3 do
-				assert.are.equal(L.rewardVendor, labelText(buttons[index]))
+				assert.is_nil(labelText(buttons[index]))
+				assert.is_false(arrowOn(buttons[index]))
 			end
 		end)
 
-		it("never calls a plate reward at 21 best, however it scores: the mail one is", function()
+		it("never marks a plate reward at 21, however it scores: the arrow goes on the mail one", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK })
 			local buttons = offer({ PLATE_CHEST, BAG_CHEST, THIN_CLOAK })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
+			assert.is_false(arrowOn(buttons[1]))
 			assert.is_nil(labelText(buttons[1]))
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
-			assert.is_nil(labelText(buttons[3]))
+			assert.is_true(arrowOn(buttons[2]))
 		end)
 
-		it("calls a plate reward at 21 Vendor with the rest when nothing else is of use", function()
+		it("never puts Sells for most on a reward the character cannot use", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK, feet = WORN_FEET })
+			sells(PLATE_CHEST, 500)
+			sells(SOFT_BOOTS, 80)
 			local buttons = offer({ PLATE_CHEST, THIN_CLOAK, SOFT_BOOTS })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			for index = 1, 3 do
-				assert.are.equal(L.rewardVendor, labelText(buttons[index]))
-			end
+			assert.is_nil(labelText(buttons[1]))
+			assert.are.equal(L.rewardSellsForMost, labelText(buttons[3]))
+			sells(PLATE_CHEST, nil)
+			sells(SOFT_BOOTS, nil)
 		end)
 
-		it("says no Vendor while a choice is not gear (a potion may be of use)", function()
+		it("says nothing while a choice is not gear (a potion may be of use)", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK })
+			sells(RAG_CHEST, 120)
 			local buttons = offer({ THIN_CLOAK, POTION, RAG_CHEST })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
 			for index = 1, 3 do
 				assert.is_nil(labelText(buttons[index]))
 			end
+			sells(RAG_CHEST, nil)
 		end)
 
-		it("calls an off hand under a worn two-hander of no use", function()
+		it("calls an off hand under a worn two-hander of no use, and never labels it", function()
 			start({ main_hand = WORN_AXE, back = WORN_BACK })
+			sells(BUCKLER, 300)
+			sells(THIN_CLOAK, 40)
 			local labels = RewardMarks.rewardLabels({
 				RewardMarks.judge(BUCKLER, ItemTooltip.baseContext(DATA)),
 				RewardMarks.judge(THIN_CLOAK, ItemTooltip.baseContext(DATA)),
-			}, 2, "Arms")
-			assert.are.equal(L.rewardVendor, labels[1].text)
-			assert.are.equal(L.rewardVendor, labels[2].text)
+			}, 2)
+			assert.is_nil(labels[1])
+			assert.are.equal(L.rewardSellsForMost, labels[2].text)
+			sells(BUCKLER, nil)
+			sells(THIN_CLOAK, nil)
 		end)
 
-		it("calls a choice that fills an empty slot best at any gain that shows (+0.4 DPS)", function()
+		it("puts the arrow on a choice that fills an empty slot at any gain that shows (+0.4 DPS)", function()
 			start({ back = WORN_BACK })
 			local buttons = offer({ THIN_CLOAK, LIGHT_VEST })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.is_nil(labelText(buttons[1]))
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
+			assert.is_false(arrowOn(buttons[1]))
+			assert.is_true(arrowOn(buttons[2]))
 		end)
 
-		it("labels nothing with no spec weights to score by", function()
+		it("marks nothing with no spec weights to score by", function()
 			start({ chest = WORN_CHEST })
 			ItemTooltip.data = { classes = DATA.classes }
 			RewardMarks.data = ItemTooltip.data
 			local buttons = offer({ RAG_CHEST, THIN_CLOAK })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.is_nil(labelText(buttons[1]))
-			assert.is_nil(labelText(buttons[2]))
+			assert.is_nil(RewardMarks.labelOn(buttons[1]))
+			assert.is_nil(RewardMarks.labelOn(buttons[2]))
 		end)
 
-		it("waits for a choice the client has not sent, then labels on its item info", function()
+		it("waits for a choice the client has not sent, then marks it on its item info", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK })
 			HIDDEN[201] = true
 			local buttons = offer({ THIN_CLOAK, BAG_CHEST })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.is_nil(labelText(buttons[1]))
-			assert.is_nil(labelText(buttons[2]))
+			assert.is_false(arrowOn(buttons[2]))
 			assert.is_true(RewardMarks.isWaiting(201))
 			HIDDEN[201] = nil
 			RewardMarks.onItemInfo(201)
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
+			assert.is_true(arrowOn(buttons[2]))
 		end)
 
 		it("reads the classic reward buttons where the client has those", function()
@@ -399,7 +467,7 @@ describe("RewardMarks", function()
 			local buttons = offer({ THIN_CLOAK, BAG_CHEST }, "QuestRewardItem")
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
+			assert.is_true(arrowOn(buttons[2]))
 		end)
 
 		it("draws on the next frame, after the client has laid the buttons out", function()
@@ -408,31 +476,31 @@ describe("RewardMarks", function()
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			assert.is_nil(RewardMarks.labelOn(buttons[2]))
 			assert.are.equal(1, mock.runTimers(state))
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
+			assert.is_true(arrowOn(buttons[2]))
 		end)
 
-		it("takes the labels away when the quest frame closes, and off the quest log's own display", function()
+		it("takes the marks away when the quest frame closes, and off the quest log's own display", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK }, { QuestInfo_Display = function() end })
 			_G.CreateFrame("Frame", "QuestInfoFrame")
-			local buttons = offer({ THIN_CLOAK, BAG_CHEST })
+			local buttons = offer({ THIN_CLOAK, PICK_CHEST })
 			RewardMarks.register()
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
+			assert.are.equal(L.rewardBest, labelText(buttons[2]))
 			RewardMarks.onEvent("QUEST_FINISHED")
 			assert.is_nil(labelText(buttons[2]))
-			-- The quest log shows the same buttons for another quest: no label there.
+			assert.is_false(arrowOn(buttons[2]))
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
+			assert.are.equal(L.rewardBest, labelText(buttons[2]))
 			raw("QuestInfoFrame").questLog = true
 			_G.QuestInfo_Display()
 			assert.is_nil(labelText(buttons[2]))
 		end)
 
-		it("draws on an addon overlay parented to the reward button, a level above it, on a dark plate", function()
+		it("draws on an addon overlay parented to the reward button, a level above it, with no plate", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK })
-			local buttons = offer({ THIN_CLOAK, BAG_CHEST })
+			local buttons = offer({ THIN_CLOAK, PICK_CHEST })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
 			local label = RewardMarks.labelOn(buttons[2])
@@ -441,46 +509,71 @@ describe("RewardMarks", function()
 			assert.are.equal(4, mock.lastCall(label.overlay, "SetFrameLevel")[1])
 			assert.are.equal(0, mock.countCalls(label.overlay, "SetScript"))
 			assert.are.equal(label.overlay, label.text.parent)
-			assert.are.equal(label.overlay, label.plate.parent)
+			assert.are.equal(label.overlay, label.arrow.parent)
+			assert.is_nil(label.plate)
 			assert.are.equal(0, #raw("QuestInfoRewardsFrameQuestInfoItem2").regions)
 		end)
+
+		it("sets the label under the reward's own name and the arrow on its icon where the client has them",
+			function()
+				start({ chest = WORN_CHEST, back = WORN_BACK })
+				local buttons = offer({ THIN_CLOAK, PICK_CHEST })
+				local name = _G.CreateFrame("Frame", nil)
+				local icon = _G.CreateFrame("Frame", nil)
+				raw("QuestInfoRewardsFrameQuestInfoItem2").Name = name
+				raw("QuestInfoRewardsFrameQuestInfoItem2").Icon = icon
+				RewardMarks.onEvent("QUEST_COMPLETE")
+				mock.runTimers(state)
+				local label = RewardMarks.labelOn(buttons[2])
+				assert.are.same({ "TOPLEFT", name, "BOTTOMLEFT" }, { table.unpack(label.text.points[1], 1, 3) })
+				assert.are.same({ "TOPRIGHT", icon, "TOPRIGHT" }, { table.unpack(label.arrow.points[1], 1, 3) })
+			end)
 	end)
 
-	-- Ruling 3: the roll window carries the tooltip's verdict line.
 	describe("the roll window", function()
-		it("says Upgrade with the gain and the worn item's name", function()
+		it("says the gain alone, green, with the arrow on the icon: no worn item named", function()
 			start({ chest = WORN_CHEST })
 			local frame = rollFrame(3, BAG_CHEST)
 			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
-			assert.are.equal("Upgrade +2.0 DPS over Worn Chest", lineText(frame))
+			assert.are.equal("+2.0 DPS", lineText(frame))
+			assert.is_true(arrowOn(frame))
+			local raw_ = RewardMarks.lineOn(frame).text:GetText()
+			assert.is_truthy(raw_:find(require("Theme").HEX.tooltipGreen, 1, true))
 		end)
 
-		it("says Sidegrade for an item no better than what is worn", function()
+		it("adds Best in slot in gold after the gain on the band's pick", function()
+			start({ chest = WORN_CHEST })
+			local frame = rollFrame(3, PICK_CHEST)
+			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
+			assert.are.equal("+1.0 DPS · Best in slot", lineText(frame))
+			assert.is_truthy(RewardMarks.lineOn(frame).text:GetText():find(require("Theme").HEX.clientGold, 1, true))
+		end)
+
+		it("says Sidegrade for an item no better than what is worn, with no arrow", function()
 			start({ feet = WORN_FEET })
 			local frame = rollFrame(3, SOFT_BOOTS)
 			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
 			assert.are.equal(L.tooltipSide, lineText(frame))
+			assert.is_false(arrowOn(frame))
 		end)
 
-		it("says Downgrade for an item a point or more worse", function()
+		it("prints the loss for an item a point or more worse", function()
 			start({ chest = WORN_CHEST })
 			local frame = rollFrame(3, RAG_CHEST)
 			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
-			assert.are.equal(string.format(L.tooltipDown, 1, L.tooltipUnitDps, "Worn Chest"), lineText(frame))
+			-- The worn chest's 5 Strength x 2 x 0.1 DPS per point.
+			assert.are.equal(string.format(L.rollDowngrade, ItemTooltip.figure(-1, "dps")), lineText(frame))
 		end)
 
-		it("says Not for you until 40 on plate at 21", function()
+		it("says Not for you on plate at 21 and on a shield under a worn two-hander", function()
 			start({ chest = WORN_CHEST })
 			local frame = rollFrame(3, PLATE_CHEST)
 			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
-			assert.are.equal("Not for you until 40: plate armor", lineText(frame))
-		end)
-
-		it("says Not with your two-hander on a shield under a worn two-hander", function()
+			assert.are.equal(L.rollNotForYou, lineText(frame))
 			start({ main_hand = WORN_AXE })
-			local frame = rollFrame(3, BUCKLER)
-			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
-			assert.are.equal(L.tooltipTwoHander, lineText(frame))
+			frame = rollFrame(4, BUCKLER)
+			RewardMarks.onEvent("START_LOOT_ROLL", 4, 60)
+			assert.are.equal(L.rollNotForYou, lineText(frame))
 		end)
 
 		it("says nothing on an item that is not gear", function()
@@ -499,7 +592,7 @@ describe("RewardMarks", function()
 			raw("GroupLootFrame2").rollID = 9
 			raw("GroupLootFrame2").IsVisible = function() return true end
 			mock.runTimers(state)
-			assert.are.equal("Upgrade +2.0 DPS over Worn Chest", lineText(frame))
+			assert.are.equal("+2.0 DPS", lineText(frame))
 		end)
 
 		it("reads the modern container's pooled roll frames", function()
@@ -512,22 +605,24 @@ describe("RewardMarks", function()
 			pooled.IsVisible = function() return true end
 			raw("GroupLootContainer").rollFrames = { pooled }
 			RewardMarks.onEvent("START_LOOT_ROLL", 4, 60)
-			assert.are.equal("Upgrade +2.0 DPS over Worn Chest", lineText(pooled))
+			assert.are.equal("+2.0 DPS", lineText(pooled))
 		end)
 
-		it("draws beside the frame on an addon overlay that hides with it, in the verdict's colour", function()
-			start({ chest = WORN_CHEST })
-			local frame = rollFrame(3, BAG_CHEST)
-			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
-			local line = RewardMarks.lineOn(frame)
-			assert.are.equal(frame, line.overlay.parent)
-			assert.is_nil(line.overlay.name)
-			assert.are.same({ frame }, { mock.firstCall(line.overlay, "SetAllPoints")[1] })
-			assert.are.equal(0, mock.countCalls(line.overlay, "SetScript"))
-			assert.are.same({ "LEFT", line.overlay, "RIGHT" }, { table.unpack(line.plate.points[1], 1, 3) })
-			assert.are.same(rgb3("success"), { table.unpack(mock.lastCall(line.text, "SetTextColor"), 1, 3) })
-			assert.are.equal(0, #raw("GroupLootFrame1").regions)
-		end)
+		it("draws on an addon overlay that hides with the frame, under the item's name where the client has one",
+			function()
+				start({ chest = WORN_CHEST })
+				local frame = rollFrame(3, BAG_CHEST)
+				local name = _G.CreateFrame("Frame", nil)
+				raw("GroupLootFrame1").Name = name
+				RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
+				local line = RewardMarks.lineOn(frame)
+				assert.are.equal(frame, line.overlay.parent)
+				assert.is_nil(line.overlay.name)
+				assert.are.same({ frame }, { mock.firstCall(line.overlay, "SetAllPoints")[1] })
+				assert.are.equal(0, mock.countCalls(line.overlay, "SetScript"))
+				assert.are.same({ "TOPLEFT", name, "BOTTOMLEFT" }, { table.unpack(line.text.points[1], 1, 3) })
+				assert.are.equal(0, #raw("GroupLootFrame1").regions)
+			end)
 
 		it("redraws a reused frame for its new roll", function()
 			start({ chest = WORN_CHEST })
@@ -536,87 +631,71 @@ describe("RewardMarks", function()
 			raw("GroupLootFrame1").rollID = 5
 			_G.GetLootRollItemLink = function(id) return id == 5 and PLATE_CHEST or nil end
 			RewardMarks.onEvent("START_LOOT_ROLL", 5, 60)
-			assert.are.equal("Not for you until 40: plate armor", lineText(frame))
+			assert.are.equal(L.rollNotForYou, lineText(frame))
+			assert.is_false(arrowOn(frame))
+		end)
+
+		it("is pure: RewardMarks.rollLine reads a judgement", function()
+			start()
+			assert.is_nil(RewardMarks.rollLine(nil))
+			assert.is_nil(RewardMarks.rollLine({ gear = false }))
+			assert.is_nil(RewardMarks.rollLine({ gear = true, pending = true }))
+			assert.is_nil(RewardMarks.rollLine({ gear = true, wearable = true }))
+			local best = RewardMarks.rollLine({ gear = true, wearable = true, isPick = true, gain = 0.2 })
+			assert.are.equal(L.rewardBest, ItemTooltip.stripEscapes(best.text))
+			assert.is_nil(best.arrow)
 		end)
 	end)
 
-	-- Fix round 1, item 1: Best needs the tooltip's own Upgrade (the 1.0 floor over a worn
-	-- item, any gain that shows for an empty slot); a 0 < gain < 1 choice gets no label.
-	describe("fix round 1: Best needs an upgrade", function()
-		it("gives a lone +0.3 choice (a Sidegrade on its tooltip) neither Best nor Vendor", function()
+	-- A 0 < gain < 1 choice is no upgrade: no arrow, and it is of use, so no Sells for most.
+	describe("the arrow needs an upgrade", function()
+		it("gives a lone +0.3 choice (a Sidegrade on its tooltip) no mark at all", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK, feet = WORN_FEET })
+			sells(RAG_CHEST, 120)
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, FAIR_CLOAK))
-			assert.are.equal(string.format(L.tooltipSideGain, "+", 0.3, L.tooltipUnitDps), lines[1].text)
+			assert.are.equal(L.tooltipSide, lines[1].text)
 			local buttons = offer({ FAIR_CLOAK, RAG_CHEST, SOFT_BOOTS })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
 			for index = 1, 3 do
 				assert.is_nil(labelText(buttons[index]))
+				assert.is_false(arrowOn(buttons[index]))
 			end
+			sells(RAG_CHEST, nil)
 		end)
 
-		it("puts Best on the +2.0 upgrade beside a +0.3 sidegrade", function()
+		it("puts the arrow on the +2.0 upgrade beside a +0.3 sidegrade", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK })
 			local buttons = offer({ FAIR_CLOAK, BAG_CHEST })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.is_nil(labelText(buttons[1]))
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
+			assert.is_false(arrowOn(buttons[1]))
+			assert.is_true(arrowOn(buttons[2]))
 		end)
 
-		it("calls an empty-slot +0.8 fill best: it is an upgrade on its tooltip", function()
+		it("calls an empty-slot +0.8 fill an upgrade, as its tooltip does", function()
 			start({ back = WORN_BACK })
 			local judged = RewardMarks.judge(FILL_VEST, ItemTooltip.baseContext(DATA))
 			assert.are.equal(0.8, judged.gain)
 			assert.is_true(judged.upgrade)
-			assert.are.equal("success", judged.primary.color)
+			assert.are.equal("tooltipGreen", judged.primary.color)
 			local buttons = offer({ THIN_CLOAK, FILL_VEST })
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
+			assert.is_true(arrowOn(buttons[2]))
 		end)
 	end)
 
-	describe("fix round 1: the roll line", function()
-		-- Item 2: a worn item whose name the client has not sent reads "…" until it comes.
-		it("redraws when the worn item's name arrives", function()
-			start({ chest = OLD_CHEST })
-			HIDDEN[205] = true
+	describe("the roll line stays short", function()
+		it("shows the gain at once, never waiting on or naming the worn item", function()
+			start({ chest = LONG_CHEST })
 			local frame = rollFrame(3, BAG_CHEST)
 			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
-			assert.are.equal(string.format(L.tooltipVerdictDps, 2, L.tooltipNamePending), lineText(frame))
-			assert.is_true(RewardMarks.isWaiting(205))
-			HIDDEN[205] = nil
-			RewardMarks.onItemInfo(205)
-			assert.are.equal(string.format(L.tooltipVerdictDps, 2, "Old Chest"), lineText(frame))
-			-- L3.7 item 20: the name-arrival redraw wrote nothing into the client's frame either.
+			assert.are.equal("+2.0 DPS", lineText(frame))
+			assert.is_nil(lineText(frame):find("Chestguard", 1, true))
 			assert.are.same({}, state.clientWrites)
 		end)
 
-		-- Item 3: the 240 px fit, measured on the line's own font string.
-		it("fits a long worn name within the 240 px line: the name on its own line, ellipsised", function()
-			local function widest(text)
-				local most = 0
-				for part in (text or ""):gmatch("[^\n]+") do
-					most = math.max(most, #part * 6)
-				end
-				return most
-			end
-			-- L3.7 item 20: the text measure is the mock's own (state.stringWidth), not a wrapped
-			-- CreateFrame, so every font string the addon makes answers it.
-			start({ chest = LONG_CHEST }, nil, nil, { stringWidth = widest })
-			local frame = rollFrame(3, BAG_CHEST)
-			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
-			local text = lineText(frame)
-			local head, name = text:match("^(.-)\n(.+)$")
-			assert.are.equal("Upgrade +2.0 DPS over", head)
-			assert.are.equal(L.tooltipNamePending, name:sub(-#L.tooltipNamePending))
-			assert.is_true(widest(text) <= 240)
-			local plate = RewardMarks.lineOn(frame).plate
-			assert.is_true(plate:GetWidth() <= 240 + require("Theme").SIZES.labelPad * 4)
-		end)
-
-		-- Item 4: a reused frame that no longer shows the roll drawn on it loses its line.
 		it("clears a reused frame's old line when the new roll's frame cannot be found", function()
 			start({ chest = WORN_CHEST })
 			local frame = rollFrame(3, BAG_CHEST)
@@ -626,6 +705,7 @@ describe("RewardMarks", function()
 			RewardMarks.onEvent("START_LOOT_ROLL", 5, 60)
 			mock.runTimers(state)
 			assert.is_nil(lineText(frame))
+			assert.is_false(arrowOn(frame))
 			assert.are.same({}, state.clientWrites)
 		end)
 
@@ -640,17 +720,15 @@ describe("RewardMarks", function()
 		end)
 	end)
 
-	-- Item 5: the unread event table is gone.
 	it("keeps no unread event list (Options names the events)", function()
 		start()
 		assert.is_nil(RewardMarks.EVENTS)
 	end)
 
-	-- Ruling 6: the labels follow "Gear tips on item tooltips".
 	describe("the switch", function()
-		it("hides every label and line with the tooltip switch off, and draws none", function()
+		it("hides every mark and line with the tooltip switch off, and draws none", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK })
-			local buttons = offer({ THIN_CLOAK, BAG_CHEST })
+			local buttons = offer({ THIN_CLOAK, PICK_CHEST })
 			local frame = rollFrame(3, BAG_CHEST)
 			RewardMarks.onEvent("QUEST_COMPLETE")
 			mock.runTimers(state)
@@ -660,17 +738,19 @@ describe("RewardMarks", function()
 			Prefs.setFlag("tooltip", false)
 			RewardMarks.refresh(DATA)
 			assert.is_nil(labelText(buttons[2]))
+			assert.is_false(arrowOn(buttons[2]))
 			assert.is_nil(lineText(frame))
+			assert.is_false(arrowOn(frame))
 			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
 			assert.is_nil(lineText(frame))
 			Prefs.setFlag("tooltip", true)
 			RewardMarks.refresh(DATA)
-			assert.are.equal("Best for Arms", labelText(buttons[2]))
-			assert.are.equal("Upgrade +2.0 DPS over Worn Chest", lineText(frame))
+			assert.are.equal(L.rewardBest, labelText(buttons[2]))
+			assert.are.equal("+2.0 DPS", lineText(frame))
 		end)
 	end)
 
-	-- The L4.1 taint rule: nothing is ever written into a client frame.
+	-- The taint rule: nothing is ever written into a client frame.
 	describe("the client's frames", function()
 		it("never writes into a reward button or a roll frame, through every path", function()
 			start({ chest = WORN_CHEST, back = WORN_BACK }, { QuestInfo_Display = function() end })

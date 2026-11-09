@@ -48,6 +48,15 @@ function Compat.itemInfo(item)
 	return call("GetItemInfo", item)
 end
 
+--- The item's vendor price in copper (GetItemInfo's eleventh value), or nil until cached.
+function Compat.itemSellPrice(item)
+	if item == nil then
+		return nil
+	end
+	local price = select(11, Compat.itemInfo(item))
+	return type(price) == "number" and price or nil
+end
+
 --- The item's stat table, keyed by the client's ITEM_MOD_* names.
 function Compat.itemStats(link)
 	return call("GetItemStats", link)
