@@ -4898,6 +4898,8 @@ components:
         required_skill: { type: object, additionalProperties: { type: integer }, description: "crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent." }
         place: { type: string, description: "vendor and rep: where the seller stands (Booty Bay, The Barrens), curated; absent when unknown." }
         item_costs: { type: object, additionalProperties: { $ref: '#/components/schemas/VendorCost' }, description: "vendor only: item id -> its price when it is not gold; an item with no known price is absent." }
+        reputation: { type: string, description: "vendor only: the faction a quartermaster sells for, when every item it sells needs that faction's standing (faction_id beside it)." }
+        item_standings: { type: object, additionalProperties: { type: string }, description: "vendor only, beside reputation: item id -> the standing the client requires." }
         rare_spawn: { type: boolean }
         source_origin: { type: string }
         source_note: { type: string }

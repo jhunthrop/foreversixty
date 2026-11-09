@@ -271,6 +271,31 @@ describe('resolveSourceCell', () => {
     expect(unpriced).toEqual({ kind: 'vendor', npc: 'Pix Xizzix', place: 'Booty Bay' });
   });
 
+  it("reads a quartermaster's item as its reputation, the same line the other side's rep source gives", () => {
+    const loot: LootFile & LootQuestsFile = {
+      sources: [
+        {
+          id: 'vendor:263570',
+          kind: 'vendor',
+          name: 'Creeg Bothunk',
+          items: [272064],
+          place: 'The Barrens',
+          faction_id: 2798,
+          reputation: 'Darkspear Raiders',
+          item_standings: { '272064': 'honored' },
+        },
+      ],
+      quests: {},
+    };
+    const cell = resolveSourceCell(slot({ item_id: 272064, source_kind: 'vendor' }), 'horde', loot, 'f');
+    expect(cell).toEqual({
+      kind: 'rep',
+      faction: 'Darkspear Raiders',
+      standing: 'honored',
+      place: 'The Barrens',
+    });
+  });
+
   it("carries a reputation's curated place", () => {
     const loot: LootFile & LootQuestsFile = {
       sources: [

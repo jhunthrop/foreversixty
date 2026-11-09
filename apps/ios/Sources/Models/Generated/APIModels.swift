@@ -5478,6 +5478,10 @@ public struct LootSource: Codable, Sendable, Equatable {
     public let place: String?
     /// vendor only: item id -> its price when it is not gold; an item with no known price is absent.
     public let itemCosts: [String: VendorCost]?
+    /// vendor only: the faction a quartermaster sells for, when every item it sells needs that faction's standing (faction_id beside it).
+    public let reputation: String?
+    /// vendor only, beside reputation: item id -> the standing the client requires.
+    public let itemStandings: [String: String]?
     public let rareSpawn: Bool?
     public let sourceOrigin: String?
     public let sourceNote: String?
@@ -5508,6 +5512,8 @@ public struct LootSource: Codable, Sendable, Equatable {
         requiredSkill: [String: Int]? = nil,
         place: String? = nil,
         itemCosts: [String: VendorCost]? = nil,
+        reputation: String? = nil,
+        itemStandings: [String: String]? = nil,
         rareSpawn: Bool? = nil,
         sourceOrigin: String? = nil,
         sourceNote: String? = nil,
@@ -5537,6 +5543,8 @@ public struct LootSource: Codable, Sendable, Equatable {
         self.requiredSkill = requiredSkill
         self.place = place
         self.itemCosts = itemCosts
+        self.reputation = reputation
+        self.itemStandings = itemStandings
         self.rareSpawn = rareSpawn
         self.sourceOrigin = sourceOrigin
         self.sourceNote = sourceNote

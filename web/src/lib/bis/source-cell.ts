@@ -128,8 +128,19 @@ function findSource(sources: readonly LootSource[], kind: string, itemId: number
   return sources.find((source) => source.kind === kind && itemsOfSource(source).includes(itemId));
 }
 
-/** A vendor's cell, with its curated place and the item's non-gold price when known. */
-function vendorCell(source: LootSource, itemId: number): VendorSourceCell {
+/** A vendor's cell, with its curated place and the item's non-gold price when known. A
+ *  quartermaster's item reads as its reputation, the same line the other side's rep source
+ *  gives (Creeg Bothunk's Darkspear Raiders set beside the Theramore Expeditionary Force's). */
+function vendorCell(source: LootSource, itemId: number): VendorSourceCell | RepSourceCell {
+  const standing = source.item_standings?.[String(itemId)];
+  if (source.reputation !== undefined && standing !== undefined) {
+    return {
+      kind: 'rep',
+      faction: source.reputation,
+      standing,
+      ...(source.place !== undefined ? { place: source.place } : {}),
+    };
+  }
   const cost = source.item_costs?.[String(itemId)];
   return {
     kind: 'vendor',

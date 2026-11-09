@@ -238,9 +238,8 @@ def _build_and_write_loot(
     # Round 9: a client reputation reward no rep source names (Theramore
     # Expeditionary Force's Darkspear Islands set) gets its rep source and its
     # side, before the overlay and the content phases gate it.
-    document, client_rep_items = apply_client_reputations(
-        document, load_item_reputations(build_dir), build_items
-    )
+    item_reputations = load_item_reputations(build_dir)
+    document, client_rep_items = apply_client_reputations(document, item_reputations, build_items)
     logger.info("loot: %d client reputation rewards gained a rep source", client_rep_items)
     document = apply_overlays(document, load_overlays(overlay_dir))
     # Content phases after the overlay and before the quest turn-in gate, so
@@ -279,6 +278,7 @@ def _build_and_write_loot(
             for item_id, inventory_type in item_inventory_types.items()
             if inventory_type in SLOT_BY_INVENTORY_TYPE
         },
+        item_reputations,
     )
     write_document(document, build_dir / LOOT)
     return _LootRun(

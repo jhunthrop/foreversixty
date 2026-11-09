@@ -119,6 +119,11 @@ export interface LootSource {
   /** `vendor` kind only: item id (string-keyed) -> its price when it is not gold. An item
    *  with no curated price is absent. */
   item_costs?: Record<string, VendorCost>;
+  /** `vendor` kind only: the faction a quartermaster sells for, when every item it sells
+   *  needs that faction's standing (Creeg Bothunk, Darkspear Raiders). */
+  reputation?: string;
+  /** `vendor` kind only, beside `reputation`: item id (string-keyed) -> required standing. */
+  item_standings?: Record<string, string>;
 }
 
 /** A vendor price in something other than gold. */

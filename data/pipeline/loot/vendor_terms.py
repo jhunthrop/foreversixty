@@ -10,7 +10,12 @@ them onto loot.json's own sources:
 - `place` on a `vendor:<npc_id>` source and on every `rep` source of a
   curated faction;
 - `item_costs` on a vendor source, priced by each item's gear slot. An item
-  whose slot the file prices nothing for is left unpriced.
+  whose slot the file prices nothing for is left unpriced;
+- `reputation`, `faction_id` and `item_standings` on a quartermaster: a
+  vendor every one of whose items needs one faction's standing in the
+  client (items/<class>.json `reputation`). Creeg Bothunk sells the
+  Darkspear Raiders set this way, the Horde mirror of the Theramore
+  Expeditionary Force rep sources, so both sides read the same line.
 """
 
 from __future__ import annotations
@@ -22,7 +27,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from pipeline.curated import parse_sources
-from pipeline.models import LootFile, LootSource, Source, VendorCost
+from pipeline.models import ItemReputation, LootFile, LootSource, Source, VendorCost
 
 VENDOR_TERMS = "vendor-terms.json"
 
@@ -93,19 +98,56 @@ def _vendor_update(source: LootSource, term: VendorTerm, item_slots: Mapping[int
     return {"place": term.place, **({"item_costs": costs} if costs else {})}
 
 
+#: A client requirement that gates nothing (`pipeline.loot.client_rep`).
+UNGATED_STANDING = "neutral"
+
+
+def _quartermaster_update(
+    source: LootSource, item_reputations: Mapping[int, ItemReputation]
+) -> dict:
+    """The reputation a vendor sells for, when every item it sells needs a
+    standing with the same named faction; empty otherwise."""
+    items = source.items or []
+    reputations = [item_reputations.get(item_id) for item_id in items]
+    if not items or any(
+        reputation is None or reputation.standing == UNGATED_STANDING for reputation in reputations
+    ):
+        return {}
+    factions = {(reputation.faction_id, reputation.faction_name) for reputation in reputations}
+    if len(factions) != 1:
+        return {}
+    ((faction_id, faction_name),) = factions
+    if not faction_name:
+        return {}
+    return {
+        "faction_id": faction_id,
+        "reputation": faction_name,
+        "item_standings": {
+            str(item_id): reputation.standing
+            for item_id, reputation in zip(items, reputations, strict=True)
+        },
+    }
+
+
 def apply_vendor_terms(
-    document: LootFile, terms: VendorTermsFile, item_slots: Mapping[int, str]
+    document: LootFile,
+    terms: VendorTermsFile,
+    item_slots: Mapping[int, str],
+    item_reputations: Mapping[int, ItemReputation],
 ) -> LootFile:
-    """`document` with each curated vendor's and reputation's place, and each
-    curated vendor's non-gold prices. `item_slots` is item id -> gear slot."""
+    """`document` with each curated vendor's and reputation's place, each
+    curated vendor's non-gold prices, and each quartermaster's reputation.
+    `item_slots` is item id -> gear slot; `item_reputations` is item id ->
+    its client reputation requirement."""
     vendors = {term.npc_id: term for term in terms.vendors}
     reputations = {term.faction_id: term for term in terms.reputations}
     sources = []
     for source in document.sources:
-        if source.kind == "vendor" and source.npc_id in vendors:
-            source = source.model_copy(
-                update=_vendor_update(source, vendors[source.npc_id], item_slots)
-            )
+        if source.kind == "vendor":
+            update = _quartermaster_update(source, item_reputations)
+            if source.npc_id in vendors:
+                update |= _vendor_update(source, vendors[source.npc_id], item_slots)
+            source = source.model_copy(update=update) if update else source
         elif source.kind == "rep" and source.faction_id in reputations:
             source = source.model_copy(update={"place": reputations[source.faction_id].place})
         sources.append(source)

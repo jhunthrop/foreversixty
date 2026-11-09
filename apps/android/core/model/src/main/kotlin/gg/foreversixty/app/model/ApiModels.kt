@@ -2070,6 +2070,10 @@ data class LootSource(
     @SerialName("place") val place: String? = null,
     /** vendor only: item id -> its price when it is not gold; an item with no known price is absent. */
     @SerialName("item_costs") val itemCosts: Map<String, VendorCost>? = null,
+    /** vendor only: the faction a quartermaster sells for, when every item it sells needs that faction's standing (faction_id beside it). */
+    @SerialName("reputation") val reputation: String? = null,
+    /** vendor only, beside reputation: item id -> the standing the client requires. */
+    @SerialName("item_standings") val itemStandings: Map<String, String>? = null,
     @SerialName("rare_spawn") val rareSpawn: Boolean? = null,
     @SerialName("source_origin") val sourceOrigin: String? = null,
     @SerialName("source_note") val sourceNote: String? = null,
