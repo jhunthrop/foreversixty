@@ -14,11 +14,11 @@ const older = olderFixture as unknown as SimResult;
 /** The section panels measured on the fixture build (`simfullfixt1`) at 390 and 1440, 2026-11-09
  *  (round 5, sim spec §9). */
 const MEASURED_FULL = {
-  timeline: { phone: 1417, wide: 972 },
-  resource: { phone: 1279, wide: 603 },
-  buffs: { phone: 1667, wide: 986 },
-  gear: { phone: 1620, wide: 718 },
-  settings: { phone: 1415, wide: 1461 },
+  timeline: { phone: 1377, wide: 972 },
+  resource: { phone: 1299, wide: 603 },
+  buffs: { phone: 1613, wide: 956 },
+  gear: { phone: 1592, wide: 718 },
+  settings: { phone: 1351, wide: 1397 },
 } as const;
 
 describe('sectionReserves', () => {

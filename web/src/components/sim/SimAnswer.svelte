@@ -1,8 +1,8 @@
 <!-- web/src/components/sim/SimAnswer.svelte -->
 <!-- The page head's answer on /sim and /sim/<id> (spec 2026-11-06-sim §4.3 to §4.5, §5.1): a caps
-     label, the xl Figure, the band captioned once as 95% (ruling S2), a fix line after a failure,
+     label, the big Figure, the band captioned once as 95% (ruling S2), a fix line after a failure,
      the run Meter, then the actions. The slot keeps one size from the first state to the last
-     (172 px, 189 px from 900 px wide, min 360 px wide), so a run never moves the bar under it.
+     (152 px, 169 px from 900 px wide, min 360 px wide), so a run never moves the bar under it.
      aria-live sits on the captions, never on the figure: a number that changes ten times a
      second would make a screen reader unusable. -->
 <script lang="ts">
@@ -33,7 +33,7 @@
         value={model.figure.value}
         unit={model.figure.unit ? unit : undefined}
         tone={model.figure.tone}
-        size="xl"
+        size="big"
         align="end"
       />
     </span>
@@ -66,7 +66,7 @@
     flex-direction: column;
     gap: 4px;
     min-width: 0;
-    min-height: 172px;
+    min-height: 152px;
   }
   .sim-answer-captions {
     display: flex;
@@ -88,7 +88,7 @@
   @media (min-width: 900px) {
     .sim-answer {
       min-width: 360px;
-      min-height: 189px;
+      min-height: 169px;
       align-items: flex-end;
       text-align: right;
     }

@@ -729,7 +729,7 @@ def answer_result(signed_in: bool = True, last: tuple | None = None) -> str:
     """The live result. `last` draws the change since the character's last sim: hidden on the shipped page (gaps G1 and G15,
     no character key and no error on a saved-sim row), so only the states sheet passes it."""
     save = Button('Save this sim', small=True) if signed_in else Button('Sign in to save', small=True)
-    return (f'<span class="t-label">{LANE_LABEL}</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
+    return (f'<span class="t-label">{LANE_LABEL}</span>{Figure(FIGURE, unit="DPS", tone="gold", size="big")}'
             f'<span class="fig-cap">{ERR_LINE}</span>{since_last(last) if signed_in and last else ""}'
             f'<span class="ans-acts">{save}{Link("Find upgrades in Top Gear &rsaquo;")}</span>')
 
@@ -740,19 +740,19 @@ def answer_none() -> str:
 
 
 def answer_last() -> str:
-    return (f'<span class="t-label">Your last sim &middot; {LAST_SIM[1]}</span>{Figure(fnum(LAST_SIM[0]), unit="DPS", size="xl")}'
+    return (f'<span class="t-label">Your last sim &middot; {LAST_SIM[1]}</span>{Figure(fnum(LAST_SIM[0]), unit="DPS", size="big")}'
             f'<span class="fig-cap">Raid buffs, {FIGHT_STYLE} {clock(FIGHT["duration_sec"])}. Run sim for today&rsquo;s number.</span><span class="ans-acts">{Link("Open it &rsaquo;")}</span>')
 
 
 def answer_running() -> str:
     est, done = LIVE
-    return (f'<span class="t-label">Running in your browser</span>{Figure(f"{est:,.0f}", unit="DPS", tone="gold", size="xl")}'
+    return (f'<span class="t-label">Running in your browser</span>{Figure(f"{est:,.0f}", unit="DPS", tone="gold", size="big")}'
             f'<span class="fig-cap"><b>&plusmn; {band(done):.1f} (95%)</b> &middot; {done:,} of {REQ["iterations"]:,} runs</span><span class="ans-meter">{Meter(done / REQ["iterations"])}</span>')
 
 
 def answer_stopped() -> str:
     est, done = LIVE
-    return (f'<span class="t-label">Stopped at {done:,} of {REQ["iterations"]:,} runs</span>{Figure(f"about {est:,.0f}", unit="DPS", tone="muted", size="xl")}'
+    return (f'<span class="t-label">Stopped at {done:,} of {REQ["iterations"]:,} runs</span>{Figure(f"about {est:,.0f}", unit="DPS", tone="muted", size="big")}'
             f'<span class="fig-cap">Stopped at {done:,} runs: about {est:,.0f} &plusmn; {band(done):.1f}. A stopped run is not saved.</span>')
 
 
@@ -771,7 +771,7 @@ PAGE_CSS = '''<style>
 main{padding-bottom:40px}  /* the page's own bottom space (sim.astro .sim-page), above the site footer */
 /* page-level layout only: no border, background, radius or shadow (the guard reads inline styles; this block keeps to layout too) */
 /* the answer slot keeps the result's size from the first state to the last (no layout shift): label, figure, error, change, actions */
-.head .ans{min-width:0;min-height:172px}@media(min-width:900px){.head .ans{min-width:360px;min-height:189px}}
+.head .ans{min-width:0;min-height:152px}@media(min-width:900px){.head .ans{min-width:360px;min-height:169px}}
 .statesheet .head .ans{min-height:0}
 .fig-cap{font-size:13px;line-height:20px;color:var(--muted)}.fig-cap b{color:var(--text);font-weight:600}.fig-cap.kill{color:var(--kill);font-weight:600}.fig-cap.wipe{color:var(--wipe)}
 .ans-acts{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:6px}@media(min-width:900px){.ans-acts{justify-content:flex-end}}
@@ -890,7 +890,7 @@ def result_live() -> str:
 # ---- 5. /sim/<id>, a saved run, signed out
 def result_saved() -> str:
     meta = [f'{RACE} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; {FIGHT_LEN} fight, raid buffs, {len(CHAR["consumes"])} consumables', 'Saved 4 Nov 2026']
-    ans = (f'<span class="t-label">Saved sim &middot; {RES["iterations_run"]:,} runs</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
+    ans = (f'<span class="t-label">Saved sim &middot; {RES["iterations_run"]:,} runs</span>{Figure(FIGURE, unit="DPS", tone="gold", size="big")}'
            f'<span class="fig-cap">{ERR_LINE}</span><span class="ans-acts">{_Button("Open in the sim", primary=True)}{Button("Copy link")}</span>')
     head = PageHeader(SPEC_LABEL, crest=crest_img(CLS, 56), meta=meta, answer=ans)
     return finish(f'{SPEC_LABEL}, saved sim', head + worth_knowing() + result_page_body(saved=True), None)

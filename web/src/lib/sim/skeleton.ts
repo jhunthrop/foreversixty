@@ -8,12 +8,12 @@ import { PLATE_SURFACE, frameClass } from '../ui/primitives';
 const block = (classes: string): string => `<span class="skeleton-block ${classes}"></span>`;
 
 /** The page head at its ready geometry: the crest, the title and the meta line at the left, the
- *  answer (label, xl figure, band, two Buttons) in its 189 px slot at the right from 900 px. */
+ *  answer (label, big figure, band, two Buttons) in its 169 px slot at the right from 900 px. */
 const pageHead = (): string =>
   '<div class="px-[var(--page-inset)] pt-4 pb-[14px] min-[900px]:pt-5 min-[900px]:pb-4">' +
   '<div class="grid items-end gap-4 min-[900px]:grid-cols-[minmax(0,1fr)_auto]">' +
   `<div class="flex items-center gap-4">${block('h-14 w-14 shrink-0 !rounded-full')}<div class="flex flex-col gap-2">${block('h-10 w-56')}${block('h-3.5 w-72 max-w-full')}</div></div>` +
-  `<div class="flex min-h-[172px] flex-col justify-end gap-2 min-[900px]:min-h-[189px] min-[900px]:min-w-[360px] min-[900px]:items-end">${block('h-3 w-40')}${block('h-[60px] w-56')}${block('h-3.5 w-40')}<div class="flex gap-4">${block('h-11 w-36')}${block('h-11 w-28')}</div></div>` +
+  `<div class="flex min-h-[152px] flex-col justify-end gap-2 min-[900px]:min-h-[169px] min-[900px]:min-w-[360px] min-[900px]:items-end">${block('h-3 w-40')}${block('h-10 w-44')}${block('h-3.5 w-40')}<div class="flex gap-4">${block('h-11 w-36')}${block('h-11 w-28')}</div></div>` +
   '</div></div>';
 
 /** A Section panel's head: the title and its meta inside the panel (ui/Section `panel`). */
