@@ -1,6 +1,7 @@
 <!-- web/src/components/home/HomeRaidPlaque.svelte -->
 <!-- The raid plaque (round 5, the page's one ornate panel on the cave art): the guild's next raid,
-     its day and time, the clock in days and hours, signed up and late, the role counts, I'm in /
+     its day and time, the clock in days and hours, signed up and late, the role counts, your place in the guild (item level among
+     your spec, raids attended), I'm in /
      Late / Can't come (the saved choice pressed), and Before the pull at the right. A choice saves
      at once through the raid's sign-up endpoint; with no role to sign as, the raid page instead. -->
 <script lang="ts">
@@ -24,6 +25,8 @@
   import BigFigures from '../ui/BigFigures.svelte';
   import Button from '../ui/Button.svelte';
   import Frame from '../ui/Frame.svelte';
+  import type { HomeFact } from '../../lib/home/home-facts';
+  import HomeFacts from './HomeFacts.svelte';
   import HomePlaqueTitle from './HomePlaqueTitle.svelte';
 
   let {
@@ -31,6 +34,7 @@
     guild,
     raid,
     needs,
+    standing,
     characterKey,
     role,
     raidHref,
@@ -40,6 +44,8 @@
     raid: NextRaidView;
     /** Before the pull: the character's own list from the guild's standing. */
     needs: readonly string[];
+    /** You in the guild: your item level place among your spec, raids attended. */
+    standing: readonly HomeFact[];
     characterKey: string;
     /** The role a sign-up carries; null, the raid page signs up instead. */
     role: GuildRaidRole | null;
@@ -93,6 +99,9 @@
         {#each roleCounts(counts) as row (row.word)}<span><b class="text-strong">{row.n}</b> {row.word}</span
           >{/each}
       </p>
+      {#if standing.length > 0}
+        <div class="mt-[6px]"><HomeFacts facts={standing} testid="home-raid-standing" /></div>
+      {/if}
       <div class="mt-[18px] flex flex-wrap items-center gap-[10px]">
         {#if role !== null && !locked}
           {#each PLAQUE_CHOICES as choice (choice)}

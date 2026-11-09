@@ -2,8 +2,9 @@
 <!-- The signed-in home for one character (round 5, design/mocks/directions/png/g-home-*.png): the
      title band on the camp-road art (crest, name in the class colour, one line, the sim on import),
      the raid plaque (the guild's next raid, else the first raids), Latest on Forever with Your
-     upgrades beside it, then Guild sims (or, with no guild, Your spec this week). Each read has its
-     own state; none blocks another. -->
+     upgrades beside it, then Guild sims with Your spec this week beside it (or, with no guild, Your
+     spec this week alone). Each read has its own state;
+     none blocks another. -->
 <script lang="ts">
   import { untrack } from 'svelte';
   import type { Me, MeCharacter } from '../../lib/account/api';
@@ -14,6 +15,7 @@
   import { homeBCopy, homeBHrefs, simFigure } from '../../lib/home/home-b-view';
   import { EMPTY_HOME, fetchHomeAnswer, type HomeAnswer } from '../../lib/home/home-answer';
   import { signupRole } from '../../lib/home/plaque';
+  import { factsCopy, guildSummaryFacts, standingFacts } from '../../lib/home/home-facts';
   import { bandOf, type FeedRow } from '../../lib/home/feed';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import type { ClassSlug } from '../../lib/ui/primitives';
@@ -30,6 +32,7 @@
   import HomeSpecWeek from './HomeSpecWeek.svelte';
   import HomeUpgrades from './HomeUpgrades.svelte';
   import HomeRaidPlaque from './HomeRaidPlaque.svelte';
+  import HomeFacts from './HomeFacts.svelte';
 
   let {
     me,
@@ -97,6 +100,12 @@
   const sim = $derived(answered ? simFigure(answer.import_sim) : null);
   const specKey = $derived(homeSpecKeyFor(character));
   const band = $derived(bandOf(character.level));
+  const standing = $derived(
+    guildHome === null ? [] : standingFacts(guildHome.standing, character.guild, guildHome.attendance_source),
+  );
+  const guildFacts = $derived(
+    guildHome === null ? [] : [...guildSummaryFacts(guildHome.summary), ...standing],
+  );
 </script>
 
 <div data-testid="home-signed-in">
@@ -104,7 +113,10 @@
     {#snippet crest()}<ClassCrestRing characterClass={character.class ?? ''} size={CREST_PX} />{/snippet}
     {#snippet meta()}
       <span
-        >{whoLine(character)}{#if character.guild}&nbsp;· &lt;{character.guild.name}&gt;{/if}</span
+        >{whoLine(character)}{#if character.guild}&nbsp;·
+          <span class="whitespace-nowrap">&lt;{character.guild.name}&gt;</span
+          >{/if}{#if character.item_level !== undefined}&nbsp;·
+          <span class="whitespace-nowrap">{factsCopy.itemLevel(character.item_level)}</span>{/if}</span
       >
     {/snippet}
     {#snippet answer()}
@@ -128,6 +140,7 @@
           guild={character.guild.name}
           {raid}
           needs={guildHome.standing?.needs_before_next_raid ?? []}
+          {standing}
           characterKey={character.key}
           role={signupRole(raid.own, character)}
           raidHref={links.raid}
@@ -141,6 +154,9 @@
               {homeBCopy.guildNone(character.guild.name)}
               {#if links.guild !== null}· <a class={LINK} href={links.guild}>{homeBCopy.raidPageLink} ›</a
                 >{/if}
+              {#if guildFacts.length > 0}<div class="mt-2">
+                  <HomeFacts facts={guildFacts} testid="home-guild-facts" />
+                </div>{/if}
             {/if}
           {/snippet}
         </HomeFirstRaids>
@@ -149,9 +165,12 @@
     {#snippet rail()}<HomeUpgrades {upgrades} {bis} build={activeBuild.build} />{/snippet}
     {#snippet foot()}
       {#if answer.guild_sims !== null}
-        <HomeGuildSims sims={answer.guild_sims} week={answer.spec_week} />
+        <div class="home-foot-pair">
+          <HomeGuildSims sims={answer.guild_sims} />
+          {#if answer.spec_week !== null}<HomeSpecWeek week={answer.spec_week} movers={answer.movers} />{/if}
+        </div>
       {:else if answer.spec_week !== null}
-        <HomeSpecWeek week={answer.spec_week} />
+        <HomeSpecWeek week={answer.spec_week} movers={answer.movers} />
       {/if}
     {/snippet}
     <HomeFeed signedIn spec={specKey} {band} raidOnPlaque={raid !== null} {floor} build={activeBuild.build} />
@@ -165,5 +184,17 @@
     align-items: flex-end;
     gap: 2px;
     min-height: 40px;
+  }
+  /* Guild sims with Your spec this week beside it, on the columns of the feed and the rail above. */
+  .home-foot-pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: var(--gap);
+  }
+  @media (min-width: 1100px) {
+    .home-foot-pair {
+      grid-template-columns: minmax(0, 1fr) 400px;
+    }
   }
 </style>

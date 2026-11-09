@@ -47,10 +47,27 @@ test('signed in at 34: the sim, the first raids with Find a guild, the feed, upg
   await expect(page.getByTestId('home-spec-week')).toContainText(
     'Up from B last week, #4 of 23 damage specs',
   );
+  await expect(page.getByTestId('home-movers')).toContainText('Climbing this week');
+  await expect(page.getByTestId('home-mover')).toHaveCount(3);
+  await expect(page.getByTestId('home-mover').first()).toContainText('+6');
+  await expect(page.getByTestId('home-upgrades-total')).toContainText('DPS in');
+  await expect(page.getByTestId('home-upgrades-total')).not.toContainText('best in slot');
   await expect(page.getByTestId('home-guild-sims')).toHaveCount(0);
 });
 
-test('signed in at 60 in a guild: the raid plaque, the feed, the sims ladder with its tier line', async ({
+test('signed in at 60, the guild with no raid planned: the first raids with the guild and your standing', async ({
+  page,
+}) => {
+  await openHome(page, { ...SIXTY, feed: 'feed-guild-none.json', guild: 'guild-home-none.json' });
+  const plaque = page.getByTestId('home-signed-in-root').getByTestId('home-raids-countdown');
+  await expect(plaque).toContainText('Olympus XXVII: no raid planned');
+  await expect(page.getByTestId('home-signed-in-root').getByTestId('home-feed')).not.toContainText('posted');
+  await expect(page.getByTestId('home-guild-facts')).toHaveText(
+    /14 raiders\s*#2 of 4 guild Fury Warriors by item level\s*3 of 4 raid nights attended/,
+  );
+});
+
+test('signed in at 60 in a guild: the raid plaque, the feed, the sims ladder and your spec this week', async ({
   page,
 }) => {
   await openHome(page, SIXTY);
@@ -70,8 +87,17 @@ test('signed in at 60 in a guild: the raid plaque, the feed, the sims ladder wit
   );
   await expect(page.getByTestId('home-guild-sim')).toHaveCount(6);
   await expect(page.getByTestId('home-guild-sim').last()).toContainText('Thandrel');
-  await expect(page.getByTestId('home-tier-line')).toContainText('Tier S');
+  await expect(page.getByTestId('home-guild-sim-gap').first()).toHaveText('63.7 ahead');
+  await expect(page.getByTestId('home-guild-sim-gap').last()).toHaveText('');
   await expect(page.getByTestId('home-guild-sims')).not.toContainText('Guild page');
+  await expect(page.getByTestId('home-raid-standing')).toHaveText(
+    /#2 of 4 guild Fury Warriors by item level\s*3 of 4 raid nights attended/,
+  );
+  await expect(page.getByTestId('home-head')).toContainText('Item level 61');
+  await expect(page.getByTestId('home-spec-week')).toContainText('#2 of 23 damage specs');
+  await expect(page.getByTestId('home-movers')).toContainText('Top this week');
+  await expect(page.getByTestId('home-upgrades-total')).toContainText('best in slot');
+  await expect(page.getByTestId('item-row-worn')).toHaveCount(5);
 });
 
 test("the plaque signs up in place: I'm in saves and presses", async ({ page }) => {

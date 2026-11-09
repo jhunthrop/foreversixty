@@ -9,10 +9,8 @@ import {
   roleCounts,
   signupFigures,
   signupRole,
-  tierLine,
 } from './plaque';
 import type { NextRaidView } from '../guild/api';
-import type { SpecWeek } from './home-answer';
 
 const NOW = new Date('2026-11-06T18:00:00Z');
 const COUNTS: NextRaidView['counts'] = {
@@ -71,20 +69,7 @@ describe('the raid plaque', () => {
     expect(raidWhen('2026-12-10T02:00:00Z', 'Europe/London')).toBe('Thursday 10 December · 2 am');
   });
 
-  it('reads the first raids day whole, and the tier line only with a grade', () => {
+  it('reads the first raids day whole', () => {
     expect(longDay('2026-12-09T00:00:00Z')).toBe('Wednesday 9 December');
-    const week: SpecWeek = {
-      spec: 'warrior-fury',
-      band: 60,
-      faction: 'alliance',
-      role: 'dps',
-      grade: 'A',
-      last_week_grade: null,
-      place: 2,
-      of: 20,
-    };
-    expect(tierLine(week)).toBe('Tier A · #2 of 20');
-    expect(tierLine({ ...week, grade: null })).toBeNull();
-    expect(tierLine(null)).toBeNull();
   });
 });
