@@ -56,7 +56,7 @@ make run
 | `STRIPE_WEBHOOK_SECRET` | no | — | The signing secret of the `POST /v1/billing/webhook` endpoint in the same mode as the key. |
 | `STRIPE_ENVIRONMENT` | no | — | `test` or `live`. Must be `live` exactly when `PUBLIC_BASE_URL` is the production origin, and the key's own prefix must agree; `config.ValidateStripeKeyEnvironment` refuses to start otherwise. |
 | `STRIPE_CONNECT_WEBHOOK_SECRET` | no | — | The Connect endpoint's signing secret, on the same URL as `STRIPE_WEBHOOK_SECRET` (`POST /v1/billing/webhook`): `account.updated` for creators' payout accounts. The webhook accepts a signature from either secret. Without it, onboarding status is still re-read on the creator's return (`?done=1`) and by the owner's Refresh. |
-| `STRIPE_PAYOUTS_KEY` | no | — | The creator program's own restricted key (Connect Accounts, Account Links, Login Links and Transfers, all write): every Connect and transfer call. Subscriptions never use it. Missing, onboarding and payouts answer 503; with `CREATOR_PAYOUTS` on, the startup check says so on the admin pages. Secret Manager; never logged. |
+| `STRIPE_PAYOUTS_KEY` | no | — | The creator program's own restricted key, platform-account permissions only (Balance read; Accounts, Login Links and Transfers write): every Connect and transfer call, never on a connected account's behalf. Subscriptions never use it. Missing, onboarding and payouts answer 503; with `CREATOR_PAYOUTS` on, the startup check says so on the admin pages. Secret Manager; never logged. |
 | `CREATOR_PAYOUTS` | no | off | `true` lets the owner approve a creator's month, which makes a Stripe transfer. Off, statements read normally, Approve is disabled and `POST .../approve` answers 503 `payouts_off`. Leave it off until live Connect is set up and a first statement has been checked against the Dashboard. |
 | `NOTIFY_ENCRYPTION_KEY` | no | — | Base64 of 32 random bytes (`openssl rand -base64 32`); seals Discord webhook tokens at rest (AES-256-GCM). Absent, the Discord notifications feature is off; present but malformed, the service refuses to start. Lives in Secret Manager; never logged or printed. When set, the sim-run and parse-report jobs post one Discord embed per finished server sim or parsed upload; five consecutive counted failures (a 429 does not count) switch the webhook off. Migration 0047 adds `webhook_name` and backfills `upload_private` true for existing webhooks (new ones default off). |
 | `DISCORD_CLIENT_ID` | no | — | The Discord application's Client ID (public). Together with `DISCORD_CLIENT_SECRET` it turns the one-click Discord connect on (needs `NOTIFY_ENCRYPTION_KEY` too); `/v1/me` then carries `notifications.connect: true`. Both unset leaves connect off (its routes answer 404); exactly one set refuses to start, naming the missing variable. The redirect URI is `API_BASE_URL` + `/v1/notifications/discord/callback`. |
@@ -431,11 +431,16 @@ Going live, in order (the owner's Stripe account, never a key in a shell history
    restricted `rk_live_…` key in Secret Manager project `foreversixty`, secret `STRIPE_SECRET_KEY`
    (it also reads a creator's player's invoices, invoice payments, payment intents, charges,
    refunds and balance transactions for the revenue share, which billing already reads). Creator
-   payouts use a separate restricted key with only these permissions, all **Write**:
-   - Connect: **Accounts** (makes the Express account, reads its status, lists accounts for the
-     startup check), **Account Links** (the onboarding link), **Login Links** (the creator's
-     Express dashboard link);
-   - **Transfers** (the approved payout, and reading a transfer back by its group).
+   payouts use a separate restricted key with exactly these four platform-account permissions,
+   and none "in connected accounts":
+   - **Balance: Read**;
+   - **Accounts: Write** (makes the Express account, reads its status, lists accounts for the
+     startup check; it covers Account Links, the onboarding link);
+   - **Login Links: Write** (the creator's Express dashboard link);
+   - **Transfers: Write** (the approved payout, and reading a transfer back by its group).
+
+   No call is ever made on a connected account's behalf (no `Stripe-Account` header; a test holds
+   it): what a creator sees comes from our own records, and their Express dashboard covers the rest.
 
    Put it in Secret Manager project `foreversixty` as `STRIPE_PAYOUTS_KEY` without it touching a
    terminal, and wire it: `gcloud run services update api --region us-east1 --update-secrets

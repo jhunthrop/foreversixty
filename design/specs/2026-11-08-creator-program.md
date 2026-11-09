@@ -48,7 +48,7 @@ Memory rules applied: stripe-billing (Commish LLC's account, Managed Payments; k
 ## 0D. Go-live facts, 2026-11-08 (coordinator)
 
 - **Two keys.** Subscriptions keep `STRIPE_SECRET_KEY`, a restricted `rk_live_…` key in Secret Manager project `foreversixty`, and it is never widened. It also reads players' invoices and refunds for the revenue share.
-  - Creator payouts use their own restricted key, `STRIPE_PAYOUTS_KEY`, in the same project. It is write on Connect Accounts, Account Links and Login Links, and on Transfers.
+  - Creator payouts use their own restricted key, `STRIPE_PAYOUTS_KEY`, in the same project. It has exactly four platform-account permissions: Balance read, and write on Accounts (which covers account links), Login Links and Transfers. It has none in connected accounts, so no call ever carries a `Stripe-Account` header. Creator-facing figures come from our own records; the creator's Express dashboard covers the rest.
   - Every Connect and transfer call goes through a gateway built on that key (`creators.NewStripeGateway(secret, payouts)`).
   - In tests, the Connect sandbox key (`STRIPE_SANDBOX_SECRET_KEY`, project `trycommish`) stands for both.
 - **Startup check.** With `CREATOR_PAYOUTS` on, the API lists one connected account with the payouts key at startup. A missing key, or one without Connect access:
