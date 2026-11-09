@@ -25,6 +25,7 @@
       sub={encounterPickerCopy.where(encounter.zone, encounter.size) || undefined}
       href={hrefFor(encounter.slug)}
     >
+      {#snippet titleContent()}<span class="text-gold">{encounter.name}</span>{/snippet}
       {#snippet trail()}<span class="text-strong text-[14px] tabular-nums"
           >{encounterPickerCopy.ranked(encounter.kills)}</span
         >{/snippet}

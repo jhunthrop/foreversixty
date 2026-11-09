@@ -5,7 +5,8 @@
 // board. Signed in it opens the encounter the character last killed (rankings.spec.ts). When nothing
 // is ranked at all the list says so, says what fills it, and offers Upload a log.
 import { expect, test } from './support/test';
-import { stubRankedEncounters } from './support/rankings-fixture';
+import { stubRankedEncounters, stubRankingsApi } from './support/rankings-fixture';
+import { signedOut } from './support/selector';
 
 const envelope = (data: unknown) => ({
   status: 200,
@@ -40,7 +41,7 @@ test('signed out, bare /rankings lists the ranked encounters, each a link to its
   await expect(page).toHaveURL(/\/rankings$/);
   await expect(page.getByTestId('page-title')).toHaveText('Rankings');
   await expect(page.getByTestId('encounter-picker').locator('h2')).toHaveText('Choose an encounter');
-  const links = list.getByRole('link');
+  const links = list.getByTestId('rankings-encounter');
   await expect(links).toHaveCount(2);
   await expect(links.nth(0)).toContainText('Warden Kelthas');
   await expect(links.nth(0)).toContainText('5-player');
@@ -48,10 +49,16 @@ test('signed out, bare /rankings lists the ranked encounters, each a link to its
   await expect(links.nth(0)).toHaveAttribute('href', '/rankings/warden-kelthas');
   await expect(links.nth(1)).toContainText('Excavation Site: Wetlands · 5-player');
   await expect(links.nth(1)).toHaveAttribute('href', '/rankings/skolex-the-insatiable');
-  // The list is the page: the bar holds the board tabs alone, no board was asked for.
+  // The bar holds the board tabs alone. Each encounter's board is read for its top parses (every
+  // class, each character's best); an empty one says so in one line.
   await expect(page.getByTestId('control-encounter')).toHaveCount(0);
   await expect(page.getByTestId('ranking-board')).toHaveCount(0);
-  expect(asked).toEqual([]);
+  await expect(page.getByTestId('rankings-top-warden-kelthas')).toHaveText(
+    'No ranked kill on this board yet.',
+  );
+  expect(
+    asked.some((url) => url.includes('encounter=warden-kelthas') && url.includes('distinct=character')),
+  ).toBe(true);
 
   // The fixture build prerenders the one board Playwright can open without a Worker.
   await links.nth(0).click();
@@ -86,6 +93,11 @@ test('the Guilds Progress board needs no encounter and offers every encounter at
 }) => {
   test.skip(isMobile, 'the board tabs sit on the desktop bar line; the phone opens them from its summary');
   await stubRankedEncounters(page, [KELTHAS]);
+  await page.route('**/v1/rankings?**', (route) =>
+    route.fulfill(
+      envelope({ rows: [], total: 0, page: 1, per_page: 100, updated_at: '2026-12-09T00:00:00Z' }),
+    ),
+  );
   await page.route('**/v1/rankings/guilds?**', (route) =>
     route.fulfill(
       envelope({
@@ -110,4 +122,24 @@ test('the Guilds Progress board needs no encounter and offers every encounter at
   await expect(page.getByTestId('guild-rows')).toContainText('2 bosses');
   await expect(page.getByTestId('control-encounter')).toHaveValue('');
   await expect(page.getByTestId('control-encounter').locator('option').first()).toHaveText('Every encounter');
+});
+
+test("the landing shows each encounter's top three and the spec leaders on the raid boss", async ({
+  page,
+}) => {
+  await signedOut(page);
+  await stubRankingsApi(page);
+
+  await page.goto('/rankings');
+
+  const top = page.getByTestId('rankings-top-onyxia');
+  await expect(top.locator('li')).toHaveCount(3);
+  await expect(top.locator('li').first()).toContainText('Reglitch');
+  await expect(top.locator('li').first()).toContainText('Shadow Priest');
+  await expect(top.getByTestId('ranking-value').first()).toHaveAttribute('href', '/reports/report1?fight=1');
+  await expect(page.locator('main header')).toContainText('Updated 13 Dec');
+  const leaders = page.getByTestId('rankings-leaders');
+  await expect(leaders.locator('h2')).toHaveText('Leaders by spec');
+  await expect(leaders).toContainText('Onyxia');
+  await expect(page.getByTestId('rankings-leaders-list').locator('li')).toHaveCount(3);
 });

@@ -13,6 +13,10 @@ export const encounterPickerCopy = {
       .join(' · '),
   /** "212 ranked": the encounter's ranked kills. */
   ranked: (kills: number): string => `${kills.toLocaleString('en-US')} ranked`,
+  /** One line in place of an encounter's top parses, or of the spec leaders. */
+  topFailed: 'Top parses did not load.',
+  topNone: 'No ranked kill on this board yet.',
+  leadersHeading: 'Leaders by spec',
 } as const;
 
 /** The home page's Rankings panel (spec 2026-09-23 §2 item 3): the top five guilds by

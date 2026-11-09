@@ -2079,6 +2079,186 @@
   "kind": "sentence",
   "text": "Not ranked yet on Onyxia. Upload a log of a kill to get on the board."
  },
+ "landing": {
+  "top": [
+   {
+    "rank": "1",
+    "rankColor": "var(--color-parse-gold)",
+    "name": "Reglitch",
+    "href": "/character/us/normal/reglitch",
+    "classSlug": "priest",
+    "sub": "Shadow Priest",
+    "fraction": 1,
+    "figures": [
+     {
+      "value": "888",
+      "label": "DPS",
+      "href": "/reports/report1?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-value",
+      "unit": "DPS"
+     },
+     {
+      "value": "100",
+      "label": "Percentile"
+     }
+    ],
+    "gap": {
+     "text": "8 Nov",
+     "label": "Date"
+    },
+    "links": [],
+    "key": "us/normal/reglitch"
+   },
+   {
+    "rank": "2",
+    "rankColor": "var(--color-parse-blue)",
+    "name": "Thorgrim Ashveil",
+    "href": "/character/us/normal/thorgrim-ashveil",
+    "classSlug": "warrior",
+    "sub": "Olympus XXVII · Fury Warrior",
+    "fraction": 0.9864864864864865,
+    "figures": [
+     {
+      "value": "876",
+      "label": "DPS",
+      "href": "/reports/report2?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-value",
+      "unit": "DPS"
+     },
+     {
+      "value": "66",
+      "label": "Percentile"
+     }
+    ],
+    "gap": {
+     "text": "7 Nov",
+     "label": "Date"
+    },
+    "links": [],
+    "key": "us/normal/thorgrim-ashveil"
+   },
+   {
+    "rank": "3",
+    "rankColor": "var(--color-parse-green)",
+    "name": "Emberlyn",
+    "href": "/character/us/normal/emberlyn",
+    "classSlug": "mage",
+    "sub": "Frost Mage",
+    "fraction": 0.972972972972973,
+    "figures": [
+     {
+      "value": "864",
+      "label": "DPS",
+      "href": "/reports/report3?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-value",
+      "unit": "DPS"
+     },
+     {
+      "value": "33",
+      "label": "Percentile"
+     }
+    ],
+    "gap": {
+     "text": "6 Nov",
+     "label": "Date"
+    },
+    "links": [],
+    "key": "us/normal/emberlyn"
+   }
+  ],
+  "leaders": [
+   {
+    "rank": "3",
+    "rankColor": "var(--color-parse-green)",
+    "name": "Emberlyn",
+    "href": "/character/us/normal/emberlyn",
+    "classSlug": "mage",
+    "sub": "Frost Mage",
+    "fraction": 0.972972972972973,
+    "figures": [
+     {
+      "value": "864",
+      "label": "DPS",
+      "href": "/reports/report3?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-value",
+      "unit": "DPS"
+     },
+     {
+      "value": "33",
+      "label": "Percentile"
+     }
+    ],
+    "gap": {
+     "text": "6 Nov",
+     "label": "Date"
+    },
+    "links": [],
+    "key": "us/normal/emberlyn"
+   },
+   {
+    "rank": "1",
+    "rankColor": "var(--color-parse-gold)",
+    "name": "Reglitch",
+    "href": "/character/us/normal/reglitch",
+    "classSlug": "priest",
+    "sub": "Shadow Priest",
+    "fraction": 1,
+    "figures": [
+     {
+      "value": "888",
+      "label": "DPS",
+      "href": "/reports/report1?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-value",
+      "unit": "DPS"
+     },
+     {
+      "value": "100",
+      "label": "Percentile"
+     }
+    ],
+    "gap": {
+     "text": "8 Nov",
+     "label": "Date"
+    },
+    "links": [],
+    "key": "us/normal/reglitch"
+   },
+   {
+    "rank": "2",
+    "rankColor": "var(--color-parse-blue)",
+    "name": "Thorgrim Ashveil",
+    "href": "/character/us/normal/thorgrim-ashveil",
+    "classSlug": "warrior",
+    "sub": "Olympus XXVII · Fury Warrior",
+    "fraction": 0.9864864864864865,
+    "figures": [
+     {
+      "value": "876",
+      "label": "DPS",
+      "href": "/reports/report2?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-value",
+      "unit": "DPS"
+     },
+     {
+      "value": "66",
+      "label": "Percentile"
+     }
+    ],
+    "gap": {
+     "text": "7 Nov",
+     "label": "Date"
+    },
+    "links": [],
+    "key": "us/normal/thorgrim-ashveil"
+   }
+  ]
+ },
  "guilds": [
   {
    "rank": "1",
@@ -2272,7 +2452,10 @@
    "noneYet": "No boss kills are ranked yet.",
    "fill": "A boss gets its board when the first log of its kill is uploaded.",
    "where": "[fn]",
-   "ranked": "[fn]"
+   "ranked": "[fn]",
+   "topFailed": "Top parses did not load.",
+   "topNone": "No ranked kill on this board yet.",
+   "leadersHeading": "Leaders by spec"
   },
   "homeTopGuildsCopy": {
    "placeholderLabel": "Top guilds",
@@ -2602,6 +2785,7 @@
    "warden-kelthas": "3 ranked"
   },
   "boardEmpty": "No Fury Warrior kills on Warden Kelthas yet.",
-  "noneYet": "No boss kills are ranked yet."
+  "noneYet": "No boss kills are ranked yet.",
+  "leadersHeading": "Leaders by spec"
  }
 }

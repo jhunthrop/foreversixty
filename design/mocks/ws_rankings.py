@@ -49,7 +49,7 @@ PAGE_CSS = '''<style>
 .encs{padding:0 20px 8px}.ptr{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:16px}
 .you-n{display:flex;flex-direction:column;gap:4px;min-height:88px}.you-n .kv{margin-top:12px}.you-n p.go{margin-top:12px}
 
-.pin-l{display:block;padding:0 20px 4px}.ruled{border-top:1px solid var(--line-soft)}
+.pin-l{display:block;padding:0 20px 4px}.enc-b{border-top:1px solid var(--line-soft)}.enc-b .encs{padding-bottom:0}.encs .rows{margin:0}.gold{color:var(--gold)}.ruled{border-top:1px solid var(--line-soft)}
 </style>'''
 
 
@@ -148,12 +148,39 @@ def page(title: str, html: str, who: tuple | None, note: str) -> str:
 HIDDEN_STAMP = f'<span style="visibility:hidden">{UPDATED}</span>'   # the stamp's reserve: no character board answered
 
 
-def index_page(empty: bool) -> str:
+LANDING_HEADS = [('#', False), ('', False), ('Character', False), ('', False), ('Amount', True), (RC['percentileLabel'], True),
+                 ('Date', True), ('', False)]
+
+
+def landing_rows(rows: list[dict], with_heads: bool) -> str:
+    """RankingsLanding's compact list: two figures (the value with its unit, the percentile)."""
+    body = ''.join(RankRow(f'<span style="color:{token_hex(v["rankColor"])}">{v["rank"]}</span>', crest_img(v['classSlug'], 28),
+                           CLASS_COLOR[v['classSlug']], escape(v['name']), escape(v['sub']), v['fraction'],
+                           [(f'<a href="#">{escape(f["value"])}</a>' if f.get('href') else escape(f['value']), escape(f.get('unit') or ''),
+                             escape(f['label']), False) for f in v['figures']], escape(v['gap']['text']), []) for v in rows)
+    return RankList(ColumnHeads(LANDING_HEADS) if with_heads else '', body, 2, compact=True, fig_px=72)
+
+
+def landing() -> str:
+    """The landing: each encounter (gold name, zone and size, kills) over its top three; then the spec leaders."""
     encs = FACTS['encounters']
-    body = (empty_block(EC['noneYet'], EC['fill']) if empty else encounter_rows(encs))
-    main = Section(escape(EC['heading']), body, panel=True, frame='lead', flush=True)
+    blocks = ''.join(f'<div class="enc-b"><div class="encs">{Rows([Row(f"<span class=gold>{escape(e["name"])}</span>", escape(FACTS["fns"]["where"][e["slug"]]), trail=f"<span class=num>{escape(FACTS["fns"]["ranked"][e["slug"]])}</span>")])}</div>'
+                     f'{landing_rows(FACTS["landing"]["top"], i == 0)}</div>' for i, e in enumerate(encs))
+    picker = Section(escape(EC['heading']), blocks, panel=True, frame='lead', flush=True)
+    leader = next((e for e in encs if (e['size'] or 0) >= 10), encs[0])
+    leaders = Section(escape(FACTS['fns']['leadersHeading']), landing_rows(FACTS['landing']['leaders'], True), meta=escape(leader['name']),
+                      panel=True, frame='framed', flush=True)
+    return picker + leaders
+
+
+def index_page(empty: bool) -> str:
+    if empty:
+        main = Section(escape(EC['heading']), empty_block(EC['noneYet'], EC['fill']), panel=True, frame='lead', flush=True)
+        meta = HIDDEN_STAMP
+    else:
+        main, meta = landing(), UPDATED   # the landing's boards answer, so the band carries the stamp
     rail = (companion() if empty else '') + pointer()
-    html = head(HIDDEN_STAMP) + bar([board_tabs('character')], '') + Page('split', main, rail, panels=True)
+    html = head(meta) + bar([board_tabs('character')], '') + Page('split', main, rail, panels=True)
     return page('Rankings', html, None, f'/rankings mock, {"empty" if empty else "index"}. Data: rankings-fixture.ts ranked encounters.')
 
 

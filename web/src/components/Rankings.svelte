@@ -63,6 +63,7 @@
   import RankingsAnswer from './rankings/RankingsAnswer.svelte';
   import RankingsEmpty from './rankings/RankingsEmpty.svelte';
   import RankingsEncounters from './rankings/RankingsEncounters.svelte';
+  import RankingsLanding from './rankings/RankingsLanding.svelte';
   import RankingsMoreFilters from './rankings/RankingsMoreFilters.svelte';
   import ControlBar from './ui/ControlBar.svelte';
   import Button from './ui/Button.svelte';
@@ -441,6 +442,11 @@
   );
   const showYourRank = $derived(viewer !== null && !isIndex && !isGuild && ownDefaults.class !== '');
 
+  /** The landing's boards each carry updated_at: the band's stamp shows the newest. */
+  function stampUpdated(iso: string): void {
+    if (updatedAt === null || iso > updatedAt) updatedAt = iso;
+  }
+
   function backToOwnBoard(): void {
     patch({ class: ownDefaults.class, spec: ownDefaults.spec });
   }
@@ -518,18 +524,18 @@
       </div>
     {/snippet}
 
-    {#if isIndex}
+    {#if isIndex && aimed && encounters.length > 0}
+      <RankingsLanding {encounters} phase={state.phase} hrefFor={encounterHref} onupdated={stampUpdated} />
+    {:else if isIndex}
       <Section title={encounterPickerCopy.heading} panel frame="lead" flush testid="encounter-picker">
         {#if !aimed}
           <div class="px-5 pb-4"><Skeleton lines={3} rowHeight="h-11" testid="rankings-skeleton" /></div>
-        {:else if encounters.length === 0}
+        {:else}
           <RankingsEmpty
             line={encounterPickerCopy.noneYet}
             fill={encounterPickerCopy.fill}
             testid="rankings-no-encounters"
           />
-        {:else}
-          <RankingsEncounters {encounters} hrefFor={encounterHref} testid="rankings-encounters" />
         {/if}
       </Section>
     {:else}

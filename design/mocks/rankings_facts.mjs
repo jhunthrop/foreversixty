@@ -21,6 +21,7 @@ import { rankingsCopy, rankingsEmptyCopy, encounterPickerCopy, homeTopGuildsCopy
 import { rankRowView } from ${JSON.stringify(WEB + "src/lib/rankings/rank-row-view.ts")};
 import { guildRowView } from ${JSON.stringify(WEB + "src/lib/rankings/guild-row-view.ts")};
 import { ownBestFacts } from ${JSON.stringify(WEB + "src/lib/rankings/own-best.ts")};
+import { topParses, specLeaders } from ${JSON.stringify(WEB + "src/lib/rankings/landing.ts")};
 import { RANK_LEGEND, showRowCrests } from ${JSON.stringify(WEB + "src/lib/rankings/row-view.ts")};
 import { ordinal } from ${JSON.stringify(WEB + "src/lib/report/format.ts")};
 import { rankColor } from ${JSON.stringify(WEB + "src/lib/rankings/row-view.ts")};
@@ -54,6 +55,9 @@ export default {
   answer_you: answerOf(board(YOU_Q)),
   answer_off: answerOf(board(YOU_Q, { ownOffPage: true })),
   answer_unranked: answerOf(board(YOU_Q, { unranked: true })),
+  // The landing (RankingsLanding.svelte): each encounter's top three and the spec leaders, from the stub's every-class board
+  // (the stub answers every encounter and both metrics with it).
+  landing: (() => { const b = board('metric=dps'); return { top: topParses(b), leaders: specLeaders(b, board('metric=hps')) }; })(),
   guilds: guilds.map((g) => guildRowView(g, { kind: 'speed', best: guilds[0].value })),
   own_key: OWN_KEY,
   legend: RANK_LEGEND,
@@ -69,6 +73,7 @@ export default {
     ranked: Object.fromEntries([ONYXIA, KELTHAS].map((e) => [e.slug, encounterPickerCopy.ranked(e.kills)])),
     boardEmpty: rankingsEmptyCopy.board('Fury Warrior', 'Warden Kelthas'),
     noneYet: encounterPickerCopy.noneYet,
+    leadersHeading: encounterPickerCopy.leadersHeading,
   },
 };`;
 const dir = mkdtempSync(join(tmpdir(), "rankings-facts-"));
