@@ -62,7 +62,7 @@
   </a>
 {/snippet}
 
-<Section title={simCopy.details} testid="sim-details-card">
+<Section title={simCopy.details} panel testid="sim-details-card">
   <Facts items={facts} />
   {#if details.hitCeiling}
     <p class="text-muted pt-3 text-[13px] leading-5" data-testid="sim-details-ceiling">

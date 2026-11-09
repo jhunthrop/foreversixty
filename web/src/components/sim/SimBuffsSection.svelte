@@ -102,7 +102,6 @@
               { value: copy.applied(entry.applications) },
             ]}
             fraction={entry.uptimePct / 100}
-            tone="muted"
             testid="aura-bar-row"
           />
         {/each}
@@ -119,7 +118,7 @@
   </div>
 {/snippet}
 
-<Section title={copy.title} meta={copy.meta} testid="sim-auras-card">
+<Section panel title={copy.title} testid="sim-auras-card">
   <div class="grid grid-cols-1 gap-x-[var(--gap)] lg:grid-cols-2">
     {@render side(card.player, copy.onYou, 'player')}
     {@render side(
@@ -129,5 +128,4 @@
       card.targetFromRequest ? copy.targetNeedsNewerRun : undefined,
     )}
   </div>
-  <p class="text-muted pt-[10px] text-[13px] leading-5">{copy.dimmed}</p>
 </Section>

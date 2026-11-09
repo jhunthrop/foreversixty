@@ -69,6 +69,7 @@
 <!-- The header's "finished" line links here (/sim#server-runs). -->
 <div id="server-runs">
   <Section
+    panel
     title={copy.sections.yourSims}
     action={{ label: copy.sections.yourSimsAll, href: '/account#sims' }}
     testid="sim-history"

@@ -41,7 +41,7 @@ describe('simWarnings', () => {
     expect(notes).toHaveLength(1);
     expect(notes[0]).toMatchObject({ id: 'long-cooldown', actionKey: 'spell:1719' });
     expect(notes[0]?.text).toBe(
-      'Recklessness has a 30 minute cooldown, longer than this fight, so the result counts one use every pull. In a raid it is back only every 30 minutes.',
+      'Recklessness counts once a pull here. In a raid it is back every 30 minutes.',
     );
   });
 

@@ -55,11 +55,9 @@ describe('simAnswer', () => {
   it('the result labels its band once, as 95%, and its lane', () => {
     const a = simAnswer(input({ phase: 'done', result }));
     expect(a.state).toBe('result');
-    expect(a.label).toBe(
-      `Fury Warrior · run ${result.lane === 'server' ? 'on our servers' : 'in your browser'}`,
-    );
+    expect(a.label).toBe(`Run ${result.lane === 'server' ? 'on our servers' : 'in your browser'}`);
     expect(a.caption?.bold).toMatch(/^± [\d.]+ \(95%\)$/);
-    expect(a.caption?.rest).toMatch(/^ · [\d.]+% error$/);
+    expect(a.caption?.rest).toBeUndefined();
     expect(a.primary).toBe('run-again');
   });
 

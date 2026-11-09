@@ -118,7 +118,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await gotoSavedSim(page, '/sim/simfullfixt1');
     await expect(page.getByTestId('sim-spread-plot')).toBeVisible();
     await expect(page.getByTestId('sim-spread-bar').first()).toBeVisible();
-    await expect(page.getByTestId('sim-spread-caption')).toContainText('Two runs in three');
+    await expect(page.getByTestId('sim-spread-caption')).toHaveCount(0);
     await expect(page.getByTestId('sim-head-source')).toHaveText(/4 Nov 2026/);
 
     // Below 1024 the table is three columns with no heads (spec §4.7, phone), so the sort
@@ -225,7 +225,7 @@ test('a saved sim names the rotation it used, prints its notes in place, and car
   await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
   const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
-  await expect(card).toContainText('Fury, at 60');
+  await expect(card).toContainText('Fury guide');
   await expect(card).toContainText('Then, from the top at every decision');
 
   const notes = curatedRotationNotes('warrior-fury');

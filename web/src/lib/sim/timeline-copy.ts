@@ -77,11 +77,6 @@ export const timelineCopy = {
 
   castsInRun: (total: number): string => `${total} casts in this run.`,
   castsInView: (shown: number, total: number): string => `Casts in view: ${shown} of ${total}.`,
-  /** With Swings and ticks Off: what turning it on adds (sim spec 2026-11-06 §6). */
-  castsTail: (periodic: string | null): string =>
-    periodic === null
-      ? 'Turn Swings and ticks on to add white swings as their own lane.'
-      : `Turn Swings and ticks on to add white swings and ${periodic} ticks as their own lanes.`,
   listEvery: 'List every cast',
   hideList: 'Hide the list',
   queued: (name: string): string => `${name} queued`,

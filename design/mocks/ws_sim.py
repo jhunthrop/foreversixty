@@ -16,7 +16,6 @@ error band is computed from the fixture's own spread (band()).
 """
 import base64
 import decimal
-import hashlib
 import json
 import os
 import re
@@ -25,7 +24,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, LanesLegend, Link, Meter, Notice,
-                      Page, PageHeader, Plate, Row, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
+                      Page, PageHeader, Plate, Row, RowGrid, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
                       control_bar, crest_img, seg, sel, write, Paperdoll)
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -73,6 +72,20 @@ HISTORY = [('Raid buffs', SPEC_ROW['name'], '3 Nov', '900'), ('No buffs', SPEC_R
 
 _icache: dict[str, str] = {}
 
+
+# Round 5 (lane P6): every section on the simulator is a Section panel, the heading inside its Plate (web ui/Section `panel`),
+# and the split page sets them as panels (ui/Page `panels`). The built components pass `panel` on every Section here.
+_Section = Section
+_Page = Page
+
+
+def Section(*args, **kw) -> str:
+    kw.setdefault('panel', True)
+    return _Section(*args, **kw)
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
+    return _Page(layout, main, rail, sticky_rail, panels=layout == 'split')
 
 # ------------------------------------------------------------------------------------------------ data helpers
 def Button(label: str, primary: bool = False, small: bool = False) -> str:
@@ -197,10 +210,10 @@ def band(runs: int) -> float:
 
 BAND = Z95 * ERR
 FIGURE = fnum(MEAN)
-ERR_LINE = f'<b>&plusmn; {BAND:.1f} (95%)</b> &middot; {BAND / MEAN * 100:.2f}% error'   # the one place "(95%)" is written
+ERR_LINE = f'<b>&plusmn; {BAND:.1f} (95%)</b>'   # the one place "(95%)" is written
 PRECISION = {500: 'Fast', 3000: 'Normal', 10000: 'High'}[REQ['iterations']]          # lib/sim/precision.ts PRECISION_ITERATIONS
 PRECISION_LABEL = f"{PRECISION}, {REQ['iterations']:,} runs"
-LANE_LABEL = {'server': 'run on our servers', 'browser': 'run in your browser'}[RES['lane']]
+LANE_LABEL = {'server': 'Run on our servers', 'browser': 'Run in your browser'}[RES['lane']]
 DAMAGE_KEYS = {a['name'] for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 DAMAGE_SCHOOLS = {'physical' if (a.get('school') or 1) & 1 else 'other' for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 SPLIT = '/'.join(str(sum(int(c) for c in part)) for part in CHAR['talents'].split('-'))
@@ -290,8 +303,28 @@ def spread_section() -> str:
                      (f'{d["min"]:,.0f}', 'DPS per run', f'{d["max"]:,.0f}'))
     figs = Figures([(fnum(MEAN), 'Mean', '', '', 'sm'), (f'&plusmn; {BAND:.1f}', 'Error', '', '', 'sm'), (f'{d["stddev"]:.1f}', 'Std dev', '', '', 'sm'),
                     (f'{d["min"]:,.0f}', 'Lowest', '', '', 'sm'), (f'{d["max"]:,.0f}', 'Highest', '', '', 'sm'), (f'{RES["iterations_run"]:,}', 'Runs', '', '', 'sm')])
-    cap = f'<p class="t-small rail-cap">Two runs in three land between {lo:,.0f} and {hi:,.0f} DPS.</p>'
-    return Section('DPS spread', f'<div class="rail-body">{hist}{cap}{figs}</div>', meta=f'{RES["iterations_run"]:,} runs')
+    return Section('DPS spread', f'<div class="rail-body">{hist}{figs}{benchmark_row()}</div>')
+
+
+# The run beside its spec's published best-in-slot set (web lib/sim/bis-benchmark.ts): the band at the run's level, faction and
+# preset in data/builds/<build>/bis/<spec>.json, drawn only when the run fought the file's own `run` block. The gap carries both
+# runs' 95% band combined; at 10 or more it is whole (lib/sim/combos.ts gainLabel).
+FACTION = {'troll': 'horde', 'orc': 'horde', 'tauren': 'horde', 'undead': 'horde', 'human': 'alliance', 'dwarf': 'alliance',
+           'gnome': 'alliance', 'night-elf': 'alliance'}
+
+
+def benchmark_row() -> str:
+    f = json.loads((B / 'bis' / f'{SPEC}.json').read_text())
+    run, enc = f['run'], REQ['encounter']
+    if (enc['duration_sec'], enc['variation'], enc['targets'], enc['execute_ratio']) != (run['duration_sec'], run['variation'], run['targets'], run['execute_ratio']):
+        return ''
+    band_row = next(b for b in f['bands'] if b['band'] == CHAR['level'] and b['faction'] == FACTION[CHAR['race']] and b.get('preset', 'bare') == REQ['preset'])
+    dps, err = round(band_row['set_dps'], 2), round(band_row.get('set_dps_error', 0), 2)
+    gap, margin = MEAN - dps, Z95 * (ERR ** 2 + err ** 2) ** .5
+    mag = round(abs(gap), 1)
+    gap_txt = f'{round(mag):,}' if mag >= 10 or mag == 0 else f'{mag:.1f}'
+    sub = f'{gap_txt} DPS {"under" if gap < 0 else "over"} &middot; {abs(gap) / dps * 100:.1f}% &middot; &plusmn; {margin:.1f}'
+    return Rows([Row(f'Level {band_row["band"]} {REQ["preset"]} BiS', sub, trail=Figure(fnum(dps), unit='DPS', size='sm'))], open_=True)
 
 
 # "No effect on your damage": the shipped rule, lib/sim/buff-effect.ts hasNoDamageEffect, read from the data (ruling M4).
@@ -373,21 +406,13 @@ def this_run_section() -> str:
     you_l, tgt_l = buff_items(on_you), buff_items(on_tgt)
     lists = (IconList(you_l, f'On you &middot; {len(you_l)}') + IconList(tgt_l, f'On the target &middot; {len(tgt_l)}')
              + IconList(cons, f'Consumables &middot; {len(cons)}'))
-    acts = (f'<div class="rail-acts">{Button("Copy for the game", small=True)}{Button("Copy JSON", small=True)}{Button("Download JSON", small=True)}</div>'
-            '<p class="t-small rail-cap">The JSON is this whole result, request included.</p>')
-    return Section('This run', f'<div class="rail-body flow">{facts}{lists}<p class="t-small rail-cap">Dimmed: no effect on your damage.</p>{acts}</div>', meta='Inputs and engine')
-
-
-def rotation_drifted() -> bool:
-    """lib/sim/rotation-card's drift rule: the run's rotation_sha against the hash a run stamps today (sync-rotations.mjs)."""
-    apl = ROOT / 'sim' / 'request' / 'apl' / f'{SPEC}.apl.json'
-    sha = RES.get('rotation_sha')
-    return bool(sha) and apl.exists() and hashlib.sha256(apl.read_bytes()).hexdigest()[:12] != sha
+    acts = f'<div class="rail-acts">{Button("Copy for the game", small=True)}{Button("Copy JSON", small=True)}{Button("Download JSON", small=True)}</div>'
+    return Section('This run', f'<div class="rail-body flow">{facts}{lists}{acts}</div>')
 
 
 def rot_title(key: str, name: str, rank: int = 0) -> str:
     """The built rotation title (ActionMark): the 24 px icon, then the name and its rank."""
-    rk = f' <span class="rk-s">Rank {rank}</span>' if rank else ''
+    rk = f'<span class="rk-s">Rank {rank}</span>' if rank else ''   # glued, as the built ActionMark: the rank never takes a line alone
     return f'<span class="am">{act_icon(key, 24) if key else ""}<span>{name}{rk}</span></span>'
 
 
@@ -427,20 +452,19 @@ def rotation_section(ran: bool = True) -> str:
                 rank=str(i + 1), trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
         lines.append(r if n or not ran else f'<div class="dim">{r}</div>')
     body = (f'<div class="rot"><h3 class="t-label rot-l">Before the pull</h3>{Rows(pre, open_=True)}<h3 class="t-label rot-l">Then, from the top at every decision</h3>'
-            f'{Rows(lines, open_=True)}<p class="t-small rail-cap tl-foot">The {SPEC_ROW["name"]} rotation the engine follows.{" A line with no cast in this run is dimmed." if ran else ""}</p></div>')
-    meta = f'{SPEC_ROW["name"]}, at {CHAR["level"]}' + (' &middot; casts per fight' if ran else '') + (' &middot; today&rsquo;s rotation' if ran and rotation_drifted() else '')
-    return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'), meta=meta)
+            f'{Rows(lines, open_=True)}</div>')
+    return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'))
 
 
 def history_section(state: str = 'ready', server: bool = False) -> str:
-    """Your sims. `server`: a payer's list, where server runs are rows of the same list (no panel of their own), each marked
-    "On our servers" with its kind and age (SimYourSims + ServerRunRow); the gate's three runs are server runs."""
+    """Your sims. `server`: a payer's list, where server runs are rows of the same list (no panel of their own): a titled run
+    names its spec and age (SimYourSims + ServerRunRow); the gate's three runs are server runs."""
     if state == 'empty':
         return Section('Your sims', '<p class="empty-open">Nothing saved yet. Run a sim and press Save.</p>')
     if state == 'failed':
         return Section('Your sims', f'<p class="empty-open">Your sims did not load. {Link("Try again")}</p>')
     if server:
-        rows = [Row(t, f'{SPEC_LABEL} &middot; Sim &middot; On our servers &middot; <time>Finished {a}</time>', trail=(Figure(f'{v} DPS', size='sm') if v else ''))
+        rows = [Row(t, f'{SPEC_LABEL} &middot; <time>{a}</time>', trail=(Figure(f'{v} DPS', size='sm') if v else ''))
                 for (t, _, _, v), a in zip(HISTORY, SERVER_AGES)]
         return Section('Your sims', Rows(rows, open_=True), Link('All &rsaquo;'))
     rows = [Row(t, f'{s} &middot; {d}', trail=(Figure(v, unit='DPS', size='sm') if v else '')) for t, s, d, v in HISTORY]
@@ -535,11 +559,9 @@ def timeline_section(swings_and_ticks: bool = False) -> str:
              f'{LanesLegend(legend)}</div>')
     brush = '<div class="tl-brush" aria-hidden="true"><span></span><span class="tr"></span></div>'   # the shipped TimelineBrush strip
     n = sum(1 for e in ev if e['action'] in cast_keys and e['action'] not in HANDS and e['action'] not in ticking and parse(e['action'])[1] not in OFF_HAND_SPELLS)
-    hidden = ' and '.join(['white swings'] + [display_name(k) + ' ticks' for k in sorted(ticking)])
     foot = (f'<p class="t-small tl-foot">{n} casts in this run. '
-            + ('' if swings_and_ticks else f'Turn Swings and ticks on to add {hidden} as their own lanes. ')
             + '<button type="button" class="tl-list" aria-expanded="false">List every cast &rsaquo;</button></p><p class="sr" aria-live="polite"></p>')
-    return Section('Timeline', tools + Lanes(tl) + brush + foot, meta=f'The median run &middot; {clock(T1 / 1000)} long')
+    return Section('Timeline', tools + Lanes(tl) + brush + foot)
 
 
 DOLL_LEFT = ['head', 'neck', 'shoulder', 'back', 'chest', 'wrist', 'main_hand', 'off_hand', 'ranged']
@@ -570,7 +592,6 @@ def ilvl() -> float:
     return sum(lv) / len(lv)
 
 
-GEAR_META = f'17 of 17 slots &middot; no enchants &middot; item level {ilvl():.1f}'
 
 
 def gear_section(with_stats: bool = True) -> str:
@@ -588,11 +609,11 @@ def gear_section(with_stats: bool = True) -> str:
                      (f"{fs['melee_crit_pct_vs_target']:.1f}%", 'Crit on the boss', '', '', 'sm'),
                      (f"{fs['weapon_skill']['main_hand']} &middot; {fs['weapon_skill']['off_hand']}", 'Weapon skill', '', '', 'sm'),
                      (f"{fs['melee_haste_pct']:.0f}%", 'Haste from gear', '', '', 'sm')])
-    measured = (f'<p class="t-small">In the fight, against a level {RES["target_stats"]["level"]} boss. Missed in this run: {miss["sp"][0] / miss["sp"][1] * 100:.0f}% of specials '
+    measured = (f'<p class="t-small">Missed in this run: {miss["sp"][0] / miss["sp"][1] * 100:.0f}% of specials '
                 f'&middot; {miss["w"][0] / miss["w"][1] * 100:.1f}% of white swings.</p>')
-    foot = f'<div class="gear-foot"><span class="t-small">No set bonus is active: no two pieces share a set.</span>{Link("Upgrades for this character on Best in slot &rsaquo;")}</div>'
+    foot = f'<div class="gear-foot"><span class="t-small"></span>{Link("Upgrades for this character on Best in slot &rsaquo;")}</div>'
     extra = f'<div class="gear-stats">{stats}{measured}</div>' if with_stats else ''
-    return Section('Gear', doll() + extra + foot, meta=GEAR_META)
+    return Section('Gear', doll() + extra + foot)
 
 
 def talents_section() -> str:
@@ -601,7 +622,7 @@ def talents_section() -> str:
         tal = sorted(tr['talents'], key=lambda t: (t['tier'], t['column']))
         cells = [(t['tier'], t['column'], gicon(t['icon'], 36), int(part[i]) if i < len(part) else 0, t['max_rank']) for i, t in enumerate(tal)]
         trees.append((tr['name'], sum(int(c) for c in part), cells))
-    return Section('Talents', Trees(trees) + '<p class="t-small tl-foot">Read only. Hover or focus a talent for its tooltip.</p>', Link('Open in planner &rsaquo;'), meta=SPLIT.replace('/', ' / '))
+    return Section('Talents', Trees(trees), Link('Open in planner &rsaquo;'))
 
 
 def rage_section() -> str:
@@ -619,7 +640,7 @@ def rage_section() -> str:
             lost = f'<span class="wipe">&minus;{x["wasted"]:.1f} lost</span>' if x.get('wasted') else ''
             out.append(StatRow(ic, f'<b>{nm}</b>', lost, [f'{x["amount"]:,.0f}'], Meter(x['amount'] / top)))
         return f'<div><h3 class="t-label rot-l">{title} &middot; {sum(x["amount"] for x in rows):,.0f}</h3>{StatTable([("", False)] * 3 + [("", True)], out, 1, open_=True)}</div>'
-    return Section('Rage', figs + f'<div class="two">{lst(src["gained"], "Gained from")}{lst(src["spent"], "Spent on")}</div>', meta='Average fight')
+    return Section('Rage', figs + f'<div class="two">{lst(src["gained"], "Gained from")}{lst(src["spent"], "Spent on")}</div>')
 
 
 def suppressed(key: str, requested: list[str]) -> bool:
@@ -649,7 +670,7 @@ def buffs_section() -> str:
                 upall.append((act_icon(a['name'], 20), act_name(a['name']) + (f' &times; {a["max_stacks"]}' if (a.get('max_stacks') or 0) > 1 else ''),
                               bool(entry) and no_damage_effect(entry)))
             else:
-                rows.append((up, StatRow(act_icon(a['name'], 24), f'<b>{display_name(a["name"])}</b>', '', [f'{up * 100:.1f}%', f'{a["applications"]:.0f}&times;'], Meter(up, 'muted'))))
+                rows.append((up, StatRow(act_icon(a['name'], 24), f'<b>{display_name(a["name"])}</b>', '', [f'{up * 100:.1f}%', f'{a["applications"]:.0f}&times;'], Meter(up))))
         on_target = kind == 'DEBUFF'
         upall += [(gicon(e['icon'], 20), e['name'] + (', improved' if k.endswith(':improved') else ''), no_damage_effect(e))
                   for k in untracked if (e := BUFFS.get(k.partition(':')[0])) and bool(e.get('target')) == on_target]
@@ -658,8 +679,7 @@ def buffs_section() -> str:
         t = StatTable([('', False)] * 3 + [('', True), ('', True)], [r for _, r in rows], 2, open_=True) if rows else ''
         come = '1 that comes and goes' if len(rows) == 1 else f'{len(rows)} that come and go'
         return f'<div><h3 class="t-label rot-l">{title} &middot; {come}</h3>{t}{IconList(upall, "Up all fight") if upall else ""}</div>'
-    return Section('Buffs and debuffs', f'<div class="two">{col("BUFF", "On you")}{col("DEBUFF", "On the target")}</div>'
-                   '<p class="t-small rail-cap tl-foot">Dimmed: no effect on your damage.</p>', meta='Uptime, then times applied')
+    return Section('Buffs and debuffs', f'<div class="two">{col("BUFF", "On you")}{col("DEBUFF", "On the target")}</div>')
 
 
 def worth_knowing() -> str:
@@ -671,7 +691,7 @@ def worth_knowing() -> str:
         cd = (TIPS.get(ident) or {}).get('cooldown_ms', 0)
         if kind == 'spell' and n and cd > longest:
             mins = cd // 60000
-            out += Notice(f'<span class="wk">{act_icon(k, 20)}<span>{spell_name(ident)} has a {mins} minute cooldown, longer than this fight, so the result counts one use every pull. In a raid it is back only every {mins} minutes.</span></span>', tone='neutral')
+            out += Notice(f'<span class="wk">{act_icon(k, 20)}<span>{spell_name(ident)} counts once a pull here. In a raid it is back every {mins} minutes.</span></span>', tone='neutral')
     return out
 
 
@@ -721,7 +741,7 @@ def answer_result(signed_in: bool = True, last: tuple | None = None) -> str:
     """The live result. `last` draws the change since the character's last sim: hidden on the shipped page (gaps G1 and G15,
     no character key and no error on a saved-sim row), so only the states sheet passes it."""
     save = Button('Save this sim', small=True) if signed_in else Button('Sign in to save', small=True)
-    return (f'<span class="t-label">{SPEC_LABEL} &middot; {LANE_LABEL}</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
+    return (f'<span class="t-label">{LANE_LABEL}</span>{Figure(FIGURE, unit="DPS", tone="gold", size="big")}'
             f'<span class="fig-cap">{ERR_LINE}</span>{since_last(last) if signed_in and last else ""}'
             f'<span class="ans-acts">{save}{Link("Find upgrades in Top Gear &rsaquo;")}</span>')
 
@@ -732,19 +752,19 @@ def answer_none() -> str:
 
 
 def answer_last() -> str:
-    return (f'<span class="t-label">Your last sim &middot; {LAST_SIM[1]}</span>{Figure(fnum(LAST_SIM[0]), unit="DPS", size="xl")}'
+    return (f'<span class="t-label">Your last sim &middot; {LAST_SIM[1]}</span>{Figure(fnum(LAST_SIM[0]), unit="DPS", size="big")}'
             f'<span class="fig-cap">Raid buffs, {FIGHT_STYLE} {clock(FIGHT["duration_sec"])}. Run sim for today&rsquo;s number.</span><span class="ans-acts">{Link("Open it &rsaquo;")}</span>')
 
 
 def answer_running() -> str:
     est, done = LIVE
-    return (f'<span class="t-label">Running in your browser</span>{Figure(f"{est:,.0f}", unit="DPS", tone="gold", size="xl")}'
+    return (f'<span class="t-label">Running in your browser</span>{Figure(f"{est:,.0f}", unit="DPS", tone="gold", size="big")}'
             f'<span class="fig-cap"><b>&plusmn; {band(done):.1f} (95%)</b> &middot; {done:,} of {REQ["iterations"]:,} runs</span><span class="ans-meter">{Meter(done / REQ["iterations"])}</span>')
 
 
 def answer_stopped() -> str:
     est, done = LIVE
-    return (f'<span class="t-label">Stopped at {done:,} of {REQ["iterations"]:,} runs</span>{Figure(f"about {est:,.0f}", unit="DPS", tone="muted", size="xl")}'
+    return (f'<span class="t-label">Stopped at {done:,} of {REQ["iterations"]:,} runs</span>{Figure(f"about {est:,.0f}", unit="DPS", tone="muted", size="big")}'
             f'<span class="fig-cap">Stopped at {done:,} runs: about {est:,.0f} &plusmn; {band(done):.1f}. A stopped run is not saved.</span>')
 
 
@@ -754,9 +774,8 @@ def answer_failed(label: str, reason: str, fix: str = '') -> str:
 
 
 def result_page_body(saved: bool) -> str:
-    _, meta = ability_rows()
-    main = Section('Damage by ability', Plate(ability_table()), meta=meta) + timeline_section() + gear_section() + talents_section() + rage_section() + buffs_section()
-    rail = spread_section() + this_run_section() + rotation_section() + ('' if saved else history_section(server=True))
+    main = Section('Damage by ability', ability_table(), frame='framed', flush=True) + timeline_section() + gear_section() + talents_section() + rage_section() + buffs_section()
+    rail = spread_section() + ('' if saved else history_section(server=True)) + this_run_section() + rotation_section()
     return Page('split', main, rail)
 
 
@@ -764,7 +783,7 @@ PAGE_CSS = '''<style>
 main{padding-bottom:40px}  /* the page's own bottom space (sim.astro .sim-page), above the site footer */
 /* page-level layout only: no border, background, radius or shadow (the guard reads inline styles; this block keeps to layout too) */
 /* the answer slot keeps the result's size from the first state to the last (no layout shift): label, figure, error, change, actions */
-.head .ans{min-width:0;min-height:172px}@media(min-width:900px){.head .ans{min-width:360px;min-height:189px}}
+.head .ans{min-width:0;min-height:152px}@media(min-width:900px){.head .ans{min-width:360px;min-height:169px}}
 .statesheet .head .ans{min-height:0}
 .fig-cap{font-size:13px;line-height:20px;color:var(--muted)}.fig-cap b{color:var(--text);font-weight:600}.fig-cap.kill{color:var(--kill);font-weight:600}.fig-cap.wipe{color:var(--wipe)}
 .ans-acts{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:6px}@media(min-width:900px){.ans-acts{justify-content:flex-end}}
@@ -786,12 +805,18 @@ main{padding-bottom:40px}  /* the page's own bottom space (sim.astro .sim-page),
 button.link{background:none;border:0;padding:0;cursor:pointer;font:600 14px/20px var(--font-body);color:var(--gold)}
 input.field{font:400 14px/20px var(--font-body);color:var(--strong)}input.field::placeholder{color:var(--muted)}
 .bar-m summary{gap:8px}.bar-m summary>span:first-child{display:contents}.bar-m summary .sum-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar-m summary .chg{order:2;flex:none;margin-left:0}.bar-m summary .run-m{order:3;flex:none}.bar-m summary .run-m .btn{height:36px;padding:0 12px;font-size:12px}
-.paste{display:flex;flex-direction:column;gap:12px;padding:16px}
+.paste{display:flex;flex-direction:column;gap:12px;padding:16px}.paste-hint{margin-top:12px}
+.ledger-panels{display:flex;flex-direction:column;gap:22px}
+.ways-fill .row{grid-template-columns:180px minmax(0,1fr)}.ways-fill .row .trail{justify-self:stretch;min-width:0}.ways-fill .row .trail>form{flex:1}
 .way{display:flex;flex-direction:column;gap:10px;padding:16px 0}
 .cbar .grp>.t-label{display:none}@media(min-width:1920px){.cbar .grp>.t-label{display:block}}
 @media(max-width:1023px){.pc .layout-split{display:flex;flex-direction:column;align-items:stretch;gap:var(--section-gap)}.pc .layout-split section{min-width:0;max-width:100%}.pc .layout-split>.main,.pc .layout-split>.rail{display:contents}[data-region=section-damage-by-ability]{order:1}[data-region=section-dps-spread]{order:2}[data-region=section-timeline]{order:3}[data-region=section-gear]{order:4}[data-region=section-talents]{order:5}[data-region=section-rage]{order:6}[data-region=section-buffs-and-debuffs]{order:7}[data-region=section-this-run]{order:8}[data-region=section-rotation]{order:9}[data-region=section-your-sims]{order:10}}
 .statesheet{display:grid;gap:40px;grid-template-columns:minmax(0,1fr)}.statesheet>section{min-width:0}.statesheet>section>h2{margin-bottom:8px}
-.cls-links{display:flex;gap:4px 16px;flex-wrap:wrap;padding-top:2px}.cls-links .link{font-size:14px}
+.cls-links{display:flex;gap:4px 16px;flex-wrap:wrap;padding-top:2px}.cls-links .link{font-size:14px;line-height:18px}
+/* round 5 panels (ui/Section `panel`): the body starts right under the head row, so the open-section top gaps above go */
+.pn-b>.rail-body,.pn-b>.two{padding-top:0}.pn-b>.figs+.two{padding-top:8px}.pn-b>.tl-tools{margin-top:0}.rot .rows .row{border-bottom:0}.rk-s{white-space:nowrap}.am .rk-s{margin-left:4px}
+.formrow label.f>.t-label:empty{display:none}
+.rgrid .cls-links{flex-wrap:nowrap}.rgrid .cls-links .link{white-space:nowrap;flex:none}
 .bar-end{display:flex;gap:20px;align-items:center}.bar-end .link{font-size:14px}
 .bar-d.is-run .grp,.bar-d.is-run .bar-end .link{opacity:.5;pointer-events:none}
 .fig.muted .v{color:var(--muted)}
@@ -834,33 +859,38 @@ def finish(title: str, body: str, who) -> str:
 
 # ---- 1. /sim, signed out, no character
 def landing_out() -> str:
-    head = PageHeader('Simulator', meta=['Your character&rsquo;s DPS, simmed in your browser. Damage specs only; nothing is uploaded until you save.'],
-                      tabs=TabStrip(TOOLS, 'Quick sim'))
-    paste = Plate('<div class="paste">' + Form('Addon export or build code', [('Addon export or build code', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
-                  + f'<p class="t-small">In game, type /fs copy, press Ctrl+C, then paste it here. {Link("Get set up &rsaquo;")}</p></div>', label='Sim your character')
-    ways = Rows([Row('Your characters', 'Sign in with Battle.net to find your characters, with their gear and talents ready to sim.', trail=Button('Sign in with Battle.net'), link=False),
-                 Row('From a build', 'A planner link, saved or not, or a saved build id.', trail=Form('From a build', [('', Input('foreversixty.gg/b/&hellip;', 'From a build'), False)], Button('Load')), link=False),
-                 Row('From a logged fight', 'A report link, or open a fight from a report and choose Sim this fight.', trail=Form('From a logged fight', [('', Input('foreversixty.gg/reports/&hellip;?fight=2', 'From a logged fight'), False)], Button('Load')), link=False)], open_=True)
-    main = Section('Sim your character', paste) + Section('Other ways in', ways)
+    head = PageHeader('Simulator', meta=['Damage specs only. Nothing is uploaded until you save.'], tabs=TabStrip(TOOLS, 'Quick sim'))
+    paste = (Form('Addon export or build code', [('', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
+             + f'<p class="t-small paste-hint">In game: /fs copy, then paste here. {Link("Get set up &rsaquo;")}</p>')
+    # ui/Row `fillTrail`: a 180 px label column, the control filling the rest (the field grows, Load beside it)
+    ways = '<div class="ways-fill">' + Rows([Row('Your characters', trail=Button('Sign in with Battle.net'), link=False),
+                 Row('A planner build', trail=Form('A planner build', [('', Input('foreversixty.gg/b/&hellip;', 'A planner build', grow=True), True)], Button('Load')), link=False),
+                 Row('A logged fight', trail=Form('A logged fight', [('', Input('foreversixty.gg/reports/&hellip;?fight=2', 'A logged fight', grow=True), True)], Button('Load')), link=False)], open_=True) + '</div>'
     rows = []
     for c in CLASSES:
         specs = [s for s in SPECS if s['class_slug'] == c['slug'] and s['role'] == 'dps']
         if specs:
             links = ''.join(f'<a class="link" href="#">{s["name"]} &rsaquo;</a>' for s in specs)
             rows.append(Row(c['name'], f'<span class="cls-links">{links}</span>', lead=crest_img(c['slug'], 32), title_color=CLASS_COLOR[c['slug']], link=False))
-    rail = Section('Sim a best-in-slot set', Rows(rows, open_=True), meta='The published BiS gear, not yours')
-    return finish('Simulator', head + Page('split', main, rail), None)
+    main = (Section('Sim your character', paste, panel=True, frame='framed') + Section('Other ways in', ways, panel=True)
+            + Section('Sim a best-in-slot set', RowGrid(rows, 3), panel=True))
+    return finish('Simulator', head + Ledger(main), None)
+
+
+def Ledger(main: str) -> str:
+    """ui/Page `panels` with the ledger layout: one column of Section panels, 28 px under the band, 22 px apart."""
+    return f'<div class="pc" style="padding-top:28px"><div class="ledger-panels">{main}</div></div>'
 
 
 # ---- 2. /sim, signed in, the header's character loaded, not run yet
 def landing_you() -> str:
-    main = Section('Gear', Plate(doll()), Link('Upgrades on Best in slot &rsaquo;'), meta=GEAR_META) + talents_section()
+    main = Section('Gear', doll(), Link('Upgrades on Best in slot &rsaquo;')) + talents_section()
     return finish('Simulator', you_header(answer_none()) + run_bar() + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
 
 
 # ---- 3. running in the browser
 def running() -> str:
-    main = Section('Damage by ability', Plate(table_skeleton()), meta='Draws when the run finishes') + gear_section(with_stats=False) + talents_section()
+    main = Section('Damage by ability', table_skeleton(), meta='Draws when the run finishes', frame='framed', flush=True) + gear_section(with_stats=False) + talents_section()
     return finish('Simulator, running', you_header(answer_running()) + run_bar('running') + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
 
 
@@ -872,7 +902,7 @@ def result_live() -> str:
 # ---- 5. /sim/<id>, a saved run, signed out
 def result_saved() -> str:
     meta = [f'{RACE} &middot; Level {CHAR["level"]} &middot; {SPLIT} talents &middot; {FIGHT_LEN} fight, raid buffs, {len(CHAR["consumes"])} consumables', 'Saved 4 Nov 2026']
-    ans = (f'<span class="t-label">Saved sim &middot; {RES["iterations_run"]:,} runs</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
+    ans = (f'<span class="t-label">Saved sim &middot; {RES["iterations_run"]:,} runs</span>{Figure(FIGURE, unit="DPS", tone="gold", size="big")}'
            f'<span class="fig-cap">{ERR_LINE}</span><span class="ans-acts">{_Button("Open in the sim", primary=True)}{Button("Copy link")}</span>')
     head = PageHeader(SPEC_LABEL, crest=crest_img(CLS, 56), meta=meta, answer=ans)
     return finish(f'{SPEC_LABEL}, saved sim', head + worth_knowing() + result_page_body(saved=True), None)
@@ -880,7 +910,7 @@ def result_saved() -> str:
 
 # ---- 6. phone: the bar's choices open
 def bar_open() -> str:
-    main = Section('Gear', Plate(doll()), meta=GEAR_META)
+    main = Section('Gear', doll())
     return finish('Simulator, choices', you_header(answer_none()) + run_bar(open_m=True) + Page('split', main, history_section()), YOU)
 
 
@@ -911,7 +941,7 @@ def states() -> str:
         blk('The character could not be read', Notice('<span>' + 'That character could not be read. <a class="link" href="#">Try again</a>' + '</span>', tone='neutral')),
         blk('No build recorded for the character', Notice('<span>' + 'No build yet for Thandrel. <a class="link" href="#">Paste the addon export</a>, or refresh from Battle.net on your <a class="link" href="#">account page</a>.' + '</span>', tone='neutral')),
         blk('A paste that does not decode', Plate('<div class="paste">' + FormRow([('Addon export or build code', Field('FS1:1.60.1.70790:warrior:troll:3032&hellip;', grow=True), True)], '<span class="btn primary is-off">Run</span>') + '<p class="t-small wipe">That does not look like an addon export or a build code.</p></div>')),
-        blk('Saved sim: loading (prerendered skeleton at the final geometry)', PageHeader('&nbsp;', meta=[Skeleton(260, 14)], answer=Skeleton(220, 60) + Skeleton(160, 14)) + Page('split', Section('Damage by ability', Plate(table_skeleton(6))), Section('DPS spread', Skeleton(300, 168)))),
+        blk('Saved sim: loading (prerendered skeleton at the final geometry)', PageHeader('&nbsp;', meta=[Skeleton(260, 14)], answer=Skeleton(220, 60) + Skeleton(160, 14)) + Page('split', Section('Damage by ability', table_skeleton(6), frame='framed', flush=True), Section('DPS spread', Skeleton(300, 168)))),
         blk('Saved sim: no such id', Plate('<p class="empty">No sim with that id. <a class="link" href="#">Open the simulator &rsaquo;</a></p>')),
         blk('Saved sim: the server did not answer', Plate(f'<p class="empty">This sim did not load. The server did not answer. Your link is fine; try again in a moment. {Link("Try again")}</p>')),
         blk('Saved sim: an older engine', Notice('<span>' + 'This run used an older engine. A run today may give a different number. <a class="link" href="#">Open in the sim &rsaquo;</a>' + '</span>', tone='neutral')),

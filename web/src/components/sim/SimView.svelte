@@ -26,6 +26,7 @@
   import { simAnswer, type StoppedSnapshot } from '../../lib/sim/answer';
   import { fetchSpecs, listMySims } from '../../lib/sim/api';
   import type { BisSetClass } from '../../lib/sim/bis-set-rail';
+  import type { BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import { codeForCharacterSpec } from '../../lib/sim/character';
   import { followCurrentCharacter, simHoldsWork } from '../../lib/sim/follow-current-character';
@@ -73,11 +74,14 @@
     simId = '',
     inlineResult = null,
     bisSets = [],
+    bisBenchmarks = {},
     initialNotes,
   }: {
     simId?: string;
     inlineResult?: SimResult | null;
     bisSets?: readonly BisSetClass[];
+    /** The published sets a run is read against (lib/sim/bis-benchmark.ts). */
+    bisBenchmarks?: BisBenchmarks;
     /** A prerendered saved run's Worth knowing, read at build time (sim/[id].astro). */
     initialNotes?: readonly PrerenderedNote[];
   } = $props();
@@ -531,6 +535,7 @@
           {simId}
           fidelity={savedSpecRow}
           {initialNotes}
+          {bisBenchmarks}
         />
       </div>
     {:else if savedSim.error === simCopy.notFound}
@@ -712,7 +717,7 @@
       </div>
     {:else if store.result !== null && answerModel.state === 'result'}
       <div class="reveal">
-        <RunReport result={store.result} live railTail={yourSims} />
+        <RunReport result={store.result} live railTail={yourSims} {bisBenchmarks} />
       </div>
     {:else if request !== null}
       {#if preRunLazy.current}

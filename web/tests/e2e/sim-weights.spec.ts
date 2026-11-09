@@ -108,10 +108,8 @@ test('the stat picker defaults to the spec’s reference stat, first and ticked'
 // list -- Expertise, spell haste, armor penetration, MP5, feral attack power -- to every
 // spec, including ones (all of them, in 1.60) none of those apply to. Once the spec's own
 // `weight_stats` names the stats the engine actually weighs, the picker offers only those,
-// by construction, and says so.
-test('the picker offers only the spec’s own weight_stats, and says so, when the engine sent one', async ({
-  page,
-}) => {
+// by construction.
+test('the picker offers only the spec’s own weight_stats when the engine sent one', async ({ page }) => {
   await page.route('**/v1/specs', (route) =>
     route.fulfill({
       status: 200,
@@ -139,7 +137,6 @@ test('the picker offers only the spec’s own weight_stats, and says so, when th
     }),
   );
   await loadWeights(page);
-  await expect(page.getByTestId('sim-weights-stats-note')).toBeVisible();
   await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeVisible();
   await expect(page.getByTestId('sim-weight-pick-strength')).toBeVisible();
   await expect(page.getByTestId('sim-weight-pick-crit')).toBeVisible();
@@ -190,7 +187,6 @@ test('the picker falls back to the spec’s own curated weight_stats (specs.ts) 
     }),
   );
   await loadWeights(page);
-  await expect(page.getByTestId('sim-weights-stats-note')).toBeVisible();
   await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeVisible();
   await expect(page.getByTestId('sim-weight-pick-strength')).toBeVisible();
   await expect(page.getByTestId('sim-weight-pick-melee_haste')).toBeVisible();

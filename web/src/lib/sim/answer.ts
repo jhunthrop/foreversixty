@@ -134,14 +134,13 @@ function failedAnswer(input: AnswerInput): AnswerModel {
   };
 }
 
-/** The live result (§4.5): the figure, its band labelled once, the relative error. */
-export function resultAnswer(result: SimResult, specName: string): AnswerModel {
-  const pct = result.dps.mean > 0 ? ((confidenceBand(result.dps) / result.dps.mean) * 100).toFixed(2) : '0';
+/** The live result (§4.5): where it ran, the figure and its band labelled once (the spec is the head's). */
+export function resultAnswer(result: SimResult): AnswerModel {
   return {
     state: 'result',
-    label: copy.answer.resultLabel(specName, result.lane === 'server' ? 'server' : 'browser'),
+    label: copy.answer.resultLabel(result.lane === 'server' ? 'server' : 'browser'),
     figure: { value: oneDecimal(result.dps.mean), tone: 'gold', unit: true },
-    caption: { bold: `± ${band(result.dps)} (95%)`, rest: ` · ${pct}% error` },
+    caption: { bold: `± ${band(result.dps)} (95%)` },
     primary: 'run-again',
   };
 }
@@ -167,7 +166,7 @@ export function simAnswer(input: AnswerInput): AnswerModel {
   if (input.stopped !== null) return stoppedAnswer(input.stopped);
   if (input.phase === 'error' || (input.message !== null && input.result === null && input.phase !== 'idle'))
     return failedAnswer(input);
-  if (input.result !== null) return resultAnswer(input.result, input.specName);
+  if (input.result !== null) return resultAnswer(input.result);
   return {
     state: 'none',
     label: copy.answer.noSim,

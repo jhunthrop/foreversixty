@@ -6,11 +6,15 @@
      list, table and row set. A boxed body that already holds a panel (a Plate, a grid of panels) is
      not boxed again. Open (the default until each page lane moves its sections), the body sits on the
      ground under the heading's hairline. Sections sit --section-gap apart (Page); a Section is never
-     inside a Plate. `reading` sets the 24 px reading-page head. -->
+     inside a Plate. `reading` sets the 24 px reading-page head.
+     `panel` (the logs and report mocks' prims.panel) puts the heading row inside the panel: one
+     Plate (its `frame`: plain, framed or lead) holds the head and the body, the body padded 20 px,
+     or edge to edge with `flush` for a table. Page's `panels` sets them 22 px apart. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { sectionRegion } from '../../lib/ui/regions';
-  import { LINK } from '../../lib/ui/primitives';
+  import { LINK, type PanelFrame } from '../../lib/ui/primitives';
+  import Plate from './Plate.svelte';
 
   let {
     title,
@@ -26,6 +30,9 @@
     titleTestid,
     head,
     boxed = false,
+    panel = false,
+    frame = 'plain',
+    flush = false,
     children,
   }: {
     title: string;
@@ -49,18 +56,24 @@
     head?: Snippet;
     /** The body on the panel (every list, table and row set); off, it sits on the ground under a hairline. */
     boxed?: boolean;
+    /** The heading row inside the panel with the body: one Plate around both. */
+    panel?: boolean;
+    /** `panel` only: the Plate's frame (two or three framed panels a page, one lead). */
+    frame?: PanelFrame;
+    /** `panel` only: the body runs edge to edge (a table that pads its own first and last cells). */
+    flush?: boolean;
     children: Snippet;
   } = $props();
 </script>
 
-<section
-  id={id ?? anchor}
-  class="ui-section min-w-0 scroll-mt-[calc(var(--bar-h)+12px)]"
-  data-testid={testid}
-  data-region={sectionRegion(title)}
-  aria-labelledby={id ? (focusId ?? `${id}-title`) : undefined}
->
-  <div class={['flex flex-wrap items-baseline gap-x-3 gap-y-1 pb-[10px]', !boxed && 'ui-section-rule']}>
+{#snippet headRow()}
+  <div
+    class={[
+      'flex flex-wrap items-baseline gap-x-3 gap-y-1',
+      panel ? 'ui-section-panel-head' : 'pb-[10px]',
+      !boxed && !panel && 'ui-section-rule',
+    ]}
+  >
     <svelte:element
       this={level === 3 ? 'h3' : 'h2'}
       id={focusId ?? (id ? `${id}-title` : undefined)}
@@ -85,7 +98,26 @@
       </span>
     {/if}
   </div>
-  <div class={['ui-section-body', boxed ? 'ui-surface ui-section-box' : 'pt-3']}>{@render children()}</div>
+{/snippet}
+
+<section
+  id={id ?? anchor}
+  class={['ui-section min-w-0 scroll-mt-[calc(var(--bar-h)+12px)]', panel && 'ui-section-panel']}
+  data-testid={testid}
+  data-region={sectionRegion(title)}
+  aria-labelledby={id ? (focusId ?? `${id}-title`) : undefined}
+>
+  {#if panel}
+    <Plate {frame}>
+      {@render headRow()}
+      <div class={['ui-section-body', flush ? 'ui-section-panel-flush' : 'ui-section-panel-body']}>
+        {@render children()}
+      </div>
+    </Plate>
+  {:else}
+    {@render headRow()}
+    <div class={['ui-section-body', boxed ? 'ui-surface ui-section-box' : 'pt-3']}>{@render children()}</div>
+  {/if}
 </section>
 
 <style>
@@ -111,9 +143,25 @@
     background: none;
     box-shadow: none;
   }
+  /* The panel form (prims.panel): the head row and the body inside one Plate. */
+  .ui-section-panel-head {
+    padding: 16px 20px 10px;
+  }
+  .ui-section-panel-body {
+    padding: 0 20px 16px;
+  }
+  .ui-section-panel-flush {
+    padding-bottom: 6px;
+  }
   @media (max-width: 767px) {
     .ui-section-box {
       padding: 4px 14px;
+    }
+    .ui-section-panel-head {
+      padding: 14px 14px 8px;
+    }
+    .ui-section-panel-body {
+      padding: 0 14px 14px;
     }
   }
 </style>

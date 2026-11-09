@@ -79,15 +79,6 @@ export const MARGIN_BELOW_THRESHOLD = '< 0.1';
  */
 export const WEIGHT_ERROR_BELOW_THRESHOLD = '< 0.01';
 /**
- * Sub-item 4's "and says so": shown under the weights picker only when the spec's own
- * `weight_stats` came back non-empty, since that is the only time the claim is true. An
- * absent list falls back to the full pinned vocabulary (`weights.ts`'s `WEIGHT_STATS`) with
- * no explainer at all -- "the engine did not say" must not be dressed up as "the engine
- * said these are the only ones that matter" (D45's retail-stat-list defect: Expertise,
- * spell haste, armor penetration, MP5, feral attack power offered to a 1.60 spec).
- */
-export const WEIGHTS_STATS_FROM_ENGINE = 'These are the stats the engine weighs for this spec.';
-/**
  * The healer-sim defect (BLOCKER 2): a Restoration Druid string ran on `/sim/weights` for
  * 64 seconds and then said nothing. `bulk-store-request.ts`'s `buildRequest` refuses before
  * the request ever reaches the pool, with this sentence -- never the engine's own words,
@@ -263,7 +254,7 @@ export const simCopy = {
   buffs: 'Buffs',
   rotation: 'Rotation',
   rotationPrefix: 'Default for',
-  rotationLink: 'what it does',
+  rotationLink: 'What it does',
 
   // --- Task 13: the run control and every state it has. ---
   run: 'Run sim',
@@ -352,18 +343,6 @@ export const simCopy = {
   specWorstActions: 'Largest gaps',
   specCast: 'cast',
   specSimmed: 'simmed',
-  /**
-   * Final whole-branch review, I3: this used to say the nightly job "sims the top 50
-   * parses ... and publishes the gap here, whatever it is", present tense, as if every
-   * spec below already had an answer. The changelog this same lane wrote
-   * (content/changelog/2026-09-20-simulator-tools-are-live.md) says the opposite: "nothing
-   * has been checked against a real parse, because there are no real parses yet" -- and
-   * every row on this page still reads `specNotYetNote`, because `mergeSpecRows`
-   * (spec-state.ts) has no rows to merge. The job (`api sim-validate`) is real, scheduled
-   * code; it has simply never had a real parse to measure yet. This says both things.
-   */
-  specsIntro:
-    'The simulator is only worth as much as its numbers. A nightly job is built to sim the top 50 parses for each of the 20 damage specs it covers and publish the gap here, whatever it is. No real parses exist yet, so every damage spec below still reads "Not yet". The other 8 specs, healers and tanks, are not simulated yet.',
   tryAgain: 'Try again',
 
   /** The Damage tab's row for a build that names no character (a pasted export, a planner build). */
@@ -665,9 +644,8 @@ export const simCopy = {
   /** `/sim/specs`: heading over the 8 healer/tank cards, grouped below rather than
    *  interleaved, so the page reads as "these 20 work, these 8 do not". */
   specsUnsimulatedHeading: 'Healers and tanks',
-  /** Exact body text task-2-brief.md specifies, verbatim, for every card in that second
-   *  group -- no fidelity pill, no engine stamp, no "Not yet" badge link. */
-  specsUnsimulatedBody: 'Not simulated yet: damage specs first; healers and tanks come later',
+  /** A healer or tank row's way on: its guide. */
+  specsGuide: 'Guide',
   /**
    * Fix round 1, Finding B: the `<Base description="...">` strings are what a healer or
    * tank reads in a search result or a link preview -- the first place the DPS-only claim
@@ -830,21 +808,12 @@ export const simCopy = {
  * constants, never against a literal.
  */
 export const bulkCopy = {
-  // --- page titles and the one-line standfirst under each ---
+  // --- page titles ---
   gearTitle: KIND_TITLES.gear,
-  gearIntro:
-    'Tick the items, enchants, talents and sets you want tried for your damage spec. Every valid combination is simulated and ranked against what you have on.',
   talentsTitle: KIND_TITLES.talents,
-  talentsIntro:
-    'Your damage spec’s build against every other build you have, ranked. Gear is locked to what you are wearing, so the only thing that changes is the tree.',
   dropsTitle: KIND_TITLES.drops,
-  dropsIntro:
-    'Pick where you are going. Every item those bosses drop is simulated one at a time against your damage spec’s current set, and the upgrades are listed by boss.',
   weightsTitle: KIND_TITLES.weights,
-  weightsIntro:
-    'What one point of each stat is worth for your damage spec, for the addons that ask for a number.',
-  weightsWarning:
-    'A stat weight is a straight-line guess at something that is not a straight line: it holds near the gear you have now and stops holding as soon as a set bonus, a proc or a hit cap changes. Sim the actual items in Top Gear instead. These are here because addons want them.',
+  weightsWarning: 'Weights hold near the gear you have on. For a real choice, sim the items.',
   weightsWarningLink: 'Open Top Gear',
   /**
    * Each tool page's `<noscript>` fallback. A single parameterised entry rather than four
@@ -934,6 +903,8 @@ export const bulkCopy = {
 
   // --- talents and sets ---
   talentsOwn: 'Your current build',
+  /** The published set's own talents at the character's band (talent-loadouts.ts guideLoadout). */
+  talentsGuide: (band: number, split: string): string => `Guide build, level ${band} · ${split}`,
   /** The /sim/talents candidates block's title. */
   talentBuildsTitle: 'Talent builds',
   talentsSaved: 'Your saved builds',
@@ -1063,6 +1034,10 @@ export const bulkCopy = {
   weightsPick: 'Stats to weigh',
   /** The weights page's results section (mock design/mocks/ws_simtools.py). */
   weightsResultsTitle: 'Scale factors',
+  /** Before a run: the band's published weights (lib/sim/published-weights.ts). */
+  weightsPublishedTitle: 'Published weights',
+  weightsPublishedBand: (level: number, preset: 'raid' | 'bare'): string =>
+    `Level ${level} ${preset === 'raid' ? 'raid' : 'bare'} set`,
   /**
    * Task 8, sub-item 1: contract 10.9 documents `StatWeight.Error` as a standard error that
    * is a lower bound, not the true uncertainty -- an 8-seed check found the real run-to-run

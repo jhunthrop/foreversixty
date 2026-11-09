@@ -86,7 +86,6 @@
       dataUrl(build, `icons/${stem}.webp`),
     ),
   );
-  const anyDimmed = $derived(groups.some((group) => group.noEffect.length > 0));
 
   const entry = (chip: SettingsChip, dim: boolean): IconListItem => ({
     id: chip.id,
@@ -132,7 +131,7 @@
   });
 </script>
 
-<Section title={copy.title} meta={copy.meta} testid="sim-settings-card">
+<Section panel title={copy.title} testid="sim-settings-card">
   <Facts items={facts} />
   {#each groups as group (group.id)}
     <IconList
@@ -144,7 +143,6 @@
       testid={`sim-settings-group-${group.id}`}
     />
   {/each}
-  {#if anyDimmed}<p class="text-muted pt-3 text-[13px] leading-5">{copy.dimmed}</p>{/if}
   <div class="flex flex-wrap gap-2 pt-5">
     <Button
       size="sm"
@@ -162,5 +160,4 @@
       {addonCopy.copyFailed} <code class="text-text break-all select-all">{gameCode}</code>
     </p>
   {/if}
-  <p class="text-muted pt-3 text-[13px] leading-5">{copy.jsonNote}</p>
 </Section>

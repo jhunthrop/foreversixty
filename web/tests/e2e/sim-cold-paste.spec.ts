@@ -82,7 +82,7 @@ test('Save keeps the sign-in requirement after a cold-paste run', async ({ page 
 test('the reassurance line says the run stays local', async ({ page }) => {
   await page.goto('/sim');
   await expect(page.getByTestId('sim-head')).toContainText(simPageCopy.landingMeta);
-  await expect(page.getByTestId('sim-head')).toContainText('nothing is uploaded until you save');
+  await expect(page.getByTestId('sim-head')).toContainText('Nothing is uploaded until you save');
 });
 
 // Build item 3: phone -- the paste box is the first thing after the title, every control

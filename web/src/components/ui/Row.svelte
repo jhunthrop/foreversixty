@@ -5,7 +5,9 @@
      Figure, a Tag or one Button. A row is a link (`href`) or holds an action in its trail, never
      both. Hover is the S2 ground; `selected` the gold ground and a 3 px gold bar. `open` drops the
      side padding for rows in an open Section on S0. `foot` is a full-width line of controls under
-     the body, for a row in a narrow rail (a link row never takes one). -->
+     the body, for a row in a narrow rail (a link row never takes one). `fillTrail` gives the
+     title a 180 px label column and the trail the rest of the row, a control at full width (the
+     sim landing's "A planner build | field, Load"); below 768 the trail takes its own line. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { rowElement, titleColor, type TitleTone } from '../../lib/ui/primitives';
@@ -22,6 +24,7 @@
     density = 'default',
     open = false,
     wrapTrail = false,
+    fillTrail = false,
     testid,
     id,
     titleContent,
@@ -42,6 +45,8 @@
     open?: boolean;
     /** Below 768 the trail takes its own line under the body (an in-row Segmented). */
     wrapTrail?: boolean;
+    /** The title in a 180 px label column, the trail filling the rest (a field and its button). */
+    fillTrail?: boolean;
     testid?: string;
     /** A link target on the row itself (`/sim/specs#warrior-fury`). */
     id?: string;
@@ -68,6 +73,7 @@
   href={element === 'a' ? href : undefined}
   class={[
     'ui-row border-line-soft relative grid items-center gap-x-3 border-b last:border-b-0',
+    fillTrail && 'ui-row-fill',
     hasLead ? 'grid-cols-[auto_minmax(0,1fr)_auto]' : 'grid-cols-[minmax(0,1fr)_auto]',
     // A narrow phone row with nothing at its right gives the body that column and its gap.
     !trail &&
@@ -103,6 +109,7 @@
   <span
     class={[
       'flex items-center gap-3',
+      fillTrail && 'ui-row-trail',
       wrapTrail ? 'max-md:col-span-full max-md:mt-2 md:justify-self-end' : 'justify-self-end',
       !trail && 'max-[600px]:hidden',
     ]}

@@ -9,7 +9,8 @@
 // cohesive modules over one page that both computes and renders 17 slots x N bands).
 import type { LootFile } from '../sim/loot';
 import { bisCopy, tankCopy } from './copy';
-import { scaleViewFor, UNMEASURED_SCALE_VIEW, type ScaleRow, type ScaleView } from './scale-view';
+import { bandScaleView } from './band-scale-view';
+import type { ScaleRow, ScaleView } from './scale-view';
 import { healerSetViewFor, rateUnitOf, type HealerSetView } from './heal-view';
 import {
   bandEntry,
@@ -34,7 +35,7 @@ import type {
   RateUnit,
 } from './types';
 import { TWO_HAND_LABEL, type ItemTooltipModel } from '../items/tooltip';
-import { expertiseCapLine, weightsForGainedStats, type ExpertiseCapLine } from './expertise-cap';
+import { expertiseCapLine, type ExpertiseCapLine } from './expertise-cap';
 import { hitCapLine, type HitCapLine } from './hit-cap';
 import { relicNoun, slotDisplayLabel } from './slot-display-labels';
 import {
@@ -602,18 +603,7 @@ export function bandInfosFor(
       previousBandData !== undefined && presetOf(previousBandData) === presetOf(bandData)
         ? previousBandData.set_dps
         : undefined;
-    const scale: ScaleView =
-      bandData.weights_reason !== undefined && bandData.weights_reason !== null
-        ? UNMEASURED_SCALE_VIEW
-        : scaleViewFor({
-            weights: weightsForGainedStats(bandData.weights, bandData.expertise_to_cap),
-            spec: deps.spec,
-            unit: scoreUnit,
-            referenceDpsPerPoint: bandData.reference_dps_per_point ?? null,
-            publishedAnchorStat: bandData.scale_reference_stat ?? null,
-            publishedHasteScaleFactor: bandData.haste_scale_factor ?? null,
-            hasteOnItems: bandData.haste_on_items ?? true,
-          });
+    const scale: ScaleView = bandScaleView(bandData, deps.spec, scoreUnit);
     const scaleRows = scale.rows;
     const scaleNoteLine = scale.noteLine;
     const hasteCaptionLine = scale.hasteCaption;

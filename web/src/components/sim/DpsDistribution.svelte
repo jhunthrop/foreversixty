@@ -4,20 +4,46 @@
      three columns. A result saved before the engine kept the bins draws a range strip instead, and
      says so: a drawn shape the run did not produce would break the accuracy tenet. No chart
      library: the bars are spans. It draws no frame: the caller's open Section holds it. Error is
-     the page's one ± (ruling S2: the 95% band, unlabelled here); Std dev carries no ±. -->
+     the page's one ± (ruling S2: the 95% band, unlabelled here); Std dev carries no ±. Under the tiles, when the run fought the
+     spec's published fight (lib/sim/bis-benchmark.ts), the best-in-slot set's DPS and the gap to it
+     with both runs' 95% band, linking to that set on Best in slot. -->
 <script lang="ts">
-  import { confidenceBand } from '../../lib/sim/estimate';
+  import { bisPageHref } from '../../lib/bis/hover';
+  import type { BenchmarkMatch } from '../../lib/sim/bis-benchmark';
+  import { gainLabel } from '../../lib/sim/combos';
+  import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { grouped, oneDecimal, spreadCopy } from '../../lib/sim/result-copy';
   import { spreadOf, type SpreadBar } from '../../lib/sim/spread';
   import type { DpsHistogram, Estimate } from '../../lib/sim/types';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
   import Figure from '../ui/Figure.svelte';
+  import Row from '../ui/Row.svelte';
 
   let {
     estimate,
     iterationsRun,
     histogram,
-  }: { estimate: Estimate; iterationsRun: number; histogram?: DpsHistogram } = $props();
+    spec = '',
+    benchmark = null,
+  }: {
+    estimate: Estimate;
+    iterationsRun: number;
+    histogram?: DpsHistogram;
+    /** The run's spec key, for the set's Best in slot link. */
+    spec?: string;
+    benchmark?: BenchmarkMatch | null;
+  } = $props();
+
+  const gapLine = $derived(
+    benchmark === null
+      ? ''
+      : spreadCopy.benchmarkGap(
+          gainLabel(benchmark.gap),
+          benchmark.gap < 0,
+          oneDecimal(Math.abs(benchmark.gap / benchmark.dps) * 100),
+          formatMargin(benchmark.margin),
+        ),
+  );
 
   /** The readout's width and the side of the plot past which it flips left. */
   const TOOLTIP_WIDTH = 240;
@@ -125,9 +151,6 @@
           <span>{grouped(estimate.max)}</span>
         </div>
       </div>
-      <p class="text-muted text-[13px]" data-testid="sim-spread-caption">
-        {spreadCopy.caption(grouped(spread.low), grouped(spread.high))}
-      </p>
       {#if tooltipLazy.current}
         <tooltipLazy.current
           open={activeBar !== null}
@@ -173,4 +196,15 @@
       <Figure label={tile.label} value={tile.value} size="sm" testid={`sim-spread-tile-${tile.id}`} />
     {/each}
   </div>
+  {#if benchmark !== null}
+    <Row
+      title={spreadCopy.benchmark(benchmark.band, benchmark.preset)}
+      sub={gapLine}
+      href={bisPageHref(spec, benchmark.faction, benchmark.band)}
+      open
+      testid="sim-spread-benchmark"
+    >
+      {#snippet trail()}<Figure value={oneDecimal(benchmark.dps)} unit="DPS" size="sm" />{/snippet}
+    </Row>
+  {/if}
 </div>

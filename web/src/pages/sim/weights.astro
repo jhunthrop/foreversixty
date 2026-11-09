@@ -27,7 +27,7 @@ import IslandScript from '../../components/IslandScript.astro';
 <Base title={bulkCopy.weightsTitle} description={simCopy.weightsDescription} path="/sim/weights" wide>
   <link rel="stylesheet" href="/sim-tools-island.css" slot="head" />
   <main id="main" tabindex="-1" class="sim-page">
-    <SimToolHead tool="weights" title={bulkCopy.weightsTitle} lead={bulkCopy.weightsIntro} />
+    <SimToolHead tool="weights" title={bulkCopy.weightsTitle} />
     <div id="sim-tools" data-sim-tool="weights" class="min-h-[2137px] md:min-h-[1194px]">
       <Fragment set:html={TOOL_SKELETONS.weights} />
       <noscript>

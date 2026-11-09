@@ -28,7 +28,7 @@ import IslandStyle from '../../components/IslandStyle.astro';
 <Base title={bulkCopy.gearTitle} description={simCopy.gearDescription} path="/sim/gear" wide>
   <IslandStyle href="/sim-tools-island.css" slot="head" />
   <main id="main" tabindex="-1" class="sim-page">
-    <SimToolHead tool="gear" title={bulkCopy.gearTitle} lead={bulkCopy.gearIntro} />
+    <SimToolHead tool="gear" title={bulkCopy.gearTitle} />
     <div id="sim-tools" data-sim-tool="gear" class="min-h-[3469px] md:min-h-[2018px]">
       <Fragment set:html={TOOL_SKELETONS.gear} />
       <noscript>

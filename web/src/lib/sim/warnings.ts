@@ -119,11 +119,11 @@ function longCooldownWarnings({ result, names, fact }: WarningInput): SimWarning
     if (parsed?.kind !== 'spell' || parsed.tag !== 0 || row.succeeded < 1) return [];
     const cooldown = fact(parsed.id)?.cooldown_ms ?? 0;
     if (cooldown <= longestMs) return [];
-    const { length, every } = cooldownWords(cooldown);
+    const { every } = cooldownWords(cooldown);
     return [
       {
         id: 'long-cooldown',
-        text: warningsCopy.longCooldown(resolveActionName(row.spell_name, names), length, every),
+        text: warningsCopy.longCooldown(resolveActionName(row.spell_name, names), every),
         actionKey: row.spell_name,
       },
     ];

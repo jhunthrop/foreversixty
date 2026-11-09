@@ -1,14 +1,12 @@
 <!-- web/src/components/sim/SimPreRun.svelte -->
 <!-- /sim with a character before its run lands (spec 2026-11-06-sim §4.3, §4.4): not run yet, the
-     doll is the page's one Plate (Gear), then the talents; the rail the rotation (no cast counts
-     yet) and Your sims. While a run is in flight the Plate holds the ability table's skeleton at
-     its final geometry (the heads and 11 rows at 56 px), and the doll steps out of it into an open
-     Gear section (ruling S3), so the result draws into the space it already has. -->
+     Gear panel, then the talents; the rail the rotation (no cast counts yet) and Your sims. While a
+     run is in flight the framed Damage by ability panel holds the table's skeleton at its final
+     geometry (the heads and 11 rows at 56 px), so the result draws into the space it already has. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { SimRequest } from '../../lib/sim/types';
   import Page from '../ui/Page.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import SimGearSection from './SimGearSection.svelte';
   import SimRotationSection from './SimRotationSection.svelte';
@@ -29,10 +27,17 @@
   const SKELETON_ROWS = 11;
 </script>
 
-<Page layout="split" testid="sim-pre-run">
+<Page layout="split" panels testid="sim-pre-run">
   {#if running}
-    <Section title="Damage by ability" meta="Draws when the run finishes" testid="sim-damage-pending">
-      <Plate label="Damage by ability">
+    <Section
+      title="Damage by ability"
+      meta="Draws when the run finishes"
+      panel
+      frame="framed"
+      flush
+      testid="sim-damage-pending"
+    >
+      <div>
         <div aria-busy="true" data-testid="sim-table-skeleton">
           <div class="flex h-10 items-center gap-3 px-4">
             <span class="skeleton-block h-2.5 w-16"></span><span class="ml-auto"></span><span
@@ -49,7 +54,7 @@
             </div>
           {/each}
         </div>
-      </Plate>
+      </div>
     </Section>
   {/if}
   <SimGearSection {request} plated={!running} />

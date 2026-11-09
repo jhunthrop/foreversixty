@@ -1,9 +1,9 @@
 <!-- web/src/components/sim/RunReport.svelte -->
 <!-- The body of one `run` result (sim spec 2026-11-06 §4.5): everything under the page head and the
      control bar. Worth knowing as Notice lines, then the split page: Damage by ability on the
-     page's one Plate, Timeline, Gear, Talents, the resource and Buffs and debuffs in main; the DPS
-     spread, This run and Rotation in the rail, then whatever the page adds (`railTail`: Your sims).
-     Every Section is open. Each one under the fold is its own chunk, mounted as it nears the
+     page's framed panel, Timeline, Gear, Talents, the resource and Buffs and debuffs in main; the DPS
+     spread, then whatever the page adds (`railTail`: Your sims), then This run and Rotation in the rail.
+     Every Section is a panel (round 5), its heading inside. Each one under the fold is its own chunk, mounted as it nears the
      viewport with its head and a skeleton holding its ready height, so nothing shifts. Every file
      it reads is optional: a row without its icon or name still reads.
 
@@ -26,33 +26,22 @@
   import { loadBuffNames, type BuffNames } from '../../lib/sim/buff-names';
   import { plannerHrefForSpec } from '../../lib/sim/character';
   import { extraAttackLines } from '../../lib/sim/extra-attacks';
-  import { gearMeta } from '../../lib/sim/gear-card';
   import {
     aurasCardCopy,
     gearCardCopy,
-    resourceCardCopy,
     rotationCardCopy,
     talentsCardCopy,
   } from '../../lib/sim/input-cards-copy';
   import { withoutAbsentPets } from '../../lib/sim/pet-rows';
-  import { SPACED_SPLIT, talentSplit } from '../../lib/sim/result-band';
-  import {
-    clock,
-    damageCopy,
-    grouped,
-    oneDecimal,
-    spreadCopy,
-    warningsCopy,
-  } from '../../lib/sim/result-copy';
+  import { damageCopy, spreadCopy, warningsCopy } from '../../lib/sim/result-copy';
   import { resourceLabel } from '../../lib/sim/result-sections';
   import { resultTip } from '../../lib/sim/result-tips';
   import { sectionReserves } from '../../lib/sim/section-reserve';
   import { summaryActionKeys } from '../../lib/sim/sentence';
   import { settingsCopy } from '../../lib/sim/settings-copy';
-  import { specDisplayName } from '../../lib/sim/spec-label';
   import { NO_SPELL_INFO, loadSpellInfo, type SpellInfo } from '../../lib/sim/spell-info';
   import { timelineCopy } from '../../lib/sim/timeline-copy';
-  import { timelineHeadMeta } from '../../lib/sim/timeline-lanes';
+  import { benchmarkFor, type BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import type { SimResult } from '../../lib/sim/types';
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import { simWarnings } from '../../lib/sim/warnings';
@@ -62,7 +51,6 @@
   import AbilityTable, { type AbilityDecoration, type AbilityWeapon } from '../report/AbilityTable.svelte';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import DpsDistribution from './DpsDistribution.svelte';
   import LazySection from './LazySection.svelte';
@@ -74,6 +62,7 @@
     onrerun,
     simId = '',
     initialNotes,
+    bisBenchmarks = {},
   }: {
     result: SimResult;
     /** A finished run on /sim rather than a saved one. */
@@ -87,6 +76,8 @@
     /** Worth knowing computed at build time for a prerendered run (lib/sim/prerender-notes.ts):
      *  drawn until the names and spell facts load here, so the lines never arrive late. */
     initialNotes?: readonly PrerenderedNote[];
+    /** The published sets a run is read against (lib/sim/bis-benchmark.ts). */
+    bisBenchmarks?: BisBenchmarks;
   } = $props();
 
   const build = activeBuild.build;
@@ -110,7 +101,6 @@
   const reserves = $derived(sectionReserves(result));
   const request = $derived(result.request);
   const character = $derived(request.character);
-  const spec = $derived(specDisplayName(request.spec));
   const powerTitle = $derived(resourceLabel(result));
 
   /** Runs one optional load; a failure is logged and the page keeps its fallback. */
@@ -159,9 +149,6 @@
       durationMs: summary.duration_ms,
       names,
     }),
-  );
-  const damageMeta = $derived(
-    damageCopy.meta(oneDecimal(result.dps.mean), clock(summary.duration_ms / 1000)),
   );
 
   const swingsBecame = $derived(
@@ -244,22 +231,22 @@
 </script>
 
 {#snippet rail()}
-  <Section
-    title={spreadCopy.title}
-    meta={spreadCopy.meta(grouped(result.iterations_run))}
-    testid="sim-spread-card"
-  >
+  <Section panel title={spreadCopy.title} testid="sim-spread-card">
     <DpsDistribution
       estimate={result.dps}
       iterationsRun={result.iterations_run}
       histogram={result.dps_histogram}
+      spec={request.spec}
+      benchmark={benchmarkFor(result, bisBenchmarks)}
     />
   </Section>
+  <!-- Your sims under the spread, so a reader compares the number before the inputs and the
+       rotation (ux-designer, round 5). -->
+  {@render railTail?.()}
   {#if drawnRest}
     <LazySection
       id="settings"
       title={settingsCopy.title}
-      meta={settingsCopy.meta}
       lazy={thisRunLazy}
       ready={thisRunLazy.current !== null}
       reserve={reserves.settings}
@@ -269,7 +256,6 @@
     <LazySection
       id="rotation"
       title={rotationCardCopy.title}
-      meta={rotationCardCopy.metaRan(spec, character.level)}
       lazy={rotationLazy}
       ready={rotationLazy.current !== null}
       reserve={reserves.rotation}
@@ -277,7 +263,6 @@
       {#if rotationLazy.current}<rotationLazy.current {request} {result} {names} />{/if}
     </LazySection>
   {/if}
-  {@render railTail?.()}
 {/snippet}
 
 <div class="sim-body" data-testid={live ? 'sim-live-report' : 'sim-saved-run'}>
@@ -313,17 +298,14 @@
     </div>
   {/if}
 
-  <Page layout="split" {rail}>
-    <Section title={damageCopy.title} meta={damageMeta} testid="sim-damage-card">
-      <Plate>
-        <AbilityTable {table} {decorate} />
-      </Plate>
+  <Page layout="split" panels {rail}>
+    <Section title={damageCopy.title} panel frame="framed" flush testid="sim-damage-card">
+      <AbilityTable {table} {decorate} />
     </Section>
     {#if drawnRest}
       <LazySection
         id="timeline"
         title={timelineCopy.title}
-        meta={timelineHeadMeta(result)}
         lazy={timelineLazy}
         ready={timelineLazy.current !== null}
         reserve={reserves.timeline}
@@ -333,7 +315,6 @@
       <LazySection
         id="gear"
         title={gearCardCopy.title}
-        meta={character.gear.length > 0 ? gearMeta(character.gear) : undefined}
         lazy={gearLazy}
         ready={gearLazy.current !== null}
         reserve={reserves.gear}
@@ -343,7 +324,6 @@
       <LazySection
         id="talents"
         title={talentsCardCopy.title}
-        meta={talentSplit(character.talents, SPACED_SPLIT)}
         lazy={talentsLazy}
         ready={talentsLazy.current !== null}
         reserve={reserves.talents}
@@ -354,7 +334,6 @@
         <LazySection
           id="resource"
           title={powerTitle}
-          meta={resourceCardCopy.meta}
           lazy={resourceLazy}
           ready={resourceLazy.current !== null}
           reserve={reserves.resource}
@@ -365,7 +344,6 @@
       <LazySection
         id="buffs"
         title={aurasCardCopy.title}
-        meta={aurasCardCopy.meta}
         lazy={buffsLazy}
         ready={buffsLazy.current !== null}
         reserve={reserves.buffs}

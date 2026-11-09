@@ -1,6 +1,6 @@
 <!-- web/src/components/sim/tools/StatWeights.svelte -->
 <!-- /sim/weights (mock design/mocks/ws_simtools.py): the run line, the caution as the page's
-     standing line, the scale factors on the page's one Plate once a run finishes, and the stats to
+     standing line, the scale factors on the page's framed panel once a run finishes, and the stats to
      weigh in the rail. Design 7: the caution opens the page, in our words, and links to Top Gear -- it is not
      a footnote, because the whole reason this page exists is that addons ask for a number
      the number itself cannot justify.
@@ -19,17 +19,23 @@
      caption, no Pawn string. A row the engine flagged `insignificant` greys there. The
      picker above them offers only
      `store.weightStats` when the spec sent one (sub-item 4): a stat this 1.60 sim does not
-     model for this spec is never on screen to tick in the first place. -->
+     model for this spec is never on screen to tick in the first place.
+
+     Before a run, the main column holds the weights the ranker published for the character's
+     own band (lib/sim/published-weights.ts), read through the same table, linking to that set. -->
 <script lang="ts">
+  import activeBuild from '../../../data/active-build.json';
   import type { Me } from '../../../lib/account/api';
+  import { fetchBisFile } from '../../../lib/bis/hover';
+  import { publishedWeights, type PublishedWeights } from '../../../lib/sim/published-weights';
+  import { requestPresetFor } from '../../../lib/sim/settings';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
-  import { bulkCopy, WEIGHTS_STATS_FROM_ENGINE } from '../../../lib/sim/copy';
+  import { bulkCopy } from '../../../lib/sim/copy';
   import { specLabel } from '../../../lib/sim/spec-label';
-  import { hasWeightStats, pickableStatsFor, statLabel, toolScaleView } from '../../../lib/sim/weights';
+  import { pickableStatsFor, statLabel, toolScaleView } from '../../../lib/sim/weights';
   import type { Snippet } from 'svelte';
   import Notice from '../../ui/Notice.svelte';
   import Page from '../../ui/Page.svelte';
-  import Plate from '../../ui/Plate.svelte';
   import Section from '../../ui/Section.svelte';
   import WeightsScaleTable from '../WeightsScaleTable.svelte';
   import BulkRunBar from './BulkRunBar.svelte';
@@ -50,6 +56,34 @@
    */
   const saveTitleFor = $derived(`${bulkCopy.weightsTitle} · ${specLabel(store.character?.spec ?? '')}`);
 
+  let published = $state<PublishedWeights | null>(null);
+  $effect(() => {
+    const character = store.character;
+    const preset = requestPresetFor(store.settings);
+    if (character === null) {
+      published = null;
+      return;
+    }
+    let live = true;
+    fetchBisFile(activeBuild.build, character.spec)
+      .then((file) => {
+        if (!live) return;
+        published =
+          file === null
+            ? null
+            : publishedWeights(file, {
+                spec: character.spec,
+                race: character.race_slug,
+                level: character.level,
+                preset,
+              });
+      })
+      .catch((error: unknown) => console.error('sim weights: the published weights did not load', error));
+    return () => {
+      live = false;
+    };
+  });
+
   /** A stopped run has nothing finished worth naming and saving. */
   const canSave = $derived(store.result?.aborted !== true);
 
@@ -62,7 +96,7 @@
   }
 </script>
 
-<Page layout="split" testid="sim-stat-weights">
+<Page layout="split" panels testid="sim-stat-weights">
   {#snippet bar()}<BulkRunBar {store} />{/snippet}
   {#if lead}{@render lead()}{/if}
   <Notice
@@ -73,6 +107,8 @@
   />
   {#if store.weights.length > 0}
     <Section
+      panel
+      frame="framed"
       title={bulkCopy.weightsResultsTitle}
       meta={specLabel(store.character?.spec ?? '')}
       testid="sim-weights"
@@ -81,24 +117,29 @@
       <p class="text-small text-muted m-0 pb-3" data-testid="sim-weights-error-caveat">
         {bulkCopy.weightsErrorCaveat(store.weights.map((row) => row.stat))}
       </p>
-      <Plate><WeightsScaleTable {view} /></Plate>
+      <WeightsScaleTable {view} />
       <!-- Contract 10.6: saved sims of every kind are public at /sim/<id>, saved through the one
            SaveSimForm Top Gear and talent compare use. -->
       <div class="pt-4">
         <SaveSimForm onsave={(title) => store.save(title)} titleFor={saveTitleFor} {canSave} />
       </div>
     </Section>
+  {:else if published !== null}
+    <Section
+      panel
+      frame="framed"
+      title={bulkCopy.weightsPublishedTitle}
+      action={{ label: published.label, href: published.href }}
+      testid="sim-weights-published"
+    >
+      <WeightsScaleTable view={published.view} />
+    </Section>
   {/if}
   {#snippet rail()}
-    <Section title={bulkCopy.weightsPick} testid="sim-weights-pick">
+    <Section title={bulkCopy.weightsPick} panel testid="sim-weights-pick">
       {#if store.referenceStat}
         <p class="text-small text-muted m-0" data-testid="sim-weights-reference">
           {bulkCopy.weightsReference}: {statLabel(store.referenceStat)}
-        </p>
-      {/if}
-      {#if hasWeightStats(store.weightStats)}
-        <p class="text-small text-muted m-0" data-testid="sim-weights-stats-note">
-          {WEIGHTS_STATS_FROM_ENGINE}
         </p>
       {/if}
       <ul class="m-0 grid list-none grid-cols-2 gap-x-4 p-0">

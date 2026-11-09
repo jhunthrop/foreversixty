@@ -14,6 +14,7 @@ import SavedSim from '../../components/sim/SavedSim.svelte';
 import type { SimResult } from '../../lib/sim/types';
 import activeBuild from '../../data/active-build.json';
 import { prerenderedNotes } from '../../lib/sim/prerender-notes';
+import { loadBisBenchmarks } from '../../lib/sim/bis-benchmark-load';
 import path from 'node:path';
 
 export function getStaticPaths() {
@@ -27,6 +28,8 @@ const FIXTURE_INLINE: Readonly<Record<string, unknown>> = {
 };
 const fixture = id === undefined ? undefined : FIXTURE_INLINE[id];
 const inline = fixture === undefined ? undefined : JSON.stringify(fixture);
+// The published sets a run is read against (lib/sim/bis-benchmark.ts), build-time data.
+const bisBenchmarks = loadBisBenchmarks(activeBuild.build);
 // Worth knowing at build time, so its lines paint with the page (lib/sim/prerender-notes.ts).
 const notes =
   fixture === undefined
@@ -74,6 +77,7 @@ const notes =
       data-sim-id={id}
       data-sim-result={inline}
       data-sim-notes={notes === undefined ? undefined : JSON.stringify(notes)}
+      data-bis-benchmarks={JSON.stringify(bisBenchmarks)}
       class={fixture === undefined ? 'min-h-[8222px] md:min-h-[5393px]' : undefined}
     >
       {fixture === undefined ? (
@@ -87,6 +91,7 @@ const notes =
             onrerun={() => {}}
             simId={id}
             initialNotes={notes}
+            {bisBenchmarks}
           />
         </div>
       )}

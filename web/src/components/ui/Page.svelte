@@ -23,6 +23,7 @@
     top,
     rail,
     stickyRail = false,
+    panels = false,
     railFirst = false,
     splitFrom = 1024,
     tocFrom,
@@ -43,6 +44,8 @@
     rail?: Snippet;
     /** The rail sticks below the bar from 1024. */
     stickyRail?: boolean;
+    /** Main and rail hold Section `panel`s (the logs and report mocks): 22 px apart, the columns 28. */
+    panels?: boolean;
     /** `split` only: below 1024, where main and rail stack, the rail comes first (the tier list's
      *  spec panel above the list on a phone). */
     railFirst?: boolean;
@@ -65,6 +68,7 @@
 <div
   class="ui-page"
   data-layout={layout}
+  data-panels={panels ? 'true' : undefined}
   data-split-from={layout === 'split' && splitFrom !== 1024 ? splitFrom : undefined}
   data-toc-from={layout === 'reading' ? tocFrom : undefined}
   data-testid={testid}
@@ -105,6 +109,14 @@
   }
   .ui-page-rail {
     gap: 32px;
+  }
+  .ui-page[data-panels] {
+    --section-gap: 22px;
+    column-gap: 28px;
+    padding-top: 28px;
+  }
+  .ui-page[data-panels] > .ui-page-rail {
+    gap: var(--section-gap);
   }
   .ui-page-toc {
     display: none;

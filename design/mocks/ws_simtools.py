@@ -37,17 +37,23 @@ CLASS_NAME = S.CLASS_NAME
 QUALITY = S.QUALITY
 
 SCOPE = 'The simulator runs damage specs only. Healing and tanking specs are not simulated yet.'
-LEADS = {
-    'gear': 'Tick the items, enchants, talents and sets you want tried for your damage spec. Every valid combination is simulated and ranked against what you have on.',
-    'talents': 'Your damage spec&rsquo;s build against every other build you have, ranked. Gear is locked to what you are wearing, so the only thing that changes is the tree.',
-    'drops': 'Pick where you are going. Every item those bosses drop is simulated one at a time against your damage spec&rsquo;s current set, and the upgrades are listed by boss.',
-    'weights': 'What one point of each stat is worth for your damage spec, for the addons that ask for a number.',
-    'specs': ('The simulator is only worth as much as its numbers. A nightly job is built to sim the top 50 parses for each of the 20 damage specs '
-              'it covers and publish the gap here, whatever it is. No real parses exist yet, so every damage spec below still reads "Not yet". '
-              'The other 8 specs, healers and tanks, are not simulated yet.'),
-}
 TITLES = {'gear': 'Top gear', 'talents': 'Talents', 'drops': 'Droptimizer', 'weights': 'Weights', 'specs': 'Spec support'}
 
+
+# Round 5 (lane P6): every block is a Section panel (web ui/Section `panel`; tools/ToolSection), the page's primary object the
+# framed one, on a Page with `panels` (22 px apart, 28 px under the band).
+_Section = Section
+_Page = Page
+
+
+def Section(*args, **kw) -> str:
+    kw.setdefault('panel', True)
+    return _Section(*args, **kw)
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
+    html = _Page(layout, main, rail, sticky_rail, panels=layout == 'split')
+    return html.replace('style="padding-top:20px"', 'style="padding-top:28px"', 1) if layout == 'ledger' else html
 
 def ledger(*blocks: str) -> str:
     """The ledger page with the built Page's section gap between its blocks (the summary line included)."""
@@ -59,7 +65,7 @@ def split(main: list[str], rail: list[str]) -> str:
 
 
 def head(tool: str) -> str:
-    return PageHeader(TITLES[tool], meta=[SCOPE], lead=LEADS[tool], tabs=TabStrip(TOOLS, TITLES[tool]))
+    return PageHeader(TITLES[tool], meta=[SCOPE], tabs=TabStrip(TOOLS, TITLES[tool]))
 
 
 def item_name(iid: int) -> str:
@@ -106,7 +112,7 @@ def candidate(slot_label: str, iid: int) -> str:
 
 
 def candidates() -> str:
-    return Section('Candidates', Plate('<div class="pad cands">' + candidate('Head', WORN['head']) + candidate('Main hand', WORN['main_hand']) + '</div>'))
+    return Section('Candidates', '<div class="cands">' + candidate('Head', WORN['head']) + candidate('Main hand', WORN['main_hand']) + '</div>', frame='framed')
 
 
 def item_search() -> str:
@@ -135,10 +141,18 @@ def whole_sets() -> str:
                    '<button type="button" class="btn">Add set</button></div>')
 
 
+def guide_split() -> str:
+    f = json.loads((B / 'bis' / f'{SPEC}.json').read_text())
+    band = next(b for b in f['bands'] if b['band'] == LEVEL and b['faction'] == 'horde' and b.get('preset') == 'raid')
+    return '/'.join(str(sum(int(c) for c in tree)) for tree in band['talents'].split('-'))
+
+
 def talent_builds(plated: bool = False) -> str:
-    body = (f'<div class="tb"><label class="opt">{check()}Your current build</label><h3 class="t-h4">Your saved builds</h3>'
+    # The published set's own talents at the character's band (web lib/sim/talent-loadouts.ts guideLoadout)
+    body = (f'<div class="tb"><label class="opt">{check()}Your current build</label><label class="opt">{check()}Guide build, level {LEVEL} &middot; {guide_split()}</label>'
+            f'<h3 class="t-h4">Your saved builds</h3>'
             f'<p class="t-small">Your saved builds could not be read; the rest of the page still works.</p><div class="bt">{btn("Add a build")}</div></div>')
-    return Section('Talent builds', Plate(f'<div class="pad">{body}</div>') if plated else body)
+    return Section('Talent builds', body, frame='framed' if plated else 'plain')
 
 
 def gear() -> str:
@@ -203,8 +217,8 @@ def drops() -> str:
             rows += '</div>'
         note = '<p class="t-small">Nothing has recorded this character&rsquo;s professions, so every profession is listed.</p>' if kind == 'crafted' else ''
         groups.append(f'<div class="src-g"><h3 class="t-h4">{label}</h3>{note}{rows}</div>')
-    body = f'<div class="pad"><div class="kinds">{toggles}</div>{"".join(groups)}</div>'
-    return finish('Droptimizer', head('drops') + run_bar('drops') + ledger(character_line(), Section('Sources', Plate(body)), '<p class="t-small">No source ticked yet.</p>'))
+    body = f'<div><div class="kinds">{toggles}</div>{"".join(groups)}</div>'
+    return finish('Droptimizer', head('drops') + run_bar('drops') + ledger(character_line(), Section('Sources', body, frame='framed'), '<p class="t-small">No source ticked yet.</p>'))
 
 
 # ---- Weights: the caution, the stats to weigh in the rail; the scale factors arrive with a run
@@ -212,24 +226,60 @@ def weights() -> str:
     row = next(w for w in json.loads((B / 'stat-weights.json').read_text()) if w['spec'] == SPEC)
     stats = row.get('stats') or list(row['weights'])
     picks = ''.join(f'<li><label class="opt">{check(checked=True, disabled=i == 0)}{s}</label></li>' for i, s in enumerate(stats))
-    caution = ('<p class="notice">A stat weight is a straight-line guess at something that is not a straight line: it holds near the gear you have now and stops '
-               'holding as soon as a set bonus, a proc or a hit cap changes. Sim the actual items in Top Gear instead. These are here because addons want them. '
-               '<a class="link" href="#">Open Top Gear &rsaquo;</a></p>')
-    rail = Section('Stats to weigh', f'<div class="wbody"><p class="t-small">Normalised to: {stats[0]}</p><p class="t-small">Only the stats this sim models for the spec.</p><ul class="opts two">{picks}</ul></div>')
-    return finish('Weights', head('weights') + run_bar('weights') + split([character_line(), caution], [rail]))
+    caution = '<p class="notice">Weights hold near the gear you have on. For a real choice, sim the items. <a class="link" href="#">Open Top Gear &rsaquo;</a></p>'
+    rail = Section('Stats to weigh', f'<div class="wbody"><p class="t-small">Normalised to: {stats[0]}</p><ul class="opts two">{picks}</ul></div>')
+    return finish('Weights', head('weights') + run_bar('weights') + split([character_line(), caution, published_weights()], [rail]))
+
+
+# Before a run, the weights the ranker published for the character's band (web lib/sim/published-weights.ts): the level 60
+# Horde (an Orc) raid band of data/builds/<build>/bis/<spec>.json, as the built WeightsScaleTable reads one
+# (lib/bis/scale-view.ts): per-point rows only, each scale over the top significant per-point row, sorted; haste in the caption.
+STAT_LABEL = {'attack_power': 'Attack power', 'strength': 'Strength', 'agility': 'Agility', 'crit': 'Crit', 'hit': 'Hit'}
+
+
+def reading(w: dict) -> str:
+    if w.get('insignificant') or abs(w['weight']) <= w.get('error', 0):
+        return 'not-significant'
+    return 'no-gain' if w['weight'] < 0 else 'value'
+
+
+def published_weights() -> str:
+    f = json.loads((B / 'bis' / f'{SPEC}.json').read_text())
+    band = next(b for b in f['bands'] if b['band'] == LEVEL and b['faction'] == 'horde' and b.get('preset') == 'raid')
+    haste = [w for w in band['weights'] if w['stat'] in ('melee_haste', 'spell_haste')]
+    per_point = [w for w in band['weights'] if w['stat'] not in ('melee_haste', 'spell_haste', 'expertise')]
+    divisor = max(w['scale_factor'] for w in per_point if reading(w) == 'value')
+    rows = sorted(per_point, key=lambda w: (reading(w) != 'value', -w['scale_factor']))
+    trs = []
+    for w in rows:
+        label = STAT_LABEL[w['stat']]
+        name = f'<b>{label} rating</b>' if w.get('unit') == 'rating' else f'<b>{label}</b>'
+        sub = f'{w["rating_factor"]} {label} rating = 1% {label}' if 'rating_factor' in w else ''
+        sf = w['scale_factor'] / divisor
+        err = w['scale_error'] / divisor
+        err_txt = '&lt; 0.01' if err < .005 else f'&plusmn;{err:.2f}'
+        trs.append(S.StatRow('', name, sub, [f'{sf:.2f}', f'{w["dps_per_point"]:.3f} DPS', err_txt], primary_phone=f'{w["dps_per_point"]:.3f} DPS &middot; {err_txt}',
+                             meter=S.Meter(min(1, max(.04, sf)))))
+    top = STAT_LABEL[next(w for w in rows if reading(w) == 'value')['stat']]
+    cap = f'Per point of stat, normalized to {top} = 1.00, with DPS per point and the sim error.'
+    if haste:
+        hs = band['haste_scale_factor'] / divisor
+        cap += f' Haste: {hs:.2f} per 1%' + ('' if band.get('haste_on_items', True) else ', not in the table because no item at this level range has it')
+    table = S.StatTable([('', False), ('Stat', False), ('', False), ('Scale', True), ('Per point', True), ('Error', True)], trs, 3, open_=True)
+    body = f'<div class="wt-pub"><p class="t-small">{cap}</p>{table}</div>'
+    return Section('Published weights', body, action=S.Link(f'Level {LEVEL} raid set &rsaquo;'), frame='framed')
 
 
 # ---- a tool with no character (SourceSwitcher): the addon export on the Plate, the other ways in open
 def gear_empty() -> str:
     """SourceSwitcher, in the landing's own grammar (ws_sim.landing_out's Form, Input and Button)."""
-    paste = Plate('<div class="paste">' + S.Form('From the addon', [('From the addon', S.Input('FS1:&hellip;', 'From the addon', grow=True), True)], S.Button('Load', primary=True))
-                  + '<p class="t-small">Paste the export string from the Forever Sixty addon, or let the companion push it. <a class="link" href="#">Get the addon &rsaquo;</a></p></div>',
-                  label='From the addon')
+    paste = ('<div class="paste-b">' + S.Form('From the addon', [('From the addon', S.Input('FS1:&hellip;', 'From the addon', grow=True), True)], S.Button('Load', primary=True))
+                  + '<p class="t-small">Paste the export string from the Forever Sixty addon, or let the companion push it. <a class="link" href="#">Get the addon &rsaquo;</a></p></div>')
     form = lambda label, ph: S.Form(label, [('', S.Input(ph, label), False)], S.Button('Load'))
     ways = Rows([Row('From a build', 'Paste a planner link, saved or not, or a saved build id.', trail=form('From a build', 'foreversixty.gg/b/&hellip;'), link=False),
                  Row('From a logged fight', 'Paste a report link, or open a fight from a report and choose Sim this fight.', trail=form('From a logged fight', 'foreversixty.gg/reports/&hellip;?fight=2'), link=False),
                  Row('Your characters', 'Sign in with Battle.net to find your characters, with their gear and talents ready to sim.', trail=S.Button('Sign in with Battle.net'), link=False)], open_=True)
-    return finish('Top gear', head('gear') + ledger(Section('From the addon', paste), Section('Other ways in', ways)))
+    return finish('Top gear', head('gear') + ledger(Section('From the addon', paste, frame='framed'), Section('Other ways in', ways)))
 
 
 # ---- Spec support (SpecGrid): every damage spec on the Plate, "Not yet" until a parse is measured; healers and tanks open below
@@ -239,15 +289,17 @@ def specs() -> str:
     for s in [s for s in SPECS if s['role'] == 'dps']:
         label = f"{s['name']} {CLASS_NAME[s['class_slug']]}"
         foot = '<details class="disc"><summary>What it does</summary></details>' if notes.get(s['spec'], True) else ''
-        rows.append(Row(label, '<span class="num">No parses yet</span><br>Not yet: no real parse has been checked against this spec.',
-                        trail='<span class="tag muted">Not yet</span>', title_color=CLASS_COLOR[s['class_slug']], link=False, foot=foot))
-    others = [Row(f"{s['name']} {CLASS_NAME[s['class_slug']]}", 'Not simulated yet: damage specs first; healers and tanks come later',
-                  title_color=CLASS_COLOR[s['class_slug']], link=False) for s in SPECS if s['role'] != 'dps']
-    return finish('Spec support', head('specs') + ledger(Section('Damage specs', Plate(Rows(rows))), Section('Healers and tanks', Rows(others, open_=True))))
+        # SpecCard: What it does on the name's line; no parses, so no status line under it (the tag says it)
+        rows.append(Row(f'<span class="spec-t"><span>{label}</span>{foot}</span>', '',
+                        trail='<span class="tag muted">Not yet</span>', title_color=CLASS_COLOR[s['class_slug']], link=False))
+    # UnsimulatedSpecCard: the spec in its class colour, its guide the trail's action; the heading says why
+    others = [Row(f"{s['name']} {CLASS_NAME[s['class_slug']]}", trail=f'<span class="alink">{S.Link("Guide &rsaquo;")}</span>', title_color=CLASS_COLOR[s['class_slug']], link=False)
+              for s in SPECS if s['role'] != 'dps']
+    return finish('Spec support', head('specs') + ledger(Section('Damage specs', Rows(rows), frame='framed', flush=True), Section('Healers and tanks', Rows(others, open_=True))))
 
 
 TOOL_CSS = '''<style>
-.col>p{margin:0}.col{display:flex;flex-direction:column;gap:48px;min-width:0}.rail-col{gap:32px}.col>.col{gap:48px}
+.col>p{margin:0}.col{display:flex;flex-direction:column;gap:22px;min-width:0}.rail-col{gap:22px}.col>.col{gap:22px}.paste-b{display:flex;flex-direction:column;gap:12px}
 .fld{box-sizing:border-box;height:40px;padding:0 12px;font:600 14px/20px var(--font-body);color:var(--text);background:transparent;border:1px solid var(--line);border-radius:4px}
 .fld.grow,.fl.grow{flex:1;min-width:220px}.fl.grow .fld{width:100%}.w24{width:96px}.w160,.fl.w160 .fld{width:160px}.w240{width:240px;text-align:left}
 .tb{display:flex;flex-direction:column;align-items:flex-start}.tb .t-h4{padding-top:12px;margin:0;font-size:15px;line-height:20px}.tb p{padding-top:4px;margin:0}.tb .bt{padding-top:12px}.rail-col .tb{padding-top:11px}
@@ -264,7 +316,8 @@ TOOL_CSS = '''<style>
 .wbody{padding-top:10px}.wbody p{margin:0}.opts{list-style:none;margin:0;padding:0}.opts.ce{padding-top:16px}.opts.two{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
 .sets-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;padding-top:19px}.pad{padding:16px}.kinds{display:flex;flex-wrap:wrap;gap:0 20px}
 .src-g{display:flex;flex-direction:column;gap:4px;padding-top:16px}.src{display:flex;flex-direction:column;padding:4px 0}.indent{padding-left:28px}.grow-n{flex:1}.src p.indent{margin:0;line-height:19.5px}.src .disc>summary{display:flex;align-items:center;height:44px;box-sizing:border-box}.src-g .t-h4{margin:0;font-size:15px;line-height:20px}
-.gated{display:flex;flex-direction:column;gap:4px;margin:0;padding-left:12px;list-style:none}.gated li{line-height:19.5px}.gb{padding-top:4px}</style>'''
+.pn-b .hits{max-height:320px}.pn-b>.search-f{padding-bottom:16px}.spec-t{display:flex;flex-wrap:wrap;align-items:center;column-gap:16px}.spec-t .disc{font-weight:400}.rail-col .pn-b>.tb{padding-top:0}.pn-b>.opts.ce{padding-top:0}.pn-b .sets-f{padding-top:8px}.pn-b>.cands{padding-top:12px}
+.alink{display:inline-flex;align-items:center;min-height:44px}.wt-pub{display:flex;flex-direction:column;gap:8px}.wt-pub p{margin:0;font-size:13px}.gated{display:flex;flex-direction:column;gap:4px;margin:0;padding-left:12px;list-style:none}.gated li{line-height:19.5px}.gb{padding-top:4px}</style>'''
 
 
 def finish(title: str, body: str) -> str:

@@ -62,9 +62,9 @@ export const warningsCopy = {
     `${spell} was never pressed in this run. Check the talents in Open in the sim.`,
   missingTalent: (spell: string, spec: string) =>
     `${spell} is in the ${spec} rotation, but these talents do not take it.`,
-  /** `length` reads as an adjective ("30 minute"), `every` as a noun ("30 minutes"). */
-  longCooldown: (spell: string, length: string, every: string) =>
-    `${spell} has a ${length} cooldown, longer than this fight, so the result counts one use every pull. In a raid it is back only every ${every}.`,
+  /** `every` reads as a noun ("30 minutes"). */
+  longCooldown: (spell: string, every: string) =>
+    `${spell} counts once a pull here. In a raid it is back every ${every}.`,
   atCap: (amount: string, resource: string, percent: string) =>
     `${amount} ${resource} (${percent}%) was lost at the cap.`,
   atCapRage: 'Queue Heroic Strike sooner so swings do not land at full rage.',
@@ -117,7 +117,6 @@ export const spreadCopy = {
   meta: (runs: string) => `${runs} runs`,
   title: 'DPS spread',
   axis: 'DPS per run',
-  caption: (low: string, high: string) => `Two runs in three land between ${low} and ${high} DPS.`,
   bar: (low: string, high: string, runs: string) => `${low} to ${high} DPS: ${runs} runs`,
   image: (runs: string, low: string, high: string, mean: string) =>
     `DPS of each of ${runs} runs, from ${low} to ${high}, most near ${mean}`,
@@ -132,6 +131,11 @@ export const spreadCopy = {
     highest: 'Highest',
     runs: 'Runs',
   },
+  /** The published set the run is read against (lib/sim/bis-benchmark.ts): "Level 60 raid BiS". */
+  benchmark: (band: number, preset: 'raid' | 'bare'): string => `Level ${band} ${preset} BiS`,
+  /** "100 DPS under · 9.9% · ± 2.3": the run against the set. */
+  benchmarkGap: (dps: string, under: boolean, percent: string, margin: string): string =>
+    `${dps} DPS ${under ? 'under' : 'over'} · ${percent}% · ± ${margin}`,
 } as const;
 
 export const pageErrorCopy = {

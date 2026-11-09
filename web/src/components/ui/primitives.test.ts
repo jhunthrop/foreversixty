@@ -147,6 +147,30 @@ describe('Section', () => {
     expect(body).toContain('ui-surface ui-section-box');
     expect(body).not.toContain('ui-section-rule');
   });
+
+  it('puts the heading inside one Plate as a panel, with its frame and a flush body', () => {
+    const body = html(Section, {
+      title: 'Players',
+      panel: true,
+      frame: 'lead',
+      flush: true,
+      children: text('<table></table>'),
+    });
+    expect(body).toContain('data-region="section-players"');
+    expect(body).toContain('ui-framed ui-lead');
+    expect(body.indexOf('ui-surface')).toBeGreaterThan(body.indexOf('section-players'));
+    expect(body.match(/ui-frame-corner/g)).toHaveLength(4);
+    expect(body.indexOf('ui-section-title')).toBeGreaterThan(body.indexOf('ui-surface'));
+    expect(body).toContain('ui-section-panel-flush');
+    expect(body).not.toContain('ui-section-rule');
+    expect(body).not.toContain('ui-section-box');
+  });
+
+  it('leaves a panel unframed by default', () => {
+    const body = html(Section, { title: 'This pull', panel: true, children: text('<dl></dl>') });
+    expect(body).toContain('ui-section-panel-body');
+    expect(body).not.toContain('ui-framed');
+  });
 });
 
 describe('Row', () => {
@@ -324,6 +348,26 @@ describe('Field, FormRow, Button', () => {
       submit: text('<button>Go</button>'),
     });
     expect(body).toMatch(/<form[^>]*aria-label="Open a guild"/);
+  });
+
+  it('FormRow wraps by default and keeps one row when inline', () => {
+    const props = { label: 'Paste', children: text('<span>f</span>'), submit: text('<button>Run</button>') };
+    const wrapping = html(FormRow, props);
+    expect(wrapping).toContain('flex-wrap');
+    expect(wrapping).not.toContain('data-inline');
+    const inline = html(FormRow, { ...props, inline: true });
+    expect(inline).toContain('flex-nowrap');
+    expect(inline).toContain('data-inline="true"');
+  });
+
+  it('Row fillTrail gives the title a label column and the trail the rest; off, the row is unchanged', () => {
+    const props = { title: 'A planner build', trail: text('<form></form>') };
+    const plain = html(Row, props);
+    expect(plain).toContain('grid-cols-[minmax(0,1fr)_auto]');
+    expect(plain).not.toContain('ui-row-fill');
+    const filled = html(Row, { ...props, fillTrail: true });
+    expect(filled).toContain('ui-row-fill');
+    expect(filled).toContain('ui-row-trail');
   });
 
   it('Button is a link when it navigates and a button otherwise', () => {

@@ -4,7 +4,6 @@
 // so its two slot functions are the load-bearing contract for the "28 cards, 20 simulated
 // and 8 not" split task-2-brief.md calls for: a drift here is a CLS regression there.
 import { describe, expect, it } from 'vitest';
-import { simCopy } from './copy';
 import { dpsSpecs, nonDpsSpecs } from './spec-label';
 import { SPECS } from './specs';
 import { specSkeletonSlots, unsimulatedSpecSkeletonSlots } from './spec-skeleton';
@@ -33,11 +32,5 @@ describe('the /sim/specs grid split', () => {
     expect(dpsSpecs().length).toBe(20);
     expect(nonDpsSpecs().length).toBe(8);
     expect(dpsSpecs().length + nonDpsSpecs().length).toBe(SPECS.length);
-  });
-
-  it('is exactly the copy task-2-brief.md specifies for the unsimulated card', () => {
-    expect(simCopy.specsUnsimulatedBody).toBe(
-      'Not simulated yet: damage specs first; healers and tanks come later',
-    );
   });
 });

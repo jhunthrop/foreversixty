@@ -36,7 +36,7 @@
   const simulated = $derived(isSimulatedSpec(spec));
 </script>
 
-<Section title={simCopy.rotationCard} testid="sim-rotation-card">
+<Section title={simCopy.rotationCard} panel testid="sim-rotation-card">
   {#if simulated}
     <p class="text-[14px] leading-5">{simCopy.rotationCardBody(name)}</p>
     <RotationDisclosure

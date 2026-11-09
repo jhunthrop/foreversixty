@@ -2,7 +2,12 @@
 // TalentCandidates.svelte's own pure decisions, pulled out the same reason drop-picks.ts
 // was: the component owns `picked`/`saved`/`exported` state, these just compute the next
 // value from it.
+import { bandForLevel } from '../bis/hover';
+import { selectBand } from '../bis/presets';
+import type { BisFile } from '../bis/types';
 import { decodeFS1 } from '../planner/fs1';
+import { factionOfRace } from '../race-faction';
+import { talentSplit } from './result-band';
 import type { TalentIndex } from '../planner/rules';
 import { bulkCopy } from './copy';
 import { poolQualityCopy } from './pool-quality-copy';
@@ -60,4 +65,19 @@ export function hasUnaddedBuild(customCode: string, index: TalentIndex | null): 
  */
 export function savedBuildsMessage(signedOut: boolean): string {
   return signedOut ? poolQualityCopy.talentsSavedSignedOut : bulkCopy.talentsSavedUnavailable;
+}
+
+/**
+ * The talents the ranker's published set at the character's level band uses
+ * (data/builds/<build>/bis/<spec>.json, the band's `talents`): the spec's guide build, offered
+ * beside the player's own so a comparison has the build every published figure was simmed with.
+ * Null for a race with no faction or a file with no such band.
+ */
+export function guideLoadout(file: BisFile, level: number, race: string): TalentLoadout | null {
+  const faction = factionOfRace(race);
+  if (faction === null) return null;
+  const band = bandForLevel(level);
+  const entry = selectBand(file, band, faction);
+  if (entry === undefined || entry.talents === '') return null;
+  return { name: bulkCopy.talentsGuide(band, talentSplit(entry.talents)), talents: entry.talents };
 }

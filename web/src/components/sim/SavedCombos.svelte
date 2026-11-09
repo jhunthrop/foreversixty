@@ -122,7 +122,7 @@
   </div>
 
   {#if summary.length > 0}
-    <Section title={bulkCopy.slotSummary} meta={bulkCopy.slotSummaryNote} testid="sim-slot-summary">
+    <Section title={bulkCopy.slotSummary} meta={bulkCopy.slotSummaryNote} panel testid="sim-slot-summary">
       {#each summary as row (`${row.slot}-${row.item_id}`)}
         <Row title={row.name} sub={slotLabelForClass(row.slot, classSlug)} density="slim" open>
           {#snippet trail()}<span class="text-gold text-[14px] font-semibold tabular-nums"

@@ -97,7 +97,7 @@ test('a real wasm run against the fixture character returns a positive DPS', asy
   // artifact through the real RunControl wiring, for the "normal" run every visitor gets.
   await expect(button).toHaveText('Run again', { timeout: 30_000 });
   // The run count landed: the spread's meta reads the request's own 3,000 runs.
-  await expect(page.getByTestId('sim-spread-card')).toContainText('3,000 runs');
+  await expect(page.getByTestId('sim-spread-card')).toContainText(/Runs\s*3,000/);
   await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'result');
 
   const dpsText = await page.getByTestId('sim-dps').textContent();

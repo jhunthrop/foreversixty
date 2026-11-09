@@ -57,7 +57,7 @@
   );
 </script>
 
-<Page layout="ledger" testid="sim-droptimizer">
+<Page layout="ledger" panels testid="sim-droptimizer">
   {#snippet bar()}<BulkRunBar {store} />{/snippet}
   {#if lead}{@render lead()}{/if}
   {#if store.result !== null}

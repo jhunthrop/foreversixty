@@ -14,6 +14,7 @@ import { shellReservations } from './lib/islands/reservations';
 import { simIdFrom } from './lib/sim/url';
 import type { SimResult } from './lib/sim/types';
 import type { BisSetClass } from './lib/sim/bis-set-rail';
+import type { BisBenchmarks } from './lib/sim/bis-benchmark';
 import type { PrerenderedNote } from './lib/sim/prerender-notes';
 import './styles/fonts.css';
 import './styles/global.css';
@@ -50,6 +51,18 @@ export function readBisSets(element: HTMLElement): BisSetClass[] {
   }
 }
 
+/** The published sets a run is read against (sim.astro, sim/[id].astro), or none. */
+export function readBisBenchmarks(element: HTMLElement): BisBenchmarks {
+  const raw = element.dataset.bisBenchmarks;
+  if (raw === undefined || raw === '') return {};
+  try {
+    return JSON.parse(raw) as BisBenchmarks;
+  } catch (error) {
+    console.error('sim island: data-bis-benchmarks is not valid JSON', error);
+    return {};
+  }
+}
+
 /** A prerendered saved run's Worth knowing (sim/[id].astro), or none. */
 export function readInitialNotes(element: HTMLElement): PrerenderedNote[] | undefined {
   const raw = element.dataset.simNotes;
@@ -69,6 +82,7 @@ function boot(): void {
     simId: simIdFor(target, window.location.pathname),
     inlineResult: readInlineResult(target),
     bisSets: readBisSets(target),
+    bisBenchmarks: readBisBenchmarks(target),
     initialNotes: readInitialNotes(target),
   };
   // The shell's no-JS paragraph lives inside the mount element; Svelte 5 appends rather

@@ -24,9 +24,10 @@ describe('SourceSwitcher', () => {
     expect(body).toContain(currentCharacterCopy.getTheAddon);
   });
 
-  it('puts the addon export on the one Plate and the other ways in as open rows', () => {
+  it('puts the addon export on the framed panel first and the other ways in on a panel of their own', () => {
     const { body } = render(SourceSwitcher, { props: requiredProps });
-    expect(body.match(/data-region="plate"/g)).toHaveLength(1);
+    expect(body.match(/data-region="plate"/g)).toHaveLength(2);
+    expect(body.indexOf('ui-framed')).toBeLessThan(body.indexOf('sim-addon-input'));
     expect(body.indexOf('sim-addon-input')).toBeLessThan(body.indexOf('sim-build-input'));
     expect(body.indexOf('sim-fight-input')).toBeLessThan(body.indexOf('sim-signin'));
     expect(body).toContain(simCopy.sourceOtherWays);
