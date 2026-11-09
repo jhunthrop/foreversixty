@@ -357,16 +357,5 @@
         }
       }
     ]
-  },
-  "panel_when": {
-    "1": "while Decimation is up",
-    "2": "below 10% mana",
-    "3": "when Curse of the Elements is not on the target",
-    "4": "when Corruption is not on the target",
-    "5": "when Bane of Doom is not on the target, with 60+ s left",
-    "6": "when no Bane is on the target",
-    "7": "when Immolate has under 3 s left",
-    "8": "as your filler",
-    "9": "when you are out of mana and cannot Life Tap"
   }
 }

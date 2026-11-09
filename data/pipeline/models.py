@@ -1,12 +1,6 @@
 from typing import Any, Literal
 
-from pydantic import (
-    BaseModel,
-    Field,
-    SerializerFunctionWrapHandler,
-    field_validator,
-    model_serializer,
-)
+from pydantic import BaseModel, Field, SerializerFunctionWrapHandler, model_serializer
 
 
 class Zone(BaseModel):
@@ -824,8 +818,7 @@ class AddonClass(BaseModel):
 class AddonRotationLine(BaseModel):
     """One priority-list entry the rotation card and the rotation toast
     show: which ability, at the rank this level band actually casts, and
-    why (the curated APL's `panel_when` line for the step, else its own one-line
-    `notes`, unedited)."""
+    why (the curated APL's own one-line `notes`, unedited)."""
 
     spell_id: int
     name: str
@@ -1083,48 +1076,6 @@ class AplDocument(BaseModel):
     engineering_notes: dict[str, str] = {}
     #: Per-level versions of step notes (AplLevelNote).
     level_notes: list[AplLevelNote] = []
-    #: The addon rotation panel's short condition line for a `rotation.priorityList` step,
-    #: keyed by that step's 0-based index (a string key, as `engineering_notes`): "when the
-    #: target is below 20%", "on cooldown". Top level for the same reason as `level_notes`:
-    #: the engine's APLListItem rejects any other key on a step. A step with no line here
-    #: falls back to its note's first sentence (pipeline.addonrotation). The step's `notes`
-    #: stay the guides' prose; this is only the panel's line.
-    panel_when: dict[str, str] = {}
-
-    @field_validator("panel_when")
-    @classmethod
-    def _check_panel_when(cls, value: dict[str, str]) -> dict[str, str]:
-        check_panel_when(value)
-        return value
-
-
-#: The longest panel condition line (`AplDocument.panel_when`) a curated file may carry.
-PANEL_WHEN_MAX_CHARS = 60
-#: Never in a panel line: the house style has no em dashes.
-PANEL_WHEN_FORBIDDEN = ("\u2014",)
-
-
-def check_panel_when(lines: dict[str, str]) -> dict[int, str]:
-    """`panel_when` keyed by step index, or ValueError naming the first bad entry: a key
-    that is not a step index, or a line that is empty, padded, over PANEL_WHEN_MAX_CHARS or
-    holding an em dash."""
-    checked: dict[int, str] = {}
-    for key, line in lines.items():
-        if not key.isdigit():
-            raise ValueError(f"panel_when key {key!r} is not a priorityList index")
-        if not isinstance(line, str) or not line.strip():
-            raise ValueError(f"panel_when[{key}] is empty")
-        if line != line.strip():
-            raise ValueError(f"panel_when[{key}] {line!r} has leading or trailing space")
-        if len(line) > PANEL_WHEN_MAX_CHARS:
-            raise ValueError(
-                f"panel_when[{key}] {line!r} is {len(line)} characters; "
-                f"the panel line is at most {PANEL_WHEN_MAX_CHARS}"
-            )
-        if any(mark in line for mark in PANEL_WHEN_FORBIDDEN):
-            raise ValueError(f"panel_when[{key}] {line!r} has an em dash")
-        checked[int(key)] = line
-    return checked
 
 
 class SpellEffectConstant(BaseModel):

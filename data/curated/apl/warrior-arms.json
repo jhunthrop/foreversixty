@@ -362,19 +362,5 @@
       "id": 11605,
       "reason": "Slam is gated on Improved Slam (Slam's cast time under 1.5 s), which the raid build takes and the ladder's leveling builds below level 60 do not; untalented Slam stops the swing for its cast and measured as a loss, so the line stays idle until the talent is in."
     }
-  ],
-  "panel_when": {
-    "1": "when the target is below 20% and Recklessness is ready",
-    "2": "under 80 rage",
-    "3": "when Battle Shout is down",
-    "4": "when Rend is not ticking on the target",
-    "5": "the moment it lights up",
-    "6": "on cooldown",
-    "7": "on cooldown, after Mortal Strike",
-    "8": "when the target is below 20%",
-    "9": "between Mortal Strikes, with Improved Slam",
-    "10": "when nothing else is ready, in Battle Stance",
-    "11": "with Windfury Totem up, target above 25%",
-    "12": "at 90 rage"
-  }
+  ]
 }

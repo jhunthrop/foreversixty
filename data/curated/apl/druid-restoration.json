@@ -1083,21 +1083,5 @@
         }
       }
     ]
-  },
-  "panel_when": {
-    "1": "below 30% mana",
-    "2": "on cooldown, Alliance Skyborne only",
-    "3": "when the tank drops below 35%",
-    "4": "right after Nature's Swiftness",
-    "5": "on the tank under 75% while mana % is over boss health %",
-    "6": "when 2 party members are under 70%",
-    "7": "when Regrowth is not ticking on the tank",
-    "8": "when Rejuvenation is not ticking on the tank",
-    "9": "on the tank under 55% while mana % is over boss health %",
-    "10": "when you are under 70% and Rejuvenation is not on you",
-    "11": "on a party member under 70% with no Rejuvenation",
-    "12": "on a party member under 70% with no Rejuvenation",
-    "13": "on a party member under 70% with no Rejuvenation",
-    "14": "on a party member under 70% with no Rejuvenation"
   }
 }

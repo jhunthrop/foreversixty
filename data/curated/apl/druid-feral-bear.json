@@ -381,16 +381,5 @@
         }
       }
     ]
-  },
-  "panel_when": {
-    "1": "on cooldown",
-    "2": "under 50% health and 20 rage",
-    "3": "on cooldown",
-    "4": "until Lacerate has 5 stacks, then under 3 s left",
-    "5": "when Faerie Fire is not on the target",
-    "6": "when Demoralizing Roar is missing or has under 3 s left",
-    "7": "at 15 rage, 30 from level 40 to 53",
-    "8": "on 2 or more targets, at 40 rage",
-    "9": "when nothing else is ready"
   }
 }

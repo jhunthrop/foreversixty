@@ -387,19 +387,5 @@
         }
       }
     ]
-  },
-  "panel_when": {
-    "1": "when out of Defensive Stance",
-    "2": "below 35% health",
-    "3": "below 40% health",
-    "4": "under 60 rage",
-    "5": "when Shield Block is down",
-    "6": "the moment it lights up",
-    "7": "on cooldown",
-    "8": "when Thunder Clap is missing or has under 3 s left",
-    "9": "when Demoralizing Shout is missing or has under 3 s left",
-    "10": "when Battle Shout is down",
-    "11": "when nothing else is ready",
-    "12": "at 40 rage"
   }
 }

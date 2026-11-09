@@ -764,23 +764,5 @@
         }
       }
     ]
-  },
-  "panel_when": {
-    "1": "when Oath of Light is not on the tank",
-    "2": "when the tank drops below 40%",
-    "3": "on the tank below 40%",
-    "4": "on the tank below 70% while mana % is over boss health %",
-    "5": "on the tank below 70% while mana % is over boss health %",
-    "6": "on yourself below 70% while mana % is over boss health %",
-    "7": "on a party member below 70% while mana holds",
-    "8": "on a party member below 70% while mana holds",
-    "9": "on a party member below 70% while mana holds",
-    "10": "on a party member below 70% while mana holds",
-    "11": "on the tank below 90%",
-    "12": "on yourself below 80%",
-    "13": "on a party member below 80%",
-    "14": "on a party member below 80%",
-    "15": "on a party member below 80%",
-    "16": "on a party member below 80%"
   }
 }

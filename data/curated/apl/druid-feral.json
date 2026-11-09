@@ -329,16 +329,5 @@
         }
       }
     ]
-  },
-  "panel_when": {
-    "1": "to open from Prowl, behind the target",
-    "2": "when Faerie Fire is not on the target",
-    "3": "before Cat Form, when Moonfire is not on the target",
-    "4": "before Cat Form, once Moonfire is ticking",
-    "5": "at 60 energy or less",
-    "6": "at 5 combo points when Rip has under 2 s left",
-    "7": "at 5 combo points while Rip has 5+ s left",
-    "8": "as your builder, from behind the target",
-    "9": "as your builder"
   }
 }

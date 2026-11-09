@@ -360,19 +360,5 @@
         }
       }
     ]
-  },
-  "panel_when": {
-    "0": "when Curse of the Elements is not on the target",
-    "1": "when Corruption is not on the target",
-    "3": "below 10% mana",
-    "4": "when Bane of Doom is not on the target, with 60+ s left",
-    "5": "when no Bane is on the target",
-    "6": "when Immolate has under 3 s left",
-    "7": "on cooldown while Immolate is on the target",
-    "8": "when Immolate has under 6 s left",
-    "9": "on cooldown",
-    "10": "as your filler",
-    "11": "as your filler until Incinerate at level 40",
-    "12": "when you are out of mana and cannot Life Tap"
   }
 }

@@ -260,14 +260,5 @@
       "id": 408345,
       "reason": "Fire Nova fires on Clearcasting, which needs Elemental Focus; only the raid build takes it, so the leveling build never casts it."
     }
-  ],
-  "panel_when": {
-    "1": "when your Earth totem is down",
-    "2": "when your Air totem is down",
-    "3": "on cooldown",
-    "4": "at 5 Maelstrom Weapon stacks",
-    "5": "when Searing Totem is down and the fight has 20+ s left",
-    "6": "on a Clearcasting proc",
-    "7": "on cooldown, above 25% mana"
-  }
+  ]
 }

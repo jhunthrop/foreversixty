@@ -39,7 +39,7 @@ from typing import Any
 
 from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names, resolve_icon
-from pipeline.models import AddonRotationBand, AddonRotationLine, check_panel_when
+from pipeline.models import AddonRotationBand, AddonRotationLine
 from pipeline.spelltext import SpellText, load_spell_text
 from pipeline.talent_levels import (
     first_point_levels,
@@ -210,12 +210,10 @@ def _collect_cast_lines(action: dict, notes: str, lines: list[dict], line: int) 
                 _collect_cast_lines(step, notes, lines, line)
 
 
-def _cast_lines(rotation: dict, panel_when: Mapping[int, str] = MappingProxyType({})) -> list[dict]:
+def _cast_lines(rotation: dict) -> list[dict]:
     """Every priority-list cast, in the curated file's own order, with the
-    0-based index of the entry it sits under (a rank choice's "lines"), that
-    entry's condition (`_level_allows`) and its panel line (`panel_when`, the
-    curated file's top-level map; None where the entry has none). A sequence's
-    steps share their entry's line, as they share its notes."""
+    0-based index of the entry it sits under (a rank choice's "lines") and
+    that entry's condition (`_level_allows`)."""
     lines: list[dict] = []
     for index, entry in enumerate(rotation.get("priorityList", [])):
         action = entry.get("action", {})
@@ -223,39 +221,7 @@ def _cast_lines(rotation: dict, panel_when: Mapping[int, str] = MappingProxyType
         _collect_cast_lines(action, entry.get("notes", ""), lines, index)
         for line in lines[start:]:
             line["condition"] = action.get("condition")
-            line["when"] = panel_when.get(index)
     return lines
-
-
-def _panel_when(curated: dict, apl_path: Path) -> dict[int, str]:
-    """The curated file's `panel_when`, checked (`check_panel_when`), by step index."""
-    raw = curated.get("panel_when", {})
-    if not isinstance(raw, dict):
-        raise AddonRotationError(f"{apl_path}: panel_when must be an object")
-    try:
-        return check_panel_when(raw)
-    except ValueError as error:
-        raise AddonRotationError(f"{apl_path}: {error}") from error
-
-
-def _check_panel_when_steps(
-    panel_when: Mapping[int, str], casts: list[dict], apl_path: Path
-) -> None:
-    """Every `panel_when` key names a priority-list step that casts a spell: a line on any
-    other step (out of range, or an autocast/seal helper) would never print."""
-    cast_steps = {cast["line"] for cast in casts}
-    stray = sorted(index for index in panel_when if index not in cast_steps)
-    if stray:
-        raise AddonRotationError(
-            f"{apl_path}: panel_when names step(s) {stray}, which cast no spell"
-        )
-
-
-def _condition_of(cast: dict) -> str:
-    """A line's panel condition: its curated `panel_when` line verbatim, else the
-    first sentence of its step's note (`_one_line`)."""
-    when = cast.get("when")
-    return when if when is not None else _one_line(cast["notes"])
 
 
 #: The engine's APLValueCompare ops a currentLevel clause can use.
@@ -627,9 +593,7 @@ def build_rotation(
     if not apl_path.exists():
         raise AddonRotationError(f"missing {apl_path}")
     curated = json.loads(apl_path.read_text(encoding="utf-8"))
-    panel_when = _panel_when(curated, apl_path)
-    casts = _cast_lines(curated.get("rotation", {}), panel_when)
-    _check_panel_when_steps(panel_when, casts, apl_path)
+    casts = _cast_lines(curated.get("rotation", {}))
 
     families = {
         name: floor_pairs(pairs, first_point_levels(rank_levels))
@@ -695,7 +659,7 @@ def _line_at(context: _SpecContext, cast: dict, level: int) -> AddonRotationLine
     return AddonRotationLine(
         spell_id=resolved_id,
         name=name,
-        condition=_condition_of(cast),
+        condition=_one_line(cast["notes"]),
         icon=_resolve_icon(resolved_id, context.icon_of),
         race_spell_ids=_race_ids(pick, ranks, resolved_id),
     )

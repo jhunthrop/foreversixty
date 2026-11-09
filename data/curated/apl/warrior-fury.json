@@ -401,18 +401,5 @@
         }
       }
     ]
-  },
-  "panel_when": {
-    "1": "under 80 rage",
-    "2": "on the pull, below 20%, or in the last 30 s of the fight",
-    "3": "when the target is below 20%, or in the last 15 s",
-    "4": "when Battle Shout is down",
-    "5": "when the target is below 20%",
-    "6": "on cooldown",
-    "7": "on cooldown",
-    "8": "on cooldown, after Whirlwind",
-    "9": "on cooldown under 80 rage",
-    "10": "the moment it lights up",
-    "11": "at 60 rage while the target is above 25%"
   }
 }
