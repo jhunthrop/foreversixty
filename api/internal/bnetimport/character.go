@@ -107,7 +107,7 @@ func (s *Service) enrichCharacter(ctx context.Context, ref characterRef, rosterC
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
-	if err := s.enrichInTx(ctx, tx, ref, rosterCache, &guildWritten, &unavailable); err != nil {
+	if err := s.enrichInTx(ctx, tx, &ref, rosterCache, &guildWritten, &unavailable); err != nil {
 		return false, false, err
 	}
 	if err := tx.Commit(ctx); err != nil {
@@ -120,7 +120,7 @@ func (s *Service) enrichCharacter(ctx context.Context, ref characterRef, rosterC
 // enrichInTx runs the enrichment steps inside tx, which the caller owns;
 // the nightly refresh calls it inside the transaction that also re-resolved
 // the row's key.
-func (s *Service) enrichInTx(ctx context.Context, tx pgx.Tx, ref characterRef, rosterCache map[string]bnetapi.Roster,
+func (s *Service) enrichInTx(ctx context.Context, tx pgx.Tx, ref *characterRef, rosterCache map[string]bnetapi.Roster,
 	guildWritten, unavailable *bool) error {
 	if _, err := tx.Exec(ctx, `update characters set refreshed_at = now() where key = $1`, ref.Key); err != nil {
 		return fmt.Errorf("bnetimport: stamp %s: %w", ref.Key, err)
@@ -204,7 +204,11 @@ func (s *Service) rekeyIfNeeded(ctx context.Context, tx pgx.Tx, userID int64, re
 // error. A profile that answers 404 (spec A2 — a classic1x/Season of
 // Discovery character) is logged and reported via unavailable, and 403
 // (a private profile) is left silent, as before.
-func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, ref characterRef,
+//
+// A profile that names a ruleset other than the one ref is keyed under moves
+// the row to the profile's key first (adoptProfileRuleset), and ref follows,
+// so the guild below resolves under the right ruleset.
+func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, ref *characterRef,
 	rosterCache map[string]bnetapi.Roster) (profile bnetapi.CharacterProfile, guildWritten, unavailable bool, err error) {
 	userID, region, ruleset, key, realmSlug, name := ref.UserID, ref.Region, ref.Ruleset, ref.Key, ref.RealmSlug, ref.Name
 	var prevGuildID *int64
@@ -232,6 +236,10 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, ref charact
 		return profile, false, false, err
 	}
 	s.noteStaticNamespace(region, rawProfile)
+	if err := s.adoptProfileRuleset(ctx, tx, ref, profile.Ruleset); err != nil {
+		return profile, false, false, err
+	}
+	ruleset, key = ref.Ruleset, ref.Key
 
 	if !profile.HasGuild {
 		if prevGuildID != nil && prevSource == "bnet" {
@@ -307,6 +315,24 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, ref charact
 	return profile, true, false, nil
 }
 
+// adoptProfileRuleset re-keys ref's row under the ruleset its own profile
+// names when that differs from the one it was keyed under: the realm-id path
+// in rulesetFor falls back to normal whenever Blizzard cannot list the
+// region's realms, as it has not for Forever since 2026-11-05. An empty
+// profile ruleset, or a new key another row holds, leaves ref as it was.
+func (s *Service) adoptProfileRuleset(ctx context.Context, tx pgx.Tx, ref *characterRef, profileRuleset string) error {
+	if profileRuleset == "" || profileRuleset == ref.Ruleset {
+		return nil
+	}
+	newKey := character.Key(ref.Region, profileRuleset, ref.Name)
+	moved, err := s.moveKey(ctx, tx, ref.Key, newKey, profileRuleset)
+	if err != nil || !moved {
+		return err
+	}
+	ref.Key, ref.Ruleset = newKey, profileRuleset
+	return nil
+}
+
 // findRank locates the character's own roster rank: by Blizzard character
 // id when both sides carry one (a realmless Forever roster), otherwise by
 // name and realm (case-insensitive), since a guild roster can, rarely, on
@@ -328,53 +354,81 @@ func findRank(members []bnetapi.RosterMember, bnetID int64, name, realmSlug stri
 }
 
 // rulesetForRealm maps a character's realm slug to a ruleset via the
-// region's realm list (bnetapi.RulesetOf); an unresolvable slug (a stale
-// or unlisted realm) falls back to normal, the same default RulesetOf
-// itself uses for an unrecognised realm type.
-func rulesetForRealm(realms []bnetapi.Realm, slug string) string {
+// region's realm list (bnetapi.RulesetOf). ok is false for a slug the list
+// does not hold or a realm type RulesetOf does not know: nothing is guessed.
+func rulesetForRealm(realms []bnetapi.Realm, slug string) (ruleset string, ok bool) {
 	for _, r := range realms {
 		if strings.EqualFold(r.Slug, slug) {
 			return bnetapi.RulesetOf(r)
 		}
 	}
-	return character.RulesetNormal
+	return "", false
 }
 
+// rulesetSources names, for the needs_ruleset log line, every field
+// rulesetFor reads, in order.
+const rulesetSources = "realm.slug,protected_character.realm_id,profile.ruleset,addon_row"
+
 // rulesetFor resolves an account character's ruleset, the middle segment
-// of its key. Forever's account profile names no realm, so in order:
+// of its key, from the first source that names one:
 //
 //  1. the realm slug, for a realmed game;
 //  2. the realm id from the protected-character link, whose realm type
-//     (PvE, PvP, RP, RP PvP) is the ruleset;
-//  3. the ruleset this character was already keyed under: by its Blizzard
-//     id, then by this account's addon row of the same region and name;
-//  4. normal, RulesetOf's own default.
+//     (PvE, PvP, RP, RP PvP) is the ruleset, while Blizzard still lists
+//     the region's realms (Forever's realm index has answered 404 since
+//     2026-11-05);
+//  3. the character profile's own ruleset ("PvP", "Roleplay PvP");
+//  4. this account's own addon row of the same name (rulesetFromAddonRow).
+//
+// ok is false when none does (a profile not yet public, or private). There
+// is no default: a guessed ruleset keys the character, and its guild,
+// wrongly, which is how every sign-up from 2026-11-05 to 2026-11-09 landed
+// on normal. The caller skips such a character and says so.
 func (s *Service) rulesetFor(ctx context.Context, userID int64, region string, realms []bnetapi.Realm,
-	ch bnetapi.AccountCharacter) (string, error) {
+	ch bnetapi.AccountCharacter) (ruleset string, ok bool, err error) {
 	if ch.RealmSlug != "" {
-		return rulesetForRealm(realms, ch.RealmSlug), nil
+		if ruleset, ok := rulesetForRealm(realms, ch.RealmSlug); ok {
+			return ruleset, true, nil
+		}
 	}
 	if ch.RealmID != 0 {
 		for _, r := range realms {
 			if r.ID == ch.RealmID {
-				return bnetapi.RulesetOf(r), nil
+				if ruleset, ok := bnetapi.RulesetOf(r); ok {
+					return ruleset, true, nil
+				}
 			}
 		}
 	}
+	profile, _, err := s.Client.Character(ctx, region, ch.RealmSlug, ch.Name)
+	switch {
+	case errors.Is(err, bnetapi.ErrNotFound) || errors.Is(err, bnetapi.ErrForbidden):
+	case err != nil:
+		return "", false, fmt.Errorf("bnetimport: ruleset from profile of %s: %w", ch.Name, err)
+	case profile.Ruleset != "":
+		return profile.Ruleset, true, nil
+	}
+	return s.rulesetFromAddonRow(ctx, userID, region, ch.Name)
+}
+
+// rulesetFromAddonRow is the ruleset this account's own addon or companion
+// row of the same region and name was keyed under: the addon reads the
+// client's realm, so that is evidence. A row the Battle.net import wrote is
+// not: it may hold the guess this file no longer makes.
+func (s *Service) rulesetFromAddonRow(ctx context.Context, userID int64, region, name string) (string, bool, error) {
 	var ruleset string
 	err := s.Pool.QueryRow(ctx,
 		`select ruleset from characters
-		 where region = $1 and ((bnet_character_id = $2 and $2 <> 0)
-		    or (user_id = $3 and split_part(key, '/', 3) = $4))
-		 order by (bnet_character_id = $2) desc nulls last, key limit 1`,
-		region, ch.ID, userID, character.Slug(ch.Name)).Scan(&ruleset)
+		  where region = $1 and user_id = $2 and split_part(key, '/', 3) = $3 and source <> 'bnet'
+		  order by key limit 1`,
+		region, userID, character.Slug(name)).Scan(&ruleset)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return character.RulesetNormal, nil
+		return "", false, nil
 	}
 	if err != nil {
-		return "", fmt.Errorf("bnetimport: ruleset lookup for %s: %w", ch.Name, err)
+		return "", false, fmt.Errorf("bnetimport: ruleset lookup for %s: %w", name, err)
 	}
-	return ruleset, nil
+	return ruleset, true, nil
 }
 
 // noteStaticNamespace logs the versioned static namespace a profile links
