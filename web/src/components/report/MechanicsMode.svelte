@@ -380,9 +380,9 @@
     </div>
     {#if !beforeMechanics && block.table_found}
       <p class="text-muted px-5 pt-3 pb-4 text-[13px]">
-        Whole {nightMode ? 'night' : 'fight'}, from the encounter’s mechanics table. {nightMode
-          ? `${judgedSummary} A source pick does not apply here.`
-          : 'Whole fight: a brushed time window does not apply here, so none is offered.'}
+        {nightMode
+          ? `Whole night, from the encounter’s mechanics table. ${judgedSummary} A source pick does not apply here.`
+          : 'Whole fight only, from the encounter’s mechanics table.'}
       </p>
     {/if}
   </Section>

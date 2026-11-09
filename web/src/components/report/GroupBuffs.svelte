@@ -84,10 +84,7 @@
     <div class="group-buffs">
       <StatTable columns={COLUMNS} nameHead="Buff" label="Buffs">
         {#each rows as row (row.name)}
-          <StatRow
-            figures={[{ value: formatPercent(row.share * 100) }]}
-            phone={formatPercent(row.share * 100)}
-          >
+          <StatRow figures={[{ value: formatPercent(row.share * 100) }]}>
             {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
             {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
             {#snippet meter()}<Meter value={row.share} tone="gold" />{/snippet}
@@ -101,7 +98,7 @@
 <style>
   /* In the rail: a short bar in the Buffs tab's gold, so a buff's name holds its one line. */
   .group-buffs :global(.ui-st) {
-    --st-bar: minmax(0, 44px);
+    --st-bar: minmax(0, 32px);
   }
   /* The name cell itself clips, so a long name ends in an ellipsis before the bar. */
   .group-buffs :global(.ui-st-name),

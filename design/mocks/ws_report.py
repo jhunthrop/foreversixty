@@ -356,7 +356,7 @@ def tab_auras(R, fi, kind, source):
                             primary_phone=f'up {share * 100:.1f}%'))
     table = StatTable([('', False), ('Aura', False), ('Uptime', False), ('Up', True), ('Applied', True)], rows, 2, sort='Up', sortable=('Up', 'Applied'))
     plate = Section(kind, table if rows else f'<p class="empty">No {kind.lower()} in this window.</p>', action=COPY_CSV if rows else '',
-                    meta=f'{len(aus)} on players &middot; uptime over the whole fight', panel=True, flush=True)
+                    meta=f'{len(rows)} {"on players" if want == "BUFF" else ("debuff" if len(rows) == 1 else "debuffs")} &middot; uptime over the whole fight', panel=True, flush=True)
     return plate, this_pull(R, fi, source), []
 
 

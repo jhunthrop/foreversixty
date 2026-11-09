@@ -209,7 +209,10 @@
     row.tracks.length === 1 ? splitUnitName(row.tracks[0].target_name).name : `${row.tracks.length} players`;
 
   const over = $derived((windowed ?? startMs > 0) ? 'this window' : 'the whole fight');
-  const meta = $derived(`${shown.length} on players · uptime over ${over}`);
+  /** What the count counts: buffs on players, or the debuffs (each a spell, however many it was on). */
+  const meta = $derived(
+    `${rows.length} ${kind === 'BUFF' ? 'on players' : rows.length === 1 ? 'debuff' : 'debuffs'} · uptime over ${over}`,
+  );
 
   /** The table as lines: one per aura on one target, uptime in seconds and as a share. */
   function csvLines(): string[][] {
