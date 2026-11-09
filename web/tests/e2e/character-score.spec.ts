@@ -136,22 +136,20 @@ test('a bare character a visitor does not hold is the not-found page', async ({ 
   await expect(page.getByTestId('character')).toHaveCount(0);
 });
 
-test('a scored character: 1,830, Epic in the epic colour, the rating and how it is scored', async ({
-  page,
-}) => {
+test('a scored character: 1,830 and Epic in the epic colour, one headline', async ({ page }) => {
   await stub(page, { ...CHARACTER.data, ...OWNER_SCORE }, RATING);
   await page.goto(CHARACTER_PATH);
 
   const score = page.getByTestId('character-score');
   await expect(score.getByRole('heading', { name: 'Forever Score' })).toBeVisible();
-  await expect(score).toContainText('6 rated fights');
   await expect(page.getByTestId('character-score-figure')).toContainText('1,830');
   const tier = page.getByTestId('character-tier');
   await expect(tier).toContainText('Epic');
   // --color-rarity-epic-text (#b866f5), the epic tone made legible as text.
   await expect(tier.getByText('Epic', { exact: true })).toHaveCSS('color', 'rgb(184, 102, 245)');
-  await expect(page.getByTestId('character-rating')).toHaveText('65 of 100');
-  await expect(score.getByRole('link', { name: 'How it is scored ›' })).toHaveAttribute('href', '/ratings');
+  // The per-fight rating lives on /ratings: the panel carries no second or third headline.
+  await expect(score).not.toContainText('of 100');
+  await expect(score).not.toContainText('rated fights');
 });
 
 test('every part shows its bar on one scale and its points, no "of N"', async ({ page }) => {

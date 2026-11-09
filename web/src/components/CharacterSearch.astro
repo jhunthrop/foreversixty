@@ -11,6 +11,7 @@
 import { DEFAULT_REGION, DEFAULT_RULESET } from '../lib/character-search';
 import { REGIONS, RULESETS } from '../lib/characters';
 import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
+import Plate from './ui/Plate.svelte';
 import Section from './ui/Section.svelte';
 import Select from './ui/Select.astro';
 import { BUTTON_PRIMARY } from '../lib/ui/button';
@@ -19,29 +20,30 @@ import { FIELD_CONTROL, FIELD_FOCUS, FIELD_HEIGHT, FIELD_LABEL as LABEL, fieldEd
 const FIELD = [FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(false)].join(' ');
 
 interface Props {
-  /** /characters (round 5, mock b2-characters): the lookup is the page's framed panel, the heading
-   *  inside it, no aside line and no hint. Off (the 404), the open Section with its aside. */
+  /** /characters (round 5, mock b2-characters): the lookup is the page's framed panel under the
+   *  title band, with no heading of its own (the band names the page), no aside and no hint: the
+   *  name field and Look up on one row, Region and Ruleset under them. Off (the 404), the open
+   *  Section with its heading and aside, exactly as before. */
   panel?: boolean;
 }
 const { panel = false } = Astro.props;
 const HINT_ID = 'home-character-search-hint';
 const ERROR_ID = 'home-character-search-error';
+const Wrapper = panel ? Plate : Section;
+const wrapperProps = panel
+  ? { frame: 'framed' as const, flush: false, label: copy.heading, testid: 'home-character-search' }
+  : { title: copy.heading, anchor: 'lookup', testid: 'home-character-search' };
 ---
 
-<Section
-  title={copy.heading}
-  anchor="lookup"
-  testid="home-character-search"
-  panel={panel}
-  frame={panel ? 'framed' : undefined}
->
+<Wrapper {...wrapperProps}>
   {!panel && (
     <p class="text-small text-muted cs-aside" data-testid="home-character-search-aside">
       {copy.aside}
     </p>
   )}
   <form
-    class="cs-form flex flex-wrap items-end gap-3"
+    class:list={['cs-form flex flex-wrap items-end gap-3', panel && 'cs-panel']}
+    id={panel ? 'lookup' : undefined}
     aria-label={copy.heading}
     data-character-search
     data-character-search-primary
@@ -50,8 +52,8 @@ const ERROR_ID = 'home-character-search-error';
     data-invalid={copy.invalid}
     novalidate
   >
-    <div class="flex min-w-[220px] flex-1 flex-col gap-[6px]">
-      <label class={LABEL} for="home-character-search-name">
+    <div class="cs-name flex min-w-[220px] flex-1 flex-col gap-[6px]">
+      <label class={panel ? 'sr-only' : LABEL} for="home-character-search-name">
         {copy.nameLabel}
       </label>
       <div class="relative">
@@ -81,7 +83,7 @@ const ERROR_ID = 'home-character-search-error';
         </div>
       </div>
     </div>
-    <div class="flex flex-col gap-[6px]">
+    <div class="cs-region flex flex-col gap-[6px]">
       <label class={LABEL} for="home-character-search-region">
         {copy.regionLabel}
       </label>
@@ -94,7 +96,7 @@ const ERROR_ID = 'home-character-search-error';
         options={REGIONS.map((region) => ({ value: region, label: region.toUpperCase() }))}
       />
     </div>
-    <div class="flex flex-col gap-[6px]">
+    <div class="cs-ruleset flex flex-col gap-[6px]">
       <label class={LABEL} for="home-character-search-ruleset">
         {copy.rulesetLabel}
       </label>
@@ -119,7 +121,7 @@ const ERROR_ID = 'home-character-search-error';
     </p>
   )}
   <p id="home-character-search-error" class="text-wipe min-h-[1lh] text-[13px]" role="status"></p>
-</Section>
+</Wrapper>
 
 <style>
   .cs-aside {
@@ -142,10 +144,32 @@ const ERROR_ID = 'home-character-search-error';
     background-color: var(--color-gold-hover);
   }
   @media (max-width: 767px) {
-    .cs-form > *,
-    .cs-submit > button {
+    .cs-form:not(.cs-panel) > *,
+    .cs-form:not(.cs-panel) .cs-submit > button {
       width: 100%;
     }
+  }
+  /* The panel (mock b2-characters): the name and Look up on one row at every width, Region and
+     Ruleset under them at their own width. */
+  .cs-panel {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'name name name submit'
+      'region ruleset . .';
+  }
+  .cs-panel .cs-name {
+    grid-area: name;
+    min-width: 0;
+  }
+  .cs-panel .cs-submit {
+    grid-area: submit;
+  }
+  .cs-panel .cs-region {
+    grid-area: region;
+  }
+  .cs-panel .cs-ruleset {
+    grid-area: ruleset;
   }
 </style>
 

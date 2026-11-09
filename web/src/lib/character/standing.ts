@@ -87,12 +87,16 @@ export function gradeLine(week: SpecWeek | null, specName: string | null): strin
     : fillShared(sharedStandingGraded, { spec: specName, grade: week.grade });
 }
 
-/** C21: "Onyxia's Lair in 33 days, 8 hours, 0 min, 18 in"; null once it has started. */
+/** C21: "Onyxia's Lair in 33 days, 8 hours, 18 in", the clock to its two largest units; null once it
+ *  has started. */
+/** The standing line's raid clock keeps its two largest units. */
+const CLOCK_UNITS = 2;
+
 export function raidLine(raid: NextRaidView | null, now: Date): string | null {
   if (raid === null) return null;
   const parts = clockParts(new Date(raid.starts_at), now);
   if (parts === null) return null;
-  const values = { raid: raid.title, clock: clockLabel(parts) };
+  const values = { raid: raid.title, clock: clockLabel(parts.slice(0, CLOCK_UNITS)) };
   return raid.counts.in > 0
     ? fillShared(sharedStandingRaidSigned, { ...values, n: raid.counts.in })
     : fillShared(sharedStandingRaid, values);

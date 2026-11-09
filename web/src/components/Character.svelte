@@ -60,12 +60,13 @@
   import Plate from './ui/Plate.svelte';
   import Row from './ui/Row.svelte';
   import Section from './ui/Section.svelte';
-  import Tag from './ui/Tag.svelte';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
   const build = activeBuild.build;
   const CREST_PX = 56;
+  /** The band's crest: 44 px on a phone, 56 from 768 (the mock's title band). */
+  const CREST_CLASS = 'size-11 md:size-14';
   const resolved = $derived(
     path ?? (typeof window === 'undefined' ? null : parseCharacterPath(window.location.pathname)),
   );
@@ -245,7 +246,7 @@
     </p>
   </Page>
 {:else if status === 'loading'}
-  <Page layout="split" panels testid="character-skeleton">
+  <Page layout="split" panels splitFrom={1280} testid="character-skeleton">
     {#snippet header()}{@render headSkeleton()}{/snippet}
     <Section title={copy.gear} panel frame="framed">
       <div class="mx-auto max-w-[640px]" aria-busy="true">
@@ -263,7 +264,7 @@
 {:else if resolved !== null && (status === 'unlogged' || bare)}
   <CharacterMissing path={resolved} name={data?.character.name ?? unloggedName} {signedIn} />
 {:else if data !== null && resolved !== null}
-  <Page layout="split" panels testid="character">
+  <Page layout="split" panels splitFrom={1280} testid="character">
     {#snippet header()}
       <PageHeader
         title={data.character.name}
@@ -273,6 +274,7 @@
         {#snippet crest()}<ClassCrestRing
             characterClass={data.character.class ?? ''}
             size={CREST_PX}
+            class={CREST_CLASS}
           />{/snippet}
         {#snippet meta()}
           {#each headFacts(data, resolved, own) as fact (fact.key)}
@@ -280,7 +282,8 @@
                 >{fact.text}</a
               >{:else}<span data-testid={`character-fact-${fact.key}`}>{fact.text}</span>{/if}
           {/each}
-          {#if data.supporter === true}<Tag testid="supporter-chip">{premiumBlockCopy.supporterChip}</Tag
+          {#if data.supporter === true}<span data-testid="supporter-chip"
+              >{premiumBlockCopy.supporterChip}</span
             >{/if}
           {#if sync !== null}<span data-testid="character-sync"
               >{syncText(sync)}{#if sync.staleTail !== null}{STALE_SEPARATOR}<span class="text-wipe"
@@ -312,7 +315,7 @@
     {/snippet}
     {#snippet rail()}
       {#if data.score_hidden !== true}
-        <CharacterScore path={resolved} {forever} {owned} fought={data.best.length > 0} />
+        <CharacterScore {forever} {owned} fought={data.best.length > 0} />
       {/if}
       {#if data.builds_seen.length > 0}
         <Section title={copy.builds} panel testid="character-builds">

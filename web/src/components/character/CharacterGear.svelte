@@ -10,7 +10,7 @@
   import type { BisBand } from '../../lib/bis/types';
   import { bandSlotFor, runnersUp } from '../../lib/character/gear-context';
   import { characterPageCopy } from '../../lib/character/page-view';
-  import type { UpgradeRowView } from '../../lib/character/upgrades';
+  import { UPGRADES_SHOWN, type UpgradeRowView } from '../../lib/character/upgrades';
   import { gearCopy } from '../../lib/gear/copy';
   import type { GearItemTable } from '../../lib/gear/qualities';
   import type { CharacterGearSlot } from '../../lib/gear/types';
@@ -49,7 +49,8 @@
     gear: readonly CharacterGearSlot[];
     band: BisBand | null;
     table: GearItemTable | null;
-    /** The band's picks by their priced gain (lib/character/upgrades.ts). */
+    /** Every pick with a priced gain, largest first (lib/character/upgrades.ts); the centre
+     *  shows UPGRADES_SHOWN and counts the rest, so the rows and the band's total agree. */
     upgrades: readonly UpgradeRowView[];
     /** The band's rate word ("DPS", "HPS"). */
     unit: string;
@@ -86,11 +87,17 @@
     testid="character-upgrades"
   >
     <h3 class="text-strong mb-1 text-[13px] leading-5 font-semibold">{characterPageCopy.upgrades}</h3>
-    {#each upgrades as row (row.slot)}
+    {#each upgrades.slice(0, UPGRADES_SHOWN) as row (row.slot)}
       <ItemRow item={row.item} {build} source={row.label} iconSize={28} bare>
         {#snippet trail()}{@render gainText(row.value)}{/snippet}
       </ItemRow>
     {/each}
+    {#if upgrades.length > UPGRADES_SHOWN && bisHref !== null}<a
+        class="{LINK} mt-1 inline-block text-[13px]"
+        href={bisHref}
+        data-testid="character-upgrades-more"
+        >{characterPageCopy.moreUpgrades(upgrades.length - UPGRADES_SHOWN)} ›</a
+      >{/if}
   </Overlay>
 {/snippet}
 

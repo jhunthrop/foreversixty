@@ -1,7 +1,7 @@
 // web/tests/e2e/character-performance.spec.ts
 // Task L8.5's rulings that outlive the character page's rebuild (design/specs/2026-11-06-character.md
 // cut the Performance Rating card, the score card's part bars and the "Every ranked fight" table;
-// the Forever Score Section is covered by character-score.spec.ts and character-rating.spec.ts):
+// the Forever Score Section is covered by character-score.spec.ts):
 //   Ruling 5. /setup says "type /fs copy, press Ctrl+C".
 //   Fix round 1 item 5. The /ratings sample rating card stays one column in its 560px container.
 import { expect, test } from './support/test';

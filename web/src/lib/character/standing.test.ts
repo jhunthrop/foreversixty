@@ -49,9 +49,7 @@ describe('the standing line', () => {
       starts_at: '2026-11-08T20:30:00Z',
       counts: { in: 18 },
     } as NextRaidView;
-    expect(raidLine(raid, new Date('2026-11-06T18:00:00Z'))).toBe(
-      "Onyxia's Lair in 2 days, 2 hours, 30 min, 18 in",
-    );
+    expect(raidLine(raid, new Date('2026-11-06T18:00:00Z'))).toBe("Onyxia's Lair in 2 days, 2 hours, 18 in");
     expect(raidLine(raid, new Date('2026-11-09T00:00:00Z'))).toBeNull();
   });
 

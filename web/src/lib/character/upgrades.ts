@@ -6,8 +6,8 @@ import { isTie } from '../bis/doll-view';
 import { slotLabel, type PaperdollSlot } from '../gear/paperdoll';
 import type { ItemRef } from '../ui/primitives';
 
-/** The frame's centre holds four rows. */
-export const UPGRADES_SHOWN = 4;
+/** The frame's centre holds six rows; the rest are counted under them. */
+export const UPGRADES_SHOWN = 6;
 
 export interface UpgradeRowView {
   slot: string;
@@ -22,7 +22,7 @@ export interface UpgradeRowView {
 export function upgradeRows(
   slots: readonly PaperdollSlot[],
   classSlug: string,
-  limit: number = UPGRADES_SHOWN,
+  limit: number = Number.POSITIVE_INFINITY,
 ): UpgradeRowView[] {
   return slots
     .flatMap((slot): UpgradeRowView[] => {

@@ -44,10 +44,11 @@ describe('upgradeRows', () => {
     expect(rows[0].item.icon).toBeUndefined();
   });
 
-  it(`shows ${UPGRADES_SHOWN} at most`, () => {
+  it(`takes a limit (the frame shows ${UPGRADES_SHOWN})`, () => {
     const many = (['head', 'neck', 'legs', 'feet', 'wrist', 'waist'] as const).map((slot, index) =>
       gain(slot, index + 1, 300 + index),
     );
-    expect(upgradeRows(many, 'priest')).toHaveLength(UPGRADES_SHOWN);
+    expect(upgradeRows(many, 'priest')).toHaveLength(6);
+    expect(upgradeRows(many, 'priest', 2).map((row) => row.value)).toEqual([6, 5]);
   });
 });
