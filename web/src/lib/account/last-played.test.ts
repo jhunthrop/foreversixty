@@ -17,7 +17,10 @@ function character(name: string, capturedAt?: string, level = 60): MeCharacter {
 describe('lastPlayedCharacter', () => {
   it('is the character with the newest capture, addon or Battle.net', () => {
     const older = character('Older', '2026-11-08T10:00:00Z');
-    const newer = { ...character('Newer'), build: { source: 'blizzard' as const, captured_at: '2026-11-09T10:00:00Z' } };
+    const newer = {
+      ...character('Newer'),
+      build: { source: 'blizzard' as const, captured_at: '2026-11-09T10:00:00Z' },
+    };
     expect(lastPlayedCharacter([older, newer], [])?.name).toBe('Newer');
   });
 

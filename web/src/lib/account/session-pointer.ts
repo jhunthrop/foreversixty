@@ -89,7 +89,8 @@ export function settlePointerForSession(me: Me | null, storage?: Storage): void 
   if (me === null || healedThisSession()) return;
   markHealed(true);
   const pointer = readCurrent(storage);
-  const restored = takeFreshSession() && pointer !== null && pointerIdentity(pointer) === readSessionStartPointer();
+  const restored =
+    takeFreshSession() && pointer !== null && pointerIdentity(pointer) === readSessionStartPointer();
   const next = restored ? pointerForFreshSession(pointer, me) : pointerToHeal(pointer, me);
   if (next === null) return;
   writeCurrent(next, storage);

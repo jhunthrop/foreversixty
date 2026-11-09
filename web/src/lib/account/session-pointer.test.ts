@@ -2,7 +2,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { onCurrentCharacterChange } from '../current-character-events';
 import { readCurrent, writeCurrent, type CurrentCharacter } from '../current-character';
-import { pointerIdentity, SESSION_FRESH_KEY, SESSION_START_POINTER_KEY } from '../character-selector/restored';
+import {
+  pointerIdentity,
+  SESSION_FRESH_KEY,
+  SESSION_START_POINTER_KEY,
+} from '../character-selector/restored';
 import type { Me, MeCharacter } from './api';
 import { pointerForFreshSession, pointerToHeal, settlePointerForSession } from './session-pointer';
 
@@ -98,7 +102,11 @@ const played = (character: MeCharacter, hoursAgo: number): MeCharacter => ({
   ...character,
   build: { source: 'addon', captured_at: AT(hoursAgo) },
 });
-const JACKZON_POINTER = pointer({ ref: JACKZON.key, label: 'Bow Jackzon · Survival Hunter', classSlug: 'hunter' });
+const JACKZON_POINTER = pointer({
+  ref: JACKZON.key,
+  label: 'Bow Jackzon · Survival Hunter',
+  classSlug: 'hunter',
+});
 const NAMELESS_PASTE = pointer({ source: 'code', ref: 'FS1:x', label: 'Hunter', classSlug: 'hunter' });
 
 describe('pointerForFreshSession', () => {
@@ -140,7 +148,10 @@ describe('pointerForFreshSession', () => {
 });
 
 describe('settlePointerForSession in a fresh browser session', () => {
-  const me = { characters: [played(JACKZON, 48), played(PIPSQUEAK, 0.3)], main_character_key: JACKZON.key } as Me;
+  const me = {
+    characters: [played(JACKZON, 48), played(PIPSQUEAK, 0.3)],
+    main_character_key: JACKZON.key,
+  } as Me;
 
   beforeEach(() => {
     window.localStorage.clear();

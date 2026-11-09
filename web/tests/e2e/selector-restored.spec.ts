@@ -140,12 +140,16 @@ test.describe('the selector’s restored line and Forget', () => {
 
   test('signed out, a restored pasted export can be forgotten, leaving Sign in', async ({ page }) => {
     await signedOut(page);
-    await storePointer(page, {
-      source: 'code',
-      ref: FURY,
-      label: 'Obnoxious Yell · Fury Warrior',
-      classSlug: 'warrior',
-    }, { earlierVisit: true });
+    await storePointer(
+      page,
+      {
+        source: 'code',
+        ref: FURY,
+        label: 'Obnoxious Yell · Fury Warrior',
+        classSlug: 'warrior',
+      },
+      { earlierVisit: true },
+    );
     await page.goto('/guides');
     await expect(page.getByTestId('selector-name')).toHaveText('Obnoxious Yell');
     await openSelector(page);

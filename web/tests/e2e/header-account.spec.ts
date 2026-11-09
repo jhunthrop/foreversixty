@@ -185,7 +185,9 @@ test.describe('the account panel, signed in', () => {
     await expect(page.getByTestId('selector-sub')).toHaveText('Warrior · 60');
   });
 
-  test('the Founder tag sits on the Plan label line and the plan facts keep one line each', async ({ page }) => {
+  test('the Founder tag sits on the Plan label line and the plan facts keep one line each', async ({
+    page,
+  }) => {
     await signedInPage(page, PREMIUM_ME);
     await control(page).click();
     const plan = rows(page).getByTestId('selector-row-plan');
@@ -215,7 +217,7 @@ test.describe('the account panel, signed in', () => {
     expect(new Set(insets).size).toBe(1);
   });
 
-  test('the current row is the compact list\'s selection: the accent tint, the accent rail and a check', async ({
+  test("the current row is the compact list's selection: the accent tint, the accent rail and a check", async ({
     page,
   }) => {
     await signedInPage(page);
@@ -240,8 +242,12 @@ test.describe('the account panel, signed in', () => {
     ] as const) {
       await expect(panel(page).getByTestId(testid).locator(`svg[data-icon="${icon}"]`)).toBeVisible();
     }
-    await expect(panel(page).getByTestId('selector-paste').locator('svg[data-icon="paste-export"]')).toBeVisible();
-    await expect(panel(page).getByTestId('selector-account-head').locator('svg[data-icon="account"]')).toBeVisible();
+    await expect(
+      panel(page).getByTestId('selector-paste').locator('svg[data-icon="paste-export"]'),
+    ).toBeVisible();
+    await expect(
+      panel(page).getByTestId('selector-account-head').locator('svg[data-icon="account"]'),
+    ).toBeVisible();
   });
 
   test('the floating bar sits on the page column, the control inside its right end', async ({ page }) => {

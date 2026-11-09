@@ -6,7 +6,11 @@
 <script lang="ts">
   import { UI_ICONS, type UiIconName } from '../../lib/ui/ui-icons';
 
-  let { name, size = 20, class: className = '' }: { name: UiIconName; size?: number; class?: string } = $props();
+  let {
+    name,
+    size = 20,
+    class: className = '',
+  }: { name: UiIconName; size?: number; class?: string } = $props();
 
   const icon = $derived(UI_ICONS[name]);
 </script>
