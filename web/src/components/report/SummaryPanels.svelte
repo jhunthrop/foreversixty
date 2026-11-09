@@ -34,6 +34,7 @@
   interface AbilityTotal {
     name: string;
     spellId: number;
+    school?: number;
     total: number;
   }
 
@@ -47,7 +48,12 @@
         const key = ability.name === '' ? 'Melee' : ability.name;
         const found = totals.get(key);
         if (found === undefined)
-          totals.set(key, { name: key, spellId: ability.spell_id, total: ability.effective });
+          totals.set(key, {
+            name: key,
+            spellId: ability.spell_id,
+            school: ability.school,
+            total: ability.effective,
+          });
         else found.total += ability.effective;
       }
     }
@@ -80,7 +86,7 @@
           ]}
           phone={`${formatAmount(row.total)} damage`}
         >
-          {#snippet icon()}<SpellIcon url={spellIcon(row.spellId)} />{/snippet}
+          {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
           {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
           {#snippet meter()}<Meter value={row.share} tone="muted" />{/snippet}
         </StatRow>

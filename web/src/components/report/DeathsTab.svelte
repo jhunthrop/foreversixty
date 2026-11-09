@@ -395,7 +395,7 @@
                   phone={`+${formatAmount(heal.amount)}`}
                   testid="death-heal"
                 >
-                  {#snippet icon()}<SpellIcon url={spellIcon(heal.spell_id)} />{/snippet}
+                  {#snippet icon()}<SpellIcon url={spellIcon(heal.spell_id, heal.spell_name)} />{/snippet}
                   {#snippet name()}<b class="text-kill">{heal.spell_name}</b>{/snippet}
                   {#snippet sub()}{formatDurationPrecise(heal.at_ms)} · from {splitUnitName(heal.source_name)
                       .name}{/snippet}
@@ -409,7 +409,7 @@
                 {@const lethal = isKillingBlow(death, hit)}
                 {@const pct = lethal && !lethalHitMissing(death, card) ? 0 : card.pcts[i]}
                 <StatRow figures={hitFigures(death, hit, lethal)} phone={`−${formatAmount(landed(hit))}`}>
-                  {#snippet icon()}<SpellIcon url={spellIcon(hit.spell_id)} />{/snippet}
+                  {#snippet icon()}<SpellIcon url={spellIcon(hit.spell_id, hit.spell_name)} />{/snippet}
                   {#snippet name()}<b class="text-strong"
                       >{hit.spell_name === '' ? 'Melee' : hit.spell_name}</b
                     >{/snippet}

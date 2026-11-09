@@ -119,7 +119,7 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     const you = chart.locator(`[data-testid="legend-chip"][data-id="${guidOf(13)}"]`);
     await expect(you).toContainText('Lightningbolltz');
     await expect(you).toContainText('YOU');
-    // The head's raid figure is the sum of all 40 players' rounded DPS: the Section's meta from
+    // The head's raid figure is all 40 players' DPS added before rounding: the Section's meta from
     // 768, the folded chart's summary below it (TimeChart).
     const figure = `Raid ${raid40DpsSum().toLocaleString('en-US')} DPS over the whole fight`;
     if (isPhone(page))
@@ -184,10 +184,11 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     const figures = await listOf(chart, 'players').locator('.sel-row-meta').allTextContents();
     expect(figures).toHaveLength(40);
     const sum = figures.reduce((total, text) => total + Number(text.replace(/,/g, '')), 0);
-    await expect(chart.getByTestId('chart-head-meta')).toHaveText(
-      // A rate under 100 prints one decimal, the head from 100 whole: the sum at the head's precision.
-      `Raid ${Math.round(sum).toLocaleString('en-US')} DPS over the whole fight`,
-    );
+    // The head adds the exact figures; the list prints each rounded, so the two meet within half a
+    // point a player.
+    const head = await chart.getByTestId('chart-head-meta').innerText();
+    const figure = Number(/^Raid ([\d,]+) DPS over the whole fight$/.exec(head)?.[1].replace(/,/g, ''));
+    expect(Math.abs(figure - sum)).toBeLessThanOrEqual(figures.length * 0.5);
     // Every chip names its unit.
     for (const value of await chart.getByTestId('legend-value').allTextContents())
       expect(value).toMatch(/DPS$/);

@@ -237,7 +237,11 @@
             phone={`${row.succeeded} ${row.succeeded === 1 ? 'cast' : 'casts'}`}
             testid={`cast-${row.guid}-${row.spell_id}`}
           >
-            {#snippet icon()}<SpellIcon url={icons.of(row.spell_id)} spellId={row.spell_id} tip />{/snippet}
+            {#snippet icon()}<SpellIcon
+                url={icons.of(row.spell_id, row.spell_name)}
+                spellId={row.spell_id}
+                tip
+              />{/snippet}
             {#snippet name()}{row.spell_name}{#if sameName.has(`${row.guid}|${row.spell_name}`)}<span
                   class="text-muted ml-1 text-[13px] font-normal tabular-nums"
                   title="Two spells share this name; this is spell id {row.spell_id}">#{row.spell_id}</span

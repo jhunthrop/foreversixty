@@ -1,0 +1,15 @@
+{
+  "melee": "ability_meleedamage",
+  "client": {
+    "75": "ability_whirlwind"
+  },
+  "schools": {
+    "1": "ability_meleedamage",
+    "2": "spell_holy_holybolt",
+    "4": "spell_fire_fire",
+    "8": "spell_nature_lightning",
+    "16": "spell_frost_frostbolt02",
+    "32": "spell_shadow_shadowbolt",
+    "64": "spell_nature_starfall"
+  }
+}

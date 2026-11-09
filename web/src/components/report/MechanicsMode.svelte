@@ -365,7 +365,11 @@
                 .join(' · ')}
               testid={`mechanics-row-${mechanicRowKey(row)}`}
             >
-              {#snippet lead()}<SpellIcon url={icons.of(row.spell_id)} spellId={row.spell_id} tip />{/snippet}
+              {#snippet lead()}<SpellIcon
+                  url={icons.of(row.spell_id, row.name)}
+                  spellId={row.spell_id}
+                  tip
+                />{/snippet}
               {#snippet trail()}
                 <Tag tone={tagTone(row, tally.failed)}>{KIND_TAG[row.kind] ?? row.kind}</Tag>
                 {@render figure(String(tally.failed), 'Failed')}
@@ -404,7 +408,10 @@
                 open
                 wrapTrail
               >
-                {#snippet lead()}<SpellIcon url={icons.of(problem.row.spell_id)} size={24} />{/snippet}
+                {#snippet lead()}<SpellIcon
+                    url={icons.of(problem.row.spell_id, problem.row.name)}
+                    size={24}
+                  />{/snippet}
                 {#snippet titleContent()}<span class={problem.hit?.killed ? 'text-death' : 'text-strong'}
                     >{problem.text}</span
                   >{/snippet}
@@ -443,7 +450,7 @@
                   .join(' · ')}
                 open
               >
-                {#snippet lead()}<SpellIcon url={icons.of(row.spell_id)} size={24} />{/snippet}
+                {#snippet lead()}<SpellIcon url={icons.of(row.spell_id, row.name)} size={24} />{/snippet}
               </Row>
             {/each}
           {/each}
@@ -568,7 +575,7 @@
             sub={`${formatAmount(ability.damage)} damage to players · ${ability.players} ${ability.players === 1 ? 'player' : 'players'} hit`}
             open
           >
-            {#snippet lead()}<SpellIcon url={icons.of(ability.spell_id)} size={24} />{/snippet}
+            {#snippet lead()}<SpellIcon url={icons.of(ability.spell_id, ability.name)} size={24} />{/snippet}
             {#snippet trail()}
               <a
                 href={hrefFor(damageTakenPatch(ability.spell_id))}

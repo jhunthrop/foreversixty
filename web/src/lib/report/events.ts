@@ -67,6 +67,8 @@ export interface SummaryEvent {
   amount?: number;
   /** The spell the line is about, for its icon; absent on a death. */
   spellId?: number;
+  /** Its name as the log gives it, for the icon of a same-named spell. */
+  spellName?: string;
   /** The units the text names, by the spelling it uses. */
   actors?: EventActor[];
   /** Words the find matches besides the text: a miss's own type ("parry"), so the noun finds the verb. */
@@ -116,6 +118,7 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
         guid: line.destGuid,
         guids: [line.sourceGuid, line.destGuid],
         spellId: line.spellId,
+        spellName: line.spellName,
         actors: actorsOf(line, who, whom),
         text: who === 'Something' ? `${spell} refreshed on ${whom}` : `${who} refreshed ${spell} on ${whom}`,
         tags: ['refresh', 'refreshed'],
@@ -131,6 +134,7 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
         guid: line.destGuid,
         guids: [line.sourceGuid, line.destGuid],
         spellId: line.spellId,
+        spellName: line.spellName,
         actors: actorsOf(line, who, whom),
         text: `${whom} ${verb} ${who}’s ${spell}${soaked}`,
         tags: [line.missType.toLowerCase(), 'avoided'],
@@ -153,6 +157,7 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
       guids: [line.sourceGuid, line.destGuid],
       amount: line.kind === 'heal' ? line.amount - line.overheal : line.amount,
       spellId: line.spellId,
+      spellName: line.spellName,
       actors: actorsOf(line, who, whom),
       text: `${who} ${line.kind === 'heal' ? 'healed' : 'hit'} ${whom} with ${spell}${detail}`,
     };
@@ -174,6 +179,7 @@ export function summaryEvents(
         guid: row.guid,
         guids: [row.guid],
         spellId: row.spell_id,
+        spellName: row.spell_name,
         actors: [{ guid: row.guid, name: caster }],
         text: `${caster} cast ${row.spell_name}`,
       });
@@ -221,6 +227,7 @@ export function summaryEvents(
         guid: track.target_guid,
         guids,
         spellId: track.spell_id,
+        spellName: track.name,
         actors,
         text: `${track.name} ${verb} ${target}${by === '' ? '' : ` by ${by}`}`,
       });
@@ -231,6 +238,7 @@ export function summaryEvents(
           guid: track.target_guid,
           guids,
           spellId: track.spell_id,
+          spellName: track.name,
           actors,
           text: `${track.name} off ${target}${by === '' ? '' : ` (by ${by})`}`,
         });
@@ -247,6 +255,7 @@ export function summaryEvents(
         guids: [death.guid, hit.source_guid],
         amount: hit.amount,
         spellId: hit.spell_id,
+        spellName: hit.spell_name,
         actors: [
           { guid: hit.source_guid, name: splitUnitName(hit.source_name).name },
           { guid: death.guid, name: who },
@@ -262,6 +271,7 @@ export function summaryEvents(
         guids: [death.guid, heal.source_guid],
         amount: heal.amount - (heal.overheal ?? 0),
         spellId: heal.spell_id,
+        spellName: heal.spell_name,
         actors: [
           { guid: heal.source_guid, name: splitUnitName(heal.source_name).name },
           { guid: death.guid, name: who },

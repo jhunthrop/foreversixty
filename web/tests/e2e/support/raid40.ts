@@ -307,9 +307,9 @@ export async function serveRaid40(page: Page): Promise<void> {
   );
 }
 
-/** Every player's DPS over the whole pull, rounded, for the head's reconciliation. */
+/** The raid's DPS over the whole pull, every player added before rounding, as the head prints it. */
 export function raid40DpsSum(): number {
-  return NAMES.reduce((total, _, index) => total + Math.round(sum(damageSeries(index)) / DURATION_S), 0);
+  return Math.round(NAMES.reduce((total, _, index) => total + sum(damageSeries(index)) / DURATION_S, 0));
 }
 
 /** Makes Lightningbolltz the viewer's current character, so the chart pins them as you. */

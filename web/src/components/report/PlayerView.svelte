@@ -258,7 +258,10 @@
               figures={figures(ability)}
               phone={`${formatRate(ability.effective / seconds)} ${RATE[tab]}`}
             >
-              {#snippet icon()}<SpellIcon url={spellIcon(ability.spell_id)} size={28} />{/snippet}
+              {#snippet icon()}<SpellIcon
+                  url={spellIcon(ability.spell_id, ability.name, ability.school)}
+                  size={28}
+                />{/snippet}
               {#snippet name()}<b class="text-strong">{ability.name === '' ? 'Melee' : ability.name}</b
                 >{#if sameName.has(ability.name)}<span class="text-muted ml-1 text-[12px]"
                     >{ability.spell_id === 0 ? 'swing' : `#${ability.spell_id}`}</span

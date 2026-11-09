@@ -26,18 +26,6 @@ export function standingAt(running: readonly number[], window: TimeWindow): numb
   return index < 0 ? 0 : running[index];
 }
 
-/** A figure at the precision the legend prints it: one decimal under 100 (1.8), whole from 100. */
-export function legendRound(figure: number): number {
-  return figure < 100 ? Math.round(figure * 10) / 10 : Math.round(figure);
-}
-
-/** Every figure rounded first, as the legend prints it, then added: the head's raid figure is
- *  the sum a raider makes. */
-export function roundedSum(figures: readonly number[]): number {
-  const sum = figures.reduce((total, figure) => total + legendRound(figure), 0);
-  return Math.round(sum * 10) / 10;
-}
-
 export function median(values: readonly number[]): number {
   if (values.length === 0) return 0;
   const sorted = [...values].sort((a, b) => a - b);
