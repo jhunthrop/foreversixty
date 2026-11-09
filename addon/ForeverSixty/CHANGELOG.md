@@ -1,7 +1,11 @@
 # Forever Sixty
 
-## 2.0.38
+## 2.0.37
 
+- The line beside the minimap is easier to find: it always has words ("Next talent at 25", or "Forever Sixty" when there is nothing to do) and never fades. On your first logins a gold edge flashes around it a few times until you hover or click it.
+- Raid day: from the evening before, the line leads with your raid, "Tonight 8:00 pm: Onyxia's Lair". Click it for your raid jobs.
+- Its hover is two short lines: what a click does and how to hide it.
+- Settings: "Tooltips only" turns off everything but the tooltip lines in one step. The bag and character pane marks have their own switch. The minimap button is off on a new install (your choice is kept if you set it).
 - A home in game: click the line beside the minimap (or the Forever Sixty button on your character pane, or your keybind) to open one panel with what to do next on this character: tonight's raid, your next upgrades, your next talent and your rotation at your level.
 - The panel wears the site's look: a warm dark frame, your class crest in a bronze ring with your faction's mark, your name, level and class, and your Forever Score at the top right.
 - Raid day: the panel shows the raid, its start, your role and your job. Once the companion app supports it, In, Late, Bench and Out answer right there and stay so you can change your mind; your answer's button is teal. Until then it says you are on the roster.
@@ -10,13 +14,7 @@
 - Under level 10 with no build, Pick your path loads a spec's leveling build. At 60 the rotation folds away until you open it.
 - Rotation lines sit under the spell name and wrap to a second line instead of being cut.
 - The character pane's flyout is gone: its button opens the same panel, docked to the pane. Drag the top of the panel to move it; Reset positions puts it back.
-
-## 2.0.37
-
-- The line beside the minimap is easier to find: it always has words ("Next talent at 25", or "Forever Sixty" when there is nothing to do) and never fades. On your first logins a gold edge flashes around it a few times until you hover or click it.
-- Raid day: from the evening before, the line leads with your raid, "Tonight 8:00 pm: Onyxia's Lair". Click it for your raid jobs.
-- Its hover is two short lines: what a click does and how to hide it.
-- Settings: "Tooltips only" turns off everything but the tooltip lines in one step. The bag and character pane marks have their own switch. The minimap button is off on a new install (your choice is kept if you set it).
+- Rotation lines say when to press each button in plain words, and never name a spell you do not have yet.
 
 ## 2.0.36
 
