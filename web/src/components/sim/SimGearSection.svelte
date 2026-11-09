@@ -11,15 +11,7 @@
   import { loadItems, loadSets } from '../../lib/planner/load';
   import type { Item, ItemSet } from '../../lib/planner/types';
   import { loadEnchants } from '../../lib/sim/enchants';
-  import {
-    averageItemLevel,
-    classSpecPath,
-    enchantNames,
-    gearMeta,
-    gearSlots,
-    setLines,
-    statsBlock,
-  } from '../../lib/sim/gear-card';
+  import { classSpecPath, enchantNames, gearSlots, setLines, statsBlock } from '../../lib/sim/gear-card';
   import { gearCardCopy as copy } from '../../lib/sim/input-cards-copy';
   import type { SimRequest, SimResult } from '../../lib/sim/types';
   import { LINK } from '../../lib/ui/primitives';
@@ -74,9 +66,6 @@
   const slots = $derived(
     gearSlots({ gear: character.gear, items, failed: itemsState === 'failed', enchants }),
   );
-  const meta = $derived(
-    hasGear ? gearMeta(character.gear, averageItemLevel(character.gear, items)) : undefined,
-  );
   const stats = $derived(result === null ? null : statsBlock(result));
   /** Attack power, Hit, then the rest in the engine's order (spec 4.5). */
   const figures = $derived.by(() => {
@@ -86,9 +75,8 @@
     const tail = first?.id === 'attack-power' ? rest : stats.cells;
     return [...lead, ...(stats.hit === null ? [] : [stats.hit]), ...tail];
   });
-  const measured = $derived(
-    stats === null ? null : [stats.head, stats.hit?.reference?.note].filter(Boolean).join(' '),
-  );
+  /** The run's measured misses only: the boss and the fight are the page's own. */
+  const measured = $derived(stats?.hit?.reference?.note ?? null);
   const lines = $derived(setLines(character.gear, sets));
 </script>
 
@@ -108,7 +96,6 @@
 <Section
   panel
   title={copy.title}
-  {meta}
   action={plated && hasGear ? { label: copy.bisAction, href: bisHref } : undefined}
   testid="sim-gear-card"
 >
@@ -125,12 +112,14 @@
             <Figure label={figure.label} value={figure.value} size="sm" testid={`sim-stat-${figure.id}`} />
           {/each}
         </div>
-        <p class="text-muted text-[13px] leading-5" data-testid="sim-stat-hit-measured">{measured}</p>
+        {#if measured}<p class="text-muted text-[13px] leading-5" data-testid="sim-stat-hit-measured">
+            {measured}
+          </p>{/if}
       </div>
     {/if}
     <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 pt-3">
       <span class="text-muted min-w-0 text-[13px] leading-5" data-testid="sim-gear-sets">
-        {#if lines.length === 0}{copy.noSet}{:else}
+        {#if lines.length > 0}
           {#each lines as line (line.id)}
             <span class="block" data-testid="sim-gear-set"
               >{line.head}{#each line.bonuses as bonus (bonus.text)}

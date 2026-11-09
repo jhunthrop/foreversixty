@@ -16,7 +16,6 @@
   import type { TalentFile } from '../../lib/planner/types';
   import { plannerHrefForSpec, ranksFromTalentsString } from '../../lib/sim/character';
   import { talentsCardCopy as copy } from '../../lib/sim/input-cards-copy';
-  import { SPACED_SPLIT, talentSplit } from '../../lib/sim/result-band';
   import { setResultTalentTips } from '../../lib/sim/result-tips';
   import { talentsFit } from '../../lib/sim/talents-fit';
   import type { SimRequest } from '../../lib/sim/types';
@@ -93,14 +92,12 @@
     void load();
   });
 
-  const split = $derived(talentSplit(character.talents, SPACED_SPLIT));
   const plannerHref = $derived(plannerHrefForSpec(character, activeBuild.build));
 </script>
 
 <Section
   panel
   title={copy.title}
-  meta={split}
   action={{ label: copy.planner, href: plannerHref }}
   testid="sim-talents-card"
 >
@@ -131,11 +128,6 @@
       </div>
     {/if}
   </div>
-  {#if view.kind === 'ready' || view.kind === 'loading'}
-    <p class="text-muted pt-[10px] text-[13px] leading-5">
-      <span class="md:hidden">{copy.footPhone}</span><span class="hidden md:inline">{copy.footDesktop}</span>
-    </p>
-  {/if}
 </Section>
 
 <style>

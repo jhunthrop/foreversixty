@@ -26,7 +26,7 @@ test('a run moves running -> done, and a stop keeps the partial figure', async (
 
   await expect(button).toHaveText('Run again', { timeout: 5000 });
   await expect(answer(page)).toHaveAttribute('data-state', 'result');
-  await expect(page.getByTestId('sim-error')).toHaveText(/^± \d.*\(95%\) · [\d.]+% error$/);
+  await expect(page.getByTestId('sim-error')).toHaveText(/^± \d.*\(95%\)$/);
   await expect(page.getByTestId('sim-dps')).toHaveText(/^\s*[\d,]+\.\d\s*DPS\s*$/);
 
   // Run again at High (10,000 runs) and stop it once a partial figure is up: the number stays,
@@ -115,8 +115,8 @@ test('the precision select offers four choices and the report states the run', a
   // This run loads as it nears the viewport (LazySection).
   await report.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
   await expect(report.getByTestId('sim-settings-runs')).toContainText('500');
-  await expect(page.getByTestId('sim-error')).toContainText('% error');
-  await expect(page.getByTestId('sim-answer-label')).toHaveText('Fury Warrior · run in your browser');
+  await expect(page.getByTestId('sim-error')).toContainText('(95%)');
+  await expect(page.getByTestId('sim-answer-label')).toHaveText('Run in your browser');
   await expect(report.getByTestId('sim-spread-card')).toContainText('500 runs');
 });
 

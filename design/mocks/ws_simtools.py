@@ -37,15 +37,6 @@ CLASS_NAME = S.CLASS_NAME
 QUALITY = S.QUALITY
 
 SCOPE = 'The simulator runs damage specs only. Healing and tanking specs are not simulated yet.'
-LEADS = {
-    'gear': 'Tick the items, enchants, talents and sets you want tried for your damage spec. Every valid combination is simulated and ranked against what you have on.',
-    'talents': 'Your damage spec&rsquo;s build against every other build you have, ranked. Gear is locked to what you are wearing, so the only thing that changes is the tree.',
-    'drops': 'Pick where you are going. Every item those bosses drop is simulated one at a time against your damage spec&rsquo;s current set, and the upgrades are listed by boss.',
-    'weights': 'What one point of each stat is worth for your damage spec, for the addons that ask for a number.',
-    'specs': ('The simulator is only worth as much as its numbers. A nightly job is built to sim the top 50 parses for each of the 20 damage specs '
-              'it covers and publish the gap here, whatever it is. No real parses exist yet, so every damage spec below still reads "Not yet". '
-              'The other 8 specs, healers and tanks, are not simulated yet.'),
-}
 TITLES = {'gear': 'Top gear', 'talents': 'Talents', 'drops': 'Droptimizer', 'weights': 'Weights', 'specs': 'Spec support'}
 
 
@@ -74,7 +65,7 @@ def split(main: list[str], rail: list[str]) -> str:
 
 
 def head(tool: str) -> str:
-    return PageHeader(TITLES[tool], meta=[SCOPE], lead=LEADS[tool], tabs=TabStrip(TOOLS, TITLES[tool]))
+    return PageHeader(TITLES[tool], meta=[SCOPE], tabs=TabStrip(TOOLS, TITLES[tool]))
 
 
 def item_name(iid: int) -> str:
@@ -227,9 +218,7 @@ def weights() -> str:
     row = next(w for w in json.loads((B / 'stat-weights.json').read_text()) if w['spec'] == SPEC)
     stats = row.get('stats') or list(row['weights'])
     picks = ''.join(f'<li><label class="opt">{check(checked=True, disabled=i == 0)}{s}</label></li>' for i, s in enumerate(stats))
-    caution = ('<p class="notice">A stat weight is a straight-line guess at something that is not a straight line: it holds near the gear you have now and stops '
-               'holding as soon as a set bonus, a proc or a hit cap changes. Sim the actual items in Top Gear instead. These are here because addons want them. '
-               '<a class="link" href="#">Open Top Gear &rsaquo;</a></p>')
+    caution = '<p class="notice">Weights hold near the gear you have on. For a real choice, sim the items. <a class="link" href="#">Open Top Gear &rsaquo;</a></p>'
     rail = Section('Stats to weigh', f'<div class="wbody"><p class="t-small">Normalised to: {stats[0]}</p><p class="t-small">Only the stats this sim models for the spec.</p><ul class="opts two">{picks}</ul></div>')
     return finish('Weights', head('weights') + run_bar('weights') + split([character_line(), caution], [rail]))
 
@@ -253,7 +242,7 @@ def specs() -> str:
     for s in [s for s in SPECS if s['role'] == 'dps']:
         label = f"{s['name']} {CLASS_NAME[s['class_slug']]}"
         foot = '<details class="disc"><summary>What it does</summary></details>' if notes.get(s['spec'], True) else ''
-        rows.append(Row(label, '<span class="num">No parses yet</span><br>Not yet: no real parse has been checked against this spec.',
+        rows.append(Row(label, '<span class="num">No parses yet</span>',
                         trail='<span class="tag muted">Not yet</span>', title_color=CLASS_COLOR[s['class_slug']], link=False, foot=foot))
     others = [Row(f"{s['name']} {CLASS_NAME[s['class_slug']]}", 'Not simulated yet: damage specs first; healers and tanks come later',
                   title_color=CLASS_COLOR[s['class_slug']], link=False) for s in SPECS if s['role'] != 'dps']

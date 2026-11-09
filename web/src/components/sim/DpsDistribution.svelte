@@ -125,9 +125,6 @@
           <span>{grouped(estimate.max)}</span>
         </div>
       </div>
-      <p class="text-muted text-[13px]" data-testid="sim-spread-caption">
-        {spreadCopy.caption(grouped(spread.low), grouped(spread.high))}
-      </p>
       {#if tooltipLazy.current}
         <tooltipLazy.current
           open={activeBar !== null}

@@ -24,7 +24,6 @@
     model,
     window: view,
     closeUp,
-    swings,
     names,
     visuals,
     visualsLoaded,
@@ -32,8 +31,6 @@
     model: TimelineModel;
     window: ZoomWindow;
     closeUp: boolean;
-    /** Swings and ticks is On: the line has nothing to add about them. */
-    swings: boolean;
     names: ActionNames | null;
     visuals: ActionVisuals;
     visualsLoaded: boolean;
@@ -56,7 +53,7 @@
 
 <div data-testid="sim-cast-list">
   <p class="text-muted pt-[10px] text-[13px] leading-5" data-testid="sim-cast-count">
-    {swings ? countLine : `${countLine} ${timelineCopy.castsTail(model.periodicName)}`}
+    {countLine}
     {#if inView.length > 0}<button
         type="button"
         class="{LINK} text-[13px]"

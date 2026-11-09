@@ -36,7 +36,6 @@
     type ZoomWindow,
   } from '../../lib/sim/timeline';
   import { timelineCopy } from '../../lib/sim/timeline-copy';
-  import { timelineHeadMeta } from '../../lib/sim/timeline-lanes';
   import { drawnTicks, plotMarkup, xOf, timeOf, type PlotView } from '../../lib/sim/timeline-draw';
   import type { SimResult } from '../../lib/sim/types';
   import { yieldToMain } from '../../lib/yield';
@@ -392,8 +391,6 @@
   // --- The legend ---
   const damageToken = $derived(model?.casts.find((lane) => lane.schoolToken !== null)?.schoolToken ?? null);
   const hasCooldown = $derived(model?.casts.some((lane) => lane.schoolToken === null) ?? false);
-  /** The same meta the loading head printed (RunReport), so nothing pops in on load. */
-  const meta = $derived(timelineHeadMeta(result));
 </script>
 
 {#snippet laneLabel(row: Extract<PlotRow, { kind: 'lane' }>)}
@@ -418,7 +415,7 @@
   </div>
 {/snippet}
 
-<Section panel title={timelineCopy.title} {meta} testid="sim-timeline">
+<Section panel title={timelineCopy.title} testid="sim-timeline">
   {#if model === null}
     <p class="text-text text-[15px]" data-testid="timeline-no-sample">
       {timelineCopy.noSample}
@@ -705,15 +702,7 @@
     {/if}
 
     {#if drawnStage >= 2}
-      <SimCastList
-        {model}
-        window={viewWindow}
-        {closeUp}
-        {swings}
-        names={liveNames}
-        {visuals}
-        {visualsLoaded}
-      />
+      <SimCastList {model} window={viewWindow} {closeUp} names={liveNames} {visuals} {visualsLoaded} />
     {:else}
       <div style:height="{CAST_LIST_RESERVE}px"></div>
     {/if}

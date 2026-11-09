@@ -352,18 +352,6 @@ export const simCopy = {
   specWorstActions: 'Largest gaps',
   specCast: 'cast',
   specSimmed: 'simmed',
-  /**
-   * Final whole-branch review, I3: this used to say the nightly job "sims the top 50
-   * parses ... and publishes the gap here, whatever it is", present tense, as if every
-   * spec below already had an answer. The changelog this same lane wrote
-   * (content/changelog/2026-09-20-simulator-tools-are-live.md) says the opposite: "nothing
-   * has been checked against a real parse, because there are no real parses yet" -- and
-   * every row on this page still reads `specNotYetNote`, because `mergeSpecRows`
-   * (spec-state.ts) has no rows to merge. The job (`api sim-validate`) is real, scheduled
-   * code; it has simply never had a real parse to measure yet. This says both things.
-   */
-  specsIntro:
-    'The simulator is only worth as much as its numbers. A nightly job is built to sim the top 50 parses for each of the 20 damage specs it covers and publish the gap here, whatever it is. No real parses exist yet, so every damage spec below still reads "Not yet". The other 8 specs, healers and tanks, are not simulated yet.',
   tryAgain: 'Try again',
 
   /** The Damage tab's row for a build that names no character (a pasted export, a planner build). */
@@ -830,21 +818,12 @@ export const simCopy = {
  * constants, never against a literal.
  */
 export const bulkCopy = {
-  // --- page titles and the one-line standfirst under each ---
+  // --- page titles ---
   gearTitle: KIND_TITLES.gear,
-  gearIntro:
-    'Tick the items, enchants, talents and sets you want tried for your damage spec. Every valid combination is simulated and ranked against what you have on.',
   talentsTitle: KIND_TITLES.talents,
-  talentsIntro:
-    'Your damage spec’s build against every other build you have, ranked. Gear is locked to what you are wearing, so the only thing that changes is the tree.',
   dropsTitle: KIND_TITLES.drops,
-  dropsIntro:
-    'Pick where you are going. Every item those bosses drop is simulated one at a time against your damage spec’s current set, and the upgrades are listed by boss.',
   weightsTitle: KIND_TITLES.weights,
-  weightsIntro:
-    'What one point of each stat is worth for your damage spec, for the addons that ask for a number.',
-  weightsWarning:
-    'A stat weight is a straight-line guess at something that is not a straight line: it holds near the gear you have now and stops holding as soon as a set bonus, a proc or a hit cap changes. Sim the actual items in Top Gear instead. These are here because addons want them.',
+  weightsWarning: 'Weights hold near the gear you have on. For a real choice, sim the items.',
   weightsWarningLink: 'Open Top Gear',
   /**
    * Each tool page's `<noscript>` fallback. A single parameterised entry rather than four

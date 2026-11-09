@@ -330,6 +330,26 @@ describe('Field, FormRow, Button', () => {
     expect(body).toMatch(/<form[^>]*aria-label="Open a guild"/);
   });
 
+  it('FormRow wraps by default and keeps one row when inline', () => {
+    const props = { label: 'Paste', children: text('<span>f</span>'), submit: text('<button>Run</button>') };
+    const wrapping = html(FormRow, props);
+    expect(wrapping).toContain('flex-wrap');
+    expect(wrapping).not.toContain('data-inline');
+    const inline = html(FormRow, { ...props, inline: true });
+    expect(inline).toContain('flex-nowrap');
+    expect(inline).toContain('data-inline="true"');
+  });
+
+  it('Row fillTrail gives the title a label column and the trail the rest; off, the row is unchanged', () => {
+    const props = { title: 'A planner build', trail: text('<form></form>') };
+    const plain = html(Row, props);
+    expect(plain).toContain('grid-cols-[minmax(0,1fr)_auto]');
+    expect(plain).not.toContain('justify-self-stretch');
+    const filled = html(Row, { ...props, fillTrail: true });
+    expect(filled).toContain('md:grid-cols-[180px_minmax(0,1fr)]');
+    expect(filled).toContain('justify-self-stretch');
+  });
+
   it('Button is a link when it navigates and a button otherwise', () => {
     expect(html(Button, { href: '/x', children: text('Go') })).toMatch(/^<a/);
     expect(html(Button, { children: text('Go') })).toMatch(/^<button/);

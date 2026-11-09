@@ -75,9 +75,8 @@
         ? isStale(result.engine_version)
         : lines.sha !== null && result.rotation_sha !== lines.sha),
   );
-  const meta = $derived(
-    `${result === null ? copy.meta(spec, level) : copy.metaRan(spec, level)}${drifted ? copy.today : ''}`,
-  );
+  /** Only a rotation that changed since the run says so; the spec and level are the page's head. */
+  const meta = $derived(drifted ? copy.today : undefined);
 
   function rankOf(action: string | null): number {
     return action === null ? 0 : tables.visuals(action).rank;
@@ -140,8 +139,5 @@
         </div>
       {/each}
     </div>
-    <p class="text-muted pt-[10px] text-[13px] leading-5">
-      {result === null ? copy.foot(spec) : copy.footRan(spec)}
-    </p>
   {/if}
 </Section>

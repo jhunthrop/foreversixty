@@ -81,7 +81,8 @@
   {#snippet subContent()}
     <span class="flex flex-col">
       <span class="text-strong tabular-nums" data-testid="spec-figure">{figure}</span>
-      <span>{specStateNote(row.state)}</span>
+      <!-- "No parses yet" already says what the note would; one status a row (the Tag). -->
+      {#if figure !== simCopy.specNoParses}<span>{specStateNote(row.state)}</span>{/if}
     </span>
   {/snippet}
   {#snippet trail()}

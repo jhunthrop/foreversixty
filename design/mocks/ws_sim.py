@@ -211,10 +211,10 @@ def band(runs: int) -> float:
 
 BAND = Z95 * ERR
 FIGURE = fnum(MEAN)
-ERR_LINE = f'<b>&plusmn; {BAND:.1f} (95%)</b> &middot; {BAND / MEAN * 100:.2f}% error'   # the one place "(95%)" is written
+ERR_LINE = f'<b>&plusmn; {BAND:.1f} (95%)</b>'   # the one place "(95%)" is written
 PRECISION = {500: 'Fast', 3000: 'Normal', 10000: 'High'}[REQ['iterations']]          # lib/sim/precision.ts PRECISION_ITERATIONS
 PRECISION_LABEL = f"{PRECISION}, {REQ['iterations']:,} runs"
-LANE_LABEL = {'server': 'run on our servers', 'browser': 'run in your browser'}[RES['lane']]
+LANE_LABEL = {'server': 'Run on our servers', 'browser': 'Run in your browser'}[RES['lane']]
 DAMAGE_KEYS = {a['name'] for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 DAMAGE_SCHOOLS = {'physical' if (a.get('school') or 1) & 1 else 'other' for a in SUM['damage_done'][0]['abilities'] if a['total'] > 0}
 SPLIT = '/'.join(str(sum(int(c) for c in part)) for part in CHAR['talents'].split('-'))
@@ -304,8 +304,7 @@ def spread_section() -> str:
                      (f'{d["min"]:,.0f}', 'DPS per run', f'{d["max"]:,.0f}'))
     figs = Figures([(fnum(MEAN), 'Mean', '', '', 'sm'), (f'&plusmn; {BAND:.1f}', 'Error', '', '', 'sm'), (f'{d["stddev"]:.1f}', 'Std dev', '', '', 'sm'),
                     (f'{d["min"]:,.0f}', 'Lowest', '', '', 'sm'), (f'{d["max"]:,.0f}', 'Highest', '', '', 'sm'), (f'{RES["iterations_run"]:,}', 'Runs', '', '', 'sm')])
-    cap = f'<p class="t-small rail-cap">Two runs in three land between {lo:,.0f} and {hi:,.0f} DPS.</p>'
-    return Section('DPS spread', f'<div class="rail-body">{hist}{cap}{figs}</div>', meta=f'{RES["iterations_run"]:,} runs')
+    return Section('DPS spread', f'<div class="rail-body">{hist}{figs}</div>')
 
 
 # "No effect on your damage": the shipped rule, lib/sim/buff-effect.ts hasNoDamageEffect, read from the data (ruling M4).
@@ -387,9 +386,8 @@ def this_run_section() -> str:
     you_l, tgt_l = buff_items(on_you), buff_items(on_tgt)
     lists = (IconList(you_l, f'On you &middot; {len(you_l)}') + IconList(tgt_l, f'On the target &middot; {len(tgt_l)}')
              + IconList(cons, f'Consumables &middot; {len(cons)}'))
-    acts = (f'<div class="rail-acts">{Button("Copy for the game", small=True)}{Button("Copy JSON", small=True)}{Button("Download JSON", small=True)}</div>'
-            '<p class="t-small rail-cap">The JSON is this whole result, request included.</p>')
-    return Section('This run', f'<div class="rail-body flow">{facts}{lists}<p class="t-small rail-cap">Dimmed: no effect on your damage.</p>{acts}</div>', meta='Inputs and engine')
+    acts = f'<div class="rail-acts">{Button("Copy for the game", small=True)}{Button("Copy JSON", small=True)}{Button("Download JSON", small=True)}</div>'
+    return Section('This run', f'<div class="rail-body flow">{facts}{lists}{acts}</div>')
 
 
 def rotation_drifted() -> bool:
@@ -441,8 +439,8 @@ def rotation_section(ran: bool = True) -> str:
                 rank=str(i + 1), trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
         lines.append(r if n or not ran else f'<div class="dim">{r}</div>')
     body = (f'<div class="rot"><h3 class="t-label rot-l">Before the pull</h3>{Rows(pre, open_=True)}<h3 class="t-label rot-l">Then, from the top at every decision</h3>'
-            f'{Rows(lines, open_=True)}<p class="t-small rail-cap tl-foot">The {SPEC_ROW["name"]} rotation the engine follows.{" A line with no cast in this run is dimmed." if ran else ""}</p></div>')
-    meta = f'{SPEC_ROW["name"]}, at {CHAR["level"]}' + (' &middot; casts per fight' if ran else '') + (' &middot; today&rsquo;s rotation' if ran and rotation_drifted() else '')
+            f'{Rows(lines, open_=True)}</div>')
+    meta = 'Today&rsquo;s rotation' if ran and rotation_drifted() else ''   # the spec and level are the head's
     return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'), meta=meta)
 
 
@@ -549,11 +547,9 @@ def timeline_section(swings_and_ticks: bool = False) -> str:
              f'{LanesLegend(legend)}</div>')
     brush = '<div class="tl-brush" aria-hidden="true"><span></span><span class="tr"></span></div>'   # the shipped TimelineBrush strip
     n = sum(1 for e in ev if e['action'] in cast_keys and e['action'] not in HANDS and e['action'] not in ticking and parse(e['action'])[1] not in OFF_HAND_SPELLS)
-    hidden = ' and '.join(['white swings'] + [display_name(k) + ' ticks' for k in sorted(ticking)])
     foot = (f'<p class="t-small tl-foot">{n} casts in this run. '
-            + ('' if swings_and_ticks else f'Turn Swings and ticks on to add {hidden} as their own lanes. ')
             + '<button type="button" class="tl-list" aria-expanded="false">List every cast &rsaquo;</button></p><p class="sr" aria-live="polite"></p>')
-    return Section('Timeline', tools + Lanes(tl) + brush + foot, meta=f'The median run &middot; {clock(T1 / 1000)} long')
+    return Section('Timeline', tools + Lanes(tl) + brush + foot)
 
 
 DOLL_LEFT = ['head', 'neck', 'shoulder', 'back', 'chest', 'wrist', 'main_hand', 'off_hand', 'ranged']
@@ -584,7 +580,6 @@ def ilvl() -> float:
     return sum(lv) / len(lv)
 
 
-GEAR_META = f'17 of 17 slots &middot; no enchants &middot; item level {ilvl():.1f}'
 
 
 def gear_section(with_stats: bool = True) -> str:
@@ -602,11 +597,11 @@ def gear_section(with_stats: bool = True) -> str:
                      (f"{fs['melee_crit_pct_vs_target']:.1f}%", 'Crit on the boss', '', '', 'sm'),
                      (f"{fs['weapon_skill']['main_hand']} &middot; {fs['weapon_skill']['off_hand']}", 'Weapon skill', '', '', 'sm'),
                      (f"{fs['melee_haste_pct']:.0f}%", 'Haste from gear', '', '', 'sm')])
-    measured = (f'<p class="t-small">In the fight, against a level {RES["target_stats"]["level"]} boss. Missed in this run: {miss["sp"][0] / miss["sp"][1] * 100:.0f}% of specials '
+    measured = (f'<p class="t-small">Missed in this run: {miss["sp"][0] / miss["sp"][1] * 100:.0f}% of specials '
                 f'&middot; {miss["w"][0] / miss["w"][1] * 100:.1f}% of white swings.</p>')
-    foot = f'<div class="gear-foot"><span class="t-small">No set bonus is active: no two pieces share a set.</span>{Link("Upgrades for this character on Best in slot &rsaquo;")}</div>'
+    foot = f'<div class="gear-foot"><span class="t-small"></span>{Link("Upgrades for this character on Best in slot &rsaquo;")}</div>'
     extra = f'<div class="gear-stats">{stats}{measured}</div>' if with_stats else ''
-    return Section('Gear', doll() + extra + foot, meta=GEAR_META)
+    return Section('Gear', doll() + extra + foot)
 
 
 def talents_section() -> str:
@@ -615,7 +610,7 @@ def talents_section() -> str:
         tal = sorted(tr['talents'], key=lambda t: (t['tier'], t['column']))
         cells = [(t['tier'], t['column'], gicon(t['icon'], 36), int(part[i]) if i < len(part) else 0, t['max_rank']) for i, t in enumerate(tal)]
         trees.append((tr['name'], sum(int(c) for c in part), cells))
-    return Section('Talents', Trees(trees) + '<p class="t-small tl-foot">Read only. Hover or focus a talent for its tooltip.</p>', Link('Open in planner &rsaquo;'), meta=SPLIT.replace('/', ' / '))
+    return Section('Talents', Trees(trees), Link('Open in planner &rsaquo;'))
 
 
 def rage_section() -> str:
@@ -633,7 +628,7 @@ def rage_section() -> str:
             lost = f'<span class="wipe">&minus;{x["wasted"]:.1f} lost</span>' if x.get('wasted') else ''
             out.append(StatRow(ic, f'<b>{nm}</b>', lost, [f'{x["amount"]:,.0f}'], Meter(x['amount'] / top)))
         return f'<div><h3 class="t-label rot-l">{title} &middot; {sum(x["amount"] for x in rows):,.0f}</h3>{StatTable([("", False)] * 3 + [("", True)], out, 1, open_=True)}</div>'
-    return Section('Rage', figs + f'<div class="two">{lst(src["gained"], "Gained from")}{lst(src["spent"], "Spent on")}</div>', meta='Average fight')
+    return Section('Rage', figs + f'<div class="two">{lst(src["gained"], "Gained from")}{lst(src["spent"], "Spent on")}</div>')
 
 
 def suppressed(key: str, requested: list[str]) -> bool:
@@ -672,8 +667,7 @@ def buffs_section() -> str:
         t = StatTable([('', False)] * 3 + [('', True), ('', True)], [r for _, r in rows], 2, open_=True) if rows else ''
         come = '1 that comes and goes' if len(rows) == 1 else f'{len(rows)} that come and go'
         return f'<div><h3 class="t-label rot-l">{title} &middot; {come}</h3>{t}{IconList(upall, "Up all fight") if upall else ""}</div>'
-    return Section('Buffs and debuffs', f'<div class="two">{col("BUFF", "On you")}{col("DEBUFF", "On the target")}</div>'
-                   '<p class="t-small rail-cap tl-foot">Dimmed: no effect on your damage.</p>', meta='Uptime, then times applied')
+    return Section('Buffs and debuffs', f'<div class="two">{col("BUFF", "On you")}{col("DEBUFF", "On the target")}</div>')
 
 
 def worth_knowing() -> str:
@@ -685,7 +679,7 @@ def worth_knowing() -> str:
         cd = (TIPS.get(ident) or {}).get('cooldown_ms', 0)
         if kind == 'spell' and n and cd > longest:
             mins = cd // 60000
-            out += Notice(f'<span class="wk">{act_icon(k, 20)}<span>{spell_name(ident)} has a {mins} minute cooldown, longer than this fight, so the result counts one use every pull. In a raid it is back only every {mins} minutes.</span></span>', tone='neutral')
+            out += Notice(f'<span class="wk">{act_icon(k, 20)}<span>{spell_name(ident)} counts once a pull here. In a raid it is back every {mins} minutes.</span></span>', tone='neutral')
     return out
 
 
@@ -735,7 +729,7 @@ def answer_result(signed_in: bool = True, last: tuple | None = None) -> str:
     """The live result. `last` draws the change since the character's last sim: hidden on the shipped page (gaps G1 and G15,
     no character key and no error on a saved-sim row), so only the states sheet passes it."""
     save = Button('Save this sim', small=True) if signed_in else Button('Sign in to save', small=True)
-    return (f'<span class="t-label">{SPEC_LABEL} &middot; {LANE_LABEL}</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
+    return (f'<span class="t-label">{LANE_LABEL}</span>{Figure(FIGURE, unit="DPS", tone="gold", size="xl")}'
             f'<span class="fig-cap">{ERR_LINE}</span>{since_last(last) if signed_in and last else ""}'
             f'<span class="ans-acts">{save}{Link("Find upgrades in Top Gear &rsaquo;")}</span>')
 
@@ -768,9 +762,8 @@ def answer_failed(label: str, reason: str, fix: str = '') -> str:
 
 
 def result_page_body(saved: bool) -> str:
-    _, meta = ability_rows()
-    main = Section('Damage by ability', ability_table(), meta=meta, frame='framed', flush=True) + timeline_section() + gear_section() + talents_section() + rage_section() + buffs_section()
-    rail = spread_section() + this_run_section() + rotation_section() + ('' if saved else history_section(server=True))
+    main = Section('Damage by ability', ability_table(), frame='framed', flush=True) + timeline_section() + gear_section() + talents_section() + rage_section() + buffs_section()
+    rail = spread_section() + ('' if saved else history_section(server=True)) + this_run_section() + rotation_section()
     return Page('split', main, rail)
 
 
@@ -802,6 +795,7 @@ input.field{font:400 14px/20px var(--font-body);color:var(--strong)}input.field:
 .bar-m summary{gap:8px}.bar-m summary>span:first-child{display:contents}.bar-m summary .sum-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar-m summary .chg{order:2;flex:none;margin-left:0}.bar-m summary .run-m{order:3;flex:none}.bar-m summary .run-m .btn{height:36px;padding:0 12px;font-size:12px}
 .paste{display:flex;flex-direction:column;gap:12px;padding:16px}.paste-hint{margin-top:12px}
 .ledger-panels{display:flex;flex-direction:column;gap:22px}
+.ways-fill .row{grid-template-columns:180px minmax(0,1fr)}.ways-fill .row .trail{justify-self:stretch;min-width:0}.ways-fill .row .trail>form{flex:1}
 .way{display:flex;flex-direction:column;gap:10px;padding:16px 0}
 .cbar .grp>.t-label{display:none}@media(min-width:1920px){.cbar .grp>.t-label{display:block}}
 @media(max-width:1023px){.pc .layout-split{display:flex;flex-direction:column;align-items:stretch;gap:var(--section-gap)}.pc .layout-split section{min-width:0;max-width:100%}.pc .layout-split>.main,.pc .layout-split>.rail{display:contents}[data-region=section-damage-by-ability]{order:1}[data-region=section-dps-spread]{order:2}[data-region=section-timeline]{order:3}[data-region=section-gear]{order:4}[data-region=section-talents]{order:5}[data-region=section-rage]{order:6}[data-region=section-buffs-and-debuffs]{order:7}[data-region=section-this-run]{order:8}[data-region=section-rotation]{order:9}[data-region=section-your-sims]{order:10}}
@@ -855,10 +849,11 @@ def finish(title: str, body: str, who) -> str:
 def landing_out() -> str:
     head = PageHeader('Simulator', meta=['Damage specs only. Nothing is uploaded until you save.'], tabs=TabStrip(TOOLS, 'Quick sim'))
     paste = (Form('Addon export or build code', [('', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
-             + f'<p class="t-small paste-hint">In game, type /fs copy, then paste it here. {Link("Get set up &rsaquo;")}</p>')
-    ways = Rows([Row('Your characters', trail=Button('Sign in with Battle.net'), link=False),
-                 Row('A planner build', trail=Form('A planner build', [('', Input('foreversixty.gg/b/&hellip;', 'A planner build'), False)], Button('Load')), link=False),
-                 Row('A logged fight', trail=Form('A logged fight', [('', Input('foreversixty.gg/reports/&hellip;?fight=2', 'A logged fight'), False)], Button('Load')), link=False)], open_=True)
+             + '<p class="t-small paste-hint">In game: /fs copy, then paste here.</p>')
+    # ui/Row `fillTrail`: a 180 px label column, the control filling the rest (the field grows, Load beside it)
+    ways = '<div class="ways-fill">' + Rows([Row('Your characters', trail=Button('Sign in with Battle.net'), link=False),
+                 Row('A planner build', trail=Form('A planner build', [('', Input('foreversixty.gg/b/&hellip;', 'A planner build', grow=True), True)], Button('Load')), link=False),
+                 Row('A logged fight', trail=Form('A logged fight', [('', Input('foreversixty.gg/reports/&hellip;?fight=2', 'A logged fight', grow=True), True)], Button('Load')), link=False)], open_=True) + '</div>'
     rows = []
     for c in CLASSES:
         specs = [s for s in SPECS if s['class_slug'] == c['slug'] and s['role'] == 'dps']
@@ -877,7 +872,7 @@ def Ledger(main: str) -> str:
 
 # ---- 2. /sim, signed in, the header's character loaded, not run yet
 def landing_you() -> str:
-    main = Section('Gear', doll(), Link('Upgrades on Best in slot &rsaquo;'), meta=GEAR_META) + talents_section()
+    main = Section('Gear', doll(), Link('Upgrades on Best in slot &rsaquo;')) + talents_section()
     return finish('Simulator', you_header(answer_none()) + run_bar() + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
 
 
@@ -903,7 +898,7 @@ def result_saved() -> str:
 
 # ---- 6. phone: the bar's choices open
 def bar_open() -> str:
-    main = Section('Gear', doll(), meta=GEAR_META)
+    main = Section('Gear', doll())
     return finish('Simulator, choices', you_header(answer_none()) + run_bar(open_m=True) + Page('split', main, history_section()), YOU)
 
 

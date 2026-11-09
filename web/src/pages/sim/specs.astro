@@ -3,7 +3,6 @@
 // Which specs the simulator is trusted for, and by how much. Static; the island fetches
 // GET /v1/specs.
 import Base from '../../layouts/Base.astro';
-import { simCopy } from '../../lib/sim/copy';
 import SimToolHead from '../../components/sim/SimToolHead.svelte';
 import SpecGrid from '../../components/sim/SpecGrid.svelte';
 import IslandScript from '../../components/IslandScript.astro';
@@ -20,7 +19,7 @@ import IslandScript from '../../components/IslandScript.astro';
     <!-- The head is static, ahead of the island: its lead was the measured LCP element (round 2,
          Lighthouse), and SpecGrid's no-rows render is the shell's reservation (round 5), the
          same component the island mounts, so the mount moves nothing. -->
-    <SimToolHead tool="specs" title="Spec support" lead={simCopy.specsIntro} />
+    <SimToolHead tool="specs" title="Spec support" />
     <div id="sim" data-sim-mount data-sim-view="specs">
       <SpecGrid rows={null} error={null} onretry={() => {}} />
       <noscript>

@@ -24,7 +24,6 @@ export const settingsCopy = {
   executeLength: (length: string, fight: string) => `${length} of a ${fight} fight`,
   groups: { player: 'On you', target: 'On the target', consumables: 'Consumables' },
   group: (label: string, count: number) => `${label} · ${count}`,
-  dimmed: 'Dimmed: no effect on your damage.',
   copyForGame: 'Copy for the game',
   replacedBy: (winner: string) => `replaced by ${winner}`,
   mainHand: '(main hand)',
@@ -32,6 +31,5 @@ export const settingsCopy = {
   improved: ', improved',
   copyJson: 'Copy JSON',
   downloadJson: 'Download JSON',
-  jsonNote: 'The JSON is this whole result, request included.',
   fileName: (simId: string) => `forever-sixty-sim-${simId}.json`,
 } as const;

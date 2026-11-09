@@ -17,9 +17,7 @@ export const simPageCopy = {
     label: 'Addon export or build code',
     placeholder: 'FS1:…',
     run: 'Run',
-    hint: 'In game, type /fs copy, then paste it here.',
-    setUp: 'Get set up ›',
-    setUpHref: '/setup#paste',
+    hint: 'In game: /fs copy, then paste here.',
     invalid: 'That does not look like an addon export or a build code.',
   },
   ways: {
@@ -76,9 +74,8 @@ export const simPageCopy = {
     runningBrowser: 'Running in your browser',
     runningCaption: (band: string, done: string, total: string): string =>
       `± ${band} (95%) · ${done} of ${total} runs`,
-    resultLabel: (spec: string, lane: 'browser' | 'server'): string =>
-      `${spec} · ${lane === 'server' ? 'run on our servers' : 'run in your browser'}`,
-    resultCaption: (band: string, pct: string): string => `± ${band} (95%) · ${pct}% error`,
+    resultLabel: (lane: 'browser' | 'server'): string =>
+      lane === 'server' ? 'Run on our servers' : 'Run in your browser',
     savedLabel: (runs: string): string => `Saved sim · ${runs} runs`,
     stoppedLabel: (done: string, total: string): string => `Stopped at ${done} of ${total} runs`,
     stoppedFigure: (estimate: string): string => `about ${estimate}`,

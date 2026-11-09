@@ -24,7 +24,6 @@
     variationPercent,
   } from '../../lib/sim/result-band';
   import { durationLabel } from '../../lib/sim/settings';
-  import { specLabel } from '../../lib/sim/spec-label';
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
@@ -68,7 +67,7 @@
     if (kind !== 'run') savedKindLazy.load();
   });
   const model = $derived({
-    ...resultAnswer(result, specLabel(result.request.spec)),
+    ...resultAnswer(result),
     label: copy.answer.savedLabel(grouped(result.iterations_run)),
   });
 

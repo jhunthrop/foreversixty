@@ -31,7 +31,7 @@ test('the drawer shows the exact request, validates an edit and runs it', async 
   // Run from the drawer closes More settings and runs the request as written.
   await expect(page.getByTestId('sim-more-settings')).toHaveCount(0);
   await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByTestId('sim-error')).toContainText('% error');
+  await expect(page.getByTestId('sim-error')).toContainText('(95%)');
   await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('sim-settings-runs')).toContainText('500');
 });

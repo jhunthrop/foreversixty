@@ -73,7 +73,7 @@
 <Page panels testid="sim-landing">
   <Section title={copy.sections.simYourCharacter} panel frame="framed" testid="sim-cold-paste">
     <div class="flex flex-col gap-3">
-      <FormRow label={copy.paste.label} action="/sim" method="get" onsubmit={submitPaste}>
+      <FormRow label={copy.paste.label} action="/sim" method="get" inline onsubmit={submitPaste}>
         <Field
           id="sim-cold-paste-input"
           name="code"
@@ -94,28 +94,25 @@
           >
         {/snippet}
       </FormRow>
-      <p class="text-small text-muted m-0">
-        {copy.paste.hint}
-        <a class="text-gold font-semibold whitespace-nowrap" href={copy.paste.setUpHref}>{copy.paste.setUp}</a
-        >
-      </p>
+      <p class="text-small text-muted m-0">{copy.paste.hint}</p>
     </div>
   </Section>
   <Section title={copy.sections.otherWaysIn} panel testid="sim-sources">
     <div>
-      <Row title={copy.ways.characters} open wrapTrail>
+      <Row title={copy.ways.characters} open fillTrail>
         {#snippet trail()}
           <Button href={onsignin ? undefined : '/account'} onclick={onsignin} testid="sim-sign-in"
             >{copy.ways.signIn}</Button
           >
         {/snippet}
       </Row>
-      <Row title={copy.ways.build} open wrapTrail>
+      <Row title={copy.ways.build} open fillTrail>
         {#snippet trail()}
           <FormRow
             label={copy.ways.build}
             action="/sim"
             method="get"
+            inline
             onsubmit={(event) => handle(event, buildRef, onbuild)}
           >
             <Field
@@ -124,6 +121,7 @@
               label={copy.ways.build}
               placeholder={copy.ways.buildPlaceholder}
               labelHidden
+              grow
               bind:value={buildRef}
               testid="sim-build-input"
             />
@@ -133,12 +131,13 @@
           </FormRow>
         {/snippet}
       </Row>
-      <Row title={copy.ways.fight} open wrapTrail>
+      <Row title={copy.ways.fight} open fillTrail>
         {#snippet trail()}
           <FormRow
             label={copy.ways.fight}
             action="/sim"
             method="get"
+            inline
             onsubmit={(event) => handle(event, fightRef, onfight)}
           >
             <Field
@@ -147,6 +146,7 @@
               label={copy.ways.fight}
               placeholder={copy.ways.fightPlaceholder}
               labelHidden
+              grow
               bind:value={fightRef}
               testid="sim-fight-input"
             />

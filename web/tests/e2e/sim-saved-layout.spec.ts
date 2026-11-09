@@ -172,7 +172,7 @@ test('the timeline loads under its ready head at its ready height', async ({ pag
   const ready = await head();
 
   expect(loading.text).toBe(ready.text);
-  expect(loading.text).toContain('The median run · 2:53 long');
+  expect(loading.text).toContain('Timeline');
   expect(loading.glyph).toBe(ready.glyph);
   expect(Math.abs(loading.height - ready.height)).toBeLessThanOrEqual(2);
 });
