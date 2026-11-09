@@ -75,13 +75,10 @@ export const plannerCopy = {
   inGameTitle: 'In the game',
   /** The ControlBar's accessible name. */
   barLabel: 'Planner choices',
-  pointsLeft: 'Points left',
-  /** Under Points left with no character: "20 of 51 spent · level 29" (the level once a point is spent). */
-  spentOf: (spent: number, available: number, level: number | null): string =>
-    level === null ? `${spent} of ${available} spent` : `${spent} of ${available} spent · level ${level}`,
-  /** Under Points left for a character: "21 of 25 spent at level 34". */
-  spentAtLevel: (spent: number, available: number, level: number): string =>
-    `${spent} of ${available} spent at level ${level}`,
+  /** The head answer's unit after the points spent: "51 of 51 points". */
+  pointsOfUnit: (available: number): string => `of ${available} points`,
+  /** The trees' panel heading. */
+  talentsTitle: 'Talents',
   /** Points spent past a character's level (decision P4). */
   plannedAhead: (n: number): string => `${n} planned ahead`,
   /** Point order's line after the character's level row (decision P4). */
@@ -122,17 +119,11 @@ export const plannerCopy = {
   retry: 'Retry',
   loadFailedDetail: (build: string): string => `Build ${build} did not return the files the planner needs.`,
   reloadTalents: 'Reload talents',
-  /** The score's caption after its error: the gear the estimate runs on (decision P1). */
-  scoreBasis: (bandLabel: string): string => `with the ${lowerBandPhrase(bandLabel)} gear set`,
 } as const;
 
 /** Rebuild spec §4.A: the header's own copy -- crest, h1, suffix. */
 export const plannerHeaderCopy = {
   h1: (className: string): string => `${className} talents`,
-  /** Sits beside the race select: the planner has no separate FactionToggle (§4.A's own
-   *  reasoning -- a second faction control would ask the visitor to agree with their race
-   *  twice), and the mock names that choice explicitly rather than leaving it unsaid. */
-  factionFollowsRace: 'Faction follows your race',
 } as const;
 
 /** The planner's action on the shared character header (spec 2026-10-11 section 4). */

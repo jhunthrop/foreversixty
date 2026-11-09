@@ -4,7 +4,7 @@ import { expect, test } from './support/test';
 import { bandCompareCopy, plannerCharacterCardCopy, plannerCopy } from '../../src/lib/planner/copy';
 import { READ_ONLY_REASON } from '../../src/lib/planner/store.svelte';
 import { ACTIVE_BUILD } from './support/active-build';
-import { bareSpentLine, classRadio, spentLine } from './support/planner';
+import { classRadio, pointsSpent, spentIs } from './support/planner';
 import { plannerAccount, routePlannerState } from './support/planner-page';
 
 // The real /b/:id is server-rendered by the Go API and reaches the browser through the
@@ -81,7 +81,7 @@ test('a shared build opens read-only under its own title, and Edit a copy makes 
   await expect(page.getByTestId('planner-shared-note')).toHaveCount(0);
   await page.getByTestId('talent-1002').click();
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '1');
-  await expect(spentLine(page)).toHaveText(bareSpentLine(4));
+  await expect(pointsSpent(page)).toHaveText(spentIs(4));
   await expect(page.getByTestId('planner-reset')).toBeVisible();
 });
 
@@ -141,12 +141,12 @@ test('a populated read-only build keeps every cell inert, in both directions', a
   // Left-click an unspent cell: no point is added.
   await page.getByTestId('talent-4002').click({ force: true });
   await expect(page.getByTestId('talent-4002')).toHaveAttribute('data-rank', '0');
-  await expect(spentLine(page)).toHaveText(bareSpentLine(5));
+  await expect(pointsSpent(page)).toHaveText(spentIs(5));
 
   // Right-click an already-spent cell: no point is removed either.
   await page.getByTestId('talent-4001').click({ button: 'right' });
   await expect(page.getByTestId('talent-4001')).toHaveAttribute('data-rank', '5');
-  await expect(spentLine(page)).toHaveText(bareSpentLine(5));
+  await expect(pointsSpent(page)).toHaveText(spentIs(5));
 });
 
 // The API writes data-build itself, so malformed JSON there means the API is broken, not the

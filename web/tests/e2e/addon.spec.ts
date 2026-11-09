@@ -3,7 +3,7 @@ import { createServer } from 'vite';
 import { addonCopy } from '../../src/lib/addon/copy';
 import type * as Fsb1Module from '../../src/lib/addon/fsb1';
 import { ACTIVE_BUILD } from './support/active-build';
-import { bareSpentLine, expectClass, spentLine } from './support/planner';
+import { expectClass, pointsSpent, spentIs } from './support/planner';
 
 // Not a plain `import { decodeFSB1 } from '../../src/lib/addon/fsb1'`. fsb1.ts used to
 // import PINNED_STATS from sim/stats.ts, which imports a generated `.json` file at module
@@ -73,7 +73,7 @@ test.describe('the addon flows', () => {
     await page.getByTestId('import-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:3502/0/0:head=12640`);
     await page.getByTestId('import-submit').click();
 
-    await expect(spentLine(page)).toHaveText(bareSpentLine(10));
+    await expect(pointsSpent(page)).toHaveText(spentIs(10));
     await expect(page.getByTestId('import-note').first()).toHaveText(addonCopy.importOrderApproximated);
     await expect(page.getByTestId('import-error')).toHaveCount(0);
   });

@@ -51,7 +51,6 @@ import { bandRangeLabel } from ${src("src/lib/planner/band-title.ts")};
 import { plannerCopy, plannerHeaderCopy, plannerCharacterCardCopy, bandCompareCopy } from ${src("src/lib/planner/copy.ts")};
 import { addonCopy } from ${src("src/lib/addon/copy.ts")};
 import { ctaCopy } from ${src("src/lib/addon/cta-copy.ts")};
-import { plannerScoreCopy, scoreUnitForBuild } from ${src("src/lib/planner/score-unit.ts")};
 import { plannerSimCopy } from ${src("src/lib/sim/planner-copy.ts")};
 import { RATE_LIMIT_MESSAGE, SAVE_FAILED_MESSAGE, sharedFields } from ${src("src/lib/planner/share.ts")};
 import { treeSourceNotice } from ${src("src/lib/planner/tree-source.ts")};
@@ -86,9 +85,9 @@ function state({ cls, race, order = [], level = null, spec = null }) {
   const planned = level === null ? 0 : Math.max(0, spent - available);
   const atCap = spent >= available;
   const shownLevel = level ?? levelReached(order);
-  const spentLine = level === null
-    ? plannerCopy.spentOf(spent, available, spent > 0 ? levelReached(order) : null)
-    : [plannerCopy.spentAtLevel(Math.min(spent, available), available, level), planned > 0 ? plannerCopy.plannedAhead(planned) : ''].filter(Boolean).join(' · ');
+  // The head answer (PlannerAnswer): the points spent of those there are, and any planned past the level.
+  const pointsUnit = plannerCopy.pointsOfUnit(available);
+  const plannedLine = planned > 0 ? plannerCopy.plannedAhead(planned) : '';
   const plannedRanks = new Map();
   order.forEach((id, i) => { if (level !== null && i >= available) plannedRanks.set(id, (plannedRanks.get(id) ?? 0) + 1); });
   const leads = Math.max(...split) > 0 && split.filter((p) => p === Math.max(...split)).length === 1;
@@ -131,11 +130,9 @@ function state({ cls, race, order = [], level = null, spec = null }) {
   });
   const points = order.map((id, i) => { const t = index.byId.get(id); const r = order.slice(0, i + 1).filter((x) => x === id).length;
     return { level: levelForIndex(i), name: t.name, icon: t.icon, rank: r, max: t.max_rank, planned: level !== null && i >= available, tip: plannerCopy.pointAt(levelForIndex(i), t.name, r) }; });
-  const unit = scoreUnitForBuild(cls, split);
   return {
     cls, className: classRow(cls).name, title: plannerHeaderCopy.h1(classRow(cls).name), race: raceRow(race).name, race_slug: race, faction,
-    races: legalRaces(cls).map((r) => r.name), level: shownLevel, char_level: level, spent, available, left: Math.max(0, available - spent), planned, spent_line: spentLine, split,
-    score_basis: plannerCopy.scoreBasis(bandLabel),
+    races: legalRaces(cls).map((r) => r.name), level: shownLevel, char_level: level, spent, available, left: Math.max(0, available - spent), planned, points_unit: pointsUnit, planned_line: plannedLine, split,
     planned_cell: level === null ? '' : plannerCopy.plannedCell(level),
     order_rows: [10, 20, 30, 40, 50, 60].map((lo) => plannerCopy.decade(lo)),
     next_point: spent < 51 && (level === null || spent < available) ? plannerCopy.nextPoint(levelForIndex(spent)) : '',
@@ -144,7 +141,7 @@ function state({ cls, race, order = [], level = null, spec = null }) {
     meta: [raceRow(race).name, 'Level ' + shownLevel, leads ? specLabel(specKey) : ''].filter(Boolean).join(' · '),
     trees, points, band: { band, label: bandLabel, heading: bandCompareCopy.heading(bandLabel), load: bandCompareCopy.loadButton(bandLabel),
       gear: bandCompareCopy.gearRowLabel(bandLabel), none: entry ? '' : bandCompareCopy.noLevelBuild(shownLevel, specDisplayName(specKey), siblingSpecNames(specKey)) },
-    compare, unit, unit_label: plannerScoreCopy.label(unit), unit_show: plannerScoreCopy.show(unit), unit_failed: plannerScoreCopy.failed(unit),
+    compare,
     text_summary: plannerCopy.shareTextSummary(raceRow(race).name, classRow(cls).name, trees.map((t) => ({ name: t.name, points: t.points })), shownLevel),
     point_meta: plannerCopy.pointOrderMeta(spent),
     share_fields: sharedFields({ title: '', gear: {} }, false),
@@ -222,7 +219,7 @@ export default {
   },
   band_tip: bandCompareCopy.bandRankTooltipLine('60', 5, 5),
   refusals: refusals(),
-  copy: { planner: strip(plannerCopy), header: strip(plannerHeaderCopy), card: strip(CH), band: strip(bandCompareCopy), score: strip(plannerScoreCopy), sim: strip(plannerSimCopy),
+  copy: { planner: strip(plannerCopy), header: strip(plannerHeaderCopy), card: strip(CH), band: strip(bandCompareCopy), sim: strip(plannerSimCopy),
     addon: { copyForGame: addonCopy.copyForGame, copiedForGame: addonCopy.copiedForGame, copyFailed: addonCopy.copyFailed, buildCodeLabel: addonCopy.buildCodeLabel, addonCodeHint: addonCopy.addonCodeHint,
       importTitle: addonCopy.importTitle, importPlaceholder: addonCopy.importPlaceholder, importAction: addonCopy.importAction, importNoExport: addonCopy.importNoExport, importGetAddon: addonCopy.importGetAddon,
       importOrderApproximated: addonCopy.importOrderApproximated, importSwitching: addonCopy.importSwitchingClass('Priest'), importOlder: addonCopy.importOlderBuild('1.60.1.70630', BUILD), importDropped: addonCopy.importDropped('Lacerate') },

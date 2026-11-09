@@ -7,7 +7,7 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { plannerCopy } from '../../src/lib/planner/copy';
-import { pointsLeft, spentLine } from './support/planner';
+import { plannedLine, pointsSpent, spentIs } from './support/planner';
 
 import { meAddonFixture } from '../../src/fixtures/me-addon';
 
@@ -48,23 +48,23 @@ test.describe('the planner counts only the points a character has earned', () =>
   test.skip(({ isMobile }) => isMobile, 'The head is asserted at desktop width');
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  test('a level 9 character has no points left', async ({ page }) => {
+  test('a level 9 character has no points', async ({ page }) => {
     await openAs(page, 9);
     await expect(page.getByTestId('planner-meta')).toContainText('Level 9');
-    await expect(pointsLeft(page)).toHaveText('0');
-    await expect(spentLine(page)).toHaveText(plannerCopy.spentAtLevel(0, 0, 9));
+    await expect(pointsSpent(page)).toHaveText(spentIs(0));
+    await expect(page.getByTestId('planner-answer')).toContainText(plannerCopy.pointsOfUnit(0));
   });
 
   test('a level 21 character has twelve', async ({ page }) => {
     await openAs(page, 21);
     await expect(page.getByTestId('planner-meta')).toContainText('Level 21');
-    await expect(pointsLeft(page)).toHaveText('12');
-    await expect(spentLine(page)).toHaveText(plannerCopy.spentAtLevel(0, 12, 21));
+    await expect(pointsSpent(page)).toHaveText(spentIs(0));
+    await expect(page.getByTestId('planner-answer')).toContainText(plannerCopy.pointsOfUnit(12));
   });
 
   test('at the level cap the rest grey out, and a further point is planned ahead', async ({ page }) => {
     await openAs(page, 21);
-    await expect(pointsLeft(page)).toHaveText('12');
+    await expect(page.getByTestId('planner-answer')).toContainText(plannerCopy.pointsOfUnit(12));
     // Twelve legal points in Arms: Improved Heroic Strike 3, Deflection 5, Improved Rend 3 (tier 1
     // opens at 5) and Tactical Mastery 1 (needs Deflection 2).
     for (const [id, ranks] of [
@@ -75,8 +75,8 @@ test.describe('the planner counts only the points a character has earned', () =>
     ] as const) {
       for (let i = 0; i < ranks; i += 1) await page.getByTestId(`talent-${id}`).click();
     }
-    await expect(pointsLeft(page)).toHaveText('0');
-    await expect(spentLine(page)).toHaveText(plannerCopy.spentAtLevel(12, 12, 21));
+    await expect(pointsSpent(page)).toHaveText(spentIs(12));
+    await expect(plannedLine(page)).toHaveCount(0);
 
     // P3: an open cell with no point left to give reads locked, and its tooltip says why.
     const impale = page.getByTestId('talent-1006');
@@ -89,10 +89,8 @@ test.describe('the planner counts only the points a character has earned', () =>
     await impale.click({ force: true });
     await expect(impale).toHaveAttribute('data-rank', '1');
     await expect(impale).toHaveAccessibleName(`Impale, rank 1 of 2, ${plannerCopy.plannedCell(21)}`);
-    await expect(pointsLeft(page)).toHaveText('0');
-    await expect(spentLine(page)).toHaveText(
-      `${plannerCopy.spentAtLevel(12, 12, 21)} · ${plannerCopy.plannedAhead(1)}`,
-    );
+    await expect(pointsSpent(page)).toHaveText(spentIs(12));
+    await expect(plannedLine(page)).toHaveText(plannerCopy.plannedAhead(1));
     // Point order dims it under the gold line naming the character's level.
     await expect(page.getByTestId('order-point-11')).toHaveAttribute('data-kind', 'spent');
     await expect(page.getByTestId('order-point-12')).toHaveAttribute('data-kind', 'planned');

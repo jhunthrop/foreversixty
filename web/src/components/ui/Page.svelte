@@ -187,6 +187,14 @@
     .ui-page[data-layout='workbench'] > .ui-page-rail {
       gap: 40px;
     }
+    /* A workbench of panels (the planner): the panels 22 px apart, the columns 28. */
+    .ui-page[data-layout='workbench'][data-panels] {
+      column-gap: 28px;
+    }
+    .ui-page[data-layout='workbench'][data-panels] > .ui-page-main,
+    .ui-page[data-layout='workbench'][data-panels] > .ui-page-rail {
+      gap: var(--section-gap);
+    }
   }
   @media (min-width: 1024px) {
     .ui-page[data-layout='split'] {

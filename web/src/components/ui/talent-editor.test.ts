@@ -232,6 +232,14 @@ describe('TalentEditor', () => {
     expect(body).toContain('role="region" aria-label="Talent trees"');
   });
 
+  it('with a title, sits in a Section panel with its heading inside and its frame', () => {
+    const body = html(TalentEditor, { ...base, title: 'Talents', frame: 'framed', testid: 'trees' });
+    expect(body).toMatch(/<section class="ui-section[^"]*ui-section-panel[^"]*" data-testid="trees"/);
+    expect(body).toMatch(/<h2 class="ui-section-title[^"]*">Talents<\/h2>/);
+    expect(body).toMatch(/data-region="plate"[\s\S]*class="tedit"/);
+    expect(body).not.toContain('role="region"');
+  });
+
   it('renders a tablist of the trees with the active one selected', () => {
     const body = html(TalentEditor, { ...base, active: 1 });
     expect(body).toContain('role="tablist"');

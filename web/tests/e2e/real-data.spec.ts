@@ -12,14 +12,7 @@ import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { collectPageErrors } from './support/console';
 import { ACTIVE_BUILD } from './support/active-build';
-import {
-  bareSpentLine,
-  chooseClass,
-  expectClass,
-  pointsLeft,
-  shareBuild,
-  spentLine,
-} from './support/planner';
+import { chooseClass, expectClass, pointsSpent, spentIs, shareBuild } from './support/planner';
 import { POINTS_PER_TIER } from '../../src/lib/planner/types';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -187,8 +180,7 @@ test('a 31/20/0 warrior is spent and read back as 31/20/0', async ({ page }) => 
   await spend(page, arms.id, 31);
   await spend(page, fury.id, 20);
 
-  await expect(spentLine(page)).toHaveText(bareSpentLine(51));
-  await expect(pointsLeft(page)).toHaveText('0');
+  await expect(pointsSpent(page)).toHaveText(spentIs(51));
   // The level is always shown (the head's meta line): the base level plus every point.
   await expect(page.getByTestId('planner-meta')).toContainText('Level 60');
   await expect(page.getByTestId(`tree-points-${arms.id}`)).toHaveText('31');

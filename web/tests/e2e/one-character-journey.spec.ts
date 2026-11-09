@@ -11,7 +11,7 @@
 import type { Page } from '@playwright/test';
 import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
 import { API, devLogin, pointerOf, serveShells, signInThroughProxy } from './support/local-stack';
-import { expectClass, raceSelect } from './support/planner';
+import { expectClass, pointsSpent, raceSelect } from './support/planner';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
@@ -101,8 +101,7 @@ test('the chosen character follows the player through every page', async ({ page
   await expect(page.getByTestId('page-title')).toHaveText('Hunter talents');
   await expect(page.getByTestId('planner-meta')).toHaveText(`${bow.race} · Level 60 · ${bow.spec} Hunter`);
   await expect(page.getByRole('main')).toContainText('Bow Jackzon');
-  const spentText = (await page.getByTestId('planner-spent-line').innerText()).trim();
-  const spent = Number(spentText.match(/^(\d+) of 51 spent/)?.[1] ?? '0');
+  const spent = Number.parseInt((await pointsSpent(page).innerText()).trim(), 10);
   expect(spent).toBeGreaterThan(0);
   // The planner shows the points the record carries, never "25 of 51" beside "has spent 51".
   expect(spent).toBe(bow.points);

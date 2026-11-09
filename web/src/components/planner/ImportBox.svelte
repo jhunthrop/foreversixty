@@ -19,7 +19,10 @@
     activeBuild,
     onimport,
     onwrongclass = undefined,
+    panel = false,
   }: {
+    /** The heading inside its panel (the standalone planner's rail and column). */
+    panel?: boolean;
     talents: TalentIndex;
     activeBuild: string;
     /**
@@ -75,7 +78,7 @@
   }
 </script>
 
-<Section title={addonCopy.importTitle} testid="import-box">
+<Section title={addonCopy.importTitle} {panel} testid="import-box">
   <div class="pl-sec">
     <CodeField
       bind:value={code}

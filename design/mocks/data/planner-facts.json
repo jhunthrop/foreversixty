@@ -64,13 +64,13 @@
    "available": 51,
    "left": 51,
    "planned": 0,
-   "spent_line": "0 of 51 spent",
+   "points_unit": "of 51 points",
+   "planned_line": "",
    "split": [
     0,
     0,
     0
    ],
-   "score_basis": "with the level 60 gear set",
    "planned_cell": "",
    "order_rows": [
     "Levels 10 to 19",
@@ -1001,10 +1001,6 @@
     "beyond": "",
     "talents": "30303213132215201-050500050120000000-100000000000000000"
    },
-   "unit": "dps",
-   "unit_label": "DPS",
-   "unit_show": "Show DPS",
-   "unit_failed": "DPS estimate unavailable for this build.",
    "text_summary": "Human Warrior · Arms 0/Fury 0/Protection 0 · Level 9",
    "point_meta": "0 spent",
    "share_fields": [
@@ -1036,13 +1032,13 @@
    "available": 51,
    "left": 31,
    "planned": 0,
-   "spent_line": "20 of 51 spent · level 29",
+   "points_unit": "of 51 points",
+   "planned_line": "",
    "split": [
     0,
     0,
     20
    ],
-   "score_basis": "with the levels 20 to 29 gear set",
    "planned_cell": "",
    "order_rows": [
     "Levels 10 to 19",
@@ -2092,10 +2088,6 @@
     "beyond": "+9 beyond the build",
     "talents": "0000000000000000-0000000000000000-500230100000000000"
    },
-   "unit": "dps",
-   "unit_label": "DPS",
-   "unit_show": "Show DPS",
-   "unit_failed": "DPS estimate unavailable for this build.",
    "text_summary": "Night Elf Hunter · Beast Mastery 0/Marksmanship 0/Survival 20 · Level 29",
    "point_meta": "20 spent",
    "share_fields": [
@@ -2127,13 +2119,13 @@
    "available": 51,
    "left": 51,
    "planned": 0,
-   "spent_line": "0 of 51 spent",
+   "points_unit": "of 51 points",
+   "planned_line": "",
    "split": [
     0,
     0,
     0
    ],
-   "score_basis": "with the level 60 gear set",
    "planned_cell": "",
    "order_rows": [
     "Levels 10 to 19",
@@ -3015,10 +3007,6 @@
     "beyond": "",
     "talents": "5420001505001251-0052350001400000-000000000000000000"
    },
-   "unit": "dps",
-   "unit_label": "DPS",
-   "unit_show": "Show DPS",
-   "unit_failed": "DPS estimate unavailable for this build.",
    "text_summary": "Human Hunter · Beast Mastery 0/Marksmanship 0/Survival 0 · Level 9",
    "point_meta": "0 spent",
    "share_fields": [
@@ -3049,13 +3037,13 @@
    "available": 51,
    "left": 0,
    "planned": 0,
-   "spent_line": "51 of 51 spent · level 60",
+   "points_unit": "of 51 points",
+   "planned_line": "",
    "split": [
     5,
     13,
     33
    ],
-   "score_basis": "with the level 60 gear set",
    "planned_cell": "",
    "order_rows": [
     "Levels 10 to 19",
@@ -4319,16 +4307,11 @@
    },
    "compare": {
     "status": {
-     "kind": "differs",
-     "count": 2,
+     "kind": "matches",
      "beyond": 0
     },
-    "kind": "sentence",
-    "differs": [
-     105005,
-     104986,
-     104989
-    ],
+    "kind": "matches",
+    "differs": [],
     "bandRank": {
      "104960": 5,
      "104961": 0,
@@ -4350,10 +4333,10 @@
      "104983": 2,
      "104984": 1,
      "104985": 2,
-     "104986": 1,
+     "104986": 0,
      "104987": 3,
      "104988": 0,
-     "104989": 1,
+     "104989": 0,
      "104990": 0,
      "104991": 2,
      "104992": 3,
@@ -4368,7 +4351,7 @@
      "105001": 0,
      "105002": 0,
      "105004": 0,
-     "105005": 0,
+     "105005": 2,
      "105006": 0,
      "105007": 1,
      "105008": 5,
@@ -4381,14 +4364,10 @@
      "110861": 5,
      "110870": 0
     },
-    "line": "Differs by 2 points: this build takes Rapid Killing 2/2; the level 60 build takes Deterrence and Counterattack.",
+    "line": "Matches",
     "beyond": "",
-    "talents": "5000000000000000-0050050010000000-500230231051222151"
+    "talents": "5000000000000000-0050052010000000-500230230050222151"
    },
-   "unit": "dps",
-   "unit_label": "DPS",
-   "unit_show": "Show DPS",
-   "unit_failed": "DPS estimate unavailable for this build.",
    "text_summary": "Night Elf Hunter · Beast Mastery 5/Marksmanship 13/Survival 33 · Level 60",
    "point_meta": "51 spent",
    "share_fields": [
@@ -4419,13 +4398,13 @@
    "available": 51,
    "left": 0,
    "planned": 0,
-   "spent_line": "51 of 51 spent · level 60",
+   "points_unit": "of 51 points",
+   "planned_line": "",
    "split": [
     17,
     34,
     0
    ],
-   "score_basis": "with the level 60 gear set",
    "planned_cell": "",
    "order_rows": [
     "Levels 10 to 19",
@@ -5780,10 +5759,6 @@
     "beyond": "",
     "talents": "005005031030000000-33505003030121431-00000000000000000"
    },
-   "unit": "hps",
-   "unit_label": "HPS",
-   "unit_show": "Show HPS",
-   "unit_failed": "HPS estimate unavailable for this build.",
    "text_summary": "Human Priest · Discipline 17/Holy 34/Shadow 0 · Level 60",
    "point_meta": "51 spent",
    "share_fields": [
@@ -5813,13 +5788,13 @@
    "available": 51,
    "left": 0,
    "planned": 0,
-   "spent_line": "51 of 51 spent · level 60",
+   "points_unit": "of 51 points",
+   "planned_line": "",
    "split": [
     14,
     34,
     3
    ],
-   "score_basis": "with the level 60 gear set",
    "planned_cell": "",
    "order_rows": [
     "Levels 10 to 19",
@@ -7185,10 +7160,6 @@
     "beyond": "",
     "talents": "050105200100000000-55500201230133031-003000000000000000"
    },
-   "unit": "dps",
-   "unit_label": "DPS",
-   "unit_show": "Show DPS",
-   "unit_failed": "DPS estimate unavailable for this build.",
    "text_summary": "Human Mage · Arcane 14/Fire 34/Frost 3 · Level 60",
    "point_meta": "51 spent",
    "share_fields": [
@@ -7220,13 +7191,13 @@
    "available": 25,
    "left": 4,
    "planned": 0,
-   "spent_line": "21 of 25 spent at level 34",
+   "points_unit": "of 25 points",
+   "planned_line": "",
    "split": [
     21,
     0,
     0
    ],
-   "score_basis": "with the levels 30 to 39 gear set",
    "planned_cell": "planned past level 34",
    "order_rows": [
     "Levels 10 to 19",
@@ -7262,11 +7233,11 @@
       },
       {
        "d": "M 126 200 V 260",
-       "met": false
+       "met": true
       },
       {
        "d": "M 74 148 V 208",
-       "met": true
+       "met": false
       }
      ],
      "cells": [
@@ -7290,12 +7261,12 @@
        "column": 2,
        "name": "Endurance Training",
        "icon": "spell_nature_reincarnation",
-       "rank": 4,
+       "rank": 3,
        "max": 5,
        "state": "filled",
        "planned": 0,
-       "now": "Increases the Health and Armor of your pets by 12%.",
-       "next": "Increases the Health and Armor of your pets by 15%.",
+       "now": "Increases the Health and Armor of your pets by 9%.",
+       "next": "Increases the Health and Armor of your pets by 12%.",
        "refusal": ""
       },
       {
@@ -7360,13 +7331,13 @@
        "column": 1,
        "name": "Bestial Swiftness",
        "icon": "ability_druid_dash",
-       "rank": 1,
+       "rank": 0,
        "max": 1,
-       "state": "maxed",
+       "state": "available",
        "planned": 0,
-       "now": "Increases the movement speed of your pets by 30%.",
-       "next": "",
-       "refusal": "Bestial Swiftness is already at 1 of 1 points"
+       "now": "",
+       "next": "Increases the movement speed of your pets by 30%.",
+       "refusal": ""
       },
       {
        "id": 104969,
@@ -7402,13 +7373,13 @@
        "column": 2,
        "name": "Ferocity",
        "icon": "inv_misc_monsterclaw_04",
-       "rank": 4,
+       "rank": 5,
        "max": 5,
-       "state": "filled",
+       "state": "maxed",
        "planned": 0,
-       "now": "Increases the critical strike chance of your pets and hawks by 8%.",
-       "next": "Increases the critical strike chance of your pets and hawks by 10%.",
-       "refusal": ""
+       "now": "Increases the critical strike chance of your pets and hawks by 10%.",
+       "next": "",
+       "refusal": "Ferocity is already at 5 of 5 points"
       },
       {
        "id": 104966,
@@ -7446,11 +7417,11 @@
        "icon": "ability_devour",
        "rank": 0,
        "max": 1,
-       "state": "available",
+       "state": "locked",
        "planned": 0,
        "now": "",
        "next": "Command your pet to Stun the target for 3 sec on its next successful attack, which also gains 100% increased critical strike chance. Generates high threat.",
-       "refusal": ""
+       "refusal": "Intimidation needs 1 point in Bestial Swiftness first"
       },
       {
        "id": 104963,
@@ -7458,12 +7429,12 @@
        "column": 3,
        "name": "Bestial Discipline",
        "icon": "spell_nature_abolishmagic",
-       "rank": 0,
+       "rank": 1,
        "max": 2,
-       "state": "available",
+       "state": "filled",
        "planned": 0,
-       "now": "",
-       "next": "Increases the Focus regeneration of your pets by 10% and allows 25% of your Mana regeneration to continue while casting.",
+       "now": "Increases the Focus regeneration of your pets by 10% and allows 25% of your Mana regeneration to continue while casting.",
+       "next": "Increases the Focus regeneration of your pets by 20% and allows 50% of your Mana regeneration to continue while casting.",
        "refusal": ""
       },
       {
@@ -8049,21 +8020,21 @@
     },
     {
      "level": 13,
-     "name": "Endurance Training",
-     "icon": "spell_nature_reincarnation",
-     "rank": 4,
-     "max": 5,
-     "planned": false,
-     "tip": "Level 13: Endurance Training 4"
-    },
-    {
-     "level": 14,
      "name": "Deadly Aspects",
      "icon": "spell_nature_ravenform",
      "rank": 1,
      "max": 5,
      "planned": false,
-     "tip": "Level 14: Deadly Aspects 1"
+     "tip": "Level 13: Deadly Aspects 1"
+    },
+    {
+     "level": 14,
+     "name": "Deadly Aspects",
+     "icon": "spell_nature_ravenform",
+     "rank": 2,
+     "max": 5,
+     "planned": false,
+     "tip": "Level 14: Deadly Aspects 2"
     },
     {
      "level": 15,
@@ -8087,73 +8058,73 @@
      "level": 17,
      "name": "Deadly Aspects",
      "icon": "spell_nature_ravenform",
-     "rank": 2,
+     "rank": 3,
      "max": 5,
      "planned": false,
-     "tip": "Level 17: Deadly Aspects 2"
+     "tip": "Level 17: Deadly Aspects 3"
     },
     {
      "level": 18,
      "name": "Deadly Aspects",
      "icon": "spell_nature_ravenform",
-     "rank": 3,
+     "rank": 4,
      "max": 5,
      "planned": false,
-     "tip": "Level 18: Deadly Aspects 3"
+     "tip": "Level 18: Deadly Aspects 4"
     },
     {
      "level": 19,
      "name": "Deadly Aspects",
      "icon": "spell_nature_ravenform",
-     "rank": 4,
+     "rank": 5,
      "max": 5,
      "planned": false,
-     "tip": "Level 19: Deadly Aspects 4"
+     "tip": "Level 19: Deadly Aspects 5"
     },
     {
      "level": 20,
-     "name": "Bestial Swiftness",
-     "icon": "ability_druid_dash",
+     "name": "Unleashed Fury",
+     "icon": "ability_bullrush",
      "rank": 1,
-     "max": 1,
+     "max": 5,
      "planned": false,
-     "tip": "Level 20: Bestial Swiftness 1"
+     "tip": "Level 20: Unleashed Fury 1"
     },
     {
      "level": 21,
      "name": "Unleashed Fury",
      "icon": "ability_bullrush",
-     "rank": 1,
+     "rank": 2,
      "max": 5,
      "planned": false,
-     "tip": "Level 21: Unleashed Fury 1"
+     "tip": "Level 21: Unleashed Fury 2"
     },
     {
      "level": 22,
      "name": "Unleashed Fury",
      "icon": "ability_bullrush",
-     "rank": 2,
+     "rank": 3,
      "max": 5,
      "planned": false,
-     "tip": "Level 22: Unleashed Fury 2"
+     "tip": "Level 22: Unleashed Fury 3"
     },
     {
      "level": 23,
      "name": "Unleashed Fury",
      "icon": "ability_bullrush",
-     "rank": 3,
+     "rank": 4,
      "max": 5,
      "planned": false,
-     "tip": "Level 23: Unleashed Fury 3"
+     "tip": "Level 23: Unleashed Fury 4"
     },
     {
      "level": 24,
      "name": "Unleashed Fury",
      "icon": "ability_bullrush",
-     "rank": 4,
+     "rank": 5,
      "max": 5,
      "planned": false,
-     "tip": "Level 24: Unleashed Fury 4"
+     "tip": "Level 24: Unleashed Fury 5"
     },
     {
      "level": 25,
@@ -8193,21 +8164,21 @@
     },
     {
      "level": 29,
-     "name": "Unleashed Fury",
-     "icon": "ability_bullrush",
+     "name": "Ferocity",
+     "icon": "inv_misc_monsterclaw_04",
      "rank": 5,
      "max": 5,
      "planned": false,
-     "tip": "Level 29: Unleashed Fury 5"
+     "tip": "Level 29: Ferocity 5"
     },
     {
      "level": 30,
-     "name": "Deadly Aspects",
-     "icon": "spell_nature_ravenform",
-     "rank": 5,
-     "max": 5,
+     "name": "Bestial Discipline",
+     "icon": "spell_nature_abolishmagic",
+     "rank": 1,
+     "max": 2,
      "planned": false,
-     "tip": "Level 30: Deadly Aspects 5"
+     "tip": "Level 30: Bestial Discipline 1"
     }
    ],
    "band": {
@@ -8229,19 +8200,19 @@
      "104960": 5,
      "104961": 0,
      "104962": 0,
-     "104963": 0,
+     "104963": 1,
      "104964": 0,
      "104965": 0,
      "104966": 0,
-     "104967": 4,
+     "104967": 5,
      "104968": 0,
      "104969": 5,
-     "104970": 1,
+     "104970": 0,
      "104972": 0,
      "104973": 0,
      "104974": 0,
      "104975": 2,
-     "104976": 4,
+     "104976": 3,
      "104981": 0,
      "104983": 0,
      "104984": 0,
@@ -8279,12 +8250,8 @@
     },
     "line": "This build covers 21 of your 25 points; the next 4 follow the levels 40 to 49 build.",
     "beyond": "",
-    "talents": "5420001504000000-0000000000000000-000000000000000000"
+    "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
-   "unit": "dps",
-   "unit_label": "DPS",
-   "unit_show": "Show DPS",
-   "unit_failed": "DPS estimate unavailable for this build.",
    "text_summary": "Dwarf Hunter · Beast Mastery 21/Marksmanship 0/Survival 0 · Level 34",
    "point_meta": "21 spent",
    "share_fields": [
@@ -8315,13 +8282,13 @@
    "available": 25,
    "left": 25,
    "planned": 0,
-   "spent_line": "0 of 25 spent at level 34",
+   "points_unit": "of 25 points",
+   "planned_line": "",
    "split": [
     0,
     0,
     0
    ],
-   "score_basis": "with the levels 30 to 39 gear set",
    "planned_cell": "planned past level 34",
    "order_rows": [
     "Levels 10 to 19",
@@ -9133,27 +9100,27 @@
      104960,
      104976,
      104975,
-     104970,
      104969,
-     104967
+     104967,
+     104963
     ],
     "bandRank": {
      "104960": 5,
      "104961": 0,
      "104962": 0,
-     "104963": 0,
+     "104963": 1,
      "104964": 0,
      "104965": 0,
      "104966": 0,
-     "104967": 4,
+     "104967": 5,
      "104968": 0,
      "104969": 5,
-     "104970": 1,
+     "104970": 0,
      "104972": 0,
      "104973": 0,
      "104974": 0,
      "104975": 2,
-     "104976": 4,
+     "104976": 3,
      "104981": 0,
      "104983": 0,
      "104984": 0,
@@ -9191,12 +9158,8 @@
     },
     "line": "of this build's points still to take",
     "beyond": "",
-    "talents": "5420001504000000-0000000000000000-000000000000000000"
+    "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
-   "unit": "dps",
-   "unit_label": "DPS",
-   "unit_show": "Show DPS",
-   "unit_failed": "DPS estimate unavailable for this build.",
    "text_summary": "Dwarf Hunter · Beast Mastery 0/Marksmanship 0/Survival 0 · Level 34",
    "point_meta": "0 spent",
    "share_fields": [
@@ -9227,13 +9190,13 @@
    "available": 25,
    "left": 0,
    "planned": 2,
-   "spent_line": "25 of 25 spent at level 34 · 2 planned ahead",
+   "points_unit": "of 25 points",
+   "planned_line": "2 planned ahead",
    "split": [
     27,
     0,
     0
    ],
-   "score_basis": "with the levels 30 to 39 gear set",
    "planned_cell": "planned past level 34",
    "order_rows": [
     "Levels 10 to 19",
@@ -10286,7 +10249,8 @@
     },
     "kind": "sentence",
     "differs": [
-     104967,
+     104976,
+     104970,
      104964,
      104963,
      104962
@@ -10295,19 +10259,19 @@
      "104960": 5,
      "104961": 0,
      "104962": 0,
-     "104963": 0,
+     "104963": 1,
      "104964": 0,
      "104965": 0,
      "104966": 0,
-     "104967": 4,
+     "104967": 5,
      "104968": 0,
      "104969": 5,
-     "104970": 1,
+     "104970": 0,
      "104972": 0,
      "104973": 0,
      "104974": 0,
      "104975": 2,
-     "104976": 4,
+     "104976": 3,
      "104981": 0,
      "104983": 0,
      "104984": 0,
@@ -10345,12 +10309,8 @@
     },
     "line": "This build covers 21 of your 25 points; the next 4 follow the levels 40 to 49 build.",
     "beyond": "",
-    "talents": "5420001504000000-0000000000000000-000000000000000000"
+    "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
-   "unit": "dps",
-   "unit_label": "DPS",
-   "unit_show": "Show DPS",
-   "unit_failed": "DPS estimate unavailable for this build.",
    "text_summary": "Dwarf Hunter · Beast Mastery 27/Marksmanship 0/Survival 0 · Level 34",
    "point_meta": "27 spent",
    "share_fields": [
@@ -10383,13 +10343,13 @@
    "available": 51,
    "left": 51,
    "planned": 0,
-   "spent_line": "0 of 51 spent",
+   "points_unit": "of 51 points",
+   "planned_line": "",
    "split": [
     0,
     0,
     0
    ],
-   "score_basis": "with the level 60 gear set",
    "planned_cell": "",
    "order_rows": [
     "Levels 10 to 19",
@@ -11320,10 +11280,6 @@
     "beyond": "",
     "talents": "30303213132215201-050500050120000000-100000000000000000"
    },
-   "unit": "dps",
-   "unit_label": "DPS",
-   "unit_show": "Show DPS",
-   "unit_failed": "DPS estimate unavailable for this build.",
    "text_summary": "Human Warrior · Arms 0/Fury 0/Protection 0 · Level 9",
    "point_meta": "0 spent",
    "share_fields": [
@@ -11568,9 +11524,8 @@
    "noClassNote": "[fn]",
    "inGameTitle": "In the game",
    "barLabel": "Planner choices",
-   "pointsLeft": "Points left",
-   "spentOf": "[fn]",
-   "spentAtLevel": "[fn]",
+   "pointsOfUnit": "[fn]",
+   "talentsTitle": "Talents",
    "plannedAhead": "[fn]",
    "levelLine": "[fn]",
    "plannedCell": "[fn]",
@@ -11598,12 +11553,10 @@
    "copied": "Copied",
    "retry": "Retry",
    "loadFailedDetail": "[fn]",
-   "reloadTalents": "Reload talents",
-   "scoreBasis": "[fn]"
+   "reloadTalents": "Reload talents"
   },
   "header": {
-   "h1": "[fn]",
-   "factionFollowsRace": "Faction follows your race"
+   "h1": "[fn]"
   },
   "card": {
    "sendBuildTo": "[fn]",
@@ -11652,15 +11605,6 @@
    "bestInSlotList": "Best in slot list",
    "bandRankTooltipLine": "[fn]"
   },
-  "score": {
-   "label": "[fn]",
-   "ratePhrase": "[fn]",
-   "show": "[fn]",
-   "waiting": "Appears once your points are spent.",
-   "failed": "[fn]",
-   "figure": "[fn]",
-   "bandFigure": "[fn]"
-  },
   "sim": {
    "plannerDpsLabel": "DPS",
    "plannerDpsPointsToGo": "[fn]",
@@ -11699,7 +11643,7 @@
   "tree_source": "Talent trees read from the game client, build 1.60.1.70790.",
   "load_failed": "Talent data did not load",
   "load_failed_detail": "Build 1.60.1.70790 did not return the files the planner needs.",
-  "read_only": "This build was opened from a share link; fork it to edit",
+  "read_only": "This build was opened from a share link; edit a copy to change it",
   "sim_done": "The card will show 612 DPS on engine f048630de.",
   "points_to_go": "31 points to go"
  }

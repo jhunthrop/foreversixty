@@ -2,7 +2,7 @@ import { crc32, deflateSync } from 'node:zlib';
 import { expect, test } from './support/test';
 
 import { ACTIVE_BUILD } from './support/active-build';
-import { bareSpentLine, shareBuild, spentLine } from './support/planner';
+import { pointsSpent, shareBuild, spentIs } from './support/planner';
 
 const SAVED = {
   ok: true,
@@ -99,7 +99,7 @@ test('a rate-limited save keeps the build and explains the wait', async ({ page 
   await expect(page.getByTestId('share-panel').getByRole('alert')).toContainText(
     'Too many saves from this connection; try again in an hour.',
   );
-  await expect(spentLine(page)).toHaveText(bareSpentLine(1));
+  await expect(pointsSpent(page)).toHaveText(spentIs(1));
 });
 
 test('a rejected build shows the API field message and retries', async ({ page }) => {

@@ -13,7 +13,9 @@
     type EditorTree,
     type TalentEditorCopy,
   } from '../../lib/ui/talent-editor';
+  import type { PanelFrame } from '../../lib/ui/primitives';
   import Plate from './Plate.svelte';
+  import Section from './Section.svelte';
   import TalentButton from './TalentButton.svelte';
 
   let {
@@ -26,6 +28,8 @@
     onremove,
     onresettree,
     foot,
+    title,
+    frame = 'plain',
     testid,
   }: {
     trees: readonly EditorTree[];
@@ -40,6 +44,11 @@
     /** The per-tree Reset in each tree head (shown when the tree has points and not read-only). */
     onresettree?: (treeIndex: number) => void;
     foot?: Snippet;
+    /** A heading inside the panel (the planner's "Talents"): the trees sit in a Section `panel`
+     *  with its `frame` instead of a bare Plate. */
+    title?: string;
+    /** `title` only: the panel's frame. */
+    frame?: PanelFrame;
     testid?: string;
   } = $props();
 
@@ -90,9 +99,16 @@
      when met) on a --bg halo, then tiers × columns of gridcells holding TalentButtons. The grid
      owns the keyboard: one tab stop per tree on its last-focused cell, arrows move, Backspace or
      Delete removes (Enter is the button's own click). `foot` renders in `.tedit-f` (the status
-     line `.st2`, `.st2.wipe`, and the right-hand `.rs` group are styled here). -->
+     line `.st2`, `.st2.wipe`, and the right-hand `.rs` group are styled here). With a `title` the
+     trees sit in a Section panel (its heading inside, the Plate's `frame`), else on a bare Plate. -->
 
-<Plate {label} {testid}>
+{#if title}
+  <Section {title} panel {frame} flush {testid}>{@render editor()}</Section>
+{:else}
+  <Plate {label} {testid}>{@render editor()}</Plate>
+{/if}
+
+{#snippet editor()}
   <div class="tedit">
     <div class="tedit-tabs" role="tablist" aria-label={label}>
       {#each trees as tree, index (tree.id)}
@@ -185,7 +201,7 @@
     </div>
     {#if foot}<div class="tedit-f">{@render foot()}</div>{/if}
   </div>
-</Plate>
+{/snippet}
 
 <style>
   .tedit {

@@ -5,7 +5,6 @@ import fixtureClasses from '../../fixtures/planner/classes.json';
 import fixtureCombos from '../../fixtures/planner/combos.json';
 import fixtureRaces from '../../fixtures/planner/races.json';
 import fixtureTalents from '../../fixtures/planner/talents/warrior.json';
-import type { LiveDps } from '../../lib/planner/live-dps.svelte';
 import { createPlannerStore } from '../../lib/planner/store.svelte';
 import type { ClassRow, Combo, RaceRow, TalentFile } from '../../lib/planner/types';
 import SharePanel from './SharePanel.svelte';
@@ -23,28 +22,25 @@ function fixtureStore() {
   return store;
 }
 
-// SharePanel only reads `live.state`; a minimal stub is enough for a server render.
-const fixtureLive = { state: 'off' } as unknown as LiveDps;
-
 describe('SharePanel', () => {
   it('shows the Share button, not a saved link, on first render', () => {
-    const { body } = render(SharePanel, { props: { store: fixtureStore(), live: fixtureLive } });
+    const { body } = render(SharePanel, { props: { store: fixtureStore() } });
     expect(body).not.toContain('data-testid="share-link"');
     expect(body).toContain('>Share<');
   });
 
   it('does not show the confirm step before Share is clicked', () => {
-    const { body } = render(SharePanel, { props: { store: fixtureStore(), live: fixtureLive } });
+    const { body } = render(SharePanel, { props: { store: fixtureStore() } });
     expect(body).not.toContain('data-testid="share-confirm"');
   });
 
   it('gives the Share button a stable test id for the e2e confirm flow', () => {
-    const { body } = render(SharePanel, { props: { store: fixtureStore(), live: fixtureLive } });
+    const { body } = render(SharePanel, { props: { store: fixtureStore() } });
     expect(body).toContain('data-testid="share-open"');
   });
 
   it('computes the plain-text summary (review finding 8), never a placeholder-filled template', () => {
-    const { body } = render(SharePanel, { props: { store: fixtureStore(), live: fixtureLive } });
+    const { body } = render(SharePanel, { props: { store: fixtureStore() } });
     expect(body).toContain('Human Warrior · Arms 1/Fury 0 · Level 10');
     expect(body).toContain('data-testid="copy-as-text"');
     expect(body).toContain('>Copy as text<');

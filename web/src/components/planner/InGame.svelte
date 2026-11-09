@@ -119,7 +119,7 @@
   );
 </script>
 
-<Section title={plannerCopy.inGameTitle} testid="planner-in-game">
+<Section title={plannerCopy.inGameTitle} panel testid="planner-in-game">
   <div class="pl-sec">
     {#if character !== null && otherClass && plainOtherClass}
       <p class="pl-line" data-testid="planner-send-other">{action.label}</p>
