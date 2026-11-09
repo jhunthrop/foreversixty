@@ -252,6 +252,77 @@ describe('source filters re-pick, never hide', () => {
     );
   });
 
+  it("caps every kind at the leveling default's standing, not only the rep kind (P2 review, 2026-11-09)", () => {
+    // Protector's Band: Silverwing Sentinels Honored, sold by their quartermaster at the same
+    // standing, so its kinds are rep and vendor and both are above Friendly.
+    const ring = {
+      ...ROW,
+      slot: 'finger1',
+      id: 20439,
+      filter: {
+        slot: 'finger1',
+        item_id: 20439,
+        source_kind: 'rep',
+        kinds: ['rep', 'vendor'],
+        standing: 'honored',
+        kind_standings: { rep: 'honored', vendor: 'honored' },
+        by_kind: { dungeon: { item_id: 1156, rank: 2, source: 'The Deadmines: Gilnid' } },
+      },
+    } as unknown as BisRowModel;
+    const model = { band: 20, unit: 'DPS', rows: [ring] } as unknown as BisBandModel;
+    const all = ['dungeon', 'raid', 'world', 'quest', 'crafted', 'vendor', 'pvp'] as const;
+    const picks = filteredPicks(model, { on: [...all], repCap: 'friendly' });
+    expect(picks.get('finger1')?.item_id).toBe(1156);
+  });
+
+  it('never lets a by_kind entry above the cap stand in, whatever its kind', () => {
+    const ring = {
+      ...ROW,
+      slot: 'finger1',
+      id: 9001,
+      filter: {
+        slot: 'finger1',
+        item_id: 9001,
+        source_kind: 'rep',
+        standing: 'revered',
+        by_kind: {
+          vendor: {
+            item_id: 20439,
+            rank: 2,
+            source: 'Illiyana Moonblaze',
+            standing: 'honored',
+            next: { item_id: 2246, rank: 4, source: 'Some Vendor' },
+          },
+        },
+      },
+    } as unknown as BisRowModel;
+    const model = { band: 20, unit: 'DPS', rows: [ring] } as unknown as BisBandModel;
+    const all = ['dungeon', 'raid', 'world', 'quest', 'crafted', 'vendor', 'pvp'] as const;
+    const picks = filteredPicks(model, { on: [...all], repCap: 'friendly' });
+    expect(picks.get('finger1')?.item_id).toBe(2246);
+  });
+
+  it('keeps a vendor kind no standing gates under the cap', () => {
+    const ring = {
+      ...ROW,
+      slot: 'finger1',
+      id: 20440,
+      filter: {
+        slot: 'finger1',
+        item_id: 20440,
+        source_kind: 'rep',
+        kinds: ['rep', 'vendor'],
+        standing: 'honored',
+        kind_standings: { rep: 'honored' },
+        by_kind: { dungeon: { item_id: 1156, rank: 2, source: 'The Deadmines: Gilnid' } },
+      },
+    } as unknown as BisRowModel;
+    const model = { band: 20, unit: 'DPS', rows: [ring] } as unknown as BisBandModel;
+    const all = ['dungeon', 'raid', 'world', 'quest', 'crafted', 'vendor', 'pvp'] as const;
+    const picks = filteredPicks(model, { on: [...all], repCap: 'friendly' });
+    expect(picks.get('finger1')?.item_id).toBe(20440);
+  });
+
   it('counts slots with an option per kind', () => {
     expect(sourceCounts(MODEL).dungeon).toBe(2);
     expect(sourceCounts(MODEL).crafted).toBe(1);
