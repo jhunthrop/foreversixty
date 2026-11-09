@@ -87,3 +87,29 @@ Both agree on 1 to 5 above. Their corrections and additions:
 - "Play your class better." is the owner's line. Demote it below the player's next step, do not
   drop it.
 - Most trusted as is: the planner (real talent icons) and the tier list (numbers first).
+
+## The ai-slop reviewer's additions (verdict: FAIL)
+
+Blocking tells: the glow and gradient buttons and panels, the serif slogan and H1, and the
+repeated bordered panels. New or re-ranked against the lists above:
+
+- The type system is the biggest site-wide tell. Every page title is a large light serif over a
+  small grey meta line, so the slogan pattern repeats on every page, not only home. Proposal: page
+  H1s in the body face at 28 to 32px semibold, with the serif kept for the wordmark only.
+- No index page starts with data. Home, /bis, /guides and the /sim rail all open on the nine-class
+  grid or rail. Proposal: a compact class strip or rail, with real content first.
+- Pills: the role chips on only some rows, the Premium pill, and the boxed "/" hint. Proposal: plain
+  muted role text, or a glyph for tank and healer only.
+- Tracked caps also run through the tier table column heads, the planner (CLASS, RACE, TITLE,
+  POINTS LEFT) and the /bis filters.
+- Home: the Sign in button floats apart from the hero text, so the page reads as a landing page.
+  "How to start" is a fake two-step sequence. "9 Dec" is said twice.
+- /bis: three nested bordered containers (the tab band, the panel, the rows), and two stacked grey
+  intro lines.
+- /tiers: the four gold row links per row are gold by habit; mute them. The repeated "≈ tie with"
+  line doubles the row height; use a ≈ glyph and a tooltip.
+- /sim: "Other ways in" is three equal rows of filler; one input that detects the format would do.
+- /planner: the empty state ("Level 9", a dash for DPS) reads as a stub, and there are two class
+  selectors.
+- Keep: the talent icons, the tier numbers and bars, quality-coloured class names, the sim tab bar,
+  the raid icons.
