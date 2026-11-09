@@ -331,7 +331,7 @@
             <span aria-hidden="true">&nbsp;</span>
           {/if}
         </p>
-        <div class="grid grid-cols-[96px_minmax(0,1fr)] md:grid-cols-[180px_minmax(0,1fr)]">
+        <div class="grid grid-cols-[124px_minmax(0,1fr)] md:grid-cols-[180px_minmax(0,1fr)]">
           <!-- The labels stay put; only the plot scrolls sideways on a phone. -->
           <ul class="flex flex-col pr-3">
             {#each enemyRows as lane (lane.name)}

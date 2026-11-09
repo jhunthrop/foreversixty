@@ -344,51 +344,49 @@
         )}
       {:else if !block.table_found && nightMode}
         {@render line('No boss of the night has a table yet.', 'mechanics-no-table')}
-      {:else if !block.table_found}
+      {:else if !block.table_found && bossAbilities.length === 0}
         <p class="text-muted px-4 py-4 text-[14px]" data-testid="mechanics-no-table">
           No mechanics for this boss yet.
         </p>
-        {#if !trash && bossAbilities.length > 0}
-          <!-- What the boss's side did to whom, ability by ability, from damage taken. -->
-          <div class="px-5 pb-3" data-testid="mechanics-boss-abilities">
-            {#each bossAbilities as ability (ability.spell_id)}
-              <Row
-                title={unclassifiedNameShared(ability)
-                  ? `${ability.name} #${ability.spell_id}`
-                  : ability.name}
-                open
-                testid={`mechanics-ability-${ability.spell_id}`}
-              >
-                {#snippet lead()}<SpellIcon
-                    url={icons.of(ability.spell_id, ability.name)}
-                    size={24}
-                    tip
-                  />{/snippet}
-                {#snippet subContent()}{#each abilityHitsByPlayer(summary, ability.spell_id) as one, i (one.guid)}{i >
-                    0
-                      ? ' '
-                      : ''}<span class="whitespace-nowrap" data-testid="mechanics-hit"
-                      >{i > 0 ? '· ' : ''}<span style:color={classColorVar(classOf.get(one.guid))}
-                        >{splitUnitName(one.name).name}</span
-                      >
-                      <b class="text-text font-semibold tabular-nums">{formatAmount(one.damage)}</b>
-                      <span class="tabular-nums">({one.hits} {one.hits === 1 ? 'hit' : 'hits'})</span></span
-                    >{/each}{/snippet}
-                {#snippet trail()}
-                  <span class="text-strong text-[15px] leading-5 font-bold tabular-nums"
-                    >{formatAmount(ability.damage)}</span
-                  >
-                  <a
-                    href={hrefFor(damageTakenPatch(ability.spell_id))}
-                    class={linkClass}
-                    aria-label={`Damage Taken for ${ability.name}`}
-                    onclick={(event) => follow(event, damageTakenPatch(ability.spell_id))}>Damage taken</a
-                  >
-                {/snippet}
-              </Row>
-            {/each}
-          </div>
-        {/if}
+      {:else if !block.table_found}
+        <!-- A boss no table covers yet: what its side did to whom, ability by ability, from damage taken. -->
+        <div class="px-5 py-2" data-testid="mechanics-boss-abilities">
+          {#each bossAbilities as ability (ability.spell_id)}
+            <Row
+              title={unclassifiedNameShared(ability) ? `${ability.name} #${ability.spell_id}` : ability.name}
+              open
+              wrapTrail
+              testid={`mechanics-ability-${ability.spell_id}`}
+            >
+              {#snippet lead()}<SpellIcon
+                  url={icons.of(ability.spell_id, ability.name)}
+                  size={24}
+                  tip
+                />{/snippet}
+              {#snippet subContent()}{#each abilityHitsByPlayer(summary, ability.spell_id) as one, i (one.guid)}{i >
+                  0
+                    ? ' '
+                    : ''}<span class="whitespace-nowrap" data-testid="mechanics-hit"
+                    >{i > 0 ? '· ' : ''}<span style:color={classColorVar(classOf.get(one.guid))}
+                      >{splitUnitName(one.name).name}</span
+                    >
+                    <b class="text-text font-semibold tabular-nums">{formatAmount(one.damage)}</b>
+                    <span class="tabular-nums">({one.hits} {one.hits === 1 ? 'hit' : 'hits'})</span></span
+                  >{/each}{/snippet}
+              {#snippet trail()}
+                <span class="text-strong text-[15px] leading-5 font-bold tabular-nums"
+                  >{formatAmount(ability.damage)}</span
+                >
+                <a
+                  href={hrefFor(damageTakenPatch(ability.spell_id))}
+                  class={linkClass}
+                  aria-label={`Damage Taken for ${ability.name}`}
+                  onclick={(event) => follow(event, damageTakenPatch(ability.spell_id))}>Damage taken</a
+                >
+              {/snippet}
+            </Row>
+          {/each}
+        </div>
       {:else if table.length === 0}
         {@render line('Nothing the table lists went wrong.', 'mechanics-table-empty')}
       {:else}
