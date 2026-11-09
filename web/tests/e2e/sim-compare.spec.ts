@@ -73,7 +73,8 @@ test('the sentence and the ordinary results are gone in compare mode', async ({ 
 
 test('the report links to compare mode on its own current fight', async ({ page }) => {
   await stubReportMeta(page);
-  await page.goto('/reports/fixture2abcd');
+  // On fight 3 by name: a bare link now opens the night's last boss kill (fight 4).
+  await page.goto('/reports/fixture2abcd?fight=3');
   // A head button from 768, the head's actions menu below (ReportHead).
   await openSimThisFight(page);
   await expect(page).toHaveURL(/\/sim\?source=fight&ref=fixture2abcd(?:%3A|:)3&mode=compare/);
