@@ -76,11 +76,18 @@ export interface UnitName {
  * name with a hyphen between the words and ends the unit with the realm and a trailing hyphen
  * ("Bow-Jackzon-ClassicBetaPvP-"), so the trailing hyphen is dropped, the last segment is the
  * realm and the segments before it are the name, joined with spaces. One segment is all name.
+ *
+ * The launch client (1.60.1) writes the ruleset and the region instead of a realm
+ * ("Bow-Jackzon-PvP-US"): when the last segment is a region code and the one before it a
+ * ruleset word, the segment is both ("PvP-US"), so the name stays "Bow Jackzon".
  */
 export function splitUnitName(logged: string): UnitName {
   const segments = logged.replace(/-$/, '').split('-');
   if (segments.length < 2) return { name: segments[0] ?? '', segment: '' };
-  return { name: segments.slice(0, -1).join(' '), segment: segments[segments.length - 1] ?? '' };
+  let cut = segments.length - 1;
+  const last = (segments[cut] ?? '').toLowerCase();
+  if (segments.length > 2 && isRegion(last) && rulesetFromRealm(segments[cut - 1] ?? '') !== '') cut -= 1;
+  return { name: segments.slice(0, cut).join(' '), segment: segments.slice(cut).join('-') };
 }
 
 /** `Elyra Duskvale` becomes `elyra-duskvale`; runs of whitespace collapse to one hyphen. */

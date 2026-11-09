@@ -11,6 +11,8 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // applicantHistoryMax bounds the guilds a sheet lists.
@@ -181,7 +183,7 @@ func (s *Store) raidHistory(ctx context.Context, key string, guildID int64) ([]A
 	rows, err := s.Pool.Query(ctx, `
 		select g.name, count(distinct r.id), max(r.created_at)
 		from fight_metrics m join reports r on r.id = m.report_id join guilds g on g.id = r.guild_id
-		where m.player_key = $1 and r.guild_id <> $2 and r.visibility = 'public' and r.flagged is null
+		where m.player_key = $1 and r.guild_id <> $2 and r.visibility = 'public' and `+presence.NotFlagged("r")+`
 		group by g.id, g.name order by max(r.created_at) desc limit $3`, key, guildID, applicantHistoryMax)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: raid history %s: %w", key, err)

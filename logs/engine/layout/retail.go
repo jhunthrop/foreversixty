@@ -211,15 +211,19 @@ func RetailV22() Layout {
 			// The absorb shapes plus the supporting player's GUID.
 			"SPELL_ABSORBED_SUPPORT": {Widths: []int{20, 23}},
 			"ENCOUNTER_START":        {Widths: []int{6}},
-			"ENCOUNTER_END":          {Widths: []int{6}},
-			"ZONE_CHANGE":            {Widths: []int{4}},
-			"MAP_CHANGE":             {Widths: []int{7}},
-			"CHALLENGE_MODE_START":   {Widths: []int{6}},
-			"CHALLENGE_MODE_END":     {Widths: []int{5}},
-			"ENCHANT_APPLIED":        {Widths: []int{12}},
-			"ENCHANT_REMOVED":        {Widths: []int{12}},
-			"EMOTE":                  {Widths: []int{6}},
-			"COMBATANT_INFO":         {Widths: []int{34}},
+			// encounterID, name, difficulty, size, success, then the
+			// fight time in milliseconds: Forever 1.60 writes all seven
+			// (engine/event/testdata/forever-1.60-encounter.log). The
+			// six-field form stays accepted.
+			"ENCOUNTER_END":        {Widths: []int{6, 7}},
+			"ZONE_CHANGE":          {Widths: []int{4}},
+			"MAP_CHANGE":           {Widths: []int{7}},
+			"CHALLENGE_MODE_START": {Widths: []int{6}},
+			"CHALLENGE_MODE_END":   {Widths: []int{5}},
+			"ENCHANT_APPLIED":      {Widths: []int{12}},
+			"ENCHANT_REMOVED":      {Widths: []int{12}},
+			"EMOTE":                {Widths: []int{6}},
+			"COMBATANT_INFO":       {Widths: []int{34}},
 			// 9 header + 19 advanced + environmental type + 10 damage.
 			"ENVIRONMENTAL_DAMAGE": {Widths: []int{39}},
 			// instanceID, bracket, matchType, isRated.

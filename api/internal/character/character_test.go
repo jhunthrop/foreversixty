@@ -100,6 +100,10 @@ func TestSplitUnitReadsEveryShapeTheLogWrites(t *testing.T) {
 		{"Mörk-ClassicBetaPvP", "Mörk", "ClassicBetaPvP"},
 		{"Xuen", "Xuen", ""},
 		{"На-Бутылку-ClassicBetaPvP2-", "На Бутылку", "ClassicBetaPvP2"},
+		// The launch client (1.60.1, 2026-11-08) writes the ruleset and the
+		// region after the name: "First-Last-PvP-US".
+		{"Anon-One-PvP-US", "Anon One", "PvP-US"},
+		{"Anon-Normal-EU", "Anon", "Normal-EU"},
 		{"", "", ""},
 	} {
 		name, realm := SplitUnit(tc.unit)
@@ -114,11 +118,37 @@ func TestKeyFromUnitSplitsTheLoggedName(t *testing.T) {
 		t.Errorf("a two-word unit must key as the export does: %q", got)
 	}
 
+	// A launch-client unit names its own ruleset and region, which win over
+	// the report's: production's first stranger log keyed every player
+	// "us/normal/<name>-pvp".
+	if got := KeyFromUnit("us", "normal", "Anon-One-PvP-US"); got != "us/pvp/anon-one" {
+		t.Errorf("a ruleset-and-region unit must key by them: %q", got)
+	}
+	if got := KeyFromUnit("us", "normal", "Anon-One-Roleplay-EU"); got != "eu/rp/anon-one" {
+		t.Errorf("the unit's region must win: %q", got)
+	}
+
 	if got := KeyFromUnit("us", "hardcore", "Baelgrim-Nightslayer"); got != "us/hardcore/baelgrim" {
 		t.Errorf("KeyFromUnit = %q", got)
 	}
 	if got := KeyFromUnit("us", "pvp", "Baelgrim"); got != "us/pvp/baelgrim" {
 		t.Errorf("a unit with no realm segment is all name: %q", got)
+	}
+}
+
+// The ruleset names a Forever character profile carried in production on
+// 2026-11-08: ids 1, 2, 3 and 15.
+func TestRulesetNamedReadsTheProfilesRulesetNames(t *testing.T) {
+	for _, tc := range []struct{ name, want string }{
+		{"PvP", RulesetPvP}, {"Normal", RulesetNormal}, {"Roleplay", RulesetRP},
+		{"Roleplay PvP", RulesetRP}, {"Hardcore", RulesetHardcore},
+	} {
+		if got, ok := RulesetNamed(tc.name); !ok || got != tc.want {
+			t.Errorf("RulesetNamed(%q) = %q, %v; want %q", tc.name, got, ok, tc.want)
+		}
+	}
+	if got, ok := RulesetNamed(""); ok {
+		t.Errorf("an empty name must name no ruleset, got %q", got)
 	}
 }
 

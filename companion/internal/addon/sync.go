@@ -148,6 +148,10 @@ type Sync struct {
 	// consume the change the sync is waiting for. An upload that
 	// failed is simply not recorded, so the next pass retries it.
 	uploaded map[string]Stamp
+	// clears is, per SavedVariables file, the raid answers the site has
+	// accepted or refused that are still in the file: they come out of
+	// it once the folder is quiet (raid_answer.go).
+	clears map[string][]RaidAnswerKey
 	// sent is, per SavedVariables file, the key of the last outbox the
 	// site answered (stored or refused) or the companion dropped as too
 	// large: a file the game rewrites with the same outbox sends its
@@ -204,7 +208,7 @@ func New(o Options) *Sync {
 	if o.Now == nil {
 		o.Now = time.Now
 	}
-	s := &Sync{o: o, uploaded: map[string]Stamp{}, sent: map[string]string{}, fresh: map[string]bool{},
+	s := &Sync{o: o, uploaded: map[string]Stamp{}, clears: map[string][]RaidAnswerKey{}, sent: map[string]string{}, fresh: map[string]bool{},
 		skipLogged: map[string]bool{}, formatLogged: map[int]bool{},
 		pending: map[string]*pendingWrite{}, lastBody: map[string][]byte{}, seen: map[string]bool{}}
 	if o.StateDir != "" {
@@ -276,6 +280,11 @@ func (s *Sync) pass(ctx context.Context, now time.Time, paths []string) error {
 			errs = append(errs, err)
 		}
 		outboxUp = outboxUp || sent
+	}
+	for _, p := range paths {
+		if len(s.clears[p]) > 0 && quiet(p, now) {
+			s.clearAnswers(p)
+		}
 	}
 
 	// settled are the files whose logout fetch is due: exported, and the
@@ -459,6 +468,11 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 			outboxUp = true
 			s.markSent(p, ob.key())
 			s.answered(res)
+			if res.Outbox != nil {
+				if done := answeredKeys(res.Outbox.RaidAnswer); len(done) > 0 {
+					s.clears[p] = done
+				}
+			}
 			err = s.postBatches(ctx, rest)
 		case refused(err, "outbox"):
 			// The site read the outbox and cannot use it. Sending it again
@@ -499,6 +513,40 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 		s.markSent(p, dropped.key())
 	}
 	return outboxUp, nil
+}
+
+// clearAnswers takes the raid answers the site is done with out of the
+// file. When the file is still the version that went up, the edit is the
+// companion's own and is not uploaded again: the new version is recorded
+// as uploaded and its outbox as answered. A failed edit is logged and
+// dropped; the answers go up again with the next logout and are answered
+// again.
+func (s *Sync) clearAnswers(p string) {
+	done := s.clears[p]
+	delete(s.clears, p)
+	_, before, err := s.o.Cache.Saved(p)
+	ours := err == nil && s.uploaded[p].eq(before)
+	n, err := ClearRaidAnswers(p, done)
+	if err != nil {
+		s.o.Log.Warn("could not take the answered raid answers out of the addon's file",
+			"component", "addon", "path", p, "err", err.Error())
+		return
+	}
+	if n == 0 {
+		return
+	}
+	s.o.Log.Info("took answered raid answers out of the addon's file", "component", "addon", "path", p, "removed", n)
+	if !ours {
+		return
+	}
+	saved, at, err := s.o.Cache.Saved(p)
+	if err != nil {
+		return
+	}
+	s.uploaded[p] = at
+	if saved.Outbox != nil {
+		s.markSent(p, saved.Outbox.key())
+	}
 }
 
 // sentList records that the site accepted a character list of n, in

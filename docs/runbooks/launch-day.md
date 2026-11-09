@@ -92,6 +92,18 @@ Signals to watch for:
 - **`battlenet_import ... rate_limited=true`**: Blizzard answered 429 (about 36k calls an hour
   and 100 a second per client). Sign-in still works and characters are listed. Their gear and
   talents fill in on the nightly `bnet-refresh` (03:30 UTC) or the player's next sign-in.
+- **`bnetimport op=needs_ruleset`**: no source named a Battle.net character's ruleset (realm
+  type, profile `ruleset`, or the account's own addon row), so the character was skipped, never
+  keyed as normal. The line lists `fields_checked`. A trickle is new characters whose profile
+  Blizzard has not published yet; the next sign-in retries them. A burst means Blizzard moved
+  the profile's `ruleset` field: read a stored `characters.bnet_profile`. It is counted by the
+  log-based metric `bnet_needs_ruleset`, created once:
+
+  ```bash
+  gcloud logging metrics create bnet_needs_ruleset --project foreversixty \
+    --description='Battle.net characters skipped because no source named their ruleset' \
+    --log-filter='resource.type="cloud_run_revision" AND jsonPayload.msg="bnetimport" AND jsonPayload.op="needs_ruleset"'
+  ```
 - **Rising latency with low CPU**: requests are waiting on the database (pool or commish-pg). See
   "commish-pg is hot".
 

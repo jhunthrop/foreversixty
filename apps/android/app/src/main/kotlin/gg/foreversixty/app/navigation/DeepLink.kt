@@ -24,18 +24,11 @@ sealed interface DeepLink {
         override fun url(): String = link("/app/character/${enc(region)}/${enc(ruleset)}/${enc(name)}")
     }
 
-    /**
-     * Raids tab, the raid page. spec=ask opens the spec sheet with In pending; state=in presses In on open;
-     * view=unanswered opens it filtered to Not answered (spec 2026-11-08 F3). /app/raid/{guild}/{raid}
-     */
+    /** Raids tab, the raid page. spec=ask opens the spec sheet with In pending; state=in presses In on open; view=unanswered opens it filtered to Not answered (spec 2026-11-08 F3). /app/raid/{guild}/{raid} */
     data class Raid(val guild: Long, val raid: Long, val spec: String? = null, val state: String? = null, val view: String? = null) : DeepLink {
         override val screen: String get() = "raid"
 
         override fun url(): String = link("/app/raid/$guild/$raid", "spec" to spec, "state" to state, "view" to view)
-
-        companion object {
-            const val UNANSWERED = "unanswered"
-        }
     }
 
     /** Raids tab, the raid page, Your raid night. /app/raid/{guild}/{raid}/night */
@@ -50,6 +43,13 @@ sealed interface DeepLink {
         override val screen: String get() = "guild"
 
         override fun url(): String = link("/app/guild/$guild")
+    }
+
+    /** Raids tab for that guild, the applicant's sheet (guild.applicant). An application already decided opens the sheet's decided state. /app/guild/{guild}/applicants/{application} */
+    data class GuildApplicant(val guild: Long, val application: Long) : DeepLink {
+        override val screen: String get() = "guildApplicant"
+
+        override fun url(): String = link("/app/guild/$guild/applicants/$application")
     }
 
     /** BiS on that list; band is 20 to 60 or p1. /app/bis/{spec}/{band} */
@@ -216,6 +216,7 @@ sealed interface DeepLink {
                 ?: matchRaid(s, q)
                 ?: matchRaidNight(s)
                 ?: matchGuild(s)
+                ?: matchGuildApplicant(s)
                 ?: matchBis(s)
                 ?: matchSim(s)
                 ?: matchReport(s)
@@ -248,7 +249,7 @@ sealed interface DeepLink {
             if (s.size != 4 || s[0] != "app" || s[1] != "raid") return null
             val guild = s[2].toLongOrNull() ?: return null
             val raid = s[3].toLongOrNull() ?: return null
-            return Raid(guild, raid, allowed(q["spec"], "ask"), allowed(q["state"], "in", "late", "bench", "out"), allowed(q["view"], Raid.UNANSWERED))
+            return Raid(guild, raid, allowed(q["spec"], "ask"), allowed(q["state"], "in", "late", "bench", "out"), allowed(q["view"], "unanswered"))
         }
 
         private fun matchRaidNight(s: List<String>): DeepLink? {
@@ -262,6 +263,13 @@ sealed interface DeepLink {
             if (s.size != 3 || s[0] != "app" || s[1] != "guild") return null
             val guild = s[2].toLongOrNull() ?: return null
             return Guild(guild)
+        }
+
+        private fun matchGuildApplicant(s: List<String>): DeepLink? {
+            if (s.size != 5 || s[0] != "app" || s[1] != "guild" || s[3] != "applicants") return null
+            val guild = s[2].toLongOrNull() ?: return null
+            val application = s[4].toLongOrNull() ?: return null
+            return GuildApplicant(guild, application)
         }
 
         private fun matchBis(s: List<String>): DeepLink? {

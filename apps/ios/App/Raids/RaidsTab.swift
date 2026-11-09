@@ -92,12 +92,13 @@ final class RaidsRouter {
     /// Opens a raid link on a fresh stack, so back goes to the tab's root.
     func open(_ link: DeepLink) {
         switch link {
-        case let .raid(guild, raid, spec, state):
+        case let .raid(guild, raid, spec, state, _):
             let press = spec == "ask" ? SignupState.signedIn : state.flatMap(SignupState.init)
             path = [.raid(guild: guild, raid: raid, roster: false, open: press.map(RaidOpenAction.init))]
-        case let .raidNight(_, raid):
-            path = [.night(raid: raid)]
-        case .guild:
+        case let .raidNight(guild, raid):
+            path = [.raid(guild: guild, raid: raid, roster: false, open: nil), .night(raid: raid)]
+        case .guild, .guildApplicant:
+            // The applicant sheet (guild.applicant) lands on the tab's root, which shows Needs you.
             path = []
         default:
             break
@@ -112,7 +113,7 @@ final class RaidsRouter {
     /// True for the links the Raids tab opens.
     static func handles(_ link: DeepLink) -> Bool {
         switch link {
-        case .raid, .raidNight, .guild: true
+        case .raid, .raidNight, .guild, .guildApplicant: true
         default: false
         }
     }

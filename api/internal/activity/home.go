@@ -30,6 +30,8 @@ type Home struct {
 	Imports ImportSimmer
 	// Sections is HOME_SECTIONS, the owner's switches over the apps' home composition.
 	Sections homesections.Override
+	// Now is the clock GuildSimsRank reads; nil is time.Now.
+	Now func() time.Time
 }
 
 // homeCharacter is what the blocks are read for.
