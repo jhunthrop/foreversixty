@@ -41,7 +41,7 @@ PRIMS_CSS = '''
 /* facts: label and value pairs, one per line */
 .fx{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14px}.fx dt{color:var(--muted)}.fx dd{margin:0;color:#fff;text-align:right}
 /* row list: lead, main with a sub line, trail */
-.rl li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.rl li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07)}
 .rl li:last-child{border-bottom:0}.rl .mn>b{display:block;font-weight:600;line-height:19px}.rl .mn>span{display:block;font-size:13px;color:var(--muted)}
 .rl .tr{text-align:right;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap}
 /* chart frame: the modern line chart in the page's palette; legend chips carry the figure and its unit */
@@ -86,7 +86,9 @@ font:13px/1.6 ui-monospace,Menlo,monospace;color:#fff;white-space:pre-wrap;overf
 .tc .ttip{position:absolute;left:52px;top:-4px;z-index:3;width:280px}
 @media(max-width:1100px){.tt{grid-template-columns:1fr}}
 /* phone: the hover tooltip becomes the tap sheet (not drawn here); table heads may wrap rather than push a column off */
-@media(max-width:700px){.tc .ttip{display:none}.tb th{white-space:normal}}
+@media(max-width:700px){.tc .ttip{display:none}.tb th{white-space:normal}
+/* a row whose trail is actions (Award, Accept and Decline) puts them under the row on a phone; a figure trail stays */
+.rl li:has(.tr .btn,.tr .btn2){grid-template-columns:auto 1fr}.rl li:has(.tr .btn,.tr .btn2) .tr{grid-column:1/-1;text-align:left}}
 /* point order: a row per ten levels, one socket per level with the talent taken there and its rank */
 .po li{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.07)}
 .po li:last-child{border-bottom:0}.po .lv{font-size:12.5px;color:var(--muted)}.po .sk{display:flex;flex-wrap:wrap;gap:4px}
@@ -113,7 +115,7 @@ font:13px/1.6 ui-monospace,Menlo,monospace;color:#fff;white-space:pre-wrap;overf
 /* need grid: what a raid needs against what it has; a cell is ok, short or missing */
 .ng td.c{text-align:center;font-weight:700;width:56px}.ng .ok{color:var(--gain)}.ng .warn{color:var(--gold)}.ng .miss{color:#f0736b}.ng .none{color:var(--muted)}
 /* item row: icon with its quality edge, the name in quality colour, one sub line, one trail */
-.ir{display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.ir{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07)}
 .ir:last-child{border-bottom:0}.ir img{width:36px;height:36px;border-radius:var(--r-ic);border:1px solid #000;box-shadow:0 0 0 1px var(--qb,var(--rule))}
 .ir .n{display:block;font-weight:600;line-height:19px}.ir .s{display:block;font-size:12.5px;color:var(--muted);line-height:17px}.ir .t{font-size:13px;color:var(--muted);white-space:nowrap}
 .twocol{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start}
