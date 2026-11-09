@@ -49,8 +49,9 @@
     compact?: boolean;
   } = $props();
 
+  const noParses = $derived(row.median_gap === null);
   const figure = $derived(
-    row.median_gap === null
+    noParses
       ? simCopy.specNoParses
       : `${simCopy.specMedianGap} ${formatPercent(row.median_gap * 100)} ${simCopy.specOver} ${row.parses} ${row.parses === 1 ? simCopy.specParse : simCopy.specParses}`,
   );
@@ -79,11 +80,14 @@
   open={false}
 >
   {#snippet subContent()}
-    <span class="flex flex-col">
-      <span class="text-strong tabular-nums" data-testid="spec-figure">{figure}</span>
-      <!-- "No parses yet" already says what the note would; one status a row (the Tag). -->
-      {#if figure !== simCopy.specNoParses}<span>{specStateNote(row.state)}</span>{/if}
-    </span>
+    <!-- A spec with no parses says so once, in its Tag; on the in-page card (compact) the line
+         stays, as the only status there. -->
+    {#if !noParses || compact}
+      <span class="flex flex-col">
+        <span class="text-strong tabular-nums" data-testid="spec-figure">{figure}</span>
+        {#if !noParses}<span>{specStateNote(row.state)}</span>{/if}
+      </span>
+    {/if}
   {/snippet}
   {#snippet trail()}
     <Tag tone={row.state === 'validated' ? 'success' : 'muted'} testid="spec-state"

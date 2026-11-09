@@ -14,7 +14,6 @@
   import { loadRotationLines, type RotationLines } from '../../lib/sim/rotations';
   import { specDisplayName } from '../../lib/sim/spec-label';
   import type { SimRequest, SimResult } from '../../lib/sim/types';
-  import { isStale } from '../../lib/sim/version';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import ActionMark from './ActionMark.svelte';
@@ -67,16 +66,6 @@
       ? plannedRotationRows(lines, tables.names, level)
       : rotationRows(result, lines, tables.names);
   });
-  const drifted = $derived(
-    result !== null &&
-      lines !== null &&
-      lines !== undefined &&
-      (result.rotation_sha === undefined
-        ? isStale(result.engine_version)
-        : lines.sha !== null && result.rotation_sha !== lines.sha),
-  );
-  /** Only a rotation that changed since the run says so; the spec and level are the page's head. */
-  const meta = $derived(drifted ? copy.today : undefined);
 
   function rankOf(action: string | null): number {
     return action === null ? 0 : tables.visuals(action).rank;
@@ -98,7 +87,6 @@
 <Section
   panel
   title={copy.title}
-  {meta}
   action={{ label: copy.guide(spec), href: `/guides/${classSpecPath(request.spec)}` }}
   testid="sim-rotation-saved-card"
 >

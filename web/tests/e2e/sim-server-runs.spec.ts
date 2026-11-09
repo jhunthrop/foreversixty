@@ -144,7 +144,7 @@ test('a payer sees every row state with the spec words', async ({ page }) => {
 
   const unseen = page.getByTestId('server-run-done-unseen');
   await expect(unseen).toContainText('1,204 DPS');
-  await expect(unseen).toContainText('Finished 14 minutes ago');
+  await expect(unseen).toContainText('14 minutes ago');
   await expect(unseen).toContainText(serverRunsCopy.unreadSr);
   await expect(unseen).toHaveAttribute('href', '/sim/done-unseen');
 

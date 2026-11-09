@@ -31,6 +31,13 @@
   const kind = $derived(simCopy.kindLabel[kindOf(row)] ?? '');
   const titleText = $derived(row.title === '' ? spec : row.title);
   const meta = $derived(row.title === '' ? kind : `${spec} · ${kind}`);
+  /** A finished run's line: the spec under a title of its own, a tool run's kind (a plain sim
+   *  says nothing), then its age; the DPS is the trail. */
+  const doneMeta = $derived(
+    [row.title === '' ? '' : spec, kindOf(row) === 'run' ? '' : kind]
+      .filter((part) => part !== '')
+      .join(' · '),
+  );
 
   const stampSource = $derived(inFlight || row.finished_at === undefined ? row.created_at : row.finished_at);
   const stampDate = $derived(new Date(stampSource));
@@ -66,19 +73,23 @@
   </span>
 {/snippet}
 {#snippet sub()}
-  {meta === '' ? '' : `${meta} · `}{serverRunsCopy.serverMark} ·
-  {#if inFlight}
-    <span class="text-strong" data-testid={`server-run-state-${row.sim_id}`}
-      ><span
-        class="bg-gold mr-1 inline-block h-2 w-2 rounded-full align-middle"
-        class:server-run-dot-pulse={state !== 'queued'}
-        aria-hidden="true"
-      ></span>{state === 'queued' ? serverRunsCopy.queued : serverRunsCopy.running}{mutedSuffix}</span
-    > ·
-  {:else if state === 'error'}
-    <span class="text-wipe">{serverRunsCopy.failedLine(row.failure_reason)}</span> ·
+  {#if isDone}
+    {doneMeta === '' ? '' : `${doneMeta} · `}<time datetime={stampSource} title={stampTitle}>{age}</time>
+  {:else}
+    {meta === '' ? '' : `${meta} · `}{serverRunsCopy.serverMark} ·
+    {#if inFlight}
+      <span class="text-strong" data-testid={`server-run-state-${row.sim_id}`}
+        ><span
+          class="bg-gold mr-1 inline-block h-2 w-2 rounded-full align-middle"
+          class:server-run-dot-pulse={state !== 'queued'}
+          aria-hidden="true"
+        ></span>{state === 'queued' ? serverRunsCopy.queued : serverRunsCopy.running}{mutedSuffix}</span
+      > ·
+    {:else if state === 'error'}
+      <span class="text-wipe">{serverRunsCopy.failedLine(row.failure_reason)}</span> ·
+    {/if}
+    <time datetime={stampSource} title={stampTitle}>{ageLine}</time>
   {/if}
-  <time datetime={stampSource} title={stampTitle}>{ageLine}</time>
   {#if rerun === 'failed'}
     <span class="text-wipe block" role="alert">{serverRunsCopy.runAgainFailed}</span>
   {:else if rerun === 'lapsed'}

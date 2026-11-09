@@ -16,7 +16,6 @@ error band is computed from the fixture's own spread (band()).
 """
 import base64
 import decimal
-import hashlib
 import json
 import os
 import re
@@ -390,13 +389,6 @@ def this_run_section() -> str:
     return Section('This run', f'<div class="rail-body flow">{facts}{lists}{acts}</div>')
 
 
-def rotation_drifted() -> bool:
-    """lib/sim/rotation-card's drift rule: the run's rotation_sha against the hash a run stamps today (sync-rotations.mjs)."""
-    apl = ROOT / 'sim' / 'request' / 'apl' / f'{SPEC}.apl.json'
-    sha = RES.get('rotation_sha')
-    return bool(sha) and apl.exists() and hashlib.sha256(apl.read_bytes()).hexdigest()[:12] != sha
-
-
 def rot_title(key: str, name: str, rank: int = 0) -> str:
     """The built rotation title (ActionMark): the 24 px icon, then the name and its rank."""
     rk = f'<span class="rk-s">Rank {rank}</span>' if rank else ''   # glued, as the built ActionMark: the rank never takes a line alone
@@ -440,19 +432,18 @@ def rotation_section(ran: bool = True) -> str:
         lines.append(r if n or not ran else f'<div class="dim">{r}</div>')
     body = (f'<div class="rot"><h3 class="t-label rot-l">Before the pull</h3>{Rows(pre, open_=True)}<h3 class="t-label rot-l">Then, from the top at every decision</h3>'
             f'{Rows(lines, open_=True)}</div>')
-    meta = 'Today&rsquo;s rotation' if ran and rotation_drifted() else ''   # the spec and level are the head's
-    return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'), meta=meta)
+    return Section('Rotation', body, Link(f'{SPEC_ROW["name"]} guide &rsaquo;'))
 
 
 def history_section(state: str = 'ready', server: bool = False) -> str:
-    """Your sims. `server`: a payer's list, where server runs are rows of the same list (no panel of their own), each marked
-    "On our servers" with its kind and age (SimYourSims + ServerRunRow); the gate's three runs are server runs."""
+    """Your sims. `server`: a payer's list, where server runs are rows of the same list (no panel of their own): a titled run
+    names its spec and age (SimYourSims + ServerRunRow); the gate's three runs are server runs."""
     if state == 'empty':
         return Section('Your sims', '<p class="empty-open">Nothing saved yet. Run a sim and press Save.</p>')
     if state == 'failed':
         return Section('Your sims', f'<p class="empty-open">Your sims did not load. {Link("Try again")}</p>')
     if server:
-        rows = [Row(t, f'{SPEC_LABEL} &middot; Sim &middot; On our servers &middot; <time>Finished {a}</time>', trail=(Figure(f'{v} DPS', size='sm') if v else ''))
+        rows = [Row(t, f'{SPEC_LABEL} &middot; <time>{a}</time>', trail=(Figure(f'{v} DPS', size='sm') if v else ''))
                 for (t, _, _, v), a in zip(HISTORY, SERVER_AGES)]
         return Section('Your sims', Rows(rows, open_=True), Link('All &rsaquo;'))
     rows = [Row(t, f'{s} &middot; {d}', trail=(Figure(v, unit='DPS', size='sm') if v else '')) for t, s, d, v in HISTORY]

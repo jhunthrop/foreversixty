@@ -76,7 +76,6 @@ export const rotationCardCopy = {
   /** The section's meta: before a run, then with this run's casts. */
   meta: (spec: string, level: number) => `${spec}, at ${level}`,
   metaRan: (spec: string, level: number) => `${spec}, at ${level} · casts per fight`,
-  today: "Today's rotation",
   beforePull: 'Before the pull',
   thenPriority: 'Then, from the top at every decision',
   cast: 'Cast',

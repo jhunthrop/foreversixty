@@ -75,7 +75,7 @@ test.describe('/sim/specs', () => {
     // grid still renders it, as "Not yet" with no figure, rather than leaving it out.
     const feral = page.getByTestId('spec-druid-feral');
     await expect(feral.getByTestId('spec-state')).toHaveText('Not yet');
-    await expect(feral.getByTestId('spec-figure')).toHaveText(simCopy.specNoParses);
+    await expect(feral.getByTestId('spec-figure')).toHaveCount(0);
 
     // C1: rogue-combat is the fixture's own default (unmeasured) card -- null updated_at,
     // '' engine_version -- exactly the shape the real API sends for every spec the nightly

@@ -68,14 +68,15 @@ describe('ServerRunRow states', () => {
     expect(text(body)).not.toContain('taking longer');
   });
 
-  it('done and opened: a whole-row link to the result, marked as a server run, no dot', () => {
+  it('done and opened: a whole-row link to the result, its age the only line, no dot', () => {
     const body = renderRow(
       row({ state: 'done', seen: true, headline: '1,204 DPS', finished_at: '2026-10-24T11:46:00Z' }),
     );
     expect(body).toContain('href="/sim/sim-1"');
     expect(text(body)).toContain('1,204 DPS');
-    expect(text(body)).toContain('Finished 14 minutes ago');
-    expect(text(body)).toContain(serverRunsCopy.serverMark);
+    expect(text(body)).toContain('14 minutes ago');
+    expect(text(body)).not.toContain('Finished');
+    expect(text(body)).not.toContain(serverRunsCopy.serverMark);
     expect(body).not.toContain(serverRunsCopy.unreadSr);
     expect(body).not.toContain('<button');
   });
@@ -105,10 +106,11 @@ describe('ServerRunRow states', () => {
     expect(text(body)).toContain('Failed · Ended');
   });
 
-  it('titled rows show the title and the spec in the meta line', () => {
+  it('titled rows show the title and the spec in the meta line, a plain sim no kind', () => {
     const body = renderRow(row({ state: 'done', seen: true, title: 'Raid night' }));
     expect(text(body)).toContain('Raid night');
-    expect(text(body)).toContain('Frost Mage · Sim');
+    expect(text(body)).toContain('Frost Mage · 2 minutes ago');
+    expect(text(body)).not.toContain('· Sim');
   });
 
   it('untitled rows show the spec label and the kind alone', () => {

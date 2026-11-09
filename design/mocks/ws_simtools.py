@@ -242,7 +242,7 @@ def specs() -> str:
     for s in [s for s in SPECS if s['role'] == 'dps']:
         label = f"{s['name']} {CLASS_NAME[s['class_slug']]}"
         foot = '<details class="disc"><summary>What it does</summary></details>' if notes.get(s['spec'], True) else ''
-        rows.append(Row(label, '<span class="num">No parses yet</span>',
+        rows.append(Row(label, '',
                         trail='<span class="tag muted">Not yet</span>', title_color=CLASS_COLOR[s['class_slug']], link=False, foot=foot))
     others = [Row(f"{s['name']} {CLASS_NAME[s['class_slug']]}", 'Not simulated yet: damage specs first; healers and tanks come later',
                   title_color=CLASS_COLOR[s['class_slug']], link=False) for s in SPECS if s['role'] != 'dps']
