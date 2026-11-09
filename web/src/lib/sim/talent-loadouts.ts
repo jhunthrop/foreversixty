@@ -7,6 +7,7 @@ import { selectBand } from '../bis/presets';
 import type { BisFile } from '../bis/types';
 import { decodeFS1 } from '../planner/fs1';
 import { factionOfRace } from '../race-faction';
+import { talentSplit } from './result-band';
 import type { TalentIndex } from '../planner/rules';
 import { bulkCopy } from './copy';
 import { poolQualityCopy } from './pool-quality-copy';
@@ -78,5 +79,5 @@ export function guideLoadout(file: BisFile, level: number, race: string): Talent
   const band = bandForLevel(level);
   const entry = selectBand(file, band, faction);
   if (entry === undefined || entry.talents === '') return null;
-  return { name: bulkCopy.talentsGuide(band), talents: entry.talents };
+  return { name: bulkCopy.talentsGuide(band, talentSplit(entry.talents)), talents: entry.talents };
 }

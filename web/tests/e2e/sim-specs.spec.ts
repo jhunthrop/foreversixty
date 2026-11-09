@@ -106,17 +106,24 @@ test.describe('/sim/specs', () => {
 
     const protectionWarrior = page.getByTestId('spec-unsimulated-warrior-protection');
     await expect(protectionWarrior).toContainText('Protection Warrior');
-    await expect(protectionWarrior).toHaveAttribute('href', '/guides/warrior/protection');
+    await expect(page.getByTestId('spec-guide-warrior-protection')).toHaveAttribute(
+      'href',
+      '/guides/warrior/protection',
+    );
 
     const restorationDruid = page.getByTestId('spec-unsimulated-druid-restoration');
     await expect(restorationDruid).toContainText('Restoration Druid');
-    await expect(restorationDruid).toHaveAttribute('href', '/guides/druid/restoration');
+    await expect(page.getByTestId('spec-guide-druid-restoration')).toHaveAttribute(
+      'href',
+      '/guides/druid/restoration',
+    );
 
     // No fidelity pill, no engine stamp, no "Not yet" badge link -- SpecCard's own testids
     // never appear inside this group.
     await expect(unsimulated.getByTestId('spec-state')).toHaveCount(0);
     await expect(unsimulated.getByTestId('spec-footer')).toHaveCount(0);
-    await expect(unsimulated.locator('a')).toHaveCount(0);
+    // One way on per row: its guide.
+    await expect(unsimulated.locator('a')).toHaveCount(unsimulatedSpecCount);
   });
 
   test('a hash link scrolls straight to that spec’s card', async ({ page }) => {

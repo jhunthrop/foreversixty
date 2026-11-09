@@ -322,8 +322,9 @@ def benchmark_row() -> str:
     dps, err = round(band_row['set_dps'], 2), round(band_row.get('set_dps_error', 0), 2)
     gap, margin = MEAN - dps, Z95 * (ERR ** 2 + err ** 2) ** .5
     mag = round(abs(gap), 1)
-    gap_txt = ('&minus;' if gap < 0 else '+') + (f'{round(mag):,}' if mag >= 10 or mag == 0 else f'{mag:.1f}')
-    return Rows([Row('Best-in-slot set', f'{gap_txt} &plusmn; {margin:.1f}', trail=Figure(fnum(dps), unit='DPS', size='sm'))], open_=True)
+    gap_txt = f'{round(mag):,}' if mag >= 10 or mag == 0 else f'{mag:.1f}'
+    sub = f'{gap_txt} DPS {"under" if gap < 0 else "over"} &middot; {abs(gap) / dps * 100:.1f}% &middot; &plusmn; {margin:.1f}'
+    return Rows([Row(f'Level {band_row["band"]} {REQ["preset"]} BiS', sub, trail=Figure(fnum(dps), unit='DPS', size='sm'))], open_=True)
 
 
 # "No effect on your damage": the shipped rule, lib/sim/buff-effect.ts hasNoDamageEffect, read from the data (ruling M4).

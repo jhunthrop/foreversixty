@@ -10,7 +10,7 @@
 <script lang="ts">
   import { bisPageHref } from '../../lib/bis/hover';
   import type { BenchmarkMatch } from '../../lib/sim/bis-benchmark';
-  import { MINUS, gainLabel } from '../../lib/sim/combos';
+  import { gainLabel } from '../../lib/sim/combos';
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { grouped, oneDecimal, spreadCopy } from '../../lib/sim/result-copy';
   import { spreadOf, type SpreadBar } from '../../lib/sim/spread';
@@ -37,7 +37,12 @@
   const gapLine = $derived(
     benchmark === null
       ? ''
-      : `${benchmark.gap < 0 ? MINUS : '+'}${gainLabel(benchmark.gap)} ± ${formatMargin(benchmark.margin)}`,
+      : spreadCopy.benchmarkGap(
+          gainLabel(benchmark.gap),
+          benchmark.gap < 0,
+          oneDecimal(Math.abs(benchmark.gap / benchmark.dps) * 100),
+          formatMargin(benchmark.margin),
+        ),
   );
 
   /** The readout's width and the side of the plot past which it flips left. */
@@ -193,7 +198,7 @@
   </div>
   {#if benchmark !== null}
     <Row
-      title={spreadCopy.benchmark}
+      title={spreadCopy.benchmark(benchmark.band, benchmark.preset)}
       sub={gapLine}
       href={bisPageHref(spec, benchmark.faction, benchmark.band)}
       open

@@ -22,8 +22,14 @@ describe('guideLoadout', () => {
   } as unknown as BisFile;
 
   it('is the band’s own talents at the character’s level band and faction', () => {
-    expect(guideLoadout(file, 60, 'orc')).toEqual({ name: bulkCopy.talentsGuide(60), talents: '343-051-2' });
-    expect(guideLoadout(file, 57, 'troll')).toEqual({ name: bulkCopy.talentsGuide(50), talents: '1-2-3' });
+    expect(guideLoadout(file, 60, 'orc')).toEqual({
+      name: bulkCopy.talentsGuide(60, '10/6/2'),
+      talents: '343-051-2',
+    });
+    expect(guideLoadout(file, 57, 'troll')).toEqual({
+      name: bulkCopy.talentsGuide(50, '1/2/3'),
+      talents: '1-2-3',
+    });
   });
 
   it('is null for a race with no faction or a band the file lacks', () => {

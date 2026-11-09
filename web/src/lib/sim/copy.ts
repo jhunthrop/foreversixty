@@ -653,6 +653,8 @@ export const simCopy = {
   /** `/sim/specs`: heading over the 8 healer/tank cards, grouped below rather than
    *  interleaved, so the page reads as "these 20 work, these 8 do not". */
   specsUnsimulatedHeading: 'Healers and tanks',
+  /** A healer or tank row's way on: its guide. */
+  specsGuide: 'Guide',
   /**
    * Fix round 1, Finding B: the `<Base description="...">` strings are what a healer or
    * tank reads in a search result or a link preview -- the first place the DPS-only claim
@@ -911,7 +913,7 @@ export const bulkCopy = {
   // --- talents and sets ---
   talentsOwn: 'Your current build',
   /** The published set's own talents at the character's band (talent-loadouts.ts guideLoadout). */
-  talentsGuide: (band: number): string => `Guide build, level ${band}`,
+  talentsGuide: (band: number, split: string): string => `Guide build, level ${band} · ${split}`,
   /** The /sim/talents candidates block's title. */
   talentBuildsTitle: 'Talent builds',
   talentsSaved: 'Your saved builds',

@@ -20,6 +20,9 @@
   const caption = $derived(
     view.hasteCaption === undefined ? view.noteLine : `${view.noteLine} ${view.hasteCaption}`,
   );
+  /** Two decimals, as the scale; an error that rounds to nothing says so. */
+  const SMALLEST_SHOWN = 0.005;
+  const errorLabel = (error: number): string => (error < SMALLEST_SHOWN ? '< 0.01' : `±${error.toFixed(2)}`);
 
   const COLUMNS: readonly StatColumn[] = [
     { id: 'scale', label: 'Scale' },
@@ -41,7 +44,7 @@
         value: row.dpsPerPoint === undefined ? '' : `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit}`,
         muted: true,
       },
-      { value: `±${row.scaleError.toFixed(2)}`, muted: true },
+      { value: errorLabel(row.scaleError), muted: true },
     ];
   }
 </script>

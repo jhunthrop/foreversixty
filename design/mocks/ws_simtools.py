@@ -141,9 +141,15 @@ def whole_sets() -> str:
                    '<button type="button" class="btn">Add set</button></div>')
 
 
+def guide_split() -> str:
+    f = json.loads((B / 'bis' / f'{SPEC}.json').read_text())
+    band = next(b for b in f['bands'] if b['band'] == LEVEL and b['faction'] == 'horde' and b.get('preset') == 'raid')
+    return '/'.join(str(sum(int(c) for c in tree)) for tree in band['talents'].split('-'))
+
+
 def talent_builds(plated: bool = False) -> str:
     # The published set's own talents at the character's band (web lib/sim/talent-loadouts.ts guideLoadout)
-    body = (f'<div class="tb"><label class="opt">{check()}Your current build</label><label class="opt">{check()}Guide build, level {LEVEL}</label>'
+    body = (f'<div class="tb"><label class="opt">{check()}Your current build</label><label class="opt">{check()}Guide build, level {LEVEL} &middot; {guide_split()}</label>'
             f'<h3 class="t-h4">Your saved builds</h3>'
             f'<p class="t-small">Your saved builds could not be read; the rest of the page still works.</p><div class="bt">{btn("Add a build")}</div></div>')
     return Section('Talent builds', body, frame='framed' if plated else 'plain')
@@ -250,7 +256,8 @@ def published_weights() -> str:
         name = f'<b>{label} rating</b>' if w.get('unit') == 'rating' else f'<b>{label}</b>'
         sub = f'{w["rating_factor"]} {label} rating = 1% {label}' if 'rating_factor' in w else ''
         sf = w['scale_factor'] / divisor
-        trs.append(S.StatRow('', name, sub, [f'{sf:.2f}', f'{w["dps_per_point"]:.3f} DPS', f'&plusmn;{w["scale_error"] / divisor:.2f}'],
+        err = w['scale_error'] / divisor
+        trs.append(S.StatRow('', name, sub, [f'{sf:.2f}', f'{w["dps_per_point"]:.3f} DPS', '&lt; 0.01' if err < .005 else f'&plusmn;{err:.2f}'],
                              meter=S.Meter(min(1, max(.04, sf)))))
     top = STAT_LABEL[next(w for w in rows if reading(w) == 'value')['stat']]
     cap = f'Per point of stat, normalized to {top} = 1.00, with DPS per point and the sim error.'
@@ -284,8 +291,9 @@ def specs() -> str:
         # SpecCard: What it does on the name's line; no parses, so no status line under it (the tag says it)
         rows.append(Row(f'<span class="spec-t"><span>{label}</span>{foot}</span>', '',
                         trail='<span class="tag muted">Not yet</span>', title_color=CLASS_COLOR[s['class_slug']], link=False))
-    # UnsimulatedSpecCard: the spec in its class colour, linking to its guide; the heading says why
-    others = [Row(f"{s['name']} {CLASS_NAME[s['class_slug']]}", title_color=CLASS_COLOR[s['class_slug']]) for s in SPECS if s['role'] != 'dps']
+    # UnsimulatedSpecCard: the spec in its class colour, its guide the trail's action; the heading says why
+    others = [Row(f"{s['name']} {CLASS_NAME[s['class_slug']]}", trail=f'<span class="alink">{S.Link("Guide &rsaquo;")}</span>', title_color=CLASS_COLOR[s['class_slug']], link=False)
+              for s in SPECS if s['role'] != 'dps']
     return finish('Spec support', head('specs') + ledger(Section('Damage specs', Rows(rows), frame='framed', flush=True), Section('Healers and tanks', Rows(others, open_=True))))
 
 
@@ -308,7 +316,7 @@ TOOL_CSS = '''<style>
 .sets-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;padding-top:19px}.pad{padding:16px}.kinds{display:flex;flex-wrap:wrap;gap:0 20px}
 .src-g{display:flex;flex-direction:column;gap:4px;padding-top:16px}.src{display:flex;flex-direction:column;padding:4px 0}.indent{padding-left:28px}.grow-n{flex:1}.src p.indent{margin:0;line-height:19.5px}.src .disc>summary{display:flex;align-items:center;height:44px;box-sizing:border-box}.src-g .t-h4{margin:0;font-size:15px;line-height:20px}
 .pn-b .hits{max-height:320px}.pn-b>.search-f{padding-bottom:16px}.spec-t{display:flex;flex-wrap:wrap;align-items:center;column-gap:16px}.spec-t .disc{font-weight:400}.rail-col .pn-b>.tb{padding-top:0}.pn-b>.opts.ce{padding-top:0}.pn-b .sets-f{padding-top:8px}.pn-b>.cands{padding-top:12px}
-.wt-pub{display:flex;flex-direction:column;gap:8px}.wt-pub p{margin:0;font-size:13px}.gated{display:flex;flex-direction:column;gap:4px;margin:0;padding-left:12px;list-style:none}.gated li{line-height:19.5px}.gb{padding-top:4px}</style>'''
+.alink{display:inline-flex;align-items:center;min-height:44px}.wt-pub{display:flex;flex-direction:column;gap:8px}.wt-pub p{margin:0;font-size:13px}.gated{display:flex;flex-direction:column;gap:4px;margin:0;padding-left:12px;list-style:none}.gated li{line-height:19.5px}.gb{padding-top:4px}</style>'''
 
 
 def finish(title: str, body: str) -> str:
