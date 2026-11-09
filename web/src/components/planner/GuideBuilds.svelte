@@ -1,3 +1,7 @@
+<!-- Its styles travel with its code (css="injected"): it renders only after the island hydrates, and a
+     page inlines only the styles of what its server render drew. -->
+<svelte:options css="injected" />
+
 <!-- web/src/components/planner/GuideBuilds.svelte -->
 <!-- Guide builds (lane P7): the class's published guide builds in the rail, one row per build,
      the spec's icon, its name, the build and its split; the row opens it in the guide's levelling
@@ -51,8 +55,8 @@
           {/snippet}
           {#snippet subContent()}
             <span class="gb-sub"
-              >{`${row.label} · ${row.split.join('/')}`}{#if row.trees === current}<Tag tone="muted"
-                  >{plannerCopy.guideBuildLoaded}</Tag
+              >{`${row.label} · ${row.split.join('/')}`}{#if row.trees === current}<span class="gb-tag"
+                  ><Tag tone="muted">{plannerCopy.guideBuildLoaded}</Tag></span
                 >{/if}</span
             >
           {/snippet}
@@ -72,6 +76,9 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 2px 8px;
+  }
+  .gb-tag {
+    display: inline-flex;
   }
   .gb-icon {
     display: block;

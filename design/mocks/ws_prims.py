@@ -1660,7 +1660,7 @@ def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False,
 # inside ("Talents", framed) instead of a bare Plate. Additive: Page(panels=False) and TalentEditor(title='') emit what they did.
 PRIM_CSS += '''
 .layout-wb.panels{--section-gap:22px}
-.porder-s .ah img,.porder-s .ah .ic{opacity:.4}.porder-s .ah b{opacity:.7}
+.porder-s .ah img,.porder-s .ah .ic{opacity:.5}.porder-s .ah b{opacity:.7}
 .porder-s .ah::after{content:"";position:absolute;inset:0;border-radius:5px;border:1px dashed var(--line)}
 @media(min-width:1280px){.layout-wb.panels{column-gap:28px}.layout-wb.panels>.main,.layout-wb.panels>.rail{gap:22px}}
 '''

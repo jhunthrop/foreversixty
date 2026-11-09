@@ -203,12 +203,13 @@
   .pl .ic {
     opacity: 0.55;
   }
+  /* Dimmed, still 4.5:1 on the panel. */
   .lbl.ah {
-    opacity: 0.6;
+    opacity: 0.9;
   }
   .ah img,
   .ah .ic {
-    opacity: 0.4;
+    opacity: 0.5;
   }
   .ah::after {
     content: '';
