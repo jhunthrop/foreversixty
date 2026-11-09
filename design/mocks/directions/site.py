@@ -53,7 +53,7 @@ border:1px solid var(--rule);color:var(--text)}.steps .n.next{background:var(--t
 .code{font:600 30px ui-monospace,Menlo,monospace;letter-spacing:.12em;color:#fff;margin:6px 0 10px}
 .cl .ent{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}.cl .ent:last-child{border-bottom:0}.cl .ent h3{font:600 16px var(--body);color:#fff;margin:2px 0 4px}
 .cl .d{font-size:12.5px;color:var(--muted)}.cl .ent p{font-size:14.5px}.cl .ent a{font-size:14px}.page3{display:grid;grid-template-columns:200px minmax(0,1fr);gap:28px;margin-top:22px;align-items:start}
-.page3 .toc{position:sticky;top:16px}.lg .prose{max-width:76ch}.page3>section{max-width:860px}.lg h2{font-size:24px;margin:22px 0 8px}.lg h2:first-child{margin-top:0}
+.page3 .toc{position:sticky;top:16px}.lg .prose{max-width:76ch}.page3>section{max-width:780px}.lg h2{font-size:24px;margin:22px 0 8px}.lg h2:first-child{margin-top:0}
 .figs{display:flex;gap:32px;flex-wrap:wrap}.figs div{display:flex;flex-direction:column}.figs b{font:600 28px var(--body);color:#fff}.figs span{font-size:12.5px;color:var(--muted)}
 .figs .lead b{color:var(--gold)}.figs{flex-wrap:nowrap;gap:24px}.lede{margin-top:22px;max-width:80ch}
 .pick .setb .f b{border:1px solid var(--rule);border-radius:var(--r-sm);padding:5px 10px;margin-top:3px;display:inline-block}
@@ -107,7 +107,7 @@ def content_page(key: str, legal: bool) -> str:
     pg = PAGES['pages'][key]
     heads = re.findall(r'<h2[^>]*id="([^"]+)"[^>]*>(.*?)</h2>', pg['html'])
     tabs = [[(lk['label'], lk['label'].lower() == key) for lk in PAGES['copy']['legalLinks']]] if legal else None
-    text = f'<section class="card pad lg" style="max-width:860px;margin-top:22px"><div class="prose">{pg["html"]}</div></section>'
+    text = f'<section class="card pad lg" style="max-width:780px;margin-top:22px"><div class="prose">{pg["html"]}</div></section>'
     if heads:
         contents = toc([(re.sub('<[^>]+>', '', t), a) for a, t in heads], heads[0][0])
         text = f'<div class="page3"><aside>{contents}</aside>{text.replace("margin-top:22px", "margin-top:0")}</div>'
