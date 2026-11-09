@@ -1,6 +1,6 @@
-// "Forever right now" (lib/home/feed.ts, home B spec 2026-11-07 P8, P9, F1).
+// "Latest on Forever" (lib/home/feed.ts, home B spec 2026-11-07 P8, P9, F1).
 import { describe, expect, it } from 'vitest';
-import { agoText, bandOf, dayText, feedFilters, feedPath, whenText, withFloor, type FeedRow } from './feed';
+import { agoText, bandOf, dayText, feedPath, homeRows, whenText, withFloor, type FeedRow } from './feed';
 
 function row(id: string, over: Partial<FeedRow> = {}): FeedRow {
   return {
@@ -28,12 +28,6 @@ describe('feed', () => {
     expect(agoText('2026-11-03T18:00:00Z', NOW)).toBe('3 d ago');
     expect(dayText('2026-12-09T00:00:00Z')).toBe('Wed 9 Dec');
     expect(whenText({ at: '2026-12-09T00:00:00Z', date_only: true }, NOW)).toBe('Wed 9 Dec');
-  });
-
-  it('gives signed-out readers no filters and hides Your guild without a guild', () => {
-    expect(feedFilters(false, false)).toEqual([]);
-    expect(feedFilters(true, false)).toEqual(['all', 'spec', 'logs']);
-    expect(feedFilters(true, true)).toEqual(['all', 'spec', 'guild', 'logs']);
   });
 
   it('reads the band in tens from 20 to 60', () => {
@@ -67,5 +61,29 @@ describe('feed', () => {
     expect(withFloor([], floor, 'logs', undefined)).toEqual([]);
     const many = Array.from({ length: 9 }, (_, i) => row(String(i)));
     expect(withFloor(many, floor, 'all', undefined)).toHaveLength(7);
+  });
+
+  it('reads a guild sim as the guild home reads it, and leaves the raid post to the plaque', () => {
+    const sim = row('sim', {
+      kind: 'guild_sim',
+      segments: [
+        { text: 'Thalrin', style: 'name', class: 'warrior' },
+        { text: ' simmed 987.1 DPS, #2 of 14 DPS in Olympus XXVII (Fury Warrior, 60 raid)' },
+      ],
+    });
+    const post = row('post', { kind: 'guild_raid' });
+    const shown = homeRows([sim, post, row('log')], true);
+    expect(shown.map((r) => r.id)).toEqual(['sim', 'log']);
+    expect(shown[0].segments[1].text).toBe(' simmed 987.1 DPS, #2 of 14');
+    expect(homeRows([post], false).map((r) => r.id)).toEqual(['post']);
+  });
+
+  it('reads newest first, whatever order the rows came in', () => {
+    const rows = [
+      row('an hour', { at: '2026-11-06T17:00:00Z' }),
+      row('just now', { at: '2026-11-06T17:59:00Z' }),
+      row('ten', { at: '2026-11-06T17:50:00Z' }),
+    ];
+    expect(homeRows(rows, false).map((r) => r.id)).toEqual(['just now', 'ten', 'an hour']);
   });
 });

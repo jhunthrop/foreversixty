@@ -1444,9 +1444,9 @@ PRIM_CSS += '''
 _Section0 = Section
 
 
-def Section(title: str, body: str, action: str = '', meta: str = '', named: bool = False) -> str:
-    """named: the built Section with an id, a landmark named by its heading (role region)."""
-    html = _Section0(title, body, action, meta)
+def Section(title: str, body: str, action: str = '', meta: str = '', named: bool = False, boxed: bool = False) -> str:
+    """named: the built Section with an id, a landmark named by its heading (role region). boxed: as the first Section."""
+    html = _Section0(title, body, action, meta, boxed)
     if not named:
         return html
     sid = region_slug(title)

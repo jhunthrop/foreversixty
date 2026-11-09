@@ -16,6 +16,7 @@ const NO_CARD = new Set([
   'admin/testers',
   'app/auth',
   'design-sheet',
+  'guild-shell',
   'report-shell',
   'reports',
 ]);

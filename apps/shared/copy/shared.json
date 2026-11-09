@@ -27,6 +27,9 @@
     "shared.home.vsWorn": "vs your {name}",
     "shared.home.vsEmpty": "empty slot",
     "shared.home.noCharacter": "No character yet. Battle.net lists a character after you play it and log out.",
+    "shared.home.noCharacterYet": "No character yet",
+    "shared.home.pasteAction": "Paste export",
+    "shared.home.setupAction": "Get set up",
     "shared.home.signedInAs": "Signed in as {tag}",
     "shared.home.getIn": "Get your character in",
     "shared.home.checkAgain": "Check again",
@@ -86,7 +89,7 @@
     "shared.home.topThree": "Top 3 for {spec}, {band}",
     "shared.home.rankings": "Rankings",
 
-    "shared.feed.title": "Forever right now",
+    "shared.feed.title": "Latest on Forever",
     "shared.feed.filterLabel": "Show",
     "shared.feed.filter.all": "All",
     "shared.feed.filter.spec": "Your spec",
