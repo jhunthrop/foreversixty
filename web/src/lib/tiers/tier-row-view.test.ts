@@ -27,7 +27,7 @@ describe('rankRowProps', () => {
       rank: '2',
       name: 'Arms',
       sub: 'Warrior · Night Elf',
-      href: '/bis/warrior/arms',
+      href: '/bis/warrior/arms/60',
       key: 'warrior/arms',
       testid: 'tier-row-warrior-arms',
       gap: { text: '−0.8%', label: 'Gap to the top', leader: false },

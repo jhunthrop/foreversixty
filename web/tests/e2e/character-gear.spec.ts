@@ -36,8 +36,8 @@ const ok = (data: unknown) => ({
   body: JSON.stringify({ ok: true, data, error: null, request_id: 'r' }),
 });
 
-const BIS_HREF = '/bis/priest/discipline?faction=alliance#band-alliance-60';
-const OWNER_BIS_HREF = '/bis/priest/holy?faction=alliance#band-alliance-60';
+const BIS_HREF = '/bis/priest/discipline/60';
+const OWNER_BIS_HREF = '/bis/priest/holy/60';
 
 const slot = (page: Page, key: string) => page.getByTestId(`character-doll-slot-${key}`);
 

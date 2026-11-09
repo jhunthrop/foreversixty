@@ -65,12 +65,10 @@ describe('bisHref', () => {
   // L8.4 fix round 4 item 2: "Gear" opens the spec's page at this character's band (and, when
   // the race gives one, faction), the same route and anchor the /bis landing links use.
   it('opens the spec’s page at the character’s band and faction (fix round 4 item 2)', () => {
-    expect(bisHref('Priest', 'Holy', 60, 'Night Elf')).toBe(
-      '/bis/priest/holy?faction=alliance#band-alliance-60',
-    );
-    expect(bisHref('Warrior', 'Fury', 37, 'Orc')).toBe('/bis/warrior/fury?faction=horde#band-horde-30');
+    expect(bisHref('Priest', 'Holy', 60, 'Night Elf')).toBe('/bis/priest/holy/60');
+    expect(bisHref('Warrior', 'Fury', 37, 'Orc')).toBe('/bis/warrior/fury/30-39?faction=horde');
     // Below 20 the earliest band; an unknown race keeps the band, with the default panel.
-    expect(bisHref('Priest', 'Holy', 12, null)).toBe('/bis/priest/holy#band-alliance-20');
+    expect(bisHref('Priest', 'Holy', 12, null)).toBe('/bis/priest/holy');
   });
 });
 

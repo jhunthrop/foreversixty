@@ -1,0 +1,44 @@
+---
+// web/src/components/guild/GuildRoute.astro
+// The guild island's page, built twice: `/guild` (the Find a guild landing, its signed-out page
+// server-rendered so a crawler reads the lookup and the guild lists, never a loading shell) and
+// `/guild-shell` (what src/worker.ts serves for every /guild/<region>/<ruleset>/<name> URL; the
+// island reads the path at runtime and the Worker rewrites the head).
+import Base from '../../layouts/Base.astro';
+import GuildShell from '../GuildShell.svelte';
+import { guildLandingCopy } from '../../lib/guild/copy';
+
+interface Props {
+  /** The bare /guild page: the landing, rendered as such on the server. */
+  landing?: boolean;
+}
+
+const { landing = false } = Astro.props;
+const LANDING_PATH = '/guild';
+const title = landing ? guildLandingCopy.docTitle : 'Guild';
+const description = landing
+  ? guildLandingCopy.docDescription
+  : 'A World of Warcraft: Forever guild: progression per boss, pull counts, kill dates and roster bests.';
+---
+
+<Base title={title} description={description} path={LANDING_PATH}>
+  <main
+    id="main"
+    tabindex="-1"
+    class="guild-main flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-0"
+  >
+    {landing ? <GuildShell client:after-paint path={LANDING_PATH} /> : <GuildShell client:after-paint />}
+  </main>
+</Base>
+
+<style>
+  /* The guild views not yet on the primitives keep main's own 18 px phone gutter; the primitives'
+     Page and PageHeader would add their phone inset on top of it (36 px). The full-bleed
+     ControlBar escapes main's padding, so it keeps its inset and lines up at 18 px. */
+  @media (max-width: 767.98px) {
+    .guild-main :global(.ui-page),
+    .guild-main :global(.ui-page-header) {
+      padding-inline: 0;
+    }
+  }
+</style>

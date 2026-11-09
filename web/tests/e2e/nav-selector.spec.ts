@@ -427,7 +427,7 @@ test.describe('choosing a character', () => {
     await ready(page);
     await expect(page.getByTestId('selector-name')).toHaveText(OBNOXIOUS.name);
     await choose(page, FROSTBYTE);
-    await expect(page).toHaveURL(/\/bis\/mage\/frost\?faction=horde#band-horde-40$/);
+    await expect(page).toHaveURL(/\/bis\/mage\/frost\/40-49\?faction=horde$/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Frost');
     await expect(page.getByTestId('bis-band-horde-40')).toBeVisible();
     // The header selector is the one way to switch: the BiS page carries no character card of its own.
@@ -443,7 +443,7 @@ test.describe('choosing a character', () => {
     await page.goto('/bis/warrior/fury#band-alliance-60');
     await ready(page);
     await choose(page, HORDE_FURY);
-    await expect(page).toHaveURL(/\/bis\/warrior\/fury\?(?=.*faction=horde)(?=.*band=30)[^#]*$/);
+    await expect(page).toHaveURL(/\/bis\/warrior\/fury\/30-39\?faction=horde$/);
     await expect(page.getByTestId('bis-page')).toHaveAttribute('data-bis-faction', 'horde');
     await expect(page.getByTestId('bis-band-horde-30')).toBeVisible();
     await expect(page.getByTestId('selector-name')).toHaveText(HORDE_FURY.name);

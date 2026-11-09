@@ -6,6 +6,8 @@ import { classCrestSrc } from '../class-crest';
 import { classSlugFromName } from '../report/tree-sizes';
 import { classColorVar } from '../report/format';
 import type { BisRole } from '../bis/types';
+import { bisBandPath } from '../bis/band-path';
+import { MAX_BAND, MIN_BAND } from '../bis/band-levels';
 import { ROLE_LABELS, ROLE_PATHS, classNameOf, ordinal, specFullName } from './tier-copy';
 import type { TierRow } from './tier-list';
 
@@ -91,7 +93,7 @@ export function tierSpecViews(lists: Record<BisRole, readonly TierRow[]>): TierS
         place: placeOf(row),
         placeUnit: `of ${rows.length}`,
         detail: detailFor(row, top),
-        bisHref: `/bis/${path}`,
+        bisHref: bisBandPath(row.classSlug, row.specSlug, MAX_BAND, MIN_BAND),
         guideHref: `/guides/${path}`,
         rolePath: ROLE_PATHS[role],
       };

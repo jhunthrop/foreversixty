@@ -25,6 +25,7 @@ import { rankedBisFile } from '../../lib/guides/class-dps';
 import { dayMonth, pageUpdatedAt } from '../../lib/guides/guide-header';
 import { specRowTag } from '../../lib/guides/glance';
 import { dataUrl } from '../../lib/planner/load';
+import { searchCopy } from '../../lib/search-copy';
 
 const build = activeBuild.build;
 const guides = await getCollection('guides');
@@ -60,7 +61,12 @@ const groups = classes.map((c) => ({
 }));
 ---
 
-<Base title={guidesCopy.indexTitle} description={guidesCopy.indexDescription} path="/guides" wide>
+<Base
+  title={searchCopy.guidesIndex.title}
+  description={searchCopy.guidesIndex.description}
+  path="/guides"
+  wide
+>
   <main id="main" tabindex="-1" class="guides-index" data-testid="guides-index">
     <Page layout="ledger">
       <PageHeader slot="header" title={guidesCopy.indexTitle} tone="strong" lead={guidesCopy.indexLine}>

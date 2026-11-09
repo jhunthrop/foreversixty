@@ -44,12 +44,17 @@
   import { SPECS } from '../../lib/sim/specs';
   import { REGION } from '../../lib/ui/regions';
   import { bisContext, presetLabel } from '../../lib/bis/page-context';
+  import { bandSlug, bisBandPath } from '../../lib/bis/band-path';
+  import { bisSeoCopy } from '../../lib/bis/seo-copy';
 
   let {
     spec,
     classSlug,
+    specSlug,
     className,
     specName,
+    pathBand,
+    preRaid,
     crestSrc,
     crestColor,
     specOptions,
@@ -59,8 +64,13 @@
   }: {
     spec: string;
     classSlug: string;
+    specSlug: string;
     className: string;
     specName: string;
+    /** The band this page's URL names (lib/bis/band-path.ts); the server renders it. */
+    pathBand: number;
+    /** The level 60 list holds no raid drop: its h1 says Pre-Raid (lib/bis/seo-copy.ts). */
+    preRaid: boolean;
     crestSrc: string;
     crestColor: string;
     specOptions: readonly ControlOption[];
@@ -72,7 +82,10 @@
 
   const inline = readBisPageData(spec);
   let data = $state.raw(inline);
-  const context = $derived(bisContext(data, raceOptions));
+  const context = $derived(bisContext(data, raceOptions, pathBand));
+  /** A band's own page: the spec's path for its first band, else /bis/<class>/<spec>/<band>. */
+  const bandHref = (band: number): string => bisBandPath(classSlug, specSlug, band, data.bands[0] ?? band);
+  const seoSubject = { specName, className, preRaid };
   /** Settles once the full data is in (at once when the page inlined all of it). */
   let ready: Promise<void> = Promise.resolve();
 
@@ -88,7 +101,7 @@
     void ready.then(change, () => {});
   }
 
-  let state = $state<BisPageState>(parseState('', '', bisContext(inline, raceOptions)));
+  let state = $state<BisPageState>(parseState('', '', bisContext(inline, raceOptions, pathBand)));
   let selected = $state<string | null>(null);
   let character = $state<DollCharacter | undefined>(undefined);
   let root = $state<HTMLElement | undefined>(undefined);
@@ -133,7 +146,9 @@
         kind: 'segmented',
         options: data.bands.map((band) => ({
           value: String(band),
-          label: band >= 60 ? '60' : `${band}-${band + 9}`,
+          label: bandSlug(band),
+          href: bandHref(band),
+          inPlace: true,
         })),
         value: String(state.band),
       },
@@ -175,7 +190,7 @@
       character = undefined;
     state = next;
     if (!push) return;
-    const url = `${window.location.pathname}${stateSearch(next, context)}`;
+    const url = `${bandHref(next.band)}${stateSearch(next, context)}`;
     window.history.replaceState(null, '', url);
   }
 
@@ -252,12 +267,13 @@
   data-bis-faction={state.faction}
   data-bis-band={state.band}
   data-bis-preset={state.preset}
+  data-bis-path-band={pathBand !== data.bands[0] ? pathBand : undefined}
   data-testid="bis-page"
 >
   <Page layout="ledger" testid="bis-ledger">
     {#snippet header()}
       <PageHeader
-        title={`${specName} ${className}`}
+        title={bisSeoCopy.heading(seoSubject)}
         tone={{ classSlug } as never}
         minRowHeight={HEAD_ROW_MIN_HEIGHT}
         testid="bis-page-head"
@@ -273,7 +289,8 @@
             data-testid={`class-crest-${classSlug}`}
           />
         {/snippet}
-        {#snippet meta()}<span data-testid="bis-page-sub">Best in slot</span>{/snippet}
+        {#snippet meta()}<span data-testid="bis-page-sub">{bisSeoCopy.meta(seoSubject, state.band)}</span
+          >{/snippet}
         {#snippet answer()}
           <div class="bis-pending-hide">
             <BisAnswer answer={model.answer} {figure} unit={model.unit} {raceNote} />
@@ -301,8 +318,15 @@
           {dollSummary(cells, character, model.unit)}
           {#if character === undefined}<a href="/login" class="bis-gold">Sign in</a> to see them against your gear.{/if}
           {#if nextBand !== undefined}
-            <button type="button" class="bis-link" onclick={() => onControl('band', String(nextBand))}
-              >Changes from {model.label}: see {nextBand >= 60 ? '60' : `${nextBand} to ${nextBand + 9}`} ›</button
+            <a
+              class="bis-link"
+              href={bandHref(nextBand)}
+              onclick={(event) => {
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
+                onControl('band', String(nextBand));
+              }}
+              >Changes from {model.label}: see {nextBand >= 60 ? '60' : `${nextBand} to ${nextBand + 9}`} ›</a
             >
           {/if}
         </p>
