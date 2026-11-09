@@ -1,6 +1,6 @@
 <!-- web/src/components/sim/tools/StatWeights.svelte -->
 <!-- /sim/weights (mock design/mocks/ws_simtools.py): the run line, the caution as the page's
-     standing line, the scale factors on the page's one Plate once a run finishes, and the stats to
+     standing line, the scale factors on the page's framed panel once a run finishes, and the stats to
      weigh in the rail. Design 7: the caution opens the page, in our words, and links to Top Gear -- it is not
      a footnote, because the whole reason this page exists is that addons ask for a number
      the number itself cannot justify.

@@ -5,8 +5,8 @@
 // buffs), from the section's measured frame elsewhere. LazySection drops the reserve the moment its
 // section renders or fails, so an estimate that is off moves only what is still below the fold.
 //
-// The frame figures were measured on the built page (2026-11-06, the open sections, `simfullfixt1`
-// and `simfixtureab`, at 390 for phone and 1440 for wide); the timeline's rows come from the very
+// The frame figures were measured on the built page (2026-11-06, re-measured 2026-11-09 on the
+// round-5 panels, `simfullfixt1`, at 390 for phone and 1440 for wide); the timeline's rows come from the very
 // lane rules the chart draws with (lib/sim/timeline-lanes.ts). Talents is an estimate: the fixture
 // build's talent layout does not fit its runs, so it draws the one-line fallback there.
 import { plotHeightOf, ROW_HEIGHT, timelineShape } from './timeline-lanes';
@@ -26,7 +26,7 @@ type Widths<T> = Readonly<{ phone: T; wide: T }>;
 const LIST_ROW: Widths<number> = { phone: 85, wide: 56 };
 
 /** The Section head, the toolbar and legend over the plot, and the cast count line under it. */
-const TIMELINE_FRAME: Widths<number> = { phone: 306, wide: 176 }; // wide re-measured 2026-11-09 (round 5 type)
+const TIMELINE_FRAME: Widths<number> = { phone: 321, wide: 198 }; // re-measured 2026-11-09 (round 5 panels)
 
 function timelineHeight(result: SimResult, phone: boolean): number | null {
   const shape = timelineShape(result);
@@ -38,8 +38,8 @@ function timelineHeight(result: SimResult, phone: boolean): number | null {
 
 /** Rage: the head and three Figures, then the two source lists side by side (stacked on a phone), or one line. */
 const RESOURCE: Widths<{ lists: number; needsNewer: number }> = {
-  phone: { lists: 170, needsNewer: 134 },
-  wide: { lists: 130, needsNewer: 118 },
+  phone: { lists: 173, needsNewer: 137 },
+  wide: { lists: 155, needsNewer: 143 },
 };
 
 function resourceHeight(result: SimResult, phone: boolean): number {
@@ -53,7 +53,7 @@ function resourceHeight(result: SimResult, phone: boolean): number {
 }
 
 /** Buffs: one uptime row per aura that came and went; the frame holds the heads and Up all fight. */
-const BUFFS_FRAME: Widths<number> = { phone: 841, wide: 479 };
+const BUFFS_FRAME: Widths<number> = { phone: 732, wide: 426 };
 /** The Overpower window is the rotation's, not a buff: the Buffs section leaves it out (aura-card.ts). */
 const OVERPOWER_WINDOWS: ReadonlySet<string> = new Set([
   'spell:7384',
@@ -86,8 +86,8 @@ function buffsHeight(result: SimResult, phone: boolean): number {
 
 /** Gear: the open doll is the same frame for any kit; line 2 and the notes grow with it. */
 const GEAR: Widths<{ base: number; perItem: number }> = {
-  phone: { base: 1071.5, perItem: 35.7 },
-  wide: { base: 592, perItem: 9.5 },
+  phone: { base: 1012.5, perItem: 35.7 },
+  wide: { base: 557, perItem: 9.5 },
 };
 
 function gearHeight(result: SimResult, phone: boolean): number | null {
@@ -99,8 +99,8 @@ function gearHeight(result: SimResult, phone: boolean): number | null {
 
 /** This run: the Facts, then a wrapping IconList entry per buff and consumable, then the actions. */
 const SETTINGS: Widths<{ base: number; perEntry: number }> = {
-  phone: { base: 650, perEntry: 22.5 },
-  wide: { base: 623, perEntry: 25.2 },
+  phone: { base: 741, perEntry: 22.5 },
+  wide: { base: 704, perEntry: 25.2 },
 };
 
 function settingsHeight(result: SimResult, phone: boolean): number {
@@ -110,8 +110,8 @@ function settingsHeight(result: SimResult, phone: boolean): number {
 }
 
 /** Sections whose height comes from data the main chunk does not have (the trees, the rotation file). */
-const TALENTS: SectionReserve = { phone: 600, wide: 470 };
-const ROTATION: SectionReserve = { phone: 1432, wide: 1466 };
+const TALENTS: SectionReserve = { phone: 1128, wide: 430 };
+const ROTATION: SectionReserve = { phone: 1781, wide: 1913 };
 
 function both(
   height: (result: SimResult, phone: boolean) => number | null,

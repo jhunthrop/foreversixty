@@ -1,7 +1,7 @@
 <!-- web/src/components/sim/SourceSwitcher.svelte -->
 <!-- A tool page with no character (mock design/mocks/ws_simtools.py `*-empty`), the landing's own
-     grammar (SimLanding.svelte): the addon export on the page's one Plate, the other ways in as open
-     rows (a build, a logged fight, your characters). The addon export is first because it needs no
+     grammar (SimLanding.svelte): the addon export on the page's framed panel, the other ways in on a
+     panel of their own (a build, a logged fight, your characters). The addon export is first because it needs no
      account and gives the most accurate character; "Your characters" is last because it is the one
      that needs a sign-in. Signed in, that row is the way back to the character just left (the
      line's "Change source" opened this). -->

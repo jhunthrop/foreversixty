@@ -5,6 +5,7 @@
 // the page's own view chunk resolving), so nothing shifts between the two moments.
 //
 // Static markup with no data in it, so it is safe to {@html} and identical every render.
+import { PLATE_SURFACE } from '../ui/primitives';
 import type { SimTool } from './bulk-store.svelte';
 
 // A third verbatim copy of this one-liner (already duplicated between report/skeleton.ts and
@@ -22,8 +23,8 @@ const slotRow = (): string =>
 
 /**
  * The island's first frames at the page's geometry (mock design/mocks/ws_simtools.py): the run
- * bar's band, then the page column with a section head and its rows. No surface is drawn: the
- * skeleton is open, as every section on the page is.
+ * bar's band, then the page column with one section panel (round 5: the head inside the panel,
+ * ui/Section `panel`) and its rows.
  */
 const shell = (label: string, rows: number): string =>
   [
@@ -31,10 +32,11 @@ const shell = (label: string, rows: number): string =>
     `<p class="sr-only" role="status">${label}</p>`,
     '<div aria-hidden="true">',
     `<div class="flex h-[var(--bar-h)] items-center gap-3 px-[var(--page-inset)]">${block('h-3 w-36')}${block('ml-auto h-9 w-28 rounded-control')}</div>`,
-    '<div class="flex flex-col gap-3 px-[var(--page-inset)] pt-5">',
+    '<div class="px-[var(--page-inset)] pt-7">',
+    `<div class="${PLATE_SURFACE} flex flex-col gap-3 px-5 pt-4 pb-4 max-md:px-[14px]">`,
     `${block('h-5 w-48')}`,
     `<ul class="flex flex-col">${Array.from({ length: rows }, slotRow).join('')}</ul>`,
-    '</div></div></div>',
+    '</div></div></div></div>',
   ].join('');
 
 export const TOOL_SKELETONS: Record<SimTool, string> = {

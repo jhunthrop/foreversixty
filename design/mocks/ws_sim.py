@@ -663,7 +663,7 @@ def buffs_section() -> str:
                 upall.append((act_icon(a['name'], 20), act_name(a['name']) + (f' &times; {a["max_stacks"]}' if (a.get('max_stacks') or 0) > 1 else ''),
                               bool(entry) and no_damage_effect(entry)))
             else:
-                rows.append((up, StatRow(act_icon(a['name'], 24), f'<b>{display_name(a["name"])}</b>', '', [f'{up * 100:.1f}%', f'{a["applications"]:.0f}&times;'], Meter(up, 'muted'))))
+                rows.append((up, StatRow(act_icon(a['name'], 24), f'<b>{display_name(a["name"])}</b>', '', [f'{up * 100:.1f}%', f'{a["applications"]:.0f}&times;'], Meter(up))))
         on_target = kind == 'DEBUFF'
         upall += [(gicon(e['icon'], 20), e['name'] + (', improved' if k.endswith(':improved') else ''), no_damage_effect(e))
                   for k in untracked if (e := BUFFS.get(k.partition(':')[0])) and bool(e.get('target')) == on_target]

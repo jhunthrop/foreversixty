@@ -96,7 +96,8 @@
       </FormRow>
       <p class="text-small text-muted m-0">
         {copy.paste.hint}
-        <a class="text-gold font-semibold" href={copy.paste.setUpHref}>{copy.paste.setUp}</a>
+        <a class="text-gold font-semibold whitespace-nowrap" href={copy.paste.setUpHref}>{copy.paste.setUp}</a
+        >
       </p>
     </div>
   </Section>

@@ -102,7 +102,6 @@
               { value: copy.applied(entry.applications) },
             ]}
             fraction={entry.uptimePct / 100}
-            tone="muted"
             testid="aura-bar-row"
           />
         {/each}

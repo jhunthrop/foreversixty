@@ -16,7 +16,7 @@
     tables,
     figures,
     fraction,
-    tone = 'gold',
+    tone = 'accent',
     note,
     noteTone = 'muted',
     fallbackIcon = null,
@@ -28,7 +28,7 @@
     figures: readonly StatFigure[];
     /** The Meter's fill, 0 to 1. */
     fraction: number;
-    tone?: 'gold' | 'muted';
+    tone?: 'accent' | 'muted';
     /** The sub line under the name. */
     note?: string;
     /** "−17.2 lost" reads in the wipe colour. */

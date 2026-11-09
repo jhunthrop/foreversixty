@@ -263,7 +263,7 @@ export const simCopy = {
   buffs: 'Buffs',
   rotation: 'Rotation',
   rotationPrefix: 'Default for',
-  rotationLink: 'what it does',
+  rotationLink: 'What it does',
 
   // --- Task 13: the run control and every state it has. ---
   run: 'Run sim',

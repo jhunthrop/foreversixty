@@ -158,8 +158,8 @@ test('the timeline loads under its ready head at its ready height', async ({ pag
 
   const head = (): Promise<{ text: string; glyph: string; height: number }> =>
     section.evaluate((element) => {
-      const card = element.querySelector('section')!;
-      const top = card.firstElementChild as HTMLElement;
+      // The panel's head row: the title and its meta, inside the panel (ui/Section `panel`).
+      const top = element.querySelector('section .ui-section-title')!.parentElement!;
       return {
         text: top.innerText.replace(/\s+/g, ' ').trim(),
         glyph: top.querySelector('svg')?.innerHTML ?? '',
