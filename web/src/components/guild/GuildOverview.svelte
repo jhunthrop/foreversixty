@@ -33,10 +33,10 @@
     verdictWord,
   } from '../../lib/guild/overview-role-view';
   import {
-    bossesDownCountLine,
-    bossesDownLine,
     downEncounterNames,
+    lastRaidProgressLine,
     raidNightDay,
+    type TierCounts,
   } from '../../lib/guild/overview-view';
   import { fetchGuildRaid } from '../../lib/guild/raids-api';
   import { bossIdsOf, raidTallyParts } from '../../lib/guild/raid-view';
@@ -70,6 +70,7 @@
     officer = false,
     reports,
     summary,
+    publicCounts = { killed: 0, pulls: 0 },
     showCounts = true,
     nextRaid = null,
     guildPath,
@@ -85,6 +86,8 @@
     officer?: boolean;
     reports: readonly OverviewReport[];
     summary: GuildHomeSummary | undefined;
+    /** The public read's tier counts: the Last raid line for a page with no home or progression read. */
+    publicCounts?: TierCounts;
     /** False for a visitor when the only report is guild-only. */
     showCounts?: boolean;
     nextRaid?: NextRaidView | null;
@@ -153,11 +156,7 @@
   const guildTz = $derived(nextRaid?.guild_timezone ?? viewerTz);
   const day = $derived(nextRaid === null ? null : raidWeekday(nextRaid.starts_at, guildTz));
   const rows = $derived(checklist === null ? [] : checklistRows(checklist));
-  const progressionLine = $derived(
-    progression !== null
-      ? bossesDownLine(progression.names, progression.named)
-      : bossesDownCountLine(summary?.tier?.down ?? 0, summary?.tier?.named_encounters ?? 0),
-  );
+  const progressionLine = $derived(lastRaidProgressLine(progression, summary?.tier, publicCounts));
   const last = $derived(reports[0] ?? null);
   const lastFacts = $derived.by((): string[] => {
     if (last === null) return [];

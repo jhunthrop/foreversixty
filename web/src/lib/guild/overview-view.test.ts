@@ -6,7 +6,9 @@ import {
   downEncounterNames,
   bossesDownCountLine,
   bossesDownLine,
+  lastRaidProgressLine,
   progressionNightDay,
+  publicTierCounts,
   raidNightDay,
   rosterCardFacts,
   showBandCounts,
@@ -50,6 +52,27 @@ describe('the cards', () => {
     expect(bossesDownLine([], 1)).toBe('No boss down this tier yet.');
     expect(bossesDownCountLine(0, 1)).toBe('No boss down this tier yet.');
     expect(bossesDownCountLine(1, 1)).toBe('1 of 1 named bosses down.');
+  });
+
+  it('sums the public read into the tier counts', () => {
+    const rows = [
+      { kills: 2, pull_count: 14 },
+      { kills: 0, pull_count: 31 },
+    ];
+    expect(publicTierCounts(rows)).toEqual({ killed: 1, pulls: 45 });
+    expect(publicTierCounts([])).toEqual({ killed: 0, pulls: 0 });
+  });
+
+  it('reads the Last raid line from the best source and never claims nothing is down without one', () => {
+    const counts = { killed: 1, pulls: 45 };
+    expect(
+      lastRaidProgressLine({ named: 1, names: ['Onyxia'] }, { down: 0, named_encounters: 1 }, counts),
+    ).toBe('1 of 1 named bosses down: Onyxia.');
+    expect(lastRaidProgressLine(null, { down: 1, named_encounters: 2 }, counts)).toBe(
+      '1 of 2 named bosses down.',
+    );
+    expect(lastRaidProgressLine(null, undefined, counts)).toBe('1 boss down · 45 pulls');
+    expect(lastRaidProgressLine(null, undefined, { killed: 0, pulls: 0 })).toBe('');
   });
 
   it('shows the Before raids open card to members while nothing is logged in the tier', () => {

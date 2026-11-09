@@ -49,6 +49,32 @@ export function bossesDownCountLine(down: number, named: number): string {
   return down === 0 ? 'No boss down this tier yet.' : `${down} of ${named} named bosses down.`;
 }
 
+export interface TierCounts {
+  killed: number;
+  pulls: number;
+}
+
+/** The tier's bosses down and pulls from the public read's progression rows. */
+export function publicTierCounts(rows: readonly { kills: number; pull_count: number }[]): TierCounts {
+  return {
+    killed: rows.filter((row) => row.kills > 0).length,
+    pulls: rows.reduce((total, row) => total + row.pull_count, 0),
+  };
+}
+
+/** The Last raid line from the best source the page has: the progression read names the bosses,
+ *  then the home's tier count, then the public read's counts. With none, or no pull logged, it says
+ *  nothing rather than "No boss down" beside a guild that has kills. */
+export function lastRaidProgressLine(
+  progression: { named: number; names: readonly string[] } | null,
+  tier: { down: number; named_encounters: number } | undefined,
+  counts: TierCounts,
+): string {
+  if (progression !== null) return bossesDownLine(progression.names, progression.named);
+  if (tier !== undefined) return bossesDownCountLine(tier.down, tier.named_encounters);
+  return counts.pulls > 0 ? bandCountsLine(counts.killed, counts.pulls) : '';
+}
+
 /** The Before raids open card shows while nothing is logged in the tier. */
 export function showsWeekOne(role: GuildViewerRole, tier: { pulls_total: number } | undefined): boolean {
   return role !== 'public' && (tier === undefined || tier.pulls_total === 0);

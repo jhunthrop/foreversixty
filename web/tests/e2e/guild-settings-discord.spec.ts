@@ -104,8 +104,20 @@ test.describe('the return from Discord', () => {
       ),
     ).toBe(false);
     expect(seen.settingsReads).toBeGreaterThanOrEqual(2);
-    const top = await section(page).evaluate((node) => node.getBoundingClientRect().top);
-    expect(top).toBeLessThan(200);
+    // Scrolled to the section: near the top, or, where the page ends first, as far as it goes with
+    // the whole section in view.
+    const at = await section(page).evaluate((node) => {
+      const box = node.getBoundingClientRect();
+      const end = document.documentElement.scrollHeight - window.innerHeight;
+      return {
+        top: box.top,
+        bottom: box.bottom,
+        atEnd: window.scrollY >= end - 1,
+        height: window.innerHeight,
+      };
+    });
+    if (at.atEnd) expect(at.bottom).toBeLessThanOrEqual(at.height);
+    else expect(at.top).toBeLessThan(200);
   });
 
   test('denied: the status line, focus back on the connect control', async ({ page }) => {

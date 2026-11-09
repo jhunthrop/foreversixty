@@ -4,7 +4,8 @@
 // hover band is a raised ground with a ring. (The roster's handoff slot: guild-roster-handoff.spec.ts.)
 // The raid report is built from the ui/ primitives, whose own rows are Row's `selected` ground, not
 // row bands (web layout spec 2026-11-05 §3A.2), so it is no longer measured here; nor is the
-// character page, whose fight rows are Rows since design/specs/2026-11-06-character.md.
+// character page, whose fight rows are Rows since design/specs/2026-11-06-character.md, nor the guild's
+// Readiness, whose rows are Rows since the by-exception board (lane P10).
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { CHICAGO, NOW, stubGuildRaids, threePlanned } from './support/guild-raids';
@@ -35,12 +36,6 @@ for (const width of WIDTHS) {
     test('the roster own row is a rounded band holding its content', async ({ page }) => {
       await stubGuild(page, 'member');
       await gotoHydrated(page, `${GUILD_PAGE}#roster`, 'guild-roster-rows');
-      await expectRoomyBands(page, 1);
-    });
-
-    test('the readiness own row is a rounded band holding its content', async ({ page }) => {
-      await stubGuild(page, 'member');
-      await gotoHydrated(page, `${GUILD_PAGE}#readiness`, 'guild-readiness-rows');
       await expectRoomyBands(page, 1);
     });
   });

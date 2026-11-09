@@ -57,7 +57,7 @@
   import { GUILD_BANDLESS_TOP, PLANNED_RESERVE } from '../lib/guild/raid-layout';
   import { guildMarkSrc } from '../lib/guild/mark';
   import { bandFacts } from '../lib/guild/fact-line';
-  import { showBandCounts, showsWeekOne } from '../lib/guild/overview-view';
+  import { publicTierCounts, showBandCounts, showsWeekOne } from '../lib/guild/overview-view';
   import { rosterGateState } from '../lib/guild/roster-gate';
   import { claimRowKind } from '../lib/guild/claim-row';
   import { gateFactsFrom } from '../lib/guild/plan-gate';
@@ -979,6 +979,7 @@
           you={showsBandLine(myGuildMembership?.verified === true, role) ? youRow : undefined}
           reports={home?.reports ?? data.reports}
           summary={home?.summary}
+          publicCounts={publicTierCounts(data?.progression ?? [])}
           {showCounts}
           onSelectTab={selectTab}
           lead={showWeekOne ? weekOneLead : undefined}
