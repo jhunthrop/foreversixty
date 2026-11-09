@@ -172,21 +172,23 @@
 >
   <!-- The frame keeps to 640 px, centred. The Upgrades sit in its centre; where it gives way to its
        list form (under MIN_FRAME_PX, 423 px, lib/ui/paperdoll-frame.ts) they follow the list. -->
-  <div class="@container mx-auto max-w-[640px]" data-testid="character-gear" aria-busy={loading}>
-    <PaperdollFrame
-      cells={loading ? [] : cells}
-      {build}
-      {title}
-      {meta}
-      {avatar}
-      bind:selected
-      {centre}
-      label={gearCopy.listLabel}
-      testid="character-doll"
-    />
-    {#if upgrades.length > 0 && !loading}<div class="hidden @max-[423px]:mt-3 @max-[423px]:block">
-        {@render upgradeList()}
-      </div>{/if}
+  <div class="flex justify-center">
+    <div class="@container w-full max-w-[640px]" data-testid="character-gear" aria-busy={loading}>
+      <PaperdollFrame
+        cells={loading ? [] : cells}
+        {build}
+        {title}
+        {meta}
+        {avatar}
+        bind:selected
+        {centre}
+        label={gearCopy.listLabel}
+        testid="character-doll"
+      />
+      {#if upgrades.length > 0 && !loading}<div class="hidden @max-[423px]:mt-3 @max-[423px]:block">
+          {@render upgradeList()}
+        </div>{/if}
+    </div>
   </div>
   {#if note !== null}
     <p class="text-muted pt-3 text-[13px] leading-[18px]" data-testid="character-doll-note">{note}</p>

@@ -33,7 +33,7 @@ describe('CharacterHistory', () => {
     expect(html).not.toContain('<h2');
     expect(html).not.toContain('rounded-panel');
     expect(html).toContain('Includes your private and guild reports. Only you see this section.');
-    expect(html).toContain('xl:grid-cols-2');
+    expect(html).toContain('wide:grid-cols-2');
     expect(html).toContain('data-testid="history-score"');
     expect(html).toContain('data-testid="history-parse"');
     expect(html).not.toContain('history-reserve');

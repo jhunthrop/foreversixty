@@ -249,8 +249,10 @@
   <Page layout="split" panels splitFrom={1280} testid="character-skeleton">
     {#snippet header()}{@render headSkeleton()}{/snippet}
     <Section title={copy.gear} panel frame="framed">
-      <div class="mx-auto max-w-[640px]" aria-busy="true">
-        <PaperdollFrame cells={[]} {build} title="" label={copy.gear} testid="character-doll" />
+      <div class="flex justify-center" aria-busy="true">
+        <div class="w-full max-w-[640px]">
+          <PaperdollFrame cells={[]} {build} title="" label={copy.gear} testid="character-doll" />
+        </div>
       </div>
     </Section>
   </Page>
