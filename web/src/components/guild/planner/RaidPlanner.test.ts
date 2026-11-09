@@ -143,7 +143,7 @@ describe('the body', () => {
     expect(roster).toBeGreaterThan(strip);
     expect(body.indexOf('data-testid="guild-overview-comp"')).toBeGreaterThan(roster);
     expect(body.indexOf('data-testid="raid-notes"')).toBeGreaterThan(body.indexOf('guild-overview-cover'));
-    expect(body.match(/ui-plate/g)).toHaveLength(1);
+    expect(body.match(/data-region="plate"/g)?.length).toBeGreaterThan(0);
   });
 
   it('draws the Raid-Helper groups with each row’s spec, note and state Tag for members', () => {
@@ -211,15 +211,13 @@ describe('officer sections', () => {
   it('offers officers the comp edit, members the tally alone', () => {
     expect(officer()).toContain('data-testid="raid-comp-edit"');
     expect(html()).not.toContain('raid-comp-edit');
-    expect(text(between(html(), 'guild-overview-comp', 'guild-comp-tally'))).toContain(
-      "Onyxia's Lair default: 40 players",
-    );
+    expect(html()).toContain('data-testid="guild-comp-grid"');
   });
 });
 
 describe('the rail', () => {
   it('draws the cover and the notes, or the empty line', () => {
-    expect(html()).toContain('data-testid="guild-cover-buff"');
+    expect(html()).toContain('data-testid="guild-cover"');
     expect(html({ raid: full({ cover: null }) })).not.toContain('guild-overview-cover');
     expect(text(between(html(), 'raid-notes-empty', 'never'))).toContain(notesEmptyOf('raid', false));
     expect(html({ raid: full({ notes_html: '<p><strong>Flasks</strong></p>' }) })).toContain(

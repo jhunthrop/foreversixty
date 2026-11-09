@@ -13,7 +13,8 @@ import guild_overview_data as O
 import guild_overview_fixtures as F
 import guild_states_fixtures as S
 from guild_data import ALLIANCE, C, GUILD, TABS
-from ws_guild2 import _view, ch, pad
+import guild_data as gd
+from ws_guild2 import _view, ch, hdr, pad
 from ws_lib import REGION
 from ws_prims import (Button, Countdown, Emblem, FeedRow, Link, Notice, Page, PageHeader, Row, Rows, Section, TabStrip, Tally, build_page,
                       crest_img, icon)
@@ -27,12 +28,12 @@ PRIMARY = {'alchemy': 'Alchemy', 'blacksmithing': 'Blacksmithing', 'enchanting':
 STATES_CSS = '''
 .raids{display:flex;justify-content:flex-end;gap:18px;margin:0;padding:0;list-style:none}
 .raids li{display:flex;flex-direction:column;align-items:center;gap:6px;width:88px;font:600 13px/16px var(--font-body);text-align:center;color:var(--nav)}
-.w1{display:flex;flex-direction:column;gap:16px;padding-top:12px}.w1 .spread{display:flex;flex-direction:column;gap:8px}
+.w1{display:flex;flex-direction:column;gap:16px}.w1 .spread{display:flex;flex-direction:column;gap:8px}
 .w1 .step{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px}.w1 .step p{margin:0;font-size:15px;line-height:24px}
 .w1 .step .go{display:flex;flex-wrap:wrap;align-items:center;gap:16px}.w1 .step .go .link{display:inline-flex;align-items:center;min-height:44px}
 .w1 .profs{margin:0;font-size:14px;line-height:20px;color:var(--muted)}.w1 .profs b{color:var(--strong);font-weight:600}
 .lvl{padding-top:12px;font-size:14px;line-height:20px;color:var(--text)}
-.muted-line{margin:0;padding-top:12px;font-size:14px;line-height:20px;color:var(--muted)}
+.muted-line{margin:0;padding-top:12px;font-size:14px;line-height:20px;color:var(--muted)}.plate .muted-line{padding-top:0;font-size:13px}
 '''
 
 
@@ -102,7 +103,7 @@ def step(sentence: str, go: str) -> str:
 
 def week_one(title: str, levels: dict, step_html: str, meta: str = '') -> str:
     body = f'<div class="w1">{level_tally(levels)}{professions(levels)}{step_html}</div>'
-    return Section(title, body, meta=meta)
+    return Section(title, body, meta=meta, panel=True)
 
 
 def ago(iso: str, now: str) -> str:
@@ -118,7 +119,7 @@ def activity(feed: dict, now: str) -> str:
     for r in feed['rows']:
         name, rest = r['segments'][0], r['segments'][1]['text']
         rows += FeedRow(crest_img(r['crest'], 40), f'<b style="color:{C[name["class"]]}">{name["text"]}</b>{rest}', ago(r['at'], now), 'Your guild')
-    return Section('Guild activity', pad(f'<div>{rows}</div>'))
+    return Section('Guild activity', f'<div>{rows}</div>', panel=True)
 
 
 def last_raid(progression: str, logged: bool) -> str:
@@ -126,22 +127,16 @@ def last_raid(progression: str, logged: bool) -> str:
         n = O.last_raid_counts()
         row = Row(f'{O.ZONE_NAME} &middot; raid night', f"{F.day_label(O.LAST_RAID_AT)} &middot; 1 boss ({O.BOSS}) &middot; {n['kills']} kill &middot; {n['wipes']} wipe",
                   trail='<span class="gold" style="font-weight:600">Report &rsaquo;</span>')
-        body = pad(Rows([row], open_=True))
+        body = Rows([row], open_=True)
     else:
         body = '<p class="muted-line">No raid logged yet.</p>'
-    return Section('Last raid', body, meta=progression)
+    return Section('Last raid', body, meta=progression, panel=True)
 
 
-def recruitment_officer() -> str:
-    return Section('Recruitment', pad(Rows([Row('Taking applications', 'Applications, votes and your public card')], open_=True)))
 
-
-def head(facts: list[str], officer: bool, claim: bool = True, tabs: list[str] | None = None) -> str:
-    """The guild's head as Guild.svelte draws it: the faction crest, the facts line (and a member's claim holder), the tabs."""
-    holder = [] if officer or not claim else [f'Claimed by {crest_img(ch(O.OFFICER)[1], 20)} <b style="color:{C[ch(O.OFFICER)[1]]}">{O.OFFICER}</b>']
-    shown = tabs or (TABS if officer else [t for t in TABS if t != 'Settings'])
-    return PageHeader(GUILD, ALLIANCE, Emblem('alliance', 64), meta=[' &middot; '.join(facts)] + holder,
-                      actions=Button('Invite link', small=True) if officer else '', tabs=TabStrip(shown, 'Overview', tablist=True))
+def head(officer: bool, tabs: list[str] | None = None, raiders: int | None = gd.RAIDERS) -> str:
+    """The guild's head as Guild.svelte draws it (ws_guild2.hdr): the faction crest, the one band line, the tabs."""
+    return hdr(officer=officer, tabs=tabs, raiders=raiders)
 
 
 def leveling_line(name: str, level: int) -> str:
@@ -158,8 +153,8 @@ def before_raids():
     go = Link('Copy the invite link &rsaquo;') + Button('Plan an event', primary=True, small=True, act=True)
     main = (raids_countdown(S.PRE_NOW) + week_one('Before raids open', levels, step('Nothing on the calendar yet. Post a dungeon run or a guild event.', go))
             + activity(S.pre_feed(), S.PRE_NOW))
-    rail = last_raid('No boss down this tier yet.', False) + recruitment_officer()
-    body = head(['PvP US', 'Updated today'], True) + leveling_line(O.OFFICER, S.LOW_LEVEL) + Page('split', main, rail, sticky_rail=True)
+    rail = ''  # an officer's rail is the cover and attendance (batch 3): nothing before a raid is planned
+    body = head(True) + leveling_line(O.OFFICER, S.LOW_LEVEL) + Page('split', main, rail, sticky_rail=True, panels=True)
     return page('Guild, before raids open', body, ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 23'))
 
 
@@ -171,7 +166,7 @@ def low_level():
     sentence = f'<span style="color:{C[cls]};font-weight:600">{name}</span> is level {S.LOW_LEVEL}, {60 - S.LOW_LEVEL} levels to 60.'
     main = raids_countdown(S.PRE_NOW) + week_one('Before raids open', levels, step(sentence, go)) + activity(S.pre_feed(), S.PRE_NOW)
     rail = last_raid('No boss down this tier yet.', False)
-    body = head(['PvP US', 'Updated today'], False) + leveling_line(name, S.LOW_LEVEL) + Page('split', main, rail, sticky_rail=True)
+    body = head(False) + leveling_line(name, S.LOW_LEVEL) + Page('split', main, rail, sticky_rail=True, panels=True)
     return page('Guild, low-level member', body, (name, cls, 'Subtlety Rogue &middot; 23'))
 
 
@@ -184,7 +179,7 @@ def no_raid():
     main = (raids_countdown(S.OPEN_NOW) + week_one('Your first raid', levels, step(sentence, go), meta='Your first logged night starts the progression board.')
             + activity(S.open_feed(), S.OPEN_NOW))
     rail = last_raid('No boss down this tier yet.', False)
-    body = head(['PvP US', 'Updated today'], False) + Page('split', main, rail, sticky_rail=True)
+    body = head(False) + Page('split', main, rail, sticky_rail=True, panels=True)
     return page('Guild, no raid yet', body, (name, cls, 'Holy Priest &middot; 60'))
 
 
@@ -193,9 +188,8 @@ def public():
     notice = Notice(f'{GUILD} is recruiting.', Link('See what they look for &rsaquo;'))
     main = notice + last_raid('1 of 1 named bosses down: Onyxia.', True)
     gate = Section('Roster', '<p class="muted-line">Roster is for members of this guild. None of your characters is on it.</p>')
-    t = F.tier()
-    body = head(['PvP US', f"{t['down']} boss down", f"{t['pulls_total']} pulls"], True, tabs=['Overview', 'Raids', 'Progression']).replace(Button('Invite link', small=True), '')
-    body += Page('split', main, '', sticky_rail=False) + f'<div class="pc" style="padding-top:61px">{gate}</div>'
+    body = head(True, tabs=['Overview', 'Raids', 'Progression'], raiders=None)
+    body += Page('split', main, '', sticky_rail=False, panels=True) + f'<div class="pc" style="padding-top:61px">{gate}</div>'
     return page('Guild, visitor', body, ('Felsnap', 'warrior', 'Fury Warrior &middot; 34'))
 
 

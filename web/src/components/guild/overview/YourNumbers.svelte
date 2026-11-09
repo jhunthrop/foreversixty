@@ -9,7 +9,7 @@
   let { row }: { row: RosterRow } = $props();
 </script>
 
-<Section title="Your numbers" testid="guild-overview-numbers">
+<Section panel title="Your numbers" testid="guild-overview-numbers">
   <div class="flex flex-wrap gap-x-10 gap-y-4">
     {#if row.attendance !== undefined && row.attendance.nights > 0}
       <Figure

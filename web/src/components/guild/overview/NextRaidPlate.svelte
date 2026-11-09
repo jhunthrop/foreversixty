@@ -1,8 +1,8 @@
 <!-- web/src/components/guild/overview/NextRaidPlate.svelte -->
-<!-- The page's one Plate (web layout spec 2026-11-05 §7.1), in its Section: the raid's Row (its
-     icon, the guild's time and the viewer's own, the countdown), then the viewer's own Row (`you`:
-     RaidBandLine's row, which writes the same sign-up the Discord buttons write). Officers also get
-     the In, Late, Bench and Not signed figures and the planner link. -->
+<!-- Next raid (batch 3 mock), a panel: the raid's Row (its icon, the guild's time and the viewer's own,
+     the countdown), then the viewer's own Row (`you`: RaidBandLine's row, which writes the same sign-up
+     the Discord buttons write). Officers also get the In, Late, Bench and Not signed figures and the
+     planner link. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { GuildRaidView, NextRaidView } from '../../../lib/guild/api';
@@ -12,7 +12,6 @@
   import { countdown } from '../../../lib/guild/raid-copy';
   import Figure from '../../ui/Figure.svelte';
   import ItemIcon from '../../ui/ItemIcon.svelte';
-  import Plate from '../../ui/Plate.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
 
@@ -43,10 +42,10 @@
 
 <Section
   title="Next raid"
+  panel
   action={officer ? { label: 'Open the planner', href: planHref } : undefined}
   testid="guild-overview-next-raid"
 >
-  <Plate>
     <Row title={next.zone_name} open={false}>
       {#snippet lead()}<ItemIcon
           icon={raidZoneIcon(next.zone_name)}
@@ -70,7 +69,7 @@
     </Row>
     {#if you}<div data-testid="guild-next-raid-you">{@render you()}</div>{/if}
     {#if officer && raid !== null}
-      <div class="flex flex-wrap gap-x-8 gap-y-3 px-4 py-3" data-testid="guild-next-raid-figures">
+      <div class="flex flex-wrap gap-x-8 gap-y-3 pt-3" data-testid="guild-next-raid-figures">
         <Figure value={String(raid.counts.in)} label="In" size="sm" tone="kill" />
         <Figure value={String(raid.counts.late)} label="Late" size="sm" tone="gold" />
         <Figure value={String(raid.counts.bench)} label="Bench" size="sm" />
@@ -82,5 +81,4 @@
         />
       </div>
     {/if}
-  </Plate>
 </Section>

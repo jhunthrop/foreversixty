@@ -23,21 +23,11 @@ describe('factsText', () => {
 });
 
 describe('bandFacts', () => {
-  it('is the place and the tier’s two counts as separate facts', () => {
-    expect(bandFacts('PvP', 'us', { killed: 1, pulls: 2 })).toEqual(['PvP US', '1 boss down', '2 pulls']);
-    expect(bandFacts('PvP', 'us', { killed: 3, pulls: 1 })).toEqual(['PvP US', '3 bosses down', '1 pull']);
-    expect(bandFacts('Hardcore', 'eu', null)).toEqual(['Hardcore EU']);
-    // No pulls logged: the counts are left out, never "0 bosses down · 0 pulls".
-    expect(bandFacts('PvP', 'us', { killed: 0, pulls: 0 }, 'Updated today')).toEqual([
-      'PvP US',
-      'Updated today',
-    ]);
-    expect(bandFacts('PvP', 'us', { killed: 1, pulls: 2 }, 'Updated today')).toEqual([
-      'PvP US',
-      '1 boss down',
-      '2 pulls',
-      'Updated today',
-    ]);
+  it('is the region and ruleset, then the raiders, one fact each', () => {
+    expect(bandFacts('PvP', 'us', 24)).toEqual(['US PvP', '24 raiders']);
+    expect(bandFacts('PvP', 'us', 1)).toEqual(['US PvP', '1 raider']);
+    expect(bandFacts('Hardcore', 'eu')).toEqual(['EU Hardcore']);
+    expect(bandFacts('Normal', 'eu', 0)).toEqual(['EU Normal']);
   });
 });
 

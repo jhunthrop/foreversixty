@@ -18,16 +18,19 @@
 
 <Section
   title={attendanceTitle(page.raids.length)}
+  panel
+  flush
   action={{ label: 'Roster', href: rosterHref }}
   testid="guild-overview-attendance"
 >
   {#if rows.length === 0}
-    <p class="text-muted text-small">Everyone has made their raids.</p>
+    <p class="text-muted text-small px-5 pb-3">Everyone has made their raids.</p>
   {:else}
     <Grid
       caption="Attendance over the last raids"
       columns={page.raids.map((raid) => day(raid.starts_at))}
       {rows}
+      edge
     />
   {/if}
 </Section>

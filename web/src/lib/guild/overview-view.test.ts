@@ -11,7 +11,6 @@ import {
   rosterCardFacts,
   showBandCounts,
   showsWeekOne,
-  updatedLine,
 } from './overview-view';
 
 const NOW = new Date(2026, 9, 20, 20, 0); // Tuesday evening, the viewer's own clock
@@ -36,13 +35,7 @@ describe('showBandCounts', () => {
   });
 });
 
-describe('updatedLine and the raid-night days', () => {
-  it('reads the day in the viewer zone', () => {
-    expect(updatedLine(new Date(2026, 9, 20, 9, 0).toISOString(), NOW)).toBe('Updated today');
-    expect(updatedLine(new Date(2026, 9, 19, 9, 0).toISOString(), NOW)).toBe('Updated yesterday');
-    expect(updatedLine('not a date', NOW)).toBe('');
-  });
-
+describe('the raid-night days', () => {
   it('words a report instant and a progression date alike, as the night’s date and never today', () => {
     expect(raidNightDay(new Date(2026, 9, 20, 19, 0).toISOString(), NOW)).toBe('Tue 20 Oct');
     expect(raidNightDay(new Date(2026, 9, 19, 19, 0).toISOString(), NOW)).toBe('Mon 19 Oct');

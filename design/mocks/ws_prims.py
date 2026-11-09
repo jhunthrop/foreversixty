@@ -1600,3 +1600,20 @@ def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False,
     """panels: main and rail hold Section panels (web ui/Page `panels`)."""
     html = _Page1(layout, main, rail, sticky_rail)
     return html.replace('class="layout-split"', 'class="layout-split panels"', 1) if panels else html
+
+
+# ------------------------------------------------ Grid edge (web ui/Grid `edge`): the grid on a flush panel, the label column
+# taking the slack, the outer cells carrying the panel's 20 px inset (14 on a phone), the figure columns tight at the right.
+PRIM_CSS += '''
+table.gridm.edge :is(th,td){padding-inline:10px}table.gridm.edge :is(th,td):first-child{width:100%;padding-left:20px}
+table.gridm.edge :is(th,td):last-child{padding-right:20px}
+@media(max-width:767px){table.gridm.edge :is(th,td):first-child{padding-left:14px}table.gridm.edge :is(th,td):last-child{padding-right:14px}}
+'''
+
+_Grid0 = Grid
+
+
+def Grid(cols: list[str], rows: list[tuple], caption: str = '', label_header: str = '', edge: bool = False) -> str:
+    """edge: on a flush panel (web ui/Grid `edge`)."""
+    html = _Grid0(cols, rows, caption, label_header)
+    return html.replace('<table class="gridm"', '<table class="gridm edge"', 1) if edge else html

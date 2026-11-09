@@ -14,7 +14,6 @@ import {
 } from '../../lib/guild/billing-handoff';
 import { guildHomeCopy, guildJoinCopy, guildSettingsCopy } from '../../lib/guild/copy';
 import { joinedPlanLine, joinedPlanLineFor } from '../../lib/guild/join-plan';
-import { claimEntryFor } from '../../lib/guild/roster-gate';
 import GuildJoinedBlock from './GuildJoinedBlock.svelte';
 import BillingHandoff from './BillingHandoff.svelte';
 import GuildUnverifiedNote from './GuildUnverifiedNote.svelte';
@@ -85,17 +84,6 @@ describe('GuildUnverifiedNote', () => {
   });
 });
 
-describe('the claim slot', () => {
-  it('draws nothing for a member of an unclaimed guild: the Before raids open card carries their step', () => {
-    const entry = claimEntryFor({
-      signedIn: true,
-      canManage: false,
-      membership: { rank: 'member' },
-      claimState: 'unclaimed',
-    });
-    expect(entry).toEqual({ kind: 'none' });
-  });
-});
 
 describe('joinedPlanLine', () => {
   const covered = (over: Partial<GuildCoveredView>): GuildCoveredView => ({

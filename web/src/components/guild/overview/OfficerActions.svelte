@@ -1,7 +1,7 @@
 <!-- web/src/components/guild/overview/OfficerActions.svelte -->
-<!-- Action needed (web layout spec 2026-11-05 §7.1, officers): one open Row per thing waiting, each
-     with its one button. "Ping on Discord" posts one message under the raid's post naming who has not
-     signed (owner decision D16; never a DM); its answer replaces the row's sub line. -->
+<!-- Action needed (batch 3 mock, officers): the page's framed panel, one Row per thing waiting, each
+     with its one secondary button. "Ping on Discord" posts one message under the raid's post naming
+     who has not signed (owner decision D16; never a DM); its answer replaces the row's sub line. -->
 <script lang="ts">
   import { GuildApiError } from '../../../lib/guild/api';
   import { guildApplicationsHref } from '../../../lib/characters';
@@ -49,7 +49,7 @@
 </script>
 
 {#if rows.length > 0}
-  <Section title="Action needed" testid="guild-overview-actions">
+  <Section title="Action needed" panel frame="framed" testid="guild-overview-actions">
     {#each rows as row (row.key)}
       <Row
         title={row.title}
@@ -58,20 +58,24 @@
       >
         {#snippet trail()}
           {#if row.key === 'approvals'}
-            <Button size="sm" onclick={() => onSelectTab('roster')}>Review</Button>
+            <Button tone="secondary" size="sm" onclick={() => onSelectTab('roster')}>Review</Button>
           {:else if row.key === 'applications'}
-            <Button size="sm" href={guildApplicationsHref(guildPath)} testid="guild-open-applications"
-              >Open</Button
+            <Button
+              tone="secondary"
+              size="sm"
+              href={guildApplicationsHref(guildPath)}
+              testid="guild-open-applications">Open</Button
             >
           {:else if row.key === 'not_signed'}
             <Button
+              tone="secondary"
               size="sm"
               disabled={!canPing || pinging}
               onclick={() => void ping()}
               testid="guild-ping-discord">Ping on Discord</Button
             >
           {:else}
-            <Button size="sm" onclick={() => onSelectTab('loot')}>Open loot</Button>
+            <Button tone="secondary" size="sm" onclick={() => onSelectTab('loot')}>Open loot</Button>
           {/if}
         {/snippet}
       </Row>

@@ -2,7 +2,9 @@
 <!-- A coverage matrix (web layout spec 2026-11-05 §7.3): a label column, then one centred column per
      header, each cell toned ok / warn / miss / none. Buff and debuff cover, attendance over the last
      raids, later readiness and consumables by pull. Open hairline rows, no box. A table, so a screen
-     reader reads each cell against its column; `lead` draws a row's icon or crest. -->
+     reader reads each cell against its column; `lead` draws a row's icon or crest. `edge` is the grid on
+     a flush panel (Section `panel flush`): the label column takes the slack, the outer cells carry the
+     panel's 20 px inset (14 on a phone) and the figure columns sit tight at the right. -->
 <script lang="ts" generics="R extends GridRowModel">
   import type { Snippet } from 'svelte';
   import { CELL_TEXT, type GridRowModel } from '../../lib/ui/cells';
@@ -13,6 +15,7 @@
     columns,
     rows,
     lead,
+    edge = false,
     testid,
   }: {
     /** The table's name for assistive tech ("Buff and debuff cover"); not drawn. */
@@ -22,13 +25,15 @@
     columns: readonly string[];
     rows: readonly R[];
     lead?: Snippet<[R]>;
+    /** On a flush panel: the panel's inset on the outer cells, the label column wide. */
+    edge?: boolean;
     testid?: string;
   } = $props();
 
   const CELL = 'border-line-soft border-b px-[6px] py-[10px]';
 </script>
 
-<table class="w-full border-collapse" data-testid={testid}>
+<table class={['w-full border-collapse', edge && 'ui-grid-edge']} data-testid={testid}>
   <caption class="sr-only">{caption}</caption>
   <thead>
     <tr>
@@ -73,3 +78,24 @@
     {/each}
   </tbody>
 </table>
+
+<style>
+  .ui-grid-edge :is(th, td) {
+    padding-inline: 10px;
+  }
+  .ui-grid-edge :is(th, td):first-child {
+    width: 100%;
+    padding-left: 20px;
+  }
+  .ui-grid-edge :is(th, td):last-child {
+    padding-right: 20px;
+  }
+  @media (max-width: 767px) {
+    .ui-grid-edge :is(th, td):first-child {
+      padding-left: 14px;
+    }
+    .ui-grid-edge :is(th, td):last-child {
+      padding-right: 14px;
+    }
+  }
+</style>

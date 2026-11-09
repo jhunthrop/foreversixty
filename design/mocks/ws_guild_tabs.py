@@ -20,7 +20,7 @@ SPLIT_GAP = '<div style="display:flex;flex-direction:column;gap:12px">{}</div>'
 
 
 def _tab(title, active, body):
-    return build_page(title, _view(hdr(tabs_active=active, actions=Button('Invite link', small=True)) + band_line(O.OFFICER) + body), 'Guild', WHO)
+    return build_page(title, _view(hdr(tabs_active=active) + band_line(O.OFFICER) + body), 'Guild', WHO)
 
 
 def _col(*parts, gap=16):

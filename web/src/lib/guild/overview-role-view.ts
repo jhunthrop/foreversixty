@@ -5,7 +5,7 @@
 // Rows whose source is not tracked yet are dropped here, never drawn with a stand-in (7.4).
 import { bisHref } from '../character-profile';
 import { counted } from '../plural';
-import { tallyTone, type CellTone, type MarkTone } from '../ui/cells';
+import type { CellTone, MarkTone } from '../ui/cells';
 import type { GridRowModel } from '../ui/cells';
 import type { GuildRaidCounts, GuildRaidCoverRow, GuildRaidView } from './api';
 import { coverSigned, coverTone } from './cover-view';
@@ -264,7 +264,7 @@ export function actionRows(actions: GuildOfficerActions, day: string | null): Ac
   if (approvals.count > 0)
     rows.push({
       key: 'approvals',
-      title: `${counted(approvals.count, 'raider')} ${approvals.count === 1 ? 'is' : 'are'} waiting for approval`,
+      title: `${counted(approvals.count, 'raider')} waiting for approval`,
       sub: names(approvals.names),
     });
   const applications = actions.applications;
@@ -277,21 +277,12 @@ export function actionRows(actions: GuildOfficerActions, day: string | null): Ac
   if (notSigned.count > 0 && notSigned.raid_id !== null)
     rows.push({
       key: 'not_signed',
-      title: `${notSigned.count} ${notSigned.count === 1 ? 'has' : 'have'} not signed up for ${day ?? 'the next raid'}`,
+      title: `${notSigned.count} not signed up for ${day ?? 'the next raid'}`,
       sub: names(notSigned.names),
     });
   if (drops !== null && drops.tracked && (drops.count ?? 0) > 0)
     rows.push({ key: 'drops', title: `${counted(drops.count ?? 0, 'drop')} to award`, sub: drops.label });
   return rows;
-}
-
-export interface TallyRow {
-  role: GuildCompRole;
-  label: string;
-  have: number;
-  late: number;
-  want: number;
-  tone: MarkTone;
 }
 
 const ROLE_LABEL: Readonly<Record<GuildCompRole, string>> = {
@@ -302,29 +293,33 @@ const ROLE_LABEL: Readonly<Record<GuildCompRole, string>> = {
 };
 const ROLES: readonly GuildCompRole[] = ['tanks', 'healers', 'melee', 'ranged'];
 
-/** Comp against the target: In per role against the seats; Late is shown beside it, not counted. */
-export function compTallyRows(counts: GuildRaidCounts, target: GuildCompTarget): TallyRow[] {
+/** Comp against the target (batch 3): per role the seats, who is In and how many short. In is met,
+ *  met counting Late (warn) or short; the short cell takes that tone, or a muted dash at none. Late is
+ *  named under the role. */
+export function compGridRows(counts: GuildRaidCounts, target: GuildCompTarget): GridRowModel[] {
   const inByRole: Readonly<Record<GuildCompRole, number>> = {
     tanks: counts.tanks,
     healers: counts.healers,
     melee: counts.melee ?? 0,
     ranged: counts.ranged ?? 0,
   };
-  return ROLES.map((role) => ({
-    role,
-    label: ROLE_LABEL[role],
-    have: inByRole[role],
-    late: counts.late_groups?.[role] ?? 0,
-    want: target[role],
-    tone: tallyTone(inByRole[role], target[role]),
-  }));
-}
-
-export function compTargetLine(zone: string, target: GuildCompTarget): string {
-  const seats = target.tanks + target.healers + target.melee + target.ranged;
-  return target.source === 'default'
-    ? `${zone} default: ${seats} players`
-    : `Set for this raid: ${seats} players`;
+  return ROLES.map((role) => {
+    const have = inByRole[role];
+    const want = target[role];
+    const late = counts.late_groups?.[role] ?? 0;
+    const tone: CellTone = have >= want ? 'ok' : have + late >= want ? 'warn' : 'miss';
+    const short = Math.max(0, want - have);
+    return {
+      key: role,
+      label: ROLE_LABEL[role],
+      sub: late > 0 ? `${late} late` : undefined,
+      cells: [
+        { tone: 'none', text: String(want), label: `Needs ${want}` },
+        { tone, text: String(have), label: `${have} in` },
+        short > 0 ? { tone, text: String(short), label: `${short} short` } : { tone: 'none', text: '—', label: 'None short' },
+      ],
+    };
+  });
 }
 
 const CELL: Readonly<Record<AttendanceCell, { tone: CellTone; text: string; label: string }>> = {
@@ -416,12 +411,4 @@ export function pingLine(result: GuildPingResult): string {
   const named = `Pinged ${counted(result.mentioned, 'raider')} on Discord.`;
   if (result.no_discord === 0) return named;
   return `${named} No Discord linked: ${names(result.no_discord_names)}.`;
-}
-
-/** The header's next-raid fact on every tab: `Next raid: Onyxia's Lair, Thu 10 Dec` (guild calendar). */
-export function nextRaidFact(
-  next: { zone_name: string; starts_at: string; guild_timezone: string | null },
-  viewerTz: string = Intl.DateTimeFormat().resolvedOptions().timeZone,
-): string {
-  return `Next raid: ${next.zone_name}, ${dateLabel(new Date(next.starts_at), next.guild_timezone ?? viewerTz)}`;
 }

@@ -2,7 +2,7 @@
 // The guild page's header band and Overview cards in a player's words (lifecycle review round 4,
 // N8/N9): plurals from the one helper, days as words, and the counts only where the viewer can
 // open what they count. Pure, so every rule is pinned without a page.
-import { dayWord, nightDate, nightDateOnly } from '../dates';
+import { nightDate, nightDateOnly } from '../dates';
 import { counted } from '../plural';
 import type { GuildViewerRole } from './api';
 import type { Fact } from './fact-line';
@@ -21,13 +21,6 @@ export function bandCountsLine(killed: number, pulls: number): string {
 export function showBandCounts(role: GuildViewerRole, publicReportCount: number): boolean {
   return role !== 'public' || publicReportCount > 0;
 }
-
-/** "Updated today": the day in the viewer's own zone. Empty for a stamp it cannot read. */
-export function updatedLine(updatedAt: string, now: Date = new Date()): string {
-  const word = dayWord(new Date(updatedAt), now);
-  return word === '' ? '' : `Updated ${word}`;
-}
-
 /** The date of a report's `created_at` (an instant) for a raid-night row: "Tue 20 Oct", the same words
  *  the account's report row prints for the same night. */
 export function raidNightDay(createdAt: string, now: Date = new Date()): string {

@@ -618,6 +618,7 @@ right:0;left:0;bottom:0;max-height:88vh;border-radius:16px 16px 0 0}
 .cell .l1{display:flex;align-items:baseline;column-gap:10px;min-width:0}.cell .l1 .nm{flex:none;max-width:100%;font:700 15px/20px var(--font-body)}
 .cell .l1 .st{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:20px;color:var(--muted)}
 .cell .l2{font-size:13px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}
+.cell .l2 .fact{display:inline-block;max-width:100%}  /* Paperdoll.svelte .ui-doll-fact: the line wraps between facts */
 .cell .gn{display:flex;flex-direction:column;align-items:flex-end;width:144px;min-width:0;justify-self:end}
 .cell .gn .v{font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}.cell .gn .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
 .cell .gn .bs{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:16px;color:var(--muted);text-align:right}
@@ -918,6 +919,20 @@ button.tgl{all:unset;cursor:pointer;font:inherit;color:inherit}
 .insp-l{display:flex;flex-direction:column;gap:16px;margin:4px 0 0;padding:0;list-style:none;font-size:14px;line-height:22px}
 .insp-l li{display:flex;flex-direction:column;gap:4px;min-width:0}.insp-l p{margin:0}
 .live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.frame{position:relative;min-width:0;overflow:hidden;padding:22px 24px;background:var(--raised);border:1px solid #000;border-radius:10px;
+box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
+.frame::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+@media(max-width:767px){.frame{padding:18px 16px}}
+
+.plate>.sec-h.pn-h{padding:16px 20px 10px;border-bottom:0}.pn-b{padding:0 20px 16px}.pn-b.flush{padding:0 0 6px}
+.plate.framed{position:relative}.plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+.layout-split.panels{column-gap:28px}.layout-split.panels>.main,.layout-split.panels>.rail{gap:22px}
+@media(max-width:767px){.plate>.sec-h.pn-h{padding:14px 14px 8px}.pn-b{padding:0 14px 14px}}
+
+table.gridm.edge :is(th,td){padding-inline:10px}table.gridm.edge :is(th,td):first-child{width:100%;padding-left:20px}
+table.gridm.edge :is(th,td):last-child{padding-right:20px}
+@media(max-width:767px){table.gridm.edge :is(th,td):first-child{padding-left:14px}table.gridm.edge :is(th,td):last-child{padding-right:14px}}
 </style></main><!-- Layout mock. Sample content for layout only; the build renders every figure from data. Spec: design/specs/2026-11-05-web-layout.md. --><style data-system="round5">
 :root{--bg:#100a06;--raised:#170e09;--hover:#241b15;--line:#3d342d;--line-soft:#2c241f;--text:#e3dfd9;--strong:#fff;
 --muted:#e2dcd3;--nav:#fff;--gold:#ffec71;--gold-hover:#f7b90a;--cream:#f3eee2;--accent:#0093b2;--teal:#0f6064;

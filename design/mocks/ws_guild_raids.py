@@ -149,7 +149,7 @@ def raids_tab(form: bool = False) -> str:
             + Section('Raid nights', f'<div style="padding-top:12px">{night_rows()}</div>'))
     ledger = f'<div class="pc" style="padding-top:20px"><div style="display:flex;flex-direction:column;gap:var(--section-gap)">{main}</div></div>'
     title = 'Raids, plan form' if form else 'Raids'
-    return build_page(f'Guild, {title}', _view(hdr(tabs_active='Raids', actions=Button('Invite link', small=True)) + band_line(O.OFFICER) + ledger) + PRIM,
+    return build_page(f'Guild, {title}', _view(hdr(tabs_active='Raids') + band_line(O.OFFICER) + ledger) + PRIM,
                       'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 

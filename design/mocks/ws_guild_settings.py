@@ -166,7 +166,7 @@ def settings_tab(bot: bool = False):
     main = plan_section() + (discord_bot_section() if bot else discord_section())
     rail = members_section() + records_section(crest=True)
     # The tab's own heading for screen readers (GuildSettings embedded): outside every region, as built.
-    head = hdr(tabs_active='Settings', actions=Button('Invite link', small=True)) + band_line(O.OFFICER) + '<h2 class="sp-sr">Guild settings</h2>'
+    head = hdr(tabs_active='Settings') + band_line(O.OFFICER) + '<h2 class="sp-sr">Guild settings</h2>'
     return build_page('Guild settings', _view(head + Page('split', main, rail) + NOTICE_LINE + _CSS), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
