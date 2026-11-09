@@ -29,6 +29,7 @@ from pathlib import Path
 import pytest
 
 from pipeline.classicdb_items import ClassicDbItem, write_extract
+from pipeline.client_crafted import CLIENT_CRAFTED
 from pipeline.loot import ENCHANTS, LOOT, SUFFIXES, _pvp_ranks_with_classic_db, write_loot_files
 from pipeline.loot.buffs import SIMBUFFS
 from pipeline.loot.classification import CLASSIFICATION
@@ -53,6 +54,7 @@ RAW_FILES = (
     "SpellName.csv",
     "ItemEffect.csv",
     "ItemXItemEffect.csv",
+    "SpellReagents.csv",
 )
 JSON_FILES = ("zones.json", "items.json", "spells.json")
 
@@ -165,6 +167,7 @@ def test_write_loot_files_returns_the_paths_it_writes(tmp_path: Path):
     paths, build_dir = run(tmp_path)
     assert paths == [
         build_dir / CLASSIFICATION,
+        build_dir / CLIENT_CRAFTED,
         build_dir / LOOT,
         build_dir / ENCHANTS,
         build_dir / SUFFIXES,

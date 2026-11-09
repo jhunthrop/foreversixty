@@ -991,7 +991,7 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		// f.Quests' own per-quest Faction, so band.go's sourceObtainable
 		// can actually tell a horde-only quest reward from an
 		// alliance-only or unrestricted one.
-		if src.Kind == "quest" {
+		if src.Kind == "quest" || !isPlannableSource(src) {
 			continue
 		}
 		add := func(id int, label string, chance float64, rare bool, npcID int) {

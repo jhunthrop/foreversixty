@@ -179,6 +179,19 @@ def test_a_vendor_and_a_world_npc_are_gated_by_npc(tmp_path):
     assert missing == []
 
 
+def test_a_reagent_gate_is_for_the_crafted_gate_and_never_reported_missing(tmp_path):
+    """A reagent no source names (Malleable Essence of Nature) is the
+    crafted gate's input, not a source id, so it is not warned about."""
+    gates = [
+        _gate(phase="raids-1", date="2026-12-09", reagents=[{"id": 274030, "name": "Essence"}]),
+        _gate(key="open", phase="launch", date="2026-11-04", reagents=[{"id": 5, "name": "x"}]),
+    ]
+    phases = load_content_phases(_write(tmp_path, gates))
+    assert phases.closed_reagent_gates() == {274030: "raids-1"}
+    _, missing = apply_content_phases(LootFile(sources=[]), phases)
+    assert missing == []
+
+
 def test_a_gated_boss_inside_an_open_dungeon_gets_its_own_source(tmp_path):
     """Balzaphon no longer inherits Stratholme's open status."""
     document = LootFile(
