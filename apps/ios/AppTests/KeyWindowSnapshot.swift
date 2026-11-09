@@ -20,8 +20,11 @@ extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
             layout: layout, traits: traits
         )
         let exact = strategy.diffing.diffV2
+        // The exact compare first: it is the library's own fast path, and the per-channel read runs
+        // only on a miss.
         strategy.diffing.diffV2 = { reference, taken in
-            SnapshotTolerance.withinChannelDelta(reference, taken) ? nil : exact(reference, taken)
+            guard let failure = exact(reference, taken) else { return nil }
+            return SnapshotTolerance.withinChannelDelta(reference, taken) ? nil : failure
         }
         return strategy
     }

@@ -16,7 +16,16 @@ enum SnapshotTolerance {
     /// different pixel sizes never are.
     static func withinChannelDelta(_ lhs: UIImage, _ rhs: UIImage) -> Bool {
         guard let a = rgba(lhs), let b = rgba(rhs), a.width == b.width, a.height == b.height else { return false }
-        return zip(a.bytes, b.bytes).allSatisfy { abs(Int($0) - Int($1)) <= maxChannelDelta }
+        // A plain loop over the raw buffers: a test target builds without optimisation, and a
+        // full-screen image is twelve million bytes.
+        return a.bytes.withUnsafeBufferPointer { left in
+            b.bytes.withUnsafeBufferPointer { right in
+                for i in 0..<left.count where abs(Int(left[i]) - Int(right[i])) > maxChannelDelta {
+                    return false
+                }
+                return true
+            }
+        }
     }
 
     /// The image's pixels as 8-bit RGBA, drawn into one known format so two images compare byte for byte.
