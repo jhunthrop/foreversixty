@@ -4,7 +4,7 @@
 // the island and its tests read the same rules.
 import type { SelectOption } from '../ui/listbox-model';
 import type { Fact } from '../ui/facts';
-import { formatClock, formatDuration, joinFacts, outcomeLabel } from './format';
+import { formatClock, joinFacts, outcomeLabel } from './format';
 import { pullNumbers, trashGroups } from './fights';
 import type { FightEntry } from './types';
 import { ALL_FIGHTS, trashScope, type Tab } from './url';
@@ -246,7 +246,7 @@ export function thisPullFacts({ fight, scope, players, deaths, phases }: PullFac
       id: 'phases',
       label: 'Phases',
       value: phases
-        .map((phase) => `${phase.name} ${formatDuration(phase.start_ms)}–${formatDuration(phase.end_ms)}`)
+        .map((phase) => `${phase.name} ${pullLength(phase.start_ms)}–${pullLength(phase.end_ms)}`)
         .join(' · '),
     });
   return facts;

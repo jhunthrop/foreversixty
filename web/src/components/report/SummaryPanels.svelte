@@ -1,8 +1,10 @@
 <!-- web/src/components/report/SummaryPanels.svelte -->
 <!-- The Summary tab's ability panels under the chart (logs spec 2026-11-07 6.2; owner review
      2026-11-09): `metric="done"` Damage done by ability, every ability the scope's players hit
-     with; `metric="taken"` Damage taken by ability, every ability that hit them. Each a StatTable
-     (spell icon, name, a Meter, the share of the scope's total, Per sec, Amount), the top eight. -->
+     with; `metric="taken"` Damage taken by ability, every ability that hit them; `metric="healing"`
+     Healing by ability, every heal they cast (effective healing, overheal left out). Each a
+     StatTable (spell icon, name, a Meter, the share of the scope's total, Per sec, Amount), the
+     top eight, with the full tab's link in the head. -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
   import { formatAmount } from '../../lib/report/format';
@@ -15,15 +17,20 @@
   import StatTable from '../ui/StatTable.svelte';
   import SpellIcon from './SpellIcon.svelte';
 
+  type Metric = 'done' | 'taken' | 'healing';
+
   let {
     metric,
+    tabHref,
     summary,
     approximate = false,
     durationMs,
     players,
     spellIcon,
   }: {
-    metric: 'done' | 'taken';
+    metric: Metric;
+    /** The full tab's url (Damage done, Damage taken, Healing). */
+    tabHref: string;
     summary: Summary;
     durationMs: number;
     players: ReadonlySet<string>;
@@ -33,6 +40,27 @@
   } = $props();
 
   const ROWS = 8;
+  const TITLE: Readonly<Record<Metric, string>> = {
+    done: 'Damage done by ability',
+    taken: 'Damage taken by ability',
+    healing: 'Healing by ability',
+  };
+  const TAB: Readonly<Record<Metric, string>> = {
+    done: 'Damage done',
+    taken: 'Damage taken',
+    healing: 'Healing',
+  };
+  const EMPTY: Readonly<Record<Metric, string>> = {
+    done: 'Nobody did damage in this window.',
+    taken: 'Nobody took damage in this window.',
+    healing: 'Nobody healed in this window.',
+  };
+  const NOUN: Readonly<Record<Metric, string>> = { done: 'damage', taken: 'damage', healing: 'healing' };
+  const TONE: Readonly<Record<Metric, 'accent' | 'muted' | 'kill'>> = {
+    done: 'accent',
+    taken: 'muted',
+    healing: 'kill',
+  };
 
   interface AbilityTotal {
     name: string;
@@ -41,7 +69,7 @@
     total: number;
   }
 
-  /** Every ability that hit a player, summed over the players it hit, largest first. */
+  /** Every ability in `table` for the scope's players, summed by name, largest first. */
   function abilityTotals(table: readonly Actor[]): AbilityTotal[] {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const totals = new Map<string, AbilityTotal>();
@@ -62,13 +90,11 @@
     }
     return [...totals.values()].filter((row) => row.total > 0).sort((a, b) => b.total - a.total);
   }
-  const TITLE = { done: 'Damage done by ability', taken: 'Damage taken by ability' } as const;
-  const EMPTY = {
-    done: 'Nobody did damage in this window.',
-    taken: 'Nobody took damage in this window.',
-  } as const;
+
+  const source = (which: Metric): readonly Actor[] =>
+    which === 'done' ? summary.damage_done : which === 'taken' ? summary.damage_taken : summary.healing;
   const byAbility = $derived.by(() => {
-    const rows = abilityTotals(metric === 'done' ? summary.damage_done : summary.damage_taken);
+    const rows = abilityTotals(source(metric));
     const total = rows.reduce((sum, row) => sum + row.total, 0);
     return rows.slice(0, ROWS).map((row) => ({ ...row, share: total === 0 ? 0 : row.total / total }));
   });
@@ -80,7 +106,13 @@
   ] as const;
 </script>
 
-<Section title={TITLE[metric]} panel flush testid={metric === 'done' ? 'panel-done' : 'panel-taken'}>
+<Section
+  title={TITLE[metric]}
+  action={{ label: TAB[metric], href: tabHref }}
+  panel
+  flush
+  testid={`panel-${metric}`}
+>
   {#if byAbility.length === 0}
     <EmptyLine text={EMPTY[metric]} />
   {:else}
@@ -92,14 +124,11 @@
             { value: formatRate(row.total / seconds) },
             { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
           ]}
-          phone={`${formatAmount(row.total)} damage`}
+          phone={`${formatAmount(row.total)} ${NOUN[metric]}`}
         >
           {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
           {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
-          {#snippet meter()}<Meter
-              value={row.share}
-              tone={metric === 'done' ? 'accent' : 'muted'}
-            />{/snippet}
+          {#snippet meter()}<Meter value={row.share} tone={TONE[metric]} />{/snippet}
         </StatRow>
       {/each}
     </StatTable>

@@ -157,6 +157,7 @@
   import { fightGroupScope, groupScope, raidFlaggedPlayers, scopeNoun } from '../../lib/report/group';
   import { splitUnitName } from '../../lib/characters';
   import { reportCopy } from '../../lib/report/copy';
+  import { ratingCopy } from '../../lib/rating/copy';
   import { justUploadedAt } from '../../lib/reports/just-uploaded';
   import {
     ACTOR_TABS,
@@ -1657,6 +1658,8 @@
         }),
   );
   const isTrashPull = $derived(fight !== null && fight.kind !== 'encounter');
+  /** A pull a rating can exist for: a boss pull of a report the API keeps (never the bundled sample). */
+  const rateable = $derived(!isTrashPull && !isSampleReport(reportId));
   const live = $derived<'live' | 'quiet' | null>(fightIsLive ? (quiet === null ? 'live' : 'quiet') : null);
   const simHref = $derived(
     fight === null || nightMode
@@ -1733,7 +1736,11 @@
 
 {#snippet thisPull()}
   {#if fight !== null && !nightMode}
-    <ThisPull facts={pullFacts} {simHref} />
+    <ThisPull
+      facts={pullFacts}
+      {simHref}
+      note={state.tab === 'summary' && !rateable ? ratingCopy.noRatingForTrash : ''}
+    />
   {/if}
 {/snippet}
 
@@ -1949,14 +1956,17 @@
         {@render thisPull()}
         {#if !onePullTab && scoped !== null}
           {#if state.tab === 'summary' && !nightMode}
-            <RatingPanel
-              {reportId}
-              fightIndex={state.fight}
-              roster={scoped.roster.map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
-              rated={!isTrashPull && !isSampleReport(reportId)}
-              tabHref={hrefWith({ tab: 'rating' })}
-            />
-            <SummaryDeaths summary={scoped} tabHref={hrefWith({ tab: 'deaths' })} />
+            {#if scoped.deaths.length > 0}
+              <SummaryDeaths summary={scoped} tabHref={hrefWith({ tab: 'deaths' })} />
+            {/if}
+            {#if rateable}
+              <RatingPanel
+                {reportId}
+                fightIndex={state.fight}
+                roster={scoped.roster.map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
+                tabHref={hrefWith({ tab: 'rating' })}
+              />
+            {/if}
             {#if !isTrashPull && summary !== null}
               <KeyMechanics {summary} {spellIcon} tabHref={hrefWith({ tab: 'mechanics' })} />
             {/if}
@@ -1966,7 +1976,7 @@
                   {@const label = unitLabel(combatant.name).text}
                   <Row
                     title={label}
-                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · item level ${combatant.item_level ?? 0} · ${combatant.gear.filter((item) => item.ID > 0).length} items`}
+                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · item level ${combatant.item_level ?? 0}`}
                     open
                   >
                     {#snippet lead()}<ClassIcon className={classOf.get(combatant.guid)} size={28} />{/snippet}
@@ -2057,6 +2067,7 @@
           <div class="report-abilities">
             <SummaryPanels
               metric="done"
+              tabHref={hrefWith({ tab: 'damage-done' })}
               summary={scoped}
               durationMs={scoped.duration_ms}
               players={playerSet}
@@ -2065,20 +2076,32 @@
             />
             <SummaryPanels
               metric="taken"
+              tabHref={hrefWith({ tab: 'damage-taken' })}
               summary={scoped}
               durationMs={scoped.duration_ms}
               players={playerSet}
               approximate={!windowIsWhole}
               {spellIcon}
             />
+            {#if scoped.healing.some((actor) => playerSet.has(actor.guid) && actor.effective > 0)}
+              <SummaryPanels
+                metric="healing"
+                tabHref={hrefWith({ tab: 'healing' })}
+                summary={scoped}
+                durationMs={scoped.duration_ms}
+                players={playerSet}
+                approximate={!windowIsWhole}
+                {spellIcon}
+              />
+            {/if}
+            <GroupBuffs
+              summary={scoped}
+              durationMs={scoped.duration_ms}
+              players={playerSet}
+              {spellIcon}
+              tabHref={hrefWith({ tab: 'buffs' })}
+            />
           </div>
-          <GroupBuffs
-            summary={scoped}
-            durationMs={scoped.duration_ms}
-            players={playerSet}
-            {spellIcon}
-            tabHref={hrefWith({ tab: 'buffs' })}
-          />
         {:else if ACTOR_TABS.has(state.tab) && playerView}
           <PlayerView
             tab={state.tab as 'damage-done' | 'healing' | 'damage-taken'}

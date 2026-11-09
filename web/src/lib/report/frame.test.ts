@@ -161,6 +161,7 @@ describe('This pull (directions b1)', () => {
       phases: [{ name: 'Phase 1', start_ms: 0, end_ms: 14_000 }],
     });
     expect(facts.map((fact) => fact.label)).toEqual(['Started', 'In group', 'Deaths', 'Phases']);
+    expect(facts.at(-1)?.value).toBe('Phase 1 0:00–0:14');
   });
 
   it('reads everyone the logger saw as In range', () => {

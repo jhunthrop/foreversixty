@@ -278,6 +278,8 @@
     onMore={() =>
       coarse ? (legend.sheetOpen = true) : document.getElementById('chart-players-trigger')?.click()}
   />
+  <!-- The y axis's unit, over its labels (owner review 2026-11-09: a number takes its unit). -->
+  <span class="text-label text-muted block pt-2" data-testid="chart-unit">{chartCopy.unit(metric)}</span>
   <TimeSeriesChart
     {series}
     {events}

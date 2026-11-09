@@ -17,6 +17,15 @@
     $props();
 
   const SHOWN = 5;
+  /** Each ability's school, from what it did to players: the icon chain's school step for a boss
+   *  ability the build has no icon for, so the same spell draws the same icon here and in the tables. */
+  const schoolOf = $derived(
+    new Map(
+      summary.damage_taken.flatMap((actor) =>
+        actor.abilities.map((ability) => [ability.spell_id, ability.school] as const),
+      ),
+    ),
+  );
   const plural = (n: number, one: string, many = `${one}s`): string => `${n} ${n === 1 ? one : many}`;
 
   interface Line {
@@ -58,7 +67,9 @@
   <Section title="Mechanics" action={{ label: 'Mechanics', href: tabHref }} panel testid="summary-mechanics">
     {#each lines as line (line.key)}
       <Row title={line.name} sub={line.sub} open density="slim">
-        {#snippet lead()}<SpellIcon url={spellIcon(line.spellId, line.name)} />{/snippet}
+        {#snippet lead()}<SpellIcon
+            url={spellIcon(line.spellId, line.name, schoolOf.get(line.spellId))}
+          />{/snippet}
         {#snippet trail()}<span
             class={['text-[14px] font-semibold tabular-nums', line.bad ? 'text-wipe' : 'text-strong']}
             >{line.figure}</span

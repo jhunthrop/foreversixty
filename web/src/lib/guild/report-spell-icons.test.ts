@@ -25,11 +25,11 @@ describe('spellIconStem', () => {
     expect(spellIconStem(TABLE, BY_NAME, 11430, 'Slam')).toBe('ability_warrior_decisivestrike');
   });
 
-  it('falls to the school, then the attack icon; the placeholder never counts', () => {
+  it('falls to the school, then a plain rune; the placeholder never counts', () => {
     expect(spellIconStem(TABLE, BY_NAME, 1259652, 'Shock', 8)).toBe('spell_nature_lightning');
     expect(spellIconStem(TABLE, BY_NAME, 1259652, 'Shock', 20)).toBe('spell_fire_fire');
-    expect(spellIconStem(TABLE, BY_NAME, 9, 'Mystery')).toBe('ability_meleedamage');
-    expect(spellIconStem(TABLE, BY_NAME, 7183, 'Elixir of Minor Defense')).toBe('ability_meleedamage');
+    expect(spellIconStem(TABLE, BY_NAME, 9, 'Mystery')).toBe('inv_misc_rune_01');
+    expect(spellIconStem(TABLE, BY_NAME, 7183, 'Elixir of Minor Defense')).toBe('inv_misc_rune_01');
   });
 });
 

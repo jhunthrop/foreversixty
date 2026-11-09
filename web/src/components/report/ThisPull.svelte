@@ -10,7 +10,16 @@
   import Facts from '../ui/Facts.svelte';
   import Section from '../ui/Section.svelte';
 
-  let { facts, simHref }: { facts: readonly Fact[]; simHref: string | null } = $props();
+  let {
+    facts,
+    simHref,
+    note = '',
+  }: {
+    facts: readonly Fact[];
+    simHref: string | null;
+    /** One muted line under the facts (no rating can exist for this pull). */
+    note?: string;
+  } = $props();
 
   const COPIED_FOR_MS = 2000;
   let copied = $state('');
@@ -28,6 +37,7 @@
 
 <Section title="This pull" panel testid="report-this-pull">
   <Facts items={facts} />
+  {#if note !== ''}<p class="text-small text-muted pt-3" data-testid="report-this-pull-note">{note}</p>{/if}
   <div class="flex flex-wrap gap-2 pt-4">
     {#if simHref !== null}
       <a class={buttonClass('secondary', 'sm')} href={simHref} data-testid="report-sim-fight"

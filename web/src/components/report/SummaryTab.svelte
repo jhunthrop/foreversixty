@@ -123,7 +123,7 @@
         { value: formatRate(rateOf(pair, row)) },
       ]),
       { value: `${activeMark}${Math.round(row.activity_pct)}%` },
-      { value: String(row.deaths), muted: row.deaths === 0 },
+      { value: String(row.deaths), muted: row.deaths === 0, tone: row.deaths > 0 ? 'wipe' : undefined },
     ];
   }
 
@@ -142,7 +142,7 @@
   }
 </script>
 
-<Section title="Players" panel frame="framed" flush testid="summary-tab">
+<Section title="Players" panel flush testid="summary-tab">
   <!-- Up to eight figure columns: the name keeps a floor so it never folds letter by letter in
        the narrow main column (1024 to 1279); past that floor the table scrolls sideways. -->
   <div class="summary-roster" data-testid="summary-roster-card">
@@ -203,6 +203,12 @@
 <style>
   .summary-roster {
     overflow-x: auto;
+  }
+  /* One fixed row height: the name and its class line each hold one line, ellipsised. */
+  .summary-roster :global(.ui-st-name > *) {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   .summary-roster :global(.ui-st) {
     --st-name: minmax(120px, 2fr);

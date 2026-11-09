@@ -1,5 +1,6 @@
 {
   "melee": "ability_meleedamage",
+  "spell": "inv_misc_rune_01",
   "roles": {
     "tank": "ability_warrior_defensivestance",
     "healer": "spell_holy_flashheal",

@@ -4,7 +4,7 @@
 // down a chain until it has an icon (never an empty socket once the tables load; logs lane review
 // 2026-11-09): a melee swing is the client's attack icon; then the client's own override (Auto
 // Shot); then the id table; then a same-named spell's icon (`spellicons-by-name.json`, written by
-// web/scripts/spell-icons-publish.mjs); then its school's base spell; then the attack icon.
+// web/scripts/spell-icons-publish.mjs); then its school's base spell; then a plain rune (never the attack icon on a spell).
 import fallbacks from '../../data/spell-icon-fallbacks.json';
 import { isRealIcon } from '../icons/placeholder';
 import { dataUrl, loadOptional } from '../planner/load';
@@ -41,7 +41,7 @@ export function spellIconStem(
     real(table[String(spellId)]) ??
     real(name === '' ? undefined : byName[name]) ??
     schoolStem(school) ??
-    fallbacks.melee
+    (spellId === 0 ? fallbacks.melee : fallbacks.spell)
   );
 }
 
