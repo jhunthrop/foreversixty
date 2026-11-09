@@ -6,10 +6,14 @@ import { tiersCopy } from '../tiers/tier-copy';
 import { answerCopy } from './answer-copy';
 
 describe('answerCopy', () => {
-  it('is what the tier list’s answer says, key for key', () => {
-    for (const [key, value] of Object.entries(answerCopy)) {
-      expect(tiersCopy.answer[key as keyof typeof answerCopy], key).toBe(value);
-    }
+  it('is what the tier list’s spec panel says when it has no spec to show', () => {
+    const { card } = tiersCopy;
+    expect([card.unknown, card.choose, card.error, card.retry]).toEqual([
+      answerCopy.unknown,
+      answerCopy.unknownLink,
+      answerCopy.error,
+      answerCopy.retry,
+    ]);
   });
 
   it('names the character whose spec is not known', () => {

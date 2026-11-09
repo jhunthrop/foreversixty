@@ -1,16 +1,14 @@
 // web/tests/e2e/tiers.spec.ts
-// The tier list (design/specs/2026-11-06-tiers.md over the rules of 2026-10-09-tier-list.md): the
-// three role lists against the published BiS files, the faction choice, ties named on both rows of
-// a pair, the signed-in answer and pointer, keyboard on the control bar and a row, and the phone.
+// The tier list (directions mock g-tiers, round 5, over the rules of 2026-10-09-tier-list.md): the
+// three role lists against the published BiS files, the faction choice, the S to D letter column,
+// the spec panel signed out and in, keyboard on the control bar and a row, and the phone.
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import {
   expectedRows,
-  expectedTieCount,
   metricText,
   oneDecimal,
   wholeNumber,
-  raceName,
   type TierFaction,
   type TierRole,
 } from './support/tier-list';
@@ -18,8 +16,7 @@ import { bisBand } from './support/bis-file';
 
 const ROLE_PATH: Record<TierRole, string> = { dps: '/tiers', tank: '/tiers/tank', healer: '/tiers/healer' };
 const PHONE = { width: 390, height: 844 };
-const ordinalOf = (n: number): string =>
-  `${n}${n % 100 >= 11 && n % 100 <= 13 ? 'th' : (({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[n % 10] ?? 'th')}`;
+const ACCENT = 'rgb(0, 147, 178)';
 
 const envelope = (data: unknown) => ({
   status: 200,
@@ -62,7 +59,9 @@ async function signIn(page: Page, character: { class: string; spec: string; fact
 }
 
 for (const role of ['dps', 'tank', 'healer'] as const) {
-  test(`${role}: rows follow the published files in order, with their figures`, async ({ page }) => {
+  test(`${role}: rows follow the published files in order, named in full, with their figures`, async ({
+    page,
+  }) => {
     await page.goto(ROLE_PATH[role]);
     const expected = expectedRows(role, 'alliance');
     const rows = activePanel(page).locator('[data-testid^="tier-row-"]');
@@ -74,10 +73,44 @@ for (const role of ['dps', 'tank', 'healer'] as const) {
         `tier-row-${row.entry.class_slug}-${row.entry.spec_slug}`,
       );
       await expect(rendered.getByTestId('tier-number')).toHaveText(metricText(role, row.metric));
-      await expect(rendered).toContainText(raceName(row.band.race!));
+      // One link per row: the spec's full name, to its best in slot.
+      const links = rendered.getByRole('link');
+      await expect(links).toHaveCount(1);
+      await expect(links).toHaveAttribute(
+        'href',
+        new RegExp(`^/bis/${row.entry.class_slug}/${row.entry.spec_slug}/60`),
+      );
+      await expect(links).toContainText(row.entry.name);
     }
   });
 }
+
+test('the title band names the fight, and the bars are the accent from 90% of the lowest spec', async ({
+  page,
+}) => {
+  await page.goto('/tiers');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Tier list at 60');
+  await expect(page.getByTestId('tier-page')).toContainText('Best in slot, raid buffs · level 63 · 3 min');
+  await expect(activePanel(page).getByTestId('rank-group-letter').first()).toHaveAttribute(
+    'title',
+    'Within 5% of #1',
+  );
+  const rows = activePanel(page).locator('[data-testid^="tier-row-"]');
+  const fill = (index: number) =>
+    rows
+      .nth(index)
+      .locator('.ui-meter > i')
+      .evaluate((node) => ({
+        width: parseFloat((node as HTMLElement).style.width),
+        colour: getComputedStyle(node).backgroundColor,
+      }));
+  const top = await fill(0);
+  const last = await fill((await rows.count()) - 1);
+  expect(top).toEqual({ width: 100, colour: ACCENT });
+  // The lowest spec sits a tenth above the floor: (x - 0.9x) / (top - 0.9x) of the bar, well under the share.
+  expect(last.width).toBeGreaterThan(0);
+  expect(last.width).toBeLessThan(50);
+});
 
 test('tank list sorts on damage taken, not effective health, and the best of each column is green', async ({
   page,
@@ -87,7 +120,7 @@ test('tank list sorts on damage taken, not effective health, and the best of eac
   const dtps = expected.map((row) => row.band.metrics!.dtps);
   expect(dtps).toEqual([...dtps].sort((a, b) => a - b));
   const leader = activePanel(page).locator('[data-testid^="tier-row-"]').first();
-  await expect(leader.getByTestId('rank-gap')).toHaveText('Least');
+  await expect(leader.getByTestId('rank-gap')).toHaveText('');
   await expect(leader.getByTestId('tier-number')).toHaveCSS('color', 'rgb(127, 212, 138)');
   const bestHealth = Math.max(...expected.map((row) => row.band.metrics!.effective_health));
   const bestRow = expected.findIndex((row) => row.band.metrics!.effective_health === bestHealth);
@@ -96,7 +129,9 @@ test('tank list sorts on damage taken, not effective health, and the best of eac
   ).toHaveCSS('color', 'rgb(127, 212, 138)');
 });
 
-test('tank figures are whole numbers and every column head is one short line', async ({ page }) => {
+test('tank figures are whole numbers and every column head is one short line beside the rail', async ({
+  page,
+}) => {
   await page.goto('/tiers/tank');
   const leader = expectedRows('tank', 'alliance')[0]!;
   const row = activePanel(page).locator('[data-testid^="tier-row-"]').first();
@@ -104,10 +139,10 @@ test('tank figures are whole numbers and every column head is one short line', a
     wholeNumber(leader.band.metrics!.effective_health),
   );
   await expect(row.getByTestId('tier-threat')).toHaveText(wholeNumber(leader.band.metrics!.tps));
-  for (const width of [1280, 1440]) {
+  for (const width of [1280, 1440, 1760, 2000]) {
     await page.setViewportSize({ width, height: 900 });
     const heads = activePanel(page).locator('.ui-rank-heads > span');
-    await expect(heads.nth(3)).toHaveText('Survival vs the best');
+    await expect(heads.nth(4)).toHaveText('Taken / s');
     for (const head of await heads.all()) {
       const { height, lineHeight, scroll, client } = await head.evaluate((node) => ({
         height: node.getBoundingClientRect().height,
@@ -118,31 +153,27 @@ test('tank figures are whole numbers and every column head is one short line', a
       expect(height).toBeLessThanOrEqual(lineHeight + 1);
       expect(scroll).toBeLessThanOrEqual(client);
     }
+    // Every name holds one line, and the bars start at one x down the list.
+    for (const link of await activePanel(page).getByTestId('tier-spec-link').all()) {
+      const { height, lineHeight } = await link.evaluate((node) => ({
+        height: node.getBoundingClientRect().height,
+        lineHeight: parseFloat(getComputedStyle(node).lineHeight),
+      }));
+      expect(height).toBeLessThanOrEqual(lineHeight + 1);
+    }
+    const bars = await activePanel(page)
+      .locator('.ui-rr-bar')
+      .evaluateAll((nodes) => nodes.map((node) => Math.round(node.getBoundingClientRect().left)));
+    expect(new Set(bars).size).toBe(1);
+    // The list fits its column: nothing spills past the plate.
+    const plate = activePanel(page).getByTestId('tier-list');
+    const { scrollWidth, clientWidth } = await plate.evaluate((node) => ({
+      scrollWidth: node.scrollWidth,
+      clientWidth: node.clientWidth,
+    }));
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
   }
 });
-
-for (const faction of ['alliance', 'horde'] as const) {
-  test(`${faction}: both rows of a tied pair carry the mark, naming the partner`, async ({ page }) => {
-    await page.goto(`/tiers?faction=${faction}`);
-    const expected = expectedRows('dps', faction);
-    const panel = activePanel(page, faction);
-    await expect(panel.getByTestId('rank-tie')).toHaveCount(expectedTieCount(expected, 'dps'));
-    const rows = panel.locator('[data-testid^="tier-row-"]');
-    const within = (a: number, b: number) => Math.abs(1 - a / b) * 100 <= 1;
-    for (const [index, row] of expected.entries()) {
-      const partners = expected.filter(
-        (other, j) =>
-          j !== index && within(Math.min(row.metric, other.metric), Math.max(row.metric, other.metric)),
-      );
-      const tie = rows.nth(index).getByTestId('rank-tie');
-      if (partners.length === 0) {
-        await expect(tie).toHaveCount(0);
-        continue;
-      }
-      for (const partner of partners) await expect(tie).toContainText(partner.entry.name);
-    }
-  });
-}
 
 const TIER_LINES = [
   { letter: 'S', from: 0 },
@@ -160,38 +191,56 @@ function expectedLetters(metrics: number[]): string[] {
   });
 }
 
-test('the DPS list carries a tier chip per tier with its letter, band and count', async ({ page }) => {
+test('the DPS list groups its rows under a letter column, S to D', async ({ page }) => {
   await page.goto('/tiers');
   const expected = expectedRows('dps', 'alliance');
   const letters = expectedLetters(expected.map((row) => row.metric));
   const present = TIER_LINES.map((line) => line.letter).filter((letter) => letters.includes(letter));
-  const chips = activePanel(page).getByTestId('rank-group-head');
-  await expect(chips).toHaveCount(present.length);
-  for (const [index, letter] of present.entries()) {
-    const chip = chips.nth(index);
-    await expect(chip.getByTestId('rank-group-letter')).toContainText(letter);
-    await expect(chip).toContainText(`${letters.filter((l) => l === letter).length} spec`);
-  }
-  await expect(chips.first()).toContainText('Within 5% of the top');
+  const heads = activePanel(page).getByTestId('rank-group-head');
+  await expect(heads).toHaveCount(present.length);
   const groups = activePanel(page).getByTestId('tier-group');
   for (const [index, letter] of present.entries()) {
+    await expect(heads.nth(index).getByTestId('rank-group-letter')).toContainText(letter);
+    await expect(groups.nth(index).getByRole('list')).toHaveAccessibleName(`Tier ${letter}`);
     await expect(groups.nth(index).locator('[data-testid^="tier-row-"]')).toHaveCount(
       letters.filter((l) => l === letter).length,
     );
   }
-  await expect(activePanel(page).getByTestId('tier-howto')).toContainText(
-    'S is within 5% of the top, A within 10%, B within 20%, C within 30%, D beyond.',
-  );
 });
+
+for (const viewport of [{ width: 1440, height: 900 }, PHONE]) {
+  test(`at ${viewport.width} the letter column sits beside its rows`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto('/tiers');
+    const group = activePanel(page).getByTestId('tier-group').first();
+    const head = await group.getByTestId('rank-group-head').boundingBox();
+    const row = await group.locator('[data-testid^="tier-row-"]').first().boundingBox();
+    expect(head!.x + head!.width).toBeLessThanOrEqual(row!.x + 1);
+    expect(Math.abs(head!.y - row!.y)).toBeLessThanOrEqual(1);
+  });
+}
 
 for (const role of ['tank', 'healer'] as const) {
   test(`the ${role} list carries no tier letters`, async ({ page }) => {
     await page.goto(ROLE_PATH[role]);
     await expect(activePanel(page).getByTestId('tier-list')).toBeVisible();
     await expect(activePanel(page).getByTestId('rank-group-head')).toHaveCount(0);
-    await expect(activePanel(page).getByTestId('rank-group-letter')).toHaveCount(0);
   });
 }
+
+test('a shared healer rank names the healer it ties with; no other row carries a tie', async ({ page }) => {
+  await page.goto('/tiers/healer');
+  const rows = activePanel(page).locator('[data-testid^="tier-row-"]');
+  const count = await rows.count();
+  for (let index = 0; index < count; index += 1) {
+    const rank = (await rows.nth(index).getByTestId('rank-rank').textContent()) ?? '';
+    const note = rows.nth(index).getByTestId('rank-note');
+    if (rank.startsWith('=')) await expect(note).toHaveText(/^≈ tie with /);
+    else await expect(note.filter({ hasText: '≈ tie' })).toHaveCount(0);
+  }
+  await page.goto('/tiers');
+  await expect(activePanel(page).getByTestId('rank-note').filter({ hasText: '≈ tie' })).toHaveCount(0);
+});
 
 test('the DPS list keeps the less-certain note', async ({ page }) => {
   await page.goto('/tiers');
@@ -200,42 +249,7 @@ test('the DPS list keeps the less-certain note', async ({ page }) => {
   await expect(activePanel(page).getByTestId('rank-note')).toHaveCount(uncertain);
 });
 
-test('on a phone the tier chip is a header row above its rows', async ({ page }) => {
-  await page.setViewportSize(PHONE);
-  await page.goto('/tiers');
-  const group = activePanel(page).getByTestId('tier-group').first();
-  const chip = await group.getByTestId('rank-group-head').boundingBox();
-  const row = await group.locator('[data-testid^="tier-row-"]').first().boundingBox();
-  expect(chip!.y + chip!.height).toBeLessThanOrEqual(row!.y + 1);
-  expect(chip!.height).toBeLessThan(60);
-});
-
-for (const viewport of [{ width: 1440, height: 900 }, PHONE]) {
-  test(`at ${viewport.width} the Your spec edge is its slice of the tier rail`, async ({ page }) => {
-    await page.setViewportSize(viewport);
-    await signIn(page, { class: 'Warrior', spec: 'Fury' });
-    await page.goto('/tiers');
-    const you = activePanel(page).locator('[data-rank-key][aria-current="true"]');
-    await expect(you).toHaveCount(1);
-    const chip = activePanel(page)
-      .getByTestId('tier-group')
-      .filter({ has: page.locator('[data-rank-key][aria-current="true"]') })
-      .getByTestId('rank-group-head');
-    const slice = await you.evaluate((row) => {
-      const edge = getComputedStyle(row, '::before');
-      return { x: row.getBoundingClientRect().left + parseFloat(edge.left), width: edge.width };
-    });
-    const rail = await chip.evaluate((el) => ({
-      x: el.getBoundingClientRect().left,
-      width: getComputedStyle(el).borderLeftWidth,
-    }));
-    expect(slice).toEqual(rail);
-  });
-}
-
-test('the faction pill shows the Horde numbers and races, and the roles keep the faction', async ({
-  page,
-}) => {
+test('the faction tab shows the Horde numbers, and the roles keep the faction', async ({ page }) => {
   await page.goto('/tiers');
   await openBar(page);
   await page.getByTestId('control-faction-horde').click();
@@ -245,8 +259,8 @@ test('the faction pill shows the Horde numbers and races, and the roles keep the
   const expected = expectedRows('dps', 'horde');
   const first = activePanel(page, 'horde').locator('[data-testid^="tier-row-"]').first();
   await expect(first.getByTestId('tier-number')).toHaveText(oneDecimal(expected[0]!.metric));
-  await expect(first).toContainText(raceName(expected[0]!.band.race!));
   await expect(page.getByTestId('control-role-tank')).toHaveAttribute('href', '/tiers/tank?faction=horde');
+  await expect(page.getByTestId('control-role-tank')).toHaveText('Tanks');
   await expect(page.getByTestId('control-faction-horde')).toHaveAttribute('aria-checked', 'true');
   await openBar(page);
   await page.getByTestId('control-faction-alliance').click();
@@ -290,48 +304,78 @@ test('a Horde current character opens on Horde before paint; the URL still wins'
   await expect(activePanel(page, 'horde')).toBeHidden();
 });
 
-test('signed out: no answer and no marked row, the list is there and the caption offers sign-in', async ({
-  page,
-}) => {
+test('signed out: the spec panel offers sign-in and no row is marked', async ({ page }) => {
   await page.goto('/tiers');
-  await expect(page.getByTestId('tier-answer')).toBeHidden();
+  const card = page.getByTestId('tier-card');
+  await expect(page.getByTestId('tier-card-signed-out')).toBeVisible();
+  await expect(card.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/login?next=%2Ftiers');
+  await expect(page.getByTestId('tier-answer-body')).toBeHidden();
   await expect(activePanel(page).locator('[aria-current="true"]')).toHaveCount(0);
-  await expect(activePanel(page).locator('[data-testid="tier-you-tag"]:visible')).toHaveCount(0);
   await expect(activePanel(page).getByTestId('tier-list')).toBeVisible();
-  const signIn = activePanel(page).getByTestId('tier-caption').getByRole('link', { name: 'Sign in' });
-  await expect(signIn).toHaveAttribute('href', '/login?next=%2Ftiers');
-  await expect(activePanel(page).getByTestId('tier-caption')).toContainText('to see your spec marked.');
 });
 
-test('signed in on a DPS spec: the callout ranks it and its row is marked', async ({ page }) => {
+test('signed in on a DPS spec: the panel names it, where it stands, and marks its row', async ({ page }) => {
   await signIn(page, { class: 'Warrior', spec: 'Fury' });
   await page.goto('/tiers');
   const expected = expectedRows('dps', 'alliance');
-  const rank = expected.findIndex((row) => row.entry.spec === 'warrior-fury') + 1;
-  const answer = page.getByTestId('tier-answer-body');
-  await expect(answer).toContainText('Your spec · DPS');
-  await expect(answer).toContainText('Fury Warrior');
-  await expect(page.getByTestId('tier-answer-figure')).toHaveText(`${ordinalOf(rank)}of ${expected.length}`);
-  await expect(page.getByTestId('tier-answer-detail')).toContainText(
-    rank === 1 ? 'Level with the top spec.' : '% behind',
+  const index = expected.findIndex((row) => row.entry.spec === 'warrior-fury');
+  const letter = expectedLetters(expected.map((row) => row.metric))[index];
+  await expect(page.getByTestId('tier-answer-name')).toHaveText('Fury Warrior');
+  await expect(page.getByTestId('tier-answer-standing')).toHaveText(
+    `Tier ${letter} · #${index + 1} · ${oneDecimal(expected[index]!.metric)} DPS`,
   );
-  await expect(page.getByTestId('tier-answer-detail')).toContainText(rank === 1 ? '' : 'Tier ');
   await expect(page.getByTestId('tier-answer-bis')).toHaveAttribute('href', '/bis/warrior/fury/60');
-  await expect(page.getByTestId('tier-answer-sim')).toHaveAttribute('href', '/sim');
-  await expect(page.getByTestId('tier-row-warrior-fury').first()).toHaveAttribute('aria-current', 'true');
-  await expect(page.getByTestId('tier-row-warrior-fury').first().getByTestId('tier-you-tag')).toBeVisible();
+  await expect(page.getByTestId('tier-answer-guide')).toHaveAttribute('href', '/guides/warrior/fury');
+  await expect(page.getByTestId('tier-card-signed-out')).toBeHidden();
+  const mine = page.getByTestId('tier-row-warrior-fury').first();
+  await expect(mine).toHaveAttribute('aria-current', 'true');
+  const edge = await mine.evaluate((row) => getComputedStyle(row, '::before').backgroundColor);
+  expect(edge).toBe(ACCENT);
 });
 
-test('signed in on a tank spec: the DPS page points at the Tank list', async ({ page }) => {
+test('signed in on a tank spec: the DPS page points at the Tanks list', async ({ page }) => {
   await signIn(page, { class: 'Paladin', spec: 'Protection' });
   await page.goto('/tiers');
-  await expect(page.getByTestId('tier-answer-detail')).toHaveText('Protection Paladin is on the Tank list.');
+  await expect(page.getByTestId('tier-answer-other')).toHaveText('On the Tanks list ›');
   await expect(page.getByTestId('tier-answer-other')).toHaveAttribute('href', '/tiers/tank');
-  await expect(page.getByTestId('tier-answer-figure')).toBeHidden();
+  await expect(page.getByTestId('tier-answer-guide')).toHaveAttribute('href', '/guides/paladin/protection');
   await expect(activePanel(page).locator('[aria-current="true"]')).toHaveCount(0);
   await page.goto('/tiers/tank');
-  await expect(page.getByTestId('tier-answer-body')).toContainText('Protection Paladin');
-  await expect(page.getByTestId('tier-answer-figure')).toContainText('of 3');
+  await expect(page.getByTestId('tier-answer-name')).toHaveText('Protection Paladin');
+  await expect(page.getByTestId('tier-answer-standing')).toContainText('taken / s');
+});
+
+test('the spec panel holds its size from loading to answered: nothing under it moves', async ({ page }) => {
+  await page.setViewportSize(PHONE);
+  let release: () => void = () => undefined;
+  const held = new Promise<void>((resolve) => (release = resolve));
+  await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
+  await page.route('**/v1/me', async (route) => {
+    await held;
+    await route.fulfill(
+      envelope({
+        user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+        characters: [
+          {
+            key: 'us/normal/t',
+            region: 'us',
+            ruleset: 'normal',
+            name: 'Tester',
+            level: 60,
+            class: 'Warrior',
+            spec: 'Fury',
+          },
+        ],
+        guilds: [],
+      }),
+    );
+  });
+  await page.goto('/tiers');
+  const list = activePanel(page).getByTestId('tier-list');
+  const before = (await list.boundingBox())!.y;
+  release();
+  await expect(page.getByTestId('tier-answer-name')).toHaveText('Fury Warrior');
+  expect((await list.boundingBox())!.y).toBe(before);
 });
 
 test('keyboard: arrows choose the faction and the role, and a row link shows a focus ring', async ({
@@ -356,34 +400,6 @@ test('keyboard: arrows choose the faction and the role, and a row link shows a f
   await expect(link).toHaveCSS('outline-color', 'rgb(255, 236, 113)');
 });
 
-test('every row offers BiS, Guide and Planner at 44px', async ({ page }) => {
-  await page.goto('/tiers/healer');
-  const row = activePanel(page).locator('[data-testid^="tier-row-"]').first();
-  for (const name of ['BiS', 'Guide', 'Planner']) {
-    const link = row.getByRole('link', { name: new RegExp(`^${name}:`) });
-    await expect(link).toBeVisible();
-    const box = await link.boundingBox();
-    expect(box!.height).toBeGreaterThanOrEqual(44);
-  }
-});
-
-test('a DPS row links the ranking sim behind its number; a tank row, which /sim cannot run, has none', async ({
-  page,
-}) => {
-  await page.goto('/tiers');
-  const dpsRow = activePanel(page).locator('[data-testid^="tier-row-"]').first();
-  const sim = dpsRow.getByTestId('tier-sim-link');
-  await expect(sim).toHaveAccessibleName(/^View ranking sim: /);
-  const href = await sim.getAttribute('href');
-  expect(href).toMatch(/^\/sim\?code=/);
-  expect(href).toContain('run=1');
-  expect((await sim.boundingBox())!.height).toBeGreaterThanOrEqual(44);
-  await page.goto('/tiers/tank');
-  const tankRow = activePanel(page).locator('[data-testid^="tier-row-"]').first();
-  await expect(tankRow).toBeVisible();
-  await expect(tankRow.getByTestId('tier-sim-link')).toHaveCount(0);
-});
-
 test('Tier list is a door of its own and current, not Logs', async ({ page }) => {
   await page.goto('/tiers');
   const nav = page.getByTestId('primary-nav');
@@ -404,32 +420,30 @@ test.describe('phone', () => {
   test.use({ viewport: PHONE });
 
   for (const role of ['dps', 'tank', 'healer'] as const) {
-    test(`${role}: no sideways scroll, a link strip on every row`, async ({ page }) => {
+    test(`${role}: no sideways scroll, the spec panel first, a 44 px name link on every row`, async ({
+      page,
+    }) => {
       await page.goto(ROLE_PATH[role]);
       const { scrollWidth, clientWidth } = await page.evaluate(() => ({
         scrollWidth: document.documentElement.scrollWidth,
         clientWidth: document.documentElement.clientWidth,
       }));
       expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
-      const rows = activePanel(page).locator('[data-testid^="tier-row-"]');
-      const count = await rows.count();
+      const card = (await page.getByTestId('tier-card').boundingBox())!;
+      const list = (await activePanel(page).getByTestId('tier-list').boundingBox())!;
+      expect(card.y + card.height).toBeLessThanOrEqual(list.y);
+      const links = activePanel(page).getByTestId('tier-spec-link');
+      const count = await links.count();
       for (let index = 0; index < count; index += 1) {
-        const links = rows.nth(index).locator('.ui-rr-links a');
-        // A DPS row adds the ranking sim; /sim cannot rerun a tank's or a healer's figure.
-        const linkCount = role === 'dps' ? 4 : 3;
-        await expect(links).toHaveCount(linkCount);
-        for (let l = 0; l < linkCount; l += 1) {
-          expect((await links.nth(l).boundingBox())!.height).toBeGreaterThanOrEqual(44);
-        }
+        expect((await links.nth(index).boundingBox())!.height).toBeGreaterThanOrEqual(44);
       }
     });
   }
 
-  test('tank rows keep effective health and threat on their own line', async ({ page }) => {
+  test('tank rows keep effective health and threat on their own line, labelled', async ({ page }) => {
     await page.goto('/tiers/tank');
     const first = activePanel(page).locator('[data-testid^="tier-row-"]').first();
     await expect(first).toContainText('Effective health');
     await expect(first).toContainText('Threat');
-    await expect(first).toContainText('threat / s');
   });
 });

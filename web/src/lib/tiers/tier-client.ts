@@ -1,12 +1,11 @@
 // web/src/lib/tiers/tier-client.ts
 // The tier list page's browser behaviour: the faction choice (the ControlBar writes the URL and
 // announces it; this shows that faction's list and keeps it on the role links) and the signed-in
-// answer in the PageHeader (the visitor's spec, its place and its row marked, or a pointer to
-// the role list that has it). The lists are static HTML; nothing here is needed to read them.
+// spec panel in the rail (the visitor's spec, where it stands and its row marked, or the list
+// that has it). The lists are static HTML; nothing here is needed to read them.
 import type { Faction } from '../bis/types';
 import { onCurrentCharacterChange } from '../current-character-events';
 import { afterLoad, hasSessionHint } from '../page-load';
-import { writeFigure } from '../ui/figure-dom';
 import { CONTROL_BAR_EVENT, type ControlBarChange } from '../ui/control-bar';
 import { hrefWithFaction } from './tier-controls';
 import type { TierSpecView } from './tier-callout';
@@ -20,21 +19,12 @@ interface ClientConfig {
   factionAttribute: string;
 }
 
-/** The answer slot's parts, found once in the server-rendered template (TierPage.astro). */
-type AnswerField =
-  | 'label'
-  | 'crest'
-  | 'name'
-  | 'detail'
-  | 'place'
-  | 'figure'
-  | 'links'
-  | 'bis'
-  | 'guide'
-  | 'other'
-  | 'message'
-  | 'choose'
-  | 'retry';
+/** The spec panel's parts, found once in the server-rendered template (TierSpecCard.astro). */
+type CardField = 'name' | 'standing' | 'bis' | 'guide' | 'other' | 'choose' | 'retry';
+
+/** The panel's buttons; each state shows some of them. */
+const BUTTONS = ['bis', 'guide', 'other', 'choose', 'retry'] as const satisfies readonly CardField[];
+type CardButton = (typeof BUTTONS)[number];
 
 function readConfig(): ClientConfig | null {
   const node = document.getElementById('tier-client-config');
@@ -54,11 +44,8 @@ function checkedFaction(config: ClientConfig): Faction | null {
 
 function markRows(key: string | undefined): void {
   for (const row of document.querySelectorAll<HTMLElement>('[data-rank-key]')) {
-    const mine = key !== undefined && row.dataset.rankKey === key;
-    if (mine) row.setAttribute('aria-current', 'true');
+    if (key !== undefined && row.dataset.rankKey === key) row.setAttribute('aria-current', 'true');
     else row.removeAttribute('aria-current');
-    const tag = row.querySelector<HTMLElement>('[data-you-tag]');
-    if (tag !== null) tag.hidden = !mine;
   }
 }
 
@@ -71,68 +58,58 @@ function applyFaction(config: ClientConfig, faction: Faction): void {
   }
 }
 
-function fields(slot: HTMLElement): (name: AnswerField) => HTMLElement {
+function fields(slot: HTMLElement): (name: CardField) => HTMLElement {
   return (name) => {
     const found = slot.querySelector<HTMLElement>(`[data-field="${name}"]`);
-    if (found === null) throw new Error(`tier answer: the template has no ${name}`);
+    if (found === null) throw new Error(`tier spec panel: the template has no ${name}`);
     return found;
   };
 }
 
-function showSpec(field: (name: AnswerField) => HTMLElement, view: TierSpecView, config: ClientConfig): void {
-  const ownRole = view.role === config.role;
-  const faction = currentFaction(config);
-  field('label').textContent = tiersCopy.answer.label(view.role);
-  const crest = field('crest') as HTMLImageElement;
-  crest.src = view.crestSrc;
-  crest.style.boxShadow = `0 0 0 2px ${view.colorVar}`;
-  crest.hidden = false;
-  field('name').textContent = view.fullName;
-  field('name').style.color = view.colorVar;
-  field('detail').textContent = ownRole ? view.detail : tiersCopy.answer.otherRole(view.fullName, view.role);
-  field('figure').hidden = !ownRole || view.place === '';
-  writeFigure(field('figure'), view.place, view.placeUnit);
-  field('links').hidden = !ownRole;
+/** One state of the panel: its heading, its line and the buttons it shows. */
+function paint(
+  field: (name: CardField) => HTMLElement,
+  name: string,
+  line: string,
+  shown: readonly CardButton[],
+) {
+  field('name').textContent = name;
+  field('standing').textContent = line;
+  for (const button of BUTTONS) field(button).hidden = !shown.includes(button);
+}
+
+function showSpec(field: (name: CardField) => HTMLElement, view: TierSpecView, config: ClientConfig): void {
   field('bis').setAttribute('href', view.bisHref);
   field('guide').setAttribute('href', view.guideHref);
-  field('other').hidden = ownRole;
-  field('other').setAttribute('href', hrefWithFaction(view.rolePath, faction));
-  field('message').hidden = true;
+  if (view.role === config.role) {
+    paint(field, view.fullName, view.standing, ['bis', 'guide']);
+    return;
+  }
+  // On another role's list: where it stands is that list's answer, one tab away.
+  field('other').textContent = `${tiersCopy.card.otherRole(view.role)} ›`;
+  field('other').setAttribute('href', hrefWithFaction(view.rolePath, currentFaction(config)));
+  paint(field, view.fullName, '', ['bis', 'guide', 'other']);
 }
 
-function showMessage(
-  field: (name: AnswerField) => HTMLElement,
-  text: string,
-  action: 'choose' | 'retry',
-): void {
-  for (const name of ['crest', 'figure', 'links', 'other', 'choose', 'retry'] as const)
-    field(name).hidden = true;
-  field('label').textContent = '';
-  field('name').textContent = '';
-  field('detail').textContent = '';
-  field('message').hidden = false;
-  field('message').firstElementChild!.textContent = text;
-  field(action).hidden = false;
+function showMessage(field: (name: CardField) => HTMLElement, me: TierMe): void {
+  const { card } = tiersCopy;
+  if (me.kind === 'error') paint(field, card.heading, card.error, ['retry']);
+  else if (me.kind === 'unknown') paint(field, card.heading, card.unknown(me.name), ['choose']);
+  else paint(field, card.heading, card.none, ['choose']);
 }
 
-/** Paints the answer slot for one read of the account, and marks the visitor's row. */
+/** Paints the spec panel for one read of the account, and marks the visitor's row. */
 export function renderAnswer(config: ClientConfig, me: TierMe): void {
   const slot = document.getElementById('tier-answer');
   if (slot === null) return;
-  const body = slot.querySelector<HTMLElement>('[data-answer-body]');
-  const skeleton = slot.querySelector<HTMLElement>('[data-answer-skeleton]');
   const view = me.kind === 'spec' ? config.views[currentFaction(config)][me.key] : undefined;
   markRows(view !== undefined && view.role === config.role && me.kind === 'spec' ? me.key : undefined);
+  const body = slot.querySelector<HTMLElement>('[data-answer-body]');
   if (body === null) return;
-  if (me.kind === 'none' || (me.kind === 'spec' && view === undefined)) {
-    slot.hidden = true;
-    return;
-  }
-  slot.hidden = false;
   const field = fields(body);
-  if (me.kind === 'spec' && view !== undefined) showSpec(field, view, config);
-  else if (me.kind === 'unknown') showMessage(field, tiersCopy.answer.unknown(me.name), 'choose');
-  else showMessage(field, tiersCopy.answer.error, 'retry');
+  if (view !== undefined) showSpec(field, view, config);
+  else showMessage(field, me);
+  const skeleton = slot.querySelector<HTMLElement>('[data-answer-skeleton]');
   if (skeleton !== null) skeleton.hidden = true;
   body.hidden = false;
 }
@@ -148,16 +125,17 @@ export function mountTierPage(): void {
   const config = readConfig();
   if (config === null) return;
   let me: TierMe = { kind: 'none' };
+  let answered = false;
   // The bar may have booted first and taken a choice already: its checked radio is the truth.
   applyFaction(config, checkedFaction(config) ?? currentFaction(config));
   document.addEventListener(CONTROL_BAR_EVENT, (event) => {
     const change = (event as CustomEvent<ControlBarChange>).detail;
     if (change.param !== config.factionParam) return;
     applyFaction(config, change.value === 'horde' ? 'horde' : 'alliance');
-    renderAnswer(config, me);
+    if (answered) renderAnswer(config, me);
   });
   if (!hasSessionHint()) return;
-  // The answer follows the header selector: asked once after load, and again on every pointer
+  // The panel follows the header selector: asked once after load, and again on every pointer
   // change. Only the newest question may paint, so a slow older answer never wins.
   let latest = 0;
   const answer = async (): Promise<void> => {
@@ -166,6 +144,7 @@ export function mountTierPage(): void {
     const found = await findTierMe();
     if (asked !== latest) return;
     me = found;
+    answered = true;
     renderAnswer(config, me);
   };
   document.querySelector('[data-field="choose"]')?.addEventListener('click', openCharacterSelector);

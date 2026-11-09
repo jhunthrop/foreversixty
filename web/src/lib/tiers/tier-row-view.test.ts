@@ -1,8 +1,8 @@
 // web/src/lib/tiers/tier-row-view.test.ts
 import { describe, expect, it } from 'vitest';
-import { dpsInput, tankInput } from './tier-test-support';
+import { dpsInput, healerInput, tankInput } from './tier-test-support';
 import { rankRole } from './tier-list';
-import { rankRowProps } from './tier-row-view';
+import { barFraction, rankRowProps } from './tier-row-view';
 
 const dps = rankRole(
   [
@@ -21,45 +21,67 @@ const tanks = rankRole(
 );
 
 describe('rankRowProps', () => {
-  it('names a DPS row by spec, keys it, and links its name to BiS', () => {
-    const arms = rankRowProps(dps[1]!, dps.length);
+  it('names a row by its full spec name, keys it, and makes the name its one link, to BiS', () => {
+    const arms = rankRowProps(dps[1]!, dps);
     expect(arms).toMatchObject({
       rank: '2',
-      name: 'Arms',
-      sub: 'Warrior · Night Elf',
+      name: 'Arms Warrior',
       href: '/bis/warrior/arms/60',
+      barTone: 'accent',
       key: 'warrior/arms',
       testid: 'tier-row-warrior-arms',
       gap: { text: '−0.8%', label: 'Gap to the top', leader: false },
-      tie: { text: '≈ tie with Survival', title: 'Within 1% of Survival Hunter: a tie' },
     });
-    expect(arms.figures).toEqual([
-      { value: '942.2', unit: 'DPS', label: 'Damage per second', testid: 'tier-number' },
-    ]);
+    expect('sub' in arms || 'links' in arms || 'tie' in arms).toBe(false);
+    // The column head names the unit.
+    expect(arms.figures).toEqual([{ value: '942.2', label: 'Damage per second', testid: 'tier-number' }]);
   });
 
-  it('gives a DPS row BiS, Guide and Planner, and the Sim only where the number can be rerun', () => {
-    const labels = (index: number) => rankRowProps(dps[index]!, dps.length).links.map((link) => link.label);
-    expect(labels(1)).toEqual(['BiS', 'Guide', 'Planner']);
-    const fire = rankRowProps(dps[2]!, dps.length).links;
-    expect(fire.map((link) => link.label)).toEqual(['BiS', 'Guide', 'Planner', 'Sim']);
-    expect(fire[0]).toMatchObject({ primary: true, ariaLabel: 'BiS: Fire Mage' });
-    expect(fire[3]).toMatchObject({ href: '/sim?code=x&run=1', ariaLabel: 'View ranking sim: Fire Mage' });
-    expect(rankRowProps(dps[0]!, dps.length).gap).toMatchObject({ text: 'Top', leader: true });
+  it("leaves the leader's gap empty: the column reads against it", () => {
+    expect(rankRowProps(dps[0]!, dps).gap).toMatchObject({ text: '', leader: true });
+    expect(rankRowProps(tanks[0]!, tanks).gap).toMatchObject({ text: '', leader: true });
   });
 
-  it('names a tank in full and marks the best of each column, with the reason in a title', () => {
-    const [warrior, paladin] = tanks.map((row) => rankRowProps(row, tanks.length));
+  it("marks a tank's best of each column, with the reason in a title", () => {
+    const [warrior, paladin] = tanks.map((row) => rankRowProps(row, tanks));
     expect(warrior!.name).toBe('Protection Warrior');
-    expect(warrior!.sub).toBe('Night Elf');
-    expect(warrior!.figures.map((f) => [f.value, f.unit, f.best === true])).toEqual([
-      ['245', 'taken / s', true],
-      ['40,000', 'HP', false],
-      ['1,633', 'threat / s', true],
+    expect(warrior!.figures.map((f) => [f.value, f.best === true])).toEqual([
+      ['245', true],
+      ['40,000', false],
+      ['1,633', true],
     ]);
     expect(warrior!.figures[0]!.bestTitle).toBe('Best of the 2 tanks');
     expect(paladin!.figures[1]).toMatchObject({ value: '49,794', best: true });
     expect(paladin!.gap.text).toBe('+22.4%');
-    expect('tie' in paladin!).toBe(false);
+  });
+});
+
+describe('a tied healer', () => {
+  it('names its partner on the line under the name, so the shared rank explains itself', () => {
+    const bounds = (hps: number) => [
+      { scale: 1.5, hps, hps_error: 1 },
+      { scale: 1.65, hps, hps_error: 1 },
+    ];
+    const healers = rankRole(
+      [
+        healerInput('druid', 'restoration', 'Restoration', 700, 1, bounds(700)),
+        healerInput('priest', 'holy', 'Holy', 600, 1, bounds(600)),
+        healerInput('shaman', 'restoration', 'Restoration', 599.5, 1, bounds(599.5)),
+      ],
+      'healer',
+    );
+    const holy = rankRowProps(healers[1]!, healers);
+    expect(holy.rank).toBe('=2');
+    expect(holy.note).toMatchObject({ text: '≈ tie with Restoration Shaman' });
+    expect(rankRowProps(healers[0]!, healers).note).toBeUndefined();
+  });
+});
+
+describe('barFraction', () => {
+  it('starts the bar at 90% of the lowest spec and fills it at the top', () => {
+    const rows = [{ fraction: 1 }, { fraction: 0.9 }, { fraction: 0.8 }];
+    expect(barFraction(rows[0]!, rows)).toBe(1);
+    expect(barFraction(rows[2]!, rows)).toBeCloseTo((0.8 - 0.72) / 0.28);
+    expect(barFraction(rows[1]!, rows)).toBeGreaterThan(barFraction(rows[2]!, rows));
   });
 });

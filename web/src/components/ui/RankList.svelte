@@ -16,6 +16,7 @@
     links = 0,
     leads = true,
     grouped = false,
+    compact = false,
     label,
     testid,
     children,
@@ -29,6 +30,10 @@
     leads?: boolean;
     /** The children are RankGroups (a letter column from 1100). */
     grouped?: boolean;
+    /** Round 5's compact list (the tier list beside its rail): elastic name and bar tracks that
+     *  fit a split page's main column, 48 px rows, the 64 px letter column with the letter in the
+     *  title face, and the accent tint on the selected row. */
+    compact?: boolean;
     /** The list's accessible name. */
     label?: string;
     testid?: string;
@@ -39,6 +44,7 @@
 <div
   class="ui-rank-list"
   data-grouped={grouped ? 'true' : undefined}
+  data-compact={compact ? 'true' : undefined}
   data-leads={leads ? undefined : 'none'}
   style={rankListStyle({ figures, links, figureWidth })}
   data-testid={testid}
