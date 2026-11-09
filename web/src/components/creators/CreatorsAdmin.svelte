@@ -278,7 +278,7 @@
     {#snippet rail()}
       <Section title={railTitle} testid="creators-form-card">
         <div class="flex flex-col gap-3">
-          <p class="text-muted text-[14px]">{mode.kind === 'approve' ? requestsCopy.approveJob : copy.formJob}</p>
+          <p class="text-muted text-[13px] leading-5">{mode.kind === 'approve' ? requestsCopy.approveJob : copy.formJob}</p>
           <form class="flex flex-col gap-3" onsubmit={onSubmit} novalidate data-testid="creators-form">
             {#each FIELDS as field (field.id)}
               {#if fixed && (field.id === 'slug' || field.id === 'code')}
