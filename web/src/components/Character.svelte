@@ -340,7 +340,9 @@
         {note}
       />
     {/if}
-    <CharacterScore path={resolved} {forever} {owned} fought={data.best.length > 0} />
+    {#if data.score_hidden !== true}
+      <CharacterScore path={resolved} {forever} {owned} fought={data.best.length > 0} />
+    {/if}
     {#if data.best.length > 0}
       <Section
         title={copy.best}

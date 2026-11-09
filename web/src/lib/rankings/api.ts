@@ -150,6 +150,9 @@ export interface CharacterPage extends Partial<ForeverScore> {
   };
   /** The owning account shows the Supporter mark; absent from an API that predates it. */
   supporter?: boolean;
+  /** The owner hid the Forever Score and the viewer is someone else: every score field is null and
+   *  the page shows no score block at all. Absent otherwise, the owner's own view included. */
+  score_hidden?: boolean;
   best: CharacterFight[];
   history: CharacterFight[];
   builds_seen: BuildSeen[];

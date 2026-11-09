@@ -83,6 +83,10 @@ enum CharacterPage {
     /// A rated fight exists: never a zero score (F11.6).
     static func hasScore(_ profile: CharacterProfile) -> Bool { profile.score != nil }
 
+    /// False when the owner hid the Forever Score from this viewer: the page draws no score card at
+    /// all, neither the score nor the "no logs" card.
+    static func showsScoreSection(_ profile: CharacterProfile) -> Bool { profile.scoreHidden != true }
+
     static func score(_ profile: CharacterProfile) -> String {
         (profile.score ?? 0).formatted(.number.grouping(.automatic).locale(Locale(identifier: "en_US")))
     }

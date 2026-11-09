@@ -617,9 +617,11 @@ data class CharacterHome(
     @SerialName("talents") val talents: HomeTalents,
 )
 
-/** GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0. */
+/** GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0. When score_hidden is true the owner hid the Forever Score from everyone else: every score field is null, score_history is [], and the page shows no score block at all (no "no logs yet", no label, no blank row). The owner's own view carries the score as usual, and a hidden character's page is never shared-cached. */
 @Serializable
 data class CharacterProfile(
+    /** True when the owner hid the Forever Score and the viewer is someone else; absent otherwise. Show no score block. */
+    @SerialName("score_hidden") val scoreHidden: Boolean? = null,
     @SerialName("character") val character: CharacterProfileHeader,
     @SerialName("best") val best: List<CharacterFight> = emptyList(),
     @SerialName("history") val history: List<CharacterFight> = emptyList(),
