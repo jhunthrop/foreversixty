@@ -304,10 +304,10 @@ test('one ability goes on the chart from the player’s own view, and comes off 
 test('the damage tables and the player view copy as CSV from their Section head', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=damage-taken`);
   await expect(page.getByTestId('report-table-card').getByTestId('copy-csv')).toBeVisible();
-  // The sample's pull 6: the group's dodges and misses (the fixture's fight took none).
+  // The sample's boss pull: the group's blocks, dodges, misses and parries (the fixture's fight took none).
   await page.goto('/reports/sample?tab=damage-taken');
   await expect(page.getByTestId('actor-mitigated')).toContainText(
-    /^Mitigated: \d+ hits avoided \(\d+ dodge, \d+ miss\)$/,
+    /^Mitigated: \d+ blocked · \d+ hits avoided \(\d+ dodge, \d+ miss, \d+ parry\)$/,
   );
   await page.goto(`${FIGHT}&tab=damage-done&source=Player-4184-000000A1`);
   await expect(page.getByTestId('report-table-card').getByTestId('copy-csv')).toBeVisible();

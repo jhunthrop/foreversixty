@@ -115,7 +115,8 @@ test.describe('a beta-log report', () => {
     await expect(name).toHaveAttribute('href', /source=Player-4184-000000A1/);
     const crossRealm = page.getByTestId('roster-Player-4184-000000A5');
     await expect(crossRealm).toContainText('Elyra Duskvale');
-    await expect(crossRealm).toContainText('· Classic Beta PvP 2');
+    // The realm rides the line under the name, so the name never wraps.
+    await expect(crossRealm.locator('.ui-st-sub')).toContainText('Classic Beta PvP 2');
     await expect(crossRealm.locator('[title="Elyra Duskvale-ClassicBetaPvP2"]')).toHaveCount(1);
     await expect(page.getByTestId('source-scope')).not.toContainText('ClassicBetaPvP');
   });

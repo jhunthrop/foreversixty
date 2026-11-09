@@ -1,7 +1,7 @@
 <!-- web/src/components/report/SummaryTab.svelte -->
 <!-- The Summary tab's lead (logs spec 2026-11-07 6.2; directions b1): the Players panel, framed, over one StatTable, a row
      per player in the scope: the crest, the name in its class colour (the link that opens the
-     player's own view), "{spec} {class} · item level {n}", then each amount beside its rate
+     player's own view), its spec (and a cross-realm player's realm), then each amount beside its rate
      (MUST 1: Damage and DPS, Healing and HPS, Taken and Taken / s; a pair whose rate is 0.0 on
      every row is hidden), Active and Deaths. Parse leads the figures on a boss pull. Sorted by
      Damage; every head sorts.
@@ -127,12 +127,14 @@
     ];
   }
 
-  function subOf(row: RosterRow): string {
+  // One short line under the name: the spec (the name's colour already says the class) and the
+  // realm of a player from another one. With no spec to show, the item level fills it; At pull and
+  // the player view carry the item level always.
+  function subOf(row: RosterRow, realm: string): string {
     const cell = specCell(row, unitClasses);
-    const who = row.spec && cell.class ? `${row.spec} ${cell.class}` : cell.text;
-    return [who === '—' ? '' : who, row.item_level ? `item level ${row.item_level}` : '']
-      .filter((part) => part !== '')
-      .join(' · ');
+    const who = row.spec ? row.spec : cell.text === '—' ? '' : cell.text;
+    const level = who === '' && row.item_level ? `item level ${row.item_level}` : '';
+    return [who, realm, level].filter((part) => part !== '').join(' · ');
   }
 
   function follow(event: MouseEvent, guid: string): void {
@@ -164,8 +166,7 @@
               title={display.title}
               data-testid="roster-name"
               onclick={(event) => follow(event, row.guid)}>{display.name}</a
-            >{#if display.realm !== ''}<span class="text-muted ml-1 text-[12px]">· {display.realm}</span
-              >{/if}{/snippet}
+            >{/snippet}
           {#snippet sub()}{#if role !== null}{@const icon = roleIcon(role)}<img
                 src={icon.url}
                 alt={icon.label}
@@ -174,7 +175,7 @@
                 height="14"
                 class="mr-1 inline-block rounded-[2px] align-[-2px]"
                 data-testid="roster-role"
-              />{/if}{subOf(row) || ' '}{/snippet}
+              />{/if}{subOf(row, display.realm) || ' '}{/snippet}
           {#snippet meter()}<Meter
               value={row.damage_done / topDamage}
               tone="class"
@@ -205,6 +206,7 @@
     overflow-x: auto;
   }
   /* One fixed row height: the name and its class line each hold one line, ellipsised. */
+  .summary-roster :global(.ui-st-name),
   .summary-roster :global(.ui-st-name > *) {
     overflow: hidden;
     white-space: nowrap;
