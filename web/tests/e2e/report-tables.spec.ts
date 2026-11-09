@@ -187,13 +187,17 @@ test('interrupts, dispels, resources and threat each render or say they are empt
   await expect(page.getByTestId('threat-caveat')).toContainText(/An estimate|Damage and healing only/);
 });
 
-test('rankings that did not answer drop the Parse column and say so once, with Try again', async ({ page }) => {
+test('rankings that did not answer drop the Parse column and say so once, with Try again', async ({
+  page,
+}) => {
   // The fixture build's API is unreachable, so the parse lookup fails on every boss kill.
   await page.goto(FIGHT);
   await expect(page.getByTestId('parse-unavailable')).toContainText('Parses didn’t load.');
   await expect(page.getByTestId('summary-tab').getByRole('columnheader', { name: 'Parse' })).toHaveCount(0);
   await page.goto(`${FIGHT}&tab=damage-done`);
-  await expect(page.getByTestId('report-table-card').getByRole('columnheader', { name: 'Parse' })).toHaveCount(0);
+  await expect(
+    page.getByTestId('report-table-card').getByRole('columnheader', { name: 'Parse' }),
+  ).toHaveCount(0);
   // A tab with no Parse column has no line about it either.
   await page.goto(`${FIGHT}&tab=deaths`);
   await expect(page.getByTestId('deaths-tab')).toBeVisible();

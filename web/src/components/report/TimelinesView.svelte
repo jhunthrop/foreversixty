@@ -446,7 +446,11 @@
                     class={[
                       'absolute top-0 whitespace-nowrap',
                       // The first label starts at the edge, the last ends at it; the rest are centred.
-                      at === axis[0] ? '' : pct(at) >= END_LABEL_PCT ? '-translate-x-full' : '-translate-x-1/2',
+                      at === axis[0]
+                        ? ''
+                        : pct(at) >= END_LABEL_PCT
+                          ? '-translate-x-full'
+                          : '-translate-x-1/2',
                     ]}
                     style:left="{pct(at)}%">{clockLabel(at)}</span
                   >
