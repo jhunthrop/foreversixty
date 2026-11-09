@@ -42,7 +42,7 @@ const statRank = (reading: string): string => (reading === 'value' ? String(++ra
 
 {count > 0 && (
   <div class="guide-glance">
-    <PlateColumns count={count} label={guidesCopy.glance} frame="framed" testid="guide-glance">
+    <PlateColumns count={count} label={guidesCopy.glance} frame="framed" firstWide testid="guide-glance">
       {hasBuild && (
         <PlateColumn
           label={isRaidBuild ? guidesCopy.raidBuild : guidesCopy.buildRailLabel}

@@ -211,7 +211,7 @@ def extras(g: dict, data: bool = True) -> str:
                 r = line['row']
                 rows.append(Row(e(r['name']), e(r['gives']), lead=icon(r.get('icon') or '', 28), link=False))
         lane = (LaneBlock(e(C['enchants']), f'<p class="t-small">{e(C["enchantsNote"])}</p>' + ench)
-                + LaneBlock(e(C['consumables']), f'<p class="t-small">{e(C["consumablesNote"])}</p>' + RowsSlim(rows)))
+                + LaneBlock(e(C['consumables']), RowsSlim(rows)))
     return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables')
 
 

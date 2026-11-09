@@ -79,11 +79,9 @@ export const guidesCopy = {
   notSimChecked: 'Ranked by stats only',
   enchants: 'Enchants',
   consumables: 'Consumables',
-  /** What the enchant table is: each slot's best flat-stat enchant by the band's weights
-   *  (gear-extras.ts); crit, hit and haste enchants are not scored. wow-player SHIP 2026-11-04. */
-  enchantsNote:
-    'The enchant for each slot that adds the most of your weighted stats. Crit, hit and haste enchants are not included.',
-  consumablesNote: 'What to bring to a raid.',
+  /** The one thing the enchant table leaves out: each slot's best flat-stat enchant by the band's
+   *  weights (gear-extras.ts) never scores crit, hit or haste (ai-slop P8: no explainer line). */
+  enchantsNote: 'Crit, hit and haste enchants are not listed.',
   racialsColumn: 'Racials',
 
   recommendedTag: 'Recommended',
