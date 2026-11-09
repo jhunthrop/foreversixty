@@ -1,0 +1,22 @@
+{
+  "receipt_guild_yearly": {
+    "subject": "Receipt: Guild for Olympus XXVII, $120 a year",
+    "text": "Your free trial ended and we charged $120 a year on 15 Nov 2026. Your receipt: https://invoice.stripe.com/i/x\n\nThe next charge is $120 on 15 Nov 2027. Change or cancel any time: https://foreversixty.gg/guild/us/forever/olympus-xxvii/settings#billing\n\nYou're getting this because the free Guild trial for Olympus XXVII became a paid plan on Forever Sixty.\nCommish LLC"
+  },
+  "receipt_premium_monthly": {
+    "subject": "Receipt: Premium, $5 a month",
+    "text": "Your free trial ended and we charged $5 a month on 15 Nov 2026. Your receipt: https://invoice.stripe.com/i/x\n\nThe next charge is $5 on 15 Dec 2026. Change or cancel any time: https://foreversixty.gg/account#plan\n\nYou're getting this because your free Premium trial became a paid plan on Forever Sixty.\nCommish LLC"
+  },
+  "reminder_guild_yearly": {
+    "subject": "Olympus XXVII's free Guild ends on 15 Nov 2026",
+    "text": "Olympus XXVII's free Guild ends on 15 Nov 2026. On that day you'll be charged $120 for the next 12 months. Cancel before 15 Nov 2026 (UTC) and you pay nothing.\n\nPlan: Guild for Olympus XXVII, yearly: $120\n\nCancel in one click: https://foreversixty.gg/premium/cancel?t=TOKEN\n\nTo keep the plan, do nothing. You may also get a reminder from Stripe, our payment processor.\n\nYou're getting this because you started a free Guild trial for Olympus XXVII on Forever Sixty.\nCommish LLC"
+  },
+  "reminder_premium_monthly": {
+    "subject": "Your free Premium ends on 15 Nov 2026",
+    "text": "Your free Premium ends on 15 Nov 2026. On that day you'll be charged $5 a month. Cancel before 15 Nov 2026 (UTC) and you pay nothing.\n\nPlan: Premium, monthly: $5\n\nCancel in one click: https://foreversixty.gg/premium/cancel?t=TOKEN\n\nTo keep Premium, do nothing. You may also get a reminder from Stripe, our payment processor.\n\nYou're getting this because you started a free Premium trial on Forever Sixty.\nCommish LLC"
+  },
+  "reminder_premium_yearly": {
+    "subject": "Your free Premium ends on 15 Nov 2026",
+    "text": "Your free Premium ends on 15 Nov 2026. On that day you'll be charged $40 for the next 12 months. Cancel before 15 Nov 2026 (UTC) and you pay nothing.\n\nPlan: Premium, yearly: $40\n\nCancel in one click: https://foreversixty.gg/premium/cancel?t=TOKEN\n\nTo keep Premium, do nothing. You may also get a reminder from Stripe, our payment processor.\n\nYou're getting this because you started a free Premium trial on Forever Sixty.\nCommish LLC"
+  }
+}

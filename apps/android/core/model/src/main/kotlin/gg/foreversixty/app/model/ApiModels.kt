@@ -260,6 +260,8 @@ data class Billing(
     @SerialName("status") val status: String,
     @SerialName("current_period_end") val currentPeriodEnd: String? = null,
     @SerialName("cancel_at_period_end") val cancelAtPeriodEnd: Boolean,
+    /** The free trial's end (its first charge) while the plan trials, else null. */
+    @SerialName("trial_end") val trialEnd: String? = null,
     @SerialName("amount_cents") val amountCents: Long? = null,
     @SerialName("interval") val interval: String? = null,
     @SerialName("founder") val founder: Boolean? = null,

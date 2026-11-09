@@ -182,7 +182,10 @@ func (s *Service) onInvoiceEvent(ctx context.Context, event stripe.Event, actor 
 		s.publishPaymentFailed(ctx, subject.billingUserID, stripeRefID(event.Data.Object["id"]), event.ID)
 		return nil
 	}
-	return s.creatorsInvoicePaid(ctx, subject.billingUserID, stripeRefID(event.Data.Object["id"]))
+	if err := s.creatorsInvoicePaid(ctx, subject.billingUserID, stripeRefID(event.Data.Object["id"])); err != nil {
+		return err
+	}
+	return s.sendTrialReceipt(ctx, event, subID)
 }
 
 // metadataUserID reads sub.Metadata["user_id"] — always the buying

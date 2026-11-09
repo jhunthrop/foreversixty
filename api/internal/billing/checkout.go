@@ -297,15 +297,8 @@ func (s *Service) guildTerms(ctx context.Context, req guildCheckoutRequest) (str
 	if err != nil {
 		return "", nil, err
 	}
-	if req.creatorCode != "" {
-		trial, err := s.creatorCodeTrial(ctx, req.creatorCode, used)
-		return catalog.CheckoutLookupKey(req.offer, req.interval, s.now()), trial, err
-	}
-	var trial *checkoutTrial
-	if !used {
-		trial = &checkoutTrial{days: catalog.GuildTrialDays}
-	}
-	return catalog.CheckoutLookupKey(req.offer, req.interval, s.now()), trial, nil
+	trial, err := s.creatorCodeTrial(ctx, req.creatorCode, used, catalog.GuildTrialDays)
+	return catalog.CheckoutLookupKey(req.offer, req.interval, s.now()), trial, err
 }
 
 // transferTerms needs the open offer to the caller, keeps the plan's

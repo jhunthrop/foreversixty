@@ -12,6 +12,7 @@ import (
 	stripe "github.com/stripe/stripe-go/v82"
 	"github.com/stripe/stripe-go/v82/webhook"
 
+	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
 
@@ -37,26 +38,23 @@ var (
 		message: "this account or guild already had its free trial, so a code can't give another"}
 )
 
-// creatorCodeTrial validates a code a checkout carries and answers the free month it gives;
-// nil when no code was sent.
-func (s *Service) creatorCodeTrial(ctx context.Context, code string, trialUsed bool) (*checkoutTrial, error) {
-	if code == "" {
-		return nil, nil
-	}
-	if s.Creators == nil {
-		return nil, errBadCreatorCode
-	}
-	live, err := s.Creators.CodeIsLive(ctx, code)
+// creatorCodeTrial validates a code a checkout carries against the plan's default trial and
+// answers the trial the checkout gets: a code that is not live or meets a spent trial refuses.
+func (s *Service) creatorCodeTrial(ctx context.Context, code string, trialUsed bool, defaultDays int64) (*checkoutTrial, error) {
+	d, err := s.decideTrial(ctx, code, trialUsed, defaultDays)
 	if err != nil {
 		return nil, err
 	}
-	if !live {
+	switch d.code {
+	case codeUnknown:
 		return nil, errBadCreatorCode
-	}
-	if trialUsed {
+	case codeTrialUsed:
 		return nil, errTrialUsed
 	}
-	return &checkoutTrial{days: s.Creators.CodeTrialDays()}, nil
+	if d.days == 0 {
+		return nil, nil
+	}
+	return &checkoutTrial{days: d.days}, nil
 }
 
 // RecordPremiumTrial notes that an account has used its one Premium trial; a second is ignored.
@@ -68,13 +66,16 @@ func (s *Store) RecordPremiumTrial(ctx context.Context, userID int64, subscripti
 	return nil
 }
 
-// PremiumTrialUsed reports whether the account has had its one Premium trial.
-func (s *Store) PremiumTrialUsed(ctx context.Context, userID int64) (bool, error) {
-	var used bool
-	if err := s.Pool.QueryRow(ctx, `select exists (select 1 from premium_trials where user_id = $1)`, userID).Scan(&used); err != nil {
-		return false, fmt.Errorf("billing: premium trial %d: %w", userID, err)
+// PremiumTrialSpent reports whether the account's one Premium trial is gone: it had the trial, or
+// it already paid for Premium before (its first Premium was that subscription).
+func (s *Store) PremiumTrialSpent(ctx context.Context, userID int64) (bool, error) {
+	var spent bool
+	err := s.Pool.QueryRow(ctx, `select exists (select 1 from premium_trials where user_id = $1)
+		or exists (select 1 from entitlements where user_id = $1 and plan = 'premium' and source = 'stripe')`, userID).Scan(&spent)
+	if err != nil {
+		return false, fmt.Errorf("billing: premium trial spent %d: %w", userID, err)
 	}
-	return used, nil
+	return spent, nil
 }
 
 // creatorsCheckoutCompleted tells the program about a completed Checkout: the buyer and the code
@@ -160,14 +161,16 @@ func constructEvent(payload []byte, signature string, secrets []string) (stripe.
 // creatorsNormalize is a code as typed, as the program stores it (creators.NormalizeCode).
 func creatorsNormalize(code string) string { return strings.ToUpper(strings.TrimSpace(code)) }
 
-// premiumTrial is a Premium checkout's trial: a creator's code gives a free month, once per account.
+// premiumTrial is a Premium checkout's trial: the first Premium of an account trials
+// catalog.PremiumTrialDays, a creator's code makes it a free month, and a comeback (a seat holder
+// returning at their own price) has had its Premium already.
 func (s *Service) premiumTrial(ctx context.Context, req premiumCheckoutRequest) (*checkoutTrial, error) {
-	if req.creatorCode == "" {
-		return nil, nil
+	spent := req.comebackID != nil
+	if !spent {
+		var err error
+		if spent, err = s.Store.PremiumTrialSpent(ctx, req.userID); err != nil {
+			return nil, err
+		}
 	}
-	used, err := s.Store.PremiumTrialUsed(ctx, req.userID)
-	if err != nil {
-		return nil, err
-	}
-	return s.creatorCodeTrial(ctx, req.creatorCode, used)
+	return s.creatorCodeTrial(ctx, req.creatorCode, spent, catalog.PremiumTrialDays)
 }

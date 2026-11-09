@@ -24,6 +24,7 @@ func newNoticeHarness(t *testing.T) *noticeHarness {
 	h := newHarness(t)
 	m := &mail.Fake{}
 	h.svc.Mailer = m
+	h.svc.RenewalEmails = true
 	return &noticeHarness{harness: h, mailer: m}
 }
 

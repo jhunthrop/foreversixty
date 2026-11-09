@@ -24,6 +24,21 @@ func TestBillingDaily_SeatsCancellerFollowsStripeConfig(t *testing.T) {
 }
 
 func TestBillingDaily_SendsRenewalOnce(t *testing.T) {
+	if sent := dailyRenewals(t, true); sent != 1 {
+		t.Fatalf("sent %d, want 1", sent)
+	}
+}
+
+// OUR_RENEWAL_EMAILS is off by default: Stripe sends the upcoming-renewal email, and ours stays quiet.
+func TestBillingDaily_NoRenewalEmailWhileTheSwitchIsOff(t *testing.T) {
+	if sent := dailyRenewals(t, false); sent != 0 {
+		t.Fatalf("sent %d with OUR_RENEWAL_EMAILS off, want 0", sent)
+	}
+}
+
+// dailyRenewals runs the job twice over one yearly row two days from renewal and counts the emails.
+func dailyRenewals(t *testing.T, ourRenewalEmails bool) int {
+	t.Helper()
 	pool := grandfatherPool(t)
 	now := time.Date(2027, 11, 10, 20, 0, 0, 0, time.UTC)
 	var uid int64
@@ -39,13 +54,12 @@ func TestBillingDaily_SendsRenewalOnce(t *testing.T) {
 		t.Fatal(err)
 	}
 	fake := &mail.Fake{}
-	svc := newBillingDailyServices(config.Config{PublicBaseURL: "https://foreversixty.gg"}, pool, fake, slog.Default())
+	cfg := config.Config{PublicBaseURL: "https://foreversixty.gg", OurRenewalEmails: ourRenewalEmails}
+	svc := newBillingDailyServices(cfg, pool, fake, slog.Default())
 	for i := 0; i < 2; i++ {
 		if err := billingDaily(context.Background(), slog.Default(), svc, now); err != nil {
 			t.Fatal(err)
 		}
 	}
-	if len(fake.Sent) != 1 {
-		t.Fatalf("sent %d, want 1", len(fake.Sent))
-	}
+	return len(fake.Sent)
 }

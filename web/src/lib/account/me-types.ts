@@ -179,6 +179,8 @@ export interface BillingView extends BillingFacts {
   status: string;
   current_period_end: string | null;
   cancel_at_period_end: boolean;
+  /** The free trial's end (its first charge) while the plan trials; absent from older APIs. */
+  trial_end?: string | null;
 }
 
 export interface GuildBillingView {

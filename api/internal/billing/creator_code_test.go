@@ -49,8 +49,8 @@ func TestCreatorCodeGivesPremiumAFreeMonthOnce(t *testing.T) {
 		t.Fatalf("trial = %d, code = %q; want 30 and GRIMBREW", p.TrialPeriodDays, p.Metadata["creator_code"])
 	}
 	plain := mustCheckout(t, h, h.seedUser(t, "plain@example.com"), map[string]any{"plan": "premium", "interval": "monthly"})
-	if plain.TrialPeriodDays != 0 || plain.Metadata["creator_code"] != "" {
-		t.Fatalf("a checkout without a code got trial %d code %q", plain.TrialPeriodDays, plain.Metadata["creator_code"])
+	if plain.TrialPeriodDays != catalog.PremiumTrialDays || plain.Metadata["creator_code"] != "" {
+		t.Fatalf("a checkout without a code got trial %d code %q, want the 7-day trial", plain.TrialPeriodDays, plain.Metadata["creator_code"])
 	}
 	if err := h.svc.Store.RecordPremiumTrial(t.Context(), uid, "sub_first"); err != nil {
 		t.Fatal(err)

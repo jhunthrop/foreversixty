@@ -17,6 +17,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
+	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/linkedrole"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/seats"
@@ -52,11 +53,25 @@ func newBillingDailyServices(cfg config.Config, pool *pgxpool.Pool, mailer mail.
 			Store:  &seats.Store{Pool: pool, Entitlements: entStore},
 			Mailer: mailer, Canceller: cancellerFor(stripeGatewayFor(cfg)), PublicBaseURL: cfg.PublicBaseURL, Log: log,
 		},
+		// The gateway reads the Stripe customer's email for a trial reminder; the router puts the
+		// reminder in the app (nil without push: email alone).
 		Billing: &billing.Service{
-			Store: &billing.Store{Pool: pool}, Users: &auth.Store{Pool: pool},
+			Store: &billing.Store{Pool: pool}, Users: &auth.Store{Pool: pool}, Gateway: stripeGatewayFor(cfg),
+			Events: jobEvents(cfg, pool, log), RenewalEmails: cfg.OurRenewalEmails,
 			Mailer: mailer, PublicBaseURL: cfg.PublicBaseURL, Log: log,
 		},
 	}
+}
+
+// jobEvents is a job's event publisher: the router when app notifications are on, else nil.
+func jobEvents(cfg config.Config, pool *pgxpool.Pool, log *slog.Logger) events.Publisher {
+	if !cfg.Push.Enabled {
+		return nil
+	}
+	if router := newEventsRouter(context.Background(), cfg, pool, nil, log); router != nil {
+		return router
+	}
+	return nil
 }
 
 // billingDaily sweeps seats, then sends notices. Per-guild sweep failures are

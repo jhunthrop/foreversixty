@@ -16,6 +16,8 @@ const (
 	guildPlanScopeOfficerTools = "officer_tools"
 	// billingStatusCanceled is the ended-row status word BillingView shows.
 	billingStatusCanceled = "canceled"
+	// billingStatusTrialing is a Stripe row in its free trial.
+	billingStatusTrialing = "trialing"
 	// billingSourceStripe is the Source word of a row Stripe drives.
 	billingSourceStripe = "stripe"
 	// plansPath is where an ended seat whose price is unknown links to.
@@ -31,6 +33,8 @@ type BillingView struct {
 	Status            string  `json:"status"`
 	CurrentPeriodEnd  *string `json:"current_period_end"`
 	CancelAtPeriodEnd bool    `json:"cancel_at_period_end"`
+	// TrialEnd is the free trial's end while the row trials (the first charge), else null.
+	TrialEnd *string `json:"trial_end"`
 	catalog.PriceFacts
 }
 
@@ -94,9 +98,17 @@ type SeatViews struct {
 func personalBillingView(b *entitlements.Billing) *BillingView {
 	return &BillingView{
 		Plan: b.Plan, Source: b.Source, Status: personalBillingStatus(b), CancelAtPeriodEnd: b.CancelAtPeriodEnd,
-		CurrentPeriodEnd: rfc3339Ptr(b.CurrentPeriodEnd),
-		PriceFacts:       catalog.FactsOf(b.PriceLookupKey, b.UnitAmountCents),
+		CurrentPeriodEnd: rfc3339Ptr(b.CurrentPeriodEnd), TrialEnd: trialEndOf(b),
+		PriceFacts: catalog.FactsOf(b.PriceLookupKey, b.UnitAmountCents),
 	}
+}
+
+// trialEndOf is the trial's end while the row is in its trial.
+func trialEndOf(b *entitlements.Billing) *string {
+	if b.Status != billingStatusTrialing {
+		return nil
+	}
+	return rfc3339Ptr(b.TrialEnd)
 }
 
 // personalBillingStatus is the status the account page shows: an expired

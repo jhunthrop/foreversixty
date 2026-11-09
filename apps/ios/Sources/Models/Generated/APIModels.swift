@@ -637,6 +637,8 @@ public struct Billing: Codable, Sendable, Equatable {
     public let status: String
     public let currentPeriodEnd: String?
     public let cancelAtPeriodEnd: Bool
+    /// The free trial's end (its first charge) while the plan trials, else null.
+    public let trialEnd: String?
     public let amountCents: Int64?
     public let interval: String?
     public let founder: Bool?
@@ -647,6 +649,7 @@ public struct Billing: Codable, Sendable, Equatable {
         status: String,
         currentPeriodEnd: String? = nil,
         cancelAtPeriodEnd: Bool,
+        trialEnd: String? = nil,
         amountCents: Int64? = nil,
         interval: String? = nil,
         founder: Bool? = nil
@@ -656,6 +659,7 @@ public struct Billing: Codable, Sendable, Equatable {
         self.status = status
         self.currentPeriodEnd = currentPeriodEnd
         self.cancelAtPeriodEnd = cancelAtPeriodEnd
+        self.trialEnd = trialEnd
         self.amountCents = amountCents
         self.interval = interval
         self.founder = founder

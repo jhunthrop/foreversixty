@@ -1,8 +1,10 @@
 // api/internal/billing/notices.go
 //
-// The billing-daily notices: a renewal email a week before every yearly
-// renewal, and a size email two weeks before a Guild-tier plan renews with
-// more members than the tier covers. Each goes out once per period.
+// The billing-daily notices: a free trial's reminder before its first charge
+// (trial_reminders.go), a renewal email a week before every yearly renewal
+// (off unless OUR_RENEWAL_EMAILS), and a size email two weeks before a
+// Guild-tier plan renews with more members than the tier covers. Each goes
+// out once per period.
 package billing
 
 import (
@@ -14,13 +16,13 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/billingmail"
-	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
 type messageBuilder func(to string, due DueNotice) (mail.Message, error)
 
-// SendNotices sends every notice due at now and returns how many went out.
+// SendNotices sends every notice due at now and returns how many went out: the trial reminders,
+// the size notices and, with RenewalEmails on, the yearly renewal notices (Stripe sends its own).
 // A notice that fails is logged, released for the next run, and joined into
 // the returned error once every notice has been tried.
 func (s *Service) SendNotices(ctx context.Context, now time.Time) (int, error) {
@@ -32,8 +34,8 @@ func (s *Service) SendNotices(ctx context.Context, now time.Time) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	sent := 0
-	var errs []error
+	sent, trialErr := s.sendTrialReminders(ctx, now)
+	errs := []error{trialErr}
 	send := func(kind string, dues []DueNotice, build messageBuilder) {
 		for _, due := range dues {
 			ok, err := s.sendNotice(ctx, kind, due, build)
@@ -45,7 +47,9 @@ func (s *Service) SendNotices(ctx context.Context, now time.Time) (int, error) {
 			}
 		}
 	}
-	send(NoticeRenewal, renewals, s.renewalMessage)
+	if s.RenewalEmails {
+		send(NoticeRenewal, renewals, s.renewalMessage)
+	}
 	send(NoticeSize, sizes, s.sizeMessage)
 	return sent, errors.Join(errs...)
 }
@@ -120,7 +124,7 @@ func (s *Service) siteURL(path string) string {
 	return strings.TrimRight(s.PublicBaseURL, "/") + path
 }
 
-// guildBillingURL is the web's guildSettingsHref plus the #billing anchor.
+// guildBillingURL is a notice's guild settings link.
 func (s *Service) guildBillingURL(due DueNotice) string {
-	return s.siteURL(fmt.Sprintf("/guild/%s/%s/%s/settings#billing", due.Region, due.Ruleset, character.Slug(due.Guild)))
+	return s.guildSettingsURL(due.Region, due.Ruleset, due.Guild)
 }

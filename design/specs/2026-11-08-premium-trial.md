@@ -35,6 +35,17 @@ System: `design/specs/2026-11-05-web-layout.md`; the shipped premium, checkout a
 - **No change to renewal email recipients.** Our renewal emails do not move to the Stripe customer's email, so the earlier side effect is dropped. Stripe owns renewals. Our renewal email (billing-daily's yearly renewal notice) sits behind a server switch, `OUR_RENEWAL_EMAILS`, which is off by default. Off, billing-daily sends no renewal notice. The spec and `api/README.md` both say so.
 - **Our reminder never contradicts Stripe's.** It gives the same dates and the same price, and says once: `You may also get a reminder from Stripe, our payment processor.`
 
+## 0D. Server side as built, 2026-11-09 (UI waits for the design system)
+
+The coordinator split the landing: the server side is built now on `premium-trial` (off `creator-program`); the chooser, the account trial state and the confirmation are built on the new design system (`docs/design-system.md`) once `land/design-system` is on main, against the trial mocks the design lane redraws (batch 4). The old look is not built.
+
+- **Spent trial:** an account's Premium trial is spent when `premium_trials` has it **or** it already paid for Premium (a Stripe Premium row, any status): its first Premium was that subscription. A seat-holder's comeback checkout never trials. A code on a spent trial is 409 `trial_used`.
+- **Routes:** `POST /v1/billing/checkout/terms` (session; its own 120/hour budget); `POST /v1/billing/trial/cancel` and `/trial/keep` `{guild_id?}` (browser session; the caller's trialing Premium, or a guild's when the caller is its payer; 409 `not_trialing`, 403 for a non-payer); `POST /v1/billing/cancel-link/preview` and `/cancel-link` `{token}` (no sign-in; 410 `link_expired` with the 4.3 sentence). Each change re-reads the subscription into the entitlement at once.
+- **Reminder:** only trials recorded in `premium_trials` or `guild_trials` (a billing transfer's trial never gets one). The notice is claimed, the in-app `billing.trial_ending` goes (dedupe key per trial), then the email with a fresh token; a failed send releases the claim and drops the token. A free trial is never also sent our renewal notice.
+- **Receipt:** `invoice.paid` with `amount_paid > 0` and `billing_reason = subscription_cycle` on a recorded free trial, claimed once (`trial_receipt`); a failed send fails the event so Stripe redelivers.
+- **Email copy contract:** `api/internal/billingmail/testdata/trial-emails.json` (rewrite with `go test ./internal/billingmail -update`); `trial-copy.ts` is held to it when the UI lands.
+- **Migration** `0095_trial_reminders`: `billing_cancel_tokens` and the two notice kinds.
+
 ## 1. Files
 
 | What | Path |

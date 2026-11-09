@@ -13,8 +13,10 @@ import (
 
 // Notice kinds, as billing_notices.kind stores them.
 const (
-	NoticeRenewal = "renewal"
-	NoticeSize    = "size"
+	NoticeRenewal      = "renewal"
+	NoticeSize         = "size"
+	NoticeTrialEnding  = "trial_ending"
+	NoticeTrialReceipt = "trial_receipt"
 )
 
 // Notice windows: how far ahead of the period end each notice is sent.
@@ -54,9 +56,15 @@ const dueNoticeQuery = `
 	  %s
 	order by e.id`
 
+// notInFreeTrial leaves out a row in its free trial: its first charge is the trial reminder's,
+// never a renewal (a billing transfer's trial, which no trial record holds, still renews).
+const notInFreeTrial = `and not (e.status = 'trialing' and (
+	exists (select 1 from premium_trials pt where pt.stripe_subscription_id = e.stripe_subscription_id)
+	or exists (select 1 from guild_trials gt where gt.stripe_subscription_id = e.stripe_subscription_id)))`
+
 // DueRenewals lists the live yearly rows renewing within the renewal lead.
 func (s *Store) DueRenewals(ctx context.Context, now time.Time) ([]DueNotice, error) {
-	rows, err := s.dueRows(ctx, now, renewalNoticeLead, "")
+	rows, err := s.dueRows(ctx, now, renewalNoticeLead, notInFreeTrial)
 	if err != nil {
 		return nil, err
 	}
