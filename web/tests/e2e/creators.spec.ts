@@ -288,7 +288,9 @@ test.describe('/creators and /creators/apply', () => {
     await expect(page.getByTestId('creators-section-disclosure')).toContainText(
       'the first time it is missing we warn you, and a second time ends your place in the program.',
     );
-    await expect(page.getByTestId('creators-section-payouts')).toContainText('A month under $10 carries over');
+    await expect(page.getByTestId('creators-section-payouts')).toContainText(
+      'A month under $10 carries over',
+    );
     await expect(page.getByTestId('creators-apply-top')).toHaveAttribute('href', '/creators/apply');
     await expect(page.locator('footer a[href="/creators"]').first()).toBeVisible();
   });
