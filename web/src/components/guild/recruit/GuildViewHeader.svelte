@@ -2,14 +2,17 @@
 <!-- The head of a view under a guild page (recruit, applications, a member profile): the one
      PageHeader with the guild's mark and faction-colour title, its fact line and, for a member or
      officer, the guild's tab strip linking back to the page (the mocks carry no separate back link;
-     the site header's Guild door and the tabs lead back). -->
+     the site header's Guild door and the tabs lead back). `views` adds the Roster's sub-views
+     (Members, Applications) under the tabs, the current one marked (batch 3). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { GuildViewGuild } from '../../../lib/guild/guild-view-load';
   import type { TitleTone } from '../../../lib/ui/primitives';
   import FactionCrest from '../../character/FactionCrest.svelte';
   import FactLine from '../FactLine.svelte';
+  import { guildApplicationsHref } from '../../../lib/characters';
   import GuildTabs, { type GuildTabId } from '../GuildTabs.svelte';
+  import TabStrip from '../../ui/TabStrip.svelte';
   import PageHeader from '../../ui/PageHeader.svelte';
 
   let {
@@ -22,6 +25,7 @@
     answer,
     titleTone,
     lead,
+    views,
     testid,
   }: {
     guild: GuildViewGuild;
@@ -37,6 +41,8 @@
     titleTone?: TitleTone;
     /** The mark beside the title; the guild's crest when absent. */
     lead?: Snippet;
+    /** The Roster's sub-view row, its current view. */
+    views?: 'members' | 'applications';
     testid: string;
   } = $props();
 
@@ -50,7 +56,20 @@
       src={guild.mark}
     />{/if}{/snippet}
 {#snippet meta()}<FactLine facts={facts.map((text) => ({ text }))} />{/snippet}
-{#snippet tabs()}<GuildTabs active={activeTab} role={tabRole ?? 'member'} hrefBase={guildPath} />{/snippet}
+{#snippet tabs()}
+  <GuildTabs active={activeTab} role={tabRole ?? 'member'} hrefBase={guildPath} />
+  {#if views !== undefined}
+    <TabStrip
+      tabs={[
+        { id: 'members', label: 'Members', href: `${guildPath}#roster` },
+        { id: 'applications', label: 'Applications', href: guildApplicationsHref(guildPath) },
+      ]}
+      active={views}
+      label="Roster views"
+      testid="guild-roster-views"
+    />
+  {/if}
+{/snippet}
 
 <PageHeader
   title={title ?? guild.name}

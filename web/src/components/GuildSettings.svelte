@@ -222,7 +222,7 @@
 {/snippet}
 
 {#snippet membersSection(current: GuildSettingsData)}
-  <Section title={guildSettingsCopy.membersHeading} testid="guild-settings-members">
+  <Section title={guildSettingsCopy.membersHeading} panel testid="guild-settings-members">
     {@render notes()}
     {#if guildId !== null}
       <GuildInviteLink
@@ -299,6 +299,7 @@
 
 {#snippet recordsSection(id: number)}
   <Section
+    panel
     title={crest === undefined ? guildSettingsCopy.recordsOnlyHeading : guildSettingsCopy.recordsHeading}
     testid="guild-settings-records"
   >
@@ -336,7 +337,7 @@
     <p class="text-[14px]" data-testid="guild-settings-forbidden">{guildSettingsCopy.forbidden}</p>
   {:else if settings !== null}
     {@const current = settings}
-    <Page layout="split" testid="guild-settings-page">
+    <Page layout="split" panels testid="guild-settings-page">
       {#if guildId !== null}
         <GuildBillingSection {guildId} {path} {guildName} />
       {/if}

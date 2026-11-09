@@ -343,7 +343,7 @@ def loot_council():
                          title_color='#b866f5', link=False))
     picker = (f'<div style="display:flex;flex-direction:column;gap:6px;max-width:360px;margin-top:12px"><span class="t-label">Open a drop from the loot table</span>'
               f'{Select("Pick a drop")}</div>')
-    main = Section(f'{O.BOSS} drops', Plate(Rows(drops)) + picker, meta=f"{day_label(guild_time(night['at']))} &middot; {len(night['drops'])} drops, {open_n} open &middot; Recorded by the addon")
+    main = Section(f'{O.BOSS} drops', f'<div>{Rows(drops)}</div>' + picker, meta=f"{day_label(guild_time(night['at']))} &middot; {len(night['drops'])} drops, {open_n} open &middot; Recorded by the addon", panel=True)
     drop = F.council_drop()
     cands = []
     for c in drop['candidates']:
@@ -355,10 +355,10 @@ def loot_council():
     record = Rows([Row(f"{d['item_name']} to {d['name']}",
                        f"Main spec &middot; {d['votes_yes']} yes, {d['votes_no']} no of {d['votes_officers']} &middot; by {d['awarded_by']} &middot; {day_label(guild_time(d['at']))}",
                        lead=icon(d['icon'], 32, f"q{d['quality']}"), link=False) for d in F.decisions()], open_=True)
-    rail = (Section(f"Candidates for {drop['name']}", pad(Rows(cands, open_=True)), meta='Gain as on the BiS page')
-            + Section('Decision record', pad(record), DisclosureButton('Export history')))
+    rail = (Section(f"Candidates for {drop['name']}", Rows(cands, open_=True), meta='Gain as on the BiS page', panel=True, frame='framed')
+            + Section('Decision record', record, DisclosureButton('Export history'), panel=True))
     bar = control_bar([('Raid night', seg([(day_label(guild_time(n['at'])), n is night, None, '') for n in nights]))], day_label(guild_time(night['at'])), label='Loot council choices')
-    return build_page('Loot council', _view(hdr(tabs_active='Loot') + bar + Page('split', main, rail, sticky_rail=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    return build_page('Loot council', _view(hdr(tabs_active='Loot') + bar + Page('split', main, rail, sticky_rail=True, panels=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
 def _section_body(html):
@@ -453,7 +453,7 @@ def _view(html):
 
 
 # The built ghost Button (lib/ui/button.ts BUTTON_GHOST): a gold label, no fill, 10 px each side.
-GUILD_CSS = '<style>:is(a,button).btn.ghost{background:transparent;border-color:transparent;color:var(--gold);padding:0 10px}</style>'
+GUILD_CSS = '<style>html :is(a,button).btn.ghost{background:transparent;border-color:transparent;color:var(--gold);padding:0 10px}</style>'
 
 
 _PROSE = 'style="font-size:14px;line-height:22px"'
@@ -488,33 +488,37 @@ def recruitment():
     wanted = '; '.join(f'{n} ({note})' if note else n for _c, _k, n, note in gd.RECRUIT_WANTED)
     upcoming = ', '.join(f'{_day(at)}, {_clock(at)}' for at in gd.RECRUIT_UPCOMING)
     t = F.tier()
-    card = Plate(Rows([Row(GUILD, facts, lead=Emblem(gd.FACTION, 44), trail=Tag('Recruiting', 'kill'), link=False),
+    card = ('<div role="region" aria-label="Public guild card">' + Rows([Row(GUILD, facts, lead=Emblem(gd.FACTION, 44), trail=Tag('Recruiting', 'kill'), link=False),
                        Row('Raids', gd.RECRUIT_NIGHTS, link=False), Row('Next raid nights', upcoming, link=False),
                        Row('Progress', f"{t['down']} of {t['named_encounters']} named bosses down &middot; {t['name']}", link=False),
-                       Row('Looking for', wanted, link=False)]), label='Public guild card')
+                       Row('Looking for', wanted, link=False)]) + '</div>')
     # Signed out nobody can apply: the API takes one of the viewer's own characters, so the build asks them to sign in (SignInPrompt).
     sign_in = (f'<div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px"><p {_PROSE}>Sign in to apply to {GUILD} with one of your characters.</p>'
                + Button('Sign in with Battle.net') + '</div>')
     rank = {'leader': 'Guild master', 'officer': 'Officer'}  # recruit-copy card.leader / card.officer
     officers = Rows([Row(n, f'{_spec_class(n)} &middot; {rank[gd.rank_of(n)]}', lead=crest_img(ch(n)[1], 32), title_color=C[ch(n)[1]], link=False)
                      for n in gd.COUNCIL], open_=True)
-    main = Section(f'{GUILD} is recruiting', card) + Section('Apply', _body(sign_in))
-    rail = Section('Why this guild', _body(f'<p {_PROSE}>{gd.RECRUIT_PITCH}</p>')) + Section('Officers', _body(officers))
-    return build_page('Recruitment', _view(PageHeader(f'Join {GUILD}', ALLIANCE, Emblem(gd.FACTION, 56), meta=['Public guild card']) + Page('split', main, rail)), 'Guild', None)
+    main = Section(f'{GUILD} is recruiting', card, panel=True, frame='framed') + Section('Apply', sign_in, panel=True)
+    rail = Section('Why this guild', f'<p {_PROSE}>{gd.RECRUIT_PITCH}</p>', panel=True) + Section('Officers', officers, panel=True)
+    return build_page('Recruitment', _view(PageHeader(f'Join {GUILD}', ALLIANCE, Emblem(gd.FACTION, 56), meta=['Public guild card']) + Page('split', main, rail, panels=True)), 'Guild', None)
 
 
 def applications():
+    """Applications (batch 3, b3-guild-applications): the guild's band with the Roster's sub-views, Open applications framed with
+    Accept and a quiet Decline; the rail's public card editor and the recent decisions."""
     apps = []
     for _i, name, cls, spec, il, parse, msg, avail, y, n, _mine, _sent in gd.APPLICANTS:
         line = msg + (f' &middot; Can raid: {avail}' if avail else '')
         apps.append(Row(name, f'{spec} {cls.title()} &middot; Level 60 &middot; Item level {il} &middot; {_top(parse[0], parse[1])}<br>{line}', lead=crest_img(cls, 36), title_color=C[cls],
-                        trail=_votes(y, n, gd.VOTERS) + _act('Accept', primary=True) + _act('Decline'), link=False))
-    main = Section('Open applications', Plate(Rows(apps), label='Open applications'), meta=f'{len(gd.APPLICANTS)} waiting')
+                        trail=_votes(y, n, gd.VOTERS) + _act('Accept') + Button('Decline', small=True, tone='ghost', act=True), link=False))
+    main = Section('Open applications', f'<div role="region" aria-label="Open applications">{Rows(apps)}</div>', panel=True, frame='framed')
     card = Rows([Row('Looking for', _wanted_summary(), trail=_act('Edit'), link=False), Row('Raid nights', gd.RECRUIT_NIGHTS, trail=_act('Edit'), link=False)], open_=True)
     decided = Rows([Row(f'{name} accepted', f'{y} yes, 0 no of {gd.VOTERS} officers &middot; by {by} &middot; Discord role granted &middot; No Discord message: they did not ask for one', link=False, slim=True)
                     for _i, name, _c, _s, y, by, _r, _d in gd.DECIDED], open_=True)
-    rail = Section('Your public card', _body(card), Link('See it as a visitor')) + Section('Recent decisions', _body(decided))
-    return build_page('Applications', _view(hdr_view(tabs_active='Roster') + Page('split', main, rail)) + _ROLE_CSS, 'Guild', (gd.VIEWER, 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    rail = Section('Your public card', card, Link('See it as a visitor'), panel=True) + Section('Recent decisions', decided, panel=True)
+    views = TabStrip(['Members', 'Applications'], 'Applications').replace('strip-tabs ph-tabs', 'strip-tabs', 1)
+    head = PageHeader(GUILD, ALLIANCE, Emblem('alliance', 56), meta=[band_facts(None)], tabs=TabStrip(TABS, 'Roster') + views)
+    return build_page('Applications', _view(head + Page('split', main, rail, panels=True)) + _ROLE_CSS, 'Guild', (gd.VIEWER, 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
 def member_profile():
@@ -533,12 +537,12 @@ def member_profile():
     loot = '<ul>' + ''.join(f'<li>{ItemRow(n, q, icon(ic, 32, f"q{q}"), f"Awarded {_day(at)}")}</li>' for _i, n, ic, q, at in won) + '</ul>'
     notes = Rows([Row(body, f'{who} &middot; {_day(at)}', foot=Tag('Officers only', 'muted') + (f'<span style="margin-left:auto">{_act("Delete")}</span>' if mine else ''), link=False) for _i, body, who, at, mine in gd.PROFILE_NOTES], open_=True)
     addn = f'<div style="padding-top:12px">{_form("Add a note", [("Add a note", "Only officers see notes")], "Save note", floor=False)}</div>'
-    main = (Section('Gear gap', _body(gear), Link('Open their character'), meta='Same units as the BiS page') + Section('Attendance', _body(att))
-            + Section('Loot this tier', _body(loot)))
-    rail = Section('Officer notes', _body(notes + addn), meta='Private: members never see these')
+    main = (Section('Gear gap', gear, Link('Open their character'), meta='Same units as the BiS page', panel=True) + Section('Attendance', att, panel=True)
+            + Section('Loot this tier', loot, panel=True))
+    rail = Section('Officer notes', notes + addn, meta='Private: members never see these', panel=True)
     # No character switcher (owner decision, no source) and no "member since" (the roster carries no join date): the rank instead.
     head = PageHeader(name, C[cls], crest_img(cls, 56), meta=[' &middot; '.join([f'{spec} {cls.title()}', 'Level 60', 'Member'])], answer=figs)
-    return build_page('Member profile', _view(head + Page('split', main, rail)) + _ROLE_CSS, 'Guild', (gd.VIEWER, 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    return build_page('Member profile', _view(head + Page('split', main, rail, panels=True)) + _ROLE_CSS, 'Guild', (gd.VIEWER, 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
 PAGES = {'web-guild-member': landing_member, 'web-guild-officer': landing_officer, 'web-guild-raid': raid_planner, 'web-guild-loot': loot_council, 'web-guild-report': raid_report,

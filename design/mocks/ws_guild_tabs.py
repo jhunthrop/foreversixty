@@ -141,7 +141,7 @@ def readiness():
     ready = [r for r in rows if not shortfalls(r, raid)]
     at = guild_time(raid['starts_at'])
     listed = Rows([Row(r['name'], f"{r['spec']} {r['class'].title()} &middot; item level {r['item_level']}", lead=crest_img(r['class'], 30), title_color=C[r['class']],
-                       foot=f'<span class="gold" style="font-size:13px">{" &middot; ".join(why)}</span>', trail=Button('Nudge', small=True, act=True), link=False)
+                       foot=f'<span class="gold" style="font-size:13px;line-height:20px">{" &middot; ".join(why)}</span>', trail=Button('Nudge', small=True, act=True), link=False)
                    for r, why in short], list_=True)
     toggle = Button(f'Next raid &middot; {day_label(at)}', small=True, act=True)
     body = Section('Short of something', listed, toggle, meta=f'In or Late for {day_label(at)}', panel=True, frame='framed')

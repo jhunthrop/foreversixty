@@ -354,7 +354,6 @@ export const guildLandingCopy = {
   lookupHeading: 'Open a guild',
   mineHeading: 'Your guilds',
   namePlaceholder: 'Guild name',
-  lead: "Your guild's progress, roster, raid nights and loot, from the logs and the addon.",
   nameLabel: 'Guild name',
   regionLabel: 'Region',
   rulesetLabel: 'Ruleset',

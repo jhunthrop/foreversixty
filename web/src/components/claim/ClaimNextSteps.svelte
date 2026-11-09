@@ -28,7 +28,7 @@
   } = $props();
 </script>
 
-<Section title={guildClaimCopy.nextHeading} testid="guild-claim-next">
+<Section title={guildClaimCopy.nextHeading} panel testid="guild-claim-next">
   <!-- The first step is the one fill, the others outlines; full width on a phone. -->
   <div class="flex flex-col gap-3 md:flex-row md:flex-wrap [&>*]:max-md:w-full">
     {#if claimPlan !== null && subscribe !== null}

@@ -59,12 +59,12 @@
   {#snippet rail()}
     {#if p.card !== null}
       {#if p.card.pitch !== ''}
-        <Section title={copy.card.why} testid="guild-recruit-pitch">
+        <Section title={copy.card.why} panel testid="guild-recruit-pitch">
           <p class="text-text text-[14px] leading-[22px] whitespace-pre-line">{p.card.pitch}</p>
         </Section>
       {/if}
       {#if p.card.officers.length > 0}
-        <Section title={copy.card.officers} testid="guild-recruit-officers">
+        <Section title={copy.card.officers} panel testid="guild-recruit-officers">
           {#each officerRows(p.card.officers) as officer (officer.key)}
             <Row title={officer.name} titleTone={classTone(officer.classSlug)} sub={officer.sub} open>
               {#snippet lead()}<ClassCrestRing characterClass={officer.classSlug} size={32} />{/snippet}
@@ -95,8 +95,13 @@
         testid="guild-recruit-head"
       />
     {/snippet}
-    <Page layout="split" {header} {rail} testid="guild-recruit-page">
-      <Section title={copy.card.heading(card.guild.name, card.open)} testid="guild-recruit-card-section">
+    <Page layout="split" panels {header} {rail} testid="guild-recruit-page">
+      <Section
+        title={copy.card.heading(card.guild.name, card.open)}
+        panel
+        frame="framed"
+        testid="guild-recruit-card-section"
+      >
         <RecruitCard {card} mark={context.guild.mark} {viewerTimezone} {locale} />
       </Section>
       {#if state.kind === 'closed'}
@@ -119,7 +124,7 @@
           onWithdraw={() => void p.withdraw()}
         />
       {:else}
-        <Section title={copy.apply.heading} testid="guild-recruit-apply">
+        <Section title={copy.apply.heading} panel testid="guild-recruit-apply">
           {#if state.kind === 'signed-out'}
             <SignInPrompt line={copy.apply.signIn(card.guild.name)} {next} testid="guild-recruit-sign-in" />
           {:else if state.kind === 'no-character'}

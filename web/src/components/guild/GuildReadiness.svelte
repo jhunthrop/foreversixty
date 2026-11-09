@@ -175,8 +175,9 @@
                 open
               >
                 {#snippet lead()}<ClassCrestRing characterClass={row.class} size={30} />{/snippet}
-                {#snippet foot()}<span class="text-gold text-[13px]" data-testid="guild-readiness-shortfalls"
-                    >{shortfalls.join(' · ')}</span
+                {#snippet foot()}<span
+                    class="text-gold text-[13px] leading-5"
+                    data-testid="guild-readiness-shortfalls">{shortfalls.join(' · ')}</span
                   >{/snippet}
                 {#snippet trail()}
                   {#if officer}

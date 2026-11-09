@@ -306,7 +306,7 @@ function capitalize(value: string): string {
 
 /** The board by exception (batch 3): what a raider is short of, in a raid leader's words, worst
  *  first: gear, enchants, consumables, talents, then the raid's own asks (attunement, flask and
- *  food) and an export too old or missing. Empty for a raider short of nothing. `raid` is the
+ *  food) and an export missing. Empty for a raider short of nothing. `raid` is the
  *  next raid's board header when the board is cut to it. */
 export function readinessShortfalls(
   row: GuildReadinessRow,
@@ -327,7 +327,6 @@ export function readinessShortfalls(
     if (!flaskFood.flask_or_elixir) out.push('no flask or raid elixir');
     if (!flaskFood.food) out.push('no buff food');
   }
-  if (row.synced_before_cutoff === true) out.push('export out of date');
   return out;
 }
 

@@ -242,7 +242,7 @@
     </div>
   {:else}
     {#snippet rail()}
-      <Section title={guildClaimCopy.rulesHeading} testid="guild-claim-rules">
+      <Section title={guildClaimCopy.rulesHeading} panel testid="guild-claim-rules">
         <ul class="text-text flex list-disc flex-col gap-2 pl-5 text-[14px] leading-[22px]">
           {#each guildClaimCopy.rules as rule (rule)}
             <li>{rule}</li>
@@ -250,8 +250,8 @@
         </ul>
       </Section>
     {/snippet}
-    <Page layout="split" {header} {rail} testid="guild-claim-page">
-      <Section title={guildClaimCopy.stateHeading} testid="guild-claim-state-card">
+    <Page layout="split" panels {header} {rail} testid="guild-claim-page">
+      <Section title={guildClaimCopy.stateHeading} panel frame="framed" testid="guild-claim-state-card">
         <div class="flex flex-col items-start gap-4">
           {#if claimPlan !== null && !holdsClaim}
             <ClaimPlanLine line={claimPlanLine(guildName, claimPlan, founderOpen(new Date()))} />

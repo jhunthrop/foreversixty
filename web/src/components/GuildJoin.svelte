@@ -150,7 +150,7 @@
       </PageHeader>
     {/snippet}
     <Page layout="form" {header} testid="guild-join-card">
-      <Section title={guildJoinCopy.sectionHeading} testid="guild-join-section">
+      <Section title={guildJoinCopy.sectionHeading} panel frame="framed" testid="guild-join-section">
         <div class="flex flex-col items-start gap-4">
           {#if showsInvitedLine(alreadyIn, joined !== null)}
             <GuildJoinInvited guildName={guild.name} inviter={peek?.inviter ?? null} />

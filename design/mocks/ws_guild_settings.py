@@ -26,7 +26,7 @@ CREST_RULES = 'PNG, JPEG or WebP, up to 2 MB, at least 128 by 128; we crop to a 
 TIERS = [('Guild', '$120', '$150', 'Up to 25 verified members &middot; 1 Premium seat'),
          ('Raid guild', '$200', '$250', 'Any size &middot; loot council and readiness &middot; 3 Premium seats')]
 
-_CSS = ('<style>.sp-body{padding-top:12px;display:flex;flex-direction:column}.sp-btns{display:flex;flex-wrap:wrap;gap:12px;padding-top:12px}'
+_CSS = ('<style>.sp-body{display:flex;flex-direction:column}.sp-btns{display:flex;flex-wrap:wrap;gap:12px;padding-top:12px}'
         '.sp-h3{display:flex;align-items:baseline;gap:12px;font:700 15px/20px var(--font-body);color:var(--strong);margin:0}'
         '.sp-seats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}'
         '.sp-seat{display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,1.4fr) auto;align-items:center;gap:8px 16px;min-height:48px;padding:8px 0}'
@@ -85,7 +85,7 @@ def plan_section() -> str:
     who = Rows([Row('Who pays', WHO_PAYS_HELP, trail=_act('Transfer the plan'), link=False)], open_=True)
     seats = (f'<div style="display:flex;flex-direction:column;gap:8px;padding-top:20px"><h3 class="sp-h3">Premium seats '
              f'<span class="t-small" style="font-weight:400;font-size:13px">{given} of {len(view["seats"])} given</span></h3>{p(SEATS_HELP)}{seat_rows()}</div>')
-    return Section('Guild plan', body(rows + f'<div class="sp-btns" style="padding-bottom:12px">{_act("Manage billing")}</div>' + who + seats), meta='Raid guild')
+    return Section('Guild plan', body(rows + f'<div class="sp-btns" style="padding-bottom:12px">{_act("Manage billing")}</div>' + who + seats), meta='Raid guild', panel=True, frame='framed')
 
 
 def chooser_section() -> str:
@@ -101,7 +101,7 @@ def chooser_section() -> str:
              f'{p(f"{S.VERIFIED} verified members today.")}<span class="sp-act">{Link("Compare Guild and Raid guild &rsaquo;")}</span>{Button("Start the 7-day trial", primary=True)}'
              f'{p("First 7 days free, once per guild. Cancel before day 8 and nothing is charged; guild settings shows the date of the first charge.")}'
              f'{p("Founder price until 6 January 2027, kept while the plan stays active.")}</div>')
-    return Section('Guild plan', body(inner))
+    return Section('Guild plan', body(inner), panel=True, frame='framed')
 
 
 def discord_section() -> str:
@@ -115,7 +115,7 @@ def discord_section() -> str:
              f'<div style="padding-top:40px"><a href="#" style="font-size:13px;text-decoration:underline">Connect a different channel</a></div>'
              f'<div style="padding-top:12px">{p("Connecting again replaces this channel and removes its webhook from Discord.")}</div>')
     return Section('Discord', body(f'<div style="display:flex;flex-direction:column;gap:4px;min-height:176px">{inner}</div>'),
-                   action=Tag('Connected', 'kill'))
+                   action=Tag('Connected', 'kill'), panel=True)
 
 
 def discord_bot_section() -> str:
@@ -128,7 +128,7 @@ def discord_bot_section() -> str:
     acts = f'<div class="sp-btns" style="padding-top:0">{_act("Send test message", small=False)}{_act("Change channel", small=False)}{_act("Remove", small=False)}</div>'
     # The status line under the actions holds its 21 px under an 8 px gap (DiscordStatusLine), empty at rest.
     inner = f'{dest}{p(linked)}<div style="display:flex;flex-direction:column">{acts}<div style="margin-top:8px;min-height:21px"></div></div>'
-    return Section('Discord', body(f'<div style="display:flex;flex-direction:column;gap:12px">{inner}</div>'), action=Tag('Connected', 'kill'))
+    return Section('Discord', body(f'<div style="display:flex;flex-direction:column;gap:12px">{inner}</div>'), action=Tag('Connected', 'kill'), panel=True)
 
 
 def members_section() -> str:
@@ -143,7 +143,7 @@ def members_section() -> str:
     rank = Row('Officer ranks', RANK_HELP, trail=f'<input class="field sp-in" type="number" aria-label="Officer ranks" value="{s["officer_max_rank_index"]}" style="width:72px">'
                + _act('Save').replace('<button ', '<button disabled ', 1), link=False)
     vis = Row('Default report visibility', VISIBILITY_HELP, trail=f'<span style="display:inline-block;width:160px">{_select("Guild only")}</span>', link=False)
-    return Section('Members and access', body(claimed + invite + Rows([rank, vis], open_=True)))
+    return Section('Members and access', body(claimed + invite + Rows([rank, vis], open_=True)), panel=True)
 
 
 def _select(label: str) -> str:
@@ -159,7 +159,7 @@ def records_section(crest: bool) -> str:
         html += (Rows([Row('Guild crest', 'Default: your faction&rsquo;s logo', lead=mark, trail=choose, link=False)], open_=True)
                  + f'<div class="sp-col" style="gap:12px"><div><span class="t-small" style="font-size:13px">No image chosen</span>'
                  f'<p class="t-small" style="font-size:12px;margin:0">{CREST_RULES}</p></div>{_act("Save").replace("<button ", "<button disabled ", 1)}</div>')
-    return Section('Records and crest' if crest else 'Records', body(html))
+    return Section('Records and crest' if crest else 'Records', body(html), panel=True)
 
 
 def settings_tab(bot: bool = False):
@@ -167,14 +167,14 @@ def settings_tab(bot: bool = False):
     rail = members_section() + records_section(crest=True)
     # The tab's own heading for screen readers (GuildSettings embedded): outside every region, as built.
     head = hdr(tabs_active='Settings') + '<h2 class="sp-sr">Guild settings</h2>'
-    return build_page('Guild settings', _view(head + Page('split', main, rail) + NOTICE_LINE + _CSS), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    return build_page('Guild settings', _view(head + Page('split', main, rail, panels=True) + NOTICE_LINE + _CSS), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
 def settings_page():
     main = chooser_section() + discord_section()
     rail = members_section() + records_section(crest=False)
     head = f'<div style="padding-top:28px">{PageHeader(GUILD, ALLIANCE, meta=["Guild settings"])}</div>'
-    return build_page('Guild settings page', _view(head + Page('split', main, rail) + NOTICE_LINE + _CSS), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
+    return build_page('Guild settings page', _view(head + Page('split', main, rail, panels=True) + NOTICE_LINE + _CSS), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
 PAGES: dict = {'web-guild-settings': settings_tab, 'web-guild-settings-bot': lambda: settings_tab(bot=True), 'web-guild-settings-page': settings_page}

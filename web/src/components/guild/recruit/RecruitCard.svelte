@@ -1,5 +1,5 @@
 <!-- web/src/components/guild/recruit/RecruitCard.svelte -->
-<!-- The public recruiting card, the page's one Plate (web layout spec 2026-11-05 §7.2 Recruitment;
+<!-- The public recruiting card, in its framed panel (web layout spec 2026-11-05 §7.2 Recruitment;
      mock web-guild-recruit): the guild with its mark, realm, faction and size and whether they
      recruit; the raid nights in the officers' words and the next planned nights in the viewer's
      clock; progress this tier; and one Looking for line (each class or spec with its note). -->
@@ -8,7 +8,6 @@
   import { recruitCopy as copy } from '../../../lib/guild/recruit-copy';
   import { cardFacts, progressLine, upcomingNights, wantedLine } from '../../../lib/guild/recruit-view';
   import FactionCrest from '../../character/FactionCrest.svelte';
-  import Plate from '../../ui/Plate.svelte';
   import Row from '../../ui/Row.svelte';
   import Tag from '../../ui/Tag.svelte';
 
@@ -23,7 +22,7 @@
   const progress = $derived(progressLine(card));
 </script>
 
-<Plate label={copy.card.label} testid="guild-recruit-card">
+<div role="region" aria-label={copy.card.label} data-testid="guild-recruit-card">
   <Row title={card.guild.name} sub={cardFacts(card).join(' · ')} testid="guild-recruit-status">
     {#snippet lead()}<FactionCrest faction={card.guild.faction} src={mark} small />{/snippet}
     {#snippet trail()}
@@ -46,4 +45,4 @@
   {#if card.open}
     <Row title={copy.card.lookingFor} sub={wantedLine(card.wanted)} testid="guild-recruit-wanted" />
   {/if}
-</Plate>
+</div>
