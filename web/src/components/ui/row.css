@@ -2,6 +2,29 @@
    The Row primitive's bands (lib/ui/row.ts ROW_BAND_*, ROW_RULE). Imported by global.css, outside
    the layers. */
 
+/* Row `fillTrail` (sim landing, round 5): the title in a 180 px label column, the trail filling the
+   rest, a form in it stretching (a field and its button); below 768 the trail takes its own line.
+   Plain CSS outside the layers, so it outranks the Row's own grid and justify utilities. */
+.ui-row.ui-row-fill {
+  grid-template-columns: minmax(0, 1fr);
+}
+.ui-row-fill > .ui-row-trail {
+  justify-self: stretch;
+  min-width: 0;
+  margin-top: 8px;
+}
+.ui-row-fill > .ui-row-trail > form {
+  flex: 1 1 0%;
+}
+@media (min-width: 768px) {
+  .ui-row.ui-row-fill {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+  .ui-row-fill > .ui-row-trail {
+    margin-top: 0;
+  }
+}
+
 /* Row bands (row-band sweep 2026-11-01, design/specs/2026-11-01-row-bands.md). A row that lights
    up inside a list (the viewer's own row, a marked or addressed fight, a link row's hover) is a
    rounded band, never a square stripe: while lit it takes the control radius, holds its content

@@ -9,7 +9,7 @@
     16,
     0,
     380,
-    207
+    187
    ],
    "inventory": {}
   },
@@ -18,7 +18,7 @@
     16,
     16,
     380,
-    84
+    64
    ],
    "inventory": {}
   },
@@ -26,17 +26,17 @@
    "box": [
     16,
     60,
-    380,
-    40
+    311,
+    20
    ],
    "inventory": {}
   },
   "section-sim-your-character": {
    "box": [
     16,
-    235,
+    215,
     380,
-    251
+    190
    ],
    "inventory": {
     "button": 1,
@@ -46,21 +46,21 @@
   "plate": {
    "box": [
     16,
-    282,
+    893,
     380,
-    204
+    611
    ],
    "inventory": {
-    "button": 1,
-    "field": 1
+    "row": 9,
+    "image": 9
    }
   },
   "section-other-ways-in": {
    "box": [
     16,
-    534,
+    427,
     380,
-    531
+    444
    ],
    "inventory": {
     "row": 3,
@@ -71,9 +71,9 @@
   "section-sim-a-best-in-slot-set": {
    "box": [
     16,
-    1113,
+    893,
     380,
-    595
+    611
    ],
    "inventory": {
     "row": 9,

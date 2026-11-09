@@ -9,7 +9,7 @@
     16,
     0,
     380,
-    421
+    401
    ],
    "inventory": {
     "button": 1,
@@ -41,7 +41,7 @@
     16,
     142,
     380,
-    172
+    152
    ],
    "inventory": {
     "button": 1
@@ -50,7 +50,7 @@
   "controls": {
    "box": [
     0,
-    421,
+    401,
     412,
     62
    ],
@@ -63,9 +63,9 @@
   "summary": {
    "box": [
     16,
-    483,
+    463,
     380,
-    90
+    66
    ],
    "inventory": {
     "image": 1
@@ -74,9 +74,9 @@
   "section-damage-by-ability": {
    "box": [
     16,
-    601,
+    557,
     380,
-    776
+    781
    ],
    "inventory": {
     "image": 9
@@ -85,20 +85,21 @@
   "plate": {
    "box": [
     16,
-    648,
+    9986,
     380,
-    729
+    1774
    ],
    "inventory": {
-    "image": 9
+    "row": 14,
+    "image": 14
    }
   },
   "section-timeline": {
    "box": [
     16,
-    1850,
+    1794,
     380,
-    993
+    1032
    ],
    "inventory": {
     "row": 1,
@@ -110,9 +111,9 @@
   "section-gear": {
    "box": [
     16,
-    2891,
+    2874,
     380,
-    1600
+    1567
    ],
    "inventory": {
     "row": 17,
@@ -121,9 +122,9 @@
   },
   "slots": {
    "box": [
-    16,
-    2938,
-    380,
+    31,
+    2921,
+    350,
     1275
    ],
    "inventory": {
@@ -134,9 +135,9 @@
   "section-talents": {
    "box": [
     16,
-    4539,
+    4489,
     380,
-    1109
+    1094
    ],
    "inventory": {
     "image": 53
@@ -145,9 +146,9 @@
   "section-rage": {
    "box": [
     16,
-    5696,
+    5631,
     380,
-    1354
+    1369
    ],
    "inventory": {
     "image": 13
@@ -156,9 +157,9 @@
   "section-buffs-and-debuffs": {
    "box": [
     16,
-    7098,
+    7048,
     380,
-    1526
+    1547
    ],
    "inventory": {
     "image": 33
@@ -167,18 +168,29 @@
   "section-dps-spread": {
    "box": [
     16,
-    1425,
+    1386,
     380,
-    377
+    360
    ],
    "inventory": {}
+  },
+  "section-your-sims": {
+   "box": [
+    16,
+    11808,
+    380,
+    322
+   ],
+   "inventory": {
+    "row": 3
+   }
   },
   "section-this-run": {
    "box": [
     16,
-    8672,
+    8643,
     380,
-    1272
+    1295
    ],
    "inventory": {
     "button": 3,
@@ -188,24 +200,13 @@
   "section-rotation": {
    "box": [
     16,
-    9992,
+    9986,
     380,
-    1814
+    1774
    ],
    "inventory": {
     "row": 14,
     "image": 14
-   }
-  },
-  "section-your-sims": {
-   "box": [
-    16,
-    11854,
-    380,
-    307
-   ],
-   "inventory": {
-    "row": 3
    }
   }
  }

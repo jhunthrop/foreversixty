@@ -225,7 +225,7 @@ test('a saved sim names the rotation it used, prints its notes in place, and car
   await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
   const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
-  await expect(card).toContainText('Fury, at 60');
+  await expect(card).toContainText('Fury guide');
   await expect(card).toContainText('Then, from the top at every decision');
 
   const notes = curatedRotationNotes('warrior-fury');

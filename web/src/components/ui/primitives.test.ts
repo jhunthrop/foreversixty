@@ -364,10 +364,10 @@ describe('Field, FormRow, Button', () => {
     const props = { title: 'A planner build', trail: text('<form></form>') };
     const plain = html(Row, props);
     expect(plain).toContain('grid-cols-[minmax(0,1fr)_auto]');
-    expect(plain).not.toContain('justify-self-stretch');
+    expect(plain).not.toContain('ui-row-fill');
     const filled = html(Row, { ...props, fillTrail: true });
-    expect(filled).toContain('md:grid-cols-[180px_minmax(0,1fr)]');
-    expect(filled).toContain('justify-self-stretch');
+    expect(filled).toContain('ui-row-fill');
+    expect(filled).toContain('ui-row-trail');
   });
 
   it('Button is a link when it navigates and a button otherwise', () => {

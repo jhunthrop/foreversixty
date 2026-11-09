@@ -9,7 +9,7 @@
     16,
     0,
     380,
-    421
+    401
    ],
    "inventory": {
     "image": 1
@@ -40,14 +40,14 @@
     16,
     142,
     380,
-    172
+    152
    ],
    "inventory": {}
   },
   "controls": {
    "box": [
     0,
-    421,
+    401,
     412,
     62
    ],
@@ -60,27 +60,29 @@
   "section-damage-by-ability": {
    "box": [
     16,
-    511,
+    491,
     380,
-    665
+    670
    ],
    "inventory": {}
   },
   "plate": {
    "box": [
     16,
-    558,
+    5166,
     380,
-    618
+    325
    ],
-   "inventory": {}
+   "inventory": {
+    "row": 3
+   }
   },
   "section-gear": {
    "box": [
     16,
-    1224,
+    1209,
     380,
-    1382
+    1369
    ],
    "inventory": {
     "row": 17,
@@ -89,9 +91,9 @@
   },
   "slots": {
    "box": [
-    16,
-    1271,
-    380,
+    31,
+    1256,
+    350,
     1275
    ],
    "inventory": {
@@ -102,9 +104,9 @@
   "section-talents": {
    "box": [
     16,
-    2654,
+    2626,
     380,
-    1109
+    1094
    ],
    "inventory": {
     "image": 53
@@ -113,9 +115,9 @@
   "section-rotation": {
    "box": [
     16,
-    3811,
+    3768,
     380,
-    1328
+    1350
    ],
    "inventory": {
     "row": 14,
@@ -125,9 +127,9 @@
   "section-your-sims": {
    "box": [
     16,
-    5187,
+    5166,
     380,
-    310
+    325
    ],
    "inventory": {
     "row": 3

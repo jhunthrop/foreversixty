@@ -103,7 +103,7 @@ test('the rotation reads in place in the rail, without losing the character (new
   const section = page.getByTestId('sim-rotation-saved-card');
   await section.scrollIntoViewIfNeeded();
   await expect(section).toBeVisible();
-  await expect(section).toContainText('Frost, at ');
+  await expect(section).toContainText('Frost guide');
   const notes = curatedRotationNotes('mage-frost');
   expect(notes.length).toBeGreaterThan(0);
   for (const note of notes) await expect(section).toContainText(note);

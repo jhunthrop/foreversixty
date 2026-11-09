@@ -117,7 +117,7 @@ test('the precision select offers four choices and the report states the run', a
   await expect(report.getByTestId('sim-settings-runs')).toContainText('500');
   await expect(page.getByTestId('sim-error')).toContainText('(95%)');
   await expect(page.getByTestId('sim-answer-label')).toHaveText('Run in your browser');
-  await expect(report.getByTestId('sim-spread-card')).toContainText('500 runs');
+  await expect(report.getByTestId('sim-spread-card')).toContainText(/Runs\s*500/);
 });
 
 test('a finished run can be named in the save form', async ({ page }) => {
