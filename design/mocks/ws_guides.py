@@ -235,7 +235,7 @@ def leveling(g: dict, level: int = 60, data: bool = True) -> str:
     at = lv['at'].get(str(level))
     if data and at:
         lane = LaneBlock(e(C['talentsByLevel']),
-                         f'<p class="t-small">{e(C["levelingTreeIntro"])}</p><p class="lvl-l"><b class="strong">{e(at["point"])}</b><span class="t-small">{e(at["spent"])}</span></p>'
+                         f'<p class="lvl-l"><b class="strong">{e(at["point"])}</b><span class="t-small">{e(at["spent"])}</span></p>'
                          + LevelSlider(level, 10, 60, e(C['levelSliderLabel'])) + TalentTrees(trees_of(at['trees'])) + f'<p>{Link(rsaquo(C["loadInPlanner"]))}</p>')
     return ReadingSection(SEC['leveling'], prose, lane, 'leveling')
 

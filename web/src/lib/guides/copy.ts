@@ -156,8 +156,6 @@ export const guidesCopy = {
   levelRangeLabel: (band: number): string => (band === 60 ? 'Level 60' : `Level ${band} to ${band + 9}`),
   // --- the leveling tree (design/specs/2026-11-04-leveling-tree.md) ---------------------------
   talentsByLevel: 'Talents by level',
-  levelingTreeIntro:
-    'One talent point a level, from 10 to 60. Move the level to see the build at that point.',
   /** "Level 23: Improved Gouge, rank 2"; a level the ladder places no point at reads its level alone. */
   levelingPoint: (level: number, name: string | null, rank: number): string =>
     name === null ? `Level ${level}` : `Level ${level}: ${name}, rank ${rank}`,

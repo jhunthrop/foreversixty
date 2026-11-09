@@ -110,7 +110,7 @@ There is no execute phase for a hunter: the priority holds to the end.
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap against a raid boss, because every miss throws away a whole shot, auto shots included, and auto shot is more of your damage than any button you press; past the cap it adds nothing. Agility is attack power and crit together. Crit is better than it looks because the pet copies all of your crit chance. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
+Hit matters up to 9%, the cap against a raid boss, because every miss throws away a whole shot, auto shots included, and auto shot is more of your damage than any button you press; past the cap it adds nothing. Agility is attack power and crit together. Crit is better than it looks because the pet copies all of your crit chance. Intellect is attack power through Careful Aim and mana on top. Plain attack power gives only itself, though it counts for a little more than it did in Classic, because Arcane Shot and Serpent Sting carry a share of it. Haste is rare on gear but strong when you find it.
 
 ## Best in slot
 
@@ -130,7 +130,7 @@ Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, it lines u
 
 Orc for the Horde. Command makes your pet hit 5% harder all fight, and Blood Fury's two minute cooldown comes up with every Bestial Wrath, so you press them together twice in most boss fights. Troll is a fine second: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull.
 
-Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire, and it lands in the middle of the pack, so it is the paid option, never the pick.
+Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire, and it lands in the middle of the pack.
 
 ## Professions
 

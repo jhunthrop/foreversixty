@@ -97,7 +97,7 @@ Blade Flurry hits anything next to your target. Never turn it on next to a Sappe
 
 ## Stat priority
 
-Hit counts until your attacks stop missing, and adds nothing past that: a missed Backstab is a wasted global and a lost combo point, Precision only gets you part of the way, and your white swings with two weapons miss far more often than your specials. Agility gives attack power and crit together. Strength and attack power add straight damage to every swing, and in Forever to every poison hit and tick as well. A crit makes one hit bigger, and Lethality makes your Backstab crits bigger still, but Combat has no Seal Fate, so a crit never adds a combo point, and no bleed of yours runs all fight for a crit to tick on. Haste is rare on gear and good when you find it. The table above gives the order for your gear.
+Hit counts until your attacks stop missing, and adds nothing past that: a missed Backstab is a wasted global and a lost combo point, Precision only gets you part of the way, and your white swings with two weapons miss far more often than your specials. Agility gives attack power and crit together. Strength and attack power add straight damage to every swing, and in Forever to every poison hit and tick as well. A crit makes one hit bigger, and Lethality makes your Backstab crits bigger still, but Combat has no Seal Fate, so a crit never adds a combo point, and no bleed of yours runs all fight for a crit to tick on. Haste is rare on gear and good when you find it.
 
 ## Best in slot
 

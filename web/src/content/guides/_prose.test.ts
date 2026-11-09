@@ -98,6 +98,11 @@ export const BANNED_PROSE = {
   ],
   // Guide-accuracy round 2: a player never sees a repository path, in a source label or the body.
   filePaths: [/\b[\w-]+\.json\b/, /\bdata\/[\w./-]+/],
+  // Feedback 2026-11-09 (owner: no unnecessary explanations): the prose is about the play, never
+  // about the page around it ("The table above gives the order for your gear; here is why...").
+  pageTalk: ['table above', 'table below', 'on this page', 'here is why', 'this is why each stat'],
+  // Feedback 2026-11-09: a guide never advertises Blizzard's paid products.
+  paidProducts: ['Heroic Pack', 'Epic Pack', 'paid unlock', 'paid race', 'paid option'],
 } as const satisfies Record<string, readonly (string | RegExp)[]>;
 
 /**

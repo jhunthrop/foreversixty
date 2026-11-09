@@ -98,7 +98,7 @@ Mutilate costs 60, so you will often sit on four points waiting for energy. That
 
 ## Stat priority
 
-Hit counts until your attacks stop missing, and adds nothing past that: a missed Mutilate is a wasted global and two combo points you did not get, and your white swings with two weapons miss far more often than your specials, so they keep wanting hit after Mutilate stops missing. Agility gives attack power and crit together. Crit counts for more in this tree than for most melee, since every builder crit is a Seal Fate point and Lethality makes it bigger. Strength and attack power add straight damage to every hit, and in Forever to every poison hit and tick as well. Haste is rare on gear; take it when it comes. The table above gives the order for your gear.
+Hit counts until your attacks stop missing, and adds nothing past that: a missed Mutilate is a wasted global and two combo points you did not get, and your white swings with two weapons miss far more often than your specials, so they keep wanting hit after Mutilate stops missing. Agility gives attack power and crit together. Crit counts for more in this tree than for most melee, since every builder crit is a Seal Fate point and Lethality makes it bigger. Strength and attack power add straight damage to every hit, and in Forever to every poison hit and tick as well. Haste is rare on gear; take it when it comes.
 
 ## Best in slot
 
