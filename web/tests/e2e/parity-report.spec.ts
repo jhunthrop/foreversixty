@@ -30,7 +30,8 @@ const CONFIG = readParityConfig('report-parity.json');
  * shipped canvas and brush stay inside"): legend chips that toggle a line, the plot's death
  * marks, the brush's two sliders, the Players control and the log scale in the Section head.
  * Its blocks and its height differ; the regions below it are compared after moving them by the
- * height it adds. Lane: REPORT-FRAME, 2026-11-07, until LineChart in ws_prims.py draws the
+ * height it adds. Since the panels (directions b1) the Section draws its head and body in one Plate, and
+ * that Plate carries the same drift (chartPlates). Lane: REPORT-FRAME, 2026-11-07, until LineChart in ws_prims.py draws the
  * shipped chart's controls.
  */
 const CHART_DRIFT = /^section-(damage|healing|damage-taken)-over-the-fight$/;
@@ -48,9 +49,26 @@ function withoutChartHeight(mock: RegionSnapshot[], build: RegionSnapshot[]): Re
   );
 }
 
-function unexpected(failures: ParityFailure[]): ParityFailure[] {
+/** The chart Section's own panel (Section `panel` draws a Plate around its head and body), on
+ *  either side: the same drift as its Section. */
+function chartPlates(...sides: RegionSnapshot[][]): Set<string> {
+  const plates = new Set<string>();
+  for (const side of sides) {
+    const chart = side.find((r) => CHART_DRIFT.test(r.name));
+    if (chart === undefined) continue;
+    for (const r of side)
+      if (/^plate(#\d+)?$/.test(r.name) && r.box.x === chart.box.x && r.box.y === chart.box.y)
+        plates.add(r.name);
+  }
+  return plates;
+}
+
+function unexpected(failures: ParityFailure[], plates: ReadonlySet<string>): ParityFailure[] {
   return failures.filter(
-    (f) => !CHART_DRIFT.test(f.region) && !(f.region === 'site-footer' && f.kind === 'box'),
+    (f) =>
+      !CHART_DRIFT.test(f.region) &&
+      !plates.has(f.region) &&
+      !(f.region === 'site-footer' && f.kind === 'box'),
   );
 }
 
@@ -85,7 +103,10 @@ test.describe('Report mock parity at 1440', () => {
       );
       await mockPage.close();
 
-      const failures = unexpected(compareRegions(mock, withoutChartHeight(mock, built)));
+      const failures = unexpected(
+        compareRegions(mock, withoutChartHeight(mock, built)),
+        chartPlates(mock, built),
+      );
       expect(failures, `${state.id} differs from ${state.mock}:\n${formatFailures(failures)}`).toEqual([]);
     });
   }
