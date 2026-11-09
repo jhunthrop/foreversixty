@@ -65,7 +65,27 @@
 
   // The current character's guild, when it has one, is this landing's answer (GuildShell follows
   // later choices of character the same way).
+  /** The lookup sent before this island hydrated (or with no script): the server-rendered form
+   *  submits /guild?name=&region=&ruleset= natively, and the landing finishes the job here. */
+  function finishNativeLookup(): boolean {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has('name')) return false;
+    const typed = (params.get('name') ?? '').trim();
+    const pickedRegion = params.get('region') ?? '';
+    const pickedRuleset = params.get('ruleset') ?? '';
+    const knownRegion = (REGIONS as readonly string[]).includes(pickedRegion) ? pickedRegion : region;
+    const knownRuleset = RULESETS.some((option) => option.id === pickedRuleset) ? pickedRuleset : ruleset;
+    if (typed === '') {
+      window.history.replaceState(null, '', window.location.pathname);
+      status = copy.emptyName;
+      return false;
+    }
+    window.location.replace(guildHref(knownRegion, knownRuleset, typed));
+    return true;
+  }
+
   onMount(() => {
+    if (finishNativeLookup()) return;
     void import('../lib/character-selector/follow-page-run')
       .then(({ openCurrentGuild }) => openCurrentGuild())
       .then(applySession);

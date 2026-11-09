@@ -189,7 +189,7 @@ for (const [label, viewport] of [
       await expect(bisPanel(page).getByTestId('guide-bis-head').locator('img')).toHaveCount(1);
       await expect(page.getByTestId('guide-bis-full-list')).toHaveAttribute(
         'href',
-        '/bis/mage/frost?faction=alliance#band-alliance-60',
+        '/bis/mage/frost/60',
       );
       await expect(page.getByTestId('guide-bis-full-list')).toHaveText(`${guidesCopy.fullListLink} ›`);
       const horde30 = await page

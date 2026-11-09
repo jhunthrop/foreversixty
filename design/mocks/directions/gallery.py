@@ -10,6 +10,7 @@ import sys
 from html import escape
 from pathlib import Path
 
+import logs_gallery
 from style import TOKENS
 
 HERE = Path(__file__).resolve().parent
@@ -135,7 +136,7 @@ def build() -> Path:
             f'Round 4 (Blizzard\'s Forever colours, fonts and floating navigation, crisp surfaces) plus the owner\'s round-5 asks: soft corners '
             f'on one radius scale taken from the nav (10 px panels, 6 px buttons), a rounded cream frame on two or three featured panels a page, '
             f'and the owner\'s art set. Every number, item, tooltip line and icon is real repo data.</p>'
-            f'<p><a href="#round5">Round 5</a> · <a href="#paperdoll">Paperdoll</a> · <a href="#artset">Art set</a> · <a href="#mobile">Mobile</a> · <a href="#pages">Now and round 5</a> · <a href="#reviews">Reviewers</a> · '
+            f'<p><a href="#round5">Round 5</a> · <a href="#paperdoll">Paperdoll</a> · <a href="#artset">Art set</a> · <a href="#mobile">Mobile</a> · <a href="#logs">Logs</a> · <a href="#pages">Now and round 5</a> · <a href="#reviews">Reviewers</a> · '
             f'<a href="#tokens">Colours</a> · <a href="#fonts">Display font</a> · <a href="#tells">No AI tells</a> · <a href="#study">Blizzard study</a> · '
             f'<a href="#shots">Screenshots needed</a></p>'
             f'<h2 id="round5">Round 5: Blizzard, round 4 and round 5</h2>{round5}<p class="muted" style="margin-top:12px"><a href="png/g-home-2000.png">Home at 2000</a></p>'
@@ -148,7 +149,7 @@ def build() -> Path:
             f'{fig("png/art-band-390.png", "Hero band at 390")}</div><div class="three" style="margin-top:12px">{fig("png/og-home.png", "Link preview, 1200 x 630")}'
             f'{fig("png/discord-banner.png", "Discord banner (also for guild pages)")}{fig("png/app-icon.png", "App icon: the flat seal on the owner\'s field")}</div>'
             f'<div class="three" style="margin-top:12px">{fig("png/ground-seam-check.png", "The ground tile, 2 x 2: no seam at the cross")}</div>'
-            + paperdoll_section() + mobile_section() +
+            + paperdoll_section() + mobile_section() + logs_gallery.section() +
             f'<h2 id="pages">Now and round 5</h2>{pages}'
             f'<h2 id="reviews">Reviewers</h2>{verdicts()}'
             f'<h2 id="tokens">Colours, taken from their page</h2><p>Computed CSS values from the live page (blizzard/palette.json) or the mean of a flat region of '
