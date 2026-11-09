@@ -226,9 +226,18 @@ func byLevel(chars []bnetapi.AccountCharacter) []bnetapi.AccountCharacter {
 	return out
 }
 
+// errNeedsRuleset is writeAccountRow's answer for a character no source
+// names a ruleset for (rulesetFor): it is skipped, never keyed as normal.
+var errNeedsRuleset = errors.New("bnetimport: no source names this character's ruleset")
+
+// opNeedsRuleset is the log op a skipped character is reported under; the
+// bnet_needs_ruleset log-based metric counts it.
+const opNeedsRuleset = "needs_ruleset"
+
 // writeAccountRows is the first pass: one characters row per character,
-// keyed by the ruleset its realm resolves to. A collision (the key already
-// belongs to another account) is counted in summary.Skipped and logged.
+// keyed by the ruleset rulesetFor resolves. A collision (the key already
+// belongs to another account) and a character with no ruleset are each
+// counted in summary.Skipped and logged.
 func (s *Service) writeAccountRows(ctx context.Context, userID int64, region string, realms []bnetapi.Realm,
 	chars []bnetapi.AccountCharacter, summary *auth.ImportSummary) ([]characterRef, error) {
 	written := make([]characterRef, 0, len(chars))
@@ -237,6 +246,14 @@ func (s *Service) writeAccountRows(ctx context.Context, userID int64, region str
 			return written, ErrBudget
 		}
 		ref, wrote, err := s.writeAccountRow(ctx, userID, region, realms, ch)
+		if errors.Is(err, errNeedsRuleset) {
+			// Counted by the bnet_needs_ruleset log-based metric
+			// (docs/runbooks/launch-day.md); the next sign-in retries it.
+			summary.Skipped++
+			s.logger().Warn("bnetimport", "op", opNeedsRuleset, "user_id", userID, "region", region,
+				"bnet_character_id", ch.ID, "realm_id", ch.RealmID, "fields_checked", rulesetSources)
+			continue
+		}
 		if err != nil {
 			if errors.Is(err, context.DeadlineExceeded) || ctx.Err() != nil {
 				return written, ErrBudget
@@ -258,9 +275,12 @@ func (s *Service) writeAccountRows(ctx context.Context, userID int64, region str
 // writes its row.
 func (s *Service) writeAccountRow(ctx context.Context, userID int64, region string, realms []bnetapi.Realm,
 	ch bnetapi.AccountCharacter) (characterRef, bool, error) {
-	ruleset, err := s.rulesetFor(ctx, userID, region, realms, ch)
+	ruleset, ok, err := s.rulesetFor(ctx, userID, region, realms, ch)
 	if err != nil {
 		return characterRef{Key: ch.Name}, false, err
+	}
+	if !ok {
+		return characterRef{Key: ch.Name}, false, errNeedsRuleset
 	}
 	ref := characterRef{
 		UserID: userID, Region: region, Ruleset: ruleset, Key: character.Key(region, ruleset, ch.Name),

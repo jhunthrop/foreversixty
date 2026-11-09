@@ -72,6 +72,14 @@ describe('logged unit names', () => {
     expect(splitUnitName('Baelgrim-Nightslayer')).toEqual({ name: 'Baelgrim', segment: 'Nightslayer' });
   });
 
+  it('reads the launch client ruleset-and-region tail as the segment', () => {
+    expect(splitUnitName('Anon-One-PvP-US')).toEqual({ name: 'Anon One', segment: 'PvP-US' });
+    expect(splitUnitName('Anon-Normal-EU')).toEqual({ name: 'Anon', segment: 'Normal-EU' });
+    expect(rulesetFromRealm(splitUnitName('Anon-One-Roleplay-EU').segment)).toBe('rp');
+    // A surname that happens to be a region code is still a name.
+    expect(splitUnitName('Anon-Us-ClassicBetaPvP-')).toEqual({ name: 'Anon Us', segment: 'ClassicBetaPvP' });
+  });
+
   it('leaves a name with no segment alone', () => {
     expect(splitUnitName('Hollow Sentinel')).toEqual({ name: 'Hollow Sentinel', segment: '' });
     expect(splitUnitName('')).toEqual({ name: '', segment: '' });

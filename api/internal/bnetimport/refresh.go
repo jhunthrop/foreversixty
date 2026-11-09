@@ -206,7 +206,7 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 		RealmSlug: sc.RealmSlug, Name: name, BnetID: sc.BnetCharacterID,
 	}
 	var guildWritten, unavailable bool
-	if err := s.enrichInTx(ctx, tx, ref, rosterCache, &guildWritten, &unavailable); err != nil {
+	if err := s.enrichInTx(ctx, tx, &ref, rosterCache, &guildWritten, &unavailable); err != nil {
 		return err
 	}
 	// The account's "Updated from Battle.net" stamp (GET /v1/me's bnet_imported_at).
@@ -282,34 +282,19 @@ func (s *Service) rekeyInPlace(ctx context.Context, tx pgx.Tx, key, region, rule
 		}
 		realmCache[region] = realms
 	}
-	// A realmless (Forever) row's ruleset came from the account profile's
-	// realm id, which only the sign-in import holds; the refresh leaves it.
+	// A realmless (Forever) row's ruleset is the profile's own, which the
+	// enrich pass adopts (adoptProfileRuleset); the realm step leaves it.
 	if realms == nil || realmSlug == "" {
 		return key, ruleset, nil
 	}
-	newRuleset := rulesetForRealm(realms, realmSlug)
+	newRuleset, ok := rulesetForRealm(realms, realmSlug)
 	newKey := character.Key(region, newRuleset, name)
-	if newKey == key {
+	if !ok || newKey == key {
 		return key, ruleset, nil
 	}
-	var taken bool
-	if err := tx.QueryRow(ctx, `select exists (select 1 from characters where key = $1)`, newKey).Scan(&taken); err != nil {
-		return "", "", fmt.Errorf("bnetimport: rekey check %s: %w", newKey, err)
+	_, moved, err := s.moveKey(ctx, tx, key, newKey, newRuleset)
+	if err != nil || !moved {
+		return key, ruleset, err
 	}
-	if taken {
-		s.logger().Warn("bnetimport", "op", "rekey_taken", "old_key", key, "new_key", newKey)
-		return key, ruleset, nil
-	}
-	if _, err := tx.Exec(ctx, `update characters set key = $1, ruleset = $2 where key = $3`, newKey, newRuleset, key); err != nil {
-		return "", "", fmt.Errorf("bnetimport: rekey %s: %w", key, err)
-	}
-	if _, err := tx.Exec(ctx, `update guild_characters set character_key = $1 where character_key = $2`, newKey, key); err != nil {
-		return "", "", fmt.Errorf("bnetimport: rekey membership %s: %w", key, err)
-	}
-	// The account's chosen main follows its character.
-	if _, err := tx.Exec(ctx, `update users set main_character_key = $1 where main_character_key = $2`, newKey, key); err != nil {
-		return "", "", fmt.Errorf("bnetimport: rekey main %s: %w", key, err)
-	}
-	s.logger().Info("bnetimport", "op", "rekey", "old_key", key, "new_key", newKey)
 	return newKey, newRuleset, nil
 }
