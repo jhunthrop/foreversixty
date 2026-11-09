@@ -391,12 +391,7 @@
         />
       </div>
       <div class="bis-route">
-        <BisItinerary
-          {stops}
-          build={data.build}
-          unit={model.unit}
-          label={`${fullName}, where to go`}
-        />
+        <BisItinerary {stops} build={data.build} unit={model.unit} label={`${fullName}, where to go`} />
       </div>
     </div>
   </Page>
