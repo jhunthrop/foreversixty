@@ -275,6 +275,20 @@ def test_a_reference_stat_the_engine_has_no_stat_for_is_refused(tmp_path):
         load_specs(tmp_path)
 
 
+def test_every_generated_file_carries_the_full_name_the_curated_override_wins():
+    go, ts = rendered()
+    records = specs()
+    rows = json.loads(render_json(records, spec_icons(records, ACTIVE_DIR)))
+    by_key = {row["spec"]: row["full_name"] for row in rows}
+    assert by_key["warrior-fury"] == "Fury Warrior"
+    assert by_key["hunter-beast-mastery"] == "Beast Mastery Hunter"
+    # The catalogue name then the class reads "Feral Bear Druid", which no player says.
+    assert by_key["druid-feral-bear"] == "Feral Druid (Bear)"
+    assert all(by_key.values())
+    assert 'FullName: "Feral Druid (Bear)"' in go
+    assert "full_name: 'Feral Druid (Bear)'," in ts
+
+
 def test_both_generated_files_carry_the_reference_stat():
     go, ts = rendered()
     assert 'ReferenceStat string `json:"reference_stat"`' in go

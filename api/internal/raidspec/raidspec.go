@@ -39,6 +39,9 @@ type Spec struct {
 	Name  string // the full catalogue name, "Holy"
 	Role  string
 	Icon  string // the icon file's base name, no extension
+	// FullName is the spec as a player names it in full, "Holy Paladin", "Feral Druid (Bear)":
+	// the catalogue's own, never composed here.
+	FullName string
 }
 
 // Emoji is the spec's application emoji name: fs_{class}_{spec}, hyphens as underscores.
@@ -57,7 +60,7 @@ func All() []Spec {
 }
 
 func of(s specs.Spec) Spec {
-	return Spec{Key: s.Spec, Class: s.ClassSlug, Name: s.Name, Role: s.Role, Icon: s.Icon}
+	return Spec{Key: s.Spec, Class: s.ClassSlug, Name: s.Name, Role: s.Role, Icon: s.Icon, FullName: s.FullName}
 }
 
 // ByKey is the spec with this specs.json key.

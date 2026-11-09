@@ -158,7 +158,7 @@
         "spec": "druid-feral-bear",
         "seen_at": "2026-12-16 21:40",
         "role": "tank",
-        "spec_name": "Feral Bear Druid",
+        "spec_name": "Feral Druid (Bear)",
         "spec_icon": "ability_racial_bearform",
         "character_key": "us/pvp/ursoka"
       },
@@ -958,7 +958,7 @@
         "supporter": false,
         "verified": true,
         "item_level": 58,
-        "spec_name": "Feral Bear Druid",
+        "spec_name": "Feral Druid (Bear)",
         "spec_icon": "ability_racial_bearform"
       },
       {

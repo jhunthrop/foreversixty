@@ -17,6 +17,7 @@ function catalog(specKey: string, classSlug: string, name: string): SpecCatalogE
     reference_stat: 'x',
     weight_stats: [],
     icon: 'inv_misc_questionmark',
+    full_name: `${name} ${classSlug}`,
   };
 }
 

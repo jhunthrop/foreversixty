@@ -37,14 +37,10 @@ func BandWords(band int) string {
 	return fmt.Sprintf("%d to %d", band, band+bandWidth-1)
 }
 
-// SpecName is the spec's player-facing name: "Fury Warrior", "Feral Bear Druid"; "" for an
-// unknown key.
+// SpecName is the spec's player-facing name, the catalogue's full name: "Fury Warrior",
+// "Feral Druid (Bear)"; "" for an unknown key.
 func SpecName(key string) string {
-	s, ok := specs.ByKey[key]
-	if !ok {
-		return ""
-	}
-	return s.Name + " " + titleWord(s.ClassSlug)
+	return specs.ByKey[key].FullName
 }
 
 // SpecRole is the spec's role ("dps", "tank", "healer"); "dps" for an unknown key.

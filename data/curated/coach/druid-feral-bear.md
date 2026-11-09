@@ -15,7 +15,7 @@ reviewed: wow-player, 2026-10-28
 
 ## Who they are
 
-This is the best Feral Bear Druid on Forever. The bear tanks on health and armor, with Dodge as its only avoidance and Lacerate, Primal Bite and Maul for threat.
+This is the best Feral Druid (Bear) on Forever. The bear tanks on health and armor, with Dodge as its only avoidance and Lacerate, Primal Bite and Maul for threat.
 
 ## What they know
 
