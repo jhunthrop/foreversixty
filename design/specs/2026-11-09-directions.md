@@ -155,6 +155,46 @@ Renders: `design/mocks/directions/mobile.py` and `shoot_mobile.cjs`, producing `
 - The raid-day moment on the app's own mock clock (Wed 6 Jan), which differs from the web home's day 32 days before the first raids.
 - No "over <item>" on the axe's gain. The owner's rule keeps "over <item>" for rings and trinkets.
 
+### Logs, reports and rankings (batch 1)
+
+Every logs surface in the round-5 look: `/logs`, `/reports`, the report's tabs (Summary, Damage done, Healing, Damage taken, Deaths, Mechanics, Timeline, Threat, Resources, Queries, one player's view, Coach) and `/rankings` (encounters, the character board, the guild board). Each is drawn at 1440 and 390 as `png/b1-*.png`.
+
+```
+python3 design/mocks/directions/report.py && python3 design/mocks/directions/logs.py && python3 design/mocks/directions/rankings.py
+node design/mocks/directions/shoot.cjs <web/node_modules> b1-logs b1-reports b1-report-summary ...   # every html/b1-*.html
+python3 design/mocks/directions/logs_gallery.py                                                     # the gallery's Logs section
+```
+
+**Shared primitives.** Every page is drawn from `prims.py`; nothing is page-local beyond layout:
+- `panel`, `table` (sticky header, tabular figures, one fixed name and meter column so the bars never move between tabs), `player_cell`, `meter`, `facts`, `row_list`, `chips` (a chip can carry its mark's colour, so the filter is its own legend), `code_block`, `parse_colour` and `parse_legend`, plus batch 2's `tag`, `ability_icon`, `item_row` and `lanes` (the Timeline's lanes).
+- **One chart axis** (`Axis`) for the line, area and column charts:
+  - round minute ticks from `TICK_STEPS` (at most 8, 4 on a phone);
+  - a y top from `NICE`, so the four gridlines are round;
+  - the unit above the axis;
+  - the faint grid and crisp 1 px rules;
+  - deaths as red ticks on the axis.
+- **Series colour:** class colour, and a repeat of a class steps lighter or darker (`shades`) and is dashed.
+- **Phone drawing:** each chart is drawn a second time at 380 wide (`responsive_chart`).
+- **Phone band:** three short lines (title, meta, one control strip that scrolls with an edge fade and opens on the selected tab).
+
+**Page rules.**
+- **The band's figure follows the tab:** group DPS, HPS or DTPS; deaths on Deaths and Mechanics; the player's DPS on their view; none on Timeline, Threat, Resources, Queries and Coach.
+- **This pull** keeps only what the band does not say: when it started, the scope's count and its deaths.
+- **Long tables** show their top 15 and "All 265".
+
+**Data.**
+- **Pulls:** the real 17 Sept sample (trash only).
+- **Mechanics:** Onyxia's table (`logs/engine/mechanics/tables/1084.json`) and the guild report fixture's wipe. Deep Breath, which killed three, is missing from the table, so it gets its own row until the table has it.
+- **Coach:** the Fury fixture, with proposed copy (`report.COACH_COPY`).
+- **The player's gear:** a stand-in, the Beast Mastery 20 to 29 list. The sample has none, because the game writes gear at boss pulls.
+- **Rankings:** the rankings spec's example board, with the e2e stub's encounter and 212.
+
+**Icons.** No question marks. A spell without a build icon takes another same-name spell's icon, then its school's. Onyxia's physical abilities take her own icon. Auto Shot is `ability_whirlwind`, as the client draws it.
+
+**Proposed product changes the mocks carry.**
+- The Queries preset sums `amount - greatest(overkill, 0)`, so it matches Damage done.
+- The public feed leaves out the viewer's own reports.
+
 ### Everything else
 
 Everything else is round 4 (below):
