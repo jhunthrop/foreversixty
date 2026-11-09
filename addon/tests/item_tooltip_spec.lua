@@ -72,7 +72,7 @@ describe("ItemTooltip.verdictLine", function()
 	it("names the level for an item above the character's", function()
 		local line = ItemTooltip.verdictLine({ state = "behind", delta = -3.5 }, "dps", "Robe",
 			{ requiredLevel = 27, level = 24 })
-		assert.are.equal(ARROW .. string.format(L.tooltipUpgradeAt, 27, ItemTooltip.figure(3.5, "dps")), line.text)
+		assert.are.equal(ARROW .. string.format(L.tooltipUpgradeAt, ItemTooltip.figure(3.5, "dps"), 27), line.text)
 		assert.are.equal(upLine(3.5), ItemTooltip.verdictLine({ state = "behind", delta = -3.5 }, "dps", "Robe",
 			{ requiredLevel = 20, level = 24 }).text)
 	end)
@@ -135,28 +135,28 @@ describe("ItemTooltip.verdictLine", function()
 end)
 
 describe("ItemTooltip.untilLine and refusalReason", function()
-	it("says Not for you until the level, the armor type for Shift", function()
-		assert.are.equal(string.format(L.tooltipNotUntil, 40), ItemTooltip.untilLine("WARRIOR", "until", 40))
-		assert.are.equal(string.format(L.tooltipReasonUntil, "Plate armor", 40),
-			ItemTooltip.refusalReason("WARRIOR", "until", 40, "plate armor"))
+	it("names the armor type and the level, with no Shift reason to repeat it", function()
+		assert.are.equal(string.format(L.tooltipNotUntil, "Plate armor", 40),
+			ItemTooltip.untilLine("WARRIOR", "until", 40, "plate armor"))
+		assert.is_nil(ItemTooltip.refusalReason("WARRIOR", "until", "plate armor"))
 	end)
 
 	it("names the class plural for a type it never uses", function()
 		assert.are.equal(string.format(L.tooltipNotFor, L.tooltipClassPlural.ROGUE),
 			ItemTooltip.untilLine("ROGUE", "never", nil))
 		assert.are.equal(string.format(L.tooltipReasonNever, "Rogues", "two-handed swords"),
-			ItemTooltip.refusalReason("ROGUE", "never", nil, "two-handed swords"))
+			ItemTooltip.refusalReason("ROGUE", "never", "two-handed swords"))
 	end)
 
 	it("says a class cannot dual wield in plain words", function()
 		assert.are.equal(string.format(L.tooltipNotFor, "shamans"), ItemTooltip.untilLine("SHAMAN", "never", nil))
 		assert.are.equal(string.format(L.tooltipReasonTwoWeapons, "Shamans"),
-			ItemTooltip.refusalReason("SHAMAN", "never", nil, "dual wielding"))
+			ItemTooltip.refusalReason("SHAMAN", "never", "dual wielding"))
 	end)
 
 	it("says nothing for an item the class can use", function()
 		assert.is_nil(ItemTooltip.untilLine("ROGUE", "ok", nil))
-		assert.is_nil(ItemTooltip.refusalReason("ROGUE", "ok", nil, nil))
+		assert.is_nil(ItemTooltip.refusalReason("ROGUE", "ok", nil))
 	end)
 end)
 
@@ -239,8 +239,10 @@ describe("ItemTooltip.fitAlternatives", function()
 			{ name = "Cracked Blacksmith Hammer", hex = "ffffff", gain = 0.8, unit = "dps" },
 		}, measure, 200)
 		assert.are.equal(string.format(L.tooltipAlternativesOne,
-			"|cff1eff00Lil Timmy's Peashooter|r |cffb8b8b8+2.2|r |cffb8b8b8" .. L.tooltipTypeGun .. "|r"), lines[1])
-		assert.are.equal(INDENT .. "|cffffffffCracked Blacksmith Hammer|r |cffb8b8b8+0.8|r", lines[2])
+			"|cff1eff00Lil Timmy's Peashooter|r |cffb8b8b8" .. ItemTooltip.figure(2.2, "dps") .. "|r |cffb8b8b8"
+			.. L.tooltipTypeGun .. "|r"), lines[1])
+		assert.are.equal(INDENT .. "|cffffffffCracked Blacksmith Hammer|r |cffb8b8b8" .. ItemTooltip.figure(0.8, "dps")
+			.. "|r", lines[2])
 	end)
 
 	it("skips a name not sent yet rather than print the pending mark, and is empty with none", function()
@@ -594,7 +596,8 @@ describe("ItemTooltip.section", function()
 
 	local ATTRIBUTION = ItemTooltip.attributionText("Arms", "default")
 	local NEXT_SOURCE = string.format(L.tooltipSourceDrop, "The Deadmines", "Defias Overseer", 14)
-	local BETTER_100 = string.format(L.tooltipBetter, "Defias Overseer Chest", "+16.0", "The Deadmines")
+	local BETTER_100 = string.format(L.tooltipBetter, "Defias Overseer Chest", ItemTooltip.figure(16, "dps"),
+		"The Deadmines")
 
 	-- Case 9: an upgrade the band's pick beats.
 	it("scores a bag upgrade, then names the band's better pick on the support line", function()
@@ -606,7 +609,7 @@ describe("ItemTooltip.section", function()
 		assert.are.equal("support", lines[2].role)
 		assert.are.equal("muted", lines[2].color)
 		assert.are.same({ "breakdown", "attribution" }, shiftKinds(lines))
-		assert.are.same({ "+6 Str", ATTRIBUTION }, shiftTexts(lines))
+		assert.are.same({ "+6 Strength", ATTRIBUTION }, shiftTexts(lines))
 		assert.are.equal("tooltipDim", lines[#lines].color)
 		assert.are.same({ itemId = 100, link = target.link, label = L.tooltipCompareLabel }, target)
 		assert.is_nil(next(pending))
@@ -657,21 +660,12 @@ describe("ItemTooltip.section", function()
 		assert.are.same({ upLine(6), L.tooltipYourBis }, lines)
 	end)
 
-	it("puts In your build's gear list under Shift when the loaded build names the item", function()
-		local build = { name = "Arms leveling", classSlug = "warrior", order = {},
-			gear = { { slot = "chest", itemId = 900 } } }
-		local lines = ItemTooltip.section(ctx({ build = build, faction = false }))
-		assert.are.same({ upLine(6) }, texts(lines))
-		assert.are.same({ "breakdown", "buildList", "attribution" }, shiftKinds(lines))
-		assert.are.equal(L.tooltipInBuildList, find(lines, "buildList").text)
-	end)
-
 	-- Case 10: an upgrade the character cannot wear until a level.
 	it("names the level for an upgrade the character cannot wear yet", function()
 		local lines = texts(ItemTooltip.section(ctx({ faction = false, item = { itemId = 900, link = "item:900",
 			equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3, stats = { strength = 10 },
 			requiredLevel = 27 } })))
-		assert.are.same({ ARROW .. string.format(L.tooltipUpgradeAt, 27, ItemTooltip.figure(6, "dps")) }, lines)
+		assert.are.same({ ARROW .. string.format(L.tooltipUpgradeAt, ItemTooltip.figure(6, "dps"), 27) }, lines)
 	end)
 
 	describe("a worn item", function()
@@ -694,6 +688,17 @@ describe("ItemTooltip.section", function()
 		it("names the next pick in its quality colour", function()
 			local lines = ItemTooltip.section(ctx({ item = WORN, qualityHex = function() return "1eff00" end }))
 			assert.are.equal(ItemTooltip.nextLine("|cff1eff00Defias Overseer Chest|r", 16, "dps"), lines[1].text)
+		end)
+
+		it("leads the next upgrade's breakdown with its coloured name; the hovered item's own has none", function()
+			local lines = ItemTooltip.section(ctx({ item = WORN, qualityHex = function() return "1eff00" end }))
+			local name = "|cff1eff00Defias Overseer Chest|r"
+			local breakdown = lines[1].breakdown
+			assert.are.equal(name, breakdown.of)
+			assert.are.equal(string.format(L.tooltipBreakdownOf, name, "+16 Strength"), breakdown.text)
+			assert.are.same({ string.format(L.tooltipBreakdownOf, name, "+16 Strength") },
+				ItemTooltip.fitLine(breakdown, function(text) return #ItemTooltip.stripEscapes(text) end, 200))
+			assert.are.equal("+6 Strength", find(ItemTooltip.section(ctx()), "breakdown").text)
 		end)
 
 		-- tip2-chest.jpg: Abomination Bones against Mutant Scale Breastplate under the shipped
@@ -807,20 +812,30 @@ describe("ItemTooltip.section", function()
 		end)
 
 		it("gives each alternative its gain over what is worn, muted after its name, under Shift", function()
-			local stats = { [100] = { strength = 20 }, [101] = { strength = 6.2 }, [102] = { strength = 4.6 } }
+			local stats = { [100] = { strength = 20 }, [101] = { strength = 6.2 }, [102] = { strength = 6 } }
 			local names = { [100] = "Mutant Scale Breastplate", [101] = "Veteran's Chain Shirt",
 				[102] = "Defender's Leather Armor" }
 			local lines = ItemTooltip.section(ctx({ item = worn, statsOf = function(id) return stats[id] end,
 				nameOf = function(id) return names[id] end }))
 			local alternatives = find(lines, "alternatives")
 			assert.are.equal("shift", alternatives.role)
-			-- (6.2 - 4) x 2 x 0.5 = 2.2 and (4.6 - 4) x 2 x 0.5 = 0.6 DPS over the worn chest.
+			-- (6.2 - 4) x 2 x 0.5 = 2.2 and (6 - 4) x 2 x 0.5 = 2.0 DPS over the worn chest.
 			local entries = alternatives.entries
 			assert.are.same({ { name = "Veteran's Chain Shirt", gain = 2.2, unit = "dps" },
-				{ name = "Defender's Leather Armor", gain = 0.6, unit = "dps" } },
+				{ name = "Defender's Leather Armor", gain = 2, unit = "dps" } },
 				{ { name = entries[1].name, gain = entries[1].gain, unit = entries[1].unit },
 					{ name = entries[2].name, gain = entries[2].gain, unit = entries[2].unit } })
 			assert.are.equal(table.concat(ItemTooltip.fitAlternatives(alternatives.entries), "\n"), alternatives.text)
+		end)
+
+		it("leaves out an alternative that gains under the floor: a sidegrade is never good", function()
+			-- (4.6 - 4) x 2 x 0.5 = 0.6 DPS, under Progress.MIN_GAIN.
+			local stats = { [100] = { strength = 20 }, [101] = { strength = 6.2 }, [102] = { strength = 4.6 } }
+			local names = { [100] = "Mutant Scale Breastplate", [101] = "Veteran's Chain Shirt",
+				[102] = "Defender's Leather Armor" }
+			local entries = find(ItemTooltip.section(ctx({ item = worn, statsOf = function(id) return stats[id] end,
+				nameOf = function(id) return names[id] end })), "alternatives").entries
+			assert.are.same({ "Veteran's Chain Shirt" }, { entries[1].name, entries[2] and entries[2].name })
 		end)
 	end)
 
@@ -833,6 +848,19 @@ describe("ItemTooltip.section", function()
 			item = { itemId = 63, link = "item:63", equipLocation = "INVTYPE_FINGER", itemClass = 4, itemSubClass = 0,
 				stats = { strength = 5 } } })))
 		assert.are.same({ ARROW .. string.format(L.tooltipUpgradeOver, ItemTooltip.figure(3, "dps"), "Weak Ring") }, lines)
+	end)
+
+	it("names no worn item for a dual wielder's one-hander, though both hands take it", function()
+		local lines = texts(ItemTooltip.section(ctx({ faction = false,
+			equipped = {
+				main_hand = { itemId = 64, link = "|Hitem:64|h[Strong Sword]|h", equipLoc = "INVTYPE_WEAPON",
+					stats = { strength = 8 } },
+				off_hand = { itemId = 65, link = "|Hitem:65|h[Weak Sword]|h", equipLoc = "INVTYPE_WEAPON",
+					stats = { strength = 2 } },
+			},
+			item = { itemId = 66, link = "item:66", equipLocation = "INVTYPE_WEAPON", itemClass = 2, itemSubClass = 7,
+				stats = { strength = 5 } } })))
+		assert.are.same({ upLine(3) }, lines)
 	end)
 
 	describe("under a worn two-hander", function()
@@ -889,7 +917,7 @@ describe("ItemTooltip.section", function()
 			end
 
 			it("words the pair verdict as one upgrade line", function()
-				assert.are.equal("Upgrade %s as a pair with %s", L.tooltipUpgradePair)
+				assert.are.equal("%s as a pair with %s", L.tooltipUpgradePair)
 				assert.is_nil(L.tooltipPairWith)
 			end)
 
@@ -972,14 +1000,14 @@ describe("ItemTooltip.section", function()
 			local lines = ItemTooltip.section(hovered({ strength = 10 }))
 			assert.are.equal(upLine(6), lines[1].text)
 			local breakdown = find(lines, "breakdown")
-			assert.are.same({ kind = "breakdown", text = "+6 Str", color = "muted", role = "shift" },
+			assert.are.same({ kind = "breakdown", text = "+6 Strength", color = "muted", role = "shift" },
 				{ kind = breakdown.kind, text = breakdown.text, color = breakdown.color, role = breakdown.role })
 		end)
 
 		it("waits under Shift for a Downgrade", function()
 			local lines = ItemTooltip.section(hovered({ strength = 1 }))
 			assert.are.equal(downLine(3), lines[1].text)
-			assert.are.equal(L.tooltipMinus .. "3 Str", find(lines, "breakdown").text)
+			assert.are.equal(L.tooltipMinus .. "3 Strength", find(lines, "breakdown").text)
 		end)
 
 		-- Case 12: the size and the breakdown wait under Shift.
@@ -992,7 +1020,7 @@ describe("ItemTooltip.section", function()
 
 		it("lists Stamina and Armor that move, though the weights price them at nothing", function()
 			local lines = ItemTooltip.section(hovered({ strength = 10, stamina = 2, armor = 6 }))
-			assert.are.equal("+6 Str, +2 Sta, +6 " .. L.tooltipArmor, find(lines, "breakdown").text)
+			assert.are.equal("+6 Strength, +2 Stamina, +6 " .. L.tooltipArmor, find(lines, "breakdown").text)
 		end)
 	end)
 
@@ -1327,10 +1355,10 @@ describe("ItemTooltip.section", function()
 				if answer == "ok" then
 					assert.are.equal("tooltipGreen", lines[1].color)
 				else
-					-- Case 5: grey, the reason under Shift.
-					assert.are.same({ text = ItemTooltip.untilLine(case.class, answer, unlock), color = "muted" },
+					-- Case 5: grey; a "never" reason under Shift ("until" names its reason on the line).
+					assert.are.same({ text = ItemTooltip.untilLine(case.class, answer, unlock, reason), color = "muted" },
 						{ text = lines[1].text, color = lines[1].color })
-					assert.are.same({ ItemTooltip.refusalReason(case.class, answer, unlock, reason) }, shiftTexts(lines))
+					assert.are.same({ ItemTooltip.refusalReason(case.class, answer, reason) }, shiftTexts(lines))
 					for _, line in ipairs(lines) do
 						assert.are_not.equal("tooltipGreen", line.color)
 					end
@@ -1351,7 +1379,7 @@ describe("ItemTooltip.section", function()
 			local answer, _, reason = Rules.canEquip("SHAMAN", 20, 2, 7, "INVTYPE_WEAPON")
 			assert.are.equal("never", answer)
 			assert.are.same({ string.format(L.tooltipNotFor, "shamans") }, texts(lines))
-			assert.are.same({ ItemTooltip.refusalReason("SHAMAN", "never", nil, reason) }, shiftTexts(lines))
+			assert.are.same({ ItemTooltip.refusalReason("SHAMAN", "never", reason) }, shiftTexts(lines))
 		end)
 
 		it("says only the refusal for the band's own pick the character cannot wear yet", function()
@@ -1362,8 +1390,8 @@ describe("ItemTooltip.section", function()
 				spec = "shaman-enhancement",
 				item = { itemId = 900, link = "item:900", equipLocation = "INVTYPE_CHEST", itemClass = 4,
 					itemSubClass = 3, stats = { strength = 10 } } }))
-			assert.are.same({ ItemTooltip.untilLine("SHAMAN", "until", 40) }, texts(lines))
-			assert.are.same({ "reason" }, shiftKinds(lines))
+			assert.are.same({ ItemTooltip.untilLine("SHAMAN", "until", 40, "mail armor") }, texts(lines))
+			assert.are.same({}, shiftKinds(lines))
 		end)
 	end)
 
@@ -1573,7 +1601,7 @@ describe("ItemTooltip.section", function()
 
 		it("pins the wording", function()
 			assert.are.equal("Picks start at level 20", STARTS)
-			assert.are.equal("Your best in slot at level 20", string.format(L.tooltipYourBisAt, 20))
+			assert.are.equal("Best in slot at level 20", string.format(L.tooltipYourBisAt, 20))
 		end)
 
 		it("prints Picks start at level 20, muted, then the At line, its source under Shift", function()
@@ -1801,7 +1829,7 @@ describe("the item hook", function()
 		_G.IsShiftKeyDown = savedShift
 		assert.is_true(ok, err)
 		local source, breakdown, attribution = calls[2], calls[3], calls[4]
-		assert.are.equal("+16 Str", breakdown.text)
+		assert.are.equal(string.format(L.tooltipBreakdownOf, "Defias Overseer Chest", "+16 Strength"), breakdown.text)
 		assert.are.equal(ItemTooltip.attributionText("Arms", "default"), attribution.text)
 		assert.are.equal(4, #calls)
 		for _, value in ipairs({ source.r, source.g, source.b, breakdown.r, breakdown.g, breakdown.b }) do
@@ -1901,9 +1929,12 @@ describe("fitting each line to the client's width", function()
 		local entries = { { name = "Veteran's Chain Shirt", hex = "1eff00", gain = 1.1, unit = "dps" },
 			{ name = "Defender's Leather Armor", hex = "1eff00", gain = 0.6, unit = "dps" } }
 		local indent = string.rep(" ", visible(L.tooltipAlternativesLabel .. " "))
+		local function gain(value)
+			return "|cffb8b8b8" .. ItemTooltip.figure(value, "dps") .. "|r"
+		end
 		assert.are.same({
-			string.format(L.tooltipAlternativesOne, "|cff1eff00Veteran's Chain Shirt|r |cffb8b8b8+1.1|r"),
-			indent .. "|cff1eff00Defender's Leather Armor|r |cffb8b8b8+0.6|r",
+			string.format(L.tooltipAlternativesOne, "|cff1eff00Veteran's Chain Shirt|r " .. gain(1.1)),
+			indent .. "|cff1eff00Defender's Leather Armor|r " .. gain(0.6),
 		}, ItemTooltip.fitAlternatives(entries, visible, 200))
 	end)
 
@@ -1920,8 +1951,8 @@ describe("fitting each line to the client's width", function()
 	end)
 
 	it("cuts any other line by measured width, its colours kept", function()
-		local line = { kind = "buildList", text = L.tooltipInBuildList, color = "muted" }
-		assert.are.same({ L.tooltipInBuildList }, ItemTooltip.fitLine(line, visible, 200))
+		local line = { kind = "enchant", text = L.tooltipEnchantNote, color = "muted" }
+		assert.are.same({ L.tooltipEnchantNote }, ItemTooltip.fitLine(line, visible, 200))
 		local cut = ItemTooltip.fitLine(line, visible, 10)[1]
 		assert.is_true(visible(cut) <= 10)
 		assert.is_truthy(cut:find(L.tooltipNamePending, 1, true))
@@ -2170,8 +2201,8 @@ describe("the At line's source and wording", function()
 	it("pins the wording of a worn item's verdicts and the At line", function()
 		assert.are.equal("No upgrade until level 30", string.format(L.tooltipNoUpgradeUntil, 30))
 		assert.are.equal("No upgrade for this slot", L.tooltipNoUpgradeSlot)
-		assert.are.equal("Your best in slot", L.tooltipYourBis)
-		assert.are.equal("Your best in slot until level 30", string.format(L.tooltipYourBisUntil, 30))
+		assert.are.equal("Best in slot", L.tooltipYourBis)
+		assert.are.equal("Best in slot until level 30", string.format(L.tooltipYourBisUntil, 30))
 		assert.are.equal("At level 30: Avenger's Armor", string.format(L.tooltipAtBandName, 30, "Avenger's Armor"))
 		assert.is_nil(L.tooltipBestUntil)
 		assert.is_nil(L.tooltipBestForNow)
@@ -2526,7 +2557,7 @@ describe("the hook's width contract and enchant wiring", function()
 			local rows = hover({ itemId = 100, link = "item:100", equipLocation = "INVTYPE_CHEST", itemClass = 4,
 				itemSubClass = 4, stats = { strength = 10 } })
 			assert.are.equal(2, #rows)
-			assert.is_truthy(ItemTooltip.stripEscapes(rows[2].left):find("^Not for you"))
+			assert.is_truthy(ItemTooltip.stripEscapes(rows[2].left):find("^Plate armor"))
 			assertFitted(rows)
 		end)
 
@@ -2655,7 +2686,7 @@ describe("the breakdown under a figure", function()
 	-- near-identical "weapon DPS" figure.
 	it("lists every stat that changes, signed, in the player's words, without brackets or weapon DPS", function()
 		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, perPoint, weapon)
-		assert.are.equal(L.tooltipMinus .. "11 Str, " .. L.tooltipMinus .. "4 Agi",
+		assert.are.equal(L.tooltipMinus .. "11 Strength, " .. L.tooltipMinus .. "4 Agility",
 			ItemTooltip.breakdownText(verdict.contributions))
 		assert.are.equal("weapon_dps", verdict.contributions[1].stat)
 		assert.is_nil(ItemTooltip.breakdownText({ { stat = "weapon_dps", delta = 3.4, weighted = 3 } }))
@@ -2668,7 +2699,7 @@ describe("the breakdown under a figure", function()
 			{ stats = { attack_power = 4, armor = 16 }, unparsed = false })
 		local verdict = Progress.itemVerdict("chest", { itemId = 6627, stats = { strength = 10, stamina = 4 } },
 			{ chest = bones }, arms, perPoint, weapon)
-		assert.are.equal("+2 Str, +4 Sta, " .. L.tooltipMinus .. "16 " .. L.tooltipArmor .. ", " .. L.tooltipMinus
+		assert.are.equal("+2 Strength, +4 Stamina, " .. L.tooltipMinus .. "16 " .. L.tooltipArmor .. ", " .. L.tooltipMinus
 			.. "4 " .. L.statNames.attack_power, ItemTooltip.breakdownText(verdict.contributions))
 		assert.is_true(Progress.ALWAYS_LISTED.stamina)
 		assert.is_true(Progress.ALWAYS_LISTED.armor)
@@ -2685,7 +2716,7 @@ describe("the breakdown under a figure", function()
 		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, perPoint, weapon)
 		local all = ItemTooltip.breakdownText(verdict.contributions)
 		assert.are.same({ all }, ItemTooltip.fitBreakdown(verdict.contributions, visible, 200))
-		for _, room in ipairs({ 12, 9 }) do
+		for _, room in ipairs({ 18, 15 }) do
 			local rows = ItemTooltip.fitBreakdown(verdict.contributions, visible, room)
 			assert.is_true(#rows > 1)
 			assert.are.equal(all, table.concat(rows, L.tooltipBreakdownJoin))
@@ -2733,7 +2764,9 @@ describe("ItemTooltip.statWord", function()
 		assert.are.equal("Hit Rating", ItemTooltip.statWord("hit"))
 		assert.are.equal("Critical Strike Rating", ItemTooltip.statWord("crit"))
 		assert.are.equal("Spell Power", ItemTooltip.statWord("spell_power"))
-		assert.are.equal("Str", ItemTooltip.statWord("strength"))
+		-- A primary stat is the client's own word too, Locale's with none: never "Str".
+		assert.are.equal(L.statNames.strength, ItemTooltip.statWord("strength"))
+		assert.is_nil(L.statAbbrev)
 		assert.are.equal(L.tooltipWeaponDps, ItemTooltip.statWord("weapon_dps"))
 	end)
 
@@ -2751,7 +2784,7 @@ describe("the Shift block", function()
 		dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.5, healing = false } },
 	}
 
-	it("keeps the spec's order: figure and breakdown, build list, caps, enchant note, attribution", function()
+	it("keeps the spec's order: figure and breakdown, caps, enchant note, attribution", function()
 		local current = Gear.currentWeights(DATA, "warrior-arms", inbox({
 			type = "weights", spec = "warrior-arms", weights = { { stat = "strength", weight = 2 } },
 			caps = { "hit" }, dps_per_point = 0.5,
@@ -2760,7 +2793,6 @@ describe("the Shift block", function()
 			data = DATA, classToken = "WARRIOR", level = 20, spec = "warrior-arms", faction = false,
 			current = current,
 			equipped = { chest = { itemId = 50, link = WORN_LINK, stats = { strength = 4 }, enchantUnparsed = true } },
-			build = { name = "Arms leveling", classSlug = "warrior", order = {}, gear = { { slot = "chest", itemId = 900 } } },
 			nameOf = function() return nil end, statsOf = function() return nil end,
 			isCached = function() return false end, qualityHex = function() return nil end,
 			item = { itemId = 900, link = "item:900", equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3,
@@ -2772,8 +2804,8 @@ describe("the Shift block", function()
 			roles[#roles + 1] = line.role
 		end
 		-- Case 12, a Sidegrade: its size and breakdown first, the attribution last.
-		assert.are.same({ "verdict", "figure", "breakdown", "buildList", "cap", "enchant", "attribution" }, kinds)
-		assert.are.same({ "verdict", "shift", "shift", "shift", "shift", "shift", "shift" }, roles)
+		assert.are.same({ "verdict", "figure", "breakdown", "cap", "enchant", "attribution" }, kinds)
+		assert.are.same({ "verdict", "shift", "shift", "shift", "shift", "shift" }, roles)
 		assert.are.equal(L.tooltipSide, lines[1].text)
 		assert.are.equal(ItemTooltip.attributionText("Arms", "sim"), lines[#lines].text)
 		assert.are.equal("tooltipDim", lines[#lines].color)
