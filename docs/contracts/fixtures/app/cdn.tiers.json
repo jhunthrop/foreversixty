@@ -465,7 +465,7 @@
             "spec": "druid-feral-bear",
             "class": "druid",
             "spec_slug": "feral-bear",
-            "name": "Feral Bear Druid",
+            "name": "Feral Druid (Bear)",
             "race": "Night Elf",
             "icon": "ability_hunter_pet_hyena",
             "metric": 611.9635141645731,
@@ -477,7 +477,7 @@
             "tie": null,
             "tier": null,
             "low_confidence": false,
-            "title": "Feral Bear Druid is 3rd of 3 Tank specs.",
+            "title": "Feral Druid (Bear) is 3rd of 3 Tank specs.",
             "detail": "65.5% more damage taken than Protection Warrior."
           }
         ]
@@ -1054,7 +1054,7 @@
             "spec": "druid-feral-bear",
             "class": "druid",
             "spec_slug": "feral-bear",
-            "name": "Feral Bear Druid",
+            "name": "Feral Druid (Bear)",
             "race": "Tauren",
             "icon": "ability_hunter_pet_hyena",
             "metric": 618.912634029819,
@@ -1066,7 +1066,7 @@
             "tie": null,
             "tier": null,
             "low_confidence": false,
-            "title": "Feral Bear Druid is 3rd of 3 Tank specs.",
+            "title": "Feral Druid (Bear) is 3rd of 3 Tank specs.",
             "detail": "69.8% more damage taken than Protection Warrior."
           }
         ]

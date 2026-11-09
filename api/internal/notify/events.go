@@ -92,7 +92,7 @@ var pushCopy = struct {
 func SimFinishedEvent(publicBaseURL string, e SimFinished) events.Event {
 	title := pushCopy.SimTitleNoSpec
 	if spec, ok := specs.ByKey[e.Spec]; ok {
-		label := spec.Name + " " + classLabel(spec.ClassSlug)
+		label := spec.FullName
 		title = fmt.Sprintf(pushCopy.SimTitle, label)
 		if name := collapse(e.Character); name != "" {
 			title = fmt.Sprintf(pushCopy.SimTitleNamed, name, label)

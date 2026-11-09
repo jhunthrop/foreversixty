@@ -130,10 +130,11 @@ const PAGE_ISLAND_BUDGETS = [
   // over one compact view model the page inlines as JSON. Measured 19,156 bytes gzipped on the
   // fixture build of 2026-11-06 (the entry; the compare code and the full data load lazily). 20 KB
   // keeps the page islands' slack and still trips an accidental heavy import.
-  // Closure +372 (logs lane, 2026-11-09): ui/Section's `panel` mode (docs/design-system.md, the
-  // shared change every Section page carries) brings Plate into the closure; measured 77,587
-  // gzipped on the real build, plus 256 of slack.
-  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 77843 },
+  // 2026-11-09: the catalogue full name (spec-name-feral-bear) measured 77,498 on CI; 77,600 kept the trip wire.
+  // Then +280 (logs lane, 2026-11-09): ui/Section's `panel` mode (docs/design-system.md, the shared change every
+  // Section page carries) brings Plate into the closure, about +116 gzipped measured on the real build; the
+  // rest is the same slack.
+  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 77880 },
   // The shared dropdown's lazy chunk (design/specs/2026-10-30-controls-charts.md §A11.2):
   // lib/ui/listbox.ts with its list renderer, the popover core and Floating UI, loaded after
   // first paint on a fine pointer only. The spec asked for 9 KB; it measures 10,221 bytes
