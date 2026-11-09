@@ -4,7 +4,7 @@
 // the file rather than pinned.
 import type { Page } from '@playwright/test';
 import { test, expect } from './support/test';
-import { bisPreset, hitCapText, readBisFile, tankFigureTexts, tankMetrics } from './support/bis-file';
+import { hitCapText, readBisFile, tankFigureTexts, tankMetrics } from './support/bis-file';
 import { openBis as open, chooseControl } from './support/bis-page';
 
 const SPEC = 'warrior-protection';
@@ -12,53 +12,16 @@ const PRESET_PAGE = '/bis/warrior/protection?band=60';
 const BARE_FIGURE = tankFigureTexts(tankMetrics(SPEC, 'bare')).headline[0]!;
 const RAID_FIGURE = tankFigureTexts(tankMetrics(SPEC, 'raid')).headline[0]!;
 
-const countOf = (count: number, noun: string): string => `${count} ${noun}${count === 1 ? '' : 's'}`;
 const option = (page: Page, preset: 'raid' | 'bare') => page.getByTestId(`control-preset-${preset}`);
-const answer = (page: Page) => page.getByTestId('bis-this-set');
+const answer = (page: Page) => page.getByTestId('bis-set');
 const root = (page: Page) => page.getByTestId('bis-page');
-const escapeRegExp = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-test('level 60 opens on the raid-ready preset with a trust line naming what it includes', async ({
-  page,
-}) => {
+test('level 60 opens on the raid-ready preset', async ({ page }) => {
   await open(page, PRESET_PAGE);
   await expect(option(page, 'raid')).toHaveAttribute('aria-checked', 'true');
   await expect(option(page, 'bare')).toHaveAttribute('aria-checked', 'false');
   await expect(root(page)).toHaveAttribute('data-bis-preset', 'raid');
   await expect(answer(page)).toContainText(RAID_FIGURE);
-  const trust = page.getByTestId('bis-trust-line');
-  await expect(trust).toContainText('Raid-ready, Phase 1');
-  const raid = bisPreset(SPEC, 'raid');
-  await expect(trust).toContainText(
-    `${countOf(raid.buffs.length, 'buff')}, ${countOf(raid.debuffs.length, 'debuff')} and ${countOf(raid.consumes.length, 'consumable')}`,
-  );
-});
-
-test('both presets state what the sim fights when the run is published, and never invent it', async ({
-  page,
-}) => {
-  const run = readBisFile(SPEC).run;
-  await open(page, PRESET_PAGE);
-  const trust = page.getByTestId('bis-trust-line');
-  for (const preset of ['raid', 'bare'] as const) {
-    await chooseControl(page, 'preset', preset);
-    if (run === undefined) await expect(trust).not.toContainText(/ s ·|seconds|runs/);
-    else await expect(trust).toContainText(`${run.target_type.replace(/_/g, ' ')}, ${run.duration_sec} s`);
-  }
-});
-
-test('the page head has no disclosure; the raid preset names its effects on the trust line title', async ({
-  page,
-}) => {
-  await open(page, PRESET_PAGE);
-  await expect(answer(page).locator('details')).toHaveCount(0);
-  await expect(answer(page)).not.toContainText('What is included');
-  const firstConsumable = bisPreset(SPEC, 'raid').consumes[0]?.label ?? '';
-  expect(firstConsumable).not.toBe('');
-  await expect(page.getByTestId('bis-trust-line')).toHaveAttribute(
-    'title',
-    new RegExp(`Consumables: .*${escapeRegExp(firstConsumable)}`),
-  );
 });
 
 test('choosing Bare swaps the numbers and writes ?preset=bare without a reload', async ({ page }) => {
@@ -71,7 +34,6 @@ test('choosing Bare swaps the numbers and writes ?preset=bare without a reload',
   await expect(page).toHaveURL(/\/60\?/);
   await expect(option(page, 'bare')).toHaveAttribute('aria-checked', 'true');
   await expect(answer(page)).toContainText(BARE_FIGURE);
-  await expect(page.getByTestId('bis-trust-line')).toContainText('no raid buffs');
   expect(await page.evaluate(() => (window as unknown as { __marker?: boolean }).__marker)).toBe(true);
   await chooseControl(page, 'preset', 'raid');
   await expect(page).not.toHaveURL(/[?&]preset=/);
@@ -83,7 +45,7 @@ test('a ?preset=bare link opens on the bare numbers, stat weights and list inclu
   await expect(option(page, 'bare')).toHaveAttribute('aria-checked', 'true');
   await expect(root(page)).toHaveAttribute('data-bis-preset', 'bare');
   await expect(answer(page)).toContainText(BARE_FIGURE);
-  await expect(page.getByTestId('bis-weights-alliance-60')).toBeVisible();
+  await expect(page.getByTestId('bis-weights')).toBeVisible();
   await expect(page.getByTestId('bis-doll')).toBeVisible();
 });
 
@@ -115,7 +77,7 @@ test('the hit-to-cap line follows the preset, white clause only when published',
 test('a band without the key shows no hit-to-cap line and keeps the weights in place', async ({ page }) => {
   expect(readBisFile('priest-holy').bands.every((band) => !band.hit_to_cap)).toBe(true);
   await open(page, '/bis/priest/holy?faction=horde&band=60');
-  await expect(page.getByTestId('bis-weights-horde-60')).toBeAttached();
+  await expect(page.getByTestId('bis-weights')).toBeAttached();
   await expect(page.getByTestId('bis-hit-cap')).toHaveCount(0);
 });
 

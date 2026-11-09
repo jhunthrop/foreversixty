@@ -4,7 +4,6 @@
   "loadThisBuild": "Load this build",
   "simThisBuild": "Sim this build",
   "signedInCallout": "[fn]",
-  "indexLine": "Talents, rotation and gear for every spec, from your first talent point to the raid at 60.",
   "readTheGuide": "Read the guide",
   "yourSpecPill": "Your spec",
   "classLandingSpecsHeading": "Specs",
@@ -37,12 +36,11 @@
   "fullListLink": "Full list and alternatives",
   "bisByLevelLabel": "Best in slot by level:",
   "tierListLink": "Where it ranks at 60",
-  "preRaidNote": "These are the best picks before the first raid tier. Raid loot is not itemized in the client yet, and this list updates when it is.",
+  "preRaidNote": "Your best gear before the first raid opens.",
   "notSimChecked": "Ranked by stats only",
   "enchants": "Enchants",
   "consumables": "Consumables",
-  "enchantsNote": "The enchant for each slot that adds the most of your weighted stats. Crit, hit and haste enchants are not included.",
-  "consumablesNote": "What to bring to a raid.",
+  "enchantsNote": "Crit, hit and haste enchants are not listed.",
   "racialsColumn": "Racials",
   "recommendedTag": "Recommended",
   "hitToCap": "[fn]",
@@ -100,24 +98,15 @@
   "statColumn": "Stat",
   "indexTitle": "Guides",
   "indexDescription": "Class and spec guides for World of Warcraft: Forever: talents, rotation, stat weights and best in slot for every spec.",
-  "specRowTag": {
-   "healer": "Healer",
-   "tank": "Tank",
-   "melee": "Melee"
-  },
   "recommendedRacesLine": "[fn]"
  },
  "tier_answer": {
-  "label": "[fn]",
   "bis": "Your best in slot",
   "sim": "Sim your character",
   "unknown": "[fn]",
   "unknownLink": "Choose a character",
   "error": "We could not load your character.",
-  "retry": "Try again",
-  "guide": "Guide",
-  "otherRole": "[fn]",
-  "otherRoleLink": "See where it stands"
+  "retry": "Try again"
  },
  "sections": [
   {
@@ -169,22 +158,19 @@
       "slug": "arms",
       "name": "Arms",
       "icon": "ability_rogue_eviscerate",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "fury",
       "name": "Fury",
       "icon": "ability_warrior_innerrage",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "protection",
       "name": "Protection",
       "icon": "inv_shield_06",
-      "role": "tank",
-      "tag": "tank"
+      "role": "tank"
      }
     ]
    },
@@ -197,22 +183,19 @@
       "slug": "holy",
       "name": "Holy",
       "icon": "spell_holy_holybolt",
-      "role": "healer",
-      "tag": "healer"
+      "role": "healer"
      },
      {
       "slug": "protection",
       "name": "Protection",
       "icon": "spell_holy_devotionaura",
-      "role": "tank",
-      "tag": "tank"
+      "role": "tank"
      },
      {
       "slug": "retribution",
       "name": "Retribution",
       "icon": "spell_holy_auraoflight",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      }
     ]
    },
@@ -225,22 +208,19 @@
       "slug": "beast-mastery",
       "name": "Beast Mastery",
       "icon": "ability_hunter_beasttaming",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "marksmanship",
       "name": "Marksmanship",
       "icon": "ability_marksmanship",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "survival",
       "name": "Survival",
       "icon": "ability_hunter_swiftstrike",
-      "role": "dps",
-      "tag": "melee"
+      "role": "dps"
      }
     ]
    },
@@ -253,22 +233,19 @@
       "slug": "assassination",
       "name": "Assassination",
       "icon": "ability_rogue_eviscerate",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "combat",
       "name": "Combat",
       "icon": "ability_backstab",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "subtlety",
       "name": "Subtlety",
       "icon": "ability_stealth",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      }
     ]
    },
@@ -281,22 +258,19 @@
       "slug": "discipline",
       "name": "Discipline",
       "icon": "spell_holy_wordfortitude",
-      "role": "healer",
-      "tag": "healer"
+      "role": "healer"
      },
      {
       "slug": "holy",
       "name": "Holy",
       "icon": "spell_holy_guardianspirit",
-      "role": "healer",
-      "tag": "healer"
+      "role": "healer"
      },
      {
       "slug": "shadow",
       "name": "Shadow",
       "icon": "spell_shadow_shadowwordpain",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      }
     ]
    },
@@ -309,22 +283,19 @@
       "slug": "elemental",
       "name": "Elemental",
       "icon": "spell_nature_lightning",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "enhancement",
       "name": "Enhancement",
       "icon": "spell_nature_lightningshield",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "restoration",
       "name": "Restoration",
       "icon": "spell_nature_magicimmunity",
-      "role": "healer",
-      "tag": "healer"
+      "role": "healer"
      }
     ]
    },
@@ -337,22 +308,19 @@
       "slug": "arcane",
       "name": "Arcane",
       "icon": "spell_holy_magicalsentry",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "fire",
       "name": "Fire",
       "icon": "spell_fire_firebolt02",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "frost",
       "name": "Frost",
       "icon": "spell_frost_frostbolt02",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      }
     ]
    },
@@ -365,22 +333,19 @@
       "slug": "affliction",
       "name": "Affliction",
       "icon": "spell_shadow_deathcoil",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "demonology",
       "name": "Demonology",
       "icon": "spell_shadow_metamorphosis",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "destruction",
       "name": "Destruction",
       "icon": "spell_shadow_rainoffire",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      }
     ]
    },
@@ -393,29 +358,25 @@
       "slug": "balance",
       "name": "Balance",
       "icon": "spell_nature_starfall",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "feral",
       "name": "Feral",
       "icon": "ability_druid_catform",
-      "role": "dps",
-      "tag": null
+      "role": "dps"
      },
      {
       "slug": "feral-bear",
       "name": "Feral Bear",
       "icon": "ability_racial_bearform",
-      "role": "tank",
-      "tag": "tank"
+      "role": "tank"
      },
      {
       "slug": "restoration",
       "name": "Restoration",
       "icon": "spell_nature_healingtouch",
-      "role": "healer",
-      "tag": "healer"
+      "role": "healer"
      }
     ]
    }
@@ -436,7 +397,7 @@
      "heading": "Races",
      "id": "races",
      "panel": true,
-     "html": "<p><strong>Human Hunter</strong> is one of the six new race and class pairs, so the Alliance has a Human Hunter for the first time. Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction.</p>\n"
+     "html": "<p>Alliance hunters are Dwarf, Night Elf and, new in Forever, Human. Horde hunters are Orc, Troll and Tauren. Skyborne can be hunters on either faction, as the High Order on the Alliance and the Windshapers on the Horde.</p>\n"
     }
    ],
    "cards": [
@@ -444,7 +405,6 @@
      "slug": "beast-mastery",
      "name": "Beast Mastery",
      "role": "dps",
-     "tag": null,
      "icon": "ability_hunter_beasttaming",
      "line": "Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial Wrath is the burst, and your shots fill every gap."
     },
@@ -452,7 +412,6 @@
      "slug": "marksmanship",
      "name": "Marksmanship",
      "role": "dps",
-     "tag": null,
      "icon": "ability_marksmanship",
      "line": "Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Sniper Shot in a raid, Serpent Sting rolling. In a raid, no pet: Lone Wolf."
     },
@@ -460,7 +419,6 @@
      "slug": "survival",
      "name": "Survival",
      "role": "dps",
-     "tag": "melee",
      "icon": "ability_hunter_swiftstrike",
      "line": "Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet in a raid."
     }
@@ -513,7 +471,7 @@
      "heading": "Races",
      "id": "races",
      "panel": true,
-     "html": "<ul>\n<li><strong>Orc Mage</strong> is new for Forever and gives the Horde a third mage race, with Blood Fury’s spell power on a 2 minute cooldown.</li>\n<li><strong>Skyborne</strong> can be mages too, but only the Alliance High Order Skyborne, and the race is a paid unlock; the Horde Windshapers cannot.</li>\n<li><strong>Gnome</strong> is the Alliance pick for Arcane and Frost: Eureka! makes your damage spells, all but Arcane Wrath, hit 10% harder and cost 10% less for 8 seconds, every 2 minutes. Arcane Power comes back every 3, so pair Eureka! with it whenever both are ready. <strong>Human</strong> is the Alliance pick for Fire, a hair ahead of Gnome: Ruthless adds 1% crit, which Fire turns into Ignite. On the Horde, <strong>Undead</strong> is the pick for all three specs, with Orc close behind.</li>\n</ul>\n"
+     "html": "<ul>\n<li><strong>Orc Mage</strong> is new for Forever and gives the Horde a third mage race, with Blood Fury’s spell power on a 2 minute cooldown.</li>\n<li><strong>Skyborne</strong> can be mages too, but only the Alliance High Order Skyborne; the Horde Windshapers cannot.</li>\n<li><strong>Gnome</strong> is the Alliance pick for Arcane and Frost: Eureka! makes your damage spells, all but Arcane Wrath, hit 10% harder and cost 10% less for 8 seconds, every 2 minutes. Arcane Power comes back every 3, so pair Eureka! with it whenever both are ready. <strong>Human</strong> is the Alliance pick for Fire: Ruthless adds 1% crit, which Fire turns into Ignite. On the Horde, <strong>Undead</strong> is the pick for all three specs, with Orc close behind.</li>\n</ul>\n"
     },
     {
      "heading": "Raids and leveling",
@@ -527,7 +485,6 @@
      "slug": "arcane",
      "name": "Arcane",
      "role": "dps",
-     "tag": null,
      "icon": "spell_holy_magicalsentry",
      "line": "Arcane stacks Arcane Blast for spell damage, fires free Missiles on Missile Barrage and saves its burst for Arcane Power. In a raid it fills with Fireball; leveling, with Frostbolt."
     },
@@ -535,7 +492,6 @@
      "slug": "fire",
      "name": "Fire",
      "role": "dps",
-     "tag": null,
      "icon": "spell_fire_firebolt02",
      "line": "Fire casts a 3 second Fireball, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites."
     },
@@ -543,7 +499,6 @@
      "slug": "frost",
      "name": "Frost",
      "role": "dps",
-     "tag": null,
      "icon": "spell_frost_frostbolt02",
      "line": "Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, fires free Missiles on Missile Barrage, and has Ice Block when things go wrong."
     }
@@ -594,7 +549,6 @@
      "slug": "discipline",
      "name": "Discipline",
      "role": "healer",
-     "tag": "healer",
      "icon": "spell_holy_wordfortitude",
      "line": "Discipline heals the tank with Penance on cooldown, a shield to open Renewed Hope, and crits that leave Divine Aegis shields behind."
     },
@@ -602,7 +556,6 @@
      "slug": "holy",
      "name": "Holy",
      "role": "healer",
-     "tag": "healer",
      "icon": "spell_holy_guardianspirit",
      "line": "Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, Greater Heal as the filler, and Prayer of Healing for a hurt group."
     },
@@ -610,7 +563,6 @@
      "slug": "shadow",
      "name": "Shadow",
      "role": "dps",
-     "tag": null,
      "icon": "spell_shadow_shadowwordpain",
      "line": "Shadow keeps two DoTs ticking, hits Mind Blast and Shadow Word: Death on cooldown, and fills with Mind Flay, all from Shadowform."
     }
@@ -3574,7 +3526,7 @@
        "name": "Hunter's Mark",
        "rank": 4,
        "icon": "ability_hunter_snipershot",
-       "clause": "Whenever the target is not marked, and from 33 Expose Prey needs it",
+       "clause": "Whenever the target is not marked",
        "tipKey": "spell:14325",
        "rankText": "Rank 4"
       },
@@ -3583,7 +3535,7 @@
        "name": "Raptor Strike",
        "rank": 8,
        "icon": "ability_meleedamage",
-       "clause": "On every swing it is ready, with an older rank on your bar at 26 to 29, at 31, and at 46 and 47, and to 49 on most Horde characters",
+       "clause": "On every swing it is ready",
        "tipKey": "spell:14266",
        "rankText": "Rank 8"
       },
@@ -3734,7 +3686,7 @@
       "Attack speed: 8.1 DPS per 1%, but no item at level 60 has it."
      ]
     },
-    "prose": "<p>The table above gives the order for your gear; here is why each stat counts. Hit matters up to 9%, the cap for your special attacks against a raid boss; <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104987:3\">Surefooted</span> gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit pays off on your melee specials: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes their crits hit for 230% of a normal hit instead of double, and every special crit keeps half your mana regeneration running through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104993:2\">Savage Strikes</span> adds 4% crit chance to those specials on top of what your gear gives. Agility is attack power and crit together, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span> raises it by 15%. Intellect is attack power through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span>, and Strength is attack power directly. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.</p>\n"
+    "prose": "<p>Hit matters up to 9%, the cap for your special attacks against a raid boss; <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104987:3\">Surefooted</span> gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit pays off on your melee specials: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes their crits hit for 230% of a normal hit instead of double, and every special crit keeps half your mana regeneration running through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104993:2\">Savage Strikes</span> adds 4% crit chance to those specials on top of what your gear gives. Agility is attack power and crit together, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span> raises it by 15%. Intellect is attack power through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span>, and Strength is attack power directly. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.</p>\n"
    },
    "bis": {
     "data": {
@@ -6204,7 +6156,7 @@
       }
      ]
     },
-    "prose": "<p>Agility on gloves, boots and cloak, since it is attack power and crit together and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span> raises it, and the best stats enchant on the chest, which lifts every stat you use. On bracers and both weapons the Strength, Intellect and Agility enchants are all attack power for you, Strength directly, Intellect through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span> and Agility with crit on top, so take the ones the enchant table on this page picks for your gear.</p>\n<p>Forever’s damage potions share the two-minute potion cooldown with mana potions. Survival’s mana holds with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, so it drinks a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"250943\">Major Frenzy Potion</span> on the pull instead. Keep <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13452\">Elixir of the Mongoose</span> up, with <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13932\">Poached Sunscale Salmon</span>.</p>\n"
+    "prose": "<p>Agility on gloves, boots and cloak, since it is attack power and crit together and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span> raises it, and the best stats enchant on the chest, which lifts every stat you use. On bracers and both weapons the Strength, Intellect and Agility enchants are all attack power for you, Strength directly, Intellect through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span> and Agility with crit on top, so take whichever adds the most attack power.</p>\n<p>Forever’s damage potions share the two-minute potion cooldown with mana potions. Survival’s mana holds with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, so it drinks a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"250943\">Major Frenzy Potion</span> on the pull instead. Keep <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13452\">Elixir of the Mongoose</span> up, with <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13932\">Poached Sunscale Salmon</span>.</p>\n"
    },
    "races": {
     "rows": [
@@ -6440,7 +6392,7 @@
      }
     ],
     "lines": [],
-    "prose": "<p>Night Elf for the Alliance: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span> is 10% crit for 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes your special crits hit harder, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on the pull. Human’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> is next, and Dwarf’s 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.</p>\n<p>Orc and Troll are level for the Horde. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> is 10% attack power for 15 seconds every two minutes, so it goes on the pull with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> and again at two and four minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> is 10% attack speed for 15 seconds every three minutes and stacks with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on your swings.</p>\n<p>Skyborne, a paid unlock with the Heroic Pack, can be Hunters on either faction: Wind Blessed’s 2% haste speeds both of your weapons, and it lands in the middle of the pack, so it is the paid option, never the pick.</p>\n"
+    "prose": "<p>Night Elf for the Alliance: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span> is 10% crit for 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes your special crits hit harder, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on the pull. Human’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> is next, and Dwarf’s 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.</p>\n<p>Orc and Troll are level for the Horde. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> is 10% attack power for 15 seconds every two minutes, so it goes on the pull with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> and again at two and four minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> is 10% attack speed for 15 seconds every three minutes and stacks with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on your swings.</p>\n<p>Skyborne can be Hunters on either faction: Wind Blessed’s 2% haste speeds both of your weapons.</p>\n"
    },
    "professions": "<p>Enchanting is the profession your best in slot list asks for. Molten Heart of the Mountain and <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249469\">Frozen Heart of the Mountain</span> are Enchanting trinkets that bind on pickup, so nobody can make them for you. Heartseeker, the blacksmith’s dagger in your off hand, binds when equipped, so buy one and do not train Blacksmithing for it. Engineering gives Survival the AoE it lacks: grenades and explosives on trash. Skinning pays for your leveling.</p>\n",
    "leveling": {
@@ -13780,7 +13732,7 @@
        "name": "Fireball",
        "rank": 11,
        "icon": "spell_fire_flamebolt",
-       "clause": "The filler once you have Arcane Blast, which the leveling build takes at 54",
+       "clause": "The filler once you have Arcane Blast",
        "needs": [
         "Arcane Blast"
        ],
@@ -13887,7 +13839,7 @@
       "Spell haste: no item at level 60 has it."
      ]
     },
-    "prose": "<p>The table above gives the order for your gear; this is why each stat counts. Hit matters up to the hit cap: every missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> or <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> is a missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and a missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> chance, and a missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> is a missed stack too. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105778:3\">Precision</span> gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Fire power is nearly as good as spell power to you: everything you cast on a boss is Fire except <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span> and the <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> Missiles. Crit feeds <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:29077\">Master of Elements</span> at once, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105784:3\">Critical Mass</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> stack more of it on top of your gear. Intellect is your mana bar and adds spell crit, which Fire turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>. Fire drinks a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13444\">Major Mana Potion</span> on every boss, so a deeper bar keeps you casting to the end.</p>\n"
+    "prose": "<p>Hit matters up to the hit cap: every missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> or <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> is a missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and a missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> chance, and a missed <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10207\">Scorch</span> is a missed stack too. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105778:3\">Precision</span> gives you 6%, your gear finds the rest, and once your gear reaches the cap more hit adds nothing. Fire power is nearly as good as spell power to you: everything you cast on a boss is Fire except <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span> and the <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> Missiles. Crit feeds <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:29077\">Master of Elements</span> at once, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105784:3\">Critical Mass</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> stack more of it on top of your gear. Intellect is your mana bar and adds spell crit, which Fire turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>. Fire drinks a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13444\">Major Mana Potion</span> on every boss, so a deeper bar keeps you casting to the end.</p>\n"
    },
    "bis": {
     "data": {
@@ -16483,7 +16435,7 @@
      }
     ],
     "lines": [],
-    "prose": "<p><strong>Human</strong> is the Alliance pick for Fire, a hair ahead of Gnome: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> adds 1% crit with all spells, which Fire turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit. <strong>Gnome</strong> is just behind: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana, so press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and again the moment it is back. On the Horde, <strong>Undead</strong> is the pick: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Touch of the Grave\">Touch of the Grave</span> gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears. <strong>Orc</strong> is next: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> adds 10% spell power for 15 seconds every 2 minutes, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and on cooldown after that. <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> adds 10% cast speed for 15 seconds every 3 minutes and lines up with every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span>, but falls behind both. <strong>Skyborne</strong> is a paid unlock and only Alliance for mages, and played without <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Read Leyline\">Read Leyline</span> it does the least Fire damage of the lot.</p>\n"
+    "prose": "<p><strong>Human</strong> is the Alliance pick for Fire: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> adds 1% crit with all spells, which Fire turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit. <strong>Gnome</strong> is just behind: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana, so press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and again the moment it is back. On the Horde, <strong>Undead</strong> is the pick: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Touch of the Grave\">Touch of the Grave</span> gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears. <strong>Orc</strong> is next: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> adds 10% spell power for 15 seconds every 2 minutes, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and on cooldown after that. <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> adds 10% cast speed for 15 seconds every 3 minutes and lines up with every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span>, but falls behind both. <strong>Skyborne</strong> can be mages only on the Alliance, and played without <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Read Leyline\">Read Leyline</span> it does the least Fire damage of the lot.</p>\n"
    },
    "professions": "<p>Tailoring and Enchanting are the standard pair, and your raid set needs both: <span class=\"gtip gtip-item text-rarity-epic-text\" tabindex=\"0\" data-bis-item=\"14152\">Robe of the Archmage</span> is a Tailoring craft and <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249469\">Frozen Heart of the Mountain</span> an Enchanting one, and both bind on pickup, so nobody can make them for you. Enchanting also puts the spell power enchants on your own gear. The goggles in the head slot need 270 Engineering to wear: without it, take the best head you can wear and keep your two professions. Alchemy pays for itself once you raid every week, because Fire drinks a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13444\">Major Mana Potion</span> on every boss.</p>\n",
    "leveling": {
@@ -22532,7 +22484,7 @@
        "name": "Heal",
        "rank": 4,
        "icon": "spell_holy_heal02",
-       "clause": "The step down when Greater Heal rank 1 costs more than you can spend, and your filler before Greater Heal at 40",
+       "clause": "The step down when Greater Heal rank 1 costs more than you can spend",
        "tipKey": "spell:6064",
        "rankText": "Rank 4"
       },
@@ -22640,7 +22592,7 @@
      "weightHead": "Weight (MP5 = 1.00)",
      "notes": []
     },
-    "prose": "<p>The table above gives the order for your gear; here is why each stat counts. Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every heal, though a rank learned far below your level keeps less of it, or none. Spirit pays you twice: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> turns it into healing, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span> keeps half of its regeneration running while you cast. Intellect deepens the bar. A critical heal is a bigger heal, and for Holy that is all it is, since <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105860:3\">Inspiration</span> only adds armor to the target. Spell power with no healing on it does nothing for a heal.</p>\n"
+    "prose": "<p>Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every heal, though a rank learned far below your level keeps less of it, or none. Spirit pays you twice: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> turns it into healing, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span> keeps half of its regeneration running while you cast. Intellect deepens the bar. A critical heal is a bigger heal, and for Holy that is all it is, since <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105860:3\">Inspiration</span> only adds armor to the target. Spell power with no healing on it does nothing for a heal.</p>\n"
    },
    "bis": {
     "data": {

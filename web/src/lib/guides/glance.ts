@@ -5,7 +5,7 @@
 // the leveller's next talent point; the role or kind Tag a spec row carries; the Racials lane in
 // faction groups. Pure over the page's own models, so the page and the mock draw one truth.
 import { readBuildJson } from './build-files';
-import { specKindOf, type GuideRaceRow } from './race-table';
+import type { GuideRaceRow } from './race-table';
 import type { RotationItem } from './rotation-lists';
 import type { RailStatRow } from './rail-stats';
 import type { LadderStep } from './leveling-builds';
@@ -73,20 +73,6 @@ export function nextTalentPoint(
   return next === undefined || next.name === null ? undefined : { level: next.level, name: next.name };
 }
 
-/** Classes whose DPS specs fight at range: a melee spec among them is tagged (Q8). */
-const RANGED_CLASSES: ReadonlySet<string> = new Set(['hunter']);
-
-/** The muted Tag a spec row carries: its role for a healer or tank; `melee` for the melee spec
- *  of a ranged class (Survival); nothing for any other DPS spec. */
-export function specRowTag(
-  classSlug: string,
-  spec: string,
-  role: 'dps' | 'healer' | 'tank',
-): 'healer' | 'tank' | 'melee' | undefined {
-  if (role !== 'dps') return role;
-  return RANGED_CLASSES.has(classSlug) && specKindOf(classSlug, spec, role) === 'melee' ? 'melee' : undefined;
-}
-
 /** The Racials lane: Alliance then Horde, the recommended races first in each, otherwise in
  *  the build's order. */
 export function racesByFaction(
@@ -129,6 +115,22 @@ export function isCheapRank(item: RotationItem, topRank: number | undefined, pro
   if (item.rank === undefined || topRank === undefined || item.rank >= topRank) return false;
   const name = item.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return new RegExp(`\\b${name}\\b[^.]*?\\brank ${item.rank}\\b`, 'i').test(prose);
+}
+
+/** The rotation lane's lists at their level 60 clauses (level60Clause): the rank swaps while
+ *  levelling ("with an older rank on your bar at 26 to 29, ...") stay in the Leveling prose, so
+ *  every priority row reads as one line (P8, 2026-11-09). */
+export function atLevel60<
+  T extends { opener: RotationItem[]; priority: RotationItem[]; cooldowns: RotationItem[] },
+>(lists: T): T {
+  const at60 = (items: RotationItem[]): RotationItem[] =>
+    items.map((item) => ({ ...item, clause: level60Clause(item.clause) }));
+  return {
+    ...lists,
+    opener: at60(lists.opener),
+    priority: at60(lists.priority),
+    cooldowns: at60(lists.cooldowns),
+  };
 }
 
 /** Marks every row the guide casts at a cheap rank on purpose (`cheapRank`). */

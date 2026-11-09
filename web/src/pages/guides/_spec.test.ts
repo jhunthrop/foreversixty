@@ -139,12 +139,13 @@ describe('/guides/warrior/fury (the page structure)', () => {
     expect(glance).toContain('data-testid="guide-sim-build"');
   });
 
-  it('sets the PageHeader: one title in the class colour, the meta line, the lead, and the answer reserved', async () => {
+  it('sets the PageHeader (one title in the class colour, the meta line, the answer reserved) and the lede under it', async () => {
     const main = mainOf(await pageHtml('warrior/fury'));
     expect(main.match(/<h1/g)).toHaveLength(1);
     expect(main).toMatch(/<h1[^>]*style="color: var\(--color-class-warrior\);">Fury Warrior<\/h1>/);
     expect(main).toMatch(/data-region="head-meta"[^>]*><span[^>]*>DPS · Updated \d{1,2} [A-Z][a-z]{2}</);
-    expect(main).toMatch(/<p class="ui-page-header-lead[^"]*">[^<]{20,}<\/p>/);
+    expect(main).not.toContain('ui-page-header-lead');
+    expect(main).toMatch(/<p class="guide-lede[^"]*"[^>]*data-testid="guide-summary"[^>]*>[^<]{20,}<\/p>/);
     const answer = blockOf(main, 'guide-answer', 2000);
     expect(main.indexOf('data-region="head-answer"')).toBeLessThan(main.indexOf('id="guide-answer"'));
     expect(main).toMatch(
@@ -242,8 +243,10 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       main.indexOf('<section id="leveling"'),
     );
     expect(frost).toMatch(/DPS · Updated \d{1,2} [A-Z][a-z]{2}</);
-    // The lead is the Overview's own sentence, not the frontmatter description.
-    expect(frost).toMatch(/<p class="ui-page-header-lead[^"]*">Frost casts Frostbolt behind Ice Barrier/);
+    // The lede is the Overview's own sentence, not the frontmatter description.
+    expect(frost).toMatch(
+      /<p class="guide-lede[^"]*"[^>]*data-testid="guide-summary"[^>]*>Frost casts Frostbolt behind Ice Barrier/,
+    );
   });
 
   it('lays the Overview out as strengths and weaknesses beside the raid role lane', () => {

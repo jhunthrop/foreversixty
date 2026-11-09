@@ -7,10 +7,15 @@
        empty slot draws nothing, so the frame's own glyph shows; a two-hander shows greyed in the
        off hand, as the client draws it. Each filled slot is a button; hover, focus or a tap
        selects it (`onselect`).
+     - An icon that fails to load (a 404) draws the dark socket in its place, never a broken image.
      - Medallion: the character's Battle.net head render (`avatar`), else the painted seal; a render
        that fails falls back to the seal in the same box.
-     - Title bar: one line, the title, its meta, the figure and its unit at the right.
+     - Title bar: one line, the title (the heading, alone), its meta, the figure and its unit at the right.
      - Centre: the caller's `centre` snippet for the selected slot (its client tooltip, the sim link).
+       With `render` (signed in: the character's Battle.net render, `characters.render_url`) the
+       model stands in the centre as the client's pane shows it, the snippet at its foot; a render
+       that fails to load leaves the plain centre. The frame shows each item's tooltip in place, so
+       it carries `data-inline-tip` and the page's floating tooltip host leaves its slots alone.
      The frame stays a frame while a slot is at least MIN_SLOT_PX (36 px) wide, a frame of 423 px:
      narrower (every phone), a container query swaps in the list form, the header strip and the
      slots in two columns on the panel, and the frame image is never fetched there. Cells are the
@@ -43,10 +48,12 @@
     meta,
     figure,
     avatar = null,
+    render = null,
     heading = 'h2',
     selected = $bindable(null),
     onselect,
     centre,
+    shortTitle,
     label,
     testid = 'paperdoll-frame',
   }: {
@@ -60,18 +67,34 @@
     figure?: { value: string; unit: string };
     /** The character's Battle.net head render URL (`characters.avatar_url`); null for the seal. */
     avatar?: string | null;
+    /** The character's Battle.net full render URL (`characters.render_url`); null for none. */
+    render?: string | null;
     /** The title bar's heading level: `h1` where the bar is the page's title (BiS). */
     heading?: 'h1' | 'h2';
     selected?: string | null;
     onselect?: (slot: string) => void;
     /** The centre panel for the selected cell (undefined when nothing is selected). */
-    centre?: Snippet<[DollCell | undefined]>;
+    /** Its second argument says where it renders: the frame's centre, or under the phone's list. */
+    centre?: Snippet<[DollCell | undefined, 'frame' | 'list']>;
+    /** The phone strip's one-line title when `title` is too long for it ("Beast Mastery Hunter");
+     *  the rest of `title` stays in the heading for assistive tech and crawlers. */
+    shortTitle?: string;
     /** The group's accessible name; defaults to the title. */
     label?: string;
     testid?: string;
   } = $props();
 
   let avatarFailed = $state(false);
+  let renderFailed = $state(false);
+  const stripShown = $derived(shortTitle !== undefined && title.startsWith(shortTitle) ? shortTitle : title);
+  const stripRest = $derived(title.slice(stripShown.length));
+  /** Icons that failed to load draw the dark socket, never a broken image. */
+  let failedIcons = $state<Record<string, true>>({});
+
+  function markFailed(name: string | undefined): void {
+    if (name !== undefined) failedIcons = { ...failedIcons, [name]: true };
+  }
+  const model = $derived(render && !renderFailed ? render : null);
   const medallion = $derived(medallionSrc(avatar, avatarFailed));
   const bySlot = $derived(new Map(cells.map((cell) => [cell.slot, cell])));
   const selectedCell = $derived(selected === null ? undefined : bySlot.get(selected));
@@ -96,7 +119,7 @@
 </script>
 
 {#snippet icon(face: { item: ItemRef; covered: boolean })}
-  {#if face.item.icon}
+  {#if face.item.icon && !failedIcons[face.item.icon]}
     <img
       class="pdf-icon"
       class:pdf-covered={face.covered}
@@ -105,10 +128,13 @@
       loading="lazy"
       decoding="async"
       style:--qb={rarityBorderColorFor(face.item.quality)}
+      data-icon={face.item.icon}
+      onerror={() => markFailed(face.item.icon)}
     />
   {:else}
     <span
       class="pdf-icon pdf-socket"
+      data-icon-socket
       class:pdf-covered={face.covered}
       style:--qb={rarityBorderColorFor(face.item.quality)}
     ></span>
@@ -130,7 +156,7 @@
   {#if figure}<b class="pdf-figure">{figure.value} <small>{figure.unit}</small></b>{/if}
 {/snippet}
 
-<div class="pdf" data-testid={testid} role="group" aria-label={label ?? title}>
+<div class="pdf" data-testid={testid} role="group" aria-label={label ?? title} data-inline-tip>
   <!-- The frame (423 px and wider). -->
   <div
     class="pdf-frame"
@@ -159,13 +185,25 @@
     <span class="pdf-medal" style={boxStyle(MEDALLION_BOX)} data-region={REGION.paperdollMedallion}
       >{@render medal()}</span
     >
-    <svelte:element this={heading} class="pdf-title" style={boxStyle(TITLE_BOX)}>
-      <span class="pdf-title-text">{title}</span>
+    <div class="pdf-title" style={boxStyle(TITLE_BOX)}>
+      <svelte:element this={heading} class="pdf-title-text">{title}</svelte:element>
       {#if meta}<small class="pdf-meta">{meta}</small>{/if}
       {@render figureView()}
-    </svelte:element>
-    <div class="pdf-centre" style={boxStyle(CENTRE_BOX)} data-region={REGION.paperdollCentre}>
-      {#if centre}{@render centre(selectedCell)}{/if}
+    </div>
+    <div
+      class="pdf-centre"
+      class:pdf-modelled={model !== null}
+      style={boxStyle(CENTRE_BOX)}
+      data-region={REGION.paperdollCentre}
+    >
+      {#if model !== null}<img
+          class="pdf-model"
+          src={model}
+          alt=""
+          decoding="async"
+          onerror={() => (renderFailed = true)}
+        />{/if}
+      {#if centre}{@render centre(selectedCell, 'frame')}{/if}
     </div>
   </div>
 
@@ -173,7 +211,11 @@
   <div class="pdf-list">
     <div class="pdf-strip">
       <span class="pdf-strip-medal">{@render medal()}</span>
-      <svelte:element this={heading} class="pdf-strip-title">{title}</svelte:element>
+      <!-- The strip repeats the title bar's heading for the phone: one heading element per page in
+           the served HTML, so this one is a heading by role (only one of the two ever shows). -->
+      <div class="pdf-strip-title" role="heading" aria-level={heading === 'h1' ? 1 : 2}>
+        {stripShown}{#if stripRest}<span class="sr-only">{stripRest}</span>{/if}
+      </div>
       {@render figureView()}
     </div>
     <ul class="pdf-items">
@@ -210,7 +252,7 @@
         </li>
       {/each}
     </ul>
-    {#if centre && selectedCell}<div class="pdf-list-centre">{@render centre(selectedCell)}</div>{/if}
+    {#if centre && selectedCell}<div class="pdf-list-centre">{@render centre(selectedCell, 'list')}</div>{/if}
   </div>
 </div>
 
@@ -297,6 +339,10 @@
     text-shadow: 0 1px 2px black;
     white-space: nowrap;
   }
+  .pdf-title-text {
+    margin: 0;
+    font: inherit;
+  }
   .pdf-meta {
     font: 600 2.3cqw var(--font-body);
     color: var(--color-text);
@@ -321,6 +367,24 @@
     gap: 3cqw;
     padding: 4cqw;
   }
+  /* Signed in: the render fills the centre behind the snippet, its feet near the foot (the figure is
+     about 57 % of the render's height, centred at 51 % across), and the snippet stands over it. */
+  .pdf-modelled {
+    justify-content: flex-end;
+    overflow: hidden;
+  }
+  .pdf-model {
+    position: absolute;
+    left: 50%;
+    top: 54%;
+    height: 150%;
+    max-width: none;
+    transform: translate(-51%, -50%);
+    pointer-events: none;
+  }
+  .pdf-modelled > :global(:not(.pdf-model)) {
+    position: relative;
+  }
   /* The list form: a header strip on the panel, then the slots in two columns. */
   .pdf-strip {
     display: flex;
@@ -342,14 +406,12 @@
     width: 100%;
     height: 100%;
   }
+  /* The title and an item's name wrap rather than truncate, as the list form's mock draws them. */
   .pdf-strip-title {
     min-width: 0;
     margin: 0;
-    overflow: hidden;
     font: 400 19px/1.2 var(--font-title);
     color: var(--color-cream);
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .pdf-strip .pdf-figure {
     font-size: 17px;
@@ -400,12 +462,10 @@
   }
   .pdf-name {
     display: block;
-    overflow: hidden;
     font-size: 13px;
     font-weight: 600;
     line-height: 16px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
   }
   .pdf-sub {
     display: block;

@@ -28,6 +28,13 @@ import { slugify, SPEC_SECTIONS } from '../../src/lib/guides/sections';
 const PHONE = { width: 390, height: 844 };
 const DESKTOP = { width: 1440, height: 900 };
 const PAGES = ['/guides', '/guides/hunter', '/guides/hunter/survival'] as const;
+/** The panels each page draws (directions mocks b2-guides, b2-guide-class, b2-guide-spec): a panel
+ *  per class on /guides, a panel per spec on a class landing, the one At a glance on a spec guide. */
+const PLATES: Record<(typeof PAGES)[number], number> = {
+  '/guides': 9,
+  '/guides/hunter': 3,
+  '/guides/hunter/survival': 1,
+};
 const SURVIVAL = '/guides/hunter/survival';
 
 /** A level 34 Survival hunter, the second character on the account (Felsnap's facts). */
@@ -76,9 +83,9 @@ async function noSidewaysScroll(page: Page): Promise<void> {
 
 test.describe('every guide page', () => {
   for (const path of PAGES) {
-    test(`${path} has exactly one Plate and one h1, the Marcellus title`, async ({ page }) => {
+    test(`${path} has its panels and one h1, the Marcellus title`, async ({ page }) => {
       await page.goto(path);
-      await expect(page.locator('[data-region="plate"]')).toHaveCount(1);
+      await expect(page.locator('[data-region="plate"]')).toHaveCount(PLATES[path]);
       await expect(page.locator('h1')).toHaveCount(1);
       await expect(page.locator('h1')).toHaveAttribute('data-testid', 'page-title');
     });

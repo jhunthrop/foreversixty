@@ -1,0 +1,26 @@
+---
+// web/src/components/guides/GuideLede.astro
+// A guide page's one sentence under its title band (directions mocks b2-guide-class and
+// b2-guide-spec): the class's identity or the spec's summary, on the ground at the reading measure.
+interface Props {
+  text: string;
+  testid?: string;
+}
+const { text, testid } = Astro.props;
+---
+
+{text !== '' && (
+  <p class="guide-lede" data-testid={testid}>
+    {text}
+  </p>
+)}
+
+<style>
+  .guide-lede {
+    margin: 0;
+    max-width: var(--measure-reading);
+    font-size: 16px;
+    line-height: 25px;
+    color: var(--color-text);
+  }
+</style>
