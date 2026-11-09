@@ -1,0 +1,60 @@
+---
+// web/src/pages/app.astro
+// foreversixty.gg/app: the permanent link the apps' QR codes open (mock web-app,
+// design/mocks/ws_app_beta.py; parity tests/e2e/parity-app-beta.spec.ts). The PageHeader (the
+// apps, Coming soon, the lead), then a split Page: what the apps do and the tester signup in
+// main, the QR for this page in the rail from 768 (a phone is already here, so it never shows
+// one). The switch is src/data/apps.json: with a store link in it the signup gives way to the
+// store buttons, and a phone whose store is live goes straight there. The QR is drawn here at
+// build time (lib/app-beta/qr.ts), not fetched.
+import Base from '../layouts/Base.astro';
+import Page from '../components/ui/Page.svelte';
+import PageHeader from '../components/ui/PageHeader.svelte';
+import Section from '../components/ui/Section.svelte';
+import Tag from '../components/ui/Tag.svelte';
+import TesterForm from '../components/app-beta/TesterForm.svelte';
+import StoreButtons from '../components/app-beta/StoreButtons.svelte';
+import apps from '../data/apps.json';
+import { appBetaCopy as copy } from '../lib/app-beta/copy';
+import { storeLinks } from '../lib/app-beta/platform';
+import { appQrSvg } from '../lib/app-beta/qr';
+
+const stores = storeLinks(apps);
+const qr = await appQrSvg();
+---
+
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/app" wide>
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="app-beta-page">
+    <Page layout="split">
+      <PageHeader slot="header" title={copy.heading} lead={copy.lead}>
+        <span slot="meta">
+          <Tag testid="app-beta-soon">{copy.soon}</Tag>
+        </span>
+      </PageHeader>
+      <Section title={copy.featuresTitle} testid="app-beta-features">
+        <ul class="m-0 flex max-w-[62ch] list-disc flex-col gap-2 pl-5 text-[15px] leading-6 marker:text-gold">
+          {copy.features.map((line) => (
+            <li>{line}</li>
+          ))}
+        </ul>
+      </Section>
+      {stores.length > 0 ? (
+        <Section title={copy.storesTitle} testid="app-beta-stores-section">
+          <StoreButtons client:load stores={stores} />
+        </Section>
+      ) : (
+        <Section title={copy.formTitle} testid="app-beta-signup">
+          <TesterForm client:load />
+        </Section>
+      )}
+      <div slot="rail" class="hidden md:block" data-testid="app-beta-qr">
+        <Section title={copy.qrTitle}>
+          <div class="flex flex-col items-start gap-3">
+            <div class="w-[200px]" role="img" aria-label={copy.qrAlt} set:html={qr} />
+            <p class="text-small text-muted m-0">{copy.qrLine}</p>
+          </div>
+        </Section>
+      </div>
+    </Page>
+  </main>
+</Base>

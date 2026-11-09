@@ -1,0 +1,18 @@
+---
+// web/src/pages/admin/testers.astro
+// /admin/testers: the owner's list of phone app beta sign-ups (from foreversixty.gg/app). The
+// PageHeader is static; the body is one island (AppTestersAdmin), because every state follows one
+// session read and the API decides who is the owner. Never indexed, never in the sitemap.
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/ui/PageHeader.svelte';
+import AppTestersAdmin from '../../components/admin/AppTestersAdmin.svelte';
+import { adminTestersCopy as copy } from '../../lib/app-beta/admin';
+---
+
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/admin/testers" wide>
+  <meta slot="head" name="robots" content="noindex" />
+  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="admin-testers-page">
+    <PageHeader title={copy.pageTitle} lead={copy.job} />
+    <AppTestersAdmin client:load />
+  </main>
+</Base>
