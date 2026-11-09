@@ -634,6 +634,7 @@ right:0;left:0;bottom:0;max-height:88vh;border-radius:16px 16px 0 0}
 .cell .l1{display:flex;align-items:baseline;column-gap:10px;min-width:0}.cell .l1 .nm{flex:none;max-width:100%;font:700 15px/20px var(--font-body)}
 .cell .l1 .st{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:20px;color:var(--muted)}
 .cell .l2{font-size:13px;line-height:18px;color:var(--muted);overflow-wrap:anywhere}
+.cell .l2 .fact{display:inline-block;max-width:100%}  /* Paperdoll.svelte .ui-doll-fact: the line wraps between facts */
 .cell .gn{display:flex;flex-direction:column;align-items:flex-end;width:144px;min-width:0;justify-self:end}
 .cell .gn .v{font:700 16px/20px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}.cell .gn .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
 .cell .gn .bs{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:16px;color:var(--muted);text-align:right}
@@ -939,6 +940,20 @@ button.tgl{all:unset;cursor:pointer;font:inherit;color:inherit}
 box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
 .frame::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
 @media(max-width:767px){.frame{padding:18px 16px}}
+
+.rl.compact{--rr-name:minmax(170px,1fr);--rr-bar:minmax(48px,160px);--rr-gap:72px;--rr-links:0px}
+.rl.compact.grouped{--grp-w:44px}
+@media(min-width:1280px){.rl.compact.grouped{--grp-w:64px}}
+@media(min-width:1760px){.rl.compact{--rr-name:minmax(170px,1fr);--rr-bar:minmax(48px,160px)}}
+@media(max-width:1023px){.rl.compact .rr-heads{display:flex;justify-content:flex-end;padding:7px 10px}.rl.compact .rr-heads>span:not(:nth-child(5)){display:none}}
+.rl.compact .rg{grid-template-columns:var(--grp-w) minmax(0,1fr)}
+.rl.compact .rg-l{display:block;padding:10px 0 0;text-align:center;border-left:0;border-right:1px solid var(--line-soft);border-bottom:0}
+.rl.compact .rg-l .lt{font:400 40px/44px var(--font-title);color:var(--cream)}
+.rl.compact .rr{min-height:48px;padding-block:6px}.rl.compact .rr .meter>i{background:var(--accent)}
+.rl.compact .rr.cur{background:rgba(0,147,178,.16)}.rl.compact .rr.cur::before{background:var(--accent)}
+@media(max-width:1279px){.rl.compact .rg-l .lt{font-size:30px;line-height:36px}.rl.compact .rr.cols{padding:8px 14px}}
+@media(max-width:767px){.rl.compact .rr.cols{grid-template-areas:"rk ld nm f1" ". . xx xx";column-gap:8px;padding:6px 12px 6px 8px}
+ .rl.compact .rr .br,.rl.compact .rr .gp{display:none}.rl.compact .rr .fg.f1{align-self:center}}
 </style></main><!-- 404 mock (design/specs/2026-11-08-pages.md); copy from lib/not-found/copy.ts and the shared copy modules (pages-facts.json). State: out, did-you-mean (N3).. --><style data-system="round5">
 :root{--bg:#100a06;--raised:#170e09;--hover:#241b15;--line:#3d342d;--line-soft:#2c241f;--text:#e3dfd9;--strong:#fff;
 --muted:#e2dcd3;--nav:#fff;--gold:#ffec71;--gold-hover:#f7b90a;--cream:#f3eee2;--accent:#0093b2;--teal:#0f6064;

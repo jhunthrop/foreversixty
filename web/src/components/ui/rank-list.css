@@ -370,3 +370,132 @@
     transition: none;
   }
 }
+
+/* Compact (round 5, the tier list beside its rail; directions mock g-tiers): the name takes the
+   room and the bar holds at 160 at most (the mock's), so the row fits a split page's main column at
+   every desktop width; 48 px rows; a letter column at every width (44 px, 64 px from 1280) with the letter alone in the title face, and the accent
+   tint on the selected row. Below 768 the bar and the gap go: rank, crest, name and the figure. */
+.ui-rank-list[data-compact='true'] {
+  /* every row is its own grid, so the tracks are fixed: 170 holds the longest tank name on a line */
+  --rl-name: minmax(170px, 1fr);
+  --rl-bar: minmax(48px, 160px);
+  --rl-gap: 72px;
+}
+.ui-rank-list[data-compact='true'][data-grouped='true'] {
+  --rl-group-w: 44px;
+}
+@media (min-width: 1280px) {
+  .ui-rank-list[data-compact='true'][data-grouped='true'] {
+    --rl-group-w: 64px;
+  }
+}
+@media (min-width: 1760px) {
+  .ui-rank-list[data-compact='true'] {
+    --rl-name: minmax(170px, 1fr);
+    --rl-bar: minmax(48px, 160px);
+  }
+}
+.ui-rank-list[data-compact='true'] .ui-rank-group {
+  grid-template-columns: var(--rl-group-w) minmax(0, 1fr);
+}
+.ui-rank-list[data-compact='true'] .ui-rank-group-head {
+  display: block;
+  padding: 10px 0 0;
+  text-align: center;
+  border-left: 0;
+  border-right: 1px solid var(--color-line-soft);
+  border-bottom: 0;
+}
+.ui-rank-list[data-compact='true'] .ui-rg-letter {
+  font: 400 40px/44px var(--font-title);
+  color: var(--color-cream);
+}
+.ui-rank-list[data-compact='true'] .ui-rank-row {
+  min-height: 48px;
+  padding-block: 6px;
+}
+.ui-rank-list[data-compact='true'] .ui-rank-row[aria-current='true'] {
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+.ui-rank-list[data-compact='true'] .ui-rank-row[aria-current='true']::before {
+  background: var(--color-accent);
+}
+/* A compact list keeps the one-line row and its heads from 1024 (it has the column's full width
+   there, its rail stacked above it); below 1024 it is the stacked row. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .ui-rank-list[data-compact='true'] .ui-rank-heads {
+    display: grid;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rank-row.ui-rank-cols {
+    grid-template-columns:
+      28px 36px var(--rl-name) var(--rl-bar) repeat(var(--rl-n), var(--rl-fig))
+      var(--rl-gap) var(--rl-links);
+    grid-template-areas: none;
+    column-gap: 16px;
+    padding: 6px 16px;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rank-row > *,
+  .ui-rank-list[data-compact='true'] .ui-rr-fig[data-first='true'] {
+    grid-area: auto;
+    align-self: auto;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rr-extra {
+    display: contents;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rr-extra .ui-rr-fig {
+    text-align: right;
+    font-size: 16px;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rr-extra .ui-rr-fig-label {
+    display: none;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rr-bar {
+    padding-top: 0;
+  }
+}
+@media (max-width: 1023px) {
+  /* The heads keep the sorted figure's alone, over its column, so the number keeps its unit. */
+  .ui-rank-list[data-compact='true'] .ui-rank-heads {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 0;
+    padding: 7px 10px;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rank-heads > span:not(:nth-child(5)) {
+    display: none;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rg-letter {
+    font-size: 30px;
+    line-height: 36px;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rank-row.ui-rank-cols {
+    padding: 8px 14px;
+  }
+}
+@media (max-width: 767px) {
+  .ui-rank-list[data-compact='true'] .ui-rank-row.ui-rank-cols {
+    grid-template-areas:
+      'rank lead name fig'
+      '. . extra extra';
+    grid-template-columns: 22px 30px minmax(0, 1fr) auto;
+    column-gap: 8px;
+    padding: 6px 10px 6px 8px;
+  }
+  /* The crest at 30 and the name at 15 px, so a full spec name holds one line at 390. */
+  .ui-rank-list[data-compact='true'] .ui-rr-lead > img {
+    /* over the crest's own inline size (ClassCrest.astro has no 30) */
+    width: 30px !important;
+    height: 30px !important;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rr-link,
+  .ui-rank-list[data-compact='true'] .ui-rr-fig {
+    font-size: 15px;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rr-bar,
+  .ui-rank-list[data-compact='true'] .ui-rr-gap {
+    display: none;
+  }
+  .ui-rank-list[data-compact='true'] .ui-rr-fig[data-first='true'] {
+    align-self: center;
+  }
+}

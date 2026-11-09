@@ -36,8 +36,7 @@ describe('tierSpecViews', () => {
   it('says the top DPS spec is level with itself', () => {
     expect(views['warrior/fury']).toMatchObject({
       title: 'Fury Warrior is 1st of 3 DPS specs.',
-      place: '1st',
-      placeUnit: 'of 3',
+      standing: 'Tier S · #1 · 100.0 DPS',
       detail: 'Level with the top spec.',
       bisHref: '/bis/warrior/fury/60',
       guideHref: '/guides/warrior/fury',
@@ -55,21 +54,13 @@ describe('tierSpecViews', () => {
     expect(views['paladin/protection']!.detail).toBe('Takes the least damage.');
     expect(views['warrior/protection']).toMatchObject({
       title: 'Protection Warrior is 2nd of 2 Tank specs.',
-      place: '2nd',
-      placeUnit: 'of 2',
+      standing: '#2 · 345 taken / s',
       detail: '15.0% more taken than Protection Paladin',
       rolePath: '/tiers/tank',
     });
   });
 
-  it('colours with the class token and the crest path', () => {
-    expect(views['mage/fire']).toMatchObject({
-      colorVar: 'var(--color-class-mage)',
-      crestSrc: '/icons/hd/crests/mage.webp',
-    });
-  });
-
-  it('names no place for a healer whose list is not ranked yet, and a shared place for a tie', () => {
+  it('gives a healer whose list is not ranked yet its figure alone, and a tie its shared place', () => {
     const unranked = tierSpecViews({
       dps: [],
       tank: [],
@@ -98,8 +89,8 @@ describe('tierSpecViews', () => {
       ),
     });
     expect(tied['priest/holy']!.title).toBe('Holy Priest is tied 2nd of 3 Healer specs.');
-    expect(tied['priest/holy']).toMatchObject({ place: '=2', detail: 'Tied' });
-    expect(unranked['priest/holy']!.place).toBe('');
+    expect(tied['priest/holy']).toMatchObject({ standing: '=2 · 600.0 HPS', detail: 'Tied' });
+    expect(unranked['priest/holy']!.standing).toBe('600.0 HPS');
   });
 
   it('skips an empty role', () => {

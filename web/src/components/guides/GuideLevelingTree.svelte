@@ -62,7 +62,6 @@
 </script>
 
 <div class="guide-leveling" data-testid="guide-leveling-tree">
-  <p class="text-small text-muted m-0">{guidesCopy.levelingTreeIntro}</p>
   <p
     class="guide-leveling-line"
     aria-live={sliding ? 'off' : 'polite'}
