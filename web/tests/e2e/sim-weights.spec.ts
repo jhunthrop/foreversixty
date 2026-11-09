@@ -109,9 +109,7 @@ test('the stat picker defaults to the spec’s reference stat, first and ticked'
 // spec, including ones (all of them, in 1.60) none of those apply to. Once the spec's own
 // `weight_stats` names the stats the engine actually weighs, the picker offers only those,
 // by construction.
-test('the picker offers only the spec’s own weight_stats when the engine sent one', async ({
-  page,
-}) => {
+test('the picker offers only the spec’s own weight_stats when the engine sent one', async ({ page }) => {
   await page.route('**/v1/specs', (route) =>
     route.fulfill({
       status: 200,
