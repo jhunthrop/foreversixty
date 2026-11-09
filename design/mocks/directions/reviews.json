@@ -1,0 +1,29 @@
+{
+  "ux-designer": [
+    {"round": "Round 4a. ", "text": "All three SHIP WITH FIXES. Crisp as Blizzard: not yet (blotchy parchment). Official-page risk: the seal resembles their badge, the teal Premium matched their Subscribe, nav and content misaligned at 2000."},
+    {"round": "Round 4b. ", "text": "Home SHIP, Tier list SHIP, BiS SHIP WITH FIXES (fixed after). Crisp as Blizzard: YES. Seal flagged to the owner as a conscious risk."},
+    {"round": "Home art. ", "text": "SHIP WITH FIXES: the link preview needed our wordmark and fan-made line (blocker), the dusk glow was missing on desktop, the left column ran short. All fixed after."},
+    {"round": "Round 5. ", "text": "Home and BiS SHIP WITH FIXES, Tier list NO: the 390 frame escaped its card (position:static); hero too tall and too dark; flourishes on two panels. Crisp: no."},
+    {"round": "Round 5b. ", "text": "All three SHIP. Crisp as Blizzard: YES. The tier frame hugs its card, the hero is 230 px with the glow showing, flourishes only on the lead panel, 44 px phone sockets confirmed."},
+    {"round": "Mobile. ", "text": "iOS and Android SHIP WITH FIXES: Late belongs inline (spec F1), four of six filters, contradicting answer states, 44 pt / 48 dp answers, Android doubled titles. All fixed."},
+    {"round": "Mobile 2. ", "text": "iOS SHIP, Android SHIP. No deviation from the app-flows spec. Crisp: yes. Polish (chip height, Android selected segment) fixed after."}
+  ],
+  "wow-player": [
+    {"round": "Round 4a. ", "text": "Home and BiS SHIP WITH FIXES, Tier list SHIP. Harpoon should read Two-Hand with no off-hand socket. Crisp: close."},
+    {"round": "Round 4b. ", "text": "Home SHIP, Tier list SHIP, BiS SHIP WITH FIXES (the tooltip gain is now '+0.3 DPS'; 'over <item>' only for rings and trinkets). Crisp as Blizzard: YES."},
+    {"round": "Home art. ", "text": "SHIP WITH FIXES. Reads as Azeroth (alpha-card pines, the cobble road, low-poly peaks) and helps the page. Phone strip and dead ground fixed after."},
+    {"round": "Round 5. ", "text": "All three SHIP WITH FIXES: stained ground, busy blue band behind tab text, flourishes on the small tier card. The cave behind Onyxia is the best touch. Crisp: not quite."},
+    {"round": "Round 5b. ", "text": "All three SHIP. Crisp as Blizzard: YES, close enough; the rounded corners and art are a deliberate difference."},
+    {"round": "Mobile. ", "text": "iOS and Android SHIP WITH FIXES; 'No flask in your bags; boots not enchanted' reads like a raid leader. Asked for one raid date across web and app (different moments by design) and a label on +12.6 DPS (owner rule: bare)."},
+    {"round": "Mobile 2. ", "text": "iOS SHIP, Android SHIP; accepts both rules. Crisp: yes."}
+  ],
+  "ai-slop-reviewer": [
+    {"round": "Round 4a. ", "text": "Home FAIL (blotchy texture, four stamped boxes, the band read as a gradient), BiS and Tier list PASS WITH FIXES. Crisp as Blizzard: NO."},
+    {"round": "Round 4b. ", "text": "All three PASS WITH FIXES (fixed after). Crisp as Blizzard: yes as a flat clean tool page."},
+    {"round": "Home art. ", "text": "PASS WITH FIXES. At rendered size it reads as an engine render; the veil hides the smeared cliff and pine. Link preview and phone crop fixed after. Rests on the owner's written choice (recorded 2026-11-09)."},
+    {"round": "Round 5. ", "text": "All three PASS WITH FIXES: the ground tile read as blotches (tell 12), hero too tall, overdressed tier card, dim rare blue. Crisp: no, narrowly."},
+    {"round": "Round 5b. ", "text": "All three PASS WITH FIXES; the open item, the dead centre of the BiS doll, was fixed after (weapons moved under the tooltip). No art reads as generated at rendered size except a slightly soft cave, hidden by its veil. Crisp: yes, nearly."},
+    {"round": "Mobile. ", "text": "Tabs and overlays PASS WITH FIXES: our art used as the lock-screen wallpaper (fixed: a neutral system wallpaper). Portrait, 'as Thandrel, Damage' and the tool sublines are app-flows spec rules, kept."},
+    {"round": "Mobile 2. ", "text": "Tabs PASS WITH FIXES, overlays PASS (menu PASS WITH FIXES). Withdraws the portrait point. Remaining notes are spec questions for the owner: show 'as <name>, <role>' only for players with alts; cut the menu's tool sublines; the Raid tab repeats Home's raid card. Crisp: yes. No art reads as generated at phone size."}
+  ]
+}

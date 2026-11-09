@@ -48,6 +48,17 @@ func (s *Store) AttributeGuild(ctx context.Context, reportID string) (*int64, er
 	return guildID, nil
 }
 
+// CreditLogger names key as the report's logging character when it names none yet: a
+// whole-file upload's writer, read from the log. A character already named is never replaced.
+func (s *Store) CreditLogger(ctx context.Context, reportID, key string) error {
+	if _, err := s.Pool.Exec(ctx,
+		`update reports set logging_character = $2 where id = $1 and logging_character is null`,
+		reportID, key); err != nil {
+		return fmt.Errorf("reports: credit logger of %s: %w", reportID, err)
+	}
+	return nil
+}
+
 // SetLogZone records the zone the engine read from the log. An empty zone says nothing and
 // writes nothing; the same zone again is a no-op.
 func (s *Store) SetLogZone(ctx context.Context, reportID, zone string) error {

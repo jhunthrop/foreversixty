@@ -106,6 +106,18 @@ func testPool(t *testing.T) *pgxpool.Pool {
 // compressed when packed is true.
 func fixtureUpload(t *testing.T, packed bool) (Deps, string, *memObjects, *fakeRanker) {
 	t.Helper()
+	body := engine.FixtureLog()
+	if packed {
+		body = pack(t, body)
+	}
+	character := "us/hardcore/baelgrim"
+	return seedUpload(t, body, &character)
+}
+
+// seedUpload seeds a report whose upload holds body, naming logging as
+// its logging character (nil names none, as a browser upload does).
+func seedUpload(t *testing.T, body []byte, logging *string) (Deps, string, *memObjects, *fakeRanker) {
+	t.Helper()
 	pool := testPool(t)
 	ctx := context.Background()
 	accounts := &auth.Store{Pool: pool}
@@ -123,18 +135,13 @@ func fixtureUpload(t *testing.T, packed bool) (Deps, string, *memObjects, *fakeR
 		t.Fatal(err)
 	}
 	reportID := auth.NewReportID()
-	character := "us/hardcore/baelgrim"
 	if _, err := rs.Create(ctx, reports.Report{
 		ID: reportID, OwnerID: &owner.ID, Title: "Tuesday", Visibility: reports.Public,
-		Status: reports.StatusProcessing, UploadID: &uploadID, LoggingCharacter: &character,
+		Status: reports.StatusProcessing, UploadID: &uploadID, LoggingCharacter: logging,
 	}); err != nil {
 		t.Fatal(err)
 	}
 	objects := newMemObjects()
-	body := engine.FixtureLog()
-	if packed {
-		body = pack(t, body)
-	}
 	if err := objects.Put(ctx, key, body, store.PutOptions{}); err != nil {
 		t.Fatal(err)
 	}
@@ -200,6 +207,42 @@ func TestParseReportFillsInTheReportProgressively(t *testing.T) {
 		if len(rank.written) != 1 || rank.written[0].Ruleset != "hardcore" {
 			t.Fatalf("ranked = %+v", rank.written)
 		}
+	}
+}
+
+// A browser upload names no logging character, so the report was "Not
+// credited" and ranked as us/normal. The log names its writer: the one
+// player it flags as MINE. Production's first stranger log was a Forever
+// launch log whose players all read "First-Last-PvP-US".
+func TestParseReportCreditsTheLoggerAnUploadDidNotName(t *testing.T) {
+	body, err := os.ReadFile("../../../logs/engine/event/testdata/forever-1.60-encounter.log")
+	if err != nil {
+		t.Fatal(err)
+	}
+	d, reportID, _, rank := seedUpload(t, body, nil)
+	ctx := context.Background()
+	if err := Report(ctx, d, reportID); err != nil {
+		t.Fatal(err)
+	}
+	rep, err := d.Reports.Get(ctx, reportID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rep.LoggingCharacter == nil || *rep.LoggingCharacter != "us/pvp/anon-one" {
+		t.Fatalf("logging character = %v, want us/pvp/anon-one", rep.LoggingCharacter)
+	}
+	fights, err := d.Reports.Fights(ctx, reportID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	kills := 0
+	for _, f := range fights {
+		if f.EncounterID != 0 && f.Kill {
+			kills++
+		}
+	}
+	if kills != 1 || len(rank.written) != 1 {
+		t.Fatalf("kills = %d, ranked = %d; want the Saltspine kill ranked", kills, len(rank.written))
 	}
 }
 
