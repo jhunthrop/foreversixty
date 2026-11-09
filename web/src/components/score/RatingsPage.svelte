@@ -110,16 +110,12 @@
 
   <Section
     title={scoreCopy.explainerHeading}
-    meta={scoreCopy.explainerScoreCaption}
     anchor="forever-score"
     testid="ratings-forever-score"
     panel
     frame="lead"
   >
-    <p class="max-w-[62ch] text-[17px] leading-[26px]" data-testid="ratings-forever-lead">
-      {scoreCopy.explainerLead}
-    </p>
-    <div class="mt-4">
+    <div>
       <StatTable
         nameHead="Part"
         barHead="Of its top"
@@ -133,9 +129,9 @@
           <StatRow
             figures={[
               { value: count(SAMPLE_SCORE.components[part.key]) },
-              { value: scoreCopy.upTo(COMPONENT_MAX[part.key]) },
+              { value: count(COMPONENT_MAX[part.key]) },
             ]}
-            phone={`${SAMPLE_SCORE.components[part.key]} ${scoreCopy.upTo(COMPONENT_MAX[part.key])}`}
+            phone={`${SAMPLE_SCORE.components[part.key]} of ${COMPONENT_MAX[part.key]}`}
             testid={`ratings-forever-score-${part.key}`}
           >
             {#snippet name()}<b>{part.label}</b>{/snippet}
@@ -147,21 +143,17 @@
         {/each}
       </StatTable>
     </div>
-    {@render prose([scoreCopy.explainerWhat, scoreCopy.explainerLaunch], [false, true])}
+    {@render prose([scoreCopy.explainerLaunch], [true])}
   </Section>
 
   <Section
     title={scoreCopy.explainerRatingHeading}
-    meta={scoreCopy.explainerRatingCaption}
     anchor="performance-rating"
     testid="ratings-performance-rating"
     panel
     frame="framed"
   >
-    <p class="max-w-[62ch] text-[17px] leading-[26px]" data-testid="ratings-rating-bridge">
-      {`${scoreCopy.explainerRatingBridge} ${scoreCopy.explainerPreparationShared}`}
-    </p>
-    <div class="mt-4 grid grid-cols-3 gap-x-6 gap-y-5" data-testid="ratings-rating-sample">
+    <div class="grid grid-cols-3 gap-x-6 gap-y-5" data-testid="ratings-rating-sample">
       <Figure value={String(latest)} label="Latest fight" unit={ratingCopy.outOf100} tone="gold" size="big" />
       <div class="flex min-w-0 flex-col gap-[2px]">
         <span class="text-label text-muted font-bold">Last {SAMPLE_TREND.length} fights</span>
@@ -180,13 +172,13 @@
     )}
   </Section>
 
-  <Section title="What each component measures" testid="ratings-components" panel>
+  <Section title="What each component measures" testid="ratings-components">
     {#each ratingsPageCopy.components as item (item.part)}
       <Row title={item.part} sub={item.body} open />
     {/each}
   </Section>
 
-  <Section title="Weights, by role" panel>
+  <Section title="Weights, by role">
     <StatTable
       nameHead="Component"
       bar={false}
@@ -216,7 +208,7 @@
     )}
   </Section>
 
-  <Section title="Ranked against your spec, or absolute" testid="ratings-basis" panel>
+  <Section title="Ranked against your spec, or absolute" testid="ratings-basis">
     {@render prose(
       ratingsPageCopy.rankedOrAbsolute,
       [],
@@ -224,7 +216,7 @@
     )}
   </Section>
 
-  <Section title="The cap" panel>
+  <Section title="The cap">
     {@render prose([ratingCopy.cappedRule])}
   </Section>
 

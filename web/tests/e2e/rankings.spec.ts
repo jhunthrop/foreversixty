@@ -72,7 +72,7 @@ test.describe('signed in, desktop', () => {
     // The board opened on the encounter the character most recently killed, in its own cohort.
     await expect(page).toHaveURL(/\/rankings\/onyxia$/);
     await expect(heading(page)).toHaveText('Fury Warriors');
-    await expect(page.getByTestId('rankings-heading')).toContainText('212 ranked on Onyxia');
+    await expect(page.getByTestId('rankings-heading')).toContainText('212 ranked');
     const board = api.asked.find(
       (url) => url.searchParams.get('character') === OWN_KEY && url.searchParams.get('page') === null,
     );
@@ -192,11 +192,9 @@ test.describe('signed in, desktop', () => {
     await expect(pinned).toHaveAttribute('aria-current', 'true');
     await expect(pinned).toContainText('You');
     await expect(pinned.getByTestId('rank-rank')).toHaveText('204');
-    // The pin is the first row of the board; the board follows from #1, unmarked.
-    await expect(page.getByTestId('ranking-board').locator('li').first()).toHaveAttribute(
-      'data-testid',
-      'ranking-pinned-row',
-    );
+    // The pin is its own captioned list above the board; the board follows from #1, unmarked.
+    await expect(page.getByTestId('ranking-pinned').locator('li')).toHaveCount(1);
+    await expect(page.locator('#rankings')).toContainText('Your best kill');
     await expect(page.getByTestId('ranking-1')).toBeVisible();
     await expect(page.getByTestId('ranking-1')).not.toHaveAttribute('aria-current', 'true');
     await expect(ownRows(page)).toHaveCount(1);
@@ -440,8 +438,8 @@ test('the board lists ranked kills with guilds, splits, reports and moderation s
   await openFilters(page);
   await expect(page.getByTestId('control-encounter')).toHaveValue('warden-kelthas');
   await expect(page.getByTestId('ranking-1').getByTestId('rank-name')).toHaveText('Elyra Duskvale');
-  // The sub line on a board of several classes: guild, spec and class, the talent split.
-  await expect(page.getByTestId('ranking-1')).toContainText('The Last Watch · Shadow Priest · 0/31/20');
+  // The sub line on a board of several classes: guild, then spec and class.
+  await expect(page.getByTestId('ranking-1')).toContainText('The Last Watch · Shadow Priest');
   await expect(page.getByTestId('ranking-1').getByTestId('ranking-value')).toHaveText('1,840');
   await expect(page.getByTestId('ranking-1').getByTestId('ranking-value')).toHaveAttribute(
     'href',

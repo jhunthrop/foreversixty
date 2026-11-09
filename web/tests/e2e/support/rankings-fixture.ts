@@ -73,6 +73,8 @@ const WARRIORS: Seed[] = [
   { name: 'Obnoxious Yell', cls: 'Warrior', spec: 'Fury', key: OWN_KEY },
   { name: 'Bladewick', cls: 'Warrior', spec: 'Fury', key: 'us/normal/bladewick' },
 ];
+/** Who holds rank 14 when the viewer's best kill is elsewhere. */
+const STAND_IN: Seed = { name: 'Grimhollow', cls: 'Warrior', spec: 'Fury', key: 'us/normal/grimhollow' };
 const MAGES: Seed[] = [
   { name: 'Emberlyn', cls: 'Mage', spec: 'Frost', key: 'us/normal/emberlyn' },
   { name: 'Quillfeather', cls: 'Mage', spec: 'Frost', key: 'us/normal/quillfeather' },
@@ -89,10 +91,11 @@ function row(seed: Seed, rank: number): Record<string, unknown> {
     rank,
     player: { key: seed.key, name: seed.name, class: seed.cls, spec: seed.spec },
     guild: rank % 2 === 0 ? { name: 'Olympus XXVII', ruleset: 'normal', region: 'us' } : undefined,
-    value: 900 - rank * 12,
+    // A far rank still reads as a real kill: a floor on the value, a cap on the length and the age.
+    value: Math.max(300, 900 - rank * 12),
     size: 40,
-    fought_at: new Date(Date.now() - rank * 86_400_000).toISOString(),
-    duration_ms: 160_000 + rank * 1000,
+    fought_at: new Date(Date.now() - Math.min(rank, 30) * 86_400_000).toISOString(),
+    duration_ms: 160_000 + Math.min(rank, 40) * 1000,
     talent_split: '31/20/0',
     build_id: `b${rank}`,
     trinkets: [],
@@ -140,9 +143,12 @@ export function boardFor(url: URL, options: BoardOptions = {}): Record<string, u
     const index = seeds.findIndex((seed) => seed.key === character);
     return index < 0 ? null : { rank: index + 1, row: rows[index] };
   })();
+  // Off the page or unranked, the viewer's row is another warrior's: the page still runs 1 to 15.
   const rowsShown =
     (options.ownOffPage === true || options.unranked === true) && cls === 'warrior'
-      ? rows.filter((entry) => (entry.player as { key: string }).key !== OWN_KEY)
+      ? rows.map((entry, index) =>
+          (entry.player as { key: string }).key === OWN_KEY ? row(STAND_IN, index + 1) : entry,
+        )
       : rows;
   return {
     ...base,

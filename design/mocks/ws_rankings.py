@@ -20,7 +20,7 @@ from html import escape
 from pathlib import Path
 
 from mocklib import CLASS_COLOR, PARSE
-from ws_prims import (Button, Facts, Figure, Link, Page, PageHeader, Plate, RankList, RankRow, ColumnHeads, Row, Rows, Section, Tag,
+from ws_prims import (Button, Facts, Figure, Link, Page, PageHeader, Plate, RankList, RankRow, ColumnHeads, Row, Rows, Section,
                       build_page, control_bar, crest_img, seg, sel, write)
 
 MOCKDATA = Path(__file__).resolve().parent / 'data'
@@ -48,7 +48,8 @@ PAGE_CSS = '''<style>
 .else{border-top:1px solid var(--line-soft)}.else .t-label{display:block;padding:12px 20px 0}
 .encs{padding:0 20px 8px}.ptr{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:16px}
 .you-n{display:flex;flex-direction:column;gap:4px;min-height:88px}.you-n .kv{margin-top:12px}.you-n p.go{margin-top:12px}
-.rl.links1{--rr-links:56px}
+
+.pin-l{display:block;padding:0 20px 4px}.ruled{border-top:1px solid var(--line-soft)}
 </style>'''
 
 
@@ -72,12 +73,15 @@ def board_row(v: dict, you: bool = False) -> str:
 def board_list(b: dict, own_key: str = '') -> str:
     heads = ColumnHeads([('#', False), ('', False), ('Character', False), ('', False), ('DPS', True), (RC['percentileLabel'], True),
                          ('Executed', True), ('Length', True), ('Date', True), ('', False)])
-    pin = f'<div class="pin">{board_row(b["pinned"], you=True)}</div>' if b['pinned'] else ''
+    pin = ''
+    if b['pinned']:   # captioned, its own list above the board (Rankings.svelte)
+        pin = (f'<p class="t-label pin-l">{escape(RC["ownBest"])}</p>'
+               + RankList('', board_row(b['pinned'], you=True), 4, compact=True, fig_px=72))
     rows = ''.join(board_row(r, you=r['key'] == own_key and not b['pinned']) for r in b['rows'])
     pages = -(-b['total'] // b['per_page'])
     pager = (f'<div class="pager"><span class="t-small">Page 1 of {pages}</span><span class="muted">Previous</span>{Link("Next")}</div>'
              if pages > 1 else '')
-    return legend() + RankList(heads, pin + rows, 4, compact=True, fig_px=72) + pager
+    return legend() + pin + f'<div class="ruled">{RankList(heads, rows, 4, compact=True, fig_px=72)}</div>' + pager
 
 
 def bar(groups: list[tuple[str, str]], summary: str) -> str:
@@ -97,6 +101,13 @@ def character_bar(encounter: str, cls: str, spec: str, ruleset: str, summary: st
 
 def pointer() -> str:
     return f'<div data-region="summary">{Plate(f"<p class=ptr><span>{escape(RC["tierQuestion"])}</span>{Link(RC["tierLink"] + " &rsaquo;")}</p>")}</div>'
+
+
+def companion() -> str:
+    """Nothing ranked where the visitor looks: the rail says what fills it (scoreCopy's companion lines)."""
+    sc = COPY['scoreCopy']
+    return Section(escape(sc['explainerLogsHeading']), f'<p class="t-small">{escape(sc["explainerLogsBody"])}</p>'
+                   f'<p style="margin-top:12px">{Button(escape(sc["explainerLogsButton"]))}</p>', panel=True)
 
 
 def your_rank(answer: dict, best: list[dict], unranked: bool = False) -> str:
@@ -133,12 +144,15 @@ def page(title: str, html: str, who: tuple | None, note: str) -> str:
     return build_page(title, html + PAGE_CSS, 'Logs', who, note)
 
 
+HIDDEN_STAMP = f'<span style="visibility:hidden">{UPDATED}</span>'   # the stamp's reserve: no character board answered
+
+
 def index_page(empty: bool) -> str:
     encs = FACTS['encounters']
-    meta = f'{len(encs)} encounters ranked' if not empty else '&nbsp;'
     body = (empty_block(EC['noneYet'], EC['fill']) if empty else encounter_rows(encs))
     main = Section(escape(EC['heading']), body, panel=True, frame='lead', flush=True)
-    html = head(meta) + bar([board_tabs('character')], '') + Page('split', main, pointer(), panels=True)
+    rail = (companion() if empty else '') + pointer()
+    html = head(HIDDEN_STAMP) + bar([board_tabs('character')], '') + Page('split', main, rail, panels=True)
     return page('Rankings', html, None, f'/rankings mock, {"empty" if empty else "index"}. Data: rankings-fixture.ts ranked encounters.')
 
 
@@ -149,7 +163,7 @@ def board_page(state: str) -> str:
         b = FACTS['board_signed_out']
         if state == 'board':
             body = board_list(b)
-            sec = Section(escape(cohort), body, meta=f'{b["total"]} ranked on {enc}', panel=True, frame='lead', flush=True)
+            sec = Section(escape(cohort), body, meta=f'{b["total"]} ranked', panel=True, frame='lead', flush=True)
             cbar = character_bar(enc, RC['everyClass'], RC['everySpec'], RC['allRulesets'], f'{enc} &middot; {RC["everyClass"]}')
         else:
             onyxia = [e for e in FACTS['encounters'] if e['slug'] == 'onyxia']
@@ -157,12 +171,13 @@ def board_page(state: str) -> str:
             body = empty_block(FACTS['fns']['boardEmpty'], EMPTY['boardFill'], widen=True, elsewhere=elsewhere)
             sec = Section(escape(cohort), body, panel=True, frame='lead', flush=True)
             cbar = character_bar(enc, 'Warrior', 'Fury', RC['allRulesets'], f'{enc} &middot; Fury')
-        html = head(UPDATED) + cbar + Page('split', sec, pointer(), panels=True)
+        rail = (companion() if state == 'empty' else '') + pointer()
+        html = head(UPDATED) + cbar + Page('split', sec, rail, panels=True)
         return page(f'{enc} rankings', html, None, f'/rankings/<slug> mock, {state}. Data: rankings-fixture.ts boardFor().')
     key = {'you': 'board_you', 'off': 'board_you_off_page', 'unranked': 'board_you_unranked'}[state]
     b = FACTS[key]
     widen = Link(escape(RC['widen']) + ' &rsaquo;')
-    sec = Section('Fury Warriors', board_list(b, FACTS['own_key']), action=widen, meta=f'{b["total"]} ranked on Onyxia',
+    sec = Section('Fury Warriors', board_list(b, FACTS['own_key']), action=widen, meta=f'{b["total"]} ranked',
                   panel=True, frame='lead', flush=True)
     answer = FACTS[{'you': 'answer_you', 'off': 'answer_off', 'unranked': 'answer_unranked'}[state]]
     rail = your_rank(answer, b['best'], unranked=state == 'unranked') + pointer()
@@ -173,13 +188,12 @@ def board_page(state: str) -> str:
 def guild_page() -> str:
     heads = ColumnHeads([('#', False), ('', False), ('Guild', False), ('', False), ('Kill time', True), ('Date', True), ('', False)])
     rows = ''.join(RankRow(g['rank'], '', 'var(--accent)', escape(g['name']), escape(g['sub']), g['fraction'],
-                           [figure_cell(f) for f in g['figures']], escape(g['gap']['text']), [(lk['label'], True) for lk in g['links']])
+                           [figure_cell(f) for f in g['figures']], escape(g['gap']['text']), [])
                    for g in FACTS['guilds'])
-    rl = RankList(heads, rows, 1, compact=True).replace('class="rl compact"', 'class="rl compact links1"', 1)
+    rl = RankList(heads, rows, 1, compact=True)
     sec = Section(escape(RC['guildTitle']['speed']), rl, panel=True, frame='lead', flush=True)
     cbar = bar([board_tabs('guild'), (RC['encounterLabel'], sel('Warden Kelthas')), ('Kind', sel('Speed'))], 'Warden Kelthas &middot; Fastest kills')
-    meta = f'<span style="visibility:hidden">{UPDATED}</span>'   # the stamp's reserve: no character board answered
-    html = head(meta) + cbar + Page('split', sec, pointer(), panels=True)
+    html = head(HIDDEN_STAMP) + cbar + Page('split', sec, pointer(), panels=True)
     return page('Warden Kelthas rankings', html, None, '/rankings/<slug> mock, guilds (Speed). Data: rankings-fixture.ts guildSpeedRows().')
 
 

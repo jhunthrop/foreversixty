@@ -137,9 +137,7 @@ describe('tier colours (fix round 1 item 1)', () => {
   });
 
   it('says the note is true now', () => {
-    expect(scoreCopy.tiersNote).toBe(
-      'The tiers take the colours of item quality in game. The ranges may change as more players are logged.',
-    );
+    expect(scoreCopy.tiersNote).toBe('The tiers take the colours of item quality.');
   });
 });
 

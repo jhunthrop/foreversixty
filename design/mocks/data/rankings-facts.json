@@ -28,7 +28,7 @@
     "name": "Reglitch",
     "href": "/character/us/normal/reglitch",
     "classSlug": "priest",
-    "sub": "Shadow Priest · 31/20/0",
+    "sub": "Shadow Priest",
     "fraction": 1,
     "figures": [
      {
@@ -68,7 +68,7 @@
     "name": "Thorgrim Ashveil",
     "href": "/character/us/normal/thorgrim-ashveil",
     "classSlug": "warrior",
-    "sub": "Olympus XXVII · Fury Warrior · 31/20/0",
+    "sub": "Olympus XXVII · Fury Warrior",
     "fraction": 0.9864864864864865,
     "figures": [
      {
@@ -108,7 +108,7 @@
     "name": "Emberlyn",
     "href": "/character/us/normal/emberlyn",
     "classSlug": "mage",
-    "sub": "Frost Mage · 31/20/0",
+    "sub": "Frost Mage",
     "fraction": 0.972972972972973,
     "figures": [
      {
@@ -1299,6 +1299,46 @@
     "links": []
    },
    {
+    "key": "us/normal/grimhollow",
+    "rank": "14",
+    "rankColor": "var(--color-parse-purple)",
+    "name": "Grimhollow",
+    "href": "/character/us/normal/grimhollow",
+    "classSlug": "warrior",
+    "sub": "Olympus XXVII · 31/20/0",
+    "fraction": 0.8243243243243243,
+    "figures": [
+     {
+      "value": "732",
+      "label": "DPS",
+      "href": "/reports/report14?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-value"
+     },
+     {
+      "value": "93",
+      "label": "Percentile",
+      "testid": "ranking-percentile"
+     },
+     {
+      "value": "90%",
+      "label": "Executed",
+      "title": "90% of what this gear can do, simulated",
+      "href": "/sim?source=fight&ref=report14%3A1&mode=compare",
+      "testid": "ranking-execution"
+     },
+     {
+      "value": "2:54",
+      "label": "Length"
+     }
+    ],
+    "gap": {
+     "text": "26 Oct",
+     "label": "Date"
+    },
+    "links": []
+   },
+   {
     "key": "us/normal/bladewick",
     "rank": "15",
     "rankColor": "var(--color-parse-purple)",
@@ -1346,10 +1386,10 @@
    "href": "/character/us/normal/obnoxious-yell",
    "classSlug": "warrior",
    "sub": "Olympus XXVII · 31/20/0",
-   "fraction": -1.7432432432432432,
+   "fraction": 0.33783783783783783,
    "figures": [
     {
-     "value": "-1,548",
+     "value": "300",
      "label": "DPS",
      "href": "/reports/report204?fight=1",
      "title": "Open the kill in its report",
@@ -1368,12 +1408,12 @@
      "testid": "ranking-execution"
     },
     {
-     "value": "6:04",
+     "value": "3:20",
      "label": "Length"
     }
    ],
    "gap": {
-    "text": "19 Apr",
+    "text": "10 Oct",
     "label": "Date"
    },
    "links": []
@@ -1382,7 +1422,7 @@
    {
     "id": "value",
     "label": "DPS",
-    "value": "-1,548"
+    "value": "300"
    },
    {
     "id": "executed",
@@ -1392,12 +1432,12 @@
    {
     "id": "length",
     "label": "Length",
-    "value": "6:04"
+    "value": "3:20"
    },
    {
     "id": "killed",
     "label": "Killed",
-    "value": "19 Apr"
+    "value": "10 Oct"
    }
   ]
  },
@@ -1926,6 +1966,46 @@
     "links": []
    },
    {
+    "key": "us/normal/grimhollow",
+    "rank": "14",
+    "rankColor": "var(--color-parse-purple)",
+    "name": "Grimhollow",
+    "href": "/character/us/normal/grimhollow",
+    "classSlug": "warrior",
+    "sub": "Olympus XXVII · 31/20/0",
+    "fraction": 0.8243243243243243,
+    "figures": [
+     {
+      "value": "732",
+      "label": "DPS",
+      "href": "/reports/report14?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-value"
+     },
+     {
+      "value": "93",
+      "label": "Percentile",
+      "testid": "ranking-percentile"
+     },
+     {
+      "value": "90%",
+      "label": "Executed",
+      "title": "90% of what this gear can do, simulated",
+      "href": "/sim?source=fight&ref=report14%3A1&mode=compare",
+      "testid": "ranking-execution"
+     },
+     {
+      "value": "2:54",
+      "label": "Length"
+     }
+    ],
+    "gap": {
+     "text": "26 Oct",
+     "label": "Date"
+    },
+    "links": []
+   },
+   {
     "key": "us/normal/bladewick",
     "rank": "15",
     "rankColor": "var(--color-parse-purple)",
@@ -2006,12 +2086,14 @@
    "rank": "1",
    "name": "The Last Watch",
    "href": "/guild/us/normal/the-last-watch",
-   "sub": "US · Normal",
+   "sub": "US · Normal ruleset",
    "fraction": 1,
    "figures": [
     {
      "value": "2:05",
      "label": "Kill time",
+     "href": "/reports/guildreport1?fight=2",
+     "title": "Open the kill in its report",
      "testid": "guild-ranking-value"
     }
    ],
@@ -2019,25 +2101,20 @@
     "text": "8 Nov",
     "label": "Date"
    },
-   "links": [
-    {
-     "label": "Report",
-     "href": "/reports/guildreport1?fight=2",
-     "primary": true,
-     "testid": "guild-ranking-report"
-    }
-   ]
+   "links": []
   },
   {
    "rank": "2",
    "name": "Stonehearth Vanguard",
    "href": "/guild/eu/normal/stonehearth-vanguard",
-   "sub": "EU · Normal",
+   "sub": "EU · Normal ruleset",
    "fraction": 0.9541984732824428,
    "figures": [
     {
      "value": "2:11",
      "label": "Kill time",
+     "href": "/reports/guildreport2?fight=2",
+     "title": "Open the kill in its report",
      "testid": "guild-ranking-value"
     }
    ],
@@ -2045,25 +2122,20 @@
     "text": "7 Nov",
     "label": "Date"
    },
-   "links": [
-    {
-     "label": "Report",
-     "href": "/reports/guildreport2?fight=2",
-     "primary": true,
-     "testid": "guild-ranking-report"
-    }
-   ]
+   "links": []
   },
   {
    "rank": "3",
    "name": "Olympus XXVII",
    "href": "/guild/us/normal/olympus-xxvii",
-   "sub": "US · Normal",
+   "sub": "US · Normal ruleset",
    "fraction": 0.9057971014492754,
    "figures": [
     {
      "value": "2:18",
      "label": "Kill time",
+     "href": "/reports/guildreport3?fight=2",
+     "title": "Open the kill in its report",
      "testid": "guild-ranking-value"
     }
    ],
@@ -2071,25 +2143,20 @@
     "text": "6 Nov",
     "label": "Date"
    },
-   "links": [
-    {
-     "label": "Report",
-     "href": "/reports/guildreport3?fight=2",
-     "primary": true,
-     "testid": "guild-ranking-report"
-    }
-   ]
+   "links": []
   },
   {
    "rank": "4",
    "name": "Ember Court",
    "href": "/guild/us/hardcore/ember-court",
-   "sub": "US · Hardcore",
+   "sub": "US · Hardcore ruleset",
    "fraction": 0.8278145695364238,
    "figures": [
     {
      "value": "2:31",
      "label": "Kill time",
+     "href": "/reports/guildreport4?fight=2",
+     "title": "Open the kill in its report",
      "testid": "guild-ranking-value"
     }
    ],
@@ -2097,14 +2164,7 @@
     "text": "7 Nov",
     "label": "Date"
    },
-   "links": [
-    {
-     "label": "Report",
-     "href": "/reports/guildreport4?fight=2",
-     "primary": true,
-     "testid": "guild-ranking-report"
-    }
-   ]
+   "links": []
   }
  ],
  "own_key": "us/normal/obnoxious-yell",
@@ -2326,8 +2386,6 @@
    "explainerRatingHeading": "Performance Rating",
    "explainerScoreCaption": "Forever Score: your whole record, 0 to 2100.",
    "explainerRatingCaption": "Performance Rating: one fight, 0 to 100.",
-   "explainerLead": "Use it to see how your character compares and which part to work on.",
-   "explainerWhat": "The Forever Score is one number for a character, made of five parts that add up to it. It comes only from the logs the site has: fights in public reports, and the gear those logs show. The addon shows the same number on the character’s tooltip in game, dated with the day of the newest fight it counts. A character with no logs here has no score, not a score of zero.",
    "explainerLaunch": "Parses, attendance and raid bosses count once raids open.",
    "samplePill": "Sample",
    "explainerPartsHeading": "What moves each part",
@@ -2338,13 +2396,11 @@
    "tierBetween": "[fn]",
    "tierFrom": "[fn]",
    "tierShort": "[fn]",
-   "tiersNote": "The tiers take the colours of item quality in game. The ranges may change as more players are logged.",
+   "tiersNote": "The tiers take the colours of item quality.",
    "explainerLogsHeading": "How to get your logs here",
-   "explainerLogsBody": "The companion uploads your fights automatically. The companion is a small desktop app that runs beside the game and sends the site your combat log and what the addon saved.",
+   "explainerLogsBody": "The companion uploads your combat log as you play.",
    "explainerLogsButton": "Get the companion",
-   "explainerLogsHref": "/setup",
-   "explainerRatingBridge": "A rating scores one fight. The Forever Score counts all of them.",
-   "explainerPreparationShared": "Both use the word Preparation for the same thing: the flask, food and enchants you bring to a pull."
+   "explainerLogsHref": "/setup"
   },
   "ratingCopy": {
    "tabLabel": "Rating",
@@ -2457,7 +2513,7 @@
   "copy": {
    "visibility": "A rating comes only from a public report, the same way a Warcraft Logs parse does. There is no leaderboard of ratings: a rating is one fight's roster or one character's own history.",
    "oneNumberFirst": [
-    "Every rating is one number, 0 to 100: a weighted average of six components (Output, Survival, Mechanics, Utility, Preparation, Activity), each also 0 to 100. Topping the meter while dying to avoidable damage with no flask on does not rate well, because Output is one part of the score.",
+    "Topping the meter while dying to avoidable damage with no flask on does not rate well: Output is one part of the score.",
     "A component that cannot be scored for a fight is left out and named, and its weight goes to the components that did score. That happens when an encounter has no mechanics table yet, the simulator does not model the spec yet, or too few logs exist to compare against."
    ],
    "components": [
@@ -2486,7 +2542,7 @@
      "body": "The share of the fight you spent casting or swinging rather than idle, leaving out the stretches the fight itself gives you nothing to do, such as a scripted phase change."
     }
    ],
-   "roles": "Tanks and healers each have their own column in the table above. A tank's Output is worth 10 of 100 and its Survival 35, because taking hits is the job. A healer's Output is effective healing only; overheal does not count.",
+   "roles": "A healer's Output is effective healing only; overheal does not count.",
    "adjustable": "A guild's officers can change the weights and the cap for their own guild. This page shows the defaults.",
    "rankedOrAbsolute": [
     "With at least 20 kills of the same encounter, difficulty, spec, role and kill speed logged, a component is ranked against players of your spec in those logs: \"better than 71% of Fury Warriors on this fight.\" With fewer, the score is measured against the encounter's own numbers and says so.",

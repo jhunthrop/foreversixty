@@ -50,6 +50,7 @@
   import type { RankHead } from '../lib/ui/rank-list';
   import { PENDING_ANSWER, ownRankSpec } from '../lib/rankings/own-rank';
   import { cohortName, scopeHeading } from '../lib/rankings/scope';
+  import { scoreCopy } from '../lib/score/copy';
   import {
     GUILD_KINDS,
     RANKING_METRICS,
@@ -64,12 +65,14 @@
   import RankingsEncounters from './rankings/RankingsEncounters.svelte';
   import RankingsMoreFilters from './rankings/RankingsMoreFilters.svelte';
   import ControlBar from './ui/ControlBar.svelte';
+  import Button from './ui/Button.svelte';
   import Divided from './ui/Divided.svelte';
   import Page from './ui/Page.svelte';
   import PageHeader from './ui/PageHeader.svelte';
   import Plate from './ui/Plate.svelte';
   import RankList from './ui/RankList.svelte';
   import RankRow from './ui/RankRow.svelte';
+  import Ruled from './ui/Ruled.svelte';
   import Section from './ui/Section.svelte';
   import Skeleton from './ui/Skeleton.svelte';
   import Tag from './ui/Tag.svelte';
@@ -424,9 +427,17 @@
   const otherEncounters = $derived(encounters.filter((encounter) => encounter.slug !== encounterSlug));
   const boardTitle = $derived(isGuild ? rankingsCopy.guildTitle[guildKind] : cohort);
   const boardMeta = $derived(
-    isGuild || page === null || page.total === 0
-      ? undefined
-      : `${page.total.toLocaleString('en-US')} ranked on ${encounterName}`,
+    isGuild || page === null || page.total === 0 ? undefined : `${page.total.toLocaleString('en-US')} ranked`,
+  );
+  /** Nothing ranked where the visitor is looking: the rail offers the companion, what fills it. */
+  const nothingRanked = $derived(
+    aimed &&
+      status === 'ready' &&
+      (isIndex
+        ? encounters.length === 0
+        : isGuild
+          ? guildRows.length === 0
+          : page === null || page.rows.length === 0),
   );
   const showYourRank = $derived(viewer !== null && !isIndex && !isGuild && ownDefaults.class !== '');
 
@@ -440,13 +451,10 @@
     {#snippet header()}
       <PageHeader title={rankingsCopy.h1}>
         {#snippet meta()}
-          {#if isIndex}<span>{encounters.length > 0 ? `${encounters.length} encounters ranked` : ' '}</span
-            >{:else}
-            <!-- The stamp's box is there from the first paint, so the board's answer moves nothing. -->
-            <span class:invisible={updatedStamp === null} data-testid="rankings-updated"
-              >Updated {updatedStamp ?? UPDATED_PLACEHOLDER}</span
-            >
-          {/if}
+          <!-- The stamp's box is there from the first paint, so the board's answer moves nothing. -->
+          <span class:invisible={updatedStamp === null} data-testid="rankings-updated"
+            >Updated {updatedStamp ?? UPDATED_PLACEHOLDER}</span
+          >
         {/snippet}
       </PageHeader>
     {/snippet}
@@ -486,7 +494,17 @@
           {/if}
         </Section>
       {/if}
-      <div data-region={REGION.summary}>
+      {#if nothingRanked}
+        <Section title={scoreCopy.explainerLogsHeading} panel testid="rankings-companion">
+          <p class="text-small text-muted">{scoreCopy.explainerLogsBody}</p>
+          <p class="mt-3">
+            <Button href={scoreCopy.explainerLogsHref}>{scoreCopy.explainerLogsButton}</Button>
+          </p>
+        </Section>
+      {/if}
+      <!-- The tier list pointer sits beside the board; below 1280, where the rail stacks first,
+           it would push the board down for a link the bar's Tier list door already gives. -->
+      <div class="max-xl:hidden" data-region={REGION.summary}>
         <Plate flush={false}>
           <p class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <span>{rankingsCopy.tierQuestion}</span>
@@ -554,7 +572,7 @@
               fill={rankingsEmptyCopy.guildsFill}
             />
           {:else}
-            <RankList heads={guildHeads} compact figures={1} links={1} label={boardTitle} testid="guild-rows">
+            <RankList heads={guildHeads} compact figures={1} links={0} label={boardTitle} testid="guild-rows">
               {#each guildRows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
                 {@const view = guildRowView(row, { kind: guildKind, best: guildBest })}
                 <RankRow
@@ -591,31 +609,44 @@
           </RankingsEmpty>
         {:else}
           {@render legend()}
-          <RankList
-            {heads}
-            figures={4}
-            figureWidth={72}
-            links={0}
-            compact
-            label={cohort}
-            testid="ranking-board"
-          >
-            {#if placement === 'pinned' && page.character_rank}
+          {#if placement === 'pinned' && page.character_rank}
+            <!-- The viewer's best kill off this page: captioned, above the board, at its true rank. -->
+            <p class="text-label text-muted px-5 pb-1 font-bold max-md:px-[14px]">{rankingsCopy.ownBest}</p>
+            <RankList
+              figures={4}
+              figureWidth={72}
+              links={0}
+              compact
+              label={rankingsCopy.ownBest}
+              testid="ranking-pinned"
+            >
               {@render rankRow(
                 { ...page.character_rank.row, rank: page.character_rank.rank },
                 true,
                 'ranking-pinned-row',
                 rankingsCopy.ownBest,
               )}
-            {/if}
-            {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
-              {@render rankRow(
-                row,
-                placement === 'in-place' && row.player.key === ownKey,
-                `ranking-${row.rank}`,
-              )}
-            {/each}
-          </RankList>
+            </RankList>
+          {/if}
+          <Ruled>
+            <RankList
+              {heads}
+              figures={4}
+              figureWidth={72}
+              links={0}
+              compact
+              label={cohort}
+              testid="ranking-board"
+            >
+              {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
+                {@render rankRow(
+                  row,
+                  placement === 'in-place' && row.player.key === ownKey,
+                  `ranking-${row.rank}`,
+                )}
+              {/each}
+            </RankList>
+          </Ruled>
           {#if lastPage > 1}
             <Divided>
               <div

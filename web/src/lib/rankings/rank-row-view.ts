@@ -1,7 +1,7 @@
 // web/src/lib/rankings/rank-row-view.ts
 // A ranking row as the shared RankRow draws it (logs spec 2026-11-07 section 7): the rank in its
 // percentile colour (the WCL scale, floored: rankColor), the character's name and link in its
-// class colour, the guild and the talent split under it (and the spec on a board of several
+// class colour, the guild under it with the talent split (the spec on a board of several
 // classes), the bar of its value over the board's top, the figures (the value, which opens the
 // kill in its report, the percentile, Executed, Length) and the date. The row carries no link strip:
 // a compact list beside the rail has no room for one, and the value is the way into the report.
@@ -62,8 +62,8 @@ export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView 
     classSlug: row.player.class.toLowerCase(),
     sub: [
       row.guild?.name,
-      board.multiClass === true ? `${row.player.spec} ${row.player.class}` : undefined,
-      row.talent_split,
+      // A board of several classes names the spec; one class's board shows the talent split.
+      board.multiClass === true ? `${row.player.spec} ${row.player.class}` : row.talent_split,
     ]
       .filter((part): part is string => part !== undefined && part !== '')
       .join(' · '),
@@ -99,7 +99,9 @@ export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView 
   };
 }
 
-/** The kill in its report. */
-export function reportHref(row: Pick<RankingRow, 'report_id' | 'fight_index'>): string {
-  return `/reports/${row.report_id}?fight=${row.fight_index}`;
+/** The kill in its report (the report alone when the row names no fight). */
+export function reportHref(kill: { report_id: string; fight_index?: number }): string {
+  return kill.fight_index === undefined
+    ? `/reports/${kill.report_id}`
+    : `/reports/${kill.report_id}?fight=${kill.fight_index}`;
 }

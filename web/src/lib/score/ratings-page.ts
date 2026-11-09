@@ -37,7 +37,7 @@ export const ratingsPageCopy = {
   visibility:
     "A rating comes only from a public report, the same way a Warcraft Logs parse does. There is no leaderboard of ratings: a rating is one fight's roster or one character's own history.",
   oneNumberFirst: [
-    'Every rating is one number, 0 to 100: a weighted average of six components (Output, Survival, Mechanics, Utility, Preparation, Activity), each also 0 to 100. Topping the meter while dying to avoidable damage with no flask on does not rate well, because Output is one part of the score.',
+    'Topping the meter while dying to avoidable damage with no flask on does not rate well: Output is one part of the score.',
     'A component that cannot be scored for a fight is left out and named, and its weight goes to the components that did score. That happens when an encounter has no mechanics table yet, the simulator does not model the spec yet, or too few logs exist to compare against.',
   ],
   components: [
@@ -66,8 +66,7 @@ export const ratingsPageCopy = {
       body: 'The share of the fight you spent casting or swinging rather than idle, leaving out the stretches the fight itself gives you nothing to do, such as a scripted phase change.',
     },
   ],
-  roles:
-    "Tanks and healers each have their own column in the table above. A tank's Output is worth 10 of 100 and its Survival 35, because taking hits is the job. A healer's Output is effective healing only; overheal does not count.",
+  roles: "A healer's Output is effective healing only; overheal does not count.",
   adjustable:
     "A guild's officers can change the weights and the cap for their own guild. This page shows the defaults.",
   rankedOrAbsolute: [

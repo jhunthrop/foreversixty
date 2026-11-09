@@ -13,21 +13,22 @@ const ROW: GuildRankingRow = {
 };
 
 describe('guildRowView', () => {
-  it('reads a Speed row: the kill time, the bar against the fastest, the guild link and the Report', () => {
+  it('reads a Speed row: the kill time opening its report, the bar against the fastest, the guild link', () => {
     const view = guildRowView(ROW, { kind: 'speed', best: 125_000 });
     expect(view.name).toBe('The Last Watch');
     expect(view.href).toBe('/guild/us/hardcore/the-last-watch');
-    expect(view.sub).toMatch(/^US · /);
+    expect(view.sub).toMatch(/^US · .* ruleset$/);
     expect(view.figures[0]?.value).toBe('2:11');
     expect(view.fraction).toBeCloseTo(125 / 131);
-    expect(view.links.map((link) => link.href)).toEqual(['/reports/rep2?fight=4']);
+    expect(view.figures[0]?.href).toBe('/reports/rep2?fight=4');
+    expect(view.links).toEqual([]);
   });
 
-  it('reads a Progress row as bosses, with no Report when the row spans every encounter', () => {
+  it('reads a Progress row as bosses, with no report link when the row spans every encounter', () => {
     const view = guildRowView({ ...ROW, value: 3, report_id: undefined }, { kind: 'progress', best: 4 });
     expect(view.figures[0]?.value).toBe('3 bosses');
     expect(view.fraction).toBe(0.75);
-    expect(view.links).toEqual([]);
+    expect(view.figures[0]?.href).toBeUndefined();
   });
 
   it('reads an Execution row as deaths, a deathless kill the best', () => {

@@ -43,7 +43,7 @@ describe('rankRowView', () => {
 
   it('names the spec under the guild on a board of several classes', () => {
     const view = rankRowView(ROW, { ...BOARD, multiClass: true });
-    expect(view.sub).toBe('Olympus XXVII · Fury Warrior · 17/34/0');
+    expect(view.sub).toBe('Olympus XXVII · Fury Warrior');
     expect(rankRowView({ ...ROW, guild: undefined }, BOARD).sub).toBe('17/34/0');
   });
 

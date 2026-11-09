@@ -39,7 +39,6 @@ test('signed out, bare /rankings lists the ranked encounters, each a link to its
   await expect(list).toBeVisible();
   await expect(page).toHaveURL(/\/rankings$/);
   await expect(page.getByTestId('page-title')).toHaveText('Rankings');
-  await expect(page.locator('main header')).toContainText('2 encounters ranked');
   await expect(page.getByTestId('encounter-picker').locator('h2')).toHaveText('Choose an encounter');
   const links = list.getByRole('link');
   await expect(links).toHaveCount(2);

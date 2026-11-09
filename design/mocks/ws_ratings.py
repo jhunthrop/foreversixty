@@ -27,8 +27,10 @@ TIER_HEX = {'common': '#ffffff', 'uncommon': '#1eff00', 'rare': '#0070dd', 'epic
 PAGE_CSS = '''<style>
 .prose{display:flex;flex-direction:column;gap:12px;padding-top:12px}.prose:first-child{padding-top:0}.prose p{font-size:15px;line-height:24px;max-width:72ch}.prose p.muted{color:var(--muted)}
 .st-r .nm{line-height:20px}
-.parts{margin-top:16px}
-.figs3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 24px;margin-top:16px}.figs3>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.parts{margin-top:0}
+/* the built open Section sets its body 12 px under the hairline (ui/Section.svelte pt-3) */
+section>.sec-h{padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.14)}section>.sec-h+*,section>.sec-h+.rows{margin-top:12px}section>.sec-h+.prose{padding-top:0}
+.figs3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 24px}.figs3>div{display:flex;flex-direction:column;gap:2px;min-width:0}
 .score-fig{font:700 36px/40px var(--font-body);font-variant-numeric:tabular-nums}.score-fig small{margin-left:4px;font-size:13px;font-weight:600;color:var(--muted)}
 .tier{font-size:19px;line-height:24px}.tiers .row.cur{background:color-mix(in srgb,var(--c) 12%,transparent);box-shadow:inset 3px 0 0 var(--c)}
 .ans-col{display:flex;flex-direction:column;gap:4px;align-items:flex-end;text-align:right;min-width:360px;min-height:96px}
@@ -57,13 +59,12 @@ def head() -> str:
 
 def score_panel() -> str:
     rows = [StatRow('', f'<b>{escape(c["label"])}</b>', escape(c['moves']),
-                    [f'{R["sample"]["components"][c["key"]]:,}', escape(R['up_to'][c['key']])],
+                    [f'{R["sample"]["components"][c["key"]]:,}', f'{R["component_max"][c["key"]]:,}'],
                     Meter(R['sample']['components'][c['key']] / R['component_max'][c['key']]),
-                    primary_phone=f'{R["sample"]["components"][c["key"]]} {escape(R["up_to"][c["key"]])}') for c in SC['components']]
+                    primary_phone=f'{R["sample"]["components"][c["key"]]} of {R["component_max"][c["key"]]}') for c in SC['components']]
     table = StatTable([('', False), ('Part', False), ('Of its top', False), ('Points', True), ('Top', True)], rows, 2)
-    body = (f'<p class="t-lead">{escape(SC["explainerLead"])}</p><div class="parts">{table}</div>'
-            + prose([SC['explainerWhat'], SC['explainerLaunch']], [False, True]))
-    return Section(escape(SC['explainerHeading']), body, meta=escape(SC['explainerScoreCaption']), panel=True, frame='lead')
+    body = f'<div class="parts">{table}</div>' + prose([SC['explainerLaunch']], [True])
+    return Section(escape(SC['explainerHeading']), body, panel=True, frame='lead')
 
 
 def rating_panel() -> str:
@@ -74,9 +75,8 @@ def rating_panel() -> str:
             f'<span class="t-small">Up {trend[-1] - trend[0]} since the first</span></div>'
             f'<div><span class="t-label">Weakest part</span><span style="font:600 15px/20px var(--font-body);color:var(--strong)">{escape(R["weakest"])}</span></div></div>')
     pc = R['copy']
-    body = (f'<p class="t-lead">{escape(SC["explainerRatingBridge"])} {escape(SC["explainerPreparationShared"])}</p>{figs}'
-            + prose([pc['visibility'], *pc['oneNumberFirst']], [True]))
-    return Section(escape(SC['explainerRatingHeading']), body, meta=escape(SC['explainerRatingCaption']), panel=True, frame='framed')
+    body = figs + prose([pc['visibility'], *pc['oneNumberFirst']], [True])
+    return Section(escape(SC['explainerRatingHeading']), body, panel=True, frame='framed')
 
 
 def reference_panels() -> str:
@@ -85,10 +85,11 @@ def reference_panels() -> str:
     wrows = [StatRow('', f'<b>{w["component"]}</b>', '', [str(w['dps']), str(w['healer']), str(w['tank'])],
                      primary_phone=f'{w["dps"]} / {w["healer"]} / {w["tank"]}', bar=False) for w in R['weights']]
     weights = StatTable([('', False), ('Component', False), ('DPS', True), ('Healer', True), ('Tank', True)], wrows, 3, bar=False, open_=True)
-    return (Section('What each component measures', comp, panel=True)
-            + Section('Weights, by role', weights + prose([pc['roles'], pc['adjustable']], [True, True]), panel=True)
-            + Section('Ranked against your spec, or absolute', prose(pc['rankedOrAbsolute']), panel=True)
-            + Section('The cap', prose([RC['cappedRule']]), panel=True))
+    # the reference sections sit open on the ground (ai-slop round 1: seven identical panels read as a template)
+    return (Section('What each component measures', comp)
+            + Section('Weights, by role', weights + prose([pc['roles'], pc['adjustable']], [True, True]))
+            + Section('Ranked against your spec, or absolute', prose(pc['rankedOrAbsolute']))
+            + Section('The cap', prose([RC['cappedRule']])))
 
 
 def rail() -> str:
