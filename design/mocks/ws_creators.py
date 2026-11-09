@@ -131,7 +131,7 @@ def admin_creators(rail: str) -> str:
 
 
 # ================================================================================================ /admin/creators/payouts
-def payouts(dialog: bool = False, off: bool = False) -> str:
+def payouts(dialog: bool | str = False, off: bool = False) -> str:
     """off: the server's payout switch is off (CREATOR_PAYOUTS): the Notice above the Plate, Approve disabled."""
     c = P['copy']
     def trail(r: dict) -> str:
@@ -148,7 +148,11 @@ def payouts(dialog: bool = False, off: bool = False) -> str:
     body = head + f'<div class="page-foot">{Page("split", main, rail)}</div>'
     if dialog:
         d = P['confirm']
-        body += Dialog(e(d['title']), e(d['body']), '', Btn(e(d['cancel']), small=False) + Btn(e(d['pay']), primary=True, small=False), 'pay-title')
+        short = dialog == 'short'
+        line = f'<p class="t-small">{e(d["balanceShortLine"] if short else d["balance"])}</p>'
+        if short:
+            line += f'<p class="t-small wipe" role="alert">{e(d["short"])}</p>'
+        body += Dialog(e(d['title']), e(d['body']), line, Btn(e(d['cancel']), small=False) + Btn(e(d['pay']), primary=not short, small=False, disabled=short), 'pay-title')
     return render('Statements · Forever Sixty', body, OWNER, '/admin/creators/payouts mock (the owner, 2026-12-09: November closed); data creators-facts.json.')
 
 
@@ -226,6 +230,7 @@ PAGES = {
     'web-admin-creators-edit': lambda: admin_creators(edit_form()),
     'web-admin-creators-payouts': lambda: payouts(),
     'web-admin-creators-confirm': lambda: payouts(dialog=True),
+    'web-admin-creators-confirm-short': lambda: payouts(dialog='short'),
     'web-admin-creators-payouts-off': lambda: payouts(off=True),
     'web-creators-invite': lambda: onboarding('invite'),
     'web-creators-done': lambda: onboarding('done'),

@@ -108,6 +108,52 @@ func TestTheStartupConnectCheck(t *testing.T) {
 	}
 }
 
+// The platform's available balance (it pays out to the owner's bank on a schedule) may not cover a
+// statement: Approve refuses before claiming anything, and a transfer Stripe refuses for the
+// balance leaves the statement exactly as it was, so the same approve later is safe.
+func TestApproveWhenTheBalanceCannotCoverIt(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	c := h.ready(h.creator("grimbrew", "2026-11-08"))
+	h.returning(c, at("2026-11-10T10:00:00Z"), "us-normal-short1")
+	h.returning(c, at("2026-11-11T10:00:00Z"), "us-normal-short2")
+	nov := mustMonth("2026-11")
+
+	h.gw.available = 300 // $3.00 against a $4.00 statement
+	if _, err := h.svc.Approve(ctx, c.ID, nov); !errors.Is(err, ErrInsufficientBalance) {
+		t.Fatalf("approve on a short balance = %v", err)
+	}
+	if st := h.statement(c, "2026-11"); st.Status != StatementReady || st.TotalCents != 400 || h.gw.creates != 0 {
+		t.Fatalf("after the refusal = %+v, creates %d", st, h.gw.creates)
+	}
+	if w := h.request("GET", "/v1/admin/creators/balance", owner, nil); !strings.Contains(w.Body.String(), `"available_cents":300`) {
+		t.Fatalf("balance = %s", w.Body)
+	}
+	if w := h.request("GET", "/v1/admin/creators/balance", member(h.user(h.now)), nil); w.Code != 403 {
+		t.Fatalf("a member read the balance: %d", w.Code)
+	}
+
+	// The balance read said yes, but Stripe refused the transfer itself.
+	h.gw.available = -1
+	h.gw.failNext = ErrInsufficientBalance
+	w := h.request("POST", "/v1/admin/creators/"+itoa(c.ID)+"/statements/2026-11/approve", owner, nil)
+	if w.Code != 409 || !strings.Contains(w.Body.String(), "balance_insufficient") || !strings.Contains(w.Body.String(), "Nothing was paid") {
+		t.Fatalf("a refused transfer = %d %s", w.Code, w.Body)
+	}
+	var payouts, claimed int
+	h.pool.QueryRow(ctx, `select count(*) from creator_payouts`).Scan(&payouts)
+	h.pool.QueryRow(ctx, `select count(*) from creator_players where bounty_payout_id is not null or qualified_character is not null`).Scan(&claimed)
+	if payouts != 0 || claimed != 0 {
+		t.Fatalf("a refused transfer left payouts=%d claimed=%d", payouts, claimed)
+	}
+
+	// The same approve once the balance covers it: one transfer, the full amount.
+	st, err := h.svc.Approve(ctx, c.ID, nov)
+	if err != nil || st.Status != StatementPaid || h.gw.creates != 1 || h.gw.transfers[TransferGroup(c.ID, nov)].AmountCents != 400 {
+		t.Fatalf("the retry = %+v %v creates %d", st, err, h.gw.creates)
+	}
+}
+
 // An arrival sent without a click time (an older page) counts as the sign-up's own moment.
 func TestALinkArrivalWithoutAClickTimeStillCounts(t *testing.T) {
 	h := newHarness(t)

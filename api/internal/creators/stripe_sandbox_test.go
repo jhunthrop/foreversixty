@@ -55,6 +55,9 @@ func TestStripeSandbox(t *testing.T) {
 	if err != nil || StripeStatusOf(facts) != StatusReady {
 		t.Fatalf("the onboarded test creator = %+v %v", facts, err)
 	}
+	if _, err := g.AvailableUSD(ctx); err != nil {
+		t.Fatalf("balance: %v", err)
+	}
 	if _, err := g.LoginLink(ctx, creator); err != nil {
 		t.Fatalf("login link: %v", err)
 	}

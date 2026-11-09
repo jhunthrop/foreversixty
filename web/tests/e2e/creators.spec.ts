@@ -118,10 +118,13 @@ test.describe('/admin/creators', () => {
 });
 
 test.describe('/admin/creators/payouts', () => {
-  async function statements(page: Page, enabled = true): Promise<void> {
+  async function statements(page: Page, enabled = true, availableCents = 50000): Promise<void> {
     await signedIn(page, 'admin');
     await page.route('**/v1/admin/creators/statements**', (route) =>
       route.fulfill(envelope({ ...(read('statements.json') as object), payouts_enabled: enabled })),
+    );
+    await page.route('**/v1/admin/creators/balance', (route) =>
+      route.fulfill(envelope({ available_cents: availableCents })),
     );
   }
 
@@ -146,6 +149,9 @@ test.describe('/admin/creators/payouts', () => {
     await expect(page.getByTestId('payout-approve-3')).toHaveCount(0);
     await page.getByTestId('payout-approve-1').click();
     await expect(page.getByTestId('pay-dialog')).toContainText('Pay Grimbrew $168.60 for November 2026?');
+    await expect(page.getByTestId('pay-balance')).toHaveText(
+      'Available in Stripe: $500.00. This payout: $168.60.',
+    );
     await page.getByTestId('pay-cancel').click();
     expect(calls).toBe(0);
     await page.getByTestId('payout-approve-1').click();
@@ -154,6 +160,39 @@ test.describe('/admin/creators/payouts', () => {
       'Paid 9 Dec 2026 · transfer tr_creator-1-2026-11',
     );
     expect(calls).toBe(1);
+  });
+
+  test('a balance that cannot cover the payout turns Pay off and says what to do', async ({ page }) => {
+    await statements(page, true, 12000);
+    let calls = 0;
+    await page.route('**/v1/admin/creators/1/statements/2026-11/approve', async (route) => {
+      calls++;
+      await route.fulfill(envelope(null, 409, 'balance_insufficient'));
+    });
+    await page.goto('/admin/creators/payouts');
+    await page.getByTestId('payout-approve-1').click();
+    await expect(page.getByTestId('pay-balance')).toHaveText(
+      'Available in Stripe: $120.00. This payout: $168.60.',
+    );
+    await expect(page.getByTestId('pay-problem')).toContainText(
+      'Not enough in your Stripe balance. Add funds in Stripe',
+    );
+    await expect(page.getByTestId('pay-confirm')).toBeDisabled();
+    expect(calls).toBe(0);
+  });
+
+  test('a transfer Stripe refuses for the balance pays nothing and says so', async ({ page }) => {
+    await statements(page);
+    await page.route('**/v1/admin/creators/1/statements/2026-11/approve', (route) =>
+      route.fulfill(envelope(null, 409, 'balance_insufficient')),
+    );
+    await page.goto('/admin/creators/payouts');
+    await page.getByTestId('payout-approve-1').click();
+    await page.getByTestId('pay-confirm').click();
+    await expect(page.getByTestId('pay-problem')).toContainText('Nothing was paid');
+    await expect(page.getByTestId('pay-dialog')).toBeVisible();
+    await page.getByTestId('pay-cancel').click();
+    await expect(page.getByTestId('payout-row-1')).toContainText('Ready to approve');
   });
 
   test('with payouts off the notice shows and nothing can be approved', async ({ page }) => {

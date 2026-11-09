@@ -59,6 +59,9 @@ type Gateway interface {
 	InvoiceMoney(ctx context.Context, invoiceID string) (InvoiceMoney, error)
 	// Refunds lists a charge's refunds.
 	Refunds(ctx context.Context, chargeID string) ([]Refund, error)
+	// AvailableUSD is the platform's available USD balance in cents (Balance read): what a transfer
+	// can draw on now. The owner's balance pays out to the bank on a schedule, so it is often low.
+	AvailableUSD(ctx context.Context) (int64, error)
 	// FindTransfer answers the transfer already made for a group, "" when there is none.
 	FindTransfer(ctx context.Context, group string) (string, error)
 	// CreateTransfer makes the transfer, idempotent on the group, and answers its id.

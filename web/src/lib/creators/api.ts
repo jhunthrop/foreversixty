@@ -57,6 +57,9 @@ export const listStatements = (month = ''): Promise<StatementsPage> =>
   data<StatementsPage>(`${ADMIN}/statements${month === '' ? '' : `?month=${encodeURIComponent(month)}`}`);
 export const approveStatement = (id: number, month: string): Promise<Statement> =>
   data<Statement>(`${ADMIN}/${id}/statements/${encodeURIComponent(month)}/approve`, { method: 'POST' });
+/** The platform's available USD balance, in cents (the Approve dialog). */
+export const payoutBalance = async (): Promise<number> =>
+  (await data<{ available_cents: number }>(`${ADMIN}/balance`)).available_cents;
 export const listRequests = async (): Promise<CreatorRequest[]> =>
   (await data<{ requests: CreatorRequest[] }>(`${ADMIN}/requests`)).requests;
 export const approveRequest = (id: number, input: CreatorInput): Promise<Creator> =>

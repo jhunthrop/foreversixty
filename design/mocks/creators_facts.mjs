@@ -49,7 +49,8 @@ export default {
   payouts: {
     copy: strip(p), off: p.payoutsOff, month: m.monthLabel(first.month), title: p.tableTitle(statements.length), meta: p.tableMeta(m.money(m.toPay(statements))),
     rows: stRows, linesTitle: p.linesTitle(first.name), lines,
-    confirm: { title: p.confirmTitle(first.name, m.money(first.total_cents), m.monthLabel(first.month)), body: p.confirmBody(m.money(first.total_cents)), pay: p.confirmPay(m.money(first.total_cents)), cancel: p.cancel },
+    confirm: { title: p.confirmTitle(first.name, m.money(first.total_cents), m.monthLabel(first.month)), body: p.confirmBody(m.money(first.total_cents)), pay: p.confirmPay(m.money(first.total_cents)), cancel: p.cancel,
+      balance: p.balanceLine(m.money(50000), m.money(first.total_cents)), balanceShortLine: p.balanceLine(m.money(12000), m.money(first.total_cents)), short: p.balanceShort },
   },
   onboarding: { copy: strip(ob), join: ob.inviteJoin(me.name) },
   requests: {

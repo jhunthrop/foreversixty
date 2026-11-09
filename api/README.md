@@ -368,7 +368,8 @@ Both run the same image as the API, dispatched on their first argument.
 ## Stripe: going live
 
 Billing is off until the three `STRIPE_*` variables exist on the Cloud Run service; the
-deploy workflow never touches env or secrets, so they are set once and survive every deploy.
+deploy workflow touches no Stripe secret but the creator program's (`STRIPE_PAYOUTS_KEY` and `CREATOR_PAYOUTS`,
+merged in by `api.yml`), so the rest are set once and survive every deploy.
 The account runs Stripe's Managed Payments (Stripe is the merchant of record and handles
 sales tax), which is why `stripe-setup` gives every product a tax code. In order:
 
@@ -459,8 +460,19 @@ Going live, in order (the owner's Stripe account, never a key in a shell history
    with `connect: true`, the same `api_version` as the first (`2025-08-27.basil`) and the one event
    `account.updated`. Put its signing secret in Secret Manager as `STRIPE_CONNECT_WEBHOOK_SECRET`
    and wire it with `--update-secrets` as the first one was.
-5. Run a month with `CREATOR_PAYOUTS` off, compare its statements with the Dashboard, then
-   `gcloud run services update api --region us-east1 --update-env-vars CREATOR_PAYOUTS=true`.
+5. Payouts are on in production through the deploy config, not a console change: `api.yml`'s
+   deploy step merges `CREATOR_PAYOUTS=true` and the secret `STRIPE_PAYOUTS_KEY=STRIPE_PAYOUTS_KEY:latest`
+   into the service (the runtime account `api-runtime@foreversixty` holds secretAccessor on that
+   secret, granted 2026-11-08). Payouts are still one statement at a time, only on the owner's
+   Approve. After a deploy, `/admin/creators` shows neither `Payouts are switched off` nor the
+   payouts key notice.
+6. Approve checks the platform's available USD balance first (Balance read on the payouts key) and
+   the dialog shows `Available in Stripe: $X. This payout: $Y.`; a short balance turns Pay off with
+   `Not enough in your Stripe balance. Add funds in Stripe (Balances → Add to balance) or wait for
+   subscription payments to clear.` The owner's balance pays out to the bank automatically, so it is
+   often low. A transfer Stripe still refuses with `balance_insufficient` leaves the statement unpaid
+   with nothing recorded (the claim is undone); the same Approve later is safe (same transfer group
+   and idempotency key).
 
 Adding a creator (from the form or by approving an application) gives the creator's own account
 Premium, as an entitlements row with source `creator`; it never replaces a paid subscription, and

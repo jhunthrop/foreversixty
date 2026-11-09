@@ -238,6 +238,28 @@ func settleLines(ctx context.Context, tx pgx.Tx, payoutID int64, set lineSet) er
 	return err
 }
 
+// Release undoes a pending payout whose transfer Stripe refused: its lines are unsettled again and
+// the payout row goes, so the statement is exactly as before the approve.
+func (s *Store) Release(ctx context.Context, payoutID int64) error {
+	err := pgx.BeginFunc(ctx, s.Pool, func(tx pgx.Tx) error {
+		for _, sql := range []string{
+			`update creator_players set bounty_payout_id = null, qualified_character = null where bounty_payout_id = $1`,
+			`update creator_revenue set payout_id = null where payout_id = $1`,
+			`update creator_refunds set payout_id = null where payout_id = $1`,
+			`delete from creator_payouts where id = $1 and status = 'pending'`,
+		} {
+			if _, err := tx.Exec(ctx, sql, payoutID); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("creators: release payout %d: %w", payoutID, err)
+	}
+	return nil
+}
+
 // MarkPaid records the transfer that paid a pending payout.
 func (s *Store) MarkPaid(ctx context.Context, payoutID int64, transferID string, now time.Time) error {
 	_, err := s.Pool.Exec(ctx, `update creator_payouts set status = 'paid', transfer_id = $2, paid_at = $3

@@ -114,6 +114,14 @@ export const payoutsCopy = {
   confirmBody: (amount: string): string =>
     `Stripe transfers ${amount} to their account now. This can’t be undone here.`,
   confirmPay: (amount: string): string => `Pay ${amount}`,
+  balanceChecking: 'Checking your Stripe balance',
+  balanceLine: (available: string, amount: string): string =>
+    `Available in Stripe: ${available}. This payout: ${amount}.`,
+  balanceShort:
+    'Not enough in your Stripe balance. Add funds in Stripe (Balances → Add to balance) or wait for subscription payments to clear.',
+  balanceFailed: 'Your Stripe balance didn’t load; try again.',
+  transferShort:
+    'Stripe didn’t have enough in your balance for this payout. Nothing was paid; approve it again once the balance covers it.',
   cancel: 'Cancel',
   approveFailed: (reason: string): string =>
     `Stripe didn’t take the transfer: ${reason}. Nothing was paid; try again.`,

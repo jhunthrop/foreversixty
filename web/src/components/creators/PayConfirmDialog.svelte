@@ -16,9 +16,24 @@
     title,
     amount,
     busy,
+    balance,
+    blocked,
+    problem,
     onconfirm,
     onclose,
-  }: { title: string; amount: string; busy: boolean; onconfirm: () => void; onclose: () => void } = $props();
+  }: {
+    title: string;
+    amount: string;
+    busy: boolean;
+    /** The balance line (`Available in Stripe: …`), or the checking line while it loads. */
+    balance: string;
+    /** Pay is off: the balance is short, still loading, or failed to load. */
+    blocked: boolean;
+    /** Why Pay is off or what went wrong, in plain words; '' for nothing. */
+    problem: string;
+    onconfirm: () => void;
+    onclose: () => void;
+  } = $props();
 
   let panel = $state<HTMLElement | undefined>(undefined);
   let heading = $state<HTMLElement | undefined>(undefined);
@@ -75,13 +90,21 @@
         {title}
       </h2>
       <p class="m-0 text-[15px] leading-[22px]">{copy.confirmBody(amount)}</p>
+      <p class="text-muted m-0 mt-2 text-[14px] leading-5" data-testid="pay-balance">{balance}</p>
+      {#if problem !== ''}<p
+          class="text-wipe m-0 mt-1 text-[14px] leading-5"
+          role="alert"
+          data-testid="pay-problem"
+        >
+          {problem}
+        </p>{/if}
     </div>
     <div class="pay-actions ui-overlay-rule-t">
       <Button onclick={close} disabled={busy} testid="pay-cancel">{copy.cancel}</Button>
       <button
         type="button"
-        class={button('primary')}
-        disabled={busy}
+        class={button(blocked ? 'secondary' : 'primary')}
+        disabled={busy || blocked}
         aria-busy={busy ? 'true' : undefined}
         onclick={onconfirm}
         data-testid="pay-confirm"

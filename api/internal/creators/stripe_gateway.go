@@ -203,6 +203,24 @@ func (g *StripeGateway) Refunds(ctx context.Context, chargeID string) ([]Refund,
 	return out, nil
 }
 
+func (g *StripeGateway) AvailableUSD(ctx context.Context) (int64, error) {
+	c, err := g.connect()
+	if err != nil {
+		return 0, err
+	}
+	b, err := c.V1Balance.Retrieve(ctx, nil)
+	if err != nil {
+		return 0, fmt.Errorf("creators: read balance: %w", err)
+	}
+	var cents int64
+	for _, a := range b.Available {
+		if a.Currency == stripe.CurrencyUSD {
+			cents += a.Amount
+		}
+	}
+	return cents, nil
+}
+
 func (g *StripeGateway) FindTransfer(ctx context.Context, group string) (string, error) {
 	c, err := g.connect()
 	if err != nil {
@@ -231,6 +249,10 @@ func (g *StripeGateway) CreateTransfer(ctx context.Context, p TransferParams) (s
 	}
 	params.SetIdempotencyKey(p.Group)
 	t, err := c.V1Transfers.Create(ctx, params)
+	var se *stripe.Error
+	if errors.As(err, &se) && se.Code == stripe.ErrorCodeBalanceInsufficient {
+		return "", ErrInsufficientBalance
+	}
 	if err != nil {
 		return "", fmt.Errorf("creators: create transfer: %w", err)
 	}

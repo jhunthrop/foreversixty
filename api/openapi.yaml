@@ -10400,6 +10400,31 @@ paths:
         '503':
           description: payouts_off (the server switch) or stripe_off
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/admin/creators/balance:
+    get:
+      summary: The platform's available USD balance, for the Approve dialog
+      operationId: creatorPayoutBalance
+      description: >-
+        Owner only, read with the payouts key (Balance read). Approve also checks it and answers
+        409 balance_insufficient, with nothing paid or recorded, when the balance cannot cover the
+        statement.
+      responses:
+        '200':
+          description: The balance
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [available_cents], properties: { available_cents: { type: integer, format: int64 } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the owner
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/admin/creators/requests:
     get:
       summary: Waiting creator applications

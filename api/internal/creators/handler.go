@@ -28,6 +28,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	admin("POST /v1/admin/creators/{id}/stripe-status", s.refresh)
 	admin("GET /v1/admin/creators/statements", s.statements)
 	admin("POST /v1/admin/creators/{id}/statements/{month}/approve", s.approve)
+	admin("GET /v1/admin/creators/balance", s.balance)
 	admin("GET /v1/admin/creators/requests", s.requests)
 	admin("POST /v1/admin/creators/requests/{id}/approve", s.approveRequest)
 	admin("POST /v1/admin/creators/requests/{id}/decline", s.declineRequest)
@@ -68,6 +69,9 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 		httpx.WriteError(w, r, http.StatusConflict, "nothing_owed", "nothing is owed this month", nil)
 	case errors.Is(err, ErrNotPayable):
 		httpx.WriteError(w, r, http.StatusConflict, "not_payable", "stripe cannot pay this creator yet", nil)
+	case errors.Is(err, ErrInsufficientBalance):
+		httpx.WriteError(w, r, http.StatusConflict, "balance_insufficient",
+			"Not enough in your Stripe balance for this payout. Nothing was paid; approve it again once the balance covers it.", nil)
 	case errors.Is(err, ErrConnectDenied):
 		httpx.WriteError(w, r, http.StatusServiceUnavailable, "connect_denied", "the stripe payouts key is missing or lacks connect permissions", nil)
 	case errors.Is(err, ErrPayoutsOff):
@@ -220,6 +224,15 @@ func (s *Service) approve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ok(w, r, http.StatusOK, st)
+}
+
+func (s *Service) balance(w http.ResponseWriter, r *http.Request) {
+	cents, err := s.AvailableUSD(r.Context())
+	if err != nil {
+		s.fail(w, r, "balance", err)
+		return
+	}
+	ok(w, r, http.StatusOK, map[string]int64{"available_cents": cents})
 }
 
 func (s *Service) requests(w http.ResponseWriter, r *http.Request) {

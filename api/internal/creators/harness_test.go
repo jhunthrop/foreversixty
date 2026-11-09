@@ -30,12 +30,14 @@ type fakeGateway struct {
 	creates    int
 	failNext   error
 	connectErr error
-	nextID     int
+	// available is the platform balance in cents; -1 is unlimited.
+	available int64
+	nextID    int
 }
 
 func newFakeGateway() *fakeGateway {
 	return &fakeGateway{accounts: map[string]AccountFacts{}, invoices: map[string]InvoiceMoney{},
-		refunds: map[string][]Refund{}, transfers: map[string]TransferParams{}}
+		refunds: map[string][]Refund{}, transfers: map[string]TransferParams{}, available: -1}
 }
 
 func (g *fakeGateway) id(prefix string) string {
@@ -79,6 +81,13 @@ func (g *fakeGateway) Refunds(_ context.Context, charge string) ([]Refund, error
 	return g.refunds[charge], nil
 }
 
+func (g *fakeGateway) AvailableUSD(context.Context) (int64, error) {
+	if g.available < 0 {
+		return 1 << 40, nil
+	}
+	return g.available, nil
+}
+
 func (g *fakeGateway) FindTransfer(_ context.Context, group string) (string, error) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
@@ -91,6 +100,9 @@ func (g *fakeGateway) FindTransfer(_ context.Context, group string) (string, err
 func (g *fakeGateway) CreateTransfer(_ context.Context, p TransferParams) (string, error) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
+	if g.available >= 0 && p.AmountCents > g.available {
+		return "", ErrInsufficientBalance
+	}
 	if g.failNext != nil {
 		err := g.failNext
 		g.failNext = nil

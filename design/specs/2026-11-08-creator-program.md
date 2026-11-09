@@ -58,6 +58,14 @@ Memory rules applied: stripe-billing (Commish LLC's account, Managed Payments; k
   Without the key, onboarding answers 503 `payouts_key_missing`.
 - **Live Connect is enabled.** An accounts list works, with 0 accounts. The owner is finishing the platform profile. The go-live checklist is in `api/README.md`, "Creator program".
 
+## 0E. Production and the balance, 2026-11-08 (coordinator)
+
+- `CREATOR_PAYOUTS=true` and `STRIPE_PAYOUTS_KEY` are set for production by `api.yml`'s deploy step, merged into the service. Payouts are still one statement at a time, only on the owner's Approve.
+- **Balance check before paying.** The Approve dialog reads the platform's available USD balance (`GET /v1/admin/creators/balance`) and shows `Available in Stripe: $X. This payout: $Y.`
+  - If X is less than Y, Pay is off and the dialog says `Not enough in your Stripe balance. Add funds in Stripe (Balances → Add to balance) or wait for subscription payments to clear.` (mock `web-admin-creators-confirm-short`).
+  - The API checks the balance again before claiming anything.
+- **A transfer Stripe refuses with `balance_insufficient`** undoes the claim, so the statement stays unpaid with nothing recorded. The dialog stays open and says `Stripe didn't have enough in your balance for this payout. Nothing was paid; approve it again once the balance covers it.` The idempotency key is the same, so a retry is safe.
+
 ## 0. Files
 
 | What | Path |

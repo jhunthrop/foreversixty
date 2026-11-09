@@ -9,6 +9,7 @@
    "loadFailed": "The creators didn’t load.",
    "stripeOff": "Stripe isn’t configured, so codes and payouts are off.",
    "payoutsOff": "Payouts are switched off on the server. Statements can be read but not paid.",
+   "connectDenied": "Stripe payouts key missing or lacks Connect permissions. Payouts can’t be made until it’s set.",
    "tableTitle": "Your creators",
    "tableMeta": "[fn]",
    "empty": "No creators yet. Add the first one.",
@@ -279,6 +280,11 @@
    "confirmTitle": "[fn]",
    "confirmBody": "[fn]",
    "confirmPay": "[fn]",
+   "balanceChecking": "Checking your Stripe balance",
+   "balanceLine": "[fn]",
+   "balanceShort": "Not enough in your Stripe balance. Add funds in Stripe (Balances → Add to balance) or wait for subscription payments to clear.",
+   "balanceFailed": "Your Stripe balance didn’t load; try again.",
+   "transferShort": "Stripe didn’t have enough in your balance for this payout. Nothing was paid; approve it again once the balance covers it.",
    "cancel": "Cancel",
    "approveFailed": "[fn]",
    "lines": "Lines",
@@ -456,7 +462,10 @@
    "title": "Pay Grimbrew $168.60 for November 2026?",
    "body": "Stripe transfers $168.60 to their account now. This can’t be undone here.",
    "pay": "Pay $168.60",
-   "cancel": "Cancel"
+   "cancel": "Cancel",
+   "balance": "Available in Stripe: $500.00. This payout: $168.60.",
+   "balanceShortLine": "Available in Stripe: $120.00. This payout: $168.60.",
+   "short": "Not enough in your Stripe balance. Add funds in Stripe (Balances → Add to balance) or wait for subscription payments to clear."
   }
  },
  "onboarding": {

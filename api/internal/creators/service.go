@@ -31,6 +31,10 @@ type Entitlements interface {
 // ErrPayoutsOff: the server's payout switch (CREATOR_PAYOUTS) is off.
 var ErrPayoutsOff = errors.New("creators: payouts are switched off on this server")
 
+// ErrInsufficientBalance: the platform's available balance cannot cover the payout. Nothing was
+// paid and nothing is recorded; the same approve, later, is safe (same transfer group and key).
+var ErrInsufficientBalance = errors.New("creators: not enough in the stripe balance for this payout")
+
 // ErrConnectDenied: the Stripe key cannot reach Connect (a restricted key without its permissions).
 var ErrConnectDenied = errors.New("creators: the stripe payouts key is missing or lacks connect permissions")
 
@@ -398,16 +402,54 @@ func (s *Service) Approve(ctx context.Context, creatorID int64, m Month) (Statem
 	if s.Gateway == nil {
 		return Statement{}, ErrStripeOff
 	}
+	if err := s.covered(ctx, creatorID, m); err != nil {
+		return Statement{}, err
+	}
 	p, c, err := s.Store.Claim(ctx, creatorID, m, s.now())
 	if err != nil {
 		return Statement{}, err
 	}
 	if p.Status == "pending" {
 		if err := s.transfer(ctx, c, m, p); err != nil {
+			if errors.Is(err, ErrInsufficientBalance) {
+				// Stripe refused it outright: undo the claim so the statement is exactly as it was.
+				if rerr := s.Store.Release(ctx, p.ID); rerr != nil {
+					return Statement{}, rerr
+				}
+			}
 			return Statement{}, err
 		}
 	}
 	return s.Store.Statement(ctx, c, m, s.now())
+}
+
+// covered refuses a payout the platform's available balance cannot cover, before anything is claimed.
+func (s *Service) covered(ctx context.Context, creatorID int64, m Month) error {
+	c, err := s.Store.Creator(ctx, creatorID)
+	if err != nil {
+		return err
+	}
+	st, err := s.Store.Statement(ctx, c, m, s.now())
+	if err != nil || st.Status != StatementReady || st.TotalCents == 0 {
+		return err
+	}
+	available, err := s.Gateway.AvailableUSD(ctx)
+	if err != nil {
+		return err
+	}
+	if available < st.TotalCents {
+		s.logger().Warn("creators", "op", "approve", "creator_id", creatorID, "month", m.String(), "state", "balance_short")
+		return ErrInsufficientBalance
+	}
+	return nil
+}
+
+// AvailableUSD is the platform's available USD balance, for the Approve dialog.
+func (s *Service) AvailableUSD(ctx context.Context) (int64, error) {
+	if s.Gateway == nil {
+		return 0, ErrStripeOff
+	}
+	return s.Gateway.AvailableUSD(ctx)
 }
 
 func (s *Service) transfer(ctx context.Context, c Creator, m Month, p payoutRow) error {

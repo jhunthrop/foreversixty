@@ -9,7 +9,7 @@
   import { tick } from 'svelte';
   import { AccountError, fetchMeOnce } from '../../lib/account/api';
   import { smallButton } from '../../lib/account/small-button';
-  import { approveStatement, listStatements } from '../../lib/creators/api';
+  import { approveStatement, listStatements, payoutBalance } from '../../lib/creators/api';
   import { adminCreatorsCopy, payoutsCopy as copy } from '../../lib/creators/copy';
   import {
     canApprove,
@@ -56,6 +56,9 @@
   let confirming = $state<Statement | null>(null);
   let paying = $state(false);
   let payError = $state('');
+  /** The available balance for the open dialog, in cents; null while it loads; NaN when it failed. */
+  let available = $state<number | null>(null);
+  let dialogProblem = $state('');
 
   const current = $derived(statements.find((s) => s.creator_id === selected) ?? statements[0] ?? null);
 
@@ -116,20 +119,47 @@
     heading?.focus();
   }
 
+  /** Opens the dialog for one statement and reads the balance it is checked against. */
+  async function confirm(s: Statement): Promise<void> {
+    confirming = s;
+    available = null;
+    dialogProblem = '';
+    try {
+      available = await payoutBalance();
+    } catch {
+      available = Number.NaN;
+    }
+  }
+
+  const short = $derived(confirming !== null && available !== null && available < confirming.total_cents);
+  const balanceLine = $derived(
+    confirming === null || available === null
+      ? copy.balanceChecking
+      : Number.isNaN(available)
+        ? copy.balanceFailed
+        : copy.balanceLine(money(available), money(confirming.total_cents)),
+  );
+  const blocked = $derived(available === null || Number.isNaN(available) || short);
+
   async function pay(): Promise<void> {
     if (confirming === null) return;
     paying = true;
-    payError = '';
+    dialogProblem = '';
     const target = confirming;
     try {
       const paid = await approveStatement(target.creator_id, target.month);
       statements = statements.map((s) => (s.creator_id === paid.creator_id ? { ...paid, name: s.name } : s));
       confirming = null;
     } catch (error) {
-      confirming = null;
-      payError = copy.approveFailed(
-        error instanceof AccountError && error.message !== '' ? error.message : '',
-      );
+      if (error instanceof AccountError && error.code === 'balance_insufficient') {
+        // Nothing was paid or recorded: the dialog stays open and says so.
+        dialogProblem = copy.transferShort;
+      } else {
+        confirming = null;
+        payError = copy.approveFailed(
+          error instanceof AccountError && error.message !== '' ? error.message : '',
+        );
+      }
     } finally {
       paying = false;
     }
@@ -196,7 +226,7 @@
                         type="button"
                         class={smallButton(payoutsEnabled && !connectDenied ? 'primary' : 'secondary')}
                         disabled={!payoutsEnabled || connectDenied}
-                        onclick={() => (confirming = s)}
+                        onclick={() => void confirm(s)}
                         data-testid={`payout-approve-${s.creator_id}`}
                         >{copy.approve(money(s.total_cents))}</button
                       >
@@ -264,6 +294,9 @@
       title={copy.confirmTitle(confirming.name, money(confirming.total_cents), monthLabel(confirming.month))}
       amount={money(confirming.total_cents)}
       busy={paying}
+      balance={balanceLine}
+      {blocked}
+      problem={dialogProblem !== '' ? dialogProblem : short ? copy.balanceShort : ''}
       onconfirm={() => void pay()}
       onclose={() => (confirming = null)}
     />
