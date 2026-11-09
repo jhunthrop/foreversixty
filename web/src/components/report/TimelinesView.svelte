@@ -278,7 +278,7 @@
       <div class="flex flex-col gap-2 px-4 pt-3 pb-3" data-testid="timelines">
         <ul class="text-muted flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] leading-5">
           <li class="text-text tabular-nums">
-            {formatDuration(current.startMs)} to {formatDuration(current.endMs)}
+            {clockLabel(current.startMs)} to {clockLabel(current.endMs)}
           </li>
           {#each LEGEND as item (item.label)}
             <li class="flex items-center gap-2">
@@ -305,7 +305,7 @@
             <span aria-hidden="true">&nbsp;</span>
           {/if}
         </p>
-        <div class="grid grid-cols-[96px_minmax(0,1fr)] md:grid-cols-[160px_minmax(0,1fr)]">
+        <div class="grid grid-cols-[96px_minmax(0,1fr)] md:grid-cols-[180px_minmax(0,1fr)]">
           <!-- The labels stay put; only the plot scrolls sideways on a phone. -->
           <ul class="flex flex-col pr-3">
             {#each enemyLanes as lane (lane.name)}

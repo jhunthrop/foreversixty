@@ -91,7 +91,14 @@ describe('the band’s meta line (directions b1)', () => {
 });
 
 describe('the band’s figure follows the tab (directions b1)', () => {
-  const totals = { damageDone: 2_400, healing: 142, damageTaken: 737, deaths: 2, durationMs: 763_000 };
+  const totals = {
+    damageDone: 2_400,
+    healing: 142,
+    damageTaken: 737,
+    deaths: 2,
+    durationMs: 763_000,
+    bossPull: true,
+  };
 
   it('is the group’s rate on the rate tabs', () => {
     expect(reportFigure({ ...totals, tab: 'summary', player: false })).toEqual({
@@ -123,6 +130,7 @@ describe('the band’s figure follows the tab (directions b1)', () => {
   it('is absent where no one figure answers the tab', () => {
     for (const tab of ['timeline', 'threat', 'resources', 'queries', 'coach'] as const)
       expect(reportFigure({ ...totals, tab, player: false })).toBeNull();
+    expect(reportFigure({ ...totals, tab: 'mechanics', player: false, bossPull: false })).toBeNull();
   });
 
   it('reads a rate with one decimal under 100 and whole from 100', () => {

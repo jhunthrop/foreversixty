@@ -175,11 +175,18 @@ describe('ownReportRow (logs spec 2026-11-07 section 5)', () => {
     expect(ownReportRow({ ...base, title: 'Tuesday raid', zone: 'Molten Core' }).title).toBe('Tuesday raid');
   });
 
-  it('reads zone, bosses, fights and the credit, leaving out a zone it does not have', () => {
-    expect(ownReportRow(base).sub).toBe('0 bosses · 42 fights · Not credited');
+  it('reads the pulls, the bosses or Trash only, and the credit when there is one (directions b1)', () => {
+    expect(ownReportRow(base).sub).toBe('42 pulls · Trash only');
     expect(
-      ownReportRow({ ...base, zone: 'Molten Core', bossCount: 1, fightCount: 1, loggingCharacter: 'Soren' })
-        .sub,
-    ).toBe('Molten Core · 1 boss · 1 fight · Soren');
+      ownReportRow({
+        ...base,
+        title: 'Tuesday',
+        zone: 'Molten Core',
+        bossCount: 1,
+        fightCount: 1,
+        loggingCharacter: 'Soren',
+      }).sub,
+    ).toBe('Molten Core · 1 pull · 1 boss · Soren');
+    expect(ownReportRow({ ...base, zone: 'Molten Core' }).sub).toBe('42 pulls · Trash only');
   });
 });

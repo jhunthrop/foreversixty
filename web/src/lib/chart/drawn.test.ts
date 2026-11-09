@@ -5,6 +5,7 @@ import {
   DEFAULT_TOP_N,
   median,
   medianSeries,
+  legendRound,
   roundedSum,
   selectDrawn,
   standingAt,
@@ -34,6 +35,12 @@ describe('roundedSum', () => {
   it('rounds each player first, so a raider adding the legend gets the head', () => {
     expect(roundedSum([100.4, 100.4, 100.4])).toBe(300);
     expect(Math.round(100.4 * 3)).toBe(301);
+  });
+
+  it('rounds a figure under 100 to the one decimal the legend prints', () => {
+    expect(roundedSum([1.84, 0.56, 0.38, 0.36, 0.04])).toBe(3.2);
+    expect(legendRound(1.84)).toBe(1.8);
+    expect(legendRound(100.4)).toBe(100);
   });
 });
 

@@ -4,7 +4,7 @@
   "mechanics": [
     { "spell_id": 18435, "name": "Flame Breath", "kind": "avoidable", "note": "Cone of fire out of her head. Only the tank should ever be standing in front of her.", "role": "tank" },
     { "spell_id": 18500, "name": "Wing Buffet", "kind": "avoidable", "note": "Knocks everyone in front of her back and sheds threat. The tank takes it; anybody else in the cone was in the tank's spot.", "role": "tank" },
-    { "spell_id": 15847, "name": "Tail Sweep", "kind": "avoidable", "note": "Cone behind her, flinging whoever is in it towards the whelp caves. Nobody has a reason to be behind her tail." },
+    { "spell_id": 15847, "name": "Tail Sweep", "kind": "avoidable", "note": "Cone behind her that knocks back whoever is in it. Nobody has a reason to be behind her tail." },
     { "spell_id": 18392, "name": "Fireball", "kind": "avoidable", "note": "Thrown at a raider while she is in the air; it splashes everyone standing near them, so spread out." },
     { "spell_id": 17086, "name": "Deep Breath", "kind": "avoidable", "note": "She flies across the room and breathes fire down her path. Get off her line before it lands." }
   ],

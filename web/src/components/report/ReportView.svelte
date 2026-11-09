@@ -1632,6 +1632,7 @@
       : reportFigure({
           tab: state.tab,
           player: playerView,
+          bossPull: !isTrashPull,
           damageDone: figureRows.reduce((sum, row) => sum + row.damage_done, 0),
           healing: figureRows.reduce((sum, row) => sum + row.healing_done, 0),
           damageTaken: figureRows.reduce((sum, row) => sum + row.damage_taken, 0),

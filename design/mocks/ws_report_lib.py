@@ -207,7 +207,7 @@ def figure(R: Report, fi: int, tab: str, source: str, player: str = '') -> str:
     rate tabs, the player's own on their view, deaths on Deaths and Mechanics, none elsewhere."""
     s = R.summary(fi)
     fr = friendlies(R, s, source)
-    if tab in ('Deaths', 'Mechanics'):
+    if tab == 'Deaths' or (tab == 'Mechanics' and R.fight(fi)['kind'] != 'trash'):
         n = sum(1 for d in s['deaths'] if d['guid'] in fr)
         return Figure(f'{n:,}', unit='death' if n == 1 else 'deaths')
     if tab not in RATE_TABS:

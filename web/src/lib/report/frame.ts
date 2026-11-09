@@ -187,6 +187,8 @@ export interface FigureFacts {
   tab: Tab;
   /** One player's own view: their DPS, HPS or DTPS, not the group's. */
   player: boolean;
+  /** A boss pull: Mechanics counts its deaths; on trash Mechanics has nothing to count. */
+  bossPull: boolean;
   /** The scope's totals over the pull (or the window). */
   damageDone: number;
   healing: number;
@@ -203,10 +205,10 @@ const RATE_UNIT: Partial<Record<Tab, { key: 'damageDone' | 'healing' | 'damageTa
 };
 
 /** Group DPS, HPS or DTPS on the rate tabs, the player's own on their view, deaths on Deaths and
- *  Mechanics; null where no single figure answers the tab (Timeline, Threat, Resources, Queries,
+ *  Mechanics (a boss pull's); null where no single figure answers the tab (Timeline, Threat, Resources, Queries,
  *  Coach and the rest). */
 export function reportFigure(facts: FigureFacts): ReportFigure | null {
-  if (facts.tab === 'deaths' || facts.tab === 'mechanics')
+  if (facts.tab === 'deaths' || (facts.tab === 'mechanics' && facts.bossPull))
     return { value: facts.deaths.toLocaleString('en-US'), unit: facts.deaths === 1 ? 'death' : 'deaths' };
   const rate = RATE_UNIT[facts.tab];
   if (rate === undefined) return null;

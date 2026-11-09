@@ -48,7 +48,7 @@
     {/if}
   </span>
   {#if sample}
-    <span class="max-md:hidden" data-testid="report-sample-note">{reportCopy.sampleNote}</span>
+    <span class="basis-full max-md:hidden" data-testid="report-sample-note">{reportCopy.sampleNote}</span>
   {:else if credit.credited}
     <span class="max-md:hidden" data-testid="report-credit"
       >Logged by {#if credit.href}<a class={LINK} href={credit.href}>{credit.name}</a

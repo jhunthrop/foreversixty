@@ -93,7 +93,11 @@ describe('buildRateModel', () => {
       chosen: null,
       compare: { raid: true, className: null },
     });
-    const legendSum = model.entries.reduce((sum, entry) => sum + Math.round(entry.figure), 0);
+    // What the legend prints: one decimal under 100, whole from 100.
+    const printed = (figure: number): number =>
+      figure < 100 ? Math.round(figure * 10) / 10 : Math.round(figure);
+    const legendSum =
+      Math.round(model.entries.reduce((sum, entry) => sum + printed(entry.figure), 0) * 10) / 10;
     expect(model.raidFigure).toBe(legendSum);
     expect(model.raidFigure).toBeGreaterThan(0);
   });

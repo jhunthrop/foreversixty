@@ -6,7 +6,6 @@ export const recentReportsCopy = {
   /** The placeholder's screen-reader name while the feed loads: never the word "Loading" in page text. */
   placeholderLabel: 'Recent reports',
   failed: 'Recent reports did not load.',
-  empty: 'No public reports yet. The first raid logs land in December; dungeon logs are welcome now.',
   older: 'Older reports',
 } as const;
 

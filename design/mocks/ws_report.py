@@ -466,6 +466,7 @@ FACTS_CHART = {'threatCaveat': 'An estimate: 1 threat per point of damage and 0.
 PAGE_CSS = '''<style>
 .pull-acts{display:flex;flex-wrap:wrap;gap:8px;padding-top:16px}
 p.skp{padding:12px 0}
+.ph-meta>.t-small:has(>.ph-note){flex-basis:100%}
 button.sel{background:none;cursor:pointer}
 .gloss>summary{list-style:none;cursor:pointer;min-height:36px;display:inline-flex;align-items:center;font-size:14px;font-weight:600}.gloss>summary::-webkit-details-marker{display:none}
 .chart-t{margin-left:8px;font-size:13px;font-weight:600}
@@ -480,7 +481,7 @@ pre.code{margin:0;padding:10px 12px;white-space:pre-wrap;font:13px/20px ui-monos
 .qrun{display:flex;gap:12px;align-items:center}
 .chips{display:flex;flex-wrap:wrap;gap:8px 16px;padding-top:10px;font-size:14px}
 .pager{display:flex;gap:16px;align-items:center;justify-content:flex-start;padding:12px 16px;border-top:1px solid var(--line-soft)}
-.tlg{display:grid;grid-template-columns:160px minmax(0,1fr);padding:4px 16px 12px}.tl-ls{display:flex;flex-direction:column}.tl-l{height:34px;display:flex;align-items:center;gap:8px;font:600 14px/16px var(--font-body);white-space:nowrap;overflow:hidden}
+.tlg{display:grid;grid-template-columns:180px minmax(0,1fr);padding:4px 16px 12px}.tl-ls{display:flex;flex-direction:column}.tl-l{height:34px;display:flex;align-items:center;gap:8px;font:600 14px/16px var(--font-body);white-space:nowrap;overflow:hidden}
 .tl-p svg{display:block;width:100%}.tl-p .ax{display:flex;justify-content:space-between;font:600 12px/16px var(--font-body);color:var(--muted);padding-top:4px}
 .lanes .lg{padding-inline:16px}
 .ev{font-size:14px}

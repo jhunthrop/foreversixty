@@ -113,12 +113,12 @@ test.describe('signed in, desktop', () => {
     await expect(page.locator('#upload [data-region="plate"]')).toHaveCount(1);
   });
 
-  test('report rows read zone, fights and credit with a relative age; finished rows carry no Tag', async ({
+  test('report rows read zone, pulls and bosses with a relative age; finished rows carry no Tag', async ({
     page,
   }) => {
     await openSignedIn(page);
     await expect(page.getByTestId('report-row-summary').first()).toHaveText(
-      "Onyxia's Lair · 0 bosses · 6 fights · Not credited",
+      "Onyxia's Lair · 6 pulls · Trash only",
     );
     await expect(page.getByTestId('report-row-when').first()).toHaveText('1 day ago');
     await expect(page.getByTestId('report-status')).toHaveCount(0);

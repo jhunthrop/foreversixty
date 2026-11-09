@@ -1,6 +1,6 @@
 <!-- web/src/components/RecentReports.svelte -->
 <!-- /logs' "Recent public reports" Section (logs spec 2026-11-07 section 4): the public feed as open
-     report Rows, or its empty sentence, then the one sample report as its own Row with the
+     report Rows (none yet: the sample row alone, no empty sentence over it), then the one sample report as its own Row with the
      `Sample report` Tag (bundled with the site, read from its static meta; never a feed entry,
      so the feed's own empty state stays reachable). `Older reports` pages the feed in place. The
      viewer's own reports (`exclude`) sit in Your reports above and are left out here. -->
@@ -64,10 +64,6 @@
       <p>{recentReportsCopy.failed}</p>
       <div class="mt-3"><Button size="sm" onclick={() => void load(attemptedCursor)}>Try again</Button></div>
     </div>
-  {:else if rows.length === 0}
-    <p class="text-muted py-2 text-[14px] leading-5" data-testid="recent-reports-empty">
-      {recentReportsCopy.empty}
-    </p>
   {/if}
   <div class="flex flex-col" data-testid="recent-reports-list">
     {#each shown as report (report.id)}

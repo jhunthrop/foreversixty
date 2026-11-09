@@ -135,7 +135,7 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     await hoverAt(page, chart, 225_000, 340_000);
     const rows = page.getByTestId('chart-tooltip-row');
     await expect(rows.first()).toBeVisible();
-    for (const value of await rows.locator('span.numeric').allTextContents()) expect(value).toBe('0');
+    for (const value of await rows.locator('span.numeric').allTextContents()) expect(value).toBe('0.0');
     await expect(page.getByTestId('chart-tooltip')).toContainText('Submerge phase · DPS, 5 s average');
   });
 
@@ -185,7 +185,8 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     expect(figures).toHaveLength(40);
     const sum = figures.reduce((total, text) => total + Number(text.replace(/,/g, '')), 0);
     await expect(chart.getByTestId('chart-head-meta')).toHaveText(
-      `Raid ${sum.toLocaleString('en-US')} DPS over the whole fight`,
+      // A rate under 100 prints one decimal, the head from 100 whole: the sum at the head's precision.
+      `Raid ${Math.round(sum).toLocaleString('en-US')} DPS over the whole fight`,
     );
     // Every chip names its unit.
     for (const value of await chart.getByTestId('legend-value').allTextContents())

@@ -110,10 +110,16 @@ code{font:13px/20px ui-monospace,Menlo,monospace;color:var(--strong)}
 UNFINISHED = {'live': 'Live', 'processing': 'Processing', 'uploading': 'Uploading'}
 
 
+def plural(n: int, one: str, many: str = '') -> str:
+    return f'{n} {one if n == 1 else (many or one + "s")}'
+
+
 def report_row(r: dict) -> str:
-    bits = ([escape(r['zone'])] if r['zone'] else []) + [f'{r["boss_count"]} bosses', f'{r["fight_count"]} fights', 'Not credited']
+    title = report_title(r)
+    bits = ([escape(r['zone'])] if r['zone'] and r['zone'] != title else []) + [plural(r['fight_count'], 'pull'),
+                                                                              plural(r['boss_count'], 'boss', 'bosses') if r['boss_count'] else 'Trash only']
     status = Tag(UNFINISHED[r['status']], 'muted') if r['status'] in UNFINISHED else ''
-    return Row(escape(report_title(r)), ' &middot; '.join(bits), trail=f'{status}<span class="t-small">{ago(r["created_at"])}</span>')
+    return Row(escape(title), ' &middot; '.join(bits), trail=f'{status}<span class="t-small">{ago(r["created_at"])}</span>')
 
 
 def sample_row() -> str:
@@ -130,7 +136,7 @@ def recent_section(signed_in: bool = False) -> str:
     feed = [r for r in MINE['recent'] if r['kill_count'] > 0 or (r.get('zone') or '').strip()]
     own = {r['id'] for r in MINE['rows']} if signed_in else set()
     shown = [report_row(r) for r in feed if r['id'] not in own]
-    body = (f'<p class="empty">{escape(rc["empty"])}</p>' if not feed else '') + Rows(shown + [sample_row()], open_=True)
+    body = Rows(shown + [sample_row()], open_=True)   # no public report yet: the sample row alone, no empty line over it
     return Section(rc['heading'], body, panel=True)   # no page lists every public report yet: no action
 
 
