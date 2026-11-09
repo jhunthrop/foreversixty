@@ -410,7 +410,7 @@ body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:aut
 main{padding-bottom:40px}  /* the page's own bottom space (sim.astro .sim-page), above the site footer */
 /* page-level layout only: no border, background, radius or shadow (the guard reads inline styles; this block keeps to layout too) */
 /* the answer slot keeps the result's size from the first state to the last (no layout shift): label, figure, error, change, actions */
-.head .ans{min-width:0;min-height:172px}@media(min-width:900px){.head .ans{min-width:360px;min-height:189px}}
+.head .ans{min-width:0;min-height:152px}@media(min-width:900px){.head .ans{min-width:360px;min-height:169px}}
 .statesheet .head .ans{min-height:0}
 .fig-cap{font-size:13px;line-height:20px;color:var(--muted)}.fig-cap b{color:var(--text);font-weight:600}.fig-cap.kill{color:var(--kill);font-weight:600}.fig-cap.wipe{color:var(--wipe)}
 .ans-acts{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:6px}@media(min-width:900px){.ans-acts{justify-content:flex-end}}
@@ -1002,6 +1002,25 @@ button.tgl{all:unset;cursor:pointer;font:inherit;color:inherit}
 .plate.framed{position:relative}.plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
 .layout-split.panels{column-gap:28px}.layout-split.panels>.main,.layout-split.panels>.rail{gap:22px}
 @media(max-width:767px){.plate>.sec-h.pn-h{padding:14px 14px 8px}.pn-b{padding:0 14px 14px}}
+
+.frame{position:relative;min-width:0;overflow:hidden;padding:22px 24px;background:var(--raised);border:1px solid #000;border-radius:10px;
+box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
+.frame::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+@media(max-width:767px){.frame{padding:18px 16px}}
+
+.rl.compact{--rr-name:minmax(170px,1fr);--rr-bar:minmax(48px,160px);--rr-gap:72px;--rr-links:0px}
+.rl.compact.grouped{--grp-w:44px}
+@media(min-width:1280px){.rl.compact.grouped{--grp-w:64px}}
+@media(min-width:1760px){.rl.compact{--rr-name:minmax(170px,1fr);--rr-bar:minmax(48px,160px)}}
+@media(max-width:1023px){.rl.compact .rr-heads{display:flex;justify-content:flex-end;padding:7px 10px}.rl.compact .rr-heads>span:not(:nth-child(5)){display:none}}
+.rl.compact .rg{grid-template-columns:var(--grp-w) minmax(0,1fr)}
+.rl.compact .rg-l{display:block;padding:10px 0 0;text-align:center;border-left:0;border-right:1px solid var(--line-soft);border-bottom:0}
+.rl.compact .rg-l .lt{font:400 40px/44px var(--font-title);color:var(--cream)}
+.rl.compact .rr{min-height:48px;padding-block:6px}.rl.compact .rr .meter>i{background:var(--accent)}
+.rl.compact .rr.cur{background:rgba(0,147,178,.16)}.rl.compact .rr.cur::before{background:var(--accent)}
+@media(max-width:1279px){.rl.compact .rg-l .lt{font-size:30px;line-height:36px}.rl.compact .rr.cols{padding:8px 14px}}
+@media(max-width:767px){.rl.compact .rr.cols{grid-template-areas:"rk ld nm f1" ". . xx xx";column-gap:8px;padding:6px 12px 6px 8px}
+ .rl.compact .rr .br,.rl.compact .rr .gp{display:none}.rl.compact .rr .fg.f1{align-self:center}}
 </style></main><!-- Simulator tools mock (design/specs/2026-11-06-sim.md grammar), built only from ws_prims. Character: a level 60 Orc Fury Warrior entered by hand (Lionheart Helm, Arcanite Reaper); items, sources, consumables and stats from build 1.60.1.70790. --><style data-system="round5">
 :root{--bg:#100a06;--raised:#170e09;--hover:#241b15;--line:#3d342d;--line-soft:#2c241f;--text:#e3dfd9;--strong:#fff;
 --muted:#e2dcd3;--nav:#fff;--gold:#ffec71;--gold-hover:#f7b90a;--cream:#f3eee2;--accent:#0093b2;--teal:#0f6064;
