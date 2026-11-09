@@ -23,7 +23,7 @@ MARGIN = 0.06            # empty border around each glyph, as a share of its box
 
 SHEET_ORDER = [
     "home", "bis", "guides", None, None,
-    "planner", "logs", None, None, "search",
+    None, "logs", None, None, "search",
     None,                                   # the stray mountain in row 3
     "account", "premium", "setup", "character", None,
     "sign-out", "manage", "upload", "link", "download",
@@ -34,6 +34,7 @@ SINGLES = {
     "sim": "sim.jpeg",
     "guild": "guild.jpeg",
     "rankings": "rankings.jpeg",
+    "planner": "planner.jpeg",
 }
 
 
