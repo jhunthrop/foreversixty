@@ -131,8 +131,9 @@ const overviewHtml = {
 const catalogEntries = readSpecCatalog()
   .filter((s) => s.class_slug === classSlug)
   .sort((a, b) => a.tree_index - b.tree_index);
-const specName = catalogEntries.find((s) => s.spec_slug === specSlug)?.name ?? specSlug;
-const title = `${specName} ${className}`;
+const specEntry = catalogEntries.find((s) => s.spec_slug === specSlug);
+const specName = specEntry?.name ?? specSlug;
+const title = specEntry?.full_name ?? `${specName} ${className}`;
 
 const buildBlocks =
   buildCode === undefined
@@ -223,12 +224,12 @@ const jsonLd = [
   breadcrumbListLd([
     { name: 'Class guides', path: '/guides' },
     { name: className, path: `/guides/${classSlug}` },
-    { name: searchCopy.specGuideCrumb(specName, className), path },
+    { name: searchCopy.specGuideCrumb(title), path },
   ]),
 ];
 ---
 
-<Base title={searchCopy.specGuideTitle(specName, className)} {description} {path} {jsonLd} wide>
+<Base title={searchCopy.specGuideTitle(title)} {description} {path} {jsonLd} wide>
   <meta slot="head" property="article:modified_time" content={entry.data.updated.toISOString()} />
   <main id="main" tabindex="-1" class="guide-page" data-testid="guide-page">
     <Page layout="reading" testid="guide-body">

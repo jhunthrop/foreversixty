@@ -2,7 +2,6 @@
 // Home's facts and words (design/specs/2026-11-07-home-b.md §1, round 5 2026-11-09): the head's
 // sim figure, the plaque's guild lines, Your spec this week and Guild sims. Pure: the island
 // (components/home/HomeCharacter.svelte) and the unit tests read them.
-import classes from '../../data/classes.json';
 import { characterHref } from '../characters';
 import { SPECS } from '../sim/specs';
 import type { ImportSim, SpecWeek } from './home-answer';
@@ -113,10 +112,7 @@ export function simFigure(sim: ImportSim | null): HeadFigure {
 
 /** `Fury Warrior` from `warrior-fury`. */
 export function specName(specKey: string): string {
-  const spec = SPECS.find((row) => row.spec === specKey);
-  if (spec === undefined) return specKey;
-  const cls = classes.find((row) => row.slug === spec.class_slug)?.name ?? spec.class_slug;
-  return `${spec.name} ${cls}`;
+  return SPECS.find((row) => row.spec === specKey)?.full_name ?? specKey;
 }
 
 const ROLE_WORDS = { dps: 'damage specs', tank: 'tank specs', healer: 'healer specs' } as const;

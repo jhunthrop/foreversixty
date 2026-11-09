@@ -793,6 +793,12 @@ class SpecRecord(BaseModel):
     #: engine reports. None where the tree's last tier has no pressed ability
     #: this spec's rotation casts.
     capstone_spell: int | None = None
+    #: The spec as a player names it in full, where the catalogue name then the
+    #: class reads wrong ("Feral Druid (Bear)", not "Feral Bear Druid"). None for
+    #: every other spec: `pipeline.specs.full_name` composes theirs. The
+    #: generated catalogue carries the resolved name for every spec, so no reader
+    #: composes one of its own.
+    full_name: str | None = None
 
 
 class StatWeights(BaseModel):

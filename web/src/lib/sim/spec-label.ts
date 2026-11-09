@@ -32,10 +32,7 @@ export function specDisplayName(spec: string): string {
  * the site has not heard of yet must still be printable.
  */
 export function specLabel(spec: string): string {
-  const row = specRow(spec);
-  if (row === null) return spec;
-  const className = classRows.find((entry) => entry.slug === row.class_slug)?.name;
-  return className === undefined ? row.name : `${row.name} ${className}`;
+  return specRow(spec)?.full_name ?? spec;
 }
 
 /**

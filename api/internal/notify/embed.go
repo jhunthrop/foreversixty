@@ -220,7 +220,7 @@ func simTitle(character string, spec specs.Spec, known bool) string {
 	if !known {
 		return embedCopy.SimTitleNoSpec
 	}
-	label := spec.Name + " " + classLabel(spec.ClassSlug)
+	label := spec.FullName
 	if name := collapse(character); name != "" {
 		return fmt.Sprintf(embedCopy.SimTitleNamed, escapedWithin(name, maxCharacterRunes, maxCharacterRunes), label)
 	}

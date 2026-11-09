@@ -33,6 +33,7 @@ function spec(overrides: Partial<SpecCatalogEntry & { icon: string }>): SpecCata
     reference_stat: 'spell_power',
     weight_stats: [],
     icon: 'spell_nature_lightning',
+    full_name: 'Elemental Shaman',
     ...overrides,
   };
 }
