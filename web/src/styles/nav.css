@@ -617,9 +617,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  /* The face's second line ("to see your characters", the class and level): 13px medium in the
+     nav ink. 12px regular in the muted grey thinned to a blur at 1x on Windows (player feedback,
+     2026-11-09). */
   .csel-sub {
-    font-size: 12px;
-    color: var(--color-muted);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-nav);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -763,8 +767,9 @@
     }
     .csel-sub-short {
       display: block;
-      font-size: 12px;
-      color: var(--color-muted);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-nav);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
