@@ -1,4 +1,4 @@
-// Renders the source-line before/after mocks (ws_bis_labels.py) at 1440 and 390: the full page and the gear block.
+// Renders the source-line before/after mocks (ws_bis_labels.py) at 1440: the full page and the gear block.
 //   python3 design/mocks/ws_bis_labels.py && node design/mocks/shoot_bis_labels.mjs <out dir>
 import { createRequire } from "node:module";
 import { mkdirSync } from "node:fs";
@@ -8,7 +8,7 @@ const HERE = new URL("./web/", import.meta.url).pathname;
 const OUT = (process.argv[2] ?? "design/reviews/2026-11-09-feedback-ai-look/labels") + "/";
 mkdirSync(OUT, { recursive: true });
 const STATES = ["alliance-before", "alliance-after", "horde-before", "horde-after"];
-const WIDTHS = [1440, 390];
+const WIDTHS = [1440]; // 390 comes from the live page: shoot_bis_labels_phone.mjs
 const browser = await chromium.launch();
 for (const width of WIDTHS) {
   const page = await browser.newPage({ viewport: { width, height: 1000 }, deviceScaleFactor: 2 });

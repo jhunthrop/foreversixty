@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { controlSummary, isClassSlug, rowElement, signedFigure, titleColor } from './primitives';
+import {
+  controlSummary,
+  factSegments,
+  isClassSlug,
+  rowElement,
+  signedFigure,
+  titleColor,
+} from './primitives';
 
 describe('titleColor', () => {
   it('paints a class page in its class colour, a guild in its faction colour, the rest strong', () => {
@@ -59,5 +66,14 @@ describe('signedFigure', () => {
     expect(signedFigure(-1.84)).toBe('−1.8');
     expect(signedFigure(0.04)).toBe('0.0');
     expect(signedFigure(-0.04)).toBe('0.0');
+  });
+});
+
+describe('factSegments', () => {
+  it('keeps each fact of a source line whole, its dot with it, and reads back as the line', () => {
+    const line = 'Vendor: Pix Xizzix, Booty Bay · 100 Tarnished Undermine Reals';
+    expect(factSegments(line)).toEqual(['Vendor: Pix Xizzix, Booty Bay ·', '100 Tarnished Undermine Reals']);
+    expect(factSegments(line).join(' ')).toBe(line);
+    expect(factSegments('Crafted')).toEqual(['Crafted']);
   });
 });

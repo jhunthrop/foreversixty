@@ -24,6 +24,18 @@ const swap = (after) => {
       count += 1;
     }
   }
+  // Paperdoll.svelte's .ui-doll-fact: each fact a whole inline block, so the line wraps between facts.
+  for (const src of document.querySelectorAll(".ui-doll-src")) {
+    const facts = src.textContent.split(" · ");
+    src.replaceChildren(
+      ...facts.flatMap((fact, index) => {
+        const span = document.createElement("span");
+        span.style.cssText = "display:inline-block;max-width:100%";
+        span.textContent = index < facts.length - 1 ? `${fact} ·` : fact;
+        return index > 0 ? [document.createTextNode(" "), span] : [span];
+      }),
+    );
+  }
   return count;
 };
 const browser = await chromium.launch();
