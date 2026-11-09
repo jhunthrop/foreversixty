@@ -1,6 +1,6 @@
 // web/tests/e2e/character-rating.spec.ts
 // The rating inside the character page's Forever Score Section (design/specs/2026-11-06-character.md
-// C5): "65 of 100" as a Figure beside the score and the tier, the rated-fight count as the
+// C5): "65 of 100" as a fact under the score and the tier, the rated-fight count as the
 // Section's meta; with no latest rated fight, or no rating at all (an anonymized character's
 // 404), the Figure is left out rather than drawn empty. The page reads the rating only beside a
 // score, so the character carries the fixture's OWNER_SCORE.
@@ -19,7 +19,7 @@ async function stub(page: Page, rating: { status: number; data: unknown }): Prom
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(envelope(rating.data, rating.status)));
 }
 
-test('the rating is a Figure, "65 of 100", and the Section counts the rated fights', async ({ page }) => {
+test('the rating is a fact, "Rating 65 of 100", and the panel counts the rated fights', async ({ page }) => {
   await stub(page, {
     status: 200,
     data: {
@@ -50,8 +50,8 @@ test('the rating is a Figure, "65 of 100", and the Section counts the rated figh
   await page.goto(CHARACTER_PATH);
 
   const rating = page.getByTestId('character-rating');
-  await expect(rating).toContainText('Rating');
-  await expect(rating).toContainText('65of 100');
+  await expect(page.getByTestId('character-score').locator('dt', { hasText: 'Rating' })).toBeVisible();
+  await expect(rating).toHaveText('65 of 100');
   await expect(page.getByTestId('character-score')).toContainText('6 rated fights');
 });
 

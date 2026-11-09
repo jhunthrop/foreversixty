@@ -1,26 +1,19 @@
 <!-- web/src/components/character/CharacterScore.svelte -->
-<!-- The Forever Score and the rating in one open Section (character spec 2026-11-06 C5, C11): the
-     score, its tier and the rating as Figures, the one "Most to gain" line, the parts in place under
-     a Disclosure. No logs: one line (the owner's says how to get a rating). The rating reads its own
-     endpoint; until it answers, or with no rated fight, its Figure is left out. -->
+<!-- The Forever Score panel in the rail (round 5, directions mock b2-character; character spec
+     2026-11-06 C5, C11): the score, its tier in the tier's colour and the rating as Facts, then the
+     parts, each a bar on one scale (lib/character/score-parts.ts) and its points. "How it is
+     scored" is the panel's link. No logs: one line (the owner's says how to get a rating). The
+     rating reads its own endpoint; until it answers, or with no rated fight, it is left out. -->
 <script lang="ts">
-  import labels from '../../../../docs/contracts/fixtures/score-labels.json';
   import type { CharacterPath } from '../../lib/characters';
   import { characterHrefs, characterPageCopy as copy } from '../../lib/character/page-view';
+  import { scorePartRows } from '../../lib/character/score-parts';
   import { fetchCharacterRating } from '../../lib/rankings/api';
   import type { CharacterRating } from '../../lib/rating/types';
-  import {
-    COMPONENT_MAX,
-    hasScore,
-    mostToGain,
-    tierLabel,
-    tierTextColor,
-    type ForeverScore,
-    type ScoreComponentKey,
-  } from '../../lib/score/score';
-  import { LINK } from '../../lib/ui/primitives';
-  import Disclosure from '../ui/Disclosure.svelte';
-  import Figure from '../ui/Figure.svelte';
+  import { hasScore, tierLabel, tierTextColor, type ForeverScore } from '../../lib/score/score';
+  import type { Fact } from '../../lib/ui/facts';
+  import Facts from '../ui/Facts.svelte';
+  import Meter from '../ui/Meter.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
 
@@ -37,6 +30,9 @@
     fought?: boolean;
   } = $props();
 
+  /** Every bar is one track on one scale, the longest part's maximum (Experience, 700 points). */
+  const TRACK_PX = 120;
+
   const scored = $derived(hasScore(forever));
   let rating = $state<CharacterRating | null>(null);
   $effect(() => {
@@ -52,18 +48,38 @@
       });
   });
 
-  const PART_LABEL = Object.fromEntries(labels.components.map((part) => [part.key, part.label])) as Record<
-    ScoreComponentKey,
-    string
-  >;
-  const parts = Object.keys(COMPONENT_MAX) as ScoreComponentKey[];
-  const most = $derived(mostToGain(forever.components));
   const overall = $derived(rating?.latest?.overall ?? null);
+  const facts = $derived<Fact[]>([
+    {
+      id: 'score',
+      label: copy.scoreFigure,
+      value: (forever.score ?? 0).toLocaleString('en-US'),
+      testid: 'character-score-figure',
+    },
+    { id: 'tier', label: copy.tier, content: tierValue, testid: 'character-tier' },
+    ...(overall === null
+      ? []
+      : [
+          {
+            id: 'rating',
+            label: copy.rating,
+            value: `${overall} ${copy.ratingUnit}`,
+            testid: 'character-rating',
+          },
+        ]),
+  ]);
+  const parts = $derived(scorePartRows(forever.components));
 </script>
+
+{#snippet tierValue()}
+  <span style:color={tierTextColor(forever.tier) ?? undefined}>{tierLabel(forever.tier) ?? ''}</span>
+{/snippet}
 
 <Section
   title={copy.score}
+  panel
   meta={rating !== null && rating.sample_size > 0 ? copy.ratedFights(rating.sample_size) : undefined}
+  action={scored ? { label: copy.howScored, href: characterHrefs.scoreHelp } : undefined}
   testid="character-score"
 >
   {#if !scored}
@@ -71,39 +87,20 @@
       {fought ? copy.noScoreYet : owned ? copy.noLogsOwner : copy.noLogs}
     </p>
   {:else}
-    <div class="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
-      <Figure
-        value={(forever.score ?? 0).toLocaleString('en-US')}
-        label={copy.scoreFigure}
-        testid="character-score-figure"
-      />
-      <Figure
-        value={tierLabel(forever.tier) ?? ''}
-        label={copy.tier}
-        color={tierTextColor(forever.tier) ?? undefined}
-        testid="character-tier"
-      />
-      {#if overall !== null}<Figure
-          value={String(overall)}
-          unit={copy.ratingUnit}
-          label={copy.rating}
-          testid="character-rating"
-        />{/if}
-    </div>
-    {#if most !== null}
-      <p class="text-text py-[6px] text-[15px] leading-6" data-testid="character-most-to-gain">
-        {copy.mostToGain(PART_LABEL[most.key], most.gap)}
-        <a class={LINK} href={characterHrefs.scoreHelp}>{copy.howScored} ›</a>
-      </p>
-    {/if}
-    <Disclosure summary={copy.parts} testid="character-parts">
-      {#each parts as part (part)}
-        <Row
-          title={PART_LABEL[part]}
-          sub={copy.partSub(forever.components?.[part] ?? 0, COMPONENT_MAX[part])}
-          open
-        />
+    <Facts items={facts} />
+    <div class="mt-3" data-testid="character-parts">
+      {#each parts as part (part.key)}
+        <Row title={part.label} density="slim" open testid={`character-part-${part.key}`}>
+          {#snippet trail()}
+            <span class="flex items-center gap-4">
+              <span style:width={`${TRACK_PX}px`}
+                ><Meter value={part.fill * part.track} tone="class" color={part.color} /></span
+              >
+              <span class="text-strong w-10 text-right text-[14px] tabular-nums">{part.points}</span>
+            </span>
+          {/snippet}
+        </Row>
       {/each}
-    </Disclosure>
+    </div>
   {/if}
 </Section>

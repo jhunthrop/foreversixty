@@ -27,10 +27,11 @@ export const FIGHTS_SHOWN = 5;
 export const BUILDS_SHOWN = 3;
 
 export const characterPageCopy = {
-  answerLabel: 'Upgrades available',
-  scoreLabel: 'Forever Score',
-  openSim: 'Open in simulator',
-  openPlanner: 'Talents in planner',
+  /** The band's answer after its figure: "+128.9 HPS in upgrades". */
+  answerUnit: (unit: string): string => `${unit} in upgrades`,
+  upgrades: 'Upgrades',
+  allUpgrades: 'All upgrades',
+  openBis: 'Open in best in slot',
   gear: 'Gear',
   gearAction: 'Best in slot',
   score: 'Forever Score',
@@ -39,10 +40,7 @@ export const characterPageCopy = {
   rating: 'Rating',
   ratingUnit: 'of 100',
   ratedFights: (count: number): string => `${count} rated ${count === 1 ? 'fight' : 'fights'}`,
-  mostToGain: (part: string, gap: number): string => `Most to gain: ${part}, ${gap} points to the top.`,
   howScored: 'How it is scored',
-  parts: 'Score parts',
-  partSub: (points: number, max: number): string => `${points} of ${max}`,
   noLogsOwner: 'No logs yet. Upload a log to get a rating.',
   noLogs: 'No logs yet.',
   noScoreYet: 'No Forever Score yet. It is worked out from the rated fights below.',
@@ -58,7 +56,8 @@ export const characterPageCopy = {
   seePlans: 'See plans',
   coach: 'Coach history',
   coachLead: 'Every review the coach wrote for this character',
-  gearLevel: (band: number): string => (band >= 60 ? 'Level 60 raid' : `Levels ${band} to ${band + 9}`),
+  /** The paperdoll's title bar meta: "Level 60". */
+  levelMeta: (level: number): string => `Level ${level}`,
   failed: 'We could not load this character.',
   notFound: (name: string, region: string, ruleset: string): string =>
     `No character named ${name} on ${region.toUpperCase()} ${rulesetLabel(ruleset)}.`,

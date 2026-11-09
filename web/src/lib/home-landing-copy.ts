@@ -8,6 +8,8 @@ export const homeCharacterSearchCopy = {
   /** /characters' page title; the lookup under it keeps its own Section heading. */
   pageTitle: 'Characters',
   heading: 'Look up a character',
+  /** /characters' rail: the signed-in account's characters. */
+  yourCharacters: 'Your characters',
   /** The one muted line beside the heading. */
   aside: 'See any character’s Forever Score.',
   nameLabel: 'Character name',

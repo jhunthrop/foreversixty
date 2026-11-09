@@ -25,8 +25,9 @@
     topUpgrade,
     upgradeTotal,
   } from '../lib/character/page-view';
+  import { upgradeRows } from '../lib/character/upgrades';
   import { STALE_SEPARATOR, syncText, syncView } from '../lib/character-header/sync';
-  import { bisHref } from '../lib/character-profile';
+  import { bisHref, specClassLabel } from '../lib/character-profile';
   import { characterKey, nameFromSlug, parseCharacterPath, type CharacterPath } from '../lib/characters';
   import { onCurrentCharacterChange, onCurrentCharacterSwitch, readCurrent } from '../lib/current-character';
   import { viewerFromMe } from '../lib/coach/viewer';
@@ -54,7 +55,7 @@
   import LoadError from './ui/LoadError.svelte';
   import Notice from './ui/Notice.svelte';
   import Page from './ui/Page.svelte';
-  import Paperdoll from './ui/Paperdoll.svelte';
+  import PaperdollFrame from './ui/PaperdollFrame.svelte';
   import PageHeader from './ui/PageHeader.svelte';
   import Plate from './ui/Plate.svelte';
   import Row from './ui/Row.svelte';
@@ -244,12 +245,12 @@
     </p>
   </Page>
 {:else if status === 'loading'}
-  <Page layout="ledger" testid="character-skeleton">
+  <Page layout="split" panels testid="character-skeleton">
     {#snippet header()}{@render headSkeleton()}{/snippet}
-    <Section title={copy.gear}>
-      <Plate label={copy.gear}>
-        <Paperdoll cells={[]} mode="worn" {build} loading label={copy.gear} testid="character-doll" />
-      </Plate>
+    <Section title={copy.gear} panel frame="framed">
+      <div class="mx-auto max-w-[640px]" aria-busy="true">
+        <PaperdollFrame cells={[]} {build} title="" label={copy.gear} testid="character-doll" />
+      </div>
     </Section>
   </Page>
 {:else if status === 'failed'}
@@ -262,7 +263,7 @@
 {:else if resolved !== null && (status === 'unlogged' || bare)}
   <CharacterMissing path={resolved} name={data?.character.name ?? unloggedName} {signedIn} />
 {:else if data !== null && resolved !== null}
-  <Page layout="ledger" testid="character">
+  <Page layout="split" panels testid="character">
     {#snippet header()}
       <PageHeader
         title={data.character.name}
@@ -288,28 +289,12 @@
             >{/if}
         {/snippet}
         {#snippet answer()}
-          {#if total > 0}
-            <span class="character-answer-figures">
-              {#if scored}<Figure
-                  value={(forever.score ?? 0).toLocaleString('en-US')}
-                  label={copy.scoreLabel}
-                  size="sm"
-                  align="end"
-                />{/if}
-              <Figure
-                value={signedFigure(total)}
-                {unit}
-                label={copy.answerLabel}
-                size="big"
-                align="end"
-                testid="character-answer"
-              />
-            </span>
-            <span class="character-answer-links">
-              <a class={LINK} href={characterHrefs.sim}>{copy.openSim} ›</a>
-              <a class={LINK} href={plannerHref(own)}>{copy.openPlanner} ›</a>
-            </span>
-          {/if}
+          {#if total > 0}<Figure
+              value={signedFigure(total)}
+              unit={copy.answerUnit(unit)}
+              align="end"
+              testid="character-answer"
+            />{/if}
         {/snippet}
       </PageHeader>
     {/snippet}
@@ -325,14 +310,29 @@
         </div>
       {/if}
     {/snippet}
+    {#snippet rail()}
+      {#if data.score_hidden !== true}
+        <CharacterScore path={resolved} {forever} {owned} fought={data.best.length > 0} />
+      {/if}
+      {#if data.builds_seen.length > 0}
+        <Section title={copy.builds} panel testid="character-builds">
+          {#each buildRows(data.character.class, data.builds_seen) as row (row.key)}
+            <Row title={row.split} sub={row.sub} href={plannerHref(own)} density="slim" open />
+          {/each}
+        </Section>
+      {/if}
+    {/snippet}
     {#if gear.length > 0}
       <CharacterGear
-        title={unread ? notReadCopy.bestInSlot(bandLevel) : copy.gear}
-        meta={unread || bandLevel === null ? undefined : copy.gearLevel(bandLevel)}
+        sectionTitle={unread ? notReadCopy.bestInSlot(bandLevel) : copy.gear}
+        title={specClassLabel(data.character.class, pageSpec(data, own))}
+        meta={level === null ? undefined : copy.levelMeta(level)}
+        avatar={data.character.avatar_url ?? own?.avatar_url ?? null}
         {cells}
         {gear}
         {band}
         {table}
+        upgrades={unread ? [] : upgradeRows(slots, classSlug ?? '')}
         {unit}
         {build}
         bisHref={specBis}
@@ -340,12 +340,10 @@
         {note}
       />
     {/if}
-    {#if data.score_hidden !== true}
-      <CharacterScore path={resolved} {forever} {owned} fought={data.best.length > 0} />
-    {/if}
     {#if data.best.length > 0}
       <Section
         title={copy.best}
+        panel
         action={{ label: copy.allFights(data.history.length), href: characterHrefs.logs }}
         testid="character-best"
       >
@@ -354,6 +352,7 @@
             title={row.boss}
             sub={row.sub}
             href={characterHrefs.encounter(encounterSlug(row.encounter))}
+            density="slim"
             open
           >
             {#snippet trail()}
@@ -365,13 +364,6 @@
               <Figure value={row.value} unit={row.unit} size="sm" align="end" />
             {/snippet}
           </Row>
-        {/each}
-      </Section>
-    {/if}
-    {#if data.builds_seen.length > 0}
-      <Section title={copy.builds} testid="character-builds">
-        {#each buildRows(data.character.class, data.builds_seen) as row (row.key)}
-          <Row title={row.split} sub={row.sub} href={plannerHref(own)} open />
         {/each}
       </Section>
     {/if}
@@ -404,18 +396,5 @@
   }
   .character-summary {
     padding-inline: var(--page-inset);
-  }
-  .character-answer-figures {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    gap: 24px;
-  }
-  .character-answer-links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 16px;
-    font-size: 14px;
   }
 </style>

@@ -17,12 +17,29 @@ import { BUTTON_PRIMARY } from '../lib/ui/button';
 import { FIELD_CONTROL, FIELD_FOCUS, FIELD_HEIGHT, FIELD_LABEL as LABEL, fieldEdge } from '../lib/ui/field';
 
 const FIELD = [FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(false)].join(' ');
+
+interface Props {
+  /** /characters (round 5, mock b2-characters): the lookup is the page's framed panel, the heading
+   *  inside it, no aside line and no hint. Off (the 404), the open Section with its aside. */
+  panel?: boolean;
+}
+const { panel = false } = Astro.props;
+const HINT_ID = 'home-character-search-hint';
+const ERROR_ID = 'home-character-search-error';
 ---
 
-<Section title={copy.heading} anchor="lookup" testid="home-character-search">
-  <p class="text-small text-muted cs-aside" data-testid="home-character-search-aside">
-    {copy.aside}
-  </p>
+<Section
+  title={copy.heading}
+  anchor="lookup"
+  testid="home-character-search"
+  panel={panel}
+  frame={panel ? 'framed' : undefined}
+>
+  {!panel && (
+    <p class="text-small text-muted cs-aside" data-testid="home-character-search-aside">
+      {copy.aside}
+    </p>
+  )}
   <form
     class="cs-form flex flex-wrap items-end gap-3"
     aria-label={copy.heading}
@@ -45,7 +62,7 @@ const FIELD = [FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(false)].join(
           autocomplete="off"
           spellcheck="false"
           placeholder={copy.namePlaceholder}
-          aria-describedby="home-character-search-hint home-character-search-error"
+          aria-describedby={panel ? ERROR_ID : `${HINT_ID} ${ERROR_ID}`}
           aria-keyshortcuts="/"
           role="combobox"
           aria-autocomplete="list"
@@ -96,9 +113,11 @@ const FIELD = [FIELD_CONTROL, FIELD_HEIGHT, FIELD_FOCUS, fieldEdge(false)].join(
       </button>
     </span>
   </form>
-  <p id="home-character-search-hint" class="text-small text-muted cs-hint">
-    {copy.hint}
-  </p>
+  {!panel && (
+    <p id={HINT_ID} class="text-small text-muted cs-hint">
+      {copy.hint}
+    </p>
+  )}
   <p id="home-character-search-error" class="text-wipe min-h-[1lh] text-[13px]" role="status"></p>
 </Section>
 

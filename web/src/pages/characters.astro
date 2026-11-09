@@ -3,11 +3,12 @@
 // The character lookup's own page (home spec 2026-11-06 H12): home no longer carries the full box,
 // so "Look up another character" (lib/score/copy.ts) and the missing-character page land here,
 // with the name, region and ruleset filled from the query (lib/character-search-dom.ts). The
-// header's compact search stays on every page. The flat system (mock web-characters,
-// design/specs/2026-11-07-bis-landing.md section 8): the PageHeader names the page, the lookup is
-// its one Section, so the heading is not said twice.
+// header's compact search stays on every page. Round 5 (directions mock b2-characters): the title
+// band names the page; the lookup is main's framed panel; the rail lists the signed-in account's
+// characters (character/YourCharacters, nothing signed out).
 import Base from '../layouts/Base.astro';
 import CharacterSearch from '../components/CharacterSearch.astro';
+import YourCharacters from '../components/character/YourCharacters.svelte';
 import Page from '../components/ui/Page.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
 import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
@@ -15,9 +16,10 @@ import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
 
 <Base title={copy.heading} description={copy.aside} path="/characters" wide>
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="characters">
-    <Page layout="ledger">
+    <Page layout="split" panels>
       <PageHeader slot="header" title={copy.pageTitle} />
-      <CharacterSearch />
+      <CharacterSearch panel />
+      <YourCharacters slot="rail" title={copy.yourCharacters} client:idle />
     </Page>
   </main>
 </Base>

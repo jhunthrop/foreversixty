@@ -46,7 +46,7 @@
   });
 </script>
 
-<Section title={copy.history} testid="character-owner-history">
+<Section title={copy.history} panel testid="character-owner-history">
   {#if history}
     <Disclosure summary={copy.historyLead} bind:open={historyOpen} testid="character-history-toggle">
       {#if charts.current}<charts.current {path} />{/if}
@@ -62,7 +62,7 @@
   {/if}
 </Section>
 {#if coach}
-  <Section title={copy.coach} testid="character-coach-section">
+  <Section title={copy.coach} panel testid="character-coach-section">
     <Disclosure summary={copy.coachLead} bind:open={coachOpen} testid="character-coach-toggle">
       {#if reviews.current}<reviews.current {path} />{/if}
     </Disclosure>

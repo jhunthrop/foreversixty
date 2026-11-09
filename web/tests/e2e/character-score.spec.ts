@@ -136,7 +136,9 @@ test('a bare character a visitor does not hold is the not-found page', async ({ 
   await expect(page.getByTestId('character')).toHaveCount(0);
 });
 
-test('a scored character: 1,830, Epic in the epic colour, the rating and Most to gain', async ({ page }) => {
+test('a scored character: 1,830, Epic in the epic colour, the rating and how it is scored', async ({
+  page,
+}) => {
   await stub(page, { ...CHARACTER.data, ...OWNER_SCORE }, RATING);
   await page.goto(CHARACTER_PATH);
 
@@ -148,26 +150,18 @@ test('a scored character: 1,830, Epic in the epic colour, the rating and Most to
   await expect(tier).toContainText('Epic');
   // --color-rarity-epic-text (#b866f5), the epic tone made legible as text.
   await expect(tier.getByText('Epic', { exact: true })).toHaveCSS('color', 'rgb(184, 102, 245)');
-  await expect(page.getByTestId('character-rating')).toContainText('65of 100');
-  await expect(page.getByTestId('character-most-to-gain')).toContainText(
-    'Most to gain: Gear, 88 points to the top.',
-  );
-  await expect(page.getByTestId('character-most-to-gain').getByRole('link')).toHaveAttribute(
-    'href',
-    '/ratings',
-  );
+  await expect(page.getByTestId('character-rating')).toHaveText('65 of 100');
+  await expect(score.getByRole('link', { name: 'How it is scored ›' })).toHaveAttribute('href', '/ratings');
 });
 
-test('the parts open in place under "Score parts", each "N of max"', async ({ page }) => {
+test('every part shows its bar on one scale and its points, no "of N"', async ({ page }) => {
   await stub(page, { ...CHARACTER.data, ...OWNER_SCORE });
   await page.goto(CHARACTER_PATH);
 
   const parts = page.getByTestId('character-parts');
-  await expect(parts).not.toHaveAttribute('open', '');
-  await parts.locator('summary').click();
-  await expect(parts).toHaveAttribute('open', '');
   for (const component of labels.components) await expect(parts).toContainText(component.label);
-  await expect(parts).toContainText('412 of 500');
+  await expect(page.getByTestId('character-part-gear')).toContainText('412');
+  await expect(parts).not.toContainText(' of ');
 });
 
 test('Best per encounter: one Row per boss with its parse and date, then the link to all fights', async ({
