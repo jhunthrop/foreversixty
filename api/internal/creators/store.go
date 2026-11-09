@@ -29,13 +29,13 @@ const returningSQL = `(p.bounty_payout_id is not null or (
 const payingSQL = `exists (select 1 from creator_revenue r where r.user_id = p.user_id and r.paid_at > now() - interval '13 months')`
 
 const creatorColumns = `c.id, c.name, c.channel_url, c.slug, c.code, c.starts_on, c.cap_cents, c.stripe_status,
-	c.user_id, coalesce(c.stripe_account_id, '')`
+	c.user_id, coalesce(c.stripe_account_id, ''), c.ended_at is not null`
 
 func scanCreator(row pgx.Row) (Creator, error) {
 	var c Creator
 	var starts time.Time
 	err := row.Scan(&c.ID, &c.Name, &c.ChannelURL, &c.Slug, &c.Code, &starts, &c.CapCents, &c.StripeStatus,
-		&c.UserID, &c.StripeAccountID)
+		&c.UserID, &c.StripeAccountID, &c.Ended)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Creator{}, ErrNotFound
 	}
@@ -169,6 +169,23 @@ func (s *Store) InviteCreator(ctx context.Context, hash []byte, now time.Time) (
 	return c, err
 }
 
+// forgetSelf drops a creator's own account from their unsettled lines: as a player, and its
+// payments and refunds (spec section 1, self-referral). A line already paid stays paid.
+func forgetSelf(ctx context.Context, tx pgx.Tx, creatorID, userID int64) error {
+	for _, sql := range []string{
+		`delete from creator_refunds f using creator_revenue r where f.invoice_id = r.invoice_id
+		  and r.user_id = $1 and r.creator_id = $2 and f.payout_id is null`,
+		`delete from creator_revenue r where r.user_id = $1 and r.creator_id = $2 and r.payout_id is null
+		  and not exists (select 1 from creator_refunds f where f.invoice_id = r.invoice_id)`,
+		`delete from creator_players where user_id = $1 and creator_id = $2 and bounty_payout_id is null`,
+	} {
+		if _, err := tx.Exec(ctx, sql, userID, creatorID); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // AcceptInvite binds the account to the invite's creator, once. The account stops counting as
 // anyone's player of that creator (spec section 1, self-referral).
 func (s *Store) AcceptInvite(ctx context.Context, hash []byte, userID int64, now time.Time) (Creator, error) {
@@ -182,11 +199,14 @@ func (s *Store) AcceptInvite(ctx context.Context, hash []byte, userID int64, now
 		if err != nil {
 			return err
 		}
-		if _, err := tx.Exec(ctx, `update creators set user_id = $2, updated_at = now() where id = $1`, creatorID, userID); err != nil {
+		tag, err := tx.Exec(ctx, `update creators set user_id = $2, updated_at = now() where id = $1 and ended_at is null`, creatorID, userID)
+		if err != nil {
 			return err
 		}
-		_, err = tx.Exec(ctx, `delete from creator_players where user_id = $1 and creator_id = $2 and bounty_payout_id is null`, userID, creatorID)
-		return err
+		if tag.RowsAffected() == 0 {
+			return ErrBadInvite
+		}
+		return forgetSelf(ctx, tx, creatorID, userID)
 	})
 	var pgErr *pgconn.PgError
 	switch {
@@ -241,6 +261,9 @@ func (s *Store) attribute(ctx context.Context, t attributionTarget, userID int64
 // rules allow (LinkCounts, not the creator, not already anyone's). It reports whether it did.
 func (s *Store) AttributeLink(ctx context.Context, userID int64, slug string, clickedAt time.Time) (bool, error) {
 	t, ok, err := s.target(ctx, `c.slug = $1`, slug, userID)
+	if ok && clickedAt.After(t.signedUpAt) {
+		clickedAt = t.signedUpAt // no click time was sent: the arrival came with the sign-up
+	}
 	if err != nil || !ok || t.attributed || t.self(userID) || !LinkCounts(t.startsOn, clickedAt, t.signedUpAt) {
 		return false, err
 	}

@@ -73,6 +73,14 @@ func (s *Service) webhook(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) handleEvent(ctx context.Context, event stripe.Event) error {
+	// A connected account's event (the Connect endpoint) is only ever read as account.updated:
+	// its invoices and charges are the creator's own, never ours.
+	if event.Account != "" {
+		if event.Type == "account.updated" {
+			return s.onAccountUpdated(ctx, event)
+		}
+		return nil
+	}
 	actor := "stripe_webhook:" + event.ID
 	switch event.Type {
 	case "checkout.session.completed":
@@ -85,8 +93,6 @@ func (s *Service) handleEvent(ctx context.Context, event stripe.Event) error {
 		return s.onInvoiceEvent(ctx, event, actor)
 	case "charge.refunded":
 		return s.onChargeRefunded(ctx, event)
-	case "account.updated":
-		return s.onAccountUpdated(ctx, event)
 	default:
 		// Not in this endpoint's enabled_events list in practice; kept
 		// as a safety net if the Dashboard config ever drifts.

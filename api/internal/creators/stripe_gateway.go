@@ -84,6 +84,9 @@ func (g *StripeGateway) InvoiceMoney(ctx context.Context, invoiceID string) (Inv
 	if err != nil {
 		return InvoiceMoney{}, fmt.Errorf("creators: read invoice: %w", err)
 	}
+	if inv.AmountPaid <= 0 {
+		return InvoiceMoney{}, nil // a trial's $0 invoice has no payment to read
+	}
 	var tax int64
 	for _, t := range inv.TotalTaxes {
 		tax += t.Amount

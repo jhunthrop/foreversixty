@@ -98,6 +98,10 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 	}
 	metadata["guild_id"] = strconv.FormatInt(*in.GuildID, 10)
 	transfer := in.Intent == intentTransfer
+	if transfer && code != "" {
+		httpx.WriteError(w, r, http.StatusBadRequest, "creator_code", "a creator code is for a new plan, not a billing transfer", nil)
+		return
+	}
 	if transfer {
 		// Carried onto the Subscription itself (subscription_data.metadata)
 		// so the webhook can tell a deliberate billing transfer apart from

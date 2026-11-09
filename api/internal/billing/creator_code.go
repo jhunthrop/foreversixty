@@ -88,7 +88,12 @@ func (s *Service) creatorsCheckoutCompleted(ctx context.Context, event stripe.Ev
 		return nil
 	}
 	at := time.Unix(event.Created, 0).UTC()
-	return s.Creators.CheckoutCompleted(ctx, uid, sub.Metadata[metadataCreatorCode], at, stripeRefID(event.Data.Object["invoice"]))
+	// Logged, never failed: a retry would replay the whole checkout event, and the session's
+	// invoice is recorded again by its own invoice.paid.
+	if err := s.Creators.CheckoutCompleted(ctx, uid, sub.Metadata[metadataCreatorCode], at, stripeRefID(event.Data.Object["invoice"])); err != nil {
+		s.logger().Error("billing", "op", "creators_checkout", "event", event.ID, "err", err)
+	}
+	return nil
 }
 
 // creatorsInvoicePaid tells the program about a paid invoice of an account's subscription.

@@ -252,8 +252,7 @@ func (s *Store) Bind(ctx context.Context, creatorID, userID int64) error {
 		if _, err := tx.Exec(ctx, `update creators set user_id = $2, updated_at = now() where id = $1`, creatorID, userID); err != nil {
 			return err
 		}
-		_, err := tx.Exec(ctx, `delete from creator_players where user_id = $1 and creator_id = $2 and bounty_payout_id is null`, userID, creatorID)
-		return err
+		return forgetSelf(ctx, tx, creatorID, userID)
 	})
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) && pgErr.Code == uniqueViolation {

@@ -94,10 +94,12 @@ func (s *Service) InvoicePaid(ctx context.Context, userID int64, invoiceID strin
 	if err != nil {
 		return err
 	}
-	if recorded {
-		s.logger().Info("creators", "op", "revenue", "user_id", userID)
+	if !recorded {
+		return nil
 	}
-	return nil
+	s.logger().Info("creators", "op", "revenue", "user_id", userID)
+	// A refund that landed before this payment was recorded found nothing to attach to.
+	return s.ChargeRefunded(ctx, money.ChargeID)
 }
 
 // ChargeRefunded is billing's hook on charge.refunded: a refund of a recorded payment becomes a line.

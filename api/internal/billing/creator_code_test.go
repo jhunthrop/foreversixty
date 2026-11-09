@@ -2,10 +2,16 @@
 package billing
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
+
+	stripe "github.com/stripe/stripe-go/v82"
+	"github.com/stripe/stripe-go/v82/webhook"
 
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 )
@@ -16,8 +22,10 @@ type fakeCreators struct {
 	completed []string
 }
 
-func (f *fakeCreators) CodeIsLive(_ context.Context, code string) (bool, error) { return f.live[code], nil }
-func (f *fakeCreators) CodeTrialDays() int64                                     { return 30 }
+func (f *fakeCreators) CodeIsLive(_ context.Context, code string) (bool, error) {
+	return f.live[code], nil
+}
+func (f *fakeCreators) CodeTrialDays() int64 { return 30 }
 func (f *fakeCreators) CheckoutCompleted(_ context.Context, _ int64, code string, _ time.Time, _ string) error {
 	f.completed = append(f.completed, code)
 	return nil
@@ -72,6 +80,57 @@ func TestCreatorCodeTurnsTheGuildTrialIntoAMonth(t *testing.T) {
 	p := mustCheckout(t, h, officer, map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid, "creator_code": "GRIMBREW"})
 	if p.TrialPeriodDays != 30 || p.Metadata["creator_code"] != "GRIMBREW" {
 		t.Fatalf("guild trial = %d (standard %d), code %q", p.TrialPeriodDays, catalog.GuildTrialDays, p.Metadata["creator_code"])
+	}
+}
+
+func TestCreatorCodeRefusedOnABillingTransfer(t *testing.T) {
+	h := newHarness(t)
+	withCreators(h)
+	gid, officer := h.officerOf(t, "Transfer Code Guild")
+	code, params := h.checkout(t, officer, map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid, "intent": "transfer", "creator_code": "GRIMBREW"})
+	if code != http.StatusBadRequest || params != nil {
+		t.Fatalf("a code on a transfer = %d, want 400 and no session", code)
+	}
+}
+
+// accountsHeard records the creator program's account.updated calls.
+type accountsHeard struct {
+	fakeCreators
+	accounts []string
+}
+
+func (a *accountsHeard) AccountUpdated(_ context.Context, id string) error {
+	a.accounts = append(a.accounts, id)
+	return nil
+}
+
+// The Connect endpoint shares the URL: its secret verifies, and a connected account's event is
+// only ever read as account.updated; its other events never reach billing.
+func TestConnectEventsAreOnlyAccountUpdated(t *testing.T) {
+	h := newHarness(t)
+	heard := &accountsHeard{fakeCreators: fakeCreators{live: map[string]bool{}}}
+	h.svc.Creators = heard
+	const connectSecret = "whsec_test_connect_fixture"
+	h.svc.ConnectWebhookSecret = connectSecret
+	send := func(eventType, account, secret string) int {
+		body, _ := json.Marshal(map[string]any{
+			"id": "evt_" + eventType + time.Now().Format("150405.000000000"), "type": eventType, "account": account,
+			"api_version": stripe.APIVersion, "data": map[string]any{"object": map[string]any{"id": "acct_x"}},
+		})
+		signed := webhook.GenerateTestSignedPayload(&webhook.UnsignedPayload{Payload: body, Secret: secret})
+		r := httptest.NewRequest(http.MethodPost, "/v1/billing/webhook", bytes.NewReader(signed.Payload))
+		r.Header.Set("Stripe-Signature", signed.Header)
+		return h.do(t, r).Code
+	}
+	if c := send("account.updated", "acct_creator", connectSecret); c != http.StatusOK || len(heard.accounts) != 1 || heard.accounts[0] != "acct_creator" {
+		t.Fatalf("account.updated = %d, heard %v", c, heard.accounts)
+	}
+	// A connected account's invoice.paid is acknowledged and ignored (no subscription is read).
+	if c := send("invoice.paid", "acct_creator", connectSecret); c != http.StatusOK {
+		t.Fatalf("a connected invoice.paid = %d", c)
+	}
+	if c := send("account.updated", "acct_creator", "whsec_wrong"); c != http.StatusBadRequest {
+		t.Fatalf("a wrong secret = %d, want 400", c)
 	}
 }
 

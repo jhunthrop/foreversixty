@@ -131,7 +131,14 @@ func (s *Service) Add(ctx context.Context, in AddInput) (Creator, error) {
 
 // bind sets the creator's own account and gives it creator Premium (never over a paid plan).
 func (s *Service) bind(ctx context.Context, creatorID, userID int64) error {
+	before, err := s.Store.Creator(ctx, creatorID)
+	if err != nil {
+		return err
+	}
 	if err := s.Store.Bind(ctx, creatorID, userID); err != nil {
+		return err
+	}
+	if err := s.endPrevious(ctx, creatorID, before.UserID, userID); err != nil {
 		return err
 	}
 	return s.grant(ctx, creatorID, userID)
@@ -146,6 +153,18 @@ func (s *Service) grant(ctx context.Context, creatorID, userID int64) error {
 		return fmt.Errorf("creators: grant premium: %w", err)
 	}
 	s.logger().Info("creators", "op", "grant_premium", "creator_id", creatorID, "user_id", userID, "granted", granted)
+	return nil
+}
+
+// endPrevious ends the creator Premium of the account a creator was bound to before, when the
+// creator now belongs to another account.
+func (s *Service) endPrevious(ctx context.Context, creatorID int64, previous *int64, now int64) error {
+	if previous == nil || *previous == now || s.Entitlements == nil {
+		return nil
+	}
+	if _, err := s.Entitlements.EndCreatorPremium(ctx, *previous, actor(creatorID)); err != nil {
+		return fmt.Errorf("creators: end previous premium: %w", err)
+	}
 	return nil
 }
 
@@ -185,8 +204,12 @@ func hashToken(token string) []byte {
 
 // Invite makes a fresh one-time invite and answers its URL; any earlier unused invite stops working.
 func (s *Service) Invite(ctx context.Context, creatorID int64) (string, error) {
-	if _, err := s.Store.Creator(ctx, creatorID); err != nil {
+	c, err := s.Store.Creator(ctx, creatorID)
+	if err != nil {
 		return "", err
+	}
+	if c.Ended {
+		return "", ErrNotFound
 	}
 	raw := make([]byte, 24)
 	if _, err := rand.Read(raw); err != nil {
@@ -207,8 +230,15 @@ func (s *Service) InviteName(ctx context.Context, token string) (string, error) 
 
 // AcceptInvite binds the signed-in account to the invite's creator and gives it creator Premium.
 func (s *Service) AcceptInvite(ctx context.Context, token string, userID int64) (Creator, error) {
+	before, err := s.Store.InviteCreator(ctx, hashToken(token), s.now())
+	if err != nil {
+		return Creator{}, err
+	}
 	c, err := s.Store.AcceptInvite(ctx, hashToken(token), userID, s.now())
 	if err != nil {
+		return Creator{}, err
+	}
+	if err := s.endPrevious(ctx, c.ID, before.UserID, userID); err != nil {
 		return Creator{}, err
 	}
 	if err := s.grant(ctx, c.ID, userID); err != nil {

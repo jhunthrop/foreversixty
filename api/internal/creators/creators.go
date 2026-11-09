@@ -134,6 +134,8 @@ type Creator struct {
 
 	UserID          *int64 `json:"-"`
 	StripeAccountID string `json:"-"`
+	// Ended: removed from the program (no new players, no invites).
+	Ended bool `json:"-"`
 }
 
 // Figures are a creator's totals since the start and what is owed this month so far.
