@@ -26,7 +26,6 @@
   import { FIELD_CONTROL, FIELD_FOCUS, FIELD_LABEL, fieldEdge } from '../../lib/ui/field';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import Button from '../ui/Button.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import Segmented from '../ui/Segmented.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -151,8 +150,8 @@
   }
 </script>
 
-<Section title="Queries" meta="SQL over this fight’s events, run in your browser" testid="queries-view">
-  <Plate label="Query">
+<Section title="Queries" testid="queries-view" panel flush>
+  <div>
     <div class="flex flex-col gap-2 px-4 py-[14px]">
       <span class={FIELD_LABEL} id="query-starts">Starting points</span>
       <Segmented
@@ -243,10 +242,8 @@
         </p>
       {/if}
     {/if}
-  </Plate>
-  <p class="text-muted mt-3 text-[13px] leading-5">
-    The file downloads the first time you run a query and nothing leaves the page. These figures are measured,
-    not scaled: a query answers the window it asks about exactly, where the tables mark a rescaled split with
-    a tilde.
+  </div>
+  <p class="text-muted px-5 pt-3 pb-4 text-[13px] leading-5">
+    Runs in your browser; nothing leaves the page. A query answers its window exactly, never scaled.
   </p>
 </Section>

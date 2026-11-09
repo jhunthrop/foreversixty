@@ -51,7 +51,6 @@
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Notice from '../ui/Notice.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import Select from '../ui/Select.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -597,9 +596,9 @@
 {/snippet}
 
 <div class="flex flex-col gap-4" data-testid="compare-mode">
-  {#if controls}{@render pickers()}{/if}
-  <Section title="Compare" meta={sectionMeta}>
-    <Plate label="Compare">
+  <Section title="Compare" meta={sectionMeta} panel flush>
+    {#if controls}<div class="px-5 pb-3">{@render pickers()}</div>{/if}
+    <div>
       {#if error !== ''}
         <p class="px-4 py-4 text-[14px]" role="alert">{error}</p>
       {:else if versusPlayer}
@@ -641,8 +640,8 @@
           {/each}
         </StatTable>
       {/if}
-    </Plate>
-    <div class="flex flex-col gap-2 pt-2">
+    </div>
+    <div class="flex flex-col gap-2 px-5 pt-2 pb-4">
       {#if error === '' && versusPlayer}
         <p class="text-muted text-[13px]" data-testid="compare-players-scope">
           {playerName(basePlayer)} against
@@ -671,11 +670,10 @@
             rightWindow?.endMs ?? 0,
           )} of the other, so a long phase and a short one are read phase against phase.
         {:else if window === null}
-          Both sides show the whole fight. Set a window in Analyze to compare the same stretch of each pull.
+          Both sides show the whole fight. Set a Window above to compare the same stretch of each pull.
         {:else}
           Both sides show {formatDuration(window.startMs)} to {formatDuration(window.endMs)} of each fight, so a
-          long wipe and a short one are read over the same stretch. Clear the window in Analyze to compare whole
-          fights.
+          long wipe and a short one are read over the same stretch. Clear the Window above to compare whole fights.
         {/if}
       </p>
       {#if rightWhole !== null && phases.length === 0}

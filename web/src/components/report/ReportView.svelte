@@ -8,7 +8,6 @@
        open Sections after, and whose rail holds This pull and the tab's own rail Sections. -->
 <script lang="ts">
   import { untrack } from 'svelte';
-  import Facts from '../ui/Facts.svelte';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
@@ -38,7 +37,7 @@
     sampleFightIndex,
   } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
-  import { formatClock, schoolToken, TRASH_PARSE } from '../../lib/report/format';
+  import { schoolToken, TRASH_PARSE } from '../../lib/report/format';
   import {
     FLAG_LETTERS,
     MISSING_FIGHT,
@@ -82,7 +81,13 @@
   import ReportBar from './ReportBar.svelte';
   import ReportHead from './ReportHead.svelte';
   import SummaryPanels from './SummaryPanels.svelte';
+  import ThisPull from './ThisPull.svelte';
+  import SummaryDeaths from './SummaryDeaths.svelte';
+  import KeyMechanics from './KeyMechanics.svelte';
+  import GroupBuffs from './GroupBuffs.svelte';
   import TargetsRail from './TargetsRail.svelte';
+  import CastsRail from './CastsRail.svelte';
+  import DispelsRail from './DispelsRail.svelte';
   import Glossary from './Glossary.svelte';
   import EventsRail from './EventsRail.svelte';
   import MechanicsRail from './MechanicsRail.svelte';
@@ -154,6 +159,7 @@
   import { fightGroupScope, groupScope, raidFlaggedPlayers, scopeNoun } from '../../lib/report/group';
   import { splitUnitName } from '../../lib/characters';
   import { reportCopy } from '../../lib/report/copy';
+  import { ratingCopy } from '../../lib/rating/copy';
   import { justUploadedAt } from '../../lib/reports/just-uploaded';
   import {
     ACTOR_TABS,
@@ -161,7 +167,8 @@
     TABS_MD,
     TABS_XL,
     listedTabs,
-    reportAnswer,
+    reportFigure,
+    reportMeta,
     thisPullFacts,
   } from '../../lib/report/frame';
   import { pullNumbers } from '../../lib/report/fights';
@@ -215,7 +222,9 @@
     isSampleReport(reportId) ? sampleFightIndex(fights) : defaultFightIndex(fights),
   );
   /** A Parse column exists only on a report with a boss kill to rank; the sample has none. */
-  const showParse = $derived(hasRankedKill(fights));
+  // The bundled sample is no ranked night: it never asks the rankings, so no Parse column and no
+  // "could not be reached" line over a log that was never ranked.
+  const showParse = $derived(!isSampleReport(reportId) && hasRankedKill(fights));
   /**
    * The bundled sample paints its first table from the fight's own summary, before report.json
    * (half a megabyte of units) has arrived: on a phone on a slow line the serial pair kept
@@ -592,6 +601,8 @@
     scoped === null ? [] : windowPresets(scoped, base?.duration_ms ?? scoped.duration_ms),
   );
   /** The main chart's metric: the table's own on the three rate tabs, damage done elsewhere (spec §B5.2). */
+  /** The by-ability panel each amount tab shows under its chart. */
+  const ABILITY_METRIC = { 'damage-done': 'done', healing: 'healing', 'damage-taken': 'taken' } as const;
   const chartMetric = $derived<'damage-done' | 'healing' | 'damage-taken'>(
     state.tab === 'damage-taken' ? 'damage-taken' : state.tab === 'healing' ? 'healing' : 'damage-done',
   );
@@ -1335,7 +1346,7 @@
     if (status === 'processing' || status === 'waiting' || status === 'unparsed') {
       document
         .getElementById('report')
-        ?.classList.remove('min-h-[1900px]', 'md:min-h-[2200px]', 'lg:min-h-[1420px]');
+        ?.classList.remove('min-h-[1420px]', 'md:min-h-[1780px]', 'lg:min-h-[1480px]');
     }
   });
 
@@ -1548,19 +1559,42 @@
         id: 'report-missing-fight',
         text:
           missingFight === MISSING_FIGHT
-            ? 'This link names a fight the page cannot read, so the first fight is showing.'
+            ? 'This link names a fight the page cannot read, so its opening pull is showing.'
             : trashScopeKey(missingFight) !== null
-              ? `This report has no trash group starting at fight ${trashScopeKey(missingFight)}, so the first fight is showing.`
-              : `This report has no fight ${missingFight}, so the first fight is showing.`,
+              ? `This report has no trash group starting at fight ${trashScopeKey(missingFight)}, so its opening pull is showing.`
+              : `This report has no fight ${missingFight}, so its opening pull is showing.`,
       });
     // A pull the logger's group was not in reads everyone in range (lib/report/group.ts), and
     // says so, so the scope word over the table is never a surprise.
     if (groupMissing) out.push({ id: 'report-group-missing', text: reportCopy.groupMissing });
     if (error !== '') out.push({ id: 'report-fight-error', text: error });
-    if (percentilesUnavailable && showParse && fight?.kind === 'encounter')
-      out.push({ id: 'parse-unavailable-line', text: '' });
+    if (parsesUnknownHere) out.push({ id: 'parse-unavailable-line', text: '' });
     return out.filter((notice) => notice.text !== '' || notice.id === 'parse-unavailable-line');
   });
+  /** The tabs whose tables use the glossary's words (Parse, Active, Share, threat, uptime). */
+  const GLOSSARY_TABS: ReadonlySet<string> = new Set([
+    'summary',
+    'damage-done',
+    'healing',
+    'damage-taken',
+    'deaths',
+    'threat',
+    'casts',
+    'buffs',
+    'debuffs',
+    'interrupts',
+    'dispels',
+    'resources',
+  ]);
+  /** The tables' Parse column: a boss pull's, and gone while the rankings did not answer, so a
+   *  column of question marks never stands in for figures; the line over the table says so and
+   *  offers Try again. */
+  const parseColumn = $derived(showParse && fight?.kind === 'encounter' && !percentilesUnavailable);
+  /** The tabs with a Parse column: the line that parses did not load shows on them alone. */
+  const PARSE_TABS: ReadonlySet<string> = new Set(['summary', 'damage-done', 'healing']);
+  const parsesUnknownHere = $derived(
+    percentilesUnavailable && showParse && fight?.kind === 'encounter' && PARSE_TABS.has(state.tab),
+  );
   /** The report has a logger's group, and this pull ran without any of it. */
   const groupMissing = $derived(
     !nightMode &&
@@ -1621,18 +1655,22 @@
   const scopeDeaths = $derived(
     (wholeScoped?.deaths ?? []).filter((death) => inSource(death.guid, scopeKey, scopePlayers, friendlySet)),
   );
-  const answer = $derived(
+  /** The rows the band's figure sums: the source player alone on their view, else the scope. */
+  const figureRows = $derived(
+    sourcePlayer !== undefined ? scopeRoster.filter((row) => row.guid === sourcePlayer) : scopeRoster,
+  );
+  const figure = $derived(
     fight === null || nightMode || summary === null
       ? null
-      : reportAnswer({
-          fight,
-          attempt: pullNumbers(fights).get(fight.index)?.pull,
-          scope: scopeWord,
-          players: scopeRoster.length,
+      : reportFigure({
+          tab: state.tab,
+          player: playerView,
+          bossPull: !isTrashPull,
+          damageDone: figureRows.reduce((sum, row) => sum + row.damage_done, 0),
+          healing: figureRows.reduce((sum, row) => sum + row.healing_done, 0),
+          damageTaken: figureRows.reduce((sum, row) => sum + row.damage_taken, 0),
           deaths: scopeDeaths.length,
-          groupDps:
-            scopeRoster.reduce((sum, row) => sum + row.damage_done, 0) /
-            (Math.max(summary.duration_ms, 1) / 1000),
+          durationMs: summary.duration_ms,
         }),
   );
   const pullFacts = $derived(
@@ -1640,20 +1678,28 @@
       ? []
       : thisPullFacts({
           fight,
+          scope: scopeWord,
           players: scopeRoster.length,
           deaths: scopeDeaths.length,
           phases: summary?.phases ?? [],
         }),
   );
   const isTrashPull = $derived(fight !== null && fight.kind !== 'encounter');
+  /** A pull a rating can exist for: a boss pull of a report the API keeps (never the bundled sample). */
+  const rateable = $derived(!isTrashPull && !isSampleReport(reportId));
   const live = $derived<'live' | 'quiet' | null>(fightIsLive ? (quiet === null ? 'live' : 'quiet') : null);
   const simHref = $derived(
     fight === null || nightMode
       ? null
       : `/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`,
   );
-  const where = $derived(
-    [facts.zone, fights.length > 0 ? facts.date : ''].filter((part) => part !== '').join(' · '),
+  /** The band's meta line: the pull on screen, or the night (zone, date, fight count). */
+  const headLine = $derived(
+    fight !== null && !nightMode
+      ? reportMeta(facts.zone, fight, pullNumbers(fights).get(fight.index)?.pull, scopeRoster.length)
+      : [facts.zone, fights.length > 0 ? facts.date : '', facts.fights]
+          .filter((part) => part !== '')
+          .join(' · '),
   );
   /** One player as the Source on an actor tab: the player's own view (decision R5). */
   const playerView = $derived(sourcePlayer !== undefined && ACTOR_TABS.has(state.tab) && !nightMode);
@@ -1682,7 +1728,7 @@
   /** The tabs the sibling lane draws: their main content in the main column, This pull in the rail. */
   let spellIcon = $state<SpellIconOf>(NO_SPELL_ICONS);
   $effect(() => {
-    void loadSpellIcons(activeBuild.build).then((icons) => {
+    void loadSpellIcons(activeBuild.build, { chain: true }).then((icons) => {
       spellIcon = icons;
     });
   });
@@ -1717,10 +1763,11 @@
 
 {#snippet thisPull()}
   {#if fight !== null && !nightMode}
-    <Section title="This pull" meta={`Started ${formatClock(fight.start)}`} testid="report-this-pull">
-      <!-- The facts' own first hairline sits on the head's (the mock's Facts under a Section head). -->
-      <div class="-mt-3"><Facts items={pullFacts} /></div>
-    </Section>
+    <ThisPull
+      facts={pullFacts}
+      {simHref}
+      note={state.tab === 'summary' && !rateable ? ratingCopy.noRatingForTrash : ''}
+    />
   {/if}
 {/snippet}
 
@@ -1871,29 +1918,30 @@
        it moves in place (followInPage). -->
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
   <div class="reveal" onclick={followInPage}>
-    <Page layout="split" testid="report-page">
+    <Page layout="split" panels testid="report-page">
       {#snippet header()}
         <ReportHead
           title={heading}
-          {where}
-          fightCount={facts.fights}
+          line={headLine}
           sample={isSampleReport(reportId)}
           {credit}
           {live}
-          {answer}
-          {simHref}
+          {figure}
         >
           {#snippet tabs()}
-            <TabStripMore
-              tabs={tabItems}
-              active={state.tab}
-              md={TABS_MD}
-              xl={tabXl}
-              label={reportCopy.tabsLabel}
-              moreLabel={reportCopy.more}
-              testid="report-tabs"
-              onSelect={(tab) => patch({ tab: tab as ReportState['tab'] })}
-            />
+            <!-- The wrapper only scopes the phone strip's edge fade (below), never a box of its own. -->
+            <div class="report-tabs contents">
+              <TabStripMore
+                tabs={tabItems}
+                active={state.tab}
+                md={TABS_MD}
+                xl={tabXl}
+                label={reportCopy.tabsLabel}
+                moreLabel={reportCopy.more}
+                testid="report-tabs"
+                onSelect={(tab) => patch({ tab: tab as ReportState['tab'] })}
+              />
+            </div>
           {/snippet}
         </ReportHead>
       {/snippet}
@@ -1921,11 +1969,9 @@
                 <Notice text={notice.text} tone="neutral" testid={notice.id} />
               </div>
             {/each}
-            {#if percentilesUnavailable && showParse && fight?.kind === 'encounter'}
+            {#if parsesUnknownHere}
               <p class="px-[var(--page-inset)] pt-2 text-[15px]" data-testid="parse-unavailable">
-                <span class="max-md:hidden">{reportCopy.parsesUnknown}</span><span class="md:hidden"
-                  >{reportCopy.parsesUnknownShort}</span
-                >
+                {reportCopy.parsesUnknown}
                 <button type="button" class="text-gold ml-2 font-semibold" onclick={() => (parseAttempt += 1)}
                   >{reportCopy.tryAgain}</button
                 >
@@ -1938,28 +1984,34 @@
         {@render thisPull()}
         {#if !onePullTab && scoped !== null}
           {#if state.tab === 'summary' && !nightMode}
-            <SummaryPanels
-              part="deaths"
+            {#if scoped.deaths.length > 0}
+              <SummaryDeaths summary={scoped} tabHref={hrefWith({ tab: 'deaths' })} />
+            {/if}
+            {#if rateable}
+              <RatingPanel
+                {reportId}
+                fightIndex={state.fight}
+                roster={scoped.roster.map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
+                tabHref={hrefWith({ tab: 'rating' })}
+              />
+            {/if}
+            {#if !isTrashPull && summary !== null}
+              <KeyMechanics {summary} {spellIcon} tabHref={hrefWith({ tab: 'mechanics' })} />
+            {/if}
+            <GroupBuffs
               summary={scoped}
               durationMs={scoped.duration_ms}
               players={playerSet}
-              tabHref={(tab) => hrefWith({ tab })}
               {spellIcon}
-            />
-            <RatingPanel
-              {reportId}
-              fightIndex={state.fight}
-              roster={scoped.roster.map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
-              trash={isTrashPull}
-              tabHref={hrefWith({ tab: 'rating' })}
+              tabHref={hrefWith({ tab: 'buffs' })}
             />
             {#if fight?.kind === 'encounter' && scoped.combatants.length > 0}
-              <Section title="At pull" testid="at-pull-card">
+              <Section title="At pull" panel testid="at-pull-card">
                 {#each scoped.combatants as combatant (combatant.guid)}
                   {@const label = unitLabel(combatant.name).text}
                   <Row
                     title={label}
-                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · item level ${combatant.item_level ?? 0} · ${combatant.gear.filter((item) => item.ID > 0).length} items`}
+                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · item level ${combatant.item_level ?? 0}`}
                     open
                   >
                     {#snippet lead()}<ClassIcon className={classOf.get(combatant.guid)} size={28} />{/snippet}
@@ -1999,12 +2051,25 @@
               durationMs={summary?.duration_ms ?? scoped.duration_ms}
               onWindow={setWindow}
             />
+          {:else if state.tab === 'casts'}
+            <CastsRail
+              casts={scoped.casts}
+              players={scopePlayers}
+              names={unitNames}
+              {classOf}
+              durationMs={scoped.duration_ms}
+            />
+          {:else if state.tab === 'debuffs'}
+            <DispelsRail dispels={scoped.dispels} {spellIcon} tabHref={hrefWith({ tab: 'dispels' })} />
           {:else if state.tab === 'events'}
             <EventsRail off={state.eventsOff} onPatch={patch} />
           {:else if state.tab === 'queries'}
             <QueriesRail />
           {:else if state.tab === 'rating'}
-            <RatingRail ratings={ratingState.data} status={ratingState.status} {roster} />
+            <RatingRail ratings={ratingState.data} {roster} />
+          {:else if state.tab === 'deaths' && !isTrashPull && summary !== null}
+            <!-- Beside the deaths: the boss abilities that did the hurting, with the Mechanics › link. -->
+            <KeyMechanics {summary} {spellIcon} tabHref={hrefWith({ tab: 'mechanics' })} />
           {/if}
           {#if state.tab === 'mechanics' && base !== null}
             <MechanicsRail summary={base} {classOf} />
@@ -2040,23 +2105,47 @@
             durationMs={scoped.duration_ms}
             {percentiles}
             {parseFallback}
-            showParse={showParse && fight?.kind === 'encounter'}
+            showParse={parseColumn}
             approximate={!windowIsWhole}
             {unitClasses}
             {playerHref}
             onSelectPlayer={(guid) => patch({ source: guid })}
           />
           {@render chart('damage-done')}
-          <SummaryPanels
-            part="taken"
-            summary={scoped}
-            everyone={windowed ?? scoped}
-            durationMs={scoped.duration_ms}
-            players={playerSet}
-            approximate={!windowIsWhole}
-            tabHref={(tab) => hrefWith({ tab })}
-            {spellIcon}
-          />
+          <!-- Two columns from 1440: the long list on the left, the two short ones stacked on the right. -->
+          <div class="report-abilities">
+            <SummaryPanels
+              metric="done"
+              tabHref={hrefWith({ tab: 'damage-done' })}
+              summary={scoped}
+              durationMs={scoped.duration_ms}
+              players={playerSet}
+              approximate={!windowIsWhole}
+              {spellIcon}
+            />
+            <div class="report-abilities-stack">
+              <SummaryPanels
+                metric="taken"
+                tabHref={hrefWith({ tab: 'damage-taken' })}
+                summary={scoped}
+                durationMs={scoped.duration_ms}
+                players={playerSet}
+                approximate={!windowIsWhole}
+                {spellIcon}
+              />
+              {#if scoped.healing.some((actor) => playerSet.has(actor.guid) && actor.effective > 0)}
+                <SummaryPanels
+                  metric="healing"
+                  tabHref={hrefWith({ tab: 'healing' })}
+                  summary={scoped}
+                  durationMs={scoped.duration_ms}
+                  players={playerSet}
+                  approximate={!windowIsWhole}
+                  {spellIcon}
+                />
+              {/if}
+            </div>
+          </div>
         {:else if ACTOR_TABS.has(state.tab) && playerView}
           <PlayerView
             tab={state.tab as 'damage-done' | 'healing' | 'damage-taken'}
@@ -2099,7 +2188,7 @@
             players={playerSet}
             {percentiles}
             parseFallback={tableParseFallback}
-            showParse={showParse && fight?.kind === 'encounter'}
+            showParse={parseColumn}
             amountApproximate={(filtersScale && !windowIsWhole && tableExact === null) || nightProrates}
             approximate={actorTableApproximate && tableExact === null}
             absent={absentPlayers}
@@ -2121,6 +2210,17 @@
             </p>
           {/if}
           {@render chart(chartMetric)}
+          {#if !filtersScale && !nightMode}
+            <!-- What the amount was made of: the scope's abilities, as the Summary lists them. -->
+            <SummaryPanels
+              metric={ABILITY_METRIC[chartMetric]}
+              summary={scoped}
+              durationMs={scoped.duration_ms}
+              players={playerSet}
+              approximate={!windowIsWhole}
+              {spellIcon}
+            />
+          {/if}
         {:else if state.tab === 'buffs' || state.tab === 'debuffs'}
           {#if auraTabLazy.current}
             <auraTabLazy.current
@@ -2131,6 +2231,8 @@
                 kind: state.tab === 'buffs' ? 'BUFF' : 'DEBUFF',
                 names: unitNames,
                 bossNames: bossUnitNames,
+                friendly: friendlySet,
+                tauntSpells: new Set((scoped.taunts ?? []).map((taunt) => taunt.spell_id)),
                 windowed: !windowIsWhole,
               }}
               cooldowns={state.tab === 'buffs'
@@ -2173,6 +2275,7 @@
                 rows={scoped.interrupts}
                 everyone={windowed?.interrupts ?? scoped.interrupts}
                 emptyText={exchangeEmpty('interrupted')}
+                windowed={!windowIsWhole}
                 casts={base?.casts ?? []}
                 players={playerSet}
                 {classOf}
@@ -2183,6 +2286,7 @@
                 rows={scoped.dispels}
                 everyone={windowed?.dispels ?? scoped.dispels}
                 emptyText={exchangeEmpty('dispelled')}
+                windowed={!windowIsWhole}
                 auras={base?.auras ?? []}
                 players={playerSet}
                 {classOf}
@@ -2394,13 +2498,52 @@
       {:else if state.tab === 'mechanics' && nightMode && nightLoading}
         <p class="text-muted text-[14px]" data-testid="mechanics-night-loading">Folding the night’s pulls…</p>
       {/if}
-      <!-- Last in the column: a glossary is a footnote, read when a word stops someone. -->
-      <Glossary />
+      <!-- Last in the column: a glossary is a footnote, read when a word stops someone; only under
+           the tabs whose tables use its words (logs lane review 2026-11-09). -->
+      {#if GLOSSARY_TABS.has(state.tab)}<Glossary />{/if}
     </Page>
   </div>
 {/if}
 
 <style>
+  /* Below 768 the tab strip is one line that scrolls sideways: its right edge fades out, so the
+     cut tab reads as more to scroll, not as a broken label (logs lane review 2026-11-09). */
+  @media (max-width: 767px) {
+    .report-tabs :global(.ui-tsm-strip) {
+      mask-image: linear-gradient(to right, var(--color-bg) calc(100% - 48px), transparent);
+    }
+  }
+  /* Damage done by ability beside taken and healing (stacked) where the main column has the room (1440 up). */
+  .report-abilities,
+  .report-abilities-stack {
+    display: grid;
+    gap: var(--section-gap);
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+  }
+  /* The halves keep the ability's name readable at every width: a floor on the name, a cap on the bar. */
+  .report-abilities :global(.ui-st) {
+    --st-name: minmax(120px, 2fr);
+    --st-bar: minmax(0, 120px);
+  }
+  @media (min-width: 1440px) {
+    .report-abilities {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+  /* Side by side under 1760 the halves are narrow: the share figure stays, the share bar goes,
+     so the ability's name keeps its room. */
+  @media (min-width: 1440px) and (max-width: 1759px) {
+    .report-abilities :global(.ui-st) {
+      --st-bar: 0px;
+    }
+    .report-abilities :global(.ui-st-bar) {
+      visibility: hidden;
+      overflow: hidden;
+      min-width: 0;
+    }
+  }
   .report-queries :global(.ui-seg) {
     flex-wrap: wrap;
   }

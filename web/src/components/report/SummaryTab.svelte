@@ -1,7 +1,7 @@
 <!-- web/src/components/report/SummaryTab.svelte -->
-<!-- The Summary tab's Plate (logs spec 2026-11-07 6.2): Section Players over one StatTable, a row
+<!-- The Summary tab's lead (logs spec 2026-11-07 6.2; directions b1): the Players panel over one StatTable, a row
      per player in the scope: the crest, the name in its class colour (the link that opens the
-     player's own view), "{spec} {class} · item level {n}", then each amount beside its rate
+     player's own view), its spec (and a cross-realm player's realm), then each amount beside its rate
      (MUST 1: Damage and DPS, Healing and HPS, Taken and Taken / s; a pair whose rate is 0.0 on
      every row is hidden), Active and Deaths. Parse leads the figures on a boss pull. Sorted by
      Damage; every head sorts.
@@ -12,15 +12,16 @@
 <script lang="ts">
   import { unitLabel } from '../../lib/report/names.svelte';
   import { specCell, type UnitClass } from '../../lib/report/roster-class';
-  import { classColorVar, formatAmount, formatPercent, wholeFightMark } from '../../lib/report/format';
-  import { formatRate, pullLength } from '../../lib/report/frame';
+  import { classColorVar, formatAmount, wholeFightMark } from '../../lib/report/format';
+  import { formatRate } from '../../lib/report/frame';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
+  import Meter from '../ui/Meter.svelte';
+  import { roleIcon, roleOf } from '../../lib/report/role-icon';
   import ClassIcon from './ClassIcon.svelte';
 
   let {
@@ -102,44 +103,44 @@
   });
   let showEveryone = $state(false);
   const shown = $derived(rows.length > CROWD && !showEveryone ? rows.slice(0, FIRST_ROWS) : rows);
+  /** The Damage column's share bar runs against the top damage, as Damage done's does. */
+  const topDamage = $derived(Math.max(1, ...rows.map((row) => row.damage_done)));
   const activeMark = $derived(wholeFightMark(approximate));
+
+  /** An empty cell: no parse yet, or none of that amount (a healer's damage, a tank's healing). */
+  const NO_FIGURE = '–';
+  const amountCell = (value: number, text: string): StatFigure =>
+    value === 0 ? { value: NO_FIGURE, muted: true } : { value: text };
 
   function figures(row: RosterRow): StatFigure[] {
     const placed = percentiles.get(row.guid);
     const parse: StatFigure[] = showParse
       ? [
           placed === undefined
-            ? { value: parseFallback || '–', muted: true }
+            ? { value: parseFallback || NO_FIGURE, muted: true }
             : { value: String(Math.floor(placed.percentile)) },
         ]
       : [];
     return [
       ...parse,
-      ...pairs.flatMap((pair) => [
-        { value: formatAmount(pair.amountOf(row)) },
-        { value: formatRate(rateOf(pair, row)) },
-      ]),
-      { value: `${activeMark}${formatPercent(row.activity_pct)}` },
-      { value: String(row.deaths), muted: row.deaths === 0 },
+      ...pairs.flatMap((pair) => {
+        const amount = pair.amountOf(row);
+        return [amountCell(amount, formatAmount(amount)), amountCell(amount, formatRate(rateOf(pair, row)))];
+      }),
+      { value: `${activeMark}${Math.round(row.activity_pct)}%` },
+      { value: String(row.deaths), muted: row.deaths === 0, tone: row.deaths > 0 ? 'wipe' : undefined },
     ];
   }
 
-  function subOf(row: RosterRow): string {
+  // One short line under the name: the spec (the name's colour already says the class) and the
+  // realm of a player from another one. With no spec to show, the item level fills it; At pull and
+  // the player view carry the item level always.
+  function subOf(row: RosterRow, realm: string): string {
     const cell = specCell(row, unitClasses);
-    const who = row.spec && cell.class ? `${row.spec} ${cell.class}` : cell.text;
-    return [who === '—' ? '' : who, row.item_level ? `item level ${row.item_level}` : '']
-      .filter((part) => part !== '')
-      .join(' · ');
+    const who = row.spec ? row.spec : cell.text === '—' ? '' : cell.text;
+    const level = who === '' && row.item_level ? `item level ${row.item_level}` : '';
+    return [who, realm, level].filter((part) => part !== '').join(' · ');
   }
-
-  const deaths = $derived(summary.deaths.length);
-  const meta = $derived(
-    [
-      `${rows.length} ${rows.length === 1 ? 'player' : 'players'}`,
-      `${deaths} ${deaths === 1 ? 'death' : 'deaths'}`,
-      pullLength(durationMs),
-    ].join(' · '),
-  );
 
   function follow(event: MouseEvent, guid: string): void {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
@@ -148,14 +149,16 @@
   }
 </script>
 
-<Section title="Players" {meta} testid="summary-tab">
-  <Plate label="Players" testid="summary-roster-card">
-    <StatTable {columns} nameHead="Player" bar={false} {sort} {onsort} label="Players">
+<Section title="Players" panel flush testid="summary-tab">
+  <!-- Up to eight figure columns: the name keeps a floor so it never folds letter by letter in
+       the narrow main column (1024 to 1279); past that floor the table scrolls sideways. -->
+  <div class="summary-roster" data-testid="summary-roster-card">
+    <StatTable {columns} nameHead="Player" {sort} {onsort} label="Players">
       {#each shown as row (row.guid)}
         {@const display = unitLabel(row.name)}
         {@const cell = specCell(row, unitClasses)}
+        {@const role = roleOf(row.role)}
         <StatRow
-          bar={false}
           figures={figures(row)}
           phone={`damage · ${formatRate(row.damage_done / seconds)} DPS`}
           testid={`roster-${row.guid}`}
@@ -168,9 +171,21 @@
               title={display.title}
               data-testid="roster-name"
               onclick={(event) => follow(event, row.guid)}>{display.name}</a
-            >{#if display.realm !== ''}<span class="text-muted ml-1 text-[12px]">· {display.realm}</span
-              >{/if}{/snippet}
-          {#snippet sub()}{subOf(row) || ' '}{/snippet}
+            >{/snippet}
+          {#snippet sub()}{#if role !== null}{@const icon = roleIcon(role)}<img
+                src={icon.url}
+                alt={icon.label}
+                title={icon.label}
+                width="14"
+                height="14"
+                class="mr-1 inline-block rounded-[2px] align-[-2px]"
+                data-testid="roster-role"
+              />{/if}{subOf(row, display.realm) || ' '}{/snippet}
+          {#snippet meter()}<Meter
+              value={row.damage_done / topDamage}
+              tone="class"
+              color={classColorVar(cell.class)}
+            />{/snippet}
         </StatRow>
       {/each}
     </StatTable>
@@ -182,11 +197,35 @@
         onclick={() => (showEveryone = true)}>Show all {rows.length} players</button
       >
     {/if}
-  </Plate>
+  </div>
   {#if approximate}
-    <p class="text-small text-muted pt-2" data-testid="summary-wholefight-note">
+    <p class="text-small text-muted px-5 pt-2" data-testid="summary-wholefight-note">
       Active is marked {activeMark} because the summary does not track it over time: it is the whole fight's figure
       even inside a shorter window. Damage, healing, taken and deaths are this window's own numbers.
     </p>
   {/if}
 </Section>
+
+<style>
+  .summary-roster {
+    overflow-x: auto;
+  }
+  /* One fixed row height: the name and its class line each hold one line, ellipsised. */
+  .summary-roster :global(.ui-st-name),
+  .summary-roster :global(.ui-st-name > *) {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .summary-roster :global(.ui-st) {
+    --st-name: minmax(120px, 2fr);
+    --st-bar: minmax(40px, 56px);
+    --st-fig: minmax(max-content, 54px);
+    min-width: min-content;
+  }
+  @media (max-width: 1023px) {
+    .summary-roster :global(.ui-st) {
+      min-width: 0;
+    }
+  }
+</style>

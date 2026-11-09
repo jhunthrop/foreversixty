@@ -6,14 +6,12 @@ export const recentReportsCopy = {
   /** The placeholder's screen-reader name while the feed loads: never the word "Loading" in page text. */
   placeholderLabel: 'Recent reports',
   failed: 'Recent reports did not load.',
-  empty: 'No public reports yet. The first raid logs land in December; dungeon logs are welcome now.',
   older: 'Older reports',
 } as const;
 
-/** The page head's own copy (logs spec 2026-11-07 section 4): the h1 and the one meta line. */
+/** The page head's own copy (logs spec 2026-11-07 section 4; directions b1: the title alone). */
 export const logsBandCopy = {
   h1: 'Logs',
-  jobLine: 'Upload a combat log or log live, then read every pull.',
 } as const;
 
 /** /logs' companion column: the pairing island, and a pointer to /setup for the download and

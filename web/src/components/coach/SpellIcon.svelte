@@ -18,8 +18,10 @@
     style:height="{size}px"
   >
     {#if failed === url}
+      <!-- With no name it is decoration: hidden, so it is never an image with no text. -->
       <span
-        role="img"
+        role={name === '' ? undefined : 'img'}
+        aria-hidden={name === '' ? 'true' : undefined}
         aria-label={name === '' ? undefined : name}
         title={name === '' ? undefined : name}
         class="h-full w-full"

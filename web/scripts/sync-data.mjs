@@ -30,6 +30,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { bisDirFor, bisSourceBuild } from './bis-source-build.mjs';
+import { publishSpellIcons } from './spell-icons-publish.mjs';
 
 /** What gets copied into public/data/<build>/, in copy order. */
 export const SYNC_ENTRIES = [
@@ -596,9 +597,9 @@ async function copyBuild({ repoRoot, webRoot, build, sourceDir }) {
   copied.push(...(await writeSimNames(sourceDir, publicDir)));
   copied.push(...(await publishFallbackBis({ repoRoot, build, sourceDir, publicDir })));
   copied.push(...(await publishBisFixtures({ webRoot, publicDir })));
-  if (sourceDir === path.join(webRoot, 'src/fixtures/planner')) {
-    copied.push(...(await publishBisIcons({ repoRoot, webRoot, build, publicDir })));
-  }
+  const fixture = sourceDir === path.join(webRoot, 'src/fixtures/planner');
+  if (fixture) copied.push(...(await publishBisIcons({ repoRoot, webRoot, build, publicDir })));
+  copied.push(...(await publishSpellIcons({ repoRoot, webRoot, build, publicDir, fixture })));
 
   return copied;
 }

@@ -34,9 +34,9 @@ test('the sample report is one row Tagged Sample report, with a date and its fig
   await expect(row).toHaveAttribute('href', `/reports/${SAMPLE_REPORT_ID}`);
   // The date the report page says (its first fight), not a second format (W.9); the zone and
   // count come from the sample's meta, the same source the page reads (L.7).
-  await expect(row.getByTestId('report-row-when')).toHaveText('17 Sept 2026');
+  await expect(row.getByTestId('report-row-when')).toHaveText('8 Nov 2026');
   await expect(row.getByTestId('report-row-summary')).toHaveText(
-    `${SAMPLE_REPORT_META.zone} · ${SAMPLE_REPORT_META.fights.length} fights`,
+    `${SAMPLE_REPORT_META.zone} · ${SAMPLE_REPORT_META.fights.filter((fight) => fight.kind === 'encounter').length} bosses · ${SAMPLE_REPORT_META.fights.length} fights`,
   );
   await expect(page.locator('.pill-sample')).toHaveCount(0);
 });
@@ -63,7 +63,7 @@ test('the sample appears once: a feed that carries it is filtered by id', async 
   await page.goto('/logs');
   const panel = page.getByTestId('recent-reports');
   await panel.scrollIntoViewIfNeeded();
-  await expect(page.getByTestId('recent-reports-empty')).toBeVisible();
+  await expect(page.getByTestId('recent-reports-empty')).toHaveCount(0);
   await expect(panel.getByRole('link', { name: SAMPLE_REPORT_META.title })).toHaveCount(1);
 });
 
@@ -97,15 +97,16 @@ test('lists a public report by title, relative date, kills and guild', async ({ 
   );
 });
 
-test('an honest empty state before the first public report lands', async ({ page }) => {
+test('before the first public report lands the panel is the sample row alone, with no empty line over it', async ({
+  page,
+}) => {
   await signedOut(page);
   await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
 
   await page.goto('/logs');
   await page.getByTestId('recent-reports').scrollIntoViewIfNeeded();
-  await expect(page.getByTestId('recent-reports-empty')).toHaveText(
-    'No public reports yet. The first raid logs land in December; dungeon logs are welcome now.',
-  );
+  await expect(page.getByTestId('recent-reports-empty')).toHaveCount(0);
+  await expect(page.getByTestId('recent-reports-sample').getByTestId('report-row')).toHaveCount(1);
 });
 
 test('an "Older reports" control appears only when the API says a further page exists', async ({ page }) => {

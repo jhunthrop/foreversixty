@@ -143,7 +143,6 @@ export function reportStatusLabel(status: string): string {
   return UNFINISHED_STATUS[status] ?? '';
 }
 
-export const NOT_CREDITED_LABEL = 'Not credited';
 /** Shown on a live row the viewer owns that no character is credited to yet. */
 export const LOG_OUT_HINT = 'Log out once in game.';
 
@@ -169,22 +168,24 @@ export interface OwnReportRowFacts {
 /**
  * A report row in "Your reports" (logs spec 2026-11-07 section 5): the title falls back to the
  * zone, then to the night it logged ("Report, 17 Sep 2026"; production's first report had
- * neither); the line under it is the zone when known, the bosses, the fights and who it is
- * credited to.
+ * neither); the line under it (directions b1) is the zone when known, the pulls, the bosses or
+ * "Trash only", and who it is credited to when someone is.
  */
 export function ownReportRow(facts: OwnReportRowFacts): { title: string; sub: string } {
   const zone = facts.zone.trim();
   const night = formatDayMonthYear(new Date(facts.startedAt));
   const title = facts.title.trim() || zone || (night === '' ? UNTITLED_REPORT : `Report, ${night}`);
+  const bosses = facts.bossCount ?? facts.killCount;
   return {
     title,
     sub: join([
-      zone === '' ? undefined : zone,
-      bossCountLabel(facts.bossCount ?? facts.killCount),
-      plural(facts.fightCount, 'fight', 'fights'),
-      creditedName(facts.loggingCharacter) ?? NOT_CREDITED_LABEL,
+      zone === '' || zone === title ? undefined : zone,
+      plural(facts.fightCount, 'pull', 'pulls'),
+      bosses > 0 ? bossCountLabel(bosses) : TRASH_ONLY,
+      creditedName(facts.loggingCharacter) ?? undefined,
     ]),
   };
 }
 
 const UNTITLED_REPORT = 'Report';
+const TRASH_ONLY = 'Trash only';

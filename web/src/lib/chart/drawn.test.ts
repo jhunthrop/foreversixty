@@ -5,7 +5,6 @@ import {
   DEFAULT_TOP_N,
   median,
   medianSeries,
-  roundedSum,
   selectDrawn,
   standingAt,
   stopAtDeath,
@@ -27,13 +26,6 @@ describe('windowRate and standingAt', () => {
   it('reads the cumulative value at the window end', () => {
     expect(standingAt([1, 3, 6, 10], { startMs: 0, endMs: 3000 })).toBe(6);
     expect(standingAt([1, 3, 6, 10], { startMs: 0, endMs: 9000 })).toBe(10);
-  });
-});
-
-describe('roundedSum', () => {
-  it('rounds each player first, so a raider adding the legend gets the head', () => {
-    expect(roundedSum([100.4, 100.4, 100.4])).toBe(300);
-    expect(Math.round(100.4 * 3)).toBe(301);
   });
 });
 
@@ -113,6 +105,15 @@ describe('selectDrawn', () => {
       'p3',
       'p4',
     ]);
+  });
+
+  it('draws everyone when the preset covers the roster, even a healer outside the bottom pool', () => {
+    const few = candidates.slice(0, 5);
+    const pool = new Set(few.slice(0, 4).map((entry) => entry.id));
+    for (const preset of ['split', 'top', 'bottom'] as const)
+      expect(
+        selectDrawn({ candidates: few, pinned: new Set(), chosen: null, preset, bottomPool: pool }),
+      ).toEqual(['p0', 'p1', 'p2', 'p3', 'p4']);
   });
 
   it('ignores a pinned player who is not in the fight', () => {

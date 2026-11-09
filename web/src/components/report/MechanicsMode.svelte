@@ -17,6 +17,7 @@
     nightBossGroups,
     playerMechanics,
     unclassifiedAbilities,
+    abilityHitsByPlayer,
     meleeBucket,
     unjudgedDeaths,
     rolePlacements,
@@ -27,7 +28,6 @@
   import { classSlugOf } from '../../lib/report/planner-link';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -200,6 +200,8 @@
   /** What hit a player and the table does not list. The spec's honesty rule: an ability
       the curator has not reached is unjudged, not absent. */
   const unclassified = $derived(unclassifiedAbilities(summary));
+  /** On a boss with no table: the enemy abilities that did damage, each read player by player. */
+  const bossAbilities = $derived(unclassified.filter((ability) => ability.damage > 0));
   /** A name two unclassified spells share, or one that reads as the melee swing, gets its id. */
   function unclassifiedNameShared(ability: { spell_id: number; name: string }): boolean {
     return (
@@ -328,8 +330,8 @@
 {/snippet}
 
 <div class="flex flex-col gap-[var(--section-gap)]" data-testid="mechanics-mode">
-  <Section title="Mechanics" meta="Problems first, then what went right">
-    <Plate label="Mechanics">
+  <Section title="Mechanics" panel flush>
+    <div>
       {#if beforeMechanics}
         {@render line(
           'This report was parsed before Mechanics mode existed; parse it again to see mechanics.',
@@ -342,12 +344,49 @@
         )}
       {:else if !block.table_found && nightMode}
         {@render line('No boss of the night has a table yet.', 'mechanics-no-table')}
-      {:else if !block.table_found}
+      {:else if !block.table_found && bossAbilities.length === 0}
         <p class="text-muted px-4 py-4 text-[14px]" data-testid="mechanics-no-table">
-          No mechanics table for this boss yet. A table says which of its abilities are avoidable, which casts
-          to interrupt and which debuffs to dispel; without one this page has nothing to judge. Run
-          <code class="font-mono text-[13px]">forever-logs mechanics-draft</code> on the log for a draft to review.
+          No mechanics for this boss yet.
         </p>
+      {:else if !block.table_found}
+        <!-- A boss no table covers yet: what its side did to whom, ability by ability, from damage taken. -->
+        <div class="px-5 py-2" data-testid="mechanics-boss-abilities">
+          {#each bossAbilities as ability (ability.spell_id)}
+            <Row
+              title={unclassifiedNameShared(ability) ? `${ability.name} #${ability.spell_id}` : ability.name}
+              open
+              wrapTrail
+              testid={`mechanics-ability-${ability.spell_id}`}
+            >
+              {#snippet lead()}<SpellIcon
+                  url={icons.of(ability.spell_id, ability.name)}
+                  size={24}
+                  tip
+                />{/snippet}
+              {#snippet subContent()}{#each abilityHitsByPlayer(summary, ability.spell_id) as one, i (one.guid)}{i >
+                  0
+                    ? ' '
+                    : ''}<span class="whitespace-nowrap" data-testid="mechanics-hit"
+                    >{i > 0 ? '· ' : ''}<span style:color={classColorVar(classOf.get(one.guid))}
+                      >{splitUnitName(one.name).name}</span
+                    >
+                    <b class="text-text font-semibold tabular-nums">{formatAmount(one.damage)}</b>
+                    <span class="tabular-nums">({one.hits} {one.hits === 1 ? 'hit' : 'hits'})</span></span
+                  >{/each}{/snippet}
+              {#snippet trail()}
+                <span class="text-strong text-[15px] leading-5 font-bold tabular-nums"
+                  >{formatAmount(ability.damage)}</span
+                >
+                <a
+                  href={hrefFor(damageTakenPatch(ability.spell_id))}
+                  class={linkClass}
+                  aria-label={`Damage Taken for ${ability.name}`}
+                  onclick={(event) => follow(event, damageTakenPatch(ability.spell_id))}>Damage taken</a
+                >
+              {/snippet}
+            </Row>
+          {/each}
+        </div>
       {:else if table.length === 0}
         {@render line('Nothing the table lists went wrong.', 'mechanics-table-empty')}
       {:else}
@@ -366,7 +405,11 @@
                 .join(' · ')}
               testid={`mechanics-row-${mechanicRowKey(row)}`}
             >
-              {#snippet lead()}<SpellIcon url={icons.of(row.spell_id)} spellId={row.spell_id} tip />{/snippet}
+              {#snippet lead()}<SpellIcon
+                  url={icons.of(row.spell_id, row.name)}
+                  spellId={row.spell_id}
+                  tip
+                />{/snippet}
               {#snippet trail()}
                 <Tag tone={tagTone(row, tally.failed)}>{KIND_TAG[row.kind] ?? row.kind}</Tag>
                 {@render figure(String(tally.failed), 'Failed')}
@@ -376,18 +419,18 @@
           {/each}
         </div>
       {/if}
-    </Plate>
+    </div>
     {#if !beforeMechanics && block.table_found}
-      <p class="text-muted pt-3 text-[13px]">
-        Whole {nightMode ? 'night' : 'fight'}, from the encounter’s mechanics table. {nightMode
-          ? `${judgedSummary} A source pick does not apply here.`
-          : 'Whole fight: a brushed time window does not apply here, so none is offered.'}
+      <p class="text-muted px-5 pt-3 pb-4 text-[13px]">
+        {nightMode
+          ? `Whole night, from the encounter’s mechanics table. ${judgedSummary} A source pick does not apply here.`
+          : 'Whole fight only, from the encounter’s mechanics table.'}
       </p>
     {/if}
   </Section>
 
   {#if !beforeMechanics && block.table_found}
-    <Section title="Problems" meta="Deaths first, then most costly" testid="mechanics-problems">
+    <Section title="Problems" meta="Deaths first, then most costly" testid="mechanics-problems" panel>
       {#if problems.length === 0}
         <p class="text-[14px]">Nothing the table lists went wrong.</p>
       {:else}
@@ -405,7 +448,10 @@
                 open
                 wrapTrail
               >
-                {#snippet lead()}<SpellIcon url={icons.of(problem.row.spell_id)} size={24} />{/snippet}
+                {#snippet lead()}<SpellIcon
+                    url={icons.of(problem.row.spell_id, problem.row.name)}
+                    size={24}
+                  />{/snippet}
                 {#snippet titleContent()}<span class={problem.hit?.killed ? 'text-death' : 'text-strong'}
                     >{problem.text}</span
                   >{/snippet}
@@ -418,7 +464,7 @@
     </Section>
 
     {#if nightMode}
-      <Section title="Over the night" testid="mechanics-night">
+      <Section title="Over the night" testid="mechanics-night" panel>
         {#if nightBosses.length === 0}
           <p class="text-[14px]">Nothing the table lists hit anyone on any pull.</p>
         {:else}
@@ -444,7 +490,7 @@
                   .join(' · ')}
                 open
               >
-                {#snippet lead()}<SpellIcon url={icons.of(row.spell_id)} size={24} />{/snippet}
+                {#snippet lead()}<SpellIcon url={icons.of(row.spell_id, row.name)} size={24} />{/snippet}
               </Row>
             {/each}
           {/each}
@@ -453,7 +499,7 @@
     {/if}
 
     {#if melee.damage > 0}
-      <Section title="Melee swings" testid="mechanics-melee">
+      <Section title="Melee swings" testid="mechanics-melee" panel>
         <p class="text-muted text-[14px] leading-6">
           <span class="text-text tabular-nums">{formatAmount(melee.damage)}</span> damage to
           <span class="tabular-nums">{melee.players}</span>
@@ -476,7 +522,7 @@
     {/if}
 
     {#if showPlayerCards}
-      <Section title="By player" meta="What hit them, and what did not" testid="mechanics-players">
+      <Section title="By player" meta="What hit them, and what did not" testid="mechanics-players" panel>
         {#each players as player (player.guid)}
           <Row title={splitUnitName(player.name).name} open testid={`mechanics-player-${player.guid}`}>
             {#snippet lead()}<ClassCrestRing
@@ -555,11 +601,9 @@
     {/if}
 
     {#if unclassified.length > 0}
-      <Section title="Not yet classified" testid="mechanics-unclassified">
+      <Section title="Not yet classified" testid="mechanics-unclassified" panel>
         <p class="text-muted text-[13px]">
-          These enemy abilities hit someone and the table does not list them, so it does not say whether they
-          were avoidable. Run <code class="font-mono text-[13px]">forever-logs mechanics-draft</code> on the
-          log for a draft that classifies them.{nightMode
+          These enemy abilities hit someone and the table does not list them yet.{nightMode
             ? ' Over the night they are pooled across every boss: a folded ability no longer says which pull it came from.'
             : ''}
         </p>
@@ -569,7 +613,7 @@
             sub={`${formatAmount(ability.damage)} damage to players · ${ability.players} ${ability.players === 1 ? 'player' : 'players'} hit`}
             open
           >
-            {#snippet lead()}<SpellIcon url={icons.of(ability.spell_id)} size={24} />{/snippet}
+            {#snippet lead()}<SpellIcon url={icons.of(ability.spell_id, ability.name)} size={24} />{/snippet}
             {#snippet trail()}
               <a
                 href={hrefFor(damageTakenPatch(ability.spell_id))}
@@ -584,7 +628,7 @@
     {/if}
 
     {#if unjudged.length > 0}
-      <Section title="Deaths the table does not explain" testid="mechanics-unjudged-deaths">
+      <Section title="Deaths the table does not explain" testid="mechanics-unjudged-deaths" panel>
         <p class="text-muted text-[13px]">
           Killed by a swing, by an ability the table does not list, or by nothing the log named: the problems
           above cannot say whether these were avoidable. The Deaths tab has each one in full.

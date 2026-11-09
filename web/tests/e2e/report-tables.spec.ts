@@ -10,8 +10,9 @@ const FIGHT = '/reports/fixture2abcd?fight=3';
 
 test('the summary tab lists the roster with specs and deaths', async ({ page }) => {
   await page.goto(FIGHT);
-  await expect(page.getByTestId('summary-tab')).toContainText('5 players');
-  await expect(page.getByTestId('summary-tab')).toContainText('1 death ·');
+  // The band says the pull and its players; This pull counts the deaths (directions b1).
+  await expect(page.getByTestId('report-subtitle')).toContainText('5 players');
+  await expect(page.getByTestId('report-this-pull')).toContainText(/Deaths\s*1/);
   await expect(page.getByTestId('roster-Player-4184-000000A1')).toContainText('Protection');
   await expect(page.getByTestId('at-pull-card')).toContainText('item level 183');
 });
@@ -141,6 +142,57 @@ test('buffs and debuffs each show only their own kind, with a real uptime', asyn
   await expect(page.getByTestId('aura-table')).not.toContainText('Power Word: Fortitude');
 });
 
+test('a debuff reads once by spell, on how many players it landed', async ({ page }) => {
+  // The sample's Saltspine kill: Dust Storm hit all five of the group.
+  await page.goto('/reports/sample?tab=debuffs');
+  const storm = page.getByTestId('aura-table').getByRole('row').filter({ hasText: 'Dust Storm' });
+  await expect(storm).toHaveCount(1);
+  await expect(storm).toContainText('on 5 players');
+});
+
+test('the group’s debuffs on the enemies read in their own table, each enemy with its uptime', async ({
+  page,
+}) => {
+  // The sample's Saltspine kill: Kell Quickwater's Sunder Armor, 80.5% on Saltspine.
+  await page.goto('/reports/sample?tab=debuffs');
+  const sunder = page.getByTestId('aura-table-enemies').getByRole('row').filter({ hasText: 'Sunder Armor' });
+  await expect(sunder).toContainText('from Kell Quickwater');
+  await expect(sunder.getByTestId('aura-each')).toContainText('Saltspine 80.5%');
+  await expect(page.getByTestId('aura-table')).not.toContainText('Sunder Armor');
+  // Beside it, what was dispelled: Kell Stonebrook's Cure Disease took Muculent Rot off Hollis.
+  await expect(page.getByTestId('dispels-rail')).toContainText('Muculent Rot');
+});
+
+test('the amount tab’s ability panel carries hits, crit, average and biggest hit', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'a phone folds the columns into the sub line');
+  await page.goto('/reports/sample?tab=damage-done');
+  const panel = page.getByTestId('panel-done');
+  await expect(panel.getByRole('columnheader', { name: 'Crit' })).toBeVisible();
+  // Consecration: 85 hits, 9 crits, 948 damage, 20 the biggest.
+  await expect(panel.getByRole('row').filter({ hasText: 'Consecration' })).toContainText('85');
+  await expect(panel.getByRole('row').filter({ hasText: 'Consecration' })).toContainText('11%');
+});
+
+test('Casts ranks the players by casts per minute beside the table', async ({ page }) => {
+  // Kell Quickwater: 27 casts over 39.0 s.
+  await page.goto('/reports/sample?tab=casts');
+  await expect(page.getByTestId('casts-rail-Player-4184-00000040')).toContainText('41.6');
+});
+
+test('a boss no table covers lists its abilities player by player on Mechanics', async ({ page }) => {
+  // Saltspine's Dust Storm hit all five; Kell Quickwater once, the others twice.
+  await page.goto('/reports/sample?tab=mechanics');
+  const storm = page
+    .getByTestId('mechanics-boss-abilities')
+    .getByTestId(/^mechanics-ability-/)
+    .first();
+  await expect(storm).toContainText('Dust Storm');
+  await expect(storm).toContainText('Kell Quickwater 294 (1 hit)');
+});
+
 test('a brushed window reads the uptime over the window, inside the page', async ({ page }) => {
   // A window starting at 20 s: the uptime is the window's own share, and nothing in the
   // row stretches the page sideways.
@@ -178,6 +230,23 @@ test('interrupts, dispels, resources and threat each render or say they are empt
   await expect(page.getByTestId('threat-caveat')).toContainText(/An estimate|Damage and healing only/);
 });
 
+test('rankings that did not answer drop the Parse column and say so once, with Try again', async ({
+  page,
+}) => {
+  // The fixture build's API is unreachable, so the parse lookup fails on every boss kill.
+  await page.goto(FIGHT);
+  await expect(page.getByTestId('parse-unavailable')).toContainText('Parses didn’t load.');
+  await expect(page.getByTestId('summary-tab').getByRole('columnheader', { name: 'Parse' })).toHaveCount(0);
+  await page.goto(`${FIGHT}&tab=damage-done`);
+  await expect(
+    page.getByTestId('report-table-card').getByRole('columnheader', { name: 'Parse' }),
+  ).toHaveCount(0);
+  // A tab with no Parse column has no line about it either.
+  await page.goto(`${FIGHT}&tab=deaths`);
+  await expect(page.getByTestId('deaths-tab')).toBeVisible();
+  await expect(page.getByTestId('parse-unavailable')).toHaveCount(0);
+});
+
 test('the trash fight’s interrupts and dispels do have rows', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=1&tab=interrupts');
   await expect(page.getByTestId('exchange-table')).toContainText('Pummel');
@@ -191,6 +260,11 @@ test('interrupts and dispels state their counts are the whole fight’s, unaffec
   await page.goto('/reports/fixture2abcd?fight=1&tab=interrupts&start=0&end=1000');
   await expect(page.getByTestId('exchange-wholefight-note')).toContainText("whole fight's totals");
   await expect(page.getByTestId('exchange-table')).toContainText('†');
+  // The whole fight is the figure itself: no mark, no line.
+  await page.goto('/reports/fixture2abcd?fight=1&tab=interrupts');
+  await expect(page.getByTestId('exchange-table')).toContainText('Pummel');
+  await expect(page.getByTestId('exchange-table')).not.toContainText('†');
+  await expect(page.getByTestId('exchange-wholefight-note')).toHaveCount(0);
 });
 
 test('a brushed window marks cast counts as approximate', async ({ page }) => {
@@ -303,10 +377,10 @@ test('one ability goes on the chart from the player’s own view, and comes off 
 test('the damage tables and the player view copy as CSV from their Section head', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=damage-taken`);
   await expect(page.getByTestId('report-table-card').getByTestId('copy-csv')).toBeVisible();
-  // The sample's pull 6: the group's dodges and misses (the fixture's fight took none).
+  // The sample's boss pull: the group's blocks, dodges, misses and parries (the fixture's fight took none).
   await page.goto('/reports/sample?tab=damage-taken');
   await expect(page.getByTestId('actor-mitigated')).toContainText(
-    /^Mitigated: \d+ hits avoided \(\d+ dodge, \d+ miss\)$/,
+    /^Mitigated: \d+ blocked · \d+ hits avoided \(\d+ dodge, \d+ miss, \d+ parry\)$/,
   );
   await page.goto(`${FIGHT}&tab=damage-done&source=Player-4184-000000A1`);
   await expect(page.getByTestId('report-table-card').getByTestId('copy-csv')).toBeVisible();

@@ -61,14 +61,15 @@ const PROPS = {
 };
 
 describe('TimeChart (controls and charts spec §B5)', () => {
-  it('heads its Section with the metric and the raid figure, the sum of every player’s rounded DPS', () => {
+  it('heads its Section with the metric and the raid figure, every player added before rounding', () => {
     const { body } = render(TimeChart, { props: PROPS });
     expect(body).toContain('Damage over the fight');
     expect(body).toContain('data-region="section-damage-over-the-fight"');
-    const perPlayer = actors.map((actor) =>
-      Math.round(actor.series.reduce((sum, value) => sum + value, 0) / 60),
+    const exact = actors.reduce(
+      (total, actor) => total + actor.series.reduce((sum, value) => sum + value, 0) / 60,
+      0,
     );
-    const sum = perPlayer.reduce((total, value) => total + value, 0);
+    const sum = Math.round(exact);
     expect(body).toContain(`Raid ${sum.toLocaleString('en-US')} DPS over the whole fight`);
   });
 

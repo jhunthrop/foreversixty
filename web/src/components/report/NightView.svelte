@@ -13,7 +13,6 @@
   import { formatRate } from '../../lib/report/frame';
   import type { Night, NightBoss, NightPlayer } from '../../lib/report/night';
   import type { StatFigure } from '../../lib/ui/stat-table';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
@@ -101,8 +100,10 @@
   {meta}
   metaTestid="night-summary"
   testid="night-view"
+  panel
+  flush
 >
-  <Plate label="Players">
+  <div>
     <StatTable columns={PLAYER_COLUMNS} nameHead="Player" bar={false} label="Players" testid="night-players">
       {#each night.players as player (player.guid)}
         {@const display = unitLabel(player.name)}
@@ -126,11 +127,11 @@
         </StatRow>
       {/each}
     </StatTable>
-  </Plate>
+  </div>
 </Section>
 
 {#if !trash}
-  <Section title="Bosses" testid="night-bosses">
+  <Section title="Bosses" testid="night-bosses" panel>
     <StatTable columns={BOSS_COLUMNS} nameHead="Boss" bar={false} open label="Bosses">
       {#each night.bosses as boss (boss.name)}
         <StatRow

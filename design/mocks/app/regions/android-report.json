@@ -9,10 +9,10 @@
     16,
     0,
     380,
-    296
+    287
    ],
    "inventory": {
-    "button": 2
+    "button": 1
    }
   },
   "head-title": {
@@ -20,7 +20,7 @@
     16,
     16,
     380,
-    102
+    148
    ],
    "inventory": {}
   },
@@ -29,25 +29,23 @@
     16,
     98,
     380,
-    20
+    66
    ],
    "inventory": {}
   },
   "head-answer": {
    "box": [
     16,
-    134,
+    180,
     380,
-    93
+    38
    ],
-   "inventory": {
-    "button": 1
-   }
+   "inventory": {}
   },
   "controls": {
    "box": [
     0,
-    296,
+    287,
     412,
     62
    ],
@@ -58,47 +56,72 @@
   "section-players": {
    "box": [
     16,
-    386,
+    377,
     380,
-    343
+    348
    ],
    "inventory": {
-    "image": 5
+    "image": 10
    }
   },
   "plate": {
    "box": [
     16,
-    433,
+    2842,
     380,
-    296
+    516
    ],
    "inventory": {
+    "row": 5,
     "image": 5
    }
   },
   "section-damage-over-the-fight": {
    "box": [
     16,
-    777,
+    747,
     380,
-    79
+    106
    ],
    "inventory": {}
+  },
+  "section-damage-done-by-ability": {
+   "box": [
+    16,
+    875,
+    380,
+    511
+   ],
+   "inventory": {
+    "image": 8
+   }
   },
   "section-damage-taken-by-ability": {
    "box": [
     16,
-    904,
+    1408,
     380,
-    488
+    169
    ],
-   "inventory": {}
+   "inventory": {
+    "image": 2
+   }
+  },
+  "section-healing-by-ability": {
+   "box": [
+    16,
+    1599,
+    380,
+    169
+   ],
+   "inventory": {
+    "image": 2
+   }
   },
   "footer-note": {
    "box": [
     16,
-    1440,
+    1790,
     380,
     36
    ],
@@ -107,29 +130,48 @@
   "section-this-pull": {
    "box": [
     16,
-    1500,
+    1850,
     380,
-    240
+    269
    ],
-   "inventory": {}
+   "inventory": {
+    "button": 2
+   }
   },
-  "section-deaths": {
+  "section-mechanics": {
    "box": [
     16,
-    1772,
+    2141,
     380,
-    91
+    146
    ],
-   "inventory": {}
+   "inventory": {
+    "row": 1,
+    "image": 1
+   }
   },
-  "section-performance-rating": {
+  "section-buffs": {
    "box": [
     16,
-    1895,
+    2309,
     380,
-    91
+    511
    ],
-   "inventory": {}
+   "inventory": {
+    "image": 8
+   }
+  },
+  "section-at-pull": {
+   "box": [
+    16,
+    2842,
+    380,
+    516
+   ],
+   "inventory": {
+    "row": 5,
+    "image": 5
+   }
   }
  }
 }

@@ -1,0 +1,21 @@
+{
+  "melee": "ability_meleedamage",
+  "spell": "inv_misc_rune_01",
+  "roles": {
+    "tank": "ability_warrior_defensivestance",
+    "healer": "spell_holy_flashheal",
+    "dps": "ability_dualwield"
+  },
+  "client": {
+    "75": "ability_whirlwind"
+  },
+  "schools": {
+    "1": "ability_meleedamage",
+    "2": "spell_holy_holybolt",
+    "4": "spell_fire_fire",
+    "8": "spell_nature_lightning",
+    "16": "spell_frost_frostbolt02",
+    "32": "spell_shadow_shadowbolt",
+    "64": "spell_nature_starfall"
+  }
+}

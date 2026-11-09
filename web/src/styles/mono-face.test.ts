@@ -16,14 +16,13 @@ const STYLED_EXTENSIONS = new Set(['.astro', '.svelte', '.ts', '.css']);
 const ALLOWED = new Map<string, number>([
   ['styles/nav.css', 2], // the header export paste box and the search box's "/" key hint
   ['components/Guild.svelte', 1], // <code> a guild address
-  ['components/Upload.svelte', 8], // file and folder names, /combatlog, the chosen file name, both drop zones
+  ['components/Upload.svelte', 3], // WoWCombatLog.txt in both drop zones, the chosen file name
   ['components/AddonPasteBox.svelte', 1], // the addon export paste box
   ['components/ui/CopyLinkField.svelte', 1], // a link to copy
   ['components/ui/Prose.svelte', 1], // inline code in rendered markdown (a command, a path)
   ['components/ui/CodeField.svelte', 1], // the paste box for a code copied out of the game // a field id, the share link (the copy-as-text summary is a sentence, in Barlow) // the talent code paste box
   ['components/report/QueriesRail.svelte', 1], // the parquet's column names
   ['components/report/QueriesView.svelte', 1], // the SQL box
-  ['components/report/MechanicsMode.svelte', 2], // <code> the forever-logs command
   ['components/sim/DetailsCard.svelte', 1], // the engine build string
   ['components/sim/RequestDrawer.svelte', 3], // the request JSON, a field id, the buff ids
   ['components/guild/report/ReportDiscord.svelte', 1], // the copy fallback box

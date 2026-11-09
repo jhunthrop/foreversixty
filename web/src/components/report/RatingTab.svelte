@@ -2,7 +2,7 @@
 <!-- The Rating tab (logs spec 2026-11-07 section 6.2): Section `Performance rating` holding the
      tab's one Plate. A trash pull reads the shipped `noRatingForTrash` line. A boss pull draws,
      per rated player in the source scope, a first row (crest, `{name}'s rating`, the basis
-     sentence, the overall as a big gold `70 of 100`), then a StatTable row per part: its name and
+     sentence, the overall as a big `70 of 100` in its parse colour), then a StatTable row per part: its name and
      one-line definition, a score Meter (green from 75), `Of 100`, `Weight`, `Basis`; an excluded
      part reads `ratingCopy.excludedReason` with dashes. A part's moments link into the tab that
      shows them. The rail's rated players and The cap live in RatingRail.svelte; `onRatings`
@@ -24,6 +24,7 @@
     orderedComponents,
     partDefinition,
     playerRating,
+    ratingColour,
     scoreTone,
   } from '../../lib/report/rating-card';
   import type { RatingCardPlayer, RatingComponent, ReportRatings } from '../../lib/rating/types';
@@ -32,7 +33,6 @@
   import Divided from '../ui/Divided.svelte';
   import Figure from '../ui/Figure.svelte';
   import Meter from '../ui/Meter.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -108,15 +108,18 @@
     phone={part.excluded ? undefined : 'of 100'}
     testid={`rating-component-${part.name}`}
   >
-    {#snippet name()}{componentLabel(part.name)}{/snippet}
-    {#snippet sub()}
-      <div>
-        {part.excluded
-          ? ratingCopy.excludedReason(componentLabel(part.name), part.reason)
+    <!-- What a part measures is its name's hover (logs lane review 2026-11-09): the row carries the
+         score, and a line only when the part was not scored or has moments to open. -->
+    {#snippet name()}<span
+        title={part.name === 'utility' && !part.excluded
+          ? `${partDefinition(part.name)} ${ratingCopy.threatNotModeled}`
           : partDefinition(part.name)}
-      </div>
-      {#if part.name === 'utility' && !part.excluded}
-        <div data-testid="rating-threat-note">{ratingCopy.threatNotModeled}</div>
+        data-testid={part.name === 'utility' && !part.excluded ? 'rating-threat-note' : undefined}
+        >{componentLabel(part.name)}</span
+      >{/snippet}
+    {#snippet sub()}
+      {#if part.excluded}
+        <div>{ratingCopy.excludedReason(componentLabel(part.name), part.reason)}</div>
       {/if}
       {#if part.moments.length > 0}
         <ul class="flex flex-wrap gap-x-3" data-testid={`rating-moments-${part.name}`}>
@@ -169,7 +172,7 @@
           <Figure
             value={String(Math.round(player.overall))}
             unit="of 100"
-            tone="gold"
+            color={ratingColour(player.overall)}
             size="big"
             testid="rating-overall"
           />
@@ -203,8 +206,10 @@
   title={ratingCopy.panelHeading}
   action={{ label: ratingCopy.explainLink, href: '/ratings' }}
   testid="rating-tab"
+  panel
+  flush
 >
-  <Plate label="Rating">
+  <div>
     {#if fetcher.status === 'loading' || fetcher.status === 'idle'}
       {@render line(RATING_LOADING, 'rating-tab-loading')}
     {:else if fetcher.status === 'flagged'}
@@ -225,5 +230,5 @@
         {:else}<Divided gap={0}>{@render card(player, guid)}</Divided>{/if}
       {/each}
     {/if}
-  </Plate>
+  </div>
 </Section>

@@ -1,13 +1,13 @@
 <!-- web/src/components/report/RatingPanel.svelte -->
 <!-- The Summary rail's Performance rating (logs spec 2026-11-07 6.2): a Row per rated player,
      the crest, the name in its class colour and the score as "70 of 100", with the Rating tab ›
-     link. A trash pull is never asked (`trash`): its line is the shipped
-     ratingCopy.noRatingForTrash. A rating is not part of summary.json, so the panel fetches its
+     link. A boss pull's only: the report shows no rating panel on trash (directions b1). A rating is not part of summary.json, so the panel fetches its
      own (docs/superpowers/plans/2026-09-21-rating-web.md Ruling 8). -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
   import { unitLabel } from '../../lib/report/names.svelte';
   import { classColorVar } from '../../lib/report/format';
+  import { ratingColour } from '../../lib/report/rating-card';
   import { createReportRatingsFetch } from '../../lib/rating/report-ratings.svelte';
   import { ratingCopy } from '../../lib/rating/copy';
   import { classForPlayer, guidForPlayer } from '../../lib/rating/roster-join';
@@ -20,15 +20,12 @@
     reportId,
     fightIndex,
     roster,
-    trash = false,
     tabHref,
     apiBase = undefined,
   }: {
     reportId: string;
     fightIndex: number;
     roster: { guid: string; name: string; class?: string }[];
-    /** A trash pull: nothing to rate, nothing to ask. */
-    trash?: boolean;
     /** The Rating tab's url, kept with the fight. */
     tabHref: string;
     apiBase?: string;
@@ -36,7 +33,7 @@
 
   const fetcher = createReportRatingsFetch(apiBase);
   $effect(() => {
-    if (!trash) fetcher.load(reportId, fightIndex);
+    fetcher.load(reportId, fightIndex);
   });
 
   const rows = $derived(
@@ -46,21 +43,20 @@
 
 <Section
   title={ratingCopy.panelHeading}
-  action={trash ? undefined : { label: ratingCopy.panelMore, href: tabHref }}
+  action={{ label: ratingCopy.panelMore, href: tabHref }}
   testid="rating-panel"
+  panel
 >
-  {#if trash}
-    <EmptyLine text={ratingCopy.noRatingForTrash} section testid="rating-panel-none" />
-  {:else if fetcher.status === 'loading' || fetcher.status === 'idle'}
+  {#if fetcher.status === 'loading' || fetcher.status === 'idle'}
     <div data-testid="rating-panel-loading" aria-hidden="true"><Skeleton minHeight="min-h-[58px]" /></div>
   {:else if fetcher.status === 'flagged'}
-    <EmptyLine text={ratingCopy.flagged} section testid="rating-panel-flagged" />
+    <EmptyLine text={ratingCopy.flagged} testid="rating-panel-flagged" />
   {:else if fetcher.status === 'none'}
-    <EmptyLine text={ratingCopy.noRatingForTrash} section testid="rating-panel-none" />
+    <EmptyLine text={ratingCopy.noRatingForTrash} testid="rating-panel-none" />
   {:else if fetcher.status === 'failed'}
-    <EmptyLine text={ratingCopy.fetchFailed} section role="alert" testid="rating-panel-error" />
+    <EmptyLine text={ratingCopy.fetchFailed} role="alert" testid="rating-panel-error" />
   {:else if rows.length === 0}
-    <EmptyLine text={ratingCopy.panelEmpty} section testid="rating-panel-empty" />
+    <EmptyLine text={ratingCopy.panelEmpty} testid="rating-panel-empty" />
   {:else}
     <div data-testid="rating-panel-rows">
       {#each rows as { player, guid } (player.player_key)}
@@ -73,7 +69,8 @@
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(player.player_name).text}</span
             >{/snippet}
           {#snippet trail()}<span
-              class="text-[15px] font-bold tabular-nums {player.insufficient ? 'text-muted' : 'text-gold'}"
+              class={['text-[15px] font-bold tabular-nums', player.insufficient && 'text-muted']}
+              style:color={player.insufficient ? undefined : ratingColour(player.overall)}
               data-testid="rating-panel-overall"
               title={player.insufficient
                 ? ratingCopy.insufficientNote(player.insufficient_reason)

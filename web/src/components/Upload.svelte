@@ -32,6 +32,8 @@
 
   let { plate = false }: { plate?: boolean } = $props();
 
+  const FROM_LINE = "From the game's Logs folder, up to 4 GB.";
+
   /** The one line a player ever sees on a failed upload (logs build review, fix round 1,
    *  2026-10-04): multipart.ts's own thrown messages carry real diagnostic detail -- a
    *  retry count, "R2 answered 500", a doubled "did not finish" wrapper -- none of which
@@ -170,24 +172,15 @@
   }
 </script>
 
-<div class={['flex flex-col gap-3', plate && 'px-5 py-[18px]', !plate && 'pt-1']} data-testid="upload">
-  <p class="max-w-[72ch] text-[15px] leading-6">
-    A whole <code class="font-mono text-[13px] leading-5">WoWCombatLog.txt</code>. Your report appears as soon
-    as the parse starts, usually within a minute or two; the fights fill in as they are read.
-  </p>
-
-  <p class="text-muted max-w-[72ch] text-[15px] leading-6">
-    The game writes it to its <code class="font-mono text-[13px] leading-5">Logs</code> folder, beside
-    <code class="font-mono text-[13px] leading-5">Interface</code> and
-    <code class="font-mono text-[13px] leading-5">WTF</code>. Up to 4 GB. Type
-    <code class="font-mono text-[13px] leading-5">/combatlog</code> again to stop logging first, so the file is
-    whole.
-  </p>
-
+<div class={['flex flex-col gap-3', plate && 'px-5 py-[18px]']} data-testid="upload">
   {#if signedOut}
     <DropZone off testid="upload-zone">
-      <span>Drop <code class="font-mono text-[13px] leading-5">WoWCombatLog.txt</code> here, or</span>
-      <span class="font-semibold">choose a file</span>
+      <b class="text-strong text-[16px]"
+        >Drop <code class="font-mono text-[13px]">WoWCombatLog.txt</code> here</b
+      >
+      <span class="text-small text-muted"
+        >{FROM_LINE} <span class="text-gold font-semibold">Choose a file</span></span
+      >
     </DropZone>
     <p class="max-w-[72ch] text-[15px] leading-6" data-testid="upload-signed-out">{SIGNED_OUT_LINE}</p>
     <div class="flex flex-wrap items-center gap-4">
@@ -201,30 +194,35 @@
   {:else}
     <DropZone ondrop={onDrop} testid="upload-zone">
       {#if file === null}
-        <span>Drop <code class="text-text font-mono">WoWCombatLog.txt</code> here, or</span>
+        <b class="text-strong text-[16px]"
+          >Drop <code class="font-mono text-[13px]">WoWCombatLog.txt</code> here</b
+        >
       {:else}
         <span class="text-text font-mono break-all">{file.name}</span>
         <span class="numeric" data-testid="upload-size">
           {formatAmount(file.size)} byte{file.size === 1 ? '' : 's'}
         </span>
       {/if}
-      <input
-        id="upload-file"
-        bind:this={fileInput}
-        class="peer sr-only"
-        type="file"
-        accept=".txt,text/plain"
-        onchange={pick}
-        oncancel={() => fileInput?.focus()}
-        disabled={locked}
-        data-testid="upload-file"
-      />
-      <label
-        for="upload-file"
-        class="{LINK} peer-focus-visible:outline-gold cursor-pointer peer-focus-visible:outline-2 peer-disabled:cursor-default peer-disabled:opacity-50"
-      >
-        {file === null ? 'choose a file' : 'Choose another file'}
-      </label>
+      <span class="text-small text-muted flex flex-wrap items-baseline justify-center gap-x-1">
+        {#if file === null}{FROM_LINE}{/if}
+        <input
+          id="upload-file"
+          bind:this={fileInput}
+          class="peer sr-only"
+          type="file"
+          accept=".txt,text/plain"
+          onchange={pick}
+          oncancel={() => fileInput?.focus()}
+          disabled={locked}
+          data-testid="upload-file"
+        />
+        <label
+          for="upload-file"
+          class="{LINK} peer-focus-visible:outline-gold cursor-pointer peer-focus-visible:outline-2 peer-disabled:cursor-default peer-disabled:opacity-50"
+        >
+          {file === null ? 'Choose a file' : 'Choose another file'}
+        </label>
+      </span>
     </DropZone>
 
     {#if file !== null}

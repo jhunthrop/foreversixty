@@ -364,6 +364,31 @@ export function unclassifiedAbilities(summary: Summary): UnclassifiedAbility[] {
     .sort((a, b) => b.damage - a.damage || a.spell_id - b.spell_id);
 }
 
+/** One player's share of an enemy ability: how often it landed on them and what it did. */
+export interface PlayerAbilityHits {
+  guid: string;
+  name: string;
+  hits: number;
+  damage: number;
+}
+
+/**
+ * Who an enemy ability landed on, most damage first: the players' damage taken rows for that
+ * spell (hits and ticks), so a boss no table covers still reads player by player.
+ */
+export function abilityHitsByPlayer(summary: Summary, spellId: number): PlayerAbilityHits[] {
+  const players = new Set(summary.roster.map((row) => row.guid));
+  return summary.damage_taken
+    .filter((actor) => players.has(actor.guid))
+    .flatMap((actor) => {
+      const own = actor.abilities.filter((ability) => ability.spell_id === spellId);
+      const hits = own.reduce((sum, ability) => sum + ability.hits + ability.ticks, 0);
+      const damage = own.reduce((sum, ability) => sum + ability.effective, 0);
+      return hits > 0 || damage > 0 ? [{ guid: actor.guid, name: actor.name, hits, damage }] : [];
+    })
+    .sort((a, b) => b.damage - a.damage || a.name.localeCompare(b.name));
+}
+
 /** One line of the Mechanics table (logs spec 2026-11-07 section 6.2): how often the
  *  mechanic went wrong, what it cost, and who and how often in words. */
 export interface MechanicTally {

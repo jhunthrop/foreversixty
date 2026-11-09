@@ -147,6 +147,7 @@
   metaTestid="chart-head-meta"
   head={controls}
   testid="threat-chart"
+  panel
 >
   {#if phone}
     <div class="pb-2">{@render enemyPicker()}</div>

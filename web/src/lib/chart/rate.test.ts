@@ -83,7 +83,7 @@ describe('buildRateModel', () => {
     expect(model.isDefault).toBe(true);
   });
 
-  it('puts the sum of every player’s rounded figure in the head', () => {
+  it('puts the scope’s exact rate in the head: every player’s figure added before rounding', () => {
     const model = buildRateModel({
       metric: 'damage-done',
       players: raid(),
@@ -93,8 +93,8 @@ describe('buildRateModel', () => {
       chosen: null,
       compare: { raid: true, className: null },
     });
-    const legendSum = model.entries.reduce((sum, entry) => sum + Math.round(entry.figure), 0);
-    expect(model.raidFigure).toBe(legendSum);
+    const exact = model.entries.reduce((sum, entry) => sum + entry.figure, 0);
+    expect(model.raidFigure).toBeCloseTo(exact, 9);
     expect(model.raidFigure).toBeGreaterThan(0);
   });
 

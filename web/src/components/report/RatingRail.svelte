@@ -8,22 +8,20 @@
   import { splitUnitName } from '../../lib/characters';
   import { classSlugOf } from '../../lib/report/planner-link';
   import { ratingCopy } from '../../lib/rating/copy';
-  import type { ReportRatingsStatus } from '../../lib/rating/report-ratings.svelte';
   import { classForPlayer, guidForPlayer } from '../../lib/rating/roster-join';
   import type { ReportRatings } from '../../lib/rating/types';
   import { classTone } from '../../lib/ui/primitives';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Figure from '../ui/Figure.svelte';
+  import { ratingColour } from '../../lib/report/rating-card';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
 
   let {
     ratings,
-    status,
     roster,
   }: {
     ratings: ReportRatings | null;
-    status: ReportRatingsStatus;
     roster: { guid: string; name: string; class?: string }[];
   } = $props();
 
@@ -33,23 +31,13 @@
       return { player, className: classForPlayer(guid, player.class, roster) ?? '' };
     }),
   );
-
-  const emptyLine = $derived(
-    status === 'none'
-      ? ratingCopy.noRatingForTrash
-      : status === 'flagged'
-        ? ratingCopy.flagged
-        : status === 'failed'
-          ? ratingCopy.fetchFailed
-          : status === 'ready'
-            ? ratingCopy.panelEmpty
-            : '',
-  );
 </script>
 
-<div class="flex flex-col gap-[var(--section-gap)]" data-testid="rating-rail">
-  <Section title={ratingCopy.panelHeading}>
-    {#if rows.length > 0}
+<!-- Only with ratings to list: without them the Rating panel beside it already says why (logs lane
+     review 2026-11-09), and the cap has nothing to cap. -->
+{#if rows.length > 0}
+  <div class="flex flex-col gap-[var(--section-gap)]" data-testid="rating-rail">
+    <Section title={ratingCopy.panelHeading} panel>
       <div data-testid="rating-rail-rows">
         {#each rows as { player, className } (player.player_key)}
           <Row
@@ -65,17 +53,20 @@
               {#if player.insufficient}
                 <span class="text-muted text-[13px]">{ratingCopy.insufficient}</span>
               {:else}
-                <Figure value={String(Math.round(player.overall))} unit="of 100" size="sm" tone="gold" />
+                <Figure
+                  value={String(Math.round(player.overall))}
+                  unit="of 100"
+                  size="sm"
+                  color={ratingColour(player.overall)}
+                />
               {/if}
             {/snippet}
           </Row>
         {/each}
       </div>
-    {:else if emptyLine !== ''}
-      <p class="text-muted text-[14px]" data-testid="rating-rail-empty">{emptyLine}</p>
-    {/if}
-  </Section>
-  <Section title="The cap">
-    <p class="text-muted text-[14px] leading-5">{ratingCopy.cappedRule}</p>
-  </Section>
-</div>
+    </Section>
+    <Section title="The cap" panel>
+      <p class="text-muted text-[14px] leading-5">{ratingCopy.cappedRule}</p>
+    </Section>
+  </div>
+{/if}

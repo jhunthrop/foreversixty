@@ -27,8 +27,12 @@ export function resolveColour(element: Element, colour: string): string {
   return getComputedStyle(element).getPropertyValue(token).trim() || colour;
 }
 
-/** A resolved colour at an alpha: hex (`#rrggbb`) or `rgb()` in, `rgba()` out. */
+/** A resolved colour at an alpha: hex (`#rrggbb` or `#rgb`) or `rgb()` in, `rgba()` out. */
 export function withAlpha(colour: string, alpha: number): string {
+  // The build minifies tokens to the short form (#ffffff ships as #fff): read it as the long one.
+  const short = /^#([0-9a-f])([0-9a-f])([0-9a-f])$/i.exec(colour);
+  if (short !== null)
+    return withAlpha(`#${short[1]}${short[1]}${short[2]}${short[2]}${short[3]}${short[3]}`, alpha);
   const hex = /^#([0-9a-f]{6})$/i.exec(colour)?.[1];
   if (hex !== undefined) {
     const [r, g, b] = [0, 2, 4].map((at) => Number.parseInt(hex.slice(at, at + 2), 16));

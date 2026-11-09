@@ -136,6 +136,8 @@ const PAGE_ISLAND_BUDGETS = [
   // real-data build; lazy-loading the tooltip would paint the centre empty and fill it a beat
   // later. The retired head answer, inspector and weight columns paid for most of it.
   // The catalogue full name (spec-name-feral-bear, batch A) adds a few bytes on top.
+  // The logs lane (2026-11-09): ui/Section's `panel` mode (docs/design-system.md, the shared change
+  // every Section page carries) brings Plate into the closure, about +116 gzipped on the real build.
   { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 79700 },
   // The shared dropdown's lazy chunk (design/specs/2026-10-30-controls-charts.md §A11.2):
   // lib/ui/listbox.ts with its list renderer, the popover core and Floating UI, loaded after

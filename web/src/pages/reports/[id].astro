@@ -36,8 +36,9 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
       report replaces its skeleton (a shift is a shift whether the box grows into the reservation
       or past it). Re-measured 2026-11-07 on the rebuilt frame (logs spec 2026-11-07 section 13:
       the Summary leads with its Plate, the chart under it, the rail beside it from 1024), with
-      the reserve removed in-page, on the fixture's and the sample's default views: 2038 / 1909 at
-      360, 2385 / 2222 at 800 (one column: the rail under main), 1436 / 1483 at 1280. Each
+      the reserve removed in-page, on the fixture's and the sample's default views. Re-measured
+      2026-11-09 on the round-5 panels: 1938 / 1436 at 360, 2179 / 1793 at 800 (one column: the
+      rail under main), 1530 / 1500 at 1280. Each
       reserve is the lower of the two, a little under, so a short report never stands over a gap;
       px, not svh, because the content does not scale with the viewport.
     -->
@@ -46,7 +47,7 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
       data-report-mount
       data-report-id={id}
       data-report={inline}
-      class="min-h-[1900px] md:min-h-[2200px] lg:min-h-[1420px]"
+      class="min-h-[1420px] md:min-h-[1780px] lg:min-h-[1480px]"
     >
       <ReportSkeleton title={id === FIXTURE_REPORT_ID ? fixtureMeta.title : undefined} />
     </div>

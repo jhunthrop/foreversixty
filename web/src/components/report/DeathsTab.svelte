@@ -22,7 +22,6 @@
   import { plannerLinkFor } from '../../lib/report/planner-link';
   import type { StatFigure } from '../../lib/ui/stat-table';
   import Meter from '../ui/Meter.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -338,9 +337,9 @@
   }
 </script>
 
-<Section title="Deaths" meta={`${ordered.length} in this fight`} testid="deaths-tab">
+<Section title="Deaths" meta={`${ordered.length} in this fight`} testid="deaths-tab" panel flush>
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
-  <Plate label="Deaths">
+  <div>
     {#if ordered.length === 0}
       <EmptyLine text="Nobody died." testid="table-empty" />
     {/if}
@@ -350,7 +349,7 @@
       {@const colour = classColorVar(death.class ?? classOf.get(death.guid))}
       {@const footLine = foot(death, card)}
       <div class="death-block" data-testid={`death-${death.guid}`} id={`death-${death.guid}-${death.at_ms}`}>
-        <Row title={unitLabel(death.name).text} sub={killedBy(death, card)}>
+        <Row title={unitLabel(death.name).text} sub={killedBy(death, card)} wrapTrail>
           {#snippet lead()}<span class="text-muted text-[13px] tabular-nums" data-testid="death-label"
               >{#if death.label}{death.label} ·
               {/if}{formatDuration(inPull(death))}</span
@@ -389,7 +388,7 @@
                   phone={`+${formatAmount(heal.amount)}`}
                   testid="death-heal"
                 >
-                  {#snippet icon()}<SpellIcon url={spellIcon(heal.spell_id)} />{/snippet}
+                  {#snippet icon()}<SpellIcon url={spellIcon(heal.spell_id, heal.spell_name)} />{/snippet}
                   {#snippet name()}<b class="text-kill">{heal.spell_name}</b>{/snippet}
                   {#snippet sub()}{formatDurationPrecise(heal.at_ms)} · from {splitUnitName(heal.source_name)
                       .name}{/snippet}
@@ -403,7 +402,7 @@
                 {@const lethal = isKillingBlow(death, hit)}
                 {@const pct = lethal && !lethalHitMissing(death, card) ? 0 : card.pcts[i]}
                 <StatRow figures={hitFigures(death, hit, lethal)} phone={`−${formatAmount(landed(hit))}`}>
-                  {#snippet icon()}<SpellIcon url={spellIcon(hit.spell_id)} />{/snippet}
+                  {#snippet icon()}<SpellIcon url={spellIcon(hit.spell_id, hit.spell_name)} />{/snippet}
                   {#snippet name()}<b class="text-strong"
                       >{hit.spell_name === '' ? 'Melee' : hit.spell_name}</b
                     >{/snippet}
@@ -426,5 +425,5 @@
         {/if}
       </div>
     {/each}
-  </Plate>
+  </div>
 </Section>

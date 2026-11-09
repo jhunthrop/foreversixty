@@ -52,11 +52,16 @@ export function scopeSource(
     combatants: summary.combatants.filter((row) => keep(row.guid)),
     deaths: summary.deaths.filter((death) => keep(death.guid)),
     // An aura belongs to its target, and to the one player who applied it when the
-    // scope is a player: Flame Shock on the boss is the shaman's own uptime.
+    // scope is a player: Flame Shock on the boss is the shaman's own uptime. Under the
+    // friendlies scope the group's debuffs on the enemies are theirs too: Sunder Armor and
+    // Thunder Clap on the boss are what a Debuffs tab is read for.
     auras: summary.auras.filter(
       (track) =>
         keep(track.target_guid) ||
-        (source !== SOURCE_ENEMIES && players.has(source) && track.appliers.includes(source)),
+        (source !== SOURCE_ENEMIES && players.has(source) && track.appliers.includes(source)) ||
+        (source === SOURCE_FRIENDLIES &&
+          track.type === 'DEBUFF' &&
+          track.appliers.some((guid) => players.has(guid))),
     ),
     // A pet's casts are its owner's work, the way a pet's damage is its owner's damage:
     // picking the healer shows the statue's casts too. A row written before the engine

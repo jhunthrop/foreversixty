@@ -27,7 +27,6 @@
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import Spark from '../ui/Spark.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -192,7 +191,7 @@
     tracks.filter(hadActivity).sort((a, b) => a.name.localeCompare(b.name) || a.power_type - b.power_type),
   );
 
-  const mark = wholeFightMark(true);
+  const mark = $derived(wholeFightMark(windowed));
   const hasCap = (track: ResourceTrack): boolean => track.max !== undefined && track.max > 0;
 
   const columns: readonly StatColumn[] = [
@@ -220,8 +219,15 @@
 <Section
   title="Resources"
   meta={`Mana, rage, energy and focus, ${capSpan === 'window' ? 'this window' : 'whole fight'}`}
+  panel
+  flush
 >
-  <Plate label="Resources">
+  {#snippet head()}{#if rows.some((track) => track.series.length > 0)}<CopyCsv
+        lines={seriesCsv}
+        label="Copy every line as CSV"
+        inHead
+      />{/if}{/snippet}
+  <div>
     {#if rows.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
         No resource changes in this window.
@@ -342,18 +348,14 @@
         {/each}
       </StatTable>
     {/if}
-  </Plate>
-  {#if rows.length > 0}
-    <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
+  </div>
+  {#if rows.length > 0 && windowed}
+    <div class="text-muted flex flex-col gap-1 px-5 pt-3 pb-4 text-[13px] leading-[18px]">
       <p>Fight length in this window: <span class="tabular-nums">{formatDuration(durationMs)}</span>.</p>
       <p data-testid="resource-wholefight-note">
         Gained, spent, wasted and time empty are marked {mark} because the summary tracks them for the whole fight
         only; the line, the cap and the time at the cap are this window's own.
       </p>
-      {#if rows.some((track) => track.series.length > 0)}<CopyCsv
-          lines={seriesCsv}
-          label="Copy every line as CSV"
-        />{/if}
     </div>
   {/if}
 </Section>

@@ -13,7 +13,6 @@ export type ReportParityState =
   | 'report-healing'
   | 'report-damage-taken'
   | 'report-deaths'
-  | 'report-empty'
   | 'report-loading'
   | 'report-sample';
 
@@ -24,7 +23,6 @@ const READY: Readonly<Record<Exclude<ReportParityState, 'report-loading'>, strin
   'report-healing': 'report-table-card',
   'report-damage-taken': 'report-table-card',
   'report-deaths': 'deaths-tab',
-  'report-empty': 'report-table-card',
   'report-sample': 'summary-tab',
 };
 
@@ -33,7 +31,7 @@ export async function openReportState(page: Page, id: ReportParityState, path: s
   await signedOut(page);
   if (id === 'report-loading') {
     // Never answered: the island keeps its loading skeleton for the capture.
-    await page.route('**/sample-report/sample/fights/6/summary.json**', () => undefined);
+    await page.route('**/sample-report/sample/fights/11/summary.json**', () => undefined);
     await page.goto(path);
     await expect(page.getByTestId('report-skeleton')).toBeVisible();
     return;

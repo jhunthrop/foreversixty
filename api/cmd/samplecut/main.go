@@ -6,7 +6,8 @@
 // pseudonymised: every player GUID and name is replaced before the engine sees a byte, so no
 // original name reaches a summary, a unit list or a Parquet file.
 //
-//	go run ./cmd/samplecut -log WoWCombatLog.txt -out ../web/public/sample-report/sample
+//	go run ./cmd/samplecut -log WoWCombatLog.txt -out ../web/public/sample-report/sample \
+//	  [-title "Sample raid night, 17 Sept 2026"] [-date 2026-09-17] [-seed ...]
 //
 // -recount <dir> refreshes an existing cut's kill counts from its own events (recount.go).
 //
@@ -37,7 +38,9 @@ import (
 const (
 	reportID = "sample"
 	dataBase = "/sample-report/sample"
-	title    = "Sample raid night, 17 Sept 2026"
+	// The first cut's title and date, kept as the flags' defaults so it stays reproducible.
+	defaultTitle = "Sample raid night, 17 Sept 2026"
+	defaultDate  = "2026-09-17"
 )
 
 func main() {
@@ -54,6 +57,8 @@ func run(args []string, out io.Writer) error {
 	seed := fs.String("seed", "forever-sample-2026-09-17", "the pseudonym seed")
 	names := fs.String("names", "", "write the original unit names here, for the leak check")
 	recountDir := fs.String("recount", "", "refresh this cut's kill counts from its events, without the log")
+	title := fs.String("title", defaultTitle, "the sample's title")
+	day := fs.String("date", defaultDate, "the night's date (YYYY-MM-DD), the base for year-less log dialects")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
@@ -67,11 +72,15 @@ func run(args []string, out io.Writer) error {
 	if err != nil {
 		return err
 	}
+	base, err := time.Parse(time.DateOnly, *day)
+	if err != nil {
+		return fmt.Errorf("-date: %w", err)
+	}
 	ps := NewPseudonymiser(*seed)
 	log := ps.Log(raw)
 
 	// The log's own header carries the year; Base only matters for year-less dialects.
-	s := session.New(engine.SessionOptions(reportID, time.Date(2026, 9, 17, 0, 0, 0, 0, time.UTC), true))
+	s := session.New(engine.SessionOptions(reportID, base, true))
 	var closed []session.Closed
 	const chunk = 1 << 20
 	for off := 0; off < len(log); off += chunk {
@@ -119,7 +128,7 @@ func run(args []string, out io.Writer) error {
 	if err := lift(*outDir); err != nil {
 		return err
 	}
-	if err := writeMeta(*outDir, rep); err != nil {
+	if err := writeMeta(*outDir, rep, *title); err != nil {
 		return err
 	}
 	if *names != "" {
@@ -191,7 +200,7 @@ func groupOf(us []units.Unit) []string {
 
 // writeMeta writes meta.json in the shape of GET /v1/reports/{id}: public, no owner, the
 // night's own date and zone, and the static data base.
-func writeMeta(dir string, rep store.Report) error {
+func writeMeta(dir string, rep store.Report, title string) error {
 	zones := map[string]int{}
 	zone := ""
 	for _, f := range rep.Fights {

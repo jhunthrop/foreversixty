@@ -18,7 +18,6 @@
   import { classColorVar, wholeFightMark } from '../../lib/report/format';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { AuraTrack, CastRow, ExchangeRow } from '../../lib/report/types';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -34,6 +33,7 @@
     players = new Set<string>(),
     classOf = new Map<string, string>(),
     kind: kindProp,
+    windowed = false,
   }: {
     rows: ExchangeRow[];
     emptyText: string;
@@ -51,6 +51,8 @@
     classOf?: ReadonlyMap<string, string>;
     /** Which tab this is; by default the rows' own kind, else Dispels when aura tracks came. */
     kind?: 'interrupt' | 'dispel';
+    /** A brushed window: the counts stay the whole fight's, so they are marked and a line says so. */
+    windowed?: boolean;
   } = $props();
 
   const kind = $derived(
@@ -207,7 +209,7 @@
       ...course,
     ];
   }
-  const mark = wholeFightMark(true);
+  const mark = $derived(wholeFightMark(windowed));
   const total = $derived(rows.reduce((sum, row) => sum + row.count, 0));
 
   /** One line per source, most first: who did the interrupting or dispelling tonight. */
@@ -239,8 +241,9 @@
   );
 </script>
 
-<Section {title} meta={`${mark}${total} in this fight`} testid="exchange-section">
-  <Plate label={title}>
+<Section {title} meta={`${mark}${total} in this fight`} testid="exchange-section" panel flush>
+  {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
+  <div>
     {#if ordered.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">{emptyText}</p>
     {:else}
@@ -253,7 +256,11 @@
       >
         {#each ordered as row (`${row.source_guid}-${row.target_guid}-${row.spell_id}-${row.extra_spell_id}`)}
           <StatRow figures={[{ value: `${mark}${row.count}` }]} bar={false} phone={`${row.count}×`}>
-            {#snippet icon()}<SpellIcon url={icons.of(row.spell_id)} spellId={row.spell_id} tip />{/snippet}
+            {#snippet icon()}<SpellIcon
+                url={icons.of(row.spell_id, row.spell_name)}
+                spellId={row.spell_id}
+                tip
+              />{/snippet}
             {#snippet name()}
               <!-- The anchor a rating moment's link lands on (lib/rating/moments.ts). -->
               <span id={`exchange-${row.source_guid}-${row.spell_id}`} class="scroll-mt-24"
@@ -267,20 +274,19 @@
         {/each}
       </StatTable>
     {/if}
-  </Plate>
-  {#if ordered.length > 0}
-    <div class="text-muted flex flex-col gap-1 pt-3 text-[13px] leading-[18px]">
-      <p data-testid="exchange-by-source">
-        {#each bySource as entry, index (entry.name)}{#if index > 0}{SEPARATOR}{/if}<span
-            ><span class="text-text font-semibold">{splitUnitName(entry.name).name}</span>
-            <span class="tabular-nums">{mark}{entry.count}</span></span
-          >{/each}
-      </p>
-      <p data-testid="exchange-wholefight-note">
-        Count is marked {mark}: interrupts and dispels are the whole fight's totals, because the summary keeps
-        no timestamp for them and a brushed window cannot cut them down.
-      </p>
-      <CopyCsv lines={csvLines} />
+  </div>
+  {#if ordered.length > 0 && (bySource.length > 1 || windowed)}
+    <div class="text-muted flex flex-col gap-1 px-5 pt-3 pb-4 text-[13px] leading-[18px]">
+      {#if bySource.length > 1}<p data-testid="exchange-by-source">
+          {#each bySource as entry, index (entry.name)}{#if index > 0}{SEPARATOR}{/if}<span
+              ><span class="text-text font-semibold">{splitUnitName(entry.name).name}</span>
+              <span class="tabular-nums">{mark}{entry.count}</span></span
+            >{/each}
+        </p>{/if}
+      {#if windowed}<p data-testid="exchange-wholefight-note">
+          Count is marked {mark}: interrupts and dispels are the whole fight's totals, because the summary
+          keeps no timestamp for them and a brushed window cannot cut them down.
+        </p>{/if}
     </div>
   {/if}
 </Section>
@@ -292,6 +298,7 @@
       ? 'Debuffs someone dispelled at least once'
       : 'Casts someone stopped at least once'}
     testid={kind === 'dispel' ? 'dispels-uncured' : 'interrupts-missed'}
+    panel
   >
     <StatTable
       columns={[{ id: 'left', label: kind === 'dispel' ? 'Ran their course' : 'Went through' }]}
@@ -301,7 +308,10 @@
     >
       {#each shortfall as entry (entry.spellId)}
         <StatRow figures={[{ value: String(entry.left) }]} bar={false}>
-          {#snippet icon()}<SpellIcon url={icons.of(entry.spellId)} spellId={entry.spellId} />{/snippet}
+          {#snippet icon()}<SpellIcon
+              url={icons.of(entry.spellId, entry.name)}
+              spellId={entry.spellId}
+            />{/snippet}
           {#snippet name()}{entry.name}{/snippet}
           {#snippet sub()}{entry.line}{#if scopedToSome}<span>
                 ({entry.own} in this scope)</span

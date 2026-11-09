@@ -19,9 +19,9 @@
   import type { TimeWindow } from '../../lib/report/window';
   import { clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clockLabel, timeTicks } from '../../lib/chart/time-axis';
+  import { CHART_INK, inkCss } from '../../lib/chart/theme';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
 
   let {
@@ -53,6 +53,13 @@
   const owner = 'timelines';
 
   const span = $derived(Math.max(current.endMs - current.startMs, 1));
+  /** The boss's phase changes inside the window: a dashed line down every lane, as the charts draw them. */
+  const PHASE_INK = inkCss(CHART_INK.phase);
+  const phaseStarts = $derived(
+    (summary.phases ?? []).filter(
+      (phase) => phase.start_ms > current.startMs && phase.start_ms < current.endMs,
+    ),
+  );
   const pct = (ms: number): number => ((ms - current.startMs) / span) * 100;
 
   /** The time axis's ticks (lib/chart/time-axis: the step that keeps labels 64 px apart). */
@@ -215,16 +222,19 @@
   }
   const BAND_PX = 3;
   const CASTS_PX = 12;
-  /** A lane's row: its plot's height plus 8 px above and below, never under 34 px. */
+  /** A lane's row: its plot's height plus ROW_PAD_PX, never under 34 px. */
   const ROW_MIN_PX = 34;
-  const ROW_PAD_PX = 16;
+  /** 8 px under the cast line, the rest above the bands: a clear gap between one lane and the next. */
+  const ROW_PAD_PX = 28;
   const ENEMY_LANE_PX = 18;
+  /** A tick this close to the right edge ends there instead of centring past it. */
+  const END_LABEL_PCT = 97;
   /** Every aura on its own band, in name order, so each reads as one line and can be pointed at. */
-  function bandAuras(tracks: AuraTrack[]): AuraBand[] {
+  function bandAuras(tracks: AuraTrack[], order: readonly string[] = auraOrder): AuraBand[] {
     // By name, not by uptime: an aura keeps its row when the window moves.
     const ordered = [...tracks].sort((a, b) => a.name.localeCompare(b.name));
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const bands = new Map<string, number>(auraOrder.map((name, index) => [name, index]));
+    const bands = new Map<string, number>(order.map((name, index) => [name, index]));
     return ordered.flatMap((track) => {
       const band = bands.get(track.name) ?? bands.size;
       bands.set(track.name, band);
@@ -235,6 +245,25 @@
   const laneHeight = (auras: AuraBand[]): number =>
     Math.max(18, (auras.reduce((top, aura) => Math.max(top, aura.band), -1) + 1) * BAND_PX + CASTS_PX);
   const rowHeight = (plot: number): number => Math.max(ROW_MIN_PX, plot + ROW_PAD_PX);
+  /**
+   * The enemy lanes with the group's debuffs on them (Sunder Armor, Thunder Clap on the boss),
+   * each lane's own bands in name order, every enemy lane at the tallest one's height.
+   */
+  const enemyRows = $derived(
+    enemyLanes.map((lane) => {
+      const auras = bandAuras(
+        summary.auras.filter(
+          (track) =>
+            track.type === 'DEBUFF' &&
+            !players.has(track.target_guid) &&
+            splitUnitName(track.target_name).name === lane.name,
+        ),
+        [],
+      );
+      return { ...lane, auras, height: Math.max(ENEMY_LANE_PX, laneHeight(auras)) };
+    }),
+  );
+  const enemyRow = $derived(Math.max(ENEMY_LANE_PX, ...enemyRows.map((lane) => lane.height)));
 
   const lanes = $derived(
     [...summary.roster]
@@ -253,6 +282,10 @@
       }))
       .map((lane) => ({ ...lane, height: laneHeight(lane.auras) })),
   );
+  /** Every player lane at the tallest one's height, so the rows run on an even pitch. */
+  const laneRow = $derived(Math.max(18, ...lanes.map((lane) => lane.height)));
+  /** One pitch for every lane, enemy and player, so the rows run evenly down the plot. */
+  const pitch = $derived(Math.max(laneRow, enemyRow));
   const LEGEND = [
     { label: 'Cast', swatch: 'bg-gold h-[12px] w-[2px]' },
     { label: 'Buff up', swatch: 'bg-kill/60 h-[5px] w-[14px] rounded-[2px]' },
@@ -263,19 +296,15 @@
 
 {#snippet crossing()}{#if syncKey !== ''}<SyncedCrosshair {syncKey} window={current} />{/if}{/snippet}
 
-<Section
-  title="Timeline"
-  meta={`Every player, ${formatDuration(span)} · hover for the event`}
-  testid="timelines-section"
->
-  <Plate label="Timeline">
+<Section title="Timeline" testid="timelines-section" panel flush>
+  <div>
     {#if lanes.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">Nothing in this window.</p>
     {:else}
       <div class="flex flex-col gap-2 px-4 pt-3 pb-3" data-testid="timelines">
         <ul class="text-muted flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] leading-5">
           <li class="text-text tabular-nums">
-            {formatDuration(current.startMs)} to {formatDuration(current.endMs)}
+            {clockLabel(current.startMs)} to {clockLabel(current.endMs)}
           </li>
           {#each LEGEND as item (item.label)}
             <li class="flex items-center gap-2">
@@ -299,60 +328,84 @@
               >{picked.name} · at {formatDuration(picked.at)}</span
             >
           {:else}
-            Tap or hover a tick for the spell, or an aura band for what was up.
+            <span aria-hidden="true">&nbsp;</span>
           {/if}
         </p>
-        <div class="grid grid-cols-[96px_minmax(0,1fr)] md:grid-cols-[160px_minmax(0,1fr)]">
+        <div class="grid grid-cols-[124px_minmax(0,1fr)] md:grid-cols-[180px_minmax(0,1fr)]">
           <!-- The labels stay put; only the plot scrolls sideways on a phone. -->
           <ul class="flex flex-col pr-3">
-            {#each enemyLanes as lane (lane.name)}
+            {#each enemyRows as lane (lane.name)}
+              <!-- Every label sits on its lane's cast line, the bands rising above it. -->
               <li
-                class="flex items-center gap-2 overflow-hidden"
-                style:height="{rowHeight(ENEMY_LANE_PX)}px"
+                class="flex items-end gap-2 overflow-hidden pb-[3px]"
+                style:height="{rowHeight(pitch)}px"
                 title={lane.name}
               >
                 <ClassCrestRing characterClass="" size={20} />
-                <span class="text-strong truncate text-[14px] font-semibold">{lane.name}</span>
+                <span
+                  class="text-strong min-w-0 text-[13px] leading-4 font-semibold md:truncate md:text-[14px] md:leading-5"
+                  >{lane.name}</span
+                >
               </li>
             {/each}
             {#each lanes as lane (lane.guid)}
               <li
-                class="flex items-center gap-2 overflow-hidden"
-                style:height="{rowHeight(lane.height)}px"
+                class="flex items-end gap-2 overflow-hidden pb-[3px]"
+                style:height="{rowHeight(pitch)}px"
                 title={lane.name}
               >
                 <ClassCrestRing characterClass={lane.crest} size={20} />
-                <span class="truncate text-[14px] font-semibold" style:color={lane.color}>{lane.name}</span>
+                <span
+                  class="min-w-0 text-[13px] leading-4 font-semibold md:truncate md:text-[14px] md:leading-5"
+                  style:color={lane.color}>{lane.name}</span
+                >
               </li>
             {/each}
           </ul>
           <div class="min-w-0 overflow-x-auto">
-            <div class="min-w-[560px] md:min-w-0" aria-hidden="true">
+            <div class="relative min-w-[560px] md:min-w-0" aria-hidden="true">
+              {#each phaseStarts as phase (phase.name + phase.start_ms)}
+                <span
+                  class="pointer-events-none absolute inset-y-0 z-[1] w-0 border-l border-dashed"
+                  style:left="{pct(phase.start_ms)}%"
+                  style:border-color={PHASE_INK}
+                  data-testid="timeline-phase"
+                  title={phase.name}
+                ></span>
+              {/each}
               <ul class="flex flex-col">
-                {#each enemyLanes as lane (lane.name)}
-                  <li class="flex items-center" style:height="{rowHeight(ENEMY_LANE_PX)}px">
+                {#each enemyRows as lane (lane.name)}
+                  <li class="flex items-end pb-2" style:height="{rowHeight(pitch)}px">
                     <!-- svelte-ignore a11y_no_static_element_interactions (the plot is decorative, aria-hidden: the pointer readout is a sighted aid) -->
                     <span
                       class="relative block w-full touch-none"
-                      style:height="{ENEMY_LANE_PX}px"
+                      style:height="{lane.height}px"
                       data-lane
                       data-testid={lane.name === bossName ? 'lane-boss' : `lane-enemy-${lane.name}`}
-                      onpointerdown={(event) => pickNearest(event, lane.casts, [], lane.taunts)}
-                      onpointermove={(event) => pickNearest(event, lane.casts, [], lane.taunts)}
+                      onpointerdown={(event) => pickNearest(event, lane.casts, lane.auras, lane.taunts)}
+                      onpointermove={(event) => pickNearest(event, lane.casts, lane.auras, lane.taunts)}
                       onpointerleave={clearPick}
                     >
-                      <span class="bg-line-soft absolute inset-x-0 top-1/2 block h-[2px] -translate-y-1/2"
-                      ></span>
+                      <span class="bg-line-soft absolute inset-x-0 bottom-[4px] block h-[2px]"></span>
+                      {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
+                        <span
+                          class="bg-wipe/60 absolute h-[3px] rounded-[1px]"
+                          style:top="{segment.band * BAND_PX}px"
+                          style:left="{pct(segment.start_ms)}%"
+                          style:width="{Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%"
+                          title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
+                        ></span>
+                      {/each}
                       {#each lane.casts as cast, i (`${cast.at}-${i}`)}
                         <span
-                          class="bg-gold absolute bottom-0 h-[14px] w-[2px]"
+                          class="bg-gold absolute bottom-0 h-[10px] w-[2px]"
                           style:left="{pct(cast.at)}%"
                           title={`${cast.name} · ${formatDuration(cast.at)}`}
                         ></span>
                       {/each}
                       {#each lane.taunts as taunt (tauntKey(taunt))}
                         <span
-                          class="bg-gold absolute top-0 h-full w-[3px]"
+                          class="bg-gold absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
                           style:left="{pct(taunt.at_ms)}%"
                           data-testid="taunt-mark"
                           title={`Taunt · ${formatDuration(taunt.at_ms)} · by ${splitUnitName(taunt.source_name).name}`}
@@ -369,7 +422,7 @@
                   made Svelte throw on the duplicate and leave the whole view blank.
                 -->
                 {#each lanes as lane (lane.guid)}
-                  <li class="flex items-center" style:height="{rowHeight(lane.height)}px">
+                  <li class="flex items-end pb-2" style:height="{rowHeight(pitch)}px">
                     <!-- svelte-ignore a11y_no_static_element_interactions (the plot is decorative, aria-hidden: the pointer readout is a sighted aid) -->
                     <span
                       class="relative block w-full touch-none"
@@ -426,8 +479,17 @@
                 data-testid="timeline-axis"
               >
                 {#each axis as at (at)}
-                  <span class="absolute top-0 -translate-x-1/2 whitespace-nowrap" style:left="{pct(at)}%"
-                    >{clockLabel(at)}</span
+                  <span
+                    class={[
+                      'absolute top-0 whitespace-nowrap',
+                      // The first label starts at the edge, the last ends at it; the rest are centred.
+                      at === axis[0]
+                        ? ''
+                        : pct(at) >= END_LABEL_PCT
+                          ? '-translate-x-full'
+                          : '-translate-x-1/2',
+                    ]}
+                    style:left="{pct(at)}%">{clockLabel(at)}</span
                   >
                 {/each}
               </span>
@@ -453,5 +515,5 @@
         {/if}
       </div>
     {/if}
-  </Plate>
+  </div>
 </Section>

@@ -29,6 +29,7 @@
   let {
     guilds = [],
     plate,
+    open = false,
     nightDates = false,
     emptyMessage: ownEmptyMessage = myReportsCopy.empty,
     emptyAction,
@@ -38,6 +39,8 @@
     guilds?: readonly { id: number; name: string }[];
     /** The Plate's accessible name: every state sits in the page's one Plate (/reports). */
     plate?: string;
+    /** The rows open, in the caller's own panel (/logs' Your reports Section panel). */
+    open?: boolean;
     /** The account page's rows print the night's date ("Tue 20 Oct") instead of the age. */
     nightDates?: boolean;
     /** The `Yours` tab's empty sentence, where the page says it in its own words. */
@@ -115,6 +118,7 @@
       createdAt={report.created_at}
       dateLabel={nightDates ? nightDate(new Date(reportNightAt(report))) : ''}
       summary={row.sub}
+      {open}
       status={report.status}
       creditHint={ownsRows && report.status === 'live' && creditedName(report.logging_character) === null
         ? LOG_OUT_HINT
@@ -164,6 +168,8 @@
   {/if}
   {#if plate !== undefined}
     <Plate label={plate}>{@render state()}</Plate>
+  {:else if rows.length > 0 && open}
+    <div>{@render list()}</div>
   {:else if rows.length > 0}
     <Plate label="Your reports">{@render list()}</Plate>
   {:else}

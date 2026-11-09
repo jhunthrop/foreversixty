@@ -1,5 +1,5 @@
 {
-  "comment": "The report states the parity gate checks (web/tests/e2e/parity-report.spec.ts) at 1440 x 1000, on the bundled real log (web/public/sample-report/sample, the 17 Sept 2026 Zephras Isle night). ws_report.py renders each mock from the same files at test time (support/parity-mocks.ts renderReportMocks); tests/e2e/support/report-parity.ts opens /reports/sample on the matching tab, fight and source. Spec design/specs/2026-11-07-logs-reports.md section 14.",
+  "comment": "The report states the parity gate checks (web/tests/e2e/parity-report.spec.ts) at 1440 x 1000, on the bundled real log (web/public/sample-report/sample, the 8 Nov 2026 Excavation Site: Wetlands night, names changed). ws_report.py renders each mock from the same files at test time (support/parity-mocks.ts renderReportMocks); tests/e2e/support/report-parity.ts opens /reports/sample on the matching tab, fight and source. The sample opens on pull 11 (Saltspine, a kill); Deaths reads pull 20, where the whole group died. This log has no pull without the logger, so the group-missing state is unit tested only (ReportView group scope). Spec design/specs/2026-11-07-logs-reports.md section 14.",
   "viewport": {
     "width": 1440,
     "height": 1000
@@ -27,13 +27,8 @@
     },
     {
       "id": "report-deaths",
-      "path": "/reports/sample?tab=deaths&source=everyone",
+      "path": "/reports/sample?fight=20&tab=deaths",
       "mock": "web-report-deaths.html"
-    },
-    {
-      "id": "report-empty",
-      "path": "/reports/sample?fight=13&tab=damage-done",
-      "mock": "web-report-empty.html"
     },
     {
       "id": "report-loading",

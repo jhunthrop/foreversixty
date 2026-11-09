@@ -14,7 +14,6 @@ import {
   type DrawPreset,
   median,
   medianSeries,
-  roundedSum,
   selectDrawn,
   stopAtDeath,
   windowRate,
@@ -68,7 +67,8 @@ export interface MedianInfo {
 export interface RateModel {
   series: ChartSeries[];
   entries: PlayerEntry[];
-  /** The head's figure: every player's figure rounded, then added. */
+  /** The head's figure: the scope's exact rate over the window, every player's figure added before
+   *  any rounding, so it reads as the band's group figure does (lib/report/frame.ts). */
   raidFigure: number;
   total: number;
   isDefault: boolean;
@@ -230,7 +230,7 @@ export function buildRateModel(input: RateInput): RateModel {
   return {
     series: [...medianSeriesDrawn, ...playerSeries].map((line) => ({ ...line, stepMs })),
     entries,
-    raidFigure: roundedSum([...figures.values()]),
+    raidFigure: [...figures.values()].reduce((sum, figure) => sum + figure, 0),
     total: players.length,
     isDefault: chosen === null,
     medians,

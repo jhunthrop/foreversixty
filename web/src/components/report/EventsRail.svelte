@@ -15,6 +15,6 @@
   } = $props();
 </script>
 
-<Section title="Show" testid="events-rail">
+<Section title="Show" testid="events-rail" panel>
   <EventChips {off} {onPatch} />
 </Section>

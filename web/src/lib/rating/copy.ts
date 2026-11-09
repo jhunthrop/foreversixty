@@ -60,7 +60,7 @@ export const ratingCopy = {
   tabEmpty:
     'No ratings for this fight yet. Ratings are computed after a report finishes processing, and some encounters do not have a curated table yet.',
   /** GET .../ratings answered 404 "no ratings for that fight": trash, which is not rated by design. */
-  noRatingForTrash: 'No rating for trash. Ratings are made for boss fights.',
+  noRatingForTrash: 'Ratings come with boss kills in raids.',
   fetchFailed: 'Ratings did not load.',
   /** GET .../ratings answered 404 "flagged": a flagged report is evidence of nothing, so it has
    *  no ratings to show (L8.6 fix round 6 item 5). A plain "not_found" is still `fetchFailed`. */
@@ -70,7 +70,7 @@ export const ratingCopy = {
   noMatchingRow: 'This player has no rating for this fight.',
   /** Spec §1.2's two exact basis sentences. */
   percentileBasis: (spec: string, klass: string, role: string, pct: number, n: number): string =>
-    `Compared with other ${spec} ${roleNoun(klass, role)} on this fight (${n} logs).`,
+    `Compared with other ${[spec, roleNoun(klass, role)].filter((part) => part !== '').join(' ')} on this fight (${n} logs).`,
   absoluteBasis: 'Measured against the encounter’s own numbers — not enough logs yet to compare players.',
   /** Spec §7.4's fixed excluded-reason strings, by the `reason` code the API returns. */
   excludedReason: (componentLabel: string, reason: string): string => {
@@ -144,5 +144,5 @@ const COMPONENT_DEFINITIONS: Record<string, string> = {
  *  so a future copy revision that needs it has no signature to change. */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- kept for the reason above
 function roleNoun(klass: string, _role: string): string {
-  return `${klass}s`;
+  return klass === '' ? 'players' : `${klass}s`;
 }

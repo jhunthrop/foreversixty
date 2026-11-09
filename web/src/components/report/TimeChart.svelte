@@ -15,7 +15,7 @@
   import { entityStyle } from '../../lib/chart/palette';
   import { buildRateModel, classMedianInfo, RAID_MEDIAN_ID, type RatePlayer } from '../../lib/chart/rate';
   import type { ChartEvent, ChartPhase, ChartSeries, PlayerEntry } from '../../lib/chart/types';
-  import { formatAmount } from '../../lib/report/format';
+  import { formatRate } from '../../lib/report/frame';
   import type { ScopeNoun } from '../../lib/report/group';
   import type { Actor, RosterRow } from '../../lib/report/types';
   import { isFullWindow, type TimeWindow } from '../../lib/report/window';
@@ -205,8 +205,8 @@
       return chartCopy.emptyMeta(chartCopy.rateNoun(metric), phaseOfWindow, current.startMs, current.endMs);
     const span = chartCopy.span(current.startMs, current.endMs, whole);
     if (single !== undefined)
-      return chartCopy.playerMeta(metric, single.label, formatAmount(single.figure), span, targetName);
-    return chartCopy.rateMeta(metric, formatAmount(model.raidFigure), span, targetName, noun);
+      return chartCopy.playerMeta(metric, single.label, formatRate(single.figure), span, targetName);
+    return chartCopy.rateMeta(metric, formatRate(model.raidFigure), span, targetName, noun);
   });
 
   function choose(id: string): void {
@@ -248,7 +248,7 @@
         {choice}
         presets={PRESETS}
         seen={noun === 'everyone'}
-        formatValue={formatAmount}
+        formatValue={formatRate}
         onToggle={choose}
         onMedian={toggleMedian}
         {onPreset}
@@ -270,7 +270,7 @@
     {notDrawn}
     {coarse}
     scrubMs={legend.scrubMs}
-    formatValue={formatAmount}
+    formatValue={formatRate}
     unit={chartCopy.unit(metric)}
     onToggle={(id) => legend.toggle(id)}
     onOnly={(id) => legend.only(id, series)}
@@ -278,6 +278,8 @@
     onMore={() =>
       coarse ? (legend.sheetOpen = true) : document.getElementById('chart-players-trigger')?.click()}
   />
+  <!-- The y axis's unit, over its labels (owner review 2026-11-09: a number takes its unit). -->
+  <span class="text-label text-muted block pt-2" data-testid="chart-unit">{chartCopy.unit(metric)}</span>
   <TimeSeriesChart
     {series}
     {events}
@@ -294,7 +296,7 @@
     hidden={legend.hidden}
     highlightId={legend.highlightId}
     {brushShape}
-    formatValue={formatAmount}
+    formatValue={formatRate}
     rowsLabel={chartCopy.tooltipRate(metric, model.bucket.seconds)}
     onScrub={(ms) => (legend.scrubMs = ms)}
     {onOpenDeath}
@@ -306,6 +308,7 @@
   meta={wide.current ? meta : undefined}
   metaTestid="chart-head-meta"
   {testid}
+  panel
 >
   {#snippet head()}{#if wide.current}{@render controls()}{/if}{/snippet}
   {#if wide.current}
@@ -323,7 +326,7 @@
   {medians}
   {choice}
   presets={PRESETS}
-  formatValue={formatAmount}
+  formatValue={formatRate}
   onToggle={choose}
   onMedian={toggleMedian}
   {onPreset}

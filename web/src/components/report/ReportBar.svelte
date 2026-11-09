@@ -4,7 +4,7 @@
      killed nothing behind the list's last row), Source (the scope words, then the players under
      their roles) and Window (the whole fight, the slices, each phase, each death's 20 s, the
      brush's own range). The three actor tabs add Target, Ability and a Filters button that opens
-     the switches in a popover. Group labels show from 1920; below 768 the bar is one summary line
+     the switches in a popover. Group labels show from 1280; below 768 the bar is one summary line
      and Change. Every choice lands in the url through `onPatch`, `onWindow` or `onFilters`. -->
 <script lang="ts">
   import { clockLabel } from '../../lib/chart/time-axis';
@@ -185,7 +185,7 @@
   <span class="report-bar-label text-label text-muted font-bold" id={`${id}-bar-label`}>{label}</span>
 {/snippet}
 
-<ControlBar groups={[]} label="Report choices" {summary} labelsFrom={1920} testid="report-bar">
+<ControlBar groups={[]} label="Report choices" {summary} testid="report-bar">
   {#snippet tail()}
     <div class="report-bar-group" data-testid="report-fight-group">
       {@render group(reportCopy.fight, 'report-fight')}
@@ -296,6 +296,12 @@
       flex-direction: row;
       align-items: center;
       gap: 8px;
+    }
+    /* One row at 1440 (logs lane review 2026-11-09): a fitted field sizes to its longest option
+       (a player's full name, a custom window), so past the Fight the face is capped and a long
+       value ends in an ellipsis; the open list still shows it whole. */
+    .report-bar-group:not([data-testid='report-fight-group']) :global(.sel-fit) {
+      max-width: 150px;
     }
     .report-bar-label {
       display: none;

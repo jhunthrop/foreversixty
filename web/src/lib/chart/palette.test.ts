@@ -14,6 +14,7 @@ describe('entityStyle', () => {
 describe('withAlpha', () => {
   it('turns a hex or rgb colour into rgba', () => {
     expect(withAlpha('#e5b955', 0.2)).toBe('rgba(229, 185, 85, 0.2)');
+    expect(withAlpha('#fff', 0.08)).toBe('rgba(255, 255, 255, 0.08)');
     expect(withAlpha('rgb(1, 2, 3)', 0.5)).toBe('rgba(1, 2, 3, 0.5)');
     expect(withAlpha('red', 0.5)).toBe('red');
   });

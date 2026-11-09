@@ -224,9 +224,11 @@ describe('CoachPanel', () => {
     }
   });
 
-  it('the review is the one Plate; the rail is open Sections with no card', () => {
+  it('the review and each rail block are Section panels (directions b1), never the old card', () => {
     const body = panel(coachModelReview());
-    expect(body.match(/data-region="plate"/g)?.length).toBe(1);
+    expect(body.match(/data-region="plate"/g)?.length).toBe(3);
+    // One plain panel, as every report tab draws (logs lane review 2026-11-09).
+    expect(body).not.toContain('ui-lead');
     expect(body).not.toContain('card-surface');
     for (const id of ['coach-cannot', 'coach-footer-card']) {
       expect(body).toMatch(new RegExp(`class="ui-section[^"]*"[^>]*data-testid="${id}"`));

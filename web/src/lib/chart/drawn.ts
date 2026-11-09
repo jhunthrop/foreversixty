@@ -26,11 +26,6 @@ export function standingAt(running: readonly number[], window: TimeWindow): numb
   return index < 0 ? 0 : running[index];
 }
 
-/** Every figure rounded first, then added: the head's raid figure is the sum a raider makes. */
-export function roundedSum(figures: readonly number[]): number {
-  return figures.reduce((sum, figure) => sum + Math.round(figure), 0);
-}
-
 export function median(values: readonly number[]): number {
   if (values.length === 0) return 0;
   const sorted = [...values].sort((a, b) => a - b);
@@ -92,6 +87,8 @@ export function selectDrawn({
       .map((entry) => entry.id);
   let base: string[];
   if (chosen !== null) base = [...chosen];
+  // A roster the preset covers is drawn whole: the Players field reads `All N`, so is the chart.
+  else if (ranked.length <= topN) base = ranked.map((entry) => entry.id);
   else if (preset === 'top') base = ranked.slice(0, topN).map((entry) => entry.id);
   else if (preset === 'bottom') base = bottom(topN, new Set());
   else {
