@@ -20,7 +20,7 @@ beforeAll(async () => {
 describe('planner.astro', () => {
   it('renders the shell with the active build id and where its trees came from', async () => {
     const html = await container.renderToString(Planner);
-    expect(html).toContain('Build planner');
+    expect(html).toContain('WoW Forever Talent Calculator');
     expect(html).toContain(activeBuild.build);
     // No treeSourceNotice assertion here: Task 5 moved that paragraph inside the
     // `{:else if store.talentIndex}` ready branch, which only exists once Planner.svelte's

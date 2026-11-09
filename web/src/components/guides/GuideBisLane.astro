@@ -6,6 +6,10 @@
 // templates, out of the document until chosen.
 import { LINK } from '../../lib/ui/primitives';
 import { specLinkHref } from '../../lib/bis/landing-links';
+import { bandSlug } from '../../lib/bis/band-path';
+import { LANDING_BANDS } from '../../lib/bis/landing-bands';
+import { ROLE_PATHS } from '../../lib/tiers/tier-copy';
+import type { BisRole } from '../../lib/bis/types';
 import { guidesCopy } from '../../lib/guides/copy';
 import type { GuideBis } from '../../lib/guides/guide-bis';
 import GuideBisPanel from './GuideBisPanel.astro';
@@ -15,8 +19,14 @@ interface Props {
   classSlug: string;
   bis: GuideBis | undefined;
   specSlug: string;
+  role: BisRole;
 }
-const { build, classSlug, bis, specSlug } = Astro.props;
+const { build, classSlug, bis, specSlug, role } = Astro.props;
+// Every band's own BiS page, so a reader (and a crawler) reaches each level range from the guide.
+const bandLinks = LANDING_BANDS.map((band) => ({
+  label: bandSlug(band),
+  href: specLinkHref({ classSlug, specSlug, band }),
+}));
 const shown = bis?.panels.find((panel) => panel.band === 60 && panel.faction === bis.defaultFaction);
 const key = (panel: { band: number; faction: string }): string => `${panel.band}-${panel.faction}`;
 // The full list opens at the band and faction the lane shows (the BiS page reads the hash);
@@ -53,6 +63,19 @@ const href = specLinkHref({
       {guidesCopy.fullListLink} ›
     </a>
   </p>
+  <p class="guide-bis-bands m-0 text-small text-muted" data-testid="guide-bis-bands">
+    {guidesCopy.bisByLevelLabel}
+    {bandLinks.map((link) => (
+      <a class={LINK} href={link.href}>
+        {link.label}
+      </a>
+    ))}
+  </p>
+  <p class="m-0">
+    <a class={LINK} href={ROLE_PATHS[role]} data-testid="guide-tier-list">
+      {guidesCopy.tierListLink} ›
+    </a>
+  </p>
 </div>
 
 <script>
@@ -71,5 +94,15 @@ const href = specLinkHref({
     display: flex;
     flex-direction: column;
     gap: 28px;
+  }
+  /* The band links and the tier list sit under the full list as one quiet block. */
+  .guide-bis-bands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-top: -16px;
+  }
+  .guide-bis-bands + p {
+    margin-top: -16px;
   }
 </style>

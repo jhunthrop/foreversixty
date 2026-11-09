@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"slices"
 )
 
 // Filtered-set DPS (coordinator scope, 2026-11-05): the page labels a
@@ -24,6 +25,8 @@ type filterSet struct {
 	MaxStanding string
 	// LevelingOnly sets are measured below level 60 only.
 	LevelingOnly bool
+	// SixtyOnly sets are measured at level 60 only.
+	SixtyOnly bool
 }
 
 // publishedFilterSets are the filter keys a file can carry:
@@ -34,10 +37,25 @@ type filterSet struct {
 //     other half, no craft above the character's likely skill, is not
 //     applied: neither loot.json nor the item data carries a recipe's
 //     skill, so crafts stay on in this figure.
+//   - pre_raid: every kind but raid and PvP (high-rank PvP gear is not
+//     pre-raid); band 60 only. The BiS page's Pre-raid toggle
+//     (web/src/lib/bis/pre-raid.ts) is the same kinds.
 var publishedFilterSets = []filterSet{
 	{Key: "all", Kinds: filterKindOrder},
 	{Key: "dungeon", Kinds: []string{filterKindDungeon}},
 	{Key: "leveling_default", Kinds: filterKindOrder, MaxStanding: "friendly", LevelingOnly: true},
+	{Key: "pre_raid", Kinds: kindsWithout(filterKindRaid, filterKindPvP), SixtyOnly: true},
+}
+
+// kindsWithout is filterKindOrder less the given kinds.
+func kindsWithout(drop ...string) []string {
+	out := make([]string, 0, len(filterKindOrder))
+	for _, kind := range filterKindOrder {
+		if !slices.Contains(drop, kind) {
+			out = append(out, kind)
+		}
+	}
+	return out
 }
 
 // filteredSetDPS is one filter set's measured set.
@@ -141,7 +159,7 @@ func measureFilteredSets(runner engineRunner, in filteredSetInputs) (map[string]
 	}
 	var notes []string
 	for _, f := range publishedFilterSets {
-		if f.LevelingOnly && in.Band >= 60 {
+		if (f.LevelingOnly && in.Band >= 60) || (f.SixtyOnly && in.Band < 60) {
 			continue
 		}
 		set := repickFiltered(in.Spec.Spec, in.Picks, in.PickBySlot, f.allows)

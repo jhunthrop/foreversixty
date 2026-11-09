@@ -87,7 +87,9 @@ CSS = DISPLAY_FACE + _tokens() + ''':root{--title:''' + DISPLAY_FONT + ''';--tit
 :root{--body:'Open Sans',Arial,sans-serif;--ui:'Archivo',Arial,sans-serif;--max:1320px}
 @media(min-width:1760px){:root{--max:1640px}}
 *{box-sizing:border-box}html,body{margin:0}
-body{background:var(--earth) url(''' + ground_uri() + ''') 0 0/''' + str(GROUND_TILE_PX) + '''px repeat;color:var(--text);font:16px/1.55 var(--body)}
+body{background:var(--earth) url(''' + ground_uri() + ''') 0 0/''' + str(GROUND_TILE_PX) + '''px repeat;color:var(--text);font:16px/1.55 var(--body);
+  min-height:100vh;display:flex;flex-direction:column}
+body>main{flex:1 0 auto;width:100%}  /* the footer sits at the foot of a short page, never mid-viewport (reviewers, batch 1) */
 a{color:var(--gold);text-decoration:none;font-weight:600}a:hover{color:var(--gold-hi)}
 h1,h2,h3{font-family:var(--title);font-weight:400;letter-spacing:var(--title-track);color:var(--cream);text-shadow:0 1px 2px rgba(0,0,0,.45);margin:0}
 p,ul,ol{margin:0;padding:0;list-style:none}
@@ -125,7 +127,11 @@ border:0;border-radius:var(--r-sm)}
 .ctl{display:flex;flex-wrap:wrap;gap:2px 28px;border-top:1px solid rgba(255,255,255,.14);padding:2px 0}
 .ctl .g{display:flex;flex-wrap:wrap;gap:0 16px}.ctl a{color:rgba(255,255,255,.72);padding:8px 0}.ctl a.on{color:#fff;box-shadow:inset 0 -3px 0 var(--blue)}
 @media(max-width:700px){.titlebar .row{gap:10px}.titlebar .medal{width:40px!important;height:40px!important}.titlebar h1{font-size:21px;line-height:25px}
-.titlebar .right b{font-size:21px}.ctl{gap:0 20px}}
+.titlebar .right b{font-size:21px}.ctl{gap:0 20px}
+/* phone: each control group is one line that scrolls sideways, as the client and every app tab strip do */
+.ctl .g{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}.ctl .g a{white-space:nowrap}
+/* phone: the band's figure drops under the title, so a long name and meta keep the full width */
+.titlebar .row{flex-wrap:wrap}.titlebar .txt{flex:1;min-width:0}.titlebar .right{flex-basis:100%;margin-left:0;padding-top:2px}}
 /* surfaces: soft corners on every panel; the frame (cream inset line on the radius) on featured panels only, with
    rounded corner flourishes (ornate) on the page's one lead panel */
 .card{position:relative;background:var(--card);border:1px solid #000;box-shadow:0 0 0 1px rgba(130,112,91,.55);border-radius:var(--r-lg);overflow:hidden}
@@ -193,10 +199,11 @@ def header(name: str, slug: str, level: int | None, cur: str) -> str:
 
 
 def titlebar(slug: str | None, title: str, meta: str, right: str = '', title_colour: str = '',
-             ctl: list[list[tuple[str, bool]]] | None = None, top: str = '', hero: bool = False) -> str:
+             ctl: list[list[tuple[str, bool]]] | None = None, top: str = '', hero: bool = False, media: str = '') -> str:
     """The compact title band under the floating bar (`top`; their bar floats over their band): medallion, title, one meta
-    line, one number right, controls under a rule. `hero` puts the owner's camp-road art behind it (home only)."""
-    med = medallion(slug, 52) if slug else ''
+    line, one number right, controls under a rule. `hero` puts the owner's camp-road art behind it (home only). `media`
+    replaces the class medallion (a guild's faction emblem)."""
+    med = media or (medallion(slug, 52) if slug else '')
     style = f' style="color:{title_colour}"' if title_colour else ''
     meta_html = f'<p class="meta">{meta}</p>' if meta else ''
     groups = ''.join('<div class="g">' + ''.join(f'<a class="{"on" if on else ""}" href="#">{escape(label)}</a>' for label, on in g) + '</div>'

@@ -372,8 +372,17 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       .sort();
     expect(templates).toEqual(expected);
     expect(bis).toMatch(
-      /href="\/bis\/mage\/frost\?faction=alliance#band-alliance-60"[^>]*data-testid="guide-bis-full-list"[^>]*>Full list and alternatives/,
+      /href="\/bis\/mage\/frost\/60"[^>]*data-testid="guide-bis-full-list"[^>]*>Full list and alternatives/,
     );
+    // Every band's own BiS page and the role's tier list (SEO lane 2026-11-08).
+    for (const href of [
+      '/bis/mage/frost',
+      '/bis/mage/frost/30-39',
+      '/bis/mage/frost/40-49',
+      '/bis/mage/frost/50-59',
+    ])
+      expect(bis).toContain(`href="${href}"`);
+    expect(bis).toMatch(/href="\/tiers"[^>]*data-testid="guide-tier-list"/);
     expect(bis).not.toContain('named honestly');
     expect(bis).not.toMatch(/<astro-island/);
   });

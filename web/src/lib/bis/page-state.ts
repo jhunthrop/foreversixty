@@ -1,12 +1,15 @@
 // web/src/lib/bis/page-state.ts
-// The BiS spec page's state, with the URL as the truth (web layout spec 2026-11-05 §3.4, R1):
-// `?band=60&faction=horde&race=orc&view=where&sources=dungeon,quest&preset=bare`. A parameter at
-// its default is left out of the URL. The legacy `#band-<faction>-<band>` hash (every link the
-// site and the header selector wrote before this page) still opens that band and faction.
+// The BiS spec page's state, with the URL as the truth (web layout spec 2026-11-05 §3.4, R1): the
+// band is the path (lib/bis/band-path.ts: /bis/hunter/marksmanship/60), the rest the query,
+// `?faction=horde&race=orc&view=where&sources=dungeon,quest&preset=bare`. A parameter at its
+// default is left out of the URL. A `?band=` and the legacy `#band-<faction>-<band>` hash (every
+// link the site and the header selector wrote before band paths) still open that band and faction.
 // Defaults follow the band (§5.10 item 10, §5.11): below 60 the page opens on Where to go with
 // Reputation off (standings up to Friendly kept); at 60 on By slot with every source on.
+import { MAX_BAND } from './band-levels';
 import { bandForLevel } from './hover';
 import { SOURCE_FILTER_KINDS } from './source-filter';
+import { PRE_RAID_KINDS, isPreRaidView } from './pre-raid';
 import type { BisPresetId, Faction, SourceFilterKind } from './types';
 
 export type BisView = 'slot' | 'where';
@@ -24,13 +27,17 @@ export interface BisPageState {
 /** What the page offers: the bands, the presets per band, the races per faction. */
 export interface BisStateContext {
   bands: readonly number[];
+  /** The band the page's path names: the first band on /bis/<class>/<spec>, else its band page's. */
+  pathBand: number;
+  /** The path is the band's pre-raid list (/60/pre-raid, pre-raid.ts): its sources are the default. */
+  pathPreRaid?: boolean;
   presetsFor: (faction: Faction, band: number) => readonly BisPresetId[];
   racesFor: (faction: Faction) => readonly string[];
   /** The race a band was simmed as, the race control's default. */
   simRaceFor: (faction: Faction, band: number, preset: BisPresetId) => string;
 }
 
-export const MAX_BAND = 60;
+export { MAX_BAND };
 
 /** The query params the page's state reads (stateSearch writes the same names). */
 export const STATE_PARAMS = ['band', 'faction', 'preset', 'race', 'view', 'sources'] as const;
@@ -78,7 +85,7 @@ export function parseState(search: string, hash: string, context: BisStateContex
   const band =
     bandParam !== null && /^\d{1,2}$/.test(bandParam)
       ? nearestBand(context.bands, Number(bandParam))
-      : (context.bands[0] ?? MAX_BAND);
+      : context.pathBand;
   const presets = context.presetsFor(faction, band);
   const presetParam = params.get('preset');
   const preset =
@@ -91,20 +98,26 @@ export function parseState(search: string, hash: string, context: BisStateContex
     raceParam !== null && races.includes(raceParam) ? raceParam : context.simRaceFor(faction, band, preset);
   const viewParam = params.get('view');
   const view: BisView = viewParam === 'slot' || viewParam === 'where' ? viewParam : defaultView(band);
-  return { faction, band, preset, race, view, sources: parseSources(params.get('sources'), band) };
+  const sourcesParam = params.get('sources');
+  const sources =
+    sourcesParam === null && context.pathPreRaid === true && band >= MAX_BAND
+      ? [...PRE_RAID_KINDS]
+      : parseSources(sourcesParam, band);
+  return { faction, band, preset, race, view, sources };
 }
 
-/** The query string for a state: only what differs from its defaults, in a fixed order. */
+/** The query string for a state: only what differs from its defaults, in a fixed order. The band
+ *  is never in it: the page's path carries it (lib/bis/band-path.ts). */
 export function stateSearch(state: BisPageState, context: BisStateContext): string {
   const params = new URLSearchParams();
-  if (state.band !== context.bands[0]) params.set('band', String(state.band));
   if (state.faction !== 'alliance') params.set('faction', state.faction);
   if (state.preset !== defaultPreset(context.presetsFor(state.faction, state.band)))
     params.set('preset', state.preset);
   if (state.race !== context.simRaceFor(state.faction, state.band, state.preset))
     params.set('race', state.race);
   if (state.view !== defaultView(state.band)) params.set('view', state.view);
-  if (!sameKinds(state.sources, defaultSources(state.band))) {
+  // The pre-raid list is a path of its own (/60/pre-raid), never a query.
+  if (!sameKinds(state.sources, defaultSources(state.band)) && !isPreRaidView(state.band, state.sources)) {
     params.set('sources', sameKinds(state.sources, SOURCE_FILTER_KINDS) ? 'all' : state.sources.join(','));
   }
   const text = params.toString().replace(/%2C/g, ',');
@@ -140,5 +153,9 @@ export function withChange(
 
 /** Whether the URL names anything the server-rendered default did not show. */
 export function isDefaultState(state: BisPageState, context: BisStateContext): boolean {
-  return stateSearch(state, context) === '';
+  return (
+    state.band === context.pathBand &&
+    isPreRaidView(state.band, state.sources) === (context.pathPreRaid === true) &&
+    stateSearch(state, context) === ''
+  );
 }

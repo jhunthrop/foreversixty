@@ -39,7 +39,7 @@ describe('tierSpecViews', () => {
       place: '1st',
       placeUnit: 'of 3',
       detail: 'Level with the top spec.',
-      bisHref: '/bis/warrior/fury',
+      bisHref: '/bis/warrior/fury/60',
       guideHref: '/guides/warrior/fury',
       rolePath: '/tiers',
     });

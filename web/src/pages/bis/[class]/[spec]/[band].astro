@@ -1,0 +1,24 @@
+---
+// web/src/pages/bis/[class]/[spec]/[band].astro
+// One page per BiS level band after the spec's first (/bis/warrior/fury/40-49, /bis/warrior/fury/60,
+// lib/bis/band-path.ts): its own title, description, canonical and h1, its list server-rendered.
+// The first band lives at /bis/<class>/<spec> and gets no second URL here.
+import BisSpecRoute from '../../../../components/bis/BisSpecRoute.astro';
+import { bandSlug } from '../../../../lib/bis/band-path';
+import { readSpecCatalog } from '../../../../lib/bis/load';
+import { bisServerPage } from '../../../../lib/bis/page-server';
+
+export async function getStaticPaths() {
+  return readSpecCatalog().flatMap((spec) => {
+    const bands = bisServerPage(spec.spec, spec.class_slug)?.data.bands ?? [];
+    return bands.slice(1).map((band) => ({
+      params: { class: spec.class_slug, spec: spec.spec_slug, band: bandSlug(band) },
+      props: { spec, band },
+    }));
+  });
+}
+
+const { spec, band } = Astro.props;
+---
+
+<BisSpecRoute spec={spec} band={band} />

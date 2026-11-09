@@ -82,7 +82,7 @@ describe('mountTierPage', () => {
     await settle();
     expect(answerText()).toContain('Arms Warrior');
     expect(field('figure').textContent).toBe('1stof 3');
-    expect(field('bis').getAttribute('href')).toBe('/bis/warrior/arms');
+    expect(field('bis').getAttribute('href')).toBe('/bis/warrior/arms/60');
     expect(marked()).toEqual(['warrior/arms']);
 
     findTierMe.mockResolvedValue(spec('hunter/beast-mastery'));

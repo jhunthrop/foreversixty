@@ -1,0 +1,20 @@
+---
+// web/src/pages/bis/[class]/[spec]/60/pre-raid.astro
+// The level 60 pre-raid list (lib/bis/pre-raid.ts): the band page with Raid and PvP off,
+// server-rendered with the filter applied, its own title and breadcrumb. Canonical to /60 while
+// the plain list holds no raid or PvP pick (it is the same list then); its own page after.
+import BisSpecRoute from '../../../../../components/bis/BisSpecRoute.astro';
+import { MAX_BAND } from '../../../../../lib/bis/band-levels';
+import { readSpecCatalog } from '../../../../../lib/bis/load';
+import { bisServerPage } from '../../../../../lib/bis/page-server';
+
+export async function getStaticPaths() {
+  return readSpecCatalog()
+    .filter((spec) => bisServerPage(spec.spec, spec.class_slug)?.data.bands.includes(MAX_BAND) === true)
+    .map((spec) => ({ params: { class: spec.class_slug, spec: spec.spec_slug }, props: { spec } }));
+}
+
+const { spec } = Astro.props;
+---
+
+<BisSpecRoute spec={spec} band={MAX_BAND} preRaidPage />
