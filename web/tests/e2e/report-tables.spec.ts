@@ -190,7 +190,7 @@ test('a boss no table covers lists its abilities player by player on Mechanics',
     .getByTestId(/^mechanics-ability-/)
     .first();
   await expect(storm).toContainText('Dust Storm');
-  await expect(storm).toContainText('Kell Quickwater 1 hit');
+  await expect(storm).toContainText('Kell Quickwater 294 (1 hit)');
 });
 
 test('a brushed window reads the uptime over the window, inside the page', async ({ page }) => {

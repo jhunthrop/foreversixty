@@ -222,9 +222,10 @@
   }
   const BAND_PX = 3;
   const CASTS_PX = 12;
-  /** A lane's row: its plot's height plus 8 px above and below, never under 34 px. */
+  /** A lane's row: its plot's height plus ROW_PAD_PX, never under 34 px. */
   const ROW_MIN_PX = 34;
-  const ROW_PAD_PX = 16;
+  /** 8 px under the cast line, the rest above the bands: a clear gap between one lane and the next. */
+  const ROW_PAD_PX = 28;
   const ENEMY_LANE_PX = 18;
   /** A tick this close to the right edge ends there instead of centring past it. */
   const END_LABEL_PCT = 97;
@@ -283,6 +284,8 @@
   );
   /** Every player lane at the tallest one's height, so the rows run on an even pitch. */
   const laneRow = $derived(Math.max(18, ...lanes.map((lane) => lane.height)));
+  /** One pitch for every lane, enemy and player, so the rows run evenly down the plot. */
+  const pitch = $derived(Math.max(laneRow, enemyRow));
   const LEGEND = [
     { label: 'Cast', swatch: 'bg-gold h-[12px] w-[2px]' },
     { label: 'Buff up', swatch: 'bg-kill/60 h-[5px] w-[14px] rounded-[2px]' },
@@ -335,21 +338,27 @@
               <!-- Every label sits on its lane's cast line, the bands rising above it. -->
               <li
                 class="flex items-end gap-2 overflow-hidden pb-[3px]"
-                style:height="{rowHeight(enemyRow)}px"
+                style:height="{rowHeight(pitch)}px"
                 title={lane.name}
               >
                 <ClassCrestRing characterClass="" size={20} />
-                <span class="text-strong truncate text-[14px] font-semibold">{lane.name}</span>
+                <span
+                  class="text-strong min-w-0 text-[13px] leading-4 font-semibold md:truncate md:text-[14px] md:leading-5"
+                  >{lane.name}</span
+                >
               </li>
             {/each}
             {#each lanes as lane (lane.guid)}
               <li
                 class="flex items-end gap-2 overflow-hidden pb-[3px]"
-                style:height="{rowHeight(laneRow)}px"
+                style:height="{rowHeight(pitch)}px"
                 title={lane.name}
               >
                 <ClassCrestRing characterClass={lane.crest} size={20} />
-                <span class="truncate text-[14px] font-semibold" style:color={lane.color}>{lane.name}</span>
+                <span
+                  class="min-w-0 text-[13px] leading-4 font-semibold md:truncate md:text-[14px] md:leading-5"
+                  style:color={lane.color}>{lane.name}</span
+                >
               </li>
             {/each}
           </ul>
@@ -366,7 +375,7 @@
               {/each}
               <ul class="flex flex-col">
                 {#each enemyRows as lane (lane.name)}
-                  <li class="flex items-end pb-2" style:height="{rowHeight(enemyRow)}px">
+                  <li class="flex items-end pb-2" style:height="{rowHeight(pitch)}px">
                     <!-- svelte-ignore a11y_no_static_element_interactions (the plot is decorative, aria-hidden: the pointer readout is a sighted aid) -->
                     <span
                       class="relative block w-full touch-none"
@@ -413,7 +422,7 @@
                   made Svelte throw on the duplicate and leave the whole view blank.
                 -->
                 {#each lanes as lane (lane.guid)}
-                  <li class="flex items-end pb-2" style:height="{rowHeight(laneRow)}px">
+                  <li class="flex items-end pb-2" style:height="{rowHeight(pitch)}px">
                     <!-- svelte-ignore a11y_no_static_element_interactions (the plot is decorative, aria-hidden: the pointer readout is a sighted aid) -->
                     <span
                       class="relative block w-full touch-none"

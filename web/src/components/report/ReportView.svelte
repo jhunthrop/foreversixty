@@ -2232,6 +2232,7 @@
                 names: unitNames,
                 bossNames: bossUnitNames,
                 friendly: friendlySet,
+                tauntSpells: new Set((scoped.taunts ?? []).map((taunt) => taunt.spell_id)),
                 windowed: !windowIsWhole,
               }}
               cooldowns={state.tab === 'buffs'

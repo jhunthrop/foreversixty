@@ -34,6 +34,7 @@
     bossNames = new Set<string>(),
     names = new Map<string, string>(),
     friendly = new Set<string>(),
+    tauntSpells = new Set<number>(),
     emptyMessage,
     windowed,
   }: {
@@ -48,6 +49,8 @@
     bossNames?: ReadonlySet<string>;
     /** The players, their pets and totems: Debuffs splits what was on them from what they put on the enemies. */
     friendly?: ReadonlySet<string>;
+    /** The taunts' spell ids: a taunt on an enemy reads on Threat and the Timeline, not as a debuff uptime. */
+    tauntSpells?: ReadonlySet<number>;
     /**
      * Overrides the generic "No buffs/debuffs in this window" text. A real fight's empty
      * DEBUFFS tab genuinely means none were cast, so ReportView.svelte's calls leave this
@@ -154,7 +157,9 @@
   const splitSides = $derived(kind === 'DEBUFF' && friendly.size > 0);
   const onEnemy = (track: AuraTrack): boolean => splitSides && !friendly.has(track.target_guid);
   const rows = $derived(sorted(shown.filter((track) => !onEnemy(track))));
-  const enemyRows = $derived(sorted(shown.filter(onEnemy)));
+  const enemyRows = $derived(
+    sorted(shown.filter((track) => onEnemy(track) && !tauntSpells.has(track.spell_id))),
+  );
 
   /**
    * Over the night, one line per spell across every target: uptime over the time the
@@ -221,14 +226,24 @@
   const EACH_MAX = 5;
   const eachTarget = (row: AuraRow): AuraTrack[] =>
     [...row.tracks].sort((a, b) => shareOf(rowOf([b])) - shareOf(rowOf([a])));
+  /** A unit's name in a row's list; two units of one name (two Elder Crocolisks) are numbered by GUID. */
+  function unitLabel(row: AuraRow, one: AuraTrack): string {
+    const name = splitUnitName(one.target_name).name;
+    const same = row.tracks.filter((other) => splitUnitName(other.target_name).name === name);
+    if (same.length < 2) return name;
+    const order = same.map((other) => other.target_guid).sort();
+    return `${name} ${order.indexOf(one.target_guid) + 1}`;
+  }
 
   const over = $derived((windowed ?? startMs > 0) ? 'this window' : 'the whole fight');
   /** What the count counts: buffs on players, or the debuffs (each a spell, however many it was on). */
+  /** The window the uptime is over, said only when it is not the whole fight the filter already names. */
+  const overLine = $derived(over === 'the whole fight' ? '' : ` · uptime over ${over}`);
   const meta = $derived(
-    `${rows.length} ${kind === 'BUFF' ? 'on players' : rows.length === 1 ? 'debuff' : 'debuffs'}${splitSides ? ' on your group' : ''} · uptime over ${over}`,
+    `${rows.length} ${kind === 'BUFF' ? 'on players' : rows.length === 1 ? 'debuff' : 'debuffs'}${overLine}`,
   );
   const enemyMeta = $derived(
-    `${enemyRows.length} ${enemyRows.length === 1 ? 'debuff' : 'debuffs'} from your group · uptime over ${over}`,
+    `${enemyRows.length} ${enemyRows.length === 1 ? 'debuff' : 'debuffs'}${overLine}`,
   );
 
   /** The table as lines: one per aura on one target, uptime in seconds and as a share. */
@@ -286,19 +301,23 @@
             >{/if}
         {/snippet}
         {#snippet sub()}
-          <span>on {onWhom(row)}</span>{#if showApplier(row)}{SEPARATOR}<span>from {applierNames(row)}</span
-            >{/if}{#if kind === 'DEBUFF' && schoolName(track.school)}{SEPARATOR}<span
+          <span>on {onWhom(row)}</span
+          >{#if showApplier(row)}{SEPARATOR}{#each applierNames(row).split(', ') as who, i (i)}{i > 0
+                ? ', '
+                : ''}<span>{i === 0 ? 'from ' : ''}{who}</span
+              >{/each}{/if}{#if kind === 'DEBUFF' && schoolName(track.school)}{SEPARATOR}<span
               title="The spell's school. Whether a debuff can be dispelled is not in the log; the Dispels tab shows which ones were."
               data-testid="aura-school">{schoolName(track.school)}</span
             >{/if}<span class="ui-st-phone">{SEPARATOR}applied {row.applications}</span
           >{#if each.length > 0}<div data-testid="aura-each">
-              {#each each.slice(0, EACH_MAX) as one, i (one.target_guid)}{i > 0 ? SEPARATOR : ''}<span
+              {#each each.slice(0, EACH_MAX) as one, i (one.target_guid)}{i > 0 ? ' ' : ''}<span
                   id={`aura-${one.target_guid}-${one.spell_id}`}
                   class="scroll-mt-24 whitespace-nowrap"
-                  >{splitUnitName(one.target_name).name}
+                  >{i > 0 ? '· ' : ''}{unitLabel(row, one)}
                   <b class="text-text font-semibold tabular-nums">{formatPercent(shareOf(rowOf([one])))}</b
                   ></span
-                >{/each}{#if each.length > EACH_MAX}{SEPARATOR}<span>{each.length - EACH_MAX} more</span>{/if}
+                >{/each}{#if each.length > EACH_MAX}
+                <span class="whitespace-nowrap">· {each.length - EACH_MAX} more</span>{/if}
             </div>{/if}
         {/snippet}
         {#snippet meter()}<Meter

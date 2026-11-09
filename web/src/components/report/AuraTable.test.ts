@@ -125,7 +125,7 @@ describe('AuraTable', () => {
     expect(group).not.toContain('Thunder Clap');
     expect(enemies).toContain('on 2 enemies');
     expect(enemies).toMatch(/id="aura-boss-8204"[^>]*>Saltspine\s*<b[^>]*>90\.0%</);
-    expect(enemies).toMatch(/id="aura-add-8204"[^>]*>Elder Crocolisk\s*<b[^>]*>60\.0%</);
+    expect(enemies).toMatch(/id="aura-add-8204"[^>]*>· Elder Crocolisk\s*<b[^>]*>60\.0%</);
   });
 
   it('every row carries an aura-<guid>-<spellId> anchor id for a rating moment to jump to', () => {

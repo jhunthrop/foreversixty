@@ -18,7 +18,7 @@ function cast(guid: string, spell_id: number, succeeded: number, failed = 0, own
 }
 
 describe('castsByPlayer', () => {
-  it('sums each player’s casts with their pets’, per minute over the window, busiest first', () => {
+  it('counts each player’s own casts, not their pets’ or totems’, per minute over the window, busiest first', () => {
     const rows = [
       cast('A', 1, 6, 2),
       cast('A', 2, 3),
@@ -28,7 +28,7 @@ describe('castsByPlayer', () => {
     ];
     expect(castsByPlayer(rows, new Set(['A', 'B']), 30_000)).toEqual([
       { guid: 'B', casts: 20, failed: 0, spells: 1, perMinute: 40 },
-      { guid: 'A', casts: 12, failed: 2, spells: 3, perMinute: 24 },
+      { guid: 'A', casts: 9, failed: 2, spells: 2, perMinute: 18 },
     ]);
   });
 

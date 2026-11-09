@@ -1,8 +1,8 @@
 <!-- web/src/components/report/CastsRail.svelte -->
 <!-- The Casts tab's rail under This pull (density pass 2026-11-09): By player, a Row per player
-     in scope (crest, name in the class colour), their casts per minute as the figure, the casts,
-     the failed casts and the spells used in the sub line, busiest first. Pets' casts count to
-     their owner, as the table's do. Read from the scoped summary's casts (summary.json casts[]:
+     in scope (crest, name in the class colour), their own casts per minute as the figure, the casts,
+     the failed casts and the spells used in the sub line, busiest first. Pets' and totems' casts
+     are left out. Read from the scoped summary's casts (summary.json casts[]:
      owner_guid, succeeded, failed). -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
