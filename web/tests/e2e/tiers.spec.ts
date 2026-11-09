@@ -13,6 +13,7 @@ import {
   type TierRole,
 } from './support/tier-list';
 import { bisBand } from './support/bis-file';
+import { specFullName } from '../../src/lib/tiers/tier-copy';
 
 const ROLE_PATH: Record<TierRole, string> = { dps: '/tiers', tank: '/tiers/tank', healer: '/tiers/healer' };
 const PHONE = { width: 390, height: 844 };
@@ -80,7 +81,9 @@ for (const role of ['dps', 'tank', 'healer'] as const) {
         'href',
         new RegExp(`^/bis/${row.entry.class_slug}/${row.entry.spec_slug}/60`),
       );
-      await expect(links).toContainText(row.entry.name);
+      await expect(links).toContainText(
+        specFullName({ classSlug: row.entry.class_slug, specSlug: row.entry.spec_slug }),
+      );
     }
   });
 }
