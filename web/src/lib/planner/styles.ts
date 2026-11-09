@@ -3,7 +3,7 @@
 // out in exactly one place.
 
 /**
- * design/DESIGN-SYSTEM.md "Secondary button": warm border, uppercase 12px 700 at 0.06em tracking,
+ * The secondary button (docs/design-system.md: 15 px 600, sentence case, the control radius),
  * 36px tall -- 44px on phone, where it has to clear the hit-target minimum. Callers add the
  * border and text colour they want, and their own horizontal padding. The one action a page
  * exists for takes PRIMARY_BUTTON instead.
@@ -25,26 +25,26 @@ const SECONDARY_BUTTON_HOVER =
  */
 const FIXED_BUTTON_DISABLED = 'control-fixed';
 
-export const SECONDARY_BUTTON = `rounded-control inline-flex h-11 items-center border text-[13px] font-bold tracking-[.01em] md:h-9 ${SECONDARY_BUTTON_HOVER}`;
+export const SECONDARY_BUTTON = `rounded-control inline-flex h-11 items-center border button-label md:h-9 ${SECONDARY_BUTTON_HOVER}`;
 
 /**
  * Same recipe as SECONDARY_BUTTON, but 44px tall on every breakpoint instead of shrinking to
  * 36px on desktop. For controls outside the planner -- the homepage subscribe button -- where
  * the 44px hit target is a fixed requirement, not just a phone-only minimum.
  */
-export const SECONDARY_BUTTON_FIXED = `rounded-control inline-flex h-11 items-center border text-[13px] font-bold tracking-[.01em] ${SECONDARY_BUTTON_HOVER} ${FIXED_BUTTON_DISABLED}`;
+export const SECONDARY_BUTTON_FIXED = `rounded-control inline-flex h-11 items-center border button-label ${SECONDARY_BUTTON_HOVER} ${FIXED_BUTTON_DISABLED}`;
 
 /**
- * The primary button: the same recipe filled gold, for the single action a page is for
+ * The primary button: the same recipe in the round-5 teal, for the single action a page is for
  * (Sign in with Battle.net on /login and /setup, Run sim on /sim, Sim this build in the
  * planner). One per view, never two side by side: two filled buttons are two secondaries.
  * Callers add their own horizontal padding.
  */
 export const PRIMARY_BUTTON =
-  'rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[13px] font-bold tracking-[.01em] md:h-9';
+  'rounded-control border-teal-edge bg-teal text-strong hover:bg-teal-edge inline-flex h-11 items-center border button-label md:h-9';
 
 /** PRIMARY_BUTTON at 44px on every breakpoint, as SECONDARY_BUTTON_FIXED is to SECONDARY_BUTTON. */
-export const PRIMARY_BUTTON_FIXED = `rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[13px] font-bold tracking-[.01em] ${FIXED_BUTTON_DISABLED}`;
+export const PRIMARY_BUTTON_FIXED = `rounded-control border-teal-edge bg-teal text-strong hover:bg-teal-edge inline-flex h-11 items-center border button-label ${FIXED_BUTTON_DISABLED}`;
 
 /**
  * The four states a talent cell is read at a glance by, from design/DESIGN-SYSTEM.md

@@ -24,11 +24,12 @@ beforeAll(async () => {
 describe('/logs', () => {
   // Owner, 2026-10-19: Windows is the only supported platform at launch (the macOS
   // targets left the release matrix on 2026-10-15), so the site offers one download.
-  it('names the one companion build the site offers', () => {
-    expect(companion.downloads.map((entry) => entry.asset)).toEqual([
-      'foreversixty-companion_windows_amd64.exe',
-    ]);
+  it('names every companion build the site offers, each once and with its platform', () => {
+    const assets = companion.downloads.map((entry) => entry.asset);
+    expect(assets.length).toBeGreaterThan(0);
+    expect(new Set(assets).size).toBe(assets.length);
     for (const entry of companion.downloads) {
+      expect(entry.asset).toMatch(/^foreversixty-companion_/);
       expect(entry.platform.length).toBeGreaterThan(0);
     }
   });

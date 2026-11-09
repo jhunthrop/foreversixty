@@ -85,14 +85,14 @@
         <Inspector selection={cell.label} {placement} testid="character-inspector" sections={[]}>
           {#snippet head()}
             {#if placement === 'side' && cell.item}
-              <p class="text-label tracking-label text-muted font-bold uppercase">{cell.label}</p>
+              <p class="text-label text-muted font-bold">{cell.label}</p>
               <p class="text-[18px] leading-[22px] font-bold {rarityClassFor(cell.item.quality)}">
                 {cell.item.name}
               </p>
               {#if cell.source}<p class="text-muted text-[13px] leading-[18px]">{cell.source}</p>{/if}
             {/if}
             {#if pick !== null}
-              <p class="text-label tracking-label text-muted mt-3 font-bold uppercase">Best in slot</p>
+              <p class="text-label text-muted mt-3 font-bold">Best in slot</p>
               <ItemRow
                 item={ref(pick.id, pick.name)}
                 {build}

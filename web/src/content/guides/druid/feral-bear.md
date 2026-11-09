@@ -89,7 +89,7 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Stamina is health, and Heart of the Wild adds 20% to it in form. Agility is Dodge, armor and crit at once. Dodge is the only avoidance you have. Hit keeps your Lacerate and Maul landing, which is threat, not survival, and once your gear reaches the hit cap it adds nothing. Expertise, which only a few late sets carry, lowers the chance the boss dodges or parries your Maul and Lacerate, which is threat and rage. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Defense means fewer crits taken, and Thick Hide turns it into a little armor. Crit is threat, and through Blood Frenzy it is rage too.
+Stamina is health, and Heart of the Wild adds 20% to it in form. Agility is Dodge, armor and crit at once. Dodge is the only avoidance you have. Hit keeps your Lacerate and Maul landing, which is threat, not survival, and once your gear reaches the hit cap it adds nothing. Expertise, which only a few late sets carry, lowers the chance the boss dodges or parries your Maul and Lacerate, which is threat and rage. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Defense means fewer crits taken, and Thick Hide turns it into a little armor. Crit is threat, and through Blood Frenzy it is rage too.
 
 ## Best in slot
 
@@ -101,11 +101,11 @@ Forever lets a druid drink in form. Mighty Rage Potion is the bear's threat poti
 
 ## Races
 
-Your faction picks your race: Night Elf on the Alliance, Tauren on the Horde, and both tank well. Night Elf takes slightly less damage and holds a little more threat, through Quickness, 1% more Dodge, and Elune's Light, 10% crit with all spells and attacks for 15 seconds on a 3 minute cooldown, which is threat when you press it on the pull. Tauren's health is steadier: Endurance is 5% more health, and War Stomp stuns up to 5 enemies around you for 2 seconds, in form, which is a great trash pull. If you already own the paid Skyborne Heroic Pack, Skyborne can be bears on either faction, with Wind Blessed, 2% haste that never turns off.
+Your faction picks your race: Night Elf on the Alliance, Tauren on the Horde, and both tank well. Night Elf takes slightly less damage and holds a little more threat, through Quickness, 1% more Dodge, and Elune's Light, 10% crit with all spells and attacks for 15 seconds on a 3 minute cooldown, which is threat when you press it on the pull. Tauren's health is steadier: Endurance is 5% more health, and War Stomp stuns up to 5 enemies around you for 2 seconds, in form, which is a great trash pull. Skyborne can be bears on either faction, with Wind Blessed, 2% haste that never turns off.
 
 ## Professions
 
-No craft in your raid set binds on pickup, so no profession is needed for it: the Leatherworking and Tailoring pieces bind when equipped and can be bought. Much of the 20 to 50 leather in your table, the Defender's, Brawler's and Warden's pieces, binds when picked up, so a leveling bear needs Leatherworking for it. Skinning and Leatherworking pay for themselves, and Alchemy keeps you in Stoneshield and Mighty Rage Potions.
+No craft in your raid set binds on pickup, so no profession is needed for it: the Leatherworking and Tailoring pieces bind when equipped and can be bought. Much of the best 20 to 50 leather, the Defender's, Brawler's and Warden's pieces, binds when picked up, so a leveling bear needs Leatherworking for it. Skinning and Leatherworking pay for themselves, and Alchemy keeps you in Stoneshield and Mighty Rage Potions.
 
 ## Leveling
 

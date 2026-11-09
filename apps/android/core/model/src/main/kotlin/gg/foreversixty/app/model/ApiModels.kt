@@ -617,9 +617,11 @@ data class CharacterHome(
     @SerialName("talents") val talents: HomeTalents,
 )
 
-/** GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0. */
+/** GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0. When score_hidden is true the owner hid the Forever Score from everyone else: every score field is null, score_history is [], and the page shows no score block at all (no "no logs yet", no label, no blank row). The owner's own view carries the score as usual, and a hidden character's page is never shared-cached. */
 @Serializable
 data class CharacterProfile(
+    /** True when the owner hid the Forever Score and the viewer is someone else; absent otherwise. Show no score block. */
+    @SerialName("score_hidden") val scoreHidden: Boolean? = null,
     @SerialName("character") val character: CharacterProfileHeader,
     @SerialName("best") val best: List<CharacterFight> = emptyList(),
     @SerialName("history") val history: List<CharacterFight> = emptyList(),
@@ -2064,6 +2066,14 @@ data class LootSource(
     @SerialName("icon") val icon: String? = null,
     /** crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent. */
     @SerialName("required_skill") val requiredSkill: Map<String, Int>? = null,
+    /** vendor and rep: where the seller stands (Booty Bay, The Barrens), curated; absent when unknown. */
+    @SerialName("place") val place: String? = null,
+    /** vendor only: item id -> its price when it is not gold; an item with no known price is absent. */
+    @SerialName("item_costs") val itemCosts: Map<String, VendorCost>? = null,
+    /** vendor only: the faction a quartermaster sells for, when every item it sells needs that faction's standing (faction_id beside it). */
+    @SerialName("reputation") val reputation: String? = null,
+    /** vendor only, beside reputation: item id -> the standing the client requires. */
+    @SerialName("item_standings") val itemStandings: Map<String, String>? = null,
     @SerialName("rare_spawn") val rareSpawn: Boolean? = null,
     @SerialName("source_origin") val sourceOrigin: String? = null,
     @SerialName("source_note") val sourceNote: String? = null,
@@ -3677,6 +3687,13 @@ data class TrashGroup(
     @SerialName("fights") val fights: List<Int> = emptyList(),
     /** The pulls' lengths summed */
     @SerialName("duration_ms") val durationMs: Long,
+)
+
+@Serializable
+data class VendorCost(
+    @SerialName("amount") val amount: Int,
+    /** The currency's plural name: Tarnished Undermine Reals. */
+    @SerialName("currency") val currency: String,
 )
 
 @Serializable

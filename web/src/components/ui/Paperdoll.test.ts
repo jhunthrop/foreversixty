@@ -41,13 +41,14 @@ describe('Paperdoll', () => {
     expect(body).toContain('role="listbox"');
     expect(body).toContain('data-testid="paperdoll-slot-head"');
     expect(body).toContain("Brawler's Leather Hood");
-    expect(body).toContain('Crafted · Leatherworking (skill 100)');
+    expect(body.replace(/<[^>]+>/g, '')).toContain('Crafted · Leatherworking (skill 100)');
     expect(body).toContain('+10 Sta · +8 Agi');
     expect(body).toContain('title="vs Trapper\'s Leather Hood"');
     expect(body.replace(/<[^>]+>/g, '')).toContain("vs Trapper's Leather Hood");
     expect(body).toContain('data-testid="paperdoll-basis-head"');
+    // The source alone on line 2, each fact a whole unit so the line wraps only between facts.
     expect(body).toMatch(
-      /ui-doll-line2[^>]*>\s*<span class="ui-doll-src"[^>]*>Crafted · Leatherworking \(skill 100\)<\/span>\s*<\/span>/,
+      /ui-doll-line2[^>]*>\s*<span class="ui-doll-src"[^>]*><span class="ui-doll-fact[^"]*">Crafted ·<\/span> <span class="ui-doll-fact[^"]*">Leatherworking \(skill 100\)<\/span><\/span>\s*<\/span>/,
     );
     expect(body).toContain('Level 20');
   });

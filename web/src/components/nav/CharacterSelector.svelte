@@ -199,6 +199,7 @@
           <span class="csel-name" data-csel-name></span>
           <span class="csel-sub" data-csel-sub-class></span>
           <span class="csel-sub-short" data-csel-sub-short></span>
+          <span class="csel-level" data-csel-level></span>
         </span>
         <svg
           class="csel-chev"
@@ -300,6 +301,9 @@
         </span>
         <span class="csel-sub" data-testid="selector-sub">{closedFaceLine(current)}</span>
         <span class="csel-sub-short">{closedSecondLine(current, false)}</span>
+        {#if current.level !== undefined}<span class="csel-level" data-testid="selector-level"
+            >{current.level}</span
+          >{/if}
       </span>
       <svg
         class="csel-chev"

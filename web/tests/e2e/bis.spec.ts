@@ -72,7 +72,8 @@ test('BiS: index links to a spec, faction and band controls switch the doll with
   await chooseControl(page, 'band', '30');
   const band30 = page.getByTestId('bis-band-alliance-30');
   await expect(band30).toBeVisible();
-  await expect(page).toHaveURL(/[?&]band=30/);
+  // The band is its own page's path (lib/bis/band-path.ts), the view chosen above in the query.
+  await expect(page).toHaveURL(/\/bis\/hunter\/marksmanship\/30-39(\?|$)/);
   await expectNoReloadSoFar(page);
   // Band 30's picks include a quest reward, read in full on the doll's source line.
   await expect(band30.getByTestId('bis-doll')).toContainText('Quest:');

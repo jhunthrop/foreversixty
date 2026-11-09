@@ -60,6 +60,8 @@ data class RaidFigures(
     val liveCancelled: Boolean = false,
     val guildName: String? = null,
     val description: String,
+    /** The restyled widget's lines; null signed out, with no character, or on an old snapshot. */
+    val card: RaidCard? = null,
 )
 
 /** One upgrade row: item, quality, icon and its gain words. */
@@ -77,6 +79,9 @@ data class UpgradeFigures(
     val description: String,
     /** The character's class, for the crest beside the label (one crest language). */
     val className: String? = null,
+    /** The next upgrade's gain, `+14.5 DPS`, and its item with where it comes from (`Lionheart Helm, Blacksmithing`). */
+    val gain: String? = null,
+    val item: String? = null,
 )
 
 /**
@@ -87,6 +92,7 @@ data class UpgradeFigures(
  */
 class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneId.systemDefault()) {
     private val clock = RaidClock(res, zone)
+    private val cards = RaidCards(res, zone, clock)
 
     fun raid(snapshot: WidgetSnapshot?, now: Instant, overlay: SignupOverlay? = null): RaidFigures {
         if (snapshot == null) return wordy(RaidSurfaceState.SignedOut, res.getString(R.string.widget_signedOut), null)
@@ -95,13 +101,14 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
         if (widget.character == null) return wordy(RaidSurfaceState.NoCharacter, res.getString(R.string.widget_noCharacter), null, stale)
         if (widget.guild == null) {
             return wordy(RaidSurfaceState.NoGuild, res.getString(R.string.widget_noGuild), res.getString(R.string.widget_noGuildSub), stale)
+                .copy(card = cards.noGuild(widget, now))
         }
         val raid = widget.nextRaid ?: return wordy(
             RaidSurfaceState.NoRaid,
             res.getString(R.string.widget_noRaid),
             widget.lastRaid?.let { res.getString(R.string.widget_lastRaid, it.zoneName, dayMonth(Instant.parse(it.startsAt))) },
             stale,
-        )
+        ).copy(card = widget.guild?.let { cards.noRaid(widget, it.name, now) })
         return raidFigures(raid, widget.character?.name.orEmpty(), now, stale, overlay?.takeIf { it.raidId == raid.raidId })
     }
 
@@ -153,6 +160,7 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
             liveTarget = Instant.parse(raid.inviteAt ?: raid.startsAt),
             liveYou = state?.let { res.getString(R.string.live_you, res.getString(it.label), role, name) },
             description = description(raid, start, span, state, role, signedUp),
+            card = cards.raid(raid, span, CardAnswer(state, asksSpec, raid.status == STATUS_LOCKED)),
         )
     }
 
@@ -238,6 +246,8 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
             description = rows.firstOrNull()?.let { res.getString(R.string.widget_a11y_upgrade, it.slot, it.name, it.gain) }
                 ?: res.getString(R.string.widget_nextUpgrade),
             className = className,
+            gain = rows.firstOrNull()?.gain,
+            item = first?.let { row -> row.pick.sourceLine?.let { res.getString(R.string.widget_card_item, row.pick.name, it) } ?: row.pick.name },
         )
     }
 

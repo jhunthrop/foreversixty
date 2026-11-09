@@ -15,7 +15,7 @@
   import { REGION } from '../../lib/ui/regions';
   import { onMount } from 'svelte';
   import { rarityClassFor } from '../../lib/planner/items';
-  import { basisText } from '../../lib/ui/primitives';
+  import { basisText, factSegments } from '../../lib/ui/primitives';
   import {
     defaultSelection,
     dollColumns,
@@ -173,7 +173,10 @@
               class="ui-doll-src"
               class:text-rarity-uncommon={cell.sourceTone === 'enchant'}
               data-source-kind={cell.sourceKind}
-              data-testid={`${testid}-line2-${cell.slot}`}>{cell.source}</span
+              data-testid={`${testid}-line2-${cell.slot}`}
+              >{#each factSegments(cell.source) as fact, index (index)}{index > 0 ? ' ' : ''}<span
+                  class="ui-doll-fact">{fact}</span
+                >{/each}</span
             >{/if}
         {/if}
       </span>
@@ -390,6 +393,12 @@
   .ui-doll-line2 {
     overflow-wrap: anywhere;
   }
+  /* One fact of the source line, kept whole: the line wraps between facts, and a fact breaks
+     inside only when it alone is wider than the row. */
+  .ui-doll-fact {
+    display: inline-block;
+    max-width: 100%;
+  }
   .ui-doll-gain {
     display: flex;
     align-items: center;
@@ -442,9 +451,7 @@
     .ui-doll-label > span:first-child {
       font-size: 12px;
       line-height: 16px;
-      font-weight: 700;
-      letter-spacing: var(--tracking-label);
-      text-transform: uppercase;
+      font-weight: 600;
     }
     .ui-doll-icon {
       grid-column: 1;

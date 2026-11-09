@@ -95,7 +95,7 @@ Adds and AoE: on two targets, spend your casts on the one that must die and put 
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Incinerate is a whole cast lost. Spell power feeds every spell you cast. Fire power feeds Incinerate, Immolate and Conflagrate, which are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need, plus a little crit, which Ruin doubles like any other. Spirit only matters through Life Tap. The table above gives the order for your gear.
+Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Incinerate is a whole cast lost. Spell power feeds every spell you cast. Fire power feeds Incinerate, Immolate and Conflagrate, which are most of your damage. Crit pays double, since Ruin doubles its bonus on every Destruction spell. Shadow power covers Corruption, Doom and Shadowburn. Intellect is mana you need, plus a little crit, which Ruin doubles like any other. Spirit only matters through Life Tap.
 
 ## Best in slot
 

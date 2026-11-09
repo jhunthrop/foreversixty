@@ -341,6 +341,11 @@ export interface GridRow {
   cells: { tone: CellTone; text: string; label: string }[];
 }
 
+/** The attendance section's title: "Attendance, last raid" for one night, "Attendance, last 4 raids" for four. */
+export function attendanceTitle(raids: number): string {
+  return raids === 1 ? 'Attendance, last raid' : `Attendance, last ${raids} raids`;
+}
+
 /** The officer's attendance grid: slipping first, then the bench, each by name. */
 export function attendanceGridRows(page: GuildRecentAttendance): GridRow[] {
   return [...page.rows]

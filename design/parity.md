@@ -15,7 +15,7 @@ The mock library (`design/mocks/ws_lib.py` `REGION`, emitted by `ws_lib` and `ws
 | `head` | `PageHeader` | The whole page head |
 | `head-title` | `PageHeader` | Crest, title, meta line |
 | `head-meta` | `PageHeader` | The one meta line under the title |
-| `head-answer` | `PageHeader` (its `answer` slot) | BiS: one figure with its unit, the trust line, the links. Nothing else |
+| `head-answer` | `PageHeader` (its `answer` slot); `Frame` (`region`) on the tier list | BiS: one figure with its unit, the trust line, the links. Nothing else. The tier list: its spec panel in the split rail (signed out, the sign-in line; signed in, the spec, where it stands and its two buttons) |
 | `controls` | `ControlBar` | The control bar |
 | `countdowns` | the page (home) | The countdown panels under the head: the first raids and the guild's next event |
 | `summary` | the page (BiS: `BisSpecPage`) | The summary line and the view toggle |
@@ -41,13 +41,17 @@ Each run writes `web/test-results/parity/<page>-<state>.png`: mock | build at th
 
 ## The BiS states
 
-`design/mocks/web/bis-parity.json`: `dps-60` (marksmanship hunter, raid), `healer-60` (holy priest), `tank-60` (protection warrior), `low-20` (beast mastery hunter, 20 to 29, Where to go). Mocks `web-bis-<state>.html`, rev 4 of `design/mocks/ws_bis.py` (spec 5 and the 5.13 build decisions).
+`design/mocks/web/bis-parity.json`: `dps-60` (marksmanship hunter, raid), `healer-60` (holy priest), `tank-60` (protection warrior), `low-20` (beast mastery hunter, 20 to 29, Where to go). Each band is its own page (`web/src/lib/bis/band-path.ts`): the 60 states open `/bis/<class>/<spec>/60`, `low-20` the spec's own path, so the band pages are held to the same mocks. Mocks `web-bis-<state>.html`, rev 4 of `design/mocks/ws_bis.py` (spec 5 and the 5.13 build decisions).
 
 `design/mocks/bis_facts.mjs` reads names, numbers, sources and group membership from a running build; `design/mocks/ws_bis.py` renders the mocks from those facts. The facts carry no structure, so a block the build grows never reaches the mock.
 
 ## The simulator states
 
 `design/mocks/web/sim-parity.json`: `landing-out`, `landing-in`, `result`, `saved`. `design/mocks/ws_sim.py` draws them from `web/src/fixtures/sim/result-full.json` and `data/builds/<active build>`, the files `web/tests/e2e/support/sim-parity.ts` serves to the fixture build.
+
+## The app beta states
+
+`web/tests/e2e/parity-app-beta.spec.ts`: /app (the page the apps' QR codes open) as `web-app` (the signup), `web-app-done` (received: a new address and a repeat read the same), `web-app-invalid` (the address refused) and `web-app-failed` (the try-again line), each at 1440 and 390 (where the QR rail is gone on both sides; `head:box` is the known 390 inset drift), and the owner's /admin/testers as `web-admin-testers` at 1440. `design/mocks/app_beta_facts.mjs` bundles `web/src/lib/app-beta/copy.ts`, `admin.ts` and `qr.ts` (the same QR SVG the page inlines) over `web/tests/e2e/fixtures/app-beta/testers.json`; `design/mocks/ws_app_beta.py` draws them. The store buttons (`web/src/data/apps.json` with a link) have no mock while both links are null; they are covered by `components/app-beta/app-beta.test.ts`.
 
 ## The simulator tool states
 
@@ -96,11 +100,11 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 
 ## The tier list states
 
-`design/mocks/web/tiers-parity.json`: `dps` (signed out), `dps-you` (Thandrel, Fury Warrior 60), `dps-horde` (`?faction=horde`), `healer`, `tank`, `tank-you` (a DPS spec on the Tank list), at 1440. Mocks `web-tiers*.html` from `design/mocks/ws_tiers.py` (spec `design/specs/2026-11-06-tiers.md`), rendered at test time (`renderTiersMocks`) from `data/builds/<active build>/bis`, the files the fixture build prerenders `/tiers` from, so a re-rank moves both sides alike. `web-tiers-bar` (phone, controls open) and `web-tiers-states` (the states sheet) are references, not page states.
+`design/mocks/web/tiers-parity.json`: `dps` (signed out), `dps-you` (Thandrel, Fury Warrior 60), `dps-horde` (`?faction=horde`), `healer`, `tank`, `tank-you` (a DPS spec on the Tank list), at 1440. Mocks `web-tiers*.html` from `design/mocks/ws_tiers.py` (the look is the directions mock `g-tiers`, round 5: the compact RankList on the Plate and the spec panel, region `head-answer`, in the split rail; the rules are `design/specs/2026-11-06-tiers.md`), rendered at test time (`renderTiersMocks`) from `data/builds/<active build>/bis`, the files the fixture build prerenders `/tiers` from, so a re-rank moves both sides alike. `web-tiers-bar` (phone, controls open) and `web-tiers-states` (the states sheet) are references, not page states.
 
 ## The guild states
 
-`design/mocks/web/guild-parity.json`, against the committed mocks from `design/mocks/ws_guild2.py` (the persona round, `design/specs/2026-11-05-web-layout.md` section 7). The roster and every figure both sides show live once in `design/mocks/guild_data.py`; `python3 design/mocks/guild_fixtures.py` writes them as the API's answers into `web/tests/e2e/fixtures/guild-parity/`, which `tests/e2e/support/guild-parity/` routes to the build. The clock is pinned to Tue 8 Dec 2026, 4:00 pm in America/Chicago (`support/guild-parity/clock.ts`), so "Starts in" and the raid times read as the mock's. After a change: `python3 design/mocks/guild_fixtures.py && python3 design/mocks/ws_guild2.py`.
+`design/mocks/web/guild-parity.json`, against the committed mocks from `design/mocks/ws_guild2.py` (the persona round, `design/specs/2026-11-05-web-layout.md` section 7). The roster and every figure both sides show live once in `design/mocks/guild_data.py`; `python3 design/mocks/guild_fixtures.py` writes them as the API's answers into `web/tests/e2e/fixtures/guild-parity/`, which `tests/e2e/support/guild-parity/` routes to the build. The clock is pinned to Sat 12 Dec 2026, 4:00 pm in America/Chicago (the first raid night was Wed 9 Dec; the next is Wed 16 Dec) (`support/guild-parity/clock.ts`), so "Starts in" and the raid times read as the mock's. After a change: `python3 design/mocks/guild_fixtures.py && python3 design/mocks/ws_guild2.py`.
 
 ## The admin links state and the billing references
 

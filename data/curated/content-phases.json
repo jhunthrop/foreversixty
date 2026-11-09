@@ -21,7 +21,7 @@
       "kind": "blizzard"
     }
   ],
-  "notes": "Which content is open when, keyed by stable game ids. House rule, pending owner confirmation: Forever launches 'before Molten Core', the original Classic Phase 1 content set, so any source that opened after Phase 1 in original Classic is gated until a date is announced, and a source whose original phase is unsure is gated and flagged 'uncertain'. Each gate has a phase key from phases.json, or 'later' with date 'unannounced'. A phase at or before 'launch' is open, so a confirmed date flips a gate by editing its phase and date here, with no code change. Keys: npcs (a vendor's or a dungeon boss's npc id; a world source by the npc's name, because loot.json's world sources carry no npc id), quests (quest id), factions (reputation faction id, gating its rep sources and every quest that needs it, from from_standing up when set), zones (an instance or zone source's zone id), kinds (a loot source kind) and, as a last resort, items. An id missing from a night's fetch is warned about and kept, never deleted. data/pipeline/loot/content_phases.py writes the gates into loot.json; sim/cmd/leveling-bis reads this same file and applies the same gates to whatever loot.json it is given.",
+  "notes": "Which content is open when, keyed by stable game ids. House rule, pending owner confirmation: Forever launches 'before Molten Core', the original Classic Phase 1 content set, so any source that opened after Phase 1 in original Classic is gated until a date is announced, and a source whose original phase is unsure is gated and flagged 'uncertain'. Each gate has a phase key from phases.json, or 'later' with date 'unannounced'. A phase at or before 'launch' is open, so a confirmed date flips a gate by editing its phase and date here, with no code change. Keys: npcs (a vendor's or a dungeon boss's npc id; a world source by the npc's name, because loot.json's world sources carry no npc id), quests (quest id), factions (reputation faction id, gating its rep sources and every quest that needs it, from from_standing up when set), zones (an instance or zone source's zone id), kinds (a loot source kind), reagents (a crafting reagent no source names: every craft that consumes it is gated, by data/pipeline/loot/sources.py's apply_crafted_opens_gate, from classic-db's and the client's recipe chains) and, as a last resort, items. An id missing from a night's fetch is warned about and kept, never deleted. data/pipeline/loot/content_phases.py writes the gates into loot.json; sim/cmd/leveling-bis reads this same file and applies the same gates to whatever loot.json it is given.",
   "gates": [
     {
       "key": "world-bosses",
@@ -536,6 +536,18 @@
         {"id": 265575, "name": "Gezzy Gunkgear"},
         {"id": 265576, "name": "Rettrick"},
         {"id": 265577, "name": "Zippie Fizzbolt"}
+      ]
+    },
+    {
+      "key": "hyjal-barrow-deeps-reagents",
+      "label": "Reagents from Hyjal Summit and Barrow Deeps loot",
+      "original_patch": "Forever",
+      "phase": "raids-1",
+      "date": "2026-12-09",
+      "confidence": "confirmed",
+      "why": "Feedback 2026-11-09: the level-60 Protection Paladin list picked Greenhammer (279261) and Evergreen Shield (279262), Forever's new Blacksmithing epics. Their recipes, and every other Forever-new craft that uses it (client SpellReagents), need Malleable Essence of Nature, which the 1.60.1.70790 client describes as 'Acquired from disenchanting items from Hyjal Summit or Barrow Deeps'. Blizzard's raid overview (news.blizzard.com article 24303009) opens both raids on 9 December. The essence has no loot source, so it is keyed here and the crafted gate (pipeline.loot.sources.apply_crafted_opens_gate) carries its date to each craft.",
+      "reagents": [
+        {"id": 274030, "name": "Malleable Essence of Nature"}
       ]
     },
     {

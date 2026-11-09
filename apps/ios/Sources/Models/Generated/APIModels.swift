@@ -1561,8 +1561,10 @@ public struct CharacterHome: Codable, Sendable, Equatable {
     }
 }
 
-/// GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0.
+/// GET /v1/characters/{region}/{ruleset}/{name}: the public character card. Every score field is null for a character with no rated fight: render "no logs yet", never 0. When score_hidden is true the owner hid the Forever Score from everyone else: every score field is null, score_history is [], and the page shows no score block at all (no "no logs yet", no label, no blank row). The owner's own view carries the score as usual, and a hidden character's page is never shared-cached.
 public struct CharacterProfile: Codable, Sendable, Equatable {
+    /// True when the owner hid the Forever Score and the viewer is someone else; absent otherwise. Show no score block.
+    public let scoreHidden: Bool?
     public let character: CharacterProfileHeader
     public let best: [CharacterFight]
     public let history: [CharacterFight]
@@ -1582,6 +1584,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
     public let experience: ScoreExperience?
 
     public init(
+        scoreHidden: Bool? = nil,
         character: CharacterProfileHeader,
         best: [CharacterFight] = [],
         history: [CharacterFight] = [],
@@ -1599,6 +1602,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
         componentCaps: ScoreComponentCaps? = nil,
         experience: ScoreExperience? = nil
     ) {
+        self.scoreHidden = scoreHidden
         self.character = character
         self.best = best
         self.history = history
@@ -1619,6 +1623,7 @@ public struct CharacterProfile: Codable, Sendable, Equatable {
 
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
+        scoreHidden = try c.decodeIfPresent(Bool.self, forKey: .scoreHidden)
         character = try c.decode(CharacterProfileHeader.self, forKey: .character)
         best = try c.decodeIfPresent([CharacterFight].self, forKey: .best) ?? []
         history = try c.decodeIfPresent([CharacterFight].self, forKey: .history) ?? []
@@ -5469,6 +5474,14 @@ public struct LootSource: Codable, Sendable, Equatable {
     public let icon: String?
     /// crafted only: item id -> the profession skill its recipe needs; an item with no known skill is absent.
     public let requiredSkill: [String: Int]?
+    /// vendor and rep: where the seller stands (Booty Bay, The Barrens), curated; absent when unknown.
+    public let place: String?
+    /// vendor only: item id -> its price when it is not gold; an item with no known price is absent.
+    public let itemCosts: [String: VendorCost]?
+    /// vendor only: the faction a quartermaster sells for, when every item it sells needs that faction's standing (faction_id beside it).
+    public let reputation: String?
+    /// vendor only, beside reputation: item id -> the standing the client requires.
+    public let itemStandings: [String: String]?
     public let rareSpawn: Bool?
     public let sourceOrigin: String?
     public let sourceNote: String?
@@ -5497,6 +5510,10 @@ public struct LootSource: Codable, Sendable, Equatable {
         levelMax: Int? = nil,
         icon: String? = nil,
         requiredSkill: [String: Int]? = nil,
+        place: String? = nil,
+        itemCosts: [String: VendorCost]? = nil,
+        reputation: String? = nil,
+        itemStandings: [String: String]? = nil,
         rareSpawn: Bool? = nil,
         sourceOrigin: String? = nil,
         sourceNote: String? = nil,
@@ -5524,6 +5541,10 @@ public struct LootSource: Codable, Sendable, Equatable {
         self.levelMax = levelMax
         self.icon = icon
         self.requiredSkill = requiredSkill
+        self.place = place
+        self.itemCosts = itemCosts
+        self.reputation = reputation
+        self.itemStandings = itemStandings
         self.rareSpawn = rareSpawn
         self.sourceOrigin = sourceOrigin
         self.sourceNote = sourceNote
@@ -9827,6 +9848,20 @@ public struct TrashGroup: Codable, Sendable, Equatable {
         zone = try c.decode(String.self, forKey: .zone)
         fights = try c.decodeIfPresent([Int].self, forKey: .fights) ?? []
         durationMs = try c.decode(Int64.self, forKey: .durationMs)
+    }
+}
+
+public struct VendorCost: Codable, Sendable, Equatable {
+    public let amount: Int
+    /// The currency's plural name: Tarnished Undermine Reals.
+    public let currency: String
+
+    public init(
+        amount: Int,
+        currency: String
+    ) {
+        self.amount = amount
+        self.currency = currency
     }
 }
 

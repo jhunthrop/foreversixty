@@ -9,11 +9,9 @@
     16,
     0,
     380,
-    224
+    94
    ],
-   "inventory": {
-    "image": 1
-   }
+   "inventory": {}
   },
   "head-title": {
    "box": [
@@ -28,54 +26,44 @@
    "box": [
     16,
     60,
-    257,
+    307,
     20
    ],
    "inventory": {}
   },
-  "head-answer": {
-   "box": [
-    16,
-    96,
-    380,
-    114
-   ],
-   "inventory": {
-    "image": 1
-   }
-  },
   "controls": {
    "box": [
     0,
-    224,
+    94,
     412,
     62
    ],
    "inventory": {
-    "segment": 5,
-    "image": 2
+    "segment": 5
    }
   },
   "plate": {
    "box": [
     16,
-    384,
+    184,
     380,
-    2651
+    1012
    ],
    "inventory": {
     "row": 20,
     "image": 20
    }
   },
-  "section-how-to-read-this": {
+  "head-answer": {
    "box": [
     16,
-    3083,
+    1220,
     380,
-    475
+    156
    ],
-   "inventory": {}
+   "inventory": {
+    "button": 2
+   }
   }
  }
 }

@@ -175,7 +175,7 @@
 {#snippet figures(f: FunnelFigures)}
   <span class="flex min-w-0 flex-wrap items-start gap-x-5 gap-y-2">
     {#each steps(f) as step (step.key)}
-      <span class="w-[92px]"
+      <span class="w-[128px]"
         ><Figure value={step.value} label={step.label} caption={step.note} size="sm" /></span
       >
     {/each}

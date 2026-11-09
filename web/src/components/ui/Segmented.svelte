@@ -15,6 +15,7 @@
     label,
     size = 'md',
     fill = false,
+    stack = false,
     disabled = false,
     describedBy,
     onChange,
@@ -29,6 +30,9 @@
     size?: 'md' | 'sm';
     /** Stretch to the container's width; `phone` below 768 only; else as wide as the labels. */
     fill?: boolean | 'phone';
+    /** Below 768, one full-width row per option, labels wrapping: for long labels that cannot
+     *  share a phone's width (a single row squeezes them until each tap lands on its neighbour). */
+    stack?: boolean;
     disabled?: boolean;
     /** The line that says why the group is disabled. */
     describedBy?: string;
@@ -61,6 +65,7 @@
   class={[
     'ui-seg',
     size === 'sm' && 'ui-seg--sm',
+    stack && 'ui-seg--stack',
     fill === true ? 'w-full' : fill === 'phone' ? 'w-full md:w-fit' : 'w-fit',
   ]}
   data-testid={testid}

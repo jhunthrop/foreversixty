@@ -1,9 +1,8 @@
 // web/src/styles/font-families.test.ts
-// The site's type rule (fonts lane 2026-11-06): no condensed face anywhere, no mono in UI, and
-// only the faces the site actually loads. Marcellus 400 sets the page title, Barlow 400/600/700
-// sets everything else (headings included: --font-heading is --font-body), JetBrains Mono is
-// for literal code only, and the FOREVER SIXTY wordmark is an SVG path (Wordmark.astro), so the
-// logo loads no face. This walks every source file that can style text and fails on a
+// The site's type rule (round 5, design/specs/2026-11-09-directions.md section 4): no condensed
+// face anywhere, no mono in UI, and only the faces the site actually loads. Marcellus 400 sets
+// every heading (--font-heading is --font-title) and the bar's name, Open Sans 400/600/700 sets
+// body, labels and figures, Archivo 600 the navigation bar, and JetBrains Mono literal code only. This walks every source file that can style text and fails on a
 // condensed family or stretch, on any use of the retired display face, and on a fonts.css
 // family outside the allowed list, so a new heading cannot quietly bring a third family back.
 import { readdirSync, readFileSync } from 'node:fs';
@@ -16,8 +15,9 @@ const STYLED_EXTENSIONS = new Set(['.astro', '.svelte', '.ts', '.css', '.md', '.
 
 /** Every family fonts.css may declare: the loaded faces and their size-adjusted fallbacks. */
 const ALLOWED_FAMILIES = [
-  'Barlow',
-  'Barlow Fallback',
+  'Archivo',
+  'Open Sans',
+  'Open Sans Fallback',
   'JetBrains Mono',
   'Marcellus',
   'Marcellus Fallback',
@@ -69,10 +69,10 @@ function declaredFamilies(css: string): string[] {
 
 describe('the site type rule', () => {
   it('declares no condensed face or stretch in any style source', () => {
-    expect(offenders(declaresCondensed), 'set it in --font-heading (Barlow) instead').toEqual([]);
+    expect(offenders(declaresCondensed), 'set it in --font-body instead').toEqual([]);
   });
 
-  it('never uses the retired display face; the wordmark is Wordmark.astro', () => {
+  it('never uses the retired display face', () => {
     expect(offenders((text) => DISPLAY_FACE_USE.test(text))).toEqual([]);
   });
 
@@ -81,14 +81,16 @@ describe('the site type rule', () => {
     expect(declaredFamilies(css)).toEqual([...ALLOWED_FAMILIES].sort());
   });
 
-  it('sets headings in the body face', () => {
+  it('sets headings in the title face', () => {
     const tokens = readFileSync(path.join(SRC, 'styles/tokens.css'), 'utf8');
-    expect(tokens).toMatch(/--font-heading:\s*var\(--font-body\);/);
+    expect(tokens).toMatch(/--font-heading:\s*var\(--font-title\);/);
   });
 
-  it('draws the wordmark as the SVG in both lockups', () => {
+  it('draws the seal beside the name in both lockups', () => {
     for (const lockup of ['components/Header.astro', 'components/Footer.astro']) {
-      expect(readFileSync(path.join(SRC, lockup), 'utf8'), lockup).toContain('<Wordmark />');
+      const source = readFileSync(path.join(SRC, lockup), 'utf8');
+      expect(source, lockup).toContain('<Seal ');
+      expect(source, lockup).toContain('{SITE_NAME}');
     }
   });
 });

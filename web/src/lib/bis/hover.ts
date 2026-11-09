@@ -13,10 +13,10 @@ import { specRow } from '../sim/spec-label';
 import { selectBand } from './presets';
 import type { BisBand, BisFile, BisSlot, Faction } from './types';
 
-/** Bands run 20..60 in steps of 10 (sim/cmd/leveling-bis's own defaultBandsFlag). */
-export const MIN_BAND = 20;
-export const MAX_BAND = 60;
-export const BAND_STEP = 10;
+import { BAND_STEP, MAX_BAND, MIN_BAND } from './band-levels';
+import { bisBandPath } from './band-path';
+
+export { BAND_STEP, MAX_BAND, MIN_BAND };
 
 /**
  * The band a character level falls into: rounded down to the nearest step, clamped to the
@@ -89,17 +89,17 @@ export function slotHoverDiff(file: BisFile, band: number, faction: Faction, slo
 }
 
 /**
- * `/bis/<class>/<spec>?faction=<faction>#band-<faction>-<band>` -- the same route and
- * in-page anchor src/pages/bis/[class]/[spec].astro renders (its `#panel-${faction}` CSS
- * toggle plus each band's `#band-${faction}-${band}` id), built from the spec key the
- * planner already computes (addon/score.ts's specKeyFor) rather than a class/spec slug pair
- * the caller would otherwise have to carry alongside it. An unrecognised spec key links to
- * the index rather than a broken route.
+ * The band's own page (lib/bis/band-path.ts), `/bis/<class>/<spec>/<band>`, with
+ * `?faction=horde` for Horde, built from the spec key the planner already computes
+ * (addon/score.ts's specKeyFor) rather than a class/spec slug pair the caller would otherwise
+ * have to carry alongside it. An unrecognised spec key links to the index rather than a
+ * broken route.
  */
 export function bisPageHref(spec: string, faction: Faction, band: number): string {
   const row = specRow(spec);
   if (row === null) return '/bis';
-  return `/bis/${row.class_slug}/${row.spec_slug}?faction=${faction}#band-${faction}-${band}`;
+  const path = bisBandPath(row.class_slug, row.spec_slug, bandForLevel(band), MIN_BAND);
+  return faction === 'horde' ? `${path}?faction=horde` : path;
 }
 
 // --- fetch + in-memory cache -------------------------------------------------------------

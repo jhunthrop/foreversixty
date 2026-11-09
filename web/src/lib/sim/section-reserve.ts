@@ -26,7 +26,7 @@ type Widths<T> = Readonly<{ phone: T; wide: T }>;
 const LIST_ROW: Widths<number> = { phone: 85, wide: 56 };
 
 /** The Section head, the toolbar and legend over the plot, and the cast count line under it. */
-const TIMELINE_FRAME: Widths<number> = { phone: 306, wide: 147 };
+const TIMELINE_FRAME: Widths<number> = { phone: 306, wide: 176 }; // wide re-measured 2026-11-09 (round 5 type)
 
 function timelineHeight(result: SimResult, phone: boolean): number | null {
   const shape = timelineShape(result);

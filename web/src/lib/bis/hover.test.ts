@@ -143,10 +143,10 @@ describe('slotHoverDiff', () => {
 });
 
 describe('bisPageHref', () => {
-  it('links to the spec page with the faction query and band anchor', () => {
-    expect(bisPageHref('hunter-marksmanship', 'alliance', 30)).toBe(
-      '/bis/hunter/marksmanship?faction=alliance#band-alliance-30',
-    );
+  it('links to the band’s own page, Horde in the query', () => {
+    expect(bisPageHref('hunter-marksmanship', 'alliance', 30)).toBe('/bis/hunter/marksmanship/30-39');
+    expect(bisPageHref('hunter-marksmanship', 'horde', 60)).toBe('/bis/hunter/marksmanship/60?faction=horde');
+    expect(bisPageHref('hunter-marksmanship', 'alliance', 20)).toBe('/bis/hunter/marksmanship');
   });
 
   it('falls back to the index for a spec key the generated list does not carry', () => {

@@ -74,7 +74,7 @@ export async function serveShells(context: BrowserContext, distDir: string): Pro
     route.fulfill({ status: 200, contentType: 'text/html', body: shell('character.html') }),
   );
   await context.route(/\/guild\/[^/]+\/[^/]+\/[^/.]+$/, (route) =>
-    route.fulfill({ status: 200, contentType: 'text/html', body: shell('guild.html') }),
+    route.fulfill({ status: 200, contentType: 'text/html', body: shell('guild-shell.html') }),
   );
 }
 

@@ -1,27 +1,24 @@
 ---
 // web/src/components/tiers/TierPage.astro
-// The tier list page for one role (design/specs/2026-11-06-tiers.md, the frame; the rules are
+// The tier list page for one role (directions mock g-tiers, round 5; the rules are
 // 2026-10-09-tier-list.md's). /tiers, /tiers/tank and /tiers/healer render this with a different
-// role. Built from the ui/ primitives: PageHeader (the signed-in answer at its right), the
-// ControlBar (role and faction), then per faction a caption, the one Plate holding a RankList and
-// the open "How to read this" Section. Both factions are in the HTML and an inline pre-paint
+// role. The title band (title, the fight's facts, the role and faction tabs), then a split page:
+// per faction the one Plate holding a compact RankList (S to D on the damage list), and the spec
+// panel in the rail (first on a phone). Both factions are in the HTML and an inline pre-paint
 // script picks the one the URL (or the current character) asks for, so there is no island above
-// the fold; the only client work after paint is the faction choice and the answer.
+// the fold; the only client work after paint is the faction choice and the spec panel.
 import Base from '../../layouts/Base.astro';
 import UpdatedStamp from '../UpdatedStamp.astro';
 import TierRankRow from './TierRankRow.astro';
+import TierSpecCard from './TierSpecCard.astro';
 import ControlBar from '../ui/ControlBar.astro';
-import Notice from '../ui/Notice.svelte';
 import Page from '../ui/Page.svelte';
 import PageHeader from '../ui/PageHeader.svelte';
 import Plate from '../ui/Plate.svelte';
 import RankGroup from '../ui/RankGroup.svelte';
 import RankList from '../ui/RankList.svelte';
-import Section from '../ui/Section.svelte';
-import Figure from '../ui/Figure.svelte';
 import { CURRENT_CHARACTER_STORAGE_KEY } from '../../lib/current-character-events';
-import { factionMarkSrc } from '../../lib/faction-mark';
-import { LINK, type ControlGroup } from '../../lib/ui/primitives';
+import type { ControlGroup } from '../../lib/ui/primitives';
 import type { RankHead } from '../../lib/ui/rank-list';
 import {
   DEFAULT_FACTION,
@@ -30,18 +27,11 @@ import {
   TIER_FACTION_ORDER,
 } from '../../lib/tiers/tier-controls';
 import { tierSpecViews } from '../../lib/tiers/tier-callout';
-import {
-  FACTION_LABELS,
-  ROLE_LABELS,
-  ROLE_PATHS,
-  caption,
-  readColumns,
-  tiersCopy,
-} from '../../lib/tiers/tier-copy';
+import { FACTION_LABELS, ROLE_PATHS, ROLE_TABS, tiersCopy } from '../../lib/tiers/tier-copy';
 import { TIER_ROLES, groupByTier, roleHasTiers } from '../../lib/tiers/tier-list';
-import { TIER_LETTER_TONES } from '../../lib/tiers/tier-rules';
 import { loadTierData } from '../../lib/tiers/tier-load';
-import type { BisRole, Faction } from '../../lib/bis/types';
+import type { BisRole } from '../../lib/bis/types';
+import { searchCopy } from '../../lib/search-copy';
 
 interface Props {
   role: BisRole;
@@ -49,25 +39,15 @@ interface Props {
 
 const { role } = Astro.props;
 const data = loadTierData();
-const presetLabel = data.presetLabel ?? '';
 const hasData = data.updated !== null;
 const isTank = role === 'tank';
-const roleCounts = Object.fromEntries(TIER_ROLES.map((r) => [r, data.lists.alliance[r].length])) as Record<
-  BisRole,
-  number
->;
 const groups: ControlGroup[] = [
   {
     label: tiersCopy.roleGroupLabel,
     param: 'role',
     kind: 'segmented',
     value: role,
-    options: TIER_ROLES.map((r) => ({
-      value: r,
-      label: ROLE_LABELS[r],
-      count: roleCounts[r],
-      href: ROLE_PATHS[r],
-    })),
+    options: TIER_ROLES.map((r) => ({ value: r, label: ROLE_TABS[r], href: ROLE_PATHS[r] })),
   },
   {
     label: tiersCopy.factionGroupLabel,
@@ -75,11 +55,7 @@ const groups: ControlGroup[] = [
     kind: 'segmented',
     value: DEFAULT_FACTION,
     defaultValue: DEFAULT_FACTION,
-    options: TIER_FACTION_ORDER.map((faction) => ({
-      value: faction,
-      label: FACTION_LABELS[faction],
-      icon: factionMarkSrc(faction),
-    })),
+    options: TIER_FACTION_ORDER.map((faction) => ({ value: faction, label: FACTION_LABELS[faction] })),
   },
 ];
 const clientConfig = {
@@ -96,27 +72,15 @@ const stampTitle =
     : `Ranked on build ${data.build}, engine ${data.engineVersion ?? ''}`.trim();
 const heads: RankHead[] = tiersCopy.heads[role].map((label, index, all) => ({
   label,
-  // The figures and the gap: every head after the bar but the links'.
+  // The figures and the gap: every head after the bar but the empty link column's.
   align: index > 3 && index < all.length - 1 ? 'end' : 'start',
 }));
-
-function contextFor(faction: Faction) {
-  return {
-    role,
-    faction,
-    presetLabel,
-    healSeconds: data.healSeconds,
-    healerOrderMeasured: data.healerOrderMeasured[faction],
-    bossSwingSeconds: data.bossSwingSeconds,
-    hasTie: data.lists[faction][role].some((row) => row.tie !== null),
-  };
-}
-const linkCount = role === 'dps' ? 4 : 3;
+const metaLine = tiersCopy.metaLine({ role, healSeconds: data.healSeconds });
 ---
 
 <Base
-  title={tiersCopy.pageTitle(role)}
-  description={tiersCopy.metaDescription(role)}
+  title={searchCopy.tiers.title(role)}
+  description={searchCopy.tiers.description(role)}
   path={ROLE_PATHS[role]}
   wide
 >
@@ -141,77 +105,26 @@ const linkCount = role === 'dps' ? 4 : 3;
     if (faction === 'horde') document.documentElement.setAttribute(attribute, 'horde');
   </script>
   <main id="main" tabindex="-1" class="tier-page" data-testid="tier-page" data-role={role}>
-    <Page layout="ledger" testid="tier-body">
+    <Page layout="split" railFirst splitFrom={1280} testid="tier-body">
       <PageHeader slot="header" title={tiersCopy.title} tone="strong">
         <span slot="meta">
-          {tiersCopy.metaLine(data.presetLabel)}
+          {metaLine}
           {data.updated !== null && (
             <span title={stampTitle}>
-              · <UpdatedStamp date={data.updated} />
+              {' · '}
+              <UpdatedStamp date={data.updated} />
             </span>
           )}
         </span>
-        <div slot="answer" class="tier-answer" id="tier-answer" data-signed-in-only data-testid="tier-answer">
-          <div class="tier-answer-skeleton" role="status" aria-busy="true" data-answer-skeleton>
-            <span class="sr-only">Loading</span>
-            <span class="skeleton-block tier-sk-crest" aria-hidden="true"></span>
-            <span class="tier-sk-lines" aria-hidden="true">
-              <span class="skeleton-block tier-sk-name"></span>
-              <span class="skeleton-block tier-sk-detail"></span>
-            </span>
-            <span class="skeleton-block tier-sk-figure" aria-hidden="true"></span>
-          </div>
-          <div class="tier-answer-body" data-answer-body hidden data-testid="tier-answer-body">
-            <span class="text-label tracking-label text-muted font-bold uppercase" data-field="label"></span>
-            <div class="tier-answer-who">
-              <img class="tier-answer-crest" data-field="crest" src="" alt="" width="40" height="40" hidden />
-              <span class="tier-answer-text">
-                <span class="tier-answer-name" data-field="name"></span>
-                <span
-                  class="text-small text-muted"
-                  data-field="detail"
-                  data-testid="tier-answer-detail"
-                ></span>
-              </span>
-              <span data-field="figure">
-                <Figure
-                  value="0"
-                  unit="of 0"
-                  size="big"
-                  tone="gold"
-                  align="end"
-                  testid="tier-answer-figure"
-                />
-              </span>
-            </div>
-            <span class="tier-answer-links" data-field="links">
-              <a class={LINK} data-field="bis" href="/bis" data-testid="tier-answer-bis">
-                {tiersCopy.answer.bis} ›
-              </a>
-              <a class={LINK} data-field="guide" href="/guides">
-                {tiersCopy.answer.guide} ›
-              </a>
-              <a class={LINK} href="/sim" data-testid="tier-answer-sim">
-                {tiersCopy.answer.sim} ›
-              </a>
-            </span>
-            <a class={LINK} data-field="other" href="/tiers" hidden data-testid="tier-answer-other">
-              {tiersCopy.answer.otherRoleLink} ›
-            </a>
-            <span class="tier-answer-message" data-field="message" hidden>
-              <span class="text-small text-muted"></span>
-              <button type="button" class={LINK} data-field="choose" hidden>
-                {tiersCopy.answer.unknownLink} ›
-              </button>
-              <button type="button" class={LINK} data-field="retry" hidden>
-                {tiersCopy.answer.retry}
-              </button>
-            </span>
-          </div>
-        </div>
       </PageHeader>
       <Fragment slot="bar">
-        <ControlBar id="tier-bar" label={tiersCopy.controlsLabel} groups={groups} testid="tier-bar" />
+        <ControlBar
+          id="tier-bar"
+          label={tiersCopy.controlsLabel}
+          groups={groups}
+          labelsFrom={1920}
+          testid="tier-bar"
+        />
         <script is:inline define:vars={{ attribute: FACTION_ATTRIBUTE, param: FACTION_PARAM }}>
           // The bar is server-rendered on Alliance; a Horde page (set before paint above) checks
           // Horde before the bar is painted, so the selection never flashes.
@@ -226,19 +139,8 @@ const linkCount = role === 'dps' ? 4 : 3;
       </Fragment>
       {TIER_FACTION_ORDER.map((faction) => {
         const rows = data.lists[faction][role];
-        const ctx = contextFor(faction);
         return (
           <div class="tier-faction" data-faction={faction} data-testid={`tier-faction-panel-${faction}`}>
-            {hasData && rows.length > 0 && (
-              <Notice text={caption(ctx)} tone="neutral" testid="tier-caption">
-                <span slot="tail" data-signed-out-only>
-                  <a class={LINK} href={tiersCopy.signInHref(ROLE_PATHS[role])}>
-                    {tiersCopy.signIn}
-                  </a>
-                  {tiersCopy.signInSuffix}
-                </span>
-              </Notice>
-            )}
             <Plate label={tiersCopy.listLabel(role, faction)} testid="tier-plate">
               {!hasData ? (
                 <p class="tier-empty" data-testid="tier-no-data">
@@ -252,8 +154,9 @@ const linkCount = role === 'dps' ? 4 : 3;
                 <RankList
                   heads={heads}
                   figures={isTank ? 3 : 1}
-                  links={linkCount}
+                  figureWidth={isTank ? 96 : 88}
                   grouped={roleHasTiers(role)}
+                  compact
                   label={tiersCopy.listLabel(role, faction)}
                   testid="tier-list"
                 >
@@ -261,50 +164,23 @@ const linkCount = role === 'dps' ? 4 : 3;
                     ? groupByTier(rows).map((group) => (
                         <RankGroup
                           letter={group.letter}
-                          tone={TIER_LETTER_TONES[group.letter]}
-                          band={tiersCopy.tierBand(group)}
-                          count={tiersCopy.tierCount(group.rows.length)}
                           label={tiersCopy.tierLabel(group.letter)}
+                          title={tiersCopy.tierBand(group.letter)}
                           testid="tier-group"
                         >
                           {group.rows.map((row) => (
-                            <TierRankRow row={row} count={rows.length} />
+                            <TierRankRow row={row} rows={rows} />
                           ))}
                         </RankGroup>
                       ))
-                    : rows.map((row) => <TierRankRow row={row} count={rows.length} />)}
+                    : rows.map((row) => <TierRankRow row={row} rows={rows} />)}
                 </RankList>
               )}
             </Plate>
-            {hasData && (
-              <Section
-                title={tiersCopy.howToReadHeading}
-                action={{ label: tiersCopy.simChecksLink, href: tiersCopy.simChecksHref }}
-                testid="tier-howto"
-              >
-                <div class="tier-read">
-                  {readColumns(ctx).map((column) => (
-                    <div class="tier-read-col">
-                      <h3 class="text-label tracking-label text-muted font-bold uppercase">{column.label}</h3>
-                      <p>
-                        {column.body.map((segment) =>
-                          segment.href !== undefined ? (
-                            <a class={LINK} href={segment.href}>
-                              {segment.text}
-                            </a>
-                          ) : (
-                            segment.text
-                          ),
-                        )}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </Section>
-            )}
           </div>
         );
       })}
+      <TierSpecCard slot="rail" path={ROLE_PATHS[role]} />
     </Page>
   </main>
   <script
@@ -325,13 +201,9 @@ const linkCount = role === 'dps' ? 4 : 3;
 </Base>
 
 <style>
-  .tier-faction {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .tier-faction > :global(.ui-section) {
-    margin-top: calc(var(--section-gap) - 16px);
+  /* The list ends a section gap above the footer, as the mock's does. */
+  .tier-page {
+    padding-bottom: var(--section-gap);
   }
   :global(html:not([data-tier-faction='horde'])) .tier-faction[data-faction='horde'],
   :global(html[data-tier-faction='horde']) .tier-faction[data-faction='alliance'] {
@@ -342,134 +214,5 @@ const linkCount = role === 'dps' ? 4 : 3;
     padding: 20px 16px;
     font-size: 15px;
     color: var(--color-muted);
-  }
-  .tier-read {
-    display: grid;
-    gap: 20px var(--gap);
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .tier-read-col {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .tier-read-col h3 {
-    margin: 0;
-  }
-  .tier-read-col p {
-    margin: 0;
-    max-width: 62ch;
-    font-size: 15px;
-    line-height: 24px;
-    color: var(--color-text);
-  }
-  @media (min-width: 1024px) {
-    .tier-read {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  /* The signed-in answer (spec 4.6): reserved at its final size while the account loads. */
-  .tier-answer {
-    display: flex;
-    flex-direction: column;
-    min-height: 96px;
-  }
-  .tier-answer-skeleton {
-    display: grid;
-    grid-template-columns: 40px 220px 120px;
-    align-items: center;
-    gap: 12px;
-    padding-top: 20px;
-  }
-  .tier-sk-crest {
-    width: 40px;
-    height: 40px;
-    border-radius: 999px;
-  }
-  .tier-sk-lines {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .tier-sk-name {
-    width: 160px;
-    height: 20px;
-  }
-  .tier-sk-detail {
-    width: 220px;
-    height: 16px;
-  }
-  .tier-sk-figure {
-    width: 120px;
-    height: 40px;
-  }
-  .tier-answer-body {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .tier-answer-body[hidden],
-  .tier-answer-skeleton[hidden] {
-    display: none;
-  }
-  .tier-answer-who {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .tier-answer-crest {
-    width: 40px;
-    height: 40px;
-    border-radius: 999px;
-    object-fit: cover;
-  }
-  .tier-answer-text {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-width: 0;
-  }
-  .tier-answer :global(.ui-figure > span) {
-    white-space: nowrap;
-  }
-  .tier-answer-name {
-    font: 700 18px/22px var(--font-body);
-  }
-  .tier-answer-links,
-  .tier-answer-message {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px 16px;
-  }
-  .tier-answer-links a,
-  .tier-answer-message button,
-  .tier-answer-body > a {
-    display: inline-flex;
-    align-items: center;
-    font-size: 15px;
-    /* the answer's links as the shared CharacterAnswer draws them: one 24 px line (mock web-tiers-you) */
-    line-height: 24px;
-  }
-  @media (min-width: 900px) {
-    .tier-answer {
-      min-width: 420px;
-      align-items: flex-end;
-    }
-    .tier-answer-body,
-    .tier-answer-who,
-    .tier-answer-links,
-    .tier-answer-message {
-      align-items: flex-end;
-      justify-content: flex-end;
-    }
-    .tier-answer-who {
-      align-items: center;
-    }
-    .tier-answer-text {
-      align-items: flex-end;
-      text-align: right;
-    }
   }
 </style>

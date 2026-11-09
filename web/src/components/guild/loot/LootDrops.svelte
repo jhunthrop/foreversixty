@@ -69,7 +69,7 @@
   </Plate>
   {#if openable.length > 0}
     <div class="mt-3 flex max-w-[360px] flex-col gap-[6px]" data-testid="guild-loot-open-drop">
-      <label for="guild-loot-open-drop" class="text-label tracking-label text-muted font-bold uppercase"
+      <label for="guild-loot-open-drop" class="text-label text-muted font-bold"
         >Open a drop from the loot table</label
       >
       <Select

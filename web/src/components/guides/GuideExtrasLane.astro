@@ -72,9 +72,7 @@ const lines = consumableLines(extras.consumables);
     <div class="guide-extras-rows">
       {lines.map((line) =>
         'header' in line ? (
-          <h4 class="text-label tracking-label text-muted guide-extras-sub font-bold uppercase">
-            {line.header}
-          </h4>
+          <h4 class="text-label text-muted guide-extras-sub font-bold">{line.header}</h4>
         ) : (
           <Row
             title={line.row.name}

@@ -1593,6 +1593,9 @@
     })),
   );
   const playerHref = (guid: string): string => hrefWith({ source: guid });
+  /** At pull's Gear link: the player's own view on Damage done, whose "Gear at the pull" is the
+   *  paperdoll (PlayerView). A source on the Summary tab alone scopes the summary and shows no gear. */
+  const gearHref = (guid: string): string => hrefWith({ source: guid, tab: 'damage-done' });
   /** The Source list's players: the scope's own (the group on a crowded log, everyone in range under that word). */
   const sourceRoster = $derived(
     state.source === SOURCE_ENEMIES
@@ -1963,7 +1966,7 @@
                     {#snippet trail()}<span class="flex gap-3" data-testid="at-pull-links"
                         ><a
                           class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
-                          href={playerHref(combatant.guid)}>Gear ›</a
+                          href={gearHref(combatant.guid)}>Gear ›</a
                         ><a
                           class="text-gold text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
                           href={simLinkFor(reportId, state.fight, combatant.guid).href}

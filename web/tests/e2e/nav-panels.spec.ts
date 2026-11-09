@@ -9,11 +9,10 @@ import { guildHref } from '../../src/lib/characters';
 import { headerWired } from './support/header';
 import { OBNOXIOUS, armoryPointer, signInWith, storePointer } from './support/selector';
 
-const DOOR_KEYS = ['tools', 'logs', 'guild', 'guides'] as const;
+const DOOR_KEYS = ['guides', 'logs', 'guild'] as const;
 const GUILD = { id: 1, region: 'us', ruleset: 'normal', name: 'OLYMPUS XXVII', verified: true };
 const HOVER_OPEN_WAIT_MS = 400;
 const LEAVE_CLOSE_BUDGET_MS = 300;
-const BAR_HEIGHT_PX = 81;
 
 const door = (page: Page, key: string): Locator => page.locator(`a.site-door[data-door="${key}"]`);
 const panel = (page: Page, key: string): Locator => page.locator(`#site-panel-${key}`);
@@ -53,22 +52,21 @@ for (const width of [1280, 1440]) {
         expect(await page.getByRole('banner').boundingBox()).toEqual(barBefore);
         expect(await doorBoxes(page)).toEqual(doorsBefore);
         const box = (await panel(page, key).boundingBox())!;
-        expect(box.y).toBeGreaterThanOrEqual(BAR_HEIGHT_PX - 1);
+        expect(box.y).toBeGreaterThanOrEqual(barBefore!.y + barBefore!.height - 2);
         expect(box.x).toBeGreaterThanOrEqual(0);
         expect(box.x + box.width).toBeLessThanOrEqual(width);
       }
     });
 
-    test('the Tools panel lists its four rows in order, each 44px or taller', async ({ page }) => {
+    test('the Logs panel lists its three rows in order, each 44px or taller', async ({ page }) => {
       await signedInOnGuides(page, width);
-      await door(page, 'tools').hover();
-      await expect(panel(page, 'tools')).toBeVisible();
-      const rows = panel(page, 'tools').locator('a.site-panel-row');
+      await door(page, 'logs').hover();
+      await expect(panel(page, 'logs')).toBeVisible();
+      const rows = panel(page, 'logs').locator('a.site-panel-row');
       await expect(rows.locator('.site-panel-title')).toHaveText([
-        'Planner',
-        'BiS',
-        'Simulator',
-        'Tier list',
+        'Upload a log',
+        'Your reports',
+        'Rankings',
       ]);
       for (const row of await rows.all())
         expect((await row.boundingBox())!.height).toBeGreaterThanOrEqual(44);
@@ -76,11 +74,11 @@ for (const width of [1280, 1440]) {
 
     test('moving to another door closes the first panel, leaving the header closes it', async ({ page }) => {
       await signedInOnGuides(page, width);
-      await door(page, 'tools').hover();
-      await expect(panel(page, 'tools')).toBeVisible();
+      await door(page, 'guides').hover();
+      await expect(panel(page, 'guides')).toBeVisible();
       await door(page, 'logs').hover();
       await expect(panel(page, 'logs')).toBeVisible({ timeout: HOVER_OPEN_WAIT_MS });
-      await expect(panel(page, 'tools')).toBeHidden();
+      await expect(panel(page, 'guides')).toBeHidden();
       await page.mouse.move(width / 2, 600);
       await expect(panel(page, 'logs')).toBeHidden({ timeout: LEAVE_CLOSE_BUDGET_MS });
     });
@@ -154,10 +152,10 @@ test.describe('keyboard', () => {
 
   test('Tab out of the panel closes it', async ({ page }) => {
     await signedInOnGuides(page, 1280);
-    await door(page, 'tools').focus();
+    await door(page, 'logs').focus();
     await page.keyboard.press('ArrowDown');
     for (let step = 0; step < 4; step += 1) await page.keyboard.press('Tab');
-    await expect(panel(page, 'tools')).toBeHidden();
+    await expect(panel(page, 'logs')).toBeHidden();
   });
 });
 
@@ -165,13 +163,14 @@ test.describe('the current page', () => {
   test.skip(() => test.info().project.name !== 'desktop', 'desktop layout only');
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  test('a signed-out visitor on /tiers sees Tools current and /guild linked everywhere', async ({ page }) => {
+  test('a signed-out visitor on /tiers sees Tier list current and /guild linked everywhere', async ({
+    page,
+  }) => {
     await page.route('**/v1/me', (route) =>
       route.fulfill({ status: 401, contentType: 'application/json', body: '{"ok":false,"data":null}' }),
     );
     await page.goto('/tiers');
-    await expect(door(page, 'tools')).toHaveAttribute('aria-current', 'page');
-    await expect(page.getByTestId('site-panel-row-tier-list')).toHaveAttribute('href', '/tiers');
+    await expect(page.locator('a.site-door[data-door="tier-list"]')).toHaveAttribute('aria-current', 'page');
     await expect(page.locator('#site-panel-guild a[href^="/guild"]')).toHaveCount(5);
     for (const link of await page.locator('#site-panel-guild a:not([href^="https:"])').all()) {
       await expect(link).toHaveAttribute('href', /^\/guild(#\w+)?$/);
@@ -198,22 +197,22 @@ test.describe('the phone Menu', () => {
   test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('lists Tools, Logs, Guild and Guides in order with 44px rows', async ({ page }) => {
+  test('lists the plain doors as rows and Guides, Logs and Guild as headed sections, with 44px rows', async ({
+    page,
+  }) => {
     await page.goto('/');
     await page.getByTestId('menu-button').click();
-    await expect(page.locator('#site-menu h2.site-menu-heading')).toHaveText([
-      'Tools',
-      'Logs',
-      'Guild',
-      'Guides',
-    ]);
+    await expect(page.locator('#site-menu h2.site-menu-heading')).toHaveText(['Guides', 'Logs', 'Guild']);
+    for (const plain of await page.locator('#site-menu a.site-door-plain').all()) {
+      expect((await plain.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    }
     for (const row of await page.locator('#site-menu .site-menu-list a.site-panel-row').all()) {
       await expect(row).toBeVisible();
       expect((await row.boundingBox())!.height).toBeGreaterThanOrEqual(44);
     }
     await expect(page.locator('#site-menu .site-menu-list a.site-panel-class')).toHaveCount(9);
     expect(await noSideScroll(page)).toBe(true);
-    await page.getByTestId('site-menu-row-bis').click();
+    await page.locator('#site-menu a.site-door-plain[data-door="best-in-slot"]').click();
     await expect(page).toHaveURL(/\/bis$/);
   });
 });

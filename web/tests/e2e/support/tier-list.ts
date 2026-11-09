@@ -13,8 +13,6 @@ export interface ExpectedTierRow {
   metric: number;
 }
 
-const TIE_PERCENT = 1;
-
 export function expectedRows(role: TierRole, faction: TierFaction): ExpectedTierRow[] {
   const rows = readSpecCatalog()
     .filter((entry) => entry.role === role)
@@ -27,17 +25,6 @@ export function expectedRows(role: TierRole, faction: TierFaction): ExpectedTier
   return rows.sort((a, b) => direction * (a.metric - b.metric) || a.entry.name.localeCompare(b.entry.name));
 }
 
-/** How many rows carry a tie mark: those within 1% of a neighbour (DPS and healer only). */
-export function expectedTieCount(rows: readonly ExpectedTierRow[], role: TierRole): number {
-  if (role === 'tank') return 0;
-  const within = (a: number, b: number): boolean => Math.abs(1 - a / b) * 100 <= TIE_PERCENT;
-  return rows.filter(
-    (row, i) =>
-      (i > 0 && within(row.metric, rows[i - 1]!.metric)) ||
-      (i < rows.length - 1 && within(rows[i + 1]!.metric, row.metric)),
-  ).length;
-}
-
 const ONE_DECIMAL = new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const WHOLE = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
 export const oneDecimal = (value: number): string => ONE_DECIMAL.format(value);
@@ -45,10 +32,3 @@ export const oneDecimal = (value: number): string => ONE_DECIMAL.format(value);
 export const metricText = (role: TierRole, value: number): string =>
   role === 'tank' ? WHOLE.format(value) : ONE_DECIMAL.format(value);
 export const wholeNumber = (value: number): string => WHOLE.format(value);
-
-export function raceName(race: string): string {
-  return race
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-}

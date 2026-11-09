@@ -61,7 +61,7 @@ export function fixtureCharacterPaths(): { params: { path: string } }[] {
 }
 
 // The one guild path the local walkthrough stack (tools/dev-stack, `npm run dev:local-api`)
-// prerenders. A real guild's page is the Worker serving dist/guild.html for any
+// prerenders. A real guild's page is the Worker serving dist/guild-shell.html for any
 // /guild/<region>/<ruleset>/<slug>[/claim|/settings] and /guild/invite/<token>; `astro dev` has
 // no Worker, so under FS_LOCAL_GUILD_SHELL=1 astro.config.mjs rewrites every /guild/... request
 // to this one path and the shell reads the browser's own URL, exactly as it does in production.

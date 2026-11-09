@@ -313,7 +313,7 @@
                           y="0"
                           width={(span.to - span.from) * 10}
                           height="24"
-                          fill="var(--color-gold)"
+                          fill="var(--color-accent)"
                           opacity="0.18"
                           data-testid="resource-at-max"
                         />
@@ -324,7 +324,7 @@
                         y={yOf(track.max ?? 0, top) - 0.6}
                         width="1000"
                         height="1.2"
-                        fill="var(--color-gold)"
+                        fill="var(--color-accent)"
                         opacity="0.6"
                         data-testid="resource-cap-line"
                       />

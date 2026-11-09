@@ -9,8 +9,8 @@
 //    band60Weights, railStatRows, rankedStatLabels, guideHitCapLine, specGuideData, raceTableFor, recommendedRaceLines,
 //    consumableLines, guideLadderSteps, linkProse over renderGuideMarkdown, headerMeta, dataSourceLine);
 //  - the signed-in answer: descriptorLines (lib/character-header) on the home fixtures and the derived guide fixtures
-//    (web/tests/e2e/fixtures/guides, gap G6: a Survival hunter at 34 and 60, a Fire mage at 60), tierCopy.answer's states;
-//  - the copy module: lib/guides/copy.ts (guidesCopy), lib/tiers/tier-copy.ts (answer states).
+//    (web/tests/e2e/fixtures/guides, gap G6: a Survival hunter at 34 and 60, a Fire mage at 60), answerCopy's states (lib/account/answer-copy.ts);
+//  - the copy module: lib/guides/copy.ts (guidesCopy), lib/account/answer-copy.ts (answer states).
 // Every lib module resolves the repo through import.meta.url; the bundle defines it as lib/guides/build-files.ts's own.
 import { createRequire } from "node:module";
 import { existsSync, mkdtempSync, writeFileSync, readFileSync, readdirSync } from "node:fs";
@@ -55,9 +55,10 @@ import { readSpecCatalog } from ${src("src/lib/bis/load.ts")};
 import { bandTopLevel } from ${src("src/lib/bis/rotation-view.ts")};
 import { latest } from ${src("src/lib/dates.ts")};
 import { guidesCopy } from ${src("src/lib/guides/copy.ts")};
+import { bandSlug } from ${src("src/lib/bis/band-path.ts")};
 import { pillLabelFor } from ${src("src/lib/sources.ts")};
 import { addonCopy } from ${src("src/lib/addon/copy.ts")};
-import { tiersCopy as tierCopy } from ${src("src/lib/tiers/tier-copy.ts")};
+import { answerCopy } from ${src("src/lib/account/answer-copy.ts")};
 import { descriptorLines } from ${src("src/lib/character-header/descriptor.ts")};
 import { decodeBuildTrees } from ${src("src/lib/guides/build-tree.ts")};
 import { describedBuildTrees, guideRotation } from ${src("src/lib/guides/guide-rotation.ts")};
@@ -134,12 +135,13 @@ export async function run(entries, SPECS, CLASSES) {
   // (web/tests/e2e/fixtures/guides/README.md), the same files the guides parity spec serves.
   const nextOf = (g, level) => { const n = nextTalentPoint(g.leveling.ladder, level); return n === undefined ? null : guidesCopy.nextPointAt(n.level, n.name); };
   const who = (me) => { const c = me.characters[0]; const d = descriptorLines(c); return { name: c.name, class: c.class, spec: c.spec, level: c.level, race: c.race, faction: c.faction, identity: d.identity, level_line: d.level, talents_at: guidesCopy.talentsAtLevel(c.level) }; };
-  return { build, copy: strip(guidesCopy), tier_answer: strip(tierCopy.answer), sections: [...SPEC_SECTIONS].map((s) => ({ title: s, id: slugify(s) })),
+  return { build, copy: strip(guidesCopy), tier_answer: strip(answerCopy), sections: [...SPEC_SECTIONS].map((s) => ({ title: s, id: slugify(s) })),
     index, landings, guides, coverage, me: { hunter34: who(me34), survival34: { ...who(meSurvival), next: nextOf(guides['hunter/survival'], 34) }, survival60: who(meSurvival60), warrior60: who(me60), mage60: who(meMage) },
     source_labels: Object.fromEntries(['blizzard', 'datamined', 'community', 'site'].map((k) => [k, pillLabelFor(k)])), setup_title: addonCopy.setupPageTitle,
     fns: { signedInCallout: { bm: guidesCopy.signedInCallout('Beast Mastery', 'Hunter'), survival: guidesCopy.signedInCallout('Survival', 'Hunter'), fury: guidesCopy.signedInCallout('Fury', 'Warrior') },
-      dataSourceLine: guidesCopy.dataSourceLine(build), unknown: tierCopy.answer.unknown('Felsnap'),
-      levelRangeLabel: Object.fromEntries([20, 30, 40, 50, 60].map((b) => [b, guidesCopy.levelRangeLabel(b)])) } };
+      dataSourceLine: guidesCopy.dataSourceLine(build), unknown: answerCopy.unknown('Felsnap'),
+      levelRangeLabel: Object.fromEntries([20, 30, 40, 50, 60].map((b) => [b, guidesCopy.levelRangeLabel(b)])),
+      bandSlugs: [20, 30, 40, 50, 60].map(bandSlug) } };
 }
 
 async function specPage(entry) {

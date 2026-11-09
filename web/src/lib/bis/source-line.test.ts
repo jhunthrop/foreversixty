@@ -49,6 +49,33 @@ describe('fullSourceLine', () => {
     );
   });
 
+  it("names a vendor's place and a price that is not gold, only when the data names them", () => {
+    expect(fullSourceLine({ kind: 'vendor', npc: 'Pix Xizzix' }, { instanceLevels: NO_LEVELS })).toBe(
+      'Vendor: Pix Xizzix',
+    );
+    expect(
+      fullSourceLine(
+        {
+          kind: 'vendor',
+          npc: 'Pix Xizzix',
+          place: 'Booty Bay',
+          cost: { amount: 100, currency: 'Tarnished Undermine Reals' },
+        },
+        { instanceLevels: NO_LEVELS },
+      ),
+    ).toBe('Vendor: Pix Xizzix, Booty Bay · 100 Tarnished Undermine Reals');
+  });
+
+  it("names a reputation's standing and where to buy", () => {
+    const base = { kind: 'rep', faction: 'Theramore Expeditionary Force', standing: 'exalted' } as const;
+    expect(fullSourceLine(base, { instanceLevels: NO_LEVELS })).toBe(
+      'Theramore Expeditionary Force reputation · Exalted',
+    );
+    expect(fullSourceLine({ ...base, place: 'The Barrens' }, { instanceLevels: NO_LEVELS })).toBe(
+      'Theramore Expeditionary Force reputation · Exalted · The Barrens',
+    );
+  });
+
   it('notes the auction house on a bind-on-equip world drop', () => {
     expect(fullSourceLine({ kind: 'world_drop' }, { instanceLevels: NO_LEVELS, bonding: 'equip' })).toBe(
       'World drop · BoE · on the AH',

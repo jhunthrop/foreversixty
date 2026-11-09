@@ -2,9 +2,9 @@
   "comment": "The BiS states the parity gate checks (web/tests/e2e/parity-bis.spec.ts) at 1440 x 1000. ws_bis.py renders one mock per state from data/bis-facts.json; bis_facts.mjs refreshes those facts from the built page.",
   "viewport": { "width": 1440, "height": 1000 },
   "states": [
-    { "id": "dps-60", "path": "/bis/hunter/marksmanship?band=60", "mock": "web-bis-dps-60.html", "class": "hunter", "spec": "marksmanship" },
-    { "id": "healer-60", "path": "/bis/priest/holy?band=60", "mock": "web-bis-healer-60.html", "class": "priest", "spec": "holy" },
-    { "id": "tank-60", "path": "/bis/warrior/protection?band=60", "mock": "web-bis-tank-60.html", "class": "warrior", "spec": "protection" },
-    { "id": "low-20", "path": "/bis/hunter/beast-mastery?band=20", "mock": "web-bis-low-20.html", "class": "hunter", "spec": "beast-mastery" }
+    { "id": "dps-60", "path": "/bis/hunter/marksmanship/60", "mock": "web-bis-dps-60.html", "class": "hunter", "spec": "marksmanship" },
+    { "id": "healer-60", "path": "/bis/priest/holy/60", "mock": "web-bis-healer-60.html", "class": "priest", "spec": "holy" },
+    { "id": "tank-60", "path": "/bis/warrior/protection/60", "mock": "web-bis-tank-60.html", "class": "warrior", "spec": "protection" },
+    { "id": "low-20", "path": "/bis/hunter/beast-mastery", "mock": "web-bis-low-20.html", "class": "hunter", "spec": "beast-mastery" }
   ]
 }

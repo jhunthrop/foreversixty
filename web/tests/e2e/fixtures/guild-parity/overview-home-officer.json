@@ -37,19 +37,19 @@
       "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"],
       "named_encounters": 1,
       "down": 1,
-      "pulls_total": 4
+      "pulls_total": 2
     },
     "named_encounters_down": 1,
-    "pulls_this_tier": 4,
-    "updated_at": "2026-12-08T19:30:00Z"
+    "pulls_this_tier": 2,
+    "updated_at": "2026-12-12T19:30:00Z"
   },
   "standing": null,
   "reports": [
     {
-      "id": "olympusony1207",
+      "id": "olympusony1209",
       "title": "Onyxia's Lair \u00b7 raid night",
       "zone": "Onyxia's Lair",
-      "created_at": "2026-12-08T02:00:00Z",
+      "created_at": "2026-12-10T02:00:00Z",
       "fight_count": 4,
       "kill_count": 1
     }
@@ -66,13 +66,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 62,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -88,16 +88,16 @@
       "class": "paladin",
       "spec": "Holy",
       "role": "healer",
-      "rank": "member",
+      "rank": "leader",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 63,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -116,13 +116,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 60,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -141,13 +141,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 65,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -166,13 +166,13 @@
       "rank": "officer",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 61,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -191,13 +191,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 58,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 2,
-        "nights": 4
+        "present": 0,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -216,13 +216,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 59,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -238,16 +238,16 @@
       "class": "rogue",
       "spec": "Assassination",
       "role": "dps",
-      "rank": "member",
+      "rank": "officer",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 66,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -266,13 +266,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 57,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -291,13 +291,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 64,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 3,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -316,13 +316,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 60,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -341,13 +341,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 56,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 3,
-        "nights": 4
+        "present": 0,
+        "nights": 0
       },
       "best_parse": null,
       "rating": null,
@@ -366,13 +366,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 62,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -391,13 +391,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 63,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -416,13 +416,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 67,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -441,13 +441,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 68,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -466,13 +466,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 59,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 1,
-        "nights": 4
+        "present": 0,
+        "nights": 0
       },
       "best_parse": null,
       "rating": null,
@@ -491,13 +491,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 58,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
         "present": 1,
-        "nights": 4
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -516,13 +516,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 69,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -541,13 +541,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 60,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -566,13 +566,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 61,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -591,13 +591,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 64,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 1,
+        "nights": 1
       },
       "best_parse": null,
       "rating": null,
@@ -616,13 +616,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 70,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 3,
-        "nights": 4
+        "present": 0,
+        "nights": 0
       },
       "best_parse": null,
       "rating": null,
@@ -641,13 +641,13 @@
       "rank": "member",
       "verified": true,
       "logged_recently": true,
-      "logged_at": "2026-12-08T19:30:00Z",
+      "logged_at": "2026-12-12T19:30:00Z",
       "item_level": 55,
       "level": 60,
       "consent": "gear_bags",
       "attendance": {
-        "present": 4,
-        "nights": 4
+        "present": 0,
+        "nights": 0
       },
       "best_parse": null,
       "rating": null,
@@ -656,7 +656,74 @@
       "addon": null
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "character_key": "us/pvp/brambleshot",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Brambleshot",
+      "class": "hunter",
+      "spec": "Marksmanship",
+      "role": "dps",
+      "rank": "member",
+      "verified": false,
+      "logged_recently": true,
+      "logged_at": "2026-12-12T19:30:00Z",
+      "item_level": 57,
+      "level": 60,
+      "consent": "gear_bags",
+      "attendance": null,
+      "best_parse": null,
+      "rating": null,
+      "account_key": "acct-brambleshot",
+      "may_remove": true,
+      "addon": null
+    },
+    {
+      "character_key": "us/pvp/mirelocke",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Mirelocke",
+      "class": "warlock",
+      "spec": "Affliction",
+      "role": "dps",
+      "rank": "member",
+      "verified": false,
+      "logged_recently": true,
+      "logged_at": "2026-12-12T19:30:00Z",
+      "item_level": 58,
+      "level": 60,
+      "consent": "gear_bags",
+      "attendance": null,
+      "best_parse": null,
+      "rating": null,
+      "account_key": "acct-mirelocke",
+      "may_remove": true,
+      "addon": null
+    },
+    {
+      "character_key": "us/pvp/oakhallow",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Oakhallow",
+      "class": "druid",
+      "spec": "Restoration",
+      "role": "healer",
+      "rank": "member",
+      "verified": false,
+      "logged_recently": true,
+      "logged_at": "2026-12-12T19:30:00Z",
+      "item_level": 59,
+      "level": 60,
+      "consent": "gear_bags",
+      "attendance": null,
+      "best_parse": null,
+      "rating": null,
+      "account_key": "acct-oakhallow",
+      "may_remove": true,
+      "addon": null
+    }
+  ],
   "addon_snapshot": null,
   "next_raid": {
     "id": 41,
@@ -664,7 +731,7 @@
     "zone_name": "Onyxia's Lair",
     "zone_kind": "raid",
     "title": "Onyxia's Lair",
-    "starts_at": "2026-12-11T02:00:00Z",
+    "starts_at": "2026-12-17T02:00:00Z",
     "status": "planned",
     "size": 40,
     "guild_timezone": "America/Chicago",

@@ -122,23 +122,23 @@ for (const size of SIZES) {
       await expect(rows.first()).toBeVisible();
       await page.waitForLoadState('networkidle');
 
+      // The report frame's meta line (ReportHead, 2026-11-07): the zone and the date, then the fight
+      // count from 768 up (the phone's head keeps one line; the fight list carries the count there).
       const subtitle = page.getByTestId('report-subtitle');
-      for (const text of ['17 Sept 2026', `${SAMPLE_REPORT_META.fights.length} fights`]) {
-        const span = subtitle.locator('span', { hasText: text }).first();
-        await expect(span).toBeVisible();
-        expect(await span.evaluate((el) => getComputedStyle(el).whiteSpace)).toBe('nowrap');
-      }
+      await expect(subtitle).toContainText('17 Sept 2026');
+      const fights = subtitle.getByText(`${SAMPLE_REPORT_META.fights.length} fights`);
+      if (size.width >= 768) await expect(fights).toBeVisible();
+      else await expect(fights).toBeHidden();
       if (size.width >= 768) {
         // From md up the sample draws the full chart, as a real report does (owner, 2026-10-30:
-        // the 96 px strip was "still too small"), so the table starts below a 720 px fold; the
-        // first-screen promise is the phone's (onboarding-second-screen.spec.ts). Measured at
-        // 1280 x 720: the chart is 390 to 885 px, the first row at 986 px.
+        // the 96 px strip was "still too small"). The report frame (2026-11-07) leads with the
+        // Players table and draws the chart under it, the Window choice in the report bar.
         const chart = page.getByTestId('time-chart');
         await expect(chart).not.toHaveAttribute('data-compact', 'true');
-        await expect(fieldBox(chart, 'window-select')).toBeVisible();
+        await expect(fieldBox(page.getByTestId('report-bar'), 'window-select')).toBeVisible();
         const box = (await chart.boundingBox())!;
         const first = (await rows.first().boundingBox())!;
-        expect(first.y).toBeGreaterThan(box.y + box.height);
+        expect(box.y).toBeGreaterThan(first.y);
       } else {
         // The title shows its date, not an ellipsis.
         const title = page.getByTestId('report-title');

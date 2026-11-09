@@ -100,7 +100,7 @@ The leveling build opens with two points in Wand Specialization for the wand tha
 
 ## Stat priority
 
-The table above gives the order for your gear; here is why each stat counts. Hit matters up to the 16% spell hit cap against a raid boss and adds nothing past it: Shadow Focus gives 5%, your gear finds the rest, and every miss is a lost Mind Blast. Spell power and Shadow power are the same stat to you, and every spell you cast grows with them. Critical strike reaches more than your direct hits: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles the crit bonus, so a Shadow crit hits for twice a normal hit. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
+Hit matters up to the 16% spell hit cap against a raid boss and adds nothing past it: Shadow Focus gives 5%, your gear finds the rest, and every miss is a lost Mind Blast. Spell power and Shadow power are the same stat to you, and every spell you cast grows with them. Critical strike reaches more than your direct hits: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles the crit bonus, so a Shadow crit hits for twice a normal hit. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
 
 ## Best in slot
 

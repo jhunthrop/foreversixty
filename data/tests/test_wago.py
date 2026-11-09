@@ -111,6 +111,7 @@ def test_tables_cover_every_pipeline_input():
         "SpellName",
         "Spell",
         "SpellEffect",
+        "SpellReagents",
         "SpellDuration",
         "SpellAuraOptions",
         "SpellRadius",

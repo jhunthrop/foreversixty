@@ -1,0 +1,17 @@
+{
+  "ux-designer": {
+    "verdict": "SHIP on every page, round 3 (12 SHIP, 5 SHIP WITH FIXES)",
+    "tone": "pass",
+    "note": "Every round-2 blocker is fixed: the 390 band, Resources overlap, the Mechanics counts, the Timeline labels and Healing at 390. After round 3: the phone title wraps to keep the date, the strip opens on a tab boundary, and the y steps no longer use 1.5. Open, deliberate: Timeline, Threat, Resources and Queries carry no band figure, because wow-player asked for none where no single figure answers the tab."
+  },
+  "wow-player": {
+    "verdict": "No blockers, round 3 (4 SHIP, 12 SHIP WITH FIXES)",
+    "tone": "pass",
+    "note": "Mechanics adds to 6 with Deep Breath; icons, Queries totals, rankings data and the header units are all verified. Wanted later, as product scope: healing by spell; phase markers; pet damage and talents on the player view; an 'earlier hits not shown' row on Deaths. Fireball's engine copy needs an accuracy check, and Deep Breath needs adding to the Onyxia table."
+  },
+  "ai-slop-reviewer": {
+    "verdict": "PASS on all 17, round 3 (no FAIL, 6 with small text fixes)",
+    "tone": "pass",
+    "note": "This pull no longer repeats the band; flourishes sit on the lead only; bars stay at one x; same-class lines are told apart. After round 3: the overheal subline shows on phone only, the Mechanics rail list is cut, Resources names Mana once, and the picker loses the duplicate links. Open: the Coach prose trims are proposals for api/internal/coach."
+  }
+}

@@ -1,8 +1,8 @@
 import type { Locator } from '@playwright/test';
 import { expect, test } from './support/test';
 
-// design/specs/2026-10-28-polish.md section 2.3: below 768 the four link columns are a 2 x 2
-// grid (never one long column) and every link is a 44px row; the Discord button is reachable.
+// Round 5's compact footer (design/specs/2026-11-09-directions.md, coordinator ruling 2026-11-09):
+// on a phone every site link is a 44px row target and the legal links sit above the legal lines.
 test.use({ viewport: { width: 390, height: 844 } });
 
 const HIT_TARGET_PX = 44;
@@ -13,21 +13,20 @@ async function box(locator: Locator): Promise<{ x: number; y: number; width: num
   return found;
 }
 
-test('on a phone the four columns stack two-up with 44px link rows', async ({ page }) => {
+test('on a phone the compact footer carries its four site links as 44px targets', async ({ page }) => {
   await page.goto('/about');
   const nav = page.getByRole('navigation', { name: 'Footer' });
-  const labels = ['Play', 'Logs', 'Guilds', 'About'];
-  const heads = await Promise.all(labels.map((label) => box(nav.getByText(label, { exact: true }).first())));
-  expect(Math.abs(heads[0].y - heads[1].y)).toBeLessThan(2);
-  expect(Math.abs(heads[2].y - heads[3].y)).toBeLessThan(2);
-  expect(heads[1].x).toBeGreaterThan(heads[0].x + 100);
-  expect(heads[2].y).toBeGreaterThan(heads[0].y + 100);
-
-  const links = await nav.getByRole('link').all();
-  expect(links.length).toBe(16);
-  for (const link of links) {
+  await expect(nav.getByRole('link')).toHaveText([
+    'Get set up',
+    'Premium',
+    'Join the Discord',
+    'Report a bug',
+  ]);
+  for (const link of await nav.getByRole('link').all()) {
     expect((await box(link)).height).toBeGreaterThanOrEqual(HIT_TARGET_PX);
   }
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
 });
 
 test('the legal links and the buttons clear 44px and sit above the legal sentences', async ({ page }) => {

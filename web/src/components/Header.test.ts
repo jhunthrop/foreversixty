@@ -16,17 +16,18 @@ async function renderHeader(path: string): Promise<string> {
 }
 
 describe('Header', () => {
-  it('ends the doors with the Premium tag after Get set up: a plain link with no panel (spec 2026-10-29-premium-entry 3)', async () => {
+  it('ends the doors with Premium after Guild: their teal Subscribe, a plain link with no panel', async () => {
     const doc = await renderDoc('/');
     const nav = doc.getElementById('primary-nav')!;
     const last = nav.lastElementChild!;
-    expect(last.previousElementSibling?.getAttribute('data-door')).toBe('setup');
+    expect(last.previousElementSibling?.getAttribute('data-group')).toBe('guild');
+    expect(doc.querySelector('[data-door="setup"]')).toBeNull();
     expect(last.getAttribute('data-door')).toBe('premium');
     expect(last.getAttribute('href')).toBe(PREMIUM_NAV_ITEM.href);
     expect(last.hasAttribute('aria-haspopup')).toBe(false);
     expect(last.hasAttribute('aria-current')).toBe(false);
-    const tag = last.querySelector('.pill.pill-site');
-    expect(tag?.textContent?.trim()).toBe(PREMIUM_NAV_ITEM.label);
+    expect(last.classList.contains('site-door-premium')).toBe(true);
+    expect(last.textContent?.trim()).toBe(PREMIUM_NAV_ITEM.label);
     expect(last.querySelectorAll('svg, i')).toHaveLength(0);
     expect(PREMIUM_NAV_ITEM).toEqual({ label: 'Premium', href: '/premium' });
   });
@@ -50,36 +51,40 @@ describe('Header', () => {
     }
   });
 
-  it('renders the four group doors in order, each a real link with its popup attributes, then Get set up as a plain door', async () => {
+  it("renders the mock's doors in order, a panel only where a door has sub-pages, then Premium", async () => {
     const doc = await renderDoc('/');
     const doors = [...doc.querySelectorAll('a.site-door')];
     expect(doors.map((door) => [door.textContent?.trim(), door.getAttribute('href')])).toEqual([
-      ['Tools', '/planner'],
+      ['Best in slot', '/bis'],
+      ['Guides', '/guides'],
+      ['Tier list', '/tiers'],
+      ['Sim', '/sim'],
+      ['Planner', '/planner'],
       ['Logs', '/logs'],
       ['Guild', '/guild'],
-      ['Guides', '/guides'],
-      ['Get set up', '/setup'],
       ['Premium', '/premium'],
     ]);
-    const setup = doors.at(-2)!;
-    expect(setup.getAttribute('data-door')).toBe('setup');
-    expect(setup.hasAttribute('aria-haspopup')).toBe(false);
-    expect(setup.classList.contains('site-door-setup')).toBe(true);
-    for (const door of doors.slice(0, -2)) {
+    for (const door of doors.slice(0, -1)) {
       const key = door.getAttribute('data-door');
+      if (door.classList.contains('site-door-plain')) {
+        expect(door.hasAttribute('aria-haspopup'), `${key}`).toBe(false);
+        continue;
+      }
       expect(door.getAttribute('aria-haspopup')).toBe('true');
       expect(door.getAttribute('aria-expanded')).toBe('false');
       expect(door.getAttribute('aria-controls')).toBe(`site-panel-${key}`);
     }
+    expect(
+      doors.filter((door) => door.classList.contains('site-door-plain')).map((d) => d.textContent?.trim()),
+    ).toEqual(['Best in slot', 'Tier list', 'Sim', 'Planner']);
     expect(doc.querySelector('a.site-door[data-door="guild"]')?.getAttribute('data-guild-tab')).toBe(
       'overview',
     );
     const toggles = [...doc.querySelectorAll('button.site-door-toggle')];
     expect(toggles.map((t) => t.getAttribute('aria-label'))).toEqual([
-      'Open the Tools list',
+      'Open the Guides list',
       'Open the Logs list',
       'Open the Guild list',
-      'Open the Guides list',
     ]);
   });
 
@@ -90,17 +95,11 @@ describe('Header', () => {
         row.querySelector('.site-panel-title')?.textContent?.trim(),
         row.getAttribute('href'),
       ]);
-    for (const key of ['tools', 'logs', 'guild', 'guides']) {
+    for (const key of ['guides', 'logs', 'guild']) {
       const panel = doc.getElementById(`site-panel-${key}`);
       expect(panel?.hasAttribute('hidden')).toBe(true);
       expect(panel?.getAttribute('role')).toBe('menu');
     }
-    expect(rowsOf('tools')).toEqual([
-      ['Planner', '/planner'],
-      ['BiS', '/bis'],
-      ['Simulator', '/sim'],
-      ['Tier list', '/tiers'],
-    ]);
     expect(rowsOf('logs')).toEqual([
       ['Upload a log', '/logs'],
       ['Your reports', '/reports'],
@@ -143,25 +142,32 @@ describe('Header', () => {
     expect(doc.querySelector('#site-panel-guides .site-panel-foot')?.textContent?.trim()).toBe('All guides');
   });
 
-  it('marks the group whose row is the current page', async () => {
-    const doc = await renderDoc('/tiers/healer');
-    expect(doc.querySelector('a.site-door[data-door="tools"]')?.getAttribute('aria-current')).toBe('page');
-    expect(doc.querySelector('a.site-door[data-door="logs"]')?.hasAttribute('aria-current')).toBe(false);
+  it('marks the door whose page, or one of whose rows, is current', async () => {
+    const tiers = await renderDoc('/tiers/healer');
+    expect(tiers.querySelector('a.site-door[data-door="tier-list"]')?.getAttribute('aria-current')).toBe(
+      'page',
+    );
+    expect(tiers.querySelector('a.site-door[data-door="logs"]')?.hasAttribute('aria-current')).toBe(false);
+    const rankings = await renderDoc('/rankings');
+    expect(rankings.querySelector('a.site-door[data-door="logs"]')?.getAttribute('aria-current')).toBe(
+      'page',
+    );
   });
 
-  it('lists the four groups as headed sections in the phone Menu', async () => {
+  it('lists the doors with sub-pages as headed sections in the phone Menu, the plain doors as rows', async () => {
     const doc = await renderDoc('/');
     const headings = [...doc.querySelectorAll('#site-menu h2.site-menu-heading')];
-    expect(headings.map((h) => h.textContent?.trim())).toEqual(['Tools', 'Logs', 'Guild', 'Guides']);
+    expect(headings.map((h) => h.textContent?.trim())).toEqual(['Guides', 'Logs', 'Guild']);
+    expect(doc.querySelectorAll('#site-menu .site-group-plain > a.site-door-plain').length).toBe(4);
     expect(doc.querySelectorAll('#site-menu .site-menu-list a[href^="/guides/"]').length).toBe(9);
   });
 
-  it('renders no Reference disclosure, and Premium only as the one tag (never a door)', async () => {
+  it('renders no Reference disclosure, and Premium only as the one button', async () => {
     const html = await renderHeader('/');
     const doc = await renderDoc('/');
     expect(html).not.toContain('<details');
     expect(doc.querySelectorAll('a[href^="/premium"]')).toHaveLength(1);
-    expect(doc.querySelector('a[href="/premium"] > .pill-site')).not.toBeNull();
+    expect(doc.querySelector('a[href="/premium"].site-door-premium')).not.toBeNull();
     expect(html).not.toContain('>Classes<');
     expect(html).not.toContain('>The addon<');
   });

@@ -71,10 +71,10 @@ describe('RankList', () => {
 });
 
 describe('ColumnHeads', () => {
-  it('is one decorative row of caps labels, numeric heads at the end, each with its full text as a title', () => {
+  it('is one decorative row of sentence-case labels, numeric heads at the end, each with its full text as a title', () => {
     const body = html(ColumnHeads, { cells: [{ label: 'Spec' }, { label: 'Taken / s', align: 'end' }] });
     expect(body).toMatch(/^<div class="ui-rank-heads ui-rank-cols" aria-hidden="true"/);
-    expect(body).toContain('uppercase');
+    expect(body).not.toContain('uppercase');
     expect(body).toMatch(/data-align="end" title="Taken \/ s">Taken \/ s</);
     expect(body).not.toMatch(/data-align="end"[^>]*>Spec</);
   });
@@ -171,6 +171,38 @@ describe('RankRow', () => {
     expect(body).toContain('<span class="ui-rr-lead"><img alt=""></span>');
     expect(body).toContain('Arms</a><span>Your spec</span>');
     expect(body).not.toContain('ui-rr-links');
+  });
+});
+
+describe('the compact ranked list (round 5)', () => {
+  it('marks a compact list, and leaves every other list as it was', () => {
+    const compact = html(RankList, { compact: true, grouped: true, children: text('<li>r</li>') });
+    expect(compact).toContain('data-compact="true"');
+    expect(html(RankList, { children: text('<li>r</li>') })).not.toContain('data-compact');
+  });
+
+  it('draws a letter column with the letter alone when the group has no band or count', () => {
+    const body = html(RankGroup, { letter: 'B', label: 'Tier B', children: text('<li>r</li>') });
+    expect(body).toContain('<span aria-hidden="true">B</span>');
+    expect(body).not.toContain('ui-rg-band');
+    expect(body).not.toContain('ui-rg-count');
+    expect(body).not.toContain('--rg-tone');
+  });
+
+  it("fills the bar in the accent on request, and drops a figure's unit when the head names it", () => {
+    const body = html(RankRow, {
+      ...ROW,
+      sub: undefined,
+      links: [],
+      barTone: 'accent',
+      figures: [{ value: '942.2', label: 'Damage per second' }],
+    });
+    expect(body).toContain('bg-accent');
+    expect(body).not.toContain('background: var(--color-class-warrior)');
+    expect(body).not.toContain('<small>');
+    expect(body).not.toContain('ui-rr-sub');
+    // The class tone stays the default.
+    expect(html(RankRow, ROW)).toContain('background: var(--color-class-warrior)');
   });
 });
 
