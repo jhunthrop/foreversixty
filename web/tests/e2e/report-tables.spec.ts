@@ -142,6 +142,14 @@ test('buffs and debuffs each show only their own kind, with a real uptime', asyn
   await expect(page.getByTestId('aura-table')).not.toContainText('Power Word: Fortitude');
 });
 
+test('a debuff reads once by spell, on how many players it landed', async ({ page }) => {
+  // The sample's Saltspine kill: Dust Storm hit all five of the group.
+  await page.goto('/reports/sample?tab=debuffs');
+  const storm = page.getByTestId('aura-table').getByRole('row').filter({ hasText: 'Dust Storm' });
+  await expect(storm).toHaveCount(1);
+  await expect(storm).toContainText('on 5 players');
+});
+
 test('a brushed window reads the uptime over the window, inside the page', async ({ page }) => {
   // A window starting at 20 s: the uptime is the window's own share, and nothing in the
   // row stretches the page sideways.
@@ -177,6 +185,19 @@ test('interrupts, dispels, resources and threat each render or say they are empt
   await expect(page.getByTestId('threat-table')).toContainText('Baelgrim');
   // The base model's gaps are said once, in the chart's caveat line (spec §B12).
   await expect(page.getByTestId('threat-caveat')).toContainText(/An estimate|Damage and healing only/);
+});
+
+test('rankings that did not answer drop the Parse column and say so once, with Try again', async ({ page }) => {
+  // The fixture build's API is unreachable, so the parse lookup fails on every boss kill.
+  await page.goto(FIGHT);
+  await expect(page.getByTestId('parse-unavailable')).toContainText('Parses didn’t load.');
+  await expect(page.getByTestId('summary-tab').getByRole('columnheader', { name: 'Parse' })).toHaveCount(0);
+  await page.goto(`${FIGHT}&tab=damage-done`);
+  await expect(page.getByTestId('report-table-card').getByRole('columnheader', { name: 'Parse' })).toHaveCount(0);
+  // A tab with no Parse column has no line about it either.
+  await page.goto(`${FIGHT}&tab=deaths`);
+  await expect(page.getByTestId('deaths-tab')).toBeVisible();
+  await expect(page.getByTestId('parse-unavailable')).toHaveCount(0);
 });
 
 test('the trash fight’s interrupts and dispels do have rows', async ({ page }) => {

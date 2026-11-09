@@ -297,6 +297,12 @@
       align-items: center;
       gap: 8px;
     }
+    /* One row at 1440 (logs lane review 2026-11-09): a fitted field sizes to its longest option
+       (a player's full name, a custom window), so past the Fight the face is capped and a long
+       value ends in an ellipsis; the open list still shows it whole. */
+    .report-bar-group:not([data-testid='report-fight-group']) :global(.sel-fit) {
+      max-width: 150px;
+    }
     .report-bar-label {
       display: none;
     }

@@ -1584,6 +1584,10 @@
     'dispels',
     'resources',
   ]);
+  /** The tables' Parse column: a boss pull's, and gone while the rankings did not answer, so a
+   *  column of question marks never stands in for figures; the line over the table says so and
+   *  offers Try again. */
+  const parseColumn = $derived(showParse && fight?.kind === 'encounter' && !percentilesUnavailable);
   /** The tabs with a Parse column: the line that parses did not load shows on them alone. */
   const PARSE_TABS: ReadonlySet<string> = new Set(['summary', 'damage-done', 'healing']);
   const parsesUnknownHere = $derived(
@@ -2086,7 +2090,7 @@
             durationMs={scoped.duration_ms}
             {percentiles}
             {parseFallback}
-            showParse={showParse && fight?.kind === 'encounter'}
+            showParse={parseColumn}
             approximate={!windowIsWhole}
             {unitClasses}
             {playerHref}
@@ -2169,7 +2173,7 @@
             players={playerSet}
             {percentiles}
             parseFallback={tableParseFallback}
-            showParse={showParse && fight?.kind === 'encounter'}
+            showParse={parseColumn}
             amountApproximate={(filtersScale && !windowIsWhole && tableExact === null) || nightProrates}
             approximate={actorTableApproximate && tableExact === null}
             absent={absentPlayers}

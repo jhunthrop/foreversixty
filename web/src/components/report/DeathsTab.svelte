@@ -349,7 +349,7 @@
       {@const colour = classColorVar(death.class ?? classOf.get(death.guid))}
       {@const footLine = foot(death, card)}
       <div class="death-block" data-testid={`death-${death.guid}`} id={`death-${death.guid}-${death.at_ms}`}>
-        <Row title={unitLabel(death.name).text} sub={killedBy(death, card)}>
+        <Row title={unitLabel(death.name).text} sub={killedBy(death, card)} wrapTrail>
           {#snippet lead()}<span class="text-muted text-[13px] tabular-nums" data-testid="death-label"
               >{#if death.label}{death.label} ·
               {/if}{formatDuration(inPull(death))}</span

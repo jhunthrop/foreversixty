@@ -226,6 +226,8 @@
   const ROW_MIN_PX = 34;
   const ROW_PAD_PX = 16;
   const ENEMY_LANE_PX = 18;
+  /** A tick this close to the right edge ends there instead of centring past it. */
+  const END_LABEL_PCT = 97;
   /** Every aura on its own band, in name order, so each reads as one line and can be pointed at. */
   function bandAuras(tracks: AuraTrack[]): AuraBand[] {
     // By name, not by uptime: an aura keeps its row when the window moves.
@@ -260,6 +262,8 @@
       }))
       .map((lane) => ({ ...lane, height: laneHeight(lane.auras) })),
   );
+  /** Every player lane at the tallest one's height, so the rows run on an even pitch. */
+  const laneRow = $derived(Math.max(18, ...lanes.map((lane) => lane.height)));
   const LEGEND = [
     { label: 'Cast', swatch: 'bg-gold h-[12px] w-[2px]' },
     { label: 'Buff up', swatch: 'bg-kill/60 h-[5px] w-[14px] rounded-[2px]' },
@@ -321,7 +325,7 @@
             {#each lanes as lane (lane.guid)}
               <li
                 class="flex items-center gap-2 overflow-hidden"
-                style:height="{rowHeight(lane.height)}px"
+                style:height="{rowHeight(laneRow)}px"
                 title={lane.name}
               >
                 <ClassCrestRing characterClass={lane.crest} size={20} />
@@ -381,7 +385,7 @@
                   made Svelte throw on the duplicate and leave the whole view blank.
                 -->
                 {#each lanes as lane (lane.guid)}
-                  <li class="flex items-center" style:height="{rowHeight(lane.height)}px">
+                  <li class="flex items-center" style:height="{rowHeight(laneRow)}px">
                     <!-- svelte-ignore a11y_no_static_element_interactions (the plot is decorative, aria-hidden: the pointer readout is a sighted aid) -->
                     <span
                       class="relative block w-full touch-none"
@@ -439,7 +443,11 @@
               >
                 {#each axis as at (at)}
                   <span
-                    class={['absolute top-0 whitespace-nowrap', at !== axis[0] && '-translate-x-1/2']}
+                    class={[
+                      'absolute top-0 whitespace-nowrap',
+                      // The first label starts at the edge, the last ends at it; the rest are centred.
+                      at === axis[0] ? '' : pct(at) >= END_LABEL_PCT ? '-translate-x-full' : '-translate-x-1/2',
+                    ]}
                     style:left="{pct(at)}%">{clockLabel(at)}</span
                   >
                 {/each}

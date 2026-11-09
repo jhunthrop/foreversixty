@@ -1,8 +1,9 @@
 <!-- web/src/components/report/AuraTable.svelte -->
 <!-- Buffs and Debuffs (logs spec 2026-11-07 section 6.2): the tab's one Plate, a StatTable of
      the aura's icon, its name over `on {target} · from {applier}`, an uptime Meter (muted on
-     Debuffs), Up and Applied. Over the night a second, open Section reads each spell's uptime
-     across every target that had it.
+     Debuffs), Up and Applied. A debuff reads once by spell (logs lane review 2026-11-09): on how
+     many players, its uptime over the time they were in, every application. Over the night a
+     second, open Section reads each spell's uptime across every target that had it.
 
      Every figure here is exact under any window, not scaled: window.ts's scopeAuraTrack clips
      each segment to the window's own bounds and recomputes `uptime_ms` and `applications`
@@ -66,18 +67,14 @@
     });
   });
 
-  const pct = (ms: number): number => (durationMs === 0 ? 0 : (ms / durationMs) * 100);
   /**
    * Uptime over the time the track's target was in: the figure the row shows. Clamped to
    * 100 here, once, as a last line of defence (2026-09-21 result-page review round 3, E8: a
    * combined sim result's aura rows read up to 100.9%), so a future source of the same shape
    * of bug reads as an honest 100%, never a number over it.
    */
-  const shareOf = (track: AuraTrack): number =>
-    Math.min(
-      track.time_ms === undefined ? pct(track.uptime_ms) : (track.uptime_ms / track.time_ms) * 100,
-      100,
-    );
+  const shareOf = (row: AuraRow): number =>
+    Math.min(row.time_ms === 0 ? 0 : (row.uptime_ms / row.time_ms) * 100, 100);
 
   type AuraSortColumn = 'up' | 'applied';
   let sort = $state<StatSort>({ column: 'up', direction: 'desc' });
@@ -91,24 +88,64 @@
         ? { column, direction: sort.direction === 'desc' ? 'asc' : 'desc' }
         : { column, direction: 'desc' };
   }
-  const keyOf = (track: AuraTrack, column: AuraSortColumn): number =>
-    column === 'up' ? shareOf(track) : track.applications;
+  const keyOf = (row: AuraRow, column: AuraSortColumn): number =>
+    column === 'up' ? shareOf(row) : row.applications;
 
   const isUnnamed = (name: string): boolean => name.startsWith('Spell #');
   /** Carried in and never up, or carried in under no name the log or the build knows: nothing to read. */
   const isDead = (track: { applications: number; uptime_ms: number; name: string }): boolean =>
     track.applications === 0 && (track.uptime_ms === 0 || isUnnamed(track.name));
+  /** The tracks the table reads: this kind's, named, alive. */
+  const shown = $derived(
+    nameAuras(tracks, spellNames).filter((track) => track.type === kind && !isDead(track)),
+  );
+
+  /** One table row: one buff on one player, or one debuff across every player it was on. */
+  interface AuraRow {
+    key: string;
+    name: string;
+    spell_id: number;
+    school?: number;
+    tracks: AuraTrack[];
+    uptime_ms: number;
+    /** The time the row's targets were in: the share's denominator. */
+    time_ms: number;
+    applications: number;
+  }
+  const rowOf = (group: AuraTrack[]): AuraRow => ({
+    key:
+      group.length === 1
+        ? `${group[0].target_guid}-${group[0].spell_id}`
+        : `${group[0].spell_id}-${group[0].name}`,
+    name: group[0].name,
+    spell_id: group[0].spell_id,
+    school: group[0].school,
+    tracks: group,
+    uptime_ms: group.reduce((sum, track) => sum + track.uptime_ms, 0),
+    time_ms: group.reduce((sum, track) => sum + (track.time_ms ?? durationMs), 0),
+    applications: group.reduce((sum, track) => sum + track.applications, 0),
+  });
+  /** Buffs a row per player; debuffs a row per spell. */
+  function grouped(list: readonly AuraTrack[]): AuraRow[] {
+    if (kind === 'BUFF') return list.map((track) => rowOf([track]));
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const bySpell = new Map<string, AuraTrack[]>();
+    for (const track of list) {
+      const key = `${track.spell_id}|${track.name}`;
+      bySpell.set(key, [...(bySpell.get(key) ?? []), track]);
+    }
+    return [...bySpell.values()].map(rowOf);
+  }
+
   const rows = $derived(
-    nameAuras(tracks, spellNames)
-      .filter((track) => track.type === kind && !isDead(track))
-      .sort((a, b) => {
-        // The log's unnamed spells ("Spell #1") go last whatever the sort: a raider reads the named ones.
-        const unnamed = Number(isUnnamed(a.name)) - Number(isUnnamed(b.name));
-        if (unnamed !== 0) return unnamed;
-        const column = sort.column as AuraSortColumn;
-        const order = keyOf(b, column) - keyOf(a, column);
-        return (sort.direction === 'desc' ? order : -order) || a.name.localeCompare(b.name);
-      }),
+    grouped(shown).sort((a, b) => {
+      // The log's unnamed spells ("Spell #1") go last whatever the sort: a raider reads the named ones.
+      const unnamed = Number(isUnnamed(a.name)) - Number(isUnnamed(b.name));
+      if (unnamed !== 0) return unnamed;
+      const column = sort.column as AuraSortColumn;
+      const order = keyOf(b, column) - keyOf(a, column);
+      return (sort.direction === 'desc' ? order : -order) || a.name.localeCompare(b.name);
+    }),
   );
 
   /**
@@ -123,7 +160,7 @@
       string,
       { name: string; spellId: number; uptime: number; time: number; targets: number }
     >();
-    for (const track of rows) {
+    for (const track of shown) {
       if (track.time_ms === undefined || (kind === 'DEBUFF' && !bossNames.has(track.target_name))) continue;
       const found = totals.get(track.name) ?? {
         name: track.name,
@@ -149,37 +186,41 @@
   const ambiguous = $derived.by(() => {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const seen = new Map<string, Set<number>>();
-    for (const track of rows) {
+    for (const track of shown) {
       const key = `${track.target_guid}|${track.name}`;
       seen.set(key, new Set([...(seen.get(key) ?? []), track.spell_id]));
     }
     return new Set([...seen.entries()].filter(([, ids]) => ids.size > 1).map(([key]) => key));
   });
 
-  const applierNames = (track: AuraTrack): string =>
-    track.appliers
+  const appliersOf = (row: AuraRow): string[] => [...new Set(row.tracks.flatMap((track) => track.appliers))];
+  const applierNames = (row: AuraRow): string =>
+    appliersOf(row)
       .map((guid) => splitUnitName(names.get(guid) ?? '').name)
       .filter(Boolean)
       .slice(0, 2)
       .join(', ') || 'an unnamed source';
   /** A buff the target gave itself says nothing new by naming its applier. */
-  const showApplier = (track: AuraTrack): boolean =>
-    track.appliers.length > 0 &&
-    (kind === 'DEBUFF' || track.appliers.some((guid) => guid !== track.target_guid));
+  const showApplier = (row: AuraRow): boolean =>
+    appliersOf(row).length > 0 &&
+    (kind === 'DEBUFF' || appliersOf(row).some((guid) => guid !== row.tracks[0].target_guid));
+  /** Who a row's aura was on: the player, or how many. */
+  const onWhom = (row: AuraRow): string =>
+    row.tracks.length === 1 ? splitUnitName(row.tracks[0].target_name).name : `${row.tracks.length} players`;
 
   const over = $derived((windowed ?? startMs > 0) ? 'this window' : 'the whole fight');
-  const meta = $derived(`${rows.length} on players · uptime over ${over}`);
+  const meta = $derived(`${shown.length} on players · uptime over ${over}`);
 
   /** The table as lines: one per aura on one target, uptime in seconds and as a share. */
   function csvLines(): string[][] {
     return [
       ['Aura', 'Spell id', 'On', 'Uptime s', 'Uptime %', 'Applied', 'From'],
-      ...rows.map((track) => [
+      ...shown.map((track) => [
         track.name,
         String(track.spell_id),
         splitUnitName(track.target_name).name,
         (track.uptime_ms / 1000).toFixed(1),
-        shareOf(track).toFixed(1),
+        shareOf(rowOf([track])).toFixed(1),
         String(track.applications),
         track.appliers.map((guid) => splitUnitName(names.get(guid) ?? guid).name).join('; '),
       ]),
@@ -198,13 +239,16 @@
       </p>
     {:else}
       <StatTable {columns} nameHead="Aura" barHead="Uptime" {sort} {onsort} label={title} testid="aura-table">
-        {#each rows as track (`${track.target_guid}-${track.spell_id}`)}
+        {#each rows as row (row.key)}
+          {@const track = row.tracks[0]}
           <StatRow
             figures={[
-              { value: formatPercent(shareOf(track)), testid: 'aura-uptime' },
-              { value: String(track.applications), testid: 'aura-applied' },
+              { value: formatPercent(shareOf(row)), testid: 'aura-uptime' },
+              { value: String(row.applications), testid: 'aura-applied' },
             ]}
-            testid={`aura-${track.spell_id}-${track.target_guid}`}
+            testid={row.tracks.length === 1
+              ? `aura-${track.spell_id}-${track.target_guid}`
+              : `aura-${track.spell_id}-players`}
           >
             {#snippet icon()}<SpellIcon
                 url={icons.of(track.spell_id, track.name)}
@@ -212,26 +256,29 @@
                 tip
               />{/snippet}
             {#snippet name()}
-              <!-- The anchor a rating moment's link lands on (lib/rating/moments.ts). -->
+              <!-- The anchors a rating moment's link lands on (lib/rating/moments.ts): one per player. -->
               <span id={`aura-${track.target_guid}-${track.spell_id}`} class="scroll-mt-24">{track.name}</span
-              >{#if track.name.startsWith('Spell #')}<span class="text-muted ml-1 text-[13px] font-normal"
-                  >unnamed in the log</span
-                >{/if}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}<span
+              >{#each row.tracks.slice(1) as other (other.target_guid)}<span
+                  id={`aura-${other.target_guid}-${other.spell_id}`}
+                  class="scroll-mt-24"
+                ></span>{/each}{#if track.name.startsWith('Spell #')}<span
+                  class="text-muted ml-1 text-[13px] font-normal">unnamed in the log</span
+                >{/if}{#if row.tracks.some((one) => ambiguous.has(`${one.target_guid}|${one.name}`))}<span
                   class="text-muted ml-1 text-[13px] font-normal tabular-nums"
                   title="Two spells share this name; this is spell id {track.spell_id}"
                   >#{track.spell_id}</span
                 >{/if}
             {/snippet}
             {#snippet sub()}
-              <span>on {splitUnitName(track.target_name).name}</span>{#if showApplier(track)}{SEPARATOR}<span
-                  >from {applierNames(track)}</span
+              <span>on {onWhom(row)}</span>{#if showApplier(row)}{SEPARATOR}<span
+                  >from {applierNames(row)}</span
                 >{/if}{#if kind === 'DEBUFF' && schoolName(track.school)}{SEPARATOR}<span
                   title="The spell's school. Whether a debuff can be dispelled is not in the log; the Dispels tab shows which ones were."
                   data-testid="aura-school">{schoolName(track.school)}</span
-                >{/if}<span class="ui-st-phone">{SEPARATOR}applied {track.applications}</span>
+                >{/if}<span class="ui-st-phone">{SEPARATOR}applied {row.applications}</span>
             {/snippet}
             {#snippet meter()}<Meter
-                value={shareOf(track) / 100}
+                value={shareOf(row) / 100}
                 tone={kind === 'BUFF' ? 'gold' : 'muted'}
               />{/snippet}
           </StatRow>

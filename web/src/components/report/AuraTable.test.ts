@@ -65,6 +65,37 @@ describe('AuraTable', () => {
     expect(body).toContain('Spell #72');
   });
 
+  it('reads a debuff once by spell, with who it was on, its mean uptime and every application', () => {
+    const storm = (guid: string, name: string, uptime_ms: number, applications: number): AuraTrack =>
+      track({
+        type: 'DEBUFF',
+        spell_id: 17157,
+        name: 'Dust Storm',
+        target_guid: guid,
+        target_name: name,
+        uptime_ms,
+        applications,
+      });
+    const { body } = render(AuraTable, {
+      props: {
+        tracks: [
+          storm('p1', 'Hollis', 60_000, 2),
+          storm('p2', 'Kell', 30_000, 1),
+          storm('p3', 'Bram', 30_000, 1),
+        ],
+        durationMs: 120_000,
+        kind: 'DEBUFF',
+      },
+    });
+    expect(body.match(/data-testid="aura-uptime"/g)?.length).toBe(1);
+    expect(body).toContain('on 3 players');
+    // (60 + 30 + 30) s over 3 × 120 s.
+    expect(body).toContain('>33.3%<');
+    expect(body).toMatch(/data-testid="aura-applied"[^>]*>\s*4\s*</);
+    // Each player's rating-moment anchor is still on the page.
+    for (const guid of ['p1', 'p2', 'p3']) expect(body).toContain(`id="aura-${guid}-17157"`);
+  });
+
   it('every row carries an aura-<guid>-<spellId> anchor id for a rating moment to jump to', () => {
     // src/lib/rating/moments.ts already builds hrefs against this exact convention
     // (aura-<targetGuid>-<spellId>); this row-side id is what those links land on.

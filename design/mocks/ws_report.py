@@ -323,21 +323,40 @@ def tab_threat(R, fi, source):
 
 
 def tab_auras(R, fi, kind, source):
+    """report/AuraTable.svelte: one panel; a buff a row per player, a debuff once by spell (on how many players, its uptime
+    over the time they were in, every application); never-applied rows that were never up or are unnamed left out, the
+    unnamed ones last."""
     s = R.summary(fi)
     ros = roster(s)
     fr = friendlies(R, s, source)
     want = 'BUFF' if kind == 'Buffs' else 'DEBUFF'
-    aus = sorted([a for a in s['auras'] if a['type'] == want and a['target_guid'] in fr], key=lambda a: -a['uptime_ms'])
     dur = s['duration_ms']
-    rows = []
+    unnamed = lambda a: not a['name'] or a['name'].startswith('Spell #')   # noqa: E731
+    aus = [a for a in s['auras'] if a['type'] == want and a['target_guid'] in fr
+           and not (a['applications'] == 0 and (a['uptime_ms'] == 0 or unnamed(a)))]
+    groups: dict[str, list[dict]] = {}
     for a in aus:
-        by = ', '.join(split_name(ros[g]['name'])[0] if g in ros else 'an enemy' for g in a['appliers'])
-        sub = f'on {escape(split_name(a["target_name"])[0])} &middot; from {escape(by)}' + (' &middot; up at the pull' if a.get('seeded') else '')
-        rows.append(StatRow(sicon(a['spell_id']), f'<b>{escape(spell(a["spell_id"], a["name"]))}</b>', sub,
-                            [f'{a["uptime_ms"] / dur * 100:.1f}%', str(a['applications'])], Meter(a['uptime_ms'] / dur, 'muted' if kind == 'Debuffs' else ''),
-                            primary_phone=f'up {a["uptime_ms"] / dur * 100:.1f}%'))
-    plate = Section(kind, Plate(StatTable([('', False), ('Aura', False), ('Uptime', False), ('Up', True), ('Applied', True)], rows, 2, sort='Up', sortable=('Up', 'Applied')), kind)
-                    if rows else Plate(f'<p class="empty">No {kind.lower()} in this window.</p>', kind), meta=f'{len(rows)} on players &middot; uptime over the whole fight')
+        key = f'{a["target_guid"]}|{a["spell_id"]}' if want == 'BUFF' else f'{a["spell_id"]}|{a["name"]}'
+        groups.setdefault(key, []).append(a)
+    rows_data = []
+    for g in groups.values():
+        up = sum(a['uptime_ms'] for a in g)
+        share = min(1, up / (dur * len(g))) if dur else 0
+        rows_data.append((g, share, sum(a['applications'] for a in g)))
+    rows_data.sort(key=lambda r: (unnamed(r[0][0]), -r[1], r[0][0]['name']))
+    rows = []
+    for g, share, applied in rows_data:
+        a = g[0]
+        appliers = list(dict.fromkeys(x for t in g for x in t['appliers']))
+        by = ', '.join(split_name(ros[x]['name'])[0] if x in ros else 'an enemy' for x in appliers[:2])
+        who = escape(split_name(a['target_name'])[0]) if len(g) == 1 else f'{len(g)} players'
+        sub = f'on {who}' + (f' &middot; from {escape(by)}' if by else '')
+        rows.append(StatRow(sicon(a['spell_id'], 28, a['name'], a.get('school')), f'<b>{escape(spell(a["spell_id"], a["name"]))}</b>', sub,
+                            [f'{share * 100:.1f}%', str(applied)], Meter(share, 'muted' if kind == 'Debuffs' else 'gold'),
+                            primary_phone=f'up {share * 100:.1f}%'))
+    table = StatTable([('', False), ('Aura', False), ('Uptime', False), ('Up', True), ('Applied', True)], rows, 2, sort='Up', sortable=('Up', 'Applied'))
+    plate = Section(kind, table if rows else f'<p class="empty">No {kind.lower()} in this window.</p>', action=COPY_CSV if rows else '',
+                    meta=f'{len(aus)} on players &middot; uptime over the whole fight', panel=True, flush=True)
     return plate, this_pull(R, fi, source), []
 
 

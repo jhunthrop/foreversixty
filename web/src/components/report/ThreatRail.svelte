@@ -95,7 +95,7 @@
               <!-- A quiet link, not a button: the taunt's sentence keeps the rail's width. -->
               <button
                 type="button"
-                class="text-gold shrink-0 text-[13px] font-semibold whitespace-nowrap hover:underline [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
+                class="text-gold shrink-0 text-[13px] font-semibold whitespace-nowrap hover:underline [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-flex [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:items-center"
                 data-testid="taunt-window"
                 aria-label="Set the window to the span around this taunt"
                 onclick={() => onWindow(aroundWindow(taunt.at_ms, durationMs))}>Around it ›</button
