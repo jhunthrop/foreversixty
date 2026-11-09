@@ -76,10 +76,10 @@ def setup_page() -> str:
                     for r in SETUP['rows']['out'])
     own = SETUP['download_for']['windows']['own']
     others = SETUP['download_for']['windows']['others']
-    comp = (f'<p style="font-size:14px">{escape(own["firstRun"])}</p>'
+    comp = (f'<p class="muted" style="font-size:13px;margin-bottom:8px">{escape(own["meta"])}</p><p style="font-size:14px">{escape(own["firstRun"])}</p>'
             + ''.join(f'<p style="margin-top:10px"><a href="#">{escape(o["platform"])} &rsaquo;</a></p>' for o in others))
     main = panel('', f'<ul class="steps">{steps}</ul>', framed=True)
-    rail = panel('The companion', comp, meta=escape(own['meta']))
+    rail = panel('The companion', comp)
     body = titlebar(None, PAGES['copy']['setupTitle'], '', top=header(*SIGNED_OUT, '')) + f'<main class="w st"><div class="twocol"><div>{main}</div><aside>{rail}</aside></div></main>'
     return site_page('setup', body)
 
@@ -171,7 +171,8 @@ def creators_page() -> str:
     secs = ''.join(reading_section(s['title'], ''.join(f'<p>{escape(p)}</p>' for p in s['paragraphs']), [], s['id']) for s in pr['sections'])
     contents = toc([(s['title'], s['id']) for s in pr['sections']], pr['sections'][0]['id'])
     body = (titlebar(None, pr['pageTitle'], '', right=f'<a class="btn" href="#">{escape(pr["apply"])}</a>', top=header(*VIEWER, ''))
-            + f'<main class="w st"><p class="lede">{escape(pr["lead"])}</p><div class="page3"><aside>{contents}</aside><section class="card">{secs}</section></div></main>')
+            + f'<main class="w st"><div class="page3"><aside>{contents}</aside><section class="card" style="max-width:760px">'
+            f'<p class="lede" style="margin:0;padding:22px 24px 0">{escape(pr["lead"])}</p>{secs}</section></div></main>')
     return site_page('creators', body)
 
 

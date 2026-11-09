@@ -99,7 +99,7 @@ def account_page() -> str:
 def login_page() -> str:
     s = P['signin']
     body = (titlebar(None, s['title'], '', top=header('', 'warrior', None, '').replace('<span class="nm" style="color:#C69B6D"></span>', ''))
-            + f'<main class="w ac"><div class="msg card pad framed">'
+            + f'<main class="w ac"><div class="msg card pad">'
             f'<p><a class="btn" href="#">Sign in with Battle.net</a></p><p class="muted" style="font-size:13.5px;margin-top:14px">{escape(s["privacy"])}</p></div></main>'
             + footer())
     return page('Forever Sixty, sign in', ACC_CSS, body)
