@@ -7,12 +7,6 @@ import { query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 import {
   sharedFeedFailed,
-  sharedFeedFilterAll,
-  sharedFeedFilterGuild,
-  sharedFeedFilterLabel,
-  sharedFeedFilterLogs,
-  sharedFeedFilterSpec,
-  sharedFeedGuildEmpty,
   sharedFeedLogsEmpty,
   sharedFeedTagBestInSlot,
   sharedFeedTagGuides,
@@ -92,13 +86,6 @@ const DAY_HOURS = 24;
 
 export const feedCopy = {
   title: sharedFeedTitle,
-  filters: {
-    all: sharedFeedFilterAll,
-    spec: sharedFeedFilterSpec,
-    guild: sharedFeedFilterGuild,
-    logs: sharedFeedFilterLogs,
-  } satisfies Record<FeedFilter, string>,
-  filterLabel: sharedFeedFilterLabel,
   tags: {
     your_spec: sharedFeedTagYourSpec,
     logs: sharedFeedTagLogs,
@@ -109,16 +96,9 @@ export const feedCopy = {
     patch: sharedFeedTagPatch,
   } satisfies Record<FeedTag, string>,
   failed: sharedFeedFailed,
-  guildEmpty: sharedFeedGuildEmpty,
   logsEmpty: sharedFeedLogsEmpty,
   uploadLog: sharedFeedUploadLog,
 } as const;
-
-/** The feed filters a viewer gets: signed out none (All only, no bar); Your guild only in a guild. */
-export function feedFilters(signedIn: boolean, inGuild: boolean): FeedFilter[] {
-  if (!signedIn) return [];
-  return inGuild ? ['all', 'spec', 'guild', 'logs'] : ['all', 'spec', 'logs'];
-}
 
 /** The level band a character reads against: 20 to 60 in tens. */
 export function bandOf(level: number | undefined): number {
@@ -169,6 +149,29 @@ export function dayText(iso: string): string {
 
 export function whenText(row: Pick<FeedRow, 'at' | 'date_only'>, now: Date): string {
   return row.date_only ? dayText(row.at) : agoText(row.at, now);
+}
+
+/** A guild sim's tail the guild's own home already says: the guild, spec and band (ai-slop tell 22). */
+const GUILD_SIM_TAIL = /, #(\d+) of (\d+) DPS in [^,(]+ \([^)]*\)$/;
+
+/** The rows as home shows them: newest first, a guild sim reads `#2 of 14`, and with the guild's
+ *  raid on the plaque its post is left out (the plaque already shows it). */
+export function homeRows(rows: readonly FeedRow[], raidOnPlaque: boolean): FeedRow[] {
+  return [...rows]
+    .sort((a, b) => Date.parse(b.at) - Date.parse(a.at))
+    .filter((row) => !(raidOnPlaque && row.kind === 'guild_raid'))
+    .map((row) =>
+      row.kind !== 'guild_sim'
+        ? row
+        : {
+            ...row,
+            segments: row.segments.map((seg) =>
+              seg.style === undefined
+                ? { ...seg, text: seg.text.replace(GUILD_SIM_TAIL, ', #$1 of $2') }
+                : seg,
+            ),
+          },
+    );
 }
 
 /** The rows a filter shows: the API's, then (below FLOOR_MIN) real site events from the floor.

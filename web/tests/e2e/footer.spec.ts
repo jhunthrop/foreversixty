@@ -1,8 +1,8 @@
 import type { Locator } from '@playwright/test';
 import { expect, test } from './support/test';
 
-// Round 5's compact footer (design/specs/2026-11-09-directions.md, coordinator ruling 2026-11-09):
-// on a phone every site link is a 44px row target and the legal links sit above the legal lines.
+// Round 5's one-row footer (the mock, design/mocks/directions/png/g-home-1440.png): on a phone the
+// row wraps, every link a 44px target, the fan-made line under the links, nothing overflowing.
 test.use({ viewport: { width: 390, height: 844 } });
 
 const HIT_TARGET_PX = 44;
@@ -13,39 +13,38 @@ async function box(locator: Locator): Promise<{ x: number; y: number; width: num
   return found;
 }
 
-test('on a phone the compact footer carries its four site links as 44px targets', async ({ page }) => {
+test('on a phone the footer carries its seven links as 44px targets, the fan-made line under them', async ({
+  page,
+}) => {
   await page.goto('/about');
   const nav = page.getByRole('navigation', { name: 'Footer' });
   await expect(nav.getByRole('link')).toHaveText([
     'Get set up',
+    'Addon',
+    'Discord',
     'Premium',
-    'Join the Discord',
     'Report a bug',
+    'Privacy',
+    'Terms',
   ]);
   for (const link of await nav.getByRole('link').all()) {
     expect((await box(link)).height).toBeGreaterThanOrEqual(HIT_TARGET_PX);
   }
+  await expect(nav.getByRole('link', { name: 'Terms', exact: true })).toHaveAttribute('href', '/terms');
+  await expect(nav.getByRole('link', { name: 'Privacy', exact: true })).toHaveAttribute('href', '/privacy');
+  const footer = page.getByRole('contentinfo');
+  const line = footer.getByText('A fan-made player tool. Not affiliated with Blizzard.');
+  const lastLink = await box(nav.getByRole('link').last());
+  expect((await box(line)).y).toBeGreaterThan(lastLink.y);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
-test('the legal links and the buttons clear 44px and sit above the legal sentences', async ({ page }) => {
-  await page.goto('/about');
-  const footer = page.getByRole('contentinfo');
-  for (const [label, href] of [
-    ['Terms', '/terms'],
-    ['Privacy', '/privacy'],
-    ['Refunds', '/refunds'],
-  ] as const) {
-    const link = footer.getByRole('link', { name: label, exact: true });
-    await expect(link).toHaveAttribute('href', href);
-    const linkBox = await box(link);
-    expect(linkBox.height).toBeGreaterThanOrEqual(HIT_TARGET_PX);
-    expect(linkBox.width).toBeGreaterThanOrEqual(HIT_TARGET_PX);
+test('/about and /terms carry the full trademark sentence and the operator line', async ({ page }) => {
+  for (const path of ['/about', '/terms']) {
+    await page.goto(path);
+    const main = page.getByRole('main');
+    await expect(main.getByText(/World of Warcraft and Warcraft are trademarks of Blizzard/)).toBeVisible();
+    await expect(main.getByText(/registered trade name of Commish LLC/)).toBeVisible();
   }
-  const discord = footer.getByRole('link', { name: 'Join the Discord' });
-  expect((await box(discord)).height).toBeGreaterThanOrEqual(HIT_TARGET_PX);
-  const termsY = (await box(footer.getByRole('link', { name: 'Terms', exact: true }))).y;
-  const trademarkY = (await box(footer.getByText('Not affiliated with'))).y;
-  expect(termsY).toBeLessThan(trademarkY);
 });

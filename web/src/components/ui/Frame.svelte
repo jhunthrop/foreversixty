@@ -50,7 +50,7 @@
   .ui-frame[data-art='cave'] {
     background:
       linear-gradient(var(--color-veil-cave), var(--color-veil-cave)),
-      var(--art-cave, none) right center / 160% auto no-repeat,
+      var(--art-cave, none) 35% 40% / 160% auto no-repeat,
       var(--color-raised);
   }
   @media (max-width: 767px) {

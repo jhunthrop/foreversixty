@@ -13,6 +13,7 @@
     type = 'button',
     disabled = false,
     onclick,
+    pressed,
     label,
     testid,
     children,
@@ -25,6 +26,8 @@
     type?: 'button' | 'submit';
     disabled?: boolean;
     onclick?: (event: MouseEvent) => void;
+    /** A toggle's state (aria-pressed): the current choice of a set ("Late" among I'm in, Late, Can't come). */
+    pressed?: boolean;
     /** The accessible name when the visible words need more ("Retry" that reloads the talents). */
     label?: string;
     testid?: string;
@@ -37,7 +40,13 @@
 {#if href !== undefined && !disabled}
   <a class={classes} {href} {rel} aria-label={label} data-testid={testid}>{@render children()}</a>
 {:else}
-  <button class={classes} {type} {disabled} {onclick} aria-label={label} data-testid={testid}
-    >{@render children()}</button
+  <button
+    class={classes}
+    {type}
+    {disabled}
+    {onclick}
+    aria-pressed={pressed}
+    aria-label={label}
+    data-testid={testid}>{@render children()}</button
   >
 {/if}

@@ -29,9 +29,6 @@ async function signedIn(page: Page, lookup: { status: number; body: unknown }) {
 
 const DEVICE = ok({ name: 'JHUNT-PC', platform: 'Windows', expires_in: 540 });
 
-/** Three Facts rows of 41 px (10 + 20 + 10 and the hairline): the box signing in never moves. */
-const FACTS_HEIGHT = 123;
-
 test('not signed in: the code, the Battle.net hand-off with next, then pending and success', async ({
   page,
 }) => {
@@ -43,6 +40,9 @@ test('not signed in: the code, the Battle.net hand-off with next, then pending a
   await expect(page.getByRole('region', { name: 'The companion' })).toBeVisible();
   // Device and Platform keep their rows until a session can look the code up (ruling C2).
   await expect(page.getByTestId('connect-facts').getByText('Shown once you sign in')).toHaveCount(2);
+  // The box signing in never moves: the same three rows at the same height once signed in. Read
+  // off the page, not pinned: a Facts row is 41 px on macOS and rounds to 41.33 on Linux.
+  const signedOutFacts = await page.getByTestId('connect-facts').boundingBox();
   await expect(page.getByText('Forever Sixty will see your BattleTag and character list.')).toBeVisible();
   const href = await page.getByTestId('connect-battlenet').getAttribute('href');
   expect(href).toContain('/v1/auth/battlenet/start?next=');
@@ -70,7 +70,7 @@ test('not signed in: the code, the Battle.net hand-off with next, then pending a
     'Only press Connect if this code matches the one in the companion window.',
   );
   const facts = await page.getByTestId('connect-facts').boundingBox();
-  expect(facts?.height).toBe(FACTS_HEIGHT);
+  expect(facts?.height).toBe(signedOutFacts?.height);
 
   const approve = page.getByTestId('connect-approve');
   await approve.click();

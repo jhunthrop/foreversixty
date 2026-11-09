@@ -3517,7 +3517,7 @@ public struct GuildMember: Codable, Sendable, Equatable {
     public let seenAt: String?
     /// W3-C16: the spec catalogue's role for spec, else for the character's roster row; null when neither is known or consent withholds it. The apps' role chips read it, never a spec word.
     public let role: String?
-    /// W3-C16: the full spec name, catalogue name then class ("Holy Priest", "Feral Bear Druid"); null with role.
+    /// W3-C16: the full spec name, the catalogue's full_name ("Holy Priest", "Feral Druid (Bear)"); null with role.
     public let specName: String?
     /// W3-C16: the spec's talent-tab icon stem; null with role.
     public let specIcon: String?

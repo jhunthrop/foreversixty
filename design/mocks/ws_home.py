@@ -1,5 +1,8 @@
-"""Web-layout mock: home (/), layout B "the world is moving", every state, composed ONLY from ws_prims primitives.
-Spec: design/specs/2026-11-07-home-b.md (direction mock design/mocks/web/web-home-alive-b.html).
+"""Web-layout mock: home (/), round 5, every state, composed ONLY from ws_prims primitives.
+Spec: design/specs/2026-11-09-directions.md "Home" (the look: design/mocks/directions/pages.py home(), png/g-home-*), on the facts and
+states of design/specs/2026-11-07-home-b.md. Structure: the title band on the camp-road hero; the raid plaque (the ornate Frame on the
+cave: the guild's next raid, else the first raids); Latest on Forever with Your upgrades (a Frame) beside it; then Guild sims in two
+columns (or Your spec this week). Signed out: How to start in the rail and Pick your class below.
 
 States (design/mocks/web/home-parity.json): out (signed out), 34 (a level 34 leveler, no guild), 60 (a level 60 raider in a
 guild with a raid planned and the guild's sims), new (signed in, no character), feed-empty (the feed floored with real site
@@ -16,9 +19,9 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_prims import (Button, Countdown, FeedRow, FeedSkeleton, GradeTile, ItemRow, Link, Page, PageHeader, Row, RowGrid, Rows,
-                      Section, Segmented, Skeleton, build_page, crest_img, icon, write)
-from ws_lib import REGION, QCOL
+from ws_prims import (Button, FeedRow, FeedSkeleton, Frame, GradeTile, ItemRow, Link, Page, PageHeader, Plate, Row, RowGrid, Rows, Section,
+                      Skeleton, build_page, crest_img, icon, write)
+from ws_lib import REGION, QCOL, region_slug
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILD = json.loads((ROOT / 'web/src/data/active-build.json').read_text())['build']
@@ -31,26 +34,41 @@ SLOT_LABELS = {'head': 'Head', 'neck': 'Neck', 'shoulder': 'Shoulder', 'back': '
                'waist': 'Waist', 'legs': 'Legs', 'feet': 'Feet', 'finger1': 'Finger 1', 'finger2': 'Finger 2', 'trinket1': 'Trinket 1',
                'trinket2': 'Trinket 2', 'main_hand': 'Main hand', 'off_hand': 'Off hand', 'ranged': 'Ranged'}
 RAIDS = [('Barrow Deeps', 'spell_shadow_raisedead'), ('Hyjal Summit', 'spell_nature_timestop'), ("Onyxia's Lair", 'inv_misc_head_dragon_black')]
-TAGS = {'your_spec': 'Your spec', 'logs': 'Logs', 'rankings': 'Rankings', 'best_in_slot': 'Best in slot', 'guides': 'Guides', 'your_guild': 'Your guild', 'patch': 'Patch'}
-FLOOR_MIN, FEED_ROWS, UPGRADES_SHOWN, GUILD_SHOWN = 5, 7, 3, 5
-HOME_CSS = '''
-.sec-b{padding-top:12px}
-.ph-meta .t-small+.t-small::before{content:none}
-.head-sk{display:flex;flex-direction:column;gap:12px;padding-block:20px 16px;min-height:118px;justify-content:flex-end}
-.figs-b{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px 36px}
-.figs-b .f{display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right}
-.figs-b .f .v{font:700 28px/32px var(--font-body);font-variant-numeric:tabular-nums;color:var(--strong)}
-.figs-b .f .v small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
-.figs-b .f .v.kill{color:var(--kill)}.figs-b .f .c{font-size:12px;line-height:16px;color:var(--muted)}
-.cds{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);padding-top:28px}
-.cds.solo{grid-template-columns:minmax(0,1fr)}
-.raids{display:flex;justify-content:flex-end;gap:18px;margin:0;padding:0;list-style:none}
-.raids li{display:flex;flex-direction:column;align-items:center;gap:6px;width:88px;font:600 13px/16px var(--font-body);text-align:center;color:var(--nav)}
-.gw{margin:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-align:right;font-size:14px;line-height:22px;color:var(--nav)}.gw b{display:block;overflow:hidden;text-overflow:ellipsis;font-size:18px;line-height:24px;color:var(--strong)}
-.dl{color:var(--kill);font-size:13px;font-weight:700}
-.err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
-.empty-b{padding-block:12px;font-size:15px;line-height:24px;color:var(--muted)}
-.gap-sec{height:var(--section-gap)}
+FLOOR_MIN, FEED_ROWS, UPGRADES_SHOWN, GUILD_SHOWN = 5, 7, 5, 5
+FRAME_LINE = 'rgba(243,238,226,.42)'  # web --color-frame-line
+GUILD_SIM_TAIL = re.compile(r', #(\d+) of (\d+) DPS in [^,(]+ \([^)]*\)$')  # web lib/home/feed.ts homeRows
+HOME_CSS = f'''
+.ph-meta .t-small+.t-small::before{{content:none}}
+.band-r5 .head{{min-height:120px;box-sizing:content-box}}
+.pad16{{padding:16px}}
+.head-sk{{display:flex;flex-direction:column;gap:12px;padding-block:20px 16px;min-height:118px;justify-content:flex-end}}
+.hans{{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-height:40px}}
+.hgrid{{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"lead" "rail" "feed" "foot";align-items:start;gap:var(--gap);padding-top:28px}}
+.hgrid>div{{min-width:0}}.hg-lead{{grid-area:lead}}.hg-feed{{grid-area:feed}}.hg-rail{{grid-area:rail;display:flex;flex-direction:column;gap:var(--gap)}}.hg-foot{{grid-area:foot}}
+@media(min-width:1100px){{.hgrid{{grid-template-columns:minmax(0,1fr) 400px;grid-template-areas:"lead lead" "feed rail" "foot foot"}}}}
+.pq{{display:grid;gap:16px 34px}}
+@media(min-width:900px){{.pq{{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}.pq .prep{{border-top:0;border-left:1px solid {FRAME_LINE};padding:0 0 0 28px}}}}
+.pt{{font:400 30px/34px var(--font-title);margin:0}}.psub{{margin-top:4px;font-size:15px;line-height:22px}}
+.bigf{{display:flex;flex-wrap:wrap;gap:12px 26px;margin-top:16px}}.bigf .g{{display:flex;gap:26px}}.bigf .rule{{width:1px;background:{FRAME_LINE}}}
+.bigf .f{{display:flex;flex-direction:column}}.bigf b{{font-weight:600;font-size:44px;line-height:1;color:var(--strong)}}
+.bigf .f span{{margin-top:4px;font-size:13px;line-height:18px;color:var(--muted)}}
+.roles{{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:14px;font-size:14px;line-height:20px}}
+.acts{{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:18px}}
+.prep{{border-top:1px solid {FRAME_LINE};padding-top:14px}}.prep h3{{font:400 19px/26px var(--font-title)}}
+.prep ul{{margin:8px 0 0;padding:0;list-style:none}}.prep li{{display:flex;gap:10px;align-items:baseline;padding:3px 0;font-size:15px;line-height:22px}}
+.prep li::before{{content:"";flex:none;width:11px;height:11px;border:1px solid {FRAME_LINE}}}
+.frb{{container-type:inline-size}}.fr{{display:grid;gap:20px 34px;align-items:center}}@container (min-width:640px){{.fr{{grid-template-columns:minmax(0,1fr) auto}}}}
+.fr .foot{{margin-top:18px;font-size:15px;line-height:22px}}
+.fr ul{{display:flex;gap:18px;margin:0;padding:0;list-style:none}}
+.fr li{{display:flex;flex-direction:column;align-items:center;gap:8px;width:96px;font:600 14px/18px var(--font-body);text-align:center}}
+.fhd{{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:6px}}.fhd h2{{font:400 22px/28px var(--font-title);margin:0}}
+@media(min-width:700px){{.lad{{columns:2;column-gap:48px}}}}.lad>*{{break-inside:avoid}}
+.simline{{padding:12px 0 8px;font-size:15px;line-height:22px}}
+.err{{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}}
+.empty-b{{padding-block:12px;font-size:15px;line-height:24px;color:var(--muted)}}
+.gap-sec{{height:var(--section-gap)}}
+.lead-sk{{display:block;height:276px;border-radius:10px}}
+@media(max-width:767px){{.hgrid{{padding-top:20px}}.pt{{font-size:25px;line-height:30px}}.bigf,.bigf .g{{gap:10px 16px}}.bigf b{{font-size:26px}}}}
 '''
 
 
@@ -62,9 +80,9 @@ def iso(s: str) -> datetime:
     return datetime.fromisoformat(s.replace('Z', '+00:00'))
 
 
-def short_date(s: str) -> str:
+def long_day(s: str) -> str:
     d = iso(s)
-    return f'{d.day} {d.strftime("%b")}'
+    return f'{d.strftime("%A")} {d.day} {d.strftime("%B")}'
 
 
 def band_words(band: int) -> str:
@@ -78,8 +96,9 @@ def spec_name(key: str) -> str:
 
 
 def sec(title: str, body: str, action: str = '', meta: str = '', head: str = '') -> str:
+    """A boxed Section (round 5: every list sits on the panel)."""
     act = (head + (Link(f'{action} &rsaquo;') if action else '')) if (head or action) else ''
-    return Section(title, f'<div class="sec-b">{body}</div>', act, meta)
+    return Section(title, body, act, meta, boxed=True)
 
 
 def raids_open() -> str | None:
@@ -88,11 +107,13 @@ def raids_open() -> str | None:
 
 
 def clock_to(target: str) -> list[tuple[str, str]]:
-    left = iso(target) - NOW
-    secs = int(left.total_seconds())
+    """The plaque's clock (web lib/home/plaque.ts plaqueClock): days and hours, minutes in the final hour."""
+    secs = int((iso(target) - NOW).total_seconds())
+    if secs <= 0:
+        return []
     if secs < 3600:
-        return [(f'{secs // 60:02d}', 'min'), (f'{secs % 60:02d}', 'sec')]
-    return [(f'{secs // 86400:02d}', 'days'), (f'{secs % 86400 // 3600:02d}', 'hours'), (f'{secs % 3600 // 60:02d}', 'min')]
+        return [(str(-(-secs // 60)), 'min')]
+    return [(str(secs // 86400), 'days'), (str(secs % 86400 // 3600), 'hours')]
 
 
 def day_text(s: str) -> str:
@@ -109,18 +130,57 @@ def ago(s: str) -> str:
     return f'{m // 60} h ago' if m < 1440 else f'{m // 1440} d ago'
 
 
-# ------------------------------------------------------------------------------------------------ shared blocks
-def raid_panel() -> str:
+# ------------------------------------------------------------------------------------------------ the plaque
+def big_figures(groups: list[list[tuple[str, str]]], timer: bool) -> str:
+    """web ui/BigFigures: groups of a figure over its label, a hairline between; the first group a timer when `timer`."""
+    out = []
+    for i, group in enumerate(g for g in groups if g):
+        if i:
+            out.append('<span class="rule" aria-hidden="true"></span>')
+        clock = i == 0 and timer
+        attrs = f' role="timer" aria-label="{", ".join(f"{v} {u}" for v, u in group)}"' if clock else ''
+        hide = ' aria-hidden="true"' if clock else ''
+        out.append(f'<div class="g"{attrs}>' + ''.join(f'<span class="f"{hide}><b>{v}</b><span>{u}</span></span>' for v, u in group) + '</div>')
+    return f'<div class="bigf">{"".join(out)}</div>'
+
+
+def plaque_title(title: str, sub: str = '') -> str:
+    return f'<h2 class="pt">{title}</h2>' + (f'<p class="psub">{sub}</p>' if sub else '')
+
+
+def guild_plaque(char: dict, guild_home: dict) -> str:
+    r, needs = guild_home['next_raid'], guild_home['standing']['needs_before_next_raid']
+    c = r['counts']
+    d = iso(r['starts_at']) - timedelta(hours=6)
+    when = f"{d.strftime('%A')} {d.day} {d.strftime('%B')} &middot; 8 pm"  # web lib/home/plaque.ts raidWhen, the viewer's time
+    roles = ''.join(f'<span><b>{c[k]}</b> {k}</span>' for k in ('tanks', 'healers', 'melee', 'ranged'))
+    own = r['own']['state'] if r['own'] else None
+    buttons = ''.join(f'<button type="button" class="btn{" primary" if k == "in" else ""} sm" aria-pressed="{str(own == k).lower()}">{label}</button>'
+                      for k, label in (('in', "I'm in"), ('late', 'Late'), ('out', "Can't come")))
+    prep = (f'<div class="prep"><h3>Before the pull</h3><ul>{"".join(f"<li>{n}</li>" for n in needs)}</ul></div>') if needs else ''
+    main = (f'<div style="min-width:0">{plaque_title(r["zone_name"], f"{char["guild"]["name"]} &middot; {when}")}'
+            f'{big_figures([clock_to(r["starts_at"]), [(str(c["in"]), "signed up"), (str(c["late"]), "late")]], True)}'
+            f'<p class="roles">{roles}</p><div class="acts">{buttons}</div></div>')
+    return Frame(f'<div class="pq">{main}{prep}</div>', ornate=True, region=REGION['countdowns'])
+
+
+def first_raids_plaque(foot: str = '') -> str:
     at = raids_open()
-    raids = '<ul class="raids" aria-label="First raids">' + ''.join(f'<li>{icon(i, 40)}<span>{n}</span></li>' for n, i in RAIDS) + '</ul>'
-    return Countdown(f'First raids open &middot; {day_text(at)}', clock_to(at), raids, 'raid', live=True)
+    clock = clock_to(at)
+    head = plaque_title('First raids open', long_day(at)) + big_figures([clock], True) if clock else plaque_title('Raids open now')
+    f = f'<div class="foot">{foot}</div>' if foot else ''
+    raids = '<ul aria-label="First raids">' + ''.join(f'<li>{icon(i, 56)}<span>{n}</span></li>' for n, i in RAIDS) + '</ul>'
+    return Frame(f'<div class="frb"><div class="fr"><div style="min-width:0">{head}{f}</div>{raids}</div></div>', ornate=True, region=REGION['countdowns'])
 
 
-def countdowns(guild_panel: str = '') -> str:
-    solo = '' if guild_panel else ' solo'
-    return f'<div class="pc"><div class="cds{solo}" data-region="{REGION["countdowns"]}">{raid_panel()}{guild_panel}</div></div>'
+def grid(lead: str, feed: str, rail: str = '', foot: str = '') -> str:
+    """web components/home/HomeGrid: lead full width, the feed with the rail beside it, then the full-width foot."""
+    r = f'<div class="hg-rail">{rail}</div>' if rail else ''
+    f = f'<div class="hg-foot">{foot}</div>' if foot else ''
+    return f'<div class="pc"><div class="hgrid"><div class="hg-lead">{lead}</div><div class="hg-feed">{feed}</div>{r}{f}</div></div>'
 
 
+# ------------------------------------------------------------------------------------------------ the feed
 def sentence(segments: list[dict]) -> str:
     out = ''
     for s in segments:
@@ -136,12 +196,25 @@ def sentence(segments: list[dict]) -> str:
     return out
 
 
+def home_rows(rows: list[dict], raid_on_plaque: bool) -> list[dict]:
+    """web lib/home/feed.ts homeRows: newest first; a guild sim reads `#2 of 14`; the raid post is left to the plaque."""
+    out = []
+    for r in sorted(rows, key=lambda x: iso(x['at']), reverse=True):
+        if raid_on_plaque and r['kind'] == 'guild_raid':
+            continue
+        if r['kind'] == 'guild_sim':
+            r = {**r, 'segments': [dict(s, text=GUILD_SIM_TAIL.sub(r', #\1 of \2', s['text'])) if s.get('style') is None else s
+                                   for s in r['segments']]}
+        out.append(r)
+    return out
+
+
 def feed_lines(rows: list[dict]) -> str:
     out = ''
     for r in rows[:FEED_ROWS]:
-        lead = crest_img(r['crest'], 40) if r.get('crest') else icon(r.get('icon') or '', 40)
+        lead = crest_img(r['crest'], 32) if r.get('crest') else icon(r.get('icon') or '', 32)
         when = day_text(r['at']) if r.get('date_only') else ago(r['at'])
-        out += FeedRow(lead, sentence(r['segments']), when, TAGS[r['tag']])
+        out += FeedRow(lead, sentence(r['segments']), when, '')
     return f'<div>{out}</div>'
 
 
@@ -162,8 +235,8 @@ def floor_rows() -> list[dict]:
     return rows + events
 
 
-def feed_section(rows: list[dict] | None, filters: list[str] | None, state: str = 'ready') -> str:
-    head = Segmented([(f, i == 0) for i, f in enumerate(filters)], small=True) if filters else ''
+def feed_section(rows: list[dict] | None, state: str = 'ready') -> str:
+    """Latest on Forever, with no filters (round 5)."""
     if state == 'loading':
         body = FeedSkeleton(FLOOR_MIN)
     elif state == 'error':
@@ -172,30 +245,38 @@ def feed_section(rows: list[dict] | None, filters: list[str] | None, state: str 
     else:
         shown = rows[:FEED_ROWS] if len(rows) >= FLOOR_MIN else rows + floor_rows()[:FLOOR_MIN - len(rows)]
         body = feed_lines(shown)
-    return sec('Forever right now', body, head=head)
+    return sec('Latest on Forever', body)
+
+
+def frame_section(title: str, body: str, action: str = '') -> str:
+    """A featured rail panel with its title inside (Your upgrades, How to start), carrying the section's region."""
+    a = Link(f'{action} &rsaquo;') if action else ''
+    return Frame(f'<div class="fhd"><h2>{title}</h2>{a}</div>{body}', region=region_slug(title))
 
 
 # ------------------------------------------------------------------------------------------------ signed out
-def class_picker() -> str:
+def class_picker(headless: bool = False) -> str:
+    """web HomeClassPicker: boxed under its heading, or `headless` on its own plate under the title that names it."""
     rows = []
     for c in CLASSES:
         specs = ', '.join(s['name'] for s in SPECS if s['class_slug'] == c['slug'])
         rows.append(Row(c['name'], specs, lead=crest_img(c['slug'], 44), title_color=c['color']))
+    if headless:
+        return Plate(f'<div class="pad16">{RowGrid(rows, 3)}</div>', 'Pick your class')
     return sec('Pick your class', RowGrid(rows, 3))
 
 
 def how_to_start() -> str:
-    return sec('How to start', Rows([
-        Row('Sign in with Battle.net', 'Imports your characters with their level, gear and item level.', rank='1'),
-        Row('Install the addon and the companion', 'The addon rates every item in your bags; the companion uploads your logs as you play.', rank='2'),
+    return frame_section('How to start', Rows([
+        Row('Sign in with Battle.net', rank='1'),
+        Row('Install the addon and the companion', rank='2'),
     ], open_=True))
 
 
 def state_out() -> str:
-    head = PageHeader('Play your class better.', meta=['Pick your class.', f'First raids {short_date(raids_open())}'],
-                      actions=Button('Sign in with Battle.net', True))
-    return (head + Page('ledger', class_picker()) + countdowns()
-            + Page('split', feed_section(J('feed-out.json')['rows'], None), how_to_start()))
+    head = PageHeader('Pick your class', actions=Button('Sign in with Battle.net', True))
+    rows = home_rows(J('feed-out.json')['rows'], False)
+    return head + grid(class_picker(headless=True), feed_section(rows), how_to_start() + first_raids_plaque())
 
 
 # ------------------------------------------------------------------------------------------------ signed in
@@ -203,53 +284,37 @@ def spec_key(char: dict) -> str:
     return f"{char['class'].lower()}-{char['spec'].lower().replace(' ', '-')}"
 
 
-def upgrades_of(char: dict) -> tuple[list[tuple], dict, int]:
+def upgrades_of(char: dict) -> tuple[list[tuple], dict]:
     cls = char['class'].lower()
-    bis = J(f'bis-{spec_key(char)}.json')
-    band = bis['bands'][0]
+    band = J(f'bis-{spec_key(char)}.json')['bands'][0]
     items = {i['id']: i for i in J(f'items-{cls}.json')['items']}
-    ups, on_bis = [], 0
+    ups = []
     for s in band['slots']:
         worn = char['build']['gear'].get(s['slot'])
-        if 'item_id' in s and worn == s['item_id']:
-            on_bis += 1
         alt = next((a for a in s.get('alternatives') or [] if a['item_id'] == worn and a.get('dps_delta', 0) < 0), None)
         if alt:
             ups.append((-alt['dps_delta'], s))
     ups.sort(key=lambda u: -u[0])
-    return ups, items, on_bis
+    return ups, items
 
 
-def figure(value: str, label: str, unit: str = '', caption: str = '', kill: bool = False) -> str:
-    u = f'<small>{unit}</small>' if unit else ''
-    c = f'<span class="c">{caption}</span>' if caption else ''
-    return f'<span class="f"><span class="t-label">{label}</span><span class="v{" kill" if kill else ""}">{value}{u}</span>{c}</span>'
+def who_line(char: dict) -> str:
+    """web lib/home/home-view.ts whoLine, then the guild."""
+    who = f"Level {char['level']} {char['race']} {char['spec']} {char['class']}"
+    return who + (f" &middot; &lt;{char['guild']['name']}&gt;" if 'guild' in char else '')
 
 
-def head_in(char: dict, home: dict, ups: list, on_bis: int) -> str:
+def head_in(char: dict, home: dict) -> str:
     cls = char['class'].lower()
-    meta = [f"Level {char['level']} {char['spec']} {char['class']}", f"{char['faction'].capitalize()} {char['race']}", f"Item level {char['item_level']}"]
-    if 'guild' in char:
-        meta.append(f"&lt;{char['guild']['name']}&gt;")
     sim = home['import_sim']
-    figs = figure(f"{sim['dps']:,.1f}", 'Simmed on import', 'DPS', f"Simmed {short_date(sim['simmed_at'])}")
-    if ups:
-        figs += figure(f'+{sum(u[0] for u in ups):,.1f}', f'{len(ups)} upgrades', 'DPS', kill=True)
-    level = char['level']
-    figs += figure(f'{on_bis} of 17', 'On best in slot') if level >= 60 else figure(str((level // 10 + 1) * 10 - level), f'To band {(level // 10 + 1) * 10}', 'levels')
-    return PageHeader(char['name'], CLASS_COLOR[cls], crest_img(cls, 56), meta, f'<div class="figs-b">{figs}</div>')
+    answer = f'<div class="hans"><span class="fig"><span class="v">{sim["dps"]:,.1f}<small>DPS</small></span></span></div>'
+    return PageHeader(char['name'], CLASS_COLOR[cls], crest_img(cls, 48), [who_line(char)], answer)
 
 
-def guild_panel(char: dict, guild_home: dict | None) -> str:
-    if 'guild' not in char:
-        return Countdown('Find a guild', None, '<p class="gw">Raid with a guild that plans its nights here.<br><a class="link" href="#">Guilds &rsaquo;</a></p>', 'guild')
-    r = guild_home['next_raid']
-    d = iso(r['starts_at']) - timedelta(hours=6)
-    when = f"{d.strftime('%a')} {d.day} {d.strftime('%b')} &middot; 8:00 pm CST"
-    state = r['own']['state'] if r['own'] else 'not signed'
-    what = (f"<p class=\"gw\"><b>{r['title']}</b>{when} &middot; {r['counts']['in']} in &middot; you: {state}<br>"
-            f"<a class=\"link\" href=\"#\">Sign up on the raid page &rsaquo;</a></p>")
-    return Countdown(f"{char['guild']['name']} &middot; next guild event", clock_to(r['starts_at']), what, 'guild')
+def plaque_in(char: dict, guild_home: dict | None) -> str:
+    if guild_home is not None:
+        return guild_plaque(char, guild_home)
+    return first_raids_plaque('Raid with a guild that plans its nights here. <a class="link" href="#">Guilds &rsaquo;</a>')
 
 
 def upgrades_section(ups: list, items: dict) -> str:
@@ -257,26 +322,26 @@ def upgrades_section(ups: list, items: dict) -> str:
     for gain, s in ups[:UPGRADES_SHOWN]:
         it = items.get(s['item_id']) or {}
         q = it.get('quality', 1)
-        ic = icon(it.get('icon', ''), 32, {2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5'}.get(q, ''))
+        ic = icon(it.get('icon', ''), 36, {2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5'}.get(q, ''))
         # the build's source line (web/src/lib/home/source-line.ts): a crafted pick names it
         source = f"{s['source']} &middot; crafted" if s.get('source_kind') == 'crafted' else s['source']
         rows.append(ItemRow(s['item_name'], q, ic, f"{SLOT_LABELS[s['slot']]} &middot; {source}", gain=(f'+{gain:,.1f}', 'DPS', '')))
-    total = sum(u[0] for u in ups)
-    return sec('Your upgrades', ''.join(rows), 'Best in slot', f'+{total:,.1f} DPS')
+    return frame_section('Your upgrades', ''.join(rows), 'Best in slot')
 
 
 def ladder_row(r: dict, unit: str) -> str:
     trail = f'<span class="fig sm"><span class="v">{r["value"]:,.1f}<small>{unit}</small></span></span>'
-    return Row(r['name'], '', lead=crest_img(r['class'], 28), trail=trail, title_color=CLASS_COLOR[r['class']], rank=f"#{r['rank']}",
+    return Row(r['name'], '', lead=crest_img(r['class'], 28), trail=trail, title_color=CLASS_COLOR[r['class']], rank=str(r['rank']),
                selected=r['you'], slim=True)
 
 
-def guild_sims_section(g: dict) -> str:
+def guild_sims_section(g: dict, week: dict | None) -> str:
     rows = [ladder_row(r, g['unit']) for r in g['rows'][:GUILD_SHOWN]]
     if g['you'] is not None and not any(r['you'] for r in g['rows'][:GUILD_SHOWN]):
         rows.append(ladder_row(g['you'], g['unit']))
-    role = {'dps': 'DPS', 'tank': 'Tanks', 'healer': 'Healers'}[g['role']]
-    return sec('Guild sims', Rows(rows, open_=True), 'Guild page', f"{role}, {band_words(g['band'])} {g['preset']}")
+    tier = (f'<p class="simline">Tier {week["grade"]} &middot; #{week["place"]} of {week["of"]} &middot; '
+            f'<a class="link" href="#">Tier list &rsaquo;</a></p>') if week and week.get('grade') else ''
+    return sec('Guild sims', f'<div class="lad">{"".join(rows)}</div>{tier}')
 
 
 def spec_week_section(w: dict) -> str:
@@ -292,45 +357,32 @@ def spec_week_section(w: dict) -> str:
     return sec('Your spec this week', Rows([row], open_=True), 'Tier list')
 
 
-def movers_section(m: dict) -> str:
-    rows = [Row(r['name'], '', lead=crest_img(r['class'], 28), title_color=CLASS_COLOR[r['class']], rank=f"#{r['rank']}", slim=True,
-                trail=(f'<span class="dl">&#9650; {r["delta"]}</span>' if r['delta'] else '')) for r in m['rows']]
-    spec = next(x['name'] for x in SPECS if f"{x['class_slug']}-{x['spec_slug']}" == m['spec'])
-    if m['baseline']:
-        return sec('Top movers', Rows(rows, open_=True), 'Rankings', f"{spec}, {band_words(m['band'])}")
-    return sec(f"Top 3 for {spec_name(m['spec'])}, {band_words(m['band'])}", Rows(rows, open_=True), 'Rankings')
-
-
 def state_in(level: str, feed: str = 'ready', feed_file: str = '') -> str:
     me = J(f'me-{level}.json')
     char = me['characters'][0]
     home = J(f'home-{level}.json')
-    ups, items, on_bis = upgrades_of(char)
+    ups, items = upgrades_of(char)
     guild_home = J('guild-home-60.json') if 'guild' in char else None
-    filters = ['All', 'Your spec', 'Your guild', 'Logs'] if 'guild' in char else ['All', 'Your spec', 'Logs']
-    rows = J(feed_file or f'feed-{level}.json')['rows'] if feed == 'ready' else None
-    main = feed_section(rows, filters, feed)
-    rail = upgrades_section(ups, items)
-    if home['guild_sims']:
-        rail += guild_sims_section(home['guild_sims'])
-    rail += spec_week_section(home['spec_week']) + movers_section(home['movers'])
-    return head_in(char, home, ups, on_bis) + countdowns(guild_panel(char, guild_home)) + Page('split', main, rail)
+    rows = home_rows(J(feed_file or f'feed-{level}.json')['rows'], guild_home is not None) if feed == 'ready' else None
+    foot = (guild_sims_section(home['guild_sims'], home['spec_week']) if home['guild_sims']
+            else spec_week_section(home['spec_week']) if home['spec_week'] else '')
+    return head_in(char, home) + grid(plaque_in(char, guild_home), feed_section(rows, feed), upgrades_section(ups, items), foot)
 
 
 def state_new() -> str:
-    head = PageHeader('Play your class better.', meta=['Signed in as Hunthrop#1894'])
+    head = PageHeader('Get your character in')
     rows = Rows([
-        Row('Check again', 'Battle.net lists a character after you play it and log out.', trail='<button type="button" class="btn primary sm">Check again</button>', link=False),
-        Row('Paste an addon export', 'Your gear and talents, straight from the game.'),
-        Row('Get the addon and companion', 'The addon rates every item in your bags; the companion uploads your logs as you play.'),
+        Row('No character yet', 'Battle.net lists a character after you play it and log out.',
+            trail='<button type="button" class="btn primary sm">Check again</button>', link=False),
+        Row('Paste an addon export', trail='<a class="btn sm" href="#">Paste export</a>', link=False),
+        Row('Get the addon and companion', trail='<a class="btn sm" href="#">Get set up</a>', link=False),
     ], open_=True)
-    note = f'<div class="pc"><div data-region="{REGION["summary"]}"><p class="notice gold">No character yet. Battle.net lists a character after you play it and log out.</p></div></div>'
-    return head + note + Page('ledger', sec('Get your character in', rows) + '<div class="gap-sec"></div>' + class_picker())
+    return head + Page('ledger', Plate(f'<div class="pad16">{rows}</div>', 'Get your character in') + '<div class="gap-sec"></div>' + class_picker())
 
 
 def state_loading() -> str:
-    head = f'<div class="pc"><div data-region="{REGION["head"]}" class="head-sk" role="status" aria-busy="true">{Skeleton(56, 56, True)}{Skeleton(280, 28)}</div></div>'
-    return head + Page('split', sec('Forever right now', FeedSkeleton(FLOOR_MIN)), '')
+    head = f'<div class="pc"><div data-region="{REGION["head"]}" class="head-sk" role="status" aria-busy="true">{Skeleton(48, 48, True)}{Skeleton(280, 28)}</div></div>'
+    return head + grid('<span class="skel lead-sk" aria-hidden="true"></span>', sec('Latest on Forever', FeedSkeleton(FLOOR_MIN)))
 
 
 STATES = {

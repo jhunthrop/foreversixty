@@ -173,5 +173,5 @@ export function specOptions(classSlug: string): { value: string; label: string }
 export function wantedLabel(line: RecruitWantedInput): string {
   const spec = line.spec === null ? undefined : SPECS.find((s) => s.spec === line.spec);
   const className = classDisplayName(line.class);
-  return spec === undefined ? className : `${spec.name} ${className}`;
+  return spec === undefined ? className : spec.full_name;
 }
