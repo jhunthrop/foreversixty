@@ -61,7 +61,7 @@
   const columns = $derived([
     { id: 'state', label: 'Ready' },
     { id: 'attuned', label: 'Attuned' },
-    { id: 'ilvl', label: median === null ? 'Item level' : `Item level vs ${median}` },
+    { id: 'ilvl', label: median === null ? 'Item level' : `Ilvl vs ${median}` },
     { id: 'bis', label: 'To BiS' },
     { id: 'enchants', label: 'Enchants' },
     { id: 'flask', label: 'Flask' },
