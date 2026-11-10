@@ -10,8 +10,6 @@
 <script lang="ts">
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { tick } from 'svelte';
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import { classColorVar } from '../../lib/report/format';
   import {
     fetchGuildProgression,
     type GuildRaidDiscord,
@@ -19,18 +17,22 @@
     type GuildRaidView,
     type GuildZoneView,
   } from '../../lib/guild/api';
-  import { NO_PUBLIC_RAID_NIGHTS, raidNightDay } from '../../lib/guild/overview-view';
-  import { nightTops, outputFigure, topOutputLabel } from '../../lib/guild/output-figure';
-  import { TRASH_LABEL, bossIdsOf, nightFights, raidTallyParts } from '../../lib/guild/raid-view';
+  import { NO_PUBLIC_RAID_NIGHTS } from '../../lib/guild/overview-view';
+  import { bossIdsOf } from '../../lib/guild/raid-view';
+  import { fetchLootNights } from '../../lib/guild/loot-council-api';
+  import {
+    ATTENDANCE_GRID_NIGHTS,
+    absentByRaid,
+    awardsByReport,
+    raidNightsMeta,
+    type NightMisses,
+  } from '../../lib/guild/raid-nights-table';
+  import { fetchRecentAttendance } from '../../lib/guild/overview-api';
   import Page from '../ui/Page.svelte';
   import Section from '../ui/Section.svelte';
-  import Tag from '../ui/Tag.svelte';
-  import { LINK, ROW_ITEM } from '../../lib/ui/primitives';
-  import FactLine from './FactLine.svelte';
-  import { attendanceCopy } from '../../lib/guild/attendance-copy';
-  import { SEP, raidCopy } from '../../lib/guild/raid-copy';
+  import { raidCopy } from '../../lib/guild/raid-copy';
   import { nightFromHash } from '../../lib/guild/raids-hash';
-  import { guildRaidHref } from '../../lib/characters';
+  import GuildRaidNights from './GuildRaidNights.svelte';
   import { RAID_CAP, lastPlannedRaid, openRaidCount, type RaidSubmitResult } from '../../lib/guild/raid-form';
   import { createRaid, type RaidInput } from '../../lib/guild/raids-api';
   import { planRaid } from '../../lib/guild/raids-tab-controller';
@@ -143,21 +145,36 @@
       });
   });
 
-  // The first night opens from the first paint; rows that arrive later open theirs below.
-  // svelte-ignore state_referenced_locally
-  let expanded = $state<string | null>(rows[0]?.id ?? null);
-  // svelte-ignore state_referenced_locally
-  let defaulted = $state(rows.length > 0);
-
-  /** `rows` arrives after this component's own mount (Guild.svelte only renders it once
-   *  the raids fetch resolves, but a future caller could pass an empty array first) -- a
-   *  plain `$state` initializer only captures its value once, so the first night's own
-   *  default-open state is set here instead, exactly once. */
+  /** Items the council awarded per night, for a verified member or officer (the loot nights read);
+   *  null for anyone else and until it answers, which leaves the Loot column out. */
+  let lootByReport = $state<ReadonlyMap<string, number> | null>(null);
   $effect(() => {
-    if (defaulted || rows.length === 0) return;
-    expanded = rows[0].id;
-    defaulted = true;
+    if (guildId === null || !(memberView || officer)) return;
+    void fetchLootNights(guildId)
+      .then((page) => {
+        lootByReport = awardsByReport(page.nights);
+      })
+      .catch(() => {
+        lootByReport = null;
+      });
   });
+
+  /** Officers: raiders absent per guild raid (the attendance grid over every account). */
+  let absentByRaidId = $state<ReadonlyMap<number, NightMisses> | null>(null);
+  $effect(() => {
+    if (guildId === null || !officer) return;
+    void fetchRecentAttendance(guildId, ATTENDANCE_GRID_NIGHTS, true)
+      .then((grid) => {
+        absentByRaidId = absentByRaid(grid);
+      })
+      .catch(() => {
+        absentByRaidId = null;
+      });
+  });
+
+  /** The open night: the table is the summary, a night's pulls open in place on a click or its
+   *  deep link. */
+  let expanded = $state<string | null>(null);
 
   /** `#raids-{report_id}` opens that night once per hash (now and on a later hash change); rows
    *  arriving after the hash are waited for, and a night the viewer collapsed stays collapsed. */
@@ -176,20 +193,8 @@
     if (id === null || id === openedHash || !rows.some((row) => row.id === id)) return;
     openedHash = id;
     expanded = id;
-    defaulted = true;
     void tick().then(() => document.getElementById(`guild-raid-night-${id}`)?.scrollIntoView?.());
   });
-
-  function minutes(ms: number): string {
-    const total = Math.round(ms / 60000);
-    return `${total} min`;
-  }
-  function clock(ms: number): string {
-    const totalSeconds = Math.round(ms / 1000);
-    const m = Math.floor(totalSeconds / 60);
-    const s = totalSeconds % 60;
-    return `${m}:${String(s).padStart(2, '0')}`;
-  }
 </script>
 
 <!-- Two open Sections (web layout spec 2026-11-05 §3A.2): Planned, whose rows are the tab's one
@@ -244,95 +249,27 @@
       </div>
     </Section>
   {/if}
-  <Section title={raidCopy.subheads.raidNights} panel testid="guild-raid-nights">
+  <Section
+    title={raidCopy.subheads.raidNights}
+    panel
+    flush={rows.length > 0}
+    meta={rows.length > 0 ? raidNightsMeta(rows, bossIds) : undefined}
+    testid="guild-raid-nights"
+  >
     {#if rows.length === 0}
       <p class="text-muted text-[14px] leading-[22px]" data-testid="guild-raids-empty">
         {publicView ? NO_PUBLIC_RAID_NIGHTS : 'No raid nights logged yet.'}
       </p>
     {:else}
-      <div class="flex flex-col" data-testid="guild-raids-rows">
-        {#each rows as row (row.id)}
-          {@const isOpen = expanded === row.id}
-          <div class={ROW_ITEM} id={`guild-raid-night-${row.id}`}>
-            <button
-              class="flex min-h-[var(--row-h)] w-full flex-wrap items-center gap-x-3 gap-y-1 py-[10px] text-left"
-              onclick={() => (expanded = isOpen ? null : row.id)}
-              aria-expanded={isOpen}
-              data-testid={`guild-raid-row-${row.id}`}
-            >
-              <span class="min-w-0">
-                <span class="text-strong block text-[15px] leading-5 font-bold">{row.zone}</span>
-                <span class="text-muted tabular block text-[13px] leading-[18px]"
-                  >{raidNightDay(row.created_at)}{SEP}{minutes(row.duration_ms)}</span
-                >
-              </span>
-              <FactLine
-                facts={raidTallyParts(row, bossIds)}
-                class="text-muted tabular ml-auto text-right text-[13px]"
-              />
-            </button>
-            {#if isOpen}
-              <div class="flex flex-col gap-3 pb-4" data-testid={`guild-raid-expanded-${row.id}`}>
-                {#if row.raid_id !== undefined && row.raid_id !== null}
-                  <a
-                    href={guildRaidHref(guildPath, row.raid_id)}
-                    class="{LINK} inline-flex min-h-11 items-center self-start text-[14px]"
-                    data-testid={`guild-raid-link-${row.id}`}>{attendanceCopy.match.openRaid}</a
-                  >
-                {/if}
-                {#if row.present.length > 0}
-                  <div class="flex flex-wrap items-center gap-1">
-                    {#each row.present.slice(0, 20) as p (p.character_key)}
-                      <ClassCrestRing characterClass={p.class} size={22} />
-                    {/each}
-                    <span class="text-muted ml-2 text-[12px]"
-                      >{row.present.length} of {row.raiders} present</span
-                    >
-                  </div>
-                {/if}
-                {#if nightTops(row).length > 0}
-                  <!-- Healing then damage, worded and laid out as Progression's per-role line. -->
-                  <p class="text-[13px]" data-testid={`guild-raid-top-${row.id}`}>
-                    {#each nightTops(row) as top, index (top.metric)}
-                      {#if index > 0}<span class="hidden md:inline" aria-hidden="true">&nbsp;·&nbsp;</span
-                        >{/if}
-                      <span class="block md:inline">
-                        <span class="text-muted">{topOutputLabel(top.metric)}</span>
-                        <span style={`color:${classColorVar(top.class)};font-weight:600`}>{top.name}</span>
-                        <span class="numeric">{outputFigure(top.value)}</span>
-                      </span>
-                    {/each}
-                  </p>
-                {/if}
-                <ul class="flex flex-col" data-testid={`guild-raid-fights-${row.id}`}>
-                  {#each nightFights(row, bossIds) as fight (fight.index)}
-                    <li
-                      class="{ROW_ITEM} flex min-h-11 items-center gap-3 py-1.5"
-                      data-testid={fight.trash ? 'guild-raid-fight-trash' : 'guild-raid-fight'}
-                    >
-                      {#if fight.trash}
-                        <!-- Trash: named, quiet, no pull number and no badge (guild round 2, WP-12). -->
-                        <span class="text-muted min-w-[160px] text-[13px]">{fight.label}</span>
-                        <span class="text-muted numeric text-[13px]">{clock(fight.duration_ms)}</span>
-                        <span class="text-muted ml-auto text-[13px]">{TRASH_LABEL}</span>
-                      {:else if !fight.unnamed}
-                        <span class="text-strong min-w-[160px] text-[14px] font-semibold">{fight.label}</span>
-                        <span class="text-muted numeric text-[13px]">{clock(fight.duration_ms)}</span>
-                        <span class="ml-auto">
-                          <Tag tone={fight.kill ? 'success' : 'danger'}>{fight.kill ? 'Kill' : 'Wipe'}</Tag>
-                        </span>
-                      {:else}
-                        <span class="min-w-[160px] text-[14px]">{fight.label}</span>
-                        <span class="text-muted text-[13px]">no named encounter published</span>
-                      {/if}
-                    </li>
-                  {/each}
-                </ul>
-              </div>
-            {/if}
-          </div>
-        {/each}
-      </div>
+      <GuildRaidNights
+        {rows}
+        {bossIds}
+        {guildPath}
+        {lootByReport}
+        absentByRaid={absentByRaidId}
+        {expanded}
+        onToggle={(id) => (expanded = expanded === id ? null : id)}
+      />
     {/if}
   </Section>
 </Page>

@@ -11,6 +11,7 @@ import { guildGateCopy } from '../../lib/guild/copy';
 import { raidCopy } from '../../lib/guild/raid-copy';
 import { NEW_YORK, NOW, plannedRaid, text } from '../../test-support/raid-fixtures';
 import GuildRaids from './GuildRaids.svelte';
+import GuildRaidNights from './GuildRaidNights.svelte';
 
 /** A `disabled` attribute, not the `disabled:` class variants. */
 const DISABLED = / disabled(=| |>)/;
@@ -173,8 +174,21 @@ describe('GuildRaids raid nights linked to raids', () => {
     }).body;
   }
 
-  it('links the open night to its raid page by raid_id, with the id the deep link targets', () => {
-    const body = nights([night('abc123def', 7)]);
+  function opened(rows: GuildRaidRow[], expanded: string): string {
+    return render(GuildRaidNights, {
+      props: { rows, bossIds: null, guildPath: '/guild/us/pvp/olympus-xxvii', expanded, onToggle: () => {} },
+    }).body;
+  }
+
+  function cell(body: string, testid: string): string {
+    const at = body.indexOf(`data-testid="${testid}"`);
+    expect(at).toBeGreaterThan(-1);
+    return text(body.slice(body.indexOf('>', at) + 1, body.indexOf('</span>', at)));
+  }
+
+  it('opens a night in place: its raid page by raid_id, with the id the deep link targets', () => {
+    expect(nights([night('abc123def', 7)])).not.toContain('guild-raid-expanded-');
+    const body = opened([night('abc123def', 7)], 'abc123def');
     expect(body).toContain('href="/guild/us/pvp/olympus-xxvii/raids/7"');
     expect(text(body)).toContain(attendanceCopy.match.openRaid);
     expect(body).toContain('id="guild-raid-night-abc123def"');
@@ -187,26 +201,20 @@ describe('GuildRaids raid nights linked to raids', () => {
       top_dps: { name: 'Bow Jackzon', class: 'hunter', metric: 'dps', value: 272.2 },
     };
     const body = nights([row]);
-    const at = body.indexOf('data-testid="guild-raid-top-abc123def"');
-    expect(at).toBeGreaterThan(-1);
-    expect(text(body.slice(body.indexOf('>', at) + 1, body.indexOf('</p>', at)))).toBe(
-      'Top HPS Rootbound 449 · Top DPS Bow Jackzon 272',
-    );
+    expect(cell(body, 'guild-raid-top-hps-abc123def')).toBe('Top HPS Rootbound 449');
+    expect(cell(body, 'guild-raid-top-dps-abc123def')).toBe('Top DPS Bow Jackzon 272');
+    expect(body.indexOf('guild-raid-top-hps-')).toBeLessThan(body.indexOf('guild-raid-top-dps-'));
   });
 
-  it('shows the one figure a night has, and no line for a night with none', () => {
+  it('names only the figures a night has', () => {
     const dpsOnly = nights([
       {
         ...night('abc123def', null),
         top_dps: { name: 'Bow Jackzon', class: 'hunter', metric: 'dps', value: 272 },
       },
     ]);
-    const at = dpsOnly.indexOf('data-testid="guild-raid-top-abc123def"');
-    expect(text(dpsOnly.slice(dpsOnly.indexOf('>', at) + 1, dpsOnly.indexOf('</p>', at)))).toBe(
-      'Top DPS Bow Jackzon 272',
-    );
-    const { top_hps: _h, top_dps: _d, ...omitted } = night('abc123def', null);
-    expect(nights([omitted])).not.toContain('guild-raid-top-');
+    expect(cell(dpsOnly, 'guild-raid-top-dps-abc123def')).toBe('Top DPS Bow Jackzon 272');
+    expect(dpsOnly).not.toContain('guild-raid-top-hps-');
   });
 
   it('draws no link for a night matched to no raid', () => {

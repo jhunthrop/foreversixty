@@ -132,7 +132,7 @@ export const attendanceCopy = {
     groups: {
       noShow: 'Signed up, not in the log',
       late: 'Late',
-      joined: 'Joined from the bench or without a sign-up',
+      joined: 'Joined',
       present: 'Present',
       benchOut: 'Bench and out',
     },

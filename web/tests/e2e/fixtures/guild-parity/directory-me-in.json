@@ -40,7 +40,9 @@
       "ruleset": "pvp",
       "name": "Olympus XXVII",
       "rank": "officer",
-      "verified": true
+      "verified": true,
+      "faction": "alliance",
+      "roster_count": 24
     },
     {
       "id": 501,
@@ -48,7 +50,9 @@
       "ruleset": "hardcore",
       "name": "The Last Watch",
       "rank": "member",
-      "verified": true
+      "verified": true,
+      "faction": "horde",
+      "roster_count": 31
     }
   ]
 }

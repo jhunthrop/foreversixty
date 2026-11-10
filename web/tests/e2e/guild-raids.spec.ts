@@ -230,34 +230,24 @@ test.describe('race lines take focus (§4 "Races")', () => {
   });
 });
 
-test.describe('officer-read-only (§3.2, gate spec §3.4)', () => {
-  test('every officer control is present and disabled, and Copy still copies', async ({ browser }) => {
-    const live = await browser.newPage();
-    let selects = 0;
-    try {
-      await openRaid(live, { viewer: 'officer', officerTools: true });
-      selects = await rosterSelects(live).count();
-      expect(selects).toBeGreaterThan(0);
-      expect(
-        await rosterSelects(live).evaluateAll((n) => n.every((s) => !(s as HTMLButtonElement).disabled)),
-      ).toBe(true);
-    } finally {
-      await live.close();
-    }
-
+// Owner ruling 2026-11-09 (lane f-guild-onboard): the raid calendar and the sign-ups are free for any
+// claimed guild's officers, plan or none; the plan gates only the raid tools around them. A member
+// never gets an officer control.
+test.describe('the free raid calendar (owner ruling 2026-11-09)', () => {
+  test('an officer without the plan still edits, locks, cancels and sets sign-ups, and Copy copies', async ({
+    browser,
+  }) => {
     const context = await browser.newContext({ timezoneId: CHICAGO });
     try {
       await context.grantPermissions(['clipboard-read', 'clipboard-write']);
       const page = await context.newPage();
       const stub = await openRaid(page, { viewer: 'officer', officerTools: false });
       for (const id of ['raid-officer-edit', 'raid-officer-lock', 'raid-officer-cancel']) {
-        await expect(page.getByTestId(id)).toBeDisabled();
-        await expect(page.getByTestId(id)).toHaveAttribute('aria-describedby', 'officer-tools-gate-raids');
+        await expect(page.getByTestId(id)).toBeEnabled();
       }
-      await expect(page.getByTestId('guild-raids-plan-gate')).toBeVisible();
-      await expect(rosterSelects(page)).toHaveCount(selects);
+      expect(await rosterSelects(page).count()).toBeGreaterThan(0);
       expect(
-        await rosterSelects(page).evaluateAll((n) => n.every((s) => (s as HTMLButtonElement).disabled)),
+        await rosterSelects(page).evaluateAll((n) => n.every((s) => !(s as HTMLButtonElement).disabled)),
       ).toBe(true);
 
       const copy = page.getByTestId('raid-officer-copy');
@@ -273,14 +263,25 @@ test.describe('officer-read-only (§3.2, gate spec §3.4)', () => {
     }
   });
 
-  test('the Raids tab keeps Plan an event, disabled under the gate sentence', async ({ page }) => {
+  test('a member gets no officer control on the raid page', async ({ page }) => {
+    await openRaid(page, { viewer: 'member' });
+    for (const id of ['raid-officer-edit', 'raid-officer-lock', 'raid-officer-cancel', 'raid-officer-copy']) {
+      await expect(page.getByTestId(id)).toHaveCount(0);
+    }
+  });
+
+  test('the Raids tab keeps Plan an event live for an officer without the plan, and a member has none', async ({
+    page,
+  }) => {
     await openRaidsTab(page, { viewer: 'officer', officerTools: false });
-    await expect(page.getByTestId('guild-raids-plan')).toBeDisabled();
-    await expect(page.getByTestId('guild-raids-plan')).toHaveAttribute(
-      'aria-describedby',
-      'officer-tools-gate-raids',
-    );
-    await expect(page.getByTestId('guild-raids-plan-gate')).toBeVisible();
+    await expect(page.getByTestId('guild-raids-plan')).toBeEnabled();
+    await expect(page.getByTestId('guild-raids-plan-gate')).toHaveCount(0);
+  });
+
+  test('a member reads the Raids tab with no Plan an event', async ({ page }) => {
+    await openRaidsTab(page, { viewer: 'member' });
+    await expect(page.getByTestId('guild-planned')).toBeVisible();
+    await expect(page.getByTestId('guild-raids-plan')).toHaveCount(0);
   });
 });
 

@@ -140,7 +140,7 @@ describe('PlannedRaidRow', () => {
   it('holds the breakdown on one line from 1024: its cell is as wide as the text (guild round 3)', () => {
     const markup = html();
     expect(markup).toContain(
-      'lg:grid-cols-[56px_minmax(0,1.5fr)_minmax(136px,0.8fr)_minmax(max-content,1.2fr)_176px_16px]',
+      'lg:grid-cols-[56px_minmax(0,1.5fr)_minmax(136px,0.8fr)_minmax(340px,1.2fr)_176px_16px]',
     );
     expect(markup).toMatch(
       /class="text-muted text-\[12px\] lg:whitespace-nowrap" data-testid="planned-raid-7-desktop-breakdown"/,

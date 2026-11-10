@@ -50,3 +50,18 @@ export function fixRows(rows: readonly RaidAttendanceRow[]): FixRowModel[] {
 export function fixOptions(): SelectOption[] {
   return FIX_STATUSES.map((status) => ({ value: status, label: copy.attendance.status[status] }));
 }
+
+export interface NightNamesModel {
+  key: string;
+  label: string;
+  rows: RaidAttendanceRow[];
+}
+
+/** The officer's names under the summary: who signed up and was not in the log, who came late and
+ *  who joined, in the attendance groups' order and a raid leader's shorthand. */
+export function nightNames(rows: readonly RaidAttendanceRow[]): NightNamesModel[] {
+  const labels = copy.attendance.names;
+  return groupAttendance(rows)
+    .filter((group) => labels[group.key] !== undefined)
+    .map((group) => ({ key: group.key, label: labels[group.key], rows: group.rows }));
+}

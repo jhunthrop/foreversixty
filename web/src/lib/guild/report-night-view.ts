@@ -26,6 +26,7 @@ import {
   pullTitle,
   ratedOf,
   reportNightCopy as copy,
+  listWords,
   unknownPullLine,
 } from './report-night-copy';
 import { SEP } from './raid-copy';
@@ -180,10 +181,9 @@ export function outputGroups(parses: readonly RaidReportParse[]): OutputGroup[] 
       ...parse,
       figure: outputFigure(parse.value),
       unit: outputUnit(parse.metric),
-      sub:
-        parse.rating === null
-          ? roleWord(parse.role)
-          : `${roleWord(parse.role)}${SEP}${ratedOf(parse.rating)}`,
+      sub: [roleNote(parse), parse.rating === null ? '' : ratedOf(parse.rating)]
+        .filter((part) => part !== '')
+        .join(SEP),
     });
     groups.set(parse.fight_index, group);
   }
@@ -192,6 +192,13 @@ export function outputGroups(parses: readonly RaidReportParse[]): OutputGroup[] 
 
 const ROLE_WORDS: Readonly<Record<string, string>> = { tank: 'Tank', healer: 'Healer', dps: 'DPS' };
 const roleWord = (role: string): string => ROLE_WORDS[role] ?? role;
+
+/** The role only where the figure's unit does not already say it (a tank's DPS); a DPS's DPS and a
+ *  healer's HPS read the rating alone. */
+function roleNote(parse: RaidReportParse): string {
+  const implied = parse.metric === 'hps' ? 'healer' : 'dps';
+  return parse.role === implied ? '' : roleWord(parse.role);
+}
 
 export interface ConsumablesModel {
   columns: string[];
@@ -249,15 +256,55 @@ export function consumablesModel(byPull: readonly RaidPullConsumables[]): Consum
       class: who.class,
       cells: byPull.map((pull) => consumableCell(pull, key)),
     }));
-  const unknown = byPull
-    .filter((pull) => pull.rows === null)
-    .map((pull) =>
-      unknownPullLine(
-        pullTitle(pull.name, pull.attempt),
-        copy.consumables.reasons[pull.reason ?? 'not_read'],
-      ),
+  return { columns: byPull.map((pull) => columnTitle(pull, bosses)), rows, unknown: unknownLines(byPull) };
+}
+
+/** One line per reason the log cannot say, naming every pull it covers: "Onyxia, pull 1 and
+ *  Onyxia, pull 2: the log carried no character sheet, ...", never the same sentence twice. */
+function unknownLines(byPull: readonly RaidPullConsumables[]): string[] {
+  const titles = new Map<string, string[]>();
+  for (const pull of byPull) {
+    if (pull.rows !== null) continue;
+    const reason = copy.consumables.reasons[pull.reason ?? 'not_read'];
+    titles.set(reason, [...(titles.get(reason) ?? []), pullTitle(pull.name, pull.attempt)]);
+  }
+  return [...titles.entries()].map(([reason, names]) => unknownPullLine(listWords(names), reason));
+}
+
+export interface RaiderDeathsModel {
+  key: string;
+  name: string;
+  class: string;
+  /** Each death of theirs in the night: "Deep Breath, Onyxia, pull 1 at 1:45". */
+  deaths: string;
+  /** "2 on wipes · 1 on a kill" past one death; '' for one, which its line already says. */
+  count: string;
+}
+
+/** The officer's deaths by raider, in the order the API sends them (the night's order, never worst
+ *  first): each death with what killed them, which pull and when, and a count past one. */
+export function raiderDeaths(report: RaidReport): RaiderDeathsModel[] {
+  return report.deaths.map((row) => {
+    const lines = report.pulls.flatMap((pull) =>
+      (pull.death_causes ?? [])
+        .filter((death) => death.character_key === row.character_key)
+        .map((death) =>
+          copy.deaths.line(
+            death.killing_blow === null ? copy.deaths.unknown : abilityName(death.killing_blow),
+            pullTitle(pull.name, pull.attempt),
+            killTimeLabel(death.at_ms),
+          ),
+        ),
     );
-  return { columns: byPull.map((pull) => columnTitle(pull, bosses)), rows, unknown };
+    const total = row.on_wipes + row.on_kills;
+    return {
+      key: row.character_key === '' ? row.name : row.character_key,
+      name: row.name,
+      class: row.class,
+      deaths: lines.join('; '),
+      count: total > 1 ? copy.deaths.count(row.on_wipes, row.on_kills) : '',
+    };
+  });
 }
 
 /** What the Discord post carries, as plain lines (the embed's fields in order; it names nobody

@@ -88,3 +88,16 @@ Only the shared ones: PageHeader, Plate, Section, Row/Rows, Figures/Figure, Stat
 12. The in-game rank number (`guild_characters.rank_index`).
 
 Landed in this lane (API): roster rows carry `group` (raidspec.Group); report parses and roster `best_parse` carry `percentile` from `percentile_digests` (the roster's was always null before).
+
+## 8. The other tabs (batch H, lane h-guild-tabs)
+Mocks `design/mocks/ws_guild_dense_tabs.py`, fixtures `design/mocks/guild_dense_tabs_fixtures.py`, reviews `design/reviews/2026-11-10-h-guild-tabs/`.
+- **Raids:** Planned keeps its rows. The logged nights are one dense table: the boss time on a Meter against the slowest night, the kill time and its change on the night before, wipes, deaths, raiders, absent (officers, attendance/recent), the council's items (loot/nights). The sub line carries the boss pulls, the best kill mark and the top HPS and DPS in class colour. A night opens in place: its raid page, who was absent and benched by name, one pull a line.
+- **Raid planner:** every sign-up carries Last 5 (officers), item level ± the guild median, Ready with the cause under the name (officers from readiness?raid=, a member's own row from me/checklist, the same checks), rating and 30 nights. The head line carries the attendance key. Cover stays on the Overview (batch 3).
+- **Progression:** one panel a boss: a head line (kills, best kill and its night, seconds faster than the first, deaths a pull) and a table of its nights (kill time on a Meter, change, pulls, wipes, deaths). Roster bests under it (10, then all). The rail: the tier (zones with pulls) and the best per role.
+- **Applications:** item level ± the median, best kill as a percentile and figure, days waiting, the seat the spec fills for the next raid (the applicant's `group` against the raid view's comp). The rail opens with the next raid's open seats and who applies for each.
+- **Recruit:** an officer reads the open applications against the card, one click to Review.
+- **Settings:** officers by name with the GM marked, invite-link joins, addon sync with who has not synced (the setup read); the setup line names the steps left. One frame on every panel.
+
+Needs data (this lane): per-raider deaths per night on Raids and Progression (`rating_scores.deaths` is on neither read); a guild median for % of sim on Roster bests; encounter lists for Barrow Deeps and Hyjal Summit; who and when for invite-link joins; per-applicant log links (an applicant has no guild reports).
+
+Landed in this lane (API): progression `pulls_by_night[]` carries `kill_ms` (the night's fastest kill) and `deaths` (every death across the night's pulls); an applicant's character carries `group` (raidspec.Group).

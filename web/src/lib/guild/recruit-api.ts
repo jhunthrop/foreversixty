@@ -12,6 +12,8 @@ import {
   type GuildRosterAttendance,
   type GuildRosterRow,
 } from './api';
+import type { AwardRecord } from './loot-council-api';
+import type { GuildRaidGroup } from './api';
 
 export type ApplicationStatus = 'pending' | 'accepted' | 'declined' | 'withdrawn';
 export type ApplicationVote = 'yes' | 'no';
@@ -96,6 +98,8 @@ export interface ApplicantCharacter {
   class: string | null;
   spec: string | null;
   spec_name: string | null;
+  /** The raid group the spec fights in; null (or absent from an older API) when unknown. */
+  group?: GuildRaidGroup | null;
   level: number | null;
   item_level: number | null;
   best_parse: ApplicantBestParse | null;
@@ -185,9 +189,13 @@ export interface ProfileAttendance {
   last_4: GuildRosterAttendance;
   last_30: GuildRosterAttendance | null;
   nights: ProfileNight[];
+  /** Logged raids in a row, newest back, they came to (excused skipped), within the last 30; 0 in
+   *  reports mode. */
+  streak: number;
 }
 
-export interface ProfileLootItem {
+/** One award this tier, with its decision record. */
+export interface ProfileLootItem extends AwardRecord {
   item_id: number;
   name: string | null;
   icon: string | null;
@@ -196,13 +204,34 @@ export interface ProfileLootItem {
   awarded_at: string;
 }
 
+export interface ProfileLoot {
+  count: number;
+  items: ProfileLootItem[];
+  /** The median award count across the guild's verified raiders, none counting as zero. */
+  guild_median: number;
+  /** Logged raids they came to after their last award (all they came to, with none), within the
+   *  last 30; null in reports mode. */
+  nights_since: number | null;
+}
+
+/** One slot of their gear gap: the BiS pick, where it comes from, its DPS gain (null unsimmed). */
+export interface ProfileUpgrade {
+  slot: string;
+  item_id: number;
+  name: string;
+  source: string;
+  gain_dps: number | null;
+}
+
 export interface MemberProfile {
   account_key: string;
   member: GuildRosterRow | null;
   characters: { character_key: string; name: string; class: string | null; is_main: boolean }[];
   attendance: ProfileAttendance | null;
-  loot: { count: number; items: ProfileLootItem[] };
+  loot: ProfileLoot;
   readiness: GuildReadinessRow | null;
+  /** The gear gap named slot by slot, the biggest known gain first. */
+  upgrades: ProfileUpgrade[];
   /** Officers only: a member's own read never carries the field. */
   notes?: MemberNote[];
 }

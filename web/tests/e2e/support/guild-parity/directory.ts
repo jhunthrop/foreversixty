@@ -97,6 +97,7 @@ async function openClaim(page: Page): Promise<void> {
       [`/v1${GUILD_PATH.replace('/guild', '/guilds')}`]: 'overview-page.json',
       [`/v1/guilds/${GUILD_ID}/settings`]: 'directory-claim-settings.json',
       [`/v1/guilds/${GUILD_ID}/home`]: 'overview-home-officer.json',
+      [`/v1/guilds/${GUILD_ID}/setup`]: 'directory-claim-setup.json',
     },
   });
   // The fixture build prerenders one claim path (The Last Watch's): this one is the guild shell.

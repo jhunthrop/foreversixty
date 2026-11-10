@@ -99,6 +99,15 @@ export const GUILD_OVERVIEW_READS: readonly string[] = [
   '**/v1/guilds/*/setup',
 ];
 
+/** The raid planner's figure reads (h-guild-tabs): the officer's readiness for the raid and the
+ *  attendance strip, a member's own checklist. A raid spec that does not answer them leaves the
+ *  planner's figures without those columns. */
+export const GUILD_PLANNER_READS: readonly string[] = [
+  '**/v1/guilds/*/readiness*',
+  '**/v1/guilds/*/attendance/recent*',
+  '**/v1/guilds/*/me/checklist*',
+];
+
 export async function apiUnreachable(page: Page, ...globs: readonly string[]): Promise<void> {
   for (const glob of globs) await page.context().route(glob, unreachable);
 }

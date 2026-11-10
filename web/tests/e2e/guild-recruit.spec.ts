@@ -124,7 +124,7 @@ test.describe('applications, officers', () => {
     const writes = await stubRecruit(page, { viewer: 'officer' });
     await gotoHydrated(page, APPLICATIONS_URL, 'guild-applications-plate');
     const second = page.getByTestId('guild-application-42');
-    await expect(second).toContainText('Destruction Warlock · Level 60 · Item level 60 · Top DPS 465');
+    await expect(second).toContainText('Destruction Warlock · Item level 60 · Top DPS 465');
     await second.getByTestId('guild-application-votes-yes').click();
     await expect(second.getByTestId('guild-application-votes-yes')).toHaveAttribute('aria-pressed', 'true');
     expect(writes[0]).toMatchObject({ method: 'PUT', body: { vote: 'yes' } });
@@ -195,9 +195,11 @@ test.describe('the member profile', () => {
     await expect(page.getByTestId('guild-profile-figure-attendance')).toContainText('3 of 4');
     await expect(page.getByTestId('guild-profile-attendance-grid-row')).toHaveCount(1);
     await expect(page.getByTestId('guild-profile-attendance-line')).toHaveText('25 of the last 30 raids');
+    await expect(page.getByTestId('guild-profile-ready-facts')).toContainText('Enchants');
+    await expect(page.getByTestId('guild-profile-character').first()).toContainText('Zulmara');
     await expect(page.getByTestId('guild-profile-loot-row')).toContainText("Dragonstalker's Helm");
     await expect(page.getByTestId('guild-profile-note')).toHaveCount(2);
-    await expect(page.getByTestId('guild-profile-note').first()).toContainText('Officers only');
+    await expect(page.getByTestId('guild-profile-note').first()).toContainText('Kraggor');
 
     await page.getByTestId('guild-profile-note-body').fill('Swapped to Survival for Onyxia.');
     await page.getByTestId('guild-profile-note-save').click();
@@ -213,7 +215,7 @@ test.describe('the member profile', () => {
 
   test('a member reading themselves never meets a note', async ({ page }) => {
     await stubRecruit(page, { viewer: 'member' });
-    await gotoHydrated(page, profileUrl('me'), 'guild-profile-gear-gap');
+    await gotoHydrated(page, profileUrl('me'), 'guild-profile-ready');
     await expect(page.getByTestId('guild-profile-head')).toContainText('Zulmara');
     await expect(page.getByTestId('guild-profile-notes')).toHaveCount(0);
     await expect(page.getByTestId('guild-profile-page')).not.toContainText(/note/i);

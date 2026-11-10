@@ -7,7 +7,568 @@
     "faction": "alliance",
     "crest_url": null
   },
-  "roster_best": [],
+  "roster_best": [
+    {
+      "player": {
+        "key": "us/pvp/steelmane",
+        "name": "Steelmane",
+        "class": "warrior",
+        "spec": "Arms"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 523.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.9
+    },
+    {
+      "player": {
+        "key": "us/pvp/hexmarrow",
+        "name": "Hexmarrow",
+        "class": "warlock",
+        "spec": "Destruction"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 494.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.79
+    },
+    {
+      "player": {
+        "key": "us/pvp/axebreaker",
+        "name": "Axebreaker",
+        "class": "warrior",
+        "spec": "Fury"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 488.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.91
+    },
+    {
+      "player": {
+        "key": "us/pvp/duskfang",
+        "name": "Duskfang",
+        "class": "rogue",
+        "spec": "Combat"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 488.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.89
+    },
+    {
+      "player": {
+        "key": "us/pvp/dunmaro",
+        "name": "Dunmaro",
+        "class": "hunter",
+        "spec": "Beast Mastery"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 485.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.91
+    },
+    {
+      "player": {
+        "key": "us/pvp/doomwhisper",
+        "name": "Doomwhisper",
+        "class": "warlock",
+        "spec": "Affliction"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 478.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.85
+    },
+    {
+      "player": {
+        "key": "us/pvp/rimecaller",
+        "name": "Rimecaller",
+        "class": "mage",
+        "spec": "Frost"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 473.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.87
+    },
+    {
+      "player": {
+        "key": "us/pvp/gorehowl",
+        "name": "Gorehowl",
+        "class": "warrior",
+        "spec": "Fury"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 471.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.87
+    },
+    {
+      "player": {
+        "key": "us/pvp/shiverknife",
+        "name": "Shiverknife",
+        "class": "rogue",
+        "spec": "Assassination"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 470.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.89
+    },
+    {
+      "player": {
+        "key": "us/pvp/felbrand",
+        "name": "Felbrand",
+        "class": "warlock",
+        "spec": "Destruction"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 465.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.91
+    },
+    {
+      "player": {
+        "key": "us/pvp/glimmerfrost",
+        "name": "Glimmerfrost",
+        "class": "mage",
+        "spec": "Frost"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 459.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.87
+    },
+    {
+      "player": {
+        "key": "us/pvp/grimsworn",
+        "name": "Grimsworn",
+        "class": "warlock",
+        "spec": "Demonology"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 450.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.82
+    },
+    {
+      "player": {
+        "key": "us/pvp/frostquill",
+        "name": "Frostquill",
+        "class": "mage",
+        "spec": "Frost"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 433.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.83
+    },
+    {
+      "player": {
+        "key": "us/pvp/starnettle",
+        "name": "Starnettle",
+        "class": "druid",
+        "spec": "Balance"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 431.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.88
+    },
+    {
+      "player": {
+        "key": "us/pvp/skytalon",
+        "name": "Skytalon",
+        "class": "hunter",
+        "spec": "Survival"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 427.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.79
+    },
+    {
+      "player": {
+        "key": "us/pvp/blacktide",
+        "name": "Blacktide",
+        "class": "rogue",
+        "spec": "Combat"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 424.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.9
+    },
+    {
+      "player": {
+        "key": "us/pvp/longshot",
+        "name": "Longshot",
+        "class": "hunter",
+        "spec": "Marksmanship"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 423.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.88
+    },
+    {
+      "player": {
+        "key": "us/pvp/seraphine",
+        "name": "Seraphine",
+        "class": "paladin",
+        "spec": "Retribution"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 422.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.93
+    },
+    {
+      "player": {
+        "key": "us/pvp/cinderglass",
+        "name": "Cinderglass",
+        "class": "mage",
+        "spec": "Fire"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 422.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.9
+    },
+    {
+      "player": {
+        "key": "us/pvp/nightlatch",
+        "name": "Nightlatch",
+        "class": "rogue",
+        "spec": "Subtlety"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 416.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.92
+    },
+    {
+      "player": {
+        "key": "us/pvp/pinefeather",
+        "name": "Pinefeather",
+        "class": "hunter",
+        "spec": "Marksmanship"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 389.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.83
+    },
+    {
+      "player": {
+        "key": "us/pvp/skyarcana",
+        "name": "Skyarcana",
+        "class": "mage",
+        "spec": "Arcane"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 386.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.8
+    },
+    {
+      "player": {
+        "key": "us/pvp/ashblade",
+        "name": "Ashblade",
+        "class": "paladin",
+        "spec": "Retribution"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 385.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.93
+    },
+    {
+      "player": {
+        "key": "us/pvp/groundshock",
+        "name": "Groundshock",
+        "class": "shaman",
+        "spec": "Enhancement"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 381.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.83
+    },
+    {
+      "player": {
+        "key": "us/pvp/emberfall",
+        "name": "Emberfall",
+        "class": "shaman",
+        "spec": "Elemental"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 378.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.81
+    },
+    {
+      "player": {
+        "key": "us/pvp/thistlepaw",
+        "name": "Thistlepaw",
+        "class": "druid",
+        "spec": "Feral"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 370.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.9
+    },
+    {
+      "player": {
+        "key": "us/pvp/voidcall",
+        "name": "Voidcall",
+        "class": "priest",
+        "spec": "Shadow"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 360.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.9
+    },
+    {
+      "player": {
+        "key": "us/pvp/brightvow",
+        "name": "Brightvow",
+        "class": "priest",
+        "spec": "Discipline"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "hps",
+      "value": 357.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.8
+    },
+    {
+      "player": {
+        "key": "us/pvp/moonquill",
+        "name": "Moonquill",
+        "class": "druid",
+        "spec": "Balance"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 350.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.8
+    },
+    {
+      "player": {
+        "key": "us/pvp/sunmantle",
+        "name": "Sunmantle",
+        "class": "paladin",
+        "spec": "Holy"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "hps",
+      "value": 341.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.83
+    },
+    {
+      "player": {
+        "key": "us/pvp/mossveil",
+        "name": "Mossveil",
+        "class": "druid",
+        "spec": "Restoration"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "hps",
+      "value": 328.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.9
+    },
+    {
+      "player": {
+        "key": "us/pvp/hollowmend",
+        "name": "Hollowmend",
+        "class": "priest",
+        "spec": "Holy"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "hps",
+      "value": 296.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.9
+    },
+    {
+      "player": {
+        "key": "us/pvp/stonetide",
+        "name": "Stonetide",
+        "class": "shaman",
+        "spec": "Restoration"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "hps",
+      "value": 295.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.85
+    },
+    {
+      "player": {
+        "key": "us/pvp/dawnweaver",
+        "name": "Dawnweaver",
+        "class": "priest",
+        "spec": "Holy"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "hps",
+      "value": 286.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.84
+    },
+    {
+      "player": {
+        "key": "us/pvp/rainsong",
+        "name": "Rainsong",
+        "class": "shaman",
+        "spec": "Restoration"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "hps",
+      "value": 286.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.89
+    },
+    {
+      "player": {
+        "key": "us/pvp/valomira",
+        "name": "Valomira",
+        "class": "paladin",
+        "spec": "Holy"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "hps",
+      "value": 272.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.93
+    },
+    {
+      "player": {
+        "key": "us/pvp/ironbrand",
+        "name": "Ironbrand",
+        "class": "paladin",
+        "spec": "Holy"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "hps",
+      "value": 253.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.92
+    },
+    {
+      "player": {
+        "key": "us/pvp/thornwicke",
+        "name": "Thornwicke",
+        "class": "warrior",
+        "spec": "Protection"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 227.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.89
+    },
+    {
+      "player": {
+        "key": "us/pvp/ironhide",
+        "name": "Ironhide",
+        "class": "warrior",
+        "spec": "Protection"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 201.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.94
+    },
+    {
+      "player": {
+        "key": "us/pvp/bramblehorn",
+        "name": "Bramblehorn",
+        "class": "druid",
+        "spec": "Feral"
+      },
+      "encounter": "Onyxia",
+      "encounter_id": 1084,
+      "metric": "dps",
+      "value": 169.0,
+      "fought_at": "2027-01-07T02:00:00Z",
+      "execution_score": 0.86
+    }
+  ],
   "reports": [
     {
       "id": "olympusony0106",

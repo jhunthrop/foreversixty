@@ -49,7 +49,6 @@
    "notOwner": "This page is for the site’s owner. Your account can’t see the testers.",
    "loadFailed": "The testers didn’t load.",
    "tableTitle": "Sign-ups",
-   "tableMeta": "[fn]",
    "caption": "App beta sign-ups",
    "emailHeader": "Email",
    "columns": [
@@ -61,7 +60,6 @@
    "copied": "Copied",
    "copyFailed": "Couldn’t copy; select the addresses by hand."
   },
-  "meta": "3 sign-ups · newest first",
   "buttons": [
    "Copy 2 iPhone emails",
    "Copy 1 Android email"

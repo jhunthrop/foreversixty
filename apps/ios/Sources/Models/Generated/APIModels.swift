@@ -416,6 +416,8 @@ public struct ApplicantCharacter: Codable, Sendable, Equatable {
     public let className: String?
     public let spec: String?
     public let specName: String?
+    /// The raid group the spec fights in (the sign-ups' groups); null when the spec is unknown.
+    public let group: String?
     public let level: Int?
     public let itemLevel: Int?
     /// Battle.net's race name ("Dwarf"), else the export's race; null when neither says.
@@ -429,6 +431,7 @@ public struct ApplicantCharacter: Codable, Sendable, Equatable {
         className: String? = nil,
         spec: String? = nil,
         specName: String? = nil,
+        group: String? = nil,
         level: Int? = nil,
         itemLevel: Int? = nil,
         race: String? = nil,
@@ -440,6 +443,7 @@ public struct ApplicantCharacter: Codable, Sendable, Equatable {
         self.className = className
         self.spec = spec
         self.specName = specName
+        self.group = group
         self.level = level
         self.itemLevel = itemLevel
         self.race = race
@@ -453,6 +457,7 @@ public struct ApplicantCharacter: Codable, Sendable, Equatable {
         case className = "class"
         case spec
         case specName
+        case group
         case level
         case itemLevel
         case race

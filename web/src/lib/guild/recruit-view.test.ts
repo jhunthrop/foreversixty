@@ -22,7 +22,18 @@ import {
   wantedLabel,
   withRow,
 } from './applications-view';
-import { attendanceView, gearGapLines, lootRows, noteSub, profileFigures, profileHead } from './profile-view';
+import {
+  attendanceView,
+  characterRows,
+  lootFairness,
+  upgradeRows,
+  lootRows,
+  noteSub,
+  profileFigures,
+  profileHead,
+  readyFacts,
+  readyTag,
+} from './profile-view';
 import {
   applicationLine,
   applyErrorLine,
@@ -145,9 +156,7 @@ describe('the officers list', () => {
   const list = buildMockOfficerApplications();
 
   it('reads every figure with its unit, and splits pending from decided', () => {
-    expect(applicantFacts(list.rows[0].character)).toBe(
-      'Holy Paladin · Level 60 · Item level 63 · Top HPS 465',
-    );
+    expect(applicantFacts(list.rows[0].character)).toBe('Holy Paladin · Item level 63 · Top HPS 465');
     const { pending, decided } = splitApplications(list);
     expect(pending.map((r) => r.id)).toEqual([41, 42]);
     expect(decided.map((r) => r.id)).toEqual([39]);
@@ -220,20 +229,74 @@ describe('the member profile', () => {
     ]);
   });
 
-  it('writes the gear gap in the BiS unit, and the counts alone for a healer', () => {
+  it('reads Raid ready: the gear gap in the BiS unit, then enchants, bags, talents and item level', () => {
     const base = profile.readiness!;
-    const at = (gap: NonNullable<typeof base.gear_gap>) =>
-      gearGapLines({ ...profile, readiness: { ...base, gear_gap: gap } });
-    expect(at({ upgrades: 3, gain_dps: 12.44, not_sim_checked: 1, unit: 'dps' })?.map((l) => l.text)).toEqual(
-      ['3 upgrades on their BiS list', '+12.4 DPS over what they wear', '1 not sim-checked'],
+    const facts = (row: Partial<typeof base>) =>
+      readyFacts({ ...profile, readiness: { ...base, ...row } }, TZ, LOCALE)!;
+    const value = (row: Partial<typeof base>, id: string) => facts(row).find((f) => f.id === id);
+    expect(
+      value({ gear_gap: { upgrades: 3, gain_dps: 12.44, not_sim_checked: 1, unit: 'dps' } }, 'gear'),
+    ).toMatchObject({
+      value: '3 upgrades',
+      sub: '+12.4 DPS · 1 not sim-checked',
+    });
+    expect(
+      value({ gear_gap: { upgrades: 2, gain_dps: 0, not_sim_checked: 0, unit: null } }, 'gear')?.sub,
+    ).toBeUndefined();
+    expect(
+      value({ gear_gap: { upgrades: 0, gain_dps: 0, not_sim_checked: 0, unit: 'dps' } }, 'gear')?.value,
+    ).toBe('Best in slot');
+    expect(
+      value({ enchants: { checked: true, missing_slots: ['main_hand', 'legs'] } }, 'enchants')?.value,
+    ).toBe('Missing: Main Hand, Legs');
+    expect(value({ enchants: { checked: false, missing_slots: [] } }, 'enchants')).toMatchObject({
+      value: 'Not read',
+      muted: true,
+    });
+    expect(value({ flask_food: { flask_or_elixir: false, food: true } }, 'bags')?.value).toBe(
+      'No flask or raid elixir',
     );
-    expect(at({ upgrades: 2, gain_dps: 0, not_sim_checked: 0, unit: null })?.map((l) => l.text)).toEqual([
-      '2 upgrades on their BiS list',
+    expect(value({ flask_food: null, consumables: { state: 'short' } }, 'bags')?.value).toBe('Short');
+    expect(value({ talent_points_unspent: 3, talent_points_read: true }, 'talents')?.value).toBe('3 unspent');
+    expect(value({ item_level: 64, item_level_delta: -4 }, 'ilvl')?.sub).toBe('Guild median 68');
+    expect(value({ item_level: 64, item_level_delta: 0 }, 'ilvl')?.sub).toBeUndefined();
+    expect(value({ attuned: false }, 'attuned')?.value).toBe('Not attuned');
+    expect(value({ attuned: null }, 'attuned')).toBeUndefined();
+    expect(value({}, 'fight')).toMatchObject({ value: profile.member!.best_parse!.encounter });
+    expect(readyFacts({ ...profile, readiness: null }, TZ, LOCALE)).toBeNull();
+  });
+
+  it('rolls Raid ready up to how many checks fail, and says nothing when none does', () => {
+    const base = profile.readiness!;
+    expect(readyTag({ ...profile, readiness: { ...base, failing: 0 } })).toBeNull();
+    expect(readyTag({ ...profile, readiness: { ...base, failing: 2 } })).toEqual({
+      tone: 'warn',
+      text: '2 to fix',
+    });
+    expect(readyTag({ ...profile, readiness: null })).toBeNull();
+  });
+
+  it('names the next upgrades with the slot, where they drop and the gain in the BiS unit', () => {
+    expect(upgradeRows(profile).map((row) => [row.itemId, row.name, row.sub, row.gain])).toEqual([
+      [16852, "Giantstalker's Gloves", 'Hands · Molten Core: Shazzrah', { value: '+11.4', unit: 'DPS' }],
+      [16851, "Giantstalker's Belt", 'Waist · Molten Core', { value: 'Not simmed', tone: 'muted' }],
     ]);
-    expect(at({ upgrades: 0, gain_dps: 0, not_sim_checked: 0, unit: 'dps' })?.[0].text).toBe(
-      'Nothing on their BiS list beats what they wear.',
-    );
-    expect(gearGapLines({ ...profile, readiness: null })).toBeNull();
+    const healer = { ...profile.readiness!, gear_gap: { ...profile.readiness!.gear_gap!, unit: null } };
+    expect(upgradeRows({ ...profile, readiness: healer }).map((row) => row.gain)).toEqual([null, null]);
+  });
+
+  it('lists their characters, the main first, each linked to its page', () => {
+    const rows = characterRows({
+      ...profile,
+      characters: [
+        { character_key: 'us/pvp/alt', name: 'Alt', class: 'priest', is_main: false },
+        { character_key: 'us/pvp/zulmara', name: 'Zulmara', class: 'hunter', is_main: true },
+      ],
+    });
+    expect(rows.map((row) => [row.name, row.main, row.href])).toEqual([
+      ['Zulmara', true, '/character/us/pvp/zulmara'],
+      ['Alt', false, '/character/us/pvp/alt'],
+    ]);
   });
 
   it('draws the last 4 raids oldest first with the 30-raid line, and the reports mode line', () => {
@@ -244,7 +307,13 @@ describe('the member profile', () => {
     const reports = attendanceView(
       {
         ...profile,
-        attendance: { source: 'reports', last_4: { present: 2, nights: 4 }, last_30: null, nights: [] },
+        attendance: {
+          source: 'reports',
+          last_4: { present: 2, nights: 4 },
+          last_30: null,
+          nights: [],
+          streak: 0,
+        },
       },
       TZ,
       LOCALE,
@@ -252,11 +321,42 @@ describe('the member profile', () => {
     expect(reports).toEqual({ columns: [], rows: [], line: '2 of the last 4 logged nights' });
   });
 
+  it('reads loot against the guild: its median, and the raids they came to since their last item', () => {
+    expect(lootFairness(profile)).toEqual({
+      median: 'Guild median 2',
+      since: '1 raid since their last item',
+    });
+    expect(lootFairness({ ...profile, loot: { ...profile.loot, guild_median: 0 } }).median).toBe('');
+    expect(
+      lootFairness({ ...profile, loot: { ...profile.loot, count: 0, items: [], nights_since: 5 } }).since,
+    ).toBe('5 raids since the tier began, nothing yet');
+    expect(lootFairness({ ...profile, loot: { ...profile.loot, nights_since: 0 } }).since).toBeNull();
+    expect(lootFairness({ ...profile, loot: { ...profile.loot, nights_since: null } }).since).toBeNull();
+  });
+
+  it('adds the run they are on after the 30-raid figure, from two nights', () => {
+    const run = (streak: number) =>
+      attendanceView({ ...profile, attendance: { ...profile.attendance!, streak } }, TZ, LOCALE)!.line;
+    expect(run(1)).toBe('25 of the last 30 raids');
+    expect(run(4)).toBe('25 of the last 30 raids · 4 in a row');
+  });
+
   it('lists loot newest first and names who wrote each note', () => {
     expect(lootRows(profile, TZ, LOCALE)[0]).toMatchObject({
       name: "Dragonstalker's Helm",
-      source: 'Awarded Mon 30 Nov',
+      source: 'Awarded Mon 30 Nov · 3 yes, 1 no of 4 · Best in slot, every night this month',
     });
+    const unrecorded = profile.loot.items.map((item) => ({
+      ...item,
+      ms_os: null,
+      reason: null,
+      votes_yes: null,
+      votes_no: null,
+      votes_officers: null,
+    }));
+    expect(lootRows({ ...profile, loot: { ...profile.loot, items: unrecorded } }, TZ, LOCALE)[0].source).toBe(
+      'Awarded Mon 30 Nov',
+    );
     expect(noteSub(profile.notes![0], TZ, LOCALE)).toBe('Kraggor · Sat 5 Dec');
     expect(noteSub({ ...profile.notes![0], author: null }, TZ, LOCALE)).toBe('An officer · Sat 5 Dec');
   });

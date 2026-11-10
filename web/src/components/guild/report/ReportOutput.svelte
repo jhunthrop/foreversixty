@@ -8,6 +8,7 @@
   import type { RaidReportParse } from '../../../lib/guild/attendance-contract';
   import { outputGroups } from '../../../lib/guild/report-night-view';
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
+  import { characterHrefOfKey } from '../../../lib/characters';
   import { classTone } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Figure from '../../ui/Figure.svelte';
@@ -28,7 +29,7 @@
   const groups = $derived(outputGroups(parses));
 </script>
 
-<Section title={copy.output.head} meta={copy.output.meta} anchor="raid-output" testid="raid-output">
+<Section title={copy.output.head} meta={copy.output.meta} anchor="raid-output" panel testid="raid-output">
   {#if groups.length === 0}
     <p class="text-muted text-[14px]" data-testid="raid-output-empty">
       {officer ? copy.output.officerEmpty : copy.output.memberEmpty}
@@ -48,6 +49,7 @@
                   titleTone={classTone(row.class)}
                   sub={row.sub}
                   selected={ownKeys.includes(row.character_key)}
+                  href={characterHrefOfKey(row.character_key, row.name)}
                   open
                   density="slim"
                 >

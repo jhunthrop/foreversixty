@@ -1,5 +1,5 @@
 <!-- web/src/components/guild/report/ReportPulls.svelte -->
-<!-- The report's one Plate (web layout spec 2026-11-05 §7.2 "Raid report"): every pull of the
+<!-- The report's Pulls panel (web layout spec 2026-11-05 §7.2 "Raid report"): every pull of the
      night as a Row (the boss and its pull number, or the trash pack; the time, the deaths and what
      killed them; the Kill, Wipe or Clear Tag). A pull with deaths opens them: from 1024 in the
      Inspector at the plate's right (the first wipe with deaths shows at once), below 1024 inline
@@ -12,7 +12,6 @@
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
   import { NO_SPELL_ICONS, loadSpellIcons, type SpellIconOf } from '../../../lib/guild/report-spell-icons';
   import Inspector from '../../ui/Inspector.svelte';
-  import Plate from '../../ui/Plate.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
   import Tag from '../../ui/Tag.svelte';
@@ -72,8 +71,15 @@
   {/if}
 {/snippet}
 
-<Section title={copy.pulls.head} meta={copy.pulls.count(rows.length)} anchor="report" testid="raid-report">
-  <Plate label={copy.pulls.caption} testid="raid-pulls">
+<Section
+  title={copy.pulls.head}
+  meta={copy.pulls.count(rows.length)}
+  anchor="report"
+  panel
+  flush
+  testid="raid-report"
+>
+  <div role="group" aria-label={copy.pulls.caption} data-testid="raid-pulls">
     {#if rows.length === 0}
       <p class="text-muted p-4 text-[14px]" data-testid="raid-pulls-empty">{copy.pulls.none}</p>
     {:else}
@@ -122,5 +128,5 @@
         {/if}
       </div>
     {/if}
-  </Plate>
+  </div>
 </Section>

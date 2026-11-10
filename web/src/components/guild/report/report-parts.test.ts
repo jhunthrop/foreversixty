@@ -144,11 +144,16 @@ describe('ReportAttendance', () => {
 });
 
 describe('ReportLoot', () => {
-  it('draws every award as an ItemRow with the boss and the winner', () => {
+  it('draws every award as an ItemRow with the winner, the boss only when the night had several', () => {
     const body = html(ReportLoot, { groups: report.loot, officer: true, lootHref: '/g#loot' });
     expect(count(body, 'raid-loot-row')).toBe(1);
     expect(text(body)).toContain('Head of Onyxia');
-    expect(text(body)).toContain('Onyxia · to Kraggor');
+    expect(text(body)).toContain('to Kraggor');
+    expect(text(body)).not.toContain('Onyxia · to Kraggor');
+    const twoBosses = [...report.loot, { ...report.loot[0], encounter_id: 663, boss: 'Lucifron' }];
+    expect(text(html(ReportLoot, { groups: twoBosses, officer: true, lootHref: '/g#loot' }))).toContain(
+      'Onyxia · to Kraggor',
+    );
   });
 
   it('points an officer at the Loot tab when nothing was awarded', () => {

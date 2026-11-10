@@ -11,12 +11,16 @@ import type { Page, Route } from '@playwright/test';
 import { expect } from '../test';
 import { storePointer } from '../selector';
 import type { GuildStateOpener } from '../guild-parity';
+import { serveRaidShell } from '../guild-raids';
+import { serveShell } from '../guild-recruit';
 
 const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../fixtures/guild-parity');
 const GUILD_PATH = '/guild/us/pvp/olympus-xxvii';
 const GUILD_ID = 2;
 /** guild_dense_data.NOW. */
 export const DENSE_NOW = new Date('2027-01-09T22:00:00Z');
+/** guild_dense_data.NIGHTS[-1]'s report. */
+const LAST_REPORT = 'olympusony0106';
 /** guild_dense_data.SELECTED_DROP. */
 const SELECTED_DROP = 17075;
 
@@ -48,11 +52,15 @@ function answers(viewer: Viewer): ReadonlyArray<[RegExp, (url: URL) => string]> 
     [/^\/me\/checklist$/, () => 'dense-checklist.json'],
     [/^\/officer\/actions$/, () => 'dense-actions.json'],
     [/^\/attendance\/recent$/, () => 'dense-attendance.json'],
-    [/^\/recruit$/, () => 'overview-recruit.json'],
-    [/^\/applications$/, () => 'recruit-applications.json'],
+    [/^\/recruit$/, () => 'dense-recruit.json'],
+    [/^\/applications$/, () => 'dense-applications.json'],
+    [/^\/applications\/mine$/, () => 'dense-applications-mine.json'],
+    [/^\/setup$/, () => 'dense-setup.json'],
     [/^\/loot$/, () => 'dense-loot-table.json'],
     [/^\/loot\/nights$/, () => 'dense-loot-nights.json'],
     [/^\/members\/[^/]+\/profile$/, () => 'dense-profile-member.json'],
+    [/^\/settings$/, () => 'dense-settings.json'],
+    [/^\/billing$/, () => 'dense-billing.json'],
     [/^\/loot\/drops\/\d+\/candidates$/, (url) => `dense-loot-drop-${url.pathname.split('/').at(-2)}.json`],
   ];
 }
@@ -93,6 +101,16 @@ async function openTab(page: Page, viewer: Viewer, hash: string, ready: string):
   await page.waitForLoadState('networkidle');
 }
 
+/** A view under the guild page (the raid page, Recruit, Applications), served the guild page's shell. */
+async function openView(page: Page, viewer: Viewer, view: string, ready: string): Promise<void> {
+  await routeDense(page, viewer);
+  await page.route(`**${GUILD_PATH}/raids/*`, serveRaidShell);
+  for (const shell of ['recruit', 'applications']) await page.route(`**${GUILD_PATH}/${shell}`, serveShell);
+  await page.goto(`${GUILD_PATH}/${view}`);
+  await expect(page.getByTestId(ready)).toBeVisible();
+  await page.waitForLoadState('networkidle');
+}
+
 async function openLoot(page: Page): Promise<void> {
   await openTab(page, 'officer', '#loot', 'guild-loot-fairness');
   await page.getByTestId(`guild-loot-drop-${SELECTED_DROP}`).click();
@@ -107,4 +125,20 @@ export const DENSE_OPENERS: Readonly<Record<string, GuildStateOpener>> = {
   'dense-roster-member': (page) => openTab(page, 'member', '#roster', 'guild-roster-board'),
   'dense-readiness': (page) => openTab(page, 'officer', '#readiness', 'guild-readiness-board'),
   'dense-loot': openLoot,
+  // The last night open: its pulls and who was absent or benched.
+  'dense-raids': async (page) => {
+    await openTab(page, 'officer', '#raids', 'guild-raids-rows');
+    const night = page.getByTestId(`guild-raid-row-${LAST_REPORT}`);
+    // The row's button answers once the tab's chunk has hydrated; press until the night opens.
+    await expect(async () => {
+      if ((await night.getAttribute('aria-expanded')) !== 'true') await night.click();
+      await expect(page.getByTestId(`guild-raid-misses-${LAST_REPORT}`)).toBeVisible({ timeout: 1000 });
+    }).toPass();
+  },
+  'dense-progression': (page) => openTab(page, 'officer', '#progression', 'guild-progression-tab'),
+  'dense-settings': (page) => openTab(page, 'officer', '#settings', 'guild-settings-records'),
+  'dense-planner': (page) => openView(page, 'officer', 'raids/45', 'raid-signups'),
+  'dense-raid-member': (page) => openView(page, 'member', 'raids/45', 'raid-signups'),
+  'dense-recruit': (page) => openView(page, 'officer', 'recruit', 'guild-recruit-card'),
+  'dense-applications': (page) => openView(page, 'officer', 'applications', 'guild-applications-plate'),
 };

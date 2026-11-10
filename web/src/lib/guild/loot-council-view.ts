@@ -10,6 +10,7 @@ import { raidsAttended } from './attendance-copy';
 import type { GuildLootItem, GuildLootRaid } from './api';
 import type { SelectOption } from '../ui/listbox-model';
 import type {
+  AwardRecord,
   DropKind,
   LootCouncilCandidate,
   LootDecision,
@@ -247,15 +248,40 @@ export function decisionTitle(decision: LootDecision): string {
   return `${decision.item_name} to ${decision.name}`;
 }
 
+/** The record's own parts: "Off spec" when it went off spec (main spec is the rule, so it is not
+ *  named), then "3 yes, 0 no of 4"; a part the award never kept is left out. */
+export function recordParts(record: AwardRecord): string[] {
+  const parts: string[] = [];
+  if (record.ms_os === 'os') parts.push(capitalized(MS_OS_WORD[record.ms_os]));
+  if (record.votes_yes !== null && record.votes_no !== null) {
+    const of = record.votes_officers === null ? '' : ` of ${record.votes_officers}`;
+    parts.push(`${record.votes_yes} yes, ${record.votes_no} no${of}`);
+  }
+  return parts;
+}
+
+/** The votes, short: "3 of 3 yes" when nobody said no, "3 yes, 1 no of 4" when someone did
+ *  ('' when the award kept none). */
+function votesShort(record: AwardRecord): string {
+  const { votes_yes: yes, votes_no: no, votes_officers: officers } = record;
+  if (yes === null || no === null) return '';
+  const of = officers === null ? '' : ` of ${officers}`;
+  return no === 0 ? `${yes}${of} yes` : `${yes} yes, ${no} no${of}`;
+}
+
+/** Why a drop went where it did, in one short line: "Off spec · 3 of 3 yes · Best in slot" (off
+ *  spec only when it went off spec, the votes, the officer's reason); '' for an award made
+ *  before the council kept records. */
+export function recordLine(record: AwardRecord): string {
+  const reason = record.reason?.trim() ?? '';
+  return [record.ms_os === 'os' ? capitalized(MS_OS_WORD.os) : '', votesShort(record), reason]
+    .filter((part) => part !== '')
+    .join(' · ');
+}
+
 /** "3 yes, 0 no of 4 · by Ironbrand · Tue 8 Dec" ("Off spec · ..." when it went off spec); parts the award never kept are left out. */
 export function decisionSub(decision: LootDecision, timeZone?: string): string {
-  const parts: string[] = [];
-  // Main spec is the rule; the record names the spec only when it went off spec.
-  if (decision.ms_os === 'os') parts.push(capitalized(MS_OS_WORD[decision.ms_os]));
-  if (decision.votes_yes !== null && decision.votes_no !== null) {
-    const of = decision.votes_officers === null ? '' : ` of ${decision.votes_officers}`;
-    parts.push(`${decision.votes_yes} yes, ${decision.votes_no} no${of}`);
-  }
+  const parts = recordParts(decision);
   if (decision.awarded_by !== '') parts.push(`by ${decision.awarded_by}`);
   const at = new Date(decision.at);
   if (!Number.isNaN(at.getTime()))

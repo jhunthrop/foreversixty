@@ -10,8 +10,7 @@ export const adminLinksCopy = {
   notOwner: 'This page is for the site’s owner. Your account can’t see the links.',
   loadFailed: 'The links didn’t load.',
   tableTitle: 'Your links',
-  tableMeta: (count: number): string =>
-    `${count} ${count === 1 ? 'link' : 'links'} · clicks since each was made`,
+  tableMeta: (count: number): string => `${count} ${count === 1 ? 'link' : 'links'}`,
   empty: 'No links yet. Make the first one below.',
   columns: {
     link: 'Link',
@@ -39,9 +38,7 @@ export const adminLinksCopy = {
   slugLabel: 'Slug',
   slugHint: 'Lowercase letters, digits and dashes. It becomes foreversixty.gg/go/your-slug.',
   targetLabel: 'Sends people to',
-  targetHint: 'A page on this site, like / or /guides.',
   labelLabel: 'Label',
-  labelHint: 'What the table calls it, like “Reddit: r/classicwow”.',
   create: 'Make link',
   creating: 'Saving',
   created: (slug: string): string => `foreversixty.gg/go/${slug} is live.`,

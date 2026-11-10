@@ -188,6 +188,7 @@ export function buildMockProfile(name = 'Zulmara', officer = false): MemberProfi
         { raid_id: 11, starts_at: '2026-12-01T02:00:00Z', outcome: 'absent', excused: false },
         { raid_id: 12, starts_at: '2026-12-03T02:00:00Z', outcome: 'late', excused: false },
       ],
+      streak: 1,
     },
     loot: {
       count: 1,
@@ -199,10 +200,27 @@ export function buildMockProfile(name = 'Zulmara', officer = false): MemberProfi
           quality: 4,
           raid_id: 11,
           awarded_at: '2026-12-01T04:00:00Z',
+          ms_os: 'ms',
+          reason: 'Best in slot, every night this month',
+          votes_yes: 3,
+          votes_no: 1,
+          votes_officers: 4,
         },
       ],
+      guild_median: 2,
+      nights_since: 1,
     },
     readiness,
+    upgrades: [
+      {
+        slot: 'hands',
+        item_id: 16852,
+        name: "Giantstalker's Gloves",
+        source: 'Molten Core: Shazzrah',
+        gain_dps: 11.4,
+      },
+      { slot: 'waist', item_id: 16851, name: "Giantstalker's Belt", source: 'Molten Core', gain_dps: null },
+    ],
     ...(officer ? { notes: buildMockNotes() } : {}),
   };
 }

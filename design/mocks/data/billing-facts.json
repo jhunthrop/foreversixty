@@ -99,15 +99,13 @@
    "slugLabel": "Slug",
    "slugHint": "Lowercase letters, digits and dashes. It becomes foreversixty.gg/go/your-slug.",
    "targetLabel": "Sends people to",
-   "targetHint": "A page on this site, like / or /guides.",
    "labelLabel": "Label",
-   "labelHint": "What the table calls it, like “Reddit: r/classicwow”.",
    "create": "Make link",
    "creating": "Saving",
    "created": "[fn]",
    "createFailed": "That link wasn’t saved; try again."
   },
-  "meta": "3 links · clicks since each was made",
+  "meta": "3 links",
   "rows": [
    {
     "slug": "reddit-sim",

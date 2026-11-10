@@ -560,7 +560,11 @@
         "class": "priest",
         "spec": "Holy",
         "role": "healer",
-        "state": "in"
+        "state": "in",
+        "verified": true,
+        "spec_key": "priest-holy",
+        "raid_spec": null,
+        "default_spec": "priest-holy"
       }
     ]
   },

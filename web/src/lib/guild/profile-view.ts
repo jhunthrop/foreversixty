@@ -3,7 +3,14 @@
 // know about this raider?"): the head's facts and figures, the gear gap in the BiS page's unit
 // (totals, as the API gives them), the last 4 nights as a Grid row, loot this tier and the notes.
 // Pure, so a test pins the words; the notes are never read for a member (the API leaves them out).
+import { characterHrefOfKey } from '../characters';
 import type { GridCell, GridRowModel } from '../ui/cells';
+import type { Fact } from '../ui/facts';
+import type { GainFigure } from '../ui/primitives';
+import type { GuildReadinessGearGap, GuildReadinessRow } from './api';
+import { recordLine } from './loot-council-view';
+import { enchantSlotLabel } from './readiness-view';
+import { ratedOf } from './report-night-copy';
 import { outputFigure, topOutputLabel } from './output-figure';
 import { dateLabel } from './raid-time';
 import { specClassName } from './spec-name';
@@ -60,32 +67,163 @@ export function profileFigures(profile: MemberProfile): ProfileFigure[] {
   return figures;
 }
 
-export interface GapLine {
-  key: string;
-  text: string;
-  tone: 'strong' | 'muted';
-}
-
 const UNIT_WORD = { dps: 'DPS', hps: 'HPS', tps: 'TPS' } as const;
 
-/** The gear gap's totals in the BiS page's unit; a healer or tank (no unit) gets the count alone. */
-export function gearGapLines(profile: MemberProfile): GapLine[] | null {
-  const gap = profile.readiness?.gear_gap;
-  if (gap === undefined || gap === null) return null;
+/** The gear gap in the BiS page's unit: the upgrade count, the gain under it for a damage spec. */
+function gearFact(gap: GuildReadinessGearGap | null): Fact {
+  const id = 'gear';
+  const label = copy.ready.gear;
+  if (gap === null) return { id, label, value: copy.ready.notRead, muted: true };
   const upgrades = gap.upgrades ?? 0;
-  if (upgrades === 0) return [{ key: 'none', text: copy.noGap, tone: 'muted' }];
-  const lines: GapLine[] = [{ key: 'upgrades', text: copy.upgrades(upgrades), tone: 'strong' }];
-  if (gap.unit !== null && gap.gain_dps !== null && gap.gain_dps > 0) {
-    lines.push({
-      key: 'gain',
-      text: copy.gain(gap.gain_dps.toFixed(1), UNIT_WORD[gap.unit]),
-      tone: 'strong',
-    });
+  if (upgrades === 0) return { id, label, value: copy.ready.noUpgrades };
+  const gain =
+    gap.unit !== null && gap.gain_dps !== null && gap.gain_dps > 0
+      ? copy.gain(gap.gain_dps.toFixed(1), UNIT_WORD[gap.unit])
+      : '';
+  const unchecked = gap.not_sim_checked > 0 ? copy.notSimChecked(gap.not_sim_checked) : '';
+  const sub = [gain, unchecked].filter((part) => part !== '').join(SEP);
+  return { id, label, value: copy.upgrades(upgrades), ...(sub === '' ? {} : { sub }) };
+}
+
+function enchantsFact(row: GuildReadinessRow): Fact {
+  const { checked, missing_slots: missing } = row.enchants;
+  const value = !checked
+    ? copy.ready.notRead
+    : missing.length === 0
+      ? copy.ready.allEnchanted
+      : copy.ready.missing(missing.map(enchantSlotLabel));
+  return { id: 'enchants', label: copy.ready.enchants, value, muted: !checked };
+}
+
+/** The bags: what the export names (a flask or raid elixir, buff food), else the stocked state. */
+function bagsFact(row: GuildReadinessRow): Fact {
+  const id = 'bags';
+  const label = copy.ready.bags;
+  const named = row.flask_food;
+  if (named != null) {
+    const lacks = [
+      named.flask_or_elixir ? '' : copy.ready.noFlask,
+      named.food ? '' : copy.ready.noFood,
+    ].filter((part) => part !== '');
+    return { id, label, value: lacks.length === 0 ? copy.ready.flaskAndFood : lacks.join(SEP) };
   }
-  if (gap.not_sim_checked > 0) {
-    lines.push({ key: 'unchecked', text: copy.notSimChecked(gap.not_sim_checked), tone: 'muted' });
-  }
-  return lines;
+  const state = row.consumables.state;
+  return { id, label, value: copy.ready.consumables[state], muted: state === 'unknown' };
+}
+
+function talentsFact(row: GuildReadinessRow): Fact {
+  const unread = row.talent_points_read === false;
+  const value = unread
+    ? copy.ready.notRead
+    : row.talent_points_unspent === 0
+      ? copy.ready.allSpent
+      : copy.ready.unspent(row.talent_points_unspent);
+  return { id: 'talents', label: copy.ready.talents, value, muted: unread };
+}
+
+function attunementFacts(row: GuildReadinessRow): Fact[] {
+  if (row.attuned !== true && row.attuned !== false) return [];
+  const value = row.attuned ? copy.ready.attuned : copy.ready.notAttuned;
+  return [{ id: 'attuned', label: copy.ready.attunement, value }];
+}
+
+function itemLevelFacts(row: GuildReadinessRow): Fact[] {
+  if (row.item_level === null) return [];
+  const delta = row.item_level_delta;
+  // The median only where it says something: a raider at it reads the figure alone.
+  const sub = delta === null || delta === 0 ? {} : { sub: copy.ready.median(row.item_level - delta) };
+  return [{ id: 'ilvl', label: copy.figures.itemLevel, value: String(row.item_level), ...sub }];
+}
+
+/**
+ * Raid ready, as an officer reads it before a raid: the gear gap, enchants, the bags, talents, the
+ * attunement (officers only, when known), item level against the guild's median and the last
+ * export. Null when the guild can read nothing of theirs.
+ */
+/** Their top fight in Raid ready: the boss, and the fight's rating under it when the log has one. */
+function topFightFacts(profile: MemberProfile): Fact[] {
+  const parse = profile.member?.best_parse;
+  if (parse === undefined || parse === null || parse.encounter === '') return [];
+  const sub = parse.percentile === null ? {} : { sub: ratedOf(parse.percentile) };
+  return [{ id: 'fight', label: copy.ready.topFight, value: parse.encounter, ...sub }];
+}
+
+/** Raid ready's roll-up beside its heading: how many checks they fail; null when none does (the
+ *  rows already read clean) or with no export. */
+export function readyTag(profile: MemberProfile): { tone: 'warn'; text: string } | null {
+  const row = profile.readiness;
+  if (row === null || row.failing === 0) return null;
+  return { tone: 'warn', text: copy.ready.toFix(row.failing) };
+}
+
+export function readyFacts(profile: MemberProfile, viewerTz: string, locale: string): Fact[] | null {
+  const row = profile.readiness;
+  if (row === null) return null;
+  const logged: Fact = {
+    id: 'logged',
+    label: copy.ready.logged,
+    value: dateLabel(new Date(row.logged_at), viewerTz, locale),
+  };
+  return [
+    gearFact(row.gear_gap),
+    enchantsFact(row),
+    bagsFact(row),
+    talentsFact(row),
+    ...attunementFacts(row),
+    ...itemLevelFacts(row),
+    ...topFightFacts(profile),
+    logged,
+  ];
+}
+
+export interface UpgradeRowModel {
+  key: string;
+  itemId: number;
+  name: string;
+  /** "Wrist · Silverwing Sentinels": the slot in the client's words, where it comes from. */
+  sub: string;
+  /** "+6.2 DPS" in the BiS page's unit, "Not simmed" without a measured gain; null for a healer or
+   *  tank, whose list measures no gain. */
+  gain: GainFigure | null;
+}
+
+/** Their next upgrades, the biggest known gain first (the API's order): what to chase and where. */
+export function upgradeRows(profile: MemberProfile): UpgradeRowModel[] {
+  const unit = profile.readiness?.gear_gap?.unit ?? null;
+  return profile.upgrades.map((up) => ({
+    key: `${up.slot}-${up.item_id}`,
+    itemId: up.item_id,
+    name: up.name,
+    sub: [enchantSlotLabel(up.slot), up.source].filter((part) => part !== '').join(SEP),
+    gain:
+      unit === null
+        ? null
+        : up.gain_dps === null
+          ? { value: copy.notSimmed, tone: 'muted' }
+          : { value: `+${up.gain_dps.toFixed(1)}`, unit: UNIT_WORD[unit] },
+  }));
+}
+
+export interface ProfileCharacterRow {
+  key: string;
+  name: string;
+  classSlug: string;
+  main: boolean;
+  /** Their character page; null for a key the site cannot route. */
+  href: string | null;
+}
+
+/** Every character of theirs the guild knows, the main first. */
+export function characterRows(profile: MemberProfile): ProfileCharacterRow[] {
+  return [...profile.characters]
+    .sort((a, b) => Number(b.is_main) - Number(a.is_main))
+    .map((character) => ({
+      key: character.character_key,
+      name: character.name,
+      classSlug: character.class ?? '',
+      main: character.is_main,
+      href: characterHrefOfKey(character.character_key, character.name) ?? null,
+    }));
 }
 
 function nightCell(night: ProfileNight): GridCell {
@@ -127,7 +265,13 @@ export function attendanceView(
   }
   const nights = [...att.nights].sort((a, b) => a.starts_at.localeCompare(b.starts_at));
   const thirty = att.last_30;
-  const line = thirty === null || thirty.nights === 0 ? '' : copy.lastThirty(thirty.present, thirty.nights);
+  const streak = att.streak > 1 ? copy.streak(att.streak) : '';
+  const line = [
+    thirty === null || thirty.nights === 0 ? '' : copy.lastThirty(thirty.present, thirty.nights),
+    streak,
+  ]
+    .filter((part) => part !== '')
+    .join(SEP);
   if (nights.length === 0) return { columns: [], rows: [], line: line === '' ? copy.noNights : line };
   return {
     columns: nights.map((night) => dateLabel(new Date(night.starts_at), viewerTz, locale)),
@@ -155,8 +299,22 @@ export function lootRows(profile: MemberProfile, viewerTz: string, locale: strin
       name: item.name ?? `Item ${item.item_id}`,
       quality: item.quality ?? 1,
       icon: item.icon === null || item.icon === '' ? undefined : item.icon,
-      source: copy.awarded(dateLabel(new Date(item.awarded_at), viewerTz, locale)),
+      source: [copy.awarded(dateLabel(new Date(item.awarded_at), viewerTz, locale)), recordLine(item)]
+        .filter((part) => part !== '')
+        .join(SEP),
     }));
+}
+
+/** The loot panel's fairness lines: the guild's median (the meta) and the raids they came to since
+ *  their last item (null in reports mode, where nights are not kept one by one). */
+export function lootFairness(profile: MemberProfile): { median: string; since: string | null } {
+  const since = profile.loot.nights_since;
+  return {
+    // A median of none says nothing yet (one night in): the meta waits for one item a raider.
+    median: profile.loot.guild_median > 0 ? copy.guildMedian(profile.loot.guild_median) : '',
+    // None since an item awarded on the last raid says nothing: the loot row already dates it.
+    since: since === null || since === 0 ? null : copy.nightsSince(since, profile.loot.count > 0),
+  };
 }
 
 /** "Ironbrand · Wed 2 Dec": who wrote it and when; "An officer" for one who left. */

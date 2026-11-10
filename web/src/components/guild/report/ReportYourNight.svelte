@@ -39,7 +39,7 @@
     );
 </script>
 
-<Section title={copy.head} id="raid-your-night" testid="raid-your-night">
+<Section title={copy.head} id="raid-your-night" panel testid="raid-your-night">
   <ul>
     {#each rows as row (row.character_key)}
       {@const facts = yourNightFacts(row, report, raid.guild_timezone, locale)}

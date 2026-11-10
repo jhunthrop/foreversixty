@@ -11,6 +11,7 @@ import {
   yourNightRows,
   yourNightSentence,
 } from './night';
+import { NO_AWARD_RECORD } from '../../test-support/award-record';
 
 const CHICAGO = 'America/Chicago';
 const SPEC = new URL('../../../../design/specs/2026-10-27-guild-attendance.md', import.meta.url);
@@ -52,7 +53,7 @@ describe('groupAttendance', () => {
     expect(groups.map((g) => g.label)).toEqual([
       'Signed up, not in the log',
       'Late',
-      'Joined from the bench or without a sign-up',
+      'Joined',
       'Present',
       'Bench and out',
     ]);
@@ -249,6 +250,7 @@ describe('discordReportText', () => {
     class: 'mage',
     by_name: 'Boss',
     at: '',
+    ...NO_AWARD_RECORD,
   });
   const full: RaidReport = {
     headline: { kills: 1, wipes: 2, attempts: 3, deaths: 9 },

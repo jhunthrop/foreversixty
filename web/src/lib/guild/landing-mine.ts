@@ -5,14 +5,18 @@
 // a page.
 import type { Me } from '../account/api';
 import { guildHref, isRegion, isRuleset, rulesetLabel } from '../characters';
-import { guildRosterModelCopy } from './copy';
+import { guildLandingCopy, guildRosterModelCopy } from './copy';
+import { guildMarkSrc } from './mark';
 
 export interface MyGuildRow {
   key: string;
   name: string;
   href: string;
-  /** `US PvP`: where the guild lives, the way the lookup's own selects write it. */
+  /** `US PvP · 24 members`: where the guild lives, the way the lookup's own selects write it, and
+   *  its roster when the API counts it. */
   where: string;
+  /** The guild's mark (its crest, else its faction's logo); null with neither. */
+  mark: string | null;
   /** The account's rank there (`Officer`), as the roster writes it; null when /v1/me sends none. */
   rank: string | null;
 }
@@ -25,7 +29,11 @@ export function myGuildRows(me: Me | null): MyGuildRow[] {
     key: `${guild.region}-${guild.ruleset}-${guild.id}`,
     name: guild.name,
     href: guildHref(guild.region, guild.ruleset, guild.name),
-    where: `${guild.region.toUpperCase()} ${rulesetLabel(guild.ruleset)}`,
+    where: guildLandingCopy.mineWhere(
+      `${guild.region.toUpperCase()} ${rulesetLabel(guild.ruleset)}`,
+      guild.roster_count ?? null,
+    ),
+    mark: guildMarkSrc(guild),
     rank: guild.rank === undefined ? null : (RANKS[guild.rank] ?? null),
   }));
 }

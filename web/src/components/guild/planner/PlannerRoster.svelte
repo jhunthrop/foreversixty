@@ -11,7 +11,10 @@
   import type { OfficerLine } from '../../../lib/guild/raid-page-types';
   import { plannerGroups, type PlannerGrouping } from '../../../lib/guild/raid-planner-view';
   import type { RosterRow } from '../../../lib/guild/raid-roster';
+  import type { PlannerFacts } from '../../../lib/guild/planner-facts';
   import PlannerRow from './PlannerRow.svelte';
+  import AttendanceStrip from '../dense/AttendanceStrip.svelte';
+  import { PLANNER_FACT_COLUMNS, PLANNER_FACT_HEADS } from './planner-columns';
 
   let {
     raid,
@@ -22,8 +25,11 @@
     closed = false,
     busyKey = null,
     line = null,
+    facts = null,
     onSetState,
   }: {
+    /** Each sign-up's figures by character key; null draws none. */
+    facts?: ReadonlyMap<string, PlannerFacts> | null;
     raid: GuildRaidView;
     grouping: PlannerGrouping;
     officer: boolean;
@@ -56,6 +62,15 @@
     {#if empty}
       <p class="text-muted py-3 text-[14px]" data-testid="raid-roster-empty">Nobody has signed up yet.</p>
     {:else}
+      {#if facts !== null}
+        <div class="hidden items-center justify-between gap-4 pt-1 lg:flex">
+          {#if [...facts.values()].some((f) => f.cells !== null)}<AttendanceStrip legend />{:else}<span
+            ></span>{/if}
+          <span class="{PLANNER_FACT_COLUMNS} text-label text-muted grid font-bold" aria-hidden="true">
+            {#each PLANNER_FACT_HEADS as head (head)}<span>{head}</span>{/each}
+          </span>
+        </div>
+      {/if}
       {#each groups as group (group.id)}
         <div class="pb-1" data-testid={`raid-roster-${group.id}`}>
           <h3
@@ -77,6 +92,7 @@
                   describedBy={officerTools ? undefined : gateId}
                   busy={busyKey === row.character_key}
                   refusal={line?.control === `roster:${row.character_key}` ? line.message : null}
+                  facts={facts?.get(row.character_key) ?? null}
                   onSetState={setState}
                 />
               {/each}

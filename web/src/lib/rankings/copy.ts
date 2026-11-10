@@ -36,6 +36,10 @@ export const homeTopGuildsCopy = {
   emptyHref: '/guild',
   /** "1 boss", "12 bosses": the count beside each guild. */
   bosses: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'}`,
+  /** The guild landing's figure: "1 boss down". */
+  bossesDown: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'} down`,
+  /** The guild landing's row line after where the guild lives: its newest kill. */
+  lastKill: (day: string): string => `last kill ${day}`,
 } as const;
 
 /** Spec 2026-09-25 §6: every ranking board's own empty state, character or guild: what is

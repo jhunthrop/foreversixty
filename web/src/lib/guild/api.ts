@@ -1122,6 +1122,10 @@ export interface GuildProgressionPullsByNight {
   date: string;
   pulls: number;
   killed: boolean;
+  /** The night's fastest kill; null on a night without one. */
+  kill_ms: number | null;
+  /** Every death across the night's pulls on the encounter. */
+  deaths: number;
 }
 
 export interface GuildProgressionEncounter {

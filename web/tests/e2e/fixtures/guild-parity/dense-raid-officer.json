@@ -560,7 +560,11 @@
         "class": "hunter",
         "spec": "Beast Mastery",
         "role": "dps",
-        "state": "in"
+        "state": "in",
+        "verified": true,
+        "spec_key": "hunter-beast-mastery",
+        "raid_spec": null,
+        "default_spec": "hunter-beast-mastery"
       }
     ]
   },

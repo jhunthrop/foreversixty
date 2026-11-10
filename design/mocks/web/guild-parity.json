@@ -6,11 +6,6 @@
   },
   "states": [
     {
-      "id": "raid",
-      "path": "/guild/us/pvp/olympus-xxvii/raids/41",
-      "mock": "web-guild-raid.html"
-    },
-    {
       "id": "report",
       "path": "/guild/us/pvp/olympus-xxvii/raids/40",
       "mock": "web-guild-report.html"
@@ -21,19 +16,9 @@
       "mock": "web-guild-recruit.html"
     },
     {
-      "id": "applications",
-      "path": "/guild/us/pvp/olympus-xxvii/applications",
-      "mock": "web-guild-applications.html"
-    },
-    {
       "id": "profile",
       "path": "/guild/us/pvp/olympus-xxvii/members/u%3A1016",
       "mock": "web-guild-profile.html"
-    },
-    {
-      "id": "progression",
-      "path": "/guild/us/pvp/olympus-xxvii#progression",
-      "mock": "web-guild-progression.html"
     },
     {
       "id": "before-raids",
@@ -73,37 +58,7 @@
     {
       "id": "claim",
       "path": "/guild/us/pvp/olympus-xxvii/claim",
-      "mock": "web-guild-claim.html"
-    },
-    {
-      "id": "raids",
-      "path": "/guild/us/pvp/olympus-xxvii#raids",
-      "mock": "web-guild-raids.html"
-    },
-    {
-      "id": "raids-plan",
-      "path": "/guild/us/pvp/olympus-xxvii#raids",
-      "mock": "web-guild-raids-plan.html"
-    },
-    {
-      "id": "assignments",
-      "path": "/guild/us/pvp/olympus-xxvii/raids/41",
-      "mock": "web-guild-assignments.html"
-    },
-    {
-      "id": "settings",
-      "path": "/guild/us/pvp/olympus-xxvii#settings",
-      "mock": "web-guild-settings.html"
-    },
-    {
-      "id": "settings-bot",
-      "path": "/guild/us/pvp/olympus-xxvii#settings",
-      "mock": "web-guild-settings-bot.html"
-    },
-    {
-      "id": "settings-page",
-      "path": "/guild/us/pvp/olympus-xxvii/settings",
-      "mock": "web-guild-settings-page.html"
+      "mock": "web-guild-claim-done.html"
     }
   ]
 }

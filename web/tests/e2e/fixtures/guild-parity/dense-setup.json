@@ -1,0 +1,103 @@
+{
+  "steps": [
+    {
+      "key": "officer_ranks",
+      "state": "done",
+      "marked": false
+    },
+    {
+      "key": "discord_bot",
+      "state": "done",
+      "marked": false
+    },
+    {
+      "key": "recruiting",
+      "state": "done",
+      "marked": false
+    },
+    {
+      "key": "raid_schedule",
+      "state": "done",
+      "marked": false
+    },
+    {
+      "key": "invite_link",
+      "state": "done",
+      "marked": false
+    },
+    {
+      "key": "addon_sync",
+      "state": "done",
+      "marked": false
+    },
+    {
+      "key": "report_visibility",
+      "state": "done",
+      "marked": false
+    },
+    {
+      "key": "linked_role",
+      "state": "todo",
+      "marked": false
+    }
+  ],
+  "done": 7,
+  "total": 8,
+  "finished": false,
+  "plan": "raid_guild",
+  "ranks": {
+    "officer_max_rank_index": 1,
+    "officers": 3,
+    "ranks": [
+      {
+        "rank_index": 0,
+        "members": 1,
+        "names": ["Ironbrand"]
+      },
+      {
+        "rank_index": 1,
+        "members": 2,
+        "names": ["Dunmaro", "Shiverknife"]
+      },
+      {
+        "rank_index": 2,
+        "members": 37,
+        "names": ["Thornwicke", "Valomira", "Seraphine"]
+      }
+    ]
+  },
+  "discord": {
+    "bot_available": true,
+    "installed": true,
+    "server_name": "Olympus XXVII",
+    "channel_name": "raid-signups",
+    "recruit_channel_name": "recruitment",
+    "webhook_connected": false,
+    "linked_members": 31,
+    "members": 40
+  },
+  "recruiting": {
+    "open": true,
+    "pitch": true,
+    "nights": "Wed, 8:00 pm to 11:00 pm CST",
+    "wanted": ["warrior-protection", "paladin-holy", "priest-holy", "warlock-destruction"],
+    "role_set": false
+  },
+  "schedule": {
+    "timezone": "America/Chicago",
+    "planned": 2,
+    "next": "2027-01-14T02:00:00Z"
+  },
+  "invite": {
+    "made": true,
+    "joined": 39
+  },
+  "sync": {
+    "synced": 38,
+    "accounts": 40,
+    "window_days": 14,
+    "missing": ["Voidcall", "Skyarcana"]
+  },
+  "visibility": "guild",
+  "readiness": null
+}
