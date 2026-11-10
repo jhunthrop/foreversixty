@@ -356,7 +356,8 @@ test.describe('the report and attendance, officer (web layout spec 2026-11-05 §
   test('no character sheets and no loot each read their line, never red', async ({ page }) => {
     await openRaid(page, officerDone({ nights: { [ONYXIA_ID]: storedNight({ report: bareReport() }) } }));
     await expect(page.getByTestId('raid-consumables-grid')).toHaveCount(0);
-    await expect(page.getByTestId('raid-consumables-unknown')).toHaveCount(4);
+    // One reason, said once, naming every pull it covers.
+    await expect(page.getByTestId('raid-consumables-unknown')).toHaveCount(1);
     await expect(page.getByTestId('raid-consumables')).not.toContainText(
       attendanceCopy.consumables.noBuffData,
     );

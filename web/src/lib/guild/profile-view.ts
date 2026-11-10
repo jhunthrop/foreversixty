@@ -128,7 +128,8 @@ function attunementFacts(row: GuildReadinessRow): Fact[] {
 function itemLevelFacts(row: GuildReadinessRow): Fact[] {
   if (row.item_level === null) return [];
   const delta = row.item_level_delta;
-  const sub = delta === null ? {} : { sub: copy.ready.median(row.item_level - delta) };
+  // The median only where it says something: a raider at it reads the figure alone.
+  const sub = delta === null || delta === 0 ? {} : { sub: copy.ready.median(row.item_level - delta) };
   return [{ id: 'ilvl', label: copy.figures.itemLevel, value: String(row.item_level), ...sub }];
 }
 

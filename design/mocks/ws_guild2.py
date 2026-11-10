@@ -563,7 +563,8 @@ def _ready_facts(ilvl):
     sub = lambda text: f'<small class="t-small" style="display:block;font-weight:400">{text}</small>'
     rows = [('Gear', f'{gap["upgrades"]} upgrades' + sub(f'+{gap["gain_dps"]:.1f} {gap["unit"].upper()}')),
             ('Enchants', 'All enchanted'), ('Bags', 'Flask and food'), ('Talents', 'All spent'), ('Attunement', 'Attuned'),
-            ('Item level', f'{ilvl}' + sub(f'Guild median {ilvl}')), ('Top fight', 'Onyxia' + sub(f'rated {gd.PROFILE_PARSE[2]} of 100')),
+            # At the guild median, the item level reads the figure alone (readyFacts).
+            ('Item level', f'{ilvl}'), ('Top fight', 'Onyxia' + sub(f'rated {gd.PROFILE_PARSE[2]} of 100')),
             ('Last logged', _day(gd.NOW))]
     return '<dl class="gfacts">' + ''.join(f'<dt>{k}</dt><dd>{v}</dd>' for k, v in rows) + '</dl>'
 

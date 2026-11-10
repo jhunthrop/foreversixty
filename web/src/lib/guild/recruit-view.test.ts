@@ -259,6 +259,7 @@ describe('the member profile', () => {
     expect(value({ flask_food: null, consumables: { state: 'short' } }, 'bags')?.value).toBe('Short');
     expect(value({ talent_points_unspent: 3, talent_points_read: true }, 'talents')?.value).toBe('3 unspent');
     expect(value({ item_level: 64, item_level_delta: -4 }, 'ilvl')?.sub).toBe('Guild median 68');
+    expect(value({ item_level: 64, item_level_delta: 0 }, 'ilvl')?.sub).toBeUndefined();
     expect(value({ attuned: false }, 'attuned')?.value).toBe('Not attuned');
     expect(value({ attuned: null }, 'attuned')).toBeUndefined();
     expect(value({}, 'fight')).toMatchObject({ value: profile.member!.best_parse!.encounter });
