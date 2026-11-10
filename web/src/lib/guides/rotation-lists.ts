@@ -226,16 +226,36 @@ function neededSpells(gates: readonly AplGate[], spellFacts: SpellLookup): strin
   return names.length === 0 ? undefined : names;
 }
 
-/** A priority row's clause with the talents it is gated on that its note does not already
- *  name ("With Heating Up" on an Arcane Fireball line with no note). Only talent gates: an
- *  aura or resource condition is what the note explains. A gate the described build settles
- *  is not named: the card lists only that build's rows. */
-function withTalentGates(
+/** `clause` without a trailing ", with Unsealed Wrath" its authored text gives a gate the
+ *  described build settles: the addon panel's line names the talent, a card for one build
+ *  does not (the Retribution raid card read "after the opening Crusader Judgement, with
+ *  Unsealed Wrath" for a build that takes it). */
+function withoutSettledGateWords(
   clause: string,
   gates: readonly AplGate[],
   spellFacts: SpellLookup,
   settled: GateSettled,
 ): string {
+  return gates.reduce((text, gate) => {
+    const name = gate.kind === 'known' && settled(gate) ? spellFacts(gate.spellId)?.name : undefined;
+    const suffix = name === undefined ? undefined : `, ${gateWords(gate, name)}`;
+    return suffix !== undefined && text.toLowerCase().endsWith(suffix.toLowerCase())
+      ? text.slice(0, -suffix.length)
+      : text;
+  }, clause);
+}
+
+/** A priority row's clause with the talents it is gated on that its note does not already
+ *  name ("With Heating Up" on an Arcane Fireball line with no note). Only talent gates: an
+ *  aura or resource condition is what the note explains. A gate the described build settles
+ *  is not named, nor left in the authored clause: the card lists only that build's rows. */
+function withTalentGates(
+  authored: string,
+  gates: readonly AplGate[],
+  spellFacts: SpellLookup,
+  settled: GateSettled,
+): string {
+  const clause = withoutSettledGateWords(authored, gates, spellFacts, settled);
   const words = gates.flatMap((gate) => {
     const name = gate.kind === 'known' && !settled(gate) ? spellFacts(gate.spellId)?.name : undefined;
     return name === undefined || clause.toLowerCase().includes(name.toLowerCase())
