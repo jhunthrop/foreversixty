@@ -142,7 +142,8 @@ func (s *Store) bestParses(ctx context.Context, guildID int64) (map[string]BestP
 func (s *Store) bestParsesWhere(ctx context.Context, scope string, arg any) (map[string]BestParse, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select distinct on (m.player_key) m.player_key, coalesce(m.role, ''),
-		       m.metric_dps, m.metric_hps, coalesce(f.name, ''), m.report_id, m.fight_index
+		       m.metric_dps, m.metric_hps, coalesce(f.name, ''), m.report_id, m.fight_index,
+		       m.encounter_id, `+bracketColumns+`
 		from fight_metrics m
 		join reports r on r.id = m.report_id
 		join fights f on f.report_id = m.report_id and f.fight_index = m.fight_index
@@ -155,13 +156,17 @@ func (s *Store) bestParsesWhere(ctx context.Context, scope string, arg any) (map
 	}
 	defer rows.Close()
 	out := map[string]BestParse{}
+	brackets := map[string]parseBracket{}
 	for rows.Next() {
 		var (
 			key, role, encounter string
 			dps, hps             *float64
 			bp                   BestParse
+			encounterID          int64
+			bracket              parseBracket
 		)
-		if err := rows.Scan(&key, &role, &dps, &hps, &encounter, &bp.ReportID, &bp.FightIndex); err != nil {
+		if err := rows.Scan(&key, &role, &dps, &hps, &encounter, &bp.ReportID, &bp.FightIndex,
+			&encounterID, &bracket.Difficulty, &bracket.Spec, &bracket.Phase); err != nil {
 			return nil, fmt.Errorf("guilds: best parses: %w", err)
 		}
 		bp.Encounter = encounter
@@ -177,8 +182,33 @@ func (s *Store) bestParsesWhere(ctx context.Context, scope string, arg any) (map
 			}
 		}
 		out[key] = bp
+		brackets[key] = bracketOf(bracket, encounterID, bp.Metric)
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("guilds: best parses: %w", err)
+	}
+	rows.Close()
+	return s.placeBestParses(ctx, out, brackets)
+}
+
+// placeBestParses fills each best parse's percentile from one batched digest read: a new map,
+// best's rows with Percentile set where their bracket has a digest.
+func (s *Store) placeBestParses(ctx context.Context, best map[string]BestParse,
+	brackets map[string]parseBracket) (map[string]BestParse, error) {
+	keys := make([]parseBracket, 0, len(brackets))
+	for _, b := range brackets {
+		keys = append(keys, b)
+	}
+	digests, err := s.parseDigests(ctx, keys)
+	if err != nil {
+		return nil, err
+	}
+	out := make(map[string]BestParse, len(best))
+	for key, bp := range best {
+		bp.Percentile = placeParse(digests, brackets[key], bp.Value)
+		out[key] = bp
+	}
+	return out, nil
 }
 
 // ratingComponentScore is the one field toComponentDTOs' own JSON shape this reader needs -

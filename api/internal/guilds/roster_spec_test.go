@@ -70,3 +70,29 @@ func TestDescribeMembers(t *testing.T) {
 		}
 	}
 }
+
+// Each roster row carries the raid group it fights in (raidspec.Group), the rule the raid page's
+// sign-ups use: a Survival hunter is melee, a Feral tank a tank, a row with no spec none.
+func TestDescribeRosterRowsGroup(t *testing.T) {
+	cases := []struct {
+		name              string
+		class, spec, role *string
+		want              string
+	}{
+		{"a tank", strp("warrior"), strp("Protection"), strp("tank"), "tank"},
+		{"a healer", strp("priest"), strp("Holy"), nil, "healer"},
+		{"a Survival hunter fights in melee", strp("hunter"), strp("Survival"), strp("dps"), "melee"},
+		{"a Marksmanship hunter is ranged", strp("hunter"), strp("Marksmanship"), strp("dps"), "ranged"},
+		{"a Feral cat is melee", strp("druid"), strp("Feral"), strp("dps"), "melee"},
+		{"a withheld spec has no group", nil, nil, nil, "<nil>"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			rows := []RosterRow{{CharacterKey: "us/pvp/x", Class: tc.class, Spec: tc.spec, Role: tc.role}}
+			describeRosterRows(rows)
+			if got := specWord(rows[0].Group); got != tc.want {
+				t.Fatalf("group = %s, want %s", got, tc.want)
+			}
+		})
+	}
+}

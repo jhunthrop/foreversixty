@@ -12,7 +12,9 @@ import (
 )
 
 // ParseRow is one raider's parse on one boss kill. Rating is the fight's overall rating, null
-// when none was computed (an insufficient or not-yet-rated fight).
+// when none was computed (an insufficient or not-yet-rated fight). Percentile is where Value
+// stands among every ranked kill of the encounter for the raider's spec and metric, 0 to 100
+// (the rankings' figure), null when that bracket has no digest yet.
 type ParseRow struct {
 	CharacterKey string   `json:"character_key"`
 	Name         string   `json:"name"`
@@ -24,6 +26,7 @@ type ParseRow struct {
 	Metric       string   `json:"metric"`
 	Value        float64  `json:"value"`
 	Rating       *float64 `json:"rating"`
+	Percentile   *float64 `json:"percentile"`
 	own          bool
 }
 
@@ -31,6 +34,7 @@ func (s *Store) reportParses(ctx context.Context, vc raidViewContext, reportID s
 	rows, err := s.Pool.Query(ctx, `
 		select m.player_key, coalesce(m.player_name, ''), coalesce(lower(m.class), ''), coalesce(m.role, ''),
 		       m.encounter_id, coalesce(f.name, ''), m.fight_index, m.metric_dps::float8, m.metric_hps::float8,
+		       `+bracketColumns+`,
 		       (select rs.overall::float8 from rating_scores rs
 		         where rs.report_id = m.report_id and rs.fight_index = m.fight_index and rs.player_key = m.player_key
 		           and not coalesce(rs.insufficient, false) limit 1)
@@ -42,11 +46,13 @@ func (s *Store) reportParses(ctx context.Context, vc raidViewContext, reportID s
 	}
 	defer rows.Close()
 	out := []ParseRow{}
+	brackets := []parseBracket{}
 	for rows.Next() {
 		var p ParseRow
 		var dps, hps *float64
+		bracket := parseBracket{}
 		if err := rows.Scan(&p.CharacterKey, &p.Name, &p.Class, &p.Role, &p.EncounterID, &p.Encounter, &p.FightIndex,
-			&dps, &hps, &p.Rating); err != nil {
+			&dps, &hps, &bracket.Difficulty, &bracket.Spec, &bracket.Phase, &p.Rating); err != nil {
 			return nil, fmt.Errorf("guilds: report parses: %w", err)
 		}
 		p.Metric = roleMetric(p.Role)
@@ -57,11 +63,20 @@ func (s *Store) reportParses(ctx context.Context, vc raidViewContext, reportID s
 		if v != nil {
 			p.Value = *v
 		}
+		brackets = append(brackets, bracketOf(bracket, int64(p.EncounterID), p.Metric))
 		p.own = vc.ownsKey(p.CharacterKey)
 		out = append(out, p)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("guilds: report parses: %w", err)
+	}
+	rows.Close()
+	digests, err := s.parseDigests(ctx, brackets)
+	if err != nil {
+		return nil, err
+	}
+	for i := range out {
+		out[i].Percentile = placeParse(digests, brackets[i], out[i].Value)
 	}
 	sortParses(out)
 	return out, nil
