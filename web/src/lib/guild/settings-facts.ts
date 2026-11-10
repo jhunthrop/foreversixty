@@ -29,11 +29,8 @@ export function settingsFacts(setup: GuildSetup): SettingsFact[] {
       key: 'officers',
       title: `${ranks.officers} officers`,
       sub: officerRanks
-        .map(
-          (rank) =>
-            `${rank.rank_index === 0 ? 'Guild master' : `Rank ${rank.rank_index}`} ${rank.names.join(', ')}`,
-        )
-        .join(' · '),
+        .flatMap((rank) => rank.names.map((name) => (rank.rank_index === 0 ? `${name} (GM)` : name)))
+        .join(', '),
     });
   if (invite.made)
     facts.push({ key: 'invite', title: `${invite.joined} joined by the invite link`, sub: '' });

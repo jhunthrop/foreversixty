@@ -40,14 +40,13 @@ export function medianItemLevel(roster: readonly GuildRosterRow[]): number | nul
   return levels.length === 0 ? null : levels[Math.floor(levels.length / 2)];
 }
 
-/** A member's own checklist as the readiness board words its failures. */
+/** A member's own checklist as the readiness board words its failures: the same checks the
+ *  officer's readiness counts (the gain to BiS is not a shortfall for the raid). */
 export function checklistShortfalls(checklist: GuildChecklist): string[] {
   return checklist.items
     .filter((item) => item.state === 'fail')
     .flatMap((item): string[] => {
       switch (item.key) {
-        case 'gear_gap':
-          return [counted(item.upgrades ?? 0, 'upgrade')];
         case 'enchants':
           return [`${counted(item.missing_slots?.length ?? 0, 'enchant')} missing`];
         case 'flask_food':

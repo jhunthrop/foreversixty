@@ -20,7 +20,13 @@
   import { NO_PUBLIC_RAID_NIGHTS } from '../../lib/guild/overview-view';
   import { bossIdsOf } from '../../lib/guild/raid-view';
   import { fetchLootNights } from '../../lib/guild/loot-council-api';
-  import { awardsByReport, raidNightsMeta } from '../../lib/guild/raid-nights-table';
+  import {
+    ATTENDANCE_GRID_NIGHTS,
+    absentByRaid,
+    awardsByReport,
+    raidNightsMeta,
+  } from '../../lib/guild/raid-nights-table';
+  import { fetchRecentAttendance } from '../../lib/guild/overview-api';
   import Page from '../ui/Page.svelte';
   import Section from '../ui/Section.svelte';
   import { raidCopy } from '../../lib/guild/raid-copy';
@@ -152,6 +158,19 @@
       });
   });
 
+  /** Officers: raiders absent per guild raid (the attendance grid over every account). */
+  let absentByRaidId = $state<ReadonlyMap<number, number> | null>(null);
+  $effect(() => {
+    if (guildId === null || !officer) return;
+    void fetchRecentAttendance(guildId, ATTENDANCE_GRID_NIGHTS, true)
+      .then((grid) => {
+        absentByRaidId = absentByRaid(grid);
+      })
+      .catch(() => {
+        absentByRaidId = null;
+      });
+  });
+
   /** The open night: the table is the summary, a night's pulls open in place on a click or its
    *  deep link. */
   let expanded = $state<string | null>(null);
@@ -246,6 +265,7 @@
         {bossIds}
         {guildPath}
         {lootByReport}
+        absentByRaid={absentByRaidId}
         {expanded}
         onToggle={(id) => (expanded = expanded === id ? null : id)}
       />

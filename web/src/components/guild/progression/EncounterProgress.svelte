@@ -3,19 +3,15 @@
      kill and its night, how much faster than the first kill, deaths a pull, first kill), then
      every night it was pulled on one dense table, newest first: the kill time on a Meter against
      the slowest, that time against the night before, pulls, wipes and deaths. The guild's best
-     figure per role follows it. -->
+     figure per role is the rail's (BestByRole). -->
 <script lang="ts">
-  import type { GuildParseRef, GuildProgressionEncounter } from '../../../lib/guild/api';
+  import type { GuildProgressionEncounter } from '../../../lib/guild/api';
   import { progressionNightDay } from '../../../lib/guild/overview-view';
-  import { outputFigure, outputUnit } from '../../../lib/guild/output-figure';
   import { fasterSinceFirst, progressionNights, slowestKillMs } from '../../../lib/guild/progression-nights';
   import { deltaWords, killClock } from '../../../lib/guild/raid-nights-table';
-  import { specClassName } from '../../../lib/guild/spec-name';
-  import { classColorVar } from '../../../lib/report/format';
   import { counted } from '../../../lib/plural';
   import { SEP } from '../../../lib/guild/raid-copy';
   import type { StatFigure } from '../../../lib/ui/stat-table';
-  import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Meter from '../../ui/Meter.svelte';
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
@@ -27,13 +23,6 @@
   const slowest = $derived(slowestKillMs(nights));
   const faster = $derived(fasterSinceFirst(encounter));
   const bestNight = $derived(nights.find((n) => n.best) ?? null);
-  const ROLE_WORD = { tank: 'Tank', healer: 'Healer', dps: 'Damage' } as const;
-  const roles = $derived(
-    (['tank', 'healer', 'dps'] as const).flatMap((role) => {
-      const parse: GuildParseRef | undefined = encounter.best_by_role[role];
-      return parse === undefined ? [] : [{ role, parse }];
-    }),
-  );
   const DASH: StatFigure = { value: '–', muted: true };
   const columns = [
     { id: 'kill', label: 'Kill' },
@@ -90,29 +79,5 @@
         </StatRow>
       {/each}
     </StatTable>
-  {/if}
-  {#if roles.length > 0}
-    <div class="border-line-soft border-t" data-testid="guild-progression-best-parse">
-      <StatTable
-        columns={[{ id: 'figure', label: 'Best' }]}
-        nameHead={`Best on ${encounter.name}`}
-        bar={false}
-        dense
-      >
-        {#each roles as { role, parse } (role)}
-          <StatRow
-            bar={false}
-            figures={[{ value: `${outputFigure(parse.value)} ${outputUnit(parse.metric)}` }]}
-          >
-            {#snippet icon()}<ClassCrestRing characterClass={parse.class} size={28} />{/snippet}
-            {#snippet name()}<span style:color={classColorVar(parse.class)}>{parse.name}</span>{/snippet}
-            {#snippet sub()}{ROLE_WORD[role]}{#if parse.spec}{SEP}{specClassName(
-                  parse.spec,
-                  parse.class,
-                )}{/if}{/snippet}
-          </StatRow>
-        {/each}
-      </StatTable>
-    </div>
   {/if}
 </Section>

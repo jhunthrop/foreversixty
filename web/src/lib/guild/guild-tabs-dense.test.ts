@@ -192,7 +192,7 @@ describe('the Settings facts', () => {
       '14 joined by the invite link',
       '9 of 24 synced in 14 days',
     ]);
-    expect(facts[0].sub).toBe('Guild master Dunmaro · Rank 1 Kraggor, Mirelle');
+    expect(facts[0].sub).toBe('Dunmaro (GM), Kraggor, Mirelle');
     expect(facts[2].sub).toBe('Not synced: Ashvane, Brightwell, Corvane');
     expect(stepsLeft(setup)).toContain('Discord bot');
     expect(stepsLeft(setup)).not.toContain('Officer ranks');

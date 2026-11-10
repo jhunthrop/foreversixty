@@ -241,7 +241,7 @@ def raids_page() -> dict:
         idx = len(D.NIGHTS) - 1 - i
         came = [r for r in D.ROSTER if r.cells[idx] == 'P']
         def night_fig(r: D.Raider) -> float:
-            return r.figures[1] + D._n(r.name, f'night{idx}', -30, 30)
+            return r.figures[1] - D._n(r.name, f'night{idx}', 0, 30)
         top = max((r for r in came if r.metric == 'dps' and r.group != 'Tank'), key=night_fig)
         heal = max((r for r in came if r.group == 'Healer'), key=night_fig)
         rows.append({'id': rep, 'title': f'{ZONE_NAME} · raid night', 'zone': ZONE_NAME, 'created_at': at, 'fight_count': 2 + wipes,

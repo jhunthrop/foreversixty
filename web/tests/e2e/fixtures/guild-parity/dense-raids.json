@@ -15,13 +15,13 @@
         "name": "Brightvow",
         "class": "priest",
         "metric": "hps",
-        "value": 387.0
+        "value": 352.0
       },
       "top_dps": {
         "name": "Steelmane",
         "class": "warrior",
         "metric": "dps",
-        "value": 523.0
+        "value": 496.0
       },
       "fights": [
         {
@@ -58,16 +58,16 @@
       "raiders": 37,
       "deaths": 5,
       "top_hps": {
-        "name": "Sunmantle",
-        "class": "paladin",
+        "name": "Brightvow",
+        "class": "priest",
         "metric": "hps",
-        "value": 367.0
+        "value": 348.0
       },
       "top_dps": {
-        "name": "Steelmane",
-        "class": "warrior",
+        "name": "Hexmarrow",
+        "class": "warlock",
         "metric": "dps",
-        "value": 494.0
+        "value": 493.0
       },
       "fights": [
         {
@@ -107,13 +107,13 @@
         "name": "Brightvow",
         "class": "priest",
         "metric": "hps",
-        "value": 343.0
+        "value": 342.0
       },
       "top_dps": {
         "name": "Steelmane",
         "class": "warrior",
         "metric": "dps",
-        "value": 509.0
+        "value": 516.0
       },
       "fights": [
         {
@@ -153,13 +153,13 @@
         "name": "Brightvow",
         "class": "priest",
         "metric": "hps",
-        "value": 359.0
+        "value": 352.0
       },
       "top_dps": {
-        "name": "Hexmarrow",
-        "class": "warlock",
+        "name": "Steelmane",
+        "class": "warrior",
         "metric": "dps",
-        "value": 524.0
+        "value": 515.0
       },
       "fights": [
         {
@@ -199,13 +199,13 @@
         "name": "Brightvow",
         "class": "priest",
         "metric": "hps",
-        "value": 338.0
+        "value": 349.0
       },
       "top_dps": {
         "name": "Steelmane",
         "class": "warrior",
         "metric": "dps",
-        "value": 524.0
+        "value": 507.0
       },
       "fights": [
         {

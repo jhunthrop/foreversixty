@@ -13,6 +13,7 @@
   import type { RosterRow } from '../../../lib/guild/raid-roster';
   import type { PlannerFacts } from '../../../lib/guild/planner-facts';
   import PlannerRow from './PlannerRow.svelte';
+  import AttendanceStrip from '../dense/AttendanceStrip.svelte';
   import { PLANNER_FACT_COLUMNS, PLANNER_FACT_HEADS } from './planner-columns';
 
   let {
@@ -62,8 +63,10 @@
       <p class="text-muted py-3 text-[14px]" data-testid="raid-roster-empty">Nobody has signed up yet.</p>
     {:else}
       {#if facts !== null}
-        <div class="hidden justify-end pt-1 lg:flex" aria-hidden="true">
-          <span class="{PLANNER_FACT_COLUMNS} text-label text-muted grid font-bold">
+        <div class="hidden items-center justify-between gap-4 pt-1 lg:flex">
+          {#if [...facts.values()].some((f) => f.cells !== null)}<AttendanceStrip legend />{:else}<span
+            ></span>{/if}
+          <span class="{PLANNER_FACT_COLUMNS} text-label text-muted grid font-bold" aria-hidden="true">
             {#each PLANNER_FACT_HEADS as head (head)}<span>{head}</span>{/each}
           </span>
         </div>

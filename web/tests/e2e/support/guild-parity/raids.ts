@@ -13,6 +13,7 @@ import { expect } from '../test';
 import { storePointer } from '../selector';
 import type { GuildStateOpener } from '../guild-parity';
 import { openRaidPlanner } from './raid';
+import { GUILD_PLANNER_READS, apiUnreachable } from '../test';
 
 const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../fixtures/guild-parity');
 const GUILD_PATH = '/guild/us/pvp/olympus-xxvii';
@@ -56,6 +57,7 @@ async function openRaidsTab(page: Page, withForm: boolean): Promise<void> {
     label: 'Dunmaro · Beast Mastery Hunter',
     classSlug: 'hunter',
   });
+  await apiUnreachable(page, ...GUILD_PLANNER_READS);
   await page.route('**/v1/**', answer);
   await page.goto(`${GUILD_PATH}#raids`);
   await expect(page.getByTestId('guild-planned-rows')).toBeVisible();

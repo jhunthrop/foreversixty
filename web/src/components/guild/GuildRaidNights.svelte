@@ -37,6 +37,7 @@
     bossIds,
     guildPath,
     lootByReport = null,
+    absentByRaid = null,
     expanded,
     onToggle,
   }: {
@@ -45,6 +46,8 @@
     guildPath: string;
     /** Items awarded per report id (a member's loot nights read); null leaves the column out. */
     lootByReport?: ReadonlyMap<string, number> | null;
+    /** Officers: raiders absent per guild raid id; null leaves the column out. */
+    absentByRaid?: ReadonlyMap<number, number> | null;
     expanded: string | null;
     onToggle: (id: string) => void;
   } = $props();
@@ -57,6 +60,7 @@
     { id: 'wipes', label: 'Wipes' },
     { id: 'deaths', label: 'Deaths' },
     { id: 'raiders', label: 'Raiders' },
+    ...(absentByRaid === null ? [] : [{ id: 'absent', label: 'Absent' }]),
     ...(lootByReport === null ? [] : [{ id: 'loot', label: 'Loot' }]),
   ]);
   const DASH: StatFigure = { value: '–', muted: true };
@@ -68,6 +72,12 @@
       { word: 'Top DPS', parse: row.top_dps, kind: 'dps' },
     ].filter((top) => top.parse != null);
 
+  function absentCell(row: GuildRaidRow): StatFigure {
+    const absent = row.raid_id == null ? undefined : absentByRaid?.get(row.raid_id);
+    if (absent === undefined) return DASH;
+    return { value: String(absent), tone: absent > 0 ? 'wipe' : undefined };
+  }
+
   function cells(f: RaidNightFigures): StatFigure[] {
     const delta = f.deltaS === null ? DASH : { ...deltaWords(f.deltaS) };
     return [
@@ -76,6 +86,7 @@
       { value: String(f.wipes) },
       { value: String(f.row.deaths) },
       { value: String(f.row.raiders) },
+      ...(absentByRaid === null ? [] : [absentCell(f.row)]),
       ...(lootByReport === null ? [] : [{ value: String(lootByReport.get(f.row.id) ?? 0) }]),
     ];
   }

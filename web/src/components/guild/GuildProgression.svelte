@@ -22,6 +22,7 @@
   import StatTable from '../ui/StatTable.svelte';
   import { LINK } from '../../lib/ui/primitives';
   import EncounterProgress from './progression/EncounterProgress.svelte';
+  import BestByRole from './progression/BestByRole.svelte';
   import { SEP } from '../../lib/guild/raid-copy';
   import { specClassName } from '../../lib/guild/spec-name';
 
@@ -161,6 +162,9 @@
       {@render rosterBests()}
       {#snippet rail()}
         {@render tier()}
+        {#each zones as zone (zone.zone)}
+          {#each zone.pulled as encounter (encounter.encounter_id)}<BestByRole {encounter} />{/each}
+        {/each}
       {/snippet}
     </Page>
   {/if}

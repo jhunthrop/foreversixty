@@ -95,6 +95,22 @@ export function raidNightsMeta(rows: readonly GuildRaidRow[], bossIds: ReadonlyS
   return parts.join(' · ');
 }
 
+/** The attendance grid's nights the Raids tab reads (the API's most). */
+export const ATTENDANCE_GRID_NIGHTS = 12;
+
+/** Officers: who missed each guild raid, from the attendance grid (raid id to absent raiders). */
+export function absentByRaid(grid: {
+  raids: readonly { id: number }[];
+  rows: readonly { cells: readonly string[] }[];
+}): ReadonlyMap<number, number> {
+  return new Map(
+    grid.raids.map((raid, index) => [
+      raid.id,
+      grid.rows.filter((row) => row.cells[index] === 'absent').length,
+    ]),
+  );
+}
+
 /** The slowest boss time of the listed nights: the Meter's full width. */
 export function slowestMs(figures: readonly RaidNightFigures[]): number | null {
   const known = figures.map((f) => f.bossMs).filter((ms): ms is number => ms !== null);

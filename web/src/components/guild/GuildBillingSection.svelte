@@ -167,7 +167,6 @@
 <Section
   anchor="billing"
   panel
-  frame="framed"
   title={settingsWords.guildPlan}
   meta={view?.billing ? copy.chooser.tierName(view.billing.tier) : undefined}
   testid="guild-settings-billing"
