@@ -73,7 +73,6 @@ import gg.foreversixty.app.reports.ui.ErrorRegion
 import gg.foreversixty.app.talents.TalentEditing
 import gg.foreversixty.app.talents.TalentIconTile
 import gg.foreversixty.app.talents.TalentsSkeleton
-import java.util.Locale
 
 /** What the editor page draws, beyond the model's phase: the shown tree and the keyboard's talent. */
 data class EditorPageState(
@@ -125,7 +124,7 @@ private fun EditorBar(canUndo: Boolean, actions: EditorActions) {
     TopAppBar(
         title = {
             Text(
-                stringResource(R.string.plan_title).uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong,
+                stringResource(R.string.plan_title), style = ScaledType.sec, color = FsColor.strong,
                 modifier = Modifier.semantics { heading() },
             )
         },

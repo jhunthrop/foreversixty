@@ -1,5 +1,7 @@
 package gg.foreversixty.app.account
 
+import gg.foreversixty.app.designsystem.Label12
+import gg.foreversixty.app.designsystem.SectionTitle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +35,6 @@ import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 
 private val DELETED_ITEMS = listOf(
     R.string.shared_account_delete_deleted_subscription,
@@ -85,7 +86,7 @@ fun DeleteAccountScreen(
 private fun ConfirmField(battleTag: String?, typed: String, onTyped: (String) -> Unit, enabled: Boolean, mismatch: Boolean) {
     val label = AccountCopy.deletionPrompt(battleTag)
     Column(Modifier.padding(top = FsSpace.space2), verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
-        MicroLabel(label)
+        Label12(label)
         OutlinedTextField(
             value = typed,
             onValueChange = onTyped,
@@ -108,7 +109,7 @@ private fun ConfirmField(battleTag: String?, typed: String, onTyped: (String) ->
 @Composable
 private fun BulletGroup(title: String, lines: List<String>, glyph: ImageVector, tint: Color = FsColor.wipe) {
     Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
-        MicroLabel(title)
+        SectionTitle(title)
         AccountCard {
             Column(Modifier.padding(FsSpace.space4), verticalArrangement = Arrangement.spacedBy(FsSpace.space3)) {
                 lines.forEach { line ->

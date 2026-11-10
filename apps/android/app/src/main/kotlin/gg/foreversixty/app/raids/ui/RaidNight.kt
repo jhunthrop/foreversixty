@@ -64,7 +64,7 @@ fun RaidNightScreen(model: RaidNightModel, clock: RaidClock, now: () -> Instant,
     LaunchedEffect(model) { model.load() }
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
         TopAppBar(
-            title = { Text(stringResource(R.string.night_title).uppercase(), style = ScaledType.sec, color = FsColor.strong) },
+            title = { Text(stringResource(R.string.night_title), style = ScaledType.sec, color = FsColor.strong) },
             navigationIcon = {
                 IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
             },

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.planner.ui
 
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,12 +47,10 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.model.RaceInfo
 import gg.foreversixty.app.planner.logic.PlannerEditor
 import gg.foreversixty.app.planner.logic.PlannerRules
 import gg.foreversixty.app.planner.logic.PlannerShare
-import java.util.Locale
 
 /** The sheets' frame: the app's bottom sheet on the raised ground. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,7 +63,7 @@ fun PlannerSheet(onDismiss: () -> Unit, content: @Composable () -> Unit) {
 
 @Composable
 private fun SheetTitle(text: String) {
-    Text(text.uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+    Text(text, style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
 }
 
 /** The Race chip's sheet: the class's legal races (combos.json), the current one ticked. */
@@ -155,7 +154,7 @@ fun ShareSheetContent(state: ShareSheetState, onTitle: (String) -> Unit, proceed
             Bullet(stringResource(R.string.plan_shareFieldTalents))
             title?.let { Bullet(stringResource(R.string.plan_shareFieldTitle, it)) }
         }
-        MicroLabel(stringResource(R.string.plan_shareTitleField))
+        Label12(stringResource(R.string.plan_shareTitleField))
         OutlinedTextField(
             value = state.title,
             onValueChange = { onTitle(it.take(PlannerShare.TITLE_MAX)) },

@@ -117,7 +117,7 @@ private fun Message(title: String, body: String, note: String?) {
             contentAlignment = Alignment.Center,
             modifier = Modifier.size(44.dp).background(FsColor.gold.copy(alpha = 0.12f), RoundedCornerShape(FsRadius.legacyControl)),
         ) { Icon(Icons.Filled.DateRange, contentDescription = null, tint = FsColor.gold) }
-        Text(title.uppercase(), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(title, style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         Text(body, style = ScaledType.body, color = FsColor.text)
         note?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
     }
@@ -199,7 +199,7 @@ fun GuildHeadView(head: GuildHead) {
     }
     val text = @Composable {
         Column {
-            Text(head.name.uppercase(), style = ScaledType.cardHead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+            Text(head.name, style = ScaledType.cardHead, color = FsColor.strong, modifier = Modifier.semantics { heading() })
             head.line?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
         }
     }
@@ -231,7 +231,7 @@ fun NextRaidCard(
             val heading = @Composable {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = a11y }) {
                     SectionLabel(stringResource(R.string.raids_next), color = FsColor.gold)
-                    Text(raid.title.uppercase(), style = ScaledType.cardHead, color = FsColor.strong)
+                    Text(raid.title, style = ScaledType.cardHead, color = FsColor.strong)
                     TimesLine(facts, clock, showsEnd = false)
                     CountdownLine(facts, clock, now)
                 }

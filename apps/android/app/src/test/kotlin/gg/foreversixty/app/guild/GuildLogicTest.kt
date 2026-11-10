@@ -188,7 +188,7 @@ class GuildLogicTest {
     @Test
     fun `a night starts at its log's creation minus its length`() {
         val facts = NightFacts(night(ony), GuildFixture.mine)
-        assertEquals(Triple("MON", "14", "DEC"), clock().dateBlock(facts.startedAt))
+        assertEquals(Triple("Mon", "14", "Dec"), clock().dateBlock(facts.startedAt))
         assertEquals(1, facts.hours)
         assertEquals(8, facts.minutes)
     }

@@ -46,9 +46,8 @@ import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.reports.logic.ParseTier
 import gg.foreversixty.app.reports.logic.Visibility
-import java.util.Locale
 
-/** A pushed screen's bar: back with its label, the uppercase title (a guide's in its class colour), and one trailing action. */
+/** A pushed screen's bar: back with its label, the title (a guide's in its class colour), and one trailing action. */
 @Composable
 fun ReportsBar(title: String, backLabel: String, back: () -> Unit, trailing: BarAction? = null, titleColor: Color = FsColor.strong) {
     ReportsBar(title, backLabel, back, titleColor) {
@@ -71,7 +70,7 @@ fun ReportsBar(
     TopAppBar(
         title = {
             Text(
-                title.uppercase(Locale.ROOT), style = ScaledType.h2, color = titleColor, maxLines = 2, overflow = TextOverflow.Clip,
+                title, style = ScaledType.h2, color = titleColor, maxLines = 2, overflow = TextOverflow.Clip,
                 modifier = Modifier.semantics { heading() },
             )
         },

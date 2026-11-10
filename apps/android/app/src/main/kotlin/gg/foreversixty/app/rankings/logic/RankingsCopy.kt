@@ -1,5 +1,6 @@
 package gg.foreversixty.app.rankings.logic
 
+import gg.foreversixty.app.designsystem.Codes
 import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.auth.session.RelativeAge
@@ -32,7 +33,7 @@ class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId
     }
 
     /** A region chip: `All`, `US`. */
-    fun regionChip(region: String): String = if (region.isEmpty()) res.getString(R.string.rank_region_all) else region.uppercase(Locale.ROOT)
+    fun regionChip(region: String): String = if (region.isEmpty()) res.getString(R.string.rank_region_all) else Codes.region(region)
 
     fun factionLabel(faction: String): String = when (faction) {
         "alliance" -> res.getString(R.string.rank_faction_alliance)
@@ -67,7 +68,7 @@ class RankingsCopy(private val res: Resources, private val zone: ZoneId = ZoneId
     fun filterLine(filters: RankingsFilters, encounterNames: Map<String, String>): String = listOfNotNull(
         encounterNames[filters.encounter] ?: filters.encounter,
         rulesetLabel(filters.ruleset),
-        if (filters.region.isEmpty()) res.getString(R.string.rank_line_allRegions) else filters.region.uppercase(Locale.ROOT),
+        if (filters.region.isEmpty()) res.getString(R.string.rank_line_allRegions) else Codes.region(filters.region),
         if (filters.phase.isEmpty()) null else phaseLabel(filters.phase),
         measureLabel(filters.measure),
         if (filters.faction.isEmpty()) null else factionLabel(filters.faction),

@@ -54,7 +54,7 @@ class RaidLogicTest {
     fun `clocks read in the viewer's zone, and the date block`() {
         val invite = Instant.parse("2026-12-20T00:45:00Z")
         assertEquals("6:45 pm", clock().clock(invite))
-        assertEquals(Triple("SAT", "19", "DEC"), clock().dateBlock(invite))
+        assertEquals(Triple("Sat", "19", "Dec"), clock().dateBlock(invite))
         assertEquals("Saturday 19 December", clock().longDate(invite))
     }
 

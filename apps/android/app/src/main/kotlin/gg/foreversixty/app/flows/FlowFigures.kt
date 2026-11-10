@@ -38,7 +38,7 @@ fun FlowFigures(figures: List<FlowFigure>, modifier: Modifier = Modifier) {
 @Composable
 private fun Figure(figure: FlowFigure, modifier: Modifier) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(LABEL_GAP)) {
-        Text(figure.label.uppercase(), style = LABEL, color = FsColor.muted)
+        Text(figure.label, style = LABEL, color = FsColor.muted)
         Text(
             buildAnnotatedString {
                 append(figure.value)

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.logic
 
+import gg.foreversixty.app.designsystem.Codes
 import android.content.res.Resources
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +48,7 @@ data class GuildHead(
                 res.getString(
                     R.string.raids_guildLine,
                     it.faction?.replaceFirstChar { c -> c.titlecase(Locale.UK) }.orEmpty(),
-                    it.region.uppercase(Locale.UK),
+                    Codes.region(it.region),
                     it.rulesetLabel ?: it.ruleset.replaceFirstChar { c -> c.titlecase(Locale.UK) },
                     it.rosterCount ?: it.verifiedCount,
                 )

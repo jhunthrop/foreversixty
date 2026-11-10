@@ -60,6 +60,7 @@ import androidx.core.net.toUri
 import gg.foreversixty.app.R
 import gg.foreversixty.app.common.SavedAnswerStrip
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.raids.logic.NotesText
@@ -164,7 +165,7 @@ fun RaidPageContent(
     Box(Modifier.fillMaxSize().background(FsColor.bg)) {
         Column(Modifier.fillMaxSize()) {
             TopAppBar(
-                title = { Text(raid.title.uppercase(), style = ScaledType.sec, color = FsColor.strong) },
+                title = { Text(raid.title, style = ScaledType.sec, color = FsColor.strong) },
                 navigationIcon = { BackButton(back) },
                 actions = {
                     IconButton(onClick = addToCalendar) {
@@ -220,7 +221,7 @@ fun RaidHead(raid: RaidView, facts: RaidFacts, clock: RaidClock, now: () -> Inst
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         val large = isLargeText()
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.raid_eyebrow).uppercase(), style = ScaledType.micro, color = FsColor.gold, maxLines = 1, softWrap = false)
+            Text(stringResource(R.string.raid_eyebrow), style = FsType.label, color = FsColor.gold, maxLines = 1, softWrap = false)
             ChipTag(facts.chip)
             if (!large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.muted, maxLines = 1) }
         }
@@ -297,7 +298,7 @@ fun CountdownLine(facts: RaidFacts, clock: RaidClock, now: () -> Instant) {
 @Composable
 fun SignupCard(controller: SignupController, facts: RaidFacts, clock: RaidClock, currentKey: String?, requestPermission: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.raidPrimaryCard()) {
-        Text(stringResource(R.string.raid_yourSignup).uppercase(), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(stringResource(R.string.raid_yourSignup), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         when (facts.chip) {
             RaidChip.Cancelled -> {
                 Text(stringResource(R.string.raid_cancelled), style = ScaledType.body, color = FsColor.text)
@@ -347,7 +348,7 @@ private fun NightRow(open: () -> Unit) {
 @Composable
 private fun Notes(raid: RaidView) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(stringResource(R.string.raid_notes).uppercase(), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(stringResource(R.string.raid_notes), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         if (raid.notesHtml.isBlank()) {
             Text(stringResource(R.string.raid_notesEmpty), style = ScaledType.body, color = FsColor.muted)
         } else {

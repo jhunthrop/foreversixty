@@ -1,5 +1,6 @@
 package gg.foreversixty.app.search.ui
 
+import gg.foreversixty.app.designsystem.SectionTitle
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,7 +38,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.quietCard
@@ -66,7 +66,7 @@ fun SectionLabel(text: String, trailing: (@Composable () -> Unit)? = null) {
             .heightIn(min = 24.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        MicroLabel(text, Modifier.weight(1f))
+        SectionTitle(text, Modifier.weight(1f))
         trailing?.invoke()
     }
 }

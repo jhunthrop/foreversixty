@@ -146,7 +146,7 @@ data class BisContext(
         }
 
     fun className(slug: String): String =
-        classes.firstOrNull { it.slug == slug }?.name ?: slug.replaceFirstChar { it.uppercase() }
+        classes.firstOrNull { it.slug == slug }?.name ?: slug.replaceFirstChar(Char::titlecase)
 
     /** A range's chip and pill words, with `opens Dec 9` on the raid list before raids open. */
     fun rangeLabel(res: Resources, range: BisRange, nowMillis: Long = System.currentTimeMillis()): String =

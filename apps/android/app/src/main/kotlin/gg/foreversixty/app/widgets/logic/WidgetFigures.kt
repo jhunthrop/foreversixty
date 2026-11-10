@@ -1,5 +1,6 @@
 package gg.foreversixty.app.widgets.logic
 
+import gg.foreversixty.app.designsystem.Codes
 import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.model.WidgetNextRaid
@@ -272,7 +273,7 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
     private fun unitWord(unit: String): String = when (unit) {
         "dps" -> res.getString(R.string.bis_unit_dps)
         "hps" -> res.getString(R.string.bis_unit_hps)
-        else -> unit.uppercase(LOCALE)
+        else -> Codes.unit(unit)
     }
 
     fun roleLabel(role: String): String = when (role) {

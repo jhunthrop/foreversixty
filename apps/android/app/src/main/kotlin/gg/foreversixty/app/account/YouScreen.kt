@@ -50,6 +50,7 @@ import gg.foreversixty.app.common.Seal
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.ScaledType
@@ -158,7 +159,7 @@ fun YouScreen(
         TextButton(actions.onDeleteAccount, Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
             Text(stringResource(R.string.shared_account_delete_title), style = ScaledType.bodyStrong, color = FsColor.wipe)
         }
-        Text(summary.version, style = ScaledType.micro, color = FsColor.muted, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        Text(summary.version, style = FsType.label, color = FsColor.muted, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
     }
     if (confirming) {
         ConfirmDialog(
@@ -200,7 +201,7 @@ private fun CharacterRow(character: CharacterLine) {
 fun AboutScreen(version: String) {
     AccountPage(stringResource(R.string.you_about)) {
         Seal(64.dp)
-        Text(stringResource(R.string.app_name).uppercase(), style = ScaledType.wordmark, color = FsColor.strong)
+        Text(stringResource(R.string.app_name), style = ScaledType.wordmark, color = FsColor.strong)
         Text(version, style = ScaledType.body, color = FsColor.text)
         Text(stringResource(R.string.about_notAffiliated), style = ScaledType.meta, color = FsColor.muted)
     }
@@ -217,7 +218,7 @@ fun AccountPage(title: String, content: @Composable ColumnScope.() -> Unit) {
             .padding(FsSpace.space4),
         verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
     ) {
-        Text(title.uppercase(), style = ScaledType.title, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(title, style = ScaledType.title, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         content()
     }
 }

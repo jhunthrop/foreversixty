@@ -1,5 +1,6 @@
 package gg.foreversixty.app.bis
 
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +33,6 @@ import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.common.FactionMark
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.pillSurface
 import gg.foreversixty.app.designsystem.FsColor
@@ -56,7 +56,7 @@ fun BisPickerContent(context: BisContext, catalog: SpecCatalog, build: String, o
         verticalArrangement = Arrangement.spacedBy(22.dp),
     ) {
         Text(
-            stringResource(R.string.bis_picker_title).uppercase(),
+            stringResource(R.string.bis_picker_title),
             style = MaterialTheme.typography.titleMedium.copy(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold),
             color = FsColor.strong,
             modifier = Modifier.semantics { heading() },
@@ -177,7 +177,7 @@ private fun line(current: Boolean) = if (current) FsColor.gold else FsColor.line
 @Composable
 fun PickerSection(title: String, body: @Composable () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        MicroLabel(title)
+        Label12(title)
         body()
     }
 }

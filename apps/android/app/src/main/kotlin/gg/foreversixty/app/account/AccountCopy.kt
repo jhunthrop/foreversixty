@@ -1,5 +1,6 @@
 package gg.foreversixty.app.account
 
+import gg.foreversixty.app.designsystem.Codes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalResources
@@ -37,7 +38,7 @@ object AccountCopy {
     /** `US · PvP`: Forever has no realms, so a character is its region, ruleset and name. */
     @Composable
     fun place(character: AccountCharacter): String =
-        stringResource(R.string.account_character_where, character.region.uppercase(), ruleset(character.ruleset))
+        stringResource(R.string.account_character_where, Codes.region(character.region), ruleset(character.ruleset))
 
     /** The site's ruleset labels (web/src/lib/characters.ts); an unknown one is echoed. */
     @Composable

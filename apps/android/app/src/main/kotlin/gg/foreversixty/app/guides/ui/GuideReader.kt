@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guides.ui
 
+import gg.foreversixty.app.designsystem.Label12
 import gg.foreversixty.app.system.logic.ShareMessage
 import gg.foreversixty.app.system.logic.ShareText
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -37,7 +38,6 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.NewDataStrip
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.classColor
@@ -56,7 +56,6 @@ import gg.foreversixty.app.reports.ui.ReportsBar
 import gg.foreversixty.app.reports.ui.SkeletonBar
 import gg.foreversixty.app.reports.ui.scaledSize
 import java.time.Instant
-import java.util.Locale
 import kotlinx.coroutines.launch
 
 /** The new-data strip's state over an open guide (spec §5.7). */
@@ -154,7 +153,7 @@ private fun Head(guide: GuideFile) {
     ) {
         SpecIcon(guide.icon, guide.build, scaledSize(HEAD_ICON, HEAD_ICON_CAP))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(specTitle(guide.specName, guide.className).uppercase(Locale.ROOT), style = ScaledType.h2, color = classColor(guide.classSlug))
+            Text(specTitle(guide.specName, guide.className), style = ScaledType.h2, color = classColor(guide.classSlug))
             Text(copy.headMeta(guide), style = ScaledType.meta, color = FsColor.nav)
         }
     }
@@ -191,11 +190,11 @@ private fun Glance(guide: GuideFile) {
         verticalArrangement = Arrangement.spacedBy(GuideSpace.labelGap),
     ) {
         guide.roleLine?.let { line ->
-            MicroLabel(stringResource(R.string.guides_role))
+            Label12(stringResource(R.string.guides_role))
             Text(line, style = ScaledType.lead.copy(fontWeight = ScaledType.body.fontWeight), color = FsColor.strong)
         }
         if (guide.statPriority.isNotEmpty()) {
-            MicroLabel(stringResource(R.string.guides_statPriority), Modifier.padding(top = 6.dp))
+            Label12(stringResource(R.string.guides_statPriority), Modifier.padding(top = 6.dp))
             NumberedChips(guide.statPriority, copy::statLabel)
         }
     }

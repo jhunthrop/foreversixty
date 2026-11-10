@@ -60,7 +60,6 @@ import gg.foreversixty.app.rankings.logic.Rankings
 import gg.foreversixty.app.rankings.logic.RankingsCopy
 import gg.foreversixty.app.rankings.logic.RankingsFilters
 import gg.foreversixty.app.reports.ui.MetersDragHandle
-import java.util.Locale
 
 /** What the filters sheet draws: the board's filters, the encounters and the phases on offer. */
 data class FiltersSheetState(
@@ -133,7 +132,7 @@ fun FiltersSheetContent(state: FiltersSheetState, actions: FiltersActions, scrol
 
 @Composable
 private fun Title(text: String) {
-    Text(text.uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+    Text(text, style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
 }
 
 /** The Encounter row: the current encounter and a chevron, opening the list. */

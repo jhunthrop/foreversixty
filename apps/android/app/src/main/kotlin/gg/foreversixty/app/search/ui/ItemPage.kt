@@ -221,7 +221,7 @@ private fun StripChips(current: ItemSection, onChip: (ItemSection) -> Unit) {
     }
 }
 
-/** Icon 64 in its quality border, the name in quality colour (h2, not uppercased), the meta. */
+/** Icon 64 in its quality border, the name in quality colour (h2), the meta. */
 @Composable
 private fun Head(look: ItemLook, meta: String?, build: String) {
     Row(

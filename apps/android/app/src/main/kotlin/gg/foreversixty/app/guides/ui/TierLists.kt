@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guides.ui
 
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.IconButton
 import androidx.compose.foundation.background
@@ -55,7 +56,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.FsFont
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.OfflineStrip
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
@@ -160,7 +160,7 @@ private fun Callout(callout: TierCallout, build: String) {
         ) {
             SpecTile(callout.row.icon, callout.row.classSlug, build, CALLOUT_ICON)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                MicroLabel(stringResource(R.string.tiers_yours), color = FsColor.gold)
+                Label12(stringResource(R.string.tiers_yours), color = FsColor.gold)
                 Text(callout.row.title, style = ScaledType.bodyStrong, color = FsColor.strong)
                 Text(callout.row.detail, style = ScaledType.meta, color = FsColor.muted)
             }

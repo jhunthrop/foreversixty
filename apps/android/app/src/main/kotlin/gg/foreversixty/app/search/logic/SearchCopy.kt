@@ -1,5 +1,6 @@
 package gg.foreversixty.app.search.logic
 
+import gg.foreversixty.app.designsystem.Codes
 import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountCopy
@@ -38,7 +39,7 @@ class SearchCopy(private val res: Resources) {
 
     /** `Mage · Level 58 · US Normal`. */
     fun characterMeta(row: CharacterSearchRow): String {
-        val region = row.region.uppercase(Locale.ROOT)
+        val region = Codes.region(row.region)
         val ruleset = AccountCopy.rulesetName(row.ruleset)?.let(res::getString) ?: row.ruleset
         val level = row.level
         return if (level != null) {

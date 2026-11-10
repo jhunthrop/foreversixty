@@ -117,7 +117,7 @@ fun Roster(controller: SignupController, facts: RaidFacts) {
     val move: (RosterRow, SignupState) -> Unit = { row, state -> scope.launch { controller.move(row, state) } }
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
-            Text(stringResource(R.string.raid_signups).uppercase(), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+            Text(stringResource(R.string.raid_signups), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
             Text(facts.ratio, style = ScaledType.mono, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
         }
         val res = androidx.compose.ui.platform.LocalResources.current

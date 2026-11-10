@@ -47,7 +47,7 @@ import gg.foreversixty.app.designsystem.ScaledType
 @Composable
 fun GuildTopBar(title: String, back: () -> Unit, actions: @Composable () -> Unit = {}) {
     TopAppBar(
-        title = { Text(title.uppercase(), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() }) },
+        title = { Text(title, style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() }) },
         navigationIcon = {
             IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
         },

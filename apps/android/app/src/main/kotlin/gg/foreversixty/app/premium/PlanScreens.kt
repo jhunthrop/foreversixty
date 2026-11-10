@@ -1,5 +1,6 @@
 package gg.foreversixty.app.premium
 
+import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,10 +42,8 @@ import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.GameColors
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.primaryCard
-import java.util.Locale
 
 /** From this font scale up the Plan row stacks, so nothing truncates (spec 5.8.1). */
 private const val STACK_FONT_SCALE = 1.5f
@@ -126,7 +125,7 @@ fun PlanScreen(plan: PlanSummary, mayLink: Boolean, onManageBilling: () -> Unit)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    stringResource(R.string.plan_premium).uppercase(Locale.ROOT),
+                    stringResource(R.string.plan_premium),
                     style = ScaledType.h2,
                     color = FsColor.strong,
                     modifier = Modifier.weight(1f).semantics { heading() },
@@ -153,7 +152,7 @@ fun PlanScreen(plan: PlanSummary, mayLink: Boolean, onManageBilling: () -> Unit)
 private fun Includes(features: List<PlanFeature>) {
     Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
         HorizontalDivider(color = FsColor.lineSoft)
-        MicroLabel(stringResource(R.string.plan_includes))
+        Label12(stringResource(R.string.plan_includes))
         // The tick grows with the text, up to the scale where the row stacks.
         val tick = 16.dp * LocalDensity.current.fontScale.coerceAtMost(STACK_FONT_SCALE)
         features.forEach { feature ->

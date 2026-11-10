@@ -369,7 +369,7 @@ fun SpecSheetContent(ask: SpecAsk, character: RaidViewerCharacter, raidTitle: St
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.padding(16.dp)) {
-        Text(stringResource(R.string.spec_title).uppercase(), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        Text(stringResource(R.string.spec_title), style = ScaledType.sec, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         Text(lead, style = ScaledType.body, color = FsColor.text)
         Column(Modifier.raidQuietCard()) {
             val options = character.specOptions.orEmpty()

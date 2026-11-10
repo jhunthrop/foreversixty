@@ -46,6 +46,7 @@ import coil3.request.ImageResult
 import coil3.request.crossfade
 import java.io.File
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.network.StaticDataClient
@@ -200,7 +201,7 @@ fun GameIconLabel(text: String, dimmed: Boolean) {
     val size = with(LocalDensity.current) { FALLBACK_SIZE.toSp() }
     Text(
         text,
-        style = ScaledType.micro.copy(letterSpacing = 0.sp, fontSize = size),
+        style = FsType.label.copy(fontSize = size),
         color = if (dimmed) FsColor.muted else FsColor.strong,
         maxLines = 1,
         softWrap = false,

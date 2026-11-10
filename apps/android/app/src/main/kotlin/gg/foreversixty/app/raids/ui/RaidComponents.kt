@@ -63,6 +63,7 @@ import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.designsystem.primaryCard
 import gg.foreversixty.app.designsystem.FsFont
 import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.raids.logic.RaidChip
 import gg.foreversixty.app.raids.logic.RaidClock
@@ -112,12 +113,11 @@ fun GameIcon(
     }
 }
 
-/** `micro` uppercase section label, with an optional mono count. */
+/** The 12 sp label in sentence case (ruling N1), read as a heading, with an optional mono count. */
 @Composable
 fun SectionLabel(text: String, color: Color = FsColor.muted, trailing: String? = null) {
-    val tracking = if (isLargeText()) 0.sp else ScaledType.micro.letterSpacing
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.semantics { heading() }) {
-        Text(text.uppercase(), style = ScaledType.micro.copy(letterSpacing = tracking), color = color, maxLines = 1, softWrap = false)
+        Text(text, style = FsType.label, color = color, maxLines = 1, softWrap = false)
         trailing?.let { Text(it, style = ScaledType.monoMeta, color = color) }
     }
 }
@@ -149,9 +149,9 @@ fun DateBlock(at: Instant, clock: RaidClock, width: Dp = 52.dp, height: Dp = 56.
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .clearAndSetSemantics {},
     ) {
-        Text(weekday, style = ScaledType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
+        Text(weekday, style = FsType.label, color = FsColor.muted)
         Text(day, style = ScaledType.monoDay, color = FsColor.strong)
-        Text(month, style = ScaledType.micro.copy(letterSpacing = 0.sp), color = FsColor.muted)
+        Text(month, style = FsType.label, color = FsColor.muted)
     }
 }
 

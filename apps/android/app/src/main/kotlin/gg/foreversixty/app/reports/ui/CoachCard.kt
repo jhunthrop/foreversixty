@@ -1,5 +1,7 @@
 package gg.foreversixty.app.reports.ui
 
+import gg.foreversixty.app.designsystem.Label12
+import gg.foreversixty.app.designsystem.SectionTitle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,21 +20,19 @@ import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.model.CoachReview
 import gg.foreversixty.app.reports.logic.CoachPhase
 import gg.foreversixty.app.reports.logic.CoachSection
 import gg.foreversixty.app.reports.logic.ReportsCopy
-import java.util.Locale
 
 /** F10.4: Premium only, and only with a night line. The coach's words are printed as given. */
 @Composable
 fun CoachCard(phase: CoachPhase, copy: ReportsCopy, retry: () -> Unit) {
     if (phase == CoachPhase.Hidden) return
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MicroLabel(stringResource(R.string.report_coach))
+        SectionTitle(stringResource(R.string.report_coach))
         CoachBody(phase, copy, retry)
     }
 }
@@ -60,7 +60,7 @@ private fun Line(text: String) {
 private fun Review(review: CoachReview, copy: ReportsCopy) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(
-            stringResource(R.string.coach_title, review.spec).uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong,
+            stringResource(R.string.coach_title, review.spec), style = ScaledType.sec, color = FsColor.strong,
             modifier = Modifier.weight(1f).semantics { heading() },
         )
         Tag(stringResource(R.string.coach_premium), FsColor.gold)
@@ -74,27 +74,27 @@ private fun Section(section: CoachSection) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         when (section) {
             is CoachSection.FixFirst -> {
-                MicroLabel(stringResource(R.string.coach_fixFirst))
+                Label12(stringResource(R.string.coach_fixFirst))
                 Text(section.title, style = ScaledType.bodyStrong, color = FsColor.strong)
                 Text(section.why, style = ScaledType.body, color = FsColor.text)
             }
             is CoachSection.Practice -> {
-                MicroLabel(stringResource(R.string.coach_practice))
+                Label12(stringResource(R.string.coach_practice))
                 Text(section.text, style = ScaledType.body, color = FsColor.text)
             }
             is CoachSection.Then -> {
-                MicroLabel(stringResource(R.string.coach_then))
+                Label12(stringResource(R.string.coach_then))
                 section.items.forEach { (title, why) ->
                     Text(title, style = ScaledType.bodyStrong, color = FsColor.strong)
                     Text(why, style = ScaledType.body, color = FsColor.text)
                 }
             }
             is CoachSection.DoingWell -> {
-                MicroLabel(stringResource(R.string.coach_doingWell))
+                Label12(stringResource(R.string.coach_doingWell))
                 section.lines.forEach { Text(it, style = ScaledType.body, color = FsColor.text) }
             }
             is CoachSection.CouldntCheck -> {
-                MicroLabel(stringResource(R.string.coach_couldntCheck))
+                Label12(stringResource(R.string.coach_couldntCheck))
                 section.lines.forEach { Text(it, style = ScaledType.body, color = FsColor.muted) }
             }
         }

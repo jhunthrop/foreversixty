@@ -142,7 +142,7 @@ private fun TitleRow(isYours: Boolean) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            stringResource(R.string.bis_title).uppercase(),
+            stringResource(R.string.bis_title),
             style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold),
             color = FsColor.strong,
             modifier = Modifier.weight(1f, fill = false).semantics { heading() },

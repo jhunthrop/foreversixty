@@ -1,5 +1,6 @@
 package gg.foreversixty.app.system.offline
 
+import gg.foreversixty.app.designsystem.SectionTitle
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalDensity
@@ -53,7 +54,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.guild.ui.GuildTopBar
 import java.time.Instant
@@ -177,7 +177,7 @@ private const val STACK_BUTTONS_SCALE = 1.3f
 @Composable
 private fun Saved(report: OfflineReport, copy: OfflineDataCopy, now: Instant) {
     Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
-        MicroLabel(copy.section(report))
+        SectionTitle(copy.section(report))
         Card {
             report.rows.forEachIndexed { index, row ->
                 if (index > 0) HorizontalDivider(color = FsColor.lineSoft)
@@ -200,7 +200,7 @@ private fun EmptyCard() {
 @Composable
 private fun Updates(state: OfflineDataState, actions: OfflineDataActions) {
     Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
-        MicroLabel(stringResource(R.string.offlineData_updates))
+        SectionTitle(stringResource(R.string.offlineData_updates))
         Card {
             SwitchRow(stringResource(R.string.offlineData_keep), stringResource(R.string.offlineData_keepNote), state.keepClassesReady, actions.keep)
             HorizontalDivider(color = FsColor.lineSoft)

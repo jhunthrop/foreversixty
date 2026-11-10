@@ -33,23 +33,14 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
-import java.util.Locale
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-/** The site's uppercase section label (`micro`, .14em), read as a heading. */
-@Composable
-fun MicroLabel(text: String, modifier: Modifier = Modifier, color: Color = FsColor.muted) {
-    Text(text.uppercase(Locale.ROOT), modifier.semantics { heading() }, style = ScaledType.micro, color = color)
-}
-
-/** A tag (`.pill`): 22 dp, 11 sp 700 uppercase, tinted ground and border; [checked] leads with a tick. */
+/** A tag (`ui/Tag`): 22 dp, the 12 sp label in sentence case (N1), tinted ground and border; [checked] leads with a tick. */
 @Composable
 fun Tag(text: String, color: Color, modifier: Modifier = Modifier, checked: Boolean = false) {
     val shape = RoundedCornerShape(FsRadius.legacyPill)
@@ -63,7 +54,7 @@ fun Tag(text: String, color: Color, modifier: Modifier = Modifier, checked: Bool
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (checked) Icon(Icons.Filled.Check, contentDescription = null, tint = color, modifier = Modifier.size(11.dp))
-        Text(text.uppercase(Locale.ROOT), style = ScaledType.micro.copy(letterSpacing = 0.08.em), color = color)
+        Text(text, style = TAG, color = color)
     }
 }
 
@@ -223,6 +214,9 @@ fun FrameCorners(modifier: Modifier = Modifier) {
         }
     }
 }
+
+/** A tag's words: the label role at 600 (spec 3.4, Tag). */
+private val TAG = FsType.label.copy(fontWeight = FontWeight.SemiBold)
 
 private val FRAME_INSET = 6.dp
 private val CORNER_INSET = 4.dp

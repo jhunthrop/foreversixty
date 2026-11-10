@@ -40,6 +40,7 @@ import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.PanelFrame
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.ParityRegion
 import gg.foreversixty.app.designsystem.parityContent
@@ -169,7 +170,7 @@ fun FlowSection(
         ) {
             Text(
                 title,
-                style = if (round5) PANEL_TITLE else FsType.section,
+                style = if (round5) ScaledType.sectionTitle else FsType.section,
                 color = if (round5) FsColor.cream else FsColor.strong,
                 modifier = Modifier.semantics { heading() },
             )
@@ -244,6 +245,3 @@ private val SECTION_TITLE_GAP = 10.dp
 private val ACTION_DROP = 2.dp
 private val SKELETON_RADIUS = 6.dp
 private val ACTION = FsType.bodyStrong.copy(fontSize = 14.sp, lineHeight = 24.sp)
-
-/** A round-5 section title over the ground: the display face at 21 (the mock's `.sh h2`). */
-private val PANEL_TITLE = FsType.sectionReading.copy(fontSize = 21.sp, lineHeight = 26.sp)

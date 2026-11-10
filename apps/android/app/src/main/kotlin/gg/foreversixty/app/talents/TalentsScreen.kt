@@ -174,7 +174,7 @@ fun TalentsPage(
 ) {
     Column(Modifier.fillMaxSize().background(FsColor.bg)) {
         TopAppBar(
-            title = { Text(title.uppercase(Locale.ROOT), style = ScaledType.sec, color = FsColor.strong) },
+            title = { Text(title, style = ScaledType.sec, color = FsColor.strong) },
             navigationIcon = {
                 IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = FsColor.strong) }
             },

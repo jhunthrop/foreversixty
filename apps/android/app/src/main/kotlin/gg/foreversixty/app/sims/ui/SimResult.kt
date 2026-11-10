@@ -1,5 +1,7 @@
 package gg.foreversixty.app.sims.ui
 
+import gg.foreversixty.app.designsystem.Label12
+import gg.foreversixty.app.designsystem.SectionTitle
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +36,6 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.common.OfflineStamp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.items.ItemIcon
 import gg.foreversixty.app.items.ItemVocabulary
@@ -43,7 +44,6 @@ import gg.foreversixty.app.sims.logic.SimGearLook
 import gg.foreversixty.app.sims.logic.SimResultModel
 import gg.foreversixty.app.sims.logic.SimResultPhase
 import java.time.Instant
-import java.util.Locale
 
 object SimResultLayout {
     const val GRID_COLUMNS = 6
@@ -83,7 +83,7 @@ fun SimResultContent(
 private fun Loaded(model: SimResultModel, looks: Map<Int, SimGearLook>, build: String?, openItem: (SimGearCell) -> Unit, openBreakdown: (String) -> Unit) {
     val res = LocalResources.current
     Column(Modifier.padding(horizontal = 16.dp).padding(top = 4.dp)) {
-        MicroLabel(model.kind.uppercase(Locale.ROOT))
+        Label12(model.kind)
         Text(
             buildAnnotatedString {
                 append("${model.specName} ")
@@ -129,7 +129,7 @@ private fun Answer(answer: SimResultModel.Answer) {
 private fun Gear(model: SimResultModel, looks: Map<Int, SimGearLook>, build: String?, openItem: (SimGearCell) -> Unit) {
     val res = LocalResources.current
     Column(Modifier.padding(top = 22.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MicroLabel(stringResource(R.string.sims_gear).uppercase(Locale.ROOT))
+        SectionTitle(stringResource(R.string.sims_gear))
         FlowRow(
             Modifier.width(SimResultLayout.gearIcon * SimResultLayout.GRID_COLUMNS + SimResultLayout.gridGap * (SimResultLayout.GRID_COLUMNS - 1)),
             horizontalArrangement = Arrangement.spacedBy(SimResultLayout.gridGap),

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.planner.ui
 
+import gg.foreversixty.app.designsystem.SectionTitle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +42,6 @@ import gg.foreversixty.app.R
 import gg.foreversixty.app.common.ClassCrest
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.planner.logic.BuildRow
 import gg.foreversixty.app.planner.logic.BuildsProblem
@@ -105,7 +105,7 @@ private fun BuildsList(phase: YourBuildsPhase.Loaded, state: BuildsPageState, ac
             item { Text(stringResource(R.string.plan_builds_footer), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp)) }
         }
         state.newBuild?.let { new ->
-            item { MicroLabel(stringResource(R.string.plan_builds_newHeader), Modifier.padding(top = 18.dp)) }
+            item { SectionTitle(stringResource(R.string.plan_builds_newHeader), Modifier.padding(top = 18.dp)) }
             item { NewBuild(new, actions) }
         }
     }

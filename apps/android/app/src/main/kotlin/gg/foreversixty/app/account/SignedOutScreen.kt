@@ -57,13 +57,13 @@ fun SignedOutScreen(
             verticalArrangement = Arrangement.spacedBy(FsSpace.space4),
         ) {
             Seal(64.dp)
-            Text(stringResource(R.string.app_name).uppercase(), style = ScaledType.wordmark, color = FsColor.strong)
+            Text(stringResource(R.string.app_name), style = ScaledType.wordmark, color = FsColor.strong)
             val (heading, line) = when (variant) {
                 SignedOutVariant.Home -> R.string.signin_line to R.string.signin_body
                 SignedOutVariant.Raids -> R.string.raids_signedOut_title to R.string.raids_signedOut_body
             }
             Text(
-                stringResource(heading).uppercase(),
+                stringResource(heading),
                 style = ScaledType.title,
                 color = FsColor.strong,
                 modifier = Modifier.semantics { this.heading() },
@@ -89,7 +89,7 @@ fun ImportScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Seal(64.dp)
-        Text(stringResource(R.string.signin_importTitle).uppercase(), style = ScaledType.h2, color = FsColor.strong, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.signin_importTitle), style = ScaledType.h2, color = FsColor.strong, textAlign = TextAlign.Center)
         Text(stringResource(R.string.signin_importBody), style = ScaledType.body, color = FsColor.text, textAlign = TextAlign.Center)
         LinearProgressIndicator(Modifier.width(160.dp).height(8.dp), color = FsColor.gold, trackColor = FsColor.lineSoft)
     }
@@ -103,7 +103,7 @@ fun NoCharactersScreen(onGetAddon: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(FsSpace.space4),
     ) {
         Text(
-            stringResource(R.string.signin_noChars_title).uppercase(),
+            stringResource(R.string.signin_noChars_title),
             style = ScaledType.h2,
             color = FsColor.strong,
             modifier = Modifier.semantics { heading() },

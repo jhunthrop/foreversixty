@@ -1,5 +1,6 @@
 package gg.foreversixty.app.sims.ui
 
+import gg.foreversixty.app.designsystem.SectionTitle
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,7 +38,6 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.quietCard
 import gg.foreversixty.app.model.SimProgress
 import gg.foreversixty.app.model.SimRow
@@ -47,7 +47,6 @@ import gg.foreversixty.app.sims.logic.SimsContent
 import gg.foreversixty.app.sims.logic.SimsCopy
 import gg.foreversixty.app.sims.logic.SimsPhase
 import java.time.Instant
-import java.util.Locale
 
 /** What the list hands back to its screen. */
 data class SimsActions(
@@ -87,7 +86,7 @@ fun SimsList(phase: SimsPhase, state: SimsListState, specs: SpecCatalog, build: 
 @Composable
 fun ScreenTitle(text: String = stringResource(R.string.sims_title)) {
     Text(
-        text.uppercase(Locale.ROOT), style = ScaledType.title, color = FsColor.strong,
+        text, style = ScaledType.title, color = FsColor.strong,
         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp).semantics { heading() },
     )
 }
@@ -111,7 +110,7 @@ private fun Loaded(content: SimsContent, state: SimsListState, specs: SpecCatalo
 @Composable
 private fun ServerSection(content: SimsContent, state: SimsListState, specs: SpecCatalog, build: String?, now: Instant, copy: SimsCopy, actions: SimsActions) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MicroLabel(stringResource(R.string.sims_server).uppercase(Locale.ROOT))
+        SectionTitle(stringResource(R.string.sims_server))
         when {
             content.serverFailed -> Box(Modifier.fillMaxWidth().quietCard()) { ErrorBlock(stringResource(R.string.sims_serverFailed), actions.retry) }
             content.serverRows.isEmpty() -> EmptyCard(stringResource(R.string.sims_serverEmpty))
@@ -139,7 +138,7 @@ private fun ServerSection(content: SimsContent, state: SimsListState, specs: Spe
 @Composable
 private fun MineSection(content: SimsContent, state: SimsListState, specs: SpecCatalog, build: String?, now: Instant, copy: SimsCopy, actions: SimsActions) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MicroLabel(stringResource(R.string.sims_mine).uppercase(Locale.ROOT))
+        SectionTitle(stringResource(R.string.sims_mine))
         when {
             content.mineFailed -> Box(Modifier.fillMaxWidth().quietCard()) { ErrorBlock(stringResource(R.string.sims_failedLoad), actions.retry) }
             content.mine.isEmpty() -> EmptyCard(stringResource(R.string.sims_empty))

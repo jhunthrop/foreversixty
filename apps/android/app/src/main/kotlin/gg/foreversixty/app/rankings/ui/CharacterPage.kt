@@ -1,5 +1,7 @@
 package gg.foreversixty.app.rankings.ui
 
+import gg.foreversixty.app.designsystem.Label12
+import gg.foreversixty.app.designsystem.SectionTitle
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.Canvas
@@ -60,7 +62,6 @@ import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.ScaledType
-import gg.foreversixty.app.designsystem.MicroLabel
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.primaryCard
@@ -225,7 +226,7 @@ private fun Head(profile: CharacterProfile, state: CharacterScreenState, specNam
         Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
             ClassCrest(c.className?.lowercase(), CharacterLayout.crest)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(c.name.uppercase(), style = ScaledType.h2, color = classColor(c.className), modifier = Modifier.semantics { heading() })
+                Text(c.name, style = ScaledType.h2, color = classColor(c.className), modifier = Modifier.semantics { heading() })
                 val tags = CharacterCard.isYours(profile, state.viewer) || profile.supporter
                 if (tags) {
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -265,7 +266,7 @@ private fun ScoreCard(profile: CharacterProfile, copy: CharacterCopy, actions: C
     ) {
         Row(Modifier.clearAndSetSemantics { contentDescription = label }, verticalAlignment = Alignment.Top) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                MicroLabel(stringResource(R.string.char_score))
+                Label12(stringResource(R.string.char_score))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(copy.score(score), style = ScaledType.mono.copy(fontSize = CharacterLayout.scoreSize, fontWeight = FontWeight.Bold, letterSpacing = SCORE_TRACKING), color = FsColor.strong)
                     Tag(copy.tier(profile.tier), ItemQuality(CharacterCard.tierQuality(profile.tier)).text)
@@ -371,7 +372,7 @@ private fun FigureWithUnit(value: String, unit: String) {
 @Composable
 private fun GearSection(profile: CharacterProfile, state: CharacterScreenState, actions: CharacterActions) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MicroLabel(stringResource(R.string.char_gear))
+        SectionTitle(stringResource(R.string.char_gear))
         if (profile.gear.isEmpty()) {
             Text(
                 stringResource(R.string.char_noGear, profile.character.name), style = ScaledType.body, color = FsColor.text,
@@ -406,7 +407,7 @@ private fun NotFound(name: String, actions: CharacterActions) {
 @Composable
 private fun Section(title: String, rows: @Composable () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MicroLabel(title)
+        SectionTitle(title)
         Column(Modifier.fillMaxWidth().quietCard()) { rows() }
     }
 }
