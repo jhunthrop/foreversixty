@@ -9,6 +9,7 @@ import { seatFill, waitedWords } from './applicant-figures';
 import { medianItemLevel, plannerFacts, signed } from './planner-facts';
 import { fasterSinceFirst, progressionNights } from './progression-nights';
 import {
+  absentByRaid,
   awardsByReport,
   bossTimeMs,
   deltaWords,
@@ -85,6 +86,18 @@ describe('the Raids tab nights', () => {
     expect(deltaWords(-6)).toEqual({ value: '−6 s', tone: 'kill' });
     expect(deltaWords(4)).toEqual({ value: '+4 s', tone: 'wipe' });
     expect(raidNightsMeta(rows, bosses)).toBe('2 nights · 2 kills · best 3:12');
+  });
+
+  it('names who was absent and benched each guild raid', () => {
+    const misses = absentByRaid({
+      raids: [{ id: 44 }],
+      rows: [
+        { name: 'Voidcall', cells: ['absent'] },
+        { name: 'Nightlatch', cells: ['bench'] },
+        { name: 'Hollowmend', cells: ['present'] },
+      ],
+    });
+    expect(misses.get(44)).toEqual({ absent: ['Voidcall'], bench: ['Nightlatch'] });
   });
 
   it('counts the council awards per report', () => {

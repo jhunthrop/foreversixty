@@ -19,6 +19,8 @@ const GUILD_PATH = '/guild/us/pvp/olympus-xxvii';
 const GUILD_ID = 2;
 /** guild_dense_data.NOW. */
 export const DENSE_NOW = new Date('2027-01-09T22:00:00Z');
+/** guild_dense_data.NIGHTS[-1]'s report. */
+const LAST_REPORT = 'olympusony0106';
 /** guild_dense_data.SELECTED_DROP. */
 const SELECTED_DROP = 17075;
 
@@ -123,7 +125,16 @@ export const DENSE_OPENERS: Readonly<Record<string, GuildStateOpener>> = {
   'dense-roster-member': (page) => openTab(page, 'member', '#roster', 'guild-roster-board'),
   'dense-readiness': (page) => openTab(page, 'officer', '#readiness', 'guild-readiness-board'),
   'dense-loot': openLoot,
-  'dense-raids': (page) => openTab(page, 'officer', '#raids', 'guild-raids-rows'),
+  // The last night open: its pulls and who was absent or benched.
+  'dense-raids': async (page) => {
+    await openTab(page, 'officer', '#raids', 'guild-raids-rows');
+    const night = page.getByTestId(`guild-raid-row-${LAST_REPORT}`);
+    // The row's button answers once the tab's chunk has hydrated; press until the night opens.
+    await expect(async () => {
+      if ((await night.getAttribute('aria-expanded')) !== 'true') await night.click();
+      await expect(page.getByTestId(`guild-raid-misses-${LAST_REPORT}`)).toBeVisible({ timeout: 1000 });
+    }).toPass();
+  },
   'dense-progression': (page) => openTab(page, 'officer', '#progression', 'guild-progression-tab'),
   'dense-settings': (page) => openTab(page, 'officer', '#settings', 'guild-settings-records'),
   'dense-planner': (page) => openView(page, 'officer', 'raids/45', 'raid-signups'),

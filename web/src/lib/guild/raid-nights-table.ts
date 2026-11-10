@@ -98,15 +98,23 @@ export function raidNightsMeta(rows: readonly GuildRaidRow[], bossIds: ReadonlyS
 /** The attendance grid's nights the Raids tab reads (the API's most). */
 export const ATTENDANCE_GRID_NIGHTS = 12;
 
-/** Officers: who missed each guild raid, from the attendance grid (raid id to absent raiders). */
+/** One guild raid's misses: the raiders absent and those benched, by name. */
+export interface NightMisses {
+  absent: readonly string[];
+  bench: readonly string[];
+}
+
+/** Officers: who missed each guild raid and who sat on the bench, from the attendance grid. */
 export function absentByRaid(grid: {
   raids: readonly { id: number }[];
-  rows: readonly { cells: readonly string[] }[];
-}): ReadonlyMap<number, number> {
+  rows: readonly { name: string; cells: readonly string[] }[];
+}): ReadonlyMap<number, NightMisses> {
+  const named = (index: number, cell: string): string[] =>
+    grid.rows.filter((row) => row.cells[index] === cell).map((row) => row.name);
   return new Map(
     grid.raids.map((raid, index) => [
       raid.id,
-      grid.rows.filter((row) => row.cells[index] === 'absent').length,
+      { absent: named(index, 'absent'), bench: named(index, 'bench') },
     ]),
   );
 }

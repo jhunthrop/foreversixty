@@ -25,6 +25,7 @@
     absentByRaid,
     awardsByReport,
     raidNightsMeta,
+    type NightMisses,
   } from '../../lib/guild/raid-nights-table';
   import { fetchRecentAttendance } from '../../lib/guild/overview-api';
   import Page from '../ui/Page.svelte';
@@ -159,7 +160,7 @@
   });
 
   /** Officers: raiders absent per guild raid (the attendance grid over every account). */
-  let absentByRaidId = $state<ReadonlyMap<number, number> | null>(null);
+  let absentByRaidId = $state<ReadonlyMap<number, NightMisses> | null>(null);
   $effect(() => {
     if (guildId === null || !officer) return;
     void fetchRecentAttendance(guildId, ATTENDANCE_GRID_NIGHTS, true)

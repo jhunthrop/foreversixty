@@ -56,16 +56,17 @@
 >
   {#snippet lead()}<ClassCrestRing characterClass={character.class ?? ''} size={28} />{/snippet}
   {#snippet subContent()}
-    <span class="lg:hidden">{applicantFacts(character)}</span><span class="hidden whitespace-nowrap lg:inline"
+    <span class="lg:hidden">{applicantFacts(character)}</span><span class="hidden lg:inline"
       >{character.spec_name ?? ''}</span
-    >{#if fill !== null}<span
-        class="ml-2 whitespace-nowrap {fill.short ? 'text-gold' : 'text-muted'}"
+    >{#if fill !== null}{' '}<span
+        class="whitespace-nowrap {fill.short ? 'text-gold' : 'text-muted'}"
         data-testid="guild-application-fills">{fill.text}</span
-      >{/if}{#if application.availability !== ''}<span
-        class="whitespace-nowrap"
-        data-testid="guild-application-availability">{SEP}{copy.availability(application.availability)}</span
-      >{/if}<span class="block" data-testid="guild-application-message"
-      >{application.message === '' ? copy.noMessage : application.message}</span
+      >{/if}<span class="block"
+      >{#if application.availability !== ''}<span data-testid="guild-application-availability"
+          >{copy.availability(application.availability)}{SEP}</span
+        >{/if}<span data-testid="guild-application-message"
+        >{application.message === '' ? copy.noMessage : application.message}</span
+      ></span
     >{#if error !== ''}<span class="text-wipe block" role="alert">{error}</span>{/if}
   {/snippet}
   {#snippet trail()}

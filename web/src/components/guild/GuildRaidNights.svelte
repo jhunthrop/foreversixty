@@ -17,6 +17,7 @@
     killClock,
     raidNightFigures,
     slowestMs,
+    type NightMisses,
     type RaidNightFigures,
   } from '../../lib/guild/raid-nights-table';
   import { classColorVar } from '../../lib/report/format';
@@ -47,7 +48,7 @@
     /** Items awarded per report id (a member's loot nights read); null leaves the column out. */
     lootByReport?: ReadonlyMap<string, number> | null;
     /** Officers: raiders absent per guild raid id; null leaves the column out. */
-    absentByRaid?: ReadonlyMap<number, number> | null;
+    absentByRaid?: ReadonlyMap<number, NightMisses> | null;
     expanded: string | null;
     onToggle: (id: string) => void;
   } = $props();
@@ -72,9 +73,14 @@
       { word: 'Top DPS', parse: row.top_dps, kind: 'dps' },
     ].filter((top) => top.parse != null);
 
+  function missesOf(row: GuildRaidRow): NightMisses | undefined {
+    return row.raid_id == null ? undefined : absentByRaid?.get(row.raid_id);
+  }
+
   function absentCell(row: GuildRaidRow): StatFigure {
-    const absent = row.raid_id == null ? undefined : absentByRaid?.get(row.raid_id);
-    if (absent === undefined) return DASH;
+    const misses = missesOf(row);
+    if (misses === undefined) return DASH;
+    const absent = misses.absent.length;
     return { value: String(absent), tone: absent > 0 ? 'wipe' : undefined };
   }
 
@@ -95,6 +101,7 @@
 <StatTable {columns} nameHead="Night" barHead="Boss time" dense label="Raid nights" testid="guild-raids-rows">
   {#each figures as f (f.row.id)}
     {@const isOpen = expanded === f.row.id}
+    {@const misses = missesOf(f.row)}
     <StatRow
       figures={cells(f)}
       phone={`${counted(f.wipes, 'wipe')} · ${counted(f.row.deaths, 'death')}`}
@@ -139,6 +146,16 @@
             class="{LINK} inline-flex min-h-9 items-center text-[13px]"
             data-testid={`guild-raid-link-${f.row.id}`}>{attendanceCopy.match.openRaid}</a
           >
+        {/if}
+        {#if misses !== undefined && (misses.absent.length > 0 || misses.bench.length > 0)}
+          <p class="text-[13px] leading-5" data-testid={`guild-raid-misses-${f.row.id}`}>
+            {#if misses.absent.length > 0}<span class="text-muted">Absent</span>
+              <span class="text-wipe">{misses.absent.join(', ')}</span
+              >{/if}{#if misses.absent.length > 0 && misses.bench.length > 0}{SEP}{/if}{#if misses.bench.length > 0}<span
+                class="text-muted">Bench</span
+              >
+              {misses.bench.join(', ')}{/if}
+          </p>
         {/if}
         <ul class="grid gap-x-6 sm:grid-cols-2 xl:grid-cols-3" data-testid={`guild-raid-fights-${f.row.id}`}>
           {#each nightFights(f.row, bossIds) as fight (fight.index)}
