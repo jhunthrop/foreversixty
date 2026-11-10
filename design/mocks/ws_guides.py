@@ -313,7 +313,7 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
     faction = me['faction'] if me and kind == 'same' else 'alliance'
     sections = [overview(gp), talents(gp), rotation(gp, {} if partial else None), stats(gp, [] if partial else None),
                 gear(gp, band_no, faction, not partial), extras(gp, not partial), races(gp),
-                ReadingSection(SEC['professions'], Prose(g['professions']), '', 'professions', fold=e(F['fns']['foldShow'].replace('%s', 'professions'))), leveling(gp, level if kind == 'same' else 60, not partial)]
+                ReadingSection(SEC['professions'], Prose(g['professions']), '', 'professions', fold=e(F['fns']['foldShow'].replace('%s', 'professions'))), leveling(gp, 60, not partial)]   # the server render: the tree's island (client:visible) moves to the character's level only once scrolled to
     body = (ReadingPanel(''.join(sections)) + sources(g)
             )
     toc = Toc(e(C['tocBarLabel']), [(e(s['title']), s['id']) for s in F['sections']], 'overview')
