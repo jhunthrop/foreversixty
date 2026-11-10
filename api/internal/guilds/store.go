@@ -175,6 +175,11 @@ func (s *Store) IsMember(ctx context.Context, guildID, userID int64) (bool, erro
 // corroboration sweeps). It is also called by addon.Store.PutExports in
 // the same transaction as the character write it follows — this is why
 // it takes a pgx.Tx rather than opening its own.
+//
+// An unexpired guild_rank_overrides row (api grant-rank) raises the
+// account's rank to the override's and counts it as verified, but only
+// for an account that still has a character in the guild: the rows are
+// built from guild_characters, so an override alone never creates one.
 func RecomputeMembership(ctx context.Context, tx pgx.Tx, guildID int64, userID *int64) error {
 	// Serialises every recompute for this guild against every other -
 	// PutExports, ApproveCharacter, RemoveCharacter, Claim,
@@ -192,16 +197,26 @@ func RecomputeMembership(ctx context.Context, tx pgx.Tx, guildID int64, userID *
 	}
 	if _, err := tx.Exec(ctx, `
 		insert into guild_members (guild_id, user_id, rank, verified_at, refreshed_at)
-		select $1, gc.user_id,
-		       case max(case when gc.verified_at is not null then
-		                   case gc.rank when 'leader' then 3 when 'officer' then 2 else 1 end
-		                 end)
+		select $1, c.user_id,
+		       case greatest(c.level, o.level)
 		         when 3 then 'leader' when 2 then 'officer' else 'member' end,
-		       min(gc.verified_at) filter (where gc.verified_at is not null),
+		       coalesce(c.verified_at, o.created_at),
 		       now()
-		from guild_characters gc
-		where gc.guild_id = $1 and ($2::bigint is null or gc.user_id = $2)
-		group by gc.user_id
+		from (
+		  select gc.user_id,
+		         max(case when gc.verified_at is not null then
+		               case gc.rank when 'leader' then 3 when 'officer' then 2 else 1 end
+		             end) as level,
+		         min(gc.verified_at) filter (where gc.verified_at is not null) as verified_at
+		  from guild_characters gc
+		  where gc.guild_id = $1 and ($2::bigint is null or gc.user_id = $2)
+		  group by gc.user_id
+		) c
+		left join lateral (
+		  select case r.rank when 'leader' then 3 else 2 end as level, r.created_at
+		  from guild_rank_overrides r
+		  where r.guild_id = $1 and r.user_id = c.user_id and r.expires_at > now()
+		) o on true
 		on conflict (guild_id, user_id) do update set
 		  rank = excluded.rank, verified_at = excluded.verified_at, refreshed_at = now()
 	`, guildID, userID); err != nil {

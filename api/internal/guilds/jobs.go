@@ -324,6 +324,13 @@ func (j *MembershipJob) sweepOnce(ctx context.Context, at time.Time) error {
 	if err := j.Store.AgeOut(ctx, at); err != nil {
 		return fmt.Errorf("guilds: age out: %w", err)
 	}
+	expired, err := j.Store.ExpireRankOverrides(ctx, at)
+	if err != nil {
+		return fmt.Errorf("guilds: expire rank overrides: %w", err)
+	}
+	for _, p := range expired {
+		j.logger().Info("guilds", "op", "rank_override_expired", "guild_id", p[0], "user_id", p[1])
+	}
 	if err := j.Store.VerifyByLogs(ctx); err != nil {
 		return fmt.Errorf("guilds: verify by logs: %w", err)
 	}

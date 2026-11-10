@@ -116,6 +116,18 @@ func main() {
 				os.Exit(1)
 			}
 			return
+		case "grant-rank":
+			if err := runGrantRank(context.Background(), log, os.Args[2:]); err != nil {
+				log.Error("grant-rank", "err", err)
+				os.Exit(1)
+			}
+			return
+		case "revoke-rank":
+			if err := runRevokeRank(context.Background(), log, os.Args[2:]); err != nil {
+				log.Error("revoke-rank", "err", err)
+				os.Exit(1)
+			}
+			return
 		case "grandfather-officer-tools":
 			if err := runGrandfatherOfficerTools(context.Background(), log, os.Args[2:]); err != nil {
 				log.Error("grandfather-officer-tools", "err", err)
