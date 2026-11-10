@@ -133,7 +133,7 @@ export const plansPageCopy = {
     features: [
       'Comp targets, a ping for whoever has not signed, boss assignments.',
       'Attendance and a report for every raid night from its log.',
-      "Logs matched to raids, attendance fixes, the night's report in Discord.",
+      'Logs matched to their raids, attendance fixed by hand.',
       `${PLANS.guild.seats} Premium seat to give a member.`,
       `Fits a guild that runs ${RAID_SIZES[2]}- or ${RAID_SIZES[1]}-person raids.`,
     ],
