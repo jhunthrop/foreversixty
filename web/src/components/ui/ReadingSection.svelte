@@ -14,6 +14,7 @@
     title,
     anchor,
     lane,
+    proseFirst = false,
     testid,
     children,
   }: {
@@ -22,6 +23,9 @@
     anchor?: string;
     /** The section's data, beside the prose. */
     lane?: Snippet;
+    /** Below 1280 the prose comes before the lane (a section whose lane is a long list the
+     *  prose introduces: the guide's Best in slot). */
+    proseFirst?: boolean;
     testid?: string;
     /** The prose. */
     children: Snippet;
@@ -37,7 +41,7 @@
   <div class="border-line-soft border-b pb-[10px]">
     <h2 class="ui-rsec-title">{title}</h2>
   </div>
-  <div class="ui-rd" data-solo={lane ? undefined : ''}>
+  <div class="ui-rd" data-solo={lane ? undefined : ''} data-prose-first={proseFirst ? '' : undefined}>
     {#if lane}<div class="ui-rd-lane">{@render lane()}</div>{/if}
     <div class="ui-rd-prose">
       {@render children()}
@@ -90,6 +94,11 @@
   .ui-rd-more :global([data-wrapped]) {
     break-inside: avoid;
   }
+  @media (max-width: 1279.98px) {
+    .ui-rd[data-prose-first] {
+      grid-template-areas: 'prose' 'lane';
+    }
+  }
   @media (min-width: 768px) {
     .ui-rsec-title {
       font-size: 22px;
@@ -101,6 +110,10 @@
       grid-template-columns: var(--measure-reading) minmax(0, 640px);
       grid-template-areas: 'prose lane';
       align-items: start;
+    }
+    .ui-rd[data-lane-sticky] > .ui-rd-lane {
+      position: sticky;
+      top: calc(var(--bar-h) + 12px);
     }
     .ui-rd[data-solo] {
       grid-template-columns: var(--measure-reading);

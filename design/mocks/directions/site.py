@@ -133,14 +133,20 @@ def changelog_page() -> str:
 
 
 def not_found_page() -> str:
+    """Did you mean (framed), then Pick your class: each class in its colour over its specs (each spec its guide), then the
+    character lookup the shipped page keeps (P15 review round 1: the designer signs the specs and the lookup in)."""
     nf = PAGES['copy']['notFound']
     sug = PAGES['suggest']
     classes = PAGES['classes']
-    picks = row_list([(f'<img class="ai" src="{D.crest_uri(c["slug"])}" width="30" height="30" alt="" style="border-radius:50%">',
-                       f'<a href="#" style="color:{D.CLASS_COLOR[c["slug"]]}">{escape(c["name"])}</a>', '', '') for c in classes])
+    look = PAGES['copy']['lookup']
+    picks = row_list([(f'<img class="ai" src="{D.crest_uri(c["slug"])}" width="36" height="36" alt="" style="border-radius:50%">',
+                       f'<a href="#" style="color:{D.CLASS_COLOR[c["slug"]]}">{escape(c["name"])}</a>',
+                       ', '.join(f'<a href="#" class="muted">{escape(s["name"])}</a>' for s in c['specs']), '') for c in classes])
     did = panel(nf['didYouMean'], f'<p><a href="#">{escape(sug["page"][1])} &rsaquo;</a></p>', framed=True)
-    body = (titlebar(None, nf['title'], escape(nf['job'].split('. ', 1)[0] + '.'), top=header(*VIEWER, ''))
-            + f'<main class="w st" style="max-width:980px">{did}{panel(nf["pick"], "<div style=columns:3;column-gap:24px>" + picks + "</div>")}</main>')
+    lookup = (f'<section style="margin-top:28px"><h2 style="font:400 22px/28px var(--title);color:var(--cream);margin:0 0 12px">'
+              f'{escape(look["heading"])}</h2>{field(look["namePlaceholder"], f"<a class=btn href=#>{escape(look['submit'])}</a>", look["nameLabel"])}</section>')
+    body = (titlebar(None, nf['title'], escape(nf['job']), top=header(*VIEWER, ''))
+            + f'<main class="w st">{did}{panel(nf["pick"], "<div style=columns:3;column-gap:24px>" + picks + "</div>")}{lookup}</main>')
     return site_page('page not found', body)
 
 

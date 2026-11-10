@@ -188,8 +188,8 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
                 continue
             items.append(ItemRow(e(r['itemName']), r['quality'], icon(r['icon'], 36, QUAL.get(r['quality'], '')), e(r['sourceDetail']), e(r['slotLabel'])))
         caption = panel['caption']
-        note = f'<p class="t-small">{e(C["preRaidNote"])}</p>' if band_no == 60 else ''
-        lane = LaneBlock(e(F['fns']['levelRangeLabel'][str(band_no)]), f'<div class="items">{"".join(items)}</div>' + note, e(caption))
+        note = ''   # at 60 the doll's title bar says pre-raid and whose picks they are
+        lane = LaneBlock(e(F['fns']['levelRangeLabel'][str(band_no)]), f'<div class="items">{"".join(items)}</div>' + note, '' if band_no == 60 else e(caption))
     lane += f'<p>{Link(rsaquo(C["fullListLink"]))}</p>'
     # Every band's own BiS page and the role's tier list (SEO lane 2026-11-08), one quiet block under the full list.
     bands = ''.join(Link(e(s)) for s in F['fns']['bandSlugs'])

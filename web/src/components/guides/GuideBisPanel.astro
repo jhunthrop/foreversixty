@@ -1,8 +1,8 @@
 ---
 // web/src/components/guides/GuideBisPanel.astro
 // One band of the guide's Best in slot lane: the level range as the label, whose picks they are
-// as the meta, one ItemRow per slot (the slot, the icon in its quality frame, the name opening
-// the item tooltip, where it comes from), the pre-raid note at 60.
+// as the meta (below 60: at 60 the doll's title bar names them), one ItemRow per slot (the slot,
+// the icon in its quality frame, the name opening the item tooltip, where it comes from).
 import ItemRow from '../ui/ItemRow.svelte';
 import LaneBlock from '../ui/LaneBlock.svelte';
 import { guidesCopy } from '../../lib/guides/copy';
@@ -18,10 +18,10 @@ const faction = panel.faction === 'alliance' ? guidesCopy.alliancePicksHeading :
 
 <LaneBlock
   label={guidesCopy.levelRangeLabel(panel.band)}
-  meta={guidesCopy.bisCaption(panel.raceName, faction)}
+  meta={panel.band === 60 ? undefined : guidesCopy.bisCaption(panel.raceName, faction)}
   testid="guide-bis-panel"
 >
-  <div class="guide-bis-items" data-wrap-list data-band={panel.band} data-faction={panel.faction}>
+  <div class="guide-bis-items" data-band={panel.band} data-faction={panel.faction}>
     {panel.rows.map((row) => (
       <ItemRow
         item={
@@ -38,7 +38,6 @@ const faction = panel.faction === 'alliance' ? guidesCopy.alliancePicksHeading :
       />
     ))}
   </div>
-  {panel.band === 60 && <p class="text-small text-muted m-0">{guidesCopy.preRaidNote}</p>}
 </LaneBlock>
 
 <style>

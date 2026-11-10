@@ -24,13 +24,16 @@ function bottomOf(element: Element): number {
   const count = (root: Element | null): number => root?.querySelectorAll('.row, .note').length ?? 0;
   if (element.classList.contains('ui-rd-lane')) return count(element) * ROW_PX;
   if (element.classList.contains('ui-rd-prose'))
-    return PROSE_PX + count(element.querySelector('.ui-rd-more')) * ROW_PX;
+    return (
+      Number((element as HTMLElement).dataset.px ?? PROSE_PX) +
+      count(element.querySelector('.ui-rd-more')) * ROW_PX
+    );
   return 0;
 }
 
 beforeEach(() => {
   vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
-    return { bottom: bottomOf(this) } as DOMRect;
+    return { bottom: bottomOf(this), height: bottomOf(this) } as DOMRect;
   });
 });
 afterEach(() => vi.restoreAllMocks());
@@ -95,5 +98,18 @@ describe('reading-wrap', () => {
     const all = [...rowIds(rd.querySelector('.ui-rd-lane')!), ...rowIds(rd.querySelector('.ui-rd-more')!)];
     expect(all).toEqual(Array.from({ length: 12 }, (_, i) => `n${i}`));
     vi.unstubAllGlobals();
+  });
+
+  it('pins a short lane beside long prose while it fits the viewport, and lets it go on unwrap', () => {
+    const rd = section(4);
+    rd.querySelector<HTMLElement>('.ui-rd-prose')!.dataset.px = '900';
+    wrapSection(rd, 1440, 800);
+    expect(rd.hasAttribute('data-lane-sticky')).toBe(true);
+    unwrapSection(rd);
+    expect(rd.hasAttribute('data-lane-sticky')).toBe(false);
+    wrapSection(rd, 1440, 300);
+    expect(rd.hasAttribute('data-lane-sticky')).toBe(false);
+    wrapSection(rd, 1279, 800);
+    expect(rd.hasAttribute('data-lane-sticky')).toBe(false);
   });
 });

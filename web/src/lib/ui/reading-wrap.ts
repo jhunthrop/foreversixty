@@ -12,6 +12,10 @@
 // the lane is mirrored by a shallow copy (classes kept, ids and test ids dropped), so the row
 // keeps its list's spacing. A `[data-wrap-repeat]` child (a table's header row) is copied into the
 // mirror, so a table split in two keeps its heads. Hydrated islands and templates never move.
+//
+// The other way round, a short lane beside long prose (a Leveling tree beside its prose) stays in
+// view while the prose scrolls past it: the section takes `data-lane-sticky` when its lane ends
+// WRAP_GAP_PX or more above the prose and fits the viewport, and ReadingSection pins it.
 
 export const WRAP_FROM_PX = 1280;
 /** A left-column gap at least this tall wraps (the owner's ~200 px). */
@@ -21,6 +25,9 @@ export const WRAP_SLACK_PX = 48;
 
 const LIST = '[data-wrap-list]';
 const FIXED = 'astro-island, template';
+/** A pinned lane keeps this much of the viewport clear (the site and control bars above it). */
+const STICKY_CLEAR_PX = 160;
+const STICKY = 'data-lane-sticky';
 /** Set on a row while it sits under the prose: it never splits across the columns there. */
 const WRAPPED = 'data-wrapped';
 const DROPPED_ATTRIBUTES = ['id', 'data-testid', 'data-bis-current', 'data-panel', 'data-region'];
@@ -118,6 +125,7 @@ function partsOf(section: HTMLElement): SectionParts | undefined {
 
 /** Every moved row back in its place (a row whose list has gone is dropped), the mirrors cleared. */
 export function unwrapSection(section: HTMLElement): void {
+  section.removeAttribute(STICKY);
   const state = states.get(section);
   const parts = partsOf(section);
   if (state === undefined || parts === undefined) return;
@@ -134,11 +142,19 @@ function gapOf({ prose, lane }: SectionParts): number {
   return lane.getBoundingClientRect().bottom - prose.getBoundingClientRect().bottom;
 }
 
-/** Wraps one section's lane under its prose when the gap is WRAP_GAP_PX or more (from 1280). */
-export function wrapSection(section: HTMLElement, viewportWidth: number): void {
+/** Pins a lane that ends WRAP_GAP_PX or more above its prose and fits the viewport. */
+function pinShortLane(section: HTMLElement, parts: SectionParts, viewportHeight: number): void {
+  const fits = parts.lane.getBoundingClientRect().height <= viewportHeight - STICKY_CLEAR_PX;
+  if (gapOf(parts) <= -WRAP_GAP_PX && fits) section.setAttribute(STICKY, '');
+}
+
+/** Wraps one section's lane under its prose when the gap is WRAP_GAP_PX or more (from 1280), or
+ *  pins a short lane beside long prose. */
+export function wrapSection(section: HTMLElement, viewportWidth: number, viewportHeight = Infinity): void {
   unwrapSection(section);
   const parts = partsOf(section);
   if (parts === undefined || viewportWidth < WRAP_FROM_PX) return;
+  pinShortLane(section, parts, viewportHeight);
   if (gapOf(parts) < WRAP_GAP_PX) return;
   const state: WrapState = { moved: [], mirrors: new Map() };
   states.set(section, state);
@@ -162,14 +178,14 @@ export function rewrapAround(element: Element, change: () => void): void {
   const section = element.closest<HTMLElement>(SECTION);
   if (section !== null) unwrapSection(section);
   change();
-  if (section !== null) wrapSection(section, window.innerWidth);
+  if (section !== null) wrapSection(section, window.innerWidth, window.innerHeight);
 }
 
 /** Wraps every reading section on the page now, once the fonts settle and on every width change. */
 export function mountReadingWrap(root: ParentNode = document): void {
   const all = (): HTMLElement[] => [...root.querySelectorAll<HTMLElement>(SECTION)];
   const run = (): void => {
-    for (const section of all()) wrapSection(section, window.innerWidth);
+    for (const section of all()) wrapSection(section, window.innerWidth, window.innerHeight);
   };
   run();
   void document.fonts?.ready.then(run);
