@@ -86,7 +86,7 @@
 </script>
 
 <Page layout="ledger" panels>
-  <Section title={simCopy.specsSimulatedHeading} panel frame="framed" flush testid="specs-simulated">
+  <Section title={simCopy.specsSimulatedHeading} panel flush testid="specs-simulated">
     <div>
       {#if topSets.size > 0}
         <!-- The columns' heads, once: what the rank orders by and the figure's unit (h-audit 2026-11-09). -->

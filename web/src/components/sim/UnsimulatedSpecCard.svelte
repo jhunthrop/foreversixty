@@ -9,6 +9,7 @@
   import { classOfSpec, specLabel } from '../../lib/sim/spec-label';
   import type { Spec } from '../../lib/sim/specs';
   import { classColorVar } from '../../lib/report/format';
+  import { simCopy } from '../../lib/sim/copy';
 
   let { spec }: { spec: Spec } = $props();
 </script>
@@ -25,6 +26,8 @@
       width="20"
       height="20"
       class="rounded-full"
-    />{specLabel(spec.spec)}</a
+    />{specLabel(spec.spec)}<span class="text-muted text-[13px] font-normal"
+      >{simCopy.specsRole[spec.role]}</span
+    ></a
   >
 </span>

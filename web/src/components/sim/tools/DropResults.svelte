@@ -38,7 +38,6 @@
     treeVersion,
     untried,
     onpin,
-    plate = false,
   }: {
     result: BulkResult;
     items: ReadonlyMap<number, Item>;
@@ -51,8 +50,6 @@
     untried: readonly UntriedPick[];
     /** The item, its `drop:<source-id>` origin and the boss/source name it carried in. */
     onpin: (itemId: number, origin: string, sourceName: string) => void;
-    /** The results sit on the page's one Plate. */
-    plate?: boolean;
   } = $props();
 
   /** A boss's rows: the gain (primary), then the share. */
@@ -124,7 +121,7 @@
   }
 </script>
 
-<ToolSection title={bulkCopy.resultsTitle} testid="sim-combos" {plate}>
+<ToolSection title={bulkCopy.resultsTitle} testid="sim-combos">
   <div class="flex flex-col gap-3">
     <p class="text-muted text-[13px]" data-testid="sim-drops-note">{bulkCopy.dropsNoChance}</p>
 

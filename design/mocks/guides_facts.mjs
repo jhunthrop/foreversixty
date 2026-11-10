@@ -148,7 +148,7 @@ export async function run(entries, SPECS, CLASSES) {
   return { build, copy: strip(guidesCopy), tier_answer: strip(answerCopy), sections: [...SPEC_SECTIONS].map((s) => ({ title: s, id: slugify(s) })),
     index, landings, guides, coverage, me: { hunter34: who(me34), survival34: { ...who(meSurvival), next: nextOf(guides['hunter/survival'], 34) }, survival60: who(meSurvival60), warrior60: who(me60), mage60: who(meMage) },
     source_labels: Object.fromEntries(['blizzard', 'datamined', 'community', 'site'].map((k) => [k, pillLabelFor(k)])), setup_title: addonCopy.setupPageTitle,
-    fns: { signedInCallout: { bm: guidesCopy.signedInCallout('Beast Mastery', 'Hunter'), survival: guidesCopy.signedInCallout('Survival', 'Hunter'), fury: guidesCopy.signedInCallout('Fury', 'Warrior') },
+    fns: { foldShow: guidesCopy.foldShow('%s'), signedInCallout: { bm: guidesCopy.signedInCallout('Beast Mastery', 'Hunter'), survival: guidesCopy.signedInCallout('Survival', 'Hunter'), fury: guidesCopy.signedInCallout('Fury', 'Warrior') },
       unknown: answerCopy.unknown('Felsnap'),
       levelRangeLabel: Object.fromEntries([20, 30, 40, 50, 60].map((b) => [b, guidesCopy.levelRangeLabel(b)])),
       bandSlugs: [20, 30, 40, 50, 60].map(bandSlug) } };

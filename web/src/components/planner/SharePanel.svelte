@@ -1,6 +1,6 @@
 <!-- web/src/components/planner/SharePanel.svelte -->
 <!-- Share this build (spec 2026-11-08 section 4.8): the title, Share (which asks first, naming
-     what goes public), Copy as text (the build as one line of text), and the switch that sims a DPS
+     what goes public), Copy for chat (the build as one line of text), and the switch that sims a DPS
      onto the card. Saved: the link, Copy link, the card line and the 600 x 315 card. The build
      stays in the store whatever the API says, so a failed save costs nothing but a retry. Copy
      for the game left for In the game. Task 21: a saved build's card can carry a simmed DPS; the

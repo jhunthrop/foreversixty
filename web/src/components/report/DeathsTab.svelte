@@ -378,7 +378,7 @@
                 class="text-nav text-[14px] font-semibold whitespace-nowrap [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
                 aria-expanded="false"
                 data-testid="death-toggle"
-                onclick={() => openCard(death)}>Open</button
+                onclick={() => openCard(death)}>Open ›</button
               >
             {/if}
           {/snippet}

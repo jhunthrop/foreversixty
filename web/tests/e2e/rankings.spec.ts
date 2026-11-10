@@ -72,7 +72,8 @@ test.describe('signed in, desktop', () => {
     // The board opened on the encounter the character most recently killed, in its own cohort.
     await expect(page).toHaveURL(/\/rankings\/onyxia$/);
     await expect(heading(page)).toHaveText('Fury Warriors');
-    await expect(page.getByTestId('rankings-heading')).toContainText('212 ranked');
+    // Your rank says "of 212 Fury Warriors": the board's head leaves the count to it.
+    await expect(page.getByTestId('rankings-heading')).not.toContainText('212 ranked');
     const board = api.asked.find(
       (url) => url.searchParams.get('character') === OWN_KEY && url.searchParams.get('page') === null,
     );

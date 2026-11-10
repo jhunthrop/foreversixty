@@ -113,11 +113,11 @@ def band(g: dict) -> str:
         cols.append((e(b['rotationTitle']), e(F['fns']['levelRangeLabel']['60']), RowsSlim([spell_row(x) for x in b['rotation']]) + filler,
                      Link(e(C['fullPriorityLink']))))
     if b['stats']:
-        cap = b.get('hitCap')
-        lines = (f'<p class="t-small"><b class="strong">{e(cap["cap"])}</b>' + (f' &middot; {e(cap["detail"])}' if cap.get('detail') else '') + '</p>') if cap else ''
+        # web GuideGlance: the weights only; the Hit cap line is Stat priority's own
         cols.append((e(C['statPriorityRailLabel']), e(g['stats']['table']['weightHead']),
-                     StatTable([('', False), ('', False), ('', False), ('', True)], stat_rows(b['stats'], True, False), 1, open_=True) + lines, ''))
-    return PlateColumns(cols, PROPOSED['glance'], frame='framed')
+                     StatTable([('', False), ('', False), ('', False), ('', True)], stat_rows(b['stats'], True, False), 1, open_=True), ''))
+    # a phone's band is the build alone (web GuideGlance): Rotation and Stat priority are their sections
+    return f'<div class="g-glance">{PlateColumns(cols, PROPOSED["glance"], frame="framed")}</div>'
 
 
 def overview(g: dict) -> str:
@@ -168,8 +168,7 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
             cap += f'<p class="t-small">{e(t["expertiseCap"]["text"])}</p>'
         table = StatTable([('', False), (e(F['markup']['statHead']), False), ('', False), (e(t['weightHead']), True), (e(t['perPointHead']), True)],
                           stat_rows(rows, False, True), 2, open_=True)
-        # the built StatTable `wrap`: its rows may wrap under the prose, the head row repeated
-        table = wrap_list(table).replace('<div class="st-h stc" role="row">', '<div class="st-h stc" role="row" data-wrap-repeat>', 1)
+        # the table is one block: it never wraps under the prose (web GuideStatLane, no StatTable `wrap`)
         notes = ''.join(f'<p class="t-small">{e(x)}</p>' for x in [t.get('ratingNote'), *t['notes']] if x)
         notes = f'<div class="gnotes" data-wrap-list>{notes}</div>' if notes else ''
         lane = f'<div class="gstat">{LaneBlock(e(C["statPriorityRailLabel"]), cap + table + notes)}</div>'
@@ -265,9 +264,10 @@ def races(g: dict) -> str:
             rows.append(Row(e(x['name']), title_color=FACTION[x['faction']], lead=icon(portrait, 28) if portrait else '',
                             link=False, foot=foot, selected=x['recommended']))
         head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
-        body += f'<div class="grace"><h4 class="t-label sub-h">{e(head)}</h4>' + wrap_list(Rows(rows, True)) + '</div>'
+        body += f'<div class="grace"><h4 class="t-label sub-h">{e(head)}</h4>' + Rows(rows, True) + '</div>'   # one list, never wrapped
     lines = ''.join(f'<p class="t-small">{e(t)}</p>' for t in r['lines'])
-    return ReadingSection(SEC['races'], Prose(r['prose']), LaneBlock(e(C['racialsColumn']), body + lines), 'races')
+    return ReadingSection(SEC['races'], Prose(r['prose']), LaneBlock(e(C['racialsColumn']), body + lines), 'races',
+                          fold=e(F['fns']['foldShow'].replace('%s', f"{len(r['rows'])} races")))
 
 
 def leveling(g: dict, level: int = 60, data: bool = True) -> str:
@@ -279,7 +279,7 @@ def leveling(g: dict, level: int = 60, data: bool = True) -> str:
         lane = LaneBlock(e(C['talentsByLevel']),
                          f'<p class="lvl-l"><b class="strong">{e(at["point"])}</b><span class="t-small">{e(at["spent"])}</span></p>'
                          + LevelSlider(level, 10, 60, e(C['levelSliderLabel'])) + TalentTrees(trees_of(at['trees'])) + f'<p>{Link(rsaquo(C["loadInPlanner"]))}</p>')
-    return ReadingSection(SEC['leveling'], prose, lane, 'leveling')
+    return ReadingSection(SEC['leveling'], prose, lane, 'leveling', fold=e(F['fns']['foldShow'].replace('%s', 'leveling')))
 
 
 def sources(g: dict) -> str:
@@ -288,7 +288,7 @@ def sources(g: dict) -> str:
         if s['url'] in seen:
             continue
         seen.add(s['url'])
-        rows.append(Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')))
+        rows.append(Row(f'<span class="gold link">{e(source_title(s["label"]))}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')))
     return Section(PROPOSED['sources'], RowsSlim(rows))
 
 
@@ -306,7 +306,7 @@ def spec_bar(g: dict, open_m: bool = False) -> str:
     end = f'<span class="toc-sel">{sel(e(C["tocBarLabel"]))}</span>'
     spec = e(C['specGroupLabel'])
     return control_bar([(spec, seg(items, label=spec), seg(items, label=spec) + toc_m)],
-                       f'{e(g["specName"])} {e(g["className"])} &middot; {e(C["tocBarLabel"])}', end=end, open_m=open_m, label=e(C['barLabel']))
+                       f'{e(g["specName"])} {e(g["className"])}', end=end, open_m=open_m, label=e(C['barLabel']))
 
 
 def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, open_m: bool = False, partial: bool = False) -> str:
@@ -321,7 +321,7 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
     faction = me['faction'] if me and kind == 'same' else 'alliance'
     sections = [overview(gp), talents(gp), rotation(gp, {} if partial else None), stats(gp, [] if partial else None),
                 gear(gp, band_no, faction, not partial), extras(gp, not partial), races(gp),
-                ReadingSection(SEC['professions'], Prose(g['professions']), '', 'professions'), leveling(gp, level if kind == 'same' else 60, not partial)]
+                ReadingSection(SEC['professions'], Prose(g['professions']), '', 'professions', fold=e(F['fns']['foldShow'].replace('%s', 'professions'))), leveling(gp, level if kind == 'same' else 60, not partial)]
     body = (ReadingPanel(''.join(sections)) + sources(g)
             )
     toc = Toc(e(C['tocBarLabel']), [(e(s['title']), s['id']) for s in F['sections']], 'overview')
@@ -331,6 +331,15 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
             + ('Partial-data state: rotation, weights, BiS and extras removed (FORCED; no spec lacks them at this build). ' if partial else '')
             + (f'Signed in: {me["name"]} ({me["identity"]}, {me["level_line"]}), a home fixture' + (' (derived, see guides_facts.mjs).' if me_key in ('survival34', 'mage60') else '.') if me else ''))
     return build_page(f'{g["title"]} guide', html + reading_wrap_script(), 'Guides', who, note)
+
+
+def source_title(label: str) -> str:
+    """web lib/sources.ts sourceTitle: the publisher the kind pill already names is not said again."""
+    for prefix in ('Blizzard, ', 'Forever Sixty, '):
+        if label.startswith(prefix):
+            rest = label[len(prefix):]
+            return rest[:1].upper() + rest[1:]
+    return label
 
 
 # ------------------------------------------------------------------------------------------------ the class landing
@@ -366,7 +375,7 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
     main = ''.join(Section(e(s['heading']), Prose(s['html']), boxed=True) for s in L['sections'] if not s['panel'])
     rail = ''.join(Section(e(s['heading']), (race_list(L['races']) if s['heading'] == 'Races' else '')
                            + (Prose(s['html'], 'lane') if s['html'] else ''), boxed=True) for s in L['sections'] if s['panel'])
-    srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]))
+    srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(source_title(s["label"]))}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]))
     ans = '' if kind == 'out' else answer(kind, me)
     head = PageHeader(e(L['title']), CLASS_COLOR[cls], crest_img(cls, 56), [f'Updated {e(L["updated"])}'], ans)
     html = head + Page('ledger', f'<div class="g-ledger">{specs}</div>') + Page('split', main, rail) + Page('ledger', srcs) + PAGE_CSS
@@ -441,6 +450,8 @@ PAGE_CSS = '''<style>
 @media(min-width:1024px){.g-specs{grid-template-columns:repeat(var(--specs),minmax(0,1fr))}}
 .g-page{padding-bottom:40px}  /* [spec].astro .guide-page's own bottom space, under the page body's gap (ws_lib main) */
 .sw{display:grid;gap:20px var(--gap);grid-template-columns:minmax(0,1fr)}@media(min-width:768px){.sw{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:767px){.g-glance .pcol:not(:first-child){display:none}}
+.rd-lane .rows:not(.slim) .row:not(.slim){min-height:58px}  /* web tokens.css --row-h: a name-only key talent row is the token height */
 .sw-h{margin:0;padding-bottom:8px;font:600 15px/20px var(--font-body);color:#f3eee2}
 .lvl-l{display:flex;flex-direction:column}
 .racial{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:18px;color:var(--muted);width:100%}.racial b{color:var(--text);font-weight:600}

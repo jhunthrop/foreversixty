@@ -18,14 +18,11 @@
     sets,
     onadd,
     onremove,
-    plate = false,
   }: {
     character: SimCharacter;
     sets: readonly GearSet[];
     onadd: (set: GearSet) => void;
     onremove: (name: string) => void;
-    /** The block sits on the page's one Plate. */
-    plate?: boolean;
   } = $props();
 
   let code = $state('');
@@ -86,7 +83,7 @@
   }
 </script>
 
-<ToolSection title={bulkCopy.setsTitle} testid="sim-named-sets" {plate}>
+<ToolSection title={bulkCopy.setsTitle} testid="sim-named-sets">
   {#if rows.length > 0}
     <div class="pt-1">
       {#each rows as set (set.name)}
@@ -105,7 +102,7 @@
   {/if}
 
   <div class="flex flex-wrap items-end gap-3 pt-3">
-    <div class="w-40">
+    <div class="w-full md:w-40">
       <Field
         id="sim-set-name"
         label="Name"

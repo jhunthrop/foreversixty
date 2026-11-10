@@ -421,9 +421,6 @@
   );
   const otherEncounters = $derived(encounters.filter((encounter) => encounter.slug !== encounterSlug));
   const boardTitle = $derived(isGuild ? rankingsCopy.guildTitle[guildKind] : cohort);
-  const boardMeta = $derived(
-    isGuild || page === null || page.total === 0 ? undefined : `${page.total.toLocaleString('en-US')} ranked`,
-  );
   /** Nothing ranked where the visitor is looking: the rail offers the companion, what fills it. */
   const nothingRanked = $derived(
     aimed &&
@@ -435,6 +432,12 @@
           : page === null || page.rows.length === 0),
   );
   const showYourRank = $derived(viewer !== null && !isIndex && !isGuild && ownDefaults.class !== '');
+  /** "212 ranked", unless Your rank already says "14th of 212 Fury Warriors" beside it. */
+  const boardMeta = $derived(
+    isGuild || page === null || page.total === 0 || (showYourRank && placement !== 'none')
+      ? undefined
+      : `${page.total.toLocaleString('en-US')} ranked`,
+  );
 
   /** The landing's boards each carry updated_at: the band's stamp shows the newest. */
   function stampUpdated(iso: string): void {

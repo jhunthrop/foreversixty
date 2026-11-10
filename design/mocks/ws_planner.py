@@ -167,7 +167,7 @@ def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = 
         line = f'<p class="pl-line">{e(cmp["line"])}</p>'
     else:
         line = f'<p class="pl-line"><b class="gold num">{s["count"]}</b> {e(cmp["line"])}</p>'
-    beyond = (('<p class="pl-chips">' + ''.join(Tag(e(n), 'muted') for n in cmp['past']) + '</p>') if cmp.get('past') else '') + (f'<p class="t-small">{e(cmp["beyond"])}</p>' if cmp['beyond'] else '')
+    beyond = (f'<p class="t-small">{e(cmp["beyond"])}</p>' if cmp['beyond'] else '')
     if confirm:
         acts = f'<p class="t-small">{e(C["band"]["loadConfirmMessage"])}</p><div class="pl-acts">{Button(e(C["band"]["loadConfirmProceed"]))}{Button(e(C["band"]["loadConfirmCancel"]))}</div>'
     else:

@@ -105,12 +105,6 @@ const statRank = (reading: string): string => (reading === 'value' ? String(++ra
               </StatRow>
             ))}
           </StatTable>
-          {stats!.hitCap !== undefined && (
-            <p class="text-small text-muted" title={stats!.hitCap.title} data-testid="guide-glance-hit-cap">
-              <b class="text-strong">{stats!.hitCap.cap}</b>
-              {stats!.hitCap.detail !== undefined && <> · {stats!.hitCap.detail}</>}
-            </p>
-          )}
         </PlateColumn>
       )}
     </PlateColumns>
@@ -118,6 +112,12 @@ const statRank = (reading: string): string => (reading === 'value' ? String(++ra
 )}
 
 <style>
+  /* A phone's band is the build alone: the rotation and the weights are the sections below. */
+  @media (max-width: 767px) {
+    .guide-glance :global(.ui-pcol:not(:first-child)) {
+      display: none;
+    }
+  }
   :global(.guide-glance .ui-st-name) {
     font-weight: 400;
     font-size: 16px;

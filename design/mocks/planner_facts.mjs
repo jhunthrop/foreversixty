@@ -137,8 +137,7 @@ function state({ cls, race, order = [], level = null, spec = null }) {
     const kind = covers !== null || status.kind === 'differs' ? 'sentence' : status.kind === 'matches' ? 'matches' : 'count';
     compare = { status, kind, differs: [...diff.diffTalentIds], bandRank: Object.fromEntries(diff.bandRankById), line,
       beyond: status.kind === 'toTake' || covers !== null ? '' : (status.beyond > 0 ? bandCompareCopy.beyondGuide(status.beyond) : ''),
-      talents: entry.talents,
-      past: covers !== null ? names.mine : [] };
+      talents: entry.talents };
   }
   const trees = index.trees.map((tree, ti) => {
     const size = gridSize(tree);

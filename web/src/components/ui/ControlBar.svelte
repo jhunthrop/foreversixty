@@ -29,6 +29,7 @@
     busyTitle,
     tail,
     sticky = true,
+    toggleLabel = 'Change',
     labelsFrom = 1280,
     staticField = false,
     inline = false,
@@ -55,6 +56,8 @@
     /** Groups the bar's own kinds do not cover (a multi-select), after the groups. */
     tail?: Snippet;
     sticky?: boolean;
+    /** The phone toggle's word, "Change" by default; a bar that is mostly a jump menu says so. */
+    toggleLabel?: string;
     /** The width the group labels show from: 1280 by default; 1920 for a bar whose choices name
      *  themselves and need the room to stay on one row (the BiS bar). */
     labelsFrom?: 1280 | 1920;
@@ -106,7 +109,7 @@
     >
       <span class="min-w-0 truncate">{line}</span>
       <span class="text-gold ml-auto flex items-center gap-1 text-[13px]"
-        >Change <Icon icon={ICON_CHEVRON_DOWN} size={14} /></span
+        >{toggleLabel} <Icon icon={ICON_CHEVRON_DOWN} size={14} /></span
       >
     </button>
     <div

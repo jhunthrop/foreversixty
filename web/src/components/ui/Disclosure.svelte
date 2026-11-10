@@ -15,7 +15,7 @@
     eager = false,
     testid,
     summaryTestid,
-    summaryEnd,
+    link = false,
     children,
   }: {
     summary: string;
@@ -27,25 +27,34 @@
     testid?: string;
     /** The summary's own testid (a test that presses the trigger and reads its words). */
     summaryTestid?: string;
-    /** Drawn at the summary's end, collapsed or open: the row's figure (a spark, a count). */
-    summaryEnd?: Snippet;
+    /** The summary as a gold link row with `›` (an entry that opens its section in place), no caret. */
+    link?: boolean;
     children: Snippet;
   } = $props();
 </script>
 
-<details class="ui-disclosure" bind:open data-testid={testid}>
+<details class={['ui-disclosure', link && 'ui-disclosure-link']} bind:open data-testid={testid}>
   <summary
     data-testid={summaryTestid}
     class="text-nav focus-visible:outline-gold flex min-h-11 cursor-pointer list-none items-center gap-2 text-[14px] leading-5 font-semibold select-none focus-visible:outline-2 focus-visible:-outline-offset-2 [&::-webkit-details-marker]:hidden"
   >
-    {summary}{#if meta}<span class="text-small text-muted ml-1 font-normal">{meta}</span
-      >{/if}{#if summaryEnd}<span class="ml-auto inline-flex items-center">{@render summaryEnd()}</span>{/if}
+    {summary}{#if meta}<span class="text-small text-muted ml-1 font-normal">{meta}</span>{/if}{#if link}<span
+        class="text-gold"
+        aria-hidden="true">›</span
+      >{/if}
   </summary>
   {#if open || eager}<div class="pt-1 pb-2">{@render children()}</div>{/if}
 </details>
 
 <style>
   /* The caret is drawn, not written (the mock library's Disclosure): no text node to read. */
+  .ui-disclosure-link > summary {
+    color: var(--color-gold);
+    font-size: 15px;
+  }
+  .ui-disclosure-link > summary::before {
+    display: none;
+  }
   .ui-disclosure > summary::before {
     content: '\25B8';
     display: inline-block;

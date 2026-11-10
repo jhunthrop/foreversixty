@@ -50,7 +50,6 @@
   {/if}
   {#if gearMode}
     <SlotGrid
-      plate
       rows={store.rows}
       locked={store.locked}
       enchants={store.enchants}

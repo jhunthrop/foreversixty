@@ -260,7 +260,7 @@ for (const [label, viewport] of [
     }) => {
       await page.goto(PAGE);
       const tree = page.getByTestId('guide-leveling-tree');
-      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('51 points spent, all placed');
+      await expect(tree.getByTestId('guide-leveling-caption')).toHaveText(/51 points spent$/);
       await expect(tree.getByTestId('guide-leveling-caption')).toContainText(/Level 60: .+, rank \d/);
       await expect(tree.getByTestId('guide-leveling-load')).toHaveAttribute(
         'href',
@@ -289,14 +289,15 @@ for (const [label, viewport] of [
 }
 
 test.describe('the plate', () => {
-  test('phone: Rotation and Stat priority stack under the Build column with no disclosure', async ({
+  test('phone: the band is the build alone; Rotation and Stat priority are their own sections', async ({
     page,
   }) => {
     await page.setViewportSize(PHONE);
     await page.goto(PAGE);
     await expect(page.getByTestId('guide-glance').locator('details, [aria-expanded]')).toHaveCount(0);
-    await expect(page.getByTestId('guide-glance-rotation')).toBeVisible();
-    await expect(page.getByTestId('guide-glance-stats')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-build')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-rotation')).toBeHidden();
+    await expect(page.getByTestId('guide-glance-stats')).toBeHidden();
   });
 
   test('desktop: the plate shows all three columns', async ({ page }) => {

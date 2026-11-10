@@ -7,7 +7,7 @@ import Row from '../ui/Row.svelte';
 import Section from '../ui/Section.svelte';
 import Tag from '../ui/Tag.svelte';
 import { guidesCopy } from '../../lib/guides/copy';
-import { pillLabelFor, type Source } from '../../lib/sources';
+import { pillLabelFor, sourceTitle, type Source } from '../../lib/sources';
 
 interface Props {
   sources: readonly Source[];
@@ -20,12 +20,12 @@ const unique = [...new Map(sources.map((source) => [source.url, source])).values
   <Section title={guidesCopy.sources} testid="guide-sources">
     <div class="guide-sources">
       {unique.map((source) => (
-        <Row title={source.label} href={source.url} density="slim" open>
+        <Row title={sourceTitle(source.label)} href={source.url} density="slim" open>
           <Tag slot="lead" tone="muted">
             {pillLabelFor(source.kind)}
           </Tag>
           <span slot="titleContent" class="text-gold font-semibold">
-            {source.label}
+            {sourceTitle(source.label)}
           </span>
         </Row>
       ))}

@@ -6,32 +6,24 @@
 <script lang="ts">
   import type { Component } from 'svelte';
   import type { CharacterPath } from '../../lib/characters';
-  import { characterHrefs, characterPageCopy as copy, dayMonth } from '../../lib/character/page-view';
-  import type { ScorePoint } from '../../lib/score/score';
+  import { characterHrefs, characterPageCopy as copy } from '../../lib/character/page-view';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
   import { LINK } from '../../lib/ui/primitives';
   import Disclosure from '../ui/Disclosure.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import Spark from '../ui/Spark.svelte';
 
   let {
     path,
     history,
     coach,
     fights,
-    latest = null,
-    scores = [],
     inPanel = false,
   }: {
     path: CharacterPath;
     history: boolean;
     coach: boolean;
     fights: number;
-    /** The newest score on file: the History summary names it ("Score 1,830 on 6 Nov"). */
-    latest?: ScorePoint | null;
-    /** The score day by day, oldest first: the History summary's spark. */
-    scores?: readonly number[];
     /** Drawn inside the Best per encounter panel, under its fights, instead of a History panel of its own. */
     inPanel?: boolean;
   } = $props();
@@ -71,16 +63,12 @@
 {#snippet body()}
   {#if history}
     <Disclosure
-      summary={latest === null
-        ? copy.historyLead
-        : copy.historyLatest(latest.score, dayMonth(`${latest.date}T00:00:00Z`))}
+      summary={copy.history}
       meta={copy.fightCount(fights)}
+      link
       bind:open={historyOpen}
       testid="character-history-toggle"
     >
-      {#snippet summaryEnd()}{#if scores.length > 1}<span class="block w-16 shrink-0" aria-hidden="true"
-            ><Spark values={scores} /></span
-          >{/if}{/snippet}
       {#if charts.current}<charts.current {path} />{/if}
     </Disclosure>
   {:else}
@@ -94,7 +82,7 @@
   {/if}
   {#if coach}
     <div data-testid="character-coach-section">
-      <Disclosure summary={copy.coachLead} bind:open={coachOpen} testid="character-coach-toggle">
+      <Disclosure summary={copy.coach} link bind:open={coachOpen} testid="character-coach-toggle">
         {#if reviews.current}<reviews.current {path} />{/if}
       </Disclosure>
     </div>

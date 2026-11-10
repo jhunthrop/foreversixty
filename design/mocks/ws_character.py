@@ -45,8 +45,8 @@ CHAR_CSS = '''
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
 .line{font-size:15px;line-height:24px;color:var(--text);padding-block:6px}
-@media(max-width:767px){.wait-pre{display:none}}.own-in{margin-top:8px;padding-top:4px;border-top:1px solid var(--line-soft)}.bsince{font-size:13px;color:var(--muted);white-space:nowrap}.dsum-end{margin-left:auto;display:inline-flex;align-items:center}
-.dspk{display:inline-block;width:64px}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
+@media(max-width:767px){.wait-pre{display:none}}.own-in{margin-top:8px;padding-top:4px;border-top:1px solid var(--line-soft)}.bcells{display:flex;align-items:center;gap:12px}.bcells.narrow{margin-top:4px}@media(min-width:768px){.bcells.narrow{display:none}}@media(max-width:767px){.bcells.wide{display:none}}.bsince{font-size:13px;color:var(--muted);white-space:nowrap}.dsum-end{margin-left:auto;display:inline-flex;align-items:center}
+.dspk{display:inline-block;width:64px}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;padding:0 16px}.disc.dlink>summary{color:var(--gold);font-size:15px}.disc.dlink>summary::before{display:none}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
 .sum-row{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:20px}.notice.facts{gap:4px 20px}
 .frow .st{color:var(--strong)}
 /* round 5 (lane P9): the split from 1280, the frame centred at 640, the answer's sim link beside its figure, the parts' bars */
@@ -170,7 +170,8 @@ def standing(home: str | None, guild: bool, spec: str) -> list[tuple[str, str]]:
 
 
 def ledger(*sections: str) -> str:
-    return f'<div class="pc" style="padding-top:20px"><div class="cmain">{"".join(s for s in sections if s)}</div></div>'
+    """Page layout ledger; `char-pg` carries the built main's section-gap pad under the page, as the split states do."""
+    return f'<div class="char-pg"><div class="pc" style="padding-top:20px"><div class="cmain">{"".join(s for s in sections if s)}</div></div></div>'
 
 
 def figure_text(value: float) -> str:
@@ -355,11 +356,15 @@ def fights_section(ch: Char, extra: str = '') -> str:
         # The change since the kill before sits on the parse line (h-audit 2026-11-09).
         since = (f"<span class=\"bsince\">{'+' if change > 0 else '&minus;' if change < 0 else ''}{abs(change)} vs "
                  f"{short_date(before[-1]['fought_at'])}</span>") if before else ''
-        trail = (since + spark + f'<span class="pct" style="color:{parse_color(f["percentile"])}">{round(f["percentile"])}</span>'
+        cells = since + spark
+        # The delta and spark sit in the trail from 768 and on their own line under the boss below it.
+        trail = ((f'<span class="bcells wide">{cells}</span>' if cells else '')
+                 + f'<span class="pct" style="color:{parse_color(f["percentile"])}">{round(f["percentile"])}</span>'
                  + Figure(f"{f['value']:,}", '', ch.unit, size='sm'))
+        phone = f'<span class="bcells narrow">{cells}</span>' if cells else ''
         ex = f" &middot; Execution {round(f['execution_score'] * 100)}%" if f.get('execution_score') is not None else ''
         spec = '' if f['spec'] == SPEC[ch.cls] else f" &middot; {f['spec']}"  # the page's own spec goes without saying
-        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])}{spec}{ex}", trail=trail, slim=True))
+        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])}{spec}{ex}{phone}", trail=trail, slim=True))
     return panel('Best per encounter', RowsSlim(rows) + extra, f"All fights ({len(p['history'])})")
 
 
@@ -391,10 +396,11 @@ def owner_sections(premium: bool, fights: int, coach: str | None = None, latest:
                               trail=Link('See plans &rsaquo;'), link=False)], open_=True))
     body = coach_rows(coach) if coach else ''
     summary = f"Score {latest['score']:,} on {short_date(latest['date'] + 'T00:00:00Z')}" if latest else 'Score and parses'
-    history = Disclosure(summary, '', meta=f"{fights} {'fight' if fights == 1 else 'fights'}")
-    if len(scores) > 1:  # the score's spark at the summary's end (web Disclosure summaryEnd)
-        history = history.replace('</summary>', f'<span class="dsum-end"><span class="dspk">{Spark(scores)}</span></span></summary>', 1)
-    return wrap(history + Disclosure('Coach reviews', body, open_=coach is not None))
+    # History and Coach as gold link rows that open in place (web Disclosure `link`, h-audit 2026-11-09).
+    link = lambda html: html.replace('<details class="disc"', '<details class="disc dlink"', 1).replace(
+        '</summary>', '<span aria-hidden="true">&rsaquo;</span></summary>', 1)
+    history = link(Disclosure('History', '', meta=f"{fights} {'fight' if fights == 1 else 'fights'}"))
+    return wrap(history + link(Disclosure('Coach', body, open_=coach is not None)))
 
 
 def waiting(ch: Char, owner: dict) -> list[tuple[str, str]]:

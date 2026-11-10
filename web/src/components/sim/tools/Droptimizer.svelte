@@ -73,7 +73,6 @@
     <SourcePicker
       faction={factionOfRace(store.character.race_slug)}
       treeVersion={store.character.tree_version}
-      plate
       loot={store.loot}
       phases={store.phases}
       shownKinds={store.shownKinds}

@@ -97,21 +97,21 @@ def character_line() -> str:
     return (f'<div class="tool-who" data-region="summary"><p class="who-line">{S.crest_img("warrior", 24)}<span>Orc Fury Warrior &middot; Level {LEVEL}</span>'
             f'<span class="t-small num">ilvl {level:.1f}</span>'
             f'<span class="t-small num">0/20/0</span>'
-            f'<span class="who-acts"><a class="link" href="#">Open in planner &rsaquo;</a>{btn("Change source")}</span></p></div>')
+            f'<span class="who-acts"><a class="link" href="#">Open in planner &rsaquo;</a><button type="button" class="btn sm ghost">Change source</button></span></p></div>')
 
 
 # ---- Top gear: the candidates (SlotGrid, CandidateRows)
 def candidate(slot_label: str, iid: int) -> str:
     it = ITEMS[iid]
     lead = check(it['name']) + S.gicon(it['icon'], 32, it['quality'])
-    trail = f'<span class="t-small num">{it["item_level"]}</span>{btn("Copy and modify", expanded=False)}'
+    trail = f'<span class="t-small num">{it["item_level"]}</span><button type="button" class="btn sm ghost" aria-expanded="false">Modify</button>'
     title = f'<button type="button" class="hover-name">{item_name(iid)}</button>'
     return (f'<div class="cand-group"><div class="cand-h"><h3 class="t-h4">{slot_label}</h3><label class="t-small lock">{check()}Lock</label></div>'
             + Rows([Row(title, '', lead=lead, trail=trail, link=False)], open_=True) + '</div>')
 
 
 def candidates() -> str:
-    return Section('Candidates', '<div class="cands">' + candidate('Head', WORN['head']) + candidate('Main hand', WORN['main_hand']) + '</div>', frame='framed')
+    return Section('Candidates', '<div class="cands">' + candidate('Head', WORN['head']) + candidate('Main hand', WORN['main_hand']) + '</div>')
 
 
 def item_search() -> str:
@@ -166,7 +166,7 @@ def loadout_trees(per_tree: list[str]) -> str:
         cells = [(x['tier'], x['column'], S.gicon(x['icon'], 24), min(x['max_rank'], int(digits[p]) if p < len(digits) else 0), x['max_rank'])
                  for p, x in enumerate(tree['talents'])]
         trees.append((tree['name'], sum(c[3] for c in cells), cells))
-    return TalentTrees(trees)
+    return f'<div class="tbox">{TalentTrees(trees)}</div>'   # TalentTrees' sizing box (ui-trees-box)
 
 
 def loadout_ranks(per_tree: list[str]) -> list[tuple[str, int]]:
@@ -198,7 +198,7 @@ def talent_builds(plated: bool = False) -> str:
     body = (f'<div class="tb">{own}{guide}'
             f'<h3 class="t-h4">Your saved builds</h3>'
             f'<p class="t-small">Saved builds did not load.</p><div class="bt">{btn("Add a build")}</div></div>')
-    return Section('Talent builds', body, frame='framed' if plated else 'plain')
+    return Section('Talent builds', body)
 
 
 def gear() -> str:
@@ -296,7 +296,7 @@ def drops() -> str:
         groups.append(f'<div class="src-g"><details class="disc"{opened}><summary>{label} <span class="t-small">{len(shown)} {"source" if len(shown) == 1 else "sources"}</span></summary>{inner}</details></div>')
     body = f'<div><div class="kinds" role="group"><span class="t-small">Show</span>{toggles}</div>{"".join(groups)}</div>'
     return finish('Droptimizer', head('drops') + run_bar('drops')
-                  + ledger(character_line(), Section('Sources', body, frame='framed')))
+                  + ledger(character_line(), Section('Sources', body)))
 
 
 # ---- Weights: the caution, the stats to weigh in the rail; the scale factors arrive with a run
@@ -345,7 +345,7 @@ def published_weights() -> str:
         cap += f'Haste: {hs:.2f} per 1%' + ('' if band.get('haste_on_items', True) else ', not in the table because no item at this level range has it')
     table = S.StatTable([('', False), ('Stat', False), ('', False), ('Scale', True), ('Per point', True), ('Error', True)], trs, 3, open_=True)
     body = f'<div class="wt-pub">{f"<p class=t-small>{cap}</p>" if cap else ""}{table}</div>'
-    return Section('Published weights', body, action=S.Link(f'Level {LEVEL} raid set &rsaquo;'), frame='framed')
+    return Section('Published weights', body, action=S.Link(f'Level {LEVEL} raid set &rsaquo;'))
 
 
 # ---- a tool with no character (SourceSwitcher): the addon export on the Plate, the other ways in open
@@ -377,12 +377,12 @@ def specs() -> str:
                  f'<span class="num dps">{fig[0]:,.1f}</span></span>') if fig else ''
         rows.append(Row(title, '', lead=S.crest_img(s['class_slug'], 28), trail=trail, title_color=CLASS_COLOR[s['class_slug']], link=False, slim=True))
     # UnsimulatedSpecCard: one wrapping line of links, each the crest and the spec in its class colour, to its guide
-    others = ''.join(f'<a class="un-l" href="#" style="color:{CLASS_COLOR[s["class_slug"]]}">{S.crest_img(s["class_slug"], 20)}{s["name"]} {CLASS_NAME[s["class_slug"]]}</a>'
+    others = ''.join(f'<a class="un-l" href="#" style="color:{CLASS_COLOR[s["class_slug"]]}">{S.crest_img(s["class_slug"], 20)}{s["name"]} {CLASS_NAME[s["class_slug"]]}<span class="t-small">{s["role"].title()}</span></a>'
                      for s in SPECS if s['role'] != 'dps')
     meta = ''
     heads = ('<div class="spec-heads" aria-hidden="true"><span class="rk">Rank</span><span class="sbar">Raid BiS at 60</span>'
              '<span class="dps">DPS</span></div>') if top else ''
-    return finish('Spec support', head('specs') + ledger(Section('Damage specs', heads + Rows(rows), meta=meta, frame='framed', flush=True),
+    return finish('Spec support', head('specs') + ledger(Section('Damage specs', heads + Rows(rows), meta=meta, flush=True),
                                                          Section('Healers and tanks', f'<div class="un">{others}</div>')))
 
 
@@ -428,7 +428,7 @@ TOOL_CSS = '''<style>
 .src-cols{display:grid;grid-template-columns:1fr;column-gap:32px}@media(min-width:768px){.src-cols{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.src-cols{grid-template-columns:1fr 1fr 1fr}}.rep-n{padding-top:8px;font-size:14px;line-height:20px}.rep-t{display:flex;flex-wrap:wrap;gap:0 16px}.opt.sm{font-size:13px}
 .tb-row{display:grid;gap:4px 24px;padding:12px 0;border-bottom:1px solid var(--line-soft,var(--line));align-self:stretch}.tb-row:last-of-type{border-bottom:0}@media(min-width:768px){.tb-row{grid-template-columns:260px minmax(0,1fr);align-items:start}}
 .src-l{display:flex;align-items:center;gap:8px;min-height:44px}.src-l .opt{min-width:0}.bcount{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center}.pl{padding-left:8px}.later{margin:0;padding-top:4px;font-size:13px}.gl1{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-height:44px;margin:0;font-size:14px;line-height:24px}.gl1 b{font-size:15px}.disc-b{padding:4px 0 8px}
-.tb-t{display:grid;align-items:start;gap:12px 32px;min-width:0}@media(min-width:1024px){.tb-t{grid-template-columns:420px minmax(0,1fr)}}.tb-d{display:flex;flex-direction:column;margin:0;padding:0;list-style:none;font-size:13px;line-height:20px}.tb-d .kill{color:var(--kill)}.tb-d .wipe{color:var(--wipe)}.tb-d span{color:var(--text)}
+.tb-t{display:grid;align-items:start;gap:12px 32px;min-width:0}@media(min-width:1024px){.tb-t{grid-template-columns:600px minmax(0,1fr)}}.tb-t .trees.cmp{--cell:clamp(18px,calc((100cqw - 2 * var(--tg) - 9 * var(--cg)) / 12 - 0.5px),44px)}.tb-d{display:flex;flex-direction:column;margin:0;padding:0;list-style:none;font-size:13px;line-height:20px}.tb-d .kill{color:var(--kill)}.tb-d .wipe{color:var(--wipe)}.tb-d span{color:var(--text)}
 .spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:48px;text-align:right}.spec-heads{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:4px 16px 0;font:700 12px/16px var(--font-body);color:var(--muted)}.spec-heads .rk{width:48px;text-align:right}.spec-heads .dps{width:64px;text-align:right}.spec-fig .dps{width:64px;text-align:right;font-weight:700}.sbar{display:none;width:240px}@media(min-width:768px){.sbar{display:block}}.spec-n>summary{color:inherit;font-size:15px;font-weight:700;white-space:nowrap}.un{display:flex;flex-wrap:wrap;column-gap:24px}.un-l{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:700;text-decoration:none}</style>'''
 
 

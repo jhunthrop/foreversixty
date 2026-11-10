@@ -217,10 +217,10 @@
       class="border-line-soft grid gap-x-6 gap-y-1 border-b py-3 last:border-b-0 md:grid-cols-[260px_minmax(0,1fr)] md:items-start"
     >
       {@render loadoutCheck(loadout, testid)}
-      <!-- The trees size to their track (TalentTrees reads its box's width): 420 px with the diff
-           beside them from 1024, the full width with the diff under them below. -->
-      <div class="grid min-w-0 items-start gap-x-8 gap-y-3 lg:grid-cols-[420px_minmax(0,1fr)]">
-        <div class="min-w-0">
+      <!-- The trees size to their track (TalentTrees reads its box's width): 600 px with the diff
+           beside them from 1024, the full width with the diff under them below; cells up to 44 px. -->
+      <div class="grid min-w-0 items-start gap-x-8 gap-y-3 lg:grid-cols-[600px_minmax(0,1fr)]">
+        <div class="sim-loadout-trees min-w-0">
           <TalentTrees trees={loadoutTrees(index, loadout.talents)} build={character.tree_version} />
         </div>
         {#if own !== null && loadout.name !== own.name}
@@ -245,7 +245,7 @@
   {/if}
 {/snippet}
 
-<ToolSection title={bulkCopy.talentBuildsTitle} testid="sim-talent-candidates" {plate}>
+<ToolSection title={bulkCopy.talentBuildsTitle} testid="sim-talent-candidates">
   <div class="flex flex-col">
     {#if own !== null}
       {@render loadoutRow(own, 'sim-loadout-current')}
@@ -318,3 +318,10 @@
     {/if}
   </div>
 </ToolSection>
+
+<style>
+  /* A compare page reads the trees, so they take more of the plate than the guide's compact strip. */
+  .sim-loadout-trees :global(.ui-trees-box) {
+    --cell-max: 44px;
+  }
+</style>

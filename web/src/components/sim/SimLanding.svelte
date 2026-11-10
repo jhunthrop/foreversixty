@@ -171,7 +171,8 @@
         <Row title={klass.name} titleTone={classTone(klass.slug)} open>
           {#snippet lead()}<ClassCrestRing characterClass={klass.slug} size={32} />{/snippet}
           {#snippet subContent()}
-            <span class="flex flex-wrap gap-x-4 gap-y-1 pt-[2px]">
+            <!-- Two columns on a phone so a third spec never sits alone on its row; one line from 768. -->
+            <span class="grid grid-cols-2 gap-x-4 gap-y-0 pt-[2px] md:flex md:flex-wrap md:gap-y-1">
               {#each klass.specs as spec (spec.href)}
                 <!-- A 44 px hit area on a touch screen (spec §5, Touch); the line stays 20 px on desktop. -->
                 <a

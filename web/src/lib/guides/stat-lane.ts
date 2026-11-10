@@ -85,7 +85,7 @@ export function guideStatLane(
     ...(hitCap === undefined ? {} : { hitCap }),
     ...(expertiseCap === undefined ? {} : { expertiseCap }),
     weightHead: guidesCopy.weightColumn(anchor),
-    perPointHead: guidesCopy.perPointColumn(role, rated.length > 0),
+    perPointHead: guidesCopy.perPointColumn(role),
     ...(unitRow === undefined
       ? {}
       : {

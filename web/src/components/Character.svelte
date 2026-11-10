@@ -23,8 +23,8 @@
     pageSpec,
     plannerHref,
     topUpgrade,
-    scoreSeries,
     upgradeTotal,
+    type FightRowView,
     type WaitingFact,
   } from '../lib/character/page-view';
   import { upgradeRows } from '../lib/character/upgrades';
@@ -244,6 +244,12 @@
     >{#if fact.lead !== undefined}<span class="max-md:hidden">{fact.lead}</span>{/if}{fact.text}</span
   >{/snippet}
 
+{#snippet trendCells(row: FightRowView)}{#if row.since !== ''}<span
+      class="text-muted text-[13px] whitespace-nowrap tabular-nums">{row.since}</span
+    >{/if}{#if row.trend.length > 1}<span class="block w-12 shrink-0" aria-hidden="true"
+      ><Spark values={row.trend} /></span
+    >{/if}{/snippet}
+
 {#snippet headSkeleton()}
   <div role="status" class="contents">
     <PageHeader title={unloggedName} pending={unloggedName === ''} testid="character-head-loading">
@@ -336,10 +342,7 @@
             </div>{:else if waiting.length > 0}
             <!-- The waiting facts on a plate (h-audit 2026-11-09): one row each, the upgrade led by its
                  item in its quality ring, one line that truncates on a phone. -->
-            <div
-              class="{PLATE_SURFACE} mt-4 w-full max-w-[var(--measure-reading)] px-4"
-              data-testid="character-next-step"
-            >
+            <div class="{PLATE_SURFACE} mt-4 w-full px-4" data-testid="character-next-step">
               {#each waiting as fact (fact.key)}
                 {@const item = fact.item}
                 {#if item !== undefined}
@@ -449,13 +452,13 @@
               density="slim"
               open
             >
+              <!-- The delta and the spark: in the trail from 768, their own line under the boss below it
+                   (h-audit 2026-11-09: at 390 they wrapped the row to three lines against the parse). -->
+              {#snippet subContent()}{row.sub}{#if row.since !== '' || row.trend.length > 1}<span
+                    class="mt-1 flex items-center gap-3 md:hidden">{@render trendCells(row)}</span
+                  >{/if}{/snippet}
               {#snippet trail()}
-                {#if row.since !== ''}<span class="text-muted text-[13px] whitespace-nowrap tabular-nums"
-                    >{row.since}</span
-                  >{/if}
-                {#if row.trend.length > 1}<span class="block w-12 shrink-0" aria-hidden="true"
-                    ><Spark values={row.trend} /></span
-                  >{/if}
+                <span class="flex items-center gap-3 max-md:hidden">{@render trendCells(row)}</span>
                 {#if row.percentile !== null}<span
                     class="w-8 text-right text-[15px] leading-5 font-bold tabular-nums"
                     style:color={row.color}
@@ -471,8 +474,6 @@
               history={historyEntitled}
               coach={coachEntitled}
               fights={data.history.length}
-              latest={(data.score_history ?? []).at(-1) ?? null}
-              scores={scoreSeries(data.score_history ?? [])}
               inPanel
             />
           {/if}
@@ -486,7 +487,6 @@
           history={historyEntitled}
           coach={coachEntitled}
           fights={data.history.length}
-          latest={(data.score_history ?? []).at(-1) ?? null}
         /></Ordered
       >
     {/if}

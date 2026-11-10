@@ -7,6 +7,7 @@
 // Voice, per design/DESIGN-SYSTEM.md: reference, not pitch. State the number and stop.
 
 import { plannerSimCopy } from './planner-copy';
+import type { SpecRole } from './specs';
 import { itemNotInDataLine } from '../items/unknown-item-copy';
 
 /**
@@ -637,6 +638,8 @@ export const simCopy = {
   /** The tool line's average item level, short so the facts hold one row at 390. */
   toolIlvl: (level: string): string => `ilvl ${level}`,
   /** /sim/specs' column heads: the place, what it orders by, and the figure's unit. */
+  /** A healer or tank link's role mark on /sim/specs. */
+  specsRole: { dps: 'DPS', healer: 'Healer', tank: 'Tank' } as Record<SpecRole, string>,
   specsRankHead: 'Rank',
   specsBarHead: 'Raid BiS at 60',
   specsDpsHead: 'DPS',
@@ -843,7 +846,7 @@ export const bulkCopy = {
   candidatesTitle: 'Candidates',
   lockSlot: 'Lock',
   lockedSlot: 'Locked',
-  copyAndModify: 'Copy and modify',
+  copyAndModify: 'Modify',
   withEnchant: 'With enchant',
   withSuffix: 'With suffix',
   keepCurrentEnchant: 'Keep current',

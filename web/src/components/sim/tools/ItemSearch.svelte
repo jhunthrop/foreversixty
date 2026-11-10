@@ -36,7 +36,6 @@
     treeVersion,
     classSlug = '',
     onadd,
-    plate = false,
   }: {
     items: readonly Item[];
     loot: LootFile;
@@ -45,8 +44,6 @@
     /** The character's class: a relic class's ranged slot reads "Relic". */
     classSlug?: string;
     onadd: (itemId: number) => void;
-    /** The block sits on the page's one Plate. */
-    plate?: boolean;
   } = $props();
 
   let query = $state<ItemQuery>(defaultItemQuery());
@@ -75,7 +72,7 @@
   );
 </script>
 
-<ToolSection title={bulkCopy.searchLabel} testid="sim-item-search" {plate}>
+<ToolSection title={bulkCopy.searchLabel} testid="sim-item-search">
   <div class="flex flex-wrap items-end gap-3">
     <Field
       id="sim-search-text"

@@ -120,7 +120,7 @@
   {#if store.weights.length > 0}
     <Section
       panel
-      frame="framed"
+      frame="plain"
       title={bulkCopy.weightsResultsTitle}
       meta={specLabel(store.character?.spec ?? '')}
       testid="sim-weights"
@@ -139,7 +139,7 @@
   {:else if published !== null}
     <Section
       panel
-      frame="framed"
+      frame="plain"
       title={bulkCopy.weightsPublishedTitle}
       action={{ label: published.label, href: published.href }}
       testid="sim-weights-published"

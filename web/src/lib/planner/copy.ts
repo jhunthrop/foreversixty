@@ -35,7 +35,8 @@ export const plannerCopy = {
   /** Rebuild spec §4.H, review finding 8: a plain-text summary for someone with no account
    *  and no addon, beside "Copy for the game". Always computed from real data, never a
    *  placeholder-filled template. */
-  copyAsText: 'Copy as text',
+  /** Share's own copy: the build as one line for chat, beside In the game's "Copy for the game". */
+  copyAsText: 'Copy for chat',
   copiedText: 'Copied',
   shareTextSummary: (
     raceName: string,

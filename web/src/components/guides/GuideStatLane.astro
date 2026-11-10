@@ -1,7 +1,7 @@
 ---
 // web/src/components/guides/GuideStatLane.astro
 // The Stat priority lane (guides spec 2026-11-08 §4.3): the cap lines, the weights table (stat,
-// bar, the weight with the anchor at 1.00, the rate per point or rating), the unit line, the
+// bar, the weight with the anchor at 1.00, the rate per point), the unit line, the
 // rating note and the notes for the rows with no figure. A spec with no weights lists the
 // guide's own order, unnumbered figures absent.
 import LaneBlock from '../ui/LaneBlock.svelte';
@@ -45,7 +45,6 @@ const notes = stats === undefined ? [] : [stats.ratingNote, ...stats.notes].filt
           ]}
           nameHead={guidesCopy.statColumn}
           open
-          wrap
           label={guidesCopy.statPriorityRailLabel}
         >
           {stats.rows.map((row, index) => (

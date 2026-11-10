@@ -884,6 +884,8 @@ PRIM_CSS += '''
 @media(min-width:1280px){.rd{grid-template-columns:var(--measure-reading) minmax(0,640px);grid-template-areas:"prose lane"}.rd.solo{grid-template-columns:var(--measure-reading)}}
 .rd>.rd-prose{grid-area:prose;min-width:0}.rd>.rd-lane{grid-area:lane;min-width:0;display:flex;flex-direction:column;gap:28px}
 .lane-blk{display:flex;flex-direction:column;gap:8px;min-width:0}.lane-blk>.t-label{padding-bottom:2px}
+.rsec-fold-sum{display:none}
+@media(max-width:767px){.rsec-fold-sum{display:flex;align-items:center;min-height:44px;color:var(--gold);font-size:15px;font-weight:600;line-height:24px;list-style:none}.rsec-fold-sum::-webkit-details-marker{display:none}.rsec-fold::details-content{content-visibility:hidden}}
 .lane-lbl{margin:0;font:600 15px/20px var(--font-body);color:#f3eee2;letter-spacing:0;text-transform:none}
 .rprose{font-size:16px;line-height:26px;color:var(--text);max-width:var(--measure-reading);overflow-wrap:break-word}
 .rprose.lane{font-size:15px;line-height:24px}
@@ -958,15 +960,20 @@ def Prose(html: str, *mods: str) -> str:
     return f'<div class="rprose {" ".join(mods)}">{html}</div>'
 
 
-def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '', prose_first: bool = False) -> str:
-    """A section of a reading page: the Section head (22/28), then prose and lane (lane first in the DOM: one column reads it first)."""
+def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '', prose_first: bool = False,
+                   fold: str = '') -> str:
+    """A section of a reading page: the Section head (22/28), then prose and lane (lane first in the DOM: one column reads it first).
+    `fold` (web ReadingSection `fold`): below 768 the body folds behind that line, from 768 it reads open."""
     a = f'<span class="act">{action}</span>' if action else ''
     lane_html = f'<div class="rd-lane" data-reading-lane>{lane}</div>' if lane else ''
     more = '<div class="rd-more" data-reading-more></div>' if lane else ''
     solo = '' if lane else ' data-solo'
-    return (f'<section class="rsec" data-region="{region_slug(title)}" id="{anchor}"><div class="sec-h"><h2>{title}</h2>{a}</div>'
-            f'<div class="rd{"" if lane else " solo"}" data-reading{solo}{prose_first and " data-prose-first" or ""}>{lane_html}'
-            f'<div class="rd-prose" data-reading-prose>{prose}{more}</div></div></section>')
+    body = (f'<div class="rd{"" if lane else " solo"}" data-reading{solo}{prose_first and " data-prose-first" or ""}>{lane_html}'
+            f'<div class="rd-prose" data-reading-prose>{prose}{more}</div></div>')
+    if fold:
+        # open, as the build serves it; on a phone the body is hidden as the build's script closes it
+        body = f'<details class="rsec-fold" open><summary class="rsec-fold-sum">{fold}</summary>{body}</details>'
+    return f'<section class="rsec" data-region="{region_slug(title)}" id="{anchor}"><div class="sec-h"><h2>{title}</h2>{a}</div>{body}</section>'
 
 
 def LaneBlock(label: str, body: str, meta: str = '') -> str:

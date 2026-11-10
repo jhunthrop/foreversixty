@@ -426,8 +426,8 @@ body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:aut
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
 .line{font-size:15px;line-height:24px;color:var(--text);padding-block:6px}
-@media(max-width:767px){.wait-pre{display:none}}.own-in{margin-top:8px;padding-top:4px;border-top:1px solid var(--line-soft)}.bsince{font-size:13px;color:var(--muted);white-space:nowrap}.dsum-end{margin-left:auto;display:inline-flex;align-items:center}
-.dspk{display:inline-block;width:64px}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
+@media(max-width:767px){.wait-pre{display:none}}.own-in{margin-top:8px;padding-top:4px;border-top:1px solid var(--line-soft)}.bcells{display:flex;align-items:center;gap:12px}.bcells.narrow{margin-top:4px}@media(min-width:768px){.bcells.narrow{display:none}}@media(max-width:767px){.bcells.wide{display:none}}.bsince{font-size:13px;color:var(--muted);white-space:nowrap}.dsum-end{margin-left:auto;display:inline-flex;align-items:center}
+.dspk{display:inline-block;width:64px}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;padding:0 16px}.disc.dlink>summary{color:var(--gold);font-size:15px}.disc.dlink>summary::before{display:none}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
 .sum-row{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:20px}.notice.facts{gap:4px 20px}
 .frow .st{color:var(--strong)}
 /* round 5 (lane P9): the split from 1280, the frame centred at 640, the answer's sim link beside its figure, the parts' bars */
@@ -750,6 +750,7 @@ code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}
 @media(min-width:1280px){.rd{grid-template-columns:var(--measure-reading) minmax(0,640px);grid-template-areas:"prose lane"}.rd.solo{grid-template-columns:var(--measure-reading)}}
 .rd>.rd-prose{grid-area:prose;min-width:0}.rd>.rd-lane{grid-area:lane;min-width:0;display:flex;flex-direction:column;gap:28px}
 .lane-blk{display:flex;flex-direction:column;gap:8px;min-width:0}.lane-blk>.t-label{padding-bottom:2px}
+.lane-lbl{margin:0;font:600 15px/20px var(--font-body);color:#f3eee2;letter-spacing:0;text-transform:none}
 .rprose{font-size:16px;line-height:26px;color:var(--text);max-width:var(--measure-reading);overflow-wrap:break-word}
 .rprose.lane{font-size:15px;line-height:24px}
 .rprose p{margin:0 0 14px}.rprose>:last-child{margin-bottom:0}

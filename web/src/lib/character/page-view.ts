@@ -59,15 +59,13 @@ export const characterPageCopy = {
   /** A build seen row's sub: the spec and the date it was first seen ("Holy · 3 Nov"). */
   buildSub: (spec: string, date: string): string => (spec === '' ? date : `${spec} · ${date}`),
   history: 'History',
-  historyLead: 'Score and parses',
-  /** The History summary once a score is on file: "Score 1,830 on 6 Nov". */
-  historyLatest: (score: number, date: string): string => `Score ${score.toLocaleString('en-US')} on ${date}`,
+  /** The Premium entries under the best fights (gold link rows that open in place). */
+  coach: 'Coach',
   /** The History disclosure's meta: the fights behind its charts. */
   fightCount: (count: number): string => `${count} ${count === 1 ? 'fight' : 'fights'}`,
   historyLockTitle: 'Score over time and parse per boss',
   historyLockSub: 'Premium keeps every rated fight.',
   seePlans: 'See plans',
-  coachLead: 'Coach reviews',
   /** The paperdoll's title bar meta: "Level 60". */
   levelMeta: (level: number): string => `Level ${level}`,
   failed: 'We could not load this character.',
@@ -290,11 +288,6 @@ export function bestRows(
     trend: trendOf(bossKills(row, history)),
     since: sinceLast(row, bossKills(row, history)),
   }));
-}
-
-/** The score day by day, oldest first, for a spark. */
-export function scoreSeries(points: readonly { date: string; score: number }[]): number[] {
-  return [...points].sort((a, b) => a.date.localeCompare(b.date)).map((point) => point.score);
 }
 
 function trendOf(kills: readonly CharacterFight[]): number[] {

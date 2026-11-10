@@ -33,7 +33,7 @@ const raceIcons = raceIconsFor(build);
       <h4 class="text-label text-muted guide-race-sub font-bold">
         {group.faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading}
       </h4>
-      <div class="guide-race-rows" data-wrap-list>
+      <div class="guide-race-rows">
         {group.rows.map((race) => {
           const row = {
             title: race.name,

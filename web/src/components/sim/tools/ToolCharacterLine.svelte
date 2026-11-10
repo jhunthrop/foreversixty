@@ -94,7 +94,9 @@
         href={plannerHrefFor(character, talentIndex)}
         data-testid="sim-open-planner">{simCopy.openInPlanner} ›</a
       >
-      <Button size="sm" onclick={onchange} testid="sim-change-source">{simCopy.changeSource}</Button>
+      <Button tone="ghost" size="sm" onclick={onchange} testid="sim-change-source"
+        >{simCopy.changeSource}</Button
+      >
     </span>
   </p>
 </div>

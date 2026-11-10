@@ -334,9 +334,9 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(lane).not.toContain('from school');
 
     // The plate ranks exactly the rows the table gives a number, in the table's order.
-    const glance = blockOf(main, 'guide-glance-stats', 60_000).split(
-      'data-testid="guide-glance-hit-cap"',
-    )[0]!;
+    // The band carries no Hit cap line (Stat priority owns it); its block ends where the sections start.
+    const glance = blockOf(main, 'guide-glance-stats', 60_000).split('<section id="overview"')[0]!;
+    expect(glance).not.toContain('guide-glance-hit-cap');
     const ranked = [
       ...glance.matchAll(
         /guide-glance-rank[^>]*>(\d+)<\/span>[\s\S]*?class="ui-st-name" role="cell"><span[^>]*>([^<]+)</g,
@@ -427,7 +427,8 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(leveling).toContain('data-testid="guide-leveling-tree"');
     expect(leveling).toContain('client="visible"');
     expect(leveling).toMatch(/data-testid="guide-leveling-caption"[\s\S]*?Level 60: [^<]+, rank \d/);
-    expect(leveling).toContain('51 points spent, all placed');
+    expect(leveling).toContain('51 points spent');
+    expect(leveling).not.toContain('all placed');
     expect(leveling).toMatch(/value="60" aria-label="Level" aria-valuetext="Level 60"/);
     expect(leveling).toMatch(/data-testid="guide-leveling-trees"[\s\S]*?role="grid"/);
     expect(leveling).toMatch(

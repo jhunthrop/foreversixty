@@ -216,7 +216,9 @@ def board_page(state: str) -> str:
     key = {'you': 'board_you', 'off': 'board_you_off_page', 'unranked': 'board_you_unranked'}[state]
     b = FACTS[key]
     widen = Link(escape(RC['widen']) + ' &rsaquo;')
-    sec = Section('Fury Warriors', board_list(b, FACTS['own_key']), action=widen, meta=f'{b["total"]} ranked',
+    # Your rank says "14th of 212 Fury Warriors" beside the board: the head's count is left to it (Rankings.svelte).
+    meta = '' if state in ('you', 'off') else f'{b["total"]} ranked'
+    sec = Section('Fury Warriors', board_list(b, FACTS['own_key']), action=widen, meta=meta,
                   panel=True, frame='lead', flush=True)
     answer = FACTS[{'you': 'answer_you', 'off': 'answer_off', 'unranked': 'answer_unranked'}[state]]
     rail = your_rank(answer, unranked=state == 'unranked')

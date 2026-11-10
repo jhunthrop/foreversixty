@@ -56,7 +56,6 @@
     ontogglekind,
     ontoggleupcoming,
     ontoggle,
-    plate = false,
   }: {
     loot: LootFile;
     phases: readonly PhaseRow[];
@@ -76,8 +75,6 @@
     ontogglekind: (kind: string) => void;
     ontoggleupcoming: (value: boolean) => void;
     ontoggle: (sourceId: string, bossId?: string) => void;
-    /** The picker sits on the page's one Plate (/sim/drops). */
-    plate?: boolean;
   } = $props();
 
   const groups = $derived(groupSources(loot));
@@ -241,7 +238,7 @@
   {/if}
 {/snippet}
 
-<ToolSection title={bulkCopy.sourcesTitle} testid="sim-source-picker" {plate}>
+<ToolSection title={bulkCopy.sourcesTitle} testid="sim-source-picker">
   <!-- The kind ticks choose which lists show, not what is simmed: they sit after "Show". -->
   <div class="flex flex-wrap items-center gap-x-5" role="group" aria-labelledby="sim-sources-show">
     <span id="sim-sources-show" class="text-muted text-[14px]">{bulkCopy.sourcesShow}</span>
@@ -281,11 +278,15 @@
     {@const shown = rowsOf(group.kind, visibility.shown)}
     {#if visibility.ticked && group.sources.length > 0}
       <div class="pt-2" data-testid={`sim-kind-${group.kind}-group`}>
-        {#if visibility.allGated}
+        {#if visibility.allGated || shown.length === 0}
           <!-- dps D33 (BLOCKER) / newcomer MAJOR "ticking Raids produces an empty void": a
                ticked kind whose every source is gated names the gate in one line; the
                "show unreleased content" tick above opens them. -->
-          {@const gated = gatedLine(group.sources, gateLabel, bulkCopy.opensLater)}
+          {@const gated = gatedLine(
+            group.sources.filter((source) => gateLabel(source) !== ''),
+            gateLabel,
+            bulkCopy.opensLater,
+          )}
           <!-- One line: the kind, then what opens when (h-audit 2026-11-09). -->
           <p
             class="m-0 flex min-h-11 flex-wrap items-center gap-x-2 text-[14px] leading-6"

@@ -52,6 +52,7 @@ import { readItemTooltipModel } from '../../../lib/items/lookup-node';
 import { guideTipsUrl, proseNames, specGuideData, withTipKeys } from '../../../lib/guides/guide-tips';
 import { linkProse } from '../../../lib/guides/prose-tips';
 import { pageScript } from '../../../lib/guides/page-script';
+import { foldScript } from '../../../lib/ui/fold';
 import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
 import { guideLadderSteps } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
@@ -258,7 +259,7 @@ const jsonLd = [
         build={build}
         classSlug={classSlug}
         specSlug={specSlug}
-        summary={`${title} · ${guidesCopy.tocBarLabel}`}
+        summary={title}
         specs={catalogEntries}
         sections={tocItems}
       />
@@ -365,19 +366,19 @@ const jsonLd = [
           </ReadingSection>
         )}
 
-        <ReadingSection title="Races" anchor="races">
+        <ReadingSection title="Races" anchor="races" fold={guidesCopy.foldShow(`${raceRows.length} races`)}>
           <Fragment slot="lane">
             <GuideRacesLane build={build} rows={raceRows} lines={raceLines} tips={tipBundle} />
           </Fragment>
           <Prose html={await prose(racesProse)} />
         </ReadingSection>
 
-        <ReadingSection title="Professions" anchor="professions">
+        <ReadingSection title="Professions" anchor="professions" fold={guidesCopy.foldShow('professions')}>
           <Prose html={await prose(proseOnly('Professions'))} />
         </ReadingSection>
 
         {ladderSteps.length > 0 ? (
-          <ReadingSection title="Leveling" anchor="leveling">
+          <ReadingSection title="Leveling" anchor="leveling" fold={guidesCopy.foldShow('leveling')}>
             <LaneBlock slot="lane" label={guidesCopy.talentsByLevel} testid="guide-talents-by-level">
               <GuideLevelingTree
                 client:visible
@@ -392,11 +393,12 @@ const jsonLd = [
             <Prose html={levelingHtml} />
           </ReadingSection>
         ) : (
-          <ReadingSection title="Leveling" anchor="leveling">
+          <ReadingSection title="Leveling" anchor="leveling" fold={guidesCopy.foldShow('leveling')}>
             <Prose html={levelingHtml} />
           </ReadingSection>
         )}
       </ReadingPanel>
+      <script is:inline set:html={foldScript}></script>
       <GuideSources sources={entry.data.sources} />
     </Page>
   </main>

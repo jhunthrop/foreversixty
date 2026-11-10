@@ -19,7 +19,6 @@
     spec,
     level,
     ontoggle,
-    plate = false,
   }: {
     picked: readonly string[];
     buffs: SimBuffFile;
@@ -28,14 +27,12 @@
     spec: string;
     level: number;
     ontoggle: (id: string) => void;
-    /** The block sits on the page's one Plate. */
-    plate?: boolean;
   } = $props();
 
   const offered = $derived([...new Set(presetConsumables('raid-buffed', spec, level))]);
 </script>
 
-<ToolSection title={bulkCopy.tryEach} testid="sim-consumables" {plate}>
+<ToolSection title={bulkCopy.tryEach} testid="sim-consumables">
   <ul class="grid grid-cols-1 gap-x-6 pt-1 md:grid-cols-2 xl:grid-cols-3">
     {#each offered as id (id)}
       <li>
