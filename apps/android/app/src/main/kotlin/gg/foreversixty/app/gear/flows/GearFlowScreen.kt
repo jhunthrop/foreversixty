@@ -62,7 +62,7 @@ fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, po
             ItemIcon(look?.icon, look?.quality, build, SOCKET_ICON, Modifier.parityItem(ParityItemKind.Image))
         }
         if (content.where.isNotEmpty()) {
-            FlowSection(stringResource(R.string.gear_whereTonight), top = 0.dp, panel = PanelFrame.Plain) {
+            FlowSection(stringResource(R.string.gear_whereTonight), top = 0.dp, panel = PanelFrame.None) {
                 content.where.forEachIndexed { i, row ->
                     FlowRow(
                         row.title, row.line, FlowLead.Item(row.lead, build),

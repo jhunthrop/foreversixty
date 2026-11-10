@@ -8,7 +8,7 @@ Speed 2.90
 Requires Level 60
 Chance on hit: Sends a shadowy bolt at the enemy causing 125 Shadow damage.
 +12.6 DPS
-Onyxia, Onyxia's Lair (60), 8%
+Onyxia, Onyxia's Lair, 8%
 Replaces Ironwood Blade
 Equipped
 Vis'kag the Bloodletter

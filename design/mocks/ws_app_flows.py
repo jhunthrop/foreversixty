@@ -619,7 +619,7 @@ def _item_sheet_r5() -> str:
            '<span class="sp"><span>One-Hand</span><span>Axe</span></span><span class="sp"><span>114 - 213 Damage</span><span>Speed 2.90</span></span>'
            '<span>(56.4 damage per second)</span><span class="gap"></span><span>Requires Level 60</span>'
            '<span class="gr">Chance on hit: Sends a shadowy bolt at the<br>enemy causing 125 Shadow damage.</span><span class="gn">+12.6 DPS</span></div>')
-    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair (60), 8%', '', icon(ONY, 40))
+    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair, 8%', '', icon(ONY, 40))
              + _r5_gear_row('Replaces Ironwood Blade', 'Equipped', icon('inv_sword_07', 40, 'q4'))
              + _r5_gear_row('Vis&rsquo;kag the Bloodletter', 'Runner-up &middot; Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'), QCOL[4])
              + _r5_gear_row('Grunvald', 'Protection Warrior &middot; needs it, the pick on their list', crest_img('warrior', 40), WARRIOR)

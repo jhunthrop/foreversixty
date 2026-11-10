@@ -120,7 +120,7 @@ class GearParityTest {
     @Test fun theSourceLineNamesTheBossThePlaceItsLevelsAndTheChance() {
         val composer = GearSheetComposer(ApplicationProvider.getApplicationContext<android.content.Context>().resources, BUILD)
         assertEquals("Skum, Wailing Caverns (15-24), 50%", composer.sourceLine(ItemSource("dungeon", "Wailing Caverns", 50.0, boss = "Skum", levels = 15..24)))
-        assertEquals("Onyxia, Onyxia's Lair (60), 8%", composer.sourceLine(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia", levels = 60..60)))
+        assertEquals("Onyxia, Onyxia's Lair, 8%", composer.sourceLine(ItemSource("raid", "Onyxia's Lair", 8.0, boss = "Onyxia", levels = 60..60)))
         assertEquals("Stormpike Guard, revered", composer.sourceLine(ItemSource("rep", "Stormpike Guard", null, standing = "Revered")))
         assertEquals("Pix Xizzix, vendor", composer.sourceLine(ItemSource("vendor", "Pix Xizzix", null)))
     }

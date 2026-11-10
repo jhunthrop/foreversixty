@@ -109,7 +109,7 @@ class GearSheetComposer(private val res: Resources, private val build: String) {
 
     private fun IntRange?.orEmpty(): String = when {
         this == null -> ""
-        first == last -> " ($first)"
+        first == last -> ""
         else -> " ($first-$last)"
     }
 
