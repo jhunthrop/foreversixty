@@ -52,7 +52,7 @@
   import { characterFromPlanner, specOf } from '../../lib/sim/character';
   import { classDisplayName, specDisplayName, specLabel, specRow } from '../../lib/sim/spec-label';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
-  import { importFromAddon } from '../../lib/addon/import';
+  import { importFromAddon, type ImportOutcome } from '../../lib/addon/import';
   import type { BisBand } from '../../lib/bis/types';
   import { bandCompareCopy, plannerCharacterCardCopy, plannerHeaderCopy } from '../../lib/planner/copy';
   import { editorTrees, GAME_TIERS, treeIconSrc } from '../../lib/planner/editor-trees';
@@ -690,6 +690,10 @@
   /** Share and Import leave the rail for the full-width row when the level card shows beside a spent
    *  build: with all three, the rail ran 160 to 345 px past the trees (h-audit 2026-11-09). */
   const importBelow = $derived(standalone && !shared && !bandQuiet && store.spent > 0);
+  /** Import's code and outcome live here: the import itself spends points, which moves the box
+   *  (importBelow) and remounts it, and its notes must survive the move. */
+  let importCode = $state('');
+  let importOutcome = $state<ImportOutcome | null>(null);
 
   // Nothing cancels a request that is already in flight, so switching class twice in quick
   // succession leaves two runs of this racing to write to the same store. The class this run
@@ -1250,6 +1254,8 @@
 {#snippet importSection(part: boolean)}
   {#if store.talentIndex}
     <ImportBox
+      bind:code={importCode}
+      bind:outcome={importOutcome}
       panel={standalone}
       {part}
       talents={store.talentIndex}
