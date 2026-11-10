@@ -184,7 +184,7 @@ func runEvents(ctx context.Context, log *slog.Logger, svc raidPostsServices, now
 			errs = append(errs, fmt.Errorf("prune activity: %w", err))
 		}
 	}
-	log.Info("raid-posts", "events_posted", run.Posted, "nudged", run.Nudged, "short", run.Short,
+	log.Info("raid-posts", "nudged", run.Nudged, "short", run.Short,
 		"starting", run.Starting, "pending", run.Pending, "pruned", pruned, "pruned_activity", prunedActivity)
 	return errors.Join(errs...)
 }

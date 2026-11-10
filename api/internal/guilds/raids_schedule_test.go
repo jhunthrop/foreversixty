@@ -123,20 +123,33 @@ func TestSaveWithinAWeekPostsAtOnce(t *testing.T) {
 	}
 }
 
-func TestSaveFurtherOutPostsAWeekBefore(t *testing.T) {
+// unpostedRaid is a planned raid whose post is due and not yet sent, with the reminder on:
+// what the schedule run picks up after a send on save did not land. It is saved with the box
+// off, then given its row.
+func (w raidWorld) unpostedRaid(t *testing.T, start time.Time) RaidView {
+	t.Helper()
+	raid := w.createRaids(t, scheduleBody(start, 0, "false", "true"))[0]
+	if err := w.h.svc.Store.UpsertSchedule(context.Background(), raid.ID, w.gid, time.Now(), true); err != nil {
+		t.Fatal(err)
+	}
+	return raid
+}
+
+// Owner ruling 2026-11-09: a save posts at once however far out the raid is (guilds sign up
+// weeks ahead; Caffeine's Onyxia sat silent a month out under the old 7-day rule).
+func TestSaveMoreThanAWeekOutPostsAtOnce(t *testing.T) {
 	w, events, _ := postingWorld(t)
-	start := startIn(10 * day)
-	created := w.createRaids(t, scheduleBody(start, 0, "true", "false"))
-	if len(events.posted) != 0 {
+	created := w.createRaids(t, scheduleBody(startIn(30*day), 0, "true", "false"))
+	if len(events.posted) != 1 || events.posted[0].RaidID != created[0].ID {
 		t.Fatalf("posted = %+v", events.posted)
 	}
 	p := w.getRaid(t, created[0].ID).DiscordPost
-	if p == nil || p.PostAt == nil || !p.PostAt.Equal(start.Add(-postHorizon)) || p.PostedAt != nil || p.Remind {
+	if p == nil || p.PostedAt == nil || p.PostAt == nil || !p.PostAt.Equal(*p.PostedAt) || p.Remind {
 		t.Fatalf("discord_post = %+v", p)
 	}
 	// Without the box there is no schedule at all.
 	quiet := w.createRaids(t, scheduleBody(startIn(2*day), 0, "false", "true"))
-	if got := w.getRaid(t, quiet[0].ID).DiscordPost; got != nil || len(events.posted) != 0 {
+	if got := w.getRaid(t, quiet[0].ID).DiscordPost; got != nil || len(events.posted) != 1 {
 		t.Fatalf("unticked: discord_post = %+v, posted %d", got, len(events.posted))
 	}
 }
@@ -146,6 +159,26 @@ func TestRepeatPostsEveryWeekAtOnce(t *testing.T) {
 	views := w.createRaids(t, scheduleBody(startIn(2*day), raidRepeatWeeks, "true", "true"))
 	if len(views) != 4 || len(events.posted) != len(views) {
 		t.Fatalf("posted %d for %d raids", len(events.posted), len(views))
+	}
+	for _, v := range views {
+		if sentFor(events.posted, v.ID) != 1 {
+			t.Fatalf("raid %d posted %d times", v.ID, sentFor(events.posted, v.ID))
+		}
+	}
+	if got := w.run(t, time.Now().Add(13*day)); got.Posted != 0 || len(events.posted) != len(views) {
+		t.Fatalf("day 13: run %+v posted again", got)
+	}
+}
+
+// A raid saved a month out still gets its reminder the day before, once.
+func TestFarRaidStillRemindsTheDayBefore(t *testing.T) {
+	w, events, _ := postingWorld(t)
+	far := w.createRaids(t, scheduleBody(startIn(30*day), 0, "true", "true"))[0]
+	if got := w.run(t, far.StartsAt.Add(-2*day)); got.Reminded != 0 {
+		t.Fatalf("reminded 2 days out: %+v", got)
+	}
+	if got := w.run(t, far.StartsAt.Add(-23*time.Hour)); got.Reminded != 1 || sentFor(events.reminders, far.ID) != 1 {
+		t.Fatalf("day before: run %+v, reminders %+v", got, events.reminders)
 	}
 }
 
@@ -180,13 +213,12 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 	ctx := context.Background()
 	now := time.Now()
 
-	// Unposted: a move follows post_at; a move inside the week posts at once, no RaidChanged.
-	far := w.createRaids(t, scheduleBody(startIn(postHorizon+23*day), 0, "true", "true"))[0]
-	moved := w.patchTo(t, far.ID, startIn(postHorizon+13*day), "true", "true")
-	if p := moved.DiscordPost; p == nil || p.PostedAt != nil || !p.PostAt.Equal(moved.StartsAt.Add(-postHorizon)) {
-		t.Fatalf("moved unposted: discord_post = %+v", p)
+	// Saved with the box off, then ticked on an edit a month out: it posts at once, no RaidChanged.
+	far := w.createRaids(t, scheduleBody(startIn(30*day), 0, "false", "true"))[0]
+	moved := w.patchTo(t, far.ID, startIn(20*day), "true", "true")
+	if p := moved.DiscordPost; p == nil || p.PostedAt == nil {
+		t.Fatalf("ticked far raid: discord_post = %+v", p)
 	}
-	w.patchTo(t, far.ID, startIn(3*day), "true", "true")
 	posted, _, changed, _ := events.snapshot()
 	if sentFor(posted, far.ID) != 1 || len(changed) != 0 {
 		t.Fatalf("posted %+v, changed %+v", posted, changed)
@@ -211,8 +243,8 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 		t.Fatalf("re-armed reminder not sent: %+v", reminders)
 	}
 
-	// Cancel withdraws the sent reminder; a cancelled raid never posts or reminds, and a raid
-	// locked before its post time is posted but never reminded.
+	// Cancel withdraws the sent reminder; a raid cancelled before its due post goes out never
+	// posts or reminds, and one locked before it is posted but never reminded.
 	m2 := notify.ReminderRef{Via: notify.ReminderViaWebhook, MessageID: "m2"}
 	if err := w.h.svc.Store.MarkScheduleReminded(ctx, soon.ID, m2, now); err != nil {
 		t.Fatal(err)
@@ -221,8 +253,8 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 	if _, _, _, withdrawn := events.snapshot(); len(withdrawn) != 2 || withdrawn[1] != m2 {
 		t.Fatalf("cancel withdrew %+v", withdrawn)
 	}
-	cancelled := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
-	locked := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day+time.Hour), 0, "true", "true"))[0]
+	cancelled := w.unpostedRaid(t, startIn(10*day))
+	locked := w.unpostedRaid(t, startIn(10*day+time.Hour))
 	w.statusAction(t, cancelled.ID, "cancel")
 	w.statusAction(t, locked.ID, "lock")
 	w.run(t, now.Add(4*day))
@@ -241,7 +273,7 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 	}
 
 	// Switching the post off on an unposted raid drops its row.
-	off := w.createRaids(t, scheduleBody(startIn(postHorizon+5*day), 0, "true", "true"))[0]
+	off := w.unpostedRaid(t, startIn(12*day))
 	w.patchTo(t, off.ID, off.StartsAt, "false", "true")
 	if _, ok := w.scheduleOf(t, off.ID); ok {
 		t.Fatal("unposted row survived post_to_discord false")
@@ -250,7 +282,7 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 
 func TestTwoScheduleRunsSendOnce(t *testing.T) {
 	w, events, _ := postingWorld(t)
-	raid := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
+	raid := w.unpostedRaid(t, startIn(10*day))
 	race := func(now time.Time) int {
 		var wg sync.WaitGroup
 		runs := make([]ScheduleRun, 2)

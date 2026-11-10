@@ -220,18 +220,13 @@ func (s *Service) postedEvents(ctx context.Context, raidID int64) []events.Event
 	return []events.Event{raidPostedEvent(facts.GuildID, facts.Post.RaidPosted)}
 }
 
-// publishCreated tells raid.posted for each created raid already inside the posting horizon;
-// later raids are told by the scheduler as they enter it.
-func (s *Service) publishCreated(ctx context.Context, views []RaidView, now time.Time) {
-	var due []int64
-	for _, v := range views {
-		if !postAtFor(v.StartsAt, now).After(now) {
-			due = append(due, v.ID)
-		}
-	}
-	if len(due) == 0 {
+// publishCreated tells raid.posted for every created raid: its sign-ups open on save, as its
+// Discord post does.
+func (s *Service) publishCreated(ctx context.Context, views []RaidView) {
+	if len(views) == 0 {
 		return
 	}
+	due := raidIDsOf(views)
 	s.background(ctx, func(ctx context.Context) []events.Event {
 		var out []events.Event
 		for _, id := range due {

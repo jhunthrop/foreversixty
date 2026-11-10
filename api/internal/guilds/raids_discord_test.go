@@ -113,12 +113,12 @@ func patchBody(title, startsAt, post string) string {
 		`"timezone":"America/Chicago","post_to_discord":%s}`, raidZoneOny, title, startsAt, post)
 }
 
-// TestCreateRaidPostsTheFirstWeekAtOnce: a repeat posts only the raid within the week now
-// (spec 2026-10-28 §P.4); the later weeks wait for the schedule run.
-func TestCreateRaidPostsTheFirstWeekAtOnce(t *testing.T) {
+// TestCreateRaidPostsEveryWeekAtOnce: a repeat posts all four raids on the save, soonest
+// first (owner ruling 2026-11-09).
+func TestCreateRaidPostsEveryWeekAtOnce(t *testing.T) {
 	w, events, defaults := postingWorld(t)
 	views := w.createRaids(t, postingBody(futureStart(), 3, "true"))
-	if len(events.posted) != 1 || len(views) != 4 || events.posted[0].RaidID != views[0].ID {
+	if len(events.posted) != 4 || len(views) != 4 || events.posted[0].RaidID != views[0].ID {
 		t.Fatalf("posted %d for %d raids", len(events.posted), len(views))
 	}
 	first := events.posted[0]

@@ -45,20 +45,6 @@ func claimed(t *testing.T, st *Store, now time.Time) []DueSchedule {
 	return due
 }
 
-func TestPostAtFor(t *testing.T) {
-	now := time.Date(2026, 11, 1, 12, 0, 0, 0, time.UTC)
-	if got := postAtFor(now.Add(3*24*time.Hour), now); !got.Equal(now) {
-		t.Fatalf("near start posts now, got %v", got)
-	}
-	if got := postAtFor(now.Add(30*24*time.Hour), now); !got.Equal(now) {
-		t.Fatalf("a raid 30 days out posts now, got %v", got)
-	}
-	far := now.Add(postHorizon + 10*24*time.Hour)
-	if got := postAtFor(far, now); !got.Equal(far.Add(-postHorizon)) {
-		t.Fatalf("beyond the horizon posts at the horizon, got %v", got)
-	}
-}
-
 func TestScheduleDueWindows(t *testing.T) {
 	ctx := context.Background()
 	w := newScheduleWorld(t)

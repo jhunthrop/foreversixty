@@ -114,9 +114,9 @@ func TestDueKinds(t *testing.T) {
 		r    scheduledRaid
 		want []events.Kind
 	}{
-		{at(postHorizon, RaidPlanned), []events.Kind{events.RaidPosted}},
-		{at(postHorizon-30*time.Minute, RaidPlanned), []events.Kind{events.RaidPosted}},
-		{at(postHorizon-2*time.Hour, RaidPlanned), nil},
+		// raid.posted goes out on save, never from the schedule.
+		{at(7*24*time.Hour, RaidPlanned), nil},
+		{at(30*24*time.Hour, RaidPlanned), nil},
 		{at(24*time.Hour, RaidPlanned), []events.Kind{events.RaidShort}},
 		{at(24*time.Hour, RaidLocked), nil},
 		{at(30*time.Minute, RaidLocked), []events.Kind{events.RaidStarting}},

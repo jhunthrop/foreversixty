@@ -22,7 +22,7 @@ func (w raidWorld) attemptsOf(t *testing.T, id int64) (attempts int, leased bool
 func TestARowLeasedByAnotherClaimIsNotSent(t *testing.T) {
 	w, events, _ := postingWorld(t)
 	ctx := context.Background()
-	raid := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
+	raid := w.unpostedRaid(t, startIn(10*day))
 	at := time.Now().Add(4 * day)
 	mine := claimed(t, w.h.svc.Store, at)
 	// This claim's lease runs out mid-batch and another runner claims the row.
@@ -42,7 +42,7 @@ func TestARowLeasedByAnotherClaimIsNotSent(t *testing.T) {
 func TestARaidCancelledAfterTheClaimIsNotSent(t *testing.T) {
 	w, events, _ := postingWorld(t)
 	ctx := context.Background()
-	raid := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
+	raid := w.unpostedRaid(t, startIn(10*day))
 	at := time.Now().Add(4 * day)
 	due := claimed(t, w.h.svc.Store, at)
 	if len(due) != 1 {
@@ -61,7 +61,7 @@ func TestARaidCancelledAfterTheClaimIsNotSent(t *testing.T) {
 
 func TestARefusedPostIsRetriedNotMarked(t *testing.T) {
 	w, events, _ := postingWorld(t)
-	raid := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
+	raid := w.unpostedRaid(t, startIn(10*day))
 	at := time.Now().Add(4 * day)
 	events.refuse(errors.New("refused"), nil)
 	got, err := w.h.svc.RunRaidSchedule(context.Background(), at)
@@ -114,7 +114,7 @@ func (w raidWorld) leaseOf(t *testing.T, id int64) (lease *time.Time, lastErr *s
 func TestAReleaseAfterAnotherClaimLeavesItsLease(t *testing.T) {
 	w, _, _ := postingWorld(t)
 	ctx := context.Background()
-	raid := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
+	raid := w.unpostedRaid(t, startIn(10*day))
 	at := time.Now().Add(4 * day)
 	mine := claimed(t, w.h.svc.Store, at)
 	theirs := claimed(t, w.h.svc.Store, at.Add(scheduleLease+time.Minute))
@@ -169,7 +169,7 @@ func refuseMarks(t *testing.T, w raidWorld) (clear func()) {
 
 func TestAFailedMarkHoldsTheSentPost(t *testing.T) {
 	w, events, _ := postingWorld(t)
-	raid := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
+	raid := w.unpostedRaid(t, startIn(10*day))
 	at := nanoClock().Add(4 * day)
 	clear := refuseMarks(t, w)
 	if got := w.run(t, at); got.Posted != 1 || len(events.posted) != 1 {

@@ -29,7 +29,7 @@ const (
 )
 
 // EventScheduleRun counts the events one run published.
-type EventScheduleRun struct{ Posted, Nudged, Short, Starting, Pending int }
+type EventScheduleRun struct{ Nudged, Short, Starting, Pending int }
 
 // scheduledRaid is what the run reads to decide which events are due.
 type scheduledRaid struct {
@@ -46,9 +46,6 @@ func dueWithin(at, now time.Time) bool {
 // dueKinds is the scheduled events due for r at now.
 func dueKinds(r scheduledRaid, now time.Time) []events.Kind {
 	var out []events.Kind
-	if r.Status == RaidPlanned && dueWithin(r.StartsAt.Add(-postHorizon), now) {
-		out = append(out, events.RaidPosted)
-	}
 	if r.Status == RaidPlanned && dueWithin(r.StartsAt.Add(-reminderLead), now) {
 		out = append(out, events.RaidShort)
 	}
@@ -163,8 +160,6 @@ func (s *Service) publishDue(ctx context.Context, raidID int64, kinds []events.K
 	var out []events.Event
 	for _, k := range kinds {
 		switch k {
-		case events.RaidPosted:
-			out = append(out, raidPostedEvent(facts.GuildID, p))
 		case events.RaidShort:
 			if p.SizeKnown && p.Counts.In+p.Counts.Late < p.Size {
 				out = append(out, raidShortEvent(facts.GuildID, p))
@@ -186,8 +181,6 @@ func (r EventScheduleRun) add(kinds []events.Kind, ok bool) EventScheduleRun {
 	}
 	for _, k := range kinds {
 		switch k {
-		case events.RaidPosted:
-			r.Posted++
 		case events.RaidSignupNudge:
 			r.Nudged++
 		case events.RaidShort:
@@ -200,13 +193,14 @@ func (r EventScheduleRun) add(kinds []events.Kind, ok bool) EventScheduleRun {
 }
 
 // scheduledRaids is every planned or locked raid whose events can still come due: starting
-// after now and within the posting horizon.
+// after now and within the nudge window, the furthest-out scheduled event (raid.posted goes
+// out on save).
 func (s *Store) scheduledRaids(ctx context.Context, now time.Time) ([]scheduledRaid, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select id, starts_at, status from guild_raids
 		where status in ('planned', 'locked') and starts_at > $1 and starts_at <= $1 + make_interval(secs => $2)
 		order by starts_at limit $3`,
-		now, postHorizon.Seconds(), scheduleRaidLimit)
+		now, nudgeWindow.Seconds(), scheduleRaidLimit)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: scheduled raids: %w", err)
 	}

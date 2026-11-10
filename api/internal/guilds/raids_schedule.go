@@ -1,8 +1,8 @@
 // api/internal/guilds/raids_schedule.go
 //
 // When a raid posts to Discord and reminds the day before (design/specs/
-// 2026-10-28-discord-guided-cards.md §P.4): a save schedules the post (now, unless the raid is more than postHorizon away;
-// then postHorizon before the start), an edit follows a move, a cancel or lock withdraws a sent
+// 2026-10-28-discord-guided-cards.md §P.4, owner ruling 2026-11-09): a save posts at once,
+// however far out the raid is, an edit follows a move, a cancel or lock withdraws a sent
 // webhook reminder, and RunRaidSchedule (the raid-posts job) sends what has come due through
 // RaidEvents, the bot's router or the webhook. A bot reminder is never tracked here: the
 // drainer withdraws it when the raid's own move, cancel or lock marks the post.
@@ -78,23 +78,20 @@ func (s *Service) withSchedules(ctx context.Context, views []RaidView) []RaidVie
 	return out
 }
 
-// scheduleCreated plans each created raid's post and posts the ones due now, so a repeat
-// posts only the raid within the week. A failure is logged: the raids were saved.
+// scheduleCreated records each created raid's post and posts them all now, however far out
+// (owner ruling 2026-11-09: guilds sign up weeks ahead). A failure is logged: the raids were saved.
 func (s *Service) scheduleCreated(ctx context.Context, guildID int64, views []RaidView, remind bool, now time.Time) {
 	if s.RaidEvents == nil {
 		return
 	}
 	ctx = context.WithoutCancel(ctx)
-	var due []RaidView
+	due := make([]RaidView, 0, len(views))
 	for _, v := range views {
-		postAt := postAtFor(v.StartsAt, now)
-		if err := s.Store.UpsertSchedule(ctx, v.ID, guildID, postAt, remind); err != nil {
+		if err := s.Store.UpsertSchedule(ctx, v.ID, guildID, now, remind); err != nil {
 			s.logSchedule("raid_schedule", v.ID, err)
 			continue
 		}
-		if !postAt.After(now) {
-			due = append(due, v)
-		}
+		due = append(due, v)
 	}
 	s.postDue(ctx, guildID, due, now)
 }
@@ -173,14 +170,13 @@ func (s *Service) editPosted(ctx context.Context, guildID, raidID int64, remind 
 	}
 }
 
-// planUnposted upserts an unposted raid's row and posts it at once when due and planned.
+// planUnposted upserts an unposted raid's row and posts it at once when planned.
 func (s *Service) planUnposted(ctx context.Context, guildID int64, raid Raid, remind bool, now time.Time) {
-	postAt := postAtFor(raid.StartsAt, now)
-	if err := s.Store.UpsertSchedule(ctx, raid.ID, guildID, postAt, remind); err != nil {
+	if err := s.Store.UpsertSchedule(ctx, raid.ID, guildID, now, remind); err != nil {
 		s.logSchedule("raid_schedule", raid.ID, err)
 		return
 	}
-	if postAt.After(now) || raid.Status != RaidPlanned {
+	if raid.Status != RaidPlanned {
 		return
 	}
 	view, err := s.raidViewOf(ctx, guildID, noViewer, raid)

@@ -12,10 +12,6 @@ import (
 )
 
 const (
-	// postHorizon is how far ahead of the start a raid posts when saved earlier. Owner
-	// 2026-11-09: guilds plan raids weeks out (the first raids open 28 days after launch),
-	// so a saved raid posts at once unless it is more than a year away.
-	postHorizon = 365 * 24 * time.Hour
 	// reminderLead is how long before the start the reminder goes out.
 	reminderLead = 24 * time.Hour
 	// reminderFresh is the 12-hour rule: a post newer than this before the reminder is
@@ -27,15 +23,6 @@ const (
 	// (each bounded by the poster's timeout) ends well inside scheduleLease.
 	scheduleBatch = 10
 )
-
-// postAtFor is when a raid starting at startsAt posts: now when it is within the horizon,
-// otherwise the horizon before the start.
-func postAtFor(startsAt, now time.Time) time.Time {
-	if at := startsAt.Add(-postHorizon); at.After(now) {
-		return at
-	}
-	return now
-}
 
 // RaidSchedule is one raid's Discord posting plan, whichever destination sends it.
 type RaidSchedule struct {
