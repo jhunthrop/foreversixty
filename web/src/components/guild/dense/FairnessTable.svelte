@@ -63,8 +63,8 @@
 
 <Section title="Fairness, this tier" {meta} panel flush testid="guild-loot-fairness">
   <StatTable {columns} nameHead="Raider" barHead="" dense label="Fairness this tier">
-    {#each rows as row (`${row.since}:${row.items}:${row.raiders[0].key}`)}
-      {#if row.raiders.length > 1 || row === rows.find((r) => r.since === row.since)}
+    {#each rows as row, index (`${row.since}:${row.items}:${row.raiders[0].key}`)}
+      {#if index === 0 || rows[index - 1].since !== row.since}
         <StatRow total figures={blank}>
           {#snippet name()}{counted(row.since, 'night')} since an item{/snippet}
         </StatRow>
