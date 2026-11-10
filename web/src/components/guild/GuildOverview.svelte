@@ -7,7 +7,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type {
-    GuildHomeStanding,
     GuildHomeSummary,
     GuildRaidView,
     GuildRaidsPage,
@@ -23,7 +22,7 @@
     type GuildChecklist,
     type GuildOfficerActions,
   } from '../../lib/guild/overview-api';
-  import { checklistRows, raidWeekday, verdictLine } from '../../lib/guild/overview-role-view';
+  import { checklistRows } from '../../lib/guild/overview-role-view';
   import {
     downEncounterNames,
     lastRaidProgressLine,
@@ -66,7 +65,6 @@
     guildPath,
     myRow = null,
     roster = [],
-    standing = null,
     onSelectTab,
     lead,
     you,
@@ -88,8 +86,6 @@
     myRow?: GuildRosterRow | null;
     /** The guild's roster (the home's), for the officer's week. */
     roster?: readonly GuildRosterRow[];
-    /** The viewer's place among their spec (the home's `standing`). */
-    standing?: GuildHomeStanding | null;
     onSelectTab: (tab: GuildTabId) => void;
     /** The first block on the tab, when the page has one to lead with (Before raids open, which then
      *  carries the next step: no "No raid planned" line and no numbers before the first raid). */
@@ -150,8 +146,6 @@
       .catch(() => (actions = null));
   });
 
-  const guildTz = $derived(nextRaid?.guild_timezone ?? viewerTz);
-  const day = $derived(nextRaid === null ? null : raidWeekday(nextRaid.starts_at, guildTz));
   const rows = $derived(checklist === null ? [] : checklistRows(checklist));
   const progressionLine = $derived(lastRaidProgressLine(progression, summary?.tier, publicCounts));
   const last = $derived(reports[0] ?? null);
@@ -222,18 +216,6 @@
       />
     {/if}
   {:else}
-    <!-- The verdict sits under the head, over both columns (web layout spec 2026-11-05 §7.1). -->
-    {#if checklist !== null && nextRaid !== null}
-      <div class="px-(--page-inset)">
-        <Notice
-          text={verdictLine(checklist.verdict, rows, day)}
-          action={rows.some((row) => row.tone !== 'ok')
-            ? { label: 'See your checklist', href: '#guild-overview-checklist' }
-            : undefined}
-          testid="guild-overview-verdict"
-        />
-      </div>
-    {/if}
     <Page layout="split" panels testid="guild-overview-page">
       {@render lead?.()}
       {#if guildId !== null && nextRaid !== null && lead === undefined}
@@ -244,7 +226,6 @@
           {raid}
           {myRow}
           {roster}
-          {standing}
           {raidsPage}
           {viewerTz}
           now={clock.now}
@@ -266,7 +247,6 @@
           {raid}
           {myRow}
           {roster}
-          {standing}
           {raidsPage}
           {viewerTz}
           now={clock.now}
@@ -282,7 +262,6 @@
             {raid}
             {myRow}
             {roster}
-            {standing}
             {raidsPage}
             {viewerTz}
             now={clock.now}

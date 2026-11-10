@@ -11,7 +11,6 @@
   import { counted } from '../../../lib/plural';
   import { fairnessRows, guildItemsPerNight, type FairnessRaider } from '../../../lib/guild/dense/fairness';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
-  import Meter from '../../ui/Meter.svelte';
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
   import StatTable from '../../ui/StatTable.svelte';
@@ -34,12 +33,8 @@
     { id: 'nights', label: 'Nights' },
   ];
   const rows = $derived(fairnessRows(roster, loot, grid));
-  const top = $derived(Math.max(1, ...rows.map((r) => r.since)));
-  const items = $derived(new Set(loot.nights.flatMap((n) => n.decisions.map((d) => d.award_id))).size);
   const perNight = $derived(guildItemsPerNight(roster, loot, grid));
-  const meta = $derived(
-    `${counted(items, 'item')} over ${counted(grid.raids.length, 'night')} · ${perNight.toFixed(2)} per raider night`,
-  );
+  const meta = $derived(`${perNight.toFixed(2)} items per raider night`);
 
   function day(iso: string): string {
     return new Date(iso).toLocaleDateString('en-GB', {
@@ -62,15 +57,16 @@
 </script>
 
 <Section title="Fairness, this tier" {meta} panel flush testid="guild-loot-fairness">
-  <StatTable {columns} nameHead="Raider" barHead="" dense label="Fairness this tier">
+  <StatTable {columns} nameHead="Raider" bar={false} dense label="Fairness this tier">
     {#each rows as row, index (`${row.since}:${row.items}:${row.raiders[0].key}`)}
       {#if index === 0 || rows[index - 1].since !== row.since}
-        <StatRow total figures={blank}>
+        <StatRow total bar={false} figures={blank}>
           {#snippet name()}{counted(row.since, 'night')} since an item{/snippet}
         </StatRow>
       {/if}
       {#each row.raiders as one (one.key)}
         <StatRow
+          bar={false}
           figures={figures(row.since, one)}
           phone={counted(one.items, 'item')}
           testid={`guild-fair-${one.name.toLowerCase()}`}
@@ -78,13 +74,8 @@
           {#snippet icon()}<ClassCrestRing characterClass={one.cls} size={28} />{/snippet}
           {#snippet name()}<span style:color={classColorVar(one.cls)}>{one.name}</span>{/snippet}
           {#snippet sub()}{one.spec}{one.last === null
-              ? ' · no item yet'
+              ? ''
               : ` · last ${one.last.item}, ${day(one.last.at)}`}{/snippet}
-          {#snippet meter()}<Meter
-              value={row.since / top}
-              tone="gold"
-              label={`${row.since} nights since an item`}
-            />{/snippet}
         </StatRow>
       {/each}
     {/each}

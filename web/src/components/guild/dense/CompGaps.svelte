@@ -21,9 +21,7 @@
 
   function figures(row: CompGapRow) {
     return [
-      row.gap > 0
-        ? { value: `${row.gap} short`, tone: 'wipe' as const }
-        : { value: '✓', tone: 'kill' as const },
+      row.gap > 0 ? { value: String(row.gap), tone: 'wipe' as const } : { value: '✓', tone: 'kill' as const },
       { value: String(row.need), muted: true },
       { value: String(row.in) },
       row.late > 0 ? { value: String(row.late) } : { value: '–', muted: true },
@@ -33,12 +31,22 @@
 
 {#if rows.length > 0}
   <Section {title} panel flush testid="guild-overview-comp">
-    <StatTable {columns} nameHead="Role" bar={false} dense label="Seats against the target">
-      {#each rows as row (row.group)}
-        <StatRow bar={false} figures={figures(row)}>
-          {#snippet name()}{GROUP_WORD[row.group]}{/snippet}
-        </StatRow>
-      {/each}
-    </StatTable>
+    <div class="comp-gaps">
+      <StatTable {columns} nameHead="Role" bar={false} dense label="Seats against the target">
+        {#each rows as row (row.group)}
+          <StatRow bar={false} figures={figures(row)}>
+            {#snippet name()}{GROUP_WORD[row.group]}{/snippet}
+          </StatRow>
+        {/each}
+      </StatTable>
+    </div>
   </Section>
 {/if}
+
+<style>
+  /* A rail is narrow: the role keeps its word, the figures share what is left. */
+  .comp-gaps :global(.ui-st) {
+    --st-name: minmax(72px, 1fr);
+    --st-fig: minmax(max-content, 40px);
+  }
+</style>

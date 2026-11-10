@@ -1,0 +1,9 @@
+# Build round 2 verdicts (captures: build-r2/)
+
+- guild-officer-reviewer: VERDICT: WORTH PAYING FOR. SHOULDs: loot dead block at 1440; Award with no quorum state; a 0-candidate crown; fairness group blobs; Needs a word mixes jobs; recruit meta wraps; collapse the Ready rows.
+- info-density-reviewer: VERDICT: DENSE WITH ADDITIONS. Adds: KPI strip from home summary; top DPS/HPS on the last raid; ilvl delta and rating on Needs a word; applicant score and sim; professions, build, rating parts on the roster; all resistances on Readiness; candidates as a comparison table.
+- ux-designer: VERDICT: REVISE. Loot dead slab at 1440; the Wednesday table loses Gap on a phone; Nudge too small to tap; recruit wall of buttons; the readiness inner frame; empty icon gutters; legend wraps.
+- wow-player: VERDICT: REVISE. Judgement Crown 0 candidates on Loot while the Overview names one; item levels and throughput too high for Onyxia week; median 64 vs group medians 63; five items a kill; fairness groups mix attendance; Short (member) vs Gap (officer); "Best %" vs "Parse %"; "raid elixir".
+- ai-slop-reviewer: VERDICT: FAIL. The readiness inner frame; every panel the same weight; loot dead block; chips and button walls; qualifiers ("Short 1 if all answer" twice, "Almost there" twice, "1 of 1 named bosses down", "In and Late").
+
+Round 3 (build-r3/): fairness one row per raider under nights dividers, in the main column under the drops; Gap first so a phone keeps it; Nudge a 32 px (44 px touch) control under the reasons; recruit roles and applicants as quiet links; no inner frame on Readiness, fire resistance a matrix column; Classic-sized item levels and throughput, the median computed, three or four items a kill, the crown's council on the loot table; one Gap rule for officer and member; "Parse %"; "flask or elixir"; one verdict on the member page, no progression restatement.

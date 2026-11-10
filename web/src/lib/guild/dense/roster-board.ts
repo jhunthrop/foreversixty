@@ -207,7 +207,7 @@ export function seenText(days: number | null): string {
 export function groupLine(group: BoardGroup): string {
   return [
     group.need === null ? '' : `need ${group.need}`,
-    group.medianItemLevel === null ? '' : `median item level ${Math.round(group.medianItemLevel)}`,
+    group.medianItemLevel === null ? '' : `median item level ${Math.floor(group.medianItemLevel)}`,
   ]
     .filter((p) => p !== '')
     .join(' · ');

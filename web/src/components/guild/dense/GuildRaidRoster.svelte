@@ -155,7 +155,7 @@
                 ? String(row.itemLevel)
                 : `${row.itemLevel} ${signed(row.itemLevelDelta)}`,
           },
-      row.gap === null
+      row.gap === null || Math.round(row.gap) === 0
         ? dash
         : { value: `+${Math.round(row.gap)}${row.gapUnit === null ? '' : ` ${row.gapUnit.toUpperCase()}`}` },
       row.bestPercentile === null

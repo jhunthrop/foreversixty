@@ -7,13 +7,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import activeBuild from '../../../data/active-build.json';
-  import type {
-    GuildHomeStanding,
-    GuildRaidView,
-    GuildRaidsPage,
-    GuildRosterRow,
-    NextRaidView,
-  } from '../../../lib/guild/api';
+  import type { GuildRaidView, GuildRaidsPage, GuildRosterRow, NextRaidView } from '../../../lib/guild/api';
   import { fetchMemberProfile, type MemberProfile } from '../../../lib/guild/recruit-api';
   import { fetchGuildRaid } from '../../../lib/guild/raids-api';
   import { fetchLootNights } from '../../../lib/guild/loot-council-api';
@@ -34,7 +28,6 @@
     raid,
     myRow,
     roster,
-    standing,
     raidsPage,
     viewerTz,
     now,
@@ -46,7 +39,6 @@
     raid: GuildRaidView | null;
     myRow: GuildRosterRow | null;
     roster: readonly GuildRosterRow[];
-    standing: GuildHomeStanding | null;
     raidsPage: GuildRaidsPage | null;
     viewerTz: string;
     now: Date;
@@ -87,7 +79,6 @@
       month: 'short',
       timeZone: tz,
     });
-  const ordinal = (n: number) => `${n}${n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'}`;
   const ratingChange = $derived(
     last?.rating == null || before?.rating == null ? null : Math.round(last.rating - before.rating),
   );
@@ -115,13 +106,7 @@
     {#if you}<div data-testid="guild-next-raid-you">{@render you()}</div>{/if}
     <div class="flex flex-wrap gap-x-10 gap-y-4 pt-4" data-testid="guild-your-figures">
       {#if myRow?.item_level != null}
-        <Figure
-          value={String(myRow.item_level)}
-          label="Item level"
-          caption={standing === null
-            ? undefined
-            : `${standing.spec} ${standing.class} ${ordinal(standing.rank_by_item_level)} of ${standing.same_spec_count}`}
-        />
+        <Figure value={String(myRow.item_level)} label="Item level" />
       {/if}
       {#if last?.rating != null}
         <Figure

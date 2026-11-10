@@ -225,7 +225,7 @@ describe('GuildReadiness by exception', () => {
     const markup = board([clean, short]);
     expect(text(markup)).toContain('2 enchants missing, consumables short, 1 talent point unspent');
     expect(text(markup)).toContain('1 of 2 ready');
-    expect(text(markup)).toContain(`${clean.name} Protection · 68 ilvl Ready`);
+    expect(text(markup)).toContain('Ready 1');
     expect(markup.match(/data-testid="guild-readiness-nudge-/g)).toHaveLength(1);
   });
 

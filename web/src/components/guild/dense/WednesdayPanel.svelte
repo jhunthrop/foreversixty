@@ -57,6 +57,7 @@
   let pingError = $state('');
   let moving = $state<string | null>(null);
   const rows = $derived(compGaps(raid));
+  const stillShort = $derived(rows.filter((r) => r.stillShort > 0));
   const notAnswered = $derived(raid.not_signed_raiders?.length ?? raid.not_signed.length);
   const canPing = $derived(pingedAt === null && pingAllowed(raid, now));
   const pingedText = $derived(
@@ -169,13 +170,15 @@
                 >{/if}
             </span>
           {/if}
-          {#if row.stillShort > 0}<span class="text-wipe block"
-              >Still {row.stillShort} short if all answer</span
-            >{/if}
         {/snippet}
       </StatRow>
     {/each}
   </StatTable>
+  {#if stillShort.length > 0}
+    <p class="text-small text-wipe px-5 pt-2" data-testid="guild-week-still-short">
+      {stillShort.map((r) => `${GROUP_WORD[r.group]} ${r.stillShort}`).join(', ')} short if all answer
+    </p>
+  {/if}
   <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 pt-3 pb-4">
     <Button
       tone="primary"

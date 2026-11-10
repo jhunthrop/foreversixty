@@ -977,7 +977,6 @@
           {guildPath}
           myRow={myRosterRow}
           roster={home?.roster ?? []}
-          standing={home?.standing ?? null}
           you={showsBandLine(myGuildMembership?.verified === true, role) ? youRow : undefined}
           reports={home?.reports ?? data.reports}
           summary={home?.summary}

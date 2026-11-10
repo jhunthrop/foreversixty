@@ -61,6 +61,8 @@
     ...(anyStale ? [{ id: 'synced', label: 'Synced' }] : []),
   ]);
   const blank = $derived(columns.map(() => ({ value: '' })));
+  /** The ready raiders fold behind their count while someone is short. */
+  let showReady = $state(false);
   const PASS: StatFigure = { value: '✓', muted: true };
   const UNKNOWN: StatFigure = { value: '–', muted: true };
 
@@ -77,12 +79,12 @@
     return [
       shortfalls.length > 0
         ? { value: `${shortfalls.length} short`, tone: 'wipe' }
-        : { value: 'Ready', muted: true },
+        : { value: '', muted: true },
       check(row.attuned, '×'),
       delta === null
         ? UNKNOWN
         : { value: delta > 0 ? `+${delta}` : delta === 0 ? '±0' : `−${-delta}`, muted: true },
-      row.gear_gap?.gain_dps == null
+      row.gear_gap?.gain_dps == null || Math.round(row.gear_gap.gain_dps) === 0
         ? UNKNOWN
         : {
             value: `+${Math.round(row.gear_gap.gain_dps)}${row.gear_gap.unit === null ? '' : ` ${row.gear_gap.unit.toUpperCase()}`}`,
@@ -113,35 +115,50 @@
 <StatTable {columns} nameHead="Raider" bar={false} dense label="Readiness" testid="guild-readiness-board">
   {#each entries as { row, shortfalls }, index (row.character_key)}
     {#if index === short.length && short.length > 0 && ready.length > 0}
-      <StatRow total bar={false} figures={blank}>{#snippet name()}Ready {ready.length}{/snippet}</StatRow>
+      <StatRow total bar={false} figures={blank}
+        >{#snippet name()}<button
+            type="button"
+            class="fold"
+            aria-expanded={showReady}
+            onclick={() => (showReady = !showReady)}
+            data-testid="guild-readiness-ready-toggle">Ready {ready.length} {showReady ? '▴' : '▾'}</button
+          >{/snippet}</StatRow
+      >
     {/if}
-    <StatRow
-      bar={false}
-      figures={figures(row, shortfalls)}
-      testid={`guild-readiness-row-${row.character_key}`}
-    >
-      {#snippet icon()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
-      {#snippet name()}<span style:color={classColorVar(row.class)}>{row.name}</span>{/snippet}
-      {#snippet sub()}{row.spec} · {row.item_level ?? '–'} ilvl{#if shortfalls.length > 0}<div
-            class="text-wipe whitespace-normal"
-            data-testid="guild-readiness-shortfalls"
-          >
-            {shortfalls.join(', ')}{#if officer}<button
-                type="button"
-                class="nudge"
-                disabled={readOnly}
-                aria-describedby={describedBy}
-                onclick={() => onNudge(row)}
-                aria-label={`Nudge ${row.name}`}
-                data-testid={`guild-readiness-nudge-${row.character_key}`}
-                >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
-              >{/if}
-          </div>{/if}{/snippet}
-    </StatRow>
+    {#if index < short.length || showReady || short.length === 0}
+      <StatRow
+        bar={false}
+        figures={figures(row, shortfalls)}
+        testid={`guild-readiness-row-${row.character_key}`}
+      >
+        {#snippet icon()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
+        {#snippet name()}<span style:color={classColorVar(row.class)}>{row.name}</span>{/snippet}
+        {#snippet sub()}{row.spec} · {row.item_level ?? '–'} ilvl{#if shortfalls.length > 0}<div
+              class="text-wipe whitespace-normal"
+              data-testid="guild-readiness-shortfalls"
+            >
+              {shortfalls.join(', ')}{#if officer}<button
+                  type="button"
+                  class="nudge"
+                  disabled={readOnly}
+                  aria-describedby={describedBy}
+                  onclick={() => onNudge(row)}
+                  aria-label={`Nudge ${row.name}`}
+                  data-testid={`guild-readiness-nudge-${row.character_key}`}
+                  >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
+                >{/if}
+            </div>{/if}{/snippet}
+      </StatRow>
+    {/if}
   {/each}
 </StatTable>
 
 <style>
+  .fold {
+    font: inherit;
+    color: var(--color-gold);
+    cursor: pointer;
+  }
   .nudge {
     display: block;
     min-height: 32px;
