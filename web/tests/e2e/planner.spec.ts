@@ -1,6 +1,7 @@
 import { expect, test } from './support/test';
 import { collectPageErrors } from './support/console';
 
+import { plannerCopy } from '../../src/lib/planner/copy';
 import { treeSourceNotice } from '../../src/lib/planner/tree-source';
 import { ACTIVE_BUILD } from './support/active-build';
 import {
@@ -408,7 +409,8 @@ test('a build opens from an addon code in the URL, with the order noted as recon
 
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('tree-points-161')).toHaveText('3');
-  await expect(page.getByTestId('planner-code-note')).toHaveCount(0);
+  // A clean order needs no note (h-audit); the code is from an older build, and only that is said.
+  await expect(page.getByTestId('planner-code-note')).toHaveText(plannerCopy.olderBuildNote);
 });
 
 test('a code from another format is refused by name rather than ignored', async ({ page }) => {
@@ -471,7 +473,8 @@ test('a good code survives a transient failure on its own class, and still appli
   await page.getByRole('button', { name: 'Reload talents' }).click();
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('tree-points-161')).toHaveText('3');
-  await expect(page.getByTestId('planner-code-note')).toHaveCount(0);
+  // A clean order needs no note (h-audit); the code is from an older build, and only that is said.
+  await expect(page.getByTestId('planner-code-note')).toHaveText(plannerCopy.olderBuildNote);
 });
 
 test('each tree draws its own art and counts its own points', async ({ page }) => {

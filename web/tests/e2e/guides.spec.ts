@@ -13,7 +13,7 @@
 // playwright test tests/e2e/guides.spec.ts`).
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { openGuidesState } from './support/guides-page';
+import { hydratedLevelingTree, levelingTree, openGuidesState } from './support/guides-page';
 import {
   armoryPointer,
   keyOf,
@@ -50,16 +50,6 @@ const FELSNAP: FixtureCharacter = {
 
 const answer = (page: Page) => page.getByTestId('guide-answer');
 const bisPanel = (page: Page) => page.getByTestId('guide-bis').locator('[data-bis-current]');
-const levelingTree = (page: Page) => page.getByTestId('guide-leveling-tree');
-
-/** Scrolls the leveling lane into view and waits for its island (client:visible) to hydrate. */
-async function hydratedLevelingTree(page: Page): Promise<void> {
-  await levelingTree(page).scrollIntoViewIfNeeded();
-  await expect(page.locator('astro-island:has([data-testid="guide-leveling-tree"])')).not.toHaveAttribute(
-    'ssr',
-    /.*/,
-  );
-}
 
 /** Picks `character` in the header selector, as a visitor switches. */
 async function chooseInSelector(page: Page, character: FixtureCharacter): Promise<void> {

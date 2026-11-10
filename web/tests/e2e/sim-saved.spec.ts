@@ -229,10 +229,14 @@ test('a saved sim names the rotation it used, prints its notes in place, and car
 
   const notes = curatedRotationNotes('warrior-fury');
   await expect(card.getByTestId('rotation-line').first()).toBeVisible();
-  // Bloodthirst's note has no level version, so the run reads the curated note itself.
+  // A note that only says "on cooldown" is dropped (h-audit, lib/sim/rotation-card.ts obviousNote):
+  // Bloodthirst's line carries no note; a note that says when to press is printed in place.
   const bloodthirst = notes.find((note) => note.startsWith('On cooldown: the button'));
   expect(bloodthirst).toBeDefined();
-  await expect(card).toContainText(bloodthirst!);
+  await expect(card).not.toContainText(bloodthirst!);
+  const execute = notes.find((note) => note.startsWith('First, in the Execute phase'));
+  expect(execute).toBeDefined();
+  await expect(card).toContainText(execute!);
 
   const url = page.url();
   const guide = card.getByRole('link', { name: /Fury guide/ });

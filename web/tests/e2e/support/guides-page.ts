@@ -78,3 +78,26 @@ export async function openGuidesState(page: Page, pathname: string, state: Guide
   if (state !== 'out') await expect(answer).toHaveAttribute('data-state', SETTLED_ANSWER);
   await page.waitForLoadState('networkidle');
 }
+
+/** The guide's leveling lane (GuideLevelingTree). */
+export const levelingTree = (page: Page) => page.getByTestId('guide-leveling-tree');
+
+/**
+ * Opens a reading section's phone fold (ReadingSection `fold`): below 768 the page closes it
+ * before the section scrolls into view (lib/ui/fold.ts), so its body has no box until a player
+ * taps the fold's line. From 768 the line is hidden and the section is already open.
+ */
+export async function openFold(page: Page, anchor: string): Promise<void> {
+  const line = page.locator(`#${anchor} details[data-fold] > summary`);
+  if ((await line.count()) > 0 && (await line.isVisible())) await line.click();
+}
+
+/** Opens the Leveling fold, scrolls the lane into view and waits for its island (client:visible) to hydrate. */
+export async function hydratedLevelingTree(page: Page): Promise<void> {
+  await openFold(page, 'leveling');
+  await levelingTree(page).scrollIntoViewIfNeeded();
+  await expect(page.locator('astro-island:has([data-testid="guide-leveling-tree"])')).not.toHaveAttribute(
+    'ssr',
+    /.*/,
+  );
+}

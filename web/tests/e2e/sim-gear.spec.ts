@@ -63,15 +63,18 @@ test('locking a slot disables every candidate in it, and its copy-and-modify tri
   // A locked slot's checkbox drops any ticked candidate from the outgoing request
   // (validateBulk rule 1), so a copy-and-modify made here would be checked-but-inert with
   // nothing telling the player -- the trigger disables for the same reason the checkbox does.
-  await expect(row.getByRole('button', { name: /copy/i })).toBeDisabled();
+  await expect(row.getByRole('button', { name: bulkCopy.copyAndModify })).toBeDisabled();
   await page.getByTestId('sim-lock-head').uncheck();
   await expect(row.getByRole('checkbox')).toBeEnabled();
-  await expect(row.getByRole('button', { name: /copy/i })).toBeEnabled();
+  await expect(row.getByRole('button', { name: bulkCopy.copyAndModify })).toBeEnabled();
 });
 
 test('copy and modify adds the same item again with an enchant, beside the original', async ({ page }) => {
   await loadGear(page);
-  await page.getByTestId('sim-candidate-head-12640').getByRole('button', { name: /copy/i }).click();
+  await page
+    .getByTestId('sim-candidate-head-12640')
+    .getByRole('button', { name: bulkCopy.copyAndModify })
+    .click();
   await page.getByTestId('sim-enchant-head-2543').click();
   await expect(page.getByTestId('sim-candidate-head-12640')).toBeVisible();
   const copy = page.getByTestId('sim-candidate-head-12640-e2543');

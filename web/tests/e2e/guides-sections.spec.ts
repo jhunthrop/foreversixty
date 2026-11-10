@@ -12,6 +12,7 @@
 import { readFileSync } from 'node:fs';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { openFold } from './support/guides-page';
 import { choose } from './support/select';
 import { guidesCopy } from '../../src/lib/guides/copy';
 import { raceNameFor } from '../../src/lib/guides/race-table';
@@ -224,7 +225,8 @@ for (const [label, viewport] of [
       const enchant = mainHandEnchant();
       const mainHand = page.getByTestId('guide-enchant-main_hand');
       await expect(mainHand).toContainText(enchant.name);
-      await expect(mainHand).toContainText(`+${enchant.spellPower} spell power`);
+      // What the enchant gives is its tooltip's line, not repeated under the name (h-audit round 8).
+      await expect(mainHand).not.toContainText(`+${enchant.spellPower} spell power`);
       await expect(laneLabel(page, 'guide-consumables')).toHaveText('Consumables');
       await expect(page.getByTestId('guide-consumables')).toContainText('Flask of Supreme Power');
       await expect(page.getByTestId('guide-consumables')).toContainText('Elixir of Frost Power');
@@ -254,6 +256,8 @@ for (const [label, viewport] of [
       page,
     }) => {
       await page.goto(PAGE);
+      // On a phone the Leveling section is folded until its line is tapped.
+      await openFold(page, 'leveling');
       const tree = page.getByTestId('guide-leveling-tree');
       await expect(tree.getByTestId('guide-leveling-caption')).not.toContainText('points spent');
       await expect(tree.getByTestId('guide-leveling-caption')).toContainText(/Level 60: .+, rank \d/);
@@ -355,7 +359,9 @@ test.describe('table of contents', () => {
     await expect(page.getByTestId('guide-toc')).toBeHidden();
     await barBooted(page);
     const toggle = page.getByTestId('guide-bar').locator('[data-control-bar-toggle]');
-    await expect(toggle).toContainText(`Frost Mage · ${guidesCopy.tocBarLabel}`);
+    // The bar's line, then its label at the far end (ControlBar, h-audit).
+    await expect(toggle.locator('span').first()).toHaveText('Frost Mage');
+    await expect(toggle).toContainText(guidesCopy.tocBarLabel);
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     // Open, the bar lists the sections as rows (the mock's open phone bar), not the select.

@@ -20,7 +20,6 @@ export const guidesCopy = {
   /** `/guides` index's own signed-in callout (spec §4.A/§6): `{specName}` and `{className}`
    *  come from the visitor's own character, e.g. "Fury Warrior ›". */
   signedInCallout: (specName: string, className: string): string => `${specName} ${className} ›`,
-  readTheGuide: 'Read the guide',
   yourSpecPill: 'Your spec',
   /** The class landing's spec plate's accessible name. */
   classLandingSpecsHeading: 'Specs',

@@ -116,7 +116,7 @@
       {#snippet name()}
         <button
           type="button"
-          class="text-strong min-h-6 text-left underline-offset-4 hover:underline"
+          class="text-strong relative min-h-6 text-left underline-offset-4 after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-[''] hover:underline"
           aria-expanded={isOpen}
           onclick={() => onToggle(f.row.id)}
           data-testid={`guild-raid-row-${f.row.id}`}>{raidNightDay(f.row.created_at)}</button
