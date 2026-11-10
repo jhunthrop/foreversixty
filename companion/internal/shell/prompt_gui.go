@@ -41,6 +41,8 @@ func Prompt(o PromptOptions) error {
 		}
 	}
 	w.Navigate(o.URL)
+	// Once the loop runs: the app is only then able to become active.
+	w.Dispatch(func() { bringToFront(w.Window()) })
 	w.Run()
 	return nil
 }
