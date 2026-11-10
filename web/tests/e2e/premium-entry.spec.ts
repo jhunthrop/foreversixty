@@ -34,7 +34,8 @@ const GRANT_ME = {
 };
 const FREE_ME = { user: { battletag: 'Hunthrop#1894' }, entitlements: mockEntitlements() };
 const SUBSCRIBE_TEAL = 'rgb(64, 128, 118)';
-const TINT = 'rgba(255, 236, 113, 0.12)';
+// The one selected state's ground (--color-selected, design/reviews/2026-11-09-selected).
+const TINT = 'rgba(0, 147, 178, 0.16)';
 const MENU_ROW_MIN = 52;
 
 const tag = (page: Page) => page.getByTestId('nav-premium');
