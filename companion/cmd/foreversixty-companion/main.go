@@ -16,6 +16,7 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"runtime"
 	"syscall"
 
@@ -196,6 +197,10 @@ func offerInstall(log *slog.Logger, release func()) bool {
 	exe, err := os.Executable()
 	if err != nil {
 		return false
+	}
+	// hdiutil and App Translocation name real paths (/private/var, not /var).
+	if real, err := filepath.EvalSymlinks(exe); err == nil {
+		exe = real
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
