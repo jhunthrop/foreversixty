@@ -14,7 +14,7 @@ import { targetIn } from '../support/capture-kit';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SITE = 'https://foreversixty.gg';
-const target = targetIn('2026-11-09-f-guild-onboard/round3');
+const target = targetIn('2026-11-09-f-guild-onboard/round4');
 const dumped = JSON.parse(readFileSync(path.join(HERE, 'payloads.json'), 'utf8')) as Dumped[];
 const CLIENTS = [
   { name: 'desktop', width: 640 },
