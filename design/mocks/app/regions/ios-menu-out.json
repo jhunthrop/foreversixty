@@ -6,37 +6,39 @@
  "regions": {
   "head": {
    "box": [
-    32,
-    66,
-    269,
-    114
+    18,
+    18,
+    297,
+    141
    ],
-   "inventory": {}
+   "inventory": {
+    "button": 1
+   }
   },
   "head-title": {
    "box": [
-    32,
-    82,
-    269,
-    84
+    18,
+    18,
+    297,
+    77
    ],
    "inventory": {}
   },
   "head-meta": {
    "box": [
-    32,
-    126,
-    269,
-    40
+    18,
+    54,
+    297,
+    41
    ],
    "inventory": {}
   },
   "section-tools": {
    "box": [
-    16,
-    268,
-    301,
-    333
+    18,
+    176,
+    297,
+    282
    ],
    "inventory": {
     "row": 5

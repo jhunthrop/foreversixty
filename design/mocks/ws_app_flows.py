@@ -230,6 +230,8 @@ MENU_R5_CSS = """
 .r5menu .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
 .r5menu .fold{display:flex;align-items:center;min-height:48px;font:600 15px/20px var(--font-body);color:var(--gold)}
 .r5menu .foot{margin:24px 0;display:flex;flex-direction:column;gap:4px}
+/* iOS (lane M5i, m-ios-menu): the band runs under the status bar, You 18 under it */
+[data-platform=ios] .r5menu .you{padding-top:calc(var(--status) + 18px)}
 """
 
 
@@ -633,13 +635,15 @@ def _gear_page_r5() -> str:
                       note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5.')
 
 
-def _item_sheet_r5() -> str:
-    """Deathbringer in round 5 (GEAR_R5_CSS): the tooltip in the client's order, the gain closing it, then the list."""
+def _item_sheet_r5(platform: str) -> str:
+    """Deathbringer in round 5 (GEAR_R5_CSS): the tooltip in the client's order, the gain closing it, then the list. iOS
+    adds the guild's next raid to the drop's zone under the source (needs.next_raid; it opens that raid; Android to follow)."""
     tip = ('<div class="tip" data-region="inspector"><span class="nm">Deathbringer</span><span>Binds when picked up</span>'
            '<span class="sp"><span>One-Hand</span><span>Axe</span></span><span class="sp"><span>114 - 213 Damage</span><span>Speed 2.90</span></span>'
            '<span>(56.4 damage per second)</span><span class="gap"></span><span>Requires Level 60</span>'
            '<span class="gr">Chance on hit: Sends a shadowy bolt at the<br>enemy causing 125 Shadow damage.</span><span class="gn">+12.6 DPS</span></div>')
-    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair, 8%', '', icon(ONY, 40))
+    next_raid = _r5_gear_row('Next raid: Onyxia&rsquo;s Lair, Wed 8:00 PM', '', '') if platform == 'ios' else ''
+    lines = (_r5_gear_row('Onyxia, Onyxia&rsquo;s Lair, 8%', '', icon(ONY, 40)) + next_raid
              + _r5_gear_row('Replaces Ironwood Blade', 'Equipped', icon('inv_sword_07', 40, 'q4'))
              + _r5_gear_row('Vis&rsquo;kag the Bloodletter', 'Runner-up &middot; Onyxia &middot; 8% &middot; &minus;1.8 DPS', icon('inv_sword_18', 40, 'q4'), QCOL[4])
              + _r5_gear_row('Grunvald', 'Protection Warrior &middot; needs it, the pick on their list', crest_img('warrior', 40), WARRIOR)
@@ -857,6 +861,12 @@ def notification_settings(platform: str) -> str:
             + Switch('', on) + '</div>' for n, s, on in groups]
     nudge = Rows([Row('Raid-day reminder', 'If you have not answered: 3:00 pm your time', trail='<a class="link" href="#">Change</a>', link=False)], open_=True)
     body = PageHeader('Notifications') + Section('Send me', Rows(rows, open_=True)) + Section('When', nudge)
+    if platform == 'ios':
+        # officer_dms (D16, off by default; built on iOS, Android to follow): channel mentions are the default; on, the
+        # officers' Not answered row gets a DM link.
+        body += Section('Discord', Rows(['<div class="row setrow"><div class="b"><div class="ttl">Let officers DM me on Discord</div>'
+                                         '<div class="sub">When you have not answered a raid; off, they mention you in the channel</div></div>'
+                                         + Switch('', False) + '</div>'], open_=True))
     return app_page(platform, _page(body, 'Notifications'), 'home', back='Home', title='Notifications')
 
 
@@ -864,7 +874,7 @@ def notification_settings(platform: str) -> str:
 def item_sheet(platform: str) -> str:
     """Deathbringer from Onyxia (data/builds 1.60.1.70790: 8%, item level 75): the client's tooltip lines, where it drops,
     the runner-up from the same boss, and who in the guild has it or needs it (review S1)."""
-    return app_page(platform, _item_sheet_r5(), 'gear', navbar=False)
+    return app_page(platform, _item_sheet_r5(platform), 'gear', navbar=False)
 
 SCREENS = {
     'menu': menu('in'),

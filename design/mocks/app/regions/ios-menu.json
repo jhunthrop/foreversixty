@@ -6,10 +6,10 @@
  "regions": {
   "head": {
    "box": [
-    32,
-    66,
-    269,
-    141
+    18,
+    18,
+    297,
+    129
    ],
    "inventory": {
     "image": 2
@@ -17,10 +17,10 @@
   },
   "head-title": {
    "box": [
-    32,
-    82,
-    269,
-    111
+    18,
+    18,
+    297,
+    77
    ],
    "inventory": {
     "image": 2
@@ -28,31 +28,31 @@
   },
   "head-meta": {
    "box": [
-    104,
-    126,
-    197,
-    67
+    90,
+    50,
+    225,
+    45
    ],
    "inventory": {}
   },
   "section-switch-character": {
    "box": [
-    16,
-    257,
-    301,
-    387
+    18,
+    160,
+    297,
+    365
    ],
    "inventory": {
     "row": 5,
-    "image": 9
+    "image": 10
    }
   },
   "section-tools": {
    "box": [
-    16,
-    668,
-    301,
-    451
+    18,
+    525,
+    297,
+    378
    ],
    "inventory": {
     "row": 7
@@ -60,10 +60,10 @@
   },
   "section-account": {
    "box": [
-    16,
-    1143,
-    301,
-    333
+    18,
+    903,
+    297,
+    310
    ],
    "inventory": {
     "row": 5
