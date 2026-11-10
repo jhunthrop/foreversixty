@@ -118,6 +118,7 @@ public struct FSTally: View {
 
     static var columnGap: CGFloat { FSSpace.space3 }
     /// A role and its count at 14/20 bold: `Damage 11/30` holds one line in a third of 393 pt.
+    static var fit: CGFloat { 0.75 }
     static var role: TypeRole { TypeRole(face: FSFont.bodyBold, size: 14, lineHeight: 20, scalesWith: .body, tabular: true) }
     static var meterHeight: CGFloat { 8 }
 
@@ -131,13 +132,15 @@ public struct FSTally: View {
         layout {
             ForEach(items) { item in
                 VStack(alignment: .leading, spacing: 6) {
+                    // The role and its count share the line; a tight column shrinks both a little
+                    // rather than clip a role's name (`Damage 11/30` at 393 pt).
                     HStack(spacing: FSSpace.space1) {
-                        Text(item.label).type(Self.role).foregroundStyle(FSColor.strong).lineLimit(1)
+                        Text(item.label).type(Self.role).foregroundStyle(FSColor.strong)
                         Spacer(minLength: 0)
-                        Text("\(item.have)/\(item.want)")
-                            .type(Self.role)
-                            .foregroundStyle(item.met ? FSColor.kill : (item.near ? FSColor.gold : FSColor.wipe))
+                        count(item)
                     }
+                    .lineLimit(1)
+                    .minimumScaleFactor(Self.fit)
                     FSMeter(fraction: item.fraction, tone: item.met ? .kill : .gold)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -145,6 +148,15 @@ public struct FSTally: View {
                 .accessibilityLabel("\(item.label): \(item.have) of \(item.want)")
             }
         }
+    }
+}
+
+extension FSTally {
+    /// `11/30`, green when met, gold when near, red when short.
+    fileprivate func count(_ item: Item) -> some View {
+        Text("\(item.have)/\(item.want)")
+            .type(Self.role)
+            .foregroundStyle(item.met ? FSColor.kill : (item.near ? FSColor.gold : FSColor.wipe))
     }
 }
 

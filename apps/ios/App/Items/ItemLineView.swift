@@ -3,7 +3,8 @@ import SwiftUI
 
 /// `ui/ItemRow` (`.irow`): the item's icon in its quality border, the name in its quality colour
 /// (the tooltip trigger), where it comes from, and the gain at the right. 58 min, padded 8 by 16,
-/// no hairline. Home's Next upgrades and Gear's lists draw items with it.
+/// no hairline. Home's Next upgrades and Gear's lists draw items with it. At the accessibility sizes
+/// the gain drops under the text, so neither breaks mid-word.
 struct ItemLineView: View {
     let name: String
     let quality: Int?
@@ -16,6 +17,7 @@ struct ItemLineView: View {
     let build: String
     /// The row's own side padding: 0 on a round-5 panel, which carries it.
     var inset: CGFloat = FSSpace.space4
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     static let minHeight: CGFloat = 58
     /// Measured on the mocks' rows: a one-line-source row is 62 high.
@@ -30,24 +32,10 @@ struct ItemLineView: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text(name).type(FSType.item).foregroundStyle(ItemQuality(value: quality).text)
                 Text(source).type(RowType.sub).foregroundStyle(FSColor.muted)
+                if typeSize.isAccessibilitySize { gainView(alignment: .leading) }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            if let gain {
-                VStack(alignment: .trailing, spacing: 2) {
-                    HStack(alignment: .firstTextBaseline, spacing: FSSpace.space1) {
-                        Text(gain.figure).type(FSType.figureSm).foregroundStyle(FSColor.strong)
-                        if !gain.unit.isEmpty {
-                            Text(gain.unit)
-                                .font(.custom(FSFont.bodySemibold, size: 13, relativeTo: .footnote))
-                                .foregroundStyle(FSColor.muted)
-                        }
-                    }
-                    if let caption {
-                        Text(caption).type(RowType.detail).foregroundStyle(FSColor.muted)
-                    }
-                }
-                .fixedSize()
-            }
+            if !typeSize.isAccessibilitySize { gainView(alignment: .trailing) }
         }
         .padding(.horizontal, inset)
         .padding(.vertical, FSSpace.space2)
@@ -56,5 +44,25 @@ struct ItemLineView: View {
         .accessibilityElement(children: .combine)
         .accessibilityHint(Copy.itemsA11yHint)
         .parityItem(.row)
+    }
+
+    @ViewBuilder
+    private func gainView(alignment: HorizontalAlignment) -> some View {
+        if let gain {
+            VStack(alignment: alignment, spacing: 2) {
+                HStack(alignment: .firstTextBaseline, spacing: FSSpace.space1) {
+                    Text(gain.figure).type(FSType.figureSm).foregroundStyle(FSColor.strong)
+                    if !gain.unit.isEmpty {
+                        Text(gain.unit)
+                            .font(.custom(FSFont.bodySemibold, size: 13, relativeTo: .footnote))
+                            .foregroundStyle(FSColor.muted)
+                    }
+                }
+                if let caption {
+                    Text(caption).type(RowType.detail).foregroundStyle(FSColor.muted)
+                }
+            }
+            .fixedSize()
+        }
     }
 }

@@ -152,12 +152,16 @@ struct RaidAnswerButtons: View {
     let selected: SignupState?
     var small = false
     let answer: (SignupState) -> Void
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        HStack(spacing: FSSpace.space2) {
+        // At the accessibility sizes the answers go two by two, so no word breaks.
+        let columns = typeSize.isAccessibilitySize ? 2 : SignupState.allCases.count
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: FSSpace.space2), count: columns), spacing: FSSpace.space2) {
             ForEach(SignupState.allCases) { state in
                 Button(state.label) { answer(state) }
                     .buttonStyle(FSButtonStyle(state == selected ? .primary : .secondary, small: small, padX: FSButtonStyle.padXTight))
+                    .lineLimit(1)
                     .accessibilityAddTraits(state == selected ? .isSelected : [])
             }
         }

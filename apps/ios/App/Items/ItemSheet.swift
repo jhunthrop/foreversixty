@@ -136,10 +136,10 @@ enum ItemSheetBuilder {
         guard let place = places?.place(of: item, kind: kind, named: named) else {
             return fallback.map { ItemSheetRow(id: "source", title: $0, sub: nil, lead: lead) }
         }
-        // One line, as the round-5 sheet words it: `Onyxia, Onyxia's Lair, 8%`, `Blacksmithing`,
+        // One line, as the round-5 sheet words it: `Onyxia, Onyxia's Lair, 8% drop chance`, `Blacksmithing`,
         // `Stormpike Guard, revered`.
         let parts: [String?] = switch place.kind {
-        case .instance: [place.boss, place.name, place.chance.map(ItemNumbers.percent)]
+        case .instance: [place.boss, place.name, place.chance.map { Copy.gearSheetDropChance(chance: ItemNumbers.percent($0)) }]
         case .profession: [place.name]
         case .reputation: [place.name, place.standing.map { ItemVocabulary.standingName($0)?.lowercased() ?? $0 }]
         }

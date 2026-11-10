@@ -100,18 +100,22 @@ public struct PaperdollHeader<Icon: View, Lead: View>: View {
     }
 
     private var strip: some View {
-        HStack(spacing: 10) {
-            PaperdollMedallion(portrait: portrait, size: Self.medallionSize)
-            Text(title)
-                .font(.custom(FSFont.title, size: Self.titleSize, relativeTo: .title3))
-                .foregroundStyle(Theme.Palette.title)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isHeader)
-            Spacer(minLength: 0)
+        // At the accessibility sizes the set's figure drops under the title, so the title keeps the line.
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpace.space1))
+            : AnyLayout(HStackLayout(spacing: 10))
+        return layout {
+            HStack(spacing: 10) {
+                PaperdollMedallion(portrait: portrait, size: Self.medallionSize)
+                Text(title)
+                    .font(.custom(FSFont.title, size: Self.titleSize, relativeTo: .title3))
+                    .foregroundStyle(Theme.Palette.title)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+            }
+            if !typeSize.isAccessibilitySize { Spacer(minLength: 0) }
             if let figure {
-                (Text(figure).foregroundStyle(FSColor.strong)
-                    + Text(" " + unit).font(.custom(FSFont.bodySemibold, size: Self.figureSize * 0.66, relativeTo: .caption))
-                    .foregroundStyle(FSColor.text))
+                Text("\(Text(figure).foregroundStyle(FSColor.strong)) \(Text(unit).font(.custom(FSFont.bodySemibold, size: Self.figureSize * 0.66, relativeTo: .caption)).foregroundStyle(FSColor.text))")
                     .font(.custom(FSFont.bodySemibold, size: Self.figureSize, relativeTo: .headline))
                     .monospacedDigit()
                     .lineLimit(1)
@@ -127,9 +131,12 @@ public struct PaperdollHeader<Icon: View, Lead: View>: View {
         .accessibilityElement(children: .combine)
     }
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     private var list: some View {
-        LazyVGrid(
-            columns: [GridItem(.flexible(), spacing: 10, alignment: .leading), GridItem(.flexible(), alignment: .leading)],
+        let columns = typeSize.isAccessibilitySize ? 1 : 2
+        return LazyVGrid(
+            columns: Array(repeating: GridItem(.flexible(), spacing: 10, alignment: .leading), count: columns),
             alignment: .leading, spacing: 6
         ) {
             ForEach(slots) { slot in cell(slot) }
@@ -173,12 +180,12 @@ public struct PaperdollHeader<Icon: View, Lead: View>: View {
     private func sub(_ label: String, detail: String?, gain: Bool) -> some View {
         var line = Text(label).foregroundStyle(FSColor.muted)
         if let detail {
-            line = line + Text(" · ").foregroundStyle(FSColor.muted)
+            line = line + Text("\u{00A0}· ").foregroundStyle(FSColor.muted)
                 + Text(detail).foregroundStyle(gain ? FSColor.gain : FSColor.muted).fontWeight(gain ? .bold : .regular)
         }
         return line
             .font(.custom(FSFont.body, size: 12, relativeTo: .caption))
-            .lineLimit(1)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private func socket(_ item: PaperdollListSlot.Item?, covered: Bool, selected: Bool) -> some View {

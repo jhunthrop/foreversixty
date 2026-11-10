@@ -120,7 +120,8 @@ struct HomeFlowPresenter {
         let role = Self.roleWord(named?.role)
         let selected = inputs.answer ?? viewer?.state.flatMap(SignupState.init(rawValue:))
         let zone = TimeZone(identifier: raid.guildTimezone) ?? clock.zone
-        let time = Copy.homeRaidWhen(date: clock.shortDate(raid.startsAt), time: clock.guildClock(raid.startsAt, guildZone: zone))
+        let clockTime = clock.guildClock(raid.startsAt, guildZone: zone).replacingOccurrences(of: " ", with: Self.noBreak)
+        let time = Copy.homeRaidWhen(date: clock.shortDate(raid.startsAt), time: clockTime)
         let counts = Copy.homeRaidCounts(in: raid.counts.signedIn, late: raid.counts.late)
         let answer: String = switch (selected, named) {
         case let (state?, nil): Copy.homeRaidAnsweredAlone(answer: state.label)
@@ -138,7 +139,7 @@ struct HomeFlowPresenter {
             clock: clockParts(to: raid.startsAt),
             clockLabel: clockLabel(to: raid.startsAt),
             line: HomeLine(title: Copy.homeRaidLineTitle(raid: raid.zoneName, when: time), sub: selected == nil ? open : answer),
-            icon: raid.zoneIcon ?? RaidIcons.generic,
+            icon: raid.zoneIcon ?? RaidIcons.of(zone: raid.zone),
             answer: answer,
             selected: selected,
             lateOpen: inputs.lateOpen && selected == .late,
@@ -170,6 +171,8 @@ struct HomeFlowPresenter {
     }
 
     static let day = 86_400
+    /// Keeps `7:00 pm CST` together when a raid's line wraps.
+    static let noBreak = "\u{00A0}"
 
     /// E7 (owner, 2026-11-09): the character an answer is for, named only when the account has more
     /// than one character in the raid's guild; nil when the answer alone says it.

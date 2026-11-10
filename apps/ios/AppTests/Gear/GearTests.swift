@@ -6,6 +6,7 @@ import Networking
 import Routing
 import SwiftUI
 import Testing
+import UIKit
 
 /// The flows mocks' Gear scenario (design/mocks/ws_app_flows.py `gear`, `DOLL`, `item_sheet`):
 /// Thandrel's Fury Warrior 60 raid Alliance list (data/builds/1.60.1.70790/bis/warrior-fury.json,
@@ -69,7 +70,7 @@ enum GearTestData {
     static let sheet = ItemSheetContent(
         tooltip: tooltip,
         gain: HomeGain(figure: "+12.6", unit: "DPS"),
-        source: ItemSheetRow(id: "source", title: "Onyxia, Onyxia’s Lair, 8%", sub: nil, lead: .item(icon: "inv_misc_head_dragon_black", quality: nil)),
+        source: ItemSheetRow(id: "source", title: "Onyxia, Onyxia’s Lair, 8% drop chance", sub: nil, lead: .item(icon: "inv_misc_head_dragon_black", quality: nil)),
         replaces: ItemSheetRow(id: "replaces", title: "Replaces Ironwood Blade", sub: "Equipped", lead: .item(icon: "inv_sword_07", quality: 4)),
         runnerUp: ItemSheetRow(
             id: "runner-up", title: "Vis’kag the Bloodletter", titleQuality: 4, sub: "Runner-up · Onyxia · 8% · \u{2212}1.8 DPS",
@@ -82,6 +83,11 @@ enum GearTestData {
         raidZone: "Onyxia’s Lair",
         nextRaid: ItemSheetBuilder.nextRaid(nextOnyxia, guild: 2, zone: "Onyxia’s Lair", locale: Locale(identifier: "en_US"), timeZone: chicago)
     )
+
+    /// Thandrel's Battle.net portrait in the paperdoll's medallion, as the mock draws it.
+    static var portrait: UIImage? {
+        UIImage(contentsOfFile: HomeFixtures.repoRoot.appending(path: "design/mocks/data/avatars/thandrel.jpg").path)
+    }
 
     static let chicago = TimeZone(identifier: "America/Chicago")!
     /// Wednesday 11 November 2026, 8:00 pm in Chicago.
@@ -117,7 +123,7 @@ struct GearParityTests {
 
     @Test("ios-gear")
     func gear() async throws {
-        let view = GearListView(content: GearTestData.content, build: GearTestData.build)
+        let view = GearListView(content: GearTestData.content, build: GearTestData.build, portrait: GearTestData.portrait)
             .environment(\.itemIconSource, RepoItemIconSource())
         try await ParityCheck.assert(view, screen: "gear", size: Self.device)
     }

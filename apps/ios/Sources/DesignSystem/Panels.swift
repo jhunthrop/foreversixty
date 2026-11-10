@@ -113,6 +113,7 @@ public struct PanelSection<Content: View>: View {
     private let action: (title: String, run: () -> Void)?
     private let frame: PanelFrame
     private let content: Content
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     public init(
         _ title: String,
@@ -130,10 +131,14 @@ public struct PanelSection<Content: View>: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
-            HStack(alignment: .center, spacing: FSSpace.space3) {
+            // At the accessibility sizes the meta and the action drop under the title, so no word breaks.
+            let head = typeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpace.space1))
+                : AnyLayout(HStackLayout(alignment: .center, spacing: FSSpace.space3))
+            head {
                 PanelTitle(title)
                 if let meta { Text(meta).type(FSType.small).foregroundStyle(FSColor.muted) }
-                Spacer(minLength: 0)
+                if !typeSize.isAccessibilitySize { Spacer(minLength: 0) }
                 if let action { PanelAction(action.title, action: action.run) }
             }
             PanelBlock(frame: frame) { content }

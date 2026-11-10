@@ -330,7 +330,7 @@ private struct MenuRow<Lead: View>: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.vertical, ProfileMenuView.rowPad)
-        .frame(minHeight: ProfileMenuView.rowMin)
+        .frame(minHeight: sub == nil ? FSTarget.min : ProfileMenuView.rowMin)
         .overlay(alignment: .bottom) { if !last { Hairline(FSColor.line) } }
         .contentShape(.rect)
         .accessibilityElement(children: .combine)
