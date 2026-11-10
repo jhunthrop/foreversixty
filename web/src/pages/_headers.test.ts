@@ -25,4 +25,8 @@ describe('public/_headers', () => {
       expect(block).not.toContain('immutable');
     });
   }
+
+  it('keeps the workers.dev preview host out of the index', () => {
+    expect(ruleBlock('https://foreversixty.jhunthrop.workers.dev/*')).toContain('X-Robots-Tag: noindex');
+  });
 });

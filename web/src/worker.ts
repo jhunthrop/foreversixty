@@ -590,35 +590,53 @@ async function serveShell(env: Env, url: URL, asset: string): Promise<Response> 
   return head === null ? body : rewriteHead(body, head.meta);
 }
 
+/** workers_dev is on (wrangler.jsonc), so foreversixty.<account>.workers.dev serves the whole site
+ *  as a second host. Its static pages carry `X-Robots-Tag: noindex` from public/_headers; this is
+ *  the same mark on every answer the Worker writes itself, so only foreversixty.gg is indexed. */
+const PREVIEW_HOST_SUFFIX = '.workers.dev';
+
+function markPreviewNoindex(url: URL, response: Response): Response {
+  if (!url.hostname.endsWith(PREVIEW_HOST_SUFFIX)) return response;
+  // A copy: a redirect's or a fetched asset's headers are immutable.
+  const marked = new Response(response.body, response);
+  marked.headers.set('x-robots-tag', 'noindex');
+  return marked;
+}
+
+/** Every request the Worker answers, by path. */
+async function dispatch(request: Request, env: Env, url: URL, ctx?: ExecutionContext): Promise<Response> {
+  // The tracked short links (lib/golinks/redirect.ts): a 302 now, the count after.
+  if (url.pathname.startsWith(GO_PREFIX)) return serveGoLink(request, env, ctx);
+  // The site's downloads and release feed (lib/downloads/serve.ts), out of the bucket.
+  if (url.pathname.startsWith(DOWNLOAD_PREFIX)) return serveDownload(request, env);
+  // The sample's old database id: the link lives in cached pages and old shares.
+  const legacy = SAMPLE_LEGACY_IDS.find((id) => url.pathname === `/reports/${id}`);
+  if (legacy !== undefined) return Response.redirect(new URL(SAMPLE_REPORT_PATH, url).toString(), 301);
+  const logsData = LOGS_DATA_PATH.exec(url.pathname);
+  if (logsData !== null) return serveReportFile(request, env, logsData[1], logsData[2]);
+  if (url.pathname.startsWith(LOGS_DATA_PREFIX)) return refuse(404, 'Not a report file');
+
+  if (url.pathname.startsWith(DUCKDB_RUNTIME_PREFIX)) {
+    return serveDuckdbRuntime(request, env, url.pathname);
+  }
+  if (SIM_WASM_PATH.test(url.pathname)) return serveSimWasm(request, env.ASSETS);
+
+  const shell = SHELL_ROUTES.find((route) => url.pathname.startsWith(route.prefix));
+  // A path under a shell prefix that is not a valid id, slug or character path -- a
+  // prerendered fixture page's own asset request, a stray segment -- belongs to ASSETS,
+  // which serves it or 404s there.
+  if (shell !== undefined && shellPathIsAddressable(url)) {
+    return serveShell(env, url, shell.asset);
+  }
+
+  if (!BUILD_PATH.test(url.pathname)) return env.ASSETS.fetch(request);
+
+  return serveBuildPage(request, env, url);
+}
+
 export default {
   async fetch(request: Request, env: Env, ctx?: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
-    // The tracked short links (lib/golinks/redirect.ts): a 302 now, the count after.
-    if (url.pathname.startsWith(GO_PREFIX)) return serveGoLink(request, env, ctx);
-    // The site's downloads and release feed (lib/downloads/serve.ts), out of the bucket.
-    if (url.pathname.startsWith(DOWNLOAD_PREFIX)) return serveDownload(request, env);
-    // The sample's old database id: the link lives in cached pages and old shares.
-    const legacy = SAMPLE_LEGACY_IDS.find((id) => url.pathname === `/reports/${id}`);
-    if (legacy !== undefined) return Response.redirect(new URL(SAMPLE_REPORT_PATH, url).toString(), 301);
-    const logsData = LOGS_DATA_PATH.exec(url.pathname);
-    if (logsData !== null) return serveReportFile(request, env, logsData[1], logsData[2]);
-    if (url.pathname.startsWith(LOGS_DATA_PREFIX)) return refuse(404, 'Not a report file');
-
-    if (url.pathname.startsWith(DUCKDB_RUNTIME_PREFIX)) {
-      return serveDuckdbRuntime(request, env, url.pathname);
-    }
-    if (SIM_WASM_PATH.test(url.pathname)) return serveSimWasm(request, env.ASSETS);
-
-    const shell = SHELL_ROUTES.find((route) => url.pathname.startsWith(route.prefix));
-    // A path under a shell prefix that is not a valid id, slug or character path -- a
-    // prerendered fixture page's own asset request, a stray segment -- belongs to ASSETS,
-    // which serves it or 404s there.
-    if (shell !== undefined && shellPathIsAddressable(url)) {
-      return serveShell(env, url, shell.asset);
-    }
-
-    if (!BUILD_PATH.test(url.pathname)) return env.ASSETS.fetch(request);
-
-    return serveBuildPage(request, env, url);
+    return markPreviewNoindex(url, await dispatch(request, env, url, ctx));
   },
 };
