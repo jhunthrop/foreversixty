@@ -26,9 +26,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1096,
-   "prose": 1142,
-   "gap": -46
+   "lane": 1022,
+   "prose": 1172,
+   "gap": -150
   },
   {
    "id": "enchants-and-consumables",
@@ -82,9 +82,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1150,
-   "prose": 1136,
-   "gap": 14
+   "lane": 1216,
+   "prose": 1050,
+   "gap": 166
   },
   {
    "id": "enchants-and-consumables",
@@ -138,9 +138,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1078,
-   "prose": 1090,
-   "gap": -12
+   "lane": 1004,
+   "prose": 1120,
+   "gap": -116
   },
   {
    "id": "enchants-and-consumables",
@@ -194,9 +194,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1148,
-   "prose": 1136,
-   "gap": 12
+   "lane": 1214,
+   "prose": 1050,
+   "gap": 164
   },
   {
    "id": "enchants-and-consumables",
@@ -250,9 +250,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1028,
-   "prose": 1072,
-   "gap": -44
+   "lane": 1024,
+   "prose": 1044,
+   "gap": -20
   },
   {
    "id": "enchants-and-consumables",
@@ -306,9 +306,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1168,
-   "prose": 1162,
-   "gap": 6
+   "lane": 1234,
+   "prose": 1076,
+   "gap": 158
   },
   {
    "id": "enchants-and-consumables",
@@ -362,9 +362,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1096,
-   "prose": 1085,
-   "gap": 11
+   "lane": 1022,
+   "prose": 1119,
+   "gap": -97
   },
   {
    "id": "enchants-and-consumables",
@@ -418,9 +418,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1150,
-   "prose": 1100,
-   "gap": 50
+   "lane": 1216,
+   "prose": 1057,
+   "gap": 159
   },
   {
    "id": "enchants-and-consumables",
@@ -474,9 +474,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1078,
-   "prose": 1059,
-   "gap": 19
+   "lane": 1004,
+   "prose": 1093,
+   "gap": -89
   },
   {
    "id": "enchants-and-consumables",
@@ -530,9 +530,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1148,
-   "prose": 1100,
-   "gap": 48
+   "lane": 1214,
+   "prose": 1057,
+   "gap": 157
   },
   {
    "id": "enchants-and-consumables",
@@ -586,9 +586,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1028,
+   "lane": 1024,
    "prose": 1017,
-   "gap": 11
+   "gap": 7
   },
   {
    "id": "enchants-and-consumables",
@@ -642,9 +642,9 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1168,
-   "prose": 1126,
-   "gap": 42
+   "lane": 1234,
+   "prose": 1083,
+   "gap": 151
   },
   {
    "id": "enchants-and-consumables",
@@ -698,7 +698,7 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1444,
+   "lane": 1412,
    "prose": 156,
    "gap": 0
   },
@@ -754,7 +754,7 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1428,
+   "lane": 1396,
    "prose": 286,
    "gap": 0
   },
@@ -810,7 +810,7 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1432,
+   "lane": 1400,
    "prose": 104,
    "gap": 0
   },
@@ -866,7 +866,7 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1428,
+   "lane": 1396,
    "prose": 286,
    "gap": 0
   },
@@ -922,7 +922,7 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1468,
+   "lane": 1436,
    "prose": 0,
    "gap": 0
   },
@@ -978,7 +978,7 @@
   },
   {
    "id": "best-in-slot",
-   "lane": 1446,
+   "lane": 1414,
    "prose": 338,
    "gap": 0
   },

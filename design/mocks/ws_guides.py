@@ -182,17 +182,18 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
     lane = ''
     if data and b['data']:
         panel = next(p for p in b['data']['panels'] if p['band'] == band_no and p['faction'] == faction)
-        items = []
+        items, weapons = [], []
         for r in panel['rows']:
+            out = weapons if r['slot'] in ('main_hand', 'off_hand', 'ranged') else items
             if r.get('empty'):
                 # an empty slot names no item: its line is not a tooltip trigger (the built ItemRow's empty state)
-                items.append(ItemRow(f'<span class="muted">{e(r.get("emptyCopy") or "")}</span>', 1, '<span class="ic" style="width:36px;height:36px"></span>', '', e(r['slotLabel']))
-                             .replace(' role="button" tabindex="0"', '', 1))
+                out.append(ItemRow(f'<span class="muted">{e(r.get("emptyCopy") or "")}</span>', 1, '<span class="ic" style="width:36px;height:36px"></span>', '', e(r['slotLabel']))
+                           .replace(' role="button" tabindex="0"', '', 1))
                 continue
-            items.append(ItemRow(e(r['itemName']), r['quality'], icon(r['icon'], 36, QUAL.get(r['quality'], '')), e(r['sourceDetail']), e(r['slotLabel'])))
+            out.append(ItemRow(e(r['itemName']), r['quality'], icon(r['icon'], 36, QUAL.get(r['quality'], '')), e(r['sourceDetail']), e(r['slotLabel'])))
         caption = panel['caption']
         note = ''   # at 60 the doll's title bar says pre-raid and whose picks they are
-        lane = LaneBlock(e(F['fns']['levelRangeLabel'][str(band_no)]), f'<div class="items">{"".join(items)}</div>' + note, '' if band_no == 60 else e(caption))
+        lane = LaneBlock(e(F['fns']['levelRangeLabel'][str(band_no)]), f'<div class="items" data-wrap-list><div class="gblk">{"".join(items)}</div>' + (f'<div class="gblk">{"".join(weapons)}</div>' if weapons else '') + '</div>' + note, '' if band_no == 60 else e(caption))
     lane += f'<p>{Link(rsaquo(C["fullListLink"]))}</p>'
     # Every band's own BiS page and the role's tier list (SEO lane 2026-11-08), one quiet block under the full list.
     bands = ''.join(Link(e(s)) for s in F['fns']['bandSlugs'])
@@ -407,7 +408,7 @@ def states_page() -> str:
 
 
 PAGE_CSS = '''<style>
-.gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.grace{display:contents}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll{margin-top:0}
+.gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.grace{display:contents}.gblk{display:flex;flex-direction:column}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll{margin-top:0}
 .gdoll{container-type:inline-size;margin-top:24px}.gdoll-f{max-width:640px}@container (max-width:422.98px){.gdoll-f{display:none}}
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}
