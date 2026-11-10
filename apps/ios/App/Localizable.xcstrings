@@ -2508,6 +2508,17 @@
         }
       }
     },
+    "gear.error.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We could not load this list"
+          }
+        }
+      }
+    },
     "gear.everySlot": {
       "extractionState": "manual",
       "localizations": {
@@ -13727,7 +13738,7 @@
       }
     },
     "raid.tab.coverMissing": {
-      "comment": "Arguments: 1 name (string)",
+      "comment": "Arguments: 1 names (string)",
       "extractionState": "manual",
       "localizations": {
         "en": {

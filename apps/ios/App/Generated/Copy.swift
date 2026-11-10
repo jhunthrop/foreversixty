@@ -2410,6 +2410,9 @@ enum Copy {
     /// Change
     static var gearChange: String { text("gear.change") }
 
+    /// We could not load this list
+    static var gearErrorTitle: String { text("gear.error.title") }
+
     /// Where to go tonight
     static var gearWhereTonight: String { text("gear.whereTonight") }
 
@@ -5993,9 +5996,9 @@ enum Copy {
         format("raid.tab.notSynced", n)
     }
 
-    /// Missing {name}
-    static func raidTabCoverMissing(name: String) -> String {
-        format("raid.tab.coverMissing", name)
+    /// Missing {names}
+    static func raidTabCoverMissing(names: String) -> String {
+        format("raid.tab.coverMissing", names)
     }
 
     /// {name} {have} of {need}

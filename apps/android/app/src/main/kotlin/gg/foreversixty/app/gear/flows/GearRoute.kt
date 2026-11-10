@@ -86,12 +86,22 @@ fun GearRoute(model: BisModel, deps: GearDeps, owner: GearOwner, onSearch: (() -
     // A portrait that fails to load draws the seal, as no portrait does (never an empty medallion).
     val seal = painterResource(BrandArt.Seal.res)
     val portrait = owner.avatarUrl?.takeIf { it.isNotBlank() }?.let { rememberAsyncImagePainter(it, error = seal, fallback = seal) }
-    content?.let { gear ->
-        GearFlowScreen(
+    // No list for the spec and band, or it did not load: the list line with Change and one row, never a blank page.
+    val notice = GearComposer(res).notice(state.phase, model.specLabel(selection), state.context.rangeLabel(res, selection.range), selection.faction)
+    val scope = rememberCoroutineScope()
+    val onChange = { model.setPickerOpen(true) }
+    val gear = content
+    when {
+        notice != null -> GearNoticeScreen(
+            notice,
+            GearActions(onChange = onChange, onRetry = { scope.launch { model.refresh() } }),
+            topBar = { RootSearchBar(onSearch, selector) },
+        )
+        gear != null -> GearFlowScreen(
             gear,
             build,
             GearActions(
-                onChange = { model.setPickerOpen(true) },
+                onChange = onChange,
                 // A place opens the sheet of its best item, which says where else it drops.
                 onWhere = { place -> open = gear.slots.firstOrNull { it.look?.id == place.lead.id } },
                 onSlot = { open = it },
@@ -99,9 +109,10 @@ fun GearRoute(model: BisModel, deps: GearDeps, owner: GearOwner, onSearch: (() -
             portrait = portrait,
             topBar = { RootSearchBar(onSearch, selector) },
         )
-    } ?: Column(Modifier.fillMaxSize()) {
-        RootSearchBar(onSearch, selector)
-        GearLoading()
+        else -> Column(Modifier.fillMaxSize()) {
+            RootSearchBar(onSearch, selector)
+            GearLoading()
+        }
     }
     Picker(model)
     open?.takeIf { it.look != null && it.row.pick != null }?.let { row ->

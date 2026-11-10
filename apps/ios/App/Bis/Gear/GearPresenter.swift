@@ -48,11 +48,26 @@ struct GearPresenter {
 
     /// `60 raid · Alliance · 4 of 17 slots on the list`: the band, the faction, how many picks are worn.
     private func facts(slots: [GearSlotRow]) -> String {
-        let selection = context.selection
         let picks = slots.compactMap(\.pick)
         let worn = picks.filter { $0.trail == .worn }.count
-        return [Self.band(selection.range), BisLabels.faction(selection.faction), Copy.gearOnList(n: worn, total: picks.count)]
-            .joined(separator: Self.separator)
+        return facts(more: [Copy.gearOnList(n: worn, total: picks.count)])
+    }
+
+    /// The band and the faction, then `more`.
+    private func facts(more: [String] = []) -> String {
+        let selection = context.selection
+        return ([Self.band(selection.range), BisLabels.faction(selection.faction)] + more).joined(separator: Self.separator)
+    }
+
+    /// Gear's notice for a phase with no list to draw, under the spec's `title`; nil while the list
+    /// loads or once it has one.
+    func notice(phase: BisPhase, title: String) -> GearNotice? {
+        switch phase {
+        case .noList: GearNotice(title: title, facts: facts(), row: Copy.homeAnswerNoList)
+        case .failed: GearNotice(title: title, facts: facts(), row: Copy.gearErrorTitle, sub: Copy.homeErrorLine, retry: true)
+        case .notCached: GearNotice(title: title, facts: facts(), row: Copy.gearErrorTitle, sub: Copy.bisNotCached, retry: true)
+        case .loading, .loaded: nil
+        }
     }
 
     static let separator = " · "

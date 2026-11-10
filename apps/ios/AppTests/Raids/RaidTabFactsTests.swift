@@ -77,27 +77,47 @@ struct RaidTabFactsTests {
     @Test("G4: the cover names what is missing or short, and says nothing when all is covered")
     func cover() throws {
         let raid = try RaidFixture.raid()
-        let rows = raid.cover ?? []
-        let expected = rows.compactMap { row -> String? in
-            switch row.state {
-            case "missing": Copy.raidTabCoverMissing(name: row.name)
-            case "short": Copy.raidTabCoverShort(name: row.name, have: row.providersIn + row.providersLate, need: row.need)
-            default: nil
-            }
-        }
-        #expect(presenter.cover(raid) == (expected.isEmpty ? nil : expected.joined(separator: " · ")))
+        #expect(presenter.cover(raid) == "Missing Blessing of Kings, Blessing of Might, Blessing of Wisdom and 2 more")
         let covered = try edited(raid) { json in
             json["cover"] = (json["cover"] as? [[String: Any]] ?? []).map { var row = $0; row["state"] = "ok"; return row }
         }
         #expect(presenter.cover(covered) == nil)
-        let missing = try edited(raid) { json in
-            json["cover"] = (json["cover"] as? [[String: Any]] ?? []).enumerated().map { index, row in
-                var row = row
-                row["state"] = index == 0 ? "missing" : "ok"
-                return row
+    }
+
+    @Test("G4: one line, missing first, three names, one Missing, then and N more")
+    func coverLine() throws {
+        let raid = try RaidFixture.raid()
+        func with(_ states: [(String, String, Int)]) throws -> RaidView {
+            try edited(raid) { json in
+                let template = (json["cover"] as? [[String: Any]] ?? [])[0]
+                json["cover"] = states.enumerated().map { index, entry in
+                    var row = template
+                    row["key"] = "gap\(index)"
+                    row["name"] = entry.0
+                    row["state"] = entry.1
+                    row["providers_in"] = entry.2
+                    row["providers_late"] = 0
+                    row["need"] = 2
+                    return row
+                }
             }
         }
-        if let first = rows.first { #expect(presenter.cover(missing) == Copy.raidTabCoverMissing(name: first.name)) }
+        let windfury = ("Windfury Totem", "short", 1)
+        let fortitude = ("Power Word: Fortitude", "missing", 0)
+        let gaps = (1 ... 12).map { ("Gap \($0)", "missing", 0) }
+        let one = try with([windfury, fortitude])
+        let many = try with([windfury] + gaps)
+        let two = try with([windfury] + gaps.prefix(2))
+        #expect(presenter.cover(one) == "Missing Power Word: Fortitude · Windfury Totem 1 of 2")
+        #expect(presenter.cover(many) == "Missing Gap 1, Gap 2, Gap 3 and 10 more")
+        #expect(presenter.cover(two) == "Missing Gap 1, Gap 2 · Windfury Totem 1 of 2")
+    }
+
+    @Test("G4: without cover rows the line falls back to the buffs no one brings")
+    func coverFallback() throws {
+        let raid = try edited(try RaidFixture.raid()) { json in json["cover"] = NSNull() }
+        let missing = (raid.composition?.buffs ?? []).filter { !$0.present }.map(\.name)
+        #expect(presenter.cover(raid) == (missing.isEmpty ? nil : Copy.raidTabCoverMissing(names: missing.joined(separator: ", "))))
     }
 
     @Test("G1: officers see how many signed In have not synced; only for them, only when some have not")

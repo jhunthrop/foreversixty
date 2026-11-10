@@ -29,11 +29,30 @@ class RaidTabFactsTest {
 
     @Test fun `Covered names what is missing or short and is empty when all is covered`() {
         val windfury = requireNotNull(raid.cover).first().copy(state = "short", providersIn = 1, providersLate = 0, need = 2)
-        val short = raid.copy(cover = listOf(windfury))
-        assertTrue(requireNotNull(facts.covered(short)).startsWith("${windfury.name} 1 of 2"))
-        assertTrue(requireNotNull(facts.covered(raid)).contains("Missing Blessings"))
+        assertEquals("${windfury.name} 1 of 2", facts.covered(raid.copy(cover = listOf(windfury))))
         val all = raid.copy(cover = emptyList(), composition = raid.composition?.copy(buffs = emptyList()))
         assertNull(facts.covered(all))
+        val ok = raid.copy(cover = raid.cover?.map { it.copy(state = "ok") })
+        assertNull(facts.covered(ok))
+    }
+
+    @Test fun `Covered is one line - missing first, three names, one Missing, then and N more`() {
+        val rows = requireNotNull(raid.cover)
+        val fortitude = rows[1].copy(name = "Power Word: Fortitude", state = "missing")
+        val windfury = rows[0].copy(name = "Windfury Totem", state = "short", providersIn = 1, providersLate = 0, need = 2)
+        assertEquals("Missing Power Word: Fortitude · Windfury Totem 1 of 2", facts.covered(raid.copy(cover = listOf(windfury, fortitude))))
+        val missing = (1..12).map { rows[0].copy(key = "gap$it", name = "Gap $it", state = "missing") }
+        assertEquals("Missing Gap 1, Gap 2, Gap 3 and 10 more", facts.covered(raid.copy(cover = listOf(windfury) + missing)))
+        val twoMissing = missing.take(2)
+        assertEquals("Missing Gap 1, Gap 2 · Windfury Totem 1 of 2", facts.covered(raid.copy(cover = listOf(windfury) + twoMissing)))
+        assertEquals("Missing Blessing of Kings, Blessing of Might, Blessing of Wisdom and 2 more", facts.covered(raid))
+    }
+
+    @Test fun `without cover rows Covered falls back to the buffs nobody brings`() {
+        val buffs = requireNotNull(raid.composition).buffs.map { it.copy(present = it.key != "fortitude") }
+        val line = facts.covered(raid.copy(cover = emptyList(), composition = raid.composition?.copy(buffs = buffs)))
+        val name = buffs.first { it.key == "fortitude" }.name
+        assertEquals("Missing $name", line)
     }
 
     @Test fun `an officer sees who signed In without syncing this week, a member does not`() {

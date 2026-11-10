@@ -740,6 +740,7 @@
     <string name="notifications_officerDmsLine">When you have not answered a raid; off, they mention you in the channel</string>
     <string name="gear_onList" tools:ignore="PluralsCandidate">%1$d of %2$d slots match the list</string>
     <string name="gear_change">Change</string>
+    <string name="gear_error_title">We could not load this list</string>
     <string name="gear_whereTonight">Where to go tonight</string>
     <string name="gear_everySlot">Every slot</string>
     <string name="gear_worn">Equipped</string>

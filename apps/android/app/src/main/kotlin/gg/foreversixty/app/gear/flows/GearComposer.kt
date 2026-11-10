@@ -4,6 +4,7 @@ import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.bis.BisList
 import gg.foreversixty.app.bis.BisListBuilder
+import gg.foreversixty.app.bis.BisPhase
 import gg.foreversixty.app.bis.BisRow
 import gg.foreversixty.app.gear.RunPick
 import gg.foreversixty.app.items.ItemLook
@@ -53,6 +54,21 @@ data class GearContent(
 )
 
 /**
+ * Gear with no list to draw (round 2): the spec as the title, the line naming the list with Change (so
+ * the player can pick another), and one row: no published list, or `We could not load this list` with
+ * Try again ([retry]).
+ */
+data class GearNotice(
+    /** `Beast Mastery Hunter`. */
+    val title: String,
+    /** `30 to 39 · Horde`. */
+    val facts: String,
+    val row: String,
+    val sub: String? = null,
+    val retry: Boolean = false,
+)
+
+/**
  * Builds Gear from the BiS list on screen, the character's measured upgrades (Home's answer, for the
  * same list) and the picks [gg.foreversixty.app.gear.WhereToGo] placed at their sources.
  */
@@ -64,15 +80,30 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
         return GearContent(
             title = list.specLabel,
             figure = list.setFigure,
-            facts = listOf(list.rangeLabel, faction.replaceFirstChar { it.titlecase(Locale.US) }, onList)
-                .filter { it.isNotBlank() }
-                .joinToString(SEPARATOR),
+            facts = facts(list.rangeLabel, faction, onList),
             where = where(picks, list),
             slots = slots,
             unitWord = res.getString(list.unit.word),
             header = home?.let { header(it, res.getString(list.unit.word)) },
         )
     }
+
+    /** Gear's [GearNotice] for a [phase] with no list to draw; null while it loads or once it has one. */
+    fun notice(phase: BisPhase, title: String, rangeLabel: String, faction: String): GearNotice? {
+        val facts = facts(rangeLabel, faction)
+        return when (phase) {
+            is BisPhase.NoList -> GearNotice(title, facts, res.getString(R.string.home_answer_noList))
+            BisPhase.Failed -> GearNotice(title, facts, res.getString(R.string.gear_error_title), res.getString(R.string.home_error_sub), retry = true)
+            BisPhase.NotCached -> GearNotice(title, facts, res.getString(R.string.gear_error_title), res.getString(R.string.bis_notCached), retry = true)
+            BisPhase.Loading, is BisPhase.Loaded -> null
+        }
+    }
+
+    /** `60 raid · Alliance · 4 of 17 slots match the list`: the band, the faction, then what follows. */
+    private fun facts(rangeLabel: String, faction: String, vararg more: String): String =
+        (listOf(rangeLabel, faction.replaceFirstChar { it.titlecase(Locale.US) }) + more)
+            .filter { it.isNotBlank() }
+            .joinToString(SEPARATOR)
 
     /** The header line (round 2): the measured total and count, when the gear synced, the gains not modelled. */
     fun header(home: CharacterHome, unit: String): String? {

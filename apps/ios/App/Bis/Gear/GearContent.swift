@@ -20,6 +20,18 @@ struct GearContent: Equatable {
     let slots: [GearSlotRow]
 }
 
+/// Gear with no list to draw (round 2): the spec, the line naming the list with Change (so the player
+/// can pick another), and one row: no published list, or `We could not load this list` with Try again.
+struct GearNotice: Equatable {
+    /// `Beast Mastery Hunter`.
+    let title: String
+    /// `30 to 39 · Horde`, ended by Change.
+    let facts: String
+    let row: String
+    var sub: String?
+    var retry = false
+}
+
 /// An item a Gear row opens in the item sheet.
 struct GearItemRef: Equatable, Sendable {
     let itemID: Int

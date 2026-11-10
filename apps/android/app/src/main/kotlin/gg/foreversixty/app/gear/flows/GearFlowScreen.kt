@@ -5,6 +5,11 @@ import androidx.compose.foundation.layout.padding
 import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.designsystem.FsSpace
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import gg.foreversixty.app.designsystem.FsTarget
+import gg.foreversixty.app.flows.FlowBlock
+import gg.foreversixty.app.flows.FlowButton
+import gg.foreversixty.app.flows.FlowPanel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -35,6 +40,7 @@ import gg.foreversixty.app.items.ItemQuality
 
 data class GearActions(
     val onChange: () -> Unit = {},
+    val onRetry: () -> Unit = {},
     val onWhere: (GearWhereRow) -> Unit = {},
     val onSlot: (GearSlotRow) -> Unit = {},
 )
@@ -72,6 +78,29 @@ fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, po
                         meta = row.figure,
                     )
                 }
+            }
+        }
+    }
+}
+
+/**
+ * Gear with no list for the spec and band (round 2): the spec, the line naming the list with Change, and
+ * one row saying why, with Try again when the list did not load.
+ */
+@Composable
+fun GearNoticeScreen(notice: GearNotice, actions: GearActions, topBar: @Composable () -> Unit = {}) {
+    FlowBandPage(topBar) {
+        Column(Modifier.fillMaxWidth()) {
+            FlowHead(notice.title, emptyList())
+            Lead(notice.facts, null, actions.onChange)
+        }
+        FlowBlock(ParityRegion.section(if (notice.retry) "Error" else "Empty"), top = 0.dp) {
+            FlowPanel {
+                FlowRow(notice.row, notice.sub, last = true, trail = if (notice.retry) {
+                    { FlowButton(stringResource(R.string.common_tryAgain), actions.onRetry, Modifier.heightIn(min = FsTarget.min)) }
+                } else {
+                    null
+                })
             }
         }
     }

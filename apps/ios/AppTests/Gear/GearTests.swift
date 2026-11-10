@@ -231,6 +231,22 @@ struct GearLogicTests {
         #expect(line == "+102.5 DPS from 12 upgrades · 2 gains not modelled yet · synced 2 h ago")
     }
 
+    @Test("no list for the spec and band: the list line with Change and one row, never a blank page")
+    func notice() {
+        let selection = BisSelection(classSlug: "hunter", spec: "hunter-beast-mastery", range: BisRange(band: 30, preset: "bare"), faction: "horde")
+        let presenter = GearPresenter(context: BisContext(selection: selection, characterSelection: selection))
+        let title = "Beast Mastery Hunter"
+        #expect(presenter.notice(phase: .noList(offlineSince: nil), title: title) == GearNotice(
+            title: title, facts: "30 to 39 · Horde", row: "No best in slot list published yet for this spec and level range."
+        ))
+        let failed = presenter.notice(phase: .failed, title: title)
+        #expect(failed?.row == "We could not load this list")
+        #expect(failed?.sub == Copy.homeErrorLine)
+        #expect(failed?.retry == true)
+        #expect(presenter.notice(phase: .notCached, title: title)?.retry == true)
+        #expect(presenter.notice(phase: .loading, title: title) == nil)
+    }
+
     @Test("the counter reads how many slots match the list")
     func counterWords() {
         #expect(Copy.gearOnList(n: 0, total: 17) == "0 of 17 slots match the list")

@@ -207,22 +207,51 @@ struct RaidFlowPresenter {
         return parts.isEmpty ? nil : parts.joined(separator: Self.separator)
     }
 
-    /// G4: the cover rows that are missing or short, by name; else the buffs no one brings. Nil
-    /// when all is covered.
+    /// G4, one line a raid leader reads at a glance: the gaps nobody brings first, then the short ones,
+    /// at most `coverNames` names and `and N more` (`Missing Fortitude · Windfury Totem 1 of 2`,
+    /// `Missing Blessing of Kings, Blessing of Might, Judgement of Wisdom and 9 more`). Nil when all is
+    /// covered.
     func cover(_ raid: RaidView) -> String? {
-        let rows = raid.cover ?? []
-        let parts: [String] = rows.isEmpty
-            ? (raid.composition?.buffs ?? []).filter { !$0.present }.map { Copy.raidTabCoverMissing(name: $0.name) }
-            : rows.compactMap { row in
-                switch row.state {
-                case Self.coverMissing: Copy.raidTabCoverMissing(name: row.name)
-                case Self.coverShort: Copy.raidTabCoverShort(name: row.name, have: row.providersIn + row.providersLate, need: row.need)
-                default: nil
-                }
-            }
-        return parts.isEmpty ? nil : parts.joined(separator: Self.separator)
+        let all = Self.coverGaps(raid)
+        let gaps = all.filter { $0.have == nil } + all.filter { $0.have != nil }
+        guard !gaps.isEmpty else { return nil }
+        let shown = gaps.prefix(Self.coverNames)
+        let missing = shown.filter { $0.have == nil }.map(\.name)
+        let short = shown.compactMap { gap in gap.have.map { Copy.raidTabCoverShort(name: gap.name, have: $0, need: gap.need) } }
+        let line = [
+            missing.isEmpty ? nil : Copy.raidTabCoverMissing(names: missing.joined(separator: Self.list)),
+            short.isEmpty ? nil : short.joined(separator: Self.list),
+        ].compactMap(\.self).joined(separator: Self.separator)
+        let hidden = gaps.count - shown.count
+        return hidden > 0 ? Copy.raidTabAndMore(names: line, n: hidden) : line
     }
 
+    /// A gap in the cover: nobody brings `name` (`have` nil), or `have` of the `need` the raid wants.
+    struct CoverGap: Equatable {
+        let name: String
+        var have: Int?
+        var need = 0
+    }
+
+    /// The cover rows that are short or missing (In and Late against need), in the cover's order; a
+    /// raid without cover rows falls back to the buffs no one brings.
+    static func coverGaps(_ raid: RaidView) -> [CoverGap] {
+        let rows = raid.cover ?? []
+        guard !rows.isEmpty else {
+            return (raid.composition?.buffs ?? []).filter { !$0.present }.map { CoverGap(name: $0.name) }
+        }
+        return rows.compactMap { row in
+            switch row.state {
+            case coverMissing: CoverGap(name: row.name)
+            case coverShort: CoverGap(name: row.name, have: row.providersIn + row.providersLate, need: row.need)
+            default: nil
+            }
+        }
+    }
+
+    /// The most names the Covered line spells out before `and N more`.
+    static let coverNames = 3
+    static let list = ", "
     static let coverMissing = "missing"
     static let coverShort = "short"
     static let separator = " · "

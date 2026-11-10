@@ -708,6 +708,7 @@
 
     "gear.onList": {"text": "{n} of {total} slots match the list", "notPlural": true, "args": {"n": "int", "total": "int"}},
     "gear.change": "Change",
+    "gear.error.title": "We could not load this list",
     "gear.whereTonight": "Where to go tonight",
     "gear.everySlot": "Every slot",
     "gear.worn": "Equipped",
@@ -1686,7 +1687,7 @@
     "raid.tab.countOut": {"text": "Out {n}", "notPlural": true, "args": {"n": "int"}},
     "raid.tab.countNotAnswered": {"text": "{n} not answered", "notPlural": true, "args": {"n": "int"}},
     "raid.tab.notSynced": { "count": "n", "one": "1 signed In has not synced this week", "other": "{n} signed In have not synced this week" },
-    "raid.tab.coverMissing": "Missing {name}",
+    "raid.tab.coverMissing": "Missing {names}",
     "raid.tab.coverShort": {"text": "{name} {have} of {need}", "notPlural": true, "args": {"have": "int", "need": "int"}},
     "raid.answer.lateMinutes": {"text": "Late\u00a0·\u00a0{n}\u00a0min", "notPlural": true, "args": {"n": "int"}},
     "raid.na.title": "Not answered",
