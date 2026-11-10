@@ -21,7 +21,7 @@ test('a finished run shows the report under the run line, with no tab strip', as
 
   const report = page.getByTestId('sim-live-report');
   await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'result');
-  await expect(page.getByTestId('sim-answer-label')).toHaveText('Run in your browser');
+  await expect(page.getByTestId('sim-answer-label')).toHaveText('');
   await expect(page.getByTestId('sim-dps')).toHaveText(/^\s*\d[\d,]*\.\d\s*DPS\s*$/);
   await expect(report.getByTestId('sim-damage-card')).toBeVisible();
   await expect(report.getByTestId('sim-spread-card')).toBeVisible();

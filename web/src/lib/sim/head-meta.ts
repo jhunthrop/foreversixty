@@ -44,8 +44,10 @@ export interface HeadCharacter {
   source: CharacterSource;
 }
 
-/** Line 1 `{Race} {Spec} {Class} · Level {n} · {a/b/c} talents · item level {x}`, line 2 the source. */
-export function characterMeta(character: HeadCharacter, itemLevel: string | null): [string, string] {
+/** Line 1 `{Race} {Spec} {Class} · Level {n} · {a/b/c} talents · item level {x}`, line 2 the source.
+ *  The default says nothing: an addon export with no capture date has no source line, since the
+ *  line would only restate where a sim's gear comes from; a date, or any other source, keeps it. */
+export function characterMeta(character: HeadCharacter, itemLevel: string | null): readonly string[] {
   const race = raceWords(character.race);
   const split = talentSplit(character.talents);
   const spec = specLabel(character.spec);
@@ -53,8 +55,10 @@ export function characterMeta(character: HeadCharacter, itemLevel: string | null
     itemLevel === null
       ? copy.head.metaNoGear(race, spec, character.level, split)
       : copy.head.meta(race, spec, character.level, split, itemLevel);
+  const date = dayMonth(character.source.captured_at);
+  if (character.source.kind === 'addon' && date === null) return [line1.trim()];
   const from = copy.head.sourceKind[character.source.kind] ?? copy.head.sourceKind.manual;
-  return [line1.trim(), copy.head.source(from, dayMonth(character.source.captured_at))];
+  return [line1.trim(), copy.head.source(from, date)];
 }
 
 /** The title (ruling S1): the character's name, or the spec when the source carried none (a

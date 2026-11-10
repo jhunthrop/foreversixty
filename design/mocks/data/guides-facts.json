@@ -21,6 +21,7 @@
   "loadRaidBuildAriaLabel": "Load the raid build in the planner",
   "simRaidBuildAriaLabel": "Sim the raid build",
   "dataSourceLine": "[fn]",
+  "roleLabel": "[fn]",
   "headerMeta": "[fn]",
   "strengths": "Strengths",
   "weaknesses": "Weaknesses",
@@ -385,7 +386,6 @@
  "landings": {
   "hunter": {
    "title": "Hunter",
-   "identity": "Hunter is a pure damage class in Forever. All three specs deal damage, and they no longer play the same way: Beast Mastery shoots with a pet at its side, Marksmanship raids with no pet through Lone Wolf, and Survival fights in melee with no pet.",
    "sections": [
     {
      "heading": "What changed from 1.12",
@@ -406,21 +406,21 @@
      "name": "Beast Mastery",
      "role": "dps",
      "icon": "ability_hunter_beasttaming",
-     "line": "Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial Wrath is the burst, and your shots fill every gap."
+     "line": "DPS"
     },
     {
      "slug": "marksmanship",
      "name": "Marksmanship",
      "role": "dps",
      "icon": "ability_marksmanship",
-     "line": "Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Sniper Shot in a raid, Serpent Sting rolling. In a raid, no pet: Lone Wolf."
+     "line": "DPS"
     },
     {
      "slug": "survival",
      "name": "Survival",
      "role": "dps",
      "icon": "ability_hunter_swiftstrike",
-     "line": "Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet in a raid."
+     "line": "DPS"
     }
    ],
    "sources": [
@@ -459,7 +459,6 @@
   },
   "mage": {
    "title": "Mage",
-   "identity": "Mage is pure ranged damage with the best toolkit in the game around it: Polymorph, Counterspell, Frost Nova, Blink, Remove Lesser Curse, food and water for the group, teleports and portals to the capitals, and Arcane Brilliance for every caster in the raid.",
    "sections": [
     {
      "heading": "What changed from 1.12",
@@ -486,21 +485,21 @@
      "name": "Arcane",
      "role": "dps",
      "icon": "spell_holy_magicalsentry",
-     "line": "Arcane stacks Arcane Blast for spell damage, fires free Missiles on Missile Barrage and saves its burst for Arcane Power. In a raid it fills with Fireball; leveling, with Frostbolt."
+     "line": "DPS"
     },
     {
      "slug": "fire",
      "name": "Fire",
      "role": "dps",
      "icon": "spell_fire_firebolt02",
-     "line": "Fire casts a 3 second Fireball, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites."
+     "line": "DPS"
     },
     {
      "slug": "frost",
      "name": "Frost",
      "role": "dps",
      "icon": "spell_frost_frostbolt02",
-     "line": "Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, fires free Missiles on Missile Barrage, and has Ice Block when things go wrong."
+     "line": "DPS"
     }
    ],
    "sources": [
@@ -529,7 +528,6 @@
   },
   "priest": {
    "title": "Priest",
-   "identity": "Two healing specs and one shadow caster, as always. Shadow is also how a priest levels. What changed is how much every priest now carries.",
    "sections": [
     {
      "heading": "What changed from 1.12",
@@ -550,21 +548,21 @@
      "name": "Discipline",
      "role": "healer",
      "icon": "spell_holy_wordfortitude",
-     "line": "Discipline heals the tank with Penance on cooldown, a shield to open Renewed Hope, and crits that leave Divine Aegis shields behind."
+     "line": "Healer"
     },
     {
      "slug": "holy",
      "name": "Holy",
      "role": "healer",
      "icon": "spell_holy_guardianspirit",
-     "line": "Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, Greater Heal as the filler, and Prayer of Healing for a hurt group."
+     "line": "Healer"
     },
     {
      "slug": "shadow",
      "name": "Shadow",
      "role": "dps",
      "icon": "spell_shadow_shadowwordpain",
-     "line": "Shadow keeps two DoTs ticking, hits Mind Blast and Shadow Word: Death on cooldown, and fills with Mind Flay, all from Shadowform."
+     "line": "DPS"
     }
    ],
    "sources": [

@@ -5,7 +5,6 @@
      side (spec section 2.6) -- a 403 from that call IS the "you are not an officer" signal,
      read directly rather than re-derived from /v1/me client side. -->
 <script lang="ts">
-  import { GUILD_BANDLESS_TOP } from '../lib/guild/raid-layout';
   import { guildClaimHref, type CharacterPath } from '../lib/characters';
   import { fetchMeFresh, refetchMe, type Me, type MeGuild } from '../lib/account/api';
   import { onWindowFocus } from '../lib/data/query';
@@ -299,7 +298,7 @@
   </Section>
 {/snippet}
 
-<div class="reveal {embedded ? '' : GUILD_BANDLESS_TOP} flex flex-col" data-testid="guild-settings">
+<div class="reveal flex flex-col" data-testid="guild-settings">
   {#if embedded}
     <h2 class="sr-only">{guildSettingsCopy.heading}</h2>
   {:else}

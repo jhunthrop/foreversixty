@@ -1,7 +1,7 @@
 ---
 // web/src/pages/premium.astro
 // The plans page in the flat system (design/specs/2026-11-08-premium-account.md sections 4, 5):
-// the PageHeader (`Plans`, the lead, signed in the account's plan as the answer), the interval bar,
+// the PageHeader (`Plans`, signed in the account's plan as the answer), the interval bar,
 // the founder line and at most one state line, then the one Plate (Free and Premium, Premium first
 // on a phone), the guild plans, the rules and the questions open, and the sample coach review in
 // the rail. Static: both intervals and both founder states are in the DOM in fixed cells, and the
@@ -73,7 +73,7 @@ const guildPlans = [
     if (new URLSearchParams(location.search).get('interval') === 'monthly') root.dataset.iv = 'monthly';
   </script>
   <main id="main" tabindex="-1" class="plans-page" data-testid="plans-page">
-    <PageHeader title={copy.title} tone="strong" lead={copy.band.lede}>
+    <PageHeader title={copy.title} tone="strong">
       <div slot="answer" class="premium-answer-slot" data-premium-slot="answer"></div>
     </PageHeader>
     <ControlBar

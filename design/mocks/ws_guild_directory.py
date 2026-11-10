@@ -103,7 +103,7 @@ def claim():
     rules = '<ul class="dir-list">' + ''.join(f'<li>{r}</li>' for r in _CLAIM_RULES) + '</ul>'
     main = Section('Claim', state, panel=True, frame='framed') + Section('Next', nxt, panel=True)
     rail = Section('How claiming works', rules, panel=True)
-    head = f'<div class="pc"><a class="backlink" href="#">&lsaquo; {GUILD}</a></div>' + PageHeader(f'{GUILD} &middot; your claim')
+    head = PageHeader(f'{GUILD} &middot; your claim', crumb=f'<a href="#">&lsaquo; {GUILD}</a>')
     return build_page('Claim', _view(head + Page('split', main, rail, panels=True)) + _CSS, 'Guild', (D.CLAIMANT, 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 

@@ -16,8 +16,6 @@ sources:
     kind: community
 ---
 
-Warlock is a ranged caster that pays for mana with health through Life Tap, keeps a demon at its side, and stacks Shadow and Fire damage on the boss. Every spec shares one kit: Corruption, a bane, Immolate and Shadow Bolt, which Wrack replaces for Affliction and Incinerate for Destruction from 40.
-
 ## What changed from 1.12
 
 - **Banes and curses are two slots.** Curse of Agony is now Bane of Agony and Curse of Doom is Bane of Doom, with Bane of Havoc added. Each warlock keeps one bane and one curse on a target, so your own bane always goes up even when you hold the raid's curse.

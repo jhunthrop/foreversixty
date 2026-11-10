@@ -1,11 +1,13 @@
 <!-- web/src/components/sim/SimCharacterHead.svelte -->
 <!-- The /sim head with a character (spec 2026-11-06-sim §4.3, ruling S1): the ringed class crest,
      the character's name as the title, the meta line (race, spec, level, talents, item level) and
-     where the gear came from, the answer at the right, the tool tabs under it. There is no
+     where the gear came from, the answer at the right with its actions beside it, the tool tabs
+     under it. There is no
      "Change source": the header's selector changes the character (one way to switch). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import { classTone } from '../../lib/ui/primitives';
   import PageHeader from '../ui/PageHeader.svelte';
 
   let {
@@ -14,6 +16,7 @@
     lines,
     tabs,
     answer,
+    actions,
   }: {
     name: string;
     classSlug: string;
@@ -22,10 +25,12 @@
     /** The tool tabs (SimToolTabs): /sim only, never /sim/<id> (ruling S5). */
     tabs?: Snippet;
     answer: Snippet;
+    /** The answer's actions (save, open, the next tool), beside it on the head's row. */
+    actions?: Snippet;
   } = $props();
 </script>
 
-<PageHeader title={name} testid="sim-head" {answer} {tabs}>
+<PageHeader title={name} tone={classTone(classSlug)} testid="sim-head" {answer} {actions} {tabs}>
   {#snippet crest()}<ClassCrestRing
       characterClass={classSlug}
       size={56}

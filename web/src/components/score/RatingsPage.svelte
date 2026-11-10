@@ -80,19 +80,15 @@
         <span>{scoreCopy.explainerScoreCaption}</span><span>{scoreCopy.explainerRatingCaption}</span>
       {/snippet}
       {#snippet answer()}
-        <!-- the answer column holds 360 px from 900, as the mock's -->
-        <span class="hidden min-[900px]:block min-[900px]:w-[360px]" aria-hidden="true"></span>
-        <span class="text-label text-muted font-bold"
-          >{scoreCopy.samplePill} · {scoreCopy.explainerHeading}</span
-        >
-        <span
-          class="text-[36px] leading-10 font-bold tabular-nums"
-          style:color={TIER_COLOR[tier]}
-          data-testid="ratings-sample-score"
-          >{count(SAMPLE_SCORE.score)}<small class="text-muted ml-1 text-[13px] font-semibold"
-            >of {count(maxTotal)} · {tierName}</small
-          ></span
-        >
+        <Figure
+          label="{scoreCopy.samplePill} · {scoreCopy.explainerHeading}"
+          value={count(SAMPLE_SCORE.score)}
+          unit="of {count(maxTotal)} · {tierName}"
+          color={TIER_COLOR[tier]}
+          size="big"
+          align="end"
+          testid="ratings-sample-score"
+        />
         {#if gap}<span class="text-small text-muted"
             >{scoreCopy.mostToGainLead} {gap.part.label}{scoreCopy.mostToGainRest(gap.gap)}</span
           >{/if}

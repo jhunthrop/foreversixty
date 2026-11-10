@@ -22,8 +22,6 @@ sources:
     kind: community
 ---
 
-Paladin is the plate hybrid: one tree heals, one tanks with a shield, and one swings a two-hander. All three run on the same kit of Seals, Judgements and Blessings, and Forever reworked that kit from the ground up.
-
 ## What changed from 1.12
 
 - **Judgement no longer consumes your Seal.** You put a Seal up once every 30 seconds and Judge on cooldown. Old Seal twisting is dead: a new Seal just replaces the old one. Retribution's capstone, Unsealed Wrath, brings a new kind of swap back for raiders.

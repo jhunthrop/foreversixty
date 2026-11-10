@@ -154,7 +154,7 @@ const view = (me, key) => {
     // The delete dialog's field label: what this account types to confirm (its BattleTag, or "delete").
     deleteConfirm: accountPageCopy.deleteDialog.confirmLabel(confirmWordFor(me.user.battletag)),
     deleteWord: confirmWordFor(me.user.battletag),
-    answer: setupAnswer(me, null, NOW),
+    answer: setupAnswer(me, null),
     characters: me.characters.map((c) => ({ name: c.name, cls: (c.class ?? '').toLowerCase(), descriptor: characterDescriptor(c), guild: c.guild?.name ?? null,
       main: main?.key === c.key, source: c.build ? c.build.source : null, level: c.level ?? null })),
     imported: me.bnet_imported_at ? characterListCopy.updatedFrom(me.bnet_imported_at, NOW) : null,

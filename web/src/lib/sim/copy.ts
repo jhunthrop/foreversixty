@@ -340,6 +340,8 @@ export const simCopy = {
   specParse: 'parse',
   specParses: 'parses',
   specNoParses: 'No parses yet',
+  /** The head's Tag for a spec being corrected against parses (beside the result's error). */
+  specCalibrating: 'Calibrating',
   specWorstActions: 'Largest gaps',
   specCast: 'cast',
   specSimmed: 'simmed',

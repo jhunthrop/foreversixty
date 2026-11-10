@@ -46,8 +46,10 @@ export const guidesCopy = {
   /** The one data-source line, in the page's footer beside the Updated stamp, never in the reading flow. */
   dataSourceLine: (build: string): string =>
     `Numbers from client build ${build}, checked against launch logs as they come in.`,
+  roleLabel: (role: 'dps' | 'healer' | 'tank'): string =>
+    role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank',
   headerMeta: (role: 'dps' | 'healer' | 'tank', updated: string): string =>
-    `${role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank'} · Updated ${updated}`,
+    `${guidesCopy.roleLabel(role)} · Updated ${updated}`,
   strengths: 'Strengths',
   weaknesses: 'Weaknesses',
   inARaid: 'In a raid',

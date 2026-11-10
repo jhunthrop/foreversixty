@@ -121,20 +121,14 @@
 {/snippet}
 
 {#snippet header()}
-  <div>
-    <div>
-      <a
-        href={`${guildPath}#raids`}
-        class="text-muted inline-flex min-h-11 items-center text-[13px] underline"
-        data-testid="raid-back-link">{raidCopy.backLink(guildName)}</a
-      >
-    </div>
-    <PageHeader title={raid.title} tone={titleTone} {meta} {answer} testid="raid-head">
-      {#snippet tabs()}
-        <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
-      {/snippet}
-    </PageHeader>
-  </div>
+  <PageHeader title={raid.title} tone={titleTone} {meta} {answer} testid="raid-head">
+    {#snippet crumb()}<a href={`${guildPath}#raids`} data-testid="raid-back-link"
+        >{raidCopy.backLink(guildName)}</a
+      >{/snippet}
+    {#snippet tabs()}
+      <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
+    {/snippet}
+  </PageHeader>
 {/snippet}
 
 <!-- The log the night was read from: in the Attendance section once the report draws, alone under

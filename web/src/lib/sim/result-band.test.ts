@@ -10,6 +10,7 @@ import {
   bandHeading,
   buffsFact,
   savedDate,
+  savedDay,
   SPACED_SPLIT,
   talentSplit,
 } from './result-band';
@@ -69,6 +70,13 @@ describe('the band', () => {
     expect(facts(oldResult).saved).toBeUndefined();
     expect(savedDate(undefined)).toBeNull();
     expect(savedDate('not a date')).toBeNull();
+  });
+
+  it('the head says the save day, with its year only when it is not this year', () => {
+    const now = new Date('2026-11-09T12:00:00Z');
+    expect(savedDay('2026-11-04T10:00:00Z', now)).toBe('4 Nov');
+    expect(savedDay('2025-11-04T10:00:00Z', now)).toBe('4 Nov 2025');
+    expect(savedDay('', now)).toBeNull();
   });
 
   it('Buffs reads Raid only when the list equals the preset', () => {

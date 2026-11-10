@@ -15,14 +15,8 @@
   import { raceWords } from '../../lib/sim/head-meta';
   import { markSimSeenOnOpen } from '../../lib/sim/mark-seen-on-open';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
-  import { bandCopy, grouped } from '../../lib/sim/result-copy';
-  import {
-    bandHeading,
-    buffsFact,
-    savedDate,
-    talentSplit,
-    variationPercent,
-  } from '../../lib/sim/result-band';
+  import { bandCopy } from '../../lib/sim/result-copy';
+  import { bandHeading, buffsFact, savedDay, talentSplit, variationPercent } from '../../lib/sim/result-band';
   import { durationLabel } from '../../lib/sim/settings';
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import type { BisBenchmarks } from '../../lib/sim/bis-benchmark';
@@ -70,10 +64,7 @@
   $effect(() => {
     if (kind !== 'run') savedKindLazy.load();
   });
-  const model = $derived({
-    ...resultAnswer(result),
-    label: copy.answer.savedLabel(grouped(result.iterations_run)),
-  });
+  const model = $derived(resultAnswer(result));
 
   const lines = $derived.by(() => {
     const { character, encounter } = result.request;
@@ -92,7 +83,7 @@
       buffsWords,
       character.consumes.length,
     );
-    const saved = savedDate(result.created_at);
+    const saved = savedDay(result.created_at);
     return saved === null ? [line1] : [line1, copy.head.saved(saved)];
   });
 
@@ -126,22 +117,22 @@
     <SimCharacterHead name={bandHeading(result)} classSlug={result.request.character.class} {lines}>
       {#snippet answer()}
         <SimAnswer {model}>
-          {#snippet extra()}<SimFidelityCaption {fidelity} />{/snippet}
-          {#snippet actions()}
-            <Button tone="primary" size="sm" href={openHref} onclick={onrerun} testid="sim-run-yourself"
-              >{copy.answer.openInSim}</Button
-            >
-            <Button size="sm" onclick={() => void copier.copy(window.location.href)} testid="sim-saved-copy"
-              ><span aria-live="polite">{copyLabel}</span></Button
-            >
-          {/snippet}
+          {#snippet badge()}<SimFidelityCaption {fidelity} />{/snippet}
         </SimAnswer>
+      {/snippet}
+      {#snippet actions()}
+        <Button tone="primary" size="sm" href={openHref} onclick={onrerun} testid="sim-run-yourself"
+          >{copy.answer.openInSim}</Button
+        >
+        <Button size="sm" onclick={() => void copier.copy(window.location.href)} testid="sim-saved-copy"
+          ><span aria-live="polite">{copyLabel}</span></Button
+        >
       {/snippet}
     </SimCharacterHead>
     <RunReport {result} onrerun={openInSim} {initialNotes} {bisBenchmarks} />
   </div>
 {:else}
-  <div class="flex flex-col gap-[22px] pt-[22px] md:gap-8 md:pt-8">
+  <div class="flex flex-col gap-[22px] md:gap-8">
     {#if savedKindLazy.current}<savedKindLazy.current {result} onrerun={openInSim} />{/if}
   </div>
 {/if}

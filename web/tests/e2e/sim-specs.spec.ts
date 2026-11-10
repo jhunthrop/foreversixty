@@ -209,9 +209,9 @@ test.describe('the in-page fidelity note', () => {
     await expect(simCharacter(page)).toBeVisible();
 
     const note = page.getByTestId('sim-answer').getByTestId('spec-fidelity-note');
-    await expect(note).toContainText(simCopy.specNotYet);
+    await expect(note).toContainText(simCopy.specNoParses);
     await expect(note).toContainText(simCopy.specNotYetNote);
-    await expect(note.getByRole('link')).toHaveAttribute('href', '/sim/specs');
+    await expect(note.getByRole('link')).toHaveAttribute('href', /^\/sim\/specs#rogue-/);
     await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 15_000 });
     await expect(note).toContainText(simCopy.specNotYetNote);
   });

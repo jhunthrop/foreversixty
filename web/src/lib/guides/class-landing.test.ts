@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { cardLineFor, proseLabels, splitClassLanding } from './class-landing';
+import { proseLabels, splitClassLanding } from './class-landing';
 
 const GUIDES = fileURLToPath(new URL('../../content/guides/', import.meta.url));
 
@@ -15,20 +15,8 @@ const classDirs = readdirSync(GUIDES, { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name);
 
-describe('cardLineFor', () => {
-  it('fails on a spec guide with no Overview', () => {
-    expect(() => cardLineFor('## Talents and builds\n\nx', 'x.md')).toThrow(/no ## Overview/);
-  });
-
-  it('fails on a line too long for a phone card', () => {
-    expect(() => cardLineFor(`## Overview\n\n${'Long words. '.repeat(20)}`, 'x.md')).toThrow(/over 200/);
-  });
-});
-
 describe('splitClassLanding', () => {
-  const BODY = `Hunter is the class with a pet.
-
-## What changed from 1.12
+  const BODY = `## What changed from 1.12
 
 - **Pets** are reworked.
 
@@ -36,9 +24,8 @@ describe('splitClassLanding', () => {
 
 Skyborne can be hunters.`;
 
-  it('splits the identity from the sections', () => {
+  it('splits the sections', () => {
     const landing = splitClassLanding(BODY, 'x.md');
-    expect(landing.identity).toBe('Hunter is the class with a pet.');
     expect(landing.sections).toEqual([
       { heading: 'What changed from 1.12', markdown: '- **Pets** are reworked.' },
       { heading: 'Races', markdown: 'Skyborne can be hunters.' },
@@ -46,24 +33,20 @@ Skyborne can be hunters.`;
   });
 
   it('fails on a heading outside the vocabulary', () => {
-    expect(() => splitClassLanding('Id.\n\n## The three specs\n\n- a', 'x.md')).toThrow(
+    expect(() => splitClassLanding('## The three specs\n\n- a', 'x.md')).toThrow(
       /not a class landing heading/,
     );
   });
 
   it('fails on headings out of order', () => {
-    expect(() =>
-      splitClassLanding('Id.\n\n## Races\n\na\n\n## What changed from 1.12\n\n- b', 'x.md'),
-    ).toThrow(/out of order/);
+    expect(() => splitClassLanding('## Races\n\na\n\n## What changed from 1.12\n\n- b', 'x.md')).toThrow(
+      /out of order/,
+    );
   });
 
-  it('fails on an identity with Markdown in it', () => {
-    expect(() => splitClassLanding('The **hunter** shoots.\n\n## Races\n\na', 'x.md')).toThrow(/plain text/);
-  });
-
-  it('fails on an identity of two paragraphs', () => {
-    expect(() => splitClassLanding('One.\n\nTwo.\n\n## Races\n\na', 'x.md')).toThrow(
-      /more than one paragraph/,
+  it('fails on an intro paragraph before the first heading (no "<Class> is the <noun>" blurb)', () => {
+    expect(() => splitClassLanding('Hunter is the class with a pet.\n\n## Races\n\na', 'x.md')).toThrow(
+      /no intro paragraph/,
     );
   });
 });
@@ -74,18 +57,9 @@ describe('every class landing keeps the shape', () => {
   });
 
   for (const classSlug of classDirs) {
-    it(`${classSlug}: identity, then What changed from 1.12, then Races`, () => {
+    it(`${classSlug}: no intro, then What changed from 1.12, then Races`, () => {
       const landing = splitClassLanding(bodyOf(join(GUIDES, classSlug, 'index.md')), `${classSlug}/index.md`);
       expect(landing.sections.slice(0, 2).map((s) => s.heading)).toEqual(['What changed from 1.12', 'Races']);
-    });
-
-    it(`${classSlug}: every spec card line says how the spec plays, in one card-sized line`, () => {
-      const specFiles = readdirSync(join(GUIDES, classSlug)).filter(
-        (f) => f.endsWith('.md') && f !== 'index.md',
-      );
-      for (const file of specFiles) {
-        expect(() => cardLineFor(bodyOf(join(GUIDES, classSlug, file)), file)).not.toThrow();
-      }
     });
   }
 });

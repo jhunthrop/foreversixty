@@ -1,9 +1,10 @@
 ---
 // web/src/components/bis/BisLandingAnswer.astro
-// The /bis landing's head answer (design/specs/2026-11-07-bis-landing.md section 3): the shared
-// ui/CharacterAnswer (crest at the outer edge) with its figure, how many of the character's range's
-// best-in-slot pieces it wears over a Meter and the note naming the slots that range has no pick
-// for. Reserved at its final size while the account loads when a session is hinted (no reserve
+// The /bis landing's head answer (design/specs/2026-11-07-bis-landing.md section 3), on the head's
+// compact contract (ui/PageHeader): the shared ui/CharacterAnswer with its figure, how many of the
+// character's range's best-in-slot pieces it wears beside a Meter, and one short line under them:
+// the slots that range has no pick for (or, after an old sync, that the count is from it). The
+// caption is the figure's tooltip; the header selector and the "Yours" row say whose it is. Reserved at its final size while the account loads when a session is hinted (no reserve
 // signed out), then painted by lib/bis/landing-answer-mount.ts from the header selector's
 // character; the page script (lib/bis/landing-client.ts) boots it.
 import CharacterAnswer from '../ui/CharacterAnswer.svelte';
@@ -15,13 +16,7 @@ import { ANSWER_ID } from '../../lib/bis/landing-answer-mount';
 
 <CharacterAnswer label={landingCopy.answerLabel} id={ANSWER_ID} testid="bis-answer" crest="end">
   <Fragment slot="figure">
-    <Figure
-      value="0"
-      unit={landingCopy.countUnit(0)}
-      caption={landingCopy.countLabel}
-      align="end"
-      testid="bis-answer-figure"
-    />
+    <Figure value="0" unit={landingCopy.countUnit(0)} align="end" testid="bis-answer-figure" />
     <Meter value={0} testid="bis-answer-meter" />
     <span class="text-small text-muted" data-field="note" data-testid="bis-answer-note" hidden></span>
   </Fragment>

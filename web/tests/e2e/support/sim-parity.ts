@@ -160,7 +160,7 @@ let derived: Promise<void> | undefined;
  * stand-in: seven warrior items, a fixture talent tree), and the simnames files the site derives
  * at sync time are derived from it the same way (scripts/sync-data.mjs `writeSimNames`).
  */
-async function serveMockData(page: Page): Promise<void> {
+export async function serveMockData(page: Page): Promise<void> {
   derived ??= (async () => {
     mkdirSync(DERIVED_DIR, { recursive: true });
     await writeSimNames(REAL_BUILD_DIR, DERIVED_DIR);

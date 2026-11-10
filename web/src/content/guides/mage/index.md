@@ -19,8 +19,6 @@ sources:
     kind: community
 ---
 
-Mage is pure ranged damage with the best toolkit in the game around it: Polymorph, Counterspell, Frost Nova, Blink, Remove Lesser Curse, food and water for the group, teleports and portals to the capitals, and Arcane Brilliance for every caster in the raid.
-
 ## What changed from 1.12
 
 Forever keeps that whole kit and rebuilds the three trees underneath, so a 1.12 mage will recognise the spells and still have to relearn the rotation.

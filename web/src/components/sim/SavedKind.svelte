@@ -31,6 +31,7 @@
   } from '../../lib/sim/character';
   import { bulkCopy, simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
+  import { savedDay } from '../../lib/sim/result-band';
   import type { AnswerModel } from '../../lib/sim/answer';
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { gameCodeForSimResult } from '../../lib/sim/game-code';
@@ -65,9 +66,9 @@
   const encounterText = $derived(encounterLabel(result.request.encounter, buffed));
   // The request's own capture time is the only timestamp a SimResult carries; an absent one
   // (an empty string) is not turned into a fabricated date.
-  const savedDate = $derived(result.request.source.captured_at.slice(0, 10));
+  const savedOn = $derived(savedDay(result.request.source.captured_at));
   const headLines = $derived(
-    savedDate === '' ? [encounterText] : [encounterText, simPageCopy.head.saved(savedDate)],
+    savedOn === null ? [encounterText] : [encounterText, simPageCopy.head.saved(savedOn)],
   );
 
   // Kind is derived from the stored request, never sent and never stored twice (contract
@@ -105,7 +106,7 @@
     figure: hasFigure ? { value: grouped(result.dps.mean), tone: 'gold', unit: true } : undefined,
     caption:
       hasFigure && result.dps.error > 0
-        ? { bold: `± ${formatMargin(confidenceBand(result.dps))} (95%)` }
+        ? { bold: `± ${formatMargin(confidenceBand(result.dps))} DPS` }
         : undefined,
     primary: 'run-again',
   });
@@ -290,17 +291,16 @@
 <div data-testid="sim-saved-header">
   <SimCharacterHead name={heading} classSlug={result.request.character.class} lines={headLines}>
     {#snippet answer()}
-      <SimAnswer model={answerModel}>
-        {#snippet actions()}
-          <Button tone="primary" size="sm" onclick={onrerun} testid="sim-run-yourself"
-            >{simPageCopy.answer.openInSim}</Button
-          >
-          <Button size="sm" onclick={() => void copyLink()} testid="sim-saved-copy"
-            ><span aria-live="polite">{copied ? simPageCopy.answer.copied : simPageCopy.answer.copyLink}</span
-            ></Button
-          >
-        {/snippet}
-      </SimAnswer>
+      <SimAnswer model={answerModel} />
+    {/snippet}
+    {#snippet actions()}
+      <Button tone="primary" size="sm" onclick={onrerun} testid="sim-run-yourself"
+        >{simPageCopy.answer.openInSim}</Button
+      >
+      <Button size="sm" onclick={() => void copyLink()} testid="sim-saved-copy"
+        ><span aria-live="polite">{copied ? simPageCopy.answer.copied : simPageCopy.answer.copyLink}</span
+        ></Button
+      >
     {/snippet}
   </SimCharacterHead>
 </div>

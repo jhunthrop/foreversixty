@@ -12,13 +12,13 @@ const regions = (doc: Document): string[] =>
   [...doc.querySelectorAll('main [data-region]')].map((el) => el.getAttribute('data-region') ?? '');
 
 describe('the plans page in the flat system', () => {
-  it('names itself Plans once, in the one page title, with the lead and no slogan or eyebrow', async () => {
+  it('names itself Plans once, in the one page title, with no lead, slogan or eyebrow', async () => {
     const doc = await renderPremium();
     const titles = doc.querySelectorAll('main h1');
     expect(titles).toHaveLength(1);
     expect(titles[0]?.textContent?.trim()).toBe(plansPageCopy.title);
     const text = doc.querySelector('main')?.textContent ?? '';
-    expect(text).toContain(plansPageCopy.band.lede);
+    expect(text).not.toContain(plansPageCopy.band.lede);
     expect(text).not.toContain(plansPageCopy.band.heading);
   });
 

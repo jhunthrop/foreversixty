@@ -39,10 +39,8 @@ FRAME_LINE = 'rgba(243,238,226,.42)'  # web --color-frame-line
 GUILD_SIM_TAIL = re.compile(r', #(\d+) of (\d+) DPS in [^,(]+ \([^)]*\)$')  # web lib/home/feed.ts homeRows
 HOME_CSS = f'''
 .ph-meta .t-small+.t-small::before{{content:none}}
-.band-r5 .head{{min-height:120px;box-sizing:content-box}}
 .pad16{{padding:16px}}
-.head-sk{{display:flex;flex-direction:column;gap:12px;padding-block:20px 16px;min-height:118px;justify-content:flex-end}}
-.hans{{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-height:40px}}
+.hans{{display:flex;flex-direction:column;align-items:inherit;gap:2px}}.hans .link{{font-size:13px}}
 .hgrid{{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"lead" "rail" "feed" "foot";align-items:start;gap:var(--gap);padding-top:28px}}
 .hgrid>div{{min-width:0}}.hg-lead{{grid-area:lead}}.hg-feed{{grid-area:feed}}.hg-rail{{grid-area:rail;display:flex;flex-direction:column;gap:var(--gap)}}.hg-foot{{grid-area:foot}}
 @media(min-width:1100px){{.hgrid{{grid-template-columns:minmax(0,1fr) 400px;grid-template-areas:"lead lead" "feed rail" "foot foot"}}}}
@@ -349,7 +347,9 @@ def who_line(char: dict) -> str:
 def head_in(char: dict, home: dict) -> str:
     cls = char['class'].lower()
     sim = home['import_sim']
-    answer = f'<div class="hans"><span class="fig"><span class="v">{sim["dps"]:,.1f}<small>DPS</small></span></span></div>'
+    hours = int((NOW - datetime.fromisoformat(sim['simmed_at'].replace('Z', '+00:00'))).total_seconds() // 3600)
+    line = f'<a class="link" href="/sim/{sim["sim_id"]}">Sim {hours} h ago &rsaquo;</a>' if sim.get('sim_id') else ''
+    answer = f'<div class="hans"><span class="fig"><span class="v">{sim["dps"]:,.1f}<small>DPS</small></span></span>{line}</div>'
     return PageHeader(char['name'], CLASS_COLOR[cls], crest_img(cls, 48), [who_line(char)], answer)
 
 
@@ -462,7 +462,10 @@ def state_new() -> str:
 
 
 def state_loading() -> str:
-    head = f'<div class="pc"><div data-region="{REGION["head"]}" class="head-sk" role="status" aria-busy="true">{Skeleton(48, 48, True)}{Skeleton(280, 28)}</div></div>'
+    # The loading head is the PageHeader, pending on the hero (HomeSignedIn.svelte): the crest skeleton, the title's skeleton
+    # (the h1 a screen reader's: lib/home/home-view.ts loadingTitle), the whole head one status.
+    head = (f'<div role="status" style="display:contents">'
+            f'{PageHeader("Loading your character", crest=Skeleton(48, 48, True), pending=True)}</div>')
     return head + grid('<span class="skel lead-sk" aria-hidden="true"></span>', sec('Latest on Forever', FeedSkeleton(FLOOR_MIN)))
 
 

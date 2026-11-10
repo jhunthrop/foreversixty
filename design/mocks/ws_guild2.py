@@ -4,7 +4,7 @@ In / Late / Bench, loot candidates, readiness, attendance, raid report). Modules
 """
 from ws_prims import *  # noqa: F403
 from ws_prims import (Page, PageHeader, Section, Plate, Rows, Row, Figures, Figure, Meter, Tag, Button, Link, TabStrip, Select, Notice, Segmented, Grid, Tally,
-                      Checklist, Votes, Gap, build_page, crest_img, icon, write, Emblem, RowGroup, Prose, control_bar, seg, BackLink, SignupRow, ButtonRow,
+                      Checklist, Votes, Gap, build_page, crest_img, icon, write, Emblem, RowGroup, Prose, control_bar, seg, SignupRow, ButtonRow,
                       SpellIcon, DisclosureButton, VoteButtons, Toggle, Entries, Inspector, Live, Split, RowsSlim, Disclosure, ItemRow)
 
 from datetime import datetime
@@ -294,9 +294,9 @@ def raid_planner(edited=None):
             + Section(f"{enc['name']} assignments", assign, meta=f'Your job: {yours}', named=True, panel=True)
             + Section('Notes', Prose(raid['notes_html'], 'note'), named=True, panel=True))
     actions = ''.join(Button(x, small=True, act=True) for x in ['Edit', 'Lock sign-ups', 'Copy the sign-up list']) + Button('Cancel raid', small=True, tone='ghost', act=True)
-    head = (BackLink(f'&lsaquo; {GUILD} &middot; Raids')
-            + PageHeader(raid['title'], ALLIANCE, meta=[Tag('Planned'), raid_when(raid), f"<b class=\"strong\">{signed} of {raid['size']} signed up</b> &middot; {n['in']} In &middot; {n['late']} Late &middot; {n['bench']} Bench"],
-                         actions=actions, tabs=TabStrip(TABS, 'Raids')))
+    # The way back is the head's crumb, on the band above the title (the one head contract).
+    head = (PageHeader(raid['title'], ALLIANCE, meta=[Tag('Planned'), raid_when(raid), f"<b class=\"strong\">{signed} of {raid['size']} signed up</b> &middot; {n['in']} In &middot; {n['late']} Late &middot; {n['bench']} Bench"],
+                         actions=actions, tabs=TabStrip(TABS, 'Raids'), crumb=f'<a href="#">&lsaquo; {GUILD} &middot; Raids</a>'))
     # The guild route's <main> ends 40 px under its view (pages/guild/[...path].astro pb-10).
     body = f'<div style="padding-bottom:40px">{head + bar + Page("split", main, rail, sticky_rail=True, panels=True)}</div>{GUILD_CSS}'
     return build_page('Raid planner, assignments' if edited else 'Raid planner', body, 'Guild', (guild_raid.VIEWER, you['class'], f"{you['spec']} {you['class'].title()} &middot; 60"))
@@ -392,9 +392,9 @@ def raid_report():
     rail = Section('Attendance', att) + Section('Loot awarded', _section_body(lootr)) + Section('Discord summary', _section_body(discord))
     h = rep['headline']
     fig = Figures([(str(h['kills']), 'Kills', '', 'kill'), (str(h['wipes']), 'Wipes', '', 'wipe'), (str(h['attempts']), 'Attempts', '', ''), (str(h['deaths']), 'Deaths', '', '')])
-    # One raid page: the back link and the guild tabs as the planner's (raid_planner).
-    head = BackLink(f'&lsaquo; {GUILD} &middot; Raids') + PageHeader(raid['title'], ALLIANCE, meta=[Tag('Done', 'muted'), rd.when_line(raid)], answer=fig,
-                                                                  tabs=TabStrip(TABS, 'Raids'))
+    # One raid page: the crumb back and the guild tabs as the planner's (raid_planner).
+    head = PageHeader(raid['title'], ALLIANCE, meta=[Tag('Done', 'muted'), rd.when_line(raid)], answer=fig,
+                      tabs=TabStrip(TABS, 'Raids'), crumb=f'<a href="#">&lsaquo; {GUILD} &middot; Raids</a>')
     return build_page('Raid report', _view(head + Page('split', main, rail, sticky_rail=True)), 'Guild',
                       (rd.VIEWER, viewer[1], f'{viewer[2]} {viewer[1].title()} &middot; 60'))
 

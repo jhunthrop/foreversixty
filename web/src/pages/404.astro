@@ -35,7 +35,7 @@ const pages = knownPages(
 <Base title={notFoundCopy.docTitle} description={notFoundCopy.description} path="/404" wide>
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="not-found">
     <Page layout="ledger" testid="not-found-body">
-      <PageHeader slot="header" title={notFoundCopy.title} lead={notFoundCopy.job}>
+      <PageHeader slot="header" title={notFoundCopy.title}>
         <span slot="meta" id="nf-path" class="nf-path" data-testid="nf-path"></span>
         <CharacterAnswer slot="answer" label={guidesCopy.answerLabel} id="nf-answer" testid="nf-answer" />
       </PageHeader>

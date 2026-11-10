@@ -19,8 +19,6 @@ sources:
     kind: community
 ---
 
-Shaman is the totem class: a caster, a melee fighter and a healer who all bring four totems to the group whatever their spec.
-
 ## What changed from 1.12
 
 - **One weapon, never two.** Forever's shamans do not dual wield. Enhancement fights with a two-hander, or a one-hander with a shield or a held off-hand item, and your weapon imbue goes on that one weapon. Shamans train fist weapons, and they wear leather until 40 and can wear mail from 40.

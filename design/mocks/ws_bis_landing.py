@@ -35,33 +35,39 @@ def rsaquo(text: str) -> str:
 
 # ------------------------------------------------------------------------------------------------ the head's answer
 def answer(acct: dict | None, loading: bool = False) -> str:
-    """ui/CharacterAnswer with its figure: the character, the count Figure over a Meter (or the sentence in its place), the one
-    sentence-case Button. loading: the reserve (the session is hinted, /v1/me in flight)."""
-    lab = f'<span class="t-label">{e(C["answerLabel"])}</span>'
+    """ui/CharacterAnswer with its figure, on the head's compact contract (ui/PageHeader): the label and the who row are a
+    screen reader's (the header selector and the "Yours" row say whose it is); the count Figure beside a Meter, one short
+    line under them (the no-pick note, no full stop), the one sentence-case Button to their left from 900. loading: the
+    reserve (the session is hinted, /v1/me in flight)."""
+    lab = f'<span class="sr-only">{e(C["answerLabel"])}</span>'
     if loading:
-        return (f'<div class="ans-box bl-ans" aria-busy="true">{lab}<span class="ans-row">{Skeleton(40, 40, True)}<span class="ans-who">'
-                f'{Skeleton(150, 22)}{Skeleton(190, 16)}</span></span><span class="bl-fig">{Skeleton(160, 40)}{Skeleton(220, 8)}</span>'
-                f'{Skeleton(240, 44)}</div>')
+        return (f'<div class="bl-ans" aria-busy="true">{lab}<span class="bl-sk">{Skeleton(150, 22)}{Skeleton(190, 16)}</span>'
+                f'<span class="bl-fig">{Skeleton(120, 32)}<span class="bl-skbar">{Skeleton(226, 6)}</span></span>'
+                f'<span class="bl-links">{Skeleton(240, 44)}</span></div>')
     a = acct['answer']
     if a['state'] == 'none':
-        return f'<div class="ans-box bl-ans">{lab}<span class="t-small">{e(a["message"])}</span><span class="ans-links">{Link(rsaquo(a["link"]["label"]))}</span></div>'
+        return (f'<div class="bl-ans">{lab}<span class="t-small">{e(a["message"])}</span>'
+                f'<span class="bl-links">{Link(rsaquo(a["link"]["label"]))}</span></div>')
     if a['state'] == 'error':
-        return f'<div class="ans-box bl-ans">{lab}<span class="t-small" role="alert">{e(a["message"])}</span>{Button(e(a["retry"]), act=True, tone="ghost")}</div>'
+        return (f'<div class="bl-ans">{lab}<span class="t-small" role="alert">{e(a["message"])}</span>'
+                f'<span class="bl-links"><button type="button" class="link">{e(a["retry"])}</button></span></div>')
     ch = a['character']
     color = CLASS_COLOR.get(ch['classSlug'], '#f2eee4')
-    who = (f'<span class="ans-row">{crest_img(ch["classSlug"], 40)}<span class="ans-who"><b class="ans-name" style="color:{color}">{e(ch["name"])}</b>'
-           f'<span class="t-small">{e(ch["line"])}</span></span></span>')
+    who = (f'<span class="sr-only">{crest_img(ch["classSlug"], 40)}<b style="color:{color}">{e(ch["name"])}</b>'
+           f'<span class="t-small">{e(ch["line"])}</span></span>')
     body = a['body']
     if body['kind'] == 'count':
-        fig = Figure(str(body['worn']), unit=e(body['unit'])).replace('</span></div>', f'</span><span class="fcap">{e(body["caption"])}</span></div>', 1)
-        note = f'<span class="t-small">{e(body["note"])}</span>' if body.get('note') else ''
-        mid = f'<span class="bl-fig">{fig}{Meter(body["bar"])}{note}</span>'
+        note = body.get('note')
+        line = f'<span class="t-small bl-note">{e(note.removesuffix("."))}</span>' if note else ''
+        mid = f'<span class="bl-fig">{Figure(str(body["worn"]), unit=e(body["unit"]))}{Meter(body["bar"])}{line}</span>'
     elif body['kind'] == 'failed':
-        mid = f'<span class="t-small" role="alert">{e(body["text"])}</span>{Button(e(body["retry"]), act=True, tone="ghost")}'
+        mid = f'<span class="t-small" role="alert">{e(body["text"])}</span>'
     else:
         mid = f'<span class="t-small">{e(body["text"])}</span>'
     link = Link(rsaquo(body['link']['label'])) if body['kind'] == 'sentence' and body.get('link') else ''
-    return f'<div class="ans-box bl-ans">{lab}{who}{mid}<span class="ans-links">{link}{Button(e(a["action"]["label"]), primary=True)}</span></div>'
+    retry = Button(e(body['retry']), act=True, tone='ghost') if body['kind'] == 'failed' else ''
+    counted = ' counted' if body['kind'] == 'count' else ''
+    return f'<div class="bl-ans{counted}">{lab}{who}{mid}<span class="bl-links">{link}{retry}{Button(e(a["action"]["label"]), primary=True)}</span></div>'
 
 
 # ------------------------------------------------------------------------------------------------ the page
@@ -85,9 +91,9 @@ def finished_line() -> str:
     """The finished server sim (components/character/FinishedSimLine.svelte, as shipped): the sentence and Open result as one
     link on a line with a 2 px gold edge (no box), a dismiss."""
     f = F['finished']
-    return (f'<div class="pc"><div class="bl-done" role="status"><a href="#"><span>{e(f["prefix"])}<span class="num strong">{e(f["figure"])}</span></span>'
+    return (f'<div class="bl-done" role="status"><a href="#"><span>{e(f["prefix"])}<span class="num strong">{e(f["figure"])}</span></span>'
             f'<span class="gold link">{e(f["open"])}</span></a><button type="button" class="bl-x" aria-label="{e(f["dismiss"])}">'
-            f'<span aria-hidden="true">{X_GLYPH}</span></button></div></div>')
+            f'<span aria-hidden="true">{X_GLYPH}</span></button></div>')
 
 
 def classes(yours: str = '') -> str:
@@ -103,14 +109,15 @@ def landing(state: str) -> str:
     selected = int(state.split('-')[1]) if state.startswith('out-') else (acct or {}).get('band') or 20
     ans = '' if signed_out else answer(acct, loading=state == 'loading')
     meta = [f'Updated {e(F["updated"])}'] if F['updated'] else None
-    head = PageHeader(e(C['title']), '', '', meta, ans)
+    # The finished sim line is the head's notice (bis/index.astro); an empty slot takes no room.
+    notice = finished_line() if state == 'sim' else ''
+    head = PageHeader(e(C['title']), '', '', meta, ans, notice=notice)
     yours = ''
     if acct and acct['answer']['state'] == 'ready':
         me = F['me'].get(state)
         ch = me['characters'][0] if me else None
         yours = f"{ch['class'].lower()}-{ch['spec'].lower().replace(' ', '-')}" if ch else ''
-    done = finished_line() if state == 'sim' else ''
-    body = head + done + band_bar(selected) + Page('ledger', summary(selected) + f'<div id="bis-classes">{classes(yours)}</div>') + PAGE_CSS
+    body = head + band_bar(selected) + Page('ledger', summary(selected) + f'<div id="bis-classes">{classes(yours)}</div>') + PAGE_CSS
     who = None
     if acct and acct['answer']['state'] == 'ready':
         ch = acct['answer']['character']
@@ -123,21 +130,31 @@ def landing(state: str) -> str:
 
 
 PAGE_CSS = '''<style>
-/* page-level layout only (no surfaces): the answer's inner rows, the summary line, the finished-sim line */
-.ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}
-.ans-links{display:flex;gap:4px 16px;flex-wrap:wrap;padding-top:4px}
-.bl-fig{display:flex;flex-direction:column;gap:6px;min-width:0;width:100%;max-width:380px}.fcap{font-size:12px;line-height:16px;color:var(--muted)}
-@media(min-width:900px){.ans-row{flex-direction:row-reverse}.ans-who{align-items:flex-end}.ans-links{justify-content:flex-end}.bl-fig{align-items:flex-end}
-.bl-fig .meter{width:100%}.bl-fig .fig{align-items:flex-end}}
-.ans-box.bl-ans{min-height:224px}
+/* page-level layout only (no surfaces): the answer's inner rows (web ui/CharacterAnswer with a figure), the summary line */
+.bl-ans{display:flex;flex-direction:column;gap:6px;min-width:0;min-height:120px}
+.bl-sk{display:none}
+.bl-fig{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;width:100%;max-width:380px}
+.bl-fig .meter,.bl-skbar{flex:1 0 100%;height:6px;min-width:60px}.bl-skbar .skel{display:block;width:100%!important;height:6px!important}
+.bl-fig .meter{background:rgba(255,255,255,.16)}.bl-fig .meter>i{background:var(--accent)}
+.bl-note{flex:1 0 100%}
+.bl-links{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px}.bl-links button.link{font-size:15px;line-height:24px}
+@media(min-width:900px){
+.bl-ans{min-width:380px;min-height:56px;align-items:flex-end;text-align:right}.bl-links{justify-content:flex-end}
+.bl-ans>.bl-links{margin-top:-2px}
+/* the figure's grid only while the figure shows: the skeleton, a sentence, message or error state stays the flex column */
+.bl-ans.counted{display:grid;grid-template-columns:auto auto;column-gap:20px;row-gap:6px;align-items:start;justify-items:end}
+.bl-ans.counted>*{grid-column:2}.bl-ans.counted>.bl-links{grid-column:1;grid-row:1}
+.bl-fig{width:360px;flex-direction:row-reverse}.bl-fig .meter,.bl-skbar{flex:1 1 140px}.bl-note{text-align:right}
+.bl-fig .fig{align-items:flex-end}}
 .bl-sum{padding:0 0 16px}
-.bl-done{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0 0 0 22px;margin-bottom:12px;font-size:13px}
+.bl-done{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0 0 0 22px;font-size:13px}
 .bl-done{box-shadow:inset 2px 0 0 var(--gold)}
 .bl-done a{display:inline-flex;flex-wrap:wrap;gap:0 6px;align-items:center;min-height:44px;color:var(--text)}
 .bl-x{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;background:none;color:var(--muted);cursor:pointer}
 main{padding-bottom:40px}  /* the page's own bottom space (index.astro .bis-landing) */
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
 </style>'''
+
 
 MOCKS = {
     'web-bis-landing': lambda: landing('out'),

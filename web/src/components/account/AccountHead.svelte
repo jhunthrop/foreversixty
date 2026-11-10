@@ -16,13 +16,11 @@
 
   let {
     me = null,
-    now = new Date(),
     busy = false,
     onSignOut,
   }: {
     /** The signed-in account; null draws the title alone. */
     me?: Me | null;
-    now?: Date;
     busy?: boolean;
     onSignOut?: () => void;
   } = $props();
@@ -32,8 +30,7 @@
   const who = $derived(me?.user.battletag ?? me?.user.email ?? '');
   // The answer is the main (no pointer passed): this page shows the account, not the header's pick.
   const answer = $derived.by(() => {
-    const found = me === null ? null : setupAnswer(me, null, now);
-    return found === null ? null : { ...found, imported: null };
+    return me === null ? null : setupAnswer(me, null);
   });
 </script>
 

@@ -408,7 +408,7 @@
   {:else}
     <Page layout="split" testid="account-grid">
       {#snippet header()}
-        <AccountHead {me} {now} busy={busy && failure === null} {onSignOut} />
+        <AccountHead {me} busy={busy && failure === null} {onSignOut} />
         {#if errorIn('head') !== ''}<p class="text-wipe px-[var(--page-inset)] text-[13px]" role="alert">
             {errorIn('head')}
           </p>{/if}

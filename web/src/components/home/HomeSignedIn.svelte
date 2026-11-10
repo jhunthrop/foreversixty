@@ -9,7 +9,6 @@
   import { HOME_OUT_ATTR } from '../../lib/home/home-layout';
   import { homeCopy, homeHrefs } from '../../lib/home/home-view';
   import { feedCopy, type FeedRow } from '../../lib/home/feed';
-  import { REGION } from '../../lib/ui/regions';
   import Button from '../ui/Button.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
@@ -36,16 +35,11 @@
 
 <div class="home-in" data-testid="home-signed-in-root">
   {#if !settled}
-    <div data-testid="home-loading">
-      <div
-        data-region={REGION.head}
-        class="home-head-skeleton flex min-h-[118px] flex-col justify-end gap-3 pt-5 pb-4"
-        role="status"
-        aria-busy="true"
-      >
-        <span class="skeleton-block block size-12 rounded-full" aria-hidden="true"></span>
-        <span class="skeleton-block block h-7 w-[280px]" aria-hidden="true"></span>
-      </div>
+    <div data-testid="home-loading" role="status">
+      <PageHeader title={homeCopy.loadingTitle} art="hero" pending testid="home-head-loading">
+        {#snippet crest()}<span class="skeleton-block block size-12 rounded-full" aria-hidden="true"
+          ></span>{/snippet}
+      </PageHeader>
       <HomeGrid>
         {#snippet lead()}<HomePlaqueSkeleton />{/snippet}
         <Section title={feedCopy.title} boxed>

@@ -7,6 +7,7 @@ import { SPECS } from '../sim/specs';
 import type { ImportSim, SpecWeek } from './home-answer';
 import { bandWords, shortDate } from './home-view';
 import { fillShared } from '../copy/shared';
+import { compactAgo } from '../dates';
 import {
   sharedHomeBisLink,
   sharedHomeFindGuildSub,
@@ -36,6 +37,8 @@ export const GUILD_SIMS_SHOWN = 5;
 
 export const homeBCopy = {
   simmedOnImport: sharedHomeSimmedOnImport,
+  /** The import sim's link in the head: "Sim 8 h ago". */
+  simLink: 'Sim',
   simmed: (date: string) => fillShared(sharedHomeSimmed, { date }),
   simPending: sharedHomeSimPending,
   simFailed: sharedHomeSimFailed,
@@ -78,8 +81,18 @@ export interface HeadFigure {
 const oneDecimal = (n: number) =>
   n.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
+/** The finished import sim's one line in the head: which sim and how old, linking that result. */
+function simLine(sim: ImportSim, now: Date): HeadFigure['link'] {
+  if (sim.sim_id === null) return undefined;
+  const age = sim.simmed_at === null ? '' : compactAgo(new Date(sim.simmed_at), now);
+  return {
+    label: age === '' ? homeBCopy.simLink : `${homeBCopy.simLink} ${age}`,
+    href: `${homeBHrefs.sim}/${encodeURIComponent(sim.sim_id)}`,
+  };
+}
+
 /** The first figure: the sim on import (ruling P11 head 1). */
-export function simFigure(sim: ImportSim | null): HeadFigure {
+export function simFigure(sim: ImportSim | null, now: Date = new Date()): HeadFigure {
   if (sim === null) {
     return {
       key: 'sim',
@@ -107,6 +120,7 @@ export function simFigure(sim: ImportSim | null): HeadFigure {
     label: homeBCopy.simmedOnImport,
     caption: sim.simmed_at === null ? undefined : homeBCopy.simmed(shortDate(sim.simmed_at)),
     tone: 'strong',
+    link: simLine(sim, now),
   };
 }
 

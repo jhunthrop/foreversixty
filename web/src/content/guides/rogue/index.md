@@ -19,8 +19,6 @@ sources:
     kind: site
 ---
 
-Rogue is still energy, combo points and stealth, but Forever puts Combat and Assassination on daggers at 60 and gives each tree a clear job. If you want one character for launch, level Combat and pick your raid tree at 60.
-
 ## What changed from 1.12
 
 - **Daggers for Combat and Assassination.** Backstab and Ambush need a dagger in the main hand, Mutilate needs one in each hand, and Hack and Slash gives daggers crit. Hemorrhage and Ghostly Strike pay a bigger weapon percentage with a dagger too, but a slow sword's bigger hits make up for it, and Subtlety's damage leans on bleeds, Shank and Death Mark, so it takes the best weapons it can find, dagger or not. One-handed axes are new for rogues.

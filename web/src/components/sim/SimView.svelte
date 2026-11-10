@@ -619,35 +619,37 @@
       {#snippet tabs()}<SimToolTabs source={tabSource} {fallbackCode} keep={bootstrap.keep} />{/snippet}
       {#snippet answer()}
         <SimAnswer model={answerModel}>
-          {#snippet extra()}
+          {#snippet badge()}
             {#if answerModel.state !== 'not-simulated'}<SimFidelityCaption fidelity={characterSpecRow} />{/if}
-            {#if savedUrl !== null}<span class="text-kill text-[13px] font-semibold"
-                >{pageCopy.answer.saved}</span
-              >{/if}
+          {/snippet}
+          {#snippet extra()}
             {#if store.message !== null && answerModel.state !== 'failed' && store.message !== simCopy.stopped}
               <span class="text-muted text-[13px] leading-5" role="alert" data-testid="sim-message"
                 >{store.message}</span
               >
             {/if}
           {/snippet}
-          {#snippet actions()}
-            {#if answerModel.state === 'result' && store.result !== null}
-              <SimSaveActions
-                result={store.result}
-                reportTitle={store.reportTitle}
-                {signedIn}
-                {topGearHref}
-                onsave={(title) => store.save(title)}
-                onsignin={onSignIn}
-                onsaved={(url) => (savedUrl = url)}
-              />
-            {:else if answerModel.state === 'not-simulated'}
-              <a class="text-gold text-[14px] font-semibold" href={pageCopy.answer.specSupportHref}
-                >{pageCopy.answer.specSupport}</a
-              >
-            {/if}
-          {/snippet}
         </SimAnswer>
+      {/snippet}
+      {#snippet actions()}
+        {#if answerModel.state === 'result' && store.result !== null}
+          {#if savedUrl !== null}<span class="text-kill text-[13px] font-semibold"
+              >{pageCopy.answer.saved}</span
+            >{/if}
+          <SimSaveActions
+            result={store.result}
+            reportTitle={store.reportTitle}
+            {signedIn}
+            {topGearHref}
+            onsave={(title) => store.save(title)}
+            onsignin={onSignIn}
+            onsaved={(url) => (savedUrl = url)}
+          />
+        {:else if answerModel.state === 'not-simulated'}
+          <a class="text-gold text-[14px] font-semibold" href={pageCopy.answer.specSupportHref}
+            >{pageCopy.answer.specSupport}</a
+          >
+        {/if}
       {/snippet}
     </SimCharacterHead>
     <SimRunBar

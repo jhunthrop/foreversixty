@@ -96,7 +96,7 @@ def changelog_page(show: str = 'all', new_after: str = '', open_m: bool = False,
     groups = shown_months(show)
     if force_empty:   # FORCED (spec 5.1): no filter is empty at this content; the state exists for a kind with no entry yet
         groups, counts = [], {**counts, show: 0}
-    head = PageHeader(e(CL['title']), meta=[f'Updated {e(LOG["updated"])}'], lead=e(CL['description']))
+    head = PageHeader(e(CL['title']), meta=[f'Updated {e(LOG["updated"])}'])
     upcoming = coming_up() if show != 'site' else ''
     if groups:
         body = upcoming + ''.join(DatedGroup(e(t), e(meta), a, ''.join(entry_html(x, bool(new_after) and x['iso'] > new_after) for x in xs))
@@ -136,7 +136,7 @@ def content_page(pid: str, current: str = '', open_toc: bool = False, scroll_to:
         tabs = TabStrip(labels, active).replace('<nav class="strip-tabs ph-tabs">', f'<nav class="strip-tabs ph-tabs" aria-label="{e(C["legalTabsLabel"])}">', 1)
     # The description is the lead only when the body opens on a heading (the legal pages); a page that opens on a paragraph
     # leads with it (About, Data sources, Roadmap), so the head never says the same thing twice (decision L3).
-    head = PageHeader(e(p['title']), meta=[f'Updated {e(p["updated"])}'], tabs=tabs, lead='' if intro else e(p['description']))
+    head = PageHeader(e(p['title']), meta=[f'Updated {e(p["updated"])}'], tabs=tabs)
     body = f'<div class="doc-intro" data-region="{REGION["intro"]}">{Prose(intro)}</div>' if intro else ''
     contents = ''
     if len(secs) > 1:
@@ -196,7 +196,7 @@ CHARACTER_PATH = '/character/us/normal'   # SAMPLE: a dead character address (no
 
 def not_found_page(kind: str = 'out', suggest: bool = False, character: bool = False) -> str:
     path = SUGGEST[0] if suggest else (CHARACTER_PATH if character else '/this-page-does-not-exist')
-    head = PageHeader(e(NF['title']), meta=[e(path)], answer='' if kind == 'out' else answer(kind), lead=e(NF['job']))
+    head = PageHeader(e(NF['title']), meta=[e(path)], answer='' if kind == 'out' else answer(kind))
     did = (f'<div data-region="{REGION["notes"]}">' + Notice(e(NF['didYouMean']), Link(rsaquo(SUGGEST[1])), 'neutral') + '</div>') if suggest else ''
     # signed out on a dead /character/ address the lookup comes first (SHOULD)
     first_lookup = character and kind == 'out'

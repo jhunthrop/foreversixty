@@ -31,6 +31,17 @@ export function specStateNote(state: SpecState): string {
   return NOTES[state];
 }
 
+// The head's Tag sits beside a number, where "Not yet" or "In progress" would read as the run's own
+// state; it names the spec's calibration instead. A validated spec shows no Tag.
+const HEAD_LABELS: Record<Exclude<SpecState, 'validated'>, string> = {
+  in_progress: simCopy.specCalibrating,
+  unsupported: simCopy.specNoParses,
+};
+
+export function specHeadLabel(state: Exclude<SpecState, 'validated'>): string {
+  return HEAD_LABELS[state];
+}
+
 export function specPillClass(state: SpecState): string {
   return state === 'validated' ? 'pill pill-site' : 'pill pill-sample';
 }

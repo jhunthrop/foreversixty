@@ -107,17 +107,7 @@
 </script>
 
 {#snippet backLinkRow()}
-  <a
-    href={`${guildPath}#raids`}
-    class="text-muted inline-flex min-h-11 items-center self-start text-[13px] underline"
-    data-testid="raid-back-link">{raidCopy.backLink(guildName)}</a
-  >
-{/snippet}
-
-{#snippet raidEyebrow()}
-  <span class="text-label text-muted font-bold"
-    >{raid === null ? raidCopy.page.eyebrow : eyebrowOf(kindOf(raid))}</span
-  >
+  <a href={`${guildPath}#raids`} data-testid="raid-back-link">{raidCopy.backLink(guildName)}</a>
 {/snippet}
 
 {#snippet guildCrest()}
@@ -133,27 +123,32 @@
 {/snippet}
 
 {#if c.load === 'failed'}
-  <div class="flex flex-col gap-[22px] md:gap-8 {GUILD_BANDLESS_TOP}">
-    <GuildBandFrame>
-      {#if c.guild !== null}{@render guildHeading()}{:else}<h1 class="sr-only">
-          {raidCopy.page.eyebrow}
-        </h1>{/if}
-    </GuildBandFrame>
+  <div class="flex flex-col gap-[22px] md:gap-8 {c.guild !== null ? '' : GUILD_BANDLESS_TOP}">
+    {#if c.guild !== null}{@render guildHeading()}{:else}<h1 class="sr-only">
+        {raidCopy.page.eyebrow}
+      </h1>{/if}
     <LoadError message={raidCopy.loadErrors.raid} onRetry={() => c.retry()} testid="raid-load-error" />
   </div>
 {:else if c.load === 'loading' || c.access === 'loading'}
-  <div class="flex flex-col gap-[22px] md:gap-8 {GUILD_BANDLESS_TOP}" data-testid="raid-page-loading">
+  <div class="flex flex-col gap-[22px] md:gap-8" data-testid="raid-page-loading">
     <span class="sr-only">{raidCopy.page.loading}</span>
-    <!-- The back link, eyebrow and tabs need only the route, so they are drawn for real; the
-         skeleton holds lines 3–5 (and an officer's wrapped phone row) at their ready height. -->
-    <GuildBandFrame>
-      {@render backLinkRow()}
-      {@render raidEyebrow()}
-      <div class={bandLinesReserve(doneReserve, officer)}>
-        <Skeleton lines={3} rowHeight="h-5" label={raidCopy.page.loading} testid="raid-band-skeleton" />
-      </div>
-      <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
-    </GuildBandFrame>
+    <!-- The back link, the raid's kind and the tabs need only the route, so they are drawn for real
+         on the one head; the skeleton holds the meta lines (and an officer's wrapped phone row) at
+         their ready height. -->
+    <PageHeader
+      title={raid === null ? raidCopy.page.eyebrow : eyebrowOf(kindOf(raid))}
+      testid="raid-head-loading"
+    >
+      {#snippet crumb()}{@render backLinkRow()}{/snippet}
+      {#snippet meta()}
+        <div class="w-full {bandLinesReserve(doneReserve, officer)}">
+          <Skeleton lines={3} rowHeight="h-5" label={raidCopy.page.loading} testid="raid-band-skeleton" />
+        </div>
+      {/snippet}
+      {#snippet tabs()}
+        <GuildTabs active="raids" role={officer ? 'officer' : 'member'} hrefBase={guildPath} />
+      {/snippet}
+    </PageHeader>
     {#if !doneReserve}
       <div
         class={RAID_STRIP_RESERVE}
@@ -178,7 +173,7 @@
     <div class="min-h-[560px] md:min-h-[420px]" aria-hidden="true" data-testid="raid-roster-reserve"></div>
   </div>
 {:else if !visible}
-  <div class={GUILD_BANDLESS_TOP}>
+  <div>
     <GuildBandFrame testid="raid-not-visible">
       {@render guildHeading()}
       {#if c.access === 'unverified'}
