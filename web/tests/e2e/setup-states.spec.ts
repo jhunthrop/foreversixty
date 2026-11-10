@@ -66,6 +66,7 @@ for (const os of ['windows', 'mac'] as const) {
     const button = page.getByTestId('setup-action-download');
     await expect(button).toHaveText(addonCopy.setupCompanionDownload(own.platform));
     await expect(button).toHaveAttribute('href', releasePath(own.asset));
+    await expect(button).toHaveAttribute('download', own.saveAs);
     await expect(page.getByTestId('setup-download-meta')).toHaveText(/^Version 0\.2\.37 · \d+\.\d MB$/);
     await expect(page.getByTestId('setup-companion-first-run')).toHaveText(own.firstRun);
     const other = COMPANION_DOWNLOADS.find((build) => build.os !== os);
@@ -76,6 +77,7 @@ for (const os of ['windows', 'mac'] as const) {
       'href',
       releasePath(other.asset),
     );
+    await expect(others.getByTestId(`setup-download-${other.os}`)).toHaveAttribute('download', other.saveAs);
   });
 }
 

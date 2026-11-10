@@ -58,6 +58,7 @@
       <Button
         tone={primary ? 'primary' : 'secondary'}
         href={downloadHref(own.asset, release)}
+        download={own.saveAs}
         rel="noopener"
         testid="{idPrefix}-action-download">{label(own)}</Button
       >
@@ -73,6 +74,7 @@
                 <a
                   class={LINK}
                   href={downloadHref(other.asset, release)}
+                  download={other.saveAs}
                   rel="noopener"
                   data-testid="{idPrefix}-download-{other.os}">{label(other)} ›</a
                 >{#if otherMeta !== null}<span class="text-muted"> {otherMeta}</span>{/if}
@@ -96,6 +98,7 @@
       {#each others as download (download.asset)}
         <Button
           href={downloadHref(download.asset, release)}
+          download={download.saveAs}
           rel="noopener"
           testid="{idPrefix}-download-{download.os}">{label(download)}</Button
         >

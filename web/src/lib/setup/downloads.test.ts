@@ -6,12 +6,14 @@ const WINDOWS: CompanionDownload = {
   os: 'windows',
   platform: 'Windows',
   asset: 'foreversixty-companion-setup.exe',
+  saveAs: 'ForeverSixtySetup.exe',
   firstRun: 'w',
 };
 const MAC: CompanionDownload = {
   os: 'mac',
   platform: 'Mac',
-  asset: 'foreversixty-companion_darwin_universal.app.zip',
+  asset: 'foreversixty-companion_darwin_universal.dmg',
+  saveAs: 'ForeverSixty.dmg',
   firstRun: 'm',
 };
 
@@ -28,7 +30,7 @@ describe('downloadFor', () => {
 
   it('reads companion.json by default, which lists Windows and the Mac', () => {
     expect(COMPANION_DOWNLOADS.map((d) => d.os)).toEqual(['windows', 'mac']);
-    expect(downloadFor('mac')?.asset).toBe('foreversixty-companion_darwin_universal.app.zip');
+    expect(downloadFor('mac')?.asset).toBe('foreversixty-companion_darwin_universal.dmg');
   });
 });
 
