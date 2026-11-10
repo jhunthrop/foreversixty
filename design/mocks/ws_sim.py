@@ -34,6 +34,16 @@ B = DATA_ROOT / 'data/builds' / BUILD
 CUR = DATA_ROOT / 'data/curated'
 RES = json.loads((DATA_ROOT / 'web/src/fixtures/sim/result-full.json').read_text())
 REQ, CHAR, SUM = RES['request'], RES['request']['character'], RES['summary']
+
+
+def copy_string(module: str, key: str) -> str:
+    """One plain string from a web copy module (`key: '...'`, the string on its line or the next), so a lead reads the
+    shipped words: `copy_string('lib/sim/page-copy.ts', 'lead')`."""
+    text = (DATA_ROOT / 'web/src' / module).read_text()
+    found = re.search(rf"^\s+{key}:\s*'((?:[^'\\]|\\.)*)',$", text, re.M)
+    if found is None:
+        raise SystemExit(f'ws_sim: no string {key} in web/src/{module}')
+    return found.group(1).replace("\\'", "'")
 CLS = CHAR['class']
 SPEC = REQ['spec']
 
@@ -881,7 +891,7 @@ def finish(title: str, body: str, who) -> str:
 
 # ---- 1. /sim, signed out, no character
 def landing_out() -> str:
-    head = PageHeader('Simulator', tabs=TabStrip(TOOLS, 'Quick sim'))
+    head = PageHeader('Simulator', tabs=TabStrip(TOOLS, 'Quick sim'), lead=copy_string('lib/sim/page-copy.ts', 'lead'))
     paste = (Form('Addon export or build code', [('', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
              + f'<p class="t-small paste-hint">In game: /fs copy, then paste here. {Link("Get set up &rsaquo;")}</p>')
     # ui/Row `fillTrail`: a 180 px label column, the control filling the rest (the field grows, Load beside it)

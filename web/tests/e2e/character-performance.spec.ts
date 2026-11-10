@@ -20,21 +20,14 @@ test.describe('the /ratings sample at 1440 (logs spec 2026-11-07 section 8)', ()
   test.use({ viewport: { width: 1440, height: 900 } });
   test.skip(() => test.info().project.name !== 'desktop', 'a desktop width');
 
-  test('reads as three figures on one line, the sparkline under its label', async ({ page }) => {
+  // The trend reads as the last fights' numbers in a line since the report tail's round 5 (no sparkline).
+  test('reads as three figures on one line', async ({ page }) => {
     await page.goto('/ratings');
     const sample = page.getByTestId('ratings-rating-sample');
     await expect(sample).toContainText('65');
-    const boxes = await sample.evaluate((element) => {
-      const cells = [...element.children].map((child) => child.getBoundingClientRect());
-      const spark = element.querySelector('svg')!.getBoundingClientRect();
-      const label = element.children[1]!.firstElementChild!.getBoundingClientRect();
-      return {
-        tops: cells.map((cell) => Math.round(cell.top)),
-        sparkTop: spark.top,
-        labelBottom: label.bottom,
-      };
-    });
-    expect(new Set(boxes.tops).size).toBe(1);
-    expect(boxes.sparkTop).toBeGreaterThanOrEqual(boxes.labelBottom - 0.5);
+    const tops = await sample.evaluate((element) =>
+      [...element.children].map((child) => Math.round(child.getBoundingClientRect().top)),
+    );
+    expect(new Set(tops).size).toBe(1);
   });
 });

@@ -18071,6 +18071,7 @@
  },
  "copy": {
   "planner": {
+   "lead": "Plan every point up to level 60 in the order you take them, check it against the guide builds, then copy it into the game or share the link.",
    "itemNotSimmed": "[fn]",
    "unknownItem": "[fn]",
    "shareTitle": "Share this build",

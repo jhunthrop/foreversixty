@@ -52,7 +52,7 @@
   import { characterFromPlanner, specOf } from '../../lib/sim/character';
   import { classDisplayName, specDisplayName, specLabel, specRow } from '../../lib/sim/spec-label';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
-  import { importFromAddon } from '../../lib/addon/import';
+  import { importFromAddon, type ImportOutcome } from '../../lib/addon/import';
   import type { BisBand } from '../../lib/bis/types';
   import { bandCompareCopy, plannerCharacterCardCopy, plannerHeaderCopy } from '../../lib/planner/copy';
   import { editorTrees, GAME_TIERS, treeIconSrc } from '../../lib/planner/editor-trees';
@@ -690,6 +690,10 @@
   /** Share and Import leave the rail for the full-width row when the level card shows beside a spent
    *  build: with all three, the rail ran 160 to 345 px past the trees (h-audit 2026-11-09). */
   const importBelow = $derived(standalone && !shared && !bandQuiet && store.spent > 0);
+  /** Import's code and outcome live here: the import itself spends points, which moves the box
+   *  (importBelow) and remounts it, and its notes must survive the move. */
+  let importCode = $state('');
+  let importOutcome = $state<ImportOutcome | null>(null);
 
   // Nothing cancels a request that is already in flight, so switching class twice in quick
   // succession leaves two runs of this racing to write to the same store. The class this run
@@ -1250,6 +1254,8 @@
 {#snippet importSection(part: boolean)}
   {#if store.talentIndex}
     <ImportBox
+      bind:code={importCode}
+      bind:outcome={importOutcome}
       panel={standalone}
       {part}
       talents={store.talentIndex}
@@ -1271,6 +1277,16 @@
       <span class="skeleton-block block max-w-full" style="width:260px;height:20px"></span>
       <span class="skeleton-block block max-w-full" style="width:200px;height:44px"></span>
     </div>
+  </Section>
+{/snippet}
+
+<!-- Point order's place while the talent data loads: on a phone it sits between the trees and the
+     rail, so without it the level build and everything under it jumped down on load. -->
+{#snippet orderSkeleton()}
+  <Section title={plannerCopy.pointOrderTitle} panel>
+    <p class="pl-pad" aria-busy="true">
+      <span class="skeleton-block block max-w-full" style="width:160px;height:20px"></span>
+    </p>
   </Section>
 {/snippet}
 
@@ -1365,6 +1381,8 @@
           <Ordered order={7}><SharePanel {store} /></Ordered>
           <Ordered order={8}>{@render importSection(false)}</Ordered>
         {/if}
+      {:else if status === 'loading'}
+        <Ordered order={1} span>{@render orderSkeleton()}</Ordered>
       {/if}
     {/snippet}
     <Ordered order={1} span>{@render plate()}</Ordered>

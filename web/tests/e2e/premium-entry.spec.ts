@@ -153,7 +153,8 @@ test.describe('the bar tag', () => {
     await expect(page.locator('#primary-nav > :nth-last-child(2)')).toHaveAttribute('data-group', 'guild');
     await expect(tag(page)).toHaveText(/premium/i);
     await expect(tag(page)).toHaveCSS('background-color', SUBSCRIBE_TEAL);
-    await expect(tag(page).locator('svg')).toHaveCount(0);
+    // The door's own icon (custom nav icons, 2026-11-09) and nothing else: no chevron.
+    await expect(tag(page).locator('svg:not(.site-door-icon)')).toHaveCount(0);
     expect(cls).toBeLessThan(BAR_FONT_SWAP_FLOOR);
   });
 
@@ -272,7 +273,8 @@ test.describe('the phone Menu row', () => {
     expect(row.height).toBeGreaterThanOrEqual(MENU_ROW_MIN);
     expect(Math.abs(row.x - menu.x)).toBeLessThanOrEqual(1);
     expect(Math.abs(row.x + row.width - (menu.x + menu.width))).toBeLessThanOrEqual(1);
-    await expect(tag(page).locator('svg')).toHaveCount(0);
+    // The door's own icon (custom nav icons, 2026-11-09) and nothing else: no chevron.
+    await expect(tag(page).locator('svg:not(.site-door-icon)')).toHaveCount(0);
   });
 
   test('Premium: no Premium row in the Menu', async ({ page }) => {
