@@ -19,7 +19,7 @@ import (
 func TestBuildPageSitsInTheSitesPageColumn(t *testing.T) {
 	record := sampleRecord(t, "Arms leveling")
 	body := get(t, testPage(t, record, nil), "/b/"+record.ID).Body.String()
-	column := strings.Index(body, `<div class="page-column">`)
+	column := strings.Index(body, `<div class="page-column" data-page-body>`)
 	main := strings.Index(body, `<main id="main" tabindex="-1">`)
 	planner := strings.Index(body, `<div id="planner"`)
 	if column < 0 || main < column || planner < main {
@@ -27,6 +27,9 @@ func TestBuildPageSitsInTheSitesPageColumn(t *testing.T) {
 	}
 	if strings.Count(body, `class="page-column"`) != 1 {
 		t.Fatal("the page declares the site column exactly once, as Base.astro does")
+	}
+	if !strings.Contains(body, `<div class="site-top ui-band ui-band-end" data-art="band">`) {
+		t.Fatal("the bar floats on the site's band, as on every site page")
 	}
 	// Until the island mounts, a screen-high reserve keeps the footer out of the first screen.
 	if !strings.Contains(body, `<div class="b-reserve" aria-hidden="true"></div></div>`) {
@@ -78,10 +81,12 @@ func TestNotFoundPageOffersThePlannerTheGuidesAndAsksTheSender(t *testing.T) {
 	rec := get(t, testPage(t, record, nil), "/b/nosuchid")
 	body := rec.Body.String()
 	for _, want := range []string{
-		`<div class="page-column">`,
+		`<div class="page-column" data-page-body>`,
+		`<div class="b-band ui-band ui-band-end full-bleed" data-art="band">`,
 		`<h1 class="b-title" data-testid="page-title">Build not found</h1>`,
-		`data-region="head-meta">That link does not point at a saved build. It may have been mistyped.</div>`,
-		`>Ask whoever sent it for a fresh link.</p>`,
+		`<div class="b-panel ui-surface ui-framed" data-region="plate" data-testid="b-message-panel">`,
+		`data-testid="b-message-sentence">That link does not point at a saved build. It may have been mistyped. ` +
+			`<span data-testid="b-message-ask">Ask whoever sent it for a fresh link.</span></p>`,
 		`<a href="https://foreversixty.gg/planner" class="` + primaryButtonClass + `">Open the build planner</a>`,
 		`<a class="` + linkClass + `" href="https://foreversixty.gg/guides">Talent builds in the class guides ›</a>`,
 	} {
@@ -89,9 +94,9 @@ func TestNotFoundPageOffersThePlannerTheGuidesAndAsksTheSender(t *testing.T) {
 			t.Errorf("not-found page is missing:\n%s", want)
 		}
 	}
-	for _, retired := range []string{"gold-text", "font-display"} {
+	for _, retired := range []string{"gold-text", "font-display", "linear-gradient", "text-bg", "--color-strong"} {
 		if strings.Contains(body, retired) {
-			t.Errorf("the Cinzel gold heading (%s) is retired", retired)
+			t.Errorf("the Cinzel gold heading and the gold button (%s) are retired", retired)
 		}
 	}
 }
