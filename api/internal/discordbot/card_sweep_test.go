@@ -16,8 +16,9 @@ import (
 // (commit 61b459472); the amendment must change what Discord is sent.
 const preAmendmentCommandsHash = "320cbf017bb1bd518beb613361a51cc979aaa23cdaf71b4757df3407fca10d5e"
 
-// legacyComponentPrefixes are the routes that are not guided cards.
-var legacyComponentPrefixes = map[string]bool{raidIDPrefix: true, pickIDPrefix: true, shareIDPrefix: true}
+// legacyComponentPrefixes are the routes that are not guided cards (the application press is a
+// plain ephemeral answer, like the raid press).
+var legacyComponentPrefixes = map[string]bool{raidIDPrefix: true, pickIDPrefix: true, shareIDPrefix: true, prefixApplication: true}
 
 // cardPrefixes is every card prefix in the routing table.
 func cardPrefixes(s *Service) []string {
