@@ -56,6 +56,7 @@
       data-primary={index === 0 ? 'true' : undefined}
       data-muted={figure.muted === true ? 'true' : undefined}
       data-tone={figure.tone}
+      style:color={figure.color}
       data-testid={figure.testid}
       >{figure.value}{#if index === 0 && phone !== undefined}<span class="ui-st-phone">{phone}</span
         >{/if}</span

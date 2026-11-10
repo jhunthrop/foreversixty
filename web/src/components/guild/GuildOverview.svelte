@@ -2,8 +2,7 @@
 <!-- The role-aware Overview (web layout spec 2026-11-05 §7.1), built only from the ui/ primitives:
      one Plate (the next raid, with the viewer's own sign-up row), open Sections around it.
      Member: the verdict Notice, the private checklist (D12), their numbers, the raid's comp.
-     Officer: Action needed, the next raid with its counts, comp against the target, and in the rail
-     buff and debuff cover (D15), Raid-ready and the last four raids' attendance. Everyone: the last raid, with
+     Officer: the dense officer's week (dense/OfficerWeek, design/specs/2026-11-09-guild-dense.md 5.1). Everyone: the last raid, with
      progression as its one line. A module whose data has no source yet is not drawn (7.4). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -20,14 +19,11 @@
   import {
     fetchMyChecklist,
     fetchOfficerActions,
-    fetchRecentAttendance,
     type GuildChecklist,
     type GuildOfficerActions,
-    type GuildRecentAttendance,
   } from '../../lib/guild/overview-api';
   import {
     checklistRows,
-    pingAllowed,
     raidWeekday,
     verdictLine,
     verdictWord,
@@ -43,15 +39,13 @@
   import { counted } from '../../lib/plural';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
-  import BuffCover from './overview/BuffCover.svelte';
   import CompTally from './overview/CompTally.svelte';
   import LastRaid from './overview/LastRaid.svelte';
   import MemberChecklist from './overview/MemberChecklist.svelte';
   import NextRaidPlate from './overview/NextRaidPlate.svelte';
-  import OfficerActions from './overview/OfficerActions.svelte';
   import RecruitLine from './overview/RecruitLine.svelte';
-  import RecentAttendance from './overview/RecentAttendance.svelte';
   import YourNumbers from './overview/YourNumbers.svelte';
+  import OfficerWeek from './dense/OfficerWeek.svelte';
   import type { GuildTabId } from './GuildTabs.svelte';
 
   /** A report row the Last raid line can summarize (home.reports or the public page's). */
@@ -75,6 +69,7 @@
     nextRaid = null,
     guildPath,
     myRow = null,
+    roster = [],
     onSelectTab,
     lead,
     you,
@@ -94,6 +89,8 @@
     guildPath: string;
     /** The viewer's own roster row (their raid character), for Your numbers. */
     myRow?: GuildRosterRow | null;
+    /** The guild's roster (the home's), for the officer's week. */
+    roster?: readonly GuildRosterRow[];
     onSelectTab: (tab: GuildTabId) => void;
     /** The first block on the tab, when the page has one to lead with (Before raids open, which then
      *  carries the next step: no "No raid planned" line and no numbers before the first raid). */
@@ -114,7 +111,6 @@
   let raid = $state<GuildRaidView | null>(null);
   let checklist = $state<GuildChecklist | null>(null);
   let actions = $state<GuildOfficerActions | null>(null);
-  let attendance = $state<GuildRecentAttendance | null>(null);
 
   $effect(() => {
     if (guildId === null) return;
@@ -129,11 +125,16 @@
       .catch(() => (raidsPage = null));
   });
 
-  $effect(() => {
-    if (guildId === null || !member || nextRaid === null) return;
+  function reloadRaid(): void {
+    if (guildId === null || nextRaid === null) return;
     void fetchGuildRaid(guildId, nextRaid.id)
       .then((view) => (raid = view))
       .catch(() => (raid = null));
+  }
+
+  $effect(() => {
+    if (!member) return;
+    reloadRaid();
   });
 
   $effect(() => {
@@ -148,9 +149,6 @@
     void fetchOfficerActions(guildId)
       .then((page) => (actions = page))
       .catch(() => (actions = null));
-    void fetchRecentAttendance(guildId)
-      .then((page) => (attendance = page))
-      .catch(() => (attendance = null));
   });
 
   const guildTz = $derived(nextRaid?.guild_timezone ?? viewerTz);
@@ -169,7 +167,6 @@
     ];
   });
   const planHref = $derived(nextRaid === null ? '#raids' : guildRaidHref(guildPath, nextRaid.id));
-  const canPing = $derived(raid !== null && pingAllowed(raid, clock.now));
 </script>
 
 {#snippet lastRaid()}
@@ -208,23 +205,23 @@
       {@render lastRaid()}
     </Page>
   {:else if officer}
-    <Page layout="split" panels testid="guild-overview-page">
-      {@render lead?.()}
-      {#if actions !== null}
-        <OfficerActions {guildId} {actions} {day} {canPing} {onSelectTab} {guildPath} />
-      {/if}
-      {@render plate()}
-      {#if raid?.comp_target}
-        <CompTally {raid} target={raid.comp_target} editHref={planHref} />
-      {/if}
-      {#snippet rail()}
-        {#if raid?.cover && raid.cover.length > 0}<BuffCover cover={raid.cover} />{/if}
-        <!-- Attendance needs two nights to show a pattern: after the first, the panel waits. -->
-        {#if attendance !== null && attendance.raids.length > 1}
-          <RecentAttendance page={attendance} rosterHref="#roster" timezone={guildTz} />
-        {/if}
-      {/snippet}
-    </Page>
+    {@render lead?.()}
+    {#if guildId !== null}
+      <OfficerWeek
+        {guildId}
+        next={nextRaid}
+        {raid}
+        {roster}
+        {raidsPage}
+        {actions}
+        {guildPath}
+        {planHref}
+        {viewerTz}
+        now={clock.now}
+        {onSelectTab}
+        onRaidChanged={reloadRaid}
+      />
+    {/if}
   {:else}
     <!-- The verdict sits under the head, over both columns (web layout spec 2026-11-05 §7.1). -->
     {#if checklist !== null && nextRaid !== null}

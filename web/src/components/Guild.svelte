@@ -109,7 +109,7 @@
   // exceeded `scripts/check-island-size.mjs`'s 16KB gzip budget.
   // The Overview is the first tab but its own chunk: the role-aware modules keep the entry in budget.
   const overviewLazy = createLazyComponent(() => import('./guild/GuildOverview.svelte'));
-  const rosterLazy = createLazyComponent(() => import('./guild/GuildRosterTable.svelte'));
+  const rosterLazy = createLazyComponent(() => import('./guild/dense/GuildRaidRoster.svelte'));
   const raidsLazy = createLazyComponent(() => import('./guild/GuildRaids.svelte'));
   const progressionLazy = createLazyComponent(() => import('./guild/GuildProgression.svelte'));
   const readinessLazy = createLazyComponent(() => import('./guild/GuildReadiness.svelte'));
@@ -976,6 +976,7 @@
           nextRaid={home?.next_raid ?? null}
           {guildPath}
           myRow={myRosterRow}
+          roster={home?.roster ?? []}
           you={showsBandLine(myGuildMembership?.verified === true, role) ? youRow : undefined}
           reports={home?.reports ?? data.reports}
           summary={home?.summary}
@@ -991,26 +992,17 @@
     {:else if activeTab === 'roster' && home !== null}
       {#if rosterLazy.current}
         <rosterLazy.current
+          guildId={guildId ?? 0}
           roster={home.roster}
           pending={home.pending ?? []}
-          members={home.members}
-          counts={home.counts}
-          {can}
-          {myCharacterKey}
-          {rosterBusy}
-          {rosterActionError}
-          frozen={home.claim.frozen}
-          {removeOverridesFrozen}
+          nextRaidId={home.next_raid?.id ?? null}
+          officer={officerView}
+          canApprove={can.includes('approve')}
+          busy={rosterBusy !== null}
           onApprove={(row) => void onApprove(row)}
-          onRemove={(row) => void onRemove(row)}
-          onRemoveMember={(entry) => void onRemoveMember(entry)}
           onDecline={(row) => void onRemove(row)}
           onApproveAll={() => void onApproveAll()}
-          {rowPath}
           profileHref={(row) => rosterProfileHref(row, { officer: officerView, myCharacterKey, guildPath })}
-          mySiteSpec={myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)}
-          attendanceSource={attendanceSourceOf(home)}
-          {focusApproveAll}
         />
       {:else}
         <Skeleton lines={6} minHeight="min-h-[320px]" testid="guild-roster-skeleton" />

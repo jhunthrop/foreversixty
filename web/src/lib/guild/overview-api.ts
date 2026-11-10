@@ -121,13 +121,15 @@ export function fetchMyChecklist(
   return privateRead<GuildChecklist>(`${guildPath(guildId)}/me/checklist${raid}`, apiBase);
 }
 
-/** Officers: the slipping and benched raiders over the last `nights` raids. */
+/** Officers: the slipping and benched raiders over the last `nights` raids; `all`, every raider. */
 export function fetchRecentAttendance(
   guildId: number,
   nights = 4,
+  all = false,
   apiBase: string = API_BASE_URL,
 ): Promise<GuildRecentAttendance> {
-  return privateRead<GuildRecentAttendance>(`${guildPath(guildId)}/attendance/recent?n=${nights}`, apiBase);
+  const every = all ? '&all=1' : '';
+  return privateRead<GuildRecentAttendance>(`${guildPath(guildId)}/attendance/recent?n=${nights}${every}`, apiBase);
 }
 
 /** Officers: what is waiting on them (approvals, non-signers, drops). */

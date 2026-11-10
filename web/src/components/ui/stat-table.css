@@ -156,6 +156,30 @@
   padding-inline: 0;
 }
 
+/* Dense (the guild roster, readiness and loot): 40 px rows at 14 px, for tables of forty raiders. */
+.ui-st[data-dense='true'] .ui-st-h {
+  min-height: 34px;
+  padding-block: 10px 8px;
+}
+.ui-st[data-dense='true'] .ui-st-r {
+  min-height: 40px;
+  padding-block: 4px;
+}
+.ui-st[data-dense='true'] .ui-st-name {
+  font-size: 14px;
+  line-height: 18px;
+}
+.ui-st[data-dense='true'] .ui-st-sub {
+  font-size: 12px;
+  line-height: 16px;
+}
+.ui-st[data-dense='true'] .ui-st-f {
+  font-size: 14px;
+}
+.ui-st-f[data-tone='gold'] {
+  color: var(--color-gold);
+}
+
 /* Phone (below 1024): icon, name and sub, the primary figure over its sub line; the bar and the
    other figures hidden, the heads too. Open mode keeps its bar, under the name. */
 @media (max-width: 1023px) {

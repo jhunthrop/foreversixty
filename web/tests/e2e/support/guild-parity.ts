@@ -16,6 +16,7 @@ import { RAIDS_OPENERS } from './guild-parity/raids';
 import { SETTINGS_OPENERS } from './guild-parity/settings';
 import { STATES_OPENERS } from './guild-parity/states';
 import { TABS_OPENERS } from './guild-parity/tabs';
+import { DENSE_OPENERS } from './guild-parity/dense';
 
 export type GuildStateOpener = (page: Page) => Promise<void>;
 
@@ -29,6 +30,7 @@ const OPENERS: Readonly<Record<string, GuildStateOpener>> = {
   ...RAIDS_OPENERS,
   ...SETTINGS_OPENERS,
   ...DIRECTORY_OPENERS,
+  ...DENSE_OPENERS,
 };
 
 const BUILDS = fileURLToPath(new URL('../../../../data/builds/', import.meta.url));

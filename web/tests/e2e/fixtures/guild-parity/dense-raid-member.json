@@ -494,7 +494,64 @@
       "also": []
     }
   ],
-  "not_signed": ["Voidcall", "Skyarcana", "Starnettle", "Ironhide", "Rainsong", "Duskfang", "Moonquill"],
+  "not_signed": [
+    {
+      "character_key": "us/pvp/voidcall",
+      "name": "Voidcall",
+      "class": "priest",
+      "spec": "Shadow",
+      "group": "ranged",
+      "spec_key": "priest-shadow"
+    },
+    {
+      "character_key": "us/pvp/skyarcana",
+      "name": "Skyarcana",
+      "class": "mage",
+      "spec": "Arcane",
+      "group": "ranged",
+      "spec_key": "mage-arcane"
+    },
+    {
+      "character_key": "us/pvp/starnettle",
+      "name": "Starnettle",
+      "class": "druid",
+      "spec": "Balance",
+      "group": "ranged",
+      "spec_key": "druid-balance"
+    },
+    {
+      "character_key": "us/pvp/ironhide",
+      "name": "Ironhide",
+      "class": "warrior",
+      "spec": "Protection",
+      "group": "tank",
+      "spec_key": "warrior-protection"
+    },
+    {
+      "character_key": "us/pvp/rainsong",
+      "name": "Rainsong",
+      "class": "shaman",
+      "spec": "Restoration",
+      "group": "healer",
+      "spec_key": "shaman-restoration"
+    },
+    {
+      "character_key": "us/pvp/duskfang",
+      "name": "Duskfang",
+      "class": "rogue",
+      "spec": "Combat",
+      "group": "melee",
+      "spec_key": "rogue-combat"
+    },
+    {
+      "character_key": "us/pvp/moonquill",
+      "name": "Moonquill",
+      "class": "druid",
+      "spec": "Balance",
+      "group": "ranged",
+      "spec_key": "druid-balance"
+    }
+  ],
   "viewer": {
     "characters": [
       {

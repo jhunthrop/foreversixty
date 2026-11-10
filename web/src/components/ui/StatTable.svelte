@@ -16,6 +16,7 @@
     barHead = '',
     bar = true,
     open = false,
+    dense = false,
     sort,
     onsort,
     label,
@@ -31,6 +32,8 @@
     /** Whether the rows carry a Meter column. */
     bar?: boolean;
     open?: boolean;
+    /** 40 px rows at 14 px, for a table of forty raiders (guild roster, readiness, loot). */
+    dense?: boolean;
     sort?: StatSort;
     /** A sortable head was pressed. */
     onsort?: (column: string) => void;
@@ -47,6 +50,7 @@
   role="table"
   aria-label={label}
   data-open={open ? 'true' : undefined}
+  data-dense={dense ? 'true' : undefined}
   data-bar={bar ? 'true' : 'false'}
   style:--st-n={columns.length}
   data-testid={testid}

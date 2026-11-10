@@ -64,7 +64,7 @@ def best_parse(r: D.Raider) -> dict:
 def roster_row(r: D.Raider) -> dict:
     seen = ago(r.seen_days)
     return {'character_key': r.key, 'region': gd.REGION, 'ruleset': gd.RULESET, 'name': r.name, 'class': r.cls, 'spec': r.spec,
-            'role': r.role, 'rank': r.rank, 'verified': True, 'logged_recently': r.seen_days == 0, 'logged_at': seen,
+            'spec_name': f'{r.spec} {r.cls.title()}', 'role': r.role, 'rank': r.rank, 'verified': True, 'logged_recently': r.seen_days == 0, 'logged_at': seen,
             'group': r.group.lower(), 'item_level': r.ilvl, 'level': 60, 'consent': 'gear_bags', 'is_main': True,
             'attendance': {'present': r.present, 'nights': r.nights},
             'attendance_30': {'present': r.present, 'nights': r.nights}, 'best_parse': best_parse(r), 'rating': rating(r),
@@ -166,7 +166,9 @@ def raid_view(viewer: str, officer: bool) -> dict:
     return {'id': D.NEXT_RAID_ID, 'zone': ZONE_KEY, 'zone_name': ZONE_NAME, 'zone_kind': 'raid', 'key_item': None,
             'title': ZONE_NAME, 'starts_at': D.NEXT_RAID_AT, 'duration_minutes': 180, 'status': 'planned', 'size': 40,
             'guild_timezone': D.ZONE, 'notes_html': '', 'notes': '', 'counts': counts_of(D.ROSTER),
-            'signups': [signup(r, viewer) for r in signed], 'not_signed': [r.name for r in not_signed],
+            'signups': [signup(r, viewer) for r in signed],
+            'not_signed': [{'character_key': r.key, 'name': r.name, 'class': r.cls, 'spec': r.spec, 'group': r.group.lower(),
+                            'spec_key': r.spec_key} for r in not_signed],
             'viewer': {'characters': [{'character_key': me.key, 'name': me.name, 'class': me.cls, 'spec': me.spec,
                                        'role': me.role, 'state': me.answer}]},
             'discord': {'available': True, 'connected': True, 'post_default': True, 'remind_default': True, 'channel_name': 'raids'},

@@ -129,6 +129,31 @@
       "id": "settings-page",
       "path": "/guild/us/pvp/olympus-xxvii/settings",
       "mock": "web-guild-settings-page.html"
+    },
+    {
+      "id": "dense-officer",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-dense-officer.html"
+    },
+    {
+      "id": "dense-member",
+      "path": "/guild/us/pvp/olympus-xxvii",
+      "mock": "web-guild-dense-member.html"
+    },
+    {
+      "id": "dense-roster",
+      "path": "/guild/us/pvp/olympus-xxvii#roster",
+      "mock": "web-guild-dense-roster.html"
+    },
+    {
+      "id": "dense-readiness",
+      "path": "/guild/us/pvp/olympus-xxvii#readiness",
+      "mock": "web-guild-dense-readiness.html"
+    },
+    {
+      "id": "dense-loot",
+      "path": "/guild/us/pvp/olympus-xxvii#loot",
+      "mock": "web-guild-dense-loot.html"
     }
   ]
 }
