@@ -39,9 +39,11 @@ fun DevicesScreen(
     onRevoke: (DeviceRow) -> Unit,
     onRetry: () -> Unit,
     initiallyConfirming: DeviceRow? = null,
+    /** Back to the screen under this one: the title moves into the band bar (round 5). */
+    back: (() -> Unit)? = null,
 ) {
     var confirming by remember { mutableStateOf(initiallyConfirming) }
-    AccountPage(stringResource(R.string.devices_title)) {
+    AccountPage(stringResource(R.string.devices_title), back) {
         when (state) {
             DevicesState.Loading -> AccountCard {
                 repeat(3) { AccountRow(painterResource(R.drawable.ic_smartphone), " ", subtitle = " ") }

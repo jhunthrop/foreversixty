@@ -1,5 +1,7 @@
 package gg.foreversixty.app.bis
 
+import gg.foreversixty.app.designsystem.ScaledType
+import gg.foreversixty.app.designsystem.screenGround
 import android.content.res.Resources
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -93,7 +95,7 @@ fun BisContent(
         is BisPhase.NoList -> phase.offlineSinceMillis
         else -> null
     }
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         offlineSince?.let { saved ->
             OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(Instant.ofEpochMilli(saved), Instant.ofEpochMilli(nowMillis))))
         }
@@ -200,7 +202,7 @@ fun Chip(label: String, onClick: () -> Unit, leading: @Composable () -> Unit) {
 private fun SetDpsLine(line: String) {
     val figureEnd = line.indexOf(' ').coerceAtLeast(0)
     val text = buildAnnotatedString {
-        withStyle(SpanStyle(fontFamily = FontFamily.Monospace, fontWeight = FontWeight.SemiBold, color = FsColor.strong)) {
+        withStyle(ScaledType.tabular.toSpanStyle().copy(color = FsColor.strong)) {
             append(line.substring(0, figureEnd))
         }
         append(line.substring(figureEnd))

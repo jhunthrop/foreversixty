@@ -1,5 +1,6 @@
 package gg.foreversixty.app.account
 
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.system.offline.OfflineDataRoute
 import gg.foreversixty.app.system.offline.OfflineDataModel
 import android.content.Context
@@ -147,7 +148,7 @@ fun AccountRoute(deps: AccountDeps, start: AccountPage, onPickClass: () -> Unit,
     BackHandler(onBack = onBack)
     when {
         me != null -> SignedInAccount(deps, start, onBack)
-        phase is SessionPhase.SignedIn -> Box(Modifier.fillMaxSize().background(FsColor.bg), Alignment.Center) {
+        phase is SessionPhase.SignedIn -> Box(Modifier.fillMaxSize().screenGround(), Alignment.Center) {
             CircularProgressIndicator(color = FsColor.gold)
         }
         else -> SignedOutPanel(deps, onPickClass)
@@ -201,11 +202,12 @@ private fun SignedInAccount(deps: AccountDeps, start: AccountPage, onBack: () ->
             ),
             mayLink = mayLink,
             liveSurfaces = deps.liveSurfaces?.let { settings -> { LiveSurfacesCard(settings) } },
+            back = back,
         )
-        AccountPage.Plan -> PlanScreen(plan, mayLink) { AccountLinks.open(context, AccountLinks.BILLING) }
-        AccountPage.Devices -> DevicesRoute(session) { deviceCount = it }
-        AccountPage.Delete -> DeleteRoute(session, me)
-        AccountPage.About -> AboutScreen(version)
+        AccountPage.Plan -> PlanScreen(plan, mayLink, back) { AccountLinks.open(context, AccountLinks.BILLING) }
+        AccountPage.Devices -> DevicesRoute(session, back) { deviceCount = it }
+        AccountPage.Delete -> DeleteRoute(session, me, back)
+        AccountPage.About -> AboutScreen(version, back)
         AccountPage.OfflineData -> offlineData?.let { model -> OfflineDataRoute(model) { back() } }
         AccountPage.Calendar -> deps.guildExtras?.let { extras ->
             CalendarRoute(extras, me.user.id.toString(), session.currentCharacter(phase, picked)?.key) { back() }
@@ -215,7 +217,7 @@ private fun SignedInAccount(deps: AccountDeps, start: AccountPage, onBack: () ->
 
 /** Loads `GET /v1/devices`, revokes with `DELETE /v1/devices/{id}`. */
 @Composable
-private fun DevicesRoute(session: SessionManager, onCount: (Int) -> Unit) {
+private fun DevicesRoute(session: SessionManager, back: () -> Unit, onCount: (Int) -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var state by remember { mutableStateOf<DevicesState>(DevicesState.Loading) }
@@ -244,12 +246,13 @@ private fun DevicesRoute(session: SessionManager, onCount: (Int) -> Unit) {
             }
         },
         onRetry = { scope.launch { load() } },
+        back = back,
     )
 }
 
 /** Runs `DELETE /v1/me` with what the person typed; on success the session shows signed out. */
 @Composable
-private fun DeleteRoute(session: SessionManager, me: Me) {
+private fun DeleteRoute(session: SessionManager, me: Me, back: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var typed by rememberSaveable { mutableStateOf("") }
@@ -274,5 +277,6 @@ private fun DeleteRoute(session: SessionManager, me: Me) {
                 if (result == AccountActionOutcome.NeedsBrowser) AccountLinks.open(context, AccountLinks.ACCOUNT)
             }
         },
+        back = back,
     )
 }

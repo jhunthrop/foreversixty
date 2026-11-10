@@ -1,5 +1,6 @@
 package gg.foreversixty.app.home
 
+import gg.foreversixty.app.designsystem.screenGround
 import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -195,7 +196,7 @@ private fun HomeFromMe(dependencies: HomeDependencies, openBis: () -> Unit, sign
         HomeCharacterScreen(HomeCharacter.from(character), dependencies, openBis, answer.data.entitlements.serverSims, reports, flows, topBar)
         return
     }
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         topBar()
         when (answer) {
             null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = FsColor.gold) }
@@ -246,7 +247,7 @@ fun HomeCharacterScreen(
         val reportsLink = reportsFeature?.let { RankingsReports(it, reports.viewer) }
         RankingsRoute(rankingsFeature, reports.rankings, reportsLink, onBack = { rankingsFeature.navigator.showsBoard = false })
     } else {
-        Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+        Column(Modifier.fillMaxSize().screenGround()) {
             val service = remember(dependencies) { LiveHomeFlowService(dependencies.client, dependencies.catalog) }
             val exits = flows.exits.copy(
                 openGear = openBis,

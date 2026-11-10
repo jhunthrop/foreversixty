@@ -67,7 +67,7 @@ fun TalentRankContent(model: TalentSheetModel, build: String) {
             TalentIconTile(model.talent, face, build, size = 56.dp)
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(model.talent.name, style = ScaledType.name, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-                Text(stringResource(R.string.talents_rank, model.rank, model.talent.maxRank), style = ScaledType.monoMeta, color = FsColor.muted)
+                Text(stringResource(R.string.talents_rank, model.rank, model.talent.maxRank), style = ScaledType.tabularMeta, color = FsColor.muted)
             }
         }
         val panel = RoundedCornerShape(FsRadius.legacyControl)

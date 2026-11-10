@@ -1,5 +1,6 @@
 package gg.foreversixty.app.talents
 
+import gg.foreversixty.app.designsystem.ScaledType
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -273,7 +274,7 @@ fun TalentBadge(text: String, border: Color, textColor: Color, modifier: Modifie
     androidx.compose.runtime.CompositionLocalProvider(LocalDensity provides capped) {
         Text(
             text,
-            style = TextStyle(fontFamily = FontFamily.Monospace, fontWeight = FontWeight.SemiBold, fontSize = 11.sp),
+            style = ScaledType.tabular.copy(fontSize = 11.sp, lineHeight = 11.sp),
             color = textColor,
             softWrap = false,
             modifier = modifier

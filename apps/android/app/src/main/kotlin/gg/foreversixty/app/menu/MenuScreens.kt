@@ -199,7 +199,7 @@ fun MenuScreen(features: ShellFeatures, destination: MenuDestination, onPickClas
 @Composable
 private fun BackButton(onBack: () -> Unit) {
     IconButton(onClick = onBack) {
-        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back), tint = FsColor.text)
+        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back), tint = FsColor.strong)
     }
 }
 

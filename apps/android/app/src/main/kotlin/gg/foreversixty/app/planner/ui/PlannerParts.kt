@@ -127,7 +127,7 @@ fun StepButton(icon: Painter, description: String, enabled: Boolean, onClick: ()
 fun headLine(text: String, totals: String): AnnotatedString = buildAnnotatedString {
     append(text)
     val at = text.lastIndexOf(totals)
-    if (totals.isNotEmpty() && at >= 0) addStyle(SpanStyle(fontFamily = ScaledType.mono.fontFamily), at, at + totals.length)
+    if (totals.isNotEmpty() && at >= 0) addStyle(SpanStyle(fontFamily = ScaledType.tabular.fontFamily, fontFeatureSettings = ScaledType.tabular.fontFeatureSettings), at, at + totals.length)
 }
 
 /** The tree a file opens on: the most points (F6's rule). */

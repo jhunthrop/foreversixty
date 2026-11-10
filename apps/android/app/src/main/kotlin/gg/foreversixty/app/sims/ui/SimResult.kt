@@ -68,10 +68,9 @@ fun SimResultContent(
 ) {
     Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
         when (phase) {
-            SimResultPhase.Loading -> { ScreenTitle(); ResultSkeleton() }
-            SimResultPhase.Failed -> { ScreenTitle(); ErrorBlock(stringResource(R.string.sims_resultFailed), retry) }
+            SimResultPhase.Loading -> ResultSkeleton()
+            SimResultPhase.Failed -> ErrorBlock(stringResource(R.string.sims_resultFailed), retry)
             is SimResultPhase.Loaded -> {
-                ScreenTitle(phase.model.title)
                 phase.offlineSince?.let { SavedAnswerStrip(OfflineStamp.format(it, now), phase.stale, retry) }
                 Loaded(phase.model, looks, build, openItem, openBreakdown)
             }
@@ -93,7 +92,7 @@ private fun Loaded(model: SimResultModel, looks: Map<Int, SimGearLook>, build: S
             style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp),
         )
         Answer(model.answer)
-        Text(model.errorLine, style = ScaledType.monoMeta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp))
+        Text(model.errorLine, style = ScaledType.tabularMeta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp))
         if (model.gear.isNotEmpty()) Gear(model, looks, build, openItem)
         Row(
             Modifier.padding(top = 8.dp).heightIn(min = 48.dp).clickable { openBreakdown(model.breakdownUrl) },

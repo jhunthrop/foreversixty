@@ -93,7 +93,7 @@ fun LevelSheetContent(level: Int, minLevel: Int, change: (Int) -> Unit) {
         SheetTitle(stringResource(R.string.plan_levelSheet))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             StepButton(painterResource(R.drawable.ic_minus), stringResource(R.string.plan_level, level - 1), level > minLevel, { change(level - 1) })
-            Text(level.toString(), style = ScaledType.monoDay, color = FsColor.strong)
+            Text(level.toString(), style = ScaledType.tabularDay, color = FsColor.strong)
             StepButton(rememberVectorPainter(Icons.Filled.Add), stringResource(R.string.plan_level, level + 1), level < PlannerEditor.MAX_LEVEL, { change(level + 1) })
         }
         Text(stringResource(R.string.plan_levelSheetLine, PlannerRules.pointsAvailable(level)), style = ScaledType.meta, color = FsColor.muted)
@@ -164,7 +164,7 @@ fun ShareSheetContent(state: ShareSheetState, onTitle: (String) -> Unit, proceed
             trailingIcon = {
                 Text(
                     stringResource(R.string.plan_shareTitleCount, state.title.length, PlannerShare.TITLE_MAX),
-                    style = ScaledType.monoMeta, color = FsColor.muted, modifier = Modifier.padding(end = 12.dp),
+                    style = ScaledType.tabularMeta, color = FsColor.muted, modifier = Modifier.padding(end = 12.dp),
                 )
             },
             colors = OutlinedTextFieldDefaults.colors(

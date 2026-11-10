@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports
 
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.system.logic.ShareText
 import gg.foreversixty.app.common.rememberHaptics
 import gg.foreversixty.app.common.Connectivity
@@ -140,7 +141,7 @@ fun ReportsRoute(feature: ReportsFeature, viewer: ReportsViewer, signIn: () -> U
         getCompanion = { AccountLinks.open(context, AccountLinks.SETUP) },
         signIn = signIn,
     )
-    PullToRefreshBox(isRefreshing = refreshing, onRefresh = refresh, modifier = Modifier.fillMaxSize().background(FsColor.bg)) {
+    PullToRefreshBox(isRefreshing = refreshing, onRefresh = refresh, modifier = Modifier.fillMaxSize().screenGround()) {
         Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             ReportsList(store.phase, store.pageFailed, viewer, feature.now(), actions, feature.zone)
         }
@@ -184,7 +185,7 @@ fun ReportRouteScreen(feature: ReportsFeature, route: ReportRoute, viewer: Repor
     PullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = { scope.launch { refreshing = true; store.load(); refreshing = false } },
-        modifier = Modifier.fillMaxSize().background(FsColor.bg),
+        modifier = Modifier.fillMaxSize().screenGround(),
     ) {
         Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             ReportContent(ReportScreenState(store.phase, store.parses, store.coach, route.title), feature.now(), actions, feature.zone)

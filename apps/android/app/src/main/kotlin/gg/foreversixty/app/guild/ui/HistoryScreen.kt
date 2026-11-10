@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guild.ui
 
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -68,7 +69,7 @@ fun HistoryContent(
     back: () -> Unit,
 ) {
     val copy = HistoryCopy(LocalResources.current, clock)
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         GuildTopBar(stringResource(R.string.history_title), back)
         LazyColumn(Modifier.fillMaxSize()) {
             when (state) {

@@ -117,8 +117,8 @@ private fun SeePlans() {
 
 /** F8.4 Plan: the card with the site's plan line, what it includes, and billing where allowed. */
 @Composable
-fun PlanScreen(plan: PlanSummary, mayLink: Boolean, onManageBilling: () -> Unit) {
-    AccountPage(stringResource(R.string.you_plan)) {
+fun PlanScreen(plan: PlanSummary, mayLink: Boolean, back: (() -> Unit)? = null, onManageBilling: () -> Unit) {
+    AccountPage(stringResource(R.string.you_plan), back) {
         Column(
             Modifier.fillMaxWidth().primaryCard().padding(FsSpace.space4),
             verticalArrangement = Arrangement.spacedBy(FsSpace.space3),

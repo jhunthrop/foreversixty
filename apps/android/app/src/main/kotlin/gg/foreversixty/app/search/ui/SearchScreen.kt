@@ -1,5 +1,6 @@
 package gg.foreversixty.app.search.ui
 
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.model.CharacterSearchRow
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -106,7 +107,7 @@ data class SearchActions(
 @Composable
 fun SearchScreen(state: SearchScreenState, actions: SearchActions, focusField: Boolean = true) {
     val copy = SearchCopy(LocalResources.current)
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         SearchField(state.query, actions, focusField)
         ScopeChips(state.scope, copy, actions.onScope)
         LazyColumn(Modifier.fillMaxSize().weight(1f)) {

@@ -118,7 +118,7 @@ fun GameIcon(
 fun SectionLabel(text: String, color: Color = FsColor.muted, trailing: String? = null) {
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.semantics { heading() }) {
         Text(text, style = FsType.label, color = color, maxLines = 1, softWrap = false)
-        trailing?.let { Text(it, style = ScaledType.monoMeta, color = color) }
+        trailing?.let { Text(it, style = ScaledType.tabularMeta, color = color) }
     }
 }
 
@@ -150,7 +150,7 @@ fun DateBlock(at: Instant, clock: RaidClock, width: Dp = 52.dp, height: Dp = 56.
             .clearAndSetSemantics {},
     ) {
         Text(weekday, style = FsType.label, color = FsColor.muted)
-        Text(day, style = ScaledType.monoDay, color = FsColor.strong)
+        Text(day, style = ScaledType.tabularDay, color = FsColor.strong)
         Text(month, style = FsType.label, color = FsColor.muted)
     }
 }

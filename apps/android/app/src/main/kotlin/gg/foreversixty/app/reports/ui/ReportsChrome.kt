@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports.ui
 
+import gg.foreversixty.app.designsystem.FsTopBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -67,21 +68,7 @@ fun ReportsBar(
     titleColor: Color = FsColor.strong,
     actions: @Composable RowScope.() -> Unit,
 ) {
-    TopAppBar(
-        title = {
-            Text(
-                title, style = ScaledType.h2, color = titleColor, maxLines = 2, overflow = TextOverflow.Clip,
-                modifier = Modifier.semantics { heading() },
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = back) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = backLabel, tint = FsColor.strong) }
-        },
-        actions = actions,
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-        // The app scaffold already pads for the status bar.
-        windowInsets = WindowInsets(0, 0, 0, 0),
-    )
+    FsTopBar(title.ifEmpty { null }, backLabel, back, titleColor, actions = actions)
 }
 
 /** A bar's trailing icon button. */

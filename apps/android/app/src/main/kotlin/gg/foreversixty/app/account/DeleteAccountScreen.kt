@@ -67,10 +67,12 @@ fun DeleteAccountScreen(
     deleting: Boolean,
     outcome: AccountActionOutcome?,
     onDelete: () -> Unit,
+    /** Back to the screen under this one: the title moves into the band bar (round 5). */
+    back: (() -> Unit)? = null,
 ) {
     val lines = consequences.map { AccountCopy.consequence(it) }
     val canDelete = !deleting && DeletionConfirmation.matches(typed, battleTag)
-    AccountPage(stringResource(R.string.shared_account_delete_title)) {
+    AccountPage(stringResource(R.string.shared_account_delete_title), back) {
         Text(stringResource(R.string.shared_account_delete_intro), style = ScaledType.body, color = FsColor.text)
         BulletGroup(stringResource(R.string.shared_account_delete_deleted_title), DELETED_ITEMS.map { stringResource(it) }, Icons.Filled.Close)
         BulletGroup(stringResource(R.string.shared_account_delete_kept_title), KEPT_ITEMS.map { stringResource(it) }, Icons.Filled.Check, FsColor.muted)

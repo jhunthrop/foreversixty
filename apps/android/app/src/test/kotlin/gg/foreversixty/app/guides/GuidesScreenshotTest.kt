@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guides
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -77,7 +78,7 @@ class GuidesScreenshotTest {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
                     ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) {
-                        Box(Modifier.fillMaxSize().background(FsColor.bg)) { screen() }
+                        Box(Modifier.fillMaxSize().screenGround()) { screen() }
                     }
                 }
             }

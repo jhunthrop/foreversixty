@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guides.ui
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -106,7 +107,7 @@ private fun DateRow(row: KeyDateRow) {
                 .padding(6.dp),
             contentAlignment = Alignment.Center,
         ) {
-            Text(date.key, style = ScaledType.mono, color = FsColor.strong, textAlign = TextAlign.Center)
+            Text(date.key, style = ScaledType.tabular, color = FsColor.strong, textAlign = TextAlign.Center)
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(date.value, style = ScaledType.bodyStrong, color = FsColor.strong)
@@ -124,7 +125,7 @@ private fun ChangeRow(entry: ChangelogEntry, open: () -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(GuideSpace.inCard),
         verticalAlignment = Alignment.Top,
     ) {
-        Text(GuideDates.monthDay(entry.date), style = ScaledType.monoMeta, color = FsColor.muted, modifier = Modifier.padding(top = 2.dp))
+        Text(GuideDates.monthDay(entry.date), style = ScaledType.tabularMeta, color = FsColor.muted, modifier = Modifier.padding(top = 2.dp))
         Text(entry.title, style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
         Tag(copy.tag(Changes.tag(entry)), FsColor.muted)
     }
@@ -133,7 +134,7 @@ private fun ChangeRow(entry: ChangelogEntry, open: () -> Unit) {
 /** A changelog entry in the guide reader's style: its blocks and the Sources disclosure. */
 @Composable
 fun ChangeReader(entry: ChangelogEntry?, back: () -> Unit) {
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         ReportsBar(stringResource(R.string.changes_list), stringResource(R.string.guides_title), back)
         if (entry == null) return@Column
         Column(Modifier.verticalScroll(rememberScrollState()).screenMargins().padding(bottom = GuideSpace.section), verticalArrangement = Arrangement.spacedBy(GuideSpace.rowGap)) {

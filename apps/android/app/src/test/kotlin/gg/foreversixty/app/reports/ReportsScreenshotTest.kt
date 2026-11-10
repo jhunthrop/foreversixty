@@ -1,5 +1,6 @@
 package gg.foreversixty.app.reports
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -83,7 +84,7 @@ class ReportsScreenshotTest {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
                     ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) {
                         // A route scrolls itself; the stateless screens are given the scroll the route would.
-                        val ground = Modifier.fillMaxSize().background(FsColor.bg)
+                        val ground = Modifier.fillMaxSize().screenGround()
                         Box(if (scrolls) ground.verticalScroll(rememberScrollState()) else ground) { screen() }
                     }
                 }

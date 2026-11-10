@@ -87,11 +87,12 @@ class PremiumScreenshotTest {
             ),
             actions = YouActions({}, {}, {}, {}, {}, {}, {}, {}),
             mayLink = mayLink,
+            back = {},
         )
     }
 
     @Composable
-    private fun Plan(file: String, mayLink: Boolean) = PlanScreen(PlanSummary.of(me(file), NOW), mayLink) {}
+    private fun Plan(file: String, mayLink: Boolean) = PlanScreen(PlanSummary.of(me(file), NOW), mayLink, back = {}) {}
 
     private fun capture(name: String, screen: @Composable () -> Unit) {
         compose.setContent { ForeverTheme { ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) { screen() } } }

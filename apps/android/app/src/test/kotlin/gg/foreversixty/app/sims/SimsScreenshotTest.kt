@@ -1,5 +1,6 @@
 package gg.foreversixty.app.sims
 
+import gg.foreversixty.app.designsystem.PushedScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -60,7 +61,10 @@ class SimsScreenshotTest {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
                     ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) {
-                        Box(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) { screen() }
+                        // The route's chrome: the band bar over the ground (SimsRoute, SimResultRoute).
+                        PushedScreen(if (name.startsWith("result")) "Fury Warrior" else "Sims", "Back", {}) {
+                            Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) { screen() }
+                        }
                     }
                 }
             }

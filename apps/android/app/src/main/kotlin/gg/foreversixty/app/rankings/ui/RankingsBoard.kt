@@ -325,7 +325,7 @@ private fun Name(row: RankingRow, yours: Boolean) {
 @Composable
 private fun Value(row: RankingRow, filters: RankingsFilters, copy: RankingsCopy, align: Alignment.Horizontal) {
     Column(horizontalAlignment = align) {
-        Text(Rankings.valueText(row, filters.measure), style = ScaledType.mono.copy(fontSize = 17.sp), color = FsColor.strong)
+        Text(Rankings.valueText(row, filters.measure), style = ScaledType.tabular.copy(fontSize = 17.sp), color = FsColor.strong)
         Text(copy.unit(filters.measure), style = FsType.label, color = FsColor.muted)
     }
 }
@@ -416,4 +416,4 @@ private fun Skeleton(signedIn: Boolean) {
 /** The rank numeral: mono 700. */
 private val MENU_OFFSET = DpOffset(56.dp, 0.dp)
 
-private val RankNumeral = ScaledType.mono.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+private val RankNumeral = ScaledType.tabular.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp)

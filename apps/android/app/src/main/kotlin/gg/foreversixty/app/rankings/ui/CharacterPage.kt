@@ -1,5 +1,7 @@
 package gg.foreversixty.app.rankings.ui
 
+import gg.foreversixty.app.designsystem.surfaceBand
+import gg.foreversixty.app.designsystem.FsTopBar
 import gg.foreversixty.app.designsystem.Label12
 import gg.foreversixty.app.designsystem.SectionTitle
 import gg.foreversixty.app.navigation.DeepLink
@@ -85,7 +87,6 @@ import gg.foreversixty.app.reports.logic.ParseTier
 import gg.foreversixty.app.reports.ui.Chevron
 import gg.foreversixty.app.reports.ui.ErrorRegion
 import gg.foreversixty.app.reports.ui.OutcomeDot
-import gg.foreversixty.app.reports.ui.ReportsBar
 import gg.foreversixty.app.reports.ui.SkeletonBar
 import gg.foreversixty.app.reports.ui.SkeletonDot
 import gg.foreversixty.app.reports.ui.isLargeText
@@ -139,15 +140,20 @@ fun CharacterContent(state: CharacterScreenState, specs: SpecCatalog, now: Insta
     val offline = loaded?.offlineSince
     Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
         val name = loaded?.profile?.character?.name ?: state.route.name
-        // The head right under the bar names the character, so the bar title stays empty while it shows.
-        ReportsBar(if (loaded != null) "" else name, stringResource(R.string.rank_title), actions.back) {
+        // Loaded, the head continues the bar's band and names the character (the web's page head), so the bar has no title.
+        FsTopBar(name.takeIf { loaded == null }, stringResource(R.string.rank_title), actions.back, bottomLine = loaded == null) {
             if (loaded != null) {
                 state.watch?.let { WatchStar(it, name, enabled = offline == null || loaded.stale, actions.toggleWatch) }
                 IconButton(onClick = actions.share) { Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.char_share), tint = FsColor.strong) }
             }
         }
+        loaded?.let { phase ->
+            Box(Modifier.fillMaxWidth().surfaceBand().padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+                Head(phase.profile, state, CharacterCard.specName(phase.profile, specs), copy)
+            }
+        }
         offline?.let { SavedAnswerStrip(OfflineStamp.format(it, now, zone), loaded.stale, actions.retry) }
-        Column(Modifier.padding(horizontal = 16.dp).padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(22.dp)) {
+        Column(Modifier.padding(horizontal = 16.dp).padding(top = 16.dp), verticalArrangement = Arrangement.spacedBy(22.dp)) {
             when (val phase = state.phase) {
                 CharacterPhase.Loading -> Skeleton()
                 CharacterPhase.Failed -> ErrorRegion(stringResource(R.string.char_error), actions.retry, inset = false)
@@ -173,7 +179,6 @@ private fun WatchStar(watch: WatchState, name: String, enabled: Boolean, toggle:
 
 @Composable
 private fun Profile(profile: CharacterProfile, state: CharacterScreenState, specs: SpecCatalog, now: Instant, copy: CharacterCopy, actions: CharacterActions) {
-    Head(profile, state, CharacterCard.specName(profile, specs), copy)
     if (CharacterCard.showsScoreSection(profile)) ScoreCard(profile, copy, actions)
     if (profile.best.isNotEmpty()) Section(stringResource(R.string.char_bests)) { profile.best.forEachIndexed { i, f -> Divided(i) { BestRow(profile, f, now, copy) } } }
     if (profile.history.isNotEmpty()) {
@@ -187,7 +192,7 @@ private fun Profile(profile: CharacterProfile, state: CharacterScreenState, spec
             profile.buildsSeen.forEachIndexed { i, b ->
                 Divided(i) {
                     Column(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 10.dp)) {
-                        Text(b.talentSplit, style = ScaledType.mono, color = FsColor.strong)
+                        Text(b.talentSplit, style = ScaledType.tabular, color = FsColor.strong)
                         Text(copy.buildMeta(b.spec, b.firstSeen), style = ScaledType.meta, color = FsColor.muted)
                     }
                 }
@@ -234,8 +239,8 @@ private fun Head(profile: CharacterProfile, state: CharacterScreenState, specNam
                         if (profile.supporter) Tag(stringResource(R.string.shared_premium_supporterChip), FsColor.rarityEpicText)
                     }
                 }
-                Text(copy.descriptor(profile, specName), style = ScaledType.body, color = FsColor.muted)
-                Text(copy.where(profile), style = ScaledType.body, color = FsColor.muted)
+                Text(copy.descriptor(profile, specName), style = ScaledType.body, color = FsColor.nav)
+                Text(copy.where(profile), style = ScaledType.body, color = FsColor.nav)
             }
         }
         if (state.watch?.failed == true) {
@@ -268,7 +273,7 @@ private fun ScoreCard(profile: CharacterProfile, copy: CharacterCopy, actions: C
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Label12(stringResource(R.string.char_score))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text(copy.score(score), style = ScaledType.mono.copy(fontSize = CharacterLayout.scoreSize, fontWeight = FontWeight.Bold, letterSpacing = SCORE_TRACKING), color = FsColor.strong)
+                    Text(copy.score(score), style = ScaledType.tabular.copy(fontSize = CharacterLayout.scoreSize, fontWeight = FontWeight.Bold, letterSpacing = SCORE_TRACKING), color = FsColor.strong)
                     Tag(copy.tier(profile.tier), ItemQuality(CharacterCard.tierQuality(profile.tier)).text)
                 }
                 copy.asOf(profile.asOf)?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
@@ -295,14 +300,14 @@ private fun ComponentBar(bar: ScoreBar) {
     }
     if (isLargeText()) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Row { Text(name, style = ScaledType.body, color = FsColor.muted, modifier = Modifier.weight(1f)); Text(bar.value.toString(), style = ScaledType.mono, color = FsColor.strong) }
+            Row { Text(name, style = ScaledType.body, color = FsColor.muted, modifier = Modifier.weight(1f)); Text(bar.value.toString(), style = ScaledType.tabular, color = FsColor.strong) }
             track(Modifier.fillMaxWidth())
         }
     } else {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(name, style = ScaledType.body, color = FsColor.muted, modifier = Modifier.width(CharacterLayout.barLabel))
             track(Modifier.weight(1f))
-            Text(bar.value.toString(), style = ScaledType.mono, color = FsColor.strong, modifier = Modifier.width(36.dp), textAlign = TextAlign.End)
+            Text(bar.value.toString(), style = ScaledType.tabular, color = FsColor.strong, modifier = Modifier.width(36.dp), textAlign = TextAlign.End)
         }
     }
 }
@@ -334,7 +339,7 @@ private fun BestRow(profile: CharacterProfile, fight: CharacterFight, now: Insta
             fight.percentile?.let { p ->
                 val n = p.roundToInt()
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text(n.toString(), style = ScaledType.mono.copy(fontWeight = FontWeight.Bold), color = parseColor(ParseTier.of(n)))
+                    Text(n.toString(), style = ScaledType.tabular.copy(fontWeight = FontWeight.Bold), color = parseColor(ParseTier.of(n)))
                     Text(stringResource(R.string.char_percentile), style = ScaledType.meta, color = FsColor.muted)
                 }
             }
@@ -363,8 +368,8 @@ private fun RecentRow(fight: CharacterFight, now: Instant, copy: CharacterCopy, 
 @Composable
 private fun FigureWithUnit(value: String, unit: String) {
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(value, style = ScaledType.mono.copy(fontSize = 17.sp), color = FsColor.strong)
-        Text(unit, style = ScaledType.monoMeta, color = FsColor.muted)
+        Text(value, style = ScaledType.tabular.copy(fontSize = 17.sp), color = FsColor.strong)
+        Text(unit, style = ScaledType.tabularMeta, color = FsColor.muted)
     }
 }
 
@@ -388,7 +393,7 @@ private fun GearSection(profile: CharacterProfile, state: CharacterScreenState, 
         profile.gearGapTotal?.let { gap ->
             Row(Modifier.fillMaxWidth().quietCard().heightIn(min = 56.dp).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.char_gap), style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
-                Text(stringResource(R.string.char_gapPoints, ItemNumbers.tenths(gap)), style = ScaledType.mono, color = FsColor.strong)
+                Text(stringResource(R.string.char_gapPoints, ItemNumbers.tenths(gap)), style = ScaledType.tabular, color = FsColor.strong)
             }
         }
     }

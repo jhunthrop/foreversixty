@@ -103,17 +103,17 @@ class AccountScreenshotTest {
     @Test fun `sign out confirmation`() = screen("you-signout-confirm") { You(me("me.json"), confirming = true) }
 
     @Test fun `devices`() = tab("devices-default", ForeverTab.Home) {
-        DevicesScreen(DevicesState.Loaded(deviceRows()), null, {}, {})
+        DevicesScreen(DevicesState.Loaded(deviceRows()), null, {}, {}, back = {})
     }
 
     @Test fun `revoke confirmation`() {
         val rows = deviceRows()
-        screen("devices-revoke-confirm") { DevicesScreen(DevicesState.Loaded(rows), null, {}, {}, initiallyConfirming = rows[1]) }
+        screen("devices-revoke-confirm") { DevicesScreen(DevicesState.Loaded(rows), null, {}, {}, initiallyConfirming = rows[1], back = {}) }
     }
 
     @Test fun `revoke failed`() {
         val rows = deviceRows()
-        tab("devices-revoke-failed", ForeverTab.Home) { DevicesScreen(DevicesState.Loaded(rows), rows[1].id, {}, {}) }
+        tab("devices-revoke-failed", ForeverTab.Home) { DevicesScreen(DevicesState.Loaded(rows), rows[1].id, {}, {}, back = {}) }
     }
 
     @Test fun `delete account, free`() = delete("delete-free", "me.json")
@@ -132,7 +132,7 @@ class AccountScreenshotTest {
 
     @Test fun `delete account, BattleTag typed`() = delete("delete-ready", "me.json", typed = "yell#1604")
 
-    @Test fun `about`() = tab("about-default", ForeverTab.Home) { AboutScreen(VERSION) }
+    @Test fun `about`() = tab("about-default", ForeverTab.Home) { AboutScreen(VERSION, back = {}) }
 
     private fun errorMessage(name: String): String =
         requireNotNull(ApiJson.parseToJsonElement(fixture(name)).jsonObject["error"]?.jsonObject?.get("message")) { "no message in $name" }
@@ -142,7 +142,7 @@ class AccountScreenshotTest {
         val me = me(file)
         val consequences = DeletionConsequence.of(me)
         tab(name, ForeverTab.Home) {
-            DeleteAccountScreen(consequences, me.user.battletag, typed, {}, deleting = false, outcome = outcome, onDelete = {})
+            DeleteAccountScreen(consequences, me.user.battletag, typed, {}, deleting = false, outcome = outcome, onDelete = {}, back = {})
         }
     }
 
@@ -162,6 +162,7 @@ class AccountScreenshotTest {
             ),
             actions = YouActions({}, {}, {}, {}, {}, {}, {}, {}),
             confirmingSignOut = confirming,
+            back = {},
         )
     }
 

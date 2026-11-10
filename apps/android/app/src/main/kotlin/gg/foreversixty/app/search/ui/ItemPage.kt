@@ -1,5 +1,7 @@
 package gg.foreversixty.app.search.ui
 
+import gg.foreversixty.app.designsystem.FsTopBar
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -105,7 +107,7 @@ fun ItemPage(
     val list = rememberLazyListState()
     // The name sits in the head; the bar repeats it only once the head has scrolled away (P S7).
     val headGone by remember { derivedStateOf { list.firstVisibleItemIndex > 0 } }
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         ItemBar(titleOf(phase)?.takeIf { headGone }, backLabel, actions.onBack)
         Box(Modifier.weight(1f)) {
             when (phase) {
@@ -131,15 +133,7 @@ private fun titleOf(phase: ItemPagePhase): String? = when (phase) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ItemBar(title: String?, backLabel: String, onBack: () -> Unit) {
-    TopAppBar(
-        title = { title?.let { Text(it, style = ScaledType.sec, color = FsColor.strong, maxLines = 2) } },
-        navigationIcon = {
-            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = backLabel, tint = FsColor.strong) }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-        // The overlay already pads for the system bars.
-        windowInsets = WindowInsets(0, 0, 0, 0),
-    )
+    FsTopBar(title, backLabel, onBack)
 }
 
 @Composable

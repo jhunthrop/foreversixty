@@ -207,7 +207,7 @@ private fun MeterRowView(row: MeterRow, metric: Metric, specs: SpecCatalog, buil
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Text(row.rank.toString(), style = ScaledType.monoMeta, color = FsColor.muted, modifier = Modifier.widthIn(min = 20.dp))
+            Text(row.rank.toString(), style = ScaledType.tabularMeta, color = FsColor.muted, modifier = Modifier.widthIn(min = 20.dp))
             PlayerMark(player.spec, player.className, specs, build)
             if (stacked) {
                 Column(Modifier.weight(1f)) {
@@ -225,7 +225,7 @@ private fun MeterRowView(row: MeterRow, metric: Metric, specs: SpecCatalog, buil
 @Composable
 private fun Figure(row: MeterRow, metric: Metric, copy: ReportsCopy) {
     Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(Parses.figure(row.value), style = ScaledType.mono, color = FsColor.strong)
+        Text(Parses.figure(row.value), style = ScaledType.tabular, color = FsColor.strong)
         Text(copy.unit(metric.unit), style = FsType.label, color = FsColor.muted, modifier = Modifier.padding(bottom = 2.dp))
     }
 }

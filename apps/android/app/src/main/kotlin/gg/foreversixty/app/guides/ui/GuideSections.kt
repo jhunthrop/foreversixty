@@ -117,7 +117,7 @@ private fun BuildRowView(row: BuildRow, copy: GuidesCopy) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(copy.build(row.kind), style = ScaledType.bodyStrong, color = FsColor.strong, modifier = Modifier.weight(1f))
-        Text(row.totals, style = ScaledType.mono, color = FsColor.text)
+        Text(row.totals, style = ScaledType.tabular, color = FsColor.text)
         if (row.kind == BuildKind.Raid) Text(stringResource(R.string.guides_buildLevel), style = ScaledType.meta, color = FsColor.muted)
     }
 }
@@ -137,7 +137,7 @@ private fun RotationGroupView(group: RotationGroup, build: String, copy: GuidesC
         Label12(copy.rotation(group.kind))
         QuietRows(group.rows) { row ->
             Row(Modifier.fillMaxWidth().padding(start = GuideSpace.margin), verticalAlignment = Alignment.CenterVertically) {
-                Text(row.number.toString(), style = ScaledType.mono, color = FsColor.muted, modifier = Modifier.widthIn(min = NUMBER_WIDTH))
+                Text(row.number.toString(), style = ScaledType.tabular, color = FsColor.muted, modifier = Modifier.widthIn(min = NUMBER_WIDTH))
                 SpellRow(row.spell, build, copy)
             }
         }
@@ -211,7 +211,7 @@ private fun IconRow(icon: String?, build: String, inset: Boolean = true, tile: B
 private fun NameAndFigure(name: String, figure: String?) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), itemVerticalAlignment = Alignment.Bottom) {
         Text(name, style = ScaledType.bodyStrong, color = FsColor.strong)
-        figure?.let { Text(it, style = ScaledType.monoMeta, color = FsColor.muted) }
+        figure?.let { Text(it, style = ScaledType.tabularMeta, color = FsColor.muted) }
     }
 }
 

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.search
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -70,7 +71,7 @@ class SearchScreenshotTest {
         compose.setContent {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
-                    Box(Modifier.fillMaxSize().background(FsColor.bg)) { screen() }
+                    Box(Modifier.fillMaxSize().screenGround()) { screen() }
                 }
             }
         }

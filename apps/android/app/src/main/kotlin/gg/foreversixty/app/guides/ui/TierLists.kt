@@ -192,7 +192,7 @@ private fun TierRowView(model: TierRowModel, count: Int, build: String, open: ()
         horizontalArrangement = Arrangement.spacedBy(GuideSpace.rowGap),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(row.rank.toString(), style = ScaledType.mono, color = FsColor.muted, modifier = Modifier.widthIn(min = RANK_WIDTH))
+        Text(row.rank.toString(), style = ScaledType.tabular, color = FsColor.muted, modifier = Modifier.widthIn(min = RANK_WIDTH))
         SpecTile(row.icon, row.classSlug, build, ROW_ICON)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -218,9 +218,9 @@ private fun Figure(model: TierRowModel, inline: Boolean) {
         val tone = model.tone
         if (tone != null && row.tier != null) {
             TierChip(row.tier.orEmpty(), tone)
-            Text(model.gap, style = ScaledType.mono, color = FsColor.text, textAlign = TextAlign.End)
+            Text(model.gap, style = ScaledType.tabular, color = FsColor.text, textAlign = TextAlign.End)
         } else {
-            Text(row.metricText, style = ScaledType.mono, color = FsColor.text)
+            Text(row.metricText, style = ScaledType.tabular, color = FsColor.text)
             Text(row.unit, style = ScaledType.meta, color = FsColor.muted)
         }
     }

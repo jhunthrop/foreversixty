@@ -1,5 +1,6 @@
 package gg.foreversixty.app.search
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.layout.Column
 import gg.foreversixty.app.common.NewBuildStrip
 import gg.foreversixty.app.navigation.DeepLink
@@ -230,7 +231,7 @@ fun SearchOverlay(
     }
     BackHandler { navigator.pop() }
     Box(
-        Modifier.fillMaxSize().background(FsColor.bg)
+        Modifier.fillMaxSize().screenGround()
             .pointerInput(Unit) { awaitPointerEventScope { while (true) awaitPointerEvent() } }
             .windowInsetsPadding(WindowInsets.safeDrawing),
     ) {

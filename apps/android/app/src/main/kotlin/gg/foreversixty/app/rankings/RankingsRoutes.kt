@@ -1,5 +1,6 @@
 package gg.foreversixty.app.rankings
 
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.raids.logic.GameClass
 import gg.foreversixty.app.system.logic.ShareText
 import gg.foreversixty.app.common.rememberHaptics
@@ -120,7 +121,7 @@ private fun BoardRoute(feature: RankingsFeature, viewer: RankingsViewer, reports
         share = { row -> CharacterCard.shareUrl(row.player.key)?.let { RankingsFeature.share(context, it) } },
     )
     val state = RankingsScreenState(store.phase, store.filters, store.encounterNames, viewer, store.pageFailed, store.watched, reports != null)
-    PullToRefreshBox(isRefreshing = refreshing, onRefresh = refresh, modifier = Modifier.fillMaxSize().background(FsColor.bg)) {
+    PullToRefreshBox(isRefreshing = refreshing, onRefresh = refresh, modifier = Modifier.fillMaxSize().screenGround()) {
         Box(Modifier.fillMaxSize().onGloballyPositioned { top = it.positionInRoot().y }.verticalScroll(scroll)) {
             RankingsContent(state, feature.now(), actions, feature.zone)
         }
@@ -224,7 +225,7 @@ fun CharacterRouteScreen(
     PullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = { scope.launch { refreshing = true; store.load(); refreshing = false } },
-        modifier = Modifier.fillMaxSize().background(FsColor.bg),
+        modifier = Modifier.fillMaxSize().screenGround(),
     ) {
         Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             CharacterContent(state, feature.specs, feature.now(), actions, feature.zone)

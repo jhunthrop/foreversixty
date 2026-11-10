@@ -117,7 +117,7 @@ fun SimStateText(face: SimRowFace, copy: SimsCopy, singleLine: Boolean = false, 
             style = ScaledType.meta, maxLines = lines, softWrap = !singleLine, onTextLayout = layout,
         )
         ServerRunState.Done, ServerRunState.DoneUnseen ->
-            Text(face.headline, style = if (SimsLayout.isFigure(face.headline)) ScaledType.mono else ScaledType.bodyStrong, color = FsColor.strong, maxLines = lines, softWrap = !singleLine, onTextLayout = layout)
+            Text(face.headline, style = if (SimsLayout.isFigure(face.headline)) ScaledType.tabular else ScaledType.bodyStrong, color = FsColor.strong, maxLines = lines, softWrap = !singleLine, onTextLayout = layout)
         ServerRunState.Failed -> Text(copy.failedLine(face.row), style = ScaledType.meta, color = FsColor.wipe, maxLines = lines, softWrap = !singleLine, onTextLayout = layout)
     }
 }
@@ -125,7 +125,7 @@ fun SimStateText(face: SimRowFace, copy: SimsCopy, singleLine: Boolean = false, 
 /** State left and age right; at large text the age stacks under the state. */
 @Composable
 private fun SimStateLine(face: SimRowFace, copy: SimsCopy, now: Instant) {
-    val age = @Composable { Text(copy.ageLine(face.row, face.state, now), style = ScaledType.monoMeta, color = FsColor.muted) }
+    val age = @Composable { Text(copy.ageLine(face.row, face.state, now), style = ScaledType.tabularMeta, color = FsColor.muted) }
     // The age drops under the state when the two do not fit on one line (spec F5.1 item 3).
     var overflows by remember(face.row, now) { mutableStateOf(false) }
     if (overflows || LocalDensity.current.fontScale >= SimsLayout.STACK_SCALE) {
@@ -153,7 +153,7 @@ private fun SimProgressBar(progress: SimProgress) {
             gapSize = 0.dp,
             drawStopIndicator = {},
         )
-        Text(words, style = ScaledType.monoMeta, color = FsColor.muted)
+        Text(words, style = ScaledType.tabularMeta, color = FsColor.muted)
     }
 }
 

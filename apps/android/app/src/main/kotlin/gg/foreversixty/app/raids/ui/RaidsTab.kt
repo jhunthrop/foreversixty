@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids.ui
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.ScaledType
@@ -73,7 +74,7 @@ fun RaidsTabContentView(
     requestPermission: () -> Unit,
     guildRows: @Composable (RaidsTabContent) -> Unit = {},
 ) {
-    Column(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
+    Column(Modifier.fillMaxSize().screenGround().verticalScroll(rememberScrollState())) {
         (state as? RaidsTabState.Loaded)?.content?.let { content ->
             content.offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, now()), content.stale, retry) }
         }
@@ -284,7 +285,7 @@ fun PlannedRow(raid: RaidView, clock: RaidClock, now: Instant, currentKey: Strin
             Text(raid.title, style = ScaledType.bodyStrong, color = FsColor.strong, maxLines = 2)
             Text(clock.whenPhrase(facts.startsAt, now), style = ScaledType.meta, color = FsColor.muted)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(if (raid.size == null) facts.countLine(res) else facts.ratio, style = ScaledType.monoMeta, color = FsColor.strong)
+                Text(if (raid.size == null) facts.countLine(res) else facts.ratio, style = ScaledType.tabularMeta, color = FsColor.strong)
                 if (!large) facts.fill?.let { FillBar(it, 64.dp) }
             }
             // Large text: the chip moves under the title.

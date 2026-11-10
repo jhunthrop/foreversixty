@@ -1,10 +1,12 @@
 package gg.foreversixty.app.planner.ui
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import gg.foreversixty.app.designsystem.FsTopBar
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -108,7 +110,7 @@ class EditorActions(
 @Composable
 fun PlannerEditorPage(state: EditorPageState, actions: EditorActions, modifier: Modifier = Modifier) {
     val view = (state.phase as? EditorPhase.Ready)?.view
-    Column(modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(modifier.fillMaxSize().screenGround()) {
         EditorBar(canUndo = view?.state?.canUndo == true, actions)
         when (val phase = state.phase) {
             EditorPhase.Loading -> TalentsSkeleton()
@@ -121,30 +123,15 @@ fun PlannerEditorPage(state: EditorPageState, actions: EditorActions, modifier: 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditorBar(canUndo: Boolean, actions: EditorActions) {
-    TopAppBar(
-        title = {
-            Text(
-                stringResource(R.string.plan_title), style = ScaledType.sec, color = FsColor.strong,
-                modifier = Modifier.semantics { heading() },
+    FsTopBar(stringResource(R.string.plan_title), stringResource(R.string.talents_title), actions.back) {
+        IconButton(onClick = actions.undo, enabled = canUndo) {
+            // An empty history is visibly off: the glyph at 40%.
+            Icon(
+                painterResource(R.drawable.ic_undo), contentDescription = stringResource(R.string.plan_undo),
+                tint = FsColor.strong, modifier = Modifier.alpha(if (canUndo) 1f else DISABLED_ALPHA),
             )
-        },
-        navigationIcon = {
-            IconButton(onClick = actions.back) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.talents_title), tint = FsColor.strong)
-            }
-        },
-        actions = {
-            IconButton(onClick = actions.undo, enabled = canUndo) {
-                // An empty history is visibly off: the glyph at 40%.
-                Icon(
-                    painterResource(R.drawable.ic_undo), contentDescription = stringResource(R.string.plan_undo),
-                    tint = FsColor.strong, modifier = Modifier.alpha(if (canUndo) 1f else DISABLED_ALPHA),
-                )
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-        windowInsets = WindowInsets(0, 0, 0, 0),
-    )
+        }
+    }
 }
 
 @Composable
@@ -240,7 +227,7 @@ private fun PointsLeft(left: Int) {
     val spoken = stringResource(R.string.plan_a11yLeft, left)
     Text(
         stringResource(R.string.plan_left, left),
-        style = ScaledType.monoDay,
+        style = ScaledType.tabularDay,
         color = if (left == 0) FsColor.kill else FsColor.gold,
         modifier = Modifier.clearAndSetSemantics {
             contentDescription = spoken
@@ -271,7 +258,7 @@ private fun StepperStrip(strip: StripModel, build: String, copy: PlannerCopy, ac
                     buildAnnotatedString {
                         append(talent.name)
                         append(NBSP)
-                        withStyle(SpanStyle(fontFamily = ScaledType.mono.fontFamily, color = FsColor.text)) { append(rank) }
+                        withStyle(SpanStyle(fontFamily = ScaledType.tabular.fontFamily, fontFeatureSettings = ScaledType.tabular.fontFeatureSettings, color = FsColor.text)) { append(rank) }
                     },
                     style = ScaledType.bodyStrong, color = FsColor.strong,
                 )

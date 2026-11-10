@@ -1,5 +1,6 @@
 package gg.foreversixty.app.guild.ui
 
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.common.rememberHaptics
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
@@ -104,7 +105,7 @@ fun RosterContent(
     back: () -> Unit,
 ) {
     val copy = RosterCopy(LocalResources.current)
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         GuildTopBar(stringResource(R.string.roster_title), back) {
             IconButton(onClick = { controls.searching = !controls.searching }) {
                 Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.roster_search), tint = FsColor.strong)

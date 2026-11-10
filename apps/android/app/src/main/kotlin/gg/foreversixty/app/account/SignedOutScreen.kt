@@ -1,5 +1,6 @@
 package gg.foreversixty.app.account
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -99,7 +100,7 @@ fun ImportScreen() {
 @Composable
 fun NoCharactersScreen(onGetAddon: () -> Unit) {
     Column(
-        Modifier.fillMaxSize().background(FsColor.bg).padding(FsSpace.space4),
+        Modifier.fillMaxSize().screenGround().padding(FsSpace.space4),
         verticalArrangement = Arrangement.spacedBy(FsSpace.space4),
     ) {
         Text(

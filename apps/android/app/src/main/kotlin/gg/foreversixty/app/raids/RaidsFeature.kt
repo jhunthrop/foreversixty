@@ -1,5 +1,6 @@
 package gg.foreversixty.app.raids
 
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.common.rememberHaptics
 import android.Manifest
 import android.content.Context
@@ -301,7 +302,7 @@ fun RaidsRoute(
     BackHandler(enabled = feature.navigator.stack.isNotEmpty()) { feature.navigator.pop() }
     CompositionLocalProvider(LocalRaidIconBuild provides iconBuild) {
         when (val top = feature.navigator.stack.lastOrNull()) {
-            null -> Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+            null -> Column(Modifier.fillMaxSize().screenGround()) {
                 val view = RaidTabPresenter(res, clock, feature.now()).view(tab.state, next, feature.badge, extras != null, feature.tabExtras)
                 if (view != null) {
                     RaidTabScreen(view, raidTabActions(feature, content, next, scope, uri::openUri, signIn), topBar = selector) {

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.rankings
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -93,7 +94,7 @@ class RankingsScreenshotTest {
             ForeverTheme {
                 CompositionLocalProvider(LocalItemIconPainter provides HomeFixtures.repoIcons) {
                     // The screens are given the scroll their route gives them; a sheet scrolls itself.
-                    val ground = Modifier.fillMaxSize().background(FsColor.bg)
+                    val ground = Modifier.fillMaxSize().screenGround()
                     val body = @Composable { Box(if (scrolls) ground.verticalScroll(rememberScrollState()) else ground) { screen() } }
                     // A modal sheet covers the tab bar, as ModalBottomSheet does in the app.
                     if (tabs) ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}) { body() } else body()

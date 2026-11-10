@@ -1,5 +1,6 @@
 package gg.foreversixty.app.system.offline
 
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.designsystem.SectionTitle
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.text.style.TextAlign
@@ -113,7 +114,7 @@ fun OfflineDataRoute(model: OfflineDataModel, back: () -> Unit) {
 @Composable
 fun OfflineDataScreen(state: OfflineDataState, now: Instant, actions: OfflineDataActions) {
     val copy = OfflineDataCopy(LocalResources.current)
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         GuildTopBar(stringResource(R.string.offlineData_title), actions.back)
         Column(
             Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = FsSpace.space4).padding(bottom = FsSpace.space6),

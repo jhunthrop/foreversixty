@@ -1,5 +1,6 @@
 package gg.foreversixty.app.planner.ui
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -67,7 +68,7 @@ fun SharedBuildPage(state: SharedPageState, actions: SharedActions) {
     val share = loaded?.let { view ->
         BarAction(stringResource(R.string.plan_share), { rememberVectorPainter(Icons.Filled.Share) }) { actions.share(view.build.id) }
     }
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Column(Modifier.fillMaxSize().screenGround()) {
         ReportsBar(stringResource(R.string.plan_shared_title), state.backLabel ?: stringResource(R.string.items_slot_back), actions.back, share)
         when (val phase = state.phase) {
             SharedBuildPhase.Loading -> TalentsSkeleton()

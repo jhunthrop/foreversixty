@@ -110,12 +110,12 @@ private fun Figure(row: ParseRow, copy: ReportsCopy, alignment: Alignment.Horizo
                 append(Parses.figure(fight.value))
                 withStyle(SpanStyle(fontSize = ScaledType.meta.fontSize, color = FsColor.muted)) { append(" " + copy.unit(fight.unit)) }
             },
-            style = ScaledType.mono.copy(fontSize = ReportCardLayout.figureSize), color = FsColor.strong,
+            style = ScaledType.tabular.copy(fontSize = ReportCardLayout.figureSize), color = FsColor.strong,
         )
         fight.percentile?.let { percentile ->
             Text(
                 buildAnnotatedString {
-                    withStyle(SpanStyle(color = parseColor(ParseTier.of(percentile)), fontFamily = ScaledType.mono.fontFamily, fontWeight = FontWeight.Bold)) {
+                    withStyle(SpanStyle(color = parseColor(ParseTier.of(percentile)), fontFamily = ScaledType.tabular.fontFamily, fontFeatureSettings = ScaledType.tabular.fontFeatureSettings, fontWeight = FontWeight.Bold)) {
                         append(percentile.toString())
                     }
                     append(" " + stringResource(R.string.report_percentile))

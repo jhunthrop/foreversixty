@@ -1,5 +1,7 @@
 package gg.foreversixty.app.raids.ui
 
+import gg.foreversixty.app.designsystem.FsTopBar
+import gg.foreversixty.app.designsystem.screenGround
 import android.content.Intent
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.designsystem.ScaledType
@@ -117,14 +119,8 @@ fun RaidPageScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PageMessage(back: () -> Unit, content: @Composable () -> Unit) {
-    Column(Modifier.fillMaxSize().background(FsColor.bg)) {
-        TopAppBar(
-            title = {},
-            navigationIcon = { BackButton(back) },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-            // The app scaffold already pads for the status bar.
-            windowInsets = WindowInsets(0, 0, 0, 0),
-        )
+    Column(Modifier.fillMaxSize().screenGround()) {
+        FsTopBar(null, stringResource(R.string.tab_raids), back)
         Box(Modifier.padding(16.dp)) { content() }
     }
 }
@@ -162,12 +158,9 @@ fun RaidPageContent(
     var menu by remember { mutableStateOf(false) }
     val location = if (guildName.isEmpty()) raid.zoneName else stringResource(R.string.raids_calendarLocation, guildName, raid.zoneName)
     val addToCalendar = { context.startActivity(calendarIntent(raid, facts, location, share)) }
-    Box(Modifier.fillMaxSize().background(FsColor.bg)) {
+    Box(Modifier.fillMaxSize().screenGround()) {
         Column(Modifier.fillMaxSize()) {
-            TopAppBar(
-                title = { Text(raid.title, style = ScaledType.sec, color = FsColor.strong) },
-                navigationIcon = { BackButton(back) },
-                actions = {
+            FsTopBar(raid.title, stringResource(R.string.tab_raids), back) {
                     IconButton(onClick = addToCalendar) {
                         Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.raid_menu_calendar), tint = FsColor.strong)
                     }
@@ -182,11 +175,7 @@ fun RaidPageContent(
                             DropdownMenuItem(text = { Text(stringResource(R.string.raid_menu_web)) }, onClick = { menu = false; uri.openUri(web) })
                         }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = FsColor.bg),
-                // The app scaffold already pads for the status bar.
-                windowInsets = WindowInsets(0, 0, 0, 0),
-            )
+            }
             Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
                 offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, now()), stale, retry) }
                 Column(verticalArrangement = Arrangement.spacedBy(22.dp), modifier = Modifier.padding(16.dp)) {
@@ -257,7 +246,7 @@ fun TimesLine(facts: RaidFacts, clock: RaidClock, showsEnd: Boolean) {
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(head) }
                 // Only the digits are mono; `pm` stays in the body face (UX should 2).
                 val digits = time.substringBefore(' ')
-                withStyle(ScaledType.mono.toSpanStyle().copy(color = FsColor.strong)) { append(digits) }
+                withStyle(ScaledType.tabular.toSpanStyle().copy(color = FsColor.strong)) { append(digits) }
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.strong)) { append(time.removePrefix(digits)) }
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(tail) }
             }

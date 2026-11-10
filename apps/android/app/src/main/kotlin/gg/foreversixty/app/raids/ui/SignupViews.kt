@@ -305,7 +305,7 @@ private fun NoteField(controller: SignupController, key: String, block: SignupBl
             block.noteFailed -> Text(stringResource(R.string.raid_note_failed), style = ScaledType.meta, color = FsColor.wipe)
             text.length >= SignupController.NOTE_COUNTER_FROM -> Text(
                 stringResource(R.string.raid_note_left, SignupController.NOTE_LIMIT - text.length),
-                style = ScaledType.monoMeta,
+                style = ScaledType.tabularMeta,
                 color = FsColor.muted,
             )
         }

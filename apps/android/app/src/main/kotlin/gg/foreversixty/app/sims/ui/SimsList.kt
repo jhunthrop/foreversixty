@@ -72,23 +72,14 @@ fun SimsList(phase: SimsPhase, state: SimsListState, specs: SpecCatalog, build: 
     val copy = SimsCopy(LocalResources.current)
     Column(Modifier.fillMaxWidth().padding(bottom = 24.dp)) {
         when (phase) {
-            SimsPhase.Loading -> { ScreenTitle(); SimsSkeleton() }
-            SimsPhase.Failed -> { ScreenTitle(); ErrorBlock(stringResource(R.string.sims_failedLoad), actions.retry) }
+            SimsPhase.Loading -> SimsSkeleton()
+            SimsPhase.Failed -> ErrorBlock(stringResource(R.string.sims_failedLoad), actions.retry)
             is SimsPhase.Loaded -> {
-                ScreenTitle()
                 phase.content.offlineSince?.let { SavedAnswerStrip(OfflineStamp.format(it, now), phase.content.stale, actions.retry) }
                 Loaded(phase.content, state, specs, build, now, copy, actions)
             }
         }
     }
-}
-
-@Composable
-fun ScreenTitle(text: String = stringResource(R.string.sims_title)) {
-    Text(
-        text, style = ScaledType.title, color = FsColor.strong,
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp).semantics { heading() },
-    )
 }
 
 @Composable

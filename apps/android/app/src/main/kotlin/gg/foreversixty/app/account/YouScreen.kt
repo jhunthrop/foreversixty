@@ -1,5 +1,7 @@
 package gg.foreversixty.app.account
 
+import gg.foreversixty.app.designsystem.FsTopBar
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -107,9 +109,11 @@ fun YouScreen(
     confirmingSignOut: Boolean = false,
     /** Lane F14: the Live surfaces card, drawn while the `widgets` switch is on. */
     liveSurfaces: (@Composable () -> Unit)? = null,
+    /** Back to the screen under this one: the title moves into the band bar (round 5). */
+    back: (() -> Unit)? = null,
 ) {
     var confirming by rememberSaveable { mutableStateOf(confirmingSignOut) }
-    AccountPage(stringResource(R.string.you_title)) {
+    AccountPage(stringResource(R.string.you_title), back) {
         Row(horizontalArrangement = Arrangement.spacedBy(FsSpace.space3), verticalAlignment = Alignment.CenterVertically) {
             Tile(rememberVectorPainter(Icons.Filled.Person), 44.dp)
             Column(Modifier.weight(1f)) {
@@ -198,8 +202,8 @@ private fun CharacterRow(character: CharacterLine) {
 
 /** You › About Forever Sixty: the version, the build and the site footer's Blizzard line. */
 @Composable
-fun AboutScreen(version: String) {
-    AccountPage(stringResource(R.string.you_about)) {
+fun AboutScreen(version: String, back: (() -> Unit)? = null) {
+    AccountPage(stringResource(R.string.you_about), back) {
         Seal(64.dp)
         Text(stringResource(R.string.app_name), style = ScaledType.wordmark, color = FsColor.strong)
         Text(version, style = ScaledType.body, color = FsColor.text)
@@ -207,19 +211,25 @@ fun AboutScreen(version: String) {
     }
 }
 
-/** A pushed or root account page: its title, then the content on the ground, scrolling. */
+/**
+ * An account page on the ground, scrolling. Pushed ([back] set), its title is the band bar's, as on
+ * every pushed screen (round 5, spec Mobile: Material 3's bar carries the title, never doubled); as
+ * a root, the title heads the page.
+ */
 @Composable
-fun AccountPage(title: String, content: @Composable ColumnScope.() -> Unit) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(FsColor.bg)
-            .verticalScroll(rememberScrollState())
-            .padding(FsSpace.space4),
-        verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
-    ) {
-        Text(title, style = ScaledType.title, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-        content()
+fun AccountPage(title: String, back: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
+    Column(Modifier.fillMaxSize().screenGround()) {
+        if (back != null) FsTopBar(title, stringResource(R.string.common_back), back)
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(FsSpace.space4),
+            verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
+        ) {
+            if (back == null) Text(title, style = ScaledType.title, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+            content()
+        }
     }
 }
 

@@ -1,6 +1,11 @@
 package gg.foreversixty.app.designsystem
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -48,6 +53,8 @@ fun FsTopBar(
     backLabel: String,
     back: () -> Unit,
     titleColor: Color = FsColor.strong,
+    /** False when the page's head continues the band under the bar (the guide's crest and name, as on the web). */
+    bottomLine: Boolean = true,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
@@ -66,6 +73,25 @@ fun FsTopBar(
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent, scrolledContainerColor = Color.Transparent),
         // The app scaffold already pads for the status bar.
         windowInsets = WindowInsets(0, 0, 0, 0),
-        modifier = Modifier.surfaceBand(),
+        modifier = Modifier.surfaceBand(bottomLine),
     )
+}
+
+/**
+ * A pushed screen in the round-5 look: the painted ground, [FsTopBar] with [title], then [content]
+ * filling the rest (it scrolls itself). Routes and their screenshot tests draw the same chrome.
+ */
+@Composable
+fun PushedScreen(
+    title: String?,
+    backLabel: String,
+    back: () -> Unit,
+    titleColor: Color = FsColor.strong,
+    actions: @Composable RowScope.() -> Unit = {},
+    content: @Composable BoxScope.() -> Unit,
+) {
+    Column(Modifier.fillMaxSize().screenGround()) {
+        FsTopBar(title, backLabel, back, titleColor, actions = actions)
+        Box(Modifier.fillMaxWidth().weight(1f), content = content)
+    }
 }

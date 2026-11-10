@@ -118,7 +118,7 @@ fun Roster(controller: SignupController, facts: RaidFacts) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
             Text(stringResource(R.string.raid_signups), style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
-            Text(facts.ratio, style = ScaledType.mono, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
+            Text(facts.ratio, style = ScaledType.tabular, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
         }
         val res = androidx.compose.ui.platform.LocalResources.current
         gg.foreversixty.app.raids.logic.CompositionRead.of(controller.raid.composition, res)?.let { CompositionBlock(it) }

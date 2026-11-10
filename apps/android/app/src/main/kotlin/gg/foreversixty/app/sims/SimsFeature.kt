@@ -1,5 +1,9 @@
 package gg.foreversixty.app.sims
 
+import gg.foreversixty.app.R
+import androidx.compose.ui.res.stringResource
+import gg.foreversixty.app.designsystem.PushedScreen
+import gg.foreversixty.app.designsystem.screenGround
 import gg.foreversixty.app.common.Connectivity
 import android.content.Context
 import android.content.Intent
@@ -152,17 +156,19 @@ fun SimsRoute(feature: SimsFeature, entitled: Boolean, onBack: () -> Unit) {
         loadMore = { scope.launch { store.loadMore() } },
         openPlans = { context.openInBrowser(gg.foreversixty.app.account.AccountLinks.PREMIUM) },
     )
-    PullToRefreshBox(
-        isRefreshing = refreshing,
-        onRefresh = { scope.launch { refreshing = true; store.load(); refreshing = false } },
-        modifier = Modifier.fillMaxSize().background(FsColor.bg),
-    ) {
-        Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-            SimsList(
-                store.phase,
-                SimsListState(entitled, store.progress, store.rerun, store.pageFailed, plans),
-                feature.specs, build, feature.now(), actions,
-            )
+    PushedScreen(stringResource(R.string.sims_title), stringResource(R.string.common_back), onBack) {
+        PullToRefreshBox(
+            isRefreshing = refreshing,
+            onRefresh = { scope.launch { refreshing = true; store.load(); refreshing = false } },
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                SimsList(
+                    store.phase,
+                    SimsListState(entitled, store.progress, store.rerun, store.pageFailed, plans),
+                    feature.specs, build, feature.now(), actions,
+                )
+            }
         }
     }
 }
@@ -183,16 +189,19 @@ private fun SimResultRoute(feature: SimsFeature, route: SimResultRoute, markSeen
         val b = build
         value = if (model != null && b != null) SimGearLooks.load(model, b, feature.catalog) else emptyMap()
     }
-    Box(Modifier.fillMaxSize().background(FsColor.bg).verticalScroll(rememberScrollState())) {
-        SimResultContent(
-            store.phase, looks, build, feature.now(),
-            openItem = { cell ->
-                val b = build
-                if (model != null && b != null) tooltip = SimGearLooks.request(cell, looks[cell.itemId], model, b)
-            },
-            openBreakdown = { context.openInBrowser(it) },
-            retry = { scope.launch { store.load() } },
-        )
+    val title = model?.title ?: stringResource(R.string.sims_title)
+    PushedScreen(title, stringResource(R.string.sims_title), { feature.navigator.result = null }) {
+        Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            SimResultContent(
+                store.phase, looks, build, feature.now(),
+                openItem = { cell ->
+                    val b = build
+                    if (model != null && b != null) tooltip = SimGearLooks.request(cell, looks[cell.itemId], model, b)
+                },
+                openBreakdown = { context.openInBrowser(it) },
+                retry = { scope.launch { store.load() } },
+            )
+        }
     }
     tooltip?.let { ItemTooltipSheet(it, feature.catalog, onDismiss = { tooltip = null }) }
 }
