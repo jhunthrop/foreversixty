@@ -16,7 +16,10 @@ export type FactionSlug = 'alliance' | 'horde';
  */
 export type TitleTone = { classSlug: ClassSlug } | { faction: FactionSlug } | 'strong';
 
-const CLASS_SLUGS: ReadonlySet<string> = new Set<ClassSlug>([
+/** The nine playable classes in the game's own order: the one class list (component audit
+ *  cluster 26). Names come from lib/sim/spec-label.ts `classDisplayName`, colours from the
+ *  --color-class-* tokens. */
+export const CLASS_SLUGS: readonly ClassSlug[] = [
   'warrior',
   'paladin',
   'hunter',
@@ -26,10 +29,12 @@ const CLASS_SLUGS: ReadonlySet<string> = new Set<ClassSlug>([
   'mage',
   'warlock',
   'druid',
-]);
+];
+
+const CLASS_SLUG_SET: ReadonlySet<string> = new Set<string>(CLASS_SLUGS);
 
 export function isClassSlug(value: string): value is ClassSlug {
-  return CLASS_SLUGS.has(value);
+  return CLASS_SLUG_SET.has(value);
 }
 
 /** A row or title in a character's class colour; an unknown class reads the strong colour. */
