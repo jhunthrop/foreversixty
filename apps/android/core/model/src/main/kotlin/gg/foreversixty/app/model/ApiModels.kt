@@ -1497,6 +1497,22 @@ data class GuildRosterRow(
     @SerialName("professions") val professions: List<String>? = null,
 )
 
+@Serializable
+data class GuildSetup(
+    @SerialName("steps") val steps: List<GuildSetupStep> = emptyList(),
+    @SerialName("done") val done: Int,
+    @SerialName("total") val total: Int,
+    @SerialName("finished") val finished: Boolean,
+)
+
+@Serializable
+data class GuildSetupStep(
+    @SerialName("key") val key: String,
+    @SerialName("state") val state: String,
+    /** An officer marked it (done or skipped) rather than the guild's data */
+    @SerialName("marked") val marked: Boolean,
+)
+
 /** Omitted when it cannot be derived. */
 @Serializable
 data class GuildStanding(

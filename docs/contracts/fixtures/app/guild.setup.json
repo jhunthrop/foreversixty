@@ -1,0 +1,52 @@
+{
+  "ok": true,
+  "data": {
+    "steps": [
+      {
+        "key": "officer_ranks",
+        "state": "done",
+        "marked": true
+      },
+      {
+        "key": "discord_bot",
+        "state": "todo",
+        "marked": false
+      },
+      {
+        "key": "recruiting",
+        "state": "done",
+        "marked": false
+      },
+      {
+        "key": "raid_schedule",
+        "state": "todo",
+        "marked": false
+      },
+      {
+        "key": "invite_link",
+        "state": "done",
+        "marked": false
+      },
+      {
+        "key": "addon_sync",
+        "state": "todo",
+        "marked": false
+      },
+      {
+        "key": "report_visibility",
+        "state": "done",
+        "marked": true
+      },
+      {
+        "key": "linked_role",
+        "state": "skipped",
+        "marked": true
+      }
+    ],
+    "done": 4,
+    "total": 8,
+    "finished": false
+  },
+  "error": null,
+  "request_id": "5d1e8a2c90b4f713"
+}

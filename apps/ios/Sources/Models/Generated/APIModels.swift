@@ -3973,6 +3973,50 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
     }
 }
 
+public struct GuildSetup: Codable, Sendable, Equatable {
+    public let steps: [GuildSetupStep]
+    public let done: Int
+    public let total: Int
+    public let finished: Bool
+
+    public init(
+        steps: [GuildSetupStep] = [],
+        done: Int,
+        total: Int,
+        finished: Bool
+    ) {
+        self.steps = steps
+        self.done = done
+        self.total = total
+        self.finished = finished
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        steps = try c.decodeIfPresent([GuildSetupStep].self, forKey: .steps) ?? []
+        done = try c.decode(Int.self, forKey: .done)
+        total = try c.decode(Int.self, forKey: .total)
+        finished = try c.decode(Bool.self, forKey: .finished)
+    }
+}
+
+public struct GuildSetupStep: Codable, Sendable, Equatable {
+    public let key: String
+    public let state: String
+    /// An officer marked it (done or skipped) rather than the guild's data
+    public let marked: Bool
+
+    public init(
+        key: String,
+        state: String,
+        marked: Bool
+    ) {
+        self.key = key
+        self.state = state
+        self.marked = marked
+    }
+}
+
 /// Omitted when it cannot be derived.
 public struct GuildStanding: Codable, Sendable, Equatable {
     public let spec: String

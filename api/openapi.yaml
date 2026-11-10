@@ -9163,6 +9163,57 @@ paths:
         '422':
           description: "invalid n"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/setup:
+    get:
+      operationId: getGuildSetup
+      tags: [app]
+      summary: An officer's setup checklist (session)
+      description: >-
+        The guild's setup checklist as the site's setup page reads it: each step (officer_ranks,
+        discord_bot, recruiting, raid_schedule, invite_link, addon_sync, report_visibility,
+        linked_role) with its state (done, skipped, todo) and whether an officer marked it, the
+        done and total counts, and finished once every step is done or skipped. The response
+        carries each step's facts too (ranks, discord, recruiting, schedule, invite, sync,
+        visibility, readiness, plan); the apps read the counts and the steps only (the Guild
+        tab's Setup row, spec design/specs/2026-11-10-guild-tab.md 2.3). A verified officer or
+        leader may read it; anyone else gets 403.
+      parameters:
+        - $ref: '#/components/parameters/XApp'
+        - $ref: '#/components/parameters/XAppInstall'
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '426': { $ref: '#/components/responses/UpdateRequired' }
+        '200':
+          description: "The checklist"
+          x-fixtures: [guild.setup]
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        title: GuildSetup
+                        required: [steps, done, total, finished]
+                        properties:
+                          steps:
+                            type: array
+                            items:
+                              type: object
+                              title: GuildSetupStep
+                              required: [key, state, marked]
+                              properties:
+                                key: { type: string, enum: [officer_ranks, discord_bot, recruiting, raid_schedule, invite_link, addon_sync, report_visibility, linked_role] }
+                                state: { type: string, enum: [done, skipped, todo] }
+                                marked: { type: boolean, description: "An officer marked it (done or skipped) rather than the guild's data" }
+                          done: { type: integer }
+                          total: { type: integer }
+                          finished: { type: boolean }
+        '403':
+          description: "Not a verified officer of the guild"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{id}/progression:
     get:
       summary: A guild's tier, each table boss's depth and the unnamed zones' pulls
