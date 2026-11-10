@@ -13,6 +13,7 @@
 import {
   parseCharacterPath,
   parseGuildApplicationsPath,
+  parseGuildSetupPath,
   parseGuildClaimPath,
   parseGuildInviteToken,
   parseGuildMemberPath,
@@ -471,7 +472,7 @@ async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
     return { meta: guildSettingsShellMeta(guildSettings, data.guild.name), indexable: false };
   }
 
-  // A raid, the recruiting card, the applications list or a member profile: the guild page's head,
+  // A raid, the recruiting card, the applications list, the setup checklist or a member profile: the guild page's head,
   // never indexed (the guild page itself is the canonical one).
   const guildView = guildViewPath(url.pathname);
   if (guildView !== null) {
@@ -501,12 +502,13 @@ async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
   return null;
 }
 
-/** The guild of a view under the guild page: a raid, recruit, applications or a member profile. */
+/** The guild of a view under the guild page: a raid, recruit, applications, the officer's setup or a member profile. */
 function guildViewPath(pathname: string): CharacterPath | null {
   return (
     parseGuildRaidPath(pathname)?.guild ??
     parseGuildRecruitPath(pathname) ??
     parseGuildApplicationsPath(pathname) ??
+    parseGuildSetupPath(pathname) ??
     parseGuildMemberPath(pathname)?.guild ??
     null
   );
