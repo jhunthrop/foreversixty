@@ -119,34 +119,37 @@ notarize() { # notarize <file>: submits, waits, and prints Apple's log when it i
 	fi
 }
 
-hdiutil_retry() { # hdiutil_retry <args>: hdiutil fails now and then with "Resource busy" on a hosted runner
-	local attempt
-	for attempt in 1 2 3; do
-		if hdiutil "$@"; then
-			return
-		fi
-		echo "hdiutil $1 failed (attempt $attempt); retrying" >&2
-		sleep $((attempt * 5))
-	done
-	echo "package-mac-companion: hdiutil $1 kept failing" >&2
-	exit 1
-}
+# The disk image's window (tools/art/dmg_background.py draws its background on the same numbers):
+# 660 by 400 points, the app at the left, Applications at the right, 128 px icons, 13 pt labels.
+readonly DMG_BACKGROUND=companion/packaging/macos/dmg-background
+readonly DMG_WINDOW=(660 400) DMG_APP=(180 200) DMG_DROP=(480 200)
 
-disk_image() { # disk_image <dmg>: the app beside a link to Applications, under the seal as the volume icon
-	local stage=$work/dmg rw=$work/rw.dmg mount=$work/mnt
-	mkdir -p "$stage" "$mount"
+disk_image() { # disk_image <dmg>: the designed drag window, under the seal as the volume icon
+	local stage=$work/dmg background=$work/background.tiff
+	command -v create-dmg >/dev/null || die "create-dmg is not installed (brew install create-dmg)"
+	mkdir -p "$stage"
 	ditto "$APP" "$stage/$APP_NAME.app"
-	ln -s /Applications "$stage/Applications"
-	# The volume's icon is the app's own seal.icns. Finder reads it only when the volume root carries
-	# the custom-icon flag, which survives only when set on the mounted volume itself: so a writable
-	# image is made, mounted, flagged and then compressed.
-	cp "$ROOT/$ICON" "$stage/.VolumeIcon.icns"
-	hdiutil_retry create -volname "$APP_NAME" -srcfolder "$stage" -fs HFS+ -format UDRW -ov "$rw"
-	hdiutil_retry attach "$rw" -nobrowse -noautoopen -mountpoint "$mount"
-	SetFile -a C "$mount"
-	SetFile -a V "$mount/.VolumeIcon.icns"
-	hdiutil_retry detach "$mount"
-	hdiutil_retry convert "$rw" -format UDZO -ov -o "$1"
+	# One TIFF with both scales, so a Retina screen draws the 2x background.
+	tiffutil -cathidpicheck "$ROOT/$DMG_BACKGROUND.png" "$ROOT/$DMG_BACKGROUND@2x.png" -out "$background"
+	# create-dmg lays the window out through Finder (background, bounds, icon places, no toolbar or
+	# status bar), writes the .DS_Store into the image, sets the volume icon with its custom-icon
+	# flag, and compresses the result read-only. It retries hdiutil's "Resource busy" by itself.
+	rm -f "$1"
+	create-dmg \
+		--volname "$APP_NAME" \
+		--volicon "$ROOT/$ICON" \
+		--background "$background" \
+		--window-pos 200 120 \
+		--window-size "${DMG_WINDOW[@]}" \
+		--icon-size 128 \
+		--text-size 13 \
+		--icon "$APP_NAME.app" "${DMG_APP[@]}" \
+		--hide-extension "$APP_NAME.app" \
+		--app-drop-link "${DMG_DROP[@]}" \
+		--no-internet-enable \
+		--format UDZO \
+		--hdiutil-retries 8 \
+		"$1" "$stage"
 }
 
 mkdir -p "$OUT"

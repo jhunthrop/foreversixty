@@ -12,8 +12,8 @@ and open it.
 
 | Platform | What /setup offers | Also in the release |
 |---|---|---|
-| Windows | `foreversixty-companion-setup.exe` | `foreversixty-companion_windows_amd64.exe`, the bare exe the updater uses |
-| macOS 12 or later (Apple silicon and Intel) | `foreversixty-companion_darwin_universal.app.zip` | `foreversixty-companion_darwin_universal.dmg`, the same app on a disk image |
+| Windows | `foreversixty-companion-setup.exe` (saved as ForeverSixtySetup.exe) | `foreversixty-companion_windows_amd64.exe`, the bare exe the updater uses |
+| macOS 12 or later (Apple silicon and Intel) | `foreversixty-companion_darwin_universal.dmg` (saved as ForeverSixty.dmg) | `foreversixty-companion_darwin_universal.app.zip`, the app the updater installs |
 | Linux | | `foreversixty-companion_linux_amd64` |
 
 On Windows the setup (`packaging/windows/companion.iss`, Inno Setup) installs for your account
@@ -22,7 +22,7 @@ alone, to `%LOCALAPPDATA%\Programs\Forever Sixty`, with no admin rights. Its one
 Features lists it under Commish LLC, and its uninstaller asks before deleting the settings, logs
 and unsent fights in `%APPDATA%\ForeverSixty`.
 
-On a Mac, open the app wherever the download put it (or from the disk image). Its first window
+On a Mac, open the disk image and drag Forever Sixty to Applications, or just open it. Its first window
 asks to move it to Applications: it copies itself to `/Applications` (or `~/Applications` on an
 account that cannot write there), replacing an older copy, starts again from there, ejects the
 disk image and puts the download in the Trash (`internal/install`). "Open at login" is on by

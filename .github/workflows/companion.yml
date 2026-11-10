@@ -570,6 +570,9 @@ jobs:
           echo "::notice::APPLE_CERTIFICATE_P12 is not set, so the Mac app is signed ad hoc, \
           not notarized, and not published; it is kept as this run's unsigned-companion-darwin artifact."
 
+      - name: create-dmg for the disk image's window
+        run: brew install create-dmg
+
       - name: Package the app
         run: ../tools/package-mac-companion.sh "${TAG#companion-v}" dist/foreversixty-companion dist/mac
 

@@ -62,9 +62,11 @@ the error.
 3. notarizes it with `xcrun notarytool` using the App Store Connect API key, staples the ticket
    and validates it;
 4. zips the stapled app as `foreversixty-companion_darwin_universal.app.zip` (the updater's asset);
-5. makes `foreversixty-companion_darwin_universal.dmg` (the app beside a link to Applications),
-   signs, notarizes and staples it. `/setup` offers the zip, which opens in fewer steps; the app
-   moves itself to Applications on its first launch from either (`companion/internal/install`);
+5. makes `foreversixty-companion_darwin_universal.dmg` with create-dmg: a 660 by 400 drag window
+   on the background `tools/art/dmg_background.py` draws (the app left, Applications right, a brass
+   arrow between) and the app icon as the volume icon, then signs, notarizes and staples it. `/setup`
+   offers the disk image (saved as ForeverSixty.dmg); dragged or not, the app offers to move itself
+   to Applications on its first launch from anywhere else (`companion/internal/install`);
 6. checks both with `spctl`, the way Gatekeeper will on a player's Mac.
 
 Secrets and variables it reads:
