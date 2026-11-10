@@ -33,7 +33,9 @@
   import { decideBootstrap, RESTORE_BUSY_KEY, runBootstrapRestore } from '../../lib/sim/character-bootstrap';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
-  import { averageWornItemLevel, characterMeta, characterTitle } from '../../lib/sim/head-meta';
+  import { characterMeta, characterTitle } from '../../lib/sim/head-meta';
+  import { averageItemLevel } from '../../lib/gear/paperdoll';
+  import { slotsFromWorn } from '../../lib/gear/paperdoll-slots';
   import { landingCopy } from '../../lib/sim/landing-copy';
   import { createServerRunsController } from '../../lib/sim/server-runs-controller.svelte';
   import { browserNotifier, enableNotifications, notifyFinished } from '../../lib/sim/notify';
@@ -495,8 +497,9 @@
   const headLines = $derived.by(() => {
     const character = store.character;
     if (character === null || request === null) return [];
-    const ids = Object.values(character.gear).filter((id): id is number => id !== undefined && id > 0);
-    const itemLevel = averageWornItemLevel(ids, (id) => store.items.get(id)?.item_level);
+    const itemLevel = averageItemLevel(
+      slotsFromWorn(character.gear, { lookup: (id) => store.items.get(id) }),
+    );
     return characterMeta(
       {
         race: character.race_slug,

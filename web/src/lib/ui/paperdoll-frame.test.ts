@@ -1,12 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { SEAL } from './assets';
+import { FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT, FRAME_SLOTS } from '../gear/slots';
 import {
   CENTRE_BOX,
-  FRAME_BOTTOM,
-  FRAME_LEFT,
-  FRAME_RIGHT,
   FRAME_SIZE,
-  FRAME_SLOTS,
   INNER_BOX,
   MIN_FRAME_PX,
   MIN_SLOT_PX,

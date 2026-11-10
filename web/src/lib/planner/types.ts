@@ -2,6 +2,7 @@
 // Shapes are copied verbatim from docs/superpowers/specs/2026-09-13-phase-1-interfaces.md.
 // The API validates the same rules server-side; anything renamed here has to be renamed there.
 import type { SourceKind } from '../sources';
+import { COSMETIC_SLOTS, FRAME_SLOTS, type CosmeticSlot, type FrameSlot } from '../gear/slots';
 
 /** A build spends at most this many talent points. */
 export const MAX_POINTS = 51;
@@ -51,27 +52,11 @@ export interface TalentFile {
   trees: TalentTree[];
 }
 
-/** The 17 planner gear slots, in the order the slot grid lays them out. */
-export const SLOTS = [
-  'head',
-  'neck',
-  'shoulder',
-  'back',
-  'chest',
-  'wrist',
-  'hands',
-  'waist',
-  'legs',
-  'feet',
-  'finger1',
-  'finger2',
-  'trinket1',
-  'trinket2',
-  'main_hand',
-  'off_hand',
-  'ranged',
-] as const;
-export type Slot = (typeof SLOTS)[number];
+/** One of the 17 planner gear slots: every frame slot but the cosmetic shirt and tabard. */
+export type Slot = Exclude<FrameSlot, CosmeticSlot>;
+
+/** The 17 planner gear slots, in the client's paperdoll order (lib/gear/slots.ts). */
+export const SLOTS: readonly Slot[] = FRAME_SLOTS.filter((slot): slot is Slot => !COSMETIC_SLOTS.has(slot));
 
 /** Item files say `finger` and `trinket`; the planner maps each to both numbered slots. */
 export const SLOT_ALIASES: Record<string, Slot[]> = {

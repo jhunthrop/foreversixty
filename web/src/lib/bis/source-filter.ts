@@ -7,6 +7,7 @@
 // slot resolved to (`not_with`, falling back to `next`), and no off hand sits beside a
 // two-handed main hand. Multi-source rule: an item belongs to every kind it can be had from.
 import type { BisByKindEntry, BisSlot, SourceFilterKind } from './types';
+import { PAIR_OF } from '../gear/slots';
 
 /** The filter row's order. */
 export const SOURCE_FILTER_KINDS: readonly SourceFilterKind[] = [
@@ -38,10 +39,9 @@ export function filterKindOfSource(sourceKind: string): SourceFilterKind | undef
   return FILTER_KIND_OF_SOURCE[sourceKind];
 }
 
-/** The second slot of each pair, mapped to the first. */
+/** The second slot of each pair (the rings, the trinkets, the off hand), mapped to the first. */
 const PAIR_FIRST: Readonly<Record<string, string>> = {
-  finger2: 'finger1',
-  trinket2: 'trinket1',
+  ...Object.fromEntries(Object.entries(PAIR_OF).filter(([slot]) => slot.endsWith('2'))),
   off_hand: 'main_hand',
 };
 

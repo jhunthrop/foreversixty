@@ -3,6 +3,7 @@
 // compare, the character page, the sim and the report's worn sets) maps its own data to
 // `DollCell`s, and ui/PaperdollFrame draws them; the mapper decides the words.
 import type { GainFigure, ItemRef } from './primitives';
+import { FRAME_BOTTOM, FRAME_LEFT, FRAME_RIGHT } from '../gear/slots';
 
 /** The level flag under the slot label: `Level 20`, `Usable now` (kill), `At 25` (gold). */
 export interface DollFlag {
@@ -55,27 +56,7 @@ export interface DollCell {
 
 /** The order a doll opens in: head to ranged down the character panel's left, then hands to the
  *  trinkets down its right. */
-const OPEN_ORDER: readonly string[] = [
-  'head',
-  'neck',
-  'shoulder',
-  'back',
-  'chest',
-  'shirt',
-  'tabard',
-  'wrist',
-  'main_hand',
-  'off_hand',
-  'ranged',
-  'hands',
-  'waist',
-  'legs',
-  'feet',
-  'finger1',
-  'finger2',
-  'trinket1',
-  'trinket2',
-];
+const OPEN_ORDER: readonly string[] = [...FRAME_LEFT, ...FRAME_BOTTOM, ...FRAME_RIGHT];
 
 /** Whether a cell can be selected: an empty slot cannot (§4.4 Disabled). */
 export function selectable(cell: DollCell): boolean {
