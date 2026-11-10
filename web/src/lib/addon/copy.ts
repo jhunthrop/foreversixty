@@ -100,8 +100,6 @@ export const addonCopy = {
   // --- /addon page ---
   pageDescription:
     'The addon brings your character here: gear and talents, bags and bank, your professions, an in-game build guide, and a fresh export the moment you log out.',
-  pageNoNetwork:
-    'The addon never talks to the network. Everything it knows is generated here and carried in the strings you copy.',
   installCurseForge: 'Install from CurseForge',
   installWago: 'Install from Wago Addons',
   installZip: 'Download the zip',
@@ -206,7 +204,7 @@ export const addonCopy = {
    *  about it. `width`/`height` are the files' own pixel sizes, for the fixed aspect box. */
   surfacesTitle: 'What it does in the game',
   /** On a phone the surfaces fold behind this one row (setup rulings U5); open from 768. */
-  surfacesShow: 'Show every surface, with pictures from the game',
+  surfacesShow: 'Show the screenshots',
   surfaces: [
     {
       section: '4.1',

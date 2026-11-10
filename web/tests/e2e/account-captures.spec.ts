@@ -66,6 +66,8 @@ async function loadLazyImages(page: Page): Promise<void> {
             }),
       ),
     );
+    // Loaded is not painted: decode each before the shot.
+    await Promise.all(images.map((image) => image.decode().catch(() => null)));
   });
 }
 

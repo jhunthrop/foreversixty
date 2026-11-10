@@ -199,7 +199,9 @@
     <Plate label={addonCopy.setupStep3Title} frame="framed">
       <div class="connect-body" aria-busy={state === 'loading' ? 'true' : undefined}>
         <div class="flex flex-col gap-2">
-          {#if codeCheck !== ''}<p class="text-muted" data-testid="connect-code-check">{codeCheck}</p>{/if}
+          {#if codeCheck !== ''}<p class="text-small text-muted" data-testid="connect-code-check">
+              {codeCheck}
+            </p>{/if}
           <div class="flex flex-wrap items-center gap-3">
             {#if state === 'loading'}
               <span class="skeleton-block h-[30px] w-[150px]" aria-hidden="true"></span>

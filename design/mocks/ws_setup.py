@@ -73,7 +73,7 @@ section>.sec-h+*{margin-top:12px}
 .cmds .kv dt{color:var(--text);padding-right:12px}
 .cc{display:flex;flex-direction:column;gap:8px}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.cmds .kv{grid-template-columns:minmax(0,1fr) auto}.cmds .kv dd{white-space:nowrap}
 .alert{color:var(--strong)}.steps .row .sub .tx{color:var(--text)}
-.surf-fold{display:none}.surf-fold summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold)}
+.surf-fold{display:none}.surf-fold summary{cursor:pointer;min-height:44px;list-style:none}.surf-fold summary::-webkit-details-marker{display:none}
 @media(max-width:767px){.surf-fold{display:block}.surf{display:none}}
 @media(max-width:600px){.steps .row{align-items:start}}
 /* the built sm Button is a 44 px target below 1024 (web/src/lib/ui/button.ts BUTTON_SM) */@media(max-width:1023px){.btn.sm{height:44px}}
@@ -207,7 +207,7 @@ def surfaces_section() -> str:
         caps = ''.join(Capture(img(i['src']), i['width'], i['height'], i['alt'], lazy=False) for i in s['images'])
         rows.append(Row(escape(s['title']), escape(s['body']), link=False, foot=caps))
     # U5 (rulings): open from 768, folded on a phone behind one summary row.
-    fold = f'<details class="surf-fold"><summary class="t-label">{escape(A["surfacesShow"])}</summary></details>'
+    fold = f'<details class="surf-fold"><summary class="btn">{escape(A["surfacesShow"])}</summary></details>'
     return Section(A['surfacesTitle'], f'{fold}<div class="surf">{RowGrid(rows, 3)}</div>', panel=True)
 
 
@@ -232,7 +232,7 @@ def commands_section() -> str:
 
 def handshake_section() -> str:
     paras = ''.join(f'<p class="t-small">{escape(s)}</p>' for s in A['handshake'])
-    return Section(A['handshakeTitle'], f'<div class="body">{paras}<p class="t-small">{escape(A["pageNoNetwork"])}</p></div>', panel=True)
+    return Section(A['handshakeTitle'], f'<div class="body">{paras}</div>', panel=True)
 
 
 def flows_section() -> str:

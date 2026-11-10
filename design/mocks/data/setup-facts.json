@@ -1157,7 +1157,7 @@
   "signedOutLead": "Sign in to connect your companion.",
   "signedOutLeadNamed": "[fn]",
   "codeCheck": "Check that this code matches the one in the companion.",
-  "pendingCodeCheck": "Only press Connect if this code matches the one in the companion window.",
+  "pendingCodeCheck": "Only press Connect if this code matches the one the companion shows.",
   "consent": "Forever Sixty will see your BattleTag and character list. It cannot see your password or play for you.",
   "battlenet": "Continue with Battle.net",
   "checking": "Checking the link.",
@@ -1238,7 +1238,6 @@
   "pasteNeedsRuleset": "Pick the ruleset first.",
   "pasteSaved": "Saved to your account",
   "pageDescription": "The addon brings your character here: gear and talents, bags and bank, your professions, an in-game build guide, and a fresh export the moment you log out.",
-  "pageNoNetwork": "The addon never talks to the network. Everything it knows is generated here and carried in the strings you copy.",
   "installCurseForge": "Install from CurseForge",
   "installWago": "Install from Wago Addons",
   "installZip": "Download the zip",
@@ -1293,7 +1292,7 @@
   "setupTryExport": "Try an export",
   "setupTryExportBody": "Paste what the addon saved (type /fs copy in game) to see your character without the companion.",
   "surfacesTitle": "What it does in the game",
-  "surfacesShow": "Show every surface, with pictures from the game",
+  "surfacesShow": "Show the screenshots",
   "surfaces": [
    {
     "section": "4.1",

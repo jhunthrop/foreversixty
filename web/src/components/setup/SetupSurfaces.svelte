@@ -5,6 +5,7 @@
      file). On a phone the grid folds behind one summary row (`surfacesShow`); open from 768. -->
 <script lang="ts">
   import { addonCopy } from '../../lib/addon/copy';
+  import { button } from '../../lib/ui/button';
   import Capture from '../ui/Capture.svelte';
   import Row from '../ui/Row.svelte';
   import RowGrid from '../ui/RowGrid.svelte';
@@ -15,7 +16,7 @@
 
 <Section title={addonCopy.surfacesTitle} testid="setup-surfaces" panel>
   <details class="setup-surf-fold">
-    <summary class="text-label text-gold font-bold">{addonCopy.surfacesShow}</summary>
+    <summary class={button('secondary')}>{addonCopy.surfacesShow}</summary>
   </details>
   <div class="setup-surf">
     <RowGrid cols={3}>
@@ -50,11 +51,14 @@
   .setup-surf-fold {
     display: none;
   }
+  /* The fold is the button that opens the grid: no disclosure marker. */
   .setup-surf-fold summary {
-    display: flex;
     min-height: 44px;
-    align-items: center;
+    list-style: none;
     cursor: pointer;
+  }
+  .setup-surf-fold summary::-webkit-details-marker {
+    display: none;
   }
   @media (max-width: 767px) {
     .setup-surf-fold {

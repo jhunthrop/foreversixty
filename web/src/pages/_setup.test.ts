@@ -31,7 +31,6 @@ const source = [
 
 const STRING_COPY_KEYS = [
   'pageDescription',
-  'pageNoNetwork',
   'installCurseForge',
   'installWago',
   'installZip',
@@ -358,7 +357,7 @@ describe('/setup: what it does in the game (L8.3)', () => {
     expect(Object.keys(addonCopy)).not.toContain('commandsTestersLine');
   });
 
-  it('says what leaves the machine and sits the no-network sentence next to the handshake', () => {
+  it('says what leaves the machine', () => {
     const text = addonCopy.handshake.join(' ');
     for (const part of [
       'level, spec, talents, equipped gear',
@@ -371,8 +370,6 @@ describe('/setup: what it does in the game (L8.3)', () => {
     ]) {
       expect(text).toContain(part);
     }
-    expect(textOf(section('setup-handshake'))).toContain(textOf(addonCopy.pageNoNetwork));
-    expect(html.split(textOf(addonCopy.pageNoNetwork).slice(0, 30)).length - 1).toBe(1);
   });
 
   it('marks the four portrait captures tall', () => {

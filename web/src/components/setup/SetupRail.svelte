@@ -37,7 +37,6 @@
 <Section title={addonCopy.handshakeTitle} testid="setup-handshake" panel>
   <div class="setup-body">
     {#each addonCopy.handshake as sentence (sentence)}<p class="text-small text-muted">{sentence}</p>{/each}
-    <p class="text-small text-muted">{addonCopy.pageNoNetwork}</p>
   </div>
 </Section>
 

@@ -67,7 +67,7 @@ test('not signed in: the code, the Battle.net hand-off with next, then pending a
   await expect(page.getByTestId('connect-facts').locator('dt')).toHaveText(['Device', 'Platform']);
   await expect(page.getByTestId('connect-signout')).toHaveText('Sign out.');
   await expect(page.getByTestId('connect-code-check')).toHaveText(
-    'Only press Connect if this code matches the one in the companion window.',
+    'Only press Connect if this code matches the one the companion shows.',
   );
   const facts = await page.getByTestId('connect-facts').boundingBox();
   expect(facts?.height).toBe(signedOutFacts?.height);
