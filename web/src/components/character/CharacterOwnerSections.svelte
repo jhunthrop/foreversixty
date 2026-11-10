@@ -8,7 +8,7 @@
   import type { CharacterPath } from '../../lib/characters';
   import { characterHrefs, characterPageCopy as copy } from '../../lib/character/page-view';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
-  import { LINK } from '../../lib/ui/primitives';
+  import { LINK, RULE_TOP } from '../../lib/ui/primitives';
   import Disclosure from '../ui/Disclosure.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
@@ -92,7 +92,7 @@
 <!-- In the fights panel (`inPanel`, h-audit 2026-11-09): under the best fights, no plate of its own; with no
      best fights, its own History panel. -->
 {#if inPanel}
-  <div class="border-line-soft mt-2 border-t pt-1" data-testid="character-owner-history">
+  <div class="{RULE_TOP} mt-2 pt-1" data-testid="character-owner-history">
     {@render body()}
   </div>
 {:else}

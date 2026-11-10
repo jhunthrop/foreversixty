@@ -107,7 +107,8 @@ function companionScript(all) {
   const byName = new Map(all.map((icon) => [icon.name, icon]));
   const icons = COMPANION_ICONS.map((name) => {
     const icon = byName.get(name);
-    if (icon === undefined) throw new Error(`COMPANION_ICONS names ${name}, which design/assets/icons/ui lacks`);
+    if (icon === undefined)
+      throw new Error(`COMPANION_ICONS names ${name}, which design/assets/icons/ui lacks`);
     return `  '${icon.name}': { box: ${icon.box}, kind: '${icon.kind}', body: '${icon.body}' },`;
   });
   const corner = parseCorner();
@@ -177,5 +178,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   mkdirSync(MODULE_DIR, { recursive: true });
   const files = renderUiIcons();
   for (const [file, text] of files) writeFileSync(file, text);
-  console.log(`wrote ${path.relative(WEB, OUT)}, ${path.relative(WEB, COMPANION_OUT)} and ${files.size - 2} icon modules`);
+  console.log(
+    `wrote ${path.relative(WEB, OUT)}, ${path.relative(WEB, COMPANION_OUT)} and ${files.size - 2} icon modules`,
+  );
 }

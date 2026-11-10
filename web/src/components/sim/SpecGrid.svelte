@@ -14,6 +14,7 @@
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import { specSkeletonSlots } from '../../lib/sim/spec-skeleton';
   import { topRaidSets, type BisBenchmarks } from '../../lib/sim/bis-benchmark';
+  import { RULE_TOP } from '../../lib/ui/primitives';
   import Button from '../ui/Button.svelte';
   import Page from '../ui/Page.svelte';
   import Row from '../ui/Row.svelte';
@@ -130,7 +131,7 @@
       </div>
       <!-- The healers and tanks the simulator does not run: one wrapping line of guide links under
            the table, not a section of their own (h-audit 2026-11-09). -->
-      <div class="border-line-soft border-t px-4 py-2" data-testid="specs-unsimulated">
+      <div class="{RULE_TOP} px-4 py-2" data-testid="specs-unsimulated">
         <h3 class="text-cream m-0 pt-2 text-[15px] leading-5 font-semibold">
           {simCopy.specsUnsimulatedHeading}
         </h3>

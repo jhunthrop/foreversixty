@@ -29,6 +29,7 @@
     savedBuildsMessage,
   } from '../../../lib/sim/talent-loadouts';
   import { talentSplit } from '../../../lib/sim/result-band';
+  import { ROW_ITEM } from '../../../lib/ui/primitives';
   import Button from '../../ui/Button.svelte';
   import TalentTrees from '../../ui/TalentTrees.svelte';
   import ToolSection from './ToolSection.svelte';
@@ -220,7 +221,7 @@
   {#if plate && index !== null}
     <!-- /sim/talents: the build's three trees beside its tick, so the page shows what it compares. -->
     <div
-      class="border-line-soft grid gap-x-6 gap-y-1 border-b py-3 last:border-b-0 md:grid-cols-[260px_minmax(0,1fr)] md:items-start"
+      class="{ROW_ITEM} grid gap-x-6 gap-y-1 py-3 md:grid-cols-[260px_minmax(0,1fr)] md:items-start"
     >
       {@render loadoutCheck(loadout, testid)}
       <!-- The trees size to their track (TalentTrees reads its box's width): 600 px with the diff

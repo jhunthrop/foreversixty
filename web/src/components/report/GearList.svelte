@@ -13,6 +13,7 @@
   import GearDoll from '../character/GearDoll.svelte';
   import ItemIcon from '../ui/ItemIcon.svelte';
   import ItemRow from '../ui/ItemRow.svelte';
+  import Ruled from '../ui/Ruled.svelte';
   import { gearCopy } from '../../lib/gear/copy';
   import { dollCellsFromSlots } from '../../lib/gear/doll-cells';
   import { FRAME_SLOTS } from '../../lib/ui/paperdoll-frame';
@@ -127,7 +128,7 @@
       />
     </div>
     {#if worn.length > 0}
-      <div class="gear-at-pull-list" data-testid="gear-list-rows">
+      <div class="gear-at-pull-list"><Ruled edge="bottom" testid="gear-list-rows">
         {#each worn as cell (cell.slot)}
           {#snippet facts()}{cell.label}{#if cell.source}{FACT_SEPARATOR}{cell.source}{/if}{/snippet}
           {#snippet enchant()}<span class="text-rarity-uncommon">{cell.enchant}</span>{/snippet}
@@ -159,7 +160,7 @@
             </div>
           {/if}
         {/each}
-      </div>
+      </Ruled></div>
     {/if}
   </div>
 </div>
@@ -190,9 +191,6 @@
   }
   .gear-at-pull-covered-icon {
     filter: grayscale(1) brightness(0.55);
-  }
-  .gear-at-pull-list > :global(*) {
-    border-bottom: 1px solid var(--color-line-soft);
   }
   /* The frame beside its list once both fit; the frame's own list form says it all on a phone. */
   @container (min-width: 760px) {

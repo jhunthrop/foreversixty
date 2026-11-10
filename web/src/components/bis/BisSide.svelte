@@ -88,7 +88,7 @@
     <Section title={bisCopy.whereTitle} boxed testid="bis-where">
       <div class="bis-side-body bis-stops">
         {#each stops as stop (stop.key)}
-          <a class="bis-stop-chip" href={`#${stop.anchor}`}>{stop.title}</a>
+          <a class="bis-stop-chip ui-edge" href={`#${stop.anchor}`}>{stop.title}</a>
         {/each}
       </div>
       {#if whereAction}<p class="bis-side-after">
@@ -141,7 +141,6 @@
     align-items: center;
     min-height: 36px;
     padding: 0 12px;
-    border: 1px solid var(--color-line-warm-strong);
     border-radius: var(--radius-pill);
     color: var(--color-gold);
     font-size: 14px;

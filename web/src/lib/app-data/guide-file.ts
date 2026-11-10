@@ -173,10 +173,11 @@ function topRankText(trees: readonly DecodedTreeView[], name: string): string | 
   return null;
 }
 
-/** The web's fallback "why" is the talent's own rank text; the app prints that once. */
-function repeatsText(why: string, text: string | null): boolean {
+/** The web's fallback "why" is the talent's own rank text; the app prints that once. A blank why
+ *  (a key talent the guide names with no line of its own: Balance's Moonfury) is no why at all. */
+function addsNothing(why: string, text: string | null): boolean {
   const bare = (value: string): string => value.replace(/[.\s]+$/, '').replace(/\s+/g, ' ');
-  return text !== null && bare(why) === bare(text);
+  return bare(why) === '' || (text !== null && bare(why) === bare(text));
 }
 
 function keyTalents(
@@ -191,7 +192,7 @@ function keyTalents(
       rank: ref.rank ?? null,
       max_rank: ref.maxRank ?? null,
       text: topRankText(trees, ref.name),
-      why: repeatsText(entry.why, topRankText(trees, ref.name)) ? null : entry.why,
+      why: addsNothing(entry.why, topRankText(trees, ref.name)) ? null : entry.why,
     })),
   );
 }

@@ -25,7 +25,7 @@
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { Summary } from '../../lib/report/types';
   import { BUSY_CLASS } from '../../lib/ui/busy';
-  import { LINK } from '../../lib/ui/primitives';
+  import { LINK, RULE_TOP } from '../../lib/ui/primitives';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import Button from '../ui/Button.svelte';
   import Field from '../ui/Field.svelte';
@@ -214,7 +214,7 @@
       {/if}
     </div>
 
-    <p class="text-muted border-line-soft border-t px-4 pt-[10px] pb-[14px] text-[13px] leading-5 md:px-5">
+    <p class="text-muted {RULE_TOP} px-4 pt-[10px] pb-[14px] text-[13px] leading-5 md:px-5">
       {#if stream === null}
         Hits and heals: only those before a death.{#if loadStream !== undefined}<button
             type="button"

@@ -123,7 +123,7 @@ describe.skipIf(!hasBuild)('W3-C1 generator', () => {
     for (const guide of guides) {
       for (const talent of guide.talents.key) {
         if (talent.why !== null && talent.text !== null)
-          expect(talent.text.startsWith(talent.why)).toBe(false);
+          expect(talent.text.startsWith(talent.why), `${guide.spec} ${talent.name}: ${talent.why} || ${talent.text}`).toBe(false);
       }
     }
   });

@@ -24,7 +24,7 @@
   import { counted } from '../../lib/plural';
   import { SEP } from '../../lib/guild/raid-copy';
   import type { StatFigure } from '../../lib/ui/stat-table';
-  import { LINK } from '../../lib/ui/primitives';
+  import { LINK, RULE_BOTTOM } from '../../lib/ui/primitives';
   import ItemIcon from '../ui/ItemIcon.svelte';
   import Meter from '../ui/Meter.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -137,7 +137,7 @@
     {#if isOpen}
       <div
         id={`guild-raid-night-${f.row.id}`}
-        class="border-line-soft border-b px-4 pt-1 pb-3 md:pl-14"
+        class="{RULE_BOTTOM} px-4 pt-1 pb-3 md:pl-14"
         data-testid={`guild-raid-expanded-${f.row.id}`}
       >
         {#if f.row.raid_id !== undefined && f.row.raid_id !== null}

@@ -9,23 +9,9 @@
 @import '../components/ui/select.css';
 @import '../components/ui/skeleton.css';
 @import '../components/ui/row.css';
+@import '../components/ui/socket.css';
 
 @layer base {
-  /* A game icon (the build's data/<build>/icons/) whose file fails to load: only a broken image
-     draws ::after, so this covers the browser's broken-image glyph with the dark socket every
-     missing icon shows. Pure CSS: it works on a static page where no onerror handler runs. */
-  img[src*='/icons/'] {
-    position: relative;
-  }
-  img[src*='/icons/']::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 1px solid var(--color-line-warm-strong);
-    border-radius: inherit;
-    background: var(--color-bg);
-  }
-
   body {
     /* .full-bleed is 100vw, which counts a classic scrollbar; clip, unlike hidden, keeps
        position: sticky working. */

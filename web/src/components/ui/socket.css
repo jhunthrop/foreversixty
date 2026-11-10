@@ -1,0 +1,31 @@
+/* web/src/components/ui/socket.css
+   The dark socket a missing icon shows, and the warm edge a socket and a stop chip share.
+   Imported by global.css. */
+
+@layer base {
+  /* A game icon (the build's data/<build>/icons/) whose file fails to load: only a broken image
+     draws ::after, so this covers the browser's broken-image glyph with the dark socket every
+     missing icon shows. Pure CSS: it works on a static page where no onerror handler runs. */
+  img[src*='/icons/'] {
+    position: relative;
+  }
+  img[src*='/icons/']::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--color-line-warm-strong);
+    border-radius: inherit;
+    background: var(--color-bg);
+  }
+}
+
+/* An icon's frame with no icon in it yet (the guide's extras rows): the same dark socket. */
+.ui-socket {
+  border: 1px solid var(--color-line-warm-strong);
+  background: var(--color-bg);
+}
+
+/* A link chip's resting edge (the BiS page's stops); its own hover colours it. */
+.ui-edge {
+  border: 1px solid var(--color-line-warm-strong);
+}
