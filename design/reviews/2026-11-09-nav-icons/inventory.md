@@ -23,7 +23,7 @@ No icon library (lucide, iconify, heroicons, phosphor) was in use.
 | same | Your reports | hand-drawn | custom logs |
 | same | Rankings | hand-drawn | custom rankings |
 | same | Your guild | hand-drawn | custom guild |
-| same | Roster (Find a guild for a guildless visitor) | hand-drawn | custom manage (two heads: people) |
+| same | Roster (Find a guild for a guildless visitor) | hand-drawn | custom character (two heads stays the account menu's Account) |
 | same | Loot council | hand-drawn | custom bis |
 | same | Guild logs | hand-drawn | custom logs |
 | same | Planner, BiS, Simulator, Get set up, Tier list rows | hand-drawn, no row used them | deleted (dead) |
@@ -35,6 +35,14 @@ No icon library (lucide, iconify, heroicons, phosphor) was in use.
 | nav/SelectorPanel.svelte | row chevrons | Glyph chevron | line chevron-right |
 | nav/SelectorPanel.svelte | sheet close | inline svg | line close |
 | nav/SelectorRow.svelte | current-character check | Glyph check | line check |
+
+## Where the door icons show
+
+Panel rows, the account menu and every phone Menu row carry their icons at every width. The bar's
+doors carry theirs only where the bar is at least 1640 px wide (the wide column from about a
+1930 px viewport): measured signed in with an 18-letter name, the icons need about 220 px and the
+1440 bar has 24 px free. The owner's rule keeps the labels whole, so below that line the doors
+are labels alone. This is the measured limit, not a regression.
 
 ## Actions
 
