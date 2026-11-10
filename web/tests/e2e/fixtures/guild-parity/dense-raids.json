@@ -18,7 +18,26 @@
         "metric": "dps",
         "value": 857.0
       },
-      "fights": [],
+      "fights": [
+        {
+          "index": 0,
+          "name": null,
+          "encounter_id": null,
+          "kill": true,
+          "duration_ms": 60000,
+          "deaths": 0,
+          "players": 36
+        },
+        {
+          "index": 1,
+          "name": "Onyxia",
+          "encounter_id": 1084,
+          "kill": true,
+          "duration_ms": 192000,
+          "deaths": 2,
+          "players": 36
+        }
+      ],
       "present": [],
       "raid_id": 44
     },
@@ -40,7 +59,26 @@
         "metric": "dps",
         "value": 857.0
       },
-      "fights": [],
+      "fights": [
+        {
+          "index": 0,
+          "name": null,
+          "encounter_id": null,
+          "kill": true,
+          "duration_ms": 60000,
+          "deaths": 0,
+          "players": 37
+        },
+        {
+          "index": 1,
+          "name": "Onyxia",
+          "encounter_id": 1084,
+          "kill": true,
+          "duration_ms": 198000,
+          "deaths": 5,
+          "players": 37
+        }
+      ],
       "present": [],
       "raid_id": 43
     },
@@ -62,7 +100,26 @@
         "metric": "dps",
         "value": 857.0
       },
-      "fights": [],
+      "fights": [
+        {
+          "index": 0,
+          "name": null,
+          "encounter_id": null,
+          "kill": true,
+          "duration_ms": 60000,
+          "deaths": 0,
+          "players": 34
+        },
+        {
+          "index": 1,
+          "name": "Onyxia",
+          "encounter_id": 1084,
+          "kill": true,
+          "duration_ms": 206000,
+          "deaths": 3,
+          "players": 34
+        }
+      ],
       "present": [],
       "raid_id": 42
     },
@@ -84,7 +141,26 @@
         "metric": "dps",
         "value": 857.0
       },
-      "fights": [],
+      "fights": [
+        {
+          "index": 0,
+          "name": null,
+          "encounter_id": null,
+          "kill": true,
+          "duration_ms": 60000,
+          "deaths": 0,
+          "players": 36
+        },
+        {
+          "index": 1,
+          "name": "Onyxia",
+          "encounter_id": 1084,
+          "kill": true,
+          "duration_ms": 214000,
+          "deaths": 4,
+          "players": 36
+        }
+      ],
       "present": [],
       "raid_id": 41
     },
@@ -106,7 +182,35 @@
         "metric": "dps",
         "value": 857.0
       },
-      "fights": [],
+      "fights": [
+        {
+          "index": 0,
+          "name": null,
+          "encounter_id": null,
+          "kill": true,
+          "duration_ms": 60000,
+          "deaths": 0,
+          "players": 33
+        },
+        {
+          "index": 1,
+          "name": "Onyxia",
+          "encounter_id": 1084,
+          "kill": false,
+          "duration_ms": 240000,
+          "deaths": 5,
+          "players": 33
+        },
+        {
+          "index": 2,
+          "name": "Onyxia",
+          "encounter_id": 1084,
+          "kill": true,
+          "duration_ms": 225000,
+          "deaths": 7,
+          "players": 33
+        }
+      ],
       "present": [],
       "raid_id": 40
     }

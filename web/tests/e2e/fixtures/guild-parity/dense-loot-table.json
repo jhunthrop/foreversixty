@@ -271,7 +271,108 @@
       "quest_label": "",
       "eligible": [],
       "awarded_to": null,
-      "candidates": [],
+      "candidates": [
+        {
+          "character_key": "us/pvp/duskfang",
+          "name": "Duskfang",
+          "class": "rogue",
+          "spec": "Combat",
+          "gain_dps": 16.8,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 4,
+            "nights": 5
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Skullforge Reaver",
+          "replaces_item": {
+            "item_id": 13361,
+            "name": "Skullforge Reaver",
+            "icon": "inv_sword_12",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/shiverknife",
+          "name": "Shiverknife",
+          "class": "rogue",
+          "spec": "Assassination",
+          "gain_dps": 9.8,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 5,
+            "nights": 5
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Dal'Rend's Sacred Charge",
+          "replaces_item": {
+            "item_id": 12940,
+            "name": "Dal'Rend's Sacred Charge",
+            "icon": "inv_sword_43",
+            "quality": 3
+          },
+          "items_won": 2
+        },
+        {
+          "character_key": "us/pvp/steelmane",
+          "name": "Steelmane",
+          "class": "warrior",
+          "spec": "Arms",
+          "gain_dps": 7.1,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 5,
+            "nights": 5
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_34",
+            "quality": 3
+          },
+          "items_won": 0
+        },
+        {
+          "character_key": "us/pvp/thornwicke",
+          "name": "Thornwicke",
+          "class": "warrior",
+          "spec": "Protection",
+          "gain_dps": 5.3,
+          "gain_unit": "dps",
+          "tier": 0,
+          "not_sim_checked": false,
+          "ilvl_delta": null,
+          "attendance": {
+            "present": 5,
+            "nights": 5
+          },
+          "already_equivalent": false,
+          "fills_empty_slot": false,
+          "replaces": "Mirah's Song",
+          "replaces_item": {
+            "item_id": 15806,
+            "name": "Mirah's Song",
+            "icon": "inv_sword_34",
+            "quality": 3
+          },
+          "items_won": 2
+        }
+      ],
       "copies": 1,
       "encounter_id": 1084,
       "boss": "Onyxia",

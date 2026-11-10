@@ -5,11 +5,27 @@
      the buff cover and who is slipping. Reads the next raid (given), its readiness board, the last
      two logged raids, the attendance grid, the loot history and the open applications. -->
 <script lang="ts">
-  import type { GuildRaidView, GuildRaidsPage, GuildReadinessRow, GuildRosterRow, NextRaidView } from '../../../lib/guild/api';
+  import type {
+    GuildRaidView,
+    GuildRaidsPage,
+    GuildReadinessRow,
+    GuildRosterRow,
+    NextRaidView,
+  } from '../../../lib/guild/api';
   import { fetchGuildReadiness } from '../../../lib/guild/api';
-  import { guildApplicationsHref, guildMemberHref, guildRaidHref, guildRecruitHref } from '../../../lib/characters';
+  import {
+    guildApplicationsHref,
+    guildMemberHref,
+    guildRaidHref,
+    guildRecruitHref,
+  } from '../../../lib/characters';
   import { fetchLootNights, type LootNights } from '../../../lib/guild/loot-council-api';
-  import { fetchRecentAttendance, pingRaid, type GuildOfficerActions, type GuildRecentAttendance } from '../../../lib/guild/overview-api';
+  import {
+    fetchRecentAttendance,
+    pingRaid,
+    type GuildOfficerActions,
+    type GuildRecentAttendance,
+  } from '../../../lib/guild/overview-api';
   import { fetchGuildRaid } from '../../../lib/guild/raids-api';
   import { fetchOfficerApplications, type OfficerApplication } from '../../../lib/guild/recruit-api';
   import { nudgeText } from '../../../lib/guild/readiness-view';
@@ -71,34 +87,57 @@
   const logged = $derived((raidsPage?.rows ?? []).flatMap((r) => (r.raid_id == null ? [] : [r.raid_id])));
 
   $effect(() => {
-    void fetchRecentAttendance(guildId, NIGHTS, true).then((g) => (grid = g)).catch(() => (grid = null));
-    void fetchLootNights(guildId).then((l) => (loot = l)).catch(() => (loot = null));
-    void fetchOfficerApplications(guildId).then((a) => (apps = a.rows)).catch(() => (apps = []));
+    void fetchRecentAttendance(guildId, NIGHTS, true)
+      .then((g) => (grid = g))
+      .catch(() => (grid = null));
+    void fetchLootNights(guildId)
+      .then((l) => (loot = l))
+      .catch(() => (loot = null));
+    void fetchOfficerApplications(guildId)
+      .then((a) => (apps = a.rows))
+      .catch(() => (apps = []));
   });
   $effect(() => {
     if (next === null) return;
-    void fetchGuildReadiness(guildId, next.id).then((p) => (readiness = p.rows)).catch(() => (readiness = []));
+    void fetchGuildReadiness(guildId, next.id)
+      .then((p) => (readiness = p.rows))
+      .catch(() => (readiness = []));
   });
   $effect(() => {
     const [a, b] = logged;
-    if (a !== undefined) void fetchGuildRaid(guildId, a).then((v) => (last = v)).catch(() => (last = null));
-    if (b !== undefined) void fetchGuildRaid(guildId, b).then((v) => (before = v)).catch(() => (before = null));
+    if (a !== undefined)
+      void fetchGuildRaid(guildId, a)
+        .then((v) => (last = v))
+        .catch(() => (last = null));
+    if (b !== undefined)
+      void fetchGuildRaid(guildId, b)
+        .then((v) => (before = v))
+        .catch(() => (before = null));
   });
 
   const movers = $derived(ratingMovers(last?.report?.parses ?? [], before?.report?.parses ?? [], roster));
   const gaps = $derived(raid === null ? [] : compGaps(raid));
   const words = $derived(needsAWord({ view: raid, roster, grid, readiness, movers, now }));
   const ready = $derived(
-    readiness.length === 0 ? null : { ready: readiness.filter((r) => r.failing === 0).length, coming: readiness.length },
+    readiness.length === 0
+      ? null
+      : { ready: readiness.filter((r) => r.failing === 0).length, coming: readiness.length },
   );
   const tz = $derived(next?.guild_timezone ?? viewerTz);
   const dayOf = (iso: string) =>
-    new Date(iso).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: tz });
+    new Date(iso).toLocaleDateString('en-GB', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      timeZone: tz,
+    });
   const lastMeta = $derived.by(() => {
     if (last === null || last.report === null) return '';
     const kill = last.report.kill_order[0];
     const parts = [
-      kill === undefined || kill.kill_ms === null ? '' : `${kill.name} ${Math.floor(kill.kill_ms / 60000)}:${String(Math.floor(kill.kill_ms / 1000) % 60).padStart(2, '0')}`,
+      kill === undefined || kill.kill_ms === null
+        ? ''
+        : `${kill.name} ${Math.floor(kill.kill_ms / 60000)}:${String(Math.floor(kill.kill_ms / 1000) % 60).padStart(2, '0')}`,
       counted(last.report.headline.wipes, 'wipe'),
       counted(last.report.headline.deaths, 'death'),
       last.night === null ? '' : counted(last.night.came, 'raider'),
@@ -125,15 +164,24 @@
 </script>
 
 {#if actions !== null}
-  <div class="flex flex-wrap items-center gap-2.5 px-(--page-inset) pb-5" data-testid="guild-overview-actions">
+  <div
+    class="flex flex-wrap items-center gap-2.5 px-(--page-inset) pb-5"
+    data-testid="guild-overview-actions"
+  >
     {#if actions.approvals.count > 0}
-      <Button tone="secondary" size="sm" onclick={() => onSelectTab('roster')}>{actions.approvals.count} waiting for approval</Button>
+      <Button tone="secondary" size="sm" onclick={() => onSelectTab('roster')}
+        >{actions.approvals.count} waiting for approval</Button
+      >
     {/if}
     {#if (actions.applications?.count ?? 0) > 0}
-      <Button tone="secondary" size="sm" href={guildApplicationsHref(guildPath)}>{counted(actions.applications?.count ?? 0, 'application')}</Button>
+      <Button tone="secondary" size="sm" href={guildApplicationsHref(guildPath)}
+        >{counted(actions.applications?.count ?? 0, 'application')}</Button
+      >
     {/if}
     {#if (actions.drops_to_award?.count ?? 0) > 0}
-      <Button tone="secondary" size="sm" onclick={() => onSelectTab('loot')}>{actions.drops_to_award?.count} drops to award</Button>
+      <Button tone="secondary" size="sm" onclick={() => onSelectTab('loot')}
+        >{actions.drops_to_award?.count} drops to award</Button
+      >
     {/if}
   </div>
 {/if}

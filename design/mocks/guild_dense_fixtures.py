@@ -222,7 +222,10 @@ def raids_page() -> dict:
         rows.append({'id': rep, 'title': f'{ZONE_NAME} · raid night', 'zone': ZONE_NAME, 'created_at': at, 'fight_count': 3 + wipes,
                      'kill_count': 1, 'duration_ms': 3_000_000 + kill, 'wipe_count': wipes, 'raiders': len(came), 'deaths': deaths,
                      'top_hps': None, 'top_dps': {'name': top.name, 'class': top.cls, 'metric': 'dps', 'value': top.figures[1]},
-                     'fights': [], 'present': [], 'raid_id': rid})
+                     'fights': [{'index': 0, 'name': None, 'encounter_id': None, 'kill': True, 'duration_ms': 60_000, 'deaths': 0, 'players': len(came)}]
+                     + [{'index': 1 + w, 'name': 'Onyxia', 'encounter_id': ENCOUNTER_ID, 'kill': w == wipes, 'duration_ms': kill if w == wipes else 240_000,
+                         'deaths': deaths if w == wipes else 5, 'players': len(came)} for w in range(wipes + 1)],
+                     'present': [], 'raid_id': rid})
     return {'rows': rows, 'next_cursor': None}
 
 
@@ -344,7 +347,23 @@ def loot_table() -> dict:
     base = json.loads((OUT / 'loot-table.json').read_text())
     enc = [{**e, 'kill_nights': len(D.NIGHTS), 'on_farm': True} for e in base['encounters']]
     return {**base, 'encounters': enc, 'at_level_cap': len(D.ROSTER),
-            'items': [{**i, 'candidates': [], 'eligible': []} for i in base['items']]}
+            'items': [{**i, 'candidates': [candidate(c, False) for c in D.CANDIDATES] if i['item_id'] == D.SELECTED_DROP else [],
+                       'eligible': []} for i in base['items']]}
+
+
+def member_profile(name: str) -> dict:
+    """GET .../members/me/profile for a member: their row, nights, loot this tier and readiness (no notes)."""
+    r = D.BY_NAME[name]
+    outcome = {'P': 'present', 'A': 'absent', 'B': None, 'N': None}
+    nights = [{'raid_id': n[0], 'starts_at': n[1], 'outcome': outcome[c], 'excused': False} for n, c in zip(D.NIGHTS, r.cells) if c != 'N']
+    won = D.items_won(name)
+    return {'account_key': f'acct-{name.lower()}', 'member': roster_row(r),
+            'characters': [{'character_key': r.key, 'name': r.name, 'class': r.cls, 'is_main': True}],
+            'attendance': {'source': 'raids', 'last_4': {'present': r.cells[-4:].count('P'), 'nights': 4},
+                           'last_30': {'present': r.present, 'nights': r.nights}, 'nights': nights},
+            'loot': {'count': len(won), 'items': [{'item_id': a[1], 'name': a[2], 'icon': a[3], 'quality': 4, 'raid_id': a[0],
+                                                    'awarded_at': iso(parse(D.night_at(a[0])) + timedelta(minutes=62))} for a in won]},
+            'readiness': readiness_row(r)}
 
 
 def dense_fixtures() -> dict[str, object]:
@@ -354,7 +373,8 @@ def dense_fixtures() -> dict[str, object]:
             'dense-raids.json': raids_page(), 'dense-progression.json': progression(), 'dense-page.json': guild_page(),
             'dense-readiness.json': readiness(False), 'dense-readiness-raid.json': readiness(True),
             'dense-attendance.json': attendance(), 'dense-actions.json': officer_actions(), 'dense-checklist.json': checklist(),
-            'dense-loot-nights.json': loot_nights(), 'dense-loot-drop.json': loot_drop(), 'dense-loot-table.json': loot_table()}
+            'dense-loot-nights.json': loot_nights(), 'dense-loot-drop.json': loot_drop(), 'dense-loot-table.json': loot_table(),
+            'dense-profile-member.json': member_profile(D.MEMBER)}
 
 
 if __name__ == '__main__':

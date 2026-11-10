@@ -31,19 +31,31 @@
     copied = word.key;
   }
 
-  const LABEL: Readonly<Record<WordAction, string>> = { profile: 'Profile', ping: 'Ping', nudge: 'Nudge', report: 'Report' };
+  const LABEL: Readonly<Record<WordAction, string>> = {
+    profile: 'Profile',
+    ping: 'Ping',
+    nudge: 'Nudge',
+    report: 'Report',
+  };
 </script>
 
 {#if words.length > 0}
   <Section title="Needs a word" meta={`${words.length} raiders`} panel testid="guild-week-words">
     {#each words as word (word.key)}
-      <Row title={word.name} titleTone={{ classSlug: word.cls as ClassSlug }} sub={word.reasons.join(' · ')} open>
+      <Row
+        title={word.name}
+        titleTone={{ classSlug: word.cls as ClassSlug }}
+        sub={word.reasons.join(' · ')}
+        open
+      >
         {#snippet lead()}<ClassCrestRing characterClass={word.cls} size={32} />{/snippet}
         {#snippet trail()}
           {#if word.action === 'ping'}
             <Button tone="secondary" size="sm" onclick={onPing}>{LABEL.ping}</Button>
           {:else if word.action === 'nudge'}
-            <Button tone="secondary" size="sm" onclick={() => void nudge(word)}>{copied === word.key ? 'Copied' : LABEL.nudge}</Button>
+            <Button tone="secondary" size="sm" onclick={() => void nudge(word)}
+              >{copied === word.key ? 'Copied' : LABEL.nudge}</Button
+            >
           {:else}
             <Button tone="secondary" size="sm" href={hrefOf(word, word.action)}>{LABEL[word.action]}</Button>
           {/if}

@@ -7,6 +7,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type {
+    GuildHomeStanding,
     GuildHomeSummary,
     GuildRaidView,
     GuildRaidsPage,
@@ -22,12 +23,7 @@
     type GuildChecklist,
     type GuildOfficerActions,
   } from '../../lib/guild/overview-api';
-  import {
-    checklistRows,
-    raidWeekday,
-    verdictLine,
-    verdictWord,
-  } from '../../lib/guild/overview-role-view';
+  import { checklistRows, raidWeekday, verdictLine, verdictWord } from '../../lib/guild/overview-role-view';
   import {
     downEncounterNames,
     lastRaidProgressLine,
@@ -44,7 +40,7 @@
   import MemberChecklist from './overview/MemberChecklist.svelte';
   import NextRaidPlate from './overview/NextRaidPlate.svelte';
   import RecruitLine from './overview/RecruitLine.svelte';
-  import YourNumbers from './overview/YourNumbers.svelte';
+  import MemberWeek from './dense/MemberWeek.svelte';
   import OfficerWeek from './dense/OfficerWeek.svelte';
   import type { GuildTabId } from './GuildTabs.svelte';
 
@@ -70,6 +66,7 @@
     guildPath,
     myRow = null,
     roster = [],
+    standing = null,
     onSelectTab,
     lead,
     you,
@@ -91,6 +88,8 @@
     myRow?: GuildRosterRow | null;
     /** The guild's roster (the home's), for the officer's week. */
     roster?: readonly GuildRosterRow[];
+    /** The viewer's place among their spec (the home's `standing`). */
+    standing?: GuildHomeStanding | null;
     onSelectTab: (tab: GuildTabId) => void;
     /** The first block on the tab, when the page has one to lead with (Before raids open, which then
      *  carries the next step: no "No raid planned" line and no numbers before the first raid). */
@@ -237,15 +236,58 @@
     {/if}
     <Page layout="split" panels testid="guild-overview-page">
       {@render lead?.()}
-      {@render plate()}
+      {#if guildId !== null && nextRaid !== null && lead === undefined}
+        <MemberWeek
+          part="week"
+          {guildId}
+          next={nextRaid}
+          {raid}
+          {myRow}
+          {roster}
+          {standing}
+          {raidsPage}
+          {viewerTz}
+          now={clock.now}
+          {you}
+        />
+      {:else}
+        {@render plate()}
+      {/if}
       {#if checklist !== null && rows.length > 0}
         <div id="guild-overview-checklist">
           <MemberChecklist {rows} verdict={verdictWord(checklist.verdict)} />
         </div>
       {/if}
-      {#if myRow !== null && lead === undefined}<YourNumbers row={myRow} />{/if}
+      {#if guildId !== null && lead === undefined}
+        <MemberWeek
+          part="nights"
+          {guildId}
+          next={nextRaid}
+          {raid}
+          {myRow}
+          {roster}
+          {standing}
+          {raidsPage}
+          {viewerTz}
+          now={clock.now}
+        />
+      {/if}
       {#snippet rail()}
         {#if raid?.comp_target}<CompTally {raid} target={raid.comp_target} title="The raid's comp" />{/if}
+        {#if guildId !== null}
+          <MemberWeek
+            part="loot"
+            {guildId}
+            next={nextRaid}
+            {raid}
+            {myRow}
+            {roster}
+            {standing}
+            {raidsPage}
+            {viewerTz}
+            now={clock.now}
+          />
+        {/if}
         {@render lastRaid()}
       {/snippet}
     </Page>

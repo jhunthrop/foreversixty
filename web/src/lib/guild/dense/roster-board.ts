@@ -136,7 +136,9 @@ function boardRow(
 
 /** The roster's raiders, grouped by raid group, each group best rating first. */
 export function rosterBoard(inputs: BoardInputs): BoardGroup[] {
-  const cellsByAccount = new Map((inputs.attendance?.rows ?? []).map((r) => [r.account_key, r.cells] as const));
+  const cellsByAccount = new Map(
+    (inputs.attendance?.rows ?? []).map((r) => [r.account_key, r.cells] as const),
+  );
   const itemsByKey = new Map<string, number>();
   for (const award of tierAwards(inputs.loot))
     itemsByKey.set(award.character_key, (itemsByKey.get(award.character_key) ?? 0) + 1);
@@ -188,7 +190,10 @@ export function filterBoard(
   const needle = text.trim().toLowerCase();
   return groups
     .filter((g) => only === 'all' || g.group === only)
-    .map((g) => ({ ...g, rows: g.rows.filter((r) => needle === '' || r.name.toLowerCase().includes(needle)) }))
+    .map((g) => ({
+      ...g,
+      rows: g.rows.filter((r) => needle === '' || r.name.toLowerCase().includes(needle)),
+    }))
     .filter((g) => g.rows.length > 0);
 }
 

@@ -977,6 +977,7 @@
           {guildPath}
           myRow={myRosterRow}
           roster={home?.roster ?? []}
+          standing={home?.standing ?? null}
           you={showsBandLine(myGuildMembership?.verified === true, role) ? youRow : undefined}
           reports={home?.reports ?? data.reports}
           summary={home?.summary}
@@ -1003,6 +1004,28 @@
           onDecline={(row) => void onRemove(row)}
           onApproveAll={() => void onApproveAll()}
           profileHref={(row) => rosterProfileHref(row, { officer: officerView, myCharacterKey, guildPath })}
+          table={{
+            roster: home.roster,
+            pending: home.pending ?? [],
+            members: home.members,
+            counts: home.counts,
+            can,
+            myCharacterKey,
+            rosterBusy,
+            rosterActionError,
+            frozen: home.claim.frozen,
+            removeOverridesFrozen,
+            onApprove: (row) => void onApprove(row),
+            onRemove: (row) => void onRemove(row),
+            onRemoveMember: (entry) => void onRemoveMember(entry),
+            onDecline: (row) => void onRemove(row),
+            onApproveAll: () => void onApproveAll(),
+            rowPath,
+            profileHref: (row) => rosterProfileHref(row, { officer: officerView, myCharacterKey, guildPath }),
+            mySiteSpec: myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null),
+            attendanceSource: attendanceSourceOf(home),
+            focusApproveAll,
+          }}
         />
       {:else}
         <Skeleton lines={6} minHeight="min-h-[320px]" testid="guild-roster-skeleton" />
@@ -1079,6 +1102,7 @@
           onToggleNextRaid={() => (readinessNextRaidOnly = !readinessNextRaidOnly)}
           {guildId}
           guildTimezone={readinessView.guildTimezone}
+          median={readiness?.all.median_item_level ?? null}
           officer={officerView}
           {officerTools}
           {raidGuildTools}
@@ -1094,6 +1118,7 @@
           {officerTools}
           {raidGuildTools}
           ownKeys={[...myCharacterKeys]}
+          roster={home?.roster ?? []}
           {gateFacts}
           timeZone={home?.next_raid?.guild_timezone ?? undefined}
           onRefused={(gate) => {

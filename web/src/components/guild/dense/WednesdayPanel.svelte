@@ -5,7 +5,12 @@
      one-click chips (a not-answered raider: Ping, the raid-wide Discord ping that names every
      non-signer; a benched one: Move to In), and how many seats stay open if everyone says yes. -->
 <script lang="ts">
-  import { GuildApiError, type GuildRaidSignup, type GuildRaidView, type NextRaidView } from '../../../lib/guild/api';
+  import {
+    GuildApiError,
+    type GuildRaidSignup,
+    type GuildRaidView,
+    type NextRaidView,
+  } from '../../../lib/guild/api';
   import { classColorVar } from '../../../lib/report/format';
   import { pingRaid } from '../../../lib/guild/overview-api';
   import { pingAllowed } from '../../../lib/guild/overview-role-view';
@@ -55,7 +60,9 @@
   const notAnswered = $derived(raid.not_signed_raiders?.length ?? raid.not_signed.length);
   const canPing = $derived(pingedAt === null && pingAllowed(raid, now));
   const pingedText = $derived(
-    pingedAt === null ? '' : `Pinged ${pingedAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase()}`,
+    pingedAt === null
+      ? ''
+      : `Pinged ${pingedAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase()}`,
   );
 
   function named(state: GuildRaidSignup['state']): GuildRaidSignup[] {
@@ -96,10 +103,19 @@
 </script>
 
 {#snippet people(list: readonly GuildRaidSignup[])}
-  {#each list as s, i (s.character_key)}{#if i > 0}{', '}{/if}<b style:color={classColorVar(s.class)}>{s.name}</b>{/each}
+  {#each list as s, i (s.character_key)}{#if i > 0},&#32;{/if}<b style:color={classColorVar(s.class)}
+      >{s.name}</b
+    >{/each}
 {/snippet}
 
-<Section title="Wednesday" panel frame="framed" flush action={{ label: 'Edit target', href: planHref }} testid="guild-week-wednesday">
+<Section
+  title="Wednesday"
+  panel
+  frame="framed"
+  flush
+  action={{ label: 'Edit target', href: planHref }}
+  testid="guild-week-wednesday"
+>
   <div class="px-5"><NextRaidRow {next} durationMinutes={raid.duration_minutes} {viewerTz} {now} /></div>
   <div class="flex flex-wrap gap-x-8 gap-y-3 px-5 pt-3 pb-2" data-testid="guild-week-figures">
     <Figure value={String(raid.counts.in)} label="In" tone="kill" />
@@ -111,10 +127,19 @@
   </div>
   <p class="text-small text-muted px-5 pb-3" data-testid="guild-week-names">
     {#if named('late').length > 0}Late {@render people(named('late'))}{/if}
-    {#if named('bench').length > 0} · Bench {@render people(named('bench'))}{/if}
-    {#if named('out').length > 0} · Out {@render people(named('out'))}{/if}
+    {#if named('bench').length > 0}
+      · Bench {@render people(named('bench'))}{/if}
+    {#if named('out').length > 0}
+      · Out {@render people(named('out'))}{/if}
   </p>
-  <StatTable columns={[...columns]} nameHead="Role" bar={false} dense label="Seats against the target" testid="guild-week-comp">
+  <StatTable
+    columns={[...columns]}
+    nameHead="Role"
+    bar={false}
+    dense
+    label="Seats against the target"
+    testid="guild-week-comp"
+  >
     {#each rows as row (row.group)}
       <StatRow bar={false} figures={figures(row)} testid={`guild-week-comp-${row.group}`}>
         {#snippet name()}<b>{GROUP_WORD[row.group]}</b>{/snippet}
@@ -123,7 +148,8 @@
             <span class="fills">
               {#each row.fillers.slice(0, FILLERS_SHOWN) as f (f.key)}
                 {#if f.kind === 'ping' && pingedAt !== null}
-                  <span class="fill done"><b style:color={classColorVar(f.cls)}>{f.name}</b>{pingedText}</span>
+                  <span class="fill done"><b style:color={classColorVar(f.cls)}>{f.name}</b>{pingedText}</span
+                  >
                 {:else}
                   <button
                     type="button"
@@ -137,17 +163,24 @@
                   >
                 {/if}
               {/each}
-              {#if row.fillers.length > FILLERS_SHOWN}<span>+{row.fillers.length - FILLERS_SHOWN} more</span>{/if}
+              {#if row.fillers.length > FILLERS_SHOWN}<span>+{row.fillers.length - FILLERS_SHOWN} more</span
+                >{/if}
             </span>
           {/if}
-          {#if row.stillShort > 0}<span class="text-wipe block">Still {row.stillShort} short if all answer</span>{/if}
+          {#if row.stillShort > 0}<span class="text-wipe block"
+              >Still {row.stillShort} short if all answer</span
+            >{/if}
         {/snippet}
       </StatRow>
     {/each}
   </StatTable>
   <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 pt-3 pb-4">
-    <Button tone="primary" size="sm" disabled={!canPing || notAnswered === 0} onclick={() => void ping()} testid="guild-ping-all"
-      >{pingedAt === null ? `Ping ${notAnswered} not answered` : pingedText}</Button
+    <Button
+      tone="primary"
+      size="sm"
+      disabled={!canPing || notAnswered === 0}
+      onclick={() => void ping()}
+      testid="guild-ping-all">{pingedAt === null ? `Ping ${notAnswered} not answered` : pingedText}</Button
     >
     <a class="text-gold text-[14px] font-semibold" href={planHref}>Open the planner ›</a>
     {#if pingError !== ''}<span class="text-small text-wipe">{pingError}</span>{/if}

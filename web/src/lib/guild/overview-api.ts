@@ -129,7 +129,10 @@ export function fetchRecentAttendance(
   apiBase: string = API_BASE_URL,
 ): Promise<GuildRecentAttendance> {
   const every = all ? '&all=1' : '';
-  return privateRead<GuildRecentAttendance>(`${guildPath(guildId)}/attendance/recent?n=${nights}${every}`, apiBase);
+  return privateRead<GuildRecentAttendance>(
+    `${guildPath(guildId)}/attendance/recent?n=${nights}${every}`,
+    apiBase,
+  );
 }
 
 /** Officers: what is waiting on them (approvals, non-signers, drops). */

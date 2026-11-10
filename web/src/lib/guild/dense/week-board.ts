@@ -3,9 +3,16 @@
 // raid's seats against the comp target with the raiders who could fill each gap, who needs a word
 // before it, last night's risers and fallers by rating, the roles still short if everyone answers,
 // and who is slipping. Pure: built from the reads the Overview already makes.
-import type { GuildRaidGroup, GuildRaidView, GuildReadinessRow, GuildRosterRow, GuildRosterRating } from '../api';
+import type {
+  GuildRaidGroup,
+  GuildRaidView,
+  GuildReadinessRow,
+  GuildRosterRow,
+  GuildRosterRating,
+} from '../api';
 import type { RaidReportParse } from '../attendance-contract';
 import type { AttendanceCell, GuildRecentAttendance } from '../overview-api';
+import { readinessShortfalls } from '../readiness-view';
 import { RAID_GROUP_ORDER } from './roster-board';
 
 /** How many filler chips a gap row shows before "+N more". */
@@ -66,7 +73,15 @@ export function compGaps(view: GuildRaidView): CompGapRow[] {
         .filter((s) => s.state === 'bench' && (s.group ?? 'ranged') === group)
         .map((s) => ({ key: s.character_key, name: s.name, cls: s.class, kind: 'bench' as const })),
     ];
-    return { group, need, in: inCount, late, gap, fillers: gap > 0 ? fillers : [], stillShort: Math.max(0, gap - fillers.length) };
+    return {
+      group,
+      need,
+      in: inCount,
+      late,
+      gap,
+      fillers: gap > 0 ? fillers : [],
+      stillShort: Math.max(0, gap - fillers.length),
+    };
   });
 }
 
@@ -151,9 +166,12 @@ export interface SlipRow {
 /** Raiders who missed SLIP_MISSES of the last SLIP_WINDOW nights, or sat on the bench often; most misses first. */
 export function slipping(grid: GuildRecentAttendance | null): SlipRow[] {
   if (grid === null) return [];
-  const misses = (cells: readonly AttendanceCell[]) => cells.slice(-SLIP_WINDOW).filter((c) => c === 'absent').length;
+  const misses = (cells: readonly AttendanceCell[]) =>
+    cells.slice(-SLIP_WINDOW).filter((c) => c === 'absent').length;
   return grid.rows
-    .filter((r) => misses(r.cells) >= SLIP_MISSES || r.cells.filter((c) => c === 'bench').length >= BENCH_NIGHTS)
+    .filter(
+      (r) => misses(r.cells) >= SLIP_MISSES || r.cells.filter((c) => c === 'bench').length >= BENCH_NIGHTS,
+    )
     .map((r) => ({
       name: r.name,
       cls: r.class,
@@ -183,19 +201,16 @@ export interface WordInputs {
   now: Date;
 }
 
-const SHORT_WORDS: ReadonlyArray<[(r: GuildReadinessRow) => boolean, (r: GuildReadinessRow) => string]> = [
-  [(r) => r.attuned === false, () => 'not attuned'],
-  [(r) => r.enchants.missing_slots.length > 0, (r) => `${r.enchants.missing_slots.length} enchants missing`],
-  [(r) => r.flask_food != null && (!r.flask_food.flask_or_elixir || !r.flask_food.food), () => 'no flask or food'],
-  [(r) => r.talent_points_read !== false && r.talent_points_unspent > 0, (r) => `${r.talent_points_unspent} talent points unspent`],
-];
-
+/** What the raider is short of for the raid, as the readiness board words it; the gain to BiS is
+ *  not a shortfall here. */
 export function shortReasons(row: GuildReadinessRow): string[] {
-  return SHORT_WORDS.filter(([fails]) => fails(row)).map(([, word]) => word(row));
+  return readinessShortfalls(row, { attunement: true }, false);
 }
 
 function daysSince(iso: string | undefined, now: Date): number | null {
-  return iso === undefined || iso === '' ? null : Math.floor((now.getTime() - new Date(iso).getTime()) / DAY_MS);
+  return iso === undefined || iso === ''
+    ? null
+    : Math.floor((now.getTime() - new Date(iso).getTime()) / DAY_MS);
 }
 
 /** Who the officer talks to before the raid, with the reason in figures and one action each. */
@@ -207,7 +222,10 @@ export function needsAWord(inputs: WordInputs): Word[] {
     else had.reasons.push(reason);
   };
   const missesByName = new Map(
-    (inputs.grid?.rows ?? []).map((r) => [r.name, r.cells.slice(-SLIP_WINDOW).filter((c) => c === 'absent').length]),
+    (inputs.grid?.rows ?? []).map((r) => [
+      r.name,
+      r.cells.slice(-SLIP_WINDOW).filter((c) => c === 'absent').length,
+    ]),
   );
   const rosterByKey = new Map(inputs.roster.map((r) => [r.character_key, r] as const));
   for (const n of inputs.view?.not_signed_raiders ?? []) {
@@ -217,12 +235,14 @@ export function needsAWord(inputs: WordInputs): Word[] {
     const stale = daysSince(row?.logged_at, inputs.now);
     add(n.character_key, n.name, n.class, 'Not answered', n.discord_linked ? 'ping' : 'profile');
     add(n.character_key, n.name, n.class, `missed ${misses} of the last ${SLIP_WINDOW}`, 'ping');
-    if (stale !== null && stale >= WORD_STALE_DAYS) add(n.character_key, n.name, n.class, `last log ${stale} d ago`, 'ping');
+    if (stale !== null && stale >= WORD_STALE_DAYS)
+      add(n.character_key, n.name, n.class, `last log ${stale} d ago`, 'ping');
     if (!n.discord_linked) add(n.character_key, n.name, n.class, 'no Discord', 'profile');
   }
   for (const r of inputs.readiness) {
     const why = shortReasons(r);
-    if (why.length > 0 && !words.has(r.character_key)) for (const w of why) add(r.character_key, r.name, r.class, w, 'nudge');
+    if (why.length > 0 && !words.has(r.character_key))
+      for (const w of why) add(r.character_key, r.name, r.class, w, 'nudge');
   }
   for (const m of inputs.movers.down) {
     if (-m.change < WORD_RATING_FALL || words.has(m.key)) continue;

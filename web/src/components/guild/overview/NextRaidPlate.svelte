@@ -28,7 +28,6 @@
     now: Date;
     you?: Snippet;
   } = $props();
-
 </script>
 
 <Section

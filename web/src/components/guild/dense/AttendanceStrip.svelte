@@ -37,12 +37,17 @@
 {#if legend}
   <span class="att-legend text-small text-muted" data-testid={testid}>
     {#each KEY as cell (cell)}
-      <span class="att-key"><span class="att-cell" data-cell={cell} aria-hidden="true">{CELL_GLYPH[cell]}</span>{CELL_WORD[cell]}</span>
+      <span class="att-key"
+        ><span class="att-cell" data-cell={cell} aria-hidden="true">{CELL_GLYPH[cell]}</span>{CELL_WORD[
+          cell
+        ]}</span
+      >
     {/each}
   </span>
 {:else}
   <span class="att" role="img" aria-label={cells.map((c) => CELL_WORD[c]).join(', ')} data-testid={testid}>
-    {#each cells as cell, index (index)}<span class="att-cell" data-cell={cell}>{CELL_GLYPH[cell]}</span>{/each}
+    {#each cells as cell, index (index)}<span class="att-cell" data-cell={cell}>{CELL_GLYPH[cell]}</span
+      >{/each}
   </span>
 {/if}
 

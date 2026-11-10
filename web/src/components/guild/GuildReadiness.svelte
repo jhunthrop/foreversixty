@@ -7,7 +7,6 @@
      toggle cuts the board to the raid's In and Late sign-ups. Officer tools gate §3: with the tools
      off the plan sentence sits under the heading and every Nudge stays on screen, disabled. -->
 <script lang="ts">
-  import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import { classColorVar } from '../../lib/report/format';
   import { classTone } from '../../lib/ui/primitives';
   import type { GuildRaidSignup, GuildReadinessRow } from '../../lib/guild/api';
@@ -20,13 +19,11 @@
   import Page from '../ui/Page.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import { button } from '../../lib/ui/button';
   import { guildGateCopy } from '../../lib/guild/copy';
   import type { GateFacts } from '../../lib/guild/plan-gate';
   import {
     READINESS_EMPTY,
     NEXT_RAID_ONLY,
-    READY_MEANS,
     levelingLabel,
     nudgeText,
     pinReadinessOwnRow,
@@ -34,6 +31,7 @@
     tankFireLine,
   } from '../../lib/guild/readiness-view';
   import GuildPlanGate from './GuildPlanGate.svelte';
+  import ReadinessBoard from './dense/ReadinessBoard.svelte';
 
   let {
     rows,
@@ -48,6 +46,8 @@
     onToggleNextRaid = () => {},
     guildTimezone = null,
     viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    median = null,
+    now = new Date(),
   }: {
     rows: GuildReadinessRow[];
     officer: boolean;
@@ -67,13 +67,16 @@
     onToggleNextRaid?: () => void;
     guildTimezone?: string | null;
     viewerTimezone?: string;
+    /** The board's median item level, the item level column's baseline. */
+    median?: number | null;
+    now?: Date;
   } = $props();
 
   const filtered = $derived(raid !== null && nextRaidOnly);
   const raidDay = $derived(
     raid === null ? '' : dateLabel(new Date(raid.starts_at), guildTimezone ?? viewerTimezone),
   );
-  const lists = $derived(readinessLists(rows, filtered ? raid : null));
+  const lists = $derived(readinessLists(rows, filtered ? raid : null, false));
   /** A member's own row leads the list it is in; an officer's board stays worst first. */
   const short = $derived(
     officer
@@ -119,23 +122,16 @@
       // promised more than "Copied", so a refusal leaves no confirmation rather than an error.
     }
   }
-
-  const specLine = (row: GuildReadinessRow): string =>
-    [
-      `${row.spec} ${row.class.charAt(0).toUpperCase()}${row.class.slice(1)}`,
-      row.item_level === null ? '' : `item level ${row.item_level}`,
-    ]
-      .filter((part) => part !== '')
-      .join(' · ');
 </script>
 
 <div data-testid="guild-readiness-tab">
   <Page layout="ledger" panels>
     <Section
-      title="Short of something"
+      title={`${lists.ready.length} of ${lists.ready.length + short.length} ready${filtered ? ` for ${raidDay}` : ''}`}
       panel
       frame="framed"
-      meta={officer ? (filtered ? `In or Late for ${raidDay}` : undefined) : guildGateCopy.readOnly}
+      flush
+      meta={officer ? (filtered ? 'In and Late' : undefined) : guildGateCopy.readOnly}
       metaTestid="guild-readiness-read-only"
       testid="guild-readiness-short"
     >
@@ -160,43 +156,18 @@
           action={officer ? { label: 'Open the roster', href: '#roster' } : undefined}
           testid="guild-readiness-empty"
         />
-      {:else if short.length === 0}
-        <p class="text-muted text-[14px]" data-testid="guild-readiness-nobody-short">Nobody.</p>
       {:else}
-        <ul data-testid="guild-readiness-rows">
-          {#each short as { row, shortfalls } (row.character_key)}
-            {@const pinned = row.character_key === myCharacterKey}
-            <li data-testid={`guild-readiness-row-${row.character_key}`}>
-              <Row
-                title={`${row.name}${pinned ? ' (you)' : ''}`}
-                titleTone={classTone(row.class)}
-                sub={specLine(row)}
-                selected={pinned}
-                open
-              >
-                {#snippet lead()}<ClassCrestRing characterClass={row.class} size={30} />{/snippet}
-                {#snippet foot()}<span
-                    class="text-gold text-[13px] leading-5"
-                    data-testid="guild-readiness-shortfalls">{shortfalls.join(' · ')}</span
-                  >{/snippet}
-                {#snippet trail()}
-                  {#if officer}
-                    <button
-                      class={button('secondary', 'sm')}
-                      onclick={() => void onNudge(row)}
-                      disabled={officerReadOnly}
-                      aria-describedby={gateDescribedBy}
-                      aria-label={`Nudge ${row.name}`}
-                      data-testid={`guild-readiness-nudge-${row.character_key}`}
-                    >
-                      {copiedKey === row.character_key ? 'Copied' : 'Nudge'}
-                    </button>
-                  {/if}
-                {/snippet}
-              </Row>
-            </li>
-          {/each}
-        </ul>
+        <ReadinessBoard
+          {short}
+          ready={lists.ready}
+          {officer}
+          readOnly={officerReadOnly}
+          describedBy={gateDescribedBy}
+          {copiedKey}
+          {median}
+          {now}
+          onNudge={(row) => void onNudge(row)}
+        />
       {/if}
     </Section>
 
@@ -217,22 +188,6 @@
             {/each}
           </ul>
         {/if}
-      </Section>
-    {/if}
-
-    {#if lists.ready.length > 0}
-      <Section
-        title={`${lists.ready.length} ready`}
-        panel
-        meta={READY_MEANS}
-        testid="guild-readiness-ready-list"
-      >
-        <p class="text-[14px] leading-[23px]">
-          {#each lists.ready as row, index (row.character_key)}<span
-              style={`color:${classColorVar(row.class)}`}
-              data-testid={`guild-readiness-ready-${row.character_key}`}>{row.name}</span
-            >{#if index < lists.ready.length - 1}<span class="text-muted">,&#32;</span>{/if}{/each}
-        </p>
       </Section>
     {/if}
 

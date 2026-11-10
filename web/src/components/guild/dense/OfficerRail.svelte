@@ -45,34 +45,45 @@
   <Section title="Recruit for the gaps" panel testid="guild-week-recruit">
     {#each gaps as gap (gap.group)}
       <Row title={GROUP_WORD[gap.group]} sub={`Short ${gap.short} if all answer`} open>
-        {#snippet trail()}<Button tone="secondary" size="sm" href={recruitHref}>Post the role</Button>{/snippet}
+        {#snippet trail()}<Button tone="secondary" size="sm" href={recruitHref}>Post the role</Button
+          >{/snippet}
       </Row>
     {/each}
     {#each pending as app (app.id)}
       <Row
         title={app.character.name}
         titleTone={{ classSlug: (app.character.class ?? 'warrior') as never }}
-        sub={[app.character.spec_name ?? '', app.character.item_level === null ? '' : `${app.character.item_level} ilvl`]
+        sub={[
+          app.character.spec_name ?? '',
+          app.character.item_level === null ? '' : `${app.character.item_level} ilvl`,
+        ]
           .filter((p) => p !== '')
           .join(' · ')}
         open
       >
         {#snippet lead()}<ClassCrestRing characterClass={app.character.class ?? ''} size={32} />{/snippet}
-        {#snippet trail()}<Button tone="secondary" size="sm" href={applicationsHref}>Open application</Button>{/snippet}
+        {#snippet trail()}<Button tone="secondary" size="sm" href={applicationsHref}>Open application</Button
+          >{/snippet}
       </Row>
     {/each}
   </Section>
 {/if}
 
 {#if night !== null && night.drops.length > 0}
-  <Section title={`Loot, ${nightLabel}`} panel action={{ label: 'Loot', href: lootHref }} testid="guild-week-loot">
+  <Section
+    title={`Loot, ${nightLabel}`}
+    panel
+    action={{ label: 'Loot', href: lootHref }}
+    testid="guild-week-loot"
+  >
     {#each night.drops as drop (drop.item_id)}
-      <Row
-        title={drop.name}
-        sub={drop.award === null ? 'Open' : drop.award.name}
-        open
-      >
-        {#snippet lead()}<ItemIcon icon={lootIconOf(drop) ?? undefined} quality={drop.quality} {build} size={32} />{/snippet}
+      <Row title={drop.name} sub={drop.award === null ? 'Open' : drop.award.name} open>
+        {#snippet lead()}<ItemIcon
+            icon={lootIconOf(drop) ?? undefined}
+            quality={drop.quality}
+            {build}
+            size={32}
+          />{/snippet}
         {#snippet trail()}
           {#if drop.award === null}<Button tone="secondary" size="sm" href={lootHref}>Council</Button>{/if}
         {/snippet}
@@ -84,7 +95,12 @@
 {#if slipping.length > 0}
   <Section title="Slipping" panel action={{ label: 'Roster', href: '#roster' }} testid="guild-week-slipping">
     {#each slipping as row (row.name)}
-      <Row title={row.name} titleTone={{ classSlug: row.cls as never }} sub={`${row.present} of ${row.nights} nights`} open>
+      <Row
+        title={row.name}
+        titleTone={{ classSlug: row.cls as never }}
+        sub={`${row.present} of ${row.nights} nights`}
+        open
+      >
         {#snippet trail()}<AttendanceStrip cells={row.cells} />{/snippet}
       </Row>
     {/each}

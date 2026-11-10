@@ -41,7 +41,10 @@ function answers(viewer: Viewer): ReadonlyArray<[RegExp, (url: URL) => string]> 
     [/^\/raids\/44$/, () => 'dense-raid-44.json'],
     [/^\/raids\/43$/, () => 'dense-raid-43.json'],
     [/^\/progression$/, () => 'dense-progression.json'],
-    [/^\/readiness$/, (url) => (url.searchParams.has('raid') ? 'dense-readiness-raid.json' : 'dense-readiness.json')],
+    [
+      /^\/readiness$/,
+      (url) => (url.searchParams.has('raid') ? 'dense-readiness-raid.json' : 'dense-readiness.json'),
+    ],
     [/^\/me\/checklist$/, () => 'dense-checklist.json'],
     [/^\/officer\/actions$/, () => 'dense-actions.json'],
     [/^\/attendance\/recent$/, () => 'dense-attendance.json'],
@@ -49,6 +52,7 @@ function answers(viewer: Viewer): ReadonlyArray<[RegExp, (url: URL) => string]> 
     [/^\/applications$/, () => 'recruit-applications.json'],
     [/^\/loot$/, () => 'dense-loot-table.json'],
     [/^\/loot\/nights$/, () => 'dense-loot-nights.json'],
+    [/^\/members\/[^/]+\/profile$/, () => 'dense-profile-member.json'],
     [/^\/loot\/drops\/\d+\/candidates$/, () => 'dense-loot-drop.json'],
   ];
 }

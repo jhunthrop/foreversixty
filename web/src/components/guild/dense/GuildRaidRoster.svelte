@@ -6,11 +6,17 @@
      on every figure, filters by group and name. Waiting approvals sit above it on one line. Reads the
      home it is given plus the attendance grid (officers), the loot history and the readiness board. -->
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, type ComponentProps } from 'svelte';
+  import GuildRosterTable from '../GuildRosterTable.svelte';
+  import Disclosure from '../../ui/Disclosure.svelte';
   import type { GuildRaidGroup, GuildReadinessPage, GuildRosterRow } from '../../../lib/guild/api';
   import { fetchGuildReadiness } from '../../../lib/guild/api';
   import { fetchLootNights, type LootNights } from '../../../lib/guild/loot-council-api';
-  import { fetchRecentAttendance, type GuildCompTarget, type GuildRecentAttendance } from '../../../lib/guild/overview-api';
+  import {
+    fetchRecentAttendance,
+    type GuildCompTarget,
+    type GuildRecentAttendance,
+  } from '../../../lib/guild/overview-api';
   import { fetchGuildRaid } from '../../../lib/guild/raids-api';
   import { percentileToken, classColorVar } from '../../../lib/report/format';
   import type { StatColumn, StatFigure, StatSort } from '../../../lib/ui/stat-table';
@@ -48,6 +54,7 @@
     onApprove,
     onDecline,
     onApproveAll,
+    table,
     now,
   }: {
     guildId: number;
@@ -61,6 +68,8 @@
     onApprove: (row: GuildRosterRow) => void;
     onDecline: (row: GuildRosterRow) => void;
     onApproveAll: () => void;
+    /** The account view (ranks, Remove, members with no account, mains and alts), under the board. */
+    table?: ComponentProps<typeof GuildRosterTable>;
     now?: Date;
   } = $props();
 
@@ -104,12 +113,18 @@
     }),
   );
   const shown = $derived(
-    filterBoard(groups, only, find).map((g) => ({ ...g, rows: sortBoard(g.rows, sort.column as BoardSortKey) })),
+    filterBoard(groups, only, find).map((g) => ({
+      ...g,
+      rows: sortBoard(g.rows, sort.column as BoardSortKey),
+    })),
   );
   const counts = $derived(new Map(groups.map((g) => [g.group, g.rows.length] as const)));
   const filterOptions = $derived([
     { value: 'all' as const, label: `All ${roster.length}` },
-    ...RAID_GROUP_ORDER.filter((g) => counts.has(g)).map((g) => ({ value: g, label: `${GROUP_WORD[g]} ${counts.get(g)}` })),
+    ...RAID_GROUP_ORDER.filter((g) => counts.has(g)).map((g) => ({
+      value: g,
+      label: `${GROUP_WORD[g]} ${counts.get(g)}`,
+    })),
   ]);
   const hasCells = $derived(attendance !== null);
   const columns: readonly StatColumn[] = [
@@ -141,15 +156,30 @@
       row.rating === null ? dash : { value: String(row.rating) },
       row.itemLevel === null
         ? dash
-        : { value: row.itemLevelDelta === null ? String(row.itemLevel) : `${row.itemLevel} ${signed(row.itemLevelDelta)}` },
+        : {
+            value:
+              row.itemLevelDelta === null
+                ? String(row.itemLevel)
+                : `${row.itemLevel} ${signed(row.itemLevelDelta)}`,
+          },
       row.gap === null ? dash : { value: `+${Math.round(row.gap)}` },
-      row.bestPercentile === null ? dash : { value: String(Math.floor(row.bestPercentile)), color: percentileToken(row.bestPercentile) },
+      row.bestPercentile === null
+        ? dash
+        : { value: String(Math.floor(row.bestPercentile)), color: percentileToken(row.bestPercentile) },
       row.attendancePct === null ? dash : { value: `${row.attendancePct}%` },
       { value: String(row.items) },
-      row.short === null ? dash : row.short === 0 ? { value: '✓', tone: 'kill' } : { value: `${row.short} short`, tone: 'wipe' },
+      row.short === null
+        ? dash
+        : row.short === 0
+          ? { value: '✓', tone: 'kill' }
+          : { value: `${row.short} short`, tone: 'wipe' },
       seenText(row.seenDays) === ''
         ? { value: '', muted: true }
-        : { value: seenText(row.seenDays), tone: (row.seenDays ?? 0) >= STALE_DAYS ? 'wipe' : undefined, muted: (row.seenDays ?? 0) < STALE_DAYS },
+        : {
+            value: seenText(row.seenDays),
+            tone: (row.seenDays ?? 0) >= STALE_DAYS ? 'wipe' : undefined,
+            muted: (row.seenDays ?? 0) < STALE_DAYS,
+          },
     ];
   }
 
@@ -179,37 +209,54 @@
 </script>
 
 <Page layout="ledger" testid="guild-roster-page">
-{#if officer && pending.length > 0}
-  <div data-testid="guild-roster-waiting">
-    <p class="text-gold flex flex-wrap items-center gap-x-3 gap-y-2 text-[15px]">
-      {pending.length} waiting for approval: {pending.map((p) => p.name).join(', ')}
-      <Button tone="secondary" size="sm" onclick={() => (reviewing = !reviewing)} pressed={reviewing}>Review</Button>
-      {#if canApprove}
-        <Button tone="primary" size="sm" disabled={busy} onclick={onApproveAll} testid="guild-approve-all">Approve all</Button>
+  {#if officer && pending.length > 0}
+    <div data-testid="guild-roster-waiting">
+      <p class="text-gold flex flex-wrap items-center gap-x-3 gap-y-2 text-[15px]">
+        {pending.length} waiting for approval: {pending.map((p) => p.name).join(', ')}
+        <Button tone="secondary" size="sm" onclick={() => (reviewing = !reviewing)} pressed={reviewing}
+          >Review</Button
+        >
+        {#if canApprove}
+          <Button tone="primary" size="sm" disabled={busy} onclick={onApproveAll} testid="guild-approve-all"
+            >Approve all</Button
+          >
+        {/if}
+      </p>
+      {#if reviewing}
+        <div class="pt-2">
+          {#each pending as row (row.character_key)}
+            <Row
+              title={row.name}
+              titleTone={{ classSlug: (row.class ?? 'warrior') as never }}
+              sub={`${row.spec_name ?? row.spec ?? ''} · item level ${row.item_level ?? '–'}`}
+              open
+            >
+              {#snippet lead()}<ClassCrestRing characterClass={row.class ?? ''} size={32} />{/snippet}
+              {#snippet trail()}
+                <Button tone="secondary" size="sm" disabled={busy} onclick={() => onApprove(row)}
+                  >Approve</Button
+                >
+                <Button tone="ghost" size="sm" disabled={busy} onclick={() => onDecline(row)}>Decline</Button>
+              {/snippet}
+            </Row>
+          {/each}
+        </div>
       {/if}
-    </p>
-    {#if reviewing}
-      <div class="pt-2">
-        {#each pending as row (row.character_key)}
-          <Row title={row.name} titleTone={{ classSlug: (row.class ?? 'warrior') as never }} sub={`${row.spec_name ?? row.spec ?? ''} · item level ${row.item_level ?? '–'}`} open>
-            {#snippet lead()}<ClassCrestRing characterClass={row.class ?? ''} size={32} />{/snippet}
-            {#snippet trail()}
-              <Button tone="secondary" size="sm" disabled={busy} onclick={() => onApprove(row)}>Approve</Button>
-              <Button tone="ghost" size="sm" disabled={busy} onclick={() => onDecline(row)}>Decline</Button>
-            {/snippet}
-          </Row>
-        {/each}
-      </div>
-    {/if}
-  </div>
-{/if}
+    </div>
+  {/if}
 
   <Section title="Roster" {meta} panel flush testid="guild-raid-roster">
     {#snippet head()}
       <Button tone="ghost" size="sm" onclick={() => void copyCsv()}>Copy CSV</Button>
     {/snippet}
     <div class="flex flex-wrap items-center gap-3 px-5 pb-3">
-      <Segmented options={filterOptions} value={only} label="Raid group" size="sm" onChange={(value) => (only = value)} />
+      <Segmented
+        options={filterOptions}
+        value={only}
+        label="Raid group"
+        size="sm"
+        onChange={(value) => (only = value)}
+      />
       <input
         class="border-line text-text h-8 w-[200px] rounded-[6px] border bg-transparent px-3 text-[14px]"
         type="search"
@@ -232,7 +279,12 @@
       testid="guild-roster-board"
     >
       {#each shown as group (group.group)}
-        <StatRow total bar={hasCells} figures={columns.map(() => ({ value: '' }))} testid={`guild-roster-group-${group.group}`}>
+        <StatRow
+          total
+          bar={hasCells}
+          figures={columns.map(() => ({ value: '' }))}
+          testid={`guild-roster-group-${group.group}`}
+        >
           {#snippet name()}{GROUP_WORD[group.group]} {group.rows.length}{/snippet}
           {#snippet sub()}{groupLine(group)}{/snippet}
         </StatRow>
@@ -246,8 +298,9 @@
           >
             {#snippet icon()}<ClassCrestRing characterClass={row.cls} size={28} />{/snippet}
             {#snippet name()}
-              {#if href}<a href={href} style:color={classColorVar(row.cls)}>{row.name}</a
-                >{:else}<span style:color={classColorVar(row.cls)}>{row.name}</span>{/if}
+              {#if href}<a {href} style:color={classColorVar(row.cls)}>{row.name}</a>{:else}<span
+                  style:color={classColorVar(row.cls)}>{row.name}</span
+                >{/if}
             {/snippet}
             {#snippet sub()}{row.spec}{rankWord(row.rank)}{#if row.cells.length > 0}<span class="ui-st-phone">
                   · {row.attendancePct ?? '–'}% <AttendanceStrip cells={row.cells} /></span
@@ -258,4 +311,13 @@
       {/each}
     </StatTable>
   </Section>
+  {#if table !== undefined}
+    <Disclosure
+      summary="Ranks, accounts and removals"
+      meta={`${table.roster.length + (table.members?.length ?? 0)} on the roster`}
+      testid="guild-roster-accounts"
+    >
+      <GuildRosterTable {...table} />
+    </Disclosure>
+  {/if}
 </Page>

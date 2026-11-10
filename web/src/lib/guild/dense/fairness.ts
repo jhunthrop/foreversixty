@@ -86,15 +86,24 @@ export function fairnessRows(
   for (const bucket of [...buckets.values()].sort((a, b) => b.since - a.since || a.items - b.items)) {
     bucket.raiders.sort((a, b) => a.name.localeCompare(b.name));
     if (bucket.raiders.length >= SHARE_ROW_FROM) rows.push(bucket);
-    else for (const raider of bucket.raiders) rows.push({ since: bucket.since, items: bucket.items, raiders: [raider] });
+    else
+      for (const raider of bucket.raiders)
+        rows.push({ since: bucket.since, items: bucket.items, raiders: [raider] });
   }
   return rows;
 }
 
 /** Items awarded this tier per night attended, across the guild. */
-export function guildItemsPerNight(roster: readonly GuildRosterRow[], loot: LootNights, grid: GuildRecentAttendance): number {
+export function guildItemsPerNight(
+  roster: readonly GuildRosterRow[],
+  loot: LootNights,
+  grid: GuildRecentAttendance,
+): number {
   const keys = new Set(roster.map((r) => r.account_key ?? ''));
-  const attended = grid.rows.filter((r) => keys.has(r.account_key)).flatMap((r) => r.cells).filter((c) => c === 'present').length;
+  const attended = grid.rows
+    .filter((r) => keys.has(r.account_key))
+    .flatMap((r) => r.cells)
+    .filter((c) => c === 'present').length;
   const items = [...awardsByRaider(loot).values()].reduce((sum, list) => sum + list.length, 0);
   return attended === 0 ? 0 : items / attended;
 }

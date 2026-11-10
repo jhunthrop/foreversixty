@@ -15,7 +15,10 @@ import { openGuildState } from './support/guild-parity';
 import { GUILD_PARITY_NOW, GUILD_PARITY_ZONE } from './support/guild-parity/clock';
 import { REPO_ROOT, prepareParityPage, readParityConfig, settleParityPage } from './support/parity';
 
-const OUT = path.join(REPO_ROOT, process.env.GUILD_CAPTURE_DIR ?? 'design/reviews/2026-11-09-f-guild/captures');
+const OUT = path.join(
+  REPO_ROOT,
+  process.env.GUILD_CAPTURE_DIR ?? 'design/reviews/2026-11-09-f-guild/captures',
+);
 const WIDTHS = (process.env.GUILD_CAPTURE_WIDTHS ?? '390,1440').split(',').map(Number);
 const ONLY = process.env.GUILD_CAPTURE_STATES?.split(',');
 const STATES = readParityConfig('guild-parity.json').states.filter(
