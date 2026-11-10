@@ -51,12 +51,7 @@ const groups: PickerClass[] = classes.map((c) => ({
 }));
 ---
 
-<Base
-  title={searchCopy.guidesIndex.title}
-  description={searchCopy.guidesIndex.description}
-  path="/guides"
-  wide
->
+<Base title={searchCopy.guidesIndex.title} description={searchCopy.guidesIndex.description} path="/guides">
   <main id="main" tabindex="-1" class="guides-index" data-testid="guides-index">
     <Page layout="ledger">
       <PageHeader slot="header" title={guidesCopy.indexTitle} tone="strong">

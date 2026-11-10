@@ -596,7 +596,16 @@ def b_page(state: str) -> str:
         # panel. The API's missing and error pages (api/internal/site/page.go messagePage) take the same shape.
         panel = (f'<div class="plate framed" data-region="{REGION["plate"]}" style="padding:22px 24px"><p style="margin:0">{e(text)}{ask}</p>'
                  f'<div class="acts" style="margin-top:16px">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
-        body = PageHeader(e(title)) + PageForm(panel)
+        if state == 'unavailable':
+            # The static page fills the frame (owner 2026-11-10, one width on every page): the panel the
+            # frame's width, then the 404's Pick your class (ws_pages.class_picker, NotFoundClassPicker).
+            import ws_pages as WPG
+            # PAGE_CSS carries the 404's own main padding (its <main> has pb-(--section-gap)); this page's main has none.
+            from ws_lib import main_foot_padding
+            body = (PageHeader(e(title)) + Page('ledger', panel + f'<div class="section">{WPG.class_picker()}</div>') + WPG.PAGE_CSS
+                    + f'<style>{main_foot_padding()}</style>')
+        else:
+            body = PageHeader(e(title)) + PageForm(panel)
         return render(f'{title} · Forever Sixty', body, '', None, '', f'/b/:id mock, {state}: the API message page (api/internal/site/handler.go, page.go messagePage).')
     cfg = {'shared': ('guide', 'Survival raid build', None, 41), 'you': ('guide', 'Survival raid build', 'others', 41),
            'holy': ('holy', 'Holy raid healing', 'other_class', 7), 'fire': ('fire', '', None, 12)}[state]

@@ -66,20 +66,10 @@ interface Props {
   canonicalPath?: string;
   /** Extra JSON-LD nodes for this page; the homepage always carries the WebSite node. */
   jsonLd?: object[];
-  /** A page built from the ui/ primitives: from 1760 px its column widens (tokens.css, `data-column`). */
-  wide?: boolean;
   /** The art behind the bar: the painted band, or home's hero (with PageHeader's `art="hero"`). */
   art?: BandArt;
 }
-const {
-  title,
-  description,
-  path,
-  canonicalPath = path,
-  jsonLd = [],
-  wide = false,
-  art = 'band',
-} = Astro.props;
+const { title, description, path, canonicalPath = path, jsonLd = [], art = 'band' } = Astro.props;
 const site = SITE_URL;
 const fullTitle = pageTitle(path, title);
 const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
@@ -320,22 +310,25 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       }
     </script>
   </head>
-  <body class="min-h-screen flex flex-col" data-column={wide ? 'wide' : undefined}>
+  <body class="min-h-screen flex flex-col">
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:absolute focus:left-[18px] focus:top-[18px] focus:z-50 focus:inline-flex focus:items-center focus:h-11 focus:px-4 focus:rounded-field focus:bg-bg focus:text-gold focus:font-semibold focus:outline-2 focus:outline-gold"
     >
       Skip to content
     </a>
-    {/* The band the floating bar sits over (nav.css .site-top); ui/PageHeader continues it. */}
+    {/* The band the floating bar sits over (nav.css .site-top); ui/PageHeader continues it. The bar
+        sits in the one page frame (.page-column), as the page body and the footer do. */}
     <div class="site-top ui-band ui-band-end" data-art={art}>
-      <Header path={path}>
-        {/* Every page carries the same character selector (owner 2026-10-04: "it should always
+      <div class="page-column">
+        <Header path={path}>
+          {/* Every page carries the same character selector (owner 2026-10-04: "it should always
             be on and always be the same"). The island hydrates after load
             (src/directives/idle-after-load.ts); until then it is a link the scripts below have
             already filled from the stored pointer. It also renders the phone Menu's first row. */}
-        <CharacterSelector client:idle-after-load slot="session" />
-      </Header>
+          <CharacterSelector client:idle-after-load slot="session" />
+        </Header>
+      </div>
     </div>
     {/* A fixed breath above the footer (owner 2026-11-09), whatever the page's last block is. */}
     <div class="page-column" data-page-body>

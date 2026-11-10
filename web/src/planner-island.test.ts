@@ -140,7 +140,7 @@ describe('planner-island.css', () => {
   // pass vacuously. The header styles through nav.css classes; the footer through utilities.
   for (const [name, component, sentinel] of [
     ['Header', Header, 'site-header'],
-    ['Footer', Footer, 'px-[18px]'],
+    ['Footer', Footer, 'px-(--page-inset)'],
   ] as const) {
     it(`covers every class ${name} renders`, async () => {
       const container = await AstroContainer.create();

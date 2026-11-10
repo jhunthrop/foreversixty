@@ -34,11 +34,13 @@ then run go test ./internal/site again without -update. Its scripts load by stab
 which every site build writes (web/scripts/chrome-aliases.mjs), so a site deploy never strands them. -->`
 
 // The top of Base.astro's body: the skip link, then the band the bar floats over
-// (.site-top, ui/band.css) closing right after the site <header> it holds.
+// (.site-top, ui/band.css) and the page frame inside it (.page-column, the one frame
+// every page's bar, body and footer share), both closing right after the site
+// <header> they hold.
 const (
 	skipLinkStart = `<a href="#main"`
 	siteTopStart  = `<div class="site-top`
-	siteTopEnd    = "</header></div>"
+	siteTopEnd    = "</header></div></div>"
 )
 
 // extractChrome pulls the site's chrome out of a built page. The header half is
