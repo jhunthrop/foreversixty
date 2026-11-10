@@ -50,7 +50,9 @@ struct ActivityScreen: View {
                     .refreshable { await model.load() }
                 }
             }
-            .toolbarBackground(FSColor.bg, for: .navigationBar)
+            // Round 5 on iOS (m-ios-activity): the tab's large title on the band, the chips under it.
+            .navigationTitle(AppTab.activity.title)
+            .toolbarTitleDisplayMode(.large)
             .tabRootChrome()
         }
         .task {
@@ -79,24 +81,21 @@ struct ActivityView: View {
     let build: String
     var actions = ActivityActions()
 
-    /// `.ap section { margin-top: 28px }`.
-    static let sectionGap: CGFloat = 28
-    /// The unread dot (`.act-row.unread::before`): 6 pt, 10 pt left of the row.
-    static let dotSize: CGFloat = 6
-    static let dotInset: CGFloat = 10
-
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                PageHeader(title: Copy.tabActivity)
-                filters
+            BandPage {
+                // Nothing to filter with no rows at all: no chips under the bar.
+                if !isEmpty { ActivityFilterChips(filter: filter, select: actions.select) }
+            } content: {
                 switch phase {
                 case .loading:
                     ProgressView().frame(maxWidth: .infinity).padding(.top, FSSpace.space6)
                 case .failed:
-                    FSButton(Copy.commonTryAgain, action: actions.retry).padding(.top, FSSpace.space6)
+                    PanelBlock {
+                        Button(action: actions.retry) { PanelRow(Copy.commonTryAgain, last: true) }.buttonStyle(RowPressStyle())
+                    }
                 case .loaded where sections.sections.isEmpty:
-                    SmallText(Copy.activityEmpty).padding(.top, FSSpace.space4)
+                    ActivityNote(text: Copy.activityEmpty).parityRegion(ParityRegionName("section-empty"))
                 case .loaded:
                     ForEach(Array(sections.sections.enumerated()), id: \.element.id) { index, section in
                         daySection(section, first: index == 0)
@@ -104,61 +103,87 @@ struct ActivityView: View {
                     Color.clear.frame(height: 1).onAppear(perform: actions.more)
                 }
             }
-            .padding(.top, FSSpace.space2)
-            .padding(.horizontal, FSSpace.gutterPhone)
-            .padding(.bottom, FSSpace.space6)
-            .parityContent()
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 
-    private var filters: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: FSSpace.space2) {
-                ForEach(ActivityFilter.allCases) { item in
-                    Button(item.title) { actions.select(item) }
-                        .buttonStyle(FSButtonStyle(item == filter ? .primary : .secondary, fullWidth: false, small: true))
-                        .accessibilityAddTraits(item == filter ? .isSelected : [])
-                }
-            }
-            .padding(.top, FSSpace.space1)
-            .padding(.bottom, FSSpace.space2)
-        }
-        .parityRegion(.controls)
+    private var isEmpty: Bool {
+        if case .loaded = phase { return sections.sections.isEmpty && filter == .all }
+        return false
     }
 
     private func daySection(_ section: ActivitySections.Section, first: Bool) -> some View {
-        FSSection(section.day.title) {
-            if first, section.rows.contains(where: { !$0.row.read }) {
-                Button(Copy.activityMarkAllRead, action: actions.markAllRead)
-                    .font(.custom(FSFont.bodySemibold, size: FSType.small.size, relativeTo: .footnote))
-                    .foregroundStyle(FSColor.strong)
-            }
-        } content: {
-            VStack(spacing: 0) {
-                ForEach(section.rows) { item in row(item) }
+        let markAll = first && section.rows.contains { !$0.row.read }
+        return PanelSection(section.day.title, action: markAll ? (Copy.activityMarkAllRead, actions.markAllRead) : nil) {
+            ForEach(Array(section.rows.enumerated()), id: \.element.id) { index, item in
+                Button { actions.open(item.row) } label: {
+                    PanelRow(
+                        item.row.title, sub: Text(item.row.body), meta: item.when, unread: item.row.read ? nil : Copy.activityUnread,
+                        last: index == section.rows.count - 1
+                    ) {
+                        ActivityLead(row: item.row, build: build)
+                    }
+                }
+                .buttonStyle(RowPressStyle())
             }
         }
-        .padding(.top, Self.sectionGap)
     }
+}
 
-    private func row(_ item: ActivitySections.Row) -> some View {
-        Button { actions.open(item.row) } label: {
-            FSRow(title: item.row.title, sub: item.row.body, detail: item.when, inset: 0) {
-                ItemIconView(icon: item.row.icon, quality: nil, build: build, size: FSSize.icon40)
-                    .parityItem(.image)
-            }
-            .overlay(alignment: .topLeading) {
-                if !item.row.read {
-                    Circle().fill(FSColor.gold)
-                        .frame(width: Self.dotSize, height: Self.dotSize)
-                        .offset(x: -Self.dotInset, y: 24)
-                        .accessibilityHidden(true)
+/// Activity's group chips on the band (round 5): 36 pt faces in 44 pt targets, the selected one teal,
+/// scrolling sideways.
+struct ActivityFilterChips: View {
+    let filter: ActivityFilter
+    let select: (ActivityFilter) -> Void
+
+    static let face: CGFloat = 36
+    static let radius: CGFloat = 8
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: FSSpace.space2) {
+                ForEach(ActivityFilter.allCases) { item in
+                    Button(item.title) { select(item) }
+                        .buttonStyle(ChipStyle(on: item == filter))
+                        .accessibilityAddTraits(item == filter ? .isSelected : [])
                 }
             }
-            .accessibilityValue(item.row.read ? "" : Copy.activityUnread)
+            .padding(.leading, FSSpace.space4)
+            .padding(.trailing, FSSpace.space4)
+            .padding(.top, 2)
+            .padding(.bottom, FSSpace.space2)
         }
-        .buttonStyle(RowPressStyle())
+        .overlay(alignment: .bottom) { Color.black.frame(height: FSStroke.hairline) }
+        .parityRegion(.controls)
+    }
+
+    private struct ChipStyle: ButtonStyle {
+        let on: Bool
+
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                .font(.custom(FSFont.bodySemibold, size: 14, relativeTo: .subheadline))
+                .foregroundStyle(FSColor.strong)
+                .padding(.horizontal, FSSpace.space4)
+                .frame(height: ActivityFilterChips.face)
+                .background(on || configuration.isPressed ? FSColor.tealEdge : .clear, in: .rect(cornerRadius: ActivityFilterChips.radius))
+                .overlay(RoundedRectangle(cornerRadius: ActivityFilterChips.radius).strokeBorder(FSColor.rule, lineWidth: FSStroke.hairline))
+                // The 36 pt face in its 44 pt target.
+                .padding(.vertical, (FSTarget.min - ActivityFilterChips.face) / 2)
+                .contentShape(.rect)
+                .parityItem(.button)
+        }
+    }
+}
+
+/// One line on a panel (Activity empty, signed out).
+struct ActivityNote: View {
+    let text: String
+
+    var body: some View {
+        PanelBlock {
+            Text(text).type(FSType.small).foregroundStyle(FSColor.text).padding(.vertical, FSSpace.space2)
+        }
     }
 }
 
@@ -169,16 +194,18 @@ struct ActivitySignedOutView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                PageHeader(title: Copy.tabActivity) { SmallText(Copy.activitySignedOut) }
-                FSButton(Copy.signinButton, kind: .primary, action: signIn)
-                    .disabled(signingIn)
-                    .padding(.top, FSSpace.space5)
+            BandPage {
+                EmptyView()
+            } content: {
+                PanelBlock {
+                    Text(Copy.activitySignedOut).type(FSType.small).foregroundStyle(FSColor.text).padding(.vertical, FSSpace.space2)
+                    FSButton(Copy.signinButton, kind: .primary, action: signIn)
+                        .disabled(signingIn)
+                        .padding(.vertical, FSSpace.space3)
+                }
+                .parityRegion(ParityRegionName("section-activity"))
             }
-            .padding(.top, FSSpace.space2)
-            .padding(.horizontal, FSSpace.gutterPhone)
-            .parityContent()
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 }
