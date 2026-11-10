@@ -288,11 +288,6 @@ def sources(g: dict) -> str:
     return Section(PROPOSED['sources'], RowsSlim(rows), boxed=True)
 
 
-def lede(text: str) -> str:
-    """components/guides/GuideLede: the page's one sentence on the ground under the band."""
-    return f'<p class="g-lede">{e(text)}</p>' if text else ''
-
-
 def reading_page(top: str, toc: str, body: str) -> str:
     """ui/Page layout 'reading' with tocFrom 1024: the full-width top (the lede and the plate), the contents rail at the left
     from 1024, the body beside it."""
@@ -326,7 +321,7 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
     body = (ReadingPanel(''.join(sections)) + sources(g)
             + f'<p class="t-small foot-note" data-region="{REGION["footer_note"]}">{e(F["fns"]["dataSourceLine"])}</p>')
     toc = Toc(e(C['tocBarLabel']), [(e(s['title']), s['id']) for s in F['sections']], 'overview')
-    html = head + spec_bar(g, open_m) + reading_page(lede(g['summary']) + band(gp), toc, body) + PAGE_CSS
+    html = head + spec_bar(g, open_m) + reading_page(band(gp), toc, body) + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     note = (f'Guide mock (design/specs/2026-11-08-guides.md), built only from ws_prims, read from guides-facts.json (build {F["build"]}). '
             + ('Partial-data state: rotation, weights, BiS and extras removed (FORCED; no spec lacks them at this build). ' if partial else '')
@@ -415,7 +410,7 @@ PAGE_CSS = '''<style>
 .gbands{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:-16px}.gtier{margin-top:-16px}
 @media(min-width:900px){.ans-row{flex-direction:row-reverse}.ans-who{align-items:flex-end}.ans-links{justify-content:flex-end}}
 .g-read{padding-top:28px}.layout-reading{row-gap:var(--section-gap)}.g-top{grid-column:1/-1;display:flex;flex-direction:column;gap:22px;min-width:0}
-.g-lede{margin:0;max-width:var(--measure-reading);font-size:16px;line-height:25px;color:var(--text)}
+
 .g-ledger{display:flex;flex-direction:column;gap:22px}
 .g-specs{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 @media(min-width:1024px){.g-specs{grid-template-columns:repeat(var(--specs),minmax(0,1fr))}}

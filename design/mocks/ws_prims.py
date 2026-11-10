@@ -1808,7 +1808,7 @@ PRIM_CSS += """
 .rpanel .rsec>.sec-h h2{font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--cream)}
 .rpanel .rd{padding-top:12px}
 @media(max-width:767px){.rpanel>.rsec{padding:18px 16px}}
-@media(min-width:1280px){.rpanel .rd:not(.solo){grid-template-columns:minmax(0,1fr) minmax(0,380px);column-gap:28px}
+@media(min-width:1280px){.rpanel .rd:not(.solo){grid-template-columns:minmax(0,var(--measure-reading,720px)) minmax(380px,1fr);column-gap:28px}
 .rpanel .rd:not(.solo)>.rd-lane{padding-left:18px;border-left:1px solid var(--line-soft)}}
 .plate.framed{position:relative}
 .plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}

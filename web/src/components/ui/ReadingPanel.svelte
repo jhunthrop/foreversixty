@@ -2,7 +2,7 @@
 <!-- A reading page's sections on one panel (round 5, directions mock b2-guide-spec): the
      ReadingSections inside it lose their head hairline and take a hairline between them instead,
      each padded 22/24 (18/16 below 768), the heading in Marcellus cream; from 1280 the prose takes
-     the room and the lane is a 380 px column behind a hairline. Class, quality and faction colours
+     up to its reading measure and the lane, behind a hairline, 380 px and the rest. Class, quality and faction colours
      in the lanes sit on the panel, where they clear contrast. Holds ReadingSections, or a
      DatedGroup (a changelog month) drawn the same way. -->
 <script lang="ts">
@@ -52,8 +52,10 @@
     }
   }
   @media (min-width: 1280px) {
+    /* The prose keeps its reading measure; the lane takes 380 px and every pixel past the measure
+       (a wide screen's gutter goes to the lane's trees and tables, owner 2026-11-09). */
     .ui-reading-panel :global(.ui-rd:not([data-solo])) {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+      grid-template-columns: minmax(0, var(--measure-reading)) minmax(380px, 1fr);
       column-gap: 28px;
     }
     .ui-reading-panel :global(.ui-rd:not([data-solo]) > .ui-rd-lane) {

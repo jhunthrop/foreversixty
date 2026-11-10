@@ -1,0 +1,202 @@
+{
+ "warrior/protection@390": {
+  "leveling": {
+   "laneW": 320,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 320,
+   "past": 0
+  }
+ },
+ "hunter/beast-mastery@390": {
+  "leveling": {
+   "laneW": 320,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 320,
+   "past": 0
+  }
+ },
+ "priest/holy@390": {
+  "leveling": {
+   "laneW": 320,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 320,
+   "past": 0
+  }
+ },
+ "druid/restoration@390": {
+  "leveling": {
+   "laneW": 320,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 320,
+   "past": 0
+  }
+ },
+ "warrior/protection@1024": {
+  "leveling": {
+   "laneW": 654,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 654,
+   "past": 0
+  }
+ },
+ "hunter/beast-mastery@1024": {
+  "leveling": {
+   "laneW": 654,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 654,
+   "past": 0
+  }
+ },
+ "priest/holy@1024": {
+  "leveling": {
+   "laneW": 654,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 654,
+   "past": 0
+  }
+ },
+ "druid/restoration@1024": {
+  "leveling": {
+   "laneW": 654,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 654,
+   "past": 0
+  }
+ },
+ "warrior/protection@1440": {
+  "leveling": {
+   "laneW": 380,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 380,
+   "past": 0
+  }
+ },
+ "hunter/beast-mastery@1440": {
+  "leveling": {
+   "laneW": 380,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 380,
+   "past": 0
+  }
+ },
+ "priest/holy@1440": {
+  "leveling": {
+   "laneW": 380,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 380,
+   "past": 0
+  }
+ },
+ "druid/restoration@1440": {
+  "leveling": {
+   "laneW": 380,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 380,
+   "past": 0
+  }
+ },
+ "warrior/protection@2000": {
+  "leveling": {
+   "laneW": 634,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 634,
+   "past": 0
+  }
+ },
+ "hunter/beast-mastery@2000": {
+  "leveling": {
+   "laneW": 634,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 634,
+   "past": 0
+  }
+ },
+ "priest/holy@2000": {
+  "leveling": {
+   "laneW": 634,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 634,
+   "past": 0
+  }
+ },
+ "druid/restoration@2000": {
+  "leveling": {
+   "laneW": 634,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 634,
+   "past": 0
+  }
+ },
+ "warrior/protection@2560": {
+  "leveling": {
+   "laneW": 634,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 634,
+   "past": 0
+  }
+ },
+ "hunter/beast-mastery@2560": {
+  "leveling": {
+   "laneW": 634,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 634,
+   "past": 0
+  }
+ },
+ "priest/holy@2560": {
+  "leveling": {
+   "laneW": 634,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 634,
+   "past": 0
+  }
+ },
+ "druid/restoration@2560": {
+  "leveling": {
+   "laneW": 634,
+   "past": 0
+  },
+  "talents": {
+   "laneW": 634,
+   "past": 0
+  }
+ }
+}
