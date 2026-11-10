@@ -27,7 +27,7 @@ import { rankColor } from ${JSON.stringify(WEB + "src/lib/rankings/row-view.ts")
 import { scoreCopy } from ${JSON.stringify(WEB + "src/lib/score/copy.ts")};
 import { ratingCopy } from ${JSON.stringify(WEB + "src/lib/rating/copy.ts")};
 import { SAMPLE_SCORE, SAMPLE_TREND, SAMPLE_WEAKEST, WEIGHTS, ratingsPageCopy } from ${JSON.stringify(WEB + "src/lib/score/ratings-page.ts")};
-import { COMPONENT_MAX, tierRanges } from ${JSON.stringify(WEB + "src/lib/score/score.ts")};
+import { COMPONENT_MAX, TIER_FROM, tierRanges } from ${JSON.stringify(WEB + "src/lib/score/score.ts")};
 const strip = (o) => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'function' ? '[fn]' : v)));
 const board = (q, o) => boardFor(new URL('https://api.test/v1/rankings?' + q), o);
 const YOU_Q = 'encounter=onyxia&class=warrior&spec=Fury&ruleset=normal&metric=dps&distinct=character&character=' + OWN_KEY;
@@ -66,7 +66,7 @@ export default {
   copy: strip({ rankingsCopy, rankingsEmptyCopy, encounterPickerCopy, homeTopGuildsCopy, scoreCopy, ratingCopy }),
   ratings: {
     sample: SAMPLE_SCORE, trend: SAMPLE_TREND, weakest: SAMPLE_WEAKEST, weights: WEIGHTS, copy: ratingsPageCopy,
-    component_max: COMPONENT_MAX, tiers: tierRanges(),
+    component_max: COMPONENT_MAX, tiers: tierRanges(), tier_from: TIER_FROM,
     up_to: Object.fromEntries(Object.entries(COMPONENT_MAX).map(([k, v]) => [k, scoreCopy.upTo(v)])),
     most_to_gain_rest: Object.fromEntries(Object.entries(COMPONENT_MAX).map(([k, v]) => [k, scoreCopy.mostToGainRest(v - SAMPLE_SCORE.components[k])])),
   },
