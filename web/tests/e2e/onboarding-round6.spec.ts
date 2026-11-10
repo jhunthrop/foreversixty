@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { addonCopy } from '../../src/lib/addon/copy';
+import { companionCaptureRatio } from './support/setup-capture';
 import {
   CHARACTER,
   CHARACTER_PATH,
@@ -124,8 +125,10 @@ async function pictureShown(page: Page): Promise<void> {
     .poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
     .toBe(true);
   const box = await img.evaluate((el: HTMLImageElement) => el.getBoundingClientRect().toJSON());
-  expect(box.height).toBeGreaterThan(60);
-  expect(box.width / box.height).toBeCloseTo(1600 / 436, 0);
+  const ratio = companionCaptureRatio(page.viewportSize()?.width ?? 1440);
+  // Never a blank box: at least 90% of the height its width and aspect call for.
+  expect(box.height).toBeGreaterThan((0.9 * box.width) / ratio);
+  expect(box.width / box.height).toBeCloseTo(ratio, 0);
 }
 
 for (const size of SIZES) {

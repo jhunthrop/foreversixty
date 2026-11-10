@@ -9,6 +9,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { companionCaptureRatio } from './support/setup-capture';
 import {
   CHARACTER,
   CHARACTER_PATH,
@@ -164,7 +165,7 @@ for (const size of SIZES) {
 test.describe('/setup picture at 390', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('is the whole Status capture at its aspect, labelled Example when signed out', async ({ page }) => {
+  test('is the Status headline crop at its aspect, labelled Example when signed out', async ({ page }) => {
     await signedOut(page);
     await page.goto('/setup');
     const frame = page.getByTestId('setup-companion-capture');
@@ -176,7 +177,7 @@ test.describe('/setup picture at 390', () => {
       .toBe(true);
     const box = await img.evaluate((el: HTMLImageElement) => el.getBoundingClientRect().toJSON());
     expect(box.width).toBeLessThanOrEqual(390);
-    expect(box.width / box.height).toBeCloseTo(1600 / 436, 0);
+    expect(box.width / box.height).toBeCloseTo(companionCaptureRatio(390), 0);
     await page.waitForLoadState('networkidle');
     await shot(page, 'setup-signed-out-390', true);
   });
