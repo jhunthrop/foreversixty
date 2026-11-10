@@ -37,7 +37,6 @@
   "fullListLink": "Full list and alternatives",
   "bisByLevelLabel": "Best in slot by level:",
   "tierListLink": "Where it ranks at 60",
-  "preRaidNote": "Your best gear before the first raid opens.",
   "notSimChecked": "Ranked by stats only",
   "enchants": "Enchants",
   "consumables": "Consumables",
@@ -600,7 +599,6 @@
    "role": "dps",
    "title": "Survival Hunter",
    "description": "How to play a melee Survival Hunter in Forever: talents, the Raptor Strike and Mongoose Bite priority, Lone Wolf, stats, consumables and race picks.",
-   "summary": "Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet in a raid.",
    "meta": "DPS · Updated 7 Nov",
    "tabs": [
     {
@@ -1948,7 +1946,7 @@
       "name": "Hunter's Mark",
       "rank": 4,
       "icon": "ability_hunter_snipershot",
-      "clause": "Whenever the target is not marked",
+      "clause": "When Hunter's Mark is not on the target",
       "tipKey": "spell:14325",
       "rankText": "Rank 4"
      },
@@ -1957,7 +1955,7 @@
       "name": "Raptor Strike",
       "rank": 8,
       "icon": "ability_meleedamage",
-      "clause": "On every swing it is ready",
+      "clause": "On cooldown",
       "tipKey": "spell:14266",
       "rankText": "Rank 8"
      },
@@ -1966,7 +1964,7 @@
       "name": "Mongoose Bite",
       "rank": 4,
       "icon": "ability_hunter_swiftstrike",
-      "clause": "The moment it lights up",
+      "clause": "When it lights up, after a dodge or a hit on a marked target",
       "tipKey": "spell:14271",
       "rankText": "Rank 4"
      },
@@ -1975,7 +1973,7 @@
       "name": "Lacerate",
       "rank": 4,
       "icon": "ability_gouge",
-      "clause": "Whenever its bleed is not on the target",
+      "clause": "When Lacerate is not ticking on the target",
       "tipKey": "spell:1299332",
       "rankText": "Rank 4"
      }
@@ -3524,7 +3522,7 @@
        "name": "Hunter's Mark",
        "rank": 4,
        "icon": "ability_hunter_snipershot",
-       "clause": "Whenever the target is not marked",
+       "clause": "When Hunter's Mark is not on the target",
        "tipKey": "spell:14325",
        "rankText": "Rank 4"
       },
@@ -3533,7 +3531,7 @@
        "name": "Raptor Strike",
        "rank": 8,
        "icon": "ability_meleedamage",
-       "clause": "On every swing it is ready",
+       "clause": "On cooldown",
        "tipKey": "spell:14266",
        "rankText": "Rank 8"
       },
@@ -3542,7 +3540,7 @@
        "name": "Mongoose Bite",
        "rank": 4,
        "icon": "ability_hunter_swiftstrike",
-       "clause": "The moment it lights up",
+       "clause": "When it lights up, after a dodge or a hit on a marked target",
        "tipKey": "spell:14271",
        "rankText": "Rank 4"
       },
@@ -3551,7 +3549,7 @@
        "name": "Lacerate",
        "rank": 4,
        "icon": "ability_gouge",
-       "clause": "Whenever its bleed is not on the target",
+       "clause": "When Lacerate is not ticking on the target",
        "tipKey": "spell:1299332",
        "rankText": "Rank 4"
       },
@@ -3559,7 +3557,7 @@
        "spellId": 1317257,
        "name": "Strider Kick",
        "icon": "ability_hunter_pet_tallstrider",
-       "clause": "On its 8 second cooldown once the bleed is rolling",
+       "clause": "On cooldown",
        "tipKey": "spell:1317257"
       },
       {
@@ -3576,7 +3574,7 @@
        "name": "Wing Clip",
        "rank": 3,
        "icon": "ability_rogue_trip",
-       "clause": "On any free global under a Windfury Totem, as a cheap melee special that can proc Windfury",
+       "clause": "With Windfury Totem up, when nothing else is ready",
        "tipKey": "spell:14268",
        "rankText": "Rank 3"
       }
@@ -9322,7 +9320,6 @@
    "role": "dps",
    "title": "Fire Mage",
    "description": "Fire Mage in Forever: the pre-pull Pyroblast, Fireball, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.",
-   "summary": "Fire casts a 3 second Fireball, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites.",
    "meta": "DPS · Updated 7 Nov",
    "tabs": [
     {
@@ -10675,14 +10672,14 @@
       "spellId": 12051,
       "name": "Evocation",
       "icon": "spell_nature_purge",
-      "clause": "When you are nearly dry and more than 30 seconds of the fight remain",
+      "clause": "Below 5% mana, with over 30 s left",
       "tipKey": "spell:12051"
      },
      {
       "spellId": 11129,
       "name": "Combustion",
       "icon": "spell_fire_sealoffire",
-      "clause": "Once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one",
+      "clause": "At 5 Improved Scorch stacks on the target",
       "tipKey": "spell:11129"
      },
      {
@@ -10690,7 +10687,7 @@
       "name": "Scorch",
       "rank": 7,
       "icon": "spell_fire_soulburn",
-      "clause": "To build Improved Scorch to 5 stacks, or to refresh it with 5 seconds or less left",
+      "clause": "To 5 Improved Scorch stacks or under 5 s left",
       "tipKey": "spell:10207",
       "rankText": "Rank 7"
      },
@@ -10699,7 +10696,7 @@
       "name": "Pyroblast",
       "rank": 8,
       "icon": "spell_fire_fireball02",
-      "clause": "Only on 3 stacks of Heating Up, when it is a 1.5 second cast",
+      "clause": "At 3 Heating Up stacks",
       "needs": [
        "Heating Up"
       ],
@@ -10707,7 +10704,7 @@
       "rankText": "Rank 8"
      }
     ],
-    "filler": "Filler: Fireball",
+    "filler": null,
     "stats": [
      {
       "label": "Hit",
@@ -13649,14 +13646,14 @@
        "spellId": 12051,
        "name": "Evocation",
        "icon": "spell_nature_purge",
-       "clause": "When you are nearly dry and more than 30 seconds of the fight remain",
+       "clause": "Below 5% mana, with over 30 s left",
        "tipKey": "spell:12051"
       },
       {
        "spellId": 11129,
        "name": "Combustion",
        "icon": "spell_fire_sealoffire",
-       "clause": "Once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one",
+       "clause": "At 5 Improved Scorch stacks on the target",
        "tipKey": "spell:11129"
       },
       {
@@ -13664,7 +13661,7 @@
        "name": "Scorch",
        "rank": 7,
        "icon": "spell_fire_soulburn",
-       "clause": "To build Improved Scorch to 5 stacks, or to refresh it with 5 seconds or less left",
+       "clause": "To 5 Improved Scorch stacks or under 5 s left",
        "tipKey": "spell:10207",
        "rankText": "Rank 7"
       },
@@ -13673,7 +13670,7 @@
        "name": "Pyroblast",
        "rank": 8,
        "icon": "spell_fire_fireball02",
-       "clause": "Only on 3 stacks of Heating Up, when it is a 1.5 second cast",
+       "clause": "At 3 Heating Up stacks",
        "needs": [
         "Heating Up"
        ],
@@ -13685,7 +13682,7 @@
        "name": "Fire Blast",
        "rank": 7,
        "icon": "spell_fire_fireball",
-       "clause": "Every time it is off cooldown",
+       "clause": "On cooldown",
        "tipKey": "spell:10199",
        "rankText": "Rank 7"
       },
@@ -13694,7 +13691,7 @@
        "name": "Arcane Missiles",
        "rank": 7,
        "icon": "spell_nature_starfall",
-       "clause": "The moment Missile Barrage procs, while the proc is up",
+       "clause": "While Missile Barrage is up",
        "needs": [
         "Missile Barrage"
        ],
@@ -13706,7 +13703,7 @@
        "name": "Arcane Blast",
        "rank": 5,
        "icon": "spell_arcane_blast",
-       "clause": "Whenever its buff has dropped, once, then back to Fire",
+       "clause": "When you have no Arcane Blast buff",
        "needs": [
         "Arcane Blast"
        ],
@@ -13718,7 +13715,7 @@
        "name": "Scorch",
        "rank": 7,
        "icon": "spell_fire_soulburn",
-       "clause": "When Fire Blast is back before a Scorch would finish",
+       "clause": "When Fire Blast is ready before Scorch finishes",
        "needs": [
         "Arcane Blast"
        ],
@@ -13730,7 +13727,7 @@
        "name": "Fireball",
        "rank": 11,
        "icon": "spell_fire_flamebolt",
-       "clause": "The filler once you have Arcane Blast",
+       "clause": "As your filler once you have Arcane Blast",
        "needs": [
         "Arcane Blast"
        ],
@@ -13743,14 +13740,14 @@
        "spellId": 12051,
        "name": "Evocation",
        "icon": "spell_nature_purge",
-       "clause": "8 min cooldown. When you are nearly dry and more than 30 seconds of the fight remain",
+       "clause": "8 min cooldown. Below 5% mana, with over 30 s left",
        "tipKey": "spell:12051"
       },
       {
        "spellId": 11129,
        "name": "Combustion",
        "icon": "spell_fire_sealoffire",
-       "clause": "3 min cooldown. Once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one",
+       "clause": "3 min cooldown. At 5 Improved Scorch stacks on the target",
        "tipKey": "spell:11129"
       },
       {
@@ -19347,7 +19344,6 @@
    "role": "healer",
    "title": "Holy Priest",
    "description": "How to heal as a Holy Priest in Forever: talents, downranking, Prayer of Mending, Prayer of Healing, Lightwell, mana over a long fight, assignments and races.",
-   "summary": "Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, Greater Heal as the filler, and Prayer of Healing for a hurt group.",
    "meta": "Healer · Updated 7 Nov",
    "tabs": [
     {
@@ -20719,11 +20715,20 @@
     "rotationTitle": "Healing priority",
     "rotation": [
      {
+      "spellId": 1277328,
+      "name": "Dark Sacrifice",
+      "rank": 5,
+      "icon": "spell_holy_powerinfusion_shadow",
+      "clause": "Below 70% mana and above 70% health, Undead only",
+      "tipKey": "spell:1277328",
+      "rankText": "Rank 5"
+     },
+     {
       "spellId": 1240827,
       "name": "Prayer of Mending",
       "rank": 3,
       "icon": "spell_holy_prayerofmendingtga",
-      "clause": "On the tank every time it is ready",
+      "clause": "On cooldown, on the tank",
       "tipKey": "spell:1240827",
       "rankText": "Rank 3"
      },
@@ -20732,7 +20737,7 @@
       "name": "Renew",
       "rank": 7,
       "icon": "spell_holy_renew",
-      "clause": "Keep Renew on the tank all fight",
+      "clause": "When Renew is not on the tank",
       "tipKey": "spell:10927",
       "cheapRank": true,
       "rankText": "Rank 7 (cheap rank)"
@@ -20742,21 +20747,12 @@
       "name": "Flash Heal",
       "rank": 7,
       "icon": "spell_holy_flashheal",
-      "clause": "On a tank who is really low or on anyone about to die",
-      "tipKey": "spell:10917",
-      "rankText": "Rank 7"
-     },
-     {
-      "spellId": 10917,
-      "name": "Flash Heal",
-      "rank": 7,
-      "icon": "spell_holy_flashheal",
-      "clause": "On a party member under 30%",
+      "clause": "On the tank below 35%",
       "tipKey": "spell:10917",
       "rankText": "Rank 7"
      }
     ],
-    "filler": "Filler: Greater Heal",
+    "filler": null,
     "stats": [
      {
       "label": "MP5",
@@ -22389,7 +22385,7 @@
        "name": "Dark Sacrifice",
        "rank": 5,
        "icon": "spell_holy_powerinfusion_shadow",
-       "clause": "Undead only, once you are under 70% mana and still healthy",
+       "clause": "Below 70% mana and above 70% health, Undead only",
        "tipKey": "spell:1277328",
        "rankText": "Rank 5"
       },
@@ -22398,7 +22394,7 @@
        "name": "Prayer of Mending",
        "rank": 3,
        "icon": "spell_holy_prayerofmendingtga",
-       "clause": "On the tank every time it is ready",
+       "clause": "On cooldown, on the tank",
        "tipKey": "spell:1240827",
        "rankText": "Rank 3"
       },
@@ -22407,7 +22403,7 @@
        "name": "Renew",
        "rank": 7,
        "icon": "spell_holy_renew",
-       "clause": "Keep Renew on the tank all fight",
+       "clause": "When Renew is not on the tank",
        "tipKey": "spell:10927",
        "cheapRank": true,
        "rankText": "Rank 7 (cheap rank)"
@@ -22417,7 +22413,7 @@
        "name": "Flash Heal",
        "rank": 7,
        "icon": "spell_holy_flashheal",
-       "clause": "On a tank who is really low or on anyone about to die",
+       "clause": "On the tank below 35%",
        "tipKey": "spell:10917",
        "rankText": "Rank 7"
       },
@@ -22426,7 +22422,7 @@
        "name": "Flash Heal",
        "rank": 7,
        "icon": "spell_holy_flashheal",
-       "clause": "On a party member under 30%",
+       "clause": "On a party member below 30% Cast on a party member below 30%",
        "tipKey": "spell:10917",
        "rankText": "Rank 7"
       },
@@ -22435,7 +22431,7 @@
        "name": "Prayer of Healing",
        "rank": 4,
        "icon": "spell_holy_prayerofhealing02",
-       "clause": "Once three of your four party members are under 85%",
+       "clause": "When 3 party members are below 85%",
        "tipKey": "spell:10961",
        "rankText": "Rank 4"
       },
@@ -22444,7 +22440,7 @@
        "name": "Greater Heal",
        "rank": 4,
        "icon": "spell_holy_greaterheal",
-       "clause": "The filler while your mana keeps pace with the fight",
+       "clause": "On the tank below 80% while mana % is over boss health %",
        "tipKey": "spell:10965",
        "rankText": "Rank 4"
       },
@@ -22453,7 +22449,25 @@
        "name": "Greater Heal",
        "rank": 4,
        "icon": "spell_holy_greaterheal",
-       "clause": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole",
+       "clause": "On a party member below 65% while mana holds Cast on a party member below 65%, when your mana is at least 90% of the share of the fight left",
+       "tipKey": "spell:10965",
+       "rankText": "Rank 4"
+      },
+      {
+       "spellId": 10965,
+       "name": "Greater Heal",
+       "rank": 4,
+       "icon": "spell_holy_greaterheal",
+       "clause": "On the tank below 50% when mana % is under boss health %",
+       "tipKey": "spell:10965",
+       "rankText": "Rank 4"
+      },
+      {
+       "spellId": 10965,
+       "name": "Greater Heal",
+       "rank": 4,
+       "icon": "spell_holy_greaterheal",
+       "clause": "On a party member below 35% when mana is low Cast on a party member below 35%",
        "tipKey": "spell:10965",
        "rankText": "Rank 4"
       },
@@ -22462,7 +22476,7 @@
        "name": "Greater Heal",
        "rank": 1,
        "icon": "spell_holy_greaterheal",
-       "clause": "Once you have higher ranks, when the top rank would overheal or your mana runs short",
+       "clause": "On the tank below 80% while mana % is over boss health %",
        "tipKey": "spell:2060",
        "cheapRank": true,
        "rankText": "Rank 1 (cheap rank)"
@@ -22472,7 +22486,27 @@
        "name": "Greater Heal",
        "rank": 1,
        "icon": "spell_holy_greaterheal",
-       "clause": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole too",
+       "clause": "On a party member below 65% while mana holds Cast on a party member below 65%, when your mana is at least 90% of the share of the fight left",
+       "tipKey": "spell:2060",
+       "cheapRank": true,
+       "rankText": "Rank 1 (cheap rank)"
+      },
+      {
+       "spellId": 2060,
+       "name": "Greater Heal",
+       "rank": 1,
+       "icon": "spell_holy_greaterheal",
+       "clause": "On the tank below 50% when mana % is under boss health %",
+       "tipKey": "spell:2060",
+       "cheapRank": true,
+       "rankText": "Rank 1 (cheap rank)"
+      },
+      {
+       "spellId": 2060,
+       "name": "Greater Heal",
+       "rank": 1,
+       "icon": "spell_holy_greaterheal",
+       "clause": "On a party member below 35% when mana is low Cast on a party member below 35%",
        "tipKey": "spell:2060",
        "cheapRank": true,
        "rankText": "Rank 1 (cheap rank)"
@@ -22482,7 +22516,7 @@
        "name": "Heal",
        "rank": 4,
        "icon": "spell_holy_heal02",
-       "clause": "The step down when Greater Heal rank 1 costs more than you can spend",
+       "clause": "On the tank below 80% while mana % is over boss health %",
        "tipKey": "spell:6064",
        "rankText": "Rank 4"
       },
@@ -22491,7 +22525,25 @@
        "name": "Heal",
        "rank": 4,
        "icon": "spell_holy_heal02",
-       "clause": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole",
+       "clause": "On a party member below 65% while mana holds Cast on a party member below 65%, when your mana is at least 90% of the share of the fight left",
+       "tipKey": "spell:6064",
+       "rankText": "Rank 4"
+      },
+      {
+       "spellId": 6064,
+       "name": "Heal",
+       "rank": 4,
+       "icon": "spell_holy_heal02",
+       "clause": "On the tank below 50% when mana % is under boss health %",
+       "tipKey": "spell:6064",
+       "rankText": "Rank 4"
+      },
+      {
+       "spellId": 6064,
+       "name": "Heal",
+       "rank": 4,
+       "icon": "spell_holy_heal02",
+       "clause": "On a party member below 35% when mana is low Cast on a party member below 35%",
        "tipKey": "spell:6064",
        "rankText": "Rank 4"
       }
@@ -22511,7 +22563,7 @@
        "name": "Dark Sacrifice",
        "rank": 5,
        "icon": "spell_holy_powerinfusion_shadow",
-       "clause": "10 min cooldown. Undead only, once you are under 70% mana and still healthy",
+       "clause": "10 min cooldown. Below 70% mana and above 70% health, Undead only",
        "tipKey": "spell:1277328",
        "rankText": "Rank 5"
       },
@@ -28188,7 +28240,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 0,
-    "priority": 9,
+    "priority": 10,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28279,7 +28331,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 1,
-    "priority": 7,
+    "priority": 10,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28318,7 +28370,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 2,
-    "priority": 11,
+    "priority": 12,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28331,7 +28383,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 1,
-    "priority": 12,
+    "priority": 18,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28399,9 +28451,9 @@
     "priority": 8,
     "cooldowns": 2
    },
-   "stat_rows": 0,
-   "bis": 0,
-   "extras": null,
+   "stat_rows": 7,
+   "bis": 5,
+   "extras": "4/7",
    "ranked": true
   },
   "shaman/enhancement": {
@@ -28412,9 +28464,9 @@
     "priority": 7,
     "cooldowns": 2
    },
-   "stat_rows": 0,
-   "bis": 0,
-   "extras": null,
+   "stat_rows": 8,
+   "bis": 5,
+   "extras": "6/7",
    "ranked": true
   },
   "shaman/restoration": {
@@ -28422,12 +28474,12 @@
    "raid_build": false,
    "rotation": {
     "opener": 2,
-    "priority": 10,
+    "priority": 11,
     "cooldowns": 3
    },
-   "stat_rows": 0,
-   "bis": 0,
-   "extras": null,
+   "stat_rows": 5,
+   "bis": 5,
+   "extras": "4/9",
    "ranked": true
   },
   "warlock/affliction": {

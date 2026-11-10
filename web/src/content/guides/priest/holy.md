@@ -23,8 +23,6 @@ sources:
 
 ## Overview
 
-Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, Greater Heal as the filler, and Prayer of Healing for a hurt group.
-
 ### Strengths
 
 - Prayer of Mending is the cheapest healing you can cast all fight: up to five heals for one cast

@@ -45,8 +45,6 @@ sources:
 
 ## Overview
 
-Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet in a raid.
-
 ### Strengths
 
 - Lone Wolf's 20% damage on every attack, with no pet to keep alive

@@ -39,8 +39,6 @@ sources:
 
 ## Overview
 
-Arms is the two-handed warrior: Rend, Overpower and Mortal Strike in Battle Stance, a stance swap for Recklessness, and a full bar of rage spent on one huge Execute.
-
 ### Strengths
 
 - Mortal Strike is a big hit every 6 seconds that halves the healing on the target

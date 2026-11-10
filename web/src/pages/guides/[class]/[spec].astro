@@ -17,7 +17,6 @@ import GuideBisLane from '../../../components/guides/GuideBisLane.astro';
 import GuideBuildsLane from '../../../components/guides/GuideBuildsLane.astro';
 import GuideExtrasLane from '../../../components/guides/GuideExtrasLane.astro';
 import GuideGlance from '../../../components/guides/GuideGlance.astro';
-import GuideLede from '../../../components/guides/GuideLede.astro';
 import GuideLevelingTree from '../../../components/guides/GuideLevelingTree.svelte';
 import GuideRacesLane from '../../../components/guides/GuideRacesLane.astro';
 import GuideRotationLane from '../../../components/guides/GuideRotationLane.astro';
@@ -124,7 +123,7 @@ async function prose(markdown: string): Promise<string> {
   return linkProse(await renderGuideMarkdown(markdown), proseTargets);
 }
 
-const overview = splitOverview(sections.get('Overview') ?? '');
+const overview = splitOverview(sections.get('Overview') ?? '', entry.id);
 const hasOverviewBlocks = overview.strengths !== '' || overview.weaknesses !== '' || overview.raid !== '';
 const overviewHtml = {
   strengths: await prose(overview.strengths),
@@ -265,10 +264,6 @@ const jsonLd = [
         sections={tocItems}
       />
       <div slot="top" class="guide-top">
-        <GuideLede
-          text={overview.summary !== '' ? overview.summary : (entry.data.description ?? '')}
-          testid="guide-summary"
-        />
         <GuideGlance
           spec={fullSpecId}
           build={build}

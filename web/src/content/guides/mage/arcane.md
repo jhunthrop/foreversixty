@@ -27,8 +27,6 @@ sources:
 
 ## Overview
 
-Arcane stacks Arcane Blast for spell damage, fires free Missiles on Missile Barrage and saves its burst for Arcane Power. In a raid it fills with Fireball; leveling, with Frostbolt.
-
 ### Strengths
 
 - The best burst a mage has: Arcane Power's 15 second window, with Presence of Mind and your trinkets stacked into it

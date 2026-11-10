@@ -27,8 +27,6 @@ sources:
 
 ## Overview
 
-The bear tanks on health and armor, with Dodge as its only avoidance and Lacerate, Primal Bite and Maul for threat. Cat DPS has [its own guide](/guides/druid/feral).
-
 ### Strengths
 
 - Dire Bear Form adds a flat block of health and multiplies the armor on your gear, and Heart of the Wild adds 20% Stamina on top

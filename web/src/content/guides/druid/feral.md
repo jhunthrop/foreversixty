@@ -30,8 +30,6 @@ sources:
 
 ## Overview
 
-The cat opens with Ravage, keeps Rip on the boss, Shreds from behind and turns mana into energy with Shifting Power. Bear tanking has [its own guide](/guides/druid/feral-bear).
-
 ### Strengths
 
 - Rip at 5 combo points bleeds the boss for its whole duration, and the bleed keeps Rend and Tear on for every Shred and Bite

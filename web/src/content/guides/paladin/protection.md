@@ -41,8 +41,6 @@ sources:
 
 ## Overview
 
-Protection tanks with a shield and Holy damage: Righteous Fury on, Holy Shield on cooldown, Holy Strike every 6 seconds, and Judgement of Fury as your taunt.
-
 ### Strengths
 
 - Righteous Fury turns your Holy damage into huge threat, and Holy Shield adds more on every block

@@ -27,8 +27,6 @@ sources:
 
 ## Overview
 
-Shadow keeps two DoTs ticking, hits Mind Blast and Shadow Word: Death on cooldown, and fills with Mind Flay, all from Shadowform.
-
 ### Strengths
 
 - The best way to level a priest: DoTs and a wand do the work, and from level 16 Spirit Tap cuts your drinking after every kill

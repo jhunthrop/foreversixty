@@ -23,8 +23,6 @@ sources:
 
 ## Overview
 
-Restoration is the shaman's healing spec: Riptide on the tank, Chain Heal through the group, and Water Shield and Mana Tide to keep the mana coming.
-
 ### Strengths
 
 - Chain Heal cast on a target with your Riptide heals it 25% more

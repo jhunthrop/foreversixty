@@ -101,9 +101,7 @@ for (const [label, viewport] of [
       await expect(page.locator('[data-region="head-meta"]')).toContainText(
         /DPS · Updated \d{1,2} [A-Z][a-z]{2}/,
       );
-      await expect(page.getByTestId('guide-summary')).toContainText(
-        'Frost casts Frostbolt behind Ice Barrier',
-      );
+      await expect(page.getByTestId('guide-summary')).toHaveCount(0);
       await noSidewaysScroll(page);
     });
 

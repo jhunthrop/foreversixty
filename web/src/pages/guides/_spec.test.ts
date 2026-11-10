@@ -150,7 +150,8 @@ describe('/guides/warrior/fury (the page structure)', () => {
     expect(main).toMatch(/<h1[^>]*style="color: var\(--color-class-warrior\);">Fury Warrior<\/h1>/);
     expect(main).toMatch(/data-region="head-meta"[^>]*><span[^>]*>DPS · Updated \d{1,2} [A-Z][a-z]{2}</);
     expect(main).not.toContain('ui-page-header-lead');
-    expect(main).toMatch(/<p class="guide-lede[^"]*"[^>]*data-testid="guide-summary"[^>]*>[^<]{20,}<\/p>/);
+    // No lede under the band (owner 2026-11-09: the "<Spec> is the" sentences were struck from every guide).
+    expect(main).not.toContain('data-testid="guide-summary"');
     const answer = blockOf(main, 'guide-answer', 2000);
     expect(main.indexOf('data-region="head-answer"')).toBeLessThan(main.indexOf('id="guide-answer"'));
     expect(main).toMatch(
@@ -248,10 +249,8 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       main.indexOf('<section id="leveling"'),
     );
     expect(frost).toMatch(/DPS · Updated \d{1,2} [A-Z][a-z]{2}</);
-    // The lede is the Overview's own sentence, not the frontmatter description.
-    expect(frost).toMatch(
-      /<p class="guide-lede[^"]*"[^>]*data-testid="guide-summary"[^>]*>Frost casts Frostbolt behind Ice Barrier/,
-    );
+    // No lede: neither the Overview's old sentence nor the frontmatter description shows under the band.
+    expect(frost).not.toContain('Frost casts Frostbolt behind Ice Barrier');
   });
 
   it('lays the Overview out as strengths and weaknesses beside the raid role lane', () => {

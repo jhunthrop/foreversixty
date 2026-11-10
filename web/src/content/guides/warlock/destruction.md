@@ -25,8 +25,6 @@ sources:
 
 ## Overview
 
-Destruction keeps Immolate up and fires Conflagrate and Shadowburn on cooldown, since full Shadow and Flame keeps the Immolate and returns the shard, with Incinerate in between.
-
 ### Strengths
 
 - Conflagrate and Shadowburn are instants on short cooldowns, so you keep casting while you move
