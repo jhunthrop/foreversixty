@@ -20,9 +20,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 392,
+   "lane": 400,
    "prose": 449,
-   "gap": -57
+   "gap": -49
   },
   {
    "id": "best-in-slot",
@@ -76,9 +76,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 448,
-   "prose": 419,
-   "gap": 29
+   "lane": 400,
+   "prose": 475,
+   "gap": -75
   },
   {
    "id": "best-in-slot",
@@ -132,9 +132,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 344,
-   "prose": 297,
-   "gap": 47
+   "lane": 352,
+   "prose": 345,
+   "gap": 7
   },
   {
    "id": "best-in-slot",
@@ -188,9 +188,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 420,
+   "lane": 428,
    "prose": 475,
-   "gap": -55
+   "gap": -47
   },
   {
    "id": "best-in-slot",
@@ -244,9 +244,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 448,
+   "lane": 456,
    "prose": 503,
-   "gap": -55
+   "gap": -47
   },
   {
    "id": "best-in-slot",
@@ -300,9 +300,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 524,
+   "lane": 532,
    "prose": 483,
-   "gap": 41
+   "gap": 49
   },
   {
    "id": "best-in-slot",
@@ -356,9 +356,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 392,
-   "prose": 479,
-   "gap": -87
+   "lane": 344,
+   "prose": 375,
+   "gap": -31
   },
   {
    "id": "best-in-slot",
@@ -412,9 +412,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 392,
-   "prose": 499,
-   "gap": -107
+   "lane": 344,
+   "prose": 375,
+   "gap": -31
   },
   {
    "id": "best-in-slot",
@@ -468,9 +468,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 344,
-   "prose": 245,
-   "gap": 99
+   "lane": 296,
+   "prose": 293,
+   "gap": 3
   },
   {
    "id": "best-in-slot",
@@ -524,9 +524,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 420,
-   "prose": 479,
-   "gap": -59
+   "lane": 372,
+   "prose": 375,
+   "gap": -3
   },
   {
    "id": "best-in-slot",
@@ -580,9 +580,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 448,
-   "prose": 599,
-   "gap": -151
+   "lane": 400,
+   "prose": 375,
+   "gap": 25
   },
   {
    "id": "best-in-slot",
@@ -636,9 +636,9 @@
   },
   {
    "id": "stat-priority",
-   "lane": 468,
-   "prose": 480,
-   "gap": -12
+   "lane": 420,
+   "prose": 391,
+   "gap": 29
   },
   {
    "id": "best-in-slot",
