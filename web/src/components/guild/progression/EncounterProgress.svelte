@@ -65,7 +65,7 @@
           testid="guild-progression-night"
         >
           {#snippet name()}{progressionNightDay(night.date, now)}{/snippet}
-          {#snippet sub()}{night.killMs === null
+          {#snippet sub()}{!night.killed
               ? 'no kill'
               : night.first
                 ? 'first kill'

@@ -14,6 +14,7 @@ import type {
   RaidReportDeath,
 } from '../../../src/lib/guild/attendance-contract';
 import { MEMBER_ALT, ONYXIA_SIGNUPS, keyOf } from './guild-raids';
+import { NO_AWARD_RECORD } from '../../../src/test-support/award-record';
 
 /** The raid ended at 11:00 pm Chicago (05:00 UTC); one hour later the matcher's window is open. */
 export const AFTER_END = new Date('2026-12-11T06:00:00Z');
@@ -340,6 +341,7 @@ export function fixtureReport(extra: Partial<RaidReport> = {}): RaidReport {
           ...ref(name),
           by_name: 'Kraggor',
           at: '2026-12-11T04:30:00Z',
+          ...NO_AWARD_RECORD,
         })),
       },
     ],

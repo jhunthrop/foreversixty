@@ -156,9 +156,7 @@ describe('the officers list', () => {
   const list = buildMockOfficerApplications();
 
   it('reads every figure with its unit, and splits pending from decided', () => {
-    expect(applicantFacts(list.rows[0].character)).toBe(
-      'Holy Paladin · Item level 63 · Top HPS 465',
-    );
+    expect(applicantFacts(list.rows[0].character)).toBe('Holy Paladin · Item level 63 · Top HPS 465');
     const { pending, decided } = splitApplications(list);
     expect(pending.map((r) => r.id)).toEqual([41, 42]);
     expect(decided.map((r) => r.id)).toEqual([39]);

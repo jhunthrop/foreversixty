@@ -12,7 +12,6 @@
     fetchGuildHome,
     fetchGuildReadiness,
     type GuildRaidView,
-    type GuildReadinessRow,
     type GuildRosterRow,
   } from '../../../lib/guild/api';
   import { untrack } from 'svelte';

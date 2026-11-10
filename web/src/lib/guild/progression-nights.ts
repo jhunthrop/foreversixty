@@ -13,6 +13,7 @@ export interface ProgressionNightRow {
   /** Seconds against the previous night with a kill: negative is faster. */
   deltaS: number | null;
   pulls: number;
+  killed: boolean;
   wipes: number;
   deaths: number;
   first: boolean;
@@ -35,6 +36,7 @@ export function progressionNights(encounter: GuildProgressionEncounter): Progres
       killMs,
       deltaS,
       pulls: n.pulls,
+      killed: n.killed,
       wipes: Math.max(0, n.pulls - (n.killed ? 1 : 0)),
       deaths: n.deaths ?? 0,
       first: index === firstKill,
