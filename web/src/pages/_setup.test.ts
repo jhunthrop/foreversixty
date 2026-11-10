@@ -450,7 +450,7 @@ describe('/setup: The companion', () => {
     expect(howTo).toMatch(/<code class="ui-code[^"]*"[^>]*>\/combatlog<\/code>/);
   });
 
-  it('shows the 0.2.11 companion Status page as an eager Capture with its Example tag', () => {
+  it('shows the 0.2.44 companion Status page as an eager Capture with its Example tag', () => {
     const capture = addonCopy.setupCompanionCapture;
     const companionHtml = section('setup-companion');
     expect(companionHtml).toContain(`src="${capture.src}"`);
@@ -463,6 +463,9 @@ describe('/setup: The companion', () => {
     const bytes = readFileSync(new URL(`../../public${capture.src}`, import.meta.url));
     expect(jpegSize(bytes)).toEqual({ width: capture.width, height: capture.height });
     expect(capture.width).toBeGreaterThanOrEqual(1600);
+    expect(companionHtml).toContain(`srcset="${capture.narrow.src}"`);
+    const narrowBytes = readFileSync(new URL(`../../public${capture.narrow.src}`, import.meta.url));
+    expect(jpegSize(narrowBytes)).toEqual({ width: capture.narrow.width, height: capture.narrow.height });
   });
 
   it('server-renders every build and its signing line, with no word of Windows only (U7)', () => {
