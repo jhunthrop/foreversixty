@@ -9,6 +9,7 @@ import { SETUP_NAV_ITEM } from '../../src/lib/nav';
 import { uiCopy } from '../../src/lib/ui/copy';
 import type { Me } from '../../src/lib/account/me-types';
 import { buildMe, stepGuild, subscribeView } from '../../src/test-support/subscribe-fixtures';
+import { setupFixture } from '../../src/test-support/guild-setup-fixture';
 import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { expectTapHeight, routeMeCell } from './support/subscribe-stubs';
@@ -58,6 +59,7 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
 }) => {
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_OFFICER)));
+  await page.route('**/v1/guilds/501/setup', (route) => route.fulfill(envelope(setupFixture())));
   await page.route('**/v1/guilds/501/settings', (route) =>
     route.fulfill(
       envelope({
@@ -72,9 +74,7 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
   );
   await openClaim(page);
   await expect(page.getByTestId('guild-claim')).toBeVisible();
-  await expect(page.getByTestId('guild-claim-state')).toHaveText(
-    'Nobody has claimed this guild.',
-  );
+  await expect(page.getByTestId('guild-claim-state')).toHaveText('Nobody has claimed this guild.');
   await expect(page.getByTestId('guild-claim-button')).toBeVisible();
   // Nothing to contest: the claim does not exist yet.
   await expect(page.getByTestId('guild-claim-contest-button')).toHaveCount(0);
@@ -110,26 +110,30 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
   expect(claimPosts).toBe(1);
   // Once the claim is held the page is about the claim.
   await expect(page.getByTestId('guild-claim-heading')).toHaveText('The Last Watch · your claim');
+  // Then the setup checklist: the eight steps with their states, Start setup the one fill.
+  await expect(page.getByTestId('guild-claim-next')).toContainText('Set up The Last Watch');
+  await expect(page.getByTestId('guild-claim-setup-steps').locator('li')).toHaveCount(8);
+  await expect(page.getByTestId('guild-claim-next-setup')).toHaveAttribute(
+    'href',
+    '/guild/us/hardcore/the-last-watch/setup',
+  );
   await expect(page.getByTestId('guild-claim-next-roster')).toHaveText('Approve your officers and members');
   await expect(page.getByTestId('guild-claim-next-roster')).toHaveAttribute(
     'href',
     '/guild/us/hardcore/the-last-watch#roster',
   );
-  await expect(page.getByTestId('guild-claim-next-invite')).toHaveText('Make an invite link');
-  // The next steps are two 44 px buttons: the roster is the gold primary, the invite link an outline.
-  for (const id of ['guild-claim-next-roster', 'guild-claim-next-invite']) {
+  for (const id of ['guild-claim-next-setup', 'guild-claim-next-roster']) {
     const box = await page.getByTestId(id).boundingBox();
     expect(box?.height).toBe(44);
   }
-  // The pointer still rests where the claim button was, which is where the primary now sits;
-  // move it off so the resting colour is read, not the hover one.
   await page.mouse.move(0, 0);
-  await expect(page.getByTestId('guild-claim-next-roster')).toHaveClass(/\bbg-teal\b/);
-  await expect(page.getByTestId('guild-claim-next-invite')).not.toHaveClass(/\bbg-teal\b/);
-  await expect(page.getByTestId('guild-claim-next-invite')).toHaveAttribute(
-    'href',
-    '/guild/us/hardcore/the-last-watch/settings',
-  );
+  await expect(page.getByTestId('guild-claim-next-setup')).toHaveClass(/\bbg-teal\b/);
+  await expect(page.getByTestId('guild-claim-next-roster')).not.toHaveClass(/\bbg-teal\b/);
+  if (process.env.FS_CAPTURE !== undefined)
+    await page.screenshot({
+      path: `${process.env.FS_CAPTURE}/claim-done-${test.info().project.name}.png`,
+      fullPage: true,
+    });
   // Your own claim is not something to contest.
   await expect(page.getByTestId('guild-claim-contest-button')).toHaveCount(0);
 
@@ -303,6 +307,7 @@ test('after a claim made for a plan, subscribe leads Next as the one gold fill',
   await page.route('**/v1/guilds/501/settings', (route) =>
     route.fulfill(envelope(claimed ? heldSettings : unclaimedSettings)),
   );
+  await page.route('**/v1/guilds/501/setup', (route) => route.fulfill(envelope(setupFixture())));
   await page.route('**/v1/guilds/501/claim', (route) => {
     claimed = true;
     return route.fulfill(envelope({ status: 'confirmed' }));
@@ -319,15 +324,8 @@ test('after a claim made for a plan, subscribe leads Next as the one gold fill',
   const order = await next
     .locator('[data-testid^="guild-claim-next-"]')
     .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-testid')));
-  // Plan a raid and Discord follow the first three; the gated line closes a guild with no plan.
-  expect(order).toEqual([
-    'guild-claim-next-subscribe',
-    'guild-claim-next-roster',
-    'guild-claim-next-invite',
-    'guild-claim-next-plan',
-    'guild-claim-next-discord',
-    'guild-claim-next-gated',
-  ]);
+  // The plan's subscribe leads, then Start setup and the roster.
+  expect(order).toEqual(['guild-claim-next-subscribe', 'guild-claim-next-setup', 'guild-claim-next-roster']);
   // The viewer now holds the claim: "Claim the guild first" is no longer theirs to read (row 16).
   await expect(page.getByTestId('guild-claim-plan-line')).toHaveCount(0);
   await expect(page.getByTestId('guild-claim-next-subscribe')).toContainText(
@@ -336,7 +334,7 @@ test('after a claim made for a plan, subscribe leads Next as the one gold fill',
   await expect(page.getByTestId('guild-claim-next-roster')).toHaveText(guildClaimCopy.nextRoster);
 
   // One fill: the subscribe button is the primary teal, every other step a secondary.
-  const ghosts = ['roster', 'invite', 'plan', 'discord'];
+  const ghosts = ['setup', 'roster'];
   await page.mouse.move(0, 0);
   await expect(page.getByTestId('guild-claim-next-subscribe')).toHaveClass(/\bbg-teal\b/);
   for (const ghost of ghosts) {
