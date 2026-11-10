@@ -30,18 +30,7 @@ class RaidPagesParityTest {
         NotAnsweredScreen(RaidPagesFixtures.unanswered, BUILD, NotAnsweredActions())
     }
 
-    // Known drift (2026-11-10, lane M0): in Open Sans a line the mock fits on one line wraps natively (the
-    // round-5 face is wider than Barlow), so the sections below it sit lower. The tab lanes (M1i/M1a to
-    // M4i/M4a) rebuild these screens against the round-5 mocks and drop these lines.
-    @Test fun applicant() = pushed(
-        "raid-applicant",
-        "Raid",
-        drift = setOf(
-            "section-guild-history: y 512, the mock has 497 (within 8)",
-            "section-raid-ready: y 294, the mock has 282 (within 8)",
-            "section-their-note: y 694, the mock has 677 (within 8)",
-        ),
-    ) {
+    @Test fun applicant() = pushed("raid-applicant", "Raid") {
         ApplicantScreen(RaidPagesFixtures.applicant(), ApplicantActions())
     }
 

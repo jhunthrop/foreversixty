@@ -5618,7 +5618,7 @@ enum Copy {
         format("raid.tab.roleLine", role, have, want)
     }
 
-    /// {name} (Late, {n} min)
+    /// {name} (Late · {n} min)
     static func raidTabLateNote(name: String, n: Int) -> String {
         format("raid.tab.lateNote", name, n)
     }
@@ -5684,6 +5684,58 @@ enum Copy {
 
     /// Sign up for your guild's raids from your phone.
     static var raidTabOutLine: String { text("raid.tab.outLine") }
+
+    /// {time} · pull in {until}
+    static func raidTabPullIn(time: String, until: String) -> String {
+        format("raid.tab.pullIn", time, until)
+    }
+
+    /// {h} h {m} min
+    static func raidTabUntilHours(h: Int, m: Int) -> String {
+        format("raid.tab.untilHours", h, m)
+    }
+
+    /// {m} min
+    static func raidTabUntilMinutes(m: Int) -> String {
+        format("raid.tab.untilMinutes", m)
+    }
+
+    /// As {name}, {role}
+    static func raidTabAs(name: String, role: String) -> String {
+        format("raid.tab.as", name, role)
+    }
+
+    /// Who is coming
+    static var raidTabComing: String { text("raid.tab.coming") }
+
+    /// Roster ›
+    static var raidTabRosterLink: String { text("raid.tab.rosterLink") }
+
+    /// Before you pull
+    static var raidTabBeforePull: String { text("raid.tab.beforePull") }
+
+    /// {have} of {want}
+    static func raidTabOfWant(have: Int, want: Int) -> String {
+        format("raid.tab.ofWant", have, want)
+    }
+
+    /// {names} · {n} short
+    static func raidTabShort(names: String, n: Int) -> String {
+        format("raid.tab.short", names, n)
+    }
+
+    /// {names} and {n} more
+    static func raidTabAndMore(names: String, n: Int) -> String {
+        format("raid.tab.andMore", names, n)
+    }
+
+    /// How late
+    static var raidTabHowLate: String { text("raid.tab.howLate") }
+
+    /// Late · {n} min
+    static func raidAnswerLateMinutes(n: Int) -> String {
+        format("raid.answer.lateMinutes", n)
+    }
 
     /// Not answered
     static var raidNaTitle: String { text("raid.na.title") }

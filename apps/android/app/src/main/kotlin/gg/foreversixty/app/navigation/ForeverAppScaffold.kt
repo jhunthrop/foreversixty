@@ -177,7 +177,6 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
     val session = account?.session
     val openGear = { select(ForeverTab.Gear) }
     val context = LocalContext.current
-    val bar: @Composable () -> Unit = { RootSearchBar(onSearch) { ProfileBar(session) } }
     val uri = LocalUriHandler.current
     val flows = HomeFlows(
         raids = features.raids?.takeIf { it.enabled },
@@ -197,7 +196,10 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
                 HomeRoute(features.home, session, openGear, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }, flows = flows) { Unavailable(tab) }
             }
         }
-        ForeverTab.Raid -> features.raids?.let { RaidTab(it, account, features.home.reports, bar) } ?: Unavailable(tab)
+        ForeverTab.Raid -> features.raids?.let { raids ->
+            val title = stringResource(R.string.tab_raid)
+            RaidTab(raids, account, features.home.reports) { RootSearchBar(onSearch) { ProfileBar(session, title) } }
+        } ?: Unavailable(tab)
         ForeverTab.Gear -> features.bis?.let { GearTab(it, features.home, account, onSearch) } ?: Unavailable(tab)
         ForeverTab.Activity -> features.activity?.let { activity ->
             ActivityTab(activity, account, onOpen = { landing -> openLanding(features, landing, select) }) { ProfileBar(session) }

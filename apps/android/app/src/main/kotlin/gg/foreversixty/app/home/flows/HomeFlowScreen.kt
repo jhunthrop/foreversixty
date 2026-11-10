@@ -19,7 +19,6 @@ import gg.foreversixty.app.designsystem.ParityRegion
 import gg.foreversixty.app.flows.FlowBlock
 import gg.foreversixty.app.flows.FlowButton
 import gg.foreversixty.app.flows.FlowButtonRow
-import gg.foreversixty.app.flows.FlowCountdown
 import gg.foreversixty.app.flows.FlowGap
 import gg.foreversixty.app.flows.FlowItemRow
 import gg.foreversixty.app.flows.FlowLead
@@ -30,7 +29,6 @@ import gg.foreversixty.app.flows.FlowRule
 import gg.foreversixty.app.flows.FlowSection
 import gg.foreversixty.app.flows.FlowSegmented
 import gg.foreversixty.app.flows.FlowSkeleton
-import gg.foreversixty.app.flows.FlowTally
 import gg.foreversixty.app.raids.logic.SignupState
 
 /**
@@ -115,20 +113,6 @@ private fun Upgrades(block: HomeBlock.Upgrades, actions: HomeActions) {
     }
 }
 
-/** The Raid tab's next raid card (F1, until lane M2a moves the tab to its one-line head): the countdown, who you answer as, the four answers, Late's minutes, who is coming. */
-@Composable
-fun RaidCard(raid: RaidCardModel, actions: HomeActions) {
-    FlowCountdown(raid.eyebrow, raid.clock, raid.clockLabel) { FlowNote(raid.aside) }
-    FlowNote(raid.me, Modifier.padding(top = FsSpace.space2))
-    Answers(raid, Modifier.padding(top = FsSpace.space3), actions)
-    if (raid.lateOpen) LateChips { actions.onLate(raid.raidId, it) }
-    FlowTally(raid.tally, Modifier.padding(top = FsSpace.space4))
-    raid.ready?.let {
-        Column(Modifier.padding(top = FsSpace.space2)) { FlowRow(it.title, it.sub, slim = true, last = true, onClick = { actions.onReady(raid.raidId) }) }
-    }
-    raid.officer?.let { Column(Modifier.padding(top = FsSpace.space2)) { RaidOfficerItems(raid.raidId, it, actions) } }
-}
-
 @Composable
 internal fun RaidOfficerItems(raidId: Long, officer: OfficerItems, actions: HomeActions) {
     officer.unanswered?.let { line ->
@@ -137,11 +121,6 @@ internal fun RaidOfficerItems(raidId: Long, officer: OfficerItems, actions: Home
         })
     }
     officer.applicants?.let { FlowRow(it, officer.applicantLine, last = true, onClick = actions.onApplicants) }
-}
-
-@Composable
-private fun Answers(raid: RaidCardModel, modifier: Modifier, actions: HomeActions) {
-    RaidAnswerButtons(raid.answer, modifier) { actions.onAnswer(raid.raidId, it) }
 }
 
 /** In, Late, Bench, Out sharing a row, the current answer selected (F1). */

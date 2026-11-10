@@ -6,30 +6,21 @@
  "regions": {
   "section-raid-night": {
    "box": [
+    14,
     16,
-    36,
-    380,
-    268
+    384,
+    335
    ],
    "inventory": {
-    "row": 2
+    "row": 3
    }
   },
-  "countdowns": {
+  "section-before-you-pull": {
    "box": [
-    16,
-    95,
-    380,
-    108
-   ],
-   "inventory": {}
-  },
-  "section-ready-check": {
-   "box": [
-    16,
-    332,
-    380,
-    303
+    14,
+    371,
+    384,
+    266
    ],
    "inventory": {
     "row": 3
@@ -37,10 +28,10 @@
   },
   "section-olympus-xxvii": {
    "box": [
-    16,
-    663,
-    380,
-    270
+    14,
+    657,
+    384,
+    288
    ],
    "inventory": {
     "row": 4

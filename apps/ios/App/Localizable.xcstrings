@@ -11283,6 +11283,18 @@
         }
       }
     },
+    "raid.answer.lateMinutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Late · %1$lld min"
+          }
+        }
+      }
+    },
     "raid.applicant.accept": {
       "extractionState": "manual",
       "localizations": {
@@ -12844,6 +12856,18 @@
         }
       }
     },
+    "raid.tab.andMore": {
+      "comment": "Arguments: 1 names (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ and %2$lld more"
+          }
+        }
+      }
+    },
     "raid.tab.apply": {
       "extractionState": "manual",
       "localizations": {
@@ -12851,6 +12875,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apply"
+          }
+        }
+      }
+    },
+    "raid.tab.as": {
+      "comment": "Arguments: 1 name (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "raid.tab.beforePull": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before you pull"
           }
         }
       }
@@ -12900,6 +12947,28 @@
         }
       }
     },
+    "raid.tab.coming": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who is coming"
+          }
+        }
+      }
+    },
+    "raid.tab.howLate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How late"
+          }
+        }
+      }
+    },
     "raid.tab.lateNote": {
       "comment": "Arguments: 1 name (string), 2 n (int)",
       "extractionState": "manual",
@@ -12907,7 +12976,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ (Late, %2$lld min)"
+            "value": "%1$@ (Late · %2$lld min)"
           }
         }
       }
@@ -13001,6 +13070,18 @@
         }
       }
     },
+    "raid.tab.ofWant": {
+      "comment": "Arguments: 1 have (int), 2 want (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
     "raid.tab.open": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
@@ -13020,6 +13101,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sign up for your guild's raids from your phone."
+          }
+        }
+      }
+    },
+    "raid.tab.pullIn": {
+      "comment": "Arguments: 1 time (string), 2 until (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · pull in %2$@"
           }
         }
       }
@@ -13081,6 +13174,29 @@
         }
       }
     },
+    "raid.tab.rosterLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roster ›"
+          }
+        }
+      }
+    },
+    "raid.tab.short": {
+      "comment": "Arguments: 1 names (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld short"
+          }
+        }
+      }
+    },
     "raid.tab.sims": {
       "extractionState": "manual",
       "localizations": {
@@ -13100,6 +13216,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "From your last log-out, %1$@"
+          }
+        }
+      }
+    },
+    "raid.tab.untilHours": {
+      "comment": "Arguments: 1 h (int), 2 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld h %2$lld min"
+          }
+        }
+      }
+    },
+    "raid.tab.untilMinutes": {
+      "comment": "Arguments: 1 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld min"
           }
         }
       }

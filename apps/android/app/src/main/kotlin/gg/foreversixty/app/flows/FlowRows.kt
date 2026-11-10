@@ -28,7 +28,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
@@ -74,6 +77,7 @@ fun FlowRow(
     last: Boolean = false,
     trail: (@Composable () -> Unit)? = null,
     onClick: (() -> Unit)? = null,
+    subLink: FlowSubLink? = null,
 ) {
     val unreadLabel = androidx.compose.ui.res.stringResource(gg.foreversixty.app.R.string.activity_unread)
     val tap = onClick?.let { Modifier.clickable(role = Role.Button, onClick = it) } ?: Modifier
@@ -104,12 +108,26 @@ fun FlowRow(
             }
             Column(Modifier.weight(1f)) {
                 Text(title, style = FsType.item, color = titleColor)
-                if (!sub.isNullOrBlank()) Text(sub, style = SUB, color = FsColor.muted)
+                if (subLink != null) {
+                    Text(subWithLink(sub, subLink), style = SUB, color = FsColor.muted)
+                } else if (!sub.isNullOrBlank()) {
+                    Text(sub, style = SUB, color = FsColor.muted)
+                }
             }
         }
         if (trail != null) Box(Modifier.padding(top = FsSpace.space2)) { trail() }
     }
     if (!last) FlowRule()
+}
+
+/** A gold link at the end of a row's line (`None in your bags · Auction house`), round 5's inline fix. */
+data class FlowSubLink(val label: String, val onClick: () -> Unit)
+
+private fun subWithLink(sub: String?, link: FlowSubLink) = buildAnnotatedString {
+    if (!sub.isNullOrBlank()) append("$sub · ")
+    withLink(LinkAnnotation.Clickable(link.label, TextLinkStyles(SpanStyle(color = FsColor.gold, fontWeight = FontWeight.SemiBold))) { link.onClick() }) {
+        append(link.label)
+    }
 }
 
 @Composable
@@ -131,8 +149,9 @@ private fun LeadImage(lead: FlowLead) {
                 lead.miss -> CHECK_MISS to FsColor.wipe
                 else -> CHECK_WARN to FsColor.gold
             }
-            Box(Modifier.size(CHECK), contentAlignment = Alignment.Center) {
-                Text(mark, style = CHECK_TEXT, color = color)
+            // The mark on its filled disc (round 5, mock m-android-raid): green, red or amber, the glyph dark.
+            Box(Modifier.size(CHECK).background(color, CircleShape), contentAlignment = Alignment.Center) {
+                Text(mark, style = CHECK_TEXT, color = FsColor.bg)
             }
         }
     }

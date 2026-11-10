@@ -8,6 +8,8 @@ import gg.foreversixty.app.raids.clock
 import gg.foreversixty.app.raids.logic.SignupState
 import gg.foreversixty.app.raids.resources
 import org.junit.Assert.assertEquals
+import java.time.Duration
+import java.time.Instant
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -34,5 +36,39 @@ class RaidCardWordsTest {
         val model = card(one, null)
         assertEquals("Onyxia's Lair", model.zone)
         assertEquals(true, model.place.startsWith("Olympus XXVII · "))
+    }
+
+    @Test fun `the Raid tab head names the character only with two in the guild`() {
+        assertEquals(null, card(one, SignupState.In).who)
+        assertEquals("As Obnoxious Yell, Damage", card(two, SignupState.In).who)
+    }
+
+    @Test fun `a Late answer with minutes carries them on the chip and the answer`() {
+        val late = words.card(one, "Olympus XXVII", "us/pvp/obnoxious-yell", SignupState.Late, lateOpen = true, badge = null, lateMinutes = 30)
+        assertEquals("Late · 30 min", late.chip)
+        assertEquals("You are Late · 30 min", late.me)
+        assertEquals(30, late.lateMinutes)
+        assertEquals("In", card(one, SignupState.In).chip)
+        assertEquals(null, card(one, null).chip)
+    }
+
+    @Test fun `minutes count only for a Late answer`() {
+        val inWithMinutes = words.card(one, "Olympus XXVII", "us/pvp/obnoxious-yell", SignupState.In, lateOpen = true, badge = null, lateMinutes = 30)
+        assertEquals("In", inWithMinutes.chip)
+        assertEquals(null, inWithMinutes.lateMinutes)
+    }
+
+    @Test fun `within a day the head line gives the pull in hours and minutes`() {
+        val pull = Instant.parse("2026-12-20T01:00:00Z")
+        val soon = RaidCardWords(resources(), clock(), pull.minus(Duration.ofMinutes(168)))
+        val line = soon.card(one, "Olympus XXVII", "us/pvp/obnoxious-yell", null, lateOpen = false, badge = null).headLine
+        assertEquals(true, line.endsWith(" · pull in 2 h 48 min"))
+        val minutes = RaidCardWords(resources(), clock(), pull.minus(Duration.ofMinutes(12)))
+        assertEquals(true, minutes.card(one, "Olympus XXVII", null, null, lateOpen = false, badge = null).headLine.endsWith(" · pull in 12 min"))
+    }
+
+    @Test fun `a day or more out the head line gives the date and time`() {
+        val model = card(one, null)
+        assertEquals(model.aside, model.headLine)
     }
 }

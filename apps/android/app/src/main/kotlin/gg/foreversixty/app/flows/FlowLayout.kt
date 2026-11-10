@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.common.ClassCrest
+import gg.foreversixty.app.designsystem.BandKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
@@ -45,6 +46,8 @@ import gg.foreversixty.app.designsystem.parityContent
 import gg.foreversixty.app.designsystem.parityItem
 import gg.foreversixty.app.designsystem.parityRegion
 import gg.foreversixty.app.designsystem.panel
+import gg.foreversixty.app.designsystem.screenGround
+import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.items.GameIconImage
 
 /**
@@ -61,6 +64,34 @@ fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
             .padding(start = FsSpace.space4, end = FsSpace.space4, top = FsSpace.space2, bottom = FsSpace.space6),
         content = content,
     )
+}
+
+/**
+ * A tab root in the round-5 look (spec Mobile): the painted [band] behind [topBar] (and [head] on
+ * Home's hero), then [notice] and the blocks on the ground, 16 under the band, 14 at the sides and 20
+ * apart. Parity regions are measured from the bottom of [topBar], as the mocks' are from the nav bar.
+ */
+@Composable
+fun FlowBandPage(
+    topBar: @Composable () -> Unit,
+    band: BandKind = BandKind.Band,
+    head: @Composable () -> Unit = {},
+    notice: @Composable () -> Unit = {},
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(Modifier.fillMaxSize().screenGround().verticalScroll(rememberScrollState())) {
+        Column(Modifier.fillMaxWidth().surfaceBand(kind = band)) {
+            topBar()
+            Spacer(Modifier.fillMaxWidth().height(0.dp).parityContent())
+            head()
+        }
+        notice()
+        Column(
+            Modifier.fillMaxWidth().padding(start = BAND_PAGE_SIDE, end = BAND_PAGE_SIDE, top = FsSpace.space4, bottom = BAND_PAGE_BOTTOM),
+            verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
+            content = content,
+        )
+    }
 }
 
 /**
@@ -205,6 +236,8 @@ fun FlowGap(height: Dp) {
 }
 
 private val CREST = 56.dp
+private val BAND_PAGE_SIDE = 14.dp
+private val BAND_PAGE_BOTTOM = 22.dp
 private val HEAD_BOTTOM = 14.dp
 private val META_GAP = 6.dp
 private val SECTION_TITLE_GAP = 10.dp

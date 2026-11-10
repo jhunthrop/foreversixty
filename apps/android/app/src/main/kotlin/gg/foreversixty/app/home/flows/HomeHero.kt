@@ -1,17 +1,12 @@
 package gg.foreversixty.app.home.flows
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,11 +27,9 @@ import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.ParityRegion
 import gg.foreversixty.app.designsystem.classColor
-import gg.foreversixty.app.designsystem.parityContent
 import gg.foreversixty.app.designsystem.parityItem
 import gg.foreversixty.app.designsystem.parityRegion
-import gg.foreversixty.app.designsystem.screenGround
-import gg.foreversixty.app.designsystem.surfaceBand
+import gg.foreversixty.app.flows.FlowBandPage
 
 /**
  * Home's page in the round-5 look (spec Mobile, mock m-android-home): the camp-road hero behind the
@@ -45,18 +38,7 @@ import gg.foreversixty.app.designsystem.surfaceBand
  */
 @Composable
 fun HomePage(topBar: @Composable () -> Unit, head: @Composable () -> Unit, content: @Composable ColumnScope.() -> Unit) {
-    Column(Modifier.fillMaxSize().screenGround().verticalScroll(rememberScrollState())) {
-        Column(Modifier.fillMaxWidth().surfaceBand(kind = BandKind.Hero)) {
-            topBar()
-            Spacer(Modifier.fillMaxWidth().height(0.dp).parityContent())
-            head()
-        }
-        Column(
-            Modifier.fillMaxWidth().padding(start = BODY_SIDE, end = BODY_SIDE, top = FsSpace.space4, bottom = BODY_BOTTOM),
-            verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
-            content = content,
-        )
-    }
+    FlowBandPage(topBar, BandKind.Hero, head, content = content)
 }
 
 /**
@@ -82,8 +64,6 @@ fun HomeHeroHead(title: String, facts: List<String>, className: String?) {
     }
 }
 
-private val BODY_SIDE = 14.dp
-private val BODY_BOTTOM = 22.dp
 private val HEAD_TOP = 6.dp
 private val HEAD_BOTTOM = 18.dp
 private const val FACT_SEPARATOR = " · "

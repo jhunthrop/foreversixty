@@ -1684,7 +1684,7 @@
     <string name="raid_tab_noRaid">No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.</string>
     <string name="raid_tab_raidNight">Raid night</string>
     <string name="raid_tab_roleLine" tools:ignore="PluralsCandidate">%1$s %2$d of %3$d</string>
-    <string name="raid_tab_lateNote" tools:ignore="PluralsCandidate">%1$s (Late, %2$d min)</string>
+    <string name="raid_tab_lateNote" tools:ignore="PluralsCandidate">%1$s (Late · %2$d min)</string>
     <string name="raid_tab_readyCheck">Ready check</string>
     <string name="raid_tab_stamp">From your last log-out, %1$s</string>
     <string name="raid_tab_roster">Roster</string>
@@ -1703,6 +1703,18 @@
     <string name="raid_tab_levelsToGo" tools:ignore="PluralsCandidate">%1$d levels to go</string>
     <string name="raid_tab_levelerLine">Onyxia\'s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.</string>
     <string name="raid_tab_outLine">Sign up for your guild\'s raids from your phone.</string>
+    <string name="raid_tab_pullIn">%1$s · pull in %2$s</string>
+    <string name="raid_tab_untilHours" tools:ignore="PluralsCandidate">%1$d h %2$d min</string>
+    <string name="raid_tab_untilMinutes" tools:ignore="PluralsCandidate">%1$d min</string>
+    <string name="raid_tab_as">As %1$s, %2$s</string>
+    <string name="raid_tab_coming">Who is coming</string>
+    <string name="raid_tab_rosterLink">Roster ›</string>
+    <string name="raid_tab_beforePull">Before you pull</string>
+    <string name="raid_tab_ofWant" tools:ignore="PluralsCandidate">%1$d of %2$d</string>
+    <string name="raid_tab_short" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
+    <string name="raid_tab_andMore" tools:ignore="PluralsCandidate">%1$s and %2$d more</string>
+    <string name="raid_tab_howLate">How late</string>
+    <string name="raid_answer_lateMinutes" tools:ignore="PluralsCandidate">Late · %1$d min</string>
     <string name="raid_na_title">Not answered</string>
     <string name="raid_na_all">All</string>
     <string name="raid_na_filter" tools:ignore="PluralsCandidate">%1$s %2$d</string>

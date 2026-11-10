@@ -45,6 +45,14 @@ data class RaidCardModel(
     val zone: String = "",
     /** The line under it: `Olympus XXVII · Wed 6 Jan, 8:00 pm CST`. */
     val place: String = "",
+    /** The Raid tab's one-line head (spec 4.2): `8:00 pm CST · pull in 2 h 48 min`, or the date and time a day or more out. */
+    val headLine: String = "",
+    /** `As Thandrel, Damage` under the head line, only with more than one character in the guild (E7). */
+    val who: String? = null,
+    /** The answer as the head's chip: `In`, `Late · 30 min`; null while unanswered. */
+    val chip: String? = null,
+    /** How late a Late answer said it would be (15, 30, 60); the selected chip. */
+    val lateMinutes: Int? = null,
 )
 
 /** `2 things before you pull` and what they are, with the export's age. */

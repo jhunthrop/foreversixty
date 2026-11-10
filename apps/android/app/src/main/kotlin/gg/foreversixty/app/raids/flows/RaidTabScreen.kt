@@ -5,24 +5,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.PanelFrame
 import gg.foreversixty.app.designsystem.ParityRegion
+import gg.foreversixty.app.flows.FlowBandPage
 import gg.foreversixty.app.flows.FlowBlock
 import gg.foreversixty.app.flows.FlowButton
-import gg.foreversixty.app.flows.FlowCountdown
-import gg.foreversixty.app.flows.FlowHead
-import gg.foreversixty.app.flows.FlowLink
 import gg.foreversixty.app.flows.FlowLead
+import gg.foreversixty.app.flows.FlowLink
 import gg.foreversixty.app.flows.FlowNote
-import gg.foreversixty.app.flows.FlowPage
+import gg.foreversixty.app.flows.FlowPanel
 import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.flows.FlowSection
-import gg.foreversixty.app.flows.FlowWideButton
+import gg.foreversixty.app.flows.FlowSubLink
 import gg.foreversixty.app.home.flows.HomeActions
 import gg.foreversixty.app.home.flows.OfficerItems
-import gg.foreversixty.app.home.flows.RaidCard
 import gg.foreversixty.app.home.flows.RaidCardModel
 import gg.foreversixty.app.home.flows.RaidLiveModel
 
@@ -34,10 +34,13 @@ enum class GuildPage { Roster, Calendar, Loot, Sims }
 /** A guild that recruits the player's spec, with Apply. */
 data class RecruitingGuild(val id: Long, val name: String, val line: String)
 
-/** One item of Ready check: ticked, missing or a warning, and where to get it. */
+/** One item of Before you pull: ticked, missing or a warning, and where to get it. */
 data class ReadyItem(val tone: ReadyTone, val title: String, val sub: String, val where: String?, val link: String? = null)
 
 enum class ReadyTone { Ok, Miss, Warn }
+
+/** One role of Who is coming: `Healers`, `5` of `8`, the names (and the short role's gap). */
+data class RoleLine(val role: String, val have: Int, val want: Int?, val names: String)
 
 /** What the Raid tab shows (spec 2026-11-08 4.2). */
 sealed interface RaidTabView {
@@ -58,8 +61,8 @@ sealed interface RaidTabView {
         val applicantId: Long? = null,
         val needsCount: Int,
         val live: RaidLiveModel?,
-        /** Raid night's roles with names (`Tanks 2 of 2`, `Grunvald, Brakka`). */
-        val roles: List<Pair<String, String>>,
+        /** Who is coming (or, live, who is in): each role with its names. */
+        val roles: List<RoleLine>,
         val ready: List<ReadyItem>,
         val readyStamp: String?,
         val pages: List<GuildPageRow>,
@@ -78,71 +81,92 @@ data class RaidTabActions(
     val onApplicant: (Long) -> Unit = {},
 )
 
-/** The Raid tab root: the next raid first with your answer, then what needs an officer, then the guild's pages. */
+/**
+ * The Raid tab root in the round-5 look (spec 4.2, mocks m-android-raid and m-android-signup): the
+ * band behind [topBar], then on the ground the one-line raid head with your answer, Who is coming,
+ * Before you pull, what needs an officer and the guild's pages. [notice] sits under the band.
+ */
 @Composable
-fun RaidTabScreen(view: RaidTabView, actions: RaidTabActions) {
-    FlowPage {
+fun RaidTabScreen(view: RaidTabView, actions: RaidTabActions, topBar: @Composable () -> Unit = {}, notice: @Composable () -> Unit = {}) {
+    FlowBandPage(topBar, notice = notice) {
         when (view) {
-            RaidTabView.SignedOut -> {
-                FlowHead(stringResource(R.string.raid_tab_withGuild), listOf(stringResource(R.string.raid_tab_outLine)))
-                FlowWideButton(stringResource(R.string.signin_button), primary = true, onClick = actions.onSignIn)
+            RaidTabView.SignedOut -> Lone(stringResource(R.string.raid_tab_withGuild), listOf(stringResource(R.string.raid_tab_outLine))) {
+                RaidWideButton(stringResource(R.string.signin_button), primary = true, onClick = actions.onSignIn)
             }
-            is RaidTabView.Leveler -> {
-                FlowHead(stringResource(R.string.raid_tab_leveler), listOf(stringResource(R.string.raid_tab_levelsToGo, view.levelsLeft)))
-                FlowNote(stringResource(R.string.raid_tab_levelerLine), Modifier.padding(top = FsSpace.space2))
-                FlowWideButton(stringResource(R.string.home_findGuild), primary = false, onClick = actions.onFindGuild)
-            }
+            is RaidTabView.Leveler -> Lone(
+                stringResource(R.string.raid_tab_leveler),
+                listOf(stringResource(R.string.raid_tab_levelsToGo, view.levelsLeft), stringResource(R.string.raid_tab_levelerLine)),
+            ) { RaidWideButton(stringResource(R.string.home_findGuild), primary = false, onClick = actions.onFindGuild) }
             is RaidTabView.NoGuild -> NoGuild(view, actions)
             is RaidTabView.Guild -> Guild(view, actions)
         }
     }
 }
 
+/** A state with one thing to do: its lines on a panel under the title, then the button. */
+@Composable
+private fun Lone(title: String, lines: List<String>, button: @Composable () -> Unit) {
+    FlowSection(title, top = 0.dp, panel = PanelFrame.None) {
+        lines.forEachIndexed { index, line ->
+            FlowNote(line, Modifier.padding(top = FsSpace.space2), color = if (index == 0 && lines.size > 1) FsColor.strong else FsColor.text)
+        }
+        button()
+    }
+}
+
 @Composable
 private fun NoGuild(view: RaidTabView.NoGuild, actions: RaidTabActions) {
-    FlowHead(stringResource(R.string.raid_tab_withGuild), listOf(stringResource(R.string.raid_tab_withGuildLine)))
     if (view.guilds.isNotEmpty() && view.spec != null) {
-        FlowSection(stringResource(R.string.raid_tab_recruiting, view.spec)) {
+        FlowSection(stringResource(R.string.raid_tab_recruiting, view.spec), top = 0.dp, panel = PanelFrame.Plain) {
             view.guilds.forEachIndexed { index, guild ->
                 FlowRow(guild.name, guild.line, last = index == view.guilds.lastIndex, trail = {
-                    FlowButton(stringResource(R.string.raid_tab_apply), { actions.onApply(guild) })
+                    FlowButton(stringResource(R.string.raid_tab_apply), { actions.onApply(guild) }, RAID_TARGET)
                 })
             }
         }
     }
-    FlowSection(stringResource(R.string.raid_tab_notHere)) {
-        FlowNote(stringResource(R.string.raid_tab_claimLine), Modifier.padding(top = FsSpace.space2))
-        FlowWideButton(stringResource(R.string.raid_tab_claim), primary = false, onClick = actions.onClaim)
+    Lone(stringResource(R.string.raid_tab_notHere), listOf(stringResource(R.string.raid_tab_claimLine))) {
+        RaidWideButton(stringResource(R.string.raid_tab_claim), primary = false, onClick = actions.onClaim)
     }
 }
 
 @Composable
 private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
     val live = view.live
-    if (live != null) {
-        FlowSection(stringResource(R.string.raid_tab_raidNight)) {
-            FlowBlock(ParityRegion.COUNTDOWNS) { FlowCountdown(live.eyebrow, emptyList(), "", live = true) { FlowNote(live.line) } }
-            view.roles.forEachIndexed { index, (title, names) -> FlowRow(title, names, slim = true, last = index == view.roles.lastIndex) }
-        }
-        if (view.ready.isNotEmpty()) ReadyCheck(view, actions)
-    } else {
-        FlowSection(stringResource(R.string.raid_tab_nextRaid)) {
-            val next = view.next
-            if (next != null) {
-                FlowBlock(ParityRegion.COUNTDOWNS) { RaidCard(next.copy(officer = null), actions.card) }
-            } else {
-                FlowNote(stringResource(R.string.raid_tab_noRaid), Modifier.padding(top = FsSpace.space2))
+    val next = view.next
+    when {
+        live != null -> RaidNightBlock(live, view.roles)
+        next != null -> {
+            FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) { RaidHead(next, actions.card) }
+            if (view.roles.isNotEmpty()) {
+                FlowSection(
+                    stringResource(R.string.raid_tab_coming),
+                    action = stringResource(R.string.raid_tab_rosterLink),
+                    onAction = { actions.onPage(GuildPage.Roster) },
+                    top = 0.dp,
+                    panel = PanelFrame.Plain,
+                ) { RoleRows(view.roles) }
             }
         }
-        view.needs?.let { needs ->
-            FlowSection(stringResource(R.string.raid_tab_needsYou), meta = stringResource(R.string.raid_tab_open, view.needsCount)) {
-                Needs(view.next?.raidId ?: 0L, needs, actions.card) { view.applicantId?.let(actions.onApplicant) ?: actions.card.onApplicants() }
-            }
+        else -> FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) {
+            FlowPanel { FlowNote(stringResource(R.string.raid_tab_noRaid), Modifier.padding(vertical = FsSpace.space2), color = FsColor.text) }
         }
     }
-    FlowSection(view.guild) {
-        view.pages.forEachIndexed { index, page ->
-            FlowRow(page.title, page.sub, last = index == view.pages.lastIndex, onClick = { actions.onPage(page.page) })
+    if (view.ready.isNotEmpty()) {
+        FlowSection(stringResource(R.string.raid_tab_beforePull), top = 0.dp, panel = PanelFrame.None) {
+            ReadyList(view.ready, view.readyStamp, actions.onWhere, inlineWhere = true)
+        }
+    }
+    view.needs?.let { needs ->
+        FlowSection(stringResource(R.string.raid_tab_needsYou), meta = stringResource(R.string.raid_tab_open, view.needsCount), top = 0.dp, panel = PanelFrame.None) {
+            Needs(view.next?.raidId ?: 0L, needs, actions.card) { view.applicantId?.let(actions.onApplicant) ?: actions.card.onApplicants() }
+        }
+    }
+    if (view.pages.isNotEmpty()) {
+        FlowSection(view.guild, top = 0.dp, panel = PanelFrame.None) {
+            view.pages.forEachIndexed { index, page ->
+                FlowRow(page.title, page.sub, last = index == view.pages.lastIndex, onClick = { actions.onPage(page.page) })
+            }
         }
     }
 }
@@ -151,28 +175,31 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
 private fun Needs(raidId: Long, needs: OfficerItems, actions: HomeActions, openApplicant: () -> Unit) {
     needs.unanswered?.let { line ->
         FlowRow(line, needs.short, last = needs.applicants == null, trail = {
-            FlowButton(stringResource(R.string.home_officer_preview), { actions.onPreviewMention(raidId) })
+            FlowButton(stringResource(R.string.home_officer_preview), { actions.onPreviewMention(raidId) }, RAID_TARGET)
         })
     }
     needs.applicants?.let { FlowRow(it, needs.applicantLine, last = true, onClick = openApplicant) }
 }
 
+/**
+ * The Before you pull rows, each miss with where to get it, then the export's age (spec F2). With
+ * [inlineWhere] (round 5) the fix ends the row's line; otherwise it sits under the row.
+ */
 @Composable
-private fun ReadyCheck(view: RaidTabView.Guild, actions: RaidTabActions) {
-    FlowSection(stringResource(R.string.raid_tab_readyCheck)) { ReadyList(view.ready, view.readyStamp, actions.onWhere) }
-}
-
-/** The Ready check's rows, each miss with where to get it, then the export's age (spec F2). */
-@Composable
-fun ReadyList(items: List<ReadyItem>, stamp: String?, onWhere: (ReadyItem) -> Unit) {
+fun ReadyList(items: List<ReadyItem>, stamp: String?, onWhere: (ReadyItem) -> Unit, inlineWhere: Boolean = false) {
     items.forEachIndexed { index, item ->
+        val where = item.where
         FlowRow(
             item.title,
             item.sub,
             FlowLead.Check(item.tone == ReadyTone.Ok, item.tone == ReadyTone.Miss),
             last = index == items.lastIndex,
-            trail = item.where?.let { where -> { FlowLink(where) { onWhere(item) } } },
+            trail = where?.takeIf { !inlineWhere }?.let { { FlowLink(it) { onWhere(item) } } },
+            subLink = where?.takeIf { inlineWhere }?.let { FlowSubLink(it) { onWhere(item) } },
         )
     }
-    stamp?.let { Column(Modifier.padding(top = FsSpace.space2)) { FlowNote(it, color = FsColor.muted) } }
+    stamp?.let { Column(Modifier.padding(top = FsSpace.space2, bottom = FsSpace.space2)) { FlowNote(it, color = FsColor.muted) } }
 }
+
+/** The Raid tab's region for its head: the old Next raid section's name, so every state keeps one. */
+private const val NEXT_RAID_REGION = "Next raid"

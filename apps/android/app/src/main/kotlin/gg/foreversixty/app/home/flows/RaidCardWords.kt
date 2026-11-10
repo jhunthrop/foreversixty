@@ -22,8 +22,19 @@ import java.time.ZoneId
  * and an officer's open items. Formats only; the raid view and the badge are the server's.
  */
 class RaidCardWords(private val res: Resources, private val clock: RaidClock, private val now: Instant) {
-    /** [answer] is the shown answer (the controller's, else the raid's own sign-up); [badge] an officer's counts. */
-    fun card(raid: RaidView, guild: String, characterKey: String?, answer: SignupState?, lateOpen: Boolean, badge: RaidBadge?): RaidCardModel {
+    /**
+     * [answer] is the shown answer (the controller's, else the raid's own sign-up), [lateMinutes] how
+     * late a Late answer said; [badge] an officer's counts.
+     */
+    fun card(
+        raid: RaidView,
+        guild: String,
+        characterKey: String?,
+        answer: SignupState?,
+        lateOpen: Boolean,
+        badge: RaidBadge?,
+        lateMinutes: Int? = null,
+    ): RaidCardModel {
         val facts = RaidFacts(raid, now)
         val zone = runCatching { ZoneId.of(raid.guildTimezone) }.getOrDefault(clock.zone)
         val whenText = res.getString(R.string.home_raid_when, clock.shortDate(facts.startsAt), clock.guildClock(facts.startsAt, zone))
@@ -32,10 +43,12 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
         val who = namedCharacter(raid, characterKey)
         val name = who?.name.orEmpty()
         val role = roleWord(who?.role)
+        val minutes = lateMinutes.takeIf { answer == SignupState.Late }
+        val said = answer?.let { answerWord(it, minutes) }
         val me = when {
-            who == null -> answer?.let { res.getString(R.string.home_raid_answeredAlone, res.getString(it.label)) }
+            who == null -> said?.let { res.getString(R.string.home_raid_answeredAlone, it) }
                 ?: res.getString(R.string.home_raid_notAnsweredAlone)
-            else -> answer?.let { res.getString(R.string.home_raid_answered, res.getString(it.label), name, role) }
+            else -> said?.let { res.getString(R.string.home_raid_answered, it, name, role) }
                 ?: res.getString(R.string.home_raid_notAnswered, name, role)
         }
         val unansweredSub = if (who == null) {
@@ -60,7 +73,29 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
             officer = badge?.takeIf { it.officer }?.let { officer(raid, it) },
             zone = raid.zoneName,
             place = res.getString(R.string.home_raid_place, guild, whenText),
+            headLine = headLine(facts.startsAt, zone, whenText),
+            who = who?.let { res.getString(R.string.raid_tab_as, it.name, role) },
+            chip = said,
+            lateMinutes = minutes,
         )
+    }
+
+    /** `In`, or `Late · 30 min` when a Late answer said how late (F1). */
+    fun answerWord(answer: SignupState, lateMinutes: Int?): String =
+        if (answer == SignupState.Late && lateMinutes != null) {
+            res.getString(R.string.raid_answer_lateMinutes, lateMinutes)
+        } else {
+            res.getString(answer.label)
+        }
+
+    /** Within a day: `8:00 pm CST · pull in 2 h 48 min`; further out the date and time ([whenText]). */
+    private fun headLine(start: Instant, zone: ZoneId, whenText: String): String {
+        val until = Duration.between(now, start).coerceAtLeast(Duration.ZERO)
+        if (until >= Duration.ofDays(1)) return whenText
+        val hours = until.toHours().toInt()
+        val minutes = (until.toMinutes() % MINUTES_PER_HOUR).toInt()
+        val left = if (hours > 0) res.getString(R.string.raid_tab_untilHours, hours, minutes) else res.getString(R.string.raid_tab_untilMinutes, minutes)
+        return res.getString(R.string.raid_tab_pullIn, clock.guildClock(start, zone), left)
     }
 
     /**
@@ -95,17 +130,23 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
     fun live(raid: RaidView, guild: String, characterKey: String?, answer: SignupState?): RaidLiveModel {
         val pulled = RelativeAge.of(RaidFacts(raid, now).startsAt, now).phrase(res)
         val who = namedCharacter(raid, characterKey)
+        val said = answer?.let { answerWord(it, ownLateMinutes(raid, characterKey)) }
         val line = when {
-            answer == null -> res.getString(R.string.home_live_lineNoAnswer, pulled, counts(raid))
-            who == null -> res.getString(R.string.home_live_lineAlone, pulled, counts(raid), res.getString(answer.label))
-            else -> res.getString(R.string.home_live_line, pulled, counts(raid), res.getString(answer.label), who.name, roleWord(who.role))
+            said == null -> res.getString(R.string.home_live_lineNoAnswer, pulled, counts(raid))
+            who == null -> res.getString(R.string.home_live_lineAlone, pulled, counts(raid), said)
+            else -> res.getString(R.string.home_live_line, pulled, counts(raid), said, who.name, roleWord(who.role))
         }
         return RaidLiveModel(raid.id, res.getString(R.string.home_raid_live, guild, raid.zoneName), line)
     }
 
     /** The viewer's own answer on the raid, for [characterKey]. */
-    fun ownAnswer(raid: RaidView, characterKey: String?): SignupState? =
-        raid.signups.firstOrNull { it.own && (characterKey == null || it.characterKey == characterKey) }?.let { SignupState.of(it.state) }
+    fun ownAnswer(raid: RaidView, characterKey: String?): SignupState? = own(raid, characterKey)?.let { SignupState.of(it.state) }
+
+    /** How late the viewer's own Late answer said it would be; null for any other answer. */
+    fun ownLateMinutes(raid: RaidView, characterKey: String?): Int? = own(raid, characterKey)?.lateMinutes
+
+    private fun own(raid: RaidView, characterKey: String?) =
+        raid.signups.firstOrNull { it.own && (characterKey == null || it.characterKey == characterKey) }
 
     private fun counts(raid: RaidView) = res.getString(R.string.home_raid_counts, raid.counts.signedIn, raid.counts.late)
 

@@ -1,6 +1,13 @@
 package gg.foreversixty.app.menu
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.unit.sp
+import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -57,11 +64,21 @@ private fun PortraitButton(avatarUrl: String?, faction: String?, open: () -> Uni
     }
 }
 
-/** A tab root's top bar row: the profile button at the leading edge, full width for the trailing actions. */
+/**
+ * A tab root's top bar row: the profile button at the leading edge, full width for the trailing
+ * actions. A [title] follows the button as Material 3's top app bar titles its tab (spec Mobile,
+ * Android: `Raid` in the display face).
+ */
 @Composable
-fun ProfileBar(session: SessionManager?) {
-    Box(Modifier.fillMaxWidth()) { ProfileButton(session) }
+fun ProfileBar(session: SessionManager?, title: String? = null) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        ProfileButton(session)
+        if (title != null) Text(title, style = BAR_TITLE, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+    }
 }
+
+/** The bar title: the display face at 22, Material 3's small top app bar size. */
+private val BAR_TITLE = FsType.title.copy(fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.sp)
 
 private val SIZE = 32.dp
 private val TOUCH = 48.dp

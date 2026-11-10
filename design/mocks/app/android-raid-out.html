@@ -134,7 +134,7 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 [data-platform=android] .app-home{width:108px;height:4px;opacity:.7}
 /* pull to refresh affordance, drawn only on the states that show it */
 .app-ptr{display:flex;justify-content:center;padding:10px 0 0}.app-ptr span{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--gold)}
-</style></head><body data-platform="android" style="--dev-w:412px;--dev-h:915px;--status:32px;--nav:64px;--home:16px;--top:96px;--bottom:96px"><div class="app-status" aria-hidden="true"><span>9:41</span><span class="sys"><i></i><i></i><i class="b"></i></span></div><nav class="app-nav" aria-label="Navigation"><a href="#" class="menu-crest" aria-label="Open menu"><span class="anon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></span></a><span class="ttl hidden"></span><a aria-hidden="true"></a></nav><!--fs-chrome:{"who": null, "state": "", "nav": ""}--><div class="fs-chrome"><div data-fs-body%BODY_ATTRS%>%HEADER%</div></div><main><div class="ap"><div class="band-r5 full-bleed"><div class="pc ph-wrap"><div data-region="head"><div class="head"><div class="ph-title" data-region="head-title"><div><h1 class="t-title">Raid with a guild</h1><div class="ph-meta" data-region="head-meta"><span class="t-small">Sign up for your guild&rsquo;s raids from your phone.</span></div></div></div></div></div></div></div><div class="vstack"><a class="btn primary" href="#">Sign in with Battle.net</a></div></div><style>
+</style></head><body data-platform="android" style="--dev-w:412px;--dev-h:915px;--status:32px;--nav:64px;--home:16px;--top:96px;--bottom:96px"><div class="app-status" aria-hidden="true"><span>9:41</span><span class="sys"><i></i><i></i><i class="b"></i></span></div><nav class="app-nav" aria-label="Navigation"><a href="#" class="menu-crest" aria-label="Open menu"><span class="anon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></span></a><span class="ttl hidden">Raid</span><a aria-hidden="true"></a></nav><!--fs-chrome:{"who": null, "state": "", "nav": ""}--><div class="fs-chrome"><div data-fs-body%BODY_ATTRS%>%HEADER%</div></div><main><div class="ap r5raid"><section data-region="section-raid-with-a-guild"><div class="sh"><h2>Raid with a guild</h2></div><div class="pn"><p class="note">Sign up for your guild&rsquo;s raids from your phone.</p><a class="btn wide primary" href="#">Sign in with Battle.net</a></div></section></div><style>
 .ap{padding:8px 16px 24px}
 .r5{display:none}
 .ap .pc{padding-inline:0!important}
@@ -188,6 +188,42 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 [data-platform=android] .nt .acts a{min-height:48px;color:var(--gold);justify-content:flex-start}[data-platform=android] .nt .acts a+a{border:0}
 .sheetp{background:var(--raised);border-radius:12px 12px 0 0;border-top:1px solid var(--line);padding:0 16px 24px}
 .sheet-grab{display:block;width:36px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 4px}
+
+.ap.r5raid{padding:16px 14px 22px}
+.ap.r5raid>*{margin-top:0}.ap.r5raid>*+*{margin-top:20px}
+.r5raid .pn{background:#170e09;border-radius:10px;padding:8px 16px;box-shadow:0 0 0 1px #000}
+.r5raid .sh{display:flex;align-items:center;gap:12px;height:26px;margin-bottom:8px}
+.r5raid .sh h2{margin:0;font:400 21px/26px var(--font-title);color:#f3eee2}
+.r5raid .sh .act{margin-left:auto;font:600 14px/24.38px var(--font-body);color:var(--gold)}
+.r5raid .sh .meta{font:400 13px/20.57px var(--font-body);color:var(--muted)}
+.r5raid .hd{padding:8px 0}
+.r5raid .rl{display:flex;align-items:center;gap:12px}.r5raid .rl img{width:40px;height:40px;flex:none;border-radius:4px}
+.r5raid .rl .tx{flex:1;min-width:0}.r5raid .rl .s{white-space:nowrap}
+.r5raid b,.r5raid .t{display:block;font:700 15px/20.57px var(--font-body);color:#fff}
+.r5raid .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .chip{flex:none;padding:3px 10px;border-radius:4px;background:#0f6064;border:1px solid #408076;color:#fff;font:700 13px/18.29px var(--font-body)}
+.r5raid .btn{display:flex;align-items:center;justify-content:center;box-sizing:border-box;height:48px;min-height:48px;margin:0;padding:0 16px;
+  border:1px solid var(--line);border-radius:4px;background:none;color:#fff;font:600 14px/20px var(--font-body)}
+.r5raid .seg{display:grid;grid-template-columns:repeat(4,1fr);margin-top:12px;border:1px solid #5a5d70;border-radius:24px;overflow:hidden}
+.r5raid .seg .btn{height:48px;min-height:48px;border:0;border-radius:0}.r5raid .seg .btn+.btn{border-left:1px solid #5a5d70}
+.r5raid .seg .btn.on,.r5raid .lm .btn.on{background:#408076}
+.r5raid .lm{display:flex;gap:8px;margin-top:8px}.r5raid .lm .btn{border-color:#5a5d70;border-radius:8px}
+.r5raid .row{display:block;padding:10px 0;border-bottom:1px solid var(--line)}.r5raid .row:last-child{border-bottom:0}
+.r5raid .row .in{display:flex;align-items:center;gap:12px}
+.r5raid .row .tr{margin-top:8px;display:flex}
+.r5raid .row .lk{font-weight:600;color:var(--gold)}
+.r5raid .mk{display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;border-radius:50%;color:#0c0a09;font:700 13px/22px var(--font-body)}
+.r5raid .mk.ok{background:#7fd48a}.r5raid .mk.miss{background:#f0736b}.r5raid .mk.warn{background:#ffec71}
+.r5raid .ok{color:#7fd48a}.r5raid .lo{color:#f0736b}
+.r5raid .stamp{padding:8px 0;font:400 13px/20.57px var(--font-body);color:var(--muted)}
+.r5raid .note{margin:8px 0 0;font:400 13px/20.57px var(--font-body);color:var(--text)}
+.r5raid .note.strong{color:#fff}
+.r5raid .wide{width:100%;margin:12px 0}
+.r5raid .wide.primary{background:#0f6064;border-color:#408076}
+.r5raid .lvh{display:flex;align-items:center;gap:8px;margin-top:12px}.r5raid .lvh i{width:8px;height:8px;border-radius:50%;background:var(--kill)}
+.r5raid .lvh span{font:600 15px/22.1px var(--font-body);color:#fff}
+.r5raid .lvh+.note{margin:4px 0 8px}
+.r5raid .rule{border-top:1px solid var(--line)}
 </style><style>
 /* ---- Page: one column, four layouts ---- */
 .layout-split{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);align-items:start}
@@ -788,4 +824,4 @@ table.gridm.edge :is(th,td):last-child{padding-right:20px}
 @media(min-width:1280px){.layout-wb.panels{column-gap:28px}.layout-wb.panels>.main,.layout-wb.panels>.rail{gap:22px}}
 
 @media(max-width:767px){.porder-r .porder-s>span,.porder-r .porder-s img,.porder-r .porder-s .ic,.porder-r .porder-s .em{width:100%!important;max-width:30px;height:auto!important;aspect-ratio:1}.porder-r .porder-s img,.porder-r .porder-s .ic{display:block}}
-</style></main><!-- Native app mock (design/specs/2026-11-08-app-flows.md). --><div class="fs-chrome fs-foot"><div data-fs-body%BODY_ATTRS%>%FOOTER%</div></div><nav class="app-tabs" aria-label="Tabs"><a href="#" class=""><span class="ind"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg></span><span>Home</span></a><a href="#" class="on" aria-current="page"><span class="ind"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3v18M6 4h12l-3 4 3 4H6"/></svg></span><span>Raid</span></a><a href="#" class=""><span class="ind"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span>Gear</span></a><a href="#" class=""><span class="ind"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span><span>Activity</span></a></nav><span class="app-home" aria-hidden="true"></span></body></html>
+</style></main><!-- Native app mock (design/specs/2026-11-08-app-flows.md), round 5 on Android. --><div class="fs-chrome fs-foot"><div data-fs-body%BODY_ATTRS%>%FOOTER%</div></div><nav class="app-tabs" aria-label="Tabs"><a href="#" class=""><span class="ind"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg></span><span>Home</span></a><a href="#" class="on" aria-current="page"><span class="ind"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3v18M6 4h12l-3 4 3 4H6"/></svg></span><span>Raid</span></a><a href="#" class=""><span class="ind"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span>Gear</span></a><a href="#" class=""><span class="ind"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span><span>Activity</span></a></nav><span class="app-home" aria-hidden="true"></span></body></html>

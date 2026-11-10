@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from mocklib import CLASS_COLOR
 from ws_app_frame import DEFAULT, app_page, glyph, portrait
+from ws_lib import region_slug
 from ws_prims import (Button, Checklist, Countdown, Figures, ItemRow, PageHeader, Row, Rows, Section, Skeleton, Switch,
                       Tag, Tally, build_page, crest_img, icon)
 
@@ -338,16 +339,150 @@ HOME = {
 }
 
 
+# Round 5 on Android's Raid tab (lane M2a; spec 2026-11-09-directions.md Mobile, mocks directions/png/m-android-raid.png
+# and m-android-signup.png): the blue band behind the bar, then on the ground the one-line raid head (the zone's icon, the
+# raid, its time and the pull, who the answer is for, the answer chip) over the four answers as one 48 dp segmented pill,
+# Late's minutes inline under them; Who is coming, Before you pull, Needs you and the guild's pages as panels with display
+# titles. Android only until lane M2i: the iOS raid mocks keep the app-flows body. Line heights are the Pixel 9's rounding
+# (420 dpi: 13/18/20/22/24 sp lines are 20.57/18.29/20.57/22.1/24.38 dp). Open Sans sets wider on the Pixel 9 than in
+# Chromium, so the two lines it breaks there carry the break here (<br>) and the head's lines hold to one line as they do there.
+RAID_R5_CSS = """
+.ap.r5raid{padding:16px 14px 22px}
+.ap.r5raid>*{margin-top:0}.ap.r5raid>*+*{margin-top:20px}
+.r5raid .pn{background:#170e09;border-radius:10px;padding:8px 16px;box-shadow:0 0 0 1px #000}
+.r5raid .sh{display:flex;align-items:center;gap:12px;height:26px;margin-bottom:8px}
+.r5raid .sh h2{margin:0;font:400 21px/26px var(--font-title);color:#f3eee2}
+.r5raid .sh .act{margin-left:auto;font:600 14px/24.38px var(--font-body);color:var(--gold)}
+.r5raid .sh .meta{font:400 13px/20.57px var(--font-body);color:var(--muted)}
+.r5raid .hd{padding:8px 0}
+.r5raid .rl{display:flex;align-items:center;gap:12px}.r5raid .rl img{width:40px;height:40px;flex:none;border-radius:4px}
+.r5raid .rl .tx{flex:1;min-width:0}.r5raid .rl .s{white-space:nowrap}
+.r5raid b,.r5raid .t{display:block;font:700 15px/20.57px var(--font-body);color:#fff}
+.r5raid .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .chip{flex:none;padding:3px 10px;border-radius:4px;background:#0f6064;border:1px solid #408076;color:#fff;font:700 13px/18.29px var(--font-body)}
+.r5raid .btn{display:flex;align-items:center;justify-content:center;box-sizing:border-box;height:48px;min-height:48px;margin:0;padding:0 16px;
+  border:1px solid var(--line);border-radius:4px;background:none;color:#fff;font:600 14px/20px var(--font-body)}
+.r5raid .seg{display:grid;grid-template-columns:repeat(4,1fr);margin-top:12px;border:1px solid #5a5d70;border-radius:24px;overflow:hidden}
+.r5raid .seg .btn{height:48px;min-height:48px;border:0;border-radius:0}.r5raid .seg .btn+.btn{border-left:1px solid #5a5d70}
+.r5raid .seg .btn.on,.r5raid .lm .btn.on{background:#408076}
+.r5raid .lm{display:flex;gap:8px;margin-top:8px}.r5raid .lm .btn{border-color:#5a5d70;border-radius:8px}
+.r5raid .row{display:block;padding:10px 0;border-bottom:1px solid var(--line)}.r5raid .row:last-child{border-bottom:0}
+.r5raid .row .in{display:flex;align-items:center;gap:12px}
+.r5raid .row .tr{margin-top:8px;display:flex}
+.r5raid .row .lk{font-weight:600;color:var(--gold)}
+.r5raid .mk{display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;border-radius:50%;color:#0c0a09;font:700 13px/22px var(--font-body)}
+.r5raid .mk.ok{background:#7fd48a}.r5raid .mk.miss{background:#f0736b}.r5raid .mk.warn{background:#ffec71}
+.r5raid .ok{color:#7fd48a}.r5raid .lo{color:#f0736b}
+.r5raid .stamp{padding:8px 0;font:400 13px/20.57px var(--font-body);color:var(--muted)}
+.r5raid .note{margin:8px 0 0;font:400 13px/20.57px var(--font-body);color:var(--text)}
+.r5raid .note.strong{color:#fff}
+.r5raid .wide{width:100%;margin:12px 0}
+.r5raid .wide.primary{background:#0f6064;border-color:#408076}
+.r5raid .lvh{display:flex;align-items:center;gap:8px;margin-top:12px}.r5raid .lvh i{width:8px;height:8px;border-radius:50%;background:var(--kill)}
+.r5raid .lvh span{font:600 15px/22.1px var(--font-body);color:#fff}
+.r5raid .lvh+.note{margin:4px 0 8px}
+.r5raid .rule{border-top:1px solid var(--line)}
+"""
+
+R5_COMING = [('Tanks', 2, 2, 'Grunvald, Brakka'), ('Healers', 5, 8, 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen &middot; 3 short'),
+             ('Damage', 11, 30, 'Thandrel, Kaelra, Thalrin and 8 more')]
+R5_LIVE = [('Tanks', 2, 2, 'Grunvald, Brakka'),
+           ('Healers', 5, 8, 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late &middot; 15<br>min) &middot; 3 short'),
+           ('Damage', 11, 30, 'Thandrel, Kaelra, Thalrin and 8 more')]
+R5_READY = [('ok', 'Drakefire Amulet', 'Attuned', None), ('ok', 'Elixir of the Mongoose', '3 in your bags', None),
+            ('miss', 'Flask of the Titans', 'None in your bags', 'Auction house'),
+            ('warn', 'Boots not enchanted', 'Enchant Boots: Greater Agility', 'Where to get it')]
+R5_PAGES = [('Roster', '38 members, 31 at 60'), ('Calendar', 'Onyxia Wed, Barrow Deeps Sat'), ('Loot history', 'Last raid: 4 pieces'),
+            ('Guild sims', 'You are #7 of 14 DPS')]
+
+
+def _r5_section(title: str, body: str, action: str = '', meta: str = '') -> str:
+    m = f'<span class="meta">{meta}</span>' if meta else ''
+    a = f'<span class="act">{action}</span>' if action else ''
+    return f'<section data-region="{region_slug(title)}"><div class="sh"><h2>{title}</h2>{m}{a}</div><div class="pn">{body}</div></section>'
+
+
+def _r5_row(title: str, sub: str = '', lead: str = '', trail: str = '') -> str:
+    sub_html = f'<span class="s">{sub}</span>' if sub else ''
+    inner = f'<div class="in">{lead}<div><span class="t">{title}</span>{sub_html}</div></div>' if lead else f'<span class="t">{title}</span>{sub_html}'
+    return f'<div class="row">{inner}' + (f'<div class="tr">{trail}</div>' if trail else '') + '</div>'
+
+
+def _r5_roles(roles: list) -> str:
+    return ''.join(_r5_row(f'{role} <span class="{"ok" if n >= want else "lo"}">{n} of {want}</span>', names) for role, n, want, names in roles)
+
+
+def _r5_head(answer: str, late_min: int | None = None) -> str:
+    chip = f'Late &middot; {late_min} min' if late_min else answer
+    seg = ''.join(f'<a class="btn{" on" if x == answer else ""}" href="#">{x}</a>' for x in ('In', 'Late', 'Bench', 'Out'))
+    late = ('<div class="lm">' + ''.join(f'<a class="btn{" on" if m == late_min else ""}" href="#">{m} min</a>' for m in (15, 30, 60)) + '</div>'
+            if answer == 'Late' else '')
+    return (f'<div class="blk-r5" data-region="section-next-raid"><div class="pn"><div class="hd"><div class="rl">{icon(ONY, 40)}'
+            f'<div class="tx"><b>{RAID}</b><span class="s">8:00 pm CST &middot; pull in 2 h 48 min</span><span class="s">{AS_ME_CAP}</span></div>'
+            f'<span class="chip">{chip}</span></div><div class="seg">{seg}</div>{late}</div></div></div>')
+
+
+def _r5_ready(items: list) -> str:
+    marks = {'ok': '&#10003;', 'miss': '&times;', 'warn': '!'}
+    rows = ''.join(_r5_row(t, sub + (f' &middot; <a class="lk" href="#">{fix}</a>' if fix else ''), f'<span class="mk {k}">{marks[k]}</span>')
+                   for k, t, sub, fix in items)
+    return _r5_section('Before you pull', rows + '<p class="stamp" style="margin:0">From your last log-out, 9 h ago</p>')
+
+
+def _r5_lone(title: str, lines: list[str], button: str, primary: bool = False) -> str:
+    notes = ''.join(f'<p class="note{" strong" if i == 0 and len(lines) > 1 else ""}">{x}</p>' for i, x in enumerate(lines))
+    return _r5_section(title, notes + f'<a class="btn wide{" primary" if primary else ""}" href="#">{button}</a>')
+
+
+def _raid_r5(state: str) -> str:
+    """The Android Raid tab's body in round 5 (RAID_R5_CSS); the states and words are raid()'s."""
+    pages = _r5_section('Olympus XXVII', ''.join(_r5_row(t, sub) for t, sub in R5_PAGES))
+    coming = _r5_section('Who is coming', _r5_roles(R5_COMING), action='Roster &rsaquo;')
+    if state in ('member', 'officer', 'signup'):
+        head = _r5_head('Late', 30) if state == 'signup' else _r5_head('In')
+        needs = (_r5_section('Needs you', _r5_row('5 have not answered, 2 of them healers', 'Healers short by 3', trail='<a class="btn" href="#">Preview mention</a>')
+                             + _r5_row('1 applicant', 'Mirelle, Holy Priest 60, 2 min ago'), meta='6 open') if state == 'officer' else '')
+        return head + coming + _r5_ready(R5_READY) + needs + pages
+    if state == 'noraid':
+        return ('<div class="blk-r5" data-region="section-next-raid"><div class="pn"><p class="note" style="margin:0;padding:8px 0">No raid planned yet. '
+                'Your officers plan raids on the site; a push tells you the moment one is posted.</p></div></div>' + pages)
+    if state == 'live':
+        night = ('<div class="lvh"><i></i><span>Olympus XXVII &middot; Onyxia&rsquo;s Lair in progress</span></div>'
+                 '<p class="note">Pulled 1 h 12 min ago &middot; 18 in, 3 late &middot; you are In as<br>Thandrel, Damage</p>'
+                 f'<div class="rule"></div>{_r5_roles(R5_LIVE)}')
+        return _r5_section('Raid night', night) + _r5_ready([r for r in R5_READY if r[1] != 'Elixir of the Mongoose']) + pages
+    if state == 'none':
+        apply = '<a class="btn" href="#">Apply</a>'
+        recruiting = _r5_section('Guilds recruiting a Fury Warrior', _r5_row('Olympus XXVII', 'Alliance &middot; Wed and Sat, 8:00 pm CST &middot; needs damage', trail=apply)
+                                 + _r5_row('Dawnbreak', 'Alliance &middot; Tue and Thu, 9:00 pm EST &middot; needs damage', trail=apply))
+        return recruiting + _r5_lone('Your guild is not here?', ['Claim it: a guild master or an officer confirms with the addon or Battle.net.'], 'Claim your guild')
+    if state == 'leveler':
+        return _r5_lone('Raids start at 60', ['26 levels to go', 'Onyxia&rsquo;s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.'],
+                        'Find a guild')
+    return _r5_lone('Raid with a guild', ['Sign up for your guild&rsquo;s raids from your phone.'], 'Sign in with Battle.net', primary=True)
+
+
+def _raid_page_r5(state: str) -> str:
+    return build_page('Raid', f'<div class="ap r5raid">{_raid_r5(state)}</div><style>{FLOWS_CSS}{RAID_R5_CSS}</style>',
+                      note='Native app mock (design/specs/2026-11-08-app-flows.md), round 5 on Android.')
+
+
 # ------------------------------------------------------------------------------------------------ Raid (the tab)
 def raid(state: str):
     """The Raid tab (owner, 2026-11-08): the next raid first with your answer, then for an officer what needs you, then the
     guild's raid pages. Live: raid night leads. No guild: find, join or claim one. Signed out: sign in, then the same."""
     def b(platform: str) -> str:
+        if platform == 'android':
+            badges = {'member': ANSWERED, 'signup': ANSWERED, 'officer': OFFICER, 'noraid': ANSWERED, 'live': ANSWERED,
+                      'none': {'activity': 2}, 'leveler': {'activity': 1}, 'out': {}}[state]
+            who = {'out': None, 'leveler': 'hunter'}.get(state, 'warrior')
+            return app_page(platform, _raid_page_r5(state), 'raid', title='Raid', badges=badges, who=who)
         pages = Section('Olympus XXVII', Rows([Row('Roster', '38 members, 31 at 60'), Row('Calendar', 'Onyxia Wed, Barrow Deeps Sat'),
                                                Row('Loot history', 'Last raid: 4 pieces'), Row('Guild sims', 'You are #7 of 14 DPS')], open_=True))
-        if state in ('member', 'officer'):
+        if state in ('member', 'officer', 'signup'):
             needs = Section('Needs you', _needs_you(), meta='6 open') if state == 'officer' else ''
-            body = Section('Next raid', _blk(_raid_card())) + needs + pages
+            card = _raid_card(answered='Late', late=True) if state == 'signup' else _raid_card()
+            body = Section('Next raid', _blk(card)) + needs + pages
             badges = OFFICER if state == 'officer' else MEMBER
         elif state == 'noraid':
             body = (Section('Next raid', '<p class="t-small" style="padding-top:8px">No raid planned yet. Your officers plan raids on the site; '
@@ -542,7 +677,9 @@ def applicant(state: str):
                     + Section('Their note', '<p class="t-prose" style="padding-top:8px">Holy main since launch. Wednesday and Sunday nights work for me.</p>')
                     + '<div class="sticky">' + Button('Accept into guild', primary=True) + Button('Decline') + '</div>'
                     + '<p class="t-small" style="margin-top:8px">Her raid role comes from her spec when she answers a raid.</p>')
-        return app_page(platform, _page(body, 'Mirelle'), 'raid', back='Raid', title='Mirelle', badges=OFFICER)
+        # Android sets a 28 sp figure on a 38.5 dp line (the Pixel 9's font padding), not the web's 32 (lane M2a, was M0's drift)
+        android = '<style>[data-platform=android] .ap .figs .fig .v{line-height:38.5px}</style>'
+        return app_page(platform, _page(body + android, 'Mirelle'), 'raid', back='Raid', title='Mirelle', badges=OFFICER)
     return b
 
 
@@ -608,6 +745,7 @@ SCREENS = {
     'menu-out': menu('out'),
     **{k: v() for k, v in HOME.items()},
     'raid': raid('member'),
+    'raid-signup': raid('signup'),
     'raid-officer': raid('officer'),
     'raid-live': raid('live'),
     'raid-none': raid('none'),
