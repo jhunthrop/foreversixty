@@ -1,4 +1,4 @@
-# Mobile backfill review brief (round 1)
+# Mobile backfill review brief (round 2)
 
 Scope: the four tab roots (Home, Raid, Gear, Activity), the profile drawer, and the raid
 notification, on iOS (SwiftUI, apps/ios) and Android (Compose, apps/android). The tabs are four by
@@ -9,30 +9,24 @@ out of scope here: mention them only if a main-tab interaction lands on them.
 Branch: lane/mobile-review-backfill. Fixture character: Gorvash, Orc Fury Warrior 58, Officer of
 Olympus XXVII; alt Yellfury, Hunter 31, no spec reported. The app is dark only, as the site.
 
-## Captures
+What changed since round 1, and what a ruling keeps: round-2-decisions.md (read it first; contest a
+KEEP if you disagree, with the reason). Your round-1 verdict is in `<persona>.md` beside this file.
+
+## Captures (round 2)
 | Set | Where |
 |---|---|
-| iOS step captures (iPhone 17 Pro sim, fixture app, XCUITest) | design/reviews/2026-11-10-mobile-backfill/ios/ (`<step>-t0`, `-t400`, `-settled`, `-pressed`) |
-| Android mocked states (Roborazzi, Pixel 9, incl. `-x2_0` font scale) | apps/android/app/src/test/screenshots/parity/android-*.png |
-| Android flow steps (sign-up, Home sign-up, deep links; real controller, echoing service) | apps/android/app/src/test/screenshots/flows/ |
-| iOS mocked states (CI-recorded goldens) | apps/ios/AppTests/**/__Snapshots__/ (Home, Raids, Gear, Activity, Menu suites) |
-| Web counterparts at 390 px, dark and light, plus web interaction steps | design/reviews/2026-11-10-mobile-backfill/web/ (README.md lists each) |
-| Round-5 app mocks | design/mocks/app/ (m-ios-*, m-android-*), the redesign plan above |
-| Interaction inventory | design/reviews/2026-11-10-mobile-backfill/interactions.md |
-| Android emulator walk notes (captures being re-taken after fixes) | design/reviews/2026-11-10-mobile-backfill/android/README.md |
+| iOS step captures (iPhone 17 Pro sim, fixture app, XCUITest; `-t0`, `-t400`, `-settled`, `-pressed`; `light-*`, `ax5-*`) | design/reviews/2026-11-10-mobile-backfill/ios/ (round 1 kept in ios-r1/) |
+| Android step captures (Pixel 9 class emulator, fixture app, adb; `light-*`, `fs2-*` at font scale 2) | design/reviews/2026-11-10-mobile-backfill/android-r2/ |
+| Android mocked states (Roborazzi, incl. `-x2_0`) | apps/android/app/src/test/screenshots/parity/android-*.png (+ `.txt` text goldens) |
+| Android flow steps (real controller, a service that echoes the answer: sign-up, Home sign-up, deep links, saving, failed, offline) | apps/android/app/src/test/screenshots/flows/ |
+| iOS flow and parity snapshots | recorded on CI; until they land, judge iOS from the step captures and the code (apps/ios/AppTests/Flows) |
+| Round-5 app mocks (updated this round) | design/mocks/app/ios-*.html, android-*.html, regions/ |
+| Web counterparts at 390 px | design/reviews/2026-11-10-mobile-backfill/web/ (README.md) |
+| Push fixtures | docs/contracts/fixtures/app/push.*.json (raid-posted, raid-short, raid-starting, guild-applicant) |
 
 ## Fixture limits (not app behaviour)
-- In the fixture APP (emulator, simulator) the sign-up write answers one canned raid, so a tap on
-  Late snaps back to In. The Android flow steps use a service that echoes the answer; judge the
-  sign-up behaviour from those and from the code.
+- In the fixture APP the sign-up write answers one canned raid, so a tap on Late snaps back to In
+  (with `Saved.`). The flow tests use a service that echoes the answer: judge sign-up from those.
 - Feed filters and Show older are server-side; the fixture returns one page for every query.
-
-## Already found, fix in progress (do not re-report; do say if a fix looks wrong)
-Android: a drawer screen covered every tab; the answered push opened the tab root; Gear kept the
-previous character's list; empty portrait ring; no Saved./error/offline line on the Raid tab head
-and Home card; offline answers look enabled; Home's Late minutes not shown after choosing; push
-Late/Bench needing a spec became In; no pull to refresh on Home, Raid, Activity; drawer under the
-status bar; Raid root scroll lost after Back; Gear Change link target 20 dp; Gear item names
-ellipsized; drawer Refresh gives no feedback; 1.5x Home rows keep the trail at the right.
-iOS: the Raid tab showed `Raids start at 60` to a level 58 guild member; the profile button drew the
-person glyph instead of the class crest; Home said `Every slot matches` for a character with no spec.
+- The fixture raid has no comp target, so the app tallies read `Healers 6`; the mocked states
+  (parity goldens) carry a target and read `Healers 5 of 8 · 3 short`.
