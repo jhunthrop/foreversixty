@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Device, Me, MeCharacter } from '../account/api';
 import { addonCopy } from '../addon/copy';
-import { addonLine, companionLine, newestAddonCharacter, signInLine } from './progress';
+import { addonLine, companionAddon, companionLine, newestAddonCharacter, signInLine } from './progress';
 
 describe('the setup done lines (progress.ts)', () => {
   const NOW = new Date('2026-10-20T12:00:00Z');
@@ -34,7 +34,7 @@ describe('the setup done lines (progress.ts)', () => {
 
   it('says nothing signed out', () => {
     expect(signInLine(null)).toBeNull();
-    expect(addonLine(null, NOW)).toBeNull();
+    expect(addonLine(null, [], null, NOW)).toBeNull();
     expect(companionLine(null, [], NOW)).toBeNull();
   });
 
@@ -52,23 +52,45 @@ describe('the setup done lines (progress.ts)', () => {
       character('No Build', null),
     ]);
     expect(newestAddonCharacter(account.characters)?.character.name).toBe('Bow Jackzon');
-    expect(addonLine(account, NOW)).toEqual({
+    expect(addonLine(account, [], null, NOW)).toMatchObject({
       done: true,
       text: 'Bow Jackzon arrived from the addon 1 hour ago',
     });
   });
 
-  it('says the addon is optional once Battle.net brought the characters', () => {
-    expect(addonLine(me([character('Blizzard Only', '2026-10-20T11:59:00Z', 'blizzard')]), NOW)).toEqual({
-      done: false,
-      text: addonCopy.setupAddonOptional,
-    });
+  it('never ties Battle.net characters to the addon: the plain note until something shows it', () => {
+    const bnet = me([character('Blizzard Only', '2026-10-20T11:59:00Z', 'blizzard')]);
+    const unseen = { done: false, text: addonCopy.setupAddonNote, scanned: false };
+    expect(addonLine(bnet, [], null, NOW)).toEqual(unseen);
+    expect(addonLine(me([]), [], null, NOW)).toEqual(unseen);
   });
 
-  it('calls the addon optional when the account has no character (row 1 owns that case)', () => {
-    expect(addonLine(me([]), NOW)).toEqual({
-      done: false,
-      text: addonCopy.setupAddonNote,
+  it('reads the addon off the newest companion that scanned, and nothing from one that never did', () => {
+    const scanned = (name: string, seen: string, version: string | null): Device => ({
+      ...device(name, seen),
+      addons: version === null ? [] : [{ folder: 'ForeverSixty', version }],
+    });
+    expect(companionAddon([device('OLD', '2026-10-20T11:00:00Z')])).toBeNull();
+    expect(companionAddon(null)).toBeNull();
+    const none = companionAddon([scanned('JH-DESKTOP', '2026-10-20T11:00:00Z', null)]);
+    expect(none).toMatchObject({ device: { name: 'JH-DESKTOP' }, version: null });
+    const found = companionAddon([
+      scanned('OLD', '2026-10-19T00:00:00Z', '2.0.30'),
+      scanned('JH-DESKTOP', '2026-10-20T11:00:00Z', '2.0.37'),
+      scanned('BARE', '2026-10-20T11:59:00Z', null),
+    ]);
+    expect(found).toMatchObject({ device: { name: 'JH-DESKTOP' }, version: '2.0.37' });
+    const bnet = me([character('Blizzard Only', '2026-10-20T11:59:00Z', 'blizzard')]);
+    const at = (version: string) => [scanned('JH-DESKTOP', '2026-10-20T11:00:00Z', version)];
+    expect(addonLine(bnet, at('2.0.36'), '2.0.37', NOW)).toEqual({
+      done: true,
+      text: 'Installed on JH-DESKTOP · 2.0.36',
+      behind: '2.0.37 is out',
+      scanned: true,
+    });
+    expect(addonLine(bnet, at(''), '2.0.37', NOW)).toMatchObject({
+      done: true,
+      text: 'Installed on JH-DESKTOP',
     });
   });
 

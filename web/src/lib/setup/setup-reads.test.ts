@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Me } from '../account/api';
 import { platformLabel } from '../account/platform-label';
 import me34Json from '../../../tests/e2e/fixtures/home/me-34.json';
-import { CURSEFORGE_URL, SETUP_REFRESHED, SETUP_SIGNED_IN, stepHref } from './links';
+import { SETUP_REFRESHED, SETUP_SIGNED_IN, stepHref } from './links';
 import { visitorPlatform } from './visitor-platform';
 
 /** What the mocked device list answers, and how often it was asked. */
@@ -62,7 +62,7 @@ describe('loadSetupState', () => {
 describe('stepHref', () => {
   it('sends each link action where it goes, and nothing for a button or the download', () => {
     expect(stepHref('signin')).toContain(encodeURIComponent(SETUP_SIGNED_IN));
-    expect(stepHref('curseforge')).toBe(CURSEFORGE_URL);
+    expect(stepHref('install')).toBeNull(); // the install group links each store itself
     expect(stepHref('paste')).toBe('#paste');
     expect(stepHref('download')).toBeNull();
     expect(stepHref('copylink')).toBeNull();

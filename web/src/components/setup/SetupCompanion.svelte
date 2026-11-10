@@ -65,7 +65,7 @@
 {/snippet}
 
 <Section
-  title={addonCopy.setupStep3Title}
+  title={addonCopy.setupCompanionTitle}
   meta={addonCopy.setupCompanionNote}
   anchor="companion"
   testid="setup-companion"

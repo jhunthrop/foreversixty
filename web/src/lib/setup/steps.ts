@@ -8,7 +8,7 @@ import { characterListCopy } from '../account/character-list-copy';
 import { pairingCopy } from '../reports/copy';
 import { yourReportsPageCopy } from '../reports/my-reports-copy';
 import { addonCopy } from '../addon/copy';
-import { addonLine, companionLine, newestAddonCharacter, signInLine } from './progress';
+import { addonLine, companionLine, signInLine } from './progress';
 import { downloadFor } from './downloads';
 import type { VisitorPlatform } from './visitor-platform';
 
@@ -30,7 +30,9 @@ export interface StepLineOut {
   phoneOnly?: boolean;
 }
 
-export type StepActionId = 'signin' | 'retry' | 'refresh' | 'curseforge' | 'download' | 'paste' | 'copylink';
+/** `install` and `update` are the addon's store buttons as one group (CurseForge, then Wago). */
+export type StepActionId =
+  'signin' | 'retry' | 'refresh' | 'install' | 'update' | 'download' | 'paste' | 'copylink';
 
 export interface StepAction {
   id: StepActionId;
@@ -40,7 +42,13 @@ export interface StepAction {
   primary: boolean;
 }
 
+/** The three steps, in the plate's order: the companion before the addon, because the companion
+ *  is what moves the addon's data and it sees the addon in the game folder (owner 2026-11-10). */
+export const STEP_ORDER = ['signin', 'companion', 'addon'] as const;
+export type StepId = (typeof STEP_ORDER)[number];
+
 export interface StepRow {
+  id: StepId;
   n: 1 | 2 | 3;
   title: string;
   mark: StepMark;
@@ -65,6 +73,8 @@ export interface SetupInputs {
   pointer?: boolean;
   /** A fallback pairing code is out and unused. */
   pairingCode?: string | null;
+  /** The addon feed's newest version; null when the feed did not answer (no "behind" claim). */
+  addonLatest?: string | null;
   now?: Date;
 }
 
@@ -94,25 +104,40 @@ function act(id: StepActionId, label: string, kind: StepAction['kind'] = 'link-b
 }
 
 const SIGN_IN = act('signin', addonCopy.setupSignInAction);
-const CURSEFORGE = act('curseforge', addonCopy.installCurseForge);
+const INSTALL = act('install', addonCopy.setupInstallAddon);
+const UPDATE = act('update', addonCopy.setupUpdateAddon);
 
-/** Row 3 not done. Windows and Mac: their own build. A system the page cannot name: both builds
+/** The companion step not done. Windows and Mac: their own build. A system the page cannot name: both builds
  *  (the action's label is the group's name; ui draws one button per build). A phone or tablet: no
  *  download, the link to open on the computer instead. */
 function companionTodo(platform: VisitorPlatform, text: string): StepRow {
   if (platform === 'mobile') {
     const lines = [line(text), line(addonCopy.setupCompanionMobile)];
-    return row(3, 'todo', lines, act('copylink', addonCopy.setupCopyLink, 'button'));
+    return row('companion', 'todo', lines, act('copylink', addonCopy.setupCopyLink, 'button'));
   }
   const own = downloadFor(platform);
   const label =
     own === null ? addonCopy.setupDownloadCompanion : addonCopy.setupCompanionDownload(own.platform);
-  return row(3, 'todo', [line(text)], act('download', label));
+  return row('companion', 'todo', [line(text)], act('download', label));
 }
 
-function row(n: 1 | 2 | 3, mark: StepMark, lines: StepLineOut[], action: StepAction | null): StepRow {
-  const titles = [addonCopy.setupStep1Title, addonCopy.setupStep2Title, addonCopy.setupStep3Title];
-  return { n, title: titles[n - 1], mark, lines, action };
+const TITLES: Record<StepId, string> = {
+  signin: addonCopy.setupSignInTitle,
+  companion: addonCopy.setupCompanionTitle,
+  addon: addonCopy.setupAddonTitle,
+};
+
+function row(id: StepId, mark: StepMark, lines: StepLineOut[], action: StepAction | null): StepRow {
+  const n = (STEP_ORDER.indexOf(id) + 1) as StepRow['n'];
+  return { id, n, title: TITLES[id], mark, lines, action };
+}
+
+/** The addon step not done, with the install buttons. Before any companion has looked: what it does
+ *  and that an installed one will be seen. After a look that found none: on which PC it is missing. */
+function addonTodo(notOn: string | null): StepRow {
+  const lines =
+    notOn === null ? [line(addonCopy.setupAddonNote), line(addonCopy.setupAddonUnseen)] : [line(notOn)];
+  return row('addon', 'todo', lines, INSTALL);
 }
 
 /** The first `todo` row with an action becomes `next` and carries the page's one primary (W.10). */
@@ -135,29 +160,29 @@ function primary(action: StepAction): StepAction {
 function anonymousRows(input: SetupInputs): StepRow[] {
   const addon =
     input.pointer === true
-      ? row(2, 'ok', [line(addonCopy.setupAddonDoneLine, 'ok')], null)
-      : row(2, 'todo', [line(addonCopy.setupAddonNote)], CURSEFORGE);
+      ? row('addon', 'ok', [line(addonCopy.setupAddonDoneLine, 'ok')], null)
+      : addonTodo(null);
   const companion = companionTodo(input.platform, addonCopy.setupCompanionNote);
   if (input.session === 'loading') {
     return [
-      row(1, 'ok', [SKELETON, SKELETON_PHONE], null),
-      row(2, 'todo', [SKELETON], null),
-      row(3, 'todo', [SKELETON, SKELETON_PHONE], null),
+      row('signin', 'ok', [SKELETON, SKELETON_PHONE], null),
+      row('companion', 'todo', [SKELETON, SKELETON_PHONE], null),
+      row('addon', 'todo', [SKELETON], null),
     ];
   }
   if (input.session === 'error') {
     const retry = primary(act('retry', characterListCopy.tryAgain, 'button'));
     return [
-      row(1, 'miss', [line(yourReportsPageCopy.sessionFailed, 'miss', { alert: true })], retry),
-      addon,
+      row('signin', 'miss', [line(yourReportsPageCopy.sessionFailed, 'miss', { alert: true })], retry),
       companion,
+      addon,
     ];
   }
   const signIn =
     input.signinFailed === true
-      ? row(1, 'miss', [line(addonCopy.setupSignInFailed, 'miss', { alert: true })], primary(SIGN_IN))
-      : row(1, 'next', [line(addonCopy.setupSignInBody)], primary(SIGN_IN));
-  return [signIn, addon, companion];
+      ? row('signin', 'miss', [line(addonCopy.setupSignInFailed, 'miss', { alert: true })], primary(SIGN_IN))
+      : row('signin', 'next', [line(addonCopy.setupSignInBody)], primary(SIGN_IN));
+  return [signIn, companion, addon];
 }
 
 /** Row 1 signed in: who, and whether the characters are here, coming, or missing. */
@@ -168,15 +193,15 @@ function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
       me.bnet_imported_at === undefined
         ? ''
         : ` · ${characterListCopy.updatedFrom(me.bnet_imported_at, now)}`;
-    return row(1, 'ok', [line(`${signed}${imported}`, 'ok')], null);
+    return row('signin', 'ok', [line(`${signed}${imported}`, 'ok')], null);
   }
   if (me.bnet_import?.state === 'running') {
-    return row(1, 'busy', [line(signed, 'text'), line(addonCopy.setupImportWait)], null);
+    return row('signin', 'busy', [line(signed, 'text'), line(addonCopy.setupImportWait)], null);
   }
   if (input.refreshFailed === true) {
     const retry = primary(act('refresh', characterListCopy.tryAgain, 'button'));
     return row(
-      1,
+      'signin',
       'miss',
       [line(signed, 'text'), line(characterListCopy.refreshError, 'miss', { alert: true })],
       retry,
@@ -184,7 +209,7 @@ function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
   }
   const wait = importPending(me, now) ? [line(addonCopy.setupImportWait, 'warn')] : [];
   return row(
-    1,
+    'signin',
     'warn',
     [
       line(signed, 'text'),
@@ -198,9 +223,9 @@ function signInRow(me: Me, input: SetupInputs, now: Date): StepRow {
 
 function companionRow(me: Me, input: SetupInputs, now: Date): StepRow {
   const status = companionLine(me, input.devices, now);
-  if (status?.done === true) return row(3, 'ok', [line(status.text, 'ok')], null);
+  if (status?.done === true) return row('companion', 'ok', [line(status.text, 'ok')], null);
   if (input.pairingCode != null && input.pairingCode !== '') {
-    return row(3, 'busy', [line(pairingCopy.waiting, 'muted', { code: input.pairingCode })], null);
+    return row('companion', 'busy', [line(pairingCopy.waiting, 'muted', { code: input.pairingCode })], null);
   }
   return companionTodo(input.platform, status?.text ?? addonCopy.setupCompanionNote);
 }
@@ -211,12 +236,16 @@ export function setupSteps(input: SetupInputs): StepRow[] {
   const me = input.me;
   if (input.session !== 'in' || me === null) return promoteFirst(anonymousRows(input));
   const first = signInRow(me, input, now);
-  const addonDone = newestAddonCharacter(me.characters) !== null;
-  const addonText = addonLine(me, now)?.text ?? addonCopy.setupAddonNote;
-  const addon = addonDone
-    ? row(2, 'ok', [line(addonText, 'ok')], null)
-    : row(2, 'todo', [line(addonText)], CURSEFORGE);
-  return promoteFirst([first, addon, companionRow(me, input, now)]);
+  return promoteFirst([first, companionRow(me, input, now), addonRow(me, input, now)]);
+}
+
+/** The addon step for an account: done when a companion found it installed or its data arrived. */
+function addonRow(me: Me, input: SetupInputs, now: Date): StepRow {
+  const status = addonLine(me, input.devices, input.addonLatest ?? null, now);
+  if (status === null || !status.done) return addonTodo(status?.scanned === true ? status.text : null);
+  if (status.behind === undefined) return row('addon', 'ok', [line(status.text, 'ok')], null);
+  // Behind the feed: still done (it is installed), with what is out and the stores to update from.
+  return row('addon', 'ok', [line(status.text, 'ok'), line(status.behind, 'text')], UPDATE);
 }
 
 /** The session the page reads from `/v1/me`'s answer: a 401 (or no session) is signed out, anything else that fails is an error (B1). */

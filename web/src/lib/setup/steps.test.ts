@@ -1,6 +1,7 @@
 // web/src/lib/setup/steps.test.ts
 // /setup's three rows for every state of design/specs/2026-11-07-setup.md section 5, on the same
 // fixtures the mocks and the parity spec read (tests/e2e/fixtures/home, setup) at the pinned clock.
+// The plate's order is Sign in, The companion, The addon (owner 2026-11-10).
 import { describe, expect, it } from 'vitest';
 import type { Device, Me } from '../account/api';
 import { characterListCopy } from '../account/character-list-copy';
@@ -35,52 +36,76 @@ const marks = (rows: StepRow[]) => rows.map((r) => r.mark);
 const primaries = (rows: StepRow[]) =>
   rows.filter((r) => r.action?.primary === true).map((r) => r.action?.id);
 const texts = (row: StepRow) => row.lines.map((l) => l.text);
+/** The rows by step. */
+function by(rows: StepRow[]): Record<StepRow['id'], StepRow> {
+  const find = (id: StepRow['id']): StepRow => {
+    const found = rows.find((r) => r.id === id);
+    if (found === undefined) throw new Error(`no ${id} row`);
+    return found;
+  };
+  return { signin: find('signin'), companion: find('companion'), addon: find('addon') };
+}
+const withAddons = (addons: Device['addons']): Device[] => devices.map((d) => ({ ...d, addons }));
+const INSTALLED: Device['addons'] = [
+  { folder: 'ForeverSixty', version: '2.0.37' },
+  { folder: 'ForeverSixtyData', version: '2026.11.09' },
+];
 
 describe('setupSteps: signed out', () => {
-  it('web-setup: Sign in is the gold step, the addon and companion are to do', () => {
+  it('web-setup: Sign in is the gold step, then the companion, then the addon, both to do', () => {
     const rows = steps({ session: 'out' });
     expect(rows.map((r) => r.title)).toEqual([
-      addonCopy.setupStep1Title,
-      addonCopy.setupStep2Title,
-      addonCopy.setupStep3Title,
+      addonCopy.setupSignInTitle,
+      addonCopy.setupCompanionTitle,
+      addonCopy.setupAddonTitle,
+    ]);
+    expect(rows.map((r) => [r.id, r.n])).toEqual([
+      ['signin', 1],
+      ['companion', 2],
+      ['addon', 3],
     ]);
     expect(marks(rows)).toEqual(['next', 'todo', 'todo']);
     expect(primaries(rows)).toEqual(['signin']);
-    expect(texts(rows[0])).toEqual([addonCopy.setupSignInBody]);
-    expect(texts(rows[1])).toEqual([addonCopy.setupAddonNote]);
-    expect(rows[1].action).toMatchObject({ id: 'curseforge', kind: 'link-button', primary: false });
-    expect(rows[2].action).toMatchObject({ id: 'download', label: 'Download for Windows' });
+    const { signin, companion, addon } = by(rows);
+    expect(texts(signin)).toEqual([addonCopy.setupSignInBody]);
+    expect(companion.action).toMatchObject({ id: 'download', label: 'Download for Windows' });
+    expect(texts(addon)).toEqual([addonCopy.setupAddonNote, addonCopy.setupAddonUnseen]);
+    expect(addon.action).toMatchObject({ id: 'install', label: addonCopy.setupInstallAddon, primary: false });
   });
 
-  it('web-setup-mac: row 3 is the Mac download, Windows keeps its own', () => {
-    const mac = steps({ session: 'out', platform: 'mac' });
-    expect(texts(mac[2])).toEqual([addonCopy.setupCompanionNote]);
-    expect(mac[2].action).toMatchObject({ id: 'download', label: 'Download for Mac', kind: 'link-button' });
-    expect(steps({ me: me34, platform: 'mac' })[2].action).toMatchObject({
+  it('web-setup-mac: the companion step is the Mac download, Windows keeps its own', () => {
+    const mac = by(steps({ session: 'out', platform: 'mac' })).companion;
+    expect(texts(mac)).toEqual([addonCopy.setupCompanionNote]);
+    expect(mac.action).toMatchObject({ id: 'download', label: 'Download for Mac', kind: 'link-button' });
+    expect(by(steps({ me: me34, platform: 'mac' })).companion.action).toMatchObject({
       id: 'download',
       label: 'Download for Mac',
     });
   });
 
   it('web-setup-unknown: a system the page cannot name offers every build under one name', () => {
-    const rows = steps({ session: 'out', platform: 'unknown' });
-    expect(rows[2].action).toMatchObject({ id: 'download', label: addonCopy.setupDownloadCompanion });
+    const { companion } = by(steps({ session: 'out', platform: 'unknown' }));
+    expect(companion.action).toMatchObject({ id: 'download', label: addonCopy.setupDownloadCompanion });
   });
 
   it('web-setup-mobile: a phone gets the link to copy, never a download', () => {
-    const rows = steps({ session: 'out', platform: 'mobile' });
-    expect(texts(rows[2])).toEqual([addonCopy.setupCompanionNote, addonCopy.setupCompanionMobile]);
-    expect(rows[2].action).toMatchObject({ id: 'copylink', kind: 'button', label: addonCopy.setupCopyLink });
-    const signedIn = steps({ me: me34, platform: 'mobile' });
-    expect(texts(signedIn[2])).toEqual([addonCopy.setupCompanionWaiting, addonCopy.setupCompanionMobile]);
-    expect(signedIn[2].action).toMatchObject({ id: 'copylink', primary: true });
-    expect(signedIn[2].mark).toBe('next');
+    const { companion } = by(steps({ session: 'out', platform: 'mobile' }));
+    expect(texts(companion)).toEqual([addonCopy.setupCompanionNote, addonCopy.setupCompanionMobile]);
+    expect(companion.action).toMatchObject({
+      id: 'copylink',
+      kind: 'button',
+      label: addonCopy.setupCopyLink,
+    });
+    const signedIn = by(steps({ me: me34, platform: 'mobile' })).companion;
+    expect(texts(signedIn)).toEqual([addonCopy.setupCompanionWaiting, addonCopy.setupCompanionMobile]);
+    expect(signedIn.action).toMatchObject({ id: 'copylink', primary: true });
+    expect(signedIn.mark).toBe('next');
   });
 
   it('web-setup-export: an export loaded ticks the addon row', () => {
     const rows = steps({ session: 'out', pointer: true });
-    expect(marks(rows)).toEqual(['next', 'ok', 'todo']);
-    expect(rows[1]).toMatchObject({
+    expect(marks(rows)).toEqual(['next', 'todo', 'ok']);
+    expect(by(rows).addon).toMatchObject({
       action: null,
       lines: [{ text: addonCopy.setupAddonDoneLine, tone: 'ok' }],
     });
@@ -112,15 +137,15 @@ describe('setupSteps: signed out', () => {
     expect(rows.every((r) => r.action === null && r.lines.every((l) => l.skeleton === true))).toBe(true);
   });
 
-  it('web-setup-loading: rows 1 and 3 reserve the second line their answer wraps to on a phone', () => {
+  it('web-setup-loading: sign in and the companion reserve the second line their answer wraps to on a phone', () => {
     // A returning visitor's answer ("Signed in as ... · Updated from Battle.net ...", "JHUNT-PC ·
     // Windows ...") takes two lines on a phone: one reserved line moved the plate 20 px twice
     // (setup-states.spec.ts, layout shift 0.076 against 0.05).
     const rows = steps({ session: 'loading', devices: null });
-    expect(rows.map((r) => r.lines.length)).toEqual([2, 1, 2]);
-    for (const n of [0, 2]) {
-      expect(rows[n].lines[0].phoneOnly).toBeUndefined();
-      expect(rows[n].lines[1]).toMatchObject({ skeleton: true, phoneOnly: true });
+    expect(rows.map((r) => r.lines.length)).toEqual([2, 2, 1]);
+    for (const row of [by(rows).signin, by(rows).companion]) {
+      expect(row.lines[0].phoneOnly).toBeUndefined();
+      expect(row.lines[1]).toMatchObject({ skeleton: true, phoneOnly: true });
     }
   });
 });
@@ -136,7 +161,7 @@ describe('setupSteps: signed in', () => {
     ]);
     expect(rows[0].action).toMatchObject({ id: 'refresh', kind: 'button', primary: true });
     expect(primaries(rows)).toEqual(['refresh']);
-    expect(texts(rows[2])).toEqual([addonCopy.setupCompanionWaiting]);
+    expect(texts(by(rows).companion)).toEqual([addonCopy.setupCompanionWaiting]);
   });
 
   it('web-setup-importing: row 1 busy with the wait line, no primary anywhere (rulings Q2)', () => {
@@ -169,24 +194,29 @@ describe('setupSteps: signed in', () => {
     expect(rows[0].lines[1]).toEqual({ text: characterListCopy.refreshError, tone: 'miss', alert: true });
   });
 
-  it('web-setup-bnet: Battle.net brought the character, CurseForge is the gold step (rulings Q1)', () => {
+  it('web-setup-bnet: Battle.net brought the character, the companion is the gold step, the addon a plain to-do', () => {
     const rows = steps({ me: meBnet });
     expect(marks(rows)).toEqual(['ok', 'next', 'todo']);
     expect(texts(rows[0])).toEqual(['Signed in as Hunthrop#1894 · Updated 1 h ago from Battle.net']);
-    expect(texts(rows[1])).toEqual([addonCopy.setupAddonOptional]);
-    expect(primaries(rows)).toEqual(['curseforge']);
+    const { addon } = by(rows);
+    // The characters are in from Battle.net: the addon's line never ties them to it, and an addon
+    // already installed is said to be seen once the companion runs, never failed.
+    expect(texts(addon)).toEqual([addonCopy.setupAddonNote, addonCopy.setupAddonUnseen]);
+    expect(addon.lines.every((l) => l.tone === 'muted')).toBe(true);
+    expect(addon.action).toMatchObject({ id: 'install', primary: false });
+    expect(primaries(rows)).toEqual(['download']);
   });
 
   it('web-setup-addon: the addon synced, the companion download is the gold step', () => {
     const rows = steps({ me: me34 });
-    expect(marks(rows)).toEqual(['ok', 'ok', 'next']);
-    expect(texts(rows[1])).toEqual(['Felsnap arrived from the addon 1 day ago']);
+    expect(marks(rows)).toEqual(['ok', 'next', 'ok']);
+    expect(texts(by(rows).addon)).toEqual(['Felsnap arrived from the addon 1 day ago']);
     expect(primaries(rows)).toEqual(['download']);
   });
 
-  it('web-setup-pairing: a code out makes row 3 busy with the code, no primary', () => {
+  it('web-setup-pairing: a code out makes the companion step busy with the code, no primary', () => {
     const rows = steps({ me: me34, pairingCode: '4821-9930' });
-    expect(rows[2]).toMatchObject({
+    expect(by(rows).companion).toMatchObject({
       mark: 'busy',
       action: null,
       lines: [{ text: pairingCopy.waiting, code: '4821-9930' }],
@@ -197,13 +227,77 @@ describe('setupSteps: signed in', () => {
   it('web-setup-done: three ticks, the device line, no primary', () => {
     const rows = steps({ me: me34, devices });
     expect(marks(rows)).toEqual(['ok', 'ok', 'ok']);
-    expect(texts(rows[2])).toEqual(['Companion signed in on JHUNT-PC · last seen 3 minutes ago']);
+    expect(texts(by(rows).companion)).toEqual(['Companion signed in on JHUNT-PC · last seen 3 minutes ago']);
     expect(rows.every((r) => r.action === null)).toBe(true);
   });
 
   it('claims nothing about the companion when the device list did not load', () => {
     const rows = steps({ me: me34, devices: null });
-    expect(texts(rows[2])).toEqual([addonCopy.setupCompanionNote]);
+    expect(texts(by(rows).companion)).toEqual([addonCopy.setupCompanionNote]);
+  });
+});
+
+describe('setupSteps: the addon as the companion sees it', () => {
+  it('web-setup-companion: a companion that found no addon makes it the gold to-do, never a fault', () => {
+    const rows = steps({ me: meBnet, devices: withAddons([]), addonLatest: '2.0.37' });
+    expect(marks(rows)).toEqual(['ok', 'ok', 'next']);
+    const { addon } = by(rows);
+    expect(texts(addon)).toEqual(['Not in _forever_ on JHUNT-PC yet']);
+    expect(addon.lines.every((l) => l.tone === 'muted' && l.alert === undefined)).toBe(true);
+    expect(addon.action).toMatchObject({ id: 'install', primary: true });
+  });
+
+  it('web-setup-installed: installed on the PC, with its version, done with no action', () => {
+    const rows = steps({ me: meBnet, devices: withAddons(INSTALLED), addonLatest: '2.0.37' });
+    expect(marks(rows)).toEqual(['ok', 'ok', 'ok']);
+    expect(by(rows).addon).toMatchObject({
+      action: null,
+      lines: [{ text: 'Installed on JHUNT-PC · 2.0.37', tone: 'ok' }],
+    });
+  });
+
+  it('web-setup-outdated: installed but behind the feed, still done, with what is out and Update buttons', () => {
+    const behind = withAddons([{ folder: 'ForeverSixty', version: '2.0.30' }]);
+    const { addon } = by(steps({ me: meBnet, devices: behind, addonLatest: '2.0.37' }));
+    expect(addon.mark).toBe('ok');
+    expect(addon.lines).toEqual([
+      { text: 'Installed on JHUNT-PC · 2.0.30', tone: 'ok' },
+      { text: '2.0.37 is out', tone: 'text' },
+    ]);
+    expect(addon.action).toMatchObject({ id: 'update', label: addonCopy.setupUpdateAddon, primary: false });
+    // No feed answer: no claim it is behind.
+    expect(texts(by(steps({ me: meBnet, devices: behind, addonLatest: null })).addon)).toEqual([
+      'Installed on JHUNT-PC · 2.0.30',
+    ]);
+  });
+
+  it('prefers what the companion found over an older arrival, and keeps the arrival for a paste', () => {
+    expect(texts(by(steps({ me: me34, devices: withAddons(INSTALLED) })).addon)).toEqual([
+      'Installed on JHUNT-PC · 2.0.37',
+    ]);
+    // The companion found none, but the addon's data arrived (a paste, another PC): done.
+    expect(by(steps({ me: me34, devices: withAddons([]) })).addon).toMatchObject({
+      mark: 'ok',
+      lines: [{ text: 'Felsnap arrived from the addon 1 day ago' }],
+    });
+  });
+
+  it('claims nothing from a companion that has never scanned (an older build)', () => {
+    const { addon } = by(steps({ me: meBnet, devices }));
+    expect(texts(addon)).toEqual([addonCopy.setupAddonNote, addonCopy.setupAddonUnseen]);
+    expect(addon.mark).toBe('next');
+  });
+
+  it('names the PC that has the addon when another companion does not', () => {
+    const laptop: Device = {
+      ...devices[0],
+      id: 'd2',
+      name: 'LAPTOP',
+      last_seen_at: '2026-11-06T09:59:00Z',
+      addons: [],
+    };
+    const rows = steps({ me: meBnet, devices: [...withAddons(INSTALLED), laptop] });
+    expect(texts(by(rows).addon)).toEqual(['Installed on JHUNT-PC · 2.0.37']);
   });
 });
 

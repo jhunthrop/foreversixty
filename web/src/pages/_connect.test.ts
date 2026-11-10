@@ -25,7 +25,7 @@ describe('/connect', () => {
   it('server-renders the loading state: the title, the checking line, one named Plate', async () => {
     expect(html).toContain(connectCopy.title);
     expect(html).toContain(connectCopy.checking);
-    expect(html).toContain(`aria-label="${addonCopy.setupStep3Title}"`);
+    expect(html).toContain(`aria-label="${addonCopy.setupCompanionTitle}"`);
     expect(html.match(/data-region="plate"/g)?.length).toBe(1);
   });
 

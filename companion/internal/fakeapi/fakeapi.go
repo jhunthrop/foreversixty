@@ -119,6 +119,9 @@ type Server struct {
 	revoked bool
 	revokes int
 
+	// addonReports are the AddOns scans the device sent (addons.go).
+	addonReports [][]client.InstalledAddon
+
 	// limitBeats is how many heartbeats still answer 429, with
 	// limitAfter as the Retry-After header; beatAttempts counts every
 	// heartbeat request, accepted or not.
@@ -157,6 +160,7 @@ func New() *Server {
 	mux.HandleFunc("POST /v1/devices/connect/approve", s.connectApprove)
 	mux.HandleFunc("POST /v1/devices/connect/deny", s.connectDeny)
 	mux.HandleFunc("DELETE /v1/devices/self", s.revokeSelf)
+	mux.HandleFunc("PUT /v1/devices/self/addons", s.putAddons)
 	mux.HandleFunc("POST /v1/reports", s.createReport)
 	mux.HandleFunc("PATCH /v1/reports/{id}", s.patchReport)
 	mux.HandleFunc("PUT /v1/reports/{id}/fights/{n}", s.putFight)

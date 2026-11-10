@@ -3,8 +3,8 @@
      the head's download, the framed plate's three steps, The addon's and The companion's quiet links
      and the pairing block all follow one account read: the PageHeader (its answer the companion's
      download), the claim's way back, then a split Page of panels whose framed Plate is "Your setup"
-     (lib/setup/steps.ts's rows), then the panels The addon, The companion and What it does in the
-     game; the rail's panels hold Try an export, the commands, the handshake and the two flows.
+     (lib/setup/steps.ts's rows), then the panels The companion, The addon and What it does in the
+     game, in the plate's order; the rail's panels hold Try an export, the commands, the handshake and the two flows.
 
      The server markup is the signed-out page, with both companion builds offered: the island
      reads the visitor's system on mount and the Download step becomes their own build (or, on a
@@ -25,7 +25,7 @@
   import { readCurrent } from '../../lib/current-character';
   import { onCurrentCharacterChange } from '../../lib/current-character-events';
   import { sessionHinted } from '../../lib/data/query';
-  import { fetchCompanionRelease, type CompanionRelease } from '../../lib/setup/release';
+  import { fetchAddonVersion, fetchCompanionRelease, type CompanionRelease } from '../../lib/setup/release';
   import { SETUP_REFRESHED } from '../../lib/setup/links';
   import { loadSetupState } from '../../lib/setup/state';
   import { setupSteps, type SessionState, type StepAction } from '../../lib/setup/steps';
@@ -52,6 +52,7 @@
   let devices = $state<readonly Device[] | null>([]);
   let platform = $state<VisitorPlatform>('unknown');
   let release = $state<CompanionRelease | null>(null);
+  let addonLatest = $state<string | null>(null);
   let copied = $state(false);
   let pointer = $state(false);
   let signinFailed = $state(false);
@@ -88,6 +89,7 @@
     mounted = true;
     platform = visitorPlatform(navigator);
     void fetchCompanionRelease().then((fresh) => (release = fresh));
+    void fetchAddonVersion().then((fresh) => (addonLatest = fresh));
     pointer = readCurrent() !== null;
     const params = new URLSearchParams(window.location.search);
     signinFailed = params.get('signin') === 'failed';
@@ -153,7 +155,18 @@
   }
 
   const rows = $derived(
-    setupSteps({ session, me, devices, platform, signinFailed, refreshFailed, pointer, pairingCode, now }),
+    setupSteps({
+      session,
+      me,
+      devices,
+      platform,
+      signinFailed,
+      refreshFailed,
+      pointer,
+      pairingCode,
+      addonLatest,
+      now,
+    }),
   );
   /** Before the island mounts, the server draws the signed-out rows as the live list (kept, not
    *  replaced, on mount: the first paint's text stays the page's largest paint) beside the rows the
@@ -171,7 +184,7 @@
   ];
   const settled = $derived(mounted && session !== 'loading');
   const signedIn = $derived(session === 'in' && me !== null);
-  const addonDone = $derived(rows[1]?.mark === 'ok');
+  const addonDone = $derived(rows.find((row) => row.id === 'addon')?.mark === 'ok');
 </script>
 
 <!-- The companion's download at the top, in every state (owner 2026-11-08), never gold (the plate
@@ -218,7 +231,6 @@
     {/if}
   </Plate>
   <p class="sr-only" role="status">{refreshing ? characterListCopy.refreshingAnnounce : ''}</p>
-  <SetupAddon {addonDone} />
   <SetupCompanion
     {platform}
     {release}
@@ -233,6 +245,7 @@
       devices = [...(devices ?? []), device];
     }}
   />
+  <SetupAddon {addonDone} />
   <SetupSurfaces />
 
   {#snippet rail()}

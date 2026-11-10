@@ -3,6 +3,7 @@
  "rows": {
   "out": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "next",
@@ -20,29 +21,13 @@
     }
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": false
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
      {
-      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "text": "Sends bags, bank and live logs after every session.",
       "tone": "muted"
      }
     ],
@@ -52,10 +37,33 @@
      "kind": "link-button",
      "primary": false
     }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
+     "kind": "link-button",
+     "primary": false
+    }
    }
   ],
   "mac": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "next",
@@ -73,29 +81,13 @@
     }
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": false
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
      {
-      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "text": "Sends bags, bank and live logs after every session.",
       "tone": "muted"
      }
     ],
@@ -105,10 +97,33 @@
      "kind": "link-button",
      "primary": false
     }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
+     "kind": "link-button",
+     "primary": false
+    }
    }
   ],
   "mobile": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "next",
@@ -126,29 +141,13 @@
     }
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": false
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
      {
-      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "text": "Sends bags, bank and live logs after every session.",
       "tone": "muted"
      },
      {
@@ -162,10 +161,33 @@
      "kind": "button",
      "primary": false
     }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
+     "kind": "link-button",
+     "primary": false
+    }
    }
   ],
   "unknown": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "next",
@@ -183,29 +205,13 @@
     }
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": false
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
      {
-      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "text": "Sends bags, bank and live logs after every session.",
       "tone": "muted"
      }
     ],
@@ -215,10 +221,33 @@
      "kind": "link-button",
      "primary": false
     }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
+     "kind": "link-button",
+     "primary": false
+    }
    }
   ],
   "export": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "next",
@@ -236,7 +265,26 @@
     }
    },
    {
+    "id": "companion",
     "n": 2,
+    "title": "The companion",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Sends bags, bank and live logs after every session.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "download",
+     "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "id": "addon",
+    "n": 3,
     "title": "The addon",
     "mark": "ok",
     "lines": [
@@ -246,27 +294,11 @@
      }
     ],
     "action": null
-   },
-   {
-    "n": 3,
-    "title": "The companion",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Sends bags, bank and live logs after every session.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "download",
-     "label": "Download for Windows",
-     "kind": "link-button",
-     "primary": false
-    }
    }
   ],
   "paste-error": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "next",
@@ -284,29 +316,13 @@
     }
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": false
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
      {
-      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "text": "Sends bags, bank and live logs after every session.",
       "tone": "muted"
      }
     ],
@@ -316,10 +332,33 @@
      "kind": "link-button",
      "primary": false
     }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
+     "kind": "link-button",
+     "primary": false
+    }
    }
   ],
   "signin-failed": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "miss",
@@ -338,29 +377,13 @@
     }
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": false
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
      {
-      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "text": "Sends bags, bank and live logs after every session.",
       "tone": "muted"
      }
     ],
@@ -370,10 +393,33 @@
      "kind": "link-button",
      "primary": false
     }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
+     "kind": "link-button",
+     "primary": false
+    }
    }
   ],
   "error": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "miss",
@@ -392,29 +438,13 @@
     }
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": false
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
      {
-      "text": "Optional. Sends bags, bank and live logs after every session.",
+      "text": "Sends bags, bank and live logs after every session.",
       "tone": "muted"
      }
     ],
@@ -424,10 +454,33 @@
      "kind": "link-button",
      "primary": false
     }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
+     "kind": "link-button",
+     "primary": false
+    }
    }
   ],
   "loading": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "ok",
@@ -447,20 +500,8 @@
     "action": null
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "",
-      "tone": "muted",
-      "skeleton": true
-     }
-    ],
-    "action": null
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
@@ -477,10 +518,25 @@
      }
     ],
     "action": null
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "",
+      "tone": "muted",
+      "skeleton": true
+     }
+    ],
+    "action": null
    }
   ],
   "none": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "warn",
@@ -506,24 +562,8 @@
     }
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": false
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
@@ -538,10 +578,33 @@
      "kind": "link-button",
      "primary": false
     }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
+     "kind": "link-button",
+     "primary": false
+    }
    }
   ],
   "importing": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "busy",
@@ -558,24 +621,8 @@
     "action": null
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": false
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
@@ -590,10 +637,33 @@
      "kind": "link-button",
      "primary": false
     }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
+     "kind": "link-button",
+     "primary": false
+    }
    }
   ],
   "failed": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "miss",
@@ -616,24 +686,8 @@
     }
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "todo",
-    "lines": [
-     {
-      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": false
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "todo",
     "lines": [
@@ -645,6 +699,28 @@
     "action": {
      "id": "download",
      "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": false
+    }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
      "kind": "link-button",
      "primary": false
     }
@@ -652,6 +728,7 @@
   ],
   "bnet": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "ok",
@@ -664,26 +741,10 @@
     "action": null
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "next",
-    "lines": [
-     {
-      "text": "Your characters are in from Battle.net. The addon saves bags and bank when you log out; the companion sends them.",
-      "tone": "muted"
-     }
-    ],
-    "action": {
-     "id": "curseforge",
-     "label": "Install from CurseForge",
-     "kind": "link-button",
-     "primary": true
-    }
-   },
-   {
-    "n": 3,
     "title": "The companion",
-    "mark": "todo",
+    "mark": "next",
     "lines": [
      {
       "text": "No companion signed in yet",
@@ -693,6 +754,28 @@
     "action": {
      "id": "download",
      "label": "Download for Windows",
+     "kind": "link-button",
+     "primary": true
+    }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "todo",
+    "lines": [
+     {
+      "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+      "tone": "muted"
+     },
+     {
+      "text": "Already installed? The companion sees it.",
+      "tone": "muted"
+     }
+    ],
+    "action": {
+     "id": "install",
+     "label": "Install the addon",
      "kind": "link-button",
      "primary": false
     }
@@ -700,6 +783,7 @@
   ],
   "addon": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "ok",
@@ -712,19 +796,8 @@
     "action": null
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "ok",
-    "lines": [
-     {
-      "text": "Felsnap arrived from the addon 1 day ago",
-      "tone": "ok"
-     }
-    ],
-    "action": null
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "next",
     "lines": [
@@ -739,10 +812,24 @@
      "kind": "link-button",
      "primary": true
     }
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "Felsnap arrived from the addon 1 day ago",
+      "tone": "ok"
+     }
+    ],
+    "action": null
    }
   ],
   "pairing": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "ok",
@@ -755,19 +842,8 @@
     "action": null
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
-    "mark": "ok",
-    "lines": [
-     {
-      "text": "Felsnap arrived from the addon 1 day ago",
-      "tone": "ok"
-     }
-    ],
-    "action": null
-   },
-   {
-    "n": 3,
     "title": "The companion",
     "mark": "busy",
     "lines": [
@@ -778,10 +854,24 @@
      }
     ],
     "action": null
+   },
+   {
+    "id": "addon",
+    "n": 3,
+    "title": "The addon",
+    "mark": "ok",
+    "lines": [
+     {
+      "text": "Felsnap arrived from the addon 1 day ago",
+      "tone": "ok"
+     }
+    ],
+    "action": null
    }
   ],
   "done": [
    {
+    "id": "signin",
     "n": 1,
     "title": "Sign in",
     "mark": "ok",
@@ -794,24 +884,26 @@
     "action": null
    },
    {
+    "id": "companion",
     "n": 2,
-    "title": "The addon",
+    "title": "The companion",
     "mark": "ok",
     "lines": [
      {
-      "text": "Felsnap arrived from the addon 1 day ago",
+      "text": "Companion signed in on JHUNT-PC · last seen 3 minutes ago",
       "tone": "ok"
      }
     ],
     "action": null
    },
    {
+    "id": "addon",
     "n": 3,
-    "title": "The companion",
+    "title": "The addon",
     "mark": "ok",
     "lines": [
      {
-      "text": "Companion signed in on JHUNT-PC · last seen 3 minutes ago",
+      "text": "Felsnap arrived from the addon 1 day ago",
       "tone": "ok"
      }
     ],
@@ -990,7 +1082,8 @@
    },
    "addon": {
     "done": false,
-    "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank."
+    "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+    "scanned": false
    },
    "companion": {
     "done": false,
@@ -1004,7 +1097,8 @@
    },
    "addon": {
     "done": false,
-    "text": "Your characters are in from Battle.net. The addon saves bags and bank when you log out; the companion sends them."
+    "text": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+    "scanned": false
    },
    "companion": {
     "done": false,
@@ -1018,7 +1112,8 @@
    },
    "addon": {
     "done": true,
-    "text": "Felsnap arrived from the addon 1 day ago"
+    "text": "Felsnap arrived from the addon 1 day ago",
+    "scanned": false
    },
    "companion": {
     "done": false,
@@ -1032,7 +1127,8 @@
    },
    "addon": {
     "done": true,
-    "text": "Felsnap arrived from the addon 1 day ago"
+    "text": "Felsnap arrived from the addon 1 day ago",
+    "scanned": false
    },
    "companion": {
     "done": true,
@@ -1247,19 +1343,26 @@
   "flowOutBody": "In game, type /fs copy, press Ctrl+C, then paste it into the planner’s Import from addon box.",
   "flowInTitle": "Into the game",
   "flowInBody": "Save a build here, press Copy for the game, then type /fs in game and paste it.",
-  "setupStep1Title": "Sign in",
-  "setupStep2Title": "The addon",
-  "setupStep3Title": "The companion",
+  "setupSignInTitle": "Sign in",
+  "setupCompanionTitle": "The companion",
+  "setupAddonTitle": "The addon",
   "setupSignInBody": "Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.",
   "setupSignInAction": "Sign in with Battle.net",
-  "setupCompanionNote": "Optional. Sends bags, bank and live logs after every session.",
+  "setupCompanionNote": "Sends bags, bank and live logs after every session.",
   "setupCompanionBody": "The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.",
   "setupPageTitle": "Get set up",
   "setupAddonDoneLine": "An export is loaded; the site is pointed at that character.",
   "setupSignedInAs": "[fn]",
   "setupAddonArrived": "[fn]",
-  "setupAddonOptional": "Your characters are in from Battle.net. The addon saves bags and bank when you log out; the companion sends them.",
   "setupAddonNote": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
+  "setupAddonInstalled": "[fn]",
+  "setupAddonUnseen": "Already installed? The companion sees it.",
+  "setupAddonNotOn": "[fn]",
+  "setupAddonBehind": "[fn]",
+  "setupInstallAddon": "Install the addon",
+  "setupUpdateAddon": "Update the addon",
+  "setupUpdateCurseForge": "Update from CurseForge",
+  "setupUpdateWago": "Update from Wago Addons",
   "setupImportWait": "Your characters can take up to two minutes to arrive.",
   "setupSignInFailed": "Battle.net sign-in did not finish. Nothing was saved.",
   "setupHandInstall": "Installing by hand",
@@ -1558,7 +1661,7 @@
  },
  "pairing": {
   "signedOut": "Live logging needs a signed-in account.",
-  "companionFirst": "Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.",
+  "companionFirst": "Press Sign in with Battle.net in the companion. A code is the fallback.",
   "success": "[fn]",
   "action": "Get a pairing code",
   "failed": "The pairing code did not load. Try again.",
