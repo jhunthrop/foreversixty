@@ -21707,7 +21707,7 @@
     },
     "1329283": {
       "name": "Shank",
-      "rank": 0,
+      "rank": 1,
       "school_mask": 1,
       "cast_time_ms": 0,
       "gcd_ms": 1000,
@@ -21939,7 +21939,7 @@
     },
     "1329549": {
       "name": "Shank",
-      "rank": 0,
+      "rank": 2,
       "school_mask": 1,
       "cast_time_ms": 0,
       "gcd_ms": 1000,

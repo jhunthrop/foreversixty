@@ -41,7 +41,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts 10 min.",
+      "description": "Thorns sprout from the friendly target causing 3 Nature damage to attackers when hit.  Lasts 10 min.",
       "icon": "spell_nature_thorns"
     },
     "740": {
@@ -167,7 +167,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts 10 min.",
+      "description": "Thorns sprout from the friendly target causing 6 Nature damage to attackers when hit.  Lasts 10 min.",
       "icon": "spell_nature_thorns"
     },
     "783": {
@@ -237,7 +237,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts 10 min.",
+      "description": "Thorns sprout from the friendly target causing 9 Nature damage to attackers when hit.  Lasts 10 min.",
       "icon": "spell_nature_thorns"
     },
     "1079": {
@@ -853,7 +853,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 0.0,
-      "description": "Shapeshift into Bear Form, increasing Attack Power by 30, Armor contribution from items by 180%, and Health by 180.  Also protects the caster from Polymorph effects and allows the use of various bear abilities.\r\n\r\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
+      "description": "Shapeshift into Bear Form, increasing Attack Power by 30, Armor contribution from items by 180%, and Health by 20.  Also protects the caster from Polymorph effects and allows the use of various bear abilities.\r\n\r\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",
       "icon": "ability_racial_bearform"
     },
     "5570": {
@@ -937,7 +937,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Ravage the target, causing 435% damage plus 147 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Ravage the target, causing 435% damage plus 42 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_ravage"
     },
     "6787": {
@@ -951,7 +951,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Ravage the target, causing 435% damage plus 217 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Ravage the target, causing 435% damage plus 62 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_ravage"
     },
     "6795": {
@@ -1105,7 +1105,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts 10 min.",
+      "description": "Thorns sprout from the friendly target causing 12 Nature damage to attackers when hit.  Lasts 10 min.",
       "icon": "spell_nature_thorns"
     },
     "8918": {
@@ -1609,7 +1609,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts 10 min.",
+      "description": "Thorns sprout from the friendly target causing 15 Nature damage to attackers when hit.  Lasts 10 min.",
       "icon": "spell_nature_thorns"
     },
     "9758": {
@@ -1917,7 +1917,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Ravage the target, causing 435% damage plus 273 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Ravage the target, causing 435% damage plus 78 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_ravage"
     },
     "9867": {
@@ -1931,7 +1931,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 5.0,
-      "description": "Ravage the target, causing 435% damage plus 343 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
+      "description": "Ravage the target, causing 435% damage plus 98 to the target.  Must be prowling and behind the target.  Awards 1 combo point.",
       "icon": "ability_druid_ravage"
     },
     "9875": {
@@ -2169,7 +2169,7 @@
       "passive": false,
       "cooldown_ms": 0,
       "range_yd": 30.0,
-      "description": "Thorns sprout from the friendly target causing $w1 Nature damage to attackers when hit.  Lasts 10 min.",
+      "description": "Thorns sprout from the friendly target causing 18 Nature damage to attackers when hit.  Lasts 10 min.",
       "icon": "spell_nature_thorns"
     },
     "9912": {

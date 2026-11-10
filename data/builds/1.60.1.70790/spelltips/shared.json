@@ -3046,6 +3046,26 @@
       "spell_id": 17627,
       "use": "Increases the player's maximum Mana by 2000 for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
     },
+    "flask_of_natural_accuracy": {
+      "item_id": 274273,
+      "spell_id": 1293740,
+      "use": "Increases your Stamina by 30. While in Mount Hyjal, Hyjal Summit, and the Barrow Deeps, you also gain 2% Hit Chance.\r\n\r\nLasts for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
+    "flask_of_natural_aggression": {
+      "item_id": 274274,
+      "spell_id": 1293741,
+      "use": "Increases your Stamina by 30. While in Mount Hyjal, Hyjal Summit, and the Barrow Deeps, you also gain 2% Critical Strike Chance.\r\n\r\nLasts for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
+    "flask_of_natural_precision": {
+      "item_id": 274275,
+      "spell_id": 1293742,
+      "use": "Increases your Stamina by 30. While in Mount Hyjal, Hyjal Summit, and the Barrow Deeps, you also gain 2% reduced chance to be dodged or parried.\r\n\r\nLasts for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
+    "flask_of_natural_swiftness": {
+      "item_id": 274276,
+      "spell_id": 1293743,
+      "use": "Increases your Stamina by 30. While in Mount Hyjal, Hyjal Summit, and the Barrow Deeps, you also gain 2% Haste.\r\n\r\nLasts for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
     "flask_of_supreme_power": {
       "item_id": 13512,
       "spell_id": 17628,
@@ -3678,15 +3698,15 @@
     "ManifestInterfaceData": "71b82f75741b87ad38c82bb73cba99b3e3bdeb6c0c00e09dde1298dafce31441",
     "SkillLine": "f3867d43ab42d1f5278e6e5028d0151bc06e4ef8e5cbd790a20df6ee57aa654d",
     "SkillLineAbility": "ba3e396415ce1cbf34df00acafbf0edc9a8d70dd4b2584ca4ddf1325fb8c9d14",
-    "Spell": "bb1d9dfc46d6639e9080ba025ad06e9f89cd01fe4f77df6a49fa9318db2d29c3",
-    "SpellAuraOptions": "aecc911e6aec0686159eb0636a1e19e9e15a426b8f2d4eb0999bbd0f2bc356d2",
+    "Spell": "0ee267e073c9070ff87fc680d5451fbb1635f9803b138d2d682ac3fc508f2a21",
+    "SpellAuraOptions": "03a2d1fb46a37f01e8d47fb76dc396fd44f7975419a4359566c898bc6bc20802",
     "SpellCastTimes": "f94e1e3a3495d11af875fd7b007124fdd660a19ba626bc1de00a609da81f25d8",
-    "SpellCooldowns": "3c073431f4ac2b7267a4b1218410bc943377e69c492303768292f35119c2ff2f",
+    "SpellCooldowns": "424b3f203b5253e70c4fa32c8ec0e36e529ff06261a8f552daa1a9188084a2bf",
     "SpellDuration": "4787f303fe8487cd67e5f9e8574fdc6fa2a03516dcfaabba23d9944f937223f5",
-    "SpellEffect": "882afedd815c896413060e09391c943603a217b7b32e869d76cf7e221b093e26",
-    "SpellMisc": "52552837d2bd61a9ebee3c318761145ffc78f538c1eaefd66d8262f40c09b151",
+    "SpellEffect": "b79e8851a92ab20c60a0dafb0de039d97878aebd627f21620b14dd81c7910563",
+    "SpellMisc": "a1da887d6e1b59340637da3e9357e2ef3d79cadb10515f5e71a9bb0a7b3256d2",
     "SpellName": "9e93482a551143ec75d656dce6a5120c869ecdab1d34a0513e057465bf06a930",
-    "SpellPower": "251dfe18ce8257e875e8d92e116405e0c828eaa9add70493e5791e77ff18639e",
+    "SpellPower": "6eb0c56fd62d3d9561f89a862dc6d574c114a2b99f182198b9d8ff69f134f307",
     "SpellRadius": "ae97b1f91868aa7b4414c3e26c5d15f6981921b2f6aa1694adc7a0c3e821826b",
     "SpellRange": "30734ead3acfb44c57737ed7c9f8ff2feafda2fbffa291711d4c4afef989b1b3",
     "SpellTargetRestrictions": "5a6c2278aef22562993afc431f54d8c00a0d986bce4d07080282c830684719a8"

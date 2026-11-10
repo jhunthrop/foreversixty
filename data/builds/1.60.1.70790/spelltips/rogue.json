@@ -1796,7 +1796,7 @@
     },
     "1329283": {
       "name": "Shank",
-      "rank": 0,
+      "rank": 1,
       "cost": 5,
       "cost_type": 3,
       "cost_pct": 0.0,
@@ -1824,7 +1824,7 @@
     },
     "1329549": {
       "name": "Shank",
-      "rank": 0,
+      "rank": 2,
       "cost": 5,
       "cost_type": 3,
       "cost_pct": 0.0,

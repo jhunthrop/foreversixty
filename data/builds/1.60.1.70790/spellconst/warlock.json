@@ -13524,7 +13524,7 @@
           "index": 1,
           "effect": 6,
           "aura": 108,
-          "amount": 5,
+          "amount": 0,
           "sp_coefficient": 0.0,
           "ap_coefficient": 0.0,
           "period_ms": 0,

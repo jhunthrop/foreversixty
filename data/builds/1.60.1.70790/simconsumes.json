@@ -4115,6 +4115,15 @@
     ]
   },
   {
+    "id": 13508,
+    "name": "Eye of Arachnida",
+    "quality": 2,
+    "required_level": 55,
+    "spell_ids": [
+      126
+    ]
+  },
+  {
     "id": 13509,
     "name": "Clutch of Foresight",
     "quality": 2,
@@ -4157,6 +4166,15 @@
     "required_level": 50,
     "spell_ids": [
       17629
+    ]
+  },
+  {
+    "id": 13514,
+    "name": "Wail of the Banshee",
+    "quality": 2,
+    "required_level": 55,
+    "spell_ids": [
+      17639
     ]
   },
   {
@@ -9719,6 +9737,15 @@
     "required_level": 1,
     "spell_ids": [
       468211
+    ]
+  },
+  {
+    "id": 231313,
+    "name": "Grimy Rune",
+    "quality": 2,
+    "required_level": 1,
+    "spell_ids": [
+      468252
     ]
   },
   {
