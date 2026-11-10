@@ -131,7 +131,7 @@
     { id: 'rating', label: 'Rating', sortable: true },
     { id: 'ilvl', label: 'Item level', sortable: true },
     { id: 'gap', label: 'To BiS', sortable: true },
-    { id: 'best', label: 'Best %', sortable: true },
+    { id: 'best', label: 'Parse %', sortable: true },
     { id: 'nights', label: 'Nights', sortable: true },
     { id: 'loot', label: 'Loot', sortable: true },
     { id: 'ready', label: 'Ready', sortable: true },

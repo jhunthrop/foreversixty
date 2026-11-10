@@ -155,7 +155,7 @@ describe('GuildReadiness next-raid filter', () => {
     expect(markup).toContain('aria-pressed="true"');
     const copy = text(markup).replace(/&#39;/g, "'");
     expect(copy).toContain('Next raid only');
-    expect(copy).toContain('ready for Thu 10 Dec In and Late');
+    expect(copy).toContain('ready for Thu 10 Dec');
   });
 
   it('lists a raider with no export by exception, and nothing else about them', () => {

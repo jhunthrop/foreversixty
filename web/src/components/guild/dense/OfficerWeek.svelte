@@ -187,7 +187,7 @@
 
 {#if actions !== null}
   <div
-    class="flex flex-wrap items-center gap-2.5 px-(--page-inset) pb-5"
+    class="actions flex flex-wrap items-center gap-x-1 gap-y-1 px-(--page-inset) pb-5"
     data-testid="guild-overview-actions"
   >
     {#if actions.approvals.count > 0}
@@ -238,3 +238,12 @@
     {#if raid?.cover && raid.cover.length > 0}<BuffCover cover={raid.cover} />{/if}
   {/snippet}
 </Page>
+
+<style>
+  /* The waiting work as one line of links, a middle dot between them. */
+  .actions > :global(* + *)::before {
+    content: '·';
+    margin-right: 4px;
+    color: var(--color-muted);
+  }
+</style>

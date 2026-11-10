@@ -23,7 +23,7 @@
     type GuildChecklist,
     type GuildOfficerActions,
   } from '../../lib/guild/overview-api';
-  import { checklistRows, raidWeekday, verdictLine, verdictWord } from '../../lib/guild/overview-role-view';
+  import { checklistRows, raidWeekday, verdictLine } from '../../lib/guild/overview-role-view';
   import {
     downEncounterNames,
     lastRaidProgressLine,
@@ -35,12 +35,12 @@
   import { counted } from '../../lib/plural';
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
-  import CompTally from './overview/CompTally.svelte';
   import LastRaid from './overview/LastRaid.svelte';
   import MemberChecklist from './overview/MemberChecklist.svelte';
   import NextRaidPlate from './overview/NextRaidPlate.svelte';
   import RecruitLine from './overview/RecruitLine.svelte';
   import MemberWeek from './dense/MemberWeek.svelte';
+  import CompGaps from './dense/CompGaps.svelte';
   import OfficerWeek from './dense/OfficerWeek.svelte';
   import type { GuildTabId } from './GuildTabs.svelte';
 
@@ -168,11 +168,11 @@
   const planHref = $derived(nextRaid === null ? '#raids' : guildRaidHref(guildPath, nextRaid.id));
 </script>
 
-{#snippet lastRaid()}
+{#snippet lastRaid(withProgression = true)}
   <LastRaid
     report={last === null ? null : { ...last, day: raidNightDay(last.created_at) }}
     facts={lastFacts}
-    progression={showCounts ? progressionLine : ''}
+    progression={showCounts && withProgression ? progressionLine : ''}
   />
 {/snippet}
 
@@ -255,7 +255,7 @@
       {/if}
       {#if checklist !== null && rows.length > 0}
         <div id="guild-overview-checklist">
-          <MemberChecklist {rows} verdict={verdictWord(checklist.verdict)} />
+          <MemberChecklist {rows} />
         </div>
       {/if}
       {#if guildId !== null && lead === undefined}
@@ -273,7 +273,7 @@
         />
       {/if}
       {#snippet rail()}
-        {#if raid?.comp_target}<CompTally {raid} target={raid.comp_target} title="The raid's comp" />{/if}
+        {#if raid?.comp_target}<CompGaps {raid} />{/if}
         {#if guildId !== null}
           <MemberWeek
             part="loot"
@@ -288,7 +288,7 @@
             now={clock.now}
           />
         {/if}
-        {@render lastRaid()}
+        {@render lastRaid(false)}
       {/snippet}
     </Page>
   {/if}

@@ -64,7 +64,7 @@
   }
   .att-legend {
     flex-wrap: wrap;
-    gap: 4px 12px;
+    gap: 4px 8px;
   }
   .att-key {
     gap: 4px;

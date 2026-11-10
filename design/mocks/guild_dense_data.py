@@ -30,7 +30,6 @@ NEXT_POSTED_AT = '2027-01-07T18:00:00Z'
 SECOND_RAID_ID = 46
 SECOND_RAID_AT = '2027-01-21T02:00:00Z'
 UPDATED_AT = '2027-01-09T19:30:00Z'
-MEDIAN_ILVL = 64
 COMP_TARGET = {'tanks': 3, 'healers': 9, 'melee': 12, 'ranged': 16}
 GROUP_ROLE = {'Tank': 'tank', 'Healer': 'healer', 'Melee': 'dps', 'Ranged': 'dps'}
 
@@ -134,9 +133,9 @@ def _group(name: str, cls: str, spec: str, group: str) -> str:
 
 def _figures(name: str, group: str, ilvl: int) -> tuple[float, float]:
     """Onyxia DPS (HPS for a healer, threat-limited DPS for a tank) the week before and last week."""
-    base = {'Tank': 260, 'Healer': 520, 'Melee': 610, 'Ranged': 600}[group] + (ilvl - 60) * 18
-    before = base + _n(name, 'fig0', -60, 60)
-    return float(before), float(before + _n(name, 'fig1', -25, 55))
+    base = {'Tank': 190, 'Healer': 270, 'Melee': 430, 'Ranged': 410}[group] + (ilvl - 60) * 9
+    before = base + _n(name, 'fig0', -40, 40)
+    return float(before), float(before + _n(name, 'fig1', -15, 35))
 
 
 def _raider(name: str, cls: str, spec: str, group: str, ilvl: int) -> Raider:
@@ -152,9 +151,16 @@ def _raider(name: str, cls: str, spec: str, group: str, ilvl: int) -> Raider:
                   professions=tuple(sorted(set(profs))), seen_days=SEEN_DAYS.get(name, 0))
 
 
-ROSTER: list[Raider] = [_raider(r[0], r[1], r[2], r[3], r[4] + 2) for r in gd.R] + [_raider(*j) for j in JOINED]
+def classic_ilvl(seed: int) -> int:
+    """An Onyxia-week item level (about 58 to 66) from the seed roster's 55 to 70 spread."""
+    return round(31 + seed / 2)
+
+
+ROSTER: list[Raider] = ([_raider(r[0], r[1], r[2], r[3], classic_ilvl(r[4])) for r in gd.R]
+                        + [_raider(j[0], j[1], j[2], j[3], classic_ilvl(j[4] + 2)) for j in JOINED])
 assert len(ROSTER) == 40, len(ROSTER)
 BY_NAME = {r.name: r for r in ROSTER}
+MEDIAN_ILVL = round(sorted(r.ilvl for r in ROSTER)[len(ROSTER) // 2])
 GROUPS = ['Tank', 'Healer', 'Melee', 'Ranged']
 GROUP_TARGET = {'Tank': 'tanks', 'Healer': 'healers', 'Melee': 'melee', 'Ranged': 'ranged'}
 
@@ -163,7 +169,7 @@ AWARDS = [
     (40, 18205, "Eskhandar's Collar", 'inv_belt_12', 'Neck', 'Shiverknife', 'Ironbrand', 3),
     (40, 18813, 'Ring of Binding', 'inv_jewelry_ring_13', 'Finger', 'Thornwicke', 'Dunmaro', 3),
     (40, 17078, 'Sapphiron Drape', 'inv_misc_cape_16', 'Back', 'Frostquill', 'Dunmaro', 3),
-    (40, 16955, 'Judgement Crown', 'inv_helmet_74', 'Head', 'Ironbrand', 'Shiverknife', 2),
+    (40, 16900, 'Stormrage Cover', 'inv_helmet_09', 'Head', 'Mossveil', 'Shiverknife', 3),
     (41, 16914, 'Netherwind Crown', 'inv_helmet_70', 'Head', 'Frostquill', 'Ironbrand', 3),
     (41, 16929, 'Nemesis Skullcap', 'inv_helmet_08', 'Head', 'Doomwhisper', 'Dunmaro', 3),
     (41, 17068, 'Deathbringer', 'inv_axe_09', 'One-Hand', 'Gorehowl', 'Ironbrand', 3),
@@ -175,9 +181,7 @@ AWARDS = [
     (43, 16963, 'Helm of Wrath', 'inv_helmet_71', 'Head', 'Thornwicke', 'Ironbrand', 3),
     (43, 16921, 'Halo of Transcendence', 'inv_helmet_24', 'Head', 'Dawnweaver', 'Dunmaro', 3),
     (43, 17067, 'Ancient Cornerstone Grimoire', 'inv_misc_book_07', 'Off Hand', 'Hexmarrow', 'Dunmaro', 2),
-    (43, 18205, "Eskhandar's Collar", 'inv_belt_12', 'Neck', 'Groundshock', 'Ironbrand', 3),
-    (44, 16939, "Dragonstalker's Helm", 'inv_helmet_05', 'Head', 'Dunmaro', 'Ironbrand', 2),
-    (44, 16900, 'Stormrage Cover', 'inv_helmet_09', 'Head', 'Mossveil', 'Shiverknife', 3),
+    (43, 16939, "Dragonstalker's Helm", 'inv_helmet_05', 'Head', 'Dunmaro', 'Ironbrand', 2),
     (44, 17078, 'Sapphiron Drape', 'inv_misc_cape_16', 'Back', 'Rimecaller', 'Dunmaro', 3),
 ]
 # Last night's drops still open (the Loot tab's night picks Vis'kag): item id, name, icon, slot word.

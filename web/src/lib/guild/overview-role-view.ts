@@ -111,8 +111,7 @@ function flaskFoodRow(item: ChecklistItem): ChecklistRow {
     };
   const title =
     FLASK_FOOD_MISSING[missing.length > 1 ? 'both' : (missing[0] ?? 'both')] ?? FLASK_FOOD_MISSING.both!;
-  const sub =
-    names.length > 0 ? `You have ${listWords(names)}.` : 'Bring a flask or a raid elixir, and buff food.';
+  const sub = names.length > 0 ? `You have ${listWords(names)}.` : 'Bring a flask or elixir, and food.';
   return { key: item.key, tone: 'warn', title, sub, fix: null };
 }
 

@@ -13,10 +13,10 @@
       "deaths": 2,
       "top_hps": null,
       "top_dps": {
-        "name": "Doomwhisper",
-        "class": "warlock",
+        "name": "Steelmane",
+        "class": "warrior",
         "metric": "dps",
-        "value": 857.0
+        "value": 523.0
       },
       "fights": [
         {
@@ -54,10 +54,10 @@
       "deaths": 5,
       "top_hps": null,
       "top_dps": {
-        "name": "Doomwhisper",
-        "class": "warlock",
+        "name": "Steelmane",
+        "class": "warrior",
         "metric": "dps",
-        "value": 857.0
+        "value": 523.0
       },
       "fights": [
         {
@@ -95,10 +95,10 @@
       "deaths": 3,
       "top_hps": null,
       "top_dps": {
-        "name": "Doomwhisper",
-        "class": "warlock",
+        "name": "Steelmane",
+        "class": "warrior",
         "metric": "dps",
-        "value": 857.0
+        "value": 523.0
       },
       "fights": [
         {
@@ -136,10 +136,10 @@
       "deaths": 4,
       "top_hps": null,
       "top_dps": {
-        "name": "Doomwhisper",
-        "class": "warlock",
+        "name": "Steelmane",
+        "class": "warrior",
         "metric": "dps",
-        "value": 857.0
+        "value": 523.0
       },
       "fights": [
         {
@@ -177,10 +177,10 @@
       "deaths": 7,
       "top_hps": null,
       "top_dps": {
-        "name": "Doomwhisper",
-        "class": "warlock",
+        "name": "Steelmane",
+        "class": "warrior",
         "metric": "dps",
-        "value": 857.0
+        "value": 523.0
       },
       "fights": [
         {

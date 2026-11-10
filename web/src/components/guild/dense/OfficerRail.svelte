@@ -48,9 +48,8 @@
 {#if gaps.length > 0}
   <Section title="Recruit for the gaps" panel testid="guild-week-recruit">
     {#each gaps as gap (gap.group)}
-      <Row title={GROUP_WORD[gap.group]} sub={`Short ${gap.short} if all answer`} open>
-        {#snippet trail()}<Button tone="secondary" size="sm" href={recruitHref}>Post the role</Button
-          >{/snippet}
+      <Row title={GROUP_WORD[gap.group]} sub={`${gap.short} seat${gap.short === 1 ? '' : 's'} open`} open>
+        {#snippet trail()}<Button tone="ghost" size="sm" href={recruitHref}>Post the role</Button>{/snippet}
       </Row>
     {/each}
     {#each pending as app (app.id)}
@@ -63,7 +62,7 @@
           app.character.item_level === null ? '' : `${app.character.item_level} ilvl`,
           parse === null || parse.percentile === null
             ? ''
-            : `${Math.floor(parse.percentile)}% ${parse.metric.toUpperCase()}`,
+            : `parse ${Math.floor(parse.percentile)} ${parse.metric.toUpperCase()}`,
         ]
           .filter((p) => p !== '')
           .join(' · ')}
@@ -71,8 +70,6 @@
         open
       >
         {#snippet lead()}<ClassCrestRing characterClass={app.character.class ?? ''} size={32} />{/snippet}
-        {#snippet trail()}<Button tone="secondary" size="sm" href={applicationsHref}>Open application</Button
-          >{/snippet}
       </Row>
     {/each}
   </Section>
@@ -102,9 +99,6 @@
           {#if drop.award !== null}<b style:color={classColorVar(drop.award.class)}>{drop.award.name}</b
             >{:else if top !== null}Open · <b style:color={classColorVar(top.class)}>{top.name}</b
             >{#if top.gain_dps !== null}{` +${top.gain_dps} ${(top.gain_unit ?? 'dps').toUpperCase()}`}{/if}{:else}Open{/if}
-        {/snippet}
-        {#snippet trail()}
-          {#if drop.award === null}<Button tone="ghost" size="sm" href={lootHref}>Council</Button>{/if}
         {/snippet}
       </ItemRow>
     {/each}

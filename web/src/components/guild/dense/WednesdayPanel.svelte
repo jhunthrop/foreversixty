@@ -47,10 +47,10 @@
   } = $props();
 
   const columns = [
+    { id: 'gap', label: 'Gap' },
     { id: 'need', label: 'Need' },
     { id: 'in', label: 'In' },
     { id: 'late', label: 'Late' },
-    { id: 'gap', label: 'Gap' },
   ] as const;
 
   let pingedAt = $state<Date | null>(null);
@@ -94,10 +94,12 @@
 
   function figures(row: CompGapRow) {
     return [
+      row.gap > 0
+        ? { value: `${row.gap} short`, tone: 'wipe' as const }
+        : { value: '✓', tone: 'kill' as const },
       { value: String(row.need), muted: true },
       { value: String(row.in), tone: row.in >= row.need ? ('kill' as const) : ('gold' as const) },
       row.late > 0 ? { value: String(row.late) } : { value: '–', muted: true },
-      row.gap > 0 ? { value: String(row.gap), tone: 'wipe' as const } : { value: '✓', tone: 'kill' as const },
     ];
   }
 </script>
@@ -199,17 +201,15 @@
     align-items: center;
     gap: 6px;
     min-height: 28px;
-    padding: 0 8px;
-    border: 1px solid var(--color-line);
-    border-radius: 4px;
+    padding: 0 6px 0 0;
     font: 600 12px/1 var(--font-body);
     color: var(--color-text);
   }
   button.fill {
     cursor: pointer;
   }
-  button.fill:hover:not(:disabled) {
-    background: var(--color-hover);
+  button.fill:hover:not(:disabled) .act {
+    text-decoration: underline;
   }
   button.fill:disabled {
     opacity: 0.6;
@@ -219,7 +219,6 @@
     color: var(--color-gold);
   }
   .fill.done {
-    border-color: transparent;
     color: var(--color-muted);
   }
 </style>

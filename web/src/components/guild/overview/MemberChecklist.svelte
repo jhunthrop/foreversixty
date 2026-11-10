@@ -6,9 +6,9 @@
   import Checklist from '../../ui/Checklist.svelte';
   import Section from '../../ui/Section.svelte';
 
-  let { rows, verdict }: { rows: readonly ChecklistRow[]; verdict: string } = $props();
+  let { rows }: { rows: readonly ChecklistRow[] } = $props();
 </script>
 
-<Section panel title="Before the raid" meta={verdict} testid="guild-overview-checklist">
+<Section panel title="Before the raid" testid="guild-overview-checklist">
   <Checklist items={rows} testid="guild-checklist" />
 </Section>

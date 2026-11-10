@@ -8,7 +8,6 @@
      off the plan sentence sits under the heading and every Nudge stays on screen, disabled. -->
 <script lang="ts">
   import { classColorVar } from '../../lib/report/format';
-  import { classTone } from '../../lib/ui/primitives';
   import type { GuildRaidSignup, GuildReadinessRow } from '../../lib/guild/api';
   import type { ReadinessRaid } from '../../lib/guild/attendance-contract';
   import { attendanceCopy } from '../../lib/guild/attendance-copy';
@@ -17,7 +16,6 @@
   import { fetchGuildRaid } from '../../lib/guild/raids-api';
   import EmptyState from '../ui/EmptyState.svelte';
   import Page from '../ui/Page.svelte';
-  import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import { guildGateCopy } from '../../lib/guild/copy';
   import type { GateFacts } from '../../lib/guild/plan-gate';
@@ -28,7 +26,6 @@
     nudgeText,
     pinReadinessOwnRow,
     readinessLists,
-    tankFireLine,
   } from '../../lib/guild/readiness-view';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import ReadinessBoard from './dense/ReadinessBoard.svelte';
@@ -105,8 +102,6 @@
       })
       .catch(() => (tanks = null));
   });
-  const fireOf = (key: string): number | null =>
-    rows.find((row) => row.character_key === key)?.resistances?.fire ?? null;
 
   let copiedKey = $state<string | null>(null);
 
@@ -129,9 +124,8 @@
     <Section
       title={`${lists.ready.length} of ${lists.ready.length + short.length} ready${filtered ? ` for ${raidDay}` : ''}`}
       panel
-      frame="framed"
       flush
-      meta={officer ? (filtered ? 'In and Late' : undefined) : guildGateCopy.readOnly}
+      meta={officer ? undefined : guildGateCopy.readOnly}
       metaTestid="guild-readiness-read-only"
       testid="guild-readiness-short"
     >
@@ -165,31 +159,12 @@
           describedBy={gateDescribedBy}
           {copiedKey}
           {median}
+          fireKeys={tanks === null ? null : new Set(tanks.map((t) => t.character_key))}
           {now}
           onNudge={(row) => void onNudge(row)}
         />
       {/if}
     </Section>
-
-    {#if tanks !== null}
-      <Section title="Fire resistance on tanks" panel testid="guild-readiness-fire">
-        {#if tanks.length === 0}
-          <p class="text-muted text-[14px]">No tank signed yet.</p>
-        {:else}
-          <ul>
-            {#each tanks as tank (tank.character_key)}
-              <li>
-                <Row title={tank.name} titleTone={classTone(tank.class)} density="slim" open>
-                  {#snippet trail()}<span class="text-[14px] font-semibold tabular-nums"
-                      >{tankFireLine(fireOf(tank.character_key))}</span
-                    >{/snippet}
-                </Row>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </Section>
-    {/if}
 
     {#if lists.leveling.length > 0}
       <Section title="Leveling" panel testid="guild-readiness-leveling-group">

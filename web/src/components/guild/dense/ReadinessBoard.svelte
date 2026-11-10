@@ -21,6 +21,7 @@
     describedBy,
     copiedKey = null,
     median = null,
+    fireKeys = null,
     now,
     onNudge,
   }: {
@@ -33,6 +34,8 @@
     describedBy?: string;
     copiedKey?: string | null;
     median?: number | null;
+    /** The raid asks for fire resistance: these signed tanks' totals fill a Fire res column. */
+    fireKeys?: ReadonlySet<string> | null;
     now: Date;
     onNudge: (row: GuildReadinessRow) => void;
   } = $props();
@@ -54,6 +57,7 @@
     { id: 'enchants', label: 'Enchants' },
     { id: 'stock', label: 'Flask, food' },
     { id: 'talents', label: 'Talents' },
+    ...(fireKeys === null ? [] : [{ id: 'fire', label: 'Fire res' }]),
     ...(anyStale ? [{ id: 'synced', label: 'Synced' }] : []),
   ]);
   const blank = $derived(columns.map(() => ({ value: '' })));
@@ -88,6 +92,13 @@
       row.talent_points_read === false
         ? UNKNOWN
         : check(row.talent_points_unspent === 0, String(row.talent_points_unspent)),
+      ...(fireKeys === null
+        ? []
+        : [
+            fireKeys.has(row.character_key) && row.resistances != null
+              ? { value: String(row.resistances.fire) }
+              : { value: '–', muted: true },
+          ]),
       ...(anyStale
         ? [
             days >= STALE_DAYS
@@ -132,11 +143,19 @@
 
 <style>
   .nudge {
-    margin-left: 10px;
+    display: block;
+    min-height: 32px;
+    margin-top: 2px;
     padding: 0;
-    font: 600 13px/16px var(--font-body);
+    font: 600 13px/32px var(--font-body);
     color: var(--color-gold);
     cursor: pointer;
+  }
+  @media (pointer: coarse) {
+    .nudge {
+      min-height: 44px;
+      line-height: 44px;
+    }
   }
   .nudge:hover:not(:disabled) {
     text-decoration: underline;

@@ -342,13 +342,16 @@ def loot_drop(item_id: int, council: list) -> dict:
             'officers': gd.VOTERS, 'closed': False, 'award': None, 'candidates': [candidate(c, True) for c in council]}
 
 
+COUNCILS = {17075: D.CANDIDATES, 16955: D.CROWN_CANDIDATES}
+
+
 def loot_table() -> dict:
     """The Loot tab's boss table: the older fixture's Onyxia table, five kill nights in, for 40 raiders at level 60."""
     base = json.loads((OUT / 'loot-table.json').read_text())
     enc = [{**e, 'kill_nights': len(D.NIGHTS), 'on_farm': True} for e in base['encounters']]
     return {**base, 'encounters': enc, 'at_level_cap': len(D.ROSTER),
-            'items': [{**i, 'candidates': [candidate(c, False) for c in D.CANDIDATES] if i['item_id'] == D.SELECTED_DROP else [],
-                       'eligible': []} for i in base['items']]}
+            'items': [{**i, 'candidates': [candidate(c, False) for c in COUNCILS.get(i['item_id'], [])], 'eligible': []}
+                      for i in base['items']]}
 
 
 def member_profile(name: str) -> dict:
