@@ -1,6 +1,8 @@
 <!-- web/src/components/sim/SimGearSection.svelte -->
 <!-- The character's gear (sim spec 2026-11-06 §4.3, §4.5; spec 2026-11-04-sim-results 3.8): the
-     shared Paperdoll in `worn` mode, each slot's client enchant on line 2 (else its item level).
+     shared paperdoll's list form in `worn` mode (the b2 sim result mock: the BiS page owns the
+     frame, the sim lists what it ran), each slot's client enchant after its slot in green (else its
+     item level).
      After a run it is open (no Plate, ruling S3) with the five stats the engine computed, the
      run's own measured miss rate, the set line and the Best in slot link. On the landing and while
      running (`plated`) the doll is the page's one Plate and the section's action is the link. It
@@ -88,6 +90,9 @@
     classSlug={character.class}
     loading={itemsState === 'loading'}
     failed={itemsState === 'failed'}
+    title={gearCopy.listLabel}
+    form="list"
+    head={false}
     label={gearCopy.listLabel}
     testid="sim-gear-doll"
   />

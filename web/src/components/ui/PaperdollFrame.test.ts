@@ -64,8 +64,10 @@ describe('PaperdollFrame', () => {
     expect(body).toContain('src="/fixtures/render-placeholder.png"');
   });
 
-  it('marks itself as showing its tooltips in place', () => {
-    expect(doll()).toContain('data-inline-tip');
+  it('marks itself as showing its tooltips in place only when it has a centre to show them in', () => {
+    const centre = createRawSnippet(() => ({ render: () => '<p>centre</p>' }));
+    expect(doll({ centre })).toContain('data-inline-tip');
+    expect(doll()).not.toContain('data-inline-tip');
   });
 
   it('holds the seal in the medallion with no portrait, the portrait when given', () => {
@@ -89,5 +91,41 @@ describe('PaperdollFrame', () => {
     expect(body).toContain('>Neck<');
     expect(body).toContain('data-testid="paperdoll-list-slot-head"');
     expect(body).not.toContain('paperdoll-list-slot-shirt');
+  });
+
+  it('draws only the list form, never the frame image, with form="list"', () => {
+    const body = doll({ form: 'list' });
+    expect(body).not.toContain('class="pdf-frame');
+    expect(body).not.toContain('paperdoll-frame-slot-head');
+    expect(body).toContain('pdf-listonly');
+    expect(body).toContain('data-testid="paperdoll-list-slot-head"');
+  });
+
+  it('drops the strip with head={false}', () => {
+    expect(doll()).toContain('class="pdf-strip');
+    const body = doll({ form: 'list', head: false });
+    expect(body).not.toContain('class="pdf-strip');
+    expect(body).toMatch(/class="pdf-items[^"]*pdf-headless/);
+  });
+
+  it('gives each row its line 2 and gain with facts: the enchant in green, the pick icon and figure', () => {
+    const cells: DollCell[] = [
+      {
+        slot: 'head',
+        label: 'Head',
+        item: { id: 1, name: 'Lionheart Helm', quality: 4, icon: 'a' },
+        source: 'Stamina +10',
+        sourceTone: 'enchant',
+        gain: { value: '+1.8', unit: 'DPS', tone: 'gold', basis: { prefix: 'vs', item: HARPOON } },
+      },
+      { slot: 'neck', label: 'Neck', item: { id: 2, name: 'Mark of Fordring', quality: 3, icon: 'b' } },
+    ];
+    const body = doll({ cells, form: 'list', facts: true });
+    expect(body).toMatch(/Head · <\/span><span[^>]*class="text-rarity-uncommon"[^>]*>Stamina \+10<\/span>/);
+    expect(body).toMatch(
+      /data-testid="paperdoll-list-gain-head"[\s\S]*data-icon="inv_spear_04"[\s\S]*\+1\.8 DPS/,
+    );
+    expect(body).not.toContain('paperdoll-list-gain-neck');
+    expect(doll({ cells, form: 'list' })).not.toContain('Stamina +10');
   });
 });

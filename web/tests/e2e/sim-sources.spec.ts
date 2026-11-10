@@ -43,7 +43,9 @@ test('pasting a valid addon export loads the character into the head and the gea
   // The paste runs at once, so the gear is the report's open Gear section (ruling S3).
   await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 15_000 });
   await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
-  await expect(page.getByTestId('sim-gear-doll-slot-head')).toContainText('Lionheart Helm');
+  await expect(page.getByTestId('sim-gear-doll').getByTestId('paperdoll-list-slot-head')).toContainText(
+    'Lionheart Helm',
+  );
 });
 
 // The Plate validates locally and synchronously (cold-paste.ts's `validateColdPaste`), so a
@@ -80,7 +82,9 @@ test('opening /sim?code=<fs1> adopts the character on load, as a manual source',
   await expect(page.getByTestId('sim-head-source')).not.toContainText('the addon');
   await expect(simCharacter(page)).toContainText('Fury Warrior');
   // Not run yet: the doll is the page's one Plate.
-  await expect(page.getByTestId('sim-gear-doll-slot-head')).toContainText('Lionheart Helm');
+  await expect(page.getByTestId('sim-gear-doll').getByTestId('paperdoll-list-slot-head')).toContainText(
+    'Lionheart Helm',
+  );
   await expect(page.getByTestId('sim-sources')).toHaveCount(0);
 });
 
@@ -94,5 +98,7 @@ test('an unsaved planner link pasted into From a build loads its character', asy
   await page.getByTestId('sim-build-load').click();
 
   await expect(simCharacter(page)).toContainText('Fury Warrior');
-  await expect(page.getByTestId('sim-gear-doll-slot-head')).toContainText('Lionheart Helm');
+  await expect(page.getByTestId('sim-gear-doll').getByTestId('paperdoll-list-slot-head')).toContainText(
+    'Lionheart Helm',
+  );
 });

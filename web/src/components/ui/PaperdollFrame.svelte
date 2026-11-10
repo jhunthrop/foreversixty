@@ -18,8 +18,13 @@
        it carries `data-inline-tip` and the page's floating tooltip host leaves its slots alone.
      The frame stays a frame while a slot is at least MIN_SLOT_PX (36 px) wide, a frame of 423 px:
      narrower (every phone), a container query swaps in the list form, the header strip and the
-     slots in two columns on the panel, and the frame image is never fetched there. Cells are the
-     same DollCell the grid paperdoll takes (lib/bis/doll-view.ts). -->
+     slots in two columns on the panel, and the frame image is never fetched there. Cells are
+     DollCells (lib/bis/doll-view.ts for BiS, lib/gear/doll-cells.ts for a worn set).
+     - `form="list"` draws the list form at every width (the sim, which lists what it ran: one job
+       per page, the BiS page owns the frame); `head={false}` drops its strip where the page already
+       names the character; `facts` gives each list row the cell's line 2 after the slot (the worn
+       enchant in the client's green, a report's "Item level 66 · Enchanted") and its gain at the
+       right. With no `centre` the page's own tooltip host opens each item. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { PAPERDOLL_FRAME } from '../../lib/ui/assets';
@@ -36,7 +41,7 @@
   import type { DollCell } from '../../lib/ui/paperdoll';
   import { dataUrl } from '../../lib/planner/load';
   import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
-  import type { ItemRef } from '../../lib/ui/primitives';
+  import { FACT_SEPARATOR, type ItemRef } from '../../lib/ui/primitives';
   import { REGION } from '../../lib/ui/regions';
   import { SLOT_DISPLAY_LABELS } from '../../lib/bis/slot-display-labels';
   import type { Slot } from '../../lib/planner/types';
@@ -55,6 +60,9 @@
     centre,
     shortTitle,
     label,
+    form = 'auto',
+    head = true,
+    facts = false,
     testid = 'paperdoll-frame',
   }: {
     cells: readonly DollCell[];
@@ -81,6 +89,12 @@
     shortTitle?: string;
     /** The group's accessible name; defaults to the title. */
     label?: string;
+    /** `list`: the list form at every width, the frame never drawn. */
+    form?: 'auto' | 'list';
+    /** The list form's header strip (medallion, title, figure). */
+    head?: boolean;
+    /** List rows carry the cell's line 2 and its gain. */
+    facts?: boolean;
     testid?: string;
   } = $props();
 
@@ -156,69 +170,96 @@
   {#if figure}<b class="pdf-figure">{figure.value} <small>{figure.unit}</small></b>{/if}
 {/snippet}
 
-<div class="pdf" data-testid={testid} role="group" aria-label={label ?? title} data-inline-tip>
-  <!-- The frame (423 px and wider). -->
-  <div
-    class="pdf-frame"
-    style="aspect-ratio:{FRAME_SIZE.width}/{FRAME_SIZE.height};{frameVar}"
-    data-region={REGION.slots}
+{#snippet rowFacts(cell: DollCell)}
+  <span class="pdf-sub"
+    >{#if cell.source}<span class="pdf-fact-slot">{cell.label}{FACT_SEPARATOR}</span><span
+        class:text-rarity-uncommon={cell.sourceTone === 'enchant'}
+        data-testid="paperdoll-list-line2-{cell.slot}">{cell.source}</span
+      >{:else}{cell.label}{/if}</span
   >
-    {#each FRAME_SLOTS as slot (slot)}
-      {@const cell = bySlot.get(slot)}
-      {@const face = shown(cell)}
-      {#if cell && face}
-        <button
-          type="button"
-          class="pdf-slot"
-          class:pdf-sel={slot === selected}
-          style={boxStyle(slotBox(slot))}
-          aria-label={name(cell, face)}
-          aria-pressed={slot === selected}
-          data-bis-item={face.item.id}
-          data-testid="paperdoll-frame-slot-{slot}"
-          onmouseenter={() => choose(slot)}
-          onfocus={() => choose(slot)}
-          onclick={() => choose(slot)}>{@render icon(face)}</button
-        >
-      {/if}
-    {/each}
-    <span class="pdf-medal" style={boxStyle(MEDALLION_BOX)} data-region={REGION.paperdollMedallion}
-      >{@render medal()}</span
-    >
-    <div class="pdf-title" style={boxStyle(TITLE_BOX)}>
-      <svelte:element this={heading} class="pdf-title-text">{title}</svelte:element>
-      {#if meta}<small class="pdf-meta">{meta}</small>{/if}
-      {@render figureView()}
-    </div>
+{/snippet}
+
+{#snippet rowGain(cell: DollCell)}
+  {#if cell.gain}
+    <span class="pdf-gain" data-tone={cell.gain.tone} data-testid="paperdoll-list-gain-{cell.slot}">
+      {#if cell.gain.basis?.item}{@render icon({ item: cell.gain.basis.item, covered: false })}{/if}
+      <b>{cell.gain.value}{cell.gain.unit ? ` ${cell.gain.unit}` : ''}</b>
+    </span>
+  {/if}
+{/snippet}
+
+<div
+  class="pdf"
+  class:pdf-listonly={form === 'list'}
+  data-testid={testid}
+  role="group"
+  aria-label={label ?? title}
+  data-inline-tip={centre === undefined ? undefined : ''}
+>
+  {#if form !== 'list'}
+    <!-- The frame (423 px and wider). -->
     <div
-      class="pdf-centre"
-      class:pdf-modelled={model !== null}
-      style={boxStyle(CENTRE_BOX)}
-      data-region={REGION.paperdollCentre}
+      class="pdf-frame"
+      style="aspect-ratio:{FRAME_SIZE.width}/{FRAME_SIZE.height};{frameVar}"
+      data-region={REGION.slots}
     >
-      {#if model !== null}<img
-          class="pdf-model"
-          src={model}
-          alt=""
-          decoding="async"
-          onerror={() => (renderFailed = true)}
-        />{/if}
-      {#if centre}{@render centre(selectedCell, 'frame')}{/if}
+      {#each FRAME_SLOTS as slot (slot)}
+        {@const cell = bySlot.get(slot)}
+        {@const face = shown(cell)}
+        {#if cell && face}
+          <button
+            type="button"
+            class="pdf-slot"
+            class:pdf-sel={slot === selected}
+            style={boxStyle(slotBox(slot))}
+            aria-label={name(cell, face)}
+            aria-pressed={slot === selected}
+            data-bis-item={face.item.id}
+            data-testid="paperdoll-frame-slot-{slot}"
+            onmouseenter={() => choose(slot)}
+            onfocus={() => choose(slot)}
+            onclick={() => choose(slot)}>{@render icon(face)}</button
+          >
+        {/if}
+      {/each}
+      <span class="pdf-medal" style={boxStyle(MEDALLION_BOX)} data-region={REGION.paperdollMedallion}
+        >{@render medal()}</span
+      >
+      <div class="pdf-title" style={boxStyle(TITLE_BOX)}>
+        <svelte:element this={heading} class="pdf-title-text">{title}</svelte:element>
+        {#if meta}<small class="pdf-meta">{meta}</small>{/if}
+        {@render figureView()}
+      </div>
+      <div
+        class="pdf-centre"
+        class:pdf-modelled={model !== null}
+        style={boxStyle(CENTRE_BOX)}
+        data-region={REGION.paperdollCentre}
+      >
+        {#if model !== null}<img
+            class="pdf-model"
+            src={model}
+            alt=""
+            decoding="async"
+            onerror={() => (renderFailed = true)}
+          />{/if}
+        {#if centre}{@render centre(selectedCell, 'frame')}{/if}
+      </div>
     </div>
-  </div>
+  {/if}
 
   <!-- The list form (narrower than 423 px): the header strip and two columns of slots. -->
   <div class="pdf-list">
-    <div class="pdf-strip">
-      <span class="pdf-strip-medal">{@render medal()}</span>
-      <!-- The strip repeats the title bar's heading for the phone: one heading element per page in
+    {#if head}<div class="pdf-strip">
+        <span class="pdf-strip-medal">{@render medal()}</span>
+        <!-- The strip repeats the title bar's heading for the phone: one heading element per page in
            the served HTML, so this one is a heading by role (only one of the two ever shows). -->
-      <div class="pdf-strip-title" role="heading" aria-level={heading === 'h1' ? 1 : 2}>
-        {stripShown}{#if stripRest}<span class="sr-only">{stripRest}</span>{/if}
-      </div>
-      {@render figureView()}
-    </div>
-    <ul class="pdf-items">
+        <div class="pdf-strip-title" role="heading" aria-level={heading === 'h1' ? 1 : 2}>
+          {stripShown}{#if stripRest}<span class="sr-only">{stripRest}</span>{/if}
+        </div>
+        {@render figureView()}
+      </div>{/if}
+    <ul class="pdf-items" class:pdf-headless={!head} class:pdf-facts={facts}>
       {#each FRAME_SLOTS.filter((slot) => slot !== 'shirt' && slot !== 'tabard') as slot (slot)}
         {@const cell = bySlot.get(slot)}
         {@const face = shown(cell)}
@@ -227,7 +268,7 @@
             <button
               type="button"
               class="pdf-item"
-              class:pdf-sel={slot === selected}
+              class:pdf-sel={slot === selected && centre !== undefined}
               aria-pressed={slot === selected}
               data-bis-item={face.item.id}
               data-testid="paperdoll-list-slot-{slot}"
@@ -239,9 +280,10 @@
                   <span class="pdf-sub">{cell.label}</span><span class="pdf-sub">Two-handed</span>
                 {:else}
                   <span class="pdf-name {rarityClassFor(face.item.quality)}">{face.item.name}</span>
-                  <span class="pdf-sub">{cell.label}</span>
+                  {#if facts}{@render rowFacts(cell)}{:else}<span class="pdf-sub">{cell.label}</span>{/if}
                 {/if}
               </span>
+              {#if facts && !face.covered}{@render rowGain(cell)}{/if}
             </button>
           {:else}
             <span class="pdf-item pdf-empty">
@@ -264,6 +306,9 @@
   .pdf-frame,
   .pdf-list {
     display: none;
+  }
+  .pdf-listonly .pdf-list {
+    display: block;
   }
   /* MIN_FRAME_PX (lib/ui/paperdoll-frame.ts): a slot is 36 px at 423 px. */
   @container (min-width: 423px) {
@@ -439,6 +484,10 @@
     background: var(--color-raised);
     box-shadow: 0 0 0 1px var(--color-panel-edge);
   }
+  .pdf-headless {
+    border-top: 1px solid black;
+    border-radius: var(--radius-plate);
+  }
   .pdf-item {
     display: grid;
     grid-template-columns: 44px minmax(0, 1fr);
@@ -485,6 +534,46 @@
     color: var(--color-muted);
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  /* A row's facts wrap rather than truncate: the enchant and the report's detail are the point. */
+  .pdf-facts .pdf-sub {
+    white-space: normal;
+  }
+  /* A phone's half column keeps the facts and drops the slot word before them (the name says it). */
+  @container (min-width: 360px) and (max-width: 559.98px) {
+    .pdf-fact-slot {
+      display: none;
+    }
+  }
+  /* Too narrow for two whole names a row (a strip inside a phone's section): one column. */
+  @container (max-width: 359.98px) {
+    .pdf-facts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .pdf-facts .pdf-item:has(.pdf-gain) {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+  }
+  .pdf-gain {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    white-space: nowrap;
+    color: var(--color-gold);
+  }
+  .pdf-gain[data-tone='kill'] {
+    color: var(--color-kill);
+  }
+  .pdf-gain[data-tone='muted'] {
+    color: var(--color-muted);
+  }
+  .pdf-gain .pdf-icon {
+    position: relative;
+    inset: auto;
+    width: 22px;
+    height: 22px;
+    border-width: 1px;
   }
   .pdf-list-centre {
     margin-top: 10px;
