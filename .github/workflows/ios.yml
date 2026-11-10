@@ -61,6 +61,7 @@ jobs:
             /design/mocks/data/avatars/
             !/docs/superpowers/reviews/
             !/apps/android/
+            /apps/android/app/src/test/resources/
       - uses: ./.github/actions/data-builds
       - uses: maxim-lobanov/setup-xcode@v1
         with:
