@@ -934,6 +934,12 @@ export const bulkCopy = {
     high: 'Two stages: everything at 1,000 iterations, twice as many finalists at 10,000.',
   } as Record<string, string>,
   runBulk: 'Run',
+  /** Why Run is disabled before anything is ticked, per tool. */
+  runReason: {
+    gear: 'Tick a candidate to try.',
+    talents: 'Pick builds to compare.',
+    drops: 'Tick a source.',
+  } as Record<string, string>,
   runBulkAgain: 'Run again',
   stopBulk: 'Stop',
   stageProgress: (stage: number, stages: number, done: number, total: number): string =>
@@ -1012,6 +1018,8 @@ export const bulkCopy = {
   sourceBosses: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'}`,
   /** A kind's summary: how many of its sources carry a tick. */
   sourcesTicked: (ticked: number, total: number): string => `${ticked} of ${total} ticked`,
+  /** A kind none of whose sources has opened: "0 of 7 open". */
+  sourcesOpen: (open: number, total: number): string => `${open} of ${total} open`,
   /** A kind's summary while none of its sources is ticked. */
   sourcesCount: (count: number): string => `${count} ${count === 1 ? 'source' : 'sources'}`,
   /** The label before the kind ticks: they choose which lists show. */

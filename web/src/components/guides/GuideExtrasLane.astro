@@ -36,21 +36,18 @@ const lines = consumableLines(extras.consumables);
     <div class="guide-extras-rows" data-wrap-list>
       {mergedEnchants(extras.enchants).map((row) => (
         <Row title={row.name} sub={row.slotLabel} density="slim" open testid={`guide-enchant-${row.slot}`}>
-          <Fragment slot="lead">
-            {row.icon !== undefined ? (
-              <img
-                src={dataUrl(build, `icons/${row.icon}.webp`)}
-                alt=""
-                width="28"
-                height="28"
-                loading="lazy"
-                decoding="async"
-                class="guide-extras-icon"
-              />
-            ) : (
-              <span class="guide-extras-icon" aria-hidden="true" />
-            )}
-          </Fragment>
+          {row.icon !== undefined && (
+            <img
+              slot="lead"
+              src={dataUrl(build, `icons/${row.icon}.webp`)}
+              alt=""
+              width="28"
+              height="28"
+              loading="lazy"
+              decoding="async"
+              class="guide-extras-icon"
+            />
+          )}
           <span
             slot="titleContent"
             class:list={[enchantKey(row.id) !== undefined && 'gtip guide-extras-tip']}
@@ -78,21 +75,18 @@ const lines = consumableLines(extras.consumables);
             open
             testid={`guide-consumable-${line.row.id}`}
           >
-            <Fragment slot="lead">
-              {line.row.icon !== undefined ? (
-                <img
-                  src={dataUrl(build, `icons/${line.row.icon}.webp`)}
-                  alt=""
-                  width="28"
-                  height="28"
-                  loading="lazy"
-                  decoding="async"
-                  class="guide-extras-icon"
-                />
-              ) : (
-                <span class="guide-extras-icon" aria-hidden="true" />
-              )}
-            </Fragment>
+            {line.row.icon !== undefined && (
+              <img
+                slot="lead"
+                src={dataUrl(build, `icons/${line.row.icon}.webp`)}
+                alt=""
+                width="28"
+                height="28"
+                loading="lazy"
+                decoding="async"
+                class="guide-extras-icon"
+              />
+            )}
             <span
               slot="titleContent"
               class:list={[consumableItem(line.row.id) !== undefined && 'gtip guide-extras-tip']}
@@ -113,8 +107,8 @@ const lines = consumableLines(extras.consumables);
     display: flex;
     flex-direction: column;
   }
-  /* Every row leads with the socket: an icon fills it; a row with none, or a file that does not
-     load, shows the dark frame every missing icon shows, never an empty gap. */
+  /* The icon's frame: a file that does not load shows the dark socket every missing icon shows.
+     A row with no icon has no lead at all, so no empty square sits in its gutter. */
   .guide-extras-icon {
     display: block;
     width: 28px;

@@ -162,9 +162,9 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
         # the table is one block: it never wraps under the prose (web GuideStatLane, no StatTable `wrap`)
         notes = ''   # web GuideStatLane: no footnotes under the table
         notes = f'<div class="gnotes" data-wrap-list>{notes}</div>' if notes else ''
-        lane = f'<div class="gstat">{LaneBlock(e(C["statPriorityRailLabel"]), cap + table + notes)}</div>'
+        lane = f'<div class="gstat"><div class="lane-blk">{cap + table + notes}</div></div>'   # no title: the section heading says it
     else:   # no weights for the spec: the guide's own order, unnumbered weights absent (the shipped fallback)
-        lane = LaneBlock(e(C['statPriorityRailLabel']), wrap_list(RowsSlim([Row(e(x), rank=str(i + 1), link=False) for i, x in enumerate(g['statPriority'])])))
+        lane = f'<div class="lane-blk">{wrap_list(RowsSlim([Row(e(x), rank=str(i + 1), link=False) for i, x in enumerate(g["statPriority"])]))}</div>'
     return ReadingSection(SEC['stat-priority'], Prose(s['prose']), lane, 'stat-priority')
 
 
@@ -228,7 +228,7 @@ def extras(g: dict, data: bool = True) -> str:
     x = g['extras']
     lane = ''
     if data and x['data']:
-        ench = RowsSlim([Row(e(r['name']), e(r['slotLabel']), lead=icon(r.get('icon') or '', 28), link=False)
+        ench = RowsSlim([Row(e(r['name']), e(r['slotLabel']), lead=icon(r['icon'], 28) if r.get('icon') else '', link=False)
                          for r in x['data']['enchants']])   # MUST 6: the same icon rows as Consumables
         rows = []
         for line in x['data']['lines']:
@@ -238,7 +238,7 @@ def extras(g: dict, data: bool = True) -> str:
                 r = line['row']
                 # web lib/guides/gear-extras.ts consumableNote: only the slot a stone or oil goes on
                 note = r['gives'].split(', ', 1)[1] if ', ' in r['gives'] else ''
-                rows.append(Row(e(r['name']), e(note[:1].upper() + note[1:]), lead=icon(r.get('icon') or '', 28), link=False))
+                rows.append(Row(e(r['name']), e(note[:1].upper() + note[1:]), lead=icon(r['icon'], 28) if r.get('icon') else '', link=False))
         lane = (LaneBlock(e(C['enchants']), wrap_list(ench))
                 + LaneBlock(e(C['consumables']), wrap_list(RowsSlim(rows))))
     return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables', fold=e(x['fold']))
@@ -253,7 +253,7 @@ def races(g: dict) -> str:
             foot = ''.join(f'<span class="racial">{icon(z["icon"], 20)}<span><b>{e(z["name"])}</b></span></span>' for z in x['racials'])   # name only: the prose says the numbers
             portrait = r.get('portraits', {}).get(x.get('slug', ''))
             rows.append(Row(e(x['name']), title_color=FACTION[x['faction']], lead=icon(portrait, 28) if portrait else '',
-                            link=False, foot=foot, selected=x['recommended']))
+                            link=False, foot=foot))
         head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
         body += f'<div class="grace"><h4 class="sub-h">{e(head)}</h4>' + Rows(rows, True) + '</div>'   # one list, never wrapped
     lines = ''.join(f'<p class="t-small">{e(t)}</p>' for t in r['lines'])
@@ -270,7 +270,8 @@ def leveling(g: dict, level: int = 60, data: bool = True) -> str:
         lane = LaneBlock(e(C['talentsByLevel']),
                          f'<p class="lvl-l"><b class="strong">{e(at["point"])}</b><span class="t-small">{e(at["spent"])}</span></p>'
                          + LevelSlider(level, 10, 60, e(C['levelSliderLabel'])) + TalentTrees(trees_of(at['trees'])) + f'<p>{Link(rsaquo(C["loadInPlanner"]))}</p>')
-    return ReadingSection(SEC['leveling'], prose, lane, 'leveling', fold=e(F['fns']['foldShow'].replace('%s', 'leveling')))
+    # web: the tree sits above its prose in one column (no rail beside nine paragraphs)
+    return ReadingSection(SEC['leveling'], lane + prose, '', 'leveling', fold=e(F['fns']['foldShow'].replace('%s', 'leveling')))
 
 
 def sources(g: dict) -> str:
@@ -297,7 +298,7 @@ def spec_bar(g: dict, open_m: bool = False) -> str:
     end = f'<span class="toc-sel">{sel(e(C["tocBarLabel"]))}</span>'
     spec = e(C['specGroupLabel'])
     return control_bar([(spec, seg(items, label=spec), seg(items, label=spec) + toc_m)],
-                       f'{e(g["specName"])} {e(g["className"])}', end=end, open_m=open_m, label=e(C['barLabel']))
+                       f'{e(g["specName"])} {e(g["className"])}', end=end, open_m=open_m, label=e(C['barLabel']), labels_from=1920)
 
 
 def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, open_m: bool = False, partial: bool = False) -> str:

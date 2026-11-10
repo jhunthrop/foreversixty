@@ -1,8 +1,8 @@
 ---
 // web/src/components/guides/GuideRacesLane.astro
 // The Races lane (guides spec 2026-11-08 §4.3, rulings 0A): the Alliance races, then the Horde,
-// the recommended ones first and marked by the row's accent rule (no pill), each led by its
-// portrait (RaceIcon) with the racials
+// the recommended ones first (the prose names the picks), each led by its portrait (RaceIcon)
+// with the racials
 // that matter for this spec under it (GuideRacials); a line for a recommended race the prose
 // does not name. A race the build ships no portrait for takes a Row with no lead, so its name
 // never sits behind an empty lead column.
@@ -39,7 +39,6 @@ const raceIcons = raceIconsFor(build);
             title: race.name,
             titleTone: { faction: group.faction },
             open: true,
-            selected: race.recommended,
             testid: `guide-race-${race.slug}`,
           };
           const portrait = raceIcons.get(race.slug);

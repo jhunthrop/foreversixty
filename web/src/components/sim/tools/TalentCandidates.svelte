@@ -156,6 +156,12 @@
     return () => onpendingcustom?.(false);
   });
 
+  /** What a build's diff reads against: the character's own build, or for that one the guide build. */
+  function againstOf(loadout: TalentLoadout): TalentLoadout | null {
+    const other = own !== null && loadout.name !== own.name ? own : guide;
+    return other !== null && other.name !== loadout.name ? other : null;
+  }
+
   function isPicked(loadout: TalentLoadout): boolean {
     return picked.some((entry) => entry.name === loadout.name);
   }
@@ -223,8 +229,10 @@
         <div class="sim-loadout-trees min-w-0">
           <TalentTrees trees={loadoutTrees(index, loadout.talents)} build={character.tree_version} />
         </div>
-        {#if own !== null && loadout.name !== own.name}
-          {@const changes = loadoutDiff(index, loadout.talents, own.talents)}
+        <!-- Each build against the other side: a build against the character's own, the character's
+             own against the guide build (h-audit 2026-11-09: its column stood empty). -->
+        {#if againstOf(loadout) !== null}
+          {@const changes = loadoutDiff(index, loadout.talents, againstOf(loadout)?.talents ?? '')}
           <!-- Against the character's own build: what this one takes more of (Gains), then less (Drops). -->
           <div
             class="flex flex-wrap gap-x-8 gap-y-2 text-[13px] leading-5 tabular-nums"
@@ -336,7 +344,8 @@
   /* Below 768 one tree per row at a readable cell, never three trees squeezed to 100 px. */
   @media (max-width: 767px) {
     .sim-loadout-trees :global(.ui-trees-box .ui-trees) {
-      --cell: 36px;
+      /* A tree fills the plate's width: four cells and three gaps, up to 56 px a cell. */
+      --cell: min(56px, calc((100cqw - 3 * var(--cell-gap)) / 4));
       grid-template-columns: calc(4 * var(--cell) + 3 * var(--cell-gap));
     }
   }

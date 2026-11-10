@@ -119,7 +119,8 @@ export const guidesCopy = {
   /** A stat whose weight is below zero beyond its error: no number is printed for it. */
   noGainNote: (labels: string, plural: boolean, role: GuideRole): string =>
     `${labels} ${plural ? 'show' : 'shows'} as "No gain": more of it does not raise your ${ROLE_OUTPUT[role]} at level 60.`,
-  weightColumn: (anchor: string): string => `Weight (${anchor} = 1.00)`,
+  /** The weights column: the 1.00 row is the anchor, so the head says no more. */
+  weightColumn: 'Weight',
   /** "DPS per point", "HPS per point", "Tank score per point". A rating stat's point is a rating
    *  point; the note under the table says so once (ratingNote), not the header. */
   perPointColumn: (role: GuideRole): string => `${ROLE_RATE_LABEL[role]} per point`,

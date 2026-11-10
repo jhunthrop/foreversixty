@@ -130,16 +130,14 @@
       </div>
       <!-- The healers and tanks the simulator does not run: one wrapping line of guide links under
            the table, not a section of their own (h-audit 2026-11-09). -->
-      <div
-        class="border-line-soft flex flex-wrap items-center gap-x-5 border-t px-4 py-2"
-        data-testid="specs-unsimulated"
-      >
-        <span class="text-muted text-[13px]">{simCopy.specsUnsimulatedHeading}</span>
-        <span class="contents" data-testid="specs-grid-unsimulated">
+      <div class="border-line-soft border-t px-4 py-2" data-testid="specs-unsimulated">
+        <span class="text-label text-muted font-bold">{simCopy.specsUnsimulatedHeading}</span>
+        <!-- One aligned grid: four across at 1440, two on a phone; each a guide link with its role. -->
+        <div class="grid grid-cols-2 gap-x-5 md:grid-cols-4" data-testid="specs-grid-unsimulated">
           {#each unsimulatedSpecs as spec (spec.spec)}
             <UnsimulatedSpecCard {spec} />
           {/each}
-        </span>
+        </div>
       </div>
     </div>
   </Section>

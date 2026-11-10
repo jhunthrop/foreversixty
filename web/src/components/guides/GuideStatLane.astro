@@ -4,7 +4,6 @@
 // bar, the weight with the anchor at 1.00, the rate per point), the unit line, the
 // rating note and the notes for the rows with no figure. A spec with no weights lists the
 // guide's own order, unnumbered figures absent.
-import LaneBlock from '../ui/LaneBlock.svelte';
 import Meter from '../ui/Meter.svelte';
 import Row from '../ui/Row.svelte';
 import StatRow from '../ui/StatRow.svelte';
@@ -21,7 +20,7 @@ const { stats, fallback } = Astro.props;
 ---
 
 <div class="guide-stat-lane">
-  <LaneBlock label={guidesCopy.statPriorityRailLabel} testid="guide-stat-table">
+  <div class="guide-stat-block" data-testid="guide-stat-table">
     {stats === undefined ? (
       <div class="guide-stat-rows" data-wrap-list>
         {fallback.map((label, i) => (
@@ -63,10 +62,17 @@ const { stats, fallback } = Astro.props;
         </StatTable>
       </>
     )}
-  </LaneBlock>
+  </div>
 </div>
 
 <style>
+  /* The section's heading names the table: no lane title above it, the lane block's 8 px rhythm. */
+  .guide-stat-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
   /* The stats read as a list of names, not headings (the mock's plain 16/24 names), and the
      empty lead cell takes no height. */
   :global(.guide-stat-lane .ui-st-name) {

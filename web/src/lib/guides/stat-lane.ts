@@ -58,7 +58,6 @@ export function guideStatLane(
     perPointText: perPointText(row.perPoint),
   }));
   const valued = rows.filter((row) => row.reading === 'value');
-  const anchor = valued.find((row) => row.perPercent === undefined)?.label ?? rows[0]!.label;
   const talentHits = bandTalentHits(build, classSlug, band60.talents);
   const hitCap = guideHitCapLine(band60.hitToCap, talentHits);
   const expertiseCap = guideExpertiseCapLine(band60.expertiseToCap, talentHits);
@@ -80,7 +79,7 @@ export function guideStatLane(
     rows,
     ...(hitCap === undefined ? {} : { hitCap }),
     ...(expertiseCap === undefined ? {} : { expertiseCap }),
-    weightHead: guidesCopy.weightColumn(anchor),
+    weightHead: guidesCopy.weightColumn,
     perPointHead: guidesCopy.perPointColumn(role),
     ...(unitRow === undefined
       ? {}

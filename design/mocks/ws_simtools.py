@@ -87,7 +87,8 @@ def run_bar(tool: str) -> str:
     bar = S.run_bar('disabled' if tool != 'weights' else 'ready')
     # Nothing ticked: the count reads muted and the stage ladder waits for a count (BulkRunBar `hasCount`).
     # A weights run says nothing under the bar (BulkRunBar).
-    line = ''
+    reason = {'gear': 'Tick a candidate to try.', 'talents': 'Pick builds to compare.', 'drops': 'Tick a source.'}.get(tool, '')
+    line = f'<span class="t-small">{reason}</span>' if reason else ''
     return bar + f'<div class="pc run-notes"><p>{line}</p></div>'
 
 
@@ -191,7 +192,15 @@ def talent_builds(plated: bool = False) -> str:
     guide = f'<label class="opt">{check()}<span class="grow-n">Guide build, level {LEVEL} &middot; {guide_split()}</span></label>'
     if plated:
         # /sim/talents: each build's three trees beside its tick (TalentCandidates `plate`)
-        own = f'<div class="tb-row">{own}<div class="tb-t">{loadout_trees(OWN_TALENTS)}</div></div>'
+        def diff_groups(changes: list[tuple[str, int]]) -> str:
+            out = ''
+            for title, rows, tone in (('Gains', [c for c in changes if c[1] > 0], 'kill'), ('Drops', [c for c in changes if c[1] < 0], 'wipe')):
+                if rows:
+                    lis = ''.join(f'<li class="{tone}">{"+" if d > 0 else "&minus;"}{abs(d)} <span>{n}</span></li>' for n, d in rows)
+                    out += f'<div class="tb-g"><h4 class="t-label">{title}</h4><ul class="tb-d">{lis}</ul></div>'
+            return out
+        own = (f'<div class="tb-row">{own}<div class="tb-t">{loadout_trees(OWN_TALENTS)}'
+               f'<div class="tb-gs">{diff_groups(loadout_diff(OWN_TALENTS, guide_talents()))}</div></div></div>')
         changes = loadout_diff(guide_talents(), OWN_TALENTS)
         groups = ''
         for title, rows, tone in (('Gains', [c for c in changes if c[1] > 0], 'kill'), ('Drops', [c for c in changes if c[1] < 0], 'wipe')):
@@ -263,7 +272,8 @@ def drops() -> str:
         if not shown:
             # The gated kind's heading, then one line per dated source and the rest named once (SourcePicker).
             undated = ', '.join(s['name'] for s in srcs)
-            groups.append(f'<div class="src-g"><p class="t-small gl2">{label}: No date yet: {undated}</p></div>')
+            opened_n = sum(1 for x in srcs if is_open(x))
+            groups.append(f'<div class="src-g"><details class="disc"><summary>{label} <span class="t-small">{opened_n} of {len(srcs)} open</span></summary></details></div>')
             continue
         rows = ''
         if kind == 'rep':
@@ -386,7 +396,7 @@ def specs() -> str:
     meta = ''
     heads = ('<div class="spec-heads" aria-hidden="true"><span class="rk">Rank</span><span class="sbar">Raid BiS at 60</span>'
              '<span class="dps">DPS</span></div>') if top else ''
-    under = f'<div class="un"><span class="t-small">Healers and tanks</span>{others}</div>'
+    under = f'<div class="un"><span class="t-label">Healers and tanks</span><div class="un-g">{others}</div></div>'
     return finish('Spec support', head('specs') + ledger(Section('Damage specs', heads + Rows(rows) + under, meta=meta, flush=True)))
 
 
@@ -433,7 +443,7 @@ TOOL_CSS = '''<style>
 .tb-row{display:grid;gap:4px 24px;padding:12px 0;border-bottom:1px solid var(--line-soft,var(--line));align-self:stretch}.tb-row:last-of-type{border-bottom:0}@media(min-width:768px){.tb-row{grid-template-columns:260px minmax(0,1fr);align-items:start}}
 .src-l{display:flex;align-items:center;gap:8px;min-height:44px}.src-l .opt{min-width:0}.bcount{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center}.pl{padding-left:8px}.later{margin:0;padding-top:4px;font-size:13px}.gl2{margin:0;padding:4px 0;font-size:13px;line-height:20px}.gl1{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-height:44px;margin:0;font-size:14px;line-height:24px}.gl1 b{font-size:15px}.disc-b{padding:4px 0 8px}
 .tb-t{display:grid;align-items:start;gap:12px 32px;min-width:0}@media(min-width:1024px){.tb-t{grid-template-columns:600px minmax(0,1fr)}}.tb-t .trees.cmp{--cell:clamp(18px,calc((100cqw - 2 * var(--tg) - 9 * var(--cg)) / 12 - 0.5px),44px)}.tb-d{display:flex;flex-direction:column;margin:0;padding:0;list-style:none;font-size:13px;line-height:20px}.tb-gs{display:flex;flex-wrap:wrap;gap:8px 32px}.tb-g h4{margin:0;padding-bottom:4px}.tb-d .kill{color:var(--kill)}.tb-d .wipe{color:var(--wipe)}.tb-d span{color:var(--text)}
-.spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:48px;text-align:right}.spec-heads{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:4px 16px 0;font:700 12px/16px var(--font-body);color:var(--muted)}.spec-heads .rk{width:48px;text-align:right}.spec-heads .dps{width:64px;text-align:right}.spec-fig .dps{width:64px;text-align:right;font-weight:700}.sbar{display:none;width:240px}@media(min-width:768px){.sbar{display:block}}.spec-n>summary{color:inherit;font-size:15px;font-weight:700;white-space:nowrap}.un{display:flex;flex-wrap:wrap;align-items:center;column-gap:20px;padding:8px 16px;border-top:1px solid var(--line-soft,var(--line))}.un-l{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:700;text-decoration:none}</style>'''
+.spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:48px;text-align:right}.spec-heads{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:4px 16px 0;font:700 12px/16px var(--font-body);color:var(--muted)}.spec-heads .rk{width:48px;text-align:right}.spec-heads .dps{width:64px;text-align:right}.spec-fig .dps{width:64px;text-align:right;font-weight:700}.sbar{display:none;width:240px}@media(min-width:768px){.sbar{display:block}}.spec-n>summary{color:inherit;font-size:15px;font-weight:700;white-space:nowrap}.un{padding:8px 16px;border-top:1px solid var(--line-soft,var(--line))}.un-g{display:grid;grid-template-columns:1fr 1fr;column-gap:20px}@media(min-width:768px){.un-g{grid-template-columns:repeat(4,1fr)}}.un-l{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:700;text-decoration:none}</style>'''
 
 
 def finish(title: str, body: str) -> str:

@@ -288,15 +288,24 @@
             bulkCopy.opensLater,
           )}
           <!-- One line: the kind, then what opens when (h-audit 2026-11-09). -->
-          <!-- Nothing to tick: a plain muted line, no heading or group chrome. -->
-          <p class="text-muted m-0 py-1 text-[13px] leading-5" data-testid={`sim-kind-${group.kind}-gated`}>
-            {SOURCE_KIND_LABELS[group.kind]}:
-            {[
-              ...gated.dated,
-              ...(gated.undated.length > 0 ? [bulkCopy.sourcesNoDate(gated.undated)] : []),
-            ].join(' · ')}
-            <span class="sr-only">{toolFixCopy.sourcesAllGated}</span>
-          </p>
+          <!-- Nothing to tick yet: the kind in the same form as the others, its count "0 of 7 open",
+               opening to the dates (h-audit 2026-11-09). -->
+          <Disclosure
+            summary={SOURCE_KIND_LABELS[group.kind]}
+            meta={bulkCopy.sourcesOpen(
+              group.sources.filter((source) => isOpen(phases, source, now)).length,
+              group.sources.length,
+            )}
+            testid={`sim-kind-${group.kind}-list`}
+          >
+            <p class="text-muted m-0 text-[13px] leading-5" data-testid={`sim-kind-${group.kind}-gated`}>
+              {[
+                ...gated.dated,
+                ...(gated.undated.length > 0 ? [bulkCopy.sourcesNoDate(gated.undated)] : []),
+              ].join(' · ')}
+              <span class="sr-only">{toolFixCopy.sourcesAllGated}</span>
+            </p>
+          </Disclosure>
         {:else}
           <Disclosure
             summary={SOURCE_KIND_LABELS[group.kind]}

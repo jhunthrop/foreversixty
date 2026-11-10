@@ -239,7 +239,7 @@ for (const [label, viewport] of [
         page.locator('#races [data-testid^="guide-race-"]:not([data-testid="guide-race-table"])'),
       ).toHaveCount(6);
       const gnome = page.getByTestId('guide-race-gnome');
-      await expect(gnome).toHaveAttribute('aria-current', 'true');
+      await expect(gnome).not.toHaveAttribute('aria-current', 'true');
       await expect(gnome).toContainText('Eureka!');
       await expect(gnome).toContainText('Expansive Mind');
       // The prose names both picks, so no recommended-race line is said again under the lane.

@@ -121,6 +121,11 @@
       >{/if}
     <!-- The stage ladder only means something once there are combinations to run; a weights run
          says nothing here (h-audit 2026-11-09). -->
+    <!-- Run is disabled with nothing to run: say why, in the tool's words (h-audit 2026-11-09). -->
+    {#if combinationTool && store.character !== null && countLabel === '' && !running && store.message === null}<span
+        class="text-muted"
+        data-testid="sim-run-reason">{bulkCopy.runReason[store.tool] ?? ''}</span
+      >{/if}
     {#if combinationTool && hasCount}<span class="text-muted">{bulkCopy.precisionNote[store.precision]}</span
       >{/if}
   </p>

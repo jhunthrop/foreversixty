@@ -100,7 +100,7 @@ Hit matters up to 9%, the cap for your special attacks against a raid boss; Sure
 
 ## Best in slot
 
-Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Survival dual-wields, and Predator's Edge's 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick.
+A strong leather piece often beats the mail you can get, so your list mixes both at 60. Survival dual-wields, and Predator's Edge's 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick.
 
 ## Enchants and consumables
 
@@ -144,6 +144,6 @@ At 26 Immolation Trap rank 2 arrives, and with a trap on every pull your mana ru
 
 At 31 you have only the first point of Resourcefulness, and for that one level Raptor Strike rank 1 does more: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 31 and put rank 5 on at 32, when you train it and the second point makes every rank cheap.
 
-Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.
+From 20 you can carry two weapons.
 
 At 46 the new Immolation Trap rank costs more, and with a trap on every pull your mana starts to run short over a chain of them. Rank 6 of Raptor Strike, trained at 40, is the one to use until then, though a Troll does a touch better keeping rank 5 at 40 itself. For 46 and 47, keep rank 5 on your bar instead: most of the hit is your weapon, so it does nearly what rank 6 does for less mana, and the mana it saves goes into traps. Drag rank 5 back from the spellbook as you did at 26. At 48 put rank 7 on the bar. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.

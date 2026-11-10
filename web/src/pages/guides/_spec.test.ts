@@ -179,15 +179,19 @@ describe('/guides/warrior/fury (the page structure)', () => {
     }
   });
 
-  it('puts each lane before its prose in the DOM, and leaves Professions at the measure', async () => {
+  it('puts each lane before its prose in the DOM; Professions and Leveling read in one column', async () => {
     const main = mainOf(await pageHtml('warrior/fury'));
-    for (const anchor of ANCHORS.filter((a) => a !== 'professions')) {
+    for (const anchor of ANCHORS.filter((a) => a !== 'professions' && a !== 'leveling')) {
       const section = sectionOf(main, anchor);
       expect(section, anchor).toMatch(/class="ui-rd-lane[^"]*"[\s\S]*class="ui-rd-prose/);
     }
-    const professions = sectionOf(main, 'professions');
-    expect(professions).toContain('data-solo=""');
-    expect(professions).not.toContain('ui-rd-lane');
+    for (const anchor of ['professions', 'leveling']) {
+      const section = sectionOf(main, anchor);
+      expect(section, anchor).toContain('data-solo=""');
+      expect(section, anchor).not.toContain('ui-rd-lane');
+    }
+    // The leveling tree sits above its prose, full width: no rail beside nine paragraphs.
+    expect(sectionOf(main, 'leveling')).toMatch(/data-testid="guide-talents-by-level"[\s\S]*class="ui-prose/);
   });
 });
 
@@ -381,9 +385,9 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(frost).not.toContain('The caster meal');
     const races = sectionOf(main, 'races');
     expect(races).toContain('data-testid="guide-race-table"');
-    // A recommended race carries the row's accent rule, no pill.
-    expect(races).toMatch(/aria-current="true" data-testid="guide-race-gnome"/);
+    // No pill and no unexplained highlight: the prose names the picks.
     expect(races).not.toContain('>Recommended<');
+    expect(races).not.toContain('aria-current="true"');
     // The guide's own Races prose names both picks, so no pick line repeats it in the lane.
     expect(races).not.toContain('data-testid="guide-race-picks"');
     // The racials come from the race data of the sync that ran: the real build's sentences, or

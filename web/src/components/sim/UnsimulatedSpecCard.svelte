@@ -14,10 +14,10 @@
   let { spec }: { spec: Spec } = $props();
 </script>
 
-<span id={spec.spec} class="inline-flex min-h-11 items-center" data-testid={`spec-unsimulated-${spec.spec}`}>
+<span id={spec.spec} class="flex min-h-11 min-w-0 items-center" data-testid={`spec-unsimulated-${spec.spec}`}>
   <a
     href={`/guides/${classSpecPath(spec.spec)}`}
-    class="inline-flex items-center gap-2 text-[15px] font-bold hover:underline"
+    class="inline-flex min-w-0 items-center gap-2 text-[15px] font-bold hover:underline md:whitespace-nowrap"
     style:color={classColorVar(classOfSpec(spec.spec))}
     data-testid={`spec-guide-${spec.spec}`}
     ><img
