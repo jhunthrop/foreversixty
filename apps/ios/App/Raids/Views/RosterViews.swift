@@ -39,7 +39,7 @@ struct OfficerRow: View {
                 Text(locked ? Copy.officerUnlock : Copy.officerLock)
             }
         }
-        .buttonStyle(BrandButtonStyle(.secondary, height: 48, fullWidth: false))
+        .buttonStyle(BrandButtonStyle(.quiet, height: 48, fullWidth: false))
         .disabled(ended || !controller.facts.canLock || controller.offline)
         .opacity(ended ? 0.5 : 1)
     }
@@ -53,7 +53,7 @@ struct OfficerRow: View {
                 Text(controller.copied ? Copy.officerCopied : Copy.officerCopy)
             }
         }
-        .buttonStyle(BrandButtonStyle(.secondary, height: 48, fullWidth: false))
+        .buttonStyle(BrandButtonStyle(.quiet, height: 48, fullWidth: false))
         .disabled(ended)
         .opacity(ended ? 0.5 : 1)
     }

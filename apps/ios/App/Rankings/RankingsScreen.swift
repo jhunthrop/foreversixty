@@ -225,9 +225,7 @@ extension View {
     /// The character page's bar (board F11.4): back, then the Watch star and share, each a
     /// 44 pt target drawn without the shared glass ground so the two read as one group.
     func characterBar(title: String, share: ShareItem, star: WatchStarState?, toggle: @escaping () -> Void) -> some View {
-        navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(removing: .title)
+        pushedBandBar(title)
             .toolbar {
                 if let star {
                     ToolbarItem(placement: .topBarTrailing) {

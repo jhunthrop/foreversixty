@@ -23,15 +23,13 @@ struct ReportsListView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            BandHead(title: Copy.reportsTitle)
             switch phase {
             case .signedOut:
-                SimsTitle(text: Copy.reportsTitle)
                 signedOut
             case .loading:
-                SimsTitle(text: Copy.reportsTitle)
                 ReportsSkeleton()
             case .failed:
-                SimsTitle(text: Copy.reportsTitle)
                 ReportsErrorCard(text: Copy.reportsFailed, retry: actions.retry).padding(.horizontal, 16).padding(.top, 12)
             case let .loaded(content):
                 if let since = content.offlineSince {
@@ -40,7 +38,6 @@ struct ReportsListView: View {
                 if let since = content.staleSince {
                     StaleStrip(time: OfflineStamp.format(since, now: now), retry: actions.retry)
                 }
-                SimsTitle(text: Copy.reportsTitle)
                 loaded(content)
             }
         }

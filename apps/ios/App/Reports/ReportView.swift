@@ -39,14 +39,13 @@ struct ReportView: View {
     @ViewBuilder
     private func loaded(_ content: ReportContent) -> some View {
         let report = content.report
+        BandHead(title: report.zone ?? report.title) { header(report) }
         if let since = content.offlineSince {
             OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now)))
         }
         if let since = content.staleSince {
             StaleStrip(time: OfflineStamp.format(since, now: now), retry: actions.retry)
         }
-        SimsTitle(text: report.zone ?? report.title)
-        header(report)
         VStack(alignment: .leading, spacing: 22) {
             switch report.status {
             case ReportStatus.processing:

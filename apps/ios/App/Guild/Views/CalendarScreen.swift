@@ -221,9 +221,8 @@ struct CalendarContentView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .buttonStyle(BrandButtonStyle(.secondary, height: 48))
+        .buttonStyle(BrandButtonStyle(.quiet, height: 48))
         .disabled(state.linkOffline || busy)
-        .opacity(state.linkOffline ? 0.5 : 1)
     }
 }
 

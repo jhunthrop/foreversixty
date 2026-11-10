@@ -95,13 +95,13 @@ struct PlanView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpace.space4) {
-                card
+            VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: Copy.youPlan)
+                card.padding(FSSpace.space4)
             }
-            .padding(FSSpace.space4)
         }
         .screenGround()
-        .navigationTitle(Copy.youPlan)
+        .pushedBandBar(Copy.youPlan)
     }
 
     private var card: some View {

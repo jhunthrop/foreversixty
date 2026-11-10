@@ -49,9 +49,7 @@ struct GuidesScreen: View {
             dates: changes.dates, changelog: changes.changelog, now: dependencies.now(), actions: rootActions
         )
         .refreshable { await load(segment) }
-        .navigationTitle(Copy.guidesTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(removing: .title)
+        .pushedBandBar(Copy.guidesTitle)
         .toolbar {
             if segment == .tiers {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -109,7 +107,7 @@ struct GuidesScreen: View {
                 }
             }
             .screenGround()
-            .navigationBarTitleDisplayMode(.inline)
+            .pushedBandBar(GameClass(rawValue: slug)?.name ?? slug)
         case let .guide(spec):
             GuideScreen(spec: spec, dependencies: dependencies, openGear: openBis) { home.refreshSaved() }
         case let .entry(id):
@@ -119,7 +117,7 @@ struct GuidesScreen: View {
                 }
             }
             .screenGround()
-            .navigationBarTitleDisplayMode(.inline)
+            .pushedBandBar(changes.changelog.value?.entries.first(where: { $0.id == id })?.title ?? Copy.guidesTitle)
         }
     }
 }
@@ -165,10 +163,10 @@ struct GuidesRootView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: Copy.guidesTitle)
                 if segment == .guides, case let .loaded(_, since) = homePhase {
                     GuidesOfflineStrip(since: since, now: now)
                 }
-                SimsTitle(text: Copy.guidesTitle)
                 SegmentBar(items: GuidesSegment.available(tiersOn: tiersOn), selection: segment, title: \.title, select: actions.selectSegment)
                     .padding(.horizontal, GuidesLayout.gutter)
                     .padding(.bottom, 14)
@@ -249,14 +247,11 @@ struct GuideScreen: View {
 }
 
 extension View {
-    /// A guide's bar (spec F9.2): back, the spec in the class colour, share.
+    /// A guide's bar (spec F9.2, N3): back and share on the clear bar; the band head names the guide.
     func guideBar(_ guide: GuideFile?) -> some View {
-        navigationBarTitleDisplayMode(.inline)
+        pushedBandBar(guide.map(GuideCopy.title) ?? Copy.guidesTitle)
             .toolbar {
                 if let guide {
-                    ToolbarItem(placement: .principal) {
-                        Text(guide.specName).font(ScaledType.name).foregroundStyle(ClassColor.of(guide.classSlug))
-                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         ShareButton(ShareText.guide(guide), accessibility: Copy.guidesShare)
                     }

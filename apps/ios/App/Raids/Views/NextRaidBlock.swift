@@ -145,10 +145,12 @@ struct NextRaidLineView: View {
     }
 }
 
-/// In, Late, Bench, Out: four 44 pt buttons 8 apart (iOS, m-ios-home), the current answer in teal (a
-/// change of plan is one tap; flows spec appendix C, "the answered state without answers"). The one
-/// answer control: Home, the Raid tab, the raid page and raid night all draw it. `pending` rings the
-/// answer waiting to send; `busy` reads the shown one as saving.
+/// In, Late, Bench, Out as one segmented control (Android `FlowSegmented`): one pill on the 1 pt rule
+/// with hairline dividers, 44 high; the answer given fills its segment in the teal edge, the others sit
+/// on the opaque panel in body ink, and nothing is filled before an answer. The one answer control:
+/// Home, the Raid tab, the raid page and raid night all draw it. `pending` rings the answer waiting to
+/// send; `busy` reads the shown one as saving. Disabled (offline, locked), the whole control is at 50%.
+/// At the accessibility sizes the answers go two by two on the field radius, so no word breaks.
 struct RaidAnswerButtons: View {
     let selected: SignupState?
     var pending: SignupState?
@@ -156,34 +158,80 @@ struct RaidAnswerButtons: View {
     var accessibilityLabel = Copy.homeRaidAnswers
     let answer: (SignupState) -> Void
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.answersOffline) private var offline
 
-    /// The pending ring's inset, dash and width inside a button.
+    /// The pending ring's inset, dash and width inside a segment.
     private static let pendingInset: CGFloat = 4
     private static let pendingDash: [CGFloat] = [4, 3]
     private static let pendingLine: CGFloat = 1.5
+    private static let disabledOpacity = 0.5
+
+    private var isGrid: Bool { typeSize.isAccessibilitySize }
+    private var shape: AnyShape {
+        isGrid ? AnyShape(RoundedRectangle(cornerRadius: FSRadius.field)) : AnyShape(Capsule())
+    }
 
     var body: some View {
-        // At the accessibility sizes the answers go two by two, so no word breaks.
-        let columns = typeSize.isAccessibilitySize ? 2 : SignupState.allCases.count
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: FSSpace.space2), count: columns), spacing: FSSpace.space2) {
-            ForEach(SignupState.allCases) { state in
-                Button(state.label) { answer(state) }
-                    .buttonStyle(FSButtonStyle(state == selected ? .primary : .secondary, padX: FSButtonStyle.padXTight))
-                    .lineLimit(1)
-                    .overlay {
-                        if state == pending {
-                            RoundedRectangle(cornerRadius: Theme.Radius.control - Self.pendingInset / 2)
-                                .strokeBorder(FSColor.gold, style: StrokeStyle(lineWidth: Self.pendingLine, dash: Self.pendingDash))
-                                .padding(Self.pendingInset)
-                                .allowsHitTesting(false)
-                        }
+        let rows = isGrid ? [Array(SignupState.allCases.prefix(2)), Array(SignupState.allCases.suffix(2))] : [SignupState.allCases]
+        VStack(spacing: 0) {
+            ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
+                if index > 0 { FSColor.rule.frame(height: FSStroke.hairline) }
+                HStack(spacing: 0) {
+                    ForEach(Array(row.enumerated()), id: \.element) { position, state in
+                        if position > 0 { FSColor.rule.frame(width: FSStroke.hairline) }
+                        segment(state)
                     }
-                    .accessibilityAddTraits(state == selected ? .isSelected : [])
-                    .accessibilityValue(state == selected && busy ? Copy.raidsA11ySaving : state == pending ? Copy.raidsA11yPending : "")
+                }
+                .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .background(FSColor.raised)
+        .clipShape(shape)
+        // The 1 pt rule as a ring of fill round the pill: a stroked capsule draws stray ticks at its ends.
+        .padding(FSStroke.hairline)
+        .background(FSColor.rule, in: shape)
+        .disabled(offline)
+        .opacity(isEnabled && !offline ? 1 : Self.disabledOpacity)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(accessibilityLabel)
+    }
+
+    private func segment(_ state: SignupState) -> some View {
+        let on = state == selected
+        return Button { answer(state) } label: {
+            Text(state.label)
+                .font(ScaledType.segment)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .foregroundStyle(on ? FSColor.strong : FSColor.text)
+                .frame(maxWidth: .infinity, minHeight: FSTarget.min)
+                .background(on ? FSColor.tealEdge : .clear)
+                .overlay {
+                    if state == pending {
+                        RoundedRectangle(cornerRadius: FSRadius.field)
+                            .strokeBorder(FSColor.gold, style: StrokeStyle(lineWidth: Self.pendingLine, dash: Self.pendingDash))
+                            .padding(Self.pendingInset)
+                    }
+                }
+                .contentShape(.rect)
+                .parityItem(.button)
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(on ? .isSelected : [])
+        .accessibilityValue(on && busy ? Copy.raidsA11ySaving : state == pending ? Copy.raidsA11yPending : "")
+    }
+}
+
+/// True while the page is offline: an answer needs a connection, so the answers read as disabled.
+private struct AnswersOfflineKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+extension EnvironmentValues {
+    var answersOffline: Bool {
+        get { self[AnswersOfflineKey.self] }
+        set { self[AnswersOfflineKey.self] = newValue }
     }
 }
 

@@ -36,20 +36,27 @@ struct DeleteAccountView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpace.space4) {
-                Text(Copy.sharedAccountDeleteIntro).font(ScaledType.body).foregroundStyle(FSColor.strong)
-                group(Copy.sharedAccountDeleteDeletedTitle, Self.deletedItems, glyph: "minus")
-                group(Copy.sharedAccountDeleteKeptTitle, Self.keptItems, glyph: "checkmark", tint: FSColor.muted)
-                if !consequenceLines.isEmpty {
-                    group(Copy.sharedAccountDeleteLoseTitle, consequenceLines, glyph: "exclamationmark.circle")
-                }
-                confirmation
-                Text(Copy.sharedAccountDeleteEmail).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
+            VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: Copy.sharedAccountDeleteTitle)
+                form
             }
-            .padding(FSSpace.space4)
         }
         .screenGround()
-        .navigationTitle(Copy.sharedAccountDeleteTitle)
+        .pushedBandBar(Copy.sharedAccountDeleteTitle)
+    }
+
+    private var form: some View {
+        VStack(alignment: .leading, spacing: FSSpace.space4) {
+            Text(Copy.sharedAccountDeleteIntro).font(ScaledType.body).foregroundStyle(FSColor.strong)
+            group(Copy.sharedAccountDeleteDeletedTitle, Self.deletedItems, glyph: "minus")
+            group(Copy.sharedAccountDeleteKeptTitle, Self.keptItems, glyph: "checkmark", tint: FSColor.muted)
+            if !consequenceLines.isEmpty {
+                group(Copy.sharedAccountDeleteLoseTitle, consequenceLines, glyph: "exclamationmark.circle")
+            }
+            confirmation
+            Text(Copy.sharedAccountDeleteEmail).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
+        }
+        .padding(FSSpace.space4)
     }
 
     private var confirmLabel: String { AccountCopy.deletionPrompt(battleTag: battleTag) }

@@ -271,16 +271,9 @@ public struct RowPressStyle: ButtonStyle {
 }
 
 public extension View {
-    /// A chip or pill's ground: the capsule filled with `fill` and its 1 pt border inside the edge.
-    func pillSurface(fill: Color, line: Color) -> some View {
-        background { Capsule().fill(fill) }
-            .overlay { Capsule().strokeBorder(line, lineWidth: 1) }
-            .contentShape(.capsule)
-    }
-
-    /// A filter chip's ground (search scopes, roster roles, rankings filters, the guides' choices):
-    /// filled with `fill` and its 1 pt border on the control radius, as the web's chips. Tags take
-    /// the field radius (`TagView`); only a pill that is not a filter stays a capsule.
+    /// A chip's ground (search scopes, roster roles, rankings filters, the guides' and the BiS picker's
+    /// choices): filled with `fill` and its 1 pt border on the control radius, as the web's chips. Tags
+    /// take the field radius (`TagView`).
     func chipSurface(fill: Color, line: Color) -> some View {
         let shape = RoundedRectangle(cornerRadius: FSRadius.control)
         return background { shape.fill(fill) }

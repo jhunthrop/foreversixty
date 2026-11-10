@@ -19,10 +19,8 @@ struct SharedBuildView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Text(Copy.planSharedTitle).font(ScaledType.title).foregroundStyle(FSColor.strong)
-                    .accessibilityAddTraits(.isHeader)
-                    .padding(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
-                content
+                BandHead(title: Copy.planSharedTitle)
+                content.padding(.top, BandReach.gap)
             }
             .padding(.bottom, 40)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -140,9 +138,7 @@ struct SharedBuildScreen: View {
             .navigationDestination(isPresented: $comparing) {
                 if let target = compareTarget { SharedBuildCompareScreen(presenter: target.presenter, characterName: target.name) }
             }
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(FSColor.bg, for: .navigationBar)
+            .pushedBandBar(Copy.planSharedTitle)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     ShareLink(item: DeepLink.sharedBuild(id: model.id).url) {

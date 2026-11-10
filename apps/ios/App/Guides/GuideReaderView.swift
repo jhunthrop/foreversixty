@@ -28,26 +28,24 @@ struct GuideReaderView: View {
         case .failed:
             ScrollView { ReportsErrorCard(text: Copy.guidesError, retry: actions.retry).padding(GuidesLayout.gutter) }
         case let .loaded(content, since):
-            GuideScroll(content: content, actions: actions)
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    VStack(spacing: 0) {
-                        NewDataStrip(newData, action: actions.update)
-                        GuidesOfflineStrip(since: since, now: now)
-                    }
-                }
+            GuideScroll(content: content, actions: actions) {
+                NewDataStrip(newData, action: actions.update)
+                GuidesOfflineStrip(since: since, now: now)
+            }
         }
     }
 }
 
 /// The loaded guide: the head band scrolls away, the section strip sticks under the bar, and
-/// the strip follows the scroll.
-struct GuideScroll: View {
+/// the strip follows the scroll. `strips` (new data, offline) sit under the band.
+struct GuideScroll<Strips: View>: View {
     let content: GuideContent
     var actions = GuideActions()
+    @ViewBuilder var strips: () -> Strips
 
     @State private var tops: [GuideSection: CGFloat] = [:]
 
-    private static let space = "guide"
+    private static var space: String { "guide" }
 
     private var sections: [GuideSection] { GuideSection.of(content.guide) }
 
@@ -61,6 +59,7 @@ struct GuideScroll: View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
                     GuideHead(guide: content.guide, build: content.build)
+                    strips()
                     Section {
                         GuideBody(content: content, space: Self.space, actions: actions) { tops[$0] = $1 }
                         .padding(.bottom, GuidesLayout.tabBarClearance)
@@ -98,7 +97,8 @@ struct GuideHead: View {
         }
         .padding(GuidesLayout.gutter)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .surfaceBand()
+        // The band runs up under the clear bar and the status bar (N3).
+        .bandUnderBars()
     }
 }
 

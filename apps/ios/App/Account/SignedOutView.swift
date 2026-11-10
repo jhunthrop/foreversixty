@@ -136,19 +136,19 @@ struct NoCharactersView: View {
     let onGetAddon: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: FSSpace.space4) {
-            Text(Copy.signinNoCharsTitle)
-                .font(ScaledType.h2)
-                .foregroundStyle(FSColor.strong)
-                .accessibilityAddTraits(.isHeader)
-            Text(Copy.signinNoCharsBody)
-                .font(ScaledType.body)
-                .foregroundStyle(FSColor.text)
-                .fixedSize(horizontal: false, vertical: true)
-            Button(Copy.sharedCtaGetAddonAndCompanion, action: onGetAddon)
-                .buttonStyle(BrandButtonStyle(.secondary))
+        VStack(alignment: .leading, spacing: 0) {
+            // The head on the band under the bars (N3), then the line and the one action.
+            BandHead(title: Copy.signinNoCharsTitle)
+            VStack(alignment: .leading, spacing: FSSpace.space4) {
+                Text(Copy.signinNoCharsBody)
+                    .font(ScaledType.body)
+                    .foregroundStyle(FSColor.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button(Copy.sharedCtaGetAddonAndCompanion, action: onGetAddon)
+                    .buttonStyle(BrandButtonStyle(.secondary))
+            }
+            .padding(FSSpace.space4)
         }
-        .padding(FSSpace.space4)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .screenGround()
     }

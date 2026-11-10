@@ -55,6 +55,8 @@ struct NotAnsweredView: View {
                     // The status filters are choice chips, never primary buttons (one primary a screen).
                     Button(chip.title) { actions.select(chip.filter) }
                         .buttonStyle(MinuteChipStyle(on: chip.filter == content.filter, height: FSButtonStyle.smallHeight, fillsWidth: false))
+                        // Each chip keeps its whole label; the row scrolls sideways instead of clipping.
+                        .fixedSize()
                         .accessibilityAddTraits(chip.filter == content.filter ? .isSelected : [])
                 }
             }
@@ -68,7 +70,7 @@ struct NotAnsweredView: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(spacing: FSSpace.space3) {
                 if let role = mention.role { FSButton(role, kind: .primary, action: actions.mentionRole) }
-                FSButton(mention.all, kind: mention.role == nil ? .primary : .secondary, action: actions.mentionAll)
+                FSButton(mention.all, kind: mention.role == nil ? .primary : .quiet, action: actions.mentionAll)
             }
             .disabled(mentioning)
             .padding(.top, RaidFlowSpacing.buttons)

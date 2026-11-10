@@ -173,7 +173,7 @@ struct GuideBuildRowView: View {
     }
 }
 
-/// Opener, Priority, Cooldowns: numbered rows of the guide's own lists, then the footer.
+/// Opener, Priority, Cooldowns: numbered rows of the guide's own lists.
 struct GuideRotationSection: View {
     let rotation: GuideRotation?
     let build: String
@@ -182,12 +182,10 @@ struct GuideRotationSection: View {
         VStack(alignment: .leading, spacing: 12) {
             ForEach(RotationRows.groups(rotation)) { group in
                 VStack(alignment: .leading, spacing: 8) {
-                    Label12(group.title).accessibilityAddTraits(.isHeader)
+                    Label12(group.title, color: FSColor.mutedGround).accessibilityAddTraits(.isHeader)
                     GuideCardRows(items: group.rows) { GuideRotationRow(row: $0, build: build) }
                 }
             }
-            Text(Copy.guidesRotationFooter).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
-                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

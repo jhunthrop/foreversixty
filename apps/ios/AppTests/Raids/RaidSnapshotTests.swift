@@ -21,7 +21,10 @@ struct RaidSnapshotTests {
             traits.preferredContentSizeCategory = large ? .accessibilityExtraExtraExtraLarge : .large
         }
         let config = ViewImageConfig(safeArea: Self.safeArea, size: CGSize(width: Self.phone.width, height: height), traits: traits)
+        // The repo's game icons, as the raid flows' tests paint them.
         let sized = view
+            .environment(\.itemIconSource, RepoItemIconSource())
+            .environment(\.raidIconBuild, HomeFlowTestData.build)
             .environment(\.dynamicTypeSize, large ? .accessibility5 : .large)
             .preferredColorScheme(.dark)
         assertSnapshot(
@@ -34,7 +37,7 @@ struct RaidSnapshotTests {
     // MARK: Raid page (F4.2, F4.6 to F4.12, F4.18 to F4.21)
 
     private func page(_ controller: SignupController, offline: Date? = nil) -> some View {
-        NavigationStack {
+        PushedScreen(back: AppTab.raid.title) {
             RaidPageContent(
                 controller: controller, clock: RaidTime.clock, now: { RaidTime.now }, currentKey: nil,
                 offlineSince: offline, guildName: "OLYMPUS XXVII", openNight: { _ in }
@@ -147,7 +150,7 @@ struct RaidSnapshotTests {
     private func night(_ fixture: String) throws -> some View {
         let night = try RaidFixture.load(RaidNightSummary.self, fixture)
         let model = RaidNightModel(raid: 29, service: FakeRaidService(), cache: NoRaidCache(), now: { RaidTime.now }, initial: .loaded(night))
-        return NavigationStack { RaidNightView(model: model, clock: RaidTime.clock, now: { RaidTime.now }) }
+        return PushedScreen(back: AppTab.raid.title) { RaidNightView(model: model, clock: RaidTime.clock, now: { RaidTime.now }) }
     }
 
     @Test func raidNight_premium() throws { snap(try night("me.raid-night"), "raid-night-premium-ios") }

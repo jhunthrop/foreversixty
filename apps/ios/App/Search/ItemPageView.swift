@@ -18,21 +18,19 @@ enum ItemPageAnchor: CaseIterable, Hashable {
 }
 
 /// F12.4 and F12.5, pushed from Search, from F2.6's `More about this item` and from a BiS row's
-/// sheet. Back only, titled `Search` from search and `Back` elsewhere; no share (no web item page).
+/// sheet. Back only on the clear bar (N3), the item named by its band head; no share (no web item page).
 struct ItemPageScreen: View {
     let route: ItemPageRoute
     let dependencies: SearchDependencies
-    let backTitle: String
     /// A spec row's chevron: that spec's list in the BiS tab.
     let openList: (BisSelection) -> Void
 
     @State private var store: ItemPageStore
     @Environment(\.scenePhase) private var scenePhase
 
-    init(route: ItemPageRoute, dependencies: SearchDependencies, backTitle: String = Copy.itemPageBackPlain, openList: @escaping (BisSelection) -> Void) {
+    init(route: ItemPageRoute, dependencies: SearchDependencies, openList: @escaping (BisSelection) -> Void) {
         self.route = route
         self.dependencies = dependencies
-        self.backTitle = backTitle
         self.openList = openList
         _store = State(initialValue: ItemPageStore(route: route, dependencies: dependencies))
     }
@@ -46,70 +44,13 @@ struct ItemPageScreen: View {
         .safeAreaInset(edge: .top, spacing: 0) {
             NewDataStrip(store.newData) { Task { await store.applyNewData() } }
         }
-        .itemPageBar(backTitle: backTitle)
+        .pushedBandBar(store.state.look.name ?? Copy.itemPageBackPlain)
         .task {
             await store.load()
             await store.checkForNewData()
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await store.checkForNewData() } }
-        }
-    }
-}
-
-extension View {
-    /// The item page's bar: no title, and a back control that names where it returns to (the
-    /// iOS 26 bar draws a bare chevron otherwise). The edge swipe still goes back.
-    func itemPageBar(backTitle: String) -> some View {
-        modifier(ItemPageBar(backTitle: backTitle))
-    }
-}
-
-private struct ItemPageBar: ViewModifier {
-    let backTitle: String
-    @Environment(\.dismiss) private var dismiss
-
-    func body(content: Content) -> some View {
-        content
-            // The board's back pill (`‹ Search`) in place of the system bar, whose iOS 26 back
-            // button draws a bare chevron.
-            .toolbar(.hidden, for: .navigationBar)
-            .safeAreaInset(edge: .top, spacing: 0) {
-                HStack {
-                    Button { dismiss() } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "chevron.left").font(.system(size: 15, weight: .semibold))
-                            Text(backTitle).font(ScaledType.bodyStrong).lineLimit(1)
-                        }
-                        .foregroundStyle(FSColor.strong)
-                        .padding(.horizontal, 14)
-                        .frame(minHeight: SearchLayout.target)
-                        .background { RingedCapsule(fill: FSColor.raised, ring: FSColor.lineSoft) }
-                        .glassEffect(.regular, in: .capsule)
-                        .contentShape(.capsule)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(backTitle)
-                    Spacer()
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 6)
-                .background(FSColor.bg)
-            }
-            .background(SwipeBackKeeper())
-    }
-}
-
-/// A hidden navigation bar also turns the edge swipe off; this turns it back on.
-private struct SwipeBackKeeper: UIViewControllerRepresentable {
-    func makeUIViewController(context _: Context) -> Keeper { Keeper() }
-    func updateUIViewController(_: Keeper, context _: Context) {}
-
-    final class Keeper: UIViewController {
-        override func viewDidAppear(_ animated: Bool) {
-            super.viewDidAppear(animated)
-            navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-            navigationController?.interactivePopGestureRecognizer?.delegate = nil
         }
     }
 }
@@ -147,17 +88,10 @@ struct ItemPageView: View {
                 if state.isKnown {
                     // Not lazy: the page is short, and every section must exist for the strip's
                     // jumps. The strip sits under the head and pick card, as on Android.
-                    VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 0) {
                         head
-                        pickSlot
-                        chips(proxy)
-                        tooltip.id(ItemPageAnchor.item)
-                        sourcesSection.id(ItemPageAnchor.source).padding(.top, 6)
-                        specsSection.id(ItemPageAnchor.bisFor).padding(.top, 6)
+                        regions(proxy)
                     }
-                    .scrollTargetLayout()
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 32)
                 } else {
                     Text(Copy.itemPageUnknown)
                         .font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
@@ -179,8 +113,25 @@ struct ItemPageView: View {
         .screenGround()
     }
 
+    /// Everything under the head: the pick, the strip and the three regions, 16 under the band.
+    private func regions(_ proxy: ScrollViewProxy) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            pickSlot
+            chips(proxy)
+            tooltip.id(ItemPageAnchor.item)
+            sourcesSection.id(ItemPageAnchor.source).padding(.top, 6)
+            specsSection.id(ItemPageAnchor.bisFor).padding(.top, 6)
+        }
+        .scrollTargetLayout()
+        .padding(.horizontal, 16)
+        .padding(.top, BandReach.gap)
+        .padding(.bottom, 32)
+    }
+
     // MARK: Head
 
+    /// The head on the band, running up under the clear bar (N3): the icon, the name in its quality
+    /// colour and the meta in the band's secondary ink.
     private var head: some View {
         HStack(alignment: .center, spacing: 14) {
             ItemIconView(icon: state.look.icon, quality: state.look.quality, build: state.build, size: 64)
@@ -194,15 +145,19 @@ struct ItemPageView: View {
                     SkeletonBar(width: 200, height: 24)
                 }
                 if let meta = state.meta {
-                    Text(meta).font(ScaledType.meta).foregroundStyle(FSColor.muted).fixedSize(horizontal: false, vertical: true)
+                    Text(meta).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround).fixedSize(horizontal: false, vertical: true)
                 } else {
                     SkeletonBar(width: 140, height: 12)
                 }
             }
         }
-        .padding(.top, 8)
+        .padding(.horizontal, BandReach.gap)
+        .padding(.top, FSSpace.space2)
+        .padding(.bottom, BandReach.gap)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
+        .bandUnderBars()
     }
 
     @ViewBuilder

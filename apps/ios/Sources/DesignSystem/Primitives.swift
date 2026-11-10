@@ -5,10 +5,11 @@ import UIKit
 // finds all three. Each reads tokens only and reports its parity region or item.
 
 /// `ui/Button` (round 5, web lib/ui/button.ts): 44 pt, 13/16 700 in sentence case, the 6 pt control
-/// radius; primary their teal with the teal edge, secondary their blue, ghost the gold text, danger
-/// the wipe outline. One primary per screen.
+/// radius; primary their teal with the teal edge, secondary their blue, quiet the rule outline (the
+/// action beside a primary, as Android's), ghost the gold text, danger the wipe outline. One primary
+/// per screen.
 public struct FSButtonStyle: ButtonStyle {
-    public enum Kind: Sendable { case primary, secondary, danger, ghost }
+    public enum Kind: Sendable { case primary, secondary, quiet, danger, ghost }
 
     public static let padX: CGFloat = 18
     /// The side padding of a button in a row of equal buttons.
@@ -50,7 +51,7 @@ public struct FSButtonStyle: ButtonStyle {
 
     private var foreground: Color {
         switch kind {
-        case .primary, .secondary: FSColor.strong
+        case .primary, .secondary, .quiet: FSColor.strong
         case .danger: FSColor.wipe
         case .ghost: FSColor.gold
         }
@@ -60,7 +61,7 @@ public struct FSButtonStyle: ButtonStyle {
         switch kind {
         case .primary: pressed ? FSColor.tealEdge : FSColor.teal
         case .secondary: pressed ? FSColor.blueEdge : FSColor.blue
-        case .danger, .ghost: pressed ? FSColor.pressed : .clear
+        case .quiet, .danger, .ghost: pressed ? FSColor.pressed : .clear
         }
     }
 
@@ -68,6 +69,7 @@ public struct FSButtonStyle: ButtonStyle {
         switch kind {
         case .primary: FSColor.tealEdge
         case .secondary: FSColor.blueEdge
+        case .quiet: FSColor.rule
         case .danger: FSColor.wipe.opacity(0.4)
         case .ghost: .clear
         }

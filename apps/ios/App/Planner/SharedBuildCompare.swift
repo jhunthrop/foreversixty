@@ -56,9 +56,7 @@ struct SharedBuildCompareScreen: View {
             openTalent: { sheet = presenter.sheet(shown, talentID: $0) },
             compareFooter: Copy.planCmpOn(name: characterName)
         )
-        .navigationTitle(Copy.planCmpTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(FSColor.bg, for: .navigationBar)
+        .pushedBandBar(Copy.planCmpTitle)
         .sheet(item: $sheet) { TalentRankSheet(model: $0, build: presenter.file.build) }
     }
 }

@@ -53,7 +53,12 @@ struct YourGuideCard: View {
                     Text(GuideCopy.cardMeta(spec)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                         .fixedSize(horizontal: false, vertical: true)
                     if saved {
-                        TagView(text: Copy.guidesSaved, color: FSColor.kill, systemImage: "checkmark").padding(.top, 4)
+                        // The one-line tag while it fits; at the largest sizes it wraps, never widening the page.
+                        ViewThatFits(in: .horizontal) {
+                            TagView(text: Copy.guidesSaved, color: FSColor.kill, systemImage: "checkmark")
+                            WrappingTag(text: Copy.guidesSaved, color: FSColor.kill)
+                        }
+                        .padding(.top, 4)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -124,15 +129,13 @@ struct GuideClassView: View {
     let open: (GuideSpecRef) -> Void
 
     private var specs: [GuideSpecRef] { GuidesIndexLogic.specs(of: classSlug, in: home.index) }
+    private var className: String { specs.first?.className ?? classSlug }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            BandHead(title: className, titleColor: ClassColor.of(classSlug))
             GuidesOfflineStrip(since: offlineSince, now: now)
-            Text((specs.first?.className ?? classSlug))
-                .font(ScaledType.title)
-                .foregroundStyle(ClassColor.of(classSlug))
-                .accessibilityAddTraits(.isHeader)
-                .padding(.horizontal, GuidesLayout.gutter).padding(.top, 8).padding(.bottom, 12)
+            Color.clear.frame(height: BandReach.gap)
             GuideCardRows(items: specs) { spec in
                 Button { open(spec) } label: { GuideSpecRow(spec: spec, build: home.build, saved: home.saved.isSaved(spec.spec)) }
                     .buttonStyle(RowPressStyle())

@@ -28,13 +28,13 @@ struct RankingsView: View {
     var body: some View {
         ScrollViewReader { proxy in
             VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: Copy.rankTitle)
                 if case let .loaded(content) = phase, let since = content.offlineSince {
                     OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now)))
                 }
                 if case let .loaded(content) = phase, let since = content.staleSince {
                     StaleStrip(time: OfflineStamp.format(since, now: now), retry: actions.retry)
                 }
-                SimsTitle(text: Copy.rankTitle)
                 VStack(alignment: .leading, spacing: 12) {
                     switch phase {
                     case .loading:

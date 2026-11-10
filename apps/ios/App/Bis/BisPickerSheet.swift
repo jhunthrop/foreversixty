@@ -152,7 +152,7 @@ struct BisPickerSheet: View {
             }
             .padding(.horizontal, Theme.Spacing.md)
             .frame(minHeight: 48)
-            .pillSurface(
+            .chipSurface(
                 fill: isCurrent ? GameColors.pressedWash : GameColors.controlFill,
                 line: isCurrent ? FSColor.gold : FSColor.lineCard
             )
@@ -163,11 +163,7 @@ struct BisPickerSheet: View {
 
     private func section(_ title: String, @ViewBuilder _ body: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm + 2) {
-            Text(title)
-                .font(ScaledType.label)
-                .tracking(1.5)
-                .foregroundStyle(FSColor.muted)
-                .accessibilityAddTraits(.isHeader)
+            Label12(title).accessibilityAddTraits(.isHeader)
             body()
         }
     }

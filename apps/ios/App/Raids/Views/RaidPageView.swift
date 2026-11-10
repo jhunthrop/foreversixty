@@ -93,12 +93,13 @@ struct RaidPageContent: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    // The head continues the band under the bar, as the web's page head.
+                    // The head continues the band from under the clear bar, as the web's page head (N3).
                     RaidHead(raid: raid, facts: facts, clock: clock, now: now, guildName: guildName)
                         .padding(.horizontal, RaidPageLayout.gutter)
+                        .padding(.top, FSSpace.space2)
                         .padding(.bottom, RaidPageLayout.gutter)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .surfaceBand()
+                        .bandUnderBars()
                     if let offlineSince {
                         OfflineStrip(text: Copy.offlineStrip(time: clock.stripTime(offlineSince, now: now())))
                     }
@@ -123,8 +124,7 @@ struct RaidPageContent: View {
         }
         .screenGround()
         .overlay(alignment: .bottom) { toast }
-        .navigationTitle(raid.title)
-        .navigationBarTitleDisplayMode(.inline)
+        .pushedBandBar(raid.title)
         .toolbar { toolbar }
         .sheet(isPresented: $showsCalendar) {
             CalendarSheet(event: CalendarEvent(raid: raid, guildName: guildName, guild: controller.guild))

@@ -70,7 +70,8 @@ struct BisView: View {
             controlBar
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .surfaceBand()
+        // The band runs up under the bar and the status bar (N3).
+        .bandUnderBars()
     }
 
     /// One row: the range and faction in words, then a gold `Change` that opens the picker. It

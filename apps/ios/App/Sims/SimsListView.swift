@@ -26,7 +26,7 @@ struct SimsListView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SimsTitle(text: Copy.simsTitle)
+            BandHead(title: Copy.simsTitle)
             switch phase {
             case .loading: SimsSkeleton()
             case .failed: errorCard(Copy.simsFailedLoad)
@@ -53,18 +53,9 @@ struct SimsListView: View {
                 serverSection(content)
             }
             mineSection(content)
-            if let footer = footer(content) {
-                Text(footer).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
         }
         .padding(.horizontal, 16)
-        .padding(.top, 12)
-    }
-
-    private func footer(_ content: SimsContent) -> String? {
-        guard !content.mine.isEmpty else { return nil }
-        return entitled ? Copy.simsFooterPremium : Copy.simsFooterFree
+        .padding(.top, BandReach.gap)
     }
 
     @ViewBuilder
@@ -140,18 +131,6 @@ struct SimsListView: View {
 
     private func errorCard(_ text: String) -> some View {
         LoadError(text, retryLabel: Copy.commonTryAgain, retry: actions.retry)
-    }
-}
-
-/// A pushed screen's title in the brand's condensed caps (as Your gear and the raid page).
-struct SimsTitle: View {
-    let text: String
-
-    var body: some View {
-        Text(text).font(ScaledType.title).foregroundStyle(FSColor.strong)
-            .fixedSize(horizontal: false, vertical: true)
-            .accessibilityAddTraits(.isHeader)
-            .padding(.horizontal, 16).padding(.top, 8).padding(.bottom, 4)
     }
 }
 

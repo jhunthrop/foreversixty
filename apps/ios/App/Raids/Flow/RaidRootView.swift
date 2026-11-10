@@ -103,6 +103,7 @@ struct RaidGuildView: View {
             RaidNightBlock(content: night)
         } else if let next = content.next {
             RaidHeadView(content: next, actions: actions.raid).parityRegion(RaidRootView.nextRaidRegion)
+                .environment(\.answersOffline, content.offlineStamp != nil)
             if !content.coming.isEmpty {
                 PanelSection(Copy.raidTabComing, action: (Copy.raidTabRosterLink, { actions.openPage(.roster) })) {
                     RoleRowsView(roles: content.coming)

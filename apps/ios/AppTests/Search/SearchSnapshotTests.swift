@@ -130,7 +130,7 @@ struct SearchSnapshotTests {
     private func page(_ state: ItemPageState, anchor: ItemPageAnchor = .item, specsExpanded: Bool = false) -> some View {
         Pushed(back: Copy.itemPageBack) {
             ItemPageView(state: state, selectedChip: anchor, specsExpanded: specsExpanded)
-                .itemPageBar(backTitle: Copy.itemPageBack)
+                .pushedBandBar(state.look.name ?? Copy.itemPageBackPlain)
         }
     }
 

@@ -2,6 +2,7 @@
 import Foundation
 import Models
 import Networking
+import SwiftUI
 import UIKit
 
 /// The contract fixtures and the repo's icons, read in place for the F2 tests.
@@ -85,4 +86,17 @@ struct RepoItemIconSource: ItemIconSource {
     }
 
     func load(icon: String, build: String) async -> UIImage? { cached(icon: icon, build: build) }
+}
+
+/// A screen as the app shows it pushed: inside a NavigationStack, one level deep under a root titled
+/// `back`, so the clear band bar, the back control and the screen's band head draw as on a phone.
+struct PushedScreen<Content: View>: View {
+    let back: String
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        NavigationStack(path: .constant([1])) {
+            Color.clear.navigationTitle(back).navigationDestination(for: Int.self) { _ in content() }
+        }
+    }
 }

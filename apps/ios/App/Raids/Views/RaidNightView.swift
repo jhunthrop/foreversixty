@@ -84,6 +84,10 @@ struct RaidNightView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                // The head names the night on the band (N3), its meta line in the band's secondary ink.
+                BandHead(title: Copy.nightTitle) {
+                    if case let .loaded(night) = model.state { BandFact(meta(night)) }
+                }
                 if let since = model.offlineSince {
                     OfflineStrip(text: Copy.offlineStrip(time: clock.stripTime(since, now: now())))
                 }
@@ -94,8 +98,7 @@ struct RaidNightView: View {
             }
         }
         .screenGround()
-        .navigationTitle(Copy.nightTitle)
-        .navigationBarTitleDisplayMode(.large)
+        .pushedBandBar(Copy.nightTitle)
         .task { await model.load() }
         .refreshable { await model.load() }
     }
@@ -118,10 +121,12 @@ struct RaidNightView: View {
         }
     }
 
+    private func meta(_ night: RaidNightSummary) -> String {
+        Copy.nightMeta(zone: night.zoneName, weekday: clock.weekday(night.startsAt), date: clock.dayMonth(night.startsAt), guild: night.guildName)
+    }
+
     @ViewBuilder
     private func loaded(_ night: RaidNightSummary) -> some View {
-        Text(Copy.nightMeta(zone: night.zoneName, weekday: clock.weekday(night.startsAt), date: clock.dayMonth(night.startsAt), guild: night.guildName))
-            .font(ScaledType.meta).foregroundStyle(FSColor.muted)
         ViewThatFits(in: .horizontal) {
             HStack(alignment: .center, spacing: 16) {
                 figures(night)

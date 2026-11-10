@@ -42,6 +42,7 @@ struct TalentsView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: isLarge ? [] : [.sectionHeaders]) {
+                    BandHead(title: Copy.talentsTitle)
                     if let offlineStamp { OfflineStrip(text: Copy.offlineStrip(time: offlineStamp)) }
                     content
                 }
@@ -63,12 +64,8 @@ struct TalentsView: View {
             TalentsSkeleton()
             footer
         case .failed:
-            VStack(alignment: .leading, spacing: 12) {
-                Text(Copy.talentsFailed).font(ScaledType.body).foregroundStyle(FSColor.wipe)
-                    .accessibilityAddTraits(.isStaticText)
-                SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: retry)
-            }
-            .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
+            LoadError(Copy.talentsFailed, retryLabel: Copy.commonTryAgain, retry: retry)
+                .padding(EdgeInsets(top: BandReach.gap, leading: 16, bottom: 0, trailing: 16))
             footer
         case let .loaded(presenter, _):
             loaded(presenter)

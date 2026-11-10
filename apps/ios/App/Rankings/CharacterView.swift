@@ -36,12 +36,22 @@ struct CharacterView: View {
         VStack(alignment: .leading, spacing: 0) {
             switch phase {
             case .loading:
+                // Every state names the character on the band (N3): the bar carries no title at rest.
+                BandHead(title: ref.name)
                 CharacterSkeleton()
             case .failed:
+                BandHead(title: ref.name)
                 LoadError(Copy.charError, retryLabel: Copy.commonTryAgain, retry: actions.retry).padding(RankingsLayout.gutter)
             case .notFound:
+                BandHead(title: ref.name)
                 notFound.padding(16)
             case let .loaded(content):
+                CharacterHead(
+                    profile: content.profile, specs: specs,
+                    yours: CharacterPage.isYours(content.profile.character, keys: Set(account.characterKeys))
+                )
+                .dynamicTypeSize(...RankingsLayout.rowTypeCap)
+                // The strips sit under the band, never under the bars.
                 if let since = content.offlineSince {
                     OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(since, now: now)))
                 }
@@ -56,22 +66,10 @@ struct CharacterView: View {
     }
 
     private func loaded(_ profile: CharacterProfile) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // The head continues the band under the bar, as the web's page head.
-            CharacterHead(
-                profile: profile, specs: specs,
-                yours: CharacterPage.isYours(profile.character, keys: Set(account.characterKeys))
-            )
+        sections(profile)
             .padding(.horizontal, RankingsLayout.gutter)
-            .padding(.top, FSSpace.space2)
-            .padding(.bottom, RankingsLayout.gutter)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .surfaceBand()
-            sections(profile)
-                .padding(.horizontal, RankingsLayout.gutter)
-                .padding(.top, RankingsLayout.gutter)
-        }
-        .dynamicTypeSize(...RankingsLayout.rowTypeCap)
+            .padding(.top, BandReach.gap)
+            .dynamicTypeSize(...RankingsLayout.rowTypeCap)
     }
 
     /// Spec ruling R7: Gear, then the fights, then Forever Score below them on a phone.
@@ -245,23 +243,18 @@ struct CharacterHead: View {
     let yours: Bool
 
     var body: some View {
-        HStack(alignment: .center, spacing: 14) {
+        // The head continues the band from under the bars, as the web's page head (N3).
+        BandHead(title: profile.character.name, titleColor: ClassColor.of(profile.character.className)) {
             ClassCrest(className: profile.character.className, size: RankingsLayout.headCrest)
-            VStack(alignment: .leading, spacing: 2) {
+        } facts: {
+            if yours || profile.supporter {
                 HStack(spacing: 8) {
-                    Text(profile.character.name).font(ScaledType.h2)
-                        .foregroundStyle(ClassColor.of(profile.character.className))
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityAddTraits(.isHeader)
                     if yours { TagView(text: Copy.charYou, color: FSColor.gold) }
                     if profile.supporter { TagView(text: Copy.sharedPremiumSupporterChip, color: FSColor.goldHover, systemImage: "heart.fill") }
                 }
-                Text(CharacterPage.descriptor(profile, specs: specs)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(CharacterPage.whereLine(profile.character)).font(ScaledType.meta).foregroundStyle(FSColor.mutedGround)
-                    .fixedSize(horizontal: false, vertical: true)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            BandFact(CharacterPage.descriptor(profile, specs: specs))
+            BandFact(CharacterPage.whereLine(profile.character))
         }
         .accessibilityElement(children: .combine)
     }

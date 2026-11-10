@@ -32,7 +32,7 @@ struct SimResultView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SimsTitle(text: title)
+            BandHead(title: title)
             switch phase {
             case .loading: SimResultSkeleton()
             case .failed:

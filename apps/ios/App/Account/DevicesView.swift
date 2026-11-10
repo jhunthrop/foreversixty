@@ -21,13 +21,16 @@ struct DevicesView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: FSSpace.space4) {
-                content
+            VStack(alignment: .leading, spacing: 0) {
+                BandHead(title: Copy.devicesTitle)
+                VStack(alignment: .leading, spacing: FSSpace.space4) {
+                    content
+                }
+                .padding(FSSpace.space4)
             }
-            .padding(FSSpace.space4)
         }
         .screenGround()
-        .navigationTitle(Copy.devicesTitle)
+        .pushedBandBar(Copy.devicesTitle)
         .alert(
             confirming.map { Copy.devicesRevokeTitle(device: $0.name) } ?? "",
             isPresented: Binding(get: { confirming != nil }, set: { if !$0 { confirming = nil } }),

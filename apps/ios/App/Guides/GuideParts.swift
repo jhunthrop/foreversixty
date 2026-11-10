@@ -29,13 +29,13 @@ enum GuidesLayout {
     static let chipNumberSize: CGFloat = 12
 }
 
-/// A section label with the spec's 22 pt above it.
+/// A group's head over the ground (Overview, All classes, Rotation, What changed): `SectionTitle`, as
+/// Android's, with the spec's 22 pt above it.
 struct GuideSectionLabel: View {
     let text: String
 
     var body: some View {
-        Label12(text)
-            .accessibilityAddTraits(.isHeader)
+        SectionTitle(text)
             .padding(.top, GuidesLayout.sectionGap)
             .padding(.bottom, 8)
     }
@@ -85,18 +85,26 @@ struct StatChips: View {
     }
 }
 
-/// Plain lines of a guide (strengths, weaknesses, a raid's notes).
+/// Bulleted lines of a guide inside a panel (strengths, weaknesses, a raid's notes): a Label12 head,
+/// never a display-face heading inside a Plate, then each line after its dot.
 struct GuideLines: View {
     let title: String
     let lines: [String]
 
+    static let dot: CGFloat = 5
+
     var body: some View {
         if !lines.isEmpty {
             VStack(alignment: .leading, spacing: 6) {
-                SectionTitle(title).accessibilityAddTraits(.isHeader)
+                Label12(title).accessibilityAddTraits(.isHeader)
                 ForEach(lines, id: \.self) { line in
-                    Text(line).font(ScaledType.body).foregroundStyle(FSColor.text)
-                        .fixedSize(horizontal: false, vertical: true)
+                    HStack(alignment: .firstTextBaseline, spacing: FSSpace.space2) {
+                        Circle().fill(FSColor.muted).frame(width: Self.dot, height: Self.dot)
+                            .alignmentGuide(.firstTextBaseline) { $0[.bottom] + Self.dot }
+                            .accessibilityHidden(true)
+                        Text(line).font(ScaledType.body).foregroundStyle(FSColor.text)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
             }
         }

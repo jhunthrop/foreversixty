@@ -45,6 +45,7 @@ struct HomeFlowView: View {
             }
         }
         .environment(\.panelRowTrailCell, true)
+        .environment(\.answersOffline, content.offlineStamp != nil)
         .screenGround()
     }
 

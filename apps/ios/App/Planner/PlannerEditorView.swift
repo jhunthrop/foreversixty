@@ -44,12 +44,9 @@ struct PlannerEditorView: View {
     private var backTitle: String { model.launch.origin == .guide ? Copy.commonCancel : Copy.talentsTitle }
 
     private var failed: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(Copy.talentsFailed).font(ScaledType.body).foregroundStyle(FSColor.wipe)
-            SecondaryButton(title: Copy.commonTryAgain, systemImage: "arrow.clockwise", action: actions.retry)
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        LoadError(Copy.talentsFailed, retryLabel: Copy.commonTryAgain, retry: actions.retry)
+            .padding(16)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     /// Below AX1 the strip and the action bar are pinned over the bottom (the scroll's inset lets
@@ -147,7 +144,8 @@ struct PlannerEditorView: View {
     }
 }
 
-/// The bar: back (`Talents`, or `Cancel` from a guide) and the 48 pt Undo.
+/// The bar on the band, as every pushed screen's (N3): back (`Talents`, or `Cancel` from a guide) as a
+/// plain chevron and label, never a capsule, and the 48 pt Undo.
 struct PlannerBar: View {
     let backTitle: String
     let canUndo: Bool
@@ -162,20 +160,17 @@ struct PlannerBar: View {
                     Text(backTitle).font(ScaledType.bodyStrong)
                 }
                 .foregroundStyle(FSColor.strong)
-                .padding(.horizontal, 14)
                 .frame(minHeight: 44)
-                .background(FSColor.raised, in: .rect(cornerRadius: 22))
-                .overlay(RoundedRectangle(cornerRadius: 22).strokeBorder(FSColor.line, lineWidth: 1))
+                .contentShape(.rect)
             }
             .buttonStyle(.plain)
             Spacer()
             Button(action: undo) {
                 Image(systemName: "arrow.uturn.backward")
                     .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(canUndo ? FSColor.strong : FSColor.muted)
+                    .foregroundStyle(canUndo ? FSColor.strong : FSColor.mutedGround)
                     .frame(width: 48, height: 48)
-                    .background(FSColor.raised, in: .circle)
-                    .overlay(Circle().strokeBorder(FSColor.line, lineWidth: 1))
+                    .contentShape(.rect)
             }
             .buttonStyle(.plain)
             .disabled(!canUndo)
@@ -183,6 +178,7 @@ struct PlannerBar: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 6)
+        .surfaceBand(underTopEdge: true)
     }
 }
 

@@ -43,8 +43,7 @@ struct SimsScreen: View {
         }
         .screenGround()
         .refreshable { await store.load() }
-        .navigationTitle(Copy.simsTitle)
-        .navigationBarTitleDisplayMode(.inline)
+        .pushedBandBar(Copy.simsTitle)
         .navigationDestination(item: $router.result) { route in
             SimResultScreen(route: route, dependencies: dependencies) { id in await store.markSeen(id) }
         }
@@ -127,8 +126,7 @@ struct SimResultScreen: View {
             )
         }
         .screenGround()
-        .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
+        .pushedBandBar(title)
         .sheet(item: $tooltip) { request in ItemTooltipSheet(request: request, catalog: dependencies.catalog) }
         .task {
             build = await dependencies.iconBuild()
