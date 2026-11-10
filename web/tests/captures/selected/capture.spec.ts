@@ -40,12 +40,16 @@ async function signInHunter(page: Page): Promise<void> {
 }
 
 const phone = (page: Page) => (page.viewportSize()?.width ?? 1440) < 768;
+const chestSlot = (page: Page) => (phone(page) ? 'paperdoll-list-slot-chest' : 'paperdoll-frame-slot-chest');
+const ZOOM_MARGIN_PX = 120;
 
 interface Shot {
   id: string;
   open: (page: Page) => Promise<void>;
   /** Viewport only (an open overlay), not the full page. */
   viewport?: boolean;
+  /** Also writes `<id>-zoom-<width>.png`, the area around this test id. */
+  zoom?: (page: Page) => string;
 }
 
 const SHOTS: readonly Shot[] = [
@@ -55,10 +59,10 @@ const SHOTS: readonly Shot[] = [
     open: async (page) => {
       await signInHunter(page);
       await openBis(page, '/bis/hunter/beast-mastery/30-39');
-      const slot = phone(page) ? 'paperdoll-list-slot-chest' : 'paperdoll-frame-slot-chest';
-      await page.getByTestId(slot).first().click();
+      await page.getByTestId(chestSlot(page)).first().click();
       await page.mouse.move(0, 0);
     },
+    zoom: chestSlot,
   },
   {
     id: 'tiers-own',
@@ -101,6 +105,19 @@ for (const shot of SHOTS) {
         path: path.join(OUT, `${shot.id}-${size.width}.png`),
         fullPage: shot.viewport !== true,
       });
+      if (shot.zoom !== undefined) {
+        const box = await page.getByTestId(shot.zoom(page)).first().boundingBox();
+        if (box === null) throw new Error(`${shot.id}: nothing to zoom on`);
+        await page.screenshot({
+          path: path.join(OUT, `${shot.id}-zoom-${size.width}.png`),
+          clip: {
+            x: Math.max(0, box.x - ZOOM_MARGIN_PX),
+            y: Math.max(0, box.y - ZOOM_MARGIN_PX),
+            width: box.width + ZOOM_MARGIN_PX * 2,
+            height: box.height + ZOOM_MARGIN_PX * 2,
+          },
+        });
+      }
       await context.close();
     });
   }

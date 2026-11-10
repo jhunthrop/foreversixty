@@ -302,18 +302,21 @@
     filter: grayscale(1) brightness(0.55);
     border-color: var(--color-muted-card);
   }
-  /* The selected slot takes the selected state's accent ring; keyboard focus keeps the cream ring,
-     so a focused slot reads apart from the one the centre shows. */
+  /* The selected slot takes the selected state's accent ring, held off the item's quality border
+     by a black gap and lifted off the teal frame by a white hairline, so a rare's blue never reads
+     as the ring. Keyboard focus keeps the cream ring, so a focused slot reads apart from the one the
+     centre shows. */
   .pdf-slot.pdf-sel::after,
   .pdf-slot:focus-visible::after {
     content: '';
     position: absolute;
-    inset: -5%;
+    inset: -9%;
     border: 3px solid var(--color-selected-mark);
     border-radius: var(--radius-field);
     box-shadow:
-      0 0 0 1px black,
-      0 0 14px 3px color-mix(in srgb, var(--color-selected-mark) 70%, transparent);
+      inset 0 0 0 2px black,
+      0 0 0 1px var(--color-strong),
+      0 0 12px 2px color-mix(in srgb, var(--color-selected-mark) 60%, transparent);
   }
   .pdf-slot:focus-visible::after {
     border-color: var(--color-cream);
@@ -465,7 +468,7 @@
   }
   .pdf-item.pdf-sel .pdf-cell {
     outline: 2px solid var(--color-selected-mark);
-    outline-offset: 1px;
+    outline-offset: 2px;
   }
   .pdf-name {
     display: block;
