@@ -16,6 +16,8 @@ const EMPTY_KOREA = `Playing in Korea? ${ctaCopy.installAddonAndCompanion}, or p
 
 export const characterListCopy = {
   heading: 'Characters',
+  /** The row's equipped item level, as the client's character sheet names it. */
+  itemLevel: (level: number): string => `Item level ${level}`,
   /** Battle.net is the primary path (2026-11-03): a Battle.net sign-in imports every Forever
    *  character, so an empty list means no Forever character on that account yet, an email
    *  sign-in, or a region Blizzard does not serve (KR); the addon covers the last two. */

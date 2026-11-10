@@ -74,14 +74,17 @@
         {#snippet titleContent()}<span id="{uid}-{row.key}" class="text-text font-normal">{row.label}</span
           >{/snippet}
         {#snippet trail()}
-          <Switch
-            checked={shown(row.key)}
-            labelledby="{uid}-{row.key}"
-            disabled={isDisabled(row.key)}
-            saving={pending?.key === row.key}
-            onchange={(next) => change(row.key, next)}
-            testid={row.testid}
-          />
+          <!-- mr-2 takes back the Switch's -mr-2 hit area: the track ends on the panel's text edge. -->
+          <span class="mr-2 inline-flex"
+            ><Switch
+              checked={shown(row.key)}
+              labelledby="{uid}-{row.key}"
+              disabled={isDisabled(row.key)}
+              saving={pending?.key === row.key}
+              onchange={(next) => change(row.key, next)}
+              testid={row.testid}
+            /></span
+          >
         {/snippet}
       </Row>
     </div>

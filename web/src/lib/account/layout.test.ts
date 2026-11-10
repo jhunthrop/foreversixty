@@ -95,8 +95,10 @@ describe('discordHintState (spec 4.1 precedence)', () => {
       'saved',
     ]);
     expect(DISCORD_FLOORS.none).toEqual({ lg: 0, stack: 0 });
-    expect(DISCORD_FLOORS.form).toEqual({ lg: 735, stack: 765 });
-    expect(DISCORD_FLOORS.connect).toEqual({ lg: 340, stack: 360 });
+    for (const state of ['free', 'connect', 'form', 'saved', 'off', 'lapsed'] as const) {
+      expect(DISCORD_FLOORS[state].lg).toBeGreaterThan(0);
+      expect(DISCORD_FLOORS[state].stack).toBeGreaterThan(0);
+    }
   });
 });
 

@@ -40,7 +40,7 @@
     primary: 'Subscribe',
     secondary: 'Manage billing',
     ghost: 'See plans',
-    danger: 'Unlink Discord',
+    danger: 'Remove channel',
   };
   const RING = 'outline-2 outline-offset-2 outline-gold';
   /** The look a real hover or press gives each tone, as static classes. */

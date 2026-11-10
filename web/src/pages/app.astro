@@ -2,8 +2,8 @@
 // web/src/pages/app.astro
 // foreversixty.gg/app: the permanent link the apps' QR codes open (mock web-app,
 // design/mocks/ws_app_beta.py; parity tests/e2e/parity-app-beta.spec.ts). The PageHeader (the
-// apps, Coming soon, the lead), then a split Page: what the apps do and the tester signup in
-// main, the QR for this page in the rail from 768 (a phone is already here, so it never shows
+// apps, Coming soon), then a split Page of panels: what the apps do (framed) and the
+// tester signup in main, the QR for this page in the rail from 768 (a phone is already here, so it never shows
 // one). The switch is src/data/apps.json: with a store link in it the signup gives way to the
 // store buttons, and a phone whose store is live goes straight there. The QR is drawn here at
 // build time (lib/app-beta/qr.ts), not fetched.
@@ -24,14 +24,14 @@ const qr = await appQrSvg();
 ---
 
 <Base title={copy.pageTitle} description={copy.pageDescription} path="/app" wide>
-  <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="app-beta-page">
-    <Page layout="split">
-      <PageHeader slot="header" title={copy.heading} lead={copy.lead}>
+  <main id="main" tabindex="-1" data-testid="app-beta-page">
+    <Page layout="split" panels>
+      <PageHeader slot="header" title={copy.heading}>
         <span slot="meta">
           <Tag testid="app-beta-soon">{copy.soon}</Tag>
         </span>
       </PageHeader>
-      <Section title={copy.featuresTitle} testid="app-beta-features">
+      <Section title={copy.featuresTitle} testid="app-beta-features" panel frame="framed">
         <ul class="m-0 flex max-w-[62ch] list-disc flex-col gap-2 pl-5 text-[15px] leading-6 marker:text-gold">
           {copy.features.map((line) => (
             <li>{line}</li>
@@ -39,16 +39,16 @@ const qr = await appQrSvg();
         </ul>
       </Section>
       {stores.length > 0 ? (
-        <Section title={copy.storesTitle} testid="app-beta-stores-section">
+        <Section title={copy.storesTitle} testid="app-beta-stores-section" panel>
           <StoreButtons client:load stores={stores} />
         </Section>
       ) : (
-        <Section title={copy.formTitle} testid="app-beta-signup">
+        <Section title={copy.formTitle} testid="app-beta-signup" panel>
           <TesterForm client:load />
         </Section>
       )}
       <div slot="rail" class="hidden md:block" data-testid="app-beta-qr">
-        <Section title={copy.qrTitle}>
+        <Section title={copy.qrTitle} panel>
           <div class="flex flex-col items-start gap-3">
             <div class="w-[200px]" role="img" aria-label={copy.qrAlt} set:html={qr} />
             <p class="text-small text-muted m-0">{copy.qrLine}</p>

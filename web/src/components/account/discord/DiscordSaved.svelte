@@ -60,18 +60,21 @@
 
 {#snippet replace()}
   {#if connected}
-    <p>
+    <p class="flex flex-wrap items-baseline gap-x-3">
       <DiscordConnectLink
         label={notificationsCopy.reconnect}
         class="{LINK} text-[15px]"
         testid="discord-replace"
         busy={busy !== null}
+        describedBy="discord-replace-note"
         {onStuck}
       >
         {#snippet content(text)}{text} ›{/snippet}
       </DiscordConnectLink>
+      <span id="discord-replace-note" class="text-small text-muted" data-testid="discord-replace-note"
+        >{notificationsCopy.reconnectAside}</span
+      >
     </p>
-    <p class="text-small text-muted" data-testid="discord-replace-note">{notificationsCopy.reconnectNote}</p>
   {:else}
     <p>
       <button

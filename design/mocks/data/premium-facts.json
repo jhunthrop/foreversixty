@@ -810,8 +810,11 @@
  },
  "account": {
   "title": "Your account",
-  "signedInWithBattlenet": "Signed in with Battle.net",
-  "signedInByEmail": "Signed in by email",
+  "battletagLabel": "BattleTag",
+  "emailLabel": "Email",
+  "signInLabel": "Sign-in",
+  "signInBattlenet": "Battle.net",
+  "signInEmail": "Email",
   "signOut": "Sign out",
   "devicesLabel": "Devices",
   "youLabel": "You",
@@ -883,6 +886,7 @@
  },
  "characters_copy": {
   "heading": "Characters",
+  "itemLevel": "[fn]",
   "empty": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.",
   "emptyLead": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.",
   "emptyKorea": "Playing in Korea? Install the addon and the companion, or paste an export.",
@@ -980,8 +984,8 @@
   "test": "Send test message",
   "testing": "Sending…",
   "testAndSwitchOn": "Test and switch on",
-  "remove": "Unlink Discord",
-  "removing": "Unlinking…",
+  "remove": "Remove channel",
+  "removing": "Removing…",
   "removeQuestionPasted": "Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.",
   "removeQuestionConnected": "Remove this connection? Posts stop and we delete its webhook from Discord.",
   "replace": "Use a different webhook",
@@ -992,6 +996,7 @@
   "connectInstead": "Connect a Discord channel instead",
   "reconnect": "Connect a different channel",
   "reconnectNote": "Connecting again replaces this channel and removes its webhook from Discord.",
+  "reconnectAside": "The old channel stops getting posts.",
   "returnConnected": "Connected. Send a test message to see it in your channel.",
   "returnDenied": "Cancelled in Discord. Nothing was connected.",
   "returnFailed": "Could not connect. You need to be able to manage webhooks in that channel. Ask a server admin, or paste a webhook URL instead.",
@@ -1087,19 +1092,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1108,7 +1100,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1157,7 +1150,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": null,
    "characters": [],
    "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
@@ -1205,19 +1197,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1226,7 +1205,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     },
     {
      "name": "Brisa",
@@ -1235,7 +1215,8 @@
      "guild": null,
      "main": false,
      "source": null,
-     "level": 19
+     "level": 19,
+     "itemLevel": null
     },
     {
      "name": "Korrin",
@@ -1244,7 +1225,8 @@
      "guild": null,
      "main": false,
      "source": "addon",
-     "level": 27
+     "level": 27,
+     "itemLevel": null
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1296,19 +1278,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Thandrel",
-    "classSlug": "warrior",
-    "levelLine": "Level 60 Fury Warrior",
-    "open": {
-     "label": "Open Thandrel",
-     "href": "/character/us/normal/thandrel"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/warrior/fury/60"
-    }
-   },
    "characters": [
     {
      "name": "Thandrel",
@@ -1317,7 +1286,8 @@
      "guild": "Olympus XXVII",
      "main": true,
      "source": "addon",
-     "level": 60
+     "level": 60,
+     "itemLevel": "Item level 61"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1412,19 +1382,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1433,7 +1390,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1504,19 +1462,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1525,7 +1470,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1593,19 +1539,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1614,7 +1547,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1683,19 +1617,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1704,7 +1625,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1783,19 +1705,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1804,7 +1713,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1882,19 +1792,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1903,7 +1800,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1955,19 +1853,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery/30-39"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1976,7 +1861,8 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34
+     "level": 34,
+     "itemLevel": "Item level 31"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -2044,19 +1930,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Thandrel",
-    "classSlug": "warrior",
-    "levelLine": "Level 60 Fury Warrior",
-    "open": {
-     "label": "Open Thandrel",
-     "href": "/character/us/normal/thandrel"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/warrior/fury/60"
-    }
-   },
    "characters": [
     {
      "name": "Thandrel",
@@ -2065,7 +1938,8 @@
      "guild": "Olympus XXVII",
      "main": true,
      "source": "addon",
-     "level": 60
+     "level": 60,
+     "itemLevel": "Item level 61"
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",

@@ -108,7 +108,7 @@
   const showSeePlans = $derived(seePlans && plan?.ended == null);
 </script>
 
-<Section title={accountPageCopy.planLabel} anchor="plan" testid="account-guilds-plan">
+<Section title={accountPageCopy.planLabel} anchor="plan" testid="account-guilds-plan" panel>
   <div class="flex flex-col gap-3">
     <div class="flex min-h-6 flex-wrap items-end justify-between gap-3" data-testid="account-plan-head">
       <span class="inline-flex flex-wrap items-center gap-2">
@@ -148,7 +148,7 @@
       {/if}
     {/if}
     {@render offer?.()}
-    <div data-testid="account-premium-block">
+    <div class="account-premium-rows" data-testid="account-premium-block">
       {#each rows as row (row.key)}
         <Row title={row.label} density="slim" open wrapTrail testid={`account-premium-${row.key}`}>
           {#snippet trail()}
@@ -191,3 +191,14 @@
       </p>{/if}
   </div>
 </Section>
+
+<style>
+  /* In the rail (from 1024) each value sits under its label, as the phone stacks them: the rail is too
+     narrow for a label and a long link side by side. */
+  @media (min-width: 1024px) {
+    .account-premium-rows :global(.ui-row > :last-child) {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+</style>

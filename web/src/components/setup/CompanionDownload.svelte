@@ -92,7 +92,7 @@
     aria-label={addonCopy.setupDownloadCompanion}
     data-testid="{idPrefix}-download"
   >
-    <div class="dl-row flex flex-wrap items-center gap-3">
+    <div class="dl-row flex flex-wrap items-center gap-x-4 gap-y-2">
       {#each others as download (download.asset)}
         <Button
           href={downloadHref(download.asset, release)}

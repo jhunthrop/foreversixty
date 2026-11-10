@@ -93,7 +93,9 @@ CSS = '''<style>
 
 # The account page's Sections open on a 12 px gap under the heading's hairline, as the built ui/Section (pt-3);
 # /premium's and /b/:id's Sections open on a Plate, Columns or the planner's own blocks, which carry their own.
-ACCOUNT_CSS = '<style>section>.sec-h+*{margin-top:12px}</style>'
+ACCOUNT_CSS = ('<style>section>.sec-h+*{margin-top:12px}.acc-foot{padding:0 20px 10px}'
+               '@media(min-width:1024px){.plan-rows .row>.trail{grid-column:1/-1;justify-self:start}}'
+               '@media(max-width:767px){.acc-foot{padding:0 14px 8px}}</style>')
 
 
 def render(title: str, body: str, nav: str, who, chrome_state: str, note: str, extra_css: str = '') -> str:
@@ -310,16 +312,6 @@ def checkout_page(state: str) -> str:
 
 
 # ================================================================================================ /account
-def account_answer(a: dict) -> str:
-    x = a['answer']
-    if not x:
-        return ''
-    cls = x['classSlug']
-    links = r(x['open']['label']) + (r(x['bis']['label']) if x['bis'] else '')
-    return (f'<span class="ans-who">{crest_img(cls, 40)}<span><b style="color:{CLASS_COLOR[cls]}">{e(x["name"])}</b>'
-            f'<span class="t-small" style="display:block">{e(x["levelLine"])}</span></span></span><span class="ans-links">{links}</span>')
-
-
 def characters_section(a: dict, refreshing: bool = False) -> str:
     rows = []
     for c in a['characters']:
@@ -327,16 +319,17 @@ def characters_section(a: dict, refreshing: bool = False) -> str:
         src = Tag(e(CL['addonSource'] if c['source'] == 'addon' else (CL['battlenetSource'] if c['source'] else CL['noBuildYet'])), 'muted')
         setmain = '' if c['main'] else Btn(e(CL['setAsMain']), small=True)
         sub = e(c['descriptor']) + (f'<br>{e(c["guild"])}' if c['guild'] else '')
+        ilvl = f'<span class="strong num">{e(c["itemLevel"])}</span>' if c.get('itemLevel') else ''
         rows.append(Row(f'<span class="fd"><span style="color:{CLASS_COLOR.get(c["cls"], "#f2eee4")}">{e(c["name"])}</span>{tags}</span>', sub, lead=crest_img(c['cls'], 40),
-                        trail=f'{src}{setmain}{r(CL['open'])}', link=False))
+                        trail=f'{ilvl}{src}{setmain}{r(CL['open'])}', link=False))
     refresh = f'<span class="t-small">{e(CL["refreshing"])}</span>' if refreshing else r(CL['refreshFromBattlenet'])
     if not rows:
-        inner = (f'<div class="stack" style="padding:16px 20px 20px"><p class="lede warn-t" style="color:var(--gold)">{e(CL["empty"])}</p>'
+        inner = (f'<div class="stack" style="padding:16px 20px 20px"><p class="lede">{e(CL["empty"])}</p>'
                  f'<div class="acts">{LinkBtn(e(CL["getSetUp"]), primary=True)}{LinkBtn(e(CL["pasteAnExport"]))}</div></div>')
-        return Section(e(CL['heading']), Plate(inner, e(CL['heading'])), action=refresh)
-    foot = (f'<p class="t-small" style="padding-top:12px">{e(CL["introBattlenetLine"])} {Link(e(CL["introInstallAddonLink"]))} {e(CL["introAddonTail"])} '
-            f'{Link(e(CL["introPasteLink"]))} {e(CL["introPasteTail"])}</p><p style="padding-top:8px">{r(ACC["reportsLink"])}</p>')
-    return Section(e(CL['heading']), Plate(Rows(rows), e(CL['heading'])) + foot, action=refresh, meta=e(a['imported'] or ''))
+        return Section(e(CL['heading']), inner, action=refresh, panel=True, frame='framed', flush=True)
+    foot = (f'<div class="acc-foot"><p class="t-small" style="padding-top:12px">{e(CL["introBattlenetLine"])} {Link(e(CL["introInstallAddonLink"]))} {e(CL["introAddonTail"])} '
+            f'{Link(e(CL["introPasteLink"]))} {e(CL["introPasteTail"])}</p><p style="padding-top:8px">{r(ACC["reportsLink"])}</p></div>')
+    return Section(e(CL['heading']), Rows(rows) + foot, action=refresh, meta=e(a['imported'] or ''), panel=True, frame='framed', flush=True)
 
 
 def plan_section(a: dict, offer_state: str = '') -> str:
@@ -383,8 +376,8 @@ def plan_section(a: dict, offer_state: str = '') -> str:
         acts.append(Btn(e(SRC['buttons']['history'])))
     if a['source'] == 'none' and not p['ended']:
         acts.append(LinkBtn(e(BB['seePlans']), primary=True))
-    body = f'<div class="stack" id="plan">{top}{lines}{offer}{RowsSlim(rows)}<div class="acts">{"".join(acts)}</div></div>'
-    return Section(e(ACC['planLabel']), body)
+    body = f'<div class="stack" id="plan">{top}{lines}{offer}<div class="plan-rows">{RowsSlim(rows)}</div><div class="acts">{"".join(acts)}</div></div>'
+    return Section(e(ACC['planLabel']), body, panel=True)
 
 
 def guilds_section(a: dict, asking: bool = False) -> str:
@@ -408,7 +401,7 @@ def guilds_section(a: dict, asking: bool = False) -> str:
         else:
             leave = f'<div class="acts">{Btn(e(CON["leave"]), small=True, tone="danger")}</div>'
         blocks.append(RowsSlim(rows, True) + leave)
-    return Section(e(ACC['guildLabel']), f'<div class="stack">{"".join(blocks)}</div>')
+    return Section(e(ACC['guildLabel']), f'<div class="stack">{"".join(blocks)}</div>', panel=True)
 
 
 def devices_section(dev: str, revoking: bool = False, pairing: bool = False) -> str:
@@ -420,13 +413,14 @@ def devices_section(dev: str, revoking: bool = False, pairing: bool = False) -> 
             rows.append(Row(e(d['revoke'][0]), trail=f'{Btn(e(DC["revoke"]), small=True, tone="danger")}{Btn(e(DC["cancel"]), small=True)}', link=False))
         else:
             rows.append(Row(e(name), e(sub), trail=Btn(e(DC['revoke']), small=True), link=False))
+    entry = f'<button type="button" class="link">{e(d["entry"])} &rsaquo;</button>'
     if pairing:
         tail = f'<p class="t-small">{e(DC["codeFallbackLine"])}</p><code class="c big">4821-9930</code>'
     elif not rows:
-        tail = f'<p class="t-small">{e(ACC["noDevices"])}</p><div class="acts">{LinkBtn(e(ACC["downloadCompanion"]))}{Link(e(d["entry"]) + " &rsaquo;")}</div>'
+        tail = f'<p class="t-small">{e(ACC["noDevices"])}</p><div class="acts">{LinkBtn(e(ACC["downloadCompanion"]))}{entry}</div>'
     else:
-        tail = f'<div class="acts">{Link(e(d["entry"]) + " &rsaquo;")}</div>'
-    return Section(e(ACC['devicesLabel']), f'<div class="stack dev">{Rows(rows, True) if rows else ""}{tail}</div>')
+        tail = f'<div class="acts">{entry}</div>'
+    return Section(e(ACC['devicesLabel']), f'<div class="stack dev">{Rows(rows, True) if rows else ""}{tail}</div>', panel=True)
 
 
 def discord_section(a: dict, unlinking: bool = False) -> str:
@@ -436,29 +430,34 @@ def discord_section(a: dict, unlinking: bool = False) -> str:
     elif link:
         top = Row(f'{e(DL["linkedLead"])} <b class="strong">{e(link["display_name"])}</b>', trail=Btn(e(DL['unlink']), small=True), link=False)
     else:
-        top = Row(e(DL['lead']), trail=Btn(e(DL['link']), small=True), link=False)
+        top = Row(e(DL['lead']), trail=LinkBtn(e(DL['link']), small=True), link=False)
     # Ruling A4 / MUST 3: an account that already has Premium is told the role turns on as soon as it links.
     lead = DR['leadOwned'] if a['source'] != 'none' else DR['lead']
-    role = Row(e(DR['label']), e(lead), trail=Btn(e(DR['link']), small=True), link=False)
+    role = Row(e(DR['label']), e(lead), trail=LinkBtn(e(DR['link']), small=True), link=False)
     st = a['discord']['state']
     if st == 'saved':
-        nt = (f'<div class="stack tight"><span class="t-label">{e(NC["headLabel"])}</span><p class="lede">{e(NC["destinationChannel"])}</p>'
-              f'{Switch(e(NC["eventSimFinished"]))}{Switch(e(NC["eventUploadParsed"]))}{Switch(e(NC["eventUploadPrivate"]), on=False)}'
-              f'<div class="acts">{Btn(e(NC["test"]), small=True)}{Link(e(NC["reconnect"]) + " &rsaquo;")}</div></div>')
+        nt = (f'<div class="stack tight"><span class="t-label">{e(NC["headLabel"])}</span><p class="lede acts"><span>{e(NC["destinationChannel"])}</span>{r(NC["openInDiscord"])}</p>'
+              f'{Switch(e(NC["eventSimFinished"]))}{Switch(e(NC["eventUploadParsed"]))}'
+              f'{Switch(e(NC["eventUploadPrivate"]) + f"<span class=t-small style=display:block>{e(NC["eventsNote"])}</span>", on=False)}'
+              f'<div class="acts">{Btn(e(NC["test"]), small=True)}{Btn(e(NC["remove"]), small=True, tone="danger")}</div>'
+              f'<p class="acts">{r(NC["reconnect"])}<span class="t-small">{e(NC["reconnectAside"])}</span></p></div>')
     else:
         nt = f'<div class="stack tight"><span class="t-label">{e(NC["headLabel"])}</span><p class="t-small">{e(NC["freeSentence"])}</p><p>{r(NC["seePlans"])}</p></div>'
-    return Section(e(NC['label']), f'<div class="stack" id="discord">{Rows([top, role], True)}{nt}</div>')
+    return Section(e(NC['label']), f'<div class="stack" id="discord">{Rows([top, role], True)}{nt}</div>', panel=True)
 
 
 def you_section(a: dict) -> str:
+    """The rail's first panel (directions mock b4-account): who is signed in and how, Sign out, then the pseudonym."""
+    who = Facts([(e(ACC['battletagLabel']), e(a['battletag'])), (e(ACC['signInLabel']), f'<span class="muted">{e(ACC["signInBattlenet"])}</span>')])
     sw = Switch(e(ACC['pseudonymLabel']), on=False)
-    return Section(e(ACC['youLabel']), f'<div class="stack">{sw}<p class="t-small">{e(ACC["pseudonymNote"])}</p></div>')
+    return Section(e(ACC['youLabel']), f'<div class="stack">{who}<div class="acts">{Btn(e(ACC["signOut"]), small=True)}</div>{sw}'
+                   f'<p class="t-small">{e(ACC["pseudonymNote"])}</p></div>', panel=True)
 
 
 def delete_section() -> str:
     """The rail's last Section (gap G6 closed 2026-11-07): one line and the danger Button that opens the confirm dialog."""
     ds = ACC['deleteSection']
-    return Section(e(ds['title']), f'<div class="stack"><p class="t-small">{e(ds["line"])}</p><div class="acts">{Btn(e(ds["button"]), small=True, tone="danger")}</div></div>')
+    return Section(e(ds['title']), f'<div class="stack"><p class="t-small">{e(ds["line"])}</p><div class="acts">{Btn(e(ds["button"]), small=True, tone="danger")}</div></div>', panel=True)
 
 
 def dialog_line(line: dict) -> str:
@@ -498,25 +497,27 @@ def account_page(state: str) -> str:
         body = head + PageForm(Plate(inner, 'Sign in'))
         return render(f'{ACC["title"]} · Forever Sixty', body, '', None, '', '/account mock, signed out. Copy: signin-copy.ts.', extra_css=ACCOUNT_CSS)
     if state in ('loading', 'error'):
-        head = PageHeader(e(ACC['title']), meta=[Skeleton(220, 14)] if state == 'loading' else None)
+        head = PageHeader(e(ACC['title']))
         if state == 'loading':
             sk = lambda n: ''.join(Skeleton(560, 14) + '<br>' for _ in range(n))
-            plate = Section(e(CL['heading']), Plate(f'<div class="stack" style="padding:16px 20px" role="status" aria-busy="true">{"".join(Skeleton(480, 56) for _ in range(2))}</div>', e(CL['heading'])))
-            rail = ''.join(Section(t, f'<div class="stack">{Skeleton(300, 20)}{Skeleton(240, 20)}{Skeleton(160, 44)}</div>') for t in (ACC['planLabel'], ACC['guildLabel'], ACC['devicesLabel'], NC['label']))
-            body = head + Page('split', plate, rail)
+            plate = Section(e(CL['heading']), f'<div class="stack" role="status" aria-busy="true">{"".join(Skeleton(480, 56) for _ in range(2))}</div>', panel=True, frame='framed')
+            sk = f'<div class="stack">{Skeleton(300, 20)}{Skeleton(240, 20)}{Skeleton(160, 44)}</div>'
+            plate += ''.join(Section(t, sk, panel=True) for t in (ACC['devicesLabel'], NC['label']))
+            rail = ''.join(Section(t, sk, panel=True) for t in (ACC['youLabel'], ACC['planLabel'], ACC['deleteSection']['title']))
+            body = head + Page('split', plate, rail, panels=True)
         else:
-            inner = f'<div class="stack" style="padding:16px 20px 20px"><p class="alert" role="alert">{e(F["account_failed"])}</p><div class="acts">{Btn(e(CK['retry']), primary=True)}</div></div>'
-            body = head + Page('split', Section(e(CL['heading']), Plate(inner, e(CL['heading']))), '')
+            inner = f'<div class="stack"><p class="alert" role="alert">{e(F["account_failed"])}</p><div class="acts">{Btn(e(CK['retry']), primary=True)}</div></div>'
+            body = head + Page('split', Section(e(CL['heading']), inner, panel=True, frame='framed'), '', panels=True)
         return render(f'{ACC["title"]} · Forever Sixty', body, '', None, 'pending', f'/account mock, {state}.', extra_css=ACCOUNT_CSS)
     st = ACCOUNT_STATES[state]
     a = A[st.get('acct', state)]
     confirm = st.get('confirm', False)
-    meta = [e(a['battletag']), e(ACC['signedInWithBattlenet']), Btn(e(ACC['signOut']), small=True)]
-    head = PageHeader(e(ACC['title']), meta=meta, answer=account_answer(a))
-    # Main: the characters (the Plate), then the plan and the guilds (rows that want the width); rail: the connections.
-    main = characters_section(a) + plan_section(a) + guilds_section(a, asking=confirm)
-    rail = devices_section(st['dev'], revoking=confirm) + discord_section(a, unlinking=confirm) + you_section(a) + delete_section()
-    body = head + Page('split', main, rail) + (delete_dialog(a) if st.get('dialog') else '')
+    head = PageHeader(e(ACC['title']))
+    # Main: the characters (the framed panel), the guilds, then the connections; rail: who you are, the plan, Delete
+    # account last (directions mock b4-account).
+    main = characters_section(a) + guilds_section(a, asking=confirm) + devices_section(st['dev'], revoking=confirm) + discord_section(a, unlinking=confirm)
+    rail = you_section(a) + plan_section(a) + delete_section()
+    body = head + Page('split', main, rail, panels=True) + (delete_dialog(a) if st.get('dialog') else '')
     key = st.get('acct', state)
     note = f'/account mock, {state}. Data: premium-facts.json (account models on the {key} account, DERIVED from home fixtures; devices {st["dev"]}).'
     return render(f'{ACC["title"]} · Forever Sixty', body, '', who_of(key) if key != 'new' else None, chrome_of(key), note, extra_css=ACCOUNT_CSS)

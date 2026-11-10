@@ -6,15 +6,16 @@
 // in <head>: the code and state leave the address bar before paint and live only in that
 // script's memory, and the button carries them back to the app. public/_headers serves
 // /app/* with no referrer and no caching. Only /app/* opens the apps (app-links.json).
-// The flat system's message page (mock web-app-auth, design/specs/2026-11-07-bis-landing.md
-// section 7): the PageHeader with the sentence as its meta line over the form layout, the one
-// primary, then the two quiet lines.
+// The message page (mock web-app-auth, ws_app_auth.py; directions mock b4-app-auth): the title alone
+// in the band, then one framed Plate in the form layout: the sentence, the one primary and the two
+// quiet lines.
 import Base from '../../layouts/Base.astro';
 import appLinks from '../../../app-links.json';
 import { appHandoff } from '../../lib/app-links/handoff';
 import { handoffCopy } from '../../lib/app-links/handoff-copy';
 import Page from '../../components/ui/Page.svelte';
 import PageHeader from '../../components/ui/PageHeader.svelte';
+import Plate from '../../components/ui/Plate.svelte';
 import { button } from '../../lib/ui/button';
 
 const handoffScript = `(${appHandoff.toString()})(window, ${JSON.stringify(appLinks.androidPackage)});`;
@@ -27,18 +28,19 @@ const handoffScript = `(${appHandoff.toString()})(window, ${JSON.stringify(appLi
   </Fragment>
   <main id="main" tabindex="-1">
     <Page layout="form">
-      <PageHeader slot="header" title={handoffCopy.heading}>
-        <span slot="meta">{handoffCopy.body}</span>
-      </PageHeader>
-      <div class="flex flex-col items-start gap-3">
-        <button type="button" class={button('primary')} data-app-handoff hidden>
-          {handoffCopy.button}
-        </button>
-        <p class="text-small text-muted m-0" data-app-handoff-missing hidden>
-          {handoffCopy.missing}
-        </p>
-        <p class="text-small text-muted m-0">{handoffCopy.notYou}</p>
-      </div>
+      <PageHeader slot="header" title={handoffCopy.heading} />
+      <Plate frame="framed" label={handoffCopy.heading}>
+        <div class="flex flex-col items-start gap-3 px-5 pt-4 pb-[18px]">
+          <p class="text-strong m-0 text-[16px] leading-6">{handoffCopy.body}</p>
+          <button type="button" class={button('primary')} data-app-handoff hidden>
+            {handoffCopy.button}
+          </button>
+          <p class="text-small text-muted m-0" data-app-handoff-missing hidden>
+            {handoffCopy.missing}
+          </p>
+          <p class="text-small text-muted m-0">{handoffCopy.notYou}</p>
+        </div>
+      </Plate>
     </Page>
   </main>
 </Base>

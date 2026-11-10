@@ -31,11 +31,9 @@ const source = [
 
 const STRING_COPY_KEYS = [
   'pageDescription',
-  'pageNoNetwork',
   'installCurseForge',
   'installWago',
   'installZip',
-  'installDataLead',
   'installDataRelease',
   'flowOutTitle',
   'flowOutBody',
@@ -93,10 +91,10 @@ describe('/setup', () => {
     expect(html).not.toMatch(/setup-chip|setup-step-tag|setup-btn|data-setup-first|current-character-bar/);
   });
 
-  it('holds the three steps in one Plate named Your setup, in order', () => {
-    expect(html.match(/data-region="plate"/g)).toHaveLength(1);
-    expect(html).toContain('aria-label="Your setup"');
-    const plate = html.slice(html.indexOf('data-region="plate"'));
+  it('holds the three steps in one framed Plate named Your setup, in order', () => {
+    expect(html.match(/aria-label="Your setup"/g)).toHaveLength(1);
+    expect(html).toMatch(/class="[^"]*ui-framed[^"]*"[^>]*aria-label="Your setup"/);
+    const plate = html.slice(html.indexOf('aria-label="Your setup"'));
     let cursor = -1;
     for (const title of [addonCopy.setupStep1Title, addonCopy.setupStep2Title, addonCopy.setupStep3Title]) {
       const at = plate.indexOf(title, cursor + 1);
@@ -358,7 +356,7 @@ describe('/setup: what it does in the game (L8.3)', () => {
     expect(Object.keys(addonCopy)).not.toContain('commandsTestersLine');
   });
 
-  it('says what leaves the machine and sits the no-network sentence next to the handshake', () => {
+  it('says what leaves the machine', () => {
     const text = addonCopy.handshake.join(' ');
     for (const part of [
       'level, spec, talents, equipped gear',
@@ -371,8 +369,6 @@ describe('/setup: what it does in the game (L8.3)', () => {
     ]) {
       expect(text).toContain(part);
     }
-    expect(textOf(section('setup-handshake'))).toContain(textOf(addonCopy.pageNoNetwork));
-    expect(html.split(textOf(addonCopy.pageNoNetwork).slice(0, 30)).length - 1).toBe(1);
   });
 
   it('marks the four portrait captures tall', () => {

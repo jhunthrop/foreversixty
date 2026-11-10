@@ -290,7 +290,7 @@ New strings live in `web/src/lib/notifications/copy.ts`; the Premium row and /pr
 | Destination, with a name (amended 2026-10-25, follow-up lane) | line one `Posts through` `“{name}”`; line two `Channel` `{first 4 digits}…{last 4 digits}` (for example `Posts through “Raid pings”` / `Channel 1198…4568`) |
 | Destination, no name (amended 2026-10-28, polish task 4, player ruling) | line one `Posts to a channel in your Discord server`; no line two |
 | Test | `Send test message`; pending `Sending…` |
-| Remove | `Unlink Discord`; pending `Unlinking…` (amended 2026-10-28, polish task 4, player ruling) |
+| Remove | `Remove channel`; pending `Removing…` (amended 2026-11-09, lane f-account: the Discord panel also carries the link row's `Unlink`, and two Unlinks read as one action twice) |
 | Replace (pasted) (amended 2026-10-25, connect lane) | `Use a different webhook` |
 | Saved status | `Saved. Send a test message to see it in your channel.` after a first save (stays until the next action, like the connected line: it is a prompt to act; controller ruling 2026-10-25, first-use fixes); `Saved.` after an event change (4 s) |
 | Test sent | `Sent. Check the channel.`; after switching on `Sent. Posts are on again.` Both stay until the next action (amended 2026-10-25, first-use fixes; 4.3). |
