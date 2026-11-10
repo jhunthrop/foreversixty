@@ -85,9 +85,8 @@ describe("SettingsPage, the switches", function()
 				"Hold Shift for the details. Off also hides player scores and the quest and roll marks." },
 			{ "Score badges in chat",
 				"Shows a player's Forever Score before their message in LFG, Trade, guild chat and whispers." },
-			{ "Show my Forever Score to others", "Off: other players see no score for you on tooltips, in chat or in their "
-				.. "guild and group panels. You still see your own. Takes effect after the companion app sends your next "
-				.. "save." },
+			{ "Show my Forever Score to others",
+				"Off: other players see no score for you. You still see yours. Applies after the companion's next upload." },
 			{ "Share my build with my guild",
 				"Guildmates with Forever Sixty see your level, spec, build and gear gap. Off: they see nothing." },
 			{ "Save my character for the companion app",

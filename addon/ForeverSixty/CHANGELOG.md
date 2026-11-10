@@ -2,8 +2,8 @@
 
 ## 2.0.38
 
-- A short tour on your first login shows how Forever Sixty works: what the site puts in your game, what your fights send back, your guild's raids, and setting your character up. Skip it any time; /fs help opens it again. "Just the tooltips" on its first page turns everything but the tooltip lines off.
-- Settings: "Show my Forever Score to others". Turn it off and other players see no score for you; you still see your own.
+- A short tour on your first login, in the panel's frame: what the site puts in your game, what your fights send back, your guild's raids, and setting your character up. Skip it any time; /fs help opens it again. "Tooltips only" on its first page turns the rest off.
+- Settings: "Show my Forever Score to others". Off, other players see no score for you; you still see yours.
 - The talent window is quieter: numbers stay only on the points you still have to take, and the strip under it reads "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan".
 - A talent's tooltip says "Your build: points 8–11 and 36" in one line.
 - The guild tab's count line is just "97 members · 3 online", and the group panel says one thing when you are alone: "Join a group to see its specs, gear and buffs."

@@ -27,9 +27,9 @@ describe("Onboarding, the pure model", function()
 	end)
 
 	it("draws the loop's guild node only in a guild, under the player's own faction banner", function()
-		assert.are.equal(6, #Onboarding.loopNodes(true, "Horde", "HUNTER"))
-		assert.are.equal(Onboarding.BANNERS.Horde, Onboarding.loopNodes(true, "Horde", "HUNTER")[6].icon)
-		assert.are.equal(5, #Onboarding.loopNodes(false, "Alliance", "HUNTER"))
+		assert.are.equal(6, #Onboarding.loopNodes(true, "horde", "HUNTER"))
+		assert.are.equal(Onboarding.BANNERS.horde, Onboarding.loopNodes(true, "horde", "HUNTER")[6].icon)
+		assert.are.equal(5, #Onboarding.loopNodes(false, "alliance", "HUNTER"))
 		assert.is_nil(L.tourLoopCaptionSolo:find("guild", 1, true))
 	end)
 
@@ -72,11 +72,37 @@ describe("Onboarding, the pure model", function()
 		assert.are.equal(48, Onboarding.QR_SIZE)
 		assert.are.equal("Join the app beta", L.tourAppBeta)
 		assert.are.equal("foreversixty.gg/app", Onboarding.APP)
-		assert.are.equal("You can turn this off in Settings.", L.tourScoreHide)
+		assert.are.equal("Settings can hide it from others.", L.tourScoreHide)
 	end)
 
 	it("says In, Late, Bench or Out on the guild page", function()
 		assert.are.equal("Answer In, Late, Bench or Out", L.tourAnswer)
+	end)
+
+	it("puts the Horde banner on a Horde guild node, from Compat.playerFaction's lower-case answer", function()
+		assert.are.equal(Onboarding.BANNERS.horde, Onboarding.loopNodes(true, "horde", "HUNTER")[6].icon)
+		assert.are.equal(Onboarding.BANNERS.alliance, Onboarding.loopNodes(true, nil, "HUNTER")[6].icon)
+		assert.are_not.equal(Onboarding.BANNERS.horde, Onboarding.BANNERS.alliance)
+	end)
+
+	it("heads each page in the panel's title band: the heading, the welcome, and 2 of 5", function()
+		local head = Onboarding.head("site", 2, 5, { classToken = "HUNTER", faction = "horde" })
+		assert.are.same({ title = L.tourSiteHeading, meta = L.tourTitle, classToken = "HUNTER", faction = "horde",
+			number = 2, unit = "of 5" }, head)
+	end)
+
+	it("draws the loop's arrows from flat parts, mirrored for left and turned for down", function()
+		assert.are.same(Onboarding.ARROW_PARTS, Onboarding.arrowParts("right"))
+		assert.are.same({ 6, 4, 10, 2 }, Onboarding.arrowParts("left")[1])
+		assert.are.same({ 0, 4, 2, 2 }, Onboarding.arrowParts("left")[4])
+		assert.are.same({ 4, 0, 2, 10 }, Onboarding.arrowParts("down")[1])
+		assert.are.same({ 4, 14, 2, 2 }, Onboarding.arrowParts("down")[4])
+	end)
+
+	it("keeps the tour's copy free of glyph arrows, dots and the old opt-out wording", function()
+		assert.is_nil(L.tourArrowRight)
+		assert.is_nil(L.tourDot)
+		assert.are.equal(L.settingsTooltipsOnly, L.tourJustTooltips)
 	end)
 end)
 
@@ -110,6 +136,11 @@ describe("Onboarding, the frame", function()
 		end
 		assert.are.same({ "loop", "site", "back", "guild", "setup" }, seen)
 		assert.are.equal(Onboarding.WIDTH, Onboarding.frame:GetWidth())
+		-- The panel's chrome: the umber ground and the title band with the medallion.
+		assert.is_not_nil(Onboarding.frame.foreverSixtyBackground)
+		assert.is_not_nil(Onboarding.band.foreverSixtyMedallion)
+		assert.are.equal(L.tourSetupHeading, Onboarding.band.foreverSixtyTitle:GetText())
+		assert.are.equal("5", Onboarding.band.foreverSixtyNumber:GetText())
 		assert.are.same({}, state.clientWrites)
 	end)
 

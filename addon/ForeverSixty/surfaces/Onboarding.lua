@@ -1,13 +1,14 @@
 -- addon/ForeverSixty/surfaces/Onboarding.lua
 -- The first-run tour (design/specs/2026-11-08-addon-ux.md section 3.1): once per account, a
--- 640 x 450 window that shows how the site, the addon, the companion and the apps work as one
+-- 640 x 450 window in the panel's chrome (umber ground, title band with the class medallion, the
+-- client's red buttons) that shows how the site, the addon, the companion and the apps work as one
 -- loop, then sets the character up. Five pages in a guild, four without (page 4 is the guild's).
 -- It replaces the three chat lines of the first login.
 --
 -- Pure model, thin frame: Onboarding.pages and Onboarding.setup are plain tables in, plain
 -- tables out; Onboarding.draw lays a page out. The frame is built on the first show, never at
 -- load. It never shows in combat or inside an instance; combat hides it without ending it, and
--- it comes back once after combat on the page it was on. Skip tour, Just the tooltips, the X,
+-- it comes back once after combat on the page it was on. Skip tour, Tooltips only, the X,
 -- Escape and Done end it for good (ForeverSixtyDB.welcomedAt); /fs help opens it again.
 --
 -- Truth rule: every claim is what is built today. What is designed but not live carries a gold
@@ -33,17 +34,22 @@ local Onboarding = {}
 Onboarding.FRAME_NAME = "ForeverSixtyOnboarding"
 Onboarding.WIDTH = 640
 Onboarding.HEIGHT = 450
+--- The content's side inset inside the umber edge.
+Onboarding.PAD = 26
 --- The app QR's size in UI units. Small and labelled "Join the app beta" while the apps are in
 --- testing (the coordinator's ruling, 2026-11-08); 112 once they are in the stores.
 Onboarding.QR_SIZE = 48
 Onboarding.QR_TEXTURE = "Interface\\AddOns\\ForeverSixty\\media\\app-qr"
+--- The footer's and the set-up page's buttons: the client's red button, a step taller than the
+--- panel's small ones.
+Onboarding.BUTTON_HEIGHT = 22
 --- The addresses the set-up page offers to copy.
 Onboarding.SITE = "foreversixty.gg"
 Onboarding.SETUP = "foreversixty.gg/setup"
 Onboarding.APP = "foreversixty.gg/app"
---- The faction banners for the guild node.
+--- The faction banners for the guild node, by Compat.playerFaction's answer.
 Onboarding.BANNERS = {
-	Horde = "Interface\\Icons\\INV_BannerPVP_01", Alliance = "Interface\\Icons\\INV_BannerPVP_02",
+	horde = "Interface\\Icons\\INV_BannerPVP_01", alliance = "Interface\\Icons\\INV_BannerPVP_02",
 }
 Onboarding.ICONS = {
 	site = "Interface\\AddOns\\ForeverSixty\\icon",
@@ -74,7 +80,7 @@ function Onboarding.loopNodes(inGuild, faction, classToken)
 		{ icon = Onboarding.ICONS.back, title = L.tourBack, line = L.tourBackLine },
 	}
 	if inGuild then
-		nodes[#nodes + 1] = { icon = Onboarding.BANNERS[faction] or Onboarding.BANNERS.Alliance, title = L.tourGuild,
+		nodes[#nodes + 1] = { icon = Onboarding.BANNERS[faction] or Onboarding.BANNERS.alliance, title = L.tourGuild,
 			line = L.tourGuildLine }
 	end
 	return nodes
@@ -150,7 +156,7 @@ function Onboarding.finish()
 	end
 end
 
---- "Just the tooltips": Tooltips only on (the chip, the talent marks and the slot marks off), and
+--- "Tooltips only" (page 1): the setting on (the chip, the talent marks and the slot marks off), and
 --- the tour ends.
 function Onboarding.justTooltips()
 	SettingsPage.onToggle("tooltipsOnly", true)
@@ -243,25 +249,58 @@ local function icon(parent, path, size)
 	end)
 	texture:SetSize(size, size)
 	texture:SetTexture(path or Theme.UNKNOWN_ICON)
-	texture:SetTexCoord(0, 1, 0, 1)
+	-- The client's icons lose their baked bevel (Theme.ICON_CROP); the addon's own art is drawn whole.
+	local own = type(path) == "string" and path:find("Interface\\AddOns\\", 1, true) == 1
+	local crop = own and { 0, 1, 0, 1 } or Theme.ICON_CROP
+	texture:SetTexCoord(crop[1], crop[2], crop[3], crop[4])
 	return texture
+end
+
+--- The loop's flow arrow, drawn from flat brass rectangles (the slot marks' way: no font glyph,
+--- no client art): a shaft and a three-step head, { x, y, width, height } in a 16 x 10 box
+--- pointing right. Left mirrors it; down turns it.
+Onboarding.ARROW_PARTS = { { 0, 4, 10, 2 }, { 10, 0, 2, 10 }, { 12, 2, 2, 6 }, { 14, 4, 2, 2 } }
+Onboarding.ARROW_BOX = { 16, 10 }
+
+--- The parts of an arrow pointing `direction` ("right", "left" or "down"). Pure.
+function Onboarding.arrowParts(direction)
+	local parts = {}
+	for index, part in ipairs(Onboarding.ARROW_PARTS) do
+		local x, y, width, h = part[1], part[2], part[3], part[4]
+		if direction == "left" then
+			x = Onboarding.ARROW_BOX[1] - x - width
+		elseif direction == "down" then
+			x, y, width, h = y, x, h, width
+		end
+		parts[index] = { x, y, width, h }
+	end
+	return parts
+end
+
+local function arrow(parent, direction, left, top)
+	for _, part in ipairs(Onboarding.arrowParts(direction)) do
+		local piece = take("rule", function()
+			return Theme.texture(parent, "ARTWORK", "brass")
+		end)
+		piece:SetSize(part[3], part[4])
+		piece:SetPoint("TOPLEFT", parent, "TOPLEFT", left + part[1], -top - part[2])
+	end
 end
 
 local function button(parent, label, onClick)
 	local made = take("button", function()
-		local built = Widgets.button(parent, "", function(self)
+		-- The client's own red button, the panel's (Widgets.clientButton), a little taller here.
+		local built = Widgets.clientButton(parent, "", function(self)
 			if self.foreverSixtyAction ~= nil then
 				self.foreverSixtyAction()
 			end
 		end)
-		built:SetHeight(24)
+		built:SetHeight(Onboarding.BUTTON_HEIGHT)
 		return built
 	end)
 	made:SetText(label)
 	made.foreverSixtyAction = onClick
-	local width = made.foreverSixtyLabel:GetStringWidth()
-	made:SetWidth(math.max(64, math.ceil(type(width) == "number" and width or 50) + 24))
-	return made
+	return Widgets.fitButton(made, 64, 24)
 end
 
 --- A read-only address box the player clicks to select, then Ctrl+C.
@@ -295,20 +334,18 @@ local function drawLoop(content, input)
 			if node ~= nil then
 				local mark = icon(content, node.icon, 34)
 				mark:SetPoint("TOPLEFT", content, "TOPLEFT", columnX[column], -top[rowIndex])
-				local title = text(content, node.title, "tooltipBody", "normal")
+				local title = text(content, node.title, "ink", "normal")
 				title:SetPoint("TOPLEFT", content, "TOPLEFT", columnX[column] + 40, -top[rowIndex])
-				local line = text(content, node.line, "tooltipMuted", "small", 130)
+				local line = text(content, node.line, "umberMuted", "small", 130)
 				line:SetPoint("TOPLEFT", content, "TOPLEFT", columnX[column] + 40, -top[rowIndex] - 18)
 			end
 			if column < 3 and (rowIndex == 1 or row[column] ~= nil) then
-				local arrow = text(content, rowIndex == 1 and L.tourArrowRight or L.tourArrowLeft, "clientGold", "normal")
-				arrow:SetPoint("TOPLEFT", content, "TOPLEFT", columnX[column] + 176, -top[rowIndex] - 6)
+				arrow(content, rowIndex == 1 and "right" or "left", columnX[column] + 174, top[rowIndex] + 12)
 			end
 		end
 	end
-	local down = text(content, L.tourArrowDown, "clientGold", "normal")
-	down:SetPoint("TOPLEFT", content, "TOPLEFT", columnX[3] + 12, -top[1] - 98)
-	local caption = text(content, input.inGuild and L.tourLoopCaption or L.tourLoopCaptionSolo, "tooltipBody",
+	arrow(content, "down", columnX[3] + 12, top[1] + 96)
+	local caption = text(content, input.inGuild and L.tourLoopCaption or L.tourLoopCaptionSolo, "ink",
 		"normal", Onboarding.WIDTH - 60)
 	caption:SetJustifyH("CENTER")
 	caption:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -top[2] - 100)
@@ -319,16 +356,16 @@ local function drawRows(content, rows)
 	for _, row in ipairs(rows) do
 		local x = 0
 		if row.source ~= nil then
-			local source = text(content, row.source, "tooltipMuted", "small", 160)
+			local source = text(content, row.source, "umberMuted", "small", 160)
 			source:SetJustifyH("RIGHT")
 			source:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 			x = 176
 		end
 		local mark = icon(content, row.icon, 30)
 		mark:SetPoint("TOPLEFT", content, "TOPLEFT", x, -y)
-		local title = text(content, row.title, "tooltipBody", "normal")
+		local title = text(content, row.title, "ink", "normal")
 		title:SetPoint("TOPLEFT", content, "TOPLEFT", x + 40, -y)
-		local line = text(content, row.line, "tooltipMuted", "small", Onboarding.WIDTH - 100 - x)
+		local line = text(content, row.line, "umberMuted", "small", Onboarding.WIDTH - 100 - x)
 		line:SetPoint("TOPLEFT", content, "TOPLEFT", x + 40, -y - 18)
 		y = y + math.max(44, 22 + height(line)) + 6
 	end
@@ -356,28 +393,28 @@ local function drawBack(content)
 end
 
 local function drawGuild(content)
-	local intro = text(content, L.tourGuildIntro, "tooltipBody", "normal", Onboarding.WIDTH - 60)
+	local intro = text(content, L.tourGuildIntro, "ink", "normal", Onboarding.WIDTH - 60)
 	intro:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
 	local y = height(intro) + 14
-	local chipLine = text(content, string.format(L.chipTonight, Compat.clockText(20, 0), L.tourGuildRaid), "body",
+	local chipLine = text(content, string.format(L.chipTonight, Compat.clockText(20, 0), L.tourGuildRaid), "ink",
 		"normal")
 	chipLine:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-	local chipNote = text(content, L.tourGuildChipNote, "tooltipMuted")
+	local chipNote = text(content, L.tourGuildChipNote, "umberMuted")
 	chipNote:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 20)
-	local job = text(content, string.format(L.panelJob, L.tourGuildJob), "tooltipBody")
+	local job = text(content, string.format(L.panelJob, L.tourGuildJob), "ink")
 	job:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 46)
-	local jobNote = text(content, L.tourGuildJobNote, "tooltipMuted")
+	local jobNote = text(content, L.tourGuildJobNote, "umberMuted")
 	jobNote:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 62)
-	local answer = text(content, L.tourAnswer, "tooltipBody", "normal")
+	local answer = text(content, L.tourAnswer, "ink", "normal")
 	answer:SetPoint("TOPLEFT", content, "TOPLEFT", 320, -y)
-	local site = text(content, L.tourAnswerSite, "tooltipBody")
+	local site = text(content, L.tourAnswerSite, "ink")
 	site:SetPoint("TOPLEFT", content, "TOPLEFT", 320, -y - 20)
-	local discord = text(content, L.tourAnswerDiscord, "tooltipBody")
+	local discord = text(content, L.tourAnswerDiscord, "ink")
 	discord:SetPoint("TOPLEFT", content, "TOPLEFT", 320, -y - 36)
-	local later = text(content, L.tourAnswerLater, "tooltipMuted")
+	local later = text(content, L.tourAnswerLater, "umberMuted")
 	later:SetPoint("TOPLEFT", content, "TOPLEFT", 320, -y - 52)
 	coming(content, later)
-	local same = text(content, L.tourAnswerSame, "tooltipMuted", "small", 240)
+	local same = text(content, L.tourAnswerSame, "umberMuted", "small", 240)
 	same:SetPoint("TOPLEFT", content, "TOPLEFT", 320, -y - 74)
 end
 
@@ -385,14 +422,14 @@ local function drawSetup(content, input)
 	local page = Onboarding.setup(input)
 	local y = 0
 	if page.path ~= nil then
-		local name = text(content, page.path.name, "tooltipBody", "normal")
+		local name = text(content, page.path.name, "ink", "normal")
 		name:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 		if page.path.count ~= nil then
-			local count = text(content, page.path.count, "tooltipMuted")
+			local count = text(content, page.path.count, "umberMuted")
 			count:SetPoint("LEFT", name, "RIGHT", 10, 0)
 		end
 		if page.path.next ~= nil then
-			local nextLine = text(content, page.path.next, "tooltipMuted")
+			local nextLine = text(content, page.path.next, "umberMuted")
 			nextLine:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 18)
 		end
 		local change = button(content, L.panelChange, function()
@@ -404,9 +441,9 @@ local function drawSetup(content, input)
 		change:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
 		y = y + 44
 	else
-		local title = text(content, L.panelPickPath, "tooltipBody", "normal")
+		local title = text(content, L.panelPickPath, "ink", "normal")
 		title:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-		local note = text(content, page.tilesNote, "tooltipMuted")
+		local note = text(content, page.tilesNote, "umberMuted")
 		note:SetPoint("LEFT", title, "RIGHT", 8, 0)
 		y = y + 20
 		for index, spec in ipairs(page.tiles) do
@@ -417,7 +454,7 @@ local function drawSetup(content, input)
 			end)
 			pick:SetPoint("TOPLEFT", content, "TOPLEFT", x, -y)
 			pick:SetWidth(188)
-			local line = text(content, spec.playstyle or "", "tooltipMuted", "small", 188)
+			local line = text(content, spec.playstyle or "", "umberMuted", "small", 188)
 			line:SetPoint("TOPLEFT", content, "TOPLEFT", x, -y - 28)
 		end
 		y = y + 64
@@ -428,7 +465,7 @@ local function drawSetup(content, input)
 		seen:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 		y = y + height(seen) + 2
 		if page.seen.detail ~= nil then
-			local detail = text(content, page.seen.detail, "tooltipMuted", "small", left)
+			local detail = text(content, page.seen.detail, "umberMuted", "small", left)
 			detail:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 			y = y + height(detail) + 8
 		end
@@ -441,26 +478,26 @@ local function drawSetup(content, input)
 		rows[#rows + 1] = { L.tourCompanion, L.tourCompanionLine, Onboarding.SETUP }
 	end
 	for _, row in ipairs(rows) do
-		local title = text(content, row[1], "tooltipBody", "normal")
+		local title = text(content, row[1], "ink", "normal")
 		title:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-		local line = text(content, row[2], "tooltipMuted", "small", left)
+		local line = text(content, row[2], "umberMuted", "small", left)
 		line:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 18)
 		local box = addressBox(content, row[3])
 		box:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y - 22 - height(line))
 		y = y + 50 + height(line)
 	end
 	if #rows > 0 then
-		local links = text(content, L.tourLinks, "tooltipMuted", "small", left)
+		local links = text(content, L.tourLinks, "umberMuted", "small", left)
 		links:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 		y = y + height(links) + 4
 	end
-	local again = text(content, L.tourAgain, "tooltipMuted", "small", left)
+	local again = text(content, L.tourAgain, "umberMuted", "small", left)
 	again:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
 	local qr = icon(content, Onboarding.QR_TEXTURE, Onboarding.QR_SIZE)
 	qr:SetPoint("TOPRIGHT", content, "TOPRIGHT", -40, -(page.path ~= nil and 54 or 92))
-	local label = text(content, L.tourAppBeta, "tooltipBody", "small")
+	local label = text(content, L.tourAppBeta, "ink", "small")
 	label:SetPoint("TOP", qr, "BOTTOM", 0, -4)
-	local address = text(content, Onboarding.APP, "tooltipMuted", "small")
+	local address = text(content, Onboarding.APP, "umberMuted", "small")
 	address:SetPoint("TOP", label, "BOTTOM", 0, -2)
 end
 
@@ -468,34 +505,32 @@ local DRAW = { loop = drawLoop, site = drawSite, back = drawBack, guild = drawGu
 local HEADINGS = { loop = "tourLoopHeading", site = "tourSiteHeading", back = "tourBackHeading",
 	guild = "tourGuildHeading", setup = "tourSetupHeading" }
 
---- The window: the dark panel, the gold title, the crest, the close X, the footer. Built once.
+--- The window, in the panel's chrome (Widgets.umberFrame and Widgets.titleBand): the umber ground,
+--- the title band with the class medallion, the page's heading in bone over "Welcome to Forever
+--- Sixty", and "2 of 5" on the right; the client's red close X; the footer. The band drags it.
+--- Built once.
 function Onboarding.ensure()
 	if Onboarding.frame ~= nil then
 		return Onboarding.frame
 	end
-	local frame = Widgets.panel(UIParent, Onboarding.WIDTH, Onboarding.HEIGHT, Onboarding.FRAME_NAME)
+	local frame = Widgets.umberFrame(UIParent, Onboarding.WIDTH, Onboarding.HEIGHT, Onboarding.FRAME_NAME)
 	frame:SetFrameStrata("DIALOG")
 	frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	frame:SetClampedToScreen(true)
+	frame:SetMovable(true)
 	frame:EnableMouse(true)
 	frame:Hide()
-	local title = Widgets.label(frame, L.tourTitle, "clientGold", "normal")
-	title:SetPoint("TOP", frame, "TOP", 0, -8)
-	local close = Widgets.closeButton(frame, Onboarding.finish)
-	close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4)
-	local crest, ring = Theme.buildCrest(frame, 52)
-	crest:SetPoint("TOPLEFT", frame, "TOPLEFT", -12, 12)
-	Onboarding.crest, Onboarding.ring = crest, ring
-	local heading = Widgets.label(frame, "", "clientGold", "large")
-	heading:SetPoint("TOPLEFT", frame, "TOPLEFT", 60, -36)
-	Onboarding.heading = heading
+	Onboarding.band = Widgets.titleBand(frame)
+	local close = Widgets.clientCloseButton(frame, Onboarding.finish)
+	close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2)
 	local content = CreateFrame("Frame", nil, frame)
-	content:SetPoint("TOPLEFT", frame, "TOPLEFT", 30, -72)
-	content:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -30, 50)
+	content:SetPoint("TOPLEFT", frame, "TOPLEFT", Onboarding.PAD, -(Theme.SIZES.titleBand + 16))
+	content:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -Onboarding.PAD, 50)
 	Onboarding.content = content
 	local footer = CreateFrame("Frame", nil, frame)
-	footer:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 16, 12)
-	footer:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 12)
-	footer:SetHeight(26)
+	footer:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 16, 14)
+	footer:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 14)
+	footer:SetHeight(Onboarding.BUTTON_HEIGHT)
 	Onboarding.footer = footer
 	frame:SetScript("OnKeyDown", function(self, key)
 		if key == "ENTER" then
@@ -522,8 +557,14 @@ function Onboarding.ensure()
 	return frame
 end
 
---- The footer for page `index` of `count`: Skip tour (and Just the tooltips on page 1), the dots,
---- Back and Next; the last page Back, Open my panel and Done.
+--- The title band for page `index` of `count` on `key`, Widgets.setTitleBand's shape. Pure.
+function Onboarding.head(key, index, count, input)
+	return { title = L[HEADINGS[key]], meta = L.tourTitle, classToken = input.classToken, faction = input.faction,
+		number = index, unit = string.format(L.tourPageOf, count) }
+end
+
+--- The footer for page `index` of `count`: Skip tour (and Tooltips only on page 1) left, Back and
+--- Next right; the last page Back, Open my panel and Done.
 local function drawFooter(index, count)
 	local footer = Onboarding.footer
 	local last = index == count
@@ -534,10 +575,6 @@ local function drawFooter(index, count)
 			local quiet = button(footer, L.tourJustTooltips, Onboarding.justTooltips)
 			quiet:SetPoint("LEFT", skip, "RIGHT", 8, 0)
 		end
-	end
-	for dot = 1, count do
-		local mark = text(footer, L.tourDot, dot == index and "clientGold" or "tooltipMuted", "large")
-		mark:SetPoint("BOTTOM", footer, "BOTTOM", (dot - (count + 1) / 2) * 16, 4)
 	end
 	local right
 	if last then
@@ -564,8 +601,7 @@ function Onboarding.draw()
 	local keys = Onboarding.pageKeys(input.inGuild)
 	Onboarding.page = math.max(1, math.min(Onboarding.page or 1, #keys))
 	local key = keys[Onboarding.page]
-	Theme.paintCrest(Onboarding.crest, Onboarding.ring, input.classToken)
-	Onboarding.heading:SetText(L[HEADINGS[key]])
+	Widgets.setTitleBand(Onboarding.band, Onboarding.head(key, Onboarding.page, #keys, input))
 	DRAW[key](Onboarding.content, input)
 	drawFooter(Onboarding.page, #keys)
 	frame:Show()
