@@ -1,0 +1,20 @@
+{
+  "sitemap": [
+    {
+      "path": "https://foreversixty.gg/sitemap-index.xml",
+      "lastSubmitted": "2026-11-08T21:13:32.941Z",
+      "isPending": false,
+      "isSitemapsIndex": true,
+      "lastDownloaded": "2026-11-08T21:13:33.562Z",
+      "warnings": "0",
+      "errors": "0",
+      "contents": [
+        {
+          "type": "web",
+          "submitted": "234",
+          "indexed": "0"
+        }
+      ]
+    }
+  ]
+}
