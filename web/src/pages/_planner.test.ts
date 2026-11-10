@@ -10,6 +10,9 @@ import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import Planner from './planner.astro';
 import activeBuild from '../data/active-build.json';
+import { loadTalentFile } from '../lib/guides/build-tree';
+import { DEFAULT_CLASS_SLUG } from '../lib/planner/config';
+import { plannerCopy } from '../lib/planner/copy';
 
 let container: AstroContainer;
 
@@ -29,6 +32,14 @@ describe('planner.astro', () => {
     // render() (which AstroContainer.renderToString uses under the hood) never runs
     // `$effect` at all, so this render never leaves the pre-`$effect` loading state.
     expect(html).toContain('href="https://foreversixty.gg/planner"');
+  });
+
+  it('names the opening class’s trees at 0 points and says what the planner does, before the island', async () => {
+    const html = await container.renderToString(Planner);
+    expect(html).toContain(plannerCopy.lead);
+    const trees = loadTalentFile(activeBuild.build, DEFAULT_CLASS_SLUG)?.trees ?? [];
+    expect(trees.length).toBeGreaterThan(0);
+    for (const tree of trees) expect(html).toMatch(new RegExp(`<h2[^>]*>${tree.name}</h2>`));
   });
 
   it('mounts exactly two islands', async () => {

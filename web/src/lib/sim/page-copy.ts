@@ -5,6 +5,8 @@
 
 export const simPageCopy = {
   title: 'Simulator',
+  /** The landing's lead: what a sim gives the player, in the game's words. */
+  lead: 'Run your gear, talents, buffs and consumables against a boss. You get your DPS, a breakdown by ability and a cast-by-cast timeline of the fight.',
   sections: {
     simYourCharacter: 'Sim your character',
     otherWaysIn: 'Other ways in',

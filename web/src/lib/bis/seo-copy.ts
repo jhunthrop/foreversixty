@@ -19,9 +19,11 @@ function who({ fullName }: BisSeoSubject): string {
 }
 
 export const bisSeoCopy = {
-  /** The spec's own page, the hub for every band: "Fury Warrior BiS: Pre-Raid and Leveling 20 to 60, WoW Forever". */
-  specTitle: (subject: BisSeoSubject, firstBand: number): string =>
-    `${who(subject)} BiS: ${subject.preRaid ? 'Pre-Raid' : `Level ${MAX_BAND}`} and Leveling ${firstBand} to ${MAX_BAND}, ${GAME}`,
+  /** The spec's own page, the hub for every band: "Fury Warrior BiS: Pre-Raid and Leveling, WoW Forever".
+   *  No level range: with it the longest spec ran to 69 characters and search cut the game off;
+   *  without it the longest ("Beast Mastery Hunter") is 60. The description carries the range. */
+  specTitle: (subject: BisSeoSubject): string =>
+    `${who(subject)} BiS: ${subject.preRaid ? 'Pre-Raid' : `Level ${MAX_BAND}`} and Leveling, ${GAME}`,
   /** A band page: "Fury Warrior BiS, Levels 40 to 49, WoW Forever"; at 60 "Fury Warrior Pre-Raid BiS, Level 60, WoW Forever". */
   bandTitle: (subject: BisSeoSubject, band: number): string =>
     band >= MAX_BAND && subject.preRaid

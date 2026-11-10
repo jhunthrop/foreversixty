@@ -58,4 +58,8 @@ describe('pageTitle', () => {
     expect(title).toBe('Hunter Beast Mastery leveling BiS · WoW Forever');
     expect(title.length).toBeLessThanOrEqual(TITLE_MAX_LENGTH);
   });
+
+  it('never repeats the brand a title already names', () => {
+    expect(pageTitle('/about', 'About Forever Sixty')).toBe('About Forever Sixty · WoW Forever');
+  });
 });
