@@ -66,6 +66,10 @@ RATING_MOVES = {'Emberfall': (58, 77), 'Rimecaller': (71, 88), 'Seraphine': (64,
 # Hand-set figures the member's page reads: the BiS-file gap and the best parse.
 GAP_SET = {'Hollowmend': 11.0}
 BEST_SET = {'Hollowmend': 82}
+# Deaths on the Onyxia kill (raid id -> name -> deaths), as the report's deaths[] carries them.
+DEATHS = {44: {'Doomwhisper': 1, 'Pinefeather': 1}, 43: {'Hollowmend': 1, 'Emberfall': 2, 'Groundshock': 1, 'Skytalon': 1}}
+# The applicants (guild_data.APPLICANTS) by the group they would fill.
+APPLICANT_GROUP = {'Ashenveil': 'Healer', 'Quillbright': 'Ranged'}
 OFFICERS = list(gd.OFFICERS)
 GUILD_MASTER = gd.GUILD_MASTER
 MEMBER = 'Hollowmend'

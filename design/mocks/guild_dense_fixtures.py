@@ -65,7 +65,7 @@ def roster_row(r: D.Raider) -> dict:
     seen = ago(r.seen_days)
     return {'character_key': r.key, 'region': gd.REGION, 'ruleset': gd.RULESET, 'name': r.name, 'class': r.cls, 'spec': r.spec,
             'role': r.role, 'rank': r.rank, 'verified': True, 'logged_recently': r.seen_days == 0, 'logged_at': seen,
-            'item_level': r.ilvl, 'level': 60, 'consent': 'gear_bags', 'is_main': True,
+            'group': r.group.lower(), 'item_level': r.ilvl, 'level': 60, 'consent': 'gear_bags', 'is_main': True,
             'attendance': {'present': r.present, 'nights': r.nights},
             'attendance_30': {'present': r.present, 'nights': r.nights}, 'best_parse': best_parse(r), 'rating': rating(r),
             'professions': list(r.professions), 'account_key': f'acct-{r.name.lower()}', 'last_report_at': None,
@@ -139,18 +139,18 @@ def signup(r: D.Raider, viewer: str) -> dict:
 
 
 def cover() -> list[dict]:
-    """The buff and debuff table for raid 45, as raids_cover.go builds it: providers by sign-up state."""
+    """The buff and debuff table for raid 45 (keys, spells and icons from api/internal/guilds/raids_cover_catalogue.go): providers by sign-up state."""
     def prov(cls: str, spec: str | None = None) -> dict:
         rows = [r for r in D.ROSTER if r.cls == cls and (spec is None or r.spec == spec)]
         return {s: sum(1 for r in rows if r.answer == s) for s in ('in', 'late', 'bench')}
-    table = [('leader_of_the_pack', 'Leader of the Pack', 'buff', 24932, 'spell_nature_unyeildingstamina', 1, 'raid', prov('druid', 'Feral')),
-             ('moonkin_aura', 'Moonkin Aura', 'buff', 24907, 'spell_nature_moonglow', 1, 'caster_group', prov('druid', 'Balance')),
+    table = [('leader_of_the_pack', 'Leader of the Pack', 'buff', 17007, 'spell_nature_unyeildingstamina', 1, 'raid', prov('druid', 'Feral')),
+             ('moonkin_aura', 'Moonkin Aura', 'buff', 24858, 'spell_nature_forceofnature', 1, 'raid', prov('druid', 'Balance')),
              ('trueshot_aura', 'Trueshot Aura', 'buff', 20906, 'ability_trueshot', 1, 'raid', prov('hunter', 'Marksmanship')),
-             ('windfury_totem', 'Windfury Totem', 'buff', 10614, 'spell_nature_windfury', 2, 'melee_group', prov('shaman')),
-             ('battle_shout', 'Battle Shout', 'buff', 25289, 'ability_warrior_battleshout', 1, 'melee_group', prov('warrior')),
-             ('blessing_of_kings', 'Blessing of Kings', 'buff', 25898, 'spell_magic_greaterblessingofkings', 1, 'raid', prov('paladin')),
+             ('windfury_totem', 'Windfury Totem', 'buff', 10614, 'spell_nature_windfury', 1, 'melee_group', prov('shaman')),
+             ('battle_shout', 'Battle Shout', 'buff', 11551, 'ability_warrior_battleshout', 1, 'melee_group', prov('warrior')),
+             ('blessing_of_kings', 'Blessing of Kings', 'buff', 20217, 'spell_magic_magearmor', 1, 'raid', prov('paladin')),
              ('sunder_armor', 'Sunder Armor', 'debuff', 11597, 'ability_warrior_sunder', 1, 'raid', prov('warrior')),
-             ('curse_of_elements', 'Curse of the Elements', 'debuff', 11722, 'spell_shadow_chilltouch', 1, 'raid', prov('warlock'))]
+             ('curse_of_the_elements', 'Curse of the Elements', 'debuff', 1311680, 'warlock_curse_shadow', 1, 'raid', prov('warlock'))]
     out = []
     for key, name, kind, spell, icon, need, per, p in table:
         state = 'ok' if p['in'] >= need else 'late' if p['in'] + p['late'] >= need else 'gap'
@@ -187,7 +187,7 @@ def done_view(raid_id: int) -> dict:
     came = [r for r in D.ROSTER if r.cells[idx] == 'P']
     parses = sorted(({'character_key': r.key, 'name': r.name, 'class': r.cls, 'role': r.role, 'encounter_id': ENCOUNTER_ID,
                       'encounter': 'Onyxia', 'fight_index': 3 + wipes, 'metric': r.metric, 'value': r.figures[week],
-                      'rating': r.ratings[week]} for r in came), key=lambda p: (p['metric'], -p['value']))
+                      'rating': r.ratings[week], 'percentile': max(5, min(99, r.best_pct - 6 + 6 * week))} for r in came), key=lambda p: (p['metric'], -p['value']))
     loot = [{'item_id': a[1], 'item_name': a[2], 'quality': 4, 'icon': a[3], 'character_key': D.BY_NAME[a[5]].key,
              'name': a[5], 'class': D.BY_NAME[a[5]].cls, 'by_name': a[6], 'at': iso(parse(at) + timedelta(minutes=61 + i))}
             for i, a in enumerate(x for x in D.AWARDS if x[0] == raid_id)]
@@ -205,7 +205,8 @@ def done_view(raid_id: int) -> dict:
                 'pulls': [], 'parses': parses,
                 'kill_order': [{'encounter_id': ENCOUNTER_ID, 'name': 'Onyxia', 'fight_index': 3 + wipes, 'killed': True,
                                 'kill_ms': kill, 'wipes_before': wipes, 'deaths': deaths}],
-                'unnamed': [], 'deaths': [], 'consumables': {'log_has_buffs': False, 'rows': [], 'by_pull': []},
+                'unnamed': [], 'deaths': [{'character_key': D.BY_NAME[n].key, 'name': n, 'class': D.BY_NAME[n].cls, 'on_wipes': 0, 'on_kills': k}
+                                         for n, k in D.DEATHS.get(raid_id, {}).items()], 'consumables': {'log_has_buffs': False, 'rows': [], 'by_pull': []},
                 'loot': [{'encounter_id': ENCOUNTER_ID, 'boss': 'Onyxia', 'awards': loot}],
                 'moves': {'previous': None, 'rows': []}, 'posted_at': None}}
 

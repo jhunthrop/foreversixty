@@ -89,7 +89,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 857.0,
-        "rating": 72
+        "rating": 72,
+        "percentile": 59
       },
       {
         "character_key": "us/pvp/starnettle",
@@ -101,7 +102,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 822.0,
-        "rating": 61
+        "rating": 61,
+        "percentile": 71
       },
       {
         "character_key": "us/pvp/shiverknife",
@@ -113,7 +115,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 802.0,
-        "rating": 88
+        "rating": 88,
+        "percentile": 74
       },
       {
         "character_key": "us/pvp/seraphine",
@@ -125,7 +128,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 776.0,
-        "rating": 79
+        "rating": 79,
+        "percentile": 91
       },
       {
         "character_key": "us/pvp/groundshock",
@@ -137,7 +141,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 770.0,
-        "rating": 66
+        "rating": 66,
+        "percentile": 53
       },
       {
         "character_key": "us/pvp/axebreaker",
@@ -149,7 +154,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 745.0,
-        "rating": 63
+        "rating": 63,
+        "percentile": 84
       },
       {
         "character_key": "us/pvp/frostquill",
@@ -161,7 +167,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 727.0,
-        "rating": 90
+        "rating": 90,
+        "percentile": 53
       },
       {
         "character_key": "us/pvp/duskfang",
@@ -173,7 +180,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 725.0,
-        "rating": 73
+        "rating": 73,
+        "percentile": 77
       },
       {
         "character_key": "us/pvp/steelmane",
@@ -185,7 +193,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 692.0,
-        "rating": 74
+        "rating": 74,
+        "percentile": 78
       },
       {
         "character_key": "us/pvp/pinefeather",
@@ -197,7 +206,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 691.0,
-        "rating": 47
+        "rating": 47,
+        "percentile": 51
       },
       {
         "character_key": "us/pvp/longshot",
@@ -209,7 +219,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 684.0,
-        "rating": 57
+        "rating": 57,
+        "percentile": 71
       },
       {
         "character_key": "us/pvp/hexmarrow",
@@ -221,7 +232,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 683.0,
-        "rating": 90
+        "rating": 90,
+        "percentile": 38
       },
       {
         "character_key": "us/pvp/gorehowl",
@@ -233,7 +245,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 683.0,
-        "rating": 73
+        "rating": 73,
+        "percentile": 68
       },
       {
         "character_key": "us/pvp/emberfall",
@@ -245,7 +258,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 678.0,
-        "rating": 77
+        "rating": 77,
+        "percentile": 43
       },
       {
         "character_key": "us/pvp/ashblade",
@@ -257,7 +271,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 675.0,
-        "rating": 53
+        "rating": 53,
+        "percentile": 92
       },
       {
         "character_key": "us/pvp/grimsworn",
@@ -269,7 +284,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 664.0,
-        "rating": 59
+        "rating": 59,
+        "percentile": 47
       },
       {
         "character_key": "us/pvp/thistlepaw",
@@ -281,7 +297,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 660.0,
-        "rating": 62
+        "rating": 62,
+        "percentile": 81
       },
       {
         "character_key": "us/pvp/rimecaller",
@@ -293,7 +310,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 646.0,
-        "rating": 88
+        "rating": 88,
+        "percentile": 69
       },
       {
         "character_key": "us/pvp/glimmerfrost",
@@ -305,7 +323,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 638.0,
-        "rating": 53
+        "rating": 53,
+        "percentile": 69
       },
       {
         "character_key": "us/pvp/moonquill",
@@ -317,7 +336,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 637.0,
-        "rating": 54
+        "rating": 54,
+        "percentile": 41
       },
       {
         "character_key": "us/pvp/skytalon",
@@ -329,7 +349,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 614.0,
-        "rating": 88
+        "rating": 88,
+        "percentile": 38
       },
       {
         "character_key": "us/pvp/dunmaro",
@@ -341,7 +362,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 607.0,
-        "rating": 69
+        "rating": 69,
+        "percentile": 84
       },
       {
         "character_key": "us/pvp/blacktide",
@@ -353,7 +375,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 582.0,
-        "rating": 95
+        "rating": 95,
+        "percentile": 80
       },
       {
         "character_key": "us/pvp/nightlatch",
@@ -365,7 +388,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 519.0,
-        "rating": 60
+        "rating": 60,
+        "percentile": 90
       },
       {
         "character_key": "us/pvp/thornwicke",
@@ -377,7 +401,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 351.0,
-        "rating": 78
+        "rating": 78,
+        "percentile": 77
       },
       {
         "character_key": "us/pvp/bramblehorn",
@@ -389,7 +414,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 347.0,
-        "rating": 48
+        "rating": 48,
+        "percentile": 65
       },
       {
         "character_key": "us/pvp/ironhide",
@@ -401,7 +427,8 @@
         "fight_index": 3,
         "metric": "dps",
         "value": 269.0,
-        "rating": 89
+        "rating": 89,
+        "percentile": 97
       },
       {
         "character_key": "us/pvp/brightvow",
@@ -413,7 +440,8 @@
         "fight_index": 3,
         "metric": "hps",
         "value": 667.0,
-        "rating": 83
+        "rating": 83,
+        "percentile": 40
       },
       {
         "character_key": "us/pvp/stonetide",
@@ -425,7 +453,8 @@
         "fight_index": 3,
         "metric": "hps",
         "value": 649.0,
-        "rating": 80
+        "rating": 80,
+        "percentile": 61
       },
       {
         "character_key": "us/pvp/hollowmend",
@@ -437,7 +466,8 @@
         "fight_index": 3,
         "metric": "hps",
         "value": 624.0,
-        "rating": 86
+        "rating": 86,
+        "percentile": 82
       },
       {
         "character_key": "us/pvp/mossveil",
@@ -449,7 +479,8 @@
         "fight_index": 3,
         "metric": "hps",
         "value": 618.0,
-        "rating": 73
+        "rating": 73,
+        "percentile": 81
       },
       {
         "character_key": "us/pvp/ironbrand",
@@ -461,7 +492,8 @@
         "fight_index": 3,
         "metric": "hps",
         "value": 585.0,
-        "rating": 89
+        "rating": 89,
+        "percentile": 89
       },
       {
         "character_key": "us/pvp/valomira",
@@ -473,7 +505,8 @@
         "fight_index": 3,
         "metric": "hps",
         "value": 583.0,
-        "rating": 67
+        "rating": 67,
+        "percentile": 94
       },
       {
         "character_key": "us/pvp/dawnweaver",
@@ -485,7 +518,8 @@
         "fight_index": 3,
         "metric": "hps",
         "value": 555.0,
-        "rating": 84
+        "rating": 84,
+        "percentile": 56
       },
       {
         "character_key": "us/pvp/sunmantle",
@@ -497,7 +531,8 @@
         "fight_index": 3,
         "metric": "hps",
         "value": 537.0,
-        "rating": 94
+        "rating": 94,
+        "percentile": 51
       },
       {
         "character_key": "us/pvp/rainsong",
@@ -509,7 +544,8 @@
         "fight_index": 3,
         "metric": "hps",
         "value": 525.0,
-        "rating": 85
+        "rating": 85,
+        "percentile": 74
       }
     ],
     "kill_order": [
@@ -524,7 +560,22 @@
       }
     ],
     "unnamed": [],
-    "deaths": [],
+    "deaths": [
+      {
+        "character_key": "us/pvp/doomwhisper",
+        "name": "Doomwhisper",
+        "class": "warlock",
+        "on_wipes": 0,
+        "on_kills": 1
+      },
+      {
+        "character_key": "us/pvp/pinefeather",
+        "name": "Pinefeather",
+        "class": "hunter",
+        "on_wipes": 0,
+        "on_kills": 1
+      }
+    ],
     "consumables": {
       "log_has_buffs": false,
       "rows": [],
