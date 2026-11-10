@@ -19,13 +19,17 @@ describe('UI_ICONS', () => {
     expect(modules.filter((file) => !expected.has(file))).toEqual([]);
   });
 
-  it('keeps the apps\' tab icons and frame corner current (node scripts/gen-ui-icons.mjs)', () => {
+  it("keeps the apps' tab icons and frame corner current (node scripts/gen-ui-icons.mjs)", () => {
     const expected = renderNativeIcons();
     for (const [file, text] of expected) expect(readFileSync(file, 'utf8')).toBe(text);
     const sets = readdirSync(NATIVE_IOS_DIR).filter((name) => name.endsWith('.imageset'));
-    expect(sets.sort()).toEqual(['frame-corner', 'tab-activity', 'tab-gear', 'tab-home', 'tab-raid'].map((n) => `${n}.imageset`));
+    expect(sets.sort()).toEqual(
+      ['frame-corner', 'tab-activity', 'tab-gear', 'tab-home', 'tab-raid'].map((n) => `${n}.imageset`),
+    );
     const vectors = readdirSync(NATIVE_ANDROID_DIR).filter((name) => /^ic_(tab_|frame_)/.test(name));
-    expect(vectors.map((name) => path.join(NATIVE_ANDROID_DIR, name)).every((file) => expected.has(file))).toBe(true);
+    expect(
+      vectors.map((name) => path.join(NATIVE_ANDROID_DIR, name)).every((file) => expected.has(file)),
+    ).toBe(true);
   });
 
   it('holds the nav doors and the account menu in the custom set, each one even-odd path', () => {

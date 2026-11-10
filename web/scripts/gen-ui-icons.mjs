@@ -107,7 +107,8 @@ function companionScript(all) {
   const byName = new Map(all.map((icon) => [icon.name, icon]));
   const icons = COMPANION_ICONS.map((name) => {
     const icon = byName.get(name);
-    if (icon === undefined) throw new Error(`COMPANION_ICONS names ${name}, which design/assets/icons/ui lacks`);
+    if (icon === undefined)
+      throw new Error(`COMPANION_ICONS names ${name}, which design/assets/icons/ui lacks`);
     return `  '${icon.name}': { box: ${icon.box}, kind: '${icon.kind}', body: '${icon.body}' },`;
   });
   const corner = parseCorner();
@@ -201,30 +202,30 @@ function parseNative(vector) {
   const svg = readFileSync(path.join(ASSETS, vector.source), 'utf8');
   const viewBox = /viewBox="0 0 (\d+) (\d+)"/.exec(svg);
   const paths = [...svg.matchAll(/<path\b[^>]*\sd="([^"]+)"/g)];
-  if (viewBox === null || viewBox[1] !== viewBox[2]) throw new Error(`${vector.source}: needs a square viewBox`);
+  if (viewBox === null || viewBox[1] !== viewBox[2])
+    throw new Error(`${vector.source}: needs a square viewBox`);
   if (paths.length !== 1) throw new Error(`${vector.source}: needs exactly one path, found ${paths.length}`);
   return { ...vector, box: Number(viewBox[1]), d: paths[0][1] };
 }
 
 function iosSvg(icon) {
-  const stroke = icon.stroke
-    ? ` stroke="#000" stroke-width="${icon.stroke}" stroke-linejoin="round"`
-    : '';
+  const stroke = icon.stroke ? ` stroke="#000" stroke-width="${icon.stroke}" stroke-linejoin="round"` : '';
   return `<!-- ${NATIVE_HEADER} -->
 <svg xmlns="http://www.w3.org/2000/svg" width="${icon.size}" height="${icon.size}" viewBox="0 0 ${icon.box} ${icon.box}"><path fill="#000" fill-rule="evenodd"${stroke} d="${icon.d}"/></svg>
 `;
 }
 
 // A template image: the app tints it (the tab bar's gold or muted white, the corner's cream).
-const iosContents = (icon) => `${JSON.stringify(
-  {
-    images: [{ filename: `${icon.name}.svg`, idiom: 'universal' }],
-    info: { author: 'xcode', version: 1 },
-    properties: { 'preserves-vector-representation': true, 'template-rendering-intent': 'template' },
-  },
-  null,
-  2,
-)}\n`;
+const iosContents = (icon) =>
+  `${JSON.stringify(
+    {
+      images: [{ filename: `${icon.name}.svg`, idiom: 'universal' }],
+      info: { author: 'xcode', version: 1 },
+      properties: { 'preserves-vector-representation': true, 'template-rendering-intent': 'template' },
+    },
+    null,
+    2,
+  )}\n`;
 
 function androidVector(icon) {
   const stroke = icon.stroke
@@ -250,7 +251,12 @@ function androidVector(icon) {
 
 /** Every native vector file, keyed by absolute path. */
 export function renderNativeIcons() {
-  const out = new Map([[path.join(NATIVE_IOS_DIR, 'Contents.json'), `${JSON.stringify({ info: { author: 'xcode', version: 1 } }, null, 2)}\n`]]);
+  const out = new Map([
+    [
+      path.join(NATIVE_IOS_DIR, 'Contents.json'),
+      `${JSON.stringify({ info: { author: 'xcode', version: 1 } }, null, 2)}\n`,
+    ],
+  ]);
   for (const icon of NATIVE_VECTORS.map(parseNative)) {
     const set = path.join(NATIVE_IOS_DIR, `${icon.name}.imageset`);
     out.set(path.join(set, `${icon.name}.svg`), iosSvg(icon));
@@ -265,7 +271,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   mkdirSync(MODULE_DIR, { recursive: true });
   const files = renderUiIcons();
   for (const [file, text] of files) writeFileSync(file, text);
-  console.log(`wrote ${path.relative(WEB, OUT)}, ${path.relative(WEB, COMPANION_OUT)} and ${files.size - 2} icon modules`);
+  console.log(
+    `wrote ${path.relative(WEB, OUT)}, ${path.relative(WEB, COMPANION_OUT)} and ${files.size - 2} icon modules`,
+  );
   rmSync(NATIVE_IOS_DIR, { recursive: true, force: true });
   const native = renderNativeIcons();
   for (const [file, text] of native) {
