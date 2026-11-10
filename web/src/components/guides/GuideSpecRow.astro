@@ -55,7 +55,7 @@ const testid = `${testidPrefix}${specKey}`;
     />
     <span slot="trail" class="guide-spec-tags">
       <span data-your-spec hidden>
-        <Tag>{yoursLabel}</Tag>
+        <Tag tone="yours">{yoursLabel}</Tag>
       </span>
     </span>
   </Row>
@@ -75,7 +75,7 @@ const testid = `${testidPrefix}${specKey}`;
       {name}
       <span data-your-spec hidden>
         {' '}
-        <Tag>{yoursLabel}</Tag>
+        <Tag tone="yours">{yoursLabel}</Tag>
       </span>
     </span>
     <span slot="foot" class="guide-spec-foot">
@@ -112,7 +112,7 @@ const testid = `${testidPrefix}${specKey}`;
   }
   :global(.ui-row[aria-current='true']:has([data-your-spec])) {
     background: var(--color-selected);
-    box-shadow: inset 3px 0 0 var(--color-gold);
+    box-shadow: var(--shadow-selected-bar);
   }
   [data-your-spec][hidden] {
     display: none;

@@ -32,10 +32,10 @@ export const ROW_BAND_REACH = {
  *  (ui/row.css keys the neighbour selectors to it, never to a universal subject). */
 export const ROW_RULE = 'row-rule';
 
-/** The viewer's own row: the gold wash on a band. */
+/** The viewer's own row: the selected state (accent tint and bar) on a band. */
 export const ROW_BAND_OWN = 'row-band row-band-own';
 
-/** A marked row (a selected fight): the 8% gold wash and the 2 px gold edge on a band. */
+/** A marked row (a selected fight): the selected state (accent tint and bar) on a band. */
 export const ROW_BAND_MARK = 'row-band row-band-mark';
 
 /** A row the address may name (`#id`): the marked look while it is the target. */

@@ -302,14 +302,21 @@
     filter: grayscale(1) brightness(0.55);
     border-color: var(--color-muted-card);
   }
+  /* The selected slot takes the selected state's accent ring; keyboard focus keeps the cream ring,
+     so a focused slot reads apart from the one the centre shows. */
   .pdf-slot.pdf-sel::after,
   .pdf-slot:focus-visible::after {
     content: '';
     position: absolute;
-    inset: -4%;
-    border: 2px solid var(--color-cream);
+    inset: -5%;
+    border: 3px solid var(--color-selected-mark);
     border-radius: var(--radius-field);
-    box-shadow: 0 0 0 1px black;
+    box-shadow:
+      0 0 0 1px black,
+      0 0 14px 3px color-mix(in srgb, var(--color-selected-mark) 70%, transparent);
+  }
+  .pdf-slot:focus-visible::after {
+    border-color: var(--color-cream);
   }
   .pdf-slot:focus-visible {
     outline: none;
@@ -457,7 +464,7 @@
     height: 38px;
   }
   .pdf-item.pdf-sel .pdf-cell {
-    outline: 2px solid var(--color-cream);
+    outline: 2px solid var(--color-selected-mark);
     outline-offset: 1px;
   }
   .pdf-name {

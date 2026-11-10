@@ -189,6 +189,6 @@
   }
   .ui-tsm-item[data-current='true'] {
     color: var(--color-strong);
-    box-shadow: inset 3px 0 0 var(--color-gold);
+    box-shadow: var(--shadow-selected-bar);
   }
 </style>

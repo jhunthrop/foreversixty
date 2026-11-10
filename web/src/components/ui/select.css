@@ -326,10 +326,15 @@
   .sel-pop[data-touch='true'] .sel-row {
     min-height: 44px;
   }
+  /* The pointer and the keyboard's active row take the hover ground; the chosen option takes the
+     one selected state (the accent tint and bar), so moving through the list never looks chosen. */
   .sel-row.is-active,
   .sel-row:not([aria-disabled='true']):hover {
+    background: var(--color-hover);
+  }
+  [role='listbox']:not([aria-multiselectable='true']) .sel-row[aria-selected='true'] {
     background: var(--color-selected);
-    box-shadow: inset 2px 0 0 var(--color-accent);
+    box-shadow: var(--shadow-selected-bar);
   }
   .sel-row[aria-disabled='true'] {
     opacity: 0.45;
@@ -379,9 +384,10 @@
     align-items: center;
     height: 18px;
     padding: 0 5px;
-    border: 1px solid color-mix(in srgb, var(--color-gold) 38%, transparent);
+    border: 1px solid var(--color-selected-mark);
     border-radius: var(--radius-pill);
-    color: var(--color-gold);
+    background: var(--color-selected);
+    color: var(--color-strong);
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0;
@@ -390,7 +396,7 @@
     position: absolute;
     top: 50%;
     right: 12px;
-    color: var(--color-gold);
+    color: var(--color-selected-mark);
     translate: 0 -50%;
   }
 
@@ -407,9 +413,9 @@
     color: transparent;
   }
   .sel-row[aria-selected='true'] .sel-box {
-    border-color: var(--color-gold);
-    background: var(--color-gold);
-    color: var(--color-bg);
+    border-color: var(--color-selected-mark);
+    background: var(--color-selected-mark);
+    color: var(--color-strong);
   }
 
   /* Group heads stick while their rows scroll (§A4.3). */
@@ -529,13 +535,13 @@
     white-space: nowrap;
   }
   button.chip-preset:hover {
-    border-color: color-mix(in srgb, var(--color-gold) 45%, transparent);
+    border-color: var(--color-line-warm-strong);
   }
   button.chip-preset[aria-pressed='true'],
   .chip-preset.is-inert[data-lit='true'] {
-    border-color: var(--color-gold);
-    background: color-mix(in srgb, var(--color-gold) 10%, transparent);
-    color: var(--color-gold);
+    border-color: var(--color-selected-mark);
+    background: var(--color-selected);
+    color: var(--color-strong);
   }
   button.chip-preset:focus-visible {
     outline: 2px solid var(--color-gold);
@@ -580,9 +586,9 @@
     white-space: nowrap;
   }
   .sel-menu-item:focus-visible {
-    outline: none;
-    background: color-mix(in srgb, var(--color-gold) 10%, transparent);
-    box-shadow: inset 2px 0 0 var(--color-gold);
+    outline: 2px solid var(--color-gold);
+    outline-offset: -2px;
+    background: var(--color-hover);
   }
 
   /* The field's error line, under the field (§A5 Error). */

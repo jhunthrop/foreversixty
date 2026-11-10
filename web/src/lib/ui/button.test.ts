@@ -58,8 +58,11 @@ describe('button recipes', () => {
     for (const recipe of ALL) expect(recipe).not.toMatch(/linear-gradient|glow|shadow-\[/);
   });
 
-  it('a pressed toggle takes the white edge, on every tone', () => {
-    for (const recipe of ALL) expect(recipe).toContain('aria-pressed:border-strong aria-pressed:ring-1');
+  it('a pressed toggle takes the selected accent edge, on every tone', () => {
+    for (const recipe of ALL)
+      expect(recipe).toContain(
+        'aria-pressed:border-selected-mark aria-pressed:ring-1 aria-pressed:ring-selected-mark',
+      );
   });
 
   it('hover applies only where a pointer can hover', () => {

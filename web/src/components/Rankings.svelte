@@ -732,7 +732,7 @@
           class="rounded-full"
         />{/snippet}
       {#snippet tag()}
-        {#if you}<Tag tone="gold">You</Tag>{/if}
+        {#if you}<Tag tone="yours">You</Tag>{/if}
       {/snippet}
     </RankRow>
   {/if}

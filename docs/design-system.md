@@ -22,7 +22,8 @@ Blizzard's Forever page, exactly (c computed, s sampled; the spec's section 2 ha
 | `--color-raised` | `#170e09` | Every panel, the card brown-black |
 | `--color-foot` | `#170e09` | The footer |
 | `--color-bg` | `#100a06` | Wells and inputs inside a panel |
-| `--color-hover`, `--color-pressed`, `--color-selected` | white lifts on the card | Row states |
+| `--color-hover`, `--color-pressed` | white lifts on the card | Row hover and press |
+| `--color-selected`, `--color-selected-mark` | accent at 16 %, `#0093b2` | The one selected state (below) |
 | `--color-band` | `#054562` | The section band, under the painted band |
 | `--color-nav-bar` | `#0b2f3b` | The floating nav bar |
 | `--color-night` | `#071d2e` | Under home's hero art |
@@ -36,11 +37,13 @@ Blizzard's Forever page, exactly (c computed, s sampled; the spec's section 2 ha
 | `--color-blue`, `--color-blue-edge` | `#114f72`, `#1d6a96` | The secondary button |
 | `--color-accent` | `#0093b2` | The current tab's underline, selection, chart accent, bars |
 | `--color-gain` | `#32ae88` | A DPS gain |
-| `--color-panel-edge`, `--color-frame-line` | warm ring, cream at 42 % | The panel's outer ring, the framed panel's inset line |
+| `--color-panel-edge`, `--color-frame-line` | warm ring, cream at 42 % | The panel's outer ring, the framed panel's inset line (featured panels only, never an overlay) |
 | `--color-veil-band`, `--color-veil-night`, `--color-veil-cave` | flat veils | Over the band, the hero and the raid cave |
 | `--color-tooltip`, `-tooltip-edge`, `-tooltip-inner`, `-tooltip-yellow` | the client's | The client tooltip only |
 
 Class, faction, rarity, parse, school and outcome colours are unchanged. `tokens.test.ts` holds text, muted, gold and cream to AA on the card and on the ground's darkest and lightest 200 px windows, and cream on the band.
+
+**The selected state** (owner 2026-11-09): one look for every selected, current and own mark (the viewer's own spec row, the current character, a chosen slot, tab, segment, chip, list option or pressed toggle). The ground is `--color-selected`; the mark is `--shadow-selected-bar` on a row, cell or list item, `--shadow-selected-underline` on a tab or segment, or a `--color-selected-mark` edge on a chip, pill or slot ring. The "Yours"/"You" tag is `Tag tone="yours"` (the accent edge, the tint, white ink). Gold stays for links, the answer number and its text accents; keyboard focus stays the 2 px gold ring, so focus never reads as selected. Hover is `--color-hover` with no mark.
 
 ### Type
 
@@ -113,7 +116,7 @@ All in `web/src/components/ui/` unless named otherwise. Props marked `?` are opt
 ### Game surfaces
 
 - **The client tooltip**: `ItemTooltip`, `GameTooltip`, on `Overlay` `kind="tooltip"`: the client's ground, edge, inner line and 4 px corner; descriptions and the gain line in the client yellow.
-- **`ItemIcon`**, **`ItemRow`**, **`Row`**: real icons with the quality border on the 3 px icon radius; with no icon, a dark socket (never a dashed box); a selected row is the white lift and a cyan bar. `Row fillTrail` gives the title a 180 px label column and lets a form in the trail fill the rest (a field and its button: the sim landing's "A planner build").
+- **`ItemIcon`**, **`ItemRow`**, **`Row`**: real icons with the quality border on the 3 px icon radius; with no icon, a dark socket (never a dashed box); a selected row is the selected state below. `Row fillTrail` gives the title a 180 px label column and lets a form in the trail fill the rest (a field and its button: the sim landing's "A planner build").
 - **`PaperdollFrame`** (on the owner's frame, `lib/ui/paperdoll-frame.ts` reads `paperdoll-slots.json`): `cells` (the `DollCell[]` the grid paperdoll takes), `build`, `title`, `meta?`, `figure?: { value, unit }`, `avatar?` (the Battle.net `-avatar.jpg`, else the painted seal, never the class crest), `heading?: 'h1' | 'h2'`, `selected` (bindable), `onselect?(slot)`, `centre?` snippet (the selected slot's tooltip), `label?`, `testid`. Under 423 px it is the one-line strip and a two-column list, and the frame image is never fetched. Regions `paperdoll-medallion` and `paperdoll-centre`. The mock twin is `ws_prims.PaperdollFrame(..., heading=)` (`h1` by default, as BiS; the character page passes `h2`).
 - **`Countdown`**: the countdown panel (the guild's first-raids card). Home's raid plaque is an ornate `Frame art="cave"` holding **`BigFigures`** (`groups` of `{ value, label }`, a hairline between groups, `timer?` naming the first group as one live clock): days and hours at 44 px, then signed up and late.
 - **`FeedRow`**: a dated feed line (`lead`, the sentence, `when`, `kind?`: the tag under the time, left out on home).

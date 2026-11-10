@@ -1,6 +1,6 @@
 <!-- web/src/components/character/BossPicker.svelte -->
 <!-- The parse column's boss picker (experience spec 2026-10-24-character-history 3.4): the flat
-     system's underline tabs (TabStrip's look: sentence case, gold text and a 2 px gold underline on
+     system's underline tabs (TabStrip's look: sentence case, white text over the accent underline on
      the chosen boss, its kill count muted beside it), one per boss with a kill, newest kill first. One
      tab stop with a roving tabindex; the arrow keys move focus, Enter and Space select. The
      selected pill scrolls into view, and the row fades at its right edge while it overflows. -->
@@ -78,7 +78,7 @@
       aria-label={pill.accessibleName}
       tabindex={active ? 0 : -1}
       class="focus-visible:outline-gold relative inline-flex h-11 shrink-0 items-center gap-2 px-3 text-[14px] font-semibold focus-visible:outline-2 focus-visible:-outline-offset-2 {active
-        ? 'text-gold after:bg-gold after:absolute after:inset-x-3 after:bottom-0 after:h-[2px]'
+        ? 'text-strong after:bg-selected-mark after:absolute after:inset-x-3 after:bottom-0 after:h-[2px]'
         : 'text-text hover:text-strong'}"
       data-testid="history-pill"
       onclick={() => onpick(pill.id)}
