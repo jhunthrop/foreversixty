@@ -218,14 +218,16 @@ on the site.
 
 ## Icons
 
-The Forever Sixty seal v4 (`design/assets/logo/lx-seal-v4*.png`, the site's one logo) is the app's icon everywhere the
-OS shows one: the window and taskbar, the Dock, the tray or menu bar, Explorer (the Windows exe carries it as a
+The Forever Sixty seal v4 (`design/assets/logo/lx-seal-v4*.png`, the painted seal) is the app's icon: the window and
+taskbar, the Dock, Explorer (the Windows exe carries it as a
 resource, with the product and company fields). Windows and Linux show it full bleed; the macOS `.icns` sets it on
-Apple's icon grid (824 of 1024 px, over a soft shadow) so it stands the size of its Dock neighbours. The tray is the
+Apple's icon grid (824 of 1024 px, over a soft shadow) so it stands the size of its Dock neighbours. The tray and the window's header, where the seal is 44 px or smaller,
+take the site's flat seal instead (owner 2026-11-10, `design/assets/brand/seal-flat` through `tools/art/flat_seal.py`):
+the tiny bold seal at 24 px and below, the small seal with its swash above. The tray is the flat
 seal with a dot in the Status headline's tone (green, amber, red; the same tokens the window uses), drawn in colour
 on every platform, macOS included: a template image is drawn from its alpha alone and would erase both the seal's
 colours and the tone dot. The rendered files live in `internal/icon/assets/` (and the window's header seal in
-`ui/seal-64.png`) and are committed. Each binary embeds only its own tray images (the four tray ICOs on Windows,
+`ui/seal.svg`, the site's `art/seal-flat-small.svg` byte for byte) and are committed. Each binary embeds only its own tray images (the four tray ICOs on Windows,
 the four 32 px tray PNGs on macOS and Linux); `seal.ico` reaches the Windows exe as its icon resource and
 `seal.icns` the macOS bundle, and neither is embedded. Every PNG is palette-quantized and recompressed, so the
 icons add about 90 KB to a Windows binary (tray ICOs and the resource) and 7 KB to a macOS or Linux one. To
@@ -233,7 +235,7 @@ regenerate them after the seal changes:
 
 ```sh
 brew install pngquant oxipng              # once
-python3 companion/tools/icons/render.py   # Pillow; from the repository root
+python3 companion/tools/icons/render.py   # Pillow and cairosvg; from the repository root
 ```
 
 The window's look comes from the site's single sources, generated or copied into `ui/`, never edited there:

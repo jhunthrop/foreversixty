@@ -39,6 +39,24 @@ test.describe('desktop header', () => {
     expect(account.x + account.width).toBeLessThanOrEqual(premium.x);
     await expect(page.getByTestId('menu-button')).toBeHidden();
   });
+
+  test('the bar and the tab carry the flat seal as SVG, crisp at every density (owner 2026-11-10)', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const seal = page.locator('.site-wordmark-seal');
+    await expect(seal).toHaveAttribute('src', '/art/seal-flat-small.svg');
+    const box = (await seal.boundingBox())!;
+    expect([box.width, box.height]).toEqual([40, 40]);
+    expect(Number.isInteger(box.x) && Number.isInteger(box.y)).toBe(true);
+    expect(await seal.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+    await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute(
+      'href',
+      '/favicon.svg',
+    );
+    const favicon = await page.request.get('/favicon.svg');
+    expect(favicon.ok()).toBe(true);
+  });
 });
 
 test.describe('phone nav', () => {

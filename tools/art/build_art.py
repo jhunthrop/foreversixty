@@ -28,7 +28,9 @@ COMPANION_OUT = REPO / 'companion/ui/art'
 COMPANION_ART = ('ground.webp', 'band-1200.webp')
 
 sys.path.insert(0, str(DIRECTIONS))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from art import ground_tile  # noqa: E402  (the mock pipeline's tile: one source for mocks, web and apps)
+from flat_seal import SMALL_SVG, TINY_SVG, flat_seal  # noqa: E402  (the flat seal at 44 px and below)
 
 WEBP_QUALITY = 80
 # Each art file at the widths the site asks for (lib/ui/assets.ts: the phone width, then the desktop width).
@@ -37,17 +39,20 @@ ART = {
     'hero': ('art/hero-road-camp-wide.jpeg', (1200, 2400)),
     'cave': ('art/raid-panel-cave.jpeg', (800, 1600)),
 }
-# One logo (owner 2026-11-09): the matte seal v4 (tools/art/cut_seal.py cuts it out with real transparency),
-# everywhere: nav, footer, favicons and the link preview (which reads the apple-touch icon). Its bold rim holds at 16 px.
+# The painted seal v4 (tools/art/cut_seal.py cuts it out with real transparency) at 64 px and up: the footer, the
+# medallion and the link preview (which reads the apple-touch icon). At 44 px and below (the nav, the favicons) the
+# flat seal (owner 2026-11-10, tools/art/flat_seal.py), served as its SVG so it is crisp at every density.
 SEAL_VERSION = 'v4'
 SEAL_SOURCE = f'logo/lx-seal-{SEAL_VERSION}.png'
 SEALS = {'seal-88': (SEAL_SOURCE, 176), 'seal-128': (f'logo/lx-seal-{SEAL_VERSION}-256.png', 256)}
 # seal-400.png is the Discord webhook avatar and footer icon (api/internal/notify), the Go cards' seal
 # (make sheet-assets copies it into api/internal/brand/art) and the apps' bundled seal.
-FAVICONS = {'favicon-32.png': (f'logo/lx-seal-{SEAL_VERSION}-32.png', 32), 'apple-touch-icon.png': (SEAL_SOURCE, 180),
-            'seal-400.png': (f'logo/lx-seal-{SEAL_VERSION}-512.png', 400)}
-# favicon.ico carries the sized renders, never a downscale of one size.
-FAVICON_ICO = tuple(f'logo/lx-seal-{SEAL_VERSION}-{px}.png' for px in (16, 32, 48))
+FAVICONS = {'apple-touch-icon.png': (SEAL_SOURCE, 180), 'seal-400.png': (f'logo/lx-seal-{SEAL_VERSION}-512.png', 400)}
+# The flat seal's SVGs, byte for byte: the nav's (art/) and the tab's (favicon.svg, the tiny bold seal at 16 px).
+FLAT_SVGS = {'art/seal-flat-small.svg': SMALL_SVG, 'art/seal-flat-tiny-bold.svg': TINY_SVG, 'favicon.svg': TINY_SVG}
+# favicon.ico, for browsers without SVG favicons: a render at each size (the tiny bold seal at 16, the small at 32
+# and 48), never a downscale of one size.
+FAVICON_ICO_PX = (16, 32, 48)
 OG_SIZE, OG_BOX = (1200, 630), (1180, 480, 2600, 1225)  # art_crops.py: the glow over the pass, the road's head
 
 
@@ -90,7 +95,9 @@ def build_seals() -> None:
         path = REPO / 'web/public' / name
         Image.open(source(rel)).convert('RGBA').resize((px, px), Image.LANCZOS).save(path)
         compress_png(path)
-    sized = [Image.open(source(rel)).convert('RGBA') for rel in FAVICON_ICO]
+    for name, svg in FLAT_SVGS.items():
+        shutil.copyfile(svg, REPO / 'web/public' / name)
+    sized = [flat_seal(px) for px in FAVICON_ICO_PX]
     largest = sized[-1]
     largest.save(REPO / 'web/public/favicon.ico', format='ICO', sizes=[im.size for im in sized],
                  append_images=sized[:-1])
