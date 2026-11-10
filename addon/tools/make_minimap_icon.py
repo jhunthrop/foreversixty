@@ -10,20 +10,21 @@ file is committed; this script exists so the mark can be regenerated,
 not because the build runs it. It lives in addon/tools/, one level above
 the packaged folder, so it can never end up in the zip.
 
-The mark is the site's own: the LX seal v3 (design/assets/logo/lx-seal-v3.png, the owner's
-painted seal cut out with real transparency, 2026-11-09). The same source writes the addon's
+The mark is the site's own: the LX seal v4 (design/assets/logo/lx-seal-v4.png, the owner's
+matte painted seal cut out with real transparency by tools/art/cut_seal.py, 2026-11-09). The same source writes the addon's
 64x64 list icon (addon/ForeverSixty/icon.png, the TOC's IconTexture), so every mark matches.
 """
 
 from __future__ import annotations
 
+import subprocess
 import sys
 from pathlib import Path
 
 from PIL import Image
 
 SIZE = 32
-SOURCE = Path(__file__).resolve().parents[2] / "design" / "assets" / "logo" / "lx-seal-v3.png"
+SOURCE = Path(__file__).resolve().parents[2] / "design" / "assets" / "logo" / "lx-seal-v4.png"
 LIST_ICON = Path(__file__).resolve().parents[1] / "ForeverSixty" / "icon.png"
 LIST_ICON_SIZE = 64
 OUTPUT = Path(__file__).resolve().parents[1] / "ForeverSixty" / "media" / "minimap.tga"
@@ -39,12 +40,20 @@ def render(size: int) -> Image.Image:
     return source.resize((size, size), Image.LANCZOS)
 
 
+def compress_png(path: Path) -> None:
+    """pngquant (quality 90 to 100, kept only if smaller) then lossless oxipng; both on PATH (brew install)."""
+    subprocess.run(["pngquant", "--quality=90-100", "--skip-if-larger", "--force", "--strip",
+                    "--output", str(path), str(path)], check=False)
+    subprocess.run(["oxipng", "-o", "4", "--strip", "safe", "-q", str(path)], check=True)
+
+
 def main() -> int:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     # compression=None is the uncompressed path: Pillow only writes RLE
     # when it is asked for "tga_rle", and the client will not read RLE.
     render(SIZE).save(OUTPUT, format="TGA", compression=None)
     render(LIST_ICON_SIZE).save(LIST_ICON, format="PNG")
+    compress_png(LIST_ICON)
     for written in (OUTPUT, LIST_ICON):
         print(f"wrote {written} ({written.stat().st_size} bytes)")
     return 0
