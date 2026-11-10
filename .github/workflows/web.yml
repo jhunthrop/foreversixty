@@ -55,6 +55,8 @@ on:
       - data/builds/**
       - Makefile
       - tools/wasm-compress.sh
+      - tools/slop/**
+      - apps/shared/copy/**
       - .github/actions/pin-engine/**
       - .github/workflows/web.yml
   pull_request:
@@ -70,6 +72,8 @@ on:
       - data/builds/**
       - Makefile
       - tools/wasm-compress.sh
+      - tools/slop/**
+      - apps/shared/copy/**
       - .github/actions/pin-engine/**
       - .github/workflows/web.yml
   workflow_dispatch:
