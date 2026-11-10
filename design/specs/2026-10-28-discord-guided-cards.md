@@ -177,12 +177,12 @@ Discord strings live in a new copy struct `guideCopy` (`api/internal/discordbot/
 | `bis.title.none` | `Choose a class` |
 | `bis.title.class` | `{Class} · choose a spec` |
 | `bis.title.ready` | `{Spec} {Class} · {band label}` |
-| `bis.lead.unlinked` | `Choose a class, a spec and a range, then Show BiS. Link Discord and this starts from your character.` |
-| `bis.lead.none` | `Choose a class, a spec and a range, then Show BiS.` |
+| `bis.lead.unlinked` | `Link Discord and this starts from your character.` |
+| `bis.lead.none` | none (2026-11-09: the selects say what to pick) |
 | `bis.lead.main` | `Picked from your main, {Name}. Show BiS, or change a pick.` (`{Name}` in bold) |
 | `bis.lead.class` | `Now choose a {Class} spec.` |
 | `bis.lead.ready` | `Ready. Show BiS, or change a pick.` |
-| `bis.lead.slot` | `For {Slot} only. Choose a class, a spec and a range, then Show BiS.` |
+| `bis.lead.slot` | `For {Slot} only.` |
 | `bis.lead.unknownSpec` | `No {Class} spec by that name. Choose one.`; without a class `No spec by that name. Choose one.` |
 | `bis.nudge.spec` | `Choose a spec first.` (bold) + ` Then Show BiS.` |
 | `bis.nudge.both` | `Choose a class and a spec first.` (bold) + ` Then Show BiS.` |

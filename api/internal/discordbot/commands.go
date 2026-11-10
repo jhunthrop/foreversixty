@@ -57,7 +57,7 @@ func Commands() []Command {
 			stringOption("raid", descRaidOption, false, true, nil),
 			stringOption("character", "Which of your characters.", false, true, nil),
 		}},
-		{Name: "char", Description: "A character: item level, readiness and the top 3 upgrades.", Released: true, Options: []CommandOption{
+		{Name: "char", Description: "Item level, readiness and the top 3 upgrades of a character.", Released: true, Options: []CommandOption{
 			stringOption("name", descName, false, true, nil),
 		}},
 		{Name: "bis", Description: "Best in slot for a class and spec.", Released: true, Options: []CommandOption{
@@ -66,7 +66,7 @@ func Commands() []Command {
 			stringOption("slot", "One slot. The top five if left out.", false, false, slotChoices),
 			stringOption("phase", "Level band or Phase 1 raid.", false, false, phaseChoices),
 		}},
-		{Name: "report", Description: "The last logged raid: kills and loot.", Released: true, Options: []CommandOption{
+		{Name: "report", Description: "Kills and loot from the last logged raid.", Released: true, Options: []CommandOption{
 			stringOption("raid", descReportRaidOption, false, true, nil),
 		}},
 		{Name: "attendance", Description: "Your attendance. Officers can name anyone.", Released: true, Options: []CommandOption{

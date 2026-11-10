@@ -131,7 +131,7 @@ func TestBisPartials(t *testing.T) {
 	})
 	t.Run("slot only", func(t *testing.T) {
 		m := w.bisCardOf(t, "d-stranger", map[string]string{"slot": "head"})
-		if headOf(t, m).Description != "For Head only. Choose a class, a spec and a range, then Show BiS." {
+		if headOf(t, m).Description != "For Head only." {
 			t.Fatalf("lead = %q", headOf(t, m).Description)
 		}
 		for _, row := range m.Components {

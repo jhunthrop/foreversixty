@@ -83,7 +83,7 @@ var officerCopy = struct {
 	PlanLapsed:            "Planning and running raids are part of the guild plan. An officer can subscribe your guild.",
 	Subscribe:             "Subscribe your guild",
 	Frozen:                "This guild's claim is contested. Officer actions are frozen until a moderator resolves it.",
-	RaidGuild:             "The readiness board is part of the Raid guild plan. An officer can move the guild to the Raid guild plan.",
+	RaidGuild:             "The readiness board is part of Raid guild.",
 	MoveToRaidGuild:       "Move to Raid guild",
 	GrantedMove:           "Your plan was granted by Forever Sixty. Ask us on Discord to move it to Raid guild.",
 	AskUsOnDiscord:        "Ask us on Discord",

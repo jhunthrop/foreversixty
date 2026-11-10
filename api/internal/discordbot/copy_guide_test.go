@@ -12,7 +12,7 @@ func TestGuideCopyMatchesTheSpec(t *testing.T) {
 	g := guideCopy
 	for key, want := range map[string]string{
 		"bis.author": g.BisAuthor, "bis.title.none": g.BisTitleNone, "bis.title.class": g.BisTitleClass,
-		"bis.title.ready": g.BisTitleReady, "bis.lead.unlinked": g.BisLeadUnlinked, "bis.lead.none": g.BisLeadNone,
+		"bis.title.ready": g.BisTitleReady, "bis.lead.unlinked": g.BisLeadUnlinked,
 		"bis.lead.class": g.BisLeadClass, "bis.lead.ready": g.BisLeadReady, "bis.lead.slot": g.BisLeadSlot,
 		"bis.placeholder.class": g.BisPlaceholderClass, "bis.placeholder.specLocked": g.BisPlaceholderSpecLocked,
 		"bis.placeholder.spec": g.BisPlaceholderSpec, "bis.placeholder.range": g.BisPlaceholderRange,
@@ -29,6 +29,10 @@ func TestGuideCopyMatchesTheSpec(t *testing.T) {
 		if got := guideString(t, "`"+key+"`", 0); got != want {
 			t.Errorf("%s = %q, spec %q", key, want, got)
 		}
+	}
+	// bis.lead.none is none: the bare card's selects say what to pick.
+	if g.BisLeadNone != "" {
+		t.Errorf("bis.lead.none = %q, want none", g.BisLeadNone)
 	}
 	checkBoldRows(t, g)
 	checkIndexedRows(t, g)

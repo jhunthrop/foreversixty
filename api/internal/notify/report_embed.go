@@ -50,7 +50,7 @@ var reportCopy = struct {
 }{
 	TitlePrefix:   "Report: ",
 	Description:   "",
-	CoachSentence: "Coach reviews of tonight's pulls are on the report.",
+	CoachSentence: "Coach reviews of tonight's pulls are in the report and /report.",
 	KillsName:     "Kills",
 	KillLine:      "%s %s",
 	MoreKills:     "+%d more",

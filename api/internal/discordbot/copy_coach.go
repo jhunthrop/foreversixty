@@ -22,5 +22,5 @@ var coachCopy = struct {
 	LineAll:   "Fix first: {stem}, on all {m} bosses. [Open your coach's review]({url})",
 	Named:     "**{Character}** · {line}",
 	Pending:   "[Your coach's review is on the site.]({url})",
-	RaidNight: "Coach reviews of tonight's pulls are on the report.",
+	RaidNight: "Coach reviews of tonight's pulls are in the report and /report.",
 }
