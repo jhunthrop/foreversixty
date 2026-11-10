@@ -1,8 +1,8 @@
 // api/internal/guilds/raids_schedule.go
 //
 // When a raid posts to Discord and reminds the day before (design/specs/
-// 2026-10-28-discord-guided-cards.md §P.4): a save schedules the post (now within 7 days,
-// else 7 days before the start), an edit follows a move, a cancel or lock withdraws a sent
+// 2026-10-28-discord-guided-cards.md §P.4): a save schedules the post (now, unless the raid is more than postHorizon away;
+// then postHorizon before the start), an edit follows a move, a cancel or lock withdraws a sent
 // webhook reminder, and RunRaidSchedule (the raid-posts job) sends what has come due through
 // RaidEvents, the bot's router or the webhook. A bot reminder is never tracked here: the
 // drainer withdraws it when the raid's own move, cancel or lock marks the post.

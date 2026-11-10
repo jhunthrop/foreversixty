@@ -24,7 +24,7 @@ func (w raidWorld) nextAttemptInfinite(t *testing.T, id int64) bool {
 // A due post that reached no channel is held back and retried, never marked or counted posted.
 func TestAPostThatReachedNoChannelIsRetriedNotMarked(t *testing.T) {
 	w, events, _ := postingWorld(t)
-	raid := w.createRaids(t, scheduleBody(startIn(10*day), 0, "true", "true"))[0]
+	raid := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
 	at := time.Now().Add(4 * day)
 	events.mu.Lock()
 	events.noChannel = true
@@ -47,7 +47,7 @@ func TestAPostThatReachedNoChannelIsRetriedNotMarked(t *testing.T) {
 // A row that keeps failing is given up after scheduleMaxAttempts: failed, kept, never retried.
 func TestARowIsGivenUpAfterTheAttemptCap(t *testing.T) {
 	w, events, _ := postingWorld(t)
-	raid := w.createRaids(t, scheduleBody(startIn(10*day), 0, "true", "true"))[0]
+	raid := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
 	at := time.Now().Add(4 * day)
 	events.refuse(&notify.NotSentError{Err: &notify.DiscordError{Status: 500, Body: "boom"}}, nil)
 	for i := 0; i < scheduleMaxAttempts; i++ {
@@ -74,7 +74,7 @@ func TestARowIsGivenUpAfterTheAttemptCap(t *testing.T) {
 // A refusal Discord will repeat (a non-429 4xx) gives the row up at once; a 429 is retried.
 func TestARefusalGivesTheRowUpAtOnce(t *testing.T) {
 	w, events, _ := postingWorld(t)
-	raid := w.createRaids(t, scheduleBody(startIn(10*day), 0, "true", "true"))[0]
+	raid := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
 	at := time.Now().Add(4 * day)
 	events.refuse(&notify.NotSentError{Err: &notify.DiscordError{Status: 429, Body: "slow down"}}, nil)
 	if got, _ := w.h.svc.RunRaidSchedule(context.Background(), at); got.Failed != 1 {

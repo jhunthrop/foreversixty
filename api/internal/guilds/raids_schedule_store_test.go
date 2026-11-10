@@ -50,9 +50,12 @@ func TestPostAtFor(t *testing.T) {
 	if got := postAtFor(now.Add(3*24*time.Hour), now); !got.Equal(now) {
 		t.Fatalf("near start posts now, got %v", got)
 	}
-	far := now.Add(10 * 24 * time.Hour)
+	if got := postAtFor(now.Add(30*24*time.Hour), now); !got.Equal(now) {
+		t.Fatalf("a raid 30 days out posts now, got %v", got)
+	}
+	far := now.Add(postHorizon + 10*24*time.Hour)
 	if got := postAtFor(far, now); !got.Equal(far.Add(-postHorizon)) {
-		t.Fatalf("far start posts 7 days before, got %v", got)
+		t.Fatalf("beyond the horizon posts at the horizon, got %v", got)
 	}
 }
 

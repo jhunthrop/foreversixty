@@ -12,8 +12,10 @@ import (
 )
 
 const (
-	// postHorizon is how far ahead of the start a raid posts when saved earlier.
-	postHorizon = 7 * 24 * time.Hour
+	// postHorizon is how far ahead of the start a raid posts when saved earlier. Owner
+	// 2026-11-09: guilds plan raids weeks out (the first raids open 28 days after launch),
+	// so a saved raid posts at once unless it is more than a year away.
+	postHorizon = 365 * 24 * time.Hour
 	// reminderLead is how long before the start the reminder goes out.
 	reminderLead = 24 * time.Hour
 	// reminderFresh is the 12-hour rule: a post newer than this before the reminder is

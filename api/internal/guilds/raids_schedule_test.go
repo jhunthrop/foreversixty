@@ -141,18 +141,11 @@ func TestSaveFurtherOutPostsAWeekBefore(t *testing.T) {
 	}
 }
 
-func TestRepeatPostsOneWeekAtATime(t *testing.T) {
+func TestRepeatPostsEveryWeekAtOnce(t *testing.T) {
 	w, events, _ := postingWorld(t)
-	now := time.Now()
 	views := w.createRaids(t, scheduleBody(startIn(2*day), raidRepeatWeeks, "true", "true"))
-	if len(views) != 4 || len(events.posted) != 1 || events.posted[0].RaidID != views[0].ID {
+	if len(views) != 4 || len(events.posted) != len(views) {
 		t.Fatalf("posted %d for %d raids", len(events.posted), len(views))
-	}
-	if got := w.run(t, now.Add(6*day)); got.Posted != 1 || len(events.posted) != 2 || events.posted[1].RaidID != views[1].ID {
-		t.Fatalf("day 6: run %+v, posted %+v", got, events.posted)
-	}
-	if got := w.run(t, now.Add(13*day)); got.Posted != 1 || len(events.posted) != 3 || events.posted[2].RaidID != views[2].ID {
-		t.Fatalf("day 13: run %+v, posted %+v", got, events.posted)
 	}
 }
 
@@ -188,8 +181,8 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 	now := time.Now()
 
 	// Unposted: a move follows post_at; a move inside the week posts at once, no RaidChanged.
-	far := w.createRaids(t, scheduleBody(startIn(30*day), 0, "true", "true"))[0]
-	moved := w.patchTo(t, far.ID, startIn(20*day), "true", "true")
+	far := w.createRaids(t, scheduleBody(startIn(postHorizon+23*day), 0, "true", "true"))[0]
+	moved := w.patchTo(t, far.ID, startIn(postHorizon+13*day), "true", "true")
 	if p := moved.DiscordPost; p == nil || p.PostedAt != nil || !p.PostAt.Equal(moved.StartsAt.Add(-postHorizon)) {
 		t.Fatalf("moved unposted: discord_post = %+v", p)
 	}
@@ -228,8 +221,8 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 	if _, _, _, withdrawn := events.snapshot(); len(withdrawn) != 2 || withdrawn[1] != m2 {
 		t.Fatalf("cancel withdrew %+v", withdrawn)
 	}
-	cancelled := w.createRaids(t, scheduleBody(startIn(10*day), 0, "true", "true"))[0]
-	locked := w.createRaids(t, scheduleBody(startIn(10*day+time.Hour), 0, "true", "true"))[0]
+	cancelled := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
+	locked := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day+time.Hour), 0, "true", "true"))[0]
 	w.statusAction(t, cancelled.ID, "cancel")
 	w.statusAction(t, locked.ID, "lock")
 	w.run(t, now.Add(4*day))
@@ -248,7 +241,7 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 	}
 
 	// Switching the post off on an unposted raid drops its row.
-	off := w.createRaids(t, scheduleBody(startIn(12*day), 0, "true", "true"))[0]
+	off := w.createRaids(t, scheduleBody(startIn(postHorizon+5*day), 0, "true", "true"))[0]
 	w.patchTo(t, off.ID, off.StartsAt, "false", "true")
 	if _, ok := w.scheduleOf(t, off.ID); ok {
 		t.Fatal("unposted row survived post_to_discord false")
@@ -257,7 +250,7 @@ func TestScheduleFollowsMovesCancelsAndLocks(t *testing.T) {
 
 func TestTwoScheduleRunsSendOnce(t *testing.T) {
 	w, events, _ := postingWorld(t)
-	raid := w.createRaids(t, scheduleBody(startIn(10*day), 0, "true", "true"))[0]
+	raid := w.createRaids(t, scheduleBody(startIn(postHorizon+3*day), 0, "true", "true"))[0]
 	race := func(now time.Time) int {
 		var wg sync.WaitGroup
 		runs := make([]ScheduleRun, 2)
