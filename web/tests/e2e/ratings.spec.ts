@@ -4,6 +4,7 @@
 // -absolute rule, the cap in the coordinator's exact words, and that a rating comes only
 // from a public report.
 import { expect, test } from './support/test';
+import { ratingsPageCopy } from '../../src/lib/score/ratings-page';
 
 test("ships only the layout's character selector island", async ({ page }) => {
   await page.goto('/ratings');
@@ -47,12 +48,15 @@ test('explains the percentile-vs-absolute rule, small samples, and role-specific
   page,
 }) => {
   await page.goto('/ratings');
-  await expect(page.getByTestId('ratings-basis')).toContainText('20');
-  await expect(page.getByTestId('ratings-small-samples')).toBeVisible();
-  await expect(page.getByTestId('ratings-roles')).toContainText('healer');
+  // How a fight is judged is one Row per rule since the round-5 /ratings (ratingsPageCopy.rules):
+  // Ranked at 20 comparable logs, Absolute below that; the weights table has a column per role.
+  const basis = page.getByTestId('ratings-basis');
+  await expect(basis).toContainText('20');
+  await expect(basis).toContainText(ratingsPageCopy.rules[1].body);
+  await expect(page.getByTestId('ratings-components')).toContainText('Healer');
 });
 
 test('says a wipe scores differently than a kill', async ({ page }) => {
   await page.goto('/ratings');
-  await expect(page.getByTestId('ratings-wipes')).toBeVisible();
+  await expect(page.getByTestId('ratings-basis')).toContainText(ratingsPageCopy.rules[2].body);
 });
