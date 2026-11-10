@@ -136,11 +136,11 @@ const (
 	CopyLoggingTitleNotCredited = CopyLoggingTitle + CopySeparator + "not credited to you yet"
 
 	// CopyAdvancedHow is the menu path, and what to do after.
-	CopyAdvancedHow = "Turn it on in Options > Network > Advanced Combat Logging, then restart the game."
+	CopyAdvancedHow = "Turn it on in Options > System > Network > Advanced Combat Logging, then restart the game."
 	// CopyAdvancedRowHelp is the short line a folder row keeps when the
 	// headline is about something else, so the sentence is never on
 	// screen twice.
-	CopyAdvancedRowHelp = "Turn it on in Options > Network > Advanced Combat Logging."
+	CopyAdvancedRowHelp = "Turn it on in Options > System > Network > Advanced Combat Logging."
 )
 
 // Why a sign-in failed, when the site (not the network) said so.

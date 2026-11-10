@@ -165,7 +165,7 @@ def row_done(state: str, step: str) -> bool:
 # ------------------------------------------------------------------------------------------------ /setup: the sections
 def addon_section(state: str) -> str:
     hand = (f'<div class="hand"><span class="t-label">{escape(A["setupHandInstall"])}</span>'
-            f'<p class="t-small">{escape(A["setupHandInstallBody"])}</p>'
+            f'<p class="t-small">{escape(FACTS["hand_install"]["mac" if platform_of(state) == "mac" else "other"])}</p>'
             f'<div class="acts">{arrow(A["installZip"])}{arrow(A["installDataRelease"])}</div><p class="t-small">{escape(FACTS["data_build"])}</p></div>')
     # U4 (rulings): once the addon step is ticked its buttons are gone; both stores stay here for a second PC.
     again = f'<div class="acts">{arrow(A["installCurseForge"])}{arrow(A["installWago"])}</div>' if row_done(state, 'addon') else ''

@@ -128,9 +128,11 @@ export const addonCopy = {
   /** Under the companion step's title: which of the three steps can be skipped. */
   setupCompanionNote: 'Sends bags, bank and live logs after every session.',
   /** Advanced Combat Logging is a setting that applies at once (no restart); /combatlog turns off
-   *  when you log out, so it is typed each time you log in (setup rulings 2026-11-07). */
+   *  when you log out, so it is typed each time you log in (setup rulings 2026-11-07). The path is
+   *  the Forever client's own: Esc > Options, the System group, Network (Blizzard UI 1.60.1.70888,
+   *  Blizzard_SettingsDefinitions_Shared/Network.lua registers Network under SETTING_GROUP_SYSTEM). */
   setupCompanionBody:
-    'The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.',
+    'The companion logs live from your desktop. Turn on Options > System > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.',
   /** The page's title, and its one H1 (setup spec 2026-11-07 section 4). */
   setupPageTitle: 'Get set up',
   /** A signed-out visitor who pasted an export: the one done line a step can show without a session. */
@@ -164,8 +166,12 @@ export const addonCopy = {
   /** The hand install under The addon: the folders each zip holds (addon-release.yml ships
    *  ForeverSixty and ForeverSixtyInbox; addon-data-release.yml ForeverSixtyData). */
   setupHandInstall: 'Installing by hand',
-  setupHandInstallBody:
-    'Unzip both into World of Warcraft\\_forever_\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.',
+  /** The path with the visitor's own separator: a Mac reads slashes, every other system the
+   *  Windows backslashes (wow-player 2026-11-10). */
+  setupHandInstallBody: (mac: boolean): string => {
+    const path = ['World of Warcraft', '_forever_', 'Interface', 'AddOns'].join(mac ? '/' : '\\');
+    return `Unzip both into ${path}: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.`;
+  },
   /** The paste field's label (the Section title is `setupTryExport`). */
   pasteFieldLabel: 'Addon export',
   setupCompanionLine: (device: string, seen: string): string =>

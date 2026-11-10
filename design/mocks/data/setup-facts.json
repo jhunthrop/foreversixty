@@ -1247,6 +1247,10 @@
   "data": "/dl/data"
  },
  "data_build": "Current data build: 1.60.1.70790",
+ "hand_install": {
+  "mac": "Unzip both into World of Warcraft/_forever_/Interface/AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.",
+  "other": "Unzip both into World of Warcraft\\_forever_\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData."
+ },
  "addon_arrived": "Felsnap arrived from the addon 1 day ago",
  "code": "KQ4-7TM",
  "connect": {
@@ -1351,7 +1355,7 @@
   "setupSignInBody": "Brings your Forever characters in from Battle.net, and saves your builds, sims and logs.",
   "setupSignInAction": "Sign in with Battle.net",
   "setupCompanionNote": "Sends bags, bank and live logs after every session.",
-  "setupCompanionBody": "The companion logs live from your desktop. Turn on Options > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.",
+  "setupCompanionBody": "The companion logs live from your desktop. Turn on Options > System > Network > Advanced Combat Logging once. Type /combatlog each time you log in, and every fight appears under Your reports within seconds of the pull ending.",
   "setupPageTitle": "Get set up",
   "setupAddonDoneLine": "An export is loaded; the site is pointed at that character.",
   "setupSignedInAs": "[fn]",
@@ -1368,7 +1372,7 @@
   "setupImportWait": "Your characters can take up to two minutes to arrive.",
   "setupSignInFailed": "Battle.net sign-in did not finish. Nothing was saved.",
   "setupHandInstall": "Installing by hand",
-  "setupHandInstallBody": "Unzip both into World of Warcraft\\_forever_\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.",
+  "setupHandInstallBody": "[fn]",
   "pasteFieldLabel": "Addon export",
   "setupCompanionLine": "[fn]",
   "setupCompanionWaiting": "No companion signed in yet",

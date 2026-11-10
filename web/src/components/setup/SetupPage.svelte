@@ -245,7 +245,7 @@
       devices = [...(devices ?? []), device];
     }}
   />
-  <SetupAddon {addonDone} />
+  <SetupAddon {addonDone} {platform} />
   <SetupSurfaces />
 
   {#snippet rail()}

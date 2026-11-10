@@ -10,9 +10,10 @@
   import { CURSEFORGE_URL, WAGO_URL } from '../../lib/setup/links';
   import { LINK } from '../../lib/ui/primitives';
   import Divided from '../ui/Divided.svelte';
+  import type { VisitorPlatform } from '../../lib/setup/visitor-platform';
   import Section from '../ui/Section.svelte';
 
-  let { addonDone }: { addonDone: boolean } = $props();
+  let { addonDone, platform }: { addonDone: boolean; platform: VisitorPlatform } = $props();
 
   const installLinks = [
     { label: addonCopy.installCurseForge, href: CURSEFORGE_URL, testid: 'setup-curseforge-again' },
@@ -36,7 +37,7 @@
     {/if}
     <Divided testid="setup-hand-install">
       <span class="text-label text-muted font-bold">{addonCopy.setupHandInstall}</span>
-      <p class="text-small text-muted">{addonCopy.setupHandInstallBody}</p>
+      <p class="text-small text-muted">{addonCopy.setupHandInstallBody(platform === 'mac')}</p>
       <div class="setup-acts gap-5">
         {#each handLinks as link (link.href)}
           <a class={LINK} href={link.href} rel="noopener" data-testid={link.testid}>{link.label} ›</a>

@@ -175,7 +175,7 @@ test('only the watched install shouts that advanced logging is off', () => {
   assert.deepStrictEqual(FORMAT.advancedView(other, 'logging', COPY.status),
     { kind: 'muted', text: 'Advanced logging: off', help: '' });
   // The watched install: the warning and the instruction, the instruction once only.
-  const help = 'Turn it on in Options > Network > Advanced Combat Logging.';
+  const help = 'Turn it on in Options > System > Network > Advanced Combat Logging.';
   assert.deepStrictEqual(FORMAT.advancedView(off(watched, { advanced_logging_help: help }), 'logging', COPY.status),
     { kind: 'warn', text: 'Advanced logging: OFF', help });
   assert.strictEqual(FORMAT.advancedView(off(watched, { advanced_logging_help: help }), 'advanced_off', COPY.status).help, '');

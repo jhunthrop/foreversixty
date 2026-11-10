@@ -81,6 +81,8 @@ export default {
   version_line: addonCopy.setupCompanionVersion(release.version),
   paths: { addon_zip: ADDON_DOWNLOAD_PATH, data: DATA_DOWNLOAD_PATH },
   data_build: addonCopy.currentDataBuild(activeBuild.build),
+  // The hand install's folder path in each system's separator (components/setup/SetupAddon.svelte).
+  hand_install: { mac: addonCopy.setupHandInstallBody(true), other: addonCopy.setupHandInstallBody(false) },
   addon_arrived: addonCopy.setupAddonArrived(ch.name, relativeTime(new Date(ch.build.captured_at), NOW)),
   code,
   connect: strip(connectCopy),

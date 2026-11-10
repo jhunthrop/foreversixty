@@ -50,7 +50,6 @@ const STRING_COPY_KEYS = [
   'setupHowItWorks',
   'setupCompanionPair',
   'setupHandInstall',
-  'setupHandInstallBody',
   'setupCompanionMobile',
   'surfacesShow',
 ] as const;
@@ -80,6 +79,7 @@ describe('/setup', () => {
       if (addonCopy[key].length > MIN_LITERAL_PINNED) expect(source).not.toContain(addonCopy[key]);
     }
     expect(source).toContain('addonCopy.currentDataBuild(');
+    expect(source).toContain('addonCopy.setupHandInstallBody(');
   });
 
   it('is one island over the Base layout, the server markup the signed-out page', () => {
@@ -109,7 +109,9 @@ describe('/setup', () => {
   });
 
   it('tells the visitor the in-game setting by its exact path, in The companion', () => {
-    expect(section('setup-companion')).toContain('Turn on Options > Network > Advanced Combat Logging once.');
+    expect(section('setup-companion')).toContain(
+      'Turn on Options > System > Network > Advanced Combat Logging once.',
+    );
   });
 
   it('links every download through the site’s own /dl/ paths, never the release host', () => {
@@ -164,7 +166,11 @@ describe('/setup', () => {
     const hand = addon.slice(addon.indexOf('data-testid="setup-hand-install"'));
     for (const url of [ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH]) expect(hand).toContain(url);
     expect(hand).toContain(addonCopy.currentDataBuild(activeBuild.build));
-    expect(hand).toContain(addonCopy.setupHandInstallBody.replace('<', '&lt;'));
+    // Server-rendered as an unknown system: the Windows path, which most players use.
+    expect(hand).toContain(addonCopy.setupHandInstallBody(false));
+    expect(hand).toContain('World of Warcraft\\_forever_\\Interface\\AddOns');
+    // A Mac reads the same folders with slashes.
+    expect(addonCopy.setupHandInstallBody(true)).toContain('World of Warcraft/_forever_/Interface/AddOns');
     // Signed out, the addon step is not ticked: CurseForge is the plate row's action, not repeated here (U4).
     expect(addon).not.toContain(CURSEFORGE_URL);
   });
