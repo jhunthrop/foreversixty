@@ -323,8 +323,8 @@ func TestCharCard(t *testing.T) {
 		}
 		// The raid band's picks (hands is the band's own 150, not the panel's 102), largest gain
 		// first, each the band's measured gain over what she wears, with the page's source line.
-		for i, want := range []string{"Head · +9.2 DPS\n-# Epic · item level 61 · Vendors", "Feet · +4.4 DPS\n-# Epic · item level 61 · Vendors",
-			"Hands · +3.1 DPS\n-# Epic · item level 61 · Vendors"} {
+		for i, want := range []string{"Head · +9.2 DPS\n-# item level 61 · Vendors", "Feet · +4.4 DPS\n-# item level 61 · Vendors",
+			"Hands · +3.1 DPS\n-# item level 61 · Vendors"} {
 			if !strings.Contains(texts[i+2], want) {
 				t.Fatalf("upgrade %d = %q, want %q", i, texts[i+2], want)
 			}
@@ -360,10 +360,15 @@ func TestCharCard(t *testing.T) {
 		w.port.candidates = []guilds.SignupCandidate{{CharacterKey: keyZulmaraLookup, Name: "Zulmara", Verified: true, Main: true}}
 		w.lg.readiness[keyZulmaraLookup] = guilds.ReadinessFacts{Word: "Short: 13 gear upgrades waiting", OnRoster: true,
 			GearChecked: true, GearUpgrades: 13}
-		// The panel measures one upgrade (the band's head); the board counts 13: one row, 12 more.
-		texts := textsOf(w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message)
-		if got := texts[len(texts)-1]; got != "-# 12 more upgrades on the character page." {
-			t.Fatalf("more = %q (texts %q)", got, texts)
+		// The panel measures one upgrade (the band's head); the board counts 13: the rest ride the
+		// character page link, labelled with the board's count.
+		m := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
+		var labels []string
+		for _, row := range m.Components {
+			labels = append(labels, buttonLabels(row)...)
+		}
+		if !slices.Contains(labels, "All 13 upgrades") {
+			t.Fatalf("labels = %q (texts %q)", labels, textsOf(m))
 		}
 	})
 	t.Run("tank specs rank by score", func(t *testing.T) {

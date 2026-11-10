@@ -201,7 +201,7 @@ func TestReportMemberAndOfficer(t *testing.T) {
 	if _, ok := fields[segment(3)]; ok {
 		t.Fatal("a member sees Consumables")
 	}
-	if fields[segment(4)] != "10 items. The first 8:" {
+	if fields[segment(4)] != "10 items, the best 8 below" {
 		t.Fatalf("loot = %q", fields[segment(4)])
 	}
 	if len(member.Message.Embeds) != 9 || member.Message.Embeds[1].Color != qualityColor(4) ||

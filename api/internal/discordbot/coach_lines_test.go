@@ -66,7 +66,7 @@ func TestReport_PremiumOwnerGetsOneLinePerCharacter(t *testing.T) {
 	rep := w.run(t, pressDiscord, "report")
 	got := headFields(rep)[coachCopy.FieldName]
 	want := "**Zulmara** · Fix first: " + zulmaraStem + ", on 5 of 8 bosses. [Open your coach's review](" + coachURL + ")\n" +
-		"**Vexlash** · Fix first: Early pulls on all 8 bosses. [Open your coach's review](" + coachURL + ")"
+		"**Vexlash** · Fix first: Early pulls, on all 8 bosses. [Open your coach's review](" + coachURL + ")"
 	if got != want {
 		t.Fatalf("field = %q", got)
 	}

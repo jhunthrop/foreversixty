@@ -35,8 +35,9 @@ const button = (label, style, custom_id) => ({ type: T.BUTTON, style, label, cus
 const link = (label, url) => ({ type: T.BUTTON, style: 5, label, url });
 
 const tileAlt = (it, slot) => `${it.name}, ${QUALITY_WORDS[it.quality] ?? ""} ${slot.toLowerCase()} item`.replace("  ", " ");
-/** The subtext line: quality word, item level, source (spec §A.3, line 3). */
-const facts = (it, source) => "-# " + [QUALITY_WORDS[it.quality], it.ilvl > 0 ? "item level " + it.ilvl : "", source].filter(Boolean).join(" · ");
+/** The subtext line: item level, source (spec §A.3, line 3); the quality is the dot's alone
+ *  (f-discord review round 1: no quality word beside the dot). */
+const facts = (it, source) => "-# " + [it.ilvl > 0 ? "item level " + it.ilvl : "", source].filter(Boolean).join(" · ");
 /** The slot line: slot, then the gain (spec §A.3, line 2). */
 const slotLine = (slot, gain) => [slot, gain].filter(Boolean).join(" · ");
 
@@ -158,22 +159,22 @@ const OWN_SELECT = {
     { label: "Duskstrider", value: "Duskstrider", description: "Fury Warrior · Level 58" },
   ],
 };
-const CHAR_ROW = () =>
-  row(SHARE("6C6UoNxef7TrDI2_1c5droEAp4_C6QFKGg22VqAquZ4"), button("Someone else", 2, "gchar:1:ask:"), link("Character page", CHAR_URL));
+// The rest of the upgrades ride the page link: "All {n} upgrades" when the panel shows only some.
+const CHAR_ROW = (total = 0, shown = 0) =>
+  row(SHARE("6C6UoNxef7TrDI2_1c5droEAp4_C6QFKGg22VqAquZ4"), button("Someone else", 2, "gchar:1:ask:"),
+    link(total > shown ? `All ${total} upgrades` : "Character page", CHAR_URL));
 
 export function charPanel(d, { noGear = false } = {}) {
   const { crows, ups } = upgradesOf(d);
   const shown = ups.slice(0, 5);
-  const more = ups.length - shown.length;
   const facts = noGear
     ? "-# Readiness: Not synced"
     : `-# Item level ${averageItemLevel(d, crows)} · Readiness: Ready · Synced <t:${SYNCED_UNIX}:R>`;
   const body = noGear
     ? [text("**Top upgrades** · level 60 Phase 1 raid\nNo gear shared yet. Upgrades show once the character is synced.")]
     : [
-        text("**Top upgrades** · level 60 Phase 1 raid\n-# By DPS gained, against the guide build."),
+        text("**Top upgrades** · level 60 Phase 1 raid"),
         ...shown.map(upgradeSection),
-        ...(more > 0 ? [text(`-# ${more} more ${more === 1 ? "upgrade" : "upgrades"} on the character page.`)] : []),
       ];
   return {
     flags: IS_COMPONENTS_V2 | EPHEMERAL,
@@ -183,7 +184,7 @@ export function charPanel(d, { noGear = false } = {}) {
         accent_color: HUNTER,
         components: [section(CHAR_HEAD + "\n" + facts, thumb(crest("hunter"), "Hunter crest")), sep(), ...body],
       },
-      CHAR_ROW(),
+      noGear ? CHAR_ROW() : CHAR_ROW(ups.length, shown.length),
       row(OWN_SELECT),
     ],
     allowed_mentions: { parse: [] },
