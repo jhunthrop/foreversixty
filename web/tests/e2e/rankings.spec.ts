@@ -438,8 +438,10 @@ test('the board lists ranked kills with guilds, splits, reports and moderation s
   await openFilters(page);
   await expect(page.getByTestId('control-encounter')).toHaveValue('warden-kelthas');
   await expect(page.getByTestId('ranking-1').getByTestId('rank-name')).toHaveText('Elyra Duskvale');
-  // The sub line on a board of several classes: guild, then spec and class.
-  await expect(page.getByTestId('ranking-1')).toContainText('The Last Watch · Shadow Priest');
+  // The sub line on a board of several classes: guild, then the spec alone (the crest says the
+  // class once a guild shares the line; lib/rankings/rank-row-view.ts).
+  await expect(page.getByTestId('ranking-1')).toContainText('The Last Watch · Shadow');
+  await expect(page.getByTestId('ranking-1')).not.toContainText('Shadow Priest');
   await expect(page.getByTestId('ranking-1').getByTestId('ranking-value')).toHaveText('1,840');
   await expect(page.getByTestId('ranking-1').getByTestId('ranking-value')).toHaveAttribute(
     'href',
@@ -809,7 +811,9 @@ test('a guild page leads with the pull count and kills, and its Progression tab 
     'href',
     '/character/us/hardcore/elyra-duskvale',
   );
-  await expect(best).toContainText('Warden Kelthas');
+  // One boss on the list: the rows name the spec and class, not the boss again (guild tabs round 4).
+  await expect(best).toContainText('Discipline Priest');
+  await expect(best).not.toContainText('Warden Kelthas');
   await expect(best).not.toContainText('NaN');
 });
 

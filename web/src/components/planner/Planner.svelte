@@ -1274,6 +1274,16 @@
   </Section>
 {/snippet}
 
+<!-- Point order's place while the talent data loads: on a phone it sits between the trees and the
+     rail, so without it the level build and everything under it jumped down on load. -->
+{#snippet orderSkeleton()}
+  <Section title={plannerCopy.pointOrderTitle} panel>
+    <p class="pl-pad" aria-busy="true">
+      <span class="skeleton-block block max-w-full" style="width:160px;height:20px"></span>
+    </p>
+  </Section>
+{/snippet}
+
 {#if standalone}
   <Page layout="workbench" panels stickyRail testid="planner">
     {#snippet header()}
@@ -1365,6 +1375,8 @@
           <Ordered order={7}><SharePanel {store} /></Ordered>
           <Ordered order={8}>{@render importSection(false)}</Ordered>
         {/if}
+      {:else if status === 'loading'}
+        <Ordered order={1} span>{@render orderSkeleton()}</Ordered>
       {/if}
     {/snippet}
     <Ordered order={1} span>{@render plate()}</Ordered>
