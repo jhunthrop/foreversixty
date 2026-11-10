@@ -64,6 +64,11 @@ struct CharacterLogicTests {
         #expect(CharacterPage.showsScoreSection(try RankingsTestData.voltaris()))
     }
 
+    @Test func unscoredCard_withFights_neverSaysNoLogs() throws {
+        #expect(CharacterPage.noScoreTitle(try RankingsTestData.freshling()) == Copy.charNoLogs)
+        #expect(CharacterPage.noScoreTitle(try RankingsTestData.voltaris()) == Copy.charNoScoreYet)
+    }
+
     @Test func sparkline_oldestFirst_normalized() throws {
         let points = CharacterPage.sparkline(try RankingsTestData.voltaris().scoreHistory.reversed())
         #expect(points.first == 0)

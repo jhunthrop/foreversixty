@@ -56,6 +56,11 @@ class CharacterLogicTest {
         assertTrue(CharacterCard.showsScoreSection(RankingsTestData.noLogs()))
     }
 
+    @Test fun `an unscored character with ranked fights has logs`() {
+        assertFalse(CharacterCard.hasFights(RankingsTestData.noLogs()))
+        assertTrue(CharacterCard.hasFights(RankingsTestData.voltaris().copy(score = null)))
+    }
+
     @Test fun `no score has no bars, never a zero`() {
         val p = RankingsTestData.noLogs()
         assertFalse(CharacterCard.hasScore(p))
