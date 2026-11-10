@@ -29,7 +29,7 @@ HERE = Path(__file__).resolve().parent
 OUT = HERE / 'paperdoll'
 SOURCE = 'art/paperdoll-frame-source.jpeg'
 CHECKER_SPREAD, CHECKER_MIN = 16, 175
-CENTRE = (402, 470, 1372, 1922)  # the teal inside the knot border, source px (measured on gridded crops)
+CENTRE = (385, 456, 1426, 1938)  # inside the knot border's inner gold line (381, 455, 1427, 1939), source px, centred between the slot columns to 1 px
 CENTRE_CONTRAST = .33
 # Predicted slot boxes (source px): columns, the 211 px row rhythm, the weapon row; refined by refine().
 LEFT_X, RIGHT_X, SLOT_W, SLOT_H, ROW0, ROW_STEP = 100, 1549, 163, 152, 397, 211
