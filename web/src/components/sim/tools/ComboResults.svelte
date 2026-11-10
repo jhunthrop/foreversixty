@@ -55,7 +55,6 @@
     partial,
     onsave,
     talents = null,
-    plate = false,
   }: {
     result: BulkResult;
     items: ReadonlyMap<number, Item>;
@@ -69,8 +68,6 @@
      *  code's talent cells are read from. Null (not loaded, or failed) leaves "Copy for the
      *  game" disabled rather than copying a build with no talents in it. */
     talents?: TalentFile | null;
-    /** The results sit on the page's one Plate. */
-    plate?: boolean;
   } = $props();
 
   /** The ranking's figure columns: the combination's DPS (primary), its gain, its share. */
@@ -180,7 +177,7 @@
   );
 </script>
 
-<ToolSection title={bulkCopy.resultsTitle} testid="sim-combos" {plate}>
+<ToolSection title={bulkCopy.resultsTitle} testid="sim-combos">
   <div class="flex flex-col gap-3">
     {#if partial}
       <p class="text-strong text-[13px]" role="status">{bulkCopy.partial}</p>

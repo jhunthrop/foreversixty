@@ -34,7 +34,5 @@ describe("the owner's tester list", () => {
   it('labels the copy buttons with the platform and its count', () => {
     expect(copy.copyEmails('ios', 2)).toBe('Copy 2 iPhone emails');
     expect(copy.copyEmails('android', 1)).toBe('Copy 1 Android email');
-    expect(copy.tableMeta(3)).toBe('3 sign-ups · newest first');
-    expect(copy.tableMeta(1)).toBe('1 sign-up · newest first');
   });
 });

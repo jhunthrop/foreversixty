@@ -29,8 +29,10 @@
     busyTitle,
     tail,
     sticky = true,
+    toggleLabel = 'Change',
     labelsFrom = 1280,
     staticField = false,
+    inline = false,
     onchange,
     id = 'control-bar',
     testid,
@@ -40,6 +42,9 @@
     label: string;
     /** The phone line; defaults to each group's chosen label joined with a middle dot. */
     summary?: string;
+    /** One short segmented group that fits a phone line (the rankings landing's Characters / Guilds):
+     *  below 768 it shows as itself, with no summary line and no Change. */
+    inline?: boolean;
     end?: Snippet;
     /** The page's one primary (the sim's Run). One element: on phone it sits on the summary line
      *  beside "Change", from 768 after the groups and `end`, so a run is never behind the toggle. */
@@ -51,6 +56,8 @@
     /** Groups the bar's own kinds do not cover (a multi-select), after the groups. */
     tail?: Snippet;
     sticky?: boolean;
+    /** The phone toggle's word, "Change" by default; a bar that is mostly a jump menu says so. */
+    toggleLabel?: string;
     /** The width the group labels show from: 1280 by default; 1920 for a bar whose choices name
      *  themselves and need the room to stay on one row (the BiS bar). */
     labelsFrom?: 1280 | 1920;
@@ -84,6 +91,7 @@
   class={['ui-cbar ui-band ui-band-end full-bleed', sticky && 'ui-cbar--sticky']}
   data-control-bar
   data-open={open ? '' : undefined}
+  data-inline={inline ? '' : undefined}
   data-labels-from={labelsFrom}
   role="group"
   aria-label={label}
@@ -101,7 +109,7 @@
     >
       <span class="min-w-0 truncate">{line}</span>
       <span class="text-gold ml-auto flex items-center gap-1 text-[13px]"
-        >Change <Icon icon={ICON_CHEVRON_DOWN} size={14} /></span
+        >{toggleLabel} <Icon icon={ICON_CHEVRON_DOWN} size={14} /></span
       >
     </button>
     <div
@@ -247,6 +255,16 @@
   }
   .ui-cbar[data-open] .ui-cbar-groups {
     display: flex;
+  }
+  @media (max-width: 767px) {
+    .ui-cbar[data-inline] .ui-cbar-toggle,
+    .ui-cbar[data-inline] .ui-cbar-label {
+      display: none;
+    }
+    .ui-cbar[data-inline] .ui-cbar-groups {
+      display: flex;
+      padding-block: 6px;
+    }
   }
   .ui-cbar-group {
     display: flex;

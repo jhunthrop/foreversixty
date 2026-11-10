@@ -1,6 +1,6 @@
 <!-- web/src/components/planner/SharePanel.svelte -->
 <!-- Share this build (spec 2026-11-08 section 4.8): the title, Share (which asks first, naming
-     what goes public), Copy as text (the build as one line of text), and the switch that sims a DPS
+     what goes public), Copy for chat (the build as one line of text), and the switch that sims a DPS
      onto the card. Saved: the link, Copy link, the card line and the 600 x 315 card. The build
      stays in the store whatever the API says, so a failed save costs nothing but a retry. Copy
      for the game left for In the game. Task 21: a saved build's card can carry a simmed DPS; the
@@ -33,8 +33,9 @@
   import Button from '../ui/Button.svelte';
   import Field from '../ui/Field.svelte';
   import Section from '../ui/Section.svelte';
+  import PlannerPart from './PlannerPart.svelte';
 
-  let { store }: { store: PlannerStore } = $props();
+  let { store, part = false }: { store: PlannerStore; part?: boolean } = $props();
 
   // Per-instance, not a literal id: Top Gear mounts a second, inline Planner (and so a
   // second SharePanel) on the same page, and two static `id="share-confirm-heading"`
@@ -324,7 +325,7 @@
 
 <svelte:window onkeydown={confirmOpen ? onConfirmKeydown : undefined} />
 
-<Section title={plannerCopy.shareTitle} panel testid="share-panel">
+{#snippet body()}
   <div class="pl-sec">
     <div class="pl-acts pl-end">
       <div class="pl-field">
@@ -444,4 +445,10 @@
       </div>
     {/if}
   </div>
-</Section>
+{/snippet}
+
+{#if part}
+  <PlannerPart title={plannerCopy.shareTitle} testid="share-panel">{@render body()}</PlannerPart>
+{:else}
+  <Section title={plannerCopy.shareTitle} panel testid="share-panel">{@render body()}</Section>
+{/if}

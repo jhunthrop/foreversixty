@@ -55,13 +55,13 @@ The raid build goes 31/20/0: down Assassination to Mutilate, with Seal Fate, Ven
 - **Relentless Strikes** (5 points): every finisher has a 20% chance per combo point to give 25 energy back, so a four-point Eviscerate refunds it four times in five. This is what lets a 60 energy builder keep up.
 - **Cold Blood** (1 point): your next Mutilate or Eviscerate is a guaranteed crit, on a 3 minute cooldown. Save it for an Eviscerate at four or more points.
 - **Lethality** (2 points): Mutilate crits deal 220% instead of 200%, and with Malice and Puncturing Wounds you crit a lot.
-- **Vile Poisons** (5 points): 20% more poison damage.
-- **Aggression** (2 points): Eviscerate hits 10% harder.
-- **Flawless Execution** (1 point): Eviscerate costs 15 less energy.
+- **Vile Poisons** (5 points)
+- **Aggression** (2 points)
+- **Flawless Execution** (1 point)
 - **Weapon Expertise** (2 points): the boss dodges or parries your attacks 2% less, so fewer Mutilates come back with no combo points.
-- **Coup de Grace** (3 points): Eviscerate hits 20% harder.
+- **Coup de Grace** (3 points)
 
-Those Combat points are worth more to the raid build than Improved Poisons and Opportunity: a cheaper, harder Eviscerate and fewer dodged Mutilates beat more poison procs and 20% on Mutilate. Blood Splatter keeps your opening Garrote ticking 9 seconds longer, and the point of Vigor is 5 more energy to pool into. Ruthlessness keeps finishers flowing. Two points each of Lightning Reflexes and Endurance are the toll to reach the Aggression row, and Composure on the way takes another 10 energy off your opener.
+Those Combat points are worth more to the raid build than Improved Poisons and Opportunity: a cheaper, harder Eviscerate and fewer dodged Mutilates beat more poison procs and 20% on Mutilate. Blood Splatter keeps your opening Garrote ticking 9 seconds longer, and the point of Vigor is 5 more energy to pool into. Two points each of Lightning Reflexes and Endurance are the toll to reach the Aggression row, and Composure on the way takes another 10 energy off your opener.
 
 ## Rotation and priority
 
@@ -69,32 +69,34 @@ Those Combat points are worth more to the raid build than Improved Poisons and O
 
 Stealth, get behind the boss and open with **Garrote** once the tank has the boss. The boss has no Sunders on it yet at the pull, and a bleed does not care. Ambush hits harder on paper, but it lands into that armor and gets none of Lethality's bonus. Cheap Shot is for trash only: bosses are immune to stuns.
 
-Every rogue learns **Poised** at 18: at full energy out of combat, your next ability costs less. Open from full energy.
+**Poised**, from 18, takes 10 energy off your first ability at full energy out of combat, so open from full energy.
 
 ### The priority
 
-**Shank** on cooldown, right behind any damage racial and your trinket: 5 energy for 25 back, it cannot miss, and with Venom, for the next 6 seconds your poisons get another 30% on top of Vile Poisons and Instant Poison lands on 40% of your main-hand hits at 60 (half with the level 60 build's Improved Poisons). Slice and Dice the moment it falls off, at however many combo points you have, unless the boss has under 6 seconds left: the attack speed is worth more than the points you hold back for it, and you do not refresh it before it runs out. At four or more points, press Cold Blood if it is ready and Eviscerate straight after. Mutilate builds. Cold Blood is off the global cooldown and costs nothing, so it never delays the Eviscerate.
+**Shank** sits right behind any damage racial and your trinket. Slice and Dice goes back up before any other finisher. Cold Blood rides the next Eviscerate. Mutilate gives two points and Ruthlessness often leaves you one after a finisher, so two Mutilates usually put you on four or five.
 
-Spend at four, not five. Mutilate gives two points and a Seal Fate crit gives a third, and Ruthlessness often leaves you one after a finisher, so two Mutilates usually put you on four or five: waiting for exactly five wastes a Mutilate. Expose Armor does not make the list: Forever's Expose Armor does not stack with Sunder, so leave it to your warriors. Rupture does not either: with Coup de Grace, Aggression and Flawless Execution, an Eviscerate costs 20 energy and lands more damage at once than a Rupture deals over its whole run.
+Expose Armor does not make the cut: Forever's Expose Armor does not stack with Sunder, so leave it to your warriors. Rupture does not either: with Coup de Grace, Aggression and Flawless Execution, an Eviscerate costs 20 energy and lands more damage at once than a Rupture deals over its whole run.
 
 ### Energy
 
-Mutilate costs 60, so you will often sit on four points waiting for energy. That is fine: finish first, then build, and Relentless Strikes will hand most of the finisher's cost back. Never let Shank sit ready; it is the cheapest energy you have. Do not cap. **Thistle Tea** gives 100 energy on a 5 minute cooldown; drink it when you are empty. Line up Cold Blood with any damage racial, your trinket and potion.
+Mutilate costs 60, so you will often sit on four points waiting for energy: finish first, then build, and Relentless Strikes hands most of the finisher's cost back. Never let Shank sit ready, and do not cap. Drink **Thistle Tea** when you are empty, and line up Cold Blood with any damage racial, your trinket and potion.
 
 ### Poisons
 
-**Instant Poison** on the main hand and **Deadly Poison** on the off hand at 60, with a sharpening stone beside each. Both poisons scale with your attack power in Forever: every Instant Poison hit and every Deadly Poison tick grows as your attack power does. Your off hand lands more than enough hits to hold Deadly Poison at five stacks, and every extra proc on the main hand is worth more as an Instant hit. Mutilate's bonus needs a poison sitting on the target, and Deadly Poison is the one that stays there, so never run two Instants. From 30 to 59, keep Deadly on the main hand and Instant on the off hand: at 30 to 39 Backstab stacks Deadly faster, and from 40, with Mutilate, the gap closes until the two ways round come out even in the 50s. Swap them at 60. Check both coats before every boss pull and re-apply any that is close to running out; a Mutilate into an unpoisoned boss is a weak one.
+**Instant Poison** on the main hand and **Deadly Poison** on the off hand at 60, with a sharpening stone beside each. The off hand holds Deadly at five stacks on its own, and every extra main-hand proc is worth more as an Instant hit. Mutilate's bonus needs a poison on the target and Deadly is the one that stays there, so never run two Instants.
+
+From 30 to 59, run them the other way round: at 30 to 39 Backstab stacks Deadly faster, and from 40 the gap closes until the two ways round come out even in the 50s. Check both coats before every boss pull.
 
 ### Trash, threat and survival
 
-- **Kidney Shot** costs 25 energy, sits on a 20 second cooldown and stuns longer per combo point, up to 6 seconds at five: use it on casters and on whatever is hitting your healer. Kick, Gouge and Blind handle the rest.
+- **Kidney Shot** on casters and on whatever is hitting your healer. Kick, Gouge and Blind handle the rest.
 - **Redirect** (trained at level 1) lifts your combo points off a dying mob and hands them to the next enemy you hit within 15 seconds.
-- **Feint** on cooldown on bosses where you sit near the tank's threat. **Vanish** drops you from the threat table, but a bleed or DoT on you puts you back in combat, so keep it for emergencies.
+- **Feint** on cooldown on bosses where you sit near the tank's threat. **Vanish** is for emergencies: a bleed or DoT on you puts you back in combat.
 - **Evasion** is for the melee trash mob that turns on you. It does nothing against spells.
 
 ## Stat priority
 
-Hit counts until your attacks stop missing, and adds nothing past that: a missed Mutilate is a wasted global and two combo points you did not get, and your white swings with two weapons miss far more often than your specials, so they keep wanting hit after Mutilate stops missing. Agility gives attack power and crit together. Crit counts for more in this tree than for most melee, since every builder crit is a Seal Fate point and Lethality makes it bigger. Strength and attack power add straight damage to every hit, and in Forever to every poison hit and tick as well. Haste is rare on gear; take it when it comes.
+A missed Mutilate is a wasted global and two combo points you did not get, and your white swings with two weapons miss far more often than your specials, so they keep wanting hit after Mutilate stops missing. Crit pulls extra weight in this tree: every builder crit is a Seal Fate point, and Lethality makes it bigger. Strength and attack power also grow every poison hit and tick in Forever.
 
 ## Best in slot
 
@@ -102,11 +104,11 @@ Two daggers, always. The main-hand dagger matters most: it carries Instant Poiso
 
 ## Enchants and consumables
 
-Poisons and stones go on together in Forever: at 60, Instant Poison and a stone on the main hand, Deadly Poison and a stone on the off hand. A shaman's Windfury Totem is an aura on you, so it stacks with both.
+Poison and stone go on each hand together in Forever. A shaman's Windfury Totem is an aura on you, so it stacks with both.
 
 ## Races
 
-Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your attacks a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds: free damage all fight, and nothing else a Horde rogue gets matches it. Orc's **Blood Fury** is next and Troll's **Berserking** last. On Alliance, Night Elf's **Elune's Light** (10% crit for 15 seconds every 3 minutes, which pairs with Seal Fate: more Mutilate crits, more third points), Dwarf's passive 1% hit and Human's passive 1% crit all land in the same place, so they are level: play the one you like. Forever has no weapon-skill racials.
+Undead on Horde and Night Elf on Alliance. **Touch of the Grave** is free damage all fight, and nothing else a Horde rogue gets matches it; Orc's **Blood Fury** is next and Troll's **Berserking** last. On Alliance, Night Elf's **Elune's Light**, Dwarf's passive 1% hit and Human's passive 1% crit all land in the same place, so play the one you like. Elune's Light pairs with Seal Fate: more Mutilate crits, more third points. Forever has no weapon-skill racials.
 
 ## Professions
 
@@ -116,16 +118,27 @@ Undead on Horde and Night Elf on Alliance. **Touch of the Grave** gives your att
 
 ### Levels 1 to 19
 
-You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab: it hits far harder than Sinister Strike. Each Backstab is one combo point, so until 17 spend them at five, not four: put four into Slice and Dice once it has dropped, and the next five into Eviscerate. From 17 the two habits do the same, so switch to spending at four, the habit Mutilate will want.
+You start with Sinister Strike, Eviscerate and Stealth. Backstab trains at 4, Gouge at 6, Evasion at 8, then Slice and Dice and Sprint at 10, Garrote at 14 and Ambush at 18. With a dagger in hand, Gouge, step behind and Backstab. From 18, walk into every pull capped and open with Ambush or Garrote.
 
-Poised also comes at 18: at full Energy out of combat your next ability costs 10 less, so walk into every pull capped and open with Ambush or Garrote.
+Until 17, spend at five, not four: four into Slice and Dice once it has dropped, the next five into Eviscerate. From 17 the two habits do the same, so switch to spending at four, the habit Mutilate will want.
 
-Your first five points, 10 to 14, go into Malice for 5% crit on every attack and poison. Ruthlessness from 15 to 17 often leaves a combo point after a finisher, both points of Improved Slice and Dice at 18 and 19 make it last 30% longer, and Lethality at 20 and 21 makes your Backstab and Sinister Strike crits hit harder. Improved Gouge, which holds the mob 1.5 seconds longer and gives you time to get behind it, comes at 22 to 24, and Remorseless Attacks at 25 and 26 adds 40% crit to your next Sinister Strike, Backstab or Ambush after a kill.
+Your talents, in order:
 
-Wear leather and take quest rewards over vendor gear. Drop the Worn Dagger the moment a quest offers a better dagger, so Backstab and Ambush stay open to you, and keep throwing knives for pulling.
+- **10 to 14:** Malice, 5% crit on every attack and poison.
+- **15 to 17:** Ruthlessness.
+- **18 and 19:** both points of Improved Slice and Dice, 30% longer.
+- **20 and 21:** Lethality, for harder Backstab and Sinister Strike crits.
+- **22 to 24:** Improved Gouge, 1.5 seconds more to get behind the mob.
+- **25 and 26:** Remorseless Attacks, 40% crit on your next Sinister Strike, Backstab or Ambush after a kill.
+
+Drop the Worn Dagger the moment a quest offers a better dagger, so Backstab and Ambush stay open to you, and keep throwing knives for pulling.
 
 ### Levels 20 to 60
 
-From 20 to 40, Sinister Strike is your everyday builder on mobs that face you, with Gouge into Backstab whenever you can get behind. In a group, where the tank holds the mob and you stand at its back with a dagger in hand, Backstab is your builder until Mutilate.
+From 20 to 40, Sinister Strike is your everyday builder on mobs that face you, with Gouge into Backstab whenever you can get behind. In a group, where the tank holds the mob and you stand at its back with a dagger, Backstab is your builder until Mutilate.
 
-Shank comes at 24: press it on cooldown from then on. Once Mutilate comes at 40, Assassination levels well: it has no facing requirement, so two daggers work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them. Put Deadly on the main hand and Instant on the off hand until 60, where they swap. Relentless Strikes comes late, at 39 to 44, and from then on most finishers hand their energy back. Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and, from 22, Vanish get you out of the bad ones.
+Shank comes at 24: press it on cooldown from then on. Instant Poison comes at 20, Deadly Poison at 30, and Venom at 30 makes every Shank feed them.
+
+Mutilate at 40 puts two daggers to work on mobs that face you, and two points a strike means an Eviscerate every few seconds. Open with Cheap Shot, which gives two combo points, or Garrote. Relentless Strikes comes late, at 39 to 44, and from then on most finishers hand their energy back.
+
+Remorseless Attacks and Improved Gouge make chain pulls quicker; Sprint, Evasion and, from 22, Vanish get you out of the bad ones.

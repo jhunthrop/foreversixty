@@ -9,9 +9,9 @@
   import { rerunSim } from '../../lib/sim/api';
   import { KIND_TITLES, simCopy } from '../../lib/sim/copy';
   import { dayMonth } from '../../lib/sim/head-meta';
-  import { kindOf, titleOf } from '../../lib/sim/history';
+  import { kindOf, runDeltas, titleOf } from '../../lib/sim/history';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
-  import { grouped } from '../../lib/sim/result-copy';
+  import { grouped, oneDecimal } from '../../lib/sim/result-copy';
   import { serverRunsCopy } from '../../lib/sim/server-runs-copy';
   import type { RerunStatus } from '../../lib/sim/server-runs-poll';
   import { rerunOutcome } from '../../lib/sim/server-runs-rerun';
@@ -32,6 +32,7 @@
     now = new Date(),
     onserverretry,
     onstarted,
+    pageSpec = '',
   }: {
     rows: readonly SimListRow[] | null;
     error: string | null;
@@ -43,6 +44,8 @@
     onserverretry?: () => void;
     /** A failed server run was started again. */
     onstarted?: () => void;
+    /** The spec the page is about: a run of it says only its date. */
+    pageSpec?: string;
   } = $props();
 
   /** The rail shows the newest few; the account page keeps them all. */
@@ -56,6 +59,10 @@
       .sort((a, b) => b.created_at.localeCompare(a.created_at))
       .slice(0, SHOWN),
   );
+
+  /** Each run against the run of its setup before it, from every row read, not only the shown five. */
+  const deltas = $derived(runDeltas(rows ?? []));
+  const signed = (delta: number): string => `${delta >= 0 ? '+' : '−'}${oneDecimal(Math.abs(delta))}`;
 
   let rerunStatus = $state<Record<string, RerunStatus>>({});
   async function rerun(simId: string): Promise<void> {
@@ -95,21 +102,28 @@
             <ServerRunRow
               {row}
               {now}
+              {pageSpec}
               rerun={rerunStatus[row.sim_id] ?? 'idle'}
               onrerun={(id) => void rerun(id)}
             />
           {:else}
             {@const kind = kindOf(row)}
+            <!-- An untitled run of the page's own spec is named by its day alone (h-audit 2026-11-09). -->
+            {@const ownRun = kind === 'run' && row.title === '' && row.spec === pageSpec}
             <Row
-              title={titleOf(row)}
-              sub={[
-                kind === 'run'
-                  ? specDisplayName(row.spec)
-                  : ((KIND_TITLES as Record<string, string>)[kind] ?? kind),
-                dayMonth(row.created_at),
-              ]
-                .filter((part) => part !== null && part !== '')
-                .join(' · ')}
+              title={ownRun ? dayMonth(row.created_at) : titleOf(row)}
+              sub={ownRun
+                ? undefined
+                : [
+                    kind === 'run'
+                      ? row.spec === pageSpec
+                        ? ''
+                        : specDisplayName(row.spec)
+                      : ((KIND_TITLES as Record<string, string>)[kind] ?? kind),
+                    dayMonth(row.created_at),
+                  ]
+                    .filter((part) => part !== null && part !== '')
+                    .join(' · ')}
               href={`/sim/${row.sim_id}`}
               testid={`sim-history-${row.sim_id}`}
               open
@@ -119,6 +133,8 @@
                     value={grouped(row.dps)}
                     unit="DPS"
                     size="sm"
+                    align="end"
+                    caption={deltas.has(row.sim_id) ? signed(deltas.get(row.sim_id) ?? 0) : undefined}
                   />{/if}
               {/snippet}
             </Row>

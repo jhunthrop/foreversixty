@@ -1,8 +1,8 @@
 <!-- web/src/components/guild/recruit/OfficerNotes.svelte -->
 <!-- Officer notes, the profile's rail for officers only (web layout spec 2026-11-05 §7.2; mock
-     web-guild-profile): each note a Row, who wrote it and when, and under it (the rail is narrow) its
-     "Officers only" Tag and Delete on the viewer's own (the guild master on any); a one-line FormRow
-     adds one. Never mounted for a member. -->
+     web-guild-profile): each note a Row, who wrote it and when, a quiet Delete on the viewer's own (the
+     guild master on any); a one-line FormRow adds one. The heading says whose notes they are.
+     Never mounted for a member. -->
 <script lang="ts">
   import { NOTE_MAX, noteSub } from '../../../lib/guild/profile-view';
   import type { MemberNote } from '../../../lib/guild/recruit-api';
@@ -12,7 +12,6 @@
   import FormRow from '../../ui/FormRow.svelte';
   import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
-  import Tag from '../../ui/Tag.svelte';
 
   let {
     notes,
@@ -44,23 +43,21 @@
   }
 </script>
 
-<Section title={copy.notes} panel meta={copy.notesMeta} testid="guild-profile-notes">
+<Section title={copy.notes} panel testid="guild-profile-notes">
   {#if notes.length === 0}
     <p class="text-muted text-[14px]" data-testid="guild-profile-notes-empty">{copy.noNotes}</p>
   {/if}
   {#each notes as note (note.id)}
     <Row title={note.body} sub={noteSub(note, viewerTimezone, locale)} open testid="guild-profile-note">
-      {#snippet foot()}
-        <Tag tone="muted">{copy.officersOnly}</Tag>
+      {#snippet trail()}
         {#if note.may_delete}
-          <span class="ml-auto">
-            <Button
-              size="sm"
-              disabled={deletingId === note.id}
-              onclick={() => onDelete(note.id)}
-              testid="guild-profile-note-delete">{copy.deleteNote}</Button
-            >
-          </span>
+          <Button
+            size="sm"
+            tone="danger"
+            disabled={deletingId === note.id}
+            onclick={() => onDelete(note.id)}
+            testid="guild-profile-note-delete">{copy.deleteNote}</Button
+          >
         {/if}
       {/snippet}
     </Row>
@@ -72,7 +69,6 @@
         <Field
           id="guild-profile-note-body"
           label={copy.addNote}
-          placeholder={copy.addNoteHint}
           maxlength={NOTE_MAX}
           bind:value={body}
           testid="guild-profile-note-body"

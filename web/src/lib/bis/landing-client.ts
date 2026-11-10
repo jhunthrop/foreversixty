@@ -55,9 +55,6 @@ function renderBand(band: number): void {
 }
 
 function renderSummary(view: LandingPageView): void {
-  for (const text of all<HTMLElement>('[data-band-text]')) {
-    text.hidden = Number(text.dataset.bandText) !== view.selectedBand;
-  }
   const own = document.querySelector<HTMLAnchorElement>('[data-your-range]');
   if (own === null) return;
   const show = view.youBand !== undefined && view.youBand !== view.selectedBand;

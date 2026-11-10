@@ -14,7 +14,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever, talent data from the beta client'
+  - label: 'Talents Forever'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Warcraft Tavern: WoW Classic PvE DPS Warrior guide, Arms section'
@@ -74,25 +74,25 @@ sources:
 
 The level 60 build puts one point in **Improved Heroic Strike**, three in **Deflection** and five in **Iron Will**, which takes 15% off every stun and fear on you.
 
-The raid build drops Iron Will, Deflection and Improved Charge. Two more points of **Improved Heroic Strike** make Heroic Strike, your rage dump, cost 3 less. **Spearing Strike** is a second weapon strike, 15 rage on a 20 second cooldown in Battle Stance, that hits twice as hard on dragons and giants. Fifteen points in Fury reach **Reckless Swings**: for 8 seconds your white swings bring 5 more rage each, which is two or three swings with a slow two-hander, at a quarter of your base health. The same points reach **Improved Execute**, which takes Execute down to 10 rage. **Enrage** is the way there, and it pays whenever raid damage lands on you. One point of **Improved Bloodrage** stays.
+The raid build drops Iron Will, Deflection and Improved Charge. Two more points of **Improved Heroic Strike** make Heroic Strike cost 3 less. **Spearing Strike** is a second weapon strike, 15 rage on a 20 second cooldown in Battle Stance, that hits twice as hard on dragons and giants. Fifteen points in Fury reach **Reckless Swings**: for 8 seconds your white swings bring 5 more rage each, which is two or three swings with a slow two-hander, at a quarter of your base health. The same points reach **Improved Execute**, which takes Execute down to 10 rage. **Enrage** is the way there, and it pays whenever raid damage lands on you.
 
 ## Rotation and priority
 
-**The pull.** Charge on the pull. In a raid that means once the tank has engaged the boss, never before. Out in the world, Charge is how you pull. Charge only works out of combat, and Bloodrage puts you in combat, so a Bloodrage before the pull costs you the Charge. Spend the Charge's rage on Battle Shout as you arrive, unless a raid warrior's shout is already on you; then press Bloodrage as your first swing lands. That is a shout, a Rend and a Mortal Strike in your first three globals, or Rend and Mortal Strike in the first two when another warrior's shout is already on you.
+**The pull.** In a raid, Charge once the tank has engaged the boss, never before; out in the world, Charge is how you pull. Bloodrage puts you in combat and Charge only works out of combat, so a Bloodrage before the pull costs you the Charge. Spend the Charge's rage on Battle Shout as you arrive, unless a raid warrior's shout is already on you; then press Bloodrage as your first swing lands.
 
-**Battle Stance.** Keep Rend ticking at all times: Bloodthrill only lights Overpower on a bleeding target. Press Overpower the moment it lights up, even ahead of Mortal Strike: it is only usable for a few seconds after a dodge or a Bloodthrill proc, and Mortal Strike will still be there a second later. Mortal Strike goes on cooldown otherwise, and Reckless Swings right behind it in the raid build: for 8 seconds your white swings bring 5 more rage each, which is two or three swings with a slow two-hander. It costs a quarter of your base health, so tell your healers. With Improved Slam, Slam fills the gap between Mortal Strikes, and Spearing Strike takes any global that is still free; it only works in Battle Stance, so it stops at the execute swap.
+**Battle Stance.** Rend never falls off: Bloodthrill only lights Overpower on a bleeding target. Mortal Strike on cooldown, and Reckless Swings right behind it in the raid build; tell your healers about the health it costs. With Improved Slam, Slam fills the gap between Mortal Strikes, and Spearing Strike takes any global that is still free; it only works in Battle Stance, so it stops at the execute swap.
 
-**Rage.** Bloodrage on cooldown whenever you are under 80 rage. Heroic Strike only when you are about to cap at 90 or more: below that, keep the rage for Mortal Strike, Overpower and Execute, which lose damage every time they wait for it. If a shaman drops Windfury Totem in your group, Hamstring on any free global: it is a cheap main-hand hit that can trigger the totem's extra attack. Without Windfury, never Hamstring for damage.
+**Rage.** Heroic Strike only when you are about to cap at 90 or more. Hamstring is for a group with a shaman's Windfury Totem; without Windfury, never Hamstring for damage.
 
-**Execute.** From 25% stop Hamstring and let the rage build. At 20%, Execute in Battle Stance first: it spends your whole bar, so that first Execute is your biggest hit of the fight. Then swap to Berserker Stance (Improved Tactical Mastery keeps 25 rage) and press Recklessness. From there, Mortal Strike on cooldown and Execute on every other global until the boss dies; in a dungeon without raid buffs, Execute goes first. Overpower and Rend do not work in Berserker Stance, so stay put.
+**Execute.** From 25%, stop Hamstring and let the rage build. At 20%, Execute in Battle Stance first: it spends your whole bar, so that first Execute is your biggest hit of the fight. Then swap and press Recklessness, and stay in Berserker Stance until the boss dies, Mortal Strike on cooldown and Execute on every other global. In a dungeon without raid buffs, Execute goes first.
 
-**Two or more targets.** Sweeping Strikes in Battle Stance, swap to Berserker Stance, Whirlwind. Whirlwind hits up to four targets and every Sweeping Strikes charge copies a hit onto a second one. Swap back for Overpower and Rend once Whirlwind is on cooldown. Use Cleave instead of Heroic Strike when two mobs are in front of you.
+**Two or more targets.** Sweeping Strikes in Battle Stance, swap to Berserker Stance, Whirlwind. Swap back for Overpower and Rend once Whirlwind is on cooldown. Cleave instead of Heroic Strike when two mobs are in front of you.
 
-**Moving.** Rend first on anything new, because it is what lights your Overpowers. Charge is out of combat only, so on a boss that moves you walk back in; that is a lost swing, not a reason to leave Battle Stance.
+**Moving.** Rend first on anything new. On a boss that moves you walk back in, since Charge is out of combat only; that is a lost swing, not a reason to leave Battle Stance.
 
 ## Stat priority
 
-Every point of Strength is two attack power for a warrior. Crit feeds Deep Wounds, Impale and Overpower, and a critical swing brings twice the rage. Agility carries crit and armor with it. Hit matters up to the hit cap, because a missed Mortal Strike or Overpower is a lost global and lost rage; once your gear reaches the cap it adds nothing. Haste adds swings, and swings are rage. Weapon skill takes the sting out of glancing blows and trims your misses, and no race brings it any more. For a two-hander it only comes on the weapon itself, like Obsidian Edged Blade's two-handed sword skill; Edgemaster's Handguards and the other skill gear raise one-handed skills and do nothing for you.
+Crit feeds Deep Wounds, Impale and Overpower, and a critical swing brings twice the rage. Hit counts up to the hit cap and adds nothing past it. Weapon skill takes the sting out of glancing blows and trims your misses, and no race brings it any more. For a two-hander it only comes on the weapon itself, like Obsidian Edged Blade's two-handed sword skill; Edgemaster's Handguards and the other skill gear raise one-handed skills and do nothing for you.
 
 ## Best in slot
 
@@ -102,9 +102,9 @@ Mighty Rage Potion goes on the pull and again when it comes back. Pre-pull, take
 
 ## Races
 
-Night Elf is the Alliance pick and Undead the Horde pick among the Classic races. Elune's Light is 10% crit for 15 seconds every 3 minutes: press it on the pull and every time it comes back, but never inside Recklessness, which already makes every hit crit. Undead's Touch of the Grave drains the target for damage and a little health, at most once every 15 seconds. Skyborne brings Wind Blessed, 2% haste that never turns off: on the Alliance, Night Elf and Skyborne are level, so pick either, and on the Horde Skyborne is as good as Undead.
+Night Elf is the Alliance pick and Undead the Horde pick among the Classic races. Skyborne's Wind Blessed is level with Night Elf on the Alliance and as good as Undead on the Horde. Press Elune's Light on the pull and every time it comes back, but never inside Recklessness, which already makes every hit crit.
 
-If you want a different look, the gap is small. On the Alliance, Dwarf comes out level with Night Elf, and Human's Ruthless, a flat 1% crit, and Gnome's Eureka!, 10% more damage and 10% less rage on your non-periodic damaging abilities for 8 seconds every 2 minutes, sit just behind them. On the Horde, Orc and Undead are close: Orc's Blood Fury is 10% attack power for 15 seconds every 2 minutes, so press it on the pull and every time it comes back, and it still adds damage inside Recklessness. Troll's Berserking only covers 15 seconds in every 3 minutes, so it trails Undead and Orc; Tauren brings nothing for damage and comes last.
+If you want a different look, the gap is small. On the Alliance, Dwarf comes out level with Night Elf, and Human and Gnome sit just behind them. On the Horde, Orc is close to Undead: press Blood Fury on the pull and every time it comes back, and it still adds damage inside Recklessness. Troll's Berserking trails Undead and Orc; Tauren brings nothing for damage and comes last.
 
 ## Professions
 
@@ -118,10 +118,17 @@ Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 1
 
 At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander, a good pick if your two-hander is still the starter.
 
-Your first three points, 10 to 12, go into Improved Rend for a much bigger bleed on everything you fight. Improved Heroic Strike at 13 makes Heroic Strike cost 1 less Rage, and a first point of Deflection at 14 opens the next row. Both points of Improved Overpower come at 15 and 16, so the Overpowers your target's dodges open crit far more often. Deflection finishes at 17 and 18 for parry, and Improved Charge at 19 and 20 gives 6 more Rage on every opener.
+- **10 to 12:** Improved Rend, a much bigger bleed on everything you fight.
+- **13:** Improved Heroic Strike, so Heroic Strike costs 1 less Rage.
+- **14:** a first point of Deflection to open the next row.
+- **15 and 16:** Improved Overpower, so the Overpowers your target's dodges open crit far more often.
+- **17 and 18:** the rest of Deflection, for parry.
+- **19 and 20:** Improved Charge, 6 more Rage on every opener.
 
-Weapon damage is nearly all your damage, so swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
+Swap the starter weapon for the first quest or dungeon two-hander you can get, and take quest rewards over vendor gear. You wear mail until plate at 40.
 
 ### Levels 20 to 60
 
-Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, and Victory Rush whenever it is up: it heals 10%, works for 20 seconds after a kill and comes back every 30 seconds, so when the next mob is close, press it right after the Charge. Sweeping Strikes into Whirlwind once you have both for pulls of two or three. Bloodthrill comes in at 33, after Deep Wounds and Impale; once it is in, keep Rend on everything and every pull turns into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which makes it easier to keep up to date.
+Level as Arms from the start: Rend, Charge and Overpower carry you to 40, and Mortal Strike makes everything after that quick. Charge every pull, and Victory Rush whenever it is up: it heals 10%, works for 20 seconds after a kill and comes back every 30 seconds, so when the next mob is close, press it right after the Charge. Sweeping Strikes into Whirlwind for pulls of two or three.
+
+Bloodthrill comes in at 33, after Deep Wounds and Impale; once it is in, keep Rend on everything and every pull turns into Overpower spam. Fury levels at least as fast with two good one-handers; Arms only needs one weapon, which is easier to keep up to date.

@@ -17,7 +17,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever, talent data from the beta client'
+  - label: 'Talents Forever'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Forever Sixty, Feral bear best in slot'
@@ -55,10 +55,10 @@ The build is 41 points of Feral and 10 of Restoration. It tanks from level 10 to
 - **Lacerate** (1 point): your bleed. It stacks five times, each cast hits for more per stack already up, and it carries high threat.
 - **Primal Bite** (1 point): the capstone. Weapon damage plus a bonus and very high threat, on a 6 second cooldown for 15 rage.
 - **Ferocity** (5 points): Maul, Swipe and Primal Bite 5 rage cheaper.
-- **Shredding Attacks** (3 points): Lacerate 3 rage cheaper.
+- **Shredding Attacks** (3 points)
 - **Savage Fury**, **Feral Instinct** and **Rend and Tear**: more damage, so more threat, from Maul and Swipe, and 15% more from your melee abilities while Lacerate bleeds the target.
 - **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and 5 rage on every crit.
-- **Leader of the Pack** (1 point): the raid's crit aura.
+- **Leader of the Pack** (1 point)
 - **Heart of the Wild** and **Naturalist** (5 points each): 20% more Stamina in Bear Form, and 10% more damage of every kind, which is threat.
 
 Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge (a charge and interrupt, take it if your raid needs a bear to close on casters), and the cat's Predatory Discipline and Shifting Power.
@@ -67,27 +67,21 @@ Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge 
 
 **Before the pull.** Be in Dire Bear Form. Enrage a second before you pull: it gives you rage up front and 2 a second for 10 seconds. It also costs armor for those 10 seconds, so the dip is over 9 seconds into the fight.
 
-**Pull.** Faerie Fire from range. In Bear Form it is free, on a 6 second cooldown, and it carries threat, so it is your pull and your threat on the run in. Then Primal Bite, Lacerate, and Maul queued on your swing.
+**Pull.** Faerie Fire from range is your pull and your threat on the run in. Then Primal Bite, Lacerate, and Maul queued on your swing.
 
-**Priority.**
+**Demoralizing Roar.** Demoralizing Roar whenever the boss does not have it, and again in its last 3 seconds, unless a warrior's Demoralizing Shout is already on it.
 
-1. **Primal Bite** on cooldown, every 6 seconds. It is your biggest threat hit.
-2. **Lacerate** until it has five stacks, then again when it has under 3 seconds left. The stacks make each cast hit harder, and the bleed turns on Rend and Tear.
-3. **Faerie Fire** whenever the boss does not have it.
-4. **Demoralizing Roar** whenever the boss does not have it, and again in its last 3 seconds, unless a warrior's Demoralizing Shout is already on it.
-5. **Maul** queued on your next swing whenever you have 15 rage spare. At levels 40 to 53 rage is short: queue Maul only at 30 rage, so Primal Bite seldom waits on rage when it comes off cooldown.
-6. **Swipe** only with two or more targets in front of you, above 40 rage. It hits up to three, and each hit grows with your attack power. On a single boss, leave it on the bar: the same rage does more threat in Maul, Lacerate and Primal Bite.
-7. **Lacerate** again whenever nothing above is ready. With five stacks up it is still a hit that carries threat, and it keeps the bleed fresh, so you never waste a global cooldown standing still.
+**Rage.** At levels 40 to 53 rage is short: queue Maul only at 30 rage, so Primal Bite seldom waits on rage when it comes off cooldown.
 
 **Adds.** In a raid at 60, on three or more targets, Swipe goes to the top. On two targets, and while leveling, keep it below Primal Bite, Lacerate and Maul. Put Lacerate on the target the raid will kill last. Faerie Fire is a free ranged threat tool on a loose add. Challenging Roar is your panic button when the pack runs to the healers.
 
-**Cooldowns.** Barkskin takes 20% off physical damage for 15 seconds every minute, and Forever lets you cast it in Bear Form. Press it on cooldown; when you know a big hit is a few seconds away, hold it for that. Frenzied Regeneration turns up to 10 rage a second into health for 10 seconds, and in Forever a full 100 rage of it heals your whole health bar. Use it under half health with rage banked, not at the pull. Demoralizing Roar lowers the boss's attack power: keep it up unless a warrior already has Demoralizing Shout on it.
+**Cooldowns.** Barkskin takes 20% off physical damage for 15 seconds every minute, and Forever lets you cast it in Bear Form. Press it on cooldown; when you know a big hit is a few seconds away, hold it for that. Frenzied Regeneration turns up to 10 rage a second into health for 10 seconds, and in Forever a full 100 rage of it heals your whole health bar. Use it under half health with rage banked, not at the pull.
 
 **There is no Savage Defense in Forever.** Your mitigation is armor, Dodge, Barkskin and your healers.
 
 ## Stat priority
 
-Stamina is health, and Heart of the Wild adds 20% to it in form. Agility is Dodge, armor and crit at once. Dodge is the only avoidance you have. Hit keeps your Lacerate and Maul landing, which is threat, not survival, and once your gear reaches the hit cap it adds nothing. Expertise, which only a few late sets carry, lowers the chance the boss dodges or parries your Maul and Lacerate, which is threat and rage. Armor is multiplied by the form and takes a share off every physical hit, a share that shrinks as you stack it. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Defense means fewer crits taken, and Thick Hide turns it into a little armor. Crit is threat, and through Blood Frenzy it is rage too.
+Heart of the Wild adds 20% to your Stamina in form. Agility is Dodge, armor and crit at once, and Dodge is the only avoidance you have. Hit is threat, not survival, and adds nothing past the cap. Expertise, which only a few late sets carry, keeps the boss from dodging or parrying your Maul and Lacerate, which is threat and rage. Armor is multiplied by the form, and its share off each physical hit shrinks as you stack it. Strength and attack power are threat, and so is your weapon: your paw hits with the weapon's DPS every 2.5 seconds, so a low-DPS caster staff costs you threat. Defense means fewer crits taken, and Thick Hide turns it into a little armor. Crit is threat, and through Blood Frenzy it is rage too.
 
 ## Best in slot
 
@@ -99,7 +93,7 @@ Forever lets a druid drink in form. Mighty Rage Potion is the bear's threat poti
 
 ## Races
 
-Your faction picks your race: Night Elf on the Alliance, Tauren on the Horde, and both tank well. Night Elf takes slightly less damage and holds a little more threat, through Quickness, 1% more Dodge, and Elune's Light, 10% crit with all spells and attacks for 15 seconds on a 3 minute cooldown, which is threat when you press it on the pull. Tauren's health is steadier: Endurance is 5% more health, and War Stomp stuns up to 5 enemies around you for 2 seconds, in form, which is a great trash pull. Skyborne can be bears on either faction, with Wind Blessed, 2% haste that never turns off.
+Your faction picks your race: Night Elf on the Alliance, Tauren on the Horde, and both tank well. Night Elf takes slightly less damage and holds a little more threat, through Quickness and Elune's Light, which is threat when you press it on the pull. Tauren's health is steadier through Endurance, and War Stomp works in form, a great trash pull. Skyborne can be bears on either faction, with Wind Blessed.
 
 ## Professions
 
@@ -117,4 +111,8 @@ Your paw hits with your weapon's DPS, so replace the starter weapon with the hig
 
 ### Levels 20 to 60
 
-Dire Bear Form comes at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate arrives at 25 and Primal Bite at 40, and until then Maul, Swipe and Demoralizing Roar hold a dungeon pack. Sharpened Claws comes at 22 and 23, Blood Frenzy at 28 and 29, Leader of the Pack at 30, Predatory Strikes at 31 to 33 and Natural Instinct at 34 and 35, so Rend and Tear starts at 36 and Lacerate's bleed turns it on. Feral Swiftness's second point comes at 39, before Dire Bear Form's bigger pulls. After Rend and Tear's last points, Natural Reaction, then Heart of the Wild and Naturalist.
+Dire Bear Form comes at 40. A bear is the safe way to level through big pulls and the fastest way into dungeons, at the cost of kill speed: Maul and Swipe on a pack, Demoralizing Roar to blunt it, and Frenzied Regeneration from 36 to skip drinking. Lacerate arrives at 25 and Primal Bite at 40, and until then Maul, Swipe and Demoralizing Roar hold a dungeon pack.
+
+- **22 to 35:** Sharpened Claws at 22 and 23, Blood Frenzy at 28 and 29, Leader of the Pack at 30, Predatory Strikes at 31 to 33 and Natural Instinct at 34 and 35.
+- **36 on:** Rend and Tear, which Lacerate's bleed turns on, with Feral Swiftness's second point at 39, before Dire Bear Form's bigger pulls.
+- **After Rend and Tear's last points:** Natural Reaction, then Heart of the Wild and Naturalist.

@@ -17,7 +17,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever, talent data from the beta client'
+  - label: 'Talents Forever'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Forever Sixty, stat weights'
@@ -66,25 +66,23 @@ The raid build skips Furor. In Forever it no longer hands you 40 energy on a shi
 
 ## Rotation and priority
 
-**Open.** Prowl, walk behind the boss and Ravage once the tank has two or three globals on it. Poised, a passive you learn at 32, makes your first ability cheaper when you start at full energy out of combat, so open from a full bar. Pounce needs Prowl and your position behind the target, exactly like Ravage, so it is never the fallback for a boss you cannot get behind. Use it on trash you want stunned. On a boss, Ravage hits much harder.
+**Open.** Prowl, walk behind the boss and Ravage once the tank has two or three globals on it. Open from a full bar so Poised, a passive you learn at 32, makes it cheaper. Pounce needs Prowl and your position behind the target, exactly like Ravage, so it is never the fallback for a boss you cannot get behind. Use it on trash you want stunned; on a boss, Ravage hits much harder.
 
-**Finishers.** At 5 combo points, Rip if it is not on the boss or has under 2 seconds left. A new Rip replaces the old one and throws away the ticks it had left, so let it run to its last tick. Rip comes first because it is the bleed that keeps Rend and Tear on. Ferocious Bite is for 5 points while Rip still has 5 seconds or more; between 2 and 5 seconds, keep Shredding and hold the points for the Rip. With Predatory Discipline the Bite keeps the damage from your spare energy without spending it, so do not pool energy for it. Never finish on fewer than 5 points against a boss.
+**Finishers.** Ferocious Bite is for 5 points while Rip still has 5 seconds or more; between 2 and 5 seconds, keep Shredding and hold the points for the Rip. Do not pool energy for the Bite. Never finish on fewer than 5 points against a boss.
 
-**Shred** is everything else. Stand behind the target, every global. Rake is not worth its energy here: Rip alone keeps the boss bleeding, and the 35 energy buys more as Shred.
+**Shred.** Stand behind the target, every global. Rake is not worth its energy here: Rip alone keeps the boss bleeding, and the 35 energy buys more as Shred.
 
-**Energy.** Energy ticks 20 every 2 seconds. Press Shifting Power whenever it is ready and you are at 60 energy or less, so all 40 fits under the cap. If you are above 60, Shred first and press it on the next global. Clearcasting from Omen of Clarity makes your next ability free; it nearly always lands on a Shred, which needs no button of its own.
+**Energy.** Above 60 energy when Shifting Power comes up, Shred first and press it on the next global. Clearcasting from Omen of Clarity nearly always lands on a Shred, which needs no button of its own.
 
-**Faerie Fire.** In Cat Form it is free on a 6 second cooldown. If no one else has it on the boss, keep yours up.
+**Mana.** Shifting Power costs 55% of your base mana, and mana decides how many you get. With a paladin's Judgement of Wisdom on the boss, your hits refill most of it over a fight. Without one, or if you run dry, drink a mana potion in Cat Form without shifting.
 
-**Mana.** Shifting Power costs 55% of your base mana, and mana decides how many you get. With a paladin's Judgement of Wisdom on the boss, your hits refill most of it over a fight. Without one, or if you run dry, drink a mana potion in Cat Form; Forever lets you drink without shifting.
+**Adds and movement.** You have no cleave. On a pack, Rip the target that will live longest and Shred down the kill order. When the boss turns to you, or you cannot get behind, Claw in place of Shred until you can. Rip ticks while you run.
 
-**Adds and movement.** You have no cleave. On a pack, Rip the target that will live longest and Shred down the kill order. When the boss turns to you, or you cannot get behind, Claw in place of Shred until you can. Keep Rip rolling through movement; it ticks while you run.
-
-**Pull aggro.** Your threat is high with Leader of the Pack crits and Rend and Tear. Open late, as above, and if you pull, Cower.
+**Pull aggro.** Leader of the Pack crits and Rend and Tear push your threat high. Open late, and if you pull, Cower.
 
 ## Stat priority
 
-Weapon DPS matters in Forever. Your Cat Form paw swings at a fixed 1.0 speed and hits for your weapon's DPS, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. Agility is crit and attack power at once. Strength is attack power, and Heart of the Wild adds 10% to it. Hit keeps Shred landing: a missed or dodged Shred hands back most of its energy, but you still lose the global and the combo point. It counts up to the hit cap and adds nothing past it. Crit is bigger hits, and through Blood Frenzy it is combo points too. Attack power from gear is plain attack power, without the crit that Agility carries.
+Weapon DPS matters in Forever. Your Cat Form paw swings at a fixed 1.0 speed and hits for your weapon's DPS, and Shred and Ravage hit for a multiple of that swing, so a high-DPS two-hander beats a caster staff with more Strength and Agility on it. Heart of the Wild adds 10% to your Strength. A missed or dodged Shred hands back most of its energy, but you still lose the global and the combo point; hit adds nothing past the cap. Through Blood Frenzy, crit is combo points too.
 
 ## Best in slot
 
@@ -96,7 +94,11 @@ Forever changed the old cat rules: almost every potion works in Cat Form without
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds on a 3 minute cooldown, and it works in Cat Form. Racials are usable while shapeshifted in Forever, so line it up with your potion and trinkets. On the Horde, Tauren's Endurance is 5% more health and War Stomp stuns up to 5 enemies for 2 seconds, which is for trash, not damage. Skyborne bring Wind Blessed on either faction: 2% haste that never turns off, which in Cat Form is faster swings.
+**Night Elf.** Racials are usable while shapeshifted in Forever, so line Elune's Light up with your potion and trinkets.
+
+**Tauren** on the Horde: War Stomp is for trash, not damage.
+
+**Skyborne** on either faction: Wind Blessed's haste is faster swings in Cat Form.
 
 ## Professions
 
@@ -106,7 +108,12 @@ Your raid set asks for one profession, Enchanting. Molten Heart of the Mountain,
 
 ### Levels 1 to 19
 
-Until 20 you are a caster: Moonfire from 4, then Wrath. Your mana runs out before a long fight does, so keep the cheap ranks: Wrath rank 1 at 10 and 11, then rank 2 (a Night Elf keeps it through 15, while a Tauren takes the new rank 3 at 14); Moonfire rank 1 from 10 to 12 (a Night Elf does a little better with rank 2 at 11), then rank 2 through 19 even after rank 3 trains at 16. Every druid takes the newest Wrath at 16. At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form, with Maul and Demoralizing Roar; shift when a pull gets heavy. Bash trains at 14, Swipe at 16.
+Until 20 you are a caster: Moonfire from 4, then Wrath. Your mana runs out before a long fight does, so keep the cheap ranks:
+
+- **Wrath:** rank 1 at 10 and 11, then rank 2 (a Night Elf keeps it through 15, while a Tauren takes the new rank 3 at 14). Every druid takes the newest Wrath at 16.
+- **Moonfire:** rank 1 from 10 to 12 (a Night Elf does a little better with rank 2 at 11), then rank 2 through 19 even after rank 3 trains at 16.
+
+At 10, Heeding the Call from your trainer in Darnassus or Thunder Bluff (The Great Ursera Spirit on Zephras Isle for Skyborne) teaches Bear Form, with Maul and Demoralizing Roar; shift when a pull gets heavy. Bash trains at 14, Swipe at 16.
 
 Ferocity takes your points from 10 to 14: Maul and Swipe cost 5 less Rage now, Claw and Rake less Energy later. Feral Swiftness at 15 and 16 adds 4% dodge now, and Cat Form run speed once you learn Cat Form at 20, Feral Instinct at 17 adds 10% to Swipe, and Brutal Impact at 18 and 19 makes Bash stun longer and come back 30 seconds sooner.
 
@@ -114,4 +121,10 @@ Your bear hits with your weapon's DPS, so swap the starter weapon for the highes
 
 ### Levels 20 to 60
 
-Cat Form arrives at 20. Solo mobs face you, so Shred will not land: Claw builds your points and Rake, from 24, adds a cheap bleed on anything that lives long enough. In a group with a tank, Shred from behind from 21, once the second point of Shredding Attacks has it at 48 energy; at 20, Claw buys more damage for its energy. Open from Prowl behind the mob: Ravage once you learn it at 32, or Pounce from 36 when you want the stun. Both need you behind the target in Forever. When you cannot get there, open with Claw. Rip at 5 points on anything with a lot of health, Ferocious Bite, from 24, on the rest. From 25, Feral Charge's Cat Form leap lands you behind a mob for a Shred, and in Bear Form it is the charge you pull dungeon packs with. Your points go into Shredding Attacks at 20 to 22, Sharpened Claws at 23 and 24, Feral Charge at 25, then Savage Fury and Predatory Strikes. From 31 take Leader of the Pack, Blood Frenzy, Natural Instinct and Rend and Tear before Predatory Discipline, which only changes Ferocious Bite; it comes at 39, in time to open Shifting Power at 40. Respec into the raid build at 60.
+Cat Form arrives at 20. Solo mobs face you, so Shred will not land: Claw builds your points and Rake, from 24, adds a cheap bleed on anything that lives long enough. In a group with a tank, Shred from behind from 21, once the second point of Shredding Attacks has it at 48 energy; at 20, Claw buys more damage for its energy.
+
+Open from Prowl behind the mob: Ravage once you learn it at 32, or Pounce from 36 when you want the stun. When you cannot get behind, open with Claw. Rip at 5 points on anything with a lot of health, Ferocious Bite, from 24, on the rest. From 25, Feral Charge's Cat Form leap lands you behind a mob for a Shred, and in Bear Form it is the charge you pull dungeon packs with.
+
+- **20 to 30:** Shredding Attacks at 20 to 22, Sharpened Claws at 23 and 24, Feral Charge at 25, then Savage Fury and Predatory Strikes.
+- **31 to 40:** Leader of the Pack, Blood Frenzy, Natural Instinct and Rend and Tear before Predatory Discipline, which only changes Ferocious Bite; it comes at 39, in time to open Shifting Power at 40.
+- **60:** respec into the raid build.

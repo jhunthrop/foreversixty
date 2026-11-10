@@ -1,9 +1,7 @@
 <!-- web/src/components/sim/tools/StatWeights.svelte -->
-<!-- /sim/weights (mock design/mocks/ws_simtools.py): the run line, the caution as the page's
-     standing line, the scale factors on the page's framed panel once a run finishes, and the stats to
-     weigh in the rail. Design 7: the caution opens the page, in our words, and links to Top Gear -- it is not
-     a footnote, because the whole reason this page exists is that addons ask for a number
-     the number itself cannot justify.
+<!-- /sim/weights (mock design/mocks/ws_simtools.py): the run line, the stats to weigh as one row of
+     ticks (the explainer notice and its Top Gear link were cut, h-audit 2026-11-09), then the
+     scale factors on the page's framed panel.
 
      The reference stat always leads `store.stats`: the engine normalises its weights to it,
      so the request must weigh it. It is seeded from the spec's own
@@ -32,9 +30,8 @@
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { specLabel } from '../../../lib/sim/spec-label';
-  import { pickableStatsFor, statLabel, toolScaleView } from '../../../lib/sim/weights';
+  import { pickableStatsFor, toolScaleView } from '../../../lib/sim/weights';
   import type { Snippet } from 'svelte';
-  import Notice from '../../ui/Notice.svelte';
   import Page from '../../ui/Page.svelte';
   import Section from '../../ui/Section.svelte';
   import WeightsScaleTable from '../WeightsScaleTable.svelte';
@@ -96,19 +93,34 @@
   }
 </script>
 
-<Page layout="split" panels testid="sim-stat-weights">
+<Page layout="ledger" panels testid="sim-stat-weights">
   {#snippet bar()}<BulkRunBar {store} />{/snippet}
   {#if lead}{@render lead()}{/if}
-  <Notice
-    text={bulkCopy.weightsWarning}
-    tone="neutral"
-    action={{ label: bulkCopy.weightsWarningLink, href: '/sim/gear' }}
-    testid="sim-weights-warning"
-  />
+  <!-- The stats to weigh as one row of ticks over the table they fill (h-audit 2026-11-09: alone in
+       the rail it sat 400 px short of the table). The reference stat is its locked tick. -->
+  <Section title={bulkCopy.weightsPick} panel testid="sim-weights-pick">
+    <ul class="m-0 flex list-none flex-wrap gap-x-6 p-0">
+      {#each pickable as stat (stat.id)}
+        <li>
+          <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
+            <input
+              type="checkbox"
+              class="accent-gold h-[18px] w-[18px]"
+              data-testid={`sim-weight-pick-${stat.id}`}
+              checked={store.stats.includes(stat.id)}
+              disabled={stat.id === store.referenceStat}
+              onchange={() => togglePick(stat.id)}
+            />
+            {stat.label}
+          </label>
+        </li>
+      {/each}
+    </ul>
+  </Section>
   {#if store.weights.length > 0}
     <Section
       panel
-      frame="framed"
+      frame="plain"
       title={bulkCopy.weightsResultsTitle}
       meta={specLabel(store.character?.spec ?? '')}
       testid="sim-weights"
@@ -127,7 +139,7 @@
   {:else if published !== null}
     <Section
       panel
-      frame="framed"
+      frame="plain"
       title={bulkCopy.weightsPublishedTitle}
       action={{ label: published.label, href: published.href }}
       testid="sim-weights-published"
@@ -135,30 +147,4 @@
       <WeightsScaleTable view={published.view} />
     </Section>
   {/if}
-  {#snippet rail()}
-    <Section title={bulkCopy.weightsPick} panel testid="sim-weights-pick">
-      {#if store.referenceStat}
-        <p class="text-small text-muted m-0" data-testid="sim-weights-reference">
-          {bulkCopy.weightsReference}: {statLabel(store.referenceStat)}
-        </p>
-      {/if}
-      <ul class="m-0 grid list-none grid-cols-2 gap-x-4 p-0">
-        {#each pickable as stat (stat.id)}
-          <li>
-            <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
-              <input
-                type="checkbox"
-                class="accent-gold h-[18px] w-[18px]"
-                data-testid={`sim-weight-pick-${stat.id}`}
-                checked={store.stats.includes(stat.id)}
-                disabled={stat.id === store.referenceStat}
-                onchange={() => togglePick(stat.id)}
-              />
-              {stat.label}
-            </label>
-          </li>
-        {/each}
-      </ul>
-    </Section>
-  {/snippet}
 </Page>

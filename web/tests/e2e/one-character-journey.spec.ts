@@ -96,7 +96,7 @@ test('the chosen character follows the player through every page', async ({ page
   await page.goto('/planner');
   await expectClass(page, 'hunter');
   await expect(raceSelect(page)).toHaveValue(bow.raceSlug);
-  await expect(page.getByTestId('planner-code-note')).toContainText('Talents loaded from a character');
+  await expect(page.getByTestId('planner-code-note')).toHaveCount(0);
   // Spec 2026-11-08 4.1: the title, then the meta line (race, level, the leading spec).
   await expect(page.getByTestId('page-title')).toHaveText('Hunter talents');
   await expect(page.getByTestId('planner-meta')).toHaveText(`${bow.race} · Level 60 · ${bow.spec} Hunter`);

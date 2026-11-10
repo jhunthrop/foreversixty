@@ -63,15 +63,18 @@ test('locking a slot disables every candidate in it, and its copy-and-modify tri
   // A locked slot's checkbox drops any ticked candidate from the outgoing request
   // (validateBulk rule 1), so a copy-and-modify made here would be checked-but-inert with
   // nothing telling the player -- the trigger disables for the same reason the checkbox does.
-  await expect(row.getByRole('button', { name: /copy/i })).toBeDisabled();
+  await expect(row.getByRole('button', { name: bulkCopy.copyAndModify })).toBeDisabled();
   await page.getByTestId('sim-lock-head').uncheck();
   await expect(row.getByRole('checkbox')).toBeEnabled();
-  await expect(row.getByRole('button', { name: /copy/i })).toBeEnabled();
+  await expect(row.getByRole('button', { name: bulkCopy.copyAndModify })).toBeEnabled();
 });
 
 test('copy and modify adds the same item again with an enchant, beside the original', async ({ page }) => {
   await loadGear(page);
-  await page.getByTestId('sim-candidate-head-12640').getByRole('button', { name: /copy/i }).click();
+  await page
+    .getByTestId('sim-candidate-head-12640')
+    .getByRole('button', { name: bulkCopy.copyAndModify })
+    .click();
   await page.getByTestId('sim-enchant-head-2543').click();
   await expect(page.getByTestId('sim-candidate-head-12640')).toBeVisible();
   const copy = page.getByTestId('sim-candidate-head-12640-e2543');
@@ -81,14 +84,8 @@ test('copy and modify adds the same item again with an enchant, beside the origi
 
 test('the combination count moves as candidates are ticked', async ({ page }) => {
   await loadGear(page);
-  // Neither bulkCopy string here has a regex metacharacter, so the two are safe to
-  // alternate directly rather than through an escaping helper this file would be the only
-  // caller of.
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(
-    new RegExp(
-      `${bulkCopy.combinations(0)}|${bulkCopy.combinationsCounting}|${bulkCopy.combinationsNone.replace(/[.]/g, '\\.')}`,
-    ),
-  );
+  // Nothing ticked, nothing to run: the count says nothing until a tick makes one.
+  await expect(page.getByTestId('sim-combo-count')).toHaveCount(0);
   await page.getByTestId('sim-candidate-head-12640').getByRole('checkbox').check();
   await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1), {
     // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:

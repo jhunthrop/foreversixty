@@ -233,7 +233,8 @@ test('a dated, not-yet-open source carries the date it opens', async ({ page }) 
 
 test('crafted sources split by profession once the character records one', async ({ page }) => {
   await loadDrops(page);
-  await expect(page.getByTestId('sim-source-picker')).toContainText(bulkCopy.sourcesProfessionsUnknown);
+  // h-audit 2026-11-09: no line when nothing records the professions; every profession lists.
+  await expect(page.getByTestId('sim-source-picker')).not.toContainText(bulkCopy.sourcesMyProfessions);
   await loadDrops(page, FURY_BLACKSMITH);
   await expect(page.getByTestId('sim-source-picker')).toContainText(bulkCopy.sourcesMyProfessions);
 });

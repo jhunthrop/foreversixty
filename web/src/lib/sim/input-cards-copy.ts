@@ -10,6 +10,8 @@ export const gearCardCopy = {
     `${worn} of ${total} slots · ${enchants === 0 ? 'no enchants' : `${enchants} ${enchants === 1 ? 'enchant' : 'enchants'}`}`,
   itemLevel: (level: string) => `item level ${level}`,
   statsHead: (level: number) => `In the fight, against a level ${level} boss.`,
+  /** A run from before the engine reported its stats sheet. */
+  statsNeedNewerRun: 'Your stats in the fight show after a rerun.',
   stats: {
     attackPower: 'Attack power',
     hit: 'Hit',
@@ -20,12 +22,12 @@ export const gearCardCopy = {
     spellHit: 'Spell hit',
     spellCrit: 'Spell crit',
   },
-  missedInRun: (parts: string) => `Missed in this run: ${parts}.`,
-  missedSpecials: (share: string) => `${share} of specials`,
-  missedWhite: (share: string) => `${share} of white swings`,
+  missedInRun: (parts: string) => `Miss ${parts}`,
+  missedSpecials: (share: string) => `${share} specials`,
+  missedWhite: (share: string) => `${share} white`,
   setLine: (name: string, worn: number, total: number) => `Set: ${name} ${worn} of ${total}`,
   bonus: (pieces: number, text: string) => `(${pieces}) ${text}`,
-  bisLink: 'Upgrades for this character on Best in slot',
+  bisLink: 'Upgrades on Best in slot',
   /** The landing's plated doll: its Section action. */
   bisAction: 'Upgrades on Best in slot',
   noGear: 'This run had no gear on file.',
@@ -50,9 +52,9 @@ export const resourceCardCopy = {
   /** The engine's rage refund: 80% of a special's cost back when it misses, is dodged or parried. */
   refunded: 'Refunded on a miss, dodge or parry',
   lost: (amount: string) => `−${amount} lost`,
-  /** A figure takes its unit: "57 rage · 2.7%". */
-  amount: (amount: string, power: string) => `${amount} ${power}`,
-  capValue: (amount: string, power: string, percent: string) => `${amount} ${power} · ${percent}%`,
+  /** The panel's title ("Rage") carries the unit, once: the tiles read "2,127" and "57 · 2.7%". */
+  amount: (amount: string) => amount,
+  capValue: (amount: string, percent: string) => `${amount} · ${percent}%`,
   needsNewerRun: (resource: string) => `Where the ${resource} came from and went needs a newer run.`,
 } as const;
 
@@ -83,7 +85,6 @@ export const rotationCardCopy = {
   casts: (count: number) => (count === 1 ? '1 cast' : `${count} casts`),
   otherCooldowns: 'Other cooldowns as they come up',
   thisRun: (names: string) => `This run: ${names}.`,
-  beforeRun: 'Trinkets, racials and potions, as each comes off cooldown.',
   rank: (rank: number) => `Rank ${rank}`,
   prepullAt: (seconds: number) => `-${seconds} s`,
   guide: (spec: string) => `${spec} guide`,

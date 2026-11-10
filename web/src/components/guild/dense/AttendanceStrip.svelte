@@ -45,7 +45,13 @@
     {/each}
   </span>
 {:else}
-  <span class="att" role="img" aria-label={cells.map((c) => CELL_WORD[c]).join(', ')} data-testid={testid}>
+  <span
+    class="att"
+    role="img"
+    aria-label={cells.map((c) => CELL_WORD[c]).join(', ')}
+    title={cells.map((c) => CELL_WORD[c]).join(', ')}
+    data-testid={testid}
+  >
     {#each cells as cell, index (index)}<span class="att-cell" data-cell={cell}>{CELL_GLYPH[cell]}</span
       >{/each}
   </span>

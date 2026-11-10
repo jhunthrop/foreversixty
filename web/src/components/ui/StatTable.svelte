@@ -17,6 +17,7 @@
     barHead = '',
     bar = true,
     open = false,
+    icons = true,
     dense = false,
     action = false,
     sort,
@@ -35,7 +36,9 @@
     /** Whether the rows carry a Meter column. */
     bar?: boolean;
     open?: boolean;
-    /** 40 px rows at 14 px, for a table of forty raiders (guild roster, readiness, loot). */
+    /** Whether the rows lead with an icon; false drops the icon track (a part, a weight, a query's columns). */
+    icons?: boolean;
+    /** 40 px rows at 14 px: a table of forty raiders (guild roster, readiness, loot) or a log (Events). */
     dense?: boolean;
     /** A last fixed-width column for each row's one action (StatRow `action`): Nudge on the guild readiness board. */
     action?: boolean;
@@ -60,13 +63,14 @@
   data-dense={dense ? 'true' : undefined}
   data-action={action ? 'true' : undefined}
   data-bar={bar ? 'true' : 'false'}
+  data-icons={icons ? undefined : 'false'}
   style:--st-n={columns.length}
   data-wrap-list={wrap ? '' : undefined}
   data-testid={testid}
 >
   {#if nameHead !== undefined}
     <div class="ui-st-h ui-st-c" role="row" data-wrap-repeat={wrap ? '' : undefined}>
-      <span aria-hidden="true"></span>
+      <span class="ui-st-icon" aria-hidden="true"></span>
       <span class="ui-st-head" role="columnheader">{nameHead}</span>
       {#if bar}
         {#if barHead === ''}<span aria-hidden="true"></span>

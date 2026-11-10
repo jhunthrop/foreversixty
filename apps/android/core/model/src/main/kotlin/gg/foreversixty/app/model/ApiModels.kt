@@ -175,6 +175,8 @@ data class ApplicantCharacter(
     @SerialName("class") val className: String? = null,
     @SerialName("spec") val spec: String? = null,
     @SerialName("spec_name") val specName: String? = null,
+    /** The raid group the spec fights in (the sign-ups' groups); null when the spec is unknown. */
+    @SerialName("group") val group: String? = null,
     @SerialName("level") val level: Int? = null,
     @SerialName("item_level") val itemLevel: Int? = null,
     /** Battle.net's race name ("Dwarf"), else the export's race; null when neither says. */

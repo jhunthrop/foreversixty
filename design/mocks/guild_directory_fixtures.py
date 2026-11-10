@@ -23,6 +23,8 @@ RULESET_WORD = {'pvp': 'PvP', 'hardcore': 'Hardcore', 'normal': 'Normal'}
 
 # landing-in: the account's guilds (name, region, ruleset, rank) and the alt the header points at.
 MINE = [(gd.GUILD, 'us', 'pvp', 'officer'), ('The Last Watch', 'us', 'hardcore', 'member')]
+# Each of the account's guilds' faction and roster count, as /v1/me's MeGuild sends them (the landing's Your guilds row).
+MINE_SEEN = {gd.GUILD: (gd.FACTION, gd.RAIDERS), 'The Last Watch': ('horde', 31)}
 ALT = ('Briarwick', 'druid', 23)
 
 # join: the joining player's character, and the officer who made the link.
@@ -55,8 +57,8 @@ def me_in() -> dict:
     alt = {'key': _key(name), 'region': gd.REGION, 'ruleset': gd.RULESET, 'name': name, 'class': cls.title(), 'level': level, 'faction': gd.FACTION}
     main = {'key': _key(CLAIMANT), 'region': gd.REGION, 'ruleset': gd.RULESET, 'name': CLAIMANT, 'class': 'Hunter', 'level': 60, 'faction': gd.FACTION,
             'guild': {'id': gd.GUILD_ID, 'name': gd.GUILD, 'verified': True}}
-    guilds = [{'id': gd.GUILD_ID if n == gd.GUILD else 501, 'region': r, 'ruleset': rs, 'name': n, 'rank': rank, 'verified': True}
-              for n, r, rs, rank in MINE]
+    guilds = [{'id': gd.GUILD_ID if n == gd.GUILD else 501, 'region': r, 'ruleset': rs, 'name': n, 'rank': rank, 'verified': True,
+               'faction': MINE_SEEN[n][0], 'roster_count': MINE_SEEN[n][1]} for n, r, rs, rank in MINE]
     return {'user': _user(5, 'Dunmaro#1105'), 'characters': [alt, main], 'main_character_key': _key(CLAIMANT), 'guilds': guilds}
 
 
@@ -88,10 +90,26 @@ def claim_settings() -> dict:
             'invite': {'rotated_at': None, 'url': None, 'made_by': None}}
 
 
+SETUP_KEYS = ['officer_ranks', 'discord_bot', 'recruiting', 'raid_schedule', 'invite_link', 'addon_sync', 'report_visibility', 'linked_role']
+
+
+def claim_setup() -> dict:
+    """GET .../setup right after the claim (ws_guild_setup.fresh_steps): the invite link made, every other step to do."""
+    steps = [{'key': k, 'state': 'done' if k == 'invite_link' else 'todo', 'marked': False} for k in SETUP_KEYS]
+    return {'steps': steps, 'done': 1, 'total': len(steps), 'finished': False, 'plan': 'none',
+            'ranks': {'officer_max_rank_index': 1, 'officers': 3, 'ranks': []},
+            'discord': {'bot_available': True, 'installed': False, 'server_name': None, 'channel_name': None, 'recruit_channel_name': None,
+                        'webhook_connected': False, 'linked_members': 0, 'members': gd.RAIDERS},
+            'recruiting': {'open': False, 'pitch': False, 'nights': '', 'wanted': [], 'role_set': False},
+            'schedule': {'timezone': gd.ZONE, 'planned': 0, 'next': None}, 'invite': {'made': True, 'joined': 0},
+            'sync': {'synced': 0, 'accounts': gd.RAIDERS, 'window_days': 14, 'missing': []}, 'visibility': 'guild', 'readiness': None}
+
+
 def fixtures() -> dict[str, object]:
     """File name to JSON body."""
     return {'directory-rankings.json': rankings(), 'directory-me-in.json': me_in(), 'directory-me-join.json': me_join(),
-            'directory-invite.json': invite_peek(), 'directory-me-claim.json': me_claim(), 'directory-claim-settings.json': claim_settings()}
+            'directory-invite.json': invite_peek(), 'directory-me-claim.json': me_claim(), 'directory-claim-settings.json': claim_settings(),
+            'directory-claim-setup.json': claim_setup()}
 
 
 def writer(write) -> list[Path]:

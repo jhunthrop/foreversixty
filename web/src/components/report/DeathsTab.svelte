@@ -1,12 +1,16 @@
 <!-- web/src/components/report/DeathsTab.svelte -->
 <!-- The Deaths tab's Plate (logs spec 2026-11-07 6.2, the SHOULDs as ruled): one block per death
      in the scope, in the order they happened. A Row: the time, the crest, the name, "Killed by
-     {source} · {ability} · {amount} ({overkill} overkill) · {max} health", and The 20 s before it ›
+     {source} · {ability} · {amount} ({overkill} overkill) · {max} health", and Last 20 s ›
      (the window). Then one StatTable, Last hits and heals, in time order: a hit reads its ability,
-     "{time} · from {source}", −amount and the health after as numbers ("74 / 114") with a green
-     Meter, "dead" on the killing blow; a heal received is a green row with +amount. The foot: the
+     "{time} · from {source}", −amount and the health after as numbers ("74 / 114") with a red
+     Meter, "dead" and a Killing blow Tag on the killing blow; a heal received is a green row with
+     +amount and a green Meter. On a phone each row's line under the amount is the health after. The foot: the
      run-up in one sentence, what they held, and "No healing landed in the last 10 seconds." when
-     none did. Past six deaths each block folds to its Row. -->
+     none did. With more than one death they read as an accordion: one card open (the first, until
+     the reader opens another; the url keeps it), the rest folded to their Row. Each Row has one
+     control at its right: Open on a folded card, Last 20 s › (the window) on the open one
+     (h-audit 2026-11-09). -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
   import CopyCsv from './CopyCsv.svelte';
@@ -22,6 +26,7 @@
   import { plannerLinkFor } from '../../lib/report/planner-link';
   import type { StatFigure } from '../../lib/ui/stat-table';
   import Meter from '../ui/Meter.svelte';
+  import Tag from '../ui/Tag.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -79,8 +84,8 @@
       ]),
     ];
   }
-  const FOLD_ABOVE = 6;
-  /** Cards the reader has opened by hand; every card is open while there are few. */
+  /** One death reads open; past it, every block but the first folds to its Row. */
+  const FOLD_ABOVE = 1;
   /** The cards opened by hand, from the url, so a pasted link opens the same ones. */
   const opened = $derived(new Set(open));
   // A link that arrives with a card already open (Mechanics' Deaths links) lands at the
@@ -93,10 +98,12 @@
     document.getElementById(`death-${first}`)?.scrollIntoView({ block: 'start' });
   });
   const foldAll = $derived(ordered.length > FOLD_ABOVE);
-  const isOpen = (death: Death): boolean => !foldAll || opened.has(`${death.guid}-${death.at_ms}`);
-  function toggle(death: Death): void {
-    const key = `${death.guid}-${death.at_ms}`;
-    onPatch({ openDeaths: opened.has(key) ? open.filter((entry) => entry !== key) : [...open, key] });
+  const keyOf = (death: Death): string => `${death.guid}-${death.at_ms}`;
+  /** One card open: the one the url names, else the first. */
+  const isOpen = (death: Death): boolean =>
+    !foldAll || (opened.size > 0 ? opened.has(keyOf(death)) : death === ordered[0]);
+  function openCard(death: Death): void {
+    onPatch({ openDeaths: [keyOf(death)] });
   }
 
   type LastEvent =
@@ -229,15 +236,11 @@
     const spanText = formatDuration(spanMs);
     const healed = healingBefore(death);
     const healedText =
-      death.heals === undefined
-        ? ''
-        : healed > 0
-          ? ` ${formatAmount(healed)} of healing landed in the same span.`
-          : ' No healing landed on them in that span.';
-    const from = `the highest they stood at in that span was ${Math.round(firstPct)}%`;
+      death.heals === undefined ? '' : healed > 0 ? ` ${formatAmount(healed)} healed.` : ' No heals.';
+    const peak = `Peaked at ${Math.round(firstPct)}%.`;
     if (spanMs <= 3000 && firstPct >= 60)
-      return `Burst: they took ${formatAmount(total)} in ${spanText}; ${from}.${healedText}`;
-    return `They took ${formatAmount(total)} over ${spanText}; ${from}.${healedText}`;
+      return `Burst: ${formatAmount(total)} in ${spanText}. ${peak}${healedText}`;
+    return `${formatAmount(total)} over ${spanText}. ${peak}${healedText}`;
   }
   function linkFor(death: Death): ReturnType<typeof plannerLinkFor> {
     const combatant = combatants.find((row) => row.guid === death.guid);
@@ -337,7 +340,17 @@
   }
 </script>
 
-<Section title="Deaths" meta={`${ordered.length} in this fight`} testid="deaths-tab" panel flush>
+{#snippet windowButton(death: Death)}
+  <button
+    type="button"
+    class="text-gold text-[14px] font-semibold whitespace-nowrap [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
+    data-testid="death-window"
+    title="Set the window to the 20 seconds before this death"
+    onclick={() => onWindow(deathWindow(death.at_ms, durationMs))}>Last 20 s ›</button
+  >
+{/snippet}
+
+<Section title="Deaths" testid="deaths-tab" panel flush>
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}
@@ -349,28 +362,25 @@
       {@const colour = classColorVar(death.class ?? classOf.get(death.guid))}
       {@const footLine = foot(death, card)}
       <div class="death-block" data-testid={`death-${death.guid}`} id={`death-${death.guid}-${death.at_ms}`}>
-        <Row title={unitLabel(death.name).text} sub={killedBy(death, card)} wrapTrail>
+        <Row title={unitLabel(death.name).text} sub={killedBy(death, card)}>
           {#snippet lead()}<span class="text-muted text-[13px] tabular-nums" data-testid="death-label"
               >{#if death.label}{death.label} ·
               {/if}{formatDuration(inPull(death))}</span
             ><ClassIcon className={death.class ?? classOf.get(death.guid)} size={32} />{/snippet}
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(death.name).text}</span>{/snippet}
           {#snippet trail()}
-            {#if foldAll}
+            <!-- One control a row: Open on a folded card, the window on the open one. -->
+            {#if isOpen(death)}
+              {@render windowButton(death)}
+            {:else}
               <button
                 type="button"
-                class="text-nav text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
-                aria-expanded={isOpen(death)}
+                class="text-nav text-[14px] font-semibold whitespace-nowrap [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
+                aria-expanded="false"
                 data-testid="death-toggle"
-                onclick={() => toggle(death)}>{isOpen(death) ? 'Fold' : 'Open'}</button
+                onclick={() => openCard(death)}>Open ›</button
               >
             {/if}
-            <button
-              type="button"
-              class="text-gold text-[14px] font-semibold whitespace-nowrap [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
-              data-testid="death-window"
-              onclick={() => onWindow(deathWindow(death.at_ms, durationMs))}>The 20 s before it ›</button
-            >
           {/snippet}
         </Row>
         {#if isOpen(death)}
@@ -383,11 +393,7 @@
             {#each card.events as event, i (`${event.at_ms}-${i}`)}
               {#if event.kind === 'heal'}
                 {@const heal = event.heal}
-                <StatRow
-                  figures={healFigures(heal)}
-                  phone={`+${formatAmount(heal.amount)}`}
-                  testid="death-heal"
-                >
+                <StatRow figures={healFigures(heal)} phone={healFigures(heal)[1]?.value} testid="death-heal">
                   {#snippet icon()}<SpellIcon url={spellIcon(heal.spell_id, heal.spell_name)} />{/snippet}
                   {#snippet name()}<b class="text-kill">{heal.spell_name}</b>{/snippet}
                   {#snippet sub()}{formatDurationPrecise(heal.at_ms)} · from {splitUnitName(heal.source_name)
@@ -401,16 +407,23 @@
                 {@const hit = event.hit}
                 {@const lethal = isKillingBlow(death, hit)}
                 {@const pct = lethal && !lethalHitMissing(death, card) ? 0 : card.pcts[i]}
-                <StatRow figures={hitFigures(death, hit, lethal)} phone={`−${formatAmount(landed(hit))}`}>
+                {@const shown = hitFigures(death, hit, lethal)}
+                {@const blow = lethal && !lethalHitMissing(death, card)}
+                <StatRow figures={shown} phone={shown[1]?.value} testid={blow ? 'death-blow' : undefined}>
                   {#snippet icon()}<SpellIcon url={spellIcon(hit.spell_id, hit.spell_name)} />{/snippet}
-                  {#snippet name()}<b class="text-strong"
+                  {#snippet name()}<b class={blow ? 'text-death' : 'text-strong'}
                       >{hit.spell_name === '' ? 'Melee' : hit.spell_name}</b
-                    >{/snippet}
+                    >{#if blow}<span class="ml-2 align-middle"><Tag tone="danger">Killing blow</Tag></span
+                      >{/if}{/snippet}
                   {#snippet sub()}{formatDurationPrecise(hit.at_ms)} · from {sourceName(
                       hit.source_guid,
                       hit.source_name,
                     )}{/snippet}
-                  {#snippet meter()}{#if pct !== null}<Meter value={pct / 100} tone="kill" />{/if}{/snippet}
+                  {#snippet meter()}{#if pct !== null}<Meter
+                        value={pct / 100}
+                        tone="class"
+                        color="var(--color-wipe)"
+                      />{/if}{/snippet}
                 </StatRow>
               {/if}
             {/each}

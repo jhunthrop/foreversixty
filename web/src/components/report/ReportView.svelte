@@ -37,7 +37,7 @@
     resolveFightIndex,
     sampleFightIndex,
   } from '../../lib/report/fights';
-  import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
+  import { aggregateNight, nightFacts, nightSummary, type Night } from '../../lib/report/night';
   import { schoolToken, TRASH_PARSE } from '../../lib/report/format';
   import {
     FLAG_LETTERS,
@@ -90,7 +90,9 @@
   import CastsRail from './CastsRail.svelte';
   import DispelsRail from './DispelsRail.svelte';
   import Glossary from './Glossary.svelte';
-  import EventsRail from './EventsRail.svelte';
+  import EnemyCastsRail from './EnemyCastsRail.svelte';
+  import { enemyCasts, spellSchools } from '../../lib/report/exchange-rails';
+  import GroupDebuffsRail from './GroupDebuffsRail.svelte';
   import MechanicsRail from './MechanicsRail.svelte';
   import QueriesRail from './QueriesRail.svelte';
   import RatingRail from './RatingRail.svelte';
@@ -160,7 +162,6 @@
   import { fightGroupScope, groupScope, raidFlaggedPlayers, scopeNoun } from '../../lib/report/group';
   import { splitUnitName } from '../../lib/characters';
   import { reportCopy } from '../../lib/report/copy';
-  import { ratingCopy } from '../../lib/rating/copy';
   import { justUploadedAt } from '../../lib/reports/just-uploaded';
   import {
     ACTOR_TABS,
@@ -171,6 +172,7 @@
     reportFigure,
     reportMeta,
     thisPullFacts,
+    reportMetaTail,
   } from '../../lib/report/frame';
   import { pullNumbers } from '../../lib/report/fights';
   import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
@@ -279,18 +281,16 @@
   const unitNames = $derived(new Map((file?.units ?? []).map((unit) => [unit.guid, unit.name])));
   /** The Interrupts and Dispels tabs' empty line, naming the scope it was empty under. */
   function exchangeEmpty(verb: 'interrupted' | 'dispelled'): string {
-    // A debuff that ran its course is listed only for a spell someone dispelled at least
-    // once, since the summary cannot tell a dispellable debuff from any other: a pull with
-    // no dispels lists none, and the whole night does.
-    const tail =
-      verb === 'dispelled'
-        ? ' Debuffs that ran their course are listed only for spells someone dispelled at least once; the whole night shows them.'
-        : '';
+    const scope = nightMode ? 'tonight' : 'this pull';
+    // With nothing kicked, say whether anything could have been: an instant cast has no cast bar.
+    const castBars = enemyCasts((windowed ?? base)?.casts ?? [], friendlySet).some((row) => row.castMs > 0);
+    const tail = verb === 'interrupted' && !castBars ? ' No enemy cast had a cast bar.' : '';
+    const noun = verb === 'interrupted' ? 'interrupts' : 'dispels';
     if (state.source === SOURCE_FRIENDLIES || state.source === SOURCE_EVERYONE)
-      return `Nothing was ${verb} in the whole fight.${tail}`;
-    if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing in this fight.${tail}`;
+      return `No ${noun} ${scope}.${tail}`;
+    if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing ${scope}.`;
     const name = splitUnitName(unitNames.get(state.source) ?? state.source).name;
-    return `${name} ${verb} nothing in this fight.${tail}`;
+    return `${name} ${verb} nothing ${scope}.${tail}`;
   }
   /** The player GUIDs from report.json, for the source scope and the filters. */
   const playerSet = $derived(
@@ -1228,7 +1228,9 @@
         // untracked: this runs before the first await, inside the load effect, and these
         // read and write the state the effect must not depend on.
         untrack(() => readUrl());
-        await untrack(() => loadFight(state.fight));
+        // The whole night (fight=all) and a zone's trash have no summary.json of their own;
+        // the combined-view effect folds their pulls once the page is ready.
+        if (untrack(() => fight) !== null) await untrack(() => loadFight(state.fight));
         status = 'ready';
         const rest = await fetchReportFileFor(resolved.status, base);
         if (rest !== null) file = rest;
@@ -1639,17 +1641,7 @@
           (row) => inSource(row.guid, scopeKey, scopePlayers, friendlySet) || row.guid === state.source,
         ),
   );
-  /** The scope's word for the head's caption. */
-  const scopeWord = $derived(
-    state.source === SOURCE_EVERYONE || (!groupScopeNow.scoped && groupScopeNow.crowded)
-      ? reportCopy.everyoneInRange
-      : state.source === SOURCE_FRIENDLIES && groupScopeNow.scoped
-        ? groupScopeNow.noun === 'raid'
-          ? reportCopy.yourRaid
-          : reportCopy.yourGroup
-        : 'Group',
-  );
-  /** The players and deaths in the Source scope, for the answer and This pull. */
+  /** The players and deaths in the Source scope, for the band's answer and its players tail. */
   const scopeRoster = $derived(
     (wholeScoped?.roster ?? []).filter((row) => inSource(row.guid, scopeKey, scopePlayers, friendlySet)),
   );
@@ -1675,15 +1667,7 @@
         }),
   );
   const pullFacts = $derived(
-    fight === null || nightMode
-      ? []
-      : thisPullFacts({
-          fight,
-          scope: scopeWord,
-          players: scopeRoster.length,
-          deaths: scopeDeaths.length,
-          phases: summary?.phases ?? [],
-        }),
+    fight === null || nightMode ? [] : thisPullFacts({ fight, phases: summary?.phases ?? [] }),
   );
   const isTrashPull = $derived(fight !== null && fight.kind !== 'encounter');
   /** A pull a rating can exist for: a boss pull of a report the API keeps (never the bundled sample). */
@@ -1696,11 +1680,13 @@
   /** The band's meta line: the pull on screen, or the night (zone, date, fight count). */
   const headLine = $derived(
     fight !== null && !nightMode
-      ? reportMeta(facts.zone, fight, pullNumbers(fights).get(fight.index)?.pull, scopeRoster.length)
+      ? reportMeta(facts.zone, fight, pullNumbers(fights).get(fight.index)?.pull)
       : [facts.zone, fights.length > 0 ? facts.date : '', facts.fights]
           .filter((part) => part !== '')
           .join(' · '),
   );
+  /** The meta's last fact (players, or mobs died): a desktop fact, so a phone's meta is one line. */
+  const headTail = $derived(fight !== null && !nightMode ? reportMetaTail(fight, scopeRoster.length) : '');
   /** One player as the Source on an actor tab: the player's own view (decision R5). */
   const playerView = $derived(sourcePlayer !== undefined && ACTOR_TABS.has(state.tab) && !nightMode);
   const playerRow = $derived(base?.roster.find((row) => row.guid === sourcePlayer));
@@ -1762,12 +1748,14 @@
 {/snippet}
 
 {#snippet thisPull()}
-  {#if fight !== null && !nightMode}
+  {#if nightMode && night !== null}
     <ThisPull
-      facts={pullFacts}
-      {simHref}
-      note={state.tab === 'summary' && !rateable ? ratingCopy.noRatingForTrash : ''}
+      title={trashMode ? 'This trash' : 'The night'}
+      facts={nightFacts(night, trashMode, fights.filter((entry) => entry.kind !== 'encounter').length)}
+      simHref={null}
     />
+  {:else if fight !== null && !nightMode}
+    <ThisPull facts={pullFacts} {simHref} />
   {/if}
 {/snippet}
 
@@ -1800,6 +1788,7 @@
       onOpenDeath={openDeaths}
       extra={chartedAbility === null ? null : { label: chartedAbility.label, series: chartedAbility.series }}
       {noun}
+      openOnPhone={state.tab === 'deaths'}
     />
   {/if}
 {/snippet}
@@ -1923,6 +1912,9 @@
         <ReportHead
           title={heading}
           line={headLine}
+          lineTail={headTail}
+          {simHref}
+          pullActions={fight !== null && !nightMode}
           sample={isSampleReport(reportId)}
           {credit}
           {live}
@@ -2011,7 +2003,7 @@
                   {@const label = unitLabel(combatant.name).text}
                   <Row
                     title={label}
-                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · item level ${combatant.item_level ?? 0}`}
+                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · ilvl ${combatant.item_level ?? 0}`}
                     open
                   >
                     {#snippet lead()}<ClassIcon className={classOf.get(combatant.guid)} size={28} />{/snippet}
@@ -2051,7 +2043,7 @@
               durationMs={summary?.duration_ms ?? scoped.duration_ms}
               onWindow={setWindow}
             />
-          {:else if state.tab === 'casts'}
+          {:else if state.tab === 'casts' || state.tab === 'timeline'}
             <CastsRail
               casts={scoped.casts}
               players={scopePlayers}
@@ -2061,8 +2053,20 @@
             />
           {:else if state.tab === 'debuffs'}
             <DispelsRail dispels={scoped.dispels} {spellIcon} tabHref={hrefWith({ tab: 'dispels' })} />
-          {:else if state.tab === 'events'}
-            <EventsRail off={state.eventsOff} onPatch={patch} />
+          {:else if state.tab === 'interrupts'}
+            <EnemyCastsRail
+              casts={(windowed ?? base)?.casts ?? []}
+              players={friendlySet}
+              schools={spellSchools(base)}
+              {spellIcon}
+            />
+          {:else if state.tab === 'dispels'}
+            <GroupDebuffsRail
+              auras={(windowed ?? base)?.auras ?? []}
+              players={scopePlayers}
+              {spellIcon}
+              tabHref={hrefWith({ tab: 'debuffs' })}
+            />
           {:else if state.tab === 'queries'}
             <QueriesRail />
           {:else if state.tab === 'rating'}
@@ -2092,6 +2096,7 @@
           {#if night !== null}
             <NightView
               {night}
+              inScope={(guid) => inSource(guid, scopeKey, scopePlayers, friendlySet)}
               trash={trashMode}
               loading={nightLoading}
               {unitClasses}
@@ -2432,7 +2437,6 @@
         {:else if state.tab === 'events'}
           {#if eventsViewLazy.current}
             <eventsViewLazy.current
-              chips={false}
               summary={windowed ?? scoped}
               {classOf}
               names={unitNames}
@@ -2455,8 +2459,13 @@
         {:else if state.tab === 'queries'}
           {#if queriesViewLazy.current}
             <!-- The Starting points wrap inside the column (the mock's `.qstarts`), never under the rail. -->
-            <div class="report-queries min-w-0">
-              <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+            <div class="report-queries flex min-w-0 flex-col gap-[var(--section-gap)]">
+              <queriesViewLazy.current
+                dataBaseUrl={dataBase}
+                fightIndex={state.fight}
+                window={timeWindow}
+                classByName={new Map((summary?.roster ?? []).map((row) => [row.name, row.class ?? '']))}
+              />
             </div>
           {:else}
             {@render lazyFallback(queriesViewLazy, REPORT_LAZY_MIN_H.queries)}
@@ -2510,7 +2519,7 @@
      cut tab reads as more to scroll, not as a broken label (logs lane review 2026-11-09). */
   @media (max-width: 767px) {
     .report-tabs :global(.ui-tsm-strip) {
-      mask-image: linear-gradient(to right, var(--color-bg) calc(100% - 48px), transparent);
+      mask-image: linear-gradient(to right, var(--color-bg) calc(100% - 120px), transparent);
     }
   }
   /* Damage done by ability beside taken and healing (stacked) where the main column has the room (1440 up). */

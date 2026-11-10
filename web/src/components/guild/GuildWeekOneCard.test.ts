@@ -141,27 +141,30 @@ describe('GuildProgression with pulls', () => {
       tier: { ...page.tier, down: 0 },
       encounters: page.encounters.map((encounter) => {
         const { first_kill_at: _firstKill, best_kill_ms: _bestKill, ...rest } = encounter;
-        return { ...rest, kills: 0 };
+        const nights = rest.pulls_by_night.map((n) => ({ ...n, killed: false, kill_ms: null }));
+        return { ...rest, kills: 0, pulls_by_night: nights };
       }),
     };
     const copy = text(progressionHtml(noKill));
     expect(copy).toContain('0 of 1 boss down');
-    expect(copy).toContain('Progress');
+    expect(copy).toContain('0 kills');
     expect(copy).not.toContain('NaN');
     expect(copy).not.toContain('We do not track');
     expect(copy).not.toContain('first kill');
   });
 
-  it('reads each boss in one line: pulls, wipes, deaths a pull, first kill', () => {
-    expect(text(progressionHtml(buildMockProgression()))).toMatch(
-      /\d+ pulls? · \d+ wipes? · [\d.]+ deaths a pull · first kill \w{3} \d+ \w{3}/,
-    );
+  it('heads each boss with its kills, best kill and deaths a pull, and marks the first kill', () => {
+    const copy = text(progressionHtml(buildMockProgression()));
+    expect(copy).toMatch(/\d+ kills? · best \d+:\d{2}.* · [\d.]+ deaths a pull/);
+    expect(copy).toContain('first kill');
   });
 
   it('labels the role bests as output, never a parse, rounded as the roster writes them', () => {
     const copy = text(progressionHtml(buildMockProgression()));
-    expect(copy).toContain('Top HPS Lightbrand 302');
-    expect(copy).toContain('Top DPS Pyrewisp 358');
+    expect(copy).toContain('Lightbrand');
+    expect(copy).toContain('302 HPS');
+    expect(copy).toContain('Pyrewisp');
+    expect(copy).toContain('358 DPS');
     expect(copy).not.toMatch(/parse/i);
   });
 });

@@ -1,8 +1,9 @@
 // web/tests/e2e/paperdoll.spec.ts
-// The shared paperdoll on the sim's Gear section (`worn`, spec 2026-11-06-sim §4.5, open after
-// a run) and the report's "At pull" (`report`), web layout spec 2026-11-05 §4.2: every item opens the shared tooltip on hover,
-// focus and tap, and the tooltip carries the binding and armour lines the item row states. The
-// character page's own coverage is character-gear.spec.ts.
+// The shared paperdoll (ui/PaperdollFrame) on the sim's Gear section (`worn`, the list form: the
+// b2 sim mock lists what it ran) and the report's Gear at the pull (`report`, the frame with the
+// selected slot's tooltip in its centre), web layout spec 2026-11-05 §4.2. The sim's items open
+// the page's tooltip on hover, focus and tap, with the binding and armour lines. The character
+// page's own coverage is character-gear.spec.ts.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
@@ -21,11 +22,12 @@ async function loadSim(page: Page): Promise<void> {
   await pasteAndRun(page, FURY);
   // The result's Gear section loads as it nears the viewport.
   await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
-  await expect(page.getByTestId('sim-gear-doll-slot-head')).toHaveAttribute('data-state', 'item');
+  await expect(slot(page, 'head')).toBeVisible();
 }
 
-/** The result's Gear doll. */
+/** The result's Gear doll, and one of its list rows. */
 const strip = (page: Page) => page.getByTestId('sim-gear-doll');
+const slot = (page: Page, name: string) => strip(page).getByTestId(`paperdoll-list-slot-${name}`);
 
 test.describe('the sim card at 1280', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
@@ -35,11 +37,13 @@ test.describe('the sim card at 1280', () => {
     page.on('pageerror', (error) => errors.push(error.message));
     await loadSim(page);
     await expect(page.getByTestId('page-title')).toHaveText('Simfury');
-    await expect(page.getByTestId('sim-gear-doll-slot-neck')).toHaveAttribute('data-state', 'empty');
-    await expect(page.getByTestId('sim-gear-doll-slot-neck')).toContainText('Empty');
-    await expect(page.getByTestId('sim-gear-doll-slot-off_hand')).toContainText('Two-hand in main hand');
-    const head = strip(page).getByTestId('item-hover-12640');
-    await expect(head).toHaveText('Lionheart Helm');
+    // The list form only: the frame belongs to the BiS page.
+    await expect(strip(page).locator('.pdf-frame')).toHaveCount(0);
+    await expect(slot(page, 'neck')).toHaveCount(0);
+    await expect(slot(page, 'off_hand')).toContainText('Two-handed');
+    const head = slot(page, 'head');
+    await expect(head).toContainText('Lionheart Helm');
+    await expect(head).toContainText('Head');
     await head.hover();
     const tip = page.getByTestId('item-tooltip');
     await expect(tip).toBeVisible();
@@ -47,7 +51,7 @@ test.describe('the sim card at 1280', () => {
     await expect(tip.getByTestId('item-tooltip-bind')).toHaveText('Binds when equipped');
     await expect(tip).toContainText('Plate');
     await page.mouse.move(0, 0);
-    await page.getByTestId('sim-gear-doll-slot-main_hand').focus();
+    await slot(page, 'main_hand').focus();
     await expect(tip).toContainText('Arcanite Reaper');
     await expect(tip).toHaveCount(1);
     expect(errors).toEqual([]);
@@ -62,7 +66,7 @@ test.describe('the sim card on a 390 phone', () => {
     // loadSim's Run is a mouse click, and the card can land under where that mouse rests: its
     // hover would open the panel before the first tap. Park the mouse off the card first.
     await page.mouse.move(0, 0);
-    const head = strip(page).getByTestId('item-hover-12640');
+    const head = slot(page, 'head');
     await head.tap();
     await expect(page.getByTestId('item-tooltip')).toBeVisible();
     await head.tap();
@@ -73,7 +77,7 @@ test.describe('the sim card on a 390 phone', () => {
 test.describe('the report "At pull" at 1280', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  test('opens a combatant’s gear as the paperdoll, each slot with its log item level', async ({ page }) => {
+  test('opens a combatant’s gear on the frame, each slot with its log item level', async ({ page }) => {
     await page.route('**/fights/3/summary.json*', async (route) => {
       const response = await route.fetch();
       const summary = (await response.json()) as { combatants: { gear: unknown[] }[] };
@@ -96,12 +100,19 @@ test.describe('the report "At pull" at 1280', () => {
     // (the report frame, 2026-11-07: GearList inside PlayerView).
     await page.getByTestId('at-pull-links').first().getByRole('link', { name: 'Gear ›' }).click();
     const frame = page.getByTestId('gear-list');
-    await expect(frame.getByTestId('paperdoll-slot-head')).toHaveAttribute('data-state', 'item');
-    await expect(frame.getByTestId('paperdoll-line2-head')).toHaveText('Item level 66 · Enchanted');
-    await expect(frame.getByTestId('paperdoll-slot-head').locator('.ui-doll-figure')).toHaveCount(0);
-    // The worn set's average item level sits above the doll (owner 2026-11-06).
-    await expect(page.getByTestId('gear-list-ilvl')).toHaveText(/^Item level \d+(\.\d)?$/);
-    await frame.getByTestId('item-hover-12640').hover();
-    await expect(page.getByTestId('item-tooltip')).toContainText('Lionheart Helm');
+    await expect(frame.getByTestId('paperdoll-frame-slot-head')).toHaveAccessibleName('Head: Lionheart Helm');
+    // Beside the frame, each worn piece over its slot, the log's own item level and the enchant
+    // named from the build's table on its own green line; the off hand a two-hander covers says so; no gain.
+    await expect(frame.getByTestId('gear-list-row-head')).toContainText('Head · Item level 66');
+    await expect(frame.getByTestId('gear-list-row-head')).toContainText('Crusader');
+    await expect(frame.getByTestId('gear-list-row-main_hand')).toContainText('Main hand · Item level 63');
+    await expect(frame.getByTestId('gear-list-row-off_hand')).toContainText('Two-handed');
+    await expect(frame.locator('[data-testid^="paperdoll-list-gain"]')).toHaveCount(0);
+    // The frame opens on the head: its client tooltip in the centre, the enchant on its green line.
+    const centre = frame.locator('[data-region="paperdoll-centre"]');
+    await expect(centre).toContainText('Lionheart Helm');
+    await expect(centre).toContainText('Crusader');
+    await frame.getByTestId('paperdoll-frame-slot-main_hand').hover();
+    await expect(centre).toContainText('Arcanite Reaper');
   });
 });

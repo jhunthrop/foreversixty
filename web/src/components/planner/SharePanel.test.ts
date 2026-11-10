@@ -39,10 +39,10 @@ describe('SharePanel', () => {
     expect(body).toContain('data-testid="share-open"');
   });
 
-  it('offers Copy as text (review finding 8) without restating the head as a summary line', () => {
+  it('offers Copy for chat (review finding 8) without restating the head as a summary line', () => {
     const { body } = render(SharePanel, { props: { store: fixtureStore() } });
     expect(body).not.toContain('data-testid="planner-text-summary"');
     expect(body).toMatch(/<button[^>]*type="button"(?![^>]*disabled)[^>]*data-testid="copy-as-text"/);
-    expect(body).toContain('>Copy as text<');
+    expect(body).toContain('>Copy for chat<');
   });
 });

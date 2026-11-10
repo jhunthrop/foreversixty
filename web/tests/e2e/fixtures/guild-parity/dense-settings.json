@@ -1,0 +1,48 @@
+{
+  "default_visibility": "guild",
+  "officer_max_rank_index": 1,
+  "claimed_by": {
+    "name": "Dunmaro",
+    "class": "hunter",
+    "character_key": "us/pvp/dunmaro"
+  },
+  "claim_pending": null,
+  "claim": {
+    "state": "claimed",
+    "since": "2026-11-12T00:00:00Z",
+    "frozen": false
+  },
+  "invite": {
+    "rotated_at": "2026-12-01T18:00:00Z",
+    "url": "/guild/invite/k7Qm2v9XcLp4",
+    "made_by": {
+      "name": "Dunmaro",
+      "class": "hunter",
+      "character_key": "us/pvp/dunmaro"
+    }
+  },
+  "discord": {
+    "available": true,
+    "connected": false,
+    "channel_id": null,
+    "discord_guild_id": null,
+    "disabled_reason": null,
+    "last_error": null,
+    "failures": 0,
+    "post_default": true,
+    "bot_available": true,
+    "bot": {
+      "server_id": "1300000000000000001",
+      "server_name": "Olympus XXVII",
+      "channel_id": "1300000000000000003",
+      "channel_name": "raid-signups",
+      "linked_members": 31,
+      "members": 40,
+      "failures": 0,
+      "last_error": null,
+      "removed_in_discord": false,
+      "channel_unusable": null
+    },
+    "bot_refusal": null
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "steps": [
+    {
+      "key": "officer_ranks",
+      "state": "todo",
+      "marked": false
+    },
+    {
+      "key": "discord_bot",
+      "state": "todo",
+      "marked": false
+    },
+    {
+      "key": "recruiting",
+      "state": "todo",
+      "marked": false
+    },
+    {
+      "key": "raid_schedule",
+      "state": "todo",
+      "marked": false
+    },
+    {
+      "key": "invite_link",
+      "state": "done",
+      "marked": false
+    },
+    {
+      "key": "addon_sync",
+      "state": "todo",
+      "marked": false
+    },
+    {
+      "key": "report_visibility",
+      "state": "todo",
+      "marked": false
+    },
+    {
+      "key": "linked_role",
+      "state": "todo",
+      "marked": false
+    }
+  ],
+  "done": 1,
+  "total": 8,
+  "finished": false,
+  "plan": "none",
+  "ranks": {
+    "officer_max_rank_index": 1,
+    "officers": 3,
+    "ranks": []
+  },
+  "discord": {
+    "bot_available": true,
+    "installed": false,
+    "server_name": null,
+    "channel_name": null,
+    "recruit_channel_name": null,
+    "webhook_connected": false,
+    "linked_members": 0,
+    "members": 24
+  },
+  "recruiting": {
+    "open": false,
+    "pitch": false,
+    "nights": "",
+    "wanted": [],
+    "role_set": false
+  },
+  "schedule": {
+    "timezone": "America/Chicago",
+    "planned": 0,
+    "next": null
+  },
+  "invite": {
+    "made": true,
+    "joined": 0
+  },
+  "sync": {
+    "synced": 0,
+    "accounts": 24,
+    "window_days": 14,
+    "missing": []
+  },
+  "visibility": "guild",
+  "readiness": null
+}

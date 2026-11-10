@@ -2,6 +2,7 @@
 // The officers' applications page as plain data (web layout spec 2026-11-05 §7.2 Applications,
 // "Do we take them?"): the applicant's facts line, the decision record, what the bot did on
 // Discord in plain words, and the recruiting card's edit (wanted lines, the role id). Pure.
+import { MAX_LEVEL } from '../guides/guide-character';
 import { classDisplayName } from '../sim/spec-label';
 import { SPECS } from '../sim/specs';
 import { outputFigure, topOutputLabel } from './output-figure';
@@ -25,12 +26,13 @@ export function bestParseLine(character: ApplicantCharacter): string {
   return `${topOutputLabel(parse.metric)} ${outputFigure(parse.value)}`;
 }
 
-/** "Holy Paladin · Level 60 · Item level 63 · Top HPS 465": every figure with its unit named. */
+/** "Holy Paladin · Item level 63 · Top HPS 465": every figure with its unit named; the level only
+ *  under the cap ("Level 58"), where it is news. */
 export function applicantFacts(character: ApplicantCharacter): string {
   const who = character.spec_name ?? (character.class === null ? '' : classDisplayName(character.class));
   return [
     who,
-    character.level === null ? '' : `Level ${character.level}`,
+    character.level === null || character.level >= MAX_LEVEL ? '' : `Level ${character.level}`,
     character.item_level === null ? '' : `Item level ${character.item_level}`,
     bestParseLine(character),
   ]

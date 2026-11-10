@@ -98,11 +98,6 @@ export function settingsRows(result: SimResult): SettingsRow[] {
             id: 'execute' as const,
             label: keys.execute,
             value: settingsCopy.execute(Math.round(encounter.execute_ratio * 100)),
-            // The request's own share of the fight, no claim about boss health (spec flag A7).
-            sub: settingsCopy.executeLength(
-              durationLabel(Math.round(seconds * encounter.execute_ratio)),
-              length,
-            ),
           },
         ]
       : []),

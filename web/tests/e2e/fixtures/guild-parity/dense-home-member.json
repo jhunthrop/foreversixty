@@ -64,7 +64,7 @@
       "created_at": "2027-01-07T02:00:00Z",
       "fight_count": 3,
       "kill_count": 1,
-      "duration_ms": 3192000
+      "duration_ms": 3322000
     },
     {
       "id": "olympusony1230",
@@ -73,7 +73,7 @@
       "created_at": "2026-12-31T02:00:00Z",
       "fight_count": 3,
       "kill_count": 1,
-      "duration_ms": 3198000
+      "duration_ms": 3336000
     },
     {
       "id": "olympusony1223",
@@ -82,7 +82,7 @@
       "created_at": "2026-12-24T02:00:00Z",
       "fight_count": 3,
       "kill_count": 1,
-      "duration_ms": 3206000
+      "duration_ms": 3349000
     },
     {
       "id": "olympusony1216",
@@ -91,7 +91,7 @@
       "created_at": "2026-12-17T02:00:00Z",
       "fight_count": 3,
       "kill_count": 1,
-      "duration_ms": 3214000
+      "duration_ms": 3361000
     },
     {
       "id": "olympusony1209",
@@ -100,7 +100,7 @@
       "created_at": "2026-12-10T02:00:00Z",
       "fight_count": 4,
       "kill_count": 1,
-      "duration_ms": 3225000
+      "duration_ms": 3382000
     }
   ],
   "roster": [
@@ -303,7 +303,7 @@
       },
       "best_parse": {
         "metric": "dps",
-        "value": 512.0,
+        "value": 422.0,
         "percentile": 91,
         "encounter": "Onyxia",
         "report_id": "olympusony0106",
@@ -759,7 +759,7 @@
       },
       "best_parse": {
         "metric": "dps",
-        "value": 410.0,
+        "value": 360.0,
         "percentile": 79,
         "encounter": "Onyxia",
         "report_id": "olympusony0106",
@@ -873,7 +873,7 @@
       },
       "best_parse": {
         "metric": "dps",
-        "value": 428.0,
+        "value": 378.0,
         "percentile": 43,
         "encounter": "Onyxia",
         "report_id": "olympusony0106",
@@ -930,7 +930,7 @@
       },
       "best_parse": {
         "metric": "dps",
-        "value": 451.0,
+        "value": 381.0,
         "percentile": 53,
         "encounter": "Onyxia",
         "report_id": "olympusony0106",
@@ -1386,7 +1386,7 @@
       },
       "best_parse": {
         "metric": "dps",
-        "value": 511.0,
+        "value": 431.0,
         "percentile": 71,
         "encounter": "Onyxia",
         "report_id": "olympusony0106",
@@ -1557,7 +1557,7 @@
       },
       "best_parse": {
         "metric": "dps",
-        "value": 229.0,
+        "value": 169.0,
         "percentile": 65,
         "encounter": "Onyxia",
         "report_id": "olympusony0106",
@@ -2013,7 +2013,7 @@
       },
       "best_parse": {
         "metric": "dps",
-        "value": 430.0,
+        "value": 370.0,
         "percentile": 81,
         "encounter": "Onyxia",
         "report_id": "olympusony0106",
@@ -2070,7 +2070,7 @@
       },
       "best_parse": {
         "metric": "dps",
-        "value": 475.0,
+        "value": 385.0,
         "percentile": 92,
         "encounter": "Onyxia",
         "report_id": "olympusony0106",
@@ -2355,7 +2355,7 @@
       },
       "best_parse": {
         "metric": "dps",
-        "value": 430.0,
+        "value": 350.0,
         "percentile": 41,
         "encounter": "Onyxia",
         "report_id": "olympusony0106",

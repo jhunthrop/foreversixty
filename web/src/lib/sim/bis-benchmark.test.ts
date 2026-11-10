@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import fixture from '../../fixtures/sim/result-full.json';
-import { benchmarkFor, type BisBenchmarks } from './bis-benchmark';
+import { benchmarkFor, topRaidSets, type BisBenchmarks } from './bis-benchmark';
 import { buildBisBenchmarks, specBenchmarks } from './bis-benchmark-load';
 import type { BisFile, SpecCatalogEntry } from '../bis/types';
 import type { SimResult } from './types';
@@ -100,5 +100,24 @@ describe('specBenchmarks', () => {
       { spec: 'warrior-protection', role: 'tank' },
     ] as SpecCatalogEntry[];
     expect(Object.keys(buildBisBenchmarks(catalog, () => file))).toEqual(['warrior-fury']);
+  });
+});
+
+describe('topRaidSets', () => {
+  const table: BisBenchmarks = {
+    ...TABLE,
+    'rogue-combat': { run: RUN, bands: [[60, 'alliance', 'raid', 1100, 1]] },
+    'mage-fire': { run: RUN, bands: [[40, 'alliance', 'raid', 500, 1]] },
+  };
+
+  it('takes the better faction raid set at the band and ranks the specs high to low', () => {
+    const top = topRaidSets(table, 60);
+    expect(top.get('rogue-combat')).toEqual({ dps: 1100, rank: 1, share: 1 });
+    expect(top.get('warrior-fury')).toMatchObject({ dps: 1004.21, rank: 2 });
+    expect(top.get('warrior-fury')?.share).toBeCloseTo(1004.21 / 1100, 6);
+  });
+
+  it('leaves out a spec with no raid set at that band', () => {
+    expect(topRaidSets(table, 60).has('mage-fire')).toBe(false);
   });
 });

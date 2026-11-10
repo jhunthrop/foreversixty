@@ -15,6 +15,7 @@ import {
   reportFigure,
   reportMeta,
   thisPullFacts,
+  reportMetaTail,
 } from './frame';
 import { formatClock } from './format';
 import type { FightEntry } from './types';
@@ -90,6 +91,13 @@ describe('the band’s meta line (directions b1)', () => {
   it('reads a boss pull with its attempt, outcome, length and players', () => {
     expect(reportMeta('', BOSS, 2, 40)).toBe('Pull 90, Warden Kelthas #2 · Wipe 34% · 1:12 · 40 players');
   });
+
+  it('leaves the players to the band’s desktop tail when it is not given them', () => {
+    expect(reportMeta('', BOSS, 2)).toBe('Pull 90, Warden Kelthas #2 · Wipe 34% · 1:12');
+    expect(reportMetaTail(BOSS, 40)).toBe(' · 40 players');
+    expect(reportMetaTail(PULL_9, 5)).toBe(' · 12 mobs died');
+    expect(reportMeta('', PULL_9, undefined)).toBe('Pull 9, Trash · 1:47');
+  });
 });
 
 describe('the band’s figure follows the tab (directions b1)', () => {
@@ -143,21 +151,14 @@ describe('the band’s figure follows the tab (directions b1)', () => {
 });
 
 describe('This pull (directions b1)', () => {
-  it('says only what the band does not: the start, the scope’s count and its deaths', () => {
-    const facts = thisPullFacts({ fight: PULL_9, scope: 'Your group', players: 5, deaths: 0, phases: [] });
-    expect(facts.map((fact) => [fact.label, fact.value])).toEqual([
-      ['Started', formatClock(PULL_9.start)],
-      ['In your group', '5'],
-      ['Deaths', '0'],
-    ]);
+  it('says only what the band does not: the start', () => {
+    const facts = thisPullFacts({ fight: PULL_9, phases: [] });
+    expect(facts.map((fact) => [fact.label, fact.value])).toEqual([['Started', formatClock(PULL_9.start)]]);
   });
 
   it('adds a boss pull’s phases, one line each', () => {
     const facts = thisPullFacts({
       fight: BOSS,
-      scope: 'Group',
-      players: 5,
-      deaths: 1,
       phases: [
         { name: 'Phase 1', start_ms: 0, end_ms: 14_000 },
         { name: 'Phase 2', start_ms: 14_000, end_ms: 60_000 },
@@ -165,21 +166,8 @@ describe('This pull (directions b1)', () => {
     });
     expect(facts.map((fact) => [fact.label, fact.value])).toEqual([
       ['Started', expect.any(String)],
-      ['In group', '5'],
-      ['Deaths', '1'],
       ['Phase 1', '0:00–0:14'],
       ['Phase 2', '0:14–1:00'],
     ]);
-  });
-
-  it('reads everyone the logger saw as In range', () => {
-    const facts = thisPullFacts({
-      fight: PULL_9,
-      scope: 'Everyone in range',
-      players: 265,
-      deaths: 2,
-      phases: [],
-    });
-    expect(facts[1]).toMatchObject({ label: 'In range', value: '265' });
   });
 });

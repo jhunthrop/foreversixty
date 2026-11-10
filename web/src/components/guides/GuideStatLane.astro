@@ -1,10 +1,9 @@
 ---
 // web/src/components/guides/GuideStatLane.astro
 // The Stat priority lane (guides spec 2026-11-08 §4.3): the cap lines, the weights table (stat,
-// bar, the weight with the anchor at 1.00, the rate per point or rating), the unit line, the
+// bar, the weight with the anchor at 1.00, the rate per point), the unit line, the
 // rating note and the notes for the rows with no figure. A spec with no weights lists the
 // guide's own order, unnumbered figures absent.
-import LaneBlock from '../ui/LaneBlock.svelte';
 import Meter from '../ui/Meter.svelte';
 import Row from '../ui/Row.svelte';
 import StatRow from '../ui/StatRow.svelte';
@@ -18,14 +17,12 @@ interface Props {
   fallback: readonly string[];
 }
 const { stats, fallback } = Astro.props;
-const notes =
-  stats === undefined
-    ? []
-    : [stats.unitLine, stats.ratingNote, ...stats.notes].filter((n) => n !== undefined);
+// A stat no item carries is not a choice the player makes: the table lists only what gear offers.
+const rows = stats?.glanceRows ?? [];
 ---
 
 <div class="guide-stat-lane">
-  <LaneBlock label={guidesCopy.statPriorityRailLabel} testid="guide-stat-table">
+  <div class="guide-stat-block" data-testid="guide-stat-table">
     {stats === undefined ? (
       <div class="guide-stat-rows" data-wrap-list>
         {fallback.map((label, i) => (
@@ -48,10 +45,9 @@ const notes =
           ]}
           nameHead={guidesCopy.statColumn}
           open
-          wrap
           label={guidesCopy.statPriorityRailLabel}
         >
-          {stats.rows.map((row, index) => (
+          {rows.map((row, index) => (
             <StatRow
               figures={[
                 { value: row.valueText, muted: row.reading !== 'value' },
@@ -66,24 +62,18 @@ const notes =
             </StatRow>
           ))}
         </StatTable>
-        {notes.length > 0 && (
-          <div class="guide-stat-notes" data-wrap-list>
-            {notes.map((note) => (
-              <p class="text-small text-muted">{note}</p>
-            ))}
-          </div>
-        )}
       </>
     )}
-  </LaneBlock>
+  </div>
 </div>
 
 <style>
-  /* The notes keep the lane block's 8 px rhythm; they can wrap under the prose (lib/ui/reading-wrap.ts). */
-  .guide-stat-notes {
+  /* The section's heading names the table: no lane title above it, the lane block's 8 px rhythm. */
+  .guide-stat-block {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    min-width: 0;
   }
   /* The stats read as a list of names, not headings (the mock's plain 16/24 names), and the
      empty lead cell takes no height. */
@@ -97,6 +87,10 @@ const notes =
   /* A stat's name stays on one line ("Healing power"); the bar takes what is left of the lane. */
   :global(.guide-stat-lane .ui-st) {
     --st-name: minmax(max-content, 2fr);
+  }
+  /* No stat has an icon: the lead track takes no width, so no empty socket sits before a name. */
+  :global(.guide-stat-lane .ui-st) {
+    --st-icon: 0px;
   }
   :global(.guide-stat-lane .ui-st-icon) {
     height: auto;

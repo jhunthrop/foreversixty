@@ -1,5 +1,5 @@
 {
-  "comment": "The dense guild states (design/specs/2026-11-09-guild-dense.md): the review captures read these (web/tests/e2e/guild-captures.spec.ts with GUILD_CAPTURE_CONFIG=guild-dense.json). Their parity against design/mocks/ws_guild_dense.py is not wired yet: the mocks are the round-3 agreement, the build moved on in review.",
+  "comment": "The dense guild states (design/specs/2026-11-09-guild-dense.md): the review captures read these (web/tests/e2e/guild-captures.spec.ts with GUILD_CAPTURE_CONFIG=guild-dense.json). States marked parity are also parity states (web/tests/e2e/parity-guild.spec.ts) against their mocks (design/mocks/ws_guild_dense_tabs.py); the Overview, Roster, Readiness and Loot mocks are the round-3 agreement and are not wired.",
   "viewport": {
     "width": 1440,
     "height": 1000
@@ -29,6 +29,48 @@
       "id": "dense-loot",
       "path": "/guild/us/pvp/olympus-xxvii#loot",
       "mock": "web-guild-dense-loot.html"
+    },
+    {
+      "id": "dense-raids",
+      "path": "/guild/us/pvp/olympus-xxvii#raids",
+      "mock": "web-guild-dense-raids.html",
+      "parity": true
+    },
+    {
+      "id": "dense-planner",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/45",
+      "mock": "web-guild-dense-planner.html",
+      "parity": true
+    },
+    {
+      "id": "dense-raid-member",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/45",
+      "mock": "web-guild-dense-raid-member.html",
+      "parity": true
+    },
+    {
+      "id": "dense-progression",
+      "path": "/guild/us/pvp/olympus-xxvii#progression",
+      "mock": "web-guild-dense-progression.html",
+      "parity": true
+    },
+    {
+      "id": "dense-recruit",
+      "path": "/guild/us/pvp/olympus-xxvii/recruit",
+      "mock": "web-guild-dense-recruit.html",
+      "parity": true
+    },
+    {
+      "id": "dense-applications",
+      "path": "/guild/us/pvp/olympus-xxvii/applications",
+      "mock": "web-guild-dense-applications.html",
+      "parity": true
+    },
+    {
+      "id": "dense-settings",
+      "path": "/guild/us/pvp/olympus-xxvii#settings",
+      "mock": "web-guild-dense-settings.html",
+      "parity": true
     }
   ]
 }

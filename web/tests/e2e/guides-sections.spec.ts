@@ -12,6 +12,7 @@
 import { readFileSync } from 'node:fs';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
+import { openFold } from './support/guides-page';
 import { choose } from './support/select';
 import { guidesCopy } from '../../src/lib/guides/copy';
 import { raceNameFor } from '../../src/lib/guides/race-table';
@@ -27,8 +28,9 @@ const PAGE = '/guides/mage/frost';
 const BIS_SPEC = 'mage-frost';
 /** The race the ranker played the Horde 30 band as: every nightly re-rank may move it. */
 const HORDE_30_RACE = raceNameFor(ACTIVE_BUILD, bisBand(BIS_SPEC, 'horde', 30, 'bare').race ?? '');
-/** Every gear slot the BiS lane lists, one ItemRow each (an empty slot keeps its row). */
-const BIS_SLOTS = 17;
+/** Every gear slot the BiS lane lists, one ItemRow each (an empty slot keeps its row), less
+ *  Frost's off hand: its staff takes both hands, and the doll draws that greyed (listedBisRows). */
+const BIS_SLOTS = 16;
 
 /** The main-hand enchant the ranker put on the level 60 raid pick, from the build's enchants.json:
  *  the guide's lane must name the same one (a re-rank onto a two-hander moves it). */
@@ -97,9 +99,9 @@ for (const [label, viewport] of [
       expect(ids.filter((id) => SECTION_IDS.includes(id))).toEqual(SECTION_IDS);
 
       await expect(page.getByTestId('guide-status-note')).toHaveCount(0);
-      await expect(page.getByTestId('content-footnote')).toContainText('Numbers from client build');
-      await expect(page.locator('[data-region="head-meta"]')).toContainText(
-        /DPS · Updated \d{1,2} [A-Z][a-z]{2}/,
+      await expect(page.getByTestId('content-footnote')).toHaveCount(0);
+      await expect(page.locator('[data-region="head-meta"]')).toHaveText(
+        /^\s*Updated \d{1,2} [A-Z][a-z]{2}\s*$/,
       );
       await expect(page.getByTestId('guide-summary')).toHaveCount(0);
       await noSidewaysScroll(page);
@@ -125,7 +127,8 @@ for (const [label, viewport] of [
       );
       await expect(page.getByTestId('guide-build-sim-raid')).toBeVisible();
       await page.goto(PAGE);
-      await expect(page.getByTestId('guide-build-both')).toBeVisible();
+      // One build for both: the band's Load this build is it, the lane does not repeat it.
+      await expect(page.getByTestId('guide-build-both')).toHaveCount(0);
       await expect(page.getByTestId('guide-load-build')).toBeVisible();
       await expect(laneLabel(page, 'guide-key-talents')).toHaveText('Key talents');
       const first = page.getByTestId('guide-key-talents').locator('.ui-row').first();
@@ -154,8 +157,8 @@ for (const [label, viewport] of [
       await imagesLoaded(page, '[data-testid^="guide-rotation-"] img');
     });
 
-    // The stat pill row retires (G1): the plate's Stat priority column is the ranked summary now,
-    // and it ranks the same stats, in the same order, as the lane's weights table.
+    // The plate's Stat priority column is the ranked summary: it ranks the same stats, in the
+    // same order, as the lane's weights table.
     test('gives the stat lane the hit headline and the weights table, ranked as the plate', async ({
       page,
     }) => {
@@ -228,7 +231,8 @@ for (const [label, viewport] of [
       const enchant = mainHandEnchant();
       const mainHand = page.getByTestId('guide-enchant-main_hand');
       await expect(mainHand).toContainText(enchant.name);
-      await expect(mainHand).toContainText(`+${enchant.spellPower} spell power`);
+      // What the enchant gives is its tooltip's line, not repeated under the name (h-audit round 8).
+      await expect(mainHand).not.toContainText(`+${enchant.spellPower} spell power`);
       await expect(laneLabel(page, 'guide-consumables')).toHaveText('Consumables');
       await expect(page.getByTestId('guide-consumables')).toContainText('Flask of Supreme Power');
       await expect(page.getByTestId('guide-consumables')).toContainText('Elixir of Frost Power');
@@ -244,22 +248,24 @@ for (const [label, viewport] of [
         page.locator('#races [data-testid^="guide-race-"]:not([data-testid="guide-race-table"])'),
       ).toHaveCount(6);
       const gnome = page.getByTestId('guide-race-gnome');
-      await expect(gnome).toContainText('Recommended');
+      await expect(gnome).not.toHaveAttribute('aria-current', 'true');
       await expect(gnome).toContainText('Eureka!');
       await expect(gnome).toContainText('Expansive Mind');
       // The prose names both picks, so no recommended-race line is said again under the lane.
       await expect(lane.locator(':scope > p')).toHaveCount(0);
       await expect(page.getByTestId('guide-rotation-cooldowns')).toContainText('Eureka! (Gnome)');
       await expect(page.getByTestId('guide-race-troll')).toContainText('Berserking');
-      await expect(page.getByTestId('guide-race-human')).not.toContainText('Recommended');
+      await expect(page.getByTestId('guide-race-human')).not.toHaveAttribute('aria-current', 'true');
     });
 
     test('renders the leveling lane at level 60 with its planner link, before the island loads', async ({
       page,
     }) => {
       await page.goto(PAGE);
+      // On a phone the Leveling section is folded until its line is tapped.
+      await openFold(page, 'leveling');
       const tree = page.getByTestId('guide-leveling-tree');
-      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('51 points spent, all placed');
+      await expect(tree.getByTestId('guide-leveling-caption')).not.toContainText('points spent');
       await expect(tree.getByTestId('guide-leveling-caption')).toContainText(/Level 60: .+, rank \d/);
       await expect(tree.getByTestId('guide-leveling-load')).toHaveAttribute(
         'href',
@@ -358,7 +364,9 @@ test.describe('table of contents', () => {
     await expect(page.getByTestId('guide-toc')).toBeHidden();
     await barBooted(page);
     const toggle = page.getByTestId('guide-bar').locator('[data-control-bar-toggle]');
-    await expect(toggle).toContainText(`Frost Mage · ${guidesCopy.tocBarLabel}`);
+    // The bar's line, then its label at the far end (ControlBar, h-audit).
+    await expect(toggle.locator('span').first()).toHaveText('Frost Mage');
+    await expect(toggle).toContainText(guidesCopy.tocBarLabel);
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     // Open, the bar lists the sections as rows (the mock's open phone bar), not the select.

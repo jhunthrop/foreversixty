@@ -19,9 +19,8 @@
 
   let { view }: { view: ScaleView } = $props();
 
-  const caption = $derived(
-    view.hasteCaption === undefined ? view.noteLine : `${view.noteLine} ${view.hasteCaption}`,
-  );
+  /** Haste per 1% (owner rule: never a row); the normalisation the column heads already say is not repeated. */
+  const caption = $derived(view.hasteCaption ?? '');
   /** Two decimals, as the scale; an error that rounds to nothing says so (formatWeightError). */
   function errorLabel(error: number): string {
     const text = formatWeightError(error);
@@ -37,7 +36,7 @@
   /** Below 1024 the other columns fold away: the per-point DPS and the error under the scale. */
   function phoneLine(row: ScaleRow): string | undefined {
     if (!row.significant || row.dpsPerPoint === undefined) return undefined;
-    return `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit} · ${errorLabel(row.scaleError)}`;
+    return `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit} · ${errorLabel(row.scaleError)} error`;
   }
 
   function figuresOf(row: ScaleRow): StatFigure[] {
@@ -59,8 +58,10 @@
   }
 </script>
 
-<div class="flex flex-col gap-2" data-testid="sim-weights-table">
-  <p class="text-muted text-[13px]" data-testid="sim-weights-scale-caption">{caption}</p>
+<div class="sim-weights-table flex flex-col gap-2" data-testid="sim-weights-table">
+  {#if caption !== ''}<p class="text-muted m-0 text-[13px]" data-testid="sim-weights-scale-caption">
+      {caption}
+    </p>{/if}
   <StatTable columns={COLUMNS} nameHead="Stat" open label="Stat weights">
     {#each view.rows as row (row.stat)}
       <StatRow figures={figuresOf(row)} phone={phoneLine(row)} testid={`sim-weight-${row.stat}`}>
@@ -75,3 +76,11 @@
     {/each}
   </StatTable>
 </div>
+
+<style>
+  /* A stat has no game icon, so the table drops StatTable's icon track rather than leave an empty
+     socket's width at the head of every row. */
+  .sim-weights-table :global(.ui-st) {
+    --st-icon: 0px;
+  }
+</style>

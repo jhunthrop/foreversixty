@@ -30,7 +30,7 @@
   <div>
     <Row title={view.title} sub={view.sub} open>
       {#snippet lead()}
-        {#if week.grade}<GradeTile letter={week.grade} testid="home-grade" />{/if}
+        {#if week.grade}<GradeTile letter={week.grade} bare testid="home-grade" />{/if}
       {/snippet}
     </Row>
     {#if board !== null}

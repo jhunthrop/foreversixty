@@ -10,7 +10,6 @@ import type { WeightsResult } from '../../../lib/sim/bulk-types';
 import { bisCopy } from '../../../lib/bis/copy';
 import { bulkCopy } from '../../../lib/sim/copy';
 import type { StatWeight } from '../../../lib/sim/types';
-import { weightsEngineIterations, WEIGHTS_BROWSER_DEFAULT_ITERATIONS } from '../../../lib/sim/weights';
 import StatWeights from './StatWeights.svelte';
 
 const fixture = weightsFixture as unknown as WeightsResult;
@@ -73,7 +72,8 @@ describe('StatWeights: the published SimulationCraft form (live page)', () => {
     expect(rowFor(body, 'strength')).toContain('1.00');
     expect(rowFor(body, 'strength')).toContain('0.120 DPS');
     expect(rowFor(body, 'attack_power')).toContain('0.50');
-    expect(body).toContain('normalized to Strength = 1.00');
+    // The Scale column says the normalisation; the caption keeps only haste (h-audit 2026-11-09).
+    expect(body).not.toContain('normalized to');
     expect(body).not.toContain('Pawn');
     expect(body.indexOf('sim-weight-strength')).toBeLessThan(body.indexOf('sim-weight-attack_power'));
   });
@@ -113,28 +113,5 @@ describe('StatWeights: the error-is-a-lower-bound caveat (Task 8, sub-item 1)', 
   it('says nothing about the error bar when there are no weights to caution about yet', () => {
     const body = renderWeights([]);
     expect(body).not.toContain(bulkCopy.weightsErrorCaveat([]));
-  });
-});
-
-// Task 8, sub-item 2: the precision control discloses the real engine cost -- not the wire's
-// own nominal "N iterations" -- for whatever precision and however many stats are currently
-// ticked, so "Normal" costs something the reader chooses knowingly rather than discovers a
-// minute later.
-describe('StatWeights: the precision control discloses the real cost (Task 8, sub-item 2)', () => {
-  it('shows the true total for the default precision and the ticked stat count, not the wire’s bare iteration count', () => {
-    const weights: StatWeight[] = [
-      { stat: 'attack_power', weight: 1, error: 0 },
-      { stat: 'strength', weight: 2.14, error: 0.06 },
-      { stat: 'crit', weight: 14.37, error: 22.55 },
-    ];
-    const store = storeWith(weights);
-    // createBulkStore's own default precision is 'fast'; the browser lane's own guarded
-    // count for it is WEIGHTS_BROWSER_DEFAULT_ITERATIONS, not PRECISION_ITERATIONS.fast.
-    const total = weightsEngineIterations(WEIGHTS_BROWSER_DEFAULT_ITERATIONS, store.stats.length);
-    const { body } = render(StatWeights, { props: { store, me: null } });
-    expect(body).toContain(bulkCopy.weightsCostNote(total));
-    // Not the old, misleadingly bare per-tier number a player would otherwise read as the
-    // real cost.
-    expect(body).not.toContain('Fast, 500 iterations');
   });
 });

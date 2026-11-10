@@ -12,6 +12,7 @@
   import { serverRunsCopy } from '../../lib/sim/server-runs-copy';
   import type { RerunStatus } from '../../lib/sim/server-runs-poll';
   import { specLabel } from '../../lib/sim/spec-label';
+  import { dayMonth } from '../../lib/sim/head-meta';
   import type { SimListRow } from '../../lib/sim/types';
   import Button from '../ui/Button.svelte';
   import Row from '../ui/Row.svelte';
@@ -21,7 +22,15 @@
     now,
     rerun,
     onrerun,
-  }: { row: SimListRow; now: Date; rerun: RerunStatus; onrerun: (simId: string) => void } = $props();
+    pageSpec = '',
+  }: {
+    row: SimListRow;
+    now: Date;
+    rerun: RerunStatus;
+    onrerun: (simId: string) => void;
+    /** The spec the page is about: an untitled run of it is named by its day, not the spec again. */
+    pageSpec?: string;
+  } = $props();
 
   const state = $derived(rowState(row, now));
   const inFlight = $derived(state === 'queued' || state.startsWith('running'));
@@ -29,12 +38,16 @@
   const unseen = $derived(state === 'done-unseen');
   const spec = $derived(specLabel(row.spec));
   const kind = $derived(simCopy.kindLabel[kindOf(row)] ?? '');
-  const titleText = $derived(row.title === '' ? spec : row.title);
-  const meta = $derived(row.title === '' ? kind : `${spec} · ${kind}`);
+  const titleText = $derived(
+    row.title !== '' ? row.title : row.spec === pageSpec ? dayMonth(row.created_at) : spec,
+  );
+  /** The spec, unless it is the page's own (said once, in the head). */
+  const otherSpec = $derived(row.spec === pageSpec ? '' : spec);
+  const meta = $derived(row.title === '' || otherSpec === '' ? kind : `${spec} · ${kind}`);
   /** A finished run's line: the spec under a title of its own, a tool run's kind (a plain sim
    *  says nothing), then its age; the DPS is the trail. */
   const doneMeta = $derived(
-    [row.title === '' ? '' : spec, kindOf(row) === 'run' ? '' : kind]
+    [row.title === '' ? '' : otherSpec, kindOf(row) === 'run' ? '' : kind]
       .filter((part) => part !== '')
       .join(' · '),
   );

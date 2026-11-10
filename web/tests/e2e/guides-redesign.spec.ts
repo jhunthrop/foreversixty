@@ -8,6 +8,7 @@ import type { Page } from '@playwright/test';
 import activeBuild from '../../src/data/active-build.json' with { type: 'json' };
 import { buildRacesForClass, raceIconsFor } from '../../src/lib/guides/build-races';
 import { SPEC_BY_KEY } from '../../src/lib/sim/specs';
+import { hydratedLevelingTree, levelingTree } from './support/guides-page';
 import { expect, test } from './support/test';
 
 const ACTIVE_BUILD = activeBuild.build;
@@ -21,16 +22,6 @@ function iconOfSrc(src: string | null): string | undefined {
 const specRows = (page: Page) => page.locator('[data-testid^="guide-spec-row-"]');
 const glanceRotationRows = (page: Page) =>
   page.getByTestId('guide-glance-rotation').locator('.guide-glance-rows > .ui-row');
-const levelingTree = (page: Page) => page.getByTestId('guide-leveling-tree');
-
-/** Scrolls the leveling lane into view and waits for its island (client:visible) to hydrate. */
-async function hydratedLevelingTree(page: Page): Promise<void> {
-  await levelingTree(page).scrollIntoViewIfNeeded();
-  await expect(page.locator('astro-island:has([data-testid="guide-leveling-tree"])')).not.toHaveAttribute(
-    'ssr',
-    /.*/,
-  );
-}
 
 async function noSidewaysScroll(page: Page): Promise<void> {
   const { scrollWidth, clientWidth } = await page.evaluate(() => ({
@@ -62,9 +53,10 @@ test.describe('desktop', () => {
     const fury = rows.nth(1);
     await expect(fury).toHaveAttribute('href', '/guides/warrior/fury');
     // The row's own name says it (the spec retires the card's "Read the ... guide" aria label):
-    // the spec name, its line and "Read the guide ›", all one link and never a nested anchor.
+    // the spec name and its line, all one link and never a nested anchor. The row is the link,
+    // so no "Read the guide ›" trail repeats it (h-audit round 8).
     await expect(fury).toContainText('Fury');
-    await expect(fury).toContainText('Read the guide ›');
+    await expect(fury).not.toContainText('Read the guide');
     await expect(fury.locator('a')).toHaveCount(0);
     await expect(page.getByTestId('guide-class-spec-cards')).not.toContainText(/DPS at 60|per second/);
   });
@@ -128,6 +120,7 @@ test.describe('desktop', () => {
     for (const line of await glanceRotationRows(page).all()) {
       await expect(line.locator('img')).toHaveCount(1);
     }
+    await expect(page.getByTestId('guide-full-priority')).toHaveAttribute('href', '#rotation-and-priority');
     await expect(page.getByTestId('guide-load-build')).toBeVisible();
     await expect(page.getByTestId('guide-sim-build')).toBeVisible();
     const stats = page
@@ -171,7 +164,7 @@ test.describe('desktop', () => {
     await expect(slider).toBeEnabled();
     await expect(tree.getByTestId('guide-leveling-trees')).toBeVisible();
     const caption = tree.getByTestId('guide-leveling-caption');
-    await expect(caption).toContainText('51 points spent, all placed');
+    await expect(caption).not.toContainText('points spent');
     await expect(tree.getByTestId('guide-leveling-slider-next')).toBeDisabled();
     // Home is 10, PageUp ten levels on, End is 60.
     await slider.focus();
@@ -188,7 +181,7 @@ test.describe('desktop', () => {
     );
     await slider.focus();
     await page.keyboard.press('End');
-    await expect(caption).toContainText('51 points spent, all placed');
+    await expect(caption).not.toContainText('points spent');
   });
 
   test('the leveling tree’s Load in planner link carries the chosen level’s talent string', async ({
@@ -209,13 +202,18 @@ test.describe('desktop', () => {
 test.describe('phone', () => {
   test.use({ viewport: PHONE });
 
-  test('/guides/warrior/fury At a glance stacks to one column with every line intact', async ({ page }) => {
+  test('/guides/warrior/fury At a glance stacks to one column, Build first, every line intact', async ({
+    page,
+  }) => {
     await page.goto('/guides/warrior/fury');
     await expect(glanceRotationRows(page)).toHaveCount(4);
     await expect(page.getByTestId('guide-glance').locator('.ui-pcols')).toHaveCSS(
       'grid-template-columns',
       /^[\d.]+px$/,
     );
+    const build = await page.getByTestId('guide-glance-build').boundingBox();
+    const rotation = await page.getByTestId('guide-glance-rotation').boundingBox();
+    expect(build!.y).toBeLessThan(rotation!.y);
     await noSidewaysScroll(page);
   });
 

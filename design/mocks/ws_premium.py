@@ -589,15 +589,14 @@ def b_page(state: str) -> str:
             title = re.search(r"const title = '([^']+)'", astro).group(1)
             parts = re.search(r"const sentence =\s*((?:'[^']*'\s*\+?\s*)+);", astro).group(1)
             text = ''.join(re.findall(r"'([^']*)'", parts))
-        planner = re.search(r'class="[^"]*">([^<]+)</a></p>', (ROOT / 'api/internal/site/page.go').read_text()).group(1)
-        ask = f'<p class="t-small">{e(PROPOSED["askSender"])}</p>' if state == 'missing' else ''
-        if state == 'unavailable':
-            # Round 5 (directions mock b4-unavailable): the sentence and the two ways on one framed panel under the title band.
-            panel = (f'<div class="plate framed" data-region="{REGION["plate"]}" style="padding:22px 24px"><p style="margin:0">{e(text)}</p>'
-                     f'<div class="acts" style="margin-top:16px">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
-            body = PageHeader(e(title)) + PageForm(panel)
-        else:
-            body = PageHeader(e(title), meta=[e(text)]) + PageForm(f'<div class="stack">{ask}<div class="acts">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
+        planner = re.search(r'class="\{\{\.ButtonClass\}\}">([^<]+)</a>', (ROOT / 'api/internal/site/page.go').read_text()).group(1)
+        # A missing build closes its sentence with the ask (ruling Q12); a failure on our side does not.
+        ask = f' {e(PROPOSED["askSender"])}' if state == 'missing' else ''
+        # Round 5 (directions mock b4-unavailable): the title band, then the sentence and the two ways on one framed
+        # panel. The API's missing and error pages (api/internal/site/page.go messagePage) take the same shape.
+        panel = (f'<div class="plate framed" data-region="{REGION["plate"]}" style="padding:22px 24px"><p style="margin:0">{e(text)}{ask}</p>'
+                 f'<div class="acts" style="margin-top:16px">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
+        body = PageHeader(e(title)) + PageForm(panel)
         return render(f'{title} · Forever Sixty', body, '', None, '', f'/b/:id mock, {state}: the API message page (api/internal/site/handler.go, page.go messagePage).')
     cfg = {'shared': ('guide', 'Survival raid build', None, 41), 'you': ('guide', 'Survival raid build', 'others', 41),
            'holy': ('holy', 'Holy raid healing', 'other_class', 7), 'fire': ('fire', '', None, 12)}[state]
@@ -616,7 +615,9 @@ def b_page(state: str) -> str:
     note = f'<div class="pc" style="padding-top:16px"><div data-region="{REGION["notes"]}" style="max-width:var(--measure-reading)"><p class="notice neutral">{e(SH["note"])} {fork}</p></div></div>'
     foot = WP.tree_foot({**st, 'spent': 0})
     plate = WP.TalentEditor(WP.trees(st, readonly=True), max(range(3), key=lambda i: st['split'][i]), foot)
-    main = WP.Ordered(plate, 1, span=True) + WP.Ordered(WP.order(st), 6, span=True)
+    main = WP.Ordered(plate, 1, span=True)
+    # Point order full width under the trees and the rail (the planner's `below`, h-audit 2026-11-09); on a phone after the trees.
+    below = WP.Ordered(WP.order(st), 1, span=True)
     # Ruling MUST 5: another class's build says so in one plain line above Copy for the game, inside the rail. The planner's
     # own panels (lane P7): WP.Page sets the workbench as panels, WP.TalentEditor is the framed Talents panel.
     # The page's own rail order: the guide build first in the markup, In the game placed first by its order (Planner.svelte).
@@ -624,7 +625,7 @@ def b_page(state: str) -> str:
     who = WHO['free'] if send_key else None
     # The planner's head answer is as wide as its points and link (PlannerAnswer), not the account answer's 300 px; the API
     # page's main holds no bottom pad (the planner page's own does).
-    body = head + note + WP.Page('workbench', main, rail) + WP.PAGE_CSS + '<style>@media(min-width:900px){.head .ans[data-region]{min-width:0}}.pc:has(>.layout-wb){padding-bottom:0}</style>'
+    body = head + note + WP.Page('workbench', main, rail, below=below) + WP.PAGE_CSS + '<style>@media(min-width:900px){.head .ans[data-region]{min-width:0}}.pc:has(>.layout-wb){padding-bottom:0}</style>'
     return render(f'{h1} · {split} · Forever Sixty', body, 'Tools', who, '', f'/b/:id mock ({state}): the API page mounting the planner read-only. Data: planner-facts.json ({key}).')
 
 

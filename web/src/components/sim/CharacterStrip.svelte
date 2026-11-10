@@ -3,8 +3,8 @@
      "Open in planner" link goes to, and a second editor here would be a second set of rules
      to keep in step with lib/planner/rules.ts.
      An open section headed "Character" with "Change source": the identity line (crest, name,
-     descriptor, item level, source), then the worn set as the shared paperdoll in `worn` mode
-     in one Plate (web layout spec 2026-11-05 §4.2; inputs only, no gains), then the race
+     descriptor, item level, source), then the worn set as the shared paperdoll's list form in
+     `worn` mode (web layout spec 2026-11-05 §4.2; inputs only, no gains), then the race
      question, the level note and the talents row. An export that was not read, or a saved sim
      with no gear list, draws no doll: the identity stands over the "not read" panel or the line
      that says so. -->
@@ -28,6 +28,8 @@
   import type { SimCharacter } from '../../lib/sim/character';
   import { needsRace, plannerHrefFor } from '../../lib/sim/character';
   import { simCopy } from '../../lib/sim/copy';
+  import { loadEnchants } from '../../lib/sim/enchants';
+  import { enchantNames, withEnchants } from '../../lib/sim/enchant-names';
   import { handoffCopy } from '../../lib/sim/handoff-copy';
   import { sourcePill } from '../../lib/sim/sources';
   import { specLabel } from '../../lib/sim/spec-label';
@@ -181,12 +183,25 @@
       : `${raceWords(character.race_slug)} ${specLabel(character.spec)} · ${character.level}`,
   );
   const source = $derived(sourcePill(character.source, new Date(), character.name));
+  /** The client's name for each enchant id, so the strip reads as the result's Gear list does. */
+  let enchants = $state.raw<ReadonlyMap<number, string>>(new Map());
+  $effect(() => {
+    const build = character.tree_version;
+    loadEnchants(build).then(
+      (rows) => (enchants = enchantNames(rows)),
+      (error: unknown) => console.error('sim character: the enchant table did not load', error),
+    );
+  });
   const paperdollSlots = $derived(
-    slotsFromWorn(character.gear, {
-      lookup: (id) => items.get(id),
-      outsideName: (id) => outsideNames[String(id)],
-      failed: itemsStatus === 'failed',
-    }),
+    withEnchants(
+      slotsFromWorn(character.gear, {
+        lookup: (id) => items.get(id),
+        outsideName: (id) => outsideNames[String(id)],
+        failed: itemsStatus === 'failed',
+      }),
+      character.gear_slots,
+      enchants,
+    ),
   );
   const itemLevel = $derived(itemsStatus === 'ready' ? averageItemLevel(paperdollSlots) : null);
   /** The worn items' real tooltips: one host for the doll (BisTooltipHost claims each event, so the
@@ -240,6 +255,9 @@
             classSlug={character.class_slug}
             loading={itemsStatus === 'loading'}
             failed={itemsStatus === 'failed'}
+            title={character.name === '' ? gearCopy.listLabel : character.name}
+            form="list"
+            head={false}
             label={gearCopy.listLabel}
             testid="paperdoll"
           />

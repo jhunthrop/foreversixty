@@ -60,7 +60,7 @@ test('no band-level number on a healer band says DPS, and the simulator link is 
     expect(text).not.toMatch(/DPS/);
     await expect(page.getByTestId('bis-sim-link')).toHaveCount(0);
   }
-  await expect(page.getByTestId('bis-weights-unit')).toContainText('HPS per point');
+  await expect(page.getByTestId('bis-weights-unit')).toHaveText(/^1\.00 = \d+\.\d{3} HPS$/);
 });
 
 test('the slot lines read in HPS', async ({ page, isMobile }) => {

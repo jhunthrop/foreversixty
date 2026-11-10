@@ -1,8 +1,9 @@
 // web/src/lib/gear/doll-cells.ts
 // The worn and report paperdolls' cells (web layout spec 2026-11-05 §4.2, option C of §5.13): the
 // one mapping from `PaperdollSlot` (every surface's slots, lib/gear/paperdoll-slots.ts) to the
-// shared doll's `DollCell`. Line 1 is the worn item; line 2 its enchant (green) or its item level
-// (`worn`), or the report's detail ("Item level 66 · Enchanted"). In `worn` mode the gain column
+// shared doll's `DollCell`. Line 1 is the worn item; line 2 its item level (the log's own on a
+// report), then its enchant in the client's green: one format on every worn surface ("Item level
+// 61 · Crusader", a report's "Item level 66 · Enchanted" where the id has no name). In `worn` mode the gain column
 // is the upgrade to the band's pick in the band's unit (`+1.8 DPS` over `vs <pick>`), `Best in
 // slot`, `Not scored`, `Same` for a tie (lib/bis/doll-view.ts `isTie`, the BiS page's rule) and
 // `Not sim-checked` for a gain the rule cannot price; never 0. `report` mode has no gain.
@@ -60,15 +61,13 @@ export function wornGain(upgrade: PaperdollUpgrade): Pick<DollCell, 'gain' | 'ba
   return { gain, badge: 'upgrade' };
 }
 
-/** Line 2 of a worn or report cell. */
-function line2(slot: PaperdollSlot, mode: WornDollMode): Pick<DollCell, 'source' | 'sourceTone'> {
-  if (mode === 'report') return { source: slot.detail };
-  if (slot.enchant !== undefined) return { source: slot.enchant, sourceTone: 'enchant' };
-  if (slot.detail !== undefined) return { source: slot.detail };
+/** Line 2 of a worn or report cell: the item level (the caller's detail first), then the enchant. */
+function line2(slot: PaperdollSlot): Pick<DollCell, 'source' | 'enchant'> {
   const level = slot.item?.itemLevel;
-  return {
-    source: level === null || level === undefined ? undefined : gearCopy.paperdoll.itemLevelLine(level),
-  };
+  const source =
+    slot.detail ??
+    (level === null || level === undefined ? undefined : gearCopy.paperdoll.itemLevelLine(level));
+  return { source, ...(slot.enchant === undefined ? {} : { enchant: slot.enchant }) };
 }
 
 function cellFor(
@@ -99,7 +98,7 @@ function cellFor(
       coveredBy: covered ? itemRef(covered) : undefined,
     };
   }
-  return { ...base, ...gain, item: itemRef(slot.item), ...line2(slot, mode) };
+  return { ...base, ...gain, item: itemRef(slot.item), ...line2(slot) };
 }
 
 /** Every slot as the shared doll's cell, in the slots' own order (the doll lays out the columns). */

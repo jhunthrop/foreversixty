@@ -283,7 +283,7 @@ PRIM_CSS += '''
 .rr .nm{min-width:0;display:flex;flex-direction:column}
 .rr .nm .ttl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .rr .nm .ttl a{font:700 16px/20px var(--font-body);color:var(--c)}.rr .nm .ttl a:hover{text-decoration:underline;text-underline-offset:4px}
-.rr .nm .sub{font-size:13px;line-height:18px;color:var(--muted)}
+.rr .nm .sub{font-size:13px;line-height:18px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rr .nm .low{font-size:13px;line-height:18px;color:var(--muted);text-decoration:underline dotted;text-underline-offset:3px;align-self:flex-start}
 .rr .br{display:flex;flex-direction:column;gap:4px;min-width:0}.rr .br .tie{font:700 12px/16px var(--font-body);color:var(--strong)}
 .rr .x{display:contents}
@@ -698,7 +698,7 @@ PRIM_CSS += '''
 .menu .mi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:8px 16px;border-bottom:1px solid var(--line-soft)}
 .menu .mi b{font:700 15px/20px var(--font-body);color:var(--strong)}.menu .mi span{font-size:13px;line-height:18px;color:var(--muted)}
 .menu .mi .r{text-align:right}.menu .mi.cur{background:#e5b9551a;box-shadow:inset 3px 0 0 var(--gold)}.menu .mi:hover{background:var(--hover)}
-.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:168px;padding:20px;border:1px dashed var(--line);border-radius:6px;text-align:center;color:var(--muted);font-size:14px}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:96px;padding:16px 20px;border:1px dashed var(--line);border-radius:6px;text-align:center;color:var(--muted);font-size:14px}
 .drop.off{opacity:.55}
 .disc>summary{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;list-style:none;font:600 14px/20px var(--font-body);color:var(--strong)}
 .disc>summary::-webkit-details-marker{display:none}.disc>summary .chg{margin-left:auto;color:var(--gold);font-size:13px}
@@ -884,6 +884,9 @@ PRIM_CSS += '''
 @media(min-width:1280px){.rd{grid-template-columns:var(--measure-reading) minmax(0,640px);grid-template-areas:"prose lane"}.rd.solo{grid-template-columns:var(--measure-reading)}}
 .rd>.rd-prose{grid-area:prose;min-width:0}.rd>.rd-lane{grid-area:lane;min-width:0;display:flex;flex-direction:column;gap:28px}
 .lane-blk{display:flex;flex-direction:column;gap:8px;min-width:0}.lane-blk>.t-label{padding-bottom:2px}
+.rsec-fold-sum{display:none}
+@media(max-width:767px){.rsec-fold-sum{display:flex;align-items:center;min-height:44px;color:var(--gold);font-size:15px;font-weight:600;line-height:24px;list-style:none}.rsec-fold-sum::-webkit-details-marker{display:none}.rsec-fold::details-content{content-visibility:hidden}}
+.lane-lbl{margin:0;font:600 15px/20px var(--font-body);color:#f3eee2;letter-spacing:0;text-transform:none}
 .rprose{font-size:16px;line-height:26px;color:var(--text);max-width:var(--measure-reading);overflow-wrap:break-word}
 .rprose.lane{font-size:15px;line-height:24px}
 .rprose p{margin:0 0 14px}.rprose>:last-child{margin-bottom:0}
@@ -957,21 +960,26 @@ def Prose(html: str, *mods: str) -> str:
     return f'<div class="rprose {" ".join(mods)}">{html}</div>'
 
 
-def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '', prose_first: bool = False) -> str:
-    """A section of a reading page: the Section head (22/28), then prose and lane (lane first in the DOM: one column reads it first)."""
+def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '', prose_first: bool = False,
+                   fold: str = '') -> str:
+    """A section of a reading page: the Section head (22/28), then prose and lane (lane first in the DOM: one column reads it first).
+    `fold` (web ReadingSection `fold`): below 768 the body folds behind that line, from 768 it reads open."""
     a = f'<span class="act">{action}</span>' if action else ''
     lane_html = f'<div class="rd-lane" data-reading-lane>{lane}</div>' if lane else ''
     more = '<div class="rd-more" data-reading-more></div>' if lane else ''
     solo = '' if lane else ' data-solo'
-    return (f'<section class="rsec" data-region="{region_slug(title)}" id="{anchor}"><div class="sec-h"><h2>{title}</h2>{a}</div>'
-            f'<div class="rd{"" if lane else " solo"}" data-reading{solo}{prose_first and " data-prose-first" or ""}>{lane_html}'
-            f'<div class="rd-prose" data-reading-prose>{prose}{more}</div></div></section>')
+    body = (f'<div class="rd{"" if lane else " solo"}" data-reading{solo}{prose_first and " data-prose-first" or ""}>{lane_html}'
+            f'<div class="rd-prose" data-reading-prose>{prose}{more}</div></div>')
+    if fold:
+        # open, as the build serves it; on a phone the body is hidden as the build's script closes it
+        body = f'<details class="rsec-fold" open><summary class="rsec-fold-sum">{fold}</summary>{body}</details>'
+    return f'<section class="rsec" data-region="{region_slug(title)}" id="{anchor}"><div class="sec-h"><h2>{title}</h2>{a}</div>{body}</section>'
 
 
 def LaneBlock(label: str, body: str, meta: str = '') -> str:
-    """One labelled block in a lane (12 px caps label, then its rows or table)."""
+    """One labelled block in a lane (web ui/LaneBlock: a 15 px cream heading, then its rows or table)."""
     m = f'<span class="t-small">{meta}</span>' if meta else ''
-    return f'<div class="lane-blk"><div class="pcol-h"><h3 class="t-label">{label}</h3>{m}</div>{body}</div>'
+    return f'<div class="lane-blk"><div class="pcol-h"><h3 class="lane-lbl">{label}</h3>{m}</div>{body}</div>'
 
 
 def Toc(label: str, items: list[tuple[str, str]], current: str = '') -> str:
@@ -1033,7 +1041,8 @@ PRIM_CSS += '''
 '''
 
 TIER_TONES = {'S': '#ff8000', 'A': '#b866f5', 'B': '#3d94f0', 'C': '#1eff00', 'D': '#9d9d9d'}
-PRIM_CSS += ''.join(f'.grade.t{k}{{background:{v}}}' for k, v in TIER_TONES.items()) + '\n'
+PRIM_CSS += ''.join(f'.grade.t{k}{{background:{v}}}.grade.bare.t{k}{{background:none;color:{v}}}' for k, v in TIER_TONES.items()) + '\n'
+PRIM_CSS += '.grade.bare{font-size:40px}\n'
 
 
 def Countdown(eyebrow: str, clock: list[tuple[str, str]] | None, aside: str = '', tone: str = 'neutral', live: bool = False) -> str:
@@ -1055,8 +1064,9 @@ def FeedSkeleton(rows: int = 5) -> str:
     return '<div class="fsk" role="status" aria-busy="true">' + ''.join(f'<span aria-hidden="true">{Skeleton(40, 40)}{Skeleton(480, 16)}</span>' for _ in range(rows)) + '</div>'
 
 
-def GradeTile(letter: str) -> str:
-    return f'<span class="grade t{letter}" role="img" aria-label="Tier {letter}">{letter}</span>'
+def GradeTile(letter: str, bare: bool = False) -> str:
+    """web ui/GradeTile: the letter on its tier colour, or `bare`, the letter in its colour with no tile."""
+    return f'<span class="grade{" bare" if bare else ""} t{letter}" role="img" aria-label="Tier {letter}">{letter}</span>'
 
 # ------------------------------------------------ primitives added by the planner round (2026-11-08; design/specs/2026-11-08-planner.md section 3A)
 # Additive only: no earlier mock changes. `Page('workbench')` is L3 Workbench (3.7) with the split at 1280 (main | 340 rail;
@@ -1202,11 +1212,12 @@ def TalentTip(name: str, rank: int, mx: int, now: str, nxt: str, req: str = '', 
     return f'<div class="ttip" role="tooltip"><b>{escape(name)}</b><span class="r">Rank {rank} of {mx}</span>{n}{x}{r}{bd}</div>'
 
 
-def PointOrder(rows: list[tuple[str, list[str]]], cap_after: int = -1, cap_text: str = '') -> str:
+def PointOrder(rows: list[tuple[str, list[str]]], cap_after: int = -1, cap_text: str = '', markers: list[str] | None = None) -> str:
     """rows: (label, slots html). A slot: an icon with its rank, an empty socket, the next socket (gold). `cap_after`: the row
     index after which the character's level line sits (points past it are planned ahead). A faint 0 to 9 marker sits over
     the first row: the last digit of each socket's level."""
-    out = '<div class="porder-m" aria-hidden="true"><span></span><div class="porder-s">' + ''.join(f'<span>{d}</span>' for d in range(10)) + '</div></div>'
+    heads = markers if markers is not None else [str(d) for d in range(10)]  # additive: the built `markers`
+    out = '<div class="porder-m" aria-hidden="true"><span></span><div class="porder-s">' + ''.join(f'<span>{d}</span>' for d in heads) + '</div></div>'
     for i, (lab, slots) in enumerate(rows):
         out += f'<div class="porder-r"><span class="t-small">{lab}</span><div class="porder-s" role="list">{"".join(slots)}</div></div>'
         if i == cap_after and cap_text:
@@ -1271,7 +1282,7 @@ PRIM_CSS += '''
 .cans-links .cans-sm{font-size:13px;line-height:20px;align-self:center}
 .dated-f{padding:0;scroll-margin-top:72px;border-bottom:1px solid var(--line-soft)}.dated-f:last-child{border-bottom:0}
 .dated-f>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:'d g' 'h h';align-items:center;gap:4px 10px;padding:14px 0;min-height:44px}
-.dated-f>summary>.d{grid-area:d}.dated-f>summary>.dated-k{grid-area:g;display:flex;gap:6px;align-items:center;min-height:22px}.dated-f>summary>h3{grid-area:h}
+.dated-f>summary>.d{grid-area:d}.dated-f>summary>.dated-k{grid-area:g;display:flex;gap:6px;align-items:center}.dated-f>summary>h3{grid-area:h}
 .dated-f>summary::-webkit-details-marker{display:none}
 .dated-f>summary h3{font:700 16px/22px var(--font-body);color:var(--strong);margin:0;display:flex;gap:8px;align-items:baseline}
 .dated-f>summary h3::before{content:'\\25B8';font-size:11px;color:var(--muted);flex:none}.dated-f[open]>summary h3::before{content:'\\25BE'}
@@ -1569,14 +1580,16 @@ PRIM_CSS += '''
 .frame{position:relative;min-width:0;overflow:hidden;padding:22px 24px;background:var(--raised);border:1px solid #000;border-radius:10px;
 box-shadow:0 0 0 1px rgba(130,112,91,.55);--muted:#8b8784}
 .frame::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+.frame.plain::before{content:none}
 @media(max-width:767px){.frame{padding:18px 16px}}
 '''
 
 
-def Frame(inner: str, ornate: bool = False, region: str = '') -> str:
-    """web ui/Frame: `region` is the parity region it carries, when it is one (REGION values)."""
+def Frame(inner: str, ornate: bool = False, region: str = '', plain: bool = False) -> str:
+    """web ui/Frame: `region` is the parity region it carries, when it is one (REGION values); `plain` drops the inset line."""
     r = f' data-region="{region}"' if region else ''
-    return f'<div class="frame{" ornate" if ornate else ""}"{r}>{inner}</div>'
+    mod = " ornate" if ornate else " plain" if plain else ""
+    return f'<div class="frame{mod}"{r}>{inner}</div>'
 
 
 # The panel form (web ui/Section `panel`, `frame`, `flush`; ui/Page `panels`): the logs and report mocks' prims.panel, the
@@ -1730,6 +1743,13 @@ PRIM_CSS += '''
 .pdf-cell{position:relative;width:44px;height:44px;border-radius:3px;background:#100a06}.pdf-cell .pdf-icon{inset:3px;width:38px;height:38px}
 .pdf-name{display:block;font-size:13px;font-weight:600;line-height:16px;overflow-wrap:anywhere}.pdf-sub{display:block;font-size:12px;line-height:16px;color:#8b8784}
 .pdf-list-centre{margin-top:10px}
+/* The built frame's additive list props (lane h-doll): `form="list"` the list at every width, `head={false}` the slots straight on
+   the page's panel, `facts` "Head · Item level 61" with the enchant green on its own line. */
+.pdf-listonly .pdf-list{display:block}
+.pdf-headless{padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.pdf-facts .pdf-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pdf-facts .pdf-enchant{white-space:normal;color:#1eff00}
+@container (min-width:360px) and (max-width:559.98px){.pdf-fact-slot{display:none}}
+@container (max-width:359.98px){.pdf-facts{grid-template-columns:minmax(0,1fr)}}
 .itip{display:flex;flex-direction:column;width:100%;font-size:13px;color:#fff;border:1px solid #8b8f9c;border-radius:4px;background:#060914;box-shadow:inset 0 0 0 1px #2b3040}
 .itip .bd{display:flex;flex-direction:column;gap:8px;padding:12px 14px}.itip .nm{font-size:15px;font-weight:700}.itip .ln{font-size:12px}
 .itip .tl{font-size:12px;color:#ffd100}.itip .ft{padding:8px 14px 12px;font-size:12px;line-height:16px;color:#8b8784;border-top:1px solid #2b3040}
@@ -1758,9 +1778,12 @@ def _icon_src(name: str | None) -> str:
 
 
 def PaperdollFrame(slots: list[dict], title: str, meta: str, figure: tuple[str, str] | None, centre: str, label: str,
-                   list_centre: str = '', heading: str = 'h1') -> str:
-    """slots: the filled sockets (slot, label (the button's name), covered, selected, icon, quality). centre: the centre's html.
-    heading: the title bar's heading (the built `heading`): h1 where the bar is the page's title (BiS), h2 under a page title."""
+                   list_centre: str = '', heading: str = 'h1', form: str = 'auto', head: bool = True, facts: bool = False) -> str:
+    """slots: the filled sockets (slot, label (the button's name), covered, selected, icon, quality; with `facts`, line2 and an
+    optional enchant). centre: the centre's html.
+    heading: the title bar's heading (the built `heading`): h1 where the bar is the page's title (BiS), h2 under a page title.
+    form 'list': the list form at every width, the frame never drawn; head False: no strip, the slots on the page's panel; facts:
+    each row's sub line is "Slot · line 2", the enchant green under it (the built `form`, `head`, `facts`)."""
     tag = {'h1': 'h1', 'h2': 'h2'}[heading]
     by = {s['slot']: s for s in slots}
     fig = f'<b class="pdf-figure">{escape(figure[0])} <small>{escape(figure[1])}</small></b>' if figure else ''
@@ -1783,10 +1806,23 @@ def PaperdollFrame(slots: list[dict], title: str, meta: str, figure: tuple[str, 
         slot_word, _, item = s['label'].partition(': ')
         items.append(f'<li><button type="button" class="pdf-item" aria-pressed="{"true" if s["selected"] else "false"}">'
                      f'<span class="pdf-cell">{_pd_icon(s)}</span><span><span class="pdf-name">{escape(item)}</span>'
-                     f'<span class="pdf-sub">{escape(slot_word)}</span></span></button></li>')
-    lst = (f'<div class="pdf-list"><div class="pdf-strip"><img src="{_PD_SEAL}" alt=""><{tag}>{escape(title)}</{tag}>{fig}</div>'
-           f'<ul class="pdf-items">{"".join(items)}</ul>{f"<div class=pdf-list-centre>{list_centre}</div>" if list_centre else ""}</div>')
-    return f'<div class="pdf" role="group" aria-label="{escape(label)}">{frame}{lst}</div>'
+                     f'{_pd_facts(slot_word, s) if facts else f"<span class=pdf-sub>{escape(slot_word)}</span>"}</span></button></li>')
+    strip = f'<div class="pdf-strip"><img src="{_PD_SEAL}" alt=""><{tag}>{escape(title)}</{tag}>{fig}</div>' if head else ''
+    ul_class = 'pdf-items' + ('' if head else ' pdf-headless') + (' pdf-facts' if facts else '')
+    lst = (f'<div class="pdf-list">{strip}'
+           f'<ul class="{ul_class}">{"".join(items)}</ul>{f"<div class=pdf-list-centre>{list_centre}</div>" if list_centre else ""}</div>')
+    list_only = form == 'list'
+    return (f'<div class="pdf{" pdf-listonly" if list_only else ""}" role="group" aria-label="{escape(label)}">'
+            f'{"" if list_only else frame}{lst}</div>')
+
+
+def _pd_facts(slot_word: str, cell: dict) -> str:
+    """A `facts` row's sub lines: "Head · Item level 61" (the slot word hides in a phone's half column), the enchant green."""
+    line2 = cell.get('line2') or ''
+    lead = (f'<span class="pdf-fact-slot">{escape(slot_word)} &middot; </span><span>{escape(line2)}</span>' if line2
+            else escape(slot_word))
+    enchant = f'<span class="pdf-sub pdf-enchant">{escape(cell["enchant"])}</span>' if cell.get('enchant') else ''
+    return f'<span class="pdf-sub">{lead}</span>{enchant}'
 
 
 def ItemTip(name: str, quality: str, lines: list[str], tail: list[str], foot: str) -> str:
@@ -1858,7 +1894,7 @@ def PlateColumns(cols: list[tuple[str, str, str, str]], label: str = '', frame: 
 # from 768: the class crest and name in the class colour (a link on /guides), then its specs as slim link rows, no role tag.
 # classes: (slug, name, colour, [(key, name, icon_html)]); `yours` marks the header character's spec with `yours_label`.
 PRIM_CSS += """
-.cspick{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+.cspick{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
 @media(min-width:768px){.cspick{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:1024px){.cspick{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .cspick-c{padding-bottom:8px;min-width:0}
@@ -1869,7 +1905,7 @@ def ClassSpecPicker(classes: list[tuple[str, str, str, list[tuple[str, str, str]
                     yours: str = '', yours_label: str = '') -> str:
     groups = []
     for slug, name, colour, specs in classes:
-        rows = [Row(n, lead=ic, trail=Tag(yours_label) if key == yours else '', selected=key == yours) for key, n, ic in specs]
+        rows = [Row(n, lead=ic, selected=key == yours) for key, n, ic in specs]   # the accent rule marks yours, no pill
         head = Row(name, lead=crest_img(slug, 40), title_color=colour, link=class_links)
         groups.append(Plate(f'<div class="cspick-c">{head}{RowsSlim(rows, open_=False)}</div>'))
     return f'<div class="cspick" role="region" aria-label="{label}">{"".join(groups)}</div>'
@@ -1907,6 +1943,27 @@ def TalentEditor(trees: list[dict], active: int = 0, foot: str = '', label: str 
         return html
     inner = html[html.index('<div class="tedit">'):html.rindex('</div>')]
     return Section(title, inner, panel=True, frame=frame, flush=True)
+
+
+# ------------------------------------------------ the workbench's row below (h-audit 2026-11-09; web ui/Page `below`): full width under
+# main and the rail from 1280, its Ordered regions in the one flow below 1280. Additive: Page(below='') emits what it did.
+_PageBelow0 = Page
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, panels: bool = False, below: str = '',
+         **kwargs: object) -> str:
+    """Page; `below` on 'workbench' is a full-width row under main and the rail from 1280."""
+    html = _PageBelow0(layout, main, rail, sticky_rail, panels, **kwargs)
+    if not below or layout != 'workbench':
+        return html
+    at = html.rindex('</aside>') + len('</aside>')
+    return html[:at] + f'<div class="below">{below}</div>' + html[at:]
+
+
+PRIM_CSS += '''
+.layout-wb>.below{display:contents}
+@media(min-width:1280px){.layout-wb>.below{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--section-gap);min-width:0}}
+'''
 
 
 # ------------------------------------------------ the Subscribe button and the Plate frame (batch F, /premium): web lib/ui/button.ts

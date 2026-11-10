@@ -33,7 +33,7 @@
 
 <Section
   title="Deaths"
-  action={deaths.length === 0 ? undefined : { label: 'Deaths', href: tabHref }}
+  action={deaths.length === 0 ? undefined : { label: 'Deaths', href: tabHref, arrow: true }}
   panel
   testid="panel-deaths"
 >

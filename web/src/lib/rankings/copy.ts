@@ -36,6 +36,10 @@ export const homeTopGuildsCopy = {
   emptyHref: '/guild',
   /** "1 boss", "12 bosses": the count beside each guild. */
   bosses: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'}`,
+  /** The guild landing's figure: "1 boss down". */
+  bossesDown: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'} down`,
+  /** The guild landing's row line after where the guild lives: its newest kill. */
+  lastKill: (day: string): string => `last kill ${day}`,
 } as const;
 
 /** Spec 2026-09-25 §6: every ranking board's own empty state, character or guild: what is
@@ -62,7 +66,6 @@ export const rankingsEmptyCopy = {
 export const rankingsCopy = {
   eyebrow: 'Characters',
   h1: 'Rankings',
-  tierQuestion: 'Comparing specs, not characters?',
   tierLink: 'Tier list',
   tierHref: '/tiers',
   updated: (date: string) => `Updated ${date}`,
@@ -118,6 +121,8 @@ export const rankingsCopy = {
   percentileLabel: 'Percentile',
   /** The value's hover line: it opens the kill in its report. */
   openReport: 'Open the kill in its report',
+  /** A board row's link to the kill's log. */
+  reportLink: 'Report',
   /** The guild board's panel titles, by kind. */
   guildTitle: { progress: 'Most bosses killed', speed: 'Fastest kills', execution: 'Fewest deaths' },
   /** An execution guild row's figure (a progress row's is homeTopGuildsCopy.bosses). */

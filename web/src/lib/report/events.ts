@@ -12,7 +12,7 @@
 // this list never needs an approximate mark.
 import type { StreamLine } from './exact';
 import { splitUnitName } from '../characters';
-import type { Summary } from './types';
+import type { AuraTrack, Summary } from './types';
 
 export type EventKind = 'cast' | 'aura-applied' | 'aura-removed' | 'damage' | 'heal' | 'death';
 
@@ -164,6 +164,98 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
   });
 }
 
+/** One aura going up or fading on one unit, before lines on the same instant are folded. */
+interface AuraLine {
+  atMs: number;
+  kind: 'aura-applied' | 'aura-removed';
+  debuff: boolean;
+  /** The stack count a stack change reaches; undefined on a fresh application or a fade. */
+  stacks?: number;
+  spellId: number;
+  name: string;
+  target: EventActor;
+  /** Who put it up, when that is someone other than the target. */
+  by?: EventActor;
+  guids: string[];
+}
+
+/** "A", "A and B", "A, B and C": the targets of one folded line. */
+function listNames(names: readonly string[]): string {
+  return names.length <= 1 ? (names[0] ?? '') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
+}
+
+/**
+ * The aura lines in the client's own words: "Kell gains Shield Block", "Saltspine is afflicted by
+ * Sunder Armor (2)", "Shield Block fades from Kell". The applier is named only when it is someone
+ * else ("from Hollis"). One spell going up on several units in the same instant (a Consecration,
+ * a Thunder Clap, a party aura) is one line naming every unit, as the client's own log reads.
+ */
+function auraEvents(tracks: readonly AuraTrack[], names: ReadonlyMap<string, string>): SummaryEvent[] {
+  const lines: AuraLine[] = [];
+  for (const track of tracks) {
+    const target: EventActor = { guid: track.target_guid, name: splitUnitName(track.target_name).name };
+    const debuff = track.type === 'DEBUFF';
+    let previous: { end_ms: number; stacks: number } | undefined;
+    const joins = (later: { start_ms: number } | undefined, earlier: { end_ms: number }): boolean =>
+      later !== undefined && later.start_ms <= earlier.end_ms + 50;
+    track.segments.forEach((segment, index) => {
+      // A segment that begins where the last one ended with a different stack count is a
+      // stack change, not a new application; the aura never came off, so the earlier
+      // segment prints no fade. The engine keeps no refresh events, so nothing claims one.
+      const continues = previous !== undefined && joins(segment, previous);
+      const continued = joins(track.segments[index + 1], segment);
+      const stacks = continues && segment.stacks !== previous?.stacks ? segment.stacks : undefined;
+      previous = { end_ms: segment.end_ms, stacks: segment.stacks };
+      // The segment's own applier when the engine kept it; the track's first applier when not.
+      const byGuid = segment.source_guid ?? track.appliers[0];
+      const byName = byGuid === undefined ? '' : splitUnitName(names.get(byGuid) ?? '').name;
+      const by =
+        byGuid === undefined || byGuid === track.target_guid || byName === ''
+          ? undefined
+          : { guid: byGuid, name: byName };
+      const guids =
+        segment.source_guid === undefined
+          ? [track.target_guid, ...track.appliers]
+          : [track.target_guid, segment.source_guid];
+      const base = { debuff, spellId: track.spell_id, name: track.name, target, by, guids };
+      lines.push({ ...base, atMs: segment.start_ms, kind: 'aura-applied', stacks });
+      if (!continued) lines.push({ ...base, atMs: segment.end_ms, kind: 'aura-removed', by: undefined });
+    });
+  }
+
+  const folded = new Map<string, AuraLine[]>();
+  for (const line of lines) {
+    const key = [line.kind, line.atMs, line.spellId, line.name, line.debuff, line.stacks, line.by?.guid].join(
+      '|',
+    );
+    folded.set(key, [...(folded.get(key) ?? []), line]);
+  }
+  return [...folded.values()].map((group) => {
+    const first = group[0]!;
+    const targets = group.map((line) => line.target);
+    const who = listNames(targets.map((target) => target.name));
+    const several = targets.length > 1;
+    const stacks = first.stacks === undefined ? '' : ` (${first.stacks})`;
+    const from = first.by === undefined ? '' : ` from ${first.by.name}`;
+    const text =
+      first.kind === 'aura-removed'
+        ? `${first.name} fades from ${who}`
+        : first.debuff
+          ? `${who} ${several ? 'are' : 'is'} afflicted by ${first.name}${stacks}${from}`
+          : `${who} ${several ? 'gain' : 'gains'} ${first.name}${stacks}${from}`;
+    return {
+      atMs: first.atMs,
+      kind: first.kind,
+      guid: first.target.guid,
+      guids: [...new Set(group.flatMap((line) => line.guids))],
+      spellId: first.spellId,
+      spellName: first.name,
+      actors: [...targets, ...(first.by === undefined ? [] : [first.by])],
+      text,
+    };
+  });
+}
+
 export function summaryEvents(
   summary: Summary,
   names: ReadonlyMap<string, string> = new Map(),
@@ -181,69 +273,12 @@ export function summaryEvents(
         spellId: row.spell_id,
         spellName: row.spell_name,
         actors: [{ guid: row.guid, name: caster }],
-        text: `${caster} cast ${row.spell_name}`,
+        text: `${caster} casts ${row.spell_name}`,
       });
     }
   }
 
-  for (const track of summary.auras) {
-    const target = splitUnitName(track.target_name).name;
-    const applier = track.appliers
-      .map((guid) => splitUnitName(names.get(guid) ?? '').name)
-      .filter(Boolean)
-      .slice(0, 2)
-      .join(', ');
-    let previous: { end_ms: number; stacks: number } | undefined;
-    const joins = (later: { start_ms: number } | undefined, earlier: { end_ms: number }): boolean =>
-      later !== undefined && later.start_ms <= earlier.end_ms + 50;
-    track.segments.forEach((segment, index) => {
-      // A segment that begins where the last one ended with a different stack count is a
-      // stack change, not a new application, and the verb says so; the aura never came
-      // off, so the earlier segment prints no removal. The engine keeps no refresh
-      // events, so nothing here claims a refresh either way.
-      const continues = previous !== undefined && joins(segment, previous);
-      const continued = joins(track.segments[index + 1], segment);
-      const verb =
-        continues && segment.stacks !== previous?.stacks
-          ? `at ${segment.stacks} ${segment.stacks === 1 ? 'stack' : 'stacks'} on`
-          : 'on';
-      previous = { end_ms: segment.end_ms, stacks: segment.stacks };
-      // The segment's own applier when the engine kept it; the track's set only when it
-      // did not, so two priests' shields each say which priest.
-      const own =
-        segment.source_guid === undefined ? '' : splitUnitName(names.get(segment.source_guid) ?? '').name;
-      const by = own === '' ? applier : own;
-      const guids =
-        segment.source_guid === undefined
-          ? [track.target_guid, ...track.appliers]
-          : [track.target_guid, segment.source_guid];
-      const actors: EventActor[] = [
-        { guid: track.target_guid, name: target },
-        ...guids.slice(1).map((guid) => ({ guid, name: splitUnitName(names.get(guid) ?? '').name })),
-      ];
-      events.push({
-        atMs: segment.start_ms,
-        kind: 'aura-applied',
-        guid: track.target_guid,
-        guids,
-        spellId: track.spell_id,
-        spellName: track.name,
-        actors,
-        text: `${track.name} ${verb} ${target}${by === '' ? '' : ` by ${by}`}`,
-      });
-      if (!continued)
-        events.push({
-          atMs: segment.end_ms,
-          kind: 'aura-removed',
-          guid: track.target_guid,
-          guids,
-          spellId: track.spell_id,
-          spellName: track.name,
-          actors,
-          text: `${track.name} off ${target}${by === '' ? '' : ` (by ${by})`}`,
-        });
-    });
-  }
+  events.push(...auraEvents(summary.auras, names));
 
   for (const death of summary.deaths) {
     const who = splitUnitName(death.name).name;

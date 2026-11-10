@@ -8,6 +8,7 @@
   import { kindCountsRoles, kindOf } from '../../../lib/guild/raid-copy';
   import { notSignedRows, pingBlockedLine } from '../../../lib/guild/raid-planner-view';
   import type { RosterRow } from '../../../lib/guild/raid-roster';
+  import type { PlannerFacts } from '../../../lib/guild/planner-facts';
   import Button from '../../ui/Button.svelte';
   import Section from '../../ui/Section.svelte';
   import PlannerRow from './PlannerRow.svelte';
@@ -21,9 +22,12 @@
     busyKey = null,
     pinging = false,
     pingAnswer = null,
+    facts = null,
     onPing,
     onSetState,
   }: {
+    /** Each raider's figures by character key; null draws none. */
+    facts?: ReadonlyMap<string, PlannerFacts> | null;
     raid: GuildRaidView;
     now: Date;
     /** The next-ping time in words (`2:10 am`). */
@@ -65,6 +69,7 @@
           officer
           disabled={closed}
           busy={busyKey === entry.character_key}
+          facts={facts?.get(entry.character_key) ?? null}
           {onSetState}
         />
       {/each}

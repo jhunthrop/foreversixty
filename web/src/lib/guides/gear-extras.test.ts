@@ -9,6 +9,7 @@ import {
   KIT_IMBUES,
   consumableKind,
   consumableLines,
+  consumableNote,
   consumableRows,
   raidConsumeIds,
   simRaidConsumes,
@@ -73,6 +74,13 @@ const CONTEXT = {
   classSlug: 'mage',
   items: { wrist: CLOTH_WRIST, feet: CLOTH_FEET, main_hand: ONE_HAND_DAGGER },
 };
+
+describe('consumableNote', () => {
+  it('keeps only the slot a stone or oil goes on, never a plain stat the tooltip says', () => {
+    expect(consumableNote('Critical strike, on the main hand')).toBe('On the main hand');
+    expect(consumableNote('Strength')).toBeUndefined();
+  });
+});
 
 describe('enchantGives', () => {
   it('words flat stats in the weights’ own terms', () => {

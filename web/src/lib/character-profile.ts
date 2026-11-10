@@ -197,6 +197,7 @@ export function seenSplits(builds: readonly BuildSeen[] | null | undefined): str
  *  character in the browser, so without JavaScript there is nothing to show; the Planner works
  *  without this page. Rendered "{lead} {link}{tail}" with the link to `href`. */
 export const characterNoScriptCopy = {
+  title: 'Character',
   lead: 'Forever Sixty needs JavaScript to show this character. Turn it on and reload, or open the',
   link: 'Planner',
   href: '/planner',

@@ -13,6 +13,7 @@
   import Button from '../ui/Button.svelte';
   import CodeField from '../ui/CodeField.svelte';
   import Section from '../ui/Section.svelte';
+  import PlannerPart from './PlannerPart.svelte';
 
   let {
     talents,
@@ -20,9 +21,12 @@
     onimport,
     onwrongclass = undefined,
     panel = false,
+    part = false,
   }: {
     /** The heading inside its panel (the standalone planner's rail and column). */
     panel?: boolean;
+    /** A part of the planner's take-it-with-you plate (PlannerPart) instead of its own Section. */
+    part?: boolean;
     talents: TalentIndex;
     activeBuild: string;
     /**
@@ -78,7 +82,7 @@
   }
 </script>
 
-<Section title={addonCopy.importTitle} {panel} testid="import-box">
+{#snippet body()}
   <div class="pl-sec">
     <CodeField
       bind:value={code}
@@ -113,4 +117,10 @@
       >
     </p>
   </div>
-</Section>
+{/snippet}
+
+{#if part}
+  <PlannerPart title={addonCopy.importTitle} testid="import-box">{@render body()}</PlannerPart>
+{:else}
+  <Section title={addonCopy.importTitle} {panel} testid="import-box">{@render body()}</Section>
+{/if}

@@ -39,7 +39,6 @@
 </script>
 
 <PageHeader title={copy.title} testid="sim-head">
-  {#snippet meta()}<span>{copy.landingMeta}</span>{/snippet}
   {#snippet tabs()}<SimToolTabs />{/snippet}
 </PageHeader>
 {#if notice}{@render notice()}{/if}

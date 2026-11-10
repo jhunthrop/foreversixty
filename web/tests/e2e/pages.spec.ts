@@ -129,11 +129,7 @@ test.describe('the 404', () => {
     await expect(answer).toHaveAttribute('data-state', 'ready');
     await expect(answer).toContainText('Felsnap');
     const links = answer.locator('[data-field="links"] a');
-    await expect(links).toHaveText([
-      'Your guide: Beast Mastery Hunter ›',
-      'Your best in slot ›',
-      'Your character ›',
-    ]);
+    await expect(links).toHaveText(['Beast Mastery Hunter ›', 'Your best in slot ›', 'Your character ›']);
     await expect(links.nth(1)).toHaveAttribute('href', '/bis/hunter/beast-mastery?band=30');
     await expect(links.nth(2)).toHaveAttribute('href', '/character/us/normal/felsnap');
     await expect(links.nth(2)).toHaveAttribute('data-size', 'small');

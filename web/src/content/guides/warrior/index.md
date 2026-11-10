@@ -14,7 +14,7 @@ sources:
   - label: 'Power Up Gaming, Forever talent changes vs Classic'
     url: https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/
     kind: community
-  - label: 'Talents Forever, talent data from the beta client'
+  - label: 'Talents Forever'
     url: https://talentsforever.com/data.json
     kind: community
 ---
@@ -33,5 +33,3 @@ sources:
 - **New talents** include Bloodthrill, Weaponmaster and Spearing Strike in Arms, Reckless Swings and Furious Precision in Fury, and Vanguard and Master of Defense in Protection.
 
 ## Races
-
-Every one of the original eight races can be a warrior, and so can the Skyborne, on either faction.

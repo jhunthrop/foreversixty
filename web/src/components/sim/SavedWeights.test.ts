@@ -46,7 +46,7 @@ describe('SavedWeights: the greyed row and its label (D45)', () => {
   it('normalizes to the top per-point stat, puts haste in the caption, and has no Pawn string', () => {
     const body = renderWeights(result);
     expect(body).not.toContain('Pawn');
-    expect(body).toContain('= 1.00');
+    expect(body).toContain('>1.00<');
     expect(body).toMatch(/Haste: [0-9.]+ per 1%/);
     expect(() => rowFor(body, 'melee_haste')).toThrow();
   });

@@ -1,10 +1,10 @@
 // web/tests/e2e/support/guild-parity/recruit.ts
 // The recruitment states of the guild parity gate (design/mocks/ws_guild2.py recruitment,
-// applications, member_profile): the public recruiting card signed out, the officer's open
-// applications and Frostquill's profile with the officers' notes, both read by Dunmaro. Every read
+// member_profile): the public recruiting card signed out and Frostquill's profile with the
+// officers' notes, read by Dunmaro (the officers' applications are the dense state). Every read
 // answers from tests/e2e/fixtures/guild-parity/recruit-*.json (design/mocks/guild_fixtures.py
 // recruit_fixtures), the same values the mocks are drawn from.
-import { readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
@@ -70,21 +70,33 @@ const openRecruit: GuildStateOpener = async (page) => {
   await expect(page.getByTestId('guild-recruit-card')).toBeVisible();
 };
 
-const openApplications: GuildStateOpener = async (page) => {
-  await signInOfficer(page);
-  await routeGuild(page);
-  await page.route(`${API}/applications`, (route) =>
-    route.fulfill(envelope(fixture('recruit-applications.json'))),
+/** The repository's newest real build: the fixture build ships two class item files, and the
+ *  profile's Next upgrades read the raider's own class file for their icons and quality. */
+const REAL_BUILDS = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../../data/builds');
+
+/** Serves a class item file the fixture build lacks from the newest real build that has it. */
+async function routeClassItems(page: Page, classSlug: string): Promise<void> {
+  // Real client builds only (a pre-beta snapshot sorts above them by name), newest first.
+  const builds = existsSync(REAL_BUILDS)
+    ? readdirSync(REAL_BUILDS)
+        .filter((build) => /^\d/.test(build))
+        .sort((a, b) => b.localeCompare(a, 'en', { numeric: true }))
+    : [];
+  const file = builds
+    .map((build) => path.join(REAL_BUILDS, build, 'items', `${classSlug}.json`))
+    .find((candidate) => existsSync(candidate));
+  if (file === undefined) return;
+  await page.route(`**/data/*/items/${classSlug}.json`, (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: readFileSync(file) }),
   );
-  await page.goto(`${GUILD_PATH}/applications`);
-  await expect(page.getByTestId('guild-applications-plate')).toBeVisible();
-};
+}
 
 const openProfile: GuildStateOpener = async (page) => {
-  const profile = fixture<{ account_key: string }>('recruit-profile.json');
+  const profile = fixture<{ account_key: string; member: { class: string } | null }>('recruit-profile.json');
   const account = encodeURIComponent(profile.account_key);
   await signInOfficer(page);
   await routeGuild(page);
+  if (profile.member !== null) await routeClassItems(page, profile.member.class);
   await page.route(`${API}/members/${account}/profile`, (route) =>
     route.fulfill(envelope(fixture('recruit-profile.json'))),
   );
@@ -94,6 +106,5 @@ const openProfile: GuildStateOpener = async (page) => {
 
 export const RECRUIT_OPENERS: Readonly<Record<string, GuildStateOpener>> = {
   recruit: openRecruit,
-  applications: openApplications,
   profile: openProfile,
 };

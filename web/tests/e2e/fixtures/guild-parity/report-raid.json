@@ -468,14 +468,14 @@
       "spec": "Marksmanship",
       "signed": "late",
       "role": "dps",
-      "outcome": "absent",
+      "outcome": "no_show",
       "came_as": null,
       "first_seen_offset_s": null,
       "pulls_present": 0,
       "pulls_total": 4,
       "excused": false,
       "own": false,
-      "auto_outcome": "absent",
+      "auto_outcome": "no_show",
       "auto_excused": false,
       "override": null
     },
@@ -832,62 +832,17 @@
         "deaths": 6,
         "death_causes": [
           {
-            "character_key": "us/pvp/emberfall",
-            "name": "Emberfall",
-            "class": "shaman",
-            "at_ms": 30000,
-            "killing_blow": {
-              "at_ms": 30000,
-              "spell_id": 17086,
-              "ability": "Deep Breath",
-              "source": "Onyxia",
-              "amount": 4210,
-              "overkill": 1050
-            },
-            "last_hits": []
-          },
-          {
-            "character_key": "us/pvp/skytalon",
-            "name": "Skytalon",
-            "class": "hunter",
-            "at_ms": 50000,
-            "killing_blow": {
-              "at_ms": 50000,
-              "spell_id": 17086,
-              "ability": "Deep Breath",
-              "source": "Onyxia",
-              "amount": 4210,
-              "overkill": 1050
-            },
-            "last_hits": []
-          },
-          {
-            "character_key": "us/pvp/hexmarrow",
-            "name": "Hexmarrow",
-            "class": "warlock",
-            "at_ms": 70000,
-            "killing_blow": {
-              "at_ms": 70000,
-              "spell_id": 17086,
-              "ability": "Deep Breath",
-              "source": "Onyxia",
-              "amount": 4210,
-              "overkill": 1050
-            },
-            "last_hits": []
-          },
-          {
             "character_key": "us/pvp/shiverknife",
             "name": "Shiverknife",
             "class": "rogue",
-            "at_ms": 90000,
+            "at_ms": 40000,
             "killing_blow": {
-              "at_ms": 90000,
+              "at_ms": 40000,
               "spell_id": 15847,
               "ability": "Tail Sweep",
               "source": "Onyxia",
-              "amount": 4210,
-              "overkill": 1050
+              "amount": 1160,
+              "overkill": 380
             },
             "last_hits": []
           },
@@ -895,14 +850,59 @@
             "character_key": "us/pvp/blacktide",
             "name": "Blacktide",
             "class": "rogue",
-            "at_ms": 110000,
+            "at_ms": 52000,
             "killing_blow": {
-              "at_ms": 110000,
+              "at_ms": 52000,
               "spell_id": 15847,
               "ability": "Tail Sweep",
               "source": "Onyxia",
-              "amount": 4210,
-              "overkill": 1050
+              "amount": 1330,
+              "overkill": 610
+            },
+            "last_hits": []
+          },
+          {
+            "character_key": "us/pvp/emberfall",
+            "name": "Emberfall",
+            "class": "shaman",
+            "at_ms": 105000,
+            "killing_blow": {
+              "at_ms": 105000,
+              "spell_id": 17086,
+              "ability": "Deep Breath",
+              "source": "Onyxia",
+              "amount": 4380,
+              "overkill": 1240
+            },
+            "last_hits": []
+          },
+          {
+            "character_key": "us/pvp/skytalon",
+            "name": "Skytalon",
+            "class": "hunter",
+            "at_ms": 117000,
+            "killing_blow": {
+              "at_ms": 117000,
+              "spell_id": 17086,
+              "ability": "Deep Breath",
+              "source": "Onyxia",
+              "amount": 4550,
+              "overkill": 1470
+            },
+            "last_hits": []
+          },
+          {
+            "character_key": "us/pvp/hexmarrow",
+            "name": "Hexmarrow",
+            "class": "warlock",
+            "at_ms": 129000,
+            "killing_blow": {
+              "at_ms": 129000,
+              "spell_id": 17086,
+              "ability": "Deep Breath",
+              "source": "Onyxia",
+              "amount": 4720,
+              "overkill": 1700
             },
             "last_hits": []
           },
@@ -910,14 +910,14 @@
             "character_key": "us/pvp/seraphine",
             "name": "Seraphine",
             "class": "paladin",
-            "at_ms": 130000,
+            "at_ms": 190000,
             "killing_blow": {
-              "at_ms": 130000,
+              "at_ms": 190000,
               "spell_id": 18435,
               "ability": "Flame Breath",
               "source": "Onyxia",
-              "amount": 4210,
-              "overkill": 1050
+              "amount": 3240,
+              "overkill": 860
             },
             "last_hits": []
           }
@@ -946,14 +946,14 @@
             "character_key": "us/pvp/groundshock",
             "name": "Groundshock",
             "class": "shaman",
-            "at_ms": 30000,
+            "at_ms": 190000,
             "killing_blow": {
-              "at_ms": 30000,
+              "at_ms": 190000,
               "spell_id": 18435,
               "ability": "Flame Breath",
               "source": "Onyxia",
-              "amount": 4210,
-              "overkill": 1050
+              "amount": 3240,
+              "overkill": 860
             },
             "last_hits": []
           }
@@ -1095,7 +1095,12 @@
             "name": "Shiverknife",
             "class": "rogue",
             "by_name": "Ironbrand",
-            "at": "2026-12-10T03:01:00Z"
+            "at": "2026-12-10T03:01:00Z",
+            "ms_os": "ms",
+            "reason": null,
+            "votes_yes": 3,
+            "votes_no": 0,
+            "votes_officers": 3
           },
           {
             "item_id": 18813,
@@ -1106,7 +1111,12 @@
             "name": "Thornwicke",
             "class": "warrior",
             "by_name": "Dunmaro",
-            "at": "2026-12-10T03:02:00Z"
+            "at": "2026-12-10T03:02:00Z",
+            "ms_os": "ms",
+            "reason": null,
+            "votes_yes": 3,
+            "votes_no": 0,
+            "votes_officers": 3
           },
           {
             "item_id": 17078,
@@ -1117,7 +1127,12 @@
             "name": "Frostquill",
             "class": "mage",
             "by_name": "Dunmaro",
-            "at": "2026-12-10T03:03:00Z"
+            "at": "2026-12-10T03:03:00Z",
+            "ms_os": "ms",
+            "reason": null,
+            "votes_yes": 3,
+            "votes_no": 0,
+            "votes_officers": 3
           }
         ]
       }

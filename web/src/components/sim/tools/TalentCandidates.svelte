@@ -24,9 +24,14 @@
     customLoadouts,
     guideLoadout,
     hasUnaddedBuild,
+    loadoutDiff,
+    loadoutTrees,
     savedBuildsMessage,
   } from '../../../lib/sim/talent-loadouts';
+  import { talentSplit } from '../../../lib/sim/result-band';
+  import { ROW_ITEM } from '../../../lib/ui/primitives';
   import Button from '../../ui/Button.svelte';
+  import TalentTrees from '../../ui/TalentTrees.svelte';
   import ToolSection from './ToolSection.svelte';
 
   let {
@@ -152,6 +157,12 @@
     return () => onpendingcustom?.(false);
   });
 
+  /** What a build's diff reads against: the character's own build, or for that one the guide build. */
+  function againstOf(loadout: TalentLoadout): TalentLoadout | null {
+    const other = own !== null && loadout.name !== own.name ? own : guide;
+    return other !== null && other.name !== loadout.name ? other : null;
+  }
+
   function isPicked(loadout: TalentLoadout): boolean {
     return picked.some((entry) => entry.name === loadout.name);
   }
@@ -190,7 +201,7 @@
   {/if}
 {/snippet}
 
-{#snippet loadoutRow(loadout: TalentLoadout, testid: string)}
+{#snippet loadoutCheck(loadout: TalentLoadout, testid: string)}
   <label class="text-text flex min-h-11 items-center gap-3 text-[14px]">
     <input
       type="checkbox"
@@ -199,11 +210,58 @@
       checked={isPicked(loadout)}
       onchange={(event) => ontoggle(loadout, event.currentTarget.checked)}
     />
-    {loadout.name}
+    <span class="min-w-0 flex-1">{loadout.name}</span>
+    {#if plate && !loadout.name.includes(talentSplit(loadout.talents))}
+      <span class="text-muted text-[13px] tabular-nums">{talentSplit(loadout.talents)}</span>
+    {/if}
   </label>
 {/snippet}
 
-<ToolSection title={bulkCopy.talentBuildsTitle} testid="sim-talent-candidates" {plate}>
+{#snippet loadoutRow(loadout: TalentLoadout, testid: string)}
+  {#if plate && index !== null}
+    <!-- /sim/talents: the build's three trees beside its tick, so the page shows what it compares. -->
+    <div class="{ROW_ITEM} grid gap-x-6 gap-y-1 py-3 md:grid-cols-[260px_minmax(0,1fr)] md:items-start">
+      {@render loadoutCheck(loadout, testid)}
+      <!-- The trees size to their track (TalentTrees reads its box's width): 600 px with the diff
+           beside them from 1024, the full width with the diff under them below; cells up to 44 px. -->
+      <div class="grid min-w-0 items-start gap-x-8 gap-y-3 lg:grid-cols-[600px_minmax(0,1fr)]">
+        <div class="sim-loadout-trees min-w-0">
+          <TalentTrees trees={loadoutTrees(index, loadout.talents)} build={character.tree_version} />
+        </div>
+        <!-- Each build against the other side: a build against the character's own, the character's
+             own against the guide build (h-audit 2026-11-09: its column stood empty). -->
+        {#if againstOf(loadout) !== null}
+          {@const changes = loadoutDiff(index, loadout.talents, againstOf(loadout)?.talents ?? '')}
+          <!-- Against the character's own build: what this one takes more of (Gains), then less (Drops). -->
+          <div
+            class="flex flex-wrap gap-x-8 gap-y-2 text-[13px] leading-5 tabular-nums"
+            data-testid={`${testid}-diff`}
+          >
+            {#each [{ title: bulkCopy.talentsGains, rows: changes.filter((change) => change.delta > 0), tone: 'text-kill' }, { title: bulkCopy.talentsDrops, rows: changes.filter((change) => change.delta < 0), tone: 'text-wipe' }] as group (group.title)}
+              {#if group.rows.length > 0}
+                <div class="flex flex-col">
+                  <h4 class="text-label text-muted m-0 pb-1 font-bold">{group.title}</h4>
+                  <ul class="m-0 flex list-none flex-col p-0">
+                    {#each group.rows as change (change.name)}
+                      <li class={group.tone}>
+                        {change.delta > 0 ? '+' : '−'}{Math.abs(change.delta)}
+                        <span class="text-text">{change.name}</span>
+                      </li>
+                    {/each}
+                  </ul>
+                </div>
+              {/if}
+            {/each}
+          </div>
+        {/if}
+      </div>
+    </div>
+  {:else}
+    {@render loadoutCheck(loadout, testid)}
+  {/if}
+{/snippet}
+
+<ToolSection title={bulkCopy.talentBuildsTitle} testid="sim-talent-candidates">
   <div class="flex flex-col">
     {#if own !== null}
       {@render loadoutRow(own, 'sim-loadout-current')}
@@ -238,6 +296,7 @@
 
     <div class="pt-3">
       <Button
+        tone="ghost"
         size="sm"
         testid="sim-loadout-add"
         onclick={() => {
@@ -275,3 +334,18 @@
     {/if}
   </div>
 </ToolSection>
+
+<style>
+  /* A compare page reads the trees, so they take more of the plate than the guide's compact strip. */
+  .sim-loadout-trees :global(.ui-trees-box) {
+    --cell-max: 44px;
+  }
+  /* Below 768 one tree per row at a readable cell, never three trees squeezed to 100 px. */
+  @media (max-width: 767px) {
+    .sim-loadout-trees :global(.ui-trees-box .ui-trees) {
+      /* A tree fills the plate's width: four cells and three gaps, up to 56 px a cell. */
+      --cell: min(56px, calc((100cqw - 3 * var(--cell-gap)) / 4));
+      grid-template-columns: calc(4 * var(--cell) + 3 * var(--cell-gap));
+    }
+  }
+</style>

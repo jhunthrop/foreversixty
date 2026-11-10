@@ -1,6 +1,6 @@
 <!-- web/src/components/sim/SimPreRun.svelte -->
 <!-- /sim with a character before its run lands (spec 2026-11-06-sim §4.3, §4.4): not run yet, the
-     Gear panel, then the talents; the rail the rotation (no cast counts yet) and Your sims. While a
+     Gear panel, the talents and Your sims; the rail the rotation (no cast counts yet). While a
      run is in flight the framed Damage by ability panel holds the table's skeleton at its final
      geometry (the heads and 11 rows at 56 px), so the result draws into the space it already has. -->
 <script lang="ts">
@@ -59,8 +59,9 @@
   {/if}
   <SimGearSection {request} plated={!running} />
   <SimTalentsSection {request} />
+  <!-- Your sims under the talents, so the two columns end together (h-audit 2026-11-09). -->
+  {#if railTail}{@render railTail()}{/if}
   {#snippet rail()}
     <SimRotationSection {request} />
-    {#if railTail}{@render railTail()}{/if}
   {/snippet}
 </Page>

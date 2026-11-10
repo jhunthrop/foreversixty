@@ -67,7 +67,7 @@ def answer(kind: str, me: dict | None = None, page: dict | None = None) -> str:
         return f'<div class="ans-box">{lab}<span class="t-small">{PROPOSED["noCharacter"]}</span>{Link(rsaquo(F["setup_title"]))}</div>'
     cls = me['class'].lower()
     who = (f'<span class="ans-row">{crest_img(cls, 40)}<span class="ans-who"><b class="ans-name" style="color:{CLASS_COLOR[cls]}">{e(me["name"])}</b>'
-           f'<span class="t-small">{e(me["level_line"])} &middot; {e(me["identity"])}</span></span></span>')
+           f'<span class="t-small">{e(me["detail"])}</span></span></span>')
     if kind == 'same':
         first = me['talents_at'] if me['level'] < 60 else TA['bis']
         second = TA['bis'] if me['level'] < 60 else TA['sim']
@@ -83,7 +83,8 @@ def answer(kind: str, me: dict | None = None, page: dict | None = None) -> str:
 def spell_row(item: dict, n: str = '') -> str:
     rank = f' <span class="t-small">{e(item["rankText"])}</span>' if item.get('rankText') else ''
     tag = ' ' + Tag(e(C['raidBuildTag']), 'muted') if item.get('raidBuildOnly') else ''
-    return Row(f'{e(item["name"])}{rank}{tag}', e(item.get('clause', '')), lead=icon(item['icon'], 28) if item.get('icon') else '<span class="ic-spacer" style="width:28px;height:28px"></span>', rank=n, link=False)
+    # web GuideSpellRow: a line that names no spell has no lead at all, never an empty socket
+    return Row(f'{e(item["name"])}{rank}{tag}', e(item.get('clause', '')), lead=icon(item['icon'], 28) if item.get('icon') else '', rank=n, link=False)
 
 
 def stat_rows(rows: list[dict], numbered: bool, per_point: bool) -> list[str]:
@@ -103,6 +104,8 @@ def stat_rows(rows: list[dict], numbered: bool, per_point: bool) -> list[str]:
 
 # ------------------------------------------------------------------------------------------------ the spec guide
 def band(g: dict) -> str:
+    """web GuideGlance: Build (trees, Load and Sim), Rotation (the first four lines, Full priority) and Stat priority
+    (the gearable ranks, the hit cap and unit lines); a column with no data is left out, with none no plate."""
     b = g['band']
     cols = []
     if b['trees']:
@@ -118,13 +121,14 @@ def band(g: dict) -> str:
         lines += f'<p class="t-small">{e(b["unitLine"])}</p>' if b.get('unitLine') else ''   # MUST 4
         cols.append((e(C['statPriorityRailLabel']), e(g['stats']['table']['weightHead']),
                      StatTable([('', False), ('', False), ('', False), ('', True)], stat_rows(b['stats'], True, False), 1, open_=True) + lines, ''))
-    return PlateColumns(cols, PROPOSED['glance'], frame='framed')
-
+    if not cols:
+        return ''
+    return f'<div class="g-glance">{PlateColumns(cols, PROPOSED["glance"], frame="framed")}</div>'
 
 def overview(g: dict) -> str:
     o = g['overview']
-    prose = (f'<div class="sw"><div><h3 class="t-label sw-h">{e(C["strengths"])}</h3>{Prose(o["strengths"], "plus")}</div>'
-             f'<div><h3 class="t-label sw-h">{e(C["weaknesses"])}</h3>{Prose(o["weaknesses"], "minus")}</div></div>')
+    prose = (f'<div class="sw"><div><h3 class="sw-h">{e(C["strengths"])}</h3>{Prose(o["strengths"], "plus")}</div>'
+             f'<div><h3 class="sw-h">{e(C["weaknesses"])}</h3>{Prose(o["weaknesses"], "minus")}</div></div>')
     return ReadingSection(SEC['overview'], prose, LaneBlock(e(C['inARaid']), Prose(o['raid'], 'lane')), 'overview')
 
 
@@ -137,7 +141,9 @@ def talents(g: dict) -> str:
     for k in t['keyTalents']:
         names = ' &middot; '.join(f'{e(x["name"])} <span class="t-small">{" &middot; ".join(e(r) for r in x["rankText"])}</span>' for x in k['talents'])
         keys.append(Row(names, e(k['why']), lead=icon(k['talents'][0].get('icon') or '', 32), link=False))
-    lane = LaneBlock(PROPOSED['builds'], RowsSlim(rows) + diff) + LaneBlock(e(C['keyTalents']), wrap_list(Rows(keys, True)))
+    # web GuideBuildsLane: the Builds block only when the raid build differs (one build is the band's own)
+    builds = LaneBlock(PROPOSED['builds'], RowsSlim(rows) + diff) if len(t['blocks']) > 1 else ''
+    lane = builds + LaneBlock(e(C['keyTalents']), wrap_list(Rows(keys, True)))
     return ReadingSection(SEC['talents-and-builds'], Prose(t['prose']), lane, 'talents-and-builds')
 
 
@@ -146,11 +152,12 @@ def rotation(g: dict, lists: dict | None = None) -> str:
     lists = r['lists'] if lists is None else lists
     lane = ''
     if lists:
-        notes = (f'<p class="t-small">{e(C["rotationForRaidBuild"])}</p>' if r['forRaidBuild'] else '')
-        if any(x.get('raidBuildOnly') for k in ('opener', 'priority', 'cooldowns') for x in lists[k]):
-            notes += f'<p class="t-small">{e(C["raidBuildLegend"])}</p>'
+        # web GuideRotationLane: the row's own Raid build only tag, no legend; a whole list wraps under the prose
+        tagged = any(x.get('raidBuildOnly') for k in ('opener', 'priority', 'cooldowns') for x in lists[k])
+        notes = (f'<p class="t-small">{e(C["rotationForRaidBuild"])}</p>' if r['forRaidBuild'] and not tagged else '')
         blocks = [(C['opener'], lists['opener'], True), (C['priority'], lists['priority'], True), (C['cooldowns'], lists['cooldowns'], False)]
-        lane = notes + ''.join(LaneBlock(e(t), wrap_list(RowsSlim([spell_row(x, str(i + 1) if num else '') for i, x in enumerate(items)]))) for t, items, num in blocks if items)
+        lists_html = ''.join(LaneBlock(e(t), RowsSlim([spell_row(x, str(i + 1) if num else '') for i, x in enumerate(items)])) for t, items, num in blocks if items)
+        lane = notes + f'<div class="gblocks" data-wrap-list>{lists_html}</div>'
     return ReadingSection(SEC['rotation-and-priority'], Prose(r['prose']), lane, 'rotation-and-priority')
 
 
@@ -158,6 +165,7 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
     s = g['stats']
     t = s['table']
     rows = t['rows'] if rows is None else rows
+    rows = [r for r in rows if r['reading'] != 'not-on-items']   # web GuideStatLane: only what gear offers
     if rows:
         cap = ''
         c = t.get('hitCap')
@@ -167,13 +175,12 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
             cap += f'<p class="t-small">{e(t["expertiseCap"]["text"])}</p>'
         table = StatTable([('', False), (e(F['markup']['statHead']), False), ('', False), (e(t['weightHead']), True), (e(t['perPointHead']), True)],
                           stat_rows(rows, False, True), 2, open_=True)
-        # the built StatTable `wrap`: its rows may wrap under the prose, the head row repeated
-        table = wrap_list(table).replace('<div class="st-h stc" role="row">', '<div class="st-h stc" role="row" data-wrap-repeat>', 1)
-        notes = ''.join(f'<p class="t-small">{e(x)}</p>' for x in [t.get('unitLine'), t.get('ratingNote'), *t['notes']] if x)
+        # the table is one block: it never wraps under the prose (web GuideStatLane, no StatTable `wrap`)
+        notes = ''   # web GuideStatLane: no footnotes under the table
         notes = f'<div class="gnotes" data-wrap-list>{notes}</div>' if notes else ''
-        lane = f'<div class="gstat">{LaneBlock(e(C["statPriorityRailLabel"]), cap + table + notes)}</div>'
+        lane = f'<div class="gstat"><div class="lane-blk">{cap + table + notes}</div></div>'   # no title: the section heading says it
     else:   # no weights for the spec: the guide's own order, unnumbered weights absent (the shipped fallback)
-        lane = LaneBlock(e(C['statPriorityRailLabel']), wrap_list(RowsSlim([Row(e(x), rank=str(i + 1), link=False) for i, x in enumerate(g['statPriority'])])))
+        lane = f'<div class="lane-blk">{wrap_list(RowsSlim([Row(e(x), rank=str(i + 1), link=False) for i, x in enumerate(g["statPriority"])]))}</div>'
     return ReadingSection(SEC['stat-priority'], Prose(s['prose']), lane, 'stat-priority')
 
 
@@ -183,8 +190,13 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
     if data and b['data']:
         panel = next(p for p in b['data']['panels'] if p['band'] == band_no and p['faction'] == faction)
         items, weapons = [], []
+        main = next((r for r in panel['rows'] if r['slot'] == 'main_hand' and not r.get('empty')), None)
         for r in panel['rows']:
             out = weapons if r['slot'] in ('main_hand', 'off_hand', 'ranged') else items
+            # web listedBisRows: an empty off hand under a two-hander is not listed (the doll greys it)
+            if (r['slot'] == 'off_hand' and r.get('empty') and main
+                    and (r.get('emptyCopy') or '').startswith(f"{main['itemName']} is a two-hander")):
+                continue
             if r.get('empty'):
                 # an empty slot names no item: its line is not a tooltip trigger (the built ItemRow's empty state)
                 out.append(ItemRow(f'<span class="muted">{e(r.get("emptyCopy") or "")}</span>', 1, '<span class="ic" style="width:36px;height:36px"></span>', '', e(r['slotLabel']))
@@ -201,7 +213,7 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
     # one block, as the built GuideBisLane: its rows and links 28 px apart, and the links may wrap under the prose
     lane = f'<div class="gbis" data-wrap-list>{lane}</div>'
     return ReadingSection(SEC['best-in-slot'], Prose(b['prose']) + guide_doll(g, faction) if data and b['data'] else Prose(b['prose']), lane, 'best-in-slot',
-                          prose_first=True)
+                          prose_first=True, fold=e(g['bisFold']))
 
 
 def wrap_list(html: str) -> str:
@@ -228,7 +240,7 @@ def guide_doll(g: dict, faction: str) -> str:
                       'icon': main['icon'], 'quality': main['quality']})
     first = picks[0]
     centre = ItemTip(first['itemName'], QUALITY_NAME.get(first['quality'], 'common'), [], [], first['sourceDetail'])
-    meta = f"{'Pre-raid ' if panel['preRaid'] else ''}60 · {panel['raceName']}"
+    meta = panel['raceName']   # web GuideBisDoll: the race; the list says level 60
     doll = PaperdollFrame(slots, g['title'], meta, None, centre, f"{g['title']} best in slot, level 60", heading='h2')
     return f'<div class="gdoll"><div class="gdoll-f">{doll}</div></div>'
 
@@ -237,18 +249,26 @@ def extras(g: dict, data: bool = True) -> str:
     x = g['extras']
     lane = ''
     if data and x['data']:
-        ench = RowsSlim([Row(e(r['name']), f'{e(r["slotLabel"])} &middot; {e(r["gives"])}', lead=icon(r.get('icon') or '', 28), link=False)
+        ench = RowsSlim([Row(e(r['name']), e(r['slotLabel']), lead=icon(r['icon'], 28) if r.get('icon') else '', link=False)
                          for r in x['data']['enchants']])   # MUST 6: the same icon rows as Consumables
-        rows = []
+        # web GuideExtrasLane: the flasks and elixirs under Consumables, each header's rows as a block of its own
+        groups: list[tuple[str, list[str]]] = []
         for line in x['data']['lines']:
             if 'header' in line:
-                rows.append(f'<h4 class="t-label sub-h">{e(line["header"])}</h4>')
-            else:
-                r = line['row']
-                rows.append(Row(e(r['name']), e(r['gives']), lead=icon(r.get('icon') or '', 28), link=False))
-        lane = (LaneBlock(e(C['enchants']), f'<p class="t-small">{e(C["enchantsNote"])}</p>' + wrap_list(ench))
-                + LaneBlock(e(C['consumables']), wrap_list(RowsSlim(rows))))
-    return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables')
+                groups.append((line['header'], []))
+                continue
+            if not groups:
+                groups.append((C['consumables'], []))
+            r = line['row']
+            # web lib/guides/gear-extras.ts consumableNote: only the slot a stone or oil goes on
+            note = r['gives'].split(', ', 1)[1] if ', ' in r['gives'] else ''
+            groups[-1][1].append(Row(e(r['name']), e(note[:1].upper() + note[1:]), lead=icon(r['icon'], 28) if r.get('icon') else '', link=False))
+        blocks = LaneBlock(e(C['enchants']), ench) + ''.join(LaneBlock(e(label), RowsSlim(rows)) for label, rows in groups)
+        lane = f'<div class="gblocks" data-wrap-list>{blocks}</div>'   # a whole block wraps under the prose, with its label
+        if not x['prose'].strip():   # [spec].astro: no enchant prose, the lists side by side across the panel
+            return ReadingSection(SEC['enchants-and-consumables'], f'<div class="gextras-solo">{lane}</div>', '',
+                                  'enchants-and-consumables', fold=e(x['fold']))
+    return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables', fold=e(x['fold']))
 
 
 def races(g: dict) -> str:
@@ -257,13 +277,16 @@ def races(g: dict) -> str:
     for grp in r['groups']:   # Alliance then Horde, Recommended first (glance.ts racesByFaction)
         rows = []
         for x in grp['rows']:
-            foot = ''.join(f'<span class="racial">{icon(z["icon"], 20)}<span><b>{e(z["name"])}</b> {e(z["effect"])}</span></span>' for z in x['racials'])
-            rows.append(Row(e(x['name']), title_color=FACTION[x['faction']],
-                            trail=Tag(e(C['recommendedTag'])) if x['recommended'] else '', link=False, foot=foot))
+            foot = ''.join(f'<span class="racial">{icon(z["icon"], 20)}<span><b>{e(z["name"])}</b></span></span>' for z in x['racials'])   # name only: the prose says the numbers
+            portrait = r.get('portraits', {}).get(x.get('slug', ''))
+            rows.append(Row(e(x['name']), title_color=FACTION[x['faction']], lead=icon(portrait, 28) if portrait else '',
+                            link=False, foot=foot))
         head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
-        body += f'<div class="grace"><h4 class="t-label sub-h">{e(head)}</h4>' + wrap_list(Rows(rows, True)) + '</div>'
+        body += f'<div class="grace"><h4 class="sub-h">{e(head)}</h4>' + Rows(rows, True) + '</div>'   # a faction wraps whole
     lines = ''.join(f'<p class="t-small">{e(t)}</p>' for t in r['lines'])
-    return ReadingSection(SEC['races'], Prose(r['prose']), LaneBlock(e(C['racialsColumn']), body + lines), 'races')
+    # web GuideRacesLane: no lane title (the section is Races); the factions head their groups
+    return ReadingSection(SEC['races'], Prose(r['prose']), f'<div class="graces" data-wrap-list>{body + lines}</div>', 'races',
+                          fold=e(F['fns']['foldShow'].replace('%s', f"{len(r['rows'])} races")))
 
 
 def leveling(g: dict, level: int = 60, data: bool = True) -> str:
@@ -275,7 +298,8 @@ def leveling(g: dict, level: int = 60, data: bool = True) -> str:
         lane = LaneBlock(e(C['talentsByLevel']),
                          f'<p class="lvl-l"><b class="strong">{e(at["point"])}</b><span class="t-small">{e(at["spent"])}</span></p>'
                          + LevelSlider(level, 10, 60, e(C['levelSliderLabel'])) + TalentTrees(trees_of(at['trees'])) + f'<p>{Link(rsaquo(C["loadInPlanner"]))}</p>')
-    return ReadingSection(SEC['leveling'], prose, lane, 'leveling')
+    # web: the tree sits above its prose in one column (no rail beside nine paragraphs)
+    return ReadingSection(SEC['leveling'], lane + prose, '', 'leveling', fold=e(F['fns']['foldShow'].replace('%s', 'leveling')))
 
 
 def sources(g: dict) -> str:
@@ -284,8 +308,8 @@ def sources(g: dict) -> str:
         if s['url'] in seen:
             continue
         seen.add(s['url'])
-        rows.append(Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')))
-    return Section(PROPOSED['sources'], RowsSlim(rows), boxed=True)
+        rows.append(Row(f'<span class="gold link">{e(source_title(s["label"]))}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')))
+    return Section(PROPOSED['sources'], RowsSlim(rows))
 
 
 def reading_page(top: str, toc: str, body: str) -> str:
@@ -302,7 +326,7 @@ def spec_bar(g: dict, open_m: bool = False) -> str:
     end = f'<span class="toc-sel">{sel(e(C["tocBarLabel"]))}</span>'
     spec = e(C['specGroupLabel'])
     return control_bar([(spec, seg(items, label=spec), seg(items, label=spec) + toc_m)],
-                       f'{e(g["specName"])} {e(g["className"])} &middot; {e(C["tocBarLabel"])}', end=end, open_m=open_m, label=e(C['barLabel']))
+                       f'{e(g["specName"])} {e(g["className"])}', end=end, open_m=open_m, label=e(C['barLabel']), labels_from=1920)
 
 
 def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, open_m: bool = False, partial: bool = False) -> str:
@@ -317,11 +341,11 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
     faction = me['faction'] if me and kind == 'same' else 'alliance'
     sections = [overview(gp), talents(gp), rotation(gp, {} if partial else None), stats(gp, [] if partial else None),
                 gear(gp, band_no, faction, not partial), extras(gp, not partial), races(gp),
-                ReadingSection(SEC['professions'], Prose(g['professions']), '', 'professions'), leveling(gp, level if kind == 'same' else 60, not partial)]
+                ReadingSection(SEC['professions'], Prose(g['professions']), '', 'professions', fold=e(F['fns']['foldShow'].replace('%s', 'professions'))), leveling(gp, 60, not partial)]   # the server render: the tree's island (client:visible) moves to the character's level only once scrolled to
     body = (ReadingPanel(''.join(sections)) + sources(g)
-            + f'<p class="t-small foot-note" data-region="{REGION["footer_note"]}">{e(F["fns"]["dataSourceLine"])}</p>')
+            )
     toc = Toc(e(C['tocBarLabel']), [(e(s['title']), s['id']) for s in F['sections']], 'overview')
-    html = head + spec_bar(g, open_m) + reading_page(band(gp), toc, body) + PAGE_CSS
+    html = f'<div class="g-page">{head + spec_bar(g, open_m) + reading_page(band(gp), toc, body)}</div>' + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     note = (f'Guide mock (design/specs/2026-11-08-guides.md), built only from ws_prims, read from guides-facts.json (build {F["build"]}). '
             + ('Partial-data state: rotation, weights, BiS and extras removed (FORCED; no spec lacks them at this build). ' if partial else '')
@@ -329,7 +353,33 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
     return build_page(f'{g["title"]} guide', html + reading_wrap_script(), 'Guides', who, note)
 
 
+def source_title(label: str) -> str:
+    """web lib/sources.ts sourceTitle: the publisher the kind pill already names is not said again."""
+    for prefix in ('Blizzard, ', 'Forever Sixty, '):
+        if label.startswith(prefix):
+            rest = label[len(prefix):]
+            return rest[:1].upper() + rest[1:]
+    return label
+
+
 # ------------------------------------------------------------------------------------------------ the class landing
+FACTION_COLOR = {'alliance': '#6fb1ff', 'horde': '#ff6b5c'}  # web tokens.css --color-alliance, --color-horde
+
+
+def race_list(groups: list[dict]) -> str:
+    """web guides/GuideRaceList: per faction its label, then each race (portrait 24, name in the faction colour, "new")."""
+    out = []
+    for g in groups:
+        items = ''.join(
+            f'<li style="color:{FACTION_COLOR[g["faction"]]}">'
+            + (f'<span aria-hidden="true">{icon(r["icon"], 24)}</span>' if r['icon'] else '')
+            + f'<span>{e(r["name"])}</span>'
+            + ('<span class="t-small" style="color:var(--muted);font-weight:400">new</span>' if r['fresh'] else '')
+            + '</li>' for r in g['races'])
+        out.append(f'<div class="grl-g"><h4 class="t-label grl-h">{e(g["heading"])}</h4><ul class="grl-items">{items}</ul></div>')
+    return f'<div class="grl">{"".join(out)}</div>'
+
+
 def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
     L = F['landings'][cls]
     me = F['me'].get(me_key) if me_key else None
@@ -337,18 +387,18 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
     cards = []
     for c in L['cards']:
         you = bool(mine and me['spec'] == c['name'])
-        title = e(c['name']) + (' ' + Tag(e(C['yourSpecPill'])) if you else '')
-        cards.append(Plate(Row(title, e(c['line']), lead=icon(c['icon'], 40), title_color=CLASS_COLOR[cls], selected=you,
-                               foot=f'<span class="link">{rsaquo(C["readTheGuide"])}</span>')))
+        title = e(c['name'])   # the accent rule marks yours, no pill
+        # the whole row is the link to the guide (no "Read the guide" line)
+        cards.append(Plate(Row(title, e(c['line']), lead=icon(c['icon'], 40), title_color=CLASS_COLOR[cls], selected=you)))
     specs = (f'<div class="g-specs" role="region" aria-label="{e(C["classLandingSpecsHeading"])}" style="--specs:{len(cards)}">'
              f'{"".join(cards)}</div>')
     main = ''.join(Section(e(s['heading']), Prose(s['html']), boxed=True) for s in L['sections'] if not s['panel'])
-    rail = ''.join(Section(e(s['heading']), Prose(s['html'], 'lane'), boxed=True) for s in L['sections'] if s['panel'])
-    srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]),
-                   boxed=True)
+    rail = ''.join(Section(e(s['heading']), (race_list(L['races']) if s['heading'] == 'Races' else '')
+                           + (Prose(s['html'], 'lane') if s['html'] else ''), boxed=True) for s in L['sections'] if s['panel'])
+    srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(source_title(s["label"]))}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]))
     ans = '' if kind == 'out' else answer(kind, me)
     head = PageHeader(e(L['title']), CLASS_COLOR[cls], crest_img(cls, 56), [f'Updated {e(L["updated"])}'], ans)
-    html = head + Page('ledger', f'<div class="g-ledger">{specs}</div>') + Page('split', main + srcs, rail) + PAGE_CSS
+    html = head + Page('ledger', f'<div class="g-ledger">{specs}</div>') + Page('split', main, rail) + Page('ledger', srcs) + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     return build_page(f'{L["title"]} guides', html, 'Guides', who, f'Class landing mock (design/specs/2026-11-08-guides.md); data guides-facts.json, build {F["build"]}.')
 
@@ -378,13 +428,13 @@ def states_page() -> str:
                     ('Answer: another spec or class', 'other', me['warrior60']), ('Answer: the spec is not known yet', 'unknown', None),
                     ('Answer: no character on the account', 'nochar', None), ('Answer: the account read failed', 'error', None)):
         block(t, PageHeader(e(g['title']), CLASS_COLOR['hunter'], crest_img('hunter', 56), [e(g['meta'])], answer(k, m, g)))
-    rot = g['band']['rotation']
+    rot = g['rotation']['lists']['priority']   # the Rotation section's rows (the band shows the build alone)
     block('Rotation row: default, hover, a raid-build-only row', RowsSlim([spell_row(rot[0], '1'),
           spell_row(rot[1], '2').replace('class="row', 'class="row hov', 1), spell_row({**rot[2], 'raidBuildOnly': True}, '3')]))
     block('Spec row on /guides: default, hover, your spec, focus-visible', RowsSlim([
         Row('Beast Mastery', lead=icon(F['index']['classes'][2]['specs'][0]['icon'], 28)),
         Row('Marksmanship', lead=icon(F['index']['classes'][2]['specs'][1]['icon'], 28)).replace('class="row', 'class="row hov', 1),
-        Row('Survival', lead=icon(F['index']['classes'][2]['specs'][2]['icon'], 28), trail=Tag(e(C['yourSpecPill'])), selected=True),
+        Row('Survival', lead=icon(F['index']['classes'][2]['specs'][2]['icon'], 28), selected=True),
         Row('Survival', lead=icon(F['index']['classes'][2]['specs'][2]['icon'], 28)).replace('class="row', 'class="row fv', 1)]))
     block('Contents: the bar&rsquo;s On this page menu open (below 1760); the rail with Rotation current (from 1760)',
           '<div class="st-pair"><div class="st-menu">' + Menu(e(C['tocBarLabel']), [('', [(e(s['title']), '', '', '', s['id'] == 'rotation-and-priority') for s in F['sections']])])
@@ -402,11 +452,18 @@ def states_page() -> str:
 
 
 PAGE_CSS = '''<style>
-.gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.grace{display:contents}.gblk{display:flex;flex-direction:column}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll .gdoll-f{margin-top:0}
+.gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.graces,.gblocks{display:flex;flex-direction:column;gap:28px;min-width:0}.grace{display:flex;flex-direction:column;gap:8px}.grace>.sub-h{padding:0}.graces>p{margin:0}
+.gstat .st .stc{grid-template-columns:0 var(--st-name) var(--st-bar) repeat(var(--n),var(--st-fig))}   /* GuideStatLane: no icon track */
+@media(max-width:1023px){.gstat .st .stc{grid-template-columns:0 minmax(0,1fr) auto}}
+@media(min-width:1280px){#leveling .rd.solo{grid-template-columns:minmax(0,1fr)}#leveling .rd.solo>.rd-prose{columns:2 320px;column-gap:var(--gap)}#leveling .lane-blk{break-inside:avoid;margin-bottom:24px}#leveling li,#leveling p{break-inside:avoid}#leveling h3{break-after:avoid}#enchants-and-consumables .rd.solo{grid-template-columns:minmax(0,1fr)}.gextras-solo .gblocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:start;gap:28px var(--gap)}}   /* [spec].astro: Leveling in two columns; extras with no prose side by side */.gblk{display:flex;flex-direction:column}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll .gdoll-f{margin-top:0}
 .gdoll{container-type:inline-size}.gdoll-f{max-width:640px;margin-top:24px}@container (max-width:422.98px){.gdoll-f{display:none}}
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}
 .ans-links{display:flex;gap:4px 16px;flex-wrap:wrap}
+.grl{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}.grl-g{display:flex;flex-direction:column;gap:6px}.grl-h{margin:0;color:var(--muted);font-weight:700}
+.grl-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 12px;margin:0;padding:0;list-style:none}
+.grl-items li{display:flex;gap:8px;align-items:center;min-height:24px;font-size:14px;font-weight:700;line-height:18px}
+.grl-items li>span[aria-hidden]{display:flex;flex:none}.grl-items li .ic{display:block}
 .gbands{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:-16px}.gtier{margin-top:-16px}
 @media(min-width:900px){.ans-row{flex-direction:row-reverse}.ans-who{align-items:flex-end}.ans-links{justify-content:flex-end}}
 .g-read{padding-top:28px}.layout-reading{row-gap:var(--section-gap)}.g-top{grid-column:1/-1;display:flex;flex-direction:column;gap:22px;min-width:0}
@@ -414,12 +471,15 @@ PAGE_CSS = '''<style>
 .g-ledger{display:flex;flex-direction:column;gap:22px}
 .g-specs{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 @media(min-width:1024px){.g-specs{grid-template-columns:repeat(var(--specs),minmax(0,1fr))}}
-main{padding-bottom:40px}
+.g-page{padding-bottom:40px}  /* [spec].astro .guide-page's own bottom space, under the page body's gap (ws_lib main) */
 .sw{display:grid;gap:20px var(--gap);grid-template-columns:minmax(0,1fr)}@media(min-width:768px){.sw{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.sw-h{padding-bottom:8px}
+.rd-lane .rows:not(.slim) .row:not(.slim){min-height:58px}  /* web tokens.css --row-h: a name-only key talent row is the token height */
+.sw-h{margin:0;padding-bottom:8px;font:600 15px/20px var(--font-body);color:#f3eee2}
 .lvl-l{display:flex;flex-direction:column}
 .racial{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:18px;color:var(--muted);width:100%}.racial b{color:var(--text);font-weight:600}
-.sub-h{padding:12px 0 2px;margin:0}
+.sub-h{padding:12px 0 2px;margin:0;font:600 15px/20px var(--font-body);color:#f3eee2;letter-spacing:0;text-transform:none}
+.g-glance .pcol-h h2{font:600 15px/20px var(--font-body);color:#f3eee2;letter-spacing:0;text-transform:none}
+.rd-lane .rows.slim .row .ic:not(img){border:1px solid #82705b;background:var(--bg)}
 .lane-blk .st{--st-name:minmax(max-content,2fr)}   /* GuideStatLane: a stat's name on one line */
 .items{display:flex;flex-direction:column}
 .foot-note{padding-top:16px}

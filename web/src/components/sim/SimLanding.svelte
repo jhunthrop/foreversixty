@@ -71,7 +71,7 @@
 </script>
 
 <Page panels testid="sim-landing">
-  <Section title={copy.sections.simYourCharacter} panel frame="framed" testid="sim-cold-paste">
+  <Section title={copy.sections.simYourCharacter} panel testid="sim-cold-paste">
     <div class="flex flex-col gap-3">
       <FormRow label={copy.paste.label} action="/sim" method="get" inline onsubmit={submitPaste}>
         <Field
@@ -171,11 +171,12 @@
         <Row title={klass.name} titleTone={classTone(klass.slug)} open>
           {#snippet lead()}<ClassCrestRing characterClass={klass.slug} size={32} />{/snippet}
           {#snippet subContent()}
-            <span class="flex flex-wrap gap-x-4 gap-y-1 pt-[2px]">
+            <!-- On a phone each spec link takes its own line (no orphans, no collisions); one line from 768. -->
+            <span class="flex flex-col pt-[2px] md:flex-row md:flex-wrap md:gap-x-4 md:gap-y-1">
               {#each klass.specs as spec (spec.href)}
                 <!-- A 44 px hit area on a touch screen (spec §5, Touch); the line stays 20 px on desktop. -->
                 <a
-                  class="text-gold inline-flex min-h-11 items-center text-[14px] font-semibold md:min-h-0"
+                  class="text-gold inline-flex min-h-11 items-center text-[14px] font-semibold whitespace-nowrap md:min-h-0"
                   href={spec.href}>{spec.name} ›</a
                 >
               {/each}

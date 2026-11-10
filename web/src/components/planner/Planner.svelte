@@ -681,6 +681,11 @@
    *  every `TreeGrid` through `TreeTabs`, so the per-cell marker is one computation, not a
    *  second one forked by the tree row. */
   let bandDiff = $state<BandDiffView | null>(null);
+  /** The level card draws nothing (a build that matches it). */
+  let bandQuiet = $state(false);
+  /** Share and Import leave the rail for the full-width row when the level card shows beside a spent
+   *  build: with all three, the rail ran 160 to 345 px past the trees (h-audit 2026-11-09). */
+  const importBelow = $derived(standalone && !shared && !bandQuiet && store.spent > 0);
 
   // Nothing cancels a request that is already in flight, so switching class twice in quick
   // succession leaves two runs of this racing to write to the same store. The class this run
@@ -976,7 +981,9 @@
       : plannerCharacterCardCopy.originLine(effectiveOrigin.owner, leadingSpec || className),
   );
 
-  /** The one note line (spec 4.3), its phone sentence when it has one. */
+  /** The one note line (spec 4.3), its phone sentence when it has one. A guide's link and a clean
+   *  character load say nothing (h-audit 2026-11-09): the guide row's Loaded tag and the header's
+   *  character already say where the build came from. */
   const noteText = $derived.by((): { text: string; short?: string } | null => {
     const note = codeNote;
     if (note === null) return null;
@@ -984,7 +991,7 @@
       case 'linked':
         return { text: plannerCopy.linkedNote, short: plannerCopy.linkedNoteShort };
       case 'guide':
-        return { text: plannerCopy.guideOrderNote(note.specName) };
+        return null;
       case 'tree-count':
         return { text: `That code has ${note.got} talent trees; a build has ${note.want}.` };
       case 'kept':
@@ -997,9 +1004,10 @@
         const head = note.gearOnly
           ? plannerCopy.noTalentRanksNote
           : note.dropped === 0
-            ? plannerCopy.reconstructedNote
+            ? ''
             : plannerCopy.reconstructedDroppedNote(note.dropped);
-        return { text: note.olderBuild ? `${head} ${plannerCopy.olderBuildNote}` : head };
+        const text = note.olderBuild ? `${head} ${plannerCopy.olderBuildNote}`.trim() : head;
+        return text === '' ? null : { text };
       }
     }
   });
@@ -1208,18 +1216,28 @@
     {store}
     panel={standalone}
     heading={shared ? bandCompareCopy.sharedHeading : undefined}
+    quietMatch={standalone && !shared}
     characterLevel={store.characterLevel}
     specOverride={specParam ?? undefined}
     onbanddiff={(diff) => (bandDiff = diff)}
+    onquiet={(quiet) => (bandQuiet = quiet)}
     onloaded={(bandLabel) => (codeNote = { kind: 'band', bandLabel })}
     onband={(band, label) => (estimateBand = { band, label })}
   />
 {/snippet}
 
-{#snippet importSection()}
+<!-- The take-it-with-you parts under In the game: Share (once a point is spent) and Import, unless
+     they sit in the full-width row below. -->
+{#snippet takeItParts()}
+  {#if store.spent > 0 && !importBelow}<SharePanel {store} part />{/if}
+  {#if !importBelow}{@render importSection(true)}{/if}
+{/snippet}
+
+{#snippet importSection(part: boolean)}
   {#if store.talentIndex}
     <ImportBox
       panel={standalone}
+      {part}
       talents={store.talentIndex}
       activeBuild={activeBuild.build}
       onimport={(build, pastedCode) => {
@@ -1243,7 +1261,7 @@
 {/snippet}
 
 {#if standalone}
-  <Page layout="workbench" panels testid="planner">
+  <Page layout="workbench" panels stickyRail testid="planner">
     {#snippet header()}
       <PageHeader title={headTitle} tone={classTone(store.classSlug)} testid="planner-head">
         {#snippet crest()}
@@ -1291,22 +1309,18 @@
       {#if status === 'ready'}
         <!-- A shared build leads with In the game (spec section 8); the planner with its level build. -->
         <Ordered order={shared ? 3 : 2}>{@render bandSection()}</Ordered>
-        <Ordered order={shared ? 2 : 3}
+        <!-- One take-it-with-you plate (h-audit 2026-11-09): In the game, then Share (once a point is
+             spent) and Import under hairlines; last in the phone flow, after the guide builds. -->
+        <!-- A shared build (read-only) has no Share or Import parts, so InGame keeps its own addon line. -->
+        <Ordered order={shared ? 2 : 5}
           ><InGame
             {store}
             character={sendCharacter}
             origin={effectiveOrigin}
             plainOtherClass={shared}
+            children={store.readOnly ? undefined : takeItParts}
           /></Ordered
         >
-        <!-- Only a class with a guide build takes a slot: an empty one would still hold a flow gap. -->
-        {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
-          <Ordered order={4}><GuideBuilds builds={guideBuilds} {store} /></Ordered>
-        {/if}
-        {#if !store.readOnly}
-          <Ordered order={7}><SharePanel {store} /></Ordered>
-          <Ordered order={8}>{@render importSection()}</Ordered>
-        {/if}
       {:else if status === 'loading'}
         {#if shared}
           <Ordered order={2}>{@render railSkeleton(plannerCopy.inGameTitle)}</Ordered>
@@ -1317,12 +1331,24 @@
         {/if}
       {/if}
     {/snippet}
+    <!-- The trees beside the rail, then Point order and Build vs guide full width beneath both (h-audit
+         2026-11-09: neither column leaves a void); on a phone Point order follows the trees. -->
+    {#snippet below()}
+      {#if status === 'ready'}
+        <Ordered order={1} span
+          ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
+        >
+        <!-- Only a class with a guide build takes a slot: an empty one would still hold a flow gap. -->
+        {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
+          <Ordered order={4} span><GuideBuilds builds={guideBuilds} {store} /></Ordered>
+        {/if}
+        {#if importBelow && !store.readOnly}
+          <Ordered order={7}><SharePanel {store} /></Ordered>
+          <Ordered order={8}>{@render importSection(false)}</Ordered>
+        {/if}
+      {/if}
+    {/snippet}
     <Ordered order={1} span>{@render plate()}</Ordered>
-    {#if status === 'ready'}
-      <Ordered order={6} span
-        ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
-      >
-    {/if}
   </Page>
 {:else}
   <!-- Top Gear's inline "add a build" (TalentCandidates.svelte): the facts bar, the trees, the
@@ -1333,7 +1359,7 @@
     {#if status === 'ready'}
       <PlannerOrder {store} />
       {@render bandSection()}
-      {@render importSection()}
+      {@render importSection(false)}
     {/if}
   </div>
 {/if}

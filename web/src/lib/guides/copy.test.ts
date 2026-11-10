@@ -19,11 +19,10 @@ describe('guidesCopy', () => {
 });
 
 describe('the stat table per-point column', () => {
-  it('says "or rating" when the table prices a rating stat, and not otherwise', () => {
-    expect(guidesCopy.perPointColumn('dps', true)).toBe('DPS per point or rating');
-    expect(guidesCopy.perPointColumn('dps', false)).toBe('DPS per point');
-    expect(guidesCopy.perPointColumn('healer', true)).toBe('HPS per point or rating');
-    expect(guidesCopy.perPointColumn('tank', false)).toBe('Tank score per point');
+  it('heads the per-point column with the role rate only', () => {
+    expect(guidesCopy.perPointColumn('dps')).toBe('DPS per point');
+    expect(guidesCopy.perPointColumn('healer')).toBe('HPS per point');
+    expect(guidesCopy.perPointColumn('tank')).toBe('Tank score per point');
   });
 });
 

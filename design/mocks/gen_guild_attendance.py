@@ -321,7 +321,7 @@ def attendance_groups():
     return [
         ('Signed up, not in the log', [r for r in ROWS if r[5] == 'no_show'], True),
         ('Late', [r for r in ROWS if r[5] == 'late'], True),
-        ('Joined from the bench or without a sign-up', [r for r in ROWS if r[4] not in SIGNED_STATES and r[0] in LOG], True),
+        ('Joined', [r for r in ROWS if r[4] not in SIGNED_STATES and r[0] in LOG], True),
         ('Present', [r for r in ROWS if r[4] in SIGNED_STATES and r[5] == 'present'], False),
         ('Bench and out', [r for r in ROWS if r[5] == 'absent'], False),
     ]

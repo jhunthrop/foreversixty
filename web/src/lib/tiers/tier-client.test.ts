@@ -73,12 +73,14 @@ describe('mountTierPage', () => {
     vi.resetModules();
   });
 
-  it('names the spec and where it stands, and moves the mark when the selected character changes', async () => {
+  it('names the spec in its class colour, marks its row (no line repeats it), and moves the mark', async () => {
     findTierMe.mockResolvedValue(spec('warrior/arms'));
     const { mountTierPage } = await import('./tier-client');
     mountTierPage();
     await settle();
-    expect(card()).toBe('Arms Warrior | Tier S · #1 · 95.0 DPS');
+    expect(card()).toBe('Arms Warrior | ');
+    expect(field('standing').parentElement!.hidden).toBe(true);
+    expect(field('name').style.color).toBe('var(--color-class-warrior)');
     expect(shown()).toEqual(['bis', 'guide']);
     expect(field('bis').getAttribute('href')).toBe('/bis/warrior/arms/60');
     expect(field('guide').getAttribute('href')).toBe('/guides/warrior/arms');
@@ -88,7 +90,7 @@ describe('mountTierPage', () => {
     window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
     await settle();
 
-    expect(card()).toBe('Beast Mastery Hunter | Tier A · #2 · 90.0 DPS');
+    expect(card()).toBe('Beast Mastery Hunter | ');
     expect(marked()).toEqual(['hunter/beast-mastery']);
   });
 

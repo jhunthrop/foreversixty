@@ -4,8 +4,10 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"html"
 	"io/fs"
 	"os"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -28,21 +30,84 @@ Regenerate both chrome.html and testdata/chrome.html from the repository root wi
   (cd web && npm run build) && (cd api && go test ./internal/site -run TestChromeSnapshot -update)
 or, when the site is built in another worktree, from api/ with
   go test ./internal/site -run TestChromeSnapshot -update -site <that worktree>/web/dist/about.html
-then run go test ./internal/site again without -update. -->`
+then run go test ./internal/site again without -update. Its scripts load by stable path, /_chrome/<name>.js,
+which every site build writes (web/scripts/chrome-aliases.mjs), so a site deploy never strands them. -->`
 
-// extractChrome pulls the site's chrome out of a built page. The site header
-// is the first <header> in the document; the site footer is the last
-// <footer>, because a content page can carry its own (the /about page ends
+// The top of Base.astro's body: the skip link, then the band the bar floats over
+// (.site-top, ui/band.css) closing right after the site <header> it holds.
+const (
+	skipLinkStart = `<a href="#main"`
+	siteTopStart  = `<div class="site-top`
+	siteTopEnd    = "</header></div>"
+)
+
+// extractChrome pulls the site's chrome out of a built page. The header half is
+// the skip link and the .site-top band around the first <header> in the
+// document, so /b/{id} wears the same band under its bar; the footer is the
+// last <footer>, because a content page can carry its own (the /about page ends
 // with a sources <footer> inside its article).
 func extractChrome(page string) (header, footer string, err error) {
-	headerStart := strings.Index(page, "<header")
-	headerEnd := strings.Index(page, "</header>")
+	headerStart := strings.Index(page, skipLinkStart)
+	bandStart := strings.Index(page, siteTopStart)
+	headerEnd := strings.Index(page, siteTopEnd)
 	footerStart := strings.LastIndex(page, "<footer")
 	footerEnd := strings.LastIndex(page, "</footer>")
-	if headerStart < 0 || headerEnd < headerStart || footerStart < 0 || footerEnd < footerStart {
-		return "", "", fmt.Errorf("site: no <header>...</header> and <footer>...</footer> pair in the page")
+	if headerStart < 0 || bandStart < headerStart || headerEnd < bandStart {
+		return "", "", fmt.Errorf("site: no skip link and %s...%s band in the page", siteTopStart, siteTopEnd)
 	}
-	return page[headerStart : headerEnd+len("</header>")], page[footerStart : footerEnd+len("</footer>")], nil
+	if footerStart < 0 || footerEnd < footerStart {
+		return "", "", fmt.Errorf("site: no <footer>...</footer> in the page")
+	}
+	art, err := rootArt(page)
+	if err != nil {
+		return "", "", err
+	}
+	header = stableScripts(art + page[headerStart:headerEnd+len(siteTopEnd)])
+	return header, stableScripts(page[footerStart : footerEnd+len("</footer>")]), nil
+}
+
+// hashedScript is a built script's URL, /_astro/<name>.<8-character Vite hash>.js. The API's
+// copy is deployed apart from the site, whose next deploy removes those files, so the copy names
+// /_chrome/<name>.js instead: every site build writes that stable module re-exporting its own
+// hashed file (web/scripts/chrome-aliases.mjs, the same rule).
+var hashedScript = regexp.MustCompile(`/_astro/([^"'\s/]+)\.[A-Za-z0-9_-]{8}\.js`)
+
+func stableScripts(chrome string) string {
+	return hashedScript.ReplaceAllString(chrome, "/_chrome/$1.js")
+}
+
+// TestChromeLoadsScriptsByStablePath: no hashed site script in the served chrome, and the
+// header's islands and script do load from /_chrome/.
+func TestChromeLoadsScriptsByStablePath(t *testing.T) {
+	if m := hashedScript.FindString(string(Header + Footer)); m != "" {
+		t.Fatalf("chrome.html names the hashed %s, which the next site deploy removes; regenerate it", m)
+	}
+	for _, want := range []string{`component-url="/_chrome/`, `renderer-url="/_chrome/`, `<script type="module" src="/_chrome/`} {
+		if !strings.Contains(string(Header), want) {
+			t.Errorf("chrome.html header has no %s", want)
+		}
+	}
+}
+
+func TestStableScriptsDropsTheHash(t *testing.T) {
+	got := stableScripts(`<astro-island component-url="/_astro/CharacterSelector.B1w9MGHd.js" renderer-url="/_astro/client.svelte.CUVksGWg.js"><link href="/_astro/about.Dx1_aB-9.css">`)
+	want := `<astro-island component-url="/_chrome/CharacterSelector.js" renderer-url="/_chrome/client.svelte.js"><link href="/_astro/about.Dx1_aB-9.css">`
+	if got != want {
+		t.Fatalf("got %s\nwant %s", got, want)
+	}
+}
+
+// rootArtAttr is Base.astro's <html> style: the painted art the band and the ground draw
+// (lib/ui/assets.ts ART_CSS_VARS). An API page has its own <html>, so the header half carries the same
+// properties as a :root rule.
+var rootArtAttr = regexp.MustCompile(`<html[^>]*\sstyle="([^"]*--art-[^"]*)"`)
+
+func rootArt(page string) (string, error) {
+	m := rootArtAttr.FindStringSubmatch(page)
+	if m == nil {
+		return "", fmt.Errorf("site: the page's <html> carries no --art-* style")
+	}
+	return "<style>:root{" + html.UnescapeString(m[1]) + "}</style>", nil
 }
 
 // TestChromeTemplateMatchesTheSnapshot always runs: it proves the markup the

@@ -138,26 +138,25 @@ async function sectionsKeepGutter(page: Page): Promise<void> {
 }
 
 /**
- * The shared paperdoll on a phone (web layout spec 2026-11-05 §4.3): one column in the character
- * panel's reading order -- head, then neck under it, the right column's hands further down.
+ * The shared paperdoll's list form (design/specs/2026-11-09-directions.md, Paperdoll; the b2 sim
+ * mock): the frame is never drawn on the sim, and the slots run in the client's order -- neck
+ * after head, beside it in two columns or under it where the panel is too narrow for two names.
  */
-async function gearGridIsOneColumn(page: Page): Promise<void> {
-  // One read of all three, so a scroll still settling cannot move one between them.
-  const [head, neck, hands] = await page.evaluate(() =>
-    ['head', 'neck', 'hands'].map((slot) => {
-      const box = document
-        .querySelector(`[data-testid="sim-gear-doll-slot-${slot}"]`)
-        ?.getBoundingClientRect();
-      return box === undefined ? null : { x: box.x, y: box.y };
+async function gearListInClientOrder(page: Page): Promise<void> {
+  const doll = page.getByTestId('sim-gear-doll');
+  await expect(doll.locator('.pdf-frame')).toHaveCount(0);
+  // One read of both, so a scroll still settling cannot move one between them.
+  const [head, neck] = await doll.evaluate((root) =>
+    [...root.querySelectorAll('.pdf-items > li')].slice(0, 2).map((cell) => {
+      const box = cell.getBoundingClientRect();
+      return { x: box.x, y: box.y };
     }),
   );
-  expect(head, 'sim-gear-doll-slot-head missing').not.toBeNull();
-  expect(neck, 'sim-gear-doll-slot-neck missing').not.toBeNull();
-  expect(hands, 'sim-gear-doll-slot-hands missing').not.toBeNull();
-
-  expect(Math.round(neck!.x), 'neck is not in the head column').toBe(Math.round(head!.x));
-  expect(neck!.y, 'neck is not under head').toBeGreaterThan(head!.y);
-  expect(hands!.y, 'hands is not under the left column').toBeGreaterThan(neck!.y);
+  expect(head, 'the head row is missing').toBeDefined();
+  expect(neck, 'the neck row is missing').toBeDefined();
+  const beside = Math.round(neck!.y) === Math.round(head!.y) && neck!.x > head!.x;
+  const under = neck!.y > head!.y && Math.round(neck!.x) === Math.round(head!.x);
+  expect(beside || under, 'neck does not follow head').toBe(true);
 }
 
 // The landing's paste Plate pastes and runs in one click (SimView.svelte's `runPastedInput`),
@@ -181,12 +180,12 @@ test('nothing scrolls sideways and every target clears 44px on an empty /sim', a
   await sectionsKeepGutter(page);
 });
 
-test('a loaded character reaches the run button and the DPS figure without a scroll after pressing run, in a one-column gear grid, with no sideways scroll', async ({
+test('a loaded character reaches the run button and the DPS figure without a scroll after pressing run, in the gear list, with no sideways scroll', async ({
   page,
 }) => {
   // A code link loads the character without running it: the doll is the page's one Plate.
   await gotoSim(page, `/sim?code=${encodeURIComponent(FURY)}`);
-  await expect(page.getByTestId('sim-gear-doll-slot-head')).toBeVisible();
+  await expect(page.getByTestId('sim-gear-doll').getByTestId('paperdoll-list-slot-head')).toBeVisible();
 
   // More settings is closed on arrival: an open sheet would cover the page.
   await expect(page.getByTestId('sim-more-settings')).toHaveCount(0);
@@ -194,7 +193,7 @@ test('a loaded character reaches the run button and the DPS figure without a scr
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);
   await sectionsKeepGutter(page);
-  await gearGridIsOneColumn(page);
+  await gearListInClientOrder(page);
 
   // The secondary controls are in More settings; the audit measures them open, as a player
   // opens them.

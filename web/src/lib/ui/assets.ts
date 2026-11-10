@@ -71,7 +71,7 @@ const url = (file: string): string => `url('${file}')`;
 /**
  * The art as CSS custom properties, set once on <html> by Base.astro, so the stylesheets
  * (global.css, nav.css, the primitives) read the manifest instead of naming files. A page
- * without Base.astro (the API's /b/{id}) gets the flat token colours underneath.
+ * without Base.astro (the API's /b/{id}) carries the same properties in its copied chrome.
  */
 export const ART_CSS_VARS: Readonly<Record<string, string>> = {
   '--art-ground': url(GROUND_TILE),

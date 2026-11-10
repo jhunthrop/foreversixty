@@ -90,12 +90,15 @@ type ParseRef struct {
 	FightIndex int     `json:"fight_index"`
 }
 
-// NightPulls is one report's own pull count against a named encounter.
+// NightPulls is one report's own pull count against a named encounter, with that night's
+// fastest kill (null on a night without one) and every death across its pulls.
 type NightPulls struct {
 	ReportID string `json:"report_id"`
 	Date     string `json:"date"`
 	Pulls    int    `json:"pulls"`
 	Killed   bool   `json:"killed"`
+	KillMS   *int64 `json:"kill_ms"`
+	Deaths   int    `json:"deaths"`
 }
 
 // EncounterProgress is one named encounter's own standing for the guild.
@@ -224,7 +227,8 @@ func (s *Store) encounterProgress(ctx context.Context, guildID, encounterID int6
 	}
 
 	nightRows, err := s.Pool.Query(ctx, `
-		select r.id, r.created_at::date, count(*), count(*) filter (where f.kill) > 0
+		select r.id, r.created_at::date, count(*), count(*) filter (where f.kill) > 0,
+		       min(f.duration_ms) filter (where f.kill), coalesce(sum(f.deaths), 0)::int
 		from fights f join reports r on r.id = f.report_id
 		where r.guild_id = $1 and f.encounter_id = $2 and `+counted+`
 		group by r.id, r.created_at order by r.created_at`,
@@ -235,7 +239,7 @@ func (s *Store) encounterProgress(ctx context.Context, guildID, encounterID int6
 	for nightRows.Next() {
 		var n NightPulls
 		var date time.Time
-		if err := nightRows.Scan(&n.ReportID, &date, &n.Pulls, &n.Killed); err != nil {
+		if err := nightRows.Scan(&n.ReportID, &date, &n.Pulls, &n.Killed, &n.KillMS, &n.Deaths); err != nil {
 			nightRows.Close()
 			return EncounterProgress{}, fmt.Errorf("guilds: encounter nights: %w", err)
 		}

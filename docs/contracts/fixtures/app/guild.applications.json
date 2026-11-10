@@ -17,6 +17,7 @@
           "class": "paladin",
           "spec": "Holy",
           "spec_name": "Holy Paladin",
+          "group": "healer",
           "level": 60,
           "item_level": 63,
           "best_parse": {
@@ -96,6 +97,7 @@
           "class": "warlock",
           "spec": null,
           "spec_name": null,
+          "group": null,
           "level": 60,
           "item_level": null,
           "best_parse": null,

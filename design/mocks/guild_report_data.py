@@ -35,15 +35,24 @@ def signed_state(state: str) -> str | None:
     return None if state == 'none' else state
 
 
-def death(name: str, ability: str, at_ms: int) -> dict:
-    hit = {'at_ms': at_ms, 'spell_id': SPELL[ability], 'ability': ability, 'source': 'Onyxia', 'amount': 4210, 'overkill': 1050}
+# Each ability's killing blow and when it lands into the pull: Tail Sweep in phase 1 (behind her), Deep Breath in the air phase,
+# Flame Breath once she lands; the n-th death to one ability lands a little later and hits a little harder.
+HITS = {'Tail Sweep': (40_000, 1_160, 380), 'Deep Breath': (105_000, 4_380, 1_240), 'Flame Breath': (190_000, 3_240, 860)}
+
+
+def death(name: str, ability: str, nth: int) -> dict:
+    start, amount, overkill = HITS[ability]
+    at_ms = start + 12_000 * nth
+    hit = {'at_ms': at_ms, 'spell_id': SPELL[ability], 'ability': ability, 'source': 'Onyxia', 'amount': amount + 170 * nth,
+           'overkill': overkill + 230 * nth}
     return {**who(name), 'at_ms': at_ms, 'killing_blow': hit, 'last_hits': []}
 
 
 def pulls() -> list[dict]:
     out = []
     for index, name, attempt, result, ms, deaths in PULLS:
-        causes = [death(n, ability, 30_000 + 20_000 * i) for i, (n, ability) in enumerate(deaths)]
+        made = [death(n, ability, [a for _n, a in deaths[:i]].count(ability)) for i, (n, ability) in enumerate(deaths)]
+        causes = sorted(made, key=lambda d: d['at_ms'])
         out.append({'fight_index': index, 'encounter_id': None if attempt is None else ONYXIA, 'name': name, 'attempt': attempt,
                     'result': result, 'duration_ms': ms, 'deaths': len(deaths), 'death_causes': causes})
     return out
@@ -87,7 +96,7 @@ def report() -> dict:
                                     for p in boss_pulls]},
         'loot': [{'encounter_id': ONYXIA, 'boss': kill[1], 'awards': [
             {'item_id': d['item_id'], 'item_name': d['item_name'], 'quality': d['quality'], 'icon': d['icon'], **who(d['name']), 'by_name': d['awarded_by'],
-             'at': d['at']} for d in awards()]}],
+             'at': d['at'], **{k: d[k] for k in ('ms_os', 'reason', 'votes_yes', 'votes_no', 'votes_officers')}} for d in awards()]}],
         'moves': {'previous': None, 'rows': []},
         'posted_at': None,
     }
@@ -98,7 +107,8 @@ def attendance() -> list[dict]:
     for r in R:
         name, _, spec, _, _, state = r
         here = name not in AWAY
-        outcome = 'present' if here else 'absent'
+        # Signed up and not in the log is a no-show (attendance spec); away without a sign-up, or benched, is out.
+        outcome = 'present' if here else ('no_show' if state in ('in', 'late') else 'absent')
         out.append({**who(name), 'spec': spec, 'signed': signed_state(state), 'role': member(name)['role'], 'outcome': outcome, 'came_as': None,
                     'first_seen_offset_s': 0 if here else None, 'pulls_present': len(PULLS) if here else 0, 'pulls_total': len(PULLS),
                     'excused': False, 'own': name == VIEWER, 'auto_outcome': outcome, 'auto_excused': False, 'override': None})
@@ -205,7 +215,10 @@ def default_pull(rep: dict) -> dict | None:
 
 
 def attendance_summary(n: dict) -> str:
-    parts = [f"{n['came']} of {n['signed']} came"] + ([f"{n['joined']} more joined"] if n['joined'] else [])
+    # attendance-copy attendanceSummary: came, late, not in the log, more joined, excused.
+    parts = ([f"{n['came']} of {n['signed']} came"] + ([f"{n['late']} late"] if n.get('late') else [])
+             + ([f"{n['not_in_log']} not in the log"] if n.get('not_in_log') else []) + ([f"{n['joined']} more joined"] if n['joined'] else [])
+             + ([f"{n['excused']} excused"] if n.get('excused') else []))
     return SEP.join(parts)
 
 

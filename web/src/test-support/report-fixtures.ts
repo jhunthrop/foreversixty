@@ -2,6 +2,7 @@
 // The raid-night report's fixtures: an attendance row and a full report (one kill, deaths, buffs,
 // loot and a previous raid to compare with), for the Your night, Report and Attendance tests.
 import type { RaidAttendanceRow, RaidReport } from '../lib/guild/api';
+import { NO_AWARD_RECORD } from './award-record';
 
 /** One attendance row: a present DPS signed In. */
 export function attendanceRow(extra: Partial<RaidAttendanceRow> = {}): RaidAttendanceRow {
@@ -194,6 +195,7 @@ export function raidReport(extra: Partial<RaidReport> = {}): RaidReport {
             class: 'warrior',
             by_name: 'Bow Jackzon',
             at: '2026-12-11T05:30:00Z',
+            ...NO_AWARD_RECORD,
           },
         ],
       },

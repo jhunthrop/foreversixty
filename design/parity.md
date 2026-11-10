@@ -108,6 +108,14 @@ Then commit `design/mocks/web` (and `design/mocks/data/bis-facts.json`).
 
 `design/mocks/web/guild-parity.json`, against the committed mocks from `design/mocks/ws_guild2.py` (the persona round, `design/specs/2026-11-05-web-layout.md` section 7). The roster and every figure both sides show live once in `design/mocks/guild_data.py`; `python3 design/mocks/guild_fixtures.py` writes them as the API's answers into `web/tests/e2e/fixtures/guild-parity/`, which `tests/e2e/support/guild-parity/` routes to the build. The clock is pinned to Sat 12 Dec 2026, 4:00 pm in America/Chicago (the first raid night was Wed 9 Dec; the next is Wed 16 Dec) (`support/guild-parity/clock.ts`), so "Starts in" and the raid times read as the mock's. After a change: `python3 design/mocks/guild_fixtures.py && python3 design/mocks/ws_guild2.py`.
 
+The tabs batch H redrew (Raids, the raid planner as officer and member, Progression, Applications, Recruit read by an officer, Settings) take
+the old `raid`, `raids`, `raids-plan`, `assignments`, `progression`, `applications`, `settings`, `settings-bot` and `settings-page` states'
+places: `design/mocks/web/guild-dense.json` marks them `parity` (`dense-raids`, `dense-planner`, `dense-raid-member`, `dense-progression`,
+`dense-recruit`, `dense-applications`, `dense-settings`), and `parity-guild.spec.ts` checks them beside the states above. Their mocks come
+from `design/mocks/ws_guild_dense_tabs.py`, drawn from the 40-raider world's fixtures (`guild_dense_fixtures.py`, `guild_dense_tabs_fixtures.py`
+write `web/tests/e2e/fixtures/guild-parity/dense-*.json`; `support/guild-parity/dense.ts` routes them at Sat 9 Jan 2027). After a change:
+`python3 design/mocks/guild_dense_fixtures.py && python3 design/mocks/guild_dense_tabs_fixtures.py && python3 design/mocks/ws_guild_dense_tabs.py`.
+
 ## The admin links state and the billing references
 
 `web/tests/e2e/parity-admin.spec.ts`: `admin-links` (the owner, Thandrel from `fixtures/home/me-60.json` with role admin, and the three links `admin-links.spec.ts` serves) at 1440 against `web-admin-links.html`. Test-time render: `node design/mocks/billing_facts.mjs <out>/billing-facts.json`, then `ws_billing.py` with `FS_BILLING_FACTS` and `FS_MOCK_OUT` (the facts bundle `admin-copy.ts` and `funnel.ts`, the guild billing and seats copy and the notifications copy). The same generator draws one reference that is not a page state: `web-account-discord-paste.html` (the account's Discord paste form). The guild settings Billing tab is drawn and gated by the guild settings mock. The premium spec also checks `checkout-owned` (the seat account on `/premium/checkout`, its "You already have Premium" Plate).

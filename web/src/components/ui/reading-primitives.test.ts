@@ -55,7 +55,7 @@ describe('ReadingSection', () => {
 });
 
 describe('LaneBlock', () => {
-  it('labels its rows with an h3 caps label and an optional meta at its right', () => {
+  it('labels its rows with an h3 heading and an optional meta at its right', () => {
     const body = html(LaneBlock, {
       label: 'Priority',
       meta: 'Level 60',
@@ -63,7 +63,7 @@ describe('LaneBlock', () => {
       children: text('<ol><li>Row</li></ol>'),
     });
     expect(body).toMatch(/data-testid="lane"/);
-    expect(body).toMatch(/<h3 class="[^"]*text-label[^"]*">Priority<\/h3>/);
+    expect(body).toMatch(/<h3 class="[^"]*ui-lane-label[^"]*">Priority<\/h3>/);
     expect(body).not.toContain('uppercase');
     expect(body).toMatch(/ml-auto[^"]*">Level 60<\/span>/);
     expect(body.indexOf('Priority')).toBeLessThan(body.indexOf('<ol>'));

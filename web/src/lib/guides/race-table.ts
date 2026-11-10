@@ -140,6 +140,55 @@ export function specKindOf(classSlug: string, spec: string, role: 'dps' | 'heale
   return 'melee';
 }
 
+/** The stat words a racial's tooltip spells out, in the short form a player says. */
+const STAT_SHORT: readonly (readonly [RegExp, string])[] = [
+  [/^critical strike chance(?: with all spells and attacks)?$/i, 'crit'],
+  [/^(?:your )?chance to hit with spells and attacks$|^hit chance with spells and attacks$/i, 'hit'],
+  [/^attack power, ranged attack power and spell power$/i, 'attack and spell power'],
+  [/^casting and attack speed$/i, 'attack and casting speed'],
+  [/^the damage dealt by hunter and warlock pets$/i, 'pet damage'],
+  [/^health$/i, 'health'],
+  [/^mana, rage and energy$/i, 'mana, rage and energy'],
+  [/^spirit$/i, 'spirit'],
+];
+
+/** Eureka!'s sentence: "Makes your [non-periodic] damaging [and healing] abilities cost 10% less
+ *  Rage and deal 10% more damage [or healing]". */
+const CHEAPER_AND_HARDER =
+  /^Makes your (non-periodic )?damaging(?: and healing)? abilities cost (\d+%) less (\w+) and deal (\d+%) more (damage(?: or healing)?)$/i;
+/** Touch of the Grave's: "… drain Health from the target, up to 5% of your maximum Health, at most
+ *  once every 15 seconds". */
+const DRAIN =
+  /^Gives .+ a chance to drain Health from the target, up to (\d+%) of your maximum Health, at most once every (\d+) seconds$/i;
+
+/** A racial's tooltip sentence as a player says it: "Grants 10% critical strike chance for 15
+ *  seconds on a 3 minute cooldown" is "10% crit, 15 s / 3 min", "Increases hit chance with spells
+ *  and attacks by 1%" is "1% hit" (h-audit 2026-11-09: the tooltip pasted beside the name was
+ *  slop). A sentence in any other words stays as it is. */
+export function shortEffect(text: string): string {
+  const drain = DRAIN.exec(text);
+  if (drain !== null) return `drain up to ${drain[1]} health, once per ${drain[2]} s`;
+  const timing = /\s+for (\d+) seconds(?: on a (\d+) minute cooldown)?$/i.exec(text);
+  const body = timing === null ? text : text.slice(0, timing.index);
+  const when =
+    timing === null ? '' : `, ${timing[1]} s${timing[2] === undefined ? '' : ` / ${timing[2]} min`}`;
+  const eureka = CHEAPER_AND_HARDER.exec(body);
+  if (eureka !== null) {
+    const [, periodic, cost, resource, more, what] = eureka;
+    return `${cost} less ${resource}, ${more} more ${periodic ?? ''}${what!.toLowerCase()}${when}`;
+  }
+  const grants = /^Grants (\d+%) (.+)$/i.exec(body);
+  const increases = /^Increases (.+) by (\d+%)$/i.exec(body);
+  const [pct, stat] =
+    grants !== null ? [grants[1]!, grants[2]!] : increases !== null ? [increases[2]!, increases[1]!] : [];
+  const short = stat === undefined ? undefined : STAT_SHORT.find(([pattern]) => pattern.test(stat))?.[1];
+  // Already short ("50% health and mana regeneration"): only its timing is said the short way.
+  if (pct === undefined && timing !== null && !/^(?:Grants|Increases|Makes|Gives)\b/i.test(body))
+    return `${body}${when}`;
+  if (pct === undefined || short === undefined) return text;
+  return `${pct} ${short}${when}`;
+}
+
 function racialText(race: RaceRow): string {
   return race.forever_changes.map((change) => change.text).join(' ');
 }
@@ -282,7 +331,13 @@ export function raceTableFor(
         if (effect === undefined) return [];
         const forClass = RACIAL_EFFECTS_BY_CLASS[race.slug]?.[name]?.[classSlug];
         const icon = icons.get(racialKey(name));
-        return [{ name, effect: forClass ?? upperFirst(effect), ...(icon === undefined ? {} : { icon }) }];
+        return [
+          {
+            name,
+            effect: upperFirst(shortEffect(forClass ?? upperFirst(effect))),
+            ...(icon === undefined ? {} : { icon }),
+          },
+        ];
       }),
     };
   });

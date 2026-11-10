@@ -2,9 +2,9 @@
 // web/src/pages/guides/[class]/index.astro
 // The class landing (directions mock b2-guide-class, round 5): the title band (the crest, the
 // class name in its colour, the Updated stamp, the signed-in answer), a panel per spec (a link
-// Row: icon, name, its role, Read the guide ›; the header character's
-// spec marked after load), then What changed from 1.12 and the Sources on their panels, with the
-// Races and the raid or leveling notes boxed in the rail. No intro paragraph and no card blurb
+// Row: icon, name, its role when it heals or tanks, Read the guide ›; the header character's
+// spec marked after load), then What changed from 1.12 on its panel with the Races and the raid or
+// leveling notes in the rail beside it, then the Sources full width. No intro paragraph and no card blurb
 // (owner 2026-11-09). index.md is split by its fixed heading vocabulary (class-landing.ts).
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
@@ -24,11 +24,17 @@ import { articleLd, breadcrumbListLd } from '../../../lib/seo';
 import { searchCopy } from '../../../lib/search-copy';
 import type { ClassSlug } from '../../../lib/ui/primitives';
 import { guidesCopy } from '../../../lib/guides/copy';
-import { CLASS_LANDING_PANELS, proseLabels, splitClassLanding } from '../../../lib/guides/class-landing';
+import {
+  CLASS_LANDING_PANELS,
+  proseLabels,
+  specCardLine,
+  splitClassLanding,
+} from '../../../lib/guides/class-landing';
 import { dayMonth } from '../../../lib/guides/guide-header';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { slugify } from '../../../lib/guides/sections';
 import { readSpecCatalog } from '../../../lib/bis/load';
+import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { dataUrl } from '../../../lib/planner/load';
 
 export async function getStaticPaths() {
@@ -62,6 +68,9 @@ const sections = await Promise.all(
 const mainSections = sections.filter((s) => !CLASS_LANDING_PANELS.includes(s.heading));
 const railSections = sections.filter((s) => CLASS_LANDING_PANELS.includes(s.heading));
 
+/** A spec guide's build as its trees (the plate's point split); none for a code that does not decode. */
+const specTrees = (code: string | undefined) =>
+  code === undefined ? [] : (decodeBuildTrees(build, code) ?? []);
 // Tree order (`tree_index` ascending), the order the talent frame shows.
 const specGuideBySlug = new Map(specGuides.map((g) => [g.data.spec, g]));
 const specs = readSpecCatalog()
@@ -74,7 +83,11 @@ const specs = readSpecCatalog()
       {
         key: `${classSlug}/${s.spec_slug}`,
         name: s.name,
-        line: guidesCopy.roleLabel(guide.data.role),
+        line: specCardLine(
+          guide.data.role,
+          specTrees(guide.data.raidBuild ?? guide.data.build),
+          guide.data.statPriority,
+        ),
         icon: dataUrl(build, `icons/${s.icon}.webp`),
         href: `/guides/${classSlug}/${s.spec_slug}`,
       },
@@ -120,7 +133,6 @@ const tone = { classSlug: classSlug as ClassSlug };
                 iconSize={40}
                 tone={tone}
                 sub={spec.line}
-                foot={`${guidesCopy.readTheGuide} ›`}
               />
             </Plate>
           ))}
@@ -133,23 +145,22 @@ const tone = { classSlug: classSlug as ClassSlug };
           <Prose html={section.html} />
         </Section>
       ))}
-      <GuideSources sources={entry.data.sources} />
       <Fragment slot="rail">
         {railSections.map((section) => (
           <Section title={section.heading} anchor={section.id} boxed testid={`class-landing-${section.id}`}>
             {section.heading === 'Races' && <GuideRaceList build={build} classSlug={classSlug} />}
-            <Prose html={section.html} mods={['lane']} />
+            {section.html !== '' && <Prose html={section.html} mods={['lane']} />}
           </Section>
         ))}
       </Fragment>
+    </Page>
+    <Page layout="ledger">
+      <GuideSources sources={entry.data.sources} />
     </Page>
   </main>
 </Base>
 
 <style>
-  .guide-landing {
-    padding-bottom: 40px;
-  }
   .guide-landing-top {
     display: flex;
     flex-direction: column;

@@ -122,7 +122,7 @@ func (s *Store) reportLoot(ctx context.Context, vc raidViewContext, raidID int64
 	rows, err := s.Pool.Query(ctx, `
 		select la.encounter_id, la.item_id, la.character_key,
 		       coalesce(nullif(c.name, ''), nullif(ae.name, ''), split_part(la.character_key, '/', 3)),
-		       lower(coalesce(c.class, '')), la.awarded_at, la.awarded_by
+		       lower(coalesce(c.class, '')), la.awarded_at, la.awarded_by, `+awardRecordColumns+`
 		from loot_awards la
 		left join characters c on c.key = la.character_key
 		left join addon_exports ae on ae.character_key = la.character_key
@@ -141,7 +141,9 @@ func (s *Store) reportLoot(ctx context.Context, vc raidViewContext, raidID int64
 	for rows.Next() {
 		var w award
 		var at time.Time
-		if err := rows.Scan(&w.encounterID, &w.a.ItemID, &w.a.CharacterKey, &w.a.Name, &w.a.Class, &at, &w.by); err != nil {
+		targets := append([]any{&w.encounterID, &w.a.ItemID, &w.a.CharacterKey, &w.a.Name, &w.a.Class, &at, &w.by},
+			w.a.AwardRecord.scanTargets()...)
+		if err := rows.Scan(targets...); err != nil {
 			return nil, fmt.Errorf("guilds: report loot: %w", err)
 		}
 		w.a.At = at.UTC().Format(time.RFC3339)

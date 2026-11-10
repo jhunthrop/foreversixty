@@ -1,8 +1,11 @@
 ---
 // web/src/components/guides/GuideRotationLane.astro
-// The Rotation and priority lane (guides spec 2026-11-08 §4.3): "For the raid build." and the
-// raid-only legend when they apply, then Opener and Priority (numbered) and Cooldowns as slim
-// spell rows. The lists are the guide's own (guideRotation), every line at its full clause.
+// The Rotation and priority lane (guides spec 2026-11-08 §4.3): "For the raid build." when it
+// applies and no row carries a Raid build only tag (the tags say it), then Opener and Priority (numbered) and Cooldowns as slim spell rows. A row for a
+// talent only the raid build takes carries its own Raid build only tag, with no legend above.
+// The lists are the guide's own (guideRotation), every line at its full clause. Past the prose,
+// a whole list wraps under it with its heading (lib/ui/reading-wrap.ts), never a list split from
+// its label.
 import LaneBlock from '../ui/LaneBlock.svelte';
 import GuideSpellRow from './GuideSpellRow.astro';
 import { guidesCopy } from '../../lib/guides/copy';
@@ -14,9 +17,8 @@ interface Props {
   forRaidBuild: boolean;
 }
 const { build, lists, forRaidBuild } = Astro.props;
-const hasRaidOnly = [...lists.opener, ...lists.priority, ...lists.cooldowns].some(
-  (item) => item.raidBuildOnly,
-);
+// The rows' own Raid build only tags already say whose list it is: the line goes when one shows.
+const tagged = [...lists.opener, ...lists.priority, ...lists.cooldowns].some((item) => item.raidBuildOnly);
 const blocks = [
   { key: 'opener', label: guidesCopy.opener, items: lists.opener, numbered: true },
   { key: 'priority', label: guidesCopy.priority, items: lists.priority, numbered: true },
@@ -24,43 +26,33 @@ const blocks = [
 ].filter((block) => block.items.length > 0);
 ---
 
-{(forRaidBuild || hasRaidOnly) && (
-  <div class="guide-rotation-notes">
-    {forRaidBuild && (
-      <p class="text-small text-muted" data-testid="guide-rotation-build">
-        {guidesCopy.rotationForRaidBuild}
-      </p>
-    )}
-    {hasRaidOnly && (
-      <p class="text-small text-muted" data-testid="guide-raid-build-legend">
-        {guidesCopy.raidBuildLegend}
-      </p>
-    )}
-  </div>
+{forRaidBuild && !tagged && (
+  <p class="text-small text-muted m-0" data-testid="guide-rotation-build">
+    {guidesCopy.rotationForRaidBuild}
+  </p>
 )}
-{blocks.map((block) => (
-  <LaneBlock label={block.label} testid={`guide-rotation-${block.key}`}>
-    <div class="guide-rotation-rows" data-wrap-list id={block.key === 'priority' ? 'priority' : undefined}>
-      {block.items.map((item, i) => (
-        <GuideSpellRow
-          build={build}
-          item={item}
-          rank={block.numbered ? String(i + 1) : undefined}
-          testid={`guide-rotation-${block.key}-row`}
-        />
-      ))}
-    </div>
-  </LaneBlock>
-))}
+<div class="guide-rotation-blocks" data-wrap-list>
+  {blocks.map((block) => (
+    <LaneBlock label={block.label} testid={`guide-rotation-${block.key}`}>
+      <div class="guide-rotation-rows" id={block.key === 'priority' ? 'priority' : undefined}>
+        {block.items.map((item, i) => (
+          <GuideSpellRow
+            build={build}
+            item={item}
+            rank={block.numbered ? String(i + 1) : undefined}
+            testid={`guide-rotation-${block.key}-row`}
+          />
+        ))}
+      </div>
+    </LaneBlock>
+  ))}
+</div>
 
 <style>
-  .guide-rotation-notes {
+  .guide-rotation-blocks {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-  }
-  .guide-rotation-notes p {
-    margin: 0;
+    gap: 28px;
   }
   .guide-rotation-rows {
     display: flex;

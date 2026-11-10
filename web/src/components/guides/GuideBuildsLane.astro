@@ -35,7 +35,7 @@ const rankText = (talent: KeyTalentRef): string =>
       : `${talent.rank}/${talent.maxRank}`;
 ---
 
-{blocks.length > 0 && (
+{blocks.length > 1 && (
   <LaneBlock label={guidesCopy.builds} testid="guide-builds">
     <div class="guide-lane-rows">
       {blocks.map((block) => (
@@ -75,7 +75,11 @@ const rankText = (talent: KeyTalentRef): string =>
       {keyTalents.map((entry) => {
         const [leadTalent] = entry.talents;
         return (
-          <Row title={entry.talents.map((t) => t.name).join(' · ')} sub={entry.why} open>
+          <Row
+            title={entry.talents.map((t) => t.name).join(' · ')}
+            sub={entry.why === '' ? undefined : entry.why}
+            open
+          >
             <Fragment slot="lead">
               {leadTalent?.icon !== undefined ? (
                 <img

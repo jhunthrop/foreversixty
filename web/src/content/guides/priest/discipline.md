@@ -13,7 +13,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever, talent data from the beta client'
+  - label: 'Talents Forever'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Forever Sixty, character planner'
@@ -48,7 +48,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 - **Renewed Hope** (4 points): Flash Heal, Lesser Heal, Heal, Greater Heal and Penance gain 8% crit chance on a target under Weakened Soul, and each one takes 4 seconds off his Weakened Soul so the next shield comes sooner.
 - **Divine Aegis** (3 points): every direct heal that crits leaves a shield for 15% of it.
 - **Soul Warding** (1 point): no cooldown on Power Word: Shield and 15% off its cost.
-- **Improved Power Word: Shield** (3 points): 20% more on every shield.
+- **Improved Power Word: Shield** (3 points)
 - **Twin Disciplines** (5 points) and **Mental Agility** (3 points): Penance and Renew heal 5% more, and Renew and the shield cost 10% less.
 - **Inner Focus** (1 point): a free spell with 25% more crit every 3 minutes.
 - **Meditation** (3 points) and **Mental Strength** (5 points): regeneration while casting, and a deeper bar.
@@ -61,33 +61,27 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Before the pull.** Drop Lightwell and tell the raid it is up. Fear Ward the tank if the boss fears. Renew the tank just before he engages, so it is already ticking when the first hits land.
 
-**Penance on cooldown.** On the tank whenever he is missing health, on a party member who drops low when the tank is fine. It is the heal you never let sit.
+**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. Greater Heal rank 1 on everyone else. Renew stays on the tank at rank 7 or higher.
 
-**The shield is a switch.** Shield the tank at the top rank when he is hurt, Weakened Soul is off him and your mana is keeping pace with the fight. In Forever a shield no longer costs a warrior any rage, so rage is no reason to hold it back: it soaks the next hit, and the Weakened Soul it leaves is what Renewed Hope needs. Your next heals on him gain 8% crit chance, every crit leaves a Divine Aegis, and each heal shortens the Weakened Soul so you shield again sooner.
+**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus: at 60, Lesser Heal and the first ranks of Heal and Renew heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank only within the ranks you learned from your forties on, and keep Lesser Heal off your bars for good: when even Greater Heal rank 1 is more than you can afford, wait the few seconds for your regeneration.
 
-**Renew** stays on the tank at rank 7 or higher.
+**Flash Heal** costs the most mana for what it heals, so it never becomes the filler.
 
-**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. Greater Heal rank 1 on everyone else.
+**Prayer of Healing** heals the target's party, so target a member of the group that took the damage.
 
-**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on, and keep Lesser Heal off your bars for good: when even Greater Heal rank 1 is more than you can afford, wait the few seconds for your regeneration rather than cast a heal that no longer grows with your gear.
+**Overheal.** Most of your waste is a Greater Heal that lands after a shield ate the hit: start it early and cancel it if the tank does not need it.
 
-**Emergencies.** Flash Heal at the top rank on anyone about to die. It takes a second and a half and it costs the most mana for what it heals, so it never becomes the filler.
+**Inner Focus** on a Greater Heal or a Prayer of Healing: the spell is free with 25% more crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.
 
-**Prayer of Healing** when three or more in a group are hurt. It heals the target's party, so target a member of the group that took the damage.
-
-**Overheal.** Shields and Divine Aegis land before the damage and Penance goes on health already missing, so most of your waste is a Greater Heal that arrives after a shield ate the hit. Start it early and cancel it if the tank does not need it.
-
-**Inner Focus** on a Greater Heal or a Prayer of Healing: it makes the spell free and adds 25% crit chance, and a Greater Heal crit leaves the biggest Divine Aegis you can make.
-
-**Mana.** Penance is cheap and the shield soaks more than it costs; the fillers are what drain you. When your bar falls behind the fight, stop topping off the party and heal only real holes. Major Mana Potion and Demonic Rune once you are down enough, Dark Sacrifice if you are Undead.
+**Mana.** The fillers drain you, not Penance or the shield. When your bar falls behind the fight, stop topping off the party and heal only real holes. Major Mana Potion and Demonic Rune once you are down enough, Dark Sacrifice if you are Undead.
 
 ## Stat priority
 
-Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every shield, Penance and heal, though a rank learned far below your level keeps less of it, or none. Intellect deepens your bar, and Mental Strength adds 10% to it. Critical strike pays twice for Discipline: every direct heal that crits also leaves a Divine Aegis shield on the target. Spirit is mana, and Meditation keeps half of its regeneration running while you cast. Spell power with no healing on it does nothing for a heal.
+A rank learned far below your level keeps less of your healing power, or none. Mental Strength adds 10% to your Intellect. Critical strike pays twice for Discipline: every direct heal that crits also leaves a Divine Aegis shield on the target. Meditation keeps half of your Spirit's regeneration running while you cast. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 
-Meditation keeps half your regeneration running while you cast, so Spirit still feeds you mid-fight. Forever puts a third of a healing item's bonus on it as spell damage; only the healing number heals.
+Forever puts a third of a healing item's bonus on it as spell damage; only the healing number heals.
 
 ## Enchants and consumables
 
@@ -95,13 +89,13 @@ Flask of Distilled Wisdom, Greater Mageblood Elixir, Greater Cleric's Elixir and
 
 ## Races
 
-**Human** is the Alliance pick. Divine Grace is a free instant heal on an ally under 50% that also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. The Human Spirit adds 10% Spirit, and while you level, when a long pull drains your bar, that regeneration keeps you casting where a Gnome is already out of mana.
+**Human** is the Alliance pick. Divine Grace also removes Weakened Soul, so you can shield the tank again right away: hold it for the moment he takes two big hits in a row. While you level, The Human Spirit keeps you casting through a long pull where a Gnome is already out of mana.
 
-**Gnome** heals as well as a Human at 60, so take whichever you would rather play there. Eureka! makes your direct heals 10% cheaper and 10% stronger for 8 seconds every 2 minutes, and Penance's heals too (never Renew), so put it on a string of Greater Heals, Flash Heals and a Penance. Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit.
+**Gnome** heals as well as a Human at 60, so take whichever you would rather play there. Eureka! works on Penance's heals too (never Renew), so put it on a string of Greater Heals, Flash Heals and a Penance. Put Contingency Plan on the tank before a hard hit.
 
-On the Horde, take **Undead** for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet. Will of the Forsaken breaks fears.
+On the Horde, take **Undead** for Dark Sacrifice: well over a thousand mana once a fight, paid in your own health while the raid is quiet.
 
-**Night Elf** has Elune's Light for 10% crit (more Divine Aegis), **Troll** Berserking, and **Dwarf** Stoneform and Desperate Prayer. All three heal clearly less than a Human or a Gnome.
+**Night Elf** (Elune's Light crits feed Divine Aegis), **Troll** and **Dwarf** all heal clearly less than a Human or a Gnome.
 
 ## Professions
 
@@ -111,12 +105,33 @@ Alchemy makes the flask and elixirs a healer burns every raid. Tailoring makes h
 
 ### Levels 1 to 19
 
-Train Power Word: Shield at 6 and Renew at 8, then Mind Blast at 10 and Inner Fire at 12. Shadow Word: Pain at 4 opens every pull, Smite does the work until a wand takes over, and Dispel Magic arrives at 18. When you heal a group from 10, until you learn Heal at 16, put Lesser Heal rank 3 on the tank as well as on the party: your shield and Renew alone will not keep him up. Once Heal takes the tank at 16, Lesser Heal stays on the party at rank 3, except at 17, where rank 2 heals more for its mana. Keep shield rank 1 on your bar when rank 2 arrives at 12: it soaks the early hits for less than half the mana through 16, except at 13 and, for an Undead, at 15, and a Human keeps it at 18 and 19 over rank 3.
+Train Power Word: Shield at 6 and Renew at 8, then Mind Blast at 10 and Inner Fire at 12. Shadow Word: Pain at 4 opens every pull, Smite does the work until a wand takes over, and Dispel Magic arrives at 18.
 
-Twin Disciplines takes your points from 10 to 14: 5% more damage and healing on your instants, which at this level means Shadow Word: Pain and Renew. Mental Strength takes 15 to 19 for 10% more Intellect, a bigger mana bar between drinks.
+Healing a group from 10:
+
+- **10 to 15:** Lesser Heal rank 3 on the tank as well as the party: your shield and Renew alone will not keep him up.
+- **16 to 19:** Heal takes the tank, and Lesser Heal stays on the party at rank 3, except at 17, where rank 2 heals more for its mana.
+- **Shield:** keep rank 1 on your bar when rank 2 arrives at 12. It soaks the early hits for less than half the mana through 16, except at 13 and, for an Undead, at 15, and a Human keeps it at 18 and 19 over rank 3.
+
+Twin Disciplines takes your points from 10 to 14, which at this level means stronger Shadow Word: Pain and Renew. Mental Strength takes 15 to 19, a bigger bar between drinks.
 
 Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
 
 ### Levels 20 to 60
 
-From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30 and changes how Discipline plays: before that you are a Renew, Heal and shield healer. Meditation takes your points from 20 to 22, so half your mana regeneration keeps going while you cast, then Inner Focus, Mental Agility and Improved Power Word: Shield fill the rows to Penance. From 31, Improved Renew comes before Soul Warding, then Twilight Focus and Holy Specialization from the Holy tree, Renewed Hope and Divine Aegis by 49, Divine Fury and Improved Healing, and Inspiration last. When shield rank 6 arrives at 36, an Undead, Troll or Night Elf keeps rank 5 through 39 (a Dwarf from 37), and a Human, Undead or Troll still at 40; the new rank takes over from 41. Shield yourself before every solo pull and wand while it holds; Power Word: Shield is the reason a Discipline priest can quest at all. In dungeons from 40, keep Renew on the tank at rank 4, then rank 5 from 44: they cost far less than the top rank and keep nearly all of your healing bonus. A Human or Troll heals more with rank 7 from 44, and a Gnome from 45. From 50, keep rank 7: rank 8 heals more per cast but costs more for it, and over a dungeon the two come out even. From 56, a Human or Gnome takes Renew rank 9 for the last dungeons and a Dwarf or Night Elf mostly rank 8, all four on rank 9 at 59, while an Undead or Troll stays on rank 7; at 60 rank 7 is the tank's Renew again. Heal is the tank's filler until you learn Greater Heal at 40. Keep it at rank 1 through 35: rank 1 keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so the bigger ranks only cost you mana. From 36 cast rank 3 (an Undead keeps rank 1 for one more level), since rank 4 costs more mana than its extra healing is worth. From 40, Greater Heal on the tank stays at rank 1 all the way to 60, even after rank 4 arrives at 58: the bigger ranks spend mana on healing a dungeon tank rarely needs. From 40 on, leave Lesser Heal off your bars for good: Greater Heal rank 1 takes its place, by your late forties Lesser Heal has lost your healing bonus anyway, and every cast costs mana regeneration you need for the next Greater Heal.
+From 20 you can keep leveling Discipline in dungeons, or respec to Shadow at the trainer for faster solo questing and come back at 60. Penance comes at level 30; before that you are a Renew, Heal and shield healer. Shield yourself before every solo pull and wand while it holds: Power Word: Shield is the reason a Discipline priest can quest at all.
+
+Talent order:
+
+- **20 to 22:** Meditation, so half your mana regeneration keeps going while you cast.
+- **To Penance:** Inner Focus, Mental Agility and Improved Power Word: Shield fill the rows.
+- **From 31:** Improved Renew before Soul Warding, then Twilight Focus and Holy Specialization from the Holy tree, Renewed Hope and Divine Aegis by 49, Divine Fury and Improved Healing, and Inspiration last.
+
+In dungeons the cheaper ranks cost far less and keep nearly all of your healing bonus:
+
+- **Shield, 36 to 41:** when rank 6 arrives at 36, an Undead, Troll or Night Elf keeps rank 5 through 39 (a Dwarf from 37), and a Human, Undead or Troll still at 40; rank 6 takes over from 41.
+- **Heal, 16 to 39:** the tank's filler until Greater Heal at 40. Rank 1 through 35: it keeps your whole healing bonus until 33 and heals more for its mana than any later rank. Rank 3 from 36 (an Undead keeps rank 1 for one more level), since rank 4 costs more mana than its extra healing is worth.
+- **Renew, 40 to 49:** rank 4 on the tank, then rank 5 from 44. A Human or Troll heals more with rank 7 from 44, and a Gnome from 45.
+- **Renew, 50 to 60:** rank 7. Rank 8 heals more per cast but costs more for it, and over a dungeon the two come out even. From 56 a Human or Gnome takes rank 9 and a Dwarf or Night Elf mostly rank 8, all four on rank 9 at 59, while an Undead or Troll stays on rank 7. At 60 rank 7 is the tank's Renew again.
+- **Greater Heal, 40 to 60:** rank 1 on the tank all the way, even after rank 4 arrives at 58: the bigger ranks spend mana on healing a dungeon tank rarely needs.
+- **Lesser Heal, from 40:** off your bars for good. Greater Heal rank 1 takes its place, and by your late forties Lesser Heal has lost your healing bonus anyway.

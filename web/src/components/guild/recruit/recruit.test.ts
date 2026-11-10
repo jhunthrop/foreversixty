@@ -156,7 +156,7 @@ describe('the applications page', () => {
   it('lists the open applicants with votes, Accept and Decline, and the record', async () => {
     const out = await applications(me('officer'));
     expect(out).toContain('data-testid="guild-application-41"');
-    expect(out).toContain('Holy Paladin · Level 60 · Item level 63 · Top HPS 465');
+    expect(out).toContain('Holy Paladin · Item level 63 · Top HPS 465');
     expect(out).toContain('2 yes');
     expect(out).toContain('of 3 officers');
     expect(out).toContain('data-testid="guild-application-accept"');
@@ -223,7 +223,9 @@ describe('the member profile', () => {
     expect(out).toContain('25 of the last 30 raids');
     expect(out).toContain('Dragonstalker');
     expect(out).toContain('Officer notes');
-    expect(out).toContain('Officers only');
+    expect(out).toContain('data-testid="guild-profile-notes"');
+    expect(out).toContain('data-testid="guild-profile-ready-tag"');
+    expect(out).toContain('Guild median 61');
     expect(out).toContain('Ask about the Thursday conflict.');
     expect(out).toContain('data-testid="guild-profile-note-form"');
   });
@@ -232,6 +234,6 @@ describe('the member profile', () => {
     const out = await profile(me('member'), false);
     expect(out).toContain('Zulmara');
     expect(out).not.toMatch(/note/i);
-    expect(out).not.toContain('Officers only');
+    expect(out).not.toContain('guild-profile-notes');
   });
 });

@@ -119,6 +119,14 @@ const statRank = (reading: string): string => (reading === 'value' ? String(++ra
 )}
 
 <style>
+  /* The plate's labels in the lane heading's cream, not a grey caps eyebrow. */
+  .guide-glance :global(.ui-pcol-head h2) {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--color-cream);
+  }
   :global(.guide-glance .ui-st-name) {
     font-weight: 400;
     font-size: 16px;

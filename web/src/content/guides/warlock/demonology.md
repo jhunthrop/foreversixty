@@ -57,13 +57,15 @@ The leveling build stops at 30 Demonology points, before Demonic Pact, keeps Imp
 
 The raid build adds what the leveling build cannot use. Demonic Pact, the 31st point, keeps your sacrifice when you summon a different demon; only a new Imp ends it. So you sacrifice the Imp and still play with a Succubus out. Improved Shadow Bolt makes the target take 20% more Shadow damage from you for 12 seconds after a Shadow Bolt crit, and in Forever that debuff is yours alone. Ruin doubles the crit bonus on Shadow Bolt and Immolate. To pay for it, the raid build gives up Improved Corruption, Improved Life Tap, Grim Reach, Soul Harvest, Demonic Energies and the leveling build's point in Improved Voidwalker.
 
-Improved Health Funnel, Demonic Embrace and Demonic Aegis are the toll to reach Pact, and each buys survival: a stronger, cheaper Health Funnel, 9% more Stamina and a 15% stronger Demon Armor. The two points in Improved Sayaad make Lash of Pain 20% stronger. Improved Voidwalker and Improved Imp stay empty, since the Voidwalker never comes out in a raid and the Imp is sacrificed before the pull. Without Improved Corruption, Corruption is a 2 second cast in the raid build, and it is still worth it.
+Improved Health Funnel, Demonic Embrace and Demonic Aegis are the toll to reach Pact, and each buys survival: a stronger, cheaper Health Funnel, 9% more Stamina and a 15% stronger Demon Armor. The two points in Improved Sayaad make Lash of Pain 20% stronger. Improved Voidwalker and Improved Imp stay empty, since the Voidwalker never comes out in a raid and the Imp is sacrificed before the pull.
 
-Your demon scales from you in Forever, and the raid's group buffs skip it: Prayer of Fortitude, Gift of the Wild, Arcane Brilliance, the Greater Blessings and Battle Shout never land on it. The one exception for damage is Heart of the Lion, the hunter aura: it reaches every ally near the hunter, so when a hunter in your group runs it your demon gets its 10% more stats and its attack power too. A shaman's resistance totems still reach it, so park your Succubus in a Fire Resistance Totem on Fire fights. A paladin's Devotion and resistance auras do not, but Retribution Aura does. It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets a bit under half your hit. Of your crit it takes only what your gear gives you: the crit from Intellect, racials and raid buffs stays with you. So its melee rarely crits on a boss, and Lash of Pain crits at about a normal caster's rate plus the crit on your gear.
+Your demon scales from you in Forever, and the raid's group buffs skip it: Prayer of Fortitude, Gift of the Wild, Arcane Brilliance, the Greater Blessings and Battle Shout never land on it. The one exception for damage is Heart of the Lion, the hunter aura: it reaches every ally near the hunter, so when a hunter in your group runs it your demon gets its 10% more stats and its attack power too. A shaman's resistance totems still reach it, so park your Succubus in a Fire Resistance Totem on Fire fights. A paladin's Devotion and resistance auras do not, but Retribution Aura does.
+
+It inherits part of your spell damage, attack power and armor. Its spells hit as often as yours, and its melee gets a bit under half your hit. Of your crit it takes only what your gear gives you: the crit from Intellect, racials and raid buffs stays with you. So its melee rarely crits on a boss, and Lash of Pain crits at about a normal caster's rate plus the crit on your gear.
 
 ## Rotation and priority
 
-The setup, in order, starting about a minute before the pull:
+**Pre-pull.** Start about a minute out:
 
 1. Summon your Imp.
 2. Cast Demonic Sacrifice on it.
@@ -71,29 +73,29 @@ The setup, in order, starting about a minute before the pull:
 4. Put on Demon Armor, make a Healthstone and Life Tap back to full.
 5. Cast Soul Link a couple of seconds before the pull.
 
-Each summon is a 6 second cast with Master Summoner, and the Succubus costs a Soul Shard. Send the Succubus to the boss's back once the tank has it.
+Each summon is a 6 second cast with Master Summoner, and the Succubus costs a Soul Shard. Send her to the boss's back once the tank has it.
 
-On the pull: Curse of the Elements first if you hold it, since every spell the raid casts hits harder from that global on, then Corruption, then Bane of Doom, then Immolate, then Shadow Bolt for the rest of the fight. Curses and banes have their own slots in Forever, so Curse of the Elements and Doom sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two do not stack. Your curse slot is then free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
+**Curses.** Curse of the Elements first if you hold it, since every spell the raid casts hits harder from that global on. When another warlock holds it, your curse slot is free for Curse of Recklessness, Tongues or Weakness if your raid leader asks.
 
-Bane of Doom hits once, for a big chunk, when its minute runs out, so recast it the moment it fires. A Doom cast with less than a minute left never lands, so in the last minute put Bane of Agony up instead. Doom does more damage per minute than Agony for one global instead of two and a half, which is why it beats Agony here.
+**Banes and DoTs.** Never clip Corruption. Bane of Doom does more damage per minute than Agony for one global instead of two and a half, which is why it beats Agony here. Bane of Agony covers the last minute, once Doom has fired. Start Immolate's cast with about 3 seconds left on the old one.
 
-Recast Corruption when it falls off and never clip it. Start Immolate's cast with about 3 seconds left on the old one. Everything else is Shadow Bolt.
+**Below 35%.** Your button does not change. Decimation makes Soul Fire a 2.4 second cast on a 6 second cooldown that costs no shard. If you play this build from 56 to 59, cast those Soul Fires once you have rank 2: on leveling gear they still edge out Shadow Bolt. At 60, skip it: Soul Fire is Fire, and your Imp sacrifice, Master Demonologist and Improved Shadow Bolt all raise Shadow, so on raid gear it does less than the Shadow Bolt it replaces. Outside Decimation Soul Fire is a 4 second cast that costs a shard; never cast it in a raid.
 
-Below 35% your button does not change. Every Shadow Bolt now hits 6% harder, and it also gives you 10 seconds of Decimation, which makes Soul Fire a 2.4 second cast on a 6 second cooldown that costs no shard. If you play this build from 56 to 59, cast those Soul Fires once you have rank 2: on leveling gear they still edge out Shadow Bolt. At 60, skip it. Soul Fire is Fire, and your Imp sacrifice, Master Demonologist and Improved Shadow Bolt all raise Shadow, so on raid gear it does less than the Shadow Bolt it replaces. Shadow Bolt to the end. Outside Decimation Soul Fire is a 4 second cast that costs a shard; never cast it in a raid.
+**Searing Pain.** It also triggers Decimation, but it carries a lot of extra threat and Shadow Bolt hits harder with your Shadow bonuses. Keep it off your bars in raids.
 
-Searing Pain also triggers Decimation, but it carries a lot of extra threat and Shadow Bolt hits harder with your Shadow bonuses. Keep it off your bars in raids.
+**Mana.** Major Mana Potion and Demonic Rune have separate cooldowns: use both once you are low enough that none of it is wasted.
 
-Life Tap below about 10% mana and whenever you have to move. Each tap converts its base amount plus your Spirit. Major Mana Potion and Demonic Rune have separate cooldowns: use both once you are low enough that none of it is wasted.
+**Soul Shards.** Walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill. Every wipe or dead Succubus is another summon, so carry twice what you think you need.
 
-Soul Shards: walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill. Demonology spends more of them than the other specs: every wipe or dead Succubus is another summon, so carry twice what you think you need.
+**If the Succubus dies.** Resummon her (6 seconds, a shard, a big chunk of mana), then cast Soul Link again before you go back to Shadow Bolt. The Imp sacrifice survives the resummon. On fights with heavy raid damage, park her behind the boss and Health Funnel her before she drops.
 
-If the Succubus dies: resummon her (6 seconds, a shard, a big chunk of mana), then cast Soul Link again before you go back to Shadow Bolt. The Imp sacrifice survives the resummon. On fights with heavy raid damage, park her behind the boss and Health Funnel her before she drops.
+**Movement.** Corruption needs you to stand still in this build, and Doom is only due once a minute, so Life Tap is what you cast on the move.
 
-Movement: Corruption needs you to stand still in this build, and Doom is only due once a minute, so Life Tap is what you cast on the move. Adds: Doom only fires on a target that lives a minute, so Corruption is your spell for adds. Rain of Fire for trash packs that stay put.
+**Adds.** Doom only fires on a target that lives a minute, so Corruption is your spell for adds. Rain of Fire for trash packs that stay put.
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a resisted Shadow Bolt is a whole cast lost. Spell power feeds every spell you cast. Shadow power feeds Shadow Bolt, Corruption and Doom. Fire power reaches Immolate on a boss and Rain of Fire on trash, since this build skips Soul Fire at 60. Crit pays twice through Ruin and Improved Shadow Bolt. Intellect is mana, plus a little crit, which pays the same way. Crit on your gear also reaches your Succubus; the crit from Intellect does not. Spirit only matters through Life Tap.
+Suppression gives you 5% of the hit cap, and a resisted Shadow Bolt is a whole cast lost. Shadow power feeds Shadow Bolt, Corruption and Doom. Fire power reaches Immolate on a boss and Rain of Fire on trash, since this build skips Soul Fire at 60. Crit pays twice through Ruin and Improved Shadow Bolt, and so does the little crit Intellect adds. Crit on your gear also reaches your Succubus; the crit from Intellect does not. Spirit only matters through Life Tap.
 
 ## Best in slot
 
@@ -105,7 +107,7 @@ Flask and elixirs stack as they always have in Classic, and the school elixirs a
 
 ## Races
 
-Human and Orc are the picks. Ruthless is 1% crit on every spell, so more of your Shadow Bolts put up Improved Shadow Bolt and land for double the bonus through Ruin, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost on your direct damage spells every two minutes. Press it with your trinkets, and again for the last 35% if it is back, when every Shadow Bolt hits 6% harder. Expansive Mind adds 5% mana. Orc fits Demonology best of any Horde race: Command makes your Succubus hit 5% harder all fight, and that counts for more in a spec built around its demon, and Blood Fury is 10% spell power for 15 seconds every two minutes. Press Blood Fury with your trinkets, and again for the last 35% if it is back. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is close behind Orc: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds.
+Human and Orc are the picks. Ruthless means more of your Shadow Bolts put up Improved Shadow Bolt and land for double the bonus through Ruin, and The Human Spirit makes every Life Tap bigger. Orc fits Demonology best of any Horde race, since Command counts for more in a spec built around its demon; press Blood Fury with your trinkets, and again for the last 35% if it is back. Gnome is a step behind: press Eureka! with your trinkets, and again for the last 35% if it is back, when every Shadow Bolt hits 6% harder. Troll's Berserking is a step behind Orc, and Undead is close behind Orc.
 
 ## Professions
 
@@ -117,10 +119,18 @@ Tailoring and Enchanting, same as any warlock: tailored cloth and enchanted cast
 
 Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10, then train Health Funnel at 12.
 
-Your points from 10 to 14 go into Unholy Power for 10% more damage from your demon, the Voidwalker included. Fel Vitality follows from 15 to 17 for 15% more mana for you and more health and mana for the demon, then Demonic Energies at 18, which heals your demon for part of every spell you land. Improved Health Funnel comes at 19 and 20 to keep the Voidwalker standing through bad pulls: 40% more health moved, 30% cheaper, no threat, and usable at any demon health. Demonic Embrace follows from 21 to 23 for 9% more Stamina.
+- **10 to 14:** Unholy Power, for 10% more damage from your demon, the Voidwalker included.
+- **15 to 17:** Fel Vitality, for 15% more mana for you and more health and mana for the demon.
+- **18:** Demonic Energies, which heals your demon for part of every spell you land.
+- **19 and 20:** Improved Health Funnel, to keep the Voidwalker standing through bad pulls: 40% more health moved, 30% cheaper, no threat, and usable at any demon health.
+- **21 to 23:** Demonic Embrace, for 9% more Stamina.
 
 Let the Voidwalker hold the mob and wand it down; a Lesser Magic Wand at 5 and a Greater Magic Wand at 13 cost no mana, and from 13 the Greater wand out-damages your bolts. An enchanter makes both, or check the Auction House. Cloth quest rewards with Intellect and Stamina beat anything a vendor sells.
 
 ### Levels 20 to 60
 
-Demonology levels well with a demon that tanks. The leveling build skips Demonic Pact, so any summon cancels your sacrifice. Keep a demon out instead: it tanks for you, and from 30 Soul Link, then Demonic Knowledge and Master Demonologist, only work while it lives. Use the Voidwalker when pulls hurt; from 35 Master Demonologist also cuts the physical damage you take while it is out, by 10% once it is full at 39. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down. When Shadow Bolt rank 6 arrives at 36, keep casting rank 5 through 37: it is cheaper and does more over a pull on the gear you have then. From 48, when you learn Soul Fire, Decimation's shard-free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.
+Demonology levels well with a demon that tanks. The leveling build skips Demonic Pact, so any summon cancels your sacrifice; keep a demon out instead. From 30 Soul Link, then Demonic Knowledge and Master Demonologist, only work while it lives.
+
+Use the Voidwalker when pulls hurt; from 35 Master Demonologist also cuts the physical damage you take while it is out, by 10% once it is full at 39. Use the Succubus when you want speed. Put Corruption and Bane of Agony on the mob, let the demon hold it, and Shadow Bolt or wand it down.
+
+When Shadow Bolt rank 6 arrives at 36, keep casting rank 5 through 37: it is cheaper and does more over a pull on the gear you have then. From 48, when you learn Soul Fire, Decimation's shard-free Soul Fires finish every mob below 35%. Drain Soul the last few percent of a mob's health when you need shards, since every resummon costs one.

@@ -23,7 +23,6 @@ import {
 
 export const landingCopy = {
   title: 'Best in slot',
-  tierQuestion: 'Which spec is strongest?',
   tierLink: 'Tier list',
   tierHref: '/tiers',
 
@@ -55,10 +54,6 @@ export const landingCopy = {
 
   /** The ControlBar's one group. */
   bandGroupLabel: 'Level range',
-  /** The line under the bar: the top range names its raid gear when a raid preset names itself;
-   *  every other range says nothing (the picker is the page). */
-  bandSummary: (isTopBand: boolean, raidLabel: string): string =>
-    isTopBand && raidLabel !== '' ? `60: full ${raidLabel} gear.` : '',
   /** The link to the character's own range while another is selected: `Your range: 30 to 39`. */
   yourRange: (rangeLabel: string): string => `Your range: ${rangeLabel}`,
   plateLabel: 'Classes and specs',

@@ -9,6 +9,7 @@
 @import '../components/ui/select.css';
 @import '../components/ui/skeleton.css';
 @import '../components/ui/row.css';
+@import '../components/ui/socket.css';
 
 @layer base {
   body {

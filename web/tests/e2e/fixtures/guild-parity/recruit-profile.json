@@ -31,6 +31,12 @@
       "name": "Frostquill",
       "class": "mage",
       "is_main": true
+    },
+    {
+      "character_key": "us/pvp/quillstep",
+      "name": "Quillstep",
+      "class": "priest",
+      "is_main": false
     }
   ],
   "attendance": {
@@ -50,7 +56,8 @@
         "outcome": "present",
         "excused": false
       }
-    ]
+    ],
+    "streak": 1
   },
   "loot": {
     "count": 1,
@@ -61,9 +68,16 @@
         "icon": "inv_misc_cape_16",
         "quality": 4,
         "raid_id": 40,
-        "awarded_at": "2026-12-10T03:03:00Z"
+        "awarded_at": "2026-12-10T03:03:00Z",
+        "ms_os": "ms",
+        "reason": null,
+        "votes_yes": 3,
+        "votes_no": 0,
+        "votes_officers": 3
       }
-    ]
+    ],
+    "guild_median": 0,
+    "nights_since": 0
   },
   "readiness": {
     "character_key": "us/pvp/frostquill",
@@ -74,7 +88,7 @@
     "level": 60,
     "gear_gap": {
       "upgrades": 2,
-      "gain_dps": 15.9,
+      "gain_dps": 14.5,
       "unit": "dps",
       "not_sim_checked": 0
     },
@@ -90,8 +104,29 @@
     "item_level": 68,
     "item_level_delta": 0,
     "logged_at": "2026-12-12T22:00:00Z",
-    "failing": 0
+    "failing": 0,
+    "attuned": true,
+    "flask_food": {
+      "flask_or_elixir": true,
+      "food": true
+    }
   },
+  "upgrades": [
+    {
+      "slot": "legs",
+      "item_id": 237815,
+      "name": "Sentinel's Silk Leggings",
+      "source": "Illiyana Moonblaze",
+      "gain_dps": 8.6
+    },
+    {
+      "slot": "wrist",
+      "item_id": 19595,
+      "name": "Dryad's Wrist Bindings",
+      "source": "Silverwing Sentinels",
+      "gain_dps": 5.9
+    }
+  ],
   "notes": [
     {
       "id": 7,

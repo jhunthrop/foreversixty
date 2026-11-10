@@ -123,7 +123,10 @@ const PAGE_ISLAND_BUDGETS = [
   // loading the Your guilds card and the not-found panel was tried: each saved under 100 bytes
   // and the card flashed in above the lookup, so the bytes stay; 16.5 KB still trips an
   // accidental heavy import.
-  { component: 'GuildShell', limitBytes: 16 * 1024 + 512, closureLimitBytes: 141532 },
+  // +256 bytes (batch H, h-guild-tabs, 2026-11-10): measured 16,995 with lane/h-edges merged on main
+  // (GuildLanding's restyle) before any guild-tab change, 17,020 after: the tabs' new lazy chunks
+  // add their names to the shell's preload map. The tabs themselves stay lazy.
+  { component: 'GuildShell', limitBytes: 16 * 1024 + 768, closureLimitBytes: 141532 },
   // Lane bis-tooltip-host (2026-09-29): one BisTooltipHost per /bis/<class>/<spec> page
   // replaces roughly 840 per-row ItemHover islands with delegated document-level listeners
   // plus the same lazy-loaded ItemTooltip.svelte panel ItemHover already used -- no data,

@@ -241,7 +241,7 @@
   );
 </script>
 
-<Section {title} meta={`${mark}${total} in this fight`} testid="exchange-section" panel flush>
+<Section {title} meta={total > 0 ? `${mark}${total}` : undefined} testid="exchange-section" panel flush>
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}

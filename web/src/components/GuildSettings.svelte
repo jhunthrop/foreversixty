@@ -22,6 +22,8 @@
   import { fetchGuildSetup, type GuildSetup } from '../lib/guild/setup-api';
   import { setupCopy } from '../lib/guild/setup-copy';
   import { setupOpen } from '../lib/guild/setup-model';
+  import { settingsFacts, stepsLeft } from '../lib/guild/settings-facts';
+  import Row from './ui/Row.svelte';
   import Notice from './ui/Notice.svelte';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildDiscordReserve } from '../lib/guild/discord-state';
@@ -201,6 +203,13 @@
 {#snippet membersSection(current: GuildSettingsData)}
   <Section title={guildSettingsCopy.membersHeading} panel testid="guild-settings-members">
     {@render notes()}
+    {#if setup !== null}
+      <ul class="pb-2" data-testid="guild-settings-facts">
+        {#each settingsFacts(setup) as fact (fact.key)}
+          <li><Row title={fact.title} sub={fact.sub === '' ? undefined : fact.sub} density="slim" open /></li>
+        {/each}
+      </ul>
+    {/if}
     {#if guildId !== null}
       <GuildInviteLink
         {guildId}
@@ -311,7 +320,11 @@
     {#if setup !== null && setupOpen(setup)}
       <div class="px-(--page-inset) pb-3">
         <Notice
-          text={`${setupCopy.settingsRow.label} · ${setupCopy.settingsRow.progress(setup.done, setup.total)}`}
+          text={[
+            setupCopy.settingsRow.label,
+            setupCopy.settingsRow.progress(setup.done, setup.total),
+            ...stepsLeft(setup).slice(0, 2),
+          ].join(' · ')}
           action={{
             label: setupCopy.settingsRow.link,
             href: guildSetupHref(path.region, path.ruleset, guildName || path.slug),

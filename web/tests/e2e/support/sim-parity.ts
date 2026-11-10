@@ -9,6 +9,7 @@ import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, type Page } from '@playwright/test';
 import { writeSimNames } from '../../../scripts/sync-data.mjs';
+import { closeRunLine, openRunLine } from './sim-page';
 
 export type SimParityState = 'landing-out' | 'landing-in' | 'result' | 'saved';
 
@@ -119,7 +120,8 @@ async function openFuryWarrior(page: Page): Promise<void> {
   url.searchParams.delete('run');
   await page.goto(`${url.pathname}${url.search}`);
   await expect(page.getByTestId('sim-run-button')).toBeEnabled({ timeout: 15_000 });
-  await expect(page.locator('[data-region="slots"]')).toBeVisible();
+  // The Gear section's worn list (SimGearSection on the shared frame's list form, h-doll).
+  await expect(page.getByTestId('sim-gear-doll')).toBeVisible();
 }
 
 async function stubServerRun(page: Page): Promise<void> {
@@ -195,11 +197,17 @@ export async function openSimState(page: Page, state: SimParityState): Promise<v
   await openFuryWarrior(page);
   await expect(page.getByTestId('sim-history')).toBeVisible();
   if (state === 'result') {
-    // The fixture ran 10,000 runs: High, so the bar and the result read one run count (M3).
+    // The fixture ran 10,000 runs: High, so the bar and the result read one run count (M3). On a
+    // phone the run line folds behind "Change": open it first (a no-op at 1440).
+    await openRunLine(page);
     await page.getByTestId('control-precision').selectOption('high', { force: true });
+    // A change folds the phone run line again: reopen it for More settings.
+    await openRunLine(page);
     await page.getByTestId('sim-settings-more').click();
     await page.getByTestId('sim-server-run').click();
     await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'result', { timeout: 15_000 });
+    // A phone run left the run line open; a player reads the result under its one line.
+    await closeRunLine(page);
     await drawWholeReport(page);
   }
 }

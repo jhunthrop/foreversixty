@@ -4,15 +4,20 @@
      Section's own head stands over a skeleton that holds the section's ready height
      (lib/sim/section-reserve.ts), so nothing below it moves. The reserve goes the moment the
      section renders or fails. A chunk that fails shows the page's one line with Try again; the
-     rest of the page stands. The ready chunk draws its own Section (same title and meta). -->
+     rest of the page stands. The ready chunk draws its own Section (same title and meta).
+     `fold`: below 768 px the section starts as one Disclosure line under its title, so a phone
+     reads the answer, the ability table, the spread and the gear before the long secondary
+     sections (h-audit 2026-11-09); opened, it loads and draws as on desktop. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { MediaQuery } from 'svelte/reactivity';
   import type { LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { pageErrorCopy } from '../../lib/sim/result-copy';
   import type { SectionReserve } from '../../lib/sim/section-reserve';
   import LoadError from '../ui/LoadError.svelte';
   import Section from '../ui/Section.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
+  import Disclosure from '../ui/Disclosure.svelte';
 
   let {
     id,
@@ -21,6 +26,7 @@
     lazy,
     reserve = null,
     ready,
+    fold = false,
     children,
   }: {
     /** The section's test hook. */
@@ -33,8 +39,15 @@
     reserve?: SectionReserve | null;
     /** True once the chunk has resolved. */
     ready: boolean;
+    /** Below 768 px, start folded to its title (a secondary section). */
+    fold?: boolean;
     children: Snippet;
   } = $props();
+
+  /** The phone breakpoint the fold applies under; it follows the window, so a page narrowed after it loaded folds too. */
+  const phone = new MediaQuery('max-width: 767px');
+  const folded = $derived(fold && phone.current);
+  let opened = $state(false);
 
   /** How far ahead of the viewport the chunk starts to load. */
   const APPROACH_MARGIN = '600px';
@@ -63,29 +76,41 @@
   });
 </script>
 
-<div
-  bind:this={holder}
-  class={['flex min-w-0 flex-col', held && 'reserved']}
-  style:--reserve-phone={held ? `${reserve?.phone}px` : undefined}
-  style:--reserve-wide={held ? `${reserve?.wide}px` : undefined}
-  data-testid={`sim-section-${id}`}
->
-  {#if ready}
-    {@render children()}
-  {:else}
-    <Section {title} {meta} panel>
-      {#if lazy.error !== ''}
-        <LoadError
-          message={pageErrorCopy.partFailed}
-          onRetry={() => lazy.load()}
-          testid={`sim-section-${id}-error`}
-        />
-      {:else}
-        <Skeleton lines={4} testid={`sim-section-${id}-skeleton`} />
-      {/if}
-    </Section>
-  {/if}
-</div>
+{#snippet section()}
+  <div
+    bind:this={holder}
+    class={['flex min-w-0 flex-col', held && 'reserved']}
+    style:--reserve-phone={held ? `${reserve?.phone}px` : undefined}
+    style:--reserve-wide={held ? `${reserve?.wide}px` : undefined}
+    data-testid={`sim-section-${id}`}
+  >
+    {#if ready}
+      {@render children()}
+    {:else}
+      <Section {title} {meta} panel>
+        {#if lazy.error !== ''}
+          <LoadError
+            message={pageErrorCopy.partFailed}
+            onRetry={() => lazy.load()}
+            testid={`sim-section-${id}-error`}
+          />
+        {:else}
+          <Skeleton lines={4} testid={`sim-section-${id}-skeleton`} />
+        {/if}
+      </Section>
+    {/if}
+  </div>
+{/snippet}
+
+{#if folded}
+  <div class="px-[var(--page-inset)]" data-testid={`sim-section-${id}-folded`}>
+    <Disclosure summary={title} bind:open={opened} summaryTestid={`sim-section-${id}-fold`}>
+      {@render section()}
+    </Disclosure>
+  </div>
+{:else}
+  {@render section()}
+{/if}
 
 <style>
   .reserved {

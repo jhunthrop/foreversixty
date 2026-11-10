@@ -5,7 +5,7 @@
 // is support/guild-raids.ts's stub; this spec answers the raid read and the assignment writes
 // over it with an Onyxia template held here.
 import type { Page, Route } from '@playwright/test';
-import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS } from './support/test';
+import { expect, test, apiUnreachable, GUILD_OVERVIEW_READS, GUILD_PLANNER_READS } from './support/test';
 import type { GuildRaidView } from '../../src/lib/guild/api';
 import type { AssignmentSlot, GuildRaidAssignments } from '../../src/lib/guild/assignments-api';
 import { GUILD_ID } from '../../src/fixtures/guild/mock-guild';
@@ -26,7 +26,7 @@ import {
 } from './support/guild-raids';
 import { choose } from './support/select';
 
-test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
+test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS, ...GUILD_PLANNER_READS));
 test.use({ timezoneId: CHICAGO });
 
 /** The Onyxia slots this spec drives (a subset of Go's template, its words). */

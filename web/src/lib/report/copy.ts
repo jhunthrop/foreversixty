@@ -50,6 +50,8 @@ export const reportCopy = {
   onePullLabel: 'One pull only',
   /** The head's two actions, and the phone's one menu button that holds them. */
   copyLink: 'Copy link',
+  /** The phone band's ··· menu holding Sim this fight and Copy link. */
+  actionsLabel: 'Report actions',
   copied: 'Copied',
   copyFailed: 'Copy failed',
   reportActions: 'Report actions',

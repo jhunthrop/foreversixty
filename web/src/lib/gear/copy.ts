@@ -83,9 +83,10 @@ export const gearCopy = {
     noteOne: '1 item is not in our item data yet, so no item level.',
     noteMany: (count: number): string => `${count} items are not in our item data yet, so no item level.`,
     noteFailed: 'Item icons and colours did not load. Reload the page to try again.',
-    /** The report's slot detail: "Item level 66 · Enchanted". */
-    reportDetail: (itemLevel: number, enchanted: boolean): string =>
-      `Item level ${itemLevel}${enchanted ? ' · Enchanted' : ''}`,
+    /** An off hand a two-hander covers, in every worn list (the frame's list form, the report's). */
+    twoHanded: 'Two-handed',
+    /** A report slot's enchant whose id the build's enchant table cannot name. */
+    enchanted: 'Enchanted',
     /** The report doll's accessible name. */
     atPullLabel: 'Gear at pull',
   },

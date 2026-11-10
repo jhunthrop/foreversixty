@@ -255,6 +255,7 @@
     </LazySection>
     <LazySection
       id="rotation"
+      fold
       title={rotationCardCopy.title}
       lazy={rotationLazy}
       ready={rotationLazy.current !== null}
@@ -333,6 +334,7 @@
       {#if powerTitle !== null}
         <LazySection
           id="resource"
+          fold
           title={powerTitle}
           lazy={resourceLazy}
           ready={resourceLazy.current !== null}
@@ -343,6 +345,7 @@
       {/if}
       <LazySection
         id="buffs"
+        fold
         title={aurasCardCopy.title}
         lazy={buffsLazy}
         ready={buffsLazy.current !== null}

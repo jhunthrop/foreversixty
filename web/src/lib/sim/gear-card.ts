@@ -2,25 +2,17 @@
 // The Gear card's model (spec 2026-11-04-sim-results 3.8): the stored gear as the paperdoll's
 // slots with each slot's client enchant name, the set lines and the character stats. Every stat
 // is one the engine computed for this run; nothing is recomputed here.
-import type { PaperdollSlot, PaperdollSlotKey } from '../gear/paperdoll';
+import type { PaperdollSlot } from '../gear/paperdoll';
 import { slotsFromWorn } from '../gear/paperdoll-slots';
 import { SLOTS, type Item, type ItemSet } from '../planner/types';
 import { attemptsOf } from '../report/ability-table';
 import { parseActionKey } from './action-names';
-import type { EnchantRow } from './enchants';
+import { withEnchants } from './enchant-names';
 import { gearCardCopy as copy } from './input-cards-copy';
 import { grouped, oneDecimal } from './result-copy';
 import type { FinalStats, GearSlot, SimResult } from './types';
 
-/** The client's name for each enchant id. A row with no `display` draws no line: the recipe name
- *  (`name`, "Enchant Gloves - Greater Strength") is never shown. */
-export function enchantNames(rows: readonly EnchantRow[]): ReadonlyMap<number, string> {
-  return new Map(
-    rows.flatMap((row): [number, string][] =>
-      row.display === undefined || row.display === '' ? [] : [[row.id, row.display]],
-    ),
-  );
-}
+export { enchantNames } from './enchant-names';
 
 interface SlotSources {
   gear: readonly GearSlot[];
@@ -31,12 +23,7 @@ interface SlotSources {
 
 export function gearSlots({ gear, items, failed, enchants }: SlotSources): PaperdollSlot[] {
   const worn = Object.fromEntries(gear.map((row) => [row.slot, row.item_id]));
-  const bySlot = new Map(gear.map((row) => [row.slot, row]));
-  return slotsFromWorn(worn, { lookup: (id) => items.get(id), failed }).map((slot) => {
-    const enchantId = bySlot.get(slot.slot as PaperdollSlotKey)?.enchant;
-    const enchant = enchantId === undefined ? undefined : enchants.get(enchantId);
-    return enchant === undefined ? slot : { ...slot, enchant };
-  });
+  return withEnchants(slotsFromWorn(worn, { lookup: (id) => items.get(id), failed }), gear, enchants);
 }
 
 /** The worn items' mean item level, over the items the items file knows; null before it loads. */
@@ -90,7 +77,7 @@ export interface StatCell {
 
 /** The run's own miss rate under the hit figure: never a fixed cap the run could contradict. */
 export interface HitReference {
-  /** "Missed in this run: 0% of specials · 19.0% of white swings". */
+  /** "Miss 0% specials · 19.0% white". */
   note: string;
 }
 

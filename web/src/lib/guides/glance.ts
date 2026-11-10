@@ -1,9 +1,9 @@
 // web/src/lib/guides/glance.ts
-// The guide's At a glance plate and the lane rows it shares a rule with (design/specs/
-// 2026-11-08-guides.md, rulings 0A): which priority lines the plate's Rotation column shows, at
-// their level 60 clause, with the spec's filler always there; which stats a player can act on;
-// the leveller's next talent point; the role or kind Tag a spec row carries; the Racials lane in
-// faction groups. Pure over the page's own models, so the page and the mock draw one truth.
+// The guide's At a glance plate and the lane rules it shares (design/specs/2026-11-08-guides.md,
+// rulings 0A): which priority lines the plate's Rotation column shows, at their level 60 clause,
+// with the spec's filler always there; which stats a player can gear for; the leveller's next
+// talent point; the cheap ranks; the Racials lane in faction groups. Pure over the page's own
+// models, so the page and the mock draw one truth.
 import { readBuildJson } from './build-files';
 import type { GuideRaceRow } from './race-table';
 import type { RotationItem } from './rotation-lists';
@@ -59,7 +59,8 @@ export function glanceRotation(
   return filler === undefined || shown ? { rows } : { rows, filler };
 }
 
-/** The plate's stats: a row a player cannot act on ("Not on any item") stays in the full table. */
+/** The stats a player can gear for: a stat no item carries ("Not on any item") is not a choice,
+ *  so neither the plate nor the Stat priority table lists it. */
 export function glanceStatRows<T extends RailStatRow>(rows: readonly T[]): T[] {
   return rows.filter((row) => row.reading !== 'not-on-items');
 }

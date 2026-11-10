@@ -157,6 +157,7 @@ const metaLine = tiersCopy.metaLine({ role, healSeconds: data.healSeconds });
                   figureWidth={isTank ? 96 : 88}
                   grouped={roleHasTiers(role)}
                   compact
+                  phoneFigures={isTank ? undefined : 1}
                   label={tiersCopy.listLabel(role, faction)}
                   testid="tier-list"
                 >

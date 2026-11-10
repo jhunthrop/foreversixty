@@ -76,18 +76,23 @@
 
 {#snippet figure(item: RankFigure, first: boolean)}
   <span
-    class="ui-rr-fig"
+    class={['ui-rr-fig', item.phoneOnly && 'md:hidden']}
     data-first={first ? 'true' : undefined}
     data-best={item.best ? 'true' : undefined}
     title={item.best ? item.bestTitle : undefined}
-    ><span class="ui-rr-fig-label" aria-hidden="true">{item.label}</span><span class="sr-only"
-      >{`${item.label}: `}</span
+    >{#if !item.bare}<span class="ui-rr-fig-label" aria-hidden="true">{item.label}</span>{/if}<span
+      class="sr-only">{`${item.label}: `}</span
     >{#if item.href}<a
         class="ui-rr-fig-value ui-rr-fig-link"
         href={item.href}
         title={item.title}
+        style:color={item.color}
         data-testid={item.testid}>{item.value}</a
-      >{:else}<span class="ui-rr-fig-value" title={item.title} data-testid={item.testid}>{item.value}</span
+      >{:else}<span
+        class="ui-rr-fig-value"
+        title={item.title}
+        style:color={item.color}
+        data-testid={item.testid}>{item.value}</span
       >{/if}{#if item.unit}<small>{item.unit}</small>{/if}</span
   >
 {/snippet}
@@ -109,7 +114,8 @@
       ><a class="ui-rr-link" {href} data-testid={nameTestid ?? 'rank-name'}>{name}</a
       >{#if tag}{@render tag()}{/if}</span
     >
-    {#if sub}<span class="ui-rr-sub">{sub}</span>{/if}
+    <!-- One line: a guild and spec that do not fit end in an ellipsis, the whole line on hover. -->
+    {#if sub}<span class="ui-rr-sub block truncate" title={sub}>{sub}</span>{/if}
     {#if note}<span class="ui-rr-note" title={note.title} data-testid="rank-note">{note.text}</span>{/if}
   </span>
   <span class="ui-rr-bar">

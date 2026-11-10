@@ -55,7 +55,14 @@ export async function openReportBar(page: Page): Promise<void> {
   if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click();
 }
 
-/** "Sim this fight": the button in the rail's This pull panel (directions b1), at every width. */
+/** "Sim this fight": the button in the rail's This pull panel (directions b1); below 768 the
+ *  band's ··· Report actions menu holds it. */
 export async function openSimThisFight(page: Page): Promise<void> {
-  await page.getByTestId('report-sim-fight').click();
+  const button = page.getByTestId('report-sim-fight');
+  if (await button.isVisible()) {
+    await button.click();
+    return;
+  }
+  await page.getByTestId('report-actions-toggle').click();
+  await page.getByTestId('report-actions-sim').click();
 }

@@ -43,6 +43,18 @@ interface Pressed {
 }
 
 /** A key the rotation counts as a button press: an untagged spell or item. */
+/** "Other cooldowns as they come up" names no one spell: the game's pocket watch stands for it. */
+export const OTHER_COOLDOWNS_ICON = 'inv_misc_pocketwatch_01';
+
+/**
+ * A note a player does not need on the line: "on cooldown" anywhere, or a "whenever …" that
+ * restates the spell's own tooltip (Bloodrage, Battle Shout). The cast count, the tooltip and the
+ * guide say those; the card keeps the notes that change when to press (h-audit 2026-11-09).
+ */
+export function obviousNote(note: string): boolean {
+  return /^(?:on cooldown|whenever)\b|\bon cooldown\b/i.test(note.trim());
+}
+
 function pressKey(action: string): string | null {
   const parsed = parseActionKey(action);
   if (parsed === null || parsed.kind === 'other' || parsed.kind === 'unknown' || parsed.tag !== 0)
@@ -190,7 +202,7 @@ export function plannedRotationRows(
             number: at + 1,
             action: null,
             name: copy.otherCooldowns,
-            note: copy.beforeRun,
+            note: '',
             casts: null,
             dimmed: false,
           }

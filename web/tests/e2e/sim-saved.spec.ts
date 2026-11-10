@@ -8,7 +8,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { curatedRotationNotes } from './support/rotation-notes';
-import { gotoSim, simCharacter, gotoSavedSim } from './support/sim-page';
+import { gotoSavedSim, gotoSim, openSimSection, simCharacter } from './support/sim-page';
 import { expect, test } from './support/test';
 import type { CharacterSpec } from '../../src/lib/sim/types';
 
@@ -102,7 +102,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(page.getByTestId('sim-spread-plot')).toHaveCount(0);
 
     // The card below the fold mounts as it nears the viewport.
-    await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+    await openSimSection(page, 'settings');
     await expect(page.getByTestId('sim-settings-runs')).toContainText(
       fixtureResult.iterations_run.toLocaleString('en-US'),
     );
@@ -173,7 +173,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(simCharacter(page)).toBeVisible();
     // The stored request's own character, not a guess: the same class and gear the saved
     // sim ran with (src/fixtures/sim/result.json's request.character).
-    await expect(page.getByTestId('sim-gear-doll-slot-head')).toBeVisible();
+    await expect(page.getByTestId('sim-gear-doll').getByTestId('paperdoll-list-slot-head')).toBeVisible();
   });
 });
 
@@ -221,7 +221,7 @@ test('a saved sim names the rotation it used, prints its notes in place, and car
 }) => {
   await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('in_progress')));
   await gotoSavedSim(page, '/sim/simfixtureab');
-  await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
+  await openSimSection(page, 'rotation');
   const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
   await expect(card).toContainText('Fury guide');
@@ -229,10 +229,14 @@ test('a saved sim names the rotation it used, prints its notes in place, and car
 
   const notes = curatedRotationNotes('warrior-fury');
   await expect(card.getByTestId('rotation-line').first()).toBeVisible();
-  // Bloodthirst's note has no level version, so the run reads the curated note itself.
+  // A note that only says "on cooldown" is dropped (h-audit, lib/sim/rotation-card.ts obviousNote):
+  // Bloodthirst's line carries no note; a note that says when to press is printed in place.
   const bloodthirst = notes.find((note) => note.startsWith('On cooldown: the button'));
   expect(bloodthirst).toBeDefined();
-  await expect(card).toContainText(bloodthirst!);
+  await expect(card).not.toContainText(bloodthirst!);
+  const execute = notes.find((note) => note.startsWith('In the Execute phase, or in the last 15 seconds'));
+  expect(execute).toBeDefined();
+  await expect(card).toContainText(execute!);
 
   const url = page.url();
   const guide = card.getByRole('link', { name: /Fury guide/ });
@@ -252,7 +256,7 @@ test('a saved sim for a validated spec carries the rotation section with no fide
 }) => {
   await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('validated')));
   await gotoSavedSim(page, '/sim/simfixtureab');
-  await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
+  await openSimSection(page, 'rotation');
   const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
   await expect(card.getByTestId('rotation-line').first()).toBeVisible();
@@ -276,7 +280,7 @@ test('a saved sim whose stored request has no gear says so and draws no doll', a
   await expect(page.getByTestId('sim-saved')).toBeVisible();
   await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('sim-gear-empty')).toBeVisible();
-  await expect(page.getByTestId('sim-gear-doll-slot-head')).toHaveCount(0);
+  await expect(page.getByTestId('sim-gear-doll').getByTestId('paperdoll-list-slot-head')).toHaveCount(0);
 });
 
 // Defect fix: the name typed into "Name this sim" (SaveSimForm.svelte) used to be discarded
@@ -333,9 +337,9 @@ test.describe('a saved sim renders the results view its own kind calls for', () 
     await page.goto(`/sim/${id}`);
 
     await expect(page.getByTestId('sim-weights')).toBeVisible();
-    await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('= 1.00');
+    await expect(page.getByTestId('sim-weights-table')).toContainText('1.00');
     // A weights result has no gear story (design 7): the strip's grid does not claim one.
-    await expect(page.getByTestId('paperdoll-slot-head')).toHaveCount(0);
+    await expect(page.getByTestId('paperdoll-list-slot-head')).toHaveCount(0);
   });
 });
 
@@ -414,7 +418,7 @@ test('a stale engine version raises the note and names the engine, and is never 
   await page.goto(`/sim/${id}`);
 
   await expect(page.getByTestId('sim-note-stale')).toBeVisible();
-  await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await openSimSection(page, 'settings');
   // This run's Engine fact names the old build (the stale tag beside it retired).
   await expect(page.getByTestId('sim-settings-engine')).toContainText('6a1c2d9');
 

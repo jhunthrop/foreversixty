@@ -139,6 +139,12 @@ export const LINK =
  *  child), so the item carries it, none under the last. */
 export const ROW_ITEM = 'border-line-soft border-b last:border-b-0';
 
+/** The Row's hairline over a part of a panel that is not a Row (a footnote line, a second list). */
+export const RULE_TOP = 'border-line-soft border-t';
+
+/** The Row's hairline under a part of a panel that is not a Row (an opened night's detail). */
+export const RULE_BOTTOM = 'border-line-soft border-b';
+
 /** The few fields an item row or icon needs; every surface's item maps to this. */
 export interface ItemRef {
   id: number;

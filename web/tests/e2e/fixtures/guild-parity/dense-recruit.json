@@ -1,0 +1,73 @@
+{
+  "guild": {
+    "id": 2,
+    "name": "Olympus XXVII",
+    "region": "us",
+    "ruleset": "pvp",
+    "faction": "alliance",
+    "crest_url": null,
+    "path": "/guild/us/pvp/olympus-xxvii"
+  },
+  "members": 40,
+  "open": true,
+  "pitch": "We raid Wednesday nights, bring flasks, and split loot by council with the numbers shown. New to Forever is fine.",
+  "raid_nights": {
+    "text": "Wed, 8:00 pm to 11:00 pm CST",
+    "upcoming": ["2027-01-14T02:00:00Z", "2027-01-21T02:00:00Z"],
+    "timezone": "America/Chicago"
+  },
+  "progress": {
+    "name": "First tier",
+    "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"],
+    "named_encounters": 1,
+    "down": 1,
+    "pulls_total": 6
+  },
+  "wanted": [
+    {
+      "class": "warrior",
+      "spec": "warrior-protection",
+      "spec_name": "Protection Warrior",
+      "note": "Off tank"
+    },
+    {
+      "class": "paladin",
+      "spec": "paladin-holy",
+      "spec_name": "Holy Paladin",
+      "note": "For the heal rotation"
+    },
+    {
+      "class": "priest",
+      "spec": "priest-holy",
+      "spec_name": "Holy Priest",
+      "note": ""
+    },
+    {
+      "class": "warlock",
+      "spec": "warlock-destruction",
+      "spec_name": "Destruction Warlock",
+      "note": "Curse of Recklessness"
+    }
+  ],
+  "officers": [
+    {
+      "name": "Ironbrand",
+      "class": "paladin",
+      "spec": "Holy",
+      "rank": "leader"
+    },
+    {
+      "name": "Dunmaro",
+      "class": "hunter",
+      "spec": "Beast Mastery",
+      "rank": "officer"
+    },
+    {
+      "name": "Shiverknife",
+      "class": "rogue",
+      "spec": "Assassination",
+      "rank": "officer"
+    }
+  ],
+  "updated_at": "2027-01-09T19:30:00Z"
+}

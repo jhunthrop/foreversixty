@@ -6,7 +6,7 @@ import { loadBisFile, normaliseBisFile } from '../bis/load';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { LootFile } from '../sim/loot';
 import type { BisBand, BisFile, BisSlot, LootQuestsFile } from '../bis/types';
-import { guideBisFrom, loadGuideBis } from './guide-bis';
+import { guideBisFrom, listedBisRows, loadGuideBis } from './guide-bis';
 import { raceNameFor } from './race-table';
 
 const BUILD = activeBuild.build;
@@ -216,5 +216,36 @@ describe('loadGuideBis for Frost Mage, from the real file', () => {
 
   it('reads the band label from the shared copy', () => {
     expect(bisCopy.bandRangeLabel(60)).toBe('60');
+  });
+});
+
+describe('listedBisRows', () => {
+  const main = {
+    slot: 'main_hand',
+    slotLabel: 'Main hand',
+    empty: false,
+    notSimChecked: false,
+    itemName: 'Arcanite Reaper',
+  };
+  it('drops the empty off hand under a two-hander, which the doll draws greyed', () => {
+    const offHand = {
+      slot: 'off_hand',
+      slotLabel: 'Off hand',
+      empty: true,
+      notSimChecked: false,
+      emptyCopy: bisCopy.twoHanderEquippedNamed('Arcanite Reaper'),
+    };
+    expect(listedBisRows({ rows: [main, offHand] }).map((row) => row.slot)).toEqual(['main_hand']);
+  });
+
+  it('keeps an off hand that is empty for any other reason', () => {
+    const offHand = {
+      slot: 'off_hand',
+      slotLabel: 'Off hand',
+      empty: true,
+      notSimChecked: false,
+      emptyCopy: 'No known source',
+    };
+    expect(listedBisRows({ rows: [main, offHand] })).toHaveLength(2);
   });
 });

@@ -199,7 +199,7 @@ export const scoreCopy = {
   explainerJumpLabel: 'On this page',
   explainerHeading: 'Forever Score',
   explainerRatingHeading: 'Performance Rating',
-  explainerScoreCaption: 'Forever Score: your whole record, 0 to 2100.',
+  explainerScoreCaption: 'Forever Score: your whole record, 0 to 2,100.',
   explainerRatingCaption: 'Performance Rating: one fight, 0 to 100.',
   explainerLaunch: 'Parses, attendance and raid bosses count once raids open.',
   samplePill: 'Sample',

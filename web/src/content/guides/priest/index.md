@@ -14,7 +14,7 @@ sources:
   - label: 'Power Up Gaming, Forever talent changes vs Classic'
     url: https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/
     kind: community
-  - label: 'Talents Forever, talent data from the beta client'
+  - label: 'Talents Forever'
     url: https://talentsforever.com/data.json
     kind: community
 ---
@@ -43,4 +43,4 @@ sources:
 - Undead: Dark Sacrifice (health for mana, once a fight) and Touch of Weakness.
 - Troll: Hex of Weakness and Shadowguard.
 
-Skyborne, Forever's new neutral race, cannot be priests: they play warrior, hunter, rogue, shaman, mage or druid.
+Skyborne cannot be priests.

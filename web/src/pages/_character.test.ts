@@ -37,11 +37,11 @@ describe('the character page without JavaScript', () => {
     ],
   ];
   for (const [name, renderShell] of SHELLS) {
-    it(`${name}: hides the skeleton and shows the line with the Planner link`, async () => {
+    it(`${name}: hides the skeleton and the pending head, and shows the line with the Planner link`, async () => {
       const html = await renderShell(await createPageContainer());
       const noscript = /<noscript>([\s\S]*?)<\/noscript>/.exec(html)?.[1] ?? '';
       expect(noscript).toMatch(
-        /<style>\s*\[data-testid=["']character-skeleton["']\]\s*\{\s*display:\s*none\s*!important;?\s*\}\s*<\/style>/,
+        /<style>\s*\[data-testid=["']character-skeleton["']\],\s*\[data-testid=["']character-head-loading["']\]\s*\{\s*display:\s*none\s*!important;?\s*\}\s*<\/style>/,
       );
       expect(noscript).toContain('data-testid="character-noscript"');
       const words = noscript
@@ -49,7 +49,8 @@ describe('the character page without JavaScript', () => {
         .replace(/<[^>]+>/g, '')
         .replace(/\s+/g, ' ')
         .trim();
-      expect(words).toBe(SENTENCE);
+      // The title band, then the one line (h-edges: the no-script page wears the page head).
+      expect(words).toBe(`Character ${SENTENCE}`);
       expect(noscript).toMatch(/<a [^>]*href="\/planner"[^>]*>Planner<\/a>/);
       // The skeleton it hides is in the same server HTML.
       expect(html).toContain('data-testid="character-skeleton"');

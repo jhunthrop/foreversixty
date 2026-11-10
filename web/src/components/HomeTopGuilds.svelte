@@ -1,21 +1,25 @@
 <!-- web/src/components/HomeTopGuilds.svelte -->
 <!-- The guild landing's Top guilds (web layout spec 2026-11-05 §6.1): the top five guilds by
      progression, from `GET /v1/rankings/guilds?kind=progress` (the one guild leaderboard kind that
-     needs no `encounter`), as ranked Rows with a Meter against the leader in the page's one Plate.
+     needs no `encounter`), as ranked Rows (where the guild lives, its newest kill, the bosses down), in the landing's
+     Top guilds panel.
      Loading holds the five rows' height; a failure and an empty board are open lines. -->
 <script lang="ts">
   import { guildHref, rulesetLabel } from '../lib/characters';
   import { fetchGuildRankings, type GuildRankingRow } from '../lib/rankings/api';
+  import { dateLabel, viewerLocale } from '../lib/guild/raid-time';
   import { homeTopGuildsCopy } from '../lib/rankings/copy';
   import LoadError from './ui/LoadError.svelte';
-  import Meter from './ui/Meter.svelte';
-  import Plate from './ui/Plate.svelte';
   import Row from './ui/Row.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
   const ROWS = 5;
 
-  let { label = homeTopGuildsCopy.placeholderLabel }: { label?: string } = $props();
+  let {
+    label = homeTopGuildsCopy.placeholderLabel,
+    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    locale = viewerLocale(),
+  }: { label?: string; viewerTimezone?: string; locale?: string } = $props();
 
   let rows = $state<GuildRankingRow[]>([]);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
@@ -36,8 +40,6 @@
     void attempt;
     void load();
   });
-
-  const top = $derived(Math.max(1, ...rows.map((row) => row.value)));
 </script>
 
 {#if status === 'loading'}
@@ -57,22 +59,22 @@
 {:else if rows.length === 0}
   <p class="text-muted text-[14px]" data-testid="home-top-guilds-empty">{homeTopGuildsCopy.empty}</p>
 {:else}
-  <Plate {label} testid="home-top-guilds">
+  <div role="group" aria-label={label} data-testid="home-top-guilds">
     {#each rows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
-      {@const bosses = homeTopGuildsCopy.bosses(Math.round(row.value))}
+      {@const where = `${row.guild.region.toUpperCase()} ${rulesetLabel(row.guild.ruleset)}`}
+      {@const killed = homeTopGuildsCopy.lastKill(dateLabel(new Date(row.fought_at), viewerTimezone, locale))}
       <Row
         title={row.guild.name}
         rank={String(row.rank)}
-        sub={`${row.guild.region.toUpperCase()} ${rulesetLabel(row.guild.ruleset)}`}
+        sub={`${where} · ${killed}`}
         href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
       >
         {#snippet trail()}
-          <span class="hidden w-24 md:block"
-            ><Meter value={row.value / top} label={`${row.guild.name}: ${bosses}`} /></span
+          <span class="text-text text-right text-[14px] font-semibold tabular-nums"
+            >{homeTopGuildsCopy.bossesDown(Math.round(row.value))}</span
           >
-          <span class="text-text w-[72px] text-right text-[14px] font-semibold tabular-nums">{bosses}</span>
         {/snippet}
       </Row>
     {/each}
-  </Plate>
+  </div>
 {/if}

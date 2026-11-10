@@ -7,7 +7,8 @@
      chunk; lib/guild/recruit-page.svelte.ts owns the reads and writes. -->
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { guildHref, type CharacterPath } from '../../../lib/characters';
+  import { guildApplicationsHref, guildHref, type CharacterPath } from '../../../lib/characters';
+  import { fetchOfficerApplications } from '../../../lib/guild/recruit-api';
   import { liveRecruitDeps } from '../../../lib/guild/guild-view-deps';
   import { viewerLocale } from '../../../lib/guild/raid-time';
   import { recruitCopy as copy } from '../../../lib/guild/recruit-copy';
@@ -52,6 +53,17 @@
   const guildPath = $derived(guildHref(path.region, path.ruleset, guildName || path.slug));
   const role = $derived(p.context?.role);
   const tabRole = $derived(role === 'officer' ? 'officer' : role === 'member' ? 'member' : undefined);
+  /** An officer reads the open applications against this card; null until read. */
+  let openApplications = $state<number | null>(null);
+  $effect(() => {
+    const guildId = p.context?.guild.id;
+    if (role !== 'officer' || guildId === undefined) return;
+    void untrack(() =>
+      fetchOfficerApplications(guildId)
+        .then((list) => (openApplications = list.pending))
+        .catch(() => (openApplications = null)),
+    );
+  });
   const next = typeof location === 'undefined' ? '/account?signed_in=1' : location.pathname;
 </script>
 
@@ -105,7 +117,7 @@
     {/snippet}
     <Page layout="split" panels {header} {rail} testid="guild-recruit-page">
       {#if card.open}
-        <Section title={copy.card.lookingFor} panel frame="framed" testid="guild-recruit-wanted">
+        <Section title={copy.card.lookingFor} panel testid="guild-recruit-wanted">
           {#if card.wanted.length === 0}
             <p class="text-text text-[14px]">{copy.card.nobodyListed}</p>
           {:else}
@@ -128,6 +140,13 @@
       {/if}
       {#if state.kind === 'closed'}
         <Notice text={copy.closedLine(card.guild.name)} tone="neutral" testid="guild-recruit-closed" />
+      {:else if state.kind === 'member' && openApplications !== null}
+        <Notice
+          text={copy.mine.officerOpen(openApplications)}
+          tone="neutral"
+          action={{ label: copy.mine.review, href: guildApplicationsHref(guildPath) }}
+          testid="guild-recruit-officer"
+        />
       {:else if state.kind === 'member'}
         <Notice
           text={copy.mine.member(card.guild.name)}

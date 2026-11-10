@@ -617,6 +617,11 @@ export function buildMockProgression(): GuildProgressionPage {
     date,
     pulls: ONYXIA_PULLS.filter((p) => p[0] === date).length,
     killed: ONYXIA_PULLS.some((p) => p[0] === date && p[3] === 'kill'),
+    kill_ms:
+      (ONYXIA_PULLS.find((p) => p[0] === date && p[3] === 'kill')?.[2] ?? null) === null
+        ? null
+        : (ONYXIA_PULLS.find((p) => p[0] === date && p[3] === 'kill')?.[2] ?? 0) * 1000,
+    deaths: ONYXIA_PULLS.filter((p) => p[0] === date).length,
   }));
   return {
     tier: {

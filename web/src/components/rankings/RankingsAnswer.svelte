@@ -1,7 +1,8 @@
 <!-- web/src/components/rankings/RankingsAnswer.svelte -->
 <!-- The body of the board's Your rank panel in the rail (logs spec 2026-11-07 section 7; directions
      mock b1-rankings-board): the rank as a big Figure in its percentile colour with
-     `of {total} {Spec} {Class}s`, the scope line, the best kill's facts when the board holds it, and
+     `of {total} {Spec} {Class}s` (the filter bar names the encounter and ruleset; the marked row
+     carries the best kill's figures), and
      `See your parses ›`. Unranked: the sentence and `Upload a log ›`. Failed: `Your rank did not
      load.` The answer is read by the board's own spec (lib/rankings/own-rank.ts); a newer spec
      drops an older read. The block keeps its loading height so the rail never moves. -->
@@ -10,20 +11,15 @@
   import type { AnswerSpec, HeaderAnswer } from '../../lib/character-header/types';
   import { ownParsesAction } from '../../lib/rankings/own-rank';
   import { rankingsCopy, rankingsEmptyCopy } from '../../lib/rankings/copy';
-  import type { Fact } from '../../lib/ui/facts';
   import { LINK } from '../../lib/ui/primitives';
-  import Facts from '../ui/Facts.svelte';
   import Figure from '../ui/Figure.svelte';
 
   let {
     spec,
     character,
-    best = [],
   }: {
     spec: AnswerSpec;
     character: MeCharacter;
-    /** The best kill's facts (DPS, Executed, Length, Killed) when the board holds the row. */
-    best?: readonly Fact[];
   } = $props();
 
   let answer = $state<HeaderAnswer | null>(null);
@@ -50,7 +46,6 @@
 
   const parses = $derived(ownParsesAction(character));
   const figure = $derived(answer?.kind === 'figures' ? answer.figures[0] : undefined);
-  const note = $derived(answer?.kind === 'figures' ? answer.note?.text : undefined);
 </script>
 
 <div class="flex min-h-[88px] flex-col gap-1" data-testid="rankings-answer">
@@ -69,8 +64,6 @@
       size="big"
       testid="rankings-answer-rank"
     />
-    <p class="text-small text-muted">{note}</p>
-    {#if best.length > 0}<div class="mt-3"><Facts items={best} testid="rankings-answer-best" /></div>{/if}
     <p class="mt-3">
       <a class={LINK} href={parses.href} data-testid="rankings-answer-parses">{rankingsCopy.parsesLink} ›</a>
     </p>

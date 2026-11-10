@@ -37,7 +37,7 @@
   }
 </script>
 
-<Section title={copy.loot.head} anchor="raid-loot" testid="raid-loot">
+<Section title={copy.loot.head} anchor="raid-loot" panel testid="raid-loot">
   {#if awards.length === 0}
     <p class="text-muted text-[14px]" data-testid="raid-loot-empty">
       {#if officer}{empty.officerEmptyLead}<a class="text-text underline" href={lootHref}
@@ -47,7 +47,7 @@
   {:else}
     <div>
       {#each awards as entry (`${entry.award.item_id}-${entry.award.at}-${entry.award.character_key}`)}
-        <ReportLootRow award={entry.award} boss={entry.boss} />
+        <ReportLootRow award={entry.award} boss={groups.length > 1 ? entry.boss : ''} />
       {/each}
     </div>
     <BisTooltipHost {build} modelsElementId="raid-loot-tooltip-models" {resolve} />

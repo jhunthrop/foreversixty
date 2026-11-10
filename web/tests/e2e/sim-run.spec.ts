@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { choose } from './support/select';
-import { openMoreSettings, pasteAndRun } from './support/sim-page';
+import { openMoreSettings, openSimSection, pasteAndRun } from './support/sim-page';
 
 // The landing's paste Plate loads and runs in one click (SimView.svelte's `runPastedInput`),
 // so this helper's postcondition is "character loaded, one run already finished": every caller
@@ -113,7 +113,7 @@ test('the precision select offers four choices and the report states the run', a
   const report = page.getByTestId('sim-live-report');
   await expect(report).toBeVisible({ timeout: 30_000 });
   // This run loads as it nears the viewport (LazySection).
-  await report.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await openSimSection(page, 'settings');
   await expect(report.getByTestId('sim-settings-runs')).toContainText('500');
   await expect(page.getByTestId('sim-error')).toContainText(/^± [\d.]+ DPS/);
   // The default lane says nothing: a browser result has no label.

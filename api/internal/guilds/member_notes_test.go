@@ -117,8 +117,9 @@ func TestMemberProfileIsOfficerOrSelf(t *testing.T) {
 	if _, err := h.store.AddMemberNote(context.Background(), gid, member, leader, "leader", secretNote); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := h.pool.Exec(context.Background(), `insert into loot_awards (guild_id, encounter_id, item_id, character_key)
-		values ($1, 1084, 18813, 'us/hardcore/notesmember')`, gid); err != nil {
+	if _, err := h.pool.Exec(context.Background(), `insert into loot_awards (guild_id, encounter_id, item_id, character_key,
+		ms_os, reason, votes_yes, votes_no, votes_officers)
+		values ($1, 1084, 18813, 'us/hardcore/notesmember', 'ms', 'Best in slot', 3, 1, 4)`, gid); err != nil {
 		t.Fatal(err)
 	}
 	profile := fmt.Sprintf("/v1/guilds/%d/members/%s/profile", gid, accountKeyFor(member))
@@ -144,6 +145,21 @@ func TestMemberProfileIsOfficerOrSelf(t *testing.T) {
 	}
 	if p.Loot.Count != 1 || p.Loot.Items[0].Name == nil || *p.Loot.Items[0].Name != "Ring of Binding" {
 		t.Fatalf("loot = %+v", p.Loot)
+	}
+	// The award's decision record rides with it; the guild median counts every verified raider,
+	// the ones with nothing as zero (one award among this guild's raiders: the median is 0).
+	if r := p.Loot.Items[0].AwardRecord; r.MsOs == nil || *r.MsOs != "ms" || r.Reason == nil || *r.Reason != "Best in slot" ||
+		r.VotesYes == nil || *r.VotesYes != 3 || r.VotesNo == nil || *r.VotesNo != 1 || r.VotesOfficers == nil || *r.VotesOfficers != 4 {
+		t.Fatalf("award record = %+v", r)
+	}
+	if p.Upgrades == nil {
+		t.Fatal("upgrades is null; a profile with a readiness row sends a list, empty without a gap")
+	}
+	if p.Loot.GuildMedian != 0 {
+		t.Fatalf("guild median = %d, want 0", p.Loot.GuildMedian)
+	}
+	if p.Attendance.Source == AttendanceSourceReports && (p.Loot.NightsSince != nil || p.Attendance.Streak != 0) {
+		t.Fatalf("reports mode carries no nights: since %v, streak %d", p.Loot.NightsSince, p.Attendance.Streak)
 	}
 	if p.Notes == nil || len(*p.Notes) != 1 || (*p.Notes)[0].Body != secretNote {
 		t.Fatalf("officer's notes = %v", p.Notes)

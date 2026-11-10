@@ -62,6 +62,13 @@ describe('glanceRotation', () => {
     expect(glanceRotation(priority.slice(3), RACES).filler).toBeUndefined();
   });
 
+  it('reads each row at its level 60 clause', () => {
+    const rows = [
+      item('Raptor Strike', 'On every swing it is ready, with an older rank on your bar at 26 to 29'),
+    ];
+    expect(glanceRotation(rows, RACES).rows[0]!.clause).toBe('On every swing it is ready');
+  });
+
   it('finds race-only rows and the filler', () => {
     expect(isRaceOnlyRow(priority[0]!, RACES)).toBe(true);
     expect(isRaceOnlyRow(priority[1]!, RACES)).toBe(false);

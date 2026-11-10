@@ -66,6 +66,7 @@ section>.sec-h+*{margin-top:12px}
 .ans-who{display:flex;align-items:center;gap:12px}.ans-who b{display:block;font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px;flex-wrap:wrap;font-size:16px}  /* the links take the page head's 16 px */
 @media(min-width:900px){.head .ans:has(>.ans-who){min-width:300px}.ans-who{justify-content:flex-end;text-align:right}.ans-links{justify-content:flex-end}}
 .pair{display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding-top:12px;border-top:1px solid var(--line-soft)}
+.pair-h{font:700 15px/1.5 var(--font-body);color:var(--strong)}  /* PairingBlock's label (h-audit): 15 px bold, no caps label */
 .paste textarea{width:100%;min-height:72px;resize:vertical;font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace}
 .kv code.c{font-size:14px}.kv dd .t-small{font-weight:400}
 .surf .row{align-items:start;align-content:start}.surf .row .foot{padding-top:12px}.surf .cap{--mh:240px!important}
@@ -181,12 +182,12 @@ def companion_section(state: str) -> str:
         lc = FACTS['logs_companion']
         if state == 'done':
             status = ''.join(f'<p class="t-small" style="color:var(--text)">{escape(x)}</p>' for x in FACTS['device_status'])
-            pair = f'<div class="pair">{status}<span class="t-label">{escape(lc["pairAnotherLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(PC["action"], small=True)}</div></div>'
+            pair = f'<div class="pair">{status}<span class="pair-h">{escape(lc["pairAnotherLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(PC["action"], small=True)}</div></div>'
         elif state == 'pairing':
-            pair = (f'<div class="pair"><span class="t-label">{escape(lc["pairLabel"])}</span>{Code(FACTS["pair_code"]["code"], big=True)}'
+            pair = (f'<div class="pair"><span class="pair-h">{escape(lc["pairLabel"])}</span>{Code(FACTS["pair_code"]["code"], big=True)}'
                     f'<p class="t-small">{escape(PC["code_line"])}</p></div>')
         else:
-            pair = f'<div class="pair"><span class="t-label">{escape(lc["pairLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(PC["action"], small=True)}</div></div>'
+            pair = f'<div class="pair"><span class="pair-h">{escape(lc["pairLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(PC["action"], small=True)}</div></div>'
     # The signing and first-run line (U7): the own build's; every build's, named, for an unknown system; none on a phone.
     if comp['own'] is not None:
         plat = f'<p class="t-small">{escape(comp["own"]["firstRun"])}</p>'

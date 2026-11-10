@@ -50,7 +50,7 @@ sources:
 - Lone Wolf's 20% damage on every attack, with no pet to keep alive
 - Expose Prey opens Mongoose Bite off your own hits on a marked target, so it fires even on a boss that never swings at you
 - Resourcefulness takes 60% off your melee and trap costs, so you do not run dry
-- Rapid Fire speeds your melee swings as well as your shots
+- Rapid Fire speeds your melee swings
 
 ### Weaknesses
 
@@ -67,14 +67,14 @@ sources:
 
 Thirty-three points in Survival take every melee damage talent, thirteen in Marksmanship take Careful Aim, Rapid Killing and Lone Wolf, and five in Beast Mastery take Deadly Aspects.
 
-- **Lone Wolf** (1 point): 20% more damage with every attack while no pet is out. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so in a raid the talent beats the pet for a melee hunter. Out in the world the pet is worth a little more than the talent and takes the hits, so keep it out there; the point waits for your next raid pull
-- **Expose Prey** (2 points): your hits on a target with Hunter's Mark have a 10% chance to open Mongoose Bite for 10 seconds, the only way it opens on a boss that is not attacking you
-- **Lacerating Strikes** (1 point): Mongoose Bite also bleeds the target for 40% of its damage over 21 seconds
-- **Predator's Edge** (5 points): your melee special crits hit for 230% of a normal hit instead of double, and your off hand does 50% more damage
-- **Savage Strikes** (2 points): 4% crit on your melee specials
-- **Lightning Reflexes** (5 points): 15% Agility
-- **Deadly Aspects** (5 points): under Aspect of the Beast, every white swing has a 10% chance to speed your melee attacks by 30% for 12 seconds
-- **Resourcefulness** (2 points): 60% off melee and trap costs, and your special crits keep half your mana regeneration running
+- **Lone Wolf** (1 point)
+- **Expose Prey** (2 points)
+- **Lacerating Strikes** (1 point)
+- **Predator's Edge** (5 points)
+- **Savage Strikes** (2 points)
+- **Lightning Reflexes** (5 points)
+- **Deadly Aspects** (5 points)
+- **Resourcefulness** (2 points)
 
 Careful Aim (5 points) turns Intellect into attack power and is the way to Lone Wolf. Lethal Attacks (5 points) is 5% crit on everything. Surefooted is 3% hit, Strider Kick is a third melee special, and Clever Traps and Survivalist's Discipline turn Immolation Trap into a damage button. Improved Tracking (5 points) is 5% damage against the creature type you track. Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead, which takes in most raid bosses, so set it to the boss's type before the pull whenever Track covers it.
 
@@ -82,41 +82,37 @@ The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk
 
 ## Rotation and priority
 
-In a raid, dismiss your pet before the pull; Lone Wolf only works with no pet out. Mark the boss with Hunter's Mark first, so the mana is back by the pull, then put up Aspect of the Beast and leave it up. At 60, Aspect of the Falcon gives the same melee attack power as Beast (10 more once you own Hawk's Ahn'Qiraj rank), and Deadly Aspects procs from your swings under either one, so Falcon is not a clear upgrade. From 30 to 59 Beast is the only melee aspect you have. Expose Prey needs a mark on the target, so if no other hunter has marked it, you do, and on a fight longer than two minutes you mark it again when it falls off.
+**Pet.** In a raid, dismiss your pet before the pull; Lone Wolf only works with no pet out.
 
-Walk in behind the boss with the rogues once the tank has it. On the pull, press Rapid Fire, your trinkets and your racial (Elune's Light, Blood Fury or Berserking) together. Rapid Fire speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.
+**Aspect.** From 30 to 59 Beast is your only melee aspect: put it up and leave it up. At 60 Aspect of the Falcon gives the same melee attack power as Aspect of the Beast (10 more with Hawk's Ahn'Qiraj rank), and Deadly Aspects procs under either one, so Falcon is not a clear upgrade.
 
-Then work through your melee priority: Raptor Strike, Mongoose Bite, Lacerate, Strider Kick, Immolation Trap. Raptor Strike replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Watch for Mongoose Bite: Expose Prey opens it off your own hits. Keep Lacerate's bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and Strider Kick and Immolation Trap fill what is left. Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
+**Mana.** With Resourcefulness your mana holds through Raptor Strike on every swing and Immolation Trap on cooldown. Rapid Fire speeds your swings, so it is a melee cooldown for you.
 
-You fire no shots in this spec. Your bow or gun is there for its stats.
+**Windfury.** Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
 
-**Threat.** You sit on a fresh tank's heels in the opener. Disengage trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. Feign Death drops all of your threat if it lands; check the message, because either can miss or be resisted. Feign Death is also your answer when something turns on you.
+**Threat.** Walk in behind the boss with the rogues once the tank has it; you sit on a fresh tank's heels in the opener. Disengage trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. Feign Death drops all of your threat if it lands; check the message, because either can miss or be resisted. Feign Death is also your answer when something turns on you.
 
 **Trash.** Survival has little cleave of its own. Explosive Trap under the pack is your AoE, and Engineering's explosives are the rest. Lay Freezing Trap before the pull.
 
-**Movement.** Stay on the boss's back. Every second you are not swinging is lost white damage and lost Expose Prey procs.
-
 ## Stat priority
 
-Hit matters up to 9%, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit pays off on your melee specials: Predator's Edge makes their crits hit for 230% of a normal hit instead of double, and every special crit keeps half your mana regeneration running through Resourcefulness. Savage Strikes adds 4% crit chance to those specials on top of what your gear gives. Agility is attack power and crit together, and Lightning Reflexes raises it by 15%. Intellect is attack power through Careful Aim, and Strength is attack power directly. Plain attack power gives only itself. Haste is rare on gear but strong when you find it.
+Hit matters up to 9%, the cap for your special attacks against a raid boss; Surefooted gives you 3% of it, so you need 6% from gear, or 5% as a Dwarf. Your white swings have a much higher cap that you will not reach, and hit past the special cap still raises white damage. Crit pays off on your melee specials: Predator's Edge makes their crits hit for 230% of a normal hit instead of double, and every special crit keeps half your mana regeneration running through Resourcefulness. Savage Strikes adds 4% crit chance to those specials on top of what your gear gives. Lightning Reflexes raises Agility by 15%, and Intellect is attack power through Careful Aim.
 
 ## Best in slot
 
-Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Survival dual-wields, and Predator's Edge's 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick.
+A strong leather piece often beats the mail you can get, so your list mixes both at 60. Survival dual-wields, and Predator's Edge's 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick.
 
 ## Enchants and consumables
 
-Agility on gloves, boots and cloak, since it is attack power and crit together and Lightning Reflexes raises it, and the best stats enchant on the chest, which lifts every stat you use. On bracers and both weapons the Strength, Intellect and Agility enchants are all attack power for you, Strength directly, Intellect through Careful Aim and Agility with crit on top, so take whichever adds the most attack power.
+Agility on gloves, boots and cloak, which Lightning Reflexes raises, and the best stats enchant on the chest, which lifts every stat you use. On bracers and both weapons the Strength, Intellect and Agility enchants are all attack power for you, Intellect through Careful Aim and Agility with crit on top, so take whichever adds the most attack power.
 
 Forever's damage potions share the two-minute potion cooldown with mana potions. Survival's mana holds with Resourcefulness, so it drinks a Major Frenzy Potion on the pull instead. Keep Elixir of the Mongoose up, with Poached Sunscale Salmon.
 
 ## Races
 
-Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, and Predator's Edge makes your special crits hit harder, so press it with Rapid Fire on the pull. Human's Ruthless is next, and Dwarf's 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.
+Night Elf for the Alliance: Elune's Light's crit feeds Predator's Edge, so press it with Rapid Fire on the pull. Human's Ruthless is next, and Dwarf's 1% hit comes last even for a dual-wielder.
 
-Orc and Troll are level for the Horde. Blood Fury is 10% attack power for 15 seconds every two minutes, so it goes on the pull with Rapid Fire and again at two and four minutes. Berserking is 10% attack speed for 15 seconds every three minutes and stacks with Rapid Fire on your swings.
-
-Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds both of your weapons.
+Orc and Troll are level for the Horde. Blood Fury goes on the pull with Rapid Fire and again at two and four minutes; Berserking stacks with Rapid Fire on your swings.
 
 ## Professions
 
@@ -130,22 +126,30 @@ Train Heart of the Lion at level 1 and keep it up all the way to 60: 10% more st
 
 At 10 your trainer starts the taming quests, which end by teaching Tame Beast. Tame a beast at your level, feed it to keep it happy, and train Mend Pet at 12.
 
-Your first five points go into Improved Tracking, 1% damage per point against whatever you are tracking: Track Beasts from level 1, Track Humanoids at 10, Track Undead at 18. Keep the right one on. Savage Strikes at 15 and 16 adds 2% crit to your melee abilities per point, then Survivalist from 17 adds 2% health per point.
+Your first five points go into Improved Tracking, 1% damage per point against whatever you are tracking: Track Beasts from level 1, Track Humanoids at 10, Track Undead at 18. Savage Strikes at 15 and 16 adds 2% crit to your melee abilities per point, then Survivalist from 17 adds 2% health per point.
 
-Take quest rewards over vendor gear, Agility first. Your melee weapon is your damage: replace the starting one with the first slow two-handed quest reward you find, since Raptor Strike adds its damage on top of the weapon hit. Wear leather until 40. From 40 you can wear mail, but keep a leather piece whenever it is the better one.
+Take quest rewards over vendor gear, Agility first. Replace the starting weapon with the first slow two-handed quest reward you find, since Raptor Strike adds its damage on top of the weapon hit. Wear leather until 40. From 40 you can wear mail, but keep a leather piece whenever it is the better one.
 
 ### Levels 20 to 60
 
-Survival levels in melee. Keep a pet out while you level: Lone Wolf is the last point this build takes, at 60, and until then the pet holds aggro and adds damage. Lone Wolf pays off in a raid, where you get the raid buffs and your pet gets none, so your own hits carry more of the damage. Out in the world at 60 a pet still adds a little more damage than Lone Wolf does and takes the hits for you, so keep it out while you quest and farm. The talent does nothing while your pet is out, so dismiss the pet before a raid pull and call it back afterwards.
+Keep a pet out while you level: Lone Wolf is the last point this build takes, at 60, and until then the pet holds aggro and adds damage. Even at 60, out in the world a pet adds a little more damage than Lone Wolf and takes the hits, so keep it out while you quest and farm. Lone Wolf pays off in a raid, where you get the raid buffs and your pet gets none: dismiss the pet before a raid pull and call it back afterwards.
 
-Open with Hunter's Mark, send the pet, then walk in and queue Raptor Strike. Press Mongoose Bite whenever it lights up, and from 30 keep Lacerate on anything that will live long enough to bleed. Wing Clip a runner. Wear Aspect of the Monkey until 30: its dodges open Mongoose Bite. At 30 switch to Aspect of the Beast and keep it up. Throw Immolation Trap under anything that will live long enough to burn. Feign Death at 30 resets a bad pull. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.
+Open with Hunter's Mark, send the pet, then walk in and queue Raptor Strike. Press Mongoose Bite whenever it lights up, and from 30 keep Lacerate on anything that will live long enough to bleed. Throw Immolation Trap under anything that will live long enough to burn, and Wing Clip a runner. Feign Death at 30 resets a bad pull.
 
-Spend 25 to 29 on Predator's Edge and take Strider Kick at 30, then Resourcefulness, Expose Prey, Survivalist's Discipline and Lightning Reflexes, with Lacerating Strikes at 40 and Lightning Reflexes full at 42. Deadly Aspects from 43, Lethal Attacks and Careful Aim take you to 57, Rapid Killing comes at 58 and 59, and Lone Wolf is the last point at 60.
+Wear Aspect of the Monkey until 30: its dodges open Mongoose Bite. At 30 switch to Aspect of the Beast and keep it up. Aspect of the Cheetah at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight. From 20 you can carry two weapons.
 
-At 26 Immolation Trap rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep Raptor Strike rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.
+Talents after Survivalist:
 
-At 31 you have only the first point of Resourcefulness, and for that one level Raptor Strike rank 1 does more: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 31 and put rank 5 on at 32, when you train it and the second point makes every rank cheap.
+- **25 to 29:** Predator's Edge.
+- **30 to 39:** Strider Kick at 30, then Resourcefulness, Expose Prey, Survivalist's Discipline and Lightning Reflexes.
+- **40 to 42:** Lacerating Strikes at 40, Lightning Reflexes full at 42.
+- **43 to 57:** Deadly Aspects, then Lethal Attacks and Careful Aim.
+- **58 to 60:** Rapid Killing at 58 and 59, Lone Wolf the last point at 60.
 
-Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.
+With a trap on every pull your mana runs short, so at a few levels you keep an older Raptor Strike rank on your bar: most of the hit is your weapon, so it does nearly what the new rank does for less mana, and the mana goes into traps. Drag the lower rank onto your bar from the spellbook.
 
-At 46 the new Immolation Trap rank costs more, and with a trap on every pull your mana starts to run short over a chain of them. Rank 6 of Raptor Strike, trained at 40, is the one to use until then, though a Troll does a touch better keeping rank 5 at 40 itself. For 46 and 47, keep rank 5 on your bar instead: most of the hit is your weapon, so it does nearly what rank 6 does for less mana, and the mana it saves goes into traps. Drag rank 5 back from the spellbook as you did at 26. At 48 put rank 7 on the bar. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.
+- **26 to 29:** rank 3 instead of rank 4, once Immolation Trap rank 2 arrives at 26. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Put rank 4 back at 30.
+- **31:** rank 1, while you have only the first point of Resourcefulness; it costs almost nothing. Put rank 5 on at 32, when you train it and the second point makes every rank cheap.
+- **40 to 45:** rank 6, trained at 40, though a Troll does a touch better keeping rank 5 at 40 itself.
+- **46 and 47:** rank 5 instead of rank 6, since the new Immolation Trap rank at 46 costs more.
+- **48:** rank 7. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.

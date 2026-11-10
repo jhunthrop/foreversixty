@@ -36,7 +36,6 @@ import activeBuild from '../../../data/active-build.json';
 import { readSpecCatalog } from '../../../lib/bis/load';
 import { articleLd, breadcrumbListLd } from '../../../lib/seo';
 import { searchCopy } from '../../../lib/search-copy';
-import { REGION } from '../../../lib/ui/regions';
 import type { ClassSlug } from '../../../lib/ui/primitives';
 import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { describedBuildTrees, guideRotation } from '../../../lib/guides/guide-rotation';
@@ -49,10 +48,13 @@ import { splitSpecSections, slugify, SPEC_SECTIONS, type SpecSection } from '../
 import { diffBuilds, buildDiffLine } from '../../../lib/guides/build-diff';
 import { guideBuildBlocks } from '../../../lib/guides/guide-builds';
 import { guideDollTooltips, guideDollViews } from '../../../lib/guides/guide-bis-doll';
+import { bisPieceCount } from '../../../lib/guides/guide-bis';
+import { extrasRowCount } from '../../../lib/guides/gear-extras';
 import { readItemTooltipModel } from '../../../lib/items/lookup-node';
 import { guideTipsUrl, proseNames, specGuideData, withTipKeys } from '../../../lib/guides/guide-tips';
 import { linkProse } from '../../../lib/guides/prose-tips';
 import { pageScript } from '../../../lib/guides/page-script';
+import { foldScript } from '../../../lib/ui/fold';
 import { dayMonth, pageUpdatedAt } from '../../../lib/guides/guide-header';
 import { guideLadderSteps } from '../../../lib/guides/leveling-builds';
 import { keyTalentsFor, withoutTalentBullets } from '../../../lib/guides/key-talents';
@@ -61,6 +63,7 @@ import { raceTableFor, recommendedRaceLines, specKindOf } from '../../../lib/gui
 import { guideStatLane } from '../../../lib/guides/stat-lane';
 import { talentTreesOf } from '../../../lib/guides/talent-cells';
 import {
+  joinPriorityRuns,
   litTalentsOf,
   markRaidBuildRows,
   raidBuildOnlyTalents,
@@ -171,7 +174,7 @@ const rotation =
   unkeyed === undefined
     ? undefined
     : markCheapRanks(
-        atLevel60(withTipKeys(markRaidBuildRows(unkeyed, raidOnly), tipBundle)),
+        joinPriorityRuns(atLevel60(withTipKeys(markRaidBuildRows(unkeyed, raidOnly), tipBundle))),
         (name) => topRankAt60(build, classSlug, name),
         proseOnly('Rotation and priority'),
       );
@@ -259,7 +262,7 @@ const jsonLd = [
         build={build}
         classSlug={classSlug}
         specSlug={specSlug}
-        summary={`${title} · ${guidesCopy.tocBarLabel}`}
+        summary={title}
         specs={catalogEntries}
         sections={tocItems}
       />
@@ -293,11 +296,11 @@ const jsonLd = [
           {hasOverviewBlocks ? (
             <div class="guide-sw">
               <div>
-                <h3 class="text-label text-muted guide-sw-head font-bold">{guidesCopy.strengths}</h3>
+                <h3 class="guide-sw-head">{guidesCopy.strengths}</h3>
                 <Prose html={overviewHtml.strengths} mods={['plus']} testid="guide-strengths" />
               </div>
               <div>
-                <h3 class="text-label text-muted guide-sw-head font-bold">{guidesCopy.weaknesses}</h3>
+                <h3 class="guide-sw-head">{guidesCopy.weaknesses}</h3>
                 <Prose html={overviewHtml.weaknesses} mods={['minus']} testid="guide-weaknesses" />
               </div>
             </div>
@@ -339,7 +342,12 @@ const jsonLd = [
           <Prose html={await prose(proseOnly('Stat priority'))} />
         </ReadingSection>
 
-        <ReadingSection title="Best in slot" anchor="best-in-slot" proseFirst>
+        <ReadingSection
+          title="Best in slot"
+          anchor="best-in-slot"
+          proseFirst
+          fold={guidesCopy.foldShow(guidesCopy.foldItems(bisPieceCount(guideBis)))}
+        >
           <Fragment slot="lane">
             <GuideBisLane build={build} classSlug={classSlug} bis={guideBis} specSlug={specSlug} {role} />
           </Fragment>
@@ -353,8 +361,22 @@ const jsonLd = [
           />
         </ReadingSection>
 
-        {gearExtras !== undefined ? (
-          <ReadingSection title="Enchants and consumables" anchor="enchants-and-consumables">
+        {gearExtras !== undefined && extrasHtml.trim() === '' ? (
+          <ReadingSection
+            title="Enchants and consumables"
+            anchor="enchants-and-consumables"
+            fold={guidesCopy.foldShow(guidesCopy.foldExtras(extrasRowCount(gearExtras)))}
+          >
+            <div class="guide-extras-solo">
+              <GuideExtrasLane build={build} extras={gearExtras} tips={tipBundle} />
+            </div>
+          </ReadingSection>
+        ) : gearExtras !== undefined ? (
+          <ReadingSection
+            title="Enchants and consumables"
+            anchor="enchants-and-consumables"
+            fold={guidesCopy.foldShow(guidesCopy.foldExtras(extrasRowCount(gearExtras)))}
+          >
             <Fragment slot="lane">
               <GuideExtrasLane build={build} extras={gearExtras} tips={tipBundle} />
             </Fragment>
@@ -366,20 +388,20 @@ const jsonLd = [
           </ReadingSection>
         )}
 
-        <ReadingSection title="Races" anchor="races">
+        <ReadingSection title="Races" anchor="races" fold={guidesCopy.foldShow(`${raceRows.length} races`)}>
           <Fragment slot="lane">
             <GuideRacesLane build={build} rows={raceRows} lines={raceLines} tips={tipBundle} />
           </Fragment>
           <Prose html={await prose(racesProse)} />
         </ReadingSection>
 
-        <ReadingSection title="Professions" anchor="professions">
+        <ReadingSection title="Professions" anchor="professions" fold={guidesCopy.foldShow('professions')}>
           <Prose html={await prose(proseOnly('Professions'))} />
         </ReadingSection>
 
         {ladderSteps.length > 0 ? (
-          <ReadingSection title="Leveling" anchor="leveling">
-            <LaneBlock slot="lane" label={guidesCopy.talentsByLevel} testid="guide-talents-by-level">
+          <ReadingSection title="Leveling" anchor="leveling" fold={guidesCopy.foldShow('leveling')}>
+            <LaneBlock label={guidesCopy.talentsByLevel} testid="guide-talents-by-level">
               <GuideLevelingTree
                 client:visible
                 build={build}
@@ -393,19 +415,13 @@ const jsonLd = [
             <Prose html={levelingHtml} />
           </ReadingSection>
         ) : (
-          <ReadingSection title="Leveling" anchor="leveling">
+          <ReadingSection title="Leveling" anchor="leveling" fold={guidesCopy.foldShow('leveling')}>
             <Prose html={levelingHtml} />
           </ReadingSection>
         )}
       </ReadingPanel>
+      <script is:inline set:html={foldScript}></script>
       <GuideSources sources={entry.data.sources} />
-      <p
-        class="text-small text-muted guide-foot-note"
-        data-region={REGION.footerNote}
-        data-testid="content-footnote"
-      >
-        {guidesCopy.dataSourceLine(build)}
-      </p>
     </Page>
   </main>
   <script is:inline set:html={pageScript}></script>
@@ -435,9 +451,39 @@ const jsonLd = [
     flex-direction: column;
     gap: 22px;
   }
-  .guide-foot-note {
-    margin: 0;
-    padding-top: 16px;
+  /* Leveling runs the panel's full width from 1280 in two columns: its talent tree heads the
+     first, its prose flows beside and under it, so no empty rail stands beside nine paragraphs.
+     A short section (Professions) keeps the reading measure: two columns would split its one
+     paragraph mid-sentence. */
+  @media (min-width: 1280px) {
+    .guide-page :global(#leveling .ui-rd[data-solo]) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .guide-page :global(#leveling .ui-rd[data-solo] > .ui-rd-prose) {
+      columns: 2 320px;
+      column-gap: var(--gap);
+    }
+    .guide-page :global(#leveling .ui-lane-block) {
+      break-inside: avoid;
+      margin-bottom: 24px;
+    }
+    .guide-page :global(#leveling li),
+    .guide-page :global(#leveling p) {
+      break-inside: avoid;
+    }
+    .guide-page :global(#leveling h3) {
+      break-after: avoid;
+    }
+    /* A guide with no enchant prose: its lists side by side across the panel, no empty column. */
+    .guide-page :global(#enchants-and-consumables .ui-rd[data-solo]) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .guide-extras-solo :global(.guide-extras-blocks) {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      align-items: start;
+      gap: 28px var(--gap);
+    }
   }
   .guide-sw {
     display: grid;
@@ -447,6 +493,11 @@ const jsonLd = [
   .guide-sw-head {
     margin: 0;
     padding-bottom: 8px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--color-cream);
   }
   @media (min-width: 768px) {
     .guide-sw {
