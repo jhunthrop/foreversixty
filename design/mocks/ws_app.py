@@ -22,6 +22,7 @@ from html import escape
 from mocklib import ROOT, CLASS_COLOR
 from ws_app_frame import DEVICES, app_page, from_web, glyph, write_app
 import ws_app_flows as flows
+import ws_app_guild as guild_tab
 from ws_home import NOW, RAIDS, clock_to, day_text, raids_open
 from ws_prims import (Button, Checklist, Countdown, Figure, Notice, PageHeader, Rows, Row, Section, Switch, Tag, Meter, build_page,
                       crest_img, icon)
@@ -375,6 +376,7 @@ SCREENS: dict = {
     'widgets-open': widgets('open'),
     'live-activity': live_activity,
     **flows.SCREENS,
+    **guild_tab.SCREENS,
 }
 
 

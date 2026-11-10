@@ -30,7 +30,21 @@ BARS = {
 
 # The four tabs are the app's jobs (design/specs/2026-11-08-app-flows.md section 3, owner 2026-11-08): the answer, the raid,
 # your gear, what changed. Guides, Tiers and the other tools are in the profile menu. id, label.
-TABS = [('home', 'Home'), ('raid', 'Raid'), ('gear', 'Gear'), ('activity', 'Activity')]
+TABS = [('home', 'Home'), ('guild', 'Guild'), ('gear', 'Gear'), ('activity', 'Activity')]
+# The tab icons as the apps draw them (web/scripts/gen-ui-icons.mjs NATIVE_VECTORS): the owner's traced nav set, and for Guild the
+# site's own Guild door (design/assets/icons/ui/guild.svg, spec 2026-11-10-guild-tab.md section 1), with thicken.json's stroke.
+TAB_ICON_SOURCES = {'home': 'icons/nav/home.svg', 'guild': 'icons/ui/guild.svg', 'gear': 'icons/nav/gear.svg',
+                    'activity': 'icons/nav/activity.svg'}
+_ASSETS = HERE.parent / 'assets'
+_THICKEN = {k: v for k, v in json.loads((_ASSETS / 'icons/nav/thicken.json').read_text()).items() if not k.startswith('$')}
+
+
+def tab_icon(name: str, px: int = 24) -> str:
+    """A tab's icon, tintable (currentColor), thickened where the apps' vector is."""
+    body = (_ASSETS / TAB_ICON_SOURCES[name]).read_text().strip()
+    if name in _THICKEN:
+        body = body.replace('fill="currentColor"', f'fill="currentColor" stroke="currentColor" stroke-width="{_THICKEN[name]}" stroke-linejoin="round"', 1)
+    return body.replace('<svg ', f'<svg width="{px}" height="{px}" aria-hidden="true" ', 1)
 # The crest that opens the profile menu sits top left on every tab root (flows spec section 3).
 CREST = '../../../web/public/icons/hd/crests/{cls}.webp'
 # Battle.net avatar stand-ins (the client's race portraits, 84 px like the render CDN's avatar.jpg): the selected character's
@@ -176,13 +190,13 @@ def nav_bar(platform: str, back: str = '', title: str = '', share: bool = False,
 
 
 def tab_bar(platform: str, active: str, badges: dict | None = None) -> str:
-    """badges: the open count per tab (Raid: your unanswered raid or the officer's open items; Activity: unread)."""
+    """badges: the open count per tab (Guild: your unanswered raid or the officer's open items; Activity: unread)."""
     badges = badges or {}
     items = ''
     for tid, label in TABS:
         on = ' on' if tid == active else ''
         cur = ' aria-current="page"' if on else ''
-        g = glyph(tid, 24)
+        g = tab_icon(tid, 24)
         inner = f'<span class="ind">{g}</span>' if platform == 'android' else g
         n = badges.get(tid, 0)
         mark = f'<span class="badge" aria-label="{n} new">{n}</span>' if n else ''
