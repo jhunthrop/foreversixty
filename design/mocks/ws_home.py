@@ -42,6 +42,8 @@ GUILD_SIM_TAIL = re.compile(r', #(\d+) of (\d+) DPS in [^,(]+ \([^)]*\)$')  # we
 HOME_CSS = f'''
 .ph-wrap>[data-region="head"]{{display:flex;flex-direction:column;justify-content:flex-end;min-height:120px;padding-top:8px}}
 @media(min-width:900px){{.ph-wrap>[data-region="head"]{{min-height:160px}}}}
+.home-out .ph-wrap>[data-region="head"]{{min-height:0;padding-top:0}}
+@media(min-width:1100px){{.hg-feed{{align-self:stretch;display:flex;flex-direction:column}}.hg-feed>section{{display:flex;flex:1;flex-direction:column}}.hg-feed>section>.sbox{{flex:1}}}}
 .ph-meta .t-small+.t-small::before{{content:none}}
 .pad16{{padding:16px}}
 .hans{{display:flex;flex-direction:column;align-items:inherit;gap:2px}}.hans .link{{font-size:13px}}
@@ -338,7 +340,7 @@ def how_to_start() -> str:
 
 
 def state_out() -> str:
-    head = PageHeader('Pick your class')
+    head = f'<div class="home-out">{PageHeader("Pick your class")}</div>'
     rows = home_rows(J('feed-out.json')['rows'], False)
     return head + grid(class_picker(headless=True), feed_section(rows), how_to_start() + first_raids_plaque())
 

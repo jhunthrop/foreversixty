@@ -97,9 +97,9 @@ for (const [label, viewport] of [
       expect(ids.filter((id) => SECTION_IDS.includes(id))).toEqual(SECTION_IDS);
 
       await expect(page.getByTestId('guide-status-note')).toHaveCount(0);
-      await expect(page.getByTestId('content-footnote')).toContainText('Numbers from client build');
-      await expect(page.locator('[data-region="head-meta"]')).toContainText(
-        /DPS · Updated \d{1,2} [A-Z][a-z]{2}/,
+      await expect(page.getByTestId('content-footnote')).toHaveCount(0);
+      await expect(page.locator('[data-region="head-meta"]')).toHaveText(
+        /^\s*Updated \d{1,2} [A-Z][a-z]{2}\s*$/,
       );
       await expect(page.getByTestId('guide-summary')).toHaveCount(0);
       await noSidewaysScroll(page);
@@ -125,7 +125,8 @@ for (const [label, viewport] of [
       );
       await expect(page.getByTestId('guide-build-sim-raid')).toBeVisible();
       await page.goto(PAGE);
-      await expect(page.getByTestId('guide-build-both')).toBeVisible();
+      // One build for both: the band's Load this build is it, the lane does not repeat it.
+      await expect(page.getByTestId('guide-build-both')).toHaveCount(0);
       await expect(page.getByTestId('guide-load-build')).toBeVisible();
       await expect(laneLabel(page, 'guide-key-talents')).toHaveText('Key talents');
       const first = page.getByTestId('guide-key-talents').locator('.ui-row').first();
@@ -244,14 +245,14 @@ for (const [label, viewport] of [
         page.locator('#races [data-testid^="guide-race-"]:not([data-testid="guide-race-table"])'),
       ).toHaveCount(6);
       const gnome = page.getByTestId('guide-race-gnome');
-      await expect(gnome).toContainText('Recommended');
+      await expect(gnome).toHaveAttribute('aria-current', 'true');
       await expect(gnome).toContainText('Eureka!');
       await expect(gnome).toContainText('Expansive Mind');
       // The prose names both picks, so no recommended-race line is said again under the lane.
       await expect(lane.locator(':scope > p')).toHaveCount(0);
       await expect(page.getByTestId('guide-rotation-cooldowns')).toContainText('Eureka! (Gnome)');
       await expect(page.getByTestId('guide-race-troll')).toContainText('Berserking');
-      await expect(page.getByTestId('guide-race-human')).not.toContainText('Recommended');
+      await expect(page.getByTestId('guide-race-human')).not.toHaveAttribute('aria-current', 'true');
     });
 
     test('renders the leveling lane at level 60 with its planner link, before the island loads', async ({

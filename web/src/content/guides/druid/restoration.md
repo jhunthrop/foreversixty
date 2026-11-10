@@ -49,14 +49,14 @@ sources:
 The build is 40 points of Restoration and 11 of Balance. It is built for a tank-healing fight that runs your mana down.
 
 - **Gift of Nature** (5 points): 10% more healing on your heals. In Forever it does not reach Tranquility.
-- **Improved Rejuvenation** (3 points): 15% more from your most-cast spell.
+- **Improved Rejuvenation** (3 points)
 - **Bloom** (1 point): when a Rejuvenation or Regrowth runs out on its own, the target is healed for your Spirit. With HoTs doing most of your healing, it is the best single point you take.
 - **Swiftmend** (1 point): an instant heal for the whole of your own Regrowth or Rejuvenation on the target (another druid's does not count), and in Forever the HoT keeps ticking.
 - **Nature's Swiftness** (1 point): your next Healing Touch is instant, the save for a dying tank.
 - **Naturalist** (5 points): Healing Touch and Wild Growth half a second faster.
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
 - **Improved Tranquility** (2 points): Tranquility with no threat and its cooldown cut from 5 minutes to 2.
-- **Heart of the Wild** (5 points): 10% more Intellect.
+- **Heart of the Wild** (5 points)
 - **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) is the price of reaching Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
 - **Improved Regrowth** (1 point): 10% more crit on the Regrowth you keep on the tank.
 

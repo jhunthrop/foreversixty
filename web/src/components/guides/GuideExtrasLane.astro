@@ -7,7 +7,7 @@ import LaneBlock from '../ui/LaneBlock.svelte';
 import Row from '../ui/Row.svelte';
 import { dataUrl } from '../../lib/planner/load';
 import { guidesCopy } from '../../lib/guides/copy';
-import { consumableLines, type GearExtras } from '../../lib/guides/gear-extras';
+import { consumableLines, consumableNote, type GearExtras } from '../../lib/guides/gear-extras';
 import { consumableItemId } from '../../lib/guides/guide-tips';
 import { enchantTipKey, type GuideTipBundle } from '../../lib/tooltips/game-tip';
 
@@ -28,16 +28,9 @@ const lines = consumableLines(extras.consumables);
 
 {extras.enchants.length > 0 && (
   <LaneBlock label={guidesCopy.enchants} testid="guide-enchants">
-    <p class="text-small text-muted m-0">{guidesCopy.enchantsNote}</p>
     <div class="guide-extras-rows" data-wrap-list>
       {extras.enchants.map((row) => (
-        <Row
-          title={row.name}
-          sub={`${row.slotLabel} · ${row.gives}`}
-          density="slim"
-          open
-          testid={`guide-enchant-${row.slot}`}
-        >
+        <Row title={row.name} sub={row.slotLabel} density="slim" open testid={`guide-enchant-${row.slot}`}>
           <Fragment slot="lead">
             {row.icon !== undefined ? (
               <img
@@ -75,7 +68,7 @@ const lines = consumableLines(extras.consumables);
         ) : (
           <Row
             title={line.row.name}
-            sub={line.row.gives}
+            sub={consumableNote(line.row.gives)}
             density="slim"
             open
             testid={`guide-consumable-${line.row.id}`}
@@ -120,6 +113,11 @@ const lines = consumableLines(extras.consumables);
     width: 28px;
     height: 28px;
     border-radius: var(--radius-icon);
+  }
+  /* No icon for the row: the dark socket every missing icon shows, never an invisible gap. */
+  span.guide-extras-icon {
+    border: 1px solid var(--color-line-warm-strong);
+    background: var(--color-bg);
   }
   .guide-extras-sub {
     margin: 0;

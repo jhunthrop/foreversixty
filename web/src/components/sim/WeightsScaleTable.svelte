@@ -36,7 +36,7 @@
   /** Below 1024 the other columns fold away: the per-point DPS and the error under the scale. */
   function phoneLine(row: ScaleRow): string | undefined {
     if (!row.significant || row.dpsPerPoint === undefined) return undefined;
-    return `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit} · ${errorLabel(row.scaleError)}`;
+    return `${row.dpsPerPoint.toFixed(3)} ${row.perPointUnit} · ${errorLabel(row.scaleError)} error`;
   }
 
   function figuresOf(row: ScaleRow): StatFigure[] {

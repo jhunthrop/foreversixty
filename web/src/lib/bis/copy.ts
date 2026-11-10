@@ -32,8 +32,6 @@ export const bisCopy = {
   /** The paperdoll page (design/specs/2026-11-09-directions.md, Paperdoll). */
   stackTitle: 'What to stack',
   whereTitle: 'Where to go',
-  /** A stop's piece count in Where to go: "2 pieces". */
-  stopPieces: (n: number): string => `${n} ${n === 1 ? 'piece' : 'pieces'}`,
   setTitle: 'This set',
   openInSim: 'Open in the sim',
   allWeightsLink: 'All stat weights in the sim',

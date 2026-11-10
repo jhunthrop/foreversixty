@@ -8,13 +8,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { classColorVar } from '../../../lib/report/format';
-  import { gearCopy } from '../../../lib/gear/copy';
   import { averageItemLevel } from '../../../lib/gear/paperdoll';
   import { slotsFromWorn } from '../../../lib/gear/paperdoll-slots';
   import { loadTalents } from '../../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../../lib/planner/rules';
   import type { Item, TalentFile } from '../../../lib/planner/types';
-  import { plannerHrefFor, type SimCharacter } from '../../../lib/sim/character';
+  import { plannerHrefFor, talentsString, type SimCharacter } from '../../../lib/sim/character';
+  import { talentSplit } from '../../../lib/sim/result-band';
   import { simCopy } from '../../../lib/sim/copy';
   import { sourcePill } from '../../../lib/sim/sources';
   import { specLabel } from '../../../lib/sim/spec-label';
@@ -61,14 +61,19 @@
       ? ''
       : sourcePill(character.source, new Date(), character.name),
   );
-  /** Talents short of the character's level (a planner build sent at 60): the count, on the line. */
+  /** Talents short of the character's level (a planner build sent at 60): its split, the way every
+   *  build reads on these pages ("0/20/0"), never a bare count beside another build's split. */
   const levelNote = $derived(
-    character.talent_level < character.level ? simCopy.talentPoints(character.point_order.length) : '',
+    character.talent_level < character.level && talentIndex !== null
+      ? talentSplit(talentsString(talentIndex, character.point_order))
+      : '',
   );
 </script>
 
 <div class="flex flex-col gap-1 pt-[14px] pb-1" data-region={REGION.summary} data-testid="sim-character">
-  <p class="m-0 flex flex-wrap items-center gap-x-3 gap-y-2 text-[15px] leading-6">
+  <!-- One line of facts (13 px from the item level on, so a phone holds it on one row), then the
+       actions; at 390 the actions take the second row. -->
+  <p class="m-0 flex flex-wrap items-center gap-x-2 gap-y-2 text-[15px] leading-6 md:gap-x-3">
     <ClassCrestRing characterClass={character.class_slug} size={24} testid="sim-character-class-icon" />
     {#if character.name}<span
         class="font-bold"
@@ -76,11 +81,12 @@
         data-testid="paperdoll-name">{character.name}</span
       >{/if}
     <span class="text-text" data-testid="paperdoll-descriptor">{descriptor}</span>
-    {#if itemLevel !== null}<span class="text-muted tabular-nums" data-testid="sim-gear-ilvl"
-        >{gearCopy.paperdoll.averageItemLevel(itemLevel)}</span
+    {#if itemLevel !== null}<span class="text-muted text-[13px] tabular-nums" data-testid="sim-gear-ilvl"
+        >{simCopy.toolIlvl(itemLevel)}</span
       >{/if}
     {#if source !== ''}<span class="text-muted" data-testid="paperdoll-source">{source}</span>{/if}
-    {#if levelNote !== ''}<span class="text-muted tabular-nums" data-testid="sim-level-note">{levelNote}</span
+    {#if levelNote !== ''}<span class="text-muted text-[13px] tabular-nums" data-testid="sim-level-note"
+        >{levelNote}</span
       >{/if}
     <span class="ml-auto flex items-center gap-4 max-md:w-full max-md:justify-between">
       <a

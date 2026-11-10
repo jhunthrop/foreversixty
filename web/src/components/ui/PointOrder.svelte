@@ -219,7 +219,8 @@
   .ah .ic {
     opacity: 0.5;
   }
-  .ah::after {
+  /* A socket's ring only: a row's label also carries .ah, and unpositioned it ringed the whole plate. */
+  .porder-s > .ah::after {
     content: '';
     position: absolute;
     inset: 0;

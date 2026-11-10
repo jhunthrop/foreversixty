@@ -33,6 +33,5 @@ sources:
 - **Heart of the Lion** from level 1: 10% stats and 280 melee and ranged attack power at 60 for everyone near you, and another 10% stats for you.
 - **Aspect of the Beast** gives melee attack power. Survival runs it; Hawk stays the ranged aspect.
 - **Trueshot Aura:** ranged attack power only, 100 at 60, party and raid.
-- **Mail from 40.**
 
 ## Races

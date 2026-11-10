@@ -42,12 +42,12 @@ BIS_CSS = '''
 .bis-side-body{display:flex;flex-direction:column;padding-bottom:8px}
 .bis-side-line{margin-top:10px;color:var(--muted);font-size:13px;line-height:20px}
 .bis-side-link{margin-top:12px;font-size:14px;font-weight:600}
-.bis-stop-link{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0;font-size:14px;line-height:20px;border-bottom:1px solid var(--line-soft)}
-.bis-stop-link a{display:inline-flex;align-items:center;min-height:44px;font-weight:600}.bis-stop-link span{color:var(--muted);white-space:nowrap}
+.bis-stops{flex-direction:row;flex-wrap:wrap;gap:8px}
+.bis-stop-chip{display:inline-flex;align-items:center;min-height:36px;padding:0 12px;border:1px solid #82705b;border-radius:999px;color:var(--gold);font-size:14px;font-weight:600;line-height:20px}
 .bis-sim-link{font-size:14px;font-weight:600;white-space:nowrap}
 .bis-route{margin-top:var(--section-gap)}
 .bis-route .plate{padding:16px}
-.bis-stop+.bis-stop{margin-top:18px}
+.bis-stop{break-inside:avoid;padding-bottom:18px}@media(min-width:1280px){.bis-stops-cols{columns:2;column-gap:40px}}
 .bis-stop h2{display:flex;align-items:baseline;gap:10px;padding:4px 0 8px;font:400 22px/28px var(--font-title);letter-spacing:-.015em;color:#f3eee2}
 .bis-stop h2 span{font:600 14px/1 var(--font-body);color:var(--text)}
 .irow .tr .g .v{color:#32ae88}
@@ -93,9 +93,10 @@ def side(f: dict) -> str:
     parts.append(Section(escape(st['title']), f'<div class="bis-side-body">{facts}{lines}{link}</div>', boxed=True))
     w = f['where']
     if w:
-        stops = ''.join(f'<p class="bis-stop-link"><a href="#">{escape(s["title"])}</a><span>{escape(s["count"])}</span></p>' for s in w['stops'])
+        # web BisSide: one jump chip per stop
+        stops = ''.join(f'<a class="bis-stop-chip" href="#">{escape(s["title"])}</a>' for s in w['stops'])
         action = f'<p style="margin-top:10px"><a class="bis-side-link" href="#">{escape(w["action"])}</a></p>' if w['action'] else ''
-        parts.append(Section(escape(w['title']), f'<div class="bis-side-body"><div>{stops}</div></div>{action}', boxed=True))
+        parts.append(Section(escape(w['title']), f'<div class="bis-side-body bis-stops">{stops}</div>{action}', boxed=True))
     return f'<div class="bis-side">{"".join(parts)}</div>'
 
 
@@ -106,11 +107,11 @@ def gain(g: dict | None) -> tuple[str, str, str] | None:
 
 def itinerary(f: dict) -> str:
     it = f['itinerary']
-    stops = ''.join(
+    stops = '<div class="bis-stops-cols">' + ''.join(
         f'<section class="bis-stop"><h2>{escape(s["title"])}{f"<span>{escape(s["range"])}</span>" if s["range"] else ""}</h2>'
         + ''.join(ItemRow(escape(r['name']), QUALITY.get(r['quality'], 1), icon(r['icon'], 40) if r['icon'] else '<span class="ic"></span>',
                           escape(r['line']), gain=gain(r['gain'])) for r in s['rows'])
-        + '</section>' for s in it['stops'])
+        + '</section>' for s in it['stops']) + '</div>'
     return f'<div class="bis-route">{Plate(stops, label=escape(it["label"]))}</div>'
 
 

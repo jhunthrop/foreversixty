@@ -63,17 +63,17 @@
   );
 </script>
 
-<Section title={plannerCopy.pointOrderTitle} {panel} testid="planner-point-order">
+<Section
+  title={store.spent === 0 && ahead !== null
+    ? plannerCopy.previewLine(ahead.specName)
+    : plannerCopy.pointOrderTitle}
+  {panel}
+  testid="planner-point-order"
+>
   {#if store.spent === 0 && ahead === null}
     <!-- Nothing spent and no guide to preview: one line, never rows of empty sockets (h-audit 2026-11-09). -->
     <p class="text-small text-muted pl-pad">{plannerCopy.noPointsYet}</p>
   {:else if view !== null}
-    {#if store.spent === 0 && ahead !== null}<p
-        class="text-small text-muted pl-pad"
-        data-testid="planner-order-preview"
-      >
-        {plannerCopy.previewLine(ahead.specName)}
-      </p>{/if}
     <!-- The rows meet the heading's hairline (the mock's rhythm). -->
     <div class={panel ? '' : '-mt-3'}>
       <!-- The heads read as levels past the row's first ("+0" to "+9"), never as rank counts (ruling 2026-11-09). -->

@@ -3,7 +3,7 @@
 // §4.4): the header selector's character (`selectedCharacter`, never the account's first,
 // bug B1) and its next link. On the guide of its own spec below 60 the next step is the
 // talents at its level, the ladder's next point and its best in slot; at 60 its best in slot
-// and the sim; anywhere else "Your guide: <Spec> <Class> ›". Pure: the mount feeds it the
+// and the sim; anywhere else "<Spec> <Class> ›". Pure: the mount feeds it the
 // account read, the pointer and the page.
 import type { Me, MeCharacter } from '../account/api';
 import { answerCopy } from '../account/answer-copy';

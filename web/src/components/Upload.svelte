@@ -32,7 +32,7 @@
 
   let { plate = false }: { plate?: boolean } = $props();
 
-  const FROM_LINE = "From the game's Logs folder, up to 4 GB.";
+  const FROM_LINE = 'Up to 4 GB.';
 
   /** The one line a player ever sees on a failed upload (logs build review, fix round 1,
    *  2026-10-04): multipart.ts's own thrown messages carry real diagnostic detail -- a

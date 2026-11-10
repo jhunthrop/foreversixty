@@ -225,7 +225,7 @@ def card(role: str, lists: dict, signed_in: bool, state: str = 'ready') -> str:
 
 PAGE_CSS = '''<style>
 /* page-level layout only (no surfaces): the spec line's type and rhythm (TierSpecCard.astro) */
-.tc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:48px}
+.tc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:48px}.plate>.tc{padding:16px}
 .tc h2{margin:0;font:700 15px/22px var(--font-body);color:var(--strong)}
 .tc .cl{margin:0;font:400 15px/24px var(--font-body)}
 .tc .ca{display:flex;flex-wrap:wrap;gap:16px;font:400 15px/24px var(--font-body)}
@@ -244,6 +244,8 @@ def tiers_page(role: str, faction: str = 'alliance', signed_in: bool = False, op
     header = PageHeader('Tier list at 60', meta=[meta_line(role, meta)])
     plate = Plate(the_list(lst, role, ranked_, YOU_SPEC if signed_in else '', hover_spec), list_label(role, faction))
     inner = card(role, lists, signed_in, answer_state)
+    # Signed in, the spec sits on a hairline plate (TierSpecCard.astro); signed out, a quiet link.
+    inner = Plate(inner, '') if signed_in else inner
     rail = f'<div data-region="{REGION["head_answer"]}">{inner}</div>'
     body = header + bar(role, faction, open_m) + f'<div class="tiers-end">{Page("split", plate, rail)}</div>' + PAGE_CSS
     note = (f'Tier list mock (directions mock g-tiers, round 5), built only from ws_prims. Data: build {BUILD}, band 60, preset raid, '

@@ -140,7 +140,7 @@ def recent_section(signed_in: bool = False) -> str:
     return Section(rc['heading'], body, panel=True)   # no page lists every public report yet: no action
 
 
-FROM_LINE = 'From the game&rsquo;s Logs folder, up to 4 GB.'   # Upload.svelte FROM_LINE
+FROM_LINE = 'Up to 4 GB.'   # Upload.svelte FROM_LINE
 
 
 def upload_body(state: str) -> str:

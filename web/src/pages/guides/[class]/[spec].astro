@@ -36,7 +36,6 @@ import activeBuild from '../../../data/active-build.json';
 import { readSpecCatalog } from '../../../lib/bis/load';
 import { articleLd, breadcrumbListLd } from '../../../lib/seo';
 import { searchCopy } from '../../../lib/search-copy';
-import { REGION } from '../../../lib/ui/regions';
 import type { ClassSlug } from '../../../lib/ui/primitives';
 import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { describedBuildTrees, guideRotation } from '../../../lib/guides/guide-rotation';
@@ -293,11 +292,11 @@ const jsonLd = [
           {hasOverviewBlocks ? (
             <div class="guide-sw">
               <div>
-                <h3 class="text-label text-muted guide-sw-head font-bold">{guidesCopy.strengths}</h3>
+                <h3 class="guide-sw-head">{guidesCopy.strengths}</h3>
                 <Prose html={overviewHtml.strengths} mods={['plus']} testid="guide-strengths" />
               </div>
               <div>
-                <h3 class="text-label text-muted guide-sw-head font-bold">{guidesCopy.weaknesses}</h3>
+                <h3 class="guide-sw-head">{guidesCopy.weaknesses}</h3>
                 <Prose html={overviewHtml.weaknesses} mods={['minus']} testid="guide-weaknesses" />
               </div>
             </div>
@@ -399,13 +398,6 @@ const jsonLd = [
         )}
       </ReadingPanel>
       <GuideSources sources={entry.data.sources} />
-      <p
-        class="text-small text-muted guide-foot-note"
-        data-region={REGION.footerNote}
-        data-testid="content-footnote"
-      >
-        {guidesCopy.dataSourceLine(build)}
-      </p>
     </Page>
   </main>
   <script is:inline set:html={pageScript}></script>
@@ -435,10 +427,6 @@ const jsonLd = [
     flex-direction: column;
     gap: 22px;
   }
-  .guide-foot-note {
-    margin: 0;
-    padding-top: 16px;
-  }
   .guide-sw {
     display: grid;
     gap: 20px var(--gap);
@@ -447,6 +435,11 @@ const jsonLd = [
   .guide-sw-head {
     margin: 0;
     padding-bottom: 8px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--color-cream);
   }
   @media (min-width: 768px) {
     .guide-sw {

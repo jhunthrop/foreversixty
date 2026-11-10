@@ -55,14 +55,13 @@
    * than still being awaited. The real explanation is the `sim-message` block below this
    * bar; this placeholder just gets out of its way instead of contradicting it.
    */
+  // Nothing to run says nothing: the count shows once a tick makes one (h-audit 2026-11-09).
   const countLabel = $derived(
-    store.combinations !== null
+    store.combinations !== null && store.combinations > 0
       ? bulkCopy.combinations(store.combinations)
-      : store.message !== null
-        ? ''
-        : store.phase === 'counting'
-          ? bulkCopy.combinationsCounting
-          : bulkCopy.combinationsNone,
+      : store.message === null && store.phase === 'counting'
+        ? bulkCopy.combinationsCounting
+        : '',
   );
   /**
    * A combination tool with nothing to run: no count yet (nothing ticked, or a source

@@ -873,7 +873,7 @@ def landing_out() -> str:
         if specs:
             links = ''.join(f'<a class="link" href="#">{s["name"]} &rsaquo;</a>' for s in specs)
             rows.append(Row(c['name'], f'<span class="cls-links">{links}</span>', lead=crest_img(c['slug'], 32), title_color=CLASS_COLOR[c['slug']], link=False))
-    main = (Section('Sim your character', paste, panel=True, frame='framed') + Section('Other ways in', ways, panel=True)
+    main = (Section('Sim your character', paste, panel=True) + Section('Other ways in', ways, panel=True)
             + Section('Sim a best-in-slot set', RowGrid(rows, 3), panel=True))
     return finish('Simulator', head + Ledger(main), None)
 

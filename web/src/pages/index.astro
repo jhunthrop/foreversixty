@@ -83,4 +83,10 @@ const raids = loadRaidFacts();
       --home-band-h: 160px;
     }
   }
+  /* Signed out the title band is the compact one every page opens with: "Pick your class" is the
+     page's answer, not a hero over the art. */
+  .home-out .ui-band[data-art='hero'] header.ui-page-header {
+    min-height: 0;
+    padding-top: 16px;
+  }
 </style>

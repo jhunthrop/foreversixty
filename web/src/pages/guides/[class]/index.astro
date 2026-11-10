@@ -3,8 +3,8 @@
 // The class landing (directions mock b2-guide-class, round 5): the title band (the crest, the
 // class name in its colour, the Updated stamp, the signed-in answer), a panel per spec (a link
 // Row: icon, name, its role when it heals or tanks, Read the guide ›; the header character's
-// spec marked after load), then What changed from 1.12 on its panel, with the Races, the raid or
-// leveling notes and the Sources in the rail. No intro paragraph and no card blurb
+// spec marked after load), then What changed from 1.12 on its panel with the Races and the raid or
+// leveling notes in the rail beside it, then the Sources full width. No intro paragraph and no card blurb
 // (owner 2026-11-09). index.md is split by its fixed heading vocabulary (class-landing.ts).
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
@@ -83,7 +83,11 @@ const specs = readSpecCatalog()
       {
         key: `${classSlug}/${s.spec_slug}`,
         name: s.name,
-        line: specCardLine(guide.data.role, specTrees(guide.data.raidBuild ?? guide.data.build)),
+        line: specCardLine(
+          guide.data.role,
+          specTrees(guide.data.raidBuild ?? guide.data.build),
+          guide.data.statPriority,
+        ),
         icon: dataUrl(build, `icons/${s.icon}.webp`),
         href: `/guides/${classSlug}/${s.spec_slug}`,
       },
@@ -129,7 +133,6 @@ const tone = { classSlug: classSlug as ClassSlug };
                 iconSize={40}
                 tone={tone}
                 sub={spec.line}
-                foot={`${guidesCopy.readTheGuide} ›`}
               />
             </Plate>
           ))}
@@ -149,8 +152,10 @@ const tone = { classSlug: classSlug as ClassSlug };
             {section.html !== '' && <Prose html={section.html} mods={['lane']} />}
           </Section>
         ))}
-        <GuideSources sources={entry.data.sources} />
       </Fragment>
+    </Page>
+    <Page layout="ledger">
+      <GuideSources sources={entry.data.sources} />
     </Page>
   </main>
 </Base>

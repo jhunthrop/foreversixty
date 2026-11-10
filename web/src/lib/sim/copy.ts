@@ -634,7 +634,12 @@ export const simCopy = {
    *  interleaved, so the page reads as "these 20 work, these 8 do not". */
   specsUnsimulatedHeading: 'Healers and tanks',
   /** A tool page's character line when the talents stop short of the level. */
-  talentPoints: (points: number): string => `${points} talent points`,
+  /** The tool line's average item level, short so the facts hold one row at 390. */
+  toolIlvl: (level: string): string => `ilvl ${level}`,
+  /** /sim/specs' column heads: the place, what it orders by, and the figure's unit. */
+  specsRankHead: 'Rank',
+  specsBarHead: 'Raid BiS at 60',
+  specsDpsHead: 'DPS',
   /** A damage spec's place among the specs by that figure. */
   specsTopSetRank: (rank: number): string => `#${rank}`,
   /**
@@ -913,7 +918,6 @@ export const bulkCopy = {
   combinations: (n: number): string =>
     `${n.toLocaleString('en-US')} valid ${n === 1 ? 'combination' : 'combinations'}`,
   combinationsCounting: 'Counting combinations…',
-  combinationsNone: '0 valid combinations',
   precisionLabel: 'Precision',
   precisionFast: 'Fast',
   precisionNormal: 'Normal',

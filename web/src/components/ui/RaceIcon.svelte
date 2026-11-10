@@ -4,8 +4,8 @@
      height always set. The race's name is its title on hover; the name beside it says the rest,
      so screen readers skip it. A race with no portrait draws nothing, never an empty socket, so
      the caller renders it only with a url; an image that fails to load removes itself too. In a
-     static render (an Astro page, no hydration) the error handler never runs, so a broken image is
-     covered by a faction-tinted fill instead of the browser's broken-image glyph. -->
+     static render (an Astro page, no hydration) the error handler never runs; global.css covers a
+     broken icon image with the dark socket. -->
 <script lang="ts">
   let {
     url,
@@ -42,21 +42,8 @@
       height={size}
       loading="lazy"
       decoding="async"
-      class="ui-race-icon-img block h-full w-full object-cover"
+      class="block h-full w-full object-cover"
       onerror={() => (failed = url)}
     />
   </span>
 {/if}
-
-<style>
-  .ui-race-icon {
-    position: relative;
-  }
-  /* Only a broken image draws pseudo-elements: this covers the browser's glyph. */
-  .ui-race-icon-img::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: color-mix(in srgb, currentColor 30%, var(--color-bg));
-  }
-</style>

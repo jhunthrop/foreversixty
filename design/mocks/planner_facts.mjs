@@ -138,7 +138,7 @@ function state({ cls, race, order = [], level = null, spec = null }) {
     compare = { status, kind, differs: [...diff.diffTalentIds], bandRank: Object.fromEntries(diff.bandRankById), line,
       beyond: status.kind === 'toTake' || covers !== null ? '' : (status.beyond > 0 ? bandCompareCopy.beyondGuide(status.beyond) : ''),
       talents: entry.talents,
-      past: covers !== null && names.mine.length > 0 ? bandCompareCopy.coversPast(names.mine) : '' };
+      past: covers !== null ? names.mine : [] };
   }
   const trees = index.trees.map((tree, ti) => {
     const size = gridSize(tree);

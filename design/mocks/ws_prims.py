@@ -884,6 +884,7 @@ PRIM_CSS += '''
 @media(min-width:1280px){.rd{grid-template-columns:var(--measure-reading) minmax(0,640px);grid-template-areas:"prose lane"}.rd.solo{grid-template-columns:var(--measure-reading)}}
 .rd>.rd-prose{grid-area:prose;min-width:0}.rd>.rd-lane{grid-area:lane;min-width:0;display:flex;flex-direction:column;gap:28px}
 .lane-blk{display:flex;flex-direction:column;gap:8px;min-width:0}.lane-blk>.t-label{padding-bottom:2px}
+.lane-lbl{margin:0;font:600 15px/20px var(--font-body);color:#f3eee2;letter-spacing:0;text-transform:none}
 .rprose{font-size:16px;line-height:26px;color:var(--text);max-width:var(--measure-reading);overflow-wrap:break-word}
 .rprose.lane{font-size:15px;line-height:24px}
 .rprose p{margin:0 0 14px}.rprose>:last-child{margin-bottom:0}
@@ -969,9 +970,9 @@ def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', act
 
 
 def LaneBlock(label: str, body: str, meta: str = '') -> str:
-    """One labelled block in a lane (12 px caps label, then its rows or table)."""
+    """One labelled block in a lane (web ui/LaneBlock: a 15 px cream heading, then its rows or table)."""
     m = f'<span class="t-small">{meta}</span>' if meta else ''
-    return f'<div class="lane-blk"><div class="pcol-h"><h3 class="t-label">{label}</h3>{m}</div>{body}</div>'
+    return f'<div class="lane-blk"><div class="pcol-h"><h3 class="lane-lbl">{label}</h3>{m}</div>{body}</div>'
 
 
 def Toc(label: str, items: list[tuple[str, str]], current: str = '') -> str:
@@ -1874,7 +1875,7 @@ def ClassSpecPicker(classes: list[tuple[str, str, str, list[tuple[str, str, str]
                     yours: str = '', yours_label: str = '') -> str:
     groups = []
     for slug, name, colour, specs in classes:
-        rows = [Row(n, lead=ic, trail=Tag(yours_label) if key == yours else '', selected=key == yours) for key, n, ic in specs]
+        rows = [Row(n, lead=ic, selected=key == yours) for key, n, ic in specs]   # the accent rule marks yours, no pill
         head = Row(name, lead=crest_img(slug, 40), title_color=colour, link=class_links)
         groups.append(Plate(f'<div class="cspick-c">{head}{RowsSlim(rows, open_=False)}</div>'))
     return f'<div class="cspick" role="region" aria-label="{label}">{"".join(groups)}</div>'

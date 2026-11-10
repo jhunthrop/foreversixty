@@ -71,7 +71,7 @@
 </script>
 
 <Page panels testid="sim-landing">
-  <Section title={copy.sections.simYourCharacter} panel frame="framed" testid="sim-cold-paste">
+  <Section title={copy.sections.simYourCharacter} panel testid="sim-cold-paste">
     <div class="flex flex-col gap-3">
       <FormRow label={copy.paste.label} action="/sim" method="get" inline onsubmit={submitPaste}>
         <Field

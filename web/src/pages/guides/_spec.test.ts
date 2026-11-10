@@ -119,7 +119,6 @@ describe('/guides/warrior/fury (the page structure)', () => {
           : [`section-${anchor}`],
       ),
       'section-sources',
-      'footer-note',
     ]);
   });
 
@@ -148,7 +147,7 @@ describe('/guides/warrior/fury (the page structure)', () => {
     const main = mainOf(await pageHtml('warrior/fury'));
     expect(main.match(/<h1/g)).toHaveLength(1);
     expect(main).toMatch(/<h1[^>]*style="color: var\(--color-class-warrior\);">Fury Warrior<\/h1>/);
-    expect(main).toMatch(/data-region="head-meta"[^>]*><span[^>]*>DPS · Updated \d{1,2} [A-Z][a-z]{2}</);
+    expect(main).toMatch(/data-region="head-meta"[^>]*><span[^>]*>Updated \d{1,2} [A-Z][a-z]{2}</);
     expect(main).not.toContain('ui-page-header-lead');
     // No lede under the band (owner 2026-11-09: the "<Spec> is the" sentences were struck from every guide).
     expect(main).not.toContain('data-testid="guide-summary"');
@@ -218,11 +217,11 @@ describe('/guides/rogue/assassination (a spec with a raid build)', () => {
 });
 
 describe('/guides/warrior/fury (a spec whose raid build is its leveling build)', () => {
-  it('lists one build under a single "Level 60 and raid build" row', async () => {
+  it('leaves one build to the band: no Builds block repeats its Load and Sim', async () => {
     const entry = loadGuideEntry('warrior/fury');
     expect(entry.data.raidBuild).toBeUndefined();
     const main = mainOf(await pageHtml('warrior/fury'));
-    expect(main).toMatch(/data-testid="guide-build-both"[\s\S]*?>Level 60 and raid build</);
+    expect(main).not.toContain('data-testid="guide-builds"');
     expect(main).not.toContain('data-testid="guide-build-raid"');
     expect(blockOf(main, 'guide-glance-build', 400)).toContain(`>${guidesCopy.buildRailLabel}</h2>`);
   });
@@ -242,13 +241,12 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     const visible = reading.replace(/<[^>]+>/g, ' ');
     const talk = [...visible.matchAll(/.{0,60}(?:simulator|simulated|this site).{0,40}/gi)];
     expect(talk.map((m) => m[0])).toEqual([]);
-    expect(main).toMatch(
-      /data-region="footer-note" data-testid="content-footnote"[^>]*>\s*Numbers from client build 1\.60\.1\.\d+, checked against launch logs/,
-    );
+    expect(main).not.toContain('Numbers from client build');
     expect(main.indexOf('data-testid="guide-sources"')).toBeGreaterThan(
       main.indexOf('<section id="leveling"'),
     );
-    expect(frost).toMatch(/DPS · Updated \d{1,2} [A-Z][a-z]{2}</);
+    expect(frost).toMatch(/>Updated \d{1,2} [A-Z][a-z]{2}</);
+    expect(frost).not.toContain('DPS · Updated');
     // No lede: neither the Overview's old sentence nor the frontmatter description shows under the band.
     expect(frost).not.toContain('Frost casts Frostbolt behind Ice Barrier');
   });
@@ -268,7 +266,7 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     const arcane = await pageHtml('mage/arcane');
     expect(arcane).toMatch(/data-testid="guide-raid-diff"[^>]*>The raid build moves \d+ points? from /);
     const talents = sectionOf(mainOf(frost), 'talents-and-builds');
-    expect(talents).toContain('data-testid="guide-build-both"');
+    expect(talents).not.toContain('data-testid="guide-builds"');
     expect(talents).not.toContain('data-testid="guide-raid-diff"');
     const keys = blockOf(talents, 'guide-key-talents', 20_000);
     expect(keys).toContain('Improved Frostbolt');
@@ -324,13 +322,8 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(lane).toContain(`>${line!.cap}</b> · ${line!.detail}</p>`);
     expect(line!.detail).toContain('from Precision');
     expect(lane).toContain('DPS per point');
-    // The unit line names the top per-point stat at 60, and the nightly sim decides which one
-    // that is: for Frost, hit and spell power sit within error of each other and swap places
-    // between nightlies. Pin the shape, a lowercase stat label and then dpsText's figure (two
-    // decimals under 10, one at 10 or more), never which stat wins.
-    expect(lane).toMatch(
-      />1 (?:point of [a-z][a-z ]*|[a-z][a-z ]* rating) = (?:\d\.\d\d|\d{2,}\.\d) DPS at level 60\.?</,
-    );
+    // No "1 point of hit = 0.79 DPS at level 60" line: the per-point column already says it.
+    expect(lane).not.toMatch(/>1 (?:point of [a-z][a-z ]*|[a-z][a-z ]* rating) = /);
     // Hit and crit are priced per rating point; the note under the table says what a point is.
     expect(lane).toMatch(/>[^<]*per rating point: [^<]*10 hit rating is 1% hit/);
     // No item at 60 carries haste: its row reads "Not on any item" and the note under the
@@ -409,7 +402,9 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(frost).not.toContain('The caster meal');
     const races = sectionOf(main, 'races');
     expect(races).toContain('data-testid="guide-race-table"');
-    expect(races).toMatch(/data-testid="guide-race-gnome"[\s\S]*?>Recommended</);
+    // A recommended race carries the row's accent rule, no pill.
+    expect(races).toMatch(/aria-current="true" data-testid="guide-race-gnome"/);
+    expect(races).not.toContain('>Recommended<');
     // The guide's own Races prose names both picks, so no pick line repeats it in the lane.
     expect(races).not.toContain('data-testid="guide-race-picks"');
     // The racials come from the race data of the sync that ran: the real build's sentences, or

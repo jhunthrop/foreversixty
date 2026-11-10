@@ -58,6 +58,11 @@ def legend() -> str:
     return f'<p class="legend"><span>{escape(RC["legendLead"])}</span>{steps}</p>'
 
 
+def figure_cells(figures: list[dict]) -> list[tuple]:
+    """The row's figures as the wide row draws them: a phone-only one (the Date under the figure) is not a column."""
+    return [figure_cell(f) for f in figures if not f.get('phoneOnly')]
+
+
 def figure_cell(f: dict) -> tuple:
     """A built RankFigure as the mock RankRow's (value, unit, phone label, best); a figure with an href is a link."""
     v = escape(f['value'])
@@ -67,7 +72,8 @@ def figure_cell(f: dict) -> tuple:
 def board_row(v: dict, you: bool = False) -> str:
     rank = f'<span style="color:{token_hex(v["rankColor"])}">{v["rank"]}</span>'
     return RankRow(rank, crest_img(v['classSlug'], 28), CLASS_COLOR[v['classSlug']], escape(v['name']), escape(v['sub']), v['fraction'],
-                   [figure_cell(f) for f in v['figures']], escape(v['gap']['text']), [], you='You' if you else '', selected=you)
+                   figure_cells(v['figures']), escape(v['gap']['text']), [(escape(lk['label']), False) for lk in v.get('links', [])],
+                   you='You' if you else '', selected=you)
 
 
 def board_list(b: dict, own_key: str = '') -> str:
@@ -101,7 +107,8 @@ def character_bar(encounter: str, cls: str, spec: str, ruleset: str, summary: st
 
 
 def pointer() -> str:
-    return f'<div data-region="summary">{Plate(f"<p class=ptr><span>{escape(RC["tierQuestion"])}</span>{Link(RC["tierLink"] + " &rsaquo;")}</p>")}</div>'
+    """The tier list is a link in the band now (Rankings.svelte): the rail carries no pointer card."""
+    return ''
 
 
 def companion() -> str:
@@ -111,17 +118,17 @@ def companion() -> str:
                    f'<p style="margin-top:12px">{Button(escape(sc["explainerLogsButton"]))}</p>', panel=True)
 
 
-def your_rank(answer: dict, best: list[dict], unranked: bool = False) -> str:
+def your_rank(answer: dict, unranked: bool = False) -> str:
     if unranked:
         body = (f'<div class="you-n"><p>{escape(answer["text"])}</p><p class="go" style="margin-top:8px">'
                 f'{Link(escape(EMPTY["action"]) + " &rsaquo;")}</p></div>')
     else:
         fig = answer['figures'][0]
         big = Figure(escape(fig['value']), unit=escape(fig['unit']), size='big').replace('class="v"', f'class="v" style="color:{token_hex(fig["color"])}"', 1)
-        facts = Facts([(escape(f['label']), escape(f['value'])) for f in best]) if best else ''
-        body = (f'<div class="you-n">{big}{facts}'
+        # The best kill's figures are the marked row's: the answer and its next step only (Rankings.svelte).
+        body = (f'<div class="you-n">{big}'
                 f'<p class="go">{Link(escape(RC["parsesLink"]) + " &rsaquo;")}</p></div>')
-    return Section(RC['answerLabel'], body, panel=True, frame='framed')
+    return Section(RC['answerLabel'], body, panel=True)
 
 
 def empty_block(line: str, fill: str, widen: bool = False, elsewhere: str = '') -> str:
@@ -138,7 +145,7 @@ def encounter_rows(encs: list[dict]) -> str:
 
 
 def head(meta: str) -> str:
-    return PageHeader(escape(RC['h1']), meta=[meta])
+    return PageHeader(escape(RC['h1']), meta=[meta, Link(escape(RC['tierLink']) + ' &rsaquo;')])
 
 
 def page(title: str, html: str, who: tuple | None, note: str) -> str:
@@ -212,7 +219,7 @@ def board_page(state: str) -> str:
     sec = Section('Fury Warriors', board_list(b, FACTS['own_key']), action=widen, meta=f'{b["total"]} ranked',
                   panel=True, frame='lead', flush=True)
     answer = FACTS[{'you': 'answer_you', 'off': 'answer_off', 'unranked': 'answer_unranked'}[state]]
-    rail = your_rank(answer, b['best'], unranked=state == 'unranked') + pointer()
+    rail = your_rank(answer, unranked=state == 'unranked')
     html = head(UPDATED) + character_bar('Onyxia', 'Warrior', 'Fury', 'Normal', 'Onyxia &middot; Fury') + Page('split', sec, rail, panels=True)
     return page('Onyxia rankings', html, YOU, f'/rankings mock, {state}. Data: rankings-fixture.ts boardFor().')
 

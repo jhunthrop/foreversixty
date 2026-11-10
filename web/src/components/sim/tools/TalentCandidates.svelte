@@ -217,8 +217,12 @@
       class="border-line-soft grid gap-x-6 gap-y-1 border-b py-3 last:border-b-0 md:grid-cols-[260px_minmax(0,1fr)] md:items-start"
     >
       {@render loadoutCheck(loadout, testid)}
-      <div class="flex min-w-0 flex-wrap items-start gap-x-8 gap-y-2">
-        <TalentTrees trees={loadoutTrees(index, loadout.talents)} build={character.tree_version} />
+      <!-- The trees size to their track (TalentTrees reads its box's width): 420 px with the diff
+           beside them from 1024, the full width with the diff under them below. -->
+      <div class="grid min-w-0 items-start gap-x-8 gap-y-3 lg:grid-cols-[420px_minmax(0,1fr)]">
+        <div class="min-w-0">
+          <TalentTrees trees={loadoutTrees(index, loadout.talents)} build={character.tree_version} />
+        </div>
         {#if own !== null && loadout.name !== own.name}
           {@const changes = loadoutDiff(index, loadout.talents, own.talents)}
           <!-- Against the character's own build: what this one takes more of, then less. -->

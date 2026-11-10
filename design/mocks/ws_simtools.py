@@ -87,7 +87,7 @@ def run_bar(tool: str) -> str:
     bar = S.run_bar('disabled' if tool != 'weights' else 'ready')
     # Nothing ticked: the count reads muted and the stage ladder waits for a count (BulkRunBar `hasCount`).
     # A weights run says nothing under the bar (BulkRunBar).
-    line = '' if tool == 'weights' else '<span class="t-small">0 valid combinations</span>'
+    line = ''
     return bar + f'<div class="pc run-notes"><p>{line}</p></div>'
 
 
@@ -95,8 +95,8 @@ def run_bar(tool: str) -> str:
 def character_line() -> str:
     level = sum(ITEMS[i]['item_level'] for i in WORN.values()) / len(WORN)
     return (f'<div class="tool-who" data-region="summary"><p class="who-line">{S.crest_img("warrior", 24)}<span>Orc Fury Warrior &middot; Level {LEVEL}</span>'
-            f'<span class="t-small">Item level {level:.1f}</span>'
-            f'<span class="t-small num">20 talent points</span>'
+            f'<span class="t-small num">ilvl {level:.1f}</span>'
+            f'<span class="t-small num">0/20/0</span>'
             f'<span class="who-acts"><a class="link" href="#">Open in planner &rsaquo;</a>{btn("Change source")}</span></p></div>')
 
 
@@ -290,7 +290,7 @@ def drops() -> str:
         # Each kind is a Disclosure titled with its ticked count, open when the list is short (OPEN_UP_TO).
         opened = ' open' if len(shown) <= 8 else ''
         # The kind's unopened sources, one deduped line under its rows (SourcePicker `later`, source-rows gatedLine)
-        later = sorted({s['name'] for s in srcs if not is_open(s)})
+        later = sorted({s['name'] for s in srcs if not is_open(s)}) if kind == 'raid' else []
         later_p = f'<p class="t-small later">First raids: {", ".join(later)}</p>' if later else ''
         inner = f'<div class="disc-b">{note}<div class="src-cols">{rows}</div>{later_p}</div>' if opened else ''
         groups.append(f'<div class="src-g"><details class="disc"{opened}><summary>{label} <span class="t-small">{len(shown)} {"source" if len(shown) == 1 else "sources"}</span></summary>{inner}</details></div>')
@@ -336,7 +336,7 @@ def published_weights() -> str:
         sf = w['scale_factor'] / divisor
         err = w['scale_error'] / divisor
         err_txt = '&lt; 0.01' if err < .005 else f'&plusmn;{err:.2f}'
-        trs.append(S.StatRow('', name, sub, [f'{sf:.2f}', f'{w["dps_per_point"]:.3f} DPS', err_txt], primary_phone=f'{w["dps_per_point"]:.3f} DPS &middot; {err_txt}',
+        trs.append(S.StatRow('', name, sub, [f'{sf:.2f}', f'{w["dps_per_point"]:.3f} DPS', err_txt], primary_phone=f'{w["dps_per_point"]:.3f} DPS &middot; {err_txt} error',
                              meter=S.Meter(min(1, max(.04, sf)))))
     top = STAT_LABEL[next(w for w in rows if reading(w) == 'value')['stat']]
     cap = ''   # the column heads say the normalisation; the caption keeps haste per 1% (owner rule)
@@ -366,7 +366,8 @@ def specs() -> str:
     top = top_raid_sets()
     rows = []
     best = max((v[0] for v in top.values()), default=0)
-    for s in [s for s in SPECS if s['role'] == 'dps']:
+    damage = sorted((s for s in SPECS if s['role'] == 'dps'), key=lambda s: top.get(s['spec'], (0, 10 ** 6))[1])
+    for s in damage:
         label = f"{s['name']} {CLASS_NAME[s['class_slug']]}"
         # SpecCard: the spec's name is the toggle for its rotation steps; no parses, so no Tag; the raid BiS set at 60,
         # its place and its bar, the unit once in the section's meta
@@ -379,7 +380,9 @@ def specs() -> str:
     others = ''.join(f'<a class="un-l" href="#" style="color:{CLASS_COLOR[s["class_slug"]]}">{S.crest_img(s["class_slug"], 20)}{s["name"]} {CLASS_NAME[s["class_slug"]]}</a>'
                      for s in SPECS if s['role'] != 'dps')
     meta = ''
-    return finish('Spec support', head('specs') + ledger(Section('Damage specs', Rows(rows), meta=meta, frame='framed', flush=True),
+    heads = ('<div class="spec-heads" aria-hidden="true"><span class="rk">Rank</span><span class="sbar">Raid BiS at 60</span>'
+             '<span class="dps">DPS</span></div>') if top else ''
+    return finish('Spec support', head('specs') + ledger(Section('Damage specs', heads + Rows(rows), meta=meta, frame='framed', flush=True),
                                                          Section('Healers and tanks', f'<div class="un">{others}</div>')))
 
 
@@ -425,8 +428,8 @@ TOOL_CSS = '''<style>
 .src-cols{display:grid;grid-template-columns:1fr;column-gap:32px}@media(min-width:768px){.src-cols{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.src-cols{grid-template-columns:1fr 1fr 1fr}}.rep-n{padding-top:8px;font-size:14px;line-height:20px}.rep-t{display:flex;flex-wrap:wrap;gap:0 16px}.opt.sm{font-size:13px}
 .tb-row{display:grid;gap:4px 24px;padding:12px 0;border-bottom:1px solid var(--line-soft,var(--line));align-self:stretch}.tb-row:last-of-type{border-bottom:0}@media(min-width:768px){.tb-row{grid-template-columns:260px minmax(0,1fr);align-items:start}}
 .src-l{display:flex;align-items:center;gap:8px;min-height:44px}.src-l .opt{min-width:0}.bcount{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center}.pl{padding-left:8px}.later{margin:0;padding-top:4px;font-size:13px}.gl1{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-height:44px;margin:0;font-size:14px;line-height:24px}.gl1 b{font-size:15px}.disc-b{padding:4px 0 8px}
-.tb-t{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 32px;min-width:0}.tb-d{display:flex;flex-direction:column;margin:0;padding:0;list-style:none;font-size:13px;line-height:20px}.tb-d .kill{color:var(--kill)}.tb-d .wipe{color:var(--wipe)}.tb-d span{color:var(--text)}
-.spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:32px;text-align:right}.spec-fig .dps{width:64px;text-align:right;font-weight:700}.sbar{display:none;width:240px}@media(min-width:768px){.sbar{display:block}}.spec-n>summary{color:inherit;font-size:15px;font-weight:700;white-space:nowrap}.un{display:flex;flex-wrap:wrap;column-gap:24px}.un-l{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:700;text-decoration:none}</style>'''
+.tb-t{display:grid;align-items:start;gap:12px 32px;min-width:0}@media(min-width:1024px){.tb-t{grid-template-columns:420px minmax(0,1fr)}}.tb-d{display:flex;flex-direction:column;margin:0;padding:0;list-style:none;font-size:13px;line-height:20px}.tb-d .kill{color:var(--kill)}.tb-d .wipe{color:var(--wipe)}.tb-d span{color:var(--text)}
+.spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:48px;text-align:right}.spec-heads{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:4px 16px 0;font:700 12px/16px var(--font-body);color:var(--muted)}.spec-heads .rk{width:48px;text-align:right}.spec-heads .dps{width:64px;text-align:right}.spec-fig .dps{width:64px;text-align:right;font-weight:700}.sbar{display:none;width:240px}@media(min-width:768px){.sbar{display:block}}.spec-n>summary{color:inherit;font-size:15px;font-weight:700;white-space:nowrap}.un{display:flex;flex-wrap:wrap;column-gap:24px}.un-l{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:700;text-decoration:none}</style>'''
 
 
 def finish(title: str, body: str) -> str:

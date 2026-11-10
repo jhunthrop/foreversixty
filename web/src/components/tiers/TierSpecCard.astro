@@ -1,11 +1,12 @@
 ---
 // web/src/components/tiers/TierSpecCard.astro
-// The visitor's spec beside the tier list (directions mock g-tiers), quiet, never a panel (h-audit
-// 2026-11-09: the row on the list is the answer, marked): signed out, one link to sign in; signed in,
-// the spec's name in its class colour and its Best in slot › and Guide › links, or, for a spec on
+// The visitor's spec beside the tier list (directions mock g-tiers; h-audit 2026-11-09: the row on the
+// list is the answer, marked): signed out, one quiet link to sign in; signed in, a hairline plate with
+// the spec's name in its class colour and its Best in slot › and Guide › links (one line below 1024), or, for a spec on
 // another role, a link to that list first. A read that fails or names no spec says so with its one
 // action. The signed-in half is a template lib/tiers/tier-client.ts fills after load, reserved at its
 // final size while the account loads, so nothing under it moves.
+import Plate from '../ui/Plate.svelte';
 import { LINK } from '../../lib/ui/primitives';
 import { REGION } from '../../lib/ui/regions';
 import { tiersCopy } from '../../lib/tiers/tier-copy';
@@ -26,32 +27,34 @@ const copy = tiersCopy.card;
     </a>
   </p>
   <div data-signed-in-only>
-    <div class="tier-card-skeleton" role="status" aria-busy="true" data-answer-skeleton>
-      <span class="sr-only">Loading</span>
-      <span class="skeleton-block tier-sk-name" aria-hidden="true"></span>
-      <span class="skeleton-block tier-sk-line" aria-hidden="true"></span>
-    </div>
-    <div class="tier-card-body" data-answer-body hidden data-testid="tier-answer-body">
-      <h2 class="tier-card-name" data-field="name" data-testid="tier-answer-name"></h2>
-      <p class="tier-card-line">
-        <span data-field="standing" data-testid="tier-answer-standing"></span>
-        <a class={LINK} data-field="other" href="/tiers" hidden data-testid="tier-answer-other"></a>
-      </p>
-      <div class="tier-card-actions" data-field="links">
-        <a class={LINK} data-field="bis" href="/bis" data-testid="tier-answer-bis">
-          {copy.bis} ›
-        </a>
-        <a class={LINK} data-field="guide" href="/guides" data-testid="tier-answer-guide">
-          {copy.guide} ›
-        </a>
-        <button type="button" class={LINK} data-field="choose" hidden>
-          {copy.choose} ›
-        </button>
-        <button type="button" class={LINK} data-field="retry" hidden>
-          {copy.retry}
-        </button>
+    <Plate flush={false}>
+      <div class="tier-card-skeleton" role="status" aria-busy="true" data-answer-skeleton>
+        <span class="sr-only">Loading</span>
+        <span class="skeleton-block tier-sk-name" aria-hidden="true"></span>
+        <span class="skeleton-block tier-sk-line" aria-hidden="true"></span>
       </div>
-    </div>
+      <div class="tier-card-body" data-answer-body hidden data-testid="tier-answer-body">
+        <h2 class="tier-card-name" data-field="name" data-testid="tier-answer-name"></h2>
+        <p class="tier-card-line">
+          <span data-field="standing" data-testid="tier-answer-standing"></span>
+          <a class={LINK} data-field="other" href="/tiers" hidden data-testid="tier-answer-other"></a>
+        </p>
+        <div class="tier-card-actions" data-field="links">
+          <a class={LINK} data-field="bis" href="/bis" data-testid="tier-answer-bis">
+            {copy.bis} ›
+          </a>
+          <a class={LINK} data-field="guide" href="/guides" data-testid="tier-answer-guide">
+            {copy.guide} ›
+          </a>
+          <button type="button" class={LINK} data-field="choose" hidden>
+            {copy.choose} ›
+          </button>
+          <button type="button" class={LINK} data-field="retry" hidden>
+            {copy.retry}
+          </button>
+        </div>
+      </div>
+    </Plate>
   </div>
 </div>
 
@@ -92,6 +95,18 @@ const copy = tiersCopy.card;
     gap: 16px;
     font-size: 15px;
     line-height: 24px;
+  }
+  /* Below 1024, where the rail sits above the list, the spec reads as one line on its plate, so the
+     list moves down by one short row, never a panel's height. */
+  @media (max-width: 1023px) {
+    .tier-card-body,
+    .tier-card-skeleton {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 2px 16px;
+      min-height: 24px;
+    }
   }
   .tier-sk-name {
     width: 160px;

@@ -50,7 +50,7 @@ sources:
 - Lone Wolf's 20% damage on every attack, with no pet to keep alive
 - Expose Prey opens Mongoose Bite off your own hits on a marked target, so it fires even on a boss that never swings at you
 - Resourcefulness takes 60% off your melee and trap costs, so you do not run dry
-- Rapid Fire speeds your melee swings as well as your shots
+- Rapid Fire speeds your melee swings
 
 ### Weaknesses
 
@@ -69,12 +69,12 @@ Thirty-three points in Survival take every melee damage talent, thirteen in Mark
 
 - **Lone Wolf** (1 point): 20% more damage with every attack while no pet is out. Forever's pets copy only a tenth of your attack power and take no stat buffs from other players, so in a raid the talent beats the pet for a melee hunter. Out in the world the pet is worth a little more than the talent and takes the hits, so keep it out there; the point waits for your next raid pull
 - **Expose Prey** (2 points): your hits on a target with Hunter's Mark have a 10% chance to open Mongoose Bite for 10 seconds, the only way it opens on a boss that is not attacking you
-- **Lacerating Strikes** (1 point): Mongoose Bite also bleeds the target for 40% of its damage over 21 seconds
+- **Lacerating Strikes** (1 point)
 - **Predator's Edge** (5 points): your melee special crits hit for 230% of a normal hit instead of double, and your off hand does 50% more damage
-- **Savage Strikes** (2 points): 4% crit on your melee specials
-- **Lightning Reflexes** (5 points): 15% Agility
-- **Deadly Aspects** (5 points): under Aspect of the Beast, every white swing has a 10% chance to speed your melee attacks by 30% for 12 seconds
-- **Resourcefulness** (2 points): 60% off melee and trap costs, and your special crits keep half your mana regeneration running
+- **Savage Strikes** (2 points)
+- **Lightning Reflexes** (5 points)
+- **Deadly Aspects** (5 points)
+- **Resourcefulness** (2 points)
 
 Careful Aim (5 points) turns Intellect into attack power and is the way to Lone Wolf. Lethal Attacks (5 points) is 5% crit on everything. Surefooted is 3% hit, Strider Kick is a third melee special, and Clever Traps and Survivalist's Discipline turn Immolation Trap into a damage button. Improved Tracking (5 points) is 5% damage against the creature type you track. Track covers Beasts, Demons, Dragonkin, Elementals, Giants, Humanoids and Undead, which takes in most raid bosses, so set it to the boss's type before the pull whenever Track covers it.
 
@@ -112,11 +112,11 @@ Forever's damage potions share the two-minute potion cooldown with mana potions.
 
 ## Races
 
-Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, and Predator's Edge makes your special crits hit harder, so press it with Rapid Fire on the pull. Human's Ruthless is next, and Dwarf's 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.
+Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, and Predator's Edge makes your special crits hit harder, so press it with Rapid Fire on the pull. Human's Ruthless is next, and Dwarf's 1% hit comes last even for a dual-wielder.
 
 Orc and Troll are level for the Horde. Blood Fury is 10% attack power for 15 seconds every two minutes, so it goes on the pull with Rapid Fire and again at two and four minutes. Berserking is 10% attack speed for 15 seconds every three minutes and stacks with Rapid Fire on your swings.
 
-Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds both of your weapons.
+Skyborne's Wind Blessed is 2% haste on both of your weapons.
 
 ## Professions
 

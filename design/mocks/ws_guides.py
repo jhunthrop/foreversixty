@@ -115,7 +115,6 @@ def band(g: dict) -> str:
     if b['stats']:
         cap = b.get('hitCap')
         lines = (f'<p class="t-small"><b class="strong">{e(cap["cap"])}</b>' + (f' &middot; {e(cap["detail"])}' if cap.get('detail') else '') + '</p>') if cap else ''
-        lines += f'<p class="t-small">{e(b["unitLine"])}</p>' if b.get('unitLine') else ''   # MUST 4
         cols.append((e(C['statPriorityRailLabel']), e(g['stats']['table']['weightHead']),
                      StatTable([('', False), ('', False), ('', False), ('', True)], stat_rows(b['stats'], True, False), 1, open_=True) + lines, ''))
     return PlateColumns(cols, PROPOSED['glance'], frame='framed')
@@ -123,8 +122,8 @@ def band(g: dict) -> str:
 
 def overview(g: dict) -> str:
     o = g['overview']
-    prose = (f'<div class="sw"><div><h3 class="t-label sw-h">{e(C["strengths"])}</h3>{Prose(o["strengths"], "plus")}</div>'
-             f'<div><h3 class="t-label sw-h">{e(C["weaknesses"])}</h3>{Prose(o["weaknesses"], "minus")}</div></div>')
+    prose = (f'<div class="sw"><div><h3 class="sw-h">{e(C["strengths"])}</h3>{Prose(o["strengths"], "plus")}</div>'
+             f'<div><h3 class="sw-h">{e(C["weaknesses"])}</h3>{Prose(o["weaknesses"], "minus")}</div></div>')
     return ReadingSection(SEC['overview'], prose, LaneBlock(e(C['inARaid']), Prose(o['raid'], 'lane')), 'overview')
 
 
@@ -137,7 +136,9 @@ def talents(g: dict) -> str:
     for k in t['keyTalents']:
         names = ' &middot; '.join(f'{e(x["name"])} <span class="t-small">{" &middot; ".join(e(r) for r in x["rankText"])}</span>' for x in k['talents'])
         keys.append(Row(names, e(k['why']), lead=icon(k['talents'][0].get('icon') or '', 32), link=False))
-    lane = LaneBlock(PROPOSED['builds'], RowsSlim(rows) + diff) + LaneBlock(e(C['keyTalents']), wrap_list(Rows(keys, True)))
+    # web GuideBuildsLane: the Builds block only when the raid build differs (one build is the band's own)
+    builds = LaneBlock(PROPOSED['builds'], RowsSlim(rows) + diff) if len(t['blocks']) > 1 else ''
+    lane = builds + LaneBlock(e(C['keyTalents']), wrap_list(Rows(keys, True)))
     return ReadingSection(SEC['talents-and-builds'], Prose(t['prose']), lane, 'talents-and-builds')
 
 
@@ -169,7 +170,7 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
                           stat_rows(rows, False, True), 2, open_=True)
         # the built StatTable `wrap`: its rows may wrap under the prose, the head row repeated
         table = wrap_list(table).replace('<div class="st-h stc" role="row">', '<div class="st-h stc" role="row" data-wrap-repeat>', 1)
-        notes = ''.join(f'<p class="t-small">{e(x)}</p>' for x in [t.get('unitLine'), t.get('ratingNote'), *t['notes']] if x)
+        notes = ''.join(f'<p class="t-small">{e(x)}</p>' for x in [t.get('ratingNote'), *t['notes']] if x)
         notes = f'<div class="gnotes" data-wrap-list>{notes}</div>' if notes else ''
         lane = f'<div class="gstat">{LaneBlock(e(C["statPriorityRailLabel"]), cap + table + notes)}</div>'
     else:   # no weights for the spec: the guide's own order, unnumbered weights absent (the shipped fallback)
@@ -237,7 +238,7 @@ def extras(g: dict, data: bool = True) -> str:
     x = g['extras']
     lane = ''
     if data and x['data']:
-        ench = RowsSlim([Row(e(r['name']), f'{e(r["slotLabel"])} &middot; {e(r["gives"])}', lead=icon(r.get('icon') or '', 28), link=False)
+        ench = RowsSlim([Row(e(r['name']), e(r['slotLabel']), lead=icon(r.get('icon') or '', 28), link=False)
                          for r in x['data']['enchants']])   # MUST 6: the same icon rows as Consumables
         rows = []
         for line in x['data']['lines']:
@@ -245,8 +246,10 @@ def extras(g: dict, data: bool = True) -> str:
                 rows.append(f'<h4 class="t-label sub-h">{e(line["header"])}</h4>')
             else:
                 r = line['row']
-                rows.append(Row(e(r['name']), e(r['gives']), lead=icon(r.get('icon') or '', 28), link=False))
-        lane = (LaneBlock(e(C['enchants']), f'<p class="t-small">{e(C["enchantsNote"])}</p>' + wrap_list(ench))
+                # web lib/guides/gear-extras.ts consumableNote: only the slot a stone or oil goes on
+                note = r['gives'].split(', ', 1)[1] if ', ' in r['gives'] else ''
+                rows.append(Row(e(r['name']), e(note[:1].upper() + note[1:]), lead=icon(r.get('icon') or '', 28), link=False))
+        lane = (LaneBlock(e(C['enchants']), wrap_list(ench))
                 + LaneBlock(e(C['consumables']), wrap_list(RowsSlim(rows))))
     return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables')
 
@@ -260,7 +263,7 @@ def races(g: dict) -> str:
             foot = ''.join(f'<span class="racial">{icon(z["icon"], 20)}<span><b>{e(z["name"])}</b> {e(z["effect"])}</span></span>' for z in x['racials'])
             portrait = r.get('portraits', {}).get(x.get('slug', ''))
             rows.append(Row(e(x['name']), title_color=FACTION[x['faction']], lead=icon(portrait, 28) if portrait else '',
-                            trail=Tag(e(C['recommendedTag'])) if x['recommended'] else '', link=False, foot=foot))
+                            link=False, foot=foot, selected=x['recommended']))
         head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
         body += f'<div class="grace"><h4 class="t-label sub-h">{e(head)}</h4>' + wrap_list(Rows(rows, True)) + '</div>'
     lines = ''.join(f'<p class="t-small">{e(t)}</p>' for t in r['lines'])
@@ -320,7 +323,7 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
                 gear(gp, band_no, faction, not partial), extras(gp, not partial), races(gp),
                 ReadingSection(SEC['professions'], Prose(g['professions']), '', 'professions'), leveling(gp, level if kind == 'same' else 60, not partial)]
     body = (ReadingPanel(''.join(sections)) + sources(g)
-            + f'<p class="t-small foot-note" data-region="{REGION["footer_note"]}">{e(F["fns"]["dataSourceLine"])}</p>')
+            )
     toc = Toc(e(C['tocBarLabel']), [(e(s['title']), s['id']) for s in F['sections']], 'overview')
     html = f'<div class="g-page">{head + spec_bar(g, open_m) + reading_page(band(gp), toc, body)}</div>' + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
@@ -355,9 +358,9 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
     cards = []
     for c in L['cards']:
         you = bool(mine and me['spec'] == c['name'])
-        title = e(c['name']) + (' ' + Tag(e(C['yourSpecPill'])) if you else '')
-        cards.append(Plate(Row(title, e(c['line']), lead=icon(c['icon'], 40), title_color=CLASS_COLOR[cls], selected=you,
-                               foot=f'<span class="link">{rsaquo(C["readTheGuide"])}</span>')))
+        title = e(c['name'])   # the accent rule marks yours, no pill
+        # the whole row is the link to the guide (no "Read the guide" line)
+        cards.append(Plate(Row(title, e(c['line']), lead=icon(c['icon'], 40), title_color=CLASS_COLOR[cls], selected=you)))
     specs = (f'<div class="g-specs" role="region" aria-label="{e(C["classLandingSpecsHeading"])}" style="--specs:{len(cards)}">'
              f'{"".join(cards)}</div>')
     main = ''.join(Section(e(s['heading']), Prose(s['html']), boxed=True) for s in L['sections'] if not s['panel'])
@@ -366,7 +369,7 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
     srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]))
     ans = '' if kind == 'out' else answer(kind, me)
     head = PageHeader(e(L['title']), CLASS_COLOR[cls], crest_img(cls, 56), [f'Updated {e(L["updated"])}'], ans)
-    html = head + Page('ledger', f'<div class="g-ledger">{specs}</div>') + Page('split', main, rail + srcs) + PAGE_CSS
+    html = head + Page('ledger', f'<div class="g-ledger">{specs}</div>') + Page('split', main, rail) + Page('ledger', srcs) + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     return build_page(f'{L["title"]} guides', html, 'Guides', who, f'Class landing mock (design/specs/2026-11-08-guides.md); data guides-facts.json, build {F["build"]}.')
 
@@ -438,7 +441,7 @@ PAGE_CSS = '''<style>
 @media(min-width:1024px){.g-specs{grid-template-columns:repeat(var(--specs),minmax(0,1fr))}}
 .g-page{padding-bottom:40px}  /* [spec].astro .guide-page's own bottom space, under the page body's gap (ws_lib main) */
 .sw{display:grid;gap:20px var(--gap);grid-template-columns:minmax(0,1fr)}@media(min-width:768px){.sw{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.sw-h{padding-bottom:8px}
+.sw-h{margin:0;padding-bottom:8px;font:600 15px/20px var(--font-body);color:#f3eee2}
 .lvl-l{display:flex;flex-direction:column}
 .racial{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:18px;color:var(--muted);width:100%}.racial b{color:var(--text);font-weight:600}
 .sub-h{padding:12px 0 2px;margin:0}

@@ -31,6 +31,7 @@
     sticky = true,
     labelsFrom = 1280,
     staticField = false,
+    inline = false,
     onchange,
     id = 'control-bar',
     testid,
@@ -40,6 +41,9 @@
     label: string;
     /** The phone line; defaults to each group's chosen label joined with a middle dot. */
     summary?: string;
+    /** One short segmented group that fits a phone line (the rankings landing's Characters / Guilds):
+     *  below 768 it shows as itself, with no summary line and no Change. */
+    inline?: boolean;
     end?: Snippet;
     /** The page's one primary (the sim's Run). One element: on phone it sits on the summary line
      *  beside "Change", from 768 after the groups and `end`, so a run is never behind the toggle. */
@@ -84,6 +88,7 @@
   class={['ui-cbar ui-band ui-band-end full-bleed', sticky && 'ui-cbar--sticky']}
   data-control-bar
   data-open={open ? '' : undefined}
+  data-inline={inline ? '' : undefined}
   data-labels-from={labelsFrom}
   role="group"
   aria-label={label}
@@ -247,6 +252,16 @@
   }
   .ui-cbar[data-open] .ui-cbar-groups {
     display: flex;
+  }
+  @media (max-width: 767px) {
+    .ui-cbar[data-inline] .ui-cbar-toggle,
+    .ui-cbar[data-inline] .ui-cbar-label {
+      display: none;
+    }
+    .ui-cbar[data-inline] .ui-cbar-groups {
+      display: flex;
+      padding-block: 6px;
+    }
   }
   .ui-cbar-group {
     display: flex;

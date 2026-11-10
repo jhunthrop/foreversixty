@@ -159,9 +159,7 @@ describe('the answer’s links', () => {
   it('anywhere else (another spec, another class, /guides): its own guide', () => {
     for (const page of [{ classSlug: 'hunter', specSlug: 'marksmanship' }, { classSlug: 'mage' }, {}]) {
       const answer = ready(guideAnswerFrom(me, pointerForCharacter(bow), page));
-      expect(answer.links).toEqual([
-        { label: 'Your guide: Survival Hunter ›', href: '/guides/hunter/survival' },
-      ]);
+      expect(answer.links).toEqual([{ label: 'Survival Hunter ›', href: '/guides/hunter/survival' }]);
       expect(answer.next).toBeUndefined();
     }
   });

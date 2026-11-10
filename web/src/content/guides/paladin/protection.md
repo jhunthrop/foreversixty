@@ -70,7 +70,7 @@ The build is 10 Holy, 33 Protection and 8 Retribution.
 - **Shield Specialization** (2 points): 30% more absorbed by your shield, and a block gives back 4% of your mana, at most once every 3 seconds. This is where your mana comes from.
 - **Swift Judgement** (1 point): a second Judgement of your Seal on its own one minute cooldown, free and off the global cooldown.
 - **Improved Righteous Fury** (3 points): 9% less damage taken while Righteous Fury is on. It is a mitigation talent now, not a threat one.
-- **Anticipation** (5 points): 20 Defense Skill.
+- **Anticipation** (5 points)
 - **Holy Shield** (1 point): 30% more block for 10 seconds or 4 blocks, with Holy damage on each block and 20% extra threat on that damage. It sits on the 21 point row now.
 - **Iron Creed** (3 points): 30% more threat on Holy Strike, and while Righteous Fury is on each Holy Strike cuts your damage taken by 6% for 6 seconds.
 - **Shieldsworn** (1 point): the capstone. Holy Strike comes back every 6 seconds, which keeps Iron Creed up, and each strike fires Holy Shield's damage and Shield Specialization's mana without spending a charge. For 6 seconds after a strike you can block spells too.

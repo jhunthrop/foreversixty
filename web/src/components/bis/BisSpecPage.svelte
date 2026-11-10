@@ -323,9 +323,11 @@
     </p>
   {/if}
   {#if tip}
-    <ItemTooltip model={tip} build={data.build} floating={false}>
-      {#snippet tail()}<BisSlotLines {cell} />{/snippet}
-    </ItemTooltip>
+    <div class="bis-tip" data-form={form} data-picked={selected !== null ? '' : undefined}>
+      <ItemTooltip model={tip} build={data.build} floating={false}>
+        {#snippet tail()}<BisSlotLines {cell} />{/snippet}
+      </ItemTooltip>
+    </div>
   {/if}
   {#if character === undefined}{@render simLink()}{/if}
 {/snippet}
@@ -403,6 +405,12 @@
 </div>
 
 <style>
+  /* The phone list shows a slot's tooltip once the player taps it, never one left open by default. */
+  @media (max-width: 767px) {
+    .bis-tip[data-form='list']:not([data-picked]) {
+      display: none;
+    }
+  }
   .bis-top {
     display: grid;
     grid-template-columns: minmax(0, 1fr);

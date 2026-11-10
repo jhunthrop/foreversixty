@@ -366,7 +366,7 @@ def fights_section(ch: Char, extra: str = '') -> str:
 def builds_section(ch: Char) -> str:
     rows = [Row(b['talent_split'], f"{b['spec']} &middot; {short_date(b['first_seen'])}", slim=True)
             for b in ch.page['builds_seen'][:3]]
-    return sec('Builds seen', RowsSlim(rows))  # a plain list on the ground (h-audit 2026-11-09)
+    return panel('Builds seen', RowsSlim(rows))
 
 
 def coach_rows(file: str) -> str:

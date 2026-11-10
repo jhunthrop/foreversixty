@@ -135,7 +135,7 @@
         >
       {/if}
       {#if top !== null}
-        <span class="text-muted w-8 text-right text-[13px] tabular-nums" data-testid="spec-top-rank"
+        <span class="text-muted w-12 text-right text-[13px] tabular-nums" data-testid="spec-top-rank"
           >{simCopy.specsTopSetRank(top.rank)}</span
         >
         <!-- The section's meta names the figure and its unit once ("Raid BiS DPS at 60"). -->

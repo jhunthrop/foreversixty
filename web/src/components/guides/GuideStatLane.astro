@@ -18,10 +18,7 @@ interface Props {
   fallback: readonly string[];
 }
 const { stats, fallback } = Astro.props;
-const notes =
-  stats === undefined
-    ? []
-    : [stats.unitLine, stats.ratingNote, ...stats.notes].filter((n) => n !== undefined);
+const notes = stats === undefined ? [] : [stats.ratingNote, ...stats.notes].filter((n) => n !== undefined);
 ---
 
 <div class="guide-stat-lane">

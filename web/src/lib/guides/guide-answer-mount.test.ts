@@ -97,7 +97,7 @@ describe('paintGuideAnswer', () => {
 
   it('replaces the links on a repaint and hides next when the answer has none', () => {
     const root = mountMarkup();
-    const links = [{ label: 'Your guide: Survival Hunter ›', href: '/guides/hunter/survival' }];
+    const links = [{ label: 'Survival Hunter ›', href: '/guides/hunter/survival' }];
     paintGuideAnswer(
       root,
       { state: 'ready', character: BOW, next: 'x', links: [...links, ...links] },
@@ -254,7 +254,7 @@ describe('mountGuideAnswer', () => {
     window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
     await vi.advanceTimersByTimeAsync(5);
     expect(field(root, 'name').textContent).toBe('Armsy');
-    expect(field(root, 'links').textContent).toContain('Your guide: Arms Warrior');
+    expect(field(root, 'links').textContent).toContain('Arms Warrior ›');
     expect(seen.at(-1)?.name).toBe('Armsy');
   });
 });

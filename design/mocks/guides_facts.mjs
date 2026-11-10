@@ -7,7 +7,7 @@
 //  - /guides/<class>/<spec>: every call [spec].astro and its components make (splitSpecSections, splitOverview,
 //    decodeBuildTrees, guideBuildBlocks, diffBuilds, keyTalentsFor, guideRotation, markRaidBuildRows, withTipKeys,
 //    band60Weights, railStatRows, rankedStatLabels, guideHitCapLine, specGuideData, raceTableFor, recommendedRaceLines,
-//    consumableLines, guideLadderSteps, linkProse over renderGuideMarkdown, headerMeta, dataSourceLine);
+//    consumableLines, guideLadderSteps, linkProse over renderGuideMarkdown, headerMeta);
 //  - the signed-in answer: descriptorLines (lib/character-header) on the home fixtures and the derived guide fixtures
 //    (web/tests/e2e/fixtures/guides, gap G6: a Survival hunter at 34 and 60, a Fire mage at 60), answerCopy's states (lib/account/answer-copy.ts);
 //  - the copy module: lib/guides/copy.ts (guidesCopy), lib/account/answer-copy.ts (answer states).
@@ -108,7 +108,7 @@ export async function run(entries, SPECS, CLASSES) {
       html: (await renderGuideMarkdown(s.markdown)).replace(/<p><strong>([^<]+)<\\/strong><\\/p>/g, '<p class="glabel">$1</p>') });
     const specGuides = entries.filter((g) => g.data.classSlug === cls && g.data.spec !== undefined);
     const cards = specsOf(cls).flatMap((s) => { const g = specGuides.find((x) => x.data.spec === s.spec_slug); if (!g || !g.data.role) return [];
-      return [{ slug: s.spec_slug, name: s.name, role: g.data.role, icon: s.icon, line: specCardLine(g.data.role, decodeBuildTrees(build, g.data.raidBuild ?? g.data.build ?? '') ?? []) ?? '' }]; });
+      return [{ slug: s.spec_slug, name: s.name, role: g.data.role, icon: s.icon, line: specCardLine(g.data.role, decodeBuildTrees(build, g.data.raidBuild ?? g.data.build ?? '') ?? [], g.data.statPriority ?? []) ?? '' }]; });
     // GuideRaceList: the class's races by faction, each its portrait stem (when the build ships one) and the "new" mark
     const raceList = buildRacesForClass(build, cls);
     const raceIcons = raceIconsFor(build);
@@ -149,7 +149,7 @@ export async function run(entries, SPECS, CLASSES) {
     index, landings, guides, coverage, me: { hunter34: who(me34), survival34: { ...who(meSurvival), next: nextOf(guides['hunter/survival'], 34) }, survival60: who(meSurvival60), warrior60: who(me60), mage60: who(meMage) },
     source_labels: Object.fromEntries(['blizzard', 'datamined', 'community', 'site'].map((k) => [k, pillLabelFor(k)])), setup_title: addonCopy.setupPageTitle,
     fns: { signedInCallout: { bm: guidesCopy.signedInCallout('Beast Mastery', 'Hunter'), survival: guidesCopy.signedInCallout('Survival', 'Hunter'), fury: guidesCopy.signedInCallout('Fury', 'Warrior') },
-      dataSourceLine: guidesCopy.dataSourceLine(build), unknown: answerCopy.unknown('Felsnap'),
+      unknown: answerCopy.unknown('Felsnap'),
       levelRangeLabel: Object.fromEntries([20, 30, 40, 50, 60].map((b) => [b, guidesCopy.levelRangeLabel(b)])),
       bandSlugs: [20, 30, 40, 50, 60].map(bandSlug) } };
 }

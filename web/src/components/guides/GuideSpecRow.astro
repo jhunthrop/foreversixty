@@ -1,12 +1,11 @@
 ---
 // web/src/components/guides/GuideSpecRow.astro
 // One spec as a link Row on /guides, a class landing and /bis (ClassSpecPicker; directions mocks
-// b2-guides, b2-guide-class): the spec icon, the name, and a hidden "Your spec" Tag the answer
-// shows on the header character's spec (lib/guides/guide-answer-mount.ts marks the row
-// `aria-current`). No role tag: the spec's name says it. On a landing the tag follows the name
-// and the row carries its line and "Read the guide ›"; in the picker it sits at the right.
+// b2-guides, b2-guide-class): the spec icon and the name, the whole row the link. The header
+// character's spec is marked by the row's accent rule (lib/guides/guide-answer-mount.ts sets
+// `aria-current`) and a screen reader's "Your spec": no pill beside the rule (h-audit 2026-11-09).
+// On a landing the row carries its line (role, top stats, point split) under the name.
 import Row from '../ui/Row.svelte';
-import Tag from '../ui/Tag.svelte';
 import { guidesCopy } from '../../lib/guides/copy';
 import type { TitleTone } from '../../lib/ui/primitives';
 
@@ -19,8 +18,6 @@ interface Props {
   iconSize: 28 | 40;
   tone?: TitleTone;
   sub?: string;
-  /** A landing row's last line ("Read the guide ›"). */
-  foot?: string;
   /** The row's testid before `specKey` (/bis: `bis-spec-row-`); the answer marks rows by it. */
   testidPrefix?: string;
   /** The hidden tag the answer shows on the header character's spec. */
@@ -34,15 +31,14 @@ const {
   iconSize,
   tone,
   sub,
-  foot,
   testidPrefix = 'guide-spec-row-',
   yoursLabel = guidesCopy.yourSpecPill,
 } = Astro.props;
 const testid = `${testidPrefix}${specKey}`;
 ---
 
-{foot === undefined ? (
-  <Row title={name} titleTone={tone} {href} density="slim" wrapTrail {testid}>
+{sub === undefined ? (
+  <Row title={name} titleTone={tone} {href} density="slim" {testid}>
     <img
       slot="lead"
       src={icon}
@@ -53,9 +49,10 @@ const testid = `${testidPrefix}${specKey}`;
       decoding="async"
       class="guide-spec-icon"
     />
-    <span slot="trail" class="guide-spec-tags">
-      <span data-your-spec hidden>
-        <Tag tone="yours">{yoursLabel}</Tag>
+    <span slot="titleContent">
+      {name}
+      <span class="sr-only" data-your-spec hidden>
+        {yoursLabel}
       </span>
     </span>
   </Row>
@@ -73,13 +70,9 @@ const testid = `${testidPrefix}${specKey}`;
     />
     <span slot="titleContent">
       {name}
-      <span data-your-spec hidden>
-        {' '}
-        <Tag tone="yours">{yoursLabel}</Tag>
+      <span class="sr-only" data-your-spec hidden>
+        {yoursLabel}
       </span>
-    </span>
-    <span slot="foot" class="guide-spec-foot">
-      {foot}
     </span>
   </Row>
 )}
@@ -89,26 +82,6 @@ const testid = `${testidPrefix}${specKey}`;
     display: block;
     border-radius: var(--radius-icon);
     box-shadow: 0 0 0 1px var(--color-line);
-  }
-  /* The tags sit on the name's 20 px line, so a tagged row is as tall as any other. */
-  .guide-spec-tags {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    height: 20px;
-  }
-  .guide-spec-foot {
-    color: var(--color-gold);
-    font-weight: 600;
-    font-size: 15px;
-    line-height: 24px;
-  }
-  /* On a phone the tag takes its own line under the name; a row where it is hidden (not your
-     spec) keeps no empty line for it. */
-  @media (max-width: 767px) {
-    :global(.ui-row > span:has(> .guide-spec-tags > [data-your-spec][hidden]:only-child)) {
-      display: none;
-    }
   }
   :global(.ui-row[aria-current='true']:has([data-your-spec])) {
     background: var(--color-selected);

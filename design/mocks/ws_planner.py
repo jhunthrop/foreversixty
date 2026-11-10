@@ -167,7 +167,7 @@ def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = 
         line = f'<p class="pl-line">{e(cmp["line"])}</p>'
     else:
         line = f'<p class="pl-line"><b class="gold num">{s["count"]}</b> {e(cmp["line"])}</p>'
-    beyond = (f'<p class="t-small">{e(cmp["past"])}</p>' if cmp.get('past') else '') + (f'<p class="t-small">{e(cmp["beyond"])}</p>' if cmp['beyond'] else '')
+    beyond = (('<p class="pl-chips">' + ''.join(Tag(e(n), 'muted') for n in cmp['past']) + '</p>') if cmp.get('past') else '') + (f'<p class="t-small">{e(cmp["beyond"])}</p>' if cmp['beyond'] else '')
     if confirm:
         acts = f'<p class="t-small">{e(C["band"]["loadConfirmMessage"])}</p><div class="pl-acts">{Button(e(C["band"]["loadConfirmProceed"]))}{Button(e(C["band"]["loadConfirmCancel"]))}</div>'
     else:
@@ -279,10 +279,10 @@ def order(st: dict) -> str:
     if st['points']:
         body = PointOrder(rows, view['capAfter'], e(view['capText']), markers=P['orderMarkers'])
     elif preview:
-        body = f'<p class="t-small pl-pad">{e(st["preview_line"])}</p>' + PointOrder(rows, view['capAfter'], e(view['capText']), markers=P['orderMarkers'])
+        body = PointOrder(rows, view['capAfter'], e(view['capText']), markers=P['orderMarkers'])
     else:
         body = f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>'
-    return Section(e(P['pointOrderTitle']), body)
+    return Section(e(st['preview_line']) if preview else e(P['pointOrderTitle']), body)
 
 
 def guide_builds(st: dict) -> str:
@@ -318,9 +318,10 @@ def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note:
     quiet = st['compare'] is not None and st['compare']['kind'] == 'matches' and not confirm and not loaded
     # Import leaves the rail for the full-width row when the level card shows beside a spent build (h-audit 2026-11-09).
     import_below = not quiet and st['spent'] > 0
-    parts = ((part(e(P['shareTitle']), share_body(st, share_mode)) if st['spent'] else '')
+    parts = ((part(e(P['shareTitle']), share_body(st, share_mode)) if st['spent'] and not import_below else '')
              + ('' if import_below else part(e(C['addon']['importTitle']), importer_body(st, import_mode))))
-    below += Ordered(importer(st, import_mode), 8, span=True) if import_below else ''
+    # Share and Import join the full-width row too (h-audit 2026-11-09), side by side from 1024.
+    below += (Ordered(share(st, share_mode), 7) + Ordered(importer(st, import_mode), 8)) if import_below else ''
     # The level card says nothing when the build matches it (the guide row's Loaded tag says so).
     rail = ('' if quiet else Ordered(compare(st, confirm, loaded), 2)) + Ordered(in_game(st, send, copy_state, parts=parts), 5)
     # Ruling MUST 1: the build's origin is said once; the gold origin line drops whenever the note shows.
@@ -407,7 +408,7 @@ PAGE_CSS = '''<style>
 
 .pl-sec{display:flex;flex-direction:column;gap:12px;padding-top:2px}.pl-pad{padding-top:2px}
 .gb-off{display:flex;flex-direction:column;align-items:flex-end;font-size:13px;line-height:18px;white-space:nowrap}.gb-off>span{line-height:18px}.gb-miss{flex-basis:100%}
-.pl-part{margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft)}.pl-part-h{margin:0 0 10px;font:600 15px/20px var(--font-body);color:var(--strong)}
+.pl-part{margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft)}.pl-chips{display:flex;flex-wrap:wrap;gap:6px}.pl-part:first-child{margin-top:0;padding-top:0;border-top:0}.pl-part-h{margin:0 0 10px;font:600 15px/20px var(--font-body);color:var(--strong)}
 .pl-acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.pl-acts.pl-end{align-items:flex-end}
 .pl-line{font-size:15px;line-height:22px}.pl-note{font-size:14px;line-height:20px}.pl-note.muted{color:var(--muted)}
 .pl-gear{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding-top:10px;border-top:1px solid var(--line-soft)}

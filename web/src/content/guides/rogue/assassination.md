@@ -55,11 +55,11 @@ The raid build goes 31/20/0: down Assassination to Mutilate, with Seal Fate, Ven
 - **Relentless Strikes** (5 points): every finisher has a 20% chance per combo point to give 25 energy back, so a four-point Eviscerate refunds it four times in five. This is what lets a 60 energy builder keep up.
 - **Cold Blood** (1 point): your next Mutilate or Eviscerate is a guaranteed crit, on a 3 minute cooldown. Save it for an Eviscerate at four or more points.
 - **Lethality** (2 points): Mutilate crits deal 220% instead of 200%, and with Malice and Puncturing Wounds you crit a lot.
-- **Vile Poisons** (5 points): 20% more poison damage.
-- **Aggression** (2 points): Eviscerate hits 10% harder.
-- **Flawless Execution** (1 point): Eviscerate costs 15 less energy.
+- **Vile Poisons** (5 points)
+- **Aggression** (2 points)
+- **Flawless Execution** (1 point)
 - **Weapon Expertise** (2 points): the boss dodges or parries your attacks 2% less, so fewer Mutilates come back with no combo points.
-- **Coup de Grace** (3 points): Eviscerate hits 20% harder.
+- **Coup de Grace** (3 points)
 
 Those Combat points are worth more to the raid build than Improved Poisons and Opportunity: a cheaper, harder Eviscerate and fewer dodged Mutilates beat more poison procs and 20% on Mutilate. Blood Splatter keeps your opening Garrote ticking 9 seconds longer, and the point of Vigor is 5 more energy to pool into. Ruthlessness keeps finishers flowing. Two points each of Lightning Reflexes and Endurance are the toll to reach the Aggression row, and Composure on the way takes another 10 energy off your opener.
 

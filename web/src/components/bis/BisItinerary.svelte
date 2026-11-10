@@ -22,26 +22,28 @@
 </script>
 
 <Plate {label} flush={false} testid="bis-itinerary">
-  {#each stops as stop (stop.key)}
-    <section class="bis-stop" id={stop.anchor} data-testid={`bis-stop-${stop.key}`}>
-      <h2 class="bis-stop-title text-section">
-        {stop.title}{#if stop.range}<span class="bis-stop-range">{stop.range}</span>{/if}
-      </h2>
-      {#each stop.rows as row (row.cell.slot)}
-        <ItemRow
-          item={row.cell.item}
-          {build}
-          gain={rowFigure(row.cell.gain)}
-          badge={row.cell.badge}
-          testid={`bis-row-${row.cell.slot}`}
-        >
-          {#snippet sourceContent()}{#each factSegments(row.line) as fact, index (index)}{index > 0
-                ? ' '
-                : ''}<span class="bis-fact">{fact}</span>{/each}{/snippet}
-        </ItemRow>
-      {/each}
-    </section>
-  {/each}
+  <div class="bis-stops-cols">
+    {#each stops as stop (stop.key)}
+      <section class="bis-stop" id={stop.anchor} data-testid={`bis-stop-${stop.key}`}>
+        <h2 class="bis-stop-title text-section">
+          {stop.title}{#if stop.range}<span class="bis-stop-range">{stop.range}</span>{/if}
+        </h2>
+        {#each stop.rows as row (row.cell.slot)}
+          <ItemRow
+            item={row.cell.item}
+            {build}
+            gain={rowFigure(row.cell.gain)}
+            badge={row.cell.badge}
+            testid={`bis-row-${row.cell.slot}`}
+          >
+            {#snippet sourceContent()}{#each factSegments(row.line) as fact, index (index)}{index > 0
+                  ? ' '
+                  : ''}<span class="bis-fact">{fact}</span>{/each}{/snippet}
+          </ItemRow>
+        {/each}
+      </section>
+    {/each}
+  </div>
 </Plate>
 
 <style>
@@ -50,8 +52,15 @@
     display: inline-block;
     max-width: 100%;
   }
-  .bis-stop + .bis-stop {
-    margin-top: 18px;
+  .bis-stop {
+    break-inside: avoid;
+    padding-bottom: 18px;
+  }
+  @media (min-width: 1280px) {
+    .bis-stops-cols {
+      columns: 2;
+      column-gap: 40px;
+    }
   }
   .bis-stop-title {
     display: flex;

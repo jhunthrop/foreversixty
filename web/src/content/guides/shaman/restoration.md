@@ -46,7 +46,7 @@ sources:
 Forty-one points in Restoration and ten in Enhancement. Thundering Strikes is 5% crit on your heals, because in Forever it raises spells as well as attacks, and crits are what fire Water Shield. Ancestral Knowledge is 10% more Intellect. Nothing in Elemental helps a heal.
 
 - **Improved Healing Wave** (5 points): Healing Wave casts in 2.5 seconds instead of 3.
-- **Tidal Focus** (5 points): 5% cheaper heals.
+- **Tidal Focus** (5 points)
 - **Mindfulness** (3 points): half your mana regeneration keeps running while you cast.
 - **Water Shield** (1 point): your mana engine. Three globes, each returning 2% of your maximum mana when you are hit or a heal crits.
 - **Healing Focus** (3 points): a 70% chance not to lose cast time when you take damage.
@@ -55,7 +55,7 @@ Forty-one points in Restoration and ten in Enhancement. Thundering Strikes is 5%
 - **Mana Tide Totem** (1 point): mana for your whole party for 12 seconds, every 5 minutes.
 - **Healing Way** (3 points): Healing Wave heals 25% more, always on.
 - **Nature's Swiftness** (1 point): one instant Healing Wave every 3 minutes.
-- **Purification** (5 points): 10% more healing on everything.
+- **Purification** (5 points)
 - **Riptide** (1 point): an instant 15 second heal over time on a 12 second cooldown, and Chain Heal heals its target 25% more.
 
 Ancestral Healing is three points for 25% more armor on your target for 15 seconds after a crit heal, which is a real help to the tank.

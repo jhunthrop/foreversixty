@@ -96,4 +96,10 @@ describe('specCardLine', () => {
     expect(specCardLine('dps', trees)).toBe('5/13/33');
     expect(specCardLine('healer', trees)).toBe('Healer · 5/13/33');
   });
+
+  it('names the top two stats of the priority', () => {
+    expect(specCardLine('dps', [{ points: 51 }], ['Hit', 'Critical strike', 'Agility'])).toBe(
+      'Hit, Critical strike · 51',
+    );
+  });
 });

@@ -18,8 +18,8 @@ export const guidesCopy = {
   simThisBuild: 'Sim this build',
   // --- rebuild (2026-10-04) --------------------------------------------------------------
   /** `/guides` index's own signed-in callout (spec §4.A/§6): `{specName}` and `{className}`
-   *  come from the visitor's own character, e.g. "Your guide: Fury Warrior ›". */
-  signedInCallout: (specName: string, className: string): string => `Your guide: ${specName} ${className} ›`,
+   *  come from the visitor's own character, e.g. "Fury Warrior ›". */
+  signedInCallout: (specName: string, className: string): string => `${specName} ${className} ›`,
   readTheGuide: 'Read the guide',
   yourSpecPill: 'Your spec',
   /** The class landing's spec plate's accessible name. */
@@ -43,13 +43,12 @@ export const guidesCopy = {
   loadRaidBuildAriaLabel: 'Load the raid build in the planner',
   simRaidBuildAriaLabel: 'Sim the raid build',
   // --- guides like Wowhead's (W.18, 2026-10-22) ---------------------------------------------
-  /** The one data-source line, in the page's footer beside the Updated stamp, never in the reading flow. */
-  dataSourceLine: (build: string): string =>
-    `Numbers from client build ${build}, checked against launch logs as they come in.`,
   roleLabel: (role: 'dps' | 'healer' | 'tank'): string =>
     role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank',
+  /** The band's meta: "Updated 7 Nov"; a healer or a tank names its role first (every class has a
+   *  damage spec, so "DPS" tells nothing). */
   headerMeta: (role: 'dps' | 'healer' | 'tank', updated: string): string =>
-    `${guidesCopy.roleLabel(role)} · Updated ${updated}`,
+    role === 'dps' ? `Updated ${updated}` : `${guidesCopy.roleLabel(role)} · Updated ${updated}`,
   strengths: 'Strengths',
   weaknesses: 'Weaknesses',
   inARaid: 'In a raid',
@@ -79,12 +78,8 @@ export const guidesCopy = {
   notSimChecked: 'Ranked by stats only',
   enchants: 'Enchants',
   consumables: 'Consumables',
-  /** The one thing the enchant table leaves out: each slot's best flat-stat enchant by the band's
-   *  weights (gear-extras.ts) never scores crit, hit or haste (ai-slop P8: no explainer line). */
-  enchantsNote: 'Crit, hit and haste enchants are not listed.',
   racialsColumn: 'Racials',
 
-  recommendedTag: 'Recommended',
   /** The Stat priority headline's cap: "Hit cap: 16%". Caps arrive formatted with their own
    *  "%" (or as `capReached`); the breakdown joins through `capWithDetail`. */
   hitToCap: (cap: string): string => `Hit cap: ${cap}`,
@@ -167,7 +162,7 @@ export const guidesCopy = {
   levelSliderLabel: 'Level',
   levelValueText: (level: number): string => `Level ${level}`,
   loadLevelBuildAriaLabel: (level: number): string => `Load the level ${level} build in the planner`,
-  tocBarLabel: 'On this page',
+  tocBarLabel: 'Jump to',
   alliancePicksHeading: 'Alliance',
   hordePicksHeading: 'Horde',
   alsoUsed: 'Food, oil and potions',

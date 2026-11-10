@@ -38,6 +38,11 @@
   /** The level whose raid sets the list reads. */
   const TOP_SET_BAND = 60;
   const topSets = $derived(topRaidSets(benchmarks, TOP_SET_BAND));
+  /** Highest raid BiS DPS first, so the rank, the bar and the list read one order; unranked specs last. */
+  function byRank(list: SpecFidelity[]): SpecFidelity[] {
+    const rank = (spec: string): number => topSets.get(spec)?.rank ?? Number.POSITIVE_INFINITY;
+    return [...list].sort((a, b) => rank(a.spec) - rank(b.spec));
+  }
 
   const skeletonSlots = specSkeletonSlots();
   /** How long a `#<spec>` arrival keeps its card in view while the list above it settles. */
@@ -83,6 +88,18 @@
 <Page layout="ledger" panels>
   <Section title={simCopy.specsSimulatedHeading} panel frame="framed" flush testid="specs-simulated">
     <div>
+      {#if topSets.size > 0}
+        <!-- The columns' heads, once: what the rank orders by and the figure's unit (h-audit 2026-11-09). -->
+        <div
+          class="text-label text-muted flex items-center justify-end gap-3 px-4 pt-1 font-bold"
+          aria-hidden="true"
+          data-testid="specs-heads"
+        >
+          <span class="w-12 text-right">{simCopy.specsRankHead}</span>
+          <span class="hidden w-[240px] md:block">{simCopy.specsBarHead}</span>
+          <span class="w-[64px] text-right">{simCopy.specsDpsHead}</span>
+        </div>
+      {/if}
       <div data-testid="specs-grid">
         {#if rows === null}
           {#each skeletonSlots as slot, index (slot)}
@@ -106,7 +123,7 @@
             {/if}
           {/each}
         {:else}
-          {#each mergeSpecRows(rows) as row (row.spec)}
+          {#each byRank(mergeSpecRows(rows)) as row (row.spec)}
             <SpecCard {row} top={topSets.get(row.spec) ?? null} />
           {/each}
         {/if}

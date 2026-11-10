@@ -1,7 +1,7 @@
 // web/src/components/Rankings.test.ts
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import { encounterPickerCopy, rankingsCopy, rankingsEmptyCopy } from '../lib/rankings/copy';
+import { encounterPickerCopy, rankingsEmptyCopy } from '../lib/rankings/copy';
 import Rankings from './Rankings.svelte';
 
 describe('Rankings', () => {
@@ -43,11 +43,10 @@ describe('Rankings', () => {
     expect(body).not.toMatch(/Sign in with/i);
   });
 
-  it('points at the tier list from the rail on every view', () => {
+  it('points at the tier list from the band on every view', () => {
     for (const props of [{}, { slug: 'ragnaros' }]) {
       const { body } = render(Rankings, { props });
-      expect(body).toContain('href="/tiers"');
-      expect(body).toContain(rankingsCopy.tierQuestion);
+      expect(body).toMatch(/href="\/tiers"[^>]*data-testid="rankings-tier-link"/);
     }
   });
 });

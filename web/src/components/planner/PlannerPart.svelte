@@ -23,6 +23,11 @@
     padding-top: 16px;
     border-top: 1px solid var(--color-line-soft);
   }
+  .pl-part:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
   .pl-part-title {
     margin-bottom: 10px;
     font: 600 15px/20px var(--font-body);

@@ -62,7 +62,6 @@ export const rankingsEmptyCopy = {
 export const rankingsCopy = {
   eyebrow: 'Characters',
   h1: 'Rankings',
-  tierQuestion: 'Comparing specs, not characters?',
   tierLink: 'Tier list',
   tierHref: '/tiers',
   updated: (date: string) => `Updated ${date}`,
@@ -118,6 +117,8 @@ export const rankingsCopy = {
   percentileLabel: 'Percentile',
   /** The value's hover line: it opens the kill in its report. */
   openReport: 'Open the kill in its report',
+  /** A board row's link to the kill's log. */
+  reportLink: 'Report',
   /** The guild board's panel titles, by kind. */
   guildTitle: { progress: 'Most bosses killed', speed: 'Fastest kills', execution: 'Fewest deaths' },
   /** An execution guild row's figure (a progress row's is homeTopGuildsCopy.bosses). */

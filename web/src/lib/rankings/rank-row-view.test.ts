@@ -29,9 +29,18 @@ describe('rankRowView', () => {
     expect(view.rankColor).toBe('var(--color-parse-gold)');
     expect(view.sub).toBe('Olympus XXVII · 17/34/0');
     expect(view.fraction).toBe(1);
-    expect(view.figures.map((figure) => figure.value)).toEqual(['888', '100', '90%', '2:41']);
+    // The Date rides under the figure below 768 (phone only), beside the percentile.
+    expect(view.figures.map((figure) => figure.value)).toEqual(['888', '100', view.gap.text, '90%', '2:41']);
+    expect(view.figures[2]).toMatchObject({ label: 'Date', bare: true, phoneOnly: true });
     expect(view.figures[0]?.href).toBe('/reports/rep1?fight=3');
-    expect(view.links).toEqual([]);
+    expect(view.links).toEqual([
+      {
+        label: 'Report',
+        href: '/reports/rep1?fight=3',
+        title: 'Open the kill in its report',
+        testid: 'ranking-report',
+      },
+    ]);
     expect(view.note).toBeUndefined();
   });
 
@@ -41,9 +50,12 @@ describe('rankRowView', () => {
     expect(rankRowView({ ...ROW, state: 'removed' }, BOARD).note?.text).toBe('Removed by a moderator');
   });
 
-  it('names the spec under the guild on a board of several classes', () => {
+  it('names the spec under the guild on a board of several classes (the crest says the class)', () => {
     const view = rankRowView(ROW, { ...BOARD, multiClass: true });
-    expect(view.sub).toBe('Olympus XXVII · Fury Warrior');
+    expect(view.sub).toBe('Olympus XXVII · Fury');
+    expect(rankRowView({ ...ROW, guild: undefined }, { ...BOARD, multiClass: true }).sub).toBe(
+      'Fury Warrior',
+    );
     expect(rankRowView({ ...ROW, guild: undefined }, BOARD).sub).toBe('17/34/0');
   });
 

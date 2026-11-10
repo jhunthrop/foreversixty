@@ -83,9 +83,8 @@ test.describe('signed in, desktop', () => {
     expect(board?.searchParams.get('metric')).toBe('dps');
     expect(board?.searchParams.get('distinct')).toBe('character');
 
-    // The rail lists the best kill the board placed.
-    await expect(page.getByTestId('rankings-answer-best')).toContainText('DPS');
-    await expect(page.getByTestId('rankings-answer-best')).toContainText('Executed');
+    // The rail answers with the rank alone: the marked row carries the best kill's figures.
+    await expect(page.getByTestId('rankings-answer-best')).toHaveCount(0);
 
     // The own row is marked where it is, never pinned, with the You tag; the others are not marked.
     const own = page.getByTestId('ranking-14');
@@ -109,8 +108,8 @@ test.describe('signed in, desktop', () => {
     await expect(page.locator('#rankings [data-testid^="character-header"]')).toHaveCount(0);
     await expect(page.locator('#rankings header')).toContainText('Updated 13 Dec');
     await expect(page.getByText(/^Updated /)).toHaveCount(1);
-    await expect(page.locator('#rankings a[href="/tiers"]')).toHaveText('Tier list ›');
-    await expect(page.locator('#rankings')).toContainText('Comparing specs, not characters?');
+    // The tier list is a link in the band, beside the stamp.
+    await expect(page.locator('#rankings header a[href="/tiers"]')).toHaveText('Tier list ›');
     await expect(page.getByTestId('rankings-legend')).toContainText('Percentile');
     await expect(page.getByTestId('rankings-legend').locator('b')).toHaveText([
       '100',

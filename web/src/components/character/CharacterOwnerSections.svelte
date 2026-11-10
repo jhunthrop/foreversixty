@@ -78,7 +78,7 @@
       bind:open={historyOpen}
       testid="character-history-toggle"
     >
-      {#snippet summaryEnd()}{#if scores.length > 1}<span class="w-16" aria-hidden="true"
+      {#snippet summaryEnd()}{#if scores.length > 1}<span class="block w-16 shrink-0" aria-hidden="true"
             ><Spark values={scores} /></span
           >{/if}{/snippet}
       {#if charts.current}<charts.current {path} />{/if}

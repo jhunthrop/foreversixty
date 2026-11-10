@@ -6,7 +6,6 @@
 <script lang="ts">
   import Section from '../ui/Section.svelte';
   import Facts from '../ui/Facts.svelte';
-  import Ruled from '../ui/Ruled.svelte';
   import type { Fact } from '../../lib/ui/facts';
   import type { BisBandModel } from '../../lib/bis/page-model';
   import type { ItineraryStop, StackView } from '../../lib/bis/frame-view';
@@ -88,15 +87,9 @@
   {#if stops.length > 0}
     <Section title={bisCopy.whereTitle} boxed testid="bis-where">
       <div class="bis-side-body bis-stops">
-        <Ruled edge="bottom">
-          {#each stops as stop (stop.key)}
-            <p class="bis-stop-link">
-              <a href={`#${stop.anchor}`}>{stop.title}</a><span class="whitespace-nowrap tabular-nums"
-                >{bisCopy.stopPieces(stop.rows.length)}</span
-              >
-            </p>
-          {/each}
-        </Ruled>
+        {#each stops as stop (stop.key)}
+          <a class="bis-stop-chip" href={`#${stop.anchor}`}>{stop.title}</a>
+        {/each}
       </div>
       {#if whereAction}<p class="bis-side-after">
           <a
@@ -137,24 +130,29 @@
   .bis-side-after {
     margin-top: 10px;
   }
-  .bis-stop-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    min-height: 44px;
-    padding: 0;
-    font-size: 14px;
-    line-height: 20px;
+  /* Jump chips to the stops below: the list under the doll names each piece. */
+  .bis-stops {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
   }
-  .bis-stops a {
+  .bis-stop-chip {
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--color-line-warm-strong);
+    border-radius: var(--radius-pill);
     color: var(--color-gold);
+    font-size: 14px;
     font-weight: 600;
+    line-height: 20px;
   }
-  .bis-stops span {
-    color: var(--color-muted);
+  .bis-stop-chip:hover {
+    border-color: var(--color-gold);
+  }
+  .bis-stop-chip:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
   }
 </style>

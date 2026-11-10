@@ -66,19 +66,6 @@ const { build, item, rank, testid } = Astro.props;
     height: 28px;
     border-radius: var(--radius-icon);
   }
-  /* A file that fails to load: only a broken image draws pseudo-elements, so this covers the
-     browser's glyph with the dark socket every other missing icon shows (no script on this page). */
-  img.guide-spell-icon {
-    position: relative;
-  }
-  img.guide-spell-icon::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 1px solid var(--color-line-warm-strong);
-    border-radius: inherit;
-    background: var(--color-bg);
-  }
   .guide-spell-tip {
     position: relative;
     cursor: pointer;

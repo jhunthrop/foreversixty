@@ -48,7 +48,7 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 - **Renewed Hope** (4 points): Flash Heal, Lesser Heal, Heal, Greater Heal and Penance gain 8% crit chance on a target under Weakened Soul, and each one takes 4 seconds off his Weakened Soul so the next shield comes sooner.
 - **Divine Aegis** (3 points): every direct heal that crits leaves a shield for 15% of it.
 - **Soul Warding** (1 point): no cooldown on Power Word: Shield and 15% off its cost.
-- **Improved Power Word: Shield** (3 points): 20% more on every shield.
+- **Improved Power Word: Shield** (3 points)
 - **Twin Disciplines** (5 points) and **Mental Agility** (3 points): Penance and Renew heal 5% more, and Renew and the shield cost 10% less.
 - **Inner Focus** (1 point): a free spell with 25% more crit every 3 minutes.
 - **Meditation** (3 points) and **Mental Strength** (5 points): regeneration while casting, and a deeper bar.

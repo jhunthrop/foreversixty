@@ -394,7 +394,7 @@
       {/if}
       {#if data.builds_seen.length > 0}
         <Ordered order={6}
-          ><Section title={copy.builds} testid="character-builds">
+          ><Section title={copy.builds} panel testid="character-builds">
             {#each buildRows(data.character.class, data.builds_seen) as row (row.key)}
               <Row title={row.split} sub={row.sub} href={plannerHref(own)} density="slim" open />
             {/each}
@@ -453,7 +453,7 @@
                 {#if row.since !== ''}<span class="text-muted text-[13px] whitespace-nowrap tabular-nums"
                     >{row.since}</span
                   >{/if}
-                {#if row.trend.length > 1}<span class="w-12" aria-hidden="true"
+                {#if row.trend.length > 1}<span class="block w-12 shrink-0" aria-hidden="true"
                     ><Spark values={row.trend} /></span
                   >{/if}
                 {#if row.percentile !== null}<span

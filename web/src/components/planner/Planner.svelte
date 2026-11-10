@@ -683,8 +683,8 @@
   let bandDiff = $state<BandDiffView | null>(null);
   /** The level card draws nothing (a build that matches it). */
   let bandQuiet = $state(false);
-  /** Import leaves the rail for the full-width row when the level card shows beside a spent build:
-   *  with both, the rail ran 345 px past the trees (h-audit 2026-11-09). */
+  /** Share and Import leave the rail for the full-width row when the level card shows beside a spent
+   *  build: with all three, the rail ran 160 to 345 px past the trees (h-audit 2026-11-09). */
   const importBelow = $derived(standalone && !shared && !bandQuiet && store.spent > 0);
 
   // Nothing cancels a request that is already in flight, so switching class twice in quick
@@ -1307,7 +1307,7 @@
         <Ordered order={shared ? 2 : 5}
           ><InGame {store} character={sendCharacter} origin={effectiveOrigin} plainOtherClass={shared}>
             {#if !store.readOnly}
-              {#if store.spent > 0}<SharePanel {store} part />{/if}
+              {#if store.spent > 0 && !importBelow}<SharePanel {store} part />{/if}
               {#if !importBelow}{@render importSection(true)}{/if}
             {/if}
           </InGame></Ordered
@@ -1333,8 +1333,10 @@
         {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
           <Ordered order={4} span><GuideBuilds builds={guideBuilds} {store} /></Ordered>
         {/if}
-        {#if importBelow && !store.readOnly}<Ordered order={8} span>{@render importSection(false)}</Ordered
-          >{/if}
+        {#if importBelow && !store.readOnly}
+          <Ordered order={7}><SharePanel {store} /></Ordered>
+          <Ordered order={8}>{@render importSection(false)}</Ordered>
+        {/if}
       {/if}
     {/snippet}
     <Ordered order={1} span>{@render plate()}</Ordered>
