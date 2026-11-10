@@ -12,6 +12,7 @@
   import { outputFigure } from '../../lib/guild/output-figure';
   import { TRASH_LABEL, nightFights } from '../../lib/guild/raid-view';
   import {
+    bossPulls,
     deltaWords,
     killClock,
     raidNightFigures,
@@ -103,7 +104,7 @@
           data-testid={`guild-raid-row-${f.row.id}`}>{raidNightDay(f.row.created_at)}</button
         >
       {/snippet}
-      {#snippet sub()}{counted(f.row.fight_count, 'pull')}{#if f.best}{SEP}<span class="text-gold"
+      {#snippet sub()}{counted(bossPulls(f.row, bossIds), 'pull')}{#if f.best}{SEP}<span class="text-gold"
             >best kill</span
           >{/if}{#each tops(f.row) as top (top.kind)}{SEP}<span
             data-testid={`guild-raid-top-${top.kind}-${f.row.id}`}

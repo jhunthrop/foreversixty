@@ -2,7 +2,7 @@
 // The open applications' figure columns (item level, best kill, days waiting), one
 // track list shared by the list's head line and every applicant row.
 export const APPLICANT_COLUMNS =
-  'grid-cols-[56px_76px_56px] items-center gap-x-3 text-right tabular-nums whitespace-nowrap';
+  'grid-cols-[72px_76px_56px] items-center gap-x-3 text-right tabular-nums whitespace-nowrap';
 
 export const APPLICANT_HEADS: readonly string[] = ['Item level', 'Best %', 'Waiting'];
 

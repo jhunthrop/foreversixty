@@ -264,7 +264,7 @@
   <li bind:this={rowEl} class="{ROW_ITEM} pt-1.5 md:pt-3" aria-busy={busy} data-testid={`signup-row-${key}`}>
     <div
       class="grid grid-cols-[minmax(0,1fr)_176px] items-center gap-x-2 gap-y-1 md:min-h-[68px] md:gap-4 {asksSpec
-        ? 'md:grid-cols-[minmax(180px,1fr)_auto_220px_minmax(200px,1.4fr)]'
+        ? 'md:grid-cols-[minmax(180px,1fr)_auto_220px]'
         : 'md:grid-cols-[minmax(180px,1fr)_auto_minmax(200px,1.4fr)]'}"
       data-testid={`signup-grid-${key}`}
     >
@@ -318,9 +318,9 @@
         </div>
       {/if}
       <div
-        class="relative col-span-2 row-start-3 md:col-span-1 md:row-start-1 {asksSpec
-          ? 'md:col-start-4'
-          : 'md:col-start-3'}"
+        class="relative col-span-2 row-start-3 {asksSpec
+          ? 'md:col-span-3 md:col-start-1 md:row-start-2'
+          : 'md:col-span-1 md:col-start-3 md:row-start-1'}"
       >
         <input
           type="text"

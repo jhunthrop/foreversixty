@@ -13,9 +13,9 @@
   import { specClassName } from '../../../lib/guild/spec-name';
   import { classColorVar } from '../../../lib/report/format';
   import { counted } from '../../../lib/plural';
+  import { SEP } from '../../../lib/guild/raid-copy';
   import type { StatFigure } from '../../../lib/ui/stat-table';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
-  import Figure from '../../ui/Figure.svelte';
   import Meter from '../../ui/Meter.svelte';
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
@@ -27,7 +27,6 @@
   const slowest = $derived(slowestKillMs(nights));
   const faster = $derived(fasterSinceFirst(encounter));
   const bestNight = $derived(nights.find((n) => n.best) ?? null);
-  const firstKill = $derived(encounter.first_kill_at);
   const ROLE_WORD = { tank: 'Tank', healer: 'Healer', dps: 'Damage' } as const;
   const roles = $derived(
     (['tank', 'healer', 'dps'] as const).flatMap((role) => {
@@ -43,32 +42,23 @@
     { id: 'wipes', label: 'Wipes' },
     { id: 'deaths', label: 'Deaths' },
   ];
+  /** The boss's head line: kills, the best kill and its night, how much faster than the first,
+   *  deaths a pull. */
   const meta = $derived(
-    `${encounter.zone} · ${encounter.pulls} pulls · ${encounter.pulls_by_night.length} nights`,
+    [
+      counted(encounter.kills, 'kill'),
+      typeof encounter.best_kill_ms === 'number'
+        ? `best ${killClock(encounter.best_kill_ms)}${bestNight === null ? '' : `, ${progressionNightDay(bestNight.date, now)}`}`
+        : '',
+      faster !== null && faster > 0 ? `${faster} s faster than the first` : '',
+      `${encounter.deaths_per_pull.toFixed(1)} deaths a pull`,
+    ]
+      .filter((part) => part !== '')
+      .join(SEP),
   );
 </script>
 
-<Section title={encounter.name} {meta} panel frame="framed" flush testid="guild-progression-encounter">
-  <div class="flex flex-wrap gap-x-10 gap-y-3 px-5 pb-3" data-testid="guild-progression-figures">
-    <Figure value={String(encounter.kills)} label="Kills" />
-    {#if typeof encounter.best_kill_ms === 'number'}
-      <Figure
-        value={killClock(encounter.best_kill_ms)}
-        label="Best kill"
-        tone="gold"
-        caption={bestNight === null ? undefined : progressionNightDay(bestNight.date, now)}
-      />
-    {/if}
-    {#if faster !== null && faster > 0}<Figure
-        value={`${faster} s`}
-        label="Faster than the first"
-        tone="kill"
-      />{/if}
-    <Figure value={encounter.deaths_per_pull.toFixed(1)} label="Deaths a pull" />
-    {#if typeof firstKill === 'string'}
-      <Figure value={progressionNightDay(firstKill, now)} label="First kill" />
-    {/if}
-  </div>
+<Section title={encounter.name} {meta} panel flush testid="guild-progression-encounter">
   {#if nights.length > 0}
     <StatTable {columns} nameHead="Night" barHead="Kill time" dense label={`${encounter.name} by night`}>
       {#each nights as night (night.reportId)}
@@ -92,7 +82,7 @@
                 ? 'first kill'
                 : night.best
                   ? 'best kill'
-                  : 'kill'}{/snippet}
+                  : ''}{/snippet}
           {#snippet meter()}{#if night.killMs !== null && slowest !== null}<Meter
                 value={night.killMs / slowest}
                 tone="gold"
@@ -104,7 +94,7 @@
   {#if roles.length > 0}
     <div class="border-line-soft border-t" data-testid="guild-progression-best-parse">
       <StatTable
-        columns={[{ id: 'figure', label: 'Best kill figure' }]}
+        columns={[{ id: 'figure', label: 'Best' }]}
         nameHead={`Best on ${encounter.name}`}
         bar={false}
         dense
@@ -116,8 +106,10 @@
           >
             {#snippet icon()}<ClassCrestRing characterClass={parse.class} size={28} />{/snippet}
             {#snippet name()}<span style:color={classColorVar(parse.class)}>{parse.name}</span>{/snippet}
-            {#snippet sub()}{ROLE_WORD[role]}{#if parse.spec}
-                · {specClassName(parse.spec, parse.class)}{/if}{/snippet}
+            {#snippet sub()}{ROLE_WORD[role]}{#if parse.spec}{SEP}{specClassName(
+                  parse.spec,
+                  parse.class,
+                )}{/if}{/snippet}
           </StatRow>
         {/each}
       </StatTable>

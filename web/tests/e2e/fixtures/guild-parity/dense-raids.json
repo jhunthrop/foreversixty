@@ -5,9 +5,9 @@
       "title": "Onyxia's Lair \u00b7 raid night",
       "zone": "Onyxia's Lair",
       "created_at": "2027-01-07T02:00:00Z",
-      "fight_count": 3,
-      "kill_count": 1,
-      "duration_ms": 3192000,
+      "fight_count": 2,
+      "kill_count": 2,
+      "duration_ms": 3322000,
       "wipe_count": 0,
       "raiders": 36,
       "deaths": 2,
@@ -18,10 +18,10 @@
         "value": 387.0
       },
       "top_dps": {
-        "name": "Seraphine",
-        "class": "paladin",
+        "name": "Steelmane",
+        "class": "warrior",
         "metric": "dps",
-        "value": 539.0
+        "value": 523.0
       },
       "fights": [
         {
@@ -38,7 +38,7 @@
           "name": "Onyxia",
           "encounter_id": 1084,
           "kill": true,
-          "duration_ms": 192000,
+          "duration_ms": 322000,
           "deaths": 2,
           "players": 36
         }
@@ -51,9 +51,9 @@
       "title": "Onyxia's Lair \u00b7 raid night",
       "zone": "Onyxia's Lair",
       "created_at": "2026-12-31T02:00:00Z",
-      "fight_count": 3,
-      "kill_count": 1,
-      "duration_ms": 3198000,
+      "fight_count": 2,
+      "kill_count": 2,
+      "duration_ms": 3336000,
       "wipe_count": 0,
       "raiders": 37,
       "deaths": 5,
@@ -84,7 +84,7 @@
           "name": "Onyxia",
           "encounter_id": 1084,
           "kill": true,
-          "duration_ms": 198000,
+          "duration_ms": 336000,
           "deaths": 5,
           "players": 37
         }
@@ -97,9 +97,9 @@
       "title": "Onyxia's Lair \u00b7 raid night",
       "zone": "Onyxia's Lair",
       "created_at": "2026-12-24T02:00:00Z",
-      "fight_count": 3,
-      "kill_count": 1,
-      "duration_ms": 3206000,
+      "fight_count": 2,
+      "kill_count": 2,
+      "duration_ms": 3349000,
       "wipe_count": 0,
       "raiders": 34,
       "deaths": 3,
@@ -130,7 +130,7 @@
           "name": "Onyxia",
           "encounter_id": 1084,
           "kill": true,
-          "duration_ms": 206000,
+          "duration_ms": 349000,
           "deaths": 3,
           "players": 34
         }
@@ -143,9 +143,9 @@
       "title": "Onyxia's Lair \u00b7 raid night",
       "zone": "Onyxia's Lair",
       "created_at": "2026-12-17T02:00:00Z",
-      "fight_count": 3,
-      "kill_count": 1,
-      "duration_ms": 3214000,
+      "fight_count": 2,
+      "kill_count": 2,
+      "duration_ms": 3361000,
       "wipe_count": 0,
       "raiders": 36,
       "deaths": 4,
@@ -156,10 +156,10 @@
         "value": 359.0
       },
       "top_dps": {
-        "name": "Starnettle",
-        "class": "druid",
+        "name": "Hexmarrow",
+        "class": "warlock",
         "metric": "dps",
-        "value": 529.0
+        "value": 524.0
       },
       "fights": [
         {
@@ -176,7 +176,7 @@
           "name": "Onyxia",
           "encounter_id": 1084,
           "kill": true,
-          "duration_ms": 214000,
+          "duration_ms": 361000,
           "deaths": 4,
           "players": 36
         }
@@ -189,12 +189,12 @@
       "title": "Onyxia's Lair \u00b7 raid night",
       "zone": "Onyxia's Lair",
       "created_at": "2026-12-10T02:00:00Z",
-      "fight_count": 4,
-      "kill_count": 1,
-      "duration_ms": 3225000,
+      "fight_count": 3,
+      "kill_count": 2,
+      "duration_ms": 3382000,
       "wipe_count": 1,
       "raiders": 33,
-      "deaths": 7,
+      "deaths": 12,
       "top_hps": {
         "name": "Brightvow",
         "class": "priest",
@@ -202,10 +202,10 @@
         "value": 338.0
       },
       "top_dps": {
-        "name": "Starnettle",
-        "class": "druid",
+        "name": "Steelmane",
+        "class": "warrior",
         "metric": "dps",
-        "value": 528.0
+        "value": 524.0
       },
       "fights": [
         {
@@ -231,7 +231,7 @@
           "name": "Onyxia",
           "encounter_id": 1084,
           "kill": true,
-          "duration_ms": 225000,
+          "duration_ms": 382000,
           "deaths": 7,
           "players": 33
         }

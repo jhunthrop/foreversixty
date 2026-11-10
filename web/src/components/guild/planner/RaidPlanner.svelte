@@ -16,7 +16,9 @@
     type GuildRosterRow,
   } from '../../../lib/guild/api';
   import { untrack } from 'svelte';
-  import { plannerFacts } from '../../../lib/guild/planner-facts';
+  import { plannerFacts, type PlannerReads } from '../../../lib/guild/planner-facts';
+  import { fetchMyChecklist, fetchRecentAttendance } from '../../../lib/guild/overview-api';
+  import { ATTENDANCE_NIGHTS } from './planner-columns';
   import type { GateFacts } from '../../../lib/guild/plan-gate';
   import { focusOnMount } from '../../../lib/guild/focus-now';
   import {
@@ -115,24 +117,34 @@
   /** The guild's roster (the /home read the page already made, from cache) and, for officers with
    *  the Raid guild tools, this raid's readiness rows: each sign-up's figures. */
   let roster = $state<readonly GuildRosterRow[]>([]);
-  let readiness = $state<readonly GuildReadinessRow[] | null>(null);
+  let reads = $state<PlannerReads>({ readiness: null, attendance: null, checklist: null });
   $effect(() => {
     const guildId = c.guild?.id;
     if (guildId === undefined) return;
     const raidId = raid.id;
     const ended = flags.ended;
     void untrack(async () => {
-      try {
-        const home = await fetchGuildHome(guildId);
-        roster = home.roster;
-        if (!officer || ended || home.viewer?.raid_guild_tools !== true) return;
-        readiness = (await fetchGuildReadiness(guildId, raidId)).rows;
-      } catch {
-        readiness = null;
+      const home = await fetchGuildHome(guildId).catch(() => null);
+      if (home === null) return;
+      roster = home.roster;
+      if (ended) return;
+      if (!officer) {
+        const checklist = await fetchMyChecklist(guildId, raidId).catch(() => null);
+        reads = { ...reads, checklist };
+        return;
       }
+      const [attendance, readiness] = await Promise.all([
+        fetchRecentAttendance(guildId, ATTENDANCE_NIGHTS, true).catch(() => null),
+        home.viewer?.raid_guild_tools === true
+          ? fetchGuildReadiness(guildId, raidId)
+              .then((page) => page.rows)
+              .catch(() => null)
+          : Promise.resolve(null),
+      ]);
+      reads = { ...reads, attendance, readiness };
     });
   });
-  const facts = $derived(roster.length === 0 ? null : plannerFacts(roster, readiness));
+  const facts = $derived(roster.length === 0 ? null : plannerFacts(roster, reads));
 
   /** The URL is the truth: a reload, a share and Back restore the grouping (spec 3.4). */
   function chooseGrouping(param: string, value: string): void {
@@ -276,7 +288,7 @@
       onSignup={c.signup}
       currentKey={c.currentKey}
     />
-    <Section title={raidCopy.subheads.signups} panel frame="framed" meta={count.ratio} testid="raid-signups">
+    <Section title={raidCopy.subheads.signups} panel meta={count.ratio} testid="raid-signups">
       <PlannerRoster
         {raid}
         {grouping}

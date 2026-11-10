@@ -26,14 +26,14 @@
       "first_kill_at": "2026-12-10T02:00:00Z",
       "pulls": 6,
       "kills": 5,
-      "best_kill_ms": 192000,
+      "best_kill_ms": 322000,
       "pulls_by_night": [
         {
           "report_id": "olympusony1209",
           "date": "2026-12-09",
           "pulls": 2,
           "killed": true,
-          "kill_ms": 225000,
+          "kill_ms": 382000,
           "deaths": 12
         },
         {
@@ -41,7 +41,7 @@
           "date": "2026-12-16",
           "pulls": 1,
           "killed": true,
-          "kill_ms": 214000,
+          "kill_ms": 361000,
           "deaths": 4
         },
         {
@@ -49,7 +49,7 @@
           "date": "2026-12-23",
           "pulls": 1,
           "killed": true,
-          "kill_ms": 206000,
+          "kill_ms": 349000,
           "deaths": 3
         },
         {
@@ -57,7 +57,7 @@
           "date": "2026-12-30",
           "pulls": 1,
           "killed": true,
-          "kill_ms": 198000,
+          "kill_ms": 336000,
           "deaths": 5
         },
         {
@@ -65,18 +65,18 @@
           "date": "2027-01-06",
           "pulls": 1,
           "killed": true,
-          "kill_ms": 192000,
+          "kill_ms": 322000,
           "deaths": 2
         }
       ],
       "deaths_per_pull": 4.3,
       "best_by_role": {
         "tank": {
-          "name": "Bramblehorn",
-          "class": "druid",
-          "spec": "Feral",
+          "name": "Thornwicke",
+          "class": "warrior",
+          "spec": "Protection",
           "metric": "dps",
-          "value": 229.0,
+          "value": 227.0,
           "report_id": "olympusony0106",
           "fight_index": 4
         },

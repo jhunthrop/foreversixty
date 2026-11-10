@@ -117,7 +117,7 @@
     {/snippet}
     <Page layout="split" panels {header} {rail} testid="guild-recruit-page">
       {#if card.open}
-        <Section title={copy.card.lookingFor} panel frame="framed" testid="guild-recruit-wanted">
+        <Section title={copy.card.lookingFor} panel testid="guild-recruit-wanted">
           {#if card.wanted.length === 0}
             <p class="text-text text-[14px]">{copy.card.nobodyListed}</p>
           {:else}

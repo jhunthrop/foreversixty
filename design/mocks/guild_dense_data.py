@@ -16,11 +16,11 @@ import guild_data as gd
 NOW = '2027-01-09T22:00:00Z'
 ZONE = gd.ZONE
 NIGHTS = [  # raid id, start (UTC), report id, the Onyxia kill in ms, wipes before it, deaths
-    (40, '2026-12-10T02:00:00Z', 'olympusony1209', 225_000, 1, 7),
-    (41, '2026-12-17T02:00:00Z', 'olympusony1216', 214_000, 0, 4),
-    (42, '2026-12-24T02:00:00Z', 'olympusony1223', 206_000, 0, 3),
-    (43, '2026-12-31T02:00:00Z', 'olympusony1230', 198_000, 0, 5),
-    (44, '2027-01-07T02:00:00Z', 'olympusony0106', 192_000, 0, 2),
+    (40, '2026-12-10T02:00:00Z', 'olympusony1209', 382_000, 1, 7),
+    (41, '2026-12-17T02:00:00Z', 'olympusony1216', 361_000, 0, 4),
+    (42, '2026-12-24T02:00:00Z', 'olympusony1223', 349_000, 0, 3),
+    (43, '2026-12-31T02:00:00Z', 'olympusony1230', 336_000, 0, 5),
+    (44, '2027-01-07T02:00:00Z', 'olympusony0106', 322_000, 0, 2),
 ]
 LAST_RAID_ID = 44
 PREV_RAID_ID = 43
@@ -131,9 +131,14 @@ def _group(name: str, cls: str, spec: str, group: str) -> str:
     return 'Melee' if (cls, spec) == ('hunter', 'Survival') else group
 
 
-def _figures(name: str, group: str, ilvl: int) -> tuple[float, float]:
+# The hybrid damage specs sit under the warriors, rogues, mages and warlocks on a 1.60 meter.
+HYBRID_DPS_PENALTY = {'Retribution': 90, 'Balance': 80, 'Feral': 60, 'Enhancement': 70, 'Shadow': 50, 'Elemental': 50}
+
+
+def _figures(name: str, group: str, ilvl: int, spec: str = '') -> tuple[float, float]:
     """Onyxia DPS (HPS for a healer, threat-limited DPS for a tank) the week before and last week."""
-    base = {'Tank': 190, 'Healer': 270, 'Melee': 430, 'Ranged': 410}[group] + (ilvl - 60) * 9
+    base = ({'Tank': 190, 'Healer': 270, 'Melee': 430, 'Ranged': 410}[group] + (ilvl - 60) * 9
+            - HYBRID_DPS_PENALTY.get(spec, 0))
     before = base + _n(name, 'fig0', -40, 40)
     return float(before), float(before + _n(name, 'fig1', -15, 35))
 
@@ -147,7 +152,7 @@ def _raider(name: str, cls: str, spec: str, group: str, ilvl: int) -> Raider:
     profs = (PROFESSIONS[_n(name, 'p0', 0, 8)], PROFESSIONS[_n(name, 'p1', 0, 8)])
     return Raider(name=name, cls=cls, spec=spec, group=group, ilvl=ilvl, answer=ANSWERS.get(name, 'in'),
                   cells=ATTENDANCE.get(name, 'PPPPP'), rank=gd.rank_of(name), ratings=ratings,
-                  figures=_figures(name, group, ilvl), best_pct=BEST_SET.get(name, _n(name, 'pct', 38, 97)), gap=gap, upgrades=upgrades,
+                  figures=_figures(name, group, ilvl, spec), best_pct=BEST_SET.get(name, _n(name, 'pct', 38, 97)), gap=gap, upgrades=upgrades,
                   professions=tuple(sorted(set(profs))), seen_days=SEEN_DAYS.get(name, 0))
 
 

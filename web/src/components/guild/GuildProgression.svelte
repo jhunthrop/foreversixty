@@ -22,6 +22,8 @@
   import StatTable from '../ui/StatTable.svelte';
   import { LINK } from '../../lib/ui/primitives';
   import EncounterProgress from './progression/EncounterProgress.svelte';
+  import { SEP } from '../../lib/guild/raid-copy';
+  import { specClassName } from '../../lib/guild/spec-name';
 
   /** `rosterBest` is v1's own "Roster bests" feature (`GET .../<guild>`'s existing,
    *  working `roster_best` rows) -- carried forward unchanged here (tenet 10) rather than
@@ -56,15 +58,17 @@
 
   const clock = minuteClock(() => fixedNow);
   const now = $derived(clock.now);
-  /** Every zone of the tier without an encounter list, with its pulls (none is a fact too). */
-  const unnamed = $derived(progression?.unnamed ?? []);
+  /** The tier's zones without an encounter list that the guild has pulled in. */
+  const unnamed = $derived((progression?.unnamed ?? []).filter((zone) => zone.pulls > 0));
+  /** One boss: the rows need not repeat its name. */
+  const oneBoss = $derived(new Set(encounterBests.map((row) => row.encounter_id)).size === 1);
   const zones = $derived(progressionZones(progression?.encounters ?? []));
 </script>
 
 {#snippet rosterBests()}
   {#if encounterBests.length > 0}
-    <Section title="Roster bests" meta="best kill figure" panel flush testid="guild-roster-best">
-      <StatTable columns={[{ id: 'value', label: 'Figure' }]} nameHead="Raider" bar={false} dense>
+    <Section title="Roster bests" panel flush testid="guild-roster-best">
+      <StatTable columns={[{ id: 'value', label: 'Best' }]} nameHead="Raider" bar={false} dense>
         {#each shownBests as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
           {@const labels = rosterBestLabels(row)}
           <StatRow bar={false} figures={[{ value: labels.value }]}>
@@ -74,8 +78,11 @@
                 style:color={classColorVar(row.player.class)}
                 class="underline-offset-4 hover:underline">{splitUnitName(row.player.name).name}</a
               >{/snippet}
-            {#snippet sub()}<span title={labels.hover}>{labels.what}</span>{#if labels.execution !== null}
-                · <span title={labels.executionHover}>{labels.execution}</span>{/if}{/snippet}
+            {#snippet sub()}<span title={labels.hover}
+                >{oneBoss ? specClassName(row.player.spec, row.player.class) : labels.what}</span
+              >{#if labels.execution !== null}{SEP}<span title={labels.executionHover}
+                  >{labels.execution}</span
+                >{/if}{/snippet}
           </StatRow>
         {/each}
       </StatTable>
@@ -151,9 +158,9 @@
           <EncounterProgress {encounter} {now} />
         {/each}
       {/each}
+      {@render rosterBests()}
       {#snippet rail()}
         {@render tier()}
-        {@render rosterBests()}
       {/snippet}
     </Page>
   {/if}

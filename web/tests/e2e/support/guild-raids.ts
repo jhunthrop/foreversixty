@@ -39,6 +39,7 @@ import type { RaidInput } from '../../../src/lib/guild/raids-api';
 import { SPECS } from '../../../src/lib/sim/specs';
 import { CHICAGO, NOW, NO_LOG_YET, plannedRaid } from '../../../src/test-support/raid-fixtures';
 import { GUILD_URL, envelope, refusal } from './officer-tools';
+import { GUILD_PLANNER_READS, apiUnreachable } from './test';
 
 export { CHICAGO, NOW, GUILD_URL };
 
@@ -722,6 +723,7 @@ export async function serveRaidShell(route: Route): Promise<void> {
  *  the raid route's shell; answers the stub that holds the raids and records the writes. */
 export async function stubGuildRaids(page: Page, options: RaidStubOptions): Promise<RaidStub> {
   const stub = new RaidStub(options);
+  await apiUnreachable(page, ...GUILD_PLANNER_READS);
   await page.route(`**/guild/${GUILD.region}/${GUILD.ruleset}/olympus-xxvii/raids/*`, serveRaidShell);
   await page.route(`**/v1/guilds/${GUILD.region}/${GUILD.ruleset}/olympus-xxvii`, (route) =>
     route.fulfill(envelope(buildMockGuildPage())),

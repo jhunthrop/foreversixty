@@ -3,7 +3,7 @@
 // Progression nights, the planner's per-raider figures, an applicant's seat and wait, and the
 // Settings tab's standing facts.
 import { describe, expect, it } from 'vitest';
-import type { GuildProgressionEncounter, GuildRaidRow, GuildRosterRow } from './api';
+import type { GuildProgressionEncounter, GuildRaidRow, GuildReadinessRow, GuildRosterRow } from './api';
 import type { CompGapRow } from './dense/week-board';
 import { seatFill, waitedWords } from './applicant-figures';
 import { medianItemLevel, plannerFacts, signed } from './planner-facts';
@@ -120,6 +120,19 @@ describe('a boss on Progression', () => {
   });
 });
 
+function readinessRow(key: string): GuildReadinessRow {
+  return {
+    character_key: key,
+    no_export: false,
+    gear_gap: { upgrades: 0, gain_dps: null, not_sim_checked: 0, unit: null },
+    enchants: { missing_slots: [], checked: true },
+    flask_food: { flask_or_elixir: false, food: false },
+    consumables: { state: 'short' },
+    talent_points_unspent: 0,
+    attuned: true,
+  } as unknown as GuildReadinessRow;
+}
+
 describe('the planner figures', () => {
   const row = (key: string, ilvl: number): GuildRosterRow =>
     ({
@@ -132,16 +145,18 @@ describe('the planner figures', () => {
   it('reads item level against the median, the readiness shortfalls and attendance', () => {
     const roster = [row('a', 60), row('b', 62), row('c', 64)];
     expect(medianItemLevel(roster)).toBe(62);
-    const facts = plannerFacts(roster, [{ character_key: 'c', failing: 2 } as never]);
-    expect(facts.get('c')).toEqual({
+    const reads = { readiness: [readinessRow('c')], attendance: null, checklist: null };
+    const facts = plannerFacts(roster, reads);
+    expect(facts.get('c')).toMatchObject({
       itemLevel: 64,
       itemLevelDelta: 2,
       short: 2,
       attendancePct: 80,
       rating: 77,
     });
+    expect(facts.get('c')?.why).toEqual(['no flask or elixir', 'no food']);
     expect(facts.get('a')?.short).toBeNull();
-    expect(plannerFacts(roster, null).get('c')?.short).toBeNull();
+    expect(plannerFacts(roster, { ...reads, readiness: null }).get('c')?.short).toBeNull();
     expect(signed(-1)).toBe('−1');
     expect(signed(0)).toBe('+0');
   });
@@ -177,7 +192,7 @@ describe('the Settings facts', () => {
       '14 joined by the invite link',
       '9 of 24 synced in 14 days',
     ]);
-    expect(facts[0].sub).toBe('Rank 0 Dunmaro · Rank 1 Kraggor, Mirelle');
+    expect(facts[0].sub).toBe('Guild master Dunmaro · Rank 1 Kraggor, Mirelle');
     expect(facts[2].sub).toBe('Not synced: Ashvane, Brightwell, Corvane');
     expect(stepsLeft(setup)).toContain('Discord bot');
     expect(stepsLeft(setup)).not.toContain('Officer ranks');

@@ -8,6 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, type Page } from '@playwright/test';
 import { serveRaidShell } from '../guild-raids';
+import { GUILD_PLANNER_READS, apiUnreachable } from '../test';
 import type { GuildStateOpener } from '../guild-parity';
 
 const FIXTURES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../fixtures/guild-parity');
@@ -30,6 +31,7 @@ export async function openRaidPlanner(page: Page): Promise<void> {
   const page_ = fixture<GuildFixture>('raid-guild.json');
   const { id, region, ruleset } = page_.guild;
   const guildPath = `/guild/${region}/${ruleset}/olympus-xxvii`;
+  await apiUnreachable(page, ...GUILD_PLANNER_READS);
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route(`**${guildPath}/raids/*`, serveRaidShell);
   await page.route('**/v1/me', (route) => route.fulfill(envelope(fixture('raid-me.json'))));

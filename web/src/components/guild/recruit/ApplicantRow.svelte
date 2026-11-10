@@ -17,12 +17,15 @@
   import Row from '../../ui/Row.svelte';
   import Votes from '../../ui/Votes.svelte';
   import { APPLICANT_ACTIONS, APPLICANT_COLUMNS } from './applicant-columns';
+  import { SEP } from '../../../lib/guild/raid-copy';
+  import { signed } from '../../../lib/guild/planner-facts';
 
   let {
     application,
     busy,
     error,
     gaps = null,
+    median = null,
     now = new Date(),
     onVote,
     onDecide,
@@ -32,6 +35,8 @@
     error: string;
     /** The next raid's seats against its comp; null leaves the Fills column dashed. */
     gaps?: readonly CompGapRow[] | null;
+    /** The guild's median item level; null leaves the delta off. */
+    median?: number | null;
     now?: Date;
     onVote: (vote: ApplicationVote | null) => void;
     onDecide: (decision: 'accept' | 'decline') => void;
@@ -56,25 +61,27 @@
     >{#if fill !== null}<span
         class="ml-2 {fill.short ? 'text-gold' : 'text-muted'}"
         data-testid="guild-application-fills">{fill.text}</span
+      >{/if}{#if application.availability !== ''}<span data-testid="guild-application-availability"
+        >{SEP}{copy.availability(application.availability)}</span
       >{/if}<span class="block" data-testid="guild-application-message"
-      >{application.message === ''
-        ? copy.noMessage
-        : application.message}{#if application.availability !== ''}<span
-          data-testid="guild-application-availability"
-        >
-          · {copy.availability(application.availability)}</span
-        >{/if}</span
+      >{application.message === '' ? copy.noMessage : application.message}</span
     >{#if error !== ''}<span class="text-wipe block" role="alert">{error}</span>{/if}
   {/snippet}
   {#snippet trail()}
     <span class="hidden {APPLICANT_COLUMNS} text-[14px] lg:grid" data-testid="guild-application-figures">
-      <span class="text-strong">{character.item_level ?? '–'}</span>
+      <span class="text-strong"
+        >{character.item_level ?? '–'}{#if median !== null && character.item_level !== null}<span
+            class="text-muted ml-1 font-normal">{signed(character.item_level - median)}</span
+          >{/if}</span
+      >
       {#if parse === null}<span class="text-muted">–</span>
       {:else}
         <span
-          >{#if parse.percentile !== null}<b style:color={percentileToken(parse.percentile)}
-              >{Math.floor(parse.percentile)}</b
-            >{/if}
+          >{#if parse.percentile !== null}<span
+              class="mr-1 inline-block h-3 w-1 rounded-sm align-[-1px]"
+              style:background={percentileToken(parse.percentile)}
+              aria-hidden="true"
+            ></span><b class="text-strong">{Math.floor(parse.percentile)}</b>{/if}
           <span class="text-muted">{outputFigure(parse.value)}</span></span
         >
       {/if}

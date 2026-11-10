@@ -25,6 +25,16 @@ function isBossKill(fight: GuildRaidFight, bossIds: ReadonlySet<number> | null):
   return fight.encounter_id !== null && bossIds.has(fight.encounter_id);
 }
 
+/** The pulls on the tier's bosses (kills and wipes; trash packs left out). */
+export function bossPulls(row: GuildRaidRow, bossIds: ReadonlySet<number> | null): number {
+  return row.fights.filter(
+    (fight) =>
+      fight.name !== null &&
+      fight.encounter_id !== null &&
+      (bossIds === null || bossIds.has(fight.encounter_id)),
+  ).length;
+}
+
 export function bossTimeMs(row: GuildRaidRow, bossIds: ReadonlySet<number> | null): number | null {
   const kills = row.fights.filter((fight) => isBossKill(fight, bossIds));
   return kills.length === 0 ? null : kills.reduce((sum, fight) => sum + fight.duration_ms, 0);

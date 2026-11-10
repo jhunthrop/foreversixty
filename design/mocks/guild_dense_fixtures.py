@@ -244,8 +244,8 @@ def raids_page() -> dict:
             return r.figures[1] + D._n(r.name, f'night{idx}', -30, 30)
         top = max((r for r in came if r.metric == 'dps' and r.group != 'Tank'), key=night_fig)
         heal = max((r for r in came if r.group == 'Healer'), key=night_fig)
-        rows.append({'id': rep, 'title': f'{ZONE_NAME} · raid night', 'zone': ZONE_NAME, 'created_at': at, 'fight_count': 3 + wipes,
-                     'kill_count': 1, 'duration_ms': 3_000_000 + kill, 'wipe_count': wipes, 'raiders': len(came), 'deaths': deaths,
+        rows.append({'id': rep, 'title': f'{ZONE_NAME} · raid night', 'zone': ZONE_NAME, 'created_at': at, 'fight_count': 2 + wipes,
+                     'kill_count': 2, 'duration_ms': 3_000_000 + kill, 'wipe_count': wipes, 'raiders': len(came), 'deaths': deaths + 5 * wipes,
                      'top_hps': {'name': heal.name, 'class': heal.cls, 'metric': 'hps', 'value': night_fig(heal)},
                      'top_dps': {'name': top.name, 'class': top.cls, 'metric': 'dps', 'value': night_fig(top)},
                      'fights': [{'index': 0, 'name': None, 'encounter_id': None, 'kill': True, 'duration_ms': 60_000, 'deaths': 0, 'players': len(came)}]

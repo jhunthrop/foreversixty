@@ -17,6 +17,7 @@
   import { fetchGuildRaid } from '../../../lib/guild/raids-api';
   import { compGaps, type CompGapRow } from '../../../lib/guild/dense/week-board';
   import { GROUP_WORD } from '../../../lib/guild/applicant-figures';
+  import { medianItemLevel } from '../../../lib/guild/planner-facts';
   import { raidNightDay } from '../../../lib/guild/overview-view';
   import Row from '../../ui/Row.svelte';
   import { APPLICANT_ACTIONS, APPLICANT_COLUMNS, APPLICANT_HEADS } from './applicant-columns';
@@ -47,12 +48,15 @@
   /** The next raid's seats against its comp target, and its start; null until read (or none planned). */
   let gaps = $state<readonly CompGapRow[] | null>(null);
   let nextAt = $state<string | null>(null);
+  let median = $state<number | null>(null);
   $effect(() => {
     const guildId = p.context?.guild.id;
     if (guildId === undefined || p.load !== 'ready') return;
     void untrack(async () => {
       try {
-        const next = (await fetchGuildHome(guildId)).next_raid;
+        const home = await fetchGuildHome(guildId);
+        median = medianItemLevel(home.roster);
+        const next = home.next_raid;
         if (next == null) return;
         const raid = await fetchGuildRaid(guildId, next.id);
         gaps = compGaps(raid);
@@ -154,7 +158,7 @@
           testid="guild-applications-outcome"
         />
       {/if}
-      <Section title={copy.open} panel frame="framed" testid="guild-applications-open">
+      <Section title={copy.open} panel testid="guild-applications-open">
         {#if split.pending.length === 0}
           <p class="text-muted text-[14px]" data-testid="guild-applications-none">{copy.none}</p>
         {:else}
@@ -168,6 +172,7 @@
             {#each split.pending as application (application.id)}
               <ApplicantRow
                 {gaps}
+                {median}
                 {application}
                 busy={p.busyId === application.id}
                 error={p.rowError?.id === application.id ? p.rowError.text : ''}

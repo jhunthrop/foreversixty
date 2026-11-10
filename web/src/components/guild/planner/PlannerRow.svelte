@@ -11,6 +11,7 @@
   import type { RosterRow } from '../../../lib/guild/raid-roster';
   import { phoneFacts, signed, type PlannerFacts } from '../../../lib/guild/planner-facts';
   import { PLANNER_FACT_COLUMNS } from './planner-columns';
+  import AttendanceStrip from '../dense/AttendanceStrip.svelte';
   import { classTone, ROW_ITEM } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Row from '../../ui/Row.svelte';
@@ -68,6 +69,9 @@
     {#snippet lead()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
     {#snippet subContent()}
       <span class="block truncate" title={sub ?? rowSub(row, roles)}>{sub ?? rowSub(row, roles)}</span>
+      {#if facts !== null && facts.why.length > 0}<span class="text-wipe block" data-testid="raid-roster-why"
+          >{facts.why.join(', ')}</span
+        >{/if}
       {#if facts !== null}<span class="block lg:hidden" data-testid="raid-roster-facts-phone"
           >{phoneFacts(facts)}</span
         >{/if}
@@ -97,13 +101,16 @@
       {/if}
       {#if facts !== null}
         <span class="hidden {PLANNER_FACT_COLUMNS} text-[14px] lg:grid" data-testid="raid-roster-facts">
+          <span class="flex justify-end"
+            >{#if facts.cells !== null}<AttendanceStrip cells={facts.cells} />{/if}</span
+          >
           <span class="text-strong">
             {facts.itemLevel ?? '–'}{#if facts.itemLevelDelta !== null}
               <span class="text-muted ml-1 font-normal">{signed(facts.itemLevelDelta)}</span>{/if}
           </span>
           {#if facts.short === null}<span class="text-muted">–</span>
           {:else if facts.short === 0}<span class="text-kill" aria-label="Ready">✓</span>
-          {:else}<span class="text-wipe">{facts.short} short</span>{/if}
+          {:else}<span class="text-wipe" title={facts.why.join(', ')}>{facts.short} short</span>{/if}
           <span>{facts.rating ?? '–'}</span>
           <span>{facts.attendancePct === null ? '–' : `${facts.attendancePct}%`}</span>
         </span>
