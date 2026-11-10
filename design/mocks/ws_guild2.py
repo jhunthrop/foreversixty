@@ -370,16 +370,38 @@ def raid_report():
         title = Toggle(rd.pull_title(p), is_open) if p['death_causes'] else rd.pull_title(p)
         rows.append(Row(title, rd.pull_sub(p), trail=Tag(*tone[p['result']]), link=False, selected=is_open))
     deaths = Entries([(f'<b style="color:{C[d["class"]]}">{d["name"]}</b> <span class="t-small">{rd.clock(d["at_ms"])} in</span>',
-                       f'<b>{d["killing_blow"]["ability"]}</b> from {d["killing_blow"]["source"]}, 4,210 (1,050 overkill)') for d in shown['death_causes']])
+                       f'<b>{d["killing_blow"]["ability"]}</b> from {d["killing_blow"]["source"]}, {d["killing_blow"]["amount"]:,} '
+                       f'({d["killing_blow"]["overkill"]:,} overkill)') for d in shown['death_causes']])
     insp = Inspector(rd.pull_title(shown), [('Deaths', deaths)], rd.pull_title(shown), rd.pull_sub(shown))
     pulls = f'<div role="group" aria-label="Every pull of the night">{Split(Rows(rows), insp)}</div>'
     output = Rows([Row(p['name'], f'DPS &middot; rated {p["rating"]} of 100', lead=crest_img(p['class'], 24), title_color=C[p['class']],
                        trail=Figure(str(p['value']), '', 'DPS', size='sm'), link=False, selected=p['name'] == rd.VIEWER, slim=True) for p in rep['parses']], open_=True)
-    unknown = ''.join(f'<p class="t-small" style="margin-top:4px">{rd.pull_title(b)}: the log carried no character sheet, so nothing can be said.</p>' for b in rep['consumables']['by_pull'])
+    # One reason said once, naming every pull it covers (report-night-view unknownLines).
+    titles = [rd.pull_title(b) for b in rep['consumables']['by_pull']]
+    named = titles[0] if len(titles) == 1 else ', '.join(titles[:-1]) + ' and ' + titles[-1]
+    unknown = f'<p class="t-small" style="margin-top:4px">{named}: the log carried no character sheet, so nothing can be said.</p>'
+    # The officer's deaths by raider (ReportDeaths), in the night's order, never worst first.
+    def _counted(names):
+        counts = {}
+        for n in names:
+            counts[n] = counts.get(n, 0) + 1
+        return ', '.join(n if c == 1 else f'{n} &times;{c}' for n, c in sorted(counts.items(), key=lambda kv: -kv[1]))
+
+    def _count(w, k):
+        parts = ([] if w == 0 else ['1 on a wipe' if w == 1 else f'{w} on wipes']) + ([] if k == 0 else ['1 on a kill' if k == 1 else f'{k} on kills'])
+        return ' &middot; '.join(parts)
+    blows = [d for p in rep['pulls'] for d in p['death_causes']]
+    died = Rows([Row(r['name'], _counted([d['killing_blow']['ability'] for d in blows if d['character_key'] == r['character_key']]),
+                         lead=crest_img(r['class'], 24), title_color=C[r['class']], link=False,
+                         trail=f'<span style="font-size:13px">{_count(r["on_wipes"], r["on_kills"])}</span>', slim=True) for r in rep['deaths']],
+                 open_=True, list_=True)
     match = raid['match']
     logged = (f'<p class="t-small">Logged as a raid night. {Link("Open the night")}</p><div><p class="t-small">Log uploaded '
               f'{rd.local(match["uploaded_at"]):%a} {rd.local(match["uploaded_at"]).day} Dec, {rd.hour(rd.local(match["uploaded_at"]))} by {match["uploaded_by_name"]}'
-              f' &middot; matched by time</p>{Button("Not this log", small=True, act=True)}</div>')
+              f' &middot; matched by time</p>'
+              # RaidMatchLine's Not this log: a quiet underlined text button on the line under the upload.
+              '<button type="button" class="t-small" style="all:unset;display:block;font-size:13px;line-height:18px;'
+              'text-decoration:underline;cursor:pointer">Not this log</button></div>')
     fix = RowsSlim([Row(a['name'], 'Present' if a['outcome'] == 'present' else 'Out', lead=crest_img(a['class'], 24), title_color=C[a['class']],
                         trail=Select('Fix'), link=False, selected=a['own']) for a in raid['attendance']])
     att = logged + f'<p>{rd.attendance_summary(raid["night"])}</p>' + Disclosure('Fix attendance', fix)
@@ -390,7 +412,7 @@ def raid_report():
                + f'<div style="display:flex;gap:12px;padding-top:12px">{Button("Post to Discord", primary=True, small=True, act=True)}{Button("Copy for Discord", small=True, act=True)}{Live()}</div>')
     # Round 5 (lane h-edges): every section on its panel, the pulls framed and edge to edge for the Inspector.
     main = (Section('Pulls', pulls, meta=f'{len(rep["pulls"])} fights', panel=True, frame='framed', flush=True)
-            + Section('DPS and HPS', output, meta='Boss kills', panel=True) + Section('Consumables by pull', unknown, panel=True))
+            + Section('Deaths', died, meta=f'{len(rep["deaths"])} raiders', panel=True) + Section('DPS and HPS', output, meta='Boss kills', panel=True) + Section('Consumables by pull', unknown, panel=True))
     rail = Section('Attendance', att, panel=True) + Section('Loot awarded', lootr, panel=True) + Section('Discord summary', _section_body(discord))  # ReportDiscord: lane f-content's file, still open
     h = rep['headline']
     fig = Figures([(str(h['kills']), 'Kills', '', 'kill'), (str(h['wipes']), 'Wipes', '', 'wipe'), (str(h['attempts']), 'Attempts', '', ''), (str(h['deaths']), 'Deaths', '', '')])
@@ -530,9 +552,10 @@ def _ready_facts(ilvl):
     guild's median and the last export, as ui/Facts draws them (the sub line muted under the value)."""
     gap = gd.PROFILE_GAP
     sub = lambda text: f'<small class="t-small" style="display:block;font-weight:400">{text}</small>'
-    rows = [('Gear', f'{gap["upgrades"]} upgrades' + sub(f'+{gap["gain_dps"]:.1f} {gap["unit"].upper()} over what they wear')),
+    rows = [('Gear', f'{gap["upgrades"]} upgrades' + sub(f'+{gap["gain_dps"]:.1f} {gap["unit"].upper()}')),
             ('Enchants', 'All enchanted'), ('Bags', 'Flask and food'), ('Talents', 'All spent'), ('Attunement', 'Attuned'),
-            ('Item level', f'{ilvl}' + sub('The guild median')), ('Last logged', _day(gd.NOW))]
+            ('Item level', f'{ilvl}' + sub(f'Guild median {ilvl}')), ('Top fight', 'Onyxia' + sub(f'rated {gd.PROFILE_PARSE[2]} of 100')),
+            ('Last logged', _day(gd.NOW))]
     return '<dl class="gfacts">' + ''.join(f'<dt>{k}</dt><dd>{v}</dd>' for k, v in rows) + '</dl>'
 
 
@@ -550,11 +573,15 @@ def member_profile():
     att = (_grid_table(last, [_day(at) for at, _o in gd.PROFILE_NIGHTS], [(last, [mark[o] for _at, o in gd.PROFILE_NIGHTS])])
            + f'<p style="padding-top:12px;font-size:14px;line-height:22px">{gd.PROFILE_LAST_30[0]} of {"1 raid" if gd.PROFILE_LAST_30[1] == 1 else f"the last {gd.PROFILE_LAST_30[1]} raids"}</p>')
     loot = '<ul>' + ''.join(f'<li>{ItemRow(n, q, icon(ic, 32, f"q{q}"), f"Awarded {_day(at)}")}</li>' for _i, n, ic, q, at in won) + '</ul>'
-    notes = Rows([Row(body, f'{who} &middot; {_day(at)}', foot=Tag('Officers only', 'muted') + (f'<span style="margin-left:auto">{_act("Delete")}</span>' if mine else ''), link=False) for _i, body, who, at, mine in gd.PROFILE_NOTES], open_=True)
-    addn = f'<div style="padding-top:12px">{_form("Add a note", [("Add a note", "Only officers see notes")], "Save note", floor=False)}</div>'
+    # The notes panel says once that members never see them: no chip per note, no placeholder; Delete is the quiet danger button.
+    delete = Button('Delete', small=True, tone='danger').replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
+    notes = Rows([Row(body, f'{who} &middot; {_day(at)}', trail=delete if mine else '', link=False) for _i, body, who, at, mine in gd.PROFILE_NOTES], open_=True)
+    addn = f'<div style="padding-top:12px">{_form("Add a note", [("Add a note", "")], "Save note", floor=False)}</div>'
     characters = Rows([Row(n, lead=crest_img(c, 28), title_color=C[c], trail=Tag('Main', 'muted') if main else '', slim=True)
                        for n, c, main in [(name, cls, True), (*gd.PROFILE_ALT, False)]], list_=True)
-    main = (Section('Raid ready', _ready_facts(ilvl), Link('Open their character'), panel=True, frame='framed') + Section('Attendance', att, panel=True)
+    ready = Section('Raid ready', _ready_facts(ilvl), Link('Open their character'), panel=True, frame='framed')
+    ready = ready.replace('<span class="act">', f'<span class="act">{Tag("Ready", "kill")} ', 1)
+    main = (ready + Section('Attendance', att, panel=True)
             + Section('Loot this tier', loot, panel=True))
     rail = Section('Characters', characters, panel=True) + Section('Officer notes', notes + addn, meta='Private: members never see these', panel=True)
     # No "member since" (the roster carries no join date): the rank instead.

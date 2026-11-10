@@ -26,6 +26,7 @@ import {
   pullTitle,
   ratedOf,
   reportNightCopy as copy,
+  listWords,
   unknownPullLine,
 } from './report-night-copy';
 import { SEP } from './raid-copy';
@@ -249,15 +250,57 @@ export function consumablesModel(byPull: readonly RaidPullConsumables[]): Consum
       class: who.class,
       cells: byPull.map((pull) => consumableCell(pull, key)),
     }));
-  const unknown = byPull
-    .filter((pull) => pull.rows === null)
-    .map((pull) =>
-      unknownPullLine(
-        pullTitle(pull.name, pull.attempt),
-        copy.consumables.reasons[pull.reason ?? 'not_read'],
-      ),
-    );
-  return { columns: byPull.map((pull) => columnTitle(pull, bosses)), rows, unknown };
+  return { columns: byPull.map((pull) => columnTitle(pull, bosses)), rows, unknown: unknownLines(byPull) };
+}
+
+/** One line per reason the log cannot say, naming every pull it covers: "Onyxia, pull 1 and
+ *  Onyxia, pull 2: the log carried no character sheet, ...", never the same sentence twice. */
+function unknownLines(byPull: readonly RaidPullConsumables[]): string[] {
+  const titles = new Map<string, string[]>();
+  for (const pull of byPull) {
+    if (pull.rows !== null) continue;
+    const reason = copy.consumables.reasons[pull.reason ?? 'not_read'];
+    titles.set(reason, [...(titles.get(reason) ?? []), pullTitle(pull.name, pull.attempt)]);
+  }
+  return [...titles.entries()].map(([reason, names]) => unknownPullLine(listWords(names), reason));
+}
+
+export interface RaiderDeathsModel {
+  key: string;
+  name: string;
+  class: string;
+  /** "2 on wipes · 1 on a kill". */
+  count: string;
+  /** What killed them, most often first: "Deep Breath ×2, Flame Breath". */
+  causes: string;
+}
+
+/** The officer's deaths by raider, in the order the API sends them (the night's order, never worst
+ *  first): how many on wipes and kills, and what killed them across every pull. */
+export function raiderDeaths(report: RaidReport): RaiderDeathsModel[] {
+  return report.deaths.map((row) => {
+    const hits = report.pulls
+      .flatMap((pull) => pull.death_causes ?? [])
+      .filter((death) => death.character_key === row.character_key && death.killing_blow !== null)
+      .map((death) => abilityName(death.killing_blow as RaidReportHit));
+    return {
+      key: row.character_key === '' ? row.name : row.character_key,
+      name: row.name,
+      class: row.class,
+      count: copy.deaths.count(row.on_wipes, row.on_kills),
+      causes: countedNames(hits),
+    };
+  });
+}
+
+/** "Deep Breath ×2, Flame Breath": each name once, most often first, a count past one. */
+function countedNames(names: readonly string[]): string {
+  const counts = new Map<string, number>();
+  for (const name of names) counts.set(name, (counts.get(name) ?? 0) + 1);
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, n]) => (n > 1 ? `${name} ×${n}` : name))
+    .join(', ');
 }
 
 /** What the Discord post carries, as plain lines (the embed's fields in order; it names nobody

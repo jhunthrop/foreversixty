@@ -35,15 +35,24 @@ def signed_state(state: str) -> str | None:
     return None if state == 'none' else state
 
 
-def death(name: str, ability: str, at_ms: int) -> dict:
-    hit = {'at_ms': at_ms, 'spell_id': SPELL[ability], 'ability': ability, 'source': 'Onyxia', 'amount': 4210, 'overkill': 1050}
+# Each ability's killing blow and when it lands into the pull: Tail Sweep in phase 1 (behind her), Deep Breath in the air phase,
+# Flame Breath once she lands; the n-th death to one ability lands a little later and hits a little harder.
+HITS = {'Tail Sweep': (40_000, 1_160, 380), 'Deep Breath': (105_000, 4_380, 1_240), 'Flame Breath': (190_000, 3_240, 860)}
+
+
+def death(name: str, ability: str, nth: int) -> dict:
+    start, amount, overkill = HITS[ability]
+    at_ms = start + 12_000 * nth
+    hit = {'at_ms': at_ms, 'spell_id': SPELL[ability], 'ability': ability, 'source': 'Onyxia', 'amount': amount + 170 * nth,
+           'overkill': overkill + 230 * nth}
     return {**who(name), 'at_ms': at_ms, 'killing_blow': hit, 'last_hits': []}
 
 
 def pulls() -> list[dict]:
     out = []
     for index, name, attempt, result, ms, deaths in PULLS:
-        causes = [death(n, ability, 30_000 + 20_000 * i) for i, (n, ability) in enumerate(deaths)]
+        made = [death(n, ability, [a for _n, a in deaths[:i]].count(ability)) for i, (n, ability) in enumerate(deaths)]
+        causes = sorted(made, key=lambda d: d['at_ms'])
         out.append({'fight_index': index, 'encounter_id': None if attempt is None else ONYXIA, 'name': name, 'attempt': attempt,
                     'result': result, 'duration_ms': ms, 'deaths': len(deaths), 'death_causes': causes})
     return out

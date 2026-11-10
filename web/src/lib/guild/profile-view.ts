@@ -8,6 +8,7 @@ import type { GridCell, GridRowModel } from '../ui/cells';
 import type { Fact } from '../ui/facts';
 import type { GuildReadinessGearGap, GuildReadinessRow } from './api';
 import { enchantSlotLabel } from './readiness-view';
+import { ratedOf } from './report-night-copy';
 import { outputFigure, topOutputLabel } from './output-figure';
 import { dateLabel } from './raid-time';
 import { specClassName } from './spec-name';
@@ -127,7 +128,7 @@ function attunementFacts(row: GuildReadinessRow): Fact[] {
 function itemLevelFacts(row: GuildReadinessRow): Fact[] {
   if (row.item_level === null) return [];
   const delta = row.item_level_delta;
-  const sub = delta === null ? {} : { sub: copy.ready.median(delta) };
+  const sub = delta === null ? {} : { sub: copy.ready.median(row.item_level - delta) };
   return [{ id: 'ilvl', label: copy.figures.itemLevel, value: String(row.item_level), ...sub }];
 }
 
@@ -136,6 +137,23 @@ function itemLevelFacts(row: GuildReadinessRow): Fact[] {
  * attunement (officers only, when known), item level against the guild's median and the last
  * export. Null when the guild can read nothing of theirs.
  */
+/** Their top fight in Raid ready: the boss, and the fight's rating under it when the log has one. */
+function topFightFacts(profile: MemberProfile): Fact[] {
+  const parse = profile.member?.best_parse;
+  if (parse === undefined || parse === null || parse.encounter === '') return [];
+  const sub = parse.percentile === null ? {} : { sub: ratedOf(parse.percentile) };
+  return [{ id: 'fight', label: copy.ready.topFight, value: parse.encounter, ...sub }];
+}
+
+/** Raid ready's roll-up beside its heading: Ready, or how many checks they fail; null with no export. */
+export function readyTag(profile: MemberProfile): { tone: 'success' | 'warn'; text: string } | null {
+  const row = profile.readiness;
+  if (row === null) return null;
+  return row.failing === 0
+    ? { tone: 'success', text: copy.ready.ready }
+    : { tone: 'warn', text: copy.ready.toFix(row.failing) };
+}
+
 export function readyFacts(profile: MemberProfile, viewerTz: string, locale: string): Fact[] | null {
   const row = profile.readiness;
   if (row === null) return null;
@@ -151,6 +169,7 @@ export function readyFacts(profile: MemberProfile, viewerTz: string, locale: str
     talentsFact(row),
     ...attunementFacts(row),
     ...itemLevelFacts(row),
+    ...topFightFacts(profile),
     logged,
   ];
 }

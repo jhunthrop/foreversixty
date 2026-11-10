@@ -152,7 +152,7 @@ export const profileCopy = {
   },
   openCharacter: 'Open their character',
   upgrades: (n: number) => (n === 1 ? '1 upgrade' : `${n} upgrades`),
-  gain: (figure: string, unit: string) => `+${figure} ${unit} over what they wear`,
+  gain: (figure: string, unit: string) => `+${figure} ${unit}`,
   notSimChecked: (n: number) => (n === 1 ? '1 not sim-checked' : `${n} not sim-checked`),
   ready: {
     head: 'Raid ready',
@@ -173,12 +173,10 @@ export const profileCopy = {
     attunement: 'Attunement',
     attuned: 'Attuned',
     notAttuned: 'Not attuned',
-    median: (delta: number) =>
-      delta === 0
-        ? 'The guild median'
-        : delta > 0
-          ? `${delta} over the guild median`
-          : `${-delta} under the guild median`,
+    median: (median: number) => `Guild median ${median}`,
+    ready: 'Ready',
+    toFix: (n: number) => `${n} to fix`,
+    topFight: 'Top fight',
     logged: 'Last logged',
     notRead: 'Not read',
   },
@@ -196,10 +194,8 @@ export const profileCopy = {
   awarded: (day: string) => `Awarded ${day}`,
   notes: 'Officer notes',
   notesMeta: 'Private: members never see these',
-  officersOnly: 'Officers only',
   noNotes: 'No notes yet.',
   addNote: 'Add a note',
-  addNoteHint: 'Only officers see notes',
   saveNote: 'Save note',
   saving: 'Saving',
   deleteNote: 'Delete',

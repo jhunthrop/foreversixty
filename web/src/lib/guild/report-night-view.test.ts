@@ -17,6 +17,7 @@ import {
   hitModel,
   outputGroups,
   pullRows,
+  raiderDeaths,
 } from './report-night-view';
 import { reportNightCopy as copy } from './report-night-copy';
 
@@ -170,6 +171,39 @@ describe('consumablesModel', () => {
     ]);
     expect(none.rows).toEqual([]);
     expect(none.unknown).toEqual(['Onyxia, pull 1: not read from the log yet.']);
+  });
+
+  it('says one reason once, naming every pull it covers', () => {
+    const unread = (attempt: number): RaidPullConsumables => ({
+      fight_index: attempt,
+      name: 'Onyxia',
+      attempt,
+      reason: 'no_character_sheet',
+      rows: null,
+    });
+    expect(consumablesModel([unread(1), unread(2), unread(3)]).unknown).toEqual([
+      'Onyxia, pull 1, Onyxia, pull 2 and Onyxia, pull 3: the log carried no character sheet, so nothing can be said.',
+    ]);
+  });
+});
+
+describe('raiderDeaths', () => {
+  it('lists each raider who died in the API order, counted on wipes and kills, with what killed them', () => {
+    const rows = raiderDeaths(report);
+    expect(rows.map((row) => row.name)).toEqual(report.deaths.map((row) => row.name));
+    const first = report.deaths[0];
+    const model = rows[0];
+    expect(model.count).toBe(copy.deaths.count(first.on_wipes, first.on_kills));
+    const blows = report.pulls
+      .flatMap((pull) => pull.death_causes ?? [])
+      .filter((death) => death.character_key === first.character_key && death.killing_blow !== null);
+    expect(model.causes === '').toBe(blows.length === 0);
+  });
+
+  it('words the counts as a raider would', () => {
+    expect(copy.deaths.count(2, 1)).toBe('2 on wipes · 1 on a kill');
+    expect(copy.deaths.count(1, 0)).toBe('1 on a wipe');
+    expect(copy.deaths.count(0, 3)).toBe('3 on kills');
   });
 });
 

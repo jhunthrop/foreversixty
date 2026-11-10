@@ -172,9 +172,10 @@
 {/snippet}
 
 {#snippet figures(f: FunnelFigures)}
-  <span class="flex min-w-0 flex-wrap items-start gap-x-5 gap-y-2">
+  <!-- Two by two on a phone, so a link is two figure rows, not a column of four. -->
+  <span class="grid min-w-0 grid-cols-2 items-start gap-x-5 gap-y-2 max-md:flex-1 md:flex md:flex-wrap">
     {#each steps(f) as step (step.key)}
-      <span class="w-[128px]"
+      <span class="md:w-[128px]"
         ><Figure value={step.value} label={step.label} caption={step.note} size="sm" /></span
       >
     {/each}

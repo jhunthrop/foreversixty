@@ -63,11 +63,11 @@ describe('lookupDefaults', () => {
 });
 
 describe('the landing for a signed-in player', () => {
-  it('leads the rail with Your guilds, above Run a guild?', () => {
+  it('leads the rail with Your guilds and asks a guild member no Run a guild?', () => {
     const { body } = render(GuildLanding, { props: { me: ME } });
     const mine = body.indexOf('guild-landing-mine');
     expect(mine).toBeGreaterThan(body.indexOf('ui-page-rail'));
-    expect(mine).toBeLessThan(body.indexOf('guild-landing-claim'));
+    expect(body).not.toContain('guild-landing-claim');
     expect(body).toContain('>Officer<');
     expect(body).toContain('Your guilds');
     expect(body).toContain('href="/guild/us/pvp/lifecycle-test"');
@@ -99,6 +99,7 @@ describe('the foot line for a claim holder', () => {
     const { body } = render(GuildLanding, { props: { me: HOLDER } });
     expect(body).toContain("You hold The Last Watch's claim.");
     expect(body).not.toContain('Run a guild?');
-    expect(render(GuildLanding, { props: { me: ME } }).body).toContain('Run a guild?');
+    expect(render(GuildLanding, { props: { me: ME } }).body).not.toContain('Run a guild?');
+    expect(render(GuildLanding, { props: { me: { ...ME, guilds: [] } } }).body).toContain('Run a guild?');
   });
 });

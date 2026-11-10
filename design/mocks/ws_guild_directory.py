@@ -2,18 +2,21 @@
 is guild_directory_fixtures.py's, which guild_fixtures.py writes for the build. Registered in ws_guild2.all_pages().
 
 - Landing (web layout spec 2026-11-05 section 6.1): PageHeader "Guilds" with the shipped lead, then Page split. Main: Open a guild (a
-  FormRow: name Field, region and ruleset Selects side by side, one primary Button) and Top guilds (a panel, ranked link Rows with a
-  Meter against the leader). Rail: Your guilds (signed in with guilds: open link Rows, the guild's mark, its roster, the rank Tag), then Run a guild? (signed
-  out: the line and the sign-in Button).
+  FormRow: name Field, region and ruleset Selects side by side, one primary Button) and Top guilds (a panel, ranked link Rows: where,
+  the newest kill, the bosses down). Rail: Your guilds (signed in with guilds: open link Rows, the guild's mark, its roster, the rank
+  Tag); signed out, Run a guild? (the line and the sign-in Button).
 - Join: the guild's PageHeader (faction crest, the faction-colour name, the realm line), then the form measure with one Section, Your
   invite: who invited you, the character you join as (an open Row), what joining does, Join and Not now.
 - Claim (the holder's read): the back link, PageHeader "Olympus XXVII · your claim", Page split. Main: Claim (the state sentence and
   Release claim) and Next (the four Buttons, the plan-gate line). Rail: How claiming works.
 """
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 import guild_data as gd
 import guild_directory_fixtures as D
 from guild_data import ALLIANCE, C, GUILD
-from ws_prims import (Button, Emblem, Meter, Page, PageForm, PageHeader, Row, Rows, Section, Tag, build_page, crest_img, emblem)
+from ws_prims import (Button, Emblem, Page, PageForm, PageHeader, Row, Rows, Section, Tag, build_page, crest_img, emblem)
 
 _OFFICER_LINE = 'Sign in and import your character, then open the guild page and choose Claim this guild.'
 _PROSE = 'style="font-size:14px;line-height:22px"'
@@ -27,7 +30,7 @@ _CSS = ('<style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin
         '.dir-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:22px;list-style:disc}'
         '.dir-col{display:flex;flex-direction:column;align-items:flex-start;gap:16px}.dir-btns{display:flex;flex-wrap:wrap;gap:12px}'
         '.dir-place{display:flex;gap:12px}@media(max-width:767px){.dir-place>*{flex:1}.dir-place select.field{width:100%}}'
-        '.dir-trail{display:flex;align-items:center;gap:12px}.dir-trail .meter{width:96px}.dir-trail b{width:72px;text-align:right;font-weight:600;font-size:14px}'
+        '.dir-trail{display:flex;align-items:center;gap:12px}.dir-trail .meter{width:96px}.dir-trail b{text-align:right;font-weight:600;font-size:14px;white-space:nowrap}'
         '.backlink{display:inline-flex;align-items:center;min-height:44px;font-size:13px;color:var(--muted);text-decoration:underline}'
         'button.backlink{background:none;border:0;padding:0;font-family:inherit;cursor:pointer}</style>')
 
@@ -62,10 +65,16 @@ def lookup(ruleset: str) -> str:
     return Section('Open a guild', form, panel=True, frame='framed')
 
 
+def _day(iso: str) -> str:
+    """'Wed 9 Dec' in the guild's zone (raid-time dateLabel)."""
+    d = datetime.fromisoformat(iso.replace('Z', '+00:00')).astimezone(ZoneInfo(gd.ZONE))
+    return f'{d:%a} {d.day} {d:%b}'
+
+
 def top_guilds() -> str:
-    lead = D.TOP[0][3]
-    rows = [Row(n, f'{r.upper()} {D.RULESET_WORD[rs]}', rank=str(i + 1),
-                trail=f'<span class="dir-trail">{Meter(v / lead, "", f"{n}: {v} bosses" if v != 1 else f"{n}: 1 boss")}<b>{v} {"boss" if v == 1 else "bosses"}</b></span>')
+    """Ranked rows: where each guild lives and its newest kill, the bosses down at the right (no bar: the counts carry it)."""
+    rows = [Row(n, f'{r.upper()} {D.RULESET_WORD[rs]} &middot; last kill {_day(D.FOUGHT_AT[n])}', rank=str(i + 1),
+                trail=f'<span class="dir-trail"><b>{v} {"boss" if v == 1 else "bosses"} down</b></span>')
             for i, (n, r, rs, v) in enumerate(D.TOP)]
     return Section('Top guilds', f'<div role="group" aria-label="Top guilds">{Rows(rows)}</div>', panel=True)
 
@@ -78,8 +87,8 @@ def landing(signed_in: bool):
                     lead=f'<img src="{emblem(D.MINE_SEEN[n][0])}" alt="" width="28" height="28" style="width:28px;height:28px;object-fit:contain">')
                 for n, r, rs, rank in D.MINE]
         rail += Section('Your guilds', Rows(rows, open_=True), panel=True)
-    sign_in = '' if signed_in else Button('Sign in with Battle.net')
-    rail += Section('Run a guild?', f'<div class="dir-col"><p {_PROSE}>{_OFFICER_LINE}</p>{sign_in}</div>', panel=True)
+    else:  # a player already in a guild is not asked to run one
+        rail += Section('Run a guild?', f'<div class="dir-col"><p {_PROSE}>{_OFFICER_LINE}</p>{Button("Sign in with Battle.net")}</div>', panel=True)
     body = PageHeader('Guilds') + Page('split', lookup('PvP' if signed_in else 'Normal') + top_guilds(), rail, panels=True)
     who = (D.ALT[0], D.ALT[1], f'{D.ALT[1].title()} &middot; {D.ALT[2]}') if signed_in else None
     return build_page('Guilds', _view(body) + _CSS, 'Guild', who)

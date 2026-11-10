@@ -30,6 +30,7 @@ import {
   profileFigures,
   profileHead,
   readyFacts,
+  readyTag,
 } from './profile-view';
 import {
   applicationLine,
@@ -237,7 +238,7 @@ describe('the member profile', () => {
       value({ gear_gap: { upgrades: 3, gain_dps: 12.44, not_sim_checked: 1, unit: 'dps' } }, 'gear'),
     ).toMatchObject({
       value: '3 upgrades',
-      sub: '+12.4 DPS over what they wear · 1 not sim-checked',
+      sub: '+12.4 DPS · 1 not sim-checked',
     });
     expect(
       value({ gear_gap: { upgrades: 2, gain_dps: 0, not_sim_checked: 0, unit: null } }, 'gear')?.sub,
@@ -257,10 +258,24 @@ describe('the member profile', () => {
     );
     expect(value({ flask_food: null, consumables: { state: 'short' } }, 'bags')?.value).toBe('Short');
     expect(value({ talent_points_unspent: 3, talent_points_read: true }, 'talents')?.value).toBe('3 unspent');
-    expect(value({ item_level: 64, item_level_delta: -4 }, 'ilvl')?.sub).toBe('4 under the guild median');
+    expect(value({ item_level: 64, item_level_delta: -4 }, 'ilvl')?.sub).toBe('Guild median 68');
     expect(value({ attuned: false }, 'attuned')?.value).toBe('Not attuned');
     expect(value({ attuned: null }, 'attuned')).toBeUndefined();
+    expect(value({}, 'fight')).toMatchObject({ value: profile.member!.best_parse!.encounter });
     expect(readyFacts({ ...profile, readiness: null }, TZ, LOCALE)).toBeNull();
+  });
+
+  it('rolls Raid ready up to Ready or how many checks fail', () => {
+    const base = profile.readiness!;
+    expect(readyTag({ ...profile, readiness: { ...base, failing: 0 } })).toEqual({
+      tone: 'success',
+      text: 'Ready',
+    });
+    expect(readyTag({ ...profile, readiness: { ...base, failing: 2 } })).toEqual({
+      tone: 'warn',
+      text: '2 to fix',
+    });
+    expect(readyTag({ ...profile, readiness: null })).toBeNull();
   });
 
   it('lists their characters, the main first, each linked to its page', () => {

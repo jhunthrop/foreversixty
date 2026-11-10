@@ -21,6 +21,17 @@ export const reportNightCopy = {
     melee: 'Melee',
   },
   result: { kill: 'Kill', wipe: 'Wipe', clear: 'Clear' } satisfies Record<PullResult, string>,
+  deaths: {
+    head: 'Deaths',
+    meta: (n: number): string => `${n} ${n === 1 ? 'raider' : 'raiders'}`,
+    count: (wipes: number, kills: number): string =>
+      [
+        wipes === 0 ? '' : wipes === 1 ? '1 on a wipe' : `${wipes} on wipes`,
+        kills === 0 ? '' : kills === 1 ? '1 on a kill' : `${kills} on kills`,
+      ]
+        .filter((part) => part !== '')
+        .join(SEP),
+  },
   output: {
     head: 'DPS and HPS',
     meta: 'Boss kills',
@@ -96,6 +107,10 @@ export const ratedOf = (rating: number): string => `rated ${Math.round(rating)} 
 
 /** `Onyxia, pull 1: not read from the log yet.` */
 export const unknownPullLine = (title: string, reason: string): string => `${title}: ${reason}.`;
+
+/** "a, b and c": names in one sentence, no serial comma. */
+export const listWords = (names: readonly string[]): string =>
+  new Intl.ListFormat('en-GB', { type: 'conjunction' }).format(names);
 
 /** `Bench, set by Kraggor`. */
 export const fixedBy = (status: string, by: string): string => `${status}, set by ${by}`;

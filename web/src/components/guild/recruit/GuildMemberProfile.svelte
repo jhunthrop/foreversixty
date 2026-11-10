@@ -19,6 +19,7 @@
     profileFigures,
     profileHead,
     readyFacts,
+    readyTag,
   } from '../../../lib/guild/profile-view';
   import { viewerLocale } from '../../../lib/guild/raid-time';
   import { profileCopy as copy } from '../../../lib/guild/recruit-copy';
@@ -97,6 +98,7 @@
     {@const profile = p.profile}
     {@const head = profileHead(profile)}
     {@const ready = readyFacts(profile, viewerTimezone, locale)}
+    {@const readyState = readyTag(profile)}
     {@const characters = characterRows(profile)}
     {@const attendance = attendanceView(profile, viewerTimezone, locale)}
     {@const loot = lootRows(profile, viewerTimezone, locale)}
@@ -181,6 +183,9 @@
           : { label: copy.openCharacter, href: characterHref(member.region, member.ruleset, member.name) }}
         testid="guild-profile-ready"
       >
+        {#snippet head()}{#if readyState !== null}<Tag tone={readyState.tone} testid="guild-profile-ready-tag"
+              >{readyState.text}</Tag
+            >{/if}{/snippet}
         {#if ready === null}
           <p class="text-muted text-[14px]">{copy.ready.noData}</p>
         {:else}

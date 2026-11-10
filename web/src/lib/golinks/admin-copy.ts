@@ -10,8 +10,7 @@ export const adminLinksCopy = {
   notOwner: 'This page is for the site’s owner. Your account can’t see the links.',
   loadFailed: 'The links didn’t load.',
   tableTitle: 'Your links',
-  tableMeta: (count: number): string =>
-    `${count} ${count === 1 ? 'link' : 'links'} · clicks since each was made`,
+  tableMeta: (count: number): string => `${count} ${count === 1 ? 'link' : 'links'}`,
   empty: 'No links yet. Make the first one below.',
   columns: {
     link: 'Link',

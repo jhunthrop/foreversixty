@@ -198,7 +198,7 @@ test.describe('the member profile', () => {
     await expect(page.getByTestId('guild-profile-character').first()).toContainText('Zulmara');
     await expect(page.getByTestId('guild-profile-loot-row')).toContainText("Dragonstalker's Helm");
     await expect(page.getByTestId('guild-profile-note')).toHaveCount(2);
-    await expect(page.getByTestId('guild-profile-note').first()).toContainText('Officers only');
+    await expect(page.getByTestId('guild-profile-note').first()).toContainText('Kraggor');
 
     await page.getByTestId('guild-profile-note-body').fill('Swapped to Survival for Onyxia.');
     await page.getByTestId('guild-profile-note-save').click();
