@@ -1148,9 +1148,9 @@
  "copy": {
   "answerLabel": "Your character",
   "noCharacter": "No character on this account yet.",
-  "tocBarLabel": "On this page",
+  "tocBarLabel": "Jump to",
   "sources": "Sources",
-  "callout": "Your guide: Beast Mastery Hunter ›",
+  "callout": "Beast Mastery Hunter ›",
   "answer": {
    "bis": "Your best in slot",
    "sim": "Sim your character",
