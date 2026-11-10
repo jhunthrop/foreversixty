@@ -953,7 +953,7 @@ describe('shell routes with rewritten unfurl tags', () => {
     expect(response.headers.get('x-robots-tag')).toBe('noindex');
   });
 
-  it.each(['raids/42', 'recruit', 'applications', 'members/me', 'members/u%3A42'])(
+  it.each(['raids/42', 'recruit', 'applications', 'setup', 'members/me', 'members/u%3A42'])(
     'serves the guild shell at /guild/.../%s with the guild head, not indexed',
     async (view) => {
       vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);

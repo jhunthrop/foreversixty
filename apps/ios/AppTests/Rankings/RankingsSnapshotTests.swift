@@ -256,25 +256,6 @@ struct RankingsSnapshotTests {
     @Test func character_watchFailed() throws {
         snap(try page(profile(try RankingsTestData.voltaris()), items: try RankingsTestData.items(), watchFailed: true), "character-watchfailed-ios", keyWindow: true)
     }
-
-    // MARK: Home
-
-    /// Lightningbolltz, the Elemental Shaman the board places: Home's row says his ladder.
-    private static let lightningHome = HomeCharacter(
-        key: "us/normal/lightningbolltz", region: "us", ruleset: "normal", name: "Lightningbolltz", race: "troll",
-        className: "shaman", specName: "Elemental", level: 60, guild: "Hordebreakers", faction: "horde"
-    )
-
-    /// Lightningbolltz's Your gear: his Home answer's upgrades over the shaman items file, the
-    /// same dots his character page draws.
-    @Test func home_gearYours() throws {
-        let home = try HomeFixtures.home("character.home.yours")
-        let rows = GearModel.rows(home: home, gear: [:], items: try RankingsTestData.items())
-        let view = HomeCaptureFrame(title: Copy.gearTitle, large: true) {
-            GearView(rows: rows, intro: Copy.gearIntro(band: "60 · raid"), build: home.dataBuild)
-        }
-        snap(view, "home-gear-yours-ios", height: 1300)
-    }
 }
 
 /// A system menu row as captured: the title, then the glyph at the trailing edge, 44 pt.

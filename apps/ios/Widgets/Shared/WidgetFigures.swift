@@ -287,6 +287,8 @@ struct WidgetClock: Sendable {
     func dayTimeShort(_ date: Date) -> String { onTheHour(date) ? format("EEE h a", date) : dayTime(date) }
     /// `8:00 pm`
     func time(_ date: Date) -> String { format("h:mm a", date) }
+    /// `8:00 pm CST`: a raid time carries its zone (flows spec E7).
+    func zonedTime(_ date: Date) -> String { format("h:mm a zzz", date) }
     /// `Thursday 8 pm`
     func spokenDayTime(_ date: Date) -> String { onTheHour(date) ? format("EEEE h a", date) : format("EEEE h:mm a", date) }
     /// `10 Dec`

@@ -91,6 +91,12 @@ public extension View {
         }
     }
 
+    /// Leaves this view's items out of every region: a bar pinned over the content (the applicant's
+    /// Accept / Decline) that the mock draws in the page's flow after the content.
+    func parityPinned() -> some View {
+        transformPreference(ParityItemsKey.self) { $0 = [] }
+    }
+
     /// Marks the screen's content (under the navigation bar) as the space boxes are measured in.
     func parityContent() -> some View {
         coordinateSpace(.named(ParityContent.space))

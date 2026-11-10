@@ -46,19 +46,29 @@ struct NextRaidContent: Equatable {
     let guildID: Int64
     let raidID: Int64
     let characterKey: String
-    /// `Olympus XXVII · Onyxia's Lair tonight`.
-    let eyebrow: String
+    /// The card's title: `Onyxia's Lair`.
+    let zone: String
+    /// `Olympus XXVII · Wed 6 Jan, 8:00 pm CST` (no guild stores a sign-up cutoff, so there is no `answer by`).
+    let place: String
     let clock: [FSClockPart]
-    /// `Wed 6 Jan, 8:00 pm CST` (no guild stores a sign-up cutoff, so there is no `answer by`).
-    let when: String
+    /// The clock read aloud as one timer.
+    let clockLabel: String
     /// The line's title and sub (other days).
     let line: HomeLine
     let icon: String?
-    /// `You have not answered, as Thandrel, Damage`.
+    /// `You have not answered`; `..., as Thandrel, Damage` with more than one character in the guild (E7).
     let answer: String
     let selected: SignupState?
     /// Late's minutes are open under the answers.
     let lateOpen: Bool
+    /// The Raid tab's compact head (round 5): `8:00 pm CST · pull in 2 h 48 min` within a day, else the date and time.
+    var headLine: String = ""
+    /// `As Thandrel, Damage`, only with more than one character in the guild (E7).
+    var who: String?
+    /// The answer as the head's chip: `In`, `Late · 30 min`.
+    var chip: String?
+    /// How late a Late answer said it would be.
+    var lateMinutes: Int?
     let tally: [FSTally.Item]
     let ready: HomeLine?
     let officer: OfficerContent?

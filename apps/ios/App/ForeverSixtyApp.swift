@@ -13,7 +13,11 @@ struct ForeverSixtyApp: App {
         BarAppearance.install()
         CrashReporting.start(configuration: environment.configuration)
         // Lane F4: the raid notifications' categories and their In, Late and Out answers.
-        RaidNotificationCenter.shared.install(answerer: RaidPushAnswerer(calls: LiveRaidService(client: environment.client)))
+        let flows = LiveRaidFlowService(client: environment.client)
+        RaidNotificationCenter.shared.install(
+            answerer: RaidPushAnswerer(calls: LiveRaidService(client: environment.client)),
+            decline: { guild, application in (try? await flows.decline(guild: guild, application: application)) != nil }
+        )
         _environment = State(initialValue: environment)
     }
 

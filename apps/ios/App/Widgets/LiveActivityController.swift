@@ -72,7 +72,9 @@ final class LiveActivityController {
         } else if figures.liveActive, settings.raidCountdown {
             if isRunning {
                 await RaidActivities.update(id, state: state, stale: stale)
-            } else if let tokens = RaidActivities.start(RaidActivityAttributes(raid, characterName: character.name), state: state, stale: stale) {
+            } else if let tokens = RaidActivities.start(
+                RaidActivityAttributes(raid, characterName: character.name, zoneIcon: RaidIcons.of(zone: raid.zone)), state: state, stale: stale
+            ) {
                 follow(tokens, kind: "raid", objectID: id)
             }
         } else if isRunning {

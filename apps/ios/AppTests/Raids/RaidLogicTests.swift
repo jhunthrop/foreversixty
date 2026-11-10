@@ -387,12 +387,13 @@ struct RaidsTabModelTests {
         #expect(tab.state == .signedOut)
     }
 
-    @Test("a character in no guild shows No guild yet with its name")
+    @Test("a character in no guild shows the recruiting guilds for it")
     func noGuild() async throws {
         let tab = model(FakeRaidService())
         tab.currentKey = "us/pvp/yellfury"
         await tab.load()
-        #expect(tab.state == .noGuild(name: "Yellfury"))
+        guard case let .noGuild(character) = tab.state else { Issue.record("expected no guild, got \(tab.state)"); return }
+        #expect(character?.name == "Yellfury")
     }
 
     @Test("an unverified member waits for approval")
@@ -412,7 +413,7 @@ struct RaidsTabModelTests {
         guard case let .loaded(content) = tab.state else { Issue.record("not loaded"); return }
         #expect(content.planned.count == 3)
         #expect(content.waiting == 2)
-        #expect(content.head.line == "Horde · US PvP · 38 on the roster")
+        #expect(content.head.members == 38)
     }
 
     @Test("offline with a cached answer shows it under the strip; with none, the error")
@@ -522,13 +523,15 @@ struct RaidPushTests {
 @MainActor
 @Suite("Raid links")
 struct RaidRouterTests {
-    @Test("a raid link pushes the raid page; night pushes the page then the night; spec=ask presses In")
+    @Test("a raid link pushes the raid page; night pushes the page then the night; spec=ask presses In; an applicant opens its review")
     func routes() throws {
         let router = RaidsRouter()
         router.open(.raid(guild: 2, raid: 41, spec: "ask", state: nil))
         #expect(router.path == [.raid(guild: 2, raid: 41, roster: false, open: RaidOpenAction(state: .signedIn))])
         router.open(.raidNight(guild: 2, raid: 41))
         #expect(router.path == [.raid(guild: 2, raid: 41, roster: false, open: nil), .night(raid: 41)])
+        router.open(.guildApplicant(guild: 2, application: 17))
+        #expect(router.path == [.applicant(guild: 2, application: 17)])
         router.open(.guild(guild: 2))
         #expect(router.path.isEmpty)
         #expect(!RaidsRouter.handles(.plan))

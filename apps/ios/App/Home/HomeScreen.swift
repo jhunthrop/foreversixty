@@ -127,7 +127,7 @@ struct HomeTab: View {
     }
 }
 
-/// Home for one character: the answer, Your gear and the tooltip sheet.
+/// Home for one character: the answer and the item sheet.
 struct HomeCharacterScreen: View {
     let character: HomeCharacter
     /// `entitlements.server_sims`, for Sims' Server runs section (lane F5).
@@ -143,8 +143,8 @@ struct HomeCharacterScreen: View {
     @State private var store: HomeStore
     /// The time-aware Home (flows spec 4.1); nil while its calls are not wired (tests).
     @State private var flow: HomeFlowModel?
-    @State private var tooltip: ItemTooltipRequest?
-    /// Lane F12: the item page, pushed from the tooltip's `More about this item`.
+    @State private var sheet: ItemSheetRequest?
+    /// Lane F12: the item page, pushed from the sheet's `More about this item`.
     @State private var itemPage: ItemPageRoute?
     @Environment(\.searchNavigator) private var search
     @Environment(SimsRouter.self) private var simsRouter: SimsRouter?
@@ -179,6 +179,7 @@ struct HomeCharacterScreen: View {
         NavigationStack {
             HomeFlowView(content: flowContent, build: home?.dataBuild ?? "", actions: flowActions)
                 .refreshable { await flow?.refresh() }
+                .bandBar()
                 .navigationTitle("")
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationDestination(isPresented: simsShown) { sims }
@@ -193,11 +194,15 @@ struct HomeCharacterScreen: View {
             .tabRootChrome()
             .searchButton()
         }
-        .sheet(item: $tooltip) { request in
-            ItemTooltipSheet(request: request, catalog: dependencies.catalog, moreAbout: search.map { _ in {
-                tooltip = nil
-                itemPage = ItemPageRoute(itemID: request.itemID, fallback: request.fallback, classSlug: request.classSlug)
-            } })
+        .sheet(item: $sheet) { request in
+            ItemSheetScreen(
+                request: request, catalog: dependencies.catalog, needs: LiveItemNeedsSource(client: dependencies.client),
+                moreAbout: search.map { _ in {
+                    sheet = nil
+                    let item = request.tooltip
+                    itemPage = ItemPageRoute(itemID: item.itemID, fallback: item.fallback, classSlug: item.classSlug)
+                } }
+            )
         }
         .task { if let flow { await flow.load() } else { await store.load(character) } }
         .onChange(of: scenePhase) { _, phase in
@@ -229,18 +234,30 @@ struct HomeCharacterScreen: View {
 
     private var flowActions: HomeFlowActions {
         let raidTab = { open(.tab(.raid)) }
+        // Each raid action opens its screen under Raid; without the raid loaded, the tab.
+        let raidScreen = { (route: (Int64, Int64) -> RaidsRoute?) in
+            guard let guild = flow?.character.guildID, let raid = flow?.inputs.raid?.id, let screen = route(guild, raid) else {
+                raidTab()
+                return
+            }
+            open(.raid(screen))
+        }
+        let raidNight = { raidScreen { _, raid in .night(raid: raid) } }
         return HomeFlowActions(
             raid: NextRaidActions(
                 answer: { state in Task { await flow?.answer(state) } },
                 late: { minutes in Task { await flow?.late(minutes) } },
-                openRaid: raidTab, openReady: raidTab, previewMention: raidTab, openApplicants: raidTab
+                openRaid: { raidScreen { .raid(guild: $0, raid: $1, roster: false, open: nil) } },
+                openReady: raidNight,
+                previewMention: { raidScreen { .notAnswered(guild: $0, raid: $1) } },
+                openApplicants: { raidScreen { guild, _ in flow?.inputs.applicants.first.map { .applicant(guild: guild, application: $0.id) } } }
             ),
-            openRaidNight: raidTab,
+            openRaidNight: raidNight,
             openItem: { row in
-                if let home { tooltip = request(for: row.look, home: home, sourceLine: row.sourceLine, wornID: row.wornID) }
+                if let home { sheet = request(for: row.look, home: home, sourceLine: row.sourceLine, wornID: row.wornID, gain: row.gain) }
             },
             openGear: openBis,
-            openLoot: { loot in if let home { tooltip = request(for: loot.look, home: home, sourceLine: nil, wornID: nil) } },
+            openLoot: { loot in if let home { sheet = request(for: loot.look, home: home, sourceLine: nil, wornID: nil, gain: nil) } },
             openReport: { id in open(.link(.reportPage(id: id))) },
             simAgain: { simsRouter?.showsList = dependencies.sims != nil },
             openActivity: { row in
@@ -310,34 +327,12 @@ struct HomeCharacterScreen: View {
     }
 
 
-    private func request(for look: HomeItemLook, home: CharacterHome, sourceLine: String?, wornID: Int?) -> ItemTooltipRequest {
-        .forHome(look, home: home, character: character, sourceLine: sourceLine, wornID: wornID)
-    }
-}
-
-/// Your gear, with the build's items file loaded for the slots the answer does not name.
-struct GearScreen: View {
-    private static let probe = HomeItemLook(id: 0, name: nil, quality: nil, icon: nil, itemLevel: nil)
-
-    let home: CharacterHome
-    let character: HomeCharacter
-    let catalog: ItemCatalog
-    let open: (HomeItemLook, Int?) -> Void
-
-    @State private var sources: ItemTooltipSources?
-
-    var body: some View {
-        let items = sources?.items ?? [:]
-        let band = ItemTooltipModel.band(for: .forHome(Self.probe, home: home, character: character), in: sources?.bis)
-        let blocker = GearModel.offHandBlocker(home: home, gear: character.gear, items: items, band: band)
-        GearView(
-            rows: GearModel.rows(home: home, gear: character.gear, items: items, offHandBlockedBy: blocker),
-            intro: Copy.gearIntro(band: HomePresenter.bandHead(home, character: character) ?? ""),
-            build: home.dataBuild,
-            open: open
+    private func request(
+        for look: HomeItemLook, home: CharacterHome, sourceLine: String?, wornID: Int?, gain: HomeGain?
+    ) -> ItemSheetRequest {
+        ItemSheetRequest(
+            tooltip: .forHome(look, home: home, character: character, sourceLine: sourceLine, wornID: wornID),
+            gain: gain, guildID: character.guildID
         )
-        .task {
-            sources = try? await catalog.sources(for: .forHome(Self.probe, home: home, character: character))
-        }
     }
 }

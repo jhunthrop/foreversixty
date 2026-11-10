@@ -46,8 +46,9 @@ public struct PaperdollListSlot: Identifiable, Sendable {
 /// list form): under 36 pt slots the frame gives way to its one-line header strip (the medallion
 /// with the character's portrait, or the LX seal; the title; the set's DPS) and the slots in two
 /// columns on the panel. A tap on a filled slot calls `onSelect`. `icon` draws a slot's item icon
-/// (the app's `ItemIcon`), which sits in the 44 pt socket.
-public struct PaperdollHeader<Icon: View>: View {
+/// (the app's `ItemIcon`), which sits in the 44 pt socket. `lead` is the line under the strip that
+/// names the list (Gear's `60 raid · Alliance · 4 of 17 slots on the list · Change`).
+public struct PaperdollHeader<Icon: View, Lead: View>: View {
     private let title: String
     private let figure: String?
     private let unit: String
@@ -56,6 +57,7 @@ public struct PaperdollHeader<Icon: View>: View {
     private let selected: String?
     private let onSelect: ((String) -> Void)?
     private let icon: (PaperdollListSlot.Item) -> Icon
+    private let lead: Lead
 
     static var medallionSize: CGFloat { 40 }
     static var cellSize: CGFloat { 44 }
@@ -72,6 +74,7 @@ public struct PaperdollHeader<Icon: View>: View {
         slots: [PaperdollListSlot],
         selected: String? = nil,
         onSelect: ((String) -> Void)? = nil,
+        @ViewBuilder lead: () -> Lead,
         @ViewBuilder icon: @escaping (PaperdollListSlot.Item) -> Icon
     ) {
         self.title = title
@@ -82,29 +85,37 @@ public struct PaperdollHeader<Icon: View>: View {
         self.selected = selected
         self.onSelect = onSelect
         self.icon = icon
+        self.lead = lead()
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             strip
+            lead
+                .padding(.horizontal, FSSpace.space3)
+                .padding(.top, FSSpace.space3)
             list
         }
         .panel()
     }
 
     private var strip: some View {
-        HStack(spacing: 10) {
-            PaperdollMedallion(portrait: portrait, size: Self.medallionSize)
-            Text(title)
-                .font(.custom(FSFont.title, size: Self.titleSize, relativeTo: .title3))
-                .foregroundStyle(Theme.Palette.title)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isHeader)
-            Spacer(minLength: 0)
+        // At the accessibility sizes the set's figure drops under the title, so the title keeps the line.
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpace.space1))
+            : AnyLayout(HStackLayout(spacing: 10))
+        return layout {
+            HStack(spacing: 10) {
+                PaperdollMedallion(portrait: portrait, size: Self.medallionSize)
+                Text(title)
+                    .font(.custom(FSFont.title, size: Self.titleSize, relativeTo: .title3))
+                    .foregroundStyle(Theme.Palette.title)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+            }
+            if !typeSize.isAccessibilitySize { Spacer(minLength: 0) }
             if let figure {
-                (Text(figure).foregroundStyle(FSColor.strong)
-                    + Text(" " + unit).font(.custom(FSFont.bodySemibold, size: Self.figureSize * 0.66, relativeTo: .caption))
-                    .foregroundStyle(FSColor.text))
+                Text("\(Text(figure).foregroundStyle(FSColor.strong)) \(Text(unit).font(.custom(FSFont.bodySemibold, size: Self.figureSize * 0.66, relativeTo: .caption)).foregroundStyle(FSColor.text))")
                     .font(.custom(FSFont.bodySemibold, size: Self.figureSize, relativeTo: .headline))
                     .monospacedDigit()
                     .lineLimit(1)
@@ -120,15 +131,18 @@ public struct PaperdollHeader<Icon: View>: View {
         .accessibilityElement(children: .combine)
     }
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     private var list: some View {
-        LazyVGrid(
-            columns: [GridItem(.flexible(), spacing: 10, alignment: .leading), GridItem(.flexible(), alignment: .leading)],
+        let columns = typeSize.isAccessibilitySize ? 1 : 2
+        return LazyVGrid(
+            columns: Array(repeating: GridItem(.flexible(), spacing: 10, alignment: .leading), count: columns),
             alignment: .leading, spacing: 6
         ) {
             ForEach(slots) { slot in cell(slot) }
         }
-        .padding(FSSpace.space3)
         .parityRegion(.slots)
+        .padding(FSSpace.space3)
     }
 
     @ViewBuilder
@@ -166,12 +180,12 @@ public struct PaperdollHeader<Icon: View>: View {
     private func sub(_ label: String, detail: String?, gain: Bool) -> some View {
         var line = Text(label).foregroundStyle(FSColor.muted)
         if let detail {
-            line = line + Text(" · ").foregroundStyle(FSColor.muted)
+            line = line + Text("\u{00A0}· ").foregroundStyle(FSColor.muted)
                 + Text(detail).foregroundStyle(gain ? FSColor.gain : FSColor.muted).fontWeight(gain ? .bold : .regular)
         }
         return line
             .font(.custom(FSFont.body, size: 12, relativeTo: .caption))
-            .lineLimit(1)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private func socket(_ item: PaperdollListSlot.Item?, covered: Bool, selected: Bool) -> some View {
@@ -193,6 +207,24 @@ public struct PaperdollHeader<Icon: View>: View {
                     .padding(-3)
             }
         }
+    }
+}
+
+public extension PaperdollHeader where Lead == EmptyView {
+    init(
+        title: String,
+        figure: String?,
+        unit: String = "DPS",
+        portrait: UIImage?,
+        slots: [PaperdollListSlot],
+        selected: String? = nil,
+        onSelect: ((String) -> Void)? = nil,
+        @ViewBuilder icon: @escaping (PaperdollListSlot.Item) -> Icon
+    ) {
+        self.init(
+            title: title, figure: figure, unit: unit, portrait: portrait, slots: slots, selected: selected, onSelect: onSelect,
+            lead: { EmptyView() }, icon: icon
+        )
     }
 }
 

@@ -31,64 +31,6 @@ struct RaidSnapshotTests {
         )
     }
 
-    // MARK: Raids tab (F4.1, F4.13 to F4.17)
-
-    private func tab(_ state: RaidsTabState, controller: SignupController? = nil) -> some View {
-        NavigationStack {
-            RaidsTabContentView(
-                state: state, clock: RaidTime.clock, now: { RaidTime.now }, nextController: controller,
-                openRaid: { _, _ in }, openNight: { _ in }, openWeb: { _ in }, retry: {}
-            )
-            .navigationTitle(Copy.tabRaids)
-            .toolbarTitleDisplayMode(.inline)
-        }
-    }
-
-    private func loadedContent(offline: Date? = nil, planned: [RaidView]? = nil) throws -> RaidsTabContent {
-        let me = try RaidFixture.load(Me.self, "me")
-        let raids = try RaidFixture.load(GuildRaids.self, "guild.raids")
-        let character = try #require(me.mainCharacter)
-        return RaidsTabContent(
-            head: GuildHead(character: try #require(character.guild), guild: me.guilds.first),
-            character: character, planned: planned ?? raids.planned ?? [], nights: raids.rows,
-            waiting: raids.waitingForApproval, offlineSince: offline
-        )
-    }
-
-    @Test func raidsTab_loaded() throws {
-        let content = try loadedContent()
-        snap(tab(.loaded(content), controller: try makeController(content.planned.first)), "raids-tab-loaded-ios", height: 1300)
-    }
-
-    @Test func raidsTab_loaded_xl() throws {
-        let content = try loadedContent()
-        snap(tab(.loaded(content), controller: try makeController(content.planned.first)), "raids-tab-loaded-xl-ios", height: 2600, large: true)
-    }
-
-    @Test func raidsTab_noGuild() throws { snap(tab(.noGuild(name: "Yellfury")), "raids-tab-no-guild-ios") }
-
-    @Test func raidsTab_waiting() throws {
-        let me = try RaidFixture.load(Me.self, "me.waiting")
-        let character = try #require(me.mainCharacter)
-        let head = GuildHead(character: try #require(character.guild), guild: me.guilds.first)
-        snap(tab(.waiting(head: head, character: character)), "raids-tab-waiting-ios")
-    }
-
-    @Test func raidsTab_empty() throws { snap(tab(.loaded(try loadedContent(planned: []))), "raids-tab-no-raid-ios") }
-
-    @Test func raidsTab_error() throws { snap(tab(.failed), "raids-tab-error-ios") }
-
-    @Test func raidsTab_offline() throws {
-        let content = try loadedContent(offline: RaidTime.now.addingTimeInterval(-3600))
-        let controller = try makeController(content.planned.first)
-        controller.offline = true
-        snap(tab(.loaded(content), controller: controller), "raids-tab-offline-ios")
-    }
-
-    @Test func raidsTab_signedOut() throws { snap(tab(.signedOut), "raids-tab-signed-out-ios") }
-
-    @Test func raidsTab_loading() throws { snap(tab(.loading), "raids-tab-loading-ios") }
-
     // MARK: Raid page (F4.2, F4.6 to F4.12, F4.18 to F4.21)
 
     private func page(_ controller: SignupController, offline: Date? = nil) -> some View {

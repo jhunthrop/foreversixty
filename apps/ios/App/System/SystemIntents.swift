@@ -13,6 +13,8 @@ enum IntentDestination: Equatable, Sendable {
     /// Rankings on Home, on its default board.
     case rankingsBoard
     case tab(AppTab)
+    /// One of the Raid tab's screens (Not answered, an applicant, raid night), on a fresh stack.
+    case raid(RaidsRoute)
 }
 
 @MainActor

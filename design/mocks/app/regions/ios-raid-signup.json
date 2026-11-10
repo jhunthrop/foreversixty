@@ -6,34 +6,44 @@
  "regions": {
   "section-next-raid": {
    "box": [
+    14,
     16,
-    36,
-    361,
-    487
+    365,
+    197
    ],
    "inventory": {
-    "row": 1,
-    "button": 7
+    "button": 7,
+    "image": 1
    }
   },
-  "countdowns": {
+  "section-who-is-coming": {
    "box": [
-    16,
-    95,
-    361,
-    428
+    14,
+    233,
+    365,
+    247
    ],
    "inventory": {
-    "row": 1,
-    "button": 7
+    "row": 3
+   }
+  },
+  "section-before-you-pull": {
+   "box": [
+    14,
+    500,
+    365,
+    326
+   ],
+   "inventory": {
+    "row": 4
    }
   },
   "section-olympus-xxvii": {
    "box": [
-    16,
-    551,
-    361,
-    270
+    14,
+    846,
+    365,
+    288
    ],
    "inventory": {
     "row": 4

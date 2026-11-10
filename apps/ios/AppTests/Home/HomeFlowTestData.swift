@@ -4,7 +4,8 @@ import Foundation
 import Models
 
 /// The flows mocks' scenario (design/mocks/ws_app_flows.py): Thandrel, Fury Warrior 60 of Olympus
-/// XXVII; Onyxia's Lair, Wed 6 Jan, 8:00 pm CST; Felsnap, Beast Mastery Hunter 34.
+/// XXVII; Onyxia's Lair, Wed 6 Jan, 8:00 pm CST; Felsnap, Beast Mastery Hunter 34. Next upgrades are the
+/// round-5 mock's (m-ios-home): Greenhammer unlocks with the first raids, so Timbermaw Tunic is third.
 enum HomeFlowTestData {
     static let build = "1.60.1.70790"
     static let onyxia = "inv_misc_head_dragon_black"
@@ -21,8 +22,8 @@ enum HomeFlowTestData {
 
     static let raidRows = [
         item("head", "Lionheart Helm", "inv_helmet_36", source: "Head · Blacksmithing", gain: "+14.5"),
-        item("offhand", "Greenhammer", "inv_mace_1h_raidhyjalc60_d_01", source: "Off hand · Blacksmithing", gain: "+9.7"),
         item("finger", "Don Julio’s Band", "inv_jewelry_ring_35", source: "Finger · Stormpike Guard, needs revered", gain: "+6.8"),
+        item("chest", "Timbermaw Tunic", "inv_chest_fur", source: "Chest · Leatherworking", gain: "+5.3"),
     ]
 
     static let levelerRows = [
@@ -49,9 +50,10 @@ enum HomeFlowTestData {
         let answer = state.map { "You are \($0.label), \(who)" } ?? "You have not answered, \(who)"
         return NextRaidContent(
             guildID: 2, raidID: 29, characterKey: "us/normal/thandrel",
-            eyebrow: "Olympus XXVII · Onyxia’s Lair tonight",
+            zone: "Onyxia’s Lair",
+            place: "Olympus XXVII · Wed 6 Jan, 8:00 pm CST",
             clock: [FSClockPart("02", "hours"), FSClockPart("48", "min")],
-            when: "Wed 6 Jan, 8:00 pm CST",
+            clockLabel: "2 hours, 48 minutes",
             line: HomeLine(
                 title: "Onyxia’s Lair · Wed 6 Jan, 8:00 pm CST",
                 sub: state == nil ? "18 in, 3 late · you have not answered, \(who)" : answer

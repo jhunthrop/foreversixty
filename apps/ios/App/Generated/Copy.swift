@@ -1349,6 +1349,134 @@ enum Copy {
     /// Open on foreversixty.gg
     static var raidMenuWeb: String { text("raid.menu.web") }
 
+    /// Calendar
+    static var raidPagesCalendar: String { text("raid.pages.calendar") }
+
+    /// Loot history
+    static var raidPagesLoot: String { text("raid.pages.loot") }
+
+    /// Guild sims
+    static var raidPagesSims: String { text("raid.pages.sims") }
+
+    /// {n} members
+    static func raidPagesMembers(n: Int) -> String {
+        format("raid.pages.members", n)
+    }
+
+    /// {members}, {n} at 60
+    static func raidPagesMembersAtCap(members: String, n: Int) -> String {
+        format("raid.pages.membersAtCap", members, n)
+    }
+
+    /// {zone} {weekday}
+    static func raidPagesCalendarItem(zone: String, weekday: String) -> String {
+        format("raid.pages.calendarItem", zone, weekday)
+    }
+
+    /// Last raid: {n} pieces
+    static func raidPagesLootLast(n: Int) -> String {
+        format("raid.pages.lootLast", n)
+    }
+
+    /// #{position} of {of} in guild sims
+    static func raidPagesSimsRank(position: Int, of: Int) -> String {
+        format("raid.pages.simsRank", position, of)
+    }
+
+    /// No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.
+    static var raidNoRaid: String { text("raid.noRaid") }
+
+    /// Needs you
+    static var raidNeedsYou: String { text("raid.needsYou") }
+
+    /// {n} open
+    static func raidNeedsYouOpen(n: Int) -> String {
+        format("raid.needsYouOpen", n)
+    }
+
+    /// Raid night
+    static var raidNightTitle: String { text("raid.night.title") }
+
+    /// {role} {n} of {want}
+    static func raidNightRole(role: String, n: Int, want: Int) -> String {
+        format("raid.night.role", role, n, want)
+    }
+
+    /// {name} (Late, {n} min)
+    static func raidNightLateName(name: String, n: Int) -> String {
+        format("raid.night.lateName", name, n)
+    }
+
+    /// {name} (Late)
+    static func raidNightLateNameOnly(name: String) -> String {
+        format("raid.night.lateNameOnly", name)
+    }
+
+    /// Ready check
+    static var raidReadyTitle: String { text("raid.ready.title") }
+
+    /// From your last log-out, {age}
+    static func raidReadyStamp(age: String) -> String {
+        format("raid.ready.stamp", age)
+    }
+
+    /// Done
+    static var raidReadyOk: String { text("raid.ready.ok") }
+
+    /// To do
+    static var raidReadyWarn: String { text("raid.ready.warn") }
+
+    /// Missing
+    static var raidReadyMiss: String { text("raid.ready.miss") }
+
+    /// Guilds that plan their raids here
+    static var raidRecruitMeta: String { text("raid.recruit.meta") }
+
+    /// Guilds recruiting a {kind}
+    static func raidRecruitHeading(kind: String) -> String {
+        format("raid.recruit.heading", kind)
+    }
+
+    /// Guilds recruiting an {kind}
+    static func raidRecruitHeadingVowel(kind: String) -> String {
+        format("raid.recruit.headingVowel", kind)
+    }
+
+    /// Apply
+    static var raidRecruitApply: String { text("raid.recruit.apply") }
+
+    /// No guild here is recruiting your spec right now.
+    static var raidRecruitNone: String { text("raid.recruit.none") }
+
+    /// Your guild is not here?
+    static var raidClaimTitle: String { text("raid.claim.title") }
+
+    /// Claim it: a guild master or an officer confirms with the addon or Battle.net.
+    static var raidClaimLine: String { text("raid.claim.line") }
+
+    /// Claim your guild
+    static var raidClaimButton: String { text("raid.claim.button") }
+
+    /// Raids start at 60
+    static var raidLevelerTitle: String { text("raid.leveler.title") }
+
+    /// {n} levels to go
+    static func raidLevelerToGo(n: Int) -> String {
+        format("raid.leveler.toGo", n)
+    }
+
+    /// Onyxia's Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.
+    static var raidLevelerLine: String { text("raid.leveler.line") }
+
+    /// Sign up for your guild's raids from your phone.
+    static var raidOutLine: String { text("raid.out.line") }
+
+    /// This guild has no Discord bot yet. Connect it on the raid's page.
+    static var raidNaNoBot: String { text("raid.na.noBot") }
+
+    /// They were mentioned a moment ago. Try again later.
+    static var raidNaThrottled: String { text("raid.na.throttled") }
+
     /// Officer
     static var officerLabel: String { text("officer.label") }
 
@@ -2222,6 +2350,15 @@ enum Copy {
 
     /// Change
     static var notificationsChange: String { text("notifications.change") }
+
+    /// Discord
+    static var notificationsDiscord: String { text("notifications.discord") }
+
+    /// Let officers DM me on Discord
+    static var notificationsOfficerDms: String { text("notifications.officerDms") }
+
+    /// When you have not answered a raid; off, they mention you in the channel
+    static var notificationsOfficerDmsLine: String { text("notifications.officerDmsLine") }
 
     /// {n} of {total} slots on the list
     static func gearOnList(n: Int, total: Int) -> String {
@@ -6155,6 +6292,22 @@ enum Copy {
 
     /// Check your connection
     static var homeErrorLine: String { text("home.error.line") }
+
+    /// {band} raid
+    static func gearBandRaid(band: String) -> String {
+        format("gear.bandRaid", band)
+    }
+
+    /// a crafter
+    static var gearCrafterOther: String { text("gear.crafter.other") }
+
+    /// Next raid: {zone}, {when}
+    static func itemsSheetNextRaid(zone: String, when: String) -> String {
+        format("items.sheet.nextRaid", zone, when)
+    }
+
+    /// Who needs it did not load.
+    static var itemsSheetGuildFailed: String { text("items.sheet.guildFailed") }
 
     /// Get the addon and companion
     static var sharedCtaGetAddonAndCompanion: String { text("shared.cta.getAddonAndCompanion") }

@@ -4,39 +4,12 @@
   "height": 852
  },
  "regions": {
-  "head": {
-   "box": [
-    16,
-    8,
-    361,
-    94
-   ],
-   "inventory": {}
-  },
-  "head-title": {
-   "box": [
-    16,
-    24,
-    361,
-    64
-   ],
-   "inventory": {}
-  },
-  "head-meta": {
-   "box": [
-    16,
-    68,
-    247,
-    20
-   ],
-   "inventory": {}
-  },
   "section-guilds-recruiting-a-fury-warrior": {
    "box": [
+    14,
     16,
-    130,
-    361,
-    240
+    365,
+    273
    ],
    "inventory": {
     "row": 2,
@@ -45,10 +18,10 @@
   },
   "section-your-guild-is-not-here": {
    "box": [
-    16,
-    398,
-    361,
-    147
+    14,
+    309,
+    365,
+    167
    ],
    "inventory": {
     "button": 1

@@ -16,22 +16,25 @@ enum ParityCheck {
         let lane: String
     }
 
-    /// EXPECTED_DRIFT, per screen. Batch I (2026-11-10): M0's Open Sans metrics and the round-5
-    /// mocks moved these regions; the iOS screens keep their old layouts until their tab lanes.
+    /// EXPECTED_DRIFT, per screen. Lanes M1i to M5i (2026-11-10) took the restyled tabs to their
+    /// round-5 mocks; what is left is text metrics: the runner's Chromium sets Open Sans a few points
+    /// narrower than iOS, so `Main hand · Fel Ancient, Ashenvale` holds one line in the mock and wraps
+    /// on the phone, moving New for you 13 down.
     static let expectedDrift: [String: [Drift]] = [
-        "activity": batchI("M4i", ["section-this-week: y"]),
-        "home-raid-day-officer": batchI("M1i", ["section-next-upgrades: y"]),
-        "menu": batchI("M5i", menuHead + ["section-switch-character: y", "section-tools: y", "section-account: y"]),
-        "menu-one": batchI("M5i", menuHead + ["section-tools: y", "section-account: y"]),
-        "menu-low": batchI("M5i", menuHead + ["section-switch-character: y", "section-tools: y", "section-account: y"]),
+        "home-34": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "M1i")],
+        // The runner's Chromium sets a low-level row's crest inline, on the line's baseline, so each such
+        // row is 4 to 5 taller in the mock than the 48 pt row the drawer draws.
+        "menu-low": [
+            Drift(prefix: "section-tools: y", since: "2026-11-10", lane: "M5i"),
+            Drift(prefix: "section-account: y", since: "2026-11-10", lane: "M5i"),
+        ],
+        // The web system's rows set the mock's Send me 12 shorter since batch H; Notifications keeps its
+        // rows until the secondary screens' restyle.
+        "notification-settings": [
+            Drift(prefix: "section-when: y", since: "2026-11-10", lane: "secondary restyle"),
+            Drift(prefix: "section-discord: y", since: "2026-11-10", lane: "secondary restyle"),
+        ],
     ]
-
-    /// The profile menu's head: the round-5 mock's head is taller than the old iOS one.
-    private static let menuHead = ["head: height", "head-title: height", "head-meta: height"]
-
-    private static func batchI(_ lane: String, _ prefixes: [String]) -> [Drift] {
-        prefixes.map { Drift(prefix: $0, since: "2026-11-10", lane: lane) }
-    }
 
     /// Room under the content for the safe area and the screen's own bottom padding.
     static let textSlack: CGFloat = 200
