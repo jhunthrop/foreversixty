@@ -6,6 +6,7 @@
      (lib/home/raid-facts.ts). Once open, "Raids open now" and the raids. Where the plaque is wide
      (it leads a signed-in page) the three sit in a row; in the signed-out rail they stack. -->
 <script lang="ts">
+  import ZoneIcon from '../ui/ZoneIcon.svelte';
   import type { Snippet } from 'svelte';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { longDay, plaqueClock, plaqueClockLabel, plaqueCopy } from '../../lib/home/plaque';
@@ -13,7 +14,6 @@
   import { REGION } from '../../lib/ui/regions';
   import BigFigures from '../ui/BigFigures.svelte';
   import Frame from '../ui/Frame.svelte';
-  import ItemIcon from '../ui/ItemIcon.svelte';
   import HomePlaqueTitle from './HomePlaqueTitle.svelte';
 
   let {
@@ -60,7 +60,7 @@
         {#each raids as raid, index (raid.name)}
           {@const line = lines[index]}
           <li data-testid="home-raid-zone">
-            <ItemIcon icon={raid.icon} {build} size={RAID_ICON_PX} eager />
+            <ZoneIcon zone={raid.name} {build} size={RAID_ICON_PX} eager />
             <span class="min-w-0">
               <span class="home-first-raid-name">{raid.name}</span>
               {#if line}<span class="home-first-raid-line">{line}</span>{/if}

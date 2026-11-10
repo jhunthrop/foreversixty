@@ -23,6 +23,7 @@
     item,
     label = '',
     loading = false,
+    eager = false,
     onfail,
     testid,
   }: {
@@ -37,6 +38,8 @@
     label?: string;
     /** The icon table is still loading: the skeleton, not yet the socket. */
     loading?: boolean;
+    /** Above the fold: load at once instead of lazily. */
+    eager?: boolean;
     /** Called once when the image fails to load, for a caller that draws its own fallback. */
     onfail?: () => void;
     testid?: string;
@@ -72,7 +75,7 @@
         alt=""
         width={size}
         height={size}
-        loading="lazy"
+        loading={eager ? 'eager' : 'lazy'}
         decoding="async"
         class={SPELL_ICON_IMAGE}
         onerror={() => {

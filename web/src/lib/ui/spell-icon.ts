@@ -5,7 +5,7 @@
 // Items keep ui/ItemIcon, whose frame is the item's quality.
 
 /** The sizes a spell icon is drawn at, in CSS px. */
-export const SPELL_ICON_SIZES = [14, 16, 18, 20, 22, 24, 28, 32, 36, 40] as const;
+export const SPELL_ICON_SIZES = [14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 44] as const;
 export type SpellIconSize = (typeof SPELL_ICON_SIZES)[number];
 
 /** The frame: the warm line, the icon radius, the dark socket behind the art. */
