@@ -208,8 +208,8 @@ test.describe('zero logs', () => {
     expect(band.split('is level 52.').length - 1).toBe(1);
     await expect(page.getByTestId('guild-standing-rank')).toHaveCount(0);
     await expect(page.getByTestId('guild-overview-needs')).toHaveCount(0);
-    // Progression is the Last raid section's one line (web layout spec 7.1).
-    await expect(lastRaidLine(page, 'No boss down this tier yet.')).toBeVisible();
+    // A member's Last raid is the guild's last night (guild dense spec 5.2); the tier count is Progression's.
+    await expect(lastRaidLine(page, 'No raid logged yet.')).toBeVisible();
     await capture(page, 'overview-raider-52');
 
     await page.getByRole('tab', { name: 'Progression' }).click();
@@ -259,8 +259,10 @@ test.describe('after a kill', () => {
     await expect(page.getByTestId('guild-overview-tab')).toBeVisible();
     await expect(page.getByTestId('guild-overview-card-week-one')).toHaveCount(0);
     const { down, named_encounters: named } = progression.tier;
-    // The band is one line (batch 3): the region and ruleset, then the raiders; the tier's counts are the Last raid's.
-    await expect(lastRaidLine(page, `${down} of ${named} named bosses down: Onyxia.`)).toBeVisible();
+    // The band is one line (batch 3): the region and ruleset, then the raiders. A member's Last raid is
+    // the guild's last night (guild dense spec 5.2); the tier's counts are Progression's.
+    await expect(page.getByTestId('guild-overview-last-raid')).toBeVisible();
+    await expect(page.getByTestId('guild-overview-last-raid')).not.toContainText('NaN');
     await capture(page, 'overview-after-kill');
 
     await page.getByRole('tab', { name: 'Progression' }).click();
@@ -292,7 +294,7 @@ test.describe('readiness', () => {
     await expect(page.getByTestId(`guild-readiness-nudge-${low.character_key}`)).toHaveCount(0);
 
     const healerRow = page.getByTestId(`guild-readiness-row-${healer.character_key}`);
-    await expect(healerRow).toContainText('4 upgrades');
+    await expect(healerRow).toContainText('1 talent point unspent');
     await expect(healerRow).not.toContainText('DPS');
     await capture(page, 'readiness-mixed');
   });
