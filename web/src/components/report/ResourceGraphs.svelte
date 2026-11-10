@@ -16,16 +16,12 @@
   import { clearChartCursor, cursorMsFor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clockLabel } from '../../lib/chart/time-axis';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
-  import {
-    classColorVar,
-    formatAmount,
-    formatDuration,
-    formatPercent,
-    wholeFightMark,
-  } from '../../lib/report/format';
+  import { classColorVar, wholeFightMark } from '../../lib/report/format';
   import type { ResourceTrack } from '../../lib/report/types';
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
+import { clockDuration } from '../../lib/format/duration';
+import { compact, percent } from '../../lib/format/number';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Section from '../ui/Section.svelte';
   import Spark from '../ui/Spark.svelte';
@@ -63,7 +59,7 @@
     if (cursorMs === null) return null;
     const index = Math.floor((cursorMs - windowStartMs) / 1000);
     if (index < 0 || index >= series.length) return null;
-    return `at ${clockLabel(cursorMs)} · ${formatAmount(series[index] ?? 0)}`;
+    return `at ${clockLabel(cursorMs)} · ${compact(series[index] ?? 0)}`;
   }
   /**
    * What the at-cap share is a share of. The figure has always been the window's own --
@@ -91,7 +87,7 @@
     );
     readouts = {
       ...readouts,
-      [key]: `at ${clockLabel(windowStartMs + index * 1000)} · ${formatAmount(series[index] ?? 0)}`,
+      [key]: `at ${clockLabel(windowStartMs + index * 1000)} · ${compact(series[index] ?? 0)}`,
     };
     if (syncKey !== '') setChartCursor({ syncKey, ms: windowStartMs + index * 1000, owner });
   }
@@ -202,13 +198,13 @@
   ];
   function figuresOf(track: ResourceTrack): StatFigure[] {
     return [
-      { value: `${mark}${formatAmount(track.gained)}` },
-      { value: `${mark}${formatAmount(track.spent)}` },
+      { value: `${mark}${compact(track.gained)}` },
+      { value: `${mark}${compact(track.spent)}` },
       track.wasted === undefined
         ? { value: '–', muted: true }
-        : { value: `${mark}${formatAmount(track.wasted)}` },
+        : { value: `${mark}${compact(track.wasted)}` },
       {
-        value: `${mark}${track.zero_ms === 0 ? '0:00' : formatDuration(track.zero_ms)}`,
+        value: `${mark}${track.zero_ms === 0 ? '0:00' : clockDuration(track.zero_ms)}`,
         testid: 'resource-zero',
       },
     ];
@@ -249,7 +245,7 @@
           {@const reading = readouts[key] ?? atCursor(track.series)}
           <StatRow
             figures={figuresOf(track)}
-            phone={`${formatAmount(track.spent)} spent`}
+            phone={`${compact(track.spent)} spent`}
             testid={`resource-${track.guid}-${track.power_type}`}
           >
             {#snippet icon()}<ClassCrestRing
@@ -264,24 +260,24 @@
                 >{#if track.series.length === 0}{SEPARATOR}<span
                     >No per-second reading or cap for a simulated fight; these are the fight's own totals.</span
                   ><span class="ui-st-phone" data-testid="resource-totals-only"
-                    >{SEPARATOR}gained {formatAmount(track.gained)}{SEPARATOR}spent {formatAmount(
+                    >{SEPARATOR}gained {compact(track.gained)}{SEPARATOR}spent {compact(
                       track.spent,
-                    )}{#if (track.wasted ?? 0) > 0}{`${SEPARATOR}wasted ${formatAmount(track.wasted ?? 0)}`}{/if}</span
+                    )}{#if (track.wasted ?? 0) > 0}{`${SEPARATOR}wasted ${compact(track.wasted ?? 0)}`}{/if}</span
                   >{:else}{SEPARATOR}<span data-testid={hasCap(track) ? 'resource-cap-figures' : undefined}
                     ><span class="whitespace-nowrap" title="The top of the line"
-                      >peak {formatAmount(peak)}</span
+                      >peak {compact(peak)}</span
                     >{SEPARATOR}<span
                       class="whitespace-nowrap"
                       title="The lowest point and when it was reached"
                       data-testid="resource-low"
-                      >low {formatAmount(lowest.value)} at {formatDuration(lowest.atMs)}</span
+                      >low {compact(lowest.value)} at {clockDuration(lowest.atMs)}</span
                     >{#if hasCap(track)}{SEPARATOR}<span
                         class="whitespace-nowrap"
                         title="The share of this window the bar spent full, measured from the window's own seconds"
                         data-testid="resource-at-cap"
-                        >at cap {formatPercent(atCapPct(track.at_max_ms ?? 0))} of the {capSpan}</span
+                        >at cap {percent(atCapPct(track.at_max_ms ?? 0))} of the {capSpan}</span
                       >{SEPARATOR}<span class="whitespace-nowrap"
-                        >{mark}wasted {formatAmount(track.wasted ?? 0)}</span
+                        >{mark}wasted {compact(track.wasted ?? 0)}</span
                       >{/if}</span
                   >{/if}
               </div>
@@ -351,7 +347,7 @@
   </div>
   {#if rows.length > 0 && windowed}
     <div class="text-muted flex flex-col gap-1 px-5 pt-3 pb-4 text-[13px] leading-[18px]">
-      <p>Fight length in this window: <span class="tabular-nums">{formatDuration(durationMs)}</span>.</p>
+      <p>Fight length in this window: <span class="tabular-nums">{clockDuration(durationMs)}</span>.</p>
       <p data-testid="resource-wholefight-note">
         Gained, spent, wasted and time empty are marked {mark} because the summary tracks them for the whole fight
         only; the line, the cap and the time at the cap are this window's own.

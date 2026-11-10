@@ -4,7 +4,7 @@
 // the consumables-by-pull grid and the Discord summary's preview. Every number is the API's; a
 // member's report already carries only their own deaths, output and consumables, so nothing here
 // ranks or filters other raiders. Strings come from report-night-copy.ts.
-import { formatAmount } from '../report/format';
+import { compact } from '../format/number';
 import type { CellTone, GridCell, GridRowModel } from '../ui/cells';
 import type {
   PullResult,
@@ -130,7 +130,7 @@ export function hitModel(hit: RaidReportHit): HitModel {
     spellId: hit.spell_id === MELEE_SPELL_ID ? null : hit.spell_id,
     source: hit.source,
     clock: killTimeLabel(hit.at_ms),
-    amount: hitAmount(formatAmount(hit.amount), hit.overkill > 0 ? formatAmount(hit.overkill) : null),
+    amount: hitAmount(compact(hit.amount), hit.overkill > 0 ? compact(hit.overkill) : null),
   };
 }
 

@@ -8,7 +8,7 @@
   import { splitUnitName } from '../../lib/characters';
   import { clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clockLabel, timeTicks } from '../../lib/chart/time-axis';
-  import { formatDuration } from '../../lib/report/format';
+  import { clockDuration } from '../../lib/format/duration';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
   import Section from '../ui/Section.svelte';
   import { isRaidCooldown } from '../../lib/report/raid-cooldowns';
@@ -107,7 +107,7 @@
       .filter((use) => Math.abs(use.at - at) <= span / 40 || (use.at <= at && at <= use.end))
       .sort((a, b) => Math.abs(a.at - at) - Math.abs(b.at - at))[0];
     // On the night, every time is read on the pull's own clock, like the pull's own lane.
-    const clock = (ms: number): string => formatDuration(ms - (pull?.start_ms ?? 0));
+    const clock = (ms: number): string => clockDuration(ms - (pull?.start_ms ?? 0));
     const use =
       near === undefined || row === undefined
         ? ''
@@ -213,7 +213,7 @@
               <span
                 class="bg-gold absolute top-0 h-full opacity-80"
                 style={`left: ${pct(use.at)}%; width: ${Math.max(pct(use.end) - pct(use.at), 0.4)}%`}
-                title={`${formatDuration(use.at)}${use.source ? ` · ${splitUnitName(use.source).name}` : ''} on ${splitUnitName(use.target).name}`}
+                title={`${clockDuration(use.at)}${use.source ? ` · ${splitUnitName(use.source).name}` : ''} on ${splitUnitName(use.target).name}`}
               ></span>
             {/each}
             <!-- After the use blocks, so a busy lane's gold never paints over the wipe edge. -->
@@ -228,7 +228,7 @@
               <span
                 class="border-death absolute top-0 h-full border-l border-dashed"
                 style={`left: ${pct(death.at_ms)}%`}
-                title={`${splitUnitName(death.name).name} died at ${formatDuration(death.at_ms)}`}
+                title={`${splitUnitName(death.name).name} died at ${clockDuration(death.at_ms)}`}
                 aria-hidden="true"
               ></span>
             {/each}
@@ -257,7 +257,7 @@
             <span
               class="text-death absolute top-3 hidden -translate-x-1/2 md:inline"
               style={`left: ${pct(death.at_ms)}%`}
-              title={`${splitUnitName(death.name).name} died at ${formatDuration(death.at_ms)}`}>†</span
+              title={`${splitUnitName(death.name).name} died at ${clockDuration(death.at_ms)}`}>†</span
             >
           {/each}
         </span>

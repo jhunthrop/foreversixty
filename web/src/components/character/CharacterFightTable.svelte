@@ -17,10 +17,11 @@
   import { specName } from '../../lib/guild/spec-name';
   import type { CharacterFight } from '../../lib/rankings/api';
   import { RANKING_METRICS } from '../../lib/rankings/url';
-  import { formatAmount, percentileToken, rowLink } from '../../lib/report/format';
+  import { percentileToken, rowLink } from '../../lib/report/format';
   import { executionHref, executionLabel, executionTitle } from '../../lib/sim/execution';
   import { ROW_ITEM } from '../../lib/ui/primitives';
   import { ROW_BAND_MARK, ROW_BAND_REACH, ROW_BAND_TARGET, ROW_RULE } from '../../lib/ui/row';
+import { compact } from '../../lib/format/number';
 
   let {
     title,
@@ -174,9 +175,9 @@
         <a
           class="{rowLink} numeric justify-end text-right"
           href={`/reports/${row.report_id}?fight=${row.fight_index}`}
-          aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
+          aria-label={`${compact(Math.round(row.value))} ${metricLabel(row.metric)}`}
         >
-          {formatAmount(Math.round(row.value))}
+          {compact(Math.round(row.value))}
         </a>
         <span
           class="text-muted numeric hidden text-[13px] md:ml-2 md:inline"

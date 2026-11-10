@@ -7,7 +7,7 @@
      `loading` and `error` hold the section's height so the page does not shift. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import {
     levelSpread,
     levelTally,

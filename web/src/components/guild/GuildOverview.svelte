@@ -15,7 +15,7 @@
   } from '../../lib/guild/api';
   import { fetchGuildProgression, fetchGuildRaids } from '../../lib/guild/api';
   import { guildRaidHref } from '../../lib/characters';
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import {
     fetchMyChecklist,
     fetchOfficerActions,

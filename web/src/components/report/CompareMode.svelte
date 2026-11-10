@@ -33,13 +33,7 @@
     type CompareMetric,
   } from '../../lib/report/compare';
   import { splitUnitName } from '../../lib/characters';
-  import {
-    classColorVar,
-    formatAmount,
-    formatDuration,
-    joinFacts,
-    outcomeLabel,
-  } from '../../lib/report/format';
+  import { classColorVar, joinFacts, outcomeLabel } from '../../lib/report/format';
   import { fetchSummary } from '../../lib/report/load';
   import type { FightEntry, RosterRow, Summary } from '../../lib/report/types';
   import { clampWindow, scopeSummary, type TimeWindow } from '../../lib/report/window';
@@ -49,6 +43,8 @@
   import { classOption } from '../../lib/ui/select-options';
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
+import { clockDuration } from '../../lib/format/duration';
+import { compact } from '../../lib/format/number';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Notice from '../ui/Notice.svelte';
   import Section from '../ui/Section.svelte';
@@ -122,7 +118,7 @@
     return {
       value: String(fight.index),
       label: `${fight.name}${pull === '' ? '' : ` · ${pull}`}`,
-      description: joinFacts(outcomeLabel(fight), formatDuration(fight.duration_ms)),
+      description: joinFacts(outcomeLabel(fight), clockDuration(fight.duration_ms)),
       group,
     };
   }
@@ -219,7 +215,7 @@
   const mark = $derived(threatScaled ? '~' : '');
   /** A difference as sign, mark, magnitude: "+~13,550" and "−~26,473" read the same way round. */
   const signed = (value: number): string =>
-    `${value >= 0 ? '+' : '−'}${mark}${formatAmount(Math.abs(value))}`;
+    `${value >= 0 ? '+' : '−'}${mark}${compact(Math.abs(value))}`;
   /** A player's figure for the picked metric: off the roster row, or the threat table. */
   function rowMetric(row: RosterRow, summary: Summary): number {
     // A window past the shorter pull's end scopes that pull to nothing: no seconds and
@@ -237,8 +233,8 @@
     if (fight === null) return '';
     const stretch =
       own === null
-        ? formatDuration(fight.duration_ms)
-        : `${formatDuration(own.startMs)} to ${formatDuration(Math.min(own.endMs, fight.duration_ms))} of ${formatDuration(fight.duration_ms)}`;
+        ? clockDuration(fight.duration_ms)
+        : `${clockDuration(own.startMs)} to ${clockDuration(Math.min(own.endMs, fight.duration_ms))} of ${clockDuration(fight.duration_ms)}`;
     return joinFacts(fight.name, stretch, outcomeLabel(fight).toLowerCase());
   }
 
@@ -373,7 +369,7 @@
   const splitMark = $derived(splitScaled ? '~' : '');
   /** A signed difference in the ability table, marked when the split it came from was scaled. */
   const splitSigned = (value: number): string =>
-    `${value >= 0 ? '+' : '−'}${splitMark}${formatAmount(Math.abs(value))}`;
+    `${value >= 0 ? '+' : '−'}${splitMark}${compact(Math.abs(value))}`;
 
   /** An ability diff as lines, in the same shape as every other table's CSV. */
   function abilityCsv(rows: AbilityDiff[], aHead: string, bHead: string): string[][] {
@@ -413,7 +409,7 @@
   const rightHead = $derived(
     rightFight === null
       ? reportCopy.compareWith
-      : joinFacts(rightFight.name, formatDuration(rightFight.duration_ms)),
+      : joinFacts(rightFight.name, clockDuration(rightFight.duration_ms)),
   );
   const playerColumns = $derived<StatColumn[]>(
     versusPlayer
@@ -429,11 +425,11 @@
         ],
   );
   function lineFigures(line: Line, deltaTestid: string): StatFigure[] {
-    if (!line.inB) return [{ value: mark + formatAmount(line.a) }, DASH_FIGURE, DASH_FIGURE];
+    if (!line.inB) return [{ value: mark + compact(line.a) }, DASH_FIGURE, DASH_FIGURE];
     const delta = line.a - line.b;
     return [
-      { value: mark + formatAmount(line.a) },
-      { value: mark + formatAmount(line.b), muted: true },
+      { value: mark + compact(line.a) },
+      { value: mark + compact(line.b), muted: true },
       { value: signed(delta), tone: toneOf(delta), testid: deltaTestid },
     ];
   }
@@ -444,8 +440,8 @@
   ];
   function abilityFigures(row: AbilityDiff): StatFigure[] {
     return [
-      row.a === null ? DASH_FIGURE : { value: splitMark + formatAmount(row.a) },
-      row.b === null ? DASH_FIGURE : { value: splitMark + formatAmount(row.b), muted: true },
+      row.a === null ? DASH_FIGURE : { value: splitMark + compact(row.a) },
+      row.b === null ? DASH_FIGURE : { value: splitMark + compact(row.b), muted: true },
       { value: splitSigned(row.delta), tone: toneOf(row.delta), testid: 'ability-delta' },
     ];
   }
@@ -509,7 +505,7 @@
   <StatRow
     figures={lineFigures(line, deltaTestid)}
     bar={false}
-    phone={line.inB ? `${mark}${formatAmount(line.b)} · ${signed(line.a - line.b)}` : DASH}
+    phone={line.inB ? `${mark}${compact(line.b)} · ${signed(line.a - line.b)}` : DASH}
     testid={rowTestid}
   >
     {#snippet icon()}<ClassCrestRing characterClass={classSlugOf(line.class) ?? ''} size={28} />{/snippet}
@@ -517,8 +513,8 @@
       >{/snippet}
     {#snippet sub()}
       {#if versusPlayer}
-        <span>{mark}{formatAmount(line.a)} in this pull</span> ·
-        <span>{mark}{formatAmount(line.b)} for {playerName(line.guid === basePlayer ? vs : basePlayer)}</span>
+        <span>{mark}{compact(line.a)} in this pull</span> ·
+        <span>{mark}{compact(line.b)} for {playerName(line.guid === basePlayer ? vs : basePlayer)}</span>
         ·
       {/if}
       {@render abilitiesToggle(line)}
@@ -647,7 +643,7 @@
           {playerName(basePlayer)} against
           {playerName(vs)}, in this pull{window === null
             ? ''
-            : `'s ${formatDuration(window.startMs)} to ${formatDuration(window.endMs)}`}.
+            : `'s ${clockDuration(window.startMs)} to ${clockDuration(window.endMs)}`}.
         </p>
         <h3 class="text-strong pt-2 text-[15px] font-bold">
           {playerName(basePlayer)} against {playerName(vs)}, ability by ability
@@ -664,15 +660,15 @@
       {/if}
       <p class="text-muted text-[13px]" data-testid="compare-scope">
         {#if phase !== ''}
-          Each side shows its own {phase}: {formatDuration(leftWindow?.startMs ?? 0)} to {formatDuration(
+          Each side shows its own {phase}: {clockDuration(leftWindow?.startMs ?? 0)} to {clockDuration(
             leftWindow?.endMs ?? 0,
-          )} of this pull against {formatDuration(rightWindow?.startMs ?? 0)} to {formatDuration(
+          )} of this pull against {clockDuration(rightWindow?.startMs ?? 0)} to {clockDuration(
             rightWindow?.endMs ?? 0,
           )} of the other, so a long phase and a short one are read phase against phase.
         {:else if window === null}
           Both sides show the whole fight. Set a Window above to compare the same stretch of each pull.
         {:else}
-          Both sides show {formatDuration(window.startMs)} to {formatDuration(window.endMs)} of each fight, so a
+          Both sides show {clockDuration(window.startMs)} to {clockDuration(window.endMs)} of each fight, so a
           long wipe and a short one are read over the same stretch. Clear the Window above to compare whole fights.
         {/if}
       </p>

@@ -7,7 +7,7 @@
      (it leads a signed-in page) the three sit in a row; in the signed-out rail they stack. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { longDay, plaqueClock, plaqueClockLabel, plaqueCopy } from '../../lib/home/plaque';
   import { raidLines, type RaidFact } from '../../lib/home/raid-facts';
   import { REGION } from '../../lib/ui/regions';

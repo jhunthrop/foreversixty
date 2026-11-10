@@ -10,10 +10,12 @@
 <script lang="ts">
   import { unitLabel } from '../../lib/report/names.svelte';
   import { specCell, type UnitClass } from '../../lib/report/roster-class';
-  import { classColorVar, formatAmount, formatDuration, formatPercent } from '../../lib/report/format';
+  import { classColorVar } from '../../lib/report/format';
   import { formatRate } from '../../lib/report/frame';
   import type { Night, NightBoss, NightPlayer } from '../../lib/report/night';
   import type { StatFigure } from '../../lib/ui/stat-table';
+import { clockDuration } from '../../lib/format/duration';
+import { compact, percent } from '../../lib/format/number';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
@@ -79,12 +81,12 @@
   function playerFigures(player: NightPlayer): StatFigure[] {
     return [
       { value: String(player.fights) },
-      { value: formatAmount(player.damage_done) },
+      { value: compact(player.damage_done) },
       { value: formatRate(player.dps) },
-      { value: formatAmount(player.healing_done) },
+      { value: compact(player.healing_done) },
       { value: formatRate(player.hps) },
-      { value: formatAmount(player.damage_taken) },
-      { value: formatPercent(player.activity_pct) },
+      { value: compact(player.damage_taken) },
+      { value: percent(player.activity_pct) },
       { value: String(player.deaths), muted: player.deaths === 0 },
     ];
   }
@@ -93,12 +95,12 @@
       { value: String(boss.pulls) },
       { value: String(boss.kills), muted: boss.kills === 0 },
       { value: String(boss.wipes), muted: boss.wipes === 0 },
-      { value: formatDuration(boss.time_ms) },
+      { value: clockDuration(boss.time_ms) },
       { value: String(boss.deaths), muted: boss.deaths === 0 },
     ];
   }
   function bossSub(boss: NightBoss): string {
-    if (boss.best) return `Best kill ${formatDuration(boss.best.duration_ms)}`;
+    if (boss.best) return `Best kill ${clockDuration(boss.best.duration_ms)}`;
     if (boss.lowest_wipe_pct !== undefined) return `Best wipe ${Math.round(boss.lowest_wipe_pct)}%`;
     return 'No kill';
   }

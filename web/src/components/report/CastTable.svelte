@@ -14,12 +14,13 @@
      silently the whole fight's total -- the `†` mark SummaryTab's Active column uses. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { approximateMark, classColorVar, formatDuration, wholeFightMark } from '../../lib/report/format';
+  import { approximateMark, classColorVar, wholeFightMark } from '../../lib/report/format';
   import type { CastRow } from '../../lib/report/types';
   import { castKey } from '../../lib/report/cast-key';
   import type { CastCounts } from '../../lib/report/exact';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
+import { clockDuration } from '../../lib/format/duration';
   import Section from '../ui/Section.svelte';
   import Spark from '../ui/Spark.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -193,7 +194,7 @@
   const castTimeMark = $derived(wholeFightMark(approximate));
 
   function castTimeText(ms: number): string {
-    return ms === 0 ? 'instant' : formatDuration(ms);
+    return ms === 0 ? 'instant' : clockDuration(ms);
   }
 
   const icons = new SpellIcons();
@@ -212,7 +213,7 @@
   const SEPARATOR = ' · ';
 </script>
 
-<Section title="Casts" meta={`Every caster, ${formatDuration(durationMs)}`} testid="cast-section" panel flush>
+<Section title="Casts" meta={`Every caster, ${clockDuration(durationMs)}`} testid="cast-section" panel flush>
   {#snippet head()}{#if ordered.length > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
   <div>
     {#if ordered.length === 0}
@@ -267,8 +268,8 @@
           <span class="tabular-nums">{rhythm.casts}</span>
           casts{#if cancelledTotal > 0 && !scaled}{SEPARATOR}<span class="tabular-nums">{cancelledTotal}</span
             > cancelled{/if}{SEPARATOR}<span class="tabular-nums">{perMinute(rhythm.casts)}</span> a minute{SEPARATOR}longest
-          gap <span class="tabular-nums">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
-          <span class="tabular-nums">{formatDuration(rhythm.gap.from)}</span>
+          gap <span class="tabular-nums">{clockDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
+          <span class="tabular-nums">{clockDuration(rhythm.gap.from)}</span>
         </p>
       {/if}
       {#if scaled}

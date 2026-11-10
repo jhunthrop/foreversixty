@@ -54,7 +54,7 @@
 <script lang="ts">
   import { viewerLocale } from '../../lib/guild/raid-time';
   import { tick } from 'svelte';
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { guildRaidHref } from '../../lib/characters';
   import type { GuildRaidRole, GuildSignupState } from '../../lib/guild/api';
   import { bandClause, bandLineParts, kindCountsRoles, kindOf, whenPhrase } from '../../lib/guild/raid-copy';

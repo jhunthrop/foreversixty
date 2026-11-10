@@ -14,7 +14,7 @@
 // deliberate trade: every table rescopes in under a frame with no network, and the one
 // question that needs precision says so.
 import { splitUnitName } from '../characters';
-import { formatDuration } from './format';
+import { clockDuration } from '../format/duration';
 import type {
   Actor,
   AuraTrack,
@@ -67,8 +67,8 @@ export function isFullWindow(window: TimeWindow, durationMs: number): boolean {
  */
 export function windowSummaryLabel(window: TimeWindow, durationMs: number): string {
   return isFullWindow(window, durationMs)
-    ? `Whole fight · ${formatDuration(durationMs)}`
-    : `${formatDuration(window.startMs)} to ${formatDuration(window.endMs)}`;
+    ? `Whole fight · ${clockDuration(durationMs)}`
+    : `${clockDuration(window.startMs)} to ${clockDuration(window.endMs)}`;
 }
 
 /** The URL's start and end, clamped; a window that covers the fight is the whole fight. */
@@ -381,7 +381,7 @@ export function windowPresets(summary: Summary, wholeDurationMs = summary.durati
   ];
   for (const phase of summary.phases ?? []) {
     presets.push({
-      label: `${phase.name} · ${formatDuration(phase.start_ms)} to ${formatDuration(phase.end_ms)}`,
+      label: `${phase.name} · ${clockDuration(phase.start_ms)} to ${clockDuration(phase.end_ms)}`,
       window: clampWindow({ startMs: phase.start_ms, endMs: phase.end_ms }, wholeDurationMs),
     });
   }
@@ -389,7 +389,7 @@ export function windowPresets(summary: Summary, wholeDurationMs = summary.durati
     presets.push({
       // The time is part of the label: one player can die twice in a fight (a battle
       // rez), and two chips reading "Before Thalgrit died" leave the reader guessing.
-      label: `20s before ${splitUnitName(death.name).name} died · ${formatDuration(death.at_ms)}`,
+      label: `20s before ${splitUnitName(death.name).name} died · ${clockDuration(death.at_ms)}`,
       window: deathWindow(death.at_ms, duration),
     });
   }

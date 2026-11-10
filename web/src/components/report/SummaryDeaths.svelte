@@ -5,8 +5,10 @@
      link. Nobody died: one short line. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
+  import { classColorVar } from '../../lib/report/format';
   import type { Summary } from '../../lib/report/types';
+import { clockDuration } from '../../lib/format/duration';
+import { compact } from '../../lib/format/number';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import ClassIcon from './ClassIcon.svelte';
@@ -27,7 +29,7 @@
         : blow.spell_name === ''
           ? 'Melee'
           : blow.spell_name;
-    return `${spell} · ${splitUnitName(blow.source_name).name} · ${formatAmount(blow.amount)}`;
+    return `${spell} · ${splitUnitName(blow.source_name).name} · ${compact(blow.amount)}`;
   }
 </script>
 
@@ -43,7 +45,7 @@
     {#each deaths as death, i (`${death.guid}-${death.at_ms}-${i}`)}
       <Row title={splitUnitName(death.name).name} sub={cause(death)} open density="slim">
         {#snippet lead()}<span class="text-muted w-9 text-right text-[13px] tabular-nums"
-            >{formatDuration(death.at_ms)}</span
+            >{clockDuration(death.at_ms)}</span
           ><ClassIcon className={death.class} size={24} />{/snippet}
         {#snippet titleContent()}<span style:color={classColorVar(death.class)}
             >{splitUnitName(death.name).name}</span

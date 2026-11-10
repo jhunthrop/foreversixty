@@ -5,7 +5,7 @@
      not a verified member gets the band and the not-visible line. GuildShell loads this file
      as its own chunk; lib/guild/raid-page-controller.svelte.ts owns the data and the 10 s poll. -->
 <script lang="ts">
-  import { minuteClock } from '../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../lib/ui/minute-clock.svelte';
   import { viewerLocale } from '../lib/guild/raid-time';
   import { untrack } from 'svelte';
   import { guildClaimHref, guildHref, guildSettingsHref } from '../lib/characters';

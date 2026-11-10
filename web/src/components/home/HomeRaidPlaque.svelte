@@ -7,7 +7,7 @@
 <script lang="ts">
   import type { GuildRaidRole, GuildSignupState, NextRaidView } from '../../lib/guild/api';
   import { putSignup } from '../../lib/guild/raids-api';
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { homeBCopy } from '../../lib/home/home-b-view';
   import {
     PLAQUE_CHOICES,

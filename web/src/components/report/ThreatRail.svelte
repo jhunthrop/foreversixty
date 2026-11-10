@@ -6,11 +6,12 @@
      an enemy picked, its taunts alone: the list answers "who took this one off me". -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar, formatDuration, tauntKey } from '../../lib/report/format';
+  import { classColorVar, tauntKey } from '../../lib/report/format';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import { noTauntsLine, orderedTaunts, pickedEnemyName } from '../../lib/report/threat-taunts';
   import type { Taunt, ThreatPair } from '../../lib/report/types';
   import { aroundWindow, type TimeWindow } from '../../lib/report/window';
+import { clockDuration } from '../../lib/format/duration';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -74,7 +75,7 @@
         <Row title="" sub={subOf(taunt)} open density="slim" testid="threat-taunt">
           {#snippet lead()}
             <span class="text-muted w-9 text-right text-[13px] tabular-nums" title="On the pull's clock"
-              >{formatDuration(taunt.at_ms)}</span
+              >{clockDuration(taunt.at_ms)}</span
             >
             <SpellIcon
               url={icons.of(taunt.spell_id, taunt.spell_name)}

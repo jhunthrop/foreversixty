@@ -11,11 +11,11 @@
      The rotation reads on /sim, in its rail: this list carries no toggle for it (h-audit
      2026-11-09: an unlabelled caret on every row). -->
 <script lang="ts">
-  // formatPercent is the site's one percentage formatter: one decimal and a % sign. Every
+  // percent is the site's one percentage formatter: one decimal and a % sign. Every
   // other caller in report/format.ts pre-multiplies by 100 exactly as this does, so a
   // hand-rolled toFixed(1) here would be a second formatter that drifts the day the first
   // one changes.
-  import { formatPercent } from '../../lib/report/format';
+  import { percent } from '../../lib/format/number';
   import { oneDecimal } from '../../lib/sim/result-copy';
   import { resolveActionName, type ActionNames } from '../../lib/sim/action-names';
   import { simCopy } from '../../lib/sim/copy';
@@ -54,7 +54,7 @@
   const figure = $derived(
     noParses
       ? simCopy.specNoParses
-      : `${simCopy.specMedianGap} ${formatPercent(row.median_gap * 100)} ${simCopy.specOver} ${row.parses} ${row.parses === 1 ? simCopy.specParse : simCopy.specParses}`,
+      : `${simCopy.specMedianGap} ${percent(row.median_gap * 100)} ${simCopy.specOver} ${row.parses} ${row.parses === 1 ? simCopy.specParse : simCopy.specParses}`,
   );
   const footer = $derived(
     [

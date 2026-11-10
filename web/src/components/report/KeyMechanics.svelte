@@ -6,7 +6,7 @@
      they hit. At most five rows; the tab has the rest. -->
 <script lang="ts">
   import { mechanicTable, unclassifiedAbilities } from '../../lib/report/mechanics';
-  import { formatAmount } from '../../lib/report/format';
+  import { compact } from '../../lib/format/number';
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
   import type { Summary } from '../../lib/report/types';
   import Row from '../ui/Row.svelte';
@@ -56,7 +56,7 @@
         key: String(ability.spell_id),
         spellId: ability.spell_id,
         name: ability.name,
-        figure: formatAmount(ability.damage),
+        figure: compact(ability.damage),
         sub: `${plural(ability.players, 'player')} hit`,
         bad: false,
       }));

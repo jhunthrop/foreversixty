@@ -11,7 +11,7 @@
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
   import { isUnnamed, loadSharedSpellNames, nameAuras, type SpellNames } from '../../lib/report/aura-names';
-  import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
+  import { classColorVar } from '../../lib/report/format';
   import {
     EVENT_KINDS,
     filterEvents,
@@ -27,6 +27,8 @@
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { LINK, RULE_TOP } from '../../lib/ui/primitives';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
+import { clockDuration } from '../../lib/format/duration';
+import { compact } from '../../lib/format/number';
   import Button from '../ui/Button.svelte';
   import Field from '../ui/Field.svelte';
   import Section from '../ui/Section.svelte';
@@ -145,9 +147,9 @@
   const DASH: StatFigure = { value: '–', muted: true };
 
   function figuresOf(event: SummaryEvent): StatFigure[] {
-    const time = { value: formatDuration(event.atMs) };
+    const time = { value: clockDuration(event.atMs) };
     if (!withAmounts) return [time];
-    return [time, event.amount === undefined ? DASH : { value: formatAmount(event.amount) }];
+    return [time, event.amount === undefined ? DASH : { value: compact(event.amount) }];
   }
 
   /** A player's name in their class colour; an enemy's in the line's own colour. */

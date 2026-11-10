@@ -8,7 +8,7 @@
      `Plan an event` (disabled with the gate sentence in officer-read-only; the cap line at 12 raids
      limits raids only, so the button stays live) and the form in place under the header row. One minute tick feeds every row's countdown. -->
 <script lang="ts">
-  import { minuteClock } from '../../lib/guild/minute-clock.svelte';
+  import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { tick } from 'svelte';
   import {
     fetchGuildProgression,

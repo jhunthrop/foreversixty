@@ -1,4 +1,4 @@
-// web/src/lib/guild/minute-clock.svelte.ts
+// web/src/lib/ui/minute-clock.svelte.ts
 // The one minute tick the raid surfaces read `now` from (raids spec 3.1, 3.4): countdowns step and
 // `Tonight` turns over at midnight without a reload. A fixed `now` (tests, captures) stops the tick.
 // Call it while a component initialises: it owns an effect.

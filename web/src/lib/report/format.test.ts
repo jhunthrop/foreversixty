@@ -1,34 +1,16 @@
 // web/src/lib/report/format.test.ts
 import { describe, expect, it } from 'vitest';
-import {
-  classColorVar,
-  formatAmount,
-  formatClock,
-  formatDuration,
-  formatDurationPrecise,
-  formatPercent,
-  formatPerSecond,
-  ordinal,
-  joinFacts,
-  outcomeLabel,
-  parseTitle,
-  TRASH_PARSE,
-  percentileToken,
-  phaseReached,
-  schoolName,
-  schoolToken,
-  formatAmountLike,
-  formatLanded,
-  formatShare,
-} from './format';
+import { classColorVar, formatClock, formatPerSecond, joinFacts, outcomeLabel, parseTitle, TRASH_PARSE, percentileToken, phaseReached, schoolName, schoolToken, formatAmountLike, formatLanded, formatShare } from './format';
+import { clockDuration, clockDurationPrecise } from '../format/duration';
+import { compact, ordinal, percent } from '../format/number';
 
 describe('report formatting', () => {
   it('formats durations as minutes and seconds, with tenths under a minute', () => {
-    expect(formatDuration(6400)).toBe('6.4s');
-    expect(formatDuration(40000)).toBe('40.0s');
-    expect(formatDuration(107000)).toBe('1:47');
-    expect(formatDuration(3_723_000)).toBe('62:03');
-    expect(formatDuration(0)).toBe('0.0s');
+    expect(clockDuration(6400)).toBe('6.4s');
+    expect(clockDuration(40000)).toBe('40.0s');
+    expect(clockDuration(107000)).toBe('1:47');
+    expect(clockDuration(3_723_000)).toBe('62:03');
+    expect(clockDuration(0)).toBe('0.0s');
   });
 
   it('formats wall-clock times from the engine’s ISO strings', () => {
@@ -38,14 +20,14 @@ describe('report formatting', () => {
   });
 
   it('groups amounts, and abbreviates from a million up', () => {
-    expect(formatAmount(0)).toBe('0');
-    expect(formatAmount(1484)).toBe('1,484');
-    expect(formatAmount(99_999)).toBe('99,999');
-    expect(formatAmount(239_230)).toBe('239.2k');
-    expect(formatAmount(999_999)).toBe('1000k');
-    expect(formatAmount(1_250_000)).toBe('1.25M');
-    expect(formatAmount(12_500_000)).toBe('12.5M');
-    expect(formatAmount(1_250_000_000)).toBe('1.25B');
+    expect(compact(0)).toBe('0');
+    expect(compact(1484)).toBe('1,484');
+    expect(compact(99_999)).toBe('99,999');
+    expect(compact(239_230)).toBe('239.2k');
+    expect(compact(999_999)).toBe('1000k');
+    expect(compact(1_250_000)).toBe('1.25M');
+    expect(compact(12_500_000)).toBe('12.5M');
+    expect(compact(1_250_000_000)).toBe('1.25B');
   });
 
   it('divides by the window, not the fight, and never by zero', () => {
@@ -55,8 +37,8 @@ describe('report formatting', () => {
   });
 
   it('formats percentages to one decimal', () => {
-    expect(formatPercent(7.5)).toBe('7.5%');
-    expect(formatPercent(100)).toBe('100.0%');
+    expect(percent(7.5)).toBe('7.5%');
+    expect(percent(100)).toBe('100.0%');
   });
 
   it('maps a class name to its token, and anything unknown to the body colour', () => {
@@ -83,8 +65,8 @@ describe('report formatting', () => {
   });
 
   it('keeps tenths past a minute in the precise form, and names spell schools', () => {
-    expect(formatDurationPrecise(61_400)).toBe('1:01.4');
-    expect(formatDurationPrecise(6400)).toBe('6.4s');
+    expect(clockDurationPrecise(61_400)).toBe('1:01.4');
+    expect(clockDurationPrecise(6400)).toBe('6.4s');
     expect(schoolName(1)).toBe('Physical');
     expect(schoolName(36)).toBe('Fire/Shadow');
     expect(schoolName(undefined)).toBe('Physical');

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ReportMeta } from '../report/types';
-import { formatDate } from '../report/format';
+import { utcDayMonthYear } from '../dates';
 import { SAMPLE_FALLBACK_ROW, SAMPLE_REPORT_ID, sampleDateIso, sampleRowFromMeta } from './sample-row';
 
 const META = {
@@ -29,7 +29,7 @@ describe('sampleRowFromMeta', () => {
 
   it('says the date the report page says: the first fight, in the page format', () => {
     expect(sampleDateIso(META)).toBe('2026-09-26T20:10:04Z');
-    expect(sampleRowFromMeta(META).dateLabel).toBe(formatDate(META.fights[0].start));
+    expect(sampleRowFromMeta(META).dateLabel).toBe(utcDayMonthYear(META.fights[0].start));
     // A meta with no fights falls back to its own created_at.
     expect(sampleRowFromMeta({ ...META, fights: [] } as unknown as ReportMeta).createdAt).toBe(
       '2026-09-15T12:55:13Z',

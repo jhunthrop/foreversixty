@@ -12,7 +12,7 @@
 <script lang="ts">
   import { unitLabel } from '../../lib/report/names.svelte';
   import { specCell, type UnitClass } from '../../lib/report/roster-class';
-  import { classColorVar, formatAmount, wholeFightMark } from '../../lib/report/format';
+  import { classColorVar, wholeFightMark } from '../../lib/report/format';
   import { formatRate } from '../../lib/report/frame';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
@@ -22,6 +22,7 @@
   import StatTable from '../ui/StatTable.svelte';
   import Meter from '../ui/Meter.svelte';
   import { roleIcon, roleOf } from '../../lib/report/role-icon';
+import { compact } from '../../lib/format/number';
   import ClassIcon from './ClassIcon.svelte';
 
   let {
@@ -125,7 +126,7 @@
       ...parse,
       ...pairs.flatMap((pair) => {
         const amount = pair.amountOf(row);
-        return [amountCell(amount, formatAmount(amount)), amountCell(amount, formatRate(rateOf(pair, row)))];
+        return [amountCell(amount, compact(amount)), amountCell(amount, formatRate(rateOf(pair, row)))];
       }),
       { value: `${activeMark}${Math.round(row.activity_pct)}%` },
       { value: String(row.deaths), muted: row.deaths === 0, tone: row.deaths > 0 ? 'wipe' : undefined },

@@ -6,7 +6,7 @@
 // kill in its report, the percentile, Executed, Length) and the date. The row carries no link strip:
 // a compact list beside the rail has no room for one, and the value is the way into the report.
 import { characterHref, parseCharacterKey, splitUnitName } from '../characters';
-import { formatAmount } from '../report/format';
+import { compact } from '../format/number';
 import { executionHref, executionLabel, executionTitle } from '../sim/execution';
 import type { RankFigure, RankGap, RankLink, RankNote } from '../ui/rank-list';
 import type { RankingRow } from './api';
@@ -76,7 +76,7 @@ export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView 
     fraction: board.top > 0 ? row.value / board.top : 0,
     figures: [
       {
-        value: formatAmount(Math.round(row.value)),
+        value: compact(Math.round(row.value)),
         label: board.unit,
         href: reportHref(row),
         title: rankingsCopy.openReport,
