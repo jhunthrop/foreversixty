@@ -56,7 +56,7 @@ def planned_row(raid: dict) -> str:
     c = raid['counts']
     signed = c['in'] + c['late']
     left = at - at_zone(D.NOW)
-    countdown_words = f'in {left.days} days {left.seconds // 3600} h'
+    countdown_words = f'in {gd.countdown_text(left)}'
     word = lambda n, one, many: f'{n} {one if n == 1 else many}'  # noqa: E731
     parts = [word(c['tanks'], 'tank', 'tanks'), word(c['healers'], 'healer', 'healers'), f"{c['melee']} melee", f"{c['ranged']} ranged"]
     late = sum(c['late_groups'].values())
@@ -255,7 +255,7 @@ def planner_when(raid: dict) -> str:
     clock_word = lambda t: t.strftime('%I:%M %p').lstrip('0').lower()  # noqa: E731
     left = start - at_zone(D.NOW)
     return (f"{start:%A} {start.day} {start:%B} &middot; {clock_word(start)} to {clock_word(end)} CST &middot; "
-            f'<span class="gold">in {left.days} days {left.seconds // 3600} h</span>')
+            f'<span class="gold">in {gd.countdown_text(left)}</span>')
 
 
 def planner(officer: bool = True) -> str:

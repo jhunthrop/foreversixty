@@ -10,6 +10,21 @@ from mocklib import CLASS_COLOR
 # hours before the next raid. The raids open Wed 9 Dec; the guild raids Wednesdays at 8:00 pm CST.
 NOW = '2026-12-12T22:00:00Z'
 ZONE = 'America/Chicago'
+
+
+def countdown_text(left) -> str:
+    """The one countdown (web/src/lib/ui/countdown.ts, apps/shared/formats.json `countdown`):
+    `4 days, 4 hours, 0 min`, the largest non-zero unit first, minutes rounded up; empty once passed."""
+    total = -(-int(left.total_seconds()) // 60)
+    if total <= 0:
+        return ''
+    days, hours, minutes = total // 1440, total % 1440 // 60, total % 60
+    word = lambda n, one, many: f'{n} {one if n == 1 else many}'  # noqa: E731
+    parts = [word(days, 'day', 'days')] if days else []
+    if days or hours:
+        parts.append(word(hours, 'hour', 'hours'))
+    parts.append(f'{minutes} min')
+    return ', '.join(parts)
 # The guild's first raid night, Wed 9 Dec, 8:00 pm CST: Onyxia's first kill, the loot council's night and the last raid every
 # surface reads (raid 40, its report and its log). Nothing is logged, killed or looted before it.
 LAST_RAID_ID = 40
