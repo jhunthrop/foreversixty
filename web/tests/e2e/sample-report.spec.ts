@@ -179,7 +179,7 @@ test.describe('the sample’s counts say what they count', () => {
     await expect(page.getByTestId('report-this-pull')).toContainText(/In your group\s*5\s*Deaths\s*0/);
     const chart = page.getByTestId('time-chart');
     await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
-    await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Group [\d.,]+ DPS over the whole fight$/);
+    await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Group [\d.,]+ DPS$/);
     await expect(chart.getByTestId('chart-legend')).toContainText('Group median');
     await expect(chart).not.toContainText('Raid');
     // Nobody died on the boss pull: the group's chart marks no death.
@@ -204,7 +204,7 @@ test.describe('the sample’s counts say what they count', () => {
     await expect(page.getByTestId('summary-tab').getByTestId(/^roster-Player-/)).toHaveCount(57);
     const chart = page.getByTestId('time-chart');
     await expect(chart.locator('[data-state="ready"]').first()).toBeVisible();
-    await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Total [\d.,]+ DPS over the whole fight$/);
+    await expect(chart.getByTestId('chart-head-meta')).toHaveText(/^Total [\d.,]+ DPS$/);
     await expect(fieldBox(chart, 'players')).toContainText(/Top 4, bottom 4 of \d+ players seen/);
     // The longer field still shows its value whole (the dropdown's fitted-field rule).
     const label = fieldBox(chart, 'players').locator('.sel-label');

@@ -70,7 +70,7 @@ describe('TimeChart (controls and charts spec §B5)', () => {
       0,
     );
     const sum = Math.round(exact);
-    expect(body).toContain(`Raid ${sum.toLocaleString('en-US')} DPS over the whole fight`);
+    expect(body).toContain(`Raid ${sum.toLocaleString('en-US')} DPS<`);
   });
 
   it('draws the raid median, the top 4 and the bottom 4 of 40, and names it in the Players field', () => {

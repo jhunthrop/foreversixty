@@ -358,7 +358,7 @@ def chart(R: Report, fi: int, metric: str, source: str) -> str:
     series = [(split_name(a['name'])[0], colour(ros.get(a['guid'])), a['series'], f'<span class="num">{rate(a["effective"] / dur)}</span> {unit}') for a in rows]
     total = sum(a['effective'] for a in s[key] if a['guid'] in fr) / dur
     title = {'damage': 'Damage over the fight', 'healing': 'Healing over the fight', 'taken': 'Damage taken over the fight'}[metric]
-    meta = f'{"Your group" if source == "Your group" else "Group"} {rate(total)} {unit} over the whole fight'
+    meta = f'{"Your group" if source == "Your group" else "Group"} {rate(total)} {unit}'
     if not rows:
         return Section(title, f'<p class="empty">Nothing in this window.</p>', meta=meta, panel=True)
     phases = [(p['name'], p['start_ms'] / 1000, p['end_ms'] / 1000) for p in s.get('phases', [])]

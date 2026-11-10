@@ -160,7 +160,6 @@
   import { fightGroupScope, groupScope, raidFlaggedPlayers, scopeNoun } from '../../lib/report/group';
   import { splitUnitName } from '../../lib/characters';
   import { reportCopy } from '../../lib/report/copy';
-  import { ratingCopy } from '../../lib/rating/copy';
   import { justUploadedAt } from '../../lib/reports/just-uploaded';
   import {
     ACTOR_TABS,
@@ -171,6 +170,7 @@
     reportFigure,
     reportMeta,
     thisPullFacts,
+    reportPlayersTail,
   } from '../../lib/report/frame';
   import { pullNumbers } from '../../lib/report/fights';
   import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
@@ -1696,11 +1696,13 @@
   /** The band's meta line: the pull on screen, or the night (zone, date, fight count). */
   const headLine = $derived(
     fight !== null && !nightMode
-      ? reportMeta(facts.zone, fight, pullNumbers(fights).get(fight.index)?.pull, scopeRoster.length)
+      ? reportMeta(facts.zone, fight, pullNumbers(fights).get(fight.index)?.pull)
       : [facts.zone, fights.length > 0 ? facts.date : '', facts.fights]
           .filter((part) => part !== '')
           .join(' · '),
   );
+  /** The players count after the meta: a desktop fact (This pull counts them on a phone). */
+  const headTail = $derived(fight !== null && !nightMode ? reportPlayersTail(fight, scopeRoster.length) : '');
   /** One player as the Source on an actor tab: the player's own view (decision R5). */
   const playerView = $derived(sourcePlayer !== undefined && ACTOR_TABS.has(state.tab) && !nightMode);
   const playerRow = $derived(base?.roster.find((row) => row.guid === sourcePlayer));
@@ -1763,11 +1765,7 @@
 
 {#snippet thisPull()}
   {#if fight !== null && !nightMode}
-    <ThisPull
-      facts={pullFacts}
-      {simHref}
-      note={state.tab === 'summary' && !rateable ? ratingCopy.noRatingForTrash : ''}
-    />
+    <ThisPull facts={pullFacts} {simHref} />
   {/if}
 {/snippet}
 
@@ -1923,6 +1921,7 @@
         <ReportHead
           title={heading}
           line={headLine}
+          lineTail={headTail}
           sample={isSampleReport(reportId)}
           {credit}
           {live}
@@ -2011,7 +2010,7 @@
                   {@const label = unitLabel(combatant.name).text}
                   <Row
                     title={label}
-                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · item level ${combatant.item_level ?? 0}`}
+                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · ilvl ${combatant.item_level ?? 0}`}
                     open
                   >
                     {#snippet lead()}<ClassIcon className={classOf.get(combatant.guid)} size={28} />{/snippet}

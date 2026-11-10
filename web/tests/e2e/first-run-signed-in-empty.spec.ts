@@ -94,9 +94,7 @@ test.describe('/setup and /logs first-run copy', () => {
     await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
     await page.goto('/logs');
     const line = page.getByTestId('pairing-companion-first');
-    await expect(line).toHaveText(
-      'Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.',
-    );
+    await expect(line).toHaveText('Press Sign in with Battle.net in the companion. A code is the fallback.');
     await expect(page.getByRole('button', { name: 'Get a pairing code' })).toBeVisible();
   });
 });

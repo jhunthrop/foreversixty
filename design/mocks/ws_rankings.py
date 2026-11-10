@@ -119,7 +119,7 @@ def your_rank(answer: dict, best: list[dict], unranked: bool = False) -> str:
         fig = answer['figures'][0]
         big = Figure(escape(fig['value']), unit=escape(fig['unit']), size='big').replace('class="v"', f'class="v" style="color:{token_hex(fig["color"])}"', 1)
         facts = Facts([(escape(f['label']), escape(f['value'])) for f in best]) if best else ''
-        body = (f'<div class="you-n">{big}<p class="t-small">{escape(answer["note"]["text"])}</p>{facts}'
+        body = (f'<div class="you-n">{big}{facts}'
                 f'<p class="go">{Link(escape(RC["parsesLink"]) + " &rsaquo;")}</p></div>')
     return Section(RC['answerLabel'], body, panel=True, frame='framed')
 

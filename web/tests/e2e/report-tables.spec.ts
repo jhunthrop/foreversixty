@@ -14,7 +14,7 @@ test('the summary tab lists the roster with specs and deaths', async ({ page }) 
   await expect(page.getByTestId('report-subtitle')).toContainText('5 players');
   await expect(page.getByTestId('report-this-pull')).toContainText(/Deaths\s*1/);
   await expect(page.getByTestId('roster-Player-4184-000000A1')).toContainText('Protection');
-  await expect(page.getByTestId('at-pull-card')).toContainText('item level 183');
+  await expect(page.getByTestId('at-pull-card')).toContainText('ilvl 183');
 });
 
 test('damage done ranks rows, colours names by class and expands to abilities', async ({ page }) => {

@@ -57,13 +57,21 @@ export function landingRow(
     unit: UNIT[metric],
     multiClass: true,
   });
+  const { rankColor: parseColor, ...plain } = view;
   const value = view.figures[0];
   const figures: RankFigure[] = [
     // The column head names the metric (DPS, HPS): the figure carries no unit.
     ...(value === undefined ? [] : [{ ...value, unit: undefined }]),
-    { value: percentileLabel(row.rank, board.total), label: rankingsCopy.percentileLabel },
+    {
+      value: percentileLabel(row.rank, board.total),
+      label: rankingsCopy.percentileLabel,
+      title: rankingsCopy.percentileLabel,
+      bare: true,
+      color: parseColor,
+    },
   ];
-  return { ...view, key: row.player.key, figures };
+  // The landing has no percentile legend: the colour sits on the percentile, the rank stays plain.
+  return { ...plain, key: row.player.key, figures };
 }
 
 /** The first `count` rows of an encounter's board. */

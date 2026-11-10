@@ -24,7 +24,7 @@
     onSelect,
   }: {
     actor: Actor;
-    /** "{spec} {class} · item level {n}", plus overheal or "dead since" where they apply. */
+    /** "{spec} {class} · ilvl {n}", plus overheal or "dead since" where they apply. */
     subLine: string;
     figures: readonly StatFigure[];
     /** This row's amount over the top row's, 0 to 1. */

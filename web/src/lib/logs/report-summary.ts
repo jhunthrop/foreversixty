@@ -167,14 +167,14 @@ export interface OwnReportRowFacts {
 
 /**
  * A report row in "Your reports" (logs spec 2026-11-07 section 5): the title falls back to the
- * zone, then to the night it logged ("Report, 17 Sep 2026"; production's first report had
+ * zone, then to the night it logged ("17 Sep 2026"; production's first report had
  * neither); the line under it (directions b1) is the zone when known, the pulls, the bosses or
  * "Trash only", and who it is credited to when someone is.
  */
 export function ownReportRow(facts: OwnReportRowFacts): { title: string; sub: string } {
   const zone = facts.zone.trim();
   const night = formatDayMonthYear(new Date(facts.startedAt));
-  const title = facts.title.trim() || zone || (night === '' ? UNTITLED_REPORT : `Report, ${night}`);
+  const title = facts.title.trim() || zone || (night === '' ? UNTITLED_REPORT : night);
   const bosses = facts.bossCount ?? facts.killCount;
   return {
     title,

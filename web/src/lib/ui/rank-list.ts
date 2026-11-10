@@ -18,6 +18,10 @@ export interface RankFigure {
   href?: string;
   /** The figure's own explanation, on hover. */
   title?: string;
+  /** No visible label on a phone: the figure reads alone (a percentile in its parse colour). */
+  bare?: boolean;
+  /** The value's own colour (a percentile on the parse scale); the strong text without. */
+  color?: string;
   testid?: string;
 }
 

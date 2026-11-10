@@ -35,8 +35,7 @@ export const logsCopy = {
 export const pairingCopy = {
   signedOut: 'Live logging needs a signed-in account.',
   /** One line above the code button: the companion's own Battle.net sign-in is the way in. */
-  companionFirst:
-    'Using the companion? Press Sign in with Battle.net in it. The code below is only for the fallback.',
+  companionFirst: 'Press Sign in with Battle.net in the companion. A code is the fallback.',
   success: (deviceName: string): string =>
     `${deviceName} paired. It starts uploading as soon as you are logging.`,
   action: 'Get a pairing code',

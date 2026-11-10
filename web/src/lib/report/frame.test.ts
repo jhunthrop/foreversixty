@@ -15,6 +15,7 @@ import {
   reportFigure,
   reportMeta,
   thisPullFacts,
+  reportPlayersTail,
 } from './frame';
 import { formatClock } from './format';
 import type { FightEntry } from './types';
@@ -89,6 +90,12 @@ describe('the band’s meta line (directions b1)', () => {
 
   it('reads a boss pull with its attempt, outcome, length and players', () => {
     expect(reportMeta('', BOSS, 2, 40)).toBe('Pull 90, Warden Kelthas #2 · Wipe 34% · 1:12 · 40 players');
+  });
+
+  it('leaves the players to the band’s desktop tail when it is not given them', () => {
+    expect(reportMeta('', BOSS, 2)).toBe('Pull 90, Warden Kelthas #2 · Wipe 34% · 1:12');
+    expect(reportPlayersTail(BOSS, 40)).toBe(' · 40 players');
+    expect(reportPlayersTail(PULL_9, 5)).toBe('');
   });
 });
 

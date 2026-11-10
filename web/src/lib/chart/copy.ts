@@ -20,15 +20,19 @@ const NOUN: Record<RateMetric, string> = {
   'damage-taken': 'damage taken',
 };
 
+/** " over 0:12 to 0:40" for a window; nothing for the whole fight. */
+const over = (span: string): string => (span === '' ? '' : ` over ${span}`);
+
 export const chartCopy = {
   title: { 'damage-done': 'Damage done', healing: 'Healing', 'damage-taken': 'Damage taken' } as Record<
     RateMetric,
     string
   >,
   unit: (metric: RateMetric): string => UNIT[metric],
-  /** The span every figure on a chart is over: the head, the legend and the Players list agree. */
+  /** The span every figure on a chart is over: the head, the legend and the Players list agree.
+   *  The whole fight is the default the filter bar already names, so it reads as no span at all. */
   span: (startMs: number, endMs: number, whole: boolean): string =>
-    whole ? 'the whole fight' : `${clockLabel(startMs)} to ${clockLabel(endMs)}`,
+    whole ? '' : `${clockLabel(startMs)} to ${clockLabel(endMs)}`,
   /**
    * Fix round 2: the head says what its figure is, the sum of every player's figure over the span,
    * named for the set it sums: a raid, a group, or (everyone in range) a total.
@@ -39,9 +43,9 @@ export const chartCopy = {
     span: string,
     target?: string,
     noun: ScopeNoun = 'raid',
-  ): string => `${SET_NAME[noun]} ${figure} ${UNIT[metric]} over ${span}${target ? ` · on ${target}` : ''}`,
+  ): string => `${SET_NAME[noun]} ${figure} ${UNIT[metric]}${over(span)}${target ? ` · on ${target}` : ''}`,
   playerMeta: (metric: RateMetric, name: string, figure: string, span: string, target?: string): string =>
-    `${name} · ${figure} ${UNIT[metric]} over ${span}${target ? ` · on ${target}` : ''}`,
+    `${name} · ${figure} ${UNIT[metric]}${over(span)}${target ? ` · on ${target}` : ''}`,
   threatMeta: (startMs: number, endMs: number, whole: boolean): string =>
     `Cumulative · ${whole ? 'Whole fight' : `${clockLabel(startMs)} to ${clockLabel(endMs)}`}`,
   emptyMeta: (noun: string, phase: string | undefined, startMs: number, endMs: number): string =>

@@ -57,7 +57,6 @@
     taken: 'Nobody took damage in this window.',
     healing: 'Nobody healed in this window.',
   };
-  const NOUN: Readonly<Record<Metric, string>> = { done: 'damage', taken: 'damage', healing: 'healing' };
   const TONE: Readonly<Record<Metric, 'accent' | 'muted' | 'kill'>> = {
     done: 'accent',
     taken: 'muted',
@@ -171,7 +170,7 @@
           { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
           ...(detail ? DETAIL[metric].map((id) => ({ value: detailValue(row, id) })) : []),
         ]}
-        {@const phone = `${formatAmount(row.total)} ${NOUN[metric]}`}
+        {@const phone = formatAmount(row.total)}
         {#if detail}
           <!-- On a phone the detail columns fold into the sub line under the name. -->
           <StatRow {figures} {phone}>

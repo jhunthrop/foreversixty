@@ -125,7 +125,7 @@ test.describe('the chart on a phone', () => {
     // chart, its sliders and its presets.
     await expect(page.getByTestId('time-chart')).toHaveCount(0);
     const strip = page.getByTestId('chart-collapsed');
-    await expect(strip).toContainText(/whole fight/i);
+    await expect(strip).toContainText(/\d DPS/);
     const toggle = strip.locator('summary');
     const toggleBox = (await toggle.boundingBox())!;
     expect(toggleBox.height).toBeGreaterThanOrEqual(44);

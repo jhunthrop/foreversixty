@@ -127,14 +127,17 @@
   function subLine(actor: Actor): string {
     const row = roster.get(actor.guid);
     const who = [row?.spec, row?.class ?? actor.class].filter(Boolean).join(' ');
+    // An overheal that rounds to 0% says nothing: it is left out.
+    const overhealPercent =
+      actor.overheal !== undefined && actor.total > 0 ? Math.round((actor.overheal / actor.total) * 100) : 0;
     const overheal =
-      tab === 'healing' && actor.overheal !== undefined && actor.overheal > 0 && actor.total > 0
-        ? `${formatAmount(actor.overheal)} overheal (${Math.round((actor.overheal / actor.total) * 100)}%)`
+      tab === 'healing' && overhealPercent > 0
+        ? `${formatAmount(actor.overheal ?? 0)} overheal (${overhealPercent}%)`
         : '';
     const dead = deadAt.get(actor.guid);
     return [
       who,
-      row?.item_level ? `item level ${row.item_level}` : '',
+      row?.item_level ? `ilvl ${row.item_level}` : '',
       overheal,
       dead === undefined ? '' : `dead since ${formatDuration(dead)}`,
     ]
@@ -269,14 +272,20 @@
             onSelect={onSelectPlayer}
           />
         {/each}
-        <StatRow
-          figures={totalFigures}
-          total
-          name={totalName}
-          sub={absentLine === '' && mitigatedLine === '' ? undefined : absentSub}
-          testid="actor-total"
-        />
+        <!-- One player's row is its own total: no foot row, its absent and mitigated lines under the table. -->
+        {#if actors.length > 1}
+          <StatRow
+            figures={totalFigures}
+            total
+            name={totalName}
+            sub={absentLine === '' && mitigatedLine === '' ? undefined : absentSub}
+            testid="actor-total"
+          />
+        {/if}
       </StatTable>
+      {#if actors.length === 1 && (absentLine !== '' || mitigatedLine !== '')}
+        <div class="text-small text-muted px-5 py-3 max-md:px-[14px]">{@render absentSub()}</div>
+      {/if}
     {/if}
   </div>
 </Section>

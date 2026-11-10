@@ -62,7 +62,7 @@ test.describe('signed in, desktop', () => {
     await expect(page.getByTestId('control-ruleset')).toHaveValue('normal');
     await expect(yourRank(page).locator('h2')).toHaveText('Your rank');
     await expect(page.getByTestId('rankings-answer-rank')).toHaveText(/^\s*14th\s*of 212 Fury Warriors\s*$/);
-    await expect(answer(page)).toContainText('On Onyxia, Normal ruleset');
+    await expect(answer(page)).not.toContainText('ruleset');
     await expect(page.getByTestId('rankings-answer-parses')).toHaveText('See your parses ›');
     await expect(page.getByTestId('rankings-answer-parses')).toHaveAttribute(
       'href',
@@ -173,7 +173,7 @@ test.describe('signed in, desktop', () => {
     await expect(page).toHaveURL(/\/rankings\/warden-kelthas$/);
     await expect(page.getByTestId('control-encounter')).toHaveValue('warden-kelthas');
     await expect(page.getByTestId('rankings-answer-rank')).toHaveText(/^\s*3rd\s*of 3 Frost Mages\s*$/);
-    await expect(answer(page)).toContainText('On Warden Kelthas, Normal ruleset');
+    await expect(answer(page)).not.toContainText('ruleset');
     await expect(page.getByTestId('ranking-3')).toHaveAttribute('aria-current', 'true');
     await expect(ownRows(page)).toHaveCount(1);
     expect(await page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept)).toBe(true);
@@ -773,7 +773,7 @@ test('a character page shows the best per encounter and the builds they were see
   await expect(best.getByRole('link', { name: 'All fights (1) ›' })).toHaveAttribute('href', '/logs');
   const builds = page.getByTestId('character-builds');
   await expect(builds).toContainText('31/20/0');
-  await expect(builds).toContainText('Discipline · first seen 9 Dec 2026');
+  await expect(builds).toContainText('Discipline · 9 Dec');
 
   // rankings/api.ts's encounterSlug is the one derivation of this identifier, trailing
   // hyphen trimmed and all. A second, inlined copy here linked "Emeriss (Dream)" to

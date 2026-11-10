@@ -18,6 +18,7 @@
   let {
     title,
     line,
+    lineTail = '',
     sample,
     credit,
     live,
@@ -27,6 +28,8 @@
     title: string;
     /** "Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died". */
     line: string;
+    /** " · 40 players": shown from 768 only, so the phone's meta stays one line. */
+    lineTail?: string;
     sample: boolean;
     credit: Credit;
     /** The fight on screen is still being logged: 'live', or 'quiet' once the companion went quiet. */
@@ -37,7 +40,9 @@
 </script>
 
 {#snippet meta()}
-  <span data-testid="report-subtitle">{line}</span>
+  <span data-testid="report-subtitle"
+    >{line}{#if lineTail !== ''}<span class="max-md:hidden">{lineTail}</span>{/if}</span
+  >
   <span aria-live="polite" class="contents">
     {#if sample}
       <Tag tone="muted" testid="report-sample-badge">{reportCopy.sampleBadge}</Tag>

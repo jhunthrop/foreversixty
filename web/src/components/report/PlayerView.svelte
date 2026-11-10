@@ -222,7 +222,7 @@
   const chartKey = (ability: Ability): string => `${actor?.guid ?? ''}|${abilityKey(ability)}`;
 
   const gearMeta = $derived(
-    [row?.spec, row?.item_level ? `item level ${row.item_level}` : ''].filter(Boolean).join(' · '),
+    [row?.spec, row?.item_level ? `ilvl ${row.item_level}` : ''].filter(Boolean).join(' · '),
   );
 </script>
 

@@ -23,7 +23,7 @@ from ws_lib import REGION
 
 # ------------------------------------------------------------------------------------------------ tabs
 def player_sub(r: dict, extra: str = '') -> str:
-    bits = [b for b in (f'{r.get("spec", "")} {r.get("class", "")}'.strip(), f'item level {r["item_level"]}' if r.get('item_level') else '', extra) if b]
+    bits = [b for b in (f'{r.get("spec", "")} {r.get("class", "")}'.strip(), f'ilvl {r["item_level"]}' if r.get('item_level') else '', extra) if b]
     return ' &middot; '.join(escape(b) if '<' not in b else b for b in bits)
 
 
@@ -72,7 +72,7 @@ def role_sub(r: dict, realm: str = '') -> str:
     """The line under a Players name (report/SummaryTab.svelte subOf): the role's icon, then the spec alone (the name's colour
     says the class), else the class; a cross-realm player's realm; the item level only when nothing else is known."""
     who = r.get('spec') or r.get('class') or ''
-    level = f'item level {r["item_level"]}' if not who and r.get('item_level') else ''
+    level = f'ilvl {r["item_level"]}' if not who and r.get('item_level') else ''
     return role_icon(r.get('role')) + ' &middot; '.join(escape(b) for b in (who, realm, level) if b)
 
 
@@ -91,7 +91,7 @@ def summary_players(R, fi, source) -> str:
         cells = [x for _, ak, _, rk in pairs for x in ((n0(r[ak]), rate(r[rk])) if r[ak] else (NO_FIGURE, NO_FIGURE))]
         figs = ([NO_FIGURE] if parse else []) + cells + [f'{round(r["activity_pct"])}%', f'<span class="{"wipe" if r["deaths"] else ""}">{r["deaths"]}</span>']
         rows.append(StatRow(crest(r, 28), plink(r), role_sub(r, split_name(r['name'])[1] if realm_tag(r['name'], '') else ''), figs,
-                            MeterClass(r['damage_done'] / top, colour(r)), primary_phone=f'damage &middot; {rate(r["dps"])} DPS'))
+                            MeterClass(r['damage_done'] / top, colour(r)), primary_phone=f'{rate(r["dps"])} DPS'))
     table = StatTable(heads, rows, len(heads) - 3, sort='Damage', sortable=tuple(h for h, _ in heads[3:]))
     return Section('Players', f'<div class="summary-roster">{table}</div>', panel=True, flush=True)
 
@@ -152,7 +152,7 @@ def abilities_panel(R, fi, source, metric: str, link: bool = True) -> str:
                        for i, d in enumerate(detail))
     rows = [StatRow(sicon(v['sid'], 24, k, v['school']), f'<b>{escape(k)}</b>', sub(v),
                     [f'{v["total"] / tot * 100:.1f}%', rate(v['total'] / dur), n0(v['total'])] + [ability_detail(v, d) for d in detail],
-                    Meter(v['total'] / tot, ABILITY_TONE[metric]), primary_phone=f'{n0(v["total"])} {"healing" if metric == "healing" else "damage"}')
+                    Meter(v['total'] / tot, ABILITY_TONE[metric]), primary_phone=n0(v["total"]))
             for k, v in shown]
     heads = [('', False), ('Ability', False), ('', False), ('Share', True), ('Per sec', True), ('Amount', True)] + [(DETAIL_LABEL[d], True) for d in detail]
     body = StatTable(heads, rows, 3 + len(detail)) if rows else '<p class="empty">Nothing in this window.</p>'
@@ -214,7 +214,7 @@ def at_pull(R, fi) -> str:
         return ''
     ros = roster(s)
     links = '<span class="pull-links"><a class="link" href="#">Gear &rsaquo;</a><a class="link" href="#">Sim &rsaquo;</a></span>'
-    rows = [Row(escape(split_name(c['name'])[0]), f'{escape((ros.get(c["guid"]) or {}).get("class", ""))} &middot; item level {c.get("item_level") or 0}',
+    rows = [Row(escape(split_name(c['name'])[0]), f'{escape((ros.get(c["guid"]) or {}).get("class", ""))} &middot; ilvl {c.get("item_level") or 0}',
                 lead=crest(ros.get(c['guid']), 28), trail=links, link=False) for c in s['combatants']]
     return Section('At pull', Rows(rows, open_=True), panel=True)
 
@@ -226,8 +226,8 @@ def tab_summary(R, fi, source):
     stack = abilities_panel(R, fi, source, 'taken') + (abilities_panel(R, fi, source, 'healing') if healed(R, s, source) else '')
     grid = f'<div class="report-abilities">{abilities_panel(R, fi, source, "done")}<div class="report-abilities-stack">{stack}</div></div>'
     main = summary_players(R, fi, source) + chart(R, fi, 'damage', source) + grid   # R4: the table first, the chart under it
-    # The sample is never rated: This pull says so in one line (ratingCopy.noRatingForTrash) and no Rating panel follows.
-    rail = (this_pull(R, fi, source, note=COPY['ratingCopy']['noRatingForTrash'])
+    # The sample is never rated: no Rating panel follows, and This pull says nothing about it.
+    rail = (this_pull(R, fi, source)
             + (deaths_rail(R, fi, source) if any(d['guid'] in friendlies(R, s, source) for d in s['deaths']) else '')
             + (key_mechanics(R, fi) if boss else '') + group_buffs(R, fi, source) + at_pull(R, fi)
             + (f'<a class="link rank-link" href="#">Rankings for {escape(f["name"])} &rsaquo;</a>' if boss else ''))
@@ -265,14 +265,19 @@ def actor_table(R, fi, source, key, unit, head_amt):
     rows = []
     for a in acts:
         r = ros.get(a['guid'], {'name': a['name'], 'class': a.get('class')})
-        extra = f'{n0(a["overheal"])} overheal ({a["overheal"] / a["total"] * 100:.0f}%)' if key == 'healing' and a.get('overheal') else ''
+        extra = f'{n0(a["overheal"])} overheal ({a["overheal"] / a["total"] * 100:.0f}%)' if key == 'healing' and a.get('overheal') and round(a["overheal"] / a["total"] * 100) > 0 else ''
         figs = [n0(a['effective']), rate(a['effective'] / dur), f'{a["effective"] / tot * 100:.1f}%', f'{a["active_ms"] / s["duration_ms"] * 100:.1f}%']
         rows.append(StatRow(crest(r, 28), plink(r, a['name']), player_sub(r, extra) or '&nbsp;', figs, MeterClass(a['effective'] / top, colour(r)),
                             primary_phone=f'{figs[1]} {unit}'))
-    if acts:
-        rows.append(StatRow('', f'Total, {plural(len(acts), "player")}', mitigated_line(s, fr) if key == 'damage_taken' else '', [n0(sum(a['effective'] for a in acts)), rate(sum(a['effective'] for a in acts) / dur), '100%', ''], total=True))
+    foot = mitigated_line(s, fr) if key == 'damage_taken' else ''
+    # One player's row is its own total (report/ActorTable.svelte): no foot row, its mitigated line under the table.
+    if len(acts) > 1:
+        rows.append(StatRow('', f'Total, {plural(len(acts), "player")}', foot, [n0(sum(a['effective'] for a in acts)), rate(sum(a['effective'] for a in acts) / dur), '100%', ''], total=True))
     heads = [('', False), ('Player', False), ('', False), (head_amt, True), (unit, True), ('Share', True), ('Active', True)]
-    return StatTable(heads, rows, 4, sort=head_amt, sortable=(head_amt, unit, 'Share', 'Active')) if acts else '<p class="empty">Nothing in this window.</p>'
+    if not acts:
+        return '<p class="empty">Nothing in this window.</p>'
+    after = f'<div class="t-small muted actor-foot">{foot}</div>' if len(acts) == 1 and foot else ''
+    return StatTable(heads, rows, 4, sort=head_amt, sortable=(head_amt, unit, 'Share', 'Active')) + after
 
 
 def tab_actor(R, fi, source, which):
@@ -414,10 +419,10 @@ def death_foot(d: dict, scope_deaths: list[dict]) -> str:
         span = d['at_ms'] - hits[0]['at_ms']
         total = sum(h['amount'] for h in hits)
         healed = sum(h['amount'] for h in d.get('heals', []) if h['at_ms'] >= hits[0]['at_ms'])
-        heal_text = '' if 'heals' not in d else (f' {n0(healed)} of healing landed in the same span.' if healed > 0 else ' No healing landed on them in that span.')
-        lead = 'Burst: they took' if span <= 3000 and max(pcts) >= 60 else 'They took'
-        joiner = 'in' if lead.startswith('Burst') else 'over'
-        parts.append(f'{lead} {n0(total)} {joiner} {fmt_duration(span)}; the highest they stood at in that span was {round(max(pcts))}%.{heal_text}')
+        heal_text = '' if 'heals' not in d else (f' {n0(healed)} healed.' if healed > 0 else ' No heals.')
+        burst = span <= 3000 and max(pcts) >= 60
+        run = f'Burst: {n0(total)} in {fmt_duration(span)}.' if burst else f'{n0(total)} over {fmt_duration(span)}.'
+        parts.append(f'{run} Peaked at {round(max(pcts))}%.{heal_text}')
     held = [x['name'] or f'Spell #{x["spell_id"]}' for x in d['auras_held']]
     if held:
         parts.append(f'Holding: {", ".join(escape(h) for h in held)}.')
@@ -436,11 +441,18 @@ def tab_deaths(R, fi, source):
     ros = roster(s)
     fr = friendlies(R, s, source)
     blocks = []
-    for d in [d for d in s['deaths'] if d['guid'] in fr]:
+    died = [d for d in s['deaths'] if d['guid'] in fr]
+    # More than one death: the first is open, the rest fold to their Row with an Open toggle (report/DeathsTab.svelte).
+    fold = len(died) > 1
+    for index, d in enumerate(died):
         r = ros.get(d['guid'])
         kb = d['killing_blow']
+        toggle = (f'<button type="button" class="link">{"Fold" if index == 0 else "Open"}</button>' if fold else '')
         head_row = Row(pname(r, d['name']), f'Killed by {escape(kb["source_name"])} &middot; {escape(melee(kb["spell_id"], kb["spell_name"]))} &middot; {n0(kb["amount"])} ({n0(kb.get("overkill", 0))} overkill) &middot; {n0(kb["max_hp"])} health',
-                       lead=f'<span class="num muted">{at(d["at_ms"])}</span>{crest(r, 32)}', trail='<button type="button" class="link">The 20 s before it &rsaquo;</button>', link=False)
+                       lead=f'<span class="num muted">{at(d["at_ms"])}</span>{crest(r, 32)}', trail=toggle + '<button type="button" class="link">The 20 s before it &rsaquo;</button>', link=False)
+        if fold and index > 0:
+            blocks.append(f'<div class="dblock">{Rows([head_row])}</div>')
+            continue
         events = [('hit', h) for h in d['last']] + [('heal', h) for h in d.get('heals', [])]
         lines = []
         for kind, h in sorted(events, key=lambda e: e[1]['at_ms']):
@@ -448,14 +460,16 @@ def tab_deaths(R, fi, source):
             hp = f'{n0(h["hp_after"])} / {n0(mx)}' if 'hp_after' in h else 'dead'
             if kind == 'heal':
                 lines.append(StatRow(sicon(h['spell_id'], 24), f'<b class="kill">{escape(spell(h["spell_id"], h["spell_name"]))}</b>', f'<span>{at(h["at_ms"])}</span> &middot; from {escape(split_name(h["source_name"])[0])}',
-                                     [f'<span class="kill">+{n0(h["amount"])}</span>', hp], Meter(h.get('hp_after', 0) / mx, 'kill'), primary_phone=f'+{n0(h["amount"])}'))
+                                     [f'<span class="kill">+{n0(h["amount"])}</span>', hp], Meter(h.get('hp_after', 0) / mx, 'kill'), primary_phone=hp))
             else:
-                lines.append(StatRow(sicon(h['spell_id'], 24), f'<b>{escape(melee(h["spell_id"], h["spell_name"]))}</b>', f'<span>{at(h["at_ms"])}</span> &middot; from {escape(h["source_name"])}',
-                                     [f'&minus;{n0(h["amount"])}', hp], Meter(h.get('hp_after', 0) / mx, 'kill'), primary_phone=f'&minus;{n0(h["amount"])} &middot; {hp}'))
+                blow = 'hp_after' not in h
+                name = f'<b class="death">{escape(melee(h["spell_id"], h["spell_name"]))}</b> {Tag("Killing blow", "danger")}' if blow else f'<b>{escape(melee(h["spell_id"], h["spell_name"]))}</b>'
+                lines.append(StatRow(sicon(h['spell_id'], 24), name, f'<span>{at(h["at_ms"])}</span> &middot; from {escape(h["source_name"])}',
+                                     [f'&minus;{n0(h["amount"])}', hp], Meter(h.get('hp_after', 0) / mx, 'wipe'), primary_phone=hp))
         foot = death_foot(d, [e for e in s['deaths'] if e['guid'] in fr])
         body = StatTable([('', False), ('Last hits and heals', False), ('Health after', False), ('Amount', True), ('Health', True)], lines, 2, sort='', sortable=())
         blocks.append(f'<div class="dblock">{Rows([head_row])}{body}' + (f'<p class="t-small dfoot">{foot}</p>' if foot else '') + '</div>')
-    plate = Section('Deaths', ''.join(blocks) if blocks else '<p class="empty">Nobody died.</p>', meta=f'{len(blocks)} in this fight',
+    plate = Section('Deaths', ''.join(blocks) if blocks else '<p class="empty">Nobody died.</p>',
                     action=COPY_CSV if blocks else '', panel=True, flush=True)
     rail = this_pull(R, fi, source) + (key_mechanics(R, fi) if R.fight(fi)['kind'] != 'trash' else '')
     return plate + chart(R, fi, 'taken', source), rail, []

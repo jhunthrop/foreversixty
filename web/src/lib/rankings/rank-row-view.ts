@@ -18,7 +18,8 @@ const MS_PER_SECOND = 1000;
 
 export interface RankRowView {
   rank: string;
-  rankColor: string;
+  /** The percentile colour on the rank; left out where no legend explains it (the landing). */
+  rankColor?: string;
   name: string;
   href: string;
   classSlug: string;
@@ -79,6 +80,9 @@ export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView 
       {
         value: percentileLabel(row.rank, board.total),
         label: rankingsCopy.percentileLabel,
+        title: rankingsCopy.percentileLabel,
+        bare: true,
+        color: rankColor(row.rank, board.total),
         testid: 'ranking-percentile',
       },
       {

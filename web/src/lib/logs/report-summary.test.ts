@@ -170,7 +170,7 @@ describe('ownReportRow (logs spec 2026-11-07 section 5)', () => {
   };
 
   it('falls back from the title to the zone, then to the night it logged', () => {
-    expect(ownReportRow(base).title).toBe('Report, 17 Sep 2026');
+    expect(ownReportRow(base).title).toBe('17 Sep 2026');
     expect(ownReportRow({ ...base, zone: 'Molten Core' }).title).toBe('Molten Core');
     expect(ownReportRow({ ...base, title: 'Tuesday raid', zone: 'Molten Core' }).title).toBe('Tuesday raid');
   });

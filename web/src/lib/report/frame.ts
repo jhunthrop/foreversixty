@@ -151,12 +151,13 @@ export function formatRate(perSecond: number): string {
 }
 
 /** The band's meta line (directions b1): "Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died",
- *  "Pull 2, Onyxia #1 · Wipe at 34% · 4:10 · 40 players". */
+ *  "Pull 2, Onyxia #1 · Wipe at 34% · 4:10 · 40 players". Without `players` a boss pull's line
+ *  stops at its length: the band then draws `reportPlayersTail` itself (desktop only). */
 export function reportMeta(
   zone: string,
   fight: FightEntry,
   attempt: number | undefined,
-  players: number,
+  players?: number,
 ): string {
   if (fight.kind !== 'encounter') {
     const mobs = fight.mob_deaths ?? 0;
@@ -173,8 +174,13 @@ export function reportMeta(
     `Pull ${fight.index}, ${fight.name} #${attempt ?? 1}`,
     outcome,
     pullLength(fight.duration_ms),
-    plural(players, 'player'),
+    players === undefined ? '' : plural(players, 'player'),
   );
+}
+
+/** " · 40 players" after a boss pull's meta line; '' on trash, whose line counts the mobs. */
+export function reportPlayersTail(fight: FightEntry, players: number): string {
+  return fight.kind === 'encounter' ? ` · ${plural(players, 'player')}` : '';
 }
 
 /** The band's one figure and its unit (directions b1: the figure follows the tab). */
