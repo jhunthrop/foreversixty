@@ -65,7 +65,7 @@
     align-self: start;
   }
   .ui-inspector[data-placement='inline'] {
-    box-shadow: inset 3px 0 0 var(--color-gold);
+    box-shadow: var(--shadow-selected-bar);
     background: var(--color-selected);
   }
   .ui-inspector-head,

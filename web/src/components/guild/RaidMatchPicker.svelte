@@ -153,7 +153,8 @@
               aria-hidden="true"
               data-testid="raid-match-radio"
             >
-              {#if picker.selected === row.report_id}<i class="bg-gold absolute inset-[3px] rounded-full"
+              {#if picker.selected === row.report_id}<i
+                  class="bg-selected-mark absolute inset-[3px] rounded-full"
                 ></i>{/if}
             </span>
             <!-- Phone, three lines (UX 15): zone, Closest and the duration; the upload time; then

@@ -260,8 +260,9 @@
     font-weight: 600;
   }
   .bis-chip[aria-pressed='true'] {
-    border-color: var(--color-gold);
-    color: var(--color-gold);
+    border-color: var(--color-selected-mark);
+    background: var(--color-selected);
+    color: var(--color-strong);
   }
   .bis-chip:focus-visible {
     outline: 2px solid var(--color-gold);

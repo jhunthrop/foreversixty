@@ -29,6 +29,11 @@ object FsColor {
     val raised = Color(0xFF0D111A)
     val hover = Color(0xFF131824)
     val pressed = Color(0xFF1A2030)
+    // The one selected state's ground (owner 2026-11-09, design/reviews/2026-11-09-selected): on
+    // the web the accent tint under a selected row, cell or tab and the viewer's own row, with the
+    // accent bar or underline (elevation.selectedBar, selectedUnderline). Keyboard focus stays the
+    // gold ring, so the two never read alike. The apps keep the gold wash until the mobile lane
+    // adopts the palette.
     val selected = Color(0x1AE5B955)
     val line = Color(0xFF262E40)
     val lineSoft = Color(0xFF1C2230)

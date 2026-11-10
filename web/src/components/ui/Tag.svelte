@@ -2,7 +2,7 @@
 <!-- A state tag: 22 px, 12 px 600 in sentence case, 1 px border on the control radius, five tones,
      an optional dot. For a state (Founder, Connected, Current, Main); source pills stay `pill`. -->
 <script lang="ts" module>
-  export type TagTone = 'gold' | 'success' | 'muted' | 'danger' | 'warn' | 'premium';
+  export type TagTone = 'gold' | 'success' | 'muted' | 'danger' | 'warn' | 'premium' | 'yours';
 </script>
 
 <script lang="ts">
@@ -17,6 +17,8 @@
     warn: 'text-ember border-ember/40 bg-ember/12',
     // Premium: the teal edge flat with white ink (design-system.md: "Premium is the edge colour flat").
     premium: 'text-strong border-teal-edge bg-teal-edge',
+    // The viewer's own row ("Yours", "You"): the selected state's accent edge and tint, white ink.
+    yours: 'text-strong border-selected-mark bg-selected',
   };
 
   let {

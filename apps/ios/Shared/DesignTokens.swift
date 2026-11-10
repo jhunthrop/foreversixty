@@ -51,6 +51,11 @@ public enum FSColor {
     public static let raised = Color(tokenHex: 0x0D111A)
     public static let hover = Color(tokenHex: 0x131824)
     public static let pressed = Color(tokenHex: 0x1A2030)
+    /// The one selected state's ground (owner 2026-11-09, design/reviews/2026-11-09-selected): on
+    /// the web the accent tint under a selected row, cell or tab and the viewer's own row, with the
+    /// accent bar or underline (elevation.selectedBar, selectedUnderline). Keyboard focus stays the
+    /// gold ring, so the two never read alike. The apps keep the gold wash until the mobile lane
+    /// adopts the palette.
     public static let selected = Color(tokenHex: 0xE5B955, opacity: 0.1)
     public static let line = Color(tokenHex: 0x262E40)
     public static let lineSoft = Color(tokenHex: 0x1C2230)

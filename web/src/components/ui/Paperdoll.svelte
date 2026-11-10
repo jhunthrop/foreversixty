@@ -323,7 +323,7 @@
   }
   .ui-doll-cell[aria-selected='true'] {
     background: var(--color-selected);
-    box-shadow: inset 3px 0 0 var(--color-gold);
+    box-shadow: var(--shadow-selected-bar);
   }
   @media (hover: hover) and (pointer: fine) {
     .ui-doll-cell:not([aria-selected='true']):not([aria-disabled='true']):hover {

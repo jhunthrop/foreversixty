@@ -250,11 +250,11 @@
   }
   .tedit-tabs button[aria-selected='true'] {
     background: var(--color-selected);
-    color: var(--color-gold);
-    box-shadow: inset 0 -2px 0 var(--color-gold);
+    color: var(--color-strong);
+    box-shadow: var(--shadow-selected-underline);
   }
   .tedit-tabs button[aria-selected='true'] b {
-    color: var(--color-gold);
+    color: var(--color-strong);
   }
   .tedit-tabs img,
   .tedit-h img {

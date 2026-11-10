@@ -27,6 +27,11 @@
       0 0 0 1px var(--color-panel-edge),
       var(--shadow-overlay);
   }
+  /* One edge: the inset frame line and the corner flourishes are a featured panel's (ui/panel.css
+     .ui-framed), never a menu's, a sheet's or a tooltip's. */
+  .ui-overlay:is(.ui-framed, .ui-lead)::before {
+    content: none;
+  }
   .ui-overlay[data-kind='sheet'] {
     border-bottom: 0;
     border-radius: var(--radius-plate) var(--radius-plate) 0 0;

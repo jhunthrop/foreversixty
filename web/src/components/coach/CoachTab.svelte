@@ -125,7 +125,7 @@
           <button
             type="button"
             class="focus-visible:outline-gold flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-2"
-            style={owned.guid === unit?.guid ? 'box-shadow: 0 0 0 2px var(--color-gold)' : ''}
+            style={owned.guid === unit?.guid ? 'box-shadow: 0 0 0 2px var(--color-selected-mark)' : ''}
             aria-label={splitUnitName(owned.name).name}
             aria-pressed={owned.guid === unit?.guid}
             title={splitUnitName(owned.name).name}
