@@ -81,7 +81,7 @@
             <span class="gb-sub"
               >{`${row.label} · ${row.split.join('/')}`}{#if row.trees === current}<span class="gb-tag"
                   ><Tag tone="muted">{plannerCopy.guideBuildLoaded}</Tag></span
-                >{:else if diff !== null && diff.missing !== null}<span
+                >{:else if diff !== null && diff.missing !== null}<span class="gb-miss"
                   >{plannerCopy.guideBuildMissing(diff.missing)}</span
                 >{/if}</span
             >
@@ -102,6 +102,10 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 2px 8px;
+  }
+  /* The talent a guide row lacks takes its own line under the build and split, at every width. */
+  .gb-miss {
+    flex-basis: 100%;
   }
   .gb-tag {
     display: inline-flex;

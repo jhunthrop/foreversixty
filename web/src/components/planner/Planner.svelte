@@ -1211,6 +1211,7 @@
     {store}
     panel={standalone}
     heading={shared ? bandCompareCopy.sharedHeading : undefined}
+    quietMatch={standalone && !shared}
     characterLevel={store.characterLevel}
     specOverride={specParam ?? undefined}
     onbanddiff={(diff) => (bandDiff = diff)}
@@ -1315,18 +1316,20 @@
         {/if}
       {/if}
     {/snippet}
-    <Ordered order={1} span>{@render plate()}</Ordered>
-    {#if status === 'ready'}
-      <!-- Point order straight after the trees in the phone flow (h-audit 2026-11-09). -->
-      <Ordered order={1} span
-        ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
-      >
-      <!-- Build vs guide under Point order at main's width (h-audit 2026-11-09): main ended 200 px above
-           the rail. Only a class with a guide build takes a slot: an empty one would still hold a flow gap. -->
-      {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
-        <Ordered order={4} span><GuideBuilds builds={guideBuilds} {store} /></Ordered>
+    <!-- The trees beside the rail, then Point order and Build vs guide full width beneath both (h-audit
+         2026-11-09: neither column leaves a void); on a phone Point order follows the trees. -->
+    {#snippet below()}
+      {#if status === 'ready'}
+        <Ordered order={1} span
+          ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
+        >
+        <!-- Only a class with a guide build takes a slot: an empty one would still hold a flow gap. -->
+        {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
+          <Ordered order={4} span><GuideBuilds builds={guideBuilds} {store} /></Ordered>
+        {/if}
       {/if}
-    {/if}
+    {/snippet}
+    <Ordered order={1} span>{@render plate()}</Ordered>
   </Page>
 {:else}
   <!-- Top Gear's inline "add a build" (TalentCandidates.svelte): the facts bar, the trees, the

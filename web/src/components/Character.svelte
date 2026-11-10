@@ -461,10 +461,20 @@
               {/snippet}
             </Row>
           {/each}
+          {#if own !== null && scored}
+            <CharacterOwnerSections
+              path={resolved}
+              history={historyEntitled}
+              coach={coachEntitled}
+              fights={data.history.length}
+              latest={(data.score_history ?? []).at(-1) ?? null}
+              inPanel
+            />
+          {/if}
         </Section></Ordered
       >
     {/if}
-    {#if own !== null && scored}
+    {#if own !== null && scored && data.best.length === 0}
       <Ordered order={5} span
         ><CharacterOwnerSections
           path={resolved}

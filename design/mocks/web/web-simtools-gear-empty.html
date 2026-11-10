@@ -493,7 +493,7 @@ body .sec-h{flex-wrap:wrap;row-gap:4px}body .sec-h .act{line-height:21px}body .r
 .hit{box-sizing:border-box;display:flex;align-items:center;gap:12px;min-height:44px;padding:6px 0;border-bottom:1px solid var(--line-soft,var(--line))}.hit:last-child{border-bottom:0}.hit-n{flex:1;min-width:0;font-size:15px;line-height:20px}
 .wbody{padding-top:10px}.wbody p{margin:0}.opts{list-style:none;margin:0;padding:0}.opts.ce{padding-top:16px}.opts.two{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
 .sets-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;padding-top:19px}.pad{padding:16px}.kinds{display:flex;flex-wrap:wrap;gap:0 20px}
-.src-g{display:flex;flex-direction:column;gap:4px;padding-top:16px}.src{display:flex;flex-direction:column;padding:4px 0}.indent{padding-left:28px}.grow-n{flex:1}.src p.indent{margin:0;line-height:19.5px}.src .disc>summary{display:flex;align-items:center;height:44px;box-sizing:border-box}.src-g .t-h4{margin:0;font-size:15px;line-height:20px}
+.src-g{display:flex;flex-direction:column;padding-top:8px}.src{display:flex;flex-direction:column}.indent{padding-left:28px}.grow-n{flex:1}.src p.indent{margin:0;line-height:19.5px}.src .disc>summary{display:flex;align-items:center;height:44px;box-sizing:border-box}.src-g .t-h4{margin:0;font-size:15px;line-height:20px}
 .pn-b>.search-f{padding-bottom:16px}.spec-t{display:flex;flex-wrap:wrap;align-items:center;column-gap:16px}.spec-t .disc{font-weight:400}.rail-col .pn-b>.tb{padding-top:0}.pn-b>.opts.ce{padding-top:0}.pn-b .sets-f{padding-top:8px}.pn-b>.cands{padding-top:12px}
 .alink{display:inline-flex;align-items:center;min-height:44px}.wt-pub{display:flex;flex-direction:column;gap:8px}.wt-pub p{margin:0;font-size:13px}.gated{display:flex;flex-direction:column;gap:4px;margin:0;padding-left:12px;list-style:none}.gated li{line-height:19.5px}.gb{padding-top:4px}
 .wt-pub .st .stc{grid-template-columns:0 var(--st-name) var(--st-bar) repeat(var(--n),var(--st-fig))}@media(max-width:1023px){.wt-pub .st .stc{grid-template-columns:0 minmax(0,1fr) auto}}
@@ -1104,6 +1104,9 @@ table.gridm.edge :is(th,td):last-child{padding-right:20px}
 @media(min-width:1280px){.layout-wb.panels{column-gap:28px}.layout-wb.panels>.main,.layout-wb.panels>.rail{gap:22px}}
 
 @media(max-width:767px){.porder-r .porder-s>span,.porder-r .porder-s img,.porder-r .porder-s .ic,.porder-r .porder-s .em{width:100%!important;max-width:30px;height:auto!important;aspect-ratio:1}.porder-r .porder-s img,.porder-r .porder-s .ic{display:block}}
+
+.layout-wb>.below{display:contents}
+@media(min-width:1280px){.layout-wb>.below{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--section-gap);min-width:0}}
 </style></main><!-- Simulator tools mock (design/specs/2026-11-06-sim.md grammar), built only from ws_prims. Character: a level 60 Orc Fury Warrior entered by hand (Lionheart Helm, Arcanite Reaper); items, sources, consumables and stats from build 1.60.1.70790. --><style data-system="round5">
 :root{--bg:#100a06;--raised:#170e09;--hover:#241b15;--line:#3d342d;--line-soft:#2c241f;--text:#e3dfd9;--strong:#fff;
 --muted:#e2dcd3;--nav:#fff;--gold:#ffec71;--gold-hover:#f7b90a;--cream:#f3eee2;--accent:#0093b2;--teal:#0f6064;

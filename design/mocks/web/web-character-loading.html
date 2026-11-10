@@ -426,7 +426,7 @@ body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:aut
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
 .line{font-size:15px;line-height:24px;color:var(--text);padding-block:6px}
-@media(max-width:767px){.wait-pre{display:none}}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
+@media(max-width:767px){.wait-pre{display:none}}.own-in{margin-top:8px;padding-top:4px;border-top:1px solid var(--line-soft)}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
 .sum-row{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:20px}.notice.facts{gap:4px 20px}
 .frow .st{color:var(--strong)}
 /* round 5 (lane P9): the split from 1280, the frame centred at 640, the answer's sim link beside its figure, the parts' bars */
@@ -554,7 +554,7 @@ a.row:hover,.row.hov{background:var(--hover)}
 .rr .nm{min-width:0;display:flex;flex-direction:column}
 .rr .nm .ttl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .rr .nm .ttl a{font:700 16px/20px var(--font-body);color:var(--c)}.rr .nm .ttl a:hover{text-decoration:underline;text-underline-offset:4px}
-.rr .nm .sub{font-size:13px;line-height:18px;color:var(--muted)}
+.rr .nm .sub{font-size:13px;line-height:18px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rr .nm .low{font-size:13px;line-height:18px;color:var(--muted);text-decoration:underline dotted;text-underline-offset:3px;align-self:flex-start}
 .rr .br{display:flex;flex-direction:column;gap:4px;min-width:0}.rr .br .tie{font:700 12px/16px var(--font-body);color:var(--strong)}
 .rr .x{display:contents}
@@ -1045,6 +1045,9 @@ table.gridm.edge :is(th,td):last-child{padding-right:20px}
 @media(min-width:1280px){.layout-wb.panels{column-gap:28px}.layout-wb.panels>.main,.layout-wb.panels>.rail{gap:22px}}
 
 @media(max-width:767px){.porder-r .porder-s>span,.porder-r .porder-s img,.porder-r .porder-s .ic,.porder-r .porder-s .em{width:100%!important;max-width:30px;height:auto!important;aspect-ratio:1}.porder-r .porder-s img,.porder-r .porder-s .ic{display:block}}
+
+.layout-wb>.below{display:contents}
+@media(min-width:1280px){.layout-wb>.below{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--section-gap);min-width:0}}
 </style></main><!-- Layout mock. Sample content for layout only; the build renders every figure from data. Spec: design/specs/2026-11-05-web-layout.md. --><style data-system="round5">
 :root{--bg:#100a06;--raised:#170e09;--hover:#241b15;--line:#3d342d;--line-soft:#2c241f;--text:#e3dfd9;--strong:#fff;
 --muted:#e2dcd3;--nav:#fff;--gold:#ffec71;--gold-hover:#f7b90a;--cream:#f3eee2;--accent:#0093b2;--teal:#0f6064;

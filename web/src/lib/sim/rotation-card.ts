@@ -201,7 +201,7 @@ export function plannedRotationRows(
             number: at + 1,
             action: null,
             name: copy.otherCooldowns,
-            note: copy.beforeRun,
+            note: '',
             casts: null,
             dimmed: false,
           }

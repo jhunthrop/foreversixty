@@ -52,8 +52,8 @@ def Section(*args, **kw) -> str:
     return _Section(*args, **kw)
 
 
-def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False) -> str:
-    return _Page(layout, main, rail, sticky_rail, panels=layout == 'workbench')
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, below: str = '') -> str:
+    return _Page(layout, main, rail, sticky_rail, panels=layout == 'workbench', below=below)
 
 
 def TalentEditor(trees: list[dict], active: int = 0, foot: str = '') -> str:
@@ -174,7 +174,7 @@ def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = 
         see = Button(e(C['band']['seeWhatDiffers'])) if s['kind'] == 'differs' else ''
         acts = f'<div class="pl-acts">{"" if readonly else Button(e(b["load"]))}{see}</div>'
     ld = f'<p class="t-small">{e(loaded)}</p>' if loaded else ''
-    gear = f'<p class="pl-gear"><span class="t-small">{e(b["gear"])}</span>{Link(r(C["band"]["bestInSlotList"]))}</p>'
+    gear = f'<p class="pl-gear">{Link(r(C["band"]["bestInSlotList"]))}</p>'
     return Section(e(b['heading']), f'<div class="pl-sec">{line}{beyond}{acts}{ld}{gear}</div>')
 
 
@@ -289,7 +289,7 @@ def guide_builds(st: dict) -> str:
     """Guide builds as build vs guide (GuideBuilds.svelte): the spec icon, name, build and split; the build on screen carries
     Loaded, every other row its points off, the split's change and the first talent it lacks."""
     def sub(b: dict) -> str:
-        tail = Tag(e(P['guideBuildLoaded']), 'muted') if b['current'] else (f'<span>{e(b["missing"])}</span>' if b.get('missing') else '')
+        tail = Tag(e(P['guideBuildLoaded']), 'muted') if b['current'] else (f'<span class="gb-miss">{e(b["missing"])}</span>' if b.get('missing') else '')
         return f'<span class="gb-sub">{e(b["label"])} &middot; {"/".join(str(x) for x in b["split"])}{tail}</span>'
 
     def trail(b: dict) -> str:
@@ -311,14 +311,18 @@ def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note:
     send = F['send'][send_key] if send_key else None
     gb = guide_builds(st)
     # Build vs guide under Point order at main's width (h-audit 2026-11-09).
-    main = Ordered(plate, 1, span=True) + Ordered(order(st), 1, span=True) + (Ordered(gb, 4, span=True) if gb else '')
+    # The trees beside the rail, then Point order and Build vs guide full width beneath both (h-audit 2026-11-09).
+    main = Ordered(plate, 1, span=True)
+    below = Ordered(order(st), 1, span=True) + (Ordered(gb, 4, span=True) if gb else '')
     # One take-it-with-you plate (h-audit 2026-11-09): Share (once a point is spent) and Import as parts of In the game.
     parts = ((part(e(P['shareTitle']), share_body(st, share_mode)) if st['spent'] else '')
              + part(e(C['addon']['importTitle']), importer_body(st, import_mode)))
-    rail = Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state, parts=parts), 5)
+    # The level card says nothing when the build matches it (the guide row's Loaded tag says so).
+    quiet = st['compare'] is not None and st['compare']['kind'] == 'matches' and not confirm and not loaded
+    rail = ('' if quiet else Ordered(compare(st, confirm, loaded), 2)) + Ordered(in_game(st, send, copy_state, parts=parts), 5)
     # Ruling MUST 1: the build's origin is said once; the gold origin line drops whenever the note shows.
     body = (head(st, signed != 'out', st.get('origin', '') if origin and not note else '') + bar(st, open_m) + notes(note, note_short)
-            + Page('workbench', main, rail) + PAGE_CSS)
+            + Page('workbench', main, rail, below=below) + PAGE_CSS)
     who = WHO if signed == 'in' else None
     return build_page(f'{st["title"]} · Forever Sixty', body, 'Tools', who,
                       f'Planner mock ({key}). Data: planner-facts.json (lib/planner/* on build {F["build"]}). {title_note} Spec: design/specs/2026-11-08-planner.md.')
@@ -399,7 +403,7 @@ PAGE_CSS = '''<style>
 @media(max-width:767px){main .btn.sm{height:44px}}
 
 .pl-sec{display:flex;flex-direction:column;gap:12px;padding-top:2px}.pl-pad{padding-top:2px}
-.gb-off{display:flex;flex-direction:column;align-items:flex-end;font-size:13px;line-height:18px;white-space:nowrap}
+.gb-off{display:flex;flex-direction:column;align-items:flex-end;font-size:13px;line-height:18px;white-space:nowrap}.gb-off>span{line-height:18px}.gb-miss{flex-basis:100%}
 .pl-part{margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft)}.pl-part-h{margin:0 0 10px;font:600 15px/20px var(--font-body);color:var(--strong)}
 .pl-acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.pl-acts.pl-end{align-items:flex-end}
 .pl-line{font-size:15px;line-height:22px}.pl-note{font-size:14px;line-height:20px}.pl-note.muted{color:var(--muted)}

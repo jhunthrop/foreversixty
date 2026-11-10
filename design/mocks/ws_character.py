@@ -45,7 +45,7 @@ CHAR_CSS = '''
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
 .line{font-size:15px;line-height:24px;color:var(--text);padding-block:6px}
-@media(max-width:767px){.wait-pre{display:none}}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
+@media(max-width:767px){.wait-pre{display:none}}.own-in{margin-top:8px;padding-top:4px;border-top:1px solid var(--line-soft)}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
 .sum-row{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:20px}.notice.facts{gap:4px 20px}
 .frow .st{color:var(--strong)}
 /* round 5 (lane P9): the split from 1280, the frame centred at 640, the answer's sim link beside its figure, the parts' bars */
@@ -340,7 +340,7 @@ def parse_color(pct: float) -> str:
     return next(c for floor, c in PARSE if round(pct) >= floor)
 
 
-def fights_section(ch: Char) -> str:
+def fights_section(ch: Char, extra: str = '') -> str:
     p = ch.page
     rows = []
     for f in p['best'][:FIGHTS_SHOWN]:
@@ -358,7 +358,7 @@ def fights_section(ch: Char) -> str:
                  if before else '')
         spec = '' if f['spec'] == SPEC[ch.cls] else f" &middot; {f['spec']}"  # the page's own spec goes without saying
         rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])}{spec}{ex}{since}", trail=trail, slim=True))
-    return panel('Best per encounter', RowsSlim(rows), f"All fights ({len(p['history'])})")
+    return panel('Best per encounter', RowsSlim(rows) + extra, f"All fights ({len(p['history'])})")
 
 
 def builds_section(ch: Char) -> str:
@@ -379,15 +379,16 @@ def coach_rows(file: str) -> str:
     return f'<section aria-label="Your coach">{Rows(rows, open_=True, list_=True)}</section>'
 
 
-def owner_sections(premium: bool, fights: int, coach: str | None = None, latest: dict | None = None) -> str:
+def owner_sections(premium: bool, fights: int, coach: str | None = None, latest: dict | None = None, in_panel: bool = False) -> str:
     """One History panel (h-audit 2026-11-09): the charts' Disclosure with the fight count, then the coach's reviews."""
+    wrap = (lambda body: f'<div class="own-in">{body}</div>') if in_panel else (lambda body: panel('History', body))
     if not premium:
-        return panel('History', Rows([Row('Score over time and parse per boss', 'Premium keeps every rated fight.',
-                                          trail=Link('See plans &rsaquo;'), link=False)], open_=True))
+        return wrap(Rows([Row('Score over time and parse per boss', 'Premium keeps every rated fight.',
+                              trail=Link('See plans &rsaquo;'), link=False)], open_=True))
     body = coach_rows(coach) if coach else ''
     summary = f"Score {latest['score']:,} on {short_date(latest['date'] + 'T00:00:00Z')}" if latest else 'Score and parses'
-    return panel('History', Disclosure(summary, '', meta=f"{fights} {'fight' if fights == 1 else 'fights'}")
-                 + Disclosure('Coach reviews', body, open_=coach is not None))
+    return wrap(Disclosure(summary, '', meta=f"{fights} {'fight' if fights == 1 else 'fights'}")
+                + Disclosure('Coach reviews', body, open_=coach is not None))
 
 
 def waiting(ch: Char, owner: dict) -> list[tuple[str, str]]:
@@ -426,8 +427,12 @@ def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | Non
     if owner:
         body += waiting_summary(waiting(ch, owner))
     logged = bool(ch.page.get('score'))
-    main = (O(gear_section(ch), 1, True) + O(fights_section(ch) if ch.page['best'] else '', 4, True)
-            + O(owner_sections(premium, len(ch.page['history']), coach, (ch.page.get('score_history') or [None])[-1]) if owner and logged else '', 5, True))
+    latest = (ch.page.get('score_history') or [None])[-1]
+    fights = len(ch.page['history'])
+    # The owner's History and Coach rows sit under the best fights, in their panel (h-audit 2026-11-09).
+    inner = owner_sections(premium, fights, coach, latest, in_panel=True) if owner and logged and ch.page['best'] else ''
+    alone = owner_sections(premium, fights, coach, latest) if owner and logged and not ch.page['best'] else ''
+    main = (O(gear_section(ch), 1, True) + O(fights_section(ch, inner) if ch.page['best'] else '', 4, True) + O(alone, 5, True))
     stand = standing_section(standing(home, 'guild' in owner, SPEC[ch.cls])) if owner else ''
     rail = (O(score_section(ch, owner is not None), 2) + O(stand, 3) + O(builds_section(ch) if ch.page['builds_seen'] else '', 6)
             + O(activity_section(feed, ch.page['character']['name']), 7))

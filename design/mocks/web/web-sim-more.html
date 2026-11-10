@@ -1078,6 +1078,9 @@ table.gridm.edge :is(th,td):last-child{padding-right:20px}
 @media(min-width:1280px){.layout-wb.panels{column-gap:28px}.layout-wb.panels>.main,.layout-wb.panels>.rail{gap:22px}}
 
 @media(max-width:767px){.porder-r .porder-s>span,.porder-r .porder-s img,.porder-r .porder-s .ic,.porder-r .porder-s .em{width:100%!important;max-width:30px;height:auto!important;aspect-ratio:1}.porder-r .porder-s img,.porder-r .porder-s .ic{display:block}}
+
+.layout-wb>.below{display:contents}
+@media(min-width:1280px){.layout-wb>.below{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--section-gap);min-width:0}}
 </style></main><!-- Simulator mock (design/specs/2026-11-06-sim.md), built only from ws_prims. Run: web/src/fixtures/sim/result-full.json (the published warrior-fury 60 raid set, 10,000 runs); names, icons, items, talents and rotation from build 1.60.1.70790. SAMPLE: the signed-in name Thandrel, the last sims, the live estimate, the engine-refusal reason and the Your sims rows. --><style data-system="round5">
 :root{--bg:#100a06;--raised:#170e09;--hover:#241b15;--line:#3d342d;--line-soft:#2c241f;--text:#e3dfd9;--strong:#fff;
 --muted:#e2dcd3;--nav:#fff;--gold:#ffec71;--gold-hover:#f7b90a;--cream:#f3eee2;--accent:#0093b2;--teal:#0f6064;

@@ -22,6 +22,7 @@
     toc,
     top,
     rail,
+    below,
     stickyRail = false,
     panels = false,
     railFirst = false,
@@ -42,6 +43,9 @@
     top?: Snippet;
     /** `split`, `reading` and `workbench`: the rail (the lane on a reading page). */
     rail?: Snippet;
+    /** `workbench` only: a full-width row under main and the rail from 1280 (the planner's Point order
+     *  and guide builds under the trees and the rail); below 1280 its Ordered regions join the flow. */
+    below?: Snippet;
     /** The rail sticks below the bar from 1024. */
     stickyRail?: boolean;
     /** Main and rail hold Section `panel`s (the logs and report mocks): 22 px apart, the columns 28. */
@@ -86,6 +90,7 @@
       >
         {@render rail()}
       </aside>{/if}
+    {#if below && layout === 'workbench'}<div class="ui-page-below">{@render below()}</div>{/if}
   {:else}
     <div class="ui-page-main">{@render children()}</div>
   {/if}
@@ -161,7 +166,8 @@
     gap: var(--section-gap) var(--gap);
   }
   .ui-page[data-layout='workbench'] > .ui-page-main,
-  .ui-page[data-layout='workbench'] > .ui-page-rail {
+  .ui-page[data-layout='workbench'] > .ui-page-rail,
+  .ui-page[data-layout='workbench'] > .ui-page-below {
     display: contents;
   }
   .ui-page[data-layout='workbench'] :global([data-order]) {
@@ -190,6 +196,13 @@
     }
     .ui-page[data-layout='workbench'] > .ui-page-rail {
       gap: 40px;
+    }
+    .ui-page[data-layout='workbench'] > .ui-page-below {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--section-gap);
+      min-width: 0;
     }
     /* A workbench of panels (the planner): the panels 22 px apart, the columns 28. */
     .ui-page[data-layout='workbench'][data-panels] {

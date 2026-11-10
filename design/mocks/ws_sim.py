@@ -441,7 +441,7 @@ def rotation_section(ran: bool = True) -> str:
         a = p['action']
         if 'autocastOtherCooldowns' in a:
             total = round(sum(CASTS[k] for k in other))
-            sub = f'This run: {", ".join(act_name(k) for k in other)}.' if ran else 'Trinkets, racials and potions, as each comes off cooldown.'
+            sub = f'This run: {", ".join(act_name(k) for k in other)}.' if ran else ''
             cnt = (f'{total} cast{"s" if total != 1 else ""}' if total else 'Not cast in this run')
             r = Row(rot_title(other[0] if ran and other else '', 'Other cooldowns as they come up'), sub, rank=str(len(lines) + 1),
                     trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)

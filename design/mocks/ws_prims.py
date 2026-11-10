@@ -1883,3 +1883,24 @@ def TalentEditor(trees: list[dict], active: int = 0, foot: str = '', label: str 
         return html
     inner = html[html.index('<div class="tedit">'):html.rindex('</div>')]
     return Section(title, inner, panel=True, frame=frame, flush=True)
+
+
+# ------------------------------------------------ the workbench's row below (h-audit 2026-11-09; web ui/Page `below`): full width under
+# main and the rail from 1280, its Ordered regions in the one flow below 1280. Additive: Page(below='') emits what it did.
+_PageBelow0 = Page
+
+
+def Page(layout: str, main: str = '', rail: str = '', sticky_rail: bool = False, panels: bool = False, below: str = '',
+         **kwargs: object) -> str:
+    """Page; `below` on 'workbench' is a full-width row under main and the rail from 1280."""
+    html = _PageBelow0(layout, main, rail, sticky_rail, panels, **kwargs)
+    if not below or layout != 'workbench':
+        return html
+    at = html.rindex('</aside>') + len('</aside>')
+    return html[:at] + f'<div class="below">{below}</div>' + html[at:]
+
+
+PRIM_CSS += '''
+.layout-wb>.below{display:contents}
+@media(min-width:1280px){.layout-wb>.below{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--section-gap);min-width:0}}
+'''

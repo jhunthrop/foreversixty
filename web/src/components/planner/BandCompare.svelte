@@ -42,6 +42,7 @@
     onloaded,
     onband,
     heading,
+    quietMatch = false,
     panel = false,
   }: {
     /** The heading inside its panel (the standalone planner's rail and column). */
@@ -65,6 +66,9 @@
     onband?: (band: BisBand | null, bandLabel: string) => void;
     /** The section's title in place of `{band} build`: a shared build's `Guide build` (ruling SHOULD). */
     heading?: string;
+    /** The standalone planner: a build that matches its level build draws no card (h-audit 2026-11-09:
+     *  a plate holding one Matches chip and a button); the guide row's Loaded tag says it. */
+    quietMatch?: boolean;
   } = $props();
 
   let file = $state<BisFile | null | undefined>(undefined);
@@ -175,6 +179,9 @@
   /** What the last load did, shown until the build changes from what it loaded. */
   let loaded = $state({ key: '', line: '' });
   const loadedLine = $derived(loaded.key === store.order.join(',') ? loaded.line : '');
+  const quiet = $derived(
+    quietMatch && status?.kind === 'matches' && coverage === null && !confirming && loadedLine === '',
+  );
 
   /** The band's talents, applied in tree/tier/column order -- the same order the
    *  reconstruction itself walks -- so "see what differs" always jumps to a real,
@@ -227,77 +234,76 @@
   }
 </script>
 
-<Section title={heading ?? bandCompareCopy.heading(bandLabel)} {panel} testid="band-compare">
-  {#if file === undefined}
-    <div class="pl-sec" data-testid="band-compare-skeleton" aria-busy="true">
-      <span class="skeleton-block block max-w-full" style="width:260px;height:20px"></span>
-      <span class="skeleton-block block max-w-full" style="width:200px;height:44px"></span>
-    </div>
-  {:else if file === null || bandEntry === undefined}
-    <p class="text-small text-muted pl-pad" data-testid="band-compare-empty">
-      {bandCompareCopy.noLevelBuild(
-        store.level,
-        specKey !== null ? specDisplayName(specKey) : '',
-        specKey !== null ? siblingSpecNames(specKey) : [],
-      )}
-    </p>
-  {:else if diff !== null}
-    <div class="pl-sec">
-      <p class="pl-line" data-testid="band-compare-differs">
-        {#if coverage !== null}
-          {bandCompareCopy.coversFewer(coverage.covered, coverage.total)}
-        {:else if status?.kind === 'matches'}
-          <Tag tone="success">{bandCompareCopy.matches}</Tag>
-        {:else if status?.kind === 'differs'}
-          {namedLine}
-        {:else if status?.kind === 'toTake'}
-          <b class="text-gold tabular-nums">{status.count}</b>
-          {bandCompareCopy.toTakeSuffix}
+{#if !quiet}<Section title={heading ?? bandCompareCopy.heading(bandLabel)} {panel} testid="band-compare">
+    {#if file === undefined}
+      <div class="pl-sec" data-testid="band-compare-skeleton" aria-busy="true">
+        <span class="skeleton-block block max-w-full" style="width:260px;height:20px"></span>
+        <span class="skeleton-block block max-w-full" style="width:200px;height:44px"></span>
+      </div>
+    {:else if file === null || bandEntry === undefined}
+      <p class="text-small text-muted pl-pad" data-testid="band-compare-empty">
+        {bandCompareCopy.noLevelBuild(
+          store.level,
+          specKey !== null ? specDisplayName(specKey) : '',
+          specKey !== null ? siblingSpecNames(specKey) : [],
+        )}
+      </p>
+    {:else if diff !== null}
+      <div class="pl-sec">
+        <p class="pl-line" data-testid="band-compare-differs">
+          {#if coverage !== null}
+            {bandCompareCopy.coversFewer(coverage.covered, coverage.total)}
+          {:else if status?.kind === 'matches'}
+            <Tag tone="success">{bandCompareCopy.matches}</Tag>
+          {:else if status?.kind === 'differs'}
+            {namedLine}
+          {:else if status?.kind === 'toTake'}
+            <b class="text-gold tabular-nums">{status.count}</b>
+            {bandCompareCopy.toTakeSuffix}
+          {/if}
+        </p>
+        {#if pastLine !== ''}
+          <p class="text-small text-muted" data-testid="band-compare-past">{pastLine}</p>
         {/if}
-      </p>
-      {#if pastLine !== ''}
-        <p class="text-small text-muted" data-testid="band-compare-past">{pastLine}</p>
-      {/if}
-      {#if beyond > 0}
-        <p class="text-small text-muted" data-testid="band-compare-beyond">
-          {bandCompareCopy.beyondGuide(beyond)}
-        </p>
-      {/if}
-      {#if confirming}
-        <p class="text-small text-muted" data-testid="band-compare-load-confirm">
-          {bandCompareCopy.loadConfirmMessage}
-        </p>
-        <div class="pl-acts">
-          <Button onclick={confirmLoad} testid="band-compare-load-confirm-proceed"
-            >{bandCompareCopy.loadConfirmProceed}</Button
-          >
-          <Button onclick={() => (confirming = false)} testid="band-compare-load-confirm-cancel"
-            >{bandCompareCopy.loadConfirmCancel}</Button
-          >
-        </div>
-      {:else}
-        <div class="pl-acts">
-          {#if !store.readOnly}
-            <Button onclick={requestLoad} testid="band-compare-load"
-              >{bandCompareCopy.loadButton(bandLabel)}</Button
+        {#if beyond > 0}
+          <p class="text-small text-muted" data-testid="band-compare-beyond">
+            {bandCompareCopy.beyondGuide(beyond)}
+          </p>
+        {/if}
+        {#if confirming}
+          <p class="text-small text-muted" data-testid="band-compare-load-confirm">
+            {bandCompareCopy.loadConfirmMessage}
+          </p>
+          <div class="pl-acts">
+            <Button onclick={confirmLoad} testid="band-compare-load-confirm-proceed"
+              >{bandCompareCopy.loadConfirmProceed}</Button
             >
-          {/if}
-          {#if status?.kind === 'differs'}
-            <Button onclick={scrollToFirstDiff} testid="band-compare-see-differs"
-              >{bandCompareCopy.seeWhatDiffers}</Button
+            <Button onclick={() => (confirming = false)} testid="band-compare-load-confirm-cancel"
+              >{bandCompareCopy.loadConfirmCancel}</Button
             >
-          {/if}
-        </div>
-      {/if}
-      {#if loadedLine !== ''}
-        <p class="text-small text-muted" data-testid="band-compare-loaded">{loadedLine}</p>
-      {/if}
-      <p class="pl-gear">
-        <span class="text-small text-muted">{bandCompareCopy.gearRowLabel(bandLabel)}</span>
-        <a class={LINK} href={gearHref} data-testid="band-compare-gear-link"
-          >{bandCompareCopy.bestInSlotList} ›</a
-        >
-      </p>
-    </div>
-  {/if}
-</Section>
+          </div>
+        {:else}
+          <div class="pl-acts">
+            {#if !store.readOnly}
+              <Button onclick={requestLoad} testid="band-compare-load"
+                >{bandCompareCopy.loadButton(bandLabel)}</Button
+              >
+            {/if}
+            {#if status?.kind === 'differs'}
+              <Button onclick={scrollToFirstDiff} testid="band-compare-see-differs"
+                >{bandCompareCopy.seeWhatDiffers}</Button
+              >
+            {/if}
+          </div>
+        {/if}
+        {#if loadedLine !== ''}
+          <p class="text-small text-muted" data-testid="band-compare-loaded">{loadedLine}</p>
+        {/if}
+        <p class="pl-gear">
+          <a class={LINK} href={gearHref} data-testid="band-compare-gear-link"
+            >{bandCompareCopy.bestInSlotList} ›</a
+          >
+        </p>
+      </div>
+    {/if}
+  </Section>{/if}

@@ -20,6 +20,7 @@
     coach,
     fights,
     latest = null,
+    inPanel = false,
   }: {
     path: CharacterPath;
     history: boolean;
@@ -27,6 +28,8 @@
     fights: number;
     /** The newest score on file: the History summary names it ("Score 1,830 on 6 Nov"). */
     latest?: ScorePoint | null;
+    /** Drawn inside the Best per encounter panel, under its fights, instead of a History panel of its own. */
+    inPanel?: boolean;
   } = $props();
 
   let historyOpen = $state(false);
@@ -61,7 +64,7 @@
   });
 </script>
 
-<Section title={copy.history} panel testid="character-owner-history">
+{#snippet body()}
   {#if history}
     <Disclosure
       summary={latest === null
@@ -89,4 +92,14 @@
       </Disclosure>
     </div>
   {/if}
-</Section>
+{/snippet}
+
+<!-- In the fights panel (`inPanel`, h-audit 2026-11-09): under the best fights, no plate of its own; with no
+     best fights, its own History panel. -->
+{#if inPanel}
+  <div class="border-line-soft mt-2 border-t pt-1" data-testid="character-owner-history">
+    {@render body()}
+  </div>
+{:else}
+  <Section title={copy.history} panel testid="character-owner-history">{@render body()}</Section>
+{/if}

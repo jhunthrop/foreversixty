@@ -273,7 +273,6 @@ export const bandCompareCopy = {
     "Loading replaces every point you've spent with this level range's own build. Load anyway?",
   loadConfirmProceed: 'Load it',
   loadConfirmCancel: 'Keep my build',
-  gearRowLabel: (bandLabel: string): string => `Gear for ${bandLabel}`,
   bestInSlotList: 'Best in slot list',
   /** Rebuild spec §4.E.4: one more line in the talent cell's own existing tooltip, once a
    *  band has loaded and this cell's rank differs from it. */

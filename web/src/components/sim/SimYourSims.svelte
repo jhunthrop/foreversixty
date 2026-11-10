@@ -102,23 +102,28 @@
             <ServerRunRow
               {row}
               {now}
+              {pageSpec}
               rerun={rerunStatus[row.sim_id] ?? 'idle'}
               onrerun={(id) => void rerun(id)}
             />
           {:else}
             {@const kind = kindOf(row)}
+            <!-- An untitled run of the page's own spec is named by its day alone (h-audit 2026-11-09). -->
+            {@const ownRun = kind === 'run' && row.title === '' && row.spec === pageSpec}
             <Row
-              title={titleOf(row)}
-              sub={[
-                kind === 'run'
-                  ? row.spec === pageSpec
-                    ? ''
-                    : specDisplayName(row.spec)
-                  : ((KIND_TITLES as Record<string, string>)[kind] ?? kind),
-                dayMonth(row.created_at),
-              ]
-                .filter((part) => part !== null && part !== '')
-                .join(' · ')}
+              title={ownRun ? dayMonth(row.created_at) : titleOf(row)}
+              sub={ownRun
+                ? undefined
+                : [
+                    kind === 'run'
+                      ? row.spec === pageSpec
+                        ? ''
+                        : specDisplayName(row.spec)
+                      : ((KIND_TITLES as Record<string, string>)[kind] ?? kind),
+                    dayMonth(row.created_at),
+                  ]
+                    .filter((part) => part !== null && part !== '')
+                    .join(' · ')}
               href={`/sim/${row.sim_id}`}
               testid={`sim-history-${row.sim_id}`}
               open

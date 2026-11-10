@@ -34,8 +34,6 @@ const OUT = process.env.CAPTURE_OUT ?? path.join(REPO_ROOT, 'design/reviews/2026
 const ONLY = process.env.CAPTURE_ONLY ? new RegExp(process.env.CAPTURE_ONLY) : null;
 const WIDTHS = [1440, 390] as const;
 const HEIGHT = 1000;
-/** States whose opener drives desktop-only controls: opened at 1440, then narrowed to shoot. */
-const OPEN_WIDE = new Set(['sim-result']);
 
 const stateOf = <T>(file: string, id: string): T => {
   const state = readParityConfig(file).states.find((entry) => entry.id === id);
@@ -127,11 +125,9 @@ for (const [name, open] of PAGES) {
   for (const width of WIDTHS) {
     test(`${name} at ${width}`, async ({ page }) => {
       test.slow();
-      const openWide = OPEN_WIDE.has(name);
-      await page.setViewportSize({ width: openWide ? WIDTHS[0] : width, height: HEIGHT });
+      await page.setViewportSize({ width, height: HEIGHT });
       await prepareParityPage(page);
       await open(page);
-      if (openWide) await page.setViewportSize({ width, height: HEIGHT });
       await settleParityPage(page);
       await page.screenshot({ path: path.join(OUT, `${name}-${width}.png`), fullPage: true });
     });

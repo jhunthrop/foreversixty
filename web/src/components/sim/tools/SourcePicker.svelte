@@ -308,6 +308,17 @@
             testid={`sim-kind-${group.kind}-list`}
           >
             {@render groupBody(group.kind, shown)}
+            {@const later = group.sources.filter((source) => !visibility.shown.includes(source))}
+            {#if later.length > 0}
+              <!-- The kind's opened sources are rows; the rest are named in one line (h-audit 2026-11-09). -->
+              {@const gatedRest = gatedLine(later, gateLabel, bulkCopy.opensLater)}
+              <p class="text-muted m-0 pt-1 text-[13px]" data-testid={`sim-kind-${group.kind}-later`}>
+                {[
+                  ...gatedRest.dated,
+                  ...(gatedRest.undated.length > 0 ? [bulkCopy.sourcesNoDate(gatedRest.undated)] : []),
+                ].join(' · ')}
+              </p>
+            {/if}
           </Disclosure>
         {/if}
       </div>

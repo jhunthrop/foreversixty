@@ -183,7 +183,7 @@ function state({ cls, race, order = [], level = null, spec = null }) {
     spec: leads ? specLabel(specKey) : '', spec_key: specKey, spec_name: specDisplayName(specKey), siblings: siblingSpecNames(specKey),
     meta: [raceRow(race).name, 'Level ' + shownLevel, leads ? specLabel(specKey) : ''].filter(Boolean).join(' · '),
     trees, points, band: { band, label: bandLabel, heading: bandCompareCopy.heading(bandLabel), load: bandCompareCopy.loadButton(bandLabel),
-      gear: bandCompareCopy.gearRowLabel(bandLabel), none: entry ? '' : bandCompareCopy.noLevelBuild(shownLevel, specDisplayName(specKey), siblingSpecNames(specKey)) },
+      none: entry ? '' : bandCompareCopy.noLevelBuild(shownLevel, specDisplayName(specKey), siblingSpecNames(specKey)) },
     compare,
     text_summary: plannerCopy.shareTextSummary(raceRow(race).name, classRow(cls).name, trees.map((t) => ({ name: t.name, points: t.points })), shownLevel),
     order_view: orderView, preview_line: previewLine, guide_builds: guideBuilds,

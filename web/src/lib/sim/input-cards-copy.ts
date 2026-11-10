@@ -83,7 +83,6 @@ export const rotationCardCopy = {
   casts: (count: number) => (count === 1 ? '1 cast' : `${count} casts`),
   otherCooldowns: 'Other cooldowns as they come up',
   thisRun: (names: string) => `This run: ${names}.`,
-  beforeRun: 'Trinkets, racials and potions, as each comes off cooldown.',
   rank: (rank: number) => `Rank ${rank}`,
   prepullAt: (seconds: number) => `-${seconds} s`,
   guide: (spec: string) => `${spec} guide`,
