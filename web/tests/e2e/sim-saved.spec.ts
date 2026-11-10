@@ -234,7 +234,7 @@ test('a saved sim names the rotation it used, prints its notes in place, and car
   const bloodthirst = notes.find((note) => note.startsWith('On cooldown: the button'));
   expect(bloodthirst).toBeDefined();
   await expect(card).not.toContainText(bloodthirst!);
-  const execute = notes.find((note) => note.startsWith('First, in the Execute phase'));
+  const execute = notes.find((note) => note.startsWith('In the Execute phase, or in the last 15 seconds'));
   expect(execute).toBeDefined();
   await expect(card).toContainText(execute!);
 

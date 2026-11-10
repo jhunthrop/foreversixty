@@ -94,6 +94,10 @@
   width: var(--st-icon);
   height: var(--st-icon);
 }
+/* The head row's icon cell only holds the track (and leaves with it, `icons={false}`): no height. */
+.ui-st-h > .ui-st-icon {
+  height: 0;
+}
 .ui-st-name {
   min-width: 0;
   font: 700 15px/20px var(--font-body);
