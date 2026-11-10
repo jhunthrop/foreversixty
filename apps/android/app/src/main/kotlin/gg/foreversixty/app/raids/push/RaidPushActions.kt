@@ -64,9 +64,12 @@ data class RaidPushPayload(
 ) {
     data class Answer(val title: String, val body: String)
 
-    /** The screen a tap opens: the payload's app link, else the raid page. */
+    /**
+     * The screen a tap opens: the payload's app link when it names an app screen, else this raid's page.
+     * The site's raid page link names the guild by its slug, which the app cannot open, so the ids win.
+     */
     fun deepLink(askingSpec: Boolean = false): DeepLink {
-        if (!askingSpec) link?.let(DeepLink::parse)?.let { return it }
+        if (!askingSpec) link?.let(DeepLink::parse)?.takeIf { it !is DeepLink.GuildRaidPage }?.let { return it }
         return DeepLink.Raid(guild, raid, spec = if (askingSpec) "ask" else null)
     }
 

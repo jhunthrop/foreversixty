@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -60,10 +61,15 @@ fun CharacterPortrait(avatarUrl: String?, faction: String?, size: Dp, modifier: 
                 if (local != null) {
                     Image(local, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image))
                 } else {
+                    // A portrait that fails to load (a Battle.net render 403, no network) falls back to the
+                    // crest, never an empty ring (one crest language).
+                    val stand = crest?.let { painterResource(it) } ?: rememberVectorPainter(Icons.Outlined.Person)
                     AsyncImage(
                         model = avatarUrl,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
+                        error = stand,
+                        fallback = stand,
                         modifier = Modifier.fillMaxSize().parityItem(ParityItemKind.Image),
                     )
                 }

@@ -104,10 +104,12 @@ data class BisSelection(val classSlug: String, val spec: String, val range: BisR
         fun forGuide(classSlug: String, spec: String, faction: String?): BisSelection =
             BisSelection(classSlug, spec, BisRange.all.last(), faction?.takeIf { it in factions } ?: factions.last())
 
-        /** The character's own list, when the catalogue knows its class and spec. */
+        /** The character's own list, when the catalogue knows its class (its spec, else the class's first). */
         fun forCharacter(character: AccountCharacter, catalog: SpecCatalog): BisSelection? {
             val classSlug = character.className ?: return null
-            val spec = character.spec?.let { catalog.spec(classSlug, it) } ?: return null
+            // A character whose spec Battle.net has not reported yet opens on its class's first list,
+            // never on the previous character's (the switcher must move Gear with it).
+            val spec = character.spec?.let { catalog.spec(classSlug, it) } ?: catalog.specsOf(classSlug).firstOrNull() ?: return null
             val level = character.level ?: return null
             val faction = character.faction?.takeIf { it in factions } ?: return null
             return BisSelection(classSlug, spec.spec, BisRange.forLevel(level), faction)

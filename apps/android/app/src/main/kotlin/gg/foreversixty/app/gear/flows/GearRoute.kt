@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.rememberAsyncImagePainter
 import gg.foreversixty.app.bis.BisModel
@@ -25,6 +26,7 @@ import gg.foreversixty.app.bis.BisPickerContent
 import gg.foreversixty.app.bis.BisRoute
 import gg.foreversixty.app.bis.BisSelection
 import gg.foreversixty.app.bis.band
+import gg.foreversixty.app.designsystem.BrandArt
 import gg.foreversixty.app.designsystem.GameColors
 import gg.foreversixty.app.gear.WhereToGo
 import gg.foreversixty.app.home.HomeCache
@@ -81,7 +83,9 @@ fun GearRoute(model: BisModel, deps: GearDeps, owner: GearOwner, onSearch: (() -
         }
     }
     var open by remember { mutableStateOf<GearSlotRow?>(null) }
-    val portrait = owner.avatarUrl?.takeIf { it.isNotBlank() }?.let { rememberAsyncImagePainter(it) }
+    // A portrait that fails to load draws the seal, as no portrait does (never an empty medallion).
+    val seal = painterResource(BrandArt.Seal.res)
+    val portrait = owner.avatarUrl?.takeIf { it.isNotBlank() }?.let { rememberAsyncImagePainter(it, error = seal, fallback = seal) }
     content?.let { gear ->
         GearFlowScreen(
             gear,
