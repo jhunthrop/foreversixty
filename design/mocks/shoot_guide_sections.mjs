@@ -58,6 +58,17 @@ for (const width of WIDTHS) {
       if (shot && r.id !== "best-in-slot") await page.locator(`#${r.id}`).screenshot({ path: `${OUT}${TAG}-${slug}-${r.id}-${width}.png` });
     }
     await page.setViewportSize({ width, height: 1000 });
+    // A pinned short lane (reading-wrap's data-lane-sticky) only shows while scrolling: the viewport partway down Leveling.
+    if (width === 1440 && TAG === "after") {
+      await page.setViewportSize({ width, height: 900 });
+      await page.evaluate(() => {
+        const sec = document.querySelector("#leveling");
+        window.scrollTo(0, sec.getBoundingClientRect().top + window.scrollY + 380);
+      });
+      await page.waitForTimeout(300);
+      await page.screenshot({ path: `${OUT}pinned-${slug}-leveling-1440.png` });
+      await page.setViewportSize({ width, height: 1000 });
+    }
   }
   await page.close();
 }

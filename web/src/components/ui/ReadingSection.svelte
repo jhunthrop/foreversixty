@@ -116,7 +116,7 @@
       grid-template-areas: 'prose lane';
       align-items: start;
     }
-    .ui-rd[data-lane-sticky] > .ui-rd-lane {
+    .ui-rd:global([data-lane-sticky]) > .ui-rd-lane {
       position: sticky;
       top: calc(var(--bar-h) + 12px);
     }
