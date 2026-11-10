@@ -19,12 +19,15 @@ func decode(t *testing.T, b []byte) (int, int) {
 
 func sample() Input {
 	return Input{
-		Title:      "Arms leveling",
+		Title:      "Arms raid build",
 		Race:       "Human",
 		Class:      "Warrior",
+		ClassSlug:  "warrior",
 		ClassColor: "#c69b6d",
 		Split:      []int{31, 0, 20},
+		Trees:      []string{"Arms", "Fury", "Protection"},
 		Level:      60,
+		DPS:        "612 DPS ±4",
 	}
 }
 
@@ -91,8 +94,8 @@ func TestSplitTextJoinsTheTreeCounts(t *testing.T) {
 		in   []int
 		want string
 	}{
-		{[]int{31, 0, 20}, "31 / 0 / 20"},
-		{[]int{6, 1}, "6 / 1"},
+		{[]int{31, 0, 20}, "31/0/20"},
+		{[]int{6, 1}, "6/1"},
 		{nil, "0"},
 	} {
 		if got := splitText(tc.in); got != tc.want {

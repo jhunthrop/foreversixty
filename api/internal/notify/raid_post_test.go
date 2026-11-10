@@ -41,11 +41,11 @@ func TestRaidPostEmbedStates(t *testing.T) {
 		desc   string
 		fields []string
 	}{
-		{PostOpen, onyxiaThursday(), 15055189, "", "Sign up with the buttons below.", plain},
-		{PostLocked, onyxiaThursday(), 10130564, "", "Sign-ups are locked. An officer can still change yours.", plain},
-		{PostMoved, moved, 15055189, "Moved: ", "Sign-ups carry over. Check you can still make it.", []string{"When", "Was", "Guild time", "Signed up"}},
+		{PostOpen, onyxiaThursday(), 37810, "", "", plain},
+		{PostLocked, onyxiaThursday(), 9144196, "", "Sign-ups are locked. An officer can still change yours.", plain},
+		{PostMoved, moved, 37810, "Moved: ", "Sign-ups carry over. Check you can still make it.", []string{"When", "Was", "Guild time", "Signed up"}},
 		{PostCancelled, onyxiaThursday(), 15758187, "Cancelled: ", "This raid was cancelled.", []string{"When", "Signed up"}},
-		{PostEnded, onyxiaThursday(), 10130564, "", "This raid has ended.", plain},
+		{PostEnded, onyxiaThursday(), 9144196, "", "This raid has ended.", plain},
 		{PostDone, onyxiaThursday(), 8377482, "Done: ", "Logged as a raid night.", []string{"When", "Came", "Kills"}},
 	}
 	for _, c := range cases {

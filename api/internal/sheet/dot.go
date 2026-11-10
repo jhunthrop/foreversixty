@@ -3,6 +3,8 @@ package sheet
 import (
 	"image"
 	"image/color"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 )
 
 // The quality dot (spec §A.4.1) at Discord's 128 px emoji size: the spec's 64 px drawing at
@@ -37,7 +39,7 @@ func QualityDots() ([]QualityDot, error) {
 func dotImage(fill color.RGBA) *image.NRGBA {
 	img := image.NewNRGBA(image.Rect(0, 0, dotSide, dotSide))
 	shade := color.NRGBA{A: dotShadeA}
-	fillMask(img, image.Point{}, discMask(dotSide, dotRadius+dotOutline/2), shade)
-	fillMask(img, image.Point{}, discMask(dotSide, dotRadius-dotOutline/2), fill)
+	brand.FillMask(img, image.Point{}, discMask(dotSide, dotRadius+dotOutline/2), shade)
+	brand.FillMask(img, image.Point{}, discMask(dotSide, dotRadius-dotOutline/2), fill)
 	return img
 }

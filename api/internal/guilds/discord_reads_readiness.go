@@ -142,7 +142,7 @@ func readinessLine(row ReadinessRow, now time.Time) string {
 		parts = append(parts, "No enchant: "+strings.Join(labels, ", "))
 	}
 	if row.Consumables.State == "short" {
-		parts = append(parts, "Short")
+		parts = append(parts, "Consumables short")
 	}
 	if n := row.TalentPointsUnspent; n > 0 {
 		parts = append(parts, fmt.Sprintf("%d unspent talent point%s", n, plural(n)))

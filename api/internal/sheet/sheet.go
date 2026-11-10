@@ -1,11 +1,11 @@
 // Package sheet draws the Discord character sheet and the item tiles (spec
-// design/specs/2026-10-29-discord-gear-panel.md, Part B, §A.4 and Part C): a 1200 x 1688 PNG
+// design/specs/2026-10-29-discord-gear-panel.md, Part B, §A.4 and Part C): a 1264 x 1792 PNG
 // laid out like the in-game character frame, posted on Share in channel, and the 72 px icon
 // tiles the panel's thumbnails point at.
 //
-// It draws directly onto an image with golang.org/x/image, at scale 2 over the spec's 600 x
-// 844 logical box, with the site's faces (fonts/, Barlow 400 and 600, Cinzel 700, OFL) and
-// art (assets/, the HD crests, faction marks and seal, copied byte for byte from web/public).
+// It draws directly onto an image with golang.org/x/image, at scale 2, in the round-5 look
+// (render.go): the faces, colours, ground, band, panel and seal are internal/brand's, the site's
+// own; the HD crests and faction marks are assets/, copied byte for byte from web/public.
 // Item icons come from an IconSource: the active build's icon folder in production.
 package sheet
 
@@ -45,7 +45,10 @@ type Slot struct {
 	ItemLevel int
 	Meta      string
 	Gain      string
-	Empty     bool
+	// Pick is the /char upgrade's item name for the slot, "" when there is none: the gain line
+	// names it when it fits, and an empty slot shows it as its BiS.
+	Pick  string
+	Empty bool
 	// TwoHandOff marks the empty off hand under a two-handed main hand (set by Sheet.cellFor).
 	TwoHandOff bool `json:"-"`
 }
@@ -75,9 +78,13 @@ type Sheet struct {
 	Guild                string
 	Slots                []Slot
 	TwoHand              bool
+	// UpgradeTotal and UpgradeSlots are the /char summary in the centre column: the modelled
+	// gains summed in their unit ("+73.4 DPS") over how many slots; "" draws none.
+	UpgradeTotal string
+	UpgradeSlots int
 }
 
-// Render draws the sheet as a 1200 x 1688 PNG. It is safe to call concurrently.
+// Render draws the sheet as a 1264 x 1792 PNG. It is safe to call concurrently.
 func Render(s Sheet, icons IconSource) ([]byte, error) {
 	if err := s.validate(); err != nil {
 		return nil, err
@@ -85,11 +92,7 @@ func Render(s Sheet, icons IconSource) ([]byte, error) {
 	if icons == nil {
 		return nil, errors.New("sheet: no icon source")
 	}
-	r, err := newRenderer(icons)
-	if err != nil {
-		return nil, err
-	}
-	img, err := r.draw(s)
+	img, err := newRenderer(icons).draw(s)
 	if err != nil {
 		return nil, err
 	}

@@ -23,9 +23,9 @@ func wireOf(t *testing.T, e Embed) string {
 	return string(b)
 }
 
-const common = `"footer":{"text":"Forever Sixty"},"timestamp":"2026-10-25T18:30:00Z","color":15055189`
-const footer = `"footer":{"text":"Forever Sixty"},`
-const stamp = `"timestamp":"2026-10-25T18:30:00Z","color":15055189`
+const common = `"footer":{"text":"Forever Sixty","icon_url":"https://foreversixty.gg/seal-400.png"},"timestamp":"2026-10-25T18:30:00Z","color":37810`
+const footer = `"footer":{"text":"Forever Sixty","icon_url":"https://foreversixty.gg/seal-400.png"},`
+const stamp = `"timestamp":"2026-10-25T18:30:00Z","color":37810`
 
 func TestEmbedsMatchTheCopyTable(t *testing.T) {
 	head := `{"username":"Forever Sixty","avatar_url":"https://foreversixty.gg/seal-400.png","embeds":[`

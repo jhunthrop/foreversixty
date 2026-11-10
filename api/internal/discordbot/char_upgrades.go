@@ -263,7 +263,10 @@ func upgradesText(card rankings.Character, list upgradeList) string {
 	case len(list.items) == 0 && list.band != "":
 		return title + "\n" + fill(panelCopy.UpgradesNone, "{band label}", list.band)
 	}
-	return title + "\n" + rankLines[list.rank]
+	if by := rankLines[list.rank]; by != "" {
+		return title + "\n" + by
+	}
+	return title
 }
 
 // rankLines say what each list is ranked by, under its title.
@@ -273,13 +276,11 @@ var rankLines = map[upgradeRank]string{
 	rankLevel: panelCopy.UpgradesByLevel,
 }
 
-// moreText is "-# {n} more upgrades on the character page.", "" when none are left.
-func moreText(n int) string {
-	switch {
-	case n <= 0:
-		return ""
-	case n == 1:
-		return panelCopy.UpgradesMoreOne
+// characterPageLabel is the character page link's label: "All {n} upgrades" when the panel
+// shows only some of them, else "Character page".
+func characterPageLabel(shown, total int) string {
+	if total > shown {
+		return fill(panelCopy.AllUpgrades, "{n}", fmt.Sprint(total))
 	}
-	return fill(panelCopy.UpgradesMore, "{n}", fmt.Sprint(n))
+	return lookupCopy.CharacterPage
 }

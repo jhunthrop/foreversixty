@@ -29,6 +29,10 @@ type Description struct {
 	// ("31/0/20" for a three-tree class).
 	Split     []int
 	SplitText string
+	// TreeNames are the class's trees in Split's order ("Arms", "Fury", "Protection");
+	// ClassSlug is the class's slug ("warrior"), "" for a class the data does not know.
+	TreeNames []string
+	ClassSlug string
 	// Level is 10 + len(point_order) - 1, per the contract: the first point
 	// is spent at level 10, so a build with no points reads as level 9.
 	Level int
@@ -47,7 +51,7 @@ func Describe(data *trees.Data, b Build) Description {
 	}
 	if tb, ok := buildData(data, b.TreeVersion); ok {
 		if c, ok := tb.Class(b.ClassID); ok {
-			d.ClassName = c.Name
+			d.ClassName, d.ClassSlug = c.Name, c.Slug
 			if c.Color != "" {
 				d.ClassColor = c.Color
 			}
@@ -60,6 +64,7 @@ func Describe(data *trees.Data, b Build) Description {
 		position := make(map[int]int, len(treeList))
 		for i, tree := range treeList {
 			position[tree.ID] = i
+			d.TreeNames = append(d.TreeNames, tree.Name)
 		}
 		for _, id := range b.PointOrder {
 			t, ok := tb.Talent(b.ClassID, id)

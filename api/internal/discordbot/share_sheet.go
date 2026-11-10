@@ -140,10 +140,11 @@ func (s *Service) charSheet(d charData) *sheetPost {
 		Title: d.card.Character.Name, Kicker: cardLineWith(d.card, d.named, d.class, func(s string) string { return s }),
 		Subtitle: average, Level: level, Guild: guild, Slots: s.charSheetCells(d)}
 	model.TwoHand = s.wearsTwoHander(d)
+	model.UpgradeTotal, model.UpgradeSlots = upgradeSum(d.ups)
 	post := &sheetPost{model: model, accent: classColorOf(d.class), head: s.charHeader(d, false),
 		link: Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.CharacterPage, URL: s.characterURL(d.card.Character.Key)}}
 	if d.ups.band != "" {
-		post.model.Footer = fill(panelCopy.SheetCharGold, "{band label}", d.ups.band)
+		post.model.Footer = fill(panelCopy.SheetCharFooter, "{band label}", d.ups.band)
 	}
 	return post
 }
@@ -160,7 +161,7 @@ func (s *Service) charSheetCells(d charData) []sheet.Slot {
 		if w == nil {
 			cell := sheet.Slot{Slot: c.Value, Empty: true}
 			if upgraded {
-				cell.Gain = sheet.CopyUpgrade
+				cell.Gain, cell.Pick = sheet.CopyUpgrade, u.name
 				if u.gain == panelCopy.NotModelled {
 					cell.Gain = sheet.CopyNotModelled
 				}
@@ -174,11 +175,28 @@ func (s *Service) charSheetCells(d charData) []sheet.Slot {
 			cell.ItemLevel = level
 		}
 		if upgraded {
-			cell.Gain = u.gain
+			cell.Gain, cell.Pick = u.gain, u.name
 		}
 		out = append(out, cell)
 	}
 	return out
+}
+
+// upgradeSum is the sheet's summary: the measured gains summed in the list's unit ("+73.4 DPS",
+// "+21.0 points") and how many slots they span; none for a list ranked by item level.
+func upgradeSum(l upgradeList) (string, int) {
+	unit := map[upgradeRank]string{rankDPS: "DPS", rankScore: pointsWord}[l.rank]
+	total, slots := 0.0, 0
+	for _, u := range l.items {
+		if u.group == groupMeasured && u.value > 0 {
+			total += u.value
+			slots++
+		}
+	}
+	if unit == "" || slots == 0 {
+		return "", 0
+	}
+	return upgrades.SignedFigure(total, unit), slots
 }
 
 // wearsTwoHander is a character whose main hand is two-handed and whose off hand is empty.

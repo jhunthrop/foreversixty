@@ -12,6 +12,8 @@ import (
 // rosterCopy is the roster's words on the raid post (spec 2026-10-28 §P.7, the roster.* rows).
 var rosterCopy = struct {
 	Tanks, Healers, Melee, Ranged string // each takes %d
+	OfTarget                      string // a group heading with its target: %s the heading, %d
+	OverTarget                    string // a group past its target: %s the heading, %d the target, %d over
 	In                            string // a guild event's In list; takes %d
 	Late, Bench, Out              string // each takes %d
 	Continued                     string
@@ -21,7 +23,7 @@ var rosterCopy = struct {
 	Sep                           string // between a name and its spec or class in a text line
 	EmojiFormat                   string // %s the emoji name, %s its id, %s the name
 }{
-	Tanks: "Tanks · %d", Healers: "Healers · %d", Melee: "Melee · %d", Ranged: "Ranged · %d",
+	Tanks: "Tanks · %d", Healers: "Healers · %d", Melee: "Melee · %d", Ranged: "Ranged · %d", OfTarget: "%s of %d", OverTarget: "%s of %d, %d over",
 	In: "In · %d", Late: "Late · %d", Bench: "Bench · %d", Out: "Out · %d",
 	Continued: "​", Empty: "None yet", More: "and %d more", OutJoin: ", ", Sep: " · ",
 	EmojiFormat: "<:%s:%s> %s",
@@ -86,9 +88,9 @@ func defaultLimits() rosterLimits {
 // keeping the whole embed under Discord's 6000: while over 5900, the tail of Out, then Bench,
 // then the largest group becomes `and {n} more`.
 // noRoles draws a guild event's one plain list (eventRosterFields) instead.
-func rosterFields(roster []RosterLine, marks Marks, fixed int, noRoles bool) []EmbedField {
+func rosterFields(roster []RosterLine, marks Marks, target *RoleTarget, fixed int, noRoles bool) []EmbedField {
 	lim := defaultLimits()
-	within := rosterFieldsWithin
+	within := func(r []RosterLine, m Marks, l rosterLimits) []EmbedField { return rosterFieldsWithin(r, m, target, l) }
 	if noRoles {
 		within = eventRosterFields
 	}
@@ -147,13 +149,21 @@ func fieldsChars(fields []EmbedField) int {
 	return n
 }
 
-func rosterFieldsWithin(roster []RosterLine, marks Marks, lim rosterLimits) []EmbedField {
+func rosterFieldsWithin(roster []RosterLine, marks Marks, target *RoleTarget, lim rosterLimits) []EmbedField {
 	var fields []EmbedField
 	// Fields 4 to 6 (the groups, Late, Bench) are drawn only once someone is In or Late (§P.9.2).
 	if countState(roster, rosterIn)+countState(roster, rosterLate) > 0 {
 		for i, g := range rosterGroups {
 			rows := inGroup(roster, g)
-			fields = append(fields, groupFields(fmt.Sprintf(g.label, len(rows)), lines(rows, marks), lim.group[i])...)
+			heading := fmt.Sprintf(g.label, len(rows))
+			if target != nil {
+				want := target.of(g.group)
+				heading = fmt.Sprintf(rosterCopy.OfTarget, heading, want)
+				if over := len(rows) - want; over > 0 {
+					heading = fmt.Sprintf(rosterCopy.OverTarget, fmt.Sprintf(g.label, len(rows)), want, over)
+				}
+			}
+			fields = append(fields, groupFields(heading, lines(rows, marks), lim.group[i])...)
 		}
 		fields = append(fields, listFields(roster, marks, lim)...)
 	}

@@ -1,141 +1,125 @@
-// Package card draws the 1200x630 preview image shown when a build link is
-// unfurled. It draws directly onto an RGBA image with golang.org/x/image
-// rather than going through SVG: the site's TypeScript OG renderer
-// (web/src/lib/og.ts) uses satori and resvg, which is a JavaScript
-// toolchain this service has no reason to carry.
+// Package card draws the 1200x630 preview images shown when a build or a report link is
+// unfurled (Discord, Slack, any Open Graph reader). They are the site's link preview in the
+// round-5 look (web/src/lib/og.ts, design/specs/2026-11-09-directions.md): the owner's
+// road-and-glow art under the night veil, the painted seal and "Forever Sixty" in Marcellus at
+// the top, then the build's or the report's own lines over the fan-made line. The faces, colours
+// and art are internal/brand's, the site's own.
 //
-// The two faces under fonts/ are the site's display and body faces, taken
-// as TTF from the Fontsource CDN at the same version web/package.json pins
-// (cinzel@5.3.0, barlow@5.3.0). Both are SIL Open Font License 1.1; the
-// license text sits beside them as OFL-Cinzel.txt and OFL-Barlow.txt.
+// It draws directly onto an RGBA image with golang.org/x/image rather than going through SVG:
+// the site's renderer uses satori and resvg, a JavaScript toolchain this service has no reason
+// to carry.
 package card
 
 import (
 	"bytes"
-	"embed"
 	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
 	"image/png"
+	"math"
 	"strconv"
 	"strings"
 	"sync"
 
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"golang.org/x/image/font"
-	"golang.org/x/image/font/opentype"
 	"golang.org/x/image/math/fixed"
 )
-
-//go:embed fonts/*.ttf
-var fontFS embed.FS
 
 const (
 	// Width and Height are the Open Graph card size the contract fixes.
 	Width  = 1200
 	Height = 630
 
-	bandHeight = 24
-	marginX    = 72
+	marginX = 64 // the site card's padding
+	marginY = 64
 
-	titleBaseline    = 160
-	subtitleBaseline = 222
-	splitBaseline    = 410
-	levelBaseline    = 474
-	wordmarkBaseline = 566
+	sealPage  = 88  // the seal on a build or report card
+	sealBrand = 116 // the seal on the brand card
+	sealGap   = 22
+
+	// The night veil over the art: the site preview's (art_crops.OG_VEIL), the night token at 42%.
+	veilAlpha = 0.42
+	// The scrim under the lines: the night token from y 220 down to 45% at the foot.
+	scrimTop   = 220
+	scrimAlpha = 0.45
 )
 
-// The palette is the site's: bg, text, muted, and gold from
-// design/DESIGN-SYSTEM.md, the same values web/src/lib/og.ts draws with.
+// The copy every card carries (web/src/lib/og.ts): the site's name and the fan-made line, so a
+// shared link never reads as an official page.
+const (
+	copyBrand   = "Forever Sixty"
+	copyFanLine = "Fan-made player tool for WoW: Forever"
+	copyBuild   = "Talent build"
+	copyReport  = "Raid report"
+	lineJoin    = " · "
+)
+
+// The inks, all site tokens.
 var (
-	bgColor    = color.RGBA{R: 0x07, G: 0x0b, B: 0x12, A: 0xff}
-	textColor  = color.RGBA{R: 0xf2, G: 0xee, B: 0xe4, A: 0xff}
-	mutedColor = color.RGBA{R: 0x9a, G: 0x94, B: 0x84, A: 0xff}
-	goldColor  = color.RGBA{R: 0xe5, G: 0xb9, B: 0x55, A: 0xff}
+	inkCream  = brand.ColorForeverCream
+	inkCream2 = brand.ColorForeverCream2
+	inkText   = brand.ColorBaseText
+	inkKill   = brand.ColorOutcomeKill
+	inkWipe   = brand.ColorOutcomeWipe
 )
 
-// Input is everything the card shows. Split is points per tree in client
-// order; Level is the build's level as builds.Describe computes it.
+// Input is everything a build card shows. Split is points per tree in client order and Trees
+// their names in the same order; Level is the build's level as builds.Describe computes it;
+// ClassSlug picks the crest ("" draws none); DPS is the simmed DPS line, "" when unsimmed.
 type Input struct {
 	Title      string
 	Race       string
 	Class      string
+	ClassSlug  string
 	ClassColor string
 	Split      []int
+	Trees      []string
 	Level      int
+	DPS        string
 }
 
+// The build card's crest, the site's ringed HD crest, beside the title and the line under it.
+const (
+	crestPx  = 112
+	crestGap = 28
+)
+
+// faces is one render's set. A font.Face may not be shared across goroutines (opentype's
+// carries a rasteriser every draw overwrites), so each render builds its own from the shared
+// parsed fonts; the parse is the costly half and brand does it once.
 type faces struct {
-	title    font.Face
-	numerals font.Face
-	body     font.Face
-	wordmark font.Face
+	brand    font.Face // "Forever Sixty" beside the seal
+	brandBig font.Face // the brand card's name
+	title    font.Face // the build's or report's title
+	titleSm  font.Face // a title too long for the large face
+	lead     font.Face // the line under the title
+	body     font.Face // the bosses, the fan-made line
+	label    font.Face // "Killed", "Wiped"
 }
 
-// parsedFonts holds the two typefaces the card draws with. An
-// *opentype.Font is read-only once parsed, so one copy is shared by every
-// request; the font.Face values built from it are not, which is why
-// newFaces below builds a fresh set per render.
-type parsedFonts struct {
-	cinzel *opentype.Font
-	barlow *opentype.Font
-}
-
-// loadFonts parses the embedded fonts once. Parsing can only fail if the
-// embedded files are corrupt, which is a build problem, not a request one.
-var loadFonts = sync.OnceValues(func() (*parsedFonts, error) {
-	cinzel, err := parseFont("fonts/Cinzel-Bold.ttf")
-	if err != nil {
-		return nil, err
-	}
-	barlow, err := parseFont("fonts/Barlow-Regular.ttf")
-	if err != nil {
-		return nil, err
-	}
-	return &parsedFonts{cinzel: cinzel, barlow: barlow}, nil
-})
-
-// newFaces builds one render's worth of faces. A font.Face may not be
-// shared across goroutines: opentype's implementation carries an
-// sfnt.Buffer, a vector.Rasterizer and a glyph mask that every draw
-// overwrites, so two concurrent card requests through one face corrupt each
-// other's glyphs or panic inside the rasterizer. Giving each render its own
-// set costs a few microseconds against a render of several milliseconds,
-// because the parse - the expensive half - is already shared and
-// opentype.NewFace only records a font pointer and a scale.
 func newFaces() (*faces, error) {
-	fonts, err := loadFonts()
-	if err != nil {
-		return nil, err
-	}
 	f := &faces{}
 	for _, spec := range []struct {
 		dst  *font.Face
-		src  *opentype.Font
-		size float64
+		face brand.Face
+		px   float64
 	}{
-		{&f.title, fonts.cinzel, 64},
-		{&f.numerals, fonts.cinzel, 96},
-		{&f.body, fonts.barlow, 34},
-		{&f.wordmark, fonts.barlow, 26},
+		{&f.brand, brand.Marcellus400, 40},
+		{&f.brandBig, brand.Marcellus400, 64},
+		{&f.title, brand.Marcellus400, 72},
+		{&f.titleSm, brand.Marcellus400, 54},
+		{&f.lead, brand.OpenSans600, 34},
+		{&f.body, brand.OpenSans400, 26},
+		{&f.label, brand.OpenSans700, 26},
 	} {
-		face, err := opentype.NewFace(spec.src, &opentype.FaceOptions{Size: spec.size, DPI: 72, Hinting: font.HintingFull})
+		face, err := brand.NewFace(spec.face, spec.px)
 		if err != nil {
-			return nil, fmt.Errorf("card: face at %.0fpx: %w", spec.size, err)
+			return nil, fmt.Errorf("card: %w", err)
 		}
 		*spec.dst = face
-	}
-	return f, nil
-}
-
-func parseFont(name string) (*opentype.Font, error) {
-	b, err := fontFS.ReadFile(name)
-	if err != nil {
-		return nil, fmt.Errorf("card: read %s: %w", name, err)
-	}
-	f, err := opentype.Parse(b)
-	if err != nil {
-		return nil, fmt.Errorf("card: parse %s: %w", name, err)
 	}
 	return f, nil
 }
@@ -146,48 +130,140 @@ func Render(in Input) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	accent := parseHexColor(in.ClassColor)
-	img := canvas(accent)
-
-	drawText(img, f.title, goldColor, marginX, titleBaseline, fit(f.title, in.Title, Width-2*marginX))
-	drawText(img, f.body, textColor, marginX, subtitleBaseline,
-		fit(f.body, strings.TrimSpace(in.Race+" "+in.Class), Width-2*marginX))
-	drawText(img, f.numerals, accent, marginX, splitBaseline, splitText(in.Split))
-	drawText(img, f.body, mutedColor, marginX, levelBaseline, "Level "+strconv.Itoa(in.Level))
-	drawText(img, f.wordmark, mutedColor, marginX, wordmarkBaseline, "foreversixty.gg")
-
+	img, err := canvas(f)
+	if err != nil {
+		return nil, err
+	}
+	title := strings.TrimSpace(in.Title)
+	if title == "" {
+		title = copyBuild
+	}
+	// The lines from the foot up: the fan-made line, the trees, the race, class and level, the
+	// title; the crest stands beside the title and the line under it.
+	const fanY, treesY, leadY, titleY = Height - marginY - 34, Height - marginY - 92, Height - marginY - 138, Height - marginY - 204
+	drawText(img, f.body, inkText, marginX, fanY, fit(f.body, copyBuild+lineJoin+copyFanLine, Width-2*marginX))
+	x := marginX
+	if crest, err := sheet.EmbeddedCrest(in.ClassSlug); err == nil {
+		top := (titleY - 54 + leadY - crestPx + 8) / 2
+		brand.PlaceImage(img, image.Pt(marginX, top), crestPx, crestPx, crest, nil)
+		x += crestPx + crestGap
+	}
+	maxW := Width - marginX - x
+	drawText(img, f.body, inkCream2, x, treesY, fit(f.body, treesText(in.Split, in.Trees), maxW))
+	who := strings.TrimSpace(in.Race + " " + in.Class)
+	stats := joinNonEmpty(lineJoin, "Level "+strconv.Itoa(in.Level), in.DPS)
+	lx := x
+	if who != "" {
+		lx = drawText(img, f.lead, parseHexColor(in.ClassColor), lx, leadY, fit(f.lead, who, maxW/2))
+		lx = drawText(img, f.lead, inkCream2, lx, leadY, lineJoin)
+	}
+	drawText(img, f.lead, inkCream2, lx, leadY, fit(f.lead, stats, Width-marginX-lx))
+	drawTitle(img, f, x, titleY, title, maxW)
 	return encode(img)
 }
 
-// fallback is rendered once and reused: it is the image served when a
-// build's own card cannot be drawn, so it must never itself fail at
-// request time.
-var fallback = sync.OnceValue(func() []byte {
-	f, err := newFaces()
-	if err != nil {
-		return nil
+// treesText is the talent split as players read it, each tree named: "31 Arms · 0 Fury · 20
+// Protection"; the bare split ("31/0/20") when the trees are not known.
+func treesText(split []int, trees []string) string {
+	if len(trees) != len(split) || len(split) == 0 {
+		return splitText(split)
 	}
-	img := canvas(goldColor)
-	drawText(img, f.title, goldColor, marginX, titleBaseline, "Forever Sixty")
-	drawText(img, f.body, textColor, marginX, subtitleBaseline, "Build planner")
-	drawText(img, f.wordmark, mutedColor, marginX, wordmarkBaseline, "foreversixty.gg")
-	out, err := encode(img)
+	parts := make([]string, len(split))
+	for i, n := range split {
+		parts[i] = strconv.Itoa(n) + " " + trees[i]
+	}
+	return strings.Join(parts, lineJoin)
+}
+
+// joinNonEmpty joins the parts that are not empty.
+func joinNonEmpty(sep string, parts ...string) string {
+	kept := parts[:0:0]
+	for _, p := range parts {
+		if p != "" {
+			kept = append(kept, p)
+		}
+	}
+	return strings.Join(kept, sep)
+}
+
+// fallback is rendered once and reused: it is the image served when a card cannot be drawn,
+// so it must never itself fail at request time.
+var fallback = sync.OnceValue(func() []byte {
+	out, err := brandCard()
 	if err != nil {
 		return nil
 	}
 	return out
 })
 
-// Fallback is the static card served when a build's card cannot be drawn.
-// It returns nil only when the embedded fonts cannot be used at all, which
-// the package's tests rule out.
+// Fallback is the brand card, served when a build's or report's own card cannot be drawn: the
+// seal beside the name, the fan-made line under it, at the foot of the art. It returns nil only
+// when the embedded fonts or art cannot be used at all, which the package's tests rule out.
 func Fallback() []byte { return fallback() }
 
-func canvas(band color.RGBA) *image.RGBA {
+func brandCard() ([]byte, error) {
+	f, err := newFaces()
+	if err != nil {
+		return nil, err
+	}
+	img, err := background()
+	if err != nil {
+		return nil, err
+	}
+	top := Height - marginY - sealBrand
+	if err := drawSeal(img, marginX, top, sealBrand); err != nil {
+		return nil, err
+	}
+	x := marginX + sealBrand + 26
+	drawText(img, f.brandBig, inkCream2, x, top+62, copyBrand)
+	drawText(img, f.body, inkText, x, top+106, copyFanLine)
+	return encode(img)
+}
+
+// canvas is the art under the veil with the seal and the site's name across the top.
+func canvas(f *faces) (*image.RGBA, error) {
+	img, err := background()
+	if err != nil {
+		return nil, err
+	}
+	if err := drawSeal(img, marginX, marginY, sealPage); err != nil {
+		return nil, err
+	}
+	drawText(img, f.brand, inkCream2, marginX+sealPage+sealGap, marginY+sealPage/2+14, copyBrand)
+	return img, nil
+}
+
+func background() (*image.RGBA, error) {
+	art, err := brand.LinkArt()
+	if err != nil {
+		return nil, err
+	}
 	img := image.NewRGBA(image.Rect(0, 0, Width, Height))
-	draw.Draw(img, img.Bounds(), image.NewUniform(bgColor), image.Point{}, draw.Src)
-	draw.Draw(img, image.Rect(0, 0, Width, bandHeight), image.NewUniform(band), image.Point{}, draw.Src)
-	return img
+	brand.PlaceImage(img, image.Point{}, Width, Height, art, nil)
+	veil := brand.ColorBaseNight
+	veil.A = uint8(math.Round(veilAlpha * 255))
+	brand.FillRect(img, img.Bounds(), veil)
+	scrim(img)
+	return img, nil
+}
+
+// scrim darkens the art's lower part under the card's lines, from nothing at scrimTop to
+// scrimAlpha at the foot, so the words hold over a bright patch of the road.
+func scrim(img *image.RGBA) {
+	shade := brand.ColorBaseNight
+	for y := scrimTop; y < Height; y++ {
+		shade.A = uint8(math.Round(scrimAlpha * 255 * float64(y-scrimTop) / float64(Height-scrimTop)))
+		brand.FillRect(img, image.Rect(0, y, Width, y+1), shade)
+	}
+}
+
+func drawSeal(img draw.Image, x, y, px int) error {
+	seal, err := brand.Seal()
+	if err != nil {
+		return err
+	}
+	brand.PlaceImage(img, image.Pt(x, y), px, px, seal, nil)
+	return nil
 }
 
 func encode(img *image.RGBA) ([]byte, error) {
@@ -198,12 +274,24 @@ func encode(img *image.RGBA) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func drawText(dst draw.Image, face font.Face, col color.Color, x, baseline int, s string) {
-	d := &font.Drawer{Dst: dst, Src: image.NewUniform(col), Face: face, Dot: fixed.P(x, baseline)}
-	d.DrawString(s)
+// drawTitle draws the title in the large face, or the smaller one when it does not fit, cut
+// with "..." only when even that runs out of room.
+func drawTitle(img draw.Image, f *faces, x, baseline int, title string, maxW int) {
+	face := f.title
+	if measure(face, title) > maxW {
+		face = f.titleSm
+	}
+	drawText(img, face, inkCream, x, baseline, fit(face, title, maxW))
 }
 
-// splitText renders the per-tree point counts, spaced for the large face.
+// drawText draws s with its left edge at x on the baseline, and returns the x it ends at.
+func drawText(dst draw.Image, face font.Face, col color.Color, x, baseline int, s string) int {
+	d := &font.Drawer{Dst: dst, Src: image.NewUniform(col), Face: face, Dot: fixed.P(x, baseline)}
+	d.DrawString(s)
+	return d.Dot.X.Ceil()
+}
+
+// splitText renders the per-tree point counts as players write them: 21/30/0.
 func splitText(split []int) string {
 	if len(split) == 0 {
 		return "0"
@@ -212,7 +300,7 @@ func splitText(split []int) string {
 	for i, n := range split {
 		parts[i] = strconv.Itoa(n)
 	}
-	return strings.Join(parts, " / ")
+	return strings.Join(parts, "/")
 }
 
 // measure is the drawn width of s in a face, in pixels.
@@ -220,9 +308,8 @@ func measure(face font.Face, s string) int {
 	return font.MeasureString(face, s).Ceil()
 }
 
-// fit trims s with an ellipsis until it draws within maxWidth. The faces
-// are the latin subsets, so the ellipsis is three periods rather than the
-// single character, which those subsets may not carry.
+// fit trims s with an ellipsis until it draws within maxWidth. The faces are the site's Latin
+// subsets, so the ellipsis is three periods.
 func fit(face font.Face, s string, maxWidth int) string {
 	s = strings.TrimSpace(s)
 	limit := fixed.I(maxWidth)
@@ -239,12 +326,12 @@ func fit(face font.Face, s string, maxWidth int) string {
 	return ""
 }
 
-// parseHexColor reads "#rrggbb" and falls back to the site's gold.
-func parseHexColor(s string) color.RGBA {
+// parseHexColor reads "#rrggbb" and falls back to the cream.
+func parseHexColor(s string) color.NRGBA {
 	if len(s) == 7 && s[0] == '#' {
 		if v, err := strconv.ParseUint(s[1:], 16, 32); err == nil {
-			return color.RGBA{R: uint8(v >> 16), G: uint8(v >> 8), B: uint8(v), A: 0xff}
+			return color.NRGBA{R: uint8(v >> 16), G: uint8(v >> 8), B: uint8(v), A: 0xff}
 		}
 	}
-	return goldColor
+	return inkCream
 }

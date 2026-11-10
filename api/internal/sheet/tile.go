@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 )
 
 // The tile (spec §A.4): a 72 x 72 PNG, a 4 px ring in the quality colour around the icon at
@@ -29,7 +31,7 @@ func TileURL(apiBase, build string, itemID int) string {
 }
 
 var tileMasks = sync.OnceValues(func() (*image.Alpha, *image.Alpha) {
-	return roundRectMask(TileSide, TileSide, tileOuter), roundRectMask(tileIcon, tileIcon, tileInner)
+	return brand.RoundRectMask(TileSide, TileSide, tileOuter), brand.RoundRectMask(tileIcon, tileIcon, tileInner)
 })
 
 // Tile draws icon in its quality ring; an unknown quality gets the empty ring (#262e40).
@@ -44,9 +46,9 @@ func Tile(icon image.Image, quality int) ([]byte, error) {
 func tileImage(icon image.Image, ring color.RGBA) *image.NRGBA {
 	outer, inner := tileMasks()
 	img := image.NewNRGBA(image.Rect(0, 0, TileSide, TileSide))
-	fillMask(img, image.Point{}, outer, ring)
+	brand.FillMask(img, image.Point{}, outer, ring)
 	p := image.Pt(tileRing, tileRing)
-	fillMask(img, p, inner, colorBlack)
-	placeImage(img, p, tileIcon, tileIcon, icon, inner)
+	brand.FillMask(img, p, inner, colorBlack)
+	brand.PlaceImage(img, p, tileIcon, tileIcon, icon, inner)
 	return img
 }

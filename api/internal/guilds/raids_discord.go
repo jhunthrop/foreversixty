@@ -105,7 +105,7 @@ func (s *Service) logDiscordDefaults(guildID int64, destination string, err erro
 }
 
 // raidPost is what every raid embed needs for one raid view, in the guild's terms.
-func (s *Service) raidPost(g Guild, v RaidView) notify.RaidPosted {
+func (s *Service) raidPost(ctx context.Context, g Guild, v RaidView) notify.RaidPosted {
 	in := notify.RaidPosted{
 		GuildName: g.Name, Title: v.Title, StartsAt: v.StartsAt,
 		RaidID:  v.ID,
@@ -128,7 +128,42 @@ func (s *Service) raidPost(g Guild, v RaidView) notify.RaidPosted {
 	if v.Size != nil {
 		in.Size, in.SizeKnown = *v.Size, true
 	}
+	if t := s.postCompTarget(ctx, v); t != nil && v.ZoneKind != ZoneEvent {
+		in.Target = &notify.RoleTarget{Tanks: t.Tanks, Healers: t.Healers, Melee: t.Melee, Ranged: t.Ranged}
+	}
+	in.Missing, in.Short = coverNames(v.Cover)
 	return in
+}
+
+// postCompTarget is the raid's comp target for its post: the view's when it carries one, else the
+// officer's row or the zone default. A failed read posts the zone default, logged.
+func (s *Service) postCompTarget(ctx context.Context, v RaidView) *CompTarget {
+	if v.CompTarget != nil {
+		return v.CompTarget
+	}
+	targets, err := s.Store.compTargetsOf(ctx, []int64{v.ID})
+	if err != nil {
+		s.logger().Warn("guilds", "op", "raid_post_comp_target", "raid_id", v.ID, "err", err)
+		return compTargetOf(zoneOf(v.Zone), nil)
+	}
+	var own *RoleCounts
+	if c, ok := targets[v.ID]; ok {
+		own = &c
+	}
+	return compTargetOf(zoneOf(v.Zone), own)
+}
+
+// coverNames are the cover rows nobody signed brings and those too few bring, by name.
+func coverNames(rows []CoverRow) (missing, short []string) {
+	for _, r := range rows {
+		switch r.State {
+		case CoverMissing:
+			missing = append(missing, r.Name)
+		case CoverShort:
+			short = append(short, r.Name)
+		}
+	}
+	return missing, short
 }
 
 // rosterLines are the sign-ups as the post lists them (spec 2026-10-28 §P.9): name, class,
@@ -186,7 +221,7 @@ func (s *Service) postCreated(ctx context.Context, guildID int64, views []RaidVi
 			s.logSkipped(guildID, sorted[i:])
 			return posted
 		}
-		s.RaidEvents.RaidPosted(ctx, guildID, s.raidPost(g, v))
+		s.RaidEvents.RaidPosted(ctx, guildID, s.raidPost(ctx, g, v))
 		posted = append(posted, v.ID)
 	}
 	return posted
@@ -209,5 +244,5 @@ func (s *Service) postChanged(ctx context.Context, guildID int64, v RaidView, wa
 	if !ok {
 		return
 	}
-	s.RaidEvents.RaidChanged(ctx, guildID, notify.RaidChanged{RaidPosted: s.raidPost(g, v), Was: was, Cancelled: was == nil})
+	s.RaidEvents.RaidChanged(ctx, guildID, notify.RaidChanged{RaidPosted: s.raidPost(ctx, g, v), Was: was, Cancelled: was == nil})
 }

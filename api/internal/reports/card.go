@@ -90,8 +90,9 @@ func cardInput(rep Report, fights []FightEntry) card.ReportInput {
 	var first, last time.Time
 	for _, f := range fights {
 		if f.Kind == string(fight.Encounter) {
-			in.Bosses = append(in.Bosses, card.Boss{Name: f.Name, Kill: f.Kill})
+			in.Bosses = append(in.Bosses, card.Boss{Name: f.Name, Kill: f.Kill, DurationMS: f.DurationMS})
 		}
+		in.Deaths += f.Deaths
 		if first.IsZero() || f.Start.Before(first) {
 			first = f.Start
 		}

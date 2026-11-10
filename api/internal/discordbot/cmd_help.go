@@ -7,14 +7,19 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
-// cmdHelp answers /help: one gold embed, a line per command, no components. It reads nothing
+// helpCommand is /help's own name, left out of its list.
+const helpCommand = "help"
+
+// cmdHelp answers /help: one accent embed, a line per command, no components. It reads nothing
 // of the caller, so it answers the same in a DM or an unbound server.
 func (s *Service) cmdHelp(_ context.Context, _ Interaction) (Reply, error) {
-	cmds := s.commandList()
-	lines := make([]string, len(cmds))
-	for i, c := range cmds {
-		lines[i] = fill(commandCopy.HelpLine, "{name}", c.Name, "{description}", c.Description)
+	var lines []string
+	for _, c := range s.commandList() {
+		if c.Name == helpCommand { // the player just ran it
+			continue
+		}
+		lines = append(lines, fill(commandCopy.HelpLine, "{name}", c.Name, "{description}", c.Description))
 	}
-	embed := notify.BrandEmbed(commandCopy.HelpTitle, strings.Join(lines, "\n"), s.now())
+	embed := notify.WithSealFooter(notify.BrandEmbed(commandCopy.HelpTitle, strings.Join(lines, "\n"), s.now()), s.sealURL())
 	return Reply{Message: Message{Embeds: []notify.Embed{embed}, Ephemeral: true}}, nil
 }

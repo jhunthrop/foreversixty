@@ -177,12 +177,12 @@ Discord strings live in a new copy struct `guideCopy` (`api/internal/discordbot/
 | `bis.title.none` | `Choose a class` |
 | `bis.title.class` | `{Class} · choose a spec` |
 | `bis.title.ready` | `{Spec} {Class} · {band label}` |
-| `bis.lead.unlinked` | `Choose a class, a spec and a range, then Show BiS. Link Discord and this starts from your character.` |
-| `bis.lead.none` | `Choose a class, a spec and a range, then Show BiS.` |
+| `bis.lead.unlinked` | `Link Discord and this starts from your character.` |
+| `bis.lead.none` | none (2026-11-09: the selects say what to pick) |
 | `bis.lead.main` | `Picked from your main, {Name}. Show BiS, or change a pick.` (`{Name}` in bold) |
 | `bis.lead.class` | `Now choose a {Class} spec.` |
 | `bis.lead.ready` | `Ready. Show BiS, or change a pick.` |
-| `bis.lead.slot` | `For {Slot} only. Choose a class, a spec and a range, then Show BiS.` |
+| `bis.lead.slot` | `For {Slot} only.` |
 | `bis.lead.unknownSpec` | `No {Class} spec by that name. Choose one.`; without a class `No spec by that name. Choose one.` |
 | `bis.nudge.spec` | `Choose a spec first.` (bold) + ` Then Show BiS.` |
 | `bis.nudge.both` | `Choose a class and a spec first.` (bold) + ` Then Show BiS.` |
@@ -323,8 +323,8 @@ Site strings join `raidCopy.form` (beside `postToDiscord`); Discord strings join
 | `form.posted` | `Posted to {channel}. The post updates itself.` |
 | `form.reminded` | `Reminder sent.` |
 | `post.tomorrowTitle` | `Tomorrow: {Title} · {Weekday} {d} {Month}` |
-| `post.tomorrowDescription` | `The raid is tomorrow. Sign up with the buttons below.` |
-| `reminder.line` | `{Title} is tomorrow, <t:{unix}:F> (<t:{unix}:R>). {signed} of {size} signed up so far.` Unknown size: `{n} signed up so far.` Nobody: `Nobody has signed up yet.` |
+| `post.tomorrowDescription` | none (round 5, 2026-11-09: the title's `Tomorrow:` says it) |
+| `reminder.line` | `{Title} is tomorrow, <t:{unix}:t>. {signed} of {size} signed up so far.` Unknown size: `{n} signed up so far.` Nobody: `Nobody has signed up yet.` |
 | `reminder.webhookLink` | `[Sign up on Forever Sixty]({raid url})` |
 | `roster.signed` | `**{signed} of {size}**`; unknown size `**{n} signed up**`; nobody `None yet` (the `Signed up` field's value; the role clauses and the `Bench {n} · Out {n}` line leave the post) |
 | `roster.tanks` | `Tanks · {n}` |

@@ -232,8 +232,8 @@ func TestColoursAreTheSiteTokens(t *testing.T) {
 		}
 	}
 	for q, word := range qualityWords {
-		if want := token("color-rarity-" + strings.ToLower(word)); qualityColors[q] != want {
-			t.Errorf("%s = %06x, want %06x", word, qualityColors[q], want)
+		if want := token("color-rarity-" + strings.ToLower(word)); qualityColor(q) != want {
+			t.Errorf("%s = %06x, want %06x", word, qualityColor(q), want)
 		}
 	}
 }
@@ -286,11 +286,10 @@ func TestCharCard(t *testing.T) {
 			t.Fatalf("lead = %q", texts[1])
 		}
 		// Nothing measured, so the list reads in points, largest gap first: the top 3 of head, hands,
-		// feet, wrist, then the more line for the fourth.
-		want := []string{"**Pick head**\nHead · +9.0 points\n-# Epic · item level 61 · Source head",
-			"**Pick hands**\nHands · +7.0 points\n-# Epic · item level 61 · Source hands",
-			"**Pick feet**\nFeet · +5.0 points\n-# Epic · item level 61 · Source feet",
-			panelCopy.UpgradesMoreOne}
+		// feet, wrist; the fourth rides the link's "All 4 upgrades".
+		want := []string{"**Pick head**\nHead · +9.0 points\n-# item level 61 · Source head",
+			"**Pick hands**\nHands · +7.0 points\n-# item level 61 · Source hands",
+			"**Pick feet**\nFeet · +5.0 points\n-# item level 61 · Source feet"}
 		if got := texts[2:]; strings.Join(got, "|") != strings.Join(want, "|") {
 			t.Fatalf("upgrades = %q", got)
 		}
@@ -299,7 +298,7 @@ func TestCharCard(t *testing.T) {
 		}
 		row := m.Components[0]
 		if len(row) != 2 || row[0].Label != lookupCopy.Share || row[0].Style != StyleSecondary ||
-			row[1].Label != lookupCopy.CharacterPage || row[1].URL != pressPublic+"/character/"+keyZulmaraLookup {
+			row[1].Label != "All 4 upgrades" || row[1].URL != pressPublic+"/character/"+keyZulmaraLookup {
 			t.Fatalf("row = %+v", row)
 		}
 	})
@@ -319,7 +318,7 @@ func TestCharCard(t *testing.T) {
 		writeBis(t, w.lg.dir, "hunter-marksmanship", bands("alliance"))
 		m := w.command(t, pressDiscord, "char", map[string]string{"name": "Zulmara"}).Message
 		texts := textsOf(m)
-		if texts[1] != "**Top upgrades** · level 60 Phase 1 raid\n"+panelCopy.UpgradesByDPS {
+		if texts[1] != "**Top upgrades** · level 60 Phase 1 raid" {
 			t.Fatalf("lead = %q", texts[1])
 		}
 		// The raid band's picks (hands is the band's own 150, not the panel's 102), largest gain
@@ -460,9 +459,12 @@ func TestUpgradeTotal(t *testing.T) {
 			t.Errorf("%s: total = %d, want %d", c.name, got, c.want)
 		}
 	}
-	// 13 upgrades, 3 rows: "10 more".
-	if got := moreText(upgradeTotal(charData{ups: four, facts: board(true, 13)}) - maxUpgrades); got != "-# 10 more upgrades on the character page." {
-		t.Errorf("more = %q", got)
+	// 13 upgrades, 3 rows: the link reads "All 13 upgrades"; with every upgrade shown, the page.
+	if got := characterPageLabel(maxUpgrades, upgradeTotal(charData{ups: four, facts: board(true, 13)})); got != "All 13 upgrades" {
+		t.Errorf("label = %q", got)
+	}
+	if got := characterPageLabel(3, 3); got != lookupCopy.CharacterPage {
+		t.Errorf("label = %q", got)
 	}
 }
 

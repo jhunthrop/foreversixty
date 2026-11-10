@@ -5,14 +5,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 const (
 	// embedFooter is the footer text every message carries.
 	embedFooter = "Forever Sixty"
-	// embedColor is #e5b955, the gold of the seal.
-	embedColor = 15055189
 
 	accountDiscordPath = "/account#discord"
 	simPathPrefix      = "/sim/"
@@ -30,6 +29,9 @@ const (
 	maxCharacterRunes = 40
 	maxReportTitle    = 200
 )
+
+// embedColor is every normal post's stripe: the teal accent (round 5, color.forever.accent).
+var embedColor = brand.RGB(brand.ColorForeverAccent)
 
 // embedCopy is the words of every message the channel receives (spec 6.2).
 var embedCopy = struct {
@@ -239,7 +241,7 @@ func classLabel(slug string) string {
 	return strings.ToUpper(slug[:1]) + slug[1:]
 }
 
-// BrandEmbed is a gold embed with the plain "Forever Sixty" footer, for answers that belong to
+// BrandEmbed is an accent embed with the plain "Forever Sixty" footer, for answers that belong to
 // no guild (the bot's /help).
 func BrandEmbed(title, description string, at time.Time) Embed {
 	e := baseEmbed(title, "", at)

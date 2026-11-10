@@ -12,13 +12,14 @@ import (
 	"regexp"
 	"sync"
 
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 	"golang.org/x/image/webp"
 )
 
 // assetFS is the site's own art the sheet draws, copied byte for byte from web/public by
-// `make sheet-assets`: the nine 128 px HD crests, the 72 px faction marks and the 400 px seal.
+// `make sheet-assets`: the nine 128 px HD crests, and the 72 px faction marks. The seal is brand.Seal.
 //
-//go:embed assets/crests/*.webp assets/faction/*.webp assets/seal-400.png
+//go:embed assets/crests/*.webp assets/faction/*.webp
 var assetFS embed.FS
 
 // QuestionMark is the icon an item unknown to the build draws (spec §A.4, §B.3).
@@ -81,7 +82,7 @@ func factionMark(faction string) (image.Image, error) {
 	return embeddedImage("assets/faction/" + faction + ".webp")
 }
 
-func seal() (image.Image, error) { return embeddedImage("assets/seal-400.png") }
+func seal() (image.Image, error) { return brand.Seal() }
 
 // embedded decodes each embedded image once; decoded images are only ever read.
 var (

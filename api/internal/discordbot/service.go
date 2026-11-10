@@ -170,7 +170,7 @@ func (s *Service) StartDrainer(stop context.Context, d *Drainer) {
 
 // NewDrainer is a drainer over the service's store and REST client, reading facts from facts.
 func (s *Service) NewDrainer(facts PostFacts) *Drainer {
-	return &Drainer{Store: s.d.Store, REST: s.d.REST, Facts: facts, Marks: s.emoji, Log: s.log}
+	return &Drainer{Store: s.d.Store, REST: s.d.REST, Facts: facts, Marks: s.emoji, SealURL: s.sealURL(), Log: s.log}
 }
 
 // serverGuild is the guild the interaction's server is installed for.
