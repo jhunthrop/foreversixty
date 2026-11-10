@@ -563,23 +563,27 @@ def b_page(state: str) -> str:
     st = WP.S[key]
     heading = f'{st["race"]} {st["className"]}'
     h1 = title or heading
-    score = WP.SAMPLE_SCORE.get(key)
     split = '/'.join(str(x) for x in st['split'])
     SH = F['shared']
     # Ruling Q10: `Shared by {name}` only when the share record names the sharer; the record carries no sharer today.
     meta = [e(SH['meta']), e(st['meta']), e(split), e(SH['views'][str(views)])]
-    head = PageHeader(e(h1), CLASS_COLOR[st['cls']], crest_img(st['cls'], 56), meta, WP.answer(st, score))
+    head = PageHeader(e(h1), CLASS_COLOR[st['cls']], crest_img(st['cls'], 56), meta, WP.answer(st))
     send = WP.F['send'][send_key] if send_key else None
     fork = f'{Btn(e(SH["fork"]))}'
-    note = f'<div class="pc"><div data-region="{REGION["notes"]}"><p class="notice neutral">{e(SH["note"])} {fork}</p></div></div>'
+    # The shared-link line at the reading measure, as the built planner sets its note line.
+    note = f'<div class="pc" style="padding-top:16px"><div data-region="{REGION["notes"]}" style="max-width:var(--measure-reading)"><p class="notice neutral">{e(SH["note"])} {fork}</p></div></div>'
     foot = WP.tree_foot({**st, 'spent': 0})
     plate = WP.TalentEditor(WP.trees(st, readonly=True), max(range(3), key=lambda i: st['split'][i]), foot)
     main = WP.Ordered(plate, 1, span=True) + WP.Ordered(WP.order(st), 6, span=True)
-    # Ruling MUST 5: another class's build says so in one plain line above Copy for the game, inside the rail.
-    rail = WP.Ordered(WP.in_game(st, send, plain_block=True), 2) + WP.Ordered(WP.compare(st, readonly=True, heading=SH['guideBuild']), 3)
+    # Ruling MUST 5: another class's build says so in one plain line above Copy for the game, inside the rail. The planner's
+    # own panels (lane P7): WP.Page sets the workbench as panels, WP.TalentEditor is the framed Talents panel.
+    # The page's own rail order: the guide build first in the markup, In the game placed first by its order (Planner.svelte).
+    rail = WP.Ordered(WP.compare(st, readonly=True, heading=SH['guideBuild']), 3) + WP.Ordered(WP.in_game(st, send, plain_block=True), 2)
     who = WHO['free'] if send_key else None
-    body = head + note + Page('workbench', main, rail) + WP.PAGE_CSS
-    return render(f'{h1} · {split} · Forever Sixty', body, 'Tools', who, '', f'/b/:id mock ({state}): the API page mounting the planner read-only. Data: planner-facts.json ({key}); SAMPLE live score.')
+    # The planner's head answer is as wide as its points and link (PlannerAnswer), not the account answer's 300 px; the API
+    # page's main holds no bottom pad (the planner page's own does).
+    body = head + note + WP.Page('workbench', main, rail) + WP.PAGE_CSS + '<style>@media(min-width:900px){.head .ans[data-region]{min-width:0}}.pc:has(>.layout-wb){padding-bottom:0}</style>'
+    return render(f'{h1} · {split} · Forever Sixty', body, 'Tools', who, '', f'/b/:id mock ({state}): the API page mounting the planner read-only. Data: planner-facts.json ({key}).')
 
 
 PAGES = {('web-premium' if s == 'out' else f'web-premium-{s}'): (lambda s=s: premium_page(s)) for s in PREMIUM_STATES}

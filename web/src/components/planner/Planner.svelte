@@ -1299,7 +1299,10 @@
             plainOtherClass={shared}
           /></Ordered
         >
-        <Ordered order={4}><GuideBuilds builds={guideBuilds} {store} /></Ordered>
+        <!-- Only a class with a guide build takes a slot: an empty one would still hold a flow gap. -->
+        {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
+          <Ordered order={4}><GuideBuilds builds={guideBuilds} {store} /></Ordered>
+        {/if}
         {#if !store.readOnly}
           <Ordered order={7}><SharePanel {store} /></Ordered>
           <Ordered order={8}>{@render importSection()}</Ordered>
