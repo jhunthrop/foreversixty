@@ -495,9 +495,9 @@ def state_new() -> str:
 
 def state_loading() -> str:
     # The loading head is the PageHeader, pending on the hero (HomeSignedIn.svelte): the crest skeleton, the title's skeleton
-    # (the h1 a screen reader's: lib/home/home-view.ts loadingTitle), the whole head one status.
+    # (a screen reader's paragraph, not a second h1 beside the signed-out page's: lib/home/home-view.ts loadingTitle), the whole head one status.
     head = (f'<div role="status" style="display:contents">'
-            f'{PageHeader("Loading your character", crest=Skeleton(48, 48, True), pending=True)}</div>')
+            f'{PageHeader("Loading your character", crest=Skeleton(48, 48, True), pending=True, second_head=True)}</div>')
     return head + grid('<span class="skel lead-sk" aria-hidden="true"></span>', sec('Latest on Forever', FeedSkeleton(FLOOR_MIN)))
 
 

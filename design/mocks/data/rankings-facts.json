@@ -3674,6 +3674,7 @@
   "rankingsCopy": {
    "eyebrow": "Characters",
    "h1": "Rankings",
+   "lead": "Logged boss kills on Forever, ranked by DPS and HPS for each spec, class, ruleset and guild. The companion uploads your combat log as you play, so your kills join the board.",
    "tierLink": "Tier list",
    "tierHref": "/tiers",
    "updated": "[fn]",

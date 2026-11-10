@@ -22,6 +22,7 @@ from html import escape
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
+from ws_lib import main_foot_padding
 from ws_prims import (Button, CharacterAnswer, Dated, DatedGroup, Disclosure, Field, FormRow, LaneBlock, Link, Notice, Page, PageHeader,
                       PageForm, Plate, Prose, ReadingPanel, ReadingSection, Row, RowGrid, RowsSlim, Section, Select, Skeleton, TabStrip, Tag, Toc, build_page,
                       control_bar, crest_img, seg, sel, write, REGION)
@@ -293,7 +294,7 @@ def states_page() -> str:
 
 PAGE_CSS = '''<style>
 /* page-level layout only (no surfaces): spacing, column splits, what shows at which width */
-main{padding-bottom:var(--section-gap)}
+''' + main_foot_padding('var(--section-gap)') + '''
 .toc-sel{display:inline-flex}@media(min-width:1760px){.toc-sel{display:none}}
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}
 .cl-empty{padding:24px 0}
