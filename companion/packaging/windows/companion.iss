@@ -74,7 +74,7 @@ RestartApplications=no
 [Messages]
 SelectTasksLabel2=
 WizardSelectTasks=Install {#AppName}
-SelectTasksDesc=The companion for your Windows account. No admin needed.
+SelectTasksDesc=Installs for your Windows account.
 
 [Tasks]
 Name: startup; Description: "Start with Windows"
@@ -105,6 +105,14 @@ Type: dirifempty; Name: "{app}"
 [Code]
 const
   StopWaitMs = 3000;
+  { The one page holds two ticks; the wizard's stock height left a band of white under them. }
+  TrimHeight = 110;
+
+procedure InitializeWizard();
+begin
+  { Inno 6 anchors the buttons and pages to the form, so they follow the shorter client area. }
+  WizardForm.ClientHeight := WizardForm.ClientHeight - ScaleY(TrimHeight);
+end;
 
 { Stops every companion this account runs: asked to close first, then ended. }
 procedure StopCompanion();
@@ -145,7 +153,7 @@ begin
   Data := ExpandConstant('{userappdata}\ForeverSixty');
   if UninstallSilent or not DirExists(Data) then
     exit;
-  if MsgBox('Also delete the companion''s settings, logs and any fights still waiting to upload? ' +
+  if MsgBox('Also delete the companion''s settings, its own logs and any fights still waiting to upload? ' +
             'Your reports on foreversixty.gg stay either way.',
             mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES then
   begin

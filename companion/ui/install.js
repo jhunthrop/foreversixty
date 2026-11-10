@@ -2,13 +2,15 @@
 // The Mac's first-launch window (install.html). The Go side binds two
 // functions on the window (internal/install/offer.go): fsInstallInfo says
 // whether the system can open the app at login, and fsInstallMove installs
-// it, starts the installed copy and closes this window.
+// it, starts the installed copy and closes this window. Closing the window
+// instead quits the companion; the next launch asks again.
 'use strict';
 
 (() => {
   const C = COPY.install;
   const $ = (id) => document.getElementById(id);
   const button = $('move');
+  const login = $('move-login');
   const error = $('move-error');
 
   $('move-title').textContent = C.title;
@@ -22,18 +24,21 @@
     });
   }
 
+  const busy = (on) => {
+    button.disabled = on;
+    login.disabled = on;
+    button.textContent = on ? C.moving : C.move;
+  };
+
   button.addEventListener('click', async () => {
-    button.disabled = true;
-    button.textContent = C.moving;
+    busy(true);
     error.hidden = true;
     try {
-      const login = !$('move-login-row').hidden && $('move-login').checked;
-      await window.fsInstallMove(login);
+      await window.fsInstallMove(!$('move-login-row').hidden && login.checked);
     } catch {
       error.textContent = C.failed;
       error.hidden = false;
-      button.disabled = false;
-      button.textContent = C.move;
+      busy(false);
     }
   });
 })();

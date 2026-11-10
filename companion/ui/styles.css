@@ -554,7 +554,8 @@ footer a:hover, footer a:focus-visible { color: var(--color-gold); }
   letter-spacing: var(--tracking-heading);
   color: var(--color-cream);
 }
-.prompt .lede { margin-top: 10px; }
+.prompt .lede { margin-top: 10px; max-width: 52ch; text-wrap: balance; }
+.switch input:disabled { opacity: 0.5; cursor: default; }
 .prompt .switch { margin-top: 18px; }
 .prompt #move { margin-top: 22px; }
 

@@ -80,12 +80,12 @@
       {onCopyLink}
       idPrefix="setup-companion"
     />
-    <p data-testid="setup-companion-lead">{lead}</p>
     {#each firstRuns as build (build.asset)}
       <p class="text-small text-muted" data-testid="setup-companion-first-run">
         {firstRuns.length > 1 ? `${build.platform}: ${build.firstRun}` : build.firstRun}
       </p>
     {/each}
+    <p data-testid="setup-companion-lead">{lead}</p>
     <div data-testid="setup-companion-howto">
       {#each howTo as text, index (text)}
         <Row
