@@ -157,7 +157,7 @@
               {misses.bench.join(', ')}{/if}
           </p>
         {/if}
-        <ul class="grid gap-x-6 sm:grid-cols-2 xl:grid-cols-3" data-testid={`guild-raid-fights-${f.row.id}`}>
+        <ul class="max-w-[560px]" data-testid={`guild-raid-fights-${f.row.id}`}>
           {#each nightFights(f.row, bossIds) as fight (fight.index)}
             <li
               class="grid min-h-8 grid-cols-[minmax(0,1fr)_48px_56px] items-center gap-3 text-[13px]"

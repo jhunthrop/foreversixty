@@ -124,7 +124,7 @@ test.describe('applications, officers', () => {
     const writes = await stubRecruit(page, { viewer: 'officer' });
     await gotoHydrated(page, APPLICATIONS_URL, 'guild-applications-plate');
     const second = page.getByTestId('guild-application-42');
-    await expect(second).toContainText('Destruction Warlock · Level 60 · Item level 60 · Top DPS 465');
+    await expect(second).toContainText('Destruction Warlock · Item level 60 · Top DPS 465');
     await second.getByTestId('guild-application-votes-yes').click();
     await expect(second.getByTestId('guild-application-votes-yes')).toHaveAttribute('aria-pressed', 'true');
     expect(writes[0]).toMatchObject({ method: 'PUT', body: { vote: 'yes' } });
