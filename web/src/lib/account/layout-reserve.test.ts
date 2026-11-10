@@ -1,11 +1,14 @@
 // @vitest-environment jsdom
 // The /account loading reserve's three copies of one set of numbers must agree: layout.ts's
 // tables, global.css's "account loading reserve" block, and Base.astro's inline pre-paint script
-// (which also repeats discordHintState). Each is read from disk and checked here.
+// (which also repeats discordHintState). Each is read from disk and checked here. The script runs
+// as written and as the build ships it (minified, scripts/inline-code.mjs), so minifying can
+// never change what it does.
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockEntitlements } from '../../test-support/billing-fixtures';
 import { discordBlock } from '../../test-support/notifications-api';
+import { minifyCode } from '../../../scripts/inline-code.mjs';
 import type { Me } from './api';
 import {
   ACCOUNT_RESERVE_KEY,
@@ -148,12 +151,18 @@ describe('the floors', () => {
   });
 });
 
-describe('Base.astro hint script', () => {
+/** The two forms of the inline script: its source text, and the minified text the build ships. */
+const SCRIPT_FORMS: readonly [string, (source: string) => string][] = [
+  ['as written', (source) => source],
+  ['as shipped', (source) => minifyCode(source)],
+];
+
+describe.each(SCRIPT_FORMS)('Base.astro hint script %s', (_form, ship) => {
   const hintOf = ((): ((account: Me | null) => HintState) => {
     const begin = base.indexOf('// discord-hint:begin');
     const end = base.indexOf('// discord-hint:end');
     expect(begin).toBeGreaterThan(-1);
-    const source = base.slice(begin, end);
+    const source = ship(base.slice(begin, end));
     return new Function(`${source}; return hintOf;`)() as (account: Me | null) => HintState;
   })();
 
@@ -198,7 +207,7 @@ describe('Base.astro hint script', () => {
       const begin = base.indexOf('// discord-link-hint:begin');
       const end = base.indexOf('// discord-link-hint:end');
       expect(begin).toBeGreaterThan(-1);
-      return new Function(`${base.slice(begin, end)}; return linkHintOf;`)() as (
+      return new Function(`${ship(base.slice(begin, end))}; return linkHintOf;`)() as (
         account: Me | null,
       ) => LinkHintState;
     })();
@@ -246,7 +255,7 @@ describe('Base.astro hint script', () => {
       const matchMedia = (query: string): { matches: boolean } => ({
         matches: query === lgQuery && options.wide,
       });
-      new Function('document', 'location', 'localStorage', 'matchMedia', base.slice(begin, end))(
+      new Function('document', 'location', 'localStorage', 'matchMedia', ship(base.slice(begin, end)))(
         fakeDocument,
         { pathname: options.path },
         localStorage,

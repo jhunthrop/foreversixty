@@ -10,6 +10,7 @@ import links from './src/data/links.json';
 import { assertLinksAreReal } from './src/lib/links';
 import { LOCAL_GUILD_SHELL_PATH } from './src/lib/report/shell-paths';
 import { isNoindexPath } from './src/lib/noindex-paths.mjs';
+import { shipDist } from './scripts/inline-code.mjs';
 import { DUCKDB_WASM_VERSION, RUNTIME_MODULES, stagingDir } from './scripts/duckdb-runtime.mjs';
 
 // The two DuckDB engine modules are over Cloudflare's static-asset limit, so they are not
@@ -86,6 +87,20 @@ const afterPaintDirective = {
   hooks: {
     'astro:config:setup': ({ addClientDirective }) => {
       addClientDirective({ name: 'after-paint', entrypoint: './src/directives/after-paint.ts' });
+    },
+  },
+};
+
+// Inline scripts and our own template comments are emitted verbatim, so their
+// developer notes shipped on every page. Once the pages are written, this minifies each inline
+// script and drops our `<!-- -->` comments (scripts/inline-code.mjs), leaving the
+// comments in source; postbuild's check-no-dev-comments.mjs fails the build if any remain.
+const shipMinified = {
+  name: 'ship-minified',
+  hooks: {
+    'astro:build:done': ({ dir, logger }) => {
+      const saved = shipDist(fileURLToPath(dir));
+      logger.info(`inline code minified, ${saved} bytes saved across the built pages`);
     },
   },
 };
@@ -186,6 +201,7 @@ export default defineConfig({
     placeholderGuard,
     duckdbRuntime,
     localGuildShell,
+    shipMinified,
   ],
   vite: {
     plugins: [tailwindcss()],
