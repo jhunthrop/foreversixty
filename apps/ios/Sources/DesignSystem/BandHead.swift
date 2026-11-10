@@ -16,10 +16,11 @@ public enum BandReach {
 
 public extension View {
     /// The band art behind a head, running up under the status bar and the navigation bar, with the
-    /// band's black bottom edge. Secondary lines on it take `mutedGround`.
-    func bandUnderBars() -> some View {
-        background(alignment: .bottom) { BandArt().padding(.top, -BandReach.underBars) }
-            .overlay(alignment: .bottom) { Color.black.frame(height: FSStroke.hairline) }
+    /// band's black bottom edge. Secondary lines on it take `mutedGround`. `bleed`: how far the band
+    /// reaches past the head's sides, for a head inside a padded column, so it still meets the edges.
+    func bandUnderBars(bleed: CGFloat = 0) -> some View {
+        background(alignment: .bottom) { BandArt().padding(.top, -BandReach.underBars).padding(.horizontal, -bleed) }
+            .overlay(alignment: .bottom) { Color.black.frame(height: FSStroke.hairline).padding(.horizontal, -bleed) }
             .environment(\.subInk, FSColor.mutedGround)
     }
 

@@ -54,8 +54,7 @@ struct NotAnsweredScreen: View {
                 RaidFlowLoading(failed: model.phase == .failed, message: Copy.raidFailed) { Task { await model.load() } }
             }
         }
-        .navigationTitle(model.raid?.zoneName ?? "")
-        .navigationBarTitleDisplayMode(.inline)
+        .pushedBandBar(model.raid?.zoneName ?? "")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 ShareLink(item: RaidLinks.web(guild: model.guild, raid: model.raidID)) {
@@ -115,8 +114,7 @@ struct ApplicantScreen: View {
                 RaidFlowLoading(failed: model.phase == .failed, message: Copy.commonFailed) { Task { await model.load() } }
             }
         }
-        .navigationTitle(applicantName)
-        .navigationBarTitleDisplayMode(.inline)
+        .pushedBandBar(applicantName)
         .task { await model.load() }
     }
 
@@ -178,8 +176,7 @@ struct RaidNightPageScreen: View {
             )
         )
         .refreshable { await model.load() }
-        .navigationTitle(night.zoneName)
-        .navigationBarTitleDisplayMode(.inline)
+        .pushedBandBar(night.zoneName)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 ShareLink(item: RaidLinks.web(guild: night.guildId, raid: model.raidID)) {
@@ -200,6 +197,7 @@ struct RaidCalendarScreen: View {
 
     var body: some View {
         RaidFlowScroll {
+            RaidFlowHead(title: Copy.raidPagesCalendar)
             let upcoming = planned.filter { $0.startsAt > now().addingTimeInterval(-HomeFlowModel.liveSpan) }.sorted { $0.startsAt < $1.startsAt }
             if upcoming.isEmpty { SmallText(Copy.raidNoRaid).padding(.top, RaidFlowSpacing.section) }
             VStack(spacing: 0) {
@@ -210,7 +208,6 @@ struct RaidCalendarScreen: View {
             }
             .padding(.top, RaidFlowSpacing.line)
         }
-        .navigationTitle(Copy.raidPagesCalendar)
-        .navigationBarTitleDisplayMode(.inline)
+        .pushedBandBar(Copy.raidPagesCalendar)
     }
 }

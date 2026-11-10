@@ -24,10 +24,9 @@ struct RaidNightPageView: View {
 
     var body: some View {
         RaidFlowScroll {
-            RaidFlowHead(title: content.title, facts: content.facts) {
+            RaidFlowHead(title: content.title, facts: content.facts, inset: Self.headInset) {
                 ItemIconView(icon: content.icon, quality: nil, build: build, size: FSSize.crest56).parityItem(.image)
             }
-            .padding(.horizontal, Self.headInset)
             FSCountdown(eyebrow: content.eyebrow, clock: content.clock, live: content.clock.isEmpty) {
                 VStack(alignment: .leading, spacing: Self.tagTop) {
                     SmallText(content.aside)
