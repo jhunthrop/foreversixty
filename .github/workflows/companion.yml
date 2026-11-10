@@ -371,6 +371,50 @@ jobs:
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE == ''
         run: echo "::notice::AZURE_SIGNING_PROFILE is not set, so this Windows build is unsigned."
 
+      # A dry run installs the setup on the runner as a player would: the one screen, Install,
+      # the companion's first run, then what the install left behind, and the uninstaller. The
+      # two screens are kept as the run's dryrun-windows-captures artifact (never companion-*,
+      # so a release could not pick them up).
+      - name: Try the setup on the runner (dry run)
+        if: matrix.goos == 'windows' && github.event.inputs.dry_run == 'true'
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          New-Item -ItemType Directory captures | Out-Null
+          function Snap([string]$name) {
+            $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+            $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+            [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+            $bmp.Save("$PWD\captures\$name.png")
+          }
+          $run = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
+          $dir = Join-Path $env:LOCALAPPDATA 'Programs\Forever Sixty'
+          $setup = Start-Process dist\foreversixty-companion-setup.exe -PassThru
+          Start-Sleep 8; Snap 'win-1-setup'
+          $shell = New-Object -ComObject WScript.Shell
+          $null = $shell.AppActivate($setup.Id); Start-Sleep 1; $shell.SendKeys('{ENTER}')
+          Start-Sleep 25; Snap 'win-2-first-run'
+          Get-ChildItem $dir | Format-Table Name, Length
+          "start with windows: $((Get-ItemProperty $run -ErrorAction SilentlyContinue).'Forever Sixty')"
+          "start menu shortcut: $(Test-Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Forever Sixty.lnk")"
+          "desktop shortcut: $(Test-Path "$([Environment]::GetFolderPath('Desktop'))\Forever Sixty.lnk")"
+          Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*' |
+            Where-Object DisplayName -eq 'Forever Sixty' |
+            Format-List DisplayName, DisplayVersion, Publisher, DisplayIcon, InstallLocation
+          Get-Process foreversixty-companion -ErrorAction SilentlyContinue | Format-Table Id, Path
+          if (-not (Test-Path "$dir\foreversixty-companion.exe")) { throw "the setup installed nothing" }
+          Start-Process "$dir\unins000.exe" -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES' -Wait
+          Start-Sleep 10
+          "after the uninstaller: exe $(Test-Path "$dir\foreversixty-companion.exe"), start with windows '$((Get-ItemProperty $run -ErrorAction SilentlyContinue).'Forever Sixty')', running $(@(Get-Process foreversixty-companion -ErrorAction SilentlyContinue).Count)"
+
+      - name: Keep the setup's screens (dry run)
+        if: always() && matrix.goos == 'windows' && github.event.inputs.dry_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dryrun-windows-captures
+          path: companion/captures/*
+          if-no-files-found: warn
+
       - uses: actions/upload-artifact@v4
         with:
           name: companion-${{ matrix.goos }}-${{ matrix.goarch }}
