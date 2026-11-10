@@ -189,7 +189,7 @@ fun FlowSection(
             HorizontalDivider(color = FsColor.line)
             content()
         } else {
-            FlowPanel(panel, content = content)
+            FlowPanel(frame = panel, content = content)
         }
     }
 }
@@ -199,7 +199,7 @@ fun FlowSection(
  * the sides and 8 above and below, so a row's own padding finishes the inset.
  */
 @Composable
-fun FlowPanel(frame: PanelFrame = PanelFrame.None, modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+fun FlowPanel(modifier: Modifier = Modifier, frame: PanelFrame = PanelFrame.None, content: @Composable ColumnScope.() -> Unit) {
     Box(modifier.fillMaxWidth().panel(frame)) {
         Column(Modifier.fillMaxWidth().padding(horizontal = FsSpace.space4, vertical = FsSpace.space2), content = content)
     }
