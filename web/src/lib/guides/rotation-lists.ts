@@ -301,11 +301,15 @@ export function joinSpellRuns(items: readonly RotationItem[]): RotationItem[] {
   }, []);
 }
 
+/** A rule shorter than this ("On cooldown") reads faster than "Same as above". */
+const SAME_RULE_MIN_CHARS = 40;
+
 /** Rows whose rules repeat the row above's word for word say so instead of the rules again:
- *  Greater Heal rank 4, rank 1 and Heal rank 4 at one set of thresholds read once. */
+ *  Greater Heal rank 4, rank 1 and Heal rank 4 at one set of thresholds read once. A short rule
+ *  is simply said again. */
 export function sayRepeatedRulesOnce(items: readonly RotationItem[]): RotationItem[] {
   return items.map((item, i) =>
-    i > 0 && item.clause !== '' && item.clause === items[i - 1]!.clause
+    i > 0 && item.clause.length > SAME_RULE_MIN_CHARS && item.clause === items[i - 1]!.clause
       ? { ...item, clause: guidesCopy.sameRulesAsAbove }
       : item,
   );

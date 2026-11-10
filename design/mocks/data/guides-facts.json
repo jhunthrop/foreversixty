@@ -3602,7 +3602,7 @@
        "name": "Immolation Trap",
        "rank": 5,
        "icon": "spell_fire_flameshock",
-       "clause": "Same as above",
+       "clause": "On cooldown",
        "tipKey": "spell:14305",
        "rankText": "Rank 5"
       },
@@ -22433,7 +22433,7 @@
      "weightHead": "Weight",
      "notes": []
     },
-    "prose": "<p>A rank learned far below your level keeps less of your healing power, or none. Spirit pays you twice: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> turns it into healing, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span> keeps half of its regeneration running while you cast. For Holy a critical heal is only a bigger heal, since <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105860:3\">Inspiration</span> only adds armor to the target. Spell power with no healing on it does nothing for a heal.</p>\n"
+    "prose": "<p>Spirit pays you twice, through <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span>. For Holy a critical heal is only a bigger heal, since <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105860:3\">Inspiration</span> only adds armor to the target. Spell power with no healing on it does nothing for a heal.</p>\n"
    },
    "bis": {
     "data": {

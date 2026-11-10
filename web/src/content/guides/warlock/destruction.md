@@ -94,7 +94,7 @@ The pre-raid set leans on Tailoring and Enchanting crafts.
 
 ## Enchants and consumables
 
-Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Put Brilliant Wizard Oil or a Firestone on the weapon. A Firestone costs a shard; Ruin doubles the bonus on the crits its 2% adds, and its Fire damage feeds Incinerate, Immolate and Conflagrate.
+Flask and elixirs stack as they always have in Classic, and the school elixirs are separate buffs, so run Elixir of Shadow Power for your Shadow spells and Elixir of Fire Power for Incinerate, Immolate and Conflagrate. Major Mana Potion and Demonic Rune have separate cooldowns, so use both, and keep a Healthstone for the Life Taps that leave you low. Put Brilliant Wizard Oil or a Firestone on the weapon. A Firestone costs a shard.
 
 ## Races
 

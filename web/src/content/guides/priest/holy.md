@@ -83,7 +83,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 ## Stat priority
 
-A rank learned far below your level keeps less of your healing power, or none. Spirit pays you twice: Spiritual Guidance turns it into healing, and Meditation keeps half of its regeneration running while you cast. For Holy a critical heal is only a bigger heal, since Inspiration only adds armor to the target. Spell power with no healing on it does nothing for a heal.
+Spirit pays you twice, through Spiritual Guidance and Meditation. For Holy a critical heal is only a bigger heal, since Inspiration only adds armor to the target. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 

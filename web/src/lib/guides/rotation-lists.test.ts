@@ -889,6 +889,14 @@ describe('sayRepeatedRulesOnce', () => {
       'When Renew is not on the tank',
     ]);
   });
+
+  it('says a short rule again', () => {
+    const rows = sayRepeatedRulesOnce([
+      { name: 'Strider Kick', clause: 'On cooldown' },
+      { name: 'Immolation Trap', rank: 5, clause: 'On cooldown' },
+    ]);
+    expect(rows.map((row) => row.clause)).toEqual(['On cooldown', 'On cooldown']);
+  });
 });
 
 describe('inPageWords', () => {
