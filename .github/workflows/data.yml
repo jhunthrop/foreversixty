@@ -153,7 +153,10 @@ jobs:
     if: inputs.product != ''
     needs: test
     runs-on: ubuntu-latest
-    # 150 since 2026-11-09: the per-spell hotfix push search alone ran past 60 minutes.
+    # 150 for the full hotfix push crawl, which only a build with no saved push runs
+    # (a new client build, or `--full` / HOTFIX_PUSH_FULL=1): at 1.60.1.70790 it is
+    # about 32,000 wago.tools searches and over an hour. Every other run reads only
+    # the pushes newer than the committed raw/wago-push/entries.json and is short.
     timeout-minutes: 150
     defaults: { run: { working-directory: data } }
     permissions: { contents: write }
@@ -166,6 +169,9 @@ jobs:
       # (pipeline/hotfix_push.py): round 6 found Ice Barrier, Frigid Power and
       # Touch of the Grave among the pushed rows no generator read. A push it
       # cannot read fails this step rather than leaving the build shipped-only.
+      # The push read is saved in builds/<build>/raw/wago-push/entries.json, which
+      # the commit step's `git add builds` commits (a .gitignore exception), so the
+      # next run starts from it (pipeline/hotfix_push_store.py).
       - name: Fetch build
         env:
           PRODUCT: ${{ inputs.product }}

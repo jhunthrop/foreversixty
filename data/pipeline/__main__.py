@@ -5,6 +5,11 @@ from pathlib import Path
 
 import httpx
 
+_FULL_HELP = (
+    "read the whole hotfix push by the full crawl instead of only what is new over "
+    "raw/wago-push/entries.json (also HOTFIX_PUSH_FULL=1)"
+)
+
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="pipeline", description="Forever Sixty data pipeline")
@@ -18,6 +23,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     f.add_argument("--product", required=True, help="wago.tools product key, e.g. wow_classic_era")
     f.add_argument("--build", help="build string like 1.15.7.61582; default: latest for product")
+    f.add_argument("--full", action="store_true", help=_FULL_HELP)
 
     lhp = sub.add_parser(
         "layer-hotfix-push",
@@ -31,6 +37,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="re-layer from the push cached in raw/wago-push/ instead of fetching it; "
         "fails when there is no cache",
     )
+    lhp.add_argument("--full", action="store_true", help=_FULL_HELP)
 
     pc = sub.add_parser(
         "push-check",
@@ -481,10 +488,11 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "fetch":
         from pipeline import hotfix_push, wago, wago_hotfixes
+        from pipeline.hotfix_push_store import full_requested
 
         build_dir = wago.fetch_build(args.product, args.build)
         build = build_dir.name if build_dir is not None else args.build
-        _log_layer(hotfix_push.layer_hotfix_push(build))
+        _log_layer(hotfix_push.layer_hotfix_push(build, full=full_requested(args.full)))
         # The item pair's pushes too (sim-accuracy round 11): without them a
         # local fetch + normalize drops 165 hotfix-only items and puts 404 on
         # wowhead or classic-db stats. Logged, like the layer: stdout's last
@@ -505,8 +513,10 @@ def main(argv: list[str] | None = None) -> int:
                 f.write(line + "\n")
     elif args.command == "layer-hotfix-push":
         from pipeline import hotfix_push
+        from pipeline.hotfix_push_store import full_requested
 
-        _log_layer(hotfix_push.layer_hotfix_push(args.build, offline=args.offline))
+        full = full_requested(args.full)
+        _log_layer(hotfix_push.layer_hotfix_push(args.build, offline=args.offline, full=full))
     elif args.command == "fetch-wowhead":
         from pipeline.wowhead_items import fetch_wowhead
 

@@ -128,6 +128,12 @@ data/builds/*/raw/client/*
 # feedback 2026-11-09: the client's recipe chains for Forever-new crafts
 # (pipeline.client_crafted), written by `loot` and read by `loot-merge`.
 !data/builds/*/raw/client/crafted-recipes.json
+# 2026-11-09: the build's saved hotfix push (pipeline.hotfix_push_store), so the
+# next data run reads only the pushes that are new instead of the full crawl
+# (~32,000 wago.tools searches at 70790). The per-table cache beside it stays ignored.
+!data/builds/*/raw/wago-push/
+data/builds/*/raw/wago-push/*
+!data/builds/*/raw/wago-push/entries.json
 data/.icon-cache/
 
 # git worktrees for parallel plan execution

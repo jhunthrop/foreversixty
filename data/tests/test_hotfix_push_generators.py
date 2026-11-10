@@ -146,7 +146,9 @@ def test_fetch_layers_the_push_and_the_item_pushes_after_the_download(monkeypatc
     )
     monkeypatch.setattr(
         "pipeline.hotfix_push.layer_hotfix_push",
-        lambda build, offline=False: calls.append(("layer", build, offline)) or {"tables": {}},
+        lambda build, offline=False, full=False: (
+            calls.append(("layer", build, offline, full)) or {"tables": {}}
+        ),
     )
     monkeypatch.setattr(
         "pipeline.wago_hotfixes.fetch_wago_hotfixes",
@@ -155,7 +157,7 @@ def test_fetch_layers_the_push_and_the_item_pushes_after_the_download(monkeypatc
     cli.main(["fetch", "--product", "wowf", "--build", BUILD])
     assert calls == [
         ("fetch", "wowf", BUILD),
-        ("layer", BUILD, False),
+        ("layer", BUILD, False, False),
         ("item-pushes", BUILD, "wowf"),
     ]
 
@@ -171,7 +173,8 @@ def test_fetch_prints_the_build_last_after_the_item_pushes(monkeypatch, tmp_path
 
     monkeypatch.setattr("pipeline.wago.fetch_build", fetch_build)
     monkeypatch.setattr(
-        "pipeline.hotfix_push.layer_hotfix_push", lambda build, offline=False: {"tables": {}}
+        "pipeline.hotfix_push.layer_hotfix_push",
+        lambda build, offline=False, full=False: {"tables": {}},
     )
     monkeypatch.setattr(
         "pipeline.wago_hotfixes.fetch_wago_hotfixes",
@@ -185,10 +188,28 @@ def test_layer_hotfix_push_has_an_explicit_offline_mode(monkeypatch):
     calls: list[tuple] = []
     monkeypatch.setattr(
         "pipeline.hotfix_push.layer_hotfix_push",
-        lambda build, offline=False: calls.append((build, offline)) or {"tables": {}},
+        lambda build, offline=False, full=False: (
+            calls.append((build, offline, full)) or {"tables": {}}
+        ),
     )
     cli.main(["layer-hotfix-push", "--build", BUILD, "--offline"])
-    assert calls == [(BUILD, True)]
+    assert calls == [(BUILD, True, False)]
+
+
+def test_full_forces_the_full_push_crawl_by_flag_or_env(monkeypatch):
+    calls: list[tuple] = []
+    monkeypatch.setattr(
+        "pipeline.hotfix_push.layer_hotfix_push",
+        lambda build, offline=False, full=False: (
+            calls.append((build, offline, full)) or {"tables": {}}
+        ),
+    )
+    monkeypatch.delenv("HOTFIX_PUSH_FULL", raising=False)
+    cli.main(["layer-hotfix-push", "--build", BUILD])
+    cli.main(["layer-hotfix-push", "--build", BUILD, "--full"])
+    monkeypatch.setenv("HOTFIX_PUSH_FULL", "1")
+    cli.main(["layer-hotfix-push", "--build", BUILD])
+    assert calls == [(BUILD, False, False), (BUILD, False, True), (BUILD, False, True)]
 
 
 def test_simconst_drops_a_spell_the_push_removes(build_root):  # noqa: F811
