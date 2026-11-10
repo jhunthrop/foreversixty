@@ -255,3 +255,35 @@ These are tells 15 (the painted seal and icon), 12 (the painted ground), 2 (the 
 Item 1 is a visual tell in this lane's control and the reason for the verdict. Fixing items 1 and 4, with the owner confirming the brand assets, would take this to PASS WITH FIXES, with items 2 and 3 as the copy fixes.
 
 Path: `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/design/reviews/2026-11-10-companion-installers/`
+
+# Round 6
+
+# Companion installers, round 6: PASS WITH FIXES
+
+**First impression:** The DMG is now the Discord reference with the site's teal arrow, so it reads as a person made it. The Windows prompt is a short, specific installer. What remains is brand-level, plus two small copy items.
+
+I looked at `mac-dmg-window-light.png`, `mac-dmg-window-dark.png` and `page-setup.png`. I did not re-open the done-state capture, so the "is installed." and "is updated." titles are taken from your description.
+
+## Resolved
+- **Tell 4 (DMG):** the ground is now white and the arrow is a short teal chevron. The cream and brass pairing is gone. The Marcellus wordmark on its own over white is the site's wordmark and is not a slogan.
+- **Tell 22 (setup lede):** "Installs in your own Programs folder. No admin needed." now names a place. The Programs folder is a fact the button does not carry. The Mac side stays one line.
+- **Tell 13 (blank window):** fixed last round and not regressed.
+
+## Remaining
+1. **"No admin needed." (tell 22, minor).** The folder clause earns its place, but "No admin needed" is still the explainer and could go. If the window shows no UAC prompt, a Windows player sees that for themselves. Fix: "Installs in your own Programs folder." That is optional.
+2. **Heading repeats the button (tell 21, minor).** "Install Forever Sixty?" above an "Install" button is unchanged. The done and busy titles now carry a state, which is better. This one is a taste call and not worth holding.
+3. **Card inside window (tell 8), accepted on the lane's reasoning.** `page-setup.png` still has the dark double-border card in the window. It matches the companion's main window, so it is consistent. I would not call it a stamped card on every block. A one-button prompt would still look better as bare text on the ground, but this is the house panel and not a template accident.
+4. **Brand assets (tells 12, 15, 2), conditionally accepted.** The painted ground, the teal band and the seal and icon still look generated to me. The brief cites the owner's 2026-11-09 rulings (one logo, painted art as background) and `docs/design-system.md` records them. I read that as the "specific reason" my criteria allow.
+   - It rests on a relayed brief and a doc, so it is not something I can verify.
+   - The band still repeats the title-bar wordmark in the prompt windows. Removing it is the one cheap cleanup left, and the owner's "background only" scope does not clearly cover it.
+
+## Authentic (keep)
+- The DMG matches the owner's reference at the same scale, with white ground, short arrow and wordmark top left.
+- The setup lines name real things: the Programs folder, "Verified publisher: Commish LLC", "Keep my settings".
+- The busy and done titles carry the state in the heading instead of a spinner.
+- There are no em dashes, glows, fake stats or emoji.
+
+## Verdict: PASS WITH FIXES
+No tell in my "cannot pass" set is in this lane's control any more. The painted seal, ground and band stand only on the owner's rulings, which the owner needs to confirm in writing and not through the relay. The fixes are the two copy trims in items 1 and 2, and removing the band from the prompt windows if the owner agrees.
+
+Path: `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/design/reviews/2026-11-10-companion-installers/`
