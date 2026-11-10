@@ -120,56 +120,63 @@
   }
 </script>
 
-<StatTable
-  {columns}
-  nameHead="Raider"
-  bar={false}
-  dense
-  action={officer}
-  label="Readiness"
-  testid="guild-readiness-board"
->
-  {#each entries as { row, shortfalls }, index (row.character_key)}
-    {#snippet nudge()}<button
-        type="button"
-        class="nudge"
-        disabled={readOnly}
-        aria-describedby={describedBy}
-        onclick={() => onNudge(row)}
-        aria-label={`Nudge ${row.name}`}
-        data-testid={`guild-readiness-nudge-${row.character_key}`}
-        >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
-      >{/snippet}
-    {#if index === short.length && short.length > 0 && ready.length > 0}
-      <StatRow total bar={false} figures={blank}
-        >{#snippet name()}<button
-            type="button"
-            class="fold"
-            aria-expanded={showReady}
-            onclick={() => (showReady = !showReady)}
-            data-testid="guild-readiness-ready-toggle">Ready {ready.length} {showReady ? '▴' : '▾'}</button
-          >{/snippet}</StatRow
-      >
-    {/if}
-    {#if index < short.length || showReady || short.length === 0}
-      <StatRow
-        bar={false}
-        action={officer && shortfalls.length > 0 ? nudge : undefined}
-        figures={figures(row, shortfalls)}
-        testid={`guild-readiness-row-${row.character_key}`}
-      >
-        {#snippet icon()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
-        {#snippet name()}<span style:color={classColorVar(row.class)}>{row.name}</span>{/snippet}
-        {#snippet sub()}<span class="sub-line"><span>{row.spec} · {row.item_level ?? '–'} ilvl</span></span
-          >{#if shortfalls.length > 0}<span class="reasons text-wipe" data-testid="guild-readiness-shortfalls"
-              >{shortfalls.join(', ')}</span
-            >{/if}{/snippet}
-      </StatRow>
-    {/if}
-  {/each}
-</StatTable>
+<div class="matrix">
+  <StatTable
+    {columns}
+    nameHead="Raider"
+    bar={false}
+    dense
+    action={officer}
+    label="Readiness"
+    testid="guild-readiness-board"
+  >
+    {#each entries as { row, shortfalls }, index (row.character_key)}
+      {#snippet nudge()}<button
+          type="button"
+          class="nudge"
+          disabled={readOnly}
+          aria-describedby={describedBy}
+          onclick={() => onNudge(row)}
+          aria-label={`Nudge ${row.name}`}
+          data-testid={`guild-readiness-nudge-${row.character_key}`}
+          >{copiedKey === row.character_key ? 'Copied' : 'Nudge'}</button
+        >{/snippet}
+      {#if index === short.length && short.length > 0 && ready.length > 0}
+        <StatRow total bar={false} figures={blank}
+          >{#snippet name()}<button
+              type="button"
+              class="fold"
+              aria-expanded={showReady}
+              onclick={() => (showReady = !showReady)}
+              data-testid="guild-readiness-ready-toggle">Ready {ready.length} {showReady ? '▴' : '▾'}</button
+            >{/snippet}</StatRow
+        >
+      {/if}
+      {#if index < short.length || showReady || short.length === 0}
+        <StatRow
+          bar={false}
+          action={officer && shortfalls.length > 0 ? nudge : undefined}
+          figures={figures(row, shortfalls)}
+          testid={`guild-readiness-row-${row.character_key}`}
+        >
+          {#snippet icon()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
+          {#snippet name()}<span style:color={classColorVar(row.class)}>{row.name}</span>{/snippet}
+          {#snippet sub()}<span class="sub-line"><span>{row.spec} · {row.item_level ?? '–'} ilvl</span></span
+            >{#if shortfalls.length > 0}<span
+                class="reasons text-wipe"
+                data-testid="guild-readiness-shortfalls">{shortfalls.join(', ')}</span
+              >{/if}{/snippet}
+        </StatRow>
+      {/if}
+    {/each}
+  </StatTable>
+</div>
 
 <style>
+  /* One column grid for every row: the figures take fixed tracks, so a long cell never shifts the next. */
+  .matrix :global(.ui-st) {
+    --st-fig: 92px;
+  }
   .fold {
     font: inherit;
     color: var(--color-gold);
