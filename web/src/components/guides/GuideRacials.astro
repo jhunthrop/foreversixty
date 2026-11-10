@@ -1,0 +1,70 @@
+---
+// web/src/components/guides/GuideRacials.astro
+// One race's racials under its row in the Races lane (GuideRacesLane): each the racial's icon,
+// its name opening the racial tooltip, and what it does.
+import { dataUrl } from '../../lib/planner/load';
+import { racialKeyFor } from '../../lib/guides/guide-tips';
+import type { GuideRaceRow } from '../../lib/guides/race-table';
+import type { GuideTipBundle } from '../../lib/tooltips/game-tip';
+
+interface Props {
+  build: string;
+  racials: GuideRaceRow['racials'];
+  tips: GuideTipBundle;
+}
+const { build, racials, tips } = Astro.props;
+---
+
+{racials.map((racial) => (
+  <span class="guide-racial">
+    {racial.icon !== undefined ? (
+      <img
+        src={dataUrl(build, `icons/${racial.icon}.webp`)}
+        alt=""
+        width="20"
+        height="20"
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <span class="guide-racial-gap" aria-hidden="true" />
+    )}
+    <span>
+      <b
+        class:list={[racialKeyFor(tips, racial.name) !== undefined && 'gtip guide-racial-tip']}
+        tabindex={racialKeyFor(tips, racial.name) !== undefined ? 0 : undefined}
+        data-game-tip={racialKeyFor(tips, racial.name)}
+      >
+        {racial.name}
+      </b>{' '}
+      {racial.effect}
+    </span>
+  </span>
+))}
+
+<style>
+  .guide-racial {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    width: 100%;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--color-muted);
+  }
+  .guide-racial img,
+  .guide-racial-gap {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-icon);
+  }
+  .guide-racial b {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+  .guide-racial-tip {
+    position: relative;
+    cursor: pointer;
+  }
+</style>

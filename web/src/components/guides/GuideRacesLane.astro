@@ -1,16 +1,18 @@
 ---
 // web/src/components/guides/GuideRacesLane.astro
 // The Races lane (guides spec 2026-11-08 §4.3, rulings 0A): the Alliance races, then the Horde,
-// the recommended ones first and tagged, each with the racials that matter for this spec (icon,
-// name opening the racial tooltip, what it does); a line for a recommended race the prose does
-// not name.
+// the recommended ones first and tagged, each led by its portrait (RaceIcon) with the racials
+// that matter for this spec under it (GuideRacials); a line for a recommended race the prose
+// does not name. A race the build ships no portrait for takes a Row with no lead, so its name
+// never sits behind an empty lead column.
 import LaneBlock from '../ui/LaneBlock.svelte';
+import RaceIcon from '../ui/RaceIcon.svelte';
 import Row from '../ui/Row.svelte';
 import Tag from '../ui/Tag.svelte';
-import { dataUrl } from '../../lib/planner/load';
+import GuideRacials from './GuideRacials.astro';
 import { guidesCopy } from '../../lib/guides/copy';
+import { raceIconsFor } from '../../lib/guides/build-races';
 import { racesByFaction } from '../../lib/guides/glance';
-import { racialKeyFor } from '../../lib/guides/guide-tips';
 import type { GuideRaceRow } from '../../lib/guides/race-table';
 import type { GuideTipBundle } from '../../lib/tooltips/game-tip';
 
@@ -22,6 +24,7 @@ interface Props {
 }
 const { build, rows, lines, tips } = Astro.props;
 const groups = racesByFaction(rows);
+const raceIcons = raceIconsFor(build);
 ---
 
 <LaneBlock label={guidesCopy.racialsColumn} testid="guide-race-table">
@@ -31,47 +34,32 @@ const groups = racesByFaction(rows);
         {group.faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading}
       </h4>
       <div class="guide-race-rows">
-        {group.rows.map((race) => (
-          <Row
-            title={race.name}
-            titleTone={{ faction: group.faction }}
-            open
-            wrapTrail={race.recommended}
-            testid={`guide-race-${race.slug}`}
-          >
-            <span slot="trail" class="guide-race-tag">
-              {race.recommended && <Tag>{guidesCopy.recommendedTag}</Tag>}
-            </span>
-            <Fragment slot="foot">
-              {race.racials.map((racial) => (
-                <span class="guide-racial">
-                  {racial.icon !== undefined ? (
-                    <img
-                      src={dataUrl(build, `icons/${racial.icon}.webp`)}
-                      alt=""
-                      width="20"
-                      height="20"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ) : (
-                    <span class="guide-racial-gap" aria-hidden="true" />
-                  )}
-                  <span>
-                    <b
-                      class:list={[racialKeyFor(tips, racial.name) !== undefined && 'gtip guide-racial-tip']}
-                      tabindex={racialKeyFor(tips, racial.name) !== undefined ? 0 : undefined}
-                      data-game-tip={racialKeyFor(tips, racial.name)}
-                    >
-                      {racial.name}
-                    </b>{' '}
-                    {racial.effect}
-                  </span>
-                </span>
-              ))}
-            </Fragment>
-          </Row>
-        ))}
+        {group.rows.map((race) => {
+          const row = {
+            title: race.name,
+            titleTone: { faction: group.faction },
+            open: true,
+            wrapTrail: race.recommended,
+            testid: `guide-race-${race.slug}`,
+          };
+          const portrait = raceIcons.get(race.slug);
+          return portrait !== undefined ? (
+            <Row {...row}>
+              <RaceIcon slot="lead" url={portrait} name={race.name} size={28} />
+              <span slot="trail" class="guide-race-tag">
+                {race.recommended && <Tag>{guidesCopy.recommendedTag}</Tag>}
+              </span>
+              <GuideRacials slot="foot" {build} racials={race.racials} {tips} />
+            </Row>
+          ) : (
+            <Row {...row}>
+              <span slot="trail" class="guide-race-tag">
+                {race.recommended && <Tag>{guidesCopy.recommendedTag}</Tag>}
+              </span>
+              <GuideRacials slot="foot" {build} racials={race.racials} {tips} />
+            </Row>
+          );
+        })}
       </div>
     </div>
   ))}
@@ -99,29 +87,5 @@ const groups = racesByFaction(rows);
   .guide-race-rows {
     display: flex;
     flex-direction: column;
-  }
-  .guide-racial {
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    width: 100%;
-    font-size: 13px;
-    line-height: 18px;
-    color: var(--color-muted);
-  }
-  .guide-racial img,
-  .guide-racial-gap {
-    flex: none;
-    width: 20px;
-    height: 20px;
-    border-radius: var(--radius-icon);
-  }
-  .guide-racial b {
-    color: var(--color-text);
-    font-weight: 600;
-  }
-  .guide-racial-tip {
-    position: relative;
-    cursor: pointer;
   }
 </style>
