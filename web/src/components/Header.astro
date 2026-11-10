@@ -17,6 +17,8 @@ import { PREMIUM_SOURCE_KEY, STORED_SOURCES } from '../lib/account/premium-hint'
 import HeaderPanel from './HeaderPanel.astro';
 import HeaderSearch from './HeaderSearch.astro';
 import Seal from './Seal.astro';
+import Icon from './ui/Icon.astro';
+import { ICON_CHEVRON_DOWN, ICON_MENU, UI_ICONS } from '../lib/ui/ui-icons';
 import { SITE_NAME } from '../lib/seo';
 import { REGION } from '../lib/ui/regions';
 
@@ -34,6 +36,8 @@ const { path = '' } = Astro.props;
 
 // Build time only, as pages/guides/index.astro reads it: the Guides panel's spec names.
 const guideEntries = guideClasses(classes, readSpecCatalog());
+/** A door's icon beside its label (nav.css shows it where the bar has the room). */
+const DOOR_ICON_PX = 20;
 
 // Not an HTML comment: that would ship in every page and in the API's chrome snapshot.
 // Styling lives in styles/nav.css (spec 2026-10-09-nav-character-selector.md), not in
@@ -83,18 +87,7 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
     data-testid="menu-button"
     data-menu-button
   >
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      aria-hidden="true"
-    >
-      <path d="M4 7h16M4 12h16M4 17h16"></path>
-    </svg>
+    <Icon icon={ICON_MENU} size={20} />
   </button>
   <div id="site-menu" class="site-menu" data-menu-panel>
     <HeaderSearch place="menu" />
@@ -111,13 +104,17 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
                 data-door={key}
                 aria-current={isNavGroupCurrent(group, path) ? 'page' : undefined}
               >
+                <Icon icon={UI_ICONS[group.icon]} size={DOOR_ICON_PX} class="site-door-icon" />
                 {group.label}
               </a>
             </div>
           );
         return (
           <div class="site-group" data-group={key}>
-            <h2 class="site-menu-heading">{group.label}</h2>
+            <h2 class="site-menu-heading">
+              <Icon icon={UI_ICONS[group.icon]} size={DOOR_ICON_PX} class="site-door-icon" />
+              {group.label}
+            </h2>
             <a
               href={group.href}
               class="site-door"
@@ -128,6 +125,7 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
               aria-controls={`site-panel-${key}`}
               data-guild-tab={index === GUILD_GROUP_INDEX ? GUILD_OVERVIEW_TAB : undefined}
             >
+              <Icon icon={UI_ICONS[group.icon]} size={DOOR_ICON_PX} class="site-door-icon" />
               {group.label}
             </a>
             <button
@@ -138,19 +136,7 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
               aria-controls={`site-panel-${key}`}
               data-door-toggle={key}
             >
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m6 9 6 6 6-6"></path>
-              </svg>
+              <Icon icon={ICON_CHEVRON_DOWN} size={12} />
             </button>
             <HeaderPanel {...panel} place="bar" />
             <HeaderPanel {...panel} place="menu" />
@@ -164,6 +150,7 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
         data-testid="nav-premium"
         aria-current={isNavItemCurrent(PREMIUM_NAV_ITEM, path) ? 'page' : undefined}
       >
+        <Icon icon={UI_ICONS[PREMIUM_NAV_ITEM.icon]} size={DOOR_ICON_PX} class="site-door-icon" />
         {PREMIUM_NAV_ITEM.label}
       </a>
     </nav>

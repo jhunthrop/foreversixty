@@ -1,28 +1,23 @@
 <!-- web/src/components/ui/Icon.svelte -->
-<!-- One icon from the owner's custom set (lib/ui/ui-icons.ts, generated from
-     design/assets/icons/ui): a filled path in currentColor, so the caller's token colours it.
-     Decorative (aria-hidden): the control that holds it carries the name. Line glyphs stay
-     ui/Glyph.svelte's. -->
+<!-- One icon from the site's one icon source (lib/ui/ui-icons.ts: the owner's custom set and the
+     line family), in currentColor, so the caller's token colours it. The caller imports the one
+     export it draws (ICON_SEARCH ...), so an island carries only its own icons. Ui/Icon.astro is
+     the server-rendered twin. -->
 <script lang="ts">
-  import { UI_ICONS, type UiIconName } from '../../lib/ui/ui-icons';
+  import { iconAttributes } from '../../lib/ui/icon';
+  import type { UiIconShape } from '../../lib/ui/ui-icons';
 
   let {
-    name,
+    icon,
     size = 20,
     class: className = '',
-  }: { name: UiIconName; size?: number; class?: string } = $props();
+    testid,
+  }: { icon: UiIconShape; size?: number; class?: string; testid?: string } = $props();
 
-  const icon = $derived(UI_ICONS[name]);
+  const attributes = $derived(iconAttributes(icon, size));
 </script>
 
-<svg
-  class={['shrink-0', className]}
-  width={size}
-  height={size}
-  viewBox={`0 0 ${icon.size} ${icon.size}`}
-  fill="currentColor"
-  aria-hidden="true"
-  data-icon={name}
->
-  <path fill-rule="evenodd" d={icon.d} />
+<svg class={['shrink-0', className]} {...attributes} data-testid={testid}>
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -- a constant from ui-icons.ts, never user text -->
+  {@html icon.body}
 </svg>

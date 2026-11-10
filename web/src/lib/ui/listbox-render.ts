@@ -4,10 +4,8 @@
 // check, the group heads, the no-match row and the multi-select foot. Built from data only;
 // listbox.ts owns state and events.
 import { selectCopy } from './copy';
-import { CHECK_GLYPH, CLOSE_GLYPH, SEARCH_GLYPH } from './glyphs';
-
-const LIST_GLYPHS = { check: CHECK_GLYPH, close: CLOSE_GLYPH, search: SEARCH_GLYPH } as const;
-type ListGlyph = keyof typeof LIST_GLYPHS;
+import { iconAttributes } from './icon';
+import { ICON_CHECK, ICON_CLOSE, ICON_SEARCH, type UiIconShape } from './ui-icons';
 import {
   crestRing,
   labelColour,
@@ -19,20 +17,13 @@ import {
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-export function glyph(name: ListGlyph, size: number, className: string): SVGSVGElement {
+/** One icon from lib/ui/ui-icons.ts, drawn with ui/Icon.svelte's own attributes. */
+export function glyph(icon: UiIconShape, size: number, className: string): SVGSVGElement {
   const svg = document.createElementNS(SVG_NS, 'svg');
   svg.setAttribute('class', className);
-  svg.setAttribute('width', String(size));
-  svg.setAttribute('height', String(size));
-  svg.setAttribute('viewBox', '0 0 24 24');
-  svg.setAttribute('fill', 'none');
-  svg.setAttribute('stroke', 'currentColor');
-  svg.setAttribute('stroke-width', '2');
-  svg.setAttribute('stroke-linecap', 'round');
-  svg.setAttribute('stroke-linejoin', 'round');
-  svg.setAttribute('aria-hidden', 'true');
-  // A constant from glyphs.ts, never user text.
-  svg.innerHTML = LIST_GLYPHS[name];
+  for (const [name, value] of Object.entries(iconAttributes(icon, size))) svg.setAttribute(name, value);
+  // A constant from ui-icons.ts, never user text.
+  svg.innerHTML = icon.body;
   return svg;
 }
 
@@ -104,7 +95,7 @@ export function optionRow(row: ListRow, context: RowContext): HTMLElement {
 
   if (context.multiple) {
     const box = el('span', 'sel-box');
-    box.append(glyph('check', 12, 'sel-box-check'));
+    box.append(glyph(ICON_CHECK, 12, 'sel-box-check'));
     node.append(box);
   }
   if (row.icon !== undefined) node.append(iconSlot(row.icon, row.colour));
@@ -132,7 +123,7 @@ export function optionRow(row: ListRow, context: RowContext): HTMLElement {
   else node.setAttribute('aria-labelledby', named.join(' '));
 
   if (row.meta !== undefined) node.append(el('span', 'sel-row-meta', row.meta));
-  if (!context.multiple && row.selected) node.append(glyph('check', 16, 'sel-check'));
+  if (!context.multiple && row.selected) node.append(glyph(ICON_CHECK, 16, 'sel-check'));
   return node;
 }
 
@@ -208,8 +199,8 @@ function filterRow(
   clear.tabIndex = -1;
   clear.hidden = true;
   clear.setAttribute('aria-label', selectCopy.clearFilter);
-  clear.append(glyph('close', 14, ''));
-  box.append(glyph('search', 16, 'sel-filter-glyph'), input, clear);
+  clear.append(glyph(ICON_CLOSE, 14, ''));
+  box.append(glyph(ICON_SEARCH, 16, 'sel-filter-glyph'), input, clear);
   const count = el('span', 'sel-count');
   count.setAttribute('aria-live', 'polite');
   row.append(box, count);

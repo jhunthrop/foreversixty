@@ -5,6 +5,7 @@
 // a markup diff. Get set up left the bar for the account menu and the footer.
 
 import communityLinks from '../data/links.json' with { type: 'json' };
+import type { UiIconName } from './ui/ui-icons';
 
 /** The Guild panel's last row: the site's one header link to the community Discord. */
 export const DISCORD_ROW_LABEL = 'Forever Sixty Discord';
@@ -14,13 +15,17 @@ export interface NavItem {
   readonly href: string;
 }
 
-export interface NavRow extends NavItem {
-  readonly description: string;
-  /** A tinted brand tile in place of the line icon (the Guild panel's Discord row). */
-  readonly mark?: 'discord';
+/** A door on the bar: its label leads with the owner's custom icon (lib/ui/ui-icons.ts). */
+export interface NavDoor extends NavItem {
+  readonly icon: UiIconName;
 }
 
-export interface NavGroup extends NavItem {
+/** A panel row: its icon, or the Discord brand tile in its place (the Guild panel's last row). */
+export type NavRow = NavItem & { readonly description: string } & (
+    { readonly icon: UiIconName; readonly mark?: never } | { readonly mark: 'discord'; readonly icon?: never }
+  );
+
+export interface NavGroup extends NavDoor {
   /** The panel's rows. Empty for Guides (the header renders its class grid from classes.json)
    *  and for a plain door. */
   readonly rows: readonly NavRow[];
@@ -30,41 +35,52 @@ export interface NavGroup extends NavItem {
 }
 
 /** A plain door: a link with no panel. */
-const door = (label: string, href: string): NavGroup => ({ label, href, rows: [], panel: false });
+const door = (label: string, href: string, icon: UiIconName): NavGroup => ({
+  label,
+  href,
+  icon,
+  rows: [],
+  panel: false,
+});
 
 /**
  * The doors, in the mock's order on every breakpoint. A door is a real link to its own href; a
  * door with sub-pages (Guides, Logs, Guild) has its rows behind a chevron panel.
  */
 export const NAV_GROUPS: readonly NavGroup[] = [
-  door('Best in slot', '/bis'),
+  door('Best in slot', '/bis', 'bis'),
   {
     label: 'Guides',
     href: '/guides',
+    icon: 'guides',
     rows: [],
     foot: { label: 'All guides', href: '/guides' },
     panel: true,
   },
-  door('Tier list', '/tiers'),
-  door('Sim', '/sim'),
-  door('Planner', '/planner'),
+  door('Tier list', '/tiers', 'tier-list'),
+  door('Sim', '/sim', 'sim'),
+  door('Planner', '/planner', 'planner'),
   {
     label: 'Logs',
     href: '/logs',
+    icon: 'logs',
     rows: [
       {
         label: 'Upload a log',
         href: '/logs',
+        icon: 'upload',
         description: 'Drop a combat log, or let the companion stream it live',
       },
       {
         label: 'Your reports',
         href: '/reports',
+        icon: 'logs',
         description: 'Every fight you logged, newest first',
       },
       {
         label: 'Rankings',
         href: '/rankings',
+        icon: 'rankings',
         description: 'Parses by boss, spec and level range, from every log',
       },
     ],
@@ -73,25 +89,30 @@ export const NAV_GROUPS: readonly NavGroup[] = [
   {
     label: 'Guild',
     href: '/guild',
+    icon: 'guild',
     rows: [
       {
         label: 'Your guild',
         href: '/guild',
+        icon: 'guild',
         description: "Progress, the week's raids, who logged what",
       },
       {
         label: 'Roster',
         href: '/guild#roster',
+        icon: 'character',
         description: 'Everyone the addon has seen, with gear score and last sync',
       },
       {
         label: 'Loot council',
         href: '/guild#loot',
-        description: 'Who gains most from each drop, by the sim, before the roll',
+        icon: 'bis',
+        description: 'Who gains most from each drop, by the sim',
       },
       {
         label: 'Guild logs',
         href: '/guild#raids',
+        icon: 'logs',
         description: 'Reports from guild members, raid night by raid night',
       },
       {
@@ -133,7 +154,7 @@ export const SETUP_NAV_ITEM: NavItem = { label: 'Get set up', href: '/setup' };
 
 /** Premium, their teal Subscribe at the bar's end: a link with no panel and no chevron, hidden for
  *  an account with Premium from any source (spec 2026-10-29-premium-entry sections 3 and 4). */
-export const PREMIUM_NAV_ITEM: NavItem = { label: 'Premium', href: '/premium' };
+export const PREMIUM_NAV_ITEM: NavDoor = { label: 'Premium', href: '/premium', icon: 'premium' };
 
 /**
  * True for the item's own page and any sub-path of it (`/sim` matches `/sim/gear`), so a

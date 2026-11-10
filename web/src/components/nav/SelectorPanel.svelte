@@ -14,10 +14,21 @@
   import type { AccountPanel } from '../../lib/character-selector/account-panel';
   import { button } from '../../lib/ui/button';
   import { FIELD_CONTROL, FIELD_FOCUS, fieldEdge } from '../../lib/ui/field';
-  import Glyph from '../ui/Glyph.svelte';
   import Tag from '../ui/Tag.svelte';
   import Icon from '../ui/Icon.svelte';
-  import type { UiIconName } from '../../lib/ui/ui-icons';
+  import {
+    ICON_ACCOUNT,
+    ICON_CHARACTER,
+    ICON_CHEVRON_RIGHT,
+    ICON_CLOSE,
+    ICON_DOWNLOAD,
+    ICON_MANAGE,
+    ICON_PASTE_EXPORT,
+    ICON_PREMIUM,
+    ICON_SETUP,
+    ICON_SIGN_OUT,
+    type UiIconShape,
+  } from '../../lib/ui/ui-icons';
   import SelectorPaste from './SelectorPaste.svelte';
   import SelectorRow from './SelectorRow.svelte';
 
@@ -29,15 +40,15 @@
   const SKELETON_ROWS = 3;
   /** The rows' tiles: the owner's custom icon set (lib/ui/ui-icons.ts), tile ink at 20 px. */
   const TILE_ICONS = {
-    head: 'account',
-    paste: 'paste-export',
-    addon: 'download',
-    profile: 'character',
-    account: 'manage',
-    plan: 'premium',
-    setUp: 'setup',
-    signOut: 'sign-out',
-  } as const satisfies Record<string, UiIconName>;
+    head: ICON_ACCOUNT,
+    paste: ICON_PASTE_EXPORT,
+    addon: ICON_DOWNLOAD,
+    profile: ICON_CHARACTER,
+    account: ICON_MANAGE,
+    plan: ICON_PREMIUM,
+    setUp: ICON_SETUP,
+    signOut: ICON_SIGN_OUT,
+  } as const satisfies Record<string, UiIconShape>;
   const TILE_ICON_PX = 20;
 
   let {
@@ -190,12 +201,16 @@
   }
 </script>
 
-{#snippet glyph(name: UiIconName)}
-  <Icon {name} size={TILE_ICON_PX} />
+{#snippet glyph(icon: UiIconShape)}
+  <Icon {icon} size={TILE_ICON_PX} />
 {/snippet}
 
 {#snippet chevron(gold = false)}
-  <Glyph name="chevron" size={16} class={['csel-arow-chev', gold && 'is-gold'].filter(Boolean).join(' ')} />
+  <Icon
+    icon={ICON_CHEVRON_RIGHT}
+    size={16}
+    class={['csel-arow-chev', gold && 'is-gold'].filter(Boolean).join(' ')}
+  />
 {/snippet}
 
 {#snippet signInButtons()}
@@ -316,18 +331,7 @@
       </a>
     {/if}
     <button type="button" class="csel-close" aria-label={selectorCopy.close} onclick={onclose}>
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        aria-hidden="true"
-      >
-        <path d="M6 6l12 12M18 6L6 18"></path>
-      </svg>
+      <Icon icon={ICON_CLOSE} size={20} />
     </button>
   </div>
 

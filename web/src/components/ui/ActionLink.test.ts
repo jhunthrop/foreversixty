@@ -10,7 +10,7 @@ describe('ActionLink', () => {
 
   it('is a real link with a trailing chevron', () => {
     expect(body).toMatch(/<a href="\/premium"/);
-    expect(body.indexOf('See plans')).toBeLessThan(body.indexOf('data-glyph="chevron"'));
+    expect(body.indexOf('See plans')).toBeLessThan(body.indexOf('data-icon="chevron-right"'));
   });
 
   it('is 14 px 600 gold, 44 px tall and not underlined', () => {

@@ -6,6 +6,8 @@
      result page (3.6), so nothing here posts on a link click. Dismiss posts the seen call for
      every run the line names. -->
 <script lang="ts">
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_CLOSE } from '../../lib/ui/ui-icons';
   import { onDestroy } from 'svelte';
   import type { FinishedSim } from '../../lib/account/api';
   import { DISMISS_FAILURE_MS, markAllSeen } from '../../lib/character-header/finished-sim-line';
@@ -82,17 +84,7 @@
     aria-busy={phase === 'busy'}
     onclick={dismiss}
     data-testid="finished-sim-dismiss"
-    ><span aria-hidden="true"
-      ><svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.75"
-        stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" /></svg
-      ></span
-    ></button
+    ><span aria-hidden="true"><Icon icon={ICON_CLOSE} size={16} /></span></button
   >
 </div>
 

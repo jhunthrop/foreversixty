@@ -8,9 +8,10 @@
      Switch in `control` can name itself by it. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import type { GlyphName } from '../../lib/ui/glyphs';
+  import type { UiIconShape } from '../../lib/ui/ui-icons';
   import { ROW, ROW_INTERACTIVE, ROW_OPEN, ROW_LABEL, ROW_SUB } from '../../lib/ui/row';
-  import Glyph from './Glyph.svelte';
+  import Icon from './Icon.svelte';
+  import { ICON_CHEVRON_RIGHT } from '../../lib/ui/ui-icons';
 
   const uid = $props.id();
   type GlyphTone = 'gold' | 'discord' | 'muted';
@@ -51,7 +52,7 @@
     value?: string;
     /** The value is a quiet state (off, not shipped): `--muted` and no chevron. */
     muted?: boolean;
-    glyph?: GlyphName;
+    glyph?: UiIconShape;
     /** Drawn in the icon slot instead of a tile (a character's crest). */
     icon?: Snippet;
     /** The label's colour when it names a character (a class colour). */
@@ -113,7 +114,7 @@
 >
   {#if icon !== undefined}{@render icon()}{:else if glyph !== undefined}<span
       class="inline-flex h-8 w-8 shrink-0 items-center justify-center {GLYPH_INK[tone]}"
-      aria-hidden="true"><Glyph name={glyph} size={16} /></span
+      aria-hidden="true"><Icon icon={glyph} size={20} /></span
     >{/if}
   {@render lead?.()}
   <span class="flex min-w-0 flex-1 flex-col">
@@ -142,5 +143,5 @@
       >{@render control(labelId)}</span
     >
   {/if}
-  {#if chevron}<Glyph name="chevron" size={16} class="text-muted" />{/if}
+  {#if chevron}<Icon icon={ICON_CHEVRON_RIGHT} size={16} class="text-muted" />{/if}
 </svelte:element>

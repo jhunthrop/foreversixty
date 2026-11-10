@@ -1,0 +1,23 @@
+---
+// web/src/components/ui/Icon.astro
+// ui/Icon.svelte's server-rendered twin: the same icon (lib/ui/ui-icons.ts) with the same
+// attributes (lib/ui/icon.ts), for .astro markup, where it costs no JavaScript.
+import { iconAttributes } from '../../lib/ui/icon';
+import type { UiIconShape } from '../../lib/ui/ui-icons';
+
+interface Props {
+  icon: UiIconShape;
+  size?: number;
+  class?: string;
+  testid?: string;
+}
+
+const { icon, size = 20, class: className, testid } = Astro.props;
+---
+
+<svg
+  class:list={['shrink-0', className]}
+  {...iconAttributes(icon, size)}
+  data-testid={testid}
+  set:html={icon.body}
+/>

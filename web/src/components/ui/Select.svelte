@@ -12,6 +12,8 @@
 </script>
 
 <script lang="ts">
+  import Icon from './Icon.svelte';
+  import { ICON_CHEVRON_DOWN } from '../../lib/ui/ui-icons';
   import { selectCopy } from '../../lib/ui/copy';
   import {
     FOOT_EVENT,
@@ -308,19 +310,7 @@
       {#if loading}
         <span class="sel-spin"><Spinner /></span>
       {:else if !empty}
-        <svg
-          class="sel-chev"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          data-testid="select-chevron"><path d="M6 9l6 6 6-6" /></svg
-        >
+        <Icon icon={ICON_CHEVRON_DOWN} size={16} class="sel-chev" testid="select-chevron" />
       {/if}
     </span>
   </div>

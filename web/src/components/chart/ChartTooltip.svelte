@@ -19,7 +19,8 @@
   import { clockLabel } from '../../lib/chart/time-axis';
   import { chartCopy } from '../../lib/chart/copy';
   import type { ChartEvent } from '../../lib/chart/types';
-  import Glyph from '../ui/Glyph.svelte';
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_BOLT, ICON_SKULL, ICON_TARGET, type UiIconShape } from '../../lib/ui/ui-icons';
   import Overlay from '../ui/Overlay.svelte';
 
   let {
@@ -72,8 +73,8 @@
     return Math.max(8, Math.min(viewport - height - 8, y));
   });
 
-  const glyphOf = (event: ChartEvent): 'skull' | 'target' | 'bolt' =>
-    event.kind === 'death' ? 'skull' : event.kind === 'target-change' ? 'target' : 'bolt';
+  const glyphOf = (event: ChartEvent): UiIconShape =>
+    event.kind === 'death' ? ICON_SKULL : event.kind === 'target-change' ? ICON_TARGET : ICON_BOLT;
 </script>
 
 <div
@@ -105,7 +106,7 @@
                 <img src={event.iconUrl} alt="" width="16" height="16" class="rounded-[3px]" />
               {:else}
                 <span class="icon flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px]"
-                  ><Glyph name={glyphOf(event)} size={12} /></span
+                  ><Icon icon={glyphOf(event)} size={12} /></span
                 >
               {/if}
               <span>{event.text}</span>

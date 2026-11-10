@@ -3,7 +3,8 @@
 // The shared disclosure (polish spec 5.7): a native details element, so find-in-page and the
 // keyboard work without script, with a bordered 44 px summary (sentence-case title, 15 px 600)
 // and a chevron that turns down when it opens. Content goes in the default slot.
-import Glyph from './Glyph.svelte';
+import Icon from './Icon.astro';
+import { ICON_CHEVRON_RIGHT } from '../../lib/ui/ui-icons';
 
 interface Props {
   title: string;
@@ -25,7 +26,7 @@ const { title, open = false, testid, row = false } = Astro.props;
   >
     {title}
     <span class="text-muted transition-transform duration-150 group-open:rotate-90" aria-hidden="true">
-      <Glyph name="chevron" size={18} />
+      <Icon icon={ICON_CHEVRON_RIGHT} size={18} />
     </span>
   </summary>
   <slot />

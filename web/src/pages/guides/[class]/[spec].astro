@@ -24,7 +24,6 @@ import GuideSources from '../../../components/guides/GuideSources.astro';
 import GuideSpecBar from '../../../components/guides/GuideSpecBar.astro';
 import GuideStatLane from '../../../components/guides/GuideStatLane.astro';
 import GuideTooltips from '../../../components/guides/GuideTooltips.svelte';
-import GlyphSheet from '../../../components/bis/GlyphSheet.astro';
 import LaneBlock from '../../../components/ui/LaneBlock.svelte';
 import Page from '../../../components/ui/Page.svelte';
 import PageHeader from '../../../components/ui/PageHeader.svelte';
@@ -339,7 +338,6 @@ const jsonLd = [
 
         <ReadingSection title="Best in slot" anchor="best-in-slot">
           <Fragment slot="lane">
-            <GlyphSheet />
             <GuideBisLane build={build} classSlug={classSlug} bis={guideBis} specSlug={specSlug} {role} />
           </Fragment>
           <Prose html={await prose(proseOnly('Best in slot'))} />

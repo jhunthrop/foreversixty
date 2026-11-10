@@ -35,7 +35,8 @@
   import { LOG_FLOOR, logTicks, niceTop, valueLabel, valueTicks } from '../../lib/chart/value-axis';
   import { subscribeOverlays } from '../../lib/ui/overlay';
   import { BUCKET_MS, type TimeWindow } from '../../lib/report/window';
-  import Glyph from '../ui/Glyph.svelte';
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_BOLT, ICON_CHEVRON_RIGHT, ICON_SKULL, ICON_TARGET } from '../../lib/ui/ui-icons';
   import ChartTooltip, { type TooltipRow } from './ChartTooltip.svelte';
   import OverviewBrush from './OverviewBrush.svelte';
 
@@ -787,7 +788,7 @@
                 {#if item.kind === 'cluster'}
                   <span class="count numeric">{item.events.length}</span>
                 {:else}
-                  <Glyph name="skull" size={14} />
+                  <Icon icon={ICON_SKULL} size={14} />
                 {/if}
               </span>
             </a>
@@ -817,7 +818,7 @@
                     onerror={() => markBroken(item.events[0].iconUrl)}
                   />
                 {:else}
-                  <Glyph name={item.events[0].kind === 'target-change' ? 'target' : 'bolt'} size={14} />
+                  <Icon icon={item.events[0].kind === 'target-change' ? ICON_TARGET : ICON_BOLT} size={14} />
                 {/if}
               </span>
             </span>
@@ -930,10 +931,10 @@
               onOpenDeath([first]);
             }}
           >
-            <Glyph name="skull" size={14} class="text-death" />
+            <Icon icon={ICON_SKULL} size={14} class="text-death" />
             <span class="truncate">{first.shortText ?? first.text}</span>
             {#if lineEvents.length > 1}<span class="text-muted">+{lineEvents.length - 1}</span>{/if}
-            <Glyph name="chevron" size={14} />
+            <Icon icon={ICON_CHEVRON_RIGHT} size={14} />
           </a>
         {:else}
           <span class="truncate">{first.shortText ?? first.text}</span>

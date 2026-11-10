@@ -5,6 +5,8 @@
      Escape or a click outside closes it and focus returns to the button. Below 768 px the same
      fields sit in the expanded control stack. Every choice lands in the URL through `onpatch`. -->
 <script lang="ts">
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_CHEVRON_DOWN } from '../../lib/ui/ui-icons';
   import { factionOptions, metricOptions, phaseOptions, regionOptions } from '../../lib/rankings/options';
   import { rankingsCopy } from '../../lib/rankings/copy';
   import type { RankingsState } from '../../lib/rankings/url';
@@ -137,15 +139,7 @@
       onclick={() => (open ? hide(true) : void show())}
     >
       <span>{label}</span>
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-        aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg
-      >
+      <Icon icon={ICON_CHEVRON_DOWN} size={14} />
     </button>
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div

@@ -6,6 +6,8 @@
      (an older /v1/me) draws the identity row and the block only. Not a control: no hover or
      focus state of its own. -->
 <script lang="ts">
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_CHECK } from '../../lib/ui/ui-icons';
   import type { Snippet } from 'svelte';
   import type { MeCharacter, MeGuild } from '../../lib/account/me-types';
   import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
@@ -93,16 +95,7 @@
                 >
                 {#if entry.verified}
                   <span class="text-kill inline-flex items-center gap-1">
-                    <svg viewBox="0 0 14 14" width="12" height="12" aria-hidden="true">
-                      <path
-                        d="M2.5 7.5l3 3 6-7"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
+                    <Icon icon={ICON_CHECK} size={12} />
                     {copy.verifyMark.verified}
                   </span>
                 {:else}

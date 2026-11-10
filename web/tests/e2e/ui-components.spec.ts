@@ -82,7 +82,7 @@ test.describe('component sheet', () => {
     const row = page.locator('[data-testid="sheet-rows"] a').first();
     const box = await row.boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(56);
-    await expect(row.locator('[data-glyph="chevron"]')).toBeVisible();
+    await expect(row.locator('[data-icon="chevron-right"]')).toBeVisible();
   });
 
   test('below 480 px the value sits under its label, never beside it', async ({ page }) => {

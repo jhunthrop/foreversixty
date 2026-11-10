@@ -9,7 +9,8 @@
   import type { DiscordBlockKey } from '../../../lib/account/notifications';
   import { notificationsCopy } from '../../../lib/account/notifications-copy';
   import { button } from '../../../lib/ui/button';
-  import Glyph from '../../ui/Glyph.svelte';
+  import Icon from '../../ui/Icon.svelte';
+  import { ICON_SEND } from '../../../lib/ui/ui-icons';
   import Spinner from '../../ui/Spinner.svelte';
 
   let {
@@ -77,7 +78,7 @@
         onclick={onTest}
         data-testid="discord-test"
       >
-        {#if busy === 'test'}<Spinner />{:else if sendGlyph}<Glyph name="send" />{/if}{label(
+        {#if busy === 'test'}<Spinner />{:else if sendGlyph}<Icon icon={ICON_SEND} />{/if}{label(
           state === 'disabled' ? notificationsCopy.testAndSwitchOn : notificationsCopy.test,
           busy === 'test',
           notificationsCopy.testing,

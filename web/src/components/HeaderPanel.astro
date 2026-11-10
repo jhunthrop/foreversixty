@@ -9,7 +9,8 @@ import { classCrestSrc } from '../lib/class-crest';
 import { GUILD_OVERVIEW_TAB, GUILDLESS_SWAPS, navKey, type NavGroup, type NavRow } from '../lib/nav';
 import type { GuideClass } from '../lib/nav-guides';
 import DiscordMark from './DiscordMark.astro';
-import { NAV_ROW_ICON_PATHS } from './nav-row-icons';
+import { UI_ICONS } from '../lib/ui/ui-icons';
+import Icon from './ui/Icon.astro';
 
 interface Props {
   group: NavGroup;
@@ -25,6 +26,8 @@ const key = navKey(group.label);
 const inBar = place === 'bar';
 const testScope = inBar ? 'site-panel' : 'site-menu';
 const itemRole = inBar ? 'menuitem' : undefined;
+/** A row's icon: the owner's custom set at the row title's scale. */
+const PANEL_ICON_PX = 24;
 
 const Shell = 'div';
 const shellProps: HTMLAttributes<'div'> = inBar
@@ -64,20 +67,7 @@ const swapOf = (tab: string | undefined) => (tab === undefined ? undefined : GUI
           <DiscordMark size={15} />
         </span>
       ) : (
-        <svg
-          class="site-panel-icon"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.75"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d={NAV_ROW_ICON_PATHS[row.label]}></path>
-        </svg>
+        <Icon icon={UI_ICONS[row.icon]} size={PANEL_ICON_PX} class="site-panel-icon" />
       )}
       <span class="site-panel-text">
         <span class="site-panel-title">

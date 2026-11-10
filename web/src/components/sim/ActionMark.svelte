@@ -8,7 +8,8 @@
   import type { Snippet } from 'svelte';
   import type { CardTables } from '../../lib/sim/card-tables.svelte';
   import { actionTip, resolveIconUrl, REFUND_KEY } from '../../lib/sim/action-mark';
-  import Glyph from '../ui/Glyph.svelte';
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_REFRESH } from '../../lib/ui/ui-icons';
 
   /** The refund row's tile size: the 24 px icon column of the Resource card. */
   const REFUND_TILE = 24;
@@ -65,10 +66,10 @@
         style:width="{REFUND_TILE}px"
         style:height="{REFUND_TILE}px"
         aria-hidden="true"
-        data-testid="refund-glyph"><Glyph name="refresh" size={14} /></span
+        data-testid="refund-glyph"><Icon icon={ICON_REFRESH} size={14} /></span
       >
     {:else if action === REFUND_KEY}
-      <Glyph name="refresh" size={Math.round(size * 0.7)} class="text-muted" />
+      <Icon icon={ICON_REFRESH} size={Math.round(size * 0.7)} class="text-muted" />
     {/if}
   </span>
   <span class="min-w-0">{@render children()}</span>

@@ -6,7 +6,8 @@
   import type { Snippet } from 'svelte';
   import type { HTMLAnchorAttributes } from 'svelte/elements';
   import { ACTION_LINK, ACTION_LINK_CHEVRON } from '../../lib/ui/link';
-  import Glyph from './Glyph.svelte';
+  import Icon from './Icon.svelte';
+  import { ICON_CHEVRON_RIGHT } from '../../lib/ui/ui-icons';
 
   let {
     href,
@@ -17,5 +18,5 @@
 </script>
 
 <a {href} class="{ACTION_LINK} {className}" {...rest}>
-  {@render children()}<Glyph name="chevron" size={16} class={ACTION_LINK_CHEVRON} />
+  {@render children()}<Icon icon={ICON_CHEVRON_RIGHT} size={16} class={ACTION_LINK_CHEVRON} />
 </a>

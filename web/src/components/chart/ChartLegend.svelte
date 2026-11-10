@@ -9,7 +9,8 @@
   import { chartCopy } from '../../lib/chart/copy';
   import type { ChartSeries } from '../../lib/chart/types';
   import { valueLabel } from '../../lib/chart/value-axis';
-  import Glyph from '../ui/Glyph.svelte';
+  import Icon from '../ui/Icon.svelte';
+  import { ICON_PIN } from '../../lib/ui/ui-icons';
 
   let {
     series,
@@ -137,7 +138,7 @@
             style:--swatch={line.colour}
             aria-hidden="true"
           ></span>
-          {#if line.pinned}<Glyph name="pin" size={12} class="text-muted" />{/if}
+          {#if line.pinned}<Icon icon={ICON_PIN} size={12} class="text-muted" />{/if}
           <span class="name" style:color={line.kind === 'median' ? 'var(--color-strong)' : line.colour}
             >{line.label}</span
           >
