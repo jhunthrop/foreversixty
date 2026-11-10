@@ -25,7 +25,7 @@ export const gearCardCopy = {
   missedWhite: (share: string) => `${share} white`,
   setLine: (name: string, worn: number, total: number) => `Set: ${name} ${worn} of ${total}`,
   bonus: (pieces: number, text: string) => `(${pieces}) ${text}`,
-  bisLink: 'Upgrades for this character on Best in slot',
+  bisLink: 'Best in slot',
   /** The landing's plated doll: its Section action. */
   bisAction: 'Upgrades on Best in slot',
   noGear: 'This run had no gear on file.',

@@ -260,8 +260,8 @@ export const bandCompareCopy = {
   },
   /** A band build that covers fewer points than the character has (ruling MUST 3): never "Matches". */
   coversFewer: (covered: number, total: number): string => `${covered} of ${total} points`,
-  /** Under coversFewer: the build's talents past the band's build, named (h-audit 2026-11-09). */
-  coversPast: (names: readonly string[]): string => `Past it: ${listOf(names)}`,
+  /** Under coversFewer: the build's talents past the band's build, named alone (h-audit 2026-11-09). */
+  coversPast: (names: readonly string[]): string => listOf(names),
   loadButton: (bandLabel: string): string => `Load the ${lowerBandPhrase(bandLabel)} build`,
   /** The line under the panel after a load: cut at a character's level, or the band's whole build. */
   loadedLine: (level: number, points: number, of: number): string =>

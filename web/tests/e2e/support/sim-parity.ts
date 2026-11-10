@@ -9,7 +9,7 @@ import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, type Page } from '@playwright/test';
 import { writeSimNames } from '../../../scripts/sync-data.mjs';
-import { openRunLine } from './sim-page';
+import { closeRunLine, openRunLine } from './sim-page';
 
 export type SimParityState = 'landing-out' | 'landing-in' | 'result' | 'saved';
 
@@ -205,6 +205,8 @@ export async function openSimState(page: Page, state: SimParityState): Promise<v
     await page.getByTestId('sim-settings-more').click();
     await page.getByTestId('sim-server-run').click();
     await expect(page.getByTestId('sim-answer')).toHaveAttribute('data-state', 'result', { timeout: 15_000 });
+    // A phone run left the run line open; a player reads the result under its one line.
+    await closeRunLine(page);
     await drawWholeReport(page);
   }
 }

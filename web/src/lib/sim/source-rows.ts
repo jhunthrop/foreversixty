@@ -79,24 +79,32 @@ export function pvpForFaction(sources: readonly LootSource[], faction: Faction |
 }
 
 export interface GatedLine {
-  /** Sources that open on a known date, each with its label ("Onyxia's Lair: First raids, 9 December 2026"). */
+  /** One entry per opening date, its sources named once each: "First raids, 9 December 2026: Blacksmithing, Leatherworking". */
   dated: string[];
-  /** Names of sources with no date. */
+  /** Names of sources with no date, each once. */
   undated: string[];
 }
 
-/** A gated kind's sources split by whether they carry an opening date, for one summary line. */
+/** A gated kind's sources grouped by their opening date, every name once, for one summary line. */
 export function gatedLine(
   sources: readonly LootSource[],
   gate: (source: LootSource) => string,
   noDate: string,
 ): GatedLine {
-  const dated: string[] = [];
-  const undated: string[] = [];
+  const byDate = new Map<string, Set<string>>();
+  const undated = new Set<string>();
   for (const source of sources) {
     const label = gate(source);
-    if (label === '' || label === noDate) undated.push(source.name);
-    else dated.push(`${source.name}: ${label}`);
+    if (label === '' || label === noDate) {
+      undated.add(source.name);
+      continue;
+    }
+    const names = byDate.get(label) ?? new Set<string>();
+    names.add(source.name);
+    byDate.set(label, names);
   }
-  return { dated, undated };
+  return {
+    dated: [...byDate].map(([label, names]) => `${label}: ${[...names].join(', ')}`),
+    undated: [...undated],
+  };
 }

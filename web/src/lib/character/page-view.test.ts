@@ -141,7 +141,8 @@ describe('fights and builds', () => {
     expect(bestRows([{ ...row, execution_score: 0.9 } as never])[0].sub).toBe('3 Nov · Holy · Execution 90%');
     const before = { ...row, value: 930, percentile: 88, fought_at: '2026-10-27T20:40:00Z' };
     const [withHistory] = bestRows([row as never], [row as never, before as never]);
-    expect(withHistory.sub).toBe('3 Nov · Holy · +82 vs 27 Oct');
+    expect(withHistory.sub).toBe('3 Nov · Holy');
+    expect(withHistory.since).toBe('+82 vs 27 Oct');
     expect(bestRows([row as never], [], 'Holy')[0].sub).toBe('3 Nov');
     expect(withHistory.trend).toEqual([88, 98.4]);
     expect(characterPageCopy.allFights(7)).toBe('All fights (7)');

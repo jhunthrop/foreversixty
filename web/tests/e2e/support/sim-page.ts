@@ -64,6 +64,16 @@ export async function openRunLine(page: Page): Promise<void> {
   }
 }
 
+/** Folds the run line back to its one line when a phone step left it open (a no-op at 1440). */
+export async function closeRunLine(page: Page): Promise<void> {
+  const toggle = page
+    .locator('[data-testid="sim-settings"], [data-testid="sim-run-bulk-bar"]')
+    .locator('[data-control-bar-toggle]');
+  if ((await toggle.isVisible()) && (await toggle.getAttribute('aria-expanded')) === 'true') {
+    await toggle.click();
+  }
+}
+
 /** Picks a Buffs preset on the run line's segmented control. */
 export async function chooseBuffs(page: Page, preset: 'raid-buffed' | 'bare' | 'custom'): Promise<void> {
   await openRunLine(page);

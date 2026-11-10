@@ -13,6 +13,7 @@
   import Disclosure from '../ui/Disclosure.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
+  import Spark from '../ui/Spark.svelte';
 
   let {
     path,
@@ -20,6 +21,7 @@
     coach,
     fights,
     latest = null,
+    scores = [],
     inPanel = false,
   }: {
     path: CharacterPath;
@@ -28,6 +30,8 @@
     fights: number;
     /** The newest score on file: the History summary names it ("Score 1,830 on 6 Nov"). */
     latest?: ScorePoint | null;
+    /** The score day by day, oldest first: the History summary's spark. */
+    scores?: readonly number[];
     /** Drawn inside the Best per encounter panel, under its fights, instead of a History panel of its own. */
     inPanel?: boolean;
   } = $props();
@@ -74,6 +78,9 @@
       bind:open={historyOpen}
       testid="character-history-toggle"
     >
+      {#snippet summaryEnd()}{#if scores.length > 1}<span class="w-16" aria-hidden="true"
+            ><Spark values={scores} /></span
+          >{/if}{/snippet}
       {#if charts.current}<charts.current {path} />{/if}
     </Disclosure>
   {:else}

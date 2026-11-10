@@ -23,6 +23,7 @@
     pageSpec,
     plannerHref,
     topUpgrade,
+    scoreSeries,
     upgradeTotal,
     type WaitingFact,
   } from '../lib/character/page-view';
@@ -449,6 +450,9 @@
               open
             >
               {#snippet trail()}
+                {#if row.since !== ''}<span class="text-muted text-[13px] whitespace-nowrap tabular-nums"
+                    >{row.since}</span
+                  >{/if}
                 {#if row.trend.length > 1}<span class="w-12" aria-hidden="true"
                     ><Spark values={row.trend} /></span
                   >{/if}
@@ -468,6 +472,7 @@
               coach={coachEntitled}
               fights={data.history.length}
               latest={(data.score_history ?? []).at(-1) ?? null}
+              scores={scoreSeries(data.score_history ?? [])}
               inPanel
             />
           {/if}

@@ -52,7 +52,7 @@
           href={row.href}
           density="slim"
           open
-          wrapTrail
+          wrapTrail={diffOf(row.trees) !== null}
           testid={`planner-guide-build-${row.key}`}
         >
           {#snippet lead()}

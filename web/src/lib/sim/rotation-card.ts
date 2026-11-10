@@ -47,11 +47,12 @@ interface Pressed {
 export const OTHER_COOLDOWNS_ICON = 'inv_misc_pocketwatch_01';
 
 /**
- * A note that only says to press it on cooldown ("On cooldown: the button you lose the most by
- * delaying."): after a run the cast count says as much, so the result card leaves it out.
+ * A note a player does not need on the line: "on cooldown" anywhere, or a "whenever …" that
+ * restates the spell's own tooltip (Bloodrage, Battle Shout). The cast count, the tooltip and the
+ * guide say those; the card keeps the notes that change when to press (h-audit 2026-11-09).
  */
 export function obviousNote(note: string): boolean {
-  return /^on cooldown\b/i.test(note.trim());
+  return /^(?:on cooldown|whenever)\b|\bon cooldown\b/i.test(note.trim());
 }
 
 function pressKey(action: string): string | null {

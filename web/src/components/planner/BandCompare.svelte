@@ -39,6 +39,7 @@
     specOverride,
     characterLevel = null,
     onbanddiff,
+    onquiet,
     onloaded,
     onband,
     heading,
@@ -57,6 +58,8 @@
      *  can draw the per-cell "differs from this band" marker (spec §4.E.4) from the same
      *  computation, rather than a second fetch/derivation of its own. */
     onbanddiff?: (diff: BandDiffView | null) => void;
+    /** Whether the card draws nothing (quietMatch on a matching build): the planner lays out the rail by it. */
+    onquiet?: (quiet: boolean) => void;
     /** Fires once a load actually applies, with the band's own label -- fix round 2
      *  (ux-designer review finding 2): a band load is never a character/addon import and
      *  must never claim to be one in Planner.svelte's own reconstruction note. */
@@ -165,6 +168,9 @@
 
   $effect(() => {
     onbanddiff?.(diff);
+  });
+  $effect(() => {
+    onquiet?.(quiet);
   });
   // Only once the band file has answered: the estimate waits for the gear it runs on.
   $effect(() => {

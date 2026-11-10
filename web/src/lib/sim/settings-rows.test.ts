@@ -53,7 +53,8 @@ describe('settingsRows', () => {
     expect(rows.target).toBe('Level 63 boss');
     expect(subs.target).toBe('3,731 armor, 471 after debuffs');
     expect(rows.execute).toBe('Last 25% of the fight');
-    expect(subs.execute).toBe('0:45 of a 3:00 fight');
+    // The share is the value ("Last 25% of the fight"); no sub restates it (h-audit 2026-11-09).
+    expect(subs.execute).toBeUndefined();
     expect(rows.race).toBe('Troll');
     expect(rows.runs).toBe('10,000');
   });

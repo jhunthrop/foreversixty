@@ -68,7 +68,7 @@ describe('gatedLine', () => {
     const rows = [source({ id: 'o', name: "Onyxia's Lair" }), source({ id: 'm', name: 'Molten Core' })];
     const gate = (row: LootSource): string => (row.id === 'o' ? 'First raids, 9 December 2026' : 'later');
     expect(gatedLine(rows, gate, 'later')).toEqual({
-      dated: ["Onyxia's Lair: First raids, 9 December 2026"],
+      dated: ["First raids, 9 December 2026: Onyxia's Lair"],
       undated: ['Molten Core'],
     });
   });
@@ -90,5 +90,18 @@ describe('tickedSources', () => {
     expect(tickedSources(rows, ['raid:mc|', 'raid:mc|raid:mc:1', 'raid:ony|raid:ony:2', 'dungeon:x|'])).toBe(
       2,
     );
+  });
+});
+
+describe('gatedLine dedupes', () => {
+  it('names each source once under its date', () => {
+    const rows = [
+      source({ id: 'a', name: 'Blacksmithing' }),
+      source({ id: 'b', name: 'Blacksmithing' }),
+      source({ id: 'c', name: 'Leatherworking' }),
+    ];
+    expect(gatedLine(rows, () => 'First raids, 9 December 2026', 'later').dated).toEqual([
+      'First raids, 9 December 2026: Blacksmithing, Leatherworking',
+    ]);
   });
 });

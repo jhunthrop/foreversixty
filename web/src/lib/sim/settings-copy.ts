@@ -21,7 +21,6 @@ export const settingsCopy = {
   armor: (armor: string) => `${armor} armor`,
   afterDebuffs: (after: string) => `${after} after debuffs`,
   execute: (percent: number) => `Last ${percent}% of the fight`,
-  executeLength: (length: string, fight: string) => `${length} of a ${fight} fight`,
   groups: { player: 'On you', target: 'On the target', consumables: 'Consumables' },
   group: (label: string, count: number) => `${label} · ${count}`,
   copyForGame: 'Copy for the game',

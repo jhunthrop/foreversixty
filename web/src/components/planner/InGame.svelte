@@ -123,50 +123,53 @@
 </script>
 
 <Section title={plannerCopy.inGameTitle} panel testid="planner-in-game">
-  <div class="pl-sec">
-    {#if character !== null && otherClass && plainOtherClass}
-      <p class="pl-line" data-testid="planner-send-other">{action.label}</p>
-    {:else if character !== null}
-      <div class="pl-acts">
-        <Button
-          tone={otherClass ? 'secondary' : 'primary'}
-          disabled={'disabled' in action && action.disabled === true}
-          onclick={() => void send()}
-          testid="planner-send">{action.label}</Button
-        >
-        {#if 'secondary' in action && action.secondary?.testid === 'planner-send-cancel'}
-          <Button onclick={() => (sendState = { kind: 'idle' })} testid="planner-send-cancel"
-            >{action.secondary.label}</Button
+  <!-- Nothing to send or copy yet and Import under it: no empty line under the heading (h-audit 2026-11-09). -->
+  {#if !(character === null && store.spent === 0 && children !== undefined)}
+    <div class="pl-sec">
+      {#if character !== null && otherClass && plainOtherClass}
+        <p class="pl-line" data-testid="planner-send-other">{action.label}</p>
+      {:else if character !== null}
+        <div class="pl-acts">
+          <Button
+            tone={otherClass ? 'secondary' : 'primary'}
+            disabled={'disabled' in action && action.disabled === true}
+            onclick={() => void send()}
+            testid="planner-send">{action.label}</Button
           >
+          {#if 'secondary' in action && action.secondary?.testid === 'planner-send-cancel'}
+            <Button onclick={() => (sendState = { kind: 'idle' })} testid="planner-send-cancel"
+              >{action.secondary.label}</Button
+            >
+          {/if}
+        </div>
+        {#if note !== undefined}
+          <p
+            class="pl-note {noteTone}"
+            role={note.tone === 'error' ? 'alert' : 'status'}
+            data-testid="planner-send-note"
+          >
+            {note.text}
+            {#if note.link}<a class={LINK} href={note.link.href}>{note.link.label} ›</a>{/if}
+          </p>
+          {#if note.detail}<p class="text-small text-muted">{note.detail}</p>{/if}
         {/if}
-      </div>
-      {#if note !== undefined}
-        <p
-          class="pl-note {noteTone}"
-          role={note.tone === 'error' ? 'alert' : 'status'}
-          data-testid="planner-send-note"
-        >
-          {note.text}
-          {#if note.link}<a class={LINK} href={note.link.href}>{note.link.label} ›</a>{/if}
-        </p>
-        {#if note.detail}<p class="text-small text-muted">{note.detail}</p>{/if}
+        {#if store.leftOutSlots.length > 0}
+          <p class="text-small text-muted" data-testid="planner-left-out">
+            {cardCopy.leftOut(store.leftOutSlots)}
+          </p>
+        {/if}
       {/if}
-      {#if store.leftOutSlots.length > 0}
-        <p class="text-small text-muted" data-testid="planner-left-out">
-          {cardCopy.leftOut(store.leftOutSlots)}
+      <!-- No Copy for the game until a point is spent (h-audit 2026-11-09: a dim button read as unstyled). -->
+      {#if store.spent > 0}<CopyForGame code={addonCode} primary={character === null || otherClass} />{/if}
+      <!-- With Import under it (the take-it-with-you plate), its own line carries the addon link. -->
+      {#if character === null && children === undefined}
+        <p>
+          <a class={LINK} href={cardCopy.getTheAddonHref} data-testid="planner-get-addon"
+            >{ctaCopy.getAddonAndCompanion} ›</a
+          >
         </p>
       {/if}
-    {/if}
-    <!-- No Copy for the game until a point is spent (h-audit 2026-11-09: a dim button read as unstyled). -->
-    {#if store.spent > 0}<CopyForGame code={addonCode} primary={character === null || otherClass} />{/if}
-    <!-- With Import under it (the take-it-with-you plate), its own line carries the addon link. -->
-    {#if character === null && children === undefined}
-      <p>
-        <a class={LINK} href={cardCopy.getTheAddonHref} data-testid="planner-get-addon"
-          >{ctaCopy.getAddonAndCompanion} ›</a
-        >
-      </p>
-    {/if}
-  </div>
+    </div>
+  {/if}
   {#if children}{@render children()}{/if}
 </Section>

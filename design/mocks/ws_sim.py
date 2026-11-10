@@ -397,7 +397,7 @@ def this_run_section() -> str:
     lo, hi = FIGHT['duration_sec'] * (1 - FIGHT['variation']), FIGHT['duration_sec'] * (1 + FIGHT['variation'])
     facts = Facts([('Fight length', f"{clock(FIGHT['duration_sec'])}, &plusmn; {FIGHT['variation'] * 100:.0f}%<small>{clock(lo)} to {clock(hi)}</small>"),
                    ('Target', f"Level {ts.get('level', 63)} boss<small>{ts['armor']:,} armor, {ts['armor_after_debuffs']:,} after debuffs</small>" if ts else 'Level 63 boss'),
-                   ('Execute phase', f"Last {FIGHT['execute_ratio'] * 100:.0f}% of the fight<small>{clock(FIGHT['duration_sec'] * FIGHT['execute_ratio'])} of a {clock(FIGHT['duration_sec'])} fight</small>"),
+                   ('Execute phase', f"Last {FIGHT['execute_ratio'] * 100:.0f}% of the fight"),
                    ('Race', RACE), ('Runs', f"{RUNS:,}"), ('Actions per minute', f'{apm():.1f}'),
                    ('Engine', f'<span class="muted">{RES["engine_version"][:7]}</span>')])
     keys = raid_keys()
@@ -453,7 +453,7 @@ def rotation_section(ran: bool = True) -> str:
         n = CASTS.get(key, 0)
         cnt = f'{n} cast{"s" if n != 1 else ""}' if n else 'Not cast in this run'
         note = notes.get(i, p.get('notes', ''))
-        if note.lower().startswith('on cooldown'):   # rotation-card.ts obviousNote: the line says it
+        if re.search(r'^(?:on cooldown|whenever)\b|\bon cooldown\b', note, re.I):   # rotation-card.ts obviousNote
             note = ''
         r = Row(rot_title(key, spell_name(sid), rank_of(sid)), note,
                 rank=str(len(lines) + 1), trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
@@ -619,7 +619,7 @@ def gear_section(with_stats: bool = True) -> str:
                      (f"{fs['melee_haste_pct']:.0f}%", 'Haste from gear', '', '', 'sm')])
     measured = (f'<p class="t-small">Missed in this run: {miss["sp"][0] / miss["sp"][1] * 100:.0f}% of specials '
                 f'&middot; {miss["w"][0] / miss["w"][1] * 100:.1f}% of white swings.</p>')
-    foot = f'<div class="gear-foot"><span class="t-small"></span>{Link("Upgrades for this character on Best in slot &rsaquo;")}</div>'
+    foot = f'<div class="gear-foot"><span class="t-small"></span>{Link("Best in slot &rsaquo;")}</div>'
     extra = f'<div class="gear-stats">{stats}{measured}</div>' if with_stats else ''
     return Section('Gear', doll() + extra + foot)
 

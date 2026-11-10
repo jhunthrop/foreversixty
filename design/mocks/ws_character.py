@@ -45,7 +45,8 @@ CHAR_CSS = '''
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
 .line{font-size:15px;line-height:24px;color:var(--text);padding-block:6px}
-@media(max-width:767px){.wait-pre{display:none}}.own-in{margin-top:8px;padding-top:4px;border-top:1px solid var(--line-soft)}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
+@media(max-width:767px){.wait-pre{display:none}}.own-in{margin-top:8px;padding-top:4px;border-top:1px solid var(--line-soft)}.bsince{font-size:13px;color:var(--muted);white-space:nowrap}.dsum-end{margin-left:auto;display:inline-flex;align-items:center}
+.dspk{display:inline-block;width:64px}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
 .sum-row{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:20px}.notice.facts{gap:4px 20px}
 .frow .st{color:var(--strong)}
 /* round 5 (lane P9): the split from 1280, the frame centred at 640, the answer's sim link beside its figure, the parts' bars */
@@ -349,15 +350,16 @@ def fights_section(ch: Char, extra: str = '') -> str:
                         and h['metric'] == f['metric'] and h.get('kill') is not False), key=lambda h: h['fought_at'])
         parses = [h['percentile'] for h in kills if h.get('percentile') is not None]
         spark = f'<span class="bspk" aria-hidden="true">{Spark(parses)}</span>' if len(parses) > 1 else ''
-        trail = (spark + f'<span class="pct" style="color:{parse_color(f["percentile"])}">{round(f["percentile"])}</span>'
-                 + Figure(f"{f['value']:,}", '', ch.unit, size='sm'))
-        ex = f" &middot; Execution {round(f['execution_score'] * 100)}%" if f.get('execution_score') is not None else ''
         before = [h for h in kills if h['fought_at'] < f['fought_at']]
         change = round(f['value'] - before[-1]['value']) if before else None
-        since = (f" &middot; {'+' if change > 0 else '&minus;' if change < 0 else ''}{abs(change)} vs {short_date(before[-1]['fought_at'])}"
-                 if before else '')
+        # The change since the kill before sits on the parse line (h-audit 2026-11-09).
+        since = (f"<span class=\"bsince\">{'+' if change > 0 else '&minus;' if change < 0 else ''}{abs(change)} vs "
+                 f"{short_date(before[-1]['fought_at'])}</span>") if before else ''
+        trail = (since + spark + f'<span class="pct" style="color:{parse_color(f["percentile"])}">{round(f["percentile"])}</span>'
+                 + Figure(f"{f['value']:,}", '', ch.unit, size='sm'))
+        ex = f" &middot; Execution {round(f['execution_score'] * 100)}%" if f.get('execution_score') is not None else ''
         spec = '' if f['spec'] == SPEC[ch.cls] else f" &middot; {f['spec']}"  # the page's own spec goes without saying
-        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])}{spec}{ex}{since}", trail=trail, slim=True))
+        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])}{spec}{ex}", trail=trail, slim=True))
     return panel('Best per encounter', RowsSlim(rows) + extra, f"All fights ({len(p['history'])})")
 
 
@@ -379,7 +381,9 @@ def coach_rows(file: str) -> str:
     return f'<section aria-label="Your coach">{Rows(rows, open_=True, list_=True)}</section>'
 
 
-def owner_sections(premium: bool, fights: int, coach: str | None = None, latest: dict | None = None, in_panel: bool = False) -> str:
+def owner_sections(premium: bool, fights: int, coach: str | None = None, latest: dict | None = None, in_panel: bool = False,
+                   scores: list[float] | None = None) -> str:
+    scores = scores or []
     """One History panel (h-audit 2026-11-09): the charts' Disclosure with the fight count, then the coach's reviews."""
     wrap = (lambda body: f'<div class="own-in">{body}</div>') if in_panel else (lambda body: panel('History', body))
     if not premium:
@@ -387,8 +391,10 @@ def owner_sections(premium: bool, fights: int, coach: str | None = None, latest:
                               trail=Link('See plans &rsaquo;'), link=False)], open_=True))
     body = coach_rows(coach) if coach else ''
     summary = f"Score {latest['score']:,} on {short_date(latest['date'] + 'T00:00:00Z')}" if latest else 'Score and parses'
-    return wrap(Disclosure(summary, '', meta=f"{fights} {'fight' if fights == 1 else 'fights'}")
-                + Disclosure('Coach reviews', body, open_=coach is not None))
+    history = Disclosure(summary, '', meta=f"{fights} {'fight' if fights == 1 else 'fights'}")
+    if len(scores) > 1:  # the score's spark at the summary's end (web Disclosure summaryEnd)
+        history = history.replace('</summary>', f'<span class="dsum-end"><span class="dspk">{Spark(scores)}</span></span></summary>', 1)
+    return wrap(history + Disclosure('Coach reviews', body, open_=coach is not None))
 
 
 def waiting(ch: Char, owner: dict) -> list[tuple[str, str]]:
@@ -430,7 +436,8 @@ def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | Non
     latest = (ch.page.get('score_history') or [None])[-1]
     fights = len(ch.page['history'])
     # The owner's History and Coach rows sit under the best fights, in their panel (h-audit 2026-11-09).
-    inner = owner_sections(premium, fights, coach, latest, in_panel=True) if owner and logged and ch.page['best'] else ''
+    scores = [x['score'] for x in sorted(ch.page.get('score_history') or [], key=lambda x: x['date'])]
+    inner = owner_sections(premium, fights, coach, latest, in_panel=True, scores=scores) if owner and logged and ch.page['best'] else ''
     alone = owner_sections(premium, fights, coach, latest) if owner and logged and not ch.page['best'] else ''
     main = (O(gear_section(ch), 1, True) + O(fights_section(ch, inner) if ch.page['best'] else '', 4, True) + O(alone, 5, True))
     stand = standing_section(standing(home, 'guild' in owner, SPEC[ch.cls])) if owner else ''

@@ -681,6 +681,11 @@
    *  every `TreeGrid` through `TreeTabs`, so the per-cell marker is one computation, not a
    *  second one forked by the tree row. */
   let bandDiff = $state<BandDiffView | null>(null);
+  /** The level card draws nothing (a build that matches it). */
+  let bandQuiet = $state(false);
+  /** Import leaves the rail for the full-width row when the level card shows beside a spent build:
+   *  with both, the rail ran 345 px past the trees (h-audit 2026-11-09). */
+  const importBelow = $derived(standalone && !shared && !bandQuiet && store.spent > 0);
 
   // Nothing cancels a request that is already in flight, so switching class twice in quick
   // succession leaves two runs of this racing to write to the same store. The class this run
@@ -1215,6 +1220,7 @@
     characterLevel={store.characterLevel}
     specOverride={specParam ?? undefined}
     onbanddiff={(diff) => (bandDiff = diff)}
+    onquiet={(quiet) => (bandQuiet = quiet)}
     onloaded={(bandLabel) => (codeNote = { kind: 'band', bandLabel })}
     onband={(band, label) => (estimateBand = { band, label })}
   />
@@ -1302,7 +1308,7 @@
           ><InGame {store} character={sendCharacter} origin={effectiveOrigin} plainOtherClass={shared}>
             {#if !store.readOnly}
               {#if store.spent > 0}<SharePanel {store} part />{/if}
-              {@render importSection(true)}
+              {#if !importBelow}{@render importSection(true)}{/if}
             {/if}
           </InGame></Ordered
         >
@@ -1327,6 +1333,8 @@
         {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
           <Ordered order={4} span><GuideBuilds builds={guideBuilds} {store} /></Ordered>
         {/if}
+        {#if importBelow && !store.readOnly}<Ordered order={8} span>{@render importSection(false)}</Ordered
+          >{/if}
       {/if}
     {/snippet}
     <Ordered order={1} span>{@render plate()}</Ordered>

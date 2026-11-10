@@ -289,7 +289,10 @@ def drops() -> str:
         note = ''   # nothing records the fixture's professions: no line (SourcePicker)
         # Each kind is a Disclosure titled with its ticked count, open when the list is short (OPEN_UP_TO).
         opened = ' open' if len(shown) <= 8 else ''
-        inner = f'<div class="disc-b">{note}<div class="src-cols">{rows}</div></div>' if opened else ''
+        # The kind's unopened sources, one deduped line under its rows (SourcePicker `later`, source-rows gatedLine)
+        later = sorted({s['name'] for s in srcs if not is_open(s)})
+        later_p = f'<p class="t-small later">First raids: {", ".join(later)}</p>' if later else ''
+        inner = f'<div class="disc-b">{note}<div class="src-cols">{rows}</div>{later_p}</div>' if opened else ''
         groups.append(f'<div class="src-g"><details class="disc"{opened}><summary>{label} <span class="t-small">{len(shown)} {"source" if len(shown) == 1 else "sources"}</span></summary>{inner}</details></div>')
     body = f'<div><div class="kinds" role="group"><span class="t-small">Show</span>{toggles}</div>{"".join(groups)}</div>'
     return finish('Droptimizer', head('drops') + run_bar('drops')
@@ -421,7 +424,7 @@ TOOL_CSS = '''<style>
 .opts.inl{display:flex;flex-wrap:wrap;gap:0 24px}.opts.cols3{display:grid;grid-template-columns:1fr;gap:0 24px}@media(min-width:768px){.opts.cols3{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.opts.cols3{grid-template-columns:1fr 1fr 1fr}}
 .src-cols{display:grid;grid-template-columns:1fr;column-gap:32px}@media(min-width:768px){.src-cols{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.src-cols{grid-template-columns:1fr 1fr 1fr}}.rep-n{padding-top:8px;font-size:14px;line-height:20px}.rep-t{display:flex;flex-wrap:wrap;gap:0 16px}.opt.sm{font-size:13px}
 .tb-row{display:grid;gap:4px 24px;padding:12px 0;border-bottom:1px solid var(--line-soft,var(--line));align-self:stretch}.tb-row:last-of-type{border-bottom:0}@media(min-width:768px){.tb-row{grid-template-columns:260px minmax(0,1fr);align-items:start}}
-.src-l{display:flex;align-items:center;gap:8px;min-height:44px}.src-l .opt{min-width:0}.bcount{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center}.pl{padding-left:8px}.gl1{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-height:44px;margin:0;font-size:14px;line-height:24px}.gl1 b{font-size:15px}.disc-b{padding:4px 0 8px}
+.src-l{display:flex;align-items:center;gap:8px;min-height:44px}.src-l .opt{min-width:0}.bcount{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center}.pl{padding-left:8px}.later{margin:0;padding-top:4px;font-size:13px}.gl1{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-height:44px;margin:0;font-size:14px;line-height:24px}.gl1 b{font-size:15px}.disc-b{padding:4px 0 8px}
 .tb-t{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 32px;min-width:0}.tb-d{display:flex;flex-direction:column;margin:0;padding:0;list-style:none;font-size:13px;line-height:20px}.tb-d .kill{color:var(--kill)}.tb-d .wipe{color:var(--wipe)}.tb-d span{color:var(--text)}
 .spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:32px;text-align:right}.spec-fig .dps{width:64px;text-align:right;font-weight:700}.sbar{display:none;width:240px}@media(min-width:768px){.sbar{display:block}}.spec-n>summary{color:inherit;font-size:15px;font-weight:700;white-space:nowrap}.un{display:flex;flex-wrap:wrap;column-gap:24px}.un-l{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:700;text-decoration:none}</style>'''
 

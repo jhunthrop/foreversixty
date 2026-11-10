@@ -213,7 +213,7 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
         body += (f'<div class="pl-acts">{copy_btn}</div>' if copy_btn else '') + failed
         # With Import under it, Import's own line carries the addon link (h-audit 2026-11-09).
         body += '' if parts else f'<p>{Link(r(C["cta"]["getAddonAndCompanion"]))}</p>'
-    return Section(e(P['inGameTitle']), f'<div class="pl-sec">{body}</div>{parts}')
+    return Section(e(P['inGameTitle']), (f'<div class="pl-sec">{body}</div>' if body else '') + parts)
 
 
 def share_body(st: dict, mode: str = 'idle') -> str:
@@ -315,10 +315,13 @@ def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note:
     main = Ordered(plate, 1, span=True)
     below = Ordered(order(st), 1, span=True) + (Ordered(gb, 4, span=True) if gb else '')
     # One take-it-with-you plate (h-audit 2026-11-09): Share (once a point is spent) and Import as parts of In the game.
-    parts = ((part(e(P['shareTitle']), share_body(st, share_mode)) if st['spent'] else '')
-             + part(e(C['addon']['importTitle']), importer_body(st, import_mode)))
-    # The level card says nothing when the build matches it (the guide row's Loaded tag says so).
     quiet = st['compare'] is not None and st['compare']['kind'] == 'matches' and not confirm and not loaded
+    # Import leaves the rail for the full-width row when the level card shows beside a spent build (h-audit 2026-11-09).
+    import_below = not quiet and st['spent'] > 0
+    parts = ((part(e(P['shareTitle']), share_body(st, share_mode)) if st['spent'] else '')
+             + ('' if import_below else part(e(C['addon']['importTitle']), importer_body(st, import_mode))))
+    below += Ordered(importer(st, import_mode), 8, span=True) if import_below else ''
+    # The level card says nothing when the build matches it (the guide row's Loaded tag says so).
     rail = ('' if quiet else Ordered(compare(st, confirm, loaded), 2)) + Ordered(in_game(st, send, copy_state, parts=parts), 5)
     # Ruling MUST 1: the build's origin is said once; the gold origin line drops whenever the note shows.
     body = (head(st, signed != 'out', st.get('origin', '') if origin and not note else '') + bar(st, open_m) + notes(note, note_short)

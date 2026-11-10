@@ -242,6 +242,8 @@ export interface FightRowView {
   encounter: string;
   /** The boss's parses kill by kill, oldest first; empty with fewer than two (h-audit 2026-11-09). */
   trend: number[];
+  /** "+82 vs 27 Oct" on the parse line; '' with no kill before. */
+  since: string;
 }
 
 /** The same boss, difficulty and metric as a best fight. */
@@ -277,7 +279,6 @@ export function bestRows(
       // The page's own spec goes without saying; another spec's fight names it.
       row.spec === pageSpecName ? '' : row.spec,
       typeof row.execution_score === 'number' ? characterPageCopy.execution(row.execution_score) : '',
-      sinceLast(row, bossKills(row, history)),
     ]
       .filter(Boolean)
       .join(' · '),
@@ -287,7 +288,13 @@ export function bestRows(
     unit: row.metric === 'hps' ? 'HPS' : 'DPS',
     encounter: row.encounter,
     trend: trendOf(bossKills(row, history)),
+    since: sinceLast(row, bossKills(row, history)),
   }));
+}
+
+/** The score day by day, oldest first, for a spark. */
+export function scoreSeries(points: readonly { date: string; score: number }[]): number[] {
+  return [...points].sort((a, b) => a.date.localeCompare(b.date)).map((point) => point.score);
 }
 
 function trendOf(kills: readonly CharacterFight[]): number[] {

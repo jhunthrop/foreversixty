@@ -131,9 +131,10 @@ test('the tank’s repro: an Arms Warrior’s rotation reads in place, with no n
   const url = page.url();
   const section = page.getByTestId('sim-rotation-saved-card');
   await section.scrollIntoViewIfNeeded();
-  await expect(section).toContainText(
-    'Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute',
-  );
+  // The rotation reads in place: a note that changes when to press stays, a tooltip restatement
+  // (Bloodrage's "Whenever rage is under 80") is left off (rotation-card.ts obviousNote).
+  await expect(section).toContainText('Bloodrage');
+  await expect(section).not.toContainText('Whenever rage is under 80');
 
   expect(page.url()).toBe(url);
   await expect(simCharacter(page)).toBeVisible();
