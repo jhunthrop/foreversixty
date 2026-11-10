@@ -302,14 +302,18 @@ private struct StateNotice: View {
     }
 }
 
-/// The tooltip request of a list row, in F2's entry point's terms (`ItemTooltipSheet(request:catalog:)`).
+/// The tooltip request of a list row, which the item sheet (`ItemSheetScreen`) opens with.
 enum BisTooltip {
-    static func request(row: BisRow, pick: BisPick, list: BisList, context: BisContext, build: String) -> ItemTooltipRequest {
+    /// `runnerUp` opens one of the row's runners-up instead of its pick (Gear's places).
+    static func request(
+        row: BisRow, pick: BisPick, list: BisList, context: BisContext, build: String, runnerUp: BisRunnerUp? = nil
+    ) -> ItemTooltipRequest {
         let selection = context.selection
-        let item = pick.item.item
+        let ref = runnerUp?.item ?? pick.item
+        let item = ref.item
         return ItemTooltipRequest(
-            itemID: pick.item.id,
-            fallback: HomeItemLook(id: pick.item.id, name: pick.item.name, quality: item?.quality, icon: item?.icon, itemLevel: item?.itemLevel),
+            itemID: ref.id,
+            fallback: HomeItemLook(id: ref.id, name: ref.name, quality: item?.quality, icon: item?.icon, itemLevel: item?.itemLevel),
             build: build,
             classSlug: selection.classSlug,
             spec: selection.spec,
@@ -318,7 +322,7 @@ enum BisTooltip {
             bandLabel: list.rangeLabel,
             preset: selection.range.preset,
             faction: selection.faction,
-            sourceLine: pick.source,
+            sourceLine: runnerUp?.source ?? pick.source,
             wornID: pick.runnersUp.first(where: \.isWorn)?.item.id ?? (pick.isWorn ? pick.item.id : nil)
         )
     }

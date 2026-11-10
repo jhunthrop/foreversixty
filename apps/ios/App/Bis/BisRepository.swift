@@ -19,6 +19,10 @@ protocol BisDataSource: Sendable {
     func currentCharacter() async -> AccountCharacter?
     /// The key dates: the CDN's (or its saved copy), else the copy bundled with the app.
     func keyDates() async -> [KeyDate]
+    /// The build's loot file (or its saved copy), for Gear's places; nil when it cannot load.
+    func loot(build: String) async -> LootFile?
+    /// The character's home answer (its gains over what it wears), or nil.
+    func characterHome(_ character: AccountCharacter) async -> CharacterHome?
 }
 
 /// The live source: the CDN through the offline cache, the build from the app config.
@@ -29,6 +33,8 @@ struct LiveBisDataSource: BisDataSource {
     let character: @MainActor @Sendable () -> AccountCharacter?
     /// Nil only for a broken build; the first offline launch then shows the not-saved sentence.
     let bundledBuild: String?
+    /// The character's home answer for Gear; nil where the list has no character (Guides, Talents).
+    var home: (@Sendable (AccountCharacter) async -> CharacterHome?)?
 
     func activeBuild() async -> String {
         if let build = appConfig.current?.activeBuild { return build }
@@ -67,6 +73,28 @@ struct LiveBisDataSource: BisDataSource {
     func keyDates() async -> [KeyDate] {
         if let dates = try? await files.load(.getKeyDates).value { return dates }
         return BundledData.keyDates()
+    }
+
+    func loot(build: String) async -> LootFile? {
+        try? await files.load(.getLoot(build: build)).value
+    }
+
+    func characterHome(_ character: AccountCharacter) async -> CharacterHome? {
+        await home?(character)
+    }
+}
+
+/// Gear's home answer: the API's, else the copy Home saved (offline).
+enum GearHome {
+    static func live(client: APIClient, cache: any HomeCache) -> @Sendable (AccountCharacter) async -> CharacterHome? {
+        { character in
+            let who = HomeCharacter(character)
+            do {
+                return try await client.send(.getCharacterHome(region: who.region, ruleset: who.ruleset, name: who.slug))
+            } catch {
+                return cache.load(who.key)?.home
+            }
+        }
     }
 }
 

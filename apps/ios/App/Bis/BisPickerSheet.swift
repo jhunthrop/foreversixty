@@ -77,12 +77,7 @@ struct BisPickerSheet: View {
         .haptic(.selection, trigger: selection)
     }
 
-    private var classSlugs: [String] {
-        if !context.classes.isEmpty { return context.classes.map(\.slug) }
-        var seen: [String] = []
-        for spec in catalog.specs where !seen.contains(spec.classSlug) { seen.append(spec.classSlug) }
-        return seen
-    }
+    private var classSlugs: [String] { context.classSlugs(catalog) }
 
     private var classGrid: some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.sm), count: classColumns), spacing: Theme.Spacing.sm) {

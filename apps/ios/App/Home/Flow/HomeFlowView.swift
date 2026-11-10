@@ -159,15 +159,18 @@ struct SectionLink: View {
 /// Raid live (F2, mock ios-home-raid-live): pulled how long ago, the counts, your answer, Open raid night.
 struct RaidLiveCard: View {
     let content: RaidLiveContent
-    let open: () -> Void
+    /// Open raid night; nil on the Raid tab, where raid night is the page.
+    let open: (() -> Void)?
 
     var body: some View {
         FSCountdown(eyebrow: content.eyebrow, live: true) {
             VStack(alignment: .leading, spacing: FSSpace.space2) {
                 SmallText(content.line)
-                Button(Copy.homeRaidOpenNight, action: open)
-                    .font(.custom(FSFont.bodySemibold, size: 15, relativeTo: .body))
-                    .foregroundStyle(FSColor.gold)
+                if let open {
+                    Button(Copy.homeRaidOpenNight, action: open)
+                        .font(.custom(FSFont.bodySemibold, size: 15, relativeTo: .body))
+                        .foregroundStyle(FSColor.gold)
+                }
             }
         }
         .parityRegion(.countdowns)

@@ -33,4 +33,9 @@ actor ItemCatalog {
             bis: bis
         )
     }
+
+    /// The build's loot file, for where an item drops and its chance; nil when it cannot load.
+    func loot(build: String) async -> LootFile? {
+        try? await store.file(.getLoot(build: build))
+    }
 }

@@ -7,9 +7,10 @@ import Testing
 struct PushLandingTests {
     private let raidData = ["guild_id": "2", "raid_id": "41"]
 
-    @Test("raid events open the raid page; raid.starting opens raid night")
+    @Test("raid events open the raid page; raid.short opens Not answered; raid.starting opens raid night")
     func raids() {
-        for kind in ["raid.posted", "raid.signup_nudge", "raid.changed", "raid.short", "roster.pending", "raid.late_change"] {
+        #expect(PushLanding.destination(kind: "raid.short", link: nil, data: raidData) == .raid(.notAnswered(guild: 2, raid: 41)))
+        for kind in ["raid.posted", "raid.signup_nudge", "raid.changed", "roster.pending", "raid.late_change"] {
             #expect(PushLanding.destination(kind: kind, link: nil, data: raidData) == .link(.raid(guild: 2, raid: 41)))
         }
         #expect(PushLanding.destination(kind: "raid.starting", link: nil, data: raidData) == .link(.raidNight(guild: 2, raid: 41)))
@@ -43,6 +44,16 @@ struct PushLandingTests {
     func account() {
         #expect(PushLanding.destination(kind: "billing.failed", link: nil, data: [:]) == .link(.plan))
         #expect(PushLanding.destination(kind: "premium.seat", link: nil, data: [:]) == .link(.plan))
+    }
+
+    @Test("a new applicant opens its review; Decline reads the same guild and application")
+    func applicant() {
+        let data = ["guild_id": "2", "application_id": "17"]
+        #expect(PushLanding.destination(kind: "guild.applicant", link: nil, data: data) == .link(.guildApplicant(guild: 2, application: 17)))
+        #expect(PushLanding.applicant(data: data)?.guild == 2)
+        #expect(PushLanding.applicant(data: data)?.application == 17)
+        #expect(PushLanding.applicant(data: ["guild_id": "2"]) == nil)
+        #expect(PushLanding.destination(kind: "guild.applicant", link: nil, data: ["guild_id": "2"]) == nil)
     }
 
     @Test("an unknown kind falls back to its link, else nothing")

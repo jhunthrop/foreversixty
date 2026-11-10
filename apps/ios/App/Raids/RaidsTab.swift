@@ -22,6 +22,12 @@ struct RaidsDependencies {
     let reports: ReportsDependencies?
     /// Lane F15: the connection, for the stale strip; nil (tests) keeps v1's offline rule alone.
     var connectivity: (any Connectivity)?
+    /// The flows' calls (flows spec 4.2): the badge, applicants, recruiting guilds, the Ready check.
+    var flow: any RaidFlowService
+    /// The officer's Discord mention.
+    var ping: any RaidPingService
+    /// What the site still does for the app (Apply, Claim, connecting the Discord bot).
+    var site: any RaidSiteActions = LiveRaidSiteActions()
 
     static func live(_ environment: AppEnvironment) -> RaidsDependencies {
         // The active build names every icon URL. In fixture mode it comes from the bundled
@@ -46,7 +52,9 @@ struct RaidsDependencies {
             clock: RaidClock(),
             iconBuild: { try? await statics.activeBuild().build },
             reports: environment.isAvailable(.reports) ? .live(environment) : nil,
-            connectivity: PathConnectivity.shared
+            connectivity: PathConnectivity.shared,
+            flow: LiveRaidFlowService(client: environment.client),
+            ping: LiveRaidPingService(client: environment.client)
         )
     }
 
@@ -58,9 +66,16 @@ struct RaidsDependencies {
 }
 
 /// A screen pushed on the Raids stack.
-enum RaidsRoute: Hashable {
+enum RaidsRoute: Hashable, Sendable {
     case raid(guild: Int64, raid: Int64, roster: Bool, open: RaidOpenAction?)
+    /// The raid night page before and during the raid; Your raid night after it.
     case night(raid: Int64)
+    /// F3: the raid page filtered to Not answered.
+    case notAnswered(guild: Int64, raid: Int64)
+    /// F3: one applicant.
+    case applicant(guild: Int64, application: Int64)
+    /// The guild's planned raids.
+    case calendar
     /// Lane F10: a report from Your raid night.
     case report(id: String)
     /// Lane F16: the guild's roster and raid history.
@@ -82,12 +97,18 @@ final class RaidsRouter {
             path = [.raid(guild: guild, raid: raid, roster: false, open: press.map(RaidOpenAction.init))]
         case let .raidNight(guild, raid):
             path = [.raid(guild: guild, raid: raid, roster: false, open: nil), .night(raid: raid)]
-        case .guild, .guildApplicant:
-            // The applicant sheet (guild.applicant) lands on the tab's root, which shows Needs you.
+        case let .guildApplicant(guild, application):
+            path = [.applicant(guild: guild, application: application)]
+        case .guild:
             path = []
         default:
             break
         }
+    }
+
+    /// Opens one of the tab's screens on a fresh stack (Home's raid actions, a push).
+    func open(_ route: RaidsRoute) {
+        path = [route]
     }
 
     /// True for the links the Raids tab opens.
@@ -99,8 +120,8 @@ final class RaidsRouter {
     }
 }
 
-/// F4: the Raids tab root. Signed in (lane F1), it follows the session's current character's
-/// guild under the same selector as Home and BiS; otherwise `/v1/me`'s main character.
+/// The Raid tab root (flows spec 4.2). Signed in, it follows the session's current character's
+/// guild; otherwise `/v1/me`'s main character.
 struct RaidsTab: View {
     let dependencies: RaidsDependencies
     @Bindable var router: RaidsRouter
@@ -110,8 +131,9 @@ struct RaidsTab: View {
     let extras: GuildExtrasDependencies?
     let calendar: CalendarSyncController?
     @State private var model: RaidsTabModel
+    @State private var loader: RaidRootLoader
+    @State private var answers: RaidAnswerModel
     @State private var rosterStore: RosterStore?
-    @State private var nextController: SignupController?
     @State private var iconBuild: String?
     @Environment(\.openURL) private var openURL
 
@@ -124,28 +146,25 @@ struct RaidsTab: View {
         self.session = session
         self.extras = extras
         self.calendar = calendar
-        _model = State(initialValue: RaidsTabModel(service: dependencies.service, cache: dependencies.cache, now: dependencies.now, connectivity: dependencies.connectivity))
+        _model = State(initialValue: RaidsTabModel(
+            service: dependencies.service, cache: dependencies.cache, now: dependencies.now, connectivity: dependencies.connectivity
+        ))
+        _loader = State(initialValue: RaidRootLoader(service: dependencies.flow, raids: dependencies.service, now: dependencies.now))
+        _answers = State(initialValue: RaidAnswerModel(service: dependencies.service))
     }
 
     var body: some View {
         NavigationStack(path: $router.path) {
-            RaidsTabContentView(
-                state: model.state, clock: dependencies.clock, now: dependencies.now, nextController: nextController,
-                openRaid: { raid, roster in router.path.append(.raid(guild: guildID ?? 0, raid: raid.id, roster: roster, open: nil)) },
-                openNight: { router.path.append(.night(raid: $0)) },
-                openWeb: { openURL($0) },
-                retry: { Task { await reload() } },
-                guildRows: guildRows
-            )
-            .refreshable { await reload() }
-            .navigationTitle(Copy.tabRaids)
-            .toolbarTitleDisplayMode(.inline)
-            .tabRootChrome()
-            .searchButton()
-            // Under the selector the bar matches Home and BiS: no title beside it (the title still
-            // names the back button on the pushed raid page).
-            .toolbar(removing: session != nil ? .title : nil)
-            .navigationDestination(for: RaidsRoute.self) { destination($0) }
+            RaidRootView(content: rootContent, actions: rootActions)
+                .refreshable { await reload() }
+                .navigationTitle(Copy.tabRaids)
+                .toolbarTitleDisplayMode(.inline)
+                .tabRootChrome()
+                .searchButton()
+                // The bar matches Home: no title beside the profile button (the title still names
+                // the back button on a pushed screen).
+                .toolbar(removing: .title)
+                .navigationDestination(for: RaidsRoute.self) { destination($0) }
         }
         .environment(\.raidIconBuild, iconBuild)
         .task { iconBuild = await dependencies.iconBuild() }
@@ -155,34 +174,34 @@ struct RaidsTab: View {
         }
     }
 
-    private var guildID: Int64? {
-        if case let .loaded(content) = model.state { return content.head.id }
-        return nil
-    }
-
     private var content: RaidsTabContent? {
         if case let .loaded(content) = model.state { return content }
         return nil
     }
 
-    private func reload() async {
-        await model.load()
-        syncNextController()
-        await refreshGuildExtras()
-    }
-
-    /// F16.7: the rows show for a verified member with `guild_extras` on.
-    private var guildRows: GuildTabRows? {
-        guard extras != nil, let content else { return nil }
-        let guild = content.head.id
-        return GuildTabRows(
-            onRoster: rosterStore?.guild == guild ? rosterStore?.onRoster : nil,
-            openRoster: { router.path.append(.roster(guild: guild)) },
-            openHistory: { router.path.append(.history(guild: guild)) }
+    private var composer: RaidRootComposer {
+        let roster = rosterStore?.guild == content?.head.id ? rosterStore?.home?.roster : nil
+        return RaidRootComposer(
+            presenter: RaidFlowPresenter(now: dependencies.now(), clock: dependencies.clock),
+            members: roster?.count,
+            atCap: roster?.filter { $0.level == RaidFlowPresenter.maxLevel }.count,
+            answer: answers.pending,
+            lateOpen: answers.lateOpen
         )
     }
 
-    /// The roster count for the row, and the calendar on every Raids refresh.
+    private var rootContent: RaidRootContent {
+        if session?.phase.isSignedIn == false { return .signedOut }
+        return composer.content(model.state, extras: loader.extras)
+    }
+
+    private func reload() async {
+        await model.load()
+        await loader.load(for: model.state)
+        await refreshGuildExtras()
+    }
+
+    /// The roster's figures for the Roster row, and the calendar on every Raids refresh.
     private func refreshGuildExtras() async {
         guard let content else { return }
         if let calendar { await calendar.update(content.calendarInput) }
@@ -191,29 +210,70 @@ struct RaidsTab: View {
         await rosterStore?.load()
     }
 
-    /// A sign-up answer replaced a raid: the tab's list, then the calendar's event title.
+    /// A sign-up replaced a raid: the tab's list, then the calendar's event title.
     private func raidChanged(_ view: RaidView) {
         model.replace(view)
         guard let calendar, let content else { return }
         Task { await calendar.update(content.calendarInput) }
     }
 
-    /// The card's controller follows the next raid; a sign-up on it updates the tab's list.
-    private func syncNextController() {
-        guard let content, let next = PlannedRaids(content.planned, now: dependencies.now()).next else {
-            nextController = nil
-            return
-        }
-        if let controller = nextController, controller.raid.id == next.id {
-            controller.replace(with: next)
-            controller.offline = content.offlineSince != nil
-            return
-        }
-        let controller = SignupController(guild: content.head.id, raid: next, dependencies: dependencies.signup)
-        controller.offline = content.offlineSince != nil
-        controller.onRaidChanged = { view in raidChanged(view) }
-        nextController = controller
+    // MARK: Actions
+
+    private var currentRaid: RaidView? {
+        content.flatMap { HomeFlowModel.current($0.planned, now: dependencies.now()) }
     }
+
+    private var rootActions: RaidRootActions {
+        RaidRootActions(
+            raid: NextRaidActions(
+                answer: { state in answer { key, raid, note in await answers.answer(state, guild: raid.0, raid: raid.1, key: key, note: note) } },
+                late: { minutes in answer { key, raid, note in await answers.late(minutes, guild: raid.0, raid: raid.1, key: key, note: note) } },
+                openRaid: { push { .raid(guild: $0, raid: $1.id, roster: false, open: nil) } },
+                openReady: { push { _, raid in .night(raid: raid.id) } },
+                previewMention: { push { .notAnswered(guild: $0, raid: $1.id) } },
+                openApplicants: {
+                    guard let guild = content?.head.id, let first = loader.extras.applicants.first else { return }
+                    router.path.append(.applicant(guild: guild, application: first.id))
+                }
+            ),
+            openPage: openPage,
+            openLink: { openURL($0) },
+            apply: { openURL(dependencies.site.apply(guild: $0.guildID)) },
+            claim: { openURL(dependencies.site.guilds) },
+            findGuild: { openURL(dependencies.site.guilds) },
+            signIn: { Task { await session?.signIn(deviceName: UIDevice.current.name) } },
+            retry: { Task { await reload() } }
+        )
+    }
+
+    private func push(_ route: (Int64, RaidView) -> RaidsRoute) {
+        guard let guild = content?.head.id, let raid = currentRaid else { return }
+        router.path.append(route(guild, raid))
+    }
+
+    /// Answers the current raid for the tab's character (its viewer row's key and note).
+    private func answer(_ send: @escaping (String, (Int64, Int64), String) async -> RaidView?) {
+        guard let content, let raid = currentRaid else { return }
+        let key = raid.viewer.characters.first { $0.characterKey == content.character.key }?.characterKey ?? content.character.key
+        let note = raid.signups.first { $0.characterKey == key }?.note ?? ""
+        Task {
+            if let view = await send(key, (content.head.id, raid.id), note) { raidChanged(view) }
+        }
+    }
+
+    private func openPage(_ page: GuildPage) {
+        guard let content else { return }
+        let guild = content.head.id
+        switch page {
+        case .roster where extras != nil: router.path.append(.roster(guild: guild))
+        case .loot where extras != nil: router.path.append(.history(guild: guild))
+        case .calendar: router.path.append(.calendar)
+        case .roster, .loot, .sims:
+            if let url = content.head.webURL { openURL(page == .sims ? url.appending(path: "sims") : url) }
+        }
+    }
+
+    // MARK: Destinations
 
     @ViewBuilder
     private func destination(_ route: RaidsRoute) -> some View {
@@ -231,11 +291,31 @@ struct RaidsTab: View {
                 scrollToRoster: roster
             )
         case let .night(raid):
-            RaidNightView(
-                model: RaidNightModel(raid: raid, service: dependencies.service, cache: dependencies.cache, now: dependencies.now, connectivity: dependencies.connectivity),
+            RaidNightPageScreen(
+                model: RaidNightPageModel(raid: raid, service: dependencies.service),
                 clock: dependencies.clock, now: dependencies.now,
-                openReport: dependencies.reports == nil ? nil : { router.path.append(.report(id: $0)) }
+                openRoster: { if let guild = content?.head.id { router.path.append(.raid(guild: guild, raid: raid, roster: true, open: nil)) } },
+                after: { AnyView(afterNight(raid)) }
             )
+        case let .notAnswered(guild, raid):
+            NotAnsweredScreen(
+                model: NotAnsweredModel(
+                    guild: guild, raid: raid, service: dependencies.service, ping: dependencies.ping, hold: .seconds(4)
+                ),
+                guildName: content?.head.name ?? "", site: dependencies.site, clock: dependencies.clock
+            )
+        case let .applicant(guild, application):
+            ApplicantScreen(
+                model: ApplicantModel(guild: guild, application: application, service: dependencies.flow),
+                guildName: content?.head.name ?? "", now: dependencies.now,
+                back: { if !router.path.isEmpty { router.path.removeLast() } }
+            )
+        case .calendar:
+            RaidCalendarScreen(
+                planned: content?.planned ?? [], clock: dependencies.clock, now: dependencies.now, currentKey: content?.character.key
+            ) { raid in
+                if let guild = content?.head.id { router.path.append(.raid(guild: guild, raid: raid.id, roster: false, open: nil)) }
+            }
         case let .report(id):
             if let reports = dependencies.reports {
                 ReportScreen(
@@ -256,5 +336,16 @@ struct RaidsTab: View {
                 )
             }
         }
+    }
+
+    /// Your raid night once it is over (spec F4.22).
+    private func afterNight(_ raid: Int64) -> some View {
+        RaidNightView(
+            model: RaidNightModel(
+                raid: raid, service: dependencies.service, cache: dependencies.cache, now: dependencies.now, connectivity: dependencies.connectivity
+            ),
+            clock: dependencies.clock, now: dependencies.now,
+            openReport: dependencies.reports == nil ? nil : { router.path.append(.report(id: $0)) }
+        )
     }
 }

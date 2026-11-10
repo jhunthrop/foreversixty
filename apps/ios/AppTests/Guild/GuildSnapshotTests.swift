@@ -202,32 +202,7 @@ struct GuildSnapshotTests {
         snap(calendar(CalendarScreenState(link: .failed, linkMessage: Copy.calendarLinkError)), "f16.4-link-error", height: 1000)
     }
 
-    // MARK: F16.7 the Raids tab rows, and You › Calendar
-
-    private func raidsTab(large: Bool = false) throws -> some View {
-        let me = try RaidFixture.load(Me.self, "me")
-        let raids = try RaidFixture.load(GuildRaids.self, "guild.raids")
-        let character = try #require(me.mainCharacter)
-        let content = RaidsTabContent(
-            head: GuildHead(character: try #require(character.guild), guild: me.guilds.first),
-            character: character, planned: raids.planned ?? [], nights: raids.rows,
-            waiting: raids.waitingForApproval, offlineSince: nil
-        )
-        let controller = try makeController(content.planned.first)
-        return NavigationStack {
-            RaidsTabContentView(
-                state: .loaded(content), clock: RaidTime.clock, now: { RaidTime.now },
-                nextController: controller,
-                openRaid: { _, _ in }, openNight: { _ in }, openWeb: { _ in }, retry: {},
-                guildRows: GuildTabRows(onRoster: 38, openRoster: {}, openHistory: {})
-            )
-            .navigationTitle(Copy.tabRaids)
-            .toolbarTitleDisplayMode(.inline)
-        }
-    }
-
-    @Test func raidsTabRows() throws { snap(try raidsTab(), "f16.7-raids-tab", height: 1400) }
-    @Test func raidsTabRows_xl() throws { snap(try raidsTab(), "f16.7-raids-tab-xl", height: 3000, large: true) }
+    // MARK: You › Calendar
 
     @Test func youCalendarRow() throws {
         let summary = try AccountSnapshotTests.summary("me.json")

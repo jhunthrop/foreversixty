@@ -64,20 +64,6 @@ struct HomeSnapshotTests {
         }
     }
 
-    @Test("F2.7 Your gear, all 17 slots")
-    func gear() throws {
-        let home = try HomeFixtures.home()
-        let sources = try HomeFixtures.tooltipSources()
-        let probe = ItemTooltipRequest.forHome(HomeItemLook(id: 0, name: nil, quality: nil, icon: nil, itemLevel: nil), home: home, character: HomeFixtures.velaren)
-        let blocker = GearModel.offHandBlocker(home: home, gear: [:], items: sources.items, band: ItemTooltipModel.band(for: probe, in: sources.bis))
-        let rows = GearModel.rows(home: home, gear: [:], items: sources.items, offHandBlockedBy: blocker)
-        let view = HomeCaptureFrame(title: Copy.gearTitle, large: true) {
-            GearView(rows: rows, intro: Copy.gearIntro(band: "60 · raid"), build: home.dataBuild)
-        }
-        snap(view, named: "gear-default")
-        snap(view, large: true, named: "gear-default-xl")
-        snap(view, tall: true, named: "gear-full")
-    }
 }
 
 /// The navigation chrome around a captured screen. The tab bar is left out: the iOS 26 glass

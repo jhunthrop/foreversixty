@@ -194,11 +194,14 @@ public struct SmallText: View {
 /// action at the right. Reports `section-<slug of the title>`.
 public struct FSSection<Content: View, Trailing: View>: View {
     private let title: String
+    private let meta: String?
     private let trailing: Trailing
     private let content: Content
 
-    public init(_ title: String, @ViewBuilder trailing: () -> Trailing, @ViewBuilder content: () -> Content) {
+    /// `meta`: the small muted words beside the title (`6 open`, `4 of 31, healers first`).
+    public init(_ title: String, meta: String? = nil, @ViewBuilder trailing: () -> Trailing, @ViewBuilder content: () -> Content) {
         self.title = title
+        self.meta = meta
         self.trailing = trailing()
         self.content = content()
     }
@@ -207,6 +210,7 @@ public struct FSSection<Content: View, Trailing: View>: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .firstTextBaseline, spacing: FSSpace.space3) {
                 Text(title).type(FSType.section).foregroundStyle(Theme.Palette.title).accessibilityAddTraits(.isHeader)
+                if let meta { SmallText(meta) }
                 Spacer(minLength: 0)
                 trailing
             }
@@ -221,8 +225,8 @@ public struct FSSection<Content: View, Trailing: View>: View {
 }
 
 public extension FSSection where Trailing == EmptyView {
-    init(_ title: String, @ViewBuilder content: () -> Content) {
-        self.init(title, trailing: { EmptyView() }, content: content)
+    init(_ title: String, meta: String? = nil, @ViewBuilder content: () -> Content) {
+        self.init(title, meta: meta, trailing: { EmptyView() }, content: content)
     }
 }
 
