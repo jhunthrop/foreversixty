@@ -148,7 +148,7 @@
   {@const bossCount = (source.bosses ?? []).length}
   <div class="flex flex-col">
     <div class="flex min-h-11 items-center gap-2">
-      <label class="text-text flex min-w-0 flex-1 items-center gap-2 text-[14px]">
+      <label class="text-text flex min-h-11 min-w-0 flex-1 items-center gap-2 text-[14px]">
         <input
           type="checkbox"
           class="accent-gold h-5 w-5 shrink-0"
@@ -175,7 +175,7 @@
         <!-- A dungeon's bosses fold under its row (a real build lists 900): the count is the toggle. -->
         <button
           type="button"
-          class="text-muted hover:text-text min-h-11 shrink-0 text-[13px] tabular-nums"
+          class="text-muted hover:text-text min-h-11 min-w-11 shrink-0 text-[13px] tabular-nums"
           aria-expanded={openBosses.has(source.id)}
           data-testid={`sim-source-bosses-${source.id}`}
           onclick={() => toggleBosses(source.id)}>{bulkCopy.sourceBosses(bossCount)}</button

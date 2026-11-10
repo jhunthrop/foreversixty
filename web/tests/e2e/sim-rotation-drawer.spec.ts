@@ -131,9 +131,10 @@ test('the tank’s repro: an Arms Warrior’s rotation reads in place, with no n
   const url = page.url();
   const section = page.getByTestId('sim-rotation-saved-card');
   await section.scrollIntoViewIfNeeded();
-  // The rotation reads in place: a note that changes when to press stays, a tooltip restatement
-  // (Bloodrage's "Whenever rage is under 80") is left off (rotation-card.ts obviousNote).
-  await expect(section).toContainText('Bloodrage');
+  // The rotation reads in place: a note that changes when to press stays (Rend's), a tooltip
+  // restatement (Bloodrage's "Whenever rage is under 80") is left off (rotation-card.ts obviousNote).
+  // The fixture build publishes no spell names (no spells.json), so the notes are what it can read.
+  await expect(section).toContainText('Keep it ticking: the bleed ignores armor');
   await expect(section).not.toContainText('Whenever rage is under 80');
 
   expect(page.url()).toBe(url);

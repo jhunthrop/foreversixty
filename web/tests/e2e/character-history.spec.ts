@@ -128,7 +128,8 @@ test('the premium owner’s History is closed, and nothing is read until it open
   await page.goto(CHARACTER_PATH);
 
   const toggle = page.getByTestId('character-history-toggle');
-  await expect(toggle.locator('summary')).toHaveText(/Score over time, then parse per boss/);
+  // One History panel (h-audit 2026-11-09): the summary is the panel's name and the fight count.
+  await expect(toggle.locator('summary')).toHaveText(/^History\s*\d+ fights?/);
   await expect(toggle).not.toHaveAttribute('open', '');
   await expect(page.getByTestId('history-score')).toHaveCount(0);
   await page.waitForLoadState('networkidle');

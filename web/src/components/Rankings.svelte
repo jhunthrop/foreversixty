@@ -455,8 +455,10 @@
           <!-- Specs, not characters: the tier list, a link in the band (never a card stranded in the rail).
                It leads the line, so the stamp arriving after it moves nothing; no date is printed
                until the board names a real one. -->
-          <a class={LINK} href={rankingsCopy.tierHref} data-testid="rankings-tier-link"
-            >{rankingsCopy.tierLink} ›</a
+          <a
+            class="{LINK} [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
+            href={rankingsCopy.tierHref}
+            data-testid="rankings-tier-link">{rankingsCopy.tierLink} ›</a
           >
           {#if updatedStamp !== null}<span data-testid="rankings-updated"
               >{rankingsCopy.updated(updatedStamp)}</span

@@ -22,6 +22,8 @@
     onwrongclass = undefined,
     panel = false,
     part = false,
+    code = $bindable(''),
+    outcome = $bindable(null),
   }: {
     /** The heading inside its panel (the standalone planner's rail and column). */
     panel?: boolean;
@@ -46,10 +48,11 @@
      * the wrong-class message as before (Top Gear's inline box has one class).
      */
     onwrongclass?: (classSlug: string, pastedCode: string) => void;
+    /** The pasted code and the last outcome, bindable so a page that moves the box (the planner's
+     *  rail to its full-width row once points are spent, which an import does) keeps them. */
+    code?: string;
+    outcome?: ImportOutcome | null;
   } = $props();
-
-  let code = $state('');
-  let outcome = $state<ImportOutcome | null>(null);
 
   const notes = $derived(outcome !== null && outcome.ok ? outcome.notes : []);
   const failure = $derived(outcome !== null && !outcome.ok ? outcome.message : null);

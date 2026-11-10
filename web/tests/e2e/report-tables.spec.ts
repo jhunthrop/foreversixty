@@ -216,7 +216,7 @@ test('interrupts, dispels, resources and threat each render or say they are empt
   isMobile,
 }) => {
   await page.goto(`${FIGHT}&tab=interrupts`);
-  await expect(page.getByTestId('table-empty')).toContainText('Nothing was interrupted');
+  await expect(page.getByTestId('table-empty')).toContainText('No interrupts this pull.');
 
   await page.goto(`${FIGHT}&tab=resources`);
   await expect(page.getByTestId('resource-graphs')).toBeVisible();

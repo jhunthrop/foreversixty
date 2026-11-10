@@ -395,7 +395,12 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
           document.querySelectorAll('[data-csel-sub]').forEach((el) => (el.textContent = full));
           document.querySelectorAll('[data-csel-sub-class]').forEach((el) => (el.textContent = classLine));
           document.querySelectorAll('[data-csel-sub-short]').forEach((el) => (el.textContent = short));
-          document.querySelectorAll('[data-csel-level]').forEach((el) => (el.textContent = level));
+          // Only a Battle.net character carries a level (it may arrive with /v1/me): a pasted
+          // export's control holds no level slot, as the island draws it.
+          document.querySelectorAll('[data-csel-level]').forEach((el) => {
+            el.textContent = level;
+            el.hidden = pointer.source !== 'armory';
+          });
         }
       } catch {
         /* malformed pointer or cache: leave the link as rendered, hydration answers for real */
