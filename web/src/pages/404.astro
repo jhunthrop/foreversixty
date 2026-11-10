@@ -1,24 +1,25 @@
 ---
 // web/src/pages/404.astro: served by Workers static assets for any path that has no file (see
 // `not_found_handling` in wrangler.jsonc). The flat system (design/specs/2026-11-08-pages.md
-// §4.4, rulings 0A): the PageHeader (No page here, the address that failed as its meta, the
-// line; signed in, your character with your guide, your best in slot and a smaller Your
-// character), Did you mean when the address is within 3 edits of a page, then the page's one
-// Plate (the class picker, each spec linking its guide) and the character lookup (first, signed
+// §4.4, rulings 0A; round 5 mock b4-404): the title band (No page here, the address that failed as
+// its meta, the line; signed in, your character with your guide, your best in slot and a smaller
+// Your character), Did you mean on a framed panel when the address is within 3 edits of a page,
+// then the class picker's panel (each spec linking its guide) and the character lookup (first, signed
 // out, on a dead /character/ address). The address line and the suggestion are set inline before
 // the plate paints; the answer is painted after load (lib/not-found/answer-mount.ts).
 import Base from '../layouts/Base.astro';
 import CharacterSearch from '../components/CharacterSearch.astro';
 import NotFoundClassPicker from '../components/not-found/NotFoundClassPicker.svelte';
 import CharacterAnswer from '../components/ui/CharacterAnswer.svelte';
-import Notice from '../components/ui/Notice.svelte';
 import Page from '../components/ui/Page.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
+import Plate from '../components/ui/Plate.svelte';
 import classes from '../data/classes.json';
 import { guidesCopy } from '../lib/guides/copy';
 import { notFoundCopy } from '../lib/not-found/copy';
 import { knownPages, SUGGEST_SCRIPT } from '../lib/not-found/suggest';
 import { SPECS } from '../lib/sim/specs';
+import { LINK } from '../lib/ui/primitives';
 import { REGION } from '../lib/ui/regions';
 
 const pages = knownPages(
@@ -39,13 +40,16 @@ const pages = knownPages(
         <span slot="meta" id="nf-path" class="nf-path" data-testid="nf-path"></span>
         <CharacterAnswer slot="answer" label={guidesCopy.answerLabel} id="nf-answer" testid="nf-answer" />
       </PageHeader>
-      <Fragment slot="bar">
-        <div id="nf-suggest" class="nf-suggest" data-region={REGION.notes} data-testid="nf-suggest" hidden>
-          <Notice text={notFoundCopy.didYouMean} action={{ label: '', href: '/' }} tone="neutral" />
-        </div>
-        <script is:inline type="application/json" id="nf-pages" set:html={JSON.stringify(pages)}></script>
-        <script is:inline set:html={SUGGEST_SCRIPT}></script>
-      </Fragment>
+      <div id="nf-suggest" data-region={REGION.notes} data-testid="nf-suggest" hidden>
+        <Plate frame="framed" flush={false}>
+          <h2 class="nf-suggest-title">{notFoundCopy.didYouMean}</h2>
+          <a class={LINK} href="/">
+            ›
+          </a>
+        </Plate>
+      </div>
+      <script is:inline type="application/json" id="nf-pages" set:html={JSON.stringify(pages)}></script>
+      <script is:inline set:html={SUGGEST_SCRIPT}></script>
       <NotFoundClassPicker />
       <div class="nf-lookup">
         <CharacterSearch />
@@ -68,11 +72,14 @@ const pages = knownPages(
     min-height: 20px;
     overflow-wrap: anywhere;
   }
-  .nf-suggest {
-    padding-inline: var(--page-inset);
-  }
-  .nf-suggest[hidden] {
+  #nf-suggest[hidden] {
     display: none;
+  }
+  .nf-suggest-title {
+    margin: 0 0 6px;
+    font: 400 var(--text-section) / var(--text-section--line-height) var(--font-title);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-cream);
   }
   /* Signed out on a dead /character/ address the lookup comes first (ruling SHOULD). */
   :global(html[data-nf-character]:not([data-session='1'])) .nf-lookup {
