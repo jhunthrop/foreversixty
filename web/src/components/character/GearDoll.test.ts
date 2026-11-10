@@ -44,7 +44,7 @@ describe('GearDoll', () => {
     expect(body).not.toContain('paperdoll-frame-slot-head');
     expect(body).not.toContain('class="pdf-strip');
     expect(body).toMatch(
-      /Head · <\/span><span[^>]*>Item level 66<\/span> · <span class="text-rarity-uncommon"[^>]*>Stamina \+10/,
+      /Head · <\/span><span[^>]*>Item level 66<\/span><\/span>\s*<span class="pdf-sub pdf-enchant[^"]*"[^>]*>Stamina \+10/,
     );
     expect(body).not.toContain('data-inline-tip');
   });

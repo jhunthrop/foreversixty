@@ -122,7 +122,7 @@ describe('PaperdollFrame', () => {
     ];
     const body = doll({ cells, form: 'list', facts: true });
     expect(body).toMatch(
-      /Head · <\/span><span[^>]*>Item level 61<\/span> · <span class="text-rarity-uncommon"[^>]*>Stamina \+10<\/span>/,
+      /Head · <\/span><span[^>]*>Item level 61<\/span><\/span>\s*<span class="pdf-sub pdf-enchant[^"]*"[^>]*>Stamina \+10<\/span>/,
     );
     expect(body).toMatch(
       /data-testid="paperdoll-list-gain-head"[\s\S]*data-icon="inv_spear_04"[\s\S]*\+1\.8 DPS/,

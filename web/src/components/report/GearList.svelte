@@ -129,14 +129,13 @@
     {#if worn.length > 0}
       <div class="gear-at-pull-list" data-testid="gear-list-rows">
         {#each worn as cell (cell.slot)}
-          {#snippet facts()}{cell.label}{#if cell.source}{FACT_SEPARATOR}{cell.source}{/if}{#if cell.enchant}{FACT_SEPARATOR}<span
-                class="text-rarity-uncommon">{cell.enchant}</span
-              >{/if}{/snippet}
+          {#snippet facts()}{cell.label}{#if cell.source}{FACT_SEPARATOR}{cell.source}{/if}{/snippet}
+          {#snippet enchant()}<span class="text-rarity-uncommon">{cell.enchant}</span>{/snippet}
           {#if cell.item}<ItemRow
               item={cell.item}
               build={dataBuild}
               sourceContent={facts}
-              sourceTitle={[cell.label, cell.source, cell.enchant].filter(Boolean).join(FACT_SEPARATOR)}
+              detail={cell.enchant ? enchant : undefined}
               unknown={cell.unknown}
               iconSize={28}
               bare
@@ -191,11 +190,6 @@
   }
   .gear-at-pull-covered-icon {
     filter: grayscale(1) brightness(0.55);
-  }
-  .gear-at-pull-list :global(.ui-item-row-src) {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .gear-at-pull-list > :global(*) {
     border-bottom: 1px solid var(--color-line-soft);

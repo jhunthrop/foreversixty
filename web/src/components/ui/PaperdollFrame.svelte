@@ -177,14 +177,14 @@
 {/snippet}
 
 {#snippet rowFacts(cell: DollCell)}
-  <span class="pdf-sub" title={[cell.label, cell.source, cell.enchant].filter(Boolean).join(FACT_SEPARATOR)}
-    >{#if cell.source || cell.enchant}<span class="pdf-fact-slot">{cell.label}{FACT_SEPARATOR}</span
-      >{#if cell.source}<span data-testid="paperdoll-list-line2-{cell.slot}">{cell.source}</span
-        >{/if}{#if cell.source && cell.enchant}{FACT_SEPARATOR}{/if}{#if cell.enchant}<span
-          class="text-rarity-uncommon"
-          data-testid="paperdoll-list-enchant-{cell.slot}">{cell.enchant}</span
-        >{/if}{:else}{cell.label}{/if}</span
+  <span class="pdf-sub"
+    >{#if cell.source}<span class="pdf-fact-slot">{cell.label}{FACT_SEPARATOR}</span><span
+        data-testid="paperdoll-list-line2-{cell.slot}">{cell.source}</span
+      >{:else}{cell.label}{/if}</span
   >
+  {#if cell.enchant}<span class="pdf-sub pdf-enchant" data-testid="paperdoll-list-enchant-{cell.slot}"
+      >{cell.enchant}</span
+    >{/if}
 {/snippet}
 
 {#snippet rowGain(cell: DollCell)}
@@ -552,15 +552,11 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  /* A row's facts wrap on a phone, where the enchant would otherwise be cut; from 560 px (two wide
-     columns) every row keeps one line, the whole line in its title and the item's tooltip. */
-  .pdf-facts .pdf-sub {
+  /* The enchant has its own green line under the item level, as the client's tooltip prints it,
+     and wraps rather than lose a word. */
+  .pdf-facts .pdf-enchant {
     white-space: normal;
-  }
-  @container (min-width: 560px) {
-    .pdf-facts .pdf-sub {
-      white-space: nowrap;
-    }
+    color: var(--color-rarity-uncommon);
   }
   /* A phone's half column keeps the facts and drops the slot word before them (the name says it). */
   @container (min-width: 360px) and (max-width: 559.98px) {

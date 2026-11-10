@@ -102,8 +102,9 @@ test.describe('the report "At pull" at 1280', () => {
     const frame = page.getByTestId('gear-list');
     await expect(frame.getByTestId('paperdoll-frame-slot-head')).toHaveAccessibleName('Head: Lionheart Helm');
     // Beside the frame, each worn piece over its slot, the log's own item level and the enchant
-    // named from the build's table; the off hand a two-hander covers says so; no gain.
-    await expect(frame.getByTestId('gear-list-row-head')).toContainText('Head · Item level 66 · Crusader');
+    // named from the build's table on its own green line; the off hand a two-hander covers says so; no gain.
+    await expect(frame.getByTestId('gear-list-row-head')).toContainText('Head · Item level 66');
+    await expect(frame.getByTestId('gear-list-row-head')).toContainText('Crusader');
     await expect(frame.getByTestId('gear-list-row-main_hand')).toContainText('Main hand · Item level 63');
     await expect(frame.getByTestId('gear-list-row-off_hand')).toContainText('Two-handed');
     await expect(frame.locator('[data-testid^="paperdoll-list-gain"]')).toHaveCount(0);
