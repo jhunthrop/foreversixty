@@ -36,8 +36,8 @@ var officerCopy = struct {
 	ReadinessNobodySigned string
 	// ToFix is the failing rows' field; ReadinessMore follows the tenth row; Board the link.
 	ToFix, ReadinessMore, Board string
-	// The refusals: a member, an unlinked viewer, a lapsed plan (with Subscribe), a frozen claim.
-	NotOfficer, ReadinessUnlinked, PlanLapsed, Subscribe, Frozen string
+	// The refusals: a member, an unlinked viewer, a frozen claim.
+	NotOfficer, ReadinessUnlinked, Frozen string
 	// RaidGuild and MoveToRaidGuild (Task 14's addition) answer a Guild-tier guild: the board is
 	// part of Raid guild (launch pricing §3.2.8, the site's GuildPlanGate sentence).
 	RaidGuild, MoveToRaidGuild string
@@ -80,8 +80,6 @@ var officerCopy = struct {
 	Board:                 "Readiness board",
 	NotOfficer:            "Readiness is for officers of {Guild}.",
 	ReadinessUnlinked:     "Readiness is for officers of {Guild}. Link your Discord account if you are one.",
-	PlanLapsed:            "Planning and running raids are part of the guild plan. An officer can subscribe your guild.",
-	Subscribe:             "Subscribe your guild",
 	Frozen:                "This guild's claim is contested. Officer actions are frozen until a moderator resolves it.",
 	RaidGuild:             "The readiness board is part of the Raid guild plan. An officer can move the guild to the Raid guild plan.",
 	MoveToRaidGuild:       "Move to Raid guild",

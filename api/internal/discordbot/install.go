@@ -47,13 +47,13 @@ func (s *Service) mountInstall(mux *http.ServeMux) {
 	mux.Handle("GET "+botChannelsPath, layout(auth.RequireSession(s.channelsList)))
 	mux.Handle("PUT "+botChannelPath, layout(auth.RequireSession(s.channelSave)))
 	mux.Handle("POST "+botTestPath, test(auth.RequireSession(s.botTest)))
-	// Remove is never behind the plan: stopping posts must always work.
 	mux.HandleFunc("DELETE "+botPath, auth.RequireSession(s.botRemove))
 }
 
-// officer is notify's gate for the bot's routes.
-func (s *Service) officer(w http.ResponseWriter, r *http.Request, needPlan bool) (int64, notify.GuildStanding, bool) {
-	return notify.GuildOfficerGate(w, r, s.d.Guilds, needPlan, func(op string, err error) { s.logFailure(r, op, err) })
+// officer is notify's gate for the bot's routes: any claimed guild's verified officer or
+// leader, no plan (owner ruling 2026-11-09: the bot is free).
+func (s *Service) officer(w http.ResponseWriter, r *http.Request) (int64, notify.GuildStanding, bool) {
+	return notify.GuildOfficerGate(w, r, s.d.Guilds, func(op string, err error) { s.logFailure(r, op, err) })
 }
 
 func (s *Service) logFailure(r *http.Request, op string, err error) {
@@ -140,10 +140,10 @@ func (s *Service) installView(ctx context.Context, guildID int64) (*guilds.Setti
 	}, nil
 }
 
-// installStart sends a plan-holding officer to Discord's install page.
+// installStart sends a verified officer to Discord's install page.
 func (s *Service) installStart(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
-	guildID, _, ok := s.officer(w, r, true)
+	guildID, _, ok := s.officer(w, r)
 	if !ok {
 		return
 	}
@@ -174,7 +174,7 @@ func (s *Service) installCallback(w http.ResponseWriter, r *http.Request, cs not
 func (s *Service) installOutcome(r *http.Request, cs notify.ConnectState, standing notify.GuildStanding) string {
 	actor := auth.ActorFrom(r.Context())
 	if !actor.Signed() || actor.IsDevice() || actor.UserID != cs.UserID || cs.Expired ||
-		!standing.Officer || !standing.Plan || standing.Frozen {
+		!standing.Officer || standing.Frozen {
 		return installFailed
 	}
 	query := r.URL.Query()

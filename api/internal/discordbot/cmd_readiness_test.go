@@ -21,9 +21,8 @@ func TestReadinessGate(t *testing.T) {
 		button string
 	}{
 		{guilds.ErrNotOfficer, segment(7, olympus), ""},
-		{guilds.ErrPlanRequired, segment(9, nil), segment(10, nil)},
-		{guilds.ErrRaidGuildRequired, segment(12, nil), segment(13, nil)},
-		{guilds.ErrClaimContested, segment(11, nil), ""},
+		{guilds.ErrRaidGuildRequired, segment(10, nil), segment(11, nil)},
+		{guilds.ErrClaimContested, segment(9, nil), ""},
 	} {
 		w.og.readyErr = c.err
 		rep := w.run(t, pressDiscord, "readiness")
@@ -39,11 +38,11 @@ func TestReadinessGate(t *testing.T) {
 	}
 	w.og.readyErr = guilds.ErrRaidGuildGranted
 	rep := w.run(t, pressDiscord, "readiness")
-	if rep.Message.Content != segment(15, nil) {
-		t.Errorf("granted: %q, want %q", rep.Message.Content, segment(15, nil))
+	if rep.Message.Content != segment(13, nil) {
+		t.Errorf("granted: %q, want %q", rep.Message.Content, segment(13, nil))
 	}
-	if b := rep.Message.Components[0][0]; b.Label != segment(16, nil) || b.URL != CommunityDiscordInvite {
-		t.Errorf("granted: button %+v, want %q to the Discord invite", b, segment(16, nil))
+	if b := rep.Message.Components[0][0]; b.Label != segment(14, nil) || b.URL != CommunityDiscordInvite {
+		t.Errorf("granted: button %+v, want %q to the Discord invite", b, segment(14, nil))
 	}
 	w.og.readyErr = nil
 	w.og.readiness = guilds.ReadinessAnswer{}
@@ -80,7 +79,7 @@ func TestReadinessGate(t *testing.T) {
 		t.Fatalf("one = %q", got)
 	}
 	w.og.readiness = guilds.ReadinessAnswer{Raid: &raid}
-	if got := w.run(t, pressDiscord, "readiness").Message.Embeds[0]; got.Description != segment(14, nil) || len(got.Fields) != 0 {
+	if got := w.run(t, pressDiscord, "readiness").Message.Embeds[0]; got.Description != segment(12, nil) || len(got.Fields) != 0 {
 		t.Fatalf("nobody signed = %+v", got)
 	}
 	w.og.readiness = guilds.ReadinessAnswer{Raid: &raid, Signed: 23}

@@ -6,7 +6,7 @@
      read directly rather than re-derived from /v1/me client side. -->
 <script lang="ts">
   import { guildClaimHref, type CharacterPath } from '../lib/characters';
-  import { fetchMeFresh, refetchMe, type Me, type MeGuild } from '../lib/account/api';
+  import { fetchMeFresh, refetchMe, type Me } from '../lib/account/api';
   import { onWindowFocus } from '../lib/data/query';
   import {
     GuildApiError,
@@ -19,7 +19,6 @@
   import { guildSettingsCopy } from '../lib/guild/copy';
   import { can } from '../lib/guild/roster-model';
   import { settingsWords } from '../lib/guild/settings-view';
-  import { gateFactsFrom } from '../lib/guild/plan-gate';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildDiscordReserve } from '../lib/guild/discord-state';
   import { createLazyComponent } from '../lib/report/lazy-component.svelte';
@@ -52,24 +51,17 @@
     path,
     embedded = false,
     crest,
-    officerTools,
-    onPlanRefused,
   }: {
     path: CharacterPath;
     /** Inside the guild page's Settings tab: the page's own head stands, so no h1 of its own. */
     embedded?: boolean;
     /** The guild crest row (officers only), drawn at the foot of the Records card. */
     crest?: Snippet;
-    /** From the guild page's Settings tab; the standalone route leaves it out. */
-    officerTools?: boolean;
-    onPlanRefused?: () => void;
   } = $props();
 
   let guildId = $state<number | null>(null);
   /** Whether this account may release the claim (the `release` word on its /v1/me guild entry). */
   let mayRelease = $state(false);
-  /** This account's /v1/me guild entry: its rank and whether the trial is open, for the gate. */
-  let myEntry = $state<MeGuild | null>(null);
   let guildName = $state('');
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
@@ -109,7 +101,6 @@
 
   function applyBilling(me: Me | null): void {
     const entry = me?.guilds.find((g) => g.id === guildId);
-    myEntry = entry ?? null;
     mayRelease = entry === undefined ? false : can(entry.can, 'release');
   }
 
@@ -183,18 +174,6 @@
   $effect(() => {
     if (settings?.discord !== undefined) discordLazy.load();
   });
-
-  /** Only Discord is gated here, a feature of both plans: the plan flags do not change its link. */
-  const gateFacts = $derived(
-    gateFactsFrom({
-      claim: settings?.claim ?? null,
-      membership: myEntry,
-      officerTools: false,
-      raidGuildTools: false,
-      settingsHref: '',
-      claimHref: guildClaimHref(path.region, path.ruleset, guildName),
-    }),
-  );
 </script>
 
 {#snippet notes()}
@@ -337,9 +316,6 @@
             {guildId}
             discord={settings.discord}
             {frozen}
-            {officerTools}
-            {gateFacts}
-            {onPlanRefused}
             onDiscord={(discord) => {
               if (settings !== null) settings = { ...settings, discord };
             }}

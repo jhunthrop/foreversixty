@@ -106,8 +106,6 @@ func (s *Service) readinessRefusal(err error, guildName, billing string) (Reply,
 	switch {
 	case errors.Is(err, guilds.ErrNotOfficer):
 		return pressReply(fill(officerCopy.NotOfficer, "{Guild}", guildName), false), true
-	case errors.Is(err, guilds.ErrPlanRequired):
-		return pressReply(officerCopy.PlanLapsed, false, planLink(officerCopy.Subscribe)), true
 	case errors.Is(err, guilds.ErrRaidGuildGranted):
 		return grantedPlanReply(), true
 	case errors.Is(err, guilds.ErrRaidGuildRequired):

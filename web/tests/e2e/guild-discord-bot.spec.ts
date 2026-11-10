@@ -310,50 +310,24 @@ test.describe('removed in Discord', () => {
   });
 });
 
-test.describe('officer-read-only and frozen', () => {
-  test('state 5: add and webhook links are aria-disabled with no href', async ({ page }) => {
+test.describe('a guild with no plan, and frozen', () => {
+  // Owner ruling 2026-11-09: the bot is free for any claimed guild's officers.
+  test('a guild with no plan adds the bot, tests and changes the channel', async ({ page }) => {
     await open(page, { discord: botSettings(null), officerTools: false });
     for (const testid of ['bot-add', 'bot-webhook']) {
-      await expect(id(page, testid)).toHaveAttribute('aria-disabled', 'true');
-      expect(await id(page, testid).getAttribute('href')).toBeNull();
-      await expect(id(page, testid)).toHaveAttribute('aria-describedby', 'officer-tools-gate-discord');
+      expect(await id(page, testid).getAttribute('href')).not.toBeNull();
     }
-  });
-
-  test('installed: test and change are disabled, the line is drawn, Remove works', async ({ page }) => {
-    const seen = await open(page, { discord: botSettings({}), officerTools: false });
-    await expect(id(page, 'bot-test')).toBeDisabled();
-    await expect(id(page, 'bot-change')).toBeDisabled();
-    await expect(id(page, 'bot-read-only')).toHaveText(guildBotCopy.installed.readOnly);
-    await id(page, 'bot-remove').click();
-    await id(page, 'bot-remove-confirm').click();
-    await expect(id(page, 'bot-add')).toHaveAttribute('aria-disabled', 'true');
-    expect(seen.botDeletes).toBe(1);
-  });
-
-  test('the picker: select and save are disabled, Remove the bot is live', async ({ page }) => {
-    await open(page, { discord: botSettings({ channel_id: null, channel_name: null }), officerTools: false });
-    await expect(id(page, 'bot-channel')).toBeDisabled();
-    await expect(id(page, 'bot-channel-save')).toBeDisabled();
-    await expect(id(page, 'bot-remove-bot')).toBeEnabled();
+    const installed = await page.context().newPage();
+    await open(installed, { discord: botSettings({}), officerTools: false });
+    await expect(id(installed, 'bot-test')).toBeEnabled();
+    await expect(id(installed, 'bot-change')).toBeEnabled();
+    await expect(id(installed, 'bot-read-only')).toHaveCount(0);
   });
 
   test('frozen disables Remove too', async ({ page }) => {
     await open(page, { discord: botSettings({}), frozen: true });
     await expect(id(page, 'bot-test')).toBeDisabled();
     await expect(id(page, 'bot-remove')).toBeDisabled();
-  });
-
-  test('a 403 guild_plan_required says so, focused, and turns the section read-only', async ({ page }) => {
-    await open(page, {
-      discord: botSettings({}),
-      testRefusal: { status: 403, code: 'guild_plan_required', message: 'plan' },
-    });
-    await id(page, 'bot-test').click();
-    await expect(page.locator('#guild-discord-status')).toBeFocused();
-    await expect(section(page).getByRole('alert')).toHaveText(guildBotCopy.planEnded);
-    await expect(id(page, 'bot-test')).toBeDisabled();
-    await expect(id(page, 'bot-remove')).toBeEnabled();
   });
 });
 

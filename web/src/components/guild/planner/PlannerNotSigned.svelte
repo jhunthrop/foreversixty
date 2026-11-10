@@ -17,7 +17,6 @@
     now,
     clock,
     officerTools,
-    gateId,
     closed = false,
     busyKey = null,
     pinging = false,
@@ -30,7 +29,6 @@
     /** The next-ping time in words (`2:10 am`). */
     clock: (at: Date) => string;
     officerTools: boolean;
-    gateId: string;
     closed?: boolean;
     busyKey?: string | null;
     pinging?: boolean;
@@ -65,8 +63,7 @@
           sub={entry.sub}
           {roles}
           officer
-          disabled={!officerTools || closed}
-          describedBy={officerTools ? undefined : gateId}
+          disabled={closed}
           busy={busyKey === entry.character_key}
           {onSetState}
         />

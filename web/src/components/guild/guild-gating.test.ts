@@ -57,7 +57,7 @@ describe('GuildPlanGate', () => {
       claim: { state: 'claimed', yours: false, claimed_by: null },
     });
     expect(text(body)).toBe(
-      'Planning raids and events is part of the Guild and Raid guild plans. Ask your guild master to turn it on.',
+      'Comp targets, pings, assignments and log matching are part of the Guild and Raid guild plans. Ask your guild master to turn it on.',
     );
   });
 

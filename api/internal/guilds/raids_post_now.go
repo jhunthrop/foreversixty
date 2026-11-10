@@ -1,6 +1,6 @@
 // api/internal/guilds/raids_post_now.go
 //
-// POST /v1/guilds/{id}/raids/{raid}/discord/post: the officer's "Post now" for an open raid
+// POST /v1/guilds/{id}/raids/{raid}/discord/post (the free calendar gate): the officer's "Post now" for an open raid
 // that has not posted (the box was off, or a send failed), and "Repost" for one that has (the
 // message was buried or deleted). A first post goes through the schedule row, so the run and a
 // second press cannot post it twice; a repost asks the router for a fresh message, and the
@@ -41,7 +41,7 @@ func mountRaidPostNowRoute(mux *http.ServeMux, s *Service, officerLimit func(htt
 }
 
 func (s *Service) postRaidNow(w http.ResponseWriter, r *http.Request) {
-	guildID, raid, ok := s.officerRaid(w, r, raidPostNowOp)
+	guildID, raid, ok := s.calendarRaid(w, r, raidPostNowOp)
 	if !ok {
 		return
 	}

@@ -1,10 +1,9 @@
 // web/src/lib/guild/discord-copy.ts
 // The guild settings' Discord section's own sentences (raids spec §6.1, "Settings · Discord").
-// Every sentence the account block shares verbatim comes from notificationsCopy, the gate and the
-// plan-ended line from raidCopy; only the guild's own words are typed here. No runtime import
+// Every sentence the account block shares verbatim comes from notificationsCopy; only the guild's
+// own words are typed here. No runtime import
 // beyond the copy modules, so a Playwright spec can read it.
 import { notificationsCopy } from '../account/notifications-copy';
-import { raidCopy } from './raid-copy';
 
 export const guildDiscordCopy = {
   heading: 'Discord',
@@ -23,5 +22,4 @@ export const guildDiscordCopy = {
   returnFailed:
     'Could not connect. You need to manage webhooks in that channel and be an officer of this guild. Ask a server admin for the permission, then try again.',
   connectStuck: 'Discord did not open. Try again.',
-  planEnded: raidCopy.races.officerToolsEnded,
 } as const;

@@ -76,7 +76,8 @@ describe('the band', () => {
     expect(html()).not.toContain('data-testid="raid-officer-row"');
     const officer = html({ role: 'officer' });
     expect(officer).toContain('data-testid="raid-officer-row"');
-    expect(html({ role: 'officer', officerToolsEnded: true })).toContain('id="officer-tools-gate-raids"');
+    // The calendar is free (owner ruling 2026-11-09): no plan gate on the officer row.
+    expect(html({ role: 'officer', officerToolsEnded: true })).not.toContain('id="officer-tools-gate-raids"');
   });
 
   it('draws the tabs as links to the guild page, Raids active', () => {

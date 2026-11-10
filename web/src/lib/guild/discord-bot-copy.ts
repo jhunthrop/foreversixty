@@ -1,10 +1,9 @@
 // web/src/lib/guild/discord-bot-copy.ts
 // The guild settings' bot sentences (discord bot spec §6.1, "On the site"): the add path, the
 // picker, the installed and removed states, the remove question and the install returns. The
-// webhook's own words stay in discord-copy.ts; the plan-ended and gate lines are raidCopy's.
+// webhook's own words stay in discord-copy.ts.
 // Functions take the data, so no number or name is typed into prose. No runtime import beyond
 // the copy modules, so a Playwright spec can read it.
-import { raidCopy } from './raid-copy';
 
 /** A server name is shown whole up to this many characters, then cut with an ellipsis (§3.1). */
 const SERVER_NAME_LIMIT = 60;
@@ -74,7 +73,6 @@ export const guildBotCopy = {
     removing: 'Removing…',
     saved: 'Saved. Raids post here with sign-up buttons.',
     fallbackNote: 'Your webhook channel stays as the fallback if the bot is removed.',
-    readOnly: 'Members can still sign up with the buttons on posted raids and use the commands.',
     linkedMembers: (linked: number, members: number): string => {
       if (linked === 0)
         return 'No member has linked Discord yet. Members get a link when they press a button.';
@@ -148,6 +146,4 @@ export const guildBotCopy = {
     takenExpired:
       'That Discord server is linked to another guild. One server works with one guild: ask its officers to remove the bot from their guild settings, or add it to another server.',
   },
-
-  planEnded: raidCopy.races.officerToolsEnded,
 } as const;

@@ -88,9 +88,10 @@ func TestSignUpOfficerForAMemberAndTheFreeze(t *testing.T) {
 		t.Fatalf("foreign moderator ctx = %v", err)
 	}
 	w.setContested(t, false)
+	// Answering for a member is part of the free sign-ups (owner ruling 2026-11-09).
 	w.dropPlan(t)
-	if _, err := w.svcSignUp(w.cmd(raid.ID, w.officer, memberKeyA, SignupOut)); !errors.Is(err, ErrPlanRequired) {
-		t.Fatalf("no plan = %v", err)
+	if res, err := w.svcSignUp(w.cmd(raid.ID, w.officer, memberKeyA, SignupOut)); err != nil || res.Raid.Counts.Out != 1 {
+		t.Fatalf("no plan = %+v %v", res, err)
 	}
 }
 

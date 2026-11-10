@@ -1401,7 +1401,7 @@ enum Copy {
     /// Add
     static var officerAdd: String { text("officer.add") }
 
-    /// Planning and running raids are part of the guild plan.
+    /// Comp targets, Discord pings, assignments and log matching are part of the guild plan.
     static var officerGate: String { text("officer.gate") }
 
     /// Your raid night

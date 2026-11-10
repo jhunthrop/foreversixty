@@ -88,9 +88,12 @@ func (s *Service) answeredMemberRaid(w http.ResponseWriter, r *http.Request, op 
 const officerPlanForbidden = "you must be a verified officer of this guild to plan raids"
 
 // officerRaidGate runs the officer write checks in order: a verified officer or leader
-// (forbidden, with forbiddenMessage), the guild plan (guild_plan_required), and the claim
-// freeze (claim_contested).
-func (s *Service) officerRaidGate(w http.ResponseWriter, r *http.Request, op, forbiddenMessage string) (int64, bool) {
+// (forbidden, with forbiddenMessage), the guild plan when needPlan (guild_plan_required), and
+// the claim freeze (claim_contested). The raid calendar (create, edit, lock, unlock, cancel,
+// Post now) passes needPlan false: it feeds the free Discord bot's raid posts (owner ruling
+// 2026-11-09). The raid tools beyond it (comp targets, pings, assignments, log matching,
+// attendance overrides, the report post) keep the plan.
+func (s *Service) officerRaidGate(w http.ResponseWriter, r *http.Request, op, forbiddenMessage string, needPlan bool) (int64, bool) {
 	guildID, ok := guildIDFrom(r)
 	if !ok {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
@@ -105,7 +108,7 @@ func (s *Service) officerRaidGate(w http.ResponseWriter, r *http.Request, op, fo
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", forbiddenMessage, nil)
 		return 0, false
 	}
-	if !s.requireGuildPlan(w, r, guildID, auth.ActorFrom(r.Context()).UserID, entitlements.FeatureOfficerViews, refusal.RaidPlanRequired, op, raidFailMessage) {
+	if needPlan && !s.requireGuildPlan(w, r, guildID, auth.ActorFrom(r.Context()).UserID, entitlements.FeatureOfficerViews, refusal.RaidPlanRequired, op, raidFailMessage) {
 		return 0, false
 	}
 	if !s.officerNotFrozen(w, r, guildID, op, raidFailMessage) {
@@ -129,9 +132,19 @@ func (s *Service) writeRaidWriteErr(w http.ResponseWriter, r *http.Request, op s
 	return false
 }
 
-// officerRaid is officerRaidGate plus the {raid} the route names, 404 when the guild has none.
+// officerRaid is officerRaidGate with the guild plan, plus the {raid} the route names, 404 when
+// the guild has none: the raid tools.
 func (s *Service) officerRaid(w http.ResponseWriter, r *http.Request, op string) (int64, Raid, bool) {
-	guildID, ok := s.officerRaidGate(w, r, op, officerPlanForbidden)
+	return s.gatedRaid(w, r, op, true)
+}
+
+// calendarRaid is officerRaid without the plan: the free raid calendar's writes.
+func (s *Service) calendarRaid(w http.ResponseWriter, r *http.Request, op string) (int64, Raid, bool) {
+	return s.gatedRaid(w, r, op, false)
+}
+
+func (s *Service) gatedRaid(w http.ResponseWriter, r *http.Request, op string, needPlan bool) (int64, Raid, bool) {
+	guildID, ok := s.officerRaidGate(w, r, op, officerPlanForbidden, needPlan)
 	if !ok {
 		return 0, Raid{}, false
 	}
@@ -181,7 +194,7 @@ func (s *Service) writeRaidView(w http.ResponseWriter, r *http.Request, op strin
 }
 
 func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
-	guildID, ok := s.officerRaidGate(w, r, "raid_create", officerPlanForbidden)
+	guildID, ok := s.officerRaidGate(w, r, "raid_create", officerPlanForbidden, false)
 	if !ok {
 		return
 	}
@@ -228,7 +241,7 @@ func (s *Service) createRaid(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) patchRaid(w http.ResponseWriter, r *http.Request) {
-	guildID, raid, ok := s.officerRaid(w, r, "raid_update")
+	guildID, raid, ok := s.calendarRaid(w, r, "raid_update")
 	if !ok {
 		return
 	}
@@ -273,7 +286,7 @@ func (s *Service) raidStatusAction(action string) http.HandlerFunc {
 	move := raidStatusMoves[action]
 	op := "raid_" + action
 	return func(w http.ResponseWriter, r *http.Request) {
-		guildID, raid, ok := s.officerRaid(w, r, op)
+		guildID, raid, ok := s.calendarRaid(w, r, op)
 		if !ok {
 			return
 		}

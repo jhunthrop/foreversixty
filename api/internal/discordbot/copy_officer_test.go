@@ -50,8 +50,8 @@ func TestOfficerCopyMatchesTheSpec(t *testing.T) {
 		{"attendance", cell("`/attendance`"), []string{c.AttendanceTitle, c.LastRaids, c.Roster, c.OfficersOnly, c.NoMember,
 			c.NoRaids, c.AttendanceUnlinked, c.AttendanceMembers}},
 		{"readiness", cell("`/readiness`"), []string{c.ReadinessTitle + "{Title} · {Weekday} {d} {Month}", c.ReadinessLead,
-			"1 has", c.ReadinessAllReady, c.ToFix, c.ReadinessMore, c.Board, c.NotOfficer, c.ReadinessUnlinked, c.PlanLapsed,
-			c.Subscribe, c.Frozen, c.RaidGuild, c.MoveToRaidGuild, c.ReadinessNobodySigned, c.GrantedMove, c.AskUsOnDiscord}},
+			"1 has", c.ReadinessAllReady, c.ToFix, c.ReadinessMore, c.Board, c.NotOfficer, c.ReadinessUnlinked,
+			c.Frozen, c.RaidGuild, c.MoveToRaidGuild, c.ReadinessNobodySigned, c.GrantedMove, c.AskUsOnDiscord}},
 	} {
 		if strings.Join(row.got, "|") != strings.Join(row.want, "|") {
 			t.Errorf("%s: spec %q\ncopy %q", row.name, row.got, row.want)

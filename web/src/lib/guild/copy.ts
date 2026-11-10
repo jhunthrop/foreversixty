@@ -414,8 +414,7 @@ export const guildRosterModelCopy = {
 export const guildGateCopy = {
   // Spec 2026-11-05 §3.2, part 1 by feature; part 2 by viewer (lib/guild/plan-gate.ts).
   lead: {
-    raids: 'Planning raids and events is part of the Guild and Raid guild plans.',
-    discord: 'Posting to Discord is part of the Guild and Raid guild plans.',
+    raids: 'Comp targets, pings, assignments and log matching are part of the Guild and Raid guild plans.',
     loot: 'Awarding loot is part of Raid guild.',
     readiness: 'Nudge is part of Raid guild.',
   },

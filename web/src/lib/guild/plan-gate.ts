@@ -7,9 +7,9 @@ import communityLinks from '../../data/links.json';
 import type { ClaimHolder, ClaimStateView } from './api';
 import { guildGateCopy } from './copy';
 
-export type GateFeature = 'raids' | 'discord' | 'loot' | 'readiness';
+export type GateFeature = 'raids' | 'loot' | 'readiness';
 
-/** The Raid guild features; Raids and Discord come with both plans. */
+/** The Raid guild features; the raid tools come with both plans (the Discord bot is free). */
 const RAID_GUILD_FEATURES: ReadonlySet<GateFeature> = new Set(['loot', 'readiness']);
 
 const BILLING_HASH = '#billing';

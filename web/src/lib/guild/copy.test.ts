@@ -129,9 +129,8 @@ describe('guildGateCopy', () => {
     const part = (label: string, index: number): string =>
       specString(gating, '## 5. Copy, verbatim', label, index);
     expect(guildGateCopy.lead.raids).toBe(part('Gate part 1', 0));
-    expect(guildGateCopy.lead.discord).toBe(part('Gate part 1', 1));
-    expect(guildGateCopy.lead.loot).toBe(part('Gate part 1', 2));
-    expect(guildGateCopy.lead.readiness).toBe(part('Gate part 1', 3));
+    expect(guildGateCopy.lead.loot).toBe(part('Gate part 1', 1));
+    expect(guildGateCopy.lead.readiness).toBe(part('Gate part 1', 2));
     expect(guildGateCopy.startTrial).toBe(part('Gate part 2', 0));
     expect(guildGateCopy.subscribe).toBe(part('Gate part 2', 1));
     expect(guildGateCopy.moveToRaidGuild).toBe(part('Gate part 2', 2));

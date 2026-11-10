@@ -76,7 +76,7 @@ export const plansPageCopy = {
   },
   guildRegion: {
     heading: 'For guild leaders',
-    lede: 'One officer pays, and the whole guild gets raids, sign-ups and attendance. Members never pay to sign up.',
+    lede: 'The Discord bot, raid posts, sign-ups and the recruiting channel are free for every claimed guild. A plan adds the officer tools. Members never pay.',
     members:
       'Plans count verified members: players with a Forever Sixty account whose character the guild has confirmed. People in your Discord without an account do not count.',
   },
@@ -146,9 +146,9 @@ export const plansPageCopy = {
     name: 'Guild',
     audience: `For a guild of up to ${GUILD_TIER_MEMBER_LIMIT} verified members`,
     features: [
-      'Post raids on the site and in Discord; members sign up with one tap.',
+      'Raid tools on top of the free calendar: comp targets, a Discord ping for whoever has not signed, and boss assignments.',
       'See who came: attendance and a report for every raid night from its log.',
-      'The Forever Sixty bot in your Discord: raid posts with buttons, plus /bis and /char lookups.',
+      "Match each night's log to its raid, fix attendance by hand and post the night's report to Discord.",
       `${PLANS.guild.seats} Premium seat to give a member, such as your raid leader.`,
       `Up to ${GUILD_TIER_MEMBER_LIMIT} verified members, so a guild that runs ${RAID_SIZES[2]}- or ${RAID_SIZES[1]}-person raids fits under Guild. Nothing switches off if you grow past it.`,
     ],
@@ -161,7 +161,7 @@ export const plansPageCopy = {
       'Readiness board: before the pull, one list of who is missing enchants, consumables, talent points or upgrades, worst first.',
       `${PLANS.raid_guild.seats} Premium seats to give members.`,
       'Any number of members.',
-      'Everything in Guild: raids, sign-ups, attendance and the Discord bot.',
+      'Everything in Guild.',
     ],
   },
   price: {

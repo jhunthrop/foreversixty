@@ -16,7 +16,6 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
-	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
@@ -110,8 +109,9 @@ func GuildPagePath(g Guild) string {
 }
 
 // GuildStanding implements notify.GuildAccess with this package's own rules: a verified
-// officer or leader (verifiedOfficerOrLeader's), the guild plan (requireGuildPlan's,
-// asked for an officer only) and the claim freeze (freezeCheck's, no moderator bypass).
+// officer or leader (verifiedOfficerOrLeader's) and the claim freeze (freezeCheck's, no
+// moderator bypass). The Discord routes are free for any claimed guild's officers (owner
+// ruling 2026-11-09), so no plan is read.
 func (s *Service) GuildStanding(ctx context.Context, guildID, userID int64) (notify.GuildStanding, bool, error) {
 	g, err := s.Store.getGuild(ctx, guildID)
 	if errors.Is(err, ErrNotFound) {
@@ -128,12 +128,6 @@ func (s *Service) GuildStanding(ctx context.Context, guildID, userID int64) (not
 		Officer: verified && (rank == "officer" || rank == "leader"),
 		Frozen:  claimState(g, time.Now()).Frozen,
 		Name:    g.Name, Path: GuildPagePath(g),
-	}
-	if standing.Officer && s.Entitlements != nil {
-		standing.Plan, _, err = s.Entitlements.CanForGuild(ctx, guildID, userID, entitlements.FeatureOfficerViews)
-		if err != nil {
-			return notify.GuildStanding{}, false, fmt.Errorf("guilds: standing %d: plan: %w", guildID, err)
-		}
 	}
 	return standing, true, nil
 }

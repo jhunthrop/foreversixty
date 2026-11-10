@@ -150,9 +150,11 @@ func TestReadinessGateRunsOnEveryCall(t *testing.T) {
 	if _, err := w.h.svc.NextRaidReadiness(ctx, w.gid, w.officer, time.Now()); !errors.Is(err, ErrRaidGuildRequired) {
 		t.Fatalf("guild tier = %v", err)
 	}
+	// The bot is free, the board stays Raid guild: no plan reads as the Raid guild refusal.
 	w.dropPlan(t)
-	if _, err := w.h.svc.NextRaidReadiness(ctx, w.gid, w.officer, time.Now()); !errors.Is(err, ErrPlanRequired) {
-		t.Fatalf("lapsed = %v", err)
+	if _, err := w.h.svc.NextRaidReadiness(ctx, w.gid, w.officer, time.Now()); !errors.Is(err, ErrRaidGuildRequired) ||
+		errors.Is(err, ErrRaidGuildGranted) {
+		t.Fatalf("no plan = %v", err)
 	}
 	w.grantPlan(t)
 	w.setContested(t, true)

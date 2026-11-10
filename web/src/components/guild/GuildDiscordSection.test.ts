@@ -63,7 +63,6 @@ function channel(confirming: boolean, status: DiscordStatus | null = null): stri
       confirming,
       busy: null,
       status,
-      gateId: undefined,
       frozen: false,
       onTest: () => {},
       onAskRemove: () => {},
@@ -142,32 +141,17 @@ describe('GuildDiscordSection', () => {
     expect(body.indexOf('discord-replace')).toBeLessThan(body.indexOf('discord-test'));
   });
 
-  it('officer-read-only, not connected: the gate sentence, a connect link with no href', () => {
-    const body = html(NOT_CONNECTED, { officerTools: false });
-    expect(body).toContain('id="officer-tools-gate-discord"');
-    expect(text(body)).toContain('Posting to Discord is part of the Guild and Raid guild plans.');
-    expect(body).toMatch(/<a[^>]*href="#billing"[^>]*>Start the 7-day trial<\/a>/);
-    const link = tag(body, 'discord-connect');
-    expect(link).not.toContain('href=');
-    expect(link).toContain('aria-disabled="true"');
-    expect(link).toContain('tabindex="-1"');
-    expect(link).toContain('opacity-50');
-    expect(link).toContain('aria-describedby="officer-tools-gate-discord"');
-  });
-
-  it('officer-read-only, connected: tests disabled and described, Remove live', () => {
-    for (const discord of [CONNECTED, SWITCHED_OFF]) {
-      const body = html(discord, { officerTools: false });
-      const test = tag(body, 'discord-test');
-      expect(test).toContain('disabled=""');
-      expect(test).toContain('aria-describedby="officer-tools-gate-discord"');
-      expect(tag(body, 'discord-remove')).not.toContain('disabled=""');
-      expect(tag(body, 'discord-replace')).not.toContain('href=');
-    }
+  // Owner ruling 2026-11-09: the Discord section is free, so a guild with no plan gets live controls.
+  it('a guild with no plan connects and tests like any other', () => {
+    const link = tag(html(NOT_CONNECTED), 'discord-connect');
+    expect(link).toContain('href=');
+    expect(link).not.toContain('aria-disabled="true"');
+    expect(tag(html(CONNECTED), 'discord-test')).not.toContain('disabled=""');
+    expect(html(CONNECTED)).not.toContain('officer-tools-gate-discord');
   });
 
   it('frozen: every control off, Remove included, and no gate sentence', () => {
-    const body = html(CONNECTED, { frozen: true, officerTools: false });
+    const body = html(CONNECTED, { frozen: true });
     expect(body).not.toContain('officer-tools-gate-discord"');
     expect(tag(body, 'discord-test')).toContain('disabled');
     expect(tag(body, 'discord-remove')).toContain('disabled');
@@ -187,8 +171,8 @@ describe('GuildDiscordChannel', () => {
   });
 
   it('a status line is a focusable target: a failure is an alert, a success a status', () => {
-    expect(channel(false, { ok: false, message: guildDiscordCopy.planEnded })).toMatch(
-      /id="guild-discord-status" tabindex="-1"[\s\S]*role="alert"[^>]*>\s*Not saved/,
+    expect(channel(false, { ok: false, message: guildDiscordCopy.connectStuck })).toMatch(
+      /id="guild-discord-status" tabindex="-1"[\s\S]*role="alert"[^>]*>\s*Discord did not open/,
     );
     expect(channel(false, { ok: true, message: notificationsCopy.testSent })).toContain('role="status"');
   });

@@ -113,6 +113,9 @@
   }
 
   const nextPingClock = (at: Date): string => clockText(at, viewerTimezone, locale);
+  /** Owner ruling 2026-11-09: the raid calendar and the sign-ups are free for any claimed guild's
+   *  officers (they feed the free Discord bot); the plan gates only the raid tools below them. */
+  const CALENDAR_FREE = true;
   const postedWhen = (at: Date): string =>
     `${dateLabel(at, viewerTimezone, locale)}, ${clockText(at, viewerTimezone, locale)}`;
 </script>
@@ -145,7 +148,7 @@
         <RaidOfficerRow
           {raid}
           ended={flags.ended}
-          readOnly={!c.officerTools}
+          readOnly={!CALENDAR_FREE}
           busy={c.busy}
           line={c.line}
           {gateId}
@@ -248,7 +251,7 @@
         {raid}
         {grouping}
         {officer}
-        officerTools={c.officerTools}
+        officerTools={CALENDAR_FREE}
         {gateId}
         closed={flags.cancelled}
         busyKey={c.rosterBusy}
@@ -272,7 +275,6 @@
         {now}
         clock={nextPingClock}
         officerTools={c.officerTools}
-        {gateId}
         closed={flags.cancelled || flags.ended}
         busyKey={c.rosterBusy}
         pinging={c.planner.pinging}
@@ -312,7 +314,7 @@
       {#if officer && roles}
         <PlannerBench
           {raid}
-          officerTools={c.officerTools}
+          officerTools={CALENDAR_FREE}
           closed={flags.cancelled}
           busyKey={c.rosterBusy}
           onSetState={(row, state) => c.setRosterState(row, state)}

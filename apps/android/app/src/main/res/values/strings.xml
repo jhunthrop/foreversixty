@@ -418,7 +418,7 @@
     <string name="officer_move_addIn">Add as In</string>
     <string name="officer_move_addBench">Add as Bench</string>
     <string name="officer_add">Add</string>
-    <string name="officer_gate">Planning and running raids are part of the guild plan.</string>
+    <string name="officer_gate">Comp targets, Discord pings, assignments and log matching are part of the guild plan.</string>
     <string name="night_title">Your raid night</string>
     <string name="night_meta">%1$s · %2$s %3$s · %4$s</string>
     <plurals name="night_kill">
