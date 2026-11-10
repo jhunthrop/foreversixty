@@ -18,6 +18,8 @@ const (
 	botChannelsPath = botPath + "/channels"
 	botChannelPath  = botPath + "/channel"
 	botTestPath     = botPath + "/test"
+	// botRecruitChannelPath saves the channel the bot posts new applications in.
+	botRecruitChannelPath = botPath + "/recruit-channel"
 
 	installsPerMinute = 20
 	// layoutReadsPerMinute caps an account's channel list and channel save together: each
@@ -27,8 +29,12 @@ const (
 	// refusalTTL is how long an officer's "server taken" refusal waits for the next page load.
 	refusalTTL = 10 * time.Minute
 
-	botOutcomeParam = "/settings?discord_bot="
-	discordAnchor   = "#discord"
+	botOutcomeParam      = "/settings?discord_bot="
+	botSetupOutcomeParam = "/setup?discord_bot="
+	discordAnchor        = "#discord"
+	// installReturnParam names where an install returns: installReturnSetup is the checklist.
+	installReturnParam = "return"
+	installReturnSetup = "setup"
 
 	installInstalled = "installed"
 	installDenied    = "denied"
@@ -46,6 +52,7 @@ func (s *Service) mountInstall(mux *http.ServeMux) {
 	layout := httpx.RateLimitByKey(layoutReadsPerMinute, time.Minute, auth.AccountRateLimitKey)
 	mux.Handle("GET "+botChannelsPath, layout(auth.RequireSession(s.channelsList)))
 	mux.Handle("PUT "+botChannelPath, layout(auth.RequireSession(s.channelSave)))
+	mux.Handle("PUT "+botRecruitChannelPath, layout(auth.RequireSession(s.recruitChannelSave)))
 	mux.Handle("POST "+botTestPath, test(auth.RequireSession(s.botTest)))
 	mux.HandleFunc("DELETE "+botPath, auth.RequireSession(s.botRemove))
 }
@@ -135,19 +142,25 @@ func (s *Service) installView(ctx context.Context, guildID int64) (*guilds.Setti
 	}
 	return &guilds.SettingsBot{
 		ServerID: in.ServerID, ServerName: in.ServerName, ChannelID: in.ChannelID, ChannelName: in.ChannelName,
+		RecruitChannelID: in.RecruitChannelID, RecruitChannelName: in.RecruitChannelName,
 		LinkedMembers: linked, Members: members, Failures: in.Failures, LastError: in.LastError,
 		RemovedInDiscord: in.RemovedInDiscord, ChannelUnusable: unusableView(in.ChannelUnusable),
 	}, nil
 }
 
-// installStart sends a verified officer to Discord's install page.
+// installStart sends a verified officer to Discord's install page; ?return=setup brings the
+// install back to the guild's setup checklist.
 func (s *Service) installStart(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
 	guildID, _, ok := s.officer(w, r)
 	if !ok {
 		return
 	}
-	state, err := s.d.Notify.StartState(r.Context(), notify.StateKindBotInstall, auth.ActorFrom(r.Context()).UserID, &guildID)
+	kind := notify.StateKindBotInstall
+	if r.URL.Query().Get(installReturnParam) == installReturnSetup {
+		kind = notify.StateKindBotInstallSetup
+	}
+	state, err := s.d.Notify.StartState(r.Context(), kind, auth.ActorFrom(r.Context()).UserID, &guildID)
 	if err != nil {
 		s.internalError(w, r, "install state", err)
 		return
@@ -155,20 +168,23 @@ func (s *Service) installStart(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, s.d.OAuth.InstallURL(state), http.StatusFound)
 }
 
-// installCallback finishes an install at the shared callback. The code never leaves the
-// exchange; only the server's id and name are kept.
-func (s *Service) installCallback(w http.ResponseWriter, r *http.Request, cs notify.ConnectState) {
-	httpx.CachePrivateNoStore(w)
-	standing, found, err := s.d.Guilds.GuildStanding(r.Context(), cs.GuildID, cs.UserID)
-	if err != nil {
-		s.logFailure(r, "install standing", err)
+// installCallback finishes an install at the shared callback, returning to the guild page's
+// back (settings or the setup checklist) with the outcome. The code never leaves the exchange;
+// only the server's id and name are kept.
+func (s *Service) installCallback(back string) notify.StateHandler {
+	return func(w http.ResponseWriter, r *http.Request, cs notify.ConnectState) {
+		httpx.CachePrivateNoStore(w)
+		standing, found, err := s.d.Guilds.GuildStanding(r.Context(), cs.GuildID, cs.UserID)
+		if err != nil {
+			s.logFailure(r, "install standing", err)
+		}
+		if err != nil || !found {
+			http.Redirect(w, r, s.d.PublicBaseURL+"/", http.StatusFound)
+			return
+		}
+		outcome := s.installOutcome(r, cs, standing)
+		http.Redirect(w, r, s.d.PublicBaseURL+standing.Path+back+outcome+discordAnchor, http.StatusFound)
 	}
-	if err != nil || !found {
-		http.Redirect(w, r, s.d.PublicBaseURL+"/", http.StatusFound)
-		return
-	}
-	outcome := s.installOutcome(r, cs, standing)
-	http.Redirect(w, r, s.d.PublicBaseURL+standing.Path+botOutcomeParam+outcome+discordAnchor, http.StatusFound)
 }
 
 func (s *Service) installOutcome(r *http.Request, cs notify.ConnectState, standing notify.GuildStanding) string {

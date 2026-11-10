@@ -167,6 +167,7 @@ func (s *Service) apply(w http.ResponseWriter, r *http.Request) {
 	}
 	s.logger().Info("guilds", "op", "apply", "guild_id", guildID, "user_id", actor.UserID, "application_id", a.ID)
 	s.publishApplicant(r.Context(), guildID, a)
+	s.postApplication(r.Context(), guildID, a)
 	httpx.WriteOK(w, r, http.StatusCreated, a)
 }
 

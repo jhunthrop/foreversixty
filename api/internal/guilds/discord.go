@@ -50,15 +50,19 @@ type SettingsDiscord struct {
 
 // SettingsBot is settings.discord.bot.
 type SettingsBot struct {
-	ServerID         string  `json:"server_id"`
-	ServerName       string  `json:"server_name"`
-	ChannelID        *string `json:"channel_id"`
-	ChannelName      *string `json:"channel_name"`
-	LinkedMembers    int     `json:"linked_members"`
-	Members          int     `json:"members"`
-	Failures         int     `json:"failures"`
-	LastError        *string `json:"last_error"`
-	RemovedInDiscord bool    `json:"removed_in_discord"`
+	ServerID    string  `json:"server_id"`
+	ServerName  string  `json:"server_name"`
+	ChannelID   *string `json:"channel_id"`
+	ChannelName *string `json:"channel_name"`
+	// RecruitChannelID and RecruitChannelName are where the bot posts new applications; null
+	// until an officer picks one.
+	RecruitChannelID   *string `json:"recruit_channel_id"`
+	RecruitChannelName *string `json:"recruit_channel_name"`
+	LinkedMembers      int     `json:"linked_members"`
+	Members            int     `json:"members"`
+	Failures           int     `json:"failures"`
+	LastError          *string `json:"last_error"`
+	RemovedInDiscord   bool    `json:"removed_in_discord"`
 	// ChannelUnusable is null while the bot can post in its channel.
 	ChannelUnusable *ChannelUnusable `json:"channel_unusable"`
 }

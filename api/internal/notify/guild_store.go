@@ -139,7 +139,10 @@ type ConnectState struct {
 const (
 	StateKindGuildWebhook = "guild_webhook"
 	StateKindBotInstall   = "bot_install"
-	StateKindLink         = "link"
+	// StateKindBotInstallSetup is a bot install started from the guild's setup checklist: its
+	// return lands on the checklist instead of settings.
+	StateKindBotInstallSetup = "bot_install_setup"
+	StateKindLink            = "link"
 	// StateKindLinkedRole is the Discord Linked Roles verification (package linkedrole).
 	StateKindLinkedRole = "linked_role"
 )

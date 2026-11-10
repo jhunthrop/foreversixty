@@ -135,7 +135,7 @@ func (h *installHarness) callback(guildID int64, query string, actor auth.Actor)
 	req := httptest.NewRequest(http.MethodGet, "/v1/notifications/discord/callback?"+query, nil)
 	req = req.WithContext(auth.WithActor(req.Context(), actor))
 	rec := httptest.NewRecorder()
-	h.svc.installCallback(rec, req, cs)
+	h.svc.installCallback(botOutcomeParam)(rec, req, cs)
 	return rec.Header().Get("Location")
 }
 
