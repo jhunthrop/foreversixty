@@ -21,12 +21,15 @@ const GROUND = '#07090d';
 /** The seal's ring spans 88% of its canvas. Android's adaptive mask keeps a centred circle of
  *  66/108 of the canvas, so the foreground seal is sized to sit inside it. */
 const ANDROID_SEAL_RATIO = 0.6;
-/** The painted seal's outer edge (ring radius plus half its stroke) spans 93% of its canvas;
- *  the flat seal fills its own, so it is drawn at this share to sit where the painted one does. */
-const FLAT_SEAL_RATIO = 0.93;
+/** The flat seal fills its own canvas edge to edge; on the dark and tinted icons it keeps a 7.5%
+ *  margin inside the mask so it sits at the painted icon's optical size. */
+const FLAT_SEAL_RATIO = 0.85;
 /** Tinted icons are greyscale: the levels stretch the flat seal's outline (#170E09, luma 16) to
- *  black and its gold (#C9A465, luma 168) to white, so the tint lands on the ring and the LX. */
-const TINT_LEVELS = { black: 16, white: 168 };
+ *  black and its gold (#C9A465, luma 168) to white, so the tint lands on the ring and the LX; the
+ *  curve sets the turquoise disc (luma 112) to a mid grey, apart from both the LX and the outline. */
+const TINT_LEVELS = { black: 16, white: 168, curve: 1.6 };
+/** Rec. 601 luma weights, the ones the levels above are measured in. */
+const LUMA = [0.299, 0.587, 0.114];
 const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
 
 const renderSeal = (diameter) =>
@@ -58,13 +61,18 @@ async function iosDark(file) {
 
 /** Apple's tinted icons are a greyscale image on a transparent ground; the system tints it. */
 async function iosTinted(file) {
-  const { black, white } = TINT_LEVELS;
-  const gain = 255 / (white - black);
-  const seal = await sharp(await renderFlatSeal(Math.round(SIZE * FLAT_SEAL_RATIO)))
-    .greyscale()
-    .linear(gain, -black * gain)
-    .png()
-    .toBuffer();
+  const { black, white, curve } = TINT_LEVELS;
+  const { data, info } = await sharp(await renderFlatSeal(Math.round(SIZE * FLAT_SEAL_RATIO)))
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const grey = Buffer.alloc(data.length);
+  for (let i = 0; i < data.length; i += 4) {
+    const luma = LUMA[0] * data[i] + LUMA[1] * data[i + 1] + LUMA[2] * data[i + 2];
+    const level = Math.round(Math.min(1, Math.max(0, (luma - black) / (white - black))) ** curve * 255);
+    grey.set([level, level, level, data[i + 3]], i);
+  }
+  const seal = await sharp(grey, { raw: info }).png().toBuffer();
   await transparentCanvas()
     .composite([{ input: seal, gravity: 'center' }])
     .png()

@@ -84,15 +84,7 @@ async function notificationSection(top) {
       left: bx + 190,
       top: y + 46,
     });
-    svg.push(
-      text(
-        bx + 280,
-        y + 96,
-        '(two pushes, xxhdpi, actual size)',
-        18,
-        ink === '#ffffff' ? '#9a9a9a' : '#5f5f5f',
-      ),
-    );
+    svg.push(text(bx + 280, y + 96, 'xxhdpi', 18, ink === '#ffffff' ? '#9a9a9a' : '#5f5f5f'));
     y += 170;
   }
   // The expanded shade header: the icon in the turquoise accent with the app name.
@@ -187,7 +179,7 @@ async function themedSection(top) {
       '#c9c6c0',
     ),
   );
-  svg.push(text(px + proof + 24, py + 68, 'The seal is 64 dp across, centred.', 18, '#c9c6c0'));
+  svg.push(text(px + proof + 24, py + 68, 'Seal: 64 dp.', 18, '#c9c6c0'));
   return { svg: svg.join(''), parts, bottom: py + proof + 30 };
 }
 
@@ -247,9 +239,9 @@ async function iosSection(top) {
   ];
   const parts = [];
   const screens = [
-    ['light', 'Any (light): painted seal, unchanged', ['#cfd9e6', '#9fb3cc'], '#1d1d1f'],
-    ['dark', 'Dark: flat seal on transparent', ['#1d2433', '#05070b'], '#f2f2f7'],
-    ['tinted', 'Tinted: greyscale flat seal, amber tint', ['#3a2e1c', '#0d0a06'], '#f2e6cf'],
+    ['light', 'Any', ['#cfd9e6', '#9fb3cc'], '#1d1d1f'],
+    ['dark', 'Dark', ['#1d2433', '#05070b'], '#f2f2f7'],
+    ['tinted', 'Tinted (system tint simulated in amber)', ['#3a2e1c', '#0d0a06'], '#f2e6cf'],
   ];
   const w = 500;
   const h = 540;
