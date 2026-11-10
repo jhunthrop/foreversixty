@@ -51,14 +51,15 @@ describe('summaryEvents', () => {
     // Ashfang's Bite at 1.5s is now the fight's earliest cast, ahead of Morrowlyn's
     // Frostbolt: a pet's cast row sorts into the timeline by its own timestamp same
     // as any other caster's.
-    expect(events.find((event) => event.kind === 'cast')?.text).toBe('Ashfang cast Bite');
+    expect(events.find((event) => event.kind === 'cast')?.text).toBe('Ashfang casts Bite');
     // The first aura of the fight is one the engine seeds from Baelgrim's COMBATANT_INFO
     // snapshot, which carries spell ids and no names, so it is filed under its id. The
     // Fortitude the priest casts four seconds in is still in the list behind it.
-    expect(events.find((event) => event.kind === 'aura-applied')?.text).toBe('Spell #17 on Baelgrim');
+    expect(events.find((event) => event.kind === 'aura-applied')?.text).toBe('Baelgrim gains Spell #17');
     expect(
       events.some(
-        (event) => event.kind === 'aura-applied' && event.text === 'Power Word: Fortitude on Baelgrim',
+        (event) =>
+          event.kind === 'aura-applied' && event.text.startsWith('Baelgrim gains Power Word: Fortitude'),
       ),
     ).toBe(true);
   });
@@ -74,13 +75,14 @@ describe('summaryEvents', () => {
       ],
     };
     const lines = summaryEvents({ ...summary, auras: [track] })
-      .filter((event) => event.text.startsWith('Wicked Gash'))
+      .filter((event) => event.spellName === 'Wicked Gash')
       .map((event) => `${event.atMs} ${event.text}`);
     const target = track.target_name.split('-')[0];
+    const verb = track.type === 'DEBUFF' ? 'is afflicted by' : 'gains';
     expect(lines).toEqual([
-      `1000 Wicked Gash on ${target}`,
-      `2000 Wicked Gash at 2 stacks on ${target}`,
-      `4000 Wicked Gash off ${target}`,
+      `1000 ${target} ${verb} Wicked Gash`,
+      `2000 ${target} ${verb} Wicked Gash (2)`,
+      `4000 Wicked Gash fades from ${target}`,
     ]);
   });
 
@@ -99,11 +101,34 @@ describe('summaryEvents', () => {
       ['Player-B', 'Reglitch-Realm'],
     ]);
     const applied = summaryEvents({ ...summary, auras: [track] }, names)
-      .filter((event) => event.kind === 'aura-applied' && event.text.startsWith('Power Word: Shield'))
+      .filter((event) => event.kind === 'aura-applied' && event.spellName === 'Power Word: Shield')
       .map((event) => event.text);
+    const verb = track.type === 'DEBUFF' ? 'is afflicted by' : 'gains';
     expect(applied).toEqual([
-      `Power Word: Shield on ${track.target_name.split('-')[0]} by Reglitch`,
-      `Power Word: Shield on ${track.target_name.split('-')[0]} by Hanabanana`,
+      `${track.target_name.split('-')[0]} ${verb} Power Word: Shield from Reglitch`,
+      `${track.target_name.split('-')[0]} ${verb} Power Word: Shield from Hanabanana`,
+    ]);
+  });
+
+  it('folds one aura landing on several units in the same instant into one line', () => {
+    const base = summary.auras[0]!;
+    const hit = (guid: string, name: string) => ({
+      ...base,
+      type: 'DEBUFF',
+      name: 'Thunder Clap',
+      spell_id: 8198,
+      target_guid: guid,
+      target_name: name,
+      appliers: ['Player-W'],
+      segments: [{ start_ms: 1500, end_ms: 9000, stacks: 1, source_guid: 'Player-W' }],
+    });
+    const lines = summaryEvents(
+      { ...summary, auras: [hit('Creature-1', 'Saltspine'), hit('Creature-2', 'Marsh Skulker')] },
+      new Map([['Player-W', 'Kell-Realm']]),
+    ).filter((event) => event.spellName === 'Thunder Clap');
+    expect(lines.map((event) => event.text)).toEqual([
+      'Saltspine and Marsh Skulker are afflicted by Thunder Clap from Kell',
+      'Thunder Clap fades from Saltspine and Marsh Skulker',
     ]);
   });
 });

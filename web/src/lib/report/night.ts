@@ -706,9 +706,12 @@ function mergeCounts(
  * The rail's facts over a combined view (round 5 b1-report-night, `The night`): the pulls, the
  * kills and wipes (boss pulls only), the time in combat and the deaths.
  */
-export function nightFacts(night: Night, trash: boolean): Fact[] {
+export function nightFacts(night: Night, trash: boolean, trashPulls = 0): Fact[] {
   const kills = night.bosses.reduce((sum, boss) => sum + boss.kills, 0);
   const wipes = night.bosses.reduce((sum, boss) => sum + boss.wipes, 0);
+  const fastest = night.bosses
+    .filter((boss) => boss.best !== undefined)
+    .sort((a, b) => (a.best?.duration_ms ?? 0) - (b.best?.duration_ms ?? 0))[0];
   return [
     { id: 'pulls', label: trash ? 'Trash pulls' : 'Boss pulls', value: String(night.expected) },
     ...(trash
@@ -716,6 +719,17 @@ export function nightFacts(night: Night, trash: boolean): Fact[] {
       : [
           { id: 'kills', label: 'Kills', value: String(kills) },
           { id: 'wipes', label: 'Wipes', value: String(wipes) },
+          ...(fastest?.best === undefined
+            ? []
+            : [
+                {
+                  id: 'fastest',
+                  label: 'Fastest kill',
+                  value: formatDuration(fastest.best.duration_ms),
+                  sub: fastest.name,
+                },
+              ]),
+          ...(trashPulls > 0 ? [{ id: 'trash', label: 'Trash pulls', value: String(trashPulls) }] : []),
         ]),
     { id: 'combat', label: 'In combat', value: formatDuration(night.time_ms) },
     { id: 'deaths', label: 'Deaths', value: String(night.deaths) },

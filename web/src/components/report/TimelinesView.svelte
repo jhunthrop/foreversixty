@@ -72,7 +72,13 @@
 
   /** Which marks the lanes draw (the Show chips); every kind on by default. */
   type MarkKind = 'cast' | 'buff' | 'debuff' | 'death' | 'taunt';
-  let shown = $state<Record<MarkKind, boolean>>({ cast: true, buff: true, debuff: true, death: true, taunt: true });
+  let shown = $state<Record<MarkKind, boolean>>({
+    cast: true,
+    buff: true,
+    debuff: true,
+    death: true,
+    taunt: true,
+  });
   function toggleMark(id: string): void {
     if (id in shown) shown = { ...shown, [id]: !shown[id as MarkKind] };
   }
@@ -308,7 +314,7 @@
     { id: 'buff', label: 'Buffs', swatch: 'color-mix(in srgb, var(--color-kill) 60%, transparent)' },
     { id: 'debuff', label: 'Debuffs', swatch: 'color-mix(in srgb, var(--color-wipe) 60%, transparent)' },
     { id: 'death', label: 'Deaths', swatch: 'var(--color-death)' },
-    { id: 'taunt', label: 'Taunts', swatch: 'var(--color-gold)' },
+    { id: 'taunt', label: 'Taunts', swatch: 'var(--color-accent)' },
   ];
   const chips = $derived(
     MARKS.filter((mark) => mark.id !== 'taunt' || windowedTaunts.length > 0).map((mark) => ({
@@ -379,7 +385,7 @@
             {/each}
           </ul>
           <div class="min-w-0 overflow-x-auto">
-            <div class="relative min-w-[560px] md:min-w-0" aria-hidden="true">
+            <div class="relative" aria-hidden="true">
               {#each phaseStarts as phase (phase.name + phase.start_ms)}
                 <span
                   class="pointer-events-none absolute inset-y-0 z-[1] w-0 border-l border-dashed"
@@ -421,7 +427,7 @@
                       {/each}
                       {#each shown.taunt ? lane.taunts : [] as taunt (tauntKey(taunt))}
                         <span
-                          class="bg-gold absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
+                          class="bg-accent absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
                           style:left="{pct(taunt.at_ms)}%"
                           data-testid="taunt-mark"
                           title={`Taunt · ${formatDuration(taunt.at_ms)} · by ${splitUnitName(taunt.source_name).name}`}
@@ -478,7 +484,7 @@
                       {/each}
                       {#each shown.taunt ? lane.taunts : [] as taunt (tauntKey(taunt))}
                         <span
-                          class="bg-gold absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
+                          class="bg-accent absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
                           style:left="{pct(taunt.at_ms)}%"
                           data-testid="taunt-mark"
                           title={`Taunt · ${formatDuration(taunt.at_ms)} · on ${splitUnitName(taunt.target_name).name}`}

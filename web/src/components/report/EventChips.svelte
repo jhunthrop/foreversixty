@@ -15,7 +15,9 @@
     onPatch?: (patch: { eventsOff?: string[] }) => void;
   } = $props();
 
-  const chips = $derived(EVENT_CHIPS.map((chip) => ({ id: chip.id, label: chip.label, on: chipOn(chip, off) })));
+  const chips = $derived(
+    EVENT_CHIPS.map((chip) => ({ id: chip.id, label: chip.label, on: chipOn(chip, off) })),
+  );
   function toggle(id: string): void {
     const chip = EVENT_CHIPS.find((one) => one.id === id);
     if (chip !== undefined) onPatch({ eventsOff: toggleChip(chip, off) });

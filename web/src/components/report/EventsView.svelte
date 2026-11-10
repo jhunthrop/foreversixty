@@ -83,6 +83,14 @@
     stream = null;
     streamError = '';
   });
+  // The hits and heals are what a log is read for: on a single pull they load as the tab opens,
+  // once per window, and the button stays for a retry after a failed load.
+  let asked: Summary | null = null;
+  $effect(() => {
+    if (loadStream === undefined || stream !== null || streaming || asked === summary) return;
+    asked = summary;
+    void runStream();
+  });
   async function runStream(): Promise<void> {
     if (loadStream === undefined) return;
     streaming = true;
@@ -128,17 +136,18 @@
     all.filter((event) => event.kind === 'damage' || event.kind === 'heal').length,
   );
 
-  const COLUMNS: readonly StatColumn[] = [
+  /** Amount only while a line on the page carries one: a column of dashes says nothing. */
+  const withAmounts = $derived(shown.some((event) => event.amount !== undefined));
+  const columns = $derived<StatColumn[]>([
     { id: 'time', label: 'Time' },
-    { id: 'amount', label: 'Amount' },
-  ];
+    ...(withAmounts ? [{ id: 'amount', label: 'Amount' }] : []),
+  ]);
   const DASH: StatFigure = { value: '–', muted: true };
 
   function figuresOf(event: SummaryEvent): StatFigure[] {
-    return [
-      { value: formatDuration(event.atMs) },
-      event.amount === undefined ? DASH : { value: formatAmount(event.amount) },
-    ];
+    const time = { value: formatDuration(event.atMs) };
+    if (!withAmounts) return [time];
+    return [time, event.amount === undefined ? DASH : { value: formatAmount(event.amount) }];
   }
 
   /** A player's name in their class colour; an enemy's in the line's own colour. */
@@ -151,13 +160,7 @@
   }
 </script>
 
-<Section
-  title="Events"
-  meta={`${matching.length.toLocaleString()} in this window`}
-  testid="events-view"
-  panel
-  flush
->
+<Section title="Events" meta={`${matching.length.toLocaleString()} lines`} testid="events-view" panel flush>
   <div class="flex flex-col">
     <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 pb-3 md:px-5">
       <EventChips {off} {onPatch} />
@@ -179,7 +182,7 @@
       {#if shown.length === 0}
         <p class="text-muted px-4 py-4 text-[14px] md:px-5" data-testid="table-empty">No rows matched.</p>
       {:else}
-        <StatTable columns={COLUMNS} nameHead="Event" bar={false} dense label="Events" testid="event-list">
+        <StatTable {columns} nameHead="Event" bar={false} dense label="Events" testid="event-list">
           {#each shown as event, index (`${event.atMs}-${index}`)}
             <StatRow figures={figuresOf(event)} bar={false}>
               {#snippet icon()}{#if event.spellId !== undefined}<SpellIcon
@@ -213,17 +216,17 @@
 
     <p class="text-muted border-line-soft border-t px-4 pt-[10px] pb-[14px] text-[13px] leading-5 md:px-5">
       {#if stream === null}
-        Hits and heals: only those before a death.{#if loadStream !== undefined}
-          <button
+        Hits and heals: only those before a death.{#if loadStream !== undefined}<button
             type="button"
-            class={`${LINK} inline-flex min-h-11 items-center md:min-h-0 ${streaming ? BUSY_CLASS : ''}`}
+            class={`${LINK} ml-1 inline-flex min-h-11 items-center md:min-h-0 ${streaming ? BUSY_CLASS : ''}`}
             data-testid="events-stream"
             disabled={streaming}
             aria-busy={streaming}
-            onclick={() => void runStream()}>Load every hit and heal</button
+            onclick={() => void runStream()}
+            >{streaming ? 'Loading every hit and heal' : 'Load every hit and heal'}</button
           >{/if}
       {:else}
-        Every hit and heal: <span class="tabular-nums">{streamedCount.toLocaleString()}</span> lines.
+        Every hit and heal in the window: <span class="tabular-nums">{streamedCount.toLocaleString()}</span>.
       {/if}
       {#if streamError !== ''}<span class="text-wipe" role="alert">{streamError}</span>{/if}
     </p>

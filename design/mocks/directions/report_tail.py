@@ -53,7 +53,7 @@ def tab_events() -> tuple[str, str]:
     head = (f'<div class="evh">{chips([(t, True) for t in SHOW])}'
             '<div class="fld"><input placeholder="Find a name, spell or amount"></div></div>')
     more = len(evs) - EVENT_ROWS
-    foot = (f'<div class="more"><a class="btn2" href="#">Show 100 more</a><span>{more:,} more</span></div>'
+    foot = (f'<div class="more"><a class="btn2" href="#">Show 50 more</a><span>{more:,} more</span></div>'
             '<p class="foot1">Hits and heals: only those before a death. <a href="#">Load every hit and heal</a></p>')
     body = head + table([('Time', False), ('Event', False), ('Amount', True)], rows) + foot
     return panel('Events', body, meta=f'{len(evs):,} in this window', flush=True), RB.this_pull(src)
@@ -112,7 +112,7 @@ def tab_dispels() -> tuple[str, str]:
 
 def tab_interrupts() -> tuple[str, str]:
     rows = kick_rows('interrupts')
-    body = table([('Who, with what', False), ('Count', True)], rows) if rows else '<p class="empty">Nothing interrupted this pull.</p>'
+    body = table([('Who, with what', False), ('Count', True)], rows) if rows else '<p class="empty">No interrupts this pull. No enemy cast had a cast bar.</p>'
     return panel('Interrupts', body, meta=f'{sum(int(r[1]) for r in rows)} this pull'), RB.this_pull('Your group') + enemy_casts()
 
 
@@ -154,7 +154,10 @@ def night() -> tuple[str, str, str]:
     main = (panel('Players', table(heads, prow, sort='Damage', hide_phone={4, 5, 6}), meta='across every boss pull', flush=True, framed=True)
             + panel('Bosses', table([('Boss', False), ('Pulls', True), ('Kills', True), ('Wipes', True), ('Time', True), ('Deaths', True)], brow,
                                     hide_phone={3, 4}), flush=True))
+    fastest = min((b['best'] for b in by_boss.values() if b['best']), default=None)
+    trash = sum(1 for f in R.meta['fights'] if f['kind'] != 'encounter')
     rail = panel('The night', facts([('Boss pulls', str(len(bosses))), ('Kills', str(kills)), ('Wipes', str(len(bosses) - kills)),
+                                     ('Fastest kill', L.mmss(fastest) if fastest else '&ndash;'), ('Trash pulls', str(trash)),
                                      ('In combat', L.mmss(time_ms)), ('Deaths', str(deaths))]))
     meta = f'{escape(R.zone)} &middot; All boss pulls &middot; {len(bosses)} pulls &middot; {kills} kills &middot; {L.mmss(time_ms)}'
     return main, rail, meta
@@ -188,16 +191,17 @@ def ratings_page() -> str:
     weights = table([('Component', False), ('DPS', True), ('Healer', True), ('Tank', True)],
                     [[f'<span class="pc"><span><span class="nm" style="color:#fff">{c}</span><span class="sb">{d}</span></span></span>', str(a), str(b), str(t)]
                      for c, a, b, t, d in WEIGHTS])
-    rating = ('<div class="rt">' + facts([('Latest fight', '<b style="color:var(--gold);font-size:22px">65</b> of 100'), ('Last 6 fights', 'Up 25'),
+    rating = ('<div class="rt">' + facts([('Latest fight', '<b style="color:var(--gold);font-size:22px">65</b> of 100'),
+                                          ('Last 6 fights', '40 &middot; 45 &middot; 50 &middot; 55 &middot; 60 &middot; 65'),
                                           ('Weakest part', 'Activity')]) + '</div>'
-              '<p class="foot1" style="padding:12px 0 0">Public reports only. An early avoidable death caps a fight at 40.</p>')
+              '<p class="foot1" style="padding:12px 0 0">Rated from public reports only. An early avoidable death caps a fight at 40.</p>')
     rules = row_list([('', 'Ranked', '20 or more kills of the encounter, spec and kill speed: against your spec', ''),
                       ('', 'Absolute', 'Fewer: against the encounter’s own numbers', ''),
                       ('', 'Wipes', 'Survival and Mechanics only', '')])
-    main = (panel('Forever Score', parts, meta='Sample', flush=True, ornate=True) + panel('Performance Rating', rating, framed=True)
-            + panel('Weights, by role', weights, meta='Guild officers can change these', flush=True) + panel('How a fight is judged', rules))
-    tiers = row_list([('', f'<span style="color:{c}">{n}</span>', r, 'Sample' if n == 'Epic' else '') for n, r, c in TIERS])
-    rail = panel('Tiers', tiers, framed=True) + panel('Get your logs here', '<p class="empty">The companion uploads your combat log as you play.</p>'
+    main = (panel('Forever Score', parts, meta='Sample raider, after raids open', flush=True, framed=True) + panel('Performance Rating', rating)
+            + panel('Weights, by role', weights, meta='Defaults; guild officers can change them', flush=True) + panel('How a fight is judged', rules))
+    tiers = row_list([('', f'<span style="color:{c}">{n}</span>', r, 'Sample<br>170 to Legendary' if n == 'Epic' else '') for n, r, c in TIERS])
+    rail = panel('Tiers', tiers) + panel('Get your logs here', '<p class="empty">The companion uploads your combat log as you play.</p>'
                                                       '<a class="btn" href="#">Get the companion</a>')
     right = '<b class="num" style="color:#a335ee">1,830</b> of 2,100 &middot; Epic'
     band = titlebar(None, 'Forever Score and ratings', 'Most to gain: Gear, 88 below its top', right=right,

@@ -40,6 +40,16 @@
     min-height: 44px;
   }
 }
+/* A phone keeps a short row on one line: tighter chips, never one left alone on a second row. */
+@media (max-width: 767px) {
+  .ui-chips {
+    gap: 6px;
+  }
+  .ui-chip {
+    padding: 0 9px;
+    gap: 6px;
+  }
+}
 .ui-chip-swatch {
   flex: none;
   width: 10px;

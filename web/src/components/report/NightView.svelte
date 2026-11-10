@@ -18,6 +18,7 @@
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
   import ClassIcon from './ClassIcon.svelte';
+  import CopyCsv from './CopyCsv.svelte';
 
   let {
     night,
@@ -66,6 +67,15 @@
     ].join(' · '),
   );
 
+  const csvLines = (): string[][] => [
+    ['Player', 'Class', ...PLAYER_COLUMNS.map((column) => column.label)],
+    ...players.map((player) => [
+      unitLabel(player.name).text,
+      specCell(player, unitClasses).text,
+      ...playerFigures(player).map((figure) => figure.value),
+    ]),
+  ];
+
   function playerFigures(player: NightPlayer): StatFigure[] {
     return [
       { value: String(player.fights) },
@@ -94,7 +104,8 @@
   }
 </script>
 
-<Section title="Players" {meta} metaTestid="night-summary" testid="night-view" panel frame="framed" flush>
+<Section title="Players" {meta} metaTestid="night-summary" testid="night-view" panel flush>
+  {#snippet head()}<CopyCsv lines={csvLines} inHead />{/snippet}
   <div>
     <StatTable columns={PLAYER_COLUMNS} nameHead="Player" bar={false} label="Players" testid="night-players">
       {#each players as player (player.guid)}
@@ -133,11 +144,11 @@
           testid={`night-boss-${boss.name}`}
         >
           {#snippet name()}<b class="text-strong">{boss.name}</b>{/snippet}
-          {#snippet sub()}{bossSub(boss)} · {#each boss.fights as index, i (index)}<button
+          {#snippet sub()}{bossSub(boss)} · {#each boss.fights as index (index)}<button
                 type="button"
                 class="text-gold mr-2 hover:underline"
                 title="Open this pull"
-                onclick={() => onSelect(index)}>#{i + 1}</button
+                onclick={() => onSelect(index)}>Pull {index}</button
               >{/each}{/snippet}
         </StatRow>
       {/each}

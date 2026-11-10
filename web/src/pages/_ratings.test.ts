@@ -83,7 +83,11 @@ describe('/ratings', () => {
       expect(html).toContain(`>${component.label}<`);
       expect(html).toContain(`>${COMPONENT_MAX[component.key as keyof typeof COMPONENT_MAX]}<`);
     }
-    for (const component of scoreCopy.components) expect(html).toContain(component.moves);
+    for (const component of scoreCopy.components) {
+      expect(html).toContain(
+        ratingsPageCopy.parts[component.key].replace(/’/g, '&#39;').replace('&#39;', '’'),
+      );
+    }
   });
 
   it('says how parses rank in plain words, never "percentile"', () => {
@@ -108,7 +112,8 @@ describe('/ratings', () => {
     }
     expect(tiers).toMatch(/data-current="true"[^>]*style="--tier: var\(--color-rarity-epic\)/);
     expect(tiers).toContain('The sample');
-    expect(tiers).toContain(scoreCopy.tiersNote);
+    expect(tiers).toContain('170 to Legendary');
+    expect(tiers).not.toContain(scoreCopy.tiersNote);
   });
 
   it('says how logs get here, with a "Get the companion" button', () => {
@@ -120,21 +125,18 @@ describe('/ratings', () => {
 
   it('shows the rating sample as three figures: 65 of 100, the last six fights, the weakest part', () => {
     const sample = text(
-      /data-testid="ratings-rating-sample"[\s\S]*?<\/svg>[\s\S]*?Weakest part<\/span>[\s\S]*?<\/span>/.exec(
-        html,
-      )?.[0] ?? '',
+      /data-testid="ratings-rating-sample"[\s\S]*?Weakest part<\/span>[\s\S]*?<\/span>/.exec(html)?.[0] ?? '',
     );
     expect(sample).toContain('65');
     expect(sample).toContain(ratingCopy.outOf100);
     expect(sample).toContain('Last 6 fights');
+    expect(sample).toContain('40 · 45 · 50 · 55 · 60 · 65');
     expect(sample).toContain('Up 25 since the first');
     expect(sample).toMatch(/Weakest part\s*Activity/);
   });
 
   it('says "ranked against players of your spec", never "percentile", in the rating copy', () => {
-    const rating = text(
-      [section('performance-rating'), section('how-a-fight-is-judged')].join(' '),
-    );
+    const rating = text([section('performance-rating'), section('how-a-fight-is-judged')].join(' '));
     expect(rating).not.toMatch(/percentile/i);
     expect(rating).toContain('ranked against players of your spec');
     expect(rating).toContain(ratingsPageCopy.visibility);
@@ -143,8 +145,10 @@ describe('/ratings', () => {
   it('weighs the six components by role, each with what it measures, then how a fight is judged', () => {
     const weights = section('weights-by-role');
     for (const row of WEIGHTS) {
-      // the phone line repeats the three after the primary figure
-      expect(text(weights)).toContain(`${row.dps} ${row.dps} / ${row.healer} / ${row.tank} ${row.healer} ${row.tank}`);
+      // the phone line names the healer and tank weights; the primary figure is the DPS one
+      expect(text(weights)).toContain(
+        `Healer ${row.healer} · Tank ${row.tank} ${row.dps} DPS ${row.healer} ${row.tank}`,
+      );
     }
     for (const { part, body } of ratingsPageCopy.components) {
       expect(weights).toContain(body);

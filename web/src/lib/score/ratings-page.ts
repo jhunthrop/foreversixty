@@ -34,34 +34,30 @@ export const WEIGHTS: readonly RoleWeights[] = [
 ];
 
 export const ratingsPageCopy = {
-  visibility: 'A rating comes only from a public report. There is no leaderboard of ratings.',
+  visibility: 'Rated from public reports only.',
+  /** One line per Performance Rating component: what it judges. */
   components: [
-    {
-      part: 'Output',
-      body: "Damage or healing done. For a DPS spec the simulator models, Output is judged against what the fight could have been with your gear: rotation, GCD use and cooldown timing, not the raw number on the meter. A healer's Output counts effective healing only, so overheal never adds to it. A tank's Output carries little weight: holding threat and staying alive are the job.",
-    },
-    {
-      part: 'Survival',
-      body: "Whether you died, with an avoidable death early in a fight costing far more than one near the end, blended with the avoidable damage you took. Tanks are judged on avoidable damage alone: a boss's expected hits never count against them.",
-    },
-    {
-      part: 'Mechanics',
-      body: 'Three things, averaged: your interrupts, valued by the damage the interrupted cast would have done; your dispels, valued by the healing or damage they denied; and how long you carried a debuff that should have been dispelled. That last part counts against the player carrying the debuff, not whoever should have cleansed it.',
-    },
-    {
-      part: 'Utility',
-      body: 'The average uptime of every buff, debuff and cooldown your class and spec are expected to keep up for the raid. One dropped buff does not sink the score; broad coverage is what counts. Threat is not scored yet.',
-    },
+    { part: 'Output', body: 'Damage, or effective healing, against what the fight allowed with your gear.' },
+    { part: 'Survival', body: 'Avoidable deaths, an early one costing most, and avoidable damage taken.' },
+    { part: 'Mechanics', body: 'Interrupts, dispels, and debuffs carried that should have been cleansed.' },
+    { part: 'Utility', body: 'Uptime of the buffs and debuffs your class keeps up for the raid.' },
     {
       part: 'Preparation',
-      body: "Showing up ready: the right flask, food, weapon oil or stone and world buffs at the pull, and your class's potions during the fight, each weighed by how much it matters for your role.",
+      body: 'Flask, food, oil or stone and world buffs at the pull, potions in the fight.',
     },
-    {
-      part: 'Activity',
-      body: 'The share of the fight you spent casting or swinging rather than idle, leaving out the stretches the fight itself gives you nothing to do, such as a scripted phase change.',
-    },
+    { part: 'Activity', body: 'Time spent casting or swinging, scripted downtime left out.' },
   ],
-  adjustable: "A guild's officers can change the weights and the cap for their own guild. These are the defaults.",
+  /** One line per Forever Score part, keyed as the addon keys them. */
+  parts: {
+    gear: 'Your gear against your spec’s best set for your level',
+    experience: '25 a dungeon cleared, 40 a raid boss killed, alts included',
+    parses: 'Your best boss parses against your spec',
+    attendance: 'Your guild’s raid nights logged in the last 90 days',
+    discipline: 'Flask, food and enchants on every logged pull',
+  },
+  adjustable: 'Defaults; guild officers can change them',
+  /** The sample's raid parts: what a raider's score looks like once raids open. */
+  sampleNote: 'Sample raider, after raids open',
   /** How a fight is judged: one Row each, the rule's name over the rule. */
   rules: [
     {

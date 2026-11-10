@@ -91,6 +91,7 @@
   import DispelsRail from './DispelsRail.svelte';
   import Glossary from './Glossary.svelte';
   import EnemyCastsRail from './EnemyCastsRail.svelte';
+  import { enemyCasts, spellSchools } from '../../lib/report/exchange-rails';
   import GroupDebuffsRail from './GroupDebuffsRail.svelte';
   import MechanicsRail from './MechanicsRail.svelte';
   import QueriesRail from './QueriesRail.svelte';
@@ -280,18 +281,16 @@
   const unitNames = $derived(new Map((file?.units ?? []).map((unit) => [unit.guid, unit.name])));
   /** The Interrupts and Dispels tabs' empty line, naming the scope it was empty under. */
   function exchangeEmpty(verb: 'interrupted' | 'dispelled'): string {
-    // A debuff that ran its course is listed only for a spell someone dispelled at least
-    // once, since the summary cannot tell a dispellable debuff from any other: a pull with
-    // no dispels lists none, and the whole night does.
-    const tail =
-      verb === 'dispelled'
-        ? ' Debuffs that ran their course are listed only for spells someone dispelled at least once; the whole night shows them.'
-        : '';
+    const scope = nightMode ? 'tonight' : 'this pull';
+    // With nothing kicked, say whether anything could have been: an instant cast has no cast bar.
+    const castBars = enemyCasts((windowed ?? base)?.casts ?? [], friendlySet).some((row) => row.castMs > 0);
+    const tail = verb === 'interrupted' && !castBars ? ' No enemy cast had a cast bar.' : '';
+    const noun = verb === 'interrupted' ? 'interrupts' : 'dispels';
     if (state.source === SOURCE_FRIENDLIES || state.source === SOURCE_EVERYONE)
-      return `Nothing was ${verb} in the whole fight.${tail}`;
-    if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing in this fight.${tail}`;
+      return `No ${noun} ${scope}.${tail}`;
+    if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing ${scope}.`;
     const name = splitUnitName(unitNames.get(state.source) ?? state.source).name;
-    return `${name} ${verb} nothing in this fight.${tail}`;
+    return `${name} ${verb} nothing ${scope}.${tail}`;
   }
   /** The player GUIDs from report.json, for the source scope and the filters. */
   const playerSet = $derived(
@@ -1766,7 +1765,11 @@
 
 {#snippet thisPull()}
   {#if nightMode && night !== null}
-    <ThisPull title={trashMode ? 'This trash' : 'The night'} facts={nightFacts(night, trashMode)} simHref={null} />
+    <ThisPull
+      title={trashMode ? 'This trash' : 'The night'}
+      facts={nightFacts(night, trashMode, fights.filter((entry) => entry.kind !== 'encounter').length)}
+      simHref={null}
+    />
   {:else if fight !== null && !nightMode}
     <ThisPull
       facts={pullFacts}
@@ -2056,7 +2059,7 @@
               durationMs={summary?.duration_ms ?? scoped.duration_ms}
               onWindow={setWindow}
             />
-          {:else if state.tab === 'casts'}
+          {:else if state.tab === 'casts' || state.tab === 'timeline'}
             <CastsRail
               casts={scoped.casts}
               players={scopePlayers}
@@ -2067,7 +2070,12 @@
           {:else if state.tab === 'debuffs'}
             <DispelsRail dispels={scoped.dispels} {spellIcon} tabHref={hrefWith({ tab: 'dispels' })} />
           {:else if state.tab === 'interrupts'}
-            <EnemyCastsRail casts={(windowed ?? base)?.casts ?? []} players={friendlySet} {spellIcon} />
+            <EnemyCastsRail
+              casts={(windowed ?? base)?.casts ?? []}
+              players={friendlySet}
+              schools={spellSchools(base)}
+              {spellIcon}
+            />
           {:else if state.tab === 'dispels'}
             <GroupDebuffsRail
               auras={(windowed ?? base)?.auras ?? []}

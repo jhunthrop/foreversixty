@@ -28,7 +28,7 @@ describe('EventsView', () => {
     expect(body).toContain('data-testid="events-view"');
     expect(plates(body)).toBe(1);
     expect(body).toContain('data-testid="event-list"');
-    expect(body).toMatch(/[\d,]+ in this window/);
+    expect(body).toMatch(/[\d,]+ lines/);
     expect(body).toContain('data-dense="true"');
   });
 

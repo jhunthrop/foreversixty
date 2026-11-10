@@ -39,7 +39,10 @@
       aria-pressed={chip.on}
       data-testid={testid === undefined ? undefined : `${testid}-${chip.id}`}
       onclick={() => onToggle(chip.id)}
-      >{#if chip.swatch !== undefined}<i class="ui-chip-swatch" style:background={chip.swatch} aria-hidden="true"
+      >{#if chip.swatch !== undefined}<i
+          class="ui-chip-swatch"
+          style:background={chip.swatch}
+          aria-hidden="true"
         ></i>{/if}{chip.label}</button
     >
   {/each}

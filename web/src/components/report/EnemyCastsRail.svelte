@@ -15,8 +15,15 @@
   let {
     casts,
     players,
+    schools = new Map<number, number>(),
     spellIcon,
-  }: { casts: readonly CastRow[]; players: ReadonlySet<string>; spellIcon: SpellIconOf } = $props();
+  }: {
+    casts: readonly CastRow[];
+    players: ReadonlySet<string>;
+    /** Each spell's school, for the base icon of a spell with none of its own. */
+    schools?: ReadonlyMap<number, number>;
+    spellIcon: SpellIconOf;
+  } = $props();
 
   const rows = $derived(enemyCasts(casts, players));
 </script>
@@ -30,7 +37,9 @@
         density="slim"
         open
       >
-        {#snippet lead()}<SpellIcon url={spellIcon(row.spellId, row.name)} />{/snippet}
+        {#snippet lead()}<SpellIcon
+            url={spellIcon(row.spellId, row.name, schools.get(row.spellId))}
+          />{/snippet}
         {#snippet trail()}<span class="text-strong text-[14px] font-semibold tabular-nums">{row.count}</span
           >{/snippet}
       </Row>

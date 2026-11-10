@@ -18,7 +18,7 @@
     WEIGHTS,
     ratingsPageCopy,
   } from '../../lib/score/ratings-page';
-  import { COMPONENT_MAX, tierRanges, type Tier } from '../../lib/score/score';
+  import { COMPONENT_MAX, TIER_FROM, tierRanges, type Tier } from '../../lib/score/score';
   import Button from '../ui/Button.svelte';
   import Figure from '../ui/Figure.svelte';
   import Meter from '../ui/Meter.svelte';
@@ -26,7 +26,6 @@
   import PageHeader from '../ui/PageHeader.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
-  import Spark from '../ui/Spark.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
   import TabStrip from '../ui/TabStrip.svelte';
@@ -40,6 +39,7 @@
     legendary: 'var(--color-rarity-legendary)',
   };
   const RATING_TOP = 100;
+  const count = (n: number): string => n.toLocaleString('en-US');
 
   const parts = scoreCopy.components;
   const maxTotal = Object.values(COMPONENT_MAX).reduce((sum, max) => sum + max, 0);
@@ -50,11 +50,16 @@
     .sort((a, b) => b.gap - a.gap)[0];
   const latest = SAMPLE_TREND[SAMPLE_TREND.length - 1] ?? 0;
   const rise = latest - (SAMPLE_TREND[0] ?? 0);
+  /** The next tier up and the points to it, for the sample's row in the Tiers rail. */
+  const nextTier = (Object.keys(TIER_FROM) as Tier[]).find((each) => TIER_FROM[each] > SAMPLE_SCORE.score);
+  const toNext =
+    nextTier === undefined
+      ? ''
+      : `${count(TIER_FROM[nextTier] - SAMPLE_SCORE.score)} to ${nextTier.charAt(0).toUpperCase()}${nextTier.slice(1)}`;
   const tabsList = [
     { id: 'forever-score', label: scoreCopy.explainerHeading, href: '#forever-score' },
     { id: 'performance-rating', label: scoreCopy.explainerRatingHeading, href: '#performance-rating' },
   ];
-  const count = (n: number): string => n.toLocaleString('en-US');
 </script>
 
 <Page layout="split" panels testid="ratings-page">
@@ -93,13 +98,15 @@
     anchor="forever-score"
     testid="ratings-forever-score"
     panel
-    frame="lead"
+    frame="framed"
+    meta={ratingsPageCopy.sampleNote}
   >
     <div>
       <StatTable
         nameHead="Part"
         barHead="Of its top"
         icons={false}
+        open
         columns={[
           { id: 'points', label: 'Points' },
           { id: 'top', label: 'Top' },
@@ -112,11 +119,11 @@
               { value: count(SAMPLE_SCORE.components[part.key]) },
               { value: count(COMPONENT_MAX[part.key]) },
             ]}
-            phone={`${SAMPLE_SCORE.components[part.key]} of ${COMPONENT_MAX[part.key]}`}
+            phone={`of ${COMPONENT_MAX[part.key]}`}
             testid={`ratings-forever-score-${part.key}`}
           >
             {#snippet name()}<b>{part.label}</b>{/snippet}
-            {#snippet sub()}{part.moves}{/snippet}
+            {#snippet sub()}{ratingsPageCopy.parts[part.key]}{/snippet}
             {#snippet meter()}<Meter
                 value={SAMPLE_SCORE.components[part.key] / COMPONENT_MAX[part.key]}
               />{/snippet}
@@ -132,13 +139,15 @@
     anchor="performance-rating"
     testid="ratings-performance-rating"
     panel
-    frame="framed"
   >
     <div class="grid grid-cols-3 gap-x-6 gap-y-5" data-testid="ratings-rating-sample">
       <Figure value={String(latest)} label="Latest fight" unit={ratingCopy.outOf100} tone="gold" size="big" />
       <div class="flex min-w-0 flex-col gap-[2px]">
         <span class="text-label text-muted font-bold">Last {SAMPLE_TREND.length} fights</span>
-        <Spark values={SAMPLE_TREND} top={RATING_TOP} />
+        <span
+          class="text-strong text-[15px] leading-5 font-semibold tabular-nums"
+          title={`out of ${RATING_TOP}`}>{SAMPLE_TREND.join(' · ')}</span
+        >
         <span class="text-small text-muted">Up {rise} since the first</span>
       </div>
       <div class="flex min-w-0 flex-col gap-[2px]">
@@ -152,13 +161,7 @@
     </p>
   </Section>
 
-  <Section
-    title="Weights, by role"
-    meta={ratingsPageCopy.adjustable}
-    testid="ratings-components"
-    panel
-    flush
-  >
+  <Section title="Weights, by role" meta={ratingsPageCopy.adjustable} testid="ratings-components" panel flush>
     <StatTable
       nameHead="Component"
       bar={false}
@@ -176,10 +179,12 @@
         <StatRow
           bar={false}
           figures={[{ value: String(row.dps) }, { value: String(row.healer) }, { value: String(row.tank) }]}
-          phone={`${row.dps} / ${row.healer} / ${row.tank}`}
+          phone="DPS"
         >
           {#snippet name()}<b>{row.component}</b>{/snippet}
-          {#snippet sub()}{measures?.body ?? ''}{/snippet}
+          {#snippet sub()}{measures?.body ?? ''}<span class="ui-st-phone"
+              ><br />Healer {row.healer} · Tank {row.tank}</span
+            >{/snippet}
         </StatRow>
       {/each}
     </StatTable>
@@ -192,7 +197,7 @@
   </Section>
 
   {#snippet rail()}
-    <Section title={`${scoreCopy.tierColumn}s`} testid="ratings-forever-tiers" panel frame="framed">
+    <Section title={`${scoreCopy.tierColumn}s`} testid="ratings-forever-tiers" panel>
       {#each tierRanges() as { tier: each, range } (each)}
         <div
           class="ratings-tier"
@@ -203,14 +208,15 @@
             {#snippet titleContent()}<span class="text-[19px] leading-6" style:color={TIER_COLOR[each]}
                 >{each.charAt(0).toUpperCase() + each.slice(1)}</span
               >{/snippet}
-            {#snippet trail()}{#if each === tier}<span class="text-small text-muted">The sample</span
+            {#snippet trail()}{#if each === tier}<span class="text-small text-muted text-right"
+                  >The sample{#if toNext !== ''}<br /><span
+                      class="text-text tabular-nums"
+                      data-testid="ratings-to-next">{toNext}</span
+                    >{/if}</span
                 >{/if}{/snippet}
           </Row>
         </div>
       {/each}
-      <p class="text-small text-muted mt-[10px]" data-testid="ratings-forever-tiers-note">
-        {scoreCopy.tiersNote}
-      </p>
     </Section>
     <Section title={scoreCopy.explainerLogsHeading} panel>
       <p class="text-small text-muted" data-testid="ratings-forever-logs">

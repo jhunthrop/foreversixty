@@ -6,6 +6,7 @@
 <script lang="ts">
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
   import { groupDebuffs } from '../../lib/report/exchange-rails';
+  import { formatDuration } from '../../lib/report/format';
   import type { AuraTrack } from '../../lib/report/types';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
@@ -27,16 +28,22 @@
 </script>
 
 {#if rows.length > 0}
-  <Section title="Debuffs on your group" action={{ label: 'Debuffs', href: tabHref }} panel testid="group-debuffs-rail">
+  <Section
+    title="Debuffs on your group"
+    action={{ label: 'Debuffs', href: tabHref }}
+    panel
+    testid="group-debuffs-rail"
+  >
     {#each rows as row (row.name)}
       <Row
         title={row.name}
-        sub={`on ${row.players} ${row.players === 1 ? 'player' : 'players'}`}
+        sub={`${row.landed} ${row.landed === 1 ? 'application' : 'applications'} on ${row.players} ${row.players === 1 ? 'player' : 'players'}`}
         density="slim"
         open
       >
-        {#snippet lead()}<SpellIcon url={spellIcon(row.spellId, row.name)} />{/snippet}
-        {#snippet trail()}<span class="text-strong text-[14px] font-semibold tabular-nums">{row.landed}×</span
+        {#snippet lead()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
+        {#snippet trail()}<span class="text-strong text-[14px] font-semibold tabular-nums"
+            >{formatDuration(row.uptimeMs)}</span
           >{/snippet}
       </Row>
     {/each}
