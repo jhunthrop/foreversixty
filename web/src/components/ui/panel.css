@@ -31,11 +31,17 @@
   .ui-frame-corner {
     position: absolute;
     z-index: 1;
-    width: 26px;
-    height: 26px;
+    width: 64px;
+    height: 64px;
     color: var(--color-cream);
     opacity: 0.8;
     pointer-events: none;
+  }
+  @media (width < 640px) {
+    .ui-frame-corner {
+      width: 44px;
+      height: 44px;
+    }
   }
   .ui-frame-corner[data-corner='tl'] {
     top: 4px;
@@ -44,17 +50,17 @@
   .ui-frame-corner[data-corner='tr'] {
     top: 4px;
     right: 4px;
-    transform: rotate(90deg);
+    transform: scaleX(-1);
   }
   .ui-frame-corner[data-corner='br'] {
     right: 4px;
     bottom: 4px;
-    transform: rotate(180deg);
+    transform: scale(-1, -1);
   }
   .ui-frame-corner[data-corner='bl'] {
     bottom: 4px;
     left: 4px;
-    transform: rotate(270deg);
+    transform: scaleY(-1);
   }
 }
 
