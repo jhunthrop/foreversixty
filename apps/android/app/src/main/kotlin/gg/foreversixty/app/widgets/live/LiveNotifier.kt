@@ -25,6 +25,7 @@ import gg.foreversixty.app.R
 import androidx.compose.ui.graphics.toArgb
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.navigation.DeepLink
+import gg.foreversixty.app.push.PushNotifier
 import gg.foreversixty.app.raids.push.RaidNotificationActions
 import gg.foreversixty.app.raids.push.RaidPushCategory
 import gg.foreversixty.app.raids.logic.SignupState
@@ -91,9 +92,7 @@ class LiveNotifier(private val context: Context) {
             zoneIcon: Bitmap? = null,
             now: Instant = Instant.ofEpochMilli(System.currentTimeMillis()),
         ): Notification {
-            val builder = NotificationCompat.Builder(context, CHANNEL_RAID)
-                .setSmallIcon(R.drawable.ic_notification_seal)
-                .setColor(FsColor.gold.toArgb())
+            val builder = PushNotifier.builder(context, CHANNEL_RAID)
                 .setContentTitle(content.title)
                 .setContentText(content.text)
                 .setShowWhen(false)
@@ -146,10 +145,8 @@ class LiveNotifier(private val context: Context) {
         private val ANSWER_VIEWS = listOf(R.id.live_in, R.id.live_late, R.id.live_bench, R.id.live_out)
 
         fun simNotification(context: Context, sim: SimLive, content: SimLiveContent): Notification {
-            val builder = NotificationCompat.Builder(context, CHANNEL_SIMS)
-                .setSmallIcon(R.drawable.ic_notification_seal)
-                // Gold tints the icon and the progress bar (the board's bar), not the system blue.
-                .setColor(FsColor.gold.toArgb())
+            // The seal's turquoise tints the icon, like every notification; the bar below matches it.
+            val builder = PushNotifier.builder(context, CHANNEL_SIMS)
                 .setContentTitle(content.title)
                 .setContentText(content.text)
                 .setSubText(content.subText)

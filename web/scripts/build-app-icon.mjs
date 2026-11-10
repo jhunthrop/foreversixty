@@ -2,6 +2,9 @@
 // Renders the app icon set to apps/shared/brand/ from design/logo/foreversixty-mark.svg (the LX
 // seal, vector, unmodified): the iOS AppIcon asset-catalog set and the Android adaptive icon
 // layers. The seal is only scaled and placed, never redrawn.
+// The iOS Dark and Tinted appearances come from the flat seal
+// (design/assets/brand/seal-flat/seal-flat-small.svg); the light (Any) appearance stays the
+// painted seal. The Android themed layer is a vector drawable from tools/gen_seal_silhouette.py.
 // Run from the repo root: node web/scripts/build-app-icon.mjs
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -10,6 +13,7 @@ import sharp from 'sharp';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const MARK_SVG = join(ROOT, 'design/logo/foreversixty-mark.svg');
+const FLAT_SVG = join(ROOT, 'design/assets/brand/seal-flat/seal-flat-small.svg');
 const OUT = join(ROOT, 'apps/shared/brand');
 const SIZE = 1024;
 /** tokens.css --color-bg, the near-black the site and the seal's own disc sit on. */
@@ -17,9 +21,70 @@ const GROUND = '#07090d';
 /** The seal's ring spans 88% of its canvas. Android's adaptive mask keeps a centred circle of
  *  66/108 of the canvas, so the foreground seal is sized to sit inside it. */
 const ANDROID_SEAL_RATIO = 0.6;
+/** The flat seal fills its own canvas edge to edge; on the dark and tinted icons it keeps a 7.5%
+ *  margin inside the mask so it sits at the painted icon's optical size. */
+const FLAT_SEAL_RATIO = 0.85;
+/** Tinted icons are greyscale: the levels stretch the flat seal's outline (#170E09, luma 16) to
+ *  black and its gold (#C9A465, luma 168) to white, so the tint lands on the ring and the LX; the
+ *  curve sets the turquoise disc (luma 112) to a mid grey, apart from both the LX and the outline. */
+const TINT_LEVELS = { black: 16, white: 168, curve: 1.6 };
+/** Rec. 601 luma weights, the ones the levels above are measured in. */
+const LUMA = [0.299, 0.587, 0.114];
+const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
 
 const renderSeal = (diameter) =>
   sharp(MARK_SVG, { density: 1200 }).resize(diameter, diameter).png().toBuffer();
+
+const renderFlatSeal = (diameter) =>
+  sharp(FLAT_SVG, { density: 1200 }).resize(diameter, diameter).png().toBuffer();
+
+const transparentCanvas = () =>
+  sharp({ create: { width: SIZE, height: SIZE, channels: 4, background: TRANSPARENT } });
+
+async function iosAny(file) {
+  const seal = await renderSeal(SIZE);
+  await sharp({ create: { width: SIZE, height: SIZE, channels: 3, background: GROUND } })
+    .composite([{ input: seal }])
+    .removeAlpha()
+    .png()
+    .toFile(file);
+}
+
+/** Apple's dark icons sit on a transparent ground; the system draws the dark backdrop. */
+async function iosDark(file) {
+  const seal = await renderFlatSeal(Math.round(SIZE * FLAT_SEAL_RATIO));
+  await transparentCanvas()
+    .composite([{ input: seal, gravity: 'center' }])
+    .png()
+    .toFile(file);
+}
+
+/** Apple's tinted icons are a greyscale image on a transparent ground; the system tints it. */
+async function iosTinted(file) {
+  const { black, white, curve } = TINT_LEVELS;
+  const { data, info } = await sharp(await renderFlatSeal(Math.round(SIZE * FLAT_SEAL_RATIO)))
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const grey = Buffer.alloc(data.length);
+  for (let i = 0; i < data.length; i += 4) {
+    const luma = LUMA[0] * data[i] + LUMA[1] * data[i + 1] + LUMA[2] * data[i + 2];
+    const level = Math.round(Math.min(1, Math.max(0, (luma - black) / (white - black))) ** curve * 255);
+    grey.set([level, level, level, data[i + 3]], i);
+  }
+  const seal = await sharp(grey, { raw: info }).png().toBuffer();
+  await transparentCanvas()
+    .composite([{ input: seal, gravity: 'center' }])
+    .png()
+    .toFile(file);
+}
+
+/** The iOS appearances: the painted seal for Any, the flat seal for Dark and Tinted. */
+const IOS_ICONS = [
+  { filename: 'AppIcon-1024.png', render: iosAny },
+  { filename: 'AppIcon-Dark-1024.png', luminosity: 'dark', render: iosDark },
+  { filename: 'AppIcon-Tinted-1024.png', luminosity: 'tinted', render: iosTinted },
+];
 
 async function ios() {
   // A whole asset catalog, so the iOS target compiles it in place (actool skips symlinks).
@@ -30,14 +95,17 @@ async function ios() {
     join(catalog, 'Contents.json'),
     `${JSON.stringify({ info: { author: 'xcode', version: 1 } }, null, 2)}\n`,
   );
-  const seal = await renderSeal(SIZE);
-  await sharp({ create: { width: SIZE, height: SIZE, channels: 3, background: GROUND } })
-    .composite([{ input: seal }])
-    .removeAlpha()
-    .png()
-    .toFile(join(dir, 'AppIcon-1024.png'));
+  for (const { filename, render } of IOS_ICONS) {
+    await render(join(dir, filename));
+  }
   const contents = {
-    images: [{ filename: 'AppIcon-1024.png', idiom: 'universal', platform: 'ios', size: '1024x1024' }],
+    images: IOS_ICONS.map(({ filename, luminosity }) => ({
+      ...(luminosity && { appearances: [{ appearance: 'luminosity', value: luminosity }] }),
+      filename,
+      idiom: 'universal',
+      platform: 'ios',
+      size: '1024x1024',
+    })),
     info: { author: 'xcode', version: 1 },
   };
   writeFileSync(join(dir, 'Contents.json'), `${JSON.stringify(contents, null, 2)}\n`);
@@ -48,21 +116,22 @@ async function android() {
   mkdirSync(dir, { recursive: true });
   const diameter = Math.round((SIZE * ANDROID_SEAL_RATIO) / 0.88);
   const seal = await renderSeal(diameter);
-  await sharp({
-    create: { width: SIZE, height: SIZE, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
-  })
+  await transparentCanvas()
     .composite([{ input: seal, gravity: 'center' }])
     .png()
     .toFile(join(dir, 'ic_launcher_foreground.png'));
   await sharp({ create: { width: SIZE, height: SIZE, channels: 3, background: GROUND } })
     .png()
     .toFile(join(dir, 'ic_launcher_background.png'));
+  // The monochrome layer is the app's res/drawable/ic_launcher_monochrome.xml
+  // (tools/gen_seal_silhouette.py), which launchers tint for themed icons on Android 13+.
   writeFileSync(
     join(dir, 'ic_launcher.xml'),
     `<?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@mipmap/ic_launcher_background" />
     <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
 </adaptive-icon>
 `,
   );
