@@ -35,8 +35,9 @@ export type FeedKind =
 
 export interface FeedSegment {
   text: string;
-  /** Absent: plain text. `name` carries `class`; `item` carries `quality` and `item_id`. */
-  style?: 'strong' | 'name' | 'item';
+  /** Absent: plain text. `name` carries `class`; `item` carries `quality` and `item_id`. `gain` and
+   *  `loss` are home's own (a sim's change since the one before, lib/home/feed-mix.ts). */
+  style?: 'strong' | 'name' | 'item' | 'gain' | 'loss';
   class?: string;
   quality?: number;
   item_id?: number;
@@ -70,6 +71,8 @@ export interface FeedQuery {
   spec?: string;
   band?: number;
   signedIn: boolean;
+  /** Rows asked for; FEED_ROWS by default. */
+  limit?: number;
 }
 
 /** Rows on home (ruling P9). */
@@ -107,8 +110,8 @@ export function bandOf(level: number | undefined): number {
   return Math.max(FIRST_BAND, Math.floor(level / BAND_STEP) * BAND_STEP);
 }
 
-export function feedPath(q: Omit<FeedQuery, 'signedIn'>, limit = FEED_ROWS): string {
-  const params = new URLSearchParams({ filter: q.filter, limit: String(limit) });
+export function feedPath(q: Omit<FeedQuery, 'signedIn'>): string {
+  const params = new URLSearchParams({ filter: q.filter, limit: String(q.limit ?? FEED_ROWS) });
   if (q.spec !== undefined) params.set('spec', q.spec);
   if (q.band !== undefined) params.set('band', String(q.band));
   return `/v1/feed?${params.toString()}`;

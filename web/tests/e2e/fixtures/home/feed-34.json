@@ -33,7 +33,7 @@
       "kind": "bis_change",
       "at": "2026-11-06T17:12:00Z",
       "tag": "your_spec",
-      "icon": "inv_weapon_bow_08",
+      "icon": "inv_musket_02",
       "crest": null,
       "quality": 3,
       "href": "/bis/hunter/beast-mastery",
@@ -44,7 +44,16 @@
           "style": "strong"
         },
         {
-          "text": " for Beast Mastery Hunter 30 to 39: a new ranged pick"
+          "text": " for Beast Mastery Hunter 30 to 39: "
+        },
+        {
+          "text": "Golemsight Long Gun",
+          "style": "item",
+          "quality": 3,
+          "item_id": 273029
+        },
+        {
+          "text": " is the new ranged"
         }
       ]
     },

@@ -23,7 +23,11 @@ test('signed out: Pick your class with Sign in, the nine classes, the feed, how 
   const plaque = out.getByTestId('home-raids-countdown');
   await expect(plaque.getByRole('heading', { level: 2 })).toHaveText('First raids open');
   await expect(plaque.getByRole('timer')).toHaveAccessibleName('32 days, 6 hours');
-  await expect(plaque.getByRole('listitem')).toHaveText(['Barrow Deeps', 'Hyjal Summit', "Onyxia's Lair"]);
+  await expect(plaque.getByTestId('home-raid-zone')).toHaveText([
+    /Barrow Deeps\s*Loot not out yet/,
+    /Hyjal Summit\s*Loot not out yet/,
+    /Onyxia's Lair\s*1 boss · \d+ drops/,
+  ]);
   await expect(out.getByTestId('home-feed-row')).toHaveCount(7);
   await expect(out.getByTestId('home-feed').getByRole('radiogroup')).toHaveCount(0);
   await expect(out.getByTestId('home-feed-row').first()).toContainText('4 min ago');
@@ -51,7 +55,7 @@ test('signed in at 34: the sim, the first raids with Find a guild, the feed, upg
   await expect(page.getByTestId('home-mover')).toHaveCount(3);
   await expect(page.getByTestId('home-mover').first()).toContainText('+6');
   await expect(page.getByTestId('home-upgrades-total')).toContainText('DPS in');
-  await expect(page.getByTestId('home-upgrades-total')).not.toContainText('best in slot');
+  await expect(page.getByTestId('home-upgrades-total')).toContainText('1 best in slot');
   await expect(page.getByTestId('home-guild-sims')).toHaveCount(0);
 });
 
@@ -83,12 +87,13 @@ test('signed in at 60 in a guild: the raid plaque, the feed, the sims ladder and
   await expect(feed).not.toContainText('posted Onyxia');
   await expect(feed.getByTestId('home-feed-row').first()).toContainText('4 min ago');
   await expect(feed.getByTestId('home-feed-row').filter({ hasText: 'Thalrin' })).toContainText(
-    'simmed 987.1 DPS, #2 of 14',
+    'simmed 987 DPS, #2 of 14 (Fury Warrior, 60 raid)',
   );
+  await expect(feed).not.toContainText('in Olympus XXVII');
   await expect(page.getByTestId('home-guild-sim')).toHaveCount(6);
   await expect(page.getByTestId('home-guild-sim').last()).toContainText('Thandrel');
-  await expect(page.getByTestId('home-guild-sim-gap').first()).toHaveText('63.7 ahead');
-  await expect(page.getByTestId('home-guild-sim-gap').last()).toHaveText('');
+  await expect(page.getByTestId('home-guild-sim').first()).toContainText('63.7 DPS ahead of you');
+  await expect(page.getByTestId('home-guild-sim').last()).not.toContainText('of you');
   await expect(page.getByTestId('home-guild-sims')).not.toContainText('Guild page');
   await expect(page.getByTestId('home-raid-standing')).toHaveText(
     /#2 of 4 guild Fury Warriors by item level\s*3 of 4 raid nights attended/,
@@ -97,7 +102,39 @@ test('signed in at 60 in a guild: the raid plaque, the feed, the sims ladder and
   await expect(page.getByTestId('home-spec-week')).toContainText('#2 of 23 damage specs');
   await expect(page.getByTestId('home-movers')).toContainText('Top this week');
   await expect(page.getByTestId('home-upgrades-total')).toContainText('best in slot');
-  await expect(page.getByTestId('item-row-worn')).toHaveCount(5);
+  await expect(page.getByTestId('home-upgrade-over')).toHaveCount(5);
+});
+
+test('signed in at 34 in a guild with no raid: one row per sim, the guild beside the clock, See all upgrades', async ({
+  page,
+}) => {
+  await openHome(page, {
+    me: 'me-34-guild.json',
+    feed: 'feed-34-guild.json',
+    home: 'home-34-guild.json',
+    guild: 'guild-home-34.json',
+  });
+  const feed = page.getByTestId('home-signed-in-root').getByTestId('home-feed');
+  const rows = feed.getByTestId('home-feed-row');
+  await expect(rows).toHaveCount(7);
+  await expect(rows.filter({ hasText: 'simmed' })).toHaveCount(3);
+  await expect(rows.filter({ hasText: 'Vessa' })).toHaveCount(1);
+  await expect(rows.filter({ hasText: 'Vessa' })).toContainText(
+    'Vessa simmed 71.2 DPS +3.2 (Combat Rogue, 30 to 39)',
+  );
+  await expect(rows.filter({ hasText: 'Kaelra' })).toContainText('66.9 DPS +2.8');
+  await expect(feed).not.toContainText('Olympus XXVII');
+  await expect(rows.filter({ hasText: 'uploaded' }).first()).toBeVisible();
+  const plaque = page.getByTestId('home-signed-in-root').getByTestId('home-raids-countdown');
+  await expect(plaque.getByTestId('home-raids-guild')).toContainText('Olympus XXVII: no raid planned');
+  await expect(plaque.getByTestId('home-raid-zone').last()).toContainText(/1 boss · \d+ Hunter drops/);
+  await expect(page.getByTestId('home-upgrade')).toHaveCount(5);
+  await expect(page.getByTestId('home-upgrade-over').first()).toContainText(/^over \S/);
+  await expect(page.getByTestId('home-upgrades-all')).toHaveText('See all 13 ›');
+  await expect(page.getByTestId('home-upgrades-all')).toHaveAttribute(
+    'href',
+    /^\/bis\/hunter\/beast-mastery/,
+  );
 });
 
 test("the plaque signs up in place: I'm in saves and presses", async ({ page }) => {
@@ -114,12 +151,15 @@ test("the plaque signs up in place: I'm in saves and presses", async ({ page }) 
   expect(body).toMatchObject({ state: 'in', role: 'dps' });
 });
 
-test('a quiet feed fills with real dated site events, the raid opening first', async ({ page }) => {
+test('a quiet feed fills with real dated site events, the raid opening left to the plaque', async ({
+  page,
+}) => {
   await openHome(page, { me: 'me-34.json', feed: 'feed-empty.json', home: 'home-34.json' });
   const rows = page.getByTestId('home-signed-in-root').getByTestId('home-feed-row');
   await expect(rows).toHaveCount(5);
-  await expect(rows.first()).toContainText('First raids open');
-  await expect(rows.first()).toContainText('Wed 9 Dec');
+  await expect(page.getByTestId('home-signed-in-root').getByTestId('home-feed')).not.toContainText(
+    'First raids open',
+  );
 });
 
 test('the feed fails on its own and comes back with Try again', async ({ page }) => {

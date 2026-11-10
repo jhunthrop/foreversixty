@@ -118,10 +118,10 @@ describe('movers', () => {
 
 describe('guild sims', () => {
   it('reads each row against your sim and the top of the ladder', () => {
-    expect(simGap(sim(1012.3), sim(948.6, true))).toBe('63.7 ahead');
-    expect(simGap(sim(940.0), sim(948.6, true))).toBe('8.6 behind');
-    expect(simGap(sim(948.6, true), sim(948.6, true))).toBeNull();
-    expect(simGap(sim(1012.3), null)).toBeNull();
+    expect(simGap(sim(1012.3), sim(948.6, true), 'DPS')).toBe('63.7 DPS ahead of you');
+    expect(simGap(sim(940.0), sim(948.6, true), 'DPS')).toBe('8.6 DPS behind you');
+    expect(simGap(sim(948.6, true), sim(948.6, true), 'DPS')).toBeNull();
+    expect(simGap(sim(1012.3), null, 'DPS')).toBeNull();
     expect(simShare(sim(506.15), 1012.3)).toBeCloseTo(0.5);
     expect(simShare(sim(1), 0)).toBe(0);
   });

@@ -1,46 +1,49 @@
 <!-- web/src/components/home/HomeUpgrades.svelte -->
-<!-- Your upgrades (round 5: the page's second featured panel, the plain frame): the five biggest
+<!-- Your upgrades (on the panel under its heading, as the feed beside it): the five biggest
      upgrades for the character's band, each the item in its quality colour, its slot and source,
-     the piece you wear now and what the pick adds, with Best in slot at the right of the title; under
-     them the whole gap (every measured upgrade's gain) and how many slots are already best in slot.
-     Left out with none to show. -->
+     the piece it replaces ("over Mantle of Thieves", in that piece's quality colour) and what the
+     pick adds, with Best in slot at the right of the title; under them the whole gap (every
+     measured upgrade's gain), how many slots are already best in slot, and See all N to the band's
+     best-in-slot list when there are more than five. Left out with none to show. -->
 <script lang="ts">
   import type { Item } from '../../lib/planner/types';
   import type { CachedUpgrades } from '../../lib/home/upgrades-loader';
+  import type { SlotUpgrade } from '../../lib/home/upgrades';
   import { UPGRADES_SHOWN, gainText, upgradeLine, type HomeLink } from '../../lib/home/home-view';
   import { homeBCopy } from '../../lib/home/home-b-view';
-  import { upgradesFacts } from '../../lib/home/home-facts';
-  import { LINK, type ItemRef } from '../../lib/ui/primitives';
-  import { sectionRegion } from '../../lib/ui/regions';
-  import Frame from '../ui/Frame.svelte';
+  import { factsCopy, upgradesFacts } from '../../lib/home/home-facts';
+  import { rarityClassFor } from '../../lib/planner/items';
+  import { LINK } from '../../lib/ui/primitives';
   import ItemRow from '../ui/ItemRow.svelte';
+  import Section from '../ui/Section.svelte';
   import HomeFacts from './HomeFacts.svelte';
 
   let { upgrades, bis, build }: { upgrades: CachedUpgrades | null; bis: HomeLink | null; build: string } =
     $props();
 
   const items = $derived(new Map<number, Item>((upgrades?.items ?? []).map((item) => [item.id, item])));
-  const list = $derived((upgrades?.result.upgrades ?? []).slice(0, UPGRADES_SHOWN));
+  const all = $derived(upgrades?.result.upgrades ?? []);
+  const list = $derived(all.slice(0, UPGRADES_SHOWN));
   const facts = $derived(upgradesFacts(upgrades?.result));
+  const more = $derived(bis !== null && all.length > UPGRADES_SHOWN);
 
-  /** The piece worn in the slot, as the item table knows it; none for an empty slot or an unknown id. */
-  function wornRef(id: number | undefined): ItemRef | undefined {
-    const known = id === undefined ? undefined : items.get(id);
-    return known === undefined
-      ? undefined
-      : { id: known.id, name: known.name, quality: known.quality, icon: known.icon };
+  /** The piece worn in the slot, as the item table knows it; undefined for an id it does not know. */
+  function worn(upgrade: SlotUpgrade): Item | undefined {
+    return upgrade.wornItemId === undefined ? undefined : items.get(upgrade.wornItemId);
   }
 </script>
 
 {#if list.length > 0}
-  <Frame region={sectionRegion(homeBCopy.upgrades)} testid="home-upgrades">
-    <div class="home-upgrades-head">
-      <h2 class="text-section">{homeBCopy.upgrades}</h2>
-      {#if bis !== null}<a class="{LINK} text-[14px]" href={bis.href}>{homeBCopy.bisLink} ›</a>{/if}
-    </div>
+  <Section
+    title={homeBCopy.upgrades}
+    action={bis === null ? undefined : { label: homeBCopy.bisLink, href: bis.href }}
+    boxed
+    testid="home-upgrades"
+  >
     <div class="home-upgrades-rows">
       {#each list as upgrade (upgrade.slot)}
         {@const pick = items.get(upgrade.pick.item_id)}
+        {@const piece = worn(upgrade)}
         <ItemRow
           item={{
             id: upgrade.pick.item_id,
@@ -51,35 +54,51 @@
           {build}
           iconSize={36}
           source={upgradeLine(upgrade)}
-          worn={wornRef(upgrade.wornItemId)}
           gain={upgrade.gainDps === null
             ? undefined
             : { value: gainText(upgrade.gainDps), unit: 'DPS', tone: 'kill' }}
           testid="home-upgrade"
-        />
+        >
+          {#snippet detail()}
+            <span data-testid="home-upgrade-over">
+              {#if upgrade.wornItemId === undefined}{factsCopy.emptySlot}{:else if piece !== undefined}{factsCopy.over}
+                <span class="font-semibold {rarityClassFor(piece.quality)}" data-bis-item={piece.id}
+                  >{piece.name}</span
+                >{/if}
+            </span>
+          {/snippet}
+        </ItemRow>
       {/each}
     </div>
-    {#if facts.length > 0}
-      <div class="home-upgrades-foot"><HomeFacts {facts} testid="home-upgrades-total" /></div>
+    {#if facts.length > 0 || more}
+      <div class="home-upgrades-foot">
+        <HomeFacts {facts} testid="home-upgrades-total" />
+        {#if more && bis !== null}<a
+            class="{LINK} shrink-0 text-[14px]"
+            href={bis.href}
+            data-testid="home-upgrades-all">{factsCopy.seeAll(all.length)} ›</a
+          >{/if}
+      </div>
     {/if}
-  </Frame>
+  </Section>
 {/if}
 
 <style>
-  .home-upgrades-head {
+  .home-upgrades-foot {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 12px;
-    padding-bottom: 6px;
-  }
-  .home-upgrades-foot {
     padding-top: 12px;
   }
-  /* On a phone the name and source keep the row; the worn piece gives way. */
-  @media (max-width: 767px) {
-    .home-upgrades-rows :global([data-testid='item-row-worn']) {
-      display: none;
+  /* One line per name and per worn piece on the desktop rail (an ellipsis past it); a phone wraps. */
+  @media (min-width: 768px) {
+    .home-upgrades-rows :global([data-testid^='item-hover-']),
+    .home-upgrades-rows :global([data-testid='home-upgrade-over']) {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 </style>

@@ -9,6 +9,7 @@
   import { HOME_OUT_ATTR } from '../../lib/home/home-layout';
   import { homeCopy, homeHrefs } from '../../lib/home/home-view';
   import { feedCopy, type FeedRow } from '../../lib/home/feed';
+  import type { RaidFact } from '../../lib/home/raid-facts';
   import Button from '../ui/Button.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
@@ -21,7 +22,8 @@
   import HomePlaqueSkeleton from './HomePlaqueSkeleton.svelte';
   import FeedSkeleton from '../ui/FeedSkeleton.svelte';
 
-  let { floor, raidsOpen }: { floor: FeedRow[]; raidsOpen: string | null } = $props();
+  let { floor, raidsOpen, raids }: { floor: FeedRow[]; raidsOpen: string | null; raids: RaidFact[] } =
+    $props();
 
   const session = createCharacterCardState();
   const settled = $derived(session.status === 'ready' || session.status === 'failed');
@@ -49,7 +51,7 @@
     </div>
   {:else if me !== null && session.character !== null}
     {#key session.character.key}
-      <HomeCharacter {me} character={session.character} {floor} {raidsOpen} />
+      <HomeCharacter {me} character={session.character} {floor} {raidsOpen} {raids} />
     {/key}
   {:else if me !== null}
     <Page layout="ledger" testid="home-no-character">

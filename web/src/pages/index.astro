@@ -15,6 +15,7 @@ import { homeCopy } from '../lib/home/home-view';
 import { FLOOR_MIN } from '../lib/home/feed';
 import { buildFloor } from '../lib/home/floor';
 import { floorInputs, raidsOpenIso } from '../lib/home/floor-load';
+import { loadRaidFacts } from '../lib/home/raid-facts-load';
 import Button from '../components/ui/Button.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
 import HomeClassPicker from '../components/home/HomeClassPicker.svelte';
@@ -40,6 +41,7 @@ const changelog = (await getCollection('changelog')).map((e) => ({
 }));
 const floor = buildFloor(floorInputs(guides, changelog, now));
 const signInHref = battlenetStartUrl('/account?signed_in=1');
+const raids = loadRaidFacts();
 ---
 
 <Base title={SITE_NAME} description={HOME_DESCRIPTION} path="/" wide art="hero">
@@ -60,9 +62,9 @@ const signInHref = battlenetStartUrl('/account?signed_in=1');
           build={activeBuild.build}
         />
         <HomeHowToStart slot="rail" {signInHref} />
-        <HomeFirstRaids slot="rail" client:idle-after-load {raidsOpen} build={activeBuild.build} />
+        <HomeFirstRaids slot="rail" client:idle-after-load {raidsOpen} {raids} build={activeBuild.build} />
       </HomeGrid>
     </div>
-    <HomeSignedIn client:idle-after-load {floor} {raidsOpen} />
+    <HomeSignedIn client:idle-after-load {floor} {raidsOpen} {raids} />
   </main>
 </Base>
