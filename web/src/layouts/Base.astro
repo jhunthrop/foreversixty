@@ -336,7 +336,8 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
         <CharacterSelector client:idle-after-load slot="session" />
       </Header>
     </div>
-    <div class="page-column">
+    {/* A fixed breath above the footer (owner 2026-11-09), whatever the page's last block is. */}
+    <div class="page-column pb-10 lg:pb-14">
       <slot />
     </div>
     <Footer />
