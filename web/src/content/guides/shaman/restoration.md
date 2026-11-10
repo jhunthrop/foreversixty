@@ -13,7 +13,7 @@ sources:
   - label: 'Blizzard, Deep Dive panel recap'
     url: https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap
     kind: blizzard
-  - label: 'Talents Forever, talent data from the beta client'
+  - label: 'Talents Forever'
     url: https://talentsforever.com/data.json
     kind: community
   - label: 'Forever Sixty, character planner'

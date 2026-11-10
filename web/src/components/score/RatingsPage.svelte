@@ -208,11 +208,9 @@
             {#snippet titleContent()}<span class="text-[19px] leading-6" style:color={TIER_COLOR[each]}
                 >{each.charAt(0).toUpperCase() + each.slice(1)}</span
               >{/snippet}
-            {#snippet trail()}{#if each === tier}<span class="text-small text-muted text-right"
-                  >The sample{#if toNext !== ''}<br /><span
-                      class="text-text tabular-nums"
-                      data-testid="ratings-to-next">{toNext}</span
-                    >{/if}</span
+            {#snippet trail()}{#if each === tier && toNext !== ''}<span
+                  class="text-small text-text text-right tabular-nums"
+                  data-testid="ratings-to-next">{toNext}</span
                 >{/if}{/snippet}
           </Row>
         </div>

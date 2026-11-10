@@ -14,7 +14,7 @@ sources:
   - label: 'Wowhead, Skyborne First Look'
     url: https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829
     kind: community
-  - label: 'Talents Forever, talent data from the beta client'
+  - label: 'Talents Forever'
     url: https://talentsforever.com/data.json
     kind: community
 ---

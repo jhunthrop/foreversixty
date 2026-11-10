@@ -93,7 +93,7 @@ def to_next() -> str:
 def rail() -> str:
     tier = R['sample']['tier']
     nxt = to_next()
-    sample = f'<span class="t-small" style="text-align:right">The sample{f"<br><span>{nxt}</span>" if nxt else ""}</span>'
+    sample = f'<span class="t-small" style="text-align:right"><span>{nxt}</span></span>' if nxt else ''
     rows = [Row(f'<span class="tier" style="color:{TIER_HEX[t["tier"]]}">{t["tier"].capitalize()}</span>', escape(t['range']), link=False,
                 selected=t['tier'] == tier, trail=sample if t['tier'] == tier else '')
             .replace('<div class="row', f'<div style="--c:{TIER_HEX[t["tier"]]}" class="row', 1) for t in R['tiers']]

@@ -111,7 +111,7 @@ describe('/ratings', () => {
       expect(tiers).toContain(range);
     }
     expect(tiers).toMatch(/data-current="true"[^>]*style="--tier: var\(--color-rarity-epic\)/);
-    expect(tiers).toContain('The sample');
+    expect(tiers).not.toContain('The sample');
     expect(tiers).toContain('170 to Legendary');
     expect(tiers).not.toContain(scoreCopy.tiersNote);
   });
