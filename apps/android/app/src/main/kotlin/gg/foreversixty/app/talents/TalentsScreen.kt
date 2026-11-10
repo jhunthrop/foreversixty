@@ -451,7 +451,6 @@ private fun DiffDot() {
 @Composable
 private fun TalentsFooter(openPlanner: () -> Unit, planner: TalentsPlannerLinks?) {
     Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(stringResource(R.string.talents_footer), style = ScaledType.meta, color = FsColor.muted)
         if (planner != null) {
             PlannerLinkRow(stringResource(R.string.plan_planBuild), planner.plan)
             planner.builds?.let { PlannerLinkRow(stringResource(R.string.plan_yourBuilds), it) }

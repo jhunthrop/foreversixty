@@ -116,7 +116,7 @@ private fun Figure(row: ParseRow, copy: ReportsCopy, alignment: Alignment.Horizo
             Text(
                 buildAnnotatedString {
                     withStyle(SpanStyle(color = parseColor(ParseTier.of(percentile)), fontFamily = ScaledType.tabular.fontFamily, fontFeatureSettings = ScaledType.tabular.fontFeatureSettings, fontWeight = FontWeight.Bold)) {
-                        append(percentile.toString())
+                        append(gg.foreversixty.app.raids.ui.ordinal(percentile))
                     }
                     append(" " + stringResource(R.string.report_percentile))
                 },

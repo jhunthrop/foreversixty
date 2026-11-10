@@ -62,7 +62,7 @@ class GuidesHomeActions(
 fun GuidesHome(state: GuidesHomeState, actions: GuidesHomeActions) {
     when (val index = state.index) {
         Loadable.Loading -> GuidesHomeSkeleton()
-        Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = ScaledType.body, color = FsColor.muted, modifier = Modifier.screenMargins().padding(top = GuideSpace.section))
+        Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = ScaledType.body, color = FsColor.mutedGround, modifier = Modifier.screenMargins().padding(top = GuideSpace.section))
         Loadable.Failed -> ErrorRegion(stringResource(R.string.guides_error), actions.retry)
         is Loadable.Loaded -> Column(Modifier.screenMargins()) {
             state.yours?.let { spec ->
@@ -71,7 +71,7 @@ fun GuidesHome(state: GuidesHomeState, actions: GuidesHomeActions) {
             }
             GuideSectionBlock(stringResource(R.string.guides_classes)) { ClassGrid(Guides.classCells(index.value), actions.openClass) }
             val copy = GuidesCopy(LocalResources.current)
-            Text(copy.footer(Guides.footer(index.value, state.saved)), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(top = GuideSpace.rowGap, bottom = GuideSpace.section))
+            Text(copy.footer(Guides.footer(index.value, state.saved)), style = ScaledType.meta, color = FsColor.mutedGround, modifier = Modifier.padding(top = GuideSpace.rowGap, bottom = GuideSpace.section))
         }
     }
 }
@@ -134,7 +134,7 @@ private fun GuidesHomeSkeleton() {
             SkeletonBar(160.dp, 12.dp)
         }
         Box(Modifier.fillMaxWidth().quietCard().height(GRID_SKELETON))
-        Text(stringResource(R.string.guides_loading), style = ScaledType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.guides_loading), style = ScaledType.meta, color = FsColor.mutedGround)
     }
 }
 

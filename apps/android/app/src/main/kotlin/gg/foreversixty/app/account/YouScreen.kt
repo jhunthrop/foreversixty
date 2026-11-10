@@ -118,7 +118,7 @@ fun YouScreen(
             Tile(rememberVectorPainter(Icons.Filled.Person), 44.dp)
             Column(Modifier.weight(1f)) {
                 Text(summary.battletag, style = ScaledType.name, color = FsColor.strong)
-                Text(stringResource(R.string.you_signedInWith), style = ScaledType.meta, color = FsColor.muted)
+                Text(stringResource(R.string.you_signedInWith), style = ScaledType.meta, color = FsColor.mutedGround)
             }
             if (summary.plan.isPremium) Tag(stringResource(R.string.plan_premium), FsColor.gold)
         }
@@ -160,10 +160,13 @@ fun YouScreen(
             AccountRow(rememberVectorPainter(Icons.Filled.Info), stringResource(R.string.you_about), chevron = true, onClick = actions.onAbout)
         }
         BrandButton(stringResource(R.string.you_signOut), BrandButtonKind.Quiet, { confirming = true }, height = 48.dp)
-        TextButton(actions.onDeleteAccount, Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-            Text(stringResource(R.string.shared_account_delete_title), style = ScaledType.bodyStrong, color = FsColor.wipe)
+        // The destructive row on a panel, so its wipe ink reads (never faint on the painted ground).
+        AccountCard {
+            TextButton(actions.onDeleteAccount, Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                Text(stringResource(R.string.shared_account_delete_title), style = ScaledType.bodyStrong, color = FsColor.wipe)
+            }
         }
-        Text(summary.version, style = FsType.label, color = FsColor.muted, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        Text(summary.version, style = FsType.label, color = FsColor.mutedGround, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
     }
     if (confirming) {
         ConfirmDialog(
@@ -206,8 +209,8 @@ fun AboutScreen(version: String, back: (() -> Unit)? = null) {
     AccountPage(stringResource(R.string.you_about), back) {
         Seal(64.dp)
         Text(stringResource(R.string.app_name), style = ScaledType.wordmark, color = FsColor.strong)
-        Text(version, style = ScaledType.body, color = FsColor.text)
-        Text(stringResource(R.string.about_notAffiliated), style = ScaledType.meta, color = FsColor.muted)
+        Text(version, style = ScaledType.body, color = FsColor.strong)
+        Text(stringResource(R.string.about_notAffiliated), style = ScaledType.meta, color = FsColor.mutedGround)
     }
 }
 

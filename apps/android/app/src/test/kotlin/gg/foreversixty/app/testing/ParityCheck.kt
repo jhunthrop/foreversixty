@@ -1,5 +1,6 @@
 package gg.foreversixty.app.testing
 
+import gg.foreversixty.app.designsystem.screenGround
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,7 +45,7 @@ object ParityCheck {
             density = LocalDensity.current.density
             ForeverTheme {
                 CompositionLocalProvider(LocalParityRecorder provides recorder) {
-                    Box(Modifier.fillMaxSize().background(FsColor.bg)) { content() }
+                    Box(Modifier.fillMaxSize().screenGround()) { content() }
                 }
             }
         }

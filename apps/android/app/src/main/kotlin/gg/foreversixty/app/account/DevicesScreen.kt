@@ -64,7 +64,7 @@ fun DevicesScreen(
                 BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, onRetry, height = 44.dp)
             }
         }
-        Text(stringResource(R.string.devices_footer), style = ScaledType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.devices_footer), style = ScaledType.meta, color = FsColor.mutedGround)
     }
     confirming?.let { row ->
         ConfirmDialog(

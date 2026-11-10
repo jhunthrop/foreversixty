@@ -43,7 +43,7 @@ import kotlin.math.roundToInt
 /** A tag (`ui/Tag`): 22 dp, the 12 sp label in sentence case (N1), tinted ground and border; [checked] leads with a tick. */
 @Composable
 fun Tag(text: String, color: Color, modifier: Modifier = Modifier, checked: Boolean = false) {
-    val shape = RoundedCornerShape(FsRadius.legacyPill)
+    val shape = RoundedCornerShape(FsRadius.field)
     Row(
         modifier
             .heightIn(min = 22.dp)
@@ -58,8 +58,8 @@ fun Tag(text: String, color: Color, modifier: Modifier = Modifier, checked: Bool
     }
 }
 
-/** A chip or pill's ground: [fill] and a 1 dp [line] border in [shape]. */
-fun Modifier.pillSurface(fill: Color, line: Color, shape: Shape = RoundedCornerShape(percent = 50)): Modifier =
+/** A chip's ground: [fill] and a 1 dp [line] border on the control radius (web chips.css), never a full pill. */
+fun Modifier.pillSurface(fill: Color, line: Color, shape: Shape = RoundedCornerShape(FsRadius.control)): Modifier =
     background(fill, shape).border(1.dp, line, shape)
 
 /**

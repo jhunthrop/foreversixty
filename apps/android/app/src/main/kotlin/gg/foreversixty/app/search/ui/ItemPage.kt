@@ -1,5 +1,7 @@
 package gg.foreversixty.app.search.ui
 
+import gg.foreversixty.app.designsystem.LoadError
+import gg.foreversixty.app.designsystem.panel
 import gg.foreversixty.app.designsystem.FsTopBar
 import gg.foreversixty.app.designsystem.screenGround
 import androidx.annotation.DrawableRes
@@ -219,7 +221,7 @@ private fun StripChips(current: ItemSection, onChip: (ItemSection) -> Unit) {
 @Composable
 private fun Head(look: ItemLook, meta: String?, build: String) {
     Row(
-        Modifier.padding(SearchLayout.margin).fillMaxWidth().semantics(mergeDescendants = true) { heading() },
+        Modifier.padding(SearchLayout.margin).fillMaxWidth().panel().padding(16.dp).semantics(mergeDescendants = true) { heading() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
@@ -269,15 +271,12 @@ private fun FailedBody(look: ItemLook, build: String, onRetry: () -> Unit) {
 /** An error in its own region, in wipe red, with Try again (spec §5.0). */
 @Composable
 private fun RegionError(text: String, onRetry: () -> Unit) {
-    Column(Modifier.padding(horizontal = SearchLayout.margin, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(text, style = ScaledType.body, color = FsColor.wipe)
-        BrandButton(stringResource(R.string.search_tryAgain), BrandButtonKind.Secondary, onRetry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
-    }
+    LoadError(text, stringResource(R.string.search_tryAgain), onRetry, Modifier.padding(horizontal = SearchLayout.margin, vertical = 8.dp))
 }
 
 @Composable
 private fun Foot(text: String) {
-    Text(text, style = ScaledType.body, color = FsColor.muted, modifier = Modifier.padding(horizontal = SearchLayout.margin, vertical = 12.dp))
+    Text(text, style = ScaledType.body, color = FsColor.mutedGround, modifier = Modifier.padding(horizontal = SearchLayout.margin, vertical = 12.dp))
 }
 
 @Composable

@@ -1483,7 +1483,7 @@ enum Copy {
     /// Lock sign-ups
     static var officerLock: String { text("officer.lock") }
 
-    /// Unlock sign-ups
+    /// Open sign-ups
     static var officerUnlock: String { text("officer.unlock") }
 
     /// Copy the list
@@ -1709,9 +1709,9 @@ enum Copy {
     /// Full breakdown on foreversixty.gg
     static var simsBreakdown: String { text("sims.breakdown") }
 
-    /// ± {error} · {n} iterations · engine {version}
-    static func simsError(error: String, n: String, version: String) -> String {
-        format("sims.error", error, n, version)
+    /// ± {error} · {n} iterations
+    static func simsError(error: String, n: String) -> String {
+        format("sims.error", error, n)
     }
 
     /// Sim

@@ -128,7 +128,7 @@ fun OfflineDataScreen(state: OfflineDataState, now: Instant, actions: OfflineDat
             }
             Updates(state, actions)
             UpdateButtons(state, report?.isEmpty != false, actions)
-            Text(copy.footer(state.checkedAt, now), style = ScaledType.meta, color = FsColor.muted)
+            Text(copy.footer(state.checkedAt, now), style = ScaledType.meta, color = FsColor.mutedGround)
         }
     }
     if (state.confirmingRemove) RemoveDialog(actions)

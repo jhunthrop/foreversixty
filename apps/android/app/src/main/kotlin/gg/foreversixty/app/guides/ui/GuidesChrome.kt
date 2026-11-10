@@ -95,8 +95,8 @@ internal fun EqualSegments(labels: List<String>, selected: Int, onSelect: (Int) 
                     activeContainerColor = GameColors.pressedWash,
                     activeContentColor = FsColor.strong,
                     activeBorderColor = FsColor.line,
-                    inactiveContainerColor = GameColors.controlFill,
-                    inactiveContentColor = FsColor.muted,
+                    inactiveContainerColor = FsColor.raised,
+                    inactiveContentColor = FsColor.text,
                     inactiveBorderColor = FsColor.line,
                 ),
             ) {

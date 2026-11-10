@@ -144,7 +144,6 @@ fun PlanScreen(plan: PlanSummary, mayLink: Boolean, back: (() -> Unit)? = null, 
                 PlanBillingLine.Nothing -> Unit
             }
         }
-        Text(stringResource(R.string.plan_freeForAll), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 

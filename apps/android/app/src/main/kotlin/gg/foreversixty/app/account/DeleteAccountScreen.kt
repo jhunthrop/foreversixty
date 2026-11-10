@@ -80,7 +80,7 @@ fun DeleteAccountScreen(
         ConfirmField(battleTag, typed, onTyped, enabled = !deleting, mismatch = outcome == AccountActionOutcome.ConfirmMismatch)
         AccountCopy.deletionFailure(outcome)?.let { Text(it, style = ScaledType.body, color = FsColor.wipe) }
         BrandButton(stringResource(R.string.shared_account_delete_button), BrandButtonKind.Destructive, onDelete, busy = deleting, enabled = canDelete)
-        Text(stringResource(R.string.shared_account_delete_email), style = ScaledType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.shared_account_delete_email), style = ScaledType.meta, color = FsColor.mutedGround)
     }
 }
 

@@ -1,5 +1,6 @@
 package gg.foreversixty.app.sims.ui
 
+import gg.foreversixty.app.designsystem.LoadError
 import gg.foreversixty.app.designsystem.SectionTitle
 import gg.foreversixty.app.common.SavedAnswerStrip
 import androidx.compose.foundation.background
@@ -89,12 +90,6 @@ private fun Loaded(content: SimsContent, state: SimsListState, specs: SpecCatalo
             ServerSection(content, state, specs, build, now, copy, actions)
         }
         MineSection(content, state, specs, build, now, copy, actions)
-        if (content.mine.isNotEmpty()) {
-            Text(
-                stringResource(if (state.entitled) R.string.sims_footer_premium else R.string.sims_footer_free),
-                style = ScaledType.meta, color = FsColor.muted,
-            )
-        }
     }
 }
 
@@ -168,10 +163,7 @@ private fun EmptyCard(text: String) {
 
 @Composable
 fun ErrorBlock(text: String, retry: () -> Unit) {
-    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(text, style = ScaledType.lead, color = FsColor.wipe, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
-        BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, retry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
-    }
+    LoadError(text, stringResource(R.string.common_tryAgain), retry, Modifier.padding(16.dp))
 }
 
 /** F5.6: three rows of each section at their real heights. */

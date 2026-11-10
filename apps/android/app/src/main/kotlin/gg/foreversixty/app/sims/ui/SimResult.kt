@@ -1,5 +1,7 @@
 package gg.foreversixty.app.sims.ui
 
+import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.panel
 import gg.foreversixty.app.designsystem.Label12
 import gg.foreversixty.app.designsystem.SectionTitle
 import gg.foreversixty.app.common.SavedAnswerStrip
@@ -81,18 +83,21 @@ fun SimResultContent(
 @Composable
 private fun Loaded(model: SimResultModel, looks: Map<Int, SimGearLook>, build: String?, openItem: (SimGearCell) -> Unit, openBreakdown: (String) -> Unit) {
     val res = LocalResources.current
-    Column(Modifier.padding(horizontal = 16.dp).padding(top = 4.dp)) {
-        Label12(model.kind)
-        Text(
-            buildAnnotatedString {
-                append("${model.specName} ")
-                withStyle(SpanStyle(color = classColor(model.classSlug))) { append(model.className) }
-                model.level?.let { append(" · " + res.getString(R.string.sims_level, it)) }
-            },
-            style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp),
-        )
-        Answer(model.answer)
-        Text(model.errorLine, style = ScaledType.tabularMeta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp))
+    Column(Modifier.padding(horizontal = 16.dp).padding(top = 16.dp)) {
+        // The answer on the page's one Plate (web /sim result): the kind, who ran, the figure and its error.
+        Column(Modifier.fillMaxWidth().panel().padding(16.dp)) {
+            Label12(model.kind)
+            Text(
+                buildAnnotatedString {
+                    append("${model.specName} ")
+                    withStyle(SpanStyle(color = classColor(model.classSlug))) { append(model.className) }
+                    model.level?.let { append(" · " + res.getString(R.string.sims_level, it)) }
+                },
+                style = ScaledType.meta, color = FsColor.text, modifier = Modifier.padding(top = 4.dp),
+            )
+            Answer(model.answer)
+            Text(model.errorLine, style = ScaledType.tabularMeta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp))
+        }
         if (model.gear.isNotEmpty()) Gear(model, looks, build, openItem)
         Row(
             Modifier.padding(top = 8.dp).heightIn(min = 48.dp).clickable { openBreakdown(model.breakdownUrl) },
@@ -115,10 +120,11 @@ private fun Answer(answer: SimResultModel.Answer) {
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 itemVerticalAlignment = Alignment.Bottom,
             ) {
-                Text(answer.value, style = ScaledType.title.copy(fontSize = SimResultLayout.figureSize), color = FsColor.strong)
-                Text(stringResource(R.string.bis_unit_dps), style = ScaledType.body, color = FsColor.muted, modifier = Modifier.padding(bottom = 8.dp))
+                // A Figure: tabular Open Sans with its unit (spec 3.4), never the display face.
+                Text(answer.value, style = FsType.figureXl, color = FsColor.strong)
+                Text(stringResource(R.string.bis_unit_dps), style = ScaledType.bodyStrong, color = FsColor.muted, modifier = Modifier.padding(bottom = 6.dp))
             }
-            is SimResultModel.Answer.Sentence -> Text(answer.text, style = ScaledType.stat, color = FsColor.strong)
+            is SimResultModel.Answer.Sentence -> Text(answer.text, style = FsType.itemLg, color = FsColor.strong)
         }
     }
 }
@@ -146,7 +152,6 @@ private fun Gear(model: SimResultModel, looks: Map<Int, SimGearLook>, build: Str
                 }
             }
         }
-        if (model.showsChangedLegend) Text(stringResource(R.string.sims_changed), style = ScaledType.meta, color = FsColor.muted)
     }
 }
 

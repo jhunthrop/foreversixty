@@ -423,7 +423,7 @@
 
     "officer.label": "Officer",
     "officer.lock": "Lock sign-ups",
-    "officer.unlock": "Unlock sign-ups",
+    "officer.unlock": "Open sign-ups",
     "officer.copy": "Copy the list",
     "officer.copied": "Copied",
     "officer.lockNote": "Locking tells everyone signed up whether they are In or on the Bench.",
@@ -494,7 +494,7 @@
     "sims.premiumLine": "Server sims are part of Premium.",
     "sims.gear": "The gear it ran",
     "sims.breakdown": "Full breakdown on foreversixty.gg",
-    "sims.error": "± {error} · {n} iterations · engine {version}",
+    "sims.error": "± {error} · {n} iterations",
     "sims.kind.run": "Sim",
     "sims.kind.gear": "Top Gear",
     "sims.kind.talents": "Talent compare",

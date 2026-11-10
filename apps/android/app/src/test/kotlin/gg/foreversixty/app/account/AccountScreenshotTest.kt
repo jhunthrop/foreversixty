@@ -1,5 +1,8 @@
 package gg.foreversixty.app.account
 
+import androidx.compose.ui.test.swipeUp
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -144,6 +147,10 @@ class AccountScreenshotTest {
         tab(name, ForeverTab.Home) {
             DeleteAccountScreen(consequences, me.user.battletag, typed, {}, deleting = false, outcome = outcome, onDelete = {}, back = {})
         }
+        // The same state scrolled to its end: the BattleTag field, the button and the outcome are the step under review.
+        compose.onNode(hasScrollAction()).performTouchInput { repeat(SCROLL_SWIPES) { swipeUp() } }
+        compose.waitForIdle()
+        compose.onRoot().captureRoboImage("src/test/screenshots/account_$name-end.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
     @Composable
@@ -182,6 +189,9 @@ class AccountScreenshotTest {
         captureScreenRoboImage("src/test/screenshots/account_$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 }
+
+/** Enough swipes to reach the end of the longest delete state at 1x. */
+private const val SCROLL_SWIPES = 3
 
 private const val VERSION = "Version 0.1.0 (1) · data 1.60.1.70658"
 

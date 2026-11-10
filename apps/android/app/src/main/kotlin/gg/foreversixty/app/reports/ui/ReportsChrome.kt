@@ -1,5 +1,7 @@
 package gg.foreversixty.app.reports.ui
 
+import gg.foreversixty.app.designsystem.LoadError
+import gg.foreversixty.app.designsystem.panel
 import gg.foreversixty.app.designsystem.FsTopBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -85,10 +87,7 @@ class BarAction(val label: String, val icon: @Composable () -> Painter, val run:
 /** The failing region's sentence in wipe red with Try again (v1 §5.0). */
 @Composable
 fun ErrorRegion(text: String, retry: () -> Unit, inset: Boolean = true) {
-    Column(Modifier.fillMaxWidth().padding(if (inset) 16.dp else 0.dp),verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(text, style = ScaledType.lead, color = FsColor.wipe, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
-        BrandButton(stringResource(R.string.common_tryAgain), BrandButtonKind.Secondary, retry, height = 48.dp, fill = false, leadingIcon = Icons.Filled.Refresh)
-    }
+    LoadError(text, stringResource(R.string.common_tryAgain), retry, Modifier.padding(if (inset) 16.dp else 0.dp))
 }
 
 /** [base] grown with the font scale, never past [cap] (spec W3 §9: crests, glyphs and icons scale with text). */

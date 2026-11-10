@@ -110,7 +110,7 @@ fun GuideReader(state: GuideReaderState, now: Instant, actions: GuideReaderActio
         state.newData?.let { NewDataStrip(stringResource(if (it.failed) R.string.offline_updateFailed else R.string.offline_newData), stringResource(R.string.offline_update), actions.update, it.failed) }
         when (val phase = state.phase) {
             Loadable.Loading -> ReaderSkeleton()
-            Loadable.NotCached -> Text(stringResource(R.string.guides_notCached), style = ScaledType.body, color = FsColor.muted, modifier = Modifier.padding(GuideSpace.margin))
+            Loadable.NotCached -> Text(stringResource(R.string.guides_notCached), style = ScaledType.body, color = FsColor.mutedGround, modifier = Modifier.padding(GuideSpace.margin))
             Loadable.Failed -> ErrorRegion(stringResource(R.string.guides_error), actions.retry)
             is Loadable.Loaded -> {
                 phase.offlineSince?.let { OfflineStrip(stringResource(R.string.offline_strip, OfflineStamp.format(it, now))) }

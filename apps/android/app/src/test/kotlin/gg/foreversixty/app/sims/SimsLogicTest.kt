@@ -206,7 +206,7 @@ class SimsLogicTest {
         assertEquals("Sim", model.kind)
         assertEquals("Fury Warrior · level 60", model.meta(resources()))
         assertEquals(SimResultModel.Answer.Figure("101.4"), model.answer)
-        assertEquals("± 0.1 · 3,000 iterations · engine 1f542def3", model.errorLine)
+        assertEquals("± 0.1 · 3,000 iterations", model.errorLine)
         assertEquals("https://foreversixty.gg/sim/km3xibdrsiyr", model.breakdownUrl)
     }
 

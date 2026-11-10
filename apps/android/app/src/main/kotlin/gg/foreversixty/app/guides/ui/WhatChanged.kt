@@ -85,7 +85,7 @@ private fun <T> Region(title: String, phase: Loadable<T>, retry: () -> Unit, con
                 SkeletonBar(200.dp, 14.dp)
                 SkeletonBar(260.dp, 14.dp)
             }
-            Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = ScaledType.body, color = FsColor.muted)
+            Loadable.NotCached -> Text(stringResource(R.string.guides_listNotCached), style = ScaledType.body, color = FsColor.mutedGround)
             Loadable.Failed -> ErrorRegion(stringResource(R.string.changes_error), retry, inset = false)
             is Loadable.Loaded -> content(phase.value)
         }

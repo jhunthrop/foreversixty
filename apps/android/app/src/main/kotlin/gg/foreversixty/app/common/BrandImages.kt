@@ -53,7 +53,6 @@ fun ClassCrest(className: String?, size: Dp, modifier: Modifier = Modifier) {
     Box(
         modifier
             .size(size)
-            .shadow(7.dp, CircleShape, ambientColor = color, spotColor = color)
             .clip(CircleShape)
             .background(FsColor.raised)
             .border(2.dp, color.copy(alpha = RING_ALPHA), CircleShape),

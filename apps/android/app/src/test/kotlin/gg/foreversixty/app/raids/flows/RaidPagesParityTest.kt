@@ -1,5 +1,8 @@
 package gg.foreversixty.app.raids.flows
 
+import gg.foreversixty.app.raids.ui.LocalRaidIconBuild
+import androidx.compose.runtime.CompositionLocalProvider
+import gg.foreversixty.app.items.LocalItemIconPainter
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -54,10 +57,13 @@ class RaidPagesParityTest {
         content: @Composable () -> Unit,
     ) =
         ParityCheck.state(compose, screen, expectedDrift = drift) {
-            ForeverTabScaffold(selected = ForeverTab.Raid, onSelect = {}, badges = TabBadges(raid = 6, activity = 3)) {
-                Column {
-                    FlowBackBar(backTo, {}, if (share) ({}) else null)
-                    content()
+            // The repo's game icons, as the tab roots' parity tests paint them (never an empty square).
+            CompositionLocalProvider(LocalItemIconPainter provides gg.foreversixty.app.home.HomeFixtures.repoIcons, LocalRaidIconBuild provides gg.foreversixty.app.home.HomeFixtures.BUILD) {
+                ForeverTabScaffold(selected = ForeverTab.Raid, onSelect = {}, badges = TabBadges(raid = 6, activity = 3)) {
+                    Column {
+                        FlowBackBar(backTo, {}, if (share) ({}) else null)
+                        content()
+                    }
                 }
             }
         }

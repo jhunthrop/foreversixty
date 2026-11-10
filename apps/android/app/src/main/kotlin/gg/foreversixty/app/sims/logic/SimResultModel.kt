@@ -69,7 +69,7 @@ data class SimResultModel(
                 level = character?.level,
                 answer = if (sentence && headline.isNotEmpty()) Answer.Sentence(headline) else Answer.Figure(figure(result.dps.mean)),
                 errorLine = res.getString(
-                    R.string.sims_error, figure(result.dps.error), String.format(Locale.US, "%,d", result.iterationsRun), result.engineVersion,
+                    R.string.sims_error, figure(result.dps.error), String.format(Locale.US, "%,d", result.iterationsRun),
                 ),
                 gear = gear(result, kindKey),
                 breakdownUrl = "$SITE/sim/$id",

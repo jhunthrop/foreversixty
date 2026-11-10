@@ -179,14 +179,15 @@ private fun WatchStar(watch: WatchState, name: String, enabled: Boolean, toggle:
 
 @Composable
 private fun Profile(profile: CharacterProfile, state: CharacterScreenState, specs: SpecCatalog, now: Instant, copy: CharacterCopy, actions: CharacterActions) {
-    if (CharacterCard.showsScoreSection(profile)) ScoreCard(profile, copy, actions)
+    // Spec ruling R7: Gear, then the fights, then Forever Score below them on a phone.
+    GearSection(profile, state, actions)
     if (profile.best.isNotEmpty()) Section(stringResource(R.string.char_bests)) { profile.best.forEachIndexed { i, f -> Divided(i) { BestRow(profile, f, now, copy) } } }
     if (profile.history.isNotEmpty()) {
         Section(stringResource(R.string.char_recent)) {
             profile.history.forEachIndexed { i, f -> Divided(i) { RecentRow(f, now, copy, state.reportsOn, actions) } }
         }
     }
-    GearSection(profile, state, actions)
+    if (CharacterCard.showsScoreSection(profile)) ScoreCard(profile, copy, actions)
     if (profile.buildsSeen.isNotEmpty()) {
         Section(stringResource(R.string.char_builds)) {
             profile.buildsSeen.forEachIndexed { i, b ->
@@ -339,7 +340,7 @@ private fun BestRow(profile: CharacterProfile, fight: CharacterFight, now: Insta
             fight.percentile?.let { p ->
                 val n = p.roundToInt()
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text(n.toString(), style = ScaledType.tabular.copy(fontWeight = FontWeight.Bold), color = parseColor(ParseTier.of(n)))
+                    Text(gg.foreversixty.app.raids.ui.ordinal(n), style = ScaledType.tabular.copy(fontWeight = FontWeight.Bold), color = parseColor(ParseTier.of(n)))
                     Text(stringResource(R.string.char_percentile), style = ScaledType.meta, color = FsColor.muted)
                 }
             }
@@ -388,7 +389,6 @@ private fun GearSection(profile: CharacterProfile, state: CharacterScreenState, 
         val slots = Paperdoll.fromProfile(profile.gear, state.items, LocalResources.current, profile.character.className?.lowercase())
         Column(Modifier.fillMaxWidth().quietCard().padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             PaperdollFrame(slots, state.build, actions.openSocket)
-            if (slots.any { it.better }) Text(stringResource(R.string.char_goldDot), style = ScaledType.meta, color = FsColor.muted)
         }
         profile.gearGapTotal?.let { gap ->
             Row(Modifier.fillMaxWidth().quietCard().heightIn(min = 56.dp).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {

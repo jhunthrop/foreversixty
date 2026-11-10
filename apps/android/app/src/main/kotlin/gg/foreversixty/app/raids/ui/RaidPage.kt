@@ -1,5 +1,7 @@
 package gg.foreversixty.app.raids.ui
 
+import androidx.compose.ui.graphics.Color
+import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.designsystem.FsTopBar
 import gg.foreversixty.app.designsystem.screenGround
 import android.content.Intent
@@ -160,7 +162,7 @@ fun RaidPageContent(
     val addToCalendar = { context.startActivity(calendarIntent(raid, facts, location, share)) }
     Box(Modifier.fillMaxSize().screenGround()) {
         Column(Modifier.fillMaxSize()) {
-            FsTopBar(raid.title, stringResource(R.string.tab_raids), back) {
+            FsTopBar(raid.title, stringResource(R.string.tab_raids), back, bottomLine = false) {
                     IconButton(onClick = addToCalendar) {
                         Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.raid_menu_calendar), tint = FsColor.strong)
                     }
@@ -177,9 +179,11 @@ fun RaidPageContent(
                     }
             }
             Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                Box(Modifier.fillMaxWidth().surfaceBand().padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+                    RaidHead(raid, facts, clock, now, guildName)
+                }
                 offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, now()), stale, retry) }
                 Column(verticalArrangement = Arrangement.spacedBy(22.dp), modifier = Modifier.padding(16.dp)) {
-                    RaidHead(raid, facts, clock, now, guildName)
                     CountBlock(facts, muted = facts.chip == RaidChip.Cancelled)
                     if (facts.showsOfficerTools && facts.isSignable) OfficerRow(controller, clock)
                     SignupCard(controller, facts, clock, currentKey, requestPermission)
@@ -204,7 +208,7 @@ private fun calendarIntent(raid: RaidView, facts: RaidFacts, location: String, l
         .putExtra(CalendarContract.Events.EVENT_LOCATION, location)
         .putExtra(CalendarContract.Events.DESCRIPTION, link)
 
-/** The page head (spec F4.2 items 1 to 3). */
+/** The page head (spec F4.2 items 1 to 3), on the band: secondary ink is `mutedGround`, AA on the painted art. */
 @Composable
 fun RaidHead(raid: RaidView, facts: RaidFacts, clock: RaidClock, now: () -> Instant, guildName: String?) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -212,26 +216,26 @@ fun RaidHead(raid: RaidView, facts: RaidFacts, clock: RaidClock, now: () -> Inst
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(stringResource(R.string.raid_eyebrow), style = FsType.label, color = FsColor.gold, maxLines = 1, softWrap = false)
             ChipTag(facts.chip)
-            if (!large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.muted, maxLines = 1) }
+            if (!large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.mutedGround, maxLines = 1) }
         }
         // Large text: the guild name drops to its own line.
-        if (large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
+        if (large) guildName?.takeIf { it.isNotEmpty() }?.let { Text(it, style = ScaledType.meta, color = FsColor.mutedGround) }
         if (raid.title != raid.zoneName) {
-            Text(stringResource(R.string.raids_zoneSuffix, raid.zoneName).trim(), style = ScaledType.body, color = FsColor.muted)
+            Text(stringResource(R.string.raids_zoneSuffix, raid.zoneName).trim(), style = ScaledType.body, color = FsColor.mutedGround)
         }
-        Text(clock.longDate(facts.startsAt), style = ScaledType.body, color = FsColor.text)
-        TimesLine(facts, clock, showsEnd = true)
+        Text(clock.longDate(facts.startsAt), style = ScaledType.body, color = FsColor.strong)
+        TimesLine(facts, clock, showsEnd = true, ink = FsColor.mutedGround)
         CountdownLine(facts, clock, now)
         val guildZone = runCatching { ZoneId.of(raid.guildTimezone) }.getOrNull()
         if (guildZone != null && clock.offsetDiffers(facts.startsAt, guildZone)) {
-            Text(stringResource(R.string.raid_guildTime, clock.guildClock(facts.startsAt, guildZone)), style = ScaledType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.raid_guildTime, clock.guildClock(facts.startsAt, guildZone)), style = ScaledType.meta, color = FsColor.mutedGround)
         }
     }
 }
 
-/** `Invites 7:45 pm · Pull 8:00 pm · Ends 11:00 pm`, labels muted and times in mono. */
+/** `Invites 7:45 pm · Pull 8:00 pm · Ends 11:00 pm`: labels in [ink] (muted on a panel, mutedGround on the band), times tabular. */
 @Composable
-fun TimesLine(facts: RaidFacts, clock: RaidClock, showsEnd: Boolean) {
+fun TimesLine(facts: RaidFacts, clock: RaidClock, showsEnd: Boolean, ink: Color = FsColor.muted) {
     val parts = buildList {
         facts.inviteAt?.let { add(R.string.raid_invites to clock.clock(it)) }
         add(R.string.raid_pull to clock.clock(facts.startsAt))
@@ -241,14 +245,14 @@ fun TimesLine(facts: RaidFacts, clock: RaidClock, showsEnd: Boolean) {
     Text(
         buildAnnotatedString {
             templates.forEachIndexed { index, (template, time) ->
-                if (index > 0) withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(RaidFacts.SEPARATOR) }
+                if (index > 0) withStyle(androidx.compose.ui.text.SpanStyle(color = ink)) { append(RaidFacts.SEPARATOR) }
                 val (head, tail) = template.split(MARK, limit = 2).let { it[0] to it.getOrElse(1) { "" } }
-                withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(head) }
+                withStyle(androidx.compose.ui.text.SpanStyle(color = ink)) { append(head) }
                 // Only the digits are mono; `pm` stays in the body face (UX should 2).
                 val digits = time.substringBefore(' ')
                 withStyle(ScaledType.tabular.toSpanStyle().copy(color = FsColor.strong)) { append(digits) }
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.strong)) { append(time.removePrefix(digits)) }
-                withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(tail) }
+                withStyle(androidx.compose.ui.text.SpanStyle(color = ink)) { append(tail) }
             }
         },
         style = ScaledType.body,

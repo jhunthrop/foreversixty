@@ -1,5 +1,7 @@
 package gg.foreversixty.app.raids.ui
 
+import gg.foreversixty.app.designsystem.SectionTitle
+import gg.foreversixty.app.designsystem.LoadError
 import androidx.compose.foundation.Image
 import gg.foreversixty.app.designsystem.Tag
 import gg.foreversixty.app.designsystem.GameColors
@@ -113,12 +115,15 @@ fun GameIcon(
     }
 }
 
-/** The 12 sp label in sentence case (ruling N1), read as a heading, with an optional mono count. */
+/**
+ * A section's head over the painted ground in the round-5 look: [SectionTitle] (the display face,
+ * cream, as the tab roots' sections) with an optional tabular count in mutedGround.
+ */
 @Composable
-fun SectionLabel(text: String, color: Color = FsColor.muted, trailing: String? = null) {
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.semantics { heading() }) {
-        Text(text, style = FsType.label, color = color, maxLines = 1, softWrap = false)
-        trailing?.let { Text(it, style = ScaledType.tabularMeta, color = color) }
+fun SectionLabel(text: String, color: Color = FsColor.cream, trailing: String? = null) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        SectionTitle(text, color = color)
+        trailing?.let { Text(it, style = ScaledType.tabular, color = FsColor.mutedGround) }
     }
 }
 
@@ -219,8 +224,5 @@ fun GoldLink(text: String, onClick: () -> Unit, trailing: Boolean = false) {
 /** An error region (spec 5.0): the sentence in wipe red and Try again. */
 @Composable
 fun ErrorRegion(message: String, retry: () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.raidQuietCard().padding(16.dp)) {
-        Text(message, style = ScaledType.body, color = FsColor.wipe)
-        RaidSecondaryButton(stringResource(R.string.common_tryAgain), retry)
-    }
+    LoadError(message, stringResource(R.string.common_tryAgain), retry)
 }
