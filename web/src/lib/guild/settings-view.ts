@@ -4,6 +4,20 @@
 // are pinned without a page.
 import type { GuildBillingView } from '../account/api';
 import { utcDayMonthYear } from '../dates';
+import type { SelectOption } from '../ui/listbox-model';
+import type { GuildVisibility } from './api';
+
+/** Report visibility in the settings' words, the order the select lists them. */
+export const VISIBILITY_OPTIONS: readonly (SelectOption & { value: GuildVisibility })[] = [
+  { value: 'public', label: 'Public' },
+  { value: 'unlisted', label: 'Unlisted' },
+  { value: 'guild', label: 'Guild only' },
+];
+
+/** A visibility's word ("Guild only"); the value itself for one the list does not know. */
+export function visibilityWord(value: string): string {
+  return VISIBILITY_OPTIONS.find((o) => o.value === value)?.label ?? value;
+}
 
 export const settingsWords = {
   officerRank: 'Officer ranks',

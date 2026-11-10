@@ -45,6 +45,7 @@ export const FIXTURE_GUILD_B_PATH = 'us/hardcore/iron-vanguard';
 // what Playwright navigates to and what [...path].astro prerenders.
 export const FIXTURE_GUILD_CLAIM_PATH = `${FIXTURE_GUILD_PATH}/claim`;
 export const FIXTURE_GUILD_SETTINGS_PATH = `${FIXTURE_GUILD_PATH}/settings`;
+export const FIXTURE_GUILD_SETUP_PATH = `${FIXTURE_GUILD_PATH}/setup`;
 export const FIXTURE_GUILD_INVITE_TOKEN = 'fixtureinvitetoken1';
 
 // The guild control-centre's own fixture guild (design/specs/2026-10-04-guild-page.md v2,
@@ -76,6 +77,7 @@ export function fixtureGuildPaths(): { params: { path: string } }[] {
     { params: { path: FIXTURE_GUILD_B_PATH } },
     { params: { path: FIXTURE_GUILD_CLAIM_PATH } },
     { params: { path: FIXTURE_GUILD_SETTINGS_PATH } },
+    { params: { path: FIXTURE_GUILD_SETUP_PATH } },
     { params: { path: `invite/${FIXTURE_GUILD_INVITE_TOKEN}` } },
     { params: { path: FIXTURE_GUILD_CENTRE_PATH } },
   ];

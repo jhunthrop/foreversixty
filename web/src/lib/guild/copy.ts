@@ -131,11 +131,6 @@ export const guildClaimCopy = {
   youHold: (guildName: string): string => `You hold ${guildName === '' ? 'this guild' : guildName}.`,
   nextHeading: 'Next',
   nextRoster: 'Approve your officers and members',
-  nextInvite: 'Make an invite link',
-  nextPlan: 'Plan an event',
-  nextDiscord: 'Add the Discord bot',
-  // A guild with no plan: the gate sentence's part 1 for both, no link (the plan lives on the tabs).
-  nextGated: 'Events and the Discord bot are part of the Guild and Raid guild plans.',
   releaseConfirmLine: (guildName: string): string =>
     `Release your claim on ${guildName === '' ? 'this guild' : guildName}? Officers will have to claim it again.`,
   releaseConfirmButton: 'Release',

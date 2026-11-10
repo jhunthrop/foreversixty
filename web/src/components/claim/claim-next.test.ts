@@ -9,13 +9,18 @@ import { BUTTON_PRIMARY } from '../../lib/ui/button';
 import SignInPrompt from '../SignInPrompt.svelte';
 import ClaimMemberHandoff from './ClaimMemberHandoff.svelte';
 import ClaimNextSteps from './ClaimNextSteps.svelte';
+import { setupFixture } from '../../test-support/guild-setup-fixture';
 import SetupBackToClaim from './SetupBackToClaim.svelte';
 
 const PLAN = { plan: 'guild' as const, interval: 'yearly' as const };
+const SETUP = setupFixture();
 const BASE = {
+  guildId: 7,
+  guildName: 'Olympus XXVII',
   claimPlan: PLAN,
   guildBase: '/guild/us/pvp/olympus-xxvii',
-  settingsBase: '/guild/us/pvp/olympus-xxvii/settings',
+  setupHref: '/guild/us/pvp/olympus-xxvii/setup',
+  initial: SETUP,
 };
 
 function testIds(body: string): string[] {
@@ -24,46 +29,29 @@ function testIds(body: string): string[] {
 
 const primaries = (html: string): number => html.split(BUTTON_PRIMARY).length - 1;
 
-describe('Next steps', () => {
-  it('leads with the subscribe button, the page one fill', () => {
+describe('Set up the guild', () => {
+  it('lists the eight steps with their states and leads with Start setup', () => {
+    const { body } = render(ClaimNextSteps, { props: { ...BASE, claimPlan: null, subscribe: null } });
+    expect(body).toContain('Set up Olympus XXVII');
+    expect(body.match(/<li /g)?.length).toBe(8);
+    expect(body).toContain('aria-label="Step 5: Done"');
+    expect(body).toContain('aria-label="Step 1: Next"');
+    expect(testIds(body)).toEqual(['guild-claim-next-setup', 'guild-claim-next-roster']);
+    expect(primaries(body)).toBe(1);
+    expect(body).toContain(`href="${BASE.setupHref}"`);
+  });
+
+  it('keeps the subscribe button as the one fill on a claim made for a plan', () => {
     const { body } = render(ClaimNextSteps, {
       props: { ...BASE, subscribe: { id: 7, label: 'Start the 7-day trial' } },
     });
     expect(testIds(body)).toEqual([
       'guild-claim-next-subscribe',
+      'guild-claim-next-setup',
       'guild-claim-next-roster',
-      'guild-claim-next-invite',
-      'guild-claim-next-plan',
-      'guild-claim-next-discord',
     ]);
     expect(primaries(body)).toBe(1);
-    expect(body.indexOf(BUTTON_PRIMARY)).toBeLessThan(body.indexOf('guild-claim-next-roster'));
-  });
-
-  it('keeps the roster link as the primary when there is nothing to subscribe', () => {
-    const { body } = render(ClaimNextSteps, { props: { ...BASE, subscribe: null } });
-    expect(testIds(body)).toEqual([
-      'guild-claim-next-roster',
-      'guild-claim-next-invite',
-      'guild-claim-next-plan',
-      'guild-claim-next-discord',
-    ]);
-    expect(primaries(body)).toBe(1);
-    expect(body.indexOf(BUTTON_PRIMARY)).toBeLessThan(body.indexOf('guild-claim-next-roster'));
-  });
-
-  it('points Plan an event at the raids tab and the bot at the Discord settings', () => {
-    const { body } = render(ClaimNextSteps, { props: { ...BASE, subscribe: null } });
-    expect(body).toContain(`href="${BASE.guildBase}#raids"`);
-    expect(body).toContain(`href="${BASE.settingsBase}#discord"`);
-    expect(body).not.toContain('guild-claim-next-gated');
-  });
-
-  it('says events and the bot need a plan when the guild has none, with no link', () => {
-    const { body } = render(ClaimNextSteps, { props: { ...BASE, subscribe: null, gated: true } });
-    expect(body).toContain('Events and the Discord bot are part of the Guild and Raid guild plans.');
-    const gated = body.slice(body.indexOf('guild-claim-next-gated'));
-    expect(gated.slice(0, gated.indexOf('</p>'))).not.toContain('<a');
+    expect(body.indexOf(BUTTON_PRIMARY)).toBeLessThan(body.indexOf('guild-claim-next-setup'));
   });
 });
 

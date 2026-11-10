@@ -11,7 +11,8 @@
   import { checkoutCopy } from '../../lib/billing/copy';
   import Button from '../ui/Button.svelte';
   import Plate from '../ui/Plate.svelte';
-  import Steps, { type StepsMark } from '../ui/Steps.svelte';
+  import type { StepsMark } from '../ui/StepMark.svelte';
+  import Steps from '../ui/Steps.svelte';
 
   let {
     phase,

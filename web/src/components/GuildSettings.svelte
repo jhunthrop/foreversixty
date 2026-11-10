@@ -5,7 +5,7 @@
      side (spec section 2.6) -- a 403 from that call IS the "you are not an officer" signal,
      read directly rather than re-derived from /v1/me client side. -->
 <script lang="ts">
-  import { guildClaimHref, type CharacterPath } from '../lib/characters';
+  import { guildClaimHref, guildSetupHref, type CharacterPath } from '../lib/characters';
   import { fetchMeFresh, refetchMe, type Me } from '../lib/account/api';
   import { onWindowFocus } from '../lib/data/query';
   import {
@@ -18,7 +18,11 @@
   } from '../lib/guild/api';
   import { guildSettingsCopy } from '../lib/guild/copy';
   import { can } from '../lib/guild/roster-model';
-  import { settingsWords } from '../lib/guild/settings-view';
+  import { settingsWords, VISIBILITY_OPTIONS } from '../lib/guild/settings-view';
+  import { fetchGuildSetup, type GuildSetup } from '../lib/guild/setup-api';
+  import { setupCopy } from '../lib/guild/setup-copy';
+  import { setupOpen } from '../lib/guild/setup-model';
+  import Notice from './ui/Notice.svelte';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildDiscordReserve } from '../lib/guild/discord-state';
   import { createLazyComponent } from '../lib/report/lazy-component.svelte';
@@ -32,17 +36,10 @@
   import Page from './ui/Page.svelte';
   import PageHeader from './ui/PageHeader.svelte';
   import Section from './ui/Section.svelte';
-  import type { SelectOption } from '../lib/ui/listbox-model';
   import Select from './ui/Select.svelte';
   import SettingsRow from './ui/SettingsRow.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
   import { button } from '../lib/ui/button';
-
-  const VISIBILITY_OPTIONS: readonly SelectOption[] = [
-    { value: 'public', label: 'Public' },
-    { value: 'unlisted', label: 'Unlisted' },
-    { value: 'guild', label: 'Guild only' },
-  ];
 
   // The Discord section (raids spec 3.8) is its own chunk: GuildShell's entry is at its budget.
   const discordLazy = createLazyComponent(() => import('./guild/GuildDiscordSection.svelte'));
@@ -63,6 +60,8 @@
   /** Whether this account may release the claim (the `release` word on its /v1/me guild entry). */
   let mayRelease = $state(false);
   let guildName = $state('');
+  /** The setup checklist, best-effort: the row above the page shows until every step is settled. */
+  let setup = $state<GuildSetup | null>(null);
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
   let notice = $state('');
@@ -84,6 +83,9 @@
       guildName = page.guild.name;
       settings = await fetchGuildSettings(page.guild.id, undefined, (fresh) => (settings = fresh));
       status = 'ready';
+      void fetchGuildSetup(page.guild.id)
+        .then((fresh) => (setup = fresh))
+        .catch(() => (setup = null));
     } catch (thrown) {
       status = thrown instanceof GuildApiError && thrown.status === 403 ? 'forbidden' : 'failed';
       return;
@@ -306,6 +308,18 @@
     <p class="text-[14px]" data-testid="guild-settings-forbidden">{guildSettingsCopy.forbidden}</p>
   {:else if settings !== null}
     {@const current = settings}
+    {#if setup !== null && setupOpen(setup)}
+      <div class="px-(--page-inset) pb-3">
+        <Notice
+          text={`${setupCopy.settingsRow.label} · ${setupCopy.settingsRow.progress(setup.done, setup.total)}`}
+          action={{
+            label: setupCopy.settingsRow.link,
+            href: guildSetupHref(path.region, path.ruleset, guildName || path.slug),
+          }}
+          testid="guild-settings-setup-row"
+        />
+      </div>
+    {/if}
     <Page layout="split" panels testid="guild-settings-page">
       {#if guildId !== null}
         <GuildBillingSection {guildId} {path} {guildName} />

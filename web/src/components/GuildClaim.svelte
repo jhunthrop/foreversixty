@@ -11,7 +11,7 @@
      its heading to a plain member (found live, 2026-09-28). -->
 <script lang="ts">
   import { fetchMeFresh, type Me } from '../lib/account/api';
-  import { guildHref, guildSettingsHref, type CharacterPath } from '../lib/characters';
+  import { guildHref, guildSetupHref, type CharacterPath } from '../lib/characters';
   import { SETUP_NAV_ITEM } from '../lib/nav';
   import {
     claimGuild,
@@ -37,7 +37,6 @@
   import ClaimPlanLine from './claim/ClaimPlanLine.svelte';
   import ClaimNextSteps from './claim/ClaimNextSteps.svelte';
   import { findMyGuild } from '../lib/guild/my-guild';
-  import { guildHasPlan } from '../lib/guild/join-plan';
   import { guildClaimCopy, guildHomeCopy } from '../lib/guild/copy';
   import { formatMadeOn } from '../lib/guild/invite-link';
   import { GUILD_LOADING } from '../lib/guild/layout';
@@ -189,12 +188,8 @@
       settings = await fetchGuildSettings(guildId);
     });
 
-  /** The guild has no plan (none, or one that lapsed): events and the Discord bot are gated. */
-  const planGated = $derived(!guildHasPlan(membership?.covered));
-
   // The guild's own page and settings, for the next-step links once the viewer holds it.
   const guildBase = $derived(guildHref(path.region, path.ruleset, guildName || path.slug));
-  const settingsBase = $derived(guildSettingsHref(path.region, path.ruleset, guildName || path.slug));
 
   const onContest = (): void =>
     void run(async () => {
@@ -430,7 +425,16 @@
         </div>
       </Section>
       {#if settings !== null && holdsClaim && claimState !== 'contested'}
-        <ClaimNextSteps {subscribe} {claimPlan} {guildBase} {settingsBase} gated={planGated} />
+        {#if guildId !== null}
+          <ClaimNextSteps
+            {guildId}
+            {guildName}
+            {subscribe}
+            {claimPlan}
+            {guildBase}
+            setupHref={guildSetupHref(path.region, path.ruleset, guildName || path.slug)}
+          />
+        {/if}
       {/if}
     </Page>
     <div class="min-h-[21px]">

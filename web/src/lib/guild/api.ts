@@ -431,6 +431,9 @@ export interface GuildBot {
   removed_in_discord: boolean;
   /** Null when the channel works; an older API's absent key is read as null. */
   channel_unusable: GuildChannelUnusable | null;
+  /** Where new applications post (guild onboarding 2026-11-09); null or absent until picked. */
+  recruit_channel_id?: string | null;
+  recruit_channel_name?: string | null;
 }
 
 /** One entry of `GET …/discord/bot/channels`, in Discord's order. */

@@ -21,12 +21,6 @@ describe('guildClaimCopy', () => {
   it('says what the claimant holds and where to go next', () => {
     expect(guildClaimCopy.youHold('Lifecycle Test')).toBe('You hold Lifecycle Test.');
     expect(guildClaimCopy.nextRoster).toBe('Approve your officers and members');
-    expect(guildClaimCopy.nextInvite).toBe('Make an invite link');
-    expect(guildClaimCopy.nextPlan).toBe('Plan an event');
-    expect(guildClaimCopy.nextDiscord).toBe('Add the Discord bot');
-    expect(guildClaimCopy.nextGated).toBe(
-      'Events and the Discord bot are part of the Guild and Raid guild plans.',
-    );
   });
 
   it('asks before releasing', () => {
