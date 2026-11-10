@@ -8,7 +8,7 @@
     "headline": {
       "key": "connecting",
       "tone": "off",
-      "title": "Waiting for you to sign in...",
+      "title": "Waiting for you to sign in…",
       "sub": "Finish in your browser. The companion connects by itself.",
       "action": {
         "label": "Show the sign-in",

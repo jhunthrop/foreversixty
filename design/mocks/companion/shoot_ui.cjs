@@ -1,6 +1,6 @@
 // design/mocks/companion/shoot_ui.cjs: captures of the BUILT companion window (companion/ui) in every state of
 // design/reviews/2026-11-09-companion/inventory.md, at the window's starting size (800 x 620) and, for the main
-// pages, at a larger 1100 x 800 (the window resizes). The page is served from companion/ui exactly as the binary
+// pages, at a larger 1100 x 800 and at the smallest the window goes, 560 x 480. The page is served from companion/ui exactly as the binary
 // embeds it; api/status answers with a snapshot from companion/ui/testdata (the same snapshots the Go tests pin),
 // adjusted per state where the fixtures have none. The clock is frozen 4 minutes after the fixtures' report start.
 //   node design/mocks/companion/shoot_ui.cjs <node_modules with playwright> <out dir> [state-name-filter]
@@ -37,7 +37,7 @@ const STATES = [
   { name: 'pair-paste-code', snap: () => fixture('status-not-connected'), page: 'device', act: async (p) => p.click('[data-fid="fallback-toggle"]') },
   { name: 'pair-paste-code-bad', snap: () => fixture('status-not-connected'), page: 'device', post: { 'api/pair': fail('bad_code', 'That code is not valid. A code works once and expires after 10 minutes. Get a new one on the site.') },
     act: async (p) => { await p.click('[data-fid="fallback-toggle"]'); await p.fill('#pair-code', 'QQQ-QQQ'); await p.click('#pair'); } },
-  { name: 'sign-in-waiting', snap: () => fixture('device-waiting'), page: 'device' },
+  { name: 'sign-in-waiting', snap: () => fixture('device-waiting'), page: 'device', small: true },
   { name: 'sign-in-last-minute', snap: () => fixture('device-waiting-last-minute'), page: 'device' },
   { name: 'sign-in-trouble', snap: () => fixture('device-waiting-trouble'), page: 'device' },
   { name: 'sign-in-browser-blocked', snap: () => fixture('device-blocked'), page: 'device' },
@@ -46,7 +46,7 @@ const STATES = [
   { name: 'signed-out-by-site', snap: () => fixture('status-signed-out'), page: 'status' },
   { name: 'signed-out-device', snap: () => fixture('status-signed-out'), page: 'device' },
   { name: 'connected-flash', snap: () => fixture('status-not-connected'), page: 'device', then: () => fixture('status-credited'), wait: 2600 },
-  { name: 'device-connected', snap: () => logging(), page: 'device', act: async (p) => p.click('details summary') },
+  { name: 'device-connected', snap: () => logging(), page: 'device' },
   { name: 'device-forget-confirm', snap: () => logging(), page: 'device', act: async (p) => p.click('[data-fid="forget"]') },
   { name: 'device-forgotten-local', snap: () => logging(), page: 'device', post: { 'api/unpair': ok(Object.assign(fixture('status-not-connected'), { revoked: false })) },
     act: async (p) => { await p.click('[data-fid="forget"]'); await p.click('#forget-yes'); }, then: () => fixture('status-not-connected') },
@@ -58,12 +58,13 @@ const STATES = [
   // watching
   { name: 'ready', snap: () => merge('status-ready', { addon_update: ADDON_LINES }), page: 'status' },
   { name: 'advanced-logging-off', snap: () => fixture('status-advanced-off'), page: 'status' },
-  { name: 'logging-credited', snap: () => logging({ pipeline: Object.assign(fixture('status-credited').pipeline, { fights: 14 }) }), page: 'status', big: true },
+  { name: 'logging-credited', snap: () => logging({ pipeline: Object.assign(fixture('status-credited').pipeline, { fights: 3, last_append: '2026-10-20T17:43:48Z' }) }), page: 'status', big: true, small: true },
   { name: 'logging-no-name', snap: () => fixture('status-no-name'), page: 'status' },
   { name: 'logging-not-credited', snap: () => fixture('status-not-credited'), page: 'status' },
   // uploading a fight, done and failed
   { name: 'uploading', snap: () => fixture('status-uploading-some'), page: 'status' },
-  { name: 'uploading-held', snap: () => fixture('status-uploading'), page: 'status' },
+  { name: 'uploading-first', snap: () => fixture('status-uploading'), page: 'status' },
+  { name: 'uploading-held', snap: () => fixture('status-upload-held'), page: 'status' },
   { name: 'reports', snap: () => fixture('reports-rows'), page: 'reports', big: true },
   { name: 'reports-copied', snap: () => fixture('reports-rows'), page: 'reports', act: async (p) => p.click('[data-fid="copy-kMolten Core"]') },
   { name: 'reports-empty', snap: () => fixture('reports-empty'), page: 'reports' },
@@ -82,7 +83,8 @@ const STATES = [
   { name: 'addon-checking-builds', snap: () => logging(), page: 'status', post: { 'api/builds/check': 'hang' }, act: async (p) => p.click('[data-fid="check-builds"]') },
   // settings
   { name: 'settings', snap: () => logging(), page: 'settings', big: true },
-  { name: 'settings-unsaved', snap: () => logging(), page: 'settings', act: async (p) => p.selectOption('#visibility', 'guild') },
+  { name: 'settings-unsaved', snap: () => logging(), page: 'settings', act: async (p) => p.selectOption('#visibility', 'guild'), small: true },
+  { name: 'reports-560', snap: () => fixture('reports-rows'), page: 'reports', only: 'small' },
   { name: 'settings-saved', snap: () => logging(), page: 'settings', post: { 'api/settings': ok(Object.assign(logging(), { visibility: 'guild' })) },
     act: async (p) => { await p.selectOption('#visibility', 'guild'); await p.click('#save'); } },
   // errors and offline
@@ -146,7 +148,8 @@ async function shoot(browser, state, size, suffix) {
   const browser = await chromium.launch();
   for (const state of STATES) {
     if (FILTER && !FILTER.test(state.name)) continue;
-    console.log(path.relative(REPO, await shoot(browser, state, { width: 800, height: 620 }, '')));
+    if (state.only !== 'small') console.log(path.relative(REPO, await shoot(browser, state, { width: 800, height: 620 }, '')));
+    if (state.small || state.only === 'small') console.log(path.relative(REPO, await shoot(browser, state, { width: 560, height: 480 }, state.only ? '' : '-560')));
     if (state.big) console.log(path.relative(REPO, await shoot(browser, state, { width: 1100, height: 800 }, '-1100')));
   }
   await browser.close();

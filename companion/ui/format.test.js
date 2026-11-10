@@ -43,7 +43,7 @@ test('Automatic names who the log says is logging once it knows', () => {
   assert.strictEqual(FORMAT.automaticLabel(undefined, COPY.settings), 'Automatic (read from the log)');
   assert.strictEqual(FORMAT.automaticLabel('Bow Jackzon', COPY.settings), 'Automatic (currently Bow Jackzon)');
   assert.strictEqual(COPY.settings.characterHelp,
-    'Automatic reads who is logging from the combat log itself. Pick a character only if that is wrong.');
+    'Pick a character only if Automatic is wrong.');
 });
 
 test('a character is named with its ruleset in words', () => {
@@ -226,13 +226,13 @@ test('the Addon row says when it checked and what it found', () => {
   assert.strictEqual(line({ at: at(5), new_builds: 2, for: ['Bow Jackzon', 'Booty'] }), 'Checked just now · 2 builds for Bow Jackzon, Booty');
   assert.strictEqual(line({ at: at(5), new_builds: 3 }), 'Checked just now · 3 builds');
   assert.strictEqual(line({ at: at(125), new_builds: 0 }), 'Checked 2 minutes ago · nothing new');
-  assert.strictEqual(COPY.status.checkBuilds, 'Check for builds now');
-  assert.strictEqual(COPY.status.checking, 'Checking…');
+  assert.strictEqual(COPY.status.checkBuilds, 'Fetch my builds from the site');
+  assert.strictEqual(COPY.status.checking, 'Fetching…');
 });
 
-test('the stopped-responding note says where the tray icon is, and that uploads may have stopped', () => {
+test('the stopped-responding note says uploads have stopped and how to start it again', () => {
   assert.strictEqual(COPY.localDown,
-    'The companion stopped responding, so your fights may not be uploading. Right-click its icon in the system tray (bottom right, under the ^ arrow), choose Quit, then open it again.');
+    'The companion stopped answering, so fights are not uploading. Quit it from the tray icon and open it again.');
 });
 
 test('the expiry bar is the share of the ten minutes left, and the last minute is amber', () => {
@@ -291,7 +291,7 @@ test('the sign-in screen says the browser has opened, and the expiry once', () =
 
 test('the update bar says how to install and what it costs, and the footer keeps the version', () => {
   assert.strictEqual(COPY.footer.updateReady,
-    'Update ready. Quit the companion from the tray icon and start it again to install it. Uploads pause while it restarts, so pick a quiet moment.');
+    'Update ready. It installs the next time the companion starts.');
   assert.strictEqual(COPY.footer.version('0.2.13') + COPY.footer.joint + COPY.footer.justUpdated, 'Companion 0.2.13 \u00b7 just updated');
   assert.strictEqual(COPY.footer.updatedTo, undefined);
   const js = read('app.js');
@@ -324,18 +324,18 @@ test('Settings lists visibility, then the credited character, then the game fold
   assert.ok(at('folder-list') < at('save'));
 });
 
-test('the Save strip is the last thing in Settings, with a fade above it', () => {
+test('the Save strip is the last thing in Settings, held at the foot of the page', () => {
   const html = read('index.html');
   const settings = html.slice(html.indexOf('<section id="settings"'), html.indexOf('</section>', html.indexOf('<section id="settings"')));
   assert.ok(settings.trimEnd().endsWith('</div>'));
   assert.ok(settings.lastIndexOf('class="save-row"') > settings.lastIndexOf('class="panel"'), 'the strip sits after the panel, not inside it');
   const css = read('styles.css');
-  assert.match(css, /\.save-row::before\s*\{[^}]*height: 24px/);
-  assert.match(css, /--save-h: 64px/);
+  assert.match(css, /\.save-row \{[^}]*position: sticky; bottom: 0/);
+  assert.match(css, /--save-h: 60px/);
 });
 
 test('the nav opens with Status current, so no tab changes at first paint', () => {
-  assert.match(read('index.html'), /<button data-page="status" aria-current="page">/);
+  assert.match(read('index.html'), /<button data-page="status" data-icon="upload" aria-current="page">/);
 });
 
 test('the connected token line is muted, never a warning', () => {
@@ -344,9 +344,8 @@ test('the connected token line is muted, never a warning', () => {
   assert.ok(!row.includes('amber'));
 });
 
-test('Reports: the hint over the list, and a row the site has not got says so in muted words', () => {
+test('Reports: a row the site has not got says so in muted words, and the usual name is said once', () => {
   const w = COPY.status.credit;
-  assert.strictEqual(COPY.reports.notCreditedHint, 'Not credited yet? Log out once in game with the addon loaded.');
   const row = (extra) => Object.assign({ key: 'k', url: 'https://x/r/1', done: true, credit: { state: 'unmatched', name: 'A' } }, extra);
   assert.deepStrictEqual(FORMAT.reportCredit(row(), w), { kind: 'notyet', text: 'not credited yet' });
   assert.strictEqual(FORMAT.reportCredit(row({ credit: { state: 'credited', name: 'Bow-Jackzon' } }), w).text, 'credited to Bow Jackzon');
@@ -354,20 +353,19 @@ test('Reports: the hint over the list, and a row the site has not got says so in
   assert.strictEqual(FORMAT.reportCredit(row({ done: true, credit: { state: 'none' } }), w).kind, 'notyet');
   // No URL: the site has no such report, so there is nothing to credit and no orange word.
   assert.deepStrictEqual(FORMAT.reportCredit(row({ url: '' }), w), { kind: 'absent', text: '' });
-  assert.strictEqual(COPY.reports.notOnSite + w.separator + COPY.reports.notOnSiteWhen, 'not on the site yet \u00b7 uploads when the site is reachable');
-  assert.strictEqual(FORMAT.anyNotCredited([row({ url: '' }), row({ credit: { state: 'credited', name: 'A' } })], w), false);
-  assert.strictEqual(FORMAT.anyNotCredited([row({ url: '' }), row()], w), true);
+  assert.strictEqual(COPY.reports.notOnSite + w.separator + COPY.reports.notOnSiteWhen, 'not on the site yet \u00b7 uploads when the site answers');
   // The fixture list: a not-credited row on the site, one never created.
   const rows = fixture('reports-rows.json').reports;
-  assert.strictEqual(FORMAT.anyNotCredited(rows, w), true);
+  assert.strictEqual(FORMAT.usualCredit(rows), 'Bow Jackzon');
+  assert.strictEqual(FORMAT.usualCredit([row({ credit: { state: 'credited', name: 'A' } }), row({ credit: { state: 'credited', name: 'B' } }), row({ credit: { state: 'credited', name: 'B' } })]), 'B');
+  assert.strictEqual(FORMAT.usualCredit([row()]), '');
   assert.deepStrictEqual(rows.filter((r) => !r.url).map((r) => FORMAT.reportCredit(r, w).kind), ['absent']);
 });
 
-test('/combatlog is a toggle: the words never tell the player to type it blind', () => {
-  assert.strictEqual(COPY.reports.emptyBody,
-    'In game, type /combatlog once to start logging. It switches off if you type it again, so leave it if it is already on.');
+test('/combatlog is a toggle: the words say turn it on, never type it blind', () => {
+  assert.strictEqual(COPY.reports.emptyBody, 'Turn /combatlog on in game and your raids land here.');
   const ready = fixture('status-ready.json').headline;
-  assert.strictEqual(ready.sub, 'Waiting for a combat log. In game, type /combatlog once to start logging. It switches off if you type it again, so leave it if it is already on.');
+  assert.strictEqual(ready.sub, 'Waiting for a combat log. Turn /combatlog on in game.');
   assert.strictEqual(COPY.status.noReport, 'None yet');
   assert.strictEqual(COPY.status.rows.lastSync, 'Characters sent');
 });
@@ -378,11 +376,11 @@ test('every count is in the body face, the poll failure disables Check for build
   assert.ok(js.includes('rows.checking || !rows.canCheck || rows.failed'));
   const css = read('styles.css');
   assert.match(css, /\.headline \.sub[^}]*text-wrap: pretty/);
-  assert.match(css, /\.expiry \{ width: 190px/);
+  assert.match(css, /\.expiry \{ width: 200px/);
   assert.match(css, /\.bar\.update \{\s*align-items: flex-start/);
   assert.ok(!/\.bar\.update \{\s*justify-content: flex-start/.test(css));
-  assert.match(css, /\.tag \{[^}]*var\(--line-strong\)/);
-  assert.match(css, /footer a \{ color: var\(--muted\)/);
+  assert.match(css, /\.tag \{[^}]*var\(--color-teal\)/);
+  assert.match(css, /footer a \{ color: rgba\(255, 255, 255, 0\.72\)/);
 });
 
 test('the Fights row never shows a bare 0 on an open report', () => {
@@ -434,7 +432,7 @@ test('the Settings help sentences collapse to one line in a short window and the
   const short = css.match(/@media \(max-height: 520px\) \{[\s\S]*?\n\}/)[0];
   assert.match(short, /#settings \.help \{[^}]*white-space: nowrap[^}]*text-overflow: ellipsis/);
   assert.match(css, /\.bar \{[^}]*text-wrap: pretty/);
-  assert.match(css, /@media \(max-width: 520px\)[\s\S]*\.row \.v \.check-builds \{ margin: 6px 0 0 -11px; \}/);
+  assert.match(css, /@media \(max-width: 520px\)[\s\S]*\.row \.v \.check-builds \{ margin: 6px 0 0 -10px; \}/);
 });
 
 // The Addon row's version lines and the install buttons arrive worded by the Go side (copy.go);
@@ -504,4 +502,26 @@ test('the Addon row says no character yet when the addon is installed and nothin
   assert.deepStrictEqual(FORMAT.addonRows(s.addon_update).lines.map((l) => l.text),
     ['Addon 2.0.15 · up to date', 'Data 2026.10.21 · up to date']);
   assert.strictEqual(fixture('status-addon-never.json').addon_help, 'Install ForeverSixty, then log out once.');
+});
+
+test('version lines that are all current fold into one; anything else stays line by line', () => {
+  const rows = (name) => FORMAT.addonRows(fixture(name).addon_update).lines;
+  assert.deepStrictEqual(FORMAT.addonSummary(rows('status-addon-current.json'), COPY.status.upToDate).map((l) => l.text),
+    ['Addon 2.0.15 \u00b7 Data 2026.10.21 \u00b7 up to date']);
+  assert.deepStrictEqual(FORMAT.addonSummary(rows('status-addon-ready.json'), COPY.status.upToDate), rows('status-addon-ready.json'));
+  assert.deepStrictEqual(FORMAT.addonSummary(rows('status-addon-missing.json'), COPY.status.upToDate), rows('status-addon-missing.json'));
+});
+
+test('a held queue names the fight and its tries, never the error', () => {
+  assert.strictEqual(COPY.status.held({ kind: 'fight', fight: 4, attempts: 3 }),
+    'Fight 4 failed 3 times and retries on its own; the rest wait behind it.');
+  assert.strictEqual(COPY.status.held({ kind: 'raw', attempts: 1 }),
+    'The raw log failed 1 time and retries on its own; the rest wait behind it.');
+});
+
+test('every busy or waiting label ends in one ellipsis character, never three dots', () => {
+  const words = [];
+  const walk = (o) => { for (const v of Object.values(o)) { if (typeof v === 'string') words.push(v); else if (v && typeof v === 'object') walk(v); } };
+  walk(COPY);
+  assert.deepStrictEqual(words.filter((w) => w.includes('...')), []);
 });

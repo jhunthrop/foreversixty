@@ -227,6 +227,13 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 			s.Pipeline.Fights, s.Pipeline.Queued, s.Pipeline.QueuedFights = 5, 4, 2
 			return s
 		}},
+		// The fight at the head failed twice: it holds the two behind it, in order.
+		{"status-upload-held.json", func() Snapshot {
+			s := base(credited)
+			s.Pipeline.Fights, s.Pipeline.Queued, s.Pipeline.QueuedFights = 6, 3, 3
+			s.Pipeline.Held = &pipeline.Held{Kind: "fight", Fight: 4, Attempts: 2}
+			return s
+		}},
 		{"status-advanced-off.json", func() Snapshot {
 			s := base(none)
 			s.Installs[0].Advanced = false

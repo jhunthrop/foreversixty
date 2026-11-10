@@ -9,7 +9,7 @@
       "key": "ready",
       "tone": "off",
       "title": "Ready",
-      "sub": "Waiting for a combat log. In game, type /combatlog once to start logging. It switches off if you type it again, so leave it if it is already on."
+      "sub": "Waiting for a combat log. Turn /combatlog on in game."
     },
     "connect": {
       "state": "",

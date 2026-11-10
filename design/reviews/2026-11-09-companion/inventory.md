@@ -4,7 +4,7 @@ This lists every screen and state of the desktop companion. The window opens at 
 
 - **The state behind each capture:** the snapshot in `companion/ui/testdata` that the Go tests pin, plus the patch or action in `design/mocks/companion/shoot_ui.cjs`.
 - **Words:** `companion/ui/copy.js` holds the window's copy, and `internal/app/copy.go` holds the headline, addon and error copy.
-- **Captures:** `round-N/<state>.png` at 800 x 620. The states marked "+1100" are also captured at 1100 x 800.
+- **Captures:** `round-N/<state>.png` at 800 x 620. The states marked "+1100" are also captured at 1100 x 800, and "+560" at the minimum 560 x 480 (`<state>-560.png`).
 
 ## First run and sign-in
 
@@ -14,7 +14,7 @@ This lists every screen and state of the desktop companion. The window opens at 
 | Status while not connected | The Status headline says "Not connected" with a red dot and a Sign in button. | `first-run-status` |
 | Paste a code (open) | The code field, its help line and **Connect with code**. | `pair-paste-code` |
 | Paste a code, refused | The error sits under the form in the bad tone. | `pair-paste-code-bad` |
-| Waiting for the browser | A spinner and "Waiting for you to sign in...", the browser line, the code plate, the countdown and its bar, **Open the browser again** and Cancel. | `sign-in-waiting` |
+| Waiting for the browser (+560) | A spinner and "Waiting for you to sign in…", the browser line, the code plate, the countdown and its bar, **Open the browser again** and Cancel. | `sign-in-waiting` |
 | Last minute | The countdown turns amber. | `sign-in-last-minute` |
 | Site unreachable while waiting | "Having trouble reaching the site. Still trying..." | `sign-in-trouble` |
 | Browser blocked | The sign-in link in a read-only field, and **Copy link**. | `sign-in-browser-blocked` |
@@ -27,7 +27,7 @@ This lists every screen and state of the desktop companion. The window opens at 
 
 | State | What shows | Capture |
 |---|---|---|
-| Connected | A green dot and "Connected as Name#1234". **Saved in** names the keychain. Details holds the device name and the API. Then **Open my reports** and **Forget this device**. | `device-connected` |
+| Connected | A green dot and "Connected as Name#1234", the device and API on one mono line, then Saved in, New reports are, Credited to, Uploaded from this PC, Addon last seen in game and Log engine. **Open my reports**, and **Forget this device** in the wipe colour. | `device-connected` |
 | Forget, confirming | The question, the red outline **Forget** and **Cancel**. Focus sits on Cancel and Esc closes it. | `device-forget-confirm` |
 | Forgotten, site unreachable | Back to Not connected, with the line "Forgotten on this PC ... Account > Devices". | `device-forgotten-local` |
 
@@ -46,17 +46,18 @@ This lists every screen and state of the desktop companion. The window opens at 
 |---|---|---|
 | Ready, not logging | A grey dot and "Ready" with the /combatlog line. | `ready` |
 | Advanced logging off | An amber headline. The folder row reads "Advanced logging: OFF" with the amber dot. | `advanced-logging-off` |
-| Logging, credited | A green live dot and "Logging", with who the report is credited to and "Open this report on the site". The rows show the report, fights uploaded, the addon and characters sent. The game folders follow. | `logging-credited` +1100 |
+| Logging, credited | A green live dot and "Logging" with who is logging, the fights the site holds as the headline's figure, and "Open this report on the site". The rows show the report (zone, start, visibility, when the log was last written), the addon (one line when current, **Fetch my builds from the site** under its name) and characters sent. The game folders follow. | `logging-credited` +1100 +560 |
 | Logging, name not read yet | "Your name is read from the first fight." | `logging-no-name` |
 | Logging, not credited | An amber headline, "Logging · not credited to you yet". | `logging-not-credited` |
-| Uploading fights | The Fights uploaded and Queued rows. | `uploading` |
-| Upload held (a fight failing holds the rest) | Queued fights stay behind the failing one. The headline is amber when the report is not credited. | `uploading-held` |
+| First fights on their way | "Uploading 3 fights…" | `uploading-first` |
+| Uploading fights | The figure and the Queued row. | `uploading` |
+| Upload held (a fight failing holds the rest) | The Queued row in amber: "Fight 4 failed 2 times and retries on its own; the rest wait behind it." (`pipeline.held`, new in this batch). | `uploading-held` |
 
 ## Reports (upload done and failed)
 
 | State | What shows | Capture |
 |---|---|---|
-| Reports list | A live dot on the open report, then zone, when, fights and credit, with **Copy link** on each row. A row the site does not have yet shows a ring and "not on the site yet · uploads when the site is reachable". "not credited yet" is amber. The hint line sits over the list. | `reports` +1100 |
+| Reports list | A live dot on the open report, then zone, when and fights. The usual character is named once, by the Status headline; a row names only another character, or "not credited yet" in amber. **Copy link** is a hairline ghost. A row the site does not have yet shows a ring and "not on the site yet · uploads when the site answers". | `reports` +1100, `reports-560` |
 | Link copied | The button reads "Copied." with a check for two seconds. | `reports-copied` |
 | No reports yet | The logs glyph, "No reports yet." and the /combatlog line. | `reports-empty` |
 | Signed out | "Sign in first." and the Sign in button. | `reports-signed-out` |
@@ -82,7 +83,7 @@ This lists every screen and state of the desktop companion. The window opens at 
 | State | Capture |
 |---|---|
 | The form: visibility, keep the addon up to date, credited to, game folders, and the Save strip | `settings` +1100 |
-| Unsaved changes (Save enabled) | `settings-unsaved` |
+| Unsaved changes (Save enabled) | `settings-unsaved` +560 |
 | Saved ("Saved. New reports will be guild only...") | `settings-saved` |
 
 ## Errors and offline
@@ -97,7 +98,7 @@ This lists every screen and state of the desktop companion. The window opens at 
 
 | State | What shows | Capture |
 |---|---|---|
-| Update downloaded | The bar above the footer, "Update ready. Quit the companion from the tray icon and start it again to install it...". | `update-ready` |
+| Update downloaded | The bar above the footer, "Update ready. It installs the next time the companion starts.", with Dismiss. | `update-ready` |
 | Just updated | The footer reads "Companion 0.2.13 · just updated" for half a minute. | `just-updated` |
 
 ## Tray and app icons

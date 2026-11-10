@@ -105,9 +105,25 @@ const FORMAT = (() => {
     return { kind: c.state === 'credited' ? 'credited' : (text === words.noName ? 'noname' : 'notyet'), text };
   }
 
-  // anyNotCredited is true when a row in the list reads "not credited yet".
-  function anyNotCredited(reports, words) {
-    return reports.some((r) => reportCredit(r, words).kind === 'notyet');
+  // usualCredit is the name most of the listed reports are credited to: the
+  // rows leave it out and name only a different character, or a missing one.
+  function usualCredit(reports) {
+    const counts = new Map();
+    for (const r of reports || []) {
+      const c = r && r.credit;
+      if (c && c.state === 'credited' && c.name) counts.set(c.name, (counts.get(c.name) || 0) + 1);
+    }
+    let best = '';
+    for (const [name, n] of counts) if (!best || n > counts.get(best)) best = name;
+    return best;
+  }
+
+  // addonSummary folds version lines that all say "up to date" into one,
+  // "Addon 2.0.16 · Data 2026.11.09 · up to date"; any other set stays as it is.
+  function addonSummary(lines, suffix) {
+    const tail = ' · ' + suffix;
+    if (lines.length < 2 || !lines.every((l) => !l.muted && l.text.endsWith(tail))) return lines;
+    return [{ text: lines.map((l) => l.text.slice(0, -tail.length)).join(' · ') + tail, muted: false }];
   }
 
   // saveStrip is the Settings strip's words and whether Save can be pressed.
@@ -257,7 +273,7 @@ const FORMAT = (() => {
     return { lines, offers };
   }
 
-  return { addonRows, fightRows, pathTruncate, pathBudget, reportCredit, anyNotCredited, saveStrip, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
+  return { addonRows, addonSummary, usualCredit, fightRows, pathTruncate, pathBudget, reportCredit, saveStrip, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;

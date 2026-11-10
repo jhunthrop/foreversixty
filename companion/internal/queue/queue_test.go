@@ -235,3 +235,25 @@ func TestWaitingCountsOneKind(t *testing.T) {
 		t.Fatalf("Len = %d, want 4", n)
 	}
 }
+
+func TestPeekReadsTheHeadWithoutCheckingItOut(t *testing.T) {
+	q, err := Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := q.Peek(); !errors.Is(err, ErrEmpty) {
+		t.Fatalf("Peek on an empty queue = %v, want ErrEmpty", err)
+	}
+	q.Enqueue(Item{Kind: Fight, ReportKey: "local-1", FightIndex: 3}, []byte("first"))
+	q.Enqueue(Item{Kind: Fight, ReportKey: "local-1", FightIndex: 4}, []byte("second"))
+	l, _ := q.Head()
+	l.Fail(errors.New("503"))
+	it, err := q.Peek()
+	if err != nil || it.FightIndex != 3 || it.Attempts != 1 {
+		t.Fatalf("Peek = %+v, %v", it, err)
+	}
+	// A peek leaves the head free for the uploader.
+	if _, err := q.Head(); err != nil {
+		t.Fatalf("Head after Peek = %v", err)
+	}
+}

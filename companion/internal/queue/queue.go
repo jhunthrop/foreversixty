@@ -202,6 +202,30 @@ func (q *Queue) Waiting(kind Kind) (int, error) {
 	return n, nil
 }
 
+// Peek is the oldest item's metadata without checking it out, so the
+// status page can say what the queue is waiting on. It returns ErrEmpty
+// when nothing is queued or the head's metadata cannot be read.
+func (q *Queue) Peek() (Item, error) {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+	seqs, err := q.pending()
+	if err != nil {
+		return Item{}, err
+	}
+	if len(seqs) == 0 {
+		return Item{}, ErrEmpty
+	}
+	b, err := os.ReadFile(q.meta(seqs[0]))
+	if err != nil {
+		return Item{}, ErrEmpty
+	}
+	var it Item
+	if err := json.Unmarshal(b, &it); err != nil {
+		return Item{}, ErrEmpty
+	}
+	return it, nil
+}
+
 // ErrEmpty is returned by Head when nothing is queued.
 var ErrEmpty = errors.New("queue: empty")
 

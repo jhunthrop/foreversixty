@@ -108,7 +108,7 @@ func TestICNSTableCoversSixteenToFiveTwelveAtTwoX(t *testing.T) {
 }
 
 func TestTheTrayIconsCarryADotInTheToneAndOffIsThePlainSeal(t *testing.T) {
-	// The dot sits at the lower right of the 32 px icon, centred on (25, 25),
+	// The dot sits in the lower right corner of the 32 px icon, centred on (24, 24),
 	// and is the headline's tone, the same token the window's --tone-* reads
 	// (ui/styles.css); the upper left is the seal and not the dot.
 	want := map[string][3]uint32{
@@ -136,7 +136,7 @@ func TestTheTrayIconsCarryADotInTheToneAndOffIsThePlainSeal(t *testing.T) {
 			t.Errorf("%s: the plain seal already has this colour at the dot", tone)
 		}
 		// The ring is the panel colour, between the dot and the seal.
-		rr, rg, rb, _ := img.At(25-8, 25).RGBA()
+		rr, rg, rb, _ := img.At(24-8, 24).RGBA()
 		if got := [3]uint32{rr >> 8, rg >> 8, rb >> 8}; got != ring {
 			t.Errorf("%s: ring pixel = %v, want %v", tone, got, ring)
 		}

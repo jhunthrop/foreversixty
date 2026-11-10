@@ -83,7 +83,7 @@ def with_dot(size: int, colour: str, ring: str) -> Image.Image:
     scale = 4
     big = size * scale
     r, edge = size * 0.19 * scale, max(1.0, size / 16) * scale
-    c = big - r - size * 0.03 * scale
+    c = big - r - edge  # in the corner, its ring touching the canvas edge, clear of the seal's face
     layer = Image.new('RGBA', (big, big), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer)
     draw.ellipse((c - r - edge, c - r - edge, c + r + edge, c + r + edge), fill=ring)

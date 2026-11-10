@@ -34,7 +34,7 @@ function h(tag, props, ...kids) {
     else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
     else el.setAttribute(k, v === true ? '' : v);
   }
-  for (const kid of kids) {
+  for (const kid of kids.flat()) {
     if (kid === undefined || kid === null || kid === false) continue;
     el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
   }
@@ -208,7 +208,7 @@ function region(name, container, data, render) {
 
 let page = null;
 let snap = null;
-const local = { pairOpen: false, confirmForget: false, forgot: false, flash: false, flashDrawn: false, copied: false, busyPair: false, starting: false, checkError: '', pollFailed: false, installingAddon: '', addonError: '' };
+const local = { pairOpen: false, confirmForget: false, forgot: false, flash: false, flashDrawn: false, copied: false, busyPair: false, starting: false, checkError: '', pollFailed: false, installingAddon: '', addonError: '', updateDismissed: false };
 
 // replay adds a class for one animation's length, so a class that was
 // already there plays again.
@@ -261,7 +261,10 @@ function renderStatus(s) {
   $('status-rows').classList.toggle('dim', failed);
   $('installs').classList.toggle('dim', failed);
 
-  region('headline', $('headline'), { hd, reportURL }, (el) => {
+  // The fights the site holds, as the headline's figure while a report is open and a number says it.
+  const fr = FORMAT.fightRows(p, COPY.status);
+  const figure = !failed && fr.show && /^\d+$/.test(fr.text) ? Number(fr.text) : null;
+  region('headline', $('headline'), { hd, reportURL, figure }, (el) => {
     el.dataset.tone = hd.tone;
     el.dataset.key = hd.key;
     el.replaceChildren();
@@ -269,7 +272,8 @@ function renderStatus(s) {
     const mark = hd.key === 'connecting' ? h('span', { class: 'spinner', 'aria-hidden': 'true' }) : dot(hd.tone);
     el.append(
       ...frameCorners(),
-      h('div', { class: 'head' }, mark, h('div', { class: 'title', text: hd.title })),
+      h('div', { class: 'head' }, mark, h('div', { class: 'title', text: hd.title }),
+        figure === null ? null : h('div', { class: 'fig' }, h('b', { text: String(figure) }), h('span', { text: COPY.status.figFights(figure) }))),
       h('p', { class: 'sub', text: hd.sub }),
     );
     const actions = [];
@@ -277,13 +281,9 @@ function renderStatus(s) {
       // The account button is for signing in and nothing else.
       const account = hd.key === 'not_connected' || hd.key === 'signed_out';
       actions.push(h('button', { class: account ? 'account' : 'action primary big', type: 'button', 'data-fid': 'headline-action',
-        onclick: () => show(hd.action.page, true) }, account ? icon('account', 18) : null, hd.action.label));
+        onclick: () => show(hd.action.page, true) }, hd.action.label));
     }
-    if (hd.key === 'logging' && reportURL) {
-      const a = ext(COPY.status.reportLogging, reportURL, { 'data-fid': 'headline-report' });
-      a.prepend(icon('link', 16));
-      actions.push(a);
-    }
+    if (hd.key === 'logging' && reportURL) actions.push(ext(COPY.status.reportLogging, reportURL, { 'data-fid': 'headline-report' }));
     if (actions.length) el.append(h('div', { class: 'actions' }, ...actions));
     if (hd.key !== lastHeadlineKey) {
       lastHeadlineKey = hd.key;
@@ -292,7 +292,11 @@ function renderStatus(s) {
   });
 
   const rows = {
-    report: p.report_id ? { zone: ((s.reports || []).find((r) => r.key === p.report_key) || {}).zone || '', credit: s.credit } : (p.report_key ? 'starting' : 'none'),
+    report: p.report_id ? { zone: ((s.reports || []).find((r) => r.key === p.report_key) || {}).zone || '', credit: s.credit,
+      started: FORMAT.when(((s.reports || []).find((r) => r.key === p.report_key) || {}).started_at, new Date(), COPY.reports),
+      visibility: COPY.settings.visibilitySaved[s.visibility] || '',
+      written: p.last_append ? FORMAT.ago(p.last_append, new Date(), COPY.status.ago) : '' } : (p.report_key ? 'starting' : 'none'),
+    held: p.held || null, figure,
     // The words, not the time: the relative time moves on its own, and the
     // region only redraws when what it holds changes.
     lastSync: lastSyncRow(s.last_sync),
@@ -318,29 +322,33 @@ function renderStatus(s) {
     else {
       // "In progress · credited to Bow Jackzon", or "... · not credited yet" in
       // the warning token with the one muted line that says what to do.
+      // "Onyxia's Lair · Today 18:40 · public", with the log's last write under it. Who it is
+      // credited to is the headline's; the row names the credit only when it is missing.
       const cr = FORMAT.currentReport(rows.report, COPY.status);
-      report = h('span', { class: 'v' }, cr.lead + cr.separator,
-        cr.credited ? cr.credit : h('span', { class: cr.noName ? 'muted-word' : 'warn', text: cr.credit }),
-        cr.help ? h('span', { class: 'help13', text: cr.help }) : null);
+      const facts = [cr.lead, rows.report.started, rows.report.visibility].filter(Boolean).join(cr.separator);
+      report = h('span', { class: 'v', title: cr.help || null }, facts,
+        cr.credited ? null : [cr.separator, h('span', { class: cr.noName ? 'muted-word' : 'warn', text: cr.credit })],
+        rows.report.written ? h('span', { class: 'sub', text: COPY.status.logWritten(rows.report.written) }) : null);
     }
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.report }), report));
     // An open report with no fight yet says so, rather than a bare 0 that reads as lost;
     // with no report open the count is "None yet", like the Current report row above it.
     // Every count is in the body face with tabular digits.
-    const fr = FORMAT.fightRows(p, COPY.status);
-    if (fr.show) {
+    // The count is the headline's figure once it is a number; the row stays for the words.
+    if (fr.show && rows.figure === null) {
       el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.fights }),
         h('span', { class: 'v' }, fr.text, fr.help ? h('span', { class: 'sub', text: fr.help }) : null)));
-      if (fr.queued > 0) {
-        el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.queued }),
-          h('span', { class: 'v', text: String(fr.queued) })));
-      }
+    }
+    if (fr.show && (fr.queued > 0 || rows.held)) {
+      el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.queued }),
+        h('span', { class: 'v' + (rows.held ? ' amber' : '') }, String(fr.queued || p.queued_fights || 0),
+          rows.held ? h('span', { class: 'sub warn', text: COPY.status.held(rows.held) }) : null)));
     }
     const v = h('span', { class: 'v' + (s.addon_stale ? ' amber' : '') + (s.addon_never ? ' muted' : ''), title: s.addon_seen_title || null, text: s.addon_line });
     // A sync over a day old, and no sync at all, each say what to do.
     if ((s.addon_stale || s.addon_never) && s.addon_help) v.append(h('span', { class: 'sub', text: s.addon_help }));
-    // What is installed, line by line, and where it is missing the button that puts it there.
-    for (const l of rows.addon.lines) v.append(h('span', { class: 'sub', text: l.text }));
+    // What is installed, line by line (one line when all is current), and where it is missing the button that puts it there.
+    for (const l of FORMAT.addonSummary(rows.addon.lines, COPY.status.upToDate)) v.append(h('span', { class: 'sub', text: l.text }));
     if (rows.checked) v.append(h('span', { class: 'sub', text: rows.checked }));
     if (s.builds_waiting) v.append(h('span', { class: 'sub', text: s.builds_waiting }));
     if (rows.installError) v.append(h('span', { class: 'sub warn', text: rows.installError }));
@@ -348,17 +356,19 @@ function renderStatus(s) {
       const working = rows.installing === o.path;
       v.append(h('button', { class: 'ghost small check-builds', type: 'button', 'data-fid': 'install-addon-' + o.path,
         disabled: !!rows.installing || rows.failed, onclick: () => onInstallAddon(o.path) },
-      working ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : icon('download', 16),
+      working ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : null,
       working ? COPY.status.installingAddon : o.label));
     }
     if (rows.checkError) v.append(h('span', { class: 'sub warn', text: rows.checkError }));
+    // Fetch my builds sits under the row's name, in the space the label leaves, not on a line of its own.
+    const k = h('span', { class: 'k', text: COPY.status.rows.addon });
     if (rows.paired) {
-      v.append(h('button', { class: 'ghost small check-builds', type: 'button', 'data-fid': 'check-builds',
+      k.append(h('button', { class: 'link check-builds', type: 'button', 'data-fid': 'check-builds',
         disabled: rows.checking || !rows.canCheck || rows.failed, onclick: onCheckBuilds },
-      rows.checking ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : icon('refresh', 14),
+      rows.checking ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : null,
       rows.checking ? COPY.status.checking : COPY.status.checkBuilds));
     }
-    el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.addon }), v));
+    el.append(h('div', { class: 'row' }, k, v));
     const ls = rows.lastSync;
     if (ls) {
       el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.lastSync }),
@@ -456,16 +466,15 @@ function renderReports(s) {
   all.hidden = !s.paired;
 
   const shown = s.reports.slice(0, REPORT_ROWS);
-  $('reports-hint').hidden = !FORMAT.anyNotCredited(shown, COPY.status.credit);
   region('reports', $('report-panel'), { reports: s.reports, paired: s.paired, site: s.site_base_url }, (el) => {
     el.replaceChildren();
     if (!s.reports.length) {
       const box = h('div', { class: 'empty' });
       if (!s.paired) {
         box.append(h('p', { class: 'big-line', text: COPY.reports.unpairedTitle }),
-          h('button', { class: 'account', type: 'button', onclick: () => show('device', true) }, icon('account', 18), COPY.reports.unpairedButton));
+          h('button', { class: 'account', type: 'button', onclick: () => show('device', true) }, COPY.reports.unpairedButton));
       } else {
-        box.append(icon('logs', 40, 'big-icon'), h('p', { class: 'big-line', text: COPY.reports.emptyTitle }),
+        box.append(h('p', { class: 'big-line', text: COPY.reports.emptyTitle }),
           h('p', { class: 'note', text: COPY.reports.emptyBody }));
       }
       el.append(box);
@@ -473,14 +482,15 @@ function renderReports(s) {
     }
     const list = h('ul', { class: 'reports' });
     const now = new Date();
-    for (const r of shown) list.append(reportRow(r, now));
+    const usual = FORMAT.usualCredit(shown);
+    for (const r of shown) list.append(reportRow(r, now, usual));
     el.append(list);
   });
 }
 
 // reportRow: a marker, the zone and one meta line, and Copy link. The whole
 // row is the link to the report; only the credit that is missing is loud.
-function reportRow(r, now) {
+function reportRow(r, now, usual) {
   const zone = r.zone || COPY.reports.unnamed;
   const title = r.url ? ext(zone, r.url, { 'data-fid': 'report-' + r.key }) : h('span', { text: zone });
   // The marker column is always there so the rows line up: a live dot while
@@ -495,7 +505,8 @@ function reportRow(r, now) {
     // The site has no such report yet, so there is nothing to credit: one muted phrase, no orange.
     parts.push(h('span', {}, COPY.reports.notOnSite + credit.separator + COPY.reports.notOnSiteWhen));
   } else if (cr.kind === 'credited') {
-    parts.push(h('span', {}, lead, h('span', { class: 'who', text: cr.text.slice(lead.length) })));
+    // The usual name is said once, by the page; a row names only another character.
+    if (r.credit.name !== usual) parts.push(h('span', {}, lead, h('span', { class: 'who', text: cr.text.slice(lead.length) })));
   } else if (cr.kind === 'noname') {
     parts.push(h('span', {}, cr.text));
   } else {
@@ -505,9 +516,9 @@ function reportRow(r, now) {
   parts.forEach((p, n) => { if (n) meta.append(credit.separator); meta.append(p); });
   const li = h('li', {}, marker, h('div', { class: 'what' }, h('div', { class: 'zone' }, title), meta));
   if (r.url) {
-    const btn = h('button', { class: 'action small', type: 'button', 'data-fid': 'copy-' + r.key }, icon('link', 14), COPY.reports.copyLink);
+    const btn = h('button', { class: 'ghost small outline', type: 'button', 'data-fid': 'copy-' + r.key }, COPY.reports.copyLink);
     btn.addEventListener('click', async () => {
-      if (await copyText(r.url)) copiedLabel(btn, [icon('link', 14), COPY.reports.copyLink], COPY.reports.copied);
+      if (await copyText(r.url)) copiedLabel(btn, COPY.reports.copyLink, COPY.reports.copied);
     });
     li.append(btn);
   } else {
@@ -544,7 +555,7 @@ function notConnectedView(s, c) {
   body.push(h('p', { class: 'lede', text: COPY.device.intro }));
   const btn = h('button', { class: 'account', type: 'button', id: 'connect', 'data-fid': 'connect',
     onclick: startConnect });
-  btn.append(icon('account', 18), local.starting ? COPY.device.starting : (failed ? COPY.device.tryAgain : COPY.device.signIn));
+  btn.append(local.starting ? COPY.device.starting : (failed ? COPY.device.tryAgain : COPY.device.signIn));
   if (local.starting) btn.disabled = true;
   body.push(h('div', { class: 'cta' }, btn));
   body.push(h('p', { class: 'fine', text: COPY.device.signInNote }));
@@ -625,12 +636,9 @@ function pairedView(s) {
   }
   // Where the key lives, in the player's words, with one muted line that says what
   // the store is. Never a warning colour: the file fallback still uploads.
-  body.push(h('div', { class: 'row device-saved' }, h('span', { class: 'k', text: COPY.device.savedIn }),
-    h('span', { class: 'v', text: s.token_backend_name },
-      s.token_backend_note ? h('span', { class: 'sub', text: s.token_backend_note }) : null)));
-  body.push(h('details', {}, h('summary', {}, icon('chevron-right', 14), COPY.device.details),
-    h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.device.deviceName }), h('span', { class: 'v mono', text: s.device_name })),
-    h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.device.api }), h('span', { class: 'v mono', text: s.api_base_url }))));
+  // The device's name and the API it talks to, one mono line under the heading.
+  body.push(h('p', { class: 'device-id mono', text: s.device_name + COPY.device.joint + s.api_base_url.replace(/^https?:\/\//, '') }));
+  body.push(h('div', { class: 'facts' }, ...deviceFacts(s).map(([k, v]) => h('div', { class: 'row' }, h('span', { class: 'k', text: k }), h('span', { class: 'v', text: v })))));
   if (local.confirmForget) {
     body.push(h('div', { class: 'ask', role: 'alertdialog', 'aria-label': COPY.device.forgetAsk },
       h('p', { text: COPY.device.forgetAsk }),
@@ -640,13 +648,29 @@ function pairedView(s) {
   } else {
     body.push(h('div', { class: 'buttons' },
       h('button', { class: 'action', type: 'button', 'data-fid': 'my-reports', onclick: () => openLink(s.site_base_url + '/logs') }, COPY.device.openReports),
-      h('button', { class: 'ghost', type: 'button', 'data-fid': 'forget', onclick: askForget }, icon('sign-out', 16), COPY.device.forget)));
+      h('button', { class: 'ghost danger-text', type: 'button', 'data-fid': 'forget', onclick: askForget }, COPY.device.forget)));
   }
   body.push(h('p', { class: 'note', id: 'device-note', role: 'status' }));
   return [
     h('div', { class: 'state-line' }, dot('on'), COPY.device.connectedAs(s.account_label)),
     h('div', { class: 'device-body' }, ...body),
   ];
+}
+
+// deviceFacts are the connected page's rows: where the key is kept, what
+// the companion will do with a report, and what it has done from this PC.
+function deviceFacts(s) {
+  const reports = s.reports || [];
+  const facts = [
+    [COPY.device.savedIn, s.token_backend_name],
+    [COPY.device.visibility, COPY.settings.visibilityOptions[s.visibility] || s.visibility],
+    [COPY.device.creditedTo, s.logging_character ? FORMAT.characterLabel(s.logging_character, COPY.settings.rulesets)
+      : FORMAT.automaticLabel(s.detected_character, COPY.settings)],
+    [COPY.device.uploaded, COPY.device.uploadedValue(reports.length, reports.reduce((n, r) => n + (r.fights || 0), 0))],
+  ];
+  if (s.addon_seen_at) facts.push([COPY.device.addonSeen, FORMAT.ago(s.addon_seen_at, new Date(), COPY.status.ago)]);
+  facts.push([COPY.device.engine, s.engine_version]);
+  return facts.filter(([, v]) => v);
 }
 
 function renderForgotten(s, revoked) {
@@ -820,7 +844,7 @@ function renderSettings(s) {
           h('span', { class: 'played', text: FORMAT.lastPlayed(i.last_played, new Date(), COPY.status) })),
         h('span', { class: 'path', title: i.path, text: FORMAT.pathTruncate(i.path, FORMAT.pathBudget(window.innerWidth)) }));
       const side = i.added
-        ? h('button', { class: 'ghost small', type: 'button', 'data-fid': 'remove-' + i.path, onclick: (e) => onRemove(e.target, i.path) }, COPY.settings.remove)
+        ? h('button', { class: 'ghost small danger-text', type: 'button', 'data-fid': 'remove-' + i.path, onclick: (e) => onRemove(e.currentTarget, i.path) }, COPY.settings.remove)
         : h('span', { class: 'auto', text: COPY.settings.foundAutomatically });
       el.append(h('li', {}, where, side));
     }
@@ -897,7 +921,7 @@ function renderChrome(s) {
     $('foot-site').textContent = COPY.footer.site;
     $('foot-site').setAttribute('href', s.site_base_url);
     $('wordmark').setAttribute('href', s.site_base_url);
-    $('update-bar').hidden = !s.update_staged;
+    $('update-bar').hidden = !s.update_staged || local.updateDismissed;
     $('update-text').textContent = s.update_staged ? COPY.footer.updateReady : '';
   });
 }
@@ -933,7 +957,8 @@ $('character-help').title = COPY.settings.characterHelp;
 $('save').textContent = COPY.settings.save;
 $('add-folder').textContent = COPY.settings.addFolder;
 $('first-check').textContent = COPY.checking;
-$('reports-hint').textContent = COPY.reports.notCreditedHint;
+$('update-dismiss').textContent = COPY.dismiss;
+$('update-dismiss').addEventListener('click', () => { local.updateDismissed = true; $('update-bar').hidden = true; });
 
 // ---- the poll --------------------------------------------------------
 

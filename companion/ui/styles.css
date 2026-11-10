@@ -86,7 +86,6 @@ main.enter { animation: fade-in var(--dur-med) var(--ease); }
 .top {
   height: var(--band-h);
   background: linear-gradient(var(--color-veil-band), var(--color-veil-band)), var(--color-band) url('art/band-1200.webp') center 30% / cover no-repeat;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
 }
 .top header { display: flex; align-items: stretch; gap: 18px; height: 100%; }
 .wordmark {
@@ -169,10 +168,11 @@ h3 { margin: 22px 0 10px; font-size: 20px; line-height: 26px; }
 
 /* Bars: the poll failure and the tray notice sit between the band and the page; the update
    notice sits between the page and the footer. None animates; each pushes the page. */
+/* Every bar starts at the column's text edge, its words first and its one button after them. */
 .bar {
-  display: flex; align-items: center; gap: 12px; justify-content: center; text-align: left;
+  display: flex; align-items: center; gap: 12px; justify-content: flex-start; text-align: left;
   min-height: 38px;
-  padding: 7px var(--gutter);
+  padding: 7px max(var(--gutter), calc((100% - var(--col)) / 2 + var(--gutter)));
   background: var(--color-nav-bar);
   border-bottom: 1px solid black;
   font-size: var(--text-small);
@@ -182,8 +182,8 @@ h3 { margin: 22px 0 10px; font-size: 20px; line-height: 26px; }
 .bar.bad { background: var(--color-death-soft); color: var(--color-cream); align-items: flex-start; }
 .bar.bad .dot { margin-top: 5px; }
 .bar button.ghost { margin-top: 0; min-height: 26px; }
-.bar.update { align-items: center; border-bottom: 0; border-top: 1px solid black; background: var(--color-foot); color: var(--color-gold); }
-.bar.update svg { width: 16px; height: 16px; flex: none; }
+.bar.update { align-items: flex-start; border-bottom: 0; border-top: 1px solid black; background: var(--color-nav-bar); color: var(--color-cream); }
+.bar .ghost { margin-left: auto; }
 .first-check { margin-top: 20px; margin-bottom: 0; color: var(--muted); font-size: var(--text-small); }
 
 /* ---- icons: the site's set (icons.js), in the text's colour ----------------------------------- */
@@ -205,6 +205,13 @@ svg.icon { display: inline-block; flex: none; vertical-align: -3px; }
   color: var(--color-cream);
 }
 .headline .dot { width: 12px; height: 12px; margin: 0; }
+/* The fights the site holds, at the headline's right: the page's one number. */
+.headline .fig { margin-left: auto; text-align: right; white-space: nowrap; }
+.headline .fig b { display: block; font: 600 26px/30px var(--font-body); color: var(--color-strong); font-variant-numeric: tabular-nums; }
+.headline .fig span { font-size: var(--text-small); color: var(--muted); }
+.headline .head { align-items: flex-start; }
+.headline .head .title { padding-top: 0; }
+.headline .head > .dot, .headline .head > .spinner { margin-top: 9px; }
 .headline .spinner { width: 18px; height: 18px; }
 .headline .sub { position: relative; z-index: 2; margin: 6px 0 0 24px; max-width: 64ch; color: var(--color-text); text-wrap: pretty; }
 .headline .actions { position: relative; z-index: 2; margin: 16px 0 0 24px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
@@ -245,7 +252,8 @@ svg.icon { display: inline-block; flex: none; vertical-align: -3px; }
 .row .v .muted-word { color: var(--muted); }
 .row .v .help13 { display: block; font-size: var(--text-small); line-height: 18px; color: var(--muted); }
 .row .v .check-builds { display: inline-flex; margin: 6px -10px 0 auto; }
-.row .v .check-builds + .check-builds { margin-left: 8px; }
+.row .k .check-builds { display: flex; margin-top: 4px; font-weight: 600; }
+.row .k .check-builds:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .note { color: var(--muted); font-size: var(--text-small); margin: 8px 0 0; min-height: 0; text-wrap: pretty; }
 .note:empty { display: none; }
@@ -327,6 +335,11 @@ button svg.icon { width: 16px; height: 16px; }
 button.ghost { border-color: transparent; background: transparent; color: var(--color-gold); padding: 0 10px; }
 button.ghost:hover { color: var(--color-gold-hover); }
 button.small { min-height: 30px; margin-top: 0; padding: 0 10px; font-size: var(--text-small); }
+/* An action in a list: the gold ghost on a hairline, one quiet level under the row's name. */
+button.ghost.outline { border-color: var(--color-line-warm); }
+button.ghost.outline:hover { border-color: var(--color-line-warm-strong); }
+/* A way to lose something (Forget this device, Remove a folder) reads in the wipe colour. */
+button.danger-text, button.danger-text:hover { color: var(--color-wipe); }
 button.action:disabled, button.ghost:disabled, button.account:disabled { opacity: 0.45; cursor: not-allowed; filter: none; transform: none; }
 /* Primary: their flat teal with the teal edge (Buy Now). Sign in with Battle.net is the primary
    with the account glyph, on the Device page and wherever Status sends you there. */
@@ -371,9 +384,8 @@ button.link:hover { color: var(--color-gold-hover); }
   font: 600 12px/18px var(--font-body);
 }
 #installs .note { margin: 12px 0; }
-ul.folders { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: var(--radius-field); background: var(--color-bg); }
-ul.folders li { padding: 10px 12px; border-bottom: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-ul.folders li:last-child { border-bottom: 0; }
+ul.folders { list-style: none; margin: 0; padding: 0; }
+ul.folders li { padding: 8px 0; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 ul.folders .where { min-width: 0; }
 ul.folders .head { display: flex; align-items: baseline; gap: 10px; }
 ul.folders .played { margin-top: 0; }
@@ -411,10 +423,9 @@ ul.reports button { position: relative; z-index: 1; }
 .when .who { color: var(--color-text); }
 .when .live { color: var(--tone-on); font-weight: 600; }
 .when .not-credited { color: var(--tone-warn); font-weight: 600; }
-.empty { text-align: center; padding: 36px 20px; }
-.empty svg.big-icon { width: 40px; height: 40px; color: var(--color-teal-edge); }
-.empty .big-line { font: 400 20px/26px var(--font-title); color: var(--color-cream); margin: 10px 0 0; }
-.empty .note { margin: 4px auto 0; max-width: 44ch; }
+.empty { padding: 20px; }
+.empty .big-line { font: 400 20px/26px var(--font-title); color: var(--color-cream); margin: 0; }
+.empty .note { margin: 4px 0 0; }
 .empty button { margin-top: 16px; }
 
 /* ---- Device ----------------------------------------------------------------------------------- */
@@ -472,7 +483,8 @@ details .row { font-size: var(--text-small); }
 .connected-flash { display: flex; align-items: center; margin: 10px 0 0; color: var(--tone-on); font-size: var(--text-small); }
 .connected-flash svg { width: 14px; height: 14px; margin-right: 6px; }
 #device-panel.flash { animation: fade-in 600ms var(--ease) both; }
-.device-saved { margin-top: 10px; }
+.device-id { margin: 4px 0 0; color: var(--muted); }
+.facts { margin-top: 8px; }
 
 /* ---- Settings --------------------------------------------------------------------------------- */
 
@@ -502,7 +514,7 @@ main:has(#settings:not([hidden])) .page { padding-top: 14px; }
   margin-top: 14px;
   padding: 10px 0;
   background: var(--color-foot);
-  box-shadow: 0 0 0 100vmax var(--color-foot), 0 -1px 0 100vmax black;
+  box-shadow: 0 0 0 100vmax var(--color-foot), 0 -1px 0 100vmax var(--color-line-warm);
   clip-path: inset(-1px -100vmax 0);
 }
 .save-row button, .save-row .note { margin: 0; }

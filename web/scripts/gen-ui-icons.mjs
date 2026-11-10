@@ -28,22 +28,10 @@ export const MODULE_DIR = path.join(WEB, 'src/lib/ui/icons');
 export const COMPANION_OUT = path.resolve(WEB, '../companion/ui/icons.js');
 const CORNER_SVG = path.resolve(WEB, '../design/assets/ornaments/corner-filigree.svg');
 
-/** The glyphs the companion window draws: its four pages (upload Status, logs Reports, account
- *  Device, setup Settings), the actions it offers, and the line family's states. */
-export const COMPANION_ICONS = [
-  'account',
-  'check',
-  'chevron-down',
-  'chevron-right',
-  'close',
-  'download',
-  'link',
-  'logs',
-  'refresh',
-  'setup',
-  'sign-out',
-  'upload',
-];
+/** The glyphs the companion window draws: its four page tabs (upload Status, logs Reports,
+ *  account Device, setup Settings), the check of a done action and a select's chevron. Its other
+ *  actions are words alone (ai-slop-reviewer, batch G). */
+export const COMPANION_ICONS = ['account', 'check', 'chevron-down', 'logs', 'setup', 'upload'];
 
 /** The line family's one grid. */
 const LINE_BOX = 24;
