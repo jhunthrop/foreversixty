@@ -4,13 +4,14 @@
      the wipe colour with role="alert", a pairing code as Code, a reserved Skeleton line while the
      reads are in flight, and on a phone the second line an answer wraps to there) and its one action. A link action is the system Button with its href, a
      button action calls back (Try again, Refresh from Battle.net, Copy link), a text link is gold
-     with `›`, and the Download step is the visitor's own build (CompanionDownload). -->
+     with `›`, the Download step is the visitor's own build (CompanionDownload), and the addon's
+     install is CurseForge then Wago as one group. -->
 <script lang="ts">
   import { characterListCopy } from '../../lib/account/character-list-copy';
   import { addonCopy } from '../../lib/addon/copy';
   import type { CompanionRelease } from '../../lib/setup/release';
   import type { VisitorPlatform } from '../../lib/setup/visitor-platform';
-  import { stepHref } from '../../lib/setup/links';
+  import { CURSEFORGE_URL, WAGO_URL, stepHref } from '../../lib/setup/links';
   import type { StepAction, StepLineOut, StepRow } from '../../lib/setup/steps';
   import { LINK } from '../../lib/ui/primitives';
   import Button from '../ui/Button.svelte';
@@ -83,6 +84,32 @@
     {@const href = stepHref(act.id)}
     {#if act.id === 'download'}
       <CompanionDownload {platform} {release} primary={act.primary} />
+    {:else if act.id === 'install'}
+      <div class="flex flex-wrap items-center gap-3" role="group" aria-label={act.label}>
+        <Button
+          tone={act.primary ? 'primary' : 'secondary'}
+          href={CURSEFORGE_URL}
+          rel="noopener"
+          testid="setup-action-curseforge">{addonCopy.installCurseForge}</Button
+        >
+        <Button href={WAGO_URL} rel="noopener" testid="setup-action-wago">{addonCopy.installWago}</Button>
+      </div>
+    {:else if act.id === 'update'}
+      <!-- A ticked step's update: quiet gold links, never a button that competes with the next step. -->
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-1" role="group" aria-label={act.label}>
+        <a
+          class="{LINK} inline-flex min-h-11 items-center md:min-h-0"
+          href={CURSEFORGE_URL}
+          rel="noopener"
+          data-testid="setup-action-curseforge">{addonCopy.setupUpdateCurseForge} ›</a
+        >
+        <a
+          class="{LINK} inline-flex min-h-11 items-center md:min-h-0"
+          href={WAGO_URL}
+          rel="noopener"
+          data-testid="setup-action-wago">{addonCopy.setupUpdateWago} ›</a
+        >
+      </div>
     {:else if act.kind === 'link'}
       <a
         class="{LINK} inline-flex min-h-11 items-center md:min-h-0"

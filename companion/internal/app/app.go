@@ -124,6 +124,8 @@ type App struct {
 	// addonsBusy is set while its goroutine is running.
 	addons     *addonupdater.Updater
 	addonsBusy atomic.Bool
+	// addonReport is what the site was last told the AddOns folders hold (addonreport.go).
+	addonReport addonReport
 
 	// bg is the context the sign-in poll runs under; Close ends it and
 	// waits for the poll, which must not outlive the app.
@@ -996,6 +998,16 @@ func (a *App) Step(ctx context.Context, now time.Time) {
 		}
 	} else {
 		a.saidFailure("addonsync", nil)
+	}
+	if err := a.reportAddons(ctx, now, tok); err != nil {
+		if a.signOutIfRefused(err, tok) {
+			return
+		}
+		if a.saidFailure("addonreport", err) {
+			a.log.Warn("telling the site which addons are installed failed", "component", "app", "err", err.Error())
+		}
+	} else {
+		a.saidFailure("addonreport", nil)
 	}
 	if staged, err := a.updater.Poll(ctx, now); err != nil {
 		if a.saidFailure("updatecheck", err) {

@@ -196,7 +196,7 @@
 
 <div data-testid="connect" data-state={state}>
   <Page layout="form" {header}>
-    <Plate label={addonCopy.setupStep3Title} frame="framed">
+    <Plate label={addonCopy.setupCompanionTitle} frame="framed">
       <div class="connect-body" aria-busy={state === 'loading' ? 'true' : undefined}>
         <div class="flex flex-col gap-2">
           {#if codeCheck !== ''}<p class="text-[15px] leading-6" data-testid="connect-code-check">

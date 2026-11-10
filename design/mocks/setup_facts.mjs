@@ -50,14 +50,14 @@ const NOW = new Date(${JSON.stringify(NOW)});
 const strip = (o) => JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'function' ? '[fn]' : v)));
 // Battle.net brought the character, the addon never did (derived from me-34: its build's source set to blizzard).
 const meBnet = { ...me34, characters: me34.characters.map((c) => ({ ...c, build: { ...c.build, source: 'blizzard' } })) };
-const lines = (me, devs) => ({ signin: signInLine(me), addon: addonLine(me, NOW), companion: companionLine(me, devs, NOW) });
+const lines = (me, devs) => ({ signin: signInLine(me), addon: addonLine(me, devs, null, NOW), companion: companionLine(me, devs, NOW) });
 const ch = me34.characters[0];
 // The import still running (the API's /v1/me bnet_import, setup spec G1): me-new with the field set.
 const meImporting = { ...meNew, bnet_import: { state: 'running', at: '2026-11-06T09:59:30Z' } };
 const steps = (session, me, devs, extra = {}) => setupSteps({ session, me, devices: devs, platform: 'windows', now: NOW, ...extra });
 const release = parseRelease(latest);
 const build = (d) => ({ os: d.os, platform: d.platform, firstRun: d.firstRun, label: addonCopy.setupCompanionDownload(d.platform), href: downloadHref(d.asset, release), meta: releaseMeta(d.asset, release) });
-// Row 3's download per visitor system (components/setup/CompanionDownload.svelte draws the same).
+// The companion step's download per visitor system (components/setup/CompanionDownload.svelte draws the same).
 const downloadOf = (p) => ({ own: downloadFor(p) && build(downloadFor(p)), others: otherDownloads(p).map(build) });
 // Every mocked state's plate rows, from lib/setup/steps.ts itself (the page's island draws the same rows).
 const STATES = {

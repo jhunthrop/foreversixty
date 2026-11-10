@@ -1,12 +1,15 @@
 // web/src/lib/setup/release.test.ts
 import { describe, expect, it } from 'vitest';
 import {
+  ADDON_MANIFEST_PATH,
   COMPANION_MANIFEST_PATH,
   downloadHref,
+  fetchAddonVersion,
   fetchCompanionRelease,
   formatSize,
   parseRelease,
   releaseMeta,
+  versionBehind,
 } from './release';
 
 const EXE = 'foreversixty-companion_windows_amd64.exe';
@@ -78,5 +81,32 @@ describe('fetchCompanionRelease', () => {
         throw new TypeError('offline');
       }) as typeof fetch),
     ).toBeNull();
+  });
+});
+
+describe('the addon feed', () => {
+  it('reads the newest addon version off its manifest, null when it answers anything else', async () => {
+    const asked: string[] = [];
+    const answer = (body: unknown) =>
+      (async (url: string) => {
+        asked.push(url);
+        return new Response(JSON.stringify(body));
+      }) as typeof fetch;
+    expect(await fetchAddonVersion(answer({ tag_name: 'addon-v2.0.37' }))).toBe('2.0.37');
+    expect(asked).toEqual([ADDON_MANIFEST_PATH]);
+    expect(await fetchAddonVersion(answer({ tag_name: 'data-v2026.11.09' }))).toBeNull();
+    expect(await fetchAddonVersion(answer({ tag_name: 'addon-v' }))).toBeNull();
+    expect(
+      await fetchAddonVersion((async () => new Response('', { status: 404 })) as typeof fetch),
+    ).toBeNull();
+  });
+
+  it('calls an addon behind only on a later dotted version', () => {
+    expect(versionBehind('2.0.9', '2.0.37')).toBe(true);
+    expect(versionBehind('2.0.37', '2.0.37')).toBe(false);
+    expect(versionBehind('2.1', '2.0.37')).toBe(false);
+    expect(versionBehind('2.0', '2.0.1')).toBe(true);
+    expect(versionBehind('', '2.0.37')).toBe(false);
+    expect(versionBehind('2.0.37-dev', '2.0.38')).toBe(false);
   });
 });

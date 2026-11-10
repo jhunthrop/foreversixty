@@ -183,6 +183,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/devices/revoke-others", RequireSession(s.revokeOtherDevices))
 	// The literal wins over {id}: a companion forgets itself with its own token.
 	mux.HandleFunc("DELETE /v1/devices/self", RequireDevice(s.revokeSelf))
+	mux.HandleFunc("PUT /v1/devices/self/addons", RequireDevice(s.putDeviceAddons))
 	mux.HandleFunc("DELETE /v1/devices/{id}", RequireSession(s.revokeDevice))
 	if s.DevLogin {
 		mux.HandleFunc("POST /v1/dev/login", s.devLogin)

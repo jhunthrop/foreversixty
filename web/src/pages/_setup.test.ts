@@ -39,8 +39,8 @@ const STRING_COPY_KEYS = [
   'flowOutBody',
   'flowInTitle',
   'flowInBody',
-  'setupStep2Title',
-  'setupStep3Title',
+  'setupAddonTitle',
+  'setupCompanionTitle',
   'setupCompanionNote',
   'installDataHint',
   'setupTryExport',
@@ -96,7 +96,11 @@ describe('/setup', () => {
     expect(html).toMatch(/class="[^"]*ui-framed[^"]*"[^>]*aria-label="Your setup"/);
     const plate = html.slice(html.indexOf('aria-label="Your setup"'));
     let cursor = -1;
-    for (const title of [addonCopy.setupStep1Title, addonCopy.setupStep2Title, addonCopy.setupStep3Title]) {
+    for (const title of [
+      addonCopy.setupSignInTitle,
+      addonCopy.setupCompanionTitle,
+      addonCopy.setupAddonTitle,
+    ]) {
       const at = plate.indexOf(title, cursor + 1);
       expect(at, title).toBeGreaterThan(cursor);
       cursor = at;
@@ -142,16 +146,26 @@ describe('/setup', () => {
     expect(html).toContain(ADDON_DOWNLOAD_PATH);
   });
 
-  it('keeps Wago, the hand install and the build number in The addon, CurseForge on the plate', () => {
+  it('keeps the hand install and the build number in The addon, CurseForge and Wago on the plate', () => {
     const addon = section('setup-addon');
     expect(addon).toContain('id="addon"');
-    expect(addon).toContain(WAGO_URL);
+    // The plate's addon step carries both stores while it is to do; the Section repeats them once ticked.
+    const plate = html.slice(
+      html.indexOf('aria-label="Your setup"'),
+      html.indexOf('data-testid="setup-companion"'),
+    );
+    for (const url of [CURSEFORGE_URL, WAGO_URL]) expect(plate).toContain(url);
+    expect(addon).not.toContain(WAGO_URL);
+    // The companion's Section comes before the addon's, in the plate's order.
+    expect(html.indexOf('data-testid="setup-companion"')).toBeLessThan(
+      html.indexOf('data-testid="setup-addon"'),
+    );
     expect(addon.indexOf(addonCopy.installDataHint)).toBeLessThan(addon.indexOf(addonCopy.setupHandInstall));
     const hand = addon.slice(addon.indexOf('data-testid="setup-hand-install"'));
     for (const url of [ADDON_DOWNLOAD_PATH, DATA_DOWNLOAD_PATH]) expect(hand).toContain(url);
     expect(hand).toContain(addonCopy.currentDataBuild(activeBuild.build));
     expect(hand).toContain(addonCopy.setupHandInstallBody.replace('<', '&lt;'));
-    // Signed out, row 2 is not ticked: CurseForge is the plate row's action, not repeated here (U4).
+    // Signed out, the addon step is not ticked: CurseForge is the plate row's action, not repeated here (U4).
     expect(addon).not.toContain(CURSEFORGE_URL);
   });
 
@@ -481,10 +495,8 @@ describe('/setup: The companion', () => {
     expect(html).not.toContain('data-testid="setup-pairing"');
   });
 
-  it('says which of the steps is optional', () => {
-    expect(addonCopy.setupCompanionNote).toBe(
-      'Optional. Sends bags, bank and live logs after every session.',
-    );
+  it('says what the companion sends, never calling the step the plate points at optional', () => {
+    expect(addonCopy.setupCompanionNote).toBe('Sends bags, bank and live logs after every session.');
     expect(section('setup-companion')).toContain(addonCopy.setupCompanionNote);
   });
 });

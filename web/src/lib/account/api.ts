@@ -68,6 +68,15 @@ export interface Device {
   kind?: DeviceKind;
   created_at: string;
   last_seen_at: string | null;
+  /** What a companion last found in Interface/AddOns: absent until one that reports has, empty
+   *  when it found none (PUT /v1/devices/self/addons). */
+  addons?: DeviceAddon[];
+}
+
+/** One Forever Sixty addon a companion found installed, with its TOC's version ('' when none). */
+export interface DeviceAddon {
+  folder: 'ForeverSixty' | 'ForeverSixtyInbox' | 'ForeverSixtyData';
+  version: string;
 }
 
 export interface PairingCode {
