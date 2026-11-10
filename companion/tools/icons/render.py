@@ -53,7 +53,10 @@ MAC_BODY = 824 / 1024  # Apple's macOS icon grid
 # Explorer's large views, scaling it down for 96 and 128.
 ICO_SIZES = (16, 20, 24, 32, 40, 48, 64, 256)
 TRAY_ICO_SIZES = (16, 20, 24, 32, 40, 48)  # Windows' tray at 100, 125, 150, 200, 250 and 300 %
+# The tray's 16 px entry (100 %) draws the LX with a heavier outline: the plain one goes soft at that size.
+HEAVY_LX_PX = 16
 TRAY_PNG_SIZE = 32  # macOS draws the menu-bar image at 16 pt (getlantern/systray): this is its 2x; Linux takes it too
+DOT_RADIUS = 0.12  # of the icon's side
 TONES = {'on': '--color-kill', 'warn': '--color-gold-hover', 'bad': '--color-wipe'}
 RING = '--color-raised'  # the dot's ring, so it reads on a light taskbar and a dark one
 # One entry per pixel size macOS draws, 16 to 512: AppKit picks a representation by pixels, so 16 pt at 2x takes
@@ -97,19 +100,24 @@ def mac_seal(size: int) -> Image.Image:
     return canvas
 
 
+def tray_seal(size: int) -> Image.Image:
+    """The flat seal for the tray at size px, its LX heavier at 16 px."""
+    return flat_seal(size, heavy=size == HEAVY_LX_PX)
+
+
 def with_dot(size: int, colour: str, ring: str) -> Image.Image:
     """The seal with a status dot at its lower right (companion premium spec, section 10.3), drawn at 4x."""
     scale = 4
     big = size * scale
-    # A corner badge: about 30 % of the icon across with a ring of a pixel or more, its ring touching the
-    # canvas edge, so it sits on the seal's rim and leaves the LX clear.
-    r, edge = size * 0.15 * scale, max(1.0, size / 24) * scale
+    # A corner badge: about a quarter of the icon across with a ring of at least 3/4 px, its ring touching the
+    # canvas edge, so it sits over the seal's rim at the bottom right and leaves the X clear.
+    r, edge = size * DOT_RADIUS * scale, max(0.75, size / 24) * scale
     c = big - r - edge
     layer = Image.new('RGBA', (big, big), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer)
     draw.ellipse((c - r - edge, c - r - edge, c + r + edge, c + r + edge), fill=ring)
     draw.ellipse((c - r, c - r, c + r, c + r), fill=colour)
-    out = flat_seal(size)
+    out = tray_seal(size)
     out.alpha_composite(layer.reduce(scale))  # a box average: no Lanczos ringing on the flat dot
     return out
 
@@ -161,8 +169,8 @@ def main() -> None:
     (OUT / 'seal.ico').write_bytes(ico([(s, seal(s)) for s in ICO_SIZES]))
     (OUT / 'seal.icns').write_bytes(icns())
     ring = token(RING)
-    (OUT / 'seal-tray-off.ico').write_bytes(ico([(s, flat_seal(s)) for s in TRAY_ICO_SIZES]))
-    (OUT / 'seal-tray-off.png').write_bytes(png_bytes(flat_seal(TRAY_PNG_SIZE)))
+    (OUT / 'seal-tray-off.ico').write_bytes(ico([(s, tray_seal(s)) for s in TRAY_ICO_SIZES]))
+    (OUT / 'seal-tray-off.png').write_bytes(png_bytes(tray_seal(TRAY_PNG_SIZE)))
     for tone, name in TONES.items():
         colour = token(name)
         (OUT / f'seal-tray-{tone}.ico').write_bytes(ico([(s, with_dot(s, colour, ring)) for s in TRAY_ICO_SIZES]))
