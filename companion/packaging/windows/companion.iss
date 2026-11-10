@@ -60,8 +60,8 @@ ArchitecturesInstallIn64BitMode=x64compatible
 WizardStyle=modern
 WizardSizePercent=100
 SetupIconFile=..\..\internal\icon\assets\seal.ico
-; The seal in the page's corner, where Inno's own box would be.
-WizardSmallImageFile=..\..\ui\seal-64.png
+; The seal in the page's corner, where Inno's own box would be, laid on white at 100 and 200 % (tools/icons/render.py).
+WizardSmallImageFile=wizard-seal-55.png,wizard-seal-110.png
 UninstallDisplayName={#AppName}
 UninstallDisplayIcon={app}\{#ExeName}
 OutputBaseFilename=foreversixty-companion-setup
