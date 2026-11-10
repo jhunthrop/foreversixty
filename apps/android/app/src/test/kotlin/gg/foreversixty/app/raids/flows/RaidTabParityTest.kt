@@ -113,17 +113,16 @@ object RaidTabFixtures {
     )
 
     /** F1 change the answer (mock m-android-signup): Late, 30 min chosen, the minutes open under the answers. */
-    fun signup() = guild().copy(next = head(SignupState.Late, "Late · 30 min", lateMinutes = 30))
+    fun signup() = guild().copy(next = head(SignupState.Late, "Late\u00a0·\u00a030\u00a0min", lateMinutes = 30))
 
     fun live() = guild().copy(
         next = null,
         live = RaidLiveModel(41, "Olympus XXVII · Onyxia's Lair in progress", "Pulled 1 h 12 min ago · 18 in, 3 late · you are In as Thandrel, Damage"),
         roles = listOf(
             RoleLine("Tanks", 2, 2, "Grunvald, Brakka"),
-            RoleLine("Healers", 5, 8, "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late · 15 min) · 3 short"),
+            RoleLine("Healers", 5, 8, "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late\u00a0·\u00a015\u00a0min) · 3 short"),
             RoleLine("Damage", 11, 30, "Thandrel, Kaelra, Thalrin and 8 more"),
         ),
-        ready = ready.filter { it.title != "Elixir of the Mongoose" },
     )
 
     val noGuild = RaidTabView.NoGuild(

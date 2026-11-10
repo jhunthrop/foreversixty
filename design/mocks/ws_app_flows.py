@@ -387,7 +387,7 @@ RAID_R5_CSS = """
 R5_COMING = [('Tanks', 2, 2, 'Grunvald, Brakka'), ('Healers', 5, 8, 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen &middot; 3 short'),
              ('Damage', 11, 30, 'Thandrel, Kaelra, Thalrin and 8 more')]
 R5_LIVE = [('Tanks', 2, 2, 'Grunvald, Brakka'),
-           ('Healers', 5, 8, 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late &middot; 15<br>min) &middot; 3 short'),
+           ('Healers', 5, 8, 'Mirethil, Selka, Hollowmend, Aenwyn, Brightwen<br>(Late&nbsp;&middot;&nbsp;15&nbsp;min) &middot; 3 short'),
            ('Damage', 11, 30, 'Thandrel, Kaelra, Thalrin and 8 more')]
 R5_READY = [('ok', 'Drakefire Amulet', 'Attuned', None), ('ok', 'Elixir of the Mongoose', '3 in your bags', None),
             ('miss', 'Flask of the Titans', 'None in your bags', 'Auction house'),
@@ -413,7 +413,7 @@ def _r5_roles(roles: list) -> str:
 
 
 def _r5_head(answer: str, late_min: int | None = None) -> str:
-    chip = f'Late &middot; {late_min} min' if late_min else answer
+    chip = f'Late&nbsp;&middot;&nbsp;{late_min}&nbsp;min' if late_min else answer
     seg = ''.join(f'<a class="btn{" on" if x == answer else ""}" href="#">{x}</a>' for x in ('In', 'Late', 'Bench', 'Out'))
     late = ('<div class="lm">' + ''.join(f'<a class="btn{" on" if m == late_min else ""}" href="#">{m} min</a>' for m in (15, 30, 60)) + '</div>'
             if answer == 'Late' else '')
@@ -422,11 +422,11 @@ def _r5_head(answer: str, late_min: int | None = None) -> str:
             f'<span class="chip">{chip}</span></div><div class="seg">{seg}</div>{late}</div></div></div>')
 
 
-def _r5_ready(items: list) -> str:
+def _r5_ready(items: list, title: str = 'Before you pull') -> str:
     marks = {'ok': '&#10003;', 'miss': '&times;', 'warn': '!'}
     rows = ''.join(_r5_row(t, sub + (f' &middot; <a class="lk" href="#">{fix}</a>' if fix else ''), f'<span class="mk {k}">{marks[k]}</span>')
                    for k, t, sub, fix in items)
-    return _r5_section('Before you pull', rows + '<p class="stamp" style="margin:0">From your last log-out, 9 h ago</p>')
+    return _r5_section(title, rows + '<p class="stamp" style="margin:0">From your last log-out, 9 h ago</p>')
 
 
 def _r5_lone(title: str, lines: list[str], button: str, primary: bool = False) -> str:
@@ -450,7 +450,7 @@ def _raid_r5(state: str) -> str:
         night = ('<div class="lvh"><i></i><span>Olympus XXVII &middot; Onyxia&rsquo;s Lair in progress</span></div>'
                  '<p class="note">Pulled 1 h 12 min ago &middot; 18 in, 3 late &middot; you are In as<br>Thandrel, Damage</p>'
                  f'<div class="rule"></div>{_r5_roles(R5_LIVE)}')
-        return _r5_section('Raid night', night) + _r5_ready([r for r in R5_READY if r[1] != 'Elixir of the Mongoose']) + pages
+        return _r5_section('Raid night', night) + _r5_ready(R5_READY, 'Ready check') + pages
     if state == 'none':
         apply = '<a class="btn" href="#">Apply</a>'
         recruiting = _r5_section('Guilds recruiting a Fury Warrior', _r5_row('Olympus XXVII', 'Alliance &middot; Wed and Sat, 8:00 pm CST &middot; needs damage', trail=apply)
@@ -459,7 +459,7 @@ def _raid_r5(state: str) -> str:
     if state == 'leveler':
         return _r5_lone('Raids start at 60', ['26 levels to go', 'Onyxia&rsquo;s Lair, Barrow Deeps and Hyjal Summit open at 60. Join a guild on the way and its raids show here.'],
                         'Find a guild')
-    return _r5_lone('Raid with a guild', ['Sign up for your guild&rsquo;s raids from your phone.'], 'Sign in with Battle.net', primary=True)
+    return _r5_lone('Raid with a guild', [], 'Sign in with Battle.net', primary=True)
 
 
 def _raid_page_r5(state: str) -> str:

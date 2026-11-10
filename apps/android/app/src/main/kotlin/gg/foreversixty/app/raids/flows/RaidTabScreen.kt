@@ -90,7 +90,7 @@ data class RaidTabActions(
 fun RaidTabScreen(view: RaidTabView, actions: RaidTabActions, topBar: @Composable () -> Unit = {}, notice: @Composable () -> Unit = {}) {
     FlowBandPage(topBar, notice = notice) {
         when (view) {
-            RaidTabView.SignedOut -> Lone(stringResource(R.string.raid_tab_withGuild), listOf(stringResource(R.string.raid_tab_outLine))) {
+            RaidTabView.SignedOut -> Lone(stringResource(R.string.raid_tab_withGuild), emptyList()) {
                 RaidWideButton(stringResource(R.string.signin_button), primary = true, onClick = actions.onSignIn)
             }
             is RaidTabView.Leveler -> Lone(
@@ -144,7 +144,7 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
                     action = stringResource(R.string.raid_tab_rosterLink),
                     onAction = { actions.onPage(GuildPage.Roster) },
                     top = 0.dp,
-                    panel = PanelFrame.Plain,
+                    panel = PanelFrame.None,
                 ) { RoleRows(view.roles) }
             }
         }
@@ -153,7 +153,9 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
         }
     }
     if (view.ready.isNotEmpty()) {
-        FlowSection(stringResource(R.string.raid_tab_beforePull), top = 0.dp, panel = PanelFrame.None) {
+        // Once pulled the list is the Ready check, not what comes before the pull.
+        val title = stringResource(if (live != null) R.string.raid_tab_readyCheck else R.string.raid_tab_beforePull)
+        FlowSection(title, top = 0.dp, panel = PanelFrame.None) {
             ReadyList(view.ready, view.readyStamp, actions.onWhere, inlineWhere = true)
         }
     }

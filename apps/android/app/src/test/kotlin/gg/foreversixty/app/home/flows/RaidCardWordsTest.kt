@@ -45,8 +45,8 @@ class RaidCardWordsTest {
 
     @Test fun `a Late answer with minutes carries them on the chip and the answer`() {
         val late = words.card(one, "Olympus XXVII", "us/pvp/obnoxious-yell", SignupState.Late, lateOpen = true, badge = null, lateMinutes = 30)
-        assertEquals("Late · 30 min", late.chip)
-        assertEquals("You are Late · 30 min", late.me)
+        assertEquals("Late\u00a0·\u00a030\u00a0min", late.chip)
+        assertEquals("You are Late\u00a0·\u00a030\u00a0min", late.me)
         assertEquals(30, late.lateMinutes)
         assertEquals("In", card(one, SignupState.In).chip)
         assertEquals(null, card(one, null).chip)

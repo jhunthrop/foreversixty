@@ -31,7 +31,7 @@ class RaidRoleLinesTest {
 
     @Test fun `a Late answer carries its minutes`() {
         val late = raid.copy(signups = raid.signups.map { if (it.name == "Kraggor") it.copy(state = "late", lateMinutes = 15) else it })
-        assertEquals("Kraggor (Late · 15 min), Ironhide, Bramblehoof", lines.of(late)[0].names)
+        assertEquals("Kraggor (Late\u00a0·\u00a015\u00a0min), Ironhide, Bramblehoof", lines.of(late)[0].names)
     }
 
     @Test fun `the comp target sets each count and names the short role's gap`() {

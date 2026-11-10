@@ -15,21 +15,21 @@
     "row": 3
    }
   },
-  "section-before-you-pull": {
+  "section-ready-check": {
    "box": [
     14,
     371,
     384,
-    266
+    326
    ],
    "inventory": {
-    "row": 3
+    "row": 4
    }
   },
   "section-olympus-xxvii": {
    "box": [
     14,
-    657,
+    717,
     384,
     288
    ],

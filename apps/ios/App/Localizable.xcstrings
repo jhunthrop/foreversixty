@@ -11290,7 +11290,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Late · %1$lld min"
+            "value": "Late · %1$lld min"
           }
         }
       }
@@ -12976,7 +12976,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ (Late · %2$lld min)"
+            "value": "%1$@ (Late · %2$lld min)"
           }
         }
       }
