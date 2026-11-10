@@ -112,15 +112,37 @@ class RaidFacts(val raid: RaidView, val now: Instant) {
     /** `24/40`, beside the roster heading. */
     val ratio: String get() = raid.size?.let { "$signedUp/$it" } ?: "$signedUp"
 
+    /** Who is coming (In plus Late): tanks, healers, damage (melee and ranged) and how many are late. */
+    private data class Coming(val tanks: Int, val healers: Int, val damage: Int, val late: Int)
+
+    /**
+     * Counted from the sign-ups when the raid carries them (owner, 2026-11-10: never `raid.counts.dps`). A
+     * list row without its sign-ups takes damage as everyone coming less the tanks and healers.
+     */
+    private val coming: Coming
+        get() {
+            val counts = raid.counts
+            if (raid.signups.isEmpty()) {
+                return Coming(counts.tanks, counts.healers, (signedUp - counts.tanks - counts.healers).coerceAtLeast(0), counts.late)
+            }
+            val roles = raid.signups.filter { SignupState.of(it.state)?.isComing == true }.groupingBy { ShortRole.group(it.role) }.eachCount()
+            return Coming(
+                roles[ShortRole.TANK] ?: 0,
+                roles[ShortRole.HEALER] ?: 0,
+                roles[ShortRole.DPS] ?: 0,
+                raid.signups.count { SignupState.of(it.state) == SignupState.Late },
+            )
+        }
+
     /** The breakdown's parts; the late clause only when someone is late. */
     fun breakdownParts(res: Resources): List<String> {
-        val counts = raid.counts
+        val (tanks, healers, damage, late) = coming
         val parts = listOf(
-            res.getQuantityString(R.plurals.raids_part_tanks, counts.tanks, counts.tanks),
-            res.getQuantityString(R.plurals.raids_part_healers, counts.healers, counts.healers),
-            res.getString(R.string.raids_part_dps, counts.dps),
+            res.getQuantityString(R.plurals.raids_part_tanks, tanks, tanks),
+            res.getQuantityString(R.plurals.raids_part_healers, healers, healers),
+            res.getString(R.string.raids_part_dps, damage),
         )
-        return if (counts.late > 0) parts + res.getString(R.string.raids_part_late, counts.late) else parts
+        return if (late > 0) parts + res.getString(R.string.raids_part_late, late) else parts
     }
 
     /** `3 tanks · 6 healers · 14 DPS · 1 late`. */

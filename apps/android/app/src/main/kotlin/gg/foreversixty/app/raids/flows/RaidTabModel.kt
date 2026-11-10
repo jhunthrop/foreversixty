@@ -162,10 +162,7 @@ class RaidRoleLines(private val res: Resources) {
         return res.getString(R.string.raid_tab_andMore, words.take(SHOWN_FEW).joinToString(", "), words.size - SHOWN_FEW)
     }
 
-    private fun group(role: String) = when (role) {
-        ShortRole.TANK, ShortRole.HEALER -> role
-        else -> ShortRole.DPS
-    }
+    private fun group(role: String) = ShortRole.group(role)
 
     private data class Group(val wire: String, @param:StringRes val label: Int, val want: Int?)
 
