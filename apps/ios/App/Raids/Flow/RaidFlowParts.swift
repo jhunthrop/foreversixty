@@ -22,7 +22,7 @@ struct RaidFlowScroll<Content: View>: View {
                 .padding(.bottom, FSSpace.space6)
                 .parityContent()
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 }
 

@@ -108,7 +108,7 @@ struct GuidesScreen: View {
                     GuidesHomeSkeleton().padding(GuidesLayout.gutter)
                 }
             }
-            .background(FSColor.bg)
+            .screenGround()
             .navigationBarTitleDisplayMode(.inline)
         case let .guide(spec):
             GuideScreen(spec: spec, dependencies: dependencies, openGear: openBis) { home.refreshSaved() }
@@ -118,7 +118,7 @@ struct GuidesScreen: View {
                     ChangelogEntryView(entry: entry)
                 }
             }
-            .background(FSColor.bg)
+            .screenGround()
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -177,7 +177,7 @@ struct GuidesRootView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.bottom, GuidesLayout.tabBarClearance)
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     @ViewBuilder
@@ -235,7 +235,7 @@ struct GuideScreen: View {
                 openPlanner: openPlanner
             )
         )
-        .background(FSColor.bg)
+        .screenGround()
         .guideBar(store.phase.value?.guide)
         .task {
             await store.load()

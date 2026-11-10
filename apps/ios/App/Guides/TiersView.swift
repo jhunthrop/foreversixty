@@ -87,7 +87,7 @@ struct TierCalloutCard: View {
             HStack(alignment: .top, spacing: 12) {
                 TierSpecIcon(row: callout.row, build: build, size: GuidesLayout.rowIcon)
                 VStack(alignment: .leading, spacing: 4) {
-                    MicroLabel(Copy.tiersYours, color: FSColor.gold)
+                    Label12(Copy.tiersYours, color: FSColor.gold)
                     Text(callout.row.title).font(ScaledType.lead).foregroundStyle(FSColor.strong)
                         .fixedSize(horizontal: false, vertical: true)
                     Text(callout.row.detail).font(ScaledType.meta).foregroundStyle(FSColor.nav)
@@ -179,7 +179,7 @@ struct TierRowView: View {
     }
 
     private var rank: some View {
-        Text("\(row.rank)").font(ScaledType.monoMeta).foregroundStyle(FSColor.muted).frame(minWidth: 20, alignment: .leading)
+        Text("\(row.rank)").font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted).frame(minWidth: 20, alignment: .leading)
     }
 
     private var name: some View {
@@ -212,13 +212,13 @@ struct TierRowView: View {
             let layout = alignment == .leading ? AnyLayout(HStackLayout(spacing: 8)) : AnyLayout(VStackLayout(alignment: .trailing, spacing: 4))
             layout {
                 TierChip(letter: letter, color: color)
-                Text(model.gap).font(ScaledType.monoMeta).foregroundStyle(FSColor.text)
+                Text(model.gap).font(ScaledType.tabularMeta).foregroundStyle(FSColor.text)
             }
         } else {
             VStack(alignment: alignment, spacing: 2) {
-                Text(model.metric).font(ScaledType.mono).foregroundStyle(FSColor.strong)
+                Text(model.metric).font(ScaledType.tabular).foregroundStyle(FSColor.strong)
                 Text(row.unit).font(ScaledType.meta).foregroundStyle(FSColor.muted)
-                Text(model.gap).font(ScaledType.monoMeta).foregroundStyle(FSColor.text)
+                Text(model.gap).font(ScaledType.tabularMeta).foregroundStyle(FSColor.text)
             }
         }
     }

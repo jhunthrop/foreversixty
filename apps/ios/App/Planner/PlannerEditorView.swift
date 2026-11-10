@@ -38,7 +38,7 @@ struct PlannerEditorView: View {
                 if let state = model.state { ready(state) }
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     private var backTitle: String { model.launch.origin == .guide ? Copy.commonCancel : Copy.talentsTitle }
@@ -233,7 +233,7 @@ struct PlannerChips: View {
 
     private var points: some View {
         Text(Copy.planLeft(n: left))
-            .font(ScaledType.monoDay)
+            .font(ScaledType.tabularDay)
             .foregroundStyle(left == 0 ? FSColor.kill : FSColor.gold)
             .accessibilityLabel(Copy.planA11yLeft(n: left))
     }
@@ -329,7 +329,7 @@ struct PlannerStrip: View {
     }
 
     private func rankLabel(_ talent: Talent, rank: Int) -> some View {
-        Text(Copy.planRank(n: rank, max: talent.maxRank)).font(ScaledType.mono).foregroundStyle(FSColor.muted)
+        Text(Copy.planRank(n: rank, max: talent.maxRank)).font(ScaledType.tabular).foregroundStyle(FSColor.muted)
     }
 
     @ViewBuilder

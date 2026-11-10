@@ -58,7 +58,7 @@ struct RaidPageScreen: View {
                 }
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
         .task { await model.load() }
         .task { await model.stayLive() }
     }
@@ -111,7 +111,7 @@ struct RaidPageContent: View {
             }
             .onAppear { if scrollToRoster { proxy.scrollTo("roster", anchor: .top) } }
         }
-        .background(FSColor.bg)
+        .screenGround()
         .overlay(alignment: .bottom) { toast }
         .navigationTitle(raid.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -170,7 +170,7 @@ struct RaidPageContent: View {
     @ViewBuilder
     private var notes: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(Copy.raidNotes.uppercased()).font(ScaledType.h2).foregroundStyle(FSColor.strong)
+            Text(Copy.raidNotes).font(ScaledType.h2).foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
             if raid.notesHtml.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 Text(Copy.raidNotesEmpty).font(ScaledType.body).foregroundStyle(FSColor.muted)
@@ -213,7 +213,7 @@ struct RaidHead: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
-                Text(Copy.raidEyebrow.uppercased()).font(ScaledType.micro)
+                Text(Copy.raidEyebrow).font(ScaledType.label)
                     .tracking(typeSize.isAccessibilitySize ? 0 : 1.5).lineLimit(1).minimumScaleFactor(0.5).foregroundStyle(FSColor.gold)
                 TagView(chip: facts.chip)
                 if let guildName, !typeSize.isAccessibilitySize {
@@ -225,7 +225,7 @@ struct RaidHead: View {
                 Text(guildName).font(ScaledType.meta).foregroundStyle(FSColor.muted)
             }
             HStack(alignment: .firstTextBaseline, spacing: 0) {
-                Text(raid.title.uppercased()).font(ScaledType.title).foregroundStyle(facts.chip == .cancelled ? FSColor.muted : FSColor.strong)
+                Text(raid.title).font(ScaledType.title).foregroundStyle(facts.chip == .cancelled ? FSColor.muted : FSColor.strong)
                     .accessibilityAddTraits(.isHeader)
                 if raid.title != raid.zoneName {
                     Text(Copy.raidsZoneSuffix(zone: raid.zoneName)).font(ScaledType.body).foregroundStyle(FSColor.muted)
@@ -261,7 +261,7 @@ struct TimesLine: View {
             let head = Text(pieces.first ?? "").foregroundStyle(FSColor.muted)
             // Only the digits are mono; `pm` stays in the body face (UX should 2).
             let digits = time.split(separator: " ", maxSplits: 1).map(String.init)
-            let figure = Text(digits.first ?? time).font(ScaledType.mono).foregroundStyle(FSColor.strong)
+            let figure = Text(digits.first ?? time).font(ScaledType.tabular).foregroundStyle(FSColor.strong)
             let unit = Text(digits.count > 1 ? " " + digits[1] : "").foregroundStyle(FSColor.strong)
             let tail = Text(pieces.dropFirst().joined()).foregroundStyle(FSColor.muted)
             return Text("\(line)\(separator)\(head)\(figure)\(unit)\(tail)")
@@ -306,7 +306,7 @@ struct SignupCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(Copy.raidYourSignup.uppercased()).font(ScaledType.sec).foregroundStyle(FSColor.strong)
+            Text(Copy.raidYourSignup).font(ScaledType.sec).foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
             if facts.chip == .cancelled {
                 cancelled

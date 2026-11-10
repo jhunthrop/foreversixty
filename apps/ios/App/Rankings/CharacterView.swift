@@ -106,7 +106,7 @@ struct CharacterView: View {
 
     private func section(_ title: String, @ViewBuilder _ body: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(title).accessibilityAddTraits(.isHeader)
+            SectionTitle(title).accessibilityAddTraits(.isHeader)
             body()
         }
     }
@@ -155,7 +155,7 @@ struct CharacterView: View {
                     layout {
                         Text(Copy.charGap).font(ScaledType.bodyStrong).foregroundStyle(FSColor.strong)
                         if !typeSize.isAccessibilitySize { Spacer() }
-                        Text(gap).font(ScaledType.mono).foregroundStyle(FSColor.strong).fixedSize()
+                        Text(gap).font(ScaledType.tabular).foregroundStyle(FSColor.strong).fixedSize()
                     }
                     .padding(.vertical, typeSize.isAccessibilitySize ? 10 : 0)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -180,7 +180,7 @@ struct CharacterView: View {
                         .background(GameColors.controlFill, in: .rect(cornerRadius: FSRadius.legacyControl))
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(build.trees).font(ScaledType.mono.weight(.bold)).foregroundStyle(FSColor.strong)
+                        Text(build.trees).font(ScaledType.tabular.weight(.bold)).foregroundStyle(FSColor.strong)
                         Text(build.meta).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -238,7 +238,7 @@ struct CharacterHead: View {
             ClassCrest(className: profile.character.className, size: RankingsLayout.headCrest)
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 8) {
-                    Text(profile.character.name.uppercased()).font(ScaledType.h2)
+                    Text(profile.character.name).font(ScaledType.h2)
                         .foregroundStyle(ClassColor.of(profile.character.className))
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
@@ -266,7 +266,7 @@ struct ScoreCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 2) {
-                    MicroLabel(Copy.charScore, color: FSColor.gold)
+                    Label12(Copy.charScore, color: FSColor.gold)
                     ViewThatFits(in: .horizontal) {
                         HStack(alignment: .firstTextBaseline, spacing: 8) { figure; tier }
                         VStack(alignment: .leading, spacing: 4) { figure; tier }
@@ -332,7 +332,7 @@ struct ScoreBarRow: View {
                     }
                 }
                 .frame(height: RankingsLayout.bar)
-                Text("\(bar.value)").font(ScaledType.monoMeta.weight(.semibold)).foregroundStyle(FSColor.strong)
+                Text("\(bar.value)").font(ScaledType.tabularMeta.weight(.semibold)).foregroundStyle(FSColor.strong)
                     .frame(minWidth: 34, alignment: .trailing)
                     .fixedSize()
             }
@@ -404,8 +404,8 @@ struct FightLineView: View {
     private func figure(_ alignment: HorizontalAlignment) -> some View {
         VStack(alignment: alignment, spacing: 2) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(line.value).font(ScaledType.mono).foregroundStyle(FSColor.strong)
-                Text(line.unit).font(ScaledType.micro).foregroundStyle(FSColor.muted)
+                Text(line.value).font(ScaledType.tabular).foregroundStyle(FSColor.strong)
+                Text(line.unit).font(ScaledType.label).foregroundStyle(FSColor.muted)
             }
             if !recent, let percentile = line.percentile {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {

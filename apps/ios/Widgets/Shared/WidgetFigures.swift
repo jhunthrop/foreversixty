@@ -1,3 +1,4 @@
+import DesignSystem
 import Foundation
 import Models
 
@@ -333,7 +334,7 @@ struct UpgradeFigures: Equatable, Sendable {
             self.init(sentence: upgrades.sentence ?? Copy.widgetNoGear, opensApp: false)
             return
         }
-        let unit = upgrades.unit.uppercased()
+        let unit = Codes.unit(upgrades.unit)
         let rows = upgrades.rows.map { row in
             Row(
                 slot: row.slotLabel, name: row.pick.name, quality: row.pick.quality, icon: row.pick.icon,

@@ -102,7 +102,7 @@ struct PlanView: View {
             }
             .padding(FSSpace.space4)
         }
-        .background(FSColor.bg)
+        .screenGround()
         .navigationTitle(Copy.youPlan)
     }
 
@@ -134,7 +134,7 @@ struct PlanView: View {
     }
 
     private var heading: some View {
-        Text(Copy.planPremium).font(ScaledType.h2).textCase(.uppercase).foregroundStyle(FSColor.strong)
+        Text(Copy.planPremium).font(ScaledType.h2).foregroundStyle(FSColor.strong)
             .accessibilityAddTraits(.isHeader)
     }
 
@@ -146,7 +146,7 @@ struct PlanView: View {
     private var includes: some View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
             Divider().overlay(FSColor.lineSoft)
-            MicroLabel(Copy.planIncludes)
+            Label12(Copy.planIncludes)
             ForEach(plan.includes, id: \.self) { line in
                 HStack(alignment: .firstTextBaseline, spacing: FSSpace.space2) {
                     Image(systemName: "checkmark").font(.footnote.weight(.bold)).foregroundStyle(FSColor.kill)

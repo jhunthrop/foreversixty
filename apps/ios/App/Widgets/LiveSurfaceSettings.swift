@@ -73,7 +73,7 @@ struct LiveSurfacesScreen: View {
         ScrollView {
             LiveSurfaceSettingsView(showsSim: showsSim, onChange: onChange)
         }
-        .background(FSColor.bg)
+        .screenGround()
         .navigationTitle(Copy.liveSettings)
         .navigationBarTitleDisplayMode(.inline)
     }

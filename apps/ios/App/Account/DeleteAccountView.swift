@@ -62,7 +62,7 @@ struct DeleteAccountView: View {
             }
             .padding(FSSpace.space4)
         }
-        .background(FSColor.bg)
+        .screenGround()
         .navigationTitle(Copy.sharedAccountDeleteTitle)
     }
 
@@ -70,7 +70,7 @@ struct DeleteAccountView: View {
 
     private var confirmField: some View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
-            MicroLabel(confirmLabel)
+            Label12(confirmLabel)
             TextField("", text: $typed)
                 .font(ScaledType.body)
                 .foregroundStyle(FSColor.strong)
@@ -94,7 +94,7 @@ struct DeleteAccountView: View {
 
     private func group(_ title: String, _ lines: [String], glyph: String, tint: Color = FSColor.wipe) -> some View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
-            MicroLabel(title)
+            SectionTitle(title)
             VStack(alignment: .leading, spacing: FSSpace.space3) {
                 ForEach(lines, id: \.self) { line in
                     HStack(alignment: .firstTextBaseline, spacing: FSSpace.space3) {

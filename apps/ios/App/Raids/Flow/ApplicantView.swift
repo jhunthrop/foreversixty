@@ -68,12 +68,12 @@ struct ApplicantView: View {
                 FSButton(Copy.raidApplicantDecline, action: actions.decline)
             }
             .disabled(busy)
-            SmallText(error ?? Copy.raidApplicantRole, color: error == nil ? FSColor.muted : FSColor.wipe)
+            SmallText(error ?? Copy.raidApplicantRole, color: error == nil ? nil : FSColor.wipe)
         }
         .padding(.top, FSSpace.space3)
         .padding(.bottom, FSSpace.space1)
         .padding(.horizontal, FSSpace.gutterPhone)
-        .background(FSColor.bg)
+        .screenGround()
         .overlay(alignment: .top) { Hairline() }
     }
 

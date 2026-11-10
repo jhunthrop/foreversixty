@@ -41,7 +41,7 @@ struct RankingsScreen: View {
                 watching: watchList.keys, pageFailed: store.pageFailed, now: dependencies.now(), actions: actions
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .refreshable { await store.load() }
         .reportsBar(title: Copy.rankTitle) { EmptyView() }
         .haptic(.success, trigger: watchList.confirmed)
@@ -130,7 +130,7 @@ struct CharacterScreen: View {
                 now: dependencies.now(), clock: dependencies.clock, actions: actions
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .refreshable { await store?.load() }
         .characterBar(
             title: route.ref.name, share: shareItem,

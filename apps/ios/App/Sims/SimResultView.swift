@@ -53,10 +53,10 @@ struct SimResultView: View {
 
     private func content(_ model: SimResultModel) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            MicroLabel(model.kind)
+            Label12(model.kind)
             meta(model).padding(.top, 4)
             answer(model.answer).padding(.top, 12)
-            Text(model.errorLine).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+            Text(model.errorLine).font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
                 .fixedSize(horizontal: false, vertical: true).padding(.top, 4)
             if !model.gear.isEmpty { gear(model).padding(.top, 22) }
             Button { openBreakdown(model.breakdownURL) } label: {
@@ -111,7 +111,7 @@ struct SimResultView: View {
 
     private func gear(_ model: SimResultModel) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(Copy.simsGear)
+            SectionTitle(Copy.simsGear)
             LazyVGrid(
                 columns: Array(repeating: GridItem(.fixed(Self.gearIcon), spacing: Self.gridGap), count: Self.gridColumns),
                 alignment: .leading, spacing: Self.gridGap

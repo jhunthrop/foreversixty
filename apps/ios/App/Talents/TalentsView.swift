@@ -53,7 +53,7 @@ struct TalentsView: View {
                 withAnimation { proxy.scrollTo(TalentTreeView.anchor(tier: tier), anchor: Self.sheetClearAnchor) }
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     @ViewBuilder
@@ -224,7 +224,7 @@ struct TalentCompareBar: View {
             }
         }
         .padding(EdgeInsets(top: 12, leading: 16, bottom: 8, trailing: 16))
-        .background(FSColor.bg)
+        .screenGround()
         .overlay(alignment: .bottom) { if !isLarge { FSColor.lineSoft.frame(height: 1) } }
         .haptic(.selection, trigger: shown)
         .haptic(.selection, trigger: tree)
@@ -289,7 +289,7 @@ struct TalentCompareBar: View {
                         Text(tab.name).font(ScaledType.bodyStrong)
                             .foregroundStyle(tree == tab.index ? FSColor.strong : FSColor.nav)
                         Spacer(minLength: 8)
-                        Text("\(tab.points)").font(ScaledType.mono)
+                        Text("\(tab.points)").font(ScaledType.tabular)
                             .foregroundStyle(tree == tab.index ? FSColor.strong : FSColor.nav)
                         if tab.differing > 0 { DiffDot() }
                     }
@@ -312,7 +312,7 @@ struct TalentCompareBar: View {
         let selected = tree == tab.index
         return HStack(spacing: 6) {
             Text(tab.name).font(selected ? ScaledType.bodyStrong : ScaledType.body)
-            Text("\(tab.points)").font(ScaledType.mono)
+            Text("\(tab.points)").font(ScaledType.tabular)
             if tab.differing > 0 { DiffDot() }
         }
         .foregroundStyle(selected ? FSColor.strong : FSColor.nav)

@@ -68,9 +68,9 @@ struct RosterView: View {
         let officer = facts.canMove && facts.isSignable
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(Copy.raidSignups.uppercased()).font(ScaledType.h2).foregroundStyle(FSColor.strong)
+                Text(Copy.raidSignups).font(ScaledType.h2).foregroundStyle(FSColor.strong)
                     .accessibilityAddTraits(.isHeader)
-                Text(facts.ratio).font(ScaledType.mono).foregroundStyle(FSColor.muted)
+                Text(facts.ratio).font(ScaledType.tabular).foregroundStyle(FSColor.muted)
             }
             if let read = CompositionRead(controller.raid.composition) { CompositionView(read: read) }
             ForEach(roster.groups) { group in

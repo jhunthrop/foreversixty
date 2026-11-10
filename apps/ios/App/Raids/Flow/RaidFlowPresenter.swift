@@ -246,7 +246,7 @@ struct RaidFlowPresenter {
         var figures: [ApplicantFigure] = []
         if let score = sheet?.score { figures.append(ApplicantFigure(label: Copy.raidApplicantScore, value: "\(score)", unit: nil)) }
         if let sim = sheet?.sim {
-            figures.append(ApplicantFigure(label: Copy.raidApplicantSim, value: "\(Int(sim.value.rounded()))", unit: sim.unit.uppercased()))
+            figures.append(ApplicantFigure(label: Copy.raidApplicantSim, value: "\(Int(sim.value.rounded()))", unit: Codes.unit(sim.unit)))
         }
         if let level = character.itemLevel { figures.append(ApplicantFigure(label: Copy.raidApplicantItemLevel, value: "\(level)", unit: nil)) }
         return ApplicantContent(

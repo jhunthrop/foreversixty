@@ -26,7 +26,7 @@ struct CompositionView: View {
                     ClassCrest(className: line.className, size: 24)
                     Text(line.name).font(ScaledType.meta).lineLimit(1).minimumScaleFactor(0.7)
                         .foregroundStyle(line.count == 0 ? FSColor.muted : ClassColor.of(line.className))
-                    Text("\(line.count)").font(ScaledType.monoMeta)
+                    Text("\(line.count)").font(ScaledType.tabularMeta)
                         .foregroundStyle(line.count == 0 ? FSColor.muted : FSColor.strong)
                 }
             }

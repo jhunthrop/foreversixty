@@ -55,7 +55,7 @@ struct BisPickerSheet: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                Text(Copy.bisPickerTitle.uppercased())
+                Text(Copy.bisPickerTitle)
                     .font(ScaledType.sec)
                     .foregroundStyle(FSColor.strong)
                     .accessibilityAddTraits(.isHeader)
@@ -166,8 +166,8 @@ struct BisPickerSheet: View {
 
     private func section(_ title: String, @ViewBuilder _ body: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.sm + 2) {
-            Text(title.uppercased())
-                .font(ScaledType.micro)
+            Text(title)
+                .font(ScaledType.label)
                 .tracking(1.5)
                 .foregroundStyle(FSColor.muted)
                 .accessibilityAddTraits(.isHeader)

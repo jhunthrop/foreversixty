@@ -93,7 +93,7 @@ struct RaidNightView: View {
                 VStack(alignment: .leading, spacing: 22) { content }.padding(16)
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
         .navigationTitle(Copy.nightTitle)
         .navigationBarTitleDisplayMode(.large)
         .task { await model.load() }
@@ -149,7 +149,7 @@ struct RaidNightView: View {
             section(Copy.nightCoach) {
                 ForEach(Array(notes.enumerated()), id: \.offset) { index, note in
                     HStack(alignment: .top, spacing: 10) {
-                        Text("\(index + 1)").font(ScaledType.mono).foregroundStyle(FSColor.gold)
+                        Text("\(index + 1)").font(ScaledType.tabular).foregroundStyle(FSColor.gold)
                         Text(note).font(ScaledType.body).foregroundStyle(FSColor.text)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -244,7 +244,7 @@ struct RaidNightView: View {
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {
                 Text(Copy.raidsNightDps(dps: best.dps.formatted(.number.precision(.fractionLength(1)))))
-                    .font(ScaledType.mono).foregroundStyle(FSColor.strong)
+                    .font(ScaledType.tabular).foregroundStyle(FSColor.strong)
                 if let percentile = best.percentile {
                     Text(Copy.nightPercentile(ordinal: Self.ordinal(percentile)))
                         .font(ScaledType.meta).foregroundStyle(GameColors.parse(percentile))

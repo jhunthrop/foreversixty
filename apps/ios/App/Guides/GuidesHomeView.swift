@@ -47,8 +47,8 @@ struct YourGuideCard: View {
             HStack(alignment: .center, spacing: 14) {
                 SpecIcon(icon: spec.icon, build: build, size: GuidesLayout.headIcon)
                 VStack(alignment: .leading, spacing: 4) {
-                    MicroLabel(Copy.guidesYours, color: FSColor.gold)
-                    Text(spec.title.uppercased()).font(ScaledType.sec).foregroundStyle(ClassColor.of(spec.classSlug))
+                    Label12(Copy.guidesYours, color: FSColor.gold)
+                    Text(spec.title).font(ScaledType.sec).foregroundStyle(ClassColor.of(spec.classSlug))
                         .fixedSize(horizontal: false, vertical: true)
                     Text(GuideCopy.cardMeta(spec)).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                         .fixedSize(horizontal: false, vertical: true)
@@ -128,7 +128,7 @@ struct GuideClassView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             GuidesOfflineStrip(since: offlineSince, now: now)
-            Text((specs.first?.className ?? classSlug).uppercased())
+            Text((specs.first?.className ?? classSlug))
                 .font(ScaledType.title)
                 .foregroundStyle(ClassColor.of(classSlug))
                 .accessibilityAddTraits(.isHeader)

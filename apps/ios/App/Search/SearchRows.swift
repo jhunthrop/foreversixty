@@ -281,7 +281,7 @@ struct SearchSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                MicroLabel(title).accessibilityAddTraits(.isHeader)
+                SectionTitle(title).accessibilityAddTraits(.isHeader)
                 Spacer()
                 if let trailing {
                     Button(trailing.label, action: trailing.action)

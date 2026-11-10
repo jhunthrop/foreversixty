@@ -26,7 +26,7 @@ struct BisView: View {
             .padding(.horizontal, Theme.Spacing.md)
             .padding(.vertical, Theme.Spacing.sm)
         }
-        .background(FSColor.bg)
+        .screenGround()
         .safeAreaInset(edge: .top, spacing: 0) {
             VStack(spacing: 0) {
                 if let offlineSince { OfflineStrip(text: Copy.offlineStrip(time: OfflineStamp.format(offlineSince, now: now))) }
@@ -44,7 +44,7 @@ struct BisView: View {
 
     private var titleRow: some View {
         HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.sm + Theme.Spacing.xs) {
-            Text(Copy.bisTitle.uppercased())
+            Text(Copy.bisTitle)
                 .font(ScaledType.title)
                 .foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
@@ -116,7 +116,7 @@ private struct SetDpsLine: View {
         let figureEnd = line.firstIndex(of: " ").map { line.distance(from: line.startIndex, to: $0) } ?? 0
         if figureEnd > 0 {
             let range = text.startIndex..<text.index(text.startIndex, offsetByCharacters: figureEnd)
-            text[range].font = ScaledType.mono
+            text[range].font = ScaledType.tabular
             text[range].foregroundColor = FSColor.strong
         }
         return text

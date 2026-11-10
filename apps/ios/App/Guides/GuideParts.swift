@@ -35,7 +35,7 @@ struct GuideSectionLabel: View {
     let text: String
 
     var body: some View {
-        MicroLabel(text)
+        Label12(text)
             .accessibilityAddTraits(.isHeader)
             .padding(.top, GuidesLayout.sectionGap)
             .padding(.bottom, 8)
@@ -54,7 +54,7 @@ struct StatChipView: View {
         let shape = RoundedRectangle(cornerRadius: GuidesLayout.chip / 2)
         HStack(spacing: 8) {
             Text("\(chip.number)")
-                .font(.system(size: number, weight: .semibold, design: .monospaced))
+                .font(Font.custom(FSFont.bodySemibold, size: number).monospacedDigit())
                 .foregroundStyle(FSColor.strong)
                 .frame(width: disc, height: disc)
                 .background(FSColor.cardTop, in: .circle)
@@ -94,7 +94,7 @@ struct GuideLines: View {
     var body: some View {
         if !lines.isEmpty {
             VStack(alignment: .leading, spacing: 6) {
-                MicroLabel(title).accessibilityAddTraits(.isHeader)
+                SectionTitle(title).accessibilityAddTraits(.isHeader)
                 ForEach(lines, id: \.self) { line in
                     Text(line).font(ScaledType.body).foregroundStyle(FSColor.text)
                         .fixedSize(horizontal: false, vertical: true)

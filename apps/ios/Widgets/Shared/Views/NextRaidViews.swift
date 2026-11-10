@@ -58,7 +58,7 @@ struct RaidHeadline: View {
         VStack(alignment: .leading, spacing: 2) {
             WidgetHeader(title: Copy.widgetNextRaid)
                 .padding(.bottom, 4)
-            Text((figures.zone ?? "").uppercased())
+            Text((figures.zone ?? ""))
                 .font(ScaledType.sec)
                 .foregroundStyle(FSColor.strong)
                 .lineLimit(2)
@@ -67,7 +67,7 @@ struct RaidHeadline: View {
                 Text(time).font(ScaledType.meta).foregroundStyle(FSColor.muted).lineLimit(1)
             }
             if let countdown = figures.countdown {
-                Text(countdown).font(ScaledType.mono).foregroundStyle(FSColor.gold).lineLimit(1).minimumScaleFactor(0.7)
+                Text(countdown).font(ScaledType.tabular).foregroundStyle(FSColor.gold).lineLimit(1).minimumScaleFactor(0.7)
             }
         }
     }
@@ -137,7 +137,7 @@ struct NextRaidMediumView: View {
                         .accessibilityLabel(figures.accessibility)
                     if let signed = figures.signedUp {
                         VStack(alignment: .trailing, spacing: 0) {
-                            Text(signed).font(ScaledType.monoDay).foregroundStyle(FSColor.strong).lineLimit(1)
+                            Text(signed).font(ScaledType.tabularDay).foregroundStyle(FSColor.strong).lineLimit(1)
                             Text(Copy.widgetSignedUpLabel).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                         }
                         .accessibilityElement(children: .combine)

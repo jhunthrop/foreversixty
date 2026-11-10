@@ -1,8 +1,9 @@
 import SwiftUI
 import UIKit
 
-/// The site's uppercase section label (`micro`, .14em).
-public struct MicroLabel: View {
+/// The 12 pt label (`FSType.label`): 700, muted, sentence case (ruling N1). A field's name above its
+/// value, never a section's title (`SectionTitle`) and never a button. Android: `Label12`.
+public struct Label12: View {
     private let text: String
     private let color: Color
 
@@ -12,15 +13,28 @@ public struct MicroLabel: View {
     }
 
     public var body: some View {
-        Text(text.uppercased())
-            .font(ScaledType.micro)
-            .tracking(1.5)
-            .foregroundStyle(color)
-            .accessibilityLabel(text)
+        Text(text).type(FSType.label).foregroundStyle(color)
     }
 }
 
-/// A tag (`.pill`): 22 pt, 11 pt 700 uppercase, tinted ground and border, an optional glyph first.
+/// A section's title over the ground in the round-5 look: the display face at 21, cream, read as a
+/// heading (the tab roots' section titles). Android: `SectionTitle`.
+public struct SectionTitle: View {
+    private let text: String
+    private let color: Color
+
+    public init(_ text: String, color: Color = FSColor.cream) {
+        self.text = text
+        self.color = color
+    }
+
+    public var body: some View {
+        Text(text).font(ScaledType.sectionTitle).foregroundStyle(color).accessibilityAddTraits(.isHeader)
+    }
+}
+
+/// A tag (`ui/Tag`): 22 pt, the 12 pt label at 600 in sentence case (N1), tinted ground and border on
+/// the field radius, an optional glyph first.
 public struct TagView: View {
     private let text: String
     private let color: Color
@@ -37,13 +51,13 @@ public struct TagView: View {
             if let systemImage {
                 Image(systemName: systemImage).font(.system(size: 9, weight: .bold)).accessibilityHidden(true)
             }
-            Text(text.uppercased()).font(ScaledType.micro).tracking(1)
+            Text(text).font(Font.custom(FSFont.bodySemibold, size: FSType.label.size, relativeTo: .caption))
         }
         .foregroundStyle(color)
         .padding(.horizontal, FSSpace.space2)
         .frame(minHeight: 22)
-        .background(color.opacity(0.12), in: .rect(cornerRadius: FSRadius.legacyPill))
-        .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyPill).stroke(color.opacity(0.35)))
+        .background(color.opacity(0.12), in: .rect(cornerRadius: FSRadius.field))
+        .overlay(RoundedRectangle(cornerRadius: FSRadius.field).stroke(color.opacity(0.35)))
         .fixedSize()
     }
 }
@@ -153,6 +167,7 @@ struct Panel: ViewModifier {
     func body(content: Content) -> some View {
         let shape = RoundedRectangle(cornerRadius: Theme.Radius.panel)
         content
+            .environment(\.subInk, FSColor.muted)
             .background { ground.clipShape(shape) }
             .overlay { shape.strokeBorder(Color.black, lineWidth: FSStroke.hairline) }
             .overlay {
@@ -235,8 +250,8 @@ public extension View {
     /// A list card: the plain panel.
     func quietCard() -> some View { panel() }
     func surfaceBand(bottomLine: Bool = true) -> some View { modifier(SurfaceBand(bottomLine: bottomLine)) }
-    /// The screen's painted ground behind the content.
-    func screenGround() -> some View { background { ScreenGround() } }
+    /// The screen's painted ground behind the content; lines on it take `mutedGround` (a panel restores `muted`).
+    func screenGround() -> some View { background { ScreenGround() }.environment(\.subInk, FSColor.mutedGround) }
 }
 
 /// A list row's press: the 10% gold wash while held (spec §8).

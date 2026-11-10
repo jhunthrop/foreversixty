@@ -42,7 +42,7 @@ struct RankingsSnapshotTests {
         NavigationStack(path: .constant([1])) {
             Color.clear.navigationTitle(back).navigationDestination(for: Int.self) { _ in
                 ScrollView { content() }
-                    .background(FSColor.bg)
+                    .screenGround()
                     .reportsBar(title: back) { EmptyView() }
             }
         }
@@ -159,7 +159,7 @@ struct RankingsSnapshotTests {
         let setup = try setup()
         let sheet = SheetFrame(height: 800, behind: board(loaded(try RankingsTestData.page()))) {
             VStack(alignment: .leading, spacing: 0) {
-                Text(Copy.rankFilterEncounter.uppercased()).font(ScaledType.sec).foregroundStyle(FSColor.strong)
+                Text(Copy.rankFilterEncounter).font(ScaledType.sec).foregroundStyle(FSColor.strong)
                     .padding(.horizontal, 16).padding(.top, 16)
                 EncounterList(encounters: setup.encounters, selected: "onyxia") { _ in }
             }
@@ -189,7 +189,7 @@ struct RankingsSnapshotTests {
                         watchFailed: watchFailed, now: now, clock: clock, actions: CharacterActions(openReport: { _ in })
                     )
                 }
-                .background(FSColor.bg)
+                .screenGround()
                 .characterBar(title: name, share: ShareText.character(key: ref.key, name: name, spec: nil, className: nil, level: nil), star: star) {}
             }
         }

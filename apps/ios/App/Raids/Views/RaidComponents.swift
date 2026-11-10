@@ -44,10 +44,10 @@ struct SectionLabel: View {
 
     var body: some View {
         HStack(spacing: 6) {
-            Text(text.uppercased()).font(ScaledType.micro).tracking(typeSize.isAccessibilitySize ? 0 : 1.5)
+            Text(text).font(ScaledType.label)
                 .lineLimit(1).minimumScaleFactor(0.5).foregroundStyle(color)
             if let trailing {
-                Text(trailing).font(ScaledType.monoMeta).foregroundStyle(color)
+                Text(trailing).font(ScaledType.tabularMeta).foregroundStyle(color)
             }
         }
         .accessibilityAddTraits(.isHeader)
@@ -80,9 +80,9 @@ struct DateBlock: View {
     var body: some View {
         let parts = clock.dateBlock(date)
         VStack(spacing: 0) {
-            Text(parts.weekday).font(ScaledType.micro).foregroundStyle(FSColor.muted)
-            Text(parts.day).font(ScaledType.monoDay).foregroundStyle(FSColor.strong)
-            Text(parts.month).font(ScaledType.micro).foregroundStyle(FSColor.muted)
+            Text(parts.weekday).font(ScaledType.label).foregroundStyle(FSColor.muted)
+            Text(parts.day).font(ScaledType.tabularDay).foregroundStyle(FSColor.strong)
+            Text(parts.month).font(ScaledType.label).foregroundStyle(FSColor.muted)
         }
         // The block keeps its width at every size; its words shrink, never break.
         .lineLimit(1)
@@ -195,7 +195,7 @@ struct WrappingTag: View {
     let color: Color
 
     var body: some View {
-        Text(text.uppercased()).font(ScaledType.micro).tracking(1)
+        Text(text).font(ScaledType.label)
             .fixedSize(horizontal: false, vertical: true)
             .foregroundStyle(color)
             .padding(.horizontal, FSSpace.space2).padding(.vertical, 2)

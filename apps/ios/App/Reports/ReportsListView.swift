@@ -68,7 +68,7 @@ struct ReportsListView: View {
 
     private func section(_ title: String, _ rows: [ReportRow], content: ReportsContent) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(title)
+            SectionTitle(title)
             VStack(spacing: 0) {
                 ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
                     if index > 0 { Divider().overlay(FSColor.lineSoft) }
@@ -218,7 +218,7 @@ struct LiveTag: View {
         HStack(spacing: ReportsLayout.liveDotGap) {
             Circle().fill(FSColor.kill).frame(width: ReportsLayout.liveDot, height: ReportsLayout.liveDot)
                 .accessibilityHidden(true)
-            Text(Copy.reportsStateLive.uppercased()).font(ScaledType.micro).tracking(1)
+            Text(Copy.reportsStateLive).font(ScaledType.label)
         }
         .foregroundStyle(FSColor.kill)
         .padding(.horizontal, FSSpace.space2)
@@ -304,6 +304,6 @@ enum ReportsLayout {
     static let mineEdge: CGFloat = 3
     /// The meter bar's class colour strength (spec §4 Meter row).
     static let barOpacity = 0.22
-    static let figure = Font.system(.title3, design: .monospaced, weight: .semibold)
-    static let parseNumber = Font.system(.subheadline, design: .monospaced, weight: .bold)
+    static let figure = Font.custom(FSFont.bodySemibold, size: 20, relativeTo: .title3).monospacedDigit()
+    static let parseNumber = Font.custom(FSFont.bodyBold, size: 15, relativeTo: .subheadline).monospacedDigit()
 }

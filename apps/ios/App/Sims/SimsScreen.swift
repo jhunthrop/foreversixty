@@ -41,7 +41,7 @@ struct SimsScreen: View {
                 build: build, now: dependencies.now(), actions: actions
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .refreshable { await store.load() }
         .navigationTitle(Copy.simsTitle)
         .navigationBarTitleDisplayMode(.inline)
@@ -126,7 +126,7 @@ struct SimResultScreen: View {
                 staleSince: store.staleSince
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $tooltip) { request in ItemTooltipSheet(request: request, catalog: dependencies.catalog) }

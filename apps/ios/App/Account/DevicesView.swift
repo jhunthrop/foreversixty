@@ -27,7 +27,7 @@ struct DevicesView: View {
             }
             .padding(FSSpace.space4)
         }
-        .background(FSColor.bg)
+        .screenGround()
         .navigationTitle(Copy.devicesTitle)
         .alert(
             confirming.map { Copy.devicesRevokeTitle(device: $0.name) } ?? "",

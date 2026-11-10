@@ -87,7 +87,7 @@ struct SearchChrome<Content: View>: View {
             ScrollView { content() }
                 .scrollDismissesKeyboard(.interactively)
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 }
 
@@ -312,7 +312,7 @@ struct SearchContentView: View {
     private var charactersStatus: some View {
         if scope.shows(.characters), characters == .failed {
             VStack(alignment: .leading, spacing: 10) {
-                MicroLabel(Copy.searchGroupCharacters)
+                SectionTitle(Copy.searchGroupCharacters)
                 Text(Copy.searchCharactersFailed).font(ScaledType.body).foregroundStyle(FSColor.wipe)
                 SecondaryButton(title: Copy.searchTryAgain, action: actions.retryCharacters)
             }

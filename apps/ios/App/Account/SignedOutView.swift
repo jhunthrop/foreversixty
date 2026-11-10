@@ -40,12 +40,9 @@ struct SignedOutView: View {
             Seal(size: 64)
             Text(Copy.appName)
                 .font(ScaledType.wordmark)
-                .textCase(.uppercase)
-                .tracking(2)
                 .foregroundStyle(FSColor.strong)
             Text(heading)
                 .font(ScaledType.title)
-                .textCase(.uppercase)
                 .foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
             Text(line)
@@ -102,7 +99,6 @@ struct ImportView: View {
                 Seal(size: 64)
                 Text(Copy.signinImportTitle)
                     .font(ScaledType.h2)
-                    .textCase(.uppercase)
                     .foregroundStyle(FSColor.strong)
                     .multilineTextAlignment(.center)
                 Text(Copy.signinImportBody)
@@ -128,7 +124,6 @@ struct NoCharactersView: View {
         VStack(alignment: .leading, spacing: FSSpace.space4) {
             Text(Copy.signinNoCharsTitle)
                 .font(ScaledType.h2)
-                .textCase(.uppercase)
                 .foregroundStyle(FSColor.strong)
                 .accessibilityAddTraits(.isHeader)
             Text(Copy.signinNoCharsBody)
@@ -140,6 +135,6 @@ struct NoCharactersView: View {
         }
         .padding(FSSpace.space4)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(FSColor.bg)
+        .screenGround()
     }
 }

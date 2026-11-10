@@ -18,7 +18,7 @@ struct GuildScreenScroll<Content: View, Trailing: View>: View {
                 if let stale { stale }
                 VStack(alignment: .leading, spacing: 16) {
                     HStack(alignment: .center, spacing: 12) {
-                        Text(title.uppercased()).font(ScaledType.title).foregroundStyle(FSColor.strong)
+                        Text(title).font(ScaledType.title).foregroundStyle(FSColor.strong)
                             .fixedSize(horizontal: false, vertical: true)
                             .accessibilityAddTraits(.isHeader)
                         Spacer(minLength: 0)
@@ -29,7 +29,7 @@ struct GuildScreenScroll<Content: View, Trailing: View>: View {
                 .padding(16)
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 }
 

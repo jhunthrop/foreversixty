@@ -54,7 +54,7 @@ struct SimResultModel: Equatable, Sendable {
             answer = .figure(figure)
         }
         errorLine = Copy.simsError(
-            error: Self.figure(result.dps.error), n: result.iterationsRun.formatted(), version: result.engineVersion
+            error: Self.figure(result.dps.error), n: result.iterationsRun.formatted()
         )
         gear = Self.gear(result, kind: kindKey)
         showsChangedLegend = gear.contains(where: \.changed)

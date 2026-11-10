@@ -1,4 +1,5 @@
 import Auth
+import DesignSystem
 import Foundation
 import Routing
 import Models
@@ -70,7 +71,7 @@ enum CharacterPage {
 
     /// `Hordebreakers · US Normal`.
     static func whereLine(_ header: CharacterProfileHeader) -> String {
-        let region = header.region.uppercased()
+        let region = Codes.region(header.region)
         let ruleset = RankingsCopy.ruleset(header.ruleset)
         guard let guild = header.guild?.name else { return Copy.charWhereNoGuild(region: region, ruleset: ruleset) }
         return Copy.charWhere(guild: guild, region: region, ruleset: ruleset)

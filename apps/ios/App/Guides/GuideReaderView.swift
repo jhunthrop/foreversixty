@@ -72,7 +72,7 @@ struct GuideScroll: View {
                 }
             }
             .coordinateSpace(.named(Self.space))
-            .background(FSColor.bg)
+            .screenGround()
         }
     }
 }
@@ -86,7 +86,7 @@ struct GuideHead: View {
         HStack(alignment: .top, spacing: 14) {
             SpecIcon(icon: guide.icon, build: build, size: GuidesLayout.headIcon)
             VStack(alignment: .leading, spacing: 4) {
-                Text(GuideCopy.title(guide).uppercased())
+                Text(GuideCopy.title(guide))
                     .font(ScaledType.h2)
                     .foregroundStyle(ClassColor.of(guide.classSlug))
                     .fixedSize(horizontal: false, vertical: true)
@@ -126,7 +126,7 @@ struct GuideSectionStrip: View {
                 withAnimation { proxy.scrollTo(section, anchor: .center) }
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
         .overlay(alignment: .bottom) { FSColor.lineSoft.frame(height: 1) }
         .haptic(.selection, trigger: current)
     }

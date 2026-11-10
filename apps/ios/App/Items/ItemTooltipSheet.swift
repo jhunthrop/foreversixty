@@ -113,7 +113,7 @@ struct ItemTooltipContent: View {
     private func sourceSection(_ model: ItemTooltipModel) -> some View {
         if let source = model.source {
             VStack(alignment: .leading, spacing: 6) {
-                MicroLabel(Copy.tooltipSource)
+                Label12(Copy.tooltipSource)
                 Text(source).font(ScaledType.body).foregroundStyle(FSColor.strong)
             }
             .accessibilityElement(children: .combine)
@@ -124,7 +124,7 @@ struct ItemTooltipContent: View {
     private func nextBest(_ model: ItemTooltipModel) -> some View {
         if model.pickFooter != nil || !model.alternatives.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                MicroLabel(Copy.tooltipNextBest).padding(.bottom, 8)
+                Label12(Copy.tooltipNextBest).padding(.bottom, 8)
                 if model.alternatives.isEmpty {
                     Text(Copy.tooltipNothingElse).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                 }

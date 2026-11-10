@@ -32,7 +32,7 @@ struct ReportsScreen: View {
                 now: dependencies.now(), clock: dependencies.clock, actions: actions
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .refreshable { await store.load() }
         .reportsBar(title: Copy.reportsBack) {
             Button { Task { await store.load() } } label: { Image(systemName: "arrow.clockwise") }
@@ -88,7 +88,7 @@ struct ReportScreen: View {
                 )
             )
         }
-        .background(FSColor.bg)
+        .screenGround()
         .refreshable { await store.load() }
         .reportsBar(title: store.report?.zone ?? Copy.reportsBack) {
             if let share = store.report.flatMap(ShareText.report) {

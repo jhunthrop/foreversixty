@@ -181,18 +181,33 @@ public extension PageHeader where Lead == EmptyView, Meta == EmptyView {
     }
 }
 
-/// Small muted text (`t-small`, 13/20).
+/// The secondary ink of the surface a line sits on (round 5): the panel's `muted` by default; the
+/// painted ground (`screenGround()`) provides `mutedGround`, AA there, and a panel restores `muted`.
+/// Android: `LocalSubInk`.
+private struct SubInkKey: EnvironmentKey {
+    static let defaultValue = FSColor.muted
+}
+
+public extension EnvironmentValues {
+    var subInk: Color {
+        get { self[SubInkKey.self] }
+        set { self[SubInkKey.self] = newValue }
+    }
+}
+
+/// Small secondary text (`t-small`, 13/20), in the surface's secondary ink unless given a colour.
 public struct SmallText: View {
     private let text: String
-    private let color: Color
+    private let color: Color?
+    @Environment(\.subInk) private var subInk
 
-    public init(_ text: String, color: Color = FSColor.muted) {
+    public init(_ text: String, color: Color? = nil) {
         self.text = text
         self.color = color
     }
 
     public var body: some View {
-        Text(text).type(FSType.small).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+        Text(text).type(FSType.small).foregroundStyle(color ?? subInk).fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -267,6 +282,7 @@ public struct FSRow<Lead: View, Trail: View>: View {
     private let trailPlacement: TrailPlacement
     private let lead: Lead
     private let trail: Trail
+    @Environment(\.subInk) private var subInk
 
     public init(
         title: String,
@@ -299,10 +315,10 @@ public struct FSRow<Lead: View, Trail: View>: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(title).type(FSType.item).foregroundStyle(titleColor)
                     if let sub {
-                        Text(sub).type(RowType.sub).foregroundStyle(FSColor.muted)
+                        Text(sub).type(RowType.sub).foregroundStyle(subInk)
                     }
                     if let detail {
-                        Text(detail).type(RowType.detail).foregroundStyle(FSColor.muted).padding(.top, 2)
+                        Text(detail).type(RowType.detail).foregroundStyle(subInk).padding(.top, 2)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

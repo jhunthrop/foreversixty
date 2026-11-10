@@ -1,4 +1,5 @@
 import Foundation
+import DesignSystem
 import Networking
 import Observation
 import StoreKit
@@ -15,7 +16,7 @@ enum WebCheckoutPolicy {
     /// StoreKit names the storefront in ISO 3166-1 alpha-3 (`USA`); the config lists alpha-2
     /// (`US`). Returns nil for anything that is not a known region.
     static func alpha2(_ code: String) -> String? {
-        let upper = code.uppercased()
+        let upper = Codes.region(code)
         guard upper.count == 2 || upper.count == 3, upper.allSatisfy(\.isLetter) else { return nil }
         guard let region = Locale(identifier: "und_\(upper)").region, region.isISORegion else { return nil }
         let identifier = region.identifier

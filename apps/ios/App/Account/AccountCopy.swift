@@ -1,4 +1,5 @@
 import Auth
+import DesignSystem
 import Foundation
 import Models
 import Networking
@@ -24,7 +25,7 @@ enum AccountCopy {
 
     /// `US · PvP`: Forever has no realms, so a character is its region, ruleset and name.
     static func place(_ character: AccountCharacter) -> String {
-        Copy.accountCharacterWhere(region: character.region.uppercased(), ruleset: ruleset(character.ruleset))
+        Copy.accountCharacterWhere(region: Codes.region(character.region), ruleset: ruleset(character.ruleset))
     }
 
     /// The site's ruleset labels (web/src/lib/characters.ts); an unknown one is echoed.
@@ -107,7 +108,7 @@ enum AccountCopy {
 
     /// The API's lower-case words (`night elf`, `warrior`) as display words.
     static func words(_ raw: String) -> String {
-        raw.split(separator: " ").map { $0.prefix(1).uppercased() + $0.dropFirst() }.joined(separator: " ")
+        raw.split(separator: " ").map { $0.prefix(1).capitalized + $0.dropFirst() }.joined(separator: " ")
     }
 
     static func shortDate(_ date: Date) -> String {

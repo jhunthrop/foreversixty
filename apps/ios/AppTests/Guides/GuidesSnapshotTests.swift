@@ -46,7 +46,7 @@ struct GuidesSnapshotTests {
     private func pushed(_ guide: GuideFile? = nil, @ViewBuilder _ content: @escaping () -> some View) -> some View {
         NavigationStack(path: .constant([1])) {
             Color.clear.navigationTitle(Copy.guidesTitle).navigationDestination(for: Int.self) { _ in
-                content().background(FSColor.bg).guideBar(guide)
+                content().screenGround().guideBar(guide)
             }
         }
     }
@@ -86,7 +86,7 @@ struct GuidesSnapshotTests {
             Spacer(minLength: 0)
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     // MARK: F9.1 the tab

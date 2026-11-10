@@ -70,7 +70,7 @@ struct SimsListView: View {
     @ViewBuilder
     private func serverSection(_ content: SimsContent) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(Copy.simsServer)
+            SectionTitle(Copy.simsServer)
             if content.serverFailed {
                 errorCard(Copy.simsServerFailed)
             } else if content.serverRows.isEmpty {
@@ -98,7 +98,7 @@ struct SimsListView: View {
     @ViewBuilder
     private func mineSection(_ content: SimsContent) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(Copy.simsMine)
+            SectionTitle(Copy.simsMine)
             if content.mineFailed {
                 errorCard(Copy.simsFailedLoad)
             } else if content.mine.isEmpty {
@@ -158,7 +158,7 @@ struct SimsTitle: View {
     let text: String
 
     var body: some View {
-        Text(text.uppercased()).font(ScaledType.title).foregroundStyle(FSColor.strong)
+        Text(text).font(ScaledType.title).foregroundStyle(FSColor.strong)
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityAddTraits(.isHeader)
             .padding(.horizontal, 16).padding(.top, 8).padding(.bottom, 4)

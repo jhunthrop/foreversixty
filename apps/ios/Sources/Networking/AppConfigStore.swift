@@ -62,7 +62,7 @@ public final class AppConfigStore: Sendable {
 
     /// Whether the storefront country may show See plans (`web_checkout_regions`).
     public func mayLinkToWebCheckout(storefront country: String) -> Bool {
-        current?.webCheckoutRegions.contains(country.uppercased()) ?? false
+        current?.webCheckoutRegions.contains { $0.caseInsensitiveCompare(country) == .orderedSame } ?? false
     }
 }
 

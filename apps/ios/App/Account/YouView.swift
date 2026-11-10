@@ -124,13 +124,13 @@ struct YouView: View {
                         .contentShape(.rect)
                 }
                 .padding(.top, FSSpace.space2)
-                Text(summary.version).font(ScaledType.micro).foregroundStyle(FSColor.muted)
+                Text(summary.version).font(ScaledType.label).foregroundStyle(FSColor.muted)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.plain)
             .padding(FSSpace.space4)
         }
-        .background(FSColor.bg)
+        .screenGround()
         .navigationTitle(Copy.youTitle)
         .confirmationDialog(
             Copy.youSignOutConfirm(device: Copy.accountDeviceWord),
@@ -202,7 +202,7 @@ struct AboutView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: FSSpace.space4) {
                 Seal(size: 64)
-                Text(Copy.appName).font(ScaledType.wordmark).textCase(.uppercase).tracking(2).foregroundStyle(FSColor.strong)
+                Text(Copy.appName).font(ScaledType.wordmark).tracking(2).foregroundStyle(FSColor.strong)
                 Text(version).font(ScaledType.body).foregroundStyle(FSColor.text)
                 Text(Copy.aboutNotAffiliated).font(ScaledType.meta).foregroundStyle(FSColor.muted)
                     .fixedSize(horizontal: false, vertical: true)
@@ -210,7 +210,7 @@ struct AboutView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(FSSpace.space4)
         }
-        .background(FSColor.bg)
+        .screenGround()
         .navigationTitle(Copy.youAbout)
     }
 }

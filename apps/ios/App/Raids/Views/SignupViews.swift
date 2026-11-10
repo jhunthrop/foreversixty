@@ -205,7 +205,7 @@ struct SignupBlockView: View {
                 Text(Copy.raidNoteFailed).font(ScaledType.meta).foregroundStyle(FSColor.wipe)
             } else if text.count >= SignupController.noteCounterFrom {
                 Text(Copy.raidNoteLeft(n: SignupController.noteLimit - text.count))
-                    .font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+                    .font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
             }
         }
     }
@@ -249,7 +249,7 @@ struct SpecSheet: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                Text(Copy.specTitle.uppercased()).font(ScaledType.sec).foregroundStyle(FSColor.strong)
+                Text(Copy.specTitle).font(ScaledType.sec).foregroundStyle(FSColor.strong)
                     .accessibilityAddTraits(.isHeader)
                 Text(lead).font(ScaledType.body).foregroundStyle(FSColor.text)
                 VStack(spacing: 0) {

@@ -34,7 +34,7 @@ struct OfflineDataView: View {
             }
             .padding(FSSpace.space4)
         }
-        .background(FSColor.bg)
+        .screenGround()
         .alert(Copy.offlineDataRemoveConfirm, isPresented: $confirmingRemove) {
             Button(Copy.offlineDataRemoveAction, role: .destructive, action: remove)
             Button(Copy.commonCancel, role: .cancel) {}

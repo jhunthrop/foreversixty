@@ -123,7 +123,7 @@ struct DesignSystemSheet: View {
                 FSTag("Bench", tone: .muted)
                 TagView(text: "In", color: FSColor.kill, systemImage: "checkmark")
             }
-            MicroLabel("New for you", color: Theme.Palette.mutedOnGround)
+            Label12("New for you", color: Theme.Palette.mutedOnGround)
             OfflineStrip(text: "Offline · showing Tuesday's raid")
         }
     }

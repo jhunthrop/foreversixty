@@ -235,7 +235,7 @@ struct TalentBadge: View {
 
     var body: some View {
         Text(text)
-            .font(.system(size: 11, weight: .semibold, design: .monospaced))
+            .font(Font.custom(FSFont.bodySemibold, size: 11).monospacedDigit())
             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
             .foregroundStyle(textColor)
             .padding(.horizontal, 5)

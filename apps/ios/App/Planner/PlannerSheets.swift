@@ -13,7 +13,6 @@ struct PlannerRaceSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(Copy.planRaceSheet).font(ScaledType.sec).foregroundStyle(FSColor.strong)
-                .textCase(.uppercase)
                 .padding(EdgeInsets(top: 20, leading: 16, bottom: 8, trailing: 16))
                 .accessibilityAddTraits(.isHeader)
             ScrollView {
@@ -52,10 +51,9 @@ struct PlannerLevelSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text(Copy.planLevelSheet).font(ScaledType.sec).foregroundStyle(FSColor.strong)
-                .textCase(.uppercase)
                 .accessibilityAddTraits(.isHeader)
             Stepper {
-                Text(Copy.planLevel(n: level)).font(ScaledType.monoDay).foregroundStyle(FSColor.strong)
+                Text(Copy.planLevel(n: level)).font(ScaledType.tabularDay).foregroundStyle(FSColor.strong)
             } onIncrement: {
                 set(min(PlannerRules.maxLevel, level + 1))
             } onDecrement: {
@@ -83,7 +81,6 @@ struct PlannerShareSheet: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 Text(Copy.planShareTitle).font(ScaledType.sec).foregroundStyle(FSColor.strong)
-                    .textCase(.uppercase)
                     .accessibilityAddTraits(.isHeader)
                 Text(Copy.planShareIntro).font(ScaledType.body).foregroundStyle(FSColor.text)
                     .fixedSize(horizontal: false, vertical: true)
@@ -121,14 +118,14 @@ struct PlannerShareSheet: View {
 
     private var titleField: some View {
         VStack(alignment: .leading, spacing: 6) {
-            MicroLabel(Copy.planShareTitleField)
+            Label12(Copy.planShareTitleField)
             HStack {
                 TextField("", text: limited)
                     .font(ScaledType.body)
                     .foregroundStyle(FSColor.strong)
                     .accessibilityLabel(Copy.planShareTitleField)
                 Text(Copy.planShareTitleCount(n: title.count, max: PlannerEditorModel.titleLimit))
-                    .font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+                    .font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
             }
             .padding(.horizontal, 12)
             .frame(minHeight: 48)

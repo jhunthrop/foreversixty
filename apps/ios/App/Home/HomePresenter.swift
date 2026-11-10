@@ -106,7 +106,7 @@ enum HomePresenter {
     /// `night_elf` → `Night Elf`; the API's slugs are lowercase.
     static func words(_ slug: String) -> String {
         slug.split(whereSeparator: { $0 == "_" || $0 == "-" || $0 == " " })
-            .map { $0.prefix(1).uppercased() + $0.dropFirst() }
+            .map { $0.prefix(1).capitalized + $0.dropFirst() }
             .joined(separator: " ")
     }
 }

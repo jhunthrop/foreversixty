@@ -28,12 +28,11 @@ struct YourBuildsView: View {
     var body: some View {
         List {
             Text(Copy.planBuildsTitle).font(ScaledType.title).foregroundStyle(FSColor.strong)
-                .textCase(.uppercase)
                 .accessibilityAddTraits(.isHeader)
                 .plainRow(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
             content
             if let newBuild {
-                MicroLabel(Copy.planBuildsNewHeader)
+                SectionTitle(Copy.planBuildsNewHeader)
                     .accessibilityAddTraits(.isHeader)
                     .plainRow(EdgeInsets(top: 22, leading: 16, bottom: 8, trailing: 16))
                 newRow(newBuild).plainRow(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
@@ -41,7 +40,7 @@ struct YourBuildsView: View {
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
-        .background(FSColor.bg)
+        .screenGround()
         .safeAreaInset(edge: .bottom) { snackbar }
     }
 
@@ -160,7 +159,7 @@ struct YourBuildRow: View {
     }
 
     private var views: some View {
-        Text(Copy.planBuildsViews(n: Int(summary.build.views))).font(ScaledType.monoMeta).foregroundStyle(FSColor.nav)
+        Text(Copy.planBuildsViews(n: Int(summary.build.views))).font(ScaledType.tabularMeta).foregroundStyle(FSColor.nav)
     }
 }
 

@@ -46,7 +46,7 @@ struct SimsSnapshotTests {
                     mayLinkToPlans: plans, specs: specs, build: SimsTestData.build, now: now
                 )
             }
-            .background(FSColor.bg)
+            .screenGround()
             .navigationTitle(Copy.simsTitle)
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -64,7 +64,7 @@ struct SimsSnapshotTests {
             ScrollView {
                 SimResultView(phase: phase, looks: looks, build: SimsTestData.build, now: now)
             }
-            .background(FSColor.bg)
+            .screenGround()
             .navigationTitle(resultTitle(phase))
             .navigationBarTitleDisplayMode(.inline)
         }

@@ -20,7 +20,6 @@ struct SharedBuildView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 Text(Copy.planSharedTitle).font(ScaledType.title).foregroundStyle(FSColor.strong)
-                    .textCase(.uppercase)
                     .accessibilityAddTraits(.isHeader)
                     .padding(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
                 content
@@ -28,7 +27,7 @@ struct SharedBuildView: View {
             .padding(.bottom, 40)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     @ViewBuilder

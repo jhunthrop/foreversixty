@@ -95,7 +95,7 @@ struct PlannerSnapshotTests {
             PlannerShareSheet(title: .constant("Elemental raid"), signedIn: true, state: .idle, proceed: {}, cancel: {})
         }
         .frame(height: 560)
-        .background(FSColor.bg)
+        .screenGround()
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: 22, topTrailingRadius: 22))
         let composed = ZStack(alignment: .bottom) {
             editor(twoLeft)

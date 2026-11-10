@@ -176,7 +176,7 @@ struct ItemPageView: View {
                 anchor = first
             }
         }
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     // MARK: Head
@@ -233,7 +233,7 @@ struct ItemPageView: View {
         }
         .scrollIndicators(.hidden)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(FSColor.bg)
+        .screenGround()
     }
 
     // MARK: Sections
@@ -252,7 +252,7 @@ struct ItemPageView: View {
 
     private var sourcesSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(Copy.itemPageSources).accessibilityAddTraits(.isHeader)
+            SectionTitle(Copy.itemPageSources).accessibilityAddTraits(.isHeader)
             switch state.sources {
             case .loading:
                 skeletonRows(Self.skeletonSources)
@@ -273,7 +273,7 @@ struct ItemPageView: View {
 
     private var specsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            MicroLabel(Copy.itemPageBisFor).accessibilityAddTraits(.isHeader)
+            SectionTitle(Copy.itemPageBisFor).accessibilityAddTraits(.isHeader)
             switch state.specs {
             case .loading:
                 skeletonRows(ItemPageLogic.visibleSpecs)

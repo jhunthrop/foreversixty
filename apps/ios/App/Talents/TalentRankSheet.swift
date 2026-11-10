@@ -71,7 +71,7 @@ struct TalentRankContent: View {
                     .foregroundStyle(FSColor.strong)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
-                Text(model.rankLine).font(ScaledType.monoMeta).foregroundStyle(FSColor.muted)
+                Text(model.rankLine).font(ScaledType.tabularMeta).foregroundStyle(FSColor.muted)
             }
         }
     }
@@ -84,7 +84,7 @@ struct TalentRankContent: View {
             }
             if let next = model.next {
                 VStack(alignment: .leading, spacing: 4) {
-                    MicroLabel(Copy.talentsNextRank)
+                    Label12(Copy.talentsNextRank)
                     Text(next).font(ScaledType.body).foregroundStyle(FSColor.muted)
                         .fixedSize(horizontal: false, vertical: true)
                 }

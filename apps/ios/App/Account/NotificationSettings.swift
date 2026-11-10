@@ -237,7 +237,7 @@ struct NotificationSettingsView: View {
             .padding(.bottom, FSSpace.space6)
             .parityContent()
         }
-        .background(FSColor.bg)
+        .screenGround()
         .navigationBarTitleDisplayMode(.inline)
     }
 
