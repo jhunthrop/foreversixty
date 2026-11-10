@@ -38,7 +38,7 @@
   }
 </script>
 
-<Section title={copy.title} anchor="delete" testid="account-delete">
+<Section title={copy.title} anchor="delete" testid="account-delete" panel>
   <div class="flex flex-col items-start gap-3">
     <p class="text-small text-muted">{copy.line}</p>
     <button

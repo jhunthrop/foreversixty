@@ -108,7 +108,7 @@
   const showSeePlans = $derived(seePlans && plan?.ended == null);
 </script>
 
-<Section title={accountPageCopy.planLabel} anchor="plan" testid="account-guilds-plan">
+<Section title={accountPageCopy.planLabel} anchor="plan" testid="account-guilds-plan" panel>
   <div class="flex flex-col gap-3">
     <div class="flex min-h-6 flex-wrap items-end justify-between gap-3" data-testid="account-plan-head">
       <span class="inline-flex flex-wrap items-center gap-2">

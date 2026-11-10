@@ -124,10 +124,12 @@ describe('CharacterList', () => {
     expect(body).not.toContain('<a href="/character/us/pvp/blizzardbuilt" class="ui-row');
   });
 
-  it('is the page’s one Plate, named Characters, with the reports link under it', () => {
+  it('is one framed panel, Characters, with the reports link inside it', () => {
     const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
     expect(body.match(/data-region="plate"/g)?.length).toBe(1);
-    expect(body).toContain('aria-label="Characters"');
+    expect(body).toContain('data-region="section-characters"');
+    expect(body).toMatch(/class="[^"]*ui-framed[^"]*" data-region="plate"/);
+    expect(body.indexOf('account-reports-link')).toBeLessThan(body.lastIndexOf('</section>'));
     expect(body).toContain('href="/reports" data-testid="account-reports-link"');
   });
 

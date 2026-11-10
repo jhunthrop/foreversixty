@@ -95,10 +95,10 @@ describe('/setup', () => {
     expect(html).not.toMatch(/setup-chip|setup-step-tag|setup-btn|data-setup-first|current-character-bar/);
   });
 
-  it('holds the three steps in one Plate named Your setup, in order', () => {
-    expect(html.match(/data-region="plate"/g)).toHaveLength(1);
-    expect(html).toContain('aria-label="Your setup"');
-    const plate = html.slice(html.indexOf('data-region="plate"'));
+  it('holds the three steps in one framed Plate named Your setup, in order', () => {
+    expect(html.match(/aria-label="Your setup"/g)).toHaveLength(1);
+    expect(html).toMatch(/class="[^"]*ui-framed[^"]*"[^>]*aria-label="Your setup"/);
+    const plate = html.slice(html.indexOf('aria-label="Your setup"'));
     let cursor = -1;
     for (const title of [addonCopy.setupStep1Title, addonCopy.setupStep2Title, addonCopy.setupStep3Title]) {
       const at = plate.indexOf(title, cursor + 1);

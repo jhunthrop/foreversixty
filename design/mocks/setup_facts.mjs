@@ -7,7 +7,7 @@
 //    addonLine, companionLine), lib/reports/device-status.ts, lib/account/connect-flow.ts;
 //  - data: web/src/data/companion.json, active-build.json, lib/downloads/paths.ts;
 //  - fixtures: web/tests/e2e/fixtures/home/me-34.json, me-new.json, web/tests/e2e/fixtures/setup/*.json.
-//  - the plate's rows and the head answer: lib/setup/steps.ts and lib/setup/answer.ts, the page's own models;
+//  - the plate's rows: lib/setup/steps.ts, the page's own model;
 //  - which build each visitor downloads: lib/setup/downloads.ts and lib/setup/release.ts on the feed manifest fixture
 //    (fixtures/setup/companion-latest.json): Windows and Mac their own, an unknown system both, a phone none.
 import { createRequire } from "node:module";
@@ -34,7 +34,6 @@ import { signInLine, addonLine, companionLine } from ${src("src/lib/setup/progre
 import { deviceStatusLine } from ${src("src/lib/reports/device-status.ts")};
 import { displayCode } from ${src("src/lib/account/connect-flow.ts")};
 import { setupSteps } from ${src("src/lib/setup/steps.ts")};
-import { setupAnswer } from ${src("src/lib/setup/answer.ts")};
 import { downloadFor, otherDownloads } from ${src("src/lib/setup/downloads.ts")};
 import { parseRelease, downloadHref, releaseMeta } from ${src("src/lib/setup/release.ts")};
 import latest from ${src("tests/e2e/fixtures/setup/companion-latest.json")};
@@ -73,8 +72,6 @@ const code = displayCode('kq47tm');
 export default {
   now: NOW.toISOString(),
   rows: STATES,
-  answer: setupAnswer(me34, null, NOW),
-  answer_bnet: setupAnswer(meBnet, null, NOW),
   me: { addon: me34, bnet: meBnet, none: meNew },
   devices, lookup, pair_code: pairCode,
   lines: { out: lines(null, []), none: lines(meNew, []), bnet: lines(meBnet, []), addon: lines(me34, []), done: lines(me34, devices) },
@@ -97,7 +94,7 @@ export default {
   wrong_prefix: addonCopy.wrongPrefix('FS2', 'FS1'),
 };`;
 // CI's parity job serves a downloaded dist and never runs sync:data, so src/data/generated is absent
-// there; the head answer's BiS link reads it. Fall back to the fixture the fixture build publishes.
+// there; the copy modules read it. Fall back to the fixture the fixture build publishes.
 const generatedFallback = {
   name: "generated-fallback",
   setup(build) {

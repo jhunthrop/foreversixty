@@ -152,7 +152,6 @@ test('everything done: the quiet install links stay in the Sections (U4)', async
     await expect(page.getByTestId(`${place}-action-download`)).toHaveAttribute('rel', 'noopener');
   }
   await expect(page.getByTestId('setup-device-status')).toContainText('JHUNT-PC · Windows');
-  await expect(page.getByTestId('setup-answer-open')).toHaveText('Open Felsnap ›');
 });
 
 test('opened from a claim, the way back is a Notice under the head (spec 4.6)', async ({ page }) => {

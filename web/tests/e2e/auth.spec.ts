@@ -184,6 +184,4 @@ test('choosing a main on the account page records it and makes it the head answe
   await dottzzRow.getByTestId('character-set-main').click();
   await expect(dottzzRow.getByTestId('character-main-pill')).toBeVisible();
   expect(mainKey).toBe('us/pvp/dottzz');
-  // The head's answer is the main.
-  await expect(page.getByTestId('account-head')).toContainText('Dottzz');
 });

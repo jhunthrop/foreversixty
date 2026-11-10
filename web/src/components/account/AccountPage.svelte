@@ -1,8 +1,9 @@
 <!-- web/src/components/account/AccountPage.svelte -->
 <!-- /account (premium spec 2026-11-08 sections 7, 7A) as one island over one `/v1/me` read: the head
-     (title, BattleTag, Sign out, the main character as the answer), then a split page. Main: the
-     Characters Plate, the Plan, the Guilds; rail: Devices, Discord, You, Delete account. Signed out it is a form
-     page with the Battle.net button; a failed read is a Plate with Try again; while it loads, the
+     (the title alone, directions mock b4-account), then a split page of panels. Main: the framed
+     Characters panel, the Plan, the Guilds; rail: You (BattleTag, sign-in, Sign out, the pseudonym),
+     Devices, Discord, Delete account. Signed out it is a form page with the Battle.net button; a failed
+     read is the Characters panel with Try again; while it loads, the
      ready page's shape (AccountLoading). The page owns the account and every call; the sections
      draw it and report what the viewer chose. -->
 <script lang="ts">
@@ -59,13 +60,11 @@
   import Notice from '../ui/Notice.svelte';
   import Page from '../ui/Page.svelte';
   import PageHeader from '../ui/PageHeader.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Section from '../ui/Section.svelte';
   import AccountDelete from './AccountDelete.svelte';
   import AccountDevices from './AccountDevices.svelte';
   import AccountDiscord from './AccountDiscord.svelte';
   import AccountGuildBlock from './AccountGuildBlock.svelte';
-  import AccountHead from './AccountHead.svelte';
   import AccountLoading from './AccountLoading.svelte';
   import AccountOut from './AccountOut.svelte';
   import AccountPremiumBlock from './AccountPremiumBlock.svelte';
@@ -77,7 +76,7 @@
   const CONSENT_SAVED_MS = 3000;
 
   // No session hint (no fs_csrf cookie): nobody is signed in, so a failed read (the API down) still
-  // leaves the sign-in page the static render drew; the error Plate is for a signed-in visitor.
+  // leaves the sign-in page the static render drew; the error panel is for a signed-in visitor.
   const hinted = typeof document !== 'undefined' && hasSessionHint();
   // One `/v1/me` read, shared with every other island through the client cache (lib/data/query.ts).
   const session = createQueryState<Me | null>(`${API_BASE_URL}/v1/me`, () => fetchMeOnce(), {
@@ -387,31 +386,26 @@
   {#if status === 'loading'}
     <AccountLoading />
   {:else if status === 'failed'}
-    <Page layout="split" testid="account-grid">
+    <Page layout="split" panels testid="account-grid">
       {#snippet header()}<PageHeader title={accountPageCopy.title} testid="account-head" />{/snippet}
-      <Section title={characterListCopy.heading}>
-        <Plate label={characterListCopy.heading}>
-          <div class="flex flex-col items-start gap-3 px-5 pt-4 pb-5" data-testid="account-load-error">
-            <p class="text-strong text-[15px] leading-6" role="alert">{ACCOUNT_FAILED}</p>
-            <button
-              type="button"
-              class={button('primary')}
-              onclick={() => session.refresh()}
-              data-testid="account-load-error-retry">{checkoutCopy.retry}</button
-            >
-          </div>
-        </Plate>
+      <Section title={characterListCopy.heading} panel frame="framed">
+        <div class="flex flex-col items-start gap-3" data-testid="account-load-error">
+          <p class="text-strong text-[15px] leading-6" role="alert">{ACCOUNT_FAILED}</p>
+          <button
+            type="button"
+            class={button('primary')}
+            onclick={() => session.refresh()}
+            data-testid="account-load-error-retry">{checkoutCopy.retry}</button
+          >
+        </div>
       </Section>
     </Page>
   {:else if me === null}
     <AccountOut />
   {:else}
-    <Page layout="split" testid="account-grid">
+    <Page layout="split" panels testid="account-grid">
       {#snippet header()}
-        <AccountHead {me} {now} busy={busy && failure === null} {onSignOut} />
-        {#if errorIn('head') !== ''}<p class="text-wipe px-[var(--page-inset)] text-[13px]" role="alert">
-            {errorIn('head')}
-          </p>{/if}
+        <PageHeader title={accountPageCopy.title} testid="account-head" />
         {#if signedInBanner !== ''}
           <div class="px-[var(--page-inset)]">
             <Notice text={signedInBanner} tone="neutral" testid="account-signed-in-banner" />
@@ -452,7 +446,7 @@
         {/snippet}
       </AccountPremiumBlock>
       {#if me.guilds.length > 0}
-        <Section title={accountPageCopy.guildLabel} anchor="guild" testid="account-guilds-panel">
+        <Section title={accountPageCopy.guildLabel} anchor="guild" testid="account-guilds-panel" panel>
           <div class="flex flex-col gap-8" data-testid="account-guilds">
             {#each me.guilds as guild (guild.id)}
               <AccountGuildBlock
@@ -475,6 +469,16 @@
       {/if}
 
       {#snippet rail()}
+        <AccountYou
+          battletag={me!.user.battletag}
+          email={me!.user.email}
+          anonymize={me!.user.anonymize}
+          {busy}
+          error={errorIn('you')}
+          signOutError={errorIn('head')}
+          {onAnonymize}
+          {onSignOut}
+        />
         <AccountDevices
           {devices}
           {pairing}
@@ -486,7 +490,6 @@
           {onRevoke}
         />
         <AccountDiscord me={me!} {now} />
-        <AccountYou anonymize={me!.user.anonymize} {busy} error={errorIn('you')} {onAnonymize} />
         <AccountDelete
           battletag={me!.user.battletag}
           open={deleteOpen}
@@ -501,13 +504,3 @@
     </Page>
   {/if}
 </div>
-
-<style>
-  /* The page starts 28 px under the head at every width (the mock's split page); the primitive
-     tightens to 20 below 1024. The doubled class outranks the primitive's own rule whatever
-     order the bundles load the two in. */
-  :global(.ui-page.ui-page[data-testid='account-grid']),
-  :global(.ui-page.ui-page[data-testid='account-loading']) {
-    padding-top: 28px;
-  }
-</style>

@@ -1,14 +1,11 @@
 // web/src/lib/setup/setup-reads.test.ts
-// /setup's small models: the head answer (answer.ts), the account read (state.ts, B1), the action
+// /setup's small models: the account read (state.ts, B1), the action
 // links (links.ts), the visitor's platform (visitor-platform.ts, G4) and the device platform's
 // player-facing label (account/platform-label.ts, G5).
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Me } from '../account/api';
 import { platformLabel } from '../account/platform-label';
-import { addonCopy } from '../addon/copy';
 import me34Json from '../../../tests/e2e/fixtures/home/me-34.json';
-import meNewJson from '../../../tests/e2e/fixtures/home/me-new.json';
-import { setupAnswer } from './answer';
 import { CURSEFORGE_URL, SETUP_REFRESHED, SETUP_SIGNED_IN, stepHref } from './links';
 import { visitorPlatform } from './visitor-platform';
 
@@ -23,29 +20,7 @@ vi.mock('../account/api', async (importOriginal) => ({
 }));
 const { loadSetupState } = await import('./state');
 
-const NOW = new Date('2026-11-06T10:00:00Z');
 const me34 = me34Json as unknown as Me;
-const meNew = meNewJson as unknown as Me;
-
-describe('setupAnswer', () => {
-  it('is the character: name, class slug, the level line in the client order, imported, two links', () => {
-    const answer = setupAnswer(me34, null, NOW);
-    expect(answer).toMatchObject({
-      name: 'Felsnap',
-      classSlug: 'hunter',
-      levelLine: 'Level 34 Beast Mastery Hunter',
-      imported: 'Updated 1 h ago from Battle.net',
-      open: { label: addonCopy.setupOpenCharacter('Felsnap') },
-    });
-    expect(answer?.open.href).toContain('felsnap');
-    expect(answer?.bis?.label).toBe(addonCopy.setupBis);
-  });
-
-  it('is nothing signed out or with no character', () => {
-    expect(setupAnswer(null, null, NOW)).toBeNull();
-    expect(setupAnswer(meNew, null, NOW)).toBeNull();
-  });
-});
 
 describe('loadSetupState', () => {
   beforeEach(() => {

@@ -155,12 +155,6 @@ export const addonCopy = {
   setupImportWait: 'Your characters can take up to two minutes to arrive.',
   /** Step 1 after `?signin=failed` (the API's callback redirect). */
   setupSignInFailed: 'Battle.net sign-in did not finish. Nothing was saved.',
-  /** The head's character line, the client's own order ("Level 34 Hunter"). */
-  setupLevelLine: (level: number, spec: string, cls: string): string =>
-    `Level ${level} ${spec ? `${spec} ` : ''}${cls}`,
-  setupOpenCharacter: (name: string): string => `Open ${name}`,
-  /** The nav's own label for the BiS page. */
-  setupBis: 'Best in slot',
   /** The hand install under The addon: the folders each zip holds (addon-release.yml ships
    *  ForeverSixty and ForeverSixtyInbox; addon-data-release.yml ForeverSixtyData). */
   setupHandInstall: 'Installing by hand',

@@ -60,7 +60,7 @@ CSS = '''<style>
 .ph-only{display:block}@media(min-width:768px){.ph-only{display:none}}
 section>.sec-h+*{margin-top:12px}
 .acts{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.body{display:flex;flex-direction:column;gap:14px}.body p{font-size:15px;line-height:24px;max-width:72ch}
+.body{display:flex;flex-direction:column;gap:14px}.body p{font-size:15px;line-height:24px;max-width:72ch;text-wrap:pretty}
 .body .t-small{max-width:72ch}
 .hand{display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--line-soft)}
 .hand .acts{gap:20px}
@@ -70,7 +70,7 @@ section>.sec-h+*{margin-top:12px}
 .paste textarea{width:100%;min-height:72px;resize:vertical;font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace}
 .kv code.c{font-size:14px}.kv dd .t-small{font-weight:400}
 .surf .row{align-items:start;align-content:start}.surf .row .foot{padding-top:12px}.surf .cap{--mh:240px!important}
-.cmds .kv dt{color:var(--text)}
+.cmds .kv dt{color:var(--text);padding-right:12px}.cmds .kv{grid-template-columns:minmax(0,1fr) auto}.cmds .kv dd{white-space:nowrap}
 .alert{color:var(--strong)}.steps .row .sub .tx{color:var(--text)}
 .surf-fold{display:none}.surf-fold summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold)}
 @media(max-width:767px){.surf-fold{display:block}.surf{display:none}}
@@ -144,23 +144,10 @@ def step_rows(state: str) -> list[tuple]:
     return [(r['mark'], r['n'], r['title'], '<br>'.join(_line(l) for l in r['lines']), _action(r['action'], state)) for r in FACTS['rows'][state]]
 
 
-def character_answer(state: str) -> str:
-    """Signed in with a character: the character, and where to take it next (tenet 14). lib/setup/answer.ts on me-34."""
-    if state not in ('bnet', 'addon', 'pairing', 'done'):
-        return ''
-    a = FACTS['answer_bnet' if state == 'bnet' else 'answer']
-    cls = a['classSlug']
-    links = arrow(a['open']['label']) + (arrow(a['bis']['label']) if a['bis'] else '')
-    return (f'<span class="ans-who">{crest_img(cls, 40)}<span><b style="color:{CLASS_COLOR[cls]}">{escape(a["name"])}</b>'
-            f'<span class="t-small" style="display:block">{escape(a["levelLine"])}</span></span></span>'
-            f'<span class="t-small">{escape(a["imported"] or "")}</span>'
-            f'<span class="ans-links">{links}</span>')
-
-
 def answer(state: str) -> str:
-    """The head's answer: the character when there is one, then the companion's download in every state (owner
-    2026-11-08: "a download link at the top"), never gold (the plate keeps the page's one primary)."""
-    return character_answer(state) + f'<div class="dl-head">{download_block(state, primary=False)}</div>'
+    """The head's answer, compact: the companion's download in every state (owner 2026-11-08: "a download link at the
+    top"), never gold (the plate keeps the page's one primary). The signed-in character is the header's and step 1's."""
+    return f'<div class="dl-head">{download_block(state, primary=False)}</div>'
 
 
 def row_done(state: str, n: int) -> bool:
@@ -175,7 +162,7 @@ def addon_section(state: str) -> str:
     # U4 (rulings): once row 2 is ticked its button is gone; CurseForge stays here for a second PC.
     again = arrow(A['installCurseForge']) if row_done(state, 2) else ''
     body = (f'<div class="body" id="addon"><p class="t-small">{escape(A["installDataHint"])}</p><div class="acts">{again}{LinkButton(A["installWago"])}</div>{hand}</div>')
-    return Section(A['setupStep2Title'], body)
+    return Section(A['setupStep2Title'], body, panel=True)
 
 
 def companion_section(state: str) -> str:
@@ -210,7 +197,7 @@ def companion_section(state: str) -> str:
     # Owner 2026-11-08: the download right under the heading, in every state (it replaces U4's quiet "another PC" link).
     body = (f'<div class="body" id="companion">{download_block(state, primary=False)}<p>{escape(lead_sentence)}</p>{plat}'
             f'{rows}{pic}{pair}</div>')
-    return Section(A['setupStep3Title'], body, meta=escape(A['setupCompanionNote']))
+    return Section(A['setupStep3Title'], body, meta=escape(A['setupCompanionNote']), panel=True)
 
 
 def surfaces_section() -> str:
@@ -220,7 +207,7 @@ def surfaces_section() -> str:
         rows.append(Row(escape(s['title']), escape(s['body']), link=False, foot=caps))
     # U5 (rulings): open from 768, folded on a phone behind one summary row.
     fold = f'<details class="surf-fold"><summary class="t-label">{escape(A["surfacesShow"])}</summary></details>'
-    return Section(A['surfacesTitle'], f'{fold}<div class="surf">{RowGrid(rows, 3)}</div>')
+    return Section(A['surfacesTitle'], f'{fold}<div class="surf">{RowGrid(rows, 3)}</div>', panel=True)
 
 
 def paste_section(state: str) -> str:
@@ -235,21 +222,21 @@ def paste_section(state: str) -> str:
     if state == 'export':
         after = f'<div class="acts">{arrow(A["pasteOpenPlanner"])}{arrow(A["pasteOpenSim"])}</div><p class="t-small">{escape(A["pasteSignInHint"])}</p>'
     body = f'<div class="body paste" id="paste"><p class="t-small">{escape(A["setupTryExportBody"])}</p>{form}{after}</div>'
-    return Section(A['setupTryExport'], body)
+    return Section(A['setupTryExport'], body, panel=True)
 
 
 def commands_section() -> str:
-    return Section(A['commandsTitle'], f'<div class="cmds">{Facts([(escape(c["description"]), Code(c["command"])) for c in A["commands"]])}</div>')
+    return Section(A['commandsTitle'], f'<div class="cmds">{Facts([(escape(c["description"]), Code(c["command"])) for c in A["commands"]])}</div>', panel=True)
 
 
 def handshake_section() -> str:
     paras = ''.join(f'<p class="t-small">{escape(s)}</p>' for s in A['handshake'])
-    return Section(A['handshakeTitle'], f'<div class="body">{paras}<p class="t-small">{escape(A["pageNoNetwork"])}</p></div>')
+    return Section(A['handshakeTitle'], f'<div class="body">{paras}<p class="t-small">{escape(A["pageNoNetwork"])}</p></div>', panel=True)
 
 
 def flows_section() -> str:
     rows = [Row(escape(A['flowOutTitle']), escape(A['flowOutBody']), link=False), Row(escape(A['flowInTitle']), escape(A['flowInBody']), link=False)]
-    return Section(A['setupHowItWorks'], Rows(rows, open_=True))
+    return Section(A['setupHowItWorks'], Rows(rows, open_=True), panel=True)
 
 
 SIGNED_IN = ('none', 'importing', 'failed', 'bnet', 'addon', 'pairing', 'done', 'loading')
@@ -259,9 +246,9 @@ def setup_page(state: str) -> str:
     paste_state = state if state in ('export', 'paste-error') else ''
     plate_state = 'out' if state == 'paste-error' else state
     head = PageHeader(escape(A['setupPageTitle']), meta=[escape(A['setupSubline'])], answer=answer(state))
-    main = Plate(Steps(step_rows(plate_state)), 'Your setup') + addon_section(plate_state) + companion_section(plate_state) + surfaces_section()
+    main = Plate(Steps(step_rows(plate_state)), 'Your setup').replace('class="plate"', 'class="plate framed"', 1) + addon_section(plate_state) + companion_section(plate_state) + surfaces_section()
     rail = paste_section(paste_state) + commands_section() + handshake_section() + flows_section()
-    body = head + Page('split', main, rail)
+    body = head + Page('split', main, rail, panels=True)
     who = WHO if state in ('bnet', 'addon', 'pairing', 'done') else None
     chrome = {'none': 'new', 'importing': 'new', 'failed': 'new', 'loading': 'pending'}.get(state, '')
     note = f'/setup mock, {state}. Data: design/mocks/data/setup-facts.json (copy modules, progress.ts lines on fixtures home/me-34, me-new, setup/devices at 2026-11-06T10:00Z).'
@@ -315,7 +302,7 @@ def connect_page(state: str) -> str:
     head = PageHeader(escape(title), crest=crest, meta=[escape(meta)])
     if state == 'failed':
         head = head.replace('<span class="t-small">', '<span class="t-small" role="alert">', 1)
-    body = head + PageForm(Plate(inner, 'The companion'))
+    body = head + PageForm(Plate(inner, 'The companion').replace('class="plate"', 'class="plate framed"', 1))
     signed = state not in ('out', 'expired', 'loading')
     chrome = 'new' if signed else ('pending' if state == 'loading' else '')
     note = f'/connect mock, {state}. Data: design/mocks/data/setup-facts.json (lib/account/connect-copy.ts, fixtures setup/connect-device.json, home/me-new.json).'

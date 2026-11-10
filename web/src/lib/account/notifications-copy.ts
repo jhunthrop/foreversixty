@@ -96,6 +96,8 @@ export const notificationsCopy = {
   connectInstead: 'Connect a Discord channel instead',
   reconnect: 'Connect a different channel',
   reconnectNote: 'Connecting again replaces this channel and removes its webhook from Discord.',
+  /** The account's saved view: the note on the link's own line (a quiet aside, not a paragraph). */
+  reconnectAside: 'The old channel stops getting posts.',
   returnConnected: 'Connected. Send a test message to see it in your channel.',
   returnDenied: 'Cancelled in Discord. Nothing was connected.',
   returnFailed:

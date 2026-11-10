@@ -13,7 +13,7 @@
   const SURFACE_CAPTURE_MAX_PX = 240;
 </script>
 
-<Section title={addonCopy.surfacesTitle} testid="setup-surfaces">
+<Section title={addonCopy.surfacesTitle} testid="setup-surfaces" panel>
   <details class="setup-surf-fold">
     <summary class="text-label text-gold font-bold">{addonCopy.surfacesShow}</summary>
   </details>
@@ -55,12 +55,6 @@
     min-height: 44px;
     align-items: center;
     cursor: pointer;
-  }
-  /* From 768 the fold is gone and the grid sits right under the Section's hairline. */
-  @media (min-width: 768px) {
-    .setup-surf {
-      margin-top: -12px;
-    }
   }
   @media (max-width: 767px) {
     .setup-surf-fold {

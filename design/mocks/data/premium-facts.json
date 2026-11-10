@@ -810,8 +810,11 @@
  },
  "account": {
   "title": "Your account",
-  "signedInWithBattlenet": "Signed in with Battle.net",
-  "signedInByEmail": "Signed in by email",
+  "battletagLabel": "BattleTag",
+  "emailLabel": "Email",
+  "signInLabel": "Sign-in",
+  "signInBattlenet": "Battle.net",
+  "signInEmail": "Email",
   "signOut": "Sign out",
   "devicesLabel": "Devices",
   "youLabel": "You",
@@ -992,6 +995,7 @@
   "connectInstead": "Connect a Discord channel instead",
   "reconnect": "Connect a different channel",
   "reconnectNote": "Connecting again replaces this channel and removes its webhook from Discord.",
+  "reconnectAside": "The old channel stops getting posts.",
   "returnConnected": "Connected. Send a test message to see it in your channel.",
   "returnDenied": "Cancelled in Discord. Nothing was connected.",
   "returnFailed": "Could not connect. You need to be able to manage webhooks in that channel. Ask a server admin, or paste a webhook URL instead.",
@@ -1087,20 +1091,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1158,7 +1148,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": null,
    "characters": [],
    "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
@@ -1206,20 +1195,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1298,20 +1273,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Thandrel",
-    "classSlug": "warrior",
-    "levelLine": "Level 60 Fury Warrior",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Thandrel",
-     "href": "/character/us/normal/thandrel"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/warrior/fury?faction=alliance#band-alliance-60"
-    }
-   },
    "characters": [
     {
      "name": "Thandrel",
@@ -1415,20 +1376,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1508,20 +1455,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1598,20 +1531,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1689,20 +1608,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1790,20 +1695,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1890,20 +1781,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1964,20 +1841,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Felsnap",
-    "classSlug": "hunter",
-    "levelLine": "Level 34 Beast Mastery Hunter",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Felsnap",
-     "href": "/character/us/normal/felsnap"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
-    }
-   },
    "characters": [
     {
      "name": "Felsnap",
@@ -2054,20 +1917,6 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
-   "answer": {
-    "name": "Thandrel",
-    "classSlug": "warrior",
-    "levelLine": "Level 60 Fury Warrior",
-    "imported": "Updated 2 d ago from Battle.net",
-    "open": {
-     "label": "Open Thandrel",
-     "href": "/character/us/normal/thandrel"
-    },
-    "bis": {
-     "label": "Best in slot",
-     "href": "/bis/warrior/fury?faction=alliance#band-alliance-60"
-    }
-   },
    "characters": [
     {
      "name": "Thandrel",

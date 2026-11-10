@@ -48,7 +48,7 @@
     deviceStatusLine(device, now).split(' · ').slice(1).join(' · ');
 </script>
 
-<Section title={accountPageCopy.devicesLabel} anchor="devices" testid="account-devices">
+<Section title={accountPageCopy.devicesLabel} anchor="devices" testid="account-devices" panel>
   <div class="flex flex-col gap-3">
     {#if devices.length > 0}
       <div>

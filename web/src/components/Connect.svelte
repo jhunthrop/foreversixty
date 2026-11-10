@@ -199,7 +199,7 @@
 
 <div data-testid="connect" data-state={state}>
   <Page layout="form" {header}>
-    <Plate label={addonCopy.setupStep3Title}>
+    <Plate label={addonCopy.setupStep3Title} frame="framed">
       <div class="connect-body" aria-busy={state === 'loading' ? 'true' : undefined}>
         <Facts items={facts} testid="connect-facts" />
         {#each lines as line (line)}

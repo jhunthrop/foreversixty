@@ -69,6 +69,7 @@
   meta={addonCopy.setupCompanionNote}
   anchor="companion"
   testid="setup-companion"
+  panel
 >
   <div class="setup-body">
     <CompanionDownload

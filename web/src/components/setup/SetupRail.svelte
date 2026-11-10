@@ -23,27 +23,26 @@
   ];
 </script>
 
-<Section title={addonCopy.setupTryExport} anchor="paste" testid="setup-try-export">
+<Section title={addonCopy.setupTryExport} anchor="paste" testid="setup-try-export" panel>
   <div class="setup-body">
     <p class="text-small text-muted" data-testid="setup-export-what">{addonCopy.setupTryExportBody}</p>
     <AddonPasteBox {signedIn} />
   </div>
 </Section>
 
-<Section title={addonCopy.commandsTitle} testid="setup-commands">
+<Section title={addonCopy.commandsTitle} testid="setup-commands" panel>
   <div class="setup-commands"><Facts items={commands} /></div>
 </Section>
 
-<Section title={addonCopy.handshakeTitle} testid="setup-handshake">
+<Section title={addonCopy.handshakeTitle} testid="setup-handshake" panel>
   <div class="setup-body">
     {#each addonCopy.handshake as sentence (sentence)}<p class="text-small text-muted">{sentence}</p>{/each}
     <p class="text-small text-muted">{addonCopy.pageNoNetwork}</p>
   </div>
 </Section>
 
-<Section title={addonCopy.setupHowItWorks} testid="setup-flows">
-  <!-- Open Rows start at the Section's hairline. -->
-  <div class="-mt-3">
+<Section title={addonCopy.setupHowItWorks} testid="setup-flows" panel>
+  <div>
     {#each flows as flow (flow.title)}<Row title={flow.title} sub={flow.body} open />{/each}
   </div>
 </Section>
@@ -51,5 +50,13 @@
 <style>
   .setup-commands :global(dt) {
     color: var(--color-text);
+    padding-right: 12px;
+  }
+  /* A command never breaks and keeps its width: the description takes the rest and wraps. */
+  .setup-commands :global(dl) {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .setup-commands :global(dd) {
+    white-space: nowrap;
   }
 </style>

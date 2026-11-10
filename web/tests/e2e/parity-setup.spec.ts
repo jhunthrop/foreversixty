@@ -41,29 +41,8 @@ const HEIGHT = 1000;
 const MOCK_HEAD_INSET =
   'below 768 the mock puts the 18 px page inset outside the head region (.pc), PageHeader inside it; ' +
   'a primitive/mock-library question, the same drift parity-connect.spec.ts lists (2026-11-07)';
-// Round 5 (design-system lane, 2026-11-09): Open Sans sets wider than Barlow, and at 390 the unknown
-// system's companion section (its every-build download row and the screenshot under it) runs 14 px
-// taller in the build than ws_setup.py draws it; the sections under it move by that. The setup lane
-// (P13) redraws the page on the new system and clears it.
-const ROUND5_COMPANION_ROWS =
-  'Open Sans wraps the unknown-system companion block 14 px taller than ws_setup.py draws it (lane P13)';
-const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> = {
-  ...Object.fromEntries(
-    STATES.map(({ id }) => [`${id}-390`, { failures: ['head:box'], why: MOCK_HEAD_INSET }]),
-  ),
-  'setup-unknown-390': {
-    failures: [
-      'head:box',
-      'section-what-it-does-in-the-game:box',
-      'section-try-an-export:box',
-      'section-commands:box',
-      'section-the-companion-handshake:box',
-      'section-how-the-addon-works:box',
-      'site-footer:box',
-    ],
-    why: `${MOCK_HEAD_INSET}; ${ROUND5_COMPANION_ROWS}`,
-  },
-};
+const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> =
+  Object.fromEntries(STATES.map(({ id }) => [`${id}-390`, { failures: ['head:box'], why: MOCK_HEAD_INSET }]));
 
 test.describe('/setup mock parity', () => {
   test.skip(({ isMobile }) => isMobile, 'the parity mocks are desktop captures');

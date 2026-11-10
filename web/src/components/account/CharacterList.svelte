@@ -1,8 +1,8 @@
 <!-- web/src/components/account/CharacterList.svelte -->
-<!-- /account's Characters section (premium spec 2026-11-08 section 7.2): the page's one Plate, a Row
+<!-- /account's Characters section (premium spec 2026-11-08 section 7.2): the page's framed panel, a Row
      per character (the ringed crest, the name in its class colour with Current and Main, the
      descriptor and the guild, then the build source, Set as main and Open), the last raid as the
-     Plate's foot row when there is one, and under it the Battle.net line and the reports link. The
+     panel's foot row when there is one, and under it, in the panel, the Battle.net line and the reports link. The
      head's action refreshes from Battle.net: the page leaves for Battle.net and comes back to
      `?refreshed=1`, where the caller compares and hands the result in. A pure render of what the
      caller holds: no fetch of its own but the last-raid line's. -->
@@ -18,7 +18,6 @@
   import { classTone, LINK } from '../../lib/ui/primitives';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Button from '../ui/Button.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import Tag from '../ui/Tag.svelte';
@@ -159,11 +158,20 @@
   {/if}
 {/snippet}
 
-<Section title={characterListCopy.heading} {meta} {head} anchor="characters" testid="account-characters">
+<Section
+  title={characterListCopy.heading}
+  {meta}
+  {head}
+  anchor="characters"
+  testid="account-characters"
+  panel
+  frame="framed"
+  flush
+>
   {#if announcement !== ''}<p class="sr-only" role="status" data-testid="bnet-refresh-status">
       {announcement}
     </p>{/if}
-  <Plate label={characterListCopy.heading}>
+  <div>
     <div
       class="account-plate-body"
       class:account-refreshing={refreshing}
@@ -242,23 +250,36 @@
         <CoachLastRaidLine premium={logCoach} />
       {/if}
     </div>
-  </Plate>
-  {#if setMainError !== ''}
-    <p class="text-wipe pt-2 text-[13px]" role="alert" data-testid="character-set-main-error">
-      {setMainError}
-    </p>
-  {/if}
-  {#if characters.length > 0}
-    <CharacterListIntro />
-    <p class="pt-2">
-      <a class={LINK} href={REPORTS_HREF} data-testid="account-reports-link"
-        >{accountPageCopy.reportsLink} ›</a
-      >
-    </p>
+  </div>
+  {#if setMainError !== '' || characters.length > 0}
+    <div class="account-characters-foot">
+      {#if setMainError !== ''}
+        <p class="text-wipe pt-2 text-[13px]" role="alert" data-testid="character-set-main-error">
+          {setMainError}
+        </p>
+      {/if}
+      {#if characters.length > 0}
+        <CharacterListIntro />
+        <p class="pt-2">
+          <a class={LINK} href={REPORTS_HREF} data-testid="account-reports-link"
+            >{accountPageCopy.reportsLink} ›</a
+          >
+        </p>
+      {/if}
+    </div>
   {/if}
 </Section>
 
 <style>
+  /* The panel's text under the rows, at the panel's 20 px inset (14 on a phone). */
+  .account-characters-foot {
+    padding: 0 20px 10px;
+  }
+  @media (max-width: 767px) {
+    .account-characters-foot {
+      padding: 0 14px 8px;
+    }
+  }
   .account-plate-body {
     position: relative;
     transition: opacity 120ms;

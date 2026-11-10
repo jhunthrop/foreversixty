@@ -21,7 +21,7 @@
   ];
 </script>
 
-<Section title={addonCopy.setupStep2Title} anchor="addon" testid="setup-addon">
+<Section title={addonCopy.setupStep2Title} anchor="addon" testid="setup-addon" panel>
   <div class="setup-body">
     <p class="text-small text-muted" data-testid="setup-data-addon">{addonCopy.installDataHint}</p>
     <div class="setup-acts">
