@@ -152,6 +152,9 @@ func TestMemberProfileIsOfficerOrSelf(t *testing.T) {
 		r.VotesYes == nil || *r.VotesYes != 3 || r.VotesNo == nil || *r.VotesNo != 1 || r.VotesOfficers == nil || *r.VotesOfficers != 4 {
 		t.Fatalf("award record = %+v", r)
 	}
+	if p.Upgrades == nil {
+		t.Fatal("upgrades is null; a profile with a readiness row sends a list, empty without a gap")
+	}
 	if p.Loot.GuildMedian != 0 {
 		t.Fatalf("guild median = %d, want 0", p.Loot.GuildMedian)
 	}

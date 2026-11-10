@@ -603,8 +603,13 @@ def member_profile():
                        for n, c, main in [(name, cls, True), (*gd.PROFILE_ALT, False)]], list_=True)
     # Raid ready's roll-up tag shows only when a check fails (readyTag); Frostquill passes every one.
     ready = Section('Raid ready', _ready_facts(ilvl), Link('Open their character'), panel=True)
+    # Next upgrades (upgradeRows): the gap named, the biggest gain first, the slot and where it drops, the gain at the right.
+    slot_word = {'neck': 'Neck', 'wrist': 'Wrist'}
+    ups = Rows([Row(name, f'{slot_word[slot]} &middot; {source}', trail=f'<b style="font-size:14px;white-space:nowrap">+{gain:.1f} DPS</b>', link=False)
+                for slot, _id, name, source, gain in gd.PROFILE_UPGRADES], list_=True, open_=True)
+    ready += Section('Next upgrades', ups, panel=True)
     main = (ready + Section('Attendance', att, panel=True)
-            + Section('Loot this tier', loot, meta='Guild median 0', panel=True))
+            + Section('Loot this tier', loot, panel=True))  # the guild median shows once it is above none (lootFairness)
     rail = Section('Characters', characters, panel=True) + Section('Officer notes', notes + addn, panel=True)
     # No "member since" (the roster carries no join date): the rank instead.
     head = PageHeader(name, C[cls], crest_img(cls, 56), meta=[' &middot; '.join([f'{spec} {cls.title()}', 'Level 60', 'Member'])], answer=figs,

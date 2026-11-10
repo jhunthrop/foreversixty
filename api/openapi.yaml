@@ -5945,9 +5945,25 @@ components:
         the last 4 reports and last_30 is null. loot counts every award to the character (this
         tier, as the loot council counts). readiness is the readiness board's row (verified
         characters only), its gear_gap in the BiS page's unit. notes is present for an officer only.
-      required: [account_key, member, characters, attendance, loot, readiness]
+      required: [account_key, member, characters, attendance, loot, readiness, upgrades]
       properties:
         account_key: { type: string }
+        upgrades:
+          type: array
+          description: >-
+            The readiness row's gear gap named slot by slot: the BiS pick, where it comes from and
+            its DPS gain over what they wear (null when not sim-checked), the biggest known gain
+            first. Empty without a readiness row or a gap.
+          items:
+            type: object
+            title: ProfileUpgrade
+            required: [slot, item_id, name, source, gain_dps]
+            properties:
+              slot: { type: string }
+              item_id: { type: integer }
+              name: { type: string }
+              source: { type: string }
+              gain_dps: { type: [number, "null"] }
         member:
           oneOf:
             - { $ref: '#/components/schemas/GuildRosterRow' }

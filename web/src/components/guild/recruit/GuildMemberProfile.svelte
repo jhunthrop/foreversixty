@@ -20,6 +20,7 @@
     profileFigures,
     profileHead,
     readyFacts,
+    upgradeRows,
     readyTag,
   } from '../../../lib/guild/profile-view';
   import { viewerLocale } from '../../../lib/guild/raid-time';
@@ -104,6 +105,7 @@
     {@const attendance = attendanceView(profile, viewerTimezone, locale)}
     {@const loot = lootRows(profile, viewerTimezone, locale)}
     {@const fairness = lootFairness(profile)}
+    {@const upgrades = upgradeRows(profile)}
     {@const member = profile.member}
     {#snippet crest()}<ClassCrestRing characterClass={head.classSlug} size={56} />{/snippet}
     {#snippet figures()}
@@ -194,6 +196,22 @@
           <Facts items={ready} testid="guild-profile-ready-facts" />
         {/if}
       </Section>
+      {#if upgrades.length > 0}
+        <Section title={copy.upgradesHead} panel testid="guild-profile-upgrades">
+          <ul>
+            {#each upgrades as up (up.key)}
+              <li>
+                <Row title={up.name} sub={up.sub} open testid="guild-profile-upgrade">
+                  {#snippet trail()}{#if up.gain !== ''}<span
+                        class="text-strong text-[14px] font-semibold whitespace-nowrap tabular-nums"
+                        >{up.gain}</span
+                      >{/if}{/snippet}
+                </Row>
+              </li>
+            {/each}
+          </ul>
+        </Section>
+      {/if}
       <Section title={copy.attendance} panel testid="guild-profile-attendance">
         {#if attendance === null}
           <p class="text-muted text-[14px]">{copy.noNights}</p>
@@ -213,7 +231,12 @@
           {/if}
         {/if}
       </Section>
-      <Section title={copy.loot} meta={fairness.median} panel testid="guild-profile-loot">
+      <Section
+        title={copy.loot}
+        meta={fairness.median === '' ? undefined : fairness.median}
+        panel
+        testid="guild-profile-loot"
+      >
         {#if loot.length === 0}
           <p class="text-muted text-[14px]">{copy.noLoot}</p>
         {:else}

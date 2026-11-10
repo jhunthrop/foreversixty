@@ -123,7 +123,9 @@ def member_profile() -> dict:
                                                                               {'character_key': _char_key(gd.PROFILE_ALT[0]), 'name': gd.PROFILE_ALT[0], 'class': gd.PROFILE_ALT[1], 'is_main': False}],
             'attendance': {'source': 'raids', 'last_4': {'present': present, 'nights': len(nights)},
                            'last_30': {'present': gd.PROFILE_LAST_30[0], 'nights': gd.PROFILE_LAST_30[1]}, 'nights': nights, 'streak': streak},
-            'loot': {'count': len(loot), 'items': loot, 'guild_median': 0, 'nights_since': 0}, 'readiness': readiness, 'notes': notes}
+            'loot': {'count': len(loot), 'items': loot, 'guild_median': 0, 'nights_since': 0}, 'readiness': readiness,
+            'upgrades': [{'slot': slot, 'item_id': item_id, 'name': name, 'source': source, 'gain_dps': gain}
+                         for slot, item_id, name, source, gain in gd.PROFILE_UPGRADES], 'notes': notes}
 
 
 def profile_loot() -> list[dict]:

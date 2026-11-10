@@ -211,6 +211,15 @@ export interface ProfileLoot {
   nights_since: number | null;
 }
 
+/** One slot of their gear gap: the BiS pick, where it comes from, its DPS gain (null unsimmed). */
+export interface ProfileUpgrade {
+  slot: string;
+  item_id: number;
+  name: string;
+  source: string;
+  gain_dps: number | null;
+}
+
 export interface MemberProfile {
   account_key: string;
   member: GuildRosterRow | null;
@@ -218,6 +227,8 @@ export interface MemberProfile {
   attendance: ProfileAttendance | null;
   loot: ProfileLoot;
   readiness: GuildReadinessRow | null;
+  /** The gear gap named slot by slot, the biggest known gain first. */
+  upgrades: ProfileUpgrade[];
   /** Officers only: a member's own read never carries the field. */
   notes?: MemberNote[];
 }

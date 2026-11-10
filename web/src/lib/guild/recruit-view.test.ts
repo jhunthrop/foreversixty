@@ -26,6 +26,7 @@ import {
   attendanceView,
   characterRows,
   lootFairness,
+  upgradeRows,
   lootRows,
   noteSub,
   profileFigures,
@@ -277,6 +278,15 @@ describe('the member profile', () => {
     expect(readyTag({ ...profile, readiness: null })).toBeNull();
   });
 
+  it('names the next upgrades with the slot, where they drop and the gain in the BiS unit', () => {
+    expect(upgradeRows(profile).map((row) => [row.name, row.sub, row.gain])).toEqual([
+      ["Giantstalker's Gloves", 'Hands · Molten Core: Shazzrah', '+11.4 DPS'],
+      ["Giantstalker's Belt", 'Waist · Molten Core', 'Not simmed'],
+    ]);
+    const healer = { ...profile.readiness!, gear_gap: { ...profile.readiness!.gear_gap!, unit: null } };
+    expect(upgradeRows({ ...profile, readiness: healer }).map((row) => row.gain)).toEqual(['', '']);
+  });
+
   it('lists their characters, the main first, each linked to its page', () => {
     const rows = characterRows({
       ...profile,
@@ -318,6 +328,7 @@ describe('the member profile', () => {
       median: 'Guild median 2',
       since: '1 raid since their last item',
     });
+    expect(lootFairness({ ...profile, loot: { ...profile.loot, guild_median: 0 } }).median).toBe('');
     expect(
       lootFairness({ ...profile, loot: { ...profile.loot, count: 0, items: [], nights_since: 5 } }).since,
     ).toBe('5 raids since the tier began, nothing yet');

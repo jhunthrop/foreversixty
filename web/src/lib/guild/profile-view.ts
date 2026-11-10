@@ -175,6 +175,32 @@ export function readyFacts(profile: MemberProfile, viewerTz: string, locale: str
   ];
 }
 
+export interface UpgradeRowModel {
+  key: string;
+  name: string;
+  /** "Wrist · Warsong Outriders": the slot in the client's words, where it comes from. */
+  sub: string;
+  /** "+6.2 DPS" in the BiS page's unit; "Not simmed" without a measured gain; '' for a healer or
+   *  tank, whose list measures no gain. */
+  gain: string;
+}
+
+/** Their next upgrades, the biggest known gain first (the API's order): what to chase and where. */
+export function upgradeRows(profile: MemberProfile): UpgradeRowModel[] {
+  const unit = profile.readiness?.gear_gap?.unit ?? null;
+  return profile.upgrades.map((up) => ({
+    key: `${up.slot}-${up.item_id}`,
+    name: up.name,
+    sub: [enchantSlotLabel(up.slot), up.source].filter((part) => part !== '').join(SEP),
+    gain:
+      unit === null
+        ? ''
+        : up.gain_dps === null
+          ? copy.notSimmed
+          : `+${up.gain_dps.toFixed(1)} ${UNIT_WORD[unit]}`,
+  }));
+}
+
 export interface ProfileCharacterRow {
   key: string;
   name: string;
@@ -281,7 +307,8 @@ export function lootRows(profile: MemberProfile, viewerTz: string, locale: strin
 export function lootFairness(profile: MemberProfile): { median: string; since: string | null } {
   const since = profile.loot.nights_since;
   return {
-    median: copy.guildMedian(profile.loot.guild_median),
+    // A median of none says nothing yet (one night in): the meta waits for one item a raider.
+    median: profile.loot.guild_median > 0 ? copy.guildMedian(profile.loot.guild_median) : '',
     since: since === null ? null : copy.nightsSince(since, profile.loot.count > 0),
   };
 }

@@ -72,7 +72,9 @@ type MemberProfile struct {
 	Attendance *ProfileAttendance `json:"attendance"`
 	Loot       ProfileLoot        `json:"loot"`
 	Readiness  *ReadinessRow      `json:"readiness"`
-	Notes      *[]MemberNote      `json:"notes,omitempty"`
+	// Upgrades names the readiness row's gear gap, biggest known gain first; empty without one.
+	Upgrades []ProfileUpgrade `json:"upgrades"`
+	Notes    *[]MemberNote    `json:"notes,omitempty"`
 }
 
 // ProfileCharacter is one of the account's roster characters, to switch the profile between.
@@ -87,7 +89,7 @@ type ProfileCharacter struct {
 // else the first roster row).
 func (s *Store) MemberProfile(ctx context.Context, guildID, subjectID int64, characterKey string) (MemberProfile, error) {
 	out := MemberProfile{AccountKey: accountKeyFor(subjectID), Characters: []ProfileCharacter{},
-		Loot: ProfileLoot{Items: []ProfileLootItem{}}}
+		Loot: ProfileLoot{Items: []ProfileLootItem{}}, Upgrades: []ProfileUpgrade{}}
 	roster, median, err := s.profileRoster(ctx, guildID)
 	if err != nil {
 		return out, err
@@ -112,8 +114,10 @@ func (s *Store) MemberProfile(ctx context.Context, guildID, subjectID int64, cha
 		out.Loot.NightsSince = &since
 	}
 	if row.Verified {
-		rr := readinessRowOf(*row, s.readinessOf(*row, median))
+		cr := s.readinessOf(*row, median)
+		rr := readinessRowOf(*row, cr)
 		out.Readiness = &rr
+		out.Upgrades = profileUpgrades(cr.GearGap.Pieces)
 	}
 	return out, nil
 }

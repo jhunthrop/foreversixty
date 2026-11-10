@@ -94,5 +94,8 @@ PROFILE_NIGHTS = [(LAST_RAID_AT, 'present')]
 PROFILE_LAST_30 = (1, 1)
 PROFILE_PARSE = ('dps', 812.0, 96)
 PROFILE_GAP = {'upgrades': 2, 'gain_dps': 15.9, 'unit': 'dps', 'not_sim_checked': 0}
+# The gap named (the profile's Next upgrades): slot, item id, the pick, where it comes from, its gain. The gains sum to PROFILE_GAP's.
+PROFILE_UPGRADES = [('neck', 22403, "Diana's Pearl Necklace", 'Stratholme: Cannon Master Willey', 9.7),
+                    ('wrist', 19595, "Dryad's Wrist Bindings", 'Warsong Outriders', 6.2)]
 # id, body, author, written, the viewer may delete it
 PROFILE_NOTES = [(7, 'Ask about the Wednesday conflict.', 'Dunmaro', '2026-12-05T18:00:00Z', True), (6, 'Always brings flasks.', 'Ironbrand', '2026-12-02T18:00:00Z', False)]

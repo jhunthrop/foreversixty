@@ -111,6 +111,22 @@
       "food": true
     }
   },
+  "upgrades": [
+    {
+      "slot": "neck",
+      "item_id": 22403,
+      "name": "Diana's Pearl Necklace",
+      "source": "Stratholme: Cannon Master Willey",
+      "gain_dps": 9.7
+    },
+    {
+      "slot": "wrist",
+      "item_id": 19595,
+      "name": "Dryad's Wrist Bindings",
+      "source": "Warsong Outriders",
+      "gain_dps": 6.2
+    }
+  ],
   "notes": [
     {
       "id": 7,

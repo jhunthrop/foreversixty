@@ -179,6 +179,8 @@ export const profileCopy = {
     logged: 'Last logged',
     notRead: 'Not read',
   },
+  upgradesHead: 'Next upgrades',
+  notSimmed: 'Not simmed',
   characters: 'Characters',
   main: 'Main',
   attendance: 'Attendance',

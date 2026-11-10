@@ -11,6 +11,8 @@ import (
 	"fmt"
 	"sort"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/bis"
 )
 
 // attended is a night the raider came to: present or late. An excused night is neither.
@@ -100,4 +102,31 @@ func (s *Store) guildMedianAwards(ctx context.Context, guildID int64, roster []R
 		}
 	}
 	return medianOf(counts), nil
+}
+
+// ProfileUpgrade is one slot of the raider's gear gap: the BiS pick, where it comes from and its
+// DPS gain over what they wear (null when no listed alternative measured the worn item).
+type ProfileUpgrade struct {
+	Slot    string   `json:"slot"`
+	ItemID  int      `json:"item_id"`
+	Name    string   `json:"name"`
+	Source  string   `json:"source"`
+	GainDps *float64 `json:"gain_dps"`
+}
+
+// profileUpgrades is the gap's pieces, the biggest known gain first, the unmeasured after them in
+// the band's slot order.
+func profileUpgrades(pieces []bis.GapPiece) []ProfileUpgrade {
+	out := make([]ProfileUpgrade, 0, len(pieces))
+	for _, p := range pieces {
+		out = append(out, ProfileUpgrade{Slot: p.Slot, ItemID: p.ItemID, Name: p.ItemName, Source: p.Source, GainDps: p.GainDps})
+	}
+	sort.SliceStable(out, func(i, j int) bool {
+		a, b := out[i].GainDps, out[j].GainDps
+		if a == nil || b == nil {
+			return a != nil && b == nil
+		}
+		return *a > *b
+	})
+	return out
 }

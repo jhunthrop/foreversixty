@@ -3,6 +3,8 @@ package guilds
 import (
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/bis"
 )
 
 func profileNightOn(day int, outcome string, excused bool) ProfileNight {
@@ -52,5 +54,26 @@ func TestMedianOf(t *testing.T) {
 		if got := medianOf(c.values); got != c.want {
 			t.Errorf("medianOf(%v) = %d, want %d", c.values, got, c.want)
 		}
+	}
+}
+
+func TestProfileUpgradesLeadWithTheBiggestKnownGain(t *testing.T) {
+	gain := func(v float64) *float64 { return &v }
+	got := profileUpgrades([]bis.GapPiece{
+		{Slot: "head", ItemID: 1, ItemName: "Helm", Source: "Onyxia"},
+		{Slot: "back", ItemID: 2, ItemName: "Drape", Source: "Onyxia", GainDps: gain(4.2)},
+		{Slot: "hands", ItemID: 3, ItemName: "Gloves", Source: "Lucifron", GainDps: gain(11.7)},
+	})
+	want := []string{"Gloves", "Drape", "Helm"}
+	for i, name := range want {
+		if got[i].Name != name {
+			t.Fatalf("order = %+v, want %v", got, want)
+		}
+	}
+	if got[2].GainDps != nil || got[0].Source != "Lucifron" {
+		t.Fatalf("pieces = %+v", got)
+	}
+	if len(profileUpgrades(nil)) != 0 || profileUpgrades(nil) == nil {
+		t.Fatal("no gap reads an empty list, never null")
 	}
 }

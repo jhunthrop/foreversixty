@@ -211,6 +211,16 @@ export function buildMockProfile(name = 'Zulmara', officer = false): MemberProfi
       nights_since: 1,
     },
     readiness,
+    upgrades: [
+      {
+        slot: 'hands',
+        item_id: 16852,
+        name: "Giantstalker's Gloves",
+        source: 'Molten Core: Shazzrah',
+        gain_dps: 11.4,
+      },
+      { slot: 'waist', item_id: 16851, name: "Giantstalker's Belt", source: 'Molten Core', gain_dps: null },
+    ],
     ...(officer ? { notes: buildMockNotes() } : {}),
   };
 }
