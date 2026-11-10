@@ -76,7 +76,7 @@ func TestWoff2IsServedAsAFont(t *testing.T) {
 // Every file the page or the stylesheet names ships.
 func TestTheStylesheetAndPageNameOnlyFilesThatShip(t *testing.T) {
 	ref := regexp.MustCompile(`(?:href|src)="([^"#:]+)"|url\('([^']+)'\)`)
-	for _, page := range []string{"styles.css", "index.html"} {
+	for _, page := range []string{"styles.css", "index.html", "install.html"} {
 		b, _ := fs.ReadFile(Assets, page)
 		for _, m := range ref.FindAllStringSubmatch(string(b), -1) {
 			name := m[1] + m[2]

@@ -19,6 +19,12 @@ installed companion updates itself from the feed's `latest.json`.
   every platform. That is why `build-mac` runs on every release, not only on hand-pushed tags,
   and why `release` waits for it. A macOS runner bills at ten times the Linux rate, but it runs
   only when a release is cut (a handful a week), never for tests.
+- A dispatch with `dry_run: true` builds, signs and notarizes everything as the next version and
+  stops before `release`: no tag, no GitHub release, no feed entry. The builds stay as the run's
+  artifacts, and the Windows job installs the setup on the runner, runs it again over the running
+  install, uninstalls it, logs what each step left behind and keeps the screens as
+  `dryrun-windows-captures`. Any branch may dispatch one:
+  `gh workflow run companion.yml --ref <branch> -f dry_run=true`.
 
 ## Windows: Azure Artifact Signing
 
@@ -29,6 +35,14 @@ with the certificate profile the repository variable `AZURE_SIGNING_PROFILE` nam
 name Commish LLC. With the variable unset, Windows builds ship unsigned with a notice.
 Secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` (environment `signing`);
 variables `AZURE_SIGNING_ENDPOINT`, `AZURE_SIGNING_ACCOUNT`, `AZURE_SIGNING_PROFILE`.
+
+The setup /setup offers, `foreversixty-companion-setup.exe` (saved as ForeverSixtySetup.exe), is
+the same signed exe under a setup name: run from anywhere but the install folder it installs itself
+(`companion/internal/install`, setup.go), and the installed copy's `-uninstall` is what Apps &
+Features runs. One binary, one signature, checked with its version-info resource (Commish LLC,
+Forever Sixty). The bare exe name stays in every release because installed companions update from
+it. The Apps & Features entry is `HKCU\...\Uninstall\ForeverSixty`; each launch of an installed
+companion writes its version there (`internal/updater/installed.go`), so it follows self-updates.
 
 If signing fails with AADSTS700213, GitHub changed the OIDC subject format again: add a federated
 credential on the `foreversixty-companion-signing` app registration that matches the subject in
@@ -45,8 +59,11 @@ the error.
 3. notarizes it with `xcrun notarytool` using the App Store Connect API key, staples the ticket
    and validates it;
 4. zips the stapled app as `foreversixty-companion_darwin_universal.app.zip` (the updater's asset);
-5. makes `foreversixty-companion_darwin_universal.dmg` (the app beside a link to Applications),
-   signs, notarizes and staples it;
+5. makes `foreversixty-companion_darwin_universal.dmg` with create-dmg: a 660 by 400 drag window
+   on the background `tools/art/dmg_background.py` draws (the app left, Applications right, a brass
+   arrow between) and the app icon as the volume icon, then signs, notarizes and staples it. `/setup`
+   offers the disk image (saved as ForeverSixty.dmg); dragged or not, the app offers to move itself
+   to Applications on its first launch from anywhere else (`companion/internal/install`);
 6. checks both with `spctl`, the way Gatekeeper will on a player's Mac.
 
 Secrets and variables it reads:
@@ -115,8 +132,8 @@ then add the entry to `companion.json`'s `downloads` and land it:
 ```json
 {
   "platform": "Mac",
-  "asset": "foreversixty-companion_darwin_universal.dmg",
-  "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications."
+  "asset": "foreversixty-companion_darwin_universal.app.zip",
+  "firstRun": "Signed by Commish LLC and notarized by Apple. Open the download and Forever Sixty moves itself to Applications, then sets itself up. macOS 12 or later."
 }
 ```
 

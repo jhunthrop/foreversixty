@@ -15,6 +15,8 @@ export interface CompanionDownload {
   platform: string;
   /** The file's name in the feed's companion manifest. */
   asset: string;
+  /** The name the browser saves it as (the Worker's Content-Disposition, the link's download). */
+  saveAs: string;
   /** The signing and first-run line under the download. */
   firstRun: string;
 }

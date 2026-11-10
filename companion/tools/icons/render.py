@@ -13,9 +13,11 @@ header, where the seal is 44 px or smaller and the painted one turns to mud. It 
 seal.ico and seal.icns are never embedded in the binary; each platform's go:embed (internal/icon) carries its
 own tray images alone.
 
-Every PNG is palette-quantized (pngquant at quality 90 to 100, dithered) and then losslessly recompressed
+Every loose PNG is palette-quantized (pngquant at quality 90 to 100, dithered) and then losslessly recompressed
 (oxipng), keeping the smaller of that and the plain encode; at 16 to 64 px the 256-colour palette holds every
-colour the seal has. Needs pngquant and oxipng on PATH (brew install pngquant oxipng).
+colour the seal has. Needs pngquant and oxipng on PATH (brew install pngquant oxipng). The images inside an
+.ico or .icns stay 32-bit RGBA: Windows documents only that for PNG icon entries, and Finder drew palette PNGs
+in an .icns as noise. The .icns is packed by Apple's iconutil, so this runs on a Mac.
 
 The seal is never redrawn. Each tray size is the flat seal rendered at that size (the tiny bold seal at 24 px and
 below, the small seal with its swash above). For the painted seal, where the owner's set has a size (16, 24, 32, 40, 48, 64, 128, 256, 512, 1024)
@@ -49,6 +51,10 @@ OUT = COMPANION / 'internal/icon/assets'
 TOKENS_CSS = COMPANION / 'ui/tokens.css'
 
 MAC_BODY = 824 / 1024  # Apple's macOS icon grid
+MAC_CORNER = 185.4 / 824  # the grid's corner radius, as a share of the tile
+MAC_GROUND = REPO / 'design/assets/art/app-icon-background.jpeg'
+MAC_GROUND_INNER = (0.09, 0.91)  # the painted blue inside the art's brass frame
+MAC_SEAL = 0.78  # the seal's share of the tile
 # Windows draws the exe's icon at 16 to 64 px a scale step (small and large icons, 100 to 200 %) and takes 256 for
 # Explorer's large views, scaling it down for 96 and 128.
 ICO_SIZES = (16, 20, 24, 32, 40, 48, 64, 256)
@@ -59,10 +65,10 @@ TRAY_PNG_SIZE = 32  # macOS draws the menu-bar image at 16 pt (getlantern/systra
 DOT_RADIUS = 0.12  # of the icon's side
 TONES = {'on': '--color-kill', 'warn': '--color-gold-hover', 'bad': '--color-wipe'}
 RING = '--color-raised'  # the dot's ring, so it reads on a light taskbar and a dark one
-# One entry per pixel size macOS draws, 16 to 512: AppKit picks a representation by pixels, so 16 pt at 2x takes
-# the 32 px entry and 256 pt at 2x the 512 px one, and the @2x types (ic11 to ic14) would only repeat the bytes.
-# No 1024: nothing short of a 512 pt Finder icon on a Retina screen asks for it, and the Dock tops out at 256 pt.
-ICNS_TYPES = (('icp4', 16), ('icp5', 32), ('icp6', 64), ('ic07', 128), ('ic08', 256), ('ic09', 512))
+# Apple's .iconset point sizes, each at 1x and 2x; iconutil (macOS only) packs them. No 1024 px (512 pt @2x): it
+# alone would double the file, and nothing short of a 512 pt Finder icon on a Retina screen asks for it.
+ICONSET_POINTS = (16, 32, 128, 256, 512)
+ICONSET_MAX_PX = 512
 
 _cache: dict[int, Image.Image] = {}
 
@@ -86,17 +92,33 @@ def seal(size: int) -> Image.Image:
 
 
 def mac_seal(size: int) -> Image.Image:
-    """The seal on Apple's grid: the body centred at 824/1024, a drop shadow under it from 64 px up."""
+    """The Mac app icon: a full tile on Apple's grid, the owner's painted blue ground (design/assets/art/
+    app-icon-background.jpeg, inside its brass frame) cut to the rounded square at 824/1024 with Apple's corner,
+    the painted seal centred on it, and a soft shadow under the tile from 64 px up. A tile that fills the shape
+    is what macOS 26 shows as it is; the bare round seal it put on a white plate (owner, 2026-11-10)."""
     body = round(size * MAC_BODY)
     inset = (size - body) // 2
-    shape = Image.open(MASTER).convert('RGBA').resize((body, body), Image.LANCZOS)
+    scale = 4  # the corner is drawn large and reduced, for a clean edge at every size
+    mask = Image.new('L', (body * scale, body * scale), 0)
+    ImageDraw.Draw(mask).rounded_rectangle(
+        (0, 0, body * scale - 1, body * scale - 1), radius=round(body * scale * MAC_CORNER), fill=255)
+    mask = mask.resize((body, body), Image.LANCZOS)
+    ground = Image.open(MAC_GROUND).convert('RGB')
+    gw, gh = ground.size
+    ground = ground.crop((round(gw * MAC_GROUND_INNER[0]), round(gh * MAC_GROUND_INNER[0]),
+                          round(gw * MAC_GROUND_INNER[1]), round(gh * MAC_GROUND_INNER[1])))
+    tile = ground.resize((body, body), Image.LANCZOS).convert('RGBA')
+    tile.putalpha(mask)
+    seal_px = round(body * MAC_SEAL)
+    shape = Image.open(MASTER).convert('RGBA').resize((seal_px, seal_px), Image.LANCZOS)
+    tile.alpha_composite(shape, ((body - seal_px) // 2, (body - seal_px) // 2))
     canvas = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     if size >= 64:
         alpha = Image.new('L', (size, size), 0)
-        alpha.paste(shape.getchannel('A').point(lambda a: a * 3 // 10), (inset, inset + round(size * 0.012)))
+        alpha.paste(mask.point(lambda a: a * 3 // 10), (inset, inset + round(size * 0.012)))
         alpha = alpha.filter(ImageFilter.GaussianBlur(size * 0.012))
         canvas = Image.merge('RGBA', (*Image.new('RGB', (size, size)).split(), alpha))
-    canvas.alpha_composite(shape, (inset, inset))
+    canvas.alpha_composite(tile, (inset, inset))
     return canvas
 
 
@@ -142,9 +164,19 @@ def png_bytes(im: Image.Image) -> bytes:
     return best if len(best) < len(plain) else plain
 
 
+def rgba_png(im: Image.Image) -> bytes:
+    """A 32-bit RGBA PNG, never a palette one: what icon containers are documented to hold. oxipng recompresses it
+    losslessly with the colour type kept (--nc)."""
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp) / 'out.png'
+        im.convert('RGBA').save(out, 'PNG', optimize=True)
+        subprocess.run([*OXIPNG, '--nc', str(out)], check=True)
+        return out.read_bytes()
+
+
 def ico(images: list[tuple[int, Image.Image]]) -> bytes:
     """ICONDIR, one ICONDIRENTRY per image, then PNG blobs (Windows reads PNG entries since Vista)."""
-    blobs = [png_bytes(im) for _, im in images]
+    blobs = [rgba_png(im) for _, im in images]
     head = struct.pack('<HHH', 0, 1, len(images))
     offset = 6 + 16 * len(images)
     for (size, _), blob in zip(images, blobs):
@@ -155,11 +187,20 @@ def ico(images: list[tuple[int, Image.Image]]) -> bytes:
 
 
 def icns() -> bytes:
-    elems = b''
-    for kind, size in ICNS_TYPES:
-        blob = png_bytes(mac_seal(size))
-        elems += kind.encode('ascii') + struct.pack('>I', 8 + len(blob)) + blob
-    return b'icns' + struct.pack('>I', 8 + len(elems)) + elems
+    """Apple's own iconutil over a full .iconset of plain RGBA PNGs, so every type code is the one Apple writes.
+
+    The hand-packed file this replaced (2026-11-10) put palette PNGs under icp4 and icp5, and Finder drew the 16
+    and 32 pt sizes (the sidebar, list views, the mounted disk image) as red and green noise."""
+    with tempfile.TemporaryDirectory() as tmp:
+        iconset = Path(tmp) / 'seal.iconset'
+        iconset.mkdir()
+        for points in ICONSET_POINTS:
+            for scale, suffix in ((1, ''), (2, '@2x')):
+                if points * scale <= ICONSET_MAX_PX:
+                    (iconset / f'icon_{points}x{points}{suffix}.png').write_bytes(rgba_png(mac_seal(points * scale)))
+        out = Path(tmp) / 'seal.icns'
+        subprocess.run(['iconutil', '-c', 'icns', '-o', str(out), str(iconset)], check=True)
+        return out.read_bytes()
 
 
 def main() -> None:

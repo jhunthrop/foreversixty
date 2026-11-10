@@ -55,6 +55,15 @@ func installCloseHook(window unsafe.Pointer, onClose func() bool) (show, hide fu
 	return show, hide, true
 }
 
+// bringToFront makes the app active and the window key: a window opened
+// before the app has a menu bar or a tray (the first-launch prompt) is
+// otherwise left behind whatever the player clicked last.
+func bringToFront(window unsafe.Pointer) {
+	if window != nil {
+		C.fsShowWindow(window)
+	}
+}
+
 // installAppHooks gives the app its menu bar and routes the system's Quit
 // (Command-Q, the Dock's Quit) through quit, so the companion stops the
 // way the tray's Quit stops it, and a click on the Dock icon through

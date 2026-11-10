@@ -10,6 +10,7 @@
     size = 'md',
     href,
     rel,
+    download,
     type = 'button',
     disabled = false,
     onclick,
@@ -23,6 +24,8 @@
     href?: string;
     /** A link's rel (`noopener` on every install and download link). */
     rel?: string;
+    /** A link's saved file name (the companion's ForeverSixty.dmg, ForeverSixtySetup.exe). */
+    download?: string;
     type?: 'button' | 'submit';
     disabled?: boolean;
     onclick?: (event: MouseEvent) => void;
@@ -38,7 +41,7 @@
 </script>
 
 {#if href !== undefined && !disabled}
-  <a class={classes} {href} {rel} aria-label={label} data-testid={testid}>{@render children()}</a>
+  <a class={classes} {href} {rel} {download} aria-label={label} data-testid={testid}>{@render children()}</a>
 {:else}
   <button
     class={classes}

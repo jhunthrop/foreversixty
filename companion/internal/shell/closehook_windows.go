@@ -66,3 +66,6 @@ func installCloseHook(hwnd unsafe.Pointer, onClose func() bool) (show, hide func
 	}
 	return show, hide, true
 }
+
+// bringToFront is macOS only (closehook_darwin.go): a new window opens in front here.
+func bringToFront(unsafe.Pointer) {}

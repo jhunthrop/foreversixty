@@ -15,6 +15,10 @@ on:
         description: Cut a release from this commit even if nothing under companion/ changed
         type: boolean
         default: false
+      dry_run:
+        description: Build, sign and notarize every installer as the next version, but publish and tag nothing (the builds stay as this run's artifacts)
+        type: boolean
+        default: false
 permissions: { contents: read }
 concurrency:
   group: companion-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
@@ -163,6 +167,7 @@ jobs:
         env:
           BEFORE: ${{ github.event.before }}
           FORCE: ${{ github.event.inputs.release }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
           if [[ "$GITHUB_REF" == refs/tags/companion-v* ]]; then
             echo "release=true" >> "$GITHUB_OUTPUT"
@@ -177,7 +182,7 @@ jobs:
           # up by the next push, because the tree still differs from the last tag.
           last=$(git tag --list 'companion-v*' --sort=-v:refname | head -1)
           changed=false
-          if [ "$FORCE" = "true" ]; then
+          if [ "$FORCE" = "true" ] || [ "$DRY_RUN" = "true" ]; then
             changed=true
           elif [ -n "$last" ]; then
             if git diff --name-only "$last" "$GITHUB_SHA" \
@@ -202,7 +207,11 @@ jobs:
           fi
           echo "release=true" >> "$GITHUB_OUTPUT"
           echo "tag=$next" >> "$GITHUB_OUTPUT"
-          echo "releasing $next (previous: ${last:-none})"
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "dry run: building $next (previous: ${last:-none}); nothing is published or tagged"
+          else
+            echo "releasing $next (previous: ${last:-none})"
+          fi
 
   build:
     needs: [test, version]
@@ -301,6 +310,8 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # The companion is signed first, because the setup program carries it: the setup is
+      # built around the signed exe, then signed itself by the same profile.
       - name: Sign for Windows
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
         uses: azure/artifact-signing-action@v2
@@ -313,20 +324,119 @@ jobs:
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
 
-      - name: Check the Windows signature
-        # A release never carries a binary the OS would call unsigned: the
-        # signature must verify and name the company.
+      # foreversixty-companion-setup.exe: the download /setup offers (saved as ForeverSixtySetup.exe).
+      # It is the signed companion itself under a setup name: run from anywhere but the install
+      # folder it shows its own install window and installs itself (companion/internal/install,
+      # setup.go). The bare exe beside it stays in the release for the updater.
+      - name: The Windows setup
+        if: matrix.goos == 'windows'
+        run: cp "dist/${ASSET}" dist/foreversixty-companion-setup.exe
+
+      - name: Check the Windows signatures
+        # A release never carries a binary the OS would call unsigned: each signature must
+        # verify and name the company.
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
         shell: pwsh
         run: |
-          $sig = Get-AuthenticodeSignature "dist/$env:ASSET"
-          "status: $($sig.Status); signer: $($sig.SignerCertificate.Subject)"
-          if ($sig.Status -ne 'Valid') { throw "the Windows binary is not validly signed: $($sig.StatusMessage)" }
-          if ($sig.SignerCertificate.Subject -notmatch 'Commish LLC') { throw "unexpected signer: $($sig.SignerCertificate.Subject)" }
+          foreach ($file in @("dist/$env:ASSET", "dist/foreversixty-companion-setup.exe")) {
+            $sig = Get-AuthenticodeSignature $file
+            "${file}: status $($sig.Status); signer $($sig.SignerCertificate.Subject)"
+            if ($sig.Status -ne 'Valid') { throw "$file is not validly signed: $($sig.StatusMessage)" }
+            if ($sig.SignerCertificate.Subject -notmatch 'Commish LLC') { throw "unexpected signer on ${file}: $($sig.SignerCertificate.Subject)" }
+          }
+          $info = (Get-Item "dist/$env:ASSET").VersionInfo
+          "version info: $($info.ProductName) / $($info.FileDescription) / $($info.CompanyName) / $($info.LegalCopyright) / $($info.ProductVersion)"
 
       - name: Unsigned Windows build
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE == ''
         run: echo "::notice::AZURE_SIGNING_PROFILE is not set, so this Windows build is unsigned."
+
+      # A dry run plays a player on the runner: install, the companion's first run, the setup
+      # again over the running install (an upgrade), the light theme, then Apps & Features'
+      # uninstall, logging what each left behind. The screens are kept as the run's
+      # dryrun-windows-captures artifact (never companion-*, so a release could not pick them up).
+      - name: Try the setup on the runner (dry run)
+        if: matrix.goos == 'windows' && github.event.inputs.dry_run == 'true'
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          New-Item -ItemType Directory captures | Out-Null
+          function Snap([string]$name) {
+            $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+            $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+            [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+            $bmp.Save("$PWD\captures\$name.png")
+          }
+          # The window's one button, clicked as a player would: keys sent to the window never
+          # reach the web view inside it. The button sits at the same place in every mode.
+          Add-Type -TypeDefinition @"
+          using System; using System.Runtime.InteropServices;
+          public static class Mouse {
+            public struct Rect { public int Left, Top, Right, Bottom; }
+            [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out Rect r);
+            [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
+            [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+            [DllImport("user32.dll")] public static extern void mouse_event(uint f, uint x, uint y, uint d, UIntPtr e);
+          }
+          "@
+          function Press([System.Diagnostics.Process]$p) {
+            $p.Refresh()
+            $h = $p.MainWindowHandle
+            $null = [Mouse]::SetForegroundWindow($h)
+            $r = New-Object Mouse+Rect
+            $null = [Mouse]::GetWindowRect($h, [ref]$r)
+            $null = [Mouse]::SetCursorPos($r.Left + 92, $r.Top + 315)
+            [Mouse]::mouse_event(2, 0, 0, 0, [UIntPtr]::Zero); [Mouse]::mouse_event(4, 0, 0, 0, [UIntPtr]::Zero)
+          }
+          function State([string]$when) {
+            $run = (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -ErrorAction SilentlyContinue).'Forever Sixty'
+            $entry = Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\ForeverSixty' -ErrorAction SilentlyContinue
+            $lnk = Test-Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Forever Sixty.lnk"
+            $running = @(Get-Process foreversixty-companion -ErrorAction SilentlyContinue).Count
+            "${when}: exe $(Test-Path "$dir\foreversixty-companion.exe"); shortcut $lnk; startup '$run'; running $running"
+            if ($entry) { $entry | Format-List DisplayName, DisplayVersion, Publisher, DisplayIcon, EstimatedSize, UninstallString, URLInfoAbout }
+          }
+          $dir = Join-Path $env:LOCALAPPDATA 'Programs\Forever Sixty'
+
+          $setup = Start-Process dist\foreversixty-companion-setup.exe -PassThru
+          Start-Sleep 8; Snap 'win-1-setup'
+          $clicked = Get-Date; Press $setup
+          Start-Sleep -Milliseconds 250; Snap 'win-2-installing'
+          $setup.WaitForExit(30000) | Out-Null
+          "setup finished $([int]((Get-Date) - $clicked).TotalMilliseconds) ms after the click"
+          Start-Sleep 12; Snap 'win-3-first-run'
+          State 'after install'
+
+          $upgrade = Start-Process dist\foreversixty-companion-setup.exe -PassThru
+          Start-Sleep 8; Snap 'win-4-upgrade'
+          Press $upgrade; $upgrade.WaitForExit(30000) | Out-Null
+          Start-Sleep 10
+          State 'after the upgrade'
+
+          Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' AppsUseLightTheme 1
+          Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' SystemUsesLightTheme 1
+          $light = Start-Process dist\foreversixty-companion-setup.exe -PassThru
+          Start-Sleep 8; Snap 'win-5-setup-light-theme'
+          Stop-Process -Id $light.Id
+          Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' AppsUseLightTheme 0
+          Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' SystemUsesLightTheme 0
+
+          $remove = Start-Process "$dir\foreversixty-companion.exe" -ArgumentList '-uninstall' -PassThru
+          Start-Sleep 8; Snap 'win-6-uninstall'
+          Press $remove
+          Start-Sleep 1; Snap 'win-7-removed'
+          $remove.WaitForExit(30000) | Out-Null
+          Start-Sleep 8
+          State 'after the uninstall'
+          if (Test-Path "$dir\foreversixty-companion.exe") { throw "the uninstall left the companion behind" }
+
+      - name: Keep the setup's screens (dry run)
+        if: always() && matrix.goos == 'windows' && github.event.inputs.dry_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dryrun-windows-captures
+          path: companion/captures/*
+          if-no-files-found: warn
 
       - uses: actions/upload-artifact@v4
         with:
@@ -473,6 +583,9 @@ jobs:
           echo "::notice::APPLE_CERTIFICATE_P12 is not set, so the Mac app is signed ad hoc, \
           not notarized, and not published; it is kept as this run's unsigned-companion-darwin artifact."
 
+      - name: create-dmg for the disk image's window
+        run: brew install create-dmg
+
       - name: Package the app
         run: ../tools/package-mac-companion.sh "${TAG#companion-v}" dist/foreversixty-companion dist/mac
 
@@ -503,7 +616,9 @@ jobs:
     # The Mac build must pass too, signed or not: a release without its Mac app would
     # take the Mac download offline (see build-mac).
     needs: [build, build-mac, version]
-    if: ${{ !cancelled() && needs.build.result == 'success' && needs.build-mac.result == 'success' && needs.version.outputs.release == 'true' }}
+    # A dry run (workflow_dispatch with dry_run) stops before this job: its builds stay as the
+    # run's artifacts, and no tag, release or feed entry is made.
+    if: ${{ !cancelled() && needs.build.result == 'success' && needs.build-mac.result == 'success' && needs.version.outputs.release == 'true' && github.event.inputs.dry_run != 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions: { contents: write }

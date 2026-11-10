@@ -53,6 +53,18 @@ const CONTENT_TYPES: Record<string, string> = {
 
 const COMPANION_ASSETS: readonly string[] = companion.downloads.map((entry) => entry.asset);
 
+/** The name a browser saves each /setup build under (companion.json's saveAs: ForeverSixty.dmg,
+ *  ForeverSixtySetup.exe), as Discord's downloads read. The release and the updater keep the asset
+ *  names; every other file is saved under its own. */
+const COMPANION_SAVE_AS: ReadonlyMap<string, string> = new Map(
+  companion.downloads.map((entry) => [entry.asset, entry.saveAs]),
+);
+
+/** The file name a download is saved as. */
+export function saveAsName(family: Family, name: string): string {
+  return (family === 'companion' && COMPANION_SAVE_AS.get(name)) || name;
+}
+
 function contentType(name: string): string {
   const dot = name.lastIndexOf('.');
   return (dot >= 0 && CONTENT_TYPES[name.slice(dot)]) || 'application/octet-stream';
@@ -94,6 +106,7 @@ async function serveFile(
   key: string,
   name: string,
   cache: string,
+  saveAs: string = name,
 ): Promise<Response> {
   const object = await env.LOGS?.get(key);
   if (object === null || object === undefined) return refuse(404, 'No such download');
@@ -103,7 +116,7 @@ async function serveFile(
     'content-length': String(object.size),
     etag: object.httpEtag,
   });
-  if (!name.endsWith('.json')) headers.set('content-disposition', `attachment; filename="${name}"`);
+  if (!name.endsWith('.json')) headers.set('content-disposition', `attachment; filename="${saveAs}"`);
   return new Response(request.method === 'HEAD' ? null : object.body, { status: 200, headers });
 }
 
@@ -138,6 +151,7 @@ export async function serveDownload(request: Request, env: DownloadEnv): Promise
         storageKey(target.family, target.tag, target.name),
         target.name,
         IMMUTABLE_CACHE,
+        saveAsName(target.family, target.name),
       );
     case 'latest-zip':
     case 'latest-file':
