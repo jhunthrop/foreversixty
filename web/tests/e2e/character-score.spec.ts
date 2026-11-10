@@ -174,7 +174,7 @@ test('Best per encounter: one Row per boss with its parse and date, then the lin
   await expect(best).toContainText('Deep Warden');
   await expect(best.getByRole('link', { name: 'All fights (2) ›' })).toHaveAttribute('href', '/logs');
   await expect(page.getByRole('heading', { name: 'Every ranked fight' })).toHaveCount(0);
-  await expect(page.getByTestId('character-builds')).toContainText('first seen 9 Dec 2026');
+  await expect(page.getByTestId('character-builds')).toContainText('Discipline · 9 Dec');
 });
 
 test('no best fights: the Section is left out', async ({ page }) => {

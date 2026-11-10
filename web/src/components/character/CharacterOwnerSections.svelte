@@ -1,7 +1,8 @@
 <!-- web/src/components/character/CharacterOwnerSections.svelte -->
-<!-- The owner's extras below the fights (character spec 2026-11-06 C8): History (score over time,
-     then parse per boss) collapsed, its charts' chunk read only when opened; a free owner gets one
-     line to the plans instead. Coach history last, collapsed, Premium only. -->
+<!-- The owner's extras below the fights (character spec 2026-11-06 C8), one History panel since the
+     h-audit review (2026-11-09: two panels each holding one closed line read thin): the score and
+     parse charts collapsed with the fight count beside them, their chunk read only when opened (a
+     free owner gets one line to the plans instead), then the coach's reviews, collapsed, Premium only. -->
 <script lang="ts">
   import type { Component } from 'svelte';
   import type { CharacterPath } from '../../lib/characters';
@@ -12,7 +13,12 @@
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
 
-  let { path, history, coach }: { path: CharacterPath; history: boolean; coach: boolean } = $props();
+  let {
+    path,
+    history,
+    coach,
+    fights,
+  }: { path: CharacterPath; history: boolean; coach: boolean; fights: number } = $props();
 
   let historyOpen = $state(false);
   let coachOpen = $state(false);
@@ -48,7 +54,12 @@
 
 <Section title={copy.history} panel testid="character-owner-history">
   {#if history}
-    <Disclosure summary={copy.historyLead} bind:open={historyOpen} testid="character-history-toggle">
+    <Disclosure
+      summary={copy.historyLead}
+      meta={copy.fightCount(fights)}
+      bind:open={historyOpen}
+      testid="character-history-toggle"
+    >
       {#if charts.current}<charts.current {path} />{/if}
     </Disclosure>
   {:else}
@@ -60,11 +71,11 @@
         >{/snippet}
     </Row>
   {/if}
+  {#if coach}
+    <div data-testid="character-coach-section">
+      <Disclosure summary={copy.coachLead} bind:open={coachOpen} testid="character-coach-toggle">
+        {#if reviews.current}<reviews.current {path} />{/if}
+      </Disclosure>
+    </div>
+  {/if}
 </Section>
-{#if coach}
-  <Section title={copy.coach} panel testid="character-coach-section">
-    <Disclosure summary={copy.coachLead} bind:open={coachOpen} testid="character-coach-toggle">
-      {#if reviews.current}<reviews.current {path} />{/if}
-    </Disclosure>
-  </Section>
-{/if}

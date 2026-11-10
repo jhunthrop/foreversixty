@@ -1,16 +1,18 @@
 <!-- web/src/components/character/CharacterStanding.svelte -->
-<!-- The owner's standing line under the waiting fact (character spec 2026-11-06 section 6, C16, C19,
-     C21): the place in the guild's sim ladder, the spec's tier as a link to the tier
+<!-- The owner's standing (character spec 2026-11-06 section 6, C16, C19, C21), a rail panel of link
+     rows since the h-audit review (2026-11-09; a bare link strip under the band read as loose
+     nudges): the place in the guild's sim ladder, the spec's tier as a link to the tier
      list, and the next guild raid as a short clock to its raid page. Each piece shows only when it
-     has something true to say; with none, the line is left out. Home keeps the ladder, the tile and
+     has something true to say; with none, the panel is left out. Home keeps the ladder, the tile and
      the countdown panels; this only links to them. -->
 <script lang="ts">
   import type { Me, MeCharacter } from '../../lib/account/api';
   import { fetchGuildHome, type NextRaidView } from '../../lib/guild/api';
   import { fetchHomeAnswer, type HomeAnswer } from '../../lib/home/home-answer';
   import { guildLinks } from '../../lib/home/home-view';
-  import { gradeLine, guildRankLine, raidLine } from '../../lib/character/standing';
-  import { LINK } from '../../lib/ui/primitives';
+  import { gradeLine, guildRankLine, raidLine, standingCopy } from '../../lib/character/standing';
+  import Row from '../ui/Row.svelte';
+  import Section from '../ui/Section.svelte';
 
   let { me, own, specName, now }: { me: Me; own: MeCharacter; specName: string | null; now: Date } = $props();
 
@@ -49,9 +51,15 @@
 </script>
 
 {#if pieces.length > 0}
-  <p class="flex flex-wrap gap-x-5 gap-y-1 pb-1 text-[15px] leading-6" data-testid="character-standing">
+  <Section title={standingCopy.standing} panel testid="character-standing">
     {#each pieces as piece (piece.key)}
-      <a class={LINK} href={piece.href} data-testid={`character-standing-${piece.key}`}>{piece.text} ›</a>
+      <Row
+        title={piece.text}
+        href={piece.href}
+        density="slim"
+        open
+        testid={`character-standing-${piece.key}`}
+      />
     {/each}
-  </p>
+  </Section>
 {/if}

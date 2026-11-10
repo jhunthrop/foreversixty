@@ -79,20 +79,22 @@ def sec(title: str, body: str, action: str = '', meta: str = '') -> str:
     return Section(title, f'<div class="sec-b">{body}</div>', Link(f'{action} &rsaquo;') if action else '', meta)
 
 
-def summary(text: str, action: str = '', tone: str = 'gold', standing: list[str] | None = None) -> str:
+def summary(text: str, action: str = '', tone: str = 'gold') -> str:
     act = f'<a class="link" href="#">{action} &rsaquo;</a>' if action else ''
-    stand = ('<p class="stand">' + ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in standing) + '</p>') if standing else ''
-    return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}"><p class="notice {tone}">{text}{act}</p>{stand}</div></div>'
+    return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}"><p class="notice {tone}">{text}{act}</p></div></div>'
 
 
-def waiting_summary(facts: list[str], standing: list[str] | None = None) -> str:
-    """The owner's waiting facts (web characterWaiting), each a link, on one row with the standing links."""
-    links = ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in facts)
-    first = f'<p class="notice gold facts">{links}</p>' if facts else ''
-    stand = ('<p class="stand">' + ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in standing) + '</p>') if standing else ''
-    if not first and not stand:
+def waiting_summary(facts: list[str]) -> str:
+    """The owner's waiting facts (web characterWaiting), each a link, on one row."""
+    if not facts:
         return ''
-    return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}">{first}{stand}</div></div>'
+    links = ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in facts)
+    return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}"><p class="notice gold facts">{links}</p></div></div>'
+
+
+def standing_section(lines: list[str]) -> str:
+    """The owner's standing in the rail (character/CharacterStanding, h-audit 2026-11-09): one slim link Row a line."""
+    return panel('Standing', RowsSlim([Row(t, slim=True) for t in lines])) if lines else ''
 
 
 # ------------------------------------------------------------------------------------------------ the alive pass (section 6)
@@ -119,13 +121,27 @@ def sentence(segments: list[dict]) -> str:
     return out
 
 
-def activity_section(feed: str | None) -> str:
+def own_segments(segments: list[dict], name: str) -> list[dict]:
+    """The character's own name out of its own feed rows (web ownActivitySegments): the text after it opens with a capital."""
+    at = next((i for i, s in enumerate(segments) if s.get('style') == 'name' and s['text'] == name), None)
+    if at is None:
+        return segments
+    rest = segments[at + 1:]
+    if not rest or rest[0].get('style'):
+        return segments[:at] + rest
+    text = rest[0]['text'].lstrip()
+    opened = text[:1].upper() + text[1:] if at == 0 else text
+    return segments[:at] + [{**rest[0], 'text': opened}] + rest[1:]
+
+
+def activity_section(feed: str | None, name: str) -> str:
     if not feed:
         return ''
     rows = J(FIX / feed)['rows']
     if not rows:
         return ''
-    return panel('Activity', ''.join(FeedRow(crest_img(r['crest'], 32), sentence(r['segments']), ago(r['at']), '') for r in rows))
+    return panel('Activity', ''.join(FeedRow(crest_img(r['crest'], 32), sentence(own_segments(r['segments'], name)), ago(r['at']), '')
+                                     for r in rows))
 
 
 def standing(home: str | None, guild: bool, spec: str) -> list[str]:
@@ -334,7 +350,7 @@ def fights_section(ch: Char) -> str:
 
 
 def builds_section(ch: Char) -> str:
-    rows = [Row(b['talent_split'], f"{b['spec']} &middot; first seen {short_date(b['first_seen'], True)}", slim=True)
+    rows = [Row(b['talent_split'], f"{b['spec']} &middot; {short_date(b['first_seen'])}", slim=True)
             for b in ch.page['builds_seen'][:3]]
     return panel('Builds seen', RowsSlim(rows))
 
@@ -351,13 +367,14 @@ def coach_rows(file: str) -> str:
     return f'<section aria-label="Your coach">{Rows(rows, open_=True, list_=True)}</section>'
 
 
-def owner_sections(premium: bool, coach: str | None = None) -> str:
+def owner_sections(premium: bool, fights: int, coach: str | None = None) -> str:
+    """One History panel (h-audit 2026-11-09): the charts' Disclosure with the fight count, then the coach's reviews."""
     if not premium:
         return panel('History', Rows([Row('Score over time and parse per boss', 'Premium keeps every rated fight.',
                                           trail=Link('See plans &rsaquo;'), link=False)], open_=True))
-    history = panel('History', Disclosure('Score over time, then parse per boss', ''))
     body = coach_rows(coach) if coach else ''
-    return history + panel('Coach history', Disclosure('Every review the coach wrote for this character', body, open_=coach is not None))
+    return panel('History', Disclosure('Score and parses', '', meta=f"{fights} {'fight' if fights == 1 else 'fights'}")
+                 + Disclosure('Coach reviews', body, open_=coach is not None))
 
 
 def waiting(ch: Char, owner: dict) -> list[str]:
@@ -387,11 +404,13 @@ def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | Non
     owner = J(FIX / me)['characters'][0] if me else None
     body = head(ch, owner)
     if owner:
-        body += waiting_summary(waiting(ch, owner), standing(home, 'guild' in owner, SPEC[ch.cls]))
+        body += waiting_summary(waiting(ch, owner))
     logged = bool(ch.page.get('score'))
-    main = (gear_section(ch) + (fights_section(ch) if ch.page['best'] else '') + activity_section(feed)
-            + (owner_sections(premium, coach) if owner and logged else ''))
-    rail = score_section(ch, owner is not None) + (builds_section(ch) if ch.page['builds_seen'] else '')
+    main = (gear_section(ch) + (fights_section(ch) if ch.page['best'] else '')
+            + (owner_sections(premium, len(ch.page['history']), coach) if owner and logged else ''))
+    stand = standing_section(standing(home, 'guild' in owner, SPEC[ch.cls])) if owner else ''
+    rail = (score_section(ch, owner is not None) + stand + (builds_section(ch) if ch.page['builds_seen'] else '')
+            + activity_section(feed, ch.page['character']['name']))
     return body + split(main, rail)
 
 
@@ -399,9 +418,9 @@ def state_unread() -> str:
     ch = felsnap('character-34-unread.json')
     owner = J(FIX / 'me-34-unread.json')['characters'][0]
     return (head(ch, owner, answer=False)
-            + summary('Your gear has not been read yet. In game, log in, wait for the world to load, then log out once; it appears here within a minute.', tone='neutral',
-                      standing=standing('home-34.json', False, 'Beast Mastery'))
-            + split(gear_section(ch, 'Best in slot for level 30 to 39', picks=True), score_section(ch, True)))
+            + summary('Your gear has not been read yet. In game, log in, wait for the world to load, then log out once; it appears here within a minute.', tone='neutral')
+            + split(gear_section(ch, 'Best in slot for level 30 to 39', picks=True),
+                    score_section(ch, True) + standing_section(standing('home-34.json', False, 'Beast Mastery'))))
 
 
 def lookup() -> str:

@@ -6,7 +6,7 @@
 import { requestEnvelope } from '../account/api';
 import { query } from '../data/query';
 import type { NextRaidView } from '../guild/api';
-import type { FeedPage } from '../home/feed';
+import type { FeedPage, FeedSegment } from '../home/feed';
 import type { GuildSims, SpecWeek } from '../home/home-answer';
 import { API_BASE_URL } from '../planner/config';
 import { clockLabel, clockParts } from '../ui/countdown';
@@ -35,6 +35,8 @@ const ROLE_WORD = {
 
 export const standingCopy = {
   activity: sharedCharacterActivity,
+  /** The rail panel holding the guild place, the tier grade and the raid clock. */
+  standing: 'Standing',
   failed: sharedCharacterActivityFailed,
 } as const;
 
@@ -98,4 +100,18 @@ export function raidLine(raid: NextRaidView | null, now: Date): string | null {
   if (parts === null) return null;
   const values = { raid: raid.title, clock: clockLabel(parts.slice(0, CLOCK_UNITS)) };
   return fillShared(sharedStandingRaid, values);
+}
+
+/** A feed sentence on the character's own page: the character's own name drops out (the page is
+ *  theirs; "Elyra Duskvale uploaded Molten Core" reads "Uploaded Molten Core"), and the text that
+ *  followed it opens the sentence with a capital. Another character's name (a guild row) stays. */
+export function ownActivitySegments(segments: readonly FeedSegment[], name: string): FeedSegment[] {
+  const at = segments.findIndex((seg) => seg.style === 'name' && seg.text === name);
+  if (at === -1) return [...segments];
+  const rest = segments.slice(at + 1);
+  const next = rest[0];
+  if (next === undefined || next.style !== undefined) return [...segments.slice(0, at), ...rest];
+  const text = next.text.trimStart();
+  const opened = at === 0 ? `${text.charAt(0).toUpperCase()}${text.slice(1)}` : text;
+  return [...segments.slice(0, at), { ...next, text: opened }, ...rest.slice(1)];
 }

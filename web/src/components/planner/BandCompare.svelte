@@ -32,6 +32,7 @@
   import type { LadderOrderFor } from '../../lib/planner/ladder-load';
   import Button from '../ui/Button.svelte';
   import Section from '../ui/Section.svelte';
+  import Tag from '../ui/Tag.svelte';
 
   let {
     store,
@@ -240,7 +241,7 @@
         {#if coverage !== null}
           {bandCompareCopy.coversFewer(coverage.covered, coverage.total)}
         {:else if status?.kind === 'matches'}
-          <b class="text-kill">{bandCompareCopy.matches}</b>
+          <Tag tone="success">{bandCompareCopy.matches}</Tag>
         {:else if status?.kind === 'differs'}
           {namedLine}
         {:else if status?.kind === 'toTake'}

@@ -56,8 +56,7 @@ export const plannerCopy = {
   /** The record carries more points than any legal order reaches: name what the planner kept. */
   keptNote: (kept: number, total: number, name: string): string =>
     `Loaded ${kept} of ${name}'s ${total} points; the rest cannot be reached in any legal order.`,
-  /** A character's export or an addon import: the game records ranks, never the order. */
-  reconstructedNote: 'Talents loaded from a character.',
+  /** A character's export or an addon import that lost points: the game records ranks, never the order. */
   reconstructedDroppedNote: (dropped: number): string =>
     `Talents loaded from a character, minus ${dropped} that no legal order reaches.`,
   olderBuildNote: 'This code is from an older client build; check the talents.',
@@ -65,8 +64,6 @@ export const plannerCopy = {
    *  long sentence from 768, the short one on a phone, where the note is one line. */
   linkedNote: 'Opened from a link. Point order: the main tree first.',
   linkedNoteShort: 'Opened from a link.',
-  /** A guide's link that names its spec: the build is spent in that guide's own levelling order. */
-  guideOrderNote: (specName: string): string => `Loaded in the ${specName} guide's levelling order.`,
   /** A code for a class the planner has no talent data for. */
   noClassNote: (slug: string): string => `That code names a class this planner does not have: ${slug}.`,
   inGameTitle: 'In the game',
@@ -84,8 +81,6 @@ export const plannerCopy = {
    *  repeated here so the planner island does not carry the guides' whole copy. */
   guideLevelingBuild: 'Level 60 build',
   guideRaidBuild: 'Raid build',
-  /** In the game, under Copy for the game: the one thing to know. */
-  pasteHint: 'Paste in game with /fs.',
   /** Points spent past a character's level (decision P4). */
   plannedAhead: (n: number): string => `${n} planned ahead`,
   /** Point order's line after the character's level row (decision P4). */
@@ -258,7 +253,7 @@ export const bandCompareCopy = {
     return `Differs by ${count} point${count === 1 ? '' : 's'}: ${sides.join('; ')}.`;
   },
   /** A band build that covers fewer points than the character has (ruling MUST 3): never "Matches". */
-  coversFewer: (covered: number, total: number): string => `Covers ${covered} of your ${total} points.`,
+  coversFewer: (covered: number, total: number): string => `${covered} of ${total} points`,
   loadButton: (bandLabel: string): string => `Load the ${lowerBandPhrase(bandLabel)} build`,
   /** The line under the panel after a load: cut at a character's level, or the band's whole build. */
   loadedLine: (level: number, points: number, of: number): string =>

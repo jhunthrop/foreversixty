@@ -234,9 +234,10 @@ export default {
     confirming: send({ kind: 'confirming' }, 51, { owner: '' }), signed_out: sendActionFor(null, { kind: 'idle' }),
   },
   notes: {
-    reconstructed: plannerCopy.reconstructedNote, linked: plannerCopy.linkedNote, linked_short: plannerCopy.linkedNoteShort,
-    // The guide's link names its spec: the build is spent in the guide's own levelling order (when the ladder reaches it).
-    guide: survPrefix !== undefined ? plannerCopy.guideOrderNote(specDisplayName('hunter-survival')) : '',
+    // A clean character load and a guide's link carry no note (h-audit 2026-11-09): the header and the Loaded tag say it.
+    reconstructed: '', linked: plannerCopy.linkedNote, linked_short: plannerCopy.linkedNoteShort,
+    // The guide's link names its spec: spent in the guide's own levelling order when the ladder reaches it, else a plain link.
+    guide_reached: survPrefix !== undefined,
     band60: plannerCopy.bandLoadedNote('60'), kept: plannerCopy.keptNote(23, 25, 'Felsnap'), gear_only: plannerCopy.noTalentRanksNote,
     no_class: plannerCopy.noClassNote('monk'), invalid: invalid.ok ? '' : invalid.message,
   },

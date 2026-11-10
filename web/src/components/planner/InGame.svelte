@@ -154,7 +154,6 @@
       {/if}
     {/if}
     <CopyForGame code={store.spent === 0 ? '' : addonCode} primary={character === null || otherClass} />
-    <p class="text-small text-muted">{plannerCopy.pasteHint}</p>
     {#if character === null}
       <p>
         <a class={LINK} href={cardCopy.getTheAddonHref} data-testid="planner-get-addon"

@@ -51,15 +51,16 @@ export const characterPageCopy = {
   best: 'Best per encounter',
   allFights: (count: number): string => `All fights (${count})`,
   builds: 'Builds seen',
-  buildSub: (spec: string, date: string): string =>
-    spec === '' ? `first seen ${date}` : `${spec} · first seen ${date}`,
+  /** A build seen row's sub: the spec and the date it was first seen ("Holy · 3 Nov"). */
+  buildSub: (spec: string, date: string): string => (spec === '' ? date : `${spec} · ${date}`),
   history: 'History',
-  historyLead: 'Score over time, then parse per boss',
+  historyLead: 'Score and parses',
+  /** The History disclosure's meta: the fights behind its charts. */
+  fightCount: (count: number): string => `${count} ${count === 1 ? 'fight' : 'fights'}`,
   historyLockTitle: 'Score over time and parse per boss',
   historyLockSub: 'Premium keeps every rated fight.',
   seePlans: 'See plans',
-  coach: 'Coach history',
-  coachLead: 'Every review the coach wrote for this character',
+  coachLead: 'Coach reviews',
   /** The paperdoll's title bar meta: "Level 60". */
   levelMeta: (level: number): string => `Level ${level}`,
   failed: 'We could not load this character.',
@@ -241,6 +242,6 @@ export function buildRows(className: string | undefined, builds: readonly BuildS
     .map((build) => ({
       key: `${build.talent_split}-${build.first_seen}`,
       split: build.talent_split,
-      sub: characterPageCopy.buildSub(seenBuildSpec(className, build), dayMonth(build.first_seen, true)),
+      sub: characterPageCopy.buildSub(seenBuildSpec(className, build), dayMonth(build.first_seen)),
     }));
 }

@@ -318,7 +318,7 @@
       </PageHeader>
     {/snippet}
     {#snippet bar()}
-      {#if notReadLine || waiting.length > 0 || (own !== null && meRead !== null)}
+      {#if notReadLine || waiting.length > 0}
         <div class="character-summary" data-region={REGION.summary}>
           {#if notReadLine}<div data-testid="character-next-step">
               <Notice text={`${notReadCopy.lead} ${notReadCopy.steps}`} tone="neutral" />
@@ -334,9 +334,6 @@
                   >{:else}<span data-testid={`character-waiting-${fact.key}`}>{fact.text}</span>{/if}
               {/each}
             </p>{/if}
-          {#if own !== null && meRead !== null}
-            <CharacterStanding me={meRead} {own} specName={pageSpec(data, own)} {now} />
-          {/if}
         </div>
       {/if}
     {/snippet}
@@ -350,6 +347,9 @@
           history={data.score_history ?? []}
         />
       {/if}
+      {#if own !== null && meRead !== null}
+        <CharacterStanding me={meRead} {own} specName={pageSpec(data, own)} {now} />
+      {/if}
       {#if data.builds_seen.length > 0}
         <Section title={copy.builds} panel testid="character-builds">
           {#each buildRows(data.character.class, data.builds_seen) as row (row.key)}
@@ -357,6 +357,15 @@
           {/each}
         </Section>
       {/if}
+      <!-- The rail carries the activity beside the gear and fights (h-audit 2026-11-09): main runs
+           long with the paperdoll, so the rail takes the feed instead of ending under Builds seen. -->
+      <CharacterActivity
+        characterKey={characterKey(resolved.region, resolved.ruleset, resolved.slug)}
+        characterName={data.character.name}
+        {signedIn}
+        {build}
+        {now}
+      />
     {/snippet}
     {#if gear.length > 0}
       <CharacterGear
@@ -403,14 +412,13 @@
         {/each}
       </Section>
     {/if}
-    <CharacterActivity
-      characterKey={characterKey(resolved.region, resolved.ruleset, resolved.slug)}
-      {signedIn}
-      {build}
-      {now}
-    />
     {#if own !== null && scored}
-      <CharacterOwnerSections path={resolved} history={historyEntitled} coach={coachEntitled} />
+      <CharacterOwnerSections
+        path={resolved}
+        history={historyEntitled}
+        coach={coachEntitled}
+        fights={data.history.length}
+      />
     {/if}
   </Page>
   {#if classSlug !== null && gear.length > 0}

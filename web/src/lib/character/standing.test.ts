@@ -2,7 +2,39 @@
 import { describe, expect, it } from 'vitest';
 import type { NextRaidView } from '../guild/api';
 import type { GuildSims, SpecWeek } from '../home/home-answer';
-import { activityPath, gradeLine, guildRankLine, raidLine } from './standing';
+import { activityPath, gradeLine, guildRankLine, ownActivitySegments, raidLine } from './standing';
+
+describe('ownActivitySegments', () => {
+  const name = { text: 'Elyra Duskvale', style: 'name' as const, class: 'priest' };
+
+  it('drops the leading own name and capitalises the verb', () => {
+    expect(
+      ownActivitySegments([name, { text: ' uploaded Molten Core, 10 bosses in 92 min' }], 'Elyra Duskvale'),
+    ).toEqual([{ text: 'Uploaded Molten Core, 10 bosses in 92 min' }]);
+  });
+
+  it('drops a name mid-sentence without capitalising', () => {
+    const climb = [
+      { text: 'Holy, 60: ', style: 'strong' as const },
+      name,
+      { text: ' climbed 6 places to ' },
+      { text: '#4', style: 'strong' as const },
+    ];
+    expect(ownActivitySegments(climb, 'Elyra Duskvale')).toEqual([
+      { text: 'Holy, 60: ', style: 'strong' },
+      { text: 'climbed 6 places to ' },
+      { text: '#4', style: 'strong' },
+    ]);
+  });
+
+  it("keeps another character's name", () => {
+    const other = [
+      { text: 'Thalrin', style: 'name' as const, class: 'warrior' },
+      { text: ' simmed 900 DPS' },
+    ];
+    expect(ownActivitySegments(other, 'Elyra Duskvale')).toEqual(other);
+  });
+});
 
 const row = {
   rank: 3,

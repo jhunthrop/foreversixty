@@ -15,7 +15,7 @@ export const plannerSimCopy = {
   simThisBuild: 'Sim this build',
 
   // --- Task 21: build unfurls carrying simmed DPS. ---
-  includeSimOnCard: 'Include a simmed DPS on the card',
+  includeSimOnCard: 'Show DPS on the card',
   buildSimUnavailable: 'Needs a DPS estimate first; change a talent or a slot to get one.',
   buildSimRunning: 'Simming this build for the card, a few seconds…',
   buildSimDone: (dps: string, version: string): string =>

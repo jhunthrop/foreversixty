@@ -63,12 +63,11 @@
 
 <Section title={plannerCopy.pointOrderTitle} {panel} testid="planner-point-order">
   {#if store.spent === 0}
+    <!-- Nothing spent: one line, never rows of empty sockets (h-audit 2026-11-09). -->
     <p class="text-small text-muted pl-pad">{plannerCopy.noPointsYet}</p>
-  {/if}
-  {#if view !== null}
-    <!-- The rows meet the heading's hairline once a point is spent (the mock's rhythm); the empty
-         line keeps the Section's own gap above it. -->
-    <div class={store.spent > 0 && !panel ? '-mt-3' : ''}>
+  {:else if view !== null}
+    <!-- The rows meet the heading's hairline (the mock's rhythm). -->
+    <div class={panel ? '' : '-mt-3'}>
       <PointOrder rows={view.rows} capAfter={view.capAfter} capText={view.capText} testid="planner-order" />
     </div>
   {/if}

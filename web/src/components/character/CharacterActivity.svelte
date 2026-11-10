@@ -1,10 +1,11 @@
 <!-- web/src/components/character/CharacterActivity.svelte -->
-<!-- The character's own activity (character spec 2026-11-06 section 6, C18, C20): its rows of the
-     site feed, newest first, five at most, each an icon, the sentence the API wrote, its age. A session adds its guild's rows (a guild sim). No rows, or a failed read, and the
+<!-- The character's own activity (character spec 2026-11-06 section 6, C18, C20), in the page's
+     rail: its rows of the site feed, newest first, five at most, each an icon, the sentence the API
+     wrote with the character's own name taken out (ownActivitySegments), its age. A session adds its guild's rows (a guild sim). No rows, or a failed read, and the
      section is left out: never an empty box, never a made-up row. -->
 <script lang="ts">
   import { whenText, type FeedRow } from '../../lib/home/feed';
-  import { fetchActivity, standingCopy } from '../../lib/character/standing';
+  import { fetchActivity, ownActivitySegments, standingCopy } from '../../lib/character/standing';
   import FeedSentence from '../home/FeedSentence.svelte';
   import FeedRowUi from '../ui/FeedRow.svelte';
   import ItemIcon from '../ui/ItemIcon.svelte';
@@ -13,10 +14,11 @@
 
   let {
     characterKey,
+    characterName,
     signedIn,
     build,
     now,
-  }: { characterKey: string; signedIn: boolean; build: string; now: Date } = $props();
+  }: { characterKey: string; characterName: string; signedIn: boolean; build: string; now: Date } = $props();
 
   let rows = $state<FeedRow[]>([]);
   $effect(() => {
@@ -43,7 +45,7 @@
             <ItemIcon icon={row.icon ?? undefined} quality={row.quality ?? 1} {build} size={32} />
           {/if}
         {/snippet}
-        <FeedSentence segments={row.segments} />
+        <FeedSentence segments={ownActivitySegments(row.segments, characterName)} />
       </FeedRowUi>
     {/each}
   </Section>

@@ -162,7 +162,7 @@ def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = 
         return Section(e(b['heading']), f'<p class="t-small pl-pad">{e(b["none"])}</p>')
     s = cmp['status']
     if cmp['kind'] == 'matches':
-        line = f'<p class="pl-line"><b class="kill">{e(cmp["line"])}</b></p>'
+        line = f'<p class="pl-line">{Tag(e(cmp["line"]), "kill")}</p>'
     elif cmp['kind'] == 'sentence':
         line = f'<p class="pl-line">{e(cmp["line"])}</p>'
     else:
@@ -189,7 +189,7 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
     body = ''
     if send is not None and plain_block and send.get('otherClass'):
         # Ruling MUST 5 (premium round): another class's build is one plain line above Copy for the game.
-        body += f'<p class="pl-line">{e(send["label"])}</p><div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(P["pasteHint"])}</p>'
+        body += f'<p class="pl-line">{e(send["label"])}</p><div class="pl-acts">{copy_btn}</div>{failed}'
     elif send is not None:
         btn = Button(e(send['label']), primary=not send.get('otherClass')).replace('class="btn', 'class="btn is-off' if send.get('disabled') else 'class="btn', 1)
         sec = send.get('secondary') or {}
@@ -202,9 +202,9 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
             role = ' role="alert"' if n['tone'] == 'error' else ' role="status"'
             note = f'<p class="pl-note {tone}"{role}>{e(n["text"])}{link}</p>' + (f'<p class="t-small">{e(n["detail"])}</p>' if n.get('detail') else '')
         body += f'<div class="pl-acts">{btn}{sec_btn}</div>{note}'
-        body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(P["pasteHint"])}</p>'
+        body += f'<div class="pl-acts">{copy_btn}</div>{failed}'
     else:
-        body += f'<div class="pl-acts">{copy_btn}</div>{failed}<p class="t-small">{e(P["pasteHint"])}</p>'
+        body += f'<div class="pl-acts">{copy_btn}</div>{failed}'
         body += f'<p>{Link(r(C["cta"]["getAddonAndCompanion"]))}</p>'
     return Section(e(P['inGameTitle']), f'<div class="pl-sec">{body}</div>')
 
@@ -260,7 +260,7 @@ def order(st: dict) -> str:
             else:
                 slots.append(OrderSlot(icon(slot['iconSrc'], 36), slot['name'], str(slot['rank']), kind))
         rows.append((e(row['label']), slots))
-    body = PointOrder(rows, view['capAfter'], e(view['capText'])) if st['points'] else f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>' + PointOrder(rows)
+    body = PointOrder(rows, view['capAfter'], e(view['capText'])) if st['points'] else f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>'
     return Section(e(P['pointOrderTitle']), body)
 
 
@@ -282,10 +282,11 @@ def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note:
     lead_tree = active if active is not None else max(range(len(st['split'])), key=lambda i: st['split'][i]) if st['spent'] else 0
     plate = TalentEditor(trees(st), lead_tree, tree_foot(st, status, status_tone, reset_open))
     send = F['send'][send_key] if send_key else None
-    main = Ordered(plate, 1, span=True) + Ordered(order(st), 6, span=True)
-    gb = guide_builds(st)
-    rail = (Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + (Ordered(gb, 4) if gb else '') + Ordered(share(st, share_mode), 7)
+    # Share and Import under Point order (h-audit 2026-11-09): the rail ended 300 px below main.
+    main = (Ordered(plate, 1, span=True) + Ordered(order(st), 6, span=True) + Ordered(share(st, share_mode), 7)
             + Ordered(importer(st, import_mode), 8))
+    gb = guide_builds(st)
+    rail = Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + (Ordered(gb, 4) if gb else '')
     # Ruling MUST 1: the build's origin is said once; the gold origin line drops whenever the note shows.
     body = (head(st, signed != 'out', st.get('origin', '') if origin and not note else '') + bar(st, open_m) + notes(note, note_short)
             + Page('workbench', main, rail) + PAGE_CSS)
@@ -391,8 +392,8 @@ PAGE_CSS = '''<style>
 
 
 LINKED = dict(note=F['notes']['linked'], note_short=F['notes']['linked_short'], origin=True)
-# The guide's own link names its spec: the build arrives in the guide's levelling order (the facts check the ladder reaches it).
-GUIDE_NOTE = dict(note=F['notes']['guide'], origin=True) if F['notes']['guide'] else LINKED
+# The guide's own link names its spec: the build arrives in the guide's levelling order with no note line (h-audit 2026-11-09).
+GUIDE_NOTE = dict(origin=True) if F['notes']['guide_reached'] else LINKED
 
 PAGES = {
     'web-planner': lambda: planner('empty'),

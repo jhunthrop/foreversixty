@@ -129,6 +129,6 @@ describe('fights and builds', () => {
     }));
     const rows = buildRows('Priest', builds);
     expect(rows.map((row) => row.split)).toEqual(['1/0/0', '2/0/0', '0/0/0']);
-    expect(rows[0].sub).toMatch(/first seen 1 Nov 2026$/);
+    expect(rows[0].sub).toBe('Discipline · 1 Nov');
   });
 });

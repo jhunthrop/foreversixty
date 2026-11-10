@@ -35,7 +35,7 @@ test('a saved build sims itself for the card, without blocking the link', async 
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
 
-  const checkbox = page.getByLabel('Include a simmed DPS on the card');
+  const checkbox = page.getByLabel('Show DPS on the card');
   await expect(checkbox).toBeChecked();
 
   await shareBuild(page);
@@ -98,7 +98,7 @@ test('unchecking the box skips the card sim entirely', async ({ page }) => {
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
 
-  const checkbox = page.getByLabel('Include a simmed DPS on the card');
+  const checkbox = page.getByLabel('Show DPS on the card');
   await expect(checkbox).toBeChecked();
   await checkbox.uncheck();
 
@@ -137,7 +137,7 @@ test('unticking the box after a failed save drops Retry and reopens a fresh conf
   await page.goto(NEARLY_FINISHED_BUILD);
   await finishBuild(page);
 
-  const checkbox = page.getByLabel('Include a simmed DPS on the card');
+  const checkbox = page.getByLabel('Show DPS on the card');
   await expect(checkbox).toBeChecked();
 
   await shareBuild(page);
@@ -236,7 +236,7 @@ test("a second save while the first build's sim is still running never overwrite
   await expect(page.getByTestId('share-link')).not.toBeVisible();
   // The confirm's sim line, and whether attachSim runs, read the box at the moment "Share
   // anyway" is clicked: the build is whole again, so the box is on.
-  await expect(page.getByLabel('Include a simmed DPS on the card')).toBeChecked();
+  await expect(page.getByLabel('Show DPS on the card')).toBeChecked();
   await shareBuild(page);
 
   const secondBuildId = builds[1].data.id;

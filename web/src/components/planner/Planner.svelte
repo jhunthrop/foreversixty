@@ -976,7 +976,9 @@
       : plannerCharacterCardCopy.originLine(effectiveOrigin.owner, leadingSpec || className),
   );
 
-  /** The one note line (spec 4.3), its phone sentence when it has one. */
+  /** The one note line (spec 4.3), its phone sentence when it has one. A guide's link and a clean
+   *  character load say nothing (h-audit 2026-11-09): the guide row's Loaded tag and the header's
+   *  character already say where the build came from. */
   const noteText = $derived.by((): { text: string; short?: string } | null => {
     const note = codeNote;
     if (note === null) return null;
@@ -984,7 +986,7 @@
       case 'linked':
         return { text: plannerCopy.linkedNote, short: plannerCopy.linkedNoteShort };
       case 'guide':
-        return { text: plannerCopy.guideOrderNote(note.specName) };
+        return null;
       case 'tree-count':
         return { text: `That code has ${note.got} talent trees; a build has ${note.want}.` };
       case 'kept':
@@ -997,9 +999,10 @@
         const head = note.gearOnly
           ? plannerCopy.noTalentRanksNote
           : note.dropped === 0
-            ? plannerCopy.reconstructedNote
+            ? ''
             : plannerCopy.reconstructedDroppedNote(note.dropped);
-        return { text: note.olderBuild ? `${head} ${plannerCopy.olderBuildNote}` : head };
+        const text = note.olderBuild ? `${head} ${plannerCopy.olderBuildNote}`.trim() : head;
+        return text === '' ? null : { text };
       }
     }
   });
@@ -1303,10 +1306,6 @@
         {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
           <Ordered order={4}><GuideBuilds builds={guideBuilds} {store} /></Ordered>
         {/if}
-        {#if !store.readOnly}
-          <Ordered order={7}><SharePanel {store} /></Ordered>
-          <Ordered order={8}>{@render importSection()}</Ordered>
-        {/if}
       {:else if status === 'loading'}
         {#if shared}
           <Ordered order={2}>{@render railSkeleton(plannerCopy.inGameTitle)}</Ordered>
@@ -1322,6 +1321,12 @@
       <Ordered order={6} span
         ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
       >
+      <!-- Share and Import sit under Point order from 1280 (h-audit 2026-11-09): the rail ran 300 px
+           past the trees while main ended at the order; below 1280 they pair up in the flow. -->
+      {#if !store.readOnly}
+        <Ordered order={7}><SharePanel {store} /></Ordered>
+        <Ordered order={8}>{@render importSection()}</Ordered>
+      {/if}
     {/if}
   </Page>
 {:else}
