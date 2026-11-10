@@ -123,7 +123,7 @@ def changelog_page() -> str:
         shown = [e for e in m['entries'] if not e['folded']]
         if not shown:  # a month whose entries are all folded (pre-launch) is the fold's, not an empty panel
             continue
-        ents = ''.join(f'<div class="ent"><span class="d">{escape(e["date"])}</span> {tag(e["kindLabel"], "gold" if e["show"] == "game" else "")}'
+        ents = ''.join(f'<div class="ent"><span class="d">{escape(e["date"])}</span> {tag(e["kindLabel"], "gold") if e["show"] == "game" else ""}'
                        f'<h3>{escape(e["title"])}</h3>{e["html"]}' + ''.join(f'<a href="#">{escape(a["label"])}</a> ' for a in e['actions']) + '</div>'
                        for e in shown)
         months += panel(m['title'], f'<div class="cl">{ents}</div>')

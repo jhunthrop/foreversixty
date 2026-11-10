@@ -122,7 +122,7 @@ const hideCss = (['game', 'site'] as const satisfies readonly ChangelogShow[])
                 show={entry.show}
               >
                 <Fragment slot="tags">
-                  <Tag tone="muted">{entry.kindLabel}</Tag>
+                  {entry.show !== 'site' && <Tag tone="muted">{entry.kindLabel}</Tag>}
                   <span class="cl-new" data-cl-new hidden>
                     <Tag>{changelogCopy.newTag}</Tag>
                   </span>

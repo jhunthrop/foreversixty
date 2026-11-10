@@ -60,7 +60,8 @@ def lane_html(x: dict) -> str:
 
 
 def entry_html(x: dict, new: bool = False) -> str:
-    tags = Tag(e(x['kindLabel']), 'muted') + (Tag(e(CL['newTag'])) if new else '')
+    # P15 round 2: a pill only where the source changes the reading; this site's own entries carry none
+    tags = (Tag(e(x['kindLabel']), 'muted') if x['show'] != 'site' else '') + (Tag(e(CL['newTag'])) if new else '')
     text = Prose(x['html']) if x['html'] else f'<p class="dated-n">{e(x.get("noteAsBody") or "")}</p>'
     return Dated(x['id'], x['iso'], e(x['date']), tags, e(x['title']), text, lane_html(x), x['folded'])
 

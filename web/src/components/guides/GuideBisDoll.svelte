@@ -37,7 +37,6 @@
       ? selected
       : defaultSelection(view?.cells ?? []),
   );
-  const factionWord = $derived(view?.faction === 'horde' ? bisCopy.factionHorde : bisCopy.factionAlliance);
 
   onMount(() => {
     let stop: (() => void) | undefined;
@@ -63,7 +62,7 @@
         cells={view.cells}
         {build}
         {title}
-        meta={bisCopy.frameMeta('60', `${view.raceName} (${factionWord})`, view.preRaid)}
+        meta={bisCopy.frameMeta('60', view.raceName, view.preRaid)}
         selected={shownSlot}
         onselect={(slot) => (selected = slot)}
         {centre}
@@ -77,14 +76,14 @@
 <style>
   .guide-doll {
     container-type: inline-size;
-    margin-top: 24px;
-  }
-  /* A section with no prose of its own opens on the doll. */
-  :global(.ui-prose:empty + astro-island) .guide-doll {
-    margin-top: 0;
   }
   .guide-doll-frame {
     max-width: 640px;
+    margin-top: 24px;
+  }
+  /* A section with no prose of its own opens on the doll. */
+  :global(.ui-prose:empty + astro-island) .guide-doll-frame {
+    margin-top: 0;
   }
   /* Under the frame's minimum (lib/ui/paperdoll-frame.ts MIN_FRAME_PX) the lane's list says it all. */
   @container (max-width: 422.98px) {

@@ -185,7 +185,10 @@ for (const [label, viewport] of [
       await page.goto(PAGE);
       await expect(bisPanel(page)).toHaveAttribute('data-panel', '60-alliance');
       await expect(bisPanel(page).locator('.ui-lane-head h3')).toHaveText('Level 60');
-      await expect(bisPanel(page).locator('.ui-item-row[data-testid^="guide-bis-"]')).toHaveCount(BIS_SLOTS);
+      // From 1280 the weapon rows may wrap under the doll (lib/ui/reading-wrap.ts): the section holds every slot.
+      await expect(page.locator('#best-in-slot .ui-item-row[data-testid^="guide-bis-"]')).toHaveCount(
+        BIS_SLOTS,
+      );
       await expect(bisPanel(page).getByTestId('guide-bis-head')).toContainText('Head');
       await expect(bisPanel(page).getByTestId('guide-bis-head').locator('img')).toHaveCount(1);
       await expect(page.getByTestId('guide-bis-full-list')).toHaveAttribute('href', '/bis/mage/frost/60');

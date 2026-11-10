@@ -228,8 +228,7 @@ def guide_doll(g: dict, faction: str) -> str:
                       'icon': main['icon'], 'quality': main['quality']})
     first = picks[0]
     centre = ItemTip(first['itemName'], QUALITY_NAME.get(first['quality'], 'common'), [], [], first['sourceDetail'])
-    who = 'Alliance' if faction == 'alliance' else 'Horde'
-    meta = f"{'Pre-raid ' if panel['preRaid'] else ''}60 · {panel['raceName']} ({who})"
+    meta = f"{'Pre-raid ' if panel['preRaid'] else ''}60 · {panel['raceName']}"
     doll = PaperdollFrame(slots, g['title'], meta, None, centre, f"{g['title']} best in slot, level 60", heading='h2')
     return f'<div class="gdoll"><div class="gdoll-f">{doll}</div></div>'
 
@@ -408,8 +407,8 @@ def states_page() -> str:
 
 
 PAGE_CSS = '''<style>
-.gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.grace{display:contents}.gblk{display:flex;flex-direction:column}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll{margin-top:0}
-.gdoll{container-type:inline-size;margin-top:24px}.gdoll-f{max-width:640px}@container (max-width:422.98px){.gdoll-f{display:none}}
+.gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.grace{display:contents}.gblk{display:flex;flex-direction:column}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll .gdoll-f{margin-top:0}
+.gdoll{container-type:inline-size}.gdoll-f{max-width:640px;margin-top:24px}@container (max-width:422.98px){.gdoll-f{display:none}}
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}
 .ans-links{display:flex;gap:4px 16px;flex-wrap:wrap}
