@@ -224,7 +224,7 @@ export const OWNER_SCORE = {
   experience: { dungeons: 14, raid_kills: 0, alts: 2 },
 };
 
-/** Opens the owner's History Disclosure (`Score over time, then parse per boss`); the charts
+/** Opens the owner's History Disclosure (`History`, the fight count); the charts
  *  are read only once it is open. */
 export async function openHistoryDisclosure(page: Page): Promise<void> {
   await page.getByTestId('character-history-toggle').locator('summary').click();

@@ -272,13 +272,14 @@ test('a stale compare answer does not overwrite the fight actually selected', as
 test('the full event stream lists aura refreshes under the Auras chip', async ({ page }) => {
   test.slow();
   await serveDuckdbRuntime(page);
+  // A single pull streams its hits and heals as the tab opens (report tail review round 1).
   await page.goto('/reports/fixture2abcd?fight=3&tab=events');
-  await page.getByTestId('events-stream').click();
   await expect(page.getByTestId('event-list')).toContainText('refreshed Power Word: Fortitude', {
     timeout: 60_000,
   });
   // The Auras chip governs it: off, the refresh goes with the applications.
-  await page.getByLabel('Auras', { exact: true }).uncheck();
+  await page.getByTestId('events-chips-auras').click();
+  await expect(page.getByTestId('events-chips-auras')).toHaveAttribute('aria-pressed', 'false');
   await expect(page.getByTestId('event-list')).not.toContainText('refreshed Power Word: Fortitude');
 });
 
@@ -320,7 +321,8 @@ test('a zone’s trash folds into one entry, and an old trash link still opens i
   await page.goto(`${REPORT}?fight=trash-1`);
   await expect(page.locator(FIGHT_SELECT)).toHaveValue('-2');
   await expect(page.getByTestId('night-view')).toBeVisible();
-  await expect(page.getByTestId('night-summary')).toContainText('2 trash pulls');
+  // The Players panel's meta says what it sums (round 5).
+  await expect(page.getByTestId('night-summary')).toContainText('across every trash pull');
 });
 
 test('the glossary is one quiet line that opens the words the tables use', async ({ page }) => {

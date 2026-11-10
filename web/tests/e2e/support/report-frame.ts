@@ -1,7 +1,7 @@
 // web/tests/e2e/support/report-frame.ts
 // Driving the report's frame (logs spec 2026-11-07 6.1): the Fight select in the control bar and
 // the one tab strip, whose tabs past the first seven sit in its More menu below 1760 px.
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { choose } from './select';
 
 /** Picks a pull (or 'all', the night's boss pulls) on the bar's Fight select. */
@@ -59,10 +59,18 @@ export async function openReportBar(page: Page): Promise<void> {
  *  band's ··· Report actions menu holds it. */
 export async function openSimThisFight(page: Page): Promise<void> {
   const button = page.getByTestId('report-sim-fight');
+  const toggle = page.getByTestId('report-actions-toggle');
+  // isVisible() does not wait: before the report island has drawn This pull it read false on a
+  // desktop and sent the click to the phone menu, which is hidden from 768.
+  await expect(
+    page
+      .locator('[data-testid="report-sim-fight"]:visible, [data-testid="report-actions-toggle"]:visible')
+      .first(),
+  ).toBeVisible();
   if (await button.isVisible()) {
     await button.click();
     return;
   }
-  await page.getByTestId('report-actions-toggle').click();
+  await toggle.click();
   await page.getByTestId('report-actions-sim').click();
 }

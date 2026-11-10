@@ -73,7 +73,8 @@ test('the whole night folds every boss pull into one table, and each pull opens 
   await page.goto('/reports/fixture2abcd?fight=all');
   await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('0');
   await expect(page.getByTestId('night-view')).toBeVisible();
-  await expect(page.getByTestId('night-summary')).toContainText('2 boss pulls');
+  // The Players panel's meta says what it sums (round 5); the Bosses panel counts the pulls.
+  await expect(page.getByTestId('night-summary')).toContainText('across every boss pull');
   await expect(page.getByTestId('night-bosses').locator('[data-testid^="night-boss-"]')).toHaveCount(2);
   await expect(
     page.getByTestId('night-players').locator('[data-testid^="night-player-"]').first(),
@@ -83,7 +84,8 @@ test('the whole night folds every boss pull into one table, and each pull opens 
   await openTab(page, 'damage-done');
   await expect(page.getByTestId('actor-table')).toBeVisible();
   await openTab(page, 'summary');
-  await page.getByTestId('night-bosses').getByRole('button', { name: '#1' }).first().click();
+  // Each boss row names its pulls by fight number (round 5): Pull 3 is the first boss pull.
+  await page.getByTestId('night-bosses').getByRole('button', { name: 'Pull 3' }).click();
   await expect(page.locator('select[data-testid="report-fight"]')).toHaveValue('3');
   await expect(page.getByTestId('summary-tab')).toBeVisible();
 });

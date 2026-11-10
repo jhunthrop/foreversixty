@@ -48,7 +48,9 @@ const parquetFiles = (urls: string[]): string[] => urls.filter((url) => /events\
 
 // Spec section 4: "DuckDB-WASM loads lazily on the first deep interaction, never on page
 // load." Opening the Queries view is not the deep interaction -- running a query is -- so
-// browsing the whole report, tabs included, must still cost nothing.
+// browsing the report's tables must still cost nothing. Events is the exception by ruling
+// (report tail review round 1, 2026-11-09: its Amount column must not be empty): on a single
+// pull it streams the hits and heals as it opens, so it is left out here.
 test('nothing DuckDB-related loads on page load, while browsing, or on opening Queries', async ({ page }) => {
   const fetched = recordRequests(page);
 
@@ -56,8 +58,7 @@ test('nothing DuckDB-related loads on page load, while browsing, or on opening Q
   await expect(page.getByTestId('summary-tab')).toBeVisible();
   await openTab(page, 'damage-done');
   await openTab(page, 'casts');
-  await openTab(page, 'events');
-  await expect(page.getByTestId('events-view')).toBeVisible();
+  await expect(page.getByTestId('cast-section')).toBeVisible();
 
   expect(duckdbAssets(fetched)).toEqual([]);
   expect(parquetFiles(fetched)).toEqual([]);
@@ -76,7 +77,8 @@ test('nothing DuckDB-related loads on page load, while browsing, or on opening Q
 // the next button, so a tap on one picked its neighbour. Each is now its own row below 768.
 test('every starting point takes the tap aimed at it', async ({ page }) => {
   await page.goto(QUERIES);
-  const items = page.locator('[data-testid^="template-"][role="radio"]');
+  // The starting points are the shared Chips since round 5: pressed buttons, not radios.
+  const items = page.getByTestId('template').locator('button[aria-pressed]');
   await expect(items.first()).toBeVisible();
   const misses = await items.evaluateAll((elements) =>
     elements.flatMap((element) => {
@@ -121,15 +123,14 @@ test('a query runs against the fight’s own Parquet, and every byte comes from 
   const table = page.getByTestId('query-result');
   await expect(table).toBeVisible({ timeout: 90_000 });
   await expect(table).toContainText('SPELL_DAMAGE');
-  // The cold run paid for the engine and the download, and says so, so nobody reads the
-  // number as the cost of the query.
-  await expect(page.getByTestId('query-status')).toContainText('That run included the one-time load');
+  // The status is the rows and the time, nothing more (the cold-load qualifier went in the report
+  // tail's round 5, an AI-slop tell).
+  await expect(page.getByTestId('query-status')).toContainText(/\d+ rows? · \d+ ms/);
 
   // A warm run answers from memory: no second engine, no second download.
   await page.getByTestId('template-damage-by-ability').click();
   await page.getByTestId('query-run').click();
   await expect(page.getByTestId('query-result')).toContainText('Anima Lash');
-  await expect(page.getByTestId('query-status')).not.toContainText('one-time load');
 
   // A query with nothing to say says nothing rather than rendering an empty grid: the
   // fixture fight has no misses at all.
