@@ -11,23 +11,25 @@
      screen and no newer run has started. src/lib/report/query.ts owns the other half of
      that discipline: one engine, one query at a time, and nothing left running after
      close().
-     Drawn to logs spec 2026-11-07 section 6.2 (`web-report-queries`): Section `Queries` holding
-     the one Plate: the Starting points (Segmented), the SQL as literal code, the primary Run,
-     `{n} rows`, then the result as a StatTable under the query's own column names. The parquet's
-     column list is the rail's (QueriesRail). -->
+     Drawn to round 5 (design/mocks/directions/report.py, b1-report-queries): the panel `Queries`
+     with the starting points as chips, the SQL as literal code, Run and `{n} rows · {ms} ms`; then
+     the panel `Result`, a StatTable under the query's own column names. The parquet's column
+     list is the rail's (QueriesRail). -->
 <script lang="ts">
+  import { splitUnitName } from '../../lib/characters';
   import { sharedQueryLayer } from '../../lib/report/exact';
+  import { classColorVar } from '../../lib/report/format';
   import { untrack } from 'svelte';
   import { eventsUrl as eventsUrlFor } from '../../lib/report/load';
-  import { formatDuration } from '../../lib/report/format';
   import { QUERY_ABANDONED, QUERY_TEMPLATES, withWindow, type QueryResult } from '../../lib/report/query';
   import type { TimeWindow } from '../../lib/report/window';
   import { BUSY_CLASS } from '../../lib/ui/busy';
-  import { FIELD_CONTROL, FIELD_FOCUS, FIELD_LABEL, fieldEdge } from '../../lib/ui/field';
+  import { FIELD_CONTROL, FIELD_FOCUS, fieldEdge } from '../../lib/ui/field';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
   import Button from '../ui/Button.svelte';
+  import Chips from '../ui/Chips.svelte';
+  import CopyCsv from './CopyCsv.svelte';
   import Section from '../ui/Section.svelte';
-  import Segmented from '../ui/Segmented.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
 
@@ -35,11 +37,17 @@
     dataBaseUrl,
     fightIndex,
     window: current,
-  }: { dataBaseUrl: string; fightIndex: number; window: TimeWindow } = $props();
+    classByName = new Map<string, string>(),
+  }: {
+    dataBaseUrl: string;
+    fightIndex: number;
+    window: TimeWindow;
+    /** A unit's full log name to its class: a player's name in a result reads as on every table. */
+    classByName?: ReadonlyMap<string, string>;
+  } = $props();
 
-  const LOADING_NOTE =
-    'Loading the query engine and this fight’s event file. A few megabytes, once per fight.';
-  const RUNNING_NOTE = 'Running the query.';
+  const LOADING_NOTE = 'Loading this fight’s events.';
+  const RUNNING_NOTE = 'Running.';
   const FAILED_NOTE = 'That query did not run.';
 
   // One engine for the page, shared with the tables' exact measure (exact.ts): a second
@@ -63,12 +71,12 @@
     windowKey = key;
     template = null;
   });
-  const templateOptions = QUERY_TEMPLATES.map((one) => ({ value: one.id, label: one.label }));
+  const templateChips = $derived(
+    QUERY_TEMPLATES.map((one) => ({ id: one.id, label: one.label, on: one.id === template })),
+  );
   let result = $state<QueryResult | null>(null);
   let running = $state(false);
   let error = $state('');
-  /** Whether the answer on screen was paid for with the engine build and the download. */
-  let wasCold = $state(false);
   /** The one live region: what a screen reader hears while a slow run is happening. */
   let note = $state('');
   /** Bumped by every run, so an older answer cannot overwrite a newer one. */
@@ -85,7 +93,6 @@
     result = null;
     error = '';
     note = '';
-    wasCold = false;
   });
 
   // Svelte tears every live effect down on destroy, so leaving the Queries view, switching
@@ -105,16 +112,61 @@
     useTemplate(id);
   }
 
-  /** The first column is the row's name; a one-column answer (a count) is a figure alone. */
-  const named = $derived((result?.columns.length ?? 0) > 1);
-  const resultColumns = $derived<StatColumn[]>(
-    (result?.columns ?? [])
-      .slice(named ? 1 : 0)
-      .map((column, index) => ({ id: `${index}-${column}`, label: column })),
-  );
   const cellText = (cell: unknown): string => (cell === null || cell === undefined ? '' : String(cell));
+  /** An id or a timestamp reads as written; every other number with its thousands commas. */
+  const RAW_COLUMN = /(_id|_guid|time_unix_nano|_flags|_raid)$/;
+  /** DuckDB hands a HUGEINT sum over as a string of digits: a number all the same. */
+  const NUMERIC = /^-?\d+(\.\d+)?$/;
+  const isNumber = (cell: unknown): boolean =>
+    typeof cell === 'number' || typeof cell === 'bigint' || (typeof cell === 'string' && NUMERIC.test(cell));
+  /** A melee swing has no spell: the log leaves spell_name empty, the tables call it Melee. */
+  function cellShown(cell: unknown, column: string): string {
+    if (column === 'spell_name' && cellText(cell) === '') return 'Melee';
+    if (isNumber(cell) && !RAW_COLUMN.test(column)) {
+      const value = typeof cell === 'string' ? Number(cell) : (cell as number | bigint);
+      return value.toLocaleString('en-US', { maximumFractionDigits: 1 });
+    }
+    return cellText(cell);
+  }
+
+  /**
+   * The result on the report's table: the first column names the row; the other text columns
+   * (a spell, a target, a miss type) join it on its line, so a word is never right-aligned like a
+   * figure; the number columns are the figures. A one-column answer is a figure alone.
+   */
+  const shape = $derived.by(() => {
+    const columns = result?.columns ?? [];
+    const rows = result?.rows ?? [];
+    const textual = columns.map(
+      (column, index) =>
+        RAW_COLUMN.test(column) || rows.some((row) => row[index] !== null && !isNumber(row[index])),
+    );
+    const lead = columns.length > 1 ? 0 : -1;
+    const words = columns.map((_, index) => index).filter((index) => index !== lead && textual[index]);
+    const figures = columns.map((_, index) => index).filter((index) => index !== lead && !textual[index]);
+    return { columns, lead, words, figures };
+  });
+  const nameHead = $derived(
+    shape.lead === -1 ? '' : [shape.lead, ...shape.words].map((index) => shape.columns[index]).join(' · '),
+  );
+  const resultColumns = $derived<StatColumn[]>(
+    shape.figures.map((index) => ({
+      id: `${index}-${shape.columns[index]}`,
+      label: shape.columns[index] ?? '',
+    })),
+  );
   const figuresOf = (row: readonly unknown[]): StatFigure[] =>
-    row.slice(named ? 1 : 0).map((cell) => ({ value: cellText(cell) }));
+    shape.figures.map((index) => ({ value: cellShown(row[index], shape.columns[index] ?? '') }));
+  /** Below 1024 a row shows its first figure; the rest go on the name's line, each with its column. */
+  const phoneLine = (row: readonly unknown[]): string =>
+    shape.figures
+      .slice(1)
+      .map((index) => `${shape.columns[index]} ${cellShown(row[index], shape.columns[index] ?? '')}`)
+      .join(' · ');
+  const csvLines = (): string[][] =>
+    result === null
+      ? []
+      : [[...result.columns], ...result.rows.map((row) => row.map((cell) => cellText(cell)))];
 
   async function run(): Promise<void> {
     // Both captured before the first await and re-checked after the last: the visitor can
@@ -131,7 +183,6 @@
       const answer = await layer.run(wanted, sql);
       if (mine !== token || wanted !== eventsUrl) return;
       result = answer;
-      wasCold = startedCold;
       note = '';
     } catch (thrown) {
       // The rejection path needs the same guard as the success path: a stale failure that
@@ -150,100 +201,80 @@
   }
 </script>
 
-<Section title="Queries" testid="queries-view" panel flush>
-  <div>
-    <div class="flex flex-col gap-2 px-4 py-[14px]">
-      <span class={FIELD_LABEL} id="query-starts">Starting points</span>
-      <Segmented
-        options={templateOptions}
-        value={template}
-        label="Starting points"
-        size="sm"
-        stack
-        onChange={pick}
-        testid="template"
-      />
-      <p class="text-muted text-[13px] leading-5" data-testid="query-window">
-        A starting point is written for the window on screen,
-        <span class="tabular-nums">{formatDuration(current.startMs)}</span>
-        to
-        <span class="tabular-nums">{formatDuration(current.endMs)}</span>. Pick one again after brushing the
-        chart to move its bounds.
+<Section title="Queries" testid="queries-view" panel>
+  <div class="flex flex-col gap-3">
+    <Chips chips={templateChips} label="Starting points" onToggle={pick} testid="template" />
+    <!-- Literal code, the page's one mono face. -->
+    <textarea
+      id="query-sql"
+      aria-label="Query"
+      class={[
+        FIELD_CONTROL,
+        FIELD_FOCUS,
+        fieldEdge(false),
+        'min-h-[172px] resize-y py-2 font-mono text-[13px] leading-5',
+      ]}
+      bind:value={sql}
+      spellcheck="false"
+      data-testid="query-sql"></textarea>
+
+    <div class="flex flex-wrap items-center gap-x-[14px] gap-y-2">
+      <span class={running ? BUSY_CLASS : undefined} aria-busy={running}>
+        <Button tone="primary" disabled={running} onclick={() => void run()} testid="query-run">Run</Button>
+      </span>
+      <!-- Always in the DOM, so the first slow run is announced rather than swallowed: a live
+           region added at the same moment as its text is not reliably read out. Polite, not
+           assertive -- a download finishing is worth hearing, not worth interrupting for. -->
+      <p class="text-muted text-[13px] leading-5" role="status" aria-live="polite" data-testid="query-status">
+        {#if note !== ''}
+          {note}
+        {:else if result !== null}
+          <span class="tabular-nums">{rowsFound.toLocaleString()}</span>
+          {rowsFound === 1 ? 'row' : 'rows'}{#if rowsFound > rowsShown}
+            · <span class="tabular-nums" data-testid="query-truncated">{rowsShown}</span> shown{/if}
+          · <span class="tabular-nums">{Math.round(result.elapsedMs)}</span> ms
+        {/if}
       </p>
-
-      <label class={['mt-2', FIELD_LABEL]} for="query-sql">Query</label>
-      <!-- Literal code, the page's one mono face. -->
-      <textarea
-        id="query-sql"
-        class={[
-          FIELD_CONTROL,
-          FIELD_FOCUS,
-          fieldEdge(false),
-          'min-h-[140px] resize-y py-2 font-mono text-[13px] leading-5',
-        ]}
-        bind:value={sql}
-        spellcheck="false"
-        data-testid="query-sql"></textarea>
-
-      <div class="flex flex-wrap items-center gap-3">
-        <span class={running ? BUSY_CLASS : undefined} aria-busy={running}>
-          <Button tone="primary" disabled={running} onclick={() => void run()} testid="query-run">Run</Button>
-        </span>
-        <!-- Always in the DOM, so the first slow run is announced rather than swallowed: a live
-             region added at the same moment as its text is not reliably read out. Polite, not
-             assertive -- a download finishing is worth hearing, not worth interrupting for. -->
-        <p
-          class="text-muted text-[13px] leading-5"
-          role="status"
-          aria-live="polite"
-          data-testid="query-status"
-        >
-          {#if note !== ''}
-            {note}
-          {:else if result !== null}
-            <span class="tabular-nums">{rowsFound}</span>
-            {rowsFound === 1 ? 'row' : 'rows'} in
-            <span class="tabular-nums">{Math.round(result.elapsedMs)}</span> ms{wasCold
-              ? '. That run included the one-time load.'
-              : '.'}
-          {/if}
-        </p>
-      </div>
-
-      {#if error !== ''}
-        <p class="text-wipe text-[14px]" role="alert" data-testid="query-error">{error}</p>
-      {/if}
     </div>
 
-    {#if result !== null}
-      {#if rowsShown === 0}
-        <p class="text-muted px-4 pb-4 text-[14px]" data-testid="query-empty">No rows matched.</p>
-      {:else}
-        <div class="overflow-x-auto">
-          <StatTable
-            columns={resultColumns}
-            nameHead={named ? (result.columns[0] ?? '') : ''}
-            bar={false}
-            label="Query result"
-            testid="query-result"
-          >
-            {#each result.rows as row, index (index)}
-              <StatRow figures={figuresOf(row)} bar={false}>
-                {#snippet name()}{named ? cellText(row[0]) : ''}{/snippet}
-              </StatRow>
-            {/each}
-          </StatTable>
-        </div>
-      {/if}
-      {#if rowsFound > rowsShown}
-        <p class="text-muted px-4 pb-4 text-[13px]" data-testid="query-truncated">
-          The first <span class="tabular-nums">{rowsShown}</span> of
-          <span class="tabular-nums">{rowsFound}</span> rows are shown. Add a LIMIT or a GROUP BY to narrow it.
-        </p>
-      {/if}
+    {#if error !== ''}
+      <p class="text-wipe text-[14px]" role="alert" data-testid="query-error">{error}</p>
     {/if}
   </div>
-  <p class="text-muted px-5 pt-3 pb-4 text-[13px] leading-5">
-    Runs in your browser; nothing leaves the page. A query answers its window exactly, never scaled.
-  </p>
 </Section>
+
+{#if result !== null}
+  <Section title="Result" testid="query-result-panel" panel flush>
+    {#snippet head()}{#if rowsShown > 0}<CopyCsv lines={csvLines} inHead />{/if}{/snippet}
+    {#if rowsShown === 0}
+      <p class="text-muted px-4 pb-4 text-[14px] md:px-5" data-testid="query-empty">No rows matched.</p>
+    {:else}
+      <div class="overflow-x-auto">
+        <StatTable
+          columns={resultColumns}
+          {nameHead}
+          bar={false}
+          icons={false}
+          dense
+          label="Query result"
+          testid="query-result"
+        >
+          {#each result.rows as row, index (index)}
+            <StatRow figures={figuresOf(row)} bar={false}>
+              {#snippet name()}{#if shape.lead !== -1}{@const first = cellText(
+                    row[shape.lead],
+                  )}{#if classByName.has(first)}<span style:color={classColorVar(classByName.get(first))}
+                      >{splitUnitName(first).name}</span
+                    >{:else}{first}{/if}{#each shape.words as index (index)}<span
+                      class="text-text font-normal"
+                      >{` · ${cellShown(row[index], shape.columns[index] ?? '')}`}</span
+                    >{/each}{/if}{/snippet}
+              {#snippet sub()}{#if shape.figures.length > 1}<span class="ui-st-phone">{phoneLine(row)}</span
+                  >{/if}{/snippet}
+            </StatRow>
+          {/each}
+        </StatTable>
+      </div>
+    {/if}
+  </Section>
+{/if}

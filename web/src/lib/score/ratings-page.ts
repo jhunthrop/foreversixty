@@ -34,43 +34,47 @@ export const WEIGHTS: readonly RoleWeights[] = [
 ];
 
 export const ratingsPageCopy = {
-  visibility: 'A rating comes only from a public report. There is no leaderboard of ratings.',
-  oneNumberFirst: [
-    'Topping the meter while dying to avoidable damage with no flask on does not rate well.',
-    'A component that cannot be scored for a fight is left out and named, and its weight goes to the components that did score. That happens when an encounter has no mechanics table yet, the simulator does not model the spec yet, or too few logs exist to compare against.',
-  ],
+  visibility: 'Rated from public reports only.',
+  /** One line per Performance Rating component: what it judges. */
   components: [
-    {
-      part: 'Output',
-      body: "Damage or healing done. For a DPS spec the simulator models, Output is judged against what the fight could have been with your gear: rotation, GCD use and cooldown timing, not the raw number on the meter. A healer's Output counts effective healing only, so overheal never adds to it. A tank's Output carries little weight: holding threat and staying alive are the job.",
-    },
-    {
-      part: 'Survival',
-      body: "Whether you died, with an avoidable death early in a fight costing far more than one near the end, blended with the avoidable damage you took. Tanks are judged on avoidable damage alone: a boss's expected hits never count against them.",
-    },
-    {
-      part: 'Mechanics',
-      body: 'Three things, averaged: your interrupts, valued by the damage the interrupted cast would have done; your dispels, valued by the healing or damage they denied; and how long you carried a debuff that should have been dispelled. That last part counts against the player carrying the debuff, not whoever should have cleansed it.',
-    },
-    {
-      part: 'Utility',
-      body: 'The average uptime of every buff, debuff and cooldown your class and spec are expected to keep up for the raid. One dropped buff does not sink the score. Threat is not scored yet.',
-    },
+    { part: 'Output', body: 'Damage, or effective healing, against what the fight allowed with your gear.' },
+    { part: 'Survival', body: 'Avoidable deaths, an early one costing most, and avoidable damage taken.' },
+    { part: 'Mechanics', body: 'Interrupts, dispels, and debuffs carried that should have been cleansed.' },
+    { part: 'Utility', body: 'Uptime of the buffs and debuffs your class keeps up for the raid.' },
     {
       part: 'Preparation',
-      body: "Showing up ready: the right flask, food, weapon oil or stone at the pull, and your class's potions during the fight, each weighed by how much it matters for your role.",
+      body: 'Flask, food, oil or stone at the pull, potions in the fight.',
+    },
+    { part: 'Activity', body: 'Time spent casting or swinging, scripted downtime left out.' },
+  ],
+  /** One line per Forever Score part, keyed as the addon keys them. */
+  parts: {
+    gear: 'Your gear against your spec’s best set for your level',
+    experience: '25 a dungeon cleared, 40 a raid boss killed, alts included',
+    parses: 'Your best boss parses against your spec',
+    attendance: 'Your guild’s raid nights logged in the last 90 days',
+    discipline: 'Flask, food and enchants on every logged pull',
+  },
+  adjustable: 'Defaults; guild officers can change them',
+  /** The sample's raid parts: what a raider's score looks like once raids open. */
+  sampleNote: 'Sample raider, after raids open',
+  /** How a fight is judged: one Row each, the rule's name over the rule. */
+  rules: [
+    {
+      title: 'Ranked',
+      body: 'With at least 20 kills of the same encounter, difficulty, spec, role and kill speed logged, a component is ranked against players of your spec in those logs: "better than 71% of Fury Warriors on this fight."',
     },
     {
-      part: 'Activity',
-      body: 'The share of the fight you spent casting or swinging rather than idle, leaving out the stretches the fight itself gives you nothing to do, such as a scripted phase change.',
+      title: 'Absolute',
+      body: "With fewer, a component is measured against the encounter's own numbers. A new boss or an unmatched kill speed starts here and moves to ranked at 20 comparable logs (fast, typical or slow, against the encounter's own kill times).",
     },
-  ],
-  roles: "A healer's Output is effective healing only; overheal does not count.",
-  adjustable:
-    "These are the default weights and cap. A guild's officers can change them for their own guild.",
-  rankedOrAbsolute: [
-    'With at least 20 kills of the same encounter, difficulty, spec, role and kill speed logged, a component is ranked against players of your spec in those logs: "better than 71% of Fury Warriors on this fight." With fewer, the score is measured against the encounter\'s own numbers and says so.',
-    "A new boss, or a kill speed nobody has matched yet, starts on that absolute standard. It moves to ranked once its speed band (fast, typical or slow, judged against the encounter's own kill times) reaches 20 comparable logs.",
-    "A wipe scores Survival and Mechanics, since a wipe is where avoidable deaths and missed interrupts matter most. Output, Utility, Preparation and Activity are left out: a wipe's damage window is cut short.",
+    {
+      title: 'Wipes',
+      body: "A wipe scores Survival and Mechanics only. Output, Utility, Preparation and Activity are left out: a wipe's damage window is cut short.",
+    },
+    {
+      title: 'A part left out',
+      body: 'A component that cannot be scored for a fight is named and its weight goes to the ones that did: an encounter with no mechanics table yet, a spec the simulator does not model yet, too few logs to compare.',
+    },
   ],
 } as const;

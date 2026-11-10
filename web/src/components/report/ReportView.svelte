@@ -37,7 +37,7 @@
     resolveFightIndex,
     sampleFightIndex,
   } from '../../lib/report/fights';
-  import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
+  import { aggregateNight, nightFacts, nightSummary, type Night } from '../../lib/report/night';
   import { schoolToken, TRASH_PARSE } from '../../lib/report/format';
   import {
     FLAG_LETTERS,
@@ -90,7 +90,9 @@
   import CastsRail from './CastsRail.svelte';
   import DispelsRail from './DispelsRail.svelte';
   import Glossary from './Glossary.svelte';
-  import EventsRail from './EventsRail.svelte';
+  import EnemyCastsRail from './EnemyCastsRail.svelte';
+  import { enemyCasts, spellSchools } from '../../lib/report/exchange-rails';
+  import GroupDebuffsRail from './GroupDebuffsRail.svelte';
   import MechanicsRail from './MechanicsRail.svelte';
   import QueriesRail from './QueriesRail.svelte';
   import RatingRail from './RatingRail.svelte';
@@ -279,18 +281,16 @@
   const unitNames = $derived(new Map((file?.units ?? []).map((unit) => [unit.guid, unit.name])));
   /** The Interrupts and Dispels tabs' empty line, naming the scope it was empty under. */
   function exchangeEmpty(verb: 'interrupted' | 'dispelled'): string {
-    // A debuff that ran its course is listed only for a spell someone dispelled at least
-    // once, since the summary cannot tell a dispellable debuff from any other: a pull with
-    // no dispels lists none, and the whole night does.
-    const tail =
-      verb === 'dispelled'
-        ? ' Debuffs that ran their course are listed only for spells someone dispelled at least once; the whole night shows them.'
-        : '';
+    const scope = nightMode ? 'tonight' : 'this pull';
+    // With nothing kicked, say whether anything could have been: an instant cast has no cast bar.
+    const castBars = enemyCasts((windowed ?? base)?.casts ?? [], friendlySet).some((row) => row.castMs > 0);
+    const tail = verb === 'interrupted' && !castBars ? ' No enemy cast had a cast bar.' : '';
+    const noun = verb === 'interrupted' ? 'interrupts' : 'dispels';
     if (state.source === SOURCE_FRIENDLIES || state.source === SOURCE_EVERYONE)
-      return `Nothing was ${verb} in the whole fight.${tail}`;
-    if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing in this fight.${tail}`;
+      return `No ${noun} ${scope}.${tail}`;
+    if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing ${scope}.`;
     const name = splitUnitName(unitNames.get(state.source) ?? state.source).name;
-    return `${name} ${verb} nothing in this fight.${tail}`;
+    return `${name} ${verb} nothing ${scope}.${tail}`;
   }
   /** The player GUIDs from report.json, for the source scope and the filters. */
   const playerSet = $derived(
@@ -1228,7 +1228,9 @@
         // untracked: this runs before the first await, inside the load effect, and these
         // read and write the state the effect must not depend on.
         untrack(() => readUrl());
-        await untrack(() => loadFight(state.fight));
+        // The whole night (fight=all) and a zone's trash have no summary.json of their own;
+        // the combined-view effect folds their pulls once the page is ready.
+        if (untrack(() => fight) !== null) await untrack(() => loadFight(state.fight));
         status = 'ready';
         const rest = await fetchReportFileFor(resolved.status, base);
         if (rest !== null) file = rest;
@@ -1762,7 +1764,13 @@
 {/snippet}
 
 {#snippet thisPull()}
-  {#if fight !== null && !nightMode}
+  {#if nightMode && night !== null}
+    <ThisPull
+      title={trashMode ? 'This trash' : 'The night'}
+      facts={nightFacts(night, trashMode, fights.filter((entry) => entry.kind !== 'encounter').length)}
+      simHref={null}
+    />
+  {:else if fight !== null && !nightMode}
     <ThisPull
       facts={pullFacts}
       {simHref}
@@ -2051,7 +2059,7 @@
               durationMs={summary?.duration_ms ?? scoped.duration_ms}
               onWindow={setWindow}
             />
-          {:else if state.tab === 'casts'}
+          {:else if state.tab === 'casts' || state.tab === 'timeline'}
             <CastsRail
               casts={scoped.casts}
               players={scopePlayers}
@@ -2061,8 +2069,20 @@
             />
           {:else if state.tab === 'debuffs'}
             <DispelsRail dispels={scoped.dispels} {spellIcon} tabHref={hrefWith({ tab: 'dispels' })} />
-          {:else if state.tab === 'events'}
-            <EventsRail off={state.eventsOff} onPatch={patch} />
+          {:else if state.tab === 'interrupts'}
+            <EnemyCastsRail
+              casts={(windowed ?? base)?.casts ?? []}
+              players={friendlySet}
+              schools={spellSchools(base)}
+              {spellIcon}
+            />
+          {:else if state.tab === 'dispels'}
+            <GroupDebuffsRail
+              auras={(windowed ?? base)?.auras ?? []}
+              players={scopePlayers}
+              {spellIcon}
+              tabHref={hrefWith({ tab: 'debuffs' })}
+            />
           {:else if state.tab === 'queries'}
             <QueriesRail />
           {:else if state.tab === 'rating'}
@@ -2092,6 +2112,7 @@
           {#if night !== null}
             <NightView
               {night}
+              inScope={(guid) => inSource(guid, scopeKey, scopePlayers, friendlySet)}
               trash={trashMode}
               loading={nightLoading}
               {unitClasses}
@@ -2432,7 +2453,6 @@
         {:else if state.tab === 'events'}
           {#if eventsViewLazy.current}
             <eventsViewLazy.current
-              chips={false}
               summary={windowed ?? scoped}
               {classOf}
               names={unitNames}
@@ -2455,8 +2475,13 @@
         {:else if state.tab === 'queries'}
           {#if queriesViewLazy.current}
             <!-- The Starting points wrap inside the column (the mock's `.qstarts`), never under the rail. -->
-            <div class="report-queries min-w-0">
-              <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+            <div class="report-queries flex min-w-0 flex-col gap-[var(--section-gap)]">
+              <queriesViewLazy.current
+                dataBaseUrl={dataBase}
+                fightIndex={state.fight}
+                window={timeWindow}
+                classByName={new Map((summary?.roster ?? []).map((row) => [row.name, row.class ?? '']))}
+              />
             </div>
           {:else}
             {@render lazyFallback(queriesViewLazy, REPORT_LAZY_MIN_H.queries)}
