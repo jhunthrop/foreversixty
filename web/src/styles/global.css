@@ -212,6 +212,16 @@ label:has(input[type='checkbox']:disabled) {
     padding-inline: var(--page-gutter);
   }
 }
+/* The page body's breath above the footer (owner 2026-11-09: "it's crammed"), whatever its last
+   block is. Base.astro's slot wrapper only; bands reuse .page-column without it. */
+[data-page-body] {
+  padding-bottom: var(--page-foot-gap, 40px);
+}
+@media (min-width: 1024px) {
+  [data-page-body] {
+    padding-bottom: var(--page-foot-gap-lg, 64px);
+  }
+}
 
 @layer components {
   /* Break a band out of the column to the full viewport width (its background runs edge to

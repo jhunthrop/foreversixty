@@ -91,7 +91,7 @@ describe('the single site column', () => {
     // band); what only the layout may do is wrap the page's slot.
     const wrappers = scannedFiles()
       .filter((file) => /^(pages|layouts)\//.test(relative(file)))
-      .filter((file) => /<div class="page-column">\s*<slot\s*\/>/.test(readFileSync(file, 'utf8')));
+      .filter((file) => /<div class="page-column"[^>]*>\s*<slot\s*\/>/.test(readFileSync(file, 'utf8')));
     expect(wrappers.map(relative)).toEqual(['layouts/Base.astro']);
   });
 
