@@ -998,8 +998,7 @@
     },
     "line": "points left",
     "beyond": "",
-    "talents": "30303213132215201-050500050120000000-100000000000000000",
-    "past": ""
+    "talents": "30303213132215201-050500050120000000-100000000000000000"
    },
    "text_summary": "Human Warrior · Arms 0/Fury 0/Protection 0 · Level 9",
    "order_view": {
@@ -2752,8 +2751,7 @@
     },
     "line": "Matches the Survival guide build",
     "beyond": "+9 beyond the build",
-    "talents": "0000000000000000-0000000000000000-500230100000000000",
-    "past": ""
+    "talents": "0000000000000000-0000000000000000-500230100000000000"
    },
    "text_summary": "Night Elf Hunter · Beast Mastery 0/Marksmanship 0/Survival 20 · Level 29",
    "order_view": {
@@ -4138,8 +4136,7 @@
     },
     "line": "points left",
     "beyond": "",
-    "talents": "5420001505001251-0052350001400000-000000000000000000",
-    "past": ""
+    "talents": "5420001505001251-0052350001400000-000000000000000000"
    },
    "text_summary": "Human Hunter · Beast Mastery 0/Marksmanship 0/Survival 0 · Level 9",
    "order_view": {
@@ -6183,8 +6180,7 @@
     },
     "line": "Matches the Survival guide build",
     "beyond": "",
-    "talents": "5000000000000000-0050052010000000-500230230050222151",
-    "past": ""
+    "talents": "5000000000000000-0050052010000000-500230230050222151"
    },
    "text_summary": "Night Elf Hunter · Beast Mastery 5/Marksmanship 13/Survival 33 · Level 60",
    "order_view": {
@@ -8258,8 +8254,7 @@
     },
     "line": "Matches the Holy guide build",
     "beyond": "",
-    "talents": "005005031030000000-33505003030121431-00000000000000000",
-    "past": ""
+    "talents": "005005031030000000-33505003030121431-00000000000000000"
    },
    "text_summary": "Human Priest · Discipline 17/Holy 34/Shadow 0 · Level 60",
    "order_view": {
@@ -10326,8 +10321,7 @@
     },
     "line": "Matches the Fire guide build",
     "beyond": "",
-    "talents": "050105200100000000-55500201230133031-003000000000000000",
-    "past": ""
+    "talents": "050105200100000000-55500201230133031-003000000000000000"
    },
    "text_summary": "Human Mage · Arcane 14/Fire 34/Frost 3 · Level 60",
    "order_view": {
@@ -12119,8 +12113,7 @@
     },
     "line": "21 of 25 points",
     "beyond": "",
-    "talents": "5320000505000100-0000000000000000-000000000000000000",
-    "past": ""
+    "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
    "text_summary": "Dwarf Hunter · Beast Mastery 21/Marksmanship 0/Survival 0 · Level 34",
    "order_view": {
@@ -13711,8 +13704,7 @@
     },
     "line": "points left",
     "beyond": "",
-    "talents": "5320000505000100-0000000000000000-000000000000000000",
-    "past": ""
+    "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
    "text_summary": "Dwarf Hunter · Beast Mastery 0/Marksmanship 0/Survival 0 · Level 34",
    "order_view": {
@@ -15546,8 +15538,7 @@
     },
     "line": "21 of 25 points",
     "beyond": "",
-    "talents": "5320000505000100-0000000000000000-000000000000000000",
-    "past": "Endurance Training 4/5, Bestial Swiftness, Intimidation, Bestial Discipline 2/2 and Frenzy 2/5"
+    "talents": "5320000505000100-0000000000000000-000000000000000000"
    },
    "text_summary": "Dwarf Hunter · Beast Mastery 27/Marksmanship 0/Survival 0 · Level 34",
    "order_view": {
@@ -17199,8 +17190,7 @@
     },
     "line": "points left",
     "beyond": "",
-    "talents": "30303213132215201-050500050120000000-100000000000000000",
-    "past": ""
+    "talents": "30303213132215201-050500050120000000-100000000000000000"
    },
    "text_summary": "Human Warrior · Arms 0/Fury 0/Protection 0 · Level 9",
    "order_view": {
@@ -18097,7 +18087,7 @@
    "shareConfirmCancel": "Cancel",
    "shareConfirmCopyUnsaved": "Copy an unsaved link instead",
    "copiedUnsavedLink": "Copied",
-   "copyAsText": "Copy as text",
+   "copyAsText": "Copy for chat",
    "copiedText": "Copied",
    "shareTextSummary": "[fn]",
    "bandLoadedNote": "[fn]",
@@ -18151,7 +18141,7 @@
    "resetNo": "Keep the build",
    "resetTree": "Reset",
    "resetTreeLabel": "[fn]",
-   "sharedLinkNote": "This build was shared as a link. Edit a copy to spend points of your own.",
+   "sharedLinkNote": "Read only.",
    "fork": "Edit a copy",
    "sharedMeta": "Shared build",
    "sharedViews": "[fn]",
@@ -18203,7 +18193,6 @@
    "beyondGuide": "[fn]",
    "differsNamed": "[fn]",
    "coversFewer": "[fn]",
-   "coversPast": "[fn]",
    "loadButton": "[fn]",
    "loadedLine": "[fn]",
    "seeWhatDiffers": "See what differs",

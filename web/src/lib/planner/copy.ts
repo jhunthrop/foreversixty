@@ -122,7 +122,7 @@ export const plannerCopy = {
   /** The small reset link in each tree head (Q9). */
   resetTree: 'Reset',
   resetTreeLabel: (treeName: string): string => `Reset ${treeName}`,
-  sharedLinkNote: 'This build was shared as a link. Edit a copy to spend points of your own.',
+  sharedLinkNote: 'Read only.',
   fork: 'Edit a copy',
   /** The shared page's meta lead and its view count (spec 2026-11-08 section 8). */
   sharedMeta: 'Shared build',

@@ -6,7 +6,7 @@
 // its header loads its scripts by the stable /_chrome/ paths (web/scripts/chrome-aliases.mjs).
 // Not a test of behaviour.
 //   CAPTURE_PORT=<port> npx playwright test -c tests/captures/batch-h/playwright.capture.config.ts
-import { mkdirSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { prepareParityPage, REPO_ROOT, settleParityPage } from '../../e2e/support/parity';
@@ -22,6 +22,28 @@ const SHARED = path.join(REPO_ROOT, 'web/tests/e2e/fixtures/shared-build/surviva
 const SHARED_RECORD = JSON.parse(
   readFileSync(path.join(REPO_ROOT, 'api/internal/site/testdata/shared-survival.json'), 'utf8'),
 ) as { id: string };
+
+const BUILDS = path.join(REPO_ROOT, 'data/builds');
+/** The repository's real build folders with icons, newest first. */
+const ICON_DIRS: readonly string[] = existsSync(BUILDS)
+  ? readdirSync(BUILDS)
+      .sort()
+      .reverse()
+      .map((build) => path.join(BUILDS, build, 'icons'))
+      .filter((dir) => existsSync(dir))
+  : [];
+
+/** The fixture build publishes a handful of icons; the captures draw every icon from the newest
+ *  real build that carries it (as support/guild-parity.ts does), so a socket means a real gap. */
+async function routeRealIcons(page: Page): Promise<void> {
+  await page.route('**/data/*/icons/*.webp', (route) => {
+    const name = new URL(route.request().url()).pathname.split('/').pop() ?? '';
+    const file = ICON_DIRS.map((dir) => path.join(dir, name)).find((candidate) => existsSync(candidate));
+    return file === undefined
+      ? route.continue()
+      : route.fulfill({ status: 200, contentType: 'image/webp', body: readFileSync(file) });
+  });
+}
 
 async function openReportPlayer(page: Page): Promise<void> {
   await page.goto('/reports/fixture2abcd?fight=3');
@@ -61,6 +83,7 @@ for (const [name, open] of PAGES) {
       test.slow();
       await page.setViewportSize({ width, height: HEIGHT });
       await prepareParityPage(page);
+      await routeRealIcons(page);
       await open(page);
       await settleParityPage(page);
       await page.screenshot({ path: path.join(OUT, `${name}-${width}.png`), fullPage: true });

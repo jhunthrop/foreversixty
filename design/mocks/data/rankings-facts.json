@@ -41,7 +41,17 @@
      {
       "value": "100",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-gold)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "9 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -59,7 +69,14 @@
      "text": "9 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report1?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/thorgrim-ashveil",
@@ -68,7 +85,7 @@
     "name": "Thorgrim Ashveil",
     "href": "/character/us/normal/thorgrim-ashveil",
     "classSlug": "warrior",
-    "sub": "Olympus XXVII · Fury Warrior",
+    "sub": "Olympus XXVII · Fury",
     "fraction": 0.9864864864864865,
     "figures": [
      {
@@ -81,7 +98,17 @@
      {
       "value": "66",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-blue)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "8 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -99,7 +126,14 @@
      "text": "8 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report2?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/emberlyn",
@@ -121,7 +155,17 @@
      {
       "value": "33",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-green)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "7 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -139,11 +183,17 @@
      "text": "7 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report3?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    }
   ],
-  "pinned": null,
-  "best": []
+  "pinned": null
  },
  "board_you": {
   "total": 212,
@@ -169,7 +219,17 @@
      {
       "value": "100",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-gold)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "9 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -187,7 +247,14 @@
      "text": "9 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report1?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/valkyra",
@@ -209,7 +276,17 @@
      {
       "value": "99",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-pink)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "8 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -227,7 +304,14 @@
      "text": "8 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report2?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/brannoch",
@@ -249,7 +333,17 @@
      {
       "value": "99",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-pink)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "7 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -267,7 +361,14 @@
      "text": "7 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report3?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/kaelith-rowe",
@@ -289,7 +390,17 @@
      {
       "value": "98",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "6 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -307,7 +418,14 @@
      "text": "6 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report4?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/rhoswen",
@@ -329,7 +447,17 @@
      {
       "value": "98",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "5 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -347,7 +475,14 @@
      "text": "5 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report5?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/dunmar",
@@ -369,7 +504,17 @@
      {
       "value": "97",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "4 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -387,7 +532,14 @@
      "text": "4 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report6?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/tessiel-vane",
@@ -409,7 +561,17 @@
      {
       "value": "97",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "3 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -427,7 +589,14 @@
      "text": "3 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report7?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/ironvow",
@@ -449,7 +618,17 @@
      {
       "value": "96",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "2 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -467,7 +646,14 @@
      "text": "2 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report8?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/gaelwyn",
@@ -489,7 +675,17 @@
      {
       "value": "96",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "1 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -507,7 +703,14 @@
      "text": "1 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report9?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/hrafnild",
@@ -529,7 +732,17 @@
      {
       "value": "95",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "31 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -547,7 +760,14 @@
      "text": "31 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report10?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/morvain-holt",
@@ -569,7 +789,17 @@
      {
       "value": "95",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "30 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -587,7 +817,14 @@
      "text": "30 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report11?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/sellar",
@@ -609,7 +846,17 @@
      {
       "value": "94",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "29 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -627,7 +874,14 @@
      "text": "29 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report12?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/orsolya",
@@ -649,7 +903,17 @@
      {
       "value": "94",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "28 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -667,7 +931,14 @@
      "text": "28 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report13?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/obnoxious-yell",
@@ -689,7 +960,17 @@
      {
       "value": "93",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "27 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -707,7 +988,14 @@
      "text": "27 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report14?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/bladewick",
@@ -729,7 +1017,17 @@
      {
       "value": "93",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "26 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -747,32 +1045,17 @@
      "text": "26 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report15?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    }
   ],
-  "pinned": null,
-  "best": [
-   {
-    "id": "value",
-    "label": "DPS",
-    "value": "732"
-   },
-   {
-    "id": "executed",
-    "label": "Executed",
-    "value": "90%"
-   },
-   {
-    "id": "length",
-    "label": "Length",
-    "value": "2:54"
-   },
-   {
-    "id": "killed",
-    "label": "Killed",
-    "value": "27 Oct"
-   }
-  ]
+  "pinned": null
  },
  "board_you_off_page": {
   "total": 212,
@@ -798,7 +1081,17 @@
      {
       "value": "100",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-gold)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "9 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -816,7 +1109,14 @@
      "text": "9 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report1?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/valkyra",
@@ -838,7 +1138,17 @@
      {
       "value": "99",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-pink)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "8 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -856,7 +1166,14 @@
      "text": "8 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report2?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/brannoch",
@@ -878,7 +1195,17 @@
      {
       "value": "99",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-pink)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "7 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -896,7 +1223,14 @@
      "text": "7 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report3?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/kaelith-rowe",
@@ -918,7 +1252,17 @@
      {
       "value": "98",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "6 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -936,7 +1280,14 @@
      "text": "6 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report4?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/rhoswen",
@@ -958,7 +1309,17 @@
      {
       "value": "98",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "5 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -976,7 +1337,14 @@
      "text": "5 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report5?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/dunmar",
@@ -998,7 +1366,17 @@
      {
       "value": "97",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "4 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1016,7 +1394,14 @@
      "text": "4 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report6?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/tessiel-vane",
@@ -1038,7 +1423,17 @@
      {
       "value": "97",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "3 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1056,7 +1451,14 @@
      "text": "3 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report7?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/ironvow",
@@ -1078,7 +1480,17 @@
      {
       "value": "96",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "2 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1096,7 +1508,14 @@
      "text": "2 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report8?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/gaelwyn",
@@ -1118,7 +1537,17 @@
      {
       "value": "96",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "1 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1136,7 +1565,14 @@
      "text": "1 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report9?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/hrafnild",
@@ -1158,7 +1594,17 @@
      {
       "value": "95",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "31 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1176,7 +1622,14 @@
      "text": "31 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report10?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/morvain-holt",
@@ -1198,7 +1651,17 @@
      {
       "value": "95",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "30 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1216,7 +1679,14 @@
      "text": "30 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report11?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/sellar",
@@ -1238,7 +1708,17 @@
      {
       "value": "94",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "29 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1256,7 +1736,14 @@
      "text": "29 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report12?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/orsolya",
@@ -1278,7 +1765,17 @@
      {
       "value": "94",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "28 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1296,7 +1793,14 @@
      "text": "28 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report13?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/grimhollow",
@@ -1318,7 +1822,17 @@
      {
       "value": "93",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "27 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1336,7 +1850,14 @@
      "text": "27 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report14?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/bladewick",
@@ -1358,7 +1879,17 @@
      {
       "value": "93",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "26 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1376,7 +1907,14 @@
      "text": "26 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report15?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    }
   ],
   "pinned": {
@@ -1398,7 +1936,17 @@
     {
      "value": "4",
      "label": "Percentile",
+     "title": "Percentile",
+     "bare": true,
+     "color": "var(--color-parse-grey-text)",
      "testid": "ranking-percentile"
+    },
+    {
+     "value": "11 Oct",
+     "label": "Date",
+     "bare": true,
+     "phoneOnly": true,
+     "testid": "ranking-date-phone"
     },
     {
      "value": "90%",
@@ -1416,30 +1964,15 @@
     "text": "11 Oct",
     "label": "Date"
    },
-   "links": []
-  },
-  "best": [
-   {
-    "id": "value",
-    "label": "DPS",
-    "value": "300"
-   },
-   {
-    "id": "executed",
-    "label": "Executed",
-    "value": "90%"
-   },
-   {
-    "id": "length",
-    "label": "Length",
-    "value": "3:20"
-   },
-   {
-    "id": "killed",
-    "label": "Killed",
-    "value": "11 Oct"
-   }
-  ]
+   "links": [
+    {
+     "label": "Report",
+     "href": "/reports/report204?fight=1",
+     "title": "Open the kill in its report",
+     "testid": "ranking-report"
+    }
+   ]
+  }
  },
  "board_you_unranked": {
   "total": 212,
@@ -1465,7 +1998,17 @@
      {
       "value": "100",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-gold)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "9 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1483,7 +2026,14 @@
      "text": "9 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report1?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/valkyra",
@@ -1505,7 +2055,17 @@
      {
       "value": "99",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-pink)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "8 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1523,7 +2083,14 @@
      "text": "8 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report2?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/brannoch",
@@ -1545,7 +2112,17 @@
      {
       "value": "99",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-pink)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "7 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1563,7 +2140,14 @@
      "text": "7 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report3?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/kaelith-rowe",
@@ -1585,7 +2169,17 @@
      {
       "value": "98",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "6 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1603,7 +2197,14 @@
      "text": "6 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report4?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/rhoswen",
@@ -1625,7 +2226,17 @@
      {
       "value": "98",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "5 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1643,7 +2254,14 @@
      "text": "5 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report5?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/dunmar",
@@ -1665,7 +2283,17 @@
      {
       "value": "97",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "4 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1683,7 +2311,14 @@
      "text": "4 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report6?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/tessiel-vane",
@@ -1705,7 +2340,17 @@
      {
       "value": "97",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "3 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1723,7 +2368,14 @@
      "text": "3 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report7?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/ironvow",
@@ -1745,7 +2397,17 @@
      {
       "value": "96",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "2 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1763,7 +2425,14 @@
      "text": "2 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report8?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/gaelwyn",
@@ -1785,7 +2454,17 @@
      {
       "value": "96",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "1 Nov",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1803,7 +2482,14 @@
      "text": "1 Nov",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report9?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/hrafnild",
@@ -1825,7 +2511,17 @@
      {
       "value": "95",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "31 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1843,7 +2539,14 @@
      "text": "31 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report10?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/morvain-holt",
@@ -1865,7 +2568,17 @@
      {
       "value": "95",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-orange)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "30 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1883,7 +2596,14 @@
      "text": "30 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report11?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/sellar",
@@ -1905,7 +2625,17 @@
      {
       "value": "94",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "29 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1923,7 +2653,14 @@
      "text": "29 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report12?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/orsolya",
@@ -1945,7 +2682,17 @@
      {
       "value": "94",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "28 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -1963,7 +2710,14 @@
      "text": "28 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report13?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/grimhollow",
@@ -1985,7 +2739,17 @@
      {
       "value": "93",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "27 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -2003,7 +2767,14 @@
      "text": "27 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report14?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    },
    {
     "key": "us/normal/bladewick",
@@ -2025,7 +2796,17 @@
      {
       "value": "93",
       "label": "Percentile",
+      "title": "Percentile",
+      "bare": true,
+      "color": "var(--color-parse-purple)",
       "testid": "ranking-percentile"
+     },
+     {
+      "value": "26 Oct",
+      "label": "Date",
+      "bare": true,
+      "phoneOnly": true,
+      "testid": "ranking-date-phone"
      },
      {
       "value": "90%",
@@ -2043,11 +2824,17 @@
      "text": "26 Oct",
      "label": "Date"
     },
-    "links": []
+    "links": [
+     {
+      "label": "Report",
+      "href": "/reports/report15?fight=1",
+      "title": "Open the kill in its report",
+      "testid": "ranking-report"
+     }
+    ]
    }
   ],
-  "pinned": null,
-  "best": []
+  "pinned": null
  },
  "answer_you": {
   "kind": "figures",
@@ -2084,7 +2871,6 @@
    "onyxia": [
     {
      "rank": "1",
-     "rankColor": "var(--color-parse-gold)",
      "name": "Vashrel",
      "href": "/character/us/normal/vashrel",
      "classSlug": "rogue",
@@ -2100,23 +2886,32 @@
       },
       {
        "value": "100",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-gold)"
       }
      ],
      "gap": {
       "text": "9 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report1?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/vashrel"
     },
     {
      "rank": "2",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Thorgrim Ashveil",
      "href": "/character/us/normal/thorgrim-ashveil",
      "classSlug": "warrior",
-     "sub": "Olympus XXVII · Fury Warrior",
+     "sub": "Olympus XXVII · Fury",
      "fraction": 0.9864864864864865,
      "figures": [
       {
@@ -2128,19 +2923,28 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "8 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report2?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/thorgrim-ashveil"
     },
     {
      "rank": "3",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Ysolde",
      "href": "/character/us/normal/ysolde",
      "classSlug": "mage",
@@ -2156,21 +2960,30 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "7 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report3?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/ysolde"
     }
    ],
    "warden-kelthas": [
     {
      "rank": "1",
-     "rankColor": "var(--color-parse-gold)",
      "name": "Reglitch",
      "href": "/character/us/normal/reglitch",
      "classSlug": "priest",
@@ -2186,23 +2999,32 @@
       },
       {
        "value": "100",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-gold)"
       }
      ],
      "gap": {
       "text": "9 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report1?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/reglitch"
     },
     {
      "rank": "2",
-     "rankColor": "var(--color-parse-blue)",
      "name": "Thorgrim Ashveil",
      "href": "/character/us/normal/thorgrim-ashveil",
      "classSlug": "warrior",
-     "sub": "Olympus XXVII · Fury Warrior",
+     "sub": "Olympus XXVII · Fury",
      "fraction": 0.9864864864864865,
      "figures": [
       {
@@ -2214,19 +3036,28 @@
       },
       {
        "value": "66",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-blue)"
       }
      ],
      "gap": {
       "text": "8 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report2?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/thorgrim-ashveil"
     },
     {
      "rank": "3",
-     "rankColor": "var(--color-parse-green)",
      "name": "Emberlyn",
      "href": "/character/us/normal/emberlyn",
      "classSlug": "mage",
@@ -2242,14 +3073,24 @@
       },
       {
        "value": "33",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-green)"
       }
      ],
      "gap": {
       "text": "7 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report3?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/emberlyn"
     }
    ]
@@ -2258,7 +3099,6 @@
    "damage": [
     {
      "rank": "1",
-     "rankColor": "var(--color-parse-gold)",
      "name": "Combat Rogue",
      "href": "/rankings/onyxia?class=rogue&spec=Combat",
      "classSlug": "rogue",
@@ -2274,19 +3114,28 @@
       },
       {
        "value": "100",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-gold)"
       }
      ],
      "gap": {
       "text": "9 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report1?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/vashrel"
     },
     {
      "rank": "2",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Fury Warrior",
      "href": "/rankings/onyxia?class=warrior&spec=Fury",
      "classSlug": "warrior",
@@ -2302,19 +3151,28 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "8 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report2?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/thorgrim-ashveil"
     },
     {
      "rank": "3",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Fire Mage",
      "href": "/rankings/onyxia?class=mage&spec=Fire",
      "classSlug": "mage",
@@ -2330,19 +3188,28 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "7 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report3?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/ysolde"
     },
     {
      "rank": "4",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Destruction Warlock",
      "href": "/rankings/onyxia?class=warlock&spec=Destruction",
      "classSlug": "warlock",
@@ -2358,19 +3225,28 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "6 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report4?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/corvane"
     },
     {
      "rank": "5",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Marksmanship Hunter",
      "href": "/rankings/onyxia?class=hunter&spec=Marksmanship",
      "classSlug": "hunter",
@@ -2386,19 +3262,28 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "5 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report5?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/haldrik"
     },
     {
      "rank": "6",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Frost Mage",
      "href": "/rankings/onyxia?class=mage&spec=Frost",
      "classSlug": "mage",
@@ -2414,19 +3299,28 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "4 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report6?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/emberlyn"
     },
     {
      "rank": "7",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Feral Druid",
      "href": "/rankings/onyxia?class=druid&spec=Feral",
      "classSlug": "druid",
@@ -2442,19 +3336,28 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "3 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report7?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/tamsin-reed"
     },
     {
      "rank": "8",
-     "rankColor": "var(--color-parse-orange)",
      "name": "Enhancement Shaman",
      "href": "/rankings/onyxia?class=shaman&spec=Enhancement",
      "classSlug": "shaman",
@@ -2470,21 +3373,30 @@
       },
       {
        "value": "98",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-orange)"
       }
      ],
      "gap": {
       "text": "2 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report8?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/grenna"
     }
    ],
    "healing": [
     {
      "rank": "1",
-     "rankColor": "var(--color-parse-gold)",
      "name": "Holy Priest",
      "href": "/rankings/onyxia?class=priest&spec=Holy",
      "classSlug": "priest",
@@ -2500,19 +3412,28 @@
       },
       {
        "value": "100",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-gold)"
       }
      ],
      "gap": {
       "text": "9 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report1?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/lumen-ashby"
     },
     {
      "rank": "2",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Restoration Shaman",
      "href": "/rankings/onyxia?class=shaman&spec=Restoration",
      "classSlug": "shaman",
@@ -2528,19 +3449,28 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "8 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report2?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/brannagh"
     },
     {
      "rank": "3",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Holy Paladin",
      "href": "/rankings/onyxia?class=paladin&spec=Holy",
      "classSlug": "paladin",
@@ -2556,19 +3486,28 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "7 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report3?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/oswin-hale"
     },
     {
      "rank": "4",
-     "rankColor": "var(--color-parse-pink)",
      "name": "Restoration Druid",
      "href": "/rankings/onyxia?class=druid&spec=Restoration",
      "classSlug": "druid",
@@ -2584,14 +3523,24 @@
       },
       {
        "value": "99",
-       "label": "Percentile"
+       "label": "Percentile",
+       "title": "Percentile",
+       "bare": true,
+       "color": "var(--color-parse-pink)"
       }
      ],
      "gap": {
       "text": "6 Nov",
       "label": "Date"
      },
-     "links": [],
+     "links": [
+      {
+       "label": "Report",
+       "href": "/reports/report4?fight=1",
+       "title": "Open the kill in its report",
+       "testid": "ranking-report"
+      }
+     ],
      "key": "us/normal/mirethil"
     }
    ]
@@ -2725,7 +3674,6 @@
   "rankingsCopy": {
    "eyebrow": "Characters",
    "h1": "Rankings",
-   "tierQuestion": "Comparing specs, not characters?",
    "tierLink": "Tier list",
    "tierHref": "/tiers",
    "updated": "[fn]",
@@ -2767,6 +3715,7 @@
    "todayOnly": "Today only",
    "percentileLabel": "Percentile",
    "openReport": "Open the kill in its report",
+   "reportLink": "Report",
    "guildTitle": {
     "progress": "Most bosses killed",
     "speed": "Fastest kills",
@@ -2804,7 +3753,9 @@
    "empty": "No guild has a boss kill logged yet.",
    "emptyAction": "Open the guild page",
    "emptyHref": "/guild",
-   "bosses": "[fn]"
+   "bosses": "[fn]",
+   "bossesDown": "[fn]",
+   "lastKill": "[fn]"
   },
   "scoreCopy": {
    "heading": "Forever Score",
@@ -2817,7 +3768,7 @@
     {
      "key": "gear",
      "label": "Gear",
-     "moves": "How close your gear is to your spec’s best set for your level (20, 30, 40, 50 or 60). Every upgrade for your spec moves it up."
+     "moves": "How close your gear is to your spec’s best set for your level (20, 30, 40, 50 or 60)."
     },
     {
      "key": "experience",
@@ -2906,7 +3857,7 @@
    "explainerJumpLabel": "On this page",
    "explainerHeading": "Forever Score",
    "explainerRatingHeading": "Performance Rating",
-   "explainerScoreCaption": "Forever Score: your whole record, 0 to 2100.",
+   "explainerScoreCaption": "Forever Score: your whole record, 0 to 2,100.",
    "explainerRatingCaption": "Performance Rating: one fight, 0 to 100.",
    "explainerLaunch": "Parses, attendance and raid bosses count once raids open.",
    "samplePill": "Sample",
@@ -2956,10 +3907,10 @@
    "enemiesHaveNone": "Ratings are for your raid, not the enemy.",
    "noMatchingRow": "This player has no rating for this fight.",
    "percentileBasis": "[fn]",
-   "absoluteBasis": "Measured against the encounter’s own numbers — not enough logs yet to compare players.",
+   "absoluteBasis": "Measured against the encounter’s own numbers: not enough logs yet to compare players.",
    "excludedReason": "[fn]",
-   "threatNotModeled": "Threat — not modeled yet. This does not count for or against Utility.",
-   "cappedNote": "capped from a higher weighted average — a costly avoidable death outweighs the rest of the fight. See Survival.",
+   "threatNotModeled": "Threat: not modeled yet. It does not count for or against Utility.",
+   "cappedNote": "capped from a higher weighted average: a costly avoidable death outweighs the rest of the fight. See Survival.",
    "cappedRule": "An avoidable death early in a fight caps the overall score at 40, because nothing else in the fight makes up for it.",
    "trendTooFew": "[fn]",
    "characterEmpty": "Nothing rated yet. Ratings appear after your first ranked fight.",
@@ -3033,43 +3984,59 @@
    }
   ],
   "copy": {
-   "visibility": "A rating comes only from a public report. There is no leaderboard of ratings.",
-   "oneNumberFirst": [
-    "Topping the meter while dying to avoidable damage with no flask on does not rate well.",
-    "A component that cannot be scored for a fight is left out and named, and its weight goes to the components that did score. That happens when an encounter has no mechanics table yet, the simulator does not model the spec yet, or too few logs exist to compare against."
-   ],
+   "visibility": "Rated from public reports only.",
    "components": [
     {
      "part": "Output",
-     "body": "Damage or healing done. For a DPS spec the simulator models, Output is judged against what the fight could have been with your gear: rotation, GCD use and cooldown timing, not the raw number on the meter. A healer's Output counts effective healing only, so overheal never adds to it. A tank's Output carries little weight: holding threat and staying alive are the job."
+     "body": "Damage, or effective healing, against what the fight allowed with your gear."
     },
     {
      "part": "Survival",
-     "body": "Whether you died, with an avoidable death early in a fight costing far more than one near the end, blended with the avoidable damage you took. Tanks are judged on avoidable damage alone: a boss's expected hits never count against them."
+     "body": "Avoidable deaths, an early one costing most, and avoidable damage taken."
     },
     {
      "part": "Mechanics",
-     "body": "Three things, averaged: your interrupts, valued by the damage the interrupted cast would have done; your dispels, valued by the healing or damage they denied; and how long you carried a debuff that should have been dispelled. That last part counts against the player carrying the debuff, not whoever should have cleansed it."
+     "body": "Interrupts, dispels, and debuffs carried that should have been cleansed."
     },
     {
      "part": "Utility",
-     "body": "The average uptime of every buff, debuff and cooldown your class and spec are expected to keep up for the raid. One dropped buff does not sink the score; broad coverage is what counts. Threat is not scored yet."
+     "body": "Uptime of the buffs and debuffs your class keeps up for the raid."
     },
     {
      "part": "Preparation",
-     "body": "Showing up ready: the right flask, food, weapon oil or stone and world buffs at the pull, and your class's potions during the fight, each weighed by how much it matters for your role."
+     "body": "Flask, food, oil or stone at the pull, potions in the fight."
     },
     {
      "part": "Activity",
-     "body": "The share of the fight you spent casting or swinging rather than idle, leaving out the stretches the fight itself gives you nothing to do, such as a scripted phase change."
+     "body": "Time spent casting or swinging, scripted downtime left out."
     }
    ],
-   "roles": "A healer's Output is effective healing only; overheal does not count.",
-   "adjustable": "A guild's officers can change the weights and the cap for their own guild. This page shows the defaults.",
-   "rankedOrAbsolute": [
-    "With at least 20 kills of the same encounter, difficulty, spec, role and kill speed logged, a component is ranked against players of your spec in those logs: \"better than 71% of Fury Warriors on this fight.\" With fewer, the score is measured against the encounter's own numbers and says so.",
-    "A new boss, or a kill speed nobody has matched yet, starts on that absolute standard. It moves to ranked once its speed band (fast, typical or slow, judged against the encounter's own kill times) reaches 20 comparable logs.",
-    "A wipe scores Survival and Mechanics, since a wipe is where avoidable deaths and missed interrupts matter most. Output, Utility, Preparation and Activity are left out: a wipe's damage window is cut short."
+   "parts": {
+    "gear": "Your gear against your spec’s best set for your level",
+    "experience": "25 a dungeon cleared, 40 a raid boss killed, alts included",
+    "parses": "Your best boss parses against your spec",
+    "attendance": "Your guild’s raid nights logged in the last 90 days",
+    "discipline": "Flask, food and enchants on every logged pull"
+   },
+   "adjustable": "Defaults; guild officers can change them",
+   "sampleNote": "Sample raider, after raids open",
+   "rules": [
+    {
+     "title": "Ranked",
+     "body": "With at least 20 kills of the same encounter, difficulty, spec, role and kill speed logged, a component is ranked against players of your spec in those logs: \"better than 71% of Fury Warriors on this fight.\""
+    },
+    {
+     "title": "Absolute",
+     "body": "With fewer, a component is measured against the encounter's own numbers. A new boss or an unmatched kill speed starts here and moves to ranked at 20 comparable logs (fast, typical or slow, against the encounter's own kill times)."
+    },
+    {
+     "title": "Wipes",
+     "body": "A wipe scores Survival and Mechanics only. Output, Utility, Preparation and Activity are left out: a wipe's damage window is cut short."
+    },
+    {
+     "title": "A part left out",
+     "body": "A component that cannot be scored for a fight is named and its weight goes to the ones that did: an encounter with no mechanics table yet, a spec the simulator does not model yet, too few logs to compare."
+    }
    ]
   },
   "component_max": {
@@ -3101,6 +4068,13 @@
     "range": "2000 and up"
    }
   ],
+  "tier_from": {
+   "common": 0,
+   "uncommon": 500,
+   "rare": 1000,
+   "epic": 1500,
+   "legendary": 2000
+  },
   "up_to": {
    "gear": "up to 500",
    "experience": "up to 700",
