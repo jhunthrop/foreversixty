@@ -63,3 +63,10 @@ export async function fetchItemTooltipModel(
   const row = items.get(itemId);
   return row === undefined ? null : itemTooltipModel(row, sources);
 }
+
+/** The class item file's own row for `itemId` (its name, quality and icon), fetched and cached
+ *  as fetchItemTooltipModel's; null when the file does not carry the id. A row that only needs
+ *  the icon and the quality colour reads this, so a tooltip it cannot build never blanks them. */
+export async function fetchItemRow(build: string, classSlug: string, itemId: number): Promise<Item | null> {
+  return (await loadItemMap(build, classSlug)).get(itemId) ?? null;
+}

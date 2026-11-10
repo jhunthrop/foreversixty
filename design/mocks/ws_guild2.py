@@ -355,9 +355,10 @@ def loot_council():
 
 def _record_line(d):
     """Why a drop went where it did (loot-council-view recordLine): off spec named, the votes, then the reason."""
-    parts = (['Off spec'] if d.get('ms_os') == 'os' else []) + (
-        [f"{d['votes_yes']} yes, {d['votes_no']} no" + (f" of {d['votes_officers']}" if d.get('votes_officers') is not None else '')]
-        if d.get('votes_yes') is not None and d.get('votes_no') is not None else []) + ([d['reason']] if d.get('reason') else [])
+    of = f" of {d['votes_officers']}" if d.get('votes_officers') is not None else ''
+    votes = ([] if d.get('votes_yes') is None or d.get('votes_no') is None
+             else [f"{d['votes_yes']}{of} yes" if d['votes_no'] == 0 else f"{d['votes_yes']} yes, {d['votes_no']} no{of}"])
+    parts = (['Off spec'] if d.get('ms_os') == 'os' else []) + votes + ([d['reason']] if d.get('reason') else [])
     return ' &middot; '.join(parts)
 
 
@@ -423,7 +424,7 @@ def raid_report():
                     for label, rows in groups if rows)
     att = logged + f'<p>{rd.attendance_summary(raid["night"])}</p>' + names + Disclosure('Fix attendance', fix)
     lootr = ''.join(ItemRow(a['item_name'], a['quality'], icon(a['icon'], 32, f'q{a["quality"]}'),
-                            ' &middot; '.join(x for x in (f'{g["boss"]} &middot; to {a["name"]}', _record_line(a)) if x))
+                            ' &middot; '.join(x for x in (f'to {a["name"]}', _record_line(a)) if x))  # one boss: not repeated
                     for g in rep['loot'] for a in g['awards'])
     lines = rd.discord_lines(raid)
     discord = (''.join(f'<p class="t-small">{"<b>" + x + "</b>" if i == 0 else x}</p>' for i, x in enumerate(lines))
@@ -593,8 +594,7 @@ def member_profile():
            + f'<p style="padding-top:12px;font-size:14px;line-height:22px">{gd.PROFILE_LAST_30[0]} of {"1 raid" if gd.PROFILE_LAST_30[1] == 1 else f"the last {gd.PROFILE_LAST_30[1]} raids"}</p>')
     loot = '<ul>' + ''.join(f'<li>{ItemRow(n, q, icon(ic, 32, f"q{q}"), " &middot; ".join(x for x in (f"Awarded {_day(at)}", why) if x))}</li>'
                             for _i, n, ic, q, at, why in won) + '</ul>'
-    # The fairness line under the loot (lootFairness): the award came on the guild's one night, so no raid since.
-    loot += '<p style="padding-top:12px;font-size:14px;line-height:22px">No raid since their last item</p>'
+    # No fairness line under the loot: the award came on the guild's one night, and none since says nothing (lootFairness).
     # The notes panel says once that members never see them: no chip per note, no placeholder; Delete is the quiet danger button.
     delete = Button('Delete', small=True, tone='danger').replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
     notes = Rows([Row(body, f'{who} &middot; {_day(at)}', trail=delete if mine else '', link=False) for _i, body, who, at, mine in gd.PROFILE_NOTES], open_=True)
@@ -604,9 +604,9 @@ def member_profile():
     # Raid ready's roll-up tag shows only when a check fails (readyTag); Frostquill passes every one.
     ready = Section('Raid ready', _ready_facts(ilvl), Link('Open their character'), panel=True)
     # Next upgrades (upgradeRows): the gap named, the biggest gain first, the slot and where it drops, the gain at the right.
-    slot_word = {'neck': 'Neck', 'wrist': 'Wrist'}
-    ups = Rows([Row(name, f'{slot_word[slot]} &middot; {source}', trail=f'<b style="font-size:14px;white-space:nowrap">+{gain:.1f} DPS</b>', link=False)
-                for slot, _id, name, source, gain in gd.PROFILE_UPGRADES], list_=True, open_=True)
+    slot_word = {'legs': 'Legs', 'wrist': 'Wrist'}
+    ups = '<ul>' + ''.join(f'<li>{ItemRow(name, 4, icon(ic, 32, "q4"), f"{slot_word[slot]} &middot; {source}", gain=(f"+{gain:.1f}", "DPS", ""))}</li>'
+                           for slot, _id, name, source, gain, ic in gd.PROFILE_UPGRADES) + '</ul>'
     ready += Section('Next upgrades', ups, panel=True)
     main = (ready + Section('Attendance', att, panel=True)
             + Section('Loot this tier', loot, panel=True))  # the guild median shows once it is above none (lootFairness)

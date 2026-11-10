@@ -14,7 +14,14 @@
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
   import ItemRow from '../../ui/ItemRow.svelte';
 
-  let { award, boss }: { award: RaidLootAward & Partial<AwardRecord>; boss: string } = $props();
+  let {
+    award,
+    boss,
+  }: {
+    award: RaidLootAward & Partial<AwardRecord>;
+    /** The boss, '' when the night had one (every row would repeat it). */
+    boss: string;
+  } = $props();
 
   const build = activeBuild.build;
   const icon = $derived(lootIconOf(award) ?? undefined);
@@ -26,7 +33,7 @@
     item={{ id: award.item_id, name: award.item_name, quality: award.quality, icon }}
     {build}
     iconSize={32}
-    source={why === '' ? copy.loot.to(boss, award.name) : `${copy.loot.to(boss, award.name)} · ${why}`}
+    source={copy.loot.line(boss, award.name, why)}
     testid="raid-loot-row"
   />
 </div>

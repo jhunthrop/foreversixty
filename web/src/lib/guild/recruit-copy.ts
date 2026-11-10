@@ -195,7 +195,7 @@ export const profileCopy = {
   guildMedian: (n: number) => `Guild median ${n}`,
   /** Under the loot: how long they have waited, the fairness figure a council reads. */
   nightsSince: (n: number, hasItem: boolean) =>
-    `${n === 0 ? 'No raid' : n === 1 ? '1 raid' : `${n} raids`} since ${hasItem ? 'their last item' : 'the tier began, nothing yet'}`,
+    `${n === 1 ? '1 raid' : `${n} raids`} since ${hasItem ? 'their last item' : 'the tier began, nothing yet'}`,
   /** After the 30-raid figure: the run they are on. */
   streak: (n: number) => `${n} in a row`,
   noLoot: 'Nothing awarded this tier.',

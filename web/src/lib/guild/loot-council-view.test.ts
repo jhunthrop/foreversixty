@@ -189,6 +189,9 @@ describe('the record line (the night report and the member profile)', () => {
       votes_officers: 4,
     };
     expect(recordLine(record)).toBe('Off spec · 3 yes, 1 no of 4 · Best in slot');
+    expect(recordLine({ ...record, ms_os: 'ms', votes_no: 0, votes_yes: 4, reason: null })).toBe(
+      '4 of 4 yes',
+    );
     expect(recordLine(recordOf({}))).toBe('');
     expect(recordOf({ votes_yes: 2 })).toEqual({
       ms_os: null,

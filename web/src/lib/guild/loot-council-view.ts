@@ -272,11 +272,23 @@ export function recordOf(award: Partial<AwardRecord>): AwardRecord {
   };
 }
 
-/** Why a drop went where it did, in one line: "3 yes, 1 no of 4 · Best in slot" (the record's
- *  parts, then the officer's reason); '' for an award made before the council kept records. */
+/** The votes, short: "3 of 3 yes" when nobody said no, "3 yes, 1 no of 4" when someone did
+ *  ('' when the award kept none). */
+function votesShort(record: AwardRecord): string {
+  const { votes_yes: yes, votes_no: no, votes_officers: officers } = record;
+  if (yes === null || no === null) return '';
+  const of = officers === null ? '' : ` of ${officers}`;
+  return no === 0 ? `${yes}${of} yes` : `${yes} yes, ${no} no${of}`;
+}
+
+/** Why a drop went where it did, in one short line: "Off spec · 3 of 3 yes · Best in slot" (off
+ *  spec only when it went off spec, the votes, the officer's reason); '' for an award made
+ *  before the council kept records. */
 export function recordLine(record: AwardRecord): string {
   const reason = record.reason?.trim() ?? '';
-  return [...recordParts(record), ...(reason === '' ? [] : [reason])].join(' · ');
+  return [record.ms_os === 'os' ? capitalized(MS_OS_WORD.os) : '', votesShort(record), reason]
+    .filter((part) => part !== '')
+    .join(' · ');
 }
 
 /** "3 yes, 0 no of 4 · by Ironbrand · Tue 8 Dec" ("Off spec · ..." when it went off spec); parts the award never kept are left out. */

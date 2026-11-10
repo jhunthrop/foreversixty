@@ -279,12 +279,12 @@ describe('the member profile', () => {
   });
 
   it('names the next upgrades with the slot, where they drop and the gain in the BiS unit', () => {
-    expect(upgradeRows(profile).map((row) => [row.name, row.sub, row.gain])).toEqual([
-      ["Giantstalker's Gloves", 'Hands · Molten Core: Shazzrah', '+11.4 DPS'],
-      ["Giantstalker's Belt", 'Waist · Molten Core', 'Not simmed'],
+    expect(upgradeRows(profile).map((row) => [row.itemId, row.name, row.sub, row.gain])).toEqual([
+      [16852, "Giantstalker's Gloves", 'Hands · Molten Core: Shazzrah', { value: '+11.4', unit: 'DPS' }],
+      [16851, "Giantstalker's Belt", 'Waist · Molten Core', { value: 'Not simmed', tone: 'muted' }],
     ]);
     const healer = { ...profile.readiness!, gear_gap: { ...profile.readiness!.gear_gap!, unit: null } };
-    expect(upgradeRows({ ...profile, readiness: healer }).map((row) => row.gain)).toEqual(['', '']);
+    expect(upgradeRows({ ...profile, readiness: healer }).map((row) => row.gain)).toEqual([null, null]);
   });
 
   it('lists their characters, the main first, each linked to its page', () => {
@@ -332,9 +332,7 @@ describe('the member profile', () => {
     expect(
       lootFairness({ ...profile, loot: { ...profile.loot, count: 0, items: [], nights_since: 5 } }).since,
     ).toBe('5 raids since the tier began, nothing yet');
-    expect(lootFairness({ ...profile, loot: { ...profile.loot, nights_since: 0 } }).since).toBe(
-      'No raid since their last item',
-    );
+    expect(lootFairness({ ...profile, loot: { ...profile.loot, nights_since: 0 } }).since).toBeNull();
     expect(lootFairness({ ...profile, loot: { ...profile.loot, nights_since: null } }).since).toBeNull();
   });
 

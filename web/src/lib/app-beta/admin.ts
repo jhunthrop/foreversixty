@@ -19,7 +19,6 @@ export const adminTestersCopy = {
   notOwner: 'This page is for the site’s owner. Your account can’t see the testers.',
   loadFailed: 'The testers didn’t load.',
   tableTitle: 'Sign-ups',
-  tableMeta: (count: number): string => `${count} ${count === 1 ? 'sign-up' : 'sign-ups'}`,
   caption: 'App beta sign-ups',
   emailHeader: 'Email',
   columns: ['Phone', 'Signed up'],

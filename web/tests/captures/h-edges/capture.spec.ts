@@ -28,6 +28,8 @@ const WIDTHS = [390, 1024, 1440, 2000] as const;
 const SYSTEM_WIDTHS = [390, 1024, 1440, 2000, 2560] as const;
 const PHONE_HEIGHT = 844;
 const DESKTOP_HEIGHT = 1000;
+/** Long enough for a row's item file and its icon to land after the page settles. */
+const LATE_READS_MS = 1500;
 
 const heightFor = (width: number): number => (width < 768 ? PHONE_HEIGHT : DESKTOP_HEIGHT);
 
@@ -48,6 +50,17 @@ function mockFor(mock: string, width: number, directions?: string): string | nul
 
 async function shoot(page: Page, name: string, width: number, mock: string | null): Promise<void> {
   const built = path.join(OUT, `${name}-${width}.png`);
+  // Late reads (an item file a row resolves its icon from) land before the capture, and every
+  // image is painted.
+  await page.waitForTimeout(LATE_READS_MS);
+  // A lazy image below the fold never decodes until scrolled to, so each wait is bounded.
+  await page.evaluate(() =>
+    Promise.all(
+      [...document.images].map((image) =>
+        Promise.race([image.decode().catch(() => null), new Promise((done) => setTimeout(done, 2000))]),
+      ),
+    ),
+  );
   await page.screenshot({ path: built, fullPage: true });
   if (mock === null) return;
   const board = await page.context().newPage();

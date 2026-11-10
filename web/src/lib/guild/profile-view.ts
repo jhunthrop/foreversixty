@@ -6,6 +6,7 @@
 import { characterHrefOfKey } from '../characters';
 import type { GridCell, GridRowModel } from '../ui/cells';
 import type { Fact } from '../ui/facts';
+import type { GainFigure } from '../ui/primitives';
 import type { GuildReadinessGearGap, GuildReadinessRow } from './api';
 import { recordLine } from './loot-council-view';
 import { enchantSlotLabel } from './readiness-view';
@@ -177,12 +178,13 @@ export function readyFacts(profile: MemberProfile, viewerTz: string, locale: str
 
 export interface UpgradeRowModel {
   key: string;
+  itemId: number;
   name: string;
-  /** "Wrist · Warsong Outriders": the slot in the client's words, where it comes from. */
+  /** "Wrist · Silverwing Sentinels": the slot in the client's words, where it comes from. */
   sub: string;
-  /** "+6.2 DPS" in the BiS page's unit; "Not simmed" without a measured gain; '' for a healer or
+  /** "+6.2 DPS" in the BiS page's unit, "Not simmed" without a measured gain; null for a healer or
    *  tank, whose list measures no gain. */
-  gain: string;
+  gain: GainFigure | null;
 }
 
 /** Their next upgrades, the biggest known gain first (the API's order): what to chase and where. */
@@ -190,14 +192,15 @@ export function upgradeRows(profile: MemberProfile): UpgradeRowModel[] {
   const unit = profile.readiness?.gear_gap?.unit ?? null;
   return profile.upgrades.map((up) => ({
     key: `${up.slot}-${up.item_id}`,
+    itemId: up.item_id,
     name: up.name,
     sub: [enchantSlotLabel(up.slot), up.source].filter((part) => part !== '').join(SEP),
     gain:
       unit === null
-        ? ''
+        ? null
         : up.gain_dps === null
-          ? copy.notSimmed
-          : `+${up.gain_dps.toFixed(1)} ${UNIT_WORD[unit]}`,
+          ? { value: copy.notSimmed, tone: 'muted' }
+          : { value: `+${up.gain_dps.toFixed(1)}`, unit: UNIT_WORD[unit] },
   }));
 }
 
@@ -309,7 +312,8 @@ export function lootFairness(profile: MemberProfile): { median: string; since: s
   return {
     // A median of none says nothing yet (one night in): the meta waits for one item a raider.
     median: profile.loot.guild_median > 0 ? copy.guildMedian(profile.loot.guild_median) : '',
-    since: since === null ? null : copy.nightsSince(since, profile.loot.count > 0),
+    // None since an item awarded on the last raid says nothing: the loot row already dates it.
+    since: since === null || since === 0 ? null : copy.nightsSince(since, profile.loot.count > 0),
   };
 }
 

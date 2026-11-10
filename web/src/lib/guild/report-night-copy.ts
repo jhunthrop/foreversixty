@@ -71,6 +71,9 @@ export const reportNightCopy = {
   loot: {
     head: 'Loot awarded',
     to: (boss: string, name: string): string => `${boss}${SEP}to ${name}`,
+    /** "to Shiverknife · 3 of 3 yes", the boss first when the night had several. */
+    line: (boss: string, name: string, why: string): string =>
+      [boss, `to ${name}`, why].filter((part) => part !== '').join(SEP),
   },
   discord: {
     head: 'Discord summary',

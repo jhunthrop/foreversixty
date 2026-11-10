@@ -2,7 +2,7 @@
 <!-- /guild/{region}/{ruleset}/{slug}/members/{account} (web layout spec 2026-11-05 §7.2 Member
      profile, "What do I know about this raider?"), an officer's read of anyone or a member's of
      themselves; mock web-guild-profile. The head names the raider in class colour with their figures
-     over the guild's tabs (Roster current). Main: Raid ready (the gear gap in the BiS page's unit,
+     over the guild's tabs (Roster current). Main: Raid ready, Next upgrades (ProfileUpgrades), (the gear gap in the BiS page's unit,
      enchants, bags, talents, item level against the guild, the top fight, the last export), the last 4
      raids as a Grid with the 30-raid figure, and loot this tier. The rail: their characters, then,
      officers only, Officer notes: a member's own read carries no notes and draws no trace of them.
@@ -42,6 +42,7 @@
   import Tag from '../../ui/Tag.svelte';
   import GuildViewHeader from './GuildViewHeader.svelte';
   import OfficerNotes from './OfficerNotes.svelte';
+  import ProfileUpgrades from './ProfileUpgrades.svelte';
 
   let {
     path,
@@ -197,20 +198,7 @@
         {/if}
       </Section>
       {#if upgrades.length > 0}
-        <Section title={copy.upgradesHead} panel testid="guild-profile-upgrades">
-          <ul>
-            {#each upgrades as up (up.key)}
-              <li>
-                <Row title={up.name} sub={up.sub} open testid="guild-profile-upgrade">
-                  {#snippet trail()}{#if up.gain !== ''}<span
-                        class="text-strong text-[14px] font-semibold whitespace-nowrap tabular-nums"
-                        >{up.gain}</span
-                      >{/if}{/snippet}
-                </Row>
-              </li>
-            {/each}
-          </ul>
-        </Section>
+        <ProfileUpgrades rows={upgrades} classSlug={head.classSlug} />
       {/if}
       <Section title={copy.attendance} panel testid="guild-profile-attendance">
         {#if attendance === null}

@@ -47,7 +47,7 @@
   {:else}
     <div>
       {#each awards as entry (`${entry.award.item_id}-${entry.award.at}-${entry.award.character_key}`)}
-        <ReportLootRow award={entry.award} boss={entry.boss} />
+        <ReportLootRow award={entry.award} boss={groups.length > 1 ? entry.boss : ''} />
       {/each}
     </div>
     <BisTooltipHost {build} modelsElementId="raid-loot-tooltip-models" {resolve} />

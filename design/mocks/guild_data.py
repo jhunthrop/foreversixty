@@ -93,9 +93,11 @@ PROFILE_ALT = ('Quillstep', 'priest')
 PROFILE_NIGHTS = [(LAST_RAID_AT, 'present')]
 PROFILE_LAST_30 = (1, 1)
 PROFILE_PARSE = ('dps', 812.0, 96)
-PROFILE_GAP = {'upgrades': 2, 'gain_dps': 15.9, 'unit': 'dps', 'not_sim_checked': 0}
-# The gap named (the profile's Next upgrades): slot, item id, the pick, where it comes from, its gain. The gains sum to PROFILE_GAP's.
-PROFILE_UPGRADES = [('neck', 22403, "Diana's Pearl Necklace", 'Stratholme: Cannon Master Willey', 9.7),
-                    ('wrist', 19595, "Dryad's Wrist Bindings", 'Warsong Outriders', 6.2)]
+PROFILE_GAP = {'upgrades': 2, 'gain_dps': 14.5, 'unit': 'dps', 'not_sim_checked': 0}
+# The gap named (the profile's Next upgrades): slot, item id, the pick, where it comes from, its gain, its icon. The Alliance frost
+# mage's 60 raid band of 1.60.1.70790 (bis/mage-frost.json): Sentinel's Silk Leggings over Skyshroud Leggings, Dryad's Wrist
+# Bindings over Netherfroth Cuffs. The gains sum to PROFILE_GAP's.
+PROFILE_UPGRADES = [('legs', 237815, "Sentinel's Silk Leggings", 'Illiyana Moonblaze', 8.6, 'inv_pants_cloth_05'),
+                    ('wrist', 19595, "Dryad's Wrist Bindings", 'Silverwing Sentinels', 5.9, 'inv_bracer_13')]
 # id, body, author, written, the viewer may delete it
 PROFILE_NOTES = [(7, 'Ask about the Wednesday conflict.', 'Dunmaro', '2026-12-05T18:00:00Z', True), (6, 'Always brings flasks.', 'Ironbrand', '2026-12-02T18:00:00Z', False)]
