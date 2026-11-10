@@ -198,14 +198,17 @@ def companion_section(state: str) -> str:
         else:
             pair = f'<div class="pair"><span class="pair-h">{escape(lc["pairLabel"])}</span><p class="t-small">{escape(PC["companionFirst"])}</p><div class="acts">{Button(PC["action"], small=True)}</div></div>'
     # The signing and first-run line (U7): the own build's; every build's, named, for an unknown system; none on a phone.
+    # It belongs to the button: 8 px under it, in body ink (installers review 2026-11-10; SetupCompanion.svelte).
+    first_run = '<p class="t-small" style="color:var(--text)">{}</p>'
     if comp['own'] is not None:
-        plat = f'<p class="t-small">{escape(comp["own"]["firstRun"])}</p>'
+        plat = first_run.format(escape(comp["own"]["firstRun"]))
     elif platform_of(state) == 'unknown':
-        plat = ''.join(f'<p class="t-small">{escape(b["platform"])}: {escape(b["firstRun"])}</p>' for b in comp['others'])
+        plat = ''.join(first_run.format(f'{escape(b["platform"])}: {escape(b["firstRun"])}') for b in comp['others'])
     else:
         plat = ''
     # Owner 2026-11-08: the download right under the heading, in every state (it replaces U4's quiet "another PC" link).
-    body = (f'<div class="body" id="companion">{download_block(state, primary=False)}<p>{escape(lead_sentence)}</p>{plat}'
+    download = f'<div style="display:flex;flex-direction:column;gap:8px">{download_block(state, primary=False)}{plat}</div>'
+    body = (f'<div class="body" id="companion">{download}<p>{escape(lead_sentence)}</p>'
             f'{rows}{pic}{pair}</div>')
     return Section(A['setupCompanionTitle'], body, meta=escape(A['setupCompanionNote']), panel=True)
 
