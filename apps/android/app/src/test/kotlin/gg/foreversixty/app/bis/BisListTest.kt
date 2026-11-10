@@ -217,7 +217,7 @@ class BisListTest {
         val band = requireNotNull(file.band(BisRange(60, "raid"), "horde"))
         val list = BisListBuilder(res, emptyList(), emptySet(), ZoneOffset.UTC).list(file, band, "Protection Warrior", "60")
         assertEquals(BisUnit.Score, list.unit)
-        assertTrue(list.setDpsLine.orEmpty().startsWith("Tank lists rank by score"))
+        assertTrue(list.setDpsLine.orEmpty().startsWith("Ranked by tank score"))
         assertTrue(list.rows.mapNotNull { it.pick }.any { it.next.endsWith(" score") })
     }
 
