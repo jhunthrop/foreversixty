@@ -38,7 +38,7 @@
   } = $props();
 </script>
 
-<PageHeader title={copy.title} testid="sim-head">
+<PageHeader title={copy.title} lead={copy.lead} testid="sim-head">
   {#snippet meta()}<span>{copy.landingMeta}</span>{/snippet}
   {#snippet tabs()}<SimToolTabs />{/snippet}
 </PageHeader>

@@ -2,7 +2,12 @@
 import { describe, expect, it } from 'vitest';
 import type { BisFile } from '../bis/types';
 import { bulkCopy } from './copy';
-import { publishedWeights } from './published-weights';
+import {
+  DEFAULT_WEIGHTS_SPEC,
+  defaultPublishedWeights,
+  parseDefaultWeights,
+  publishedWeights,
+} from './published-weights';
 
 const weight = (stat: string, value: number, scale: number) => ({
   stat,
@@ -44,5 +49,32 @@ describe('publishedWeights', () => {
     expect(
       publishedWeights(file, { spec: 'warrior-fury', race: 'murloc', level: 60, preset: 'raid' }),
     ).toBeNull();
+  });
+});
+
+describe('defaultPublishedWeights', () => {
+  it('reads the default spec at level 60, falling back to the faction the file publishes', () => {
+    const got = defaultPublishedWeights(file);
+    expect(got?.spec).toBe(DEFAULT_WEIGHTS_SPEC);
+    expect(got?.view.rows[0]?.stat).toBe('strength');
+    expect(got?.href).toContain('faction=horde');
+  });
+
+  it('is null when the file publishes no level 60 band', () => {
+    expect(defaultPublishedWeights({ ...file, bands: [] })).toBeNull();
+  });
+});
+
+describe('parseDefaultWeights', () => {
+  it('reads back what the page wrote', () => {
+    const written = defaultPublishedWeights(file);
+    expect(parseDefaultWeights(JSON.stringify(written))).toEqual(written);
+  });
+
+  it('is null for nothing, broken JSON or the wrong shape', () => {
+    expect(parseDefaultWeights(undefined)).toBeNull();
+    expect(parseDefaultWeights('')).toBeNull();
+    expect(parseDefaultWeights('{')).toBeNull();
+    expect(parseDefaultWeights('{"spec":"warrior-fury"}')).toBeNull();
   });
 });

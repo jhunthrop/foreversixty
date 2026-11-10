@@ -12,6 +12,8 @@ export const bandPhrase = (bandLabel: string): string =>
 const lowerBandPhrase = (bandLabel: string): string => bandPhrase(bandLabel).toLowerCase();
 
 export const plannerCopy = {
+  /** The standalone planner's lead: what it does for the player. */
+  lead: 'Plan every point up to level 60 in the order you take them, check it against the guide builds, then copy it into the game or share the link.',
   /** A slot an import names with an item this build's data does not carry; see
    *  simCopy.unknownItem, the same line on the simulator's strip. */
   itemNotSimmed: (name: string): string => `${name} · not simmed`,

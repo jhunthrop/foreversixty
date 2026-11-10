@@ -55,7 +55,7 @@
   import { importFromAddon } from '../../lib/addon/import';
   import type { BisBand } from '../../lib/bis/types';
   import { bandCompareCopy, plannerCharacterCardCopy, plannerHeaderCopy } from '../../lib/planner/copy';
-  import { editorTrees, GAME_TIERS } from '../../lib/planner/editor-trees';
+  import { editorTrees, GAME_TIERS, treeIconSrc } from '../../lib/planner/editor-trees';
   import { bandCodeGear, earnedOrder, estimateCharacter } from '../../lib/planner/estimate';
   import type { LadderOrderFor, LadderOrderForRanks } from '../../lib/planner/ladder-load';
   import { dataUrl } from '../../lib/planner/load';
@@ -94,6 +94,7 @@
     oncode,
     standalone = true,
     openingArt = [],
+    openingTrees = [],
     title = null,
     views = null,
     hideBar = false,
@@ -121,6 +122,9 @@
     /** The opening class's tree art (`trees/<background>.webp`, tab order): the loading Plate
      *  paints it so the largest paint is in the server render (planner.astro reads it). */
     openingArt?: readonly string[];
+    /** The opening class's tree names, left to right: the loading Plate's heads, each at 0 points,
+     *  so the first paint reads the trees the island is about to draw. */
+    openingTrees?: readonly string[];
     /** The shared build's own name (`/b/:id`, premium spec 2026-11-08 decision B1): the H1 in
      *  place of `{Class} talents`; a record with none reads `{Race} {Class}`. */
     title?: string | null;
@@ -1130,7 +1134,17 @@
       >
         {#each [0, 1, 2] as tree (tree)}
           <div class="pl-skt">
-            <span class="skeleton-block block" style="width:180px;height:24px"></span>
+            {#if openingTrees[tree] !== undefined && store.classSlug === classSlug}
+              <!-- The opening class's tree head as the editor draws it (TalentEditor .tedit-h). -->
+              {@const iconSrc = treeIconSrc(classSlug, tree, (path) => dataUrl(store.treeVersion, path))}
+              <div class="pl-skh">
+                {#if iconSrc !== ''}<img src={iconSrc} alt="" width="28" height="28" />{/if}
+                <h2>{openingTrees[tree]}</h2>
+                <b>0</b>
+              </div>
+            {:else}
+              <span class="skeleton-block block" style="width:180px;height:24px"></span>
+            {/if}
             {#if openingArt[tree] !== undefined && store.classSlug === classSlug}
               <!-- The opening class's tree art in the server render: the page's largest paint
                        arrives with the first paint instead of after the island and the trees. -->
@@ -1245,7 +1259,12 @@
 {#if standalone}
   <Page layout="workbench" panels testid="planner">
     {#snippet header()}
-      <PageHeader title={headTitle} tone={classTone(store.classSlug)} testid="planner-head">
+      <PageHeader
+        title={headTitle}
+        tone={classTone(store.classSlug)}
+        lead={shared ? undefined : plannerCopy.lead}
+        testid="planner-head"
+      >
         {#snippet crest()}
           <!-- Keyed on mount: hydration keeps the server's src, which is the default class's. -->
           {#key mounted}<ClassCrestRing
@@ -1369,14 +1388,15 @@
   .pl-skel {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
-    padding: 16px 20px;
   }
+  /* TalentEditor's .tedit-tree padding, so a head sits where the editor's head lands. */
   .pl-skt {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 14px;
+    padding: 16px 12px;
+    min-width: 0;
   }
   @media (max-width: 767px) {
     .pl-skel {
@@ -1385,6 +1405,33 @@
     .pl-skt + .pl-skt {
       display: none;
     }
+  }
+  .pl-skh {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    height: 28px;
+  }
+  .pl-skh img {
+    display: block;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    flex: none;
+  }
+  .pl-skh h2 {
+    font: 700 15px/20px var(--font-body);
+    color: var(--color-strong);
+    margin: 0;
+    min-width: 0;
+  }
+  .pl-skh b {
+    margin-left: auto;
+    font: 700 18px/24px var(--font-body);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-muted);
   }
   .pl-art {
     display: block;

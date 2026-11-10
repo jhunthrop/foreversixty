@@ -10,6 +10,7 @@ import { scheduleBoot } from './lib/islands/boot';
 import { shellReservations } from './lib/islands/reservations';
 import ToolsView from './components/sim/tools/ToolsView.svelte';
 import { TOOLS, type SimTool } from './lib/sim/bulk-store.svelte';
+import { parseDefaultWeights } from './lib/sim/published-weights';
 import './styles/fonts.css';
 import './styles/global.css';
 
@@ -40,13 +41,15 @@ function boot(): void {
   const target = document.getElementById(MOUNT_ID);
   if (target === null) return;
   const tool = toolFrom(target, window.location.pathname);
+  // /sim/weights' default table, computed at build time and server-rendered (sim/weights.astro).
+  const defaultWeights = parseDefaultWeights(target.dataset.defaultWeights);
   // The shell's skeleton and no-JS paragraph live inside the mount; Svelte 5 appends rather
   // than replaces, so they go before the mount or they stay under the island.
   target.replaceChildren();
   // The shell's min-h reservation holds the footer until the island draws; after that the page
   // is as tall as what it shows (lib/islands/reservations.ts).
   target.classList.remove(...shellReservations(target));
-  mount(ToolsView, { target, props: { tool } });
+  mount(ToolsView, { target, props: { tool, defaultWeights } });
 }
 
 scheduleBoot(boot);

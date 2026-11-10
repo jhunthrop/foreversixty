@@ -62,6 +62,8 @@ export const rankingsEmptyCopy = {
 export const rankingsCopy = {
   eyebrow: 'Characters',
   h1: 'Rankings',
+  /** The page's lead: what the boards hold and how a player gets on them. */
+  lead: 'Logged boss kills on Forever, ranked by DPS and HPS for each spec, class, ruleset and guild. The companion uploads your combat log as you play, so your kills join the board.',
   tierQuestion: 'Comparing specs, not characters?',
   tierLink: 'Tier list',
   tierHref: '/tiers',

@@ -22,7 +22,9 @@
      model for this spec is never on screen to tick in the first place.
 
      Before a run, the main column holds the weights the ranker published for the character's
-     own band (lib/sim/published-weights.ts), read through the same table, linking to that set. -->
+     own band (lib/sim/published-weights.ts), read through the same table, linking to that set.
+     With no character loaded it holds `defaultWeights`, the default spec's level 60 figures the
+     page computed at build time and server-rendered (WeightsShell.svelte). -->
 <script lang="ts">
   import activeBuild from '../../../data/active-build.json';
   import type { Me } from '../../../lib/account/api';
@@ -32,7 +34,7 @@
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { specLabel } from '../../../lib/sim/spec-label';
-  import { pickableStatsFor, statLabel, toolScaleView } from '../../../lib/sim/weights';
+  import { pickableStatsFor, toolScaleView } from '../../../lib/sim/weights';
   import type { Snippet } from 'svelte';
   import Notice from '../../ui/Notice.svelte';
   import Page from '../../ui/Page.svelte';
@@ -40,8 +42,20 @@
   import WeightsScaleTable from '../WeightsScaleTable.svelte';
   import BulkRunBar from './BulkRunBar.svelte';
   import SaveSimForm from './SaveSimForm.svelte';
+  import WeightsPicks from './WeightsPicks.svelte';
+  import WeightsPublishedSection from './WeightsPublishedSection.svelte';
 
-  let { store, lead }: { store: BulkStore; me: Me | null; lead?: Snippet } = $props();
+  let {
+    store,
+    lead,
+    defaultWeights = null,
+  }: {
+    store: BulkStore;
+    me: Me | null;
+    lead?: Snippet;
+    /** The default spec's published figures, shown while no character is loaded. */
+    defaultWeights?: PublishedWeights | null;
+  } = $props();
 
   const view = $derived(toolScaleView(store.weights, store.character?.spec ?? '', store.referenceStat));
   /** The picker's own list: `store.weightStats` when the spec sent one, the full pinned
@@ -56,19 +70,20 @@
    */
   const saveTitleFor = $derived(`${bulkCopy.weightsTitle} · ${specLabel(store.character?.spec ?? '')}`);
 
-  let published = $state<PublishedWeights | null>(null);
+  let characterPublished = $state<PublishedWeights | null>(null);
+  const published = $derived(store.character === null ? defaultWeights : characterPublished);
   $effect(() => {
     const character = store.character;
     const preset = requestPresetFor(store.settings);
     if (character === null) {
-      published = null;
+      characterPublished = null;
       return;
     }
     let live = true;
     fetchBisFile(activeBuild.build, character.spec)
       .then((file) => {
         if (!live) return;
-        published =
+        characterPublished =
           file === null
             ? null
             : publishedWeights(file, {
@@ -125,40 +140,9 @@
       </div>
     </Section>
   {:else if published !== null}
-    <Section
-      panel
-      frame="framed"
-      title={bulkCopy.weightsPublishedTitle}
-      action={{ label: published.label, href: published.href }}
-      testid="sim-weights-published"
-    >
-      <WeightsScaleTable view={published.view} />
-    </Section>
+    <WeightsPublishedSection {published} isDefault={store.character === null} />
   {/if}
   {#snippet rail()}
-    <Section title={bulkCopy.weightsPick} panel testid="sim-weights-pick">
-      {#if store.referenceStat}
-        <p class="text-small text-muted m-0" data-testid="sim-weights-reference">
-          {bulkCopy.weightsReference}: {statLabel(store.referenceStat)}
-        </p>
-      {/if}
-      <ul class="m-0 grid list-none grid-cols-2 gap-x-4 p-0">
-        {#each pickable as stat (stat.id)}
-          <li>
-            <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
-              <input
-                type="checkbox"
-                class="accent-gold h-[18px] w-[18px]"
-                data-testid={`sim-weight-pick-${stat.id}`}
-                checked={store.stats.includes(stat.id)}
-                disabled={stat.id === store.referenceStat}
-                onchange={() => togglePick(stat.id)}
-              />
-              {stat.label}
-            </label>
-          </li>
-        {/each}
-      </ul>
-    </Section>
+    <WeightsPicks {pickable} picked={store.stats} reference={store.referenceStat} ontoggle={togglePick} />
   {/snippet}
 </Page>

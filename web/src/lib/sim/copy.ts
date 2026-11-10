@@ -807,6 +807,13 @@ export const bulkCopy = {
   dropsTitle: KIND_TITLES.drops,
   weightsTitle: KIND_TITLES.weights,
   weightsWarning: 'Weights hold near the gear you have on. For a real choice, sim the items.',
+  /** /sim/weights' lead: what the table tells the player. */
+  weightsLead:
+    'What one more point of each stat adds to your DPS. The top stat in the table reads 1.00 and the rest scale from it. Load your character to weigh your own gear, talents and buffs.',
+  /** The default table's line before a character is loaded; the spec is named beside the title. */
+  weightsDefaultNote: (level: number): string => `Level ${level} until you load your own.`,
+  /** /sim/weights without JavaScript: the table works, loading a character does not. */
+  weightsNeedsJs: 'Loading your own character needs JavaScript. The published figures below work without it.',
   weightsWarningLink: 'Open Top Gear',
   /**
    * Each tool page's `<noscript>` fallback. A single parameterised entry rather than four
@@ -1029,7 +1036,7 @@ export const bulkCopy = {
   /** Before a run: the band's published weights (lib/sim/published-weights.ts). */
   weightsPublishedTitle: 'Published weights',
   weightsPublishedBand: (level: number, preset: 'raid' | 'bare'): string =>
-    `Level ${level} ${preset === 'raid' ? 'raid' : 'bare'} set`,
+    `Level ${level} BiS, ${preset === 'raid' ? 'raid buffs' : 'no buffs'}`,
   /**
    * Task 8, sub-item 1: contract 10.9 documents `StatWeight.Error` as a standard error that
    * is a lower bound, not the true uncertainty -- an 8-seed check found the real run-to-run
