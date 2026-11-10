@@ -1,12 +1,15 @@
 import SwiftUI
+import UIKit
 
 // The round-5 page and its panels (spec 2026-11-09-directions.md Mobile; design/mocks/ws_app_flows.py
 // HOME_R5_CSS, RAID_R5_CSS, GEAR_R5_CSS, ACTIVITY_R5_CSS): the tab roots Home, Raid, Gear and Activity
 // are built from these, as Android's FlowBandPage, FlowSection(panel =) and FlowRow.
 
-/// A tab root's page in the round-5 look: the painted ground, an optional head on the band art (Home's
-/// hero, Activity's chips), then the blocks 16 under it, 14 at the sides and 20 apart. Parity regions
-/// are measured from the top of the head, as the mocks' are from the navigation bar.
+/// A tab root's page in the round-5 look: the band art (Home's hero) running up under the bars, an
+/// optional head on it (Home's crest and name, Activity's chips), then on the painted ground the blocks
+/// 16 under it, 14 at the sides and 20 apart. Parity regions are measured from the top of the head, as
+/// the mocks' are from the navigation bar. With `bandBar()` on the screen the bars stay clear over the
+/// art until the page scrolls.
 public struct BandPage<Head: View, Notice: View, Content: View>: View {
     static var side: CGFloat { 14 }
     static var bottom: CGFloat { 22 }
@@ -30,10 +33,16 @@ public struct BandPage<Head: View, Notice: View, Content: View>: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            head
-                .frame(maxWidth: .infinity, alignment: .leading)
-                // The art runs up under the navigation bar and the status bar, the head's own height below them.
-                .background(alignment: .bottom) { BandArt(art).padding(.top, -Self.underBars) }
+            // A zero-height line keeps the band drawn when there is no head (Raid, Gear): the art runs
+            // up under the navigation bar and the status bar, the head's own height below them.
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear.frame(height: 0)
+                head
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(alignment: .bottom) { BandArt(art).padding(.top, -Self.underBars) }
+            // The band's black edge (`.band`, `.bandc`); the hero has none.
+            .overlay(alignment: .bottom) { if art == .band { Color.black.frame(height: FSStroke.hairline) } }
             notice
             VStack(alignment: .leading, spacing: FSSpace.space5) { content }
                 .padding(.horizontal, Self.side)
@@ -51,6 +60,49 @@ public extension BandPage where Notice == EmptyView {
     init(art: BandArt.Art = .band, @ViewBuilder head: () -> Head, @ViewBuilder content: () -> Content) {
         self.init(art: art, head: head, notice: { EmptyView() }, content: content)
     }
+}
+
+/// A tab root's bars over the band (round 5): at rest the navigation bar is clear, so `BandPage`'s art
+/// shows behind the profile button and the large title; once the page scrolls under it the bar takes
+/// the band's own ground (the app's standard appearance). Set on the screen's navigation item, so the
+/// title faces of `BarAppearance` stay and pushed screens keep the standard bar.
+public struct BandBar: UIViewControllerRepresentable {
+    public init() {}
+
+    public func makeUIViewController(context: Context) -> Controller { Controller() }
+
+    public func updateUIViewController(_ controller: Controller, context: Context) {}
+
+    public final class Controller: UIViewController {
+        override public func didMove(toParent parent: UIViewController?) {
+            super.didMove(toParent: parent)
+            applyEdge()
+        }
+
+        override public func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+            applyEdge()
+        }
+
+        /// The nearest ancestor the navigation controller shows is the screen whose item it draws.
+        private func applyEdge() {
+            var current: UIViewController? = self
+            while let controller = current {
+                if let navigation = controller.navigationController, navigation.viewControllers.contains(controller) {
+                    let edge = BarAppearance.clearEdge()
+                    controller.navigationItem.scrollEdgeAppearance = edge
+                    controller.navigationItem.compactScrollEdgeAppearance = edge
+                    return
+                }
+                current = controller.parent
+            }
+        }
+    }
+}
+
+public extension View {
+    /// A round-5 tab root's clear bar over its band (`BandBar`).
+    func bandBar() -> some View { background { BandBar().frame(width: 0, height: 0).accessibilityHidden(true) } }
 }
 
 /// A round-5 section over the ground: the cream display title at 21/26 with its gold action (or a muted

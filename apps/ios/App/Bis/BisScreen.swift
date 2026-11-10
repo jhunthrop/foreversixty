@@ -122,6 +122,7 @@ struct BisScreen: View {
                 portrait: model.context.isYours ? portrait : nil,
                 actions: GearActions(openPicker: { model.isPickerPresented = true }, openItem: open)
             )
+            .bandBar()
             .safeAreaInset(edge: .top, spacing: 0) { strips(offlineSince) }
         } else {
             list

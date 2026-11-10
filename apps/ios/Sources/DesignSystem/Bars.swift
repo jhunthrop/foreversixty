@@ -25,6 +25,18 @@ public enum BarAppearance {
         appearance.backgroundImage = veiledBand()
         appearance.backgroundImageContentMode = .scaleAspectFill
         appearance.shadowColor = .black
+        return titled(appearance)
+    }
+
+    /// A round-5 tab root's bar at rest (`BandBar`): clear, so the page's band art shows behind the
+    /// profile button and the large title, with the same title faces.
+    public static func clearEdge() -> UINavigationBarAppearance {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        return titled(appearance)
+    }
+
+    private static func titled(_ appearance: UINavigationBarAppearance) -> UINavigationBarAppearance {
         var title: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor(Theme.Palette.strong)]
         if let font = Theme.Typography.barTitle { title[.font] = font }
         appearance.titleTextAttributes = title

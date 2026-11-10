@@ -157,6 +157,7 @@ struct RaidsTab: View {
         NavigationStack(path: $router.path) {
             RaidRootView(content: rootContent, actions: rootActions)
                 .refreshable { await reload() }
+                .bandBar()
                 // Round 5 on iOS (m-ios-raid): the tab's large title on the band, under the profile button.
                 .navigationTitle(AppTab.raid.title)
                 .toolbarTitleDisplayMode(.large)

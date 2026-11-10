@@ -179,6 +179,7 @@ struct HomeCharacterScreen: View {
         NavigationStack {
             HomeFlowView(content: flowContent, build: home?.dataBuild ?? "", actions: flowActions)
                 .refreshable { await flow?.refresh() }
+                .bandBar()
                 .navigationTitle("")
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationDestination(isPresented: simsShown) { sims }

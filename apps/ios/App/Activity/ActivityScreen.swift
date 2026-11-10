@@ -48,6 +48,7 @@ struct ActivityScreen: View {
                         )
                     )
                     .refreshable { await model.load() }
+                    .bandBar()
                 }
             }
             // Round 5 on iOS (m-ios-activity): the tab's large title on the band, the chips under it.
@@ -153,7 +154,6 @@ struct ActivityFilterChips: View {
             .padding(.top, 2)
             .padding(.bottom, FSSpace.space2)
         }
-        .overlay(alignment: .bottom) { Color.black.frame(height: FSStroke.hairline) }
         .parityRegion(.controls)
     }
 
