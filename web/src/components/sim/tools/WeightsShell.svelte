@@ -1,18 +1,18 @@
 <!-- web/src/components/sim/tools/WeightsShell.svelte -->
 <!-- /sim/weights' server render (sim/weights.astro), the island's no-character state drawn
-     without a store: the source switcher, the run line's band with its Run held off, the caution,
-     the default spec's published weights and the stats to weigh. The island mounts the same parts
-     over it (ToolsView: SourceSwitcher, then StatWeights with `defaultWeights`), so the table a
-     search engine reads is the one a player sees, figure for figure. -->
+     without a store: the source switcher, the run line with its Run held off, the stats to weigh
+     and the default spec's published weights. The island mounts the same parts over it
+     (ToolsView: SourceSwitcher, then StatWeights with `defaultWeights`), so the table a search
+     engine reads is the one a player sees, figure for figure. -->
 <script lang="ts">
+  import { BULK_PRECISIONS, type Precision } from '../../../lib/sim/bulk-types';
   import { bulkCopy } from '../../../lib/sim/copy';
-  import { simPageCopy } from '../../../lib/sim/page-copy';
+  import type { PrecisionId } from '../../../lib/sim/precision';
   import type { PublishedWeights } from '../../../lib/sim/published-weights';
-  import { pickableStatsFor, weightsEngineIterations, weightsIterationsFor } from '../../../lib/sim/weights';
-  import Button from '../../ui/Button.svelte';
-  import ControlBar from '../../ui/ControlBar.svelte';
-  import Notice from '../../ui/Notice.svelte';
+  import { defaultSettings } from '../../../lib/sim/settings';
+  import { pickableStatsFor } from '../../../lib/sim/weights';
   import Page from '../../ui/Page.svelte';
+  import SimRunBar from '../SimRunBar.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
   import WeightsPicks from './WeightsPicks.svelte';
   import WeightsPublishedSection from './WeightsPublishedSection.svelte';
@@ -20,8 +20,14 @@
   let { published }: { published: PublishedWeights } = $props();
 
   const nothing = (): void => {};
-  /** BulkRunBar's cost line at the store's opening state: Fast, in the browser, nothing ticked. */
-  const openingCost = weightsEngineIterations(weightsIterationsFor('fast', 'browser'), 0);
+  /** The bulk store's opening precision (bulk-store.svelte.ts). */
+  const OPENING_PRECISION: PrecisionId = 'fast';
+  const PRECISION_LABELS: Record<Precision, string> = {
+    fast: bulkCopy.precisionFast,
+    normal: bulkCopy.precisionNormal,
+    high: bulkCopy.precisionHigh,
+  };
+  const precisionOptions = BULK_PRECISIONS.map((id) => ({ value: id, label: PRECISION_LABELS[id] }));
 </script>
 
 <div data-testid="sim-tools-view">
@@ -39,21 +45,24 @@
   />
   <Page layout="ledger" panels testid="sim-stat-weights">
     {#snippet bar()}
-      <ControlBar groups={[]} label={simPageCopy.bar.label} labelsFrom={1920}>
-        {#snippet action()}<Button tone="primary" disabled>{bulkCopy.runBulk}</Button>{/snippet}
-      </ControlBar>
-      <div class="flex flex-col gap-1 px-[var(--page-inset)] pt-3">
-        <p class="m-0 text-[14px] leading-5">
-          <span class="text-muted">{bulkCopy.weightsCostNote(openingCost)}</span>
-        </p>
-      </div>
+      <!-- BulkRunBar's opening state: the store's default settings and Fast, Run held off. -->
+      <SimRunBar
+        settings={defaultSettings()}
+        precisionId={OPENING_PRECISION}
+        spec=""
+        level={60}
+        primary="disabled"
+        primaryLabel={bulkCopy.runBulk}
+        primaryTestid="sim-run-bulk"
+        testid="sim-run-bulk-bar"
+        busy={false}
+        {precisionOptions}
+        onsettings={nothing}
+        onprecision={nothing}
+        onprimary={nothing}
+        onmore={nothing}
+      />
     {/snippet}
-    <Notice
-      text={bulkCopy.weightsWarning}
-      tone="neutral"
-      action={{ label: bulkCopy.weightsWarningLink, href: '/sim/gear' }}
-      testid="sim-weights-warning"
-    />
     <WeightsPicks pickable={pickableStatsFor(undefined)} picked={[]} reference="" />
     <WeightsPublishedSection {published} isDefault />
   </Page>
