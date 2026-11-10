@@ -2,9 +2,9 @@
 // web/src/components/guides/GuideSpecBar.astro
 // The guide's ControlBar (guides spec 2026-11-08 §4.3): the class's specs as a segmented
 // group of links, each with its spec icon, the current one checked; at the end, from 768 to 1024,
-// an On this page select that jumps to a section (from 1024 the contents rail does). On a phone
-// one line, "<Spec> <Class> · On this page", that opens in place onto the specs and the sections
-// as slim rows.
+// a Jump to select that jumps to a section (from 1024 the contents rail does). On a phone one
+// line, "<Spec> <Class>" and "Jump to", that opens in place onto the specs and the sections as
+// slim rows.
 import ControlBar from '../ui/ControlBar.astro';
 import Row from '../ui/Row.svelte';
 import Select from '../ui/Select.astro';
@@ -37,7 +37,15 @@ const groups: ControlGroup[] = [
 ];
 ---
 
-<ControlBar id="guide-bar" label={guidesCopy.barLabel} groups={groups} summary={summary} testid="guide-bar">
+<ControlBar
+  id="guide-bar"
+  labelsFrom={1920}
+  label={guidesCopy.barLabel}
+  groups={groups}
+  summary={summary}
+  toggleLabel={guidesCopy.tocBarLabel}
+  testid="guide-bar"
+>
   <Fragment slot="end">
     <span class="guide-toc-select" data-testid="guide-toc-select">
       <Select

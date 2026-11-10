@@ -15,6 +15,8 @@ export const characterHeaderCopy = {
   getSetUpHref: '/setup',
   /** Only the words past the sync age go ember (nav selector spec 2.11 threshold). */
   staleTail: 'Log out in the game to sync',
+  /** The sync line's lead before the age: "Synced 12 minutes ago". */
+  synced: 'Synced',
   tryAgain: 'Try again',
   loading: 'Loading your character',
   levelWord: 'Level',

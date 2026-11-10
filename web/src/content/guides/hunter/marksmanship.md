@@ -69,8 +69,8 @@ There are two builds. You level with the pet: thirty-one points in Marksmanship 
 - **Mortal Shots** (5 points): your shot crits hit for 230% of a normal hit instead of double
 - **Barrage** (3 points in the raid build): 15% more damage on Multi-Shot, Aimed Shot and Volley, 5% with the 1 point you level with
 - **Ranged Weapon Specialization** (5 points): 5% more damage on everything your bow or gun does, auto shot included
-- **Careful Aim** (5 points): attack power equal to your Intellect
-- **Lethal Attacks** (5 points): 5% crit on every attack
+- **Careful Aim** (5 points)
+- **Lethal Attacks** (5 points)
 - **Efficiency** (5 points): 15% off every shot, so you reach the end of a long fight still shooting
 - **Deadly Aspects** (5 points): auto shots under Aspect of the Hawk have a 10% chance to speed your ranged attacks by 30% for 12 seconds
 - **Improved Tracking** (5 points): 5% more damage against the creature type you are tracking
@@ -130,11 +130,11 @@ Forever's damage potions share the two-minute potion cooldown with mana potions,
 
 ## Races
 
-Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds and lines up with Rapid Fire on the pull. Human is next with Ruthless's 1% crit all fight, and Dwarf's 1% hit and Big Game Hunter come last. Humans can be Hunters for the first time in Forever.
+Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds and lines up with Rapid Fire on the pull. Human is next with Ruthless's 1% crit all fight, and Dwarf's 1% hit and Big Game Hunter come last.
 
 Troll for the Horde: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull, and more auto shots is what Marksmanship lives on. Orc is close behind: Blood Fury is 10% attack power for 15 seconds every two minutes, but Command does nothing for you with the pet dismissed.
 
-Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire.
+Skyborne's Wind Blessed is 2% haste and speeds every auto shot you fire.
 
 ## Professions
 

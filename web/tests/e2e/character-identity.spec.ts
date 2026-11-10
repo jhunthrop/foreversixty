@@ -100,7 +100,7 @@ test('the owner’s head carries the sync line after the facts, the split to the
 
   const sync = page.getByTestId('character-sync');
   // The fixture's build was captured minutes before the worker loaded it.
-  await expect(sync).toHaveText(/^Addon · \d+ minutes ago$/);
+  await expect(sync).toHaveText(/^Synced \d+ minutes ago$/);
   await expect(page.getByTestId('character-head').getByTestId('character-sync')).toBeVisible();
   await expect(fact(page, 'split')).toHaveAttribute(
     'href',
@@ -115,7 +115,7 @@ test('a stale addon sync still reads its age in days', async ({ page }) => {
   await stub(page, { ...CHARACTER.data, ...OWNER_SCORE });
   await page.goto(CHARACTER_PATH);
 
-  await expect(page.getByTestId('character-sync')).toHaveText(/^Addon · 19 days ago/);
+  await expect(page.getByTestId('character-sync')).toHaveText(/^Synced 19 days ago/);
 });
 
 test('the owner’s sync age ticks each minute while the tab lives', async ({ page }) => {
@@ -128,9 +128,9 @@ test('the owner’s sync age ticks each minute while the tab lives', async ({ pa
   await page.goto(CHARACTER_PATH);
 
   const sync = page.getByTestId('character-sync');
-  await expect(sync).toHaveText('Addon · 4 minutes ago');
+  await expect(sync).toHaveText('Synced 4 minutes ago');
   await page.clock.runFor(60_000);
-  await expect(sync).toHaveText('Addon · 5 minutes ago');
+  await expect(sync).toHaveText('Synced 5 minutes ago');
 });
 
 test('the crest sits on the name’s line in the same place for a visitor and the owner', async ({ page }) => {

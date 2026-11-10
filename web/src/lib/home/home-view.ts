@@ -29,7 +29,6 @@ const MAX_LEVEL = 60;
 const BAND_SPAN = 9;
 
 export const homeCopy = {
-  signIn: sharedHomeSignIn,
   pickClass: sharedHomePickClass,
   howToStart: sharedHomeHowToStart,
   steps: [{ title: sharedHomeSignIn }, { title: ctaCopy.installAddonAndCompanion }],

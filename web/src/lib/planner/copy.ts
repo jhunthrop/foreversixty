@@ -35,7 +35,8 @@ export const plannerCopy = {
   /** Rebuild spec §4.H, review finding 8: a plain-text summary for someone with no account
    *  and no addon, beside "Copy for the game". Always computed from real data, never a
    *  placeholder-filled template. */
-  copyAsText: 'Copy as text',
+  /** Share's own copy: the build as one line for chat, beside In the game's "Copy for the game". */
+  copyAsText: 'Copy for chat',
   copiedText: 'Copied',
   shareTextSummary: (
     raceName: string,
@@ -56,8 +57,7 @@ export const plannerCopy = {
   /** The record carries more points than any legal order reaches: name what the planner kept. */
   keptNote: (kept: number, total: number, name: string): string =>
     `Loaded ${kept} of ${name}'s ${total} points; the rest cannot be reached in any legal order.`,
-  /** A character's export or an addon import: the game records ranks, never the order. */
-  reconstructedNote: 'Talents loaded from a character.',
+  /** A character's export or an addon import that lost points: the game records ranks, never the order. */
   reconstructedDroppedNote: (dropped: number): string =>
     `Talents loaded from a character, minus ${dropped} that no legal order reaches.`,
   olderBuildNote: 'This code is from an older client build; check the talents.',
@@ -65,8 +65,6 @@ export const plannerCopy = {
    *  long sentence from 768, the short one on a phone, where the note is one line. */
   linkedNote: 'Opened from a link. Point order: the main tree first.',
   linkedNoteShort: 'Opened from a link.',
-  /** A guide's link that names its spec: the build is spent in that guide's own levelling order. */
-  guideOrderNote: (specName: string): string => `Loaded in the ${specName} guide's levelling order.`,
   /** A code for a class the planner has no talent data for. */
   noClassNote: (slug: string): string => `That code names a class this planner does not have: ${slug}.`,
   inGameTitle: 'In the game',
@@ -80,19 +78,28 @@ export const plannerCopy = {
   guideBuildsTitle: 'Guide builds',
   /** The guide build row that is the build on screen. */
   guideBuildLoaded: 'Loaded',
+  /** A guide build row's distance from the build on screen: "3 points off". */
+  guideBuildOff: (points: number): string => `${points} ${points === 1 ? 'point' : 'points'} off`,
+  /** A guide build row's first talent the build on screen lacks: "Missing Lacerate". */
+  guideBuildMissing: (talent: string): string => `Missing ${talent}`,
   /** The guide's own build names (guidesCopy.levelingBuild, raidBuild; guide-builds.test.ts holds them equal):
    *  repeated here so the planner island does not carry the guides' whole copy. */
   guideLevelingBuild: 'Level 60 build',
   guideRaidBuild: 'Raid build',
-  /** In the game, under Copy for the game: the one thing to know. */
-  pasteHint: 'Paste in game with /fs.',
+  /** In the game, under Copy for the game: the one line on using it, linked to the addon's setup step. */
+  pasteHint: 'In game: /fs, then paste.',
+  pasteHintHref: '/setup#addon',
+  /** Point order's column heads: the level past the row's first (ruling 2026-11-09: digits read as ranks). */
+  orderMarkers: Array.from({ length: 10 }, (_, step) => `+${step}`) as readonly string[],
   /** Points spent past a character's level (decision P4). */
   plannedAhead: (n: number): string => `${n} planned ahead`,
   /** Point order's line after the character's level row (decision P4). */
   levelLine: (name: string, level: number): string => `${name} is level ${level}.`,
+  /** Above an empty build's Point order, the spec guide's order it previews, dimmed. */
+  previewLine: (specName: string): string => `${specName} guide order`,
   /** The same line when the spec guide's order fills the sockets past the character's level. */
   aheadLine: (name: string, level: number, specName: string): string =>
-    `${name} is level ${level}. Then the ${specName} guide's order.`,
+    `${name} is ${level}. Then ${specName} guide order.`,
   /** A talent cell whose last points are planned past the character's level: its accessible name's tail. */
   plannedCell: (level: number): string => `planned past level ${level}`,
   /** Point order's row labels: "Levels 20 to 29", "Level 60". */
@@ -239,8 +246,10 @@ export const bandCompareCopy = {
   /** The count leads in gold, this text follows it. */
   differsSuffix: 'of your points differ from this build',
   /** A build inside the band's, only short of it: the count leads, this text follows it. */
-  toTakeSuffix: "of this build's points still to take",
-  matches: 'Matches',
+  toTakeSuffix: 'points left',
+  /** The level card on a build that is its guide's: "Matches the Survival guide build". */
+  matches: (specName: string): string =>
+    specName === '' ? 'Matches' : `Matches the ${specName} guide build`,
   /** The quiet note under the line when the build holds points past the band's own total. */
   beyondGuide: (n: number): string => `+${n} beyond the build`,
   /** The difference named, not counted (ruling Q1): "Differs by 2 points: this build takes
@@ -258,7 +267,7 @@ export const bandCompareCopy = {
     return `Differs by ${count} point${count === 1 ? '' : 's'}: ${sides.join('; ')}.`;
   },
   /** A band build that covers fewer points than the character has (ruling MUST 3): never "Matches". */
-  coversFewer: (covered: number, total: number): string => `Covers ${covered} of your ${total} points.`,
+  coversFewer: (covered: number, total: number): string => `${covered} of ${total} points`,
   loadButton: (bandLabel: string): string => `Load the ${lowerBandPhrase(bandLabel)} build`,
   /** The line under the panel after a load: cut at a character's level, or the band's whole build. */
   loadedLine: (level: number, points: number, of: number): string =>
@@ -270,7 +279,6 @@ export const bandCompareCopy = {
     "Loading replaces every point you've spent with this level range's own build. Load anyway?",
   loadConfirmProceed: 'Load it',
   loadConfirmCancel: 'Keep my build',
-  gearRowLabel: (bandLabel: string): string => `Gear for ${bandLabel}`,
   bestInSlotList: 'Best in slot list',
   /** Rebuild spec §4.E.4: one more line in the talent cell's own existing tooltip, once a
    *  band has loaded and this cell's rank differs from it. */

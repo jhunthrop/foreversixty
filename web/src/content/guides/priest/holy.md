@@ -46,7 +46,7 @@ sources:
 Deep Holy for Prayer of Mending, with 17 points in Discipline for stronger, cheaper Renews and mana.
 
 - **Prayer of Mending** (1 point): the capstone. It heals its holder on the next hit or direct heal, then jumps. Keep it on the tank.
-- **Spiritual Healing** (3 points): 10% more healing on everything.
+- **Spiritual Healing** (3 points)
 - **Spiritual Guidance** (4 points): a share of your Spirit becomes healing power, so Spirit pays you twice.
 - **Holy Specialization** (5 points) and **Divine Fury** (5 points): 5% crit on Holy spells, and Heal and Greater Heal cast half a second faster.
 - **Improved Healing** (3 points): 15% off Lesser Heal, Heal, Greater Heal and Prayer of Mending.

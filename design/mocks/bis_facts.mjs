@@ -107,7 +107,7 @@ function readFacts() {
     where: where
       ? {
           title: text(q("h2", where)),
-          stops: qa(".bis-stop-link", where).map((p) => ({ title: text(q("a", p)), count: text(q("span", p)) })),
+          stops: qa(".bis-stop-chip", where).map((a) => ({ title: text(a) })),
           action: text(q('[data-testid="bis-pre-raid-toggle"]', where)),
         }
       : null,

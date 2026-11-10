@@ -89,14 +89,17 @@
 <!-- Utilities, not a scoped <style>: this island's scoped CSS never reached the page (it is
      only reachable through HomeSignedIn's client graph); the theme utilities are global. -->
 <Frame ornate art="cave" region={REGION.countdowns} testid="home-raid">
-  <div class="grid gap-x-[34px] gap-y-4 min-[900px]:grid-cols-2">
+  <div class="grid gap-x-[34px] gap-y-4 min-[900px]:grid-cols-[minmax(0,1fr)_auto]">
     <div class="min-w-0">
       <HomePlaqueTitle title={raid.zone_name} sub={`${guild} · ${when}`} />
       <div class="mt-4">
-        <BigFigures groups={[parts, signupFigures(counts)]} {timer} testid="home-raid-figures" />
+        <BigFigures groups={[parts]} {timer} testid="home-raid-figures" />
       </div>
       <p class="text-text mt-[14px] flex flex-wrap gap-x-[18px] gap-y-[6px] text-[14px] leading-5">
-        {#each roleCounts(counts) as row (row.word)}<span><b class="text-strong">{row.n}</b> {row.word}</span
+        {#each signupFigures(counts) as row (row.label)}<span data-testid="home-raid-signups"
+            ><b class="text-strong">{row.value}</b> {row.label}</span
+          >{/each}{#each roleCounts(counts) as row (row.word)}<span
+            ><b class="text-strong">{row.n}</b> {row.word}</span
           >{/each}
       </p>
       {#if standing.length > 0}
@@ -122,7 +125,7 @@
     </div>
     {#if needs.length > 0}
       <div
-        class="border-frame-line border-t pt-[14px] min-[900px]:border-t-0 min-[900px]:border-l min-[900px]:pt-0 min-[900px]:pl-7"
+        class="border-frame-line border-t pt-[14px] min-[900px]:max-w-[360px] min-[900px]:self-start min-[900px]:border-t-0 min-[900px]:border-l min-[900px]:pt-0 min-[900px]:pl-7"
         data-testid="home-raid-prep"
       >
         <h3 class="font-heading text-cream text-[19px] leading-[26px] font-normal">

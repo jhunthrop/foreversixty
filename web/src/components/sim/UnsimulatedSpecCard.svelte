@@ -1,30 +1,33 @@
 <!-- web/src/components/sim/UnsimulatedSpecCard.svelte -->
-<!-- /sim/specs' healer and tank rows (mock design/mocks/ws_simtools.py `web-sim-specs`), open under
-     their own section below the simulated ones: the spec in its class colour and its guide as the
-     trail's action, with no state tag, engine stamp or rotation. The section's heading says why; a line under every
-     row saying it again was the same sentence eight times. -->
+<!-- One of /sim/specs' healer and tank specs (mock design/mocks/ws_simtools.py `web-sim-specs`): the
+     class crest and the spec's name in its class colour, a link to its guide, set inline with the
+     others on one wrapping line under their heading (h-audit 2026-11-09: eight rows of "Guide ›"
+     said nothing a link line does not). No state tag, engine stamp or rotation. -->
 <script lang="ts">
+  import { classCrestSrc } from '../../lib/class-crest';
   import { classSpecPath } from '../../lib/sim/gear-card';
   import { classOfSpec, specLabel } from '../../lib/sim/spec-label';
-  import { simCopy } from '../../lib/sim/copy';
-  import ActionLink from '../ui/ActionLink.svelte';
   import type { Spec } from '../../lib/sim/specs';
-  import { classTone } from '../../lib/ui/primitives';
-  import Row from '../ui/Row.svelte';
+  import { classColorVar } from '../../lib/report/format';
+  import { simCopy } from '../../lib/sim/copy';
 
   let { spec }: { spec: Spec } = $props();
 </script>
 
-<Row
-  id={spec.spec}
-  title={specLabel(spec.spec)}
-  titleTone={classTone(classOfSpec(spec.spec))}
-  open
-  testid={`spec-unsimulated-${spec.spec}`}
->
-  {#snippet trail()}
-    <ActionLink href={`/guides/${classSpecPath(spec.spec)}`} data-testid={`spec-guide-${spec.spec}`}
-      >{simCopy.specsGuide}</ActionLink
-    >
-  {/snippet}
-</Row>
+<span id={spec.spec} class="flex min-h-11 min-w-0 items-center" data-testid={`spec-unsimulated-${spec.spec}`}>
+  <a
+    href={`/guides/${classSpecPath(spec.spec)}`}
+    class="inline-flex min-w-0 items-center gap-2 text-[15px] font-bold hover:underline md:whitespace-nowrap"
+    style:color={classColorVar(classOfSpec(spec.spec))}
+    data-testid={`spec-guide-${spec.spec}`}
+    ><img
+      src={classCrestSrc(classOfSpec(spec.spec))}
+      alt=""
+      width="20"
+      height="20"
+      class="rounded-full"
+    />{specLabel(spec.spec)}<span class="text-muted text-[13px] font-normal"
+      >{simCopy.specsRole[spec.role]}</span
+    ></a
+  >
+</span>

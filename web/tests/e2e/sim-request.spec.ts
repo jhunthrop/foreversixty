@@ -3,7 +3,7 @@
 import { expect, test } from './support/test';
 import { simCopy } from '../../src/lib/sim/copy';
 import { choose } from './support/select';
-import { gotoSim, openRequest, pasteAndRun, simCharacter } from './support/sim-page';
+import { gotoSim, openRequest, openSimSection, pasteAndRun, simCharacter } from './support/sim-page';
 
 test('the drawer shows the exact request, validates an edit and runs it', async ({ page }) => {
   // The paste runs at once, and the request drawer is disabled while that run is in flight
@@ -32,7 +32,7 @@ test('the drawer shows the exact request, validates an edit and runs it', async 
   await expect(page.getByTestId('sim-more-settings')).toHaveCount(0);
   await expect(page.getByTestId('sim-live-report')).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId('sim-error')).toContainText(/^± [\d.]+ DPS/);
-  await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await openSimSection(page, 'settings');
   await expect(page.getByTestId('sim-settings-runs')).toContainText('500');
 });
 

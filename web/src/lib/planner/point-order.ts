@@ -85,7 +85,8 @@ export function pointOrderRows(
   ahead: PointOrderAhead | null = null,
 ): PointOrderView {
   const available = characterLevel === null ? MAX_POINTS : pointsAvailableAt(characterLevel);
-  const plan = characterLevel === null ? [] : (ahead?.points ?? []);
+  // A character's build continues in its guide's order; an empty build previews the guide's order (h-audit 2026-11-09).
+  const plan = characterLevel !== null || order.length === 0 ? (ahead?.points ?? []) : [];
   const ranks = new Map<number, number>();
   const nextRank = (id: number): number => {
     const rank = (ranks.get(id) ?? 0) + 1;

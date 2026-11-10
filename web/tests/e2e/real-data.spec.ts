@@ -107,8 +107,11 @@ test('switching class lays out the new class real trees', async ({ page }) => {
   await expect.poll(() => renderedTreeNames(page)).toEqual(syncedTreeNames(to!));
 });
 
-test('the planner offers the share panel', async ({ page }) => {
+test('the planner offers the share panel once a point is spent', async ({ page }) => {
   await openPlanner(page);
+  await expect(page.getByTestId('share-panel')).toHaveCount(0);
+  // The first talent of the first tree sits in the opening row, open to a first point.
+  await page.locator('[data-testid^="talent-"][data-rank]').first().click();
   await expect(page.getByTestId('share-panel')).toBeAttached();
   await expect(page.getByRole('button', { name: 'Share' })).toBeAttached();
 });

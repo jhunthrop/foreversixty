@@ -24,7 +24,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { artifactPublished, E2E_ARTIFACT, realEngineSkipReason } from './support/real-engine';
 import { ENGINE_VERSION } from '../../src/lib/sim/version';
-import { gotoSim, simCharacter } from './support/sim-page';
+import { gotoSim, openSimSection, simCharacter } from './support/sim-page';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -79,7 +79,7 @@ test('a real wasm run against the fixture character returns a positive DPS', asy
   // The result names the engine it actually ran on (This run's Engine fact, the result's own
   // engine_version) -- confirming this run is against the published artifact and not a build
   // that silently fell back to the fake engine.
-  await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await openSimSection(page, 'settings');
   await expect(page.getByTestId('sim-settings-engine')).toContainText(ENGINE_VERSION.slice(0, 7));
 
   // "Run again", not "Run sim": loadFury's own hero run already finished once against the

@@ -16,7 +16,6 @@ import { FLOOR_MIN } from '../lib/home/feed';
 import { buildFloor } from '../lib/home/floor';
 import { floorInputs, raidsOpenIso } from '../lib/home/floor-load';
 import { loadRaidFacts } from '../lib/home/raid-facts-load';
-import Button from '../components/ui/Button.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
 import HomeClassPicker from '../components/home/HomeClassPicker.svelte';
 import HomeDeletedNotice from '../components/home/HomeDeletedNotice.svelte';
@@ -47,11 +46,7 @@ const raids = loadRaidFacts();
 <Base title={SITE_NAME} description={HOME_DESCRIPTION} path="/" wide art="hero">
   <main id="main" tabindex="-1" data-testid="home">
     <div class="home-out" data-testid="home-signed-out">
-      <PageHeader title={homeCopy.pickClass} art="hero">
-        <Button slot="actions" tone="primary" href={signInHref} testid="home-sign-in">
-          {homeCopy.signIn}
-        </Button>
-      </PageHeader>
+      <PageHeader title={homeCopy.pickClass} art="hero" />
       <HomeDeletedNotice client:idle-after-load />
       <HomeGrid>
         <HomeClassPicker slot="lead" headless />
@@ -68,3 +63,30 @@ const raids = loadRaidFacts();
     <HomeSignedIn client:idle-after-load {floor} {raidsOpen} {raids} />
   </main>
 </Base>
+
+<style is:global>
+  /* Home's title band (directions mock g-home): a band of its own height on the camp-road art, the
+     title at its foot and 24 px under the bar at least, so the art reads above it. Home is the only
+     `art="hero"` band; the selector outranks PageHeader's scoped padding. */
+  .ui-band[data-art='hero'] header.ui-page-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: var(--home-band-h);
+    padding-top: 24px;
+  }
+  :root {
+    --home-band-h: 120px;
+  }
+  @media (min-width: 900px) {
+    :root {
+      --home-band-h: 160px;
+    }
+  }
+  /* Signed out the title band is the compact one every page opens with: "Pick your class" is the
+     page's answer, not a hero over the art. */
+  .home-out .ui-band[data-art='hero'] header.ui-page-header {
+    min-height: 0;
+    padding-top: 16px;
+  }
+</style>

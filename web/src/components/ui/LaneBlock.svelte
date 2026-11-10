@@ -1,6 +1,7 @@
 <!-- web/src/components/ui/LaneBlock.svelte -->
-<!-- One labelled block in a reading section's lane (guides spec 2026-11-08 §3A): a 12 px caps
-     label, an optional Small meta at its right, then its rows or table. No box. -->
+<!-- One labelled block in a reading section's lane (guides spec 2026-11-08 §3A): a 15 px heading
+     in the panel's cream (never a grey caps eyebrow), an optional Small meta at its right, then its
+     rows or table. No box. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
 
@@ -19,7 +20,7 @@
 
 <div class="ui-lane-block" data-testid={testid}>
   <div class="ui-lane-head">
-    <h3 class="text-label text-muted m-0 font-bold">{label}</h3>
+    <h3 class="ui-lane-label m-0">{label}</h3>
     {#if meta}<span class="text-small text-muted ml-auto text-right">{meta}</span>{/if}
   </div>
   {@render children()}
@@ -36,5 +37,12 @@
     display: flex;
     align-items: baseline;
     gap: 12px;
+  }
+  .ui-lane-label {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--color-cream);
   }
 </style>

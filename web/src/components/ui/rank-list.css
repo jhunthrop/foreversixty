@@ -485,8 +485,10 @@
   .ui-rank-list[data-compact='true'] .ui-rr-fig {
     font-size: 15px;
   }
+  /* The row stays two lines: no bar, gap or link strip (the figure itself opens the report). */
   .ui-rank-list[data-compact='true'] .ui-rr-bar,
-  .ui-rank-list[data-compact='true'] .ui-rr-gap {
+  .ui-rank-list[data-compact='true'] .ui-rr-gap,
+  .ui-rank-list[data-compact='true'] .ui-rr-links {
     display: none;
   }
   .ui-rank-list[data-compact='true'] .ui-rr-fig[data-first='true'] {
@@ -502,6 +504,8 @@
       'rank lead name fig'
       'rank lead name extra';
     row-gap: 0;
+    /* Clear of the plate's framed corner, so the last figure's digits are never cut. */
+    padding-right: 14px;
   }
   .ui-rank-list[data-phone-figures] .ui-rr-fig[data-first='true'] {
     align-self: end;

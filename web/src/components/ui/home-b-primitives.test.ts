@@ -59,4 +59,10 @@ describe('GradeTile', () => {
     expect(body).toContain('aria-label="Tier A"');
     expect(body).toContain('var(--color-rarity-epic-text)');
   });
+
+  it('bare: the letter in its tier colour, no tile', () => {
+    const body = html(render(GradeTile, { props: { letter: 'A', bare: true } }).body);
+    expect(body).toContain('color: var(--color-rarity-epic-text)');
+    expect(body).not.toContain('background');
+  });
 });

@@ -7,7 +7,7 @@ import type { GameTipModel } from '../tooltips/game-tip';
 import type { ActionNames } from './action-names';
 import type { SimSpellFact } from './spell-info';
 import type { SimResult } from './types';
-import { capstoneSpellOf, cooldownWords, MAX_WARNINGS, simWarnings } from './warnings';
+import { capstoneSpellOf, MAX_WARNINGS, simWarnings } from './warnings';
 
 const result = full as unknown as SimResult;
 const names: ActionNames = {
@@ -36,17 +36,8 @@ const withoutBloodthirst: SimResult = {
 };
 
 describe('simWarnings', () => {
-  it('on the fixture fires W4 for Recklessness and nothing else', () => {
-    const notes = simWarnings({ result, names, fact });
-    expect(notes).toHaveLength(1);
-    expect(notes[0]).toMatchObject({ id: 'long-cooldown', actionKey: 'spell:1719' });
-    expect(notes[0]?.text).toBe(
-      'Recklessness counts once a pull here. In a raid it is back every 30 minutes.',
-    );
-  });
-
-  it('draws no cooldown note until the spell facts are here', () => {
-    expect(simWarnings({ result, names, fact: () => undefined })).toEqual([]);
+  it('on the fixture fires nothing (h-audit 2026-11-09 dropped the long-cooldown note)', () => {
+    expect(simWarnings({ result, names, fact })).toEqual([]);
   });
 
   it('W2: fires with the Bloodthirst rows removed, whether or not the talents decode', () => {
@@ -108,9 +99,7 @@ describe('simWarnings', () => {
     expect(note?.text).toBe('Reckless Swings is in the Fury rotation, but these talents do not take it.');
     const without = simWarnings({ result: withoutBloodthirst, names, fact, capstone, talentGaps: gaps });
     expect(without.map((entry) => entry.id)).not.toContain('missing-talent');
-    expect(simWarnings({ result, names, fact, talentGaps: null }).map((entry) => entry.id)).toEqual([
-      'long-cooldown',
-    ]);
+    expect(simWarnings({ result, names, fact, talentGaps: null })).toEqual([]);
   });
 
   it('W5: fires at 5% lost at the cap, not at 2.7%, with the rage advice', () => {
@@ -144,23 +133,16 @@ describe('simWarnings', () => {
       dps: { ...result.dps, error: 9 },
       summary: { ...withoutBloodthirst.summary, resources: [{ ...track, wasted: 120 }] },
     };
-    expect(ids(all)).toEqual(['stale', 'capstone', 'long-cooldown']);
+    expect(ids(all)).toEqual(['stale', 'capstone', 'at-cap']);
     expect(ids(all)).toHaveLength(MAX_WARNINGS);
   });
 });
 
-describe('cooldownWords', () => {
-  it('reads an adjective and a noun', () => {
-    expect(cooldownWords(1_800_000)).toEqual({ length: '30 minute', every: '30 minutes' });
-    expect(cooldownWords(7_200_000)).toEqual({ length: '2 hour', every: '2 hours' });
-  });
-});
-
 describe('the older fixture (result.json: 0 Bloodthirst casts, talents that no longer fit)', () => {
-  it('fires W2 from the published spec list, ahead of the Recklessness note', () => {
+  it('fires W2 from the published spec list', () => {
     expect(capstoneSpellOf('warrior-fury')).toBe(23894);
     const notes = simWarnings({ result: olderFixture as unknown as SimResult, names, fact });
-    expect(notes.map((note) => note.id)).toEqual(['capstone', 'long-cooldown']);
+    expect(notes.map((note) => note.id)).toEqual(['capstone']);
     expect(notes[0]!.text).toBe(
       'Bloodthirst was never pressed in this run. Check the talents in Open in the sim.',
     );

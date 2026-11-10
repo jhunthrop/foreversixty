@@ -124,11 +124,11 @@ Forever's damage potions share the two-minute potion cooldown with mana potions,
 
 ## Races
 
-Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, it lines up with Bestial Wrath and Rapid Fire on the pull, and your pet copies that crit. Human is next with Ruthless's 1% crit all fight, and Dwarf's 1% hit and Big Game Hunter come last. Humans can be Hunters for the first time in Forever.
+Night Elf for the Alliance: Elune's Light is 10% crit for 15 seconds, it lines up with Bestial Wrath and Rapid Fire on the pull, and your pet copies that crit. Human is next with Ruthless's 1% crit all fight, and Dwarf's 1% hit and Big Game Hunter come last.
 
 Orc for the Horde. Command makes your pet hit 5% harder all fight, and Blood Fury's two minute cooldown comes up with every Bestial Wrath, so you press them together twice in most boss fights. Troll is a fine second: Berserking is 10% attack speed for 15 seconds and stacks with Rapid Fire on the pull.
 
-Skyborne can be Hunters on either faction: Wind Blessed's 2% haste speeds every auto shot you fire.
+Skyborne's Wind Blessed is 2% haste and speeds every auto shot you fire.
 
 ## Professions
 

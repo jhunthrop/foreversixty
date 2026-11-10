@@ -41,6 +41,16 @@ const MARKDOWN = `Intro sentence.
 Closing paragraph.`;
 
 describe('parseTalentBullets', () => {
+  it('reads a name-only bullet as a key talent with no why', () => {
+    const bullets = parseTalentBullets(
+      '- **Lightning Reflexes** (5 points)\n- **Lone Wolf** (1 point): no pet out',
+    );
+    expect(bullets.map((b) => [b.names, b.why])).toEqual([
+      [['Lightning Reflexes'], ''],
+      [['Lone Wolf'], 'No pet out'],
+    ]);
+  });
+
   it('reads the names and the why from each bold-led bullet with a dash', () => {
     const bullets = parseTalentBullets(MARKDOWN);
     expect(bullets.map((b) => b.names)).toEqual([

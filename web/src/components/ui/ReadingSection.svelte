@@ -15,6 +15,7 @@
     anchor,
     lane,
     proseFirst = false,
+    fold,
     testid,
     children,
   }: {
@@ -26,6 +27,10 @@
     /** Below 1280 the prose comes before the lane (a section whose lane is a long list the
      *  prose introduces: the guide's Best in slot). */
     proseFirst?: boolean;
+    /** Below 768 the section folds under its heading behind this line ("Show 8 races"); from 768
+     *  it reads as any other section. The body is a `<details open data-fold>`: the page closes
+     *  it on a phone before the section scrolls into view (lib/ui/fold.ts). */
+    fold?: string;
     testid?: string;
     /** The prose. */
     children: Snippet;
@@ -41,6 +46,17 @@
   <div class="border-line-soft border-b pb-[10px]">
     <h2 class="ui-rsec-title">{title}</h2>
   </div>
+  {#if fold}
+    <details class="ui-rsec-fold" open data-fold>
+      <summary class="ui-rsec-fold-sum">{fold}</summary>
+      {@render body()}
+    </details>
+  {:else}
+    {@render body()}
+  {/if}
+</section>
+
+{#snippet body()}
   <div
     class="ui-rd"
     data-reading
@@ -53,9 +69,31 @@
       {#if lane}<div class="ui-rd-more" data-reading-more></div>{/if}
     </div>
   </div>
-</section>
+{/snippet}
 
 <style>
+  /* The fold's line shows on a phone only; from 768 the section is always open. */
+  .ui-rsec-fold-sum {
+    display: none;
+  }
+  @media (max-width: 767px) {
+    .ui-rsec-fold-sum {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      color: var(--color-gold);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 24px;
+      list-style: none;
+    }
+    .ui-rsec-fold-sum::-webkit-details-marker {
+      display: none;
+    }
+    .ui-rsec-fold[open] > .ui-rsec-fold-sum {
+      display: none;
+    }
+  }
   .ui-rsec-title {
     margin: 0;
     font-weight: 700;

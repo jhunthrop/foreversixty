@@ -13,6 +13,7 @@
   import { nonDpsSpecs } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import { specSkeletonSlots } from '../../lib/sim/spec-skeleton';
+  import { topRaidSets, type BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import Button from '../ui/Button.svelte';
   import Page from '../ui/Page.svelte';
   import Row from '../ui/Row.svelte';
@@ -25,11 +26,23 @@
     rows,
     error,
     onretry,
+    benchmarks = {},
   }: {
     rows: SpecFidelity[] | null;
     error: string | null;
     onretry: () => void;
+    /** The published sets (lib/sim/bis-benchmark.ts): each damage row's raid BiS DPS at 60. */
+    benchmarks?: BisBenchmarks;
   } = $props();
+
+  /** The level whose raid sets the list reads. */
+  const TOP_SET_BAND = 60;
+  const topSets = $derived(topRaidSets(benchmarks, TOP_SET_BAND));
+  /** Highest raid BiS DPS first, so the rank, the bar and the list read one order; unranked specs last. */
+  function byRank(list: SpecFidelity[]): SpecFidelity[] {
+    const rank = (spec: string): number => topSets.get(spec)?.rank ?? Number.POSITIVE_INFINITY;
+    return [...list].sort((a, b) => rank(a.spec) - rank(b.spec));
+  }
 
   const skeletonSlots = specSkeletonSlots();
   /** How long a `#<spec>` arrival keeps its card in view while the list above it settles. */
@@ -73,8 +86,20 @@
 </script>
 
 <Page layout="ledger" panels>
-  <Section title={simCopy.specsSimulatedHeading} panel frame="framed" flush testid="specs-simulated">
+  <Section title={simCopy.specsSimulatedHeading} panel flush testid="specs-simulated">
     <div>
+      {#if topSets.size > 0}
+        <!-- The columns' heads, once: what the rank orders by and the figure's unit (h-audit 2026-11-09). -->
+        <div
+          class="text-label text-muted flex items-center justify-end gap-3 px-4 pt-1 font-bold"
+          aria-hidden="true"
+          data-testid="specs-heads"
+        >
+          <span class="w-12 text-right">{simCopy.specsRankHead}</span>
+          <span class="hidden w-[240px] md:block">{simCopy.specsBarHead}</span>
+          <span class="w-[64px] text-right">{simCopy.specsDpsHead}</span>
+        </div>
+      {/if}
       <div data-testid="specs-grid">
         {#if rows === null}
           {#each skeletonSlots as slot, index (slot)}
@@ -98,18 +123,22 @@
             {/if}
           {/each}
         {:else}
-          {#each mergeSpecRows(rows) as row (row.spec)}
-            <SpecCard {row} />
+          {#each byRank(mergeSpecRows(rows)) as row (row.spec)}
+            <SpecCard {row} top={topSets.get(row.spec) ?? null} />
           {/each}
         {/if}
       </div>
-    </div>
-  </Section>
-  <Section title={simCopy.specsUnsimulatedHeading} panel testid="specs-unsimulated">
-    <div data-testid="specs-grid-unsimulated">
-      {#each unsimulatedSpecs as spec (spec.spec)}
-        <UnsimulatedSpecCard {spec} />
-      {/each}
+      <!-- The healers and tanks the simulator does not run: one wrapping line of guide links under
+           the table, not a section of their own (h-audit 2026-11-09). -->
+      <div class="border-line-soft border-t px-4 py-2" data-testid="specs-unsimulated">
+        <span class="text-label text-muted font-bold">{simCopy.specsUnsimulatedHeading}</span>
+        <!-- One aligned grid: four across at 1440, two on a phone; each a guide link with its role. -->
+        <div class="grid grid-cols-2 gap-x-5 md:grid-cols-4" data-testid="specs-grid-unsimulated">
+          {#each unsimulatedSpecs as spec (spec.spec)}
+            <UnsimulatedSpecCard {spec} />
+          {/each}
+        </div>
+      </div>
     </div>
   </Section>
 </Page>

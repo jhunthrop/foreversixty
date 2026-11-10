@@ -116,16 +116,11 @@ test.describe('signed out, desktop', () => {
     }
   });
 
-  test('a range rewrites every spec link and the summary, keeps the choice in the URL and in storage', async ({
-    page,
-  }) => {
+  test('a range rewrites every spec link, keeps the choice in the URL and in storage', async ({ page }) => {
     await band(page, 40).click();
     await expect(band(page, 40)).toHaveAttribute('aria-checked', 'true');
     await expect(page).toHaveURL(/\?band=40$/);
     await expect(specRow(page, 'warrior', 'fury')).toHaveAttribute('href', '/bis/warrior/fury/40-49');
-    // One range's line is shown at a time (only 60's has words: its raid gear).
-    await expect(page.locator('[data-band-text]:not([hidden])')).toHaveCount(1);
-    await expect(page.locator('[data-band-text="40"]')).not.toHaveAttribute('hidden');
     await page.goto('/bis');
     await expect(band(page, 40)).toHaveAttribute('aria-checked', 'true');
   });

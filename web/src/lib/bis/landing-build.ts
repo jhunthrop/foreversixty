@@ -32,16 +32,9 @@ export interface LandingClassCard {
 export interface LandingData {
   cards: LandingClassCard[];
   captions: BandCaption[];
-  /** The raid preset's own label as a sentence continues it ("raid-ready, Phase 1"); empty when no
-   *  file carries one. */
-  raidLabel: string;
   /** The newest file's `generated_at`, or null when no spec has a file. */
   updated: Date | null;
   config: LandingConfig;
-}
-
-function lowerFirst(text: string): string {
-  return text.charAt(0).toLowerCase() + text.slice(1);
 }
 
 function cardsFor(build: string): LandingClassCard[] {
@@ -100,9 +93,6 @@ export function loadLandingData(build: string): LandingData {
   return {
     cards,
     captions: bandCaptions(slotsByBand(files)),
-    raidLabel: lowerFirst(
-      files.map((file) => file.presets?.raid?.label).find((label) => label !== undefined) ?? '',
-    ),
     updated: files.length === 0 ? null : latest(files.map((file) => new Date(file.generated_at))),
     config: configFor(build, cards),
   };

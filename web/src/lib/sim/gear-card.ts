@@ -90,7 +90,7 @@ export interface StatCell {
 
 /** The run's own miss rate under the hit figure: never a fixed cap the run could contradict. */
 export interface HitReference {
-  /** "Missed in this run: 0% of specials · 19.0% of white swings". */
+  /** "Miss 0% specials · 19.0% white". */
   note: string;
 }
 

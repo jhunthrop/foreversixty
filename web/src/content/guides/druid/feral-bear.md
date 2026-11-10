@@ -55,10 +55,10 @@ The build is 41 points of Feral and 10 of Restoration. It tanks from level 10 to
 - **Lacerate** (1 point): your bleed. It stacks five times, each cast hits for more per stack already up, and it carries high threat.
 - **Primal Bite** (1 point): the capstone. Weapon damage plus a bonus and very high threat, on a 6 second cooldown for 15 rage.
 - **Ferocity** (5 points): Maul, Swipe and Primal Bite 5 rage cheaper.
-- **Shredding Attacks** (3 points): Lacerate 3 rage cheaper.
+- **Shredding Attacks** (3 points)
 - **Savage Fury**, **Feral Instinct** and **Rend and Tear**: more damage, so more threat, from Maul and Swipe, and 15% more from your melee abilities while Lacerate bleeds the target.
 - **Sharpened Claws**, **Natural Instinct** and **Blood Frenzy**: crit, bigger crits, and 5 rage on every crit.
-- **Leader of the Pack** (1 point): the raid's crit aura.
+- **Leader of the Pack** (1 point)
 - **Heart of the Wild** and **Naturalist** (5 points each): 20% more Stamina in Bear Form, and 10% more damage of every kind, which is threat.
 
 Left out: Brutal Impact (a shorter Bash cooldown, nice for trash), Feral Charge (a charge and interrupt, take it if your raid needs a bear to close on casters), and the cat's Predatory Discipline and Shifting Power.

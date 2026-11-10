@@ -60,7 +60,7 @@ test('What to stack reads in score, never DPS, with the expertise line', async (
   await open(page);
   const weights = page.getByTestId('bis-weights');
   await expect(weights.locator('dt')).not.toHaveCount(0);
-  await expect(weights.getByTestId('bis-weights-unit')).toContainText('score per point');
+  await expect(weights.getByTestId('bis-weights-unit')).toHaveText(/^1\.00 = \d+\.\d{3} score$/);
   await expect(weights).not.toContainText('DPS');
   await expect(weights.getByTestId('bis-expertise-cap')).toContainText(/^Expertise to cap: /);
 });

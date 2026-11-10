@@ -169,8 +169,7 @@ export function simAnswer(input: AnswerInput): AnswerModel {
   if (input.result !== null) return resultAnswer(input.result);
   return {
     state: 'none',
-    label: copy.answer.noSim,
-    caption: { rest: copy.answer.noSimCaption },
+    label: '',
     primary: 'run',
   };
 }

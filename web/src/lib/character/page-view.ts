@@ -18,6 +18,8 @@ import type { PaperdollSlot } from '../gear/paperdoll';
 import { homeHrefs } from '../home/home-view';
 import { PREMIUM_LINKS } from '../billing/premium-links';
 import { percentileToken } from '../report/format';
+import { executionLabel } from '../sim/execution';
+import { signedFigure } from '../ui/primitives';
 import type { BuildSeen, CharacterFight, CharacterPage } from '../rankings/api';
 import { pointsEarnedAt } from '../leveling/leveling-plan';
 
@@ -40,7 +42,6 @@ export const characterPageCopy = {
   gearAction: 'Best in slot',
   score: 'Forever Score',
   scoreFigure: 'Score',
-  tier: 'Tier',
   rating: 'Rating',
   ratingValue: (overall: number): string => `${overall} of 100`,
   /** The score trend's label: "Since 20 Oct". */
@@ -49,17 +50,22 @@ export const characterPageCopy = {
   noLogs: 'No logs yet.',
   noScoreYet: 'No Forever Score yet.',
   best: 'Best per encounter',
+  /** A best fight's execution against the sim, in its sub: "Execution 90%". */
+  execution: (score: number): string => `Execution ${executionLabel(score)}`,
+  /** A best fight's change against the kill of that boss before it: "+82 vs 27 Oct". */
+  sinceKill: (change: string, date: string): string => `${change} vs ${date}`,
   allFights: (count: number): string => `All fights (${count})`,
   builds: 'Builds seen',
-  buildSub: (spec: string, date: string): string =>
-    spec === '' ? `first seen ${date}` : `${spec} · first seen ${date}`,
+  /** A build seen row's sub: the spec and the date it was first seen ("Holy · 3 Nov"). */
+  buildSub: (spec: string, date: string): string => (spec === '' ? date : `${spec} · ${date}`),
   history: 'History',
-  historyLead: 'Score over time, then parse per boss',
+  /** The Premium entries under the best fights (gold link rows that open in place). */
+  coach: 'Coach',
+  /** The History disclosure's meta: the fights behind its charts. */
+  fightCount: (count: number): string => `${count} ${count === 1 ? 'fight' : 'fights'}`,
   historyLockTitle: 'Score over time and parse per boss',
   historyLockSub: 'Premium keeps every rated fight.',
   seePlans: 'See plans',
-  coach: 'Coach history',
-  coachLead: 'Every review the coach wrote for this character',
   /** The paperdoll's title bar meta: "Level 60". */
   levelMeta: (level: number): string => `Level ${level}`,
   failed: 'We could not load this character.',
@@ -158,15 +164,26 @@ export function topUpgrade(slots: readonly PaperdollSlot[]): PaperdollSlot | nul
 /** One fact waiting on the owner, and where to act on it. */
 export interface WaitingFact {
   key: 'talents' | 'upgrade';
+  /** The words before the fact that a phone drops ("Upgrade: "). */
+  lead?: string;
   text: string;
   href: string | null;
+  /** The upgrade's item, drawn as its icon in its quality ring. */
+  item?: { icon: string | null; quality: number };
+}
+
+/** A source's boss without its zone ("Stratholme: Baron Rivendare" reads "Baron Rivendare"), so the
+ *  upgrade line fits one line on a phone. */
+export function bossOf(source: string): string {
+  const at = source.lastIndexOf(': ');
+  return at === -1 ? source : source.slice(at + 2);
 }
 
 /** C11: what waits on the owner, as plain facts (owner 2026-11-09: no "Next:" nudge): unspent
  *  talent points, then the top upgrade. Empty with neither. */
 export function characterWaiting(input: {
   own: MeCharacter;
-  top: { name: string; source: string } | null;
+  top: { name: string; source: string; icon: string | null; quality: number } | null;
   bisHref: string | null;
 }): WaitingFact[] {
   const { own, top, bisHref } = input;
@@ -187,7 +204,17 @@ export function characterWaiting(input: {
         ]
       : [];
   const upgrade: WaitingFact[] =
-    top === null ? [] : [{ key: 'upgrade', text: `Upgrade: ${top.name}, ${top.source}`, href: bisHref }];
+    top === null
+      ? []
+      : [
+          {
+            key: 'upgrade',
+            lead: 'Upgrade: ',
+            text: `${top.name}, ${bossOf(top.source)}`,
+            href: bisHref,
+            item: { icon: top.icon, quality: top.quality },
+          },
+        ];
   return [...talents, ...upgrade];
 }
 
@@ -211,20 +238,61 @@ export interface FightRowView {
   /** The fight's own rate word: HPS for a heal, DPS otherwise. */
   unit: string;
   encounter: string;
+  /** The boss's parses kill by kill, oldest first; empty with fewer than two (h-audit 2026-11-09). */
+  trend: number[];
+  /** "+82 vs 27 Oct" on the parse line; '' with no kill before. */
+  since: string;
 }
 
-/** C6: the best fight per encounter, five at most. */
-export function bestRows(best: readonly CharacterFight[]): FightRowView[] {
+/** The same boss, difficulty and metric as a best fight. */
+const sameBoss = (a: CharacterFight, b: CharacterFight): boolean =>
+  a.encounter_id === b.encounter_id && a.difficulty === b.difficulty && a.metric === b.metric;
+
+/** A best fight's boss kill by kill from the fights on the page, oldest first (a wipe is left out). */
+function bossKills(row: CharacterFight, history: readonly CharacterFight[]): CharacterFight[] {
+  return history
+    .filter((fight) => sameBoss(fight, row) && fight.kill !== false)
+    .sort((a, b) => a.fought_at.localeCompare(b.fought_at));
+}
+
+/** "+82 since 27 Oct": the best fight against the kill of that boss before it; '' with none. */
+function sinceLast(row: CharacterFight, kills: readonly CharacterFight[]): string {
+  const before = kills.filter((fight) => fight.fought_at < row.fought_at).at(-1);
+  return before === undefined
+    ? ''
+    : characterPageCopy.sinceKill(signedFigure(row.value - before.value, 0), dayMonth(before.fought_at));
+}
+
+/** C6: the best fight per encounter, five at most, each with its boss's trend from `history`. */
+export function bestRows(
+  best: readonly CharacterFight[],
+  history: readonly CharacterFight[] = [],
+  pageSpecName: string | null = null,
+): FightRowView[] {
   return best.slice(0, FIGHTS_SHOWN).map((row) => ({
     key: `${row.encounter_id}-${row.difficulty}-${row.metric}`,
     boss: row.encounter,
-    sub: [dayMonth(row.fought_at), row.spec].filter(Boolean).join(' · '),
+    sub: [
+      dayMonth(row.fought_at),
+      // The page's own spec goes without saying; another spec's fight names it.
+      row.spec === pageSpecName ? '' : row.spec,
+      typeof row.execution_score === 'number' ? characterPageCopy.execution(row.execution_score) : '',
+    ]
+      .filter(Boolean)
+      .join(' · '),
     percentile: row.percentile === undefined ? null : String(Math.round(row.percentile)),
     color: row.percentile === undefined ? null : percentileToken(row.percentile),
     value: Math.round(row.value).toLocaleString('en-US'),
     unit: row.metric === 'hps' ? 'HPS' : 'DPS',
     encounter: row.encounter,
+    trend: trendOf(bossKills(row, history)),
+    since: sinceLast(row, bossKills(row, history)),
   }));
+}
+
+function trendOf(kills: readonly CharacterFight[]): number[] {
+  const parses = kills.flatMap((fight) => (fight.percentile === undefined ? [] : [fight.percentile]));
+  return parses.length > 1 ? parses : [];
 }
 
 export interface BuildRowView {
@@ -241,6 +309,6 @@ export function buildRows(className: string | undefined, builds: readonly BuildS
     .map((build) => ({
       key: `${build.talent_split}-${build.first_seen}`,
       split: build.talent_split,
-      sub: characterPageCopy.buildSub(seenBuildSpec(className, build), dayMonth(build.first_seen, true)),
+      sub: characterPageCopy.buildSub(seenBuildSpec(className, build), dayMonth(build.first_seen)),
     }));
 }

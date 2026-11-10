@@ -1,6 +1,6 @@
 <!-- web/src/components/ReportRow.svelte -->
 <!-- One report's row (logs spec 2026-11-07 sections 4 and 5), the ui Row as a link to the report:
-     the title, one muted line under it (the caller builds it: lib/logs/report-summary.ts), and at
+     the title in the link gold (directions b1-logs), one muted line under it (the caller builds it: lib/logs/report-summary.ts), and at
      the right a muted status Tag only while the report is not finished (Live, Processing,
      Uploading; a complete or ready report carries none, MUST 4) or the caller's own Tag (the
      sample's), then the age (relative inside two weeks, a date beyond, `relativeDay`; a caller
@@ -43,6 +43,7 @@
 </script>
 
 <Row {title} {href} {open} testid="report-row">
+  {#snippet titleContent()}<span class="text-gold">{title}</span>{/snippet}
   {#snippet subContent()}
     <span data-testid="report-row-summary">{summary}</span>
     {#if creditHint !== ''}<span class="block text-[12px]" data-testid="report-row-hint">{creditHint}</span

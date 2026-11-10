@@ -7,6 +7,7 @@
 // Voice, per design/DESIGN-SYSTEM.md: reference, not pitch. State the number and stop.
 
 import { plannerSimCopy } from './planner-copy';
+import type { SpecRole } from './specs';
 import { itemNotInDataLine } from '../items/unknown-item-copy';
 
 /**
@@ -626,22 +627,24 @@ export const simCopy = {
   /** The strip's short label for `KIND_TITLES.weights` ("Stat weights"). */
   tabWeights: 'Weights',
   tabSpecs: 'Spec support',
-  /**
-   * Task 2: the site never said the simulator is DPS-only (healer/tank persona review
-   * BLOCKERs). One sentence, one key, rendered in every simulator page's static Astro
-   * shell -- near the `<h1>`, above the fold at 390x844 -- plus LandingState.svelte and
-   * SourceSwitcher.svelte, since those are what a signed-out visitor reads first.
-   */
   /** The eyebrow over every simulator page's h1. */
   pageEyebrow: 'Tools',
-  scopeNote: 'The simulator runs damage specs only. Healing and tanking specs are not simulated yet.',
   /** `/sim/specs`: heading over the 20 dps cards the grid has always shown. */
   specsSimulatedHeading: 'Damage specs',
   /** `/sim/specs`: heading over the 8 healer/tank cards, grouped below rather than
    *  interleaved, so the page reads as "these 20 work, these 8 do not". */
   specsUnsimulatedHeading: 'Healers and tanks',
-  /** A healer or tank row's way on: its guide. */
-  specsGuide: 'Guide',
+  /** A tool page's character line when the talents stop short of the level. */
+  /** The tool line's average item level, short so the facts hold one row at 390. */
+  toolIlvl: (level: string): string => `ilvl ${level}`,
+  /** /sim/specs' column heads: the place, what it orders by, and the figure's unit. */
+  /** A healer or tank link's role mark on /sim/specs. */
+  specsRole: { dps: 'DPS', healer: 'Healer', tank: 'Tank' } as Record<SpecRole, string>,
+  specsRankHead: 'Rank',
+  specsBarHead: 'Raid BiS at 60',
+  specsDpsHead: 'DPS',
+  /** A damage spec's place among the specs by that figure. */
+  specsTopSetRank: (rank: number): string => `#${rank}`,
   /**
    * Fix round 1, Finding B: the `<Base description="...">` strings are what a healer or
    * tank reads in a search result or a link preview -- the first place the DPS-only claim
@@ -841,9 +844,9 @@ export const bulkCopy = {
   notInSimulator: 'Not in the simulator’s item table',
   /** The Top gear candidates block's title. */
   candidatesTitle: 'Candidates',
-  lockSlot: 'Lock to equipped',
+  lockSlot: 'Lock',
   lockedSlot: 'Locked',
-  copyAndModify: 'Copy and modify',
+  copyAndModify: 'Modify',
   withEnchant: 'With enchant',
   withSuffix: 'With suffix',
   keepCurrentEnchant: 'Keep current',
@@ -881,6 +884,8 @@ export const bulkCopy = {
   // --- item search ---
   searchLabel: 'Find an item',
   searchPlaceholder: 'Name',
+  /** Shows the next page of hits. */
+  searchMore: (count: number): string => `${count} more`,
   searchMinItemLevel: 'Minimum item level',
   searchSlot: 'Slot',
   searchSource: 'Source',
@@ -902,8 +907,11 @@ export const bulkCopy = {
   talentsSaved: 'Your saved builds',
   talentsLoadouts: 'In-game loadouts',
   talentsAddCustom: 'Add a build',
+  /** A build's talents over the character's own, and under it. */
+  talentsGains: 'Gains',
+  talentsDrops: 'Drops',
   talentsNoSaved: 'No saved builds for this class yet.',
-  talentsSavedUnavailable: 'Your saved builds could not be read; the rest of the page still works.',
+  talentsSavedUnavailable: 'No saved builds',
   setsTitle: 'Whole sets',
   setsIntro: 'A set replaces every slot at once. Paste a second export string to add one.',
   setsPaste: 'Paste an export string',
@@ -916,7 +924,6 @@ export const bulkCopy = {
   combinations: (n: number): string =>
     `${n.toLocaleString('en-US')} valid ${n === 1 ? 'combination' : 'combinations'}`,
   combinationsCounting: 'Counting combinations…',
-  combinationsNone: 'Nothing to try yet. Tick an item, a build or a source that fits your character.',
   precisionLabel: 'Precision',
   precisionFast: 'Fast',
   precisionNormal: 'Normal',
@@ -927,6 +934,12 @@ export const bulkCopy = {
     high: 'Two stages: everything at 1,000 iterations, twice as many finalists at 10,000.',
   } as Record<string, string>,
   runBulk: 'Run',
+  /** Why Run is disabled before anything is ticked, per tool. */
+  runReason: {
+    gear: 'Tick a candidate to try.',
+    talents: 'Pick builds to compare.',
+    drops: 'Tick a source.',
+  } as Record<string, string>,
   runBulkAgain: 'Run again',
   stopBulk: 'Stop',
   stageProgress: (stage: number, stages: number, done: number, total: number): string =>
@@ -996,12 +1009,23 @@ export const bulkCopy = {
   sourcesQuestNote: 'Off by default: a quest reward is a one-time source.',
   sourcesMyProfessions: 'My professions',
   sourcesAllProfessions: 'All professions',
-  sourcesProfessionsUnknown:
-    'Nothing has recorded this character’s professions, so every profession is listed.',
-  sourcesTrash: 'Trash and chests',
   /** A run asked for with no character loaded (bulk-store-request.ts). */
   needCharacter: 'Load a character first.',
-  sourcesWholeRaid: 'Every boss',
+  /** A source row's figures: the items this class can try, and the best item level among them. */
+  sourceItems: (count: number): string =>
+    `${count.toLocaleString('en-US')} ${count === 1 ? 'item' : 'items'}`,
+  sourceBestIlvl: (ilvl: number): string => `ilvl ${ilvl}`,
+  sourceBosses: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'}`,
+  /** A kind's summary: how many of its sources carry a tick. */
+  sourcesTicked: (ticked: number, total: number): string => `${ticked} of ${total} ticked`,
+  /** A kind none of whose sources has opened: "0 of 7 open". */
+  sourcesOpen: (open: number, total: number): string => `${open} of ${total} open`,
+  /** A kind's summary while none of its sources is ticked. */
+  sourcesCount: (count: number): string => `${count} ${count === 1 ? 'source' : 'sources'}`,
+  /** The label before the kind ticks: they choose which lists show. */
+  sourcesShow: 'Show',
+  /** A ticked kind whose every source is gated: the undated ones named in one line. */
+  sourcesNoDate: (names: readonly string[]): string => `No date yet: ${names.join(', ')}`,
   /** A dungeon's folded boss list (mock design/mocks/ws_simtools.py). */
   sourcesBosses: 'Bosses',
   showUpcoming: 'Show unreleased content',
@@ -1070,19 +1094,6 @@ export const bulkCopy = {
           : `${swingy.slice(0, -1).join(', ')} and ${swingy[swingy.length - 1]}`;
     return `A greyed row cannot be told apart from zero. The ± on every other row is a floor, not the full picture: for ${named}, the real run-to-run swing can run four to ten times wider.`;
   },
-  /**
-   * Task 8, sub-item 2: the precision control's own bare "Fast"/"Normal"/"High" no longer
-   * says a number for a weights run (BulkRunBar.svelte's `precisionLabelFor`) -- the wire's
-   * own `iterations` field was never the real cost to begin with (a weights sweep runs a
-   * baseline plus a low and a high pass per stat weighed, each at up to eight times that
-   * count: `weights.ts`'s `weightsEngineIterations`, contract 10.9), so a bare "Normal,
-   * 3,000 iterations" label was quietly wrong by 68x for an eight-stat spec. This note
-   * replaces that claim with the true total, recomputed for whichever precision and however
-   * many stats are ticked right now, so "Normal" costs something the reader chose knowingly
-   * rather than discovered a minute later.
-   */
-  weightsCostNote: (totalIterations: number): string =>
-    `${totalIterations.toLocaleString('en-US')} engine iterations in your browser: a baseline pass plus a low and a high pass for each stat weighed.`,
   /** bulk-store.svelte.ts's `baseRequest` refusal when `stats` is empty: `WeightsSpec.
    *  Reference` is required (contract 10.8), so an empty list has nothing to send. */
   weightsNeedStats: 'Pick at least one stat to weigh.',

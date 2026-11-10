@@ -18,10 +18,12 @@ export const STACK_ROWS = 4;
 const SEP = ' · ';
 /** An instance with its level range, as a source line names it: "Wailing Caverns (15-24)". */
 const PLACE_RANGE = /^(.*) \((\d+)-(\d+)\)$/;
+/** "Leatherworking (skill 300)": a name and its worded note (never a level, "Molten Core (60)"). */
+const NAME_NOTE = /^(.*) \(([a-z][^()]*)\)$/;
 
 export interface StackView {
   rows: readonly ScaleRow[];
-  /** "1.00 = 0.316 DPS per point of Agility". */
+  /** "1.00 = 0.316 DPS": the stack's first row names the stat 1.00 is. */
   unitLine?: string;
 }
 
@@ -32,7 +34,7 @@ export function stackView(model: BisBandModel): StackView {
   if (lead?.dpsPerPoint === undefined) return { rows };
   return {
     rows,
-    unitLine: `${lead.scaleFactor.toFixed(2)} = ${lead.dpsPerPoint.toFixed(3)} ${lead.perPointUnit} per point of ${lead.label}`,
+    unitLine: `${lead.scaleFactor.toFixed(2)} = ${lead.dpsPerPoint.toFixed(3)} ${lead.perPointUnit}`,
   };
 }
 
@@ -84,15 +86,26 @@ export function placeRange(source: string | undefined, place: string): string | 
   return undefined;
 }
 
-/** A row's line under its stop: the slot, then the source's parts the heading does not say. */
+/** A row's line under its stop: the slot, then the source's parts the heading does not say. A
+ *  part that only adds a note to a name the heading says keeps the note ("Leatherworking (skill
+ *  300)" under "Crafted · Leatherworking" is "skill 300"). */
 export function rowLine(cell: DollCell, title: string): string {
   const said = new Set(title.split(SEP));
-  const parts = (cell.source ?? '').split(SEP).filter((part) => {
-    if (part === '' || said.has(part)) return false;
-    const match = PLACE_RANGE.exec(part);
-    return match === null || !said.has(match[1] ?? '');
-  });
+  const parts = (cell.source ?? '')
+    .split(SEP)
+    .filter((part) => {
+      if (part === '' || said.has(part)) return false;
+      const match = PLACE_RANGE.exec(part);
+      return match === null || !said.has(match[1] ?? '');
+    })
+    .map((part) => noteOfSaid(part, said));
   return [cell.label, ...parts].join(SEP);
+}
+
+/** "Leatherworking (skill 300)" with "Leatherworking" said: "skill 300"; any other part as is. */
+function noteOfSaid(part: string, said: ReadonlySet<string>): string {
+  const match = NAME_NOTE.exec(part);
+  return match !== null && said.has(match[1] ?? '') ? (match[2] ?? part) : part;
 }
 
 /** The band's set on the sim's weights page: the same code Open in the sim carries. */
@@ -105,15 +118,16 @@ export function isMeasuredGain(value: string | undefined): boolean {
   return value !== undefined && /^[+−-]\d/.test(value);
 }
 
-/** A row's figure in the itinerary, so no row is a silent blank: a measured gain in the gain
- *  colour (a re-pick's loss in red); a tie with the next pick as "Same DPS"; a worn pick as Worn;
- *  an only option or an unscored one by its own words ("Only option", "Not sim-checked"). */
-export function rowFigure(gain: GainFigure | undefined, unit: string): GainFigure | undefined {
+/** A row's figure in the itinerary: a measured gain in the gain colour (a re-pick's loss in red);
+ *  a worn pick as Worn; an only option or an unscored one by its own words ("Only option", "Not
+ *  sim-checked"). A tie with the next pick shows nothing: only a real gain earns a figure
+ *  (h-audit 2026-11-09, "Same DPS" on most rows was noise). */
+export function rowFigure(gain: GainFigure | undefined): GainFigure | undefined {
   if (gain === undefined) return undefined;
   if (isMeasuredGain(gain.value)) {
     return { value: gain.value, unit: gain.unit, tone: gain.tone === 'wipe' ? 'wipe' : 'gain' };
   }
-  if (gain.value === gearCopy.paperdoll.same) return { value: gain.value, unit, tone: 'muted' };
+  if (gain.value === gearCopy.paperdoll.same) return undefined;
   if (gain.value === gearCopy.paperdoll.worn) return { value: gain.value, tone: gain.tone ?? 'kill' };
   return { value: gain.basis?.prefix ?? gain.value, tone: 'muted' };
 }

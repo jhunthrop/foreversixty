@@ -51,6 +51,19 @@ export function buildRacesForClass(build: string, classSlug: string): RaceRow[] 
   );
 }
 
+/** The races whose pairing with `classSlug` is new in Forever (combos.json `new_in_forever`). */
+export function newRaceSlugsForClass(build: string, classSlug: string): ReadonlySet<string> {
+  const reference = referenceFor(build);
+  const classRow = reference.classes.find((row) => row.slug === classSlug);
+  if (classRow === undefined) return new Set();
+  const ids = new Set(
+    reference.combos
+      .filter((combo) => combo.class_id === classRow.id && combo.new_in_forever)
+      .map((combo) => combo.race_id),
+  );
+  return new Set(reference.races.filter((race) => ids.has(race.id)).map((race) => race.slug));
+}
+
 /** The build's race portraits (`data/builds/<build>/raceicons.json`, race slug to icon stem) as
  *  urls, keeping only those whose art the build ships; empty before the build's first icons run
  *  writes the file, so a race then shows its name alone. */

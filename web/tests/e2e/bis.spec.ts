@@ -122,9 +122,7 @@ test('BiS: What to stack lists the top weights, what 1.00 is worth, and sends th
   await expect(weights).toBeVisible();
   await expect(weights.locator('dt')).toHaveCount(4);
   await expect(weights.locator('dd').first()).toHaveText('1.00');
-  await expect(weights.getByTestId('bis-weights-unit')).toHaveText(
-    /^1\.00 = \d\.\d\d\d DPS per point of [A-Z][a-z ]+$/,
-  );
+  await expect(weights.getByTestId('bis-weights-unit')).toHaveText(/^1\.00 = \d\.\d\d\d DPS$/);
   await expect(weights.getByTestId('bis-weights-sim-link')).toHaveAttribute('href', /^\/sim\/weights\?code=/);
   // No other addon is ever named (owner rule, 2026-09-30).
   await expect(page.getByTestId('bis-page')).not.toContainText(/Pawn/);

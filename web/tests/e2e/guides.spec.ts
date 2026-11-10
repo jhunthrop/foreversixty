@@ -112,7 +112,7 @@ test.describe('the leveling slider', () => {
     await hydratedLevelingTree(page);
     const caption = levelingTree(page).getByTestId('guide-leveling-caption');
     await expect(caption).toContainText('Level 60:');
-    await expect(caption).toContainText('51 points spent, all placed');
+    await expect(caption).not.toContainText('points spent');
     await levelingTree(page).getByTestId('guide-leveling-slider-previous').click();
     await expect(caption).toContainText('Level 59:');
     await expect(caption).toContainText('50 points spent, 1 to go');
@@ -131,9 +131,7 @@ test.describe('signed in as a level 34 Survival hunter on the Survival guide', (
 
   test('the answer offers the talents at 34 and names the next point', async ({ page }) => {
     await expect(answer(page)).toHaveAttribute('data-state', 'ready');
-    await expect(answer(page).getByTestId('guide-answer-detail')).toHaveText(
-      'Level 34 · Dwarf Survival Hunter',
-    );
+    await expect(answer(page).getByTestId('guide-answer-detail')).toHaveText('34 Dwarf Survival');
     const talents = answer(page).getByTestId('guide-answer-link-0');
     await expect(talents).toHaveText(`${guidesCopy.talentsAtLevel(34)} ›`);
     await expect(talents).toHaveAttribute('href', '#leveling');
@@ -176,7 +174,7 @@ test.describe('the Best in slot lane follows the header selector', () => {
     await page.goto(SURVIVAL);
     await expect(bisPanel(page)).toHaveAttribute('data-panel', '30-alliance');
     await chooseInSelector(page, capped);
-    await expect(answer(page).getByTestId('guide-answer-detail')).toContainText('Level 60');
+    await expect(answer(page).getByTestId('guide-answer-detail')).toHaveText(/^60 /);
     await expect(bisPanel(page)).toHaveAttribute('data-panel', '60-alliance');
     await expect(bisPanel(page).locator('[data-band]')).toHaveAttribute('data-band', '60');
   });

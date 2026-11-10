@@ -18,14 +18,11 @@
     sets,
     onadd,
     onremove,
-    plate = false,
   }: {
     character: SimCharacter;
     sets: readonly GearSet[];
     onadd: (set: GearSet) => void;
     onremove: (name: string) => void;
-    /** The block sits on the page's one Plate. */
-    plate?: boolean;
   } = $props();
 
   let code = $state('');
@@ -86,15 +83,16 @@
   }
 </script>
 
-<ToolSection title={bulkCopy.setsTitle} testid="sim-named-sets" {plate}>
-  <p class="text-muted text-[13px]">{bulkCopy.setsIntro}</p>
-
+<ToolSection title={bulkCopy.setsTitle} testid="sim-named-sets">
   {#if rows.length > 0}
     <div class="pt-1">
       {#each rows as set (set.name)}
         <Row title={set.name} open density="slim" testid={`sim-set-${set.name}`}>
           {#snippet trail()}
-            <Button size="sm" onclick={() => (isAdded(set.name) ? onremove(set.name) : onadd(set))}
+            <Button
+              tone="ghost"
+              size="sm"
+              onclick={() => (isAdded(set.name) ? onremove(set.name) : onadd(set))}
               >{isAdded(set.name) ? bulkCopy.setsRemove : bulkCopy.setsAdd}</Button
             >
           {/snippet}
@@ -104,19 +102,27 @@
   {/if}
 
   <div class="flex flex-wrap items-end gap-3 pt-3">
-    <div class="w-40">
-      <Field id="sim-set-name" label="Name" placeholder="Name" testid="sim-set-name" bind:value={name} />
+    <div class="w-full md:w-40">
+      <Field
+        id="sim-set-name"
+        label="Name"
+        labelHidden
+        placeholder="Name"
+        testid="sim-set-name"
+        bind:value={name}
+      />
     </div>
     <Field
       id="sim-set-input"
       label={bulkCopy.setsPaste}
+      labelHidden
       placeholder={bulkCopy.setsPaste}
       grow
       invalid={error !== ''}
       testid="sim-set-input"
       bind:value={code}
     />
-    <Button size="md" testid="sim-set-add" onclick={add}>{bulkCopy.setsAdd}</Button>
+    <Button tone="ghost" size="md" testid="sim-set-add" onclick={add}>{bulkCopy.setsAdd}</Button>
   </div>
   {#if error !== ''}
     <p class="text-wipe pt-2 text-[13px]" role="alert" data-testid="sim-set-error">{error}</p>

@@ -74,7 +74,11 @@ describe('pointOrderRows', () => {
       'empty',
     ]);
     expect(view.rows[0].slots[3].rank).toBe(3);
-    expect(view.capText).toBe("Felsnap is level 11. Then the Arms guide's order.");
+    expect(view.capText).toBe('Felsnap is 11. Then Arms guide order.');
+    // An empty build previews the guide's order, dimmed.
+    expect(
+      pointOrderRows(index, [], null, null, icon, { specName: 'Arms', points: [1001] }).rows[0].slots[0].kind,
+    ).toBe('ahead');
     // A bare build has no guide plan: its next socket stays.
     expect(
       pointOrderRows(index, [1001], null, null, icon, { specName: 'Arms', points: [1001] }).rows[0].slots[1]

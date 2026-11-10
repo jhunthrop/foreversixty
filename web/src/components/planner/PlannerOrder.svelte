@@ -3,7 +3,8 @@
      order as rows of ten levels, a socket per level, every point visible at every width. A spent
      point is its talent's icon with the rank it reached; the next point's socket is gold with
      `Next point: level 31`; past a character's level the points are planned ahead, dimmed under
-     the level line, then the spec guide's order fills the rest, dimmed. The rows are
+     the level line, then the spec guide's order fills the rest, dimmed. An empty build previews that
+     guide's order, dimmed, under one line naming it (h-audit 2026-11-09). The rows are
      lib/planner/point-order.ts's; the drawing is ui/PointOrder. -->
 <script lang="ts">
   import { plannerCopy } from '../../lib/planner/copy';
@@ -31,14 +32,15 @@
   // ladder), read on demand: a bare build never asks for it.
   let plans = $state<LevelingPlans | null>(null);
   $effect(() => {
-    if (store.characterLevel === null || plans !== null) return;
+    if ((store.characterLevel === null && store.spent > 0) || plans !== null) return;
     void import('../../lib/leveling/plans-file')
       .then((m) => m.loadLevelingPlans())
       .then((loaded) => (plans = loaded));
   });
   const ahead = $derived.by((): PointOrderAhead | null => {
     const index = store.talentIndex;
-    if (plans === null || index === null || store.characterLevel === null || store.spent === 0) return null;
+    // A character's build continues in the guide's order; an empty build previews it.
+    if (plans === null || index === null || (store.characterLevel === null && store.spent > 0)) return null;
     const spec = specKeyFor(store.classSlug, store.split);
     const ladder = plans[spec]?.ladder;
     const name = SPECS.find((row) => row.spec === spec)?.name;
@@ -61,15 +63,27 @@
   );
 </script>
 
-<Section title={plannerCopy.pointOrderTitle} {panel} testid="planner-point-order">
-  {#if store.spent === 0}
+<Section
+  title={store.spent === 0 && ahead !== null
+    ? plannerCopy.previewLine(ahead.specName)
+    : plannerCopy.pointOrderTitle}
+  {panel}
+  testid="planner-point-order"
+>
+  {#if store.spent === 0 && ahead === null}
+    <!-- Nothing spent and no guide to preview: one line, never rows of empty sockets (h-audit 2026-11-09). -->
     <p class="text-small text-muted pl-pad">{plannerCopy.noPointsYet}</p>
-  {/if}
-  {#if view !== null}
-    <!-- The rows meet the heading's hairline once a point is spent (the mock's rhythm); the empty
-         line keeps the Section's own gap above it. -->
-    <div class={store.spent > 0 && !panel ? '-mt-3' : ''}>
-      <PointOrder rows={view.rows} capAfter={view.capAfter} capText={view.capText} testid="planner-order" />
+  {:else if view !== null}
+    <!-- The rows meet the heading's hairline (the mock's rhythm). -->
+    <div class={panel ? '' : '-mt-3'}>
+      <!-- The heads read as levels past the row's first ("+0" to "+9"), never as rank counts (ruling 2026-11-09). -->
+      <PointOrder
+        rows={view.rows}
+        capAfter={view.capAfter}
+        capText={view.capText}
+        markers={plannerCopy.orderMarkers}
+        testid="planner-order"
+      />
     </div>
   {/if}
 </Section>

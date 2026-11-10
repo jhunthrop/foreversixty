@@ -11,7 +11,7 @@ import type { SimSpellFact } from './spell-info';
 import type { SimResult } from './types';
 import { isStale } from './version';
 
-export type WarningId = 'stale' | 'capstone' | 'missing-talent' | 'long-cooldown' | 'at-cap' | 'wide-error';
+export type WarningId = 'stale' | 'capstone' | 'missing-talent' | 'at-cap' | 'wide-error';
 
 /** Where a note's trailing link goes. */
 export type WarningAction = 'sim' | 'planner';
@@ -99,37 +99,6 @@ function missingTalentWarning(input: WarningInput, capstone: SimWarning | null):
   };
 }
 
-const MINUTE_MS = 60_000;
-const HOUR_MS = 60 * MINUTE_MS;
-
-/** A cooldown in the words W4 uses: "30 minute" as an adjective, "30 minutes" as a noun. */
-export function cooldownWords(ms: number): { length: string; every: string } {
-  const hours = ms >= 2 * HOUR_MS;
-  const count = Math.round(ms / (hours ? HOUR_MS : MINUTE_MS));
-  const unit = hours ? 'hour' : 'minute';
-  return { length: `${count} ${unit}`, every: count === 1 ? `1 ${unit}` : `${count} ${unit}s` };
-}
-
-/** W4, one note per spell whose cooldown no fight of this length can see twice. */
-function longCooldownWarnings({ result, names, fact }: WarningInput): SimWarning[] {
-  const { duration_sec: seconds, variation } = result.request.encounter;
-  const longestMs = seconds * (1 + variation) * 1000;
-  return result.summary.casts.flatMap((row): SimWarning[] => {
-    const parsed = parseActionKey(row.spell_name);
-    if (parsed?.kind !== 'spell' || parsed.tag !== 0 || row.succeeded < 1) return [];
-    const cooldown = fact(parsed.id)?.cooldown_ms ?? 0;
-    if (cooldown <= longestMs) return [];
-    const { every } = cooldownWords(cooldown);
-    return [
-      {
-        id: 'long-cooldown',
-        text: warningsCopy.longCooldown(resolveActionName(row.spell_name, names), every),
-        actionKey: row.spell_name,
-      },
-    ];
-  });
-}
-
 /** The powers with a cap worth naming. */
 const CAPPED_POWER: Readonly<Partial<Record<PrimaryPower, string>>> = {
   rage: warningsCopy.atCapRage,
@@ -164,7 +133,6 @@ export function simWarnings(input: WarningInput): SimWarning[] {
     staleWarning(result),
     capstone,
     missingTalentWarning(input, capstone),
-    ...longCooldownWarnings(input),
     atCapWarning(result),
     wideErrorWarning(result),
   ]

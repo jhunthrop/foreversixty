@@ -7,7 +7,12 @@ import LaneBlock from '../ui/LaneBlock.svelte';
 import Row from '../ui/Row.svelte';
 import { dataUrl } from '../../lib/planner/load';
 import { guidesCopy } from '../../lib/guides/copy';
-import { consumableLines, type GearExtras } from '../../lib/guides/gear-extras';
+import {
+  consumableLines,
+  consumableNote,
+  mergedEnchants,
+  type GearExtras,
+} from '../../lib/guides/gear-extras';
 import { consumableItemId } from '../../lib/guides/guide-tips';
 import { enchantTipKey, type GuideTipBundle } from '../../lib/tooltips/game-tip';
 
@@ -28,31 +33,21 @@ const lines = consumableLines(extras.consumables);
 
 {extras.enchants.length > 0 && (
   <LaneBlock label={guidesCopy.enchants} testid="guide-enchants">
-    <p class="text-small text-muted m-0">{guidesCopy.enchantsNote}</p>
     <div class="guide-extras-rows" data-wrap-list>
-      {extras.enchants.map((row) => (
-        <Row
-          title={row.name}
-          sub={`${row.slotLabel} · ${row.gives}`}
-          density="slim"
-          open
-          testid={`guide-enchant-${row.slot}`}
-        >
-          <Fragment slot="lead">
-            {row.icon !== undefined ? (
-              <img
-                src={dataUrl(build, `icons/${row.icon}.webp`)}
-                alt=""
-                width="28"
-                height="28"
-                loading="lazy"
-                decoding="async"
-                class="guide-extras-icon"
-              />
-            ) : (
-              <span class="guide-extras-icon" aria-hidden="true" />
-            )}
-          </Fragment>
+      {mergedEnchants(extras.enchants).map((row) => (
+        <Row title={row.name} sub={row.slotLabel} density="slim" open testid={`guide-enchant-${row.slot}`}>
+          {row.icon !== undefined && (
+            <img
+              slot="lead"
+              src={dataUrl(build, `icons/${row.icon}.webp`)}
+              alt=""
+              width="28"
+              height="28"
+              loading="lazy"
+              decoding="async"
+              class="guide-extras-icon"
+            />
+          )}
           <span
             slot="titleContent"
             class:list={[enchantKey(row.id) !== undefined && 'gtip guide-extras-tip']}
@@ -71,30 +66,27 @@ const lines = consumableLines(extras.consumables);
     <div class="guide-extras-rows" data-wrap-list>
       {lines.map((line) =>
         'header' in line ? (
-          <h4 class="text-label text-muted guide-extras-sub font-bold">{line.header}</h4>
+          <h4 class="guide-extras-sub">{line.header}</h4>
         ) : (
           <Row
             title={line.row.name}
-            sub={line.row.gives}
+            sub={consumableNote(line.row.gives)}
             density="slim"
             open
             testid={`guide-consumable-${line.row.id}`}
           >
-            <Fragment slot="lead">
-              {line.row.icon !== undefined ? (
-                <img
-                  src={dataUrl(build, `icons/${line.row.icon}.webp`)}
-                  alt=""
-                  width="28"
-                  height="28"
-                  loading="lazy"
-                  decoding="async"
-                  class="guide-extras-icon"
-                />
-              ) : (
-                <span class="guide-extras-icon" aria-hidden="true" />
-              )}
-            </Fragment>
+            {line.row.icon !== undefined && (
+              <img
+                slot="lead"
+                src={dataUrl(build, `icons/${line.row.icon}.webp`)}
+                alt=""
+                width="28"
+                height="28"
+                loading="lazy"
+                decoding="async"
+                class="guide-extras-icon"
+              />
+            )}
             <span
               slot="titleContent"
               class:list={[consumableItem(line.row.id) !== undefined && 'gtip guide-extras-tip']}
@@ -115,15 +107,24 @@ const lines = consumableLines(extras.consumables);
     display: flex;
     flex-direction: column;
   }
+  /* The icon's frame: a file that does not load shows the dark socket every missing icon shows.
+     A row with no icon has no lead at all, so no empty square sits in its gutter. */
   .guide-extras-icon {
     display: block;
     width: 28px;
     height: 28px;
+    border: 1px solid var(--color-line-warm-strong);
     border-radius: var(--radius-icon);
+    background: var(--color-bg);
   }
+  /* A group's name in the lane heading's cream, not a grey caps eyebrow. */
   .guide-extras-sub {
     margin: 0;
     padding: 12px 0 2px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--color-cream);
   }
   .guide-extras-tip {
     position: relative;

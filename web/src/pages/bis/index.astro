@@ -25,7 +25,7 @@ import { REGION } from '../../lib/ui/regions';
 import { searchCopy } from '../../lib/search-copy';
 import { LINK, type ControlGroup } from '../../lib/ui/primitives';
 
-const { cards, captions, raidLabel, updated, config } = loadLandingData(activeBuild.build);
+const { cards, updated, config } = loadLandingData(activeBuild.build);
 const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
 const groups: ControlGroup[] = [
   {
@@ -36,10 +36,6 @@ const groups: ControlGroup[] = [
     options: LANDING_BANDS.map((band) => ({ value: String(band), label: bandLabel(band) })),
   },
 ];
-const summaries = captions.map((caption) => ({
-  band: caption.band,
-  text: landingCopy.bandSummary(caption.band === LANDING_BANDS.at(-1), raidLabel),
-}));
 const pickerClasses: PickerClass[] = cards.map((card) => ({
   slug: card.slug,
   name: card.name,
@@ -63,9 +59,13 @@ const pickerClasses: PickerClass[] = cards.map((card) => ({
         <div slot="notice" class="bis-finished" data-bis-finished data-testid="bis-finished"></div>
       </PageHeader>
       <Fragment slot="bar">
-        <ControlBar groups={groups} label={landingCopy.bandGroupLabel} testid="bis-landing-bar">
+        <ControlBar
+          groups={groups}
+          label={landingCopy.bandGroupLabel}
+          labelsFrom={1920}
+          testid="bis-landing-bar"
+        >
           <span slot="end" class="bis-tier">
-            <span class="text-small text-muted">{landingCopy.tierQuestion}</span>
             <a class={LINK} href={landingCopy.tierHref} data-testid="bis-index-tier-link">
               {landingCopy.tierLink} ›
             </a>
@@ -78,11 +78,6 @@ const pickerClasses: PickerClass[] = cards.map((card) => ({
           data-region={REGION.summary}
           data-testid="bis-landing-summary"
         >
-          {summaries.map((summary) => (
-            <span data-band-text={summary.band} hidden={summary.band !== DEFAULT_LANDING_BAND}>
-              {summary.text}
-            </span>
-          ))}{' '}
           <a
             class={LINK}
             href="?band="
@@ -115,10 +110,6 @@ const pickerClasses: PickerClass[] = cards.map((card) => ({
 </Base>
 
 <style>
-  /* The page's own bottom space above the site footer, as the spec pages keep it. */
-  .bis-landing {
-    padding-bottom: 40px;
-  }
   .bis-tier {
     display: flex;
     flex-wrap: wrap;

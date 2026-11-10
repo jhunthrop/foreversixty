@@ -20,7 +20,6 @@ import { boardFor, guildSpeedRows, ONYXIA, KELTHAS, OWN_KEY } from ${JSON.string
 import { rankingsCopy, rankingsEmptyCopy, encounterPickerCopy, homeTopGuildsCopy } from ${JSON.stringify(WEB + "src/lib/rankings/copy.ts")};
 import { rankRowView } from ${JSON.stringify(WEB + "src/lib/rankings/rank-row-view.ts")};
 import { guildRowView } from ${JSON.stringify(WEB + "src/lib/rankings/guild-row-view.ts")};
-import { ownBestFacts } from ${JSON.stringify(WEB + "src/lib/rankings/own-best.ts")};
 import { topParses, specLeaders } from ${JSON.stringify(WEB + "src/lib/rankings/landing.ts")};
 import { RANK_LEGEND, showRowCrests } from ${JSON.stringify(WEB + "src/lib/rankings/row-view.ts")};
 import { ordinal } from ${JSON.stringify(WEB + "src/lib/report/format.ts")};
@@ -37,7 +36,7 @@ const view = (b) => {
   const rows = b.rows.map((r) => ({ key: r.player.key, ...rankRowView(r, shape) }));
   const pinned = b.character_rank && !b.rows.some((r) => r.player.key === b.character_rank.row.player.key)
     ? rankRowView({ ...b.character_rank.row, rank: b.character_rank.rank }, shape) : null;
-  return { total: b.total, per_page: b.per_page, rows, pinned, best: ownBestFacts(b, shape) };
+  return { total: b.total, per_page: b.per_page, rows, pinned };
 };
 // Your rank as lib/rankings/own-rank.ts ownRankAnswer reads it, from the same copy and colour helpers. own-rank.ts itself
 // reaches the planner's generated reference (through the cohort name), which the parity job's checkout does not build.

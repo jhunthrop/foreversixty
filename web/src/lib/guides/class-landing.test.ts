@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { proseLabels, splitClassLanding } from './class-landing';
+import { proseLabels, specCardLine, splitClassLanding } from './class-landing';
 
 const GUIDES = fileURLToPath(new URL('../../content/guides/', import.meta.url));
 
@@ -71,6 +71,35 @@ describe('proseLabels', () => {
     );
     expect(proseLabels('<p><strong>Opener.</strong> Mage Armor first.</p>')).toBe(
       '<p><strong>Opener.</strong> Mage Armor first.</p>',
+    );
+  });
+});
+
+describe('an empty section', () => {
+  it('is allowed for Races alone, whose race list is its content', () => {
+    expect(splitClassLanding('## Races\n', 'x.md').sections).toEqual([{ heading: 'Races', markdown: '' }]);
+    expect(() => splitClassLanding('## What changed from 1.12\n\n## Races\n\na', 'x.md')).toThrow(
+      /no content/,
+    );
+  });
+});
+
+describe('specCardLine', () => {
+  it('names the role only when the spec heals or tanks', () => {
+    expect(specCardLine('dps')).toBeUndefined();
+    expect(specCardLine('healer')).toBe('Healer');
+    expect(specCardLine('tank')).toBe('Tank');
+  });
+
+  it('adds the build point split', () => {
+    const trees = [{ points: 5 }, { points: 13 }, { points: 33 }];
+    expect(specCardLine('dps', trees)).toBe('5/13/33');
+    expect(specCardLine('healer', trees)).toBe('Healer · 5/13/33');
+  });
+
+  it('names the top two stats of the priority', () => {
+    expect(specCardLine('dps', [{ points: 51 }], ['Hit', 'Critical strike', 'Agility'])).toBe(
+      'Hit, Critical strike · 51',
     );
   });
 });

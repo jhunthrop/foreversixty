@@ -54,12 +54,12 @@ describe('guideStatLane', () => {
     }
   });
 
-  it('heads the weight column on the anchor stat and says "or rating" when it prices one', () => {
+  it('heads the weight column on the anchor stat and the per-point column on the role rate', () => {
     const lane = furyLane();
     expect(lane.role).toBe('dps');
-    expect(lane.weightHead).toMatch(/^Weight \([A-Za-z ]+ = 1\.00\)$/);
+    expect(lane.weightHead).toBe('Weight');
     // Fury prices hit and crit per rating point (round 20).
-    expect(lane.perPointHead).toBe('DPS per point or rating');
+    expect(lane.perPointHead).toBe('DPS per point');
     expect(lane.ratingNote).toMatch(/per rating point: .*hit rating is 1% hit/);
   });
 
@@ -132,8 +132,6 @@ describe('guideStatLane', () => {
         `${row.label}: ${row.value!.toFixed(1)} DPS per 1%, but no item at level 60 has it.`,
       );
     }
-    expect(lane.glanceRows.every((row) => row.reading !== 'not-on-items')).toBe(true);
-    expect(lane.glanceRows).toHaveLength(lane.rows.length - offItems.length);
   });
 
   it('is undefined for a spec with no ranked BiS file', () => {

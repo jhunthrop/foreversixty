@@ -65,12 +65,12 @@ sources:
 The leveling build takes Heart of the Wild and Reflection, because mana is what runs out while questing, plus all five points of Naturalist (2% damage a point) and Nature's Grace once you reach it. The raid build moves Heart of the Wild and Reflection into Improved Starfire, Eclipse and Subtlety: the full Starfire loop. At full ranks, Improved Starfire makes Starfire a 3 second cast, and each Wrath banks two Eclipse charges (up to four), each taking another half second off one Starfire. Nature's Grace makes every non-periodic crit speed up your casting and your global cooldown for 3 seconds.
 
 - **Vengeance** (5 points): the crit damage bonus of your Arcane and Nature spells is doubled.
-- **Moonfury** (5 points): 10% more Arcane and Nature damage.
+- **Moonfury** (5 points)
 - **Improved Wrath** (5 points): Wrath at 1.5 seconds and half the mana. It is what makes the Eclipse Wrath cheap enough to cast every loop.
 - **Improved Moonfire**, **Nature's Splendor** and **Insect Swarm**: a Moonfire worth its global, longer DoTs, and the second DoT.
 - **Nature's Reach** (2 points): 4% hit and longer range. Hit is the stat a fresh 60 Moonkin is shortest on.
-- **Moonglow** (3 points): your damage spells cost 25% less.
-- **Moonkin Form** (1 point): the capstone and the crit aura.
+- **Moonglow** (3 points)
+- **Moonkin Form** (1 point)
 
 From Restoration, Nature's Focus saves your Starfire from pushback 70% of the time when you take damage, which matters on a boss that hits the raid, and Subtlety cuts the threat of your Nature and Arcane spells, which keeps your crit streaks off the tank's threat.
 

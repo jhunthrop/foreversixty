@@ -4,7 +4,6 @@
 // the API did not send is left out rather than guessed; the list endpoint does not carry the
 // length yet, so it prints when it does.
 import { bossCountLabel } from '../boss-count';
-import { formatDayMonthYear } from '../dates';
 import { reportCredit } from '../report/credit';
 
 const MS_PER_MINUTE = 60_000;
@@ -167,25 +166,25 @@ export interface OwnReportRowFacts {
 
 /**
  * A report row in "Your reports" (logs spec 2026-11-07 section 5): the title falls back to the
- * zone, then to the night it logged ("Report, 17 Sep 2026"; production's first report had
+ * zone, then to what the night held ("Trash only", "3 bosses"; production's first report had
  * neither); the line under it (directions b1) is the zone when known, the pulls, the bosses or
  * "Trash only", and who it is credited to when someone is.
  */
 export function ownReportRow(facts: OwnReportRowFacts): { title: string; sub: string } {
   const zone = facts.zone.trim();
-  const night = formatDayMonthYear(new Date(facts.startedAt));
-  const title = facts.title.trim() || zone || (night === '' ? UNTITLED_REPORT : `Report, ${night}`);
   const bosses = facts.bossCount ?? facts.killCount;
+  const content = bosses > 0 ? bossCountLabel(bosses) : TRASH_ONLY;
+  // No title and no zone: the row is named by what the night held; the row's one date sits at its right.
+  const title = facts.title.trim() || zone || content;
   return {
     title,
     sub: join([
       zone === '' || zone === title ? undefined : zone,
       plural(facts.fightCount, 'pull', 'pulls'),
-      bosses > 0 ? bossCountLabel(bosses) : TRASH_ONLY,
+      content === title ? undefined : content,
       creditedName(facts.loggingCharacter) ?? undefined,
     ]),
   };
 }
 
-const UNTITLED_REPORT = 'Report';
 const TRASH_ONLY = 'Trash only';

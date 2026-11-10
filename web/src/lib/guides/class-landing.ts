@@ -4,6 +4,7 @@
 // before them. There is no intro paragraph (owner 2026-11-09: a "<Class> is the <noun>: a, b and c"
 // blurb tells a veteran what they know). The page lays each part out in its own region, so a file
 // that strays from the shape fails the build rather than rendering a section nobody designed.
+import { guidesCopy } from './copy';
 
 /** The section headings a class landing may carry, in the order they must appear. */
 export const CLASS_LANDING_HEADINGS = [
@@ -32,6 +33,25 @@ export interface ClassLanding {
   sections: ClassLandingSection[];
 }
 
+/** How many of the guide's stat priority a spec card names. */
+const CARD_STATS = 2;
+
+/** A spec card's line under its name: the role for a healer or a tank only (every class has a
+ *  damage spec, so "DPS" under each one tells a veteran nothing), the guide's top two stats, then
+ *  the guide build's point split, "5/13/33", when its code decodes (h-audit 2026-11-09). */
+export function specCardLine(
+  role: 'dps' | 'healer' | 'tank',
+  trees: readonly { points: number }[] = [],
+  stats: readonly string[] = [],
+): string | undefined {
+  const parts = [
+    role === 'dps' ? undefined : guidesCopy.roleLabel(role),
+    stats.length === 0 ? undefined : stats.slice(0, CARD_STATS).join(', '),
+    trees.length === 0 ? undefined : trees.map((tree) => tree.points).join('/'),
+  ].filter((part): part is string => part !== undefined);
+  return parts.length === 0 ? undefined : parts.join(' · ');
+}
+
 const HEADING = /^##[ \t]+(.+?)[ \t]*$/gm;
 
 function isHeading(text: string): text is ClassLandingHeading {
@@ -53,7 +73,9 @@ function parseSections(markdown: string, file: string): ClassLandingSection[] {
       `${file}: headings out of order or repeated (${sections.map((s) => s.heading).join(', ')})`,
     );
   }
-  if (sections.some((s) => s.markdown === '')) throw new Error(`${file}: a section has no content`);
+  // Races may be the heading alone: the page draws the class's race list under it (GuideRaceList).
+  if (sections.some((s) => s.markdown === '' && s.heading !== 'Races'))
+    throw new Error(`${file}: a section has no content`);
   return sections;
 }
 

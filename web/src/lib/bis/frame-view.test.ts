@@ -42,7 +42,7 @@ describe('stackView', () => {
       ]),
     );
     expect(view.rows.map((r) => r.stat)).toEqual(['agility', 'intellect', 'rap', 'hit']);
-    expect(view.unitLine).toBe('1.00 = 0.316 DPS per point of Agility');
+    expect(view.unitLine).toBe('1.00 = 0.316 DPS');
   });
 
   it('has no unit line when nothing is significant', () => {
@@ -64,6 +64,9 @@ describe('the itinerary lines', () => {
       'Back · Skum · 50%',
     );
     expect(rowLine(cell('Crafted · Leatherworking', 'Head'), 'Crafted · Leatherworking')).toBe('Head');
+    expect(rowLine(cell('Crafted · Leatherworking (skill 300)', 'Head'), 'Crafted · Leatherworking')).toBe(
+      'Head · skill 300',
+    );
     expect(
       rowLine(cell('Silverwing Sentinels reputation · Honored', 'Neck'), 'Silverwing Sentinels reputation'),
     ).toBe('Neck · Honored');
@@ -78,22 +81,18 @@ describe('simWeightsHref', () => {
 });
 
 describe('rowFigure', () => {
-  it('never leaves a row blank: a gain, a tie, a worn pick or the row state', () => {
-    expect(rowFigure({ value: '+0.3', unit: 'DPS', tone: 'strong' }, 'DPS')).toEqual({
+  it('shows a gain, a worn pick or the row state, and nothing for a tie', () => {
+    expect(rowFigure({ value: '+0.3', unit: 'DPS', tone: 'strong' })).toEqual({
       value: '+0.3',
       unit: 'DPS',
       tone: 'gain',
     });
-    expect(rowFigure({ value: 'Same', tone: 'muted' }, 'DPS')).toEqual({
-      value: 'Same',
-      unit: 'DPS',
-      tone: 'muted',
-    });
-    expect(rowFigure({ value: 'Worn', tone: 'kill' }, 'DPS')).toEqual({ value: 'Worn', tone: 'kill' });
-    expect(rowFigure({ value: '\u2014', basis: { prefix: 'Only option' }, tone: 'muted' }, 'DPS')).toEqual({
+    expect(rowFigure({ value: 'Same', tone: 'muted' })).toBeUndefined();
+    expect(rowFigure({ value: 'Worn', tone: 'kill' })).toEqual({ value: 'Worn', tone: 'kill' });
+    expect(rowFigure({ value: '\u2014', basis: { prefix: 'Only option' }, tone: 'muted' })).toEqual({
       value: 'Only option',
       tone: 'muted',
     });
-    expect(rowFigure(undefined, 'DPS')).toBeUndefined();
+    expect(rowFigure(undefined)).toBeUndefined();
   });
 });

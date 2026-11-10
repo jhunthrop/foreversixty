@@ -56,6 +56,20 @@
       grid-template-columns: minmax(0, 1fr) var(--home-rail);
       grid-template-areas: 'lead lead' 'feed rail' 'foot foot';
     }
+    /* The feed's panel runs to the rail's foot: the two columns end together. */
+    .home-grid-feed {
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+    }
+    .home-grid-feed :global(section.ui-section) {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+    }
+    .home-grid-feed :global(section.ui-section > .ui-section-box) {
+      flex: 1;
+    }
   }
   @media (min-width: 1280px) {
     .home-grid {

@@ -8,6 +8,7 @@ import type { BisFile } from '../bis/types';
 import { decodeFS1 } from '../planner/fs1';
 import { factionOfRace } from '../race-faction';
 import { talentSplit } from './result-band';
+import { ranksFromTalentsString } from './character';
 import type { TalentIndex } from '../planner/rules';
 import { bulkCopy } from './copy';
 import { poolQualityCopy } from './pool-quality-copy';
@@ -80,4 +81,59 @@ export function guideLoadout(file: BisFile, level: number, race: string): Talent
   const entry = selectBand(file, band, faction);
   if (entry === undefined || entry.talents === '') return null;
   return { name: bulkCopy.talentsGuide(band, talentSplit(entry.talents)), talents: entry.talents };
+}
+
+/** One talent of a loadout's tree, the shape ui/TalentTrees.svelte draws. */
+export interface LoadoutTalent {
+  tier: number;
+  column: number;
+  name: string;
+  icon: string;
+  rank: number;
+  maxRank: number;
+}
+
+export interface LoadoutTree {
+  name: string;
+  points: number;
+  talents: LoadoutTalent[];
+}
+
+/**
+ * A loadout's engine talents string ("05505-5530515-") as its three trees, each talent with the
+ * rank the string gives it: /sim/talents draws every build it can compare (ui/TalentTrees).
+ */
+export function loadoutTrees(index: TalentIndex, talents: string): LoadoutTree[] {
+  const ranks = ranksFromTalentsString(talents);
+  return index.trees.map((tree, treeIndex) => {
+    const treeRanks = ranks[treeIndex] ?? [];
+    const cells = tree.talents.map((talent, position) => ({
+      tier: talent.tier,
+      column: talent.column,
+      name: talent.name,
+      icon: talent.icon,
+      rank: Math.min(talent.max_rank, treeRanks[position] ?? 0),
+      maxRank: talent.max_rank,
+    }));
+    return { name: tree.name, points: cells.reduce((sum, cell) => sum + cell.rank, 0), talents: cells };
+  });
+}
+
+export interface TalentChange {
+  name: string;
+  /** Ranks this build has over the one it is read against: +3, or -2. */
+  delta: number;
+}
+
+/**
+ * Where a loadout's talents differ from another's (/sim/talents reads every build against the
+ * character's own): one entry per talent whose rank differs, gains first, then by size.
+ */
+export function loadoutDiff(index: TalentIndex, talents: string, against: string): TalentChange[] {
+  const mine = loadoutTrees(index, talents).flatMap((tree) => tree.talents);
+  const theirs = loadoutTrees(index, against).flatMap((tree) => tree.talents);
+  return mine
+    .map((talent, at) => ({ name: talent.name, delta: talent.rank - (theirs[at]?.rank ?? 0) }))
+    .filter((change) => change.delta !== 0)
+    .sort((a, b) => Math.sign(b.delta) - Math.sign(a.delta) || Math.abs(b.delta) - Math.abs(a.delta));
 }

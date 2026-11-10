@@ -56,7 +56,7 @@ The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of F
 - **Weapon Expertise** (2 points): 2% less chance to be dodged or parried. Every dodged Backstab is a wasted global and a combo point you did not get.
 - **Dual Wield Specialization** (2 points): 50% more off-hand damage on every off-hand swing.
 - **Puncturing Wounds** (3 points): 30% more crit on Backstab and a 45% chance at a second combo point. This is what makes daggers the Combat weapon in Forever.
-- **Coup de Grace** (3 points): Eviscerate hits 20% harder.
+- **Coup de Grace** (3 points)
 
 In the raid build, Lethality takes Backstab crits from 200% to 220%, and with Puncturing Wounds and Hack and Slash more than half your Backstabs crit. Opportunity adds 20% to Backstab. Aggression adds 15% to Eviscerate and Sinister Strike, not to Backstab, so on daggers it is a finisher talent. Flawless Execution takes 15 energy off Eviscerate, and Ruthlessness and Improved Slice and Dice feed the finishers. Efficient Strikes takes 3 energy off Sinister Strike at one point: your builder's discount in the level 60 build. The raid build never presses Sinister Strike, so it skips Efficient Strikes and puts two points in Composure instead: Poised takes 20 energy off your opener, not 10, so the opening Garrote costs 30. Those two points and four of Lightning Reflexes are the toll to reach Flawless Execution, Weapon Expertise and Aggression.
 

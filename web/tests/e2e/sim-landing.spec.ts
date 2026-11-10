@@ -125,7 +125,7 @@ test.describe('a signed-in member with characters', () => {
     await expect(page.getByTestId('sim-settings')).toBeVisible();
     await expect(page.getByTestId('sim-landing')).toHaveCount(0);
     await expect(page.getByTestId('sim-sources')).toHaveCount(0);
-    await expect(page.getByTestId('sim-answer-label')).toHaveText(simPageCopy.answer.noSim);
+    await expect(page.getByTestId('sim-answer-label')).toHaveText('');
   });
 
   // The run line's Run sim runs the character the page arrived on.

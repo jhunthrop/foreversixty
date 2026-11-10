@@ -38,7 +38,9 @@
     title: string;
     level?: 2 | 3;
     meta?: string;
-    action?: { label: string; href: string };
+    /** One link at the head's right. `arrow`: the link reads `›` alone (its label is its accessible
+     *  name), for a plate whose title already names where it goes ("Buffs" › the Buffs tab). */
+    action?: { label: string; href: string; arrow?: boolean };
     reading?: boolean;
     /** The meta line's testid, for a test that reads the line alone. */
     metaTestid?: string;
@@ -91,7 +93,12 @@
         {#if head}{@render head()}{/if}
         <!-- On a touch screen the link's hit area is 44 px tall: 12 px of padding above and below,
              taken back by the same negative margin, so the head row does not grow. -->
-        {#if action}<a
+        {#if action?.arrow}<a
+            class="{LINK} -my-3 inline-flex min-h-11 min-w-11 items-center justify-end text-[18px]"
+            href={action.href}
+            aria-label={action.label}
+            title={action.label}>›</a
+          >{:else if action}<a
             class="{LINK} text-[14px] [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
             href={action.href}>{action.label} ›</a
           >{/if}

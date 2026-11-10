@@ -151,21 +151,18 @@ export function formatRate(perSecond: number): string {
 }
 
 /** The band's meta line (directions b1): "Zephras Isle · Pull 6, Trash · 12:43 · 177 mobs died",
- *  "Pull 2, Onyxia #1 · Wipe at 34% · 4:10 · 40 players". */
+ *  "Pull 2, Onyxia #1 · Wipe at 34% · 4:10 · 40 players". Without `players` the line stops at the
+ *  pull's length: the band then draws `reportMetaTail` itself, from 768 only, so a phone's meta
+ *  stays one line. */
 export function reportMeta(
   zone: string,
   fight: FightEntry,
   attempt: number | undefined,
-  players: number,
+  players?: number,
 ): string {
+  const tail = players === undefined ? '' : reportMetaTail(fight, players).replace(/^ · /, '');
   if (fight.kind !== 'encounter') {
-    const mobs = fight.mob_deaths ?? 0;
-    return joinFacts(
-      zone,
-      `Pull ${fight.index}, ${fight.name}`,
-      pullLength(fight.duration_ms),
-      `${plural(mobs, 'mob')} died`,
-    );
+    return joinFacts(zone, `Pull ${fight.index}, ${fight.name}`, pullLength(fight.duration_ms), tail);
   }
   const outcome = fight.in_progress ? 'Live' : fight.kill ? 'Kill' : outcomeLabel(fight);
   return joinFacts(
@@ -173,8 +170,15 @@ export function reportMeta(
     `Pull ${fight.index}, ${fight.name} #${attempt ?? 1}`,
     outcome,
     pullLength(fight.duration_ms),
-    plural(players, 'player'),
+    tail,
   );
+}
+
+/** The meta line's last fact: " · 40 players" on a boss pull, " · 177 mobs died" on trash. */
+export function reportMetaTail(fight: FightEntry, players: number): string {
+  return fight.kind === 'encounter'
+    ? ` · ${plural(players, 'player')}`
+    : ` · ${plural(fight.mob_deaths ?? 0, 'mob')} died`;
 }
 
 /** The band's one figure and its unit (directions b1: the figure follows the tab). */
@@ -221,25 +225,14 @@ export function reportFigure(facts: FigureFacts): ReportFigure | null {
 
 export interface PullFacts {
   fight: FightEntry;
-  /** "Your group", "Your raid", "Everyone in range". */
-  scope: string;
-  players: number;
-  deaths: number;
   phases: readonly { name: string; start_ms: number; end_ms: number }[];
 }
 
-/** "In your group", "In your raid"; everyone the logger saw reads "In range". */
-function scopeLabel(scope: string): string {
-  return /^everyone/i.test(scope) ? 'In range' : `In ${scope.toLowerCase()}`;
-}
-
-/** The rail's This pull (directions b1): only what the band does not say, when it started, the
- *  scope's count and its deaths; then a boss pull's phases, one line each with its span. */
-export function thisPullFacts({ fight, scope, players, deaths, phases }: PullFacts): Fact[] {
+/** This pull's facts (directions b1): only what the band does not say, the start and a boss pull's
+ *  phases. The scope's count and deaths are the band's and the tables' (h-audit 2026-11-09). */
+export function thisPullFacts({ fight, phases }: PullFacts): Fact[] {
   return [
     { id: 'started', label: 'Started', value: formatClock(fight.start) },
-    { id: 'players', label: scopeLabel(scope), value: players.toLocaleString('en-US') },
-    { id: 'deaths', label: 'Deaths', value: String(deaths) },
     ...phases.map((phase, index) => ({
       id: `phase-${index}`,
       label: phase.name,

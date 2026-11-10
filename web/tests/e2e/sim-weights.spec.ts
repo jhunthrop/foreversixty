@@ -3,7 +3,6 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { bulkCopy } from '../../src/lib/sim/copy';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const activeBuild = JSON.parse(readFileSync(path.join(ROOT, 'src', 'data', 'active-build.json'), 'utf8')) as {
@@ -46,17 +45,6 @@ async function loadWeights(page: Page): Promise<void> {
   await page.getByTestId('sim-addon-load').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
 }
-
-test('the page opens with the warning, above everything else', async ({ page }) => {
-  await page.goto('/sim/weights');
-  const warning = page.getByTestId('sim-weights-warning');
-  await expect(warning).toBeVisible();
-  await expect(warning).toContainText(bulkCopy.weightsWarning);
-  await expect(warning.getByRole('link', { name: bulkCopy.weightsWarningLink })).toHaveAttribute(
-    'href',
-    '/sim/gear',
-  );
-});
 
 // Residual regressions fix, Finding 1: BulkRunBar mounts SettingsBar with `spec=''` (no
 // character loaded) -- the only page among the four tools that renders the settings bar in
@@ -101,7 +89,8 @@ test('the stat picker defaults to the spec’s reference stat, first and ticked'
   );
   await loadWeights(page);
   await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeChecked();
-  await expect(page.getByTestId('sim-weights-reference')).toHaveText(/Attack power/);
+  // The reference reads as its locked tick (h-audit 2026-11-09 cut the "Reference: …" line).
+  await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeDisabled();
 });
 
 // D45 (MAJOR, dps-minmaxer review round 1): the picker used to offer the full retail stat
@@ -229,7 +218,8 @@ test('a run renders the published scale-factor table: top stat 1.00, haste in th
   // Round 11 (owner, 2026-09-30): the top per-point stat reads 1.00 and names the table;
   // haste is per 1%, in the caption, never a row. Contract 10.8: haste is split, hit and
   // crit are not.
-  await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('= 1.00');
+  // The top stat reads 1.00 in the Scale column (the caption keeps only haste).
+  await expect(page.getByTestId('sim-weights-table')).toContainText('1.00');
   await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('Haste:');
   await expect(page.getByTestId('sim-weight-melee_haste')).toHaveCount(0);
   await expect(page.getByTestId('sim-weight-attack_power')).toBeVisible();
@@ -278,10 +268,8 @@ test('the run bar shows no combination count, but does show a working precision 
   // Task 8, sub-item 2: the option text itself is now the bulk tools' own bare
   // "Fast"/"Normal"/"High" -- the wire's nominal iteration count was never the real cost of
   // a weights sweep (up to 68x off for an eight-stat spec, contract 10.9's per-stat
-  // multiplier), so the label no longer claims a number it cannot back up. The real total
-  // is the cost note below the select instead.
+  // multiplier), so the label no longer claims a number it cannot back up.
   await expect(precision.locator('option').first()).not.toHaveText(/iterations/);
-  await expect(page.getByTestId('sim-weights-cost-note')).toContainText('engine iterations in your browser');
 });
 
 // Contract 10.6: saved sims of every kind are public at /sim/<id>. Top Gear and talent
@@ -326,5 +314,6 @@ test('a finished run can be saved, and the saved page renders its table', async 
   await page.goto(`/sim/${id}`);
 
   await expect(page.getByTestId('sim-weights')).toBeVisible();
-  await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('= 1.00');
+  // The top stat reads 1.00 in the Scale column (the caption keeps only haste).
+  await expect(page.getByTestId('sim-weights-table')).toContainText('1.00');
 });

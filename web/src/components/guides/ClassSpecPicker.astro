@@ -80,10 +80,12 @@ const { classes, label, testid, classTestidPrefix, classLinkTestidPrefix, rowTes
 </div>
 
 <style>
+  /* Each plate is as tall as its specs: a three-spec class never pads to Druid's four. */
   .class-spec-picker {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 18px;
+    align-items: start;
   }
   @media (min-width: 768px) {
     .class-spec-picker {

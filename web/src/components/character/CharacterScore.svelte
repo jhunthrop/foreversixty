@@ -1,6 +1,6 @@
 <!-- web/src/components/character/CharacterScore.svelte -->
 <!-- The Forever Score panel in the rail (round 5, directions mock b2-character; character spec
-     2026-11-06 C5, C11): the score, its tier in the tier's colour and the rating ("65 of 100") as
+     2026-11-06 C5, C11): the score in its tier's colour with the tier word beside it, and the rating ("65 of 100") as
      Facts, then the parts, each a bar on one scale (lib/character/score-parts.ts) and its points. No
      fight count or link beside the heading (review 2026-11-09). The rating reads its own endpoint;
      until it answers, or with no rated fight, its row is left out. No logs: one line (the owner's
@@ -65,12 +65,7 @@
   const overall = $derived(rating?.latest?.overall ?? null);
   const trend = $derived(scoreTrend(history));
   const facts = $derived<Fact[]>([
-    {
-      id: 'score',
-      label: copy.scoreFigure,
-      value: (forever.score ?? 0).toLocaleString('en-US'),
-      testid: 'character-score-figure',
-    },
+    { id: 'score', label: copy.scoreFigure, content: scoreValue, testid: 'character-score-figure' },
     ...(trend === null
       ? []
       : [
@@ -81,7 +76,6 @@
             testid: 'character-score-trend',
           },
         ]),
-    { id: 'tier', label: copy.tier, content: tierValue, testid: 'character-tier' },
     ...(overall === null
       ? []
       : [{ id: 'rating', label: copy.rating, value: copy.ratingValue(overall), testid: 'character-rating' }]),
@@ -101,8 +95,14 @@
       signedFigure(trend.change, 0),
     )}{/if}{/snippet}
 
-{#snippet tierValue()}
-  <span style:color={tierTextColor(forever.tier) ?? undefined}>{tierLabel(forever.tier) ?? ''}</span>
+<!-- The score and its tier on one row (h-audit 2026-11-09): the tier is the score's colour and its word,
+     never a row of its own. -->
+{#snippet scoreValue()}
+  <span class="inline-flex items-baseline gap-2" style:color={tierTextColor(forever.tier) ?? undefined}>
+    <span>{(forever.score ?? 0).toLocaleString('en-US')}</span>
+    <span class="text-[13px] font-semibold" data-testid="character-tier">{tierLabel(forever.tier) ?? ''}</span
+    >
+  </span>
 {/snippet}
 
 <Section title={copy.score} panel testid="character-score">

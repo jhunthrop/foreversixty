@@ -118,7 +118,7 @@ describe('dollCellFor, signed out', () => {
       OUT,
     );
     expect(tie.gain?.basis).toEqual({
-      prefix: 'next: −0.4 vs',
+      prefix: '−0.4 DPS vs',
       item: { id: 5, name: 'Item 5', quality: 1, icon: undefined },
     });
     expect(JSON.stringify(tie.gain)).not.toContain("Trapper's Leather Hood");
@@ -136,7 +136,7 @@ describe('dollCellFor, signed out', () => {
       { ...OUT, unit: 'score' },
     );
     expect(tie.gain?.basis?.item?.name).toBe("Serpent's Shoulders");
-    expect(tie.gain?.basis?.prefix).toBe('next: −2.3 vs');
+    expect(tie.gain?.basis?.prefix).toBe('−2.3 score vs');
     expect(tie.gain?.value).toBe('Same');
   });
 

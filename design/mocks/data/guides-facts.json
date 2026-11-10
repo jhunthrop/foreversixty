@@ -390,13 +390,13 @@
      "heading": "What changed from 1.12",
      "id": "what-changed-from-1-12",
      "panel": false,
-     "html": "<ul>\n<li><strong>Pets are reworked.</strong> A pet copies 10% of your attack power and all of your crit, and it takes no stat buffs from other players; your own Heart of the Lion still reaches it. Your gear is what makes it hit.</li>\n<li><strong>Aimed Shot is a trained spell</strong> with a 2 second cast, and it shares one 6 second cooldown with Multi-Shot. Aimed Shot outhits Multi-Shot, and in Forever your auto shots keep firing while you cast it, so it takes that cooldown every time it comes up; Multi-Shot is for packs and for when you have to move.</li>\n<li><strong>Heart of the Lion</strong> is a hunter spell from level 1: 10% more stats and extra attack power (280 melee and ranged at 60) for everyone near you, and another 10% stats for you.</li>\n<li><strong>Aspect of the Beast</strong> gives melee attack power, which makes it the Survival aspect. Aspect of the Hawk stays the ranged one.</li>\n<li><strong>Trueshot Aura</strong> is ranged attack power only, 100 at 60 for your party and raid.</li>\n<li><strong>Mail from 40.</strong> Hunters wear leather until 40, and good leather stays in the mix after it.</li>\n</ul>\n"
+     "html": "<ul>\n<li><strong>Pets copy 10% of your attack power and all of your crit.</strong></li>\n<li><strong>Aimed Shot:</strong> trained, 2 second cast, one 6 second cooldown shared with Multi-Shot. Auto shots keep firing while you cast it.</li>\n<li><strong>Aimed Shot over Multi-Shot</strong> every time the cooldown comes up. Multi-Shot is for packs and for when you have to move.</li>\n<li><strong>Heart of the Lion</strong> from level 1: 10% stats and 280 melee and ranged attack power at 60 for everyone near you, and another 10% stats for you.</li>\n<li><strong>Aspect of the Beast</strong> gives melee attack power. Survival runs it; Hawk stays the ranged aspect.</li>\n<li><strong>Trueshot Aura:</strong> ranged attack power only, 100 at 60, party and raid.</li>\n<li><strong>Mail from 40.</strong></li>\n</ul>\n"
     },
     {
      "heading": "Races",
      "id": "races",
      "panel": true,
-     "html": "<p>Alliance hunters are Dwarf, Night Elf and, new in Forever, Human. Horde hunters are Orc, Troll and Tauren. Skyborne can be hunters on either faction, as the High Order on the Alliance and the Windshapers on the Horde.</p>\n"
+     "html": ""
     }
    ],
    "cards": [
@@ -405,21 +405,75 @@
      "name": "Beast Mastery",
      "role": "dps",
      "icon": "ability_hunter_beasttaming",
-     "line": "DPS"
+     "line": "31/20/0"
     },
     {
      "slug": "marksmanship",
      "name": "Marksmanship",
      "role": "dps",
      "icon": "ability_marksmanship",
-     "line": "DPS"
+     "line": "5/33/13"
     },
     {
      "slug": "survival",
      "name": "Survival",
      "role": "dps",
      "icon": "ability_hunter_swiftstrike",
-     "line": "DPS"
+     "line": "5/13/33"
+    }
+   ],
+   "races": [
+    {
+     "faction": "alliance",
+     "heading": "Alliance",
+     "races": [
+      {
+       "name": "Human",
+       "icon": "achievement_character_human_male",
+       "fresh": true
+      },
+      {
+       "name": "Dwarf",
+       "icon": "achievement_character_dwarf_male",
+       "fresh": false
+      },
+      {
+       "name": "Night Elf",
+       "icon": "achievement_character_nightelf_male",
+       "fresh": false
+      },
+      {
+       "name": "High Order Skyborne",
+       "icon": "achievement_character_bloodelf_male",
+       "fresh": true
+      }
+     ]
+    },
+    {
+     "faction": "horde",
+     "heading": "Horde",
+     "races": [
+      {
+       "name": "Orc",
+       "icon": "achievement_character_orc_male",
+       "fresh": false
+      },
+      {
+       "name": "Tauren",
+       "icon": "achievement_character_tauren_male",
+       "fresh": false
+      },
+      {
+       "name": "Troll",
+       "icon": "achievement_character_troll_male",
+       "fresh": false
+      },
+      {
+       "name": "Windshaper Skyborne",
+       "icon": "achievement_character_bloodelf_male",
+       "fresh": true
+      }
+     ]
     }
    ],
    "sources": [
@@ -463,7 +517,7 @@
      "heading": "What changed from 1.12",
      "id": "what-changed-from-1-12",
      "panel": false,
-     "html": "<p>Forever keeps that whole kit and rebuilds the three trees underneath, so a 1.12 mage will recognise the spells and still have to relearn the rotation.</p>\n<ul>\n<li><strong>Personal debuffs.</strong> Improved Scorch and Winter’s Chill now only boost your own spells. Every Fire mage keeps their own Scorch stacks, and nobody else’s Scorches help you.</li>\n<li><strong>Ice Block comes earlier.</strong> It is still a Frost talent, but it sits at 15 points instead of 20, with Cold Snap below it now. Fire mages never get there, and the Arcane builds have no spare point for it, so only Frost mages carry Ice Block.</li>\n<li><strong>Armor and threat.</strong> Mage Armor is the raid armor and now keeps half your mana regeneration running while you cast; Ice Armor is for when things hit you. There is no Molten Armor or Invisibility, so threat is handled with Arcane Subtlety, Burning Soul and Frost Channeling, and by not out-casting your tank.</li>\n<li><strong>One hit stat.</strong> Hit now counts for spells and attacks alike, and Precision in the Frost tree adds 6% hit to every school where 1.12’s Elemental Precision covered only Fire and Frost, which is why the Arcane and Fire builds both dip three points there.</li>\n<li><strong>New spells.</strong> Arcane Blast, Arcane Wrath, Ice Lance on an 8 second cooldown, Heating Up, Fingers of Frost and Missile Barrage are new talents, Frostfire Bolt is trained at 40, 50 and 60, and Teleport: Dalaran at 50.</li>\n</ul>\n"
+     "html": "<ul>\n<li><strong>Personal debuffs.</strong> Improved Scorch and Winter’s Chill now only boost your own spells. Every Fire mage keeps their own Scorch stacks, and nobody else’s Scorches help you.</li>\n<li><strong>Ice Block comes earlier.</strong> It is still a Frost talent, but it sits at 15 points instead of 20, with Cold Snap below it now. Fire mages never get there, and the Arcane builds have no spare point for it, so only Frost mages carry Ice Block.</li>\n<li><strong>Armor and threat.</strong> Raid in Mage Armor, which now keeps half your mana regeneration running while you cast; Ice Armor is for when things hit you. There is no Molten Armor or Invisibility, so threat is handled with Arcane Subtlety, Burning Soul and Frost Channeling, and by not out-casting your tank.</li>\n<li><strong>One hit stat.</strong> Hit now counts for spells and attacks alike, and Precision in the Frost tree adds 6% hit to every school where 1.12’s Elemental Precision covered only Fire and Frost, which is why the Arcane and Fire builds both dip three points there.</li>\n<li><strong>New spells.</strong> Arcane Blast, Arcane Wrath, Ice Lance on an 8 second cooldown, Heating Up, Fingers of Frost and Missile Barrage are new talents, Frostfire Bolt is trained at 40, 50 and 60, and Teleport: Dalaran at 50.</li>\n</ul>\n"
     },
     {
      "heading": "Races",
@@ -475,7 +529,7 @@
      "heading": "Raids and leveling",
      "id": "raids-and-leveling",
      "panel": true,
-     "html": "<p>All three are raid specs. Fire builds its Scorch stacks and burns into a big Combustion and needs every gem, potion and rune on a long fight, Arcane puts the most damage into its Arcane Power windows, and Frost is the easiest to level and the safest in a bad pull.</p>\n"
+     "html": "<p>Fire builds its Scorch stacks and burns into a big Combustion and needs every gem, potion and rune on a long fight, Arcane puts the most damage into its Arcane Power windows, and Frost is the easiest to level and the safest in a bad pull.</p>\n"
     }
    ],
    "cards": [
@@ -484,21 +538,65 @@
      "name": "Arcane",
      "role": "dps",
      "icon": "spell_holy_magicalsentry",
-     "line": "DPS"
+     "line": "32/16/3"
     },
     {
      "slug": "fire",
      "name": "Fire",
      "role": "dps",
      "icon": "spell_fire_firebolt02",
-     "line": "DPS"
+     "line": "14/34/3"
     },
     {
      "slug": "frost",
      "name": "Frost",
      "role": "dps",
      "icon": "spell_frost_frostbolt02",
-     "line": "DPS"
+     "line": "15/5/31"
+    }
+   ],
+   "races": [
+    {
+     "faction": "alliance",
+     "heading": "Alliance",
+     "races": [
+      {
+       "name": "Human",
+       "icon": "achievement_character_human_male",
+       "fresh": false
+      },
+      {
+       "name": "Gnome",
+       "icon": "achievement_character_gnome_male",
+       "fresh": false
+      },
+      {
+       "name": "High Order Skyborne",
+       "icon": "achievement_character_bloodelf_male",
+       "fresh": true
+      }
+     ]
+    },
+    {
+     "faction": "horde",
+     "heading": "Horde",
+     "races": [
+      {
+       "name": "Orc",
+       "icon": "achievement_character_orc_male",
+       "fresh": true
+      },
+      {
+       "name": "Undead",
+       "icon": "achievement_character_undead_male",
+       "fresh": false
+      },
+      {
+       "name": "Troll",
+       "icon": "achievement_character_troll_male",
+       "fresh": false
+      }
+     ]
     }
    ],
    "sources": [
@@ -538,7 +636,7 @@
      "heading": "Races",
      "id": "races",
      "panel": true,
-     "html": "<p class=\"glabel\">Race picks.</p>\n<ul>\n<li>Discipline: Human on Alliance for The Human Spirit and Divine Grace, with Gnome level with it at 60. Undead on Horde for Dark Sacrifice.</li>\n<li>Holy: Human on Alliance for The Human Spirit and Divine Grace, with Gnome close. Undead on Horde for Dark Sacrifice.</li>\n<li>Shadow: Human on Alliance for Ruthless, with Night Elf just as good and Dwarf close. Undead on Horde for Touch of the Grave, well ahead of Troll.</li>\n<li><strong>The Gnome priest</strong> is new. Gnomes bring Eureka! (8 seconds of 10% cheaper and 10% stronger direct heals and damage spells every 2 minutes, and 10% stronger Mind Flay and Penance ticks; never Shadow Word: Pain, Devouring Plague, Renew or a shield), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. At 60 a Gnome heals as well as a Human as Discipline.</li>\n</ul>\n<p class=\"glabel\">Each race has its own two priest spells.</p>\n<ul>\n<li>Human: Divine Grace (a free instant heal that clears Weakened Soul) and Feedback.</li>\n<li>Dwarf: Desperate Prayer and Chastise.</li>\n<li>Night Elf: Elune’s Grace and Starshards.</li>\n<li>Undead: Dark Sacrifice (health for mana, once a fight) and Touch of Weakness.</li>\n<li>Troll: Hex of Weakness and Shadowguard.</li>\n</ul>\n<p>Skyborne, Forever’s new neutral race, cannot be priests: they play warrior, hunter, rogue, shaman, mage or druid.</p>\n"
+     "html": "<p class=\"glabel\">Race picks.</p>\n<ul>\n<li>Discipline: Human on Alliance for The Human Spirit and Divine Grace, with Gnome level with it at 60. Undead on Horde for Dark Sacrifice.</li>\n<li>Holy: Human on Alliance for The Human Spirit and Divine Grace, with Gnome close. Undead on Horde for Dark Sacrifice.</li>\n<li>Shadow: Human on Alliance for Ruthless, with Night Elf just as good and Dwarf close. Undead on Horde for Touch of the Grave, well ahead of Troll.</li>\n<li><strong>The Gnome priest</strong> is new. Gnomes bring Eureka! (8 seconds of 10% cheaper and 10% stronger direct heals and damage spells every 2 minutes, and 10% stronger Mind Flay and Penance ticks; never Shadow Word: Pain, Devouring Plague, Renew or a shield), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. At 60 a Gnome heals as well as a Human as Discipline.</li>\n</ul>\n<p class=\"glabel\">Each race has its own two priest spells.</p>\n<ul>\n<li>Human: Divine Grace (a free instant heal that clears Weakened Soul) and Feedback.</li>\n<li>Dwarf: Desperate Prayer and Chastise.</li>\n<li>Night Elf: Elune’s Grace and Starshards.</li>\n<li>Undead: Dark Sacrifice (health for mana, once a fight) and Touch of Weakness.</li>\n<li>Troll: Hex of Weakness and Shadowguard.</li>\n</ul>\n<p>Skyborne cannot be priests.</p>\n"
     }
    ],
    "cards": [
@@ -547,21 +645,65 @@
      "name": "Discipline",
      "role": "healer",
      "icon": "spell_holy_wordfortitude",
-     "line": "Healer"
+     "line": "Healer · 29/22/0"
     },
     {
      "slug": "holy",
      "name": "Holy",
      "role": "healer",
      "icon": "spell_holy_guardianspirit",
-     "line": "Healer"
+     "line": "Healer · 17/34/0"
     },
     {
      "slug": "shadow",
      "name": "Shadow",
      "role": "dps",
      "icon": "spell_shadow_shadowwordpain",
-     "line": "DPS"
+     "line": "18/0/33"
+    }
+   ],
+   "races": [
+    {
+     "faction": "alliance",
+     "heading": "Alliance",
+     "races": [
+      {
+       "name": "Human",
+       "icon": "achievement_character_human_male",
+       "fresh": false
+      },
+      {
+       "name": "Dwarf",
+       "icon": "achievement_character_dwarf_male",
+       "fresh": false
+      },
+      {
+       "name": "Night Elf",
+       "icon": "achievement_character_nightelf_male",
+       "fresh": false
+      },
+      {
+       "name": "Gnome",
+       "icon": "achievement_character_gnome_male",
+       "fresh": true
+      }
+     ]
+    },
+    {
+     "faction": "horde",
+     "heading": "Horde",
+     "races": [
+      {
+       "name": "Undead",
+       "icon": "achievement_character_undead_male",
+       "fresh": false
+      },
+      {
+       "name": "Troll",
+       "icon": "achievement_character_troll_male",
+       "fresh": false
+      }
+     ]
     }
    ],
    "sources": [
@@ -6388,7 +6530,19 @@
      }
     ],
     "lines": [],
-    "prose": "<p>Night Elf for the Alliance: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span> is 10% crit for 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes your special crits hit harder, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on the pull. Human’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> is next, and Dwarf’s 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.</p>\n<p>Orc and Troll are level for the Horde. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> is 10% attack power for 15 seconds every two minutes, so it goes on the pull with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> and again at two and four minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> is 10% attack speed for 15 seconds every three minutes and stacks with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on your swings.</p>\n<p>Skyborne can be Hunters on either faction: Wind Blessed’s 2% haste speeds both of your weapons.</p>\n"
+    "prose": "<p>Night Elf for the Alliance: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span> is 10% crit for 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes your special crits hit harder, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on the pull. Human’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> is next, and Dwarf’s 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.</p>\n<p>Orc and Troll are level for the Horde. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> is 10% attack power for 15 seconds every two minutes, so it goes on the pull with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> and again at two and four minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> is 10% attack speed for 15 seconds every three minutes and stacks with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on your swings.</p>\n<p>Skyborne can be Hunters on either faction: Wind Blessed’s 2% haste speeds both of your weapons.</p>\n",
+    "portraits": {
+     "dwarf": "achievement_character_dwarf_male",
+     "gnome": "achievement_character_gnome_male",
+     "high-order-skyborne": "achievement_character_bloodelf_male",
+     "human": "achievement_character_human_male",
+     "night-elf": "achievement_character_nightelf_male",
+     "orc": "achievement_character_orc_male",
+     "tauren": "achievement_character_tauren_male",
+     "troll": "achievement_character_troll_male",
+     "undead": "achievement_character_undead_male",
+     "windshaper-skyborne": "achievement_character_bloodelf_male"
+    }
    },
    "professions": "<p>Your raid set asks for Enchanting. Molten Heart of the Mountain and <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249469\">Frozen Heart of the Mountain</span> are Enchanting trinkets that bind on pickup, so nobody can make them for you. Heartseeker, the blacksmith’s dagger in your off hand, binds when equipped, so buy one and do not train Blacksmithing for it. Engineering gives Survival the AoE it lacks: grenades and explosives on trash. Skinning pays for your leveling.</p>\n",
    "leveling": {
@@ -16430,7 +16584,19 @@
      }
     ],
     "lines": [],
-    "prose": "<p>On the Alliance, take a <strong>Human</strong>: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> adds 1% crit with all spells, which Fire turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit. <strong>Gnome</strong> is just behind: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana, so press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and again the moment it is back. On the Horde, take <strong>Undead</strong>: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Touch of the Grave\">Touch of the Grave</span> gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears. <strong>Orc</strong> is next: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> adds 10% spell power for 15 seconds every 2 minutes, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and on cooldown after that. <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> adds 10% cast speed for 15 seconds every 3 minutes and lines up with every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span>, but falls behind both. <strong>Skyborne</strong> can be mages only on the Alliance, and played without <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Read Leyline\">Read Leyline</span> it does the least Fire damage of the lot.</p>\n"
+    "prose": "<p>On the Alliance, take a <strong>Human</strong>: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> adds 1% crit with all spells, which Fire turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit. <strong>Gnome</strong> is just behind: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana, so press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and again the moment it is back. On the Horde, take <strong>Undead</strong>: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Touch of the Grave\">Touch of the Grave</span> gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears. <strong>Orc</strong> is next: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> adds 10% spell power for 15 seconds every 2 minutes, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and on cooldown after that. <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> adds 10% cast speed for 15 seconds every 3 minutes and lines up with every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span>, but falls behind both. <strong>Skyborne</strong> can be mages only on the Alliance, and played without <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Read Leyline\">Read Leyline</span> it does the least Fire damage of the lot.</p>\n",
+    "portraits": {
+     "dwarf": "achievement_character_dwarf_male",
+     "gnome": "achievement_character_gnome_male",
+     "high-order-skyborne": "achievement_character_bloodelf_male",
+     "human": "achievement_character_human_male",
+     "night-elf": "achievement_character_nightelf_male",
+     "orc": "achievement_character_orc_male",
+     "tauren": "achievement_character_tauren_male",
+     "troll": "achievement_character_troll_male",
+     "undead": "achievement_character_undead_male",
+     "windshaper-skyborne": "achievement_character_bloodelf_male"
+    }
    },
    "professions": "<p>Take Tailoring and Enchanting, since your raid set needs both: <span class=\"gtip gtip-item text-rarity-epic-text\" tabindex=\"0\" data-bis-item=\"14152\">Robe of the Archmage</span> is a Tailoring craft and <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249469\">Frozen Heart of the Mountain</span> an Enchanting one, and both bind on pickup, so nobody can make them for you. Enchanting also puts the spell power enchants on your own gear. The goggles in the head slot need 270 Engineering to wear: without it, take the best head you can wear and keep your two professions. Alchemy pays for itself once you raid every week, because Fire drinks a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13444\">Major Mana Potion</span> on every boss.</p>\n",
    "leveling": {
@@ -25252,7 +25418,19 @@
      }
     ],
     "lines": [],
-    "prose": "<p><strong>Human</strong> is the Alliance pick. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit, which <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> turns into healing, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277378\">Divine Grace</span> is a free instant heal on an ally under 50% every 10 minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19275\">Feedback</span> is a PvP spell.</p>\n<p><strong>Undead</strong> is the Horde pick, and the best Holy priest of all, for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277328\">Dark Sacrifice</span>: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears.</p>\n<p><strong>Gnome</strong> is close behind Human. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your direct heals 10% stronger and 10% cheaper for 8 seconds every 2 minutes (never <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span>), and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277640\">Contingency Plan</span> is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. <strong>Night Elf</strong> has <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span>, 10% crit for 15 seconds, <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span>, 10% cast speed, and <strong>Dwarf</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Stoneform\">Stoneform</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19243\">Desperate Prayer</span>, a free self heal. Those three heal clearly less.</p>\n"
+    "prose": "<p><strong>Human</strong> is the Alliance pick. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit, which <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> turns into healing, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277378\">Divine Grace</span> is a free instant heal on an ally under 50% every 10 minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19275\">Feedback</span> is a PvP spell.</p>\n<p><strong>Undead</strong> is the Horde pick, and the best Holy priest of all, for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277328\">Dark Sacrifice</span>: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears.</p>\n<p><strong>Gnome</strong> is close behind Human. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your direct heals 10% stronger and 10% cheaper for 8 seconds every 2 minutes (never <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span>), and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277640\">Contingency Plan</span> is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. <strong>Night Elf</strong> has <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span>, 10% crit for 15 seconds, <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span>, 10% cast speed, and <strong>Dwarf</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Stoneform\">Stoneform</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19243\">Desperate Prayer</span>, a free self heal. Those three heal clearly less.</p>\n",
+    "portraits": {
+     "dwarf": "achievement_character_dwarf_male",
+     "gnome": "achievement_character_gnome_male",
+     "high-order-skyborne": "achievement_character_bloodelf_male",
+     "human": "achievement_character_human_male",
+     "night-elf": "achievement_character_nightelf_male",
+     "orc": "achievement_character_orc_male",
+     "tauren": "achievement_character_tauren_male",
+     "troll": "achievement_character_troll_male",
+     "undead": "achievement_character_undead_male",
+     "windshaper-skyborne": "achievement_character_bloodelf_male"
+    }
    },
    "professions": "<p>Tailoring makes healing cloth you will wear into the first raids. Enchanting saves you the enchanting bill. Alchemy makes the flask and the elixirs you burn every raid, and that is the profession that saves a healer the most gold.</p>\n",
    "leveling": {
@@ -28571,6 +28749,7 @@
    "faction": "alliance",
    "identity": "Dwarf Beast Mastery Hunter",
    "level_line": "Level 34",
+   "detail": "34 Dwarf Beast Mastery",
    "talents_at": "Talents at level 34"
   },
   "survival34": {
@@ -28582,6 +28761,7 @@
    "faction": "alliance",
    "identity": "Dwarf Survival Hunter",
    "level_line": "Level 34",
+   "detail": "34 Dwarf Survival",
    "talents_at": "Talents at level 34",
    "next": "Next point at 35: Survivalist's Discipline"
   },
@@ -28594,6 +28774,7 @@
    "faction": "alliance",
    "identity": "Night Elf Survival Hunter",
    "level_line": "Level 60",
+   "detail": "60 Night Elf Survival",
    "talents_at": "Talents at level 60"
   },
   "warrior60": {
@@ -28605,6 +28786,7 @@
    "faction": "alliance",
    "identity": "Human Fury Warrior",
    "level_line": "Level 60",
+   "detail": "60 Human Fury",
    "talents_at": "Talents at level 60"
   },
   "mage60": {
@@ -28616,6 +28798,7 @@
    "faction": "alliance",
    "identity": "Human Fire Mage",
    "level_line": "Level 60",
+   "detail": "60 Human Fire",
    "talents_at": "Talents at level 60"
   }
  },

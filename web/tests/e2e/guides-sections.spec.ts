@@ -97,9 +97,9 @@ for (const [label, viewport] of [
       expect(ids.filter((id) => SECTION_IDS.includes(id))).toEqual(SECTION_IDS);
 
       await expect(page.getByTestId('guide-status-note')).toHaveCount(0);
-      await expect(page.getByTestId('content-footnote')).toContainText('Numbers from client build');
-      await expect(page.locator('[data-region="head-meta"]')).toContainText(
-        /DPS · Updated \d{1,2} [A-Z][a-z]{2}/,
+      await expect(page.getByTestId('content-footnote')).toHaveCount(0);
+      await expect(page.locator('[data-region="head-meta"]')).toHaveText(
+        /^\s*Updated \d{1,2} [A-Z][a-z]{2}\s*$/,
       );
       await expect(page.getByTestId('guide-summary')).toHaveCount(0);
       await noSidewaysScroll(page);
@@ -125,7 +125,8 @@ for (const [label, viewport] of [
       );
       await expect(page.getByTestId('guide-build-sim-raid')).toBeVisible();
       await page.goto(PAGE);
-      await expect(page.getByTestId('guide-build-both')).toBeVisible();
+      // One build for both: the band's Load this build is it, the lane does not repeat it.
+      await expect(page.getByTestId('guide-build-both')).toHaveCount(0);
       await expect(page.getByTestId('guide-load-build')).toBeVisible();
       await expect(laneLabel(page, 'guide-key-talents')).toHaveText('Key talents');
       const first = page.getByTestId('guide-key-talents').locator('.ui-row').first();
@@ -154,13 +155,8 @@ for (const [label, viewport] of [
       await imagesLoaded(page, '[data-testid^="guide-rotation-"] img');
     });
 
-    // The stat pill row retires (G1): the plate's Stat priority column is the ranked summary now,
-    // and it ranks the same stats, in the same order, as the lane's weights table.
-    test('gives the stat lane the hit headline and the weights table, ranked as the plate', async ({
-      page,
-    }) => {
+    test('gives the stat lane the hit headline and the weights table', async ({ page }) => {
       await page.goto(PAGE);
-      await expect(page.getByTestId('guide-glance-stats')).toBeVisible();
       await expect(page.getByTestId('guide-stat-table')).toBeVisible();
       // The cap, then each source the band's figure counts on the same line; the unit test in
       // src/pages/guides/_spec.test.ts pins the exact line.
@@ -168,10 +164,9 @@ for (const [label, viewport] of [
         /^Hit cap: \d+(\.\d)?%(?: · (?:\d+(\.\d)?% hit from BiS gear and buffs, )?(?:\d+(\.\d)?% from [^,]+, )*\d+(\.\d)?% still to find)?$/,
       );
       await expect(page.getByTestId('guide-stat-table')).toContainText('DPS per point');
-      const plate = await rankedStatNames(page, '[data-testid="guide-glance-stats"] .ui-st-r');
-      const table = await rankedStatNames(page, '[data-testid^="guide-stat-table-row-"]');
-      expect(plate.length).toBeGreaterThan(0);
-      expect(plate).toEqual(table);
+      expect((await rankedStatNames(page, '[data-testid^="guide-stat-table-row-"]')).length).toBeGreaterThan(
+        0,
+      );
     });
 
     // The level and faction pills retire (G5): the guide shows one band, the level 60 picks for
@@ -244,14 +239,14 @@ for (const [label, viewport] of [
         page.locator('#races [data-testid^="guide-race-"]:not([data-testid="guide-race-table"])'),
       ).toHaveCount(6);
       const gnome = page.getByTestId('guide-race-gnome');
-      await expect(gnome).toContainText('Recommended');
+      await expect(gnome).not.toHaveAttribute('aria-current', 'true');
       await expect(gnome).toContainText('Eureka!');
       await expect(gnome).toContainText('Expansive Mind');
       // The prose names both picks, so no recommended-race line is said again under the lane.
       await expect(lane.locator(':scope > p')).toHaveCount(0);
       await expect(page.getByTestId('guide-rotation-cooldowns')).toContainText('Eureka! (Gnome)');
       await expect(page.getByTestId('guide-race-troll')).toContainText('Berserking');
-      await expect(page.getByTestId('guide-race-human')).not.toContainText('Recommended');
+      await expect(page.getByTestId('guide-race-human')).not.toHaveAttribute('aria-current', 'true');
     });
 
     test('renders the leveling lane at level 60 with its planner link, before the island loads', async ({
@@ -259,7 +254,7 @@ for (const [label, viewport] of [
     }) => {
       await page.goto(PAGE);
       const tree = page.getByTestId('guide-leveling-tree');
-      await expect(tree.getByTestId('guide-leveling-caption')).toContainText('51 points spent, all placed');
+      await expect(tree.getByTestId('guide-leveling-caption')).not.toContainText('points spent');
       await expect(tree.getByTestId('guide-leveling-caption')).toContainText(/Level 60: .+, rank \d/);
       await expect(tree.getByTestId('guide-leveling-load')).toHaveAttribute(
         'href',
@@ -288,22 +283,23 @@ for (const [label, viewport] of [
 }
 
 test.describe('the plate', () => {
-  test('phone: Rotation and Stat priority stack under the Build column with no disclosure', async ({
+  test('phone: the band is the build alone; Rotation and Stat priority are their own sections', async ({
     page,
   }) => {
     await page.setViewportSize(PHONE);
     await page.goto(PAGE);
     await expect(page.getByTestId('guide-glance').locator('details, [aria-expanded]')).toHaveCount(0);
-    await expect(page.getByTestId('guide-glance-rotation')).toBeVisible();
-    await expect(page.getByTestId('guide-glance-stats')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-build')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-rotation')).toHaveCount(0);
+    await expect(page.getByTestId('guide-glance-stats')).toHaveCount(0);
   });
 
-  test('desktop: the plate shows all three columns', async ({ page }) => {
+  test('desktop: the plate is the build alone, as on a phone', async ({ page }) => {
     await page.setViewportSize(DESKTOP);
     await page.goto(PAGE);
     await expect(page.getByTestId('guide-glance-build')).toBeVisible();
-    await expect(page.getByTestId('guide-glance-rotation')).toBeVisible();
-    await expect(page.getByTestId('guide-glance-stats')).toBeVisible();
+    await expect(page.getByTestId('guide-glance-rotation')).toHaveCount(0);
+    await expect(page.getByTestId('guide-glance-stats')).toHaveCount(0);
   });
 });
 

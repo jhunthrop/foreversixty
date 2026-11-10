@@ -9,6 +9,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, type Page } from '@playwright/test';
+import { plannerCopy } from '../../../src/lib/planner/copy';
 
 const WEB_ROOT = path.join(import.meta.dirname, '..', '..', '..');
 const BUILD = (
@@ -98,8 +99,13 @@ export async function openPlanner(page: Page, url: string, state: PlannerState =
   await routePlannerState(page, state);
   await page.goto(url);
   await plannerReady(page);
+  // A build that matches its level build draws no level card; its guide row carries the Loaded tag.
   await expect(
-    page.getByTestId('band-compare-differs').or(page.getByTestId('band-compare-empty')),
+    page
+      .getByTestId('band-compare-differs')
+      .or(page.getByTestId('band-compare-empty'))
+      .or(page.getByTestId('planner-guide-builds').getByText(plannerCopy.guideBuildLoaded, { exact: true }))
+      .first(),
   ).toBeVisible();
   await page.waitForLoadState('networkidle');
 }

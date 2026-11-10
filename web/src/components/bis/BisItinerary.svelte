@@ -3,7 +3,7 @@
      panel, the stops in route order (instances by pieces, then crafted, reputation, quest, vendor,
      world drops), each headed by its name and level range, each piece an ItemRow: the item, the
      slot and what the source adds to the heading (wrapping only between its facts), and what it
-     is worth: a gain, "Same DPS" as the next pick, Worn, or the row's own state. -->
+     is worth: a gain, Worn, or the row's own state; a tie with the next pick shows nothing. -->
 <script lang="ts">
   import Plate from '../ui/Plate.svelte';
   import ItemRow from '../ui/ItemRow.svelte';
@@ -13,38 +13,37 @@
   let {
     stops,
     build,
-    unit,
     label,
   }: {
     stops: readonly ItineraryStop[];
     build: string;
-    /** The band's unit ("DPS"), for a tie's "Same DPS". */
-    unit: string;
     label: string;
   } = $props();
 </script>
 
 <Plate {label} flush={false} testid="bis-itinerary">
-  {#each stops as stop (stop.key)}
-    <section class="bis-stop" id={stop.anchor} data-testid={`bis-stop-${stop.key}`}>
-      <h2 class="bis-stop-title text-section">
-        {stop.title}{#if stop.range}<span class="bis-stop-range">{stop.range}</span>{/if}
-      </h2>
-      {#each stop.rows as row (row.cell.slot)}
-        <ItemRow
-          item={row.cell.item}
-          {build}
-          gain={rowFigure(row.cell.gain, unit)}
-          badge={row.cell.badge}
-          testid={`bis-row-${row.cell.slot}`}
-        >
-          {#snippet sourceContent()}{#each factSegments(row.line) as fact, index (index)}{index > 0
-                ? ' '
-                : ''}<span class="bis-fact">{fact}</span>{/each}{/snippet}
-        </ItemRow>
-      {/each}
-    </section>
-  {/each}
+  <div class="bis-stops-cols">
+    {#each stops as stop (stop.key)}
+      <section class="bis-stop" id={stop.anchor} data-testid={`bis-stop-${stop.key}`}>
+        <h2 class="bis-stop-title text-section">
+          {stop.title}{#if stop.range}<span class="bis-stop-range">{stop.range}</span>{/if}
+        </h2>
+        {#each stop.rows as row (row.cell.slot)}
+          <ItemRow
+            item={row.cell.item}
+            {build}
+            gain={rowFigure(row.cell.gain)}
+            badge={row.cell.badge}
+            testid={`bis-row-${row.cell.slot}`}
+          >
+            {#snippet sourceContent()}{#each factSegments(row.line) as fact, index (index)}{index > 0
+                  ? ' '
+                  : ''}<span class="bis-fact">{fact}</span>{/each}{/snippet}
+          </ItemRow>
+        {/each}
+      </section>
+    {/each}
+  </div>
 </Plate>
 
 <style>
@@ -53,8 +52,15 @@
     display: inline-block;
     max-width: 100%;
   }
-  .bis-stop + .bis-stop {
-    margin-top: 18px;
+  .bis-stop {
+    break-inside: avoid;
+    padding-bottom: 18px;
+  }
+  @media (min-width: 1280px) {
+    .bis-stops-cols {
+      columns: 2;
+      column-gap: 40px;
+    }
   }
   .bis-stop-title {
     display: flex;

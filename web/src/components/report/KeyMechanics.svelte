@@ -64,7 +64,12 @@
 </script>
 
 {#if lines.length > 0}
-  <Section title="Mechanics" action={{ label: 'Mechanics', href: tabHref }} panel testid="summary-mechanics">
+  <Section
+    title="Mechanics"
+    action={{ label: 'Mechanics', href: tabHref, arrow: true }}
+    panel
+    testid="summary-mechanics"
+  >
     {#each lines as line (line.key)}
       <Row title={line.name} sub={line.sub} open density="slim">
         {#snippet lead()}<SpellIcon

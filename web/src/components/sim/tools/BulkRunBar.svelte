@@ -13,7 +13,6 @@
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
   import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
   import { isSimulatedSpec, specDisplayName } from '../../../lib/sim/spec-label';
-  import { weightsEngineIterations, weightsIterationsFor } from '../../../lib/sim/weights';
   import type { PrimaryAction } from '../../../lib/sim/answer';
   import type { PrecisionId } from '../../../lib/sim/precision';
   import { LINK } from '../../../lib/ui/primitives';
@@ -56,14 +55,13 @@
    * than still being awaited. The real explanation is the `sim-message` block below this
    * bar; this placeholder just gets out of its way instead of contradicting it.
    */
+  // Nothing to run says nothing: the count shows once a tick makes one (h-audit 2026-11-09).
   const countLabel = $derived(
-    store.combinations !== null
+    store.combinations !== null && store.combinations > 0
       ? bulkCopy.combinations(store.combinations)
-      : store.message !== null
-        ? ''
-        : store.phase === 'counting'
-          ? bulkCopy.combinationsCounting
-          : bulkCopy.combinationsNone,
+      : store.message === null && store.phase === 'counting'
+        ? bulkCopy.combinationsCounting
+        : '',
   );
   /**
    * A combination tool with nothing to run: no count yet (nothing ticked, or a source
@@ -78,27 +76,8 @@
     normal: bulkCopy.precisionNormal,
     high: bulkCopy.precisionHigh,
   };
-  /**
-   * Bare "Fast"/"Normal"/"High" for every tool now, combination and weights alike --
-   * `precisionNote`/`weightsCostNote` below say what each actually costs. Task 8, sub-item
-   * 2: the weights tool used to borrow `/sim`'s own fixed-count labels ("Fast, 500
-   * iterations"), but that number was never the real cost of a weights sweep (contract
-   * 10.9's per-stat multiplier -- `weights.ts`'s own `weightsEngineIterations`), so the
-   * label was quietly wrong by up to 68x. `weightsCostNote` states the true total instead;
-   * the option text itself no longer claims a number it cannot back up.
-   */
+  /** Bare "Fast"/"Normal"/"High" for every tool; a combination tool's note says what each costs. */
   const precisionOptions = BULK_PRECISIONS.map((id) => ({ value: id, label: PRECISION_LABELS[id] }));
-  /**
-   * Task 8, sub-item 2: the real engine cost of the currently selected precision, for
-   * however many stats are ticked right now -- `store.stats` is generic on `BulkStore`
-   * (every tool has one), so this reads fine even before `combinationTool` gates the
-   * note below to weights only. Always the browser lane: `weightsIterationsFor`'s server
-   * number is `runOnServer()`'s own concern, not this free, default button's.
-   */
-  const weightsCost = $derived(
-    weightsEngineIterations(weightsIterationsFor(store.precision, 'browser'), store.stats.length),
-  );
-
   let moreOpen = $state(false);
   const runDisabled = $derived(
     store.capNotice !== null ||
@@ -112,6 +91,7 @@
   const primaryLabel = $derived(
     running ? bulkCopy.stopBulk : store.result !== null ? bulkCopy.runBulkAgain : bulkCopy.runBulk,
   );
+  const hasCount = $derived(store.combinations !== null && store.combinations > 0);
   const NOTE = 'text-small text-muted m-0';
   const BLOCK = 'm-0 text-[14px] leading-5 text-strong';
 </script>
@@ -136,16 +116,18 @@
 <div class="flex flex-col gap-1 px-[var(--page-inset)] pt-3" data-testid="sim-run-notes">
   <p class="m-0 flex flex-wrap items-baseline gap-x-3 text-[14px] leading-5">
     {#if combinationTool && countLabel !== ''}<span
-        class="text-strong font-semibold tabular-nums"
+        class="tabular-nums {hasCount ? 'text-strong font-semibold' : 'text-muted'}"
         data-testid="sim-combo-count">{countLabel}</span
       >{/if}
-    {#if combinationTool}
-      <span class="text-muted">{bulkCopy.precisionNote[store.precision]}</span>
-    {:else}
-      <span class="text-muted" data-testid="sim-weights-cost-note"
-        >{bulkCopy.weightsCostNote(weightsCost)}</span
-      >
-    {/if}
+    <!-- The stage ladder only means something once there are combinations to run; a weights run
+         says nothing here (h-audit 2026-11-09). -->
+    <!-- Run is disabled with nothing to run: say why, in the tool's words (h-audit 2026-11-09). -->
+    {#if combinationTool && store.character !== null && countLabel === '' && !running && store.message === null}<span
+        class="text-muted"
+        data-testid="sim-run-reason">{bulkCopy.runReason[store.tool] ?? ''}</span
+      >{/if}
+    {#if combinationTool && hasCount}<span class="text-muted">{bulkCopy.precisionNote[store.precision]}</span
+      >{/if}
   </p>
   {#if store.cap === LOW_CORE_CAP}
     <p class={NOTE} data-testid="sim-low-core">{bulkCopy.lowCoreNote(store.cap)}</p>

@@ -18,7 +18,8 @@ const MS_PER_SECOND = 1000;
 
 export interface RankRowView {
   rank: string;
-  rankColor: string;
+  /** The percentile colour on the rank; left out where no legend explains it (the landing). */
+  rankColor?: string;
   name: string;
   href: string;
   classSlug: string;
@@ -62,8 +63,13 @@ export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView 
     classSlug: row.player.class.toLowerCase(),
     sub: [
       row.guild?.name,
-      // A board of several classes names the spec; one class's board shows the talent split.
-      board.multiClass === true ? `${row.player.spec} ${row.player.class}` : row.talent_split,
+      // A board of several classes names the spec (its class too unless a guild shares the line: the
+      // crest says the class); one class's board shows the talent split.
+      board.multiClass === true
+        ? row.guild?.name
+          ? row.player.spec
+          : `${row.player.spec} ${row.player.class}`
+        : row.talent_split,
     ]
       .filter((part): part is string => part !== undefined && part !== '')
       .join(' · '),
@@ -79,7 +85,18 @@ export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView 
       {
         value: percentileLabel(row.rank, board.total),
         label: rankingsCopy.percentileLabel,
+        title: rankingsCopy.percentileLabel,
+        bare: true,
+        color: rankColor(row.rank, board.total),
         testid: 'ranking-percentile',
+      },
+      // Below 768 the Date column goes: the date rides under the figure, beside the percentile.
+      {
+        value: rankingDate(row.fought_at),
+        label: 'Date',
+        bare: true,
+        phoneOnly: true,
+        testid: 'ranking-date-phone',
       },
       {
         value: executionLabel(row.execution_score ?? null),
@@ -94,7 +111,15 @@ export function rankRowView(row: RankingRow, board: RankBoardView): RankRowView 
       { value: killLength(row.duration_ms), label: 'Length' },
     ],
     gap: { text: rankingDate(row.fought_at), label: 'Date' },
-    links: [],
+    // The kill's own log, one link a row (the DPS figure opens it too, for a reader who clicks the number).
+    links: [
+      {
+        label: rankingsCopy.reportLink,
+        href: reportHref(row),
+        title: rankingsCopy.openReport,
+        testid: 'ranking-report',
+      },
+    ],
     ...(moderation === null ? {} : { note: { text: moderation } }),
   };
 }

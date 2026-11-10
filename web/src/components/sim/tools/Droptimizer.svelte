@@ -12,8 +12,8 @@
   import type { Me } from '../../../lib/account/api';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
-  import { bulkCopy } from '../../../lib/sim/copy';
   import { pickedWithNothingTried } from '../../../lib/sim/drop-picks';
+  import { factionOfRace } from '../../../lib/race-faction';
   import type { Snippet } from 'svelte';
   import Page from '../../ui/Page.svelte';
   import BulkRunBar from './BulkRunBar.svelte';
@@ -71,7 +71,8 @@
   {/if}
   {#if store.character !== null}
     <SourcePicker
-      plate
+      faction={factionOfRace(store.character.race_slug)}
+      treeVersion={store.character.tree_version}
       loot={store.loot}
       phases={store.phases}
       shownKinds={store.shownKinds}
@@ -85,8 +86,5 @@
       ontoggleupcoming={(value) => store.setShowUpcoming(value)}
       ontoggle={(sourceId, bossId) => store.toggleSource(sourceId, bossId)}
     />
-  {/if}
-  {#if store.result === null && store.pickedBosses.length === 0}
-    <p class="text-small text-muted m-0" data-testid="sim-drops-nothing">{bulkCopy.dropsNothing}</p>
   {/if}
 </Page>

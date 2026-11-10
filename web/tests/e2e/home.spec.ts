@@ -24,9 +24,9 @@ test('signed out: Pick your class with Sign in, the nine classes, the feed, how 
   await expect(plaque.getByRole('heading', { level: 2 })).toHaveText('First raids open');
   await expect(plaque.getByRole('timer')).toHaveAccessibleName('32 days, 6 hours');
   await expect(plaque.getByTestId('home-raid-zone')).toHaveText([
-    /Barrow Deeps\s*Loot not out yet/,
-    /Hyjal Summit\s*Loot not out yet/,
-    /Onyxia's Lair\s*1 boss · \d+ drops/,
+    /^\s*Barrow Deeps\s*$/,
+    /^\s*Hyjal Summit\s*$/,
+    /^\s*Onyxia's Lair\s*$/,
   ]);
   await expect(out.getByTestId('home-feed-row')).toHaveCount(7);
   await expect(out.getByTestId('home-feed').getByRole('radiogroup')).toHaveCount(0);
@@ -54,7 +54,7 @@ test('signed in at 34: the sim, the first raids with Find a guild, the feed, upg
   await expect(page.getByTestId('home-movers')).toContainText('Climbing this week');
   await expect(page.getByTestId('home-mover')).toHaveCount(3);
   await expect(page.getByTestId('home-mover').first()).toContainText('+6');
-  await expect(page.getByTestId('home-upgrades-total')).toContainText('DPS in');
+  await expect(page.getByTestId('home-upgrades-total')).toContainText(/\+[0-9.,]+ DPS/);
   await expect(page.getByTestId('home-upgrades-total')).toContainText('1 best in slot');
   await expect(page.getByTestId('home-guild-sims')).toHaveCount(0);
 });
@@ -127,7 +127,8 @@ test('signed in at 34 in a guild with no raid: one row per sim, the guild beside
   await expect(rows.filter({ hasText: 'uploaded' }).first()).toBeVisible();
   const plaque = page.getByTestId('home-signed-in-root').getByTestId('home-raids-countdown');
   await expect(plaque.getByTestId('home-raids-guild')).toContainText('Olympus XXVII: no raid planned');
-  await expect(plaque.getByTestId('home-raid-zone').last()).toContainText(/1 boss · \d+ Hunter drops/);
+  // Barrow Deeps and Hyjal Summit have no loot rows yet, so no raid carries a line.
+  await expect(plaque.getByTestId('home-raid-zone').last()).toHaveText(/^\s*Onyxia's Lair\s*$/);
   await expect(page.getByTestId('home-upgrade')).toHaveCount(5);
   await expect(page.getByTestId('home-upgrade-over').first()).toContainText(/^over \S/);
   await expect(page.getByTestId('home-upgrades-all')).toHaveText('See all 13 ›');

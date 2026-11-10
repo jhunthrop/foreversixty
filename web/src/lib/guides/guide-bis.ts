@@ -62,6 +62,13 @@ export interface GuideBis {
   panels: GuideBisPanel[];
 }
 
+/** How many pieces the table opens on (its default band and faction): the phone fold's count. */
+export function bisPieceCount(bis: GuideBis | undefined): number {
+  if (bis === undefined) return 0;
+  const open = bis.panels.find((p) => p.band === bis.defaultBand && p.faction === bis.defaultFaction);
+  return open?.rows.length ?? 0;
+}
+
 function rowFor(row: RowView): GuideBisRow {
   const { slotLabel } = row;
   if (row.empty || row.itemId === undefined) {

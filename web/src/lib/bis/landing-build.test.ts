@@ -41,8 +41,4 @@ describe('loadLandingData', () => {
     });
     expect(data.config.build).toBe(activeBuild.build);
   });
-
-  it('reads the raid label as a sentence continues it', () => {
-    expect(data.raidLabel).toBe(data.raidLabel.charAt(0).toLowerCase() + data.raidLabel.slice(1));
-  });
 });

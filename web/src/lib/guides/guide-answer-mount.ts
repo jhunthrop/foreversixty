@@ -7,7 +7,7 @@ import { onCurrentCharacterChange, readCurrent } from '../current-character';
 import { classCrestSrc } from '../class-crest';
 import { classColorVar } from '../report/format';
 import { afterLoad, hasSessionHint } from '../page-load';
-import { guideAnswerFrom, type GuideAnswer, type GuideAnswerPage } from './guide-answer';
+import { answerDetail, guideAnswerFrom, type GuideAnswer, type GuideAnswerPage } from './guide-answer';
 import { publishGuideCharacter } from './guide-character';
 
 type Field = 'crest' | 'name' | 'detail' | 'who' | 'next' | 'links' | 'message' | 'action';
@@ -59,7 +59,7 @@ export function paintGuideAnswer(root: HTMLElement, answer: GuideAnswer, retry: 
     crest.style.setProperty('--c', classColorVar(character.className));
     field('name').textContent = character.name;
     field('name').style.color = classColorVar(character.className);
-    field('detail').textContent = [character.levelLine, character.identity].filter(Boolean).join(' · ');
+    field('detail').textContent = answerDetail(character.level, character.identity, character.className);
     field('next').textContent = answer.next ?? '';
     field('links').append(
       ...answer.links.map((link, i) => linkNode(link.label, link.href, `guide-answer-link-${i}`)),

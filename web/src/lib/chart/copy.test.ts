@@ -37,15 +37,11 @@ describe('chartCopy.tooltipRate', () => {
 
 describe('the chart says what its players are', () => {
   it('names the head’s figure for the set it sums', () => {
-    expect(chartCopy.rateMeta('damage-done', '412', 'the whole fight', undefined, 'raid')).toBe(
-      'Raid 412 DPS over the whole fight',
+    expect(chartCopy.rateMeta('damage-done', '412', '', undefined, 'raid')).toBe('Raid 412 DPS');
+    expect(chartCopy.rateMeta('damage-done', '49', '0:12 to 0:40', undefined, 'group')).toBe(
+      'Group 49 DPS over 0:12 to 0:40',
     );
-    expect(chartCopy.rateMeta('damage-done', '49', 'the whole fight', undefined, 'group')).toBe(
-      'Group 49 DPS over the whole fight',
-    );
-    expect(chartCopy.rateMeta('healing', '11', 'the whole fight', 'Hogger', 'everyone')).toBe(
-      'Total 11 HPS over the whole fight · on Hogger',
-    );
+    expect(chartCopy.rateMeta('healing', '11', '', 'Hogger', 'everyone')).toBe('Total 11 HPS · on Hogger');
   });
 
   it('never calls a median a raid’s when the set is not a raid', () => {

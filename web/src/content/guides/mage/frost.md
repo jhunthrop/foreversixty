@@ -52,7 +52,7 @@ sources:
 - **Ice Lance** (1 point): four times its damage on a frozen target, and Fingers of Frost makes a boss count as frozen. It has an 8 second cooldown in Forever.
 - **Shatter** (3 points): 50% more crit on frozen targets, so both Fingers of Frost spells crit most of the time.
 - **Ice Shards** (5 points): doubles the bonus of your Frost crits.
-- **Improved Frostbolt** (5 points): Frostbolt is a 2.5 second cast.
+- **Improved Frostbolt** (5 points)
 - **Frost Channeling** (3 points): 15% cheaper Frost spells and 30% less threat from them.
 - **Ice Block** and **Cold Snap** (2 points): 10 seconds immune to everything on a 5 minute cooldown, and Cold Snap finishes the cooldown so you have a second one.
 - **Missile Barrage** (2 points, Arcane): Frostbolt procs it 20% of the time, and the proc makes your next Arcane Missiles free and halves its channel.

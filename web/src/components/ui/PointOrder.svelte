@@ -18,12 +18,15 @@
     rows,
     capAfter = -1,
     capText = '',
+    markers = ORDER_MARKERS,
     testid,
   }: {
     rows: readonly PointOrderRow[];
     /** The row index the character's level line follows; -1 for none. */
     capAfter?: number;
     capText?: string;
+    /** The ten column heads over the first row; the level's last digit (0 to 9) by default. */
+    markers?: readonly (number | string)[];
     testid?: string;
   } = $props();
 
@@ -67,7 +70,7 @@
   <div class="porder-m" aria-hidden="true">
     <span></span>
     <div class="porder-s">
-      {#each ORDER_MARKERS as digit (digit)}<span>{digit}</span>{/each}
+      {#each markers as marker (marker)}<span>{marker}</span>{/each}
     </div>
   </div>
   {#each rows as row, r (r)}
@@ -216,7 +219,8 @@
   .ah .ic {
     opacity: 0.5;
   }
-  .ah::after {
+  /* A socket's ring only: a row's label also carries .ah, and unpositioned it ringed the whole plate. */
+  .porder-s > .ah::after {
     content: '';
     position: absolute;
     inset: 0;

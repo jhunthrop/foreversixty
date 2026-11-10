@@ -340,10 +340,12 @@ export const tiersCopy = {
     healer: ['#', '', 'Spec', '', 'HPS', 'vs #1', ''],
     tank: ['#', '', 'Spec', '', 'Taken / s', 'Health', 'Threat / s', 'vs #1', ''],
   } as const satisfies Record<BisRole, readonly string[]>,
+  /** The vs #1 cell on the top spec's own row. */
+  leaderGap: 'best',
   /** The spec panel beside the list (directions mock g-tiers). */
   card: {
     heading: 'Your spec',
-    signedOut: 'Sign in to mark your spec on the list.',
+    signedOut: 'Sign in to mark your spec',
     signIn: 'Sign in',
     signInHref: (path: string): string => `/login?next=${encodeURIComponent(path)}`,
     bis: 'Best in slot',
