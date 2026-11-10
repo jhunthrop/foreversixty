@@ -1,5 +1,5 @@
 <!-- web/src/components/ui/PlanHead.svelte -->
-<!-- A plan column's head (premium spec 2026-11-08 section 3A): the name in Barlow 700 22/28 with an
+<!-- A plan column's head (premium spec 2026-11-08 section 3A): the name in Marcellus 24/30 (round 5) with an
      optional Tag, the audience in Small, the price as a big Figure (gold on the one plan the page
      sells, strong on the others), then its small lines: muted, or gold for the founder line. The
      column's one Button sits under it, outside this block. -->
@@ -77,8 +77,14 @@
     align-items: center;
     gap: 10px;
     margin: 0;
-    font: 700 22px/28px var(--font-body);
+    font: 400 24px/30px var(--font-heading);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-strong);
+  }
+  /* A Tag beside the name keeps the body face. */
+  .ui-plh-name > :global(*) {
+    font-family: var(--font-body);
+    letter-spacing: normal;
   }
   .ui-plh-aud {
     font-size: 14px;

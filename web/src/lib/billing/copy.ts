@@ -41,6 +41,12 @@ export const checkoutCopy = {
     `${price} · renews ${date} · receipt from Stripe by email`,
   nextSim: 'Run a server sim',
   nextCoach: 'Upload a log for the coach',
+  /** The confirmed panel's head once the plan is on (redesign review 2026-11-09). */
+  planOn: (plan: string): string => `${plan} is on.`,
+  /** The confirmed panel's plan row: what the account page holds. */
+  seePlanSub: 'Renewal date, receipts and cancel',
+  /** The confirmed panel's next rows, named for assistive tech. */
+  nextLabel: 'What to do next',
 };
 
 export const billingBlockCopy = {

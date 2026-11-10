@@ -1340,7 +1340,7 @@ PRIM_CSS += '''
 @media(min-width:1024px){.pcols.open .pcol{padding:4px 24px 0}.pcols.open .pcol:first-child{padding-left:0}.pcols.open .pcol:last-child{padding-right:0}}
 .btn.danger{color:var(--wipe);border-color:#f0736b66}.btn.danger:hover{border-color:var(--wipe);color:#ff8f88}
 @media(max-width:1023px){.pcols.swap{display:flex;flex-direction:column}.pcols.swap>.pcol:nth-child(2){order:-1;border-top:0}.pcols.swap>.pcol:first-child{border-top:1px solid var(--line-soft)}}
-.plh{display:flex;flex-direction:column;gap:4px;min-width:0}.plh .nm{display:flex;align-items:center;gap:10px;font:700 22px/28px var(--font-body);color:var(--strong)}
+.plh{display:flex;flex-direction:column;gap:4px;min-width:0}.plh .nm{display:flex;align-items:center;gap:10px;font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--strong)}.plh .nm>*{font-family:var(--font-body);letter-spacing:normal}
 .plh .au{font-size:14px;line-height:20px;color:var(--muted)}.plh .fig{margin-top:8px}.plh .pl2{font-size:13px;line-height:20px;color:var(--muted)}.plh .pl2.gold{color:var(--gold)}
 '''
 
@@ -1907,3 +1907,26 @@ def TalentEditor(trees: list[dict], active: int = 0, foot: str = '', label: str 
         return html
     inner = html[html.index('<div class="tedit">'):html.rindex('</div>')]
     return Section(title, inner, panel=True, frame=frame, flush=True)
+
+
+# ------------------------------------------------ the Subscribe button and the Plate frame (batch F, /premium): web lib/ui/button.ts
+# BUTTON_SUBSCRIBE is Blizzard Forever's teal Subscribe exactly (flat teal-edge, white semibold label); ui/Plate `frame`.
+# Additive: Button(tone='subscribe') and Plate(frame=...) are new; every other call emits what it did.
+PRIM_CSS += '''
+.btn.subscribe{background:var(--teal-edge);border-color:var(--teal-edge);color:var(--strong)}
+'''
+
+_Button3, _Plate1 = Button, Plate
+
+
+def Button(label: str, primary: bool = False, small: bool = False, tone: str = '', act: bool = False) -> str:
+    """tone 'subscribe': the Premium plan's teal Subscribe (web button('subscribe'))."""
+    if tone != 'subscribe':
+        return _Button3(label, primary, small, tone, act)
+    return _Button3(label, False, small, '', act).replace('class="btn', 'class="btn subscribe', 1)
+
+
+def Plate(inner: str, label: str = '', frame: str = 'plain') -> str:
+    """frame: 'framed' draws the cream inset line (web ui/Plate `frame`)."""
+    html = _Plate1(inner, label)
+    return html.replace('class="plate"', 'class="plate framed"', 1) if frame == 'framed' else html

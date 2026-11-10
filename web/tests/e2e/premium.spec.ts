@@ -45,7 +45,7 @@ async function openAt(page: Page, time: string, options: { path?: string; stored
 }
 
 /** Below 768 the interval bar is one line with Change (ui/ControlBar): open it to reach its
- *  radios and its guild link. */
+ *  radios. */
 async function openIntervalBar(page: Page): Promise<void> {
   const toggle = page.getByTestId('interval-bar').locator('[data-control-bar-toggle]');
   if (!(await toggle.isVisible())) return;
@@ -80,7 +80,7 @@ test('on launch day the founder line shows once, prices are founder prices, no s
   await expect(premiumButton(page)).toHaveText(`Subscribe · ${premiumPrice('yearly', true)}`);
   await expect(
     page.getByTestId('price-premium').getByTestId('founder-line').filter({ visible: true }),
-  ).toHaveText('Founder price for anyone who subscribes by 6 Jan 2027. $50 after that.');
+  ).toHaveText('$50 after 6 Jan 2027.');
   await expect(
     page.getByTestId('plan-premium').getByText(plansPageCopy.founder.label, { exact: true }),
   ).toHaveCount(0);
@@ -137,14 +137,6 @@ test('at 390 Premium stacks first and its Subscribe is in the first screen (PR3)
   expect(premium!.y).toBeLessThan(free!.y);
   const button = await premiumButton(page).boundingBox();
   expect(button!.y + button!.height).toBeLessThanOrEqual(844);
-});
-
-test('the bar link brings the guild plans to the top', async ({ page }) => {
-  await openAt(page, DECEMBER);
-  await openIntervalBar(page);
-  await page.getByTestId('band-guild-link').click();
-  await expect(page).toHaveURL(/#guild-leaders$/);
-  await expect(page.getByTestId('plan-guild')).toBeInViewport();
 });
 
 test('forbidden words stay off the page, the coach line leads Premium, rules and questions are open', async ({
@@ -303,9 +295,9 @@ test('an officer paying for a guild on Guild sees it on that column with Manage 
     checkoutGuildCopy.onPlan.youPay('Olympus XXVII', 'guild'),
   );
   await expect(column.getByTestId('guild-on-plan-manage')).toBeVisible();
-  await expect(column.getByRole('link', { name: /^Subscribe a guild/ })).toBeHidden();
+  await expect(column.getByRole('link', { name: /^Subscribe · / })).toBeHidden();
   await expect(
-    page.getByTestId('plan-raid_guild').getByRole('link', { name: /^Subscribe a guild/ }),
+    page.getByTestId('plan-raid_guild').getByRole('link', { name: /^Subscribe · / }),
   ).toBeVisible();
 });
 

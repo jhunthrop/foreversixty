@@ -132,7 +132,7 @@ test('the success return re-fetches /v1/me rather than trusting the query string
     );
   });
   await page.goto('/premium/checkout?plan=premium&interval=monthly&status=success&session_id=cs_test_1');
-  await expect(page.getByTestId('checkout-message')).toContainText("You're all set", { timeout: 10000 });
+  await expect(page.getByTestId('checkout-message')).toContainText('Premium is on.', { timeout: 10000 });
   expect(meCalls).toBeGreaterThan(1);
 });
 

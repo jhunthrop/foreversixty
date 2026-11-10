@@ -47,59 +47,57 @@
   "premium": {
    "name": "Premium",
    "audience": "For one player",
-   "support": "Free stays complete. Premium pays for the servers and keeps the site going.",
    "features": [
     {
-     "text": "Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.",
+     "text": "Coach: what to fix first after every logged raid.",
      "anchor": "coach"
     },
     {
-     "text": "Try up to 5,000 gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at 400.",
+     "text": "Sims of up to 5,000 combinations; 400 in the browser.",
      "anchor": "server-sims"
     },
     {
-     "text": "Close the tab. Server sims keep running, and the site tells you when they finish.",
+     "text": "Server sims finish with the tab closed.",
      "anchor": "server-sims"
     },
     {
-     "text": "Runs go up to 100,000 iterations instead of 30,000, so close upgrades come out clear.",
+     "text": "Runs of up to 100,000 iterations, not 30,000.",
      "anchor": "server-sims"
     },
     {
-     "text": "See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.",
+     "text": "Your Forever Score and boss parses over time.",
      "anchor": "history"
     },
     {
-     "text": "A message in your own Discord channel when a server sim finishes or a log is parsed.",
+     "text": "A Discord message when a sim or log is done.",
      "anchor": "notifications"
     },
     {
-     "text": "A Supporter mark beside your name on your characters and in your guild's roster.",
+     "text": "A Supporter mark on your characters and roster.",
      "anchor": null
     }
    ],
-   "scope": "Sims cover damage specs; healing and tanking specs are not simulated yet. The coach reviews every spec; damage specs get the most findings."
+   "scope": "Sims cover damage specs. The coach reviews every spec."
   },
   "guild": {
    "name": "Guild",
-   "audience": "For a guild of up to 25 verified members",
+   "audience": "Up to 25 verified members",
    "features": [
-    "Post raids on the site and in Discord; members sign up with one tap.",
-    "See who came: attendance and a report for every raid night from its log.",
-    "The Forever Sixty bot in your Discord: raid posts with buttons, plus /bis and /char lookups.",
-    "1 Premium seat to give a member, such as your raid leader.",
-    "Up to 25 verified members, so a guild that runs 10- or 20-person raids fits under Guild. Nothing switches off if you grow past it."
+    "Raids posted on the site and in Discord, one-tap sign-ups.",
+    "Attendance and a report for every raid night from its log.",
+    "The Forever Sixty bot in Discord: raid posts, /bis and /char.",
+    "1 Premium seat to give a member.",
+    "Fits a guild that runs 10- or 20-person raids."
    ]
   },
   "raidGuild": {
    "name": "Raid guild",
-   "audience": "For a raiding guild of any size",
+   "audience": "Any number of members",
    "features": [
-    "Loot council: each drop ranks the raiders it helps most, with what they wear now, their attendance and their loot this tier. Officers award it from the same screen.",
-    "Readiness board: before the pull, one list of who is missing enchants, consumables, talent points or upgrades, worst first.",
+    "Loot council: each drop ranked by the raiders it helps most.",
+    "Readiness board: missing enchants, consumables and talents before the pull.",
     "3 Premium seats to give members.",
-    "Any number of members.",
-    "Everything in Guild: raids, sign-ups, attendance and the Discord bot."
+    "Everything in Guild."
    ]
   },
   "price": {
@@ -114,14 +112,13 @@
    "perRaider": "[fn]"
   },
   "buttons": {
-   "subscribe": "[fn]",
-   "subscribeGuild": "[fn]"
+   "subscribe": "[fn]"
   },
   "trial": "First 7 days free, once per guild. Cancel before day 8 and nothing is charged; guild settings shows the date of the first charge.",
   "trialEmail": "We email you 3 days before the trial ends.",
   "coachSample": {
    "tag": "Sample",
-   "label": "What the coach says after a raid",
+   "label": "The coach after a raid",
    "context": "[fn]",
    "fixFirst": "Fix first",
    "then": "Then",
@@ -134,7 +131,7 @@
   "rules": [
    {
     "term": "Verified members",
-    "sentence": "A verified member is a player with a Forever Sixty account whose character the guild has confirmed: an officer approved it, they joined by the guild's invite link, or the character is in the guild's logs. Each player counts once, however many characters they have in the guild. Discord members without an account do not count."
+    "sentence": "Each player counts once, however many characters they have in the guild. A character counts once an officer approves it, it joins by the guild's invite link, or it shows in the guild's logs. Discord members without an account do not count."
    },
    {
     "term": "Size",
@@ -173,15 +170,11 @@
     "sentence": "Email help@foreversixty.gg for a refund. Cancelling stops the renewal and the plan runs to the end of the period you paid for; there are no part-period refunds. If you were charged twice, or paid for something that did not work, we put it right."
    }
   ],
-  "foot": "Prices in US dollars. Cancel any time; you keep the plan to the end of the period you paid for.",
+  "foot": "Prices in US dollars.",
   "faq": [
    {
     "question": "What happens if I cancel?",
     "answer": "You keep everything through the end of the period you already paid for. After that, the account works like a free one, and nothing is deleted. A guild's records stay readable for good."
-   },
-   {
-    "question": "Can I get a refund?",
-    "answer": "Email us and we'll sort it out. The refund policy has the details."
    },
    {
     "question": "Is anything from Battle.net ever paid?",
@@ -189,7 +182,7 @@
    },
    {
     "question": "Are there ads?",
-    "answer": "No. Not for anyone, paying or not. The site is paid for by Premium and the guild plans, not by ads, and that is not a perk you are buying. It is true for everyone."
+    "answer": "No, for anyone. The site is paid for by Premium and the guild plans."
    },
    {
     "question": "Who am I paying?",
@@ -241,7 +234,7 @@
     "amount": "$40",
     "suffix": " /year",
     "secondLine": "$3.33 a month, billed yearly",
-    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $50 after that."
+    "founderLine": "$50 after 6 Jan 2027."
    },
    "button": "Subscribe · $40 a year",
    "cost": null,
@@ -265,7 +258,7 @@
     "amount": "$5",
     "suffix": " /month",
     "secondLine": "Or $40 a year.",
-    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $6 a month after that."
+    "founderLine": "$6 a month after 6 Jan 2027."
    },
    "button": "Subscribe · $5 a month",
    "cost": null,
@@ -289,9 +282,9 @@
     "amount": "$120",
     "suffix": " /year",
     "secondLine": "$10 a month, billed yearly",
-    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $150 after that."
+    "founderLine": "$150 after 6 Jan 2027."
    },
-   "button": "Subscribe a guild · $120 a year",
+   "button": "Subscribe · $120 a year",
    "cost": "$4.80 per member a year at 25 members.",
    "href": "/premium/checkout?plan=guild&interval=yearly",
    "price": "$120 a year"
@@ -303,7 +296,7 @@
     "secondLine": "$12.50 a month, billed yearly",
     "founderLine": null
    },
-   "button": "Subscribe a guild · $150 a year",
+   "button": "Subscribe · $150 a year",
    "cost": "$6 per member a year at 25 members.",
    "href": "/premium/checkout?plan=guild&interval=yearly",
    "price": "$150 a year"
@@ -313,9 +306,9 @@
     "amount": "$12",
     "suffix": " /month",
     "secondLine": "Or $120 a year.",
-    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $15 a month after that."
+    "founderLine": "$15 a month after 6 Jan 2027."
    },
-   "button": "Subscribe a guild · $12 a month",
+   "button": "Subscribe · $12 a month",
    "cost": "$0.48 per member a month at 25 members.",
    "href": "/premium/checkout?plan=guild&interval=monthly",
    "price": "$12 a month"
@@ -327,7 +320,7 @@
     "secondLine": "Or $150 a year.",
     "founderLine": null
    },
-   "button": "Subscribe a guild · $15 a month",
+   "button": "Subscribe · $15 a month",
    "cost": "$0.60 per member a month at 25 members.",
    "href": "/premium/checkout?plan=guild&interval=monthly",
    "price": "$15 a month"
@@ -337,9 +330,9 @@
     "amount": "$200",
     "suffix": " /year",
     "secondLine": "$16.67 a month, billed yearly",
-    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $250 after that."
+    "founderLine": "$250 after 6 Jan 2027."
    },
-   "button": "Subscribe a guild · $200 a year",
+   "button": "Subscribe · $200 a year",
    "cost": "$5 per raider a year in a 40-person raid, $10 in a 20, $20 in a 10.",
    "href": "/premium/checkout?plan=raid_guild&interval=yearly",
    "price": "$200 a year"
@@ -351,7 +344,7 @@
     "secondLine": "$20.83 a month, billed yearly",
     "founderLine": null
    },
-   "button": "Subscribe a guild · $250 a year",
+   "button": "Subscribe · $250 a year",
    "cost": "$6.25 per raider a year in a 40-person raid, $12.50 in a 20, $25 in a 10.",
    "href": "/premium/checkout?plan=raid_guild&interval=yearly",
    "price": "$250 a year"
@@ -361,9 +354,9 @@
     "amount": "$20",
     "suffix": " /month",
     "secondLine": "Or $200 a year.",
-    "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $25 a month after that."
+    "founderLine": "$25 a month after 6 Jan 2027."
    },
-   "button": "Subscribe a guild · $20 a month",
+   "button": "Subscribe · $20 a month",
    "cost": "$0.50 per raider a month in a 40-person raid, $1 in a 20, $2 in a 10.",
    "href": "/premium/checkout?plan=raid_guild&interval=monthly",
    "price": "$20 a month"
@@ -375,7 +368,7 @@
     "secondLine": "Or $250 a year.",
     "founderLine": null
    },
-   "button": "Subscribe a guild · $25 a month",
+   "button": "Subscribe · $25 a month",
    "cost": "$0.63 per raider a month in a 40-person raid, $1.25 in a 20, $2.50 in a 10.",
    "href": "/premium/checkout?plan=raid_guild&interval=monthly",
    "price": "$25 a month"
@@ -383,37 +376,37 @@
  },
  "premium_lines": [
   {
-   "text": "Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.",
+   "text": "Coach: what to fix first after every logged raid.",
    "anchor": "coach",
    "first": true
   },
   {
-   "text": "Try up to 5,000 gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at 400.",
+   "text": "Sims of up to 5,000 combinations; 400 in the browser.",
    "anchor": "server-sims",
    "first": true
   },
   {
-   "text": "Close the tab. Server sims keep running, and the site tells you when they finish.",
+   "text": "Server sims finish with the tab closed.",
    "anchor": "server-sims",
    "first": false
   },
   {
-   "text": "Runs go up to 100,000 iterations instead of 30,000, so close upgrades come out clear.",
+   "text": "Runs of up to 100,000 iterations, not 30,000.",
    "anchor": "server-sims",
    "first": false
   },
   {
-   "text": "See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.",
+   "text": "Your Forever Score and boss parses over time.",
    "anchor": "history",
    "first": true
   },
   {
-   "text": "A message in your own Discord channel when a server sim finishes or a log is parsed.",
+   "text": "A Discord message when a sim or log is done.",
    "anchor": "notifications",
    "first": true
   },
   {
-   "text": "A Supporter mark beside your name on your characters and in your guild's roster.",
+   "text": "A Supporter mark on your characters and roster.",
    "anchor": null,
    "first": false
   }
@@ -483,7 +476,10 @@
   "checkAgain": "Check again",
   "renewalLine": "[fn]",
   "nextSim": "Run a server sim",
-  "nextCoach": "Upload a log for the coach"
+  "nextCoach": "Upload a log for the coach",
+  "planOn": "[fn]",
+  "seePlanSub": "Renewal date, receipts and cancel",
+  "nextLabel": "What to do next"
  },
  "billing_block": {
   "notSubscribed": "Not on Premium.",
@@ -810,11 +806,8 @@
  },
  "account": {
   "title": "Your account",
-  "battletagLabel": "BattleTag",
-  "emailLabel": "Email",
-  "signInLabel": "Sign-in",
-  "signInBattlenet": "Battle.net",
-  "signInEmail": "Email",
+  "signedInWithBattlenet": "Signed in with Battle.net",
+  "signedInByEmail": "Signed in by email",
   "signOut": "Sign out",
   "devicesLabel": "Devices",
   "youLabel": "You",
@@ -886,7 +879,6 @@
  },
  "characters_copy": {
   "heading": "Characters",
-  "itemLevel": "[fn]",
   "empty": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.",
   "emptyLead": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.",
   "emptyKorea": "Playing in Korea? Install the addon and the companion, or paste an export.",
@@ -984,8 +976,8 @@
   "test": "Send test message",
   "testing": "Sending…",
   "testAndSwitchOn": "Test and switch on",
-  "remove": "Remove channel",
-  "removing": "Removing…",
+  "remove": "Unlink Discord",
+  "removing": "Unlinking…",
   "removeQuestionPasted": "Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.",
   "removeQuestionConnected": "Remove this connection? Posts stop and we delete its webhook from Discord.",
   "replace": "Use a different webhook",
@@ -996,7 +988,6 @@
   "connectInstead": "Connect a Discord channel instead",
   "reconnect": "Connect a different channel",
   "reconnectNote": "Connecting again replaces this channel and removes its webhook from Discord.",
-  "reconnectAside": "The old channel stops getting posts.",
   "returnConnected": "Connected. Send a test message to see it in your channel.",
   "returnDenied": "Cancelled in Discord. Nothing was connected.",
   "returnFailed": "Could not connect. You need to be able to manage webhooks in that channel. Ask a server admin, or paste a webhook URL instead.",
@@ -1092,6 +1083,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery/30-39"
+    }
+   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1100,8 +1105,7 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34,
-     "itemLevel": "Item level 31"
+     "level": 34
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1150,6 +1154,7 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": null,
    "characters": [],
    "imported": "Updated 2 d ago from Battle.net",
    "guilds": [],
@@ -1197,6 +1202,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery/30-39"
+    }
+   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1205,8 +1224,7 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34,
-     "itemLevel": "Item level 31"
+     "level": 34
     },
     {
      "name": "Brisa",
@@ -1215,8 +1233,7 @@
      "guild": null,
      "main": false,
      "source": null,
-     "level": 19,
-     "itemLevel": null
+     "level": 19
     },
     {
      "name": "Korrin",
@@ -1225,8 +1242,7 @@
      "guild": null,
      "main": false,
      "source": "addon",
-     "level": 27,
-     "itemLevel": null
+     "level": 27
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1278,6 +1294,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Thandrel",
+    "classSlug": "warrior",
+    "levelLine": "Level 60 Fury Warrior",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Thandrel",
+     "href": "/character/us/normal/thandrel"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/warrior/fury/60"
+    }
+   },
    "characters": [
     {
      "name": "Thandrel",
@@ -1286,8 +1316,7 @@
      "guild": "Olympus XXVII",
      "main": true,
      "source": "addon",
-     "level": 60,
-     "itemLevel": "Item level 61"
+     "level": 60
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1382,6 +1411,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery/30-39"
+    }
+   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1390,8 +1433,7 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34,
-     "itemLevel": "Item level 31"
+     "level": 34
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1462,6 +1504,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery/30-39"
+    }
+   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1470,8 +1526,7 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34,
-     "itemLevel": "Item level 31"
+     "level": 34
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1539,6 +1594,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery/30-39"
+    }
+   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1547,8 +1616,7 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34,
-     "itemLevel": "Item level 31"
+     "level": 34
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1617,6 +1685,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery/30-39"
+    }
+   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1625,8 +1707,7 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34,
-     "itemLevel": "Item level 31"
+     "level": 34
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1705,6 +1786,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery/30-39"
+    }
+   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1713,8 +1808,7 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34,
-     "itemLevel": "Item level 31"
+     "level": 34
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1792,6 +1886,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery/30-39"
+    }
+   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1800,8 +1908,7 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34,
-     "itemLevel": "Item level 31"
+     "level": 34
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1853,6 +1960,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Felsnap",
+    "classSlug": "hunter",
+    "levelLine": "Level 34 Beast Mastery Hunter",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Felsnap",
+     "href": "/character/us/normal/felsnap"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/hunter/beast-mastery/30-39"
+    }
+   },
    "characters": [
     {
      "name": "Felsnap",
@@ -1861,8 +1982,7 @@
      "guild": null,
      "main": true,
      "source": "addon",
-     "level": 34,
-     "itemLevel": "Item level 31"
+     "level": 34
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -1930,6 +2050,20 @@
    "battletag": "Hunthrop#1894",
    "deleteConfirm": "Type Hunthrop#1894 to confirm",
    "deleteWord": "Hunthrop#1894",
+   "answer": {
+    "name": "Thandrel",
+    "classSlug": "warrior",
+    "levelLine": "Level 60 Fury Warrior",
+    "imported": "Updated 2 d ago from Battle.net",
+    "open": {
+     "label": "Open Thandrel",
+     "href": "/character/us/normal/thandrel"
+    },
+    "bis": {
+     "label": "Best in slot",
+     "href": "/bis/warrior/fury/60"
+    }
+   },
    "characters": [
     {
      "name": "Thandrel",
@@ -1938,8 +2072,7 @@
      "guild": "Olympus XXVII",
      "main": true,
      "source": "addon",
-     "level": 60,
-     "itemLevel": "Item level 61"
+     "level": 60
     }
    ],
    "imported": "Updated 2 d ago from Battle.net",
@@ -3275,6 +3408,7 @@
   ]
  },
  "checkout_trial_saved": "Card saved. First charge 15 Nov 2026.",
+ "checkout_plan_on": "Premium is on.",
  "checkout_renewal": "$40 a year · renews 4 Nov 2027 · receipt from Stripe by email",
  "checkout_signed_in": "Signed in as Hunthrop#1894",
  "guild_on_line": "Olympus XXVII is on the Guild plan. You pay for it.",

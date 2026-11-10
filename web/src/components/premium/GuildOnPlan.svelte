@@ -27,7 +27,7 @@
 
 <p class="text-strong m-0 text-[15px] leading-6" data-testid="guild-on-plan">{view.line}</p>
 {#if view.manage}
-  <span class="self-start">
+  <span class="flex flex-col">
     <Button disabled={busy} onclick={() => void manage()} testid="guild-on-plan-manage"
       >{checkoutGuildCopy.onPlan.manageBilling}</Button
     >

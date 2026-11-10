@@ -39,13 +39,20 @@ export const BUTTON_DANGER =
   `${BASE} text-wipe border-wipe/40 bg-transparent ` +
   '[@media(hover:hover)_and_(pointer:fine)]:hover:border-wipe active:translate-y-px';
 
+/** Blizzard Forever's teal Subscribe, exactly (owner 2026-11-08): flat teal-edge, no separate edge,
+ *  the control radius, a white semibold label. The nav's Premium door (nav.css) and the Premium plan's
+ *  buy button on /premium; nowhere else. */
+export const BUTTON_SUBSCRIBE =
+  `${BASE} border-teal-edge text-strong bg-teal-edge ` +
+  '[@media(hover:hover)_and_(pointer:fine)]:hover:brightness-[1.08] active:translate-y-px active:brightness-[.92]';
+
 /** 44 px everywhere. */
 export const BUTTON_MD = 'h-11';
 
 /** 36 px from 1024 with a fine pointer; 44 px below, where the hit target has to clear the minimum. */
 export const BUTTON_SM = 'h-11 lg:[@media(pointer:fine)]:h-9';
 
-export type ButtonTone = 'primary' | 'secondary' | 'ghost' | 'danger';
+export type ButtonTone = 'primary' | 'secondary' | 'ghost' | 'danger' | 'subscribe';
 export type ButtonSize = 'md' | 'sm';
 
 const TONES: Readonly<Record<ButtonTone, string>> = {
@@ -53,6 +60,7 @@ const TONES: Readonly<Record<ButtonTone, string>> = {
   secondary: BUTTON_SECONDARY,
   ghost: BUTTON_GHOST,
   danger: BUTTON_DANGER,
+  subscribe: BUTTON_SUBSCRIBE,
 };
 
 const SIZES: Readonly<Record<ButtonSize, string>> = { md: BUTTON_MD, sm: BUTTON_SM };

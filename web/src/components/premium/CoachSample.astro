@@ -1,6 +1,6 @@
 ---
 // web/src/components/premium/CoachSample.astro
-// /premium's rail (premium spec 2026-11-08 section 4.8): one sample coach review, rendered at build
+// /premium's rail panel (premium spec 2026-11-08 section 4.8): one sample coach review, rendered at build
 // from the coach's own Fury fixture, labelled Sample in its head and its caption. Static.
 import Row from '../ui/Row.svelte';
 import Section from '../ui/Section.svelte';
@@ -19,7 +19,7 @@ const copy = plansPageCopy.coachSample;
 const HIDE_ON_ERROR = "this.style.visibility='hidden'";
 ---
 
-<Section title={copy.label} testid="coach-sample">
+<Section title={copy.label} testid="coach-sample" panel>
   <Tag slot="head" tone="muted" testid="coach-sample-tag">
     {copy.tag}
   </Tag>
@@ -32,12 +32,14 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
       </span>
     </div>
     <p class="coach-opening">{view.opening}</p>
+    {/* A slot passed conditionally still reserves the Row's lead column, so a row with no icon
+        is drawn without the slot. Fix first is an open row like the rest: its label sets it apart. */}
     {view.fixFirst && (
       <>
         <span class="t-label">{copy.fixFirst}</span>
         <div class="coach-rows" data-testid="coach-sample-fix-first">
-          <Row title={view.fixFirst.title} sub={view.fixFirst.why} selected testid="coach-sample-fix-title">
-            {view.fixFirst.icon && (
+          {view.fixFirst.icon ? (
+            <Row title={view.fixFirst.title} sub={view.fixFirst.why} open testid="coach-sample-fix-title">
               <img
                 slot="lead"
                 class="coach-icon"
@@ -47,8 +49,10 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
                 alt=""
                 onerror={HIDE_ON_ERROR}
               />
-            )}
-          </Row>
+            </Row>
+          ) : (
+            <Row title={view.fixFirst.title} sub={view.fixFirst.why} open testid="coach-sample-fix-title" />
+          )}
         </div>
       </>
     )}
@@ -56,9 +60,9 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
       <>
         <span class="t-label">{copy.then}</span>
         <div class="coach-rows" data-testid="coach-sample-then">
-          {view.then.map((item) => (
-            <Row title={item.title} sub={item.why}>
-              {item.icon && (
+          {view.then.map((item) =>
+            item.icon ? (
+              <Row title={item.title} sub={item.why} open>
                 <img
                   slot="lead"
                   class="coach-icon"
@@ -68,9 +72,11 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
                   alt=""
                   onerror={HIDE_ON_ERROR}
                 />
-              )}
-            </Row>
-          ))}
+              </Row>
+            ) : (
+              <Row title={item.title} sub={item.why} open />
+            ),
+          )}
         </div>
       </>
     )}
@@ -78,9 +84,9 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
       <>
         <span class="t-label">{copy.doingWell}</span>
         <div class="coach-rows" data-testid="coach-sample-well">
-          {view.doingWell.map((item) => (
-            <Row title={item.text} density="slim">
-              {item.icon && (
+          {view.doingWell.map((item) =>
+            item.icon ? (
+              <Row title={item.text} density="slim" open>
                 <img
                   slot="lead"
                   class="coach-icon"
@@ -90,9 +96,11 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
                   alt=""
                   onerror={HIDE_ON_ERROR}
                 />
-              )}
-            </Row>
-          ))}
+              </Row>
+            ) : (
+              <Row title={item.text} density="slim" open />
+            ),
+          )}
         </div>
       </>
     )}

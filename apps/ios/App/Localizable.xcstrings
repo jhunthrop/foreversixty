@@ -10100,7 +10100,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped."
+            "value": "Coach: what to fix first after every logged raid."
           }
         }
       }
@@ -10111,7 +10111,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A message in your own Discord channel when a server sim finishes or a log is parsed."
+            "value": "A Discord message when a sim or log is done."
           }
         }
       }
@@ -10122,7 +10122,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point."
+            "value": "Your Forever Score and boss parses over time."
           }
         }
       }
@@ -10133,7 +10133,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Server sims keep running, and the site tells you when they finish."
+            "value": "Server sims finish with the tab closed."
           }
         }
       }
@@ -10144,7 +10144,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A Supporter mark beside your name on your characters and in your guild's roster."
+            "value": "A Supporter mark on your characters and roster."
           }
         }
       }

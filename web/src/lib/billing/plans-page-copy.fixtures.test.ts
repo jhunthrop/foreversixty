@@ -15,7 +15,6 @@ function ruleSentence(c: Copy, term: string): string {
 function expectGuildFiguresFollow(c: Copy, perMemberLine: Copy['price']['perMember']): void {
   expect(c.guild.audience).toContain('30 verified members');
   expect(c.guild.features[3]).toMatch(/^2 Premium seat/);
-  expect(c.guild.features[4]).toContain('Up to 30 verified members');
   expect(c.guild.features[4]).toContain('5- or 15-person');
   expect(perMemberLine('yearly', true)).toBe('$3 per member a year at 30 members.');
   expect(c.trial).toContain('First 9 days free');
@@ -29,8 +28,8 @@ function expectGuildFiguresFollow(c: Copy, perMemberLine: Copy['price']['perMemb
 function expectModelPricesFollow(model: Model): void {
   expect(model.priceCell('guild', 'yearly', true).amount).toBe('$90');
   expect(model.priceCell('raid_guild', 'yearly', true).amount).toBe('$300');
-  expect(model.buttonLabel('raid_guild', 'yearly', true)).toBe('Subscribe a guild · $300 a year');
-  expect(model.buttonLabel('guild', 'monthly', true)).toBe('Subscribe a guild · $9 a month');
+  expect(model.buttonLabel('raid_guild', 'yearly', true)).toBe('Subscribe · $300 a year');
+  expect(model.buttonLabel('guild', 'monthly', true)).toBe('Subscribe · $9 a month');
   expect(model.trialParts().lead).toBe('First 9 days free');
 }
 

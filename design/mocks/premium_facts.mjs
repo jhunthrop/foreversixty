@@ -202,6 +202,7 @@ export default {
   // Ruling K1: a guild checkout in its trial saved a card and charges at the trial's end (7 days from now).
   checkout_trial_saved: checkoutCopy.trialSaved(utcDayMonthYear(days(7))),
   // Ruling K2: the renewal line above the next steps, on the paid Premium account's own renewal date.
+  checkout_plan_on: checkoutCopy.planOn(PLANS.premium.name),
   checkout_renewal: checkoutCopy.renewalLine(formatPrice(priceFor('premium', 'yearly', true), 'yearly'), accounts.premium.plan.head.when.date),
   checkout_signed_in: checkoutCopy.signedInAs(me60.user.battletag),
   guild_on_line: checkoutGuildCopy.onPlan.youPay(olympus.name, 'guild'), guild_settings: settingsWords.guildSettingsLink,

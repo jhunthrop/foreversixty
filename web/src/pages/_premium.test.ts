@@ -1,6 +1,7 @@
 // web/src/pages/_premium.test.ts
-// Container renders of the plans page in the flat system (design/specs/2026-11-08-premium-account.md
-// sections 4, 5, 14), through the shared `renderPremium` in test-support.
+// Container renders of the plans page on the round 5 system (directions mock b4-premium; parity twin
+// design/mocks/ws_premium.py; design/specs/2026-11-08-premium-account.md sections 5, 14), through the
+// shared `renderPremium` in test-support.
 import { readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
@@ -11,8 +12,8 @@ import { renderPremium } from '../test-support/render-premium';
 const regions = (doc: Document): string[] =>
   [...doc.querySelectorAll('main [data-region]')].map((el) => el.getAttribute('data-region') ?? '');
 
-describe('the plans page in the flat system', () => {
-  it('names itself Plans once, in the one page title, with no lead, slogan or eyebrow', async () => {
+describe('the plans page on the round 5 system', () => {
+  it('names itself Plans once, in the compact title band, with no lead, slogan or eyebrow', async () => {
     const doc = await renderPremium();
     const titles = doc.querySelectorAll('main h1');
     expect(titles).toHaveLength(1);
@@ -22,7 +23,7 @@ describe('the plans page in the flat system', () => {
     expect(text).not.toContain(plansPageCopy.band.heading);
   });
 
-  it('carries the regions of spec 14 in order, with one Plate', async () => {
+  it('carries its regions in order: four plan panels, then Questions with the rules, and the coach sample', async () => {
     const doc = await renderPremium();
     const order = regions(doc).filter((r) => !r.startsWith('head-') || r === 'head-answer');
     expect(order).toEqual([
@@ -31,21 +32,21 @@ describe('the plans page in the flat system', () => {
       'controls',
       'notes',
       'plate',
-      'section-for-guild-leaders',
-      'section-how-the-guild-plans-work',
+      'plate',
+      'plate',
+      'plate',
       'section-questions',
-      'section-what-the-coach-says-after-a-raid',
+      'plate',
+      'section-the-coach-after-a-raid',
+      'plate',
     ]);
-    expect(doc.querySelectorAll('main [data-region=plate]')).toHaveLength(1);
   });
 
-  it('the interval bar links to ?interval=, and the bar end sends a guild leader down the page', async () => {
+  it('the interval bar links to ?interval= and carries nothing else', async () => {
     const doc = await renderPremium();
     const radios = [...doc.querySelectorAll('[data-param=interval] [role=radio]')];
     expect(radios.map((r) => r.textContent?.trim())).toEqual(['Yearly', 'Monthly']);
-    const link = doc.querySelector('[data-testid=band-guild-link]');
-    expect(link?.getAttribute('href')).toBe('#guild-leaders');
-    expect(link?.textContent?.trim()).toBe(`${plansPageCopy.band.guildLink} ›`);
+    expect(doc.querySelector('[data-testid=band-guild-link]')).toBeNull();
   });
 
   it('says founder once: the notice line, no Founder tag on a plan column', async () => {
@@ -56,14 +57,20 @@ describe('the plans page in the flat system', () => {
     );
   });
 
-  it('the Plate holds Free then Premium (Premium stacks first on a phone)', async () => {
-    const plate = (await renderPremium()).querySelector('[data-region=plate]');
-    const cols = plate?.querySelector('.ui-cols');
-    expect(cols?.getAttribute('data-swap')).toBe('true');
-    expect([...(cols?.children ?? [])].map((c) => c.getAttribute('data-testid'))).toEqual([
+  it('the four plans in order, Premium framed with the teal Subscribe and the guild plans in the secondary tone', async () => {
+    const grid = (await renderPremium()).querySelector('[data-testid=plans-plate]');
+    const plans = [...(grid?.querySelectorAll('[data-region=plate] > .plan') ?? [])];
+    expect(plans.map((p) => p.getAttribute('data-testid'))).toEqual([
       'plan-free',
       'plan-premium',
+      'plan-guild',
+      'plan-raid_guild',
     ]);
+    expect(plans[1]?.parentElement?.className).toContain('framed');
+    for (const link of plans[1]?.querySelectorAll('.plan-btn a') ?? [])
+      expect(link.className).toContain('bg-teal-edge');
+    for (const link of plans[2]?.querySelectorAll('.plan-btn a') ?? [])
+      expect(link.className).toContain('bg-blue');
   });
 
   it('holds the three owned lines and See your plan beside the subscribe buttons', async () => {
