@@ -138,7 +138,7 @@ fun ChangeReader(entry: ChangelogEntry?, back: () -> Unit) {
         ReportsBar(stringResource(R.string.changes_list), stringResource(R.string.guides_title), back)
         if (entry == null) return@Column
         Column(Modifier.verticalScroll(rememberScrollState()).screenMargins().padding(bottom = GuideSpace.section), verticalArrangement = Arrangement.spacedBy(GuideSpace.rowGap)) {
-            Text(GuideDates.long(entry.date), style = ScaledType.meta, color = FsColor.muted)
+            Text(GuideDates.long(entry.date), style = ScaledType.meta, color = FsColor.mutedGround)
             Text(entry.title, style = ScaledType.h2, color = FsColor.strong, modifier = Modifier.semantics { heading() })
             entry.blocks.forEach { Block(it) }
             SourcesDisclosure(entry.sources)

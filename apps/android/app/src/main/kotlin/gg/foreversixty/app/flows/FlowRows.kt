@@ -113,12 +113,12 @@ fun FlowRow(
             Column(Modifier.weight(1f)) {
                 Text(title, style = FsType.item, color = titleColor)
                 if (subLink != null) {
-                    Text(subWithLink(sub, subLink), style = SUB, color = FsColor.muted)
+                    Text(subWithLink(sub, subLink), style = SUB, color = LocalSubInk.current)
                 } else if (!sub.isNullOrBlank()) {
-                    Text(sub, style = SUB, color = FsColor.muted)
+                    Text(sub, style = SUB, color = LocalSubInk.current)
                 }
                 // A third line in the same face (Activity's time: `8 h ago`, `6:02 pm`, `Tue`).
-                if (meta != null) Text(meta, style = SUB, color = FsColor.muted)
+                if (meta != null) Text(meta, style = SUB, color = LocalSubInk.current)
             }
         }
         if (trail != null) Box(Modifier.padding(top = FsSpace.space2)) { trail() }

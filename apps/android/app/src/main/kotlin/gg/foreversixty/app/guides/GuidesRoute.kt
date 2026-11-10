@@ -77,7 +77,7 @@ fun GuidesRoute(
     character: AccountCharacter?,
     openBis: (GuideFile) -> Unit,
     planner: PlannerFeature? = null,
-    selector: @Composable () -> Unit = {},
+    selector: (@Composable () -> Unit)? = null,
 ) {
     val store = feature.store
     LaunchedEffect(feature) { if (store.build == null) store.start() }
@@ -92,7 +92,7 @@ fun GuidesRoute(
 }
 
 @Composable
-private fun GuidesRoot(feature: GuidesFeature, character: AccountCharacter?, selector: @Composable () -> Unit) {
+private fun GuidesRoot(feature: GuidesFeature, character: AccountCharacter?, selector: (@Composable () -> Unit)?) {
     val store = feature.store
     val haptics = rememberHaptics()
     val scope = rememberCoroutineScope()
