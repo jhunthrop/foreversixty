@@ -642,6 +642,8 @@
     "menu.settings.line": "Sign out, delete account",
     "menu.help": "Help",
     "menu.privacy": "Privacy",
+    "menu.legal.fan": "A fan-made player tool. Not affiliated with Blizzard.",
+    "menu.legal.operator": "© {year} Commish LLC d/b/a Forever Sixty",
     "activity.filter.all": "All",
     "activity.today": "Today",
     "activity.yesterday": "Yesterday",

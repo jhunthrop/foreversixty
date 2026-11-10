@@ -21,6 +21,8 @@ Offline data
 26.6 MB on this phone
 Settings
 Sign out, delete account
+A fan-made player tool. Not affiliated with Blizzard.
+© 2026 Commish LLC d/b/a Forever Sixty
 Version 0.1.0 (7) · data 1.60.1.70790
 Help
 ·

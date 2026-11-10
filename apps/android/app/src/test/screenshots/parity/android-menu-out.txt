@@ -7,6 +7,8 @@ Tiers
 Patch notes
 Planner
 Rankings
+A fan-made player tool. Not affiliated with Blizzard.
+© 2026 Commish LLC d/b/a Forever Sixty
 Version 0.1.0 (7) · data 1.60.1.70790
 Help
 ·

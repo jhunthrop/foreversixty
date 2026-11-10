@@ -122,6 +122,7 @@ object MenuFixtures {
         devices = 3,
         offlineData = "26.6 MB",
         version = "Version 0.1.0 (7) · data 1.60.1.70790",
+        year = 2026,
     )
 
     private fun me(characters: List<AccountCharacter>): Me {

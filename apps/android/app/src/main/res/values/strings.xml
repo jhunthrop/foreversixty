@@ -660,6 +660,8 @@
     <string name="menu_settings_line">Sign out, delete account</string>
     <string name="menu_help">Help</string>
     <string name="menu_privacy">Privacy</string>
+    <string name="menu_legal_fan">A fan-made player tool. Not affiliated with Blizzard.</string>
+    <string name="menu_legal_operator">© %1$s Commish LLC d/b/a Forever Sixty</string>
     <string name="activity_filter_all">All</string>
     <string name="activity_today">Today</string>
     <string name="activity_yesterday">Yesterday</string>

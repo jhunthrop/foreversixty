@@ -7691,6 +7691,29 @@
         }
       }
     },
+    "menu.legal.fan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A fan-made player tool. Not affiliated with Blizzard."
+          }
+        }
+      }
+    },
+    "menu.legal.operator": {
+      "comment": "Arguments: 1 year (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "© %1$@ Commish LLC d/b/a Forever Sixty"
+          }
+        }
+      }
+    },
     "menu.logs": {
       "extractionState": "manual",
       "localizations": {

@@ -60,6 +60,8 @@ data class MenuLines(
     val devices: Int? = null,
     val offlineData: String? = null,
     val version: String = "",
+    /** The operator line's year: the clock's at runtime, fixed in the goldens. */
+    val year: Int,
 )
 
 /** What the menu does; each closes the menu first (the shell's job). */
@@ -106,7 +108,7 @@ fun ProfileMenu(
                 }
             }
         }
-        Body { Footer(lines.version, actions) }
+        Body { Footer(lines, actions) }
     }
 }
 
@@ -278,9 +280,12 @@ private fun MenuRow(@StringRes title: Int, line: String?, last: Boolean, onClick
 }
 
 @Composable
-private fun Footer(version: String, actions: MenuActions) {
+private fun Footer(lines: MenuLines, actions: MenuActions) {
     Column(Modifier.padding(top = FsSpace.space6, bottom = FsSpace.space4)) {
-        Text(version, style = FsType.small, color = FsColor.muted)
+        // The site footer's fan line and operator line (web/src/lib/footer-copy.ts), word for word.
+        Text(stringResource(R.string.menu_legal_fan), style = FsType.small, color = FsColor.muted)
+        Text(stringResource(R.string.menu_legal_operator, lines.year.toString()), style = FsType.small, color = FsColor.muted)
+        Text(lines.version, style = FsType.small, color = FsColor.muted, modifier = Modifier.padding(top = FsSpace.space3))
         Row(verticalAlignment = Alignment.CenterVertically) {
             FooterLink(R.string.menu_help, actions.onHelp)
             Text(" · ", style = FsType.small, color = FsColor.muted)

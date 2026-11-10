@@ -2171,6 +2171,14 @@ enum Copy {
     /// Privacy
     static var menuPrivacy: String { text("menu.privacy") }
 
+    /// A fan-made player tool. Not affiliated with Blizzard.
+    static var menuLegalFan: String { text("menu.legal.fan") }
+
+    /// © {year} Commish LLC d/b/a Forever Sixty
+    static func menuLegalOperator(year: String) -> String {
+        format("menu.legal.operator", year)
+    }
+
     /// All
     static var activityFilterAll: String { text("activity.filter.all") }
 
