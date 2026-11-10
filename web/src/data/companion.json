@@ -4,13 +4,13 @@
       "os": "windows",
       "platform": "Windows",
       "asset": "foreversixty-companion-setup.exe",
-      "firstRun": "Signed by Commish LLC. Open the download and press Install. It installs for your account only, no admin needed. If SmartScreen asks: More info, then Run anyway."
+      "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway."
     },
     {
       "os": "mac",
       "platform": "Mac",
       "asset": "foreversixty-companion_darwin_universal.app.zip",
-      "firstRun": "Notarized by Apple. Open the download and Forever Sixty moves itself to Applications. macOS 12 or later."
+      "firstRun": "Notarized by Apple. Open the download and it moves itself to Applications. macOS 12 or later."
     }
   ]
 }

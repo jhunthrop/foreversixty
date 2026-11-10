@@ -102,3 +102,65 @@ Reference surfaces: Mac, the stock "Move to Applications?" prompt (LetsMove) in 
 
 Files: `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/web/src/components/setup/SetupCompanion.svelte`, `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/companion/ui/install.js`, `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/companion/ui/install.html`, `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/companion/ui/styles.css`, `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/companion/packaging/windows/companion.iss`, `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/web/src/data/companion.json`.
 
+# Round 2
+
+# Round 2 re-review: companion install experience
+
+**Verdict: SHIP WITH FIXES.** Nothing blocks the merge. All three round-1 must-fixes are closed. Two small items below should land with it or straight after.
+
+## Round-1 items
+
+| # | Round-1 item | Status | Evidence |
+|---|---|---|---|
+| 1 | Re-capture the `/setup` pages | Closed | `setup-windows-1440.png` and `setup-mac-360.png` are real pages. The set at 360, 1440 and 2000 is present. |
+| 2 | First-run line directly under the button | Closed | In `SetupCompanion.svelte` the `firstRuns` block now comes before `lead`. In `setup-windows-1440.png` the line sits under "Download for Windows". |
+| 3 | Toggle disabled while moving | Closed | `install.js` has a `busy()` helper that sets `login.disabled`. In `mac-state-moving.png` the toggle is dimmed and the button reads "Moving…" and is dimmed. |
+| 4 | Lede widow | Closed | The lede is one line, "The download goes in the Trash." |
+| 5 | Question title with no visible "no" | Accepted | The owner fixed the wording. `install.js` documents that closing the window quits and the next launch asks again. |
+| 6 | Initial focus on the button | Closed | The focus ring is visible on the button in `mac-1-move-window.png`. |
+| 7 | Non-default state captures | Closed | `mac-state-moving.png`, `mac-state-failed.png` and `mac-state-no-login-item.png` are present. |
+| 8 | Dead white in the Windows wizard | Closed | In `win-1-setup.png` the page is about 110px shorter and the buttons sit close under the checkboxes. |
+| 10 | Vague Mac first-run line | Closed | The Mac line is now "Notarized by Apple. Open the download and Forever Sixty moves itself to Applications. macOS 12 or later." |
+
+## What shipped, region by region
+
+- **Mac window.** There is one question, one filled button and one toggle. The copy is honest and in game words, with no em dashes. The failed state shows a red `.reason` strip with "Move failed. Reopen Forever Sixty to try again." It fits at 660pt and the button does not jump. With no login item support, the toggle row is hidden cleanly and the panel closes up.
+- **Windows setup.** The subtitle "Installs for your Windows account." is accurate, with the per-user guarantee carried by the button and the web line. The seal sits in the corner, the checkboxes read correctly, and the button says Install.
+- **`/setup` at 1440.** The download row, then the muted first-run line, then the lead, then the ranked how-to rows. The reading order follows the install journey.
+- **`/setup` at 360.** There is no overflow. The first-run line wraps in four lines and the Mac button is full width.
+
+## Remaining items
+
+1. **Should: on `/setup` at 360 the first-run line floats away from the button.**
+   - In `setup-mac-360.png` there is a ~48px blank band between "Other platforms" and "Notarized by Apple…", so the line reads as detached.
+   - Cause: the `.setup-body` flex gap, plus the download component's bottom margin.
+   - In `web/src/components/setup/SetupCompanion.svelte`, give the first-run `<p>` a `margin-top: -16px` at narrow widths, or reduce the gap between the download block and the first-run paragraph to 8px on every width.
+   - The same band shows on desktop in `setup-windows-1440.png` (about 25px, so milder).
+
+2. **Should: the Windows line is two sentences too long for a muted aside.**
+   - It reads "Signed by Commish LLC. Open the download and press Install. It installs for your account only, no admin needed. If SmartScreen asks: More info, then Run anyway."
+   - It is accurate and honest. The cap is the four-line wrap at 360.
+   - In `web/src/data/companion.json`, a tighter version drops one clause: "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway."
+   - This is optional.
+
+## Notes, no action
+
+- The Mac window title bar still shows the OS title "Forever Sixty" above the wordmark band. That is the native frame, so leave it.
+- The disk image fallback is unchanged and fine.
+- `win-2-first-run.png` is unchanged and correct.
+
+## Checklist
+
+- [x] First-run line directly under the button.
+- [x] Mac states captured: default, focus, moving, failed, no login item.
+- [x] Toggle locked while moving.
+- [x] Windows wizard trimmed, copy honest.
+- [x] `/setup` captures at 360, 1440 and 2000.
+- [x] No em dashes, no slop, game words.
+- [ ] Tighten the spacing under the button on `/setup` (item 1).
+
+Files: `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/web/src/components/setup/SetupCompanion.svelte`, `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/web/src/data/companion.json`.
+
+# After round 2
+
+Applied: the first-run line sits 8 px under the button (one flex column with the download), in body ink, and the Windows line drops one clause. Recaptured setup-*-{360,1440,2000}.png.

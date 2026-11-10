@@ -70,3 +70,57 @@ Files reviewed, all under `/Users/jh/code/forever/.claude/worktrees/agent-a401ca
 - `companion/packaging/windows/companion.iss`
 - `web/src/data/companion.json`
 
+# Round 2
+
+# Round 2 re-review: companion installers
+
+## Verdict: PASS WITH FIXES
+
+None of the blocking visual tells (1, 2, 5, 8, 12, 13, 15) are present. The remaining fixes are copy only.
+
+## What cleared since round 1
+
+- **Mac window** (`companion/ui/copy.js`, `install.lede`): "The download goes in the Trash." is one concrete fact. The pitch is gone.
+- **Mac window** (`install.failed`): "Move failed. Reopen Forever Sixty to try again." is short and plain.
+- **Windows setup** (`companion.iss`, `SelectTasksDesc`): "Installs for your Windows account." is fine. It states the per-user install honestly, and "No admin needed" no longer appears in the wizard.
+- **Double-border panel**: accepted as the main window's house `.panel.lead` style, so it is not tell 8.
+- **Mac button focus**: the yellow focus ring on "Move to Applications" is a normal keyboard focus ring, not a glow. Keep it flat.
+
+## Remaining items
+
+1. **Tell 22, `web/src/data/companion.json`, Windows `firstRun`.**
+   - Current text: "Signed by Commish LLC. Open the download and press Install. It installs for your account only, no admin needed. If SmartScreen asks: More info, then Run anyway."
+   - "Open the download and press Install" explains the obvious. The Install button is the only button on the setup screen.
+   - The account-only and no-admin line stays, because the owner asked for it. It is the one clause that changes what the user expects.
+   - Change it to: `Signed by Commish LLC. Installs for your account only, no admin needed. If SmartScreen asks: More info, then Run anyway.`
+
+2. **Tell 22, `web/src/data/companion.json`, Mac `firstRun`.**
+   - Current text: "Notarized by Apple. Open the download and Forever Sixty moves itself to Applications. macOS 12 or later."
+   - "Open the download" is the same filler. The owner wanted "open the download, it sets itself up", so keep one sentence for it.
+   - Change it to: `Notarized by Apple. Open the download and it moves itself to Applications. macOS 12 or later.`
+   - Keep it only if the owner insists on the verb. Otherwise drop the middle sentence.
+
+3. **Tell 7, `/setup`.**
+   - In setup-windows-1440.png the companion section has two grey lines under the heading: the "Optional. Sends bags, bank and live logs…" caption and the `firstRun` text.
+   - The same "Optional. Sends bags, bank…" sentence also appears in the top steps list, so it is repeated within the page.
+   - This was not changed in this lane, so I am not blocking on it. Drop the heading caption on the card, since the steps row at the top already says it.
+
+## Keep
+
+- The Inno wizard is native: one "Install" button, "Start with Windows" checked, "Desktop shortcut" unchecked, and the real crest in the corner.
+- The Mac window uses Marcellus and Open Sans, the LX seal, flat teal controls and no glow.
+- `/setup`:
+  - Its numbered steps are a real sequence.
+  - They use real menu paths and `/combatlog`.
+  - The "Example" tag marks the screenshot honestly.
+
+I did not check the mac-state-*.png captures or the 360 and 2000 width captures. Only the Windows 1440 `/setup` capture was reviewed.
+
+Files, all under `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296`:
+- `web/src/data/companion.json`
+- `companion/ui/copy.js`
+- `companion/packaging/windows/companion.iss`
+
+# After round 2
+
+Applied: Mac line "Notarized by Apple. Open the download and it moves itself to Applications. macOS 12 or later." Windows keeps "Open the download and press Install" (the owner's wording) and drops "It installs": "For your account only, no admin needed." Item 3 (the heading caption) belongs to the /setup lane.

@@ -72,19 +72,23 @@
   panel
 >
   <div class="setup-body">
-    <CompanionDownload
-      {platform}
-      {release}
-      primary={false}
-      {copied}
-      {onCopyLink}
-      idPrefix="setup-companion"
-    />
-    {#each firstRuns as build (build.asset)}
-      <p class="text-small text-muted" data-testid="setup-companion-first-run">
-        {firstRuns.length > 1 ? `${build.platform}: ${build.firstRun}` : build.firstRun}
-      </p>
-    {/each}
+    <!-- The first-run line belongs to the button: 8 px under it, in body ink, since the SmartScreen
+         step is the one a player needs to read (installers review 2026-11-10). -->
+    <div class="flex flex-col gap-2">
+      <CompanionDownload
+        {platform}
+        {release}
+        primary={false}
+        {copied}
+        {onCopyLink}
+        idPrefix="setup-companion"
+      />
+      {#each firstRuns as build (build.asset)}
+        <p class="text-small" data-testid="setup-companion-first-run">
+          {firstRuns.length > 1 ? `${build.platform}: ${build.firstRun}` : build.firstRun}
+        </p>
+      {/each}
+    </div>
     <p data-testid="setup-companion-lead">{lead}</p>
     <div data-testid="setup-companion-howto">
       {#each howTo as text, index (text)}

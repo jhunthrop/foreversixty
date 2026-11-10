@@ -44,3 +44,35 @@
 
 Items 1 to 3 are needed before shipping. Items 4 and 7 are copy fixes worth making now. Items 5, 6 and 8 are small and can follow. No em dashes or slop phrasing appeared in the copy I read. The tone matches how a veteran would write it.
 
+# Round 2
+
+# Round 2 verdict: SHIP WITH FIXES
+
+All round-1 blockers are closed. I re-viewed mac-1-move-window.png, mac-state-failed.png, win-1-setup.png and setup-windows-1440.png. I did not re-open the Mac /setup captures or the 360 and 2000 versions, so the Mac /setup line is judged on the copy you quoted, not on a render.
+
+## Round-1 items
+
+1. **/setup not rendered: closed.** setup-windows-1440.png is now the real page. The companion card reads "Signed by Commish LLC. Open the download and press Install. It installs for your account only, no admin needed. If SmartScreen asks: More info, then Run anyway." That matches what the player sees, and the SmartScreen line is still there.
+2. **Mac pitch line: closed.** "Notarized by Apple. Open the download and Forever Sixty moves itself to Applications. macOS 12 or later." is plain and true. Dropping "Signed by Commish LLC" on the Mac is fine, since notarization is the thing Gatekeeper shows.
+3. **Windows line promises vs. screen: closed.** "Press Install" matches the one button.
+4. **Lede: closed.** "The download goes in the Trash." is short and honest.
+5. **Empty window: closed.** The Setup window is visibly tighter with 110px trimmed, and "Installs for your Windows account." is enough.
+6. **No done toast: accepted.** The first run follows at once, so the player sees it worked. I agree.
+7. **Failure line: accepted.** "Move failed. Reopen Forever Sixty to try again." reads fine in the red strip, and the button stays live. I accept the owner's no-drag rule.
+8. **Uninstall "its own logs": closed.** This is not a screenshot item. I take it from your message, and it removes the fear that WoWCombatLog files get deleted.
+
+## Remaining fixes
+
+1. **`web/src/pages/setup.astro` (the /setup header, step 3 and companion card): three "Download for Windows" buttons plus two "Other platforms" links on one screen.** A player scrolling the Windows /setup at 1440 sees the same button in the header, in step 3 and in the card. Keep the header one and the card one and make step 3 a plain "Install the companion below" row. This is minor and was there before this lane.
+2. **`web/src/data/companion.json`, both `firstRun` lines: low contrast.** The grey text under the button on the dark card is hard to read on the Windows capture, and that is the line with the SmartScreen instruction. Raise it to the body text colour, or at least the same grey as the step text, so the "More info, then Run anyway" part is readable. This is the line players need when SmartScreen blocks them.
+3. **"The companion logs live from your desktop." still sits between that line and step 1.** I accept that it belongs to another lane (addonCopy), but it still tells a veteran nothing. Log it as a follow-up for that lane.
+
+## Not verified
+
+"Notarized by Apple", "no admin needed" and "macOS 12 or later" remain build claims for the accuracy reviewer, as in round 1.
+
+Fix 2 is worth doing before release. Fixes 1 and 3 can follow.
+
+# After round 2
+
+Applied fix 2: the first-run line is in body ink, not muted. Fixes 1 and 3 belong to the /setup page and addonCopy lanes and are left as follow-ups.
