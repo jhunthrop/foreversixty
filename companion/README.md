@@ -218,7 +218,7 @@ on the site.
 
 ## Icons
 
-The Forever Sixty seal v3 (`design/assets/logo/lx-seal-v3*.png`, the site's one logo) is the app's icon everywhere the
+The Forever Sixty seal v4 (`design/assets/logo/lx-seal-v4*.png`, the site's one logo) is the app's icon everywhere the
 OS shows one: the window and taskbar, the Dock, the tray or menu bar, Explorer (the Windows exe carries it as a
 resource, with the product and company fields). Windows and Linux show it full bleed; the macOS `.icns` sets it on
 Apple's icon grid (824 of 1024 px, over a soft shadow) so it stands the size of its Dock neighbours. The tray is the

@@ -1,8 +1,8 @@
-"""Renders the Forever Sixty seal v3 into the companion's icons.
+"""Renders the Forever Sixty seal v4 into the companion's icons.
 
     python3 companion/tools/icons/render.py
 
-Reads design/assets/logo/lx-seal-v3*.png (the one logo since 2026-11-09) and writes only what something uses:
+Reads design/assets/logo/lx-seal-v4*.png (the one logo: the matte seal v4, 2026-11-09) and writes only what something uses:
     internal/icon/assets/seal-tray-{off,on,warn,bad}.ico    Windows tray, embedded in the Windows binary
     internal/icon/assets/seal-tray-{off,on,warn,bad}.png    macOS menu bar and Linux tray, embedded there
     internal/icon/assets/seal.ico     the Windows exe's icon resource (go-winres): window, taskbar, Explorer
@@ -16,7 +16,7 @@ Every PNG is palette-quantized (pngquant at quality 90 to 100, dithered) and the
 colour the seal has. Needs pngquant and oxipng on PATH (brew install pngquant oxipng).
 
 The seal is never redrawn. Where the owner's set has a size (16, 24, 32, 40, 48, 64, 128, 256, 512, 1024)
-that file is used as it is; any other size is a Lanczos downscale of the 1801 px master. Windows and Linux
+that file is used as it is; any other size is a Lanczos downscale of the 1768 px master. Windows and Linux
 show the seal full bleed, as every round icon there is. macOS sets an app icon on Apple's grid: the body
 spans 824 of 1024 px over a soft shadow, so the seal stands the size of its Dock neighbours.
 
@@ -36,7 +36,8 @@ from PIL import Image, ImageDraw, ImageFilter
 COMPANION = Path(__file__).resolve().parents[2]
 REPO = COMPANION.parent
 LOGO = REPO / 'design/assets/logo'
-MASTER = LOGO / 'lx-seal-v3.png'
+SEAL_VERSION = 'v4'
+MASTER = LOGO / f'lx-seal-{SEAL_VERSION}.png'
 OUT = COMPANION / 'internal/icon/assets'
 TOKENS_CSS = COMPANION / 'ui/tokens.css'
 
@@ -66,7 +67,7 @@ def token(name: str) -> str:
 def seal(size: int) -> Image.Image:
     """The seal at size px, full bleed: the owner's render at that size, else a downscale of the master."""
     if size not in _cache:
-        own = LOGO / f'lx-seal-v3-{size}.png'
+        own = LOGO / f'lx-seal-{SEAL_VERSION}-{size}.png'
         im = Image.open(own if own.exists() else MASTER).convert('RGBA')
         if im.size != (size, size):
             im = im.resize((size, size), Image.LANCZOS)
@@ -160,7 +161,7 @@ def main() -> None:
         (OUT / f'seal-tray-{tone}.ico').write_bytes(ico([(s, with_dot(s, colour, ring)) for s in TRAY_ICO_SIZES]))
         (OUT / f'seal-tray-{tone}.png').write_bytes(png_bytes(with_dot(TRAY_PNG_SIZE, colour, ring)))
     (COMPANION / 'ui/seal-64.png').write_bytes(png_bytes(seal(64)))
-    print(f'wrote the seal v3 icons to {OUT.relative_to(REPO)} and companion/ui/seal-64.png')
+    print(f'wrote the seal {SEAL_VERSION} icons to {OUT.relative_to(REPO)} and companion/ui/seal-64.png')
 
 
 if __name__ == '__main__':
