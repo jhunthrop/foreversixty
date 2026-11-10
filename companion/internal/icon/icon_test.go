@@ -3,12 +3,39 @@ package icon
 import (
 	"bytes"
 	"encoding/binary"
+	"image"
 	"image/png"
 	"os"
+	"path/filepath"
 	"regexp"
+	"runtime"
 	"strconv"
 	"testing"
 )
+
+// The files are read from assets/ here, so every platform's test checks
+// every platform's icons; Tray is checked against them for this one.
+
+func asset(t *testing.T, name string) []byte {
+	t.Helper()
+	b, err := os.ReadFile(filepath.Join("assets", name))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return b
+}
+
+func decode(t *testing.T, b []byte, want int) image.Image {
+	t.Helper()
+	img, err := png.Decode(bytes.NewReader(b))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if r := img.Bounds(); r.Dx() != want || r.Dy() != want {
+		t.Fatalf("bounds = %v, want %d square", r, want)
+	}
+	return img
+}
 
 // tokenRGB reads a hex colour token from the window's generated tokens
 // (ui/tokens.css), which the tray dots share with the Status headline.
@@ -26,45 +53,13 @@ func tokenRGB(t *testing.T, name string) [3]uint32 {
 	return [3]uint32{uint32(v >> 16), uint32(v >> 8 & 0xff), uint32(v & 0xff)}
 }
 
-func decode(t *testing.T, b []byte, want int) {
+// icoSizes checks an ICO's header and decodes each PNG entry at its size.
+func icoSizes(t *testing.T, b []byte, want []int) {
 	t.Helper()
-	img, err := png.Decode(bytes.NewReader(b))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if r := img.Bounds(); r.Dx() != want || r.Dy() != want {
-		t.Fatalf("bounds = %v, want %d square", r, want)
-	}
-}
-
-func TestEverySizeDecodesAtItsSize(t *testing.T) {
-	for _, s := range Sizes {
-		decode(t, PNGSize(s), s)
-	}
-	if PNGSize(33) != nil {
-		t.Error("PNGSize(33) is not nil")
-	}
-	decode(t, PNG(), 32)
-}
-
-func TestTheSealIsNotTransparentAtTheCentre(t *testing.T) {
-	img, _ := png.Decode(bytes.NewReader(PNGSize(256)))
-	if _, _, _, a := img.At(128, 128).RGBA(); a == 0 {
-		t.Error("the middle of the seal is transparent")
-	}
-	if _, _, _, a := img.At(0, 0).RGBA(); a != 0 {
-		t.Error("the corner of the seal is not transparent")
-	}
-}
-
-func TestICOHasEverySizeAsPNG(t *testing.T) {
-	b := ICO()
 	if len(b) < 6 || binary.LittleEndian.Uint16(b[0:]) != 0 || binary.LittleEndian.Uint16(b[2:]) != 1 {
 		t.Fatal("not an ICO header")
 	}
-	n := int(binary.LittleEndian.Uint16(b[4:]))
-	want := []int{16, 20, 24, 32, 40, 48, 64, 128, 256}
-	if n != len(want) {
+	if n := int(binary.LittleEndian.Uint16(b[4:])); n != len(want) {
 		t.Fatalf("%d entries, want %d", n, len(want))
 	}
 	for i, w := range want {
@@ -82,15 +77,20 @@ func TestICOHasEverySizeAsPNG(t *testing.T) {
 	}
 }
 
-func TestICNSTableCoversSixteenToFiveTwelveAtTwoX(t *testing.T) {
-	b := ICNS()
+// The exe's icon resource: every size Windows draws, 16 to 64 at each
+// scale step, and 256 for Explorer.
+func TestTheWindowsAppIconHasEverySizeWindowsDraws(t *testing.T) {
+	icoSizes(t, asset(t, "seal.ico"), []int{16, 20, 24, 32, 40, 48, 64, 256})
+}
+
+// The bundle icon: one PNG per pixel size macOS draws, 16 to 512, and
+// nothing repeated.
+func TestTheMacAppIconHasOneEntryPerPixelSize(t *testing.T) {
+	b := asset(t, "seal.icns")
 	if string(b[:4]) != "icns" || int(binary.BigEndian.Uint32(b[4:])) != len(b) {
 		t.Fatal("bad icns header")
 	}
-	want := map[string]int{
-		"icp4": 16, "icp5": 32, "icp6": 64, "ic07": 128, "ic08": 256, "ic09": 512,
-		"ic10": 1024, "ic11": 32, "ic12": 64, "ic13": 256, "ic14": 512,
-	}
+	want := map[string]int{"icp4": 16, "icp5": 32, "icp6": 64, "ic07": 128, "ic08": 256, "ic09": 512}
 	for p := 8; p < len(b); {
 		typ := string(b[p : p+4])
 		n := int(binary.BigEndian.Uint32(b[p+4:]))
@@ -98,7 +98,14 @@ func TestICNSTableCoversSixteenToFiveTwelveAtTwoX(t *testing.T) {
 		if !ok {
 			t.Fatalf("unexpected element %q", typ)
 		}
-		decode(t, b[p+8:p+n], w)
+		img := decode(t, b[p+8:p+n], w)
+		// Apple's grid: the corner is clear, the centre is the seal.
+		if _, _, _, a := img.At(w/2, w/2).RGBA(); a == 0 {
+			t.Errorf("%s: the middle is transparent", typ)
+		}
+		if _, _, _, a := img.At(0, 0).RGBA(); a != 0 {
+			t.Errorf("%s: the corner is not transparent", typ)
+		}
 		delete(want, typ)
 		p += n
 	}
@@ -107,66 +114,86 @@ func TestICNSTableCoversSixteenToFiveTwelveAtTwoX(t *testing.T) {
 	}
 }
 
+// The icons are the small files the owner asked for (2026-11-09: the
+// first cut added about 2.5 MB to every binary).
+func TestTheIconFilesStaySmall(t *testing.T) {
+	for name, max := range map[string]int{"seal.icns": 160 << 10, "seal.ico": 64 << 10} {
+		if n := len(asset(t, name)); n > max {
+			t.Errorf("%s is %d bytes, over %d", name, n, max)
+		}
+	}
+	tray, _ := filepath.Glob("assets/seal-tray-*")
+	total := 0
+	for _, f := range tray {
+		fi, _ := os.Stat(f)
+		total += int(fi.Size())
+	}
+	if len(tray) != 8 || total > 64<<10 {
+		t.Errorf("tray files = %d, %d bytes", len(tray), total)
+	}
+}
+
+// Windows draws the tray at 16 px a scale step: 100, 125, 150, 200, 250 and 300 %.
+func TestEachTrayICOHasEveryWindowsTrayScale(t *testing.T) {
+	for _, tone := range append([]string{Off}, Tones...) {
+		t.Run(tone, func(t *testing.T) {
+			icoSizes(t, asset(t, "seal-tray-"+tone+".ico"), []int{16, 20, 24, 32, 40, 48})
+		})
+	}
+}
+
 func TestTheTrayIconsCarryADotInTheToneAndOffIsThePlainSeal(t *testing.T) {
 	// The dot sits in the lower right corner of the 32 px icon, centred on (26, 26),
 	// and is the headline's tone, the same token the window's --tone-* reads
-	// (ui/styles.css); the upper left is the seal and not the dot.
+	// (ui/styles.css); off has no dot there.
 	want := map[string][3]uint32{
 		"on":   tokenRGB(t, "--color-kill"),
 		"warn": tokenRGB(t, "--color-gold-hover"),
 		"bad":  tokenRGB(t, "--color-wipe"),
 	}
 	ring := tokenRGB(t, "--color-raised")
-	plain, _ := png.Decode(bytes.NewReader(PNG()))
+	near := func(a, b [3]uint32) bool {
+		for i := range a {
+			if d := int(a[i]) - int(b[i]); d < -6 || d > 6 { // the palette may move a channel a step
+				return false
+			}
+		}
+		return true
+	}
+	rgb := func(img image.Image, x, y int) [3]uint32 {
+		r, g, b, _ := img.At(x, y).RGBA()
+		return [3]uint32{r >> 8, g >> 8, b >> 8}
+	}
+	plain := decode(t, asset(t, "seal-tray-off.png"), 32)
 	for _, tone := range Tones {
-		img, err := png.Decode(bytes.NewReader(TrayPNG(tone)))
-		if err != nil {
-			t.Fatalf("%s: %v", tone, err)
+		img := decode(t, asset(t, "seal-tray-"+tone+".png"), 32)
+		if got := rgb(img, 25, 25); !near(got, want[tone]) {
+			t.Errorf("%s: dot pixel = %v, want %v", tone, got, want[tone])
 		}
-		if r := img.Bounds(); r.Dx() != 32 || r.Dy() != 32 {
-			t.Fatalf("%s: bounds %v, want 32 square", tone, r)
-		}
-		r, g, b, a := img.At(25, 25).RGBA()
-		got := [3]uint32{r >> 8, g >> 8, b >> 8}
-		if got != want[tone] || a>>8 != 0xff {
-			t.Errorf("%s: dot pixel = %v alpha %d, want %v opaque", tone, got, a>>8, want[tone])
-		}
-		pr, pg, pb, pa := plain.At(25, 25).RGBA()
-		if pr>>8 == got[0] && pg>>8 == got[1] && pb>>8 == got[2] && pa>>8 == 0xff {
+		if near(rgb(plain, 25, 25), want[tone]) {
 			t.Errorf("%s: the plain seal already has this colour at the dot", tone)
 		}
-		// The ring is the panel colour, between the dot and the seal.
-		rr, rg, rb, _ := img.At(20, 25).RGBA()
-		if got := [3]uint32{rr >> 8, rg >> 8, rb >> 8}; got != ring {
+		if got := rgb(img, 20, 25); !near(got, ring) {
 			t.Errorf("%s: ring pixel = %v, want %v", tone, got, ring)
-		}
-	}
-	for _, tone := range []string{"off", "", "unknown"} {
-		if !bytes.Equal(TrayPNG(tone), PNG()) || !bytes.Equal(TrayICO(tone), ICO()) {
-			t.Errorf("tone %q is not the plain seal", tone)
 		}
 	}
 }
 
-// Windows draws the tray at 16 px a scale step: 100, 125, 150, 200, 250 and 300 %.
-func TestEachTrayICOHasEveryWindowsTrayScale(t *testing.T) {
-	for _, tone := range Tones {
-		b := TrayICO(tone)
-		if len(b) < 6 || binary.LittleEndian.Uint16(b[0:]) != 0 || binary.LittleEndian.Uint16(b[2:]) != 1 {
-			t.Fatalf("%s: not an ICO header", tone)
+// Tray hands this platform its own image for every tone, and the plain
+// seal for off and anything unknown.
+func TestTrayIsThisPlatformsImage(t *testing.T) {
+	ext := "png"
+	if runtime.GOOS == "windows" {
+		ext = "ico"
+	}
+	for _, tone := range append([]string{Off}, Tones...) {
+		if !bytes.Equal(Tray(tone), asset(t, "seal-tray-"+tone+"."+ext)) {
+			t.Errorf("Tray(%q) is not seal-tray-%s.%s", tone, tone, ext)
 		}
-		want := []int{16, 20, 24, 32, 40, 48}
-		if n := int(binary.LittleEndian.Uint16(b[4:])); n != len(want) {
-			t.Fatalf("%s: %d entries, want %d", tone, n, len(want))
-		}
-		for i, w := range want {
-			e := b[6+16*i:]
-			if int(e[0]) != w {
-				t.Errorf("%s: entry %d is %d px, want %d", tone, i, e[0], w)
-			}
-			size := binary.LittleEndian.Uint32(e[8:])
-			off := binary.LittleEndian.Uint32(e[12:])
-			decode(t, b[off:off+size], w)
+	}
+	for _, tone := range []string{"", "unknown"} {
+		if !bytes.Equal(Tray(tone), Tray(Off)) {
+			t.Errorf("tone %q is not the plain seal", tone)
 		}
 	}
 }

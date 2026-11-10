@@ -2,12 +2,18 @@
 
     python3 companion/tools/icons/render.py
 
-Reads design/assets/logo/lx-seal-v3*.png (the one logo since 2026-11-09) and writes:
-    internal/icon/assets/seal-{16,24,32,48,64,128,256,512}.png  window icon (Linux), tray (macOS, Linux)
-    internal/icon/assets/seal.ico                               Windows exe resource, window and taskbar
-    internal/icon/assets/seal.icns                              macOS app bundle (Dock, Finder)
-    internal/icon/assets/seal-tray-{on,warn,bad}.{png,ico}      the tray seal with the headline's tone dot
-    ui/seal-64.png                                              the window's header seal (32 px at 2x)
+Reads design/assets/logo/lx-seal-v3*.png (the one logo since 2026-11-09) and writes only what something uses:
+    internal/icon/assets/seal-tray-{off,on,warn,bad}.ico    Windows tray, embedded in the Windows binary
+    internal/icon/assets/seal-tray-{off,on,warn,bad}.png    macOS menu bar and Linux tray, embedded there
+    internal/icon/assets/seal.ico     the Windows exe's icon resource (go-winres): window, taskbar, Explorer
+    internal/icon/assets/seal.icns    the macOS bundle's icon (tools/package-mac-companion.sh): Dock, Finder
+    ui/seal-64.png                    the window's header seal (32 px at 2x)
+seal.ico and seal.icns are never embedded in the binary; each platform's go:embed (internal/icon) carries its
+own tray images alone.
+
+Every PNG is palette-quantized (pngquant at quality 90 to 100, dithered) and then losslessly recompressed
+(oxipng), keeping the smaller of that and the plain encode; at 16 to 64 px the 256-colour palette holds every
+colour the seal has. Needs pngquant and oxipng on PATH (brew install pngquant oxipng).
 
 The seal is never redrawn. Where the owner's set has a size (16, 24, 32, 40, 48, 64, 128, 256, 512, 1024)
 that file is used as it is; any other size is a Lanczos downscale of the 1801 px master. Windows and Linux
@@ -21,6 +27,8 @@ the tray and the Status headline never disagree. The build is deterministic: run
 import io
 import re
 import struct
+import subprocess
+import tempfile
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter
@@ -33,14 +41,17 @@ OUT = COMPANION / 'internal/icon/assets'
 TOKENS_CSS = COMPANION / 'ui/tokens.css'
 
 MAC_BODY = 824 / 1024  # Apple's macOS icon grid
-PNG_SIZES = (16, 24, 32, 48, 64, 128, 256, 512)
-ICO_SIZES = (16, 20, 24, 32, 40, 48, 64, 128, 256)
+# Windows draws the exe's icon at 16 to 64 px a scale step (small and large icons, 100 to 200 %) and takes 256 for
+# Explorer's large views, scaling it down for 96 and 128.
+ICO_SIZES = (16, 20, 24, 32, 40, 48, 64, 256)
 TRAY_ICO_SIZES = (16, 20, 24, 32, 40, 48)  # Windows' tray at 100, 125, 150, 200, 250 and 300 %
 TRAY_PNG_SIZE = 32  # macOS draws the menu-bar image at 16 pt (getlantern/systray): this is its 2x; Linux takes it too
 TONES = {'on': '--color-kill', 'warn': '--color-gold-hover', 'bad': '--color-wipe'}
 RING = '--color-raised'  # the dot's ring, so it reads on a light taskbar and a dark one
-ICNS_TYPES = (('icp4', 16), ('icp5', 32), ('icp6', 64), ('ic07', 128), ('ic08', 256), ('ic09', 512),
-              ('ic10', 1024), ('ic11', 32), ('ic12', 64), ('ic13', 256), ('ic14', 512))  # ic10..ic14: @2x
+# One entry per pixel size macOS draws, 16 to 512: AppKit picks a representation by pixels, so 16 pt at 2x takes
+# the 32 px entry and 256 pt at 2x the 512 px one, and the @2x types (ic11 to ic14) would only repeat the bytes.
+# No 1024: nothing short of a 512 pt Finder icon on a Retina screen asks for it, and the Dock tops out at 256 pt.
+ICNS_TYPES = (('icp4', 16), ('icp5', 32), ('icp6', 64), ('ic07', 128), ('ic08', 256), ('ic09', 512))
 
 _cache: dict[int, Image.Image] = {}
 
@@ -95,10 +106,24 @@ def with_dot(size: int, colour: str, ring: str) -> Image.Image:
     return out
 
 
+PNGQUANT = ('pngquant', '--quality=90-100', '--speed=1', '--strip', '--force', '--output')
+OXIPNG = ('oxipng', '--opt', 'max', '--strip', 'all', '--quiet')
+
+
 def png_bytes(im: Image.Image) -> bytes:
+    """The smallest faithful PNG: quantized when pngquant meets its quality floor, then recompressed losslessly."""
     buf = io.BytesIO()
     im.save(buf, 'PNG', optimize=True)
-    return buf.getvalue()
+    plain = buf.getvalue()
+    with tempfile.TemporaryDirectory() as tmp:
+        src, out = Path(tmp) / 'in.png', Path(tmp) / 'out.png'
+        src.write_bytes(plain)
+        quantized = subprocess.run([*PNGQUANT, str(out), str(src)], capture_output=True).returncode == 0
+        if not quantized:  # 99: the palette would miss the quality floor; keep every colour
+            out.write_bytes(plain)
+        subprocess.run([*OXIPNG, str(out)], check=True)
+        best = out.read_bytes()
+    return best if len(best) < len(plain) else plain
 
 
 def ico(images: list[tuple[int, Image.Image]]) -> bytes:
@@ -123,11 +148,13 @@ def icns() -> bytes:
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    for size in PNG_SIZES:
-        (OUT / f'seal-{size}.png').write_bytes(png_bytes(seal(size)))
+    for old in OUT.glob('seal-[0-9]*.png'):  # the per-size PNGs nothing reads any more
+        old.unlink()
     (OUT / 'seal.ico').write_bytes(ico([(s, seal(s)) for s in ICO_SIZES]))
     (OUT / 'seal.icns').write_bytes(icns())
     ring = token(RING)
+    (OUT / 'seal-tray-off.ico').write_bytes(ico([(s, seal(s)) for s in TRAY_ICO_SIZES]))
+    (OUT / 'seal-tray-off.png').write_bytes(png_bytes(seal(TRAY_PNG_SIZE)))
     for tone, name in TONES.items():
         colour = token(name)
         (OUT / f'seal-tray-{tone}.ico').write_bytes(ico([(s, with_dot(s, colour, ring)) for s in TRAY_ICO_SIZES]))

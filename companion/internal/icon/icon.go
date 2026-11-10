@@ -1,77 +1,41 @@
 // companion/internal/icon/icon.go
-// Package icon carries the Forever Sixty seal v3, rendered by
-// tools/icons/render.py from design/assets/logo/lx-seal-v3*.png and embedded here:
-// the tray icon on every platform, the ICO the Windows tray wants, and
-// the ICO and ICNS the Windows resource and the macOS bundle are built
-// from.
+// Package icon carries the tray's Forever Sixty seal v3, rendered by
+// tools/icons/render.py from design/assets/logo/lx-seal-v3*.png. Each
+// platform's binary embeds only its own tray images (tray_windows.go:
+// the ICOs; tray_other.go: the PNGs). The app icons live beside them in
+// assets/ and are never embedded: seal.ico goes into the Windows exe as a
+// resource (cmd/foreversixty-companion/winres) and seal.icns into the
+// macOS bundle (tools/package-mac-companion.sh).
 package icon
 
-import (
-	"embed"
-	"fmt"
-)
-
-//go:embed assets/seal-*.png assets/seal.ico assets/seal.icns assets/seal-tray-*.ico
-var assets embed.FS
-
-// Sizes are the PNG edges shipped, in pixels.
-var Sizes = []int{16, 24, 32, 48, 64, 128, 256, 512}
-
-func read(name string) []byte {
-	b, err := assets.ReadFile("assets/" + name)
-	if err != nil {
-		panic(err) // the pattern above guarantees the file; a test pins the set
-	}
-	return b
-}
-
-// PNG is the 32 px seal, the tray icon on macOS and Linux.
-func PNG() []byte { return read("seal-32.png") }
-
-// PNGSize is the seal at one of Sizes, or nil for any other size.
-func PNGSize(size int) []byte {
-	for _, s := range Sizes {
-		if s == size {
-			return read(fmt.Sprintf("seal-%d.png", size))
-		}
-	}
-	return nil
-}
-
-// ICO is the multi-size icon for Windows (16 to 256 px, with the 125 %
-// and 250 % steps, 20 and 40).
-func ICO() []byte { return read("seal.ico") }
+import "fmt"
 
 // Tones are the headline tones that carry a dot on the tray icon. The
 // fourth, off, is the plain seal.
 var Tones = []string{"on", "warn", "bad"}
 
-func hasDot(tone string) bool {
+// Off is the tone of the plain seal, and any tone this does not know.
+const Off = "off"
+
+// toneOf is tone when it carries a dot, else Off.
+func toneOf(tone string) string {
 	for _, t := range Tones {
 		if t == tone {
-			return true
+			return t
 		}
 	}
-	return false
+	return Off
 }
 
-// TrayICO is the Windows tray icon for a headline tone: the seal with a
-// green (on), amber (warn) or red (bad) dot at its lower right, 16 to 48
-// px at every display scale step. Tone off, and any tone this does not know, is the plain seal.
-func TrayICO(tone string) []byte {
-	if !hasDot(tone) {
-		return ICO()
+// Tray is the tray icon for a headline tone: the seal, with a green (on),
+// amber (warn) or red (bad) dot at its lower right. On Windows it is an
+// ICO at 16 to 48 px; on macOS and Linux a 32 px PNG (16 pt at 2x in the
+// menu bar), in colour: a template image is drawn from its alpha alone
+// and would erase both the seal and the dot.
+func Tray(tone string) []byte {
+	b, err := tray.ReadFile(fmt.Sprintf("assets/seal-tray-%s.%s", toneOf(tone), trayExt))
+	if err != nil {
+		panic(err) // the embed pattern guarantees every tone; a test pins the set
 	}
-	return read("seal-tray-" + tone + ".ico")
+	return b
 }
-
-// TrayPNG is the same at 32 px for macOS and Linux.
-func TrayPNG(tone string) []byte {
-	if !hasDot(tone) {
-		return PNG()
-	}
-	return read("seal-tray-" + tone + ".png")
-}
-
-// ICNS is the icon for the macOS app bundle (16 to 512 px with @2x).
-func ICNS() []byte { return read("seal.icns") }

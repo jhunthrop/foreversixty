@@ -222,9 +222,14 @@ Apple's icon grid (824 of 1024 px, over a soft shadow) so it stands the size of 
 seal with a dot in the Status headline's tone (green, amber, red; the same tokens the window uses), drawn in colour
 on every platform, macOS included: a template image is drawn from its alpha alone and would erase both the seal's
 colours and the tone dot. The rendered files live in `internal/icon/assets/` (and the window's header seal in
-`ui/seal-64.png`) and are committed; to regenerate them after the seal changes:
+`ui/seal-64.png`) and are committed. Each binary embeds only its own tray images (the four tray ICOs on Windows,
+the four 32 px tray PNGs on macOS and Linux); `seal.ico` reaches the Windows exe as its icon resource and
+`seal.icns` the macOS bundle, and neither is embedded. Every PNG is palette-quantized and recompressed, so the
+icons add about 90 KB to a Windows binary (tray ICOs and the resource) and 7 KB to a macOS or Linux one. To
+regenerate them after the seal changes:
 
 ```sh
+brew install pngquant oxipng              # once
 python3 companion/tools/icons/render.py   # Pillow; from the repository root
 ```
 

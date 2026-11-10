@@ -220,15 +220,10 @@ loop:
 }
 
 // setTrayIcon is the seal, with a dot in the headline's tone when it has
-// one. Windows takes an ICO; macOS and Linux take a colour PNG, not a
-// template image: a template is drawn from its alpha channel alone, which
-// would turn the seal's navy disc into a solid blob in the menu bar.
+// one: an ICO on Windows, a colour PNG (not a template) on macOS and Linux
+// (icon.Tray).
 func setTrayIcon(tone string) {
-	if runtime.GOOS == "windows" {
-		systray.SetIcon(icon.TrayICO(tone))
-		return
-	}
-	systray.SetIcon(icon.TrayPNG(tone))
+	systray.SetIcon(icon.Tray(tone))
 }
 
 // jsString is s as a JavaScript string literal.

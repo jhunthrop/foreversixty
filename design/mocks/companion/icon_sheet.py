@@ -64,25 +64,23 @@ def cell(inner: str, label: str) -> str:
 
 def icons_page() -> str:
     mac, ico = icns_entries(), ico_entries('seal.ico')
-    png = {s: (ASSETS / f'seal-{s}.png').read_bytes() for s in (16, 24, 32, 48, 64, 128, 256)}
-    dock = lambda bg: f'<div class="pad {bg}">' + ''.join(cell(img(mac[k], pt), f'{pt} pt') for k, pt in (('ic13', 128), ('ic12', 32), ('ic11', 16), ('ic09', 64))) + '</div>'
+    # Each entry at the size the OS draws it on a Retina screen: 128 pt from 256 px, 64 pt from 128, and so on.
+    dock = lambda bg: f'<div class="pad {bg}">' + ''.join(cell(img(mac[k], pt), f'{pt} pt') for k, pt in (('ic08', 128), ('icp6', 32), ('icp5', 16), ('ic07', 64))) + '</div>'
     task = lambda bg: f'<div class="pad {bg}">' + ''.join(cell(img(ico[s], s // 2 if s > 32 else s), f'{s} px') for s in (16, 24, 32, 48)) + '</div>'
-    explorer = ''.join(cell(img(ico[s], s), f'{s} px') for s in (48, 64, 128, 256))
-    linux = '<div class="pad linux">' + ''.join(cell(img(png[s], s), f'{s} px') for s in (24, 32, 48, 64, 128)) + '</div>'
+    explorer = ''.join(cell(img(ico[s], px), f'{px} px') for s, px in ((48, 48), (64, 64), (256, 128), (256, 256)))
     tones = ('off', 'on', 'warn', 'bad')
-    tray_ico = {t: (ico if t == 'off' else ico_entries(f'seal-tray-{t}.ico')) for t in tones}
-    tray_png = {t: (png[32] if t == 'off' else (ASSETS / f'seal-tray-{t}.png').read_bytes()) for t in tones}
+    tray_ico = {t: ico_entries(f'seal-tray-{t}.ico') for t in tones}
+    tray_png = {t: (ASSETS / f'seal-tray-{t}.png').read_bytes() for t in tones}
     win_tray = lambda bg: f'<div class="pad {bg}">' + ''.join(cell(img(tray_ico[t][s], s // (s // 16)), f'{t} {s}px') for t in tones for s in (16, 32)) + '</div>'
     mac_bar = lambda bg: f'<div class="pad {bg}">' + ''.join(img(tray_png[t], 16) for t in tones) + '</div>'
     return (f'<!doctype html><html><head><meta charset="utf-8"><title>Companion icons</title><style>{CSS}</style></head><body>'
             '<h1>Forever Sixty companion: app and tray icons (seal v3), as shipped</h1>'
-            '<h2>macOS Dock, dark and light (seal.icns, Apple grid 824/1024; Retina @2x)</h2>'
+            '<h2>macOS Dock, dark and light (seal.icns: one quantized PNG per pixel size, 16 to 512, on Apple\'s 824/1024 grid; drawn at Retina 2x)</h2>'
             f'<div class="row">{dock("dock-dark")}{dock("dock-light")}</div>'
             '<h2>Windows taskbar at 100 % and 200 %, dark and light (seal.ico)</h2>'
             f'<div class="row">{task("task-dark")}{task("task-light")}</div>'
-            f'<h2>Windows Explorer (seal.ico)</h2><div class="row">{explorer}</div>'
-            f'<h2>Linux window and launcher (seal-*.png)</h2><div class="row">{linux}</div>'
-            '<h2>Windows tray, the four tones, dark and light (seal-tray-*.ico; off is the plain seal)</h2>'
+            f'<h2>Windows Explorer (seal.ico; 128 is Windows scaling the 256 entry)</h2><div class="row">{explorer}</div>'
+            '<h2>Windows tray, the four tones, dark and light (seal-tray-*.ico); Linux takes the 32 px PNGs below</h2>'
             f'<div class="row">{win_tray("task-dark")}{win_tray("task-light")}</div>'
             '<h2>macOS menu bar, the four tones at 16 pt (seal-tray-*.png at 2x), light and dark</h2>'
             f'<div class="row">{mac_bar("mb-light")}{mac_bar("mb-dark")}</div>'
