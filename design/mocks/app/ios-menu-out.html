@@ -209,8 +209,9 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .r5menu .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
 .r5menu .fold{display:flex;align-items:center;min-height:48px;font:600 15px/20px var(--font-body);color:var(--gold)}
 .r5menu .foot{margin:24px 0;display:flex;flex-direction:column;gap:4px}
-/* iOS (lane M5i, m-ios-menu): the band runs under the status bar, You 18 under it */
+/* iOS (lane M5i, m-ios-menu): the band runs under the status bar, You 18 under it; a label row is 44 */
 [data-platform=ios] .r5menu .you{padding-top:calc(var(--status) + 18px)}
+[data-platform=ios] .r5menu .row:not(:has(.s)){min-height:44px}
 </style><style>
 /* ---- Page: one column, four layouts ---- */
 .layout-split{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);align-items:start}
@@ -499,6 +500,7 @@ right:0;left:0;bottom:0;max-height:88vh;border-radius:16px 16px 0 0}
 .btn.is-off{opacity:.45;pointer-events:none}
 .cap{display:block;position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
 .cap img{display:block;width:100%;height:100%;object-fit:contain}
+.cap picture{display:contents}@media(max-width:639px){.cap.has-narrow{aspect-ratio:var(--ar-n)}}
 .cap-wrap{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
 code.c{font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace;color:var(--strong);letter-spacing:.02em}
 code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}

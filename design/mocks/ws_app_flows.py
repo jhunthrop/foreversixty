@@ -230,8 +230,9 @@ MENU_R5_CSS = """
 .r5menu .s{display:block;font:400 13px/18.29px var(--font-body);color:var(--muted)}
 .r5menu .fold{display:flex;align-items:center;min-height:48px;font:600 15px/20px var(--font-body);color:var(--gold)}
 .r5menu .foot{margin:24px 0;display:flex;flex-direction:column;gap:4px}
-/* iOS (lane M5i, m-ios-menu): the band runs under the status bar, You 18 under it */
+/* iOS (lane M5i, m-ios-menu): the band runs under the status bar, You 18 under it; a label row is 44 */
 [data-platform=ios] .r5menu .you{padding-top:calc(var(--status) + 18px)}
+[data-platform=ios] .r5menu .row:not(:has(.s)){min-height:44px}
 """
 
 
