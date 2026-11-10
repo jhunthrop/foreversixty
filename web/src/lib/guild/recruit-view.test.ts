@@ -265,12 +265,9 @@ describe('the member profile', () => {
     expect(readyFacts({ ...profile, readiness: null }, TZ, LOCALE)).toBeNull();
   });
 
-  it('rolls Raid ready up to Ready or how many checks fail', () => {
+  it('rolls Raid ready up to how many checks fail, and says nothing when none does', () => {
     const base = profile.readiness!;
-    expect(readyTag({ ...profile, readiness: { ...base, failing: 0 } })).toEqual({
-      tone: 'success',
-      text: 'Ready',
-    });
+    expect(readyTag({ ...profile, readiness: { ...base, failing: 0 } })).toBeNull();
     expect(readyTag({ ...profile, readiness: { ...base, failing: 2 } })).toEqual({
       tone: 'warn',
       text: '2 to fix',

@@ -1,7 +1,8 @@
 <!-- web/src/components/guild/report/ReportDeaths.svelte -->
 <!-- The officer's deaths by raider (lane h-edges, guild-officer round 1: "who needs a word"): each
-     raider who died, in the night's order (never worst first), how many on wipes and on kills and
-     what killed them across every pull. Officers only; a member's own deaths are Your night's. -->
+     raider who died, in the night's order (never worst first), every death of theirs (what killed
+     them, which pull, when) and, past one, how many on wipes and on kills. Two columns from 1280.
+     Officers only; a member's own deaths are Your night's. -->
 <script lang="ts">
   import type { RaidReport } from '../../../lib/guild/attendance-contract';
   import { raiderDeaths } from '../../../lib/guild/report-night-view';
@@ -24,19 +25,21 @@
     panel
     testid="raid-deaths"
   >
-    <ul>
+    <ul class="grid gap-x-8 xl:grid-cols-2">
       {#each rows as row (row.key)}
         <li>
           <Row
             title={row.name}
             titleTone={classTone(row.class)}
-            sub={row.causes}
+            sub={row.deaths}
             open
             density="slim"
             testid="raid-deaths-row"
           >
             {#snippet lead()}<ClassCrestRing characterClass={row.class} size={24} />{/snippet}
-            {#snippet trail()}<span class="text-text text-[13px] tabular-nums">{row.count}</span>{/snippet}
+            {#snippet trail()}{#if row.count !== ''}<span class="text-text text-[13px] tabular-nums"
+                  >{row.count}</span
+                >{/if}{/snippet}
           </Row>
         </li>
       {/each}

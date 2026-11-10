@@ -1,5 +1,5 @@
 <!-- web/src/components/guild/report/ReportPulls.svelte -->
-<!-- The report's framed panel (web layout spec 2026-11-05 §7.2 "Raid report"): every pull of the
+<!-- The report's Pulls panel (web layout spec 2026-11-05 §7.2 "Raid report"): every pull of the
      night as a Row (the boss and its pull number, or the trash pack; the time, the deaths and what
      killed them; the Kill, Wipe or Clear Tag). A pull with deaths opens them: from 1024 in the
      Inspector at the plate's right (the first wipe with deaths shows at once), below 1024 inline
@@ -76,7 +76,6 @@
   meta={copy.pulls.count(rows.length)}
   anchor="report"
   panel
-  frame="framed"
   flush
   testid="raid-report"
 >

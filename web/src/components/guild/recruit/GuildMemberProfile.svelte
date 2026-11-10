@@ -3,7 +3,7 @@
      profile, "What do I know about this raider?"), an officer's read of anyone or a member's of
      themselves; mock web-guild-profile. The head names the raider in class colour with their figures
      over the guild's tabs (Roster current). Main: Raid ready (the gear gap in the BiS page's unit,
-     enchants, bags, talents, item level against the guild, the last export) framed, the last 4
+     enchants, bags, talents, item level against the guild, the top fight, the last export), the last 4
      raids as a Grid with the 30-raid figure, and loot this tier. The rail: their characters, then,
      officers only, Officer notes: a member's own read carries no notes and draws no trace of them.
      GuildShell loads this file as its own chunk. -->
@@ -106,9 +106,10 @@
     {#snippet crest()}<ClassCrestRing characterClass={head.classSlug} size={56} />{/snippet}
     {#snippet figures()}
       {@const list = profileFigures(profile)}
+      <!-- Two by two on a phone, one row from 768, so no label wraps under its figure. -->
       <div
-        class="grid gap-x-6 gap-y-5"
-        style:grid-template-columns={`repeat(${list.length}, minmax(0, 1fr))`}
+        class="grid grid-cols-2 gap-x-6 gap-y-5 md:grid-cols-[repeat(var(--figures),minmax(0,1fr))]"
+        style:--figures={list.length}
         data-testid="guild-profile-figures"
       >
         {#each list as figure (figure.key)}
@@ -176,7 +177,6 @@
       {/if}
       <Section
         panel
-        frame="framed"
         title={copy.ready.head}
         action={member === null
           ? undefined

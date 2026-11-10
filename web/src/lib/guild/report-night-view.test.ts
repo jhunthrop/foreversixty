@@ -19,7 +19,8 @@ import {
   pullRows,
   raiderDeaths,
 } from './report-night-view';
-import { reportNightCopy as copy } from './report-night-copy';
+import { pullTitle, reportNightCopy as copy } from './report-night-copy';
+import { killTimeLabel } from './attendance-copy';
 
 const report = raidReport();
 
@@ -188,16 +189,18 @@ describe('consumablesModel', () => {
 });
 
 describe('raiderDeaths', () => {
-  it('lists each raider who died in the API order, counted on wipes and kills, with what killed them', () => {
+  it('lists each raider who died in the API order, each death with its pull and time', () => {
     const rows = raiderDeaths(report);
     expect(rows.map((row) => row.name)).toEqual(report.deaths.map((row) => row.name));
-    const first = report.deaths[0];
-    const model = rows[0];
-    expect(model.count).toBe(copy.deaths.count(first.on_wipes, first.on_kills));
-    const blows = report.pulls
-      .flatMap((pull) => pull.death_causes ?? [])
-      .filter((death) => death.character_key === first.character_key && death.killing_blow !== null);
-    expect(model.causes === '').toBe(blows.length === 0);
+    rows.forEach((model, index) => {
+      const row = report.deaths[index];
+      const total = row.on_wipes + row.on_kills;
+      expect(model.count).toBe(total > 1 ? copy.deaths.count(row.on_wipes, row.on_kills) : '');
+    });
+    const pull = report.pulls.find((p) => (p.death_causes ?? []).length > 0)!;
+    const death = pull.death_causes![0];
+    const model = rows.find((row) => row.key === death.character_key)!;
+    expect(model.deaths).toContain(`${pullTitle(pull.name, pull.attempt)} at ${killTimeLabel(death.at_ms)}`);
   });
 
   it('words the counts as a raider would', () => {

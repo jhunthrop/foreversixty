@@ -3,7 +3,7 @@
      needs a word?", mock web-guild-report, built only from the ui/ primitives. Page split: the back link
      and the head (the raid, its Done Tag and date, the answer: kills, wipes, attempts, deaths, the
      guild tabs, as the planner's), then for a
-     member Your night, Pulls (framed, each pull's deaths in the Inspector), for officers the deaths
+     member Your night, Pulls (each pull's deaths in the Inspector), for officers the deaths
      by raider, DPS and HPS by boss kill and the consumables by pull. Rail: Attendance (the match line, the summary, and for
      officers the fix rows behind Fix attendance), Loot awarded, the Discord summary (officers), the
      notes. A member's report carries only their own deaths,

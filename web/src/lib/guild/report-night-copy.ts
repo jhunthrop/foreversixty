@@ -31,6 +31,8 @@ export const reportNightCopy = {
       ]
         .filter((part) => part !== '')
         .join(SEP),
+    line: (ability: string, pull: string, clock: string): string => `${ability}, ${pull} at ${clock}`,
+    unknown: 'Not read from the log',
   },
   output: {
     head: 'DPS and HPS',

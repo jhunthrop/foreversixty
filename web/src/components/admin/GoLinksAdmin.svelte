@@ -154,8 +154,8 @@
 
   const FIELDS = [
     { id: 'slug', label: copy.slugLabel, hint: copy.slugHint, placeholder: 'reddit-classicwow' },
-    { id: 'target', label: copy.targetLabel, hint: copy.targetHint, placeholder: '/' },
-    { id: 'label', label: copy.labelLabel, hint: copy.labelHint, placeholder: 'Reddit: r/classicwow' },
+    { id: 'target', label: copy.targetLabel, hint: undefined, placeholder: '/' },
+    { id: 'label', label: copy.labelLabel, hint: undefined, placeholder: 'Reddit: r/classicwow' },
   ] as const;
 </script>
 

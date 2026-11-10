@@ -79,8 +79,14 @@ def admin_links() -> str:
                 trail=figures(r['steps']) + Btn(e(c['copy'])), link=False) for r in A['rows']]
     rows.append(Row(e(c['totals']), trail=figures(A['totals']) + '<span class="spacer"></span>', link=False))
     main = Section(e(c['tableTitle']), f'<div role="group" aria-label="{e(c["tableTitle"])}">{Rows(rows)}</div>', meta=e(A['meta']), panel=True, flush=True)
+
+    def hint(field: str) -> str:
+        """The field's hint where the copy has one (the slug's format only)."""
+        text = c.get(field + 'Hint')
+        return '' if text is None else f'<span class="t-small">{e(text)}</span>'
+
     form = (f'<div class="stack"><p class="t-small">{e(c["formJob"])}</p>'
-            + ''.join(f'<label class="f"><span class="t-label">{e(c[k + "Label"])}</span>{Input(e(ph))}<span class="t-small">{e(c[k + "Hint"])}</span></label>'
+            + ''.join(f'<label class="f"><span class="t-label">{e(c[k + "Label"])}</span>{Input(e(ph))}{hint(k)}</label>'
                       for k, ph in (('slug', 'reddit-classicwow'), ('target', '/'), ('label', 'Reddit: r/classicwow')))
             + f'<div class="acts">{Btn(e(c["create"]), primary=True, small=False)}</div><div class="status" aria-live="polite"></div></div>')
     # The page's foot: the built <main> ends a section gap (48 px) above the site footer.

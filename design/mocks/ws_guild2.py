@@ -375,26 +375,26 @@ def raid_report():
     insp = Inspector(rd.pull_title(shown), [('Deaths', deaths)], rd.pull_title(shown), rd.pull_sub(shown))
     pulls = f'<div role="group" aria-label="Every pull of the night">{Split(Rows(rows), insp)}</div>'
     output = Rows([Row(p['name'], f'DPS &middot; rated {p["rating"]} of 100', lead=crest_img(p['class'], 24), title_color=C[p['class']],
-                       trail=Figure(str(p['value']), '', 'DPS', size='sm'), link=False, selected=p['name'] == rd.VIEWER, slim=True) for p in rep['parses']], open_=True)
+                       trail=Figure(str(p['value']), '', 'DPS', size='sm'), link=True, selected=p['name'] == rd.VIEWER, slim=True) for p in rep['parses']], open_=True)
     # One reason said once, naming every pull it covers (report-night-view unknownLines).
     titles = [rd.pull_title(b) for b in rep['consumables']['by_pull']]
     named = titles[0] if len(titles) == 1 else ', '.join(titles[:-1]) + ' and ' + titles[-1]
     unknown = f'<p class="t-small" style="margin-top:4px">{named}: the log carried no character sheet, so nothing can be said.</p>'
     # The officer's deaths by raider (ReportDeaths), in the night's order, never worst first.
-    def _counted(names):
-        counts = {}
-        for n in names:
-            counts[n] = counts.get(n, 0) + 1
-        return ', '.join(n if c == 1 else f'{n} &times;{c}' for n, c in sorted(counts.items(), key=lambda kv: -kv[1]))
-
     def _count(w, k):
+        if w + k < 2:
+            return ''
         parts = ([] if w == 0 else ['1 on a wipe' if w == 1 else f'{w} on wipes']) + ([] if k == 0 else ['1 on a kill' if k == 1 else f'{k} on kills'])
         return ' &middot; '.join(parts)
-    blows = [d for p in rep['pulls'] for d in p['death_causes']]
-    died = Rows([Row(r['name'], _counted([d['killing_blow']['ability'] for d in blows if d['character_key'] == r['character_key']]),
+
+    def _lines(key):
+        return '; '.join(f"{d['killing_blow']['ability']}, {rd.pull_title(p)} at {rd.clock(d['at_ms'])}"
+                         for p in rep['pulls'] for d in p['death_causes'] if d['character_key'] == key)
+    died = Rows([Row(r['name'], _lines(r['character_key']),
                          lead=crest_img(r['class'], 24), title_color=C[r['class']], link=False,
-                         trail=f'<span style="font-size:13px">{_count(r["on_wipes"], r["on_kills"])}</span>', slim=True) for r in rep['deaths']],
-                 open_=True, list_=True)
+                         trail=(f'<span style="font-size:13px">{_count(r["on_wipes"], r["on_kills"])}</span>' if _count(r['on_wipes'], r['on_kills']) else ''),
+                         slim=True) for r in rep['deaths']],
+                 open_=True, list_=True).replace('<ul class="rows', '<ul style="display:grid;grid-template-columns:1fr 1fr;column-gap:32px" class="rows', 1)
     match = raid['match']
     logged = (f'<p class="t-small">Logged as a raid night. {Link("Open the night")}</p><div><p class="t-small">Log uploaded '
               f'{rd.local(match["uploaded_at"]):%a} {rd.local(match["uploaded_at"]).day} Dec, {rd.hour(rd.local(match["uploaded_at"]))} by {match["uploaded_by_name"]}'
@@ -411,7 +411,7 @@ def raid_report():
     discord = (''.join(f'<p class="t-small">{"<b>" + x + "</b>" if i == 0 else x}</p>' for i, x in enumerate(lines))
                + f'<div style="display:flex;gap:12px;padding-top:12px">{Button("Post to Discord", primary=True, small=True, act=True)}{Button("Copy for Discord", small=True, act=True)}{Live()}</div>')
     # Round 5 (lane h-edges): every section on its panel, the pulls framed and edge to edge for the Inspector.
-    main = (Section('Pulls', pulls, meta=f'{len(rep["pulls"])} fights', panel=True, frame='framed', flush=True)
+    main = (Section('Pulls', pulls, meta=f'{len(rep["pulls"])} fights', panel=True, flush=True)
             + Section('Deaths', died, meta=f'{len(rep["deaths"])} raiders', panel=True) + Section('DPS and HPS', output, meta='Boss kills', panel=True) + Section('Consumables by pull', unknown, panel=True))
     rail = Section('Attendance', att, panel=True) + Section('Loot awarded', lootr, panel=True) + Section('Discord summary', _section_body(discord))  # ReportDiscord: lane f-content's file, still open
     h = rep['headline']
@@ -579,8 +579,8 @@ def member_profile():
     addn = f'<div style="padding-top:12px">{_form("Add a note", [("Add a note", "")], "Save note", floor=False)}</div>'
     characters = Rows([Row(n, lead=crest_img(c, 28), title_color=C[c], trail=Tag('Main', 'muted') if main else '', slim=True)
                        for n, c, main in [(name, cls, True), (*gd.PROFILE_ALT, False)]], list_=True)
-    ready = Section('Raid ready', _ready_facts(ilvl), Link('Open their character'), panel=True, frame='framed')
-    ready = ready.replace('<span class="act">', f'<span class="act">{Tag("Ready", "kill")} ', 1)
+    # Raid ready's roll-up tag shows only when a check fails (readyTag); Frostquill passes every one.
+    ready = Section('Raid ready', _ready_facts(ilvl), Link('Open their character'), panel=True)
     main = (ready + Section('Attendance', att, panel=True)
             + Section('Loot this tier', loot, panel=True))
     rail = Section('Characters', characters, panel=True) + Section('Officer notes', notes + addn, meta='Private: members never see these', panel=True)

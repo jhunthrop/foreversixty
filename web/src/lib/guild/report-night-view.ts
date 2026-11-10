@@ -269,38 +269,36 @@ export interface RaiderDeathsModel {
   key: string;
   name: string;
   class: string;
-  /** "2 on wipes · 1 on a kill". */
+  /** Each death of theirs in the night: "Deep Breath, Onyxia, pull 1 at 1:45". */
+  deaths: string;
+  /** "2 on wipes · 1 on a kill" past one death; '' for one, which its line already says. */
   count: string;
-  /** What killed them, most often first: "Deep Breath ×2, Flame Breath". */
-  causes: string;
 }
 
 /** The officer's deaths by raider, in the order the API sends them (the night's order, never worst
- *  first): how many on wipes and kills, and what killed them across every pull. */
+ *  first): each death with what killed them, which pull and when, and a count past one. */
 export function raiderDeaths(report: RaidReport): RaiderDeathsModel[] {
   return report.deaths.map((row) => {
-    const hits = report.pulls
-      .flatMap((pull) => pull.death_causes ?? [])
-      .filter((death) => death.character_key === row.character_key && death.killing_blow !== null)
-      .map((death) => abilityName(death.killing_blow as RaidReportHit));
+    const lines = report.pulls.flatMap((pull) =>
+      (pull.death_causes ?? [])
+        .filter((death) => death.character_key === row.character_key)
+        .map((death) =>
+          copy.deaths.line(
+            death.killing_blow === null ? copy.deaths.unknown : abilityName(death.killing_blow),
+            pullTitle(pull.name, pull.attempt),
+            killTimeLabel(death.at_ms),
+          ),
+        ),
+    );
+    const total = row.on_wipes + row.on_kills;
     return {
       key: row.character_key === '' ? row.name : row.character_key,
       name: row.name,
       class: row.class,
-      count: copy.deaths.count(row.on_wipes, row.on_kills),
-      causes: countedNames(hits),
+      deaths: lines.join('; '),
+      count: total > 1 ? copy.deaths.count(row.on_wipes, row.on_kills) : '',
     };
   });
-}
-
-/** "Deep Breath ×2, Flame Breath": each name once, most often first, a count past one. */
-function countedNames(names: readonly string[]): string {
-  const counts = new Map<string, number>();
-  for (const name of names) counts.set(name, (counts.get(name) ?? 0) + 1);
-  return [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, n]) => (n > 1 ? `${name} ×${n}` : name))
-    .join(', ');
 }
 
 /** What the Discord post carries, as plain lines (the embed's fields in order; it names nobody

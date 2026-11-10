@@ -174,7 +174,6 @@ export const profileCopy = {
     attuned: 'Attuned',
     notAttuned: 'Not attuned',
     median: (median: number) => `Guild median ${median}`,
-    ready: 'Ready',
     toFix: (n: number) => `${n} to fix`,
     topFight: 'Top fight',
     logged: 'Last logged',

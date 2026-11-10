@@ -3,7 +3,7 @@
 // know about this raider?"): the head's facts and figures, the gear gap in the BiS page's unit
 // (totals, as the API gives them), the last 4 nights as a Grid row, loot this tier and the notes.
 // Pure, so a test pins the words; the notes are never read for a member (the API leaves them out).
-import { characterHref } from '../characters';
+import { characterHrefOfKey } from '../characters';
 import type { GridCell, GridRowModel } from '../ui/cells';
 import type { Fact } from '../ui/facts';
 import type { GuildReadinessGearGap, GuildReadinessRow } from './api';
@@ -145,13 +145,12 @@ function topFightFacts(profile: MemberProfile): Fact[] {
   return [{ id: 'fight', label: copy.ready.topFight, value: parse.encounter, ...sub }];
 }
 
-/** Raid ready's roll-up beside its heading: Ready, or how many checks they fail; null with no export. */
-export function readyTag(profile: MemberProfile): { tone: 'success' | 'warn'; text: string } | null {
+/** Raid ready's roll-up beside its heading: how many checks they fail; null when none does (the
+ *  rows already read clean) or with no export. */
+export function readyTag(profile: MemberProfile): { tone: 'warn'; text: string } | null {
   const row = profile.readiness;
-  if (row === null) return null;
-  return row.failing === 0
-    ? { tone: 'success', text: copy.ready.ready }
-    : { tone: 'warn', text: copy.ready.toFix(row.failing) };
+  if (row === null || row.failing === 0) return null;
+  return { tone: 'warn', text: copy.ready.toFix(row.failing) };
 }
 
 export function readyFacts(profile: MemberProfile, viewerTz: string, locale: string): Fact[] | null {
@@ -187,17 +186,13 @@ export interface ProfileCharacterRow {
 export function characterRows(profile: MemberProfile): ProfileCharacterRow[] {
   return [...profile.characters]
     .sort((a, b) => Number(b.is_main) - Number(a.is_main))
-    .map((character) => {
-      const [region, ruleset] = character.character_key.split('/');
-      const href = region && ruleset ? characterHref(region, ruleset, character.name) : null;
-      return {
-        key: character.character_key,
-        name: character.name,
-        classSlug: character.class ?? '',
-        main: character.is_main,
-        href,
-      };
-    });
+    .map((character) => ({
+      key: character.character_key,
+      name: character.name,
+      classSlug: character.class ?? '',
+      main: character.is_main,
+      href: characterHrefOfKey(character.character_key, character.name) ?? null,
+    }));
 }
 
 function nightCell(night: ProfileNight): GridCell {
