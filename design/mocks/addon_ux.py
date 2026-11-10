@@ -749,7 +749,7 @@ def loop_cell(icon, title, text):
 
 
 def board_onboarding_1(guild=True):
-    top = [loop_cell(node_icon(CREST, 36, round_=True), 'Your character', 'Sign in with Battle.net; it comes to the site.'),
+    top = [loop_cell(node_icon(CREST, 36, round_=True), 'Your character', 'Imported from Battle.net when you sign in.'),
            loop_cell(node_icon(ADDON_ICON, 36), 'foreversixty.gg', 'Best in slot for your level, the sim on your gear, '
                      'guides, tiers.'),
            loop_cell(node_icon(icon_uri('inv_misc_bag_08'), 36), 'In game', 'The arrow on your bags, the talent '
@@ -767,9 +767,7 @@ def board_onboarding_1(guild=True):
     first_arrow = flow_arrow('left') if guild else '<div style="width:22px"></div>'
     row2 = f'<div style="display:flex;align-items:flex-start;gap:6px">{bottom[0]}{first_arrow}{bottom[1]}' \
            f'{flow_arrow("left")}{bottom[2]}</div>'
-    caption = (f'<div style="font-size:13.5px;color:{U["ink"]};margin:22px 0 0;text-align:center">What you plan on the '
-               f'site shows up here. What you do here goes back to the site{", and to your guild" if guild else ""}.</div>')
-    diagram = f'<div style="width:586px;padding-top:6px">{row1}{down}{row2}{caption}</div>'
+    diagram = f'<div style="width:586px;padding-top:6px">{row1}{down}{row2}</div>'
     return ob_board('<b>Onboarding, page 1 of 5</b> (4 for a character with no guild) · how the pieces connect. '
                     'Skip tour (and Escape) ends it for good; Tooltips only turns the setting on and ends it',
                     onboarding(1, 'How Forever Sixty works', diagram, total=PAGES if guild else PAGES - 1))
@@ -797,13 +795,13 @@ ARROW_ICON = tga_uri(ROOT / 'addon/ForeverSixty/media/arrow.tga')
 
 def board_onboarding_2():
     rows = (icon_row(ARROW_ICON, 'The green arrow', 'On a bag item, a quest reward or a loot roll that beats what '
-                     'you wear.', "Best in slot for your level, on the site's BiS pages")
+                     'you wear.', 'BiS pages')
             + icon_row(icon_uri('inv_weapon_bow_02'), 'One line on every item', '+2.2 DPS, Best in slot or Not for '
-                       'you. Shift shows the rest.', "Those picks, scored by your spec's weights or your own sim")
+                       'you. Shift shows the rest.', 'Spec weights or your sim')
             + icon_row(icon_uri('ability_searingarrow'), 'The gold talent ring', "Your next point, in that build's "
-                       'order.', 'The build in your class guide, or one you plan')
+                       'order.', 'Class guide build')
             + icon_row(icon_uri('inv_spear_07'), 'Rotation in your panel', 'The buttons to press at your level, and '
-                       'what changes next.', 'The rotation in your class guide, for your level'))
+                       'what changes next.', 'Class guide rotation'))
     return ob_board('<b>Page 2</b> · what the site gives you in game; each row names where it comes from',
                     onboarding(2, 'The site, in your game', rows))
 
@@ -816,7 +814,7 @@ def board_onboarding_3():
                        'Each fight gets a report, a percentile and the one thing that cost you most, like '
                        '"biggest loss: standing in fire".')
             + icon_row(ADDON_ICON, 'Your Forever Score', 'Gear, experience, parses, attendance and preparation, in '
-                       'one number. Players with Forever Sixty and Forever Sixty Data see it on your tooltip. '
+                       'one number, on your tooltip for players with Forever Sixty and Forever Sixty Data. '
                        'Settings can hide it from others.'))
     return ob_board('<b>Page 3</b> · what the game gives back', onboarding(3, 'Your game, back to the site', rows))
 
@@ -832,15 +830,14 @@ def board_onboarding_4():
     content = (f'<div style="font-size:13.5px;color:{U["ink"]};margin:0 0 14px">Your officers post a raid on the site '
                f'(and in your Discord, if your guild has linked it). On raid day, it is here:</div>'
                f'<div style="display:flex;gap:28px;align-items:flex-start">'
-               f'<div style="width:300px">{chip_line}<div class="small" style="margin:8px 0 14px">The line by your '
+               f'<div style="width:300px">{chip_line}<div style="font-size:12px;color:{U["muted"]};margin:8px 0 14px">The line by your '
                f'minimap, on raid day.</div>'
                f'<div style="font-size:13px">Job: <span style="color:{C["gold"]}">Whelps, west cave</span>'
-               f'</div><div class="small" style="margin-top:2px">In your panel, and in chat when you zone in.</div></div>'
+               f'</div><div style="font-size:12px;color:{U["muted"]};margin-top:2px">In your panel, and in chat when you zone in.</div></div>'
                f'<div><div style="color:{U["ink"]};font-size:14px;margin-bottom:6px">Answer In, Late, Bench or Out</div>'
                f'{answer_place("On foreversixty.gg", True)}{answer_place("In Discord, on the raid post", True)}'
-               f'<div class="small" style="margin:2px 0 0">In game and on the phone app{COMING}</div>'
-               f'<div class="small" style="margin-top:6px;width:220px">One answer, wherever you give it.'
-               f'</div></div></div>')
+               f'<div style="font-size:12px;color:{U["muted"]};margin:2px 0 0">In game and on the phone app{COMING}</div>'
+               f'</div></div>')
     return ob_board('<b>Page 4, only for a character in a guild</b> · your guild, everywhere. One muted "coming" '
                     'line for what is not live (in-game answers need the sign-up contract; the apps are not in the '
                     'stores yet)', onboarding(4, 'Your guild, everywhere', content))
@@ -928,7 +925,7 @@ def board_onboarding_5():
 def board_onboarding_5_connected():
     top = (f'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px">'
            f'<div><span style="font-size:13.5px;color:{U["ink"]}">Your path: Beast Mastery leveling</span>'
-           f'<span style="font-size:12px;color:{U["muted"]};margin-left:10px">12 of 15 points</span>'
+           f'<span style="font-size:12px;color:{U["muted"]};margin-left:10px">15 of 15 points</span>'
            f'<div style="font-size:12px;color:{U["muted"]};margin-top:3px">Next point at level 25: Lethal Attacks'
            f'</div></div><span class="btn">Change</span></div>')
     return ob_board('<b>Last page, a character already set up</b> · level 24, in a guild (page 5 of 5), following a '

@@ -30,7 +30,8 @@ describe("Onboarding, the pure model", function()
 		assert.are.equal(6, #Onboarding.loopNodes(true, "horde", "HUNTER"))
 		assert.are.equal(Onboarding.BANNERS.horde, Onboarding.loopNodes(true, "horde", "HUNTER")[6].icon)
 		assert.are.equal(5, #Onboarding.loopNodes(false, "alliance", "HUNTER"))
-		assert.is_nil(L.tourLoopCaptionSolo:find("guild", 1, true))
+		-- The diagram says the loop; no caption restates it (review 2026-11-10).
+		assert.is_nil(L.tourLoopCaption)
 	end)
 
 	it("offers the path tiles with no build, the build followed otherwise", function()

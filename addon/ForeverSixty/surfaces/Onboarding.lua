@@ -345,10 +345,6 @@ local function drawLoop(content, input)
 		end
 	end
 	arrow(content, "down", columnX[3] + 12, top[1] + 96)
-	local caption = text(content, input.inGuild and L.tourLoopCaption or L.tourLoopCaptionSolo, "ink",
-		"normal", Onboarding.WIDTH - 60)
-	caption:SetJustifyH("CENTER")
-	caption:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -top[2] - 100)
 end
 
 local function drawRows(content, rows)
@@ -414,8 +410,6 @@ local function drawGuild(content)
 	local later = text(content, L.tourAnswerLater, "umberMuted")
 	later:SetPoint("TOPLEFT", content, "TOPLEFT", 320, -y - 52)
 	coming(content, later)
-	local same = text(content, L.tourAnswerSame, "umberMuted", "small", 240)
-	same:SetPoint("TOPLEFT", content, "TOPLEFT", 320, -y - 74)
 end
 
 local function drawSetup(content, input)
