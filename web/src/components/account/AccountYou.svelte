@@ -82,7 +82,8 @@
       </div>
     {/if}
     {#if signOutError !== ''}<p class="text-wipe text-[13px]" role="alert">{signOutError}</p>{/if}
-    <div class="flex min-h-11 items-center justify-between gap-3">
+    <!-- pr-2 takes back the Switch's -mr-2 hit area, so the track ends on the panel's text edge. -->
+    <div class="flex min-h-11 items-center justify-between gap-3 pr-2">
       <span id={labelId} class="text-[15px] leading-5">{accountPageCopy.pseudonymLabel}</span>
       <Switch
         checked={anonymize}

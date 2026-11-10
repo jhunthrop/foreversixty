@@ -208,7 +208,7 @@ def surfaces_section() -> str:
         rows.append(Row(escape(s['title']), escape(s['body']), link=False, foot=caps))
     # U5 (rulings): open from 768, folded on a phone behind one summary row.
     fold = f'<details class="surf-fold"><summary class="btn">{escape(A["surfacesShow"])}</summary></details>'
-    return Section(A['surfacesTitle'], f'{fold}<div class="surf">{RowGrid(rows, 3)}</div>', panel=True)
+    return Section(A['surfacesTitle'], f'{fold}<div class="surf">{RowGrid(rows, 2)}</div>', panel=True)
 
 
 def paste_section(state: str) -> str:
@@ -298,7 +298,7 @@ def connect_page(state: str) -> str:
     elif state == 'failed':
         title, meta = C['failedTitle'], C['failedBody']
         acts = f'<div class="acts">{Button(C["tryAgain"], primary=True)}</div>'
-    line = f'<p class="t-small">{escape(check)}</p>' if check else ''
+    line = f'<p>{escape(check)}</p>' if check else ''
     code = f'<div class="cc">{line}<div class="acts">{big}{tag}</div></div>'
     rows = Facts(facts) if facts else ''
     agree = f'<p class="t-small">{escape(C["consent"])}</p>' if consent else ''

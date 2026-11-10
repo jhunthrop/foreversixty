@@ -1,6 +1,6 @@
 <!-- web/src/components/setup/SetupSurfaces.svelte -->
 <!-- /setup's Section "What it does in the game" (setup spec 4, rulings U5): the eleven in-game
-     surfaces as open Rows in a RowGrid (three columns from 1024, two from 768), each with its
+     surfaces as open Rows in a RowGrid (two columns from 768), each with its
      sentence and its client captures in the Row's foot (240 px high, lazy, each a link to its
      file). On a phone the grid folds behind one summary row (`surfacesShow`); open from 768. -->
 <script lang="ts">
@@ -19,7 +19,7 @@
     <summary class={button('secondary')}>{addonCopy.surfacesShow}</summary>
   </details>
   <div class="setup-surf">
-    <RowGrid cols={3}>
+    <RowGrid cols={2}>
       {#each addonCopy.surfaces as surface (surface.section)}
         <Row title={surface.title} sub={surface.body} testid="setup-surface-{surface.section}">
           {#snippet foot()}

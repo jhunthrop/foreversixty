@@ -199,7 +199,7 @@
     <Plate label={addonCopy.setupStep3Title} frame="framed">
       <div class="connect-body" aria-busy={state === 'loading' ? 'true' : undefined}>
         <div class="flex flex-col gap-2">
-          {#if codeCheck !== ''}<p class="text-small text-muted" data-testid="connect-code-check">
+          {#if codeCheck !== ''}<p class="text-[15px] leading-6" data-testid="connect-code-check">
               {codeCheck}
             </p>{/if}
           <div class="flex flex-wrap items-center gap-3">

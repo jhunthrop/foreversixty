@@ -93,7 +93,7 @@ CSS = '''<style>
 
 # The account page's Sections open on a 12 px gap under the heading's hairline, as the built ui/Section (pt-3);
 # /premium's and /b/:id's Sections open on a Plate, Columns or the planner's own blocks, which carry their own.
-ACCOUNT_CSS = ('<style>section>.sec-h+*{margin-top:12px}.acc-foot{padding:0 20px 10px}'
+ACCOUNT_CSS = ('<style>section>.sec-h+*{margin-top:12px}.acc-foot{padding:0 20px 10px}.nw{white-space:nowrap}'
                '@media(max-width:767px){.acc-foot{padding:0 14px 8px}}</style>')
 
 
@@ -362,7 +362,7 @@ def plan_section(a: dict, offer_state: str = '') -> str:
     pr = PB['rows']
     def benefit(label, on, off, live, linked=True):
         v = on if live else off
-        return Row(e(label), trail=(r(v) if live and linked else f'<span class="t-small">{e(v)}</span>'), link=False, slim=True)
+        return Row(f'<span class="nw">{e(label)}</span>', trail=(r(v) if live and linked else f'<span class="t-small">{e(v)}</span>'), link=False, slim=True)
     rows = [benefit(pr['serverSims']['label'], a['serverSimsOn'], pr['serverSims']['off'], ent.get('server_sims')),
             benefit(pr['history']['label'], pr['history']['onWithMain'], pr['history']['off'], ent.get('history'))]
     if a['premiumRow']:

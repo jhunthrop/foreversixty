@@ -41,7 +41,7 @@
     <p class="text-muted text-[13px] leading-5">{accountSignInCopy.privacy}</p>
   {/if}
   <!-- The error line's height, reserved so the session landing never shoves the page. -->
-  <p class="min-h-5 text-[14px] leading-5" role="status">
+  <p class="-mt-3 min-h-5 text-[14px] leading-5" role="status">
     {#if session.status === 'failed'}{ACCOUNT_FAILED}{/if}
   </p>
 </div>

@@ -148,7 +148,7 @@
       {/if}
     {/if}
     {@render offer?.()}
-    <div data-testid="account-premium-block">
+    <div class="account-premium-rows" data-testid="account-premium-block">
       {#each rows as row (row.key)}
         <Row title={row.label} density="slim" open wrapTrail testid={`account-premium-${row.key}`}>
           {#snippet trail()}
@@ -191,3 +191,10 @@
       </p>{/if}
   </div>
 </Section>
+
+<style>
+  /* In the rail a label stays on one line; the value beside it wraps instead. */
+  .account-premium-rows :global(.ui-row > .min-w-0 > span:first-child) {
+    white-space: nowrap;
+  }
+</style>
