@@ -80,13 +80,14 @@ struct RootView: View {
     private var tabs: some View {
         TabView(selection: $shell.selection) {
             ForEach(AppTab.allCases) { tab in
-                Tab(tab.title, systemImage: tab.systemImage, value: tab) {
-                    screen(for: tab).environment(\.tabChrome, chrome(for: tab))
+                Tab(tab.title, image: tab.icon, value: tab) {
+                    screen(for: tab).environment(\.tabChrome, chrome(for: tab)).tint(Theme.Palette.accent)
                 }
                 .badge(shell.badges[tab] ?? 0)
             }
         }
-        .tint(Theme.Palette.accent)
+        // The selected tab's gold (spec "Tab-bar icons"); the screens keep the accent.
+        .tint(Theme.Palette.tabSelected)
         .modifier(ProfileDrawer(shell: shell) { menu })
         .environment(environment.session)
         .environment(simsRouter)

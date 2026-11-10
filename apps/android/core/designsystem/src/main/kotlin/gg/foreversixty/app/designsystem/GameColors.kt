@@ -23,13 +23,13 @@ fun classColor(className: String?): Color = when (className?.lowercase()) {
 object GameColors {
     fun faction(slug: String): Color = if (slug == "horde") FsColor.horde else FsColor.alliance
 
-    // Spec-only values (spec §4.1, F2.6, F3.2); lane T folds them into tokens.css when the site gains them.
-    /** A picker sheet's ground. */
-    val sheet = Color(0xFF10141D)
+    // The surfaces the tokens name by another role, in round 5's palette (lane M0).
+    /** A picker sheet's ground: the panel brown-black. */
+    val sheet = FsColor.raised
 
-    /** The tooltip's inner panel, and the 1 dp line around it and around a spec icon. */
-    val tooltipPanel = Color(0xFF0A0D14)
-    val iconLine = Color(0xFF3A4256)
+    /** The tooltip's inner panel (the client's navy), and the 1 dp line around it and around a spec icon (their rule). */
+    val tooltipPanel = FsColor.tooltip
+    val iconLine = FsColor.rule
 
     /** A chip or secondary control's 4.5% white fill, and the pressed 10% gold wash. */
     val controlFill = Color.White.copy(alpha = 0.045f)
@@ -38,8 +38,8 @@ object GameColors {
     /** The viewer's own row (a roster's own line): gold at 5%. */
     val rowWash = FsColor.gold.copy(alpha = 0.05f)
 
-    /** The offline strip's ground (spec §5.0). */
-    val offlineGround = Color(0xFF11151F)
+    /** The offline strip's ground: the deepest brown-black well. */
+    val offlineGround = FsColor.bg
 
     /** The parse ladder's pink as text (spec W3 §4 Parse number); the other text steps are tokens. */
     val parsePinkText = Color(0xFFF08CC0)

@@ -66,7 +66,7 @@ object HomeFixtures {
     )
 
     /** The repo root, from the app module's working directory (apps/android/app). */
-    private val repoRoot: File = File(System.getProperty("user.dir").orEmpty()).absoluteFile.parentFile?.parentFile?.parentFile
+    val repoRoot: File = File(System.getProperty("user.dir").orEmpty()).absoluteFile.parentFile?.parentFile?.parentFile
         ?: File(".")
 
     /** Item icons from the repo's own build folder, so a screenshot shows the real art. */

@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DrawerValue
@@ -34,6 +35,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountDeps
@@ -329,7 +331,7 @@ fun ForeverTabScaffold(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            NavigationBar(containerColor = FsColor.raised) {
+            NavigationBar(containerColor = FsColor.navBar) {
                 ForeverTab.entries.forEach { tab ->
                     val count = badges.of(tab)
                     val badge = if (count > 0) stringResource(R.string.tab_badge, count) else null
@@ -338,15 +340,16 @@ fun ForeverTabScaffold(
                         onClick = { onSelect(tab) },
                         icon = {
                             BadgedBox(badge = { if (count > 0) Badge(containerColor = FsColor.wipe, contentColor = FsColor.bg) { Text(count.toString(), style = FsType.tab) } }) {
-                                Icon(painterResource(tab.icon), contentDescription = null)
+                                Icon(painterResource(tab.icon), contentDescription = null, modifier = Modifier.size(TAB_ICON_SIZE))
                             }
                         },
                         label = { TabLabel(stringResource(tab.label)) },
+                        // Spec "Tab-bar icons": gold #ffd36b when selected, muted white otherwise.
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = FsColor.gold,
-                            selectedTextColor = FsColor.strong,
-                            unselectedIconColor = FsColor.text,
-                            unselectedTextColor = FsColor.text,
+                            selectedIconColor = FsColor.tabOn,
+                            selectedTextColor = FsColor.tabOn,
+                            unselectedIconColor = FsColor.tabOff,
+                            unselectedTextColor = FsColor.tabOff,
                             indicatorColor = FsColor.gold.copy(alpha = INDICATOR_ALPHA),
                         ),
                         modifier = if (badge != null) Modifier.semantics { contentDescription = badge } else Modifier,
@@ -365,8 +368,11 @@ private const val SITE = "https://foreversixty.gg"
 /** The largest font scale a tab label grows to; past it the label stays one line (spec §10). */
 private const val TAB_LABEL_MAX_FONT_SCALE = 1.3f
 
-/** The active tab's pill: gold at 18% (ws_app_frame.py, `#e5b9552e`). */
+/** The active tab's pill: their gold at 18% (round 5's mock, `.android .tab.on .pill`). */
 private const val INDICATOR_ALPHA = 0.18f
+
+/** The owner's tab icons at 24 dp (spec "Tab-bar icons"). */
+private val TAB_ICON_SIZE = 24.dp
 
 /** A tab label on one line whatever the font scale: the scale is capped, the icon carries the rest. */
 @Composable

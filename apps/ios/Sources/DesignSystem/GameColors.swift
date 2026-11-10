@@ -25,15 +25,15 @@ public enum GameColors {
         slug == "horde" ? FSColor.horde : FSColor.alliance
     }
 
-    // Spec-only values (spec §4.1, §5.0, F2.6, F3.2); lane T folds them into tokens.css when the
-    // site gains them.
-    /// The offline strip's ground.
-    public static let offlineGround = Color(tokenHex: 0x11151F)
-    /// A picker sheet's ground.
-    public static let sheet = Color(tokenHex: 0x10141D)
-    /// The tooltip's inner panel, and the 1 pt line around it and around a spec icon.
-    public static let tooltipPanel = Color(tokenHex: 0x0A0D14)
-    public static let iconLine = Color(tokenHex: 0x3A4256)
+    // The surfaces the tokens name by another role, in round 5's palette (lane M0).
+    /// The offline strip's ground: the deepest brown-black well.
+    public static let offlineGround = FSColor.bg
+    /// A picker sheet's ground: the panel brown-black.
+    public static let sheet = FSColor.raised
+    /// The tooltip's inner panel (the client's navy), and the 1 pt line around it and around a
+    /// spec icon (their rule).
+    public static let tooltipPanel = FSColor.tooltip
+    public static let iconLine = FSColor.rule
     /// A chip or secondary control's 4.5% white fill, and the pressed 10% gold wash.
     public static let controlFill = Color.white.opacity(0.045)
     public static let pressedWash = FSColor.gold.opacity(0.10)

@@ -6,8 +6,7 @@
   /* The surfaces and ink. Web (round 5, Blizzard's WoW: Forever palette): bg the deepest
      brown-black for wells and inputs, raised their card and footer brown-black, hover and pressed
      white lifts on it; text and muted are the card's (muted on the earth ground is
-     --color-muted-ground, set by global.css). The apps keep the flat system's values until the
-     mobile lane adopts the palette. */
+     --color-muted-ground, set by global.css). The apps take the same values (lane M0, 2026-11-10). */
   --color-bg: #100a06;
   --color-raised: #170e09;
   --color-hover: #241b15;
@@ -103,9 +102,8 @@
   --color-rarity-rare-text: #3d94f0;
   --color-rarity-epic-text: #b866f5;
 
-  /* Round 5's Forever palette, web only for now (design/specs/2026-11-09-directions.md section 2: c
-     computed from their page, s sampled). The mobile lane makes these native when the apps adopt
-     the look. */
+  /* Round 5's Forever palette (design/specs/2026-11-09-directions.md section 2: c computed from
+     their page, s sampled), on the web and in the apps. */
   /* s: the earth ground under the painted tile (lib/ui/assets.ts). */
   --color-ground: #67563a;
   /* Muted ink on the earth ground, AA on its lightest 200 px window (white at .5 there is 3.2:1). */
@@ -158,9 +156,9 @@
   /* The client tooltip yellow: descriptions, the gain line. */
   --color-tooltip-yellow: #ffd100;
 
-  /* Web: Open Sans 400, 600 and 700 (theirs exactly), body, labels and figures; 'Open Sans
-     Fallback' (fonts.css) is a size-adjusted Arial. The apps keep Barlow until the mobile lane
-     bundles Open Sans. */
+  /* Open Sans 400, 600 and 700 (theirs exactly), body, labels and figures; 'Open Sans Fallback'
+     (fonts.css) is a size-adjusted Arial. The apps bundle the same faces (apps/shared/fonts, make
+     brand-fonts). */
   --font-body: 'Open Sans', 'Open Sans Fallback', 'Arial', sans-serif;
   /* Marcellus 400, every heading (their BlizQuadrata's stand-in, owner 2026-11-08), set mixed case
      in cream. Its size-adjusted fallbacks (fonts.css) are Georgia, then Times New Roman. */

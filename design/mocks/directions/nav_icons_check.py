@@ -1,14 +1,17 @@
 """A check sheet for the owner's traced tab icons at their real size: python3 design/mocks/directions/nav_icons_check.py
 -> html/nav-icons-check.html (24 px and 48 px, selected gold and muted, on the tab bar's colour), shot by shoot_sheet.cjs.
 """
+import json
+
 from assets import owner_asset
 from common import write
 
 NAV_ICONS = ('home', 'raid', 'gear', 'activity')
 SELECTED, MUTED, BAR = '#ffd36b', 'rgba(255,255,255,.7)', '#0b2f3b'
 # At 24 px the swords' grips and the horn's strap break up; a same-colour stroke of 22 units (viewBox 794, about
-# two-thirds of a pixel at 24) holds them, applied at embed time so the owner's files stay as traced.
-THICKEN = {'raid': 22, 'activity': 22}
+# two-thirds of a pixel at 24) holds them, applied at embed time so the owner's files stay as traced. One source with
+# the apps' vectors (web/scripts/gen-ui-icons.mjs bakes it in): design/assets/icons/nav/thicken.json.
+THICKEN = {k: v for k, v in json.loads(owner_asset('icons/nav/thicken.json').read_text()).items() if not k.startswith('$')}
 
 
 def nav_svg(name: str, px: int) -> str:

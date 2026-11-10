@@ -45,6 +45,12 @@ FAVICONS = {'favicon-32.png': (f'logo/lx-seal-{SEAL_VERSION}-32.png', 32), 'appl
 # favicon.ico carries the sized renders, never a downscale of one size.
 FAVICON_ICO = tuple(f'logo/lx-seal-{SEAL_VERSION}-{px}.png' for px in (16, 32, 48))
 OG_SIZE, OG_BOX = (1200, 630), (1180, 480, 2600, 1225)  # art_crops.py: the glow over the pass, the road's head
+# The apps' art (lane M0): the screen ground, the band behind the bars, Home's hero and the raid card's cave, each at
+# 1200 px, a 393 pt phone at 3x (the cave runs at 160% of a card about 360 pt wide, so 1200 holds 2x).
+APPS_OUT = REPO / 'apps/shared/brand/art'
+APPS_ART = {'band': ('art/blue-band.jpeg', 1200), 'hero': ('art/hero-road-camp-wide.jpeg', 1200),
+            'cave': ('art/raid-panel-cave.jpeg', 1200)}
+APPS_JPEG_QUALITY = 84  # the mocks' (art.JPEG_QUALITY)
 
 
 def source(rel: str) -> Path:
@@ -99,12 +105,24 @@ def build_paperdoll() -> None:
     SLOTS_OUT.write_text(json.dumps(slots, indent=1) + '\n')
 
 
+def build_apps_art() -> None:
+    """The apps' copy (apps/shared/brand/art): JPEG, which both asset pipelines read, the ground tile at its one size
+    and each painting at the phone width that covers a 3x screen. iOS bundles the folder (project.yml), Android copies
+    it into res/drawable-nodpi (the forever.bundled-data plugin); the seal stays web/public/seal-400.png."""
+    APPS_OUT.mkdir(parents=True, exist_ok=True)
+    ground_tile().convert('RGB').save(APPS_OUT / 'ground.jpg', 'JPEG', quality=APPS_JPEG_QUALITY, optimize=True)
+    for key, (rel, width) in APPS_ART.items():
+        im = scaled(Image.open(source(rel)).convert('RGB'), width)
+        im.save(APPS_OUT / f'{key}.jpg', 'JPEG', quality=APPS_JPEG_QUALITY, optimize=True)
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     build_art()
     build_seals()
     build_paperdoll()
-    for path in sorted(OUT.iterdir()):
+    build_apps_art()
+    for path in [*sorted(OUT.iterdir()), *sorted(APPS_OUT.iterdir())]:
         print(f'{path.relative_to(REPO)}  {path.stat().st_size // 1024} KB')
 
 

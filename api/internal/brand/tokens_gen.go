@@ -229,6 +229,12 @@ var ColorForeverTooltipInner = color.NRGBA{R: 0x2B, G: 0x30, B: 0x40, A: 0xFF}
 // The client tooltip yellow: descriptions, the gain line.
 var ColorForeverTooltipYellow = color.NRGBA{R: 0xFF, G: 0xD1, B: 0x00, A: 0xFF}
 
+// The apps' tab bar: the selected tab's icon and label (spec Tab-bar icons).
+var ColorForeverTabOn = color.NRGBA{R: 0xFF, G: 0xD3, B: 0x6B, A: 0xFF}
+
+// The apps' tab bar: an unselected tab, muted white.
+var ColorForeverTabOff = color.NRGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0xD1}
+
 const Space1 = 4
 
 const Space2 = 8

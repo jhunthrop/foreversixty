@@ -47,26 +47,26 @@ public struct FSCurve: Sendable {
 }
 
 public enum FSColor {
-    public static let bg = Color(tokenHex: 0x07090D)
-    public static let raised = Color(tokenHex: 0x0D111A)
-    public static let hover = Color(tokenHex: 0x131824)
-    public static let pressed = Color(tokenHex: 0x1A2030)
-    public static let selected = Color(tokenHex: 0xE5B955, opacity: 0.1)
-    public static let line = Color(tokenHex: 0x262E40)
-    public static let lineSoft = Color(tokenHex: 0x1C2230)
-    public static let text = Color(tokenHex: 0xE9E4D8)
-    public static let strong = Color(tokenHex: 0xF2EEE4)
-    public static let muted = Color(tokenHex: 0x9A9484)
-    public static let nav = Color(tokenHex: 0xB9B3A4)
-    public static let gold = Color(tokenHex: 0xE5B955)
-    public static let goldHover = Color(tokenHex: 0xF5D27A)
-    public static let night = Color(tokenHex: 0x26405C)
-    public static let cardTop = Color(tokenHex: 0x131824)
-    public static let lineWarm = Color(tokenHex: 0x3A3326)
-    public static let lineWarmStrong = Color(tokenHex: 0x4A4030)
-    public static let lineCard = Color(tokenHex: 0xE5B955, opacity: 0.17)
-    public static let goldDeep = Color(tokenHex: 0xA8762A)
-    public static let goldLight = Color(tokenHex: 0xFBE7A1)
+    public static let bg = Color(tokenHex: 0x100A06)
+    public static let raised = Color(tokenHex: 0x170E09)
+    public static let hover = Color(tokenHex: 0x241B15)
+    public static let pressed = Color(tokenHex: 0x2E241D)
+    public static let selected = Color(tokenHex: 0xFFFFFF, opacity: 0.07)
+    public static let line = Color(tokenHex: 0x3D342D)
+    public static let lineSoft = Color(tokenHex: 0x2C241F)
+    public static let text = Color(tokenHex: 0xE3DFD9)
+    public static let strong = Color(tokenHex: 0xFFFFFF)
+    public static let muted = Color(tokenHex: 0x8B8784)
+    public static let nav = Color(tokenHex: 0xFFFFFF)
+    public static let gold = Color(tokenHex: 0xFFEC71)
+    public static let goldHover = Color(tokenHex: 0xF7B90A)
+    public static let night = Color(tokenHex: 0x071D2E)
+    public static let cardTop = Color(tokenHex: 0x170E09)
+    public static let lineWarm = Color(tokenHex: 0x4A3F34)
+    public static let lineWarmStrong = Color(tokenHex: 0x82705B)
+    public static let lineCard = Color(tokenHex: 0x82705B, opacity: 0.55)
+    public static let goldDeep = Color(tokenHex: 0xB8A24A)
+    public static let goldLight = Color(tokenHex: 0xFFF6C4)
     public static let ember = Color(tokenHex: 0xD66E28)
     public static let kill = Color(tokenHex: 0x7FD48A)
     public static let wipe = Color(tokenHex: 0xF0736B)
@@ -117,19 +117,76 @@ public enum FSColor {
     public static let tierB = Color(tokenHex: 0x3D94F0)
     public static let tierC = Color(tokenHex: 0x1EFF00)
     public static let tierD = Color(tokenHex: 0x9D9D9D)
+    /// s: the earth ground under the painted tile (lib/ui/assets.ts).
+    public static let ground = Color(tokenHex: 0x67563A)
+    /// Muted ink on the earth ground, AA on its lightest 200 px window (white at .5 there is
+    /// 3.2:1).
+    public static let mutedGround = Color(tokenHex: 0xE2DCD3)
+    /// Muted ink on a surface (white at .5 over the card, 5.3:1); global.css restores it on every
+    /// surface over the ground.
+    public static let mutedCard = Color(tokenHex: 0x8B8784)
+    /// s: the section band under the painted band.
+    public static let band = Color(tokenHex: 0x054562)
+    /// c: the floating nav bar.
+    public static let navBar = Color(tokenHex: 0x0B2F3B)
+    public static let navy = Color(tokenHex: 0x001845)
+    /// c: display type, every Marcellus heading.
+    public static let cream = Color(tokenHex: 0xF3EEE2)
+    /// c: the footer heading.
+    public static let cream2 = Color(tokenHex: 0xFCEDCF)
+    /// c: the primary button (their Buy Now).
+    public static let teal = Color(tokenHex: 0x0F6064)
+    /// c: the primary button's edge and Premium (their Subscribe, exactly).
+    public static let tealEdge = Color(tokenHex: 0x408076)
+    /// s: the current tab's underline and the chart accent.
+    public static let accent = Color(tokenHex: 0x0093B2)
+    /// c: the secondary button (their Upgrade Now).
+    public static let blue = Color(tokenHex: 0x114F72)
+    public static let blueEdge = Color(tokenHex: 0x1D6A96)
+    /// c: their border.
+    public static let rule = Color(tokenHex: 0x5A5D70)
+    /// c
+    public static let ruleWarm = Color(tokenHex: 0x82705B)
+    /// The warm outer ring every panel wears.
+    public static let panelEdge = Color(tokenHex: 0x82705B, opacity: 0.55)
+    /// The framed panel's cream inset line.
+    public static let frameLine = Color(tokenHex: 0xF3EEE2, opacity: 0.42)
+    /// c: a DPS gain.
+    public static let gain = Color(tokenHex: 0x32AE88)
+    /// The home hero's flat veil (title 12:1).
+    public static let veilNight = Color(tokenHex: 0x071D2E, opacity: 0.3)
+    /// The painted band's flat veil.
+    public static let veilBand = Color(tokenHex: 0x053A54, opacity: 0.38)
+    /// The raid plaque's flat veil (text 11.9:1).
+    public static let veilCave = Color(tokenHex: 0x0E0906, opacity: 0.36)
+    /// c: their footer brown-black.
+    public static let foot = Color(tokenHex: 0x170E09)
+    /// The client tooltip ground (round 4: the client exactly).
+    public static let tooltip = Color(tokenHex: 0x060914)
+    /// The client tooltip edge.
+    public static let tooltipEdge = Color(tokenHex: 0x8B8F9C)
+    /// The client tooltip inner line.
+    public static let tooltipInner = Color(tokenHex: 0x2B3040)
+    /// The client tooltip yellow: descriptions, the gain line.
+    public static let tooltipYellow = Color(tokenHex: 0xFFD100)
+    /// The apps' tab bar: the selected tab's icon and label (spec Tab-bar icons).
+    public static let tabOn = Color(tokenHex: 0xFFD36B)
+    /// The apps' tab bar: an unselected tab, muted white.
+    public static let tabOff = Color(tokenHex: 0xFFFFFF, opacity: 0.82)
 }
 
 public enum FSFont {
-    public static let body = "Barlow-Regular"
-    public static let bodySemibold = "Barlow-SemiBold"
-    public static let bodyBold = "Barlow-Bold"
+    public static let body = "OpenSans-Regular"
+    public static let bodySemibold = "OpenSans-SemiBold"
+    public static let bodyBold = "OpenSans-Bold"
     public static let title = "Marcellus-Regular"
+    public static let navSemibold = "ArchivoSemiBold-SemiBold"
 }
 
 public enum FSType {
     public static let title = FSTextRole(face: FSFont.title, size: 32, lineHeight: 38, tracking: 0.01, scalesWith: .title, tabular: false)
-    public static let sectionReading = FSTextRole(face: FSFont.bodyBold, size: 20, lineHeight: 26, tracking: 0, scalesWith: .title3, tabular: false)
-    public static let section = FSTextRole(face: FSFont.bodyBold, size: 18, lineHeight: 24, tracking: 0, scalesWith: .headline, tabular: false)
+    public static let sectionReading = FSTextRole(face: FSFont.title, size: 20, lineHeight: 26, tracking: 0, scalesWith: .title3, tabular: false)
+    public static let section = FSTextRole(face: FSFont.title, size: 18, lineHeight: 24, tracking: 0, scalesWith: .headline, tabular: false)
     public static let itemLg = FSTextRole(face: FSFont.bodyBold, size: 18, lineHeight: 22, tracking: 0, scalesWith: .headline, tabular: false)
     public static let item = FSTextRole(face: FSFont.bodyBold, size: 15, lineHeight: 20, tracking: 0, scalesWith: .body, tabular: false)
     public static let lead = FSTextRole(face: FSFont.body, size: 17, lineHeight: 26, tracking: 0, scalesWith: .body, tabular: false)
@@ -223,14 +280,14 @@ public enum FSTarget {
 public enum FSRadius {
     /// The flat system's radii (spec P1, 3.4): the one Plate and overlays; segments, selects,
     /// fields.
-    public static let plate: CGFloat = 6
-    public static let field: CGFloat = 4
+    public static let plate: CGFloat = 10
+    public static let field: CGFloat = 6
     public static let pill: CGFloat = 3
     public static let control: CGFloat = 4
     public static let widget: CGFloat = 22
     public static let sheet: CGFloat = 12
-    public static let legacyPanel: CGFloat = 12
-    public static let legacyControl: CGFloat = 8
+    public static let legacyPanel: CGFloat = 10
+    public static let legacyControl: CGFloat = 6
     public static let legacyPill: CGFloat = 6
 }
 

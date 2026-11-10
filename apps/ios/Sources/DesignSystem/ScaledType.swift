@@ -3,16 +3,16 @@ import SwiftUI
 
 /// The spec's type roles (design/specs/2026-10-30-mobile-apps.md §4.2), each scaling with
 /// Dynamic Type through `relativeTo`. `FSFont` (generated) has fixed sizes only, so the faces
-/// are the generated `FSFont` PostScript names. Headings are Barlow 700, as on the site (Barlow
-/// Condensed left the apps with the flat redesign), and so is the wordmark until the app lanes
-/// draw it as the site's SVG. JetBrains Mono is not bundled, so `mono` uses the system mono.
+/// are the generated `FSFont` PostScript names. Round 5 (design/specs/2026-11-09-directions.md,
+/// Mobile): headings and the wordmark are Marcellus 400, as on the site; body, labels and figures
+/// are Open Sans. JetBrains Mono is not bundled, so `mono` uses the system mono.
 public enum ScaledType {
     private enum Face {
-        static let heading = FSFont.bodyBold
+        static let heading = FSFont.title
         static let body = FSFont.body
         static let bodySemibold = FSFont.bodySemibold
         static let bodyBold = FSFont.bodyBold
-        static let wordmark = FSFont.bodyBold
+        static let wordmark = FSFont.title
     }
 
     /// Spec sizes the tokens do not carry.
@@ -29,7 +29,7 @@ public enum ScaledType {
 
     public static let title = Font.custom(Face.heading, size: FSTextSize.h1Phone, relativeTo: .largeTitle)
     public static let h2 = Font.custom(Face.heading, size: FSTextSize.h2, relativeTo: .title)
-    public static let stat = Font.custom(Face.heading, size: FSTextSize.stat, relativeTo: .title)
+    public static let stat = Font.custom(Face.bodyBold, size: FSTextSize.stat, relativeTo: .title)
     public static let sec = Font.custom(Face.heading, size: FSTextSize.cardTitle, relativeTo: .headline)
     /// A raid card's title (spec F4.1).
     public static let cardHead = Font.custom(Face.heading, size: Size.cardHead, relativeTo: .title2)
