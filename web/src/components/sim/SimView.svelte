@@ -26,7 +26,7 @@
   import { simAnswer, type StoppedSnapshot } from '../../lib/sim/answer';
   import { fetchSpecs, listMySims } from '../../lib/sim/api';
   import type { BisSetClass } from '../../lib/sim/bis-set-rail';
-  import { benchmarkFor, type BisBenchmarks } from '../../lib/sim/bis-benchmark';
+  import type { BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import { codeForCharacterSpec } from '../../lib/sim/character';
   import { followCurrentCharacter, simHoldsWork } from '../../lib/sim/follow-current-character';
@@ -482,7 +482,6 @@
       detail: store.detail,
       stopped: store.message === simCopy.stopped ? stopped : null,
       lastLane,
-      benchmark: store.result === null ? null : benchmarkFor(store.result, bisBenchmarks),
     }),
   );
 
@@ -522,6 +521,7 @@
       now={new Date(serverRuns.nowMs)}
       onserverretry={() => void serverRuns.reload()}
       onstarted={() => serverRuns.runStarted()}
+      pageSpec={store.character?.spec ?? ''}
     />{/if}
 {/snippet}
 

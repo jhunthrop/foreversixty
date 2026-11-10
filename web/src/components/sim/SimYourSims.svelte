@@ -32,6 +32,7 @@
     now = new Date(),
     onserverretry,
     onstarted,
+    pageSpec = '',
   }: {
     rows: readonly SimListRow[] | null;
     error: string | null;
@@ -43,6 +44,8 @@
     onserverretry?: () => void;
     /** A failed server run was started again. */
     onstarted?: () => void;
+    /** The spec the page is about: a run of it says only its date. */
+    pageSpec?: string;
   } = $props();
 
   /** The rail shows the newest few; the account page keeps them all. */
@@ -108,7 +111,9 @@
               title={titleOf(row)}
               sub={[
                 kind === 'run'
-                  ? specDisplayName(row.spec)
+                  ? row.spec === pageSpec
+                    ? ''
+                    : specDisplayName(row.spec)
                   : ((KIND_TITLES as Record<string, string>)[kind] ?? kind),
                 dayMonth(row.created_at),
               ]

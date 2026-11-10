@@ -9,7 +9,8 @@
      reads the answer, the ability table, the spread and the gear before the long secondary
      sections (h-audit 2026-11-09); opened, it loads and draws as on desktop. -->
 <script lang="ts">
-  import { untrack, type Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
+  import { MediaQuery } from 'svelte/reactivity';
   import type { LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { pageErrorCopy } from '../../lib/sim/result-copy';
   import type { SectionReserve } from '../../lib/sim/section-reserve';
@@ -43,11 +44,9 @@
     children: Snippet;
   } = $props();
 
-  /** The phone breakpoint the fold applies under. */
-  const PHONE_QUERY = '(max-width: 767px)';
-  /** Read once at mount: a folded section stays a Disclosure for the page's life. */
-  const folded =
-    untrack(() => fold) && typeof window !== 'undefined' && window.matchMedia(PHONE_QUERY).matches;
+  /** The phone breakpoint the fold applies under; it follows the window, so a page narrowed after it loaded folds too. */
+  const phone = new MediaQuery('max-width: 767px');
+  const folded = $derived(fold && phone.current);
   let opened = $state(false);
 
   /** How far ahead of the viewport the chunk starts to load. */

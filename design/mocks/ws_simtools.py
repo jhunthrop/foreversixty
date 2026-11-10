@@ -118,13 +118,13 @@ def item_search() -> str:
     # The first page of hits, then a button for the next (ItemSearch PAGE): no box that cuts a row in half.
     usable = sorted((i for i in ITEMS.values() if i.get('item_level')), key=lambda i: (-i['item_level'], i['name']))[:8]
     rows = ''.join(f'<div class="hit">{S.gicon(i["icon"], 28, i["quality"])}<span class="hit-n">{item_name(i["id"])}</span>'
-                   f'<span class="t-small num">{i["item_level"]}</span>{btn("Add")}</div>' for i in usable)
+                   f'<span class="t-small num">{i["item_level"]}</span><button type="button" class="btn sm ghost">Add</button></div>' for i in usable)
     filters = (f'<div class="search-f"><input type="search" class="fld grow" placeholder="Name" aria-label="Name">'
                f'<label class="fl"><span class="t-label">Minimum item level</span><input type="number" class="fld w24" value="0"></label>'
                f'<label class="fl"><span class="t-label">Slot</span><select class="fld w160"><option>Any slot</option></select></label>'
                f'<span class="fl"><span class="t-label">Source</span><button type="button" class="fld w240 sel" aria-expanded="false">Anywhere</button></span>'
                f'<span class="sw-l"><button type="button" role="switch" aria-checked="true" class="sw"></button>Only items this character can equip</span></div>')
-    return Section('Find an item', filters + f'<div class="hits">{rows}</div><div class="more">{btn("8 more")}<p class="t-small trunc">Showing 100 of 9,026. Narrow the search.</p></div>')
+    return Section('Find an item', filters + f'<div class="hits">{rows}</div><div class="hits-more"><button type="button" class="btn sm ghost">8 more</button><p class="t-small trunc">Showing 100 of 9,026. Narrow the search.</p></div>')
 
 
 def consumables() -> str:
@@ -259,7 +259,7 @@ def drops() -> str:
         if not shown:
             # The gated kind's heading, then one line per dated source and the rest named once (SourcePicker).
             undated = ', '.join(s['name'] for s in srcs)
-            groups.append(f'<div class="src-g"><h3 class="t-h4">{label}</h3><div class="gl"><span class="t-small">No date yet: {undated}</span></div></div>')
+            groups.append(f'<div class="src-g"><p class="gl1"><b>{label}</b><span class="t-small">&middot; No date yet: {undated}</span></p></div>')
             continue
         rows = ''
         if kind == 'rep':
@@ -302,7 +302,7 @@ def weights() -> str:
     stats = row.get('stats') or list(row['weights'])
     picks = ''.join(f'<li><label class="opt">{check(checked=True, disabled=i == 0)}{s}</label></li>' for i, s in enumerate(stats))
     # The stats to weigh as one row of ticks over the table (StatWeights.svelte); the reference is its locked tick.
-    pick = Section('Stats to weigh', f'<ul class="opts row">{picks}</ul>')
+    pick = Section('Stats to weigh', f'<ul class="opts inl">{picks}</ul>')
     return finish('Weights', head('weights') + run_bar('weights') + ledger(character_line(), pick, published_weights()))
 
 
@@ -402,7 +402,7 @@ TOOL_CSS = '''<style>
 .fld{box-sizing:border-box;height:40px;padding:0 12px;font:600 14px/20px var(--font-body);color:var(--text);background:transparent;border:1px solid var(--line);border-radius:4px}
 .fld.grow,.fl.grow{flex:1;min-width:220px}.fl.grow .fld{width:100%}.w24{width:96px}.w160,.fl.w160 .fld{width:160px}.w240{width:240px;text-align:left}
 .tb{display:flex;flex-direction:column;align-items:flex-start}.tb .t-h4{padding-top:12px;margin:0;font-size:15px;line-height:20px}.tb p{padding-top:4px;margin:0}.tb .bt{padding-top:12px}.rail-col .tb{padding-top:11px}
-.hits{margin-top:8px}.trunc{margin:0;font-size:12px}.more{display:flex;flex-wrap:wrap;align-items:center;gap:0 12px;padding-top:8px}
+.hits{margin-top:8px}.trunc{margin:0;font-size:12px}.hits-more{display:flex;flex-wrap:wrap;align-items:center;gap:0 12px;padding-top:8px}
 .run-notes p{display:flex;flex-wrap:wrap;gap:0 12px;align-items:baseline;margin:0;padding-top:12px;font-size:14px;line-height:20px}
 .tool-who{display:flex;flex-direction:column;gap:4px;padding:14px 0 4px}
 .who-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0;font-size:15px;line-height:24px}
@@ -411,17 +411,17 @@ TOOL_CSS = '''<style>
 .lock,.opt{display:flex;align-items:center;gap:8px;min-height:44px;font-size:14px}.cb{width:20px;height:20px;margin:0;accent-color:var(--gold)}
 .hover-name{all:unset;cursor:pointer}.num{font-variant-numeric:tabular-nums}
 .search-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px}.search-f .fl{display:flex;flex-direction:column;gap:6px}.sw-l{display:flex;align-items:center;gap:8px;font-size:14px}
-.hit{display:flex;align-items:center;gap:10px;min-height:44px}.hit-n{flex:1;min-width:0}
+.hit{box-sizing:border-box;display:flex;align-items:center;gap:12px;min-height:44px;padding:6px 0;border-bottom:1px solid var(--line-soft,var(--line))}.hit:last-child{border-bottom:0}.hit-n{flex:1;min-width:0;font-size:15px;line-height:20px}
 .wbody{padding-top:10px}.wbody p{margin:0}.opts{list-style:none;margin:0;padding:0}.opts.ce{padding-top:16px}.opts.two{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
 .sets-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;padding-top:19px}.pad{padding:16px}.kinds{display:flex;flex-wrap:wrap;gap:0 20px}
 .src-g{display:flex;flex-direction:column;gap:4px;padding-top:16px}.src{display:flex;flex-direction:column;padding:4px 0}.indent{padding-left:28px}.grow-n{flex:1}.src p.indent{margin:0;line-height:19.5px}.src .disc>summary{display:flex;align-items:center;height:44px;box-sizing:border-box}.src-g .t-h4{margin:0;font-size:15px;line-height:20px}
-.pn-b .hits{max-height:320px}.pn-b>.search-f{padding-bottom:16px}.spec-t{display:flex;flex-wrap:wrap;align-items:center;column-gap:16px}.spec-t .disc{font-weight:400}.rail-col .pn-b>.tb{padding-top:0}.pn-b>.opts.ce{padding-top:0}.pn-b .sets-f{padding-top:8px}.pn-b>.cands{padding-top:12px}
+.pn-b>.search-f{padding-bottom:16px}.spec-t{display:flex;flex-wrap:wrap;align-items:center;column-gap:16px}.spec-t .disc{font-weight:400}.rail-col .pn-b>.tb{padding-top:0}.pn-b>.opts.ce{padding-top:0}.pn-b .sets-f{padding-top:8px}.pn-b>.cands{padding-top:12px}
 .alink{display:inline-flex;align-items:center;min-height:44px}.wt-pub{display:flex;flex-direction:column;gap:8px}.wt-pub p{margin:0;font-size:13px}.gated{display:flex;flex-direction:column;gap:4px;margin:0;padding-left:12px;list-style:none}.gated li{line-height:19.5px}.gb{padding-top:4px}
 .wt-pub .st .stc{grid-template-columns:0 var(--st-name) var(--st-bar) repeat(var(--n),var(--st-fig))}@media(max-width:1023px){.wt-pub .st .stc{grid-template-columns:0 minmax(0,1fr) auto}}
-.opts.row{display:flex;flex-wrap:wrap;gap:0 24px}.opts.cols3{display:grid;grid-template-columns:1fr;gap:0 24px}@media(min-width:768px){.opts.cols3{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.opts.cols3{grid-template-columns:1fr 1fr 1fr}}
+.opts.inl{display:flex;flex-wrap:wrap;gap:0 24px}.opts.cols3{display:grid;grid-template-columns:1fr;gap:0 24px}@media(min-width:768px){.opts.cols3{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.opts.cols3{grid-template-columns:1fr 1fr 1fr}}
 .src-cols{display:grid;grid-template-columns:1fr;column-gap:32px}@media(min-width:768px){.src-cols{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.src-cols{grid-template-columns:1fr 1fr 1fr}}.rep-n{padding-top:8px;font-size:14px;line-height:20px}.rep-t{display:flex;flex-wrap:wrap;gap:0 16px}.opt.sm{font-size:13px}
 .tb-row{display:grid;gap:4px 24px;padding:12px 0;border-bottom:1px solid var(--line-soft,var(--line));align-self:stretch}.tb-row:last-of-type{border-bottom:0}@media(min-width:768px){.tb-row{grid-template-columns:260px minmax(0,1fr);align-items:start}}
-.src-l{display:flex;align-items:center;gap:8px;min-height:44px}.src-l .opt{min-width:0}.bcount{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center}.pl{padding-left:8px}.gl{display:flex;flex-direction:column;padding-top:4px;font-size:14px;line-height:24px}.disc-b{padding:4px 0 8px}
+.src-l{display:flex;align-items:center;gap:8px;min-height:44px}.src-l .opt{min-width:0}.bcount{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center}.pl{padding-left:8px}.gl1{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-height:44px;margin:0;font-size:14px;line-height:24px}.gl1 b{font-size:15px}.disc-b{padding:4px 0 8px}
 .tb-t{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 32px;min-width:0}.tb-d{display:flex;flex-direction:column;margin:0;padding:0;list-style:none;font-size:13px;line-height:20px}.tb-d .kill{color:var(--kill)}.tb-d .wipe{color:var(--wipe)}.tb-d span{color:var(--text)}
 .spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:32px;text-align:right}.spec-fig .dps{width:64px;text-align:right;font-weight:700}.sbar{display:none;width:240px}@media(min-width:768px){.sbar{display:block}}.spec-n>summary{color:inherit;font-size:15px;font-weight:700;white-space:nowrap}.un{display:flex;flex-wrap:wrap;column-gap:24px}.un-l{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:700;text-decoration:none}</style>'''
 

@@ -1305,10 +1305,6 @@
             {/if}
           </InGame></Ordered
         >
-        <!-- Only a class with a guide build takes a slot: an empty one would still hold a flow gap. -->
-        {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
-          <Ordered order={4}><GuideBuilds builds={guideBuilds} {store} /></Ordered>
-        {/if}
       {:else if status === 'loading'}
         {#if shared}
           <Ordered order={2}>{@render railSkeleton(plannerCopy.inGameTitle)}</Ordered>
@@ -1325,6 +1321,11 @@
       <Ordered order={1} span
         ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
       >
+      <!-- Build vs guide under Point order at main's width (h-audit 2026-11-09): main ended 200 px above
+           the rail. Only a class with a guide build takes a slot: an empty one would still hold a flow gap. -->
+      {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
+        <Ordered order={4} span><GuideBuilds builds={guideBuilds} {store} /></Ordered>
+      {/if}
     {/if}
   </Page>
 {:else}

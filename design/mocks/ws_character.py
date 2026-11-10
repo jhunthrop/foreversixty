@@ -281,8 +281,6 @@ def head(ch: Char, owner: dict | None, answer: bool = True) -> str:
     if c.get('guild'):
         meta.append(f"<a class=\"link\" href=\"#\">&lt;{c['guild']['name']}&gt;</a>")
     meta += [c['realm'], f"{'Hardcore' if c['ruleset'] == 'hardcore' else 'Normal'} {c['region'].upper()}"]
-    if ch.page.get('supporter'):
-        meta.append(Tag('Supporter'))
     if owner:
         meta.append('Synced 1 day ago')
     total = ch.total()
@@ -356,9 +354,10 @@ def fights_section(ch: Char) -> str:
         ex = f" &middot; Execution {round(f['execution_score'] * 100)}%" if f.get('execution_score') is not None else ''
         before = [h for h in kills if h['fought_at'] < f['fought_at']]
         change = round(f['value'] - before[-1]['value']) if before else None
-        since = (f" &middot; {'+' if change > 0 else '&minus;' if change < 0 else ''}{abs(change)} since {short_date(before[-1]['fought_at'])}"
+        since = (f" &middot; {'+' if change > 0 else '&minus;' if change < 0 else ''}{abs(change)} vs {short_date(before[-1]['fought_at'])}"
                  if before else '')
-        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])} &middot; {f['spec']}{ex}{since}", trail=trail, slim=True))
+        spec = '' if f['spec'] == SPEC[ch.cls] else f" &middot; {f['spec']}"  # the page's own spec goes without saying
+        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])}{spec}{ex}{since}", trail=trail, slim=True))
     return panel('Best per encounter', RowsSlim(rows), f"All fights ({len(p['history'])})")
 
 
@@ -380,13 +379,14 @@ def coach_rows(file: str) -> str:
     return f'<section aria-label="Your coach">{Rows(rows, open_=True, list_=True)}</section>'
 
 
-def owner_sections(premium: bool, fights: int, coach: str | None = None) -> str:
+def owner_sections(premium: bool, fights: int, coach: str | None = None, latest: dict | None = None) -> str:
     """One History panel (h-audit 2026-11-09): the charts' Disclosure with the fight count, then the coach's reviews."""
     if not premium:
         return panel('History', Rows([Row('Score over time and parse per boss', 'Premium keeps every rated fight.',
                                           trail=Link('See plans &rsaquo;'), link=False)], open_=True))
     body = coach_rows(coach) if coach else ''
-    return panel('History', Disclosure('Score and parses', '', meta=f"{fights} {'fight' if fights == 1 else 'fights'}")
+    summary = f"Score {latest['score']:,} on {short_date(latest['date'] + 'T00:00:00Z')}" if latest else 'Score and parses'
+    return panel('History', Disclosure(summary, '', meta=f"{fights} {'fight' if fights == 1 else 'fights'}")
                  + Disclosure('Coach reviews', body, open_=coach is not None))
 
 
@@ -397,7 +397,7 @@ def waiting(ch: Char, owner: dict) -> list[tuple[str, str]]:
     top = ch.top()
     talents = [(f"{to_spend} talent {'point' if to_spend == 1 else 'points'} unspent", '')] if to_spend > 0 else []
     item = ch.items.get(top['id'], {}) if top else {}
-    return talents + ([(f"<span class=\"wait-pre\">Upgrade: </span>{top['name']}, {top['source']}", icon(item.get('icon'), 28))] if top else [])
+    return talents + ([(f"<span class=\"wait-pre\">Upgrade: </span>{top['name']}, {top['source'].rsplit(': ', 1)[-1]}", icon(item.get('icon'), 28))] if top else [])
 
 
 # ------------------------------------------------------------------------------------------------ the states
@@ -427,7 +427,7 @@ def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | Non
         body += waiting_summary(waiting(ch, owner))
     logged = bool(ch.page.get('score'))
     main = (O(gear_section(ch), 1, True) + O(fights_section(ch) if ch.page['best'] else '', 4, True)
-            + O(owner_sections(premium, len(ch.page['history']), coach) if owner and logged else '', 5, True))
+            + O(owner_sections(premium, len(ch.page['history']), coach, (ch.page.get('score_history') or [None])[-1]) if owner and logged else '', 5, True))
     stand = standing_section(standing(home, 'guild' in owner, SPEC[ch.cls])) if owner else ''
     rail = (O(score_section(ch, owner is not None), 2) + O(stand, 3) + O(builds_section(ch) if ch.page['builds_seen'] else '', 6)
             + O(activity_section(feed, ch.page['character']['name']), 7))

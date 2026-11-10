@@ -2,8 +2,8 @@
 <!-- What the engine is told to press, in words (sim spec 2026-11-06 §4.3, §4.5; spec
      2026-11-04-sim-results 3.11): an open Section of open Rows, the curated APL's own notes, and
      after a run this run's casts per fight beside each line, a line the run never cast dimmed.
-     Before a run (no `result`) it is the same lines with nothing counted; after one, a line
-     whose note only says "on cooldown" drops the note (h-audit 2026-11-09). The guide is the
+     Before a run (no `result`) it is the same lines with nothing counted. A line whose note only
+     says "on cooldown" drops the note (h-audit 2026-11-09). The guide is the
      section's action. The spec's fidelity note lives in the page's answer (§4.6), not here. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
@@ -132,7 +132,7 @@
         <div class={row.dimmed ? 'opacity-50' : ''} data-testid="rotation-line" data-dimmed={row.dimmed}>
           <Row
             title={row.name}
-            sub={result !== null && obviousNote(row.note) ? undefined : row.note || undefined}
+            sub={obviousNote(row.note) ? undefined : row.note || undefined}
             rank={String(row.number)}
             open
           >

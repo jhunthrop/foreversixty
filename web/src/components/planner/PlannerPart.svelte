@@ -1,3 +1,7 @@
+<!-- Its styles travel with its code (css="injected"): it renders only after the island hydrates, and a
+     page inlines only the styles of what its server render drew. -->
+<svelte:options css="injected" />
+
 <!-- web/src/components/planner/PlannerPart.svelte -->
 <!-- One part of the planner's take-it-with-you plate (h-audit 2026-11-09): In the game, Share and
      Import were three thin plates stacked in the rail, so they share one panel, each after a

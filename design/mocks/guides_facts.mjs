@@ -83,7 +83,7 @@ import { bandTalentHits } from ${src("src/lib/guides/talent-hit.ts")};
 import { CLASS_LANDING_PANELS, specCardLine, splitClassLanding } from ${src("src/lib/guides/class-landing.ts")};
 import { litTalentsOf, markRaidBuildRows, raidBuildOnlyTalents, talentNamesOf } from ${src("src/lib/guides/rotation-lists.ts")};
 import { atLevel60, glanceRotation, glanceStatRows, markCheapRanks, nextTalentPoint, racesByFaction, topRankAt60 } from ${src("src/lib/guides/glance.ts")};
-import { buildRaces } from ${src("src/lib/guides/build-races.ts")};
+import { buildRaces, buildRacesForClass, newRaceSlugsForClass, raceIconsFor } from ${src("src/lib/guides/build-races.ts")};
 
 const build = activeBuild.build;
 const catalog = readSpecCatalog();
@@ -109,7 +109,16 @@ export async function run(entries, SPECS, CLASSES) {
     const specGuides = entries.filter((g) => g.data.classSlug === cls && g.data.spec !== undefined);
     const cards = specsOf(cls).flatMap((s) => { const g = specGuides.find((x) => x.data.spec === s.spec_slug); if (!g || !g.data.role) return [];
       return [{ slug: s.spec_slug, name: s.name, role: g.data.role, icon: s.icon, line: specCardLine(g.data.role, decodeBuildTrees(build, g.data.raidBuild ?? g.data.build ?? '') ?? []) ?? '' }]; });
-    landings[cls] = { title: classes.find((c) => c.slug === cls).name, sections, cards, sources: e.data.sources,
+    // GuideRaceList: the class's races by faction, each its portrait stem (when the build ships one) and the "new" mark
+    const raceList = buildRacesForClass(build, cls);
+    const raceIcons = raceIconsFor(build);
+    const fresh = newRaceSlugsForClass(build, cls);
+    const races = ['alliance', 'horde'].map((faction) => ({ faction,
+      heading: faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading,
+      races: raceList.filter((r) => r.faction === faction).map((r) => ({ name: r.name,
+        icon: raceIcons.get(r.slug)?.split('/').pop().replace(/\.webp$/, '') ?? null, fresh: fresh.has(r.slug) })) }))
+      .filter((group) => group.races.length > 0);
+    landings[cls] = { title: classes.find((c) => c.slug === cls).name, sections, cards, races, sources: e.data.sources,
       updated: dayMonth(e.data.updated) };
   }
 
@@ -209,7 +218,9 @@ async function specPage(entry) {
     stats: { table: statTable, prose: await prose(proseOnly('Stat priority')) },
     bis: { data: guideBis ? strip({ ...guideBis, panels: guideBis.panels.map((p) => ({ ...p, caption: guidesCopy.bisCaption(p.raceName, fac(p.faction)) })) }) : null, href: '/bis/' + classSlug + '/' + specSlug, prose: await prose(proseOnly('Best in slot')) },
     extras: { data: gearExtras ? { ...strip(gearExtras), lines: consumableLines(gearExtras.consumables) } : null, prose: await prose(proseOnly('Enchants and consumables')) },
-    races: { rows: strip(raceRows), groups: strip(racesByFaction(raceRows)), lines: raceLines, prose: await prose(racesProse) },
+    // GuideRacesLane leads each race with its portrait (RaceIcon 28) when the build ships one: race slug to icon stem
+    races: { rows: strip(raceRows), groups: strip(racesByFaction(raceRows)), lines: raceLines, prose: await prose(racesProse),
+      portraits: Object.fromEntries([...raceIconsFor(build)].map(([slug, url]) => [slug, url.split('/').pop().replace(/\.webp$/, '')])) },
     professions: await prose(proseOnly('Professions')),
     leveling: { early: await prose(early), stripHeading: stripHead.replace(/^#+\\s*/, '').trim(), late: await prose(late), steps: steps.length, ladder: steps.map((x) => ({ level: x.level, name: x.name })), at: { 34: atLevel(34), 60: atLevel(60) } },
     sources: entry.data.sources, statPriority: entry.data.statPriority,

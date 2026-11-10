@@ -29,7 +29,6 @@ QUALITY = {'poor': 0, 'common': 1, 'uncommon': 2, 'rare': 3, 'epic': 4, 'legenda
 
 # The page's own layout (BisSpecPage, BisSide, BisItinerary measure the same); no surfaces: the primitives draw those.
 BIS_CSS = '''
-main{padding-bottom:40px}  /* the page's own bottom space ([spec].astro .bis-page), above the site footer */
 .bis-pg{padding-top:20px}
 .cbar[data-labels-from="1920"] .pc{column-gap:12px}
 .cbar .seg a{height:40px}.cbar .seg a .sp{width:22px;height:22px;border-radius:4px;background:#10141d}

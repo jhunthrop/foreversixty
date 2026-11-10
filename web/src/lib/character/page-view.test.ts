@@ -7,6 +7,7 @@ import type { CharacterPage } from '../rankings/api';
 import {
   bestRows,
   buildRows,
+  bossOf,
   characterWaiting,
   characterPageCopy,
   headFacts,
@@ -68,6 +69,13 @@ describe('the upgrade total', () => {
     expect(upgradeTotal(slots)).toBeCloseTo(14.25);
     expect(topUpgrade(slots)?.slot).toBe('head');
     expect(topUpgrade([gain('neck', 0.01)])).toBeNull();
+  });
+});
+
+describe('bossOf', () => {
+  it('names the boss without its zone', () => {
+    expect(bossOf('Stratholme: Baron Rivendare')).toBe('Baron Rivendare');
+    expect(bossOf('Wailing Caverns')).toBe('Wailing Caverns');
   });
 });
 
@@ -133,7 +141,8 @@ describe('fights and builds', () => {
     expect(bestRows([{ ...row, execution_score: 0.9 } as never])[0].sub).toBe('3 Nov · Holy · Execution 90%');
     const before = { ...row, value: 930, percentile: 88, fought_at: '2026-10-27T20:40:00Z' };
     const [withHistory] = bestRows([row as never], [row as never, before as never]);
-    expect(withHistory.sub).toBe('3 Nov · Holy · +82 since 27 Oct');
+    expect(withHistory.sub).toBe('3 Nov · Holy · +82 vs 27 Oct');
+    expect(bestRows([row as never], [], 'Holy')[0].sub).toBe('3 Nov');
     expect(withHistory.trend).toEqual([88, 98.4]);
     expect(characterPageCopy.allFights(7)).toBe('All fights (7)');
   });

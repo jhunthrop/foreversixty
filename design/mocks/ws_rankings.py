@@ -155,7 +155,8 @@ def landing_heads(first: str, amount: str) -> str:
 
 def landing_rows(rows: list[dict], heads: str) -> str:
     """RankingsLanding's compact list: two figures (the value, the percentile)."""
-    body = ''.join(RankRow(f'<span style="color:{token_hex(v["rankColor"])}">{v["rank"]}</span>', crest_img(v['classSlug'], 28),
+    # The landing's rank stays plain (no legend explains a colour there): the percentile carries it (lib/rankings/landing.ts).
+    body = ''.join(RankRow(escape(v['rank']), crest_img(v['classSlug'], 28),
                            CLASS_COLOR[v['classSlug']], escape(v['name']), escape(v['sub']), v['fraction'],
                            [(f'<a href="#">{escape(f["value"])}</a>' if f.get('href') else escape(f['value']), escape(f.get('unit') or ''),
                              escape(f['label']), False) for f in v['figures']], escape(v['gap']['text']), []) for v in rows)

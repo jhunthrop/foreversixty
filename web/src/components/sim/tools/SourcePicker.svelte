@@ -283,22 +283,21 @@
       <div class="pt-2" data-testid={`sim-kind-${group.kind}-group`}>
         {#if visibility.allGated}
           <!-- dps D33 (BLOCKER) / newcomer MAJOR "ticking Raids produces an empty void": a
-               ticked kind whose every source is gated names the gate, one line per date; the
+               ticked kind whose every source is gated names the gate in one line; the
                "show unreleased content" tick above opens them. -->
           {@const gated = gatedLine(group.sources, gateLabel, bulkCopy.opensLater)}
-          <h3 class="text-strong m-0 pt-2 text-[15px] leading-5 font-bold">
-            {SOURCE_KIND_LABELS[group.kind]}
-          </h3>
-          <div
-            class="text-text flex flex-col pt-1 text-[14px] leading-6"
+          <!-- One line: the kind, then what opens when (h-audit 2026-11-09). -->
+          <p
+            class="m-0 flex min-h-11 flex-wrap items-center gap-x-2 text-[14px] leading-6"
             data-testid={`sim-kind-${group.kind}-gated`}
           >
-            {#each gated.dated as line (line)}<span>{line}</span>{/each}
+            <b class="text-strong text-[15px]">{SOURCE_KIND_LABELS[group.kind]}</b>
+            {#each gated.dated as line (line)}<span class="text-text">· {line}</span>{/each}
             {#if gated.undated.length > 0}<span class="text-muted"
-                >{bulkCopy.sourcesNoDate(gated.undated)}</span
+                >· {bulkCopy.sourcesNoDate(gated.undated)}</span
               >{/if}
             <span class="sr-only">{toolFixCopy.sourcesAllGated}</span>
-          </div>
+          </p>
         {:else}
           <Disclosure
             summary={SOURCE_KIND_LABELS[group.kind]}

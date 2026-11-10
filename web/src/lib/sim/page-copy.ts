@@ -73,8 +73,6 @@ export const simPageCopy = {
     runningBrowser: 'Running in your browser',
     runningCaption: (band: string, done: string, total: string): string =>
       `± ${band} DPS · ${done} of ${total} runs`,
-    /** The result against its spec's published raid set: " · −99.6 vs BiS". */
-    vsBis: (gap: string): string => ` · ${gap} vs BiS`,
     /** A finished result names no lane: the band says how sure it is. */
     resultLabel: '',
     stoppedLabel: (done: string, total: string): string => `Stopped at ${done} of ${total} runs`,

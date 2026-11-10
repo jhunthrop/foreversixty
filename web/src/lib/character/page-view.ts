@@ -52,14 +52,16 @@ export const characterPageCopy = {
   best: 'Best per encounter',
   /** A best fight's execution against the sim, in its sub: "Execution 90%". */
   execution: (score: number): string => `Execution ${executionLabel(score)}`,
-  /** A best fight's change against the kill of that boss before it: "+82 since 27 Oct". */
-  sinceKill: (change: string, date: string): string => `${change} since ${date}`,
+  /** A best fight's change against the kill of that boss before it: "+82 vs 27 Oct". */
+  sinceKill: (change: string, date: string): string => `${change} vs ${date}`,
   allFights: (count: number): string => `All fights (${count})`,
   builds: 'Builds seen',
   /** A build seen row's sub: the spec and the date it was first seen ("Holy · 3 Nov"). */
   buildSub: (spec: string, date: string): string => (spec === '' ? date : `${spec} · ${date}`),
   history: 'History',
   historyLead: 'Score and parses',
+  /** The History summary once a score is on file: "Score 1,830 on 6 Nov". */
+  historyLatest: (score: number, date: string): string => `Score ${score.toLocaleString('en-US')} on ${date}`,
   /** The History disclosure's meta: the fights behind its charts. */
   fightCount: (count: number): string => `${count} ${count === 1 ? 'fight' : 'fights'}`,
   historyLockTitle: 'Score over time and parse per boss',
@@ -172,6 +174,13 @@ export interface WaitingFact {
   item?: { icon: string | null; quality: number };
 }
 
+/** A source's boss without its zone ("Stratholme: Baron Rivendare" reads "Baron Rivendare"), so the
+ *  upgrade line fits one line on a phone. */
+export function bossOf(source: string): string {
+  const at = source.lastIndexOf(': ');
+  return at === -1 ? source : source.slice(at + 2);
+}
+
 /** C11: what waits on the owner, as plain facts (owner 2026-11-09: no "Next:" nudge): unspent
  *  talent points, then the top upgrade. Empty with neither. */
 export function characterWaiting(input: {
@@ -203,7 +212,7 @@ export function characterWaiting(input: {
           {
             key: 'upgrade',
             lead: 'Upgrade: ',
-            text: `${top.name}, ${top.source}`,
+            text: `${top.name}, ${bossOf(top.source)}`,
             href: bisHref,
             item: { icon: top.icon, quality: top.quality },
           },
@@ -258,13 +267,15 @@ function sinceLast(row: CharacterFight, kills: readonly CharacterFight[]): strin
 export function bestRows(
   best: readonly CharacterFight[],
   history: readonly CharacterFight[] = [],
+  pageSpecName: string | null = null,
 ): FightRowView[] {
   return best.slice(0, FIGHTS_SHOWN).map((row) => ({
     key: `${row.encounter_id}-${row.difficulty}-${row.metric}`,
     boss: row.encounter,
     sub: [
       dayMonth(row.fought_at),
-      row.spec,
+      // The page's own spec goes without saying; another spec's fight names it.
+      row.spec === pageSpecName ? '' : row.spec,
       typeof row.execution_score === 'number' ? characterPageCopy.execution(row.execution_score) : '',
       sinceLast(row, bossKills(row, history)),
     ]

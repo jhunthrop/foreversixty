@@ -19,7 +19,7 @@
   import { bandHeading, buffsFact, savedDay, talentSplit, variationPercent } from '../../lib/sim/result-band';
   import { durationLabel } from '../../lib/sim/settings';
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
-  import { benchmarkFor, type BisBenchmarks } from '../../lib/sim/bis-benchmark';
+  import type { BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { createCopyFeedback, type CopyFeedbackState } from '../../lib/ui/copy-feedback';
   import Button from '../ui/Button.svelte';
@@ -64,7 +64,7 @@
   $effect(() => {
     if (kind !== 'run') savedKindLazy.load();
   });
-  const model = $derived(resultAnswer(result, benchmarkFor(result, bisBenchmarks)));
+  const model = $derived(resultAnswer(result));
 
   const lines = $derived.by(() => {
     const { character, encounter } = result.request;

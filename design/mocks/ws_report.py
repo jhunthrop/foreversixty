@@ -451,7 +451,7 @@ def tab_deaths(R, fi, source):
         kb = d['killing_blow']
         window_link = '<button type="button" class="link">Last 20 s &rsaquo;</button>'
         # One control a row (report/DeathsTab.svelte): the window on the open card, Open on a folded one.
-        toggle = '<button type="button" class="link">Open</button>' if fold and index > 0 else window_link
+        toggle = '<button type="button" class="link" aria-expanded="false">Open</button>' if fold and index > 0 else window_link
         head_row = Row(pname(r, d['name']), f'Killed by {escape(kb["source_name"])} &middot; {escape(melee(kb["spell_id"], kb["spell_name"]))} &middot; {n0(kb["amount"])} ({n0(kb.get("overkill", 0))} overkill) &middot; {n0(kb["max_hp"])} health',
                        lead=f'<span class="num muted">{at(d["at_ms"])}</span>{crest(r, 32)}', trail=toggle, link=False)
         if fold and index > 0:

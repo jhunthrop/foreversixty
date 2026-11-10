@@ -19,6 +19,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { curatedRotationNotes } from './support/rotation-notes';
 import { gotoSim, simCharacter } from './support/sim-page';
+import { obviousNote } from '../../src/lib/sim/rotation-card';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -105,7 +106,11 @@ test('the rotation reads in place in the rail, without losing the character (new
   await expect(section).toContainText('Frost guide');
   const notes = curatedRotationNotes('mage-frost');
   expect(notes.length).toBeGreaterThan(0);
-  for (const note of notes) await expect(section).toContainText(note);
+  // A note that only says "on cooldown" is left off its line (rotation-card.ts obviousNote).
+  for (const note of notes) {
+    if (obviousNote(note)) await expect(section).not.toContainText(note);
+    else await expect(section).toContainText(note);
+  }
 
   // Nothing navigated, so nothing was there to lose.
   expect(page.url()).toBe(url);

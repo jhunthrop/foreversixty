@@ -283,7 +283,7 @@ PRIM_CSS += '''
 .rr .nm{min-width:0;display:flex;flex-direction:column}
 .rr .nm .ttl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .rr .nm .ttl a{font:700 16px/20px var(--font-body);color:var(--c)}.rr .nm .ttl a:hover{text-decoration:underline;text-underline-offset:4px}
-.rr .nm .sub{font-size:13px;line-height:18px;color:var(--muted)}
+.rr .nm .sub{font-size:13px;line-height:18px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rr .nm .low{font-size:13px;line-height:18px;color:var(--muted);text-decoration:underline dotted;text-underline-offset:3px;align-self:flex-start}
 .rr .br{display:flex;flex-direction:column;gap:4px;min-width:0}.rr .br .tie{font:700 12px/16px var(--font-body);color:var(--strong)}
 .rr .x{display:contents}

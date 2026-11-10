@@ -222,7 +222,8 @@ def races(g: dict) -> str:
         rows = []
         for x in grp['rows']:
             foot = ''.join(f'<span class="racial">{icon(z["icon"], 20)}<span><b>{e(z["name"])}</b> {e(z["effect"])}</span></span>' for z in x['racials'])
-            rows.append(Row(e(x['name']), title_color=FACTION[x['faction']],
+            portrait = r.get('portraits', {}).get(x.get('slug', ''))
+            rows.append(Row(e(x['name']), title_color=FACTION[x['faction']], lead=icon(portrait, 28) if portrait else '',
                             trail=Tag(e(C['recommendedTag'])) if x['recommended'] else '', link=False, foot=foot))
         head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
         body += f'<h4 class="t-label sub-h">{e(head)}</h4>' + Rows(rows, True)
@@ -290,7 +291,7 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
     body = (ReadingPanel(''.join(sections)) + sources(g)
             + f'<p class="t-small foot-note" data-region="{REGION["footer_note"]}">{e(F["fns"]["dataSourceLine"])}</p>')
     toc = Toc(e(C['tocBarLabel']), [(e(s['title']), s['id']) for s in F['sections']], 'overview')
-    html = head + spec_bar(g, open_m) + reading_page(lede(g['summary']) + band(gp), toc, body) + PAGE_CSS
+    html = f'<div class="g-page">{head + spec_bar(g, open_m) + reading_page(lede(g["summary"]) + band(gp), toc, body)}</div>' + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     note = (f'Guide mock (design/specs/2026-11-08-guides.md), built only from ws_prims, read from guides-facts.json (build {F["build"]}). '
             + ('Partial-data state: rotation, weights, BiS and extras removed (FORCED; no spec lacks them at this build). ' if partial else '')
@@ -299,6 +300,23 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
 
 
 # ------------------------------------------------------------------------------------------------ the class landing
+FACTION_COLOR = {'alliance': '#6fb1ff', 'horde': '#ff6b5c'}  # web tokens.css --color-alliance, --color-horde
+
+
+def race_list(groups: list[dict]) -> str:
+    """web guides/GuideRaceList: per faction its label, then each race (portrait 24, name in the faction colour, "new")."""
+    out = []
+    for g in groups:
+        items = ''.join(
+            f'<li style="color:{FACTION_COLOR[g["faction"]]}">'
+            + (f'<span aria-hidden="true">{icon(r["icon"], 24)}</span>' if r['icon'] else '')
+            + f'<span>{e(r["name"])}</span>'
+            + ('<span class="t-small" style="color:var(--muted);font-weight:400">new</span>' if r['fresh'] else '')
+            + '</li>' for r in g['races'])
+        out.append(f'<div class="grl-g"><h4 class="t-label grl-h">{e(g["heading"])}</h4><ul class="grl-items">{items}</ul></div>')
+    return f'<div class="grl">{"".join(out)}</div>'
+
+
 def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
     L = F['landings'][cls]
     me = F['me'].get(me_key) if me_key else None
@@ -312,7 +330,8 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
     specs = (f'<div class="g-specs" role="region" aria-label="{e(C["classLandingSpecsHeading"])}" style="--specs:{len(cards)}">'
              f'{"".join(cards)}</div>')
     main = ''.join(Section(e(s['heading']), Prose(s['html']), boxed=True) for s in L['sections'] if not s['panel'])
-    rail = ''.join(Section(e(s['heading']), Prose(s['html'], 'lane'), boxed=True) for s in L['sections'] if s['panel'])
+    rail = ''.join(Section(e(s['heading']), (race_list(L['races']) if s['heading'] == 'Races' else '')
+                           + (Prose(s['html'], 'lane') if s['html'] else ''), boxed=True) for s in L['sections'] if s['panel'])
     srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]))
     ans = '' if kind == 'out' else answer(kind, me)
     head = PageHeader(e(L['title']), CLASS_COLOR[cls], crest_img(cls, 56), [f'Updated {e(L["updated"])}'], ans)
@@ -373,6 +392,10 @@ PAGE_CSS = '''<style>
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}
 .ans-links{display:flex;gap:4px 16px;flex-wrap:wrap}
+.grl{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}.grl-g{display:flex;flex-direction:column;gap:6px}.grl-h{margin:0;color:var(--muted);font-weight:700}
+.grl-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 12px;margin:0;padding:0;list-style:none}
+.grl-items li{display:flex;gap:8px;align-items:center;min-height:24px;font-size:14px;font-weight:700;line-height:18px}
+.grl-items li>span[aria-hidden]{display:flex;flex:none}.grl-items li .ic{display:block}
 .gbands{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:-16px}.gtier{margin-top:-16px}
 @media(min-width:900px){.ans-row{flex-direction:row-reverse}.ans-who{align-items:flex-end}.ans-links{justify-content:flex-end}}
 .g-read{padding-top:28px}.layout-reading{row-gap:var(--section-gap)}.g-top{grid-column:1/-1;display:flex;flex-direction:column;gap:22px;min-width:0}
@@ -380,7 +403,7 @@ PAGE_CSS = '''<style>
 .g-ledger{display:flex;flex-direction:column;gap:22px}
 .g-specs{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 @media(min-width:1024px){.g-specs{grid-template-columns:repeat(var(--specs),minmax(0,1fr))}}
-main{padding-bottom:40px}
+.g-page{padding-bottom:40px}  /* [spec].astro .guide-page's own bottom space, under the page body's gap (ws_lib main) */
 .sw{display:grid;gap:20px var(--gap);grid-template-columns:minmax(0,1fr)}@media(min-width:768px){.sw{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .sw-h{padding-bottom:8px}
 .lvl-l{display:flex;flex-direction:column}

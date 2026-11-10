@@ -6,7 +6,8 @@
 <script lang="ts">
   import type { Component } from 'svelte';
   import type { CharacterPath } from '../../lib/characters';
-  import { characterHrefs, characterPageCopy as copy } from '../../lib/character/page-view';
+  import { characterHrefs, characterPageCopy as copy, dayMonth } from '../../lib/character/page-view';
+  import type { ScorePoint } from '../../lib/score/score';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
   import { LINK } from '../../lib/ui/primitives';
   import Disclosure from '../ui/Disclosure.svelte';
@@ -18,7 +19,15 @@
     history,
     coach,
     fights,
-  }: { path: CharacterPath; history: boolean; coach: boolean; fights: number } = $props();
+    latest = null,
+  }: {
+    path: CharacterPath;
+    history: boolean;
+    coach: boolean;
+    fights: number;
+    /** The newest score on file: the History summary names it ("Score 1,830 on 6 Nov"). */
+    latest?: ScorePoint | null;
+  } = $props();
 
   let historyOpen = $state(false);
   let coachOpen = $state(false);
@@ -55,7 +64,9 @@
 <Section title={copy.history} panel testid="character-owner-history">
   {#if history}
     <Disclosure
-      summary={copy.historyLead}
+      summary={latest === null
+        ? copy.historyLead
+        : copy.historyLatest(latest.score, dayMonth(`${latest.date}T00:00:00Z`))}
       meta={copy.fightCount(fights)}
       bind:open={historyOpen}
       testid="character-history-toggle"

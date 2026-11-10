@@ -453,7 +453,7 @@ def rotation_section(ran: bool = True) -> str:
         n = CASTS.get(key, 0)
         cnt = f'{n} cast{"s" if n != 1 else ""}' if n else 'Not cast in this run'
         note = notes.get(i, p.get('notes', ''))
-        if ran and note.lower().startswith('on cooldown'):   # rotation-card.ts obviousNote: the cast count says it
+        if note.lower().startswith('on cooldown'):   # rotation-card.ts obviousNote: the line says it
             note = ''
         r = Row(rot_title(key, spell_name(sid), rank_of(sid)), note,
                 rank=str(len(lines) + 1), trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
@@ -472,10 +472,10 @@ def history_section(state: str = 'ready', server: bool = False) -> str:
     if state == 'failed':
         return Section('Your sims', f'<p class="empty-open">Your sims did not load. {Link("Try again")}</p>')
     if server:
-        rows = [Row(t, f'{SPEC_LABEL} &middot; <time>{a}</time>', trail=(Figure(f'{v} DPS', size='sm') if v else ''))
+        rows = [Row(t, f'<time>{a}</time>', trail=(Figure(f'{v} DPS', size='sm') if v else ''))
                 for (t, _, _, v), a in zip(HISTORY, SERVER_AGES)]
         return Section('Your sims', Rows(rows, open_=True), Link('All &rsaquo;'))
-    rows = [Row(t, f'{s} &middot; {d}', trail=(Figure(v, unit='DPS', size='sm') if v else '')) for t, s, d, v in HISTORY]
+    rows = [Row(t, d if s == SPEC_LABEL else f'{s} &middot; {d}', trail=(Figure(v, unit='DPS', size='sm') if v else '')) for t, s, d, v in HISTORY]
     return Section('Your sims', Rows(rows, open_=True), Link('All &rsaquo;'))
 
 
@@ -690,19 +690,6 @@ def buffs_section() -> str:
     return Section('Buffs and debuffs', f'<div class="two">{col("BUFF", "On you")}{col("DEBUFF", "On the target")}</div>')
 
 
-def worth_knowing() -> str:
-    """W4 of sim/warnings.ts, computed: a cast spell whose cooldown (spelltips cooldown_ms) is longer than the longest possible fight."""
-    longest = FIGHT['duration_sec'] * (1 + FIGHT['variation']) * 1000
-    out = ''
-    for k, n in CASTS.items():
-        kind, ident, _ = parse(k)
-        cd = (TIPS.get(ident) or {}).get('cooldown_ms', 0)
-        if kind == 'spell' and n and cd > longest:
-            mins = cd // 60000
-            out += Notice(f'<span class="wk">{act_icon(k, 20)}<span>{spell_name(ident)} counts once a pull here. In a raid it is back every {mins} minutes.</span></span>', tone='neutral')
-    return out
-
-
 # ------------------------------------------------------------------------------------------------ head, bar, pages
 TOOLS = ['Quick sim', 'Top gear', 'Droptimizer', 'Talents', 'Weights', 'Spec support']
 
@@ -793,7 +780,8 @@ def result_page_body(saved: bool) -> str:
 
 
 PAGE_CSS = '''<style>
-main{padding-bottom:40px}  /* the page's own bottom space (sim.astro .sim-page), above the site footer */
+/* the page's own bottom space (sim.astro .sim-page, 40 px) plus Base.astro's [data-page-body] gap (40 px, 64 px from 1024) */
+main{padding-bottom:80px}@media(min-width:1024px){main{padding-bottom:104px}}
 /* page-level layout only: no border, background, radius or shadow (the guard reads inline styles; this block keeps to layout too) */
 /* the answer slot keeps the result's size from the first state to the last (no layout shift): label, figure, error, change, actions */
 .head .ans .t-label{min-height:16px}.head .ans .fig-cap{min-height:24px;display:flex;align-items:center;justify-content:inherit}
@@ -897,19 +885,20 @@ def Ledger(main: str) -> str:
 
 # ---- 2. /sim, signed in, the header's character loaded, not run yet
 def landing_you() -> str:
-    main = Section('Gear', doll(), Link('Upgrades on Best in slot &rsaquo;')) + talents_section()
-    return finish('Simulator', you_header(answer_none()) + run_bar() + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
+    # Your sims under the talents, so the columns end together (SimPreRun); the rail is the rotation
+    main = Section('Gear', doll(), Link('Upgrades on Best in slot &rsaquo;')) + talents_section() + history_section()
+    return finish('Simulator', you_header(answer_none()) + run_bar() + Page('split', main, rotation_section(ran=False)), YOU)
 
 
 # ---- 3. running in the browser
 def running() -> str:
-    main = Section('Damage by ability', table_skeleton(), meta='Draws when the run finishes', frame='framed', flush=True) + gear_section(with_stats=False) + talents_section()
-    return finish('Simulator, running', you_header(answer_running()) + run_bar('running') + Page('split', main, rotation_section(ran=False) + history_section()), YOU)
+    main = Section('Damage by ability', table_skeleton(), meta='Draws when the run finishes', frame='framed', flush=True) + gear_section(with_stats=False) + talents_section() + history_section()
+    return finish('Simulator, running', you_header(answer_running()) + run_bar('running') + Page('split', main, rotation_section(ran=False)), YOU)
 
 
 # ---- 4. the live result on /sim
 def result_live() -> str:
-    return finish('Simulator, result', you_header(answer_result(), result_actions()) + run_bar('done') + worth_knowing() + result_page_body(saved=False), YOU)
+    return finish('Simulator, result', you_header(answer_result(), result_actions()) + run_bar('done') + result_page_body(saved=False), YOU)
 
 
 # ---- 5. /sim/<id>, a saved run, signed out
@@ -918,7 +907,7 @@ def result_saved() -> str:
     ans = f'<span class="t-label"></span>{Figure(FIGURE, unit="DPS", tone="gold", size="big")}<span class="fig-cap">{ERR_LINE}</span>'
     head = PageHeader(SPEC_LABEL, CLASS_COLOR[CLS], crest=crest_img(CLS, 56), meta=meta, answer=ans,
                       actions=f'{_Button("Open in the sim", primary=True)}{Button("Copy link")}')
-    return finish(f'{SPEC_LABEL}, saved sim', head + worth_knowing() + result_page_body(saved=True), None)
+    return finish(f'{SPEC_LABEL}, saved sim', head + result_page_body(saved=True), None)
 
 
 # ---- 6. phone: the bar's choices open
@@ -982,7 +971,7 @@ def more_settings() -> str:
     body = (rows + IconList(consume_items(), f'Consumables &middot; {len(CHAR["consumes"])}') + f'<p class="t-small rail-cap">{Link("Change consumables &rsaquo;")}</p>'
             + f'<h3 class="t-label il-l">Request</h3><p class="t-small rail-cap">The whole request this run sends, as JSON. {Link("Show it &rsaquo;")}</p>')
     sheet = Sheet('More settings', body, Button('Back to the preset') + Button('Done', primary=True))
-    return finish('Simulator, more settings', you_header(answer_result(), result_actions()) + run_bar('done') + worth_knowing() + result_page_body(saved=False) + sheet, YOU)
+    return finish('Simulator, more settings', you_header(answer_result(), result_actions()) + run_bar('done') + result_page_body(saved=False) + sheet, YOU)
 
 
 PAGES = {'web-sim': landing_out, 'web-sim-you': landing_you, 'web-sim-running': running, 'web-sim-result': result_live,

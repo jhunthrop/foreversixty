@@ -14,7 +14,6 @@ import { simPageCopy as copy } from './page-copy';
 import { grouped, oneDecimal } from './result-copy';
 import type { SimPhase } from './store.svelte';
 import type { Estimate, SimResult } from './types';
-import type { BenchmarkMatch } from './bis-benchmark';
 
 export type AnswerTone = 'gold' | 'strong' | 'muted';
 
@@ -65,8 +64,6 @@ export interface AnswerInput {
   stopped: StoppedSnapshot | null;
   /** The lane the last run went to, for a failure's label. */
   lastLane: 'browser' | 'server';
-  /** The published set the result reads against, when the fight matches one. */
-  benchmark?: BenchmarkMatch | null;
 }
 
 const band = (estimate: Estimate): string => formatMargin(confidenceBand(estimate));
@@ -138,16 +135,12 @@ function failedAnswer(input: AnswerInput): AnswerModel {
 }
 
 /** The live result (§4.5): where it ran, the figure and its band labelled once (the spec is the head's). */
-export function resultAnswer(result: SimResult, benchmark: BenchmarkMatch | null = null): AnswerModel {
-  const gap =
-    benchmark === null
-      ? undefined
-      : copy.answer.vsBis(`${benchmark.gap >= 0 ? '+' : '−'}${oneDecimal(Math.abs(benchmark.gap))}`);
+export function resultAnswer(result: SimResult): AnswerModel {
   return {
     state: 'result',
     label: copy.answer.resultLabel,
     figure: { value: oneDecimal(result.dps.mean), tone: 'gold', unit: true },
-    caption: { bold: `± ${band(result.dps)} DPS`, rest: gap },
+    caption: { bold: `± ${band(result.dps)} DPS` },
     primary: 'run-again',
   };
 }
@@ -173,7 +166,7 @@ export function simAnswer(input: AnswerInput): AnswerModel {
   if (input.stopped !== null) return stoppedAnswer(input.stopped);
   if (input.phase === 'error' || (input.message !== null && input.result === null && input.phase !== 'idle'))
     return failedAnswer(input);
-  if (input.result !== null) return resultAnswer(input.result, input.benchmark ?? null);
+  if (input.result !== null) return resultAnswer(input.result);
   return {
     state: 'none',
     label: '',

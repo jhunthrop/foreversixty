@@ -152,7 +152,6 @@ PAGE_CSS = '''<style>
 .bl-done{box-shadow:inset 2px 0 0 var(--gold)}
 .bl-done a{display:inline-flex;flex-wrap:wrap;gap:0 6px;align-items:center;min-height:44px;color:var(--text)}
 .bl-x{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;background:none;color:var(--muted);cursor:pointer}
-main{padding-bottom:40px}  /* the page's own bottom space (index.astro .bis-landing) */
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
 </style>'''
 

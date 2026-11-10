@@ -65,7 +65,6 @@
   import Row from './ui/Row.svelte';
   import Section from './ui/Section.svelte';
   import Spark from './ui/Spark.svelte';
-  import SupporterChip from './SupporterChip.svelte';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -303,7 +302,6 @@
                 >{fact.text}</a
               >{:else}<span data-testid={`character-fact-${fact.key}`}>{fact.text}</span>{/if}
           {/each}
-          {#if data.supporter === true}<SupporterChip />{/if}
           {#if sync !== null}<span data-testid="character-sync"
               >{syncText(sync)}{#if sync.staleTail !== null}{STALE_SEPARATOR}<span class="text-wipe"
                   >{sync.staleTail}</span
@@ -442,7 +440,7 @@
           action={{ label: copy.allFights(data.history.length), href: characterHrefs.logs }}
           testid="character-best"
         >
-          {#each bestRows(data.best, data.history) as row (row.key)}
+          {#each bestRows(data.best, data.history, pageSpec(data, own)) as row (row.key)}
             <Row
               title={row.boss}
               sub={row.sub}
@@ -473,6 +471,7 @@
           history={historyEntitled}
           coach={coachEntitled}
           fights={data.history.length}
+          latest={(data.score_history ?? []).at(-1) ?? null}
         /></Ordered
       >
     {/if}
