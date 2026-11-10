@@ -149,13 +149,14 @@ struct RaidFlowPresenter {
             ("healer", Copy.raidGroupHealers, target?.healers),
             ("dps", Copy.homeRaidDamage, target.map { $0.melee + $0.ranged }),
         ]
+        let counts = RaidRoleCounts.of(raid)
         return groups.compactMap { group in
             let people = coming.filter { Self.roleGroup($0.role) == group.wire }
             guard !people.isEmpty || group.want != nil else { return nil }
             var line = Self.roleLine(group.label, people: people.map { ($0.name, $0.className, $0.state, $0.lateMinutes) }, want: group.want)
-            if group.wire == "dps", !people.isEmpty {
-                let melee = people.filter { $0.group == Self.meleeGroup }.count
-                line.split = Copy.raidTabDamageSplit(melee: melee, ranged: people.count - melee)
+            // The split is the count model's, so `Damage 15` always reads `7 melee, 8 ranged` (row 1).
+            if group.wire == RaidRoleCounts.dps, counts.damage > 0 {
+                line.split = Copy.raidTabDamageSplit(melee: counts.melee, ranged: counts.ranged)
             }
             return line
         }
@@ -164,7 +165,7 @@ struct RaidFlowPresenter {
     static let nameSeparator = ", "
 
     /// The signup's `group` for a raider who fights in melee.
-    static let meleeGroup = "melee"
+    static let meleeGroup = RaidRoleCounts.meleeGroup
 
     /// One role line (S6): the tally, the names in class colour, a Late's minutes.
     static func roleLine(
@@ -198,7 +199,7 @@ struct RaidFlowPresenter {
 
     /// `Bench 1 · Out 4 · 14 not answered`; a count the raid leaves out is left out.
     func answers(_ raid: RaidView) -> String? {
-        let unanswered = raid.notSignedRaiders?.count ?? raid.notSigned.count
+        let unanswered = raid.notAnsweredCount
         let parts = [
             raid.counts.bench.map(Copy.raidTabCountBench),
             raid.counts.signedOut.map(Copy.raidTabCountOut),
@@ -207,46 +208,44 @@ struct RaidFlowPresenter {
         return parts.isEmpty ? nil : parts.joined(separator: Self.separator)
     }
 
-    /// G4, one line a raid leader reads at a glance: the gaps nobody brings first, then the short ones,
-    /// at most `coverNames` names and `and N more` (`Missing Fortitude · Windfury Totem 1 of 2`,
-    /// `Missing Blessing of Kings, Blessing of Might, Judgement of Wisdom and 9 more`). Nil when all is
-    /// covered.
-    func cover(_ raid: RaidView) -> String? {
+    /// G4 and row 4, one line a raid leader reads at a glance: `Missing` once, the gaps nobody brings
+    /// first, then the short ones, by the data's short label (`Fort`, `WF`) else the name, at most
+    /// `coverNames` and `and N more` (`Missing Fort · WF 1 of 2`). Nil when all is covered.
+    func cover(_ raid: RaidView) -> RaidCoverContent? {
         let all = Self.coverGaps(raid)
         let gaps = all.filter { $0.have == nil } + all.filter { $0.have != nil }
         guard !gaps.isEmpty else { return nil }
         let shown = gaps.prefix(Self.coverNames)
-        let missing = shown.filter { $0.have == nil }.map(\.name)
-        let short = shown.compactMap { gap in gap.have.map { Copy.raidTabCoverShort(name: gap.name, have: $0, need: gap.need) } }
-        let line = [
-            missing.isEmpty ? nil : Copy.raidTabCoverMissing(names: missing.joined(separator: Self.list)),
-            short.isEmpty ? nil : short.joined(separator: Self.list),
-        ].compactMap(\.self).joined(separator: Self.separator)
-        let hidden = gaps.count - shown.count
-        return hidden > 0 ? Copy.raidTabAndMore(names: line, n: hidden) : line
-    }
-
-    /// A gap in the cover: nobody brings `name` (`have` nil), or `have` of the `need` the raid wants.
-    struct CoverGap: Equatable {
-        let name: String
-        var have: Int?
-        var need = 0
+        return RaidCoverContent(
+            missing: shown.filter { $0.have == nil },
+            short: shown.filter { $0.have != nil },
+            more: gaps.count - shown.count
+        )
     }
 
     /// The cover rows that are short or missing (In and Late against need), in the cover's order; a
-    /// raid without cover rows falls back to the buffs no one brings.
+    /// raid without cover rows falls back to the buffs no one brings. A gap takes the buff's short
+    /// label when the composition has one for its key.
     static func coverGaps(_ raid: RaidView) -> [CoverGap] {
+        let buffs = raid.composition?.buffs ?? []
+        let labels = Dictionary(buffs.map { ($0.key, $0.label) }, uniquingKeysWith: { first, _ in first })
         let rows = raid.cover ?? []
         guard !rows.isEmpty else {
-            return (raid.composition?.buffs ?? []).filter { !$0.present }.map { CoverGap(name: $0.name) }
+            return buffs.filter { !$0.present }.map { CoverGap(name: label($0.label, else: $0.name), icon: $0.icon) }
         }
         return rows.compactMap { row in
-            switch row.state {
-            case coverMissing: CoverGap(name: row.name)
-            case coverShort: CoverGap(name: row.name, have: row.providersIn + row.providersLate, need: row.need)
+            let name = label(labels[row.key], else: row.name)
+            return switch row.state {
+            case coverMissing: CoverGap(name: name, icon: row.icon)
+            case coverShort: CoverGap(name: name, icon: row.icon, have: row.providersIn + row.providersLate, need: row.need)
             default: nil
             }
         }
+    }
+
+    private static func label(_ label: String?, else name: String) -> String {
+        guard let label, !label.isEmpty else { return name }
+        return label
     }
 
     /// The most names the Covered line spells out before `and N more`.
@@ -256,13 +255,20 @@ struct RaidFlowPresenter {
     static let coverShort = "short"
     static let separator = " · "
 
-    /// G1, for officers: how many signed In or Late the roster has not seen sync this week.
-    func notSynced(_ raid: RaidView, synced: [String: Bool]?) -> String? {
+    /// G1 and row 5, for officers: the signed In or Late the roster has not seen sync this week, by
+    /// name (`Not synced this week: Kaelra, Thalrin, Brakka and 1 more`); the tap opens the roster
+    /// filtered to them.
+    func notSynced(_ raid: RaidView, synced: [String: Bool]?) -> NotSyncedContent? {
         guard let synced else { return nil }
         let stale = raid.signups.filter { signup in
             SignupState(rawValue: signup.state)?.isComing == true && synced[signup.characterKey] == false
-        }.count
-        return stale > 0 ? Copy.raidTabNotSynced(n: stale) : nil
+        }
+        guard !stale.isEmpty else { return nil }
+        let names = stale.map(\.name)
+        let shown = names.count > Self.namedWhenLong + 1
+            ? Copy.raidTabAndMore(names: names.prefix(Self.namedWhenLong).joined(separator: Self.list), n: names.count - Self.namedWhenLong)
+            : names.joined(separator: Self.list)
+        return NotSyncedContent(line: Copy.raidTabNotSyncedNames(names: shown), keys: stale.map(\.characterKey))
     }
 
     /// The officers' notes, trimmed; nil when there are none.
@@ -281,12 +287,7 @@ struct RaidFlowPresenter {
         return Copy.raidTabAndMore(names: words.prefix(namedWhenLong).joined(separator: ", "), n: words.count - namedWhenLong)
     }
 
-    static func roleGroup(_ role: String) -> String {
-        switch role {
-        case "tank", "healer": role
-        default: "dps"
-        }
-    }
+    static func roleGroup(_ role: String) -> String { RaidRoleCounts.group(role) }
 
     /// The Ready check (F2): every item, the export's age; nil without an export.
     func ready(_ check: ReadyCheck?) -> ReadyListContent? {

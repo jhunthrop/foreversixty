@@ -77,8 +77,6 @@ struct NextRaidContent: Equatable {
     var headLine: String = ""
     /// `As Thandrel, Damage`, only with more than one character in the guild (E7).
     var who: String?
-    /// The answer as the head's chip: `In`, `Late · 30 min`.
-    var chip: String?
     /// How late a Late answer said it would be.
     var lateMinutes: Int?
     /// The line under the answers (F1): `Saved.`, the refusal with Try again, or offline's sentence.
@@ -89,7 +87,8 @@ struct NextRaidContent: Equatable {
     var answersEnabled = true
     /// The Raid tab head's facts: `Invites 7:45 pm · 40`.
     var invites: String?
-    let tally: [FSTally.Item]
+    /// Tanks, healers, damage from the one count model (rows 1 and 2), with or without a target.
+    let tally: [RoleLineContent]
     let ready: HomeLine?
     let officer: OfficerContent?
 }
@@ -123,6 +122,8 @@ struct LastNightContent: Equatable {
 struct NewForYouRow: Equatable, Identifiable {
     let row: ActivityRow
     let line: String
+    /// Activity's time bucket for the row: `8 h ago`, `6:02 pm`, `Sat`, `2 Nov`.
+    let when: String
 
     var id: Int64 { row.id }
 }

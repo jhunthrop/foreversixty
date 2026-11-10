@@ -93,7 +93,8 @@ class RaidSignupFlowTest {
         assertEquals(30, sent.last().lateMinutes)
         minutes(30).assertIsSelected()
         minutes(15).assertIsNotSelected()
-        compose.onNodeWithText(lateChip(30)).assertExists()
+        // AS5: the head carries no answer chip; the segmented control and the minutes are the state.
+        compose.onNodeWithText(lateChip(30)).assertDoesNotExist()
         assertEquals(listOf("selection", "success", "selection", "success"), flow.haptics.calls)
         shots.step(5, "late-30")
 

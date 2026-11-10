@@ -9,6 +9,7 @@ import gg.foreversixty.app.model.RaidBadge
 import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.model.RaidViewerCharacter
 import gg.foreversixty.app.phrase
+import gg.foreversixty.app.raids.logic.ComingCounts
 import gg.foreversixty.app.raids.logic.RaidClock
 import gg.foreversixty.app.raids.logic.RaidFacts
 import gg.foreversixty.app.raids.logic.ShortRole
@@ -60,11 +61,12 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
         val role = roleWord(who?.role)
         val minutes = lateMinutes.takeIf { answer == SignupState.Late }
         val said = answer?.let { answerWord(it, minutes) }
+        val asWho = who?.let { res.getString(R.string.raid_tab_as, it.name, role) }
+        // AS5: once answered, the segmented control is the answer; the line only names the character (E7).
         val me = when {
-            who == null -> said?.let { res.getString(R.string.home_raid_answeredAlone, it) }
-                ?: res.getString(R.string.home_raid_notAnsweredAlone)
-            else -> said?.let { res.getString(R.string.home_raid_answered, it, name, role) }
-                ?: res.getString(R.string.home_raid_notAnswered, name, role)
+            said != null -> asWho
+            who == null -> res.getString(R.string.home_raid_notAnsweredAlone)
+            else -> res.getString(R.string.home_raid_notAnswered, name, role)
         }
         val unansweredSub = if (who == null) {
             res.getString(R.string.home_raid_lineSubAlone, counts(raid))
@@ -79,7 +81,7 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
             clockLabel = clockLabel,
             aside = aside,
             title = res.getString(R.string.home_raid_lineTitle, raid.zoneName, whenText),
-            sub = if (answer == null) unansweredSub else me,
+            sub = if (answer == null) unansweredSub else listOfNotNull(counts(raid), asWho).joinToString(SEPARATOR),
             me = me,
             answer = answer,
             lateOpen = lateOpen && answer == SignupState.Late,
@@ -90,8 +92,7 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
             place = res.getString(R.string.home_raid_place, guild, whenText),
             headLine = headLine(facts.startsAt, zone, whenText),
             facts = headFacts(raid, zone),
-            who = who?.let { res.getString(R.string.raid_tab_as, it.name, role) },
-            chip = said,
+            who = asWho,
             lateMinutes = minutes,
         )
     }
@@ -169,11 +170,11 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
     /** Tanks, healers and damage against the comp target (none without one): the one tally model (S6). */
     fun roleTally(raid: RaidView): List<TallyItem> {
         val target = raid.compTarget
-        val c = raid.counts
+        val c = ComingCounts.of(raid)
         return listOf(
             TallyItem(res.getString(R.string.raid_group_tanks), c.tanks, target?.tanks),
             TallyItem(res.getString(R.string.raid_group_healers), c.healers, target?.healers),
-            TallyItem(res.getString(R.string.raid_group_damage), c.melee + c.ranged, target?.let { it.melee + it.ranged }),
+            TallyItem(res.getString(R.string.raid_group_damage), c.damage, target?.let { it.melee + it.ranged }),
         )
     }
 
@@ -184,15 +185,19 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
         return res.getString(R.string.raid_tab_inviteSize, clock.guildClock(invite, zone), size)
     }
 
-    /** `5 have not answered, 2 of them healers`, `Healers short by 3`, `1 applicant`. */
+    /**
+     * `5 have not answered, 2 of them healers`, `Healers short by 3`, `1 applicant`. The not-answered count
+     * is the raid's own list, the same people Who is coming's `N not answered` counts (row 6).
+     */
     private fun officer(raid: RaidView, badge: RaidBadge): OfficerItems {
         val short = ShortRole.of(raid)
+        val notAnswered = raid.notSigned.size
         val unansweredInRole = short?.let { role -> raid.notSigned.count { it.role == role.wire } } ?: 0
         val unanswered = when {
-            badge.unanswered <= 0 -> null
+            notAnswered <= 0 -> null
             short != null && unansweredInRole > 0 ->
-                res.getString(R.string.home_officer_unansweredRole, badge.unanswered, unansweredInRole, res.getString(short.lower))
-            else -> res.getString(R.string.home_officer_unanswered, badge.unanswered)
+                res.getString(R.string.home_officer_unansweredRole, notAnswered, unansweredInRole, res.getString(short.lower))
+            else -> res.getString(R.string.home_officer_unanswered, notAnswered)
         }
         val shortLine = short?.let { res.getString(R.string.home_officer_short, res.getString(it.group), it.missing) }
         val applicants = badge.applicants.takeIf { it > 0 }?.let { res.getQuantityString(R.plurals.home_officer_applicants, it, it) }
@@ -205,6 +210,7 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
         const val TANK = "tank"
         const val HEALER = "healer"
         const val MINUTES_PER_HOUR = 60L
+        const val SEPARATOR = " · "
     }
 }
 

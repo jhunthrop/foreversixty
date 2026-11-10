@@ -105,10 +105,22 @@ object RaidTabFixtures {
     )
 
     /** The lines under Who is coming: the other answers and what the comp misses; officers also see readiness. */
+    // Row 6: the foot's not answered is the same population as Needs you's `5 have not answered`.
     private fun foot(officer: Boolean) = listOfNotNull(
-        RoleFoot("Bench 1 · Out 3 · 14 not answered"),
-        RoleFoot("Missing Fortitude · Windfury 1 of 2", warn = true),
-        RoleFoot("4 signed In have not synced this week", warn = true).takeIf { officer },
+        RoleFoot("Bench 1 · Out 3 · 5 not answered"),
+        RoleFoot("Missing Fort · WF 1 of 2", cover = COVER),
+        RoleFoot(
+            "Not synced this week: Kaelra, Thalrin, Brakka, Mirethil",
+            warn = true,
+            onlyKeys = setOf("us/pvp/kaelra", "us/pvp/thalrin", "us/pvp/brakka", "us/pvp/mirethil"),
+        ).takeIf { officer },
+    )
+
+    /** Row 4: `Missing` once, then each gap in wipe red beside its spell icon. */
+    private val COVER = CoverLine(
+        missing = listOf(CoverItem("Fort", "spell_holy_wordfortitude")),
+        short = listOf(CoverItem("WF", "spell_nature_windfury", have = 1, need = 2)),
+        more = 0,
     )
 
     private const val NOTES = "Bring fire resistance gear and flasks. Whelps go to the left wall, the tanks call the deep " +
@@ -121,19 +133,18 @@ object RaidTabFixtures {
         ReadyItem(ReadyTone.Warn, "Boots not enchanted", "Enchant Boots: Greater Agility", "Where to get it"),
     )
 
-    private fun head(answer: SignupState, chip: String, lateMinutes: Int? = null, control: AnswerControl = AnswerControl()) =
+    private fun head(answer: SignupState, lateMinutes: Int? = null, control: AnswerControl = AnswerControl()) =
         HomeFixtures.raid(answer, lateOpen = answer == SignupState.Late).copy(
             headLine = "8:00 pm CST · pull in 2 h 48 min",
             facts = "Invites 7:45 pm · 40",
             who = "As Thandrel, Damage",
-            chip = chip,
             lateMinutes = lateMinutes,
             control = control,
         )
 
     fun guild(officer: Boolean = false) = RaidTabView.Guild(
         guild = "Olympus XXVII",
-        next = head(SignupState.In, "In"),
+        next = head(SignupState.In),
         needs = if (officer) OfficerItems("5 have not answered, 2 of them healers", "Healers short by 3", "1 applicant", "Mirelle, Holy Priest 60, 2 min ago") else null,
         needsCount = 6,
         live = null,
@@ -147,7 +158,7 @@ object RaidTabFixtures {
     )
 
     /** F1 change the answer (mock m-android-signup): Late, 30 min chosen, the minutes open under the answers. */
-    fun signup() = guild().copy(next = head(SignupState.Late, "Late\u00a0·\u00a030\u00a0min", lateMinutes = 30, control = AnswerControl(status = StatusLine.Saved("Saved."))))
+    fun signup() = guild().copy(next = head(SignupState.Late, lateMinutes = 30, control = AnswerControl(status = StatusLine.Saved("Saved."))))
 
     fun live() = guild().copy(
         foot = emptyList(),

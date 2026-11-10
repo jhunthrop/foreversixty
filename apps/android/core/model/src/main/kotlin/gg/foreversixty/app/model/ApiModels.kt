@@ -116,7 +116,7 @@ data class ActivityRow(
     @SerialName("segments") val segments: List<FeedSegment>? = null,
     /** The class slug of the other player the row is about (guildsim.passed's passer); absent otherwise. */
     @SerialName("crest") val crest: String? = null,
-    /** The row's number when it has one: sim.finished's DPS, guildsim.passed's figure. Absent otherwise. */
+    /** The row's number when it has one: sim.finished's DPS, guildsim.passed's figure; the body then leaves it out (sim.finished keeps its headline, maybe empty; guildsim.passed the lead). Absent otherwise. */
     @SerialName("figure") val figure: Double? = null,
 )
 

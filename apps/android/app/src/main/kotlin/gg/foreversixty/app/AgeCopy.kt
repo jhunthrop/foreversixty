@@ -10,3 +10,8 @@ fun RelativeAge.phrase(res: Resources): String = when (this) {
     is RelativeAge.Hours -> res.getString(R.string.common_age_hours, n)
     is RelativeAge.Days -> res.getString(R.string.common_age_days, n)
 }
+
+/** Past a week a sync stamp reads stale (round 3 row 12): the warning tone, Refresh beside it. */
+const val STALE_DAYS = 7
+
+fun RelativeAge.isStale(): Boolean = this is RelativeAge.Days && n > STALE_DAYS

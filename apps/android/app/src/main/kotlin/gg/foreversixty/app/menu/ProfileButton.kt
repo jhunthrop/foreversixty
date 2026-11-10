@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -93,7 +92,7 @@ fun CharacterBar(character: AccountCharacter?, title: String? = null) {
 }
 
 /** The bar title: the display face at 22, Material 3's small top app bar size. */
-private val BAR_TITLE = FsType.title.copy(fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.sp)
+private val BAR_TITLE = FsType.barTitle
 
 private val SIZE = 32.dp
 private val TOUCH = 48.dp

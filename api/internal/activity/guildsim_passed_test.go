@@ -77,7 +77,11 @@ func TestGuildSimPassedCarriesSegmentsCrestAndFigure(t *testing.T) {
 	if e.Crest != "warrior" || e.Figure == nil || *e.Figure != 1184.4 {
 		t.Fatalf("crest %q figure %v", e.Crest, e.Figure)
 	}
-	if events.SegmentsText(e.Segments) != e.Body || e.Segments[0].Style != StyleStrong || e.Segments[0].Text != "1184" {
-		t.Fatalf("segments %+v body %q", e.Segments, e.Body)
+	if e.Body != "1184 DPS, +12 over your 1172 (Fury Warrior, 60)." {
+		t.Fatalf("push body %q", e.Body)
+	}
+	if *e.ActivityBody != "+12 over your 1172 (Fury Warrior, 60)." || events.SegmentsText(e.Segments) != *e.ActivityBody ||
+		e.Segments[1].Style != StyleStrong || e.Segments[1].Text != "12" {
+		t.Fatalf("segments %+v activity body %q", e.Segments, *e.ActivityBody)
 	}
 }

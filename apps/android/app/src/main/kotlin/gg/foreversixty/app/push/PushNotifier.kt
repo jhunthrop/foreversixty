@@ -13,15 +13,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import gg.foreversixty.app.MainActivity
 import gg.foreversixty.app.R
-import gg.foreversixty.app.raids.push.ApplicantNotificationActions
-import gg.foreversixty.app.raids.push.ApplicantPushCategory
+import gg.foreversixty.app.raids.push.OfficerNotificationActions
 import gg.foreversixty.app.raids.push.RaidNotificationActions
 
 /**
- * Draws a push on its group's channel (spec 2026-11-08 F1, F4): the title and line, the raid answers
- * for RAID_SIGNUP, the payload's Decline for GUILD_APPLICANT, and a tap that opens its answer. One
- * notification per collapse id, so a later
- * message for the same raid replaces the earlier one.
+ * Draws a push on its group's channel (spec 2026-11-08 F1, F4): the title and the line in big text,
+ * so the expanded view shows all of it (GO N3), the raid answers for RAID_SIGNUP, the payload's
+ * Accept and Decline for GUILD_APPLICANT and its Mention for RAID_SHORT, and a tap that opens its
+ * answer. One notification per collapse id, so a later message for the same raid replaces the earlier one.
  */
 object PushNotifier {
     fun show(context: Context, message: PushMessage) {
@@ -37,7 +36,7 @@ object PushNotifier {
         message.data[PushMessage.KEY_RAID]?.let { builder.setGroup("raid-$it") }
         val actions = when (val category = message.category) {
             null -> emptyList()
-            ApplicantPushCategory.CATEGORY -> ApplicantNotificationActions.actions(context, message.data, tag, id)
+            in OfficerNotificationActions.CATEGORIES -> OfficerNotificationActions.actions(context, category, message.data, tag, id)
             else -> RaidNotificationActions.actions(context, category, message.data, tag, id)
         }
         actions.forEach(builder::addAction)

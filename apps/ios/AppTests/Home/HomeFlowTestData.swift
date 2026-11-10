@@ -11,7 +11,7 @@ enum HomeFlowTestData {
     static let onyxia = "inv_misc_head_dragon_black"
 
     static let thandrel = HomeHeadContent(name: "Thandrel", className: "warrior", facts: ["Level 60 Fury Warrior", "Olympus XXVII"])
-    static let felsnap = HomeHeadContent(name: "Felsnap", className: "hunter", facts: ["Level 34 Beast Mastery Hunter", "6 levels to band 40"])
+    static let felsnap = HomeHeadContent(name: "Felsnap", className: "hunter", facts: ["Level 34 Beast Mastery Hunter", "6 levels to the 40 list"])
 
     static func item(_ slot: String, _ name: String, _ icon: String, quality: Int = 4, source: String, gain: String) -> HomeUpgradeItem {
         HomeUpgradeItem(
@@ -41,20 +41,20 @@ enum HomeFlowTestData {
             bestRun: bestRun
                 ? HomeBestRunRow(place: "Blackrock Spire", line: "Best run · Blackcrow · 8%", icon: "inv_misc_bone_09", gain: HomeGain(figure: "+1.9", unit: "DPS"))
                 : nil,
-            note: nil, meta: "13 upgrades · +157.6 DPS", stamp: stamp
+            note: nil, meta: "12 upgrades · +47.5 DPS", stamp: stamp
         ))
     }
 
     static let tally = [
-        FSTally.Item(label: "Tanks", have: 2, want: 2),
-        FSTally.Item(label: "Healers", have: 5, want: 8),
-        FSTally.Item(label: "Damage", have: 11, want: 30),
+        RoleLineContent(role: "Tanks", have: 2, want: 2, names: ""),
+        RoleLineContent(role: "Healers", have: 5, want: 8, names: ""),
+        RoleLineContent(role: "Damage", have: 11, want: 30, names: ""),
     ]
 
     static func raid(answered: SignupState? = nil, late: Bool = false, officer: Bool = false) -> NextRaidContent {
         let state = late ? .late : answered
         let who = "as Thandrel, Damage"
-        let answer = state.map { "You are \($0.label), \(who)" } ?? "You have not answered, \(who)"
+        let answer = state == nil ? "You have not answered, \(who)" : "As Thandrel, Damage"
         var content = NextRaidContent(
             guildID: 2, raidID: 29, characterKey: "us/normal/thandrel",
             zone: "Onyxia’s Lair",
@@ -63,7 +63,7 @@ enum HomeFlowTestData {
             clockLabel: "2 hours, 48 minutes",
             line: HomeLine(
                 title: "Onyxia’s Lair · Wed 6 Jan, 8:00 pm CST",
-                sub: state == nil ? "18 in, 3 late · you have not answered, \(who)" : answer
+                sub: state == nil ? "18 in, 3 late · you have not answered, \(who)" : "18 in, 3 late · As Thandrel, Damage"
             ),
             icon: onyxia, answer: answer, selected: state, lateOpen: late, tally: tally,
             ready: HomeLine(title: "2 things before you pull", sub: "No flask in your bags; boots not enchanted · from your last log-out, 9 h ago"),
@@ -79,13 +79,17 @@ enum HomeFlowTestData {
 
     static let now = Date(timeIntervalSince1970: 1_793_988_000)
 
+    /// `line` as the mocks write it, `body · when`: the time goes on its own meta line (round 3, row 3).
     static func activity(_ id: Int64, _ icon: String, _ title: String, _ line: String, unread: Bool) -> NewForYouRow {
-        NewForYouRow(
+        var parts = line.components(separatedBy: " · ")
+        let when = parts.count > 1 ? parts.removeLast() : ""
+        let body = parts.joined(separator: " · ")
+        return NewForYouRow(
             row: ActivityRow(
-                id: id, kind: "bis.changed", group: "gear", title: title, body: line, link: "https://foreversixty.gg/",
+                id: id, kind: "bis.changed", group: "gear", title: title, body: body, link: "https://foreversixty.gg/",
                 occurredAt: now, read: !unread, icon: icon
             ),
-            line: line
+            line: body, when: when
         )
     }
 

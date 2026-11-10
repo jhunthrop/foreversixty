@@ -103,27 +103,40 @@ public struct BandBar: UIViewControllerRepresentable {
 public extension View {
     /// A round-5 tab root's clear bar over its band (`BandBar`).
     func bandBar() -> some View { background { BandBar().frame(width: 0, height: 0).accessibilityHidden(true) } }
+
+    /// A tab root's scroll over the floating tab bar (round 3, i3): the hard bottom edge keeps text
+    /// under the bar readable, and the end of the page clears it by one step of space.
+    func tabRootScroll() -> some View {
+        scrollEdgeEffectStyle(.hard, for: .bottom)
+            .contentMargins(.bottom, FSSpace.space6, for: .scrollContent)
+    }
 }
 
 /// A round-5 section over the ground: the cream display title at 21/26 with its gold action (or a muted
-/// meta beside it), 8 under it, then the content in a panel of that frame. Reports `section-<slug>`.
+/// meta beside it), a stamp under that line when given, 8 under it, then the content in a panel of
+/// that frame. Reports `section-<slug>`.
 public struct PanelSection<Content: View>: View {
     private let title: String
     private let meta: String?
+    private let stamp: String?
     private let action: (title: String, run: () -> Void)?
     private let frame: PanelFrame
     private let content: Content
     @Environment(\.dynamicTypeSize) private var typeSize
 
+    /// `stamp`: how old the section's data is (`Synced 2 h ago`), under the meta line and outside the
+    /// panel (round 3, row 8).
     public init(
         _ title: String,
         meta: String? = nil,
+        stamp: String? = nil,
         action: (title: String, run: () -> Void)? = nil,
         frame: PanelFrame = .none,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
         self.meta = meta
+        self.stamp = stamp
         self.action = action
         self.frame = frame
         self.content = content()
@@ -147,6 +160,11 @@ public struct PanelSection<Content: View>: View {
                 }
                 if !typeSize.isAccessibilitySize { Spacer(minLength: 0) }
                 if let action { PanelAction(action.title, action: action.run) }
+            }
+            if let stamp {
+                Text(stamp).type(FSType.small).foregroundStyle(FSColor.muted)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, -FSSpace.space1)
             }
             PanelBlock(frame: frame) { content }
         }

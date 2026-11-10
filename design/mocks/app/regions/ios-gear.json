@@ -16,7 +16,7 @@
   "slots": {
    "box": [
     26,
-    177,
+    159,
     341,
     492
    ],
@@ -25,10 +25,10 @@
     "image": 17
    }
   },
-  "section-where-to-go-tonight": {
+  "section-where-to-go": {
    "box": [
     14,
-    701,
+    683,
     365,
     302
    ],

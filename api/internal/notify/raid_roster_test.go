@@ -292,7 +292,7 @@ func TestShortRolesNamesOnlyTheRolesBelowTarget(t *testing.T) {
 		want []RoleShort
 	}{
 		{"below target, Late not counted", RaidPosted{Roster: roster, Target: target},
-			[]RoleShort{{Name: "Healers", Have: 1, Want: 3}, {Name: "Ranged", Have: 0, Want: 2}}},
+			[]RoleShort{{Name: "Healers", Group: raidspec.GroupHealer, Have: 1, Want: 3}, {Name: "Ranged", Group: raidspec.GroupRanged, Have: 0, Want: 2}}},
 		{"no target", RaidPosted{Roster: roster}, nil},
 		{"guild event", RaidPosted{Roster: roster, Target: target, NoRoles: true}, nil},
 		{"every role covered", RaidPosted{Roster: roster, Target: &RoleTarget{Tanks: 1, Healers: 1, Melee: 1}}, nil},

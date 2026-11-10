@@ -60,8 +60,12 @@ data class RoleLine(val tally: TallyItem, val names: List<RoleName>, val more: S
     val namesText: String get() = names.joinToString(", ") { it.text } + more.orEmpty()
 }
 
-/** A line closing Who is coming: the counts, the Covered line, an officer's readiness ([warn] in wipe red). */
-data class RoleFoot(val text: String, val warn: Boolean = false)
+/**
+ * A line closing Who is coming: the counts, the Covered line ([cover], its names in wipe red beside their
+ * icons, [text] read aloud), an officer's readiness ([warn] in wipe red; a tap opens the roster on
+ * [onlyKeys], the raiders it names).
+ */
+data class RoleFoot(val text: String, val warn: Boolean = false, val cover: CoverLine? = null, val onlyKeys: Set<String> = emptySet())
 
 /** A name on Who is coming in its class colour: `Brightwen (Late · 15 min)`. */
 data class RoleName(val text: String, val className: String)
@@ -109,6 +113,8 @@ data class RaidTabActions(
     val onSignIn: () -> Unit = {},
     val onWhere: (ReadyItem) -> Unit = {},
     val onApplicant: (Long) -> Unit = {},
+    /** The not-synced line's tap (row 5): the roster filtered to the characters it names. */
+    val onRosterOf: (Set<String>) -> Unit = {},
 )
 
 /**
@@ -174,8 +180,7 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
         live != null -> RaidNightBlock(live, view.roles)
         next != null -> {
             FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) {
-                RaidHead(next, actions.card)
-                view.notes?.let { RaidNotes(it) }
+                RaidHead(next, actions.card, view.notes)
             }
             // G3: an officer's open items come straight after the head.
             if (view.needsFirst) NeedsSection(view, actions)
@@ -186,7 +191,7 @@ private fun Guild(view: RaidTabView.Guild, actions: RaidTabActions) {
                     onAction = { actions.onPage(GuildPage.Roster) },
                     top = 0.dp,
                     panel = PanelFrame.None,
-                ) { RoleRows(view.roles, view.foot) }
+                ) { RoleRows(view.roles, view.foot, actions.onRosterOf) }
             }
         }
         else -> FlowBlock(ParityRegion.section(NEXT_RAID_REGION), top = 0.dp) {
@@ -221,7 +226,7 @@ private fun NeedsSection(view: RaidTabView.Guild, actions: RaidTabActions) {
 
 /** The raid's notes under the head, two lines; the raid page has the rest. */
 @Composable
-private fun RaidNotes(html: String) {
+internal fun RaidNotes(html: String) {
     Text(
         NotesText.annotated(html, FsColor.gold),
         style = SUB,

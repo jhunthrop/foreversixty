@@ -8,6 +8,8 @@ struct RosterQuery: Equatable {
     var sort: RosterSort = .rank
     var search = ""
     var searching = false
+    /// Only these characters (the Raid tab's not-synced raiders, row 5); nil lists everyone.
+    var only: Set<String>?
 }
 
 /// F16.1 and F16.2, pure over the store's phase so snapshot tests draw every state.
@@ -49,7 +51,7 @@ struct RosterContentView: View {
         if query.searching { searchField }
         RosterCountsCard(counts: list.counts)
         RosterChips(query: $query)
-        let rows = list.visible(role: query.role, query: query.search, sort: query.sort)
+        let rows = list.visible(role: query.role, query: query.search, sort: query.sort, only: query.only)
         if rows.isEmpty {
             GuildMessageCard(title: Copy.rosterEmptyTitle, note: Copy.rosterEmptyBody)
         } else {
@@ -271,8 +273,15 @@ struct RosterScreen: View {
     let store: RosterStore
     let clock: RaidClock
     let now: () -> Date
-    @State private var query = RosterQuery()
+    @State private var query: RosterQuery
     @Environment(\.openURL) private var openURL
+
+    init(store: RosterStore, clock: RaidClock, now: @escaping () -> Date, only: Set<String>? = nil) {
+        self.store = store
+        self.clock = clock
+        self.now = now
+        _query = State(initialValue: RosterQuery(only: only))
+    }
 
     var body: some View {
         RosterContentView(

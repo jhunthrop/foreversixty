@@ -6,21 +6,23 @@ import gg.foreversixty.app.model.GuildApplicationDecision
 import gg.foreversixty.app.network.ApiClient
 import gg.foreversixty.app.network.ApiEndpoints
 import gg.foreversixty.app.network.ApiResult
+import gg.foreversixty.app.network.Endpoint
 import gg.foreversixty.app.push.PushAction
 import gg.foreversixty.app.push.PushActions
 
 /**
  * The officer's applicant push (`guild.applicant`, category GUILD_APPLICANT): the server sends its
- * buttons in the payload; Decline is a POST the receiver makes, the tap opens the application.
+ * buttons in the payload, Accept then Decline or neither (GO N2); each is a POST the receiver makes,
+ * the tap opens the application.
  */
 object ApplicantPushCategory {
     const val CATEGORY = "GUILD_APPLICANT"
+    const val ACTION_ACCEPT = "application_accept"
     const val ACTION_DECLINE = "application_decline"
-    private const val POST = "POST"
+    private val KNOWN = setOf(ACTION_ACCEPT, ACTION_DECLINE)
 
-    /** The buttons the app answers in the background: the payload's known ones, in its order. */
-    fun answerable(actions: List<PushAction>): List<PushAction> =
-        actions.filter { it.id == ACTION_DECLINE && it.method.equals(POST, ignoreCase = true) }
+    /** The buttons the app answers in the background: the payload's known POSTs, in its order. */
+    fun answerable(actions: List<PushAction>): List<PushAction> = actions.filter { it.id in KNOWN && it.isPost }
 }
 
 /** An applicant push's payload, read from the FCM data map (strings only). */
@@ -32,11 +34,14 @@ data class ApplicantPushPayload(
     val actions: List<PushAction>,
 ) {
     /**
-     * The decline call when the payload's [action] names this application's decline route and nothing
+     * The call [action] makes when it names this application's accept or decline route and nothing
      * else; a payload that points elsewhere is not answered in the background.
      */
-    fun declineCall(action: PushAction) =
-        ApiEndpoints.declineGuildApplication(guild, application).takeIf { it.path == action.path }
+    fun call(action: PushAction): Endpoint<GuildApplicationDecision>? = when (action.id) {
+        ApplicantPushCategory.ACTION_ACCEPT -> ApiEndpoints.acceptGuildApplication(guild, application)
+        ApplicantPushCategory.ACTION_DECLINE -> ApiEndpoints.declineGuildApplication(guild, application)
+        else -> null
+    }?.takeIf { it.path == action.path }
 
     companion object {
         fun parse(data: Map<String, String>): ApplicantPushPayload? {
@@ -54,21 +59,22 @@ data class ApplicantPushPayload(
 }
 
 /** Runs one applicant call; the live one sends it through the API client. */
-fun interface ApplicantDecliner {
-    suspend fun decline(payload: ApplicantPushPayload, action: PushAction): ApiResult<GuildApplicationDecision>?
+fun interface ApplicantDecider {
+    suspend fun decide(payload: ApplicantPushPayload, action: PushAction): ApiResult<GuildApplicationDecision>?
 }
 
-class LiveApplicantDecliner(private val client: ApiClient) : ApplicantDecliner {
-    override suspend fun decline(payload: ApplicantPushPayload, action: PushAction) =
-        payload.declineCall(action)?.let { client.send(it) }
+class LiveApplicantDecider(private val client: ApiClient) : ApplicantDecider {
+    override suspend fun decide(payload: ApplicantPushPayload, action: PushAction) =
+        payload.call(action)?.let { client.send(it) }
 }
 
-/** Declines from the shade, then words the answer that replaces the notification. */
-class ApplicantPushAnswerer(private val decliner: ApplicantDecliner, private val res: Resources) {
+/** Accepts or declines from the shade, then words the answer that replaces the notification. */
+class ApplicantPushAnswerer(private val decider: ApplicantDecider, private val res: Resources) {
     suspend fun answer(payload: ApplicantPushPayload, actionId: String): RaidPushPayload.Answer {
         val action = ApplicantPushCategory.answerable(payload.actions).firstOrNull { it.id == actionId } ?: return failed()
-        return when (decliner.decline(payload, action)) {
-            is ApiResult.Success -> RaidPushPayload.Answer(res.getString(R.string.push_applicant_declined), payload.title)
+        val done = if (action.id == ApplicantPushCategory.ACTION_ACCEPT) R.string.push_applicant_accepted else R.string.push_applicant_declined
+        return when (decider.decide(payload, action)) {
+            is ApiResult.Success -> RaidPushPayload.Answer(res.getString(done), payload.title)
             else -> failed()
         }
     }

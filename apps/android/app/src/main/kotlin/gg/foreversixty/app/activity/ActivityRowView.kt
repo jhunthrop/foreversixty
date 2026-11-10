@@ -11,7 +11,11 @@ import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.items.ItemQuality
 import gg.foreversixty.app.model.ActivityRow
+import androidx.compose.ui.res.stringResource
+import gg.foreversixty.app.bis.BisUnit
+import java.text.NumberFormat
 import java.util.Locale
+import kotlin.math.roundToLong
 
 /**
  * An Activity row's body as the feed styles it (`segments`): names in class colour, items in their
@@ -42,15 +46,16 @@ object ActivityBody {
         Part(segment.text, tone)
     }
 
-    /** The row's figure (sim DPS, the guild ladder's), one decimal. */
-    fun figure(row: ActivityRow): String? = row.figure?.let { String.format(Locale.US, "%.1f", it) }
+    /**
+     * The row's figure (sim DPS, the guild ladder's) as the feed's bodies write figures, whole and
+     * grouped with its [unit] (`1,196 DPS`, row 11); the body no longer repeats it.
+     */
+    fun figure(row: ActivityRow, unit: String): String? =
+        row.figure?.let { "${NumberFormat.getIntegerInstance(Locale.US).format(it.roundToLong())} $unit" }
 
-    /** The styled line, then [suffix] after a dot (Home's age); null when the row has no segments (the caller draws its plain line). */
-    fun annotated(row: ActivityRow, suffix: String? = null): AnnotatedString? = parts(row)?.let { parts ->
-        buildAnnotatedString {
-            parts.forEach { part -> withStyle(spanOf(part.tone)) { append(part.text) } }
-            if (!suffix.isNullOrBlank()) append(" · $suffix")
-        }
+    /** The styled line; null when the row has no segments (the caller draws its plain line). */
+    fun annotated(row: ActivityRow): AnnotatedString? = parts(row)?.let { parts ->
+        buildAnnotatedString { parts.forEach { part -> withStyle(spanOf(part.tone)) { append(part.text) } } }
     }
 
     private fun spanOf(tone: Tone): SpanStyle = when (tone) {
@@ -74,17 +79,16 @@ fun ActivityRowView(
     last: Boolean,
     onClick: () -> Unit,
     meta: String? = null,
-    lineSuffix: String? = null,
 ) {
     FlowRow(
         title = row.title,
         sub = line,
-        styledSub = ActivityBody.annotated(row, lineSuffix),
+        styledSub = ActivityBody.annotated(row),
         lead = activityLead(row, build),
         unread = !row.read,
         last = last,
         meta = meta,
-        value = ActivityBody.figure(row),
+        value = ActivityBody.figure(row, stringResource(BisUnit.Dps.word)),
         onClick = onClick,
     )
 }

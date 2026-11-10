@@ -18,7 +18,7 @@ data class ShortRole(val wire: String, @param:StringRes val group: Int, @param:S
         /** Null when the raid has no comp target or every role is met. */
         fun of(raid: RaidView): ShortRole? {
             val target = raid.compTarget ?: return null
-            val c = raid.counts
+            val c = ComingCounts.of(raid)
             return listOf(
                 ShortRole(HEALER, R.string.raid_group_healers, R.string.home_officer_role_healers, target.healers - c.healers),
                 ShortRole(TANK, R.string.raid_group_tanks, R.string.home_officer_role_tanks, target.tanks - c.tanks),

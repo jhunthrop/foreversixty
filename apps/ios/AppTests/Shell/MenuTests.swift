@@ -120,6 +120,22 @@ struct ProfileMenuSummaryTests {
         #expect(summary.others.map(\.name) == ["Lightvow", "Kaelor", "Felsnap", "Brewmist", "Ashmantle"])
         #expect(summary.lowLevel.map(\.name) == ["Pockets", "Bankalt"])
         #expect(summary.stamp == "Updated 2 h ago from Battle.net")
+        #expect(!summary.stale)
+    }
+
+    @Test("row 12: past a week the stamp turns to the warning tone; tools are labels alone")
+    func staleStamp() throws {
+        let fresh = MenuTestData.summary([MenuTestData.thandrel])
+        let me = try #require(MenuTestData.me([MenuTestData.thandrel]).bnetImportedAt)
+        let week = ProfileMenuSummary.staleAfter
+        let later = ProfileMenuSummary(
+            me: MenuTestData.me([MenuTestData.thandrel]), current: MenuTestData.thandrel, facts: MenuTestData.facts,
+            version: "", now: me.addingTimeInterval(week + 60)
+        )
+        #expect(!fresh.stale)
+        #expect(later.stale)
+        let lines = later.tools.map(\.line)
+        #expect(lines.allSatisfy { $0.isEmpty })
     }
 
     @Test("the tools and the account rows, in the owner's order, with their lines")

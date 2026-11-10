@@ -117,3 +117,70 @@ The job is switching character and reaching the account.
 2. Home hero: `total_gain`, `upgrade_count`, `talents.state`, `synced_at`, plus the raid card's role split (`next_raid.counts`).
 3. Gear header: `total_gain`, a corrected "slots on the list" counter, and `synced_at`.
 
+## Round 2 (2026-11-10, base 9bbf15e37)
+
+# info-density-reviewer: round 2, Android tab roots and drawer
+
+I judged the parity goldens and `.txt` goldens, `android-r2/raid-01-top` and `activity-01-top`, the drawer golden, and the strings and composer code for Gear. I did not open the flow-step PNGs or any iOS capture. The `fs2-home` squeeze is known and not re-reported.
+
+## Round 1 findings
+
+| # | Round-1 finding | Status |
+|---|---|---|
+| H1 | Home hero figures (BLOCKER) | FIXED in the ruled form. The Next upgrades meta reads `13 upgrades · +157.6 DPS`, and the stamp reads `Synced 2 h ago from the addon`. The `Gear ›` link and the stamp are now both on screen. I accept the ruling that the head stays figure-free (app-flows line 165). |
+| H2 | Home raid card role split and countdown | FIXED. The card shows `Tanks 2/2 · Healers 5/8 · Damage 11/30` with short roles in red. On raid day the countdown and the `2 things before you pull` block show. |
+| H3 | Three upgrade rows, no count | FIXED. The meta carries the count and total, and `Gear ›` goes to the full list. |
+| H4 | Worn item, drop chance, Best run row | FIXED. The golden shows `· replaces Helm of Valor`, and Best run is a row with icon, `· 8%` and gain. |
+| H5 | spec_week, movers, guild ladder, import_sim on Home | KEPT. The ruling is that these are web Home sections and the app reaches them through New for you and Activity. I accept it: `you are #7 of 14` and `Sim done: 948.6 DPS` are both already in the feed rows. |
+| H6 | Item names in quality colour, other player's crest | FIXED. Emulator Activity shows Deathbringer in epic purple, and Home and Activity rows use the segment styles. |
+| R1 | Raid cover and buffs (BLOCKER) | FIXED as a text line. See N1: it ships as plain text. |
+| R2 | Invite time, size, bench and out (BLOCKER) | FIXED. `Invites 7:45 pm · 40` is in the head, and `Bench 1 · Out 3 · 14 not answered` ends Who is coming. |
+| R3 | Officer notes (BLOCKER) | FIXED. Two lines, truncated with an ellipsis. |
+| R4 | Class-coloured names, late minutes, melee and ranged | FIXED. Names are class-coloured (`raid-01-top`), `Brightwen (Late · 15 min)` is shown, and the Damage line reads `· 5 melee, 6 ranged`. |
+| R5 | Before you pull icons and counts | FIXED. Item icons are in the emulator capture. The `3 in your bags` figure was already there. |
+| R6 | Footer figures and last-raid line | FIXED. Roster shows `38 members, 31 at 60`, Calendar shows `Onyxia Wed, Barrow Deeps Sat`, Loot history shows `Last raid: 4 pieces`, and Guild sims shows `You are #7 of 14 DPS`. The no-raid state keeps the footer, so it is no longer blank. |
+| R7 | Attendance (NICE) | STILL OPEN as a NICE. It is not on the tab and not in the drawer. |
+| G1 | Gear header context (BLOCKER) | FIXED, with a new problem. See N2. |
+| G2 | Sort, gain bars, source on cells, preset segmented | KEPT. The paperdoll order and the ControlBar ruling (redesign plan M3) stand. |
+| G3 | Not-modelled row | FIXED as a header suffix: `2 gains not modelled yet`. The rows themselves are not shown, which I accept for the app. |
+| G4 | Where to go: upgrades per place | FIXED. Rows read `1 upgrade · +1.9 DPS`, `2 upgrades · +20.4 DPS` and `1 upgrade · +6.8 DPS`. |
+| G5 | Slot labels `Finger 1` and `Trinket 2` | STILL OPEN. The golden still shows `Finger` twice and `Trinket` twice. The `slot_label` field was not adopted. See N5. |
+| A1 | Activity chip counts | KEPT until a feed field exists. This is on my needs-data list. |
+| A2 | Trailing figure per kind | FIXED where the segment carries one. The emulator shows `1196.2` and `1184.3` on the right. |
+| A3 | Item names in colour, crest for other players | FIXED. |
+| A4 | Day-of-week and guild name on raid rows | STILL OPEN. This is a NICE: the buckets are `Tue` and `Sat` per the S3 ruling, and no guild name appears on raid rows. |
+| D1 | Drawer character rows (ilvl, guild rank) | FIXED. The head reads `Fury Warrior · 60 · Raider` and the switch rows read `item level 61`. |
+| D2 | Guild block in the drawer | KEPT under the one-job ruling, since the Raid tab is the guild. |
+| D3 | Sync status and error | FIXED for the stamp, with `Refresh` kept on the same line. I did not see the red error state in a golden. |
+| D4 | Plan and Devices values | PARTIAL. Devices reads `3 signed in · newest Pixel 9`, and Notifications shows `Raids, gear and sims, logs on`. Plan reads `Premium · Founder price` with no founder end date, which the ruling promised. See N3. |
+| D5 | Dead space under Help at 390 | STILL OPEN as a NICE. The drawer golden has a third of the screen empty. With the guild block ruled out, fill it with the Tools sub-lines (below) or nothing. |
+
+## New findings
+
+**SHOULD**
+- **N1: Covered line is wall-of-text with no icons.** The emulator `raid-01-top` shows three lines of red text: `Missing Blessing of Kings · Missing Blessing of Might · Missing Blessing of Wisdom · Missing Judgement of Wisdom · Missing Judgement of Light · Missing Blessings`. The same word "Missing" is repeated six times, and the last entry restates the first three. Drop the repeated prefix and put it once, as `Missing`, with the spell names after it. Put the spell icon beside each name from `composition.buffs[].icon` (fixture `guild.raid.json`). Fold it into the file that builds the line (`RaidTabParts.kt`). Do this because a leader scans for icons. At 390 the golden's one-line case (`Missing Fortitude · Windfury 1 of 2`) fits, but the full-gap case costs three lines.
+- **N2: Gear counter and visible rows disagree.** Gear's counter reads `4 of 17 slots match the list`. The golden shows 5 cells labelled `Equipped` (Neck, Shoulder, Waist, Trinket, Off hand), 12 cells with a gain, and the header says `13 upgrades`. The counter comes from `slots.count { it.worn }` in `GearComposer.kt:79`. The header number in the same block says 13, while only 12 cells show a gain; Blackcrow (a ranged pick) may account for the 13th, which would be double-counted. I raised this as a BLOCKER in round 1 and the ruling says "the counter reads `0 of 17 slots match the list`". Reconcile all three numbers (counter 4, Equipped cells 5, header 13 against 12 gain cells) against `upgrade_count` and `already_best[]`, or explain the 13th. A raider will count the cells.
+- **N3: Plan row has no date.** The decision says "the plan's renewal or founder date". The golden shows `Premium · Founder price`. Add the end date from `me.premium.json` (6 Jan 2027 per the pricing memory). If the fixture lacks the date, say so in the BRIEF.
+- **N4: Home raid card tally has no "N short".** On Home the tally reads `Healers 5/8` in red, while Raid says `Healers 5 of 8 · 3 short`. The ruling S6 asked for one tally model on both. The compact form is acceptable, but the card should add the short count when a target exists, because red alone does not say how many.
+- **N5: Slot labels.** The two rings and two trinkets are indistinguishable in the Gear golden (`Finger`, `Finger`, `Trinket`, `Trinket`) and in the sheet. Use `slot_label` from the API (`Finger 1`, `Trinket 2`). This is G5 above; it was unchanged.
+
+**NICE**
+- **N6: Gear cells show `Head ·` with a dangling separator** in the text golden (`Head ·` followed by the gain on the next line). The screenshot shows it as `Head · +14.5 DPS`, so only the text form has the stray separator; make the separator part of the same node so TalkBack does not read it alone.
+- **N7: Activity empty state** (`android-activity-empty`) is still `Nothing yet. Loot, sims, reports and raids land here.` It names what fills it, which meets the standard, but it could carry the filter icons. NICE only.
+- **N8: Drawer Tools are nine bare words.** Each could carry one figure that Home already fetches: `Tiers · Fury is A`, `Sims · 948.6 DPS, 3 h ago`. This also fills the empty third. Source: `/v1/home` `spec_week` and `import_sim`. NICE.
+- **N9: Activity row `1196.2` repeats the body text `1196 DPS`** on the Brakka row (`activity-01-top`). Keep the trailing figure and cut the figure from the body, or the other way round, so the row says it once.
+
+## Phones and font scale
+Nothing new collapses at 390. At font scale 2 the only issue I saw is the one already known. The Gear grid reflows to two columns at 390 with 3-line names (`Forest Stalker's Bracers`), which is acceptable. Check N1 at font scale 2 once it is rebuilt.
+
+## Needs data
+- Per-group unread counts for the Activity chips (client tally, or a field on `/v1/feed`).
+- The founder end date, if it is not in the fixture `me.premium.json`.
+- A cached `total_gain` per character, so the switch rows can show a gain.
+- A last-pulls or progress figure for the Raid tab.
+- The reputation standing number for `needs revered` rows.
+
+## Verdict
+
+**DENSE WITH ADDITIONS**
+

@@ -2,7 +2,7 @@
   "message": {
     "token": "fcm-registration-token",
     "data": {
-      "actions": "[{\"id\":\"application_decline\",\"title\":\"Decline\",\"method\":\"POST\",\"path\":\"/v1/guilds/2/applications/31/decline\"}]",
+      "actions": "[{\"id\":\"application_accept\",\"title\":\"Accept\",\"method\":\"POST\",\"path\":\"/v1/guilds/2/applications/31/accept\"},{\"id\":\"application_decline\",\"title\":\"Decline\",\"method\":\"POST\",\"path\":\"/v1/guilds/2/applications/31/decline\"}]",
       "application_id": "31",
       "body": "Holy priest, 60, full T1. Raided MC and Ony on the last server, can make every Thursday and Sunday.",
       "category": "GUILD_APPLICANT",

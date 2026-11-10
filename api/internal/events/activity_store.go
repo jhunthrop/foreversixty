@@ -55,7 +55,7 @@ func (s *Store) Record(ctx context.Context, userIDs []int64, e Event) error {
 	_, err = s.Pool.Exec(ctx, `insert into user_activity (user_id, kind, title, body, link, dedupe_key, icon, segments, crest, figure)
 		select uid, $2, $3, $4, $5, $6, $7, $8, nullif($9, ''), $10 from unnest($1::bigint[]) as uid
 		on conflict (user_id, dedupe_key) do nothing`,
-		userIDs, string(e.Kind), e.Title, e.Body, e.Link, e.DedupeKey, IconOf(e.Kind, e.Icon), segments, e.Crest, e.Figure)
+		userIDs, string(e.Kind), e.Title, e.activityBody(), e.Link, e.DedupeKey, IconOf(e.Kind, e.Icon), segments, e.Crest, e.Figure)
 	if err != nil {
 		return fmt.Errorf("events: record activity: %w", err)
 	}

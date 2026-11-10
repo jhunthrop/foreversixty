@@ -248,7 +248,7 @@ private fun ItemGain(gain: String, unit: String?, note: String?, align: Alignmen
 private fun gainText(gain: String, unit: String?) = buildAnnotatedString {
     append(gain)
     if (!unit.isNullOrEmpty()) {
-        withStyle(SpanStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = FsColor.muted)) { append(" $unit") }
+        withStyle(FsType.figureUnit.toSpanStyle().copy(fontWeight = FontWeight.SemiBold, color = FsColor.muted)) { append(" $unit") }
     }
 }
 
@@ -306,7 +306,7 @@ fun FlowChip(
             .parityItem(ParityItemKind.Button)
             .clip(shape)
             .background(if (on) colors.selected else Color.Transparent, shape)
-            .border(1.dp, colors.edge, shape)
+            .border(1.dp, if (on) colors.selectedEdge else colors.edge, shape)
             .clickable(enabled = enabled, role = role, onClick = onClick)
             .semantics { selected = on }
             .padding(horizontal = FsSpace.space4),
@@ -353,7 +353,7 @@ private val CHECK = 22.dp
 private const val CHECK_OK = "\u2713"
 private const val CHECK_MISS = "\u00d7"
 private const val CHECK_WARN = "!"
-private val CHECK_TEXT = FsType.bodyStrong.copy(fontSize = 13.sp, lineHeight = 22.sp, fontWeight = FontWeight.Bold)
+private val CHECK_TEXT = FsType.buttonSmall
 private val ROW_PAD = 10.dp
 private val SLIM_PAD = 6.dp
 private val SLIM_MIN = 44.dp
@@ -364,4 +364,4 @@ private val ITEM_ROW_BODY: Dp = 46.dp
 private val SMALL_BUTTON = 36.dp
 private val BUTTON = 44.dp
 private val BUTTON_PAD = 18.dp
-private val BUTTON_TEXT = FsType.bodyStrong.copy(fontSize = 13.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)
+private val BUTTON_TEXT = FsType.buttonSmall

@@ -35,9 +35,10 @@ enum ActivityBody {
         }
     }
 
-    /// The row's figure (sim DPS, the guild ladder's), one decimal.
+    /// The row's figure (sim DPS, the guild ladder's), shown once and worded as the other figures
+    /// (row 11): `1,196 DPS`.
     static func figure(_ row: ActivityRow) -> String? {
-        row.figure.map { String(format: "%.1f", $0) }
+        row.figure.map { Copy.homeUpgradesGain(figure: ReportsCopy.figure($0), unit: Copy.bisUnitDps) }
     }
 
     static func text(_ row: ActivityRow, fallback: String) -> Text {
@@ -67,7 +68,8 @@ struct ActivityRowView: View {
 
     var body: some View {
         PanelRow(
-            row.title, sub: ActivityBody.text(row, fallback: line), meta: meta,
+            // A row whose figure is its whole news (sim.finished) has no body: no empty line under the title.
+            row.title, sub: ActivityBody.parts(row) == nil && line.isEmpty ? nil : ActivityBody.text(row, fallback: line), meta: meta,
             unread: row.read ? nil : Copy.activityUnread, last: last, value: ActivityBody.figure(row)
         ) {
             ActivityLead(row: row, build: build)

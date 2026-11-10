@@ -8,6 +8,7 @@ import gg.foreversixty.app.bis.BisPhase
 import gg.foreversixty.app.bis.BisRow
 import gg.foreversixty.app.gear.RunPick
 import gg.foreversixty.app.items.ItemLook
+import gg.foreversixty.app.model.HomeAlreadyBest
 import gg.foreversixty.app.model.HomeUpgrade
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.auth.session.RelativeAge
@@ -75,7 +76,10 @@ data class GearNotice(
 class GearComposer(private val res: Resources, private val now: Instant = Instant.now()) {
     fun content(list: BisList, faction: String, upgrades: List<HomeUpgrade>, picks: List<RunPick>, home: CharacterHome? = null): GearContent {
         val bySlot = upgrades.associateBy { it.slot }
-        val slots = list.rows.map { row -> slotRow(row, bySlot[row.slot]) }
+        // Row 10: with the home answer, `already_best` decides Equipped, so the counter, the Equipped
+        // cells, the header's upgrade count and the gain cells read the same figures.
+        val best = home?.alreadyBest?.associateBy { it.slot }
+        val slots = list.rows.map { row -> slotRow(row, bySlot[row.slot], best) }
         val onList = res.getString(R.string.gear_onList, slots.count { it.worn }, list.rows.size)
         return GearContent(
             title = list.specLabel,
@@ -116,20 +120,27 @@ class GearComposer(private val res: Resources, private val now: Instant = Instan
         return (line + notModelled).removePrefix(SEPARATOR).ifBlank { null }
     }
 
-    private fun slotRow(row: BisRow, upgrade: HomeUpgrade?): GearSlotRow {
+    /**
+     * A slot's cell: the list's pick, its measured gain, or Equipped. [best] is the home answer's
+     * `already_best` by slot (null without a home answer, when the list's own worn mark decides);
+     * the label is the API's `slot_label` (`Finger 1`, `Trinket 2`) when the answer names the slot.
+     */
+    private fun slotRow(row: BisRow, upgrade: HomeUpgrade?, best: Map<String, HomeAlreadyBest>?): GearSlotRow {
         val pick = row.pick
         val item = pick?.item
+        val worn = best?.containsKey(row.slot) ?: (pick?.isWorn == true)
         val gain = upgrade?.takeIf { it.modelled && it.pick.id == item?.id }?.gain?.takeIf { it > 0 }
         val equipped = upgrade?.worn?.takeIf { it.known }?.let { ItemLook(it.id, it.name, it.quality, it.icon, it.itemLevel) }
+        val label = upgrade?.slotLabel ?: best?.get(row.slot)?.slotLabel ?: row.slotLabel
         return GearSlotRow(
             slot = row.slot,
-            label = row.slotLabel,
+            label = label,
             look = item?.let { ItemLook(it.id, it.name, it.quality, it.icon, it.item?.itemLevel) },
-            source = pick?.slotSource ?: row.slotLabel,
-            gain = if (pick?.isWorn != false) null else gain?.let { "+" + BisListBuilder.figure(it) },
-            worn = pick?.isWorn == true,
+            source = pick?.slotSource ?: label,
+            gain = if (worn) null else gain?.let { "+" + BisListBuilder.figure(it) },
+            worn = worn,
             row = row,
-            equipped = equipped.takeIf { pick?.isWorn != true },
+            equipped = equipped.takeIf { !worn },
         )
     }
 

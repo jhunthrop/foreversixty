@@ -27,6 +27,13 @@ enum ParityCheck {
             Drift(prefix: "section-when: y", since: "2026-11-10", lane: "secondary restyle"),
             Drift(prefix: "section-discord: y", since: "2026-11-10", lane: "secondary restyle"),
         ],
+        // Round 3 mocks set `.sub` lines at 18.29 and the Segmented inside a 1 px border; the app's row
+        // line is RowType.sub's 18. Over the Raid tab's and Activity's ~30 lines that sums to 8 to 11 pt
+        // by the last section, inside each section's own tolerance.
+        "raid": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
+        "raid-signup": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
+        "raid-officer": [Drift(prefix: "section-olympus-xxvii: y", since: "2026-11-10", lane: "row line box 18.29")],
+        "activity": [Drift(prefix: "section-this-week: y", since: "2026-11-10", lane: "row line box 18.29")],
     ]
 
     /// Room under the content for the safe area and the screen's own bottom padding.

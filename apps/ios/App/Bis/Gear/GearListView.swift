@@ -50,6 +50,7 @@ struct GearListView: View {
                 }
             }
         }
+        .tabRootScroll()
         .screenGround()
     }
 

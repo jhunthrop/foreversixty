@@ -35,26 +35,28 @@ class ActivityRowTest {
         assertTrue(ActivityBody.Part("Gorvash", ActivityBody.Tone.ClassName("warrior")) in parts)
         assertTrue(ActivityBody.Part("Deathbringer", ActivityBody.Tone.Quality(4)) in parts)
         assertEquals(loot.body, parts.joinToString("") { it.text })
-        assertNull(ActivityBody.figure(loot))
+        assertNull(ActivityBody.figure(loot, "DPS"))
     }
 
     @Test fun `the guild ladder has strong figures, the passer's crest and the figure trailing`() {
         val passed = row("guildsim.passed")
-        assertEquals(ActivityBody.Part("1196", ActivityBody.Tone.Strong), requireNotNull(ActivityBody.parts(passed)).first())
+        assertEquals(ActivityBody.Part("12", ActivityBody.Tone.Strong), requireNotNull(ActivityBody.parts(passed)).first { it.tone == ActivityBody.Tone.Strong })
         assertEquals("warrior", Activity.crestClass(passed, SpecCatalog(emptyList())))
-        assertEquals("1196.2", ActivityBody.figure(passed))
+        // Row 11: the figure shows once, whole and grouped with its unit; the body leaves it out.
+        assertEquals("1,196 DPS", ActivityBody.figure(passed, "DPS"))
+        assertEquals(false, passed.body.contains("1196"))
     }
 
     @Test fun `a row without segments keeps its plain body and a sim keeps its figure`() {
         val sim = row("sim.finished")
         assertNull(ActivityBody.parts(sim))
         assertNull(ActivityBody.annotated(sim))
-        assertEquals("1184.3", ActivityBody.figure(sim))
+        assertEquals("1,184 DPS", ActivityBody.figure(sim, "DPS"))
     }
 
-    @Test fun `Home's age follows the styled body`() {
+    @Test fun `the styled body is the body, the age is not appended (row 3)`() {
         val loot = row("loot.awarded")
-        assertEquals("${loot.body} · 3 h ago", ActivityBody.annotated(loot, "3 h ago")?.text)
+        assertEquals(loot.body, ActivityBody.annotated(loot)?.text)
     }
 
     @Test fun `Before you pull carries the item's icon where the check names one`() {

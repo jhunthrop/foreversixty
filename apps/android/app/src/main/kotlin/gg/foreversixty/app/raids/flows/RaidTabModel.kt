@@ -12,6 +12,7 @@ import gg.foreversixty.app.model.GuildHome
 import gg.foreversixty.app.model.ReadyCheck
 import gg.foreversixty.app.phrase
 import gg.foreversixty.app.model.RaidView
+import gg.foreversixty.app.raids.logic.ComingCounts
 import gg.foreversixty.app.raids.logic.PlannedRaids
 import gg.foreversixty.app.raids.logic.RaidClock
 import gg.foreversixty.app.raids.logic.RaidsTabContent
@@ -162,15 +163,16 @@ object ReadyRows {
 class RaidRoleLines(private val res: Resources) {
     fun of(raid: RaidView): List<RoleLine> {
         val target = raid.compTarget
+        val counts = ComingCounts.of(raid)
         val coming = raid.signups.filter { SignupState.of(it.state)?.isComing == true }.sortedByDescending { it.own }
         return listOf(
-            Group(ShortRole.TANK, R.string.raid_group_tanks, target?.tanks),
-            Group(ShortRole.HEALER, R.string.raid_group_healers, target?.healers),
-            Group(ShortRole.DPS, R.string.raid_group_damage, target?.let { it.melee + it.ranged }),
+            Group(ShortRole.TANK, R.string.raid_group_tanks, counts.tanks, target?.tanks),
+            Group(ShortRole.HEALER, R.string.raid_group_healers, counts.healers, target?.healers),
+            Group(ShortRole.DPS, R.string.raid_group_damage, counts.damage, target?.let { it.melee + it.ranged }),
         ).mapNotNull { group ->
             val people = coming.filter { group(it.role) == group.wire }
-            if (people.isEmpty() && group.want == null) return@mapNotNull null
-            val tally = TallyItem(res.getString(group.label), people.size, group.want)
+            if (group.have == 0 && group.want == null) return@mapNotNull null
+            val tally = TallyItem(res.getString(group.label), group.have, group.want)
             val split = if (group.wire == ShortRole.DPS) split(raid) else null
             val hidden = people.size - shown(people.size)
             // `and 8 more` after the names (the names themselves are drawn in class colours).
@@ -187,10 +189,10 @@ class RaidRoleLines(private val res: Resources) {
         return RoleName(word, s.className)
     }
 
-    /** `5 melee, 6 ranged`, from the raid's counts; null when neither has anyone. */
+    /** `5 melee, 6 ranged`, from the same coming counts as the tally (row 1); null when neither has anyone. */
     private fun split(raid: RaidView): String? {
-        val c = raid.counts
-        if (c.melee + c.ranged == 0) return null
+        val c = ComingCounts.of(raid)
+        if (c.damage == 0) return null
         return res.getString(R.string.raid_tab_damageSplit, c.melee, c.ranged)
     }
 
@@ -199,7 +201,7 @@ class RaidRoleLines(private val res: Resources) {
         else -> ShortRole.DPS
     }
 
-    private data class Group(val wire: String, @param:StringRes val label: Int, val want: Int?)
+    private data class Group(val wire: String, @param:StringRes val label: Int, val have: Int, val want: Int?)
 
     private companion object {
         const val SHOWN_ALL = 5

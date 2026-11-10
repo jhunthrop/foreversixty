@@ -18,9 +18,12 @@ import (
 )
 
 // passedCopy is the words of guildsim.passed.
-var passedCopy = struct{ Title, Body string }{
+// Body is the push's: the passer's figure, then Lead; the Activity row shows the figure itself
+// and keeps Lead alone.
+var passedCopy = struct{ Title, Body, Lead string }{
 	Title: "%s passed you in the guild ladder",
-	Body:  "%s %s, +%s over your %s (%s, %s).",
+	Body:  "%s %s, %s",
+	Lead:  "+%s over your %s (%s, %s).",
 }
 
 // guildLinkFormat is the app link the event lands on: the Raid tab for that guild, where the
@@ -90,14 +93,16 @@ func (w *GuildSimWriter) passedEvent(f simFacts, simID string, r LadderRow) even
 	if f.preset != barePreset {
 		words += " " + f.preset
 	}
-	segments := Segmentf(passedCopy.Body, Strong(FormatFigure(f.value)), Text(unit),
-		Strong(formatLead(f.value, r.Value)), Text(FormatFigure(r.Value)), Text(SpecName(f.spec)), Text(words))
+	segments := Segmentf(passedCopy.Lead, Strong(formatLead(f.value, r.Value)), Text(FormatFigure(r.Value)),
+		Text(SpecName(f.spec)), Text(words))
+	lead := events.SegmentsText(segments)
 	value := f.value
 	return events.Event{
 		Kind: events.GuildSimPassed, Audience: events.Users(r.userID),
 		DedupeKey: "guildsim.passed:" + simID + ":" + r.Key,
 		Title:     fmt.Sprintf(passedCopy.Title, f.name),
-		Body:      events.SegmentsText(segments), Segments: segments, Crest: f.class, Figure: &value,
+		Body:      fmt.Sprintf(passedCopy.Body, FormatFigure(f.value), unit, lead), ActivityBody: &lead,
+		Segments: segments, Crest: f.class, Figure: &value,
 		Link: fmt.Sprintf(guildLinkFormat, w.PublicBaseURL, f.guildID), Icon: specs.ByKey[f.spec].Icon,
 		Data: map[string]string{
 			"guild_id": strconv.FormatInt(f.guildID, 10), "sim_id": simID, "character_key": f.key,

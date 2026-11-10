@@ -230,6 +230,15 @@ public enum FSType {
     public static let tag = FSTextRole(face: FSFont.bodySemibold, size: 12, lineHeight: 16, tracking: 0, scalesWith: .caption, tabular: false)
     /// The answer chip at a raid head's end, `Late · 30 min` (brand S4).
     public static let answerChip = FSTextRole(face: FSFont.bodyBold, size: 13, lineHeight: 18, tracking: 0, scalesWith: .footnote, tabular: false)
+    /// The apps' bar title beside the profile button, Material 3's small top app bar size (brand
+    /// D6).
+    public static let barTitle = FSTextRole(face: FSFont.title, size: 22, lineHeight: 28, tracking: 0, scalesWith: .title2, tabular: false)
+    /// The paperdoll list: an item's name in its cell (brand D6).
+    public static let paperdollName = FSTextRole(face: FSFont.bodySemibold, size: 13, lineHeight: 16, tracking: 0, scalesWith: .footnote, tabular: false)
+    /// The paperdoll list: the slot word and its gain under the name (brand D6).
+    public static let paperdollDetail = FSTextRole(face: FSFont.body, size: 12, lineHeight: 15, tracking: 0, scalesWith: .caption, tabular: false)
+    /// The flows' small button label and a row's check mark (brand D6).
+    public static let buttonSmall = FSTextRole(face: FSFont.bodyBold, size: 13, lineHeight: 16, tracking: 0, scalesWith: .footnote, tabular: false)
     /// The countdown's figures on Home's raid card (brand S4).
     public static let countdown = FSTextRole(face: FSFont.bodySemibold, size: 36, lineHeight: 38, tracking: 0, scalesWith: .title2, tabular: true)
     public static let figureSm = FSTextRole(face: FSFont.bodyBold, size: 16, lineHeight: 20, tracking: 0, scalesWith: .title2, tabular: true)
@@ -293,6 +302,8 @@ public enum FSSize {
     public static let barH: CGFloat = 56
     public static let barPhone: CGFloat = 48
     public static let segment: CGFloat = 44
+    /// A spell icon beside a name in a line of text (the Covered line).
+    public static let icon20: CGFloat = 20
     public static let icon28: CGFloat = 28
     public static let icon32: CGFloat = 32
     public static let icon36: CGFloat = 36

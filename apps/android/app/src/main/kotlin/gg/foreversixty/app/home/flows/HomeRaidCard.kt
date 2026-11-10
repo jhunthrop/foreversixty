@@ -36,6 +36,7 @@ import gg.foreversixty.app.flows.ClockPart
 import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.flows.FlowTally
+import gg.foreversixty.app.flows.FlowTallyLine
 import gg.foreversixty.app.flows.lineBox
 
 /**
@@ -49,9 +50,11 @@ fun HomeRaidCard(raid: RaidCardModel, actions: HomeActions) {
         Text(raid.zone, style = HOME_CARD_TITLE, color = FsColor.cream, modifier = Modifier.semantics { heading() })
         Text(raid.place, style = FsType.small, color = FsColor.text)
         Clock(raid.clock, raid.clockLabel, Modifier.padding(top = FsSpace.space2))
-        Text(raid.me, style = FsType.small, color = FsColor.text, modifier = Modifier.padding(top = FsSpace.space3))
+        raid.me?.let { Text(it, style = FsType.small, color = FsColor.text, modifier = Modifier.padding(top = FsSpace.space3)) }
         RaidAnswers(raid, actions, Modifier.padding(top = FsSpace.space2), LateChipsStyle.Asked)
-        if (raid.tally.any { it.want != null }) FlowTally(raid.tally, Modifier.padding(top = TALLY_TOP))
+        // Row 2: the meters against a target, else the plain counts (`Healers 6`), never nothing.
+        val tallyTop = Modifier.padding(top = TALLY_TOP)
+        if (raid.tally.any { it.want != null }) FlowTally(raid.tally, tallyTop) else FlowTallyLine(raid.tally, tallyTop)
         raid.ready?.let { ready ->
             HorizontalDivider(Modifier.padding(top = TALLY_TOP), color = FsColor.lineWarm)
             FlowRow(ready.title, ready.sub, slim = true, last = true, onClick = { actions.onReady(raid.raidId) })

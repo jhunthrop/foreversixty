@@ -20,6 +20,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
 	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 )
 
@@ -31,7 +32,7 @@ var raidEventCopy = struct {
 	MovedIn, MovedBench, MovedLate, MovedOut                                                  string
 	ActionIn, ActionLate, ActionBench, ActionOut                                              string
 }{
-	Posted:      "Sign-ups are open: %s. %s.",
+	Posted:      "%s. %s.",
 	SignedOf:    "%d of %d signed",
 	SignedOpen:  "%d signed",
 	Nudge:       "%s is today at %s. Are you coming?",
@@ -114,7 +115,7 @@ func raidKey(kind events.Kind, p notify.RaidPosted, extra ...string) string {
 func raidPostedEvent(guildID int64, p notify.RaidPosted) events.Event {
 	e := raidEvent(events.RaidPosted, guildID, p, fmt.Sprintf("%s:%d", events.RaidPosted, p.RaidID),
 		events.Audience{Kind: events.ToGuildMembers, GuildID: guildID})
-	e.Body = fmt.Sprintf(raidEventCopy.Posted, raidWhen(p), signedWords(p))
+	e.Body = fmt.Sprintf(raidEventCopy.Posted, signedWords(p), raidWhen(p))
 	e.Actions = signupActions(guildID, p.RaidID)
 	return e
 }
@@ -165,14 +166,20 @@ func raidStartingEvent(guildID int64, p notify.RaidPosted, lead time.Duration, a
 // unansweredUnknown is raid.short's not-answered count when it could not be read.
 const unansweredUnknown = -1
 
-// raidShortEvent is raid.short: the signed count, then the roles below the comp target and
-// how many have not answered, each only when known and not nothing.
-func raidShortEvent(guildID int64, p notify.RaidPosted, unanswered int) events.Event {
+// raidShortEvent is raid.short: the roles below the comp target and how many have not
+// answered, each only when known and not nothing, then the signed count. canPing (the raid's
+// ping is out of its cooldown and Discord is connected) adds the Mention button for the role
+// furthest below its target.
+func raidShortEvent(guildID int64, p notify.RaidPosted, unanswered int, canPing bool) events.Event {
 	e := raidEvent(events.RaidShort, guildID, p, raidKey(events.RaidShort, p),
 		events.Audience{Kind: events.ToGuildOfficers, GuildID: guildID})
+	short := notify.ShortRoles(p)
 	var gaps []string
-	for _, r := range notify.ShortRoles(p) {
+	for _, r := range short {
 		gaps = append(gaps, fmt.Sprintf(raidEventCopy.ShortRole, r.Name, r.Have, r.Want))
+	}
+	if worst, ok := shortestRole(short); ok && canPing {
+		e.Actions = []events.Action{mentionAction(guildID, p.RaidID, worst)}
 	}
 	if unanswered > 0 {
 		gaps = append(gaps, fmt.Sprintf(raidEventCopy.ShortNotIn, unanswered))
@@ -181,8 +188,39 @@ func raidShortEvent(guildID int64, p notify.RaidPosted, unanswered int) events.E
 	if len(gaps) > 0 {
 		gapLine = strings.Join(gaps, ", ") + "."
 	}
-	e.Body = joinSentences(fmt.Sprintf(raidEventCopy.Short, signedWords(p)), gapLine)
+	e.Body = joinSentences(gapLine, fmt.Sprintf(raidEventCopy.Short, signedWords(p)))
 	return e
+}
+
+// shortestRole is the role furthest below its target, the first in roster order on a tie.
+func shortestRole(short []notify.RoleShort) (notify.RoleShort, bool) {
+	if len(short) == 0 {
+		return notify.RoleShort{}, false
+	}
+	worst := short[0]
+	for _, r := range short[1:] {
+		if r.Gap() > worst.Gap() {
+			worst = r
+		}
+	}
+	return worst, true
+}
+
+// mentionCopy is the Mention button's label per ping role.
+var mentionCopy = map[string]string{RoleTank: "Mention tanks", RoleHealer: "Mention healers", RoleDPS: "Mention DPS"}
+
+// MentionShortActionID is raid.short's one action: the raid ping for the shortest role.
+const MentionShortActionID = "raid_mention_short"
+
+// mentionAction posts the raid ping (POST …/raids/{raid}/ping) for r's role: melee and ranged
+// are the ping's dps.
+func mentionAction(guildID, raidID int64, r notify.RoleShort) events.Action {
+	role := map[string]string{raidspec.GroupTank: RoleTank, raidspec.GroupHealer: RoleHealer}[r.Group]
+	if role == "" {
+		role = RoleDPS
+	}
+	return events.Action{ID: MentionShortActionID, Title: mentionCopy[role], Method: "POST",
+		Path: fmt.Sprintf("/v1/guilds/%d/raids/%d/ping", guildID, raidID), Body: map[string]string{"role": role}}
 }
 
 // joinSentences is the non-empty sentences one after another.

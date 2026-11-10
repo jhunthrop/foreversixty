@@ -59,7 +59,7 @@ struct PickMainView: View {
                 trailPlacement: .below,
                 lead: { ClassCrest(className: character.className, size: FSSize.crest40, flat: true) },
                 trail: {
-                    if isSelected { FSTag(Copy.menuCharacterMain, tone: .gold) }
+                    if isSelected { FSTag(Copy.menuMain, tone: .gold) }
                 }
             )
         }

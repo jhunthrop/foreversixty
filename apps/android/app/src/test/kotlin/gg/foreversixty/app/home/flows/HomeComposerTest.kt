@@ -22,6 +22,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import gg.foreversixty.app.activity.ActivityTime
 import java.time.Instant
 import java.time.ZoneId
 
@@ -44,15 +45,15 @@ class HomeComposerTest {
     private fun row(id: Long, kind: String, at: String, group: String = "gear") =
         ActivityRow(id = id, kind = kind, group = group, title = "t$id", body = "b$id", link = "", occurredAt = at, read = id % 2 == 0L, icon = "i")
 
-    private fun inputs(sections: List<HomeSection>, card: RaidCardModel? = null, rows: List<ActivityRow> = emptyList()) =
+    private fun inputs(sections: List<HomeSection>, card: RaidCardModel? = null, rows: List<ActivityRow> = emptyList(), home: CharacterHome = this.home) =
         HomeInputs(sections, home, RunPick("back", 7, "Blackcrow", 1.94, ItemSource(WhereToGo.DUNGEON, "Blackrock Spire", 8.0)), card, null, rows, 3, null)
 
     @Test fun `the head names level, spec and class, then the guild or the levels to the next band`() {
         val warrior = HomeCharacter("k", "us", "normal", "Thandrel", null, "warrior", "Fury", 60, "Olympus XXVII", "alliance")
         assertEquals(listOf("Level 60 Fury Warrior", "Olympus XXVII"), composer.head(warrior).facts)
         val hunter = warrior.copy(name = "Felsnap", className = "hunter", specName = "Beast Mastery", level = 34)
-        assertEquals(listOf("Level 34 Beast Mastery Hunter", "6 levels to band 40"), composer.head(hunter).facts)
-        assertEquals("1 level to band 40", composer.head(hunter.copy(level = 39)).facts[1])
+        assertEquals(listOf("Level 34 Beast Mastery Hunter", "6 levels to the 40 list"), composer.head(hunter).facts)
+        assertEquals("1 level to the 40 list", composer.head(hunter.copy(level = 39)).facts[1])
     }
 
     @Test fun `blocks follow the sections, upgrades largest first with the Best run line`() {
@@ -109,7 +110,17 @@ class HomeComposerTest {
         assertTrue(last.simAgain)
         val preview = blocks[1] as HomeBlock.Activity
         assertEquals(listOf("t4", "t2"), preview.rows.map { it.row.title })
-        assertEquals("b2 · yesterday", preview.rows[1].line)
+        // Row 3: the body alone, the when on its own meta line in Activity's buckets.
+        assertEquals("b2", preview.rows[1].line)
+        assertEquals("9:00 am", preview.rows[1].age)
+        assertEquals(ActivityTime.label(res, Instant.parse("2026-11-05T15:00:00Z"), now, ZoneId.of("America/Chicago")), preview.rows[1].age)
+    }
+
+    @Test fun `a sync over a week old takes the warning tone (row 12)`() {
+        val fresh = composer.blocks(inputs(listOf(HomeSection("upgrades")), home = home.copy(syncedAt = "2026-11-04T18:00:00Z")))
+        val stale = composer.blocks(inputs(listOf(HomeSection("upgrades")), home = home.copy(syncedAt = "2026-10-27T18:00:00Z")))
+        assertEquals(false, (fresh.first() as HomeBlock.Upgrades).syncedStale)
+        assertEquals(true, (stale.first() as HomeBlock.Upgrades).syncedStale)
     }
 
     @Test fun `Best run is the dungeon candidate with the largest gain over the worn item`() {

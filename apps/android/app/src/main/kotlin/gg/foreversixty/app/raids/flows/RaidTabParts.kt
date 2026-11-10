@@ -1,6 +1,13 @@
 package gg.foreversixty.app.raids.flows
 
 import androidx.compose.foundation.background
+import gg.foreversixty.app.designsystem.FsSize
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
@@ -60,11 +66,12 @@ import gg.foreversixty.app.items.GameIconImage
 
 /**
  * The Raid tab's head (spec 4.2, owner 2026-11-09): one compact line, the zone's icon, the raid, its
- * time and the pull, who the answer is for (E7) and the answer as a chip; the four answers under it
- * as one 48 dp segmented pill, and with Late the minutes inline, the chosen one selected (F1).
+ * time and the pull, who the answer is for (E7); the four answers under it are the answer (AS5), drawn
+ * as one 48 dp segmented pill, and with Late the minutes inline, the chosen one selected (F1); the
+ * officer [notes] close the card (row 9).
  */
 @Composable
-internal fun RaidHead(raid: RaidCardModel, actions: HomeActions) {
+internal fun RaidHead(raid: RaidCardModel, actions: HomeActions, notes: String? = null) {
     FlowPanel {
         Column(Modifier.padding(vertical = FsSpace.space2)) {
             Row(Modifier.fillMaxWidth().clickable(role = Role.Button) { actions.onRaid(raid.raidId) }, verticalAlignment = Alignment.CenterVertically) {
@@ -76,41 +83,18 @@ internal fun RaidHead(raid: RaidCardModel, actions: HomeActions) {
                         .border(1.dp, FsColor.line, RoundedCornerShape(FsRadius.control)),
                 ) { GameIconImage(raid.icon, LocalRaidIconBuild.current, HEAD_ICON) }
                 Spacer(Modifier.width(FsSpace.space3))
-                // At large text the chip drops under the lines, so the raid's name keeps the row's width.
-                val chipBeside = LocalDensity.current.fontScale <= CHIP_BESIDE_MAX_SCALE
                 Column(Modifier.weight(1f)) {
                     Text(raid.zone, style = FsType.item, color = FsColor.strong, modifier = Modifier.semantics { heading() })
                     Text(raid.headLine, style = SUB, color = FsColor.muted)
                     raid.facts?.let { Text(it, style = SUB, color = FsColor.muted) }
                     raid.who?.let { Text(it, style = SUB, color = FsColor.muted) }
-                    if (!chipBeside) raid.chip?.let { AnswerChip(it, Modifier.padding(top = FsSpace.space1)) }
-                }
-                if (chipBeside) {
-                    raid.chip?.let {
-                        Spacer(Modifier.width(FsSpace.space2))
-                        AnswerChip(it)
-                    }
                 }
             }
             RaidAnswers(raid, actions, Modifier.padding(top = FsSpace.space3))
+            // Row 9: the officer notes (`Bring flasks`) close the card, on both apps.
+            notes?.let { RaidNotes(it) }
         }
     }
-}
-
-/** Your answer as a chip at the head's end, teal as the selected segment: `In`, `Late · 30 min`. */
-@Composable
-private fun AnswerChip(text: String, modifier: Modifier = Modifier) {
-    val shape = RoundedCornerShape(CHIP_RADIUS)
-    Text(
-        text,
-        style = CHIP_TEXT,
-        color = FsColor.strong,
-        maxLines = 1,
-        modifier = modifier
-            .background(FsColor.teal, shape)
-            .border(1.dp, FsColor.tealEdge, shape)
-            .padding(horizontal = CHIP_PAD_X, vertical = CHIP_PAD_Y),
-    )
 }
 
 /**
@@ -119,7 +103,7 @@ private fun AnswerChip(text: String, modifier: Modifier = Modifier) {
  * the Covered line, an officer's readiness).
  */
 @Composable
-internal fun RoleRows(roles: List<RoleLine>, footer: List<RoleFoot> = emptyList()) {
+internal fun RoleRows(roles: List<RoleLine>, footer: List<RoleFoot> = emptyList(), onRosterOf: (Set<String>) -> Unit = {}) {
     roles.forEachIndexed { index, line ->
         Column(Modifier.fillMaxWidth().parityItem(ParityItemKind.Row).padding(vertical = ROLE_PAD)) {
             Text(roleTitle(line), style = FsType.item, color = FsColor.strong)
@@ -128,7 +112,49 @@ internal fun RoleRows(roles: List<RoleLine>, footer: List<RoleFoot> = emptyList(
         if (index < roles.lastIndex || footer.isNotEmpty()) FlowRule()
     }
     footer.forEach { foot ->
-        Text(foot.text, style = SUB, color = if (foot.warn) FsColor.wipe else FsColor.muted, modifier = Modifier.padding(vertical = FsSpace.space2))
+        val cover = foot.cover
+        when {
+            cover != null -> CoverRow(cover, foot.text)
+            foot.onlyKeys.isNotEmpty() -> Text(
+                foot.text,
+                style = SUB,
+                color = FsColor.wipe,
+                modifier = RAID_TARGET
+                    .fillMaxWidth()
+                    .clickable(role = Role.Button) { onRosterOf(foot.onlyKeys) }
+                    .wrapContentHeight(Alignment.CenterVertically),
+            )
+            else -> Text(foot.text, style = SUB, color = if (foot.warn) FsColor.wipe else FsColor.muted, modifier = Modifier.padding(vertical = FsSpace.space2))
+        }
+    }
+}
+
+/**
+ * The Covered line (row 4): a neutral `Missing`, then each name in wipe red beside its spell icon, the
+ * short ones with their count, then `and N more`; read aloud as [spoken], one sentence.
+ */
+@Composable
+private fun CoverRow(line: CoverLine, spoken: String) {
+    val res = LocalResources.current
+    val facts = RaidTabFacts(res)
+    FlowRow(
+        Modifier.fillMaxWidth().padding(vertical = FsSpace.space2).clearAndSetSemantics { contentDescription = spoken },
+        horizontalArrangement = Arrangement.spacedBy(FsSpace.space2),
+        verticalArrangement = Arrangement.spacedBy(FsSpace.space1),
+    ) {
+        if (line.missing.isNotEmpty()) Text(stringResource(R.string.raid_tab_coverLabel), style = SUB, color = FsColor.muted)
+        line.missing.forEach { CoverName(it.icon, it.name) }
+        line.short.forEach { CoverName(it.icon, facts.shortText(it)) }
+        if (line.more > 0) Text(res.getString(R.string.raid_tab_andMore, "", line.more).trim(), style = SUB, color = FsColor.muted)
+    }
+}
+
+@Composable
+private fun CoverName(icon: String?, name: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.size(COVER_ICON).clip(RoundedCornerShape(FsRadius.control))) { GameIconImage(icon, LocalRaidIconBuild.current, COVER_ICON) }
+        Spacer(Modifier.width(FsSpace.space1))
+        Text(name, style = SUB, color = FsColor.wipe)
     }
 }
 
@@ -179,11 +205,7 @@ internal fun RaidWideButton(label: String, primary: Boolean, onClick: () -> Unit
 /** A row's button at the 48 dp target. */
 internal val RAID_TARGET = Modifier.heightIn(min = FsTarget.min)
 
-private val HEAD_ICON = 40.dp
-private const val CHIP_BESIDE_MAX_SCALE = 1.3f
-private val CHIP_RADIUS = 4.dp
-private val CHIP_PAD_X = 10.dp
-private val CHIP_PAD_Y = 3.dp
+private val HEAD_ICON = FsSize.icon40
+private val COVER_ICON = FsSize.icon20
 private val ROLE_PAD = 10.dp
 private val LIVE_DOT = 8.dp
-private val CHIP_TEXT = FsType.answerChip

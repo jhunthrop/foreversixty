@@ -13,6 +13,12 @@
   "link": "https://foreversixty.gg/app/guild/2/applicants/31",
   "actions": [
     {
+      "id": "application_accept",
+      "title": "Accept",
+      "method": "POST",
+      "path": "/v1/guilds/2/applications/31/accept"
+    },
+    {
       "id": "application_decline",
       "title": "Decline",
       "method": "POST",

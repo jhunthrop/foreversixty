@@ -4336,7 +4336,7 @@ components:
             id, strong figures); its texts joined are the body. Absent on a row that has only the
             plain body: loot.awarded and guildsim.passed carry it.
         crest: { type: string, description: "The class slug of the other player the row is about (guildsim.passed's passer); absent otherwise." }
-        figure: { type: number, description: "The row's number when it has one: sim.finished's DPS, guildsim.passed's figure. Absent otherwise." }
+        figure: { type: number, description: "The row's number when it has one: sim.finished's DPS, guildsim.passed's figure; the body then leaves it out (sim.finished keeps its headline, maybe empty; guildsim.passed the lead). Absent otherwise." }
     ActivityPage:
       type: object
       required: [rows, unread, next_before]
@@ -5136,7 +5136,7 @@ components:
                 body: { type: string }
             sound: { type: string, enum: [default] }
             thread-id: { type: string, description: "raid-<raid id>" }
-            category: { type: string, enum: [RAID_SIGNUP, GUILD_APPLICANT] }
+            category: { type: string, enum: [RAID_SIGNUP, GUILD_APPLICANT, RAID_SHORT] }
             interruption-level: { type: string, enum: [time-sensitive] }
         kind: { type: string }
         group:
@@ -5154,11 +5154,12 @@ components:
             else the only verified one), ask_spec ("true" when that character has no raid spec
             and its class has two or more) and answers, a JSON string of { in, late, out, moved,
             locked, cancelled, failed } each { title, body } composed in the player's locale,
-            which the app posts in place of the notification after an action (moved.body holds
-            {name}, appended to the in or late body). Lane F4 contract, A2 pending.
+            which the app posts in place of the notification after an action. Times read as the
+            body's ("Thu 5 Nov, 8:00 pm CST"); moved.body holds {name} and is joined to the in or
+            late body with one space. Lane F4 contract, A2 pending.
     FcmMessage:
       type: object
-      x-fixtures: [push.raid-posted.fcm, push.raid-short.fcm, push.guild-applicant.fcm]
+      x-fixtures: [push.raid-posted.fcm, push.raid-starting.fcm, push.raid-short.fcm, push.guild-applicant.fcm]
       required: [message]
       properties:
         message:
@@ -5200,19 +5201,23 @@ components:
       type: object
       description: >-
         One notification button. The app replaces {character} in path with the region/ruleset/name
-        it answers for. The sign-up buttons (RAID_SIGNUP) PUT a body; guild.applicant's Decline
-        (GUILD_APPLICANT) POSTs none.
+        it answers for. The sign-up buttons (RAID_SIGNUP) PUT a body of state;
+        guild.applicant's Accept and Decline (GUILD_APPLICANT) POST none; raid.short's
+        raid_mention_short (RAID_SHORT) POSTs the raid ping (pingGuildRaid) with the body's role,
+        the role furthest below the comp target, and is left out while the raid's ping is inside
+        its cooldown (RaidPingState.next_allowed_at). Its answer is a RaidPingResult.
       required: [id, title, method, path]
       properties:
-        id: { type: string, enum: [signup_in, signup_late, signup_bench, signup_out, application_decline] }
+        id: { type: string, enum: [signup_in, signup_late, signup_bench, signup_out, application_accept, application_decline, raid_mention_short] }
         title: { type: string }
         method: { type: string, enum: [PUT, POST] }
         path: { type: string }
         body:
           type: object
-          required: [state]
-          description: The PUT's body; the app adds late_minutes when a Late chip was picked.
-          properties: { state: { type: string, enum: [in, late, bench, out] } }
+          description: A sign-up PUT's state (the app adds late_minutes when a Late chip was picked), or the ping's role.
+          properties:
+            state: { type: string, enum: [in, late, bench, out] }
+            role: { type: string, enum: [tank, healer, dps] }
     # Live surfaces (Wave 3 lane F14, api/internal/livesurface) ----------------------------
     Widget:
       type: object

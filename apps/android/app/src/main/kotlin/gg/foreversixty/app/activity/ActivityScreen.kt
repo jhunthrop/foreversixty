@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountDeps
-import gg.foreversixty.app.auth.session.RelativeAge
 import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
@@ -50,8 +49,6 @@ import gg.foreversixty.app.phrase
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 /** The Activity tab bound to the session: signed out it asks to sign in, else the inbox. */
 @Composable
@@ -186,7 +183,7 @@ private fun Days(state: ActivityState.Loaded, build: String?, now: Instant, zone
                     line = item.row.body,
                     build = build,
                     last = at == section.items.lastIndex,
-                    meta = timeLabel(item.at, section.day, now, zone),
+                    meta = ActivityTime.label(LocalResources.current, item.at, section.day, now, zone),
                     onClick = { actions.onOpen(item.row) },
                 )
             }
@@ -194,19 +191,6 @@ private fun Days(state: ActivityState.Loaded, build: String?, now: Instant, zone
     }
     if (state.nextBefore != null) FlowLink(stringResource(R.string.activity_more), Modifier.padding(horizontal = FsSpace.space4), actions.onMore)
 }
-
-/** Today `8 h ago`, Yesterday `6:02 pm`, This week `Tue`, Earlier `3 Nov`. */
-@Composable
-private fun timeLabel(at: Instant, day: ActivityDay, now: Instant, zone: ZoneId): String = when (day) {
-    ActivityDay.Today -> RelativeAge.of(at, now).phrase(LocalResources.current)
-    ActivityDay.Yesterday -> CLOCK.withZone(zone).format(at).lowercase(Locale.UK)
-    ActivityDay.ThisWeek -> WEEKDAY.withZone(zone).format(at)
-    ActivityDay.Earlier -> DATE.withZone(zone).format(at)
-}
-
-private val CLOCK = DateTimeFormatter.ofPattern("h:mm a", Locale.UK)
-private val WEEKDAY = DateTimeFormatter.ofPattern("EEE", Locale.UK)
-private val DATE = DateTimeFormatter.ofPattern("d MMM", Locale.UK)
 
 /** A filter chip's face (the mock's `.chips a`, 7 above and below a 20 line), 48 to the touch. */
 

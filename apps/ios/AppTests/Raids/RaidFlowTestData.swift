@@ -26,7 +26,6 @@ enum RaidFlowTestData {
         raid.headLine = "8:00 pm CST · pull in 2 h 48 min"
         raid.invites = "Invites 7:45 pm · 40"
         raid.who = "As Thandrel, Damage"
-        raid.chip = late ? "Late · 30 min" : "In"
         raid.lateMinutes = late ? 30 : nil
         raid.status = late ? .saved(Copy.commonSaved) : nil
         return raid
@@ -61,8 +60,15 @@ enum RaidFlowTestData {
         .guild(RaidGuildContent(
             next: head(late: late), coming: coming, ready: ready(elixir: true),
             needsYou: officer ? NeedsYouContent(meta: "6 open", items: Self.officer) : nil, pages: pages,
-            notes: notes, answers: "Bench 1 · Out 3 · 14 not answered", cover: "Missing Fortitude · Windfury 1 of 2",
-            notSynced: officer ? "4 signed In have not synced this week" : nil
+            // Row 6: the foot counts the same 5 as Needs you.
+            notes: notes, answers: "Bench 1 · Out 3 · 5 not answered",
+            cover: RaidCoverContent(
+                missing: [CoverGap(name: "Fort", icon: "spell_holy_wordfortitude")],
+                short: [CoverGap(name: "WF", icon: "spell_nature_windfury", have: 1, need: 2)], more: 0
+            ),
+            notSynced: officer
+                ? NotSyncedContent(line: "Not synced this week: Kaelra, Thalrin, Brakka, Mirethil", keys: ["k", "t", "b", "m"])
+                : nil
         ))
     }
 

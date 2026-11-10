@@ -155,7 +155,7 @@ struct HomeFlowLogicTests {
             key: "us/normal/felsnap", region: "us", ruleset: "normal", name: "Felsnap", race: "dwarf", className: "hunter",
             specName: "Beast Mastery", level: 34, guild: nil, faction: "alliance"
         )
-        #expect(presenter.head(leveler).facts == ["Level 34 Beast Mastery Hunter", "6 levels to band 40"])
+        #expect(presenter.head(leveler).facts == ["Level 34 Beast Mastery Hunter", "6 levels to the 40 list"])
     }
 
     @Test("the countdown: hours and minutes to the pull, none once it has started")

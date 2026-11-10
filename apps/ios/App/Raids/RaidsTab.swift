@@ -79,7 +79,8 @@ enum RaidsRoute: Hashable, Sendable {
     /// Lane F10: a report from Your raid night.
     case report(id: String)
     /// Lane F16: the guild's roster and raid history.
-    case roster(guild: Int64)
+    /// `only`: the characters the roster lists (the Raid tab's not-synced raiders); empty lists all.
+    case roster(guild: Int64, only: [String] = [])
     case history(guild: Int64)
 }
 
@@ -243,6 +244,10 @@ struct RaidsTab: View {
                 }
             ),
             openPage: openPage,
+            openRoster: { keys in
+                guard let guild = content?.head.id, extras != nil else { return }
+                router.path.append(.roster(guild: guild, only: keys))
+            },
             openLink: { openURL($0) },
             apply: { openURL(dependencies.site.apply(guild: $0.guildID)) },
             claim: { openURL(dependencies.site.guilds) },
@@ -329,9 +334,9 @@ struct RaidsTab: View {
                     account: ReportsAccount.of(session?.phase.me, current: session?.currentCharacter)
                 )
             }
-        case let .roster(guild):
+        case let .roster(guild, only):
             if let extras {
-                RosterRoute(extras: extras, guild: guild, shared: rosterStore)
+                RosterRoute(extras: extras, guild: guild, shared: rosterStore, only: only.isEmpty ? nil : Set(only))
             }
         case let .history(guild):
             if let extras {

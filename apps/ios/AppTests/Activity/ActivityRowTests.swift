@@ -28,16 +28,28 @@ struct ActivityRowTests {
     func guildsim() throws {
         let passed = try row("guildsim.passed")
         let parts = try #require(ActivityBody.parts(passed))
-        #expect(parts.first == .init(text: "1196", tone: .strong))
+        #expect(parts.contains(.init(text: "12", tone: .strong)))
         #expect(ActivityCrest.className(passed, specs: .main) == "warrior")
-        #expect(ActivityBody.figure(passed) == "1196.2")
+        // Row 11: the figure once, worded as the others; the body no longer repeats it.
+        #expect(ActivityBody.figure(passed) == "1,196 DPS")
+        #expect(!passed.body.contains("1196"))
     }
 
     @Test("a row without segments keeps its plain body; a sim keeps its figure")
     func plain() throws {
         let sim = try row("sim.finished")
         #expect(ActivityBody.parts(sim) == nil)
-        #expect(ActivityBody.figure(sim) == "1184.3")
+        #expect(ActivityBody.figure(sim) == "1,184 DPS")
+    }
+
+    @Test("Mark all read keeps a row's segments, crest and figure")
+    func asRead() throws {
+        let passed = try row("guildsim.passed")
+        let read = passed.asRead
+        #expect(read.read)
+        #expect(read.segments == passed.segments)
+        #expect(read.crest == passed.crest)
+        #expect(read.figure == passed.figure)
     }
 
     @Test("Before you pull: the item's icon beside a check that names one; none for a consumable without an icon")

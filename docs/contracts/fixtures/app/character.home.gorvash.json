@@ -13,7 +13,7 @@
     "unit": "dps",
     "unit_word": "DPS",
     "upgrade_count": 13,
-    "total_gain": 157.6,
+    "total_gain": 63.0,
     "not_sim_checked_count": 0,
     "not_modelled_count": 0,
     "upgrades": [
@@ -30,8 +30,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 24.6,
-        "gain_words": "+24.6 DPS",
+        "gain": 9.8,
+        "gain_words": "+9.8 DPS",
         "modelled": true
       },
       {
@@ -47,8 +47,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 19.4,
-        "gain_words": "+19.4 DPS",
+        "gain": 7.8,
+        "gain_words": "+7.8 DPS",
         "modelled": true
       },
       {
@@ -64,8 +64,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 17.9,
-        "gain_words": "+17.9 DPS",
+        "gain": 7.2,
+        "gain_words": "+7.2 DPS",
         "modelled": true
       },
       {
@@ -81,8 +81,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 16.5,
-        "gain_words": "+16.5 DPS",
+        "gain": 6.6,
+        "gain_words": "+6.6 DPS",
         "modelled": true
       },
       {
@@ -98,8 +98,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 14.1,
-        "gain_words": "+14.1 DPS",
+        "gain": 5.6,
+        "gain_words": "+5.6 DPS",
         "modelled": true
       },
       {
@@ -115,8 +115,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 13.0,
-        "gain_words": "+13.0 DPS",
+        "gain": 5.2,
+        "gain_words": "+5.2 DPS",
         "modelled": true
       },
       {
@@ -132,8 +132,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 10.3,
-        "gain_words": "+10.3 DPS",
+        "gain": 4.1,
+        "gain_words": "+4.1 DPS",
         "modelled": true
       },
       {
@@ -149,8 +149,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 9.5,
-        "gain_words": "+9.5 DPS",
+        "gain": 3.8,
+        "gain_words": "+3.8 DPS",
         "modelled": true
       },
       {
@@ -166,8 +166,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 7.2,
-        "gain_words": "+7.2 DPS",
+        "gain": 2.9,
+        "gain_words": "+2.9 DPS",
         "modelled": true
       },
       {
@@ -183,8 +183,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 7.1,
-        "gain_words": "+7.1 DPS",
+        "gain": 2.8,
+        "gain_words": "+2.8 DPS",
         "modelled": true
       },
       {
@@ -200,8 +200,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 6.0,
-        "gain_words": "+6.0 DPS",
+        "gain": 2.4,
+        "gain_words": "+2.4 DPS",
         "modelled": true
       },
       {
@@ -217,8 +217,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 6.0,
-        "gain_words": "+6.0 DPS",
+        "gain": 2.4,
+        "gain_words": "+2.4 DPS",
         "modelled": true
       },
       {
@@ -234,8 +234,8 @@
           "drop_chance": null
         },
         "worn": null,
-        "gain": 6.0,
-        "gain_words": "+6.0 DPS",
+        "gain": 2.4,
+        "gain_words": "+2.4 DPS",
         "modelled": true
       }
     ],

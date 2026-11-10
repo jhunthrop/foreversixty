@@ -191,7 +191,7 @@ private fun Cell(
             if (item != null) {
                 Text(
                     item.name,
-                    style = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, lineHeight = 16.sp),
+                    style = FsType.paperdollName,
                     color = item.quality,
                 )
                 Sub(slot.label, item.detail, item.isGain)
@@ -209,12 +209,13 @@ private fun Cell(
  */
 @Composable
 private fun Sub(label: String, detail: String?, gain: Boolean) {
-    val style = TextStyle(fontFamily = FsFont.body, fontSize = 12.sp, lineHeight = 16.sp)
+    val style = FsType.paperdollDetail
     if (detail == null) {
         Text(label, style = style, color = FsColor.muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
         return
     }
-    FlowRow(Modifier.fillMaxWidth()) {
+    // The separator joins its word and the detail in one node, so TalkBack never reads a lone `·` (N6).
+    FlowRow(Modifier.fillMaxWidth().clearAndSetSemantics { contentDescription = "$label, $detail" }) {
         Text("${label.replace(' ', NBSP)}$NBSP·$NBSP", style = style, color = FsColor.muted, maxLines = 1, softWrap = false)
         Text(
             detail.replace(' ', NBSP),

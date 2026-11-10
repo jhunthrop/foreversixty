@@ -45,8 +45,12 @@ data class TallyItem(val label: String, val have: Int, val want: Int?) {
         return if (short > 0) res.getString(R.string.raid_tab_tallyShort, of, short) else of
     }
 
-    /** `2/2`, or the count alone without a target. */
-    fun compact(res: Resources): String = want?.let { res.getString(R.string.raid_tab_tallyCompact, have, it) } ?: have.toString()
+    /** `2/2`, `5/8 · 3 short` (row 2: red alone does not say how many), or the count alone without a target. */
+    fun compact(res: Resources): String {
+        val target = want ?: return have.toString()
+        val of = res.getString(R.string.raid_tab_tallyCompact, have, target)
+        return if (short > 0) res.getString(R.string.raid_tab_tallyShort, of, short) else of
+    }
 
     private companion object {
         /** Three quarters of the target reads close (gold), under it short (wipe). */

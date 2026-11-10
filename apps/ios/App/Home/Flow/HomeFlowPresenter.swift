@@ -181,13 +181,17 @@ struct HomeFlowPresenter {
         let clockTime = clock.guildClock(raid.startsAt, guildZone: zone).replacingOccurrences(of: " ", with: Self.noBreak)
         let time = Copy.homeRaidWhen(date: clock.shortDate(raid.startsAt), time: clockTime)
         let counts = Copy.homeRaidCounts(in: raid.counts.signedIn, late: raid.counts.late)
+        // AS5: once answered the Segmented is the answer; the line names only the character (E7), or is empty.
         let answer: String = switch (selected, named) {
-        case let (state?, nil): Copy.homeRaidAnsweredAlone(answer: state.label)
-        case let (state?, _?): Copy.homeRaidAnswered(answer: state.label, name: name, role: role)
+        case (_?, nil): ""
+        case (_?, _?): Copy.raidTabAs(name: name, role: role)
         case (nil, nil): Copy.homeRaidNotAnsweredAlone
         case (nil, _?): Copy.homeRaidNotAnswered(name: name, role: role)
         }
         let open = named == nil ? Copy.homeRaidLineSubAlone(counts: counts) : Copy.homeRaidLineSub(counts: counts, name: name, role: role)
+        // AS5: once answered the Segmented is the answer; the line keeps the counts and who it is for.
+        let answeredSub = ([counts] + (named.map { [Copy.raidTabAs(name: $0.name, role: role)] } ?? []))
+            .joined(separator: Self.partSeparator)
         let guild = inputs.character.guild ?? ""
         let saved = raid.signups.first { $0.own && $0.characterKey == viewer?.characterKey }?.lateMinutes
         let minutes = selected == .late ? (inputs.answer == .late ? inputs.answering.pendingMinutes ?? saved : saved) : nil
@@ -197,7 +201,7 @@ struct HomeFlowPresenter {
             place: Copy.homeRaidPlace(guild: guild, when: time),
             clock: clockParts(to: raid.startsAt),
             clockLabel: clockLabel(to: raid.startsAt),
-            line: HomeLine(title: Copy.homeRaidLineTitle(raid: raid.zoneName, when: time), sub: selected == nil ? open : answer),
+            line: HomeLine(title: Copy.homeRaidLineTitle(raid: raid.zoneName, when: time), sub: selected == nil ? open : answeredSub),
             icon: raid.zoneIcon ?? RaidIcons.of(zone: raid.zone),
             answer: answer,
             selected: selected,
@@ -208,7 +212,6 @@ struct HomeFlowPresenter {
         )
         content.headLine = headLine(to: raid.startsAt, zone: zone, when: time)
         content.who = named.map { Copy.raidTabAs(name: $0.name, role: role) }
-        content.chip = selected.map { Self.answerWord($0, lateMinutes: minutes) }
         content.lateMinutes = minutes
         content.status = inputs.answering.line
         content.busy = inputs.answering.busy
@@ -258,18 +261,21 @@ struct HomeFlowPresenter {
         let minutes = (seconds % 3600) / 60
         return [
             FSClockPart(String(format: "%02d", hours), Copy.homeRaidHours),
-            FSClockPart(String(format: "%02d", minutes), Copy.homeRaidMinutes),
+            FSClockPart(String(format: "%02d", minutes), Copy.homeRaidMin),
         ]
     }
 
-    /// Who is coming against the comp target: tanks, healers, damage.
-    func tally(_ raid: RaidView) -> [FSTally.Item] {
-        guard let target = raid.compTarget else { return [] }
-        return [
-            FSTally.Item(label: Copy.raidGroupTanks, have: raid.counts.tanks, want: target.tanks),
-            FSTally.Item(label: Copy.raidGroupHealers, have: raid.counts.healers, want: target.healers),
-            FSTally.Item(label: Copy.homeRaidDamage, have: raid.counts.dps, want: target.melee + target.ranged),
+    /// Who is coming by role from the one count model (rows 1 and 2): against the comp target when the
+    /// raid has one (`Healers 5/8 · 3 short`), the plain count without (`Healers 6`).
+    func tally(_ raid: RaidView) -> [RoleLineContent] {
+        let counts = RaidRoleCounts.of(raid)
+        let target = raid.compTarget
+        let roles: [(wire: String, label: String, want: Int?)] = [
+            (RaidRoleCounts.tank, Copy.raidGroupTanks, target?.tanks),
+            (RaidRoleCounts.healer, Copy.raidGroupHealers, target?.healers),
+            (RaidRoleCounts.dps, Copy.homeRaidDamage, target.map { $0.melee + $0.ranged }),
         ]
+        return roles.map { RoleLineContent(role: $0.label, have: counts.count($0.wire), want: $0.want, names: "") }
     }
 
     func ready(_ check: ReadyCheck?) -> HomeLine? {
@@ -282,7 +288,8 @@ struct HomeFlowPresenter {
     /// The officer's open items (F3): who has not answered with the short role, and the applicants.
     func officer(_ inputs: HomeFlowInputs, raid: RaidView?) -> OfficerContent? {
         guard let badge = inputs.badge, badge.officer else { return nil }
-        let unanswered: HomeLine? = if let raid, badge.unanswered > 0 { unansweredLine(badge.unanswered, raid: raid) } else { nil }
+        // Row 6: the raid's own not-answered list, the population Who is coming's foot counts.
+        let unanswered: HomeLine? = if let raid, raid.notAnsweredCount > 0 { unansweredLine(raid.notAnsweredCount, raid: raid) } else { nil }
         let applicants: HomeLine? = badge.applicants > 0 ? HomeLine(
             title: Copy.homeOfficerApplicants(n: badge.applicants),
             sub: inputs.applicants.first.map { applicant in
@@ -325,7 +332,7 @@ struct HomeFlowPresenter {
         case let (state?, nil): Copy.homeLiveLineAlone(age: age, counts: counts, answer: state.label)
         case let (state?, who?): Copy.homeLiveLine(age: age, counts: counts, answer: state.label, name: who.name, role: Self.roleWord(who.role))
         }
-        return RaidLiveContent(eyebrow: Copy.homeRaidInProgress(guild: inputs.character.guild ?? "", zone: raid.zoneName), line: line)
+        return RaidLiveContent(eyebrow: Copy.homeRaidLive(guild: inputs.character.guild ?? "", raid: raid.zoneName), line: line)
     }
 
     // MARK: Last night
@@ -369,7 +376,8 @@ struct HomeFlowPresenter {
         let rows = query.rows(page.rows).map { row in
             let day = ActivityDay.of(row.occurredAt, now: now, calendar: calendar)
             let when = ActivitySections.when(row.occurredAt, day: day, now: now, calendar: calendar, locale: Locale(identifier: "en_US"))
-            return NewForYouRow(row: row, line: Copy.homeNewForYouLine(body: row.body, when: when))
+            // Row 3: Activity's bucket (`Sat`) on its own meta line, never `· 3 d ago` after the body.
+            return NewForYouRow(row: row, line: row.body, when: when)
         }
         return NewForYouContent(rows: rows, unread: page.unread)
     }
@@ -403,12 +411,7 @@ struct RaidShortRole: Equatable {
 
     /// Tanks and healers first: a raid short of damage is rarely held up by it.
     static func of(_ raid: RaidView) -> RaidShortRole? {
-        guard let target = raid.compTarget else { return nil }
-        let gaps = [
-            RaidShortRole(role: "tank", missing: target.tanks - raid.counts.tanks),
-            RaidShortRole(role: "healer", missing: target.healers - raid.counts.healers),
-            RaidShortRole(role: "dps", missing: target.melee + target.ranged - raid.counts.dps),
-        ]
-        return gaps.first { $0.missing > 0 }
+        guard let target = raid.compTarget, let short = RaidRoleCounts.of(raid).short(target) else { return nil }
+        return RaidShortRole(role: short.role, missing: short.missing)
     }
 }

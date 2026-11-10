@@ -81,16 +81,7 @@ class NotAnsweredModel(
         }
     }
 
-    private fun mentionLine(result: gg.foreversixty.app.model.RaidPingResult, people: String?): String {
-        if (!result.posted) return res.getString(gg.foreversixty.app.R.string.raid_na_noDiscord)
-        val said = if (people != null && result.mentioned > 0) {
-            res.getString(gg.foreversixty.app.R.string.raid_na_mentioned, people)
-        } else {
-            res.getString(gg.foreversixty.app.R.string.raid_na_mentionedAll, result.mentioned)
-        }
-        val recent = result.recentlyMentioned?.takeIf { it > 0 }?.let { res.getQuantityString(gg.foreversixty.app.R.plurals.raid_na_recently, it, it) }
-        return listOfNotNull(said, recent).joinToString(" ")
-    }
+    private fun mentionLine(result: gg.foreversixty.app.model.RaidPingResult, people: String?): String = MentionWords(res).line(result, people)
 
     fun undo(row: NotAnsweredRow) {
         holds.remove(row.characterKey)?.cancel()

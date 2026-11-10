@@ -111,6 +111,8 @@ private fun Upgrades(block: HomeBlock.Upgrades, actions: HomeActions) {
         onAction = actions.onGear,
         top = 0.dp,
         panel = PanelFrame.Plain,
+        stamp = block.synced,
+        stampWarn = block.syncedStale,
     ) {
         block.rows.forEachIndexed { index, row ->
             if (index > 0) FlowRule()
@@ -120,8 +122,6 @@ private fun Upgrades(block: HomeBlock.Upgrades, actions: HomeActions) {
             FlowRule()
             FlowItemRow(run.look, block.build, run.source, run.gain, run.unit, inset = 0.dp) { actions.onGear() }
         }
-        // The panel's own foot pads the stamp (the mock's `.stmp`, 4 above, 8 below).
-        block.synced?.let { FlowNote(it, Modifier.padding(top = FsSpace.space1)) }
     }
 }
 
@@ -182,7 +182,7 @@ private fun NewForYou(block: HomeBlock.Activity, build: String?, actions: HomeAc
     FlowSection(stringResource(R.string.home_newForYou), action = link, onAction = actions.onAllActivity, top = 0.dp, panel = PanelFrame.None) {
         block.rows.forEachIndexed { index, item ->
             val row = item.row
-            ActivityRowView(row, item.line, build, last = index == block.rows.lastIndex, onClick = { actions.onActivityRow(row) }, lineSuffix = item.age)
+            ActivityRowView(row, item.line, build, last = index == block.rows.lastIndex, onClick = { actions.onActivityRow(row) }, meta = item.age)
         }
     }
 }

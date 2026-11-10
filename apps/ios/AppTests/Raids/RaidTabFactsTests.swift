@@ -59,6 +59,48 @@ struct RaidTabFactsTests {
         #expect(damage.people.first?.className == "warrior")
     }
 
+    @Test("row 1: one count model, melee + ranged = Damage, and Home's card counts what the Raid tab does")
+    func countModel() throws {
+        for name in ["guild.raid", "guild.raid.officer", "guild.raid.two-characters"] {
+            let raid = try RaidFixture.load(RaidView.self, name)
+            let counts = RaidRoleCounts.of(raid)
+            #expect(counts.melee + counts.ranged == counts.damage, "\(name)")
+            let coming = raid.signups.filter { SignupState(rawValue: $0.state)?.isComing == true }
+            #expect(counts.tanks + counts.healers + counts.damage == coming.count, "\(name): every In and Late counted once")
+            let raidTab = presenter.coming(raid)
+            let home = HomeFlowPresenter(now: RaidTime.now, clock: RaidTime.clock).tally(raid)
+            #expect(home.map(\.role) == raidTab.map(\.role), "\(name)")
+            #expect(home.map(\.have) == raidTab.map(\.have), "\(name): Home equals Raid")
+            let damage = try #require(raidTab.first { $0.role == Copy.homeRaidDamage })
+            #expect(damage.have == counts.damage)
+            #expect(damage.split == Copy.raidTabDamageSplit(melee: counts.melee, ranged: counts.ranged))
+        }
+        let raid = try RaidFixture.raid()
+        #expect(RaidRoleCounts.of(raid) == RaidRoleCounts(tanks: 3, healers: 6, melee: 7, ranged: 8), "the Late melee is coming")
+    }
+
+    @Test("row 2: Home's compact tally carries the short count; without a target the plain count")
+    func compactTally() {
+        #expect(RoleLineContent(role: "Healers", have: 5, want: 8, names: "").compactTally == "5/8 · 3 short")
+        #expect(RoleLineContent(role: "Tanks", have: 2, want: 2, names: "").compactTally == "2/2")
+        #expect(RoleLineContent(role: "Healers", have: 6, want: nil, names: "").compactTally == "6")
+        #expect(RoleLineContent(role: "Healers", have: 6, want: nil, names: "").meter == nil)
+    }
+
+    @Test("row 6: Needs you and the foot count the raid's own not-answered list")
+    func unansweredAgree() throws {
+        let raid = try RaidFixture.load(RaidView.self, "guild.raid.officer")
+        let badge = RaidBadge(count: 6, youUnanswered: false, officer: true, unanswered: 5, applicants: 1)
+        let me = try RaidFixture.load(Me.self, "me")
+        var inputs = HomeFlowInputs(character: HomeCharacter(try #require(me.characters.first)))
+        inputs.raid = raid
+        inputs.badge = badge
+        let officer = try #require(HomeFlowPresenter(now: RaidTime.now, clock: RaidTime.clock).officer(inputs, raid: raid))
+        let title = try #require(officer.unanswered?.title)
+        #expect(title.hasPrefix("\(raid.notAnsweredCount) "), "not the badge's \(badge.unanswered)")
+        #expect(try #require(presenter.answers(raid)).hasSuffix(Copy.raidTabCountNotAnswered(n: raid.notAnsweredCount)))
+    }
+
     @Test("the head's facts: `Invites 6:45 pm · 40`; the foot: bench, out and not answered")
     func facts() throws {
         let raid = try RaidFixture.raid()
@@ -77,7 +119,9 @@ struct RaidTabFactsTests {
     @Test("G4: the cover names what is missing or short, and says nothing when all is covered")
     func cover() throws {
         let raid = try RaidFixture.raid()
-        #expect(presenter.cover(raid) == "Missing Blessing of Kings, Blessing of Might, Blessing of Wisdom and 2 more")
+        let cover = try #require(presenter.cover(raid))
+        #expect(cover.line == "Missing Blessing of Kings, Blessing of Might, Blessing of Wisdom and 2 more")
+        #expect(cover.missing.map(\.icon) == ["spell_magic_magearmor", "spell_holy_fistofjustice", "spell_holy_sealofwisdom"])
         let covered = try edited(raid) { json in
             json["cover"] = (json["cover"] as? [[String: Any]] ?? []).map { var row = $0; row["state"] = "ok"; return row }
         }
@@ -108,16 +152,31 @@ struct RaidTabFactsTests {
         let one = try with([windfury, fortitude])
         let many = try with([windfury] + gaps)
         let two = try with([windfury] + gaps.prefix(2))
-        #expect(presenter.cover(one) == "Missing Power Word: Fortitude · Windfury Totem 1 of 2")
-        #expect(presenter.cover(many) == "Missing Gap 1, Gap 2, Gap 3 and 10 more")
-        #expect(presenter.cover(two) == "Missing Gap 1, Gap 2 · Windfury Totem 1 of 2")
+        #expect(presenter.cover(many)?.line == "Missing Gap 1, Gap 2, Gap 3 and 10 more")
+        // These rows' keys (`gap0`...) have no composition label, so they read by name.
+        #expect(presenter.cover(two)?.line == "Missing Gap 1, Gap 2 · Windfury Totem 1 of 2", "missing first")
+        #expect(presenter.cover(one)?.line == "Missing Power Word: Fortitude · Windfury Totem 1 of 2")
+    }
+
+    @Test("row 4: a gap takes the composition's short label for its key, else its name")
+    func coverLabels() throws {
+        let raid = try edited(try RaidFixture.raid()) { json in
+            json["cover"] = (json["cover"] as? [[String: Any]] ?? []).map { row in
+                var row = row
+                if row["key"] as? String == "fortitude" { row["state"] = "missing" }
+                return row
+            }
+        }
+        let cover = try #require(presenter.cover(raid))
+        #expect(cover.missing.first?.name == "Fort")
+        #expect(cover.missing.dropFirst().first?.name == "Blessing of Kings")
     }
 
     @Test("G4: without cover rows the line falls back to the buffs no one brings")
     func coverFallback() throws {
         let raid = try edited(try RaidFixture.raid()) { json in json["cover"] = NSNull() }
-        let missing = (raid.composition?.buffs ?? []).filter { !$0.present }.map(\.name)
-        #expect(presenter.cover(raid) == (missing.isEmpty ? nil : Copy.raidTabCoverMissing(names: missing.joined(separator: ", "))))
+        let missing = (raid.composition?.buffs ?? []).filter { !$0.present }.map(\.label)
+        #expect(presenter.cover(raid)?.line == (missing.isEmpty ? nil : Copy.raidTabCoverMissing(names: missing.joined(separator: ", "))))
     }
 
     @Test("G1: officers see how many signed In have not synced; only for them, only when some have not")
@@ -125,7 +184,16 @@ struct RaidTabFactsTests {
         let raid = try RaidFixture.raid()
         #expect(presenter.notSynced(raid, synced: nil) == nil)
         #expect(presenter.notSynced(raid, synced: [FlowPlayer.key: true]) == nil)
-        #expect(presenter.notSynced(raid, synced: [FlowPlayer.key: false]) == Copy.raidTabNotSynced(n: 1))
+        let gorvash = try #require(raid.signups.first { $0.characterKey == FlowPlayer.key })
+        let one = NotSyncedContent(line: Copy.raidTabNotSyncedNames(names: gorvash.name), keys: [FlowPlayer.key])
+        #expect(presenter.notSynced(raid, synced: [FlowPlayer.key: false]) == one)
+        let coming = raid.signups.filter { SignupState(rawValue: $0.state)?.isComing == true }
+        let five = Dictionary(coming.prefix(5).map { ($0.characterKey, false) }) { first, _ in first }
+        let named = try #require(presenter.notSynced(raid, synced: five))
+        #expect(named.keys.count == 5)
+        #expect(named.line.hasSuffix(" and 2 more"), "three names, then and N more")
+        let four = Dictionary(coming.prefix(4).map { ($0.characterKey, false) }) { first, _ in first }
+        #expect(try #require(presenter.notSynced(raid, synced: four)).line.components(separatedBy: ", ").count == 4)
 
         let tab = RaidsTabModel(service: try EchoRaidService(), cache: NoRaidCache(), now: { RaidTime.now })
         await tab.load()
@@ -136,7 +204,7 @@ struct RaidTabFactsTests {
             if case let .guild(guild) = root { return guild }
             return nil
         }
-        #expect(guild(true)?.notSynced == Copy.raidTabNotSynced(n: 1))
+        #expect(guild(true)?.notSynced?.keys == [FlowPlayer.key])
         #expect(guild(false)?.notSynced == nil)
         #expect(guild(false)?.notes == "Bring **flasks**")
         #expect(guild(false)?.next?.invites != nil)

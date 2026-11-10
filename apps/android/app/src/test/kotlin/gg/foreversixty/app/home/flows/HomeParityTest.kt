@@ -51,6 +51,8 @@ class HomeParityTest {
 
     @Test fun normalDayAt1_5() = state("home-60", HomeFixtures.normalDay(), raid = 1, fontScale = 1.5f)
 
+    @Test fun normalDayAt2() = state("home-60", HomeFixtures.normalDay(), raid = 1, fontScale = 2f)
+
     @Test fun normalDayAnswered() = state("home-60-answered", HomeFixtures.normalDay(SignupState.In))
 
     @Test fun noGuild() = state("home-noguild", HomeFixtures.noGuild(), activity = 2)
@@ -99,7 +101,7 @@ object HomeFixtures {
     private const val SYNCED = "Synced 2 h ago from the addon"
 
     val head = HomeHead("Thandrel", "warrior", listOf("Level 60 Fury Warrior", "Olympus XXVII"))
-    private val felsnap = HomeHead("Felsnap", "hunter", listOf("Level 34 Beast Mastery Hunter", "6 levels to band 40"))
+    private val felsnap = HomeHead("Felsnap", "hunter", listOf("Level 34 Beast Mastery Hunter", "6 levels to the 40 list"))
 
     private fun upgrade(name: String, quality: Int, icon: String, source: String, gain: String) =
         UpgradeLine(ItemLook(name.hashCode(), name, quality, icon), source, gain, "DPS", "head", null, source)
@@ -115,19 +117,21 @@ object HomeFixtures {
             raidUpgrades,
             if (bestRun) upgrade("Blackcrow", 3, "inv_weapon_crossbow_02", "Best run · Blackrock Spire · 8%", "+1.9") else null,
             BUILD,
-            meta = "13 upgrades · +157.6 DPS",
+            meta = "12 upgrades · +47.5 DPS",
             synced = SYNCED,
         )
 
-    private fun act(id: Long, icon: String, title: String, line: String, unread: Boolean) = HomeActivityRow(
+    /** A feed row with its body and, on New for you, its when on its own meta line (row 3). */
+    private fun act(id: Long, icon: String, title: String, line: String, unread: Boolean, age: String? = null) = HomeActivityRow(
         ActivityRow(id = id, kind = "x", group = "gear", title = title, body = "", link = "", occurredAt = "2026-11-06T10:00:00Z", read = !unread, icon = icon),
         line,
+        age,
     )
 
     private val dayRows = listOf(
-        act(8, "ability_warrior_innerrage", "Kaelra passed you in the guild sims", "1,012.3 DPS, you are #7 of 14 · 1 h ago", true),
-        act(4, "inv_misc_pocketwatch_01", "Sim done: 948.6 DPS ±6", "+21 vs your last · 3 h ago", true),
-        act(1, "inv_misc_book_09", "Fury Warrior BiS changed", "A new pick for Hands · yesterday", false),
+        act(8, "ability_warrior_innerrage", "Kaelra passed you in the guild sims", "1,012.3 DPS, you are #7 of 14", true, "1 h ago"),
+        act(4, "inv_misc_pocketwatch_01", "Sim done: 948.6 DPS ±6", "+21 vs your last", true, "3 h ago"),
+        act(1, "inv_misc_book_09", "Fury Warrior BiS changed", "A new pick for Hands", false, "6:02 pm"),
     )
 
     private fun newForYou(rows: List<HomeActivityRow> = dayRows, unread: Int = 3) = HomeBlock.Activity(rows, unread)
@@ -142,10 +146,12 @@ object HomeFixtures {
         clockLabel = "2 hours 48 minutes",
         aside = "Wed 6 Jan, 8:00 pm CST",
         title = "Onyxia's Lair · Wed 6 Jan, 8:00 pm CST",
-        sub = if (answer == null) "18 in, 3 late · you have not answered, as Thandrel, Damage" else "You are In, as Thandrel, Damage",
-        me = if (answer == null) "You have not answered, as Thandrel, Damage" else "You are ${answer.name}, as Thandrel, Damage",
+        // AS5: once answered the segmented control is the answer; the line only names the character.
+        sub = if (answer == null) "18 in, 3 late · you have not answered, as Thandrel, Damage" else "18 in, 3 late · As Thandrel, Damage",
+        me = if (answer == null) "You have not answered, as Thandrel, Damage" else "As Thandrel, Damage",
         answer = answer,
         lateOpen = lateOpen,
+        lateMinutes = 30.takeIf { answer == SignupState.Late },
         tally = tally,
         ready = ReadyLine("2 things before you pull", "No flask in your bags; boots not enchanted · from your last log-out, 9\u00a0h ago"),
         officer = if (officer) OfficerItems("5 have not answered, 2 of them healers", "Healers short by 3", "1 applicant", "Mirelle, Holy Priest 60, 2 min ago") else null,
@@ -164,9 +170,9 @@ object HomeFixtures {
             HomeBlock.RaidLive(RaidLiveModel(41, "Olympus XXVII · Onyxia's Lair in progress", "Pulled 1 h 12 min ago · 18 in, 3 late · you are In as Thandrel, Damage")),
             newForYou(
                 listOf(
-                    act(9, ONY, "Brightwen is Late, 15 min", "Onyxia's Lair · 4 min ago", true),
-                    act(10, ONY, "Selka is In", "Restoration Druid · 20 min ago", true),
-                    act(3, ONY, "Healers short for Onyxia tonight", "3 of 8 missing · 3 h ago", false),
+                    act(9, ONY, "Brightwen is Late, 15 min", "Onyxia's Lair", true, "4 min ago"),
+                    act(10, ONY, "Selka is In", "Restoration Druid", true, "20 min ago"),
+                    act(3, ONY, "Healers short for Onyxia tonight", "3 of 8 missing", false, "3 h ago"),
                 ),
             ),
         ),
@@ -186,9 +192,9 @@ object HomeFixtures {
             upgrades(bestRun = true),
             newForYou(
                 listOf(
-                    act(8, "ability_warrior_innerrage", "Kaelra passed you in the guild sims", "1,012.3 DPS, you are #7 of 14 · 8 h ago", true),
-                    act(4, "inv_misc_pocketwatch_01", "Sim done: 948.6 DPS ±6", "+21 vs your last · yesterday", false),
-                    act(1, "inv_misc_book_09", "Fury Warrior BiS changed", "A new pick for Hands · Tue", false),
+                    act(8, "ability_warrior_innerrage", "Kaelra passed you in the guild sims", "1,012.3 DPS, you are #7 of 14", true, "8 h ago"),
+                    act(4, "inv_misc_pocketwatch_01", "Sim done: 948.6 DPS ±6", "+21 vs your last", false, "6:02 pm"),
+                    act(1, "inv_misc_book_09", "Fury Warrior BiS changed", "A new pick for Hands", false, "Tue"),
                 ),
             ),
         ),
@@ -203,7 +209,7 @@ object HomeFixtures {
         listOf(
             upgrades(bestRun = true),
             newForYou(unread = 2),
-            HomeBlock.FindGuild("Raid with a guild that plans its nights here, and answer its raids from the app."),
+            HomeBlock.FindGuild("Join a guild to sign up for its raids here."),
         ),
         BUILD,
     )
@@ -224,9 +230,9 @@ object HomeFixtures {
             ),
             newForYou(
                 listOf(
-                    act(5, "inv_misc_book_09", "Level 34: your 30 to 39 list", "Beast Mastery Hunter · 2 h ago", true),
-                    act(4, "inv_misc_pocketwatch_01", "Sim done: 58.4 DPS ±1", "+3.1 vs your last · yesterday", false),
-                    act(2, "inv_misc_book_09", "Beast Mastery Hunter moved to A", "Leveling tiers, 30 to 39 · 2 d ago", false),
+                    act(5, "inv_misc_book_09", "Level 34: your 30 to 39 list", "Beast Mastery Hunter", true, "2 h ago"),
+                    act(4, "inv_misc_pocketwatch_01", "Sim done: 58.4 DPS ±1", "+3.1 vs your last", false, "6:02 pm"),
+                    act(2, "inv_misc_book_09", "Beast Mastery Hunter moved to A", "Leveling tiers, 30 to 39", false, "Sun"),
                 ),
                 unread = 1,
             ),

@@ -76,6 +76,9 @@ type Event struct {
 	Segments []Segment
 	Crest    string
 	Figure   *float64
+	// ActivityBody replaces Body on the Activity row when the row draws its figure itself, so
+	// the row does not say the number twice (it may be empty); nil keeps Body.
+	ActivityBody *string
 	// Source is the producer's typed fact, for a channel that renders it in full (the
 	// Discord embeds read notify.SimFinished and notify.UploadParsed). nil otherwise.
 	Source any
@@ -84,6 +87,14 @@ type Event struct {
 // Publisher is what a producer calls; Router implements it.
 type Publisher interface {
 	Publish(ctx context.Context, e Event) error
+}
+
+// activityBody is the body the Activity row keeps: ActivityBody, else Body.
+func (e Event) activityBody() string {
+	if e.ActivityBody != nil {
+		return *e.ActivityBody
+	}
+	return e.Body
 }
 
 var errNoDedupe = errors.New("events: an event needs a dedupe key")

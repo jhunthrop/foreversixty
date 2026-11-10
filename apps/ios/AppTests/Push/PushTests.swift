@@ -79,6 +79,45 @@ struct PushLandingTests {
         let signup = RaidNotificationCenter.categories.first { $0.identifier == RaidPushCategory.signup }
         #expect(signup?.actions.map(\.identifier) == ["signup_in", "signup_late", "signup_bench", "signup_out"])
     }
+
+    /// The contract fixture's APNs payload as userInfo.
+    private func apns(_ name: String) throws -> [AnyHashable: Any] {
+        let data = try Data(contentsOf: RaidFixture.directory.appending(path: "\(name).json"))
+        return try #require(try JSONSerialization.jsonObject(with: data) as? [AnyHashable: Any])
+    }
+
+    @Test("the officer pushes' categories carry the server's actions: Mention on RAID_SHORT, Accept before Decline")
+    @MainActor
+    func officerCategories() throws {
+        let categories = RaidNotificationCenter.categories
+        for name in ["push.raid-short.apns", "push.guild-applicant.apns"] {
+            let info = try apns(name)
+            let aps = try #require(info["aps"] as? [String: Any])
+            let category = try #require(categories.first { $0.identifier == aps["category"] as? String }, "\(name)'s category is registered")
+            let served = (info[RaidMentionRequest.actionsKey] as? [[String: Any]] ?? []).compactMap { $0["id"] as? String }
+            #expect(category.actions.map(\.identifier) == served, "\(name)")
+        }
+        let short = try #require(categories.first { $0.identifier == RaidPushCategory.short })
+        #expect(short.actions.allSatisfy { !$0.options.contains(.foreground) }, "Mention answers in place")
+    }
+
+    @Test("Mention reads the raid and the short role from the push; Accept and Decline the application")
+    func officerAnswers() throws {
+        let short = try apns("push.raid-short.apns")
+        #expect(OfficerPushAnswer(action: RaidPushCategory.actionMention, userInfo: short)
+            == .mention(try #require(RaidMentionRequest(userInfo: short))))
+        let request = try #require(RaidMentionRequest(userInfo: short))
+        #expect(request.guild == 2)
+        #expect(request.raid == 7)
+        #expect(request.role == "healer")
+        var cooled = short
+        cooled[RaidMentionRequest.actionsKey] = nil
+        #expect(OfficerPushAnswer(action: RaidPushCategory.actionMention, userInfo: cooled) == .unreadable, "no action inside the cooldown")
+        let applicant = try apns("push.guild-applicant.apns")
+        #expect(OfficerPushAnswer(action: RaidPushCategory.actionAccept, userInfo: applicant) == .accept(guild: 2, application: 31))
+        #expect(OfficerPushAnswer(action: RaidPushCategory.actionDecline, userInfo: applicant) == .decline(guild: 2, application: 31))
+        #expect(OfficerPushAnswer(action: RaidPushCategory.actionIn, userInfo: applicant) == nil)
+    }
 }
 
 @Suite("Push token registration")

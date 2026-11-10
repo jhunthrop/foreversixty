@@ -9,7 +9,7 @@
     14,
     16,
     365,
-    216
+    220
    ],
    "inventory": {
     "button": 4,
@@ -19,18 +19,19 @@
   "section-who-is-coming": {
    "box": [
     14,
-    252,
+    256,
     365,
-    327
+    333
    ],
    "inventory": {
-    "row": 3
+    "row": 3,
+    "image": 2
    }
   },
   "section-before-you-pull": {
    "box": [
     14,
-    599,
+    609,
     365,
     326
    ],
@@ -41,7 +42,7 @@
   "section-olympus-xxvii": {
    "box": [
     14,
-    945,
+    955,
     365,
     288
    ],

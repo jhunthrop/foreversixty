@@ -104,7 +104,8 @@ sealed interface RaidsDestination {
     /** Lane F10: a report pushed from Your raid night. */
     data class Report(val id: String) : RaidsDestination
     /** Lane F16: the guild's roster and its logged raid nights. */
-    data class Roster(val guild: Long) : RaidsDestination
+    /** The guild's roster; [only] narrows it to those characters (the Raid tab's not-synced line). */
+    data class Roster(val guild: Long, val only: Set<String> = emptySet()) : RaidsDestination
     data class History(val guild: Long) : RaidsDestination
 }
 
@@ -362,7 +363,7 @@ fun RaidsRoute(
                 ReportRouteScreen(it.feature, ReportRoute(top.id), it.viewer) { feature.navigator.pop() }
             }
             is RaidsDestination.Roster -> extras?.let {
-                RosterRoute(it.roster(top.guild), clock, feature.now) { feature.navigator.pop() }
+                RosterRoute(it.roster(top.guild), clock, feature.now, top.only) { feature.navigator.pop() }
             }
             is RaidsDestination.History -> extras?.let {
                 val pager = remember(top) { it.history(top.guild) }
@@ -404,6 +405,7 @@ private fun raidTabActions(
                 GuildPage.Calendar, GuildPage.Sims -> guildPage()
             }
         },
+        onRosterOf = { keys -> guild?.let { feature.navigator.push(RaidsDestination.Roster(it.id, keys)) } },
         onApply = { openWeb("${RaidLinks.SITE}/app/guild/${it.id}") },
         onClaim = { openWeb(GUILDS) },
         onFindGuild = { openWeb(GUILDS) },

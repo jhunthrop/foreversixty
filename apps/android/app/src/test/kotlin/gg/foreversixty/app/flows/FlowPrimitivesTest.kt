@@ -31,6 +31,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.GraphicsMode
 
 /** The shared primitives' fixes: the disabled answers, the padded inline link, the 1.5x item row. */
 @RunWith(AndroidJUnit4::class)
@@ -91,7 +92,58 @@ class FlowPrimitivesTest {
         assertTrue("gain $gain under name $name", gain.top >= name.bottom)
     }
 
+    @Test
+    @GraphicsMode(GraphicsMode.Mode.NATIVE)
+    fun `at 2x a section's meta moves under its title and the action keeps one line`() {
+        compose.setContent {
+            val density = LocalDensity.current
+            CompositionLocalProvider(LocalDensity provides Density(density.density, LARGEST)) {
+                FlowSection("Next upgrades", action = "Gear ›", meta = "13 upgrades · +157.6 DPS") {}
+            }
+        }
+        val title = compose.onNodeWithText("Next upgrades", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val meta = compose.onNodeWithText("13 upgrades", substring = true, useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        val action = compose.onNodeWithText("Gear ›", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        assertTrue("meta $meta under title $title", meta.top >= title.bottom)
+        assertTrue("action $action on one line", action.width > action.height)
+    }
+
+    @Test
+    fun `the answers share one row at 1x and stack two by two from 1_5x (a2)`() {
+        fun bounds(scale: Float): Pair<androidx.compose.ui.geometry.Rect, androidx.compose.ui.geometry.Rect> {
+            compose.setContent {
+                val density = LocalDensity.current
+                CompositionLocalProvider(LocalDensity provides Density(density.density, scale)) { FlowSegmented(labels, "In") {} }
+            }
+            val first = compose.onNodeWithText("In").fetchSemanticsNode().boundsInRoot
+            val third = compose.onNodeWithText("Bench").fetchSemanticsNode().boundsInRoot
+            return first to third
+        }
+        val (inAt1, benchAt1) = bounds(1f)
+        assertEquals(inAt1.top, benchAt1.top)
+        assertTrue(benchAt1.left > inAt1.right)
+    }
+
+    @Test
+    fun `at 1_5x Bench drops under In`() {
+        compose.setContent {
+            val density = LocalDensity.current
+            CompositionLocalProvider(LocalDensity provides Density(density.density, LARGE)) { FlowSegmented(labels, "In") {} }
+        }
+        val first = compose.onNodeWithText("In").fetchSemanticsNode().boundsInRoot
+        val third = compose.onNodeWithText("Bench").fetchSemanticsNode().boundsInRoot
+        assertTrue("bench $third under in $first", third.top >= first.bottom)
+    }
+
+    @Test
+    fun `the chosen answer fills teal inside the teal edge, as iOS and the web primary (a1)`() {
+        val enabled = ChoiceColors.of(true)
+        assertEquals(gg.foreversixty.app.designsystem.FsColor.teal, enabled.selected)
+        assertEquals(gg.foreversixty.app.designsystem.FsColor.tealEdge, enabled.selectedEdge)
+    }
+
     private companion object {
         const val LARGE = 1.5f
+        const val LARGEST = 2f
     }
 }

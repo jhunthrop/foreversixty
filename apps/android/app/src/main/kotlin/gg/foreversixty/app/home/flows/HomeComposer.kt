@@ -3,7 +3,7 @@ package gg.foreversixty.app.home.flows
 import android.content.res.Resources
 import gg.foreversixty.app.R
 import gg.foreversixty.app.activity.Activity
-import gg.foreversixty.app.activity.ActivityDay
+import gg.foreversixty.app.activity.ActivityTime
 import gg.foreversixty.app.auth.session.RelativeAge
 import gg.foreversixty.app.bis.BisRange
 import gg.foreversixty.app.gear.RunPick
@@ -15,6 +15,7 @@ import gg.foreversixty.app.model.ActivityRow
 import gg.foreversixty.app.model.CharacterHome
 import gg.foreversixty.app.model.HomeSection
 import gg.foreversixty.app.model.HomeUpgrade
+import gg.foreversixty.app.isStale
 import gg.foreversixty.app.phrase
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -78,7 +79,7 @@ class HomeComposer(private val res: Resources, private val now: Instant, private
         val rows = HomePresenter.presentationOrder(home.upgrades).take(limit).map { upgradeLine(it, unit) }
         if (rows.isEmpty()) return null
         val run = inputs.bestRun?.takeIf { bestRun }?.let { bestRunRow(it, unit) }
-        return HomeBlock.Upgrades(rows, run, home.dataBuild, upgradesMeta(home, unit), syncedStamp(home))
+        return HomeBlock.Upgrades(rows, run, home.dataBuild, upgradesMeta(home, unit), syncedStamp(home), syncAge(home)?.isStale() == true)
     }
 
     /** One upgrade: `Head · Blacksmithing · 4% · replaces Lionheart Helm` (round 2: the drop chance, the worn item). */
@@ -111,10 +112,12 @@ class HomeComposer(private val res: Resources, private val now: Instant, private
 
     /** `Synced 2 h ago`, or `Synced 2 h ago from the addon`; null before the first sync. */
     fun syncedStamp(home: CharacterHome): String? {
-        val at = home.syncedAt?.let { runCatching { Instant.parse(it) }.getOrNull() } ?: return null
-        val age = RelativeAge.of(at, now).phrase(res)
+        val age = syncAge(home)?.phrase(res) ?: return null
         return res.getString(if (home.syncedFrom == ADDON) R.string.home_answer_synced_addon else R.string.home_answer_synced, age)
     }
+
+    private fun syncAge(home: CharacterHome): RelativeAge? =
+        home.syncedAt?.let { runCatching { Instant.parse(it) }.getOrNull() }?.let { RelativeAge.of(it, now) }
 
     /** Best run as a row (round 2): the item, `Best run · Blackrock Spire · 8%`, its gain at the end. */
     fun bestRunRow(pick: RunPick, unit: String): UpgradeLine {
@@ -148,21 +151,12 @@ class HomeComposer(private val res: Resources, private val now: Instant, private
         val rows = Activity.items(inputs.activity)
             .filter { (section.group == null || it.row.group == section.group) && it.row.kind !in excluded }
             .take(section.limit ?: LIMIT)
-            .map { HomeActivityRow(it.row, line(it.row.body, it.at), age(it.at)) }
+            .map { HomeActivityRow(it.row, it.row.body, age(it.at)) }
         return HomeBlock.Activity(rows, inputs.unread)
     }
 
-    /** `+21 vs your last · 3 h ago`; yesterday reads as the day. */
-    fun line(body: String, at: Instant): String = listOf(body, age(at)).filter { it.isNotBlank() }.joinToString(" · ")
-
-    /** The when alone: `3 h ago`, or `Yesterday`. */
-    fun age(at: Instant): String {
-        val today = now.atZone(zone).toLocalDate()
-        return when (Activity.dayOf(at.atZone(zone).toLocalDate(), today)) {
-            ActivityDay.Yesterday -> res.getString(R.string.home_yesterday)
-            else -> RelativeAge.of(at, now).phrase(res)
-        }
-    }
+    /** The when on its own meta line, Activity's buckets (row 3): `3 h ago`, `6:02 pm`, `Sat`, `3 Nov`. */
+    fun age(at: Instant): String = ActivityTime.label(res, at, now, zone)
 
     private fun toBand(level: Int): String {
         val next = (level / BisRange.BAND_STEP + 1) * BisRange.BAND_STEP

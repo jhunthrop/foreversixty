@@ -65,7 +65,7 @@ func samplePosted() notify.RaidPosted {
 func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	p := samplePosted()
 	posted := raidPostedEvent(3, p)
-	if posted.Body != "Sign-ups are open: Wed 4 Nov, 8:00 pm CST. 12 of 40 signed." || posted.Thread != "raid-9" || posted.Collapse != "raid.posted-9" {
+	if posted.Body != "12 of 40 signed. Wed 4 Nov, 8:00 pm CST." || posted.Thread != "raid-9" || posted.Collapse != "raid.posted-9" {
 		t.Fatalf("posted %+v", posted)
 	}
 	if len(posted.Actions) != 4 || posted.Actions[0].Path != "/v1/guilds/3/raids/9/signups/{character}" ||
@@ -79,7 +79,7 @@ func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	if posted.Audience.Kind != events.ToGuildMembers || posted.Data["raid_id"] != "9" {
 		t.Fatalf("posted %+v", posted)
 	}
-	if e := raidShortEvent(3, p, unansweredUnknown); e.Body != "12 of 40 signed, 24 hours out." || e.Audience.Kind != events.ToGuildOfficers {
+	if e := raidShortEvent(3, p, unansweredUnknown, false); e.Body != "12 of 40 signed, 24 hours out." || e.Audience.Kind != events.ToGuildOfficers {
 		t.Fatalf("short %+v", e)
 	}
 	moved := raidChangedEvent(3, p, false)
@@ -98,7 +98,7 @@ func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	if e := rosterSetEvent(3, p, 7, SignupBench, time.Unix(1, 0)); e.Body != raidEventCopy.RosterBench || e.Audience.UserIDs[0] != 7 {
 		t.Fatalf("roster %+v", e)
 	}
-	for _, e := range []events.Event{posted, moved, raidNudgeEvent(3, p, []int64{1}), raidStartingEvent(3, p, time.Hour, events.Users(1), ""), raidShortEvent(3, p, 0)} {
+	for _, e := range []events.Event{posted, moved, raidNudgeEvent(3, p, []int64{1}), raidStartingEvent(3, p, time.Hour, events.Users(1), ""), raidShortEvent(3, p, 0, true)} {
 		if err := e.Validate(); err != nil {
 			t.Fatalf("%s: %v", e.Kind, err)
 		}
@@ -115,9 +115,9 @@ func TestRaidPostedBodyCountsTheSigned(t *testing.T) {
 		p    notify.RaidPosted
 		want string
 	}{
-		{"size known", samplePosted(), "Sign-ups are open: Wed 4 Nov, 8:00 pm CST. 12 of 40 signed."},
-		{"open size", open, "Sign-ups are open: Wed 4 Nov, 8:00 pm CST. 12 signed."},
-		{"morning reads am", afternoon, "Sign-ups are open: Thu 5 Nov, 9:30 am CST. 12 of 40 signed."},
+		{"size known", samplePosted(), "12 of 40 signed. Wed 4 Nov, 8:00 pm CST."},
+		{"open size", open, "12 signed. Wed 4 Nov, 8:00 pm CST."},
+		{"morning reads am", afternoon, "12 of 40 signed. Thu 5 Nov, 9:30 am CST."},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -141,19 +141,78 @@ func TestRaidShortBodyNamesShortRolesAndUnanswered(t *testing.T) {
 		unanswered int
 		want       string
 	}{
-		{"roles and unanswered", withTarget, 5, "12 of 40 signed, 24 hours out. Healers 1 of 8, 5 not answered."},
-		{"roles only, count unknown", withTarget, unansweredUnknown, "12 of 40 signed, 24 hours out. Healers 1 of 8."},
-		{"no target, unanswered", samplePosted(), 3, "12 of 40 signed, 24 hours out. 3 not answered."},
+		{"roles and unanswered", withTarget, 5, "Healers 1 of 8, 5 not answered. 12 of 40 signed, 24 hours out."},
+		{"roles only, count unknown", withTarget, unansweredUnknown, "Healers 1 of 8. 12 of 40 signed, 24 hours out."},
+		{"no target, unanswered", samplePosted(), 3, "3 not answered. 12 of 40 signed, 24 hours out."},
 		{"nothing more known", samplePosted(), 0, "12 of 40 signed, 24 hours out."},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			if got := raidShortEvent(3, c.p, c.unanswered).Body; got != c.want {
+			if got := raidShortEvent(3, c.p, c.unanswered, false).Body; got != c.want {
 				t.Fatalf("body %q, want %q", got, c.want)
 			}
 		})
 	}
 }
+
+func TestRaidShortMentionsTheShortestRole(t *testing.T) {
+	short := samplePosted()
+	short.Target = &notify.RoleTarget{Tanks: 2, Healers: 8, Ranged: 4}
+	short.Roster = []notify.RosterLine{{Name: "Mirelle", Class: "priest", Spec: "Holy", Role: "healer", State: "in"}}
+	dpsShort := samplePosted()
+	dpsShort.Target = &notify.RoleTarget{Ranged: 3}
+	cases := []struct {
+		name    string
+		p       notify.RaidPosted
+		canPing bool
+		want    string // the ping body's role; "" for no action
+		title   string
+	}{
+		{"healers furthest below", short, true, RoleHealer, "Mention healers"},
+		{"ranged pings dps", dpsShort, true, RoleDPS, "Mention DPS"},
+		{"inside the cooldown", short, false, "", ""},
+		{"no target", samplePosted(), true, "", ""},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			e := raidShortEvent(3, c.p, 0, c.canPing)
+			if c.want == "" {
+				if len(e.Actions) != 0 {
+					t.Fatalf("actions %+v, want none", e.Actions)
+				}
+				return
+			}
+			if len(e.Actions) != 1 {
+				t.Fatalf("actions %+v", e.Actions)
+			}
+			a := e.Actions[0]
+			if a.ID != MentionShortActionID || a.Method != http.MethodPost || a.Path != "/v1/guilds/3/raids/9/ping" ||
+				a.Body["role"] != c.want || a.Title != c.title {
+				t.Fatalf("action %+v", a)
+			}
+		})
+	}
+}
+
+func TestPingOpenHonoursNextAllowedAt(t *testing.T) {
+	now := time.Date(2026, 11, 4, 12, 0, 0, 0, time.UTC)
+	cases := []struct {
+		name string
+		last *time.Time
+		want bool
+	}{
+		{"never pinged", nil, true},
+		{"inside the cooldown", ptrTime(now.Add(-time.Hour)), false},
+		{"cooldown over", ptrTime(now.Add(-pingEvery)), true},
+	}
+	for _, c := range cases {
+		if got := pingOpen(pingStateOf(c.last), now); got != c.want {
+			t.Errorf("%s: %v, want %v", c.name, got, c.want)
+		}
+	}
+}
+
+func ptrTime(t time.Time) *time.Time { return &t }
 
 func TestRaidStartingBodyNamesTheReadyMiss(t *testing.T) {
 	ok := ReadyItem{Key: "flask", State: ReadyOK, Title: "Flask of the Titans"}

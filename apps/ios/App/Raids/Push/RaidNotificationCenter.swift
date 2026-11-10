@@ -10,8 +10,8 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     static let shared = RaidNotificationCenter()
 
     private var answerer: RaidPushAnswerer?
-    /// Declines an application from the applicant push; true when the API took it.
-    private var decline: (@Sendable (_ guild: Int64, _ application: Int64) async -> Bool)?
+    /// Accept, Decline and Mention from the officer pushes.
+    private var officer = OfficerPushActions()
     /// The app's router; a tap that arrives before it is set (a cold launch) waits in `pending`.
     var onOpen: ((IntentDestination) -> Void)? {
         didSet {
@@ -21,9 +21,9 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
     private var pending: IntentDestination?
 
     /// Installs the delegate and the categories, once at launch.
-    func install(answerer: RaidPushAnswerer, decline: @escaping @Sendable (_ guild: Int64, _ application: Int64) async -> Bool) {
+    func install(answerer: RaidPushAnswerer, officer: OfficerPushActions) {
         self.answerer = answerer
-        self.decline = decline
+        self.officer = officer
         let center = UNUserNotificationCenter.current()
         center.delegate = self
         center.setNotificationCategories(Self.categories)
@@ -36,14 +36,23 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
         let out = UNNotificationAction(identifier: RaidPushCategory.actionOut, title: Copy.pushActionOut, options: [])
         let askSpec = UNNotificationAction(identifier: RaidPushCategory.actionAskSpec, title: Copy.pushActionAskSpec, options: [.foreground])
         let choose = UNNotificationAction(identifier: RaidPushCategory.actionChoose, title: Copy.pushActionChoose, options: [.foreground])
+        let acceptAction = UNNotificationAction(
+            identifier: RaidPushCategory.actionAccept, title: Copy.pushActionAccept, options: [.authenticationRequired]
+        )
         let declineAction = UNNotificationAction(
             identifier: RaidPushCategory.actionDecline, title: Copy.pushActionDecline, options: [.destructive, .authenticationRequired]
+        )
+        // A category's titles are fixed at launch, so the role the server names (`Mention healers`)
+        // reads in the body; the action says what it does.
+        let mention = UNNotificationAction(
+            identifier: RaidPushCategory.actionMention, title: Copy.pushActionMention, options: [.authenticationRequired]
         )
         return [
             UNNotificationCategory(identifier: RaidPushCategory.signup, actions: [signIn, late, bench, out], intentIdentifiers: []),
             UNNotificationCategory(identifier: RaidPushCategory.askSpec, actions: [askSpec, out], intentIdentifiers: []),
             UNNotificationCategory(identifier: RaidPushCategory.choose, actions: [choose], intentIdentifiers: []),
-            UNNotificationCategory(identifier: RaidPushCategory.applicant, actions: [declineAction], intentIdentifiers: []),
+            UNNotificationCategory(identifier: RaidPushCategory.applicant, actions: [acceptAction, declineAction], intentIdentifiers: []),
+            UNNotificationCategory(identifier: RaidPushCategory.short, actions: [mention], intentIdentifiers: []),
         ]
     }
 
@@ -59,8 +68,8 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
         let content = request.content
         let payload = RaidPushPayload(userInfo: content.userInfo)
         let landing = PushLanding.destination(userInfo: content.userInfo)
-        if response.actionIdentifier == RaidPushCategory.actionDecline {
-            await declineApplicant(data: PushLanding.data(userInfo: content.userInfo), landing: landing)
+        if let answer = OfficerPushAnswer(action: response.actionIdentifier, userInfo: content.userInfo) {
+            await answerOfficer(answer, landing: landing)
             return
         }
         await handle(
@@ -69,13 +78,16 @@ final class RaidNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
         )
     }
 
-    /// Decline from the applicant push; a refused or failed decline opens the review instead.
-    private func declineApplicant(data: [String: String], landing: IntentDestination?) async {
-        if let application = PushLanding.applicant(data: data), let decline,
-           await decline(application.guild, application.application) {
-            return
+    /// Accept or Decline from the applicant push, Mention from the short raid's: done in place; a
+    /// refused, failed or unreadable answer opens the push's landing instead.
+    private func answerOfficer(_ answer: OfficerPushAnswer, landing: IntentDestination?) async {
+        let done = switch answer {
+        case let .accept(guild, application): await officer.accept(guild, application)
+        case let .decline(guild, application): await officer.decline(guild, application)
+        case let .mention(request): await officer.mention(request.guild, request.raid, request.role)
+        case .unreadable: false
         }
-        if let landing { open(landing) }
+        if !done, let landing { open(landing) }
     }
 
     /// A background answer posts in place; a tap lands on the event's answer (flows spec F4).

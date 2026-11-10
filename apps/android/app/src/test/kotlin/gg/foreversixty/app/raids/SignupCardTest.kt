@@ -148,9 +148,10 @@ class SignupCardTest {
         assertEquals(SignupState.Late, card.answer)
         assertEquals(30, card.lateMinutes)
         assertTrue(card.lateOpen)
-        assertTrue(card.me, card.me.contains(late))
-        assertTrue(card.sub, card.sub.contains(late))
-        assertEquals(late, card.chip)
+        // AS5: the segmented control and its minutes are the answer; with one character no line repeats it.
+        assertEquals(null, card.me)
+        assertEquals(false, card.sub.orEmpty().contains(late))
+        assertEquals(late, RaidCardWords(resources(), clock(), RaidTime.now).answerWord(SignupState.Late, card.lateMinutes))
     }
 
     @Test

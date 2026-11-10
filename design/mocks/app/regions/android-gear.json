@@ -9,14 +9,14 @@
     26,
     85,
     360,
-    64
+    44
    ],
    "inventory": {}
   },
   "slots": {
    "box": [
     26,
-    161,
+    141,
     360,
     490
    ],
@@ -25,10 +25,10 @@
     "image": 17
    }
   },
-  "section-where-to-go-tonight": {
+  "section-where-to-go": {
    "box": [
     14,
-    683,
+    663,
     384,
     302
    ],

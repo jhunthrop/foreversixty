@@ -269,7 +269,7 @@ public struct ActivityRow: Codable, Sendable, Equatable {
     public let segments: [FeedSegment]?
     /// The class slug of the other player the row is about (guildsim.passed's passer); absent otherwise.
     public let crest: String?
-    /// The row's number when it has one: sim.finished's DPS, guildsim.passed's figure. Absent otherwise.
+    /// The row's number when it has one: sim.finished's DPS, guildsim.passed's figure; the body then leaves it out (sim.finished keeps its headline, maybe empty; guildsim.passed the lead). Absent otherwise.
     public let figure: Double?
 
     public init(

@@ -56,8 +56,7 @@ class RaidRoleLinesTest {
     @Test fun `names carry their class for the colour, and Damage its melee and ranged split`() {
         val roles = lines.of(raid)
         assertEquals(raid.signups.first { it.name == "Kraggor" }.className, roles[0].names.first().className)
-        val c = raid.counts
-        assertEquals("${c.melee} melee, ${c.ranged} ranged", roles[2].split)
+        assertEquals("7 melee, 8 ranged", roles[2].split)
         assertEquals(null, roles[0].split)
     }
 }

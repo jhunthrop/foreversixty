@@ -2,7 +2,7 @@
 //
 // guild.applicant (spec 2026-11-08-app-flows F3): when someone applies, the guild's officers
 // hear it. The push opens the applicant sheet (/app/guild/{id}/applicants/{app}) and offers
-// Decline, never Accept; Review is the notification itself. Published after the application
+// Accept and Decline; Review is the notification itself. Published after the application
 // commits, off the request; a failure never fails the application.
 package guilds
 
@@ -21,10 +21,11 @@ const applicantBodyMax = 140
 
 // applicantCopy is the words of guild.applicant.
 var applicantCopy = struct {
-	Title, NoNote, Decline string
+	Title, NoNote, Accept, Decline string
 }{
 	Title:   "New applicant: %s",
 	NoNote:  "Applied to %s.",
+	Accept:  "Accept",
 	Decline: "Decline",
 }
 
@@ -58,10 +59,18 @@ func (s *Service) applicantEvent(guildName string, a Application) events.Event {
 		Link:      s.PublicBaseURL + ApplicantPagePath(a.GuildID, a.ID),
 		Thread:    "guild-" + gid + "-applicants",
 		Collapse:  string(events.GuildApplicant) + "-" + id,
-		Actions: []events.Action{{ID: "application_decline", Title: applicantCopy.Decline, Method: "POST",
-			Path: fmt.Sprintf("/v1/guilds/%d/applications/%d/decline", a.GuildID, a.ID)}},
-		Data: map[string]string{"guild_id": gid, "application_id": id},
+		Actions:   applicantActions(a.GuildID, a.ID),
+		Data:      map[string]string{"guild_id": gid, "application_id": id},
 	}
+}
+
+// applicantActions are Accept and Decline: each POSTs the officer's decision with no body.
+func applicantActions(guildID, applicationID int64) []events.Action {
+	action := func(decision, title string) events.Action {
+		return events.Action{ID: "application_" + decision, Title: title, Method: "POST",
+			Path: fmt.Sprintf("/v1/guilds/%d/applications/%d/%s", guildID, applicationID, decision)}
+	}
+	return []events.Action{action("accept", applicantCopy.Accept), action("decline", applicantCopy.Decline)}
 }
 
 // applicantTitle names the applicant: "New applicant: Mirelle, Holy Priest 60", each part only

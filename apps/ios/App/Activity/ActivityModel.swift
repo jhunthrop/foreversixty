@@ -150,9 +150,18 @@ final class ActivityModel {
         }
     }
 
-    /// The next page, when the list reaches its end.
+    /// The next page is out (Show older reads `…` and waits).
+    private(set) var loadingMore = false
+
+    /// Older rows exist past the loaded ones.
+    var hasOlder: Bool { nextBefore != nil }
+
+    /// The next page, from Show older (i1).
     func loadMore() async {
-        guard let before = nextBefore, let page = try? await service.page(group: nil, before: before) else { return }
+        guard let before = nextBefore, !loadingMore else { return }
+        loadingMore = true
+        defer { loadingMore = false }
+        guard let page = try? await service.page(group: nil, before: before) else { return }
         rows += page.rows.filter { new in !rows.contains { $0.id == new.id } }
         nextBefore = page.nextBefore
         setUnread(page.unread)
@@ -180,6 +189,9 @@ final class ActivityModel {
 
 extension ActivityRow {
     var asRead: ActivityRow {
-        ActivityRow(id: id, kind: kind, group: group, title: title, body: body, link: link, occurredAt: occurredAt, read: true, icon: icon)
+        ActivityRow(
+            id: id, kind: kind, group: group, title: title, body: body, link: link, occurredAt: occurredAt, read: true, icon: icon,
+            segments: segments, crest: crest, figure: figure
+        )
     }
 }

@@ -205,6 +205,15 @@ object FsType {
     val tag = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     // The answer chip at a raid head's end, `Late · 30 min` (brand S4).
     val answerChip = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 18.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The apps' bar title beside the profile button, Material 3's small top app bar size (brand
+    // D6).
+    val barTitle = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The paperdoll list: an item's name in its cell (brand D6).
+    val paperdollName = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The paperdoll list: the slot word and its gain under the name (brand D6).
+    val paperdollDetail = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 15.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    // The flows' small button label and a row's check mark (brand D6).
+    val buttonSmall = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 16.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     // The countdown's figures on Home's raid card (brand S4).
     val countdown = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 36.sp, lineHeight = 38.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines, fontFeatureSettings = "tnum")
     val figureSm = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 16.sp, lineHeight = 20.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines, fontFeatureSettings = "tnum")
@@ -268,6 +277,8 @@ object FsSize {
     val barH = 56.dp
     val barPhone = 48.dp
     val segment = 44.dp
+    // A spell icon beside a name in a line of text (the Covered line).
+    val icon20 = 20.dp
     val icon28 = 28.dp
     val icon32 = 32.dp
     val icon36 = 36.dp

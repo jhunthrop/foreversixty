@@ -8,6 +8,8 @@ import android.app.PendingIntent
 import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -72,6 +74,16 @@ class RaidDeepLinkFlowTest {
 
     private fun back() {
         compose.runOnIdle { compose.activity.onBackPressedDispatcher.onBackPressed() }
+        compose.waitForIdle()
+    }
+
+    /**
+     * Waits for the page on top to finish loading: no progress indicator left in the tree. A page pushed
+     * or popped back to builds a new model that loads again, so a capture straight after it could catch
+     * the spinner; this waits on the state, never on a sleep.
+     */
+    private fun awaitLoaded() {
+        compose.waitUntil(SETTLE_MILLIS) { compose.onAllNodes(LOADING, useUnmergedTree = true).fetchSemanticsNodes().isEmpty() }
         compose.waitForIdle()
     }
 
@@ -159,12 +171,13 @@ class RaidDeepLinkFlowTest {
             listOf(RaidsDestination.Raid(FlowPlayer.GUILD, FlowPlayer.RAID), RaidsDestination.Night(FlowPlayer.RAID)),
             flow.navigator.stack.toList(),
         )
-        compose.waitForIdle()
+        awaitLoaded()
         shots.step(6, "night")
 
         back()
         assertTrue(flow.navigator.stack.single() is RaidsDestination.Raid)
         assertTrue(flow.service.requests.isEmpty())
+        awaitLoaded()
         shots.step(7, "night-back-raid")
 
         back()
@@ -246,5 +259,8 @@ class RaidDeepLinkFlowTest {
 
         /** The ongoing notification's countdown: 15 min to the invites. */
         const val LIVE_LEAD_SECONDS = 15L * 60
+
+        /** A progress indicator: a page still loading. */
+        val LOADING = SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
     }
 }

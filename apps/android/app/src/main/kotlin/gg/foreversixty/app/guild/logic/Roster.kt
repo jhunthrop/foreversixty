@@ -102,13 +102,22 @@ object RosterEntries {
     }
 }
 
-/** The chips, the search and the sort applied; rows with the same sort key keep name order. */
-data class RosterQuery(val role: RosterRole = RosterRole.All, val sort: RosterSort = RosterSort.Rank, val search: String = "")
+/**
+ * The chips, the search and the sort applied; rows with the same sort key keep name order. [only], when
+ * not empty, keeps just those characters (the Raid tab's not-synced line, round 3 row 5).
+ */
+data class RosterQuery(
+    val role: RosterRole = RosterRole.All,
+    val sort: RosterSort = RosterSort.Rank,
+    val search: String = "",
+    val only: Set<String> = emptySet(),
+)
 
 object RosterList {
     fun apply(entries: List<RosterEntry>, query: RosterQuery): List<RosterEntry> {
         val needle = query.search.trim()
         return entries
+            .filter { query.only.isEmpty() || it.characterKey in query.only }
             .filter { query.role.wire == null || it.role == query.role.wire }
             .filter { needle.isEmpty() || it.name.contains(needle, ignoreCase = true) }
             .sortedWith(comparator(query.sort))

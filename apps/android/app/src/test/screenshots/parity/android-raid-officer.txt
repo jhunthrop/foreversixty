@@ -5,7 +5,6 @@ Onyxia's Lair
 Invites 7:45 pm · 40
 As Thandrel, Damage
 In
-In
 Late
 Bench
 Out
@@ -25,9 +24,12 @@ Healers 5 of 8 · 3 short
 Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late · 15 min)
 Damage 11 of 30 · 19 short · 5 melee, 6 ranged
 Thandrel, Kaelra, Thalrin and 8 more
-Bench 1 · Out 3 · 14 not answered
-Missing Fortitude · Windfury 1 of 2
-4 signed In have not synced this week
+Bench 1 · Out 3 · 5 not answered
+Missing Fort · WF 1 of 2
+Missing
+Fort
+WF 1 of 2
+Not synced this week: Kaelra, Thalrin, Brakka, Mirethil
 Before you pull
 ✓
 Drakefire Amulet

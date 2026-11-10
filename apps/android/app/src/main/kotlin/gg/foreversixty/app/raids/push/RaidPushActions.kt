@@ -143,12 +143,15 @@ class RaidPushAnswerer(private val service: RaidService, private val res: Resour
                 val moved = result.data.moved
                 val suffix = payload.answers["moved"]
                 RaidPushOutcome.Answered(
-                    if (moved != null && suffix != null) reply.copy(body = reply.body + suffix.body.replace("{name}", moved)) else reply,
+                    if (moved != null && suffix != null) reply.copy(body = joined(reply.body, suffix.body.replace("{name}", moved))) else reply,
                 )
             }
             is ApiResult.Failure -> RaidPushOutcome.Answered(payload.answer(refusalKey(result.error), res))
         }
     }
+
+    /** The answer's body, then the move's sentence, one space between (the server sends no leading space). */
+    private fun joined(body: String, moved: String) = listOf(body, moved).filter { it.isNotBlank() }.joinToString(" ")
 
     private fun refusalKey(error: ApiError): String = when ((error as? ApiError.Server)?.code) {
         "raid_locked" -> "locked"

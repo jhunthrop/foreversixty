@@ -45,6 +45,7 @@ struct HomeFlowView: View {
             }
         }
         .environment(\.panelRowTrailCell, true)
+        .tabRootScroll()
         .screenGround()
     }
 
@@ -140,12 +141,9 @@ struct HomeUpgradesSection: View {
     let openGear: () -> Void
 
     var body: some View {
-        PanelSection(Copy.homeUpgradesNext, meta: content.meta, action: (Copy.homeUpgradesGear, openGear), frame: .plain) {
-            if let stamp = content.stamp {
-                // The panel's own top padding sets it 8 in, as the mock's `.stmp`.
-                Text(stamp).type(FSType.small).foregroundStyle(FSColor.muted)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
+        PanelSection(
+            Copy.homeUpgradesNext, meta: content.meta, stamp: content.stamp, action: (Copy.homeUpgradesGear, openGear), frame: .plain
+        ) {
             ForEach(Array(content.rows.enumerated()), id: \.element.id) { index, row in
                 if index > 0 { Hairline(FSColor.line) }
                 Button { open(row) } label: {
@@ -195,7 +193,7 @@ struct RaidLiveCard: View {
             Text(content.line).type(FSType.small).foregroundStyle(FSColor.text).padding(.top, FSSpace.space2)
             if let open {
                 Button(Copy.homeRaidOpenNight, action: open)
-                    .font(.custom(FSFont.bodySemibold, size: 15, relativeTo: .body))
+                    .type(FSType.bodyStrong)
                     .foregroundStyle(FSColor.gold)
                     .frame(minHeight: FSTarget.min)
                     .contentShape(.rect)
@@ -253,7 +251,7 @@ struct NewForYouSection: View {
         PanelSection(Copy.homeNewForYou, action: (link, all)) {
             ForEach(Array(content.rows.enumerated()), id: \.element.id) { index, item in
                 Button { open(item.row) } label: {
-                    ActivityRowView(row: item.row, line: item.line, build: build, last: index == content.rows.count - 1)
+                    ActivityRowView(row: item.row, line: item.line, meta: item.when, build: build, last: index == content.rows.count - 1)
                 }
                 .buttonStyle(RowPressStyle())
             }

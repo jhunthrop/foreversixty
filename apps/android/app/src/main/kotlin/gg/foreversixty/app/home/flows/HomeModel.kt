@@ -33,10 +33,13 @@ data class RaidCardModel(
     val aside: String,
     /** The line style's title, `Onyxia's Lair · Wed 6 Jan, 8:00 pm CST`. */
     val title: String,
-    /** The line style's sub line: the counts and the answer. */
-    val sub: String,
-    /** `You have not answered, as Thandrel, Damage`, or the answer alone with one character in the guild (E7). */
-    val me: String,
+    /** The line style's sub line: the counts and who has not answered; once answered the counts and who answered. */
+    val sub: String?,
+    /**
+     * `You have not answered, as Thandrel, Damage` (the answer alone with one character in the guild, E7);
+     * once answered only `As Thandrel, Damage`, null with one character: the segmented control shows it (AS5).
+     */
+    val me: String?,
     val answer: SignupState?,
     val lateOpen: Boolean,
     val tally: List<TallyItem>,
@@ -52,8 +55,6 @@ data class RaidCardModel(
     val facts: String? = null,
     /** `As Thandrel, Damage` under the head line, only with more than one character in the guild (E7). */
     val who: String? = null,
-    /** The answer as the head's chip: `In`, `Late · 30 min`; null while unanswered. */
-    val chip: String? = null,
     /** How late a Late answer said it would be (15, 30, 60); the selected chip. */
     val lateMinutes: Int? = null,
     /** The answers' live state from the raid's controller: enabled, the status line, Try again. */
@@ -88,6 +89,8 @@ sealed interface HomeBlock {
         val build: String,
         val meta: String? = null,
         val synced: String? = null,
+        /** The sync is over a week old: the stamp in the warning tone (row 12). */
+        val syncedStale: Boolean = false,
     ) : HomeBlock
     data class NextRaidCard(val raid: RaidCardModel) : HomeBlock
     data class NextRaidLine(val raid: RaidCardModel) : HomeBlock

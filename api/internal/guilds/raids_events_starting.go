@@ -12,6 +12,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
@@ -62,6 +63,26 @@ func (s *Service) shortUnanswered(ctx context.Context, guildID, raidID int64) in
 		s.logger().Error("guilds", "op", "event_short_unanswered", "raid_id", raidID, "err", err)
 	}
 	return unansweredUnknown
+}
+
+// canPing reports whether raid.short may offer the Mention button: Discord pings are wired
+// and the raid's ping is past its cooldown (RaidPingState.next_allowed_at) at now. A failed
+// read offers none (logged).
+func (s *Service) canPing(ctx context.Context, raidID int64, now time.Time) bool {
+	if s.RaidPings == nil {
+		return false
+	}
+	pings, err := s.Store.lastPings(ctx, []int64{raidID})
+	if err != nil {
+		s.logger().Error("guilds", "op", "event_short_ping", "raid_id", raidID, "err", err)
+		return false
+	}
+	return pingOpen(pingStateOf(pings[raidID]), now)
+}
+
+// pingOpen reports whether a ping in state may go at now.
+func pingOpen(state *RaidPingState, now time.Time) bool {
+	return state.NextAllowedAt == nil || !now.Before(*state.NextAllowedAt)
 }
 
 // startingEvents is raid.starting, one per In or Late account with its ready check miss. A

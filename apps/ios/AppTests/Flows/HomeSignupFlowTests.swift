@@ -35,7 +35,7 @@ struct HomeSignupFlowTests {
         #expect(flow.service.sent.last?.lateMinutes == nil)
         #expect(card.selected == .late)
         #expect(card.lateOpen, "Late opens its minutes")
-        #expect(card.answer.contains(SignupState.late.label))
+        #expect(!card.answer.contains(SignupState.late.label), "AS5: the Segmented shows the answer; no sentence repeats it")
         #expect(flow.model.answerError == nil)
 
         await flow.model.late(30)
@@ -44,7 +44,6 @@ struct HomeSignupFlowTests {
         #expect(flow.service.sent.last?.lateMinutes == 30)
         #expect(card.selected == .late)
         #expect(card.lateMinutes == 30)
-        #expect(card.chip?.replacingOccurrences(of: "\u{00A0}", with: " ") == "Late · 30 min")
         #expect(card.lateOpen, "the minutes stay open with 30 chosen")
         #expect(card.status == .saved(Copy.commonSaved))
         #expect(flow.haptics.calls == ["selection", "success", "selection", "success"])

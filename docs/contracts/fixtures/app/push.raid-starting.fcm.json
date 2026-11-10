@@ -1,0 +1,20 @@
+{
+  "message": {
+    "token": "fcm-registration-token",
+    "data": {
+      "body": "Starts in 60 minutes. No flask in your bags.",
+      "collapse": "raid.starting-7",
+      "group": "raids",
+      "guild_id": "2",
+      "kind": "raid.starting",
+      "link": "https://foreversixty.gg/guild/us/pvp/olympus-xxvii/raids/7",
+      "raid_id": "7",
+      "thread": "raid-7",
+      "title": "Onyxia's Lair"
+    },
+    "android": {
+      "priority": "HIGH",
+      "collapse_key": "raid.starting-7"
+    }
+  }
+}

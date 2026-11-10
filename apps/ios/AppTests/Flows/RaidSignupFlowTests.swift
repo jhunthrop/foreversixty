@@ -25,7 +25,6 @@ struct RaidSignupFlowTests {
         let flow = try await loaded()
         var head = try #require(flow.head)
         #expect(head.selected == .signedIn)
-        #expect(head.chip == SignupState.signedIn.label)
         #expect(!head.lateOpen)
         #expect(head.status == nil)
         #expect(head.answersEnabled)
@@ -37,7 +36,6 @@ struct RaidSignupFlowTests {
         #expect(head.selected == .late)
         #expect(head.lateOpen, "Late opens its minutes")
         #expect(head.lateMinutes == nil)
-        #expect(head.chip == SignupState.late.label)
         #expect(head.status == .saved(Copy.commonSaved))
         #expect(flow.haptics.calls == Self.saved)
 
@@ -48,8 +46,7 @@ struct RaidSignupFlowTests {
         #expect(head.selected == .late)
         #expect(head.lateOpen, "the minutes stay open, as Android")
         #expect(head.lateMinutes == Self.late30, "30 is the chosen chip")
-        #expect(head.chip == Copy.raidAnswerLateMinutes(n: Self.late30))
-        #expect(head.chip?.replacingOccurrences(of: "\u{00A0}", with: " ") == "Late · 30 min")
+        #expect(head.selected == .late, "AS5: the Segmented is the answer; no chip repeats it")
 
         await flow.answer(.bench)
         head = try #require(flow.head)
@@ -62,7 +59,6 @@ struct RaidSignupFlowTests {
         await flow.answer(.out)
         head = try #require(flow.head)
         #expect(head.selected == .out)
-        #expect(head.chip == SignupState.out.label)
         #expect(flow.service.sent.map(\.state) == ["late", "late", "bench", "out"])
         #expect(flow.service.requests.allSatisfy { $0.key == FlowPlayer.key })
         #expect(flow.haptics.calls == Array(repeating: Self.saved, count: 4).flatMap(\.self))

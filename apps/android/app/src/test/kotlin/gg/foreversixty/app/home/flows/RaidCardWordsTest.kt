@@ -22,13 +22,14 @@ class RaidCardWordsTest {
 
     private fun card(raid: RaidView, answer: SignupState?) = words.card(raid, "Olympus XXVII", "us/pvp/gorvash", answer, lateOpen = false, badge = null)
 
-    @Test fun `one character in the guild gives the answer alone`() {
-        assertEquals("You are In", card(one, SignupState.In).me)
+    @Test fun `one character in the guild - no answer line once answered, the segmented control shows it`() {
+        assertEquals(null, card(one, SignupState.In).me)
+        assertEquals(true, card(one, SignupState.In).sub?.endsWith("late"))
         assertEquals("You have not answered", card(one, null).me)
     }
 
     @Test fun `two characters in the guild name the one answering`() {
-        assertEquals("You are In, as Gorvash, Damage", card(two, SignupState.In).me)
+        assertEquals("As Gorvash, Damage", card(two, SignupState.In).me)
         assertEquals("You have not answered, as Gorvash, Damage", card(two, null).me)
     }
 
@@ -43,19 +44,21 @@ class RaidCardWordsTest {
         assertEquals("As Gorvash, Damage", card(two, SignupState.In).who)
     }
 
-    @Test fun `a Late answer with minutes carries them on the chip and the answer`() {
+    @Test fun `a Late answer with minutes carries them, and the word reads them`() {
         val late = words.card(one, "Olympus XXVII", "us/pvp/gorvash", SignupState.Late, lateOpen = true, badge = null, lateMinutes = 30)
-        assertEquals("Late\u00a0·\u00a030\u00a0min", late.chip)
-        assertEquals("You are Late\u00a0·\u00a030\u00a0min", late.me)
         assertEquals(30, late.lateMinutes)
-        assertEquals("In", card(one, SignupState.In).chip)
-        assertEquals(null, card(one, null).chip)
+        assertEquals("Late\u00a0·\u00a030\u00a0min", words.answerWord(SignupState.Late, late.lateMinutes))
     }
 
     @Test fun `minutes count only for a Late answer`() {
         val inWithMinutes = words.card(one, "Olympus XXVII", "us/pvp/gorvash", SignupState.In, lateOpen = true, badge = null, lateMinutes = 30)
-        assertEquals("In", inWithMinutes.chip)
         assertEquals(null, inWithMinutes.lateMinutes)
+    }
+
+    @Test fun `an officer's not-answered count is the raid's own list, the foot's population (row 6)`() {
+        val badge = gg.foreversixty.app.model.RaidBadge(count = 6, youUnanswered = false, officer = true, unanswered = 99, applicants = 0)
+        val card = words.card(one, "Olympus XXVII", "us/pvp/gorvash", null, lateOpen = false, badge = badge)
+        assertEquals(true, card.officer?.unanswered?.startsWith("${one.notSigned.size} "))
     }
 
     @Test fun `within a day the head line gives the pull in hours and minutes`() {

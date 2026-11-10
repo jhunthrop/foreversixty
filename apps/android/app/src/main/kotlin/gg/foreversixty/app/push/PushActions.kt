@@ -5,10 +5,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.JsonObject
 
 /**
  * One button a push carries in its `actions` (app-v1.md "Push payloads"): the id the apps register,
- * the button's title, and the call a press makes (`POST /v1/guilds/2/applications/31/decline`).
+ * the button's title, and the call a press makes (`POST /v1/guilds/2/applications/31/decline`), with
+ * its JSON [body] when it sends one (`raid_mention_short`'s `{"role": "healer"}`).
  */
 @Serializable
 data class PushAction(
@@ -16,7 +18,12 @@ data class PushAction(
     @SerialName("title") val title: String,
     @SerialName("method") val method: String,
     @SerialName("path") val path: String,
-)
+    @SerialName("body") val body: JsonObject? = null,
+) {
+    val isPost: Boolean get() = method.equals(POST, ignoreCase = true)
+}
+
+private const val POST = "POST"
 
 object PushActions {
     const val KEY_ACTIONS = "actions"

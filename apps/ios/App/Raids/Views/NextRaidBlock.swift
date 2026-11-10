@@ -32,9 +32,19 @@ struct NextRaidCardView: View {
                 .accessibilityAddTraits(.isHeader)
             Text(content.place).type(FSType.small).foregroundStyle(FSColor.text)
             CardClock(parts: content.clock, label: content.clockLabel).padding(.top, FSSpace.space2)
-            Text(content.answer).type(FSType.small).foregroundStyle(FSColor.text).padding(.top, FSSpace.space3)
-            RaidAnswerControl(content: content, actions: actions, question: true, compact: true).padding(.top, FSSpace.space2)
-            if !content.tally.isEmpty { FSTally(content.tally).padding(.top, Self.tallyTop) }
+            // AS5: once answered the Segmented is the answer; the line names only the character (E7), if any.
+            if !content.answer.isEmpty {
+                Text(content.answer).type(FSType.small).foregroundStyle(FSColor.text).padding(.top, FSSpace.space3)
+            }
+            RaidAnswerControl(content: content, actions: actions, question: true, compact: true)
+                .padding(.top, content.answer.isEmpty ? FSSpace.space3 : FSSpace.space2)
+            // Against a target the meters; without one the counts (`Tanks 3 · Healers 6 · Damage 15`).
+            let meters = content.tally.compactMap(\.meter)
+            if !meters.isEmpty, meters.count == content.tally.count {
+                FSTally(meters).padding(.top, Self.tallyTop)
+            } else if !content.tally.isEmpty {
+                RaidTallyLine(roles: content.tally).padding(.top, Self.tallyTop)
+            }
             if let ready = content.ready {
                 Hairline(FSColor.line).padding(.top, Self.tallyTop)
                 Button(action: actions.openReady) {
@@ -71,7 +81,7 @@ struct CardClock: View {
     let label: String
 
     static let gap: CGFloat = 18
-    @ScaledMetric(relativeTo: .largeTitle) private var valueLine: CGFloat = 38
+    @ScaledMetric(relativeTo: FSType.countdown.scalesWith) private var valueLine: CGFloat = FSType.countdown.lineHeight
 
     var body: some View {
         if !parts.isEmpty {
@@ -79,7 +89,7 @@ struct CardClock: View {
                 ForEach(Array(parts.enumerated()), id: \.offset) { _, part in
                     VStack(alignment: .leading, spacing: 0) {
                         Text(part.value)
-                            .type(TypeRole(face: FSFont.bodySemibold, size: 36, lineHeight: 38, scalesWith: .largeTitle, tabular: true))
+                            .type(FSType.countdown)
                             .foregroundStyle(FSColor.strong)
                             .frame(height: valueLine)
                         Text(part.unit)
@@ -92,6 +102,28 @@ struct CardClock: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(label)
         }
+    }
+}
+
+/// The role tally as one line (rows 1 and 2): `Tanks 3 · Healers 6 · Damage 15`, or against a target
+/// `Healers 5/8 · 3 short` with the short count in wipe red.
+struct RaidTallyLine: View {
+    let roles: [RoleLineContent]
+
+    var body: some View {
+        roles.enumerated().reduce(Text("")) { text, entry in
+            let role = entry.element
+            let tone: Color = switch role.tone {
+            case .short: FSColor.wipe
+            case .met: FSColor.kill
+            case .plain: FSColor.strong
+            }
+            let part = Text("\(role.role) \(Text(role.compactTally).foregroundColor(tone))").foregroundColor(FSColor.muted)
+            return entry.offset == 0 ? part : Text("\(text)\(Text(RaidFlowPresenter.separator).foregroundColor(FSColor.muted))\(part)")
+        }
+        .type(RowType.sub)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .parityItem(.row)
     }
 }
 
@@ -137,10 +169,10 @@ struct NextRaidLineView: View {
                 }
             }
             .buttonStyle(RowPressStyle())
-            // The role tally, the Raid tab's on one line (`2/2 · 5/8 · 11/30`, a short role in wipe red).
-            if !content.tally.isEmpty { FSTally(content.tally) }
+            // The role tally on one line (`Healers 5/8 · 3 short`, a short role in wipe red; `Healers 6` without a target).
+            if !content.tally.isEmpty { RaidTallyLine(roles: content.tally) }
             RaidAnswerControl(content: content, actions: actions, question: true, compact: true)
-                .padding(.bottom, FSSpace.space1)
+                .padding(.bottom, content.tally.isEmpty ? FSSpace.space1 : 0)
         }
         .parityRegion(.countdowns)
     }
@@ -254,7 +286,7 @@ struct MinuteChipStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.custom(FSFont.bodySemibold, size: 14, relativeTo: .subheadline))
+            .type(FSType.chip)
             .foregroundStyle(FSColor.strong)
             .padding(.horizontal, FSSpace.space4)
             .frame(maxWidth: .infinity, minHeight: height)

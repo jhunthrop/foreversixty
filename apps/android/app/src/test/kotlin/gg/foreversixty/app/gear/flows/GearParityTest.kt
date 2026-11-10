@@ -185,10 +185,10 @@ object GearFixtures {
         Doll("waist", "Waist", "Valiant's Waistguard", "inv_belt_33", 4, "Pix Xizzix, vendor", null),
         Doll("legs", "Legs", "Sentinel's Plate Legguards", "inv_pants_plate_20", 4, "Illiyana Moonblaze, vendor", "+4.7"),
         Doll("feet", "Feet", "Scalegut Treaders", "inv_boots_chain_11", 3, "Leatherworking", "+0.9"),
-        Doll("finger_1", "Finger", "Don Julio's Band", "inv_jewelry_ring_35", 4, "Stormpike Guard", "+6.8"),
-        Doll("finger_2", "Finger", "Cutthroat's Signet", "inv_jewelry_ring_01", 3, "Pix Xizzix, vendor", "+0.8"),
-        Doll("trinket_1", "Trinket", "Hand of Justice", "inv_jewelry_talisman_01", 3, "Blackrock Depths: Emperor Dagran Thaurissan", null),
-        Doll("trinket_2", "Trinket", "Molten Heart of the Mountain", "inv_misc_gem_ruby_01", 3, "Enchanting", "+3.2"),
+        Doll("finger1", "Finger 1", "Don Julio's Band", "inv_jewelry_ring_35", 4, "Stormpike Guard", "+6.8"),
+        Doll("finger2", "Finger 2", "Cutthroat's Signet", "inv_jewelry_ring_01", 3, "Pix Xizzix, vendor", "+0.8"),
+        Doll("trinket1", "Trinket 1", "Hand of Justice", "inv_jewelry_talisman_01", 3, "Blackrock Depths: Emperor Dagran Thaurissan", null),
+        Doll("trinket2", "Trinket 2", "Molten Heart of the Mountain", "inv_misc_gem_ruby_01", 3, "Enchanting", "+3.2"),
         Doll("main_hand", "Main hand", "Ironwood Blade", "inv_sword_07", 4, "Blacksmithing", "+5.9"),
         Doll("off_hand", "Off hand", "Persuader", "inv_hammer_08", 4, "Blacksmithing", null),
         Doll("ranged", "Ranged", "Blackcrow", "inv_weapon_crossbow_04", 3, "Blackrock Spire: Shadow Hunter Vosh'gajin, 8%", "+1.9"),
@@ -199,7 +199,7 @@ object GearFixtures {
     val content = GearContent(
         title = "Fury Warrior",
         figure = "1004.2",
-        facts = "60 raid · Alliance · 4 of 17 slots match the list",
+        facts = "60 raid · Alliance · 5 of 17 slots match the list",
         where = listOf(
             GearWhereRow("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh'gajin, 8%", ItemLook(1, "Blackcrow", 3, "inv_weapon_crossbow_04"), "1 upgrade · +1.9 DPS"),
             GearWhereRow("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", ItemLook(2, "Lionheart Helm", 4, "inv_helmet_36"), "2 upgrades · +20.4 DPS"),
@@ -209,7 +209,7 @@ object GearFixtures {
             GearSlotRow(d.slot, d.label, look(i, d), "${d.label} · ${d.source}", d.gain, worn = d.gain == null, row = BisRow(d.slot, d.label, null, null))
         },
         unitWord = "DPS",
-        header = "+157.6 DPS from 13 upgrades · synced 2 h ago · 2 gains not modelled yet",
+        header = "+47.5 DPS from 12 upgrades · synced 2 h ago",
     )
 
     val classes = listOf("warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid")

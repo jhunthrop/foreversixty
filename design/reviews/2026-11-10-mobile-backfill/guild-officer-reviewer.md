@@ -77,3 +77,103 @@ The two additions: (1) an officer-only push built from `raid-badge.officer` and 
 
 Key files: `apps/android/app/src/main/kotlin/gg/foreversixty/app/raids/flows/RaidTabScreen.kt`, `apps/ios/App/Raids/Flow/RaidRootView.swift`, `apps/ios/App/Raids/Flow/NotAnsweredView.swift`, `apps/android/app/src/main/kotlin/gg/foreversixty/app/raids/flows/NotAnsweredScreen.kt`, `docs/contracts/fixtures/app/push.raid-starting.apns.json`, `docs/contracts/fixtures/app/guild.raid-badge.officer.json`.
 
+## Round 2 (2026-11-10, base 9bbf15e37)
+
+**Round 2 verdict: guild-officer-reviewer, Raid tab, Home raid card, raid and officer pushes (iOS and Android)**
+
+**Page job:** Tell a raider when the raid is, whether they're in, and what they're missing. Tell an officer who is short and who hasn't answered, and let them act from a phone. Earn an unprompted open from the officer.
+
+**Judged from:**
+- Android parity `android-raid-officer.png` and `.txt`, plus `android-raid.txt`.
+- iOS `raid-01-top.png`, a non-officer capture.
+- Android `notif-01-shade.png` and `notif-02-expanded.png`.
+- The push fixtures, `api/internal/guilds/raids_events.go`, and `ApplicantPush.kt`.
+
+I could not run either app. I did not open the flow PNGs or the Roborazzi PNGs for the Home card. I took the Late-chip, saving, failed and offline states from the code, the file names and your brief. I saw no iOS officer capture, so iOS officer behaviour is code-only. I did not find the officer readiness line in the Swift or Kotlin sources, only in the strings and in `RaidFlowContent.swift`/`RaidTabScreen.kt` comments. I did not read the Home raid card at all.
+
+## Round-1 findings
+
+| # | Finding | Status |
+|---|---|---|
+| 1 | Officer can't see raid readiness | **FIXED in part, and not enough to flip it.** The officer capture shows `4 signed In have not synced this week` as the last line of Who is coming. It is a count with no names and no tap. It is also below "Needs you", the sign-up card and the comp list. An officer who sees it can't tell who to chase. |
+| 2 | No officer push | **FIXED in part.** The fixtures exist for `raid.short` and `guild.applicant`, and the body names the short role and the not-answered count. Neither push has a "Mention healers" action, and `raid.short` has no actions at all. See N1 and N2. |
+| 3 | Needs you below the fold | **FIXED.** In the Android officer capture it is directly under the head, with "6 open", and it matches the tab badge 6. iOS has the same ordering in code (`RaidRootView.swift` line 106). |
+| 4 | Comp is roles only | **FIXED.** Android reads `Missing Fortitude · Windfury 1 of 2` and iOS reads `Missing Blessing of Kings, Blessing of Might, Blessing of Wisdom and 2 more`. The iOS line is long and ends in "and 2 more", which hides the names an officer needs. |
+| 5 | Late minutes missing | **FIXED.** `Brightwen (Late · 15 min)`. |
+| 6 | `raid.starting` body is generic | **FIXED.** `Starts in 60 minutes. No flask in your bags.` It has no actions or deep link to Before you pull, only the raid link. That's acceptable. |
+| 7 | `raid.posted` has no counts | **FIXED in the payload, but the shade clips it.** Android's collapsed shade reads `Sign-ups are open: Thu 5 Nov, 8:00 pm CS…`, so "24 of 40 signed" is cut off. `notif-02-expanded.png` is a blank spinner on the Home tab, not a notification, so I can't confirm it is expanded. See N3. |
+| 8 | iOS profile glyph | **KEPT (ruling accepted).** The owner exception for portraits holds, and `raid-01-top.png` shows the stand-in ring with the faction badge. I accept it. |
+| 9 | Mention cooldown line | **STILL OPEN, and agreed it's another lane's.** I can see `raid_na_noDiscord` and a recently-mentioned plural in the code, which is good. I could not see `next_allowed_at` rendered as a countdown. |
+| 10 | Attendance on mobile | **STILL OPEN.** It is a NICE item and nothing changed. |
+| 11 | Loot fairness | **KEPT.** It lives on a secondary screen. |
+| 12 | `no-raid` dead end for an officer | **STILL OPEN.** The `android-raid-no-raid` text is unchanged from round 1. |
+| 13 | iOS control | **FIXED.** It is now one connected four-way group with the chosen answer in teal, on par with Android. |
+
+## New findings
+
+### BLOCKER
+
+**N1. The officer push has no officer action.**
+- **What's wrong:** `push.raid-short.*.json` has no `actions` array. Every officer reply happens after opening the app, then Needs you, then Preview mention, then confirm. The brief says officer speed means one or two clicks from where the officer is looking.
+- **Fix:** Add a `raid_mention_short` action. It reuses the `RaidPingResult` call and honours `RaidPingState.next_allowed_at`. Android has room for it (three-action limit) because `raid.short` needs only one button.
+- **Status:** The data exists. This is server work in `api/internal/guilds/raids_events.go` plus a handler in `apps/android/.../push/PushActions.kt` and the iOS category.
+- **Impact:** This is what finding 2 asked for, and it is the one thing that moves an officer off Discord. Leaving it out is a decision I disagree with. It is the difference between a notification and a tool.
+
+### SHOULD
+
+**N2. The applicant push offers Decline but not Accept.**
+- **What's wrong:** `ApplicantPush.kt` registers only `application_decline`, so the shade offers the destructive choice and withholds the positive one.
+- **Fix:** Offer Accept in the shade too, or neither. Declining a Holy Priest 60 with full T1 from a lock screen is a worse failure than accepting one slowly. If Accept is withheld on purpose, keep Decline off the shade as well and open the applicant sheet.
+- **Where:** `push.guild-applicant.apns.json` and `ApplicantPush.kt`.
+
+**N3. Push bodies carry the counts too late for a collapsed shade.**
+- **What's wrong:** Android's collapsed raid-posted notification clips at about 40 characters, ahead of the counts.
+- **Fix:** Reorder to lead with the signed count (`24 of 40 signed. Thu 5 Nov, 8:00 pm CST.`) and set `BigTextStyle` for the expanded view. `raid.short` is similar: the short role is at the end of a 60-character body and will clip before "Healers 5 of 8".
+- **Where:** `raids_events.go` `raidEventCopy`.
+
+**N4. The readiness line has no names and no destination.**
+- **What's wrong:** `4 signed In have not synced this week` cannot be acted on.
+- **Fix:** Make it tappable to a list of the unsynced raiders with a Discord mention or DM, reusing the Not answered rows. The data is the guild home roster `logged_recently` against the sign-ups. If per-raider consumable or enchant state isn't in the roster payload, that part is **needs data**.
+- **Where:** `RaidTabFacts.kt`, `RaidFlowContent.swift` line 138.
+
+**N5. The Who is coming counts contradict the Needs you counts.**
+- **What's wrong:** The Android officer capture says `5 have not answered, 2 of them healers`, and the line below the roles says `14 not answered`.
+- **Why it matters:** If these are different populations, such as roster members vs raiders who normally attend, the screen needs to say so. A tab that disagrees with itself loses an officer's trust. It may be a fixture artefact, but the parity golden is the contract.
+- **Also:** The Out count differs between `round-2-decisions.md` (`Out 4`) and the capture (`Out 3`).
+
+**N6. Fixture date and time text contradict each other.**
+- **What's wrong:** `push.raid-posted.apns.json` has the title line `Thu 5 Nov, 8:00 pm CST` while `answers` says `Sunday 7 pm`.
+- **Why it matters:** The sign-up confirmation is the line a raider reads to trust the tap, and a wrong time on the confirmation is a no-show. The answers blob must come from the same formatter as the body.
+- **Where:** The `answers` blob in `push.raid-posted.*.json`.
+
+**N7. iOS Missing line truncates the names that matter.**
+- **What's wrong:** Android's `Missing Fortitude · Windfury 1 of 2` reads in one glance, but iOS lists three blessings and "and 2 more".
+- **Fix:** Order by raid impact and cap at two names, or show a count.
+
+### NICE
+
+- **N8.** The Android `moved` answer body in `push.raid-posted.*.json` begins with a space and has an empty title. Trim it.
+- **N9.** I saw no iOS officer capture in `ios/`. Add `raid-officer-*` steps so the iOS officer ordering is reviewable.
+- **N10.** `notif-02-expanded.png` should be recaptured with the expanded notification.
+- **N11.** The `no-raid` state still has no officer link to create a raid.
+
+## Value test
+
+Would a guild pay $15 or $25 a month for this screen? **Closer, but no, not yet.** Round 2 fixed the screen itself: ordering, comp cover, Late minutes, and a push that names what is short. An officer opening the app sees their job first. What's missing is the push-to-action loop. The officer is told "Healers 5 of 8, 5 not answered" and has to open the app and click through to do anything. The unsynced line is a number they can't act on. Discord and the sheet still win for chasing people.
+
+**Two additions that flip it:**
+1. A one-tap "Mention healers" action on `raid.short`, using the existing `RaidPingResult` and `next_allowed_at`. The data exists. The push action is server and client work.
+2. Make the unsynced line tappable, to named raiders with a mention. The data exists in the roster payload (`logged_recently`).
+
+Fix N5 and N6 along with these. Both are consistency bugs that cost trust.
+
+Key files:
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/docs/contracts/fixtures/app/push.raid-short.apns.json`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/docs/contracts/fixtures/app/push.guild-applicant.apns.json`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/api/internal/guilds/raids_events.go`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/main/kotlin/gg/foreversixty/app/raids/push/ApplicantPush.kt`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/android/app/src/main/kotlin/gg/foreversixty/app/raids/flows/RaidTabFacts.kt`
+- `/Users/jh/code/forever/.claude/worktrees/agent-aee50bfb43330b1e0/apps/ios/App/Raids/Flow/RaidFlowContent.swift`
+
+VERDICT: CLOSE
+

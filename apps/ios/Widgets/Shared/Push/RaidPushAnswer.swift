@@ -13,8 +13,10 @@ enum RaidPushCategory {
     static let askSpec = "RAID_ASK_SPEC"
     /// `Choose a character` (foreground, opens the raid page).
     static let choose = "RAID_CHOOSE"
-    /// An officer's new applicant: Decline, answered without opening the app.
+    /// An officer's new applicant: Accept and Decline, answered without opening the app.
     static let applicant = "GUILD_APPLICANT"
+    /// An officer's short raid (`raid.short`): Mention the short role in Discord.
+    static let short = "RAID_SHORT"
 
     static let actionIn = "signup_in"
     static let actionLate = "signup_late"
@@ -24,6 +26,10 @@ enum RaidPushCategory {
     static let actionChoose = "choose"
     /// The API's action id on `guild.applicant` (POST .../applications/{app}/decline).
     static let actionDecline = "application_decline"
+    /// The API's action id on `guild.applicant` (POST .../applications/{app}/accept).
+    static let actionAccept = "application_accept"
+    /// The API's action id on `raid.short` (POST .../raids/{raid}/ping with the short role).
+    static let actionMention = "raid_mention_short"
 
     /// The Late chips (15, 30, 60 min) the content extension offers after Late.
     static let lateMinutes = [15, 30, 60]

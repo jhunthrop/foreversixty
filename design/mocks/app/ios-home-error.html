@@ -248,8 +248,14 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 /* round 2 (review backfill): the status line under the answers; the upgrades' synced stamp; the raid line's tally */
 .ap.home .chips .btn.primary{background:#0f6064;border-color:#408076;color:#fff}
 .ap.home .stl{margin:8px 0 0;font:400 13px/20px var(--font-body);color:var(--kill)}
-.ap.home section>.stmp{margin:0;border-top:0!important;background:#170e09;padding:8px 16px 0;font:400 14px/20px var(--font-body);color:var(--muted)}
-[data-platform=android] .ap.home section>.stmp{padding:4px 16px 8px}
+.ap.home section>.stmp{margin:-8px 0 8px;font:400 14px/20px var(--font-body);color:var(--muted)}
+[data-platform=ios] .ap.home section>.stmp{margin-top:-12px}
+.ap.home section>.stmp+*{padding-top:8px;border-radius:10px 10px 0 0}
+/* round 3: New for you's ages on their own line; the compact tally (iOS 14/20 in the text colour, Android 13 muted) */
+.ap.home .row .sub.age{margin-top:0}
+[data-platform=ios] .ap.home .tline{font:400 14px/20px var(--font-body);color:var(--text);margin:0 0 8px}
+[data-platform=ios] .ap.home .tline .ok{color:#fff}
+[data-platform=ios] .ap.home .blk .btns .btn{height:36px;min-height:36px}
 .ap.home .tline{margin:0 0 4px;font:400 13px/18.29px var(--font-body);color:var(--muted)}
 .ap.home .tline .ok{color:var(--kill)}.ap.home .tline .lo{color:var(--wipe)}
 .ap.home .blk:not(:has(.cdn)) .tally{margin:0 0 8px}

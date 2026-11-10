@@ -35,7 +35,7 @@ struct ActivityScreen: View {
                 } else {
                     ActivityView(
                         phase: model.phase, sections: ActivitySections(model.rows, filter: model.filter, now: Date()),
-                        filter: model.filter, build: build,
+                        filter: model.filter, build: build, older: model.hasOlder ? (model.loadingMore ? .loading : .ready) : nil,
                         actions: ActivityActions(
                             select: { model.filter = $0 },
                             markAllRead: { Task { await model.markAllRead() } },
@@ -80,7 +80,11 @@ struct ActivityView: View {
     let sections: ActivitySections
     let filter: ActivityFilter
     let build: String
+    /// Show older at the list's end (i1): nil with no older page.
+    var older: OlderState?
     var actions = ActivityActions()
+
+    enum OlderState: Equatable { case ready, loading }
 
     var body: some View {
         ScrollView {
@@ -101,10 +105,21 @@ struct ActivityView: View {
                     ForEach(Array(sections.sections.enumerated()), id: \.element.id) { index, section in
                         daySection(section, first: index == 0)
                     }
-                    Color.clear.frame(height: 1).onAppear(perform: actions.more)
+                    if let older {
+                        // The same words as Android, a 44 pt target; disabled while the page loads.
+                        Button(action: actions.more) {
+                            Text(Copy.activityMore).type(FSType.bodyStrong).foregroundStyle(FSColor.gold)
+                                .frame(maxWidth: .infinity, minHeight: FSTarget.min)
+                                .contentShape(.rect)
+                        }
+                        .buttonStyle(RowPressStyle())
+                        .disabled(older == .loading)
+                        .parityItem(.button)
+                    }
                 }
             }
         }
+        .tabRootScroll()
         .screenGround()
     }
 
@@ -193,7 +208,7 @@ struct ActivitySignedOutView: View {
                 EmptyView()
             } content: {
                 PanelBlock {
-                    Text(Copy.activitySignedOut).type(FSType.small).foregroundStyle(FSColor.text).padding(.vertical, FSSpace.space2)
+                    Text(Copy.activityOut).type(FSType.small).foregroundStyle(FSColor.text).padding(.vertical, FSSpace.space2)
                     FSButton(Copy.signinButton, kind: .primary, action: signIn)
                         .disabled(signingIn)
                         .padding(.vertical, FSSpace.space3)

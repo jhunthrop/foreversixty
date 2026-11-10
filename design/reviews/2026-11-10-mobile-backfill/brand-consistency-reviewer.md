@@ -104,3 +104,92 @@ The iOS `Raids start at 60` text and `Every slot matches` text, and the iOS pers
 
 VERDICT: DRIFT
 
+## Round 2 (2026-11-10, base 9bbf15e37)
+
+# Round 2 verdict: brand consistency, both apps vs the web
+
+I judged the current captures, the Android parity goldens, the token sources and the code. I did not run either app. Android `notif-02-expanded.png` is a black loading frame, so I judged the Android push from `notif-01-shade.png`. The `light-*` captures in `ios/` and `android-r2/` are identical to the dark ones, which confirms the app is dark only.
+
+## Round-1 findings
+
+| # | Status | Notes |
+|---|---|---|
+| B1 iOS answers as four buttons | FIXED | `FSSegmented` is one connected group with a 4 pt radius, hairline dividers and a teal selected segment. It is used on Home and Raid, stacks at accessibility sizes (`ax5-raid.png`), and exposes a Picker to VoiceOver. |
+| B2 Android Segmented shape and colour | KEPT for the pill and the teal-chosen idea; the fill token is a NEW finding (D1) | I accept the round-5 mock ruling (`.r5raid .seg`) and the M3 pill under rule 8. The web's cyan underline versus teal fill is a mock-ruled translation. The fill colour is a separate problem. |
+| B3 Portraits | KEPT | The owner exception in app-flows lines 142-146 and tenet 2 answers it. The captures follow it: the button and drawer head show the person glyph in the faction ring with the badge, Home's head is the crest, and the Switch rows show the crest. Gear is the seal on both apps. |
+| S1 Push time format | FIXED | iOS reads `Sign-ups are open: Thu 5 Nov, 8:00 pm CST. 24 of 40 signed.` The Android shade shows the same text, truncated. |
+| S2 Android bar title at rest | KEPT | The round-5 mocks and M3 top app bar decide it (rule 8). |
+| S3 Feed time buckets | KEPT | The ruling is accepted, but Android breaks it on Home (see D3). |
+| S4 One-off type sizes | STILL OPEN, partly | The named roles exist and are used on the main paths. The residue is in D4. |
+| S5 Hardcoded colours | FIXED | `Paperdoll.kt` and `GameColors` no longer carry hex. The only hex left in the non-token Kotlin is `AndroidCalendar.kt:116`, the system calendar colour, and iOS has the same in `EventKitCalendarAdapter.swift:36`. That is a NICE token candidate. |
+| S6 Tallies differ | FIXED on Raid, STILL OPEN on iOS Home | The Raid tab tallies read the same on both apps. iOS Home is new drift (D2). |
+| S7 `Equipped` | FIXED in code | `gear.worn` is a shared key, used by both platforms and shown in the Android golden. The iOS tab capture has no worn pick, so I could not see it on screen. |
+| N-1 `OLYMPUS XXVII` | STILL OPEN, NICE | It still shows in the Activity feed body (`Loot awarded` row, both apps). The server text or the fixture should read `Olympus XXVII`. |
+| N-2 Drawer sublines | FIXED | Both drawers carry Plan `Free` and Devices `3 signed in · newest <device>`. |
+| N-4 Search button | FIXED | Android has the search glyph in the bar. |
+
+## New findings
+
+### SHOULD (noticeable to a regular)
+
+**D1. The selected answer is two different teals across the apps, and on Android two inside one card.**
+- **Where:** `FlowSegmented.kt` fills the chosen segment with `FsColor.tealEdge` (#408076, pale). iOS `Segmented.swift` fills with `FsColor.teal` (#0f6064) and uses `tealEdge` only as the hairline. The web primary uses the dark `teal` fill with the `tealEdge` border.
+- **What a player sees:** on Android the `In` chip on Raid is dark teal and the segment under it is pale teal. iOS shows one teal.
+- **Fix:** `ChoiceColors.ENABLED.selected` becomes `FsColor.teal`, with the selected segment's edge in `FsColor.tealEdge`. The pill shape stays under the ruling.
+
+**D2. iOS Home's raid card drops the role tally when the raid has no target. Android shows it.**
+- **Where:** Android Home reads `Tanks 3 · Healers 6 · Damage 14`. iOS Home (`NextRaidBlock.swift` line 141, `HomeFlowPresenter.tally`) shows nothing.
+- **Ruling broken:** the S6 decision says `Healers 6` without a target, on both platforms. iOS's Raid tab does this correctly.
+- **Fix:** have `HomeFlowPresenter.tally(_:)` fall back to plain counts, the same path as `RaidRootView`.
+
+**D3. Android Home reads `· 3 d ago` where Activity and iOS Home read `· Sat`.**
+- **Ruling broken:** the round-2 decision says Home's `New for you` rows use the same buckets "so one row never reads two ways". Android Home's Molten Core row says `3 d ago`.
+- **Fix:** route Android Home's `New for you` age through the same bucket formatter as `ActivityScreen.kt:198`.
+
+**D4. Raid counts and the Covered line disagree between the apps on the same fixture.**
+- **Damage split:** Android's Raid tab says `Damage 15 · 6 melee, 8 ranged`, which adds to 14, and Android Home says `Damage 14`. iOS says `Damage 15`, `7 melee, 8 ranged`. One of them miscounts, probably a Late or Bench boundary, and the Android split does not add up to its own total.
+- **Covered line:**
+  - iOS reads `Missing Blessing of Kings, Blessing of Might, Blessing of Wisdom and 2 more` in muted text.
+  - Android lists six `Missing …` items in wipe red, and the last one is a bare `Missing Blessings`.
+  - The decision for G4 is one line, `Missing Fortitude · Windfury 1 of 2`.
+- **Fix:** one shared tally and Covered builder, fed by the same `counts` and `composition` fields, with one tone.
+
+**D5. Android has no stacked fallback for the answer control at large font.**
+- **Where:** `android-r2/fs2-raid.png` shows `Bench` pressed against both dividers at scale 2. iOS stacks the segments at accessibility sizes.
+- **Fix:** in `FlowSegmented`, stack the segments or use a 2×2 grid when the font scale is at least 1.5. Follow the existing `isLargeText()` helper.
+
+**D6. Type residue the S4 fix missed, on the four tabs and the drawer.**
+- **iOS:**
+  - `NextRaidBlock.swift:82` uses `TypeRole(... size: 36, lineHeight: 38 ...)`. Android's countdown is `FlowCountdown.kt:138`, a local `CLOCK` of 40/42. Same job, different size, neither tokenised.
+  - `NextRaidBlock.swift:257` and `HomeFlowView.swift:198` use `.custom(... size: 14 / 15)`.
+  - `ProfileMenu.swift:221, 248, 340, 363, 372, 389` use inline `TypeRole`. The `drawerName` and `drawerSection` roles exist and Android uses them.
+- **Android:**
+  - `ProfileButton.kt:96` has `BAR_TITLE = 22.sp/28.sp`.
+  - `Paperdoll.kt:167-168` has 13/12.sp.
+  - `FlowRows.kt:251` has a 13.sp unit where `FsType.figureUnit` exists.
+  - `FlowRows.kt:356, 367` have 13.sp.
+- **Fix:** add roles for `countdown` (the token exists, so use it on both), `barTitle` and `paperdollName/Detail`, and replace every inline size above with its role.
+
+### NICE
+
+- **D7. The synced stamp sits in different places on Home.**
+  - iOS puts `Synced 12 d ago` at the top of the upgrades card. Android puts it at the bottom.
+  - The decision says the stamp goes under the section meta, so Android's bottom position is wrong.
+  - Move both to just under the `13 upgrades · +157.6 DPS` meta line.
+- **D8. `Bring flasks` sits inside the raid card on iOS and outside it on Android.** Pick one placement. The mocks decide which.
+- **D9. The feed body and the push write the same raid time two ways.** The Home row says `Thursday 8:00 PM.` and the push says `Thu 5 Nov, 8:00 pm CST`. Use the shared layout (`Mon 2 Jan, 3:04 pm MST`) in the feed text too.
+- **D10. Activity's `Show older` is on Android and not in the iOS capture.** The BRIEF lists feed paging as a fixture limit, so I only mention it here. Check it on the next iOS capture.
+
+## ALLOWED differences (cited)
+
+- The floating glass iOS tab bar against the M3 `NavigationBar` and its pill indicator: spec 4.1 and rule 8.
+- iOS large title under the band against the Android bar title at rest: N3, the round-2 KEEP, rule 8.
+- Android's Segmented as one 48 dp pill against iOS's 4 pt radius, 44 pt group: the round-5 mock ruling and rule 8.
+- Android push buttons are `In`, `Late`, `Bench` (three), because M3 notifications cap actions at three: rule 8.
+- Round pill action buttons and the system notification chrome: rule 8.
+- The Android teal LX small icon against the iOS app-icon square: rule 8.
+- Pull to refresh, haptics, safe areas, `ax5-*` and `fs2-*` scaling: rule 8.
+- The person glyph in the faction ring on the profile button and drawer head, and the crest on Home and the Switch rows: the owner exception, KEPT.
+
+VERDICT: DRIFT
+

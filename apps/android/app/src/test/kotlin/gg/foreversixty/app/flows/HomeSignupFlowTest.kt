@@ -83,10 +83,10 @@ class HomeSignupFlowTest {
         assertTrue(flow.service.requests.all { it.first == flow.character.key })
         assertEquals(listOf("selection", "success", "selection", "success"), flow.haptics.calls)
         assertOnly(SignupState.Late)
-        // Item 5: the chosen minutes selected, the card's line `Late · 30 min`, the Raid tab's list told.
+        // Item 5: the chosen minutes selected, the Raid tab's list told; AS5: no line repeats the answer.
         minutes(30).assertIsSelected()
         listOf(15, 60).forEach { minutes(it).assertIsNotSelected() }
-        compose.onNodeWithText(resources().getString(R.string.raid_answer_lateMinutes, 30), substring = true).assertExists()
+        compose.onNodeWithText(resources().getString(R.string.raid_answer_lateMinutes, 30), substring = true).assertDoesNotExist()
         val own = flow.state.nextRaid?.signups?.first { it.own && it.characterKey == flow.character.key }
         assertEquals(30, own?.lateMinutes)
         shots.step(5, "late-30")

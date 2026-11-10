@@ -49,12 +49,12 @@ fun RaidAnswers(raid: RaidCardModel, actions: HomeActions, modifier: Modifier = 
 }
 
 /**
- * How Late's minutes sit under the answers: [Inline] on the Raid tab's head (48 dp chips, mock
- * m-android-signup), [Asked] on Home's card under `How late?` (the small chip, 48 to the touch, as the
- * Home mock draws it).
+ * How Late's minutes sit under the answers, both under `How late?` (a2): [Inline] on the Raid tab's
+ * head (48 dp chips, mock m-android-signup), [Asked] on Home's card (the small chip, 48 to the touch,
+ * as the Home mock draws it).
  */
 enum class LateChipsStyle(val asks: Boolean, val chipHeight: Dp, val gap: Dp) {
-    Inline(asks = false, chipHeight = FsTarget.min, gap = FsSpace.space2),
+    Inline(asks = true, chipHeight = FsTarget.min, gap = FsSpace.space2),
     Asked(asks = true, chipHeight = FLOW_CHIP_SMALL, gap = 0.dp),
 }
 

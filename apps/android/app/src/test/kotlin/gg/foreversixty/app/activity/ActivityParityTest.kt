@@ -85,12 +85,15 @@ class ActivityParityTest {
     @Composable
     private fun Inbox(rows: List<ActivityRow>, me: gg.foreversixty.app.model.AccountCharacter = MenuFixtures.thandrel) {
         ActivityScreen(
-            ActivityState.Loaded(rows, null), ActivityFilter.All, ActivityFixtures.BUILD, ActivityFixtures.NOW, ActivityFixtures.ZONE, ActivityActions(),
+            ActivityState.Loaded(rows, OLDER), ActivityFilter.All, ActivityFixtures.BUILD, ActivityFixtures.NOW, ActivityFixtures.ZONE, ActivityActions(),
         ) { CharacterBar(me, TITLE) }
     }
 
     private companion object {
         const val TITLE = "Activity"
+
+        /** A page further back, so the list ends in Show older as the mock does. */
+        const val OLDER = 1L
     }
 }
 
@@ -103,11 +106,12 @@ object ActivityFixtures {
     /** Thandrel before his Battle.net portrait arrives: the bar draws his crest. */
     val noPortrait = MenuFixtures.thandrel.copy(avatarUrl = null)
 
-    private fun row(id: Long, kind: String, group: String, title: String, body: String, at: String, read: Boolean, icon: String) =
-        ActivityRow(id = id, kind = kind, group = group, title = title, body = body, link = "", occurredAt = at, read = read, icon = icon)
+    @Suppress("LongParameterList")
+    private fun row(id: Long, kind: String, group: String, title: String, body: String, at: String, read: Boolean, icon: String, figure: Double? = null) =
+        ActivityRow(id = id, kind = kind, group = group, title = title, body = body, link = "", occurredAt = at, read = read, icon = icon, figure = figure)
 
     val rows = listOf(
-        row(8, "guildsim.passed", "ladder", "Kaelra passed you in the guild sims", "1,012.3 DPS, you are #7 of 14", "2026-11-06T10:00:00Z", false, "ability_warrior_innerrage"),
+        row(8, "guildsim.passed", "ladder", "Kaelra passed you in the guild sims", "You are #7 of 14", "2026-11-06T10:00:00Z", false, "ability_warrior_innerrage", 1196.2),
         row(7, "loot.awarded", "gear", "You got Deathbringer", "Onyxia · main hand, +12.6 DPS", "2026-11-06T09:00:00Z", false, "inv_axe_09"),
         row(6, "report.ready", "logs", "Onyxia's Lair report ready", "87th percentile, your best on Onyxia so far · the coach has 2 notes", "2026-11-06T09:00:00Z", false, "inv_misc_head_dragon_black"),
         row(5, "raid.signup_nudge", "raids", "You're In for Onyxia", "As Thandrel, Damage · 8:00 pm CST", "2026-11-06T00:02:00Z", true, "inv_misc_head_dragon_black"),

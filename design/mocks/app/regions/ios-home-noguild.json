@@ -40,7 +40,7 @@
     14,
     96,
     365,
-    341
+    345
    ],
    "inventory": {
     "row": 4,
@@ -50,9 +50,9 @@
   "section-new-for-you": {
    "box": [
     14,
-    457,
+    461,
     365,
-    232
+    283
    ],
    "inventory": {
     "row": 3,
@@ -62,9 +62,9 @@
   "section-raid-with-a-guild": {
    "box": [
     14,
-    709,
+    764,
     365,
-    132
+    112
    ],
    "inventory": {
     "button": 1

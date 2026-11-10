@@ -29,9 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.FsType
@@ -134,6 +132,6 @@ private val METER_RADIUS = 3.dp
 private const val GLOW = 0.1f
 private val GLOW_RADIUS = 300.dp
 private const val STACK_SCALE = 1.3f
-private val EYEBROW = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)
-private val CLOCK = FsType.figure.copy(fontSize = 40.sp, lineHeight = 42.sp)
-private val UNIT = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp)
+private val EYEBROW = FsType.tag
+private val CLOCK = FsType.countdown
+private val UNIT = FsType.figureUnit

@@ -355,6 +355,7 @@ func TestMessageOfNamesTheKindsButtonSet(t *testing.T) {
 	}{
 		{"raid sign-up", events.Event{Kind: events.RaidPosted, Actions: act}, RaidSignupCategory},
 		{"applicant decline", events.Event{Kind: events.GuildApplicant, Actions: act}, GuildApplicantCategory},
+		{"short mention", events.Event{Kind: events.RaidShort, Actions: act}, RaidShortCategory},
 		{"no actions, no category", events.Event{Kind: events.RaidShort}, ""},
 	}
 	for _, c := range cases {

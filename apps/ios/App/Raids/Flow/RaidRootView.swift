@@ -5,6 +5,8 @@ import SwiftUI
 struct RaidRootActions {
     var raid = NextRaidActions()
     var openPage: (GuildPage) -> Void = { _ in }
+    /// The roster filtered to these characters (row 5's not-synced raiders).
+    var openRoster: ([String]) -> Void = { _ in }
     var openLink: (URL) -> Void = { _ in }
     var apply: (RecruitingRow) -> Void = { _ in }
     var claim: () -> Void = {}
@@ -47,6 +49,7 @@ struct RaidRootView: View {
                 }
             }
         }
+        .tabRootScroll()
         .screenGround()
     }
 
@@ -108,7 +111,10 @@ struct RaidGuildView: View {
             if !content.coming.isEmpty {
                 PanelSection(Copy.raidTabComing, action: (Copy.raidTabRosterLink, { actions.openPage(.roster) })) {
                     RoleRowsView(roles: content.coming)
-                    ComingFoot(lines: [content.answers, content.cover, content.notSynced].compactMap(\.self))
+                    ComingFoot(
+                        answers: content.answers, cover: content.cover, notSynced: content.notSynced,
+                        openUnsynced: actions.openRoster
+                    )
                 }
             }
         } else {
@@ -133,14 +139,31 @@ struct RaidGuildView: View {
 }
 
 /// Who is coming's foot: the other answers' counts, what the cover misses (G4), an officer's
-/// readiness line (G1); one muted line each.
+/// not-synced raiders by name (G1), which opens the roster filtered to them.
 private struct ComingFoot: View {
-    let lines: [String]
+    let answers: String?
+    let cover: RaidCoverContent?
+    let notSynced: NotSyncedContent?
+    let openUnsynced: ([String]) -> Void
 
     var body: some View {
-        if !lines.isEmpty {
+        if answers != nil || cover != nil || notSynced != nil {
             VStack(alignment: .leading, spacing: FSSpace.space2) {
-                ForEach(lines, id: \.self) { Text($0).type(RowType.sub).foregroundStyle(FSColor.muted) }
+                if let answers { Text(answers).type(RowType.sub).foregroundStyle(FSColor.muted) }
+                if let cover { CoverLine(content: cover) }
+                if let notSynced {
+                    Button { openUnsynced(notSynced.keys) } label: {
+                        HStack(spacing: FSSpace.space1) {
+                            Text(notSynced.line).type(RowType.sub).foregroundStyle(FSColor.text)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Image(systemName: "chevron.right").foregroundStyle(FSColor.muted).accessibilityHidden(true)
+                        }
+                        .frame(minHeight: FSTarget.min)
+                        .contentShape(.rect)
+                    }
+                    .buttonStyle(RowPressStyle())
+                    .parityItem(.row)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, FSSpace.rowPadY)
@@ -149,9 +172,51 @@ private struct ComingFoot: View {
     }
 }
 
+/// The Covered line (row 4): `Missing` once in the muted label tone, each gap's spell icon beside its
+/// name in wipe red (only the names, never a red wall), then `and N more`.
+private struct CoverLine: View {
+    let content: RaidCoverContent
+    @Environment(\.raidIconBuild) private var build
+
+    var body: some View {
+        WrapLayout(spacing: FSSpace.space1, lineSpacing: FSSpace.space1) {
+            if !content.missing.isEmpty {
+                Text(Copy.raidTabCoverLabel).foregroundStyle(FSColor.muted)
+                gaps(content.missing)
+            }
+            if !content.missing.isEmpty, !content.short.isEmpty {
+                Text(RaidFlowPresenter.separator.trimmingCharacters(in: .whitespaces)).foregroundStyle(FSColor.muted)
+            }
+            gaps(content.short)
+            if content.more > 0 {
+                Text(Copy.raidTabAndMore(names: "", n: content.more).trimmingCharacters(in: .whitespaces)).foregroundStyle(FSColor.muted)
+            }
+        }
+        .type(RowType.sub)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(content.line)
+    }
+
+    private func gaps(_ gaps: [CoverGap]) -> some View {
+        ForEach(Array(gaps.enumerated()), id: \.offset) { index, gap in
+            HStack(spacing: FSSpace.space1) {
+                ItemIconView(icon: gap.icon, quality: nil, build: build ?? "", size: FSSize.icon20).parityItem(.image)
+                Text("\(Text(gap.name).foregroundColor(FSColor.wipe))\(Text(tail(gap, last: index == gaps.count - 1)).foregroundColor(FSColor.muted))")
+            }
+        }
+    }
+
+    /// ` 1 of 2` after a short gap, then the list's comma unless it is the last.
+    private func tail(_ gap: CoverGap, last: Bool) -> String {
+        let count = gap.have.map { " " + Copy.raidTabOfWant(have: $0, want: gap.need) } ?? ""
+        return count + (last ? "" : RaidFlowPresenter.list.trimmingCharacters(in: .whitespaces))
+    }
+}
+
 /// The Raid tab's head (spec 4.2, owner 2026-11-09): one compact line, the zone's icon, the raid, its
-/// time and the pull, who the answer is for (E7) and the answer as a chip; the four answers under it,
-/// and with Late the minutes inline, the chosen one selected (F1).
+/// time and the pull, who the answer is for (E7); the four answers under it are the answer (AS5: no
+/// chip repeats it), with Late the minutes inline, the chosen one selected (F1).
 struct RaidHeadView: View {
     let content: NextRaidContent
     /// The officers' notes, two lines under the head.
@@ -159,7 +224,7 @@ struct RaidHeadView: View {
     let actions: NextRaidActions
 
     static let notesLines = 2
-    /// How far the head's line may shrink to stay on one line beside the chip.
+    /// How far the head's line may shrink to stay on one line.
     static let lineScale: CGFloat = 0.8
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -189,8 +254,8 @@ struct RaidHeadView: View {
             ZoneIcon(icon: content.icon)
             VStack(alignment: .leading, spacing: 0) {
                 Text(content.zone).type(FSType.item).foregroundStyle(FSColor.strong).accessibilityAddTraits(.isHeader)
-                // One line beside the chip, as the mock holds it (shrinking a little for a long chip); at the
-                // accessibility sizes it wraps, since the time carries meaning and never truncates (spec 3.2).
+                // One line, as the mock holds it (shrinking a little); at the accessibility sizes it wraps,
+                // since the time carries meaning and never truncates (spec 3.2).
                 if typeSize.isAccessibilitySize {
                     headLineText.fixedSize(horizontal: false, vertical: true)
                 } else {
@@ -198,11 +263,8 @@ struct RaidHeadView: View {
                 }
                 if let invites = content.invites { Text(invites).type(RowType.sub).foregroundStyle(FSColor.muted) }
                 if let who = content.who { Text(who).type(RowType.sub).foregroundStyle(FSColor.muted) }
-                // At the accessibility sizes the chip drops under the lines, so the raid's name keeps the row.
-                if typeSize.isAccessibilitySize, let chip = content.chip { AnswerChip(text: chip).padding(.top, FSSpace.space1) }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            if !typeSize.isAccessibilitySize, let chip = content.chip { AnswerChip(text: chip) }
         }
         .contentShape(.rect)
     }
@@ -218,26 +280,6 @@ struct ZoneIcon: View {
             .clipShape(.rect(cornerRadius: FSRadius.control))
             .overlay(RoundedRectangle(cornerRadius: FSRadius.control).strokeBorder(FSColor.line, lineWidth: FSStroke.hairline))
             .parityItem(.image)
-    }
-}
-
-/// Your answer as a chip at the head's end, teal as the selected answer: `In`, `Late · 30 min`.
-struct AnswerChip: View {
-    let text: String
-
-    static let padX: CGFloat = 10
-    static let padY: CGFloat = 3
-
-    var body: some View {
-        Text(text)
-            .type(TypeRole(face: FSFont.bodyBold, size: 13, lineHeight: 18, scalesWith: .footnote))
-            .foregroundStyle(FSColor.strong)
-            .lineLimit(1)
-            .padding(.horizontal, Self.padX)
-            .padding(.vertical, Self.padY)
-            .background(FSColor.teal, in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).strokeBorder(FSColor.tealEdge, lineWidth: FSStroke.hairline))
-            .fixedSize()
     }
 }
 

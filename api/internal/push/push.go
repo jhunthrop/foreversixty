@@ -67,17 +67,21 @@ func (e *ServiceError) Error() string {
 	return fmt.Sprintf("push: %s answered %d %s", e.Service, e.Status, e.Reason)
 }
 
-// The button sets the apps register: the raid events' In, Late, Bench and Out, and
-// guild.applicant's Decline.
+// The button sets the apps register: the raid events' In, Late, Bench and Out,
+// guild.applicant's Accept and Decline, and raid.short's Mention.
 const (
 	RaidSignupCategory     = "RAID_SIGNUP"
 	GuildApplicantCategory = "GUILD_APPLICANT"
+	RaidShortCategory      = "RAID_SHORT"
 )
 
 // categoryOf is the button set of a kind that carries actions.
 func categoryOf(kind events.Kind) string {
-	if kind == events.GuildApplicant {
+	switch kind {
+	case events.GuildApplicant:
 		return GuildApplicantCategory
+	case events.RaidShort:
+		return RaidShortCategory
 	}
 	return RaidSignupCategory
 }

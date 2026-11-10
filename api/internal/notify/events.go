@@ -110,6 +110,9 @@ func SimFinishedEvent(publicBaseURL string, e SimFinished) events.Event {
 	if e.DPS > 0 {
 		dps := e.DPS
 		out.Figure = &dps
+		// The Activity row draws the DPS itself: it keeps the headline alone.
+		headline := collapse(e.Headline)
+		out.ActivityBody = &headline
 	}
 	return out
 }

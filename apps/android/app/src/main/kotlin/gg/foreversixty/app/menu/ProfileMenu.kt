@@ -24,6 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -35,6 +36,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
+import gg.foreversixty.app.home.LARGE_TEXT_SCALE
+import gg.foreversixty.app.isStale
 import gg.foreversixty.app.account.AccountCopy
 import gg.foreversixty.app.designsystem.BrandButton
 import gg.foreversixty.app.designsystem.BrandButtonKind
@@ -153,39 +156,56 @@ private fun YouHead(you: AccountCharacter, model: MenuModel, refresh: MenuRefres
             }
         }
         model.updated?.let { age ->
-            BattleNetStamp(stringResource(R.string.menu_updated, AccountCopy.age(age)), you.build?.syncError != null, refresh, onRefresh)
+            BattleNetStamp(stringResource(R.string.menu_updated, AccountCopy.age(age)), age.isStale(), you.build?.syncError != null, refresh, onRefresh)
         }
     }
 }
 
 /**
- * `Updated 11 d ago from Battle.net · Refresh` (spec section 3). A tap says so at once: `Refreshing
- * from Battle.net` until the call returns, then the new stamp, or the error line under it. After a
- * failed Battle.net refresh ([syncFailed], the build's `sync_error`) the stamp reads it in wipe red
- * with Try again.
+ * `Updated 11 d ago from Battle.net · Refresh` (spec section 3). A tap says so at once (row 12): the
+ * action reads `Refreshing…` and is disabled until the call returns, then the new stamp, or the error
+ * line under it. Past [isStale] the stamp takes the warning tone. After a failed Battle.net refresh
+ * ([syncFailed], the build's `sync_error`) the stamp reads it in wipe red with Try again. From font
+ * scale 1.5 the action takes its own 48 dp row (a4).
  */
 @Composable
-private fun BattleNetStamp(updated: String, syncFailed: Boolean, refresh: MenuRefresh, onRefresh: () -> Unit) {
-    val stampModifier = Modifier
-        .padding(top = FsSpace.space1)
-        .heightIn(min = FsTarget.min)
-        .wrapContentHeight(Alignment.CenterVertically)
-        .semantics { liveRegion = LiveRegionMode.Polite }
-    if (refresh == MenuRefresh.Refreshing) {
-        Text(stringResource(R.string.shared_selector_refreshing), style = STAMP, color = FsColor.muted, modifier = stampModifier)
-        return
+private fun BattleNetStamp(updated: String, stale: Boolean, syncFailed: Boolean, refresh: MenuRefresh, onRefresh: () -> Unit) {
+    val refreshing = refresh == MenuRefresh.Refreshing
+    val stamp = if (syncFailed) stringResource(R.string.menu_syncError) else updated
+    val stampColor = when {
+        syncFailed -> FsColor.wipe
+        stale -> FsColor.warn
+        else -> FsColor.text
     }
-    Text(
-        buildAnnotatedString {
-            if (syncFailed) withStyle(SpanStyle(color = FsColor.wipe)) { append(stringResource(R.string.menu_syncError)) } else append(updated)
-            append(STAMP_DOT)
-            val action = stringResource(if (syncFailed) R.string.common_tryAgain else R.string.menu_refresh)
-            withStyle(SpanStyle(color = FsColor.gold, fontWeight = FsType.bodyStrong.fontWeight)) { append(action) }
+    val action = stringResource(
+        when {
+            refreshing -> R.string.menu_refreshing
+            syncFailed -> R.string.common_tryAgain
+            else -> R.string.menu_refresh
         },
-        style = STAMP,
-        color = FsColor.text,
-        modifier = stampModifier.clickable(role = Role.Button, onClick = onRefresh),
     )
+    val actionStyle = SpanStyle(color = if (refreshing) FsColor.muted else FsColor.gold, fontWeight = FsType.bodyStrong.fontWeight)
+    // The 48 dp target takes the press; the text is centred inside it.
+    val tap = Modifier
+        .heightIn(min = FsTarget.min)
+        .clickable(enabled = !refreshing, role = Role.Button, onClick = onRefresh)
+        .semantics { liveRegion = LiveRegionMode.Polite }
+        .wrapContentHeight(Alignment.CenterVertically)
+    if (LocalDensity.current.fontScale >= LARGE_TEXT_SCALE) {
+        Text(stamp, style = STAMP, color = stampColor, modifier = Modifier.padding(top = FsSpace.space1))
+        Text(buildAnnotatedString { withStyle(actionStyle) { append(action) } }, style = STAMP, modifier = tap)
+    } else {
+        Text(
+            buildAnnotatedString {
+                withStyle(SpanStyle(color = stampColor)) { append(stamp) }
+                append(STAMP_DOT)
+                withStyle(actionStyle) { append(action) }
+            },
+            style = STAMP,
+            color = FsColor.text,
+            modifier = Modifier.padding(top = FsSpace.space1).then(tap),
+        )
+    }
     if (refresh == MenuRefresh.Failed) Text(stringResource(R.string.menu_refreshFailed), style = STAMP, color = FsColor.wipe)
 }
 

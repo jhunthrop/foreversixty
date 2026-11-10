@@ -82,13 +82,17 @@ public final class SessionStore {
     }
 
     /// Reads `GET /v1/me`. A 401 ends the session; any other failure keeps what is on screen.
-    public func refresh() async {
-        guard phase.isSignedIn else { return }
+    /// Reloads the account; false when the call failed (the drawer's Refresh says so).
+    @discardableResult
+    public func refresh() async -> Bool {
+        guard phase.isSignedIn else { return false }
         do throws(APIError) {
             let me = try await client.send(.getMe)
             if phase.isSignedIn { phase = .signedIn(me) }
+            return true
         } catch {
             if case .unauthorized = error { tokenDied() }
+            return false
         }
     }
 

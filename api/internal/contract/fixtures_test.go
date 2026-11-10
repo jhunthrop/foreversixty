@@ -103,7 +103,7 @@ func TestPushFixturesCarryThePayloadFields(t *testing.T) {
 }
 
 // pushCategories are the button sets a payload with actions can name (push.MessageOf).
-var pushCategories = map[string]bool{push.RaidSignupCategory: true, push.GuildApplicantCategory: true}
+var pushCategories = map[string]bool{push.RaidSignupCategory: true, push.GuildApplicantCategory: true, push.RaidShortCategory: true}
 
 // assertDataOnlyFCM holds an FCM fixture to the data-only message Android is sent (since
 // a8ad9c882): no notification block, so the app's own service draws every push with its group;

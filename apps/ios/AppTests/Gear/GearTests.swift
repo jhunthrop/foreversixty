@@ -35,10 +35,10 @@ enum GearTestData {
         slot("waist", "Waist", "Valiant’s Waistguard", "inv_belt_33", 4, nil),
         slot("legs", "Legs", "Sentinel’s Plate Legguards", "inv_pants_plate_20", 4, "+4.7"),
         slot("feet", "Feet", "Scalegut Treaders", "inv_boots_chain_11", 3, "+0.9"),
-        slot("finger1", "Finger", "Don Julio’s Band", "inv_jewelry_ring_35", 4, "+6.8"),
-        slot("finger2", "Finger", "Cutthroat’s Signet", "inv_jewelry_ring_01", 3, "+0.8"),
-        slot("trinket1", "Trinket", "Hand of Justice", "inv_jewelry_talisman_01", 3, nil),
-        slot("trinket2", "Trinket", "Molten Heart of the Mountain", "inv_misc_gem_ruby_01", 3, "+3.2"),
+        slot("finger1", "Finger 1", "Don Julio’s Band", "inv_jewelry_ring_35", 4, "+6.8"),
+        slot("finger2", "Finger 2", "Cutthroat’s Signet", "inv_jewelry_ring_01", 3, "+0.8"),
+        slot("trinket1", "Trinket 1", "Hand of Justice", "inv_jewelry_talisman_01", 3, nil),
+        slot("trinket2", "Trinket 2", "Molten Heart of the Mountain", "inv_misc_gem_ruby_01", 3, "+3.2"),
         slot("main_hand", "Main hand", "Ironwood Blade", "inv_sword_07", 4, "+5.9"),
         slot("off_hand", "Off hand", "Persuader", "inv_hammer_08", 4, nil),
         slot("ranged", "Ranged", "Blackcrow", "inv_weapon_crossbow_04", 3, "+1.9"),
@@ -51,8 +51,8 @@ enum GearTestData {
     }
 
     static let content = GearContent(
-        title: "Fury Warrior", figure: "1004.2", unit: "DPS", facts: "60 raid · Alliance · 4 of 17 slots match the list",
-        summary: "+157.6 DPS from 13 upgrades · 2 gains not modelled yet · synced 2 h ago",
+        title: "Fury Warrior", figure: "1004.2", unit: "DPS", facts: "60 raid · Alliance · 5 of 17 slots match the list",
+        summary: "+47.5 DPS from 12 upgrades · synced 2 h ago",
         tonight: [
             place("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh’gajin, 8%", "inv_weapon_crossbow_04", 3, "1 upgrade · +1.9 DPS"),
             place("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", "inv_helmet_36", 4, "2 upgrades · +20.4 DPS"),
@@ -245,6 +245,33 @@ struct GearLogicTests {
         #expect(failed?.retry == true)
         #expect(presenter.notice(phase: .notCached, title: title)?.retry == true)
         #expect(presenter.notice(phase: .loading, title: title) == nil)
+    }
+
+    @Test("row 10: the counter, the Equipped cells, the header's count and the gain cells agree with the answer")
+    func countsAgree() throws {
+        let home = try HomeFixtures.home("character.home.gorvash")
+        let range = BisRange(band: 50, preset: "bare")
+        let band = try #require(try BisTestData.bis().band(for: range, faction: "horde"))
+        // A list whose picks are the answer's own: its upgrades' picks, then what is already best.
+        let pick = { (id: Int, name: String) in
+            BisRow.Content.pick(BisPick(
+                item: BisItemRef(id: id, name: name, item: nil), slotSource: "", next: "", isUnmodelled: false, isWorn: false,
+                runnersUp: [], source: ""
+            ))
+        }
+        let rows = home.upgrades.map { BisRow(slot: $0.slot, slotLabel: $0.slotLabel, content: pick($0.pick.id, $0.pick.name ?? "")) }
+            + home.alreadyBest.map { BisRow(slot: $0.slot, slotLabel: $0.slotLabel, content: pick($0.item.id, $0.item.name ?? "")) }
+        let list = BisList(setDpsLine: nil, rows: rows, unit: .dps, specLabel: "Fury Warrior", rangeLabel: "50 to 59")
+        let selection = BisSelection(classSlug: "warrior", spec: "warrior-fury", range: range, faction: "horde")
+        let content = GearPresenter(context: BisContext(selection: selection, characterSelection: selection))
+            .content(list: list, inputs: GearInputs(band: band, home: home, loot: nil, level: 58))
+        let worn = content.slots.filter { $0.pick?.trail == .worn }.count
+        let gains = content.slots.filter { if case .gain = $0.pick?.trail { true } else { false } }.count
+        #expect(worn == home.alreadyBest.count)
+        #expect(content.facts.hasSuffix(Copy.gearOnList(n: worn, total: rows.count)))
+        #expect(gains == home.upgradeCount)
+        #expect(content.summary?.contains(Copy.homeAnswerUpgrades(n: home.upgradeCount)) == true)
+        #expect(content.slots.map(\.label).contains("Finger 2"), "the API's slot label")
     }
 
     @Test("the counter reads how many slots match the list")
