@@ -14,6 +14,10 @@ import (
 // DoneFor is how long the uninstall's last line stays up before the window closes.
 const DoneFor = 1500 * time.Millisecond
 
+// ShowFor is the least time the progress is up: an install takes half a second,
+// and a window that flashes its bar and vanishes reads as a crash, not a finish.
+var ShowFor = 1200 * time.Millisecond
+
 // SetupOptions is what ShowSetup needs.
 type SetupOptions struct {
 	// Mode is ModeSetup or ModeUninstall.
@@ -37,7 +41,7 @@ func ShowSetup(o SetupOptions) error {
 		return map[string]any{
 			"fsSetupInfo": func() map[string]any {
 				_, statErr := os.Stat(o.Folders.Exe())
-				return map[string]any{"upgrade": statErr == nil}
+				return map[string]any{"upgrade": statErr == nil, "startup": o.System.StartupEnabled()}
 			},
 			// The page's one toggle: Start with Windows, or Keep my settings.
 			"fsSetupRun": func(toggle bool) {
@@ -48,6 +52,7 @@ func ShowSetup(o SetupOptions) error {
 }
 
 func runInWindow(o SetupOptions, win Window, toggle bool) {
+	started := time.Now()
 	progress := func(step, of int, key string) {
 		win.Eval(fmt.Sprintf("window.fsProgress(%d, %d, %q)", step, of, key))
 	}
@@ -62,9 +67,11 @@ func runInWindow(o SetupOptions, win Window, toggle bool) {
 		win.Eval("window.fsFailed()")
 		return
 	}
+	win.Eval("window.fsDone()")
+	hold := ShowFor - time.Since(started)
 	if o.Mode == ModeUninstall {
-		win.Eval("window.fsDone()")
-		time.Sleep(DoneFor)
+		hold = max(hold, DoneFor)
 	}
+	time.Sleep(max(hold, 0))
 	win.Close()
 }

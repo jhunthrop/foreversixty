@@ -157,6 +157,16 @@ func (winSystem) DeleteStartup() error {
 	return nil
 }
 
+func (winSystem) StartupEnabled() bool {
+	k, err := registry.OpenKey(registry.CURRENT_USER, RunKey, registry.QUERY_VALUE)
+	if err != nil {
+		return false
+	}
+	defer k.Close()
+	_, _, err = k.GetStringValue(RunValue)
+	return err == nil
+}
+
 func (winSystem) Start(exe string) error {
 	cmd := exec.Command(exe)
 	cmd.Dir = filepath.Dir(exe)

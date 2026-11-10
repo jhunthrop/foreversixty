@@ -3,6 +3,7 @@ package install
 import (
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -13,6 +14,7 @@ type fakeWin struct {
 	entry   Entry
 	failOn  string
 	started string
+	startup bool
 }
 
 func (f *fakeWin) note(call string) error {
@@ -34,6 +36,7 @@ func (f *fakeWin) SetUninstallEntry(e Entry) error  { f.entry = e; return f.note
 func (f *fakeWin) DeleteUninstallEntry() error      { return f.note("delete entry") }
 func (f *fakeWin) SetStartup(command string) error  { return f.note("startup " + command) }
 func (f *fakeWin) DeleteStartup() error             { return f.note("no startup") }
+func (f *fakeWin) StartupEnabled() bool             { return f.startup }
 func (f *fakeWin) Start(exe string) error           { f.started = exe; return f.note("start " + exe) }
 func (f *fakeWin) Remove(path string) error         { return f.note("remove " + path) }
 func (f *fakeWin) RemoveAfterExit(dir string) error { return f.note("remove after exit " + dir) }
@@ -57,6 +60,28 @@ func TestSetupMode(t *testing.T) {
 		if got := SetupMode(exe, folders.Install); got != want {
 			t.Errorf("SetupMode(%q) = %v, want %v", exe, got, want)
 		}
+	}
+}
+
+// An update keeps the player's Start with Windows choice: the window starts from it.
+func TestTheSetupWindowReportsAnInstallAndItsStartupChoice(t *testing.T) {
+	install := t.TempDir()
+	if err := os.WriteFile(filepath.Join(install, ExeName), []byte("old"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	prompt := func(_ string, bind func(Window) map[string]any) error {
+		info := bind(fakeWindow{})["fsSetupInfo"].(func() map[string]any)()
+		if info["upgrade"] != true || info["startup"] != false {
+			t.Errorf("info %v", info)
+		}
+		return nil
+	}
+	err := ShowSetup(SetupOptions{
+		Mode: ModeSetup, System: &fakeWin{startup: false}, Folders: Folders{Install: install},
+		Log: quiet, Prompt: prompt,
+	})
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
@@ -150,7 +175,7 @@ func TestTheSetupWindowRunsTheStepsAndReportsThem(t *testing.T) {
 			t.Errorf("url %s", url)
 		}
 		fns := bind(fakeWindow{closed: closed, evals: &evals})
-		if info := fns["fsSetupInfo"].(func() map[string]any)(); info["upgrade"] != false {
+		if info := fns["fsSetupInfo"].(func() map[string]any)(); info["upgrade"] != false || info["startup"] != false {
 			t.Errorf("info %v", info)
 		}
 		fns["fsSetupRun"].(func(bool))(true)
@@ -164,7 +189,7 @@ func TestTheSetupWindowRunsTheStepsAndReportsThem(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(evals) != 5 || evals[0] != `window.fsProgress(1, 5, "stop")` || evals[4] != `window.fsProgress(5, 5, "start")` {
+	if len(evals) != 6 || evals[0] != `window.fsProgress(1, 5, "stop")` || evals[4] != `window.fsProgress(5, 5, "start")` || evals[5] != "window.fsDone()" {
 		t.Errorf("evals %q", evals)
 	}
 }

@@ -76,3 +76,46 @@ Fix 2 is worth doing before release. Fixes 1 and 3 can follow.
 # After round 2
 
 Applied fix 2: the first-run line is in body ink, not muted. Fixes 1 and 3 belong to the /setup page and addonCopy lanes and are left as follow-ups.
+
+# Round 4 (both platforms, the Windows setup in our own window)
+
+**Verdict: FIX.** It is close. A player would trust the signed, one-window, no-admin story, and nothing here nags. Item 1 is a blocker until it is recaptured, and items 2 to 4 are real defects.
+
+**Capture limits.** The Windows captures sit on a CI runner with a console behind them, which I ignored. I could not check the Mac states I wasn't given (`mac-state-*`). I did not open the `.html` or `.go` sources, so I name them from the copy comments rather than from reading them.
+
+1. **`win-2-installing.png` shows a blank brown window.**
+   - There is no header, no progress bar and no step line. `copy.js` `install.steps` ("Copying", "Adding the Start menu shortcut" and so on) is nowhere on screen. A player sees an empty box and assumes it hung.
+   - Check whether the capture caught the window between states. If not, render the card, a bar and the current `steps` line from the first frame of the install state.
+   - Recapture after the change, showing at least "Copying".
+
+2. **`setup-mac-1440.png`: the manual-install path uses Windows backslashes on the Mac page.**
+   - It reads `World of Warcraft\_forever_\Interface\AddOns`. The site's setup page template needs the path per OS. On Mac it should read `/Applications/World of Warcraft/_forever_/Interface/AddOns`.
+   - A Mac player will not take a backslash path seriously.
+
+3. **Check the combat-logging path on the `/setup` companion steps.**
+   - It says "Turn on Options > Network > Advanced Combat Logging once." I am not sure the Era-based client puts that checkbox under Options > Network. I recall it under Interface > Network.
+   - Verify it in the Forever client. Fix the string in `web/src/data/companion.json`, or wherever the steps live, to the exact menu path. Also quote the checkbox label as the client spells it.
+
+4. **`mac-1-move-window.png`: the lede "The download goes in the Trash." is ambiguous.**
+   - A player does not know whether "the download" is the disk image or the app they are running. It also sounds like a warning. In `companion/ui/copy.js` `install.move.lede`, say what happens: "Moves the app to Applications and puts this download in the Trash."
+   - Keep the title as it is.
+
+5. **`copy.js` `install.setup.toggle` and `install.move.toggle`: both start-at-login toggles default on.**
+   - That is acceptable because it is visible, one line and one click. It is the only thing that could read as naggy.
+   - For trust, add a muted second line: "You can change this later in Settings." Confirm that the setting actually exists.
+   - Keep the toggles as they are. Don't add a prompt after install.
+
+6. **`win-7-removed.png` ends on a dead end.**
+   - "Forever Sixty is removed." is good copy, but the window has no button. Either auto-close after a few seconds or add a Close button. Today the player has to find the X.
+   - The same applies to `win-3-first-run.png`: it opens straight onto "Not connected" with the Battle.net sign-in. That is right. The sign-in is the only next step, and nothing else is pushed at the player.
+
+7. **`web/src/data/companion.json` `firstRun` for Windows: "Signed by Commish LLC" means nothing to a player.**
+   - It is the right fact, because SmartScreen shows that publisher. Reword it so the player can match it: "Publisher: Commish LLC (the company behind Forever Sixty)."
+   - Keep "If SmartScreen asks: More info, then Run anyway." That is exactly what players need.
+
+8. **`mac-dmg-window-*.png`: the drag window is clean and reads at a glance, but the lower third is empty.**
+   - Light and dark both work. The cream body in the dark window is fine because it is a fixed background.
+   - Optionally add one small line under the arrow, "Drag to Applications". Some players don't recognise the folder badge.
+   - Also move the icons about 40px lower, or shorten the window, so the content is centred.
+
+**What works and should not change.** The one-window flow on both platforms is a single decision with a single button. The upgrade state says "Replaces the copy already installed. Your settings stay." Uninstall reassures with "Your reports on foreversixty.gg stay." and "Keep my settings". The red Remove button is correctly alarming. Both setup pages mark the companion as "Optional", and the Download buttons are detected per OS.

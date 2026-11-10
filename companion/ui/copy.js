@@ -229,21 +229,24 @@ const COPY = {
     // The Mac's first launch from the disk image or a download (internal/install, offer.go).
     move: {
       title: 'Move Forever Sixty to Applications?',
-      lede: 'The download goes in the Trash.',
+      lede: 'This download goes in the Trash.',
       toggle: 'Open at login',
       action: 'Move to Applications',
       busy: 'Moving…',
-      failed: 'Move failed. Reopen Forever Sixty to try again.',
+      failed: 'Move failed. Press Move to Applications to try again.',
     },
-    // The Windows setup download (setup.go).
+    // The Windows setup download (setup.go); an upgrade when a copy is installed already.
     setup: {
       title: 'Install Forever Sixty?',
       lede: 'For your Windows account. No admin needed.',
+      titleUpgrade: 'Update Forever Sixty?',
       ledeUpgrade: 'Replaces the copy already installed. Your settings stay.',
       toggle: 'Start with Windows',
       action: 'Install',
+      actionUpgrade: 'Update',
       busy: 'Installing…',
-      failed: 'Install failed. Run the setup again to try once more.',
+      busyUpgrade: 'Updating…',
+      failed: 'Install failed. Press Install to try again.',
     },
     // Apps & Features' Uninstall (setup.go).
     uninstall: {
@@ -252,17 +255,17 @@ const COPY = {
       toggle: 'Keep my settings',
       action: 'Remove',
       busy: 'Removing…',
-      failed: 'Remove failed. Try again from Apps & Features.',
+      failed: 'Remove failed. Press Remove to try again.',
       done: 'Forever Sixty is removed.',
     },
     // The step under the bar, as each one starts.
     steps: {
       stop: 'Closing Forever Sixty',
-      copy: 'Copying',
+      copy: 'Copying files',
       shortcut: 'Adding the Start menu shortcut',
       register: 'Adding it to Apps & Features',
       start: 'Starting Forever Sixty',
-      remove: 'Removing',
+      remove: 'Removing files',
     },
   },
 };

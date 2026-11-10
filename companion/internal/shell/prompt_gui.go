@@ -45,6 +45,7 @@ func Prompt(o PromptOptions) error {
 	setWindowIcons(w.Window())
 	w.SetSize(o.Width, o.Height, webview.HintFixed)
 	applyChrome(w.Window())
+	dialogChrome(w.Window())
 	if o.Bind != nil {
 		for name, fn := range o.Bind(promptWindow{w}) {
 			if err := w.Bind(name, fn); err != nil {

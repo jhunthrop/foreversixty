@@ -124,3 +124,90 @@ Files, all under `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf372
 # After round 2
 
 Applied: Mac line "Notarized by Apple. Open the download and it moves itself to Applications. macOS 12 or later." Windows keeps "Open the download and press Install" (the owner's wording) and drops "It installs": "For your account only, no admin needed." Item 3 (the heading caption) belongs to the /setup lane.
+
+# Round 3 (DMG window)
+
+**Verdict: PASS WITH FIXES.** None of the fixes is a blocking visual tell (1, 2, 5, 8, 12, 13, 15). I judged this from the three captures and `tools/art/dmg_background.py`. I did not open `companion/tools/icons/render.py` or `tools/package-mac-companion.sh`.
+
+**First impression:** It reads as made on purpose. It mirrors Discord's layout (small wordmark top left, icon, arrow, Applications) but in our own materials, and it has no glow, gradient or card chrome.
+
+**Tells found, most damaging first**
+
+1. **Tell 4, cream ground, serif display face, warm accent (mild).** The ground is cream, the wordmark is Marcellus and the arrow is brass. This is the combination I flag by default.
+   - It is defensible here. `dmg_background.py` documents why the ground must be light: Finder draws icon labels in dark ink in both appearances. The cream, ink and brass are all `design/tokens/tokens.json` values. The wordmark is 19pt, not a hero slogan, so tell 5 does not apply.
+   - Change: none required. Keep the docstring's reasoning. Do not add any further serif or gold elsewhere in the window.
+
+2. **Tell 21/22, the name is stated three times.** "Forever Sixty" appears in the title bar, in the Marcellus wordmark and in the icon label. The seal also appears twice, in the wordmark and in the app icon, which is itself the seal.
+   - Change in `tools/art/dmg_background.py`: drop the `seal` paste (and `SEAL_PT` / `NAME_GAP`) so the top-left is the name alone, with `MARK_AT` unchanged.
+   - Alternatively keep the seal because the owner's Discord reference does the same. In that case say so in the docstring.
+   - The title-bar and label repeats come from Finder, so leave them.
+
+3. **Arrow proportion.** The shaft runs about 172pt between 128pt icons with a 3.5pt stroke. That reads as a long thin UI-library arrow. Discord's is short and close to the icons.
+   - Change in `dmg_background.py`: raise `ARROW_AIR` from 34 to about 52 and lower `ARROW_HEAD` from 13 to 11. This gives a shorter arrow with the same weight.
+
+4. **Tell 15, watch only.** The app icon is the owner's painted teal and blue medallion with a lit rim. It reads somewhat airbrushed, but it is the owner's own brand art, so it is exempt.
+   - Change: none. Just make sure `mac_seal` in `companion/tools/icons/render.py` does not add its own gloss, highlight or drop shadow on top of the art. The captures show only the rim Finder draws, which is correct.
+
+**What reads as authentic (keep)**
+- A single flat brass arrow with no glow or gradient, used as the only accent.
+- The light ground, chosen for a documented Finder legibility reason (checked on macOS 26), not for style.
+- A wordmark that is small and sits top left, so the icon and arrow carry the window. The hierarchy is uneven on purpose.
+- Real tokens, a real brand typeface and the real seal asset. The build is deterministic.
+- The window holds nothing but the install action: no tagline, no instruction text, no badges.
+- Both appearances hold up. The cream ground works under the dark and the light title bar.
+
+# Round 4 (both platforms, the Windows setup in our own window)
+
+# Companion installer review: FAIL
+
+**First impression:** The copy is player-written and specific, and the Mac move prompt and the Windows setup are the same window. The visuals are the problem. Cream, serif and brass on the DMG is the template, and the painted medallion, blotchy parchment and teal-fade header band read as generated.
+
+I did not open the full `design/reviews/.../page-*.png` set or the dark and light DMG variants beyond `mac-dmg-window-dark.png`. I read the Mac DMG, the move window, the Windows setup, installing and uninstall states, the Discord reference, `/setup` at 1440, and the copy and style source.
+
+## Tells, most damaging first
+
+1. **Tell 15, the LX medallion.** It is the app icon on `mac-dmg-window-dark.png`, the Mac tile, and the header seal in `win-1-setup.png` and `mac-1-move-window.png`. Teal marble, over-lit bronze and a glossy rim read as an airbrushed generated illustration.
+   - Fix: use the faithful flat HD crest per the owner's icon rule, or a hand-drawn mark with a flat fill and no lighting.
+   - This is a brand-wide asset, so the owner may decide it separately, but it cannot pass while it is the installer's hero.
+
+2. **Tell 4, DMG background.** In `tools/art/dmg_background.py` and `mac-dmg-window-dark.png`, the cream ground, the Marcellus serif "Forever Sixty" wordmark and the brass arrow are the cream, serif and warm-accent combination.
+   - Fix: copy the reference. Use a plain white or neutral light ground, drop the wordmark or set it as the app's own title, and use a short chevron in the one teal accent instead of a long brass arrow.
+   - The cream was chosen so Finder's dark labels stay readable. Plain white solves that equally well.
+
+3. **Tell 12, window ground.** The blotchy painted sand texture sits behind the prompt in every Windows and Mac capture (`win-1-setup.png`, `mac-1-move-window.png`, `page-setup-installing.png`). It reads as noise and a generated texture.
+   - Fix: a flat `--color-bg` fill for `.prompt`, with no texture.
+
+4. **Tell 2, header band.** The teal band at the top of the Windows window (`win-1-setup.png`) and the Mac window (`mac-1-move-window.png`) is a dark-to-lighter teal fade with no information in it. It also repeats the title bar: "Forever Sixty" appears in the title bar and again in the band.
+   - Fix: delete the band in the prompt windows and let the h1 carry the identity.
+
+5. **Tell 8, card inside a window.** The dark rounded card has an outer border plus an inset ring (`page-setup-installing.png`) and holds one heading, one line, one toggle and one button. It sits inside a window that is already a container.
+   - Fix: in `companion/ui/styles.css`, drop the card background, border and inset ring from `.prompt`. Set the text straight on the window ground, left-aligned with the window padding.
+
+6. **Tell 13, blank window.** `win-2-installing.png` is an empty brown rectangle with no header, no card and no bar. If that is what a player sees between launch and render, it is an empty state posing as a window.
+   - Fix: paint the window background and the h1 in the first frame, or show the window only once the content is ready. If it is only the capture timing, retake it.
+
+7. **Tell 22, qualifiers.** `copy.js` `install.setup.lede` is "For your Windows account. No admin needed." The companion.json Windows `firstRun` says the same thing again: "For your account only, no admin needed." A veteran knows it is per-user from the lack of a UAC prompt.
+   - Fix: `lede` becomes empty on Windows, since the Mac prompt gets by with one useful line. Keep "Replaces the copy already installed. Your settings stay." for upgrades.
+
+8. **Tell 21, explaining the obvious.** In `web/src/data/companion.json` the Windows `firstRun` has "Open the download and press Install."
+   - Fix: "Signed by Commish LLC. SmartScreen: More info, Run anyway." The Mac line can lose "it moves itself to Applications", because the prompt says so.
+
+9. **Tell 21, heading repeats the button.** "Install Forever Sixty?" over "Install", "Remove Forever Sixty?" over "Remove", and "Move to Applications?" over "Move to Applications" say the same thing twice.
+   - Fix: make the window's single line the useful fact, for example "Installs to %LocalAppData%" or the version number. Keep the heading only if it states something the button does not.
+
+10. **Minor inconsistency, accent colour.** In `.progress-track span`, the bar is cyan (`--color-accent`). The button and toggle are teal-green. Two accents appear in one 360px column (`page-setup-installing.png`).
+    - Fix: use the button's fill colour for the bar.
+
+11. **Tell 7 and duplication on `/setup`.** `setup-windows-1440.png` shows the line "Optional. Sends bags, bank and live logs after every session." twice, once in the step row and again beside "The companion". Grey sub-copy sits under nearly every heading on the page.
+    - Fix: say it once.
+
+## What already reads as authentic (keep)
+- "The download goes in the Trash." and "Your reports on foreversixty.gg stay." are concrete lines a developer writes.
+- Every state is named: upgrade, uninstall, "Keep my settings" and a `Start with Windows` toggle that defaults on. Each has its own words, including `install.steps.*` such as "Adding it to Apps & Features".
+- The signed and notarized lines in `companion.json` name Commish LLC and Apple instead of saying "secure".
+- The uninstall button is red text on dark. That is by role, not a glowing primary.
+- The DMG layout follows the owner's Discord reference, and the icon-centring review rounds are visible.
+- There are no em dashes, glows, fake stats or emoji in the copy.
+
+## Verdict: FAIL
+Tells 4, 12, 13, 15 and 8 are present, and 13, 15, 12 and 8 each block a pass on their own. After fixes 1 to 6, items 7 to 11 are copy trims that would otherwise be PASS WITH FIXES. The paths involved are `companion/ui/styles.css`, `companion/ui/copy.js`, `web/src/data/companion.json`, `tools/art/dmg_background.py`, and the captures in `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/design/reviews/2026-11-10-companion-installers/`.

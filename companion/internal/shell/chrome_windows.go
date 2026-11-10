@@ -96,3 +96,26 @@ func applyChrome(hwnd unsafe.Pointer) {
 	x, y := centred(mi.Work, wr.Right-wr.Left, wr.Bottom-wr.Top)
 	setWindowPos.Call(h, 0, uintptr(x), uintptr(y), 0, 0, swpNoSize|swpNoZOrder|swpNoActivate)
 }
+
+// The caption buttons a fixed dialog has no use for.
+const (
+	gwlStyle        = ^uintptr(16 - 1) // -16 as GWL_STYLE
+	wsMinimizeBox   = 0x00020000
+	wsMaximizeBox   = 0x00010000
+	swpNoMove       = 0x0002
+	swpFrameChanged = 0x0020
+)
+
+var (
+	getWindowLongPtr = sysUser32.NewProc("GetWindowLongPtrW")
+	setWindowLongPtr = sysUser32.NewProc("SetWindowLongPtrW")
+)
+
+// dialogChrome leaves a fixed window only its close button: the setup and
+// install windows have nothing to minimize or maximize.
+func dialogChrome(hwnd unsafe.Pointer) {
+	h := uintptr(hwnd)
+	style, _, _ := getWindowLongPtr.Call(h, gwlStyle)
+	setWindowLongPtr.Call(h, gwlStyle, style&^(wsMinimizeBox|wsMaximizeBox))
+	setWindowPos.Call(h, 0, 0, 0, 0, 0, swpNoMove|swpNoSize|swpNoZOrder|swpNoActivate|swpFrameChanged)
+}

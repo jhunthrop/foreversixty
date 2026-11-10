@@ -561,7 +561,7 @@ footer a:hover, footer a:focus-visible { color: var(--color-gold); }
 /* The setup's progress: a thin accent bar and the step under it, in place of the button. */
 .progress { margin-top: 22px; max-width: 360px; }
 .progress-track { height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
-.progress-track span { display: block; height: 100%; width: 0; background: var(--color-accent); transition: width var(--dur-med) var(--ease); }
+.progress-track span { display: block; height: 100%; width: 0; background: var(--color-teal-edge); transition: width var(--dur-med) var(--ease); }
 .progress .fine { margin-top: 8px; }
 
 /* Reduced motion: everything is instant except the spinner, which turns slowly. */

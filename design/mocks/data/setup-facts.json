@@ -1050,7 +1050,7 @@
     "platform": "Windows",
     "asset": "foreversixty-companion-setup.exe",
     "saveAs": "ForeverSixtySetup.exe",
-    "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway."
+    "firstRun": "Verified publisher: Commish LLC. Open it and press Install; it sets itself up for your account, no admin needed. If SmartScreen asks: More info, then Run anyway."
    },
    {
     "os": "mac",
@@ -1066,7 +1066,7 @@
    "own": {
     "os": "windows",
     "platform": "Windows",
-    "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway.",
+    "firstRun": "Verified publisher: Commish LLC. Open it and press Install; it sets itself up for your account, no admin needed. If SmartScreen asks: More info, then Run anyway.",
     "label": "Download for Windows",
     "href": "/dl/companion/companion-v0.2.37/foreversixty-companion-setup.exe",
     "meta": "Version 0.2.37 · 16.4 MB"
@@ -1095,7 +1095,7 @@
     {
      "os": "windows",
      "platform": "Windows",
-     "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway.",
+     "firstRun": "Verified publisher: Commish LLC. Open it and press Install; it sets itself up for your account, no admin needed. If SmartScreen asks: More info, then Run anyway.",
      "label": "Download for Windows",
      "href": "/dl/companion/companion-v0.2.37/foreversixty-companion-setup.exe",
      "meta": "Version 0.2.37 · 16.4 MB"
@@ -1108,7 +1108,7 @@
     {
      "os": "windows",
      "platform": "Windows",
-     "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway.",
+     "firstRun": "Verified publisher: Commish LLC. Open it and press Install; it sets itself up for your account, no admin needed. If SmartScreen asks: More info, then Run anyway.",
      "label": "Download for Windows",
      "href": "/dl/companion/companion-v0.2.37/foreversixty-companion-setup.exe",
      "meta": "Version 0.2.37 · 16.4 MB"
@@ -1129,7 +1129,7 @@
     {
      "os": "windows",
      "platform": "Windows",
-     "firstRun": "Signed by Commish LLC. Open the download and press Install. For your account only, no admin needed. If SmartScreen asks: More info, then Run anyway.",
+     "firstRun": "Verified publisher: Commish LLC. Open it and press Install; it sets itself up for your account, no admin needed. If SmartScreen asks: More info, then Run anyway.",
      "label": "Download for Windows",
      "href": "/dl/companion/companion-v0.2.37/foreversixty-companion-setup.exe",
      "meta": "Version 0.2.37 · 16.4 MB"

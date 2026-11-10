@@ -164,3 +164,151 @@ Files: `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/web/src
 # After round 2
 
 Applied: the first-run line sits 8 px under the button (one flex column with the download), in body ink, and the Windows line drops one clause. Recaptured setup-*-{360,1440,2000}.png.
+
+# Round 3 (DMG window)
+
+# Review: macOS DMG drag window
+
+**Verdict: FIX.** The cream ground, ink, labels and seal-plus-wordmark are right, and both appearances read. Three items stop it matching the owner's spec and the reference: the window is shorter than designed, the icons are not centred, and the arrow is too long and thin.
+
+I judged the screenshots only. The arrow lengths are my measurements from the 2x capture, not from a recompute of the render.
+
+## What matches
+
+- **Ground and ink:** the dark and light captures differ only in the title bar. Labels are dark ink on cream in both, so they read in both appearances.
+- **Icons and labels:** 128 pt icons and 13 pt labels match the spec.
+- **Wordmark position:** the seal sits at a 24 pt left margin and about 22 pt from the top of the content area. Discord's mark sits at about 24 pt in both directions, so the placement matches.
+- **App icon:** the full blue tile with the centred seal reads as a finished macOS icon. The wordmark seal and the tile show the same art, so they are consistent.
+- **Nothing extra:** there is no tagline, toolbar, sidebar or status bar.
+
+## Numbered fixes
+
+1. **Blocker: the window content area is 660x368, not 660x400.**
+   - **Evidence:** the capture is 1320x800 px at 2x, and the title bar takes 64 px (32 pt). Finder's bounds include the title bar, so the bottom 32 pt of the 400 pt background is cropped.
+   - **Change:** in `tools/package-mac-companion.sh` line 125, set `DMG_WINDOW=(660 432)`. The content area is then 660x400 and matches `WINDOW` in `tools/art/dmg_background.py`. Add a comment that the height is 400 plus the 32 pt title bar.
+   - **Verify:** re-capture. The window should measure 1320x864 px, with a 736 px content area below the 64 px title bar.
+
+2. **Must fix: the icons are not vertically centred.**
+   - **Evidence:** the icon cells are centred at y=200 in content coordinates, which is 16 pt below the visible centre of 184. The icon-plus-label group centres around y=215 in the 368 pt content area, about 30 pt low. Once item 1 lands, y=200 is the true centre of the icon cell.
+   - **Change:** after item 1, the icon-plus-label group is still bottom-heavy, because the label hangs about 30 pt below the icon cell. Set `ICON_Y` to 188 in `tools/art/dmg_background.py` and `DMG_APP=(180 188)`, `DMG_DROP=(480 188)` in `tools/package-mac-companion.sh`. This puts the group's visual centre at about 200.
+   - **Keep in step:** `ICON_Y` and the shell numbers share one source of truth. Prefer having the shell read them from the Python module, or at least add a comment tying the two together.
+
+3. **Must fix: the arrow is too long and too light.**
+   - **Evidence:** it measures about 104 pt shaft, as long as an icon is wide, and about 36 pt clear of the folder. At 3.5 pt stroke it reads as a ruled line with a head. Discord's arrow is about 32 pt wide with a roughly 10 pt head, and it sits close to the icons.
+   - **Change:** in `tools/art/dmg_background.py`, set `ARROW_AIR = 54` (about 68 pt shaft), `ARROW_STROKE = 4`, `ARROW_HEAD = 12`. That is a shorter, heavier arrow with a proportionate head.
+   - **Why 54:** the visible tile is about 104 pt inside the 128 pt cell. 54 pt of air from the cell edge leaves about 66 pt clear of each tile.
+   - **Keep:** the centre-line alignment is correct (arrow y=463 px against icon centre y=464 px).
+
+4. **Polish: the wordmark is heavier than "small".**
+   - **Evidence:** "Forever Sixty" in Marcellus 19 pt is about 110 pt wide. Discord's wordmark is about 85 pt wide.
+   - **Change:** in `tools/art/dmg_background.py`, set `NAME_PT = 16` and `NAME_GAP = 8`. Keep `SEAL_PT = 28`.
+   - **Hierarchy:** this keeps the wordmark secondary to the icons and does not compete with the labels.
+
+5. **Polish: the bottom of the window looks empty.**
+   - **Evidence:** there is about 73 pt of bare cream under the labels, against a tighter top. This is largely a side effect of items 1 and 2.
+   - **Change:** apply items 1 and 2 and re-check. If it still reads unfinished, leave it. Do not add a tagline.
+
+6. **Polish: the dark-appearance title bar over a cream slab.**
+   - This is a deliberate trade-off, because Finder draws labels dark in both appearances. No change is needed.
+   - Add one line to the `tools/art/dmg_background.py` docstring saying the dark title bar over cream is expected.
+
+## Acceptance re-capture (attach)
+
+- Light and dark appearance of the final window, at 2x.
+- The window measured at 660 pt wide and 432 pt tall including the title bar.
+- A side-by-side with `design/reviews/2026-11-10-companion-installers/reference-discord-dmg.png` at the same scale.
+- Both labels fully legible, with no crop at the bottom edge.
+
+Files touched by the fixes:
+- `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/tools/package-mac-companion.sh`
+- `/Users/jh/code/forever/.claude/worktrees/agent-a401ca0c4adf37296/tools/art/dmg_background.py`
+
+`companion/tools/icons/render.py` (`mac_seal`) needs no change. After the fixes, re-run `tools/art/dmg_background.py` to regenerate both background PNGs.
+
+# Round 4 (both platforms, the Windows setup in our own window)
+
+**Verdict: FIX.** The shared design is right. Both platforms use one `install.html` in one band-plus-lead-panel layout. The DMG is a faithful take on the Discord reference. The facts check out: per-user, no UAC, a Start menu shortcut, an Apps & Features entry from Commish LLC, and the same-window uninstall with "Keep my settings". Items 1 to 5 must be fixed before ship.
+
+**Must fix**
+
+1. **Blank frame while installing (blocker). `companion/internal/install/setup_window.go`, `runInWindow`, and `companion/ui/install.js`.**
+   - `win-2-installing.png` shows the window client area as flat brown. The band, panel and bar are all missing.
+   - The 0.5 s run goes from the last step straight to `win.Close()`, so the bar is never seen and the window can drop to an empty frame.
+   - Change: hold the window for at least 1200 ms after the click. After the last step, call `fsProgress(of, of, 'done')` so the bar fills before anything closes.
+   - Close only after `Start(exe)` has returned.
+   - Re-capture `win-2` showing a mid-run state: the bar part-filled with a step line under it.
+   - Today `fsProgress` sets the bar at each step's start, so "Starting Forever Sixty" shows 100% while it is still working. Use `(step-1)/of` while a step runs and 100% only on done.
+
+2. **The title keeps asking its question while it works. `companion/ui/install.js`, `button` click handler.**
+   - `page-setup-installing.png` shows "Install Forever Sixty?" over a running bar.
+   - On click, set `#move-title` to `C.busy` ("Installing…", "Removing…") and hide `#move-lede`.
+   - Keep the toggle visible but disabled, as it is now.
+
+3. **An upgrade silently turns "Start with Windows" back on. `setup.go`, `setup_window.go`, `install.js`.**
+   - The toggle is always checked on load. Someone who turned startup off, then runs the setup over the install, gets it re-enabled by `SetStartup`.
+   - Add `StartupEnabled() bool` to `WinSystem`.
+   - Return it from `fsSetupInfo` as `{upgrade, startup}`.
+   - In `install.js`, set `toggle.checked = info.startup` when `info.upgrade` is true.
+   - Add a test in `setup_test.go`.
+
+4. **Upgrade still says "Install". `companion/ui/copy.js` and `install.js`.**
+   - `win-4-upgrade.png` has the new lede under the old question and button.
+   - Add `titleUpgrade: 'Update Forever Sixty?'`, `actionUpgrade: 'Update'` and `busyUpgrade: 'Updating…'`.
+   - Apply all three in the `info.upgrade` branch, and make `showFailed` restore the right label.
+   - In `win-4` the button is a lighter teal than in `win-5` and `win-1`. Re-capture with the pointer parked, to show whether that is hover or a transition caught mid-way.
+
+5. **Failure copy contradicts the button on screen. `companion/ui/copy.js`.**
+   - `showFailed` re-shows the button, but the text says to go elsewhere. Replace the three strings:
+     - setup: `'Install failed. Press Install to try again.'`
+     - uninstall: `'Remove failed. Press Remove to try again, or use Apps & Features.'`
+     - move: `'Move failed. Press Move to Applications to try again.'`
+   - Add `mac-state-failed.png` and a Windows failed capture to the acceptance set.
+
+**Polish**
+
+6. **The destructive button is autofocused. `install.js`.**
+   - `win-6-uninstall.png` shows a gold focus ring on a red "Remove", so Enter removes the app.
+   - In uninstall mode, remove `autofocus` and focus the toggle instead.
+   - Keep the focus ring for keyboard users.
+
+7. **The toggle does not say what it keeps. `copy.js`, `install.uninstall.lede`.**
+   - The lede only says "Your reports on foreversixty.gg stay."
+   - Change it to: `'Your reports on foreversixty.gg stay. Turn off Keep my settings to also forget this device's sign-in.'`
+   - This matches `RunUninstall`, which calls `ForgetToken` only when the toggle is off.
+
+8. **The Mac copy contradicts its own picture. `web/src/data/companion.json`, Mac `firstRun`.**
+   - The DMG window shows an arrow from the app to Applications.
+   - The page says "open Forever Sixty in it: it moves itself to Applications".
+   - Change it to: `Notarized by Apple. Open the download and drag Forever Sixty onto Applications. macOS 12 or later.`
+   - The move prompt is then the fallback for someone who double-clicks the app inside the image. `setup-mac-1440.png` should show the new line.
+
+9. **The two Mac windows use different palettes. `tools/art/dmg_background.py`.**
+   - The DMG window is cream with a brass arrow. The move prompt is dark with a teal band.
+   - The cream ground is justified: Finder draws its labels in dark ink, so they need a light ground, and the Discord reference is white. Keep it.
+   - Add the same teal band (about 60 pt, `base.raised` to teal) behind the wordmark so the DMG carries the brand's colour. Re-capture the light and dark DMG windows after.
+
+10. **Setup progress step copy. `copy.js`, `install.steps`.**
+    - "Copying" is the only step without an object, so change it to `'Copying files'`.
+    - Match the Start menu wording to your fact list: `'Adding the Start Menu shortcut'`.
+
+11. **The uninstall done state jumps. `install.js`, `fsDone`.**
+    - The panel shrinks to one line for 1.5 s (`win-7-removed.png`), then the window closes.
+    - Keep the lede visible under the title: "Your reports on foreversixty.gg stay."
+    - Also set a `min-height` on the panel so it does not resize.
+
+12. **The caption shows a disabled maximize and an enabled minimize. Window creation, `companion/internal/install/offer.go`.**
+    - These are visible in `win-1`, `win-2` and `win-6`. For a fixed 660-wide dialog, remove both buttons so only close remains.
+    - If the webview library cannot do that, clear the `WS_MAXIMIZEBOX` and `WS_MINIMIZEBOX` window styles.
+    - I could not confirm the mechanism, because the window-creation code is not among the files you gave me.
+
+**Accepted**
+- Two wordmarks: the caption text and the band. Discord does the same.
+- The dark caption in both system themes.
+- 150% scale not captured.
+- `win-5` matches `win-4` because the app ignores the system theme.
+
+**Acceptance set for the re-review**
+- Windows at 100%: setup, a mid-run state, upgrade (button parked), uninstall, uninstall done, failed.
+- Mac: the move prompt and a failed state.
+- Both DMG windows, light and dark.
+- `/setup` at 1440 for both platforms.

@@ -5,9 +5,10 @@
 //              open the app at login; fsInstallMove installs it, starts the
 //              installed copy and closes this window.
 //   setup      the Windows setup download; uninstall, Apps & Features' Uninstall.
-//              fsSetupInfo says whether a copy is installed already; fsSetupRun
-//              starts the steps, which report back through fsProgress, then
-//              fsDone (uninstall) or fsFailed, and the Go side closes the window.
+//              fsSetupInfo says whether a copy is installed already and whether it
+//              starts with Windows; fsSetupRun starts the steps, which report back
+//              through fsProgress, then fsDone or fsFailed, and the Go side closes
+//              the window.
 // Closing the window instead quits; the next launch asks again.
 'use strict';
 
@@ -16,26 +17,45 @@
   const mode = ['setup', 'uninstall'].includes(params.get('mode')) ? params.get('mode') : 'move';
   const C = COPY.install[mode];
   const $ = (id) => document.getElementById(id);
+  const title = $('move-title');
+  const lede = $('move-lede');
   const button = $('move');
   const toggle = $('move-login');
   const toggleRow = $('move-login-row');
   const error = $('move-error');
   const progress = $('move-progress');
+  // The words in force: an upgrade swaps the setup's title, button and busy line.
+  let words = { title: C.title, lede: C.lede, action: C.action, busy: C.busy };
 
-  $('move-title').textContent = C.title;
-  $('move-lede').textContent = C.lede;
+  const show = () => {
+    title.textContent = words.title;
+    lede.textContent = words.lede;
+    button.textContent = words.action;
+  };
   $('move-login-label').textContent = C.toggle;
-  button.textContent = C.action;
-  if (mode === 'uninstall') button.classList.replace('primary', 'danger');
+  show();
+  if (mode === 'uninstall') {
+    // Enter must not remove the app: the focus starts on the toggle, not the red button.
+    button.classList.replace('primary', 'danger');
+    button.autofocus = false;
+    toggle.focus();
+  }
 
+  const busy = () => {
+    error.hidden = true;
+    toggle.disabled = true;
+    title.textContent = words.busy;
+    lede.hidden = true;
+  };
   const showFailed = () => {
+    show();
+    lede.hidden = false;
     error.textContent = C.failed;
     error.hidden = false;
     progress.hidden = true;
     button.hidden = false;
     button.disabled = false;
     toggle.disabled = false;
-    button.textContent = C.action;
   };
 
   if (mode === 'move') {
@@ -44,10 +64,9 @@
       toggleRow.hidden = !(info && info.loginItems);
     });
     button.addEventListener('click', async () => {
+      busy();
       button.disabled = true;
-      toggle.disabled = true;
-      button.textContent = C.busy;
-      error.hidden = true;
+      button.textContent = words.busy;
       try {
         await window.fsInstallMove(!toggleRow.hidden && toggle.checked);
       } catch {
@@ -59,25 +78,31 @@
 
   toggleRow.hidden = false;
   window.fsSetupInfo?.().then((info) => {
-    if (mode === 'setup' && info && info.upgrade) $('move-lede').textContent = C.ledeUpgrade;
+    if (mode !== 'setup' || !info || !info.upgrade) return;
+    words = { title: C.titleUpgrade, lede: C.ledeUpgrade, action: C.actionUpgrade, busy: C.busyUpgrade };
+    toggle.checked = !!info.startup;
+    show();
   });
+  // A step reports as it starts: the bar shows the steps already done, and is full only at fsDone.
   window.fsProgress = (step, of, key) => {
-    $('move-bar').style.width = `${Math.round((step / of) * 100)}%`;
-    $('move-step').textContent = COPY.install.steps[key] || C.busy;
+    $('move-bar').style.width = `${Math.round(((step - 1) / of) * 100)}%`;
+    $('move-step').textContent = COPY.install.steps[key] || words.busy;
   };
   window.fsFailed = showFailed;
   window.fsDone = () => {
-    $('move-title').textContent = C.done;
-    $('move-lede').hidden = true;
+    $('move-bar').style.width = '100%';
+    if (mode !== 'uninstall') return;
+    title.textContent = C.done;
+    lede.textContent = C.lede;
+    lede.hidden = false;
     toggleRow.hidden = true;
     progress.hidden = true;
   };
   button.addEventListener('click', () => {
-    error.hidden = true;
-    toggle.disabled = true;
+    busy();
     button.hidden = true;
     progress.hidden = false;
-    window.fsProgress(0, 1, '');
+    window.fsProgress(1, 1, '');
     window.fsSetupRun(toggle.checked);
   });
 })();

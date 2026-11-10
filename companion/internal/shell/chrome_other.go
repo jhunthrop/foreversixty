@@ -10,3 +10,7 @@ import "unsafe"
 func prepareChrome() {}
 
 func applyChrome(unsafe.Pointer) {}
+
+// dialogChrome is Windows-only: a macOS window made fixed-size already has
+// no zoom to offer.
+func dialogChrome(unsafe.Pointer) {}

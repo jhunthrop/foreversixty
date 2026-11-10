@@ -89,6 +89,9 @@ type WinSystem interface {
 	// DeleteStartup removes it.
 	SetStartup(command string) error
 	DeleteStartup() error
+	// StartupEnabled reports whether the startup entry is there: an update keeps
+	// the player's choice.
+	StartupEnabled() bool
 	// Start starts exe as a process of its own.
 	Start(exe string) error
 	// Remove deletes a file or a folder and what is in it; a missing one is no error.
