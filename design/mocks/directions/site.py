@@ -145,7 +145,7 @@ def not_found_page() -> str:
     did = panel(nf['didYouMean'], f'<p><a href="#">{escape(sug["page"][1])} &rsaquo;</a></p>', framed=True)
     lookup = (f'<section style="margin-top:28px"><h2 style="font:400 22px/28px var(--title);color:var(--cream);margin:0 0 12px">'
               f'{escape(look["heading"])}</h2>{field(look["namePlaceholder"], f"<a class=btn href=#>{escape(look['submit'])}</a>", look["nameLabel"])}</section>')
-    body = (titlebar(None, nf['title'], escape(nf['job']), top=header(*VIEWER, ''))
+    body = (titlebar(None, nf['title'], escape(sug['from']), top=header(*VIEWER, ''))
             + f'<main class="w st">{did}{panel(nf["pick"], "<div style=columns:3;column-gap:24px>" + picks + "</div>")}{lookup}</main>')
     return site_page('page not found', body)
 

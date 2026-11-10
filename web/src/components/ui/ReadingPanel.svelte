@@ -27,7 +27,8 @@
   .ui-reading-panel > :global(:is(.ui-rsec, .ui-dgroup)) {
     padding: 22px 24px;
   }
-  .ui-reading-panel > :global(.ui-rsec + .ui-rsec) {
+  /* A hairline between sections, and under a document's opening prose (Content.astro's intro). */
+  .ui-reading-panel > :global(* + .ui-rsec) {
     border-top: 1px solid var(--color-line-soft);
   }
   .ui-reading-panel > :global(:is(.ui-rsec, .ui-dgroup) > :first-child) {
