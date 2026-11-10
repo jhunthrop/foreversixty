@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // ReportWriter writes the feed rows a completed report earns (rulings P1, P2): its upload,
@@ -83,8 +84,8 @@ func (w *ReportWriter) facts(ctx context.Context, reportID string) (reportFacts,
 }
 
 func uploadEvent(f reportFacts) Event {
-	minutes := max(1, int((f.durationMS+30_000)/60_000))
-	counts := fmt.Sprintf("%d %s in %d min", f.bosses, plural(f.bosses, "boss", "bosses"), minutes)
+	length := textfmt.Duration(time.Duration(f.durationMS) * time.Millisecond)
+	counts := fmt.Sprintf("%d %s in %s", f.bosses, plural(f.bosses, "boss", "bosses"), length)
 	segments := []Segment{Text(f.zone + " uploaded, " + counts)}
 	crest := ""
 	if !f.anonymous && f.name != "" {

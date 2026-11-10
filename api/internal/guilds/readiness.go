@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // GearGapView/EnchantsView/ConsumablesView are the readiness row's own three check
@@ -280,23 +281,9 @@ func (s *Store) nudgeDay(ctx context.Context, guildID int64, raid *Raid) (string
 	return raidDay(raid.StartsAt, tz), nil
 }
 
-// raidDayLayout is a raid's date as the site's needs line names it (raid-time.ts dateLabel):
-// "Thu 10 Dec".
-const raidDayLayout = "Mon 2 Jan"
-
 // raidDay is start's date ("Thu 10 Dec") in the IANA zone tz, UTC when tz is empty or unknown.
 func raidDay(start time.Time, tz string) string {
-	return start.In(zoneOrUTC(tz)).Format(raidDayLayout)
-}
-
-// zoneOrUTC loads the IANA zone tz, UTC when tz is empty or unknown.
-func zoneOrUTC(tz string) *time.Location {
-	if tz != "" {
-		if l, err := time.LoadLocation(tz); err == nil {
-			return l
-		}
-	}
-	return time.UTC
+	return textfmt.RaidDay(start, textfmt.Location(tz))
 }
 
 // nudgeText is the officer-only clipboard message (design spec §4.E): the character's own

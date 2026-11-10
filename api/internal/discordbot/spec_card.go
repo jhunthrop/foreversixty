@@ -11,6 +11,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // prefixSpec is the "Which spec tonight?" card (spec 2026-10-28 §P.10).
@@ -140,7 +141,7 @@ func (s *Service) specCard(in specCardIn) (Reply, error) {
 // raidPairs are the lead's and the sentences' markers for the card's raid and character.
 func (s *Service) raidPairs(in specCardIn) []string {
 	return []string{"{Name}", memberText(in.char.Name), "{Title}", memberText(in.raid.Title),
-		"{Date}", in.raid.StartsAt.In(raidLocation(in.zone)).Format(raidChoiceDate)}
+		"{Date}", textfmt.RaidDay(in.raid.StartsAt, textfmt.Location(in.zone))}
 }
 
 // specPress answers the presses on a spec card. A card of an older shape answers spec.stale.

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // postChange is the smallest move in a member's figure that posts a new row (ruling P7).
@@ -88,7 +89,7 @@ func (w *GuildSimWriter) write(ctx context.Context, simID string) error {
 
 func guildSimEvent(f simFacts, simID string, ladder []LadderRow) Event {
 	members, unit := RoleWords(f.role)
-	figure := FormatFigure(f.value)
+	figure := textfmt.Figure(f.value, f.value)
 	place := ""
 	for _, r := range ladder {
 		if r.Key == f.key && len(ladder) >= ladderRankWords {
@@ -106,14 +107,6 @@ func guildSimEvent(f simFacts, simID string, ladder []LadderRow) Event {
 			Strong(f.guild), Text(fmt.Sprintf(" (%s, %s)", SpecName(f.spec), words))},
 		DedupeKey: "guild-sim:" + strconv.FormatInt(f.guildID, 10) + ":" + f.key + ":" + f.at.UTC().Format("20060102"),
 	}
-}
-
-// FormatFigure is a sim figure as the feed writes it: whole numbers from 100, one decimal below.
-func FormatFigure(v float64) string {
-	if v >= 100 {
-		return strconv.FormatFloat(math.Round(v), 'f', 0, 64)
-	}
-	return strconv.FormatFloat(v, 'f', 1, 64)
 }
 
 func (w *GuildSimWriter) now() time.Time {

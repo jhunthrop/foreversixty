@@ -14,6 +14,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -198,7 +199,7 @@ func TestLookupCopyMatchesTheSpec(t *testing.T) {
 		{"char", cell("`/char`"), []string{lookupCopy.CharLine, lookupCopy.NoGear, lookupCopy.CharacterPage}},
 		{"bis", cell("`/bis`"), []string{lookupCopy.BisOpen, lookupCopy.BisAllSlots,
 			bandLabels["20"], bandLabels["30"], bandLabels["40"], bandLabels["50"], bandLabels["60"], bandLabels["p1"]}},
-		{"item", cell("Item embed"), append([]string{lookupCopy.ItemLineOne, lookupCopy.ItemLineTwo}, qualityWords...)},
+		{"item", cell("Item embed"), append([]string{lookupCopy.ItemLineOne, lookupCopy.ItemLineTwo}, qualityNames()...)},
 		{"share", cell("Share"), []string{lookupCopy.Share, lookupCopy.Shared, lookupCopy.NoLongerPublic}},
 	} {
 		for _, want := range c.kept {
@@ -231,7 +232,7 @@ func TestColoursAreTheSiteTokens(t *testing.T) {
 			t.Errorf("%s = %06x, want %06x", c.Value, colour, want)
 		}
 	}
-	for q, word := range qualityWords {
+	for q, word := range qualityNames() {
 		if want := token("color-rarity-" + strings.ToLower(word)); qualityColor(q) != want {
 			t.Errorf("%s = %06x, want %06x", word, qualityColor(q), want)
 		}
@@ -475,3 +476,12 @@ func TestUpgradeTotal(t *testing.T) {
 
 // ref is a pointer to v.
 func ref[T any](v T) *T { return &v }
+
+// qualityNames are the item qualities in the game's words (sheet.QualityWord), Poor to Legendary.
+func qualityNames() []string {
+	out := make([]string, sheet.QualityCount)
+	for q := range out {
+		out[q] = sheet.QualityWord(q)
+	}
+	return out
+}

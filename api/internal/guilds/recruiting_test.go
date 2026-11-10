@@ -77,7 +77,7 @@ func TestRecruitingScheduleFromThePlannedRaids(t *testing.T) {
 	w.createRaids(t, raidBody(next(time.Saturday), 0))
 	w.createRaids(t, raidBody(next(time.Wednesday), 0))
 	rows := w.recruitingOf(t, "spec=warrior-fury&faction=alliance&region=us&ruleset=hardcore")
-	if len(rows) != 1 || (rows[0].Schedule != "Wed and Sat, 8:00 pm CST" && rows[0].Schedule != "Wed and Sat, 8:00 pm CDT") {
+	if len(rows) != 1 || (rows[0].Schedule != "Wed and Sat, 8 pm CST" && rows[0].Schedule != "Wed and Sat, 8 pm CDT") {
 		t.Fatalf("rows %+v", rows)
 	}
 }

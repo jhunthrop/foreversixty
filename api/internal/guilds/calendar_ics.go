@@ -12,6 +12,8 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // CalendarName is the calendar's name, in the link and in the app's own calendar.
@@ -49,11 +51,7 @@ func calendarZoneName(r Raid) string {
 
 // calendarDescription is the event's notes: the pull in the guild's time, and the count.
 func calendarDescription(c CalendarRaid) string {
-	loc, err := time.LoadLocation(c.Timezone)
-	if c.Timezone == "" || err != nil {
-		loc = time.UTC
-	}
-	pull := c.StartsAt.In(loc).Format("3:04 pm MST")
+	pull := textfmt.RaidClock(c.StartsAt, textfmt.Location(c.Timezone))
 	count := fmt.Sprintf("%d signed up.", c.SignedUp)
 	if z, ok := ZoneByKey(c.Zone); ok && z.Size != nil {
 		count = fmt.Sprintf("%d of %d signed up.", c.SignedUp, *z.Size)

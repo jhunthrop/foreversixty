@@ -229,7 +229,7 @@ func TestEmojiRegistryReadsOnceAndRereadsHourlyWhileMissing(t *testing.T) {
 		t.Fatalf("marks %d reads %d", len(m), api.reads)
 	}
 	// The six quality dots are marks too: without them the list is read again an hour on.
-	for q := range qualityWords {
+	for q := range sheet.QualityCount {
 		api.items = append(api.items, AppEmoji{ID: fmt.Sprint("q", q), Name: sheet.QualityEmojiName(q)})
 	}
 	now = now.Add(time.Hour)

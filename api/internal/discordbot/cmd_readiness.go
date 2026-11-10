@@ -10,6 +10,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/billing/catalog"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 const (
@@ -73,7 +74,7 @@ func (s *Service) readinessReply(ctx context.Context, guildID int64, viewer *int
 	if err != nil {
 		return Reply{}, err
 	}
-	rows := append([]ActionRow{{link}}, readinessRaidRow(raids, ans.Raid.ID, raidLocation(zone))...)
+	rows := append([]ActionRow{{link}}, readinessRaidRow(raids, ans.Raid.ID, textfmt.Location(zone))...)
 	return Reply{Message: Message{Embeds: embeds, Components: rows, Ephemeral: true}, Update: update}, nil
 }
 

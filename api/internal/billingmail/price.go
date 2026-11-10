@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 	_ "time/tzdata" // the zone must load on minimal images
+
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 const (
@@ -16,9 +18,6 @@ const (
 	// emailZone is the founder window's zone; dates read in it so a Pacific
 	// evening shows that evening's date.
 	emailZone = "America/Los_Angeles"
-
-	dateLayout     = "2 January 2006"
-	dayMonthLayout = "2 January"
 )
 
 // ErrNegativeAmount rejects a negative price.
@@ -58,7 +57,7 @@ func FormatPrice(cents int64, interval string) (string, error) {
 }
 
 // EmailDate renders a date in the Pacific zone as "6 January 2027".
-func EmailDate(t time.Time) string { return t.In(pacific).Format(dateLayout) }
+func EmailDate(t time.Time) string { return textfmt.LongDate(t, pacific) }
 
 // EmailDayMonth renders a date in the Pacific zone as "6 January".
-func EmailDayMonth(t time.Time) string { return t.In(pacific).Format(dayMonthLayout) }
+func EmailDayMonth(t time.Time) string { return textfmt.DayLongMonth(t, pacific) }

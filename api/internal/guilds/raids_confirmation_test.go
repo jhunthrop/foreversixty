@@ -28,12 +28,12 @@ func TestSignupConfirmation(t *testing.T) {
 		moved       *string
 		title, body string
 	}{
-		{"in", SignupIn, nil, nil, "You're In for Onyxia's Lair", "Kraggor, pull at 8:00 pm CST."},
+		{"in", SignupIn, nil, nil, "You're In for Onyxia's Lair", "Kraggor, pull at 8 pm CST."},
 		{"late with minutes", SignupLate, minutes(30), nil, "You're Late (30 min) for Onyxia's Lair", "Kraggor, arriving 8:30 pm CST."},
-		{"late", SignupLate, nil, nil, "You're Late for Onyxia's Lair", "Kraggor, pull at 8:00 pm CST."},
+		{"late", SignupLate, nil, nil, "You're Late for Onyxia's Lair", "Kraggor, pull at 8 pm CST."},
 		{"bench", SignupBench, nil, nil, "You're on the Bench for Onyxia's Lair", "Kraggor."},
 		{"out", SignupOut, nil, nil, "You're Out for Onyxia's Lair", "Kraggor."},
-		{"moved", SignupIn, nil, &moved, "You're In for Onyxia's Lair", "Kraggor, pull at 8:00 pm CST. Sunderfel moved to Bench."},
+		{"moved", SignupIn, nil, &moved, "You're In for Onyxia's Lair", "Kraggor, pull at 8 pm CST. Sunderfel moved to Bench."},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

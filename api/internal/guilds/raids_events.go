@@ -19,6 +19,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 	"github.com/jhunthrop/foreversixty/api/internal/zoneicons"
 )
 
@@ -51,16 +52,13 @@ var raidEventCopy = struct {
 	ActionOut:   "Out",
 }
 
-// raidWhenLayout is the start as a notification words it, in the guild's raid zone.
-const raidWhenLayout = "Mon 2 Jan, 15:04 MST"
-
 // SignupCharacterPlaceholder stands for the account's character in an action's path: the app
 // puts the {region}/{ruleset}/{name} of the character it answers for in its place.
 const SignupCharacterPlaceholder = "{character}"
 
 // raidWhen is p's start in its zone (UTC when the guild set none).
 func raidWhen(p notify.RaidPosted) string {
-	return p.StartsAt.In(raidLocation(p.Timezone)).Format(raidWhenLayout)
+	return textfmt.RaidWhen(p.StartsAt, textfmt.Location(p.Timezone))
 }
 
 // signupActions are the In, Late, Bench and Out buttons: the sign-up PUT the app calls with
@@ -106,7 +104,7 @@ func raidPostedEvent(guildID int64, p notify.RaidPosted) events.Event {
 
 func raidNudgeEvent(guildID int64, p notify.RaidPosted, users []int64) events.Event {
 	e := raidEvent(events.RaidSignupNudge, guildID, p, raidKey(events.RaidSignupNudge, p), events.Users(users...))
-	pull := p.StartsAt.In(raidLocation(p.Timezone)).Format(confirmationTimeLayout)
+	pull := textfmt.RaidClock(p.StartsAt, textfmt.Location(p.Timezone))
 	e.Body = fmt.Sprintf(raidEventCopy.Nudge, p.Title, pull)
 	e.Actions = signupActions(guildID, p.RaidID)
 	return e

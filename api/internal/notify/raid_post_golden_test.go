@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	raidGuildTime = `{"name":"Guild time","value":"8:00 pm CST","inline":true}`
+	raidGuildTime = `{"name":"Guild time","value":"8 pm CST","inline":true}`
 	lockedText    = "Sign-ups are locked. An officer can still change yours."
 )
 

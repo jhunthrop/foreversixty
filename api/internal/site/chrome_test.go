@@ -26,7 +26,9 @@ const snapshotPath = "testdata/chrome.html"
 // regenerate it; splitChrome drops it.
 const chromeNote = `<!-- The site's own header and footer, copied from a built page of the web site
 (web/dist/about.html) so that /b/{id} wears the site's chrome. Generated: do not edit by hand.
-Regenerate both chrome.html and testdata/chrome.html from the repository root with
+Every production site deploy regenerates both chrome.html and testdata/chrome.html from the build
+it deployed and commits them when they changed (.github/workflows/web.yml, deploy). To see a
+branch's chrome before it lands, from the repository root:
   (cd web && npm run build) && (cd api && go test ./internal/site -run TestChromeSnapshot -update)
 or, when the site is built in another worktree, from api/ with
   go test ./internal/site -run TestChromeSnapshot -update -site <that worktree>/web/dist/about.html

@@ -1,6 +1,7 @@
 package brand
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -15,6 +16,9 @@ const supersample = 4
 
 // RGB is c as Discord's integer colour (an embed's color, a container's accent_color).
 func RGB(c color.NRGBA) int { return int(c.R)<<16 | int(c.G)<<8 | int(c.B) }
+
+// Hex is c's colour as CSS #rrggbb, its alpha dropped.
+func Hex(c color.NRGBA) string { return fmt.Sprintf("#%06x", RGB(c)) }
 
 // RoundRectMask is the coverage of a w x h rectangle with corner radius r (device px).
 func RoundRectMask(w, h int, r float64) *image.Alpha {

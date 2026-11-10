@@ -13,6 +13,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
+	"github.com/jhunthrop/foreversixty/api/internal/textfmt"
 )
 
 // Raid form bounds (spec §3.5) and the sign-up note bound (migration 0050).
@@ -29,9 +30,7 @@ const (
 	raidStartsAtInPast = "Pick a time after now."
 	raidStartsAtTooFar = "Pick a date within the next year."
 	// raidZoneMissing is the What select's error (guild events spec §5).
-	raidZoneMissing = "Choose a dungeon, event or raid."
-	// zoneOpensDay is how the open day reads in the date error: `Wed 9 Dec`.
-	zoneOpensDay       = raidDayLayout
+	raidZoneMissing    = "Choose a dungeon, event or raid."
 	controlCharMessage = "Remove the control characters."
 )
 
@@ -118,7 +117,7 @@ func validateRaid(req raidRequest, now time.Time, keepStart *time.Time, allowRep
 // zoneOpensMessage is the date error for a raid posted before it opens (guild events spec
 // §3.2): `Onyxia's Lair opens Wed 9 Dec. Pick that day or later.`
 func zoneOpensMessage(z Zone) string {
-	return fmt.Sprintf("%s opens %s. Pick that day or later.", z.Name, z.Opens.UTC().Format(zoneOpensDay))
+	return fmt.Sprintf("%s opens %s. Pick that day or later.", z.Name, textfmt.RaidDay(*z.Opens, time.UTC))
 }
 
 // loadTimezone loads an IANA zone name; an empty name is refused, never read as UTC.

@@ -65,7 +65,7 @@ func samplePosted() notify.RaidPosted {
 func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	p := samplePosted()
 	posted := raidPostedEvent(3, p)
-	if posted.Body != "Sign-ups are open: Wed 4 Nov, 20:00 CST." || posted.Thread != "raid-9" || posted.Collapse != "raid.posted-9" {
+	if posted.Body != "Sign-ups are open: Wed 4 Nov, 8 pm CST." || posted.Thread != "raid-9" || posted.Collapse != "raid.posted-9" {
 		t.Fatalf("posted %+v", posted)
 	}
 	if len(posted.Actions) != 4 || posted.Actions[0].Path != "/v1/guilds/3/raids/9/signups/{character}" ||

@@ -5,6 +5,19 @@ package brand
 
 import "image/color"
 
+// TypeRole is a type role as the web sets it (tokens.json type.*): its font stack (a Font* constant,
+// written as CSS), its weight, its size and line height in px from 768 px (Size, LineHeight) and
+// below it (PhoneSize, PhoneLineHeight), and its letter spacing in em.
+type TypeRole struct {
+	Family          string
+	Weight          int
+	Size            float64
+	LineHeight      float64
+	PhoneSize       float64
+	PhoneLineHeight float64
+	TrackingEm      float64
+}
+
 var ColorBaseBg = color.NRGBA{R: 0x10, G: 0x0A, B: 0x06, A: 0xFF}
 
 var ColorBaseRaised = color.NRGBA{R: 0x17, G: 0x0E, B: 0x09, A: 0xFF}
@@ -235,6 +248,147 @@ var ColorForeverTabOn = color.NRGBA{R: 0xFF, G: 0xD3, B: 0x6B, A: 0xFF}
 // The apps' tab bar: an unselected tab, muted white.
 var ColorForeverTabOff = color.NRGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0xD1}
 
+// Web: Open Sans 400, 600 and 700 (theirs exactly), body, labels and figures; 'Open Sans Fallback'
+// (fonts.css) is a size-adjusted Arial. The apps keep Barlow until the mobile lane bundles Open
+// Sans.
+const FontBody = "'Open Sans', 'Open Sans Fallback', 'Arial', sans-serif"
+
+// Marcellus 400, every heading (their BlizQuadrata's stand-in, owner 2026-11-08), set mixed case in
+// cream. Its size-adjusted fallbacks (fonts.css) are Georgia, then Times New Roman.
+const FontTitle = "'Marcellus', 'Marcellus Fallback', 'Marcellus Fallback Times', 'Georgia', serif"
+
+// Archivo 600, the navigation bar's labels (theirs exactly).
+const FontNav = "'Archivo', 'Arial', sans-serif"
+
+// JetBrains Mono 500, literal codes only (export strings, build strings, slash commands). Not
+// bundled in the apps, which use the system monospaced face.
+const FontCode = "'JetBrains Mono', 'SF Mono', 'Menlo', monospace"
+
+var TypeTitle = TypeRole{
+	Family: FontTitle, Weight: 400,
+	Size: 26, LineHeight: 30,
+	PhoneSize: 21, PhoneLineHeight: 25,
+	TrackingEm: -0.015,
+}
+
+var TypeSectionReading = TypeRole{
+	Family: FontTitle, Weight: 400,
+	Size: 24, LineHeight: 30,
+	PhoneSize: 22, PhoneLineHeight: 28,
+	TrackingEm: -0.015,
+}
+
+var TypeSection = TypeRole{
+	Family: FontTitle, Weight: 400,
+	Size: 22, LineHeight: 28,
+	PhoneSize: 22, PhoneLineHeight: 28,
+	TrackingEm: -0.015,
+}
+
+var TypeItemLg = TypeRole{
+	Family: FontBody, Weight: 700,
+	Size: 18, LineHeight: 22,
+	PhoneSize: 18, PhoneLineHeight: 22,
+	TrackingEm: 0,
+}
+
+var TypeItem = TypeRole{
+	Family: FontBody, Weight: 700,
+	Size: 15, LineHeight: 20,
+	PhoneSize: 15, PhoneLineHeight: 20,
+	TrackingEm: 0,
+}
+
+var TypeLead = TypeRole{
+	Family: FontBody, Weight: 400,
+	Size: 17, LineHeight: 26,
+	PhoneSize: 17, PhoneLineHeight: 26,
+	TrackingEm: 0,
+}
+
+var TypeProse = TypeRole{
+	Family: FontBody, Weight: 400,
+	Size: 16, LineHeight: 26,
+	PhoneSize: 16, PhoneLineHeight: 26,
+	TrackingEm: 0,
+}
+
+// Body 15/22: the paragraph default where a surface sets one; the html base stays the browser's
+// 16px.
+var TypeBody = TypeRole{
+	Family: FontBody, Weight: 400,
+	Size: 15, LineHeight: 22,
+	PhoneSize: 15, PhoneLineHeight: 22,
+	TrackingEm: 0,
+}
+
+var TypeBodyStrong = TypeRole{
+	Family: FontBody, Weight: 600,
+	Size: 15, LineHeight: 22,
+	PhoneSize: 15, PhoneLineHeight: 22,
+	TrackingEm: 0,
+}
+
+var TypeSmall = TypeRole{
+	Family: FontBody, Weight: 400,
+	Size: 13, LineHeight: 20,
+	PhoneSize: 13, PhoneLineHeight: 20,
+	TrackingEm: 0,
+}
+
+// The 12 px label: caps at .12em on the web, sentence case at .01em in the apps (ruling N1).
+var TypeLabel = TypeRole{
+	Family: FontBody, Weight: 700,
+	Size: 12, LineHeight: 16,
+	PhoneSize: 12, PhoneLineHeight: 16,
+	TrackingEm: 0.12,
+}
+
+// Caps at .07em on the web, sentence case in the apps.
+var TypeButton = TypeRole{
+	Family: FontBody, Weight: 700,
+	Size: 13, LineHeight: 16,
+	PhoneSize: 13, PhoneLineHeight: 16,
+	TrackingEm: 0.07,
+}
+
+// The tab bar label (ruling N4).
+var TypeTab = TypeRole{
+	Family: FontBody, Weight: 600,
+	Size: 12, LineHeight: 14,
+	PhoneSize: 12, PhoneLineHeight: 14,
+	TrackingEm: 0,
+}
+
+var TypeFigureSm = TypeRole{
+	Family: FontBody, Weight: 700,
+	Size: 16, LineHeight: 20,
+	PhoneSize: 16, PhoneLineHeight: 20,
+	TrackingEm: 0,
+}
+
+var TypeFigure = TypeRole{
+	Family: FontBody, Weight: 700,
+	Size: 28, LineHeight: 32,
+	PhoneSize: 28, PhoneLineHeight: 32,
+	TrackingEm: 0,
+}
+
+var TypeFigureBig = TypeRole{
+	Family: FontBody, Weight: 700,
+	Size: 36, LineHeight: 40,
+	PhoneSize: 36, PhoneLineHeight: 40,
+	TrackingEm: 0,
+}
+
+// 56/60 from 768 px on the web.
+var TypeFigureXl = TypeRole{
+	Family: FontBody, Weight: 700,
+	Size: 44, LineHeight: 48,
+	PhoneSize: 44, PhoneLineHeight: 48,
+	TrackingEm: 0,
+}
+
 const Space1 = 4
 
 const Space2 = 8
@@ -271,8 +425,8 @@ const SpaceGutterPhone = 16
 
 const SpaceGutterWide = 64
 
-// The one site column's gutter; the header bar (nav.css) reads it too, so the bar and the page
-// never drift apart.
+// The page frame's gutter (global.css .page-column, the one frame every page, the header bar, the
+// page head band and the footer sit in).
 const SpaceGutter = 48
 
 const SpaceSectionGap = 48

@@ -58,6 +58,18 @@ var parsed = sync.OnceValues(func() ([]*opentype.Font, error) {
 	return out, nil
 })
 
+// FontFile is face f's TTF bytes, for an HTML page that inlines the site's own faces.
+func FontFile(f Face) ([]byte, error) {
+	if f < 0 || int(f) >= len(faceFiles) {
+		return nil, fmt.Errorf("brand: no face %d", f)
+	}
+	raw, err := fontFS.ReadFile(faceFiles[f])
+	if err != nil {
+		return nil, fmt.Errorf("brand: read %s: %w", faceFiles[f], err)
+	}
+	return raw, nil
+}
+
 // Font is the parsed face f.
 func Font(f Face) (*opentype.Font, error) {
 	fonts, err := parsed()

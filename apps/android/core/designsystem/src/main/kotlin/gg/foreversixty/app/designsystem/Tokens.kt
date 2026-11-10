@@ -225,8 +225,8 @@ object FsSpace {
     val space16 = 64.dp
     val gutterPhone = 16.dp
     val gutterWide = 64.dp
-    // The one site column's gutter; the header bar (nav.css) reads it too, so the bar and the page
-    // never drift apart.
+    // The page frame's gutter (global.css .page-column, the one frame every page, the header bar,
+    // the page head band and the footer sit in).
     val gutter = 48.dp
     // The apps' section gap (ruling N2).
     val sectionGapCompact = 32.dp
