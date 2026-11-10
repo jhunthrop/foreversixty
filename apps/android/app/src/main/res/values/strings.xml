@@ -1674,8 +1674,8 @@
     <string name="home_findGuild">Find a guild</string>
     <string name="home_error_title">We could not load your home</string>
     <string name="home_error_sub">Check your connection</string>
-    <string name="home_new_title">Your characters are on their way</string>
-    <string name="home_new_line">Battle.net lists a character after you play it and log out.</string>
+    <string name="home_new_title">No characters yet</string>
+    <string name="home_new_line">Log out in game, then check again.</string>
     <string name="home_new_check">Check again</string>
     <string name="home_yesterday">yesterday</string>
     <string name="raid_tab_nextRaid">Next raid</string>

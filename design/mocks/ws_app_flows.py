@@ -103,6 +103,9 @@ HOME_R5_CSS = '''
 [data-platform=android] .ap.home .blk{background:#170e09;border-radius:10px;padding:8px 16px}
 [data-platform=android] .ap.home .blk[data-region=section-loading]{background:none;padding:0}
 [data-platform=android] .ap.home .blk[data-region=section-loading]>div:first-child{margin-top:0!important}
+[data-platform=android] .ap.home .blk[data-region=section-loading] .skel{display:block;width:100%!important}
+[data-platform=android] .ap.home .blk[data-region=section-loading]>div:first-child .skel{height:365px!important}
+[data-platform=android] .ap.home .blk .row .trail .btn{min-height:48px}
 [data-platform=android] .ap.home .blk:has(.cdn){padding:18px 18px 16px}
 [data-platform=android] .ap.home .cdn{padding:0;border:0;background:none;border-radius:0}
 [data-platform=android] .ap.home .cdn:has(.clk) .eb,[data-platform=android] .ap.home .cdn:has(.clk) .as{display:none}
@@ -330,7 +333,7 @@ HOME = {
     'home-error': lambda: _home(_head() + _blk(Rows([Row('We could not load your home', 'Check your connection', trail=Button('Try again', small=True), link=False)],
                                                     open_=True), 'section-error'), 'Home', {}),
     # signed in, no character yet (F8): the one thing to do
-    'home-new': lambda: _home(PageHeader('Your characters are on their way', meta=['Battle.net lists a character after you play it and log out.'])
+    'home-new': lambda: _home(PageHeader('No characters yet', meta=['Log out in game, then check again.'])
                               + '<div class="vstack">' + Button('Check again', primary=True) + '</div>', 'Home', {}, who=None),
 }
 

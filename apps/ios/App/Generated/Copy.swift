@@ -5584,10 +5584,10 @@ enum Copy {
     /// Check your connection
     static var homeErrorSub: String { text("home.error.sub") }
 
-    /// Your characters are on their way
+    /// No characters yet
     static var homeNewTitle: String { text("home.new.title") }
 
-    /// Battle.net lists a character after you play it and log out.
+    /// Log out in game, then check again.
     static var homeNewLine: String { text("home.new.line") }
 
     /// Check again

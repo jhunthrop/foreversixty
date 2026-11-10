@@ -2,14 +2,18 @@ package gg.foreversixty.app.home.flows
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import gg.foreversixty.app.R
+import gg.foreversixty.app.designsystem.BrandButton
+import gg.foreversixty.app.designsystem.BrandButtonKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.FsTarget
 import gg.foreversixty.app.designsystem.PanelFrame
 import gg.foreversixty.app.designsystem.ParityRegion
 import gg.foreversixty.app.flows.FlowBlock
@@ -38,9 +42,10 @@ fun HomeFlowScreen(view: HomeView, actions: HomeActions, topBar: @Composable () 
     when (view) {
         is HomeView.Loading -> HomePage(topBar, { Head(view.head) }) {
             FlowBlock(ParityRegion.section("Loading"), top = 0.dp) {
-                repeat(SKELETONS) { index ->
+                // The raid card, then the rows under it, at their final size: nothing shifts when they fill.
+                SKELETONS.forEachIndexed { index, height ->
                     if (index > 0) FlowGap(FsSpace.space3)
-                    FlowSkeleton(SKELETON_WIDTH, SKELETON_HEIGHT)
+                    FlowSkeleton(SKELETON_WIDTH, height)
                 }
             }
         }
@@ -48,7 +53,7 @@ fun HomeFlowScreen(view: HomeView, actions: HomeActions, topBar: @Composable () 
             FlowBlock(ParityRegion.section("Error"), top = 0.dp) {
                 FlowPanel {
                     FlowRow(stringResource(R.string.home_error_title), stringResource(R.string.home_error_sub), last = true, trail = {
-                        FlowButton(stringResource(R.string.common_tryAgain), actions.onRetry)
+                        FlowButton(stringResource(R.string.common_tryAgain), actions.onRetry, Modifier.heightIn(min = FsTarget.min))
                     })
                 }
             }
@@ -56,7 +61,7 @@ fun HomeFlowScreen(view: HomeView, actions: HomeActions, topBar: @Composable () 
         HomeView.NoCharacter -> HomePage(topBar, {
             HomeHeroHead(stringResource(R.string.home_new_title), listOf(stringResource(R.string.home_new_line)), className = null)
         }) {
-            FlowButton(stringResource(R.string.home_new_check), actions.onCheckAgain, Modifier.fillMaxWidth(), primary = true, small = false)
+            BrandButton(stringResource(R.string.home_new_check), BrandButtonKind.Primary, actions.onCheckAgain, height = FsTarget.min)
         }
         is HomeView.Blocks -> HomePage(topBar, { Head(view.head) }) {
             view.blocks.forEach { Block(it, view.iconBuild, actions) }
@@ -128,7 +133,7 @@ fun RaidCard(raid: RaidCardModel, actions: HomeActions) {
 internal fun RaidOfficerItems(raidId: Long, officer: OfficerItems, actions: HomeActions) {
     officer.unanswered?.let { line ->
         FlowRow(line, officer.short, last = officer.applicants == null, trail = {
-            FlowButton(stringResource(R.string.home_officer_preview), { actions.onPreviewMention(raidId) })
+            FlowButton(stringResource(R.string.home_officer_preview), { actions.onPreviewMention(raidId) }, Modifier.heightIn(min = FsTarget.min))
         })
     }
     officer.applicants?.let { FlowRow(it, officer.applicantLine, last = true, onClick = actions.onApplicants) }
@@ -192,7 +197,6 @@ private fun NewForYou(block: HomeBlock.Activity, build: String?, actions: HomeAc
     }
 }
 
-private const val SKELETONS = 5
-private val SKELETON_WIDTH = 361.dp
-private val SKELETON_HEIGHT = 56.dp
+private val SKELETONS = listOf(365.dp, 56.dp, 56.dp, 56.dp, 56.dp)
+private val SKELETON_WIDTH = 384.dp
 private val LATE_MINUTES = listOf(15, 30, 60)

@@ -4240,7 +4240,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Battle.net lists a character after you play it and log out."
+            "value": "Log out in game, then check again."
           }
         }
       }
@@ -4251,7 +4251,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your characters are on their way"
+            "value": "No characters yet"
           }
         }
       }

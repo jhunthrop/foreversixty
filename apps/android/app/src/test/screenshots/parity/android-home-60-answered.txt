@@ -6,12 +6,12 @@ Gear ›
 Lionheart Helm
 Head · Blacksmithing
 +14.5 DPS
-Greenhammer
-Off hand · Blacksmithing
-+9.7 DPS
 Don Julio's Band
 Finger · Stormpike Guard, needs revered
 +6.8 DPS
+Timbermaw Tunic
+Chest · Leatherworking
++5.3 DPS
 Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%
 Onyxia's Lair · Wed 6 Jan, 8:00 pm CST
 You are In, as Thandrel, Damage

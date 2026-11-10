@@ -90,8 +90,8 @@ object HomeFixtures {
 
     private val raidUpgrades = listOf(
         upgrade("Lionheart Helm", 4, "inv_helmet_36", "Head · Blacksmithing", "+14.5"),
-        upgrade("Greenhammer", 4, "inv_mace_1h_raidhyjalc60_d_01", "Off hand · Blacksmithing", "+9.7"),
         upgrade("Don Julio's Band", 4, "inv_jewelry_ring_35", "Finger · Stormpike Guard, needs revered", "+6.8"),
+        upgrade("Timbermaw Tunic", 4, "inv_chest_fur", "Chest · Leatherworking", "+5.3"),
     )
 
     private fun upgrades(bestRun: Boolean) =
