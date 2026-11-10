@@ -37,6 +37,14 @@ struct BisScreen: View {
 
     /// The model restarts whenever the session's current character changes; nil while a signed-in
     /// session's characters are still on their way, so the signed-out first visit never fires early.
+    /// The selected character's Battle.net portrait for the paperdoll's medallion (the seal without one).
+    @State private var portrait: UIImage?
+    @Environment(\.portraitSource) private var portraitSource
+
+    private var avatarURL: URL? {
+        session?.currentCharacter?.avatarUrl.flatMap(URL.init(string:))
+    }
+
     private var owner: String?? {
         guard let session else { return .some(nil) }
         switch session.phase {
@@ -52,8 +60,10 @@ struct BisScreen: View {
             root
                 .refreshable { await model.refresh() }
                 .modifier(BisSearchMode(text: $model.searchText, isUniversal: search != nil))
+                // Round 5 on iOS (m-ios-gear): the tab's large title on the band, under the profile button.
+                .navigationTitle(AppTab.gear.title)
+                .toolbarTitleDisplayMode(.large)
                 .tabRootChrome()
-                .toolbarBackground(FSColor.bg, for: .navigationBar)
                 .navigationDestination(isPresented: $listShown) {
                     list.refreshable { await model.refresh() }
                 }
@@ -80,6 +90,10 @@ struct BisScreen: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await model.checkForNewData() } }
         }
+        .task(id: avatarURL) {
+            guard let avatarURL else { portrait = nil; return }
+            portrait = await portraitSource.load(avatarURL)
+        }
         .task(id: owner) {
             guard owner != nil else { return }
             await model.start()
@@ -105,6 +119,7 @@ struct BisScreen: View {
             GearListView(
                 content: GearPresenter(context: model.context).content(list: list, inputs: inputs),
                 build: model.build ?? "",
+                portrait: model.context.isYours ? portrait : nil,
                 actions: GearActions(openPicker: { model.isPickerPresented = true }, openItem: open)
             )
             .safeAreaInset(edge: .top, spacing: 0) { strips(offlineSince) }

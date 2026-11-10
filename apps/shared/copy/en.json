@@ -1765,15 +1765,8 @@
     "home.findGuild.button": "Find a guild",
     "home.error.line": "Check your connection",
 
-    "gear.list": "{spec} · {band} · {faction}",
     "gear.bandRaid": "{band} raid",
-    "gear.sourceVendor": "{name}, vendor",
-    "gear.sourceChance": "{source}, {chance}",
     "gear.crafter.other": "a crafter",
-    "items.sheet.bossPlace": "{boss}, {place}",
-    "items.sheet.raid": "raid",
-    "items.sheet.dungeon": "dungeon",
-    "items.sheet.needsStanding": "needs {standing}",
     "items.sheet.nextRaid": "Next raid: {zone}, {when}",
     "items.sheet.guildFailed": "Who needs it did not load."
   }

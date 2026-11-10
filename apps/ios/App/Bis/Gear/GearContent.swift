@@ -1,11 +1,17 @@
 import Foundation
 
-/// What the Gear tab draws for a signed-in player (flows spec 4.3, mock ios-gear): the list it
-/// compares against, Where to go tonight, and every slot. Plain values, so the parity tests draw
-/// the mock's scenario directly.
+/// What the Gear tab draws for a signed-in player (flows spec 4.3; round 5, mocks ios-gear and
+/// m-ios-gear-frame): the paperdoll strip (the spec, the set's figure), the line naming the list,
+/// every slot, and Where to go tonight. Plain values, so the parity tests draw the mock's scenario
+/// directly.
 struct GearContent: Equatable {
-    /// `Fury Warrior · 60 raid · Alliance` over `4 of 17 slots on the list`.
-    let summary: HomeLine
+    /// The list's spec: `Fury Warrior`.
+    let title: String
+    /// The set's figure (`1004.2`) in `unit`; nil for a tank list, whose set figure is not its score.
+    let figure: String?
+    let unit: String
+    /// `60 raid · Alliance · 4 of 17 slots on the list`, ended by Change.
+    let facts: String
     /// The best place of each kind; empty when the gains or the loot file are unknown.
     let tonight: [GearPlaceRow]
     let slots: [GearSlotRow]
@@ -30,20 +36,24 @@ struct GearPlaceRow: Equatable, Identifiable {
     let item: GearItemRef
 }
 
-/// One Every slot row: the list's pick with Worn or its gain, or why the slot has none.
+/// One slot of the paperdoll: the list's pick with Equipped or its gain, or nothing.
 struct GearSlotRow: Equatable, Identifiable {
     enum Trail: Equatable {
         case worn
         case gain(HomeGain)
     }
 
-    enum Content: Equatable {
-        case pick(look: HomeItemLook, source: String, trail: Trail?, item: GearItemRef)
-        case empty(String)
+    struct Pick: Equatable {
+        let look: HomeItemLook
+        let trail: Trail?
+        let item: GearItemRef
     }
 
     let slot: String
-    let content: Content
+    /// The slot's word: `Head`, `Main hand`.
+    let label: String
+    /// Nil when the list has no pick for the slot.
+    let pick: Pick?
 
     var id: String { slot }
 }

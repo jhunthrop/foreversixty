@@ -75,8 +75,10 @@ struct ItemSheetScreen: View {
     }
 }
 
-/// The sheet's body, pure over its content so the parity tests draw it directly. The top 17 pt
-/// hold the system's drag indicator (the mock's grab: 8 above, 5, 4 below).
+/// The sheet's body (round 5, m-ios-item), pure over its content so the parity tests draw it
+/// directly: the client's tooltip with the gain closing it, then one list (where it drops, the
+/// guild's next raid there, what it replaces, the runner-up, who in the guild needs or has it). The
+/// top 23 pt hold the system's drag indicator (the mock's grab: 9 above, 5, 9 below).
 struct ItemSheetView: View {
     let content: ItemSheetContent
     let build: String
@@ -84,21 +86,17 @@ struct ItemSheetView: View {
     /// Opens the next raid's page; nil leaves the line as text.
     var openRaid: ((DeepLink) -> Void)?
 
-    static let grabRoom: CGFloat = 17
+    static let grabRoom: CGFloat = 23
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                ItemLineView(
-                    name: content.look.name ?? Copy.itemsNotInData, quality: content.look.quality, icon: content.look.icon,
-                    source: content.slotLabel, gain: content.gain.map { ($0.figure, $0.unit) },
-                    caption: content.gain == nil ? nil : Copy.gearSheetOverWorn, build: build
-                )
-                .accessibilityAddTraits(.isHeader)
-                lines
-                if let source = content.source { whereToGet(source) }
-                if let runnerUp = content.runnerUp { section(Copy.gearSheetRunnerUp, [runnerUp]) }
-                guild
+                ItemTooltipPanel(model: content.tooltip, gain: content.gain.map { "\($0.figure) \($0.unit)" })
+                    .accessibilityAddTraits(.isHeader)
+                    .parityRegion(.inspector)
+                list
+                    .padding(.top, FSSpace.space3)
+                    .parityRegion(.section(Copy.gearSheetWhere))
                 if let moreAbout {
                     SectionLink(title: Copy.itemPageMoreAbout, action: moreAbout).padding(.top, FSSpace.space4)
                 }
@@ -110,64 +108,56 @@ struct ItemSheetView: View {
         .background(FSColor.raised)
     }
 
-    private var lines: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            ForEach(Array(content.lines.enumerated()), id: \.offset) { _, line in
-                Text(line.text).type(FSType.small).foregroundStyle(color(line.tone)).fixedSize(horizontal: false, vertical: true)
+    /// One line of the sheet's list.
+    private enum Line: Identifiable {
+        case row(ItemSheetRow)
+        case nextRaid(ItemSheetNextRaid)
+
+        var id: String {
+            switch self {
+            case let .row(row): row.id
+            case .nextRaid: "next-raid"
             }
         }
-        .padding(.vertical, FSSpace.space2)
-        .accessibilityElement(children: .combine)
     }
 
-    private func color(_ tone: ItemSheetLine.Tone) -> Color {
-        switch tone {
-        case .plain: FSColor.muted
-        case .green: FSColor.parseGreen
-        case .gold: FSColor.parseGold
+    private var lines: [Line] {
+        var lines: [Line] = content.source.map { [.row($0)] } ?? []
+        if let next = content.nextRaid { lines.append(.nextRaid(next)) }
+        lines += [content.replaces, content.runnerUp].compactMap(\.self).map(Line.row)
+        return lines + guildRows.map(Line.row)
+    }
+
+    private var list: some View {
+        let lines = lines
+        let note = guildNote
+        return VStack(alignment: .leading, spacing: 0) {
+            ForEach(Array(lines.enumerated()), id: \.element.id) { index, line in
+                let last = note == nil && content.guild != .loading && index == lines.count - 1
+                switch line {
+                case let .row(row):
+                    ItemSheetRowView(row: row, build: build, last: last)
+                case let .nextRaid(next):
+                    Button { openRaid?(next.link) } label: { PanelRow(next.line, last: last, chevron: openRaid != nil) }
+                        .buttonStyle(RowPressStyle())
+                        .disabled(openRaid == nil)
+                }
+            }
+            if content.guild == .loading { FSSkeleton(height: FSSize.row).padding(.vertical, FSSpace.space2) }
+            if let note { Text(note).type(FSType.small).foregroundStyle(FSColor.muted).padding(.vertical, FSSpace.space2) }
         }
     }
 
-    @ViewBuilder
-    private var guild: some View {
+    private var guildRows: [ItemSheetRow] {
+        if case let .loaded(rows, _) = content.guild { return rows }
+        return []
+    }
+
+    private var guildNote: String? {
         switch content.guild {
-        case .none:
-            EmptyView()
-        case .loading:
-            FSSection(Copy.gearSheetNeeds) { FSSkeleton(height: FSSize.row).padding(.top, FSSpace.space2) }
-        case let .loaded(rows, note):
-            FSSection(Copy.gearSheetNeeds) {
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(rows) { ItemSheetRowView(row: $0, build: build) }
-                    if let note { SmallText(note).padding(.top, FSSpace.space2) }
-                }
-            }
-        case .failed:
-            FSSection(Copy.gearSheetNeeds) { SmallText(Copy.itemsSheetGuildFailed).padding(.top, FSSpace.space2) }
-        }
-    }
-
-    /// Where to get it: the source, then the guild's next raid there when one is planned.
-    private func whereToGet(_ source: ItemSheetRow) -> some View {
-        FSSection(Copy.gearSheetWhere) {
-            VStack(alignment: .leading, spacing: 0) {
-                ItemSheetRowView(row: source, build: build)
-                if let next = content.nextRaid {
-                    Button { openRaid?(next.link) } label: {
-                        FSRow(title: next.line, inset: 0) { EmptyView() }
-                    }
-                    .buttonStyle(RowPressStyle())
-                    .disabled(openRaid == nil)
-                }
-            }
-        }
-    }
-
-    private func section(_ title: String, _ rows: [ItemSheetRow]) -> some View {
-        FSSection(title) {
-            VStack(alignment: .leading, spacing: 0) {
-                ForEach(rows) { ItemSheetRowView(row: $0, build: build) }
-            }
+        case let .loaded(_, note): note
+        case .failed: Copy.itemsSheetGuildFailed
+        case .none, .loading: nil
         }
     }
 }
@@ -176,9 +166,10 @@ struct ItemSheetView: View {
 private struct ItemSheetRowView: View {
     let row: ItemSheetRow
     let build: String
+    let last: Bool
 
     var body: some View {
-        FSRow(title: row.title, titleColor: titleColor, sub: row.sub, inset: 0) {
+        PanelRow(row.title, titleColor: titleColor, sub: row.sub.map { Text($0) }, last: last) {
             switch row.lead {
             case let .item(icon, quality):
                 ItemIconView(icon: icon, quality: quality, build: build, size: FSSize.icon40).parityItem(.image)

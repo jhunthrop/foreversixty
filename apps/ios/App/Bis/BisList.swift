@@ -85,6 +85,8 @@ struct BisList: Equatable, Sendable {
     /// `Fury Warrior` and `60 · Phase 1 raid`, for the tooltip footer.
     let specLabel: String
     let rangeLabel: String
+    /// The band's set figure (`1004.2`) in its unit; nil for a tank band, whose set_dps is not its score.
+    var setFigure: String?
 
     /// The rows whose pick or runner-up names contain `query` (spec F3.1 search).
     func filtered(by query: String) -> [BisRow] {
@@ -131,7 +133,8 @@ struct BisListBuilder {
             rows: band.slots.map { row($0, unit: unit, mainHand: mainHand, classSlug: Self.classSlug(of: file.spec)) },
             unit: unit,
             specLabel: specLabel,
-            rangeLabel: rangeLabel
+            rangeLabel: rangeLabel,
+            setFigure: band.setDps.flatMap { unit == .score ? nil : Self.figure($0) }
         )
     }
 

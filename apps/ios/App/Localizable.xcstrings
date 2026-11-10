@@ -2531,18 +2531,6 @@
         }
       }
     },
-    "gear.list": {
-      "comment": "Arguments: 1 spec (string), 2 band (string), 3 faction (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ · %2$@ · %3$@"
-          }
-        }
-      }
-    },
     "gear.onList": {
       "comment": "Arguments: 1 n (int), 2 total (int)",
       "extractionState": "manual",
@@ -2735,30 +2723,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Where to get it"
-          }
-        }
-      }
-    },
-    "gear.sourceChance": {
-      "comment": "Arguments: 1 source (string), 2 chance (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@, %2$@"
-          }
-        }
-      }
-    },
-    "gear.sourceVendor": {
-      "comment": "Arguments: 1 name (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@, vendor"
           }
         }
       }
@@ -6458,29 +6422,6 @@
         }
       }
     },
-    "items.sheet.bossPlace": {
-      "comment": "Arguments: 1 boss (string), 2 place (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@, %2$@"
-          }
-        }
-      }
-    },
-    "items.sheet.dungeon": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "dungeon"
-          }
-        }
-      }
-    },
     "items.sheet.guildFailed": {
       "extractionState": "manual",
       "localizations": {
@@ -6488,18 +6429,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Who needs it did not load."
-          }
-        }
-      }
-    },
-    "items.sheet.needsStanding": {
-      "comment": "Arguments: 1 standing (string)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "needs %1$@"
           }
         }
       }
@@ -6512,17 +6441,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Next raid: %1$@, %2$@"
-          }
-        }
-      }
-    },
-    "items.sheet.raid": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "raid"
           }
         }
       }

@@ -1877,15 +1877,8 @@
     <string name="home_findGuild_title">Raid with a guild</string>
     <string name="home_findGuild_button">Find a guild</string>
     <string name="home_error_line">Check your connection</string>
-    <string name="gear_list">%1$s · %2$s · %3$s</string>
     <string name="gear_bandRaid">%1$s raid</string>
-    <string name="gear_sourceVendor">%1$s, vendor</string>
-    <string name="gear_sourceChance">%1$s, %2$s</string>
     <string name="gear_crafter_other">a crafter</string>
-    <string name="items_sheet_bossPlace">%1$s, %2$s</string>
-    <string name="items_sheet_raid">raid</string>
-    <string name="items_sheet_dungeon">dungeon</string>
-    <string name="items_sheet_needsStanding">needs %1$s</string>
     <string name="items_sheet_nextRaid">Next raid: %1$s, %2$s</string>
     <string name="items_sheet_guildFailed">Who needs it did not load.</string>
     <string name="shared_cta_getAddonAndCompanion">Get the addon and companion</string>

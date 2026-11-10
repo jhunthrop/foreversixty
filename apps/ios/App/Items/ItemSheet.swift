@@ -13,14 +13,6 @@ struct ItemSheetRequest: Equatable, Identifiable, Sendable {
     var id: Int { tooltip.itemID }
 }
 
-/// One of the client's tooltip lines, in its colour.
-struct ItemSheetLine: Equatable, Hashable {
-    enum Tone: Equatable, Hashable { case plain, green, gold }
-
-    let text: String
-    var tone: Tone = .plain
-}
-
 /// A row of the sheet's sections: a title, a line under it, and its lead image.
 struct ItemSheetRow: Equatable, Identifiable {
     enum Lead: Equatable {
@@ -51,24 +43,27 @@ struct ItemSheetNextRaid: Equatable {
     let link: DeepLink
 }
 
-/// Everything the item sheet draws (mock ios-item-sheet): the item with its gain, the client's
-/// tooltip lines (no item level: the client tooltip does not show it), where to get it with its
-/// chance, the runner-up, who in the guild needs it or has it.
+/// Everything the item sheet draws (round 5, mocks ios-item-sheet and m-ios-item): the client's
+/// tooltip with the gain closing it (no item level: the client tooltip does not show it), then one
+/// list: where it drops with its chance (and the guild's next raid there), what it replaces, the
+/// runner-up, who in the guild needs it or has it.
 struct ItemSheetContent: Equatable {
-    let look: HomeItemLook
-    let slotLabel: String
+    let tooltip: ItemTooltipModel
     let gain: HomeGain?
-    let lines: [ItemSheetLine]
     let source: ItemSheetRow?
+    /// `Replaces Ironwood Blade`, Equipped: what the character wears in the slot today.
+    let replaces: ItemSheetRow?
     let runnerUp: ItemSheetRow?
     let guild: ItemSheetGuild
     /// The raid instance the item drops in, by name, for the next raid line; nil for any other source.
     var raidZone: String?
     var nextRaid: ItemSheetNextRaid?
 
+    var look: HomeItemLook { tooltip.look }
+
     func with(guild: ItemSheetGuild, nextRaid: ItemSheetNextRaid? = nil) -> ItemSheetContent {
         ItemSheetContent(
-            look: look, slotLabel: slotLabel, gain: gain, lines: lines, source: source, runnerUp: runnerUp, guild: guild,
+            tooltip: tooltip, gain: gain, source: source, replaces: replaces, runnerUp: runnerUp, guild: guild,
             raidZone: raidZone, nextRaid: nextRaid
         )
     }
@@ -84,15 +79,13 @@ enum ItemSheetBuilder {
         let places = loot.map { ItemPlaces(loot: $0, level: nil) }
         let itemID = request.tooltip.itemID
         let listed = band.flatMap { listing(of: itemID, in: $0) }
-        let item = sources.items[itemID]
-        let slot = listed?.slot.slot ?? item?.slot
         let place = places?.place(of: itemID, kind: listed?.kind, named: listed?.source)
+        // The client's tooltip has no item level (spec 2026-11-08, round 4 cut), so the sheet drops it.
         return ItemSheetContent(
-            look: tooltip.look,
-            slotLabel: slot.map { ItemVocabulary.slotLabel($0, classSlug: request.tooltip.classSlug) } ?? tooltip.headerMeta,
+            tooltip: tooltip.withoutItemLevel,
             gain: request.gain,
-            lines: lines(tooltip),
             source: source(itemID, look: tooltip.look, kind: listed?.kind, named: listed?.source, places: places, fallback: tooltip.source),
+            replaces: replaces(request.tooltip.wornID, item: itemID, items: sources.items),
             runnerUp: runnerUp(listed, band: band, items: sources.items, places: places),
             guild: guild,
             raidZone: place.flatMap { $0.kind == .instance && $0.sourceKind == ItemPlaces.raidKind ? $0.name : nil }
@@ -113,26 +106,6 @@ enum ItemSheetBuilder {
             link: .raid(guild: guild, raid: next.raidId)
         )
     }
-
-    /// The client's lines after the name, in its order; no item level.
-    static func lines(_ model: ItemTooltipModel) -> [ItemSheetLine] {
-        var out: [String?] = [model.binds, model.unique ? Copy.tooltipUnique : nil]
-        out.append([model.slotName, model.typeName].compactMap(\.self).joined(separator: separator).nilIfEmpty)
-        out.append(model.armor)
-        out.append([model.weaponDamage, model.weaponSpeed].compactMap(\.self).joined(separator: separator).nilIfEmpty)
-        out.append(model.weaponDPS)
-        var lines = out.compactMap(\.self).map { ItemSheetLine(text: $0) } + model.stats.map { ItemSheetLine(text: $0) }
-        if let effect = model.effect { lines.append(ItemSheetLine(text: effect, tone: .green)) }
-        if let requires = model.requiresLevel { lines.append(ItemSheetLine(text: requires)) }
-        lines += model.equipLines.map { ItemSheetLine(text: $0, tone: .green) }
-        if let set = model.setName {
-            lines.append(ItemSheetLine(text: set, tone: .gold))
-            lines += model.setBonuses.map { ItemSheetLine(text: $0) }
-        }
-        return lines
-    }
-
-    private static let separator = " · "
 
     /// Where the band lists the item: its slot, and its kind and source as a pick or a runner-up.
     struct Listing {
@@ -163,19 +136,27 @@ enum ItemSheetBuilder {
         guard let place = places?.place(of: item, kind: kind, named: named) else {
             return fallback.map { ItemSheetRow(id: "source", title: $0, sub: nil, lead: lead) }
         }
-        switch place.kind {
-        case .instance:
-            let title = place.boss.map { Copy.itemsSheetBossPlace(boss: $0, place: place.name) } ?? place.name
-            let raid = place.sourceKind == ItemPlaces.raidKind
-            let parts = [place.chance.map { Copy.gearSheetDropChance(chance: ItemNumbers.percent($0)) },
-                         raid ? Copy.itemsSheetRaid : Copy.itemsSheetDungeon]
-            return ItemSheetRow(id: "source", title: title, sub: parts.compactMap(\.self).joined(separator: separator), lead: lead)
-        case .profession:
-            return ItemSheetRow(id: "source", title: place.name, sub: GearPresenter.crafter(place.profession), lead: lead)
-        case .reputation:
-            let standing = place.standing.map { ItemVocabulary.standingName($0)?.lowercased() ?? $0 }
-            return ItemSheetRow(id: "source", title: place.name, sub: standing.map { Copy.itemsSheetNeedsStanding(standing: $0) }, lead: lead)
+        // One line, as the round-5 sheet words it: `Onyxia, Onyxia's Lair, 8%`, `Blacksmithing`,
+        // `Stormpike Guard, revered`.
+        let parts: [String?] = switch place.kind {
+        case .instance: [place.boss, place.name, place.chance.map(ItemNumbers.percent)]
+        case .profession: [place.name]
+        case .reputation: [place.name, place.standing.map { ItemVocabulary.standingName($0)?.lowercased() ?? $0 }]
         }
+        return ItemSheetRow(id: "source", title: parts.compactMap(\.self).joined(separator: listSeparator), sub: nil, lead: lead)
+    }
+
+    private static let listSeparator = ", "
+    private static let separator = " · "
+
+    /// `Replaces Ironwood Blade`, Equipped, with its icon: what the slot holds today; nil when the
+    /// item is what it holds, or nothing is known.
+    static func replaces(_ wornID: Int?, item: Int, items: [Int: Item]) -> ItemSheetRow? {
+        guard let wornID, wornID != item, let worn = items[wornID] else { return nil }
+        return ItemSheetRow(
+            id: "replaces", title: Copy.gearSheetReplaces(item: worn.name), sub: Copy.gearWorn,
+            lead: .item(icon: worn.icon, quality: worn.quality)
+        )
     }
 
     /// The slot's next pick after this one: `Onyxia · 8% · −1.8 DPS`.
@@ -185,7 +166,10 @@ enum ItemSheetBuilder {
         let item = items[alt.itemId]
         let place = places?.place(of: alt.itemId, kind: alt.sourceKind, named: alt.source)
         let delta = BisListBuilder.signedDelta(alt.dpsDelta).map { "\($0) \(unit)" } ?? Copy.itemsSameDps(unit: unit)
-        let parts = [place?.boss ?? place?.name ?? alt.sourceLine ?? alt.source, (place?.chance ?? alt.dropChance).map(ItemNumbers.percent), delta]
+        let parts = [
+            Copy.gearSheetRunnerUp, place?.boss ?? place?.name ?? alt.sourceLine ?? alt.source,
+            (place?.chance ?? alt.dropChance).map(ItemNumbers.percent), delta,
+        ]
         return ItemSheetRow(
             id: "runner-up", title: item?.name ?? alt.itemName, titleQuality: item?.quality ?? 1,
             sub: parts.compactMap(\.self).filter { !$0.isEmpty }.joined(separator: separator),
@@ -240,6 +224,14 @@ struct LiveItemNeedsSource: ItemNeedsSource {
     }
 }
 
-private extension String {
-    var nilIfEmpty: String? { isEmpty ? nil : self }
+extension ItemTooltipModel {
+    /// The model without its item level line.
+    var withoutItemLevel: ItemTooltipModel {
+        ItemTooltipModel(
+            look: look, headerMeta: headerMeta, known: known, binds: binds, unique: unique, slotName: slotName, typeName: typeName,
+            armor: armor, weaponDamage: weaponDamage, weaponSpeed: weaponSpeed, weaponDPS: weaponDPS, stats: stats,
+            equipLines: equipLines, effect: effect, setName: setName, setBonuses: setBonuses, requiresLevel: requiresLevel,
+            itemLevel: nil, source: source, alternatives: alternatives, pickFooter: pickFooter
+        )
+    }
 }

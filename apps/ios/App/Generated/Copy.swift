@@ -6293,44 +6293,13 @@ enum Copy {
     /// Check your connection
     static var homeErrorLine: String { text("home.error.line") }
 
-    /// {spec} · {band} · {faction}
-    static func gearList(spec: String, band: String, faction: String) -> String {
-        format("gear.list", spec, band, faction)
-    }
-
     /// {band} raid
     static func gearBandRaid(band: String) -> String {
         format("gear.bandRaid", band)
     }
 
-    /// {name}, vendor
-    static func gearSourceVendor(name: String) -> String {
-        format("gear.sourceVendor", name)
-    }
-
-    /// {source}, {chance}
-    static func gearSourceChance(source: String, chance: String) -> String {
-        format("gear.sourceChance", source, chance)
-    }
-
     /// a crafter
     static var gearCrafterOther: String { text("gear.crafter.other") }
-
-    /// {boss}, {place}
-    static func itemsSheetBossPlace(boss: String, place: String) -> String {
-        format("items.sheet.bossPlace", boss, place)
-    }
-
-    /// raid
-    static var itemsSheetRaid: String { text("items.sheet.raid") }
-
-    /// dungeon
-    static var itemsSheetDungeon: String { text("items.sheet.dungeon") }
-
-    /// needs {standing}
-    static func itemsSheetNeedsStanding(standing: String) -> String {
-        format("items.sheet.needsStanding", standing)
-    }
 
     /// Next raid: {zone}, {when}
     static func itemsSheetNextRaid(zone: String, when: String) -> String {

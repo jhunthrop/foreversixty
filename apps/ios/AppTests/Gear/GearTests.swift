@@ -14,34 +14,33 @@ import Testing
 enum GearTestData {
     static let build = "1.60.1.70790"
 
-    private static func slot(
-        _ slot: String, _ label: String, _ name: String, _ icon: String, _ quality: Int, _ source: String, _ gain: String?
-    ) -> GearSlotRow {
+    private static func slot(_ slot: String, _ label: String, _ name: String, _ icon: String, _ quality: Int, _ gain: String?) -> GearSlotRow {
         let look = HomeItemLook(id: abs(name.hashValue % 100_000), name: name, quality: quality, icon: icon, itemLevel: nil)
         let trail: GearSlotRow.Trail = gain.map { .gain(HomeGain(figure: $0, unit: "DPS")) } ?? .worn
-        return GearSlotRow(slot: slot, content: .pick(
-            look: look, source: "\(label) · \(source)", trail: trail, item: GearItemRef(itemID: look.id, slot: slot, gain: nil)
+        return GearSlotRow(slot: slot, label: label, pick: GearSlotRow.Pick(
+            look: look, trail: trail, item: GearItemRef(itemID: look.id, slot: slot, gain: nil)
         ))
     }
 
+    /// Greenhammer unlocks with the first raids, so the off hand is the Persuader he wears (round 5).
     static let slots = [
-        slot("head", "Head", "Lionheart Helm", "inv_helmet_36", 4, "Blacksmithing", "+14.5"),
-        slot("neck", "Neck", "Skibi’s Pendant", "inv_jewelry_amulet_07", 3, "World drop", nil),
-        slot("shoulder", "Shoulder", "Theramore Pauldrons", "inv_shoulder_06", 4, "Theramore Expeditionary Force", nil),
-        slot("back", "Back", "Howler’s Furs", "inv_misc_cape_10", 3, "Pix Xizzix, vendor", "+2.4"),
-        slot("chest", "Chest", "Timbermaw Tunic", "inv_chest_fur", 4, "Leatherworking", "+5.3"),
-        slot("wrist", "Wrist", "Forest Stalker’s Bracers", "inv_bracer_12", 4, "Silverwing Sentinels", "+0.1"),
-        slot("hands", "Hands", "Theramore Gauntlets", "inv_gauntlets_29", 4, "Theramore Expeditionary Force", "+1.0"),
-        slot("waist", "Waist", "Valiant’s Waistguard", "inv_belt_33", 4, "Pix Xizzix, vendor", nil),
-        slot("legs", "Legs", "Sentinel’s Plate Legguards", "inv_pants_plate_20", 4, "Illiyana Moonblaze, vendor", "+4.7"),
-        slot("feet", "Feet", "Scalegut Treaders", "inv_boots_chain_11", 3, "Leatherworking", "+0.9"),
-        slot("finger1", "Finger", "Don Julio’s Band", "inv_jewelry_ring_35", 4, "Stormpike Guard", "+6.8"),
-        slot("finger2", "Finger", "Cutthroat’s Signet", "inv_jewelry_ring_01", 3, "Pix Xizzix, vendor", "+0.8"),
-        slot("trinket1", "Trinket", "Hand of Justice", "inv_jewelry_talisman_01", 3, "Blackrock Depths: Emperor Dagran Thaurissan", nil),
-        slot("trinket2", "Trinket", "Molten Heart of the Mountain", "inv_misc_gem_ruby_01", 3, "Enchanting", "+3.2"),
-        slot("main_hand", "Main hand", "Ironwood Blade", "inv_sword_07", 4, "Blacksmithing", "+5.9"),
-        slot("off_hand", "Off hand", "Greenhammer", "inv_mace_1h_raidhyjalc60_d_01", 4, "Blacksmithing", "+9.7"),
-        slot("ranged", "Ranged", "Blackcrow", "inv_weapon_crossbow_04", 3, "Blackrock Spire: Shadow Hunter Vosh’gajin, 8%", "+1.9"),
+        slot("head", "Head", "Lionheart Helm", "inv_helmet_36", 4, "+14.5"),
+        slot("neck", "Neck", "Skibi’s Pendant", "inv_jewelry_amulet_07", 3, nil),
+        slot("shoulder", "Shoulder", "Theramore Pauldrons", "inv_shoulder_06", 4, nil),
+        slot("back", "Back", "Howler’s Furs", "inv_misc_cape_10", 3, "+2.4"),
+        slot("chest", "Chest", "Timbermaw Tunic", "inv_chest_fur", 4, "+5.3"),
+        slot("wrist", "Wrist", "Forest Stalker’s Bracers", "inv_bracer_12", 4, "+0.1"),
+        slot("hands", "Hands", "Theramore Gauntlets", "inv_gauntlets_29", 4, "+1.0"),
+        slot("waist", "Waist", "Valiant’s Waistguard", "inv_belt_33", 4, nil),
+        slot("legs", "Legs", "Sentinel’s Plate Legguards", "inv_pants_plate_20", 4, "+4.7"),
+        slot("feet", "Feet", "Scalegut Treaders", "inv_boots_chain_11", 3, "+0.9"),
+        slot("finger1", "Finger", "Don Julio’s Band", "inv_jewelry_ring_35", 4, "+6.8"),
+        slot("finger2", "Finger", "Cutthroat’s Signet", "inv_jewelry_ring_01", 3, "+0.8"),
+        slot("trinket1", "Trinket", "Hand of Justice", "inv_jewelry_talisman_01", 3, nil),
+        slot("trinket2", "Trinket", "Molten Heart of the Mountain", "inv_misc_gem_ruby_01", 3, "+3.2"),
+        slot("main_hand", "Main hand", "Ironwood Blade", "inv_sword_07", 4, "+5.9"),
+        slot("off_hand", "Off hand", "Persuader", "inv_hammer_08", 4, nil),
+        slot("ranged", "Ranged", "Blackcrow", "inv_weapon_crossbow_04", 3, "+1.9"),
     ]
 
     private static func place(_ title: String, _ sub: String, _ icon: String, _ quality: Int) -> GearPlaceRow {
@@ -49,33 +48,31 @@ enum GearTestData {
     }
 
     static let content = GearContent(
-        summary: HomeLine(title: "Fury Warrior · 60 raid · Alliance", sub: "4 of 17 slots on the list"),
+        title: "Fury Warrior", figure: "1004.2", unit: "DPS", facts: "60 raid · Alliance · 4 of 17 slots on the list",
         tonight: [
             place("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh’gajin, 8%", "inv_weapon_crossbow_04", 3),
-            place("Blacksmithing", "Lionheart Helm, Greenhammer, Ironwood Blade · ask a blacksmith", "inv_helmet_36", 4),
-            place("Stormpike Guard", "Don Julio’s Band, needs exalted", "inv_jewelry_ring_35", 4),
+            place("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", "inv_helmet_36", 4),
+            place("Stormpike Guard", "Don Julio’s Band, needs revered", "inv_jewelry_ring_35", 4),
         ],
         slots: slots
     )
 
+    /// Deathbringer from Onyxia (data/builds 1.60.1.70790, 8%) in the client's order, the round-5 sheet's list.
+    static let tooltip = ItemTooltipModel(
+        look: HomeItemLook(id: 17068, name: "Deathbringer", quality: 4, icon: "inv_axe_09", itemLevel: nil),
+        headerMeta: "Epic One-Hand", known: true, binds: "Binds when picked up", unique: false, slotName: "One-Hand", typeName: "Axe",
+        armor: nil, weaponDamage: "114 - 213 Damage", weaponSpeed: "Speed 2.90", weaponDPS: "(56.4 damage per second)", stats: [],
+        equipLines: [], effect: "Chance on hit: Sends a shadowy bolt at the enemy causing 125 Shadow damage.", setName: nil,
+        setBonuses: [], requiresLevel: "Requires Level 60", itemLevel: nil, source: nil, alternatives: [], pickFooter: nil
+    )
+
     static let sheet = ItemSheetContent(
-        look: HomeItemLook(id: 17068, name: "Deathbringer", quality: 4, icon: "inv_axe_09", itemLevel: 75),
-        slotLabel: "Main hand",
+        tooltip: tooltip,
         gain: HomeGain(figure: "+12.6", unit: "DPS"),
-        lines: [
-            ItemSheetLine(text: "Binds when picked up"),
-            ItemSheetLine(text: "One-Hand · Axe"),
-            ItemSheetLine(text: "114 - 213 Damage · Speed 2.90"),
-            ItemSheetLine(text: "(56.4 damage per second)"),
-            ItemSheetLine(text: "Chance on hit: Sends a shadowy bolt at the enemy causing 125 Shadow damage.", tone: .green),
-            ItemSheetLine(text: "Requires Level 60"),
-        ],
-        source: ItemSheetRow(
-            id: "source", title: "Onyxia, Onyxia’s Lair", sub: "8% drop chance · raid",
-            lead: .item(icon: "inv_axe_09", quality: 4)
-        ),
+        source: ItemSheetRow(id: "source", title: "Onyxia, Onyxia’s Lair, 8%", sub: nil, lead: .item(icon: "inv_misc_head_dragon_black", quality: nil)),
+        replaces: ItemSheetRow(id: "replaces", title: "Replaces Ironwood Blade", sub: "Equipped", lead: .item(icon: "inv_sword_07", quality: 4)),
         runnerUp: ItemSheetRow(
-            id: "runner-up", title: "Vis’kag the Bloodletter", titleQuality: 4, sub: "Onyxia · 8% · \u{2212}1.8 DPS",
+            id: "runner-up", title: "Vis’kag the Bloodletter", titleQuality: 4, sub: "Runner-up · Onyxia · 8% · \u{2212}1.8 DPS",
             lead: .item(icon: "inv_sword_18", quality: 4)
         ),
         guild: .loaded(rows: [
@@ -137,7 +134,7 @@ struct GearParityTests {
         let view = VStack(spacing: 0) {
             Color.black.opacity(0.45).frame(height: 120)
             ItemSheetView(content: GearTestData.sheet, build: GearTestData.build)
-                .clipShape(.rect(topLeadingRadius: 12, topTrailingRadius: 12))
+                .clipShape(.rect(topLeadingRadius: 16, topTrailingRadius: 16))
         }
         .background(FSColor.bg)
         .parityContent()
@@ -208,17 +205,6 @@ struct GearLogicTests {
         ])
     }
 
-    @Test("Gear's source words: a profession bare, a vendor after the name, an instance with its chance")
-    func sourceWords() throws {
-        let loot = try WireFormat.decoder().decode(LootFile.self, from: Data(Self.loot.utf8))
-        let places = ItemPlaces(loot: loot, level: 60)
-        #expect(GearPresenter.sourceWords("Blacksmithing", kind: "crafted", place: 1, places: places) == "Blacksmithing")
-        #expect(GearPresenter.sourceWords("Pix Xizzix", kind: "vendor", place: 9, places: places) == "Pix Xizzix, vendor")
-        #expect(GearPresenter.sourceWords("Blackrock Spire: Shadow Hunter Vosh'gajin", kind: "dungeon", place: 2, places: places)
-            == "Blackrock Spire: Shadow Hunter Vosh'gajin, 8%")
-        #expect(GearPresenter.sourceWords("World drop", kind: "world_drop", place: 9, places: places) == "World drop")
-    }
-
     @Test("the summary names the band: 60 raid, or the band's range")
     func band() {
         #expect(GearPresenter.band(BisRange(band: 60, preset: "raid")) == "60 raid")
@@ -232,24 +218,37 @@ struct GearLogicTests {
         guard case let .loaded(rows, note) = ItemSheetBuilder.guildRows(answer) else { Issue.record("not loaded"); return }
         #expect(rows.map(\.title) == ["Kraggor", "Brightwen", "Ironhide"])
         #expect(rows.map(\.sub) == [
-            "Fury Warrior · needs it, also on their list", "Combat Rogue · needs it, a runner-up on their list", "Protection Warrior · has it",
+            "Fury Warrior · needs it, the pick on their list", "Combat Rogue · needs it, a runner-up on their list", "Protection Warrior · has it",
         ])
         #expect(rows.first?.lead == .crest(className: "warrior"))
         #expect(note == "3 guildmates have not shared their gear yet")
         let empty = ItemNeeds(itemId: 1, needs: [], has: [], unknownGear: 0)
-        #expect(ItemSheetBuilder.guildRows(empty) == .loaded(rows: [], note: "Nobody in the guild needs it or has it."))
+        #expect(ItemSheetBuilder.guildRows(empty) == .loaded(rows: [], note: "Nobody in the guild has it on their list."))
     }
 
-    @Test("the sheet's tooltip lines leave the item level out")
-    func lines() throws {
+    @Test("the sheet's tooltip leaves the item level out")
+    func itemLevel() throws {
         let request = ItemTooltipRequest.forHome(
             HomeItemLook(id: 252_605, name: "Black Dragonscale Helm", quality: 4, icon: nil, itemLevel: 61),
             home: try HomeFixtures.home(), character: HomeFixtures.velaren
         )
         let model = ItemTooltipModel.build(request, sources: try HomeFixtures.tooltipSources())
-        let lines = ItemSheetBuilder.lines(model).map(\.text)
-        #expect(!lines.isEmpty)
-        #expect(!lines.contains { $0.hasPrefix("Item Level") })
-        #expect(!lines.contains(model.look.name ?? ""))
+        #expect(model.itemLevel != nil)
+        #expect(model.withoutItemLevel.itemLevel == nil)
+        #expect(model.withoutItemLevel.binds == model.binds)
+    }
+
+    @Test("what it replaces: the worn item in the slot, never the item itself")
+    func replaces() {
+        let worn = Item(
+            id: 9, name: "Ironwood Blade", icon: "inv_sword_07", slot: "one_hand", quality: 4, requiredLevel: 60, requiredLevelSource: "",
+            itemLevel: 63, armor: 0, damageMin: 0, damageMax: 0, speed: 0, dps: 0, twoHand: false, effectText: "", unique: false,
+            clientUnconfirmed: false, iconSource: ""
+        )
+        let row = ItemSheetBuilder.replaces(9, item: 17068, items: [9: worn])
+        #expect(row?.title == "Replaces Ironwood Blade")
+        #expect(row?.sub == Copy.gearWorn)
+        #expect(ItemSheetBuilder.replaces(17068, item: 17068, items: [:]) == nil)
+        #expect(ItemSheetBuilder.replaces(nil, item: 17068, items: [9: worn]) == nil)
     }
 }

@@ -46,8 +46,9 @@ public struct PaperdollListSlot: Identifiable, Sendable {
 /// list form): under 36 pt slots the frame gives way to its one-line header strip (the medallion
 /// with the character's portrait, or the LX seal; the title; the set's DPS) and the slots in two
 /// columns on the panel. A tap on a filled slot calls `onSelect`. `icon` draws a slot's item icon
-/// (the app's `ItemIcon`), which sits in the 44 pt socket.
-public struct PaperdollHeader<Icon: View>: View {
+/// (the app's `ItemIcon`), which sits in the 44 pt socket. `lead` is the line under the strip that
+/// names the list (Gear's `60 raid · Alliance · 4 of 17 slots on the list · Change`).
+public struct PaperdollHeader<Icon: View, Lead: View>: View {
     private let title: String
     private let figure: String?
     private let unit: String
@@ -56,6 +57,7 @@ public struct PaperdollHeader<Icon: View>: View {
     private let selected: String?
     private let onSelect: ((String) -> Void)?
     private let icon: (PaperdollListSlot.Item) -> Icon
+    private let lead: Lead
 
     static var medallionSize: CGFloat { 40 }
     static var cellSize: CGFloat { 44 }
@@ -72,6 +74,7 @@ public struct PaperdollHeader<Icon: View>: View {
         slots: [PaperdollListSlot],
         selected: String? = nil,
         onSelect: ((String) -> Void)? = nil,
+        @ViewBuilder lead: () -> Lead,
         @ViewBuilder icon: @escaping (PaperdollListSlot.Item) -> Icon
     ) {
         self.title = title
@@ -82,11 +85,15 @@ public struct PaperdollHeader<Icon: View>: View {
         self.selected = selected
         self.onSelect = onSelect
         self.icon = icon
+        self.lead = lead()
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             strip
+            lead
+                .padding(.horizontal, FSSpace.space3)
+                .padding(.top, FSSpace.space3)
             list
         }
         .panel()
@@ -127,8 +134,8 @@ public struct PaperdollHeader<Icon: View>: View {
         ) {
             ForEach(slots) { slot in cell(slot) }
         }
-        .padding(FSSpace.space3)
         .parityRegion(.slots)
+        .padding(FSSpace.space3)
     }
 
     @ViewBuilder
@@ -193,6 +200,24 @@ public struct PaperdollHeader<Icon: View>: View {
                     .padding(-3)
             }
         }
+    }
+}
+
+public extension PaperdollHeader where Lead == EmptyView {
+    init(
+        title: String,
+        figure: String?,
+        unit: String = "DPS",
+        portrait: UIImage?,
+        slots: [PaperdollListSlot],
+        selected: String? = nil,
+        onSelect: ((String) -> Void)? = nil,
+        @ViewBuilder icon: @escaping (PaperdollListSlot.Item) -> Icon
+    ) {
+        self.init(
+            title: title, figure: figure, unit: unit, portrait: portrait, slots: slots, selected: selected, onSelect: onSelect,
+            lead: { EmptyView() }, icon: icon
+        )
     }
 }
 

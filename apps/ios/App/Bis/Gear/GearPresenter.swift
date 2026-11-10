@@ -23,9 +23,12 @@ struct GearPresenter {
         let unit = home?.unitWord ?? list.unit.word
         let refs = Self.itemRefs(list)
         let tonight = places.map { WhereToGo(slots: inputs.band.slots, gains: gains, places: $0).tonight } ?? []
-        let slots = list.rows.map { slotRow($0, band: inputs.band, home: home, places: places, unit: unit) }
+        let slots = list.rows.map { slotRow($0, home: home, unit: unit) }
         return GearContent(
-            summary: summary(list: list, slots: slots),
+            title: list.specLabel,
+            figure: list.setFigure,
+            unit: unit,
+            facts: facts(slots: slots),
             tonight: tonight.compactMap { placeRow($0, refs: refs, unit: unit) },
             slots: slots
         )
@@ -37,20 +40,18 @@ struct GearPresenter {
         return home
     }
 
-    // MARK: The summary
+    // MARK: The line naming the list
 
-    private func summary(list: BisList, slots: [GearSlotRow]) -> HomeLine {
+    /// `60 raid · Alliance · 4 of 17 slots on the list`: the band, the faction, how many picks are worn.
+    private func facts(slots: [GearSlotRow]) -> String {
         let selection = context.selection
-        let picks = slots.compactMap { row -> GearSlotRow.Trail?? in
-            if case let .pick(_, _, trail, _) = row.content { return .some(trail) }
-            return nil
-        }
-        let worn = picks.filter { $0 == .worn }.count
-        return HomeLine(
-            title: Copy.gearList(spec: list.specLabel, band: Self.band(selection.range), faction: BisLabels.faction(selection.faction)),
-            sub: Copy.gearOnList(n: worn, total: picks.count)
-        )
+        let picks = slots.compactMap(\.pick)
+        let worn = picks.filter { $0.trail == .worn }.count
+        return [Self.band(selection.range), BisLabels.faction(selection.faction), Copy.gearOnList(n: worn, total: picks.count)]
+            .joined(separator: Self.separator)
     }
+
+    static let separator = " · "
 
     /// `60 raid` for the raid list, the band's words otherwise.
     static func band(_ range: BisRange) -> String {
@@ -59,21 +60,15 @@ struct GearPresenter {
 
     // MARK: Every slot
 
-    private func slotRow(_ row: BisRow, band: BisBand, home: CharacterHome?, places: ItemPlaces?, unit: String) -> GearSlotRow {
-        guard let pick = row.pick else {
-            if case let .empty(reason) = row.content { return GearSlotRow(slot: row.slot, content: .empty(reason)) }
-            return GearSlotRow(slot: row.slot, content: .empty(Copy.bisNoPick(slot: row.slotLabel)))
-        }
+    private func slotRow(_ row: BisRow, home: CharacterHome?, unit: String) -> GearSlotRow {
+        guard let pick = row.pick else { return GearSlotRow(slot: row.slot, label: row.slotLabel, pick: nil) }
         let worn = pick.isWorn || home?.alreadyBest.contains { $0.slot == row.slot && $0.item.id == pick.item.id } == true
         let gain = worn ? nil : Self.gain(home?.upgrades.first { $0.slot == row.slot && $0.pick.id == pick.item.id }, unit: unit)
-        let raw = band.slots.first { $0.slot == row.slot }
-        let source = Self.sourceWords(raw?.source ?? "", kind: raw?.sourceKind, place: pick.item.id, places: places)
         let look = HomeItemLook(
             id: pick.item.id, name: pick.item.name, quality: pick.item.item?.quality, icon: pick.item.icon, itemLevel: pick.item.item?.itemLevel
         )
-        return GearSlotRow(slot: row.slot, content: .pick(
+        return GearSlotRow(slot: row.slot, label: row.slotLabel, pick: GearSlotRow.Pick(
             look: look,
-            source: source.isEmpty ? row.slotLabel : Copy.bisSlotSource(slot: row.slotLabel, source: source),
             trail: worn ? .worn : gain.map { .gain($0) },
             item: GearItemRef(itemID: pick.item.id, slot: row.slot, gain: gain)
         ))
@@ -83,20 +78,6 @@ struct GearPresenter {
     static func gain(_ upgrade: HomeUpgrade?, unit: String) -> HomeGain? {
         guard let upgrade, upgrade.modelled, let gain = upgrade.gain, gain > 0 else { return nil }
         return HomeGain(figure: ItemNumbers.signedTenths(gain), unit: unit)
-    }
-
-    /// Gear's source words: a profession by its name, a vendor as `Pix Xizzix, vendor`, an
-    /// instance with its chance; every other kind as the list words it.
-    static func sourceWords(_ source: String, kind: String?, place item: Int, places: ItemPlaces?) -> String {
-        guard !source.isEmpty else { return source }
-        switch kind {
-        case ItemPlaces.craftedKind: return source
-        case "vendor" where !source.hasPrefix(BisListBuilder.pvpRankPrefix): return Copy.gearSourceVendor(name: source)
-        case ItemPlaces.dungeonKind, ItemPlaces.raidKind:
-            guard let chance = places?.place(of: item, kind: kind)?.chance else { return source }
-            return Copy.gearSourceChance(source: source, chance: ItemNumbers.percent(chance))
-        default: return BisListBuilder.sourceLine(source, kind: kind)
-        }
     }
 
     // MARK: Where to go tonight
