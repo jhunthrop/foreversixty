@@ -16,6 +16,8 @@
     barHead = '',
     bar = true,
     open = false,
+    icons = true,
+    dense = false,
     sort,
     onsort,
     label,
@@ -31,6 +33,10 @@
     /** Whether the rows carry a Meter column. */
     bar?: boolean;
     open?: boolean;
+    /** Whether the rows lead with an icon; false drops the icon track (a part, a weight, a query's columns). */
+    icons?: boolean;
+    /** A log's rows: 36 px, a 20 px icon (the Events lines), where 56 px rows would run a page long. */
+    dense?: boolean;
     sort?: StatSort;
     /** A sortable head was pressed. */
     onsort?: (column: string) => void;
@@ -48,12 +54,14 @@
   aria-label={label}
   data-open={open ? 'true' : undefined}
   data-bar={bar ? 'true' : 'false'}
+  data-icons={icons ? undefined : 'false'}
+  data-dense={dense ? 'true' : undefined}
   style:--st-n={columns.length}
   data-testid={testid}
 >
   {#if nameHead !== undefined}
     <div class="ui-st-h ui-st-c" role="row">
-      <span aria-hidden="true"></span>
+      <span class="ui-st-icon" aria-hidden="true"></span>
       <span class="ui-st-head" role="columnheader">{nameHead}</span>
       {#if bar}
         {#if barHead === ''}<span aria-hidden="true"></span>

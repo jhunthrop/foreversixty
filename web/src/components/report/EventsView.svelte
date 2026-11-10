@@ -2,13 +2,15 @@
 <!-- Every cast, aura application and removal, death and killing hit the summary itself
      timestamps, merged and time-ordered (src/lib/report/events.ts). The complete event
      stream -- every field of every line, not just what the summary keeps -- is
-     events.parquet, which is the Queries view's job (Task 16): two to ten megabytes and a
-     DuckDB instance for a question this view answers for free.
-     Drawn to logs spec 2026-11-07 section 6.2 (`web-report-events`): Section `Events` holding
-     the one Plate, a StatTable of lines (the spell's icon, the sentence with each player's name
-     in their class colour, Time, Amount), 200 a page. The Show chips are the rail's
-     (EventsRail); `chips` draws them here until the frame places the rail. -->
+     events.parquet, which is the Queries view's job: two to ten megabytes and a DuckDB
+     instance for a question this view answers for free.
+     Drawn to round 5 (design/mocks/directions/report_tail.py, b1-report-events): the panel
+     `Events` with its count, the Show chips and Find on one row under the head, a StatTable of
+     lines (the spell's icon, the sentence with each player's name in their class colour, Time,
+     Amount), 100 a page, and one foot line that loads every hit and heal. -->
 <script lang="ts">
+  import activeBuild from '../../data/active-build.json';
+  import { isUnnamed, loadSharedSpellNames, nameAuras, type SpellNames } from '../../lib/report/aura-names';
   import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
   import {
     EVENT_KINDS,
@@ -42,7 +44,6 @@
     onPatch = () => {},
     loadStream = undefined,
     names = new Map<string, string>(),
-    chips = true,
   }: {
     summary: Summary;
     classOf: Map<string, string>;
@@ -56,11 +57,22 @@
     loadStream?: () => Promise<StreamLine[]>;
     /** GUID to unit name, so an aura line can say who applied it. */
     names?: ReadonlyMap<string, string>;
-    /** Draw the Show chips above the table; false once the frame draws EventsRail. */
-    chips?: boolean;
   } = $props();
 
   const icons = new SpellIcons();
+
+  /** The build's spell names, for an aura up at the pull that no line of the log named (B2). */
+  let spellNames = $state<SpellNames>({});
+  $effect(() => {
+    void loadSharedSpellNames(activeBuild.build).then((loaded) => {
+      spellNames = loaded;
+    });
+  });
+  /** The summary with its auras named as the Buffs tab names them; one no table knows is dropped. */
+  const named = $derived<Summary>({
+    ...summary,
+    auras: nameAuras(summary.auras, spellNames).filter((track) => !isUnnamed(track.name)),
+  });
 
   let stream = $state<StreamLine[] | null>(null);
   let streaming = $state(false);
@@ -92,7 +104,7 @@
   // to every one of them; the casts, auras and deaths stay the summary's.
   const all = $derived(
     [
-      ...summaryEvents(summary, names).filter(
+      ...summaryEvents(named, names).filter(
         (event) => stream === null || (event.kind !== 'damage' && event.kind !== 'heal'),
       ),
       ...(stream === null ? [] : streamEvents(stream)),
@@ -102,7 +114,7 @@
   );
   const matching = $derived(filterEvents(all, kinds, search));
   /** How many rows are on the page: a wipe's stream runs to thousands. */
-  const PAGE = 200;
+  const PAGE = 50;
   let limit = $state(PAGE);
   const shown = $derived(matching.slice(0, limit));
   const unshown = $derived(matching.length - shown.length);
@@ -141,13 +153,14 @@
 
 <Section
   title="Events"
-  meta={`${matching.length.toLocaleString()} events in this window, in order`}
+  meta={`${matching.length.toLocaleString()} in this window`}
   testid="events-view"
   panel
+  flush
 >
-  <div class="flex flex-col gap-3">
-    <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
-      {#if chips}<EventChips {off} {onPatch} />{/if}
+  <div class="flex flex-col">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 pb-3 md:px-5">
+      <EventChips {off} {onPatch} />
       <!-- The field reports each keystroke to the url; its own value follows the url back. -->
       <div class="w-full md:ml-auto md:w-[240px]" oninput={onFind}>
         <Field
@@ -164,19 +177,15 @@
 
     <div>
       {#if shown.length === 0}
-        <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">
-          No rows matched.{stream === null && search.trim() !== ''
-            ? ' Load every hit and heal below to search them all.'
-            : ''}
-        </p>
+        <p class="text-muted px-4 py-4 text-[14px] md:px-5" data-testid="table-empty">No rows matched.</p>
       {:else}
-        <StatTable columns={COLUMNS} nameHead="Event" bar={false} label="Events" testid="event-list">
+        <StatTable columns={COLUMNS} nameHead="Event" bar={false} dense label="Events" testid="event-list">
           {#each shown as event, index (`${event.atMs}-${index}`)}
             <StatRow figures={figuresOf(event)} bar={false}>
               {#snippet icon()}{#if event.spellId !== undefined}<SpellIcon
                     url={icons.of(event.spellId, event.spellName)}
                     spellId={event.spellId}
-                    size={24}
+                    size={20}
                     tip
                   />{/if}{/snippet}
               {#snippet name()}
@@ -193,35 +202,30 @@
           {/each}
         </StatTable>
         {#if unshown > 0}
-          <div class="px-4 py-3">
+          <div class="text-muted flex items-center gap-[14px] px-4 py-3 text-[13px] md:px-5">
             <Button size="sm" testid="events-more" onclick={() => (limit += PAGE)}
-              >Show {Math.min(PAGE, unshown)} more · {unshown.toLocaleString()} not yet shown</Button
-            >
+              >Show {Math.min(PAGE, unshown)} more</Button
+            ><span class="tabular-nums">{unshown.toLocaleString()} more</span>
           </div>
         {/if}
       {/if}
     </div>
 
-    <p class="text-muted text-[13px] leading-5">
+    <p class="text-muted border-line-soft border-t px-4 pt-[10px] pb-[14px] text-[13px] leading-5 md:px-5">
       {#if stream === null}
-        From the summary: casts, auras going up and down, the hits and heals before each death, and the
-        deaths. An aura applied while the same aura is already up on that player is folded into the running
-        one, so its applier is named on the Buffs table and not here.{#if loadStream !== undefined}
+        Hits and heals: only those before a death.{#if loadStream !== undefined}
           <button
             type="button"
             class={`${LINK} inline-flex min-h-11 items-center md:min-h-0 ${streaming ? BUSY_CLASS : ''}`}
             data-testid="events-stream"
             disabled={streaming}
             aria-busy={streaming}
-            onclick={() => void runStream()}>Load every hit and heal in this window</button
-          >
-          from the fight’s events.{/if}
+            onclick={() => void runStream()}>Load every hit and heal</button
+          >{/if}
       {:else}
-        Casts, auras and deaths from the summary, and <span class="tabular-nums">{streamedCount}</span>
-        hits and heals from the fight’s events{stream.length === all.length ? '' : ' in scope'}.
+        Every hit and heal: <span class="tabular-nums">{streamedCount.toLocaleString()}</span> lines.
       {/if}
       {#if streamError !== ''}<span class="text-wipe" role="alert">{streamError}</span>{/if}
-      Every field of every line is in Queries.
     </p>
   </div>
 </Section>

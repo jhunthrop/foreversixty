@@ -37,7 +37,7 @@
     resolveFightIndex,
     sampleFightIndex,
   } from '../../lib/report/fights';
-  import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
+  import { aggregateNight, nightFacts, nightSummary, type Night } from '../../lib/report/night';
   import { schoolToken, TRASH_PARSE } from '../../lib/report/format';
   import {
     FLAG_LETTERS,
@@ -90,7 +90,8 @@
   import CastsRail from './CastsRail.svelte';
   import DispelsRail from './DispelsRail.svelte';
   import Glossary from './Glossary.svelte';
-  import EventsRail from './EventsRail.svelte';
+  import EnemyCastsRail from './EnemyCastsRail.svelte';
+  import GroupDebuffsRail from './GroupDebuffsRail.svelte';
   import MechanicsRail from './MechanicsRail.svelte';
   import QueriesRail from './QueriesRail.svelte';
   import RatingRail from './RatingRail.svelte';
@@ -1228,7 +1229,9 @@
         // untracked: this runs before the first await, inside the load effect, and these
         // read and write the state the effect must not depend on.
         untrack(() => readUrl());
-        await untrack(() => loadFight(state.fight));
+        // The whole night (fight=all) and a zone's trash have no summary.json of their own;
+        // the combined-view effect folds their pulls once the page is ready.
+        if (untrack(() => fight) !== null) await untrack(() => loadFight(state.fight));
         status = 'ready';
         const rest = await fetchReportFileFor(resolved.status, base);
         if (rest !== null) file = rest;
@@ -1762,7 +1765,9 @@
 {/snippet}
 
 {#snippet thisPull()}
-  {#if fight !== null && !nightMode}
+  {#if nightMode && night !== null}
+    <ThisPull title={trashMode ? 'This trash' : 'The night'} facts={nightFacts(night, trashMode)} simHref={null} />
+  {:else if fight !== null && !nightMode}
     <ThisPull
       facts={pullFacts}
       {simHref}
@@ -2061,8 +2066,15 @@
             />
           {:else if state.tab === 'debuffs'}
             <DispelsRail dispels={scoped.dispels} {spellIcon} tabHref={hrefWith({ tab: 'dispels' })} />
-          {:else if state.tab === 'events'}
-            <EventsRail off={state.eventsOff} onPatch={patch} />
+          {:else if state.tab === 'interrupts'}
+            <EnemyCastsRail casts={(windowed ?? base)?.casts ?? []} players={friendlySet} {spellIcon} />
+          {:else if state.tab === 'dispels'}
+            <GroupDebuffsRail
+              auras={(windowed ?? base)?.auras ?? []}
+              players={scopePlayers}
+              {spellIcon}
+              tabHref={hrefWith({ tab: 'debuffs' })}
+            />
           {:else if state.tab === 'queries'}
             <QueriesRail />
           {:else if state.tab === 'rating'}
@@ -2092,6 +2104,7 @@
           {#if night !== null}
             <NightView
               {night}
+              inScope={(guid) => inSource(guid, scopeKey, scopePlayers, friendlySet)}
               trash={trashMode}
               loading={nightLoading}
               {unitClasses}
@@ -2432,7 +2445,6 @@
         {:else if state.tab === 'events'}
           {#if eventsViewLazy.current}
             <eventsViewLazy.current
-              chips={false}
               summary={windowed ?? scoped}
               {classOf}
               names={unitNames}
@@ -2455,8 +2467,13 @@
         {:else if state.tab === 'queries'}
           {#if queriesViewLazy.current}
             <!-- The Starting points wrap inside the column (the mock's `.qstarts`), never under the rail. -->
-            <div class="report-queries min-w-0">
-              <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+            <div class="report-queries flex min-w-0 flex-col gap-[var(--section-gap)]">
+              <queriesViewLazy.current
+                dataBaseUrl={dataBase}
+                fightIndex={state.fight}
+                window={timeWindow}
+                classByName={new Map((summary?.roster ?? []).map((row) => [row.name, row.class ?? '']))}
+              />
             </div>
           {:else}
             {@render lazyFallback(queriesViewLazy, REPORT_LAZY_MIN_H.queries)}

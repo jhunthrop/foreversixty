@@ -4,7 +4,8 @@
 // not to sum eighteen pulls by hand. The caller picks the pulls: every boss pull for the
 // night (trash is left out of it, as it is from the rankings: a trash pull's damage is mostly
 // a function of how much trash there was), or one zone's trash for its combined entry.
-import { phaseReached } from './format';
+import type { Fact } from '../ui/facts';
+import { formatDuration, phaseReached } from './format';
 import { encounterKey, mechanicRowKey } from './mechanics';
 import { abilityKey } from './types';
 import type {
@@ -699,4 +700,24 @@ function mergeCounts(
   const out: Record<string, number> = { ...(a ?? {}) };
   for (const [key, count] of Object.entries(b ?? {})) out[key] = (out[key] ?? 0) + count;
   return out;
+}
+
+/**
+ * The rail's facts over a combined view (round 5 b1-report-night, `The night`): the pulls, the
+ * kills and wipes (boss pulls only), the time in combat and the deaths.
+ */
+export function nightFacts(night: Night, trash: boolean): Fact[] {
+  const kills = night.bosses.reduce((sum, boss) => sum + boss.kills, 0);
+  const wipes = night.bosses.reduce((sum, boss) => sum + boss.wipes, 0);
+  return [
+    { id: 'pulls', label: trash ? 'Trash pulls' : 'Boss pulls', value: String(night.expected) },
+    ...(trash
+      ? []
+      : [
+          { id: 'kills', label: 'Kills', value: String(kills) },
+          { id: 'wipes', label: 'Wipes', value: String(wipes) },
+        ]),
+    { id: 'combat', label: 'In combat', value: formatDuration(night.time_ms) },
+    { id: 'deaths', label: 'Deaths', value: String(night.deaths) },
+  ];
 }

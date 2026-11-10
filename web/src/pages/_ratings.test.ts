@@ -3,10 +3,11 @@
 //
 // /ratings explains both numbers (design/specs/2026-11-07-logs-reports.md section 8, T1): the
 // PageHeader with the sample Forever Score as its answer in its tier's colour and the two-tab
-// jump row; the Forever Score Section with its five parts as the one Plate (the addon's labels,
-// from the shared fixture); the Performance Rating Section with three figures; the reference
-// Sections; the tiers in the item quality colours with the sample tinted (MUST 6); how logs get
-// here. No "percentile" in the rating's words.
+// jump row; the Forever Score panel with its five parts (the addon's labels, from the shared
+// fixture); the Performance Rating panel with three figures; the weights by role with what each
+// component measures; how a fight is judged; the tiers in the item quality colours with the sample
+// tinted (MUST 6); how logs get here. Every section on its panel (round 5, b1-ratings). No
+// "percentile" in the rating's words.
 import { readFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import labels from '../../../docs/contracts/fixtures/score-labels.json';
@@ -72,7 +73,8 @@ describe('/ratings', () => {
   });
 
   it('sets every section on its panel and lists the five parts in the addon’s order, each with what moves it', () => {
-    expect(html.split('data-region="plate"').length - 1).toBe(4);
+    expect(html.split('data-region="plate"').length - 1).toBe(6);
+    expect(section('forever-score')).toContain('data-icons="false"');
     let last = -1;
     for (const component of labels.components) {
       const at = html.indexOf(`data-testid="ratings-forever-score-${component.key}"`);
@@ -131,34 +133,33 @@ describe('/ratings', () => {
 
   it('says "ranked against players of your spec", never "percentile", in the rating copy', () => {
     const rating = text(
-      [section('performance-rating'), section('ranked-against-your-spec-or-absolute')].join(' '),
+      [section('performance-rating'), section('how-a-fight-is-judged')].join(' '),
     );
     expect(rating).not.toMatch(/percentile/i);
     expect(rating).toContain('ranked against players of your spec');
     expect(rating).toContain(ratingsPageCopy.visibility);
   });
 
-  it('defines each of the six components, the weights by role, the basis and the cap', () => {
-    for (const { part, body } of ratingsPageCopy.components) {
-      expect(section('what-each-component-measures')).toContain(body);
-      expect(text(section('what-each-component-measures'))).toContain(part);
-    }
-    const weights = text(section('weights-by-role'));
+  it('weighs the six components by role, each with what it measures, then how a fight is judged', () => {
+    const weights = section('weights-by-role');
     for (const row of WEIGHTS) {
       // the phone line repeats the three after the primary figure
-      expect(weights).toContain(
-        `${row.component} ${row.dps} ${row.dps} / ${row.healer} / ${row.tank} ${row.healer} ${row.tank}`,
-      );
+      expect(text(weights)).toContain(`${row.dps} ${row.dps} / ${row.healer} / ${row.tank} ${row.healer} ${row.tank}`);
     }
-    expect(weights).toContain(ratingsPageCopy.roles);
+    for (const { part, body } of ratingsPageCopy.components) {
+      expect(weights).toContain(body);
+      expect(text(weights)).toContain(part);
+    }
     expect(weights).toContain(ratingsPageCopy.adjustable);
-    for (const paragraph of ratingsPageCopy.rankedOrAbsolute) {
-      expect(section('ranked-against-your-spec-or-absolute')).toContain(paragraph);
+    const judged = section('how-a-fight-is-judged');
+    for (const rule of ratingsPageCopy.rules) {
+      expect(judged).toContain(rule.body);
+      expect(text(judged)).toContain(rule.title);
     }
-    expect(section('the-cap')).toContain(ratingCopy.cappedRule);
+    expect(section('performance-rating')).toContain(ratingCopy.cappedRule);
   });
 
-  it('draws no card: the two systems on panels, the reference open', () => {
+  it('draws no card: every section on a panel', () => {
     expect(html).not.toMatch(/card-surface|rounded-panel/);
     expect(SAMPLE_SCORE.tier).toBe('epic');
   });

@@ -1,8 +1,9 @@
 <!-- web/src/components/report/NightView.svelte -->
-<!-- The whole night, the Summary over "All boss pulls" (logs spec 2026-11-07 6.3): the Plate is
-     Players across every boss pull (one StatTable: the crest, the name, the spec, Pulls, Damage
-     and DPS, Healing and HPS, Taken, Active, Deaths), then an open Section Bosses (Pulls, Kills,
-     Wipes, Time, Deaths, the best kill or the lowest wipe, each boss's pulls one click away).
+<!-- The whole night, the Summary over "All boss pulls" (logs spec 2026-11-07 6.3, round 5
+     design/mocks/directions/report_tail.py b1-report-night): the framed panel Players across every
+     boss pull (one StatTable: the crest, the name, the spec, a damage bar in the class colour,
+     Pulls, Damage and DPS, Healing and HPS, Taken, Active, Deaths), then the panel Bosses (Pulls,
+     Kills, Wipes, Time, Deaths, the best kill or the lowest wipe, each boss's pulls one click away).
      Trash is left out for the reason the rankings leave it out; a zone's trash entry gets the same
      view of its own pulls (`trash`), with no boss table. Not reachable on the real log (no boss
      pull, gap G14). -->
@@ -25,6 +26,7 @@
     onSelect,
     onSelectPlayer,
     unitClasses = new Map<string, UnitClass>(),
+    inScope = () => true,
   }: {
     night: Night;
     /** One zone's trash folded together rather than the night's boss pulls. */
@@ -33,7 +35,11 @@
     onSelect: (index: number) => void;
     onSelectPlayer: (guid: string) => void;
     unitClasses?: ReadonlyMap<string, UnitClass>;
+    /** The page's Source scope: the players it keeps (the group, by default). */
+    inScope?: (guid: string) => boolean;
   } = $props();
+
+  const players = $derived(night.players.filter((player) => inScope(player.guid)));
 
   const PLAYER_COLUMNS = [
     { id: 'pulls', label: 'Pulls' },
@@ -53,16 +59,9 @@
     { id: 'deaths', label: 'Deaths' },
   ];
 
-  const kills = $derived(night.bosses.reduce((sum, boss) => sum + boss.kills, 0));
-  const wipes = $derived(night.bosses.reduce((sum, boss) => sum + boss.wipes, 0));
   const meta = $derived(
     [
-      trash
-        ? `${night.expected} trash ${night.expected === 1 ? 'pull' : 'pulls'}`
-        : `${night.expected} boss pulls`,
-      ...(trash ? [] : [`${kills} kills`, `${wipes} wipes`]),
-      `${formatDuration(night.time_ms)} in combat`,
-      `${night.deaths} deaths`,
+      trash ? 'across every trash pull' : 'across every boss pull',
       ...(loading ? [`loading ${night.fights} of ${night.expected}`] : []),
     ].join(' · '),
   );
@@ -95,17 +94,10 @@
   }
 </script>
 
-<Section
-  title={`Players, across every ${trash ? 'trash' : 'boss'} pull`}
-  {meta}
-  metaTestid="night-summary"
-  testid="night-view"
-  panel
-  flush
->
+<Section title="Players" {meta} metaTestid="night-summary" testid="night-view" panel frame="framed" flush>
   <div>
     <StatTable columns={PLAYER_COLUMNS} nameHead="Player" bar={false} label="Players" testid="night-players">
-      {#each night.players as player (player.guid)}
+      {#each players as player (player.guid)}
         {@const display = unitLabel(player.name)}
         {@const cell = specCell(player, unitClasses)}
         <StatRow
@@ -117,7 +109,7 @@
           {#snippet icon()}<ClassIcon className={cell.class} size={28} />{/snippet}
           {#snippet name()}<button
               type="button"
-              class="font-bold hover:underline"
+              class="text-left font-bold hover:underline"
               style:color={classColorVar(cell.class)}
               title={display.title}
               data-testid="night-player-name"
@@ -131,8 +123,8 @@
 </Section>
 
 {#if !trash}
-  <Section title="Bosses" testid="night-bosses" panel>
-    <StatTable columns={BOSS_COLUMNS} nameHead="Boss" bar={false} open label="Bosses">
+  <Section title="Bosses" testid="night-bosses" panel flush>
+    <StatTable columns={BOSS_COLUMNS} nameHead="Boss" bar={false} icons={false} label="Bosses">
       {#each night.bosses as boss (boss.name)}
         <StatRow
           bar={false}

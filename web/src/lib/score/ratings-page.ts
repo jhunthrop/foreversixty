@@ -35,10 +35,6 @@ export const WEIGHTS: readonly RoleWeights[] = [
 
 export const ratingsPageCopy = {
   visibility: 'A rating comes only from a public report. There is no leaderboard of ratings.',
-  oneNumberFirst: [
-    'Topping the meter while dying to avoidable damage with no flask on does not rate well.',
-    'A component that cannot be scored for a fight is left out and named, and its weight goes to the components that did score. That happens when an encounter has no mechanics table yet, the simulator does not model the spec yet, or too few logs exist to compare against.',
-  ],
   components: [
     {
       part: 'Output',
@@ -65,12 +61,24 @@ export const ratingsPageCopy = {
       body: 'The share of the fight you spent casting or swinging rather than idle, leaving out the stretches the fight itself gives you nothing to do, such as a scripted phase change.',
     },
   ],
-  roles: "A healer's Output is effective healing only; overheal does not count.",
-  adjustable:
-    "A guild's officers can change the weights and the cap for their own guild. This page shows the defaults.",
-  rankedOrAbsolute: [
-    'With at least 20 kills of the same encounter, difficulty, spec, role and kill speed logged, a component is ranked against players of your spec in those logs: "better than 71% of Fury Warriors on this fight." With fewer, the score is measured against the encounter\'s own numbers and says so.',
-    "A new boss, or a kill speed nobody has matched yet, starts on that absolute standard. It moves to ranked once its speed band (fast, typical or slow, judged against the encounter's own kill times) reaches 20 comparable logs.",
-    "A wipe scores Survival and Mechanics, since a wipe is where avoidable deaths and missed interrupts matter most. Output, Utility, Preparation and Activity are left out: a wipe's damage window is cut short.",
+  adjustable: "A guild's officers can change the weights and the cap for their own guild. These are the defaults.",
+  /** How a fight is judged: one Row each, the rule's name over the rule. */
+  rules: [
+    {
+      title: 'Ranked',
+      body: 'With at least 20 kills of the same encounter, difficulty, spec, role and kill speed logged, a component is ranked against players of your spec in those logs: "better than 71% of Fury Warriors on this fight."',
+    },
+    {
+      title: 'Absolute',
+      body: "With fewer, a component is measured against the encounter's own numbers. A new boss or an unmatched kill speed starts here and moves to ranked at 20 comparable logs (fast, typical or slow, against the encounter's own kill times).",
+    },
+    {
+      title: 'Wipes',
+      body: "A wipe scores Survival and Mechanics only. Output, Utility, Preparation and Activity are left out: a wipe's damage window is cut short.",
+    },
+    {
+      title: 'A part left out',
+      body: 'A component that cannot be scored for a fight is named and its weight goes to the ones that did: an encounter with no mechanics table yet, a spec the simulator does not model yet, too few logs to compare.',
+    },
   ],
 } as const;

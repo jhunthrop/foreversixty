@@ -1,0 +1,48 @@
+/* web/src/components/ui/chips.css
+   ui/Chips: the round 5 filter chips (design/mocks/directions/prims.py `.chips`): 13 px 600 labels on
+   a hairline edge at the field radius, a lit chip white on the cyan tint with the cyan edge. 32 px
+   from 768 on a pointer, 44 px on touch. */
+.ui-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ui-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 11px;
+  font: 600 13px / 16px var(--font-body);
+  color: var(--color-text);
+  white-space: nowrap;
+  background: transparent;
+  border: 1px solid var(--color-line-warm);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+.ui-chip[aria-pressed='true'] {
+  color: var(--color-strong);
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+.ui-chip:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ui-chip:not([aria-pressed='true']):hover {
+    color: var(--color-gold);
+  }
+}
+@media (pointer: coarse), (hover: none) {
+  .ui-chip {
+    min-height: 44px;
+  }
+}
+.ui-chip-swatch {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}

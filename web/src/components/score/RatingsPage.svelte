@@ -1,12 +1,13 @@
 <!-- web/src/components/score/RatingsPage.svelte -->
 <!-- /ratings (logs spec 2026-11-07 section 8, decision T1), rendered once at build time with no
      client script: the PageHeader with the sample Forever Score as its answer (in its tier's
-     colour) and the two-anchor jump row, then a split Page of panels (round 5, the logs lane's
-     panel form). Main: the Forever Score (the page's lead panel: the five parts as a table), the
-     Performance Rating (framed: three Figures), and the reference panels (each component, weights
-     by role, ranked or absolute, the cap). Rail: the tiers in the game's item quality colours on
-     their panel, the sample's tinted in its own colour (MUST 6), and how logs get here. Words and numbers: lib/score/copy.ts, lib/rating/copy.ts and
-     lib/score/ratings-page.ts. -->
+     colour) and the two-anchor jump row, then a split Page of panels (round 5,
+     design/mocks/directions/report_tail.py b1-ratings). Main: the Forever Score (the lead panel:
+     the five parts as a table), the Performance Rating (framed: three Figures), the six components
+     with their weights by role and what each measures, and how a fight is judged (ranked,
+     absolute, wipes, a part left out, the cap) as Rows. Rail: the tiers in the game's item quality
+     colours, the sample's tinted in its own colour (MUST 6), and how logs get here. Words and
+     numbers: lib/score/copy.ts, lib/rating/copy.ts and lib/score/ratings-page.ts. -->
 <script lang="ts">
   import { ratingCopy } from '../../lib/rating/copy';
   import { scoreCopy } from '../../lib/score/copy';
@@ -56,23 +57,6 @@
   const count = (n: number): string => n.toLocaleString('en-US');
 </script>
 
-{#snippet prose(
-  paragraphs: readonly string[],
-  muted: readonly boolean[] = [],
-  testids: readonly string[] = [],
-)}
-  <div class="flex flex-col gap-3 [&:not(:first-child)]:pt-3">
-    {#each paragraphs as paragraph, index (index)}
-      <p
-        class={['max-w-[72ch] text-[15px] leading-6', muted[index] && 'text-muted']}
-        data-testid={testids[index]}
-      >
-        {paragraph}
-      </p>
-    {/each}
-  </div>
-{/snippet}
-
 <Page layout="split" panels testid="ratings-page">
   {#snippet header()}
     <PageHeader title={scoreCopy.explainerPageTitle}>
@@ -115,6 +99,7 @@
       <StatTable
         nameHead="Part"
         barHead="Of its top"
+        icons={false}
         columns={[
           { id: 'points', label: 'Points' },
           { id: 'top', label: 'Top' },
@@ -139,7 +124,7 @@
         {/each}
       </StatTable>
     </div>
-    {@render prose([scoreCopy.explainerLaunch], [true])}
+    <p class="text-small text-muted pt-3" data-testid="ratings-launch">{scoreCopy.explainerLaunch}</p>
   </Section>
 
   <Section
@@ -161,24 +146,23 @@
         <span class="text-strong text-[15px] leading-5 font-semibold">{SAMPLE_WEAKEST}</span>
       </div>
     </div>
-    {@render prose(
-      [ratingsPageCopy.visibility, ...ratingsPageCopy.oneNumberFirst],
-      [true],
-      ['ratings-visibility'],
-    )}
+    <p class="text-small text-muted pt-4" data-testid="ratings-visibility">
+      {ratingsPageCopy.visibility}
+      {ratingCopy.cappedRule}
+    </p>
   </Section>
 
-  <Section title="What each component measures" testid="ratings-components" boxed>
-    {#each ratingsPageCopy.components as item (item.part)}
-      <Row title={item.part} sub={item.body} open />
-    {/each}
-  </Section>
-
-  <Section title="Weights, by role" boxed>
+  <Section
+    title="Weights, by role"
+    meta={ratingsPageCopy.adjustable}
+    testid="ratings-components"
+    panel
+    flush
+  >
     <StatTable
       nameHead="Component"
       bar={false}
-      open
+      icons={false}
       columns={[
         { id: 'dps', label: 'DPS' },
         { id: 'healer', label: 'Healer' },
@@ -188,32 +172,23 @@
       testid="ratings-weights"
     >
       {#each WEIGHTS as row (row.component)}
+        {@const measures = ratingsPageCopy.components.find((item) => item.part === row.component)}
         <StatRow
           bar={false}
           figures={[{ value: String(row.dps) }, { value: String(row.healer) }, { value: String(row.tank) }]}
           phone={`${row.dps} / ${row.healer} / ${row.tank}`}
         >
           {#snippet name()}<b>{row.component}</b>{/snippet}
+          {#snippet sub()}{measures?.body ?? ''}{/snippet}
         </StatRow>
       {/each}
     </StatTable>
-    {@render prose(
-      [ratingsPageCopy.roles, ratingsPageCopy.adjustable],
-      [true, true],
-      ['ratings-roles', 'ratings-adjustable'],
-    )}
   </Section>
 
-  <Section title="Ranked against your spec, or absolute" testid="ratings-basis">
-    {@render prose(
-      ratingsPageCopy.rankedOrAbsolute,
-      [],
-      ['ratings-basis-rule', 'ratings-small-samples', 'ratings-wipes'],
-    )}
-  </Section>
-
-  <Section title="The cap">
-    {@render prose([ratingCopy.cappedRule])}
+  <Section title="How a fight is judged" testid="ratings-basis" panel>
+    {#each ratingsPageCopy.rules as rule (rule.title)}
+      <Row title={rule.title} sub={rule.body} open />
+    {/each}
   </Section>
 
   {#snippet rail()}

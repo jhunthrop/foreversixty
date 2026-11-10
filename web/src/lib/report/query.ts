@@ -88,6 +88,25 @@ export interface QueryEngine {
  * The columns of a fight's events.parquet, in the engine's order (read from the sample report's
  * pull 6), for the Queries rail: what a query can select.
  */
+/** The columns a query reaches for first: the Queries rail lists these, every column behind `All`. */
+export const COMMON_EVENT_COLUMNS: readonly string[] = [
+  'time_unix_nano',
+  'kind',
+  'event',
+  'source_name',
+  'dest_name',
+  'spell_id',
+  'spell_name',
+  'amount',
+  'overkill',
+  'overheal',
+  'absorbed',
+  'critical',
+  'miss_type',
+  'aura_type',
+  'power_type',
+];
+
 export const EVENT_COLUMNS: readonly string[] = [
   'time_unix_nano',
   'line',
@@ -174,8 +193,8 @@ export interface QueryTemplate {
 export const QUERY_TEMPLATES: readonly QueryTemplate[] = [
   {
     id: 'damage-by-ability',
-    label: 'Damage by ability, exactly, in this window',
-    sql: `SELECT source_name, spell_name, count(*) AS hits, sum(amount) AS total
+    label: 'Damage by ability',
+    sql: `SELECT source_name, spell_name, count(*) AS hits, sum(amount - greatest(coalesce(overkill, 0), 0)) AS total
 FROM ${EVENTS_TABLE}
 WHERE kind = 'damage' AND ${FIGHT_MS} BETWEEN :start AND :end
 GROUP BY 1, 2
@@ -183,7 +202,7 @@ ORDER BY total DESC`,
   },
   {
     id: 'pet-damage',
-    label: 'Pet damage, by pet',
+    label: 'Pet damage',
     sql: `SELECT source_name, source_guid, sum(amount) AS total, count(*) AS hits
 FROM ${EVENTS_TABLE}
 WHERE kind = 'damage' AND (source_flags & 12288) <> 0
@@ -193,7 +212,7 @@ ORDER BY total DESC`,
   },
   {
     id: 'misses',
-    label: 'Every miss, by type',
+    label: 'Every miss',
     sql: `SELECT dest_name, miss_type, count(*) AS n
 FROM ${EVENTS_TABLE}
 WHERE miss_type <> '' AND ${FIGHT_MS} BETWEEN :start AND :end
@@ -202,7 +221,7 @@ ORDER BY n DESC`,
   },
   {
     id: 'overheal',
-    label: 'Healing and overhealing by spell',
+    label: 'Healing and overhealing',
     sql: `SELECT source_name, spell_name, sum(amount) AS raw_healing, sum(overheal) AS overheal, sum(amount) - sum(overheal) AS effective_healing
 FROM ${EVENTS_TABLE}
 WHERE kind = 'heal' AND ${FIGHT_MS} BETWEEN :start AND :end
@@ -211,7 +230,7 @@ ORDER BY raw_healing DESC`,
   },
   {
     id: 'healing-by-target',
-    label: 'Healing by target, with overhealing',
+    label: 'Healing by target',
     sql: `SELECT source_name, dest_name AS target, spell_name, sum(amount) - sum(overheal) AS effective_healing, sum(overheal) AS overheal,
   round(100.0 * sum(overheal) / greatest(sum(amount), 1), 1) AS overheal_pct
 FROM ${EVENTS_TABLE}
@@ -221,7 +240,7 @@ ORDER BY effective_healing DESC`,
   },
   {
     id: 'event-counts',
-    label: 'Which events this fight contains',
+    label: 'Event counts',
     sql: `SELECT event, count(*) AS n
 FROM ${EVENTS_TABLE}
 GROUP BY 1

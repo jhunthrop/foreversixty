@@ -1,7 +1,8 @@
 <!-- web/src/components/report/ThisPull.svelte -->
 <!-- The rail's This pull panel (directions b1): only what the band does not say (when it started,
      the scope's count, its deaths; a boss pull's phases), then the pull's two actions, Sim this
-     fight and Copy link (a link to exactly this view). -->
+     fight and Copy link (a link to exactly this view). Over the whole night it is `The night`
+     (round 5 b1-report-night): the pulls, kills, wipes, time in combat and deaths, and Copy link. -->
 <script lang="ts">
   import { reportCopy } from '../../lib/report/copy';
   import { simCopy } from '../../lib/sim/copy';
@@ -14,11 +15,14 @@
     facts,
     simHref,
     note = '',
+    title = 'This pull',
   }: {
     facts: readonly Fact[];
     simHref: string | null;
     /** One muted line under the facts (no rating can exist for this pull). */
     note?: string;
+    /** The panel's title: `The night` over a combined view. */
+    title?: string;
   } = $props();
 
   const COPIED_FOR_MS = 2000;
@@ -35,7 +39,7 @@
   }
 </script>
 
-<Section title="This pull" panel testid="report-this-pull">
+<Section {title} panel testid="report-this-pull">
   <Facts items={facts} />
   {#if note !== ''}<p class="text-small text-muted pt-3" data-testid="report-this-pull-note">{note}</p>{/if}
   <div class="flex flex-wrap gap-2 pt-4">

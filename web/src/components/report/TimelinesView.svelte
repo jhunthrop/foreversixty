@@ -5,12 +5,13 @@
 
      Every source drawn here -- cast sequence, aura segments, deaths -- is exact under a
      window (window.ts's scopeSummary), so nothing on this lane needs an approximate mark.
-     Drawn to logs spec 2026-11-07 section 6.2 (`web-report-timeline`): Section `Timeline` holding
-     the one Plate: the legend, a 160 px label column (crest and name in the class colour, then
-     the boss), one lane per actor on one time axis (casts gold, buffs green, debuffs red, a
-     death red, a taunt gold full height), the axis under. Below 768 the labels are 96 px and the
-     plot scrolls sideways inside its frame while the labels stay put. The summary carries no
-     per-player hit stream, so the lanes draw no hit marks (the mock's hits read events.parquet). -->
+     Drawn to round 5 (design/mocks/directions/report.py, b1-report-timeline): the panel
+     `Timeline` with the window as its meta, the Show chips (each its mark's swatch, so the row is
+     the legend), a 180 px label column (crest and name in the class colour, the boss first), one
+     lane per actor on one time axis (casts gold, buffs green, debuffs red, a death red, a taunt
+     gold full height), the axis under. Each lane stacks only its own auras, one 3 px band each.
+     Below 768 the labels are 124 px and the plot scrolls sideways while the labels stay put. The
+     summary carries no per-player hit stream, so the lanes draw no hit marks. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar, formatDuration, tauntKey } from '../../lib/report/format';
@@ -22,6 +23,7 @@
   import { CHART_INK, inkCss } from '../../lib/chart/theme';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
+  import Chips from '../ui/Chips.svelte';
   import Section from '../ui/Section.svelte';
 
   let {
@@ -38,7 +40,7 @@
     summary: Summary;
     window: TimeWindow;
     classOf: Map<string, string>;
-    /** Every aura name in the whole fight, in order, so a band keeps its row when the window moves. */
+    /** Every aura name in the whole fight, in order, so a lane's bands keep their order when the window moves. */
     auraOrder?: string[];
     /** The encounter's name, which is the boss unit's name; '' on trash. */
     bossName?: string;
@@ -67,6 +69,13 @@
   const axis = $derived(
     timeTicks(current.startMs / 1000, current.endMs / 1000, axisWidth).map((seconds) => seconds * 1000),
   );
+
+  /** Which marks the lanes draw (the Show chips); every kind on by default. */
+  type MarkKind = 'cast' | 'buff' | 'debuff' | 'death' | 'taunt';
+  let shown = $state<Record<MarkKind, boolean>>({ cast: true, buff: true, debuff: true, death: true, taunt: true });
+  function toggleMark(id: string): void {
+    if (id in shown) shown = { ...shown, [id]: !shown[id as MarkKind] };
+  }
 
   /** The cast last tapped or hovered, read out in the legend for screens with no hover. */
   let picked = $state<{ at: number; name: string } | null>(null);
@@ -222,22 +231,29 @@
   }
   const BAND_PX = 3;
   const CASTS_PX = 12;
-  /** A lane's row: its plot's height plus ROW_PAD_PX, never under 34 px. */
-  const ROW_MIN_PX = 34;
+  /** A lane's row: its plot's height plus ROW_PAD_PX, never under 30 px. */
+  const ROW_MIN_PX = 30;
   /** 8 px under the cast line, the rest above the bands: a clear gap between one lane and the next. */
-  const ROW_PAD_PX = 28;
+  const ROW_PAD_PX = 14;
   const ENEMY_LANE_PX = 18;
   /** A tick this close to the right edge ends there instead of centring past it. */
   const END_LABEL_PCT = 97;
-  /** Every aura on its own band, in name order, so each reads as one line and can be pointed at. */
+  /**
+   * Every aura the lane holds on its own band, so each reads as one line and can be pointed at.
+   * Only the lane's own auras take a band (a lane never reserves rows for another's), ordered by
+   * the fight's aura order, so an aura keeps its place when the window moves.
+   */
   function bandAuras(tracks: AuraTrack[], order: readonly string[] = auraOrder): AuraBand[] {
-    // By name, not by uptime: an aura keeps its row when the window moves.
-    const ordered = [...tracks].sort((a, b) => a.name.localeCompare(b.name));
-    // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const bands = new Map<string, number>(order.map((name, index) => [name, index]));
-    return ordered.flatMap((track) => {
-      const band = bands.get(track.name) ?? bands.size;
-      bands.set(track.name, band);
+    const visible = tracks.filter((track) => (track.type === 'DEBUFF' ? shown.debuff : shown.buff));
+    const rank = (name: string): number => {
+      const index = order.indexOf(name);
+      return index === -1 ? order.length : index;
+    };
+    const names = [...new Set(visible.map((track) => track.name))].sort(
+      (a, b) => rank(a) - rank(b) || a.localeCompare(b),
+    );
+    return visible.flatMap((track) => {
+      const band = names.indexOf(track.name);
       const debuff = track.type === 'DEBUFF';
       return track.segments.map((segment) => ({ ...segment, name: track.name, band, debuff }));
     });
@@ -286,37 +302,37 @@
   const laneRow = $derived(Math.max(18, ...lanes.map((lane) => lane.height)));
   /** One pitch for every lane, enemy and player, so the rows run evenly down the plot. */
   const pitch = $derived(Math.max(laneRow, enemyRow));
-  const LEGEND = [
-    { label: 'Cast', swatch: 'bg-gold h-[12px] w-[2px]' },
-    { label: 'Buff up', swatch: 'bg-kill/60 h-[5px] w-[14px] rounded-[2px]' },
-    { label: 'Debuff up', swatch: 'bg-wipe/60 h-[5px] w-[14px] rounded-[2px]' },
-    { label: 'Death', swatch: 'bg-death h-[14px] w-[3px]' },
-  ] as const;
+  /** The Show chips, each with its mark's colour: the row is the legend. Taunts only when someone taunted. */
+  const MARKS: readonly { id: MarkKind; label: string; swatch: string }[] = [
+    { id: 'cast', label: 'Casts', swatch: 'var(--color-gold)' },
+    { id: 'buff', label: 'Buffs', swatch: 'color-mix(in srgb, var(--color-kill) 60%, transparent)' },
+    { id: 'debuff', label: 'Debuffs', swatch: 'color-mix(in srgb, var(--color-wipe) 60%, transparent)' },
+    { id: 'death', label: 'Deaths', swatch: 'var(--color-death)' },
+    { id: 'taunt', label: 'Taunts', swatch: 'var(--color-gold)' },
+  ];
+  const chips = $derived(
+    MARKS.filter((mark) => mark.id !== 'taunt' || windowedTaunts.length > 0).map((mark) => ({
+      ...mark,
+      on: shown[mark.id],
+    })),
+  );
 </script>
 
 {#snippet crossing()}{#if syncKey !== ''}<SyncedCrosshair {syncKey} window={current} />{/if}{/snippet}
 
-<Section title="Timeline" testid="timelines-section" panel flush>
+<Section
+  title="Timeline"
+  meta={`${clockLabel(current.startMs)} to ${clockLabel(current.endMs)}`}
+  testid="timelines-section"
+  panel
+  flush
+>
   <div>
     {#if lanes.length === 0}
       <p class="text-muted px-4 py-4 text-[14px]" data-testid="table-empty">Nothing in this window.</p>
     {:else}
-      <div class="flex flex-col gap-2 px-4 pt-3 pb-3" data-testid="timelines">
-        <ul class="text-muted flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] leading-5">
-          <li class="text-text tabular-nums">
-            {clockLabel(current.startMs)} to {clockLabel(current.endMs)}
-          </li>
-          {#each LEGEND as item (item.label)}
-            <li class="flex items-center gap-2">
-              <span class={['inline-block', item.swatch]} aria-hidden="true"></span>{item.label}
-            </li>
-          {/each}
-          {#if windowedTaunts.length > 0}
-            <li class="flex items-center gap-2">
-              <span class="bg-gold inline-block h-[14px] w-[3px]" aria-hidden="true"></span>Taunt
-            </li>
-          {/if}
-        </ul>
+      <div class="flex flex-col gap-2 px-4 pb-3 md:px-5" data-testid="timelines">
+        <Chips {chips} label="Show" onToggle={toggleMark} testid="timeline-show" />
         <!-- The readout on one line of fixed height: eight aura names must never wrap and push
              the lanes out from under the pointer that is reading them. -->
         <p
@@ -396,14 +412,14 @@
                           title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
                         ></span>
                       {/each}
-                      {#each lane.casts as cast, i (`${cast.at}-${i}`)}
+                      {#each shown.cast ? lane.casts : [] as cast, i (`${cast.at}-${i}`)}
                         <span
                           class="bg-gold absolute bottom-0 h-[10px] w-[2px]"
                           style:left="{pct(cast.at)}%"
                           title={`${cast.name} · ${formatDuration(cast.at)}`}
                         ></span>
                       {/each}
-                      {#each lane.taunts as taunt (tauntKey(taunt))}
+                      {#each shown.taunt ? lane.taunts : [] as taunt (tauntKey(taunt))}
                         <span
                           class="bg-gold absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
                           style:left="{pct(taunt.at_ms)}%"
@@ -446,21 +462,21 @@
                           title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
                         ></span>
                       {/each}
-                      {#each lane.casts as cast, i (`${cast.at}-${i}`)}
+                      {#each shown.cast ? lane.casts : [] as cast, i (`${cast.at}-${i}`)}
                         <span
                           class="bg-gold absolute bottom-0 h-[10px] w-[2px]"
                           style:left="{pct(cast.at)}%"
                           title={`${cast.name} · ${formatDuration(cast.at)}`}
                         ></span>
                       {/each}
-                      {#each lane.deaths as at, i (`${at}-${i}`)}
+                      {#each shown.death ? lane.deaths : [] as at, i (`${at}-${i}`)}
                         <span
                           class="bg-death absolute top-0 h-full w-[3px]"
                           style:left="{pct(at)}%"
                           title={`died at ${formatDuration(at)}`}
                         ></span>
                       {/each}
-                      {#each lane.taunts as taunt (tauntKey(taunt))}
+                      {#each shown.taunt ? lane.taunts : [] as taunt (tauntKey(taunt))}
                         <span
                           class="bg-gold absolute -top-[4px] h-[calc(100%+8px)] w-[3px]"
                           style:left="{pct(taunt.at_ms)}%"
@@ -496,23 +512,6 @@
             </div>
           </div>
         </div>
-        {#if auraOrder.length > 0}
-          <!-- The bands are 3 px each, too thin to label in place: this names each row's aura in
-               the order the rows run from the top of every lane. -->
-          <details class="text-[13px]" data-testid="timeline-aura-legend">
-            <summary class="text-muted min-h-11 cursor-pointer leading-5 md:min-h-0"
-              >Aura rows, top to bottom ({auraOrder.length})</summary
-            >
-            <ol class="text-text mt-1 flex flex-wrap gap-x-4 gap-y-1">
-              {#each auraOrder as name, index (name)}
-                <li class="flex items-center gap-1">
-                  <span class="text-muted text-[12px] tabular-nums">{index + 1}</span>
-                  {name}
-                </li>
-              {/each}
-            </ol>
-          </details>
-        {/if}
       </div>
     {/if}
   </div>
