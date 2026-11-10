@@ -135,48 +135,53 @@
     {#if named('out').length > 0}
       · Out {@render people(named('out'))}{/if}
   </p>
-  <StatTable
-    columns={[...columns]}
-    nameHead="Role"
-    bar={false}
-    dense
-    label="Seats against the target"
-    testid="guild-week-comp"
-  >
-    {#each rows as row (row.group)}
-      <StatRow bar={false} figures={figures(row)} testid={`guild-week-comp-${row.group}`}>
-        {#snippet name()}<b>{GROUP_WORD[row.group]}</b>{/snippet}
-        {#snippet sub()}
-          {#if row.fillers.length > 0}
-            <span class="fills">
-              {#each row.fillers.slice(0, FILLERS_SHOWN) as f (f.key)}
-                {#if f.kind === 'ping' && pingedAt !== null}
-                  <span class="fill done"><b style:color={classColorVar(f.cls)}>{f.name}</b>{pingedText}</span
-                  >
-                {:else}
-                  <button
-                    type="button"
-                    class="fill"
-                    disabled={f.kind === 'ping' ? !canPing : moving !== null}
-                    onclick={() => void (f.kind === 'ping' ? ping() : moveIn(f))}
-                    data-testid={`guild-fill-${f.name.toLowerCase()}`}
-                    ><b style:color={classColorVar(f.cls)}>{f.name}</b><span class="act"
-                      >{f.kind === 'ping' ? 'Ping' : 'Move to In'}</span
-                    ></button
-                  >
-                {/if}
-              {/each}
-              {#if row.fillers.length > FILLERS_SHOWN}<span>+{row.fillers.length - FILLERS_SHOWN} more</span
-                >{/if}
-            </span>
-          {/if}
-        {/snippet}
-      </StatRow>
-    {/each}
-  </StatTable>
+  <div class="no-gutter">
+    <StatTable
+      columns={[...columns]}
+      nameHead="Role"
+      bar={false}
+      dense
+      label="Seats against the target"
+      testid="guild-week-comp"
+    >
+      {#each rows as row (row.group)}
+        <StatRow bar={false} figures={figures(row)} testid={`guild-week-comp-${row.group}`}>
+          {#snippet name()}<b>{GROUP_WORD[row.group]}</b>{/snippet}
+          {#snippet sub()}
+            {#if row.fillers.length > 0}
+              <span class="fills">
+                {#each row.fillers.slice(0, FILLERS_SHOWN) as f (f.key)}
+                  {#if f.kind === 'ping' && pingedAt !== null}
+                    <span class="fill done"
+                      ><b style:color={classColorVar(f.cls)}>{f.name}</b>{pingedText}</span
+                    >
+                  {:else}
+                    <button
+                      type="button"
+                      class="fill"
+                      disabled={f.kind === 'ping' ? !canPing : moving !== null}
+                      onclick={() => void (f.kind === 'ping' ? ping() : moveIn(f))}
+                      data-testid={`guild-fill-${f.name.toLowerCase()}`}
+                      ><b style:color={classColorVar(f.cls)}>{f.name}</b><span class="act"
+                        >{f.kind === 'ping' ? 'Ping' : 'Move to In'}</span
+                      ></button
+                    >
+                  {/if}
+                {/each}
+                {#if row.fillers.length > FILLERS_SHOWN}<span>+{row.fillers.length - FILLERS_SHOWN} more</span
+                  >{/if}
+              </span>
+            {/if}
+          {/snippet}
+        </StatRow>
+      {/each}
+    </StatTable>
+  </div>
   {#if stillShort.length > 0}
-    <p class="text-small text-wipe px-5 pt-2" data-testid="guild-week-still-short">
-      {stillShort.map((r) => `${GROUP_WORD[r.group]} ${r.stillShort}`).join(', ')} short if all answer
+    <p class="text-muted px-5 pt-2 text-[14px]" data-testid="guild-week-still-short">
+      If all answer: <b class="text-wipe"
+        >{stillShort.map((r) => `${GROUP_WORD[r.group]} ${r.stillShort} short`).join(', ')}</b
+      >
     </p>
   {/if}
   <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 pt-3 pb-4">
@@ -193,6 +198,9 @@
 </Section>
 
 <style>
+  .no-gutter :global(.ui-st) {
+    --st-icon: 0px;
+  }
   .fills {
     display: flex;
     flex-wrap: wrap;

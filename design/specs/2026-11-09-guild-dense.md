@@ -82,3 +82,9 @@ Only the shared ones: PageHeader, Plate, Section, Row/Rows, Figures/Figure, Stat
 6. Drop method and time (`raid_drops.loot_method`, `dropped_at`).
 7. Flask, food and potions split (one consumables state today).
 8. A guild activity feed (`activity_events.guild_id` has no guild read).
+9. A fire resistance target per raid (the raid only says it asks for fire resistance; the matrix shows the tanks' totals with no pass mark).
+10. Per-voter split and vote times on past decisions (`loot_votes.voter_id`, `voted_at`).
+11. Per-raider deaths and their causes on the officer's last-raid movers (`rating_scores.deaths`; the report's `deaths[]` is per raider but not per cause outside the pull view).
+12. The in-game rank number (`guild_characters.rank_index`).
+
+Landed in this lane (API): roster rows carry `group` (raidspec.Group); report parses and roster `best_parse` carry `percentile` from `percentile_digests` (the roster's was always null before).

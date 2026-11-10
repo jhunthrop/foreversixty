@@ -413,7 +413,10 @@
    *  empty block never pushes the tab's content down (the Overview carries the raid and the needs). */
   const roleLineShown = $derived(
     home !== null &&
-      ((myLevelingLine === null && home.standing != null && standingSentence(home.standing) !== '') ||
+      ((activeTab !== 'overview' &&
+        myLevelingLine === null &&
+        home.standing != null &&
+        standingSentence(home.standing) !== '') ||
         myLevelingLine !== null ||
         (activeTab === 'roster' && showsBandLine(myGuildMembership?.verified === true, role)) ||
         (activeTab !== 'overview' && role === 'member' && needs !== null) ||
@@ -902,7 +905,7 @@
                    separate from the claim/settings row below it (unchanged v1 mechanism),
                    rather than the two fighting over the same slot. -->
             <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
-              {#if myLevelingLine === null && home.standing !== null && home.standing !== undefined}
+              {#if activeTab !== 'overview' && myLevelingLine === null && home.standing !== null && home.standing !== undefined}
                 {@const sentence = standingSentence(home.standing)}
                 <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
                        gloss read as a second spec beside the header chip's. -->

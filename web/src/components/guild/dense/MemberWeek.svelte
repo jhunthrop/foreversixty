@@ -68,6 +68,16 @@
   });
 
   const keys = $derived(new Set(myRow === null ? [] : [myRow.character_key]));
+  /** The viewer's place by item level among the roster's raiders of their class and spec. */
+  const specRank = $derived.by(() => {
+    if (myRow?.item_level == null) return null;
+    const peers = roster.filter(
+      (r) => r.class === myRow.class && r.spec === myRow.spec && r.item_level != null,
+    );
+    if (peers.length < 2) return null;
+    const place = 1 + peers.filter((r) => (r.item_level ?? 0) > (myRow.item_level ?? 0)).length;
+    return `${place} of ${peers.length} ${myRow.spec_name ?? myRow.spec ?? ''}s`.trim();
+  });
   const nights = $derived(views.map((v) => myNight(v, keys)).filter((n): n is MyNight => n !== null));
   const last = $derived(nights[0] ?? null);
   const before = $derived(nights[1] ?? null);
@@ -106,7 +116,7 @@
     {#if you}<div data-testid="guild-next-raid-you">{@render you()}</div>{/if}
     <div class="flex flex-wrap gap-x-10 gap-y-4 pt-4" data-testid="guild-your-figures">
       {#if myRow?.item_level != null}
-        <Figure value={String(myRow.item_level)} label="Item level" />
+        <Figure value={String(myRow.item_level)} label="Item level" caption={specRank ?? undefined} />
       {/if}
       {#if last?.rating != null}
         <Figure

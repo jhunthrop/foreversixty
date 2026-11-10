@@ -21,7 +21,9 @@
 
   function figures(row: CompGapRow) {
     return [
-      row.gap > 0 ? { value: String(row.gap), tone: 'wipe' as const } : { value: '✓', tone: 'kill' as const },
+      row.gap > 0
+        ? { value: `${row.gap} short`, tone: 'wipe' as const }
+        : { value: '✓', tone: 'kill' as const },
       { value: String(row.need), muted: true },
       { value: String(row.in) },
       row.late > 0 ? { value: String(row.late) } : { value: '–', muted: true },
@@ -46,6 +48,7 @@
 <style>
   /* A rail is narrow: the role keeps its word, the figures share what is left. */
   .comp-gaps :global(.ui-st) {
+    --st-icon: 0px;
     --st-name: minmax(72px, 1fr);
     --st-fig: minmax(max-content, 40px);
   }

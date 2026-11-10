@@ -49,20 +49,27 @@
   const entries = $derived([...short, ...ready.map((row) => ({ row, shortfalls: [] as string[] }))]);
   /** The Synced column shows only when someone has not logged for SEEN_FROM_DAYS. */
   const anyStale = $derived(entries.some(({ row }) => daysOf(row) >= SEEN_FROM_DAYS));
+  /** The ready raiders fold behind their count while someone is short. */
+  let showReady = $state(false);
+  /** Fire resistance shows when a shown row is a signed tank. */
+  const fireShown = $derived(
+    fireKeys !== null &&
+      [...short.map((e) => e.row), ...(showReady || short.length === 0 ? ready : [])].some((r) =>
+        fireKeys.has(r.character_key),
+      ),
+  );
   const columns = $derived([
-    { id: 'state', label: 'State' },
+    { id: 'state', label: 'Ready' },
     { id: 'attuned', label: 'Attuned' },
     { id: 'ilvl', label: median === null ? 'Item level' : `Item level vs ${median}` },
     { id: 'bis', label: 'To BiS' },
     { id: 'enchants', label: 'Enchants' },
     { id: 'stock', label: 'Flask, food' },
     { id: 'talents', label: 'Talents' },
-    ...(fireKeys === null ? [] : [{ id: 'fire', label: 'Fire res' }]),
+    ...(fireShown ? [{ id: 'fire', label: 'Fire res' }] : []),
     ...(anyStale ? [{ id: 'synced', label: 'Synced' }] : []),
   ]);
   const blank = $derived(columns.map(() => ({ value: '' })));
-  /** The ready raiders fold behind their count while someone is short. */
-  let showReady = $state(false);
   const PASS: StatFigure = { value: '✓', muted: true };
   const UNKNOWN: StatFigure = { value: '–', muted: true };
 
@@ -94,7 +101,7 @@
       row.talent_points_read === false
         ? UNKNOWN
         : check(row.talent_points_unspent === 0, String(row.talent_points_unspent)),
-      ...(fireKeys === null
+      ...(!fireShown || fireKeys === null
         ? []
         : [
             fireKeys.has(row.character_key) && row.resistances != null

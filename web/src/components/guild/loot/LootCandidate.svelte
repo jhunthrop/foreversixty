@@ -79,13 +79,14 @@
     />
     {#if !closed && !confirming}
       <span class="ml-auto flex items-center gap-2">
-        {#if candidate.votes.yes < majority}<span
-            class="text-small text-muted"
-            data-testid="guild-loot-majority">{majority - candidate.votes.yes} more yes for a majority</span
-          >{/if}
+        <span class="text-small text-muted" data-testid="guild-loot-majority"
+          >{candidate.votes.yes >= majority
+            ? 'Majority'
+            : `${majority - candidate.votes.yes} more yes for a majority`}</span
+        >
         <Button
           size="sm"
-          tone={candidate.votes.yes >= majority ? 'primary' : 'secondary'}
+          tone={candidate.votes.yes >= majority ? 'primary' : 'ghost'}
           disabled={!canAct || busy}
           onclick={onAsk}
           testid="guild-loot-award">Award</Button
