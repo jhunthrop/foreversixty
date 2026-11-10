@@ -26,7 +26,7 @@ func joinByInviteAndSync(t *testing.T, h *harness, rankIndex string) int64 {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, h.owner, []Export{{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
-		Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:" + rankIndex}}); err != nil {
+		Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Forever:" + rankIndex}}); err != nil {
 		t.Fatal(err)
 	}
 	return guildID
@@ -162,8 +162,8 @@ func TestAcceptInviteLeavesExportsNamingAnotherGuild(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, h.owner, []Export{
-		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore", Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Elsewhere:5"},
-		{Name: "Brightwing", Region: "eu", Ruleset: "hardcore", Export: "FS1:1.60.1.69893:priest:human:0/0/0:|guild=Forever:5"},
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore", Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Elsewhere:5"},
+		{Name: "Brightwing", Region: "eu", Ruleset: "hardcore", Export: "FS1:1.60.1.70790:priest:human:0/0/0:|guild=Forever:5"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -190,7 +190,7 @@ func TestPutExportsWithoutAnInviteStillWaits(t *testing.T) {
 	h := newHarness(t)
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
-		Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:5"}}); err != nil {
+		Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Forever:5"}}); err != nil {
 		t.Fatal(err)
 	}
 	var verified bool

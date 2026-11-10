@@ -52,12 +52,32 @@ func ParseFS1Guild(export string) (name string, rankIndex int, ok bool) {
 // is missing its class field; putOneExport treats that exactly like an
 // export with no class at all — the column is left as it was.
 func ParseFS1Class(export string) (classSlug string, ok bool) {
+	return fs1HeadField(export, fs1ClassField)
+}
+
+// ParseFS1Build reads the client build out of an FS1 export's head
+// ("FS1:<data-build>:..."), the build of the ForeverSixtyData the addon
+// exported with, which follows the client it was made for. ok is false when
+// the export is not FS1 or its build field is empty.
+func ParseFS1Build(export string) (build string, ok bool) {
+	return fs1HeadField(export, fs1BuildField)
+}
+
+// The head's fields, "FS1:<data-build>:<class-slug>:<race-slug>:...".
+const (
+	fs1BuildField = 1
+	fs1ClassField = 2
+)
+
+// fs1HeadField is one non-empty field of an FS1 export's head, or false
+// when the export is not FS1 or the field is missing or empty.
+func fs1HeadField(export string, field int) (string, bool) {
 	head, _, _ := strings.Cut(export, "|")
 	parts := strings.Split(head, ":")
-	if len(parts) < 3 || parts[0] != "FS1" || parts[2] == "" {
+	if len(parts) <= field || parts[0] != "FS1" || parts[field] == "" {
 		return "", false
 	}
-	return parts[2], true
+	return parts[field], true
 }
 
 // isDigits reports whether s is one or more ASCII digits — the same grammar

@@ -170,7 +170,7 @@ func TestExportsRefuseNonsense(t *testing.T) {
 func TestPutExportsStampsSourceAddonAndCapturedAt(t *testing.T) {
 	h := newHarness(t)
 	if err := h.store.PutExports(context.Background(), h.owner,
-		[]Export{{Name: "Kiloz", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.69893:warrior:orc:0/0/0:"}}); err != nil {
+		[]Export{{Name: "Kiloz", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70790:warrior:orc:0/0/0:"}}); err != nil {
 		t.Fatal(err)
 	}
 	var source string
@@ -190,7 +190,7 @@ func TestPutExportsStampsSourceAddonAndCapturedAt(t *testing.T) {
 
 func TestPutExportsRecordsOneSyncPerExport(t *testing.T) {
 	h := newHarness(t)
-	export := Export{Name: "Kiloz", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.69893:warrior:orc:0/0/0:"}
+	export := Export{Name: "Kiloz", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70790:warrior:orc:0/0/0:"}
 	for range 2 {
 		if err := h.store.PutExports(context.Background(), h.owner, []Export{export}); err != nil {
 			t.Fatal(err)
@@ -209,7 +209,7 @@ func TestPutExportsRecordsOneSyncPerExport(t *testing.T) {
 
 func TestPutExportsRefusedClaimRecordsNoSync(t *testing.T) {
 	h := newHarness(t)
-	export := Export{Name: "Kiloz", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.69893:warrior:orc:0/0/0:"}
+	export := Export{Name: "Kiloz", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70790:warrior:orc:0/0/0:"}
 	stranger, err := (&auth.Store{Pool: h.pool}).UpsertEmailUser(context.Background(), "stranger-sync@example.com")
 	if err != nil {
 		t.Fatal(err)
@@ -539,7 +539,7 @@ func TestEveryRouteAnswers500WhenTheDatabaseIsGone(t *testing.T) {
 func TestPutExportsSyncsGuildMembershipFromTheGuildSection(t *testing.T) {
 	h := newHarness(t)
 	ctx := context.Background()
-	export := "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:1"
+	export := "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:1"
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore", Export: export},
 	}); err != nil {
@@ -574,9 +574,9 @@ func TestPutExportsTwoCharactersOfOneAccountInOneGuildBothAppear(t *testing.T) {
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:0"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Forever:0"},
 		{Name: "Baelalt", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=Forever:5"},
+			Export: "FS1:1.60.1.70790:mage:gnome:0/0/0:|guild=Forever:5"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -606,13 +606,13 @@ func TestPutExportsAnUnguildedAltLeavesTheMainsRowAlone(t *testing.T) {
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:0"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Forever:0"},
 	}); err != nil {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Baelalt", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|professions=mining"},
+			Export: "FS1:1.60.1.70790:mage:gnome:0/0/0:|professions=mining"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -631,15 +631,15 @@ func TestPutExportsATransferMovesOnlyThatCharacter(t *testing.T) {
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Guild1:0"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Guild1:0"},
 		{Name: "Baelalt", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=Guild1:0"},
+			Export: "FS1:1.60.1.70790:mage:gnome:0/0/0:|guild=Guild1:0"},
 	}); err != nil {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Guild2:0"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Guild2:0"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -666,13 +666,13 @@ func TestPutExportsAnUnguildedExportRemovesAPreviousGuildRow(t *testing.T) {
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:0"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Forever:0"},
 	}); err != nil {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|professions=mining"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|professions=mining"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -692,7 +692,7 @@ func TestPutExportsAutoConfirmsAPendingClaimWhenTheGuildMastersExportArrives(t *
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Officer", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:1"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Forever:1"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -714,7 +714,7 @@ func TestPutExportsAutoConfirmsAPendingClaimWhenTheGuildMastersExportArrives(t *
 	}
 	if err := h.store.PutExports(ctx, gm, []Export{
 		{Name: "TheGM", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:paladin:human:0/0/0:|guild=Forever:0"},
+			Export: "FS1:1.60.1.70790:paladin:human:0/0/0:|guild=Forever:0"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -730,7 +730,7 @@ func TestPutExportsResolvesGuildsCaseInsensitively(t *testing.T) {
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:0"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:0"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -741,7 +741,7 @@ func TestPutExportsResolvesGuildsCaseInsensitively(t *testing.T) {
 	}
 	if err := h.store.PutExports(ctx, alt, []Export{
 		{Name: "Caseshifter", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=IRON%20VANGUARD:5"},
+			Export: "FS1:1.60.1.70790:mage:gnome:0/0/0:|guild=IRON%20VANGUARD:5"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -766,7 +766,7 @@ func TestPutExportsRejectsAnOutOfRangeRankIndexAsANoOpNotAnAbort(t *testing.T) {
 	ctx := context.Background()
 	err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Overflow:99999"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Overflow:99999"},
 	})
 	if err != nil {
 		t.Fatalf("an out-of-range rank index must be a silent no-op, not a batch-aborting error: %v", err)
@@ -791,9 +791,9 @@ func TestPutExportsContinuesTheBatchPastOneBadCharacter(t *testing.T) {
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "BadOne", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Overflow:99999"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=Overflow:99999"},
 		{Name: "GoodTwo", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=RealGuild:0"},
+			Export: "FS1:1.60.1.70790:mage:gnome:0/0/0:|guild=RealGuild:0"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -811,7 +811,7 @@ func TestConcurrentPutExportsAndApproveDoNotLoseAWrite(t *testing.T) {
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "RaceMain", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=RaceGuild:5"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=RaceGuild:5"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -833,7 +833,7 @@ func TestConcurrentPutExportsAndApproveDoNotLoseAWrite(t *testing.T) {
 		defer wg.Done()
 		err1 = h.store.PutExports(ctx, h.owner, []Export{
 			{Name: "RaceMain", Region: "us", Ruleset: "hardcore",
-				Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=RaceGuild:5"},
+				Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=RaceGuild:5"},
 		})
 	}()
 	go func() {
@@ -885,13 +885,13 @@ func TestPutExportsOppositeTransfersDoNotDeadlock(t *testing.T) {
 
 	if err := h.store.PutExports(ctx, h.owner, []Export{
 		{Name: "DeadlockA", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockOne:0"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=DeadlockOne:0"},
 	}); err != nil {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, userB, []Export{
 		{Name: "DeadlockB", Region: "us", Ruleset: "hardcore",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockTwo:0"},
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=DeadlockTwo:0"},
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -903,14 +903,14 @@ func TestPutExportsOppositeTransfersDoNotDeadlock(t *testing.T) {
 		defer wg.Done()
 		errA = h.store.PutExports(ctx, h.owner, []Export{
 			{Name: "DeadlockA", Region: "us", Ruleset: "hardcore",
-				Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockTwo:0"},
+				Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=DeadlockTwo:0"},
 		})
 	}()
 	go func() {
 		defer wg.Done()
 		errB = h.store.PutExports(ctx, userB, []Export{
 			{Name: "DeadlockB", Region: "us", Ruleset: "hardcore",
-				Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockOne:0"},
+				Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:|guild=DeadlockOne:0"},
 		})
 	}()
 	wg.Wait()
@@ -929,7 +929,7 @@ func TestPutExportsAlsoWritesTheCharactersRow(t *testing.T) {
 	h := newHarness(t)
 	if err := h.store.PutExports(context.Background(), h.owner,
 		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us",
-			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:"}}); err != nil {
+			Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:"}}); err != nil {
 		t.Fatal(err)
 	}
 	var class, source string
@@ -962,7 +962,7 @@ func TestPutExportsNeverStealsACharactersRowEvenWithNoPriorAddonExportsRow(t *te
 		t.Fatal(err)
 	}
 	err = h.store.PutExports(ctx, h.owner,
-		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:"}})
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:"}})
 	if !errors.Is(err, ErrCharacterClaimed) {
 		t.Fatalf("err = %v, want ErrCharacterClaimed", err)
 	}
@@ -981,7 +981,7 @@ func TestPutExportsKeepsABattleNetImportedCharactersSource(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, h.owner,
-		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:"}}); err != nil {
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:1.60.1.70790:warrior:tauren:0/0/0:"}}); err != nil {
 		t.Fatal(err)
 	}
 	var source, class string
@@ -1002,7 +1002,7 @@ func TestPostMyExportsStoresAndReturnsTheWrittenCharacters(t *testing.T) {
 	h := newHarness(t)
 	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
 	res := h.do(http.MethodPost, "/v1/me/exports",
-		`{"exports":[{"name":"Baelgrim","ruleset":"hardcore","region":"us","export":"FS1:1.60.1.69893:priest:human:0/0/0:"}]}`)
+		`{"exports":[{"name":"Baelgrim","ruleset":"hardcore","region":"us","export":"FS1:1.60.1.70790:priest:human:0/0/0:"}]}`)
 	var out struct {
 		Characters []struct {
 			Key    string `json:"key"`
@@ -1080,15 +1080,15 @@ func TestPutExportsRemovesTheOneWordAliasOfATwoWordCharacter(t *testing.T) {
 	h := newHarness(t)
 	ctx := context.Background()
 	old := []Export{
-		{Name: "Booty", Ruleset: "Normal US", Region: "us", Export: "FS1:1.60.1.70450:paladin:undead:0/0/0:|who=Booty:Normal US"},
-		{Name: "Bow", Ruleset: "Classic Beta PvP", Region: "us", Export: "FS1:1.60.1.70450:hunter:troll:0/0/0:"},
+		{Name: "Booty", Ruleset: "Normal US", Region: "us", Export: "FS1:1.60.1.70790:paladin:undead:0/0/0:|who=Booty:Normal US"},
+		{Name: "Bow", Ruleset: "Classic Beta PvP", Region: "us", Export: "FS1:1.60.1.70790:hunter:troll:0/0/0:"},
 	}
 	if err := h.store.PutExports(ctx, h.owner, old); err != nil {
 		t.Fatal(err)
 	}
 	fresh := []Export{
-		{Name: "Booty Twerk", Ruleset: "Normal US", Region: "us", Export: "FS1:1.60.1.70450:paladin:undead:0/0/0:|level=24|who=Booty Twerk:Normal US"},
-		{Name: "Bow Jackzon", Ruleset: "Classic Beta PvP", Region: "us", Export: "FS1:1.60.1.70450:hunter:troll:0/0/0:|level=24"},
+		{Name: "Booty Twerk", Ruleset: "Normal US", Region: "us", Export: "FS1:1.60.1.70790:paladin:undead:0/0/0:|level=24|who=Booty Twerk:Normal US"},
+		{Name: "Bow Jackzon", Ruleset: "Classic Beta PvP", Region: "us", Export: "FS1:1.60.1.70790:hunter:troll:0/0/0:|level=24"},
 	}
 	if err := h.store.PutExports(ctx, h.owner, fresh); err != nil {
 		t.Fatal(err)
@@ -1109,11 +1109,11 @@ func TestPutExportsKeepsALegitimateOneWordCharacterOfAnotherClass(t *testing.T) 
 	h := newHarness(t)
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{
-		{Name: "Bow", Ruleset: "pvp", Region: "us", Export: "FS1:1.60.1.70450:warrior:orc:0/0/0:|level=40"}}); err != nil {
+		{Name: "Bow", Ruleset: "pvp", Region: "us", Export: "FS1:1.60.1.70790:warrior:orc:0/0/0:|level=40"}}); err != nil {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, h.owner, []Export{
-		{Name: "Bow Jackzon", Ruleset: "pvp", Region: "us", Export: "FS1:1.60.1.70450:hunter:troll:0/0/0:|level=24"}}); err != nil {
+		{Name: "Bow Jackzon", Ruleset: "pvp", Region: "us", Export: "FS1:1.60.1.70790:hunter:troll:0/0/0:|level=24"}}); err != nil {
 		t.Fatal(err)
 	}
 	if c, x := h.aliasCount("us/pvp/bow"); c != 1 || x != 1 {
@@ -1125,11 +1125,11 @@ func TestPutExportsABatchWithoutTheTwoWordTwinDeletesNothing(t *testing.T) {
 	h := newHarness(t)
 	ctx := context.Background()
 	if err := h.store.PutExports(ctx, h.owner, []Export{
-		{Name: "Booty", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70450:paladin:undead:0/0/0:"}}); err != nil {
+		{Name: "Booty", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70790:paladin:undead:0/0/0:"}}); err != nil {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, h.owner, []Export{
-		{Name: "Thrall", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70450:shaman:orc:0/0/0:|level=60"}}); err != nil {
+		{Name: "Thrall", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70790:shaman:orc:0/0/0:|level=60"}}); err != nil {
 		t.Fatal(err)
 	}
 	if c, x := h.aliasCount("us/normal/booty"); c != 1 || x != 1 {
@@ -1145,11 +1145,11 @@ func TestPutExportsLeavesAnotherAccountsOneWordRowAlone(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, other.ID, []Export{
-		{Name: "Booty", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70450:paladin:undead:0/0/0:"}}); err != nil {
+		{Name: "Booty", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70790:paladin:undead:0/0/0:"}}); err != nil {
 		t.Fatal(err)
 	}
 	if err := h.store.PutExports(ctx, h.owner, []Export{
-		{Name: "Booty Twerk", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70450:paladin:undead:0/0/0:|level=24"}}); err != nil {
+		{Name: "Booty Twerk", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.70790:paladin:undead:0/0/0:|level=24"}}); err != nil {
 		t.Fatal(err)
 	}
 	if c, x := h.aliasCount("us/normal/booty"); c != 1 || x != 1 {

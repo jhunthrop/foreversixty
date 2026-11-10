@@ -102,7 +102,7 @@ func (h *outboxHarness) post(body string) exportsReply {
 
 // obnoxious is the account's own copy of the contract fixture's character,
 // synced the way the companion already sends every character today.
-const obnoxious = `{"name":"Obnoxious","ruleset":"normal","region":"us","export":"FS1:1.60.1.70291:warrior:human:0/0/0:|guild=OLYMPUS%20XXVII:3"}`
+const obnoxious = `{"name":"Obnoxious","ruleset":"normal","region":"us","export":"FS1:1.60.1.70790:warrior:human:0/0/0:|guild=OLYMPUS%20XXVII:3"}`
 
 const obnoxiousKey = "us/normal/obnoxious"
 
@@ -152,7 +152,7 @@ func TestTheContractOutboxIsStoredAndItsSimRequestQueuesOneRun(t *testing.T) {
 		`select export from addon_exports where character_key = $1`, obnoxiousKey).Scan(&export); err != nil {
 		t.Fatal(err)
 	}
-	if export != "FS1:1.60.1.70291:warrior:human:371000000/0/0:chest=6627" {
+	if export != "FS1:1.60.1.70790:warrior:human:371000000/0/0:chest=6627" {
 		t.Fatalf("stored export = %q, want the outbox's code", export)
 	}
 
@@ -294,7 +294,7 @@ func (h *outboxHarness) refusedRequests() [][2]string {
 }
 
 const rosterOutbox = `{"format":1,
- "export":{"character":"Obnoxious-Yell","code":"FS1:1.60.1.70291:warrior:human:0/0/0:|guild=OLYMPUS%20XXVII:3","saved_at":"2026-11-04 14:02"},
+ "export":{"character":"Obnoxious-Yell","code":"FS1:1.60.1.70790:warrior:human:0/0/0:|guild=OLYMPUS%20XXVII:3","saved_at":"2026-11-04 14:02"},
  "roster_snapshot":{"guild":"%s","members":[
    {"name":"Obnoxious-Yell","level":20,"spec":"warrior-arms","gear_gap":14,"build":"Arms leveling","seen_at":"2026-11-04 14:01"},
    {"name":"Healbot-Yell","level":18,"spec":"priest-holy","gear_gap":3,"build":"Holy leveling","seen_at":"2026-11-04 13:55"}]}}`
@@ -392,7 +392,7 @@ func TestAnOutboxThatIsNotOneIsRefused(t *testing.T) {
 }
 
 // altbert is a second character of the account, synced in the same body.
-const altbert = `{"name":"Altbert","ruleset":"normal","region":"us","export":"FS1:1.60.1.70291:priest:human:0/0/0:"}`
+const altbert = `{"name":"Altbert","ruleset":"normal","region":"us","export":"FS1:1.60.1.70790:priest:human:0/0/0:"}`
 
 // Members come from other players' addons: one bad line must cost only that
 // line, never the player's own sync.
@@ -404,7 +404,7 @@ func TestABadRosterMemberIsDroppedAndTheRestOfTheSyncStored(t *testing.T) {
 	  {"name":"Wrongtype-Yell","level":"twenty","spec":"rogue-combat","gear_gap":1,"build":"Combat","seen_at":"2026-11-04 14:01"},
 	  {"name":"Ahead-Yell","level":30,"spec":"priest-holy","gear_gap":-2,"build":"Holy","seen_at":"2026-11-04 13:50"}]`
 	outbox := `{"format":1,
-	 "export":{"character":"Obnoxious-Yell","code":"FS1:1.60.1.70291:warrior:human:0/0/0:chest=6627|guild=OLYMPUS%20XXVII:3","saved_at":"2026-11-04 14:02"},
+	 "export":{"character":"Obnoxious-Yell","code":"FS1:1.60.1.70790:warrior:human:0/0/0:chest=6627|guild=OLYMPUS%20XXVII:3","saved_at":"2026-11-04 14:02"},
 	 "roster_snapshot":{"guild":"OLYMPUS XXVII","members":` + members + `}}`
 	out := h.post(`{"characters":[` + obnoxious + `,` + altbert + `],"outbox":` + outbox + `}`)
 	if out.Stored != 2 || out.Outbox.Export != OutboxStored || out.Outbox.RosterSnapshot != OutboxStored ||
@@ -427,8 +427,8 @@ func TestABadRosterMemberIsDroppedAndTheRestOfTheSyncStored(t *testing.T) {
 	for _, e := range exports {
 		byName[e.Name] = e.Export
 	}
-	if byName["Altbert"] != "FS1:1.60.1.70291:priest:human:0/0/0:" ||
-		byName["Obnoxious"] != "FS1:1.60.1.70291:warrior:human:0/0/0:chest=6627|guild=OLYMPUS%20XXVII:3" {
+	if byName["Altbert"] != "FS1:1.60.1.70790:priest:human:0/0/0:" ||
+		byName["Obnoxious"] != "FS1:1.60.1.70790:warrior:human:0/0/0:chest=6627|guild=OLYMPUS%20XXVII:3" {
 		t.Fatalf("exports = %v, want the list's alt and the outbox's export", byName)
 	}
 }
@@ -468,7 +468,7 @@ func TestABadSimRequestIsAnsweredInvalidNotRefused(t *testing.T) {
 	for name, outbox := range map[string]string{
 		"bad request time": strings.Replace(fixture, "2026-11-04 14:10", "soon", 1),
 		"unknown spec":     unknownSpec,
-		"not an object":    `{"format":1,"export":{"character":"Obnoxious-Yell","code":"FS1:1.60.1.70291:warrior:human:0/0/0:"},"sim_request":5}`,
+		"not an object":    `{"format":1,"export":{"character":"Obnoxious-Yell","code":"FS1:1.60.1.70790:warrior:human:0/0/0:"},"sim_request":5}`,
 	} {
 		out := h.post(withOutbox(outbox))
 		if out.Outbox.Export != OutboxStored || out.Outbox.SimRequest != OutboxInvalid {
