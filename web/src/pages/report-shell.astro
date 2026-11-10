@@ -13,7 +13,6 @@ import IslandScript from '../components/IslandScript.astro';
   title="Report"
   description="A World of Warcraft: Forever combat log report: fights, damage, healing, deaths and rankings."
   path="/reports"
-  wide
 >
   <link rel="stylesheet" href="/report-island.css" slot="head" />
   <main id="main" tabindex="-1" class="flex w-full flex-col pb-10">
@@ -23,7 +22,7 @@ import IslandScript from '../components/IslandScript.astro';
     <div id="report" data-report-mount>
       <ReportSkeleton />
       <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0">
+        <p class="text-muted px-(--page-inset) text-[14px]">
           No report is open. Upload a log or start the companion from <a href="/logs">Logs</a>.
         </p>
       </noscript>

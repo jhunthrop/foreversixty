@@ -9,7 +9,7 @@ import AppTestersAdmin from '../../components/admin/AppTestersAdmin.svelte';
 import { adminTestersCopy as copy } from '../../lib/app-beta/admin';
 ---
 
-<Base title={copy.pageTitle} description={copy.pageDescription} path="/admin/testers" wide>
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/admin/testers">
   <meta slot="head" name="robots" content="noindex" />
   <main id="main" tabindex="-1" class="pb-(--section-gap)" data-testid="admin-testers-page">
     <PageHeader title={copy.pageTitle} lead={copy.job} />

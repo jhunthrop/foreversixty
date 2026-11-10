@@ -49,13 +49,7 @@ const jsonLd = [
 ];
 ---
 
-<Base
-  title={searchCopy.planner.title}
-  description={searchCopy.planner.description}
-  path="/planner"
-  {jsonLd}
-  wide
->
+<Base title={searchCopy.planner.title} description={searchCopy.planner.description} path="/planner" {jsonLd}>
   <main id="main" tabindex="-1" class="pb-(--section-gap)">
     <!-- `client:after-paint`, not `client:load` (src/directives/after-paint.ts): the island's
          server-rendered head is the page's largest contentful paint, and `client:load` put its

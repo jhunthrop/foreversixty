@@ -29,7 +29,7 @@ const jsonLd = [
 ];
 ---
 
-<Base title={searchCopy.sim.title} description={searchCopy.sim.description} path="/sim" {jsonLd} wide>
+<Base title={searchCopy.sim.title} description={searchCopy.sim.description} path="/sim" {jsonLd}>
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
   <main id="main" tabindex="-1" class="sim-page">
     <div
@@ -40,7 +40,7 @@ const jsonLd = [
     >
       <SimLandingPage bisSets={bisSets} />
       <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0">
+        <p class="text-muted px-(--page-inset) text-[14px]">
           The simulator runs in your browser and needs JavaScript. The <a href="/planner">build planner</a>{' '}
           works without it.
         </p>

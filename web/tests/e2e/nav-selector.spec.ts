@@ -174,19 +174,19 @@ test.describe('the bar at every width', () => {
     await expect(page.getByTestId('selector-sub')).toBeHidden();
   });
 
-  test('the floating bar spans the wide column content edges at 2000, Premium closing it', async ({
+  test('the floating bar spans the wide frame content edges at 2000, Premium closing it', async ({
     page,
   }) => {
     await signInWith(page, [OBNOXIOUS]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.setViewportSize({ width: 2000, height: 900 });
-    // /bis is a wide page (data-column="wide", tokens.css) and the header follows --page-max.
+    // The bar sits in the one page frame (.page-column, tokens.css --page-max), as every page does.
     await page.goto('/bis');
     await ready(page);
     const mark = (await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox())!;
     const bar = (await barBox(page))!;
     const premium = (await page.getByTestId('nav-premium').boundingBox())!;
-    // At 2000 the wide column is clamp(1600, 100vw - 160, 1792) = 1792 px, so it starts at 104,
+    // At 2000 the wide frame is clamp(1600, 100vw - 160, 1792) = 1792 px, so it starts at 104,
     // and the wide gutter is 64 px: the content edges are 168 and 2000 - 168 = 1832. Round 5's
     // bar floats on those edges; the seal opens it and Premium (8 px in) closes it.
     expect(Math.abs(bar.x - 168)).toBeLessThanOrEqual(1);

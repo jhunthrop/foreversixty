@@ -131,7 +131,7 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
 };
 ---
 
-<Base title={title} description={description} path={path} {canonicalPath} jsonLd={jsonLd} wide>
+<Base title={title} description={description} path={path} {canonicalPath} jsonLd={jsonLd}>
   <script is:inline set:html={BIS_PENDING_SCRIPT}></script>
   <main id="main" tabindex="-1" class="bis-page">
     {server === undefined || band === undefined ? (
