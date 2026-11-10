@@ -26,8 +26,6 @@ sources:
 
 ## Overview
 
-Subtlety is the bleed rogue in Forever: a Premeditation opener, Hemorrhage and Boot Knife Shanks to build, Rupture as the main finisher and Death Mark to cash the bleeds in.
-
 ### Strengths
 
 - No facing requirement anywhere in the level 60 rotation: Hemorrhage, Ghostly Strike and Rupture all work from the front

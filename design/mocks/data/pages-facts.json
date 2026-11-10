@@ -951,7 +951,7 @@
    "id": "about",
    "title": "About Forever Sixty",
    "description": "Who runs this site, how facts are checked, and how to help.",
-   "updated": "8 Nov",
+   "updated": "9 Nov",
    "confidence": null,
    "sources": [
     {
@@ -960,7 +960,7 @@
      "kind": "site"
     }
    ],
-   "html": "<p>Forever Sixty helps you play your class better in World of Warcraft: Forever. It is built and run by Commish LLC, an Arkansas company founded by players, and written and checked by players.</p>\n<p>Every page says when it was last updated, under its title. Where a fact comes from is shown where it matters: a source pill on each news row, a Sources list at the foot of a page, and a pill beside any claim that only one outlet has reported. The pill says whether it comes from Blizzard, from the game client, from player reports, or from this site’s own work.</p>\n<p>Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc. Forever Sixty is a registered trade name of Commish LLC. © Commish LLC.</p>\n<p>To report an error, use Report a bug in the footer. To talk about a guide or offer to help write one, join the Discord from the footer.</p>\n",
+   "html": "<p>Forever Sixty helps you play your class better in World of Warcraft: Forever. It is built and run by Commish LLC, an Arkansas company founded by players, and written and checked by players.</p>\n<p>Every page says when it was last updated, under its title. Numbers come from the game client and our own sims. <a href=\"/sources\">How sources are classified</a> says where everything else comes from.</p>\n<p>Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc. Forever Sixty is a registered trade name of Commish LLC. © Commish LLC.</p>\n<p>To report an error, use Report a bug in the footer. To talk about a guide or offer to help write one, join the Discord from the footer.</p>\n",
    "headings": [],
    "sectionsMeta": "0 sections"
   },

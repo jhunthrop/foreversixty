@@ -13,7 +13,7 @@ describe('StatTile', () => {
   });
 
   it('is a quiet tile: 12 14 padding, control radius, soft line', () => {
-    expect(body).toContain('rounded-control');
+    expect(body).toContain('rounded-field');
     expect(body).toContain('px-[14px] py-3');
     expect(body).toContain('border-line-soft');
     expect(body).toContain('bg-white/[.03]');

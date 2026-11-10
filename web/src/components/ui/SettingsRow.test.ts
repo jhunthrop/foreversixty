@@ -15,14 +15,14 @@ describe('SettingsRow', () => {
   it('is a plain div with no hover or chevron when it neither links nor acts', () => {
     const body = row({ value: 'On' });
     expect(body).toMatch(/^<!--\[-->?.*?<div class="border-line-soft/s);
-    expect(body).not.toContain('hover:bg-row-hover');
+    expect(body).not.toContain('hover:bg-hover');
     expect(body).not.toContain('data-icon="chevron-right"');
   });
 
   it('is an anchor with a chevron and the row hover when it has an href', () => {
     const body = row({ value: 'On', href: '/sim' });
     expect(first(body, 'a')).toContain('href="/sim"');
-    expect(body).toContain('hover:bg-row-hover');
+    expect(body).toContain('hover:bg-hover');
     expect(body).toContain('focus-visible:-outline-offset-2');
     expect(body).toContain('data-icon="chevron-right"');
   });

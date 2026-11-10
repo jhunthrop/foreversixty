@@ -910,11 +910,12 @@ PRIM_CSS += '''
 .pcol .st-r{min-height:40px;padding-block:6px}.pcol .st-r .nm b{white-space:nowrap}
 @media(max-width:1023px){.pcol .st .stc{grid-template-columns:28px minmax(0,1fr) minmax(0,96px) auto}.pcol .st.open .st-r .br{display:block;grid-column:auto;padding-top:0}.pcol .st.open .st-r .f.p{grid-row:auto;grid-column:auto}}.pcol .rows.slim .row{padding-block:7px}
 .pcol-f{margin-top:auto;display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding-top:4px}
-.trees.cmp{gap:16px;grid-template-columns:repeat(3,max-content)}.trees.cmp .tg>[role=row]{display:contents}.trees.cmp .tc{display:block}.trees.cmp .tr h3{font-size:13px;line-height:18px;padding-bottom:6px;white-space:nowrap}
-.trees.cmp .tg{grid-template-columns:repeat(4,24px);gap:4px}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:24px!important;height:24px!important}
+.tbox{--cg:4px;--tg:16px;container-type:inline-size}
+.trees.cmp{--cell:clamp(18px,calc((100cqw - 2 * var(--tg) - 9 * var(--cg)) / 12 - 0.5px),32px);gap:var(--tg);grid-template-columns:repeat(3,calc(4 * var(--cell) + 3 * var(--cg)))}.trees.cmp .tg>[role=row]{display:contents}.trees.cmp .tc{display:block}.trees.cmp .tr h3{font-size:13px;line-height:18px;padding-bottom:6px;white-space:nowrap}
+.trees.cmp .tg{grid-template-columns:repeat(4,var(--cell));gap:var(--cg)}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:var(--cell)!important;height:var(--cell)!important}
 .trees.cmp .tc b{font-size:10px;line-height:12px;right:-3px;bottom:-4px}
-@media(min-width:1760px){.trees.cmp .tg{grid-template-columns:repeat(4,28px)}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:28px!important;height:28px!important}}
-@media(max-width:767px){.trees.cmp .tr h3{white-space:normal;flex-wrap:wrap;column-gap:6px;row-gap:0;min-height:42px;align-content:flex-end}.trees.cmp{grid-template-columns:repeat(3,minmax(0,max-content));gap:10px}.trees.cmp .tg{grid-template-columns:repeat(4,22px);gap:3px}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:22px!important;height:22px!important}}
+@media(max-width:767px){.trees.cmp .tr h3{white-space:normal;flex-wrap:wrap;column-gap:6px;row-gap:0;min-height:42px;align-content:flex-end}.tbox{--cg:3px;--tg:10px}}
+@container (max-width:270px){.trees.cmp{grid-template-columns:calc(4 * var(--cell) + 3 * var(--cg))}}
 .lvl{display:flex;align-items:center;gap:10px}.lvl .bt{all:unset;box-sizing:border-box;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:4px;color:var(--nav);font-size:18px}
 .lvl .bt:hover{color:var(--strong);border-color:var(--gold)}.lvl .bt.off{opacity:.45}
 .lvl .rg{position:relative;flex:1;height:44px;display:flex;align-items:center}.lvl .rg .tk{height:4px;width:100%;border-radius:2px;background:var(--line-soft)}
@@ -956,12 +957,15 @@ def Prose(html: str, *mods: str) -> str:
     return f'<div class="rprose {" ".join(mods)}">{html}</div>'
 
 
-def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '') -> str:
+def ReadingSection(title: str, prose: str, lane: str = '', anchor: str = '', action: str = '', prose_first: bool = False) -> str:
     """A section of a reading page: the Section head (22/28), then prose and lane (lane first in the DOM: one column reads it first)."""
     a = f'<span class="act">{action}</span>' if action else ''
-    lane_html = f'<div class="rd-lane">{lane}</div>' if lane else ''
+    lane_html = f'<div class="rd-lane" data-reading-lane>{lane}</div>' if lane else ''
+    more = '<div class="rd-more" data-reading-more></div>' if lane else ''
+    solo = '' if lane else ' data-solo'
     return (f'<section class="rsec" data-region="{region_slug(title)}" id="{anchor}"><div class="sec-h"><h2>{title}</h2>{a}</div>'
-            f'<div class="rd{"" if lane else " solo"}">{lane_html}<div class="rd-prose">{prose}</div></div></section>')
+            f'<div class="rd{"" if lane else " solo"}" data-reading{solo}{prose_first and " data-prose-first" or ""}>{lane_html}'
+            f'<div class="rd-prose" data-reading-prose>{prose}{more}</div></div></section>')
 
 
 def LaneBlock(label: str, body: str, meta: str = '') -> str:
@@ -985,7 +989,8 @@ def PlateColumns(cols: list[tuple[str, str, str, str]], label: str = '') -> str:
 
 def TalentTrees(trees: list[tuple[str, int, list[tuple]]]) -> str:
     """`Trees` at the compact cell: three trees side by side in a 400 px column (the At a glance band, the leveling lane)."""
-    return Trees(trees).replace('<div class="trees">', '<div class="trees cmp">', 1)
+    # the built TalentTrees: the cells size themselves from the box (a container query, 18 to 32 px)
+    return '<div class="tbox">' + Trees(trees).replace('<div class="trees">', '<div class="trees cmp">', 1) + '</div>'
 
 
 def LevelSlider(level: int, lo: int, hi: int, label: str) -> str:
@@ -1805,7 +1810,7 @@ PRIM_CSS += """
 .rpanel .rsec>.sec-h h2{font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--cream)}
 .rpanel .rd{padding-top:12px}
 @media(max-width:767px){.rpanel>.rsec{padding:18px 16px}}
-@media(min-width:1280px){.rpanel .rd:not(.solo){grid-template-columns:minmax(0,1fr) minmax(0,380px);column-gap:28px}
+@media(min-width:1280px){.rpanel .rd:not(.solo){grid-template-columns:minmax(0,var(--measure-reading,720px)) minmax(380px,1fr);column-gap:28px}
 .rpanel .rd:not(.solo)>.rd-lane{padding-left:18px;border-left:1px solid var(--line-soft)}}
 .plate.framed{position:relative}
 .plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
@@ -1814,6 +1819,29 @@ PRIM_CSS += """
 
 def ReadingPanel(sections: str) -> str:
     return f'<div class="rpanel">{sections}</div>'
+
+
+# The lane wraps under its prose, and a short lane is pinned, by the shipped code itself (web/src/lib/ui/reading-wrap.ts,
+# bundled once per run with the web's esbuild), so the mock and the build place every row alike.
+PRIM_CSS += '''
+.rd-more{display:none}.rd-more:not(:empty){display:block;margin-top:24px;padding-top:16px;border-top:1px solid var(--line-soft);columns:340px;column-gap:28px}
+.rd-more [data-wrapped]{break-inside:avoid}
+@media(max-width:1279.98px){.rd[data-prose-first]{grid-template-areas:'prose' 'lane'}}
+@media(min-width:1280px){.rd{align-items:start}.rd[data-lane-sticky]>.rd-lane{position:sticky;top:12px}}
+'''
+_READING_WRAP: list[str] = []
+
+
+def reading_wrap_script() -> str:
+    """The shipped reading wrap as an inline script, mounted on the page (a page with reading sections appends it)."""
+    if not _READING_WRAP:
+        import subprocess
+        web = _WEB
+        out = subprocess.run([str(web / 'node_modules/.bin/esbuild'), str(web / 'src/lib/ui/reading-wrap.ts'), '--bundle', '--format=iife',
+                              '--global-name=FSReadingWrap', '--target=es2022', '--log-level=error'],
+                             capture_output=True, text=True, check=True).stdout
+        _READING_WRAP.append(out)
+    return f'<script>{_READING_WRAP[0]}FSReadingWrap.mountReadingWrap();</script>'
 
 
 _PlateColumns0 = PlateColumns

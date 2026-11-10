@@ -1,17 +1,18 @@
 ---
 // web/src/layouts/Content.astro
-// A `pages` collection entry (the legal pages, About, Data sources) in the flat system
-// (design/specs/2026-11-08-pages.md §4.2, §4.3): a reading page with no Plate. The PageHeader
-// (the title and the one Updated stamp, no lead sentence; the description is the page's meta only. When the body opens on a
-// heading, L3; the legal tabs on Terms, Privacy and Refunds, L2), then the prose before the first
-// heading (`intro`) and one ReadingSection per heading at the reading measure. With two sections
-// or more, the contents rail from 1024 and a closed On this page Disclosure below it. The text is
-// the markdown as written; only its frame is this layout's.
+// A `pages` collection entry (the legal pages, About, Data sources) on round 5 (directions mocks
+// b4-about, b4-privacy): the title band (the title and the one Updated stamp, no lead sentence;
+// the description is the page's meta only; the legal tabs on Terms, Privacy and Refunds, L2), then
+// the text on one reading panel at the reading measure: the prose before the first heading
+// (`intro`) and one ReadingSection per heading. With two sections or more, the contents rail from
+// 1024 and a closed On this page Disclosure below it. The text is the markdown as written; only
+// its frame is this layout's.
 import Base from './Base.astro';
 import Disclosure from '../components/ui/Disclosure.svelte';
 import Page from '../components/ui/Page.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
 import Prose from '../components/ui/Prose.svelte';
+import ReadingPanel from '../components/ui/ReadingPanel.svelte';
 import ReadingSection from '../components/ui/ReadingSection.svelte';
 import Row from '../components/ui/Row.svelte';
 import TabStrip from '../components/ui/TabStrip.astro';
@@ -85,16 +86,20 @@ const tocItems = sections.map((section) => ({ title: section.title, id: section.
           </Disclosure>
         </div>
       )}
-      {intro !== '' && (
-        <div data-region={REGION.intro} data-testid="content-intro">
-          <Prose html={intro} />
-        </div>
-      )}
-      {sections.map((section) => (
-        <ReadingSection title={section.title} anchor={section.id}>
-          <Prose html={section.html} />
-        </ReadingSection>
-      ))}
+      <div class="doc-panel">
+        <ReadingPanel testid="content-panel">
+          {intro !== '' && (
+            <div class="doc-intro" data-region={REGION.intro} data-testid="content-intro">
+              <Prose html={intro} />
+            </div>
+          )}
+          {sections.map((section) => (
+            <ReadingSection title={section.title} anchor={section.id}>
+              <Prose html={section.html} />
+            </ReadingSection>
+          ))}
+        </ReadingPanel>
+      </div>
     </Page>
   </main>
   <script is:inline set:html={pageScript}></script>
@@ -108,6 +113,18 @@ const tocItems = sections.map((section) => ({ title: section.title, id: section.
 </Base>
 
 <style>
+  /* The text keeps the reading measure on its panel (the panel's 24 px insets either side). */
+  .doc-panel {
+    max-width: calc(var(--measure-reading) + 48px);
+  }
+  .doc-intro {
+    padding: 22px 24px;
+  }
+  @media (max-width: 767px) {
+    .doc-intro {
+      padding: 18px 16px;
+    }
+  }
   /* The phone contents sit 12 px under the head (ruling SHOULD: no empty gap above it). */
   .doc-toc-m {
     margin: calc(12px - var(--section-gap)) 0 8px;

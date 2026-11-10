@@ -86,7 +86,7 @@
   <label class="flex flex-col gap-1 text-[13px]">
     <span class={labelVisible ? 'quiet-label' : 'sr-only'}>{label}</span>
     <input
-      class={`border-line-warm ${fieldGround} rounded-control text-text h-11 w-full min-w-0 px-3 font-mono text-[13px]`}
+      class={`border-line ${fieldGround} rounded-field text-text h-11 w-full min-w-0 px-3 font-mono text-[13px]`}
       type="text"
       readonly
       value={url}

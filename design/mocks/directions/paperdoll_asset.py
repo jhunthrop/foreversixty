@@ -10,8 +10,8 @@ Cleaning:
 - alpha: the checkerboard is near-grey and light (channel spread under 16, minimum over 175) and connected to the image
   edge; that region becomes transparent, its edge feathered by one pixel. The frame's own highlights are gold (saturated),
   so they are never caught.
-- centre: inside the knot border, every teal pixel (which includes the fake writing, drawn in darker teal) is replaced
-  by the owner's blue band, colour-matched to the panel's mean and at a third of its contrast; the gold knot corners stay.
+- centre: the frame's own marble stays (owner 2026-11-09); the fake writing and map rings drawn on it, thin dark
+  strokes, are closed out of it (a grey closing), and the gold knot corners stay.
 Measuring: each slot's inner teal rectangle, refined from its predicted box by the first and last rows and columns where
 teal covers more than a fifth of the line (the glyphs never span a slot's edge). Stored as percentages of the frame.
 """
@@ -22,15 +22,18 @@ import numpy as np
 from PIL import Image, ImageFilter
 from scipy import ndimage
 
-from art import soften
 from assets import owner_asset
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / 'paperdoll'
 SOURCE = 'art/paperdoll-frame-source.jpeg'
 CHECKER_SPREAD, CHECKER_MIN = 16, 175
-CENTRE = (402, 470, 1372, 1922)  # the teal inside the knot border, source px (measured on gridded crops)
-CENTRE_CONTRAST = .33
+# The centre's content box: inset from the knot border's inner gold line (inner_box) by CENTRE_INSET on every side, so
+# the tooltip and its link sit centred between the frame's inner edges.
+CENTRE_INSET = 2
+# Cleaned: everything inside the knot border's inner gold line. The fake writing's strokes are under 15 px wide.
+STROKE_PX = 15
+MARBLE_BLUR = 3
 # Predicted slot boxes (source px): columns, the 211 px row rhythm, the weapon row; refined by refine().
 LEFT_X, RIGHT_X, SLOT_W, SLOT_H, ROW0, ROW_STEP = 100, 1549, 163, 152, 397, 211
 WEAPON_X0, WEAPON_Y, WEAPON_STEP, WEAPON_S = 604, 1964, 211, 162
@@ -59,25 +62,37 @@ def cut_checkerboard(a: np.ndarray) -> np.ndarray:
     return np.asarray(alpha)
 
 
+def _gold(a: np.ndarray) -> np.ndarray:
+    """The knotwork: warm and bright, red well over blue."""
+    return (a[..., 0] > a[..., 2] + 35) & (a.max(axis=2) > 95)
+
+
+def inner_box(a: np.ndarray) -> tuple[int, int, int, int]:
+    """The knot border's inner gold line (x0, y0, x1, y1), measured outward from the frame's middle along its middle
+    row and column: the first gold run on each side."""
+    h, w = a.shape[:2]
+    cy, cx = int(h * .55), int(w * .5)
+    row, col = _gold(a[cy:cy + 1].astype(int))[0], _gold(a[:, cx:cx + 1].astype(int))[:, 0]
+    left = max(i for i in range(cx) if row[i]) + 1
+    right = min(i for i in range(cx, w) if row[i])
+    top = max(i for i in range(cy) if col[i]) + 1
+    bottom = min(i for i in range(int(h * .7), h) if col[i])
+    return left, top, right, bottom
+
+
 def clean_centre(a: np.ndarray) -> np.ndarray:
-    """Replace the centre's teal (and the fake writing in it) with the blue band, matched to the panel's colour."""
-    x0, y0, x1, y1 = CENTRE
+    """The frame's own marble stays in the centre (owner 2026-11-09: no flat cover over it); only the source's fake
+    writing and map rings, thin dark strokes, are lifted out of it. A grey closing per channel fills every dark stroke
+    thinner than STROKE_PX with the marble around it, a light blur hides the closing's blocks, and the gold knotwork
+    (warm and bright, red well over blue) is masked out so it stays sharp."""
+    x0, y0, x1, y1 = inner_box(a)
     region = a[y0:y1, x0:x1].astype(float)
-    target = region[_teal(region.astype(int))].mean(axis=0)
-    # Everything in the centre that is not the gold knotwork is replaced: the teal, the fake writing, and the dark grunge
-    # stains along the inner edge (ai-slop-reviewer, paperdoll review). Gold: warm and bright, red well over blue.
-    ri = region.astype(int)
-    gold = (ri[..., 0] > ri[..., 2] + 35) & (ri.max(axis=2) > 95)
-    gold = ndimage.binary_dilation(gold, iterations=2)
-    mask = ~gold
-    band = Image.open(owner_asset('art/blue-band.jpeg')).convert('RGB')
-    w, h = x1 - x0, y1 - y0
-    band = band.resize((max(w, round(band.width * h / band.height)), h), Image.LANCZOS).crop((0, 0, w, h))
-    fill = np.asarray(soften(band, CENTRE_CONTRAST)).astype(float)
-    fill = fill - fill.reshape(-1, 3).mean(axis=0) + target
-    soft = ndimage.gaussian_filter(mask.astype(float), 1.2)[..., None]
+    closed = np.stack([ndimage.grey_closing(region[..., c], size=(STROKE_PX, STROKE_PX)) for c in range(3)], axis=-1)
+    marble = ndimage.gaussian_filter(closed, sigma=(MARBLE_BLUR, MARBLE_BLUR, 0))
+    gold = ndimage.binary_dilation(_gold(region.astype(int)), iterations=3)
+    soft = ndimage.gaussian_filter((~gold).astype(float), 1.2)[..., None]
     out = a.copy().astype(float)
-    out[y0:y1, x0:x1] = region * (1 - soft) + fill * soft
+    out[y0:y1, x0:x1] = region * (1 - soft) + marble * soft
     return np.clip(out, 0, 255).astype(np.uint8)
 
 
@@ -149,10 +164,11 @@ def build() -> None:
         im.save(OUT / f'frame@{scale}.webp', quality=88, method=6)
     mx, my, mr = MEDALLION[0] - x0, MEDALLION[1] - y0, MEDALLION[2]
     tx0, ty0, tx1, ty1 = TITLE_BAR[0] - x0, TITLE_BAR[1] - y0, TITLE_BAR[2] - x0, TITLE_BAR[3] - y0
-    cx0, cy0, cx1, cy1 = CENTRE[0] - x0, CENTRE[1] - y0, CENTRE[2] - x0, CENTRE[3] - y0
+    ix0, iy0, ix1, iy1 = (v - o for v, o in zip(inner_box(src), (x0, y0, x0, y0)))
+    cx0, cy0, cx1, cy1 = ix0 + CENTRE_INSET, iy0 + CENTRE_INSET, ix1 - CENTRE_INSET, iy1 - CENTRE_INSET
     spec = {'source': SOURCE, 'size': [w, h], 'slots': {k: pct(v, w, h) for k, v in measured.items()},
             'medallion': pct((mx - mr, my - mr, 2 * mr, 2 * mr), w, h), 'title': pct((tx0, ty0, tx1 - tx0, ty1 - ty0), w, h),
-            'centre': pct((cx0, cy0, cx1 - cx0, cy1 - cy0), w, h)}
+            'centre': pct((cx0, cy0, cx1 - cx0, cy1 - cy0), w, h), 'inner': pct((ix0, iy0, ix1 - ix0, iy1 - iy0), w, h)}
     (OUT / 'slots.json').write_text(json.dumps(spec, indent=1) + '\n')
     for k, v in measured.items():
         print(k, v)

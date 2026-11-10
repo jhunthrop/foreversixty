@@ -555,7 +555,13 @@ def b_page(state: str) -> str:
             text = ''.join(re.findall(r"'([^']*)'", parts))
         planner = re.search(r'class="[^"]*">([^<]+)</a></p>', (ROOT / 'api/internal/site/page.go').read_text()).group(1)
         ask = f'<p class="t-small">{e(PROPOSED["askSender"])}</p>' if state == 'missing' else ''
-        body = PageHeader(e(title), meta=[e(text)]) + PageForm(f'<div class="stack">{ask}<div class="acts">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
+        if state == 'unavailable':
+            # Round 5 (directions mock b4-unavailable): the sentence and the two ways on one framed panel under the title band.
+            panel = (f'<div class="plate framed" data-region="{REGION["plate"]}" style="padding:22px 24px"><p style="margin:0">{e(text)}</p>'
+                     f'<div class="acts" style="margin-top:16px">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
+            body = PageHeader(e(title)) + PageForm(panel)
+        else:
+            body = PageHeader(e(title), meta=[e(text)]) + PageForm(f'<div class="stack">{ask}<div class="acts">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
         return render(f'{title} · Forever Sixty', body, '', None, '', f'/b/:id mock, {state}: the API message page (api/internal/site/handler.go, page.go messagePage).')
     cfg = {'shared': ('guide', 'Survival raid build', None, 41), 'you': ('guide', 'Survival raid build', 'others', 41),
            'holy': ('holy', 'Holy raid healing', 'other_class', 7), 'fire': ('fire', '', None, 12)}[state]

@@ -1,6 +1,6 @@
 <!-- web/src/components/not-found/NotFoundClassPicker.svelte -->
-<!-- The 404's "Pick your class" (pages spec 2026-11-08 §4.4, ruling SHOULD): the page's one Plate,
-     nine class Rows in three columns from 1024, the ringed crest, the class name in its colour
+<!-- The 404's "Pick your class" (pages spec 2026-11-08 §4.4, ruling SHOULD; round 5 mock b4-404): one
+     panel with its heading inside, nine class Rows in three columns from 1024, the ringed crest, the class name in its colour
      linking its guides, and each spec linking its own guide. Rendered at build time (no runtime). -->
 <script lang="ts">
   import classes from '../../data/classes.json';
@@ -8,7 +8,6 @@
   import { notFoundCopy } from '../../lib/not-found/copy';
   import { titleColor, type ClassSlug } from '../../lib/ui/primitives';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
-  import Plate from '../ui/Plate.svelte';
   import Row from '../ui/Row.svelte';
   import RowGrid from '../ui/RowGrid.svelte';
   import Section from '../ui/Section.svelte';
@@ -22,25 +21,23 @@
   }));
 </script>
 
-<Section title={notFoundCopy.pick} testid="not-found-classes">
-  <Plate label={notFoundCopy.pick}>
-    <RowGrid cols={3}>
-      {#each rows as c (c.slug)}
-        <Row title={c.name} testid={`not-found-class-${c.slug}`}>
-          {#snippet lead()}<ClassCrestRing characterClass={c.name} size={CREST_PX} />{/snippet}
-          {#snippet titleContent()}<a
-              class="nf-class"
-              href={`/guides/${c.slug}`}
-              style:color={titleColor({ classSlug: c.slug as ClassSlug })}>{c.name}</a
-            >{/snippet}
-          {#snippet subContent()}{#each c.specs as spec, i (spec.spec_slug)}{#if i > 0}{SPEC_SEPARATOR}{/if}<a
-                class="nf-spec"
-                href={`/guides/${c.slug}/${spec.spec_slug}`}>{spec.name}</a
-              >{/each}{/snippet}
-        </Row>
-      {/each}
-    </RowGrid>
-  </Plate>
+<Section title={notFoundCopy.pick} panel flush testid="not-found-classes">
+  <RowGrid cols={3}>
+    {#each rows as c (c.slug)}
+      <Row title={c.name} testid={`not-found-class-${c.slug}`}>
+        {#snippet lead()}<ClassCrestRing characterClass={c.name} size={CREST_PX} />{/snippet}
+        {#snippet titleContent()}<a
+            class="nf-class"
+            href={`/guides/${c.slug}`}
+            style:color={titleColor({ classSlug: c.slug as ClassSlug })}>{c.name}</a
+          >{/snippet}
+        {#snippet subContent()}{#each c.specs as spec, i (spec.spec_slug)}{#if i > 0}{SPEC_SEPARATOR}{/if}<a
+              class="nf-spec"
+              href={`/guides/${c.slug}/${spec.spec_slug}`}>{spec.name}</a
+            >{/each}{/snippet}
+      </Row>
+    {/each}
+  </RowGrid>
 </Section>
 
 <style>

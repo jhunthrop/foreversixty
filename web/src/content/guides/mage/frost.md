@@ -27,8 +27,6 @@ sources:
 
 ## Overview
 
-Frost casts Frostbolt behind Ice Barrier, spends Fingers of Frost on Ice Lance, fires free Missiles on Missile Barrage, and has Ice Block when things go wrong.
-
 ### Strengths
 
 - Ice Barrier is a shield and your biggest damage buff in one button

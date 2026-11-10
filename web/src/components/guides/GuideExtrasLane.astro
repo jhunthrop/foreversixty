@@ -29,7 +29,7 @@ const lines = consumableLines(extras.consumables);
 {extras.enchants.length > 0 && (
   <LaneBlock label={guidesCopy.enchants} testid="guide-enchants">
     <p class="text-small text-muted m-0">{guidesCopy.enchantsNote}</p>
-    <div class="guide-extras-rows">
+    <div class="guide-extras-rows" data-wrap-list>
       {extras.enchants.map((row) => (
         <Row
           title={row.name}
@@ -68,7 +68,7 @@ const lines = consumableLines(extras.consumables);
 )}
 {extras.consumables.length > 0 && (
   <LaneBlock label={guidesCopy.consumables} testid="guide-consumables">
-    <div class="guide-extras-rows">
+    <div class="guide-extras-rows" data-wrap-list>
       {lines.map((line) =>
         'header' in line ? (
           <h4 class="text-label text-muted guide-extras-sub font-bold">{line.header}</h4>

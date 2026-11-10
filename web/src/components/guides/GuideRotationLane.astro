@@ -40,7 +40,7 @@ const blocks = [
 )}
 {blocks.map((block) => (
   <LaneBlock label={block.label} testid={`guide-rotation-${block.key}`}>
-    <div class="guide-rotation-rows" id={block.key === 'priority' ? 'priority' : undefined}>
+    <div class="guide-rotation-rows" data-wrap-list id={block.key === 'priority' ? 'priority' : undefined}>
       {block.items.map((item, i) => (
         <GuideSpellRow
           build={build}

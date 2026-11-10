@@ -35,7 +35,7 @@
 </script>
 
 <div
-  class="rounded-control border-line-soft flex min-w-0 flex-col gap-1 border bg-white/[.03] px-[14px] py-3"
+  class="rounded-field border-line-soft flex min-w-0 flex-col gap-1 border bg-white/[.03] px-[14px] py-3"
   data-testid={testid}
 >
   <div class="figure-stat flex items-center {TONE_CLASS[tone]} {figureClass}">

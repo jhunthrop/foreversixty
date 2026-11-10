@@ -13,7 +13,7 @@ describe('SupporterChip', () => {
   it('explains itself on hover, sets the warm border explicitly and links nowhere', () => {
     const { body } = render(SupporterChip);
     expect(body).toContain('title="Supports Forever Sixty (Premium or guild plan)"');
-    expect(body).toContain('border-color: var(--color-line-warm)');
+    expect(body).toContain('border-color: var(--color-line)');
     expect(body).not.toContain('<a');
   });
 });

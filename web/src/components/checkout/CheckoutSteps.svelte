@@ -77,7 +77,7 @@
         {/if}
       {:else if back}
         <span
-          class={phase === 'slow' ? 'text-ember' : 'text-text'}
+          class={phase === 'slow' ? 'text-warn' : 'text-text'}
           role="status"
           data-testid="checkout-message">{message}</span
         >

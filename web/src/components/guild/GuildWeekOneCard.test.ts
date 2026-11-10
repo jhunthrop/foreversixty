@@ -68,7 +68,7 @@ describe('GuildWeekOneCard', () => {
 
   it('draws no box, no caps title and no stat tiles: an open Section of the ui primitives', () => {
     const markup = card();
-    expect(markup).not.toMatch(/card-surface|rounded-panel|uppercase|tracking-\[/);
+    expect(markup).not.toMatch(/card-surface|rounded-plate|uppercase|tracking-\[/);
     expect(markup).toContain('data-region="section-before-raids-open"');
   });
 

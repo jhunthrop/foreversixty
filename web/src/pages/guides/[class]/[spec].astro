@@ -12,11 +12,11 @@ import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import ClassCrest from '../../../components/ClassCrest.astro';
 import GuideAnswer from '../../../components/guides/GuideAnswer.astro';
+import GuideBisDoll from '../../../components/guides/GuideBisDoll.svelte';
 import GuideBisLane from '../../../components/guides/GuideBisLane.astro';
 import GuideBuildsLane from '../../../components/guides/GuideBuildsLane.astro';
 import GuideExtrasLane from '../../../components/guides/GuideExtrasLane.astro';
 import GuideGlance from '../../../components/guides/GuideGlance.astro';
-import GuideLede from '../../../components/guides/GuideLede.astro';
 import GuideLevelingTree from '../../../components/guides/GuideLevelingTree.svelte';
 import GuideRacesLane from '../../../components/guides/GuideRacesLane.astro';
 import GuideRotationLane from '../../../components/guides/GuideRotationLane.astro';
@@ -48,6 +48,8 @@ import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { splitSpecSections, slugify, SPEC_SECTIONS, type SpecSection } from '../../../lib/guides/sections';
 import { diffBuilds, buildDiffLine } from '../../../lib/guides/build-diff';
 import { guideBuildBlocks } from '../../../lib/guides/guide-builds';
+import { guideDollTooltips, guideDollViews } from '../../../lib/guides/guide-bis-doll';
+import { readItemTooltipModel } from '../../../lib/items/lookup-node';
 import { guideTipsUrl, proseNames, specGuideData, withTipKeys } from '../../../lib/guides/guide-tips';
 import { linkProse } from '../../../lib/guides/prose-tips';
 import { pageScript } from '../../../lib/guides/page-script';
@@ -121,7 +123,7 @@ async function prose(markdown: string): Promise<string> {
   return linkProse(await renderGuideMarkdown(markdown), proseTargets);
 }
 
-const overview = splitOverview(sections.get('Overview') ?? '');
+const overview = splitOverview(sections.get('Overview') ?? '', entry.id);
 const hasOverviewBlocks = overview.strengths !== '' || overview.weaknesses !== '' || overview.raid !== '';
 const overviewHtml = {
   strengths: await prose(overview.strengths),
@@ -180,6 +182,11 @@ const glance =
         rotation.priority,
         buildRaces(build).map((race) => race.name),
       );
+
+// The Best in slot doll: the lane's level 60 picks on the shared paperdoll, each with its tooltip.
+const itemTooltip = (itemId: number) => readItemTooltipModel(build, classSlug, itemId) ?? undefined;
+const dollViews = guideDollViews(guideBis, itemTooltip);
+const dollTooltips = guideDollTooltips(dollViews, itemTooltip);
 
 const statLane = guideStatLane(build, classSlug, fullSpecId, recommendedRaces, entry.data.statPriority);
 
@@ -257,10 +264,6 @@ const jsonLd = [
         sections={tocItems}
       />
       <div slot="top" class="guide-top">
-        <GuideLede
-          text={overview.summary !== '' ? overview.summary : (entry.data.description ?? '')}
-          testid="guide-summary"
-        />
         <GuideGlance
           spec={fullSpecId}
           build={build}
@@ -336,11 +339,18 @@ const jsonLd = [
           <Prose html={await prose(proseOnly('Stat priority'))} />
         </ReadingSection>
 
-        <ReadingSection title="Best in slot" anchor="best-in-slot">
+        <ReadingSection title="Best in slot" anchor="best-in-slot" proseFirst>
           <Fragment slot="lane">
             <GuideBisLane build={build} classSlug={classSlug} bis={guideBis} specSlug={specSlug} {role} />
           </Fragment>
           <Prose html={await prose(proseOnly('Best in slot'))} />
+          <GuideBisDoll
+            client:visible
+            views={dollViews}
+            tooltips={dollTooltips}
+            build={build}
+            title={title}
+          />
         </ReadingSection>
 
         {gearExtras !== undefined ? (
@@ -399,6 +409,11 @@ const jsonLd = [
     </Page>
   </main>
   <script is:inline set:html={pageScript}></script>
+  <script>
+    import { mountReadingWrap } from '../../../lib/ui/reading-wrap';
+
+    mountReadingWrap();
+  </script>
   <GuideTooltips client:idle-after-load build={build} bundleUrl={guideTipsUrl(build, classSlug, specSlug)} />
 </Base>
 

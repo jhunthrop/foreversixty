@@ -24,8 +24,6 @@ sources:
 
 ## Overview
 
-Affliction keeps Corruption, Siphon Life and a bane rolling on the boss and fills the gaps with Wrack, and every one of those ticks can crit in Forever.
-
 ### Strengths
 
 - Corruption, both banes and Siphon Life are instant, so you keep doing damage while you move

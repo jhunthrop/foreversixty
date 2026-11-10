@@ -458,7 +458,7 @@
         {/if}
         {#if model.hasOutcomes}
           <li>
-            <i class="swatch" style:width="4px" style:height="16px" style:background="var(--color-gold-light)"
+            <i class="swatch" style:width="4px" style:height="16px" style:background="var(--color-cream-2)"
             ></i>{timelineCopy.legend.crit}
           </li>
           <li>
@@ -493,7 +493,7 @@
               class="swatch"
               style:width="16px"
               style:height="8px"
-              style:background="var(--color-gold-deep)"
+              style:background="color-mix(in srgb, var(--color-gold) 72%, black)"
               style:opacity="0.78"
             ></i>{timelineCopy.legend.onTarget}
           </li>

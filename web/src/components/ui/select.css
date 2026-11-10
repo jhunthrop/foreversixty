@@ -385,7 +385,7 @@
     height: 18px;
     padding: 0 5px;
     border: 1px solid var(--color-selected-mark);
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-field);
     background: var(--color-selected);
     color: var(--color-strong);
     font-size: 12px;
@@ -526,7 +526,7 @@
     min-height: 32px;
     padding: 0 10px;
     border: 1px solid var(--color-line);
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-field);
     background: transparent;
     color: var(--color-text);
     font: inherit;
@@ -535,7 +535,7 @@
     white-space: nowrap;
   }
   button.chip-preset:hover {
-    border-color: var(--color-line-warm-strong);
+    border-color: var(--color-rule-warm);
   }
   button.chip-preset[aria-pressed='true'],
   .chip-preset.is-inert[data-lit='true'] {

@@ -23,7 +23,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_prims import (Button, CharacterAnswer, Dated, DatedGroup, Disclosure, Field, FormRow, LaneBlock, Link, Notice, Page, PageHeader,
-                      PageForm, Plate, Prose, ReadingSection, Row, RowGrid, RowsSlim, Section, Select, Skeleton, TabStrip, Tag, Toc, build_page,
+                      PageForm, Plate, Prose, ReadingPanel, ReadingSection, Row, RowGrid, RowsSlim, Section, Select, Skeleton, TabStrip, Tag, Toc, build_page,
                       control_bar, crest_img, seg, sel, write, REGION)
 
 HERE = Path(__file__).resolve().parent
@@ -60,7 +60,8 @@ def lane_html(x: dict) -> str:
 
 
 def entry_html(x: dict, new: bool = False) -> str:
-    tags = Tag(e(x['kindLabel']), 'muted') + (Tag(e(CL['newTag'])) if new else '')
+    # P15 round 2: a pill only where the source changes the reading; this site's own entries carry none
+    tags = (Tag(e(x['kindLabel']), 'muted') if x['show'] != 'site' else '') + (Tag(e(CL['newTag'])) if new else '')
     text = Prose(x['html']) if x['html'] else f'<p class="dated-n">{e(x.get("noteAsBody") or "")}</p>'
     return Dated(x['id'], x['iso'], e(x['date']), tags, e(x['title']), text, lane_html(x), x['folded'])
 
@@ -97,9 +98,10 @@ def changelog_page(show: str = 'all', new_after: str = '', open_m: bool = False,
     if force_empty:   # FORCED (spec 5.1): no filter is empty at this content; the state exists for a kind with no entry yet
         groups, counts = [], {**counts, show: 0}
     head = PageHeader(e(CL['title']), meta=[f'Updated {e(LOG["updated"])}'])
-    upcoming = coming_up() if show != 'site' else ''
+    # Round 5 (directions mock b4-changelog): each month, and Coming up, on its own reading panel.
+    upcoming = ReadingPanel(coming_up()) if show != 'site' else ''
     if groups:
-        body = upcoming + ''.join(DatedGroup(e(t), e(meta), a, ''.join(entry_html(x, bool(new_after) and x['iso'] > new_after) for x in xs))
+        body = upcoming + ''.join(ReadingPanel(DatedGroup(e(t), e(meta), a, ''.join(entry_html(x, bool(new_after) and x['iso'] > new_after) for x in xs)))
                                   for t, a, xs, meta in groups)
     else:
         body = upcoming + f'<p class="empty cl-empty" data-region="{REGION["notes"]}">{e(CL["empty"][show])}</p>'
@@ -142,7 +144,8 @@ def content_page(pid: str, current: str = '', open_toc: bool = False, scroll_to:
     if len(secs) > 1:
         contents = ('<div class="doc-toc-m">' + Disclosure(e(C['tocBarLabel']), RowsSlim([Row(t) for _, t, _ in secs]), open_toc,
                                                           e(p['sectionsMeta'])) + '</div>')
-    body = contents + body + ''.join(ReadingSection(t, Prose(inner), '', a) for a, t, inner in secs)
+    # Round 5 (directions mocks b4-about, b4-privacy): the text on one reading panel at the reading measure.
+    body = contents + '<div class="doc-panel">' + ReadingPanel(body + ''.join(ReadingSection(t, Prose(inner), '', a) for a, t, inner in secs)) + '</div>'
     toc_from = 1024 if len(secs) > 1 else 0
     toc = Toc(e(C['tocBarLabel']), [(t, a) for a, t, _ in secs], current or (secs[0][0] if secs else '')) if len(secs) > 1 else ''
     jump = (f'<script>document.getElementById({json.dumps(scroll_to)}).scrollIntoView()</script>' if scroll_to else '')
@@ -173,7 +176,7 @@ def class_row(c: dict) -> str:
 
 
 def class_picker() -> str:
-    return Section(e(NF['pick']), Plate(RowGrid([class_row(c) for c in F['classes']], 3), e(NF['pick'])))
+    return Section(e(NF['pick']), RowGrid([class_row(c) for c in F['classes']], 3), panel=True, flush=True)
 
 
 def lookup() -> str:
@@ -197,12 +200,13 @@ CHARACTER_PATH = '/character/us/normal'   # SAMPLE: a dead character address (no
 def not_found_page(kind: str = 'out', suggest: bool = False, character: bool = False) -> str:
     path = SUGGEST[0] if suggest else (CHARACTER_PATH if character else '/this-page-does-not-exist')
     head = PageHeader(e(NF['title']), meta=[e(path)], answer='' if kind == 'out' else answer(kind))
-    did = (f'<div data-region="{REGION["notes"]}">' + Notice(e(NF['didYouMean']), Link(rsaquo(SUGGEST[1])), 'neutral') + '</div>') if suggest else ''
+    did = (f'<div data-region="{REGION["notes"]}"><div class="plate framed nf-did" data-region="{REGION["plate"]}">'
+           f'<h2 class="nf-suggest-title">{e(NF["didYouMean"])}</h2>{Link(rsaquo(SUGGEST[1]))}</div></div>') if suggest else ''
     # signed out on a dead /character/ address the lookup comes first (SHOULD)
     first_lookup = character and kind == 'out'
     main = (lookup() + f'<div class="section">{class_picker()}</div>') if first_lookup else (class_picker() + f'<div class="section">{lookup()}</div>')
     who = (ME['name'], ME['class'].lower(), ME['level_line']) if kind != 'out' else None
-    html = head + did + Page('ledger', main) + PAGE_CSS
+    html = head + Page('ledger', did + main) + PAGE_CSS
     note = (f'404 mock ({SPEC_DOC}); copy from lib/not-found/copy.ts and the shared copy modules (pages-facts.json). State: {kind}'
             + (', did-you-mean (N3).' if suggest else '') + (', a dead /character/ address: the lookup first.' if character else '.'))
     return build_page(NF['docTitle'], html, '', who, note)
@@ -295,6 +299,9 @@ main{padding-bottom:var(--section-gap)}
 .cl-empty{padding:24px 0}
 .doc-toc-m{margin:calc(12px - var(--section-gap)) 0 8px}@media(min-width:1024px){.doc-toc-m{display:none}}
 .doc-intro+.rsec{margin-top:0}
+.doc-panel{max-width:calc(var(--measure-reading, 720px) + 48px)}.rpanel>.doc-intro{padding:22px 24px}.rpanel>.doc-intro+.rsec{border-top:1px solid var(--line-soft)}
+@media(max-width:767px){.rpanel>.doc-intro{padding:18px 16px}}
+.nf-did{padding:22px 24px}.nf-suggest-title{margin:0 0 6px;font:400 22px/28px var(--font-title);letter-spacing:-.015em;color:var(--cream)}
 .nf-aside{margin:12px 0 16px}.nf-hint{margin-top:10px}.nf-status{min-height:20px;margin:0}
 @media(max-width:767px){.formrow .sel,.formrow .field{height:44px}}
 .nf-cls{font:700 15px/24px var(--font-body);display:inline-block}.nf-spec{display:inline-block;line-height:24px}.nf-cls:hover{text-decoration:underline}

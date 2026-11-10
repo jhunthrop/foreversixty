@@ -1,8 +1,10 @@
 ---
 // web/src/components/guides/GuideBisPanel.astro
 // One band of the guide's Best in slot lane: the level range as the label, whose picks they are
-// as the meta, one ItemRow per slot (the slot, the icon in its quality frame, the name opening
-// the item tooltip, where it comes from), the pre-raid note at 60.
+// as the meta (below 60: at 60 the doll's title bar names them), one ItemRow per slot (the slot,
+// the icon in its quality frame, the name opening the item tooltip, where it comes from). The
+// armour and the weapons are two blocks: beside a tall lane the weapons wrap under the prose
+// together (lib/ui/reading-wrap.ts), under the doll's own weapon row, and the armour never splits.
 import ItemRow from '../ui/ItemRow.svelte';
 import LaneBlock from '../ui/LaneBlock.svelte';
 import { guidesCopy } from '../../lib/guides/copy';
@@ -14,34 +16,46 @@ interface Props {
 }
 const { build, panel } = Astro.props;
 const faction = panel.faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading;
+const WEAPON_SLOTS: ReadonlySet<string> = new Set(['main_hand', 'off_hand', 'ranged']);
+const blocks = [
+  { key: 'armour', rows: panel.rows.filter((row) => !WEAPON_SLOTS.has(row.slot)) },
+  { key: 'weapons', rows: panel.rows.filter((row) => WEAPON_SLOTS.has(row.slot)) },
+].filter((block) => block.rows.length > 0);
 ---
 
 <LaneBlock
   label={guidesCopy.levelRangeLabel(panel.band)}
-  meta={guidesCopy.bisCaption(panel.raceName, faction)}
+  meta={panel.band === 60 ? undefined : guidesCopy.bisCaption(panel.raceName, faction)}
   testid="guide-bis-panel"
 >
-  <div class="guide-bis-items" data-band={panel.band} data-faction={panel.faction}>
-    {panel.rows.map((row) => (
-      <ItemRow
-        item={
-          row.empty || row.itemId === undefined
-            ? null
-            : { id: row.itemId, name: row.itemName ?? '', quality: row.quality ?? 1, icon: row.icon }
-        }
-        build={build}
-        slotLabel={row.slotLabel}
-        source={row.sourceDetail}
-        emptyText={row.emptyCopy}
-        iconSize={36}
-        testid={`guide-bis-${row.slot}`}
-      />
+  <div class="guide-bis-items" data-wrap-list data-band={panel.band} data-faction={panel.faction}>
+    {blocks.map((block) => (
+      <div class="guide-bis-block" data-block={block.key}>
+        {block.rows.map((row) => (
+          <ItemRow
+            item={
+              row.empty || row.itemId === undefined
+                ? null
+                : { id: row.itemId, name: row.itemName ?? '', quality: row.quality ?? 1, icon: row.icon }
+            }
+            build={build}
+            slotLabel={row.slotLabel}
+            source={row.sourceDetail}
+            emptyText={row.emptyCopy}
+            iconSize={36}
+            testid={`guide-bis-${row.slot}`}
+          />
+        ))}
+      </div>
     ))}
   </div>
-  {panel.band === 60 && <p class="text-small text-muted m-0">{guidesCopy.preRaidNote}</p>}
 </LaneBlock>
 
 <style>
+  .guide-bis-block {
+    display: flex;
+    flex-direction: column;
+  }
   .guide-bis-items {
     display: flex;
     flex-direction: column;

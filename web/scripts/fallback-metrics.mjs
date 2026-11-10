@@ -11,9 +11,9 @@
 //
 // Usage, from web/ (the system faces are macOS paths; pass others as arguments):
 //   node scripts/fallback-metrics.mjs <web-face.woff2> <system-face.ttf|ttc> [postscriptName]
-// Reproduces `Barlow Fallback` against Helvetica Neue:
-//   node scripts/fallback-metrics.mjs src/assets/fonts/barlow-400-subset.woff2 \
-//     /System/Library/Fonts/HelveticaNeue.ttc HelveticaNeue
+// Reproduces `Open Sans Fallback` against Arial:
+//   node scripts/fallback-metrics.mjs src/assets/fonts/open-sans-400-subset.woff2 \
+//     /System/Library/Fonts/Supplemental/Arial.ttf ArialMT
 import { fromFile } from '@capsizecss/unpack/fs';
 
 const PERCENT_DECIMALS = 2;

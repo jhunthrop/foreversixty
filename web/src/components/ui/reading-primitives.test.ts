@@ -36,7 +36,7 @@ describe('ReadingSection', () => {
       /<section id="rotation-and-priority"[^>]*data-region="section-rotation-and-priority"/,
     );
     expect(body.match(/<h2[^>]*>Rotation and priority<\/h2>/g)).toHaveLength(1);
-    expect(body).toMatch(/class="ui-rd-lane[^"]*"><div>LANE<\/div>/);
+    expect(body).toMatch(/class="ui-rd-lane[^"]*"[^>]*><div>LANE<\/div>/);
     expect(body.indexOf('LANE')).toBeLessThan(body.indexOf('PROSE'));
     expect(body).not.toContain('data-solo');
   });

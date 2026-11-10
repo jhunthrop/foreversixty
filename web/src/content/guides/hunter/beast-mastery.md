@@ -45,8 +45,6 @@ sources:
 
 ## Overview
 
-Beast Mastery is the pet spec: your cat does a big share of the damage, Bestial Wrath is the burst, and your shots fill every gap.
-
 ### Strengths
 
 - The pet takes 10% of your attack power and all of your crit, so every upgrade you wear makes it hit harder

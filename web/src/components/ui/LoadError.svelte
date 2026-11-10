@@ -28,7 +28,7 @@
   {#if onRetry !== undefined}
     <button
       type="button"
-      class="border-line-warm text-text rounded-control inline-flex min-h-11 items-center border px-3 text-[13px] font-semibold md:min-h-0 md:py-1"
+      class="border-line text-text rounded-field inline-flex min-h-11 items-center border px-3 text-[13px] font-semibold md:min-h-0 md:py-1"
       onclick={onRetry}
       aria-label={retryAriaLabel}
       data-testid="{testid}-retry"

@@ -11,10 +11,10 @@ export const ROW =
 export const ROW_OPEN = ROW.replace('border-t px-5', 'border-b px-0 last:border-b-0');
 
 /** The hover ground alone, for a row that holds its own links and buttons (a character row). */
-export const ROW_HOVER = 'transition-colors duration-[120ms] hover:bg-row-hover';
+export const ROW_HOVER = 'transition-colors duration-[120ms] hover:bg-hover';
 
 export const ROW_INTERACTIVE =
-  'cursor-pointer transition-colors duration-[120ms] hover:bg-row-hover active:bg-gold/10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold';
+  'cursor-pointer transition-colors duration-[120ms] hover:bg-hover active:bg-gold/10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold';
 
 /**
  * Row bands (ui/row.css `.row-band`): a row that lights up inside a list is a rounded band whose

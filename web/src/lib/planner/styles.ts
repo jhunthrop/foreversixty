@@ -25,14 +25,14 @@ const SECONDARY_BUTTON_HOVER =
  */
 const FIXED_BUTTON_DISABLED = 'control-fixed';
 
-export const SECONDARY_BUTTON = `rounded-control inline-flex h-11 items-center border button-label md:h-9 ${SECONDARY_BUTTON_HOVER}`;
+export const SECONDARY_BUTTON = `rounded-field inline-flex h-11 items-center border button-label md:h-9 ${SECONDARY_BUTTON_HOVER}`;
 
 /**
  * Same recipe as SECONDARY_BUTTON, but 44px tall on every breakpoint instead of shrinking to
  * 36px on desktop. For controls outside the planner -- the homepage subscribe button -- where
  * the 44px hit target is a fixed requirement, not just a phone-only minimum.
  */
-export const SECONDARY_BUTTON_FIXED = `rounded-control inline-flex h-11 items-center border button-label ${SECONDARY_BUTTON_HOVER} ${FIXED_BUTTON_DISABLED}`;
+export const SECONDARY_BUTTON_FIXED = `rounded-field inline-flex h-11 items-center border button-label ${SECONDARY_BUTTON_HOVER} ${FIXED_BUTTON_DISABLED}`;
 
 /**
  * The primary button: the same recipe in the round-5 teal, for the single action a page is for
@@ -41,10 +41,10 @@ export const SECONDARY_BUTTON_FIXED = `rounded-control inline-flex h-11 items-ce
  * Callers add their own horizontal padding.
  */
 export const PRIMARY_BUTTON =
-  'rounded-control border-teal-edge bg-teal text-strong hover:bg-teal-edge inline-flex h-11 items-center border button-label md:h-9';
+  'rounded-field border-teal-edge bg-teal text-strong hover:bg-teal-edge inline-flex h-11 items-center border button-label md:h-9';
 
 /** PRIMARY_BUTTON at 44px on every breakpoint, as SECONDARY_BUTTON_FIXED is to SECONDARY_BUTTON. */
-export const PRIMARY_BUTTON_FIXED = `rounded-control border-teal-edge bg-teal text-strong hover:bg-teal-edge inline-flex h-11 items-center border button-label ${FIXED_BUTTON_DISABLED}`;
+export const PRIMARY_BUTTON_FIXED = `rounded-field border-teal-edge bg-teal text-strong hover:bg-teal-edge inline-flex h-11 items-center border button-label ${FIXED_BUTTON_DISABLED}`;
 
 /**
  * The four states a talent cell is read at a glance by, from design/DESIGN-SYSTEM.md

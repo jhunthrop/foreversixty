@@ -83,11 +83,10 @@ describe('guide content structure', () => {
   });
 
   it.each(specGuides.map((g) => [g.id, g] as const))(
-    '%s opens with a summary sentence and Strengths, Weaknesses and In a raid blocks',
+    '%s opens on its Strengths, Weaknesses and In a raid blocks, no opening blurb',
     (id, guide) => {
-      const overview = splitOverview(splitSpecSections(guide.body).get('Overview') ?? '');
-      expect(overview.summary, `${id}: no summary sentence`).not.toBe('');
-      expect(overview.summary.split(/\s+/).length, `${id}: summary too long`).toBeLessThanOrEqual(30);
+      // splitOverview throws on a "<Spec> is the" line or any text before the first block (owner 2026-11-09).
+      const overview = splitOverview(splitSpecSections(guide.body).get('Overview') ?? '', id);
       const bullets = (markdown: string) => markdown.split('\n').filter((line) => line.startsWith('- '));
       expect(bullets(overview.strengths).length, `${id}: strengths`).toBeGreaterThanOrEqual(3);
       expect(bullets(overview.strengths).length, `${id}: strengths`).toBeLessThanOrEqual(4);

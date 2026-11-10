@@ -98,7 +98,7 @@
 
 <div
   bind:this={box}
-  class="plot-box rounded-control wide:aspect-[2/1] relative aspect-[3/2] w-full max-w-full sm:aspect-[16/5]"
+  class="plot-box rounded-field wide:aspect-[2/1] relative aspect-[3/2] w-full max-w-full sm:aspect-[16/5]"
   style="touch-action: pan-y"
   role="group"
   tabindex="0"

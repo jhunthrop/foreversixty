@@ -44,8 +44,6 @@ sources:
 
 ## Overview
 
-Protection is the shield tank: Defensive Stance all fight, Shield Slam and Revenge for threat, Shield Block and Thunder Clap against every hit, Sunder Armor in between.
-
 ### Strengths
 
 - Revenge is huge threat for almost no rage, and Shield Slam carries a very high amount of threat

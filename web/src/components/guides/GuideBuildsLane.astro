@@ -71,7 +71,7 @@ const rankText = (talent: KeyTalentRef): string =>
 )}
 {keyTalents.length > 0 && (
   <LaneBlock label={guidesCopy.keyTalents} testid="guide-key-talents">
-    <div class="guide-lane-rows">
+    <div class="guide-lane-rows" data-wrap-list>
       {keyTalents.map((entry) => {
         const [leadTalent] = entry.talents;
         return (

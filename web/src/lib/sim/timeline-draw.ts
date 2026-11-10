@@ -36,17 +36,17 @@ const RESOURCE_INSET = 8;
 
 const COLOUR = {
   cooldown: 'var(--color-text)',
-  crit: 'var(--color-gold-light)',
+  crit: 'var(--color-cream-2)',
   missed: 'var(--color-muted)',
   buff: 'var(--color-text)',
-  debuff: 'var(--color-gold-deep)',
+  debuff: 'color-mix(in srgb, var(--color-gold) 72%, black)',
   grid: inkCss(CHART_INK.grid),
   pullLine: inkCss(CHART_INK.frame),
   capLine: inkCss(CHART_INK.frame),
   resource: inkCss(CHART_INK.accent),
   pull: inkCss(CHART_INK.highlight),
   label: inkCss(CHART_INK.label),
-  ember: 'var(--color-ember)',
+  ember: 'var(--color-warn)',
   stack: 'var(--color-strong)',
 } as const;
 const WASH = inkCss(CHART_INK.warn);

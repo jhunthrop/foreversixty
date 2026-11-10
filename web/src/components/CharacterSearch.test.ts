@@ -25,7 +25,7 @@ describe('CharacterSearch', () => {
   it('is a Section titled Look up a character, the #lookup target, with no card', () => {
     expect(html).toMatch(/<section id="lookup"[^>]*data-region="section-look-up-a-character"/);
     expect(html).toMatch(/<h2[^>]*>Look up a character<\/h2>/);
-    expect(html).not.toMatch(/card-surface|rounded-panel|bg-raised/);
+    expect(html).not.toMatch(/card-surface|rounded-plate|bg-raised/);
     expect(html).toContain('data-character-search-primary');
   });
 

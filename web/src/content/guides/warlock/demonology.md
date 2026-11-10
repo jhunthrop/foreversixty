@@ -25,8 +25,6 @@ sources:
 
 ## Overview
 
-Demonology sacrifices the Imp for 15% Shadow damage, keeps a Succubus out for 10% more, and casts Shadow Bolt from the pull to the kill.
-
 ### Strengths
 
 - The most Shadow bonuses of any warlock build at once: the Imp sacrifice, Master Demonologist and Soul Link, plus Demonic Knowledge's spell damage

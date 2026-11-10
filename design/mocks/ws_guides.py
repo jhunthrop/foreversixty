@@ -22,7 +22,7 @@ from pathlib import Path
 from mocklib import CLASS_COLOR
 from ws_prims import (Button, ClassSpecPicker, Facts, ItemRow, LaneBlock, LevelSlider, Link, Menu, Page, PageHeader, Plate, PlateColumns,
                       Prose, ReadingPanel, ReadingSection, Row, RowGrid, Rows, RowsSlim, Section, Skeleton, StatRow, StatTable, Tag, TalentTrees, Toc,
-                      build_page, control_bar, crest_img, icon, seg, sel, write, REGION, Meter, QCOL)
+                      build_page, control_bar, crest_img, icon, seg, sel, write, REGION, Meter, QCOL, ItemTip, PaperdollFrame, reading_wrap_script)
 
 HERE = Path(__file__).resolve().parent
 F = json.loads(Path(os.environ.get('FS_GUIDES_FACTS') or HERE / 'data' / 'guides-facts.json').read_text())
@@ -137,7 +137,7 @@ def talents(g: dict) -> str:
     for k in t['keyTalents']:
         names = ' &middot; '.join(f'{e(x["name"])} <span class="t-small">{" &middot; ".join(e(r) for r in x["rankText"])}</span>' for x in k['talents'])
         keys.append(Row(names, e(k['why']), lead=icon(k['talents'][0].get('icon') or '', 32), link=False))
-    lane = LaneBlock(PROPOSED['builds'], RowsSlim(rows) + diff) + LaneBlock(e(C['keyTalents']), Rows(keys, True))
+    lane = LaneBlock(PROPOSED['builds'], RowsSlim(rows) + diff) + LaneBlock(e(C['keyTalents']), wrap_list(Rows(keys, True)))
     return ReadingSection(SEC['talents-and-builds'], Prose(t['prose']), lane, 'talents-and-builds')
 
 
@@ -150,7 +150,7 @@ def rotation(g: dict, lists: dict | None = None) -> str:
         if any(x.get('raidBuildOnly') for k in ('opener', 'priority', 'cooldowns') for x in lists[k]):
             notes += f'<p class="t-small">{e(C["raidBuildLegend"])}</p>'
         blocks = [(C['opener'], lists['opener'], True), (C['priority'], lists['priority'], True), (C['cooldowns'], lists['cooldowns'], False)]
-        lane = notes + ''.join(LaneBlock(e(t), RowsSlim([spell_row(x, str(i + 1) if num else '') for i, x in enumerate(items)])) for t, items, num in blocks if items)
+        lane = notes + ''.join(LaneBlock(e(t), wrap_list(RowsSlim([spell_row(x, str(i + 1) if num else '') for i, x in enumerate(items)]))) for t, items, num in blocks if items)
     return ReadingSection(SEC['rotation-and-priority'], Prose(r['prose']), lane, 'rotation-and-priority')
 
 
@@ -167,10 +167,13 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
             cap += f'<p class="t-small">{e(t["expertiseCap"]["text"])}</p>'
         table = StatTable([('', False), (e(F['markup']['statHead']), False), ('', False), (e(t['weightHead']), True), (e(t['perPointHead']), True)],
                           stat_rows(rows, False, True), 2, open_=True)
+        # the built StatTable `wrap`: its rows may wrap under the prose, the head row repeated
+        table = wrap_list(table).replace('<div class="st-h stc" role="row">', '<div class="st-h stc" role="row" data-wrap-repeat>', 1)
         notes = ''.join(f'<p class="t-small">{e(x)}</p>' for x in [t.get('unitLine'), t.get('ratingNote'), *t['notes']] if x)
-        lane = LaneBlock(e(C['statPriorityRailLabel']), cap + table + notes)
+        notes = f'<div class="gnotes" data-wrap-list>{notes}</div>' if notes else ''
+        lane = f'<div class="gstat">{LaneBlock(e(C["statPriorityRailLabel"]), cap + table + notes)}</div>'
     else:   # no weights for the spec: the guide's own order, unnumbered weights absent (the shipped fallback)
-        lane = LaneBlock(e(C['statPriorityRailLabel']), RowsSlim([Row(e(x), rank=str(i + 1), link=False) for i, x in enumerate(g['statPriority'])]))
+        lane = LaneBlock(e(C['statPriorityRailLabel']), wrap_list(RowsSlim([Row(e(x), rank=str(i + 1), link=False) for i, x in enumerate(g['statPriority'])])))
     return ReadingSection(SEC['stat-priority'], Prose(s['prose']), lane, 'stat-priority')
 
 
@@ -179,22 +182,55 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
     lane = ''
     if data and b['data']:
         panel = next(p for p in b['data']['panels'] if p['band'] == band_no and p['faction'] == faction)
-        items = []
+        items, weapons = [], []
         for r in panel['rows']:
+            out = weapons if r['slot'] in ('main_hand', 'off_hand', 'ranged') else items
             if r.get('empty'):
                 # an empty slot names no item: its line is not a tooltip trigger (the built ItemRow's empty state)
-                items.append(ItemRow(f'<span class="muted">{e(r.get("emptyCopy") or "")}</span>', 1, '<span class="ic" style="width:36px;height:36px"></span>', '', e(r['slotLabel']))
-                             .replace(' role="button" tabindex="0"', '', 1))
+                out.append(ItemRow(f'<span class="muted">{e(r.get("emptyCopy") or "")}</span>', 1, '<span class="ic" style="width:36px;height:36px"></span>', '', e(r['slotLabel']))
+                           .replace(' role="button" tabindex="0"', '', 1))
                 continue
-            items.append(ItemRow(e(r['itemName']), r['quality'], icon(r['icon'], 36, QUAL.get(r['quality'], '')), e(r['sourceDetail']), e(r['slotLabel'])))
+            out.append(ItemRow(e(r['itemName']), r['quality'], icon(r['icon'], 36, QUAL.get(r['quality'], '')), e(r['sourceDetail']), e(r['slotLabel'])))
         caption = panel['caption']
-        note = f'<p class="t-small">{e(C["preRaidNote"])}</p>' if band_no == 60 else ''
-        lane = LaneBlock(e(F['fns']['levelRangeLabel'][str(band_no)]), f'<div class="items">{"".join(items)}</div>' + note, e(caption))
+        note = ''   # at 60 the doll's title bar says pre-raid and whose picks they are
+        lane = LaneBlock(e(F['fns']['levelRangeLabel'][str(band_no)]), f'<div class="items" data-wrap-list><div class="gblk">{"".join(items)}</div>' + (f'<div class="gblk">{"".join(weapons)}</div>' if weapons else '') + '</div>' + note, '' if band_no == 60 else e(caption))
     lane += f'<p>{Link(rsaquo(C["fullListLink"]))}</p>'
     # Every band's own BiS page and the role's tier list (SEO lane 2026-11-08), one quiet block under the full list.
     bands = ''.join(Link(e(s)) for s in F['fns']['bandSlugs'])
     lane += f'<p class="t-small gbands">{e(C["bisByLevelLabel"])}{bands}</p><p class="gtier">{Link(rsaquo(C["tierListLink"]))}</p>'
-    return ReadingSection(SEC['best-in-slot'], Prose(b['prose']), lane, 'best-in-slot')
+    # one block, as the built GuideBisLane: its rows and links 28 px apart, and the links may wrap under the prose
+    lane = f'<div class="gbis" data-wrap-list>{lane}</div>'
+    return ReadingSection(SEC['best-in-slot'], Prose(b['prose']) + guide_doll(g, faction) if data and b['data'] else Prose(b['prose']), lane, 'best-in-slot',
+                          prose_first=True)
+
+
+def wrap_list(html: str) -> str:
+    """Marks the list whose rows may wrap under the prose (the built lanes' `data-wrap-list`)."""
+    i = html.index('>')
+    return html[:i] + ' data-wrap-list' + html[i:]
+
+
+QUALITY_NAME = {0: 'poor', 1: 'common', 2: 'uncommon', 3: 'rare', 4: 'epic', 5: 'legendary'}
+
+
+def guide_doll(g: dict, faction: str) -> str:
+    """The Best in slot doll (web guides/GuideBisDoll.svelte): the level 60 picks on the shared PaperdollFrame in the prose
+    column, the first pick's client tooltip in its centre; under the frame's 423 px it steps aside (the lane lists the picks)."""
+    panel = next(p for p in g['bis']['data']['panels'] if p['band'] == 60 and p['faction'] == faction)
+    picks = [r for r in panel['rows'] if not r.get('empty')]
+    slots = [{'slot': r['slot'], 'label': f"{r['slotLabel']}: {r['itemName']}", 'covered': False, 'selected': i == 0,
+              'icon': r['icon'], 'quality': r['quality']} for i, r in enumerate(picks)]
+    # A two-hander shows greyed in the empty off hand (the built doll's coveredBy): the off hand's own line names it.
+    main = next((r for r in picks if r['slot'] == 'main_hand'), None)
+    off = next((r for r in panel['rows'] if r['slot'] == 'off_hand' and r.get('empty')), None)
+    if main and off and (off.get('emptyCopy') or '').startswith(f"{main['itemName']} is a two-hander"):
+        slots.append({'slot': 'off_hand', 'label': f"{off['slotLabel']}: {main['itemName']}, two-handed", 'covered': True, 'selected': False,
+                      'icon': main['icon'], 'quality': main['quality']})
+    first = picks[0]
+    centre = ItemTip(first['itemName'], QUALITY_NAME.get(first['quality'], 'common'), [], [], first['sourceDetail'])
+    meta = f"{'Pre-raid ' if panel['preRaid'] else ''}60 · {panel['raceName']}"
+    doll = PaperdollFrame(slots, g['title'], meta, None, centre, f"{g['title']} best in slot, level 60", heading='h2')
+    return f'<div class="gdoll"><div class="gdoll-f">{doll}</div></div>'
 
 
 def extras(g: dict, data: bool = True) -> str:
@@ -210,8 +246,8 @@ def extras(g: dict, data: bool = True) -> str:
             else:
                 r = line['row']
                 rows.append(Row(e(r['name']), e(r['gives']), lead=icon(r.get('icon') or '', 28), link=False))
-        lane = (LaneBlock(e(C['enchants']), f'<p class="t-small">{e(C["enchantsNote"])}</p>' + ench)
-                + LaneBlock(e(C['consumables']), RowsSlim(rows)))
+        lane = (LaneBlock(e(C['enchants']), f'<p class="t-small">{e(C["enchantsNote"])}</p>' + wrap_list(ench))
+                + LaneBlock(e(C['consumables']), wrap_list(RowsSlim(rows))))
     return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables')
 
 
@@ -225,7 +261,7 @@ def races(g: dict) -> str:
             rows.append(Row(e(x['name']), title_color=FACTION[x['faction']],
                             trail=Tag(e(C['recommendedTag'])) if x['recommended'] else '', link=False, foot=foot))
         head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
-        body += f'<h4 class="t-label sub-h">{e(head)}</h4>' + Rows(rows, True)
+        body += f'<div class="grace"><h4 class="t-label sub-h">{e(head)}</h4>' + wrap_list(Rows(rows, True)) + '</div>'
     lines = ''.join(f'<p class="t-small">{e(t)}</p>' for t in r['lines'])
     return ReadingSection(SEC['races'], Prose(r['prose']), LaneBlock(e(C['racialsColumn']), body + lines), 'races')
 
@@ -250,11 +286,6 @@ def sources(g: dict) -> str:
         seen.add(s['url'])
         rows.append(Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')))
     return Section(PROPOSED['sources'], RowsSlim(rows), boxed=True)
-
-
-def lede(text: str) -> str:
-    """components/guides/GuideLede: the page's one sentence on the ground under the band."""
-    return f'<p class="g-lede">{e(text)}</p>' if text else ''
 
 
 def reading_page(top: str, toc: str, body: str) -> str:
@@ -290,12 +321,12 @@ def spec_page(gid: str, kind: str = 'out', me_key: str = '', level: int = 60, op
     body = (ReadingPanel(''.join(sections)) + sources(g)
             + f'<p class="t-small foot-note" data-region="{REGION["footer_note"]}">{e(F["fns"]["dataSourceLine"])}</p>')
     toc = Toc(e(C['tocBarLabel']), [(e(s['title']), s['id']) for s in F['sections']], 'overview')
-    html = head + spec_bar(g, open_m) + reading_page(lede(g['summary']) + band(gp), toc, body) + PAGE_CSS
+    html = head + spec_bar(g, open_m) + reading_page(band(gp), toc, body) + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     note = (f'Guide mock (design/specs/2026-11-08-guides.md), built only from ws_prims, read from guides-facts.json (build {F["build"]}). '
             + ('Partial-data state: rotation, weights, BiS and extras removed (FORCED; no spec lacks them at this build). ' if partial else '')
             + (f'Signed in: {me["name"]} ({me["identity"]}, {me["level_line"]}), a home fixture' + (' (derived, see guides_facts.mjs).' if me_key in ('survival34', 'mage60') else '.') if me else ''))
-    return build_page(f'{g["title"]} guide', html, 'Guides', who, note)
+    return build_page(f'{g["title"]} guide', html + reading_wrap_script(), 'Guides', who, note)
 
 
 # ------------------------------------------------------------------------------------------------ the class landing
@@ -371,13 +402,15 @@ def states_page() -> str:
 
 
 PAGE_CSS = '''<style>
+.gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.grace{display:contents}.gblk{display:flex;flex-direction:column}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll .gdoll-f{margin-top:0}
+.gdoll{container-type:inline-size}.gdoll-f{max-width:640px;margin-top:24px}@container (max-width:422.98px){.gdoll-f{display:none}}
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}
 .ans-links{display:flex;gap:4px 16px;flex-wrap:wrap}
 .gbands{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:-16px}.gtier{margin-top:-16px}
 @media(min-width:900px){.ans-row{flex-direction:row-reverse}.ans-who{align-items:flex-end}.ans-links{justify-content:flex-end}}
 .g-read{padding-top:28px}.layout-reading{row-gap:var(--section-gap)}.g-top{grid-column:1/-1;display:flex;flex-direction:column;gap:22px;min-width:0}
-.g-lede{margin:0;max-width:var(--measure-reading);font-size:16px;line-height:25px;color:var(--text)}
+
 .g-ledger{display:flex;flex-direction:column;gap:22px}
 .g-specs{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
 @media(min-width:1024px){.g-specs{grid-template-columns:repeat(var(--specs),minmax(0,1fr))}}
