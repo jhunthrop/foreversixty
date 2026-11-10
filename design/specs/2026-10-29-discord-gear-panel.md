@@ -315,7 +315,7 @@ The channel asks: "What is this build, or this character, wearing, at a glance?"
 | Centre column | x 264, w 72, y 92 to 660, contents vertically centred | Crest 64 x 64 (native 128 px). `/bis`: `Level {n}` Barlow 600 14/17 `--color-strong`, then `{range}` Barlow 400 13/16 muted. `/char`: `ITEM LEVEL` Barlow 600 11/13 tracking 0.12em muted, then `{ilvl}` (whole level, as the panel) Cinzel 700 22/26 gold. Then the faction mark 32 x 32 and `Alliance` or `Horde`, Barlow 600 13/16, `--color-alliance` #6fb1ff or `--color-horde` #ff6b5c |
 | Weapons, row 9 | y 668: Main hand at x 16 (left style), Off hand at x 344 (right style) | |
 | Weapons, row 10 | y 740: Ranged centred, x 180, w 240 (left style) | |
-| Footer | 16, 814, 568, 16 | Barlow 400 13/16 muted. `/bis` left: `Updated {d Mon yyyy}` (the band file's `generated_at`). `/char` left: `Gold: gain over what is worn, {band label}`, and nothing on the right: the shared sheet never prints a sync date (ruling B11) |
+| Footer | 16, 814, 568, 16 | Barlow 400 13/16 muted. `/bis` left: `Updated {d Mon yyyy}` (the band file's `generated_at`). `/char` left: `Green: gain over what is worn, {band label}`, and nothing on the right: the shared sheet never prints a sync date (ruling B11) |
 
 **A cell** is 240 x 64, a fixed height. It holds a socket and a text block, gap 8, so the text block is 196 wide.
 - Socket: 36 x 36, radius 4, black fill, 2 px ring in `--color-rarity-*`, icon 32 x 32 logical (its native 64 px).
@@ -416,7 +416,7 @@ The `/bis` sheet always shows all 17 slots. A shared `/bis slot:{slot}` answer p
 | A public image URL for the sheet | Rejected | The attachment is a snapshot that cannot drift, survives our outages, and exposes no player's gear at a guessable URL. Public URLs are used only for the tiles, which are public item art. |
 
 Assets:
-- **Fonts:** Cinzel 700 and Barlow 400 and 600 TTF (OFL), `go:embed`, fetched by `make sheet-fonts` from the site's `@fontsource` packages. The site's woff2 subsets are cut to the site's glyphs, so the renderer embeds full Latin TTFs.
+- **Fonts:** superseded 2026-11-09 (round 5): the site's own Open Sans 400/600/700 and Marcellus 400 subsets as TTF in `api/internal/brand/fonts` (`make brand-fonts`), shared with the link previews.
 - **Crests** (9 x 128), the faction marks (72 px) and the seal: copied by `make sheet-assets` from `web/public` into `api/internal/sheet/assets` and embedded. Copied, never redrawn; a test compares hashes.
 - **Item icons:** read from `data/builds/{build}/icons/` (1,704 files, 6.7 MB). The image already carries them: `api/Dockerfile`'s `COPY data/builds /data` puts every build's `icons/` at `/data/{build}/icons`, and `Dockerfile.dockerignore` does not exclude them. A missing icon becomes the question mark (`op sheet_icon_missing` on the tiles route).
 - **No game art is resampled up.** Icons draw at 64 px; the crest at 128 px (64 logical); the faction mark 72 to 64; the seal 400 to 56.
@@ -467,7 +467,7 @@ Strings live in `lookupCopy` and `guideCopy`; tests read each string back from t
 | `sheet.none` | `{Slot} · No pick` |
 | `sheet.mark` | `foreversixty.gg` |
 | `sheet.updated` | `Updated {d Mon yyyy}` |
-| `sheet.char.gold` | `Gold: gain over what is worn, {band label}` |
+| `sheet.char.gold` | `Green: gain over what is worn, {band label}` |
 | `sheet.alt.bis` | `Best in slot sheet, {Spec} {Class}, {band label}, {Faction}. {Slot}: {Item}; …` |
 | `sheet.alt.char` | `Character sheet, {Name}, level {n} {Spec} {Class}, {Guild}. {Slot}: {Item}, {gain} available; …` |
 | `sheet.alt.offhand` | `Off hand: none, two-handed main hand` |
@@ -523,7 +523,7 @@ B4. Game art is drawn at native size or smaller, never upscaled.
 
 B5. A sheet that fails to render degrades to the panel, public, and is logged.
 
-B6. The `/char` gold legend says what the figure is: `Gold: gain over what is worn, {band label}`. The ruled wording, "Gain over the next best in the level 60 Phase 1 raid", describes the `/bis` panel's figure (which says so in its header line), not the sheet's, and tenet 8 forbids a label that misstates a number.
+B6. The `/char` gold legend says what the figure is: `Green: gain over what is worn, {band label}`. The ruled wording, "Gain over the next best in the level 60 Phase 1 raid", describes the `/bis` panel's figure (which says so in its header line), not the sheet's, and tenet 8 forbids a label that misstates a number.
 
 B7. Item 9533 is `Masons Fraternity Ring` in `items.json`, the class table and the client. It is drawn as the data names it.
 

@@ -21,8 +21,6 @@ const (
 	maxMostDeaths = 3
 	// reportChoices is how many done raids the raid option suggests.
 	reportChoices = 10
-	// doneGreen is #7fd48a, a done raid and its report.
-	doneGreen = 8377482
 	// fieldValueMax is Discord's field value limit.
 	fieldValueMax = 1024
 	// reportAnchor is the raid page's report section.
@@ -123,7 +121,7 @@ func (s *Service) reportMessage(ctx context.Context, guildID int64, viewer *int6
 	if ans.Member {
 		embeds = append(embeds, s.lootEmbeds(ans.Report, link)...)
 	}
-	closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
+	s.closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
 	button := Component{Kind: KindButton, Style: StyleLink, Label: officerCopy.OpenReport, URL: link}
 	return Message{Embeds: embeds, Components: []ActionRow{{button}}}, ans, true, nil
 }

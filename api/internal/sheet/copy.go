@@ -9,7 +9,9 @@ import (
 // words the panel shares). Tests read each one back from the spec.
 const (
 	CopyBisKicker   = "Best in slot"                         // sheet.bis.kicker
-	CopyItemLevel   = "Item level"                           // sheet.char.ilvl, drawn uppercase
+	CopyItemLevel   = "Item level"                           // sheet.char.ilvl
+	CopyLevel       = "Level"                                // sheet.bis.level, over the band's level
+	CopyBrand       = "Forever Sixty"                        // sheet.brand, beside the seal
 	CopyEmpty       = "Empty"                                // sheet.empty
 	CopyUpgrade     = "Upgrade available"                    // sheet.upgrade
 	CopyNone        = "No pick"                              // sheet.none

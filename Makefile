@@ -465,36 +465,28 @@ bis: simdb
 	    echo "::error title=leveling-bis::$$failed; their previous files stand"; \
 	  fi
 
-.PHONY: sheet-fonts
-# sheet-fonts fetches the Discord character sheet's faces (spec
-# design/specs/2026-10-29-discord-gear-panel.md, Part C) into
-# api/internal/sheet/fonts, where the renderer go:embeds them: Barlow 400 and
-# 600 and Cinzel 700, full Latin TTFs. The site's woff2 files are cut to the
-# site's own glyphs and x/image cannot read woff2, so the TTFs come from the
-# Fontsource CDN at the exact version web/package-lock.json installs, and the
-# OFL licence from that same version's npm package. Run once and commit; it
-# never runs in CI.
-SHEET_FONTS_DIR := api/internal/sheet/fonts
-sheet-fonts:
-	@mkdir -p $(SHEET_FONTS_DIR)
-	@set -e; tmp=$$(mktemp -d); trap 'rm -rf "$$tmp"' EXIT; \
-	for spec in barlow:400:Barlow-Regular barlow:600:Barlow-SemiBold cinzel:700:Cinzel-Bold; do \
-	  pkg=$${spec%%:*}; rest=$${spec#*:}; weight=$${rest%%:*}; file=$${rest#*:}; \
-	  ver=$$(node -p "require('./web/package-lock.json').packages['node_modules/@fontsource/$$pkg'].version"); \
-	  curl -sfL -o $(SHEET_FONTS_DIR)/$$file.ttf "https://cdn.jsdelivr.net/fontsource/fonts/$$pkg@$$ver/latin-$$weight-normal.ttf"; \
-	  echo "$$file.ttf  @fontsource/$$pkg@$$ver latin $$weight"; \
-	  (cd "$$tmp" && npm pack --silent "@fontsource/$$pkg@$$ver" >/dev/null && tar -xzf "fontsource-$$pkg-$$ver.tgz" package/LICENSE); \
-	  cp "$$tmp/package/LICENSE" $(SHEET_FONTS_DIR)/OFL-$$pkg.txt; \
-	done
+.PHONY: brand-fonts
+# brand-fonts writes the Go renderers' faces (the Discord sheet and tiles,
+# the build and report link previews) into api/internal/brand/fonts: the
+# site's own round-5 subsets (Open Sans 400/600/700, Marcellus 400) from
+# web/src/assets/fonts, unwrapped from woff2 to TTF because x/image reads no
+# woff2, with their OFL licences. Needs fontTools and brotli. Run after the
+# site's subsets change and commit the result; it never runs in CI.
+brand-fonts:
+	python3 -I tools/fonts/brand_fonts.py
 
 .PHONY: sheet-assets
-# sheet-assets copies the sheet's site art into api/internal/sheet/assets,
-# byte for byte (spec Part C: copied, never redrawn; the package's tests
-# compare hashes with web/public): the nine 128 px HD crests, the two 72 px
-# faction marks, and the 400 px seal.
+# sheet-assets copies the site art the Go renderers draw, byte for byte (the
+# packages' tests compare hashes with the sources): into
+# api/internal/sheet/assets the nine 128 px HD crests and the two 72 px
+# faction marks; into api/internal/brand/art the 400 px seal (seal v4), the
+# brown ground tile, the 1200 px blue band, the link preview art and the lead panel's corner
+# ornament (design/assets/ornaments/corner-filigree.svg).
 SHEET_ASSETS_DIR := api/internal/sheet/assets
+BRAND_ART_DIR := api/internal/brand/art
 sheet-assets:
-	@mkdir -p $(SHEET_ASSETS_DIR)/crests $(SHEET_ASSETS_DIR)/faction
+	@mkdir -p $(SHEET_ASSETS_DIR)/crests $(SHEET_ASSETS_DIR)/faction $(BRAND_ART_DIR)
 	cp web/public/icons/hd/crests/*.webp $(SHEET_ASSETS_DIR)/crests/
 	cp web/public/icons/hd/faction/alliance.webp web/public/icons/hd/faction/horde.webp $(SHEET_ASSETS_DIR)/faction/
-	cp web/public/seal-400.png $(SHEET_ASSETS_DIR)/seal-400.png
+	cp web/public/seal-400.png web/public/art/ground.webp web/public/art/band-1200.webp web/public/art/og-art.jpg $(BRAND_ART_DIR)/
+	cp design/assets/ornaments/corner-filigree.svg $(BRAND_ART_DIR)/

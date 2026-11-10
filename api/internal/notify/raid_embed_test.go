@@ -22,7 +22,7 @@ const (
 	wireHead   = `{"username":"Forever Sixty","avatar_url":"https://foreversixty.gg/seal-400.png","embeds":[`
 	wireTail   = `],"allowed_mentions":{"parse":[]}}`
 	raidLink   = `"url":"https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7",`
-	raidFoot   = `"footer":{"text":"Olympus XXVII · Forever Sixty"},"thumbnail":{"url":"https://api.foreversixty.gg/v1/guilds/7/crest.webp?v=abc"},"timestamp":"2026-10-25T18:30:00Z",`
+	raidFoot   = `"footer":{"text":"Olympus XXVII · Forever Sixty","icon_url":"https://foreversixty.gg/seal-400.png"},"thumbnail":{"url":"https://api.foreversixty.gg/v1/guilds/7/crest.webp?v=abc"},"timestamp":"2026-10-25T18:30:00Z",`
 	raidWhen   = `{"name":"When","value":"\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)","inline":true}`
 	raidSigned = `{"name":"Signed up","value":"**23 of 40**","inline":true}`
 )
@@ -40,7 +40,7 @@ func TestRaidEmbedsMatchTheCopyTable(t *testing.T) {
 			RaidPostedEmbed(onyxiaThursday(), fixedFinish),
 			`{"title":"Onyxia's Lair · Thursday 10 December","description":"Sign up on Forever Sixty.",` + raidLink +
 				`"fields":[` + raidWhen + `,{"name":"Guild time","value":"8:00 pm CST","inline":true},` + raidSigned + `],` +
-				raidFoot + `"color":15055189}`,
+				raidFoot + `"color":37810}`,
 		},
 		"moved": {
 			RaidChangedEmbed(moved, fixedFinish),
@@ -48,7 +48,7 @@ func TestRaidEmbedsMatchTheCopyTable(t *testing.T) {
 				raidLink + `"fields":[{"name":"When","value":"\u003ct:1797040800:F\u003e (\u003ct:1797040800:R\u003e)","inline":true},` +
 				`{"name":"Was","value":"\u003ct:1796954400:F\u003e","inline":true},` +
 				`{"name":"Guild time","value":"8:00 pm CST","inline":true},` + raidSigned + `],` +
-				raidFoot + `"color":15055189}`,
+				raidFoot + `"color":37810}`,
 		},
 		"cancelled": {
 			RaidChangedEmbed(cancelled, fixedFinish),

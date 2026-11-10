@@ -15,11 +15,7 @@ import (
 
 func testRenderer(t *testing.T) *renderer {
 	t.Helper()
-	r, err := newRenderer(testIcons())
-	if err != nil {
-		t.Fatal(err)
-	}
-	return r
+	return newRenderer(testIcons())
 }
 
 func fixtureSlot(t *testing.T, fixture, key string) Slot {
@@ -337,7 +333,6 @@ func fullAltOf(s Sheet) string { return altLead(s) + strings.Join(altSlots(s, tr
 func TestAssetsAreTheSitesBytes(t *testing.T) {
 	web := filepath.Join("..", "..", "..", "web", "public")
 	pairs := map[string]string{
-		"assets/seal-400.png":          filepath.Join(web, "seal-400.png"),
 		"assets/faction/alliance.webp": filepath.Join(web, "icons", "hd", "faction", "alliance.webp"),
 		"assets/faction/horde.webp":    filepath.Join(web, "icons", "hd", "faction", "horde.webp"),
 	}

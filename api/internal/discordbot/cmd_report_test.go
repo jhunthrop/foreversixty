@@ -199,8 +199,8 @@ func TestReportMemberAndOfficer(t *testing.T) {
 	if fields[segment(4)] != "10 items. The first 8:" {
 		t.Fatalf("loot = %q", fields[segment(4)])
 	}
-	if len(member.Message.Embeds) != 9 || member.Message.Embeds[1].Color != qualityColors[4] ||
-		member.Message.Embeds[8].Color == qualityColors[4] || !strings.Contains(member.Message.Embeds[1].Description, "to Pyrewisp · Onyxia") {
+	if len(member.Message.Embeds) != 9 || member.Message.Embeds[1].Color != qualityColor(4) ||
+		member.Message.Embeds[8].Color == qualityColor(4) || !strings.Contains(member.Message.Embeds[1].Description, "to Pyrewisp · Onyxia") {
 		t.Fatalf("loot embeds = %+v", member.Message.Embeds[1:])
 	}
 	if hasShare(member) || !member.Message.Ephemeral {

@@ -6,11 +6,13 @@ import (
 	"slices"
 	"strings"
 	"sync"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 )
 
 // socketMasks are the socket's outer shape and the icon's clip, drawn once.
 var socketMasks = sync.OnceValues(func() (*image.Alpha, *image.Alpha) {
-	return roundRectMask(int(d(sockW)), int(d(sockW)), d(sockR)), roundRectMask(int(d(iconW)), int(d(iconW)), d(sockR-ringW))
+	return brand.RoundRectMask(int(d(sockW)), int(d(sockW)), d(sockR)), brand.RoundRectMask(int(d(iconW)), int(d(iconW)), d(sockR-ringW))
 })
 
 // fitSlack is how far, in logical px, a line may run past the 196 px text box and still fit:
@@ -244,7 +246,7 @@ func (r *renderer) drawMetaAndGold(c cell, textX int, top float64, a align) erro
 		return err
 	}
 	tx, ty := at(float64(textX), top)
-	gold.drawAligned(r.img, colorGold, tx, d(textW), ty, a, c.gold)
+	gold.drawAligned(r.img, gainColor(c.gold), tx, d(textW), ty, a, c.gold)
 	return nil
 }
 
@@ -256,13 +258,13 @@ func (r *renderer) socket(c cell, x, y int) {
 	outer, inner := socketMasks()
 	inset := int(d(ringW))
 	if c.empty {
-		fillMask(r.img, p, outer, colorEmptyRing)
-		fillMask(r.img, p.Add(image.Pt(inset, inset)), inner, colorEmptyFill)
+		brand.FillMask(r.img, p, outer, colorEmptyRing)
+		brand.FillMask(r.img, p.Add(image.Pt(inset, inset)), inner, colorEmptyFill)
 		return
 	}
-	fillMask(r.img, p, outer, c.ring)
-	fillMask(r.img, p.Add(image.Pt(inset, inset)), inner, colorBlack)
-	placeImage(r.img, p.Add(image.Pt(inset, inset)), int(d(iconW)), int(d(iconW)), c.icon, inner)
+	brand.FillMask(r.img, p, outer, c.ring)
+	brand.FillMask(r.img, p.Add(image.Pt(inset, inset)), inner, colorBlack)
+	brand.PlaceImage(r.img, p.Add(image.Pt(inset, inset)), int(d(iconW)), int(d(iconW)), c.icon, inner)
 }
 
 // keepLastTogether joins the last two words into one unbreakable word, so "main hand" never
@@ -275,4 +277,13 @@ func keepLastTogether(words []word) []word {
 	joined := words[n-2]
 	joined.text += " " + words[n-1].text
 	return append(slices.Clone(words[:n-2]), joined)
+}
+
+// gainColor is a /char cell's last line's ink: a modelled gain ("+9.3 DPS") in the gain green, a
+// status the player acts on ("Gain not modelled yet") in gold.
+func gainColor(line string) color.RGBA {
+	if strings.HasPrefix(line, "+") {
+		return colorGain
+	}
+	return colorGold
 }

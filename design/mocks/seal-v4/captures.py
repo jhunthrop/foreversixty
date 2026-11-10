@@ -19,7 +19,7 @@ from playwright.sync_api import sync_playwright
 REPO = Path(__file__).resolve().parents[3]
 OUT = REPO / 'design/reviews/2026-11-09-seal-v4'
 MOCK = REPO / 'design/mocks/web/web-home-60.html'
-FONT = REPO / 'api/internal/sheet/fonts/Barlow-SemiBold.ttf'
+FONT = REPO / 'api/internal/brand/fonts/OpenSans-SemiBold.ttf'
 VIEWPORT = {'width': 1440, 'height': 900}
 TAB_GROUNDS = (('dark', '#35363a', '#202124', '#e8eaed'), ('light', '#ffffff', '#dee1e6', '#202124'))
 ADDON_GROUND = (14, 12, 10)

@@ -232,8 +232,8 @@ func TestColoursAreTheSiteTokens(t *testing.T) {
 		}
 	}
 	for q, word := range qualityWords {
-		if want := token("color-rarity-" + strings.ToLower(word)); qualityColors[q] != want {
-			t.Errorf("%s = %06x, want %06x", word, qualityColors[q], want)
+		if want := token("color-rarity-" + strings.ToLower(word)); qualityColor(q) != want {
+			t.Errorf("%s = %06x, want %06x", word, qualityColor(q), want)
 		}
 	}
 }

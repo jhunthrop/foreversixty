@@ -4,9 +4,15 @@ import (
 	"image"
 	"image/color"
 	"strconv"
+	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 )
 
-// The geometry of spec §B.3, in logical px; the PNG is drawn at scale 2.
+// The geometry in logical px (round 5, design/specs/2026-11-09-directions.md); the PNG is drawn
+// at scale 2. The sheet is the site's character page in small: the blue title band across the
+// top, then the brown ground with the gear on one card, the card's frame and corners marking it
+// as the sheet's one lead panel, and the footer line on the ground under it.
 const (
 	scale = 2
 
@@ -14,11 +20,17 @@ const (
 	Width  = sheetW * scale
 	Height = sheetH * scale
 
-	sheetW = 600
-	sheetH = 844
-	border = 1 // the surface's 1 px line; positioned content starts inside it, as in CSS
-	pad    = 16
-	row0   = 92
+	sheetW = edge*2 + inset*2 + cellW*2 + centre // 632
+	sheetH = footerY + footerLH + edge           // 896
+
+	bandH   = 76 // the title band
+	edge    = 12 // the ground around the card
+	inset   = 28 // the card's padding: the corner ornaments sit in it
+	cardTop = bandH + edge
+	cornerW = 44 // the ornaments at the site's small size
+
+	pad    = edge + inset // the slots' left edge
+	row0   = cardTop + inset
 	pitch  = 72
 	cellW  = 240
 	cellH  = 64
@@ -30,21 +42,26 @@ const (
 	textW  = cellW - sockW - gap // 196
 	centre = 72
 
-	nameTopNudge = -2 // the name's line box sits 2 px above the cell (the mock's margin-top)
+	nameTopNudge = -2 // the name's line box sits 2 px above the cell
 	nameMaxPx    = 20
 	nameMinPx    = 14
 	nameLH       = 24
 	nameTwoLH    = 17
 	metaLH       = 20
 
-	weaponsRow = row0 + pitch*8 // 668
-	rangedRow  = row0 + pitch*9 // 740
+	weaponsRow = row0 + pitch*8
+	rangedRow  = row0 + pitch*9
+	cardBottom = rangedRow + cellH + inset
 	rightX     = sheetW - pad - cellW
 	rangedX    = (sheetW - cellW) / 2
 	centreX    = (sheetW - centre) / 2
-	centreH    = pitch*7 + cellH // 568: y 92 to 660
-	ruleY      = 76
-	footerY    = sheetH - 30
+	centreH    = pitch*7 + cellH
+	footerY    = cardBottom + 10
+	footerLH   = 18
+
+	bandCrest = 44 // the class crest leading the band
+	bandSeal  = 40 // the seal closing it, as the site's nav bar draws it
+	bandPadX  = 20
 )
 
 // The frame's columns without Shirt and Tabard (spec §B.2), both top-aligned as in the game:
@@ -54,29 +71,33 @@ var (
 	rightColumn = []string{"hands", "waist", "legs", "feet", "finger1", "finger2", "trinket1", "trinket2"}
 )
 
-// The text styles of spec §B.3.
+// The text styles: Marcellus for the title and the big figure, Open Sans for every other word,
+// with no letter spacing (round 5's tracking.label is 0 on the web).
 var (
-	styleKicker  = style{face: barlow600, size: 12, lineHeight: 15, trackingEm: 0.12, upper: true}
-	styleTitle   = style{face: cinzel700, size: 24, lineHeight: 30, trackingEm: 0.01}
-	styleMark    = style{face: barlow400, size: 13, lineHeight: 16}
-	styleFooter  = style{face: barlow400, size: 13, lineHeight: 16}
-	styleMeta    = style{face: barlow400, size: 16, lineHeight: metaLH}
-	styleGold    = style{face: barlow600, size: 16, lineHeight: metaLH}
-	styleNameTwo = style{face: barlow600, size: nameMinPx, lineHeight: nameTwoLH}
-	styleLevel   = style{face: barlow600, size: 14, lineHeight: 17}
-	styleRange   = style{face: barlow400, size: 13, lineHeight: 16}
-	styleILvlLab = style{face: barlow600, size: 11, lineHeight: 13, trackingEm: 0.12, upper: true}
-	styleILvl    = style{face: cinzel700, size: 22, lineHeight: 26}
-	styleFaction = style{face: barlow600, size: 13, lineHeight: 16}
+	styleKicker  = style{face: brand.OpenSans400, size: 13, lineHeight: 18}
+	styleTitle   = style{face: brand.Marcellus400, size: 26, lineHeight: 30}
+	styleBrand   = style{face: brand.Marcellus400, size: 17, lineHeight: 20}
+	styleMark    = style{face: brand.OpenSans400, size: 12, lineHeight: 16}
+	styleFooter  = style{face: brand.OpenSans400, size: 13, lineHeight: footerLH}
+	styleMeta    = style{face: brand.OpenSans400, size: 15, lineHeight: metaLH}
+	styleGold    = style{face: brand.OpenSans600, size: 15, lineHeight: metaLH}
+	styleNameTwo = style{face: brand.OpenSans600, size: nameMinPx, lineHeight: nameTwoLH}
+	styleLevel   = style{face: brand.Marcellus400, size: 22, lineHeight: 26}
+	styleRange   = style{face: brand.OpenSans400, size: 12, lineHeight: 16}
+	styleILvlLab = style{face: brand.OpenSans600, size: 12, lineHeight: 16}
+	styleILvl    = style{face: brand.Marcellus400, size: 30, lineHeight: 34}
+	styleFaction = style{face: brand.OpenSans600, size: 13, lineHeight: 16}
 )
 
-func nameStyle(px int) style { return style{face: barlow600, size: float64(px), lineHeight: nameLH} }
+func nameStyle(px int) style {
+	return style{face: brand.OpenSans600, size: float64(px), lineHeight: nameLH}
+}
 
 // d is a logical length in device px.
 func d(v float64) float64 { return v * scale }
 
-// at is a logical position inside the border, in device px.
-func at(x, y float64) (float64, float64) { return d(x + border), d(y + border) }
+// at is a logical position in device px.
+func at(x, y float64) (float64, float64) { return d(x), d(y) }
 
 // renderer is one render's faces and art.
 type renderer struct {
@@ -85,18 +106,13 @@ type renderer struct {
 	img   *image.RGBA
 }
 
-func newRenderer(icons IconSource) (*renderer, error) {
-	fs, err := newFaceSet()
-	if err != nil {
-		return nil, err
-	}
-	return &renderer{faces: fs, icons: icons}, nil
+func newRenderer(icons IconSource) *renderer {
+	return &renderer{faces: newFaceSet(), icons: icons}
 }
 
 func (r *renderer) draw(s Sheet) (*image.RGBA, error) {
 	r.img = image.NewRGBA(image.Rect(0, 0, Width, Height))
-	r.surface()
-	steps := []func(Sheet) error{r.header, r.cells, r.centreColumn, r.footer}
+	steps := []func(Sheet) error{r.surface, r.header, r.cells, r.centreColumn, r.footer}
 	for _, step := range steps {
 		if err := step(s); err != nil {
 			return nil, err
@@ -105,71 +121,99 @@ func (r *renderer) draw(s Sheet) (*image.RGBA, error) {
 	return r.img, nil
 }
 
-// surface is --surface-card: the gold wash fading from 7.5% to 1.2% over the top 45%, on
-// #0d0f15, inside the 1 px warm line.
-func (r *renderer) surface() {
-	stop := float64(Height) * 0.45
-	for y := range Height {
-		a := 0.012
-		if fy := float64(y) + 0.5; fy < stop {
-			a = 0.075 + (0.012-0.075)*fy/stop
-		}
-		fillRect(r.img, image.Rect(0, y, Width, y+1), over(colorSurface, colorGold, a))
+// surface is the ground, the band and the card.
+func (r *renderer) surface(Sheet) error {
+	if err := brand.Ground(r.img, r.img.Bounds()); err != nil {
+		return err
 	}
-	b := border * scale
-	fillRect(r.img, image.Rect(0, 0, Width, b), colorLineWarm)
-	fillRect(r.img, image.Rect(0, Height-b, Width, Height), colorLineWarm)
-	fillRect(r.img, image.Rect(0, 0, b, Height), colorLineWarm)
-	fillRect(r.img, image.Rect(Width-b, 0, Width, Height), colorLineWarm)
+	if err := brand.Band(r.img, image.Rect(0, 0, Width, int(d(bandH)))); err != nil {
+		return err
+	}
+	card := image.Rect(int(d(edge)), int(d(cardTop)), int(d(sheetW-edge)), int(d(cardBottom)))
+	return brand.Panel(r.img, card, scale, brand.PanelStyle{Ornate: true, CornerSide: cornerW})
 }
 
+// header is the band's words: the class crest, the title over the kicker, and the site's seal and
+// name at the right.
 func (r *renderer) header(s Sheet) error {
-	kicker, err := r.faces.text(styleKicker)
+	crest, err := r.icons.Crest(s.Class)
 	if err != nil {
 		return err
 	}
+	top := (bandH - bandCrest) / 2.0
+	brand.PlaceImage(r.img, image.Pt(int(d(bandPadX)), int(d(top))), int(d(bandCrest)), int(d(bandCrest)), crest, nil)
 	title, err := r.faces.text(styleTitle)
 	if err != nil {
 		return err
 	}
-	x, y := at(pad, 16)
-	kicker.draw(r.img, colorGold, x, y, s.Kicker)
-	x, y = at(pad, 34)
-	title.draw(r.img, classColors[s.Class], x, y, s.Title)
-	if err := r.mark(); err != nil {
+	kicker, err := r.faces.text(styleKicker)
+	if err != nil {
 		return err
 	}
-	rx, ry := at(pad, ruleY)
-	fillRect(r.img, image.Rect(int(rx), int(ry), int(d(sheetW-border-pad)), int(ry)+scale), colorLineWarm)
-	return nil
+	textX := bandPadX + bandCrest + 12.0
+	block := styleTitle.lineHeight + styleKicker.lineHeight
+	y := (bandH - block) / 2
+	titleColor := colorCream
+	if s.Kind == KindChar {
+		titleColor = classColors[s.Class]
+	}
+	maxW := d(sheetW - textX - 170)
+	tx, ty := at(textX, y)
+	title.draw(r.img, titleColor, tx, ty, fitWidth(title, s.Title, maxW))
+	tx, ty = at(textX, y+styleTitle.lineHeight)
+	kicker.draw(r.img, colorText, tx, ty, fitWidth(kicker, s.Kicker, maxW))
+	return r.mark()
 }
 
-// mark is the site mark, right 16 and top 22: "foreversixty.gg" then the seal at 28 x 28.
+// mark is the site's seal and name at the band's right: "Forever Sixty" over "foreversixty.gg".
 func (r *renderer) mark() error {
-	const sealW, top = 28, 22
-	right := float64(sheetW - border - pad)
 	sealImg, err := seal()
 	if err != nil {
 		return err
 	}
-	placeImage(r.img, image.Pt(int(d(right-sealW)), int(d(top+border))), int(d(sealW)), int(d(sealW)), sealImg, nil)
-	mark, err := r.faces.text(styleMark)
+	right := float64(sheetW - bandPadX)
+	top := (bandH - bandSeal) / 2.0
+	brand.PlaceImage(r.img, image.Pt(int(d(right-bandSeal)), int(d(top))), int(d(bandSeal)), int(d(bandSeal)), sealImg, nil)
+	name, err := r.faces.text(styleBrand)
 	if err != nil {
 		return err
 	}
-	textRight := d(right - sealW - gap)
-	mark.draw(r.img, colorMuted, textRight-mark.width(CopyMark), d(top+border+(sealW-16)/2), CopyMark)
+	url, err := r.faces.text(styleMark)
+	if err != nil {
+		return err
+	}
+	textRight := d(right - bandSeal - 10)
+	y := (bandH - styleBrand.lineHeight - styleMark.lineHeight) / 2
+	name.draw(r.img, colorFooter, textRight-name.width(CopyBrand), d(y), CopyBrand)
+	url.draw(r.img, colorText, textRight-url.width(CopyMark), d(y+styleBrand.lineHeight), CopyMark)
 	return nil
 }
 
+// footer is the sheet's last line, on the ground under the card.
 func (r *renderer) footer(s Sheet) error {
 	t, err := r.faces.text(styleFooter)
 	if err != nil {
 		return err
 	}
 	x, y := at(pad, footerY)
-	t.draw(r.img, colorMuted, x, y, s.Footer)
+	t.draw(r.img, colorFooter, x, y, fitWidth(t, s.Footer, d(sheetW-2*pad)))
 	return nil
+}
+
+// fitWidth trims s with "..." until it draws within maxW device px.
+func fitWidth(t text, s string, maxW float64) string {
+	if t.width(s) <= maxW {
+		return s
+	}
+	runes := []rune(s)
+	for len(runes) > 0 {
+		runes = runes[:len(runes)-1]
+		cut := strings.TrimRight(string(runes), " ") + "..."
+		if t.width(cut) <= maxW {
+			return cut
+		}
+	}
+	return ""
 }
 
 // placement is where a slot's cell sits, in logical px, and whether it is right-styled.
@@ -209,7 +253,7 @@ func (r *renderer) cells(s Sheet) error {
 	return nil
 }
 
-// centreLine is one text line of the centre column, between the crest and the faction.
+// centreLine is one text line of the centre column, above the faction.
 type centreLine struct {
 	st    style
 	col   color.RGBA
@@ -219,59 +263,60 @@ type centreLine struct {
 
 // centreLines are the centre column's text lines: /bis the level and the range; /char the item
 // level, drawn only when every worn item is known (paperdoll spec §3.5) -- the caller leaves
-// Subtitle empty otherwise, and the crest and faction centre without it.
+// Subtitle empty otherwise, and the faction centres without it.
 func centreLines(s Sheet) []centreLine {
 	var lines []centreLine
 	if s.Kind == KindBis {
 		if s.Level > 0 {
-			lines = append(lines, centreLine{styleLevel, colorStrong, "Level " + strconv.Itoa(s.Level), 16})
+			lines = append(lines, centreLine{styleILvlLab, colorMuted, CopyLevel, 0},
+				centreLine{styleLevel, colorGold, strconv.Itoa(s.Level), 0})
 		}
 		if s.Subtitle != "" {
-			lines = append(lines, centreLine{styleRange, colorMuted, s.Subtitle, 0})
+			lines = append(lines, centreLine{styleRange, colorText, s.Subtitle, 4})
 		}
 	} else if s.Subtitle != "" {
-		lines = append(lines, centreLine{styleILvlLab, colorMuted, CopyItemLevel, 18}, centreLine{styleILvl, colorGold, s.Subtitle, 0})
+		lines = append(lines, centreLine{styleILvlLab, colorMuted, CopyItemLevel, 0}, centreLine{styleILvl, colorGold, s.Subtitle, 0})
 	}
 	return lines
 }
 
-// centreColumn is the crest, the band or the item level, and the faction, centred in the
-// column between the slots (x 264, y 92 to 660).
+// centreColumn is the level or the item level over the faction, centred in the column between
+// the slots.
 func (r *renderer) centreColumn(s Sheet) error {
 	lines := centreLines(s)
-	const crestW, factionW, factionAbove, wordAbove = 64, 32, 20, 2
-	total := float64(crestW + factionAbove + factionW + wordAbove + styleFaction.lineHeight)
+	const factionW, factionAbove, wordAbove = 40, 20, 4
+	total := float64(factionW + wordAbove + styleFaction.lineHeight)
+	if len(lines) > 0 {
+		total += factionAbove
+	}
 	for _, l := range lines {
 		total += l.above + l.st.lineHeight
 	}
 	y := row0 + (centreH-total)/2
 	cx := float64(centreX)
-	crest, err := r.icons.Crest(s.Class)
-	if err != nil {
-		return err
-	}
-	placeImage(r.img, image.Pt(int(d(cx+border+(centre-crestW)/2)), int(d(y+border))), int(d(crestW)), int(d(crestW)), crest, nil)
-	y += crestW
 	for _, l := range lines {
 		t, err := r.faces.text(l.st)
 		if err != nil {
 			return err
 		}
 		y += l.above
-		x, top := at(cx, y)
-		t.drawAligned(r.img, l.col, x, d(centre), top, alignCentre, l.text)
+		x, top := at(cx-4, y)
+		t.drawAligned(r.img, l.col, x, d(centre+8), top, alignCentre, l.text)
 		y += l.st.lineHeight
 	}
-	return r.faction(s.Faction, cx, y+factionAbove)
+	if len(lines) > 0 {
+		y += factionAbove
+	}
+	return r.faction(s.Faction, cx, y)
 }
 
 func (r *renderer) faction(faction string, cx, y float64) error {
-	const markW, wordAbove = 32, 2
+	const markW, wordAbove = 40, 4
 	mark, err := factionMark(faction)
 	if err != nil {
 		return err
 	}
-	placeImage(r.img, image.Pt(int(d(cx+border+(centre-markW)/2)), int(d(y+border))), int(d(markW)), int(d(markW)), mark, nil)
+	brand.PlaceImage(r.img, image.Pt(int(d(cx+(centre-markW)/2)), int(d(y))), int(d(markW)), int(d(markW)), mark, nil)
 	word, col := "Alliance", colorAlliance
 	if faction == "horde" {
 		word, col = "Horde", colorHorde

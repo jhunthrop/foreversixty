@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"github.com/jhunthrop/foreversixty/api/internal/upgrades"
@@ -28,9 +29,12 @@ type ItemFacts struct {
 // lineJoin joins the parts of an item embed's lines.
 const lineJoin = " · "
 
-// The game's own quality colours (--color-rarity-*, never the lightened -text variants),
-// by quality number, as embed colour integers.
-var qualityColors = []int{0x9d9d9d, 0xffffff, 0x1eff00, 0x0070dd, 0xa335ee, 0xff8000}
+// The stripes besides class and quality: the teal accent on a normal answer (round 5,
+// color.forever.accent) and the kill green on a done raid and its report.
+var (
+	accentColor = brand.RGB(brand.ColorForeverAccent)
+	doneGreen   = brand.RGB(brand.ColorOutcomeKill)
+)
 
 // classColor is --color-class-{slug} as an embed colour integer; package sheet holds the one
 // copy of the class colours. false for a slug that is not a class.
@@ -65,11 +69,14 @@ func ItemEmbed(it ItemFacts, slot string, delta string, author string) notify.Em
 	return e
 }
 
+// qualityColor is the game's own quality colour (color.rarity.*, never the lightened text
+// variants) as an embed colour integer, 0 (none) for an unknown quality.
 func qualityColor(q int) int {
-	if q < 0 || q >= len(qualityColors) {
+	c, ok := sheet.QualityColor(q)
+	if !ok {
 		return 0
 	}
-	return qualityColors[q]
+	return int(c.R)<<16 | int(c.G)<<8 | int(c.B)
 }
 
 func qualityWord(q int) string {
@@ -103,13 +110,28 @@ func signedDPS(v float64) string { return upgrades.SignedFigure(v, "DPS") }
 // signedPoints is a Forever Score gain: "+12.4 points".
 func signedPoints(v float64) string { return upgrades.SignedFigure(v, pointsWord) }
 
-// closeEmbeds puts footer and the time on the last embed alone (spec §3.3.0).
-func closeEmbeds(embeds []notify.Embed, footer string, at time.Time) {
+// closeEmbeds puts footer, with the seal before it, and the time on the last embed alone
+// (spec §3.3.0).
+func (s *Service) closeEmbeds(embeds []notify.Embed, footer string, at time.Time) {
 	if len(embeds) == 0 {
 		return
 	}
 	last := &embeds[len(embeds)-1]
 	last.Footer, last.Timestamp = footer, at
+	*last = notify.WithSealFooter(*last, s.sealURL())
+}
+
+// sealURL is the seal's public URL, the icon every footer carries.
+func (s *Service) sealURL() string { return notify.AvatarURL(s.d.PublicBaseURL) }
+
+// sealFooters is m with the seal before every embed footer.
+func sealFooters(m Message, sealURL string) Message {
+	embeds := make([]notify.Embed, len(m.Embeds))
+	for i, e := range m.Embeds {
+		embeds[i] = notify.WithSealFooter(e, sealURL)
+	}
+	m.Embeds = embeds
+	return m
 }
 
 // slotLabel is the slot as the /bis slot choice names it ("finger1" is "Finger 1").

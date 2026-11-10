@@ -57,7 +57,9 @@ type Drainer struct {
 	REST  REST
 	Facts PostFacts
 	// Marks are the spec emoji the roster draws (spec 2026-10-28 §P.9.1); nil draws text lines.
-	Marks                 MarkSource
+	Marks MarkSource
+	// SealURL is the seal every post's footer carries (notify.AvatarURL); "" draws none.
+	SealURL               string
 	Now                   func() time.Time
 	Tick, Debounce, Lease time.Duration
 	// StopWithin is how long a stop lets the drain's last work run once its context ends;
@@ -193,7 +195,7 @@ func (d *Drainer) send(ctx context.Context, p Post, post notify.RaidPost, facts 
 	if d.Marks != nil {
 		post.Marks = d.Marks.Marks(ctx)
 	}
-	msg := PostMessage(post, facts.RaidURL, facts.NightURL, now)
+	msg := sealFooters(PostMessage(post, facts.RaidURL, facts.NightURL, now), d.SealURL)
 	if p.MessageID == nil {
 		msg.Nonce = postNonce(p)
 		return d.REST.CreateMessage(ctx, p.ChannelID, msg)

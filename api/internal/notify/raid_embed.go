@@ -5,13 +5,18 @@ import (
 	"net/url"
 	"time"
 	"unicode/utf8"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
+)
+
+// The raid post's stripe besides the accent: a cancelled raid in the wipe red, a locked or ended
+// one in the card's muted ink.
+var (
+	cancelColor = brand.RGB(brand.ColorOutcomeWipe)
+	mutedColor  = brand.RGB(brand.ColorForeverMutedCard)
 )
 
 const (
-	// cancelColor is #f0736b, the site's wipe red.
-	cancelColor = 15758187
-	// mutedColor is #9a9484, a locked or ended raid.
-	mutedColor = 10130564
 	// guildDateLayout and guildTimeLayout render the raid in the guild's own zone.
 	guildDateLayout = "Monday 2 January"
 	guildTimeLayout = "3:04 pm MST"

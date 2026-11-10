@@ -3,54 +3,58 @@ package sheet
 import (
 	"image/color"
 	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 )
 
-// The site's tokens (web/src/styles/tokens.css) the sheet and the tiles draw with. No colour
-// here is new: each names the token it copies.
+// The sheet's and the tiles' inks, every one a site token (brand.Color*, generated from
+// design/tokens/tokens.json): the round-5 web values.
 var (
-	colorSurface   = rgb(0x0d0f15) // --surface-card's base
-	colorLineWarm  = rgb(0x3a3326) // --color-line-warm
-	colorText      = rgb(0xe9e4d8) // --color-text
-	colorStrong    = rgb(0xf2eee4) // --color-strong
-	colorMuted     = rgb(0x9a9484) // --color-muted
-	colorGold      = rgb(0xe5b955) // --color-gold
-	colorAlliance  = rgb(0x6fb1ff) // --color-alliance
-	colorHorde     = rgb(0xff6b5c) // --color-horde
-	colorEmptyFill = rgb(0x0d111a) // the empty socket's fill (spec §B.3)
-	colorEmptyRing = rgb(0x262e40) // the empty and unknown ring (spec §A.4, §B.3)
-	colorBlack     = rgb(0x000000)
+	colorText      = opaque(brand.ColorBaseText)         // words on the band and the card
+	colorMuted     = opaque(brand.ColorForeverMutedCard) // the card's muted ink
+	colorGold      = opaque(brand.ColorBaseGold)         // a status the player acts on
+	colorGain      = opaque(brand.ColorForeverGain)      // a modelled gain
+	colorCream     = opaque(brand.ColorForeverCream)     // titles without a class
+	colorFooter    = opaque(brand.ColorForeverCream2)    // the line on the ground under the card
+	colorAlliance  = opaque(brand.ColorFactionAlliance)
+	colorHorde     = opaque(brand.ColorFactionHorde)
+	colorEmptyFill = opaque(brand.ColorBaseBg)   // the empty socket's fill
+	colorEmptyRing = opaque(brand.ColorBaseLine) // the empty and unknown ring
+	colorBlack     = color.RGBA{A: 0xff}
 )
 
-// qualityRing is --color-rarity-*, the game's quality colours, by quality number 0 to 5.
+// qualityRing is the game's quality colours (color.rarity.*), by quality number 0 to 5.
 var qualityRing = [...]color.RGBA{
-	rgb(0x9d9d9d), rgb(0xffffff), rgb(0x1eff00), rgb(0x0070dd), rgb(0xa335ee), rgb(0xff8000),
+	opaque(brand.ColorRarityPoor), opaque(brand.ColorRarityCommon), opaque(brand.ColorRarityUncommon),
+	opaque(brand.ColorRarityRare), opaque(brand.ColorRarityEpic), opaque(brand.ColorRarityLegendary),
 }
 
 // qualityText is the colour a name is drawn in: the ring colour, except rare and epic, which use
-// --color-rarity-rare-text and --color-rarity-epic-text for contrast on the dark surface.
+// the rarity text tokens for contrast on the dark card.
 var qualityText = [...]color.RGBA{
-	rgb(0x9d9d9d), rgb(0xffffff), rgb(0x1eff00), rgb(0x3d94f0), rgb(0xb866f5), rgb(0xff8000),
+	qualityRing[0], qualityRing[1], qualityRing[2],
+	opaque(brand.ColorRarityRareText), opaque(brand.ColorRarityEpicText), qualityRing[5],
 }
 
 // qualityWords are the quality names, by quality number; the emoji names use them lowercased.
 var qualityWords = [...]string{"Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary"}
 
-// classColors are --color-class-*, keyed by class slug.
+// classColors are color.class.*, keyed by class slug.
 var classColors = map[string]color.RGBA{
-	"warrior": rgb(0xc69b6d), "paladin": rgb(0xf48cba), "hunter": rgb(0xaad372), "rogue": rgb(0xfff468),
-	"priest": rgb(0xffffff), "shaman": rgb(0x3f8fe0), "mage": rgb(0x3fc7eb), "warlock": rgb(0x8788ee),
-	"druid": rgb(0xff7c0a),
+	"warrior": opaque(brand.ColorClassWarrior), "paladin": opaque(brand.ColorClassPaladin),
+	"hunter": opaque(brand.ColorClassHunter), "rogue": opaque(brand.ColorClassRogue),
+	"priest": opaque(brand.ColorClassPriest), "shaman": opaque(brand.ColorClassShaman),
+	"mage": opaque(brand.ColorClassMage), "warlock": opaque(brand.ColorClassWarlock),
+	"druid": opaque(brand.ColorClassDruid),
 }
 
-func rgb(v uint32) color.RGBA {
-	return color.RGBA{R: uint8(v >> 16), G: uint8(v >> 8), B: uint8(v), A: 0xff}
-}
+// opaque is an opaque token as color.RGBA (the same bytes as its color.NRGBA).
+func opaque(c color.NRGBA) color.RGBA { return color.RGBA{R: c.R, G: c.G, B: c.B, A: 0xff} }
 
 // knownQuality reports whether q is one of the game's six qualities.
 func knownQuality(q int) bool { return q >= 0 && q < len(qualityRing) }
 
-// QualityColor is the game's colour for quality q (--color-rarity-*), and false for an unknown
-// quality.
+// QualityColor is the game's colour for quality q, and false for an unknown quality.
 func QualityColor(q int) (color.RGBA, bool) {
 	if !knownQuality(q) {
 		return color.RGBA{}, false
@@ -77,7 +81,7 @@ func QualityEmojiName(q int) string {
 
 const qualityEmojiPrefix = "fs_q_"
 
-// ClassColor is --color-class-{slug}, and false for a slug that is not a class.
+// ClassColor is color.class.{slug}, and false for a slug that is not a class.
 func ClassColor(slug string) (color.RGBA, bool) {
 	c, ok := classColors[slug]
 	return c, ok

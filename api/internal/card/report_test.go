@@ -61,7 +61,7 @@ func TestSummaryLineCountsKillsAndTime(t *testing.T) {
 		Bosses:     []Boss{{Kill: true}, {Kill: false}},
 		DurationMS: 95 * 60 * 1000,
 	})
-	if !strings.Contains(got, "1 of 2 killed") || !strings.Contains(got, "1h 35m") {
+	if got != "Combat log · 1 of 2 killed · 1h 35m" {
 		t.Fatalf("summary = %q", got)
 	}
 	if got := summaryLine(ReportInput{Bosses: []Boss{{Kill: true}}}); !strings.Contains(got, "1 of 1") {
@@ -72,37 +72,35 @@ func TestSummaryLineCountsKillsAndTime(t *testing.T) {
 	}
 }
 
-func TestBossLinesMarkKillsAndWipes(t *testing.T) {
+func TestBossRowsSplitKillsFromWipes(t *testing.T) {
 	f, err := newFaces()
 	if err != nil {
 		t.Fatal(err)
 	}
-	lines := bossLines(f, []Boss{{Name: "Kelthas", Kill: true}, {Name: "Emberdeep"}}, Width-2*marginX)
-	if len(lines) != 1 {
-		t.Fatalf("lines = %v", lines)
+	rows := bossRows(f, []Boss{{Name: "Kelthas", Kill: true}, {Name: "Emberdeep"}, {Name: "Emberdeep"}, {Name: "Garr", Kill: true}}, Width-2*marginX)
+	if len(rows) != 2 || rows[0].label != copyKilled || rows[0].names != "Kelthas · Garr" ||
+		rows[1].label != copyWiped || rows[1].names != "Emberdeep" {
+		t.Fatalf("rows = %+v", rows)
 	}
-	if !strings.Contains(lines[0], "Kelthas +") || !strings.Contains(lines[0], "Emberdeep x") {
-		t.Fatalf("line = %q", lines[0])
-	}
-	if got := bossLines(f, nil, 100); len(got) != 1 || !strings.Contains(got[0], "No boss") {
-		t.Fatalf("empty = %v", got)
+	if got := bossRows(f, nil, 100); len(got) != 1 || got[0].names != copyNoBosses {
+		t.Fatalf("empty = %+v", got)
 	}
 }
 
-func TestWrapSplitsOverTwoLines(t *testing.T) {
+func TestNameListCountsWhatDoesNotFit(t *testing.T) {
 	f, err := newFaces()
 	if err != nil {
 		t.Fatal(err)
 	}
-	first, second := wrap(f.title, "Short", Width)
-	if first != "Short" || second != "" {
-		t.Fatalf("wrap = %q, %q", first, second)
+	names := []string{"Lucifron", "Magmadar", "Gehennas", "Garr", "Baron Geddon", "Shazzrah", "Sulfuron Harbinger", "Golemagg", "Majordomo Executus", "Ragnaros"}
+	got := nameList(f.body, names, 600)
+	if !strings.HasPrefix(got, "Lucifron · ") || !strings.Contains(got, " more") {
+		t.Fatalf("list = %q", got)
 	}
-	first, second = wrap(f.title, "One two three four five six seven eight nine ten", 400)
-	if first == "" || second == "" {
-		t.Fatalf("wrap = %q, %q", first, second)
+	if measure(f.body, got) > 600 {
+		t.Fatalf("list %q runs past its room", got)
 	}
-	if first, _ := wrap(f.title, strings.Repeat("x", 200), 100); first == "" {
-		t.Fatal("an unbreakable string should still be ellipsised")
+	if got := nameList(f.body, []string{"Onyxia"}, 600); got != "Onyxia" {
+		t.Fatalf("one name = %q", got)
 	}
 }

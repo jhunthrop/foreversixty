@@ -92,7 +92,7 @@ var panelCopy = struct {
 	SheetRangeBare:    "No buffs or consumables",
 	SheetRangeLevels:  "Levels {n} to {n+9}",
 	SheetUpdated:      "Updated {d Mon yyyy}",
-	SheetCharGold:     "Gold: gain over what is worn, {band label}",
+	SheetCharGold:     "Green: gain over what is worn, {band label}",
 }
 
 // qualityWords are the item qualities in the game's words, by quality number (spec §6.2).

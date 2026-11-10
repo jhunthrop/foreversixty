@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 )
 
+// reportColor is the site's Done mark, the kill green (spec 2026-10-27-guild-attendance §6.2).
+var reportColor = brand.RGB(brand.ColorOutcomeKill)
+
 const (
-	// reportColor is #7fd48a, the site's Done mark (spec 2026-10-27-guild-attendance §6.2).
-	reportColor = 8377482
 	// reportMaxKills is how many kill lines the embed lists before "+n more".
 	reportMaxKills = 6
 	// maxBossRunes bounds a boss name a kill line carries.

@@ -91,8 +91,8 @@ func TestSplitTextJoinsTheTreeCounts(t *testing.T) {
 		in   []int
 		want string
 	}{
-		{[]int{31, 0, 20}, "31 / 0 / 20"},
-		{[]int{6, 1}, "6 / 1"},
+		{[]int{31, 0, 20}, "31/0/20"},
+		{[]int{6, 1}, "6/1"},
 		{nil, "0"},
 	} {
 		if got := splitText(tc.in); got != tc.want {

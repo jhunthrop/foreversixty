@@ -49,7 +49,7 @@ func TestBareBisUnlinked(t *testing.T) {
 	m := w.bisCardOf(t, "d-stranger", nil)
 	e := headOf(t, m)
 	if e.Author != "Best in slot" || e.Title != "Choose a class" || e.Description != guideCopy.BisLeadUnlinked ||
-		e.Color != goldColor || e.Thumbnail != "" {
+		e.Color != accentColor || e.Thumbnail != "" {
 		t.Fatalf("embed = %+v", e)
 	}
 	spec := m.Components[1][0]

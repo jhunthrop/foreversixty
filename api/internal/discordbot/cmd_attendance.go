@@ -102,7 +102,7 @@ func (s *Service) attendanceReply(ctx context.Context, guildID int64, guildName 
 	for _, r := range recs {
 		embeds = append(embeds, attendanceEmbed(r, roster, zone))
 	}
-	closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(guildName)), s.now())
+	s.closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(guildName)), s.now())
 	return Reply{Message: Message{Embeds: embeds, Components: []ActionRow{{rosterLink(roster)}}, Ephemeral: true}}, nil
 }
 

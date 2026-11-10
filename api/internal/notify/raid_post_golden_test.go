@@ -20,11 +20,11 @@ func TestRaidPostStatesMatchTheCopyTable(t *testing.T) {
 		want string
 	}{
 		"open": {post(PostOpen), `{"title":"Onyxia's Lair · Thursday 10 December","description":"Sign up with the buttons below.",` +
-			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":15055189}`},
+			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":37810}`},
 		"locked": {post(PostLocked), `{"title":"Onyxia's Lair · Thursday 10 December","description":"` + lockedText + `",` +
-			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":10130564}`},
+			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":9144196}`},
 		"ended": {post(PostEnded), `{"title":"Onyxia's Lair · Thursday 10 December","description":"This raid has ended.",` +
-			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":10130564}`},
+			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":9144196}`},
 		"done": {done, `{"title":"Done: Onyxia's Lair · Thursday 10 December","description":"Logged as a raid night.",` +
 			raidLink + `"fields":[` + raidWhen + `,{"name":"Came","value":"22 of 23","inline":true},` +
 			`{"name":"Kills","value":"Onyxia 1:42"}],` + raidFoot + `"color":8377482}`},
