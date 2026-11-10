@@ -78,6 +78,10 @@ targets:
         buildPhase: resources
       - path: ../../web/public/seal-400.png
         buildPhase: resources
+      # The raid zones' icons by zone key, the API's table (api/internal/zoneicons): the raid night
+      # Live Activity's icon, saved to the App Group for the extension.
+      - path: ../../api/internal/zoneicons/zones.json
+        buildPhase: resources
       - path: ../../web/src/data/specs.json
         buildPhase: resources
       - path: ../../web/src/data/active-build.json

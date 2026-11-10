@@ -15,10 +15,17 @@ struct RaidActivityAttributes: ActivityAttributes {
         var role: String
         var signedUp: Int
         var size: Int?
+        /// Who is coming (`18 in, 3 late · 2 tanks, 5 heals`; tanks and healers count the In). Nil
+        /// from a server older than the round-5 raid night.
+        var inCount: Int?
+        var late: Int?
+        var tanks: Int?
+        var healers: Int?
 
         enum CodingKeys: String, CodingKey {
             case startsAt = "starts_at", inviteAt = "invite_at", status, myState = "my_state", role
             case signedUp = "signed_up", size
+            case inCount = "in", late, tanks, healers
         }
     }
 
@@ -27,18 +34,20 @@ struct RaidActivityAttributes: ActivityAttributes {
     var guildName: String
     var zoneName: String
     var characterName: String
+    /// The zone's icon under /data/{build}/icons (api/internal/zoneicons); drawn from the App Group.
+    var zoneIcon: String?
 
     enum CodingKeys: String, CodingKey {
         case raidID = "raid_id", guildID = "guild_id", guildName = "guild_name", zoneName = "zone_name"
-        case characterName = "character_name"
+        case characterName = "character_name", zoneIcon = "zone_icon"
     }
 }
 
 extension RaidActivityAttributes {
-    init(_ raid: WidgetNextRaid, characterName: String) {
+    init(_ raid: WidgetNextRaid, characterName: String, zoneIcon: String? = nil) {
         self.init(
             raidID: String(raid.raidId), guildID: String(raid.guildId), guildName: raid.guildName,
-            zoneName: raid.zoneName, characterName: characterName
+            zoneName: raid.zoneName, characterName: characterName, zoneIcon: zoneIcon
         )
     }
 }

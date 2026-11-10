@@ -184,6 +184,24 @@ struct WidgetSnapshotTests {
             .background(.black, in: .capsule), "ios-island-compact", size: compact)
     }
 
+    @Test("raid night on the lock screen, round 5 (m-ios-lock): Onyxia's Lair, In, 42:00, who is coming, the four answers")
+    func raidNight() {
+        // Wed 6 Jan 2027, 8:00 pm CST, the flows mocks' raid; the lock screen at 7:18 pm.
+        let start = Date(timeIntervalSince1970: 1_799_287_200)
+        let attributes = RaidActivityAttributes(
+            raidID: "29", guildID: "2", guildName: "Olympus XXVII", zoneName: "Onyxia’s Lair", characterName: "Thandrel",
+            zoneIcon: "inv_misc_head_dragon_black"
+        )
+        let state = RaidActivityAttributes.ContentState(
+            startsAt: Int64(start.timeIntervalSince1970), inviteAt: nil, status: "open", myState: "in", role: "dps", signedUp: 21,
+            size: 40, inCount: 18, late: 3, tanks: 2, healers: 5
+        )
+        let size = CGSize(width: 370, height: 170)
+        snap(RaidLiveLockView(attributes: attributes, state: state, fixedNow: start.addingTimeInterval(-42 * 60), zone: zone, icons: icons)
+            .frame(width: size.width)
+            .background(FSColor.raised, in: .rect(cornerRadius: 22)), "ios-live-raid-night", size: size)
+    }
+
     @Test("the sim Live Activity running, finished and failed")
     func simLive() {
         let attributes = SimActivityAttributes(simID: "k3v9q2m8x1ab", title: "Elemental · Top Gear")
