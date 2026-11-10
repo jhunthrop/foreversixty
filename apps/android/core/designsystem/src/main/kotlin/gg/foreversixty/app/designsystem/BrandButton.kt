@@ -1,7 +1,6 @@
 package gg.foreversixty.app.designsystem
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +16,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
@@ -25,12 +23,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.util.Locale
 
 /**
- * The site's buttons (spec §4.5): `PRIMARY_BUTTON_FIXED` (the gold gradient, one per screen at
- * most), `SECONDARY_BUTTON_FIXED` (4.5% white, the gold 17% border), destructive and quiet, and the
- * accent secondary (gold label and border, the reminder ask's Turn on). Pressed: the Material ripple.
+ * The site's buttons in round 5 (web lib/ui/button.ts): primary their flat teal with the teal edge
+ * (Buy Now, one per screen at most), secondary their blue (Upgrade Now), the accent gold outline
+ * (the reminder ask's Turn on), destructive the wipe outline and quiet the rule outline, each a
+ * white or tone label in sentence case on the 6 dp control radius. Pressed: the Material ripple.
  */
 enum class BrandButtonKind { Primary, Secondary, Accent, Destructive, Quiet }
 
@@ -50,7 +48,7 @@ fun BrandButton(
     iconScalesWithText: Boolean = false,
 ) {
     val iconSize = if (iconScalesWithText) with(LocalDensity.current) { ICON_TEXT_SIZE.toDp() } else ICON_SIZE
-    val shape = RoundedCornerShape(FsRadius.legacyControl)
+    val shape = RoundedCornerShape(FsRadius.field)
     val size = if (fill) modifier.fillMaxWidth().heightIn(min = height) else modifier.heightIn(min = height)
     // The vertical padding keeps a wrapped label off the border at large text; one line still sits at [height].
     val padding = PaddingValues(horizontal = HORIZONTAL_PADDING, vertical = VERTICAL_PADDING)
@@ -62,28 +60,27 @@ fun BrandButton(
                 Icon(leadingIcon, contentDescription = null, modifier = Modifier.size(iconSize))
                 Spacer(Modifier.width(FsSpace.space2))
             }
-            Text(caseOf(kind, label), style = ScaledType.button, textAlign = TextAlign.Center)
+            Text(label, style = ScaledType.button, textAlign = TextAlign.Center)
         }
     }
     // A busy button keeps its colours; a disabled one dims.
     val disabled = if (busy) contentColor(kind) else contentColor(kind).copy(alpha = DISABLED_ALPHA)
-    if (kind == BrandButtonKind.Primary) {
+    val fill = containerColor(kind)
+    if (fill != null) {
+        // Disabled (not busy), the fill and its edge dim to the disabled alpha so it reads as unavailable.
+        val alpha = if (enabled || busy) 1f else DISABLED_ALPHA
         Button(
             onClick = onClick,
             enabled = enabled && !busy,
             shape = shape,
             contentPadding = padding,
-            // Disabled (not busy), the gold dims to the disabled alpha so it reads as unavailable.
-            modifier = size.background(
-                Brush.verticalGradient(listOf(FsColor.goldHover, FsColor.gold)),
-                shape,
-                alpha = if (enabled || busy) 1f else DISABLED_ALPHA,
-            ),
+            border = BorderStroke(1.dp, borderColor(kind).copy(alpha = alpha)),
+            modifier = size,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = FsColor.bg,
-                disabledContainerColor = Color.Transparent,
-                disabledContentColor = FsColor.bg,
+                containerColor = fill,
+                contentColor = contentColor(kind),
+                disabledContainerColor = fill.copy(alpha = alpha),
+                disabledContentColor = if (busy) contentColor(kind) else contentColor(kind).copy(alpha = DISABLED_ALPHA),
             ),
         ) { content() }
     } else {
@@ -95,9 +92,9 @@ fun BrandButton(
             modifier = size,
             border = BorderStroke(1.dp, if (enabled || busy) borderColor(kind) else borderColor(kind).copy(alpha = DISABLED_ALPHA)),
             colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = GameColors.controlFill,
+                containerColor = Color.Transparent,
                 contentColor = contentColor(kind),
-                disabledContainerColor = GameColors.controlFill,
+                disabledContainerColor = Color.Transparent,
                 disabledContentColor = disabled,
             ),
         ) { content() }
@@ -110,20 +107,23 @@ private val ICON_SIZE = 16.dp
 private val ICON_TEXT_SIZE = 16.sp
 private const val DISABLED_ALPHA = 0.38f
 
-/** Spec §4.5: the primary button is uppercase; a secondary reads in sentence case (BiS UX verdict). */
-private fun caseOf(kind: BrandButtonKind, label: String): String =
-    if (kind == BrandButtonKind.Secondary || kind == BrandButtonKind.Accent) label else label.uppercase(Locale.ROOT)
+/** The filled kinds' ground; the outlined kinds have none. */
+private fun containerColor(kind: BrandButtonKind): Color? = when (kind) {
+    BrandButtonKind.Primary -> FsColor.teal
+    BrandButtonKind.Secondary -> FsColor.blue
+    BrandButtonKind.Accent, BrandButtonKind.Destructive, BrandButtonKind.Quiet -> null
+}
 
 private fun contentColor(kind: BrandButtonKind): Color = when (kind) {
-    BrandButtonKind.Primary -> FsColor.bg
-    BrandButtonKind.Secondary -> FsColor.strong
+    BrandButtonKind.Primary, BrandButtonKind.Secondary, BrandButtonKind.Quiet -> FsColor.strong
     BrandButtonKind.Accent -> FsColor.gold
     BrandButtonKind.Destructive -> FsColor.wipe
-    BrandButtonKind.Quiet -> FsColor.nav
 }
 
 private fun borderColor(kind: BrandButtonKind): Color = when (kind) {
+    BrandButtonKind.Primary -> FsColor.tealEdge
+    BrandButtonKind.Secondary -> FsColor.blueEdge
+    BrandButtonKind.Quiet -> FsColor.rule
     BrandButtonKind.Destructive -> FsColor.wipe.copy(alpha = 0.45f)
     BrandButtonKind.Accent -> FsColor.gold
-    else -> FsColor.lineCard
 }

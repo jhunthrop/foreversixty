@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DrawerValue
@@ -34,6 +35,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountDeps
@@ -175,7 +177,6 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
     val session = account?.session
     val openGear = { select(ForeverTab.Gear) }
     val context = LocalContext.current
-    val bar: @Composable () -> Unit = { RootSearchBar(onSearch) { ProfileBar(session) } }
     val uri = LocalUriHandler.current
     val flows = HomeFlows(
         raids = features.raids?.takeIf { it.enabled },
@@ -195,10 +196,14 @@ private fun TabRoot(features: ShellFeatures, tab: ForeverTab, select: (ForeverTa
                 HomeRoute(features.home, session, openGear, onSearch, signIn = { account.session.beginSignIn(account.browser(context)) }, flows = flows) { Unavailable(tab) }
             }
         }
-        ForeverTab.Raid -> features.raids?.let { RaidTab(it, account, features.home.reports, bar) } ?: Unavailable(tab)
+        ForeverTab.Raid -> features.raids?.let { raids ->
+            val title = stringResource(R.string.tab_raid)
+            RaidTab(raids, account, features.home.reports) { RootSearchBar(onSearch) { ProfileBar(session, title) } }
+        } ?: Unavailable(tab)
         ForeverTab.Gear -> features.bis?.let { GearTab(it, features.home, account, onSearch) } ?: Unavailable(tab)
         ForeverTab.Activity -> features.activity?.let { activity ->
-            ActivityTab(activity, account, onOpen = { landing -> openLanding(features, landing, select) }) { ProfileBar(session) }
+            val title = stringResource(R.string.tab_activity)
+            ActivityTab(activity, account, onOpen = { landing -> openLanding(features, landing, select) }) { ProfileBar(session, title) }
         } ?: Unavailable(tab)
     }
 }
@@ -271,7 +276,8 @@ private fun GearTab(bis: BisModel, home: HomeDependencies, account: AccountDeps?
     val character = phase?.let { session.currentCharacter(it, picked) }
     val waiting = phase == SessionPhase.Importing || (phase is SessionPhase.SignedIn && phase.me == null)
     val deps = remember(home) { GearDeps(home.catalog, home.cache, home.client) }
-    GearRoute(bis, deps, GearOwner(character?.key, character?.guild?.id, waiting), onSearch) { ProfileBar(session) }
+    val title = stringResource(R.string.tab_gear)
+    GearRoute(bis, deps, GearOwner(character?.key, character?.guild?.id, waiting, character?.avatarUrl), onSearch) { ProfileBar(session, title) }
 }
 
 /** Raid (lane F4) for the session's current character's guild. */
@@ -329,7 +335,7 @@ fun ForeverTabScaffold(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            NavigationBar(containerColor = FsColor.raised) {
+            NavigationBar(containerColor = FsColor.navBar) {
                 ForeverTab.entries.forEach { tab ->
                     val count = badges.of(tab)
                     val badge = if (count > 0) stringResource(R.string.tab_badge, count) else null
@@ -337,16 +343,17 @@ fun ForeverTabScaffold(
                         selected = tab == selected,
                         onClick = { onSelect(tab) },
                         icon = {
-                            BadgedBox(badge = { if (count > 0) Badge(containerColor = FsColor.wipe, contentColor = FsColor.bg) { Text(count.toString(), style = FsType.tab) } }) {
-                                Icon(painterResource(tab.icon), contentDescription = null)
+                            BadgedBox(badge = { if (count > 0) TabBadge(count) }) {
+                                Icon(painterResource(tab.icon), contentDescription = null, modifier = Modifier.size(TAB_ICON_SIZE))
                             }
                         },
                         label = { TabLabel(stringResource(tab.label)) },
+                        // Spec "Tab-bar icons": gold #ffd36b when selected, muted white otherwise.
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = FsColor.gold,
-                            selectedTextColor = FsColor.strong,
-                            unselectedIconColor = FsColor.text,
-                            unselectedTextColor = FsColor.text,
+                            selectedIconColor = FsColor.tabOn,
+                            selectedTextColor = FsColor.tabOn,
+                            unselectedIconColor = FsColor.tabOff,
+                            unselectedTextColor = FsColor.tabOff,
                             indicatorColor = FsColor.gold.copy(alpha = INDICATOR_ALPHA),
                         ),
                         modifier = if (badge != null) Modifier.semantics { contentDescription = badge } else Modifier,
@@ -365,18 +372,34 @@ private const val SITE = "https://foreversixty.gg"
 /** The largest font scale a tab label grows to; past it the label stays one line (spec §10). */
 private const val TAB_LABEL_MAX_FONT_SCALE = 1.3f
 
-/** The active tab's pill: gold at 18% (ws_app_frame.py, `#e5b9552e`). */
+/** The active tab's pill: their gold at 18% (round 5's mock, `.android .tab.on .pill`). */
 private const val INDICATOR_ALPHA = 0.18f
+
+/** The owner's tab icons at 24 dp (spec "Tab-bar icons"). */
+private val TAB_ICON_SIZE = 24.dp
 
 /** A tab label on one line whatever the font scale: the scale is capped, the icon carries the rest. */
 @Composable
 private fun TabLabel(text: String) {
+    CappedTabScale { Text(text, style = FsType.tab, maxLines = 1, softWrap = false) }
+}
+
+/** A tab's unread count: capped as the label is, so at large text it never outgrows the icon it sits on. */
+@Composable
+private fun TabBadge(count: Int) {
+    CappedTabScale {
+        Badge(containerColor = FsColor.wipe, contentColor = FsColor.bg) { Text(count.toString(), style = FsType.tab, maxLines = 1) }
+    }
+}
+
+/** The tab bar's text at most [TAB_LABEL_MAX_FONT_SCALE]: the bar's height is fixed, its words fit it. */
+@Composable
+private fun CappedTabScale(content: @Composable () -> Unit) {
     val density = LocalDensity.current
     CompositionLocalProvider(
         LocalDensity provides Density(density.density, density.fontScale.coerceAtMost(TAB_LABEL_MAX_FONT_SCALE)),
-    ) {
-        Text(text, style = FsType.tab, maxLines = 1, softWrap = false)
-    }
+        content = content,
+    )
 }
 
 /** A tab whose feature switch is off. */

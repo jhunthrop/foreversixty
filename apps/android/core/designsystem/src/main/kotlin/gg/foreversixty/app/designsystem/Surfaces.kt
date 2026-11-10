@@ -1,15 +1,14 @@
 package gg.foreversixty.app.designsystem
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -18,21 +17,31 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import java.util.Locale
+import kotlin.math.max
+import kotlin.math.roundToInt
 
 /** The site's uppercase section label (`micro`, .14em), read as a heading. */
 @Composable
@@ -58,39 +67,164 @@ fun Tag(text: String, color: Color, modifier: Modifier = Modifier, checked: Bool
     }
 }
 
-/** The primary card (`--surface-card`): the warm gradient and its gold border. */
-fun Modifier.primaryCard(): Modifier = this
-    .clip(RoundedCornerShape(FsRadius.legacyPanel))
-    .background(Brush.verticalGradient(listOf(Color(0xFF16130E), FsColor.raised)), RoundedCornerShape(FsRadius.legacyPanel))
-    .border(1.dp, FsColor.lineCard, RoundedCornerShape(FsRadius.legacyPanel))
-
-/** A quiet list card: raised ground, soft line. */
-fun Modifier.quietCard(): Modifier = this
-    .clip(RoundedCornerShape(FsRadius.legacyPanel))
-    .background(FsColor.raised, RoundedCornerShape(FsRadius.legacyPanel))
-    .border(1.dp, FsColor.lineSoft, RoundedCornerShape(FsRadius.legacyPanel))
-
-/**
- * The band ground (`--surface-band`, spec §4.1): the ember radial from the top centre over
- * `#14100b`, with the soft bottom line when [bottomLine]. Every band uses it: Home's hero bands
- * (with the line) and the signed-out screens' full-bleed ground (without). iOS: `surfaceBand`.
- */
-fun Modifier.surfaceBand(bottomLine: Boolean = true): Modifier = drawBehind {
-    drawRect(BAND_GROUND)
-    drawRect(
-        Brush.radialGradient(
-            listOf(FsColor.ember.copy(alpha = BAND_GLOW_ALPHA), Color.Transparent),
-            center = Offset(size.width / 2, 0f),
-            radius = BAND_GLOW_RADIUS.toPx(),
-        ),
-    )
-    if (bottomLine) drawLine(FsColor.lineSoft, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx())
-}
-
-private val BAND_GROUND = Color(0xFF14100B)
-private const val BAND_GLOW_ALPHA = 0.22f
-private val BAND_GLOW_RADIUS = 320.dp
-
 /** A chip or pill's ground: [fill] and a 1 dp [line] border in [shape]. */
 fun Modifier.pillSurface(fill: Color, line: Color, shape: Shape = RoundedCornerShape(percent = 50)): Modifier =
     background(fill, shape).border(1.dp, line, shape)
+
+/**
+ * The round-5 art (apps/shared/brand/art, tools/art/build_art.py), copied to res/drawable-nodpi by
+ * the forever.shared-fonts plugin: the ground tile, the band behind the bars, Home's hero and the
+ * raid card's cave. Background only, never captioned (owner, 2026-11-09). iOS: `BrandArt`.
+ */
+enum class BrandArt(@DrawableRes val res: Int) {
+    Ground(R.drawable.art_ground),
+    Band(R.drawable.art_band),
+    Hero(R.drawable.art_hero),
+    Cave(R.drawable.art_cave),
+
+    /** The LX seal v4 (web/public/seal-400.png): the medallion without a portrait. */
+    Seal(R.drawable.art_seal),
+}
+
+/** The ground tile's side in dp: the web's `GROUND_TILE_PX`, drawn 1:1. */
+private val GROUND_TILE = 1600.dp
+
+/**
+ * The screen ground (spec Mobile, round 5): the painted brown tile at 1:1 over the earth colour,
+ * edge to edge. iOS: `screenGround()`.
+ */
+fun Modifier.screenGround(): Modifier = composed {
+    val tile = ImageBitmap.imageResource(BrandArt.Ground.res)
+    drawBehind {
+        drawRect(FsColor.ground)
+        val side = GROUND_TILE.toPx()
+        val size = IntSize(side.roundToInt(), side.roundToInt())
+        var y = 0f
+        while (y < this.size.height) {
+            var x = 0f
+            while (x < this.size.width) {
+                drawImage(tile, dstOffset = IntOffset(x.roundToInt(), y.roundToInt()), dstSize = size)
+                x += side
+            }
+            y += side
+        }
+    }
+}
+
+/** Which painting a band shows: the blue band on every tab but Home, the camp-road hero on Home. */
+enum class BandKind { Band, Hero }
+
+/**
+ * The painted art behind the bars under its veil, stretched to cover and never tiled (spec round
+ * 5), with the black bottom edge when [bottomLine]: the top app bar's ground, Home's hero bands and
+ * the signed-out screens' full-bleed ground (without the line). iOS: `surfaceBand` / `BandArt`.
+ */
+fun Modifier.surfaceBand(bottomLine: Boolean = true, kind: BandKind = BandKind.Band): Modifier = composed {
+    val art = ImageBitmap.imageResource(if (kind == BandKind.Band) BrandArt.Band.res else BrandArt.Hero.res)
+    val veil = if (kind == BandKind.Band) FsColor.veilBand else FsColor.veilNight
+    drawBehind {
+        drawRect(if (kind == BandKind.Band) FsColor.band else FsColor.night)
+        drawCover(art)
+        drawRect(veil)
+        if (bottomLine) drawLine(Color.Black, Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx())
+    }
+}
+
+/** [image] scaled to cover this area, centred, cropped at the edges. */
+private fun DrawScope.drawCover(image: ImageBitmap) {
+    val scale = max(size.width / image.width, size.height / image.height)
+    val drawn = IntSize((image.width * scale).roundToInt(), (image.height * scale).roundToInt())
+    val offset = IntOffset(((size.width - drawn.width) / 2).roundToInt(), ((size.height - drawn.height) / 2).roundToInt())
+    clipRect { drawImage(image, dstOffset = offset, dstSize = drawn) }
+}
+
+/**
+ * A panel's frame (spec round 5, "The frame"): none, the plain 1 dp cream line inset 6 dp, or the
+ * lead panel's ornate frame (the line plus the owner's corner filigree). Two or three framed panels
+ * a screen, one of them ornate.
+ */
+enum class PanelFrame { None, Plain, Ornate }
+
+/**
+ * The round-5 panel (`.ui-surface`): their card brown-black, a black hairline inside the warm outer
+ * ring, the 10 dp radius; optionally framed, optionally on the cave art ([cave], under its veil).
+ * Draw the ornate corners with [FrameCorners] in the panel's Box. iOS: `.panel(frame:art:)`.
+ */
+fun Modifier.panel(frame: PanelFrame = PanelFrame.None, cave: Boolean = false): Modifier = composed {
+    val art = if (cave) ImageBitmap.imageResource(BrandArt.Cave.res) else null
+    val shape = RoundedCornerShape(FsRadius.plate)
+    this
+        .drawBehind {
+            // The warm ring outside the black hairline (`box-shadow: 0 0 0 1px`).
+            val ring = 1.dp.toPx()
+            drawRoundRect(
+                FsColor.panelEdge,
+                topLeft = Offset(-ring / 2, -ring / 2),
+                size = Size(size.width + ring, size.height + ring),
+                cornerRadius = CornerRadius(FsRadius.plate.toPx() + ring / 2),
+                style = Stroke(ring),
+            )
+        }
+        .clip(shape)
+        .background(FsColor.raised)
+        .drawBehind {
+            if (art != null) {
+                drawCover(art)
+                drawRect(FsColor.veilCave)
+            }
+        }
+        .border(1.dp, Color.Black, shape)
+        .drawWithContent {
+            drawContent()
+            if (frame != PanelFrame.None) {
+                val inset = FRAME_INSET.toPx()
+                drawRoundRect(
+                    FsColor.frameLine,
+                    topLeft = Offset(inset, inset),
+                    size = Size(size.width - inset * 2, size.height - inset * 2),
+                    cornerRadius = CornerRadius((FsRadius.plate - CORNER_INSET).toPx()),
+                    style = Stroke(1.dp.toPx()),
+                )
+            }
+        }
+}
+
+/** The lead card: the plain-framed panel. */
+fun Modifier.primaryCard(): Modifier = panel(PanelFrame.Plain)
+
+/** A list card: the plain panel. */
+fun Modifier.quietCard(): Modifier = panel()
+
+/**
+ * The lead panel's four corner ornaments: the owner's filigree (design/assets/ornaments, the
+ * `ic_frame_corner` vector), cream at 80%, mirrored per corner. Place it last in the panel's Box
+ * with `Modifier.matchParentSize()`. Decorative only. iOS: `FrameCorners`.
+ */
+@Composable
+fun FrameCorners(modifier: Modifier = Modifier) {
+    Box(modifier.padding(CORNER_INSET)) {
+        val corner = painterResource(R.drawable.ic_frame_corner)
+        val tint = FsColor.cream.copy(alpha = CORNER_ALPHA)
+        listOf(
+            Alignment.TopStart to (1f to 1f),
+            Alignment.TopEnd to (-1f to 1f),
+            Alignment.BottomEnd to (-1f to -1f),
+            Alignment.BottomStart to (1f to -1f),
+        ).forEach { (alignment, flip) ->
+            Icon(
+                corner,
+                contentDescription = null,
+                tint = tint,
+                modifier = Modifier
+                    .align(alignment)
+                    .size(CORNER_SIZE)
+                    .graphicsLayer(scaleX = flip.first, scaleY = flip.second),
+            )
+        }
+    }
+}
+
+private val FRAME_INSET = 6.dp
+private val CORNER_INSET = 4.dp
+private val CORNER_SIZE = 44.dp
+private const val CORNER_ALPHA = 0.8f

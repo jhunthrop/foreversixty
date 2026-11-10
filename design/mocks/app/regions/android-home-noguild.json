@@ -7,9 +7,9 @@
   "head": {
    "box": [
     16,
-    8,
+    6,
     380,
-    94
+    56
    ],
    "inventory": {
     "image": 1
@@ -18,9 +18,9 @@
   "head-title": {
    "box": [
     16,
-    24,
+    6,
     380,
-    64
+    56
    ],
    "inventory": {
     "image": 1
@@ -28,19 +28,19 @@
   },
   "head-meta": {
    "box": [
-    88,
-    68,
-    217,
-    20
+    84,
+    41,
+    312,
+    21
    ],
    "inventory": {}
   },
   "section-next-upgrades": {
    "box": [
-    16,
-    130,
-    380,
-    277
+    14,
+    96,
+    384,
+    302
    ],
    "inventory": {
     "row": 4,
@@ -49,10 +49,10 @@
   },
   "section-new-for-you": {
    "box": [
-    16,
-    435,
-    380,
-    219
+    14,
+    418,
+    384,
+    232
    ],
    "inventory": {
     "row": 3,
@@ -61,10 +61,10 @@
   },
   "section-raid-with-a-guild": {
    "box": [
-    16,
-    678,
-    380,
-    104
+    14,
+    670,
+    384,
+    132
    ],
    "inventory": {
     "button": 1

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -93,26 +94,38 @@ fun Modifier.lineBox(lineHeight: TextUnit): Modifier = layout { measurable, cons
 /** One role against its need (`Healers 5/8` over its meter). */
 data class TallyItem(val label: String, val have: Int, val want: Int)
 
-/** Who is coming (the mock's Tally): three roles, 16 apart, each its count coloured by how close it is. */
+/**
+ * Who is coming (the mock's Tally): three roles, 16 apart, each its count coloured by how close it is.
+ * At large text the roles go one per line, full width, so no role name is clipped.
+ */
 @Composable
 fun FlowTally(items: List<TallyItem>, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(FsSpace.space4)) {
-        items.forEach { item ->
-            val tone = when {
-                item.have >= item.want -> FsColor.kill
-                item.have >= item.want * WARN_SHARE -> FsColor.gold
-                else -> FsColor.wipe
-            }
-            Column(Modifier.weight(1f).semantics(mergeDescendants = true) {}) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(item.label, style = FsType.item, color = FsColor.strong, modifier = Modifier.weight(1f), maxLines = 1)
-                    Text("${item.have}/${item.want}", style = FsType.item, color = tone)
-                }
-                val share = if (item.want > 0) (item.have.toFloat() / item.want).coerceIn(0f, 1f) else 1f
-                Box(Modifier.padding(top = METER_GAP).fillMaxWidth().height(METER).clip(RoundedCornerShape(METER_RADIUS)).background(FsColor.lineSoft)) {
-                    Box(Modifier.fillMaxWidth(share).height(METER).clip(RoundedCornerShape(METER_RADIUS)).background(if (tone == FsColor.kill) FsColor.kill else FsColor.gold))
-                }
-            }
+    if (LocalDensity.current.fontScale >= STACK_SCALE) {
+        Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(FsSpace.space3)) {
+            items.forEach { TallyRole(it, Modifier.fillMaxWidth()) }
+        }
+    } else {
+        Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(FsSpace.space4)) {
+            items.forEach { TallyRole(it, Modifier.weight(1f)) }
+        }
+    }
+}
+
+@Composable
+private fun TallyRole(item: TallyItem, modifier: Modifier) {
+    val tone = when {
+        item.have >= item.want -> FsColor.kill
+        item.have >= item.want * WARN_SHARE -> FsColor.gold
+        else -> FsColor.wipe
+    }
+    Column(modifier.semantics(mergeDescendants = true) {}) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(item.label, style = FsType.item, color = FsColor.strong, modifier = Modifier.weight(1f), maxLines = 1)
+            Text("${item.have}/${item.want}", style = FsType.item, color = tone)
+        }
+        val share = if (item.want > 0) (item.have.toFloat() / item.want).coerceIn(0f, 1f) else 1f
+        Box(Modifier.padding(top = METER_GAP).fillMaxWidth().height(METER).clip(RoundedCornerShape(METER_RADIUS)).background(FsColor.lineSoft)) {
+            Box(Modifier.fillMaxWidth(share).height(METER).clip(RoundedCornerShape(METER_RADIUS)).background(if (tone == FsColor.kill) FsColor.kill else FsColor.gold))
         }
     }
 }
@@ -127,6 +140,7 @@ private val METER_RADIUS = 3.dp
 private const val GLOW = 0.1f
 private val GLOW_RADIUS = 300.dp
 private const val WARN_SHARE = 0.75f
+private const val STACK_SCALE = 1.3f
 private val EYEBROW = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)
 private val CLOCK = FsType.figure.copy(fontSize = 40.sp, lineHeight = 42.sp)
 private val UNIT = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp)

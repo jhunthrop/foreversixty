@@ -2,21 +2,35 @@ package gg.foreversixty.app.gear.flows
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
+import gg.foreversixty.app.designsystem.FsColor
+import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.PanelFrame
+import gg.foreversixty.app.designsystem.PaperdollHeader
+import gg.foreversixty.app.designsystem.PaperdollListSlot
+import gg.foreversixty.app.designsystem.ParityItemKind
+import gg.foreversixty.app.designsystem.ParityRegion
 import gg.foreversixty.app.designsystem.classColor
+import gg.foreversixty.app.designsystem.parityItem
 import gg.foreversixty.app.designsystem.parityRegion
+import gg.foreversixty.app.flows.FlowBandPage
 import gg.foreversixty.app.flows.FlowHead
-import gg.foreversixty.app.flows.FlowItemRow
 import gg.foreversixty.app.flows.FlowLead
-import gg.foreversixty.app.flows.FlowLink
 import gg.foreversixty.app.flows.FlowPage
 import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.flows.FlowSection
 import gg.foreversixty.app.flows.FlowSkeleton
-import androidx.compose.ui.unit.dp
+import gg.foreversixty.app.flows.FlowSubLink
+import gg.foreversixty.app.flows.subWithLink
+import gg.foreversixty.app.items.ItemIcon
+import gg.foreversixty.app.items.ItemQuality
 
 data class GearActions(
     val onChange: () -> Unit = {},
@@ -25,19 +39,30 @@ data class GearActions(
 )
 
 /**
- * Gear (spec 2026-11-08 4.3, mock `gear`): the list it compares against with Change, Where to go
- * tonight (left out when nothing is worth a trip), then every slot, Worn or the gain.
+ * Gear in the round-5 look (spec 2026-11-08 4.3; spec 2026-11-09 Paperdoll "Mobile Gear tab", mock
+ * m-android-gear-frame): the band behind [topBar], then the paperdoll strip (the character's
+ * [portrait] or the seal, the spec, the set's figure), the line naming the list with Change, every
+ * slot in two columns, and Where to go tonight (left out when nothing is worth a trip).
  */
 @Composable
-fun GearFlowScreen(content: GearContent, build: String, actions: GearActions) {
-    FlowPage {
-        Column(Modifier.fillMaxWidth().parityRegion(CONTROLS)) {
-            FlowRow(content.listTitle, content.onList, last = true, trail = {
-                FlowLink(stringResource(R.string.gear_change), onClick = actions.onChange)
-            })
+fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, portrait: Painter? = null, topBar: @Composable () -> Unit = {}) {
+    val equipped = stringResource(R.string.gear_worn)
+    val looks = content.slots.mapNotNull { it.look }.associateBy { it.id }
+    FlowBandPage(topBar) {
+        PaperdollHeader(
+            title = content.title,
+            figure = content.figure,
+            portrait = portrait,
+            slots = content.slots.map { it.listSlot(content.unitWord, equipped) },
+            unit = content.unitWord,
+            onSelect = { id -> content.slots.firstOrNull { it.slot == id }?.let(actions.onSlot) },
+            lead = { Lead(content.facts, actions.onChange) },
+        ) { item ->
+            val look = looks[item.id]
+            ItemIcon(look?.icon, look?.quality, build, SOCKET_ICON, Modifier.parityItem(ParityItemKind.Image))
         }
         if (content.where.isNotEmpty()) {
-            FlowSection(stringResource(R.string.gear_whereTonight)) {
+            FlowSection(stringResource(R.string.gear_whereTonight), top = 0.dp, panel = PanelFrame.None) {
                 content.where.forEachIndexed { i, row ->
                     FlowRow(
                         row.title, row.line, FlowLead.Item(row.lead, build),
@@ -47,20 +72,30 @@ fun GearFlowScreen(content: GearContent, build: String, actions: GearActions) {
                 }
             }
         }
-        FlowSection(stringResource(R.string.gear_everySlot)) {
-            Column(Modifier.fillMaxWidth().parityRegion(SLOTS)) {
-                content.slots.forEach { slot ->
-                    FlowItemRow(
-                        look = slot.look,
-                        build = build,
-                        source = slot.source,
-                        gain = if (slot.worn) stringResource(R.string.gear_worn) else slot.gain,
-                        unit = slot.gain?.takeIf { !slot.worn }?.let { content.unitWord },
-                    ) { actions.onSlot(slot) }
-                }
-            }
-        }
     }
+}
+
+/** The line that names the list, `60 raid · Alliance · 4 of 17 slots on the list · Change`. */
+@Composable
+private fun Lead(facts: String, onChange: () -> Unit) {
+    Text(
+        subWithLink(facts, FlowSubLink(stringResource(R.string.gear_change), onChange)),
+        style = LEAD,
+        color = FsColor.text,
+        modifier = Modifier.fillMaxWidth().parityRegion(ParityRegion.CONTROLS),
+    )
+}
+
+/** A slot as the paperdoll's list draws it: the pick in its quality colour, its gain or Equipped. */
+private fun GearSlotRow.listSlot(unit: String, equipped: String): PaperdollListSlot {
+    val pick = look ?: return PaperdollListSlot(slot, label, item = null)
+    val detail = when {
+        worn -> equipped
+        gain != null -> "$gain $unit"
+        else -> null
+    }
+    val item = PaperdollListSlot.Item(pick.id, pick.name.orEmpty(), ItemQuality(pick.quality).text, detail, isGain = gain != null && !worn)
+    return PaperdollListSlot(slot, label, item)
 }
 
 /** Gear while its list loads. */
@@ -85,5 +120,8 @@ fun GearSignedOut(classes: List<Pair<String, String>>, onClass: (String) -> Unit
     }
 }
 
-private const val CONTROLS = "controls"
-private const val SLOTS = "slots"
+/** The item icon inside the 44 dp socket, as the design-system sheet draws it. */
+private val SOCKET_ICON = 38.dp
+
+/** The list's lead line, 14 on 20 (the mock's `.pdl .lead`). */
+private val LEAD = FsType.small.copy(fontSize = 14.sp, lineHeight = 20.sp)

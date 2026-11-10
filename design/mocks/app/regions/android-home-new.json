@@ -7,27 +7,27 @@
   "head": {
    "box": [
     16,
-    8,
+    6,
     380,
-    132
+    55
    ],
    "inventory": {}
   },
   "head-title": {
    "box": [
     16,
-    24,
+    6,
     380,
-    102
+    55
    ],
    "inventory": {}
   },
   "head-meta": {
    "box": [
     16,
-    106,
+    40,
     380,
-    20
+    21
    ],
    "inventory": {}
   }

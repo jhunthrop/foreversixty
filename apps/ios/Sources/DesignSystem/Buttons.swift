@@ -1,10 +1,11 @@
 import SwiftUI
 
-/// The site's buttons (spec §4.5): `PRIMARY_BUTTON_FIXED` (the gold gradient) and
-/// `SECONDARY_BUTTON_FIXED` (4.5% white, the gold 17% border), plus the destructive and quiet
-/// kinds, and the accent secondary (gold label and border, the reminder ask's Turn on). Full width
-/// by default; `fullWidth: false` hugs the label. Pressed: 0.98 over 120 ms (§8), except under
-/// Reduce Motion and on a disabled button, which never scale.
+/// The site's buttons in round 5 (web lib/ui/button.ts): primary their flat teal with the teal edge
+/// (Buy Now), secondary their blue (Upgrade Now), the accent gold outline (the reminder ask's Turn
+/// on), destructive the wipe outline and quiet the rule outline, each a white or tone label in
+/// sentence case on the 6 pt control radius. Full width by default; `fullWidth: false` hugs the
+/// label. Pressed: 0.98 over 120 ms (spec section 8), except under Reduce Motion and on a disabled
+/// button, which never scale.
 public struct BrandButtonStyle: ButtonStyle {
     public enum Kind: Sendable { case primary, secondary, accent, destructive, quiet }
 
@@ -28,14 +29,11 @@ public struct BrandButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(ScaledType.button)
-            // Spec §4.5: the primary button is uppercase; a secondary reads in sentence case.
-            .textCase(kind == .secondary || kind == .accent ? nil : .uppercase)
-            .tracking(0.9)
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: height)
             .padding(.horizontal, Self.horizontalPadding)
             .foregroundStyle(foreground)
-            .background(background, in: .rect(cornerRadius: FSRadius.legacyControl))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.legacyControl).stroke(border))
+            .background(background, in: .rect(cornerRadius: Theme.Radius.control))
+            .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control).strokeBorder(border, lineWidth: FSStroke.hairline))
             .scaleEffect(Self.scale(pressed: configuration.isPressed, reduceMotion: reduceMotion, enabled: isEnabled))
             .animation(.easeOut(duration: Self.pressDuration), value: configuration.isPressed)
     }
@@ -47,27 +45,25 @@ public struct BrandButtonStyle: ButtonStyle {
 
     private var foreground: Color {
         switch kind {
-        case .primary: FSColor.bg
-        case .secondary: FSColor.strong
+        case .primary, .secondary, .quiet: FSColor.strong
         case .accent: FSColor.gold
         case .destructive: FSColor.wipe
-        case .quiet: FSColor.nav
         }
     }
 
-    private var background: AnyShapeStyle {
+    private var background: Color {
         switch kind {
-        case .primary:
-            AnyShapeStyle(LinearGradient(colors: [FSColor.goldHover, FSColor.gold], startPoint: .top, endPoint: .bottom))
-        case .secondary, .accent, .destructive, .quiet:
-            AnyShapeStyle(GameColors.controlFill)
+        case .primary: FSColor.teal
+        case .secondary: FSColor.blue
+        case .accent, .destructive, .quiet: .clear
         }
     }
 
     private var border: Color {
         switch kind {
-        case .primary: .clear
-        case .secondary, .quiet: FSColor.lineCard
+        case .primary: FSColor.tealEdge
+        case .secondary: FSColor.blueEdge
+        case .quiet: FSColor.rule
         case .accent: FSColor.gold
         case .destructive: FSColor.wipe.opacity(0.45)
         }

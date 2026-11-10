@@ -4,30 +4,12 @@
   "height": 915
  },
  "regions": {
-  "head": {
-   "box": [
-    16,
-    8,
-    380,
-    68
-   ],
-   "inventory": {}
-  },
-  "head-title": {
-   "box": [
-    16,
-    24,
-    380,
-    38
-   ],
-   "inventory": {}
-  },
   "controls": {
    "box": [
     16,
-    76,
-    380,
-    48
+    0,
+    396,
+    58
    ],
    "inventory": {
     "button": 6
@@ -35,10 +17,10 @@
   },
   "section-today": {
    "box": [
-    16,
-    152,
-    380,
-    285
+    14,
+    75,
+    384,
+    302
    ],
    "inventory": {
     "row": 3,
@@ -47,10 +29,10 @@
   },
   "section-yesterday": {
    "box": [
-    16,
-    465,
-    380,
-    265
+    14,
+    397,
+    384,
+    283
    ],
    "inventory": {
     "row": 3,
@@ -59,10 +41,10 @@
   },
   "section-this-week": {
    "box": [
-    16,
-    758,
-    380,
-    188
+    14,
+    700,
+    384,
+    205
    ],
    "inventory": {
     "row": 2,

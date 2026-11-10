@@ -1,3 +1,4 @@
+import DesignSystem
 import SwiftUI
 
 @main
@@ -8,6 +9,8 @@ struct ForeverSixtyApp: App {
 
     init() {
         let environment = AppEnvironment.fromBundle()
+        // Round 5's bars: the painted band behind every navigation bar, the owner's tab bar.
+        BarAppearance.install()
         CrashReporting.start(configuration: environment.configuration)
         // Lane F4: the raid notifications' categories and their In, Late and Out answers.
         RaidNotificationCenter.shared.install(answerer: RaidPushAnswerer(calls: LiveRaidService(client: environment.client)))

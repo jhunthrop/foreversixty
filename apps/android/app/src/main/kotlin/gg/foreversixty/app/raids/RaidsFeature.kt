@@ -180,14 +180,17 @@ class RaidsFeature(
     var tabExtras: RaidTabExtras by mutableStateOf(RaidTabExtras())
         private set
 
-    /** Reads what [state] needs: an officer's newest applicant, the guilds recruiting a guildless spec, tonight's Ready check. */
-    suspend fun refreshExtras(state: RaidsTabState, liveRaid: Long?) {
+    /**
+     * Reads what [state] needs: an officer's newest applicant, the guilds recruiting a guildless spec,
+     * and the Ready check of [readyRaid] (the live raid, else the next: spec 4.2 Before you pull).
+     */
+    suspend fun refreshExtras(state: RaidsTabState, readyRaid: Long?) {
         tabExtras = when (state) {
             is RaidsTabState.NoGuild -> RaidTabExtras(recruiting = recruiting(state.character))
             is RaidsTabState.Loaded -> {
                 val guild = state.content.head.id
                 val applicant = if ((badge?.applicants ?: 0) > 0 && badge?.officer == true) newestApplicant(guild) else null
-                val ready = liveRaid?.let { (flows.ready(state.content.character.key, it) as? ApiResult.Success)?.data }
+                val ready = readyRaid?.let { (flows.ready(state.content.character.key, it) as? ApiResult.Success)?.data }
                 RaidTabExtras(applicant = applicant, ready = ready)
             }
             else -> RaidTabExtras()
@@ -284,7 +287,8 @@ fun RaidsRoute(
         syncCalendar()
         val loaded = (tab.state as? RaidsTabState.Loaded)?.content
         feature.refreshBadge(loaded?.head?.id)
-        feature.refreshExtras(tab.state, loaded?.planned?.firstOrNull { HomeFlowState.isLive(it, feature.now()) }?.id)
+        val readyRaid = loaded?.planned?.let { planned -> planned.firstOrNull { HomeFlowState.isLive(it, feature.now()) } ?: PlannedRaids(planned, feature.now()).next }
+        feature.refreshExtras(tab.state, readyRaid?.id)
         if (extras != null && loaded != null) extras.roster(loaded.head.id).load()
     }
 
@@ -298,12 +302,13 @@ fun RaidsRoute(
     CompositionLocalProvider(LocalRaidIconBuild provides iconBuild) {
         when (val top = feature.navigator.stack.lastOrNull()) {
             null -> Column(Modifier.fillMaxSize().background(FsColor.bg)) {
-                selector()
                 val view = RaidTabPresenter(res, clock, feature.now()).view(tab.state, next, feature.badge, extras != null, feature.tabExtras)
                 if (view != null) {
-                    content?.offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, feature.now()), content.stale, { scope.launch { reload() } }) }
-                    RaidTabScreen(view, raidTabActions(feature, content, next, scope, uri::openUri, signIn))
+                    RaidTabScreen(view, raidTabActions(feature, content, next, scope, uri::openUri, signIn), topBar = selector) {
+                        content?.offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, feature.now()), content.stale, { scope.launch { reload() } }) }
+                    }
                 } else {
+                    selector()
                     RaidsTabContentView(
                         state = tab.state,
                         clock = clock,

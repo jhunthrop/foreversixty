@@ -28,15 +28,17 @@ fails otherwise).
 
 ## Fonts (`fonts/`)
 
-The OFL faces, as TTF: Barlow 400/600/700 (converted from the site's own Latin subsets in
-`web/src/assets/fonts/`) and Marcellus 400 (`Marcellus-Regular.ttf`, the unmodified upstream file
-from google/fonts, so the OFL's Reserved Font Name clause holds; licence `OFL-Marcellus.txt`), the
-screen title's face. These four are the apps' faces (`design/tokens/tokens.json` `font`): iOS
+The OFL faces, as TTF: Open Sans 400/600/700 and Archivo 600 (`make brand-fonts` converts the
+site's own Latin subsets in `web/src/assets/fonts/`; licences `OFL-OpenSans.txt`,
+`OFL-Archivo.txt`) and Marcellus 400 (`Marcellus-Regular.ttf`, the unmodified upstream file from
+google/fonts, so the OFL's Reserved Font Name clause holds; licence `OFL-Marcellus.txt`), the
+titles' face. These five are the apps' faces (`design/tokens/tokens.json` `font`, round 5): iOS
 bundles them and lists them under `UIAppFonts` in the app and the widget extension (`FSFont`
-names them by PostScript name); Android's `forever.shared-fonts` plugin copies exactly these to
-`res/font` with lowercase names (`FsFont`). Barlow Condensed 700/800 and Cinzel 700 (licences
-`OFL-Barlow.txt`, `OFL-Cinzel.txt`) stay here for the design mocks and the Discord assets only;
-neither app ships them (the wordmark is the site's SVG).
+names them by PostScript name, which is also each file's name); Android's `forever.shared-fonts`
+plugin copies exactly these to `res/font` with lowercase names (`FsFont`). Barlow 400/600/700,
+Barlow Condensed 700/800 and Cinzel 700 (licences `OFL-Barlow.txt`, `OFL-Cinzel.txt`) stay here
+only for the older design mocks (`design/mocks/2026-11-04-sim-results`, `2026-10-31-paperdoll`)
+and the Discord assets (`design/community/discord`); neither app ships them.
 
 ## Brand (`brand/`)
 

@@ -9,7 +9,7 @@
     16,
     0,
     380,
-    232
+    206
    ],
    "inventory": {
     "image": 2
@@ -30,7 +30,7 @@
    "box": [
     88,
     60,
-    225,
+    224,
     20
    ],
    "inventory": {}
@@ -40,7 +40,7 @@
     16,
     96,
     380,
-    122
+    96
    ],
    "inventory": {
     "image": 1
@@ -49,7 +49,7 @@
   "controls": {
    "box": [
     0,
-    232,
+    206,
     412,
     50
    ],
@@ -62,7 +62,7 @@
   "plate": {
    "box": [
     16,
-    432,
+    406,
     380,
     1077
    ],
@@ -75,18 +75,18 @@
   "section-overview": {
    "box": [
     17,
-    1558,
+    1532,
     378,
-    822
+    872
    ],
    "inventory": {}
   },
   "section-talents-and-builds": {
    "box": [
     17,
-    2380,
+    2404,
     378,
-    1800
+    1914
    ],
    "inventory": {
     "row": 9,
@@ -96,9 +96,9 @@
   "section-rotation-and-priority": {
    "box": [
     17,
-    4180,
+    4318,
     378,
-    2287
+    2453
    ],
    "inventory": {
     "row": 12,
@@ -108,18 +108,18 @@
   "section-stat-priority": {
    "box": [
     17,
-    6467,
+    6771,
     378,
-    1283
+    1225
    ],
    "inventory": {}
   },
   "section-best-in-slot": {
    "box": [
     17,
-    7750,
+    7996,
     378,
-    1677
+    1703
    ],
    "inventory": {
     "row": 17,
@@ -129,9 +129,9 @@
   "section-enchants-and-consumables": {
    "box": [
     17,
-    9427,
+    9699,
     378,
-    1455
+    1481
    ],
    "inventory": {
     "row": 16,
@@ -141,7 +141,7 @@
   "section-races": {
    "box": [
     17,
-    10882,
+    11180,
     378,
     1457
    ],
@@ -153,18 +153,18 @@
   "section-professions": {
    "box": [
     17,
-    12339,
+    12637,
     378,
-    339
+    365
    ],
    "inventory": {}
   },
   "section-leveling": {
    "box": [
     17,
-    12678,
+    13002,
     378,
-    3091
+    3247
    ],
    "inventory": {
     "button": 2,
@@ -174,9 +174,9 @@
   "section-sources": {
    "box": [
     16,
-    15818,
+    16298,
     380,
-    484
+    493
    ],
    "inventory": {
     "row": 10
@@ -185,7 +185,7 @@
   "footer-note": {
    "box": [
     16,
-    16350,
+    16839,
     380,
     56
    ],

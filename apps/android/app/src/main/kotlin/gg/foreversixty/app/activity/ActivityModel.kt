@@ -2,6 +2,7 @@ package gg.foreversixty.app.activity
 
 import androidx.annotation.StringRes
 import gg.foreversixty.app.R
+import gg.foreversixty.app.bis.SpecCatalog
 import gg.foreversixty.app.menu.MenuDestination
 import gg.foreversixty.app.model.ActivityRow
 import gg.foreversixty.app.navigation.DeepLink
@@ -46,6 +47,9 @@ sealed interface ActivityLanding {
 object Activity {
     private const val WEEK_DAYS = 7L
 
+    /** The kinds whose title opens on a spec's full name (`Fury Warrior moved to S`); a BiS change keeps its icon, it is about an item. */
+    private val NAMED_SPEC_KINDS = setOf("tier.moved")
+
     fun items(rows: List<ActivityRow>): List<ActivityItem> = rows.mapNotNull { row ->
         val at = runCatching { Instant.parse(row.occurredAt) }.getOrNull() ?: return@mapNotNull null
         ActivityItem(row, at, PushGroup.of(row.group, row.kind))
@@ -65,6 +69,17 @@ object Activity {
         date.isAfter(today.minusDays(WEEK_DAYS)) -> ActivityDay.ThisWeek
         else -> ActivityDay.Earlier
     }
+
+    /**
+     * The class a row is about, drawn as its crest (one crest language, never a square spec icon): the
+     * spec icon the server sends for a guildmate (guildsim.passed), else the spec a tier move names
+     * at its start (`Fury Warrior moved to S`). Null for every other row: it keeps its game icon.
+     */
+    fun crestClass(row: ActivityRow, specs: SpecCatalog): String? =
+        specs.specs.firstOrNull { it.icon == row.icon }?.classSlug
+            ?: row.takeIf { it.kind in NAMED_SPEC_KINDS }?.let { named ->
+                specs.specs.firstOrNull { named.title.startsWith("${it.name} ${it.classSlug} ", ignoreCase = true) }?.classSlug
+            }
 
     /** The row's answer: its app link (or the push's raid, sim or report landing), else its group's tab. */
     fun landing(row: ActivityRow): ActivityLanding? {

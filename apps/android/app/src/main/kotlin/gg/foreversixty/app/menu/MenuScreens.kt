@@ -75,7 +75,8 @@ fun ProfileMenuDrawer(
             ModalDrawerSheet(
                 drawerState = drawer,
                 drawerContainerColor = FsColor.raised,
-                drawerShape = androidx.compose.ui.graphics.RectangleShape,
+                // Material 3's drawer: rounded at its open edge (round 5, mock m-android-menu).
+                drawerShape = androidx.compose.material3.DrawerDefaults.shape,
                 modifier = Modifier.fillMaxWidth(WIDTH).fillMaxHeight(),
                 windowInsets = androidx.compose.foundation.layout.WindowInsets(0.dp),
             ) {

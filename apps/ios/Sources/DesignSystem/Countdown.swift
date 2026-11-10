@@ -55,7 +55,7 @@ public struct FSCountdown<Aside: View>: View {
                             Text(part.value)
                                 .type(TypeRole(face: FSFont.bodyBold, size: 40, lineHeight: 42, scalesWith: .largeTitle, tabular: true))
                                 .foregroundStyle(FSColor.strong)
-                                // Barlow's natural line at 40 is taller than the 42 pt line box.
+                                // The face's natural line at 40 is taller than the 42 pt line box.
                                 .frame(height: clockLine)
                             Text(part.unit)
                                 .type(TypeRole(face: FSFont.body, size: 12, lineHeight: 16, scalesWith: .caption))

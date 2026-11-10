@@ -18,14 +18,9 @@ enum AppTab: String, CaseIterable, Identifiable {
         }
     }
 
-    var systemImage: String {
-        switch self {
-        case .home: "house"
-        case .raid: "flag"
-        case .gear: "shield.checkered"
-        case .activity: "bell"
-        }
-    }
+    /// The owner's tab icon (spec "Tab-bar icons", Brand.xcassets `tab-<name>`): a rune stone,
+    /// crossed swords on a banner, a T-visor helm, a war horn.
+    var icon: String { "tab-\(rawValue)" }
 }
 
 /// Where a menu row goes (flows spec 3): the tools and the account chores, pushed under the tab

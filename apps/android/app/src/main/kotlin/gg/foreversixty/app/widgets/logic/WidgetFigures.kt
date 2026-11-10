@@ -40,7 +40,6 @@ data class RaidFigures(
     /** The answer alone (`In`, `Not signed up`, `Locked`): the inline widget's and the tile's last word. */
     val inlineAnswer: String? = null,
     val signedUp: String? = null,
-    val signedUpCount: Int = 0,
     val size: Int? = null,
     val stale: String? = null,
     val buttons: Boolean = false,
@@ -55,10 +54,14 @@ data class RaidFigures(
     val liveUntil: String? = null,
     /** The instant the countdown runs to: invites, else the pull. */
     val liveTarget: Instant? = null,
-    val liveYou: String? = null,
     /** Cancelled inside the countdown's window: the notification says `Cancelled` for 5 minutes. */
     val liveCancelled: Boolean = false,
-    val guildName: String? = null,
+    /** The ongoing notification's line: `Starts 8:00 pm CST · 18 in, 3 late · 2 tanks, 5 heals`. */
+    val liveLine: String? = null,
+    /** The ongoing notification's answer: `Olympus XXVII · You are In`. */
+    val liveAnswer: String? = null,
+    /** The zone's icon (`inv_misc_head_dragon_black`), the notification's large icon. */
+    val zoneIcon: String? = null,
     val description: String,
     /** The restyled widget's lines; null signed out, with no character, or on an old snapshot. */
     val card: RaidCard? = null,
@@ -152,13 +155,15 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
             countdown = span?.let(::countdownWords), short = span?.let(::shortWords),
             time = time, timeShort = timeShort,
             inline = res.getString(R.string.widget_inline, raid.zoneName, timeShort, inlineAnswer), inlineAnswer = inlineAnswer,
-            you = res.getString(R.string.widget_you, answer), signedUp = signedUp, signedUpCount = raid.signedUp, size = raid.size,
+            you = res.getString(R.string.widget_you, answer), signedUp = signedUp, size = raid.size,
             stale = stale, buttons = raid.canSignUp && raid.status == STATUS_OPEN, checked = state,
             notSaved = overlay?.takeIf { it.isFailed(now) }?.signupState, asksSpec = asksSpec,
             liveActive = live != null, liveTitle = live?.first, liveUntil = live?.second,
-            liveCancelled = cancelled && inWindow, guildName = raid.guildName,
+            liveCancelled = cancelled && inWindow,
             liveTarget = Instant.parse(raid.inviteAt ?: raid.startsAt),
-            liveYou = state?.let { res.getString(R.string.live_you, res.getString(it.label), role, name) },
+            liveLine = liveLine(raid.inviteAt?.let(Instant::parse), start, coming(raid.inCount, raid.late, raid.tanks, raid.healers) ?: signedUp),
+            liveAnswer = state?.let { res.getString(R.string.live_answer, raid.guildName, res.getString(it.label)) },
+            zoneIcon = raid.zoneIcon,
             description = description(raid, start, span, state, role, signedUp),
             card = cards.raid(raid, span, CardAnswer(state, asksSpec, raid.status == STATUS_LOCKED)),
         )
@@ -181,6 +186,22 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
         return title to until
     }
 
+    /**
+     * `Starts 8:00 pm CST · 18 in, 3 late · 2 tanks, 5 heals`: the invites' time when the raid has them,
+     * as the countdown runs to them, then who is coming when known.
+     */
+    private fun liveLine(invites: Instant?, start: Instant, coming: String?): String {
+        val time = invites?.let { res.getString(R.string.live_invitesAt, clock.guildClock(it, zone)) }
+            ?: res.getString(R.string.live_startsAt, clock.guildClock(start, zone))
+        return listOfNotNull(time, coming).joinToString(" · ")
+    }
+
+    /** `18 in, 3 late · 2 tanks, 5 heals` when the server sent all four counts. */
+    private fun coming(inCount: Int?, late: Int?, tanks: Int?, healers: Int?): String? {
+        if (inCount == null || late == null || tanks == null || healers == null) return null
+        return res.getString(R.string.live_counts, inCount, late, tanks, healers)
+    }
+
     private fun inLiveWindow(raid: WidgetNextRaid, start: Instant, now: Instant): Boolean {
         val target = Instant.parse(raid.inviteAt ?: raid.startsAt)
         return now >= target.minus(LIVE_LEAD) && now < start.plus(LIVE_TAIL)
@@ -199,25 +220,17 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
      * The ongoing raid notification from a `live.raid.start` message alone (fixture surface.live-raid-start.fcm),
      * for when the snapshot draws none: the zone, the pull's countdown, your answer and who is coming.
      */
-    fun pushedLive(data: Map<String, String>, now: Instant): RaidLiveContent? {
+    fun pushedLive(data: Map<String, String>): RaidLiveContent? {
         val guildId = data["guild_id"]?.toLongOrNull() ?: return null
         val raidId = data["raid_id"]?.toLongOrNull() ?: return null
         val zone = data["zone_name"]?.takeIf { it.isNotBlank() } ?: return null
         val start = data["starts_at"]?.toLongOrNull()?.let(Instant::ofEpochSecond) ?: return null
         val state = SignupState.of(data["my_state"])?.takeIf { it.isComing } ?: return null
-        val minutes = ceilMinutes(Duration.between(now, start))
-        val title = when {
-            minutes <= 0 -> res.getString(R.string.live_pullTitleNow, zone)
-            minutes == 1L -> res.getString(R.string.live_pullTitleOne, zone)
-            else -> res.getString(R.string.live_pullTitle, zone, minutes.toInt())
-        }
-        val you = res.getString(R.string.live_you, res.getString(state.label), roleLabel(data["role"].orEmpty()), data["character_name"].orEmpty())
-        val counts = listOf("in", "late", "tanks", "healers").mapNotNull { data[it]?.toIntOrNull() }
-        val coming = counts.takeIf { it.size == COUNTS }?.let { (n, late, tanks, heals) -> res.getString(R.string.live_counts, n, late, tanks, heals) }
+        val said = res.getString(R.string.live_answer, data["guild_name"].orEmpty(), res.getString(state.label))
+        val coming = coming(data["in"]?.toIntOrNull(), data["late"]?.toIntOrNull(), data["tanks"]?.toIntOrNull(), data["healers"]?.toIntOrNull())
         return RaidLiveContent(
-            title = title, text = you, guild = data["guild_name"].orEmpty(),
-            bigText = listOfNotNull(res.getString(R.string.live_starts, clock.clock(start)), you, coming).joinToString("\n"),
-            countdownTo = start, guildId = guildId, raidId = raidId, description = listOf(title, you).joinToString(". "),
+            title = zone, text = said, line = liveLine(null, start, coming), zoneIcon = data["zone_icon"],
+            countdownTo = start, guildId = guildId, raidId = raidId, description = listOf(zone, said).joinToString(". "), answer = state,
         )
     }
 
@@ -335,7 +348,6 @@ class WidgetFigures(private val res: Resources, private val zone: ZoneId = ZoneI
         val LIVE_LEAD: Duration = Duration.ofMinutes(60)
 
         /** A start message's four counts: in, late, tanks, healers. */
-        private const val COUNTS = 4
         val LIVE_TAIL: Duration = Duration.ofMinutes(15)
 
         fun ceilMinutes(duration: Duration): Long = ceil(duration.toMillis() / MILLIS_PER_MINUTE).toLong()

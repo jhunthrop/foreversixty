@@ -59,8 +59,10 @@ class LiveScreenshotTest {
 
     // The expanded template is the system's own picture of the notification; nothing else draws it.
     @Suppress("DEPRECATION")
-    private fun notification(name: String, built: Notification) {
-        val views = requireNotNull(Notification.Builder.recoverBuilder(context, built).createBigContentView())
+    private fun notification(name: String, built: Notification, collapsed: Boolean = false) {
+        val recovered = Notification.Builder.recoverBuilder(context, built)
+        // A card with nothing to expand (the cancelled raid) is its collapsed view.
+        val views = requireNotNull(if (collapsed) recovered.createContentView() else recovered.createBigContentView() ?: recovered.createContentView())
         if (notification == null) {
             compose.setContent {
                 notification?.let { remote ->
@@ -77,17 +79,24 @@ class LiveScreenshotTest {
         compose.onNodeWithTag(TAG).captureRoboImage("src/test/screenshots/widgets/$name.png", roborazziOptions = STRICT_SNAPSHOT)
     }
 
-    /** The raid card at [at]; the chronometer counts against the device clock, so it is re-based on the capture's own now. */
-    private fun raid(name: String, at: Instant, patch: kotlinx.serialization.json.JsonObject = WidgetTestData.signedUp(38)) {
+    /** The raid card at [at]: the countdown counts from the capture's own now. */
+    private fun raid(name: String, at: Instant, patch: kotlinx.serialization.json.JsonObject = MOCK_RAID, collapsed: Boolean = false) {
         val figures = WidgetFigures(resources(), ZoneId.of("America/Chicago")).raid(WidgetTestData.snapshot(patch = patch), at)
         val content = requireNotNull(RaidLiveContent.of(figures, resources()))
-        val left = content.countdownTo?.let { java.time.Duration.between(at, it).seconds }
-        val rebased = left?.let { content.copy(countdownTo = Instant.ofEpochMilli(org.robolectric.shadows.ShadowSystem.currentTimeMillis()).plusSeconds(it)) } ?: content
-        notification(name, LiveNotifier.raidNotification(context, rebased))
+        notification(name, LiveNotifier.raidNotification(context, content, zoneIcon(content.zoneIcon), now = at), collapsed)
+    }
+
+    /** The zone's icon from the repo's build folder, as the phone's icon cache would hand it over. */
+    private fun zoneIcon(icon: String?): android.graphics.Bitmap? = icon?.let {
+        val file = java.io.File(gg.foreversixty.app.home.HomeFixtures.repoRoot, "data/builds/${gg.foreversixty.app.activity.ActivityFixtures.BUILD}/icons/$it.webp")
+        if (file.exists()) android.graphics.BitmapFactory.decodeFile(file.path) else null
     }
 
     @Test
     fun raidCountdown() = raid("and-live-raid", Instant.parse("2026-12-11T01:21:48Z"))
+
+    @Test
+    fun raidCountdownCollapsed() = raid("and-live-raid-collapsed", Instant.parse("2026-12-11T01:21:48Z"), collapsed = true)
 
     @Test
     fun raidCountdownFiveMinutes() = raid("and-live-raid-5-min", Instant.parse("2026-12-11T01:55:00Z"))
@@ -174,6 +183,15 @@ private fun Modifier.tileGround(active: Boolean) =
     background(if (active) FsColor.gold else Color(0xFF283041), androidx.compose.foundation.shape.RoundedCornerShape(40.dp))
 
 private const val TAG = "live"
+
+/** The mock's raid night (m-android-lock): Olympus XXVII, 18 in, 3 late, 2 tanks and 5 healers. */
+private val MOCK_RAID = kotlinx.serialization.json.buildJsonObject {
+    put("guild_name", kotlinx.serialization.json.JsonPrimitive("Olympus XXVII"))
+    put("in", kotlinx.serialization.json.JsonPrimitive(18))
+    put("late", kotlinx.serialization.json.JsonPrimitive(3))
+    put("tanks", kotlinx.serialization.json.JsonPrimitive(2))
+    put("healers", kotlinx.serialization.json.JsonPrimitive(5))
+}
 private val SHADE = Color(0xFFDADDE3)
 /** The system template draws dark text: a light shade, as on a light-theme phone. */
 private val CARD = Color(0xFFF3F4F7)

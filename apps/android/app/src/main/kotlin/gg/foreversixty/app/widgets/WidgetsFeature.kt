@@ -15,6 +15,7 @@ import gg.foreversixty.app.widgets.data.WidgetSignup
 import gg.foreversixty.app.widgets.data.WidgetStore
 import gg.foreversixty.app.widgets.glance.NextRaidWidget
 import gg.foreversixty.app.widgets.glance.NextUpgradeWidget
+import gg.foreversixty.app.widgets.glance.WidgetIcons
 import gg.foreversixty.app.widgets.live.LiveNotifier
 import gg.foreversixty.app.widgets.live.LiveRegistrations
 import gg.foreversixty.app.push.FcmToken
@@ -41,6 +42,8 @@ class WidgetsFeature(
     currentCharacter: () -> String?,
     /** `entitlements.server_sims`: the sim surface exists only for a server run (spec §1.1). */
     private val serverSims: () -> Boolean,
+    /** The data build the zone icons are served from (/data/{build}/icons), for the raid notification. */
+    private val iconBuild: suspend () -> String? = { null },
     private val now: () -> Instant = Instant::now,
 ) {
     val store = WidgetStore(context)
@@ -72,7 +75,7 @@ class WidgetsFeature(
             notifier.cancelRaid()
             registrations.end(LiveKind.Raid)
         } else {
-            notifier.showRaid(content)
+            showRaid(content)
             if (content.cancelled) registrations.end(LiveKind.Raid) else registrations.start(LiveKind.Raid, content.raidId.toString())
         }
         figures.liveTarget?.minus(WidgetFigures.LIVE_LEAD)?.takeIf { it > at }?.let {
@@ -121,7 +124,13 @@ class WidgetsFeature(
         refresher.refresh()
         if (push.event != LivePush.Event.Start || !store.liveSetting(LiveKind.Raid)) return
         val drawn = RaidLiveContent.of(figures().raid(store.snapshot(), now(), store.overlay()), context.resources)
-        if (drawn == null) figures().pushedLive(data, now())?.let(notifier::showRaid)
+        if (drawn == null) figures().pushedLive(data)?.let { showRaid(it) }
+    }
+
+    /** The raid countdown with its zone's icon, when the icon is on the phone or can load. */
+    private suspend fun showRaid(content: RaidLiveContent) {
+        val icon = content.zoneIcon?.let { WidgetIcons.load(context, it, iconBuild()) }
+        notifier.showRaid(content, icon)
     }
 
     /** Sign-out: every surface returns to its signed-out words and nothing stays registered. */

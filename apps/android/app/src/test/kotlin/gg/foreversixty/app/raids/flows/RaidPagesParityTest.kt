@@ -46,8 +46,14 @@ class RaidPagesParityTest {
         RaidNightPageScreen(RaidPagesFixtures.night(answered = false), BUILD, RaidNightPageActions())
     }
 
-    private fun pushed(screen: String, backTo: String, share: Boolean = false, content: @Composable () -> Unit) =
-        ParityCheck.state(compose, screen) {
+    private fun pushed(
+        screen: String,
+        backTo: String,
+        share: Boolean = false,
+        drift: Set<String> = emptySet(),
+        content: @Composable () -> Unit,
+    ) =
+        ParityCheck.state(compose, screen, expectedDrift = drift) {
             ForeverTabScaffold(selected = ForeverTab.Raid, onSelect = {}, badges = TabBadges(raid = 6, activity = 3)) {
                 Column {
                     FlowBackBar(backTo, {}, if (share) ({}) else null)

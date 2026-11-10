@@ -38,17 +38,17 @@ var ColorBaseGoldHover = color.NRGBA{R: 0xF7, G: 0xB9, B: 0x0A, A: 0xFF}
 
 var ColorBaseNight = color.NRGBA{R: 0x07, G: 0x1D, B: 0x2E, A: 0xFF}
 
-var ColorLegacyCardTop = color.NRGBA{R: 0x13, G: 0x18, B: 0x24, A: 0xFF}
+var ColorLegacyCardTop = color.NRGBA{R: 0x17, G: 0x0E, B: 0x09, A: 0xFF}
 
-var ColorLegacyLineWarm = color.NRGBA{R: 0x3A, G: 0x33, B: 0x26, A: 0xFF}
+var ColorLegacyLineWarm = color.NRGBA{R: 0x4A, G: 0x3F, B: 0x34, A: 0xFF}
 
-var ColorLegacyLineWarmStrong = color.NRGBA{R: 0x4A, G: 0x40, B: 0x30, A: 0xFF}
+var ColorLegacyLineWarmStrong = color.NRGBA{R: 0x82, G: 0x70, B: 0x5B, A: 0xFF}
 
-var ColorLegacyLineCard = color.NRGBA{R: 0xE5, G: 0xB9, B: 0x55, A: 0x2B}
+var ColorLegacyLineCard = color.NRGBA{R: 0x82, G: 0x70, B: 0x5B, A: 0x8C}
 
-var ColorLegacyGoldDeep = color.NRGBA{R: 0xA8, G: 0x76, B: 0x2A, A: 0xFF}
+var ColorLegacyGoldDeep = color.NRGBA{R: 0xB8, G: 0xA2, B: 0x4A, A: 0xFF}
 
-var ColorLegacyGoldLight = color.NRGBA{R: 0xFB, G: 0xE7, B: 0xA1, A: 0xFF}
+var ColorLegacyGoldLight = color.NRGBA{R: 0xFF, G: 0xF6, B: 0xC4, A: 0xFF}
 
 var ColorLegacyEmber = color.NRGBA{R: 0xD6, G: 0x6E, B: 0x28, A: 0xFF}
 
@@ -229,6 +229,12 @@ var ColorForeverTooltipYellow = color.NRGBA{R: 0xFF, G: 0xD1, B: 0x00, A: 0xFF}
 // (Direction B's ember, kept by the P15 sweep).
 var ColorForeverWarn = color.NRGBA{R: 0xD6, G: 0x6E, B: 0x28, A: 0xFF}
 
+// The apps' tab bar: the selected tab's icon and label (spec Tab-bar icons).
+var ColorForeverTabOn = color.NRGBA{R: 0xFF, G: 0xD3, B: 0x6B, A: 0xFF}
+
+// The apps' tab bar: an unselected tab, muted white.
+var ColorForeverTabOff = color.NRGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0xD1}
+
 const Space1 = 4
 
 const Space2 = 8
@@ -293,9 +299,9 @@ const RadiusWidget = 22
 
 const RadiusSheet = 12
 
-const RadiusLegacyPanel = 12
+const RadiusLegacyPanel = 10
 
-const RadiusLegacyControl = 8
+const RadiusLegacyControl = 6
 
 const RadiusLegacyPill = 6
 

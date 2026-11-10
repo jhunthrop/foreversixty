@@ -7,9 +7,9 @@
   "head": {
    "box": [
     16,
-    44,
+    0,
     380,
-    337
+    378
    ],
    "inventory": {
     "button": 4
@@ -18,25 +18,25 @@
   "head-title": {
    "box": [
     16,
-    60,
+    36,
     380,
-    116
+    137
    ],
    "inventory": {}
   },
   "head-meta": {
    "box": [
     16,
-    104,
+    80,
     380,
-    72
+    93
    ],
    "inventory": {}
   },
   "controls": {
    "box": [
     0,
-    381,
+    378,
     412,
     62
    ],
@@ -47,7 +47,7 @@
   "section-your-sign-up": {
    "box": [
     16,
-    471,
+    468,
     380,
     162
    ],
@@ -60,16 +60,16 @@
   "plate": {
    "box": [
     16,
-    6018,
+    6039,
     380,
-    84
+    107
    ],
    "inventory": {}
   },
   "section-sign-ups": {
    "box": [
     16,
-    655,
+    652,
     380,
     2393
    ],
@@ -82,7 +82,7 @@
   "section-not-signed-up": {
    "box": [
     16,
-    3070,
+    3067,
     380,
     376
    ],
@@ -96,7 +96,7 @@
   "section-comp-against-the-target": {
    "box": [
     16,
-    3470,
+    3467,
     380,
     320
    ],
@@ -107,7 +107,7 @@
   "section-bench-and-swaps": {
    "box": [
     16,
-    3812,
+    3809,
     380,
     251
    ],
@@ -120,9 +120,9 @@
   "section-onyxia-assignments": {
    "box": [
     16,
-    4085,
+    4082,
     380,
-    1911
+    1935
    ],
    "inventory": {
     "row": 12,
@@ -132,9 +132,9 @@
   "section-notes": {
    "box": [
     16,
-    6018,
+    6039,
     380,
-    84
+    107
    ],
    "inventory": {}
   }

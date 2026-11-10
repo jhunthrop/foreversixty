@@ -4,7 +4,9 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileSystemOperations
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
@@ -18,21 +20,47 @@ import javax.inject.Inject
  */
 private const val SHARED_DIR = "../shared"
 
-/**
- * The apps' faces from apps/shared/fonts, as `res/font/barlow_regular.ttf` and so on: Barlow 400,
- * 600 and 700 and Marcellus 400 (design/tokens/tokens.json `font`, Tokens.kt `FsFont`). Barlow
- * Condensed and Cinzel stay in apps/shared/fonts for the mocks and the Discord assets only.
- */
-internal val APP_FONTS = listOf("Barlow-Regular.ttf", "Barlow-SemiBold.ttf", "Barlow-Bold.ttf", "Marcellus-Regular.ttf")
+/** From apps/android, the Gradle root, to the repository root. */
+private const val REPO_ROOT = "../.."
 
+/**
+ * The apps' faces from apps/shared/fonts, as `res/font/opensans_regular.ttf` and so on: Open Sans
+ * 400, 600 and 700, Archivo 600 and Marcellus 400 (design/tokens/tokens.json `font`, Tokens.kt
+ * `FsFont`; `make brand-fonts` writes the Open Sans and Archivo files from the site's subsets).
+ * Barlow, Barlow Condensed and Cinzel stay in apps/shared/fonts for the older design mocks and the
+ * Discord assets only.
+ */
+internal val APP_FONTS = listOf(
+    "OpenSans-Regular.ttf",
+    "OpenSans-SemiBold.ttf",
+    "OpenSans-Bold.ttf",
+    "ArchivoSemiBold-SemiBold.ttf",
+    "Marcellus-Regular.ttf",
+)
+
+/**
+ * The design system's shared files: the faces above as `res/font`, and the round-5 art from
+ * apps/shared/brand/art (tools/art/build_art.py: the ground tile, the band behind the bars, Home's
+ * hero and the raid card's cave) as `res/drawable-nodpi/art_<name>.jpg`, plus the LX seal
+ * (web/public/seal-400.png, seal v4) as `art_seal.png` for the paperdoll medallion, so the design
+ * system's surfaces (Surfaces.kt `screenGround`, `surfaceBand`, `panel`) draw the same files the
+ * iOS app bundles.
+ */
 class SharedFontsConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
-        val copy = tasks.register("copySharedFonts", CopySharedFonts::class.java) {
-            sourceDir.set(rootProject.layout.projectDirectory.dir("$SHARED_DIR/fonts"))
+        val shared = rootProject.layout.projectDirectory.dir(SHARED_DIR)
+        val fonts = tasks.register("copySharedFonts", CopySharedFonts::class.java) {
+            sourceDir.set(shared.dir("fonts"))
             outputDir.set(layout.buildDirectory.dir("generated/sharedFonts"))
         }
+        val art = tasks.register("copySharedArt", CopySharedArt::class.java) {
+            sourceDir.set(shared.dir("brand/art"))
+            seal.set(rootProject.layout.projectDirectory.file("$REPO_ROOT/web/public/seal-400.png"))
+            outputDir.set(layout.buildDirectory.dir("generated/sharedArt"))
+        }
         extensions.getByType(AndroidComponentsExtension::class.java).onVariants { variant ->
-            variant.sources.res?.addGeneratedSourceDirectory(copy, CopySharedFonts::outputDir)
+            variant.sources.res?.addGeneratedSourceDirectory(fonts, CopySharedFonts::outputDir)
+            variant.sources.res?.addGeneratedSourceDirectory(art, CopySharedArt::outputDir)
         }
     }
 }
@@ -70,8 +98,35 @@ abstract class CopySharedFonts @Inject constructor(
     }
 
     companion object {
-        /** Android resource names are lowercase with underscores: Barlow-Regular.ttf -> barlow_regular.ttf. */
+        /** Android resource names are lowercase with underscores: OpenSans-Regular.ttf -> opensans_regular.ttf. */
         fun resourceName(file: String): String = file.lowercase().replace('-', '_')
+    }
+}
+
+abstract class CopySharedArt @Inject constructor(
+    private val fs: FileSystemOperations,
+) : DefaultTask() {
+    @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val sourceDir: DirectoryProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val seal: RegularFileProperty
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun copy() {
+        fs.sync {
+            from(sourceDir) {
+                include("*.jpg")
+                rename { "art_$it" }
+            }
+            from(seal) { rename { "art_seal.png" } }
+            into(outputDir.dir("drawable-nodpi"))
+        }
     }
 }
 

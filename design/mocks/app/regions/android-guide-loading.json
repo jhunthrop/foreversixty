@@ -9,7 +9,7 @@
     16,
     0,
     380,
-    198
+    176
    ],
    "inventory": {
     "image": 1
@@ -30,7 +30,7 @@
    "box": [
     88,
     60,
-    225,
+    224,
     20
    ],
    "inventory": {}
@@ -40,14 +40,14 @@
     16,
     96,
     380,
-    88
+    66
    ],
    "inventory": {}
   },
   "controls": {
    "box": [
     0,
-    198,
+    176,
     412,
     50
    ],
@@ -60,7 +60,7 @@
   "plate": {
    "box": [
     16,
-    398,
+    376,
     380,
     1077
    ],
@@ -73,18 +73,18 @@
   "section-overview": {
    "box": [
     17,
-    1524,
+    1502,
     378,
-    822
+    872
    ],
    "inventory": {}
   },
   "section-talents-and-builds": {
    "box": [
     17,
-    2346,
+    2374,
     378,
-    1800
+    1914
    ],
    "inventory": {
     "row": 9,
@@ -94,9 +94,9 @@
   "section-rotation-and-priority": {
    "box": [
     17,
-    4146,
+    4288,
     378,
-    2287
+    2453
    ],
    "inventory": {
     "row": 12,
@@ -106,18 +106,18 @@
   "section-stat-priority": {
    "box": [
     17,
-    6433,
+    6741,
     378,
-    1283
+    1225
    ],
    "inventory": {}
   },
   "section-best-in-slot": {
    "box": [
     17,
-    7716,
+    7966,
     378,
-    1729
+    1773
    ],
    "inventory": {
     "row": 17,
@@ -127,9 +127,9 @@
   "section-enchants-and-consumables": {
    "box": [
     17,
-    9445,
+    9739,
     378,
-    1455
+    1481
    ],
    "inventory": {
     "row": 16,
@@ -139,7 +139,7 @@
   "section-races": {
    "box": [
     17,
-    10900,
+    11220,
     378,
     1457
    ],
@@ -151,18 +151,18 @@
   "section-professions": {
    "box": [
     17,
-    12357,
+    12677,
     378,
-    339
+    365
    ],
    "inventory": {}
   },
   "section-leveling": {
    "box": [
     17,
-    12696,
+    13042,
     378,
-    3091
+    3247
    ],
    "inventory": {
     "button": 2,
@@ -172,9 +172,9 @@
   "section-sources": {
    "box": [
     16,
-    15836,
+    16338,
     380,
-    484
+    493
    ],
    "inventory": {
     "row": 10
@@ -183,7 +183,7 @@
   "footer-note": {
    "box": [
     16,
-    16368,
+    16879,
     380,
     56
    ],

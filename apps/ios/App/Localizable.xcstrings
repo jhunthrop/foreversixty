@@ -198,7 +198,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nothing yet. Loot, sims, reports and your guild's raids arrive here as they happen."
+            "value": "Nothing yet. Loot, sims, reports and raids land here."
           }
         }
       }
@@ -2634,6 +2634,18 @@
         }
       }
     },
+    "gear.sheet.replaces": {
+      "comment": "Arguments: 1 item (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replaces %1$@"
+          }
+        }
+      }
+    },
     "gear.sheet.runnerUp": {
       "extractionState": "manual",
       "localizations": {
@@ -2665,6 +2677,18 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "gear.sheet.vendor": {
+      "comment": "Arguments: 1 name (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, vendor"
           }
         }
       }
@@ -2756,7 +2780,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Worn"
+            "value": "Equipped"
           }
         }
       }
@@ -4154,6 +4178,18 @@
         }
       }
     },
+    "home.live.lineAlone": {
+      "comment": "Arguments: 1 age (string), 2 counts (string), 3 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulled %1$@ · %2$@ · you are %3$@"
+          }
+        }
+      }
+    },
     "home.live.lineNoAnswer": {
       "comment": "Arguments: 1 age (string), 2 counts (string)",
       "extractionState": "manual",
@@ -4228,7 +4264,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Battle.net lists a character after you play it and log out."
+            "value": "Log out in game, then check again."
           }
         }
       }
@@ -4239,7 +4275,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your characters are on their way"
+            "value": "No characters yet"
           }
         }
       }
@@ -4565,6 +4601,18 @@
         }
       }
     },
+    "home.raid.answeredAlone": {
+      "comment": "Arguments: 1 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are %1$@"
+          }
+        }
+      }
+    },
     "home.raid.answers": {
       "extractionState": "manual",
       "localizations": {
@@ -4670,6 +4718,18 @@
         }
       }
     },
+    "home.raid.lineSubAlone": {
+      "comment": "Arguments: 1 counts (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · you have not answered"
+          }
+        }
+      }
+    },
     "home.raid.lineTitle": {
       "comment": "Arguments: 1 raid (string), 2 when (string)",
       "extractionState": "manual",
@@ -4728,6 +4788,17 @@
         }
       }
     },
+    "home.raid.notAnsweredAlone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have not answered"
+          }
+        }
+      }
+    },
     "home.raid.openNight": {
       "extractionState": "manual",
       "localizations": {
@@ -4735,6 +4806,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open raid night ›"
+          }
+        }
+      }
+    },
+    "home.raid.place": {
+      "comment": "Arguments: 1 guild (string), 2 when (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
           }
         }
       }
@@ -7180,6 +7263,18 @@
         }
       }
     },
+    "live.answer": {
+      "comment": "Arguments: 1 guild (string), 2 state (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · You are %2$@"
+          }
+        }
+      }
+    },
     "live.channel.raid": {
       "extractionState": "manual",
       "localizations": {
@@ -7256,6 +7351,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "until invites at %1$@"
+          }
+        }
+      }
+    },
+    "live.invitesAt": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invites %1$@"
           }
         }
       }
@@ -7424,6 +7531,18 @@
         }
       }
     },
+    "live.startsAt": {
+      "comment": "Arguments: 1 time (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts %1$@"
+          }
+        }
+      }
+    },
     "live.tile.sub": {
       "comment": "Arguments: 1 time (string), 2 answer (string)",
       "extractionState": "manual",
@@ -7550,17 +7669,6 @@
         }
       }
     },
-    "menu.guides.line": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your spec's guide, then every class"
-          }
-        }
-      }
-    },
     "menu.help": {
       "extractionState": "manual",
       "localizations": {
@@ -7590,17 +7698,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Logs and reports"
-          }
-        }
-      }
-    },
-    "menu.logs.line": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your reports and the coach"
           }
         }
       }
@@ -7752,17 +7849,6 @@
         }
       }
     },
-    "menu.patchNotes.line": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The game and the site"
-          }
-        }
-      }
-    },
     "menu.plan": {
       "extractionState": "manual",
       "localizations": {
@@ -7785,17 +7871,6 @@
         }
       }
     },
-    "menu.planner.line": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your builds and the guide builds"
-          }
-        }
-      }
-    },
     "menu.privacy": {
       "extractionState": "manual",
       "localizations": {
@@ -7814,17 +7889,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rankings"
-          }
-        }
-      }
-    },
-    "menu.rankings.line": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your spec and your guild"
           }
         }
       }
@@ -7885,17 +7949,6 @@
         }
       }
     },
-    "menu.sims.line": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your server runs and saved sims"
-          }
-        }
-      }
-    },
     "menu.switch": {
       "extractionState": "manual",
       "localizations": {
@@ -7914,17 +7967,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tiers"
-          }
-        }
-      }
-    },
-    "menu.tiers.line": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every spec, this week"
           }
         }
       }
@@ -11224,6 +11266,18 @@
         }
       }
     },
+    "raid.answer.lateMinutes": {
+      "comment": "Arguments: 1 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Late · %1$lld min"
+          }
+        }
+      }
+    },
     "raid.applicant.accept": {
       "extractionState": "manual",
       "localizations": {
@@ -12785,6 +12839,18 @@
         }
       }
     },
+    "raid.tab.andMore": {
+      "comment": "Arguments: 1 names (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ and %2$lld more"
+          }
+        }
+      }
+    },
     "raid.tab.apply": {
       "extractionState": "manual",
       "localizations": {
@@ -12792,6 +12858,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apply"
+          }
+        }
+      }
+    },
+    "raid.tab.as": {
+      "comment": "Arguments: 1 name (string), 2 role (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "raid.tab.beforePull": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before you pull"
           }
         }
       }
@@ -12841,6 +12930,28 @@
         }
       }
     },
+    "raid.tab.coming": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Who is coming"
+          }
+        }
+      }
+    },
+    "raid.tab.howLate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How late"
+          }
+        }
+      }
+    },
     "raid.tab.lateNote": {
       "comment": "Arguments: 1 name (string), 2 n (int)",
       "extractionState": "manual",
@@ -12848,7 +12959,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ (Late, %2$lld min)"
+            "value": "%1$@ (Late · %2$lld min)"
           }
         }
       }
@@ -12942,6 +13053,18 @@
         }
       }
     },
+    "raid.tab.ofWant": {
+      "comment": "Arguments: 1 have (int), 2 want (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
     "raid.tab.open": {
       "comment": "Arguments: 1 n (int)",
       "extractionState": "manual",
@@ -12961,6 +13084,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sign up for your guild's raids from your phone."
+          }
+        }
+      }
+    },
+    "raid.tab.pullIn": {
+      "comment": "Arguments: 1 time (string), 2 until (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · pull in %2$@"
           }
         }
       }
@@ -13022,6 +13157,29 @@
         }
       }
     },
+    "raid.tab.rosterLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roster ›"
+          }
+        }
+      }
+    },
+    "raid.tab.short": {
+      "comment": "Arguments: 1 names (string), 2 n (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$lld short"
+          }
+        }
+      }
+    },
     "raid.tab.sims": {
       "extractionState": "manual",
       "localizations": {
@@ -13041,6 +13199,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "From your last log-out, %1$@"
+          }
+        }
+      }
+    },
+    "raid.tab.untilHours": {
+      "comment": "Arguments: 1 h (int), 2 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld h %2$lld min"
+          }
+        }
+      }
+    },
+    "raid.tab.untilMinutes": {
+      "comment": "Arguments: 1 m (int)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld min"
           }
         }
       }
@@ -20712,18 +20894,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sign in to see your next raid."
-          }
-        }
-      }
-    },
-    "widget.signedUp": {
-      "comment": "Arguments: 1 n (int), 2 size (int)",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld of %2$lld signed up"
           }
         }
       }

@@ -66,6 +66,8 @@ data class BisList(
     val unit: BisUnit,
     val specLabel: String,
     val rangeLabel: String,
+    /** The band's set figure (`1004.2`) in [unit]; null for a tank band, whose set_dps is not its score. */
+    val setFigure: String? = null,
 ) {
     /** The rows whose pick or runner-up names contain [query] (spec F3.1 search). */
     fun filtered(query: String): List<BisRow> {
@@ -100,6 +102,7 @@ class BisListBuilder(
             unit = unit,
             specLabel = specLabel,
             rangeLabel = rangeLabel,
+            setFigure = band.setDps?.takeIf { unit != BisUnit.Score }?.let { figure(it) },
         )
     }
 

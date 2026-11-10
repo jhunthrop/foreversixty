@@ -9,7 +9,7 @@
     16,
     0,
     380,
-    266
+    204
    ],
    "inventory": {
     "image": 1
@@ -40,14 +40,14 @@
     16,
     122,
     380,
-    130
+    68
    ],
    "inventory": {}
   },
   "notes": {
    "box": [
     16,
-    266,
+    220,
     380,
     116
    ],
@@ -55,46 +55,55 @@
     "button": 1
    }
   },
-  "plate": {
+  "section-talents": {
    "box": [
     16,
-    402,
+    364,
     380,
-    549
+    575
    ],
    "inventory": {
     "button": 21,
     "image": 22
    }
   },
-  "section-point-order": {
+  "plate": {
    "box": [
     16,
-    1472,
+    961,
     380,
-    490
-   ],
-   "inventory": {
-    "image": 51
-   }
-  },
-  "section-in-the-game": {
-   "box": [
-    16,
-    999,
-    380,
-    181
+    176
    ],
    "inventory": {
     "button": 1
    }
   },
+  "section-point-order": {
+   "box": [
+    16,
+    1326,
+    380,
+    517
+   ],
+   "inventory": {
+    "image": 51
+   }
+  },
   "section-guide-build": {
    "box": [
     16,
-    1228,
+    1159,
     380,
-    196
+    145
+   ],
+   "inventory": {}
+  },
+  "section-in-the-game": {
+   "box": [
+    16,
+    961,
+    380,
+    176
    ],
    "inventory": {
     "button": 1

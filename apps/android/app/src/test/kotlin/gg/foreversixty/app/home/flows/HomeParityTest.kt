@@ -1,6 +1,5 @@
 package gg.foreversixty.app.home.flows
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -9,8 +8,12 @@ import gg.foreversixty.app.activity.ActivityFixtures
 import gg.foreversixty.app.flows.ClockPart
 import gg.foreversixty.app.flows.TallyItem
 import gg.foreversixty.app.items.ItemLook
+import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.menu.LocalOpenMenu
-import gg.foreversixty.app.menu.ProfileBar
+import gg.foreversixty.app.menu.CharacterBar
+import gg.foreversixty.app.menu.LocalPortraitPainter
+import gg.foreversixty.app.menu.MenuFixtures
+import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.ActivityRow
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
@@ -61,16 +64,29 @@ class HomeParityTest {
 
     private fun state(screen: String, view: HomeView, raid: Int = 0, activity: Int = 3, fontScale: Float = 1f) =
         ParityCheck.state(compose, screen, fontScale = fontScale) {
-            Tab(TabBadges(raid = raid, activity = activity)) { HomeFlowScreen(view, HomeActions()) }
+            Tab(TabBadges(raid = raid, activity = activity)) {
+                HomeFlowScreen(view, HomeActions()) {
+                    CompositionLocalProvider(LocalOpenMenu provides {}, LocalPortraitPainter provides MenuFixtures.repoPortraits) { CharacterBar(barFor(view)) }
+                }
+            }
         }
+
+    /** The bar's character: none before one arrives, Felsnap while leveling, else Thandrel (the mocks' portraits). */
+    private fun barFor(view: HomeView): AccountCharacter? {
+        val name = when (view) {
+            HomeView.NoCharacter -> return null
+            is HomeView.Blocks -> view.head.name
+            is HomeView.Loading -> view.head.name
+            is HomeView.Failed -> view.head.name
+        }
+        return MenuFixtures.all.first { it.name == name }
+    }
 
     @Composable
     private fun Tab(badges: TabBadges, content: @Composable () -> Unit) {
         ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}, badges = badges) {
-            Column {
-                CompositionLocalProvider(LocalOpenMenu provides {}) { ProfileBar(null) }
-                content()
-            }
+            // The game icons from the repo's build data, as the Home screenshot test paints them.
+            CompositionLocalProvider(LocalItemIconPainter provides gg.foreversixty.app.home.HomeFixtures.repoIcons) { content() }
         }
     }
 }
@@ -88,8 +104,8 @@ object HomeFixtures {
 
     private val raidUpgrades = listOf(
         upgrade("Lionheart Helm", 4, "inv_helmet_36", "Head · Blacksmithing", "+14.5"),
-        upgrade("Greenhammer", 4, "inv_mace_1h_raidhyjalc60_d_01", "Off hand · Blacksmithing", "+9.7"),
         upgrade("Don Julio's Band", 4, "inv_jewelry_ring_35", "Finger · Stormpike Guard, needs revered", "+6.8"),
+        upgrade("Timbermaw Tunic", 4, "inv_chest_fur", "Chest · Leatherworking", "+5.3"),
     )
 
     private fun upgrades(bestRun: Boolean) =
@@ -125,6 +141,8 @@ object HomeFixtures {
         tally = tally,
         ready = ReadyLine("2 things before you pull", "No flask in your bags; boots not enchanted · from your last log-out, 9\u00a0h ago"),
         officer = if (officer) OfficerItems("5 have not answered, 2 of them healers", "Healers short by 3", "1 applicant", "Mirelle, Holy Priest 60, 2 min ago") else null,
+        zone = "Onyxia's Lair",
+        place = "Olympus XXVII · Wed 6 Jan, 8:00 pm CST",
     )
 
     fun raidDay(answer: SignupState? = null, lateOpen: Boolean = false, officer: Boolean = false) =
@@ -150,7 +168,7 @@ object HomeFixtures {
         listOf(
             HomeBlock.LastNight(
                 listOf(
-                    act(7, "inv_axe_09", "You got Deathbringer", "You got it from Onyxia · main hand, +12.6 DPS over your worn Ravencrest's Legacy", true),
+                    act(7, "inv_axe_09", "You got Deathbringer", "Onyxia · main hand, +12.6 DPS over your worn Ravencrest's Legacy", true),
                     act(6, ONY, "Onyxia's Lair report ready", "87th percentile, your best on Onyxia so far · the coach has 2 notes", true),
                 ),
                 simAgain = true,

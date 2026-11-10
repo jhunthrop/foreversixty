@@ -28,7 +28,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
@@ -38,8 +41,10 @@ import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
+import gg.foreversixty.app.designsystem.FsTarget
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.ParityItemKind
+import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.parityItem
 import gg.foreversixty.app.items.GameIconImage
 import gg.foreversixty.app.items.ItemIcon
@@ -59,7 +64,8 @@ sealed interface FlowLead {
 }
 
 /**
- * One row (the mock's Row): an optional 40 lead, the title (15/20 bold) and its line (13/18), and a
+ * One row (the mock's Row): an optional 40 lead, the title (15/20 bold), its line (13/18) and an optional
+ * [meta] line under it, and a
  * trailing control that drops under the text at phone width. [slim] rows are 6 above and below and at
  * least 44 tall; others are 10. [unread] puts the gold dot in the gutter. A rule follows unless [last].
  */
@@ -74,6 +80,8 @@ fun FlowRow(
     last: Boolean = false,
     trail: (@Composable () -> Unit)? = null,
     onClick: (() -> Unit)? = null,
+    subLink: FlowSubLink? = null,
+    meta: String? = null,
 ) {
     val unreadLabel = androidx.compose.ui.res.stringResource(gg.foreversixty.app.R.string.activity_unread)
     val tap = onClick?.let { Modifier.clickable(role = Role.Button, onClick = it) } ?: Modifier
@@ -104,12 +112,29 @@ fun FlowRow(
             }
             Column(Modifier.weight(1f)) {
                 Text(title, style = FsType.item, color = titleColor)
-                if (!sub.isNullOrBlank()) Text(sub, style = SUB, color = FsColor.muted)
+                if (subLink != null) {
+                    Text(subWithLink(sub, subLink), style = SUB, color = FsColor.muted)
+                } else if (!sub.isNullOrBlank()) {
+                    Text(sub, style = SUB, color = FsColor.muted)
+                }
+                // A third line in the same face (Activity's time: `8 h ago`, `6:02 pm`, `Tue`).
+                if (meta != null) Text(meta, style = SUB, color = FsColor.muted)
             }
         }
         if (trail != null) Box(Modifier.padding(top = FsSpace.space2)) { trail() }
     }
     if (!last) FlowRule()
+}
+
+/** A gold link at the end of a row's line (`None in your bags · Auction house`), round 5's inline fix. */
+data class FlowSubLink(val label: String, val onClick: () -> Unit)
+
+/** A line ending in its gold [link] (`60 raid · Alliance · Change`), for a row's line or any lead line. */
+fun subWithLink(sub: String?, link: FlowSubLink) = buildAnnotatedString {
+    if (!sub.isNullOrBlank()) append("$sub · ")
+    withLink(LinkAnnotation.Clickable(link.label, TextLinkStyles(SpanStyle(color = FsColor.gold, fontWeight = FontWeight.SemiBold))) { link.onClick() }) {
+        append(link.label)
+    }
 }
 
 @Composable
@@ -131,8 +156,9 @@ private fun LeadImage(lead: FlowLead) {
                 lead.miss -> CHECK_MISS to FsColor.wipe
                 else -> CHECK_WARN to FsColor.gold
             }
-            Box(Modifier.size(CHECK), contentAlignment = Alignment.Center) {
-                Text(mark, style = CHECK_TEXT, color = color)
+            // The mark on its filled disc (round 5, mock m-android-raid): green, red or amber, the glyph dark.
+            Box(Modifier.size(CHECK).background(color, CircleShape), contentAlignment = Alignment.Center) {
+                Text(mark, style = CHECK_TEXT, color = FsColor.bg)
             }
         }
     }
@@ -140,16 +166,26 @@ private fun LeadImage(lead: FlowLead) {
 
 /**
  * One item (the mock's ItemRow): the icon in its quality frame, the name in its quality colour (it opens
- * the item's tooltip), its source, and the gain on the right (`+14.5` with its unit small).
+ * the item's tooltip), its source, and the gain on the right (`+14.5` with its unit small). [inset]
+ * is the row's own side padding: 0 inside a [FlowPanel], which carries it.
  */
 @Composable
-fun FlowItemRow(look: ItemLook, build: String, source: String, gain: String?, unit: String?, gainNote: String? = null, onClick: () -> Unit) {
+fun FlowItemRow(
+    look: ItemLook,
+    build: String,
+    source: String,
+    gain: String?,
+    unit: String?,
+    gainNote: String? = null,
+    inset: Dp = FsSpace.space4,
+    onClick: () -> Unit,
+) {
     Row(
         Modifier
             .fillMaxWidth()
             .parityItem(ParityItemKind.Row)
             .clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = FsSpace.space4, vertical = FsSpace.space2)
+            .padding(horizontal = inset, vertical = FsSpace.space2)
             .heightIn(min = ITEM_ROW_BODY),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -208,6 +244,29 @@ fun FlowButton(
     }
 }
 
+/**
+ * A choice chip (round 5, spec Mobile): the rule's outline, the selected one filled in the teal edge as a
+ * selected segment is. Late's minutes (48 tall) and Activity's filters ([minHeight] 36, 48 to the touch).
+ */
+@Composable
+fun FlowChip(label: String, on: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, minHeight: Dp = FsTarget.min, role: Role = Role.Button) {
+    val shape = RoundedCornerShape(CHIP_RADIUS)
+    Box(
+        modifier
+            .heightIn(min = minHeight)
+            .parityItem(ParityItemKind.Button)
+            .clip(shape)
+            .background(if (on) FsColor.tealEdge else Color.Transparent, shape)
+            .border(1.dp, FsColor.rule, shape)
+            .clickable(role = role, onClick = onClick)
+            .semantics { selected = on }
+            .padding(horizontal = FsSpace.space4),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(label, style = ScaledType.segment, color = FsColor.strong, maxLines = 1)
+    }
+}
+
 /** Buttons sharing a row equally, 8 apart (the raid's four answers, Late's three chips). */
 @Composable
 fun FlowButtonRow(labels: List<String>, selected: String?, onPress: (Int) -> Unit) {
@@ -234,6 +293,7 @@ fun FlowLink(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
 val SUB = FsType.small.copy(lineHeight = 18.sp)
 
 private val LEAD = 40.dp
+private val CHIP_RADIUS = 8.dp
 private val CHECK = 22.dp
 private const val CHECK_OK = "\u2713"
 private const val CHECK_MISS = "\u00d7"
