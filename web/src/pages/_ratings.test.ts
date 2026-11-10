@@ -157,7 +157,7 @@ describe('/ratings', () => {
   });
 
   it('draws no card: the two systems on panels, the reference open', () => {
-    expect(html).not.toMatch(/card-surface|rounded-panel/);
+    expect(html).not.toMatch(/card-surface|rounded-plate/);
     expect(SAMPLE_SCORE.tier).toBe('epic');
   });
 

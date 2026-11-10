@@ -261,7 +261,7 @@ label:has(input[type='checkbox']:disabled) {
     gap: 6px;
     height: 22px;
     padding: 0 8px;
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-field);
     /* Tag's type (ui/Tag.svelte): 12 px 600 in sentence case; source pills keep their colours. */
     font-size: 12px;
     font-weight: 600;

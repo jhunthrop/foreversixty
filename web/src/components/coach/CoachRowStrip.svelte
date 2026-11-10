@@ -11,6 +11,7 @@
   import type { IconUrl } from '../../lib/coach/names';
   import { STRIP_RESERVE, type RowLine, type StripPhase, type StripReserve } from '../../lib/coach/row-line';
   import SpellIcon from './SpellIcon.svelte';
+  import { ROW_HOVER } from '../../lib/ui/row';
 
   let {
     phase,
@@ -50,7 +51,7 @@
 {:else if phase === 'error'}
   <button
     type="button"
-    class="{BASE} {FOCUS} text-muted hover:bg-row-hover w-full text-left"
+    class="{BASE} {FOCUS} {ROW_HOVER} text-muted w-full text-left"
     onclick={onRetry}
     data-testid="coach-row-error"
   >
@@ -60,7 +61,7 @@
   {#if line.upgrade === ''}
     <a
       {href}
-      class="{BASE} {FOCUS} hover:bg-row-hover group"
+      class="{BASE} {FOCUS} {ROW_HOVER} group"
       aria-label={label}
       onclick={onOpen}
       data-testid="coach-row-line"
@@ -83,7 +84,7 @@
            strip's edge as the Premium strip's does. -->
       <a
         {href}
-        class="{FOCUS} hover:bg-row-hover group flex min-h-11 items-center md:-ml-2 md:min-h-9 md:px-2"
+        class="{FOCUS} {ROW_HOVER} group flex min-h-11 items-center md:-ml-2 md:min-h-9 md:px-2"
         onclick={onOpen}
         data-testid="coach-row-open"
       >

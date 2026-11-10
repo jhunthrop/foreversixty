@@ -106,7 +106,7 @@
     <div class="mt-2 flex flex-col gap-2" data-testid="raid-report-copy-failed">
       <p class="text-wipe text-[13px]" role="alert">{attendanceCopy.errors.copyFailed}</p>
       <textarea
-        class="rounded-control text-text bg-bg w-full border p-3 font-mono text-[12px]"
+        class="rounded-field text-text bg-bg w-full border p-3 font-mono text-[12px]"
         rows={COPY_FALLBACK_ROWS}
         readonly
         aria-label={attendanceCopy.report.copy}

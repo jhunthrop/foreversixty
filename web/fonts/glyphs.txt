@@ -1,6 +1,6 @@
 # web/fonts/glyphs.txt
-# Explicit glyph inventory for the five self-hosted font subsets (Barlow 400/600/700,
-# JetBrains Mono 500, Marcellus 400). Every character the site may render in these faces
+# Explicit glyph inventory for the self-hosted font subsets (Open Sans 400/600/700,
+# Archivo 600, JetBrains Mono 500, Marcellus 400). Every character the site may render in these faces
 # must appear here; web/scripts/check-glyph-coverage.mjs verifies that against a fixture
 # build of dist/ (HTML and the client JS bundles -- Svelte islands' copy only exists in
 # the latter), the markdown content, and the game data JSON. Generation command and

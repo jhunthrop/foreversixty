@@ -254,7 +254,7 @@
     min-height: 32px;
     padding: 0 10px;
     border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
-    border-radius: var(--radius-control, 6px);
+    border-radius: var(--radius-field);
     color: var(--color-muted);
     font-size: 13px;
     font-weight: 600;

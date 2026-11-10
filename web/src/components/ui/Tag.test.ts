@@ -16,7 +16,7 @@ describe('Tag', () => {
     expect(body).toContain('text-[12px] font-semibold tracking-[.01em]');
     expect(body).not.toContain('uppercase');
     expect(body).toMatch(/ border /);
-    expect(body).toContain('rounded-pill');
+    expect(body).toContain('rounded-field');
   });
 
   it.each([
@@ -24,7 +24,7 @@ describe('Tag', () => {
     ['success', 'text-gain'],
     ['muted', 'text-muted'],
     ['danger', 'text-wipe'],
-    ['warn', 'text-ember'],
+    ['warn', 'text-warn'],
     ['premium', 'bg-teal-edge'],
   ])('%s tone uses %s', (tone, ink) => {
     const body = tag({ tone });
@@ -34,8 +34,8 @@ describe('Tag', () => {
 
   it('warn is a 12% fill with a 40% border', () => {
     const body = tag({ tone: 'warn' });
-    expect(body).toContain('bg-ember/12');
-    expect(body).toContain('border-ember/40');
+    expect(body).toContain('bg-warn/12');
+    expect(body).toContain('border-warn/40');
   });
 
   it('defaults to gold', () => {

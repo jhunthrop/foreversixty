@@ -49,7 +49,7 @@
     {#if onVote}
       <button
         type="button"
-        class="ui-vote rounded-pill focus-visible:outline-gold inline-flex min-h-11 items-center focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-45 md:min-h-0"
+        class="ui-vote rounded-field focus-visible:outline-gold inline-flex min-h-11 items-center focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-45 md:min-h-0"
         aria-pressed={mine === choice ? 'true' : 'false'}
         aria-label={`Vote ${choice} for ${subject}`}
         aria-describedby={disabled ? describedBy : undefined}

@@ -34,7 +34,7 @@
     {/if}
     <a
       href={PREMIUM_LINKS.coach}
-      class="rounded-control border-gold text-gold hover:border-gold-hover hover:text-gold-hover focus-visible:outline-gold hover:bg-gold/8 active:bg-gold/14 mt-5 inline-flex h-11 items-center border px-4 text-[14px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+      class="rounded-field border-gold text-gold hover:border-gold-hover hover:text-gold-hover focus-visible:outline-gold hover:bg-gold/8 active:bg-gold/14 mt-5 inline-flex h-11 items-center border px-4 text-[14px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
       data-testid="coach-upgrade">{coachCopy.upgrade}</a
     >
   {/if}

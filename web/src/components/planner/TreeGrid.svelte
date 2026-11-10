@@ -107,7 +107,7 @@
       loading="eager"
       decoding="async"
       data-testid={`tree-art-${tree.id}`}
-      class="rounded-control pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
+      class="rounded-field pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
       onerror={() => (artBroken = true)}
     />
   {/if}

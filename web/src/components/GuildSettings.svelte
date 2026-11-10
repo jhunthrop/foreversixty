@@ -240,7 +240,7 @@
             type="number"
             min="0"
             aria-labelledby={labelId}
-            class="rounded-control text-strong h-11 w-[72px] border border-white/15 bg-white/[.045] px-3 text-[15px] font-semibold disabled:opacity-45 {busy
+            class="rounded-field text-strong h-11 w-[72px] border border-white/15 bg-white/[.045] px-3 text-[15px] font-semibold disabled:opacity-45 {busy
               ? BUSY_CLASS
               : ''}"
             bind:value={rankDraft}

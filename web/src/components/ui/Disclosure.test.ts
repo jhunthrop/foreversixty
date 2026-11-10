@@ -16,7 +16,7 @@ describe('Disclosure', () => {
     expect(out).toContain('Parts and trend');
     expect(out).toContain('five parts');
     expect(out).not.toContain('data-testid="body"');
-    expect(out).not.toMatch(/bg-raised|border-line|rounded-panel/);
+    expect(out).not.toMatch(/bg-raised|border-line|rounded-plate/);
   });
 
   it('renders the body when open', () => {

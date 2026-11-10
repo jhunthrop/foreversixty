@@ -87,7 +87,7 @@ describe('GuildDiscordSection', () => {
       expect(body).toMatch(/<div id="discord" class="[^"]*scroll-mt-20/);
       expect(body).toContain('data-region="section-discord"');
       expect(body).toMatch(new RegExp(`<h2[^>]*>\\s*${guildDiscordCopy.heading}\\s*</h2>`));
-      expect(body).not.toContain('rounded-panel');
+      expect(body).not.toContain('rounded-plate');
     }
   });
 

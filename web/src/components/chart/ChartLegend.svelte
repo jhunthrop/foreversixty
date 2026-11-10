@@ -190,7 +190,7 @@
   .chip {
     height: 28px;
     padding: 0 8px;
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-field);
     background: transparent;
     font-size: 13px;
     cursor: pointer;

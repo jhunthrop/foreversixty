@@ -21,6 +21,6 @@ describe('RowGrid', () => {
   it('defaults to three columns and draws no surface', () => {
     const body = html({ children: rows });
     expect(body).toContain('--row-grid-cols: 3');
-    expect(body).not.toMatch(/bg-raised|border-line|rounded-panel/);
+    expect(body).not.toMatch(/bg-raised|border-line|rounded-plate/);
   });
 });

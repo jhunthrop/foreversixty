@@ -30,10 +30,10 @@ const PRIMITIVES = 'components/ui/';
 
 /** Surface classes: the card, the panel radius, the line borders, the raised and hover grounds. */
 const SURFACE_CLASS =
-  /(?<![\w-])(?:card-surface(?:-quiet)?|rounded-panel|rounded-plate|(?:border|divide)(?:-[trblxy])?-line(?:-soft|-warm(?:-strong)?|-card)?|bg-raised|bg-card-top|bg-tile|bg-hover|bg-selected|shadow-card|shadow-overlay|border-\[var\(--color-line[\w-]*\))(?![\w-])/g;
+  /(?<![\w-])(?:card-surface(?:-quiet)?|rounded-plate|(?:border|divide)(?:-[trblxy])?-line(?:-soft)?|bg-raised|bg-hover|bg-selected|shadow-card|shadow-overlay|border-\[var\(--color-line[\w-]*\))(?![\w-])/g;
 /** A CSS background or border declaration that reads a surface token. */
 const SURFACE_DECLARATION =
-  /(?:^|[\s;{])(?:background|border)[\w-]*\s*:[^;}]*var\(--(?:color-(?:raised|card-top|line[\w-]*)|surface-card)\)/g;
+  /(?:^|[\s;{])(?:background|border)[\w-]*\s*:[^;}]*var\(--(?:color-(?:raised|line[\w-]*)|surface-card)\)/g;
 
 function scannedFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -79,8 +79,8 @@ const RETIRED_PRIMITIVE =
 /** A class string in lib/ that rebuilds the card look: a card utility or token, or a raised
  *  ground with an edge. lib/ui/ holds the primitives' own recipes (PLATE_SURFACE, the field). */
 const CARD_LOOK_TOKEN =
-  /(?<![\w-])(?:card-surface(?:-quiet)?|shadow-card|bg-tile|rounded-panel|rounded-plate)(?![\w-])|--surface-card/;
-const RAISED_GROUND = /(?<![\w-])(?:bg-raised|bg-card-top)(?![\w-])/;
+  /(?<![\w-])(?:card-surface(?:-quiet)?|shadow-card|rounded-plate)(?![\w-])|--surface-card/;
+const RAISED_GROUND = /(?<![\w-])bg-raised(?![\w-])/;
 const EDGE = /(?<![\w-])border(?:-[trblxy])?(?:-line[\w-]*)?(?![\w-])/;
 /** An element's class attribute (static, template, list or quoted expression). */
 const CLASS_ATTRIBUTE = /\bclass(?::list)?=(?:"([^"]*)"|\{`([^`]*)`\}|\{\[([^\]]*)\]\}|\{'([^']*)'\})/g;
@@ -177,7 +177,7 @@ describe('the surface guard', () => {
     expect('<h1 class="heading-page">'.match(RETIRED_UTILITY)).toEqual(['heading-page']);
     expect("import PageHead from '../ui/PageHead.astro';".match(RETIRED_PRIMITIVE)).toHaveLength(1);
     expect("import IconTile from '../ui/IconTile.svelte';".match(RETIRED_PRIMITIVE)).toHaveLength(1);
-    expect(cardLookOffences("const BOX = 'bg-raised border-line rounded-control border';")).toHaveLength(1);
+    expect(cardLookOffences("const BOX = 'bg-raised border-line rounded-field border';")).toHaveLength(1);
     expect(cardLookOffences("const ROW = 'border-b border-line-soft';")).toEqual([]);
   });
 });

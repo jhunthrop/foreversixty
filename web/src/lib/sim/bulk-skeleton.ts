@@ -18,7 +18,7 @@ const block = (classes: string): string => `<span class="skeleton-block ${classe
 /** One placeholder row: an icon square, a name bar, two small bars, on the rows' 58 px. */
 const slotRow = (): string =>
   '<li class="flex min-h-[var(--row-h)] items-center gap-3 py-2">' +
-  `${block('h-8 w-8 rounded-control')}${block('h-3 w-32')}${block('ml-auto h-3 w-10')}${block('h-3 w-8')}` +
+  `${block('h-8 w-8 rounded-field')}${block('h-3 w-32')}${block('ml-auto h-3 w-10')}${block('h-3 w-8')}` +
   '</li>';
 
 /**
@@ -31,7 +31,7 @@ const shell = (label: string, rows: number): string =>
     '<div aria-busy="true">',
     `<p class="sr-only" role="status">${label}</p>`,
     '<div aria-hidden="true">',
-    `<div class="flex h-[var(--bar-h)] items-center gap-3 px-[var(--page-inset)]">${block('h-3 w-36')}${block('ml-auto h-9 w-28 rounded-control')}</div>`,
+    `<div class="flex h-[var(--bar-h)] items-center gap-3 px-[var(--page-inset)]">${block('h-3 w-36')}${block('ml-auto h-9 w-28 rounded-field')}</div>`,
     '<div class="px-[var(--page-inset)] pt-7">',
     `<div class="${PLATE_SURFACE} flex flex-col gap-3 px-5 pt-4 pb-4 max-md:px-[14px]">`,
     `${block('h-5 w-48')}`,

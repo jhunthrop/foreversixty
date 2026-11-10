@@ -45,7 +45,7 @@
     box-shadow 120ms ease-out;
 }
 .row-band-own {
-  background-color: var(--row-hover);
+  background-color: var(--color-hover);
 }
 .row-band-mark,
 .row-band-target:target {
@@ -53,11 +53,11 @@
   box-shadow: inset 2px 0 0 var(--color-accent);
 }
 .row-band-hover:active {
-  background-color: var(--color-card-top);
+  background-color: var(--color-raised);
   box-shadow: var(--row-band-ring);
 }
 :is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active) {
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-field);
 }
 :is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active),
 :is(.row-band-own, .row-band-mark, .row-band-target:target, .row-band-hover:active) + .row-rule {
@@ -69,10 +69,10 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .row-band-hover:hover {
-    border-radius: var(--radius-control);
+    border-radius: var(--radius-field);
   }
   .row-band-hover:hover:not(:active) {
-    background-color: var(--row-band-hover);
+    background-color: var(--color-hover);
     box-shadow: var(--row-band-ring);
   }
   .row-band-hover:hover,

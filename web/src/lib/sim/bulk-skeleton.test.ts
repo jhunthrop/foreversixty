@@ -27,7 +27,7 @@ describe('TOOL_SKELETONS', () => {
   it('opens on the run bar band and draws no surface', () => {
     for (const html of Object.values(TOOL_SKELETONS)) {
       expect(html).toContain('h-[var(--bar-h)]');
-      expect(html).not.toMatch(/rounded-panel|border-line|bg-raised|current-character-bar/);
+      expect(html).not.toMatch(/rounded-plate|border-line|bg-raised|current-character-bar/);
     }
   });
 });

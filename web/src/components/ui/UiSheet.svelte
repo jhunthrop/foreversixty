@@ -46,7 +46,7 @@
   /** The look a real hover or press gives each tone, as static classes. */
   const FORCED: Readonly<Record<ButtonTone, Partial<Record<ForcedState, string>>>> = {
     primary: { hover: 'brightness-[1.08]', 'focus-visible': RING, active: 'translate-y-px brightness-[.92]' },
-    secondary: { hover: 'border-gold/30 bg-white/[.08]', 'focus-visible': RING, active: 'bg-card-top' },
+    secondary: { hover: 'border-gold/30 bg-white/[.08]', 'focus-visible': RING, active: 'bg-raised' },
     ghost: { hover: 'text-gold-hover bg-gold/[.06]', 'focus-visible': RING, active: 'text-gold-hover' },
     danger: { hover: 'bg-wipe/[.12]', 'focus-visible': RING, active: 'bg-wipe/[.16]' },
   };
@@ -257,7 +257,7 @@
     width: 20px;
   }
   :global([data-force='hover'] a[href]) {
-    background: var(--row-hover);
+    background: var(--color-hover);
   }
   :global([data-force='focus-visible'] a[href]) {
     outline: 2px solid var(--color-gold);
