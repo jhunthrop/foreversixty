@@ -38,6 +38,7 @@ FLOOR_MIN, FEED_ROWS, UPGRADES_SHOWN, GUILD_SHOWN = 5, 7, 5, 5
 FRAME_LINE = 'rgba(243,238,226,.42)'  # web --color-frame-line
 GUILD_SIM_TAIL = re.compile(r', #(\d+) of (\d+) DPS in [^,(]+ \([^)]*\)$')  # web lib/home/feed.ts homeRows
 HOME_CSS = f'''
+.ph-wrap>[data-region="head"]{{padding-top:16px}}@media(min-width:900px){{.ph-wrap>[data-region="head"]{{padding-top:40px}}}}
 .ph-meta .t-small+.t-small::before{{content:none}}
 .pad16{{padding:16px}}
 .hans{{display:flex;flex-direction:column;align-items:inherit;gap:2px}}.hans .link{{font-size:13px}}
@@ -382,7 +383,7 @@ def upgrades_section(char: dict, ups: list, items: dict, bis_slots: int) -> str:
     facts = []
     total = sum(g for g, _ in ups)
     if total > 0:
-        facts.append((f'+{total:,.1f}', f"DPS in {len(ups)} {'upgrade' if len(ups) == 1 else 'upgrades'}"))
+        facts.append((f'+{total:,.1f}', 'DPS'))
     if bis_slots > 0:
         facts.append((str(bis_slots), 'best in slot'))
     foot = f'<div class="upfoot">{facts_line(facts)}</div>' if facts else ''

@@ -3,7 +3,7 @@
 // Runs the guide pages' own models, bundled with esbuild from web/node_modules, never retyped:
 //  - the content: web/src/content/guides/**/*.md (frontmatter through `yaml`, the body as Astro's entry.body);
 //  - /guides: the class and spec catalogue, pageUpdatedAt over every guide (index.astro's own fold);
-//  - /guides/<class>: splitClassLanding, guidesCopy.roleLabel (the card line), renderGuideMarkdown ([class]/index.astro's calls);
+//  - /guides/<class>: splitClassLanding, specCardLine (the card line), renderGuideMarkdown ([class]/index.astro's calls);
 //  - /guides/<class>/<spec>: every call [spec].astro and its components make (splitSpecSections, splitOverview,
 //    decodeBuildTrees, guideBuildBlocks, diffBuilds, keyTalentsFor, guideRotation, markRaidBuildRows, withTipKeys,
 //    band60Weights, railStatRows, rankedStatLabels, guideHitCapLine, specGuideData, raceTableFor, recommendedRaceLines,
@@ -79,7 +79,7 @@ import { raceTableFor, specKindOf, recommendedRaceLines } from ${src("src/lib/gu
 import { consumableLines } from ${src("src/lib/guides/gear-extras.ts")};
 import { guideStatLane } from ${src("src/lib/guides/stat-lane.ts")};
 import { bandTalentHits } from ${src("src/lib/guides/talent-hit.ts")};
-import { CLASS_LANDING_PANELS, splitClassLanding } from ${src("src/lib/guides/class-landing.ts")};
+import { CLASS_LANDING_PANELS, specCardLine, splitClassLanding } from ${src("src/lib/guides/class-landing.ts")};
 import { litTalentsOf, markRaidBuildRows, raidBuildOnlyTalents, talentNamesOf } from ${src("src/lib/guides/rotation-lists.ts")};
 import { atLevel60, glanceRotation, glanceStatRows, markCheapRanks, nextTalentPoint, racesByFaction, topRankAt60 } from ${src("src/lib/guides/glance.ts")};
 import { buildRaces } from ${src("src/lib/guides/build-races.ts")};
@@ -107,7 +107,7 @@ export async function run(entries, SPECS, CLASSES) {
       html: (await renderGuideMarkdown(s.markdown)).replace(/<p><strong>([^<]+)<\\/strong><\\/p>/g, '<p class="glabel">$1</p>') });
     const specGuides = entries.filter((g) => g.data.classSlug === cls && g.data.spec !== undefined);
     const cards = specsOf(cls).flatMap((s) => { const g = specGuides.find((x) => x.data.spec === s.spec_slug); if (!g || !g.data.role) return [];
-      return [{ slug: s.spec_slug, name: s.name, role: g.data.role, icon: s.icon, line: guidesCopy.roleLabel(g.data.role) }]; });
+      return [{ slug: s.spec_slug, name: s.name, role: g.data.role, icon: s.icon, line: specCardLine(g.data.role) ?? '' }]; });
     landings[cls] = { title: classes.find((c) => c.slug === cls).name, sections, cards, sources: e.data.sources,
       updated: dayMonth(e.data.updated) };
   }

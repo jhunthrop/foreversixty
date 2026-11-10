@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { proseLabels, splitClassLanding } from './class-landing';
+import { proseLabels, specCardLine, splitClassLanding } from './class-landing';
 
 const GUIDES = fileURLToPath(new URL('../../content/guides/', import.meta.url));
 
@@ -72,5 +72,13 @@ describe('proseLabels', () => {
     expect(proseLabels('<p><strong>Opener.</strong> Mage Armor first.</p>')).toBe(
       '<p><strong>Opener.</strong> Mage Armor first.</p>',
     );
+  });
+});
+
+describe('specCardLine', () => {
+  it('names the role only when the spec heals or tanks', () => {
+    expect(specCardLine('dps')).toBeUndefined();
+    expect(specCardLine('healer')).toBe('Healer');
+    expect(specCardLine('tank')).toBe('Tank');
   });
 });

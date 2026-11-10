@@ -20,6 +20,6 @@ describe('raid facts', () => {
     const [barrow, , onyxia] = raidFacts([ONYXIA], CLASSES);
     expect(raidLine(onyxia, { slug: 'hunter', name: 'Hunter' })).toBe('1 boss · 2 Hunter drops');
     expect(raidLine(onyxia)).toBe('1 boss · 3 drops');
-    expect(raidLine(barrow, { slug: 'hunter', name: 'Hunter' })).toBe('Loot not out yet');
+    expect(raidLine(barrow, { slug: 'hunter', name: 'Hunter' })).toBeUndefined();
   });
 });

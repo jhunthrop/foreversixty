@@ -24,14 +24,14 @@ sources:
 - **New talents.** Malevolence (Shadow crit), Pandemic, Wrack (a 6 second channel), Decimation (Soul Fire below 35%), Demonic Pact (keep the Imp's sacrifice with another demon out), Shadow and Flame, Incinerate and Bane of Havoc. Smaller new picks fill the trees: Demonic Knowledge (spell damage equal to your level with a demon out), Soul Harvest, Improved Drains, Demonic Aegis, Demonic Energies, Molten Skin and Fire and Brimstone.
 - **The sacrifices swapped schools.** The Imp's sacrifice now raises Shadow damage and the Succubus' raises Fire.
 - **Improved Shadow Bolt is your own.** Its 20% applies to your Shadow damage only, not the raid's.
-- **Your demon scales from you.** The raid's group buffs skip it: Prayer of Fortitude, Gift of the Wild, Arcane Brilliance, the Greater Blessings, Battle Shout, and the Strength of Earth, Grace of Air and Windfury totems. Heart of the Lion, the hunter aura, still reaches everyone near the hunter, your demon included. Blood Pact and a shaman's resistance totems still reach it too, but a paladin's Devotion and resistance auras do not. The Incubus is a summon of its own beside the Succubus, and Enslave Demon is now Subjugate Demon.
+- **Your demon scales from you.** The raid's group buffs skip it: Prayer of Fortitude, Gift of the Wild, Arcane Brilliance, the Greater Blessings, Battle Shout, and the Strength of Earth, Grace of Air and Windfury totems. A hunter's Heart of the Lion still reaches everyone near the hunter, your demon included. Blood Pact and a shaman's resistance totems still reach it too, but a paladin's Devotion and resistance auras do not. The Incubus is a summon of its own beside the Succubus, and Enslave Demon is now Subjugate Demon.
 - **Portal of Summoning** is new at 60: you and two others open it, and then two people at the portal can summon any party or raid member. It costs five Soul Shards and has a one hour cooldown.
 - **No Unstable Affliction and no Haunt.** No trainer or talent teaches either one, so your DoTs are Corruption, Immolate, your bane and, for Affliction, Siphon Life.
 
 ## Races
 
-Troll warlocks are new for the Horde, alongside Orc and Undead. Alliance warlocks are Human or Gnome. Skyborne cannot be warlocks.
+Troll warlocks are new for the Horde. Skyborne cannot be warlocks.
 
 ## In a raid
 
-In a raid you bring a curse when assigned (Curse of the Elements, or Recklessness, Tongues or Weakness for a second warlock), Healthstones for everyone, a Soulstone on a healer, and summons.
+Bring a curse when assigned (Curse of the Elements, or Recklessness, Tongues or Weakness for a second warlock), Healthstones for everyone, a Soulstone on a healer, and summons.

@@ -15,7 +15,7 @@
   const gain = $derived(cell?.gain);
   const repick = $derived(cell?.note?.label === 'You wear' ? undefined : cell?.note);
   /** A measured gain leads with its figure; a tie, an only option or a worn item says its basis
-   *  alone ("No close alternative", "Next: −1.8 vs ...", "You have this"). */
+   *  alone ("No close alternative", "−1.8 DPS vs ...", "You have this"). */
   const measured = $derived(isMeasuredGain(gain?.value));
 
   function sentence(words: string): string {

@@ -91,7 +91,9 @@
         <Ruled edge="bottom">
           {#each stops as stop (stop.key)}
             <p class="bis-stop-link">
-              <a href={`#${stop.anchor}`}>{stop.title}</a><span class="tabular-nums">{stop.rows.length}</span>
+              <a href={`#${stop.anchor}`}>{stop.title}</a><span class="tabular-nums"
+                >{bisCopy.stopPieces(stop.rows.length)}</span
+              >
             </p>
           {/each}
         </Ruled>

@@ -91,10 +91,10 @@
     gap: 12px;
     padding-top: 12px;
   }
-  /* One line per name and per worn piece on the desktop rail (an ellipsis past it); a phone wraps. */
+  /* One line per upgrade's name on the desktop rail (an ellipsis past it); the worn piece under it
+     wraps, so "over Lieutenant Commander's Plate Helmet" is never cut. A phone wraps both. */
   @media (min-width: 768px) {
-    .home-upgrades-rows :global([data-testid^='item-hover-']),
-    .home-upgrades-rows :global([data-testid='home-upgrade-over']) {
+    .home-upgrades-rows :global([data-testid^='item-hover-']) {
       display: block;
       overflow: hidden;
       white-space: nowrap;

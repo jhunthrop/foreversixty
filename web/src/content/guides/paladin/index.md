@@ -25,7 +25,7 @@ sources:
 ## What changed from 1.12
 
 - **Judgement no longer consumes your Seal.** You put a Seal up once every 30 seconds and Judge on cooldown. Old Seal twisting is dead: a new Seal just replaces the old one. Retribution's capstone, Unsealed Wrath, brings a new kind of swap back for raiders.
-- **Holy Strike** is a trainer spell from level 6, on a 10 second cooldown, and both melee specs press it.
+- **Holy Strike** from level 6, 10 second cooldown. Both melee specs press it.
 - **Consecration** is baseline from level 20, **Blessing of Kings** from 20, and **Hammer of the Righteous** from 40.
 - **Seal of Fury** and **Righteous Fury** come at level 10, so any paladin can tank a dungeon from Ragefire Chasm on.
 - **Blessings last an hour**, Greater Blessings included.
@@ -34,4 +34,4 @@ sources:
 
 ## Races
 
-**Undead Paladin** is new in Forever: the Horde has paladins for the first time, so Horde raids get Blessings and paladin tanks too. A paladin can be Human, Dwarf or Undead. Skyborne cannot be paladins.
+**Undead Paladin** is new in Forever: the Horde has paladins for the first time, so Horde raids get Blessings and paladin tanks too. Skyborne cannot be paladins.

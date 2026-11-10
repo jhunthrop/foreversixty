@@ -74,13 +74,14 @@ def answer(acct: dict | None, loading: bool = False) -> str:
 def band_bar(selected: int) -> str:
     items = [(e(b['label']), b['band'] == selected, None, '') for b in F['bands']]
     label = next(b['label'] for b in F['bands'] if b['band'] == selected)
-    end = f'<span class="t-small">{e(C["tierQuestion"])}</span>{Link(rsaquo(C["tierLink"]))}'
-    return control_bar([(e(C['bandGroupLabel']), seg(items, label=e(C['bandGroupLabel'])))], e(label), end, label=e(C['bandGroupLabel']))
+    end = Link(rsaquo(C["tierLink"]))
+    return control_bar([(e(C['bandGroupLabel']), seg(items, label=e(C['bandGroupLabel'])))], e(label), end, label=e(C['bandGroupLabel']),
+                       labels_from=1920)
 
 
-def summary(selected: int) -> str:
-    text = next(b['summary'] for b in F['bands'] if b['band'] == selected)
-    return f'<p class="t-small bl-sum" data-region="{REGION["summary"]}">{e(text)}</p>'
+def summary() -> str:
+    # the line under the bar holds only the build's "Your range" link, hidden in every mocked state
+    return f'<p class="t-small bl-sum" data-region="{REGION["summary"]}"></p>'
 
 
 X_GLYPH = ('<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">'
@@ -117,7 +118,7 @@ def landing(state: str) -> str:
         me = F['me'].get(state)
         ch = me['characters'][0] if me else None
         yours = f"{ch['class'].lower()}-{ch['spec'].lower().replace(' ', '-')}" if ch else ''
-    body = head + band_bar(selected) + Page('ledger', summary(selected) + f'<div id="bis-classes">{classes(yours)}</div>') + PAGE_CSS
+    body = head + band_bar(selected) + Page('ledger', summary() + f'<div id="bis-classes">{classes(yours)}</div>') + PAGE_CSS
     who = None
     if acct and acct['answer']['state'] == 'ready':
         ch = acct['answer']['character']

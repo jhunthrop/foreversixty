@@ -24,8 +24,8 @@ test('signed out: Pick your class with Sign in, the nine classes, the feed, how 
   await expect(plaque.getByRole('heading', { level: 2 })).toHaveText('First raids open');
   await expect(plaque.getByRole('timer')).toHaveAccessibleName('32 days, 6 hours');
   await expect(plaque.getByTestId('home-raid-zone')).toHaveText([
-    /Barrow Deeps\s*Loot not out yet/,
-    /Hyjal Summit\s*Loot not out yet/,
+    /^\s*Barrow Deeps\s*$/,
+    /^\s*Hyjal Summit\s*$/,
     /Onyxia's Lair\s*1 boss · \d+ drops/,
   ]);
   await expect(out.getByTestId('home-feed-row')).toHaveCount(7);
@@ -54,7 +54,7 @@ test('signed in at 34: the sim, the first raids with Find a guild, the feed, upg
   await expect(page.getByTestId('home-movers')).toContainText('Climbing this week');
   await expect(page.getByTestId('home-mover')).toHaveCount(3);
   await expect(page.getByTestId('home-mover').first()).toContainText('+6');
-  await expect(page.getByTestId('home-upgrades-total')).toContainText('DPS in');
+  await expect(page.getByTestId('home-upgrades-total')).toContainText(/\+[0-9.,]+ DPS/);
   await expect(page.getByTestId('home-upgrades-total')).toContainText('1 best in slot');
   await expect(page.getByTestId('home-guild-sims')).toHaveCount(0);
 });

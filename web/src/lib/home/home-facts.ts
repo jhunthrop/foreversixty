@@ -24,7 +24,6 @@ export const factsCopy = {
   attended: (nights: number, unit: 'raids' | 'raid nights') => `of ${nights} ${unit} attended`,
   raiders: (n: number) => (n === 1 ? 'raider' : 'raiders'),
   bossesDown: (named: number) => `of ${named} bosses down`,
-  upgradesIn: (n: number) => `in ${n} ${n === 1 ? 'upgrade' : 'upgrades'}`,
   /** An upgrade row's worn piece: `over Mantle of Thieves`. */
   over: 'over',
   emptySlot: 'Empty slot',
@@ -74,14 +73,15 @@ export function guildSummaryFacts(summary: GuildHomeSummary | undefined): HomeFa
   return facts;
 }
 
-/** Your upgrades' foot: `+52.1 DPS in 12 upgrades · 5 best in slot`; each clause only when it is above zero. */
+/** Your upgrades' foot: `+52.1 DPS · 5 best in slot` (See all N beside it counts the upgrades); each
+ *  clause only when it is above zero. */
 export function upgradesFacts(result: UpgradesResult | undefined): HomeFact[] {
   if (result === undefined || result.upgrades.length === 0) return [];
   const facts: HomeFact[] = [];
   if (result.totalGainDps > 0) {
     facts.push({
       n: `+${figureText(result.totalGainDps)}`,
-      text: `${UNIT_WORDS[result.scoreUnit]} ${factsCopy.upgradesIn(result.upgrades.length)}`,
+      text: UNIT_WORDS[result.scoreUnit],
     });
   }
   if (result.alreadyBis.length > 0) {

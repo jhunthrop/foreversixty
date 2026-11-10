@@ -3,7 +3,7 @@
      panel, the stops in route order (instances by pieces, then crafted, reputation, quest, vendor,
      world drops), each headed by its name and level range, each piece an ItemRow: the item, the
      slot and what the source adds to the heading (wrapping only between its facts), and what it
-     is worth: a gain, "Same DPS" as the next pick, Worn, or the row's own state. -->
+     is worth: a gain, Worn, or the row's own state; a tie with the next pick shows nothing. -->
 <script lang="ts">
   import Plate from '../ui/Plate.svelte';
   import ItemRow from '../ui/ItemRow.svelte';
@@ -13,13 +13,10 @@
   let {
     stops,
     build,
-    unit,
     label,
   }: {
     stops: readonly ItineraryStop[];
     build: string;
-    /** The band's unit ("DPS"), for a tie's "Same DPS". */
-    unit: string;
     label: string;
   } = $props();
 </script>
@@ -34,7 +31,7 @@
         <ItemRow
           item={row.cell.item}
           {build}
-          gain={rowFigure(row.cell.gain, unit)}
+          gain={rowFigure(row.cell.gain)}
           badge={row.cell.badge}
           testid={`bis-row-${row.cell.slot}`}
         >

@@ -67,8 +67,7 @@ export async function run() {
   return {
     build,
     updated: data.updated === null ? null : dayMonth(data.updated),
-    raidLabel: data.raidLabel,
-    bands: data.captions.map((c) => ({ band: c.band, label: c.label, summary: landingCopy.bandSummary(c.band === 60, data.raidLabel) })),
+    bands: data.captions.map((c) => ({ band: c.band, label: c.label })),
     classes: data.cards.map((card) => ({ slug: card.slug, name: card.name, color: card.color,
       specs: card.specs.map((s) => ({ key: s.key, classSlug: s.classSlug, specSlug: s.specSlug, name: s.name, role: s.role,
         icon: s.iconSrc.split('/').pop().replace(/\\.webp$/, '') })) })),
@@ -76,7 +75,7 @@ export async function run() {
     me: { '24': me24, '34': me34, '60': me60, nogear: meNoGear, sim: meSim },
     finished: { prefix: serverRunsCopy.bandLineParts(label, newest.dps).prefix, figure: serverRunsCopy.bandLineParts(label, newest.dps).figure,
                 open: serverRunsCopy.bandOpen, dismiss: serverRunsCopy.dismissLabel(label), more: runs.length - 1 },
-    copy: { title: landingCopy.title, tierQuestion: landingCopy.tierQuestion,
+    copy: { title: landingCopy.title,
             tierLink: landingCopy.tierLink, answerLabel: landingCopy.answerLabel, bandGroupLabel: landingCopy.bandGroupLabel,
             plateLabel: landingCopy.plateLabel, yours: landingCopy.yours,
             yourRange: Object.fromEntries(data.captions.map((c) => [c.band, landingCopy.yourRange(c.label)])),

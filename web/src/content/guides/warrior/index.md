@@ -34,4 +34,4 @@ sources:
 
 ## Races
 
-Every one of the original eight races can be a warrior, and so can the Skyborne, on either faction.
+Skyborne can be warriors on either faction.

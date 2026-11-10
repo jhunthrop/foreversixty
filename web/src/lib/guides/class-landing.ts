@@ -4,6 +4,7 @@
 // before them. There is no intro paragraph (owner 2026-11-09: a "<Class> is the <noun>: a, b and c"
 // blurb tells a veteran what they know). The page lays each part out in its own region, so a file
 // that strays from the shape fails the build rather than rendering a section nobody designed.
+import { guidesCopy } from './copy';
 
 /** The section headings a class landing may carry, in the order they must appear. */
 export const CLASS_LANDING_HEADINGS = [
@@ -30,6 +31,12 @@ export interface ClassLandingSection {
 
 export interface ClassLanding {
   sections: ClassLandingSection[];
+}
+
+/** A spec card's line under its name: the role, for a healer or a tank only. Every class has a
+ *  damage spec, so "DPS" under each one tells a veteran nothing (h-audit 2026-11-09). */
+export function specCardLine(role: 'dps' | 'healer' | 'tank'): string | undefined {
+  return role === 'dps' ? undefined : guidesCopy.roleLabel(role);
 }
 
 const HEADING = /^##[ \t]+(.+?)[ \t]*$/gm;

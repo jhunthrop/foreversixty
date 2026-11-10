@@ -57,11 +57,12 @@
         </div>{/if}
       <ul class="home-first-raids" aria-label={plaqueCopy.firstRaids}>
         {#each raids as raid (raid.name)}
+          {@const line = raidLine(raid, viewer)}
           <li data-testid="home-raid-zone">
             <ItemIcon icon={raid.icon} {build} size={RAID_ICON_PX} eager />
             <span class="min-w-0">
               <span class="home-first-raid-name">{raid.name}</span>
-              <span class="home-first-raid-line">{raidLine(raid, viewer)}</span>
+              {#if line}<span class="home-first-raid-line">{line}</span>{/if}
             </span>
           </li>
         {/each}

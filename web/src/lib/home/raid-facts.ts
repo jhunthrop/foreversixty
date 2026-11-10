@@ -1,7 +1,7 @@
 // web/src/lib/home/raid-facts.ts
 // The first raids' facts on home's raid plaque (home body pass 2026-11-09): each raid's boss count
 // and how many of its drops each class can use, from the build's loot table (loot.json) and class
-// item files. A raid the client does not ship yet has no loot rows and says so; nothing is guessed.
+// item files. A raid the client does not ship yet has no loot rows and no line; nothing is guessed.
 // Pure: raid-facts-load.ts reads the files at build time.
 import { FIRST_RAIDS } from '../first-raids';
 
@@ -22,7 +22,6 @@ export interface RaidLootSource {
 }
 
 export const raidFactsCopy = {
-  noLoot: 'Loot not out yet',
   bosses: (n: number) => `${n} ${n === 1 ? 'boss' : 'bosses'}`,
   drops: (n: number) => `${n} drops`,
   usable: (n: number, className: string) => `${n} ${className} drops`,
@@ -47,9 +46,9 @@ export function raidFacts(
 }
 
 /** A raid's one line: `1 boss · 8 Hunter drops` for a viewer of a class, `1 boss · 22 drops` for
- *  anyone else, `Not datamined yet` with no loot rows. */
-export function raidLine(fact: RaidFact, viewer?: { slug: string; name: string }): string {
-  if (fact.bosses === null || fact.drops === null) return raidFactsCopy.noLoot;
+ *  anyone else; none with no loot rows (the plaque's date says when it opens). */
+export function raidLine(fact: RaidFact, viewer?: { slug: string; name: string }): string | undefined {
+  if (fact.bosses === null || fact.drops === null) return undefined;
   const usable = viewer === undefined ? undefined : fact.usable[viewer.slug];
   const drops =
     usable === undefined || viewer === undefined

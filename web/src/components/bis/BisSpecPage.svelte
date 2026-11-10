@@ -163,7 +163,6 @@
         : undefined,
     ].filter((note) => note !== undefined),
   );
-  const factionWord = $derived(state.faction === 'horde' ? bisCopy.factionHorde : bisCopy.factionAlliance);
   /** The selected slot, else the doll's default (the first upgrade, else the first pick). */
   const shownSlot = $derived(
     selected !== null && cells.some((cell) => cell.slot === selected) ? selected : defaultSelection(cells),
@@ -359,7 +358,7 @@
             build={data.build}
             title={bisSeoCopy.heading(seoSubject)}
             shortTitle={fullName}
-            meta={bisCopy.frameMeta(model.label, factionWord, state.band >= 60 && seoSubject.preRaid)}
+            meta={bisCopy.frameMeta(model.label, state.band >= 60 && seoSubject.preRaid)}
             figure={figure ? { value: figure.value, unit: model.unit } : undefined}
             avatar={character?.avatar ?? null}
             render={character?.render ?? null}
@@ -391,7 +390,7 @@
         />
       </div>
       <div class="bis-route">
-        <BisItinerary {stops} build={data.build} unit={model.unit} label={`${fullName}, where to go`} />
+        <BisItinerary {stops} build={data.build} label={`${fullName}, where to go`} />
       </div>
     </div>
   </Page>

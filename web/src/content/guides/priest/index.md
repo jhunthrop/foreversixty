@@ -43,4 +43,4 @@ sources:
 - Undead: Dark Sacrifice (health for mana, once a fight) and Touch of Weakness.
 - Troll: Hex of Weakness and Shadowguard.
 
-Skyborne, Forever's new neutral race, cannot be priests: they play warrior, hunter, rogue, shaman, mage or druid.
+Skyborne cannot be priests.

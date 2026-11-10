@@ -68,3 +68,19 @@ const raids = loadRaidFacts();
     <HomeSignedIn client:idle-after-load {floor} {raidsOpen} {raids} />
   </main>
 </Base>
+
+<style is:global>
+  /* Home's title band sits at the foot of the camp-road art (directions mock g-home): the title
+     drops below the bar so the art reads above it (the band's 16 px top plus the lift). Home is the only `art="hero"` band. */
+  [data-art='hero'] .ui-page-header {
+    padding-top: calc(16px + var(--home-band-lift));
+  }
+  :root {
+    --home-band-lift: 16px;
+  }
+  @media (min-width: 900px) {
+    :root {
+      --home-band-lift: 40px;
+    }
+  }
+</style>
