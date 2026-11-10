@@ -250,13 +250,15 @@
       <Button tone="ghost" size="sm" onclick={() => void copyCsv()}>Copy CSV</Button>
     {/snippet}
     <div class="flex flex-wrap items-center gap-3 px-5 pb-3">
-      <Segmented
-        options={filterOptions}
-        value={only}
-        label="Raid group"
-        size="sm"
-        onChange={(value) => (only = value)}
-      />
+      <div class="max-w-full min-w-0 overflow-x-auto">
+        <Segmented
+          options={filterOptions}
+          value={only}
+          label="Raid group"
+          size="sm"
+          onChange={(value) => (only = value)}
+        />
+      </div>
       <input
         class="border-line text-text h-8 w-[200px] rounded-[6px] border bg-transparent px-3 text-[14px]"
         type="search"
@@ -265,7 +267,7 @@
         bind:value={find}
         data-testid="guild-roster-find"
       />
-      {#if hasCells}<span class="ml-auto"><AttendanceStrip legend /></span>{/if}
+      {#if hasCells}<span class="ml-auto hidden lg:inline"><AttendanceStrip legend /></span>{/if}
     </div>
     <StatTable
       {columns}
@@ -302,8 +304,8 @@
                   style:color={classColorVar(row.cls)}>{row.name}</span
                 >{/if}
             {/snippet}
-            {#snippet sub()}{row.spec}{rankWord(row.rank)}{#if row.cells.length > 0}<span class="ui-st-phone">
-                  · {row.attendancePct ?? '–'}% <AttendanceStrip cells={row.cells} /></span
+            {#snippet sub()}{row.spec}{rankWord(row.rank)}{#if row.cells.length > 0}<span class="ui-st-phone"
+                  >&#32;· {row.attendancePct ?? '–'}% <AttendanceStrip cells={row.cells} /></span
                 >{/if}{/snippet}
             {#snippet meter()}<AttendanceStrip cells={row.cells} />{/snippet}
           </StatRow>
