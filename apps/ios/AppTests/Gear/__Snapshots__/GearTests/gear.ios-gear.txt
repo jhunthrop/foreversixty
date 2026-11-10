@@ -1,23 +1,23 @@
-Fury Warrior · 60 raid · Alliance, 4 of 17 slots on the list
+Fury Warrior, 1004.2 DPS
+60 raid · Alliance · 4 of 17 slots on the list · Change
+Lionheart Helm, Head
+Skibi’s Pendant, Neck
+Theramore Pauldrons, Shoulder
+Howler’s Furs, Back
+Timbermaw Tunic, Chest
+Forest Stalker’s Bracers, Wrist
+Theramore Gauntlets, Hands
+Valiant’s Waistguard, Waist
+Sentinel’s Plate Legguards, Legs
+Scalegut Treaders, Feet
+Don Julio’s Band, Finger
+Cutthroat’s Signet, Finger
+Hand of Justice, Trinket
+Molten Heart of the Mountain, Trinket
+Ironwood Blade, Main hand
+Persuader, Off hand
+Blackcrow, Ranged
 Where to go tonight
 Blackrock Spire, Blackcrow · Shadow Hunter Vosh’gajin, 8%
-Blacksmithing, Lionheart Helm, Greenhammer, Ironwood Blade · ask a blacksmith
-Stormpike Guard, Don Julio’s Band, needs exalted
-Every slot
-Lionheart Helm, Head · Blacksmithing, +14.5, DPS
-Skibi’s Pendant, Neck · World drop, Worn
-Theramore Pauldrons, Shoulder · Theramore Expeditionary Force, Worn
-Howler’s Furs, Back · Pix Xizzix, vendor, +2.4, DPS
-Timbermaw Tunic, Chest · Leatherworking, +5.3, DPS
-Forest Stalker’s Bracers, Wrist · Silverwing Sentinels, +0.1, DPS
-Theramore Gauntlets, Hands · Theramore Expeditionary Force, +1.0, DPS
-Valiant’s Waistguard, Waist · Pix Xizzix, vendor, Worn
-Sentinel’s Plate Legguards, Legs · Illiyana Moonblaze, vendor, +4.7, DPS
-Scalegut Treaders, Feet · Leatherworking, +0.9, DPS
-Don Julio’s Band, Finger · Stormpike Guard, +6.8, DPS
-Cutthroat’s Signet, Finger · Pix Xizzix, vendor, +0.8, DPS
-Hand of Justice, Trinket · Blackrock Depths: Emperor Dagran Thaurissan, Worn
-Molten Heart of the Mountain, Trinket · Enchanting, +3.2, DPS
-Ironwood Blade, Main hand · Blacksmithing, +5.9, DPS
-Greenhammer, Off hand · Blacksmithing, +9.7, DPS
-Blackcrow, Ranged · Blackrock Spire: Shadow Hunter Vosh’gajin, 8%, +1.9, DPS
+Blacksmithing, Lionheart Helm, Ironwood Blade · ask a blacksmith
+Stormpike Guard, Don Julio’s Band, needs revered
