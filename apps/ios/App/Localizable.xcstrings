@@ -4154,6 +4154,18 @@
         }
       }
     },
+    "home.live.lineAlone": {
+      "comment": "Arguments: 1 age (string), 2 counts (string), 3 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulled %1$@ · %2$@ · you are %3$@"
+          }
+        }
+      }
+    },
     "home.live.lineNoAnswer": {
       "comment": "Arguments: 1 age (string), 2 counts (string)",
       "extractionState": "manual",
@@ -4565,6 +4577,18 @@
         }
       }
     },
+    "home.raid.answeredAlone": {
+      "comment": "Arguments: 1 answer (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are %1$@"
+          }
+        }
+      }
+    },
     "home.raid.answers": {
       "extractionState": "manual",
       "localizations": {
@@ -4670,6 +4694,18 @@
         }
       }
     },
+    "home.raid.lineSubAlone": {
+      "comment": "Arguments: 1 counts (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · you have not answered"
+          }
+        }
+      }
+    },
     "home.raid.lineTitle": {
       "comment": "Arguments: 1 raid (string), 2 when (string)",
       "extractionState": "manual",
@@ -4728,6 +4764,17 @@
         }
       }
     },
+    "home.raid.notAnsweredAlone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have not answered"
+          }
+        }
+      }
+    },
     "home.raid.openNight": {
       "extractionState": "manual",
       "localizations": {
@@ -4735,6 +4782,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open raid night ›"
+          }
+        }
+      }
+    },
+    "home.raid.place": {
+      "comment": "Arguments: 1 guild (string), 2 when (string)",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
           }
         }
       }

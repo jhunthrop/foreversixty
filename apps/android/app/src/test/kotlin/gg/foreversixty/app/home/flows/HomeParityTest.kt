@@ -1,6 +1,5 @@
 package gg.foreversixty.app.home.flows
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -9,6 +8,7 @@ import gg.foreversixty.app.activity.ActivityFixtures
 import gg.foreversixty.app.flows.ClockPart
 import gg.foreversixty.app.flows.TallyItem
 import gg.foreversixty.app.items.ItemLook
+import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.menu.LocalOpenMenu
 import gg.foreversixty.app.menu.ProfileBar
 import gg.foreversixty.app.model.ActivityRow
@@ -41,14 +41,7 @@ class HomeParityTest {
 
     @Test fun raidLive() = state("home-raid-live", HomeFixtures.raidLive())
 
-    // Known drift (2026-11-10, lane M0): in Open Sans a line the mock fits on one line wraps natively (the
-    // round-5 face is wider than Barlow), so the sections below it sit lower. The tab lanes (M1i/M1a to
-    // M4i/M4a) rebuild these screens against the round-5 mocks and drop these lines.
-    @Test fun afterRaid() = state(
-        "home-after-raid",
-        HomeFixtures.afterRaid(),
-        drift = setOf("section-new-for-you: y 710, the mock has 702 (within 8)"),
-    )
+    @Test fun afterRaid() = state("home-after-raid", HomeFixtures.afterRaid())
 
     @Test fun normalDay() = state("home-60", HomeFixtures.normalDay(), raid = 1)
 
@@ -58,12 +51,7 @@ class HomeParityTest {
 
     @Test fun noGuild() = state("home-noguild", HomeFixtures.noGuild(), activity = 2)
 
-    @Test fun leveling() = state(
-        "home-34",
-        HomeFixtures.leveling(),
-        activity = 1,
-        drift = setOf("section-new-for-you: y 464, the mock has 451 (within 8)"),
-    )
+    @Test fun leveling() = state("home-34", HomeFixtures.leveling(), activity = 1)
 
     @Test fun loading() = state("home-loading", HomeView.Loading(HomeFixtures.head), activity = 0)
 
@@ -71,25 +59,20 @@ class HomeParityTest {
 
     @Test fun noCharacter() = state("home-new", HomeView.NoCharacter, activity = 0)
 
-    private fun state(
-        screen: String,
-        view: HomeView,
-        raid: Int = 0,
-        activity: Int = 3,
-        fontScale: Float = 1f,
-        drift: Set<String> = emptySet(),
-    ) =
-        ParityCheck.state(compose, screen, fontScale = fontScale, expectedDrift = drift) {
-            Tab(TabBadges(raid = raid, activity = activity)) { HomeFlowScreen(view, HomeActions()) }
+    private fun state(screen: String, view: HomeView, raid: Int = 0, activity: Int = 3, fontScale: Float = 1f) =
+        ParityCheck.state(compose, screen, fontScale = fontScale) {
+            Tab(TabBadges(raid = raid, activity = activity)) {
+                HomeFlowScreen(view, HomeActions()) {
+                    CompositionLocalProvider(LocalOpenMenu provides {}) { ProfileBar(null) }
+                }
+            }
         }
 
     @Composable
     private fun Tab(badges: TabBadges, content: @Composable () -> Unit) {
         ForeverTabScaffold(selected = ForeverTab.Home, onSelect = {}, badges = badges) {
-            Column {
-                CompositionLocalProvider(LocalOpenMenu provides {}) { ProfileBar(null) }
-                content()
-            }
+            // The game icons from the repo's build data, as the Home screenshot test paints them.
+            CompositionLocalProvider(LocalItemIconPainter provides gg.foreversixty.app.home.HomeFixtures.repoIcons) { content() }
         }
     }
 }
@@ -144,6 +127,8 @@ object HomeFixtures {
         tally = tally,
         ready = ReadyLine("2 things before you pull", "No flask in your bags; boots not enchanted · from your last log-out, 9\u00a0h ago"),
         officer = if (officer) OfficerItems("5 have not answered, 2 of them healers", "Healers short by 3", "1 applicant", "Mirelle, Holy Priest 60, 2 min ago") else null,
+        zone = "Onyxia's Lair",
+        place = "Olympus XXVII · Wed 6 Jan, 8:00 pm CST",
     )
 
     fun raidDay(answer: SignupState? = null, lateOpen: Boolean = false, officer: Boolean = false) =

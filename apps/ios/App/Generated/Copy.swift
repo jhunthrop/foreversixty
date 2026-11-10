@@ -5449,9 +5449,22 @@ enum Copy {
         format("home.raid.notAnswered", name, role)
     }
 
+    /// You have not answered
+    static var homeRaidNotAnsweredAlone: String { text("home.raid.notAnsweredAlone") }
+
     /// You are {answer}, as {name}, {role}
     static func homeRaidAnswered(answer: String, name: String, role: String) -> String {
         format("home.raid.answered", answer, name, role)
+    }
+
+    /// You are {answer}
+    static func homeRaidAnsweredAlone(answer: String) -> String {
+        format("home.raid.answeredAlone", answer)
+    }
+
+    /// {guild} · {when}
+    static func homeRaidPlace(guild: String, when: String) -> String {
+        format("home.raid.place", guild, when)
     }
 
     /// {raid} · {when}
@@ -5462,6 +5475,11 @@ enum Copy {
     /// {counts} · you have not answered, as {name}, {role}
     static func homeRaidLineSub(counts: String, name: String, role: String) -> String {
         format("home.raid.lineSub", counts, name, role)
+    }
+
+    /// {counts} · you have not answered
+    static func homeRaidLineSubAlone(counts: String) -> String {
+        format("home.raid.lineSubAlone", counts)
     }
 
     /// {in} in, {late} late
@@ -5514,6 +5532,11 @@ enum Copy {
     /// Pulled {age} · {counts} · you are {answer} as {name}, {role}
     static func homeLiveLine(age: String, counts: String, answer: String, name: String, role: String) -> String {
         format("home.live.line", age, counts, answer, name, role)
+    }
+
+    /// Pulled {age} · {counts} · you are {answer}
+    static func homeLiveLineAlone(age: String, counts: String, answer: String) -> String {
+        format("home.live.lineAlone", age, counts, answer)
     }
 
     /// Pulled {age} · {counts}

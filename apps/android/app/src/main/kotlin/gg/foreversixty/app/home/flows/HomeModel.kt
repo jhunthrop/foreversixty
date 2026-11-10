@@ -34,13 +34,17 @@ data class RaidCardModel(
     val title: String,
     /** The line style's sub line: the counts and the answer. */
     val sub: String,
-    /** `You have not answered, as Thandrel, Damage` (E7). */
+    /** `You have not answered, as Thandrel, Damage`, or the answer alone with one character in the guild (E7). */
     val me: String,
     val answer: SignupState?,
     val lateOpen: Boolean,
     val tally: List<TallyItem>,
     val ready: ReadyLine?,
     val officer: OfficerItems?,
+    /** The card's title (round 5): the zone, `Onyxia's Lair`. */
+    val zone: String = "",
+    /** The line under it: `Olympus XXVII · Wed 6 Jan, 8:00 pm CST`. */
+    val place: String = "",
 )
 
 /** `2 things before you pull` and what they are, with the export's age. */

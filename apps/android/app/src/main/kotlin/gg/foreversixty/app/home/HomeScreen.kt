@@ -247,14 +247,13 @@ fun HomeCharacterScreen(
         RankingsRoute(rankingsFeature, reports.rankings, reportsLink, onBack = { rankingsFeature.navigator.showsBoard = false })
     } else {
         Column(Modifier.fillMaxSize().background(FsColor.bg)) {
-            topBar()
             val service = remember(dependencies) { LiveHomeFlowService(dependencies.client, dependencies.catalog) }
             val exits = flows.exits.copy(
                 openGear = openBis,
                 openItem = { line -> openItem(line.look, line.sourceLine, line.wornId) },
                 openSims = { sims?.navigator?.showsList = true },
             )
-            HomeFlowContent(character, store, phase, service, flows.raids, flows.activity, exits)
+            HomeFlowContent(character, store, phase, service, flows.raids, flows.activity, exits, topBar)
         }
     }
     tooltip?.let { request ->

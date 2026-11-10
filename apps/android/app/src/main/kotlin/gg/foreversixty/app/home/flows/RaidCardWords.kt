@@ -7,6 +7,7 @@ import gg.foreversixty.app.flows.ClockPart
 import gg.foreversixty.app.flows.TallyItem
 import gg.foreversixty.app.model.RaidBadge
 import gg.foreversixty.app.model.RaidView
+import gg.foreversixty.app.model.RaidViewerCharacter
 import gg.foreversixty.app.phrase
 import gg.foreversixty.app.raids.logic.RaidClock
 import gg.foreversixty.app.raids.logic.RaidFacts
@@ -28,11 +29,20 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
         val whenText = res.getString(R.string.home_raid_when, clock.shortDate(facts.startsAt), clock.guildClock(facts.startsAt, zone))
         val aside = whenText
         val (clock, clockLabel) = countdown(facts.startsAt)
-        val who = raid.viewer.characters.firstOrNull { it.characterKey == characterKey } ?: raid.viewer.characters.firstOrNull()
+        val who = namedCharacter(raid, characterKey)
         val name = who?.name.orEmpty()
         val role = roleWord(who?.role)
-        val me = answer?.let { res.getString(R.string.home_raid_answered, res.getString(it.label), name, role) }
-            ?: res.getString(R.string.home_raid_notAnswered, name, role)
+        val me = when {
+            who == null -> answer?.let { res.getString(R.string.home_raid_answeredAlone, res.getString(it.label)) }
+                ?: res.getString(R.string.home_raid_notAnsweredAlone)
+            else -> answer?.let { res.getString(R.string.home_raid_answered, res.getString(it.label), name, role) }
+                ?: res.getString(R.string.home_raid_notAnswered, name, role)
+        }
+        val unansweredSub = if (who == null) {
+            res.getString(R.string.home_raid_lineSubAlone, counts(raid))
+        } else {
+            res.getString(R.string.home_raid_lineSub, counts(raid), name, role)
+        }
         return RaidCardModel(
             raidId = raid.id,
             icon = RaidIcons.of(raid),
@@ -41,14 +51,26 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
             clockLabel = clockLabel,
             aside = aside,
             title = res.getString(R.string.home_raid_lineTitle, raid.zoneName, whenText),
-            sub = if (answer == null) res.getString(R.string.home_raid_lineSub, counts(raid), name, role) else me,
+            sub = if (answer == null) unansweredSub else me,
             me = me,
             answer = answer,
             lateOpen = lateOpen && answer == SignupState.Late,
             tally = tally(raid),
             ready = null,
             officer = badge?.takeIf { it.officer }?.let { officer(raid, it) },
+            zone = raid.zoneName,
+            place = res.getString(R.string.home_raid_place, guild, whenText),
         )
+    }
+
+    /**
+     * E7 (owner, 2026-11-09): the character the answer is for, named only when the account has more
+     * than one character in the raid's guild; null when the answer alone says it.
+     */
+    fun namedCharacter(raid: RaidView, characterKey: String?): RaidViewerCharacter? {
+        val mine = raid.viewer.characters
+        if (mine.size < 2) return null
+        return mine.firstOrNull { it.characterKey == characterKey } ?: mine.first()
     }
 
     /** The clock to [start] (`02 hours 48 min`) and the timer read aloud. */
@@ -72,11 +94,11 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
     /** The raid live card: pulled how long ago, the counts, your answer. */
     fun live(raid: RaidView, guild: String, characterKey: String?, answer: SignupState?): RaidLiveModel {
         val pulled = RelativeAge.of(RaidFacts(raid, now).startsAt, now).phrase(res)
-        val who = raid.viewer.characters.firstOrNull { it.characterKey == characterKey } ?: raid.viewer.characters.firstOrNull()
-        val line = if (answer != null && who != null) {
-            res.getString(R.string.home_live_line, pulled, counts(raid), res.getString(answer.label), who.name, roleWord(who.role))
-        } else {
-            res.getString(R.string.home_live_lineNoAnswer, pulled, counts(raid))
+        val who = namedCharacter(raid, characterKey)
+        val line = when {
+            answer == null -> res.getString(R.string.home_live_lineNoAnswer, pulled, counts(raid))
+            who == null -> res.getString(R.string.home_live_lineAlone, pulled, counts(raid), res.getString(answer.label))
+            else -> res.getString(R.string.home_live_line, pulled, counts(raid), res.getString(answer.label), who.name, roleWord(who.role))
         }
         return RaidLiveModel(raid.id, res.getString(R.string.home_raid_live, guild, raid.zoneName), line)
     }

@@ -1635,9 +1635,13 @@
     <string name="home_raid_clock" tools:ignore="PluralsCandidate">%1$d hours %2$d minutes</string>
     <string name="home_raid_when">%1$s, %2$s</string>
     <string name="home_raid_notAnswered">You have not answered, as %1$s, %2$s</string>
+    <string name="home_raid_notAnsweredAlone">You have not answered</string>
     <string name="home_raid_answered">You are %1$s, as %2$s, %3$s</string>
+    <string name="home_raid_answeredAlone">You are %1$s</string>
+    <string name="home_raid_place">%1$s · %2$s</string>
     <string name="home_raid_lineTitle">%1$s · %2$s</string>
     <string name="home_raid_lineSub">%1$s · you have not answered, as %2$s, %3$s</string>
+    <string name="home_raid_lineSubAlone">%1$s · you have not answered</string>
     <string name="home_raid_counts" tools:ignore="PluralsCandidate">%1$d in, %2$d late</string>
     <plurals name="home_raid_ready">
         <item quantity="one">1 thing before you pull</item>
@@ -1656,6 +1660,7 @@
         <item quantity="other">%1$d applicants</item>
     </plurals>
     <string name="home_live_line">Pulled %1$s · %2$s · you are %3$s as %4$s, %5$s</string>
+    <string name="home_live_lineAlone">Pulled %1$s · %2$s · you are %3$s</string>
     <string name="home_live_lineNoAnswer">Pulled %1$s · %2$s</string>
     <string name="home_live_open">Open raid night ›</string>
     <string name="home_lastNight">Last night</string>

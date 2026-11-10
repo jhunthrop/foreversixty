@@ -29,6 +29,7 @@ MEMBER, OFFICER, ANSWERED = {'raid': 1, 'activity': 3}, {'raid': 6, 'activity': 
 
 FLOWS_CSS = '''
 .ap{padding:8px 16px 24px}
+.r5{display:none}
 .ap .pc{padding-inline:0!important}
 .ap .t-title{font-size:32px;line-height:38px}
 .ap section{margin-top:28px}
@@ -83,8 +84,65 @@ FLOWS_CSS = '''
 '''
 
 
-def _page(body: str, title: str) -> str:
-    return build_page(title, f'<div class="ap">{body}</div><style>{FLOWS_CSS}</style>',
+# Round 5 on Android's Home (lane M1a; spec 2026-11-09-directions.md Mobile, mock directions/png/m-android-home.png): the
+# hero behind the bar and the head, the blocks as panels on the ground, 16 under the hero, 14 at the sides and 20 apart;
+# the raid card titles the zone and puts its answers in one segmented pill. Scoped to Android until lane M1i takes it to
+# iOS, so the iOS region files stay as they are. The words stay the app-flows mock's; only the geometry is round 5's.
+HOME_R5_CSS = '''
+[data-platform=android] .ap.home{padding:0 14px 22px}
+[data-platform=android] .ap.home .r5{display:block}
+[data-platform=android] .ap.home .band-r5{margin:0 -14px;width:auto;padding:6px 16px 18px;background:#071d2e}
+[data-platform=android] .ap.home .ph-wrap,[data-platform=android] .ap.home .head{display:block;padding:0}
+[data-platform=android] .ap.home .ph-title{gap:12px}[data-platform=android] .ap.home .ph-title>div{flex:1}
+[data-platform=android] .ap.home .t-title{font-size:30px;line-height:34px;letter-spacing:0}
+[data-platform=android] .ap.home .ph-meta{display:block;margin-top:0;line-height:20px}
+[data-platform=android] .ap.home .ph-meta .t-small{font-size:14px;line-height:20px}
+[data-platform=android] .ap.home .ph-meta .t-small+.t-small::before{content:" \\00b7 "}
+[data-platform=android] .ap.home>.blk,[data-platform=android] .ap.home>section{margin-top:20px}
+[data-platform=android] .ap.home>.band-r5+*{margin-top:16px}
+[data-platform=android] .ap.home .blk{background:#170e09;border-radius:10px;padding:8px 16px}
+[data-platform=android] .ap.home .blk[data-region=section-loading]{background:none;padding:0}
+[data-platform=android] .ap.home .blk[data-region=section-loading]>div:first-child{margin-top:0!important}
+[data-platform=android] .ap.home .blk:has(.cdn){padding:18px 18px 16px}
+[data-platform=android] .ap.home .cdn{padding:0;border:0;background:none;border-radius:0}
+[data-platform=android] .ap.home .cdn:has(.clk) .eb,[data-platform=android] .ap.home .cdn:has(.clk) .as{display:none}
+[data-platform=android] .ap.home .cdn .eb{font:600 15px/22px var(--font-body);color:var(--strong)}
+[data-platform=android] .ap.home .cdn .rw{margin-top:8px;gap:8px}
+[data-platform=android] .ap.home .cdn .as{flex-basis:100%}
+[data-platform=android] .ap.home .cdn .as p+p{margin-top:8px!important}
+[data-platform=android] .ap.home .r5z{font:400 24px/30px var(--font-title);margin:0}
+[data-platform=android] .ap.home .r5p{font-size:13px;line-height:20px;margin:0}
+[data-platform=android] .ap.home .cdn .clk{gap:18px}[data-platform=android] .ap.home .cdn .clk>span{align-items:flex-start}
+[data-platform=android] .ap.home .cdn .clk b{font:600 36px/38px var(--font-body)}
+[data-platform=android] .ap.home .cdn .clk>span>span{font-size:12px;line-height:16px}
+[data-platform=android] .ap.home .blk .me{margin-top:12px;line-height:20px}
+[data-platform=android] .ap.home .blk .btns{margin-top:8px;gap:0;border:1px solid var(--line);border-radius:24px;overflow:hidden}
+[data-platform=android] .ap.home .blk .btns .btn{height:48px;min-height:48px;border:0;border-radius:0}
+[data-platform=android] .ap.home .blk .me+.chips{margin-top:0}
+[data-platform=android] .ap.home .blk .tally{margin-top:14px}
+[data-platform=android] .ap.home .blk:has(.cdn) .tally+.rows{margin-top:14px;border-top:1px solid var(--line)}
+[data-platform=android] .ap.home .blk:has(.cdn) .rows+.rows{margin-top:4px}
+[data-platform=android] .ap.home .blk:not(:has(.cdn)) .rows{margin-top:0}
+[data-platform=android] .ap.home .blk:not(:has(.cdn)) .btns{margin:4px 0 8px}
+[data-platform=android] .ap.home .blk .vstack{margin:12px 0}
+[data-platform=android] .ap.home .blk>p.t-small:first-child{margin-top:8px}
+[data-platform=android] .ap.home section .sec-h{padding-bottom:0;border-bottom:0;margin-bottom:8px;align-items:center}
+[data-platform=android] .ap.home section .sec-h h2{font:400 21px/26px var(--font-title)}
+[data-platform=android] .ap.home section>.sec-h+*{margin-top:0}
+[data-platform=android] .ap.home section>.rows,[data-platform=android] .ap.home section>.irow-box{background:#170e09;padding:0 16px}
+[data-platform=android] .ap.home section>.sec-h+*{padding-top:8px;border-radius:10px 10px 0 0}
+[data-platform=android] .ap.home section>:last-child{padding-bottom:8px;border-radius:0 0 10px 10px}
+[data-platform=android] .ap.home section>.sec-h+:last-child{border-radius:10px}
+[data-platform=android] .ap.home section>.irow-box+*{border-top:1px solid var(--line)}
+[data-platform=android] .ap.home .irow{padding-inline:0}
+/* a row's lines as the Pixel 9 rounds them (420 dpi: a 20 sp line is 54 px, 20.57 dp; 18 sp is 48 px, 18.29 dp) */
+[data-platform=android] .ap.home section .row .ttl{line-height:20.57px}[data-platform=android] .ap.home section .row .sub{line-height:18.29px}
+'''
+
+
+def _page(body: str, title: str, home: bool = False) -> str:
+    cls, css = ('ap home', FLOWS_CSS + HOME_R5_CSS) if home else ('ap', FLOWS_CSS)
+    return build_page(title, f'<div class="{cls}">{body}</div><style>{css}</style>',
                       note='Native app mock (design/specs/2026-11-08-app-flows.md).')
 
 
@@ -106,7 +164,9 @@ def _raid_card(officer: bool = False, answered: str = '', late: bool = False) ->
     me = f'<p class="t-small me">{"You are " + answered if answered else "You have not answered"}, {AS_ME}</p>'
     how_late = '<p class="t-small me">How late?</p>' + _late_chips() if late else ''
     ready = Rows([Row('2 things before you pull', 'No flask in your bags; boots not enchanted &middot; from your last log-out, 9 h ago', slim=True)], open_=True)
-    return cd + me + _signup_buttons(answered) + how_late + Tally(ROLES) + ready + (_needs_you() if officer else '')
+    # round 5 (Android Home, HOME_R5_CSS): the card titles the zone and puts the guild before the time
+    r5 = f'<h2 class="r5 r5z">{RAID}</h2><p class="r5 r5p">Olympus XXVII &middot; {WHEN}</p>'
+    return r5 + cd + me + _signup_buttons(answered) + how_late + Tally(ROLES) + ready + (_needs_you() if officer else '')
 
 
 def _needs_you() -> str:
@@ -223,7 +283,7 @@ def _changed(kind: str, unread: int = 3) -> str:
 
 def _home(blocks: str, title: str, badges: dict, who: str = 'warrior', avatar=DEFAULT):
     def b(platform: str) -> str:
-        return app_page(platform, _page(blocks, title), 'home', badges=badges, who=who, avatar=avatar)
+        return app_page(platform, _page(blocks, title, home=True), 'home', badges=badges, who=who, avatar=avatar)
     return b
 
 

@@ -140,16 +140,26 @@ private fun LeadImage(lead: FlowLead) {
 
 /**
  * One item (the mock's ItemRow): the icon in its quality frame, the name in its quality colour (it opens
- * the item's tooltip), its source, and the gain on the right (`+14.5` with its unit small).
+ * the item's tooltip), its source, and the gain on the right (`+14.5` with its unit small). [inset]
+ * is the row's own side padding: 0 inside a [FlowPanel], which carries it.
  */
 @Composable
-fun FlowItemRow(look: ItemLook, build: String, source: String, gain: String?, unit: String?, gainNote: String? = null, onClick: () -> Unit) {
+fun FlowItemRow(
+    look: ItemLook,
+    build: String,
+    source: String,
+    gain: String?,
+    unit: String?,
+    gainNote: String? = null,
+    inset: Dp = FsSpace.space4,
+    onClick: () -> Unit,
+) {
     Row(
         Modifier
             .fillMaxWidth()
             .parityItem(ParityItemKind.Row)
             .clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = FsSpace.space4, vertical = FsSpace.space2)
+            .padding(horizontal = inset, vertical = FsSpace.space2)
             .heightIn(min = ITEM_ROW_BODY),
         verticalAlignment = Alignment.CenterVertically,
     ) {
