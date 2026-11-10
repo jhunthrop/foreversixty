@@ -23,7 +23,7 @@ const stores = storeLinks(apps);
 const qr = await appQrSvg();
 ---
 
-<Base title={copy.pageTitle} description={copy.pageDescription} path="/app" wide>
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/app">
   <main id="main" tabindex="-1" data-testid="app-beta-page">
     <Page layout="split" panels>
       <PageHeader slot="header" title={copy.heading}>

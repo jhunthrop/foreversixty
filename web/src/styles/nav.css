@@ -5,7 +5,8 @@
    (the one stylesheet the API's server-rendered /b/{id} page links) carries it too.
 
    Breakpoints, widest first:
-     1441+      the bar sits in the --page-max content container; Discord has its label
+     1760+      the wide frame: the door icons and the "/" hint show; the short line joins the name
+     1441+      the bar fills the page frame (Base.astro's .page-column) like every page's content
      1280-1439  Discord is the mark alone; selector 232px; the lookup keeps its "/" hint
      1024-1279  tighter doors; selector 176px, second line "Spec - level"
      560-1023   the 56px phone bar; the full name sits beside the crest; doors in the Menu
@@ -24,20 +25,17 @@
     padding-top: 16px;
   }
   /* Round 5's floating bar (design/specs/2026-11-09-directions.md section 5): their rounded bar,
-     inset over the band and aligned to the page's content edge, 64 px, the nav-bar colour, one
-     faint light edge, the panel radius. Left: our seal and name; then the doors in Archivo; right:
+     over the band and filling the one page frame (Base.astro wraps it in .page-column, the frame
+     the page body and the footer use, so its ends are the page's content edges on every page),
+     64 px, the nav-bar colour, one faint light edge, the panel radius. Left: our seal and name; then the doors in Archivo; right:
      search, the one-line account control and Premium as their teal Subscribe. */
   .site-header {
-    /* The page's content edge: the column's gutter, so the bar's ends sit where the page's own
-       content does. */
-    --bar-inset: calc(max(0px, (100% - var(--page-max)) / 2) + var(--page-gutter));
     position: relative;
     z-index: 40;
     display: flex;
     align-items: center;
     gap: 20px;
     height: 64px;
-    margin: 0 var(--bar-inset);
     padding: 0 8px 0 0;
     border: 1px solid rgb(255 255 255 / 0.08);
     border-radius: var(--radius-plate);
@@ -338,7 +336,7 @@
   }
 
   /* The door icons need about 190 px (net of the doors closing up) the bar only has when it is this wide (measured signed in
-     with an 18-letter name on the wide column, design/reviews/2026-11-09-nav-icons): below it the
+     with an 18-letter name on the wide frame, design/reviews/2026-11-09-nav-icons): below it the
      bar is the labels alone. A size container from 1024 only: below that the account sheet is
      fixed to the viewport, which a container would capture. */
   @media (min-width: 1024px) {
@@ -356,6 +354,13 @@
     }
   }
 
+  /* Below 768 the frame has no gutter (each surface keeps its own phone inset): the bar's is 8 px. */
+  @media (max-width: 767px) {
+    .site-header {
+      margin: 0 8px;
+    }
+  }
+
   /* The phone bar: wordmark, selector crest, Menu button; the doors open beneath. */
   @media (max-width: 1023px) {
     .site-header {
@@ -364,7 +369,6 @@
       align-items: center;
       gap: 0 8px;
       height: 56px;
-      margin: 0 8px;
       padding: 5px 6px 5px 0;
     }
     :root {
@@ -730,9 +734,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* The level is two digits: it never gives way, the name and short line do. */
+  /* The level is two digits: it never gives way, the name and short line do. Its slot is held
+     before the level is known (rows.ts levelSlot), so the chevron stays put when it lands. */
   .csel-level {
     flex-shrink: 0;
+    min-width: 2ch;
+    font-variant-numeric: tabular-nums;
   }
   .csel-chev {
     flex-shrink: 0;
@@ -1601,32 +1608,26 @@
   .site-menu-search {
     display: none;
   }
-  /* The "/" hint shows only on the wide column's bar (from 1760), where it has the room; round 5's
+  /* The "/" hint shows only on the wide frame's bar (from 1760), where it has the room; round 5's
      seven doors take the rest. */
-  body:not([data-column='wide']) .site-search-kbd {
-    display: none;
-  }
   @media (max-width: 1759px) {
     .site-search-kbd {
       display: none;
     }
   }
-  /* The account control's short line ("Fury · 60") likewise: on the 1246 px bar it would end in
-     an ellipsis beside most names, so it shows only on the wide column's bar, which widens the
+  /* The account control's short line ("Fury · 60") likewise: on the 1248 px bar it would end in
+     an ellipsis beside most names, so it shows only on the wide frame's bar, which widens the
      control to hold it whole. */
-  body:not([data-column='wide']) .csel-btn .csel-sub-short {
-    display: none;
-  }
   @media (max-width: 1759px) {
     .csel-btn .csel-sub-short {
       display: none;
     }
   }
   @media (min-width: 1760px) {
-    body[data-column='wide'] .csel-btn:not(.is-signed-out) {
+    .csel-btn:not(.is-signed-out) {
       width: 264px;
     }
-    body[data-column='wide'] .csel-btn .csel-level {
+    .csel-btn .csel-level {
       display: none;
     }
   }
@@ -1685,7 +1686,7 @@
     }
   }
   @media (min-width: 1760px) {
-    body[data-column='wide'] .csel-btn:not(.is-signed-out) {
+    .csel-btn:not(.is-signed-out) {
       width: auto;
       min-width: 264px;
     }

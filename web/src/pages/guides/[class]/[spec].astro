@@ -241,7 +241,7 @@ const jsonLd = [
 ];
 ---
 
-<Base title={searchCopy.specGuideTitle(title)} {description} {path} {jsonLd} wide>
+<Base title={searchCopy.specGuideTitle(title)} {description} {path} {jsonLd}>
   <meta slot="head" property="article:modified_time" content={entry.data.updated.toISOString()} />
   <main id="main" tabindex="-1" class="guide-page" data-testid="guide-page">
     <Page layout="reading" tocFrom={1024} testid="guide-body">

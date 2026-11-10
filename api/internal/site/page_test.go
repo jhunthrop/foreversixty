@@ -25,8 +25,12 @@ func TestBuildPageSitsInTheSitesPageColumn(t *testing.T) {
 	if column < 0 || main < column || planner < main {
 		t.Fatalf("the planner must mount inside <main> inside the one .page-column:\n%s", body)
 	}
-	if strings.Count(body, `class="page-column"`) != 1 {
-		t.Fatal("the page declares the site column exactly once, as Base.astro does")
+	if strings.Count(body, `data-page-body`) != 1 {
+		t.Fatal("the page declares the site column around its body exactly once, as Base.astro does")
+	}
+	// The bar sits in the same frame as the body (Base.astro, owner 2026-11-10: one width on every page).
+	if !strings.Contains(body, `<div class="page-column"><header class="site-header"`) {
+		t.Fatal("the site header bar sits in the one page frame, as on every site page")
 	}
 	if !strings.Contains(body, `<div class="site-top ui-band ui-band-end" data-art="band">`) {
 		t.Fatal("the bar floats on the site's band, as on every site page")

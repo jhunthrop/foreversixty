@@ -3,9 +3,10 @@
 // Served by src/worker.ts with status 503 when api.foreversixty.gg cannot answer a /b/:id
 // request. Static, so it works precisely when nothing else does. The message page of the shared
 // build (round 5, directions mock b4-unavailable): the title band, then one framed panel with the
-// sentence, the planner as the primary and the guides' builds as a link, the shape of the API's
-// own not-found and error pages (api/internal/site/page.go).
+// sentence, the planner as the primary and the guides' builds as a link, then the 404's Pick your
+// class, so the page fills the one page frame (owner 2026-11-10) with the ways on to a build.
 import Base from '../layouts/Base.astro';
+import NotFoundClassPicker from '../components/not-found/NotFoundClassPicker.svelte';
 import Button from '../components/ui/Button.svelte';
 import Page from '../components/ui/Page.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
@@ -21,7 +22,7 @@ const sentence =
 <Base title={title} description="This shared build cannot be loaded right now." path="/b-unavailable">
   <meta slot="head" name="robots" content="noindex" />
   <main id="main" tabindex="-1">
-    <Page layout="form">
+    <Page layout="ledger">
       <PageHeader slot="header" title={title} />
       <Plate frame="framed" flush={false} testid="b-unavailable-panel">
         <p class="m-0" data-testid="b-unavailable-sentence">
@@ -36,6 +37,7 @@ const sentence =
           </a>
         </div>
       </Plate>
+      <NotFoundClassPicker />
     </Page>
   </main>
 </Base>

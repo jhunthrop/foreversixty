@@ -160,7 +160,27 @@
 {/snippet}
 
 {#snippet centre(cell: DollCell | undefined)}
-  {#if cell !== undefined}{@render slotDetail(cell)}{:else if upgrades.length > 0}{@render upgradeList()}{/if}
+  {#if cell !== undefined}{@render slotDetail(cell)}{:else if upgrades.length > 0}<div
+      class="contents @min-[980px]/gear:hidden"
+    >
+      {@render upgradeList()}
+    </div>{/if}
+{/snippet}
+
+<!-- Beside the doll on a wide panel: every upgrade, largest first, so the panel's width holds the
+     whole list rather than ground either side of the doll. -->
+{#snippet upgradeColumn()}
+  <div class="flex h-full min-w-0 flex-col gap-1" role="group" aria-label={characterPageCopy.upgrades}>
+    <h3 class="text-strong text-[15px] leading-6 font-semibold">{characterPageCopy.upgrades}</h3>
+    {#each upgrades as row (row.slot)}
+      <ItemRow item={row.item} {build} source={row.label} iconSize={32} bare>
+        {#snippet trail()}{@render gainText(row.value)}{/snippet}
+      </ItemRow>
+    {/each}
+    {#if bisHref !== null}<a class="{LINK} mt-auto self-start pt-2 text-[13px]" href={bisHref}
+        >{characterPageCopy.openBis} ›</a
+      >{/if}
+  </div>
 {/snippet}
 
 <Section
@@ -171,22 +191,34 @@
   testid="character-gear-section"
 >
   <!-- The frame keeps to 640 px, centred. The Upgrades sit in its centre; where it gives way to its
-       list form (under MIN_FRAME_PX, 423 px, lib/ui/paperdoll-frame.ts) they follow the list. -->
-  <div class="flex justify-center">
-    <div class="@container w-full max-w-[640px]" data-testid="character-gear" aria-busy={loading}>
-      <PaperdollFrame
-        cells={loading ? [] : cells}
-        {build}
-        {title}
-        {meta}
-        {avatar}
-        bind:selected
-        {centre}
-        label={gearCopy.listLabel}
-        testid="character-doll"
-      />
-      {#if upgrades.length > 0 && !loading}<div class="hidden @max-[423px]:mt-3 @max-[423px]:block">
-          {@render upgradeList()}
+       list form (under MIN_FRAME_PX, 423 px, lib/ui/paperdoll-frame.ts) they follow the list; on a
+       panel of 980 px and up (the wide page frame) they stand beside it, every row, and the centre
+       keeps the chosen slot. -->
+  <div class="@container/gear">
+    <div
+      class="flex justify-center @min-[980px]/gear:grid @min-[980px]/gear:grid-cols-[640px_minmax(0,1fr)] @min-[980px]/gear:items-start @min-[980px]/gear:gap-8"
+    >
+      <div class="@container w-full max-w-[640px]" data-testid="character-gear" aria-busy={loading}>
+        <PaperdollFrame
+          cells={loading ? [] : cells}
+          {build}
+          {title}
+          {meta}
+          {avatar}
+          bind:selected
+          {centre}
+          label={gearCopy.listLabel}
+          testid="character-doll"
+        />
+        {#if upgrades.length > 0 && !loading}<div class="hidden @max-[423px]:mt-3 @max-[423px]:block">
+            {@render upgradeList()}
+          </div>{/if}
+      </div>
+      {#if upgrades.length > 0 && !loading}<div
+          class="hidden min-w-0 @min-[980px]/gear:block @min-[980px]/gear:self-stretch"
+          data-testid="character-upgrades-side"
+        >
+          {@render upgradeColumn()}
         </div>{/if}
     </div>
   </div>
