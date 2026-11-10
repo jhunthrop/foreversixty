@@ -415,7 +415,9 @@ describe('discordHelper', () => {
     const channel = '#raid-signups';
     expect(helper({ values: { date: '2026-12-05' } }).post).toBe(raidCopy.form.postNow(channel));
     expect(helper({ values: { date: '2027-01-30' } }).post).toBe(raidCopy.form.postNow(channel));
-    expect(helper({ values: { date: '2027-01-30' }, discord: WEBHOOK }).post).toBe(raidCopy.form.postNow(null));
+    expect(helper({ values: { date: '2027-01-30' }, discord: WEBHOOK }).post).toBe(
+      raidCopy.form.postNow(null),
+    );
     const off = helper({ values: { postToDiscord: false } });
     expect(off.post).toBe(raidCopy.form.postOff);
     expect(off.remind).toBe(raidCopy.form.remindNeedsPost);

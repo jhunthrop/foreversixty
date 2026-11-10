@@ -42,6 +42,7 @@ const DEPS: RaidPageDeps = {
   putCompTarget: never,
   deleteCompTarget: never,
   pingRaid: never,
+  postRaidNow: never,
   putAssignment: never,
   deleteAssignment: never,
   postAssignments: never,

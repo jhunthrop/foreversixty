@@ -36,6 +36,18 @@ export const TONIGHT_FROM_HOUR = 17;
  *  as an expression (`{SEP}`). */
 export const SEP = ' · ';
 
+/** The raid page's Post now / Repost (owner ruling 2026-11-09). */
+export const raidPostCopy = {
+  postNow: 'Post now',
+  repost: 'Repost',
+  notPosted: 'Not on Discord yet.',
+  postedTo: (channel: string | null, when: string): string => `Posted to ${channel ?? 'Discord'} ${when}.`,
+  posted: 'Posted.',
+  reposted: 'Reposted as a new message.',
+  noChannel: 'Pick a Discord channel in Settings first.',
+  failed: 'The post did not go out. Try again.',
+} as const;
+
 export const raidCopy = {
   planButton: 'Plan an event',
   cap: 'A guild plans at most 12 raids ahead.',

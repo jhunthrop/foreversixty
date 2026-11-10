@@ -34,7 +34,7 @@
     type PlannerGrouping,
   } from '../../../lib/guild/raid-planner-view';
   import { raidQuiet } from '../../../lib/guild/planned-row';
-  import { clockText } from '../../../lib/guild/raid-time';
+  import { clockText, dateLabel } from '../../../lib/guild/raid-time';
   import type { RaidStatusAction } from '../../../lib/guild/raids-api';
   import CompTally from '../overview/CompTally.svelte';
   import GuildTabs from '../GuildTabs.svelte';
@@ -53,6 +53,7 @@
   import PlannerAssignments from './PlannerAssignments.svelte';
   import PlannerBench from './PlannerBench.svelte';
   import PlannerNotSigned from './PlannerNotSigned.svelte';
+  import RaidDiscordPost from './RaidDiscordPost.svelte';
   import PlannerRoster from './PlannerRoster.svelte';
 
   let {
@@ -112,6 +113,8 @@
   }
 
   const nextPingClock = (at: Date): string => clockText(at, viewerTimezone, locale);
+  const postedWhen = (at: Date): string =>
+    `${dateLabel(at, viewerTimezone, locale)}, ${clockText(at, viewerTimezone, locale)}`;
 </script>
 
 {#snippet meta()}
@@ -253,6 +256,16 @@
         onSetState={(row, state) => c.setRosterState(row, state)}
       />
     </Section>
+    {#if officer && raid.discord.connected && !flags.cancelled && !flags.ended && raid.status !== 'done'}
+      <RaidDiscordPost
+        {raid}
+        when={postedWhen}
+        officerTools={c.officerTools}
+        posting={c.planner.posting}
+        answer={c.planner.postAnswer}
+        onPost={() => void c.planner.postNow()}
+      />
+    {/if}
     {#if officer}
       <PlannerNotSigned
         {raid}

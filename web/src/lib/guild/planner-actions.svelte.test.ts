@@ -10,8 +10,11 @@ const ROUTE = { guild: { region: 'us', ruleset: 'pvp', slug: 'olympus-xxvii' }, 
 const NOW = new Date('2026-12-08T18:00:00Z');
 const TARGET = { tanks: 2, healers: 8, melee: 10, ranged: 20 };
 
-function setup(deps: Partial<Pick<RaidPageDeps, 'putCompTarget' | 'deleteCompTarget' | 'pingRaid'>> = {}) {
-  let raid: GuildRaidView | null = plannedRaid();
+function setup(
+  deps: Partial<Pick<RaidPageDeps, 'putCompTarget' | 'deleteCompTarget' | 'pingRaid' | 'postRaidNow'>> = {},
+  start: GuildRaidView = plannedRaid(),
+) {
+  let raid: GuildRaidView | null = start;
   const host: NightActionHost = {
     raid: () => raid,
     write: (run) => run(2),
@@ -33,6 +36,7 @@ function setup(deps: Partial<Pick<RaidPageDeps, 'putCompTarget' | 'deleteCompTar
             no_discord_names: ['Voidcall'],
             next_allowed_at: '2026-12-09T00:00:00Z',
           })),
+      postRaidNow: deps.postRaidNow ?? (() => Promise.resolve(plannedRaid({ title: 'posted' }))),
       now: () => NOW,
     },
     ROUTE,
@@ -85,5 +89,37 @@ describe('PlannerActions', () => {
     expect(await actions.ping()).toBe(false);
     expect(actions.pingAnswer).toBe('The ping did not go out. Try again.');
     expect(actions.pinging).toBe(false);
+  });
+
+  it('posts an unposted raid now and says Posted', async () => {
+    const { actions, raid } = setup();
+    expect(await actions.postNow()).toBe(true);
+    expect(raid()?.title).toBe('posted');
+    expect(actions.postAnswer).toBe('Posted.');
+    expect(actions.posting).toBe(false);
+  });
+
+  it('says Reposted for a raid that had posted', async () => {
+    const posted = plannedRaid({
+      discord_post: {
+        posted_at: '2026-12-01T00:00:00Z',
+        post_at: '2026-12-01T00:00:00Z',
+        reminded_at: null,
+        remind: true,
+      },
+    });
+    const { actions } = setup({}, posted);
+    expect(await actions.postNow()).toBe(true);
+    expect(actions.postAnswer).toBe('Reposted as a new message.');
+  });
+
+  it('names Settings when the guild has no channel, else says it failed', async () => {
+    const noChannel = new GuildApiError('connect a Discord channel first', 409, 'no_channel');
+    const { actions } = setup({ postRaidNow: () => Promise.reject(noChannel) });
+    expect(await actions.postNow()).toBe(false);
+    expect(actions.postAnswer).toBe('Pick a Discord channel in Settings first.');
+    const down = setup({ postRaidNow: () => Promise.reject(new Error('down')) });
+    expect(await down.actions.postNow()).toBe(false);
+    expect(down.actions.postAnswer).toBe('The post did not go out. Try again.');
   });
 });
