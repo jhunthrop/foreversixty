@@ -34,6 +34,16 @@
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
 
+# Class crests, faction emblems and other icons (/icons/) and the page art (/art/). These paths
+# are not content-hashed and seal v4 replaced /art files under the same names, so they are not
+# immutable: a day in the browser and a week of serving stale while it revalidates. Without
+# this every page load revalidated every crest, and Safari drew the header's character crest
+# empty for that round trip on every navigation (owner bug 2026-11-09).
+/icons/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/art/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
 # The native apps' universal links (iOS) and App Links (Android) files, built from
 # web/app-links.json by scripts/app-links.mjs. Apple fetches the extensionless file through
 # its CDN and needs it as JSON; both stay short-cached so a new signing fingerprint or Team

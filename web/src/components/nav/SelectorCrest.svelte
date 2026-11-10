@@ -3,7 +3,9 @@
      icon, letter square or Blizzard avatar) at the selector's sizes. A character with no
      known class draws the neutral ringed disc instead of a broken `/crests/.webp` request,
      the same guard ClassCrestRing.svelte gives its callers. `lazy` is for the list's rows,
-     which are not on the page-load path; the bar's own crest loads at once. -->
+     which are not on the page-load path; the bar's own crest loads at once and decodes with the
+     paint (owner bug 2026-11-09): it replaces nav.css's pre-painted crest of the same image when
+     the island hydrates, and an async decode could paint that frame empty. -->
 <script lang="ts">
   import { classCrestSrc } from '../../lib/class-crest';
   import { classColorVar } from '../../lib/report/format';
@@ -26,7 +28,7 @@
     width={size}
     height={size}
     loading={lazy ? 'lazy' : undefined}
-    decoding="async"
+    decoding={lazy ? 'async' : 'sync'}
     style:--c={classColorVar(classSlug)}
   />
 {/if}
