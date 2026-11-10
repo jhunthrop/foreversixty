@@ -94,7 +94,7 @@ The pre-raid set leans on Tailoring and Enchanting crafts.
 
 ## Enchants and consumables
 
-Run Elixir of Shadow Power and Elixir of Fire Power together: the school elixirs are separate buffs. Keep a Healthstone for the Life Taps that leave you low. Put Brilliant Wizard Oil or a Firestone, 2% crit, on the weapon.
+Run Elixir of Shadow Power and Elixir of Fire Power together: the school elixirs are separate buffs. Keep a Healthstone for the Life Taps that leave you low. Put Brilliant Wizard Oil or a Firestone (2% crit) on the weapon.
 
 ## Races
 
