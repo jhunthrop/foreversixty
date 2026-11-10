@@ -113,6 +113,7 @@ func rosterWorld(t *testing.T, roster []notify.RosterLine) *postWorld {
 	t.Helper()
 	w := newPostWorld(t)
 	w.svc.emoji = &EmojiRegistry{API: boardMarks()}
+	w.svc.d.PublicBaseURL = reviewSite // the post's footer carries the seal, as in production
 	setRoster(w, roster)
 	return w
 }

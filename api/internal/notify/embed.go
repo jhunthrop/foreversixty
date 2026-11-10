@@ -241,7 +241,7 @@ func classLabel(slug string) string {
 	return strings.ToUpper(slug[:1]) + slug[1:]
 }
 
-// BrandEmbed is a gold embed with the plain "Forever Sixty" footer, for answers that belong to
+// BrandEmbed is an accent embed with the plain "Forever Sixty" footer, for answers that belong to
 // no guild (the bot's /help).
 func BrandEmbed(title, description string, at time.Time) Embed {
 	e := baseEmbed(title, "", at)

@@ -171,7 +171,9 @@ func dumpOfficerFrames(d frameDumper) {
 	w.og.readiness = readinessFor(raids[0], 20)
 	w.og.raidReady = map[int64]guilds.ReadinessAnswer{4: readinessFailing(raids[1])}
 	last := onyxiaReport(true, true)
+	last.Report.Loot = onyxiaLoot()
 	older := onyxiaReport(false, false)
+	older.Report.Loot = onyxiaLoot()
 	older.Raid.ID, older.Raid.Title = 6, "Molten Core"
 	w.og.report = last
 	w.og.reports = map[int64]*guilds.ReportAnswer{7: last, 6: older}
@@ -254,4 +256,21 @@ func gearBoardFrames(t *testing.T) map[string]Message {
 	w.lg.readiness[keyZulmara] = guilds.ReadinessFacts{Word: "Not synced", OnRoster: true}
 	out["char-panel-nogear"] = w.command(t, pressDiscord, "char", nil).Message
 	return out
+}
+
+// onyxiaLoot is a real Onyxia night's awards for the boards: the game's items and icons
+// (data/builds 1.60.1.70658), each to the raider who won it.
+func onyxiaLoot() []guilds.ReportLootBoss {
+	award := func(id int, name, icon, winner string) guilds.ReportLootAward {
+		return guilds.ReportLootAward{ItemID: id, ItemName: name, Quality: 4, Icon: icon, Name: winner}
+	}
+	return []guilds.ReportLootBoss{{Boss: "Onyxia", Awards: []guilds.ReportLootAward{
+		award(17068, "Deathbringer", "inv_axe_09", "Kraggor"),
+		award(17075, "Vis'kag the Bloodletter", "inv_sword_18", "Corvane"),
+		award(18205, "Eskhandar's Collar", "inv_belt_12", "Zulmara"),
+		award(18813, "Ring of Binding", "inv_jewelry_ring_13", "Ironvale"),
+		award(17078, "Sapphiron Drape", "inv_misc_cape_16", "Pyrewisp"),
+		award(16908, "Bloodfang Hood", "inv_helmet_41", "Duskmantle"),
+		award(16914, "Netherwind Crown", "inv_helmet_70", "Frostwhisk"),
+	}}}
 }

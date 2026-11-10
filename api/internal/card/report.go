@@ -61,7 +61,7 @@ func RenderReport(in ReportInput) ([]byte, error) {
 	y -= 56
 	drawText(img, f.lead, inkCream2, marginX, y, fit(f.lead, summaryLine(in), maxW))
 	y -= 70
-	drawText(img, f.title, inkCream, marginX, y, fit(f.title, reportTitle(in.Title), maxW))
+	drawTitle(img, f, marginX, y, reportTitle(in.Title), maxW)
 	return encode(img)
 }
 
@@ -79,13 +79,8 @@ func summaryLine(in ReportInput) string {
 	if zone == "" {
 		zone = copyLogZone
 	}
-	kills := 0
-	for _, b := range in.Bosses {
-		if b.Kill {
-			kills++
-		}
-	}
-	parts := []string{zone, fmt.Sprintf("%d of %d killed", kills, len(in.Bosses))}
+	killed, wiped := outcomes(in.Bosses)
+	parts := []string{zone, fmt.Sprintf("%d of %d killed", len(killed), len(killed)+len(wiped))}
 	if in.DurationMS > 0 {
 		parts = append(parts, duration(in.DurationMS))
 	}
@@ -114,14 +109,7 @@ func bossRows(f *faces, bosses []Boss, maxWidth int) []bossRow {
 	if len(bosses) == 0 {
 		return []bossRow{{names: copyNoBosses}}
 	}
-	var killed, wiped []string
-	for _, b := range bosses {
-		if b.Kill {
-			killed = appendUnique(killed, b.Name)
-		} else {
-			wiped = appendUnique(wiped, b.Name)
-		}
-	}
+	killed, wiped := outcomes(bosses)
 	var rows []bossRow
 	for _, g := range []struct {
 		label string
@@ -137,14 +125,25 @@ func bossRows(f *faces, bosses []Boss, maxWidth int) []bossRow {
 	return rows
 }
 
-// appendUnique adds name unless it is already the list's: a boss wiped on twice is one wipe row.
-func appendUnique(list []string, name string) []string {
-	for _, n := range list {
-		if n == name {
-			return list
+// outcomes are the night's bosses by name in pull order: those killed, and those wiped on and
+// never killed. A boss wiped on and then killed is a kill.
+func outcomes(bosses []Boss) (killed, wiped []string) {
+	var order []string
+	kill := map[string]bool{}
+	for _, b := range bosses {
+		if _, seen := kill[b.Name]; !seen {
+			order = append(order, b.Name)
+		}
+		kill[b.Name] = kill[b.Name] || b.Kill
+	}
+	for _, name := range order {
+		if kill[name] {
+			killed = append(killed, name)
+		} else {
+			wiped = append(wiped, name)
 		}
 	}
-	return append(list, name)
+	return killed, wiped
 }
 
 // nameList joins names with " · " within maxWidth, ending in " and N more" when some do not fit.

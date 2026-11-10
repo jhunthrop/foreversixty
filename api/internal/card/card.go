@@ -80,6 +80,7 @@ type faces struct {
 	brand    font.Face // "Forever Sixty" beside the seal
 	brandBig font.Face // the brand card's name
 	title    font.Face // the build's or report's title
+	titleSm  font.Face // a title too long for the large face
 	lead     font.Face // the line under the title
 	body     font.Face // the bosses, the fan-made line
 	label    font.Face // "Killed", "Wiped"
@@ -95,6 +96,7 @@ func newFaces() (*faces, error) {
 		{&f.brand, brand.Marcellus400, 40},
 		{&f.brandBig, brand.Marcellus400, 64},
 		{&f.title, brand.Marcellus400, 72},
+		{&f.titleSm, brand.Marcellus400, 54},
 		{&f.lead, brand.OpenSans600, 34},
 		{&f.body, brand.OpenSans400, 26},
 		{&f.label, brand.OpenSans700, 26},
@@ -136,7 +138,7 @@ func Render(in Input) ([]byte, error) {
 	}
 	drawText(img, f.lead, inkCream2, x, y, fit(f.lead, stats, Width-marginX-x))
 	y -= 72
-	drawText(img, f.title, inkCream, marginX, y, fit(f.title, title, maxW))
+	drawTitle(img, f, marginX, y, title, maxW)
 	return encode(img)
 }
 
@@ -215,6 +217,16 @@ func encode(img *image.RGBA) ([]byte, error) {
 		return nil, fmt.Errorf("card: encode: %w", err)
 	}
 	return buf.Bytes(), nil
+}
+
+// drawTitle draws the title in the large face, or the smaller one when it does not fit, cut
+// with "..." only when even that runs out of room.
+func drawTitle(img draw.Image, f *faces, x, baseline int, title string, maxW int) {
+	face := f.title
+	if measure(face, title) > maxW {
+		face = f.titleSm
+	}
+	drawText(img, face, inkCream, x, baseline, fit(face, title, maxW))
 }
 
 // drawText draws s with its left edge at x on the baseline, and returns the x it ends at.

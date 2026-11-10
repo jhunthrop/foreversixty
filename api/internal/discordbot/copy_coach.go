@@ -17,9 +17,9 @@ var coachCopy = struct {
 	RaidNight string
 }{
 	FieldName: "Your coach",
-	Line:      "Fix first: {stem} — on {n} of {m} bosses. [Open your coach's review]({url})",
+	Line:      "Fix first: {stem}, on {n} of {m} bosses. [Open your coach's review]({url})",
 	LineOne:   "Fix first: {stem}. [Open your coach's review]({url})",
-	LineAll:   "Fix first: {stem} — on all {m} bosses. [Open your coach's review]({url})",
+	LineAll:   "Fix first: {stem}, on all {m} bosses. [Open your coach's review]({url})",
 	Named:     "**{Character}** · {line}",
 	Pending:   "[Your coach's review is on the site.]({url})",
 	RaidNight: "Coach reviews for tonight's pulls are ready; open the report or use /report.",

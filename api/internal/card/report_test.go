@@ -58,7 +58,7 @@ func TestRenderReportWrapsALongTitleAndCountsExtraBosses(t *testing.T) {
 
 func TestSummaryLineCountsKillsAndTime(t *testing.T) {
 	got := summaryLine(ReportInput{
-		Bosses:     []Boss{{Kill: true}, {Kill: false}},
+		Bosses:     []Boss{{Name: "Lucifron", Kill: true}, {Name: "Magmadar"}, {Name: "Magmadar"}},
 		DurationMS: 95 * 60 * 1000,
 	})
 	if got != "Combat log · 1 of 2 killed · 1h 35m" {
@@ -77,8 +77,9 @@ func TestBossRowsSplitKillsFromWipes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	rows := bossRows(f, []Boss{{Name: "Kelthas", Kill: true}, {Name: "Emberdeep"}, {Name: "Emberdeep"}, {Name: "Garr", Kill: true}}, Width-2*marginX)
-	if len(rows) != 2 || rows[0].label != copyKilled || rows[0].names != "Kelthas · Garr" ||
+	rows := bossRows(f, []Boss{{Name: "Kelthas", Kill: true}, {Name: "Emberdeep"}, {Name: "Emberdeep"},
+		{Name: "Majordomo Executus"}, {Name: "Majordomo Executus", Kill: true}, {Name: "Garr", Kill: true}}, Width-2*marginX)
+	if len(rows) != 2 || rows[0].label != copyKilled || rows[0].names != "Kelthas · Majordomo Executus · Garr" ||
 		rows[1].label != copyWiped || rows[1].names != "Emberdeep" {
 		t.Fatalf("rows = %+v", rows)
 	}
