@@ -86,6 +86,8 @@ def icons_page() -> str:
             f'<div class="row">{win_tray("task-dark")}{win_tray("task-light")}</div>'
             '<h2>macOS menu bar, the four tones at 16 pt (seal-tray-*.png at 2x), light and dark</h2>'
             f'<div class="row">{mac_bar("mb-light")}{mac_bar("mb-dark")}</div>'
+            '<h2>The tray tones enlarged: the 32 px PNG shown at 64 px, so the corner badge can be judged</h2>'
+            f'<div class="row"><div class="pad task-dark">' + ''.join(cell(img(tray_png[t], 64), t) for t in tones) + '</div></div>'
             '</body></html>')
 
 

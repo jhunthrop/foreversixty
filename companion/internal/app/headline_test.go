@@ -141,7 +141,7 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 	// headline recomputes the headline from what a case changed.
 	headline := func(s *Snapshot) {
 		connecting := s.Connect.State == ConnectWaiting || s.Connect.State == ConnectBlocked
-		s.Headline = headlineFor(s.Paired, connecting, s.SignedOut != nil, s.Pipeline.Logging, s.Credit, s.Installs)
+		s.Headline = withHeld(headlineFor(s.Paired, connecting, s.SignedOut != nil, s.Pipeline.Logging, s.Credit, s.Installs), s.Pipeline.Held)
 	}
 	// unpaired is a companion that has never signed in.
 	unpaired := func() Snapshot {
@@ -232,6 +232,7 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 			s := base(credited)
 			s.Pipeline.Fights, s.Pipeline.Queued, s.Pipeline.QueuedFights = 6, 3, 3
 			s.Pipeline.Held = &pipeline.Held{Kind: "fight", Fight: 4, Attempts: 2}
+			headline(&s)
 			return s
 		}},
 		{"status-advanced-off.json", func() Snapshot {

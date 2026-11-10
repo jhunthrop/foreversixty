@@ -267,6 +267,7 @@ function renderStatus(s) {
   region('headline', $('headline'), { hd, reportURL, figure }, (el) => {
     el.dataset.tone = hd.tone;
     el.dataset.key = hd.key;
+    el.classList.toggle('has-fig', figure !== null);
     el.replaceChildren();
     // Connecting shows a spinner where every other state has its dot.
     const mark = hd.key === 'connecting' ? h('span', { class: 'spinner', 'aria-hidden': 'true' }) : dot(hd.tone);
@@ -337,7 +338,7 @@ function renderStatus(s) {
     // The count is the headline's figure once it is a number; the row stays for the words.
     if (fr.show && rows.figure === null) {
       el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.fights }),
-        h('span', { class: 'v' }, fr.text, fr.help ? h('span', { class: 'sub', text: fr.help }) : null)));
+        h('span', { class: 'v' }, fr.text, fr.help && !rows.failed ? h('span', { class: 'sub', text: fr.help }) : null)));
     }
     if (fr.show && (fr.queued > 0 || rows.held)) {
       el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.queued }),
@@ -657,15 +658,12 @@ function pairedView(s) {
   ];
 }
 
-// deviceFacts are the connected page's rows: where the key is kept, what
-// the companion will do with a report, and what it has done from this PC.
+// deviceFacts are the connected page's rows: where the key is kept and
+// what this PC has done. Visibility and credit live on Settings and Status.
 function deviceFacts(s) {
   const reports = s.reports || [];
   const facts = [
     [COPY.device.savedIn, s.token_backend_name],
-    [COPY.device.visibility, COPY.settings.visibilityOptions[s.visibility] || s.visibility],
-    [COPY.device.creditedTo, s.logging_character ? FORMAT.characterLabel(s.logging_character, COPY.settings.rulesets)
-      : FORMAT.automaticLabel(s.detected_character, COPY.settings)],
     [COPY.device.uploaded, COPY.device.uploadedValue(reports.length, reports.reduce((n, r) => n + (r.fights || 0), 0))],
   ];
   if (s.addon_seen_at) facts.push([COPY.device.addonSeen, FORMAT.ago(s.addon_seen_at, new Date(), COPY.status.ago)]);

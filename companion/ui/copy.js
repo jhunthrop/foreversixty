@@ -26,7 +26,7 @@ const COPY = {
     product: 'Companion',
     version: (v) => 'Companion ' + v,
     site: 'foreversixty.gg',
-    updateReady: 'Update ready. It installs the next time the companion starts.',
+    updateReady: 'Update ready. Quit the companion from the tray icon and open it again to install it.',
     // After "Companion 0.2.13", for the first half minute after a new version's first launch.
     justUpdated: 'just updated',
     joint: ' · ',
@@ -163,9 +163,7 @@ const COPY = {
     flash: 'Connected. The companion is ready.',
     savedIn: 'Saved in',
     // The connected page's facts, from the snapshot.
-    engine: 'Log engine',
-    visibility: 'New reports are',
-    creditedTo: 'Credited to',
+    engine: 'Log parser',
     uploaded: 'Uploaded from this PC',
     uploadedValue: (reports, fights) => reports + (reports === 1 ? ' report, ' : ' reports, ') + fights + (fights === 1 ? ' fight' : ' fights'),
     addonSeen: 'Addon last seen in game',
@@ -215,7 +213,7 @@ const COPY = {
     characterAutoNow: (name) => 'Automatic (currently ' + name + ')',
     characterHelp: 'Pick a character only if Automatic is wrong.',
     keepAddon: 'Keep the addon up to date',
-    keepAddonHelp: 'Installs new Forever Sixty addon and data versions into every game folder here, when the game is closed. CurseForge and Wago users can leave this on; they get the same files.',
+    keepAddonHelp: 'New versions go in when the game is closed. CurseForge and Wago users can leave this on; they get the same files.',
     savedKeep: { on: 'Saved. The addon will be kept up to date.', off: 'Saved. The companion will not update the addon.' },
     save: 'Save changes',
     noChanges: 'No changes',

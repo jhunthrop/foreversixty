@@ -26,8 +26,14 @@ const ADDON_LINES = {
   lines: [{ text: 'Addon 2.0.16 · up to date', tone: '' }, { text: 'Data 2026.11.09 · up to date', tone: '' }],
   offers: [],
 };
-const logging = (patch) =>
-  merge('status-credited', Object.assign({ addon_update: ADDON_LINES }, patch));
+// One raid night across every page: the Reports list's reports, the open one (Molten Core, 3 fights) the
+// report Status shows.
+const logging = (patch) => {
+  const s = merge('status-credited', Object.assign({ addon_update: ADDON_LINES, reports: fixture('reports-rows').reports }, patch));
+  s.pipeline = Object.assign(s.pipeline, { report_key: 'kMolten Core', report_id: 'r_Molten Core', fights: 3, last_append: '2026-10-20T17:43:48Z' }, (patch || {}).pipeline || {});
+  s.addon_seen_at = '2026-10-20T17:36:00Z';
+  return s;
+};
 
 // Each state: the snapshot, the page, what to do once it shows, and the window size.
 const STATES = [
@@ -53,12 +59,13 @@ const STATES = [
   // choosing the WoW folder
   { name: 'no-folder-status', snap: () => fixture('status-no-folder'), page: 'status' },
   { name: 'no-folder-settings', snap: () => fixture('status-no-folder'), page: 'settings' },
-  { name: 'folder-added', snap: () => fixture('status-no-folder'), page: 'settings', post: { 'api/folders/pick': ok(fixture('status-ready')) }, act: async (p) => p.click('#add-folder') },
+  { name: 'folder-added', snap: () => fixture('status-no-folder'), page: 'settings', post: { 'api/folders/pick': ok(fixture('status-ready')) },
+    act: async (p) => { await p.click('#add-folder'); }, after: () => fixture('status-ready') },
   { name: 'folder-not-wow', snap: () => fixture('status-ready'), page: 'settings', post: { 'api/folders/pick': fail('not_wow', 'That folder is not a World of Warcraft folder. Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder.') }, act: async (p) => p.click('#add-folder') },
   // watching
   { name: 'ready', snap: () => merge('status-ready', { addon_update: ADDON_LINES }), page: 'status' },
   { name: 'advanced-logging-off', snap: () => fixture('status-advanced-off'), page: 'status' },
-  { name: 'logging-credited', snap: () => logging({ pipeline: Object.assign(fixture('status-credited').pipeline, { fights: 3, last_append: '2026-10-20T17:43:48Z' }) }), page: 'status', big: true, small: true },
+  { name: 'logging-credited', snap: () => logging(), page: 'status', big: true, small: true },
   { name: 'logging-no-name', snap: () => fixture('status-no-name'), page: 'status' },
   { name: 'logging-not-credited', snap: () => fixture('status-not-credited'), page: 'status' },
   // uploading a fight, done and failed
@@ -125,6 +132,7 @@ async function shoot(browser, state, size, suffix) {
     await page.clock.runFor(300);
   }
   if (state.act) {
+    if (state.after) current = state.after;
     await state.act(page);
     await page.clock.runFor(400);
   }

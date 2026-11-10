@@ -7,8 +7,8 @@
     "device_name": "JH-DESKTOP",
     "headline": {
       "key": "logging",
-      "tone": "on",
-      "title": "Logging",
+      "tone": "warn",
+      "title": "Logging · an upload is retrying",
       "sub": "Uploading your fights as they end · logging as Bow Jackzon"
     },
     "connect": {

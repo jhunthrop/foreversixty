@@ -125,7 +125,10 @@ const (
 	CopyReadySub   = "Waiting for a combat log. Turn /combatlog on in game."
 
 	CopyLoggingTitle = "Logging"
-	CopyLoggingSub   = "Uploading your fights as they end"
+	// CopyLoggingTitleHeld is the Logging title while a failed upload
+	// holds the queue (withHeld); the Queued row names the fight.
+	CopyLoggingTitleHeld = CopyLoggingTitle + CopySeparator + "an upload is retrying"
+	CopyLoggingSub       = "Uploading your fights as they end"
 	// CopyLoggingTitleNotCredited is the Logging title while the open report is
 	// not credited to the player yet. This is the one Logging state that is
 	// amber: the headline carries the one thing the player must do (log out

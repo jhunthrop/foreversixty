@@ -291,7 +291,7 @@ test('the sign-in screen says the browser has opened, and the expiry once', () =
 
 test('the update bar says how to install and what it costs, and the footer keeps the version', () => {
   assert.strictEqual(COPY.footer.updateReady,
-    'Update ready. It installs the next time the companion starts.');
+    'Update ready. Quit the companion from the tray icon and open it again to install it.');
   assert.strictEqual(COPY.footer.version('0.2.13') + COPY.footer.joint + COPY.footer.justUpdated, 'Companion 0.2.13 \u00b7 just updated');
   assert.strictEqual(COPY.footer.updatedTo, undefined);
   const js = read('app.js');
@@ -427,10 +427,11 @@ test('the Device page keeps its heading visible and only Status hides its headin
   assert.strictEqual(heads.length, 4);
 });
 
-test('the Settings help sentences collapse to one line in a short window and the bar balances its text', () => {
+test('in a short window the character help is one line, the addon switch keeps its condition, and the bar balances its text', () => {
   const css = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf8');
   const short = css.match(/@media \(max-height: 520px\) \{[\s\S]*?\n\}/)[0];
-  assert.match(short, /#settings \.help \{[^}]*white-space: nowrap[^}]*text-overflow: ellipsis/);
+  assert.match(short, /#character-help \{[^}]*white-space: nowrap[^}]*text-overflow: ellipsis/);
+  assert.doesNotMatch(short, /#keep-addon-help|#settings \.help \{/);
   assert.match(css, /\.bar \{[^}]*text-wrap: pretty/);
   assert.match(css, /@media \(max-width: 520px\)[\s\S]*\.row \.v \.check-builds \{ margin: 6px 0 0 -10px; \}/);
 });
@@ -479,7 +480,7 @@ test('no version line or Settings sentence says manifest, asset or stage, or lea
 
 test('the Settings switch says what the ruling says, and the page carries it under the visibility group', () => {
   assert.strictEqual(COPY.settings.keepAddon, 'Keep the addon up to date');
-  assert.strictEqual(COPY.settings.keepAddonHelp, 'Installs new Forever Sixty addon and data versions into every game folder here, when the game is closed. CurseForge and Wago users can leave this on; they get the same files.');
+  assert.strictEqual(COPY.settings.keepAddonHelp, 'New versions go in when the game is closed. CurseForge and Wago users can leave this on; they get the same files.');
   const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
   const at = (id) => html.indexOf('id="' + id + '"');
   assert.ok(at('visibility') > 0 && at('visibility') < at('keep-addon') && at('keep-addon') < at('logging-character'));

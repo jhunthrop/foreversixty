@@ -82,8 +82,10 @@ def with_dot(size: int, colour: str, ring: str) -> Image.Image:
     """The seal with a status dot at its lower right (companion premium spec, section 10.3), drawn at 4x."""
     scale = 4
     big = size * scale
-    r, edge = size * 0.19 * scale, max(1.0, size / 16) * scale
-    c = big - r - edge  # in the corner, its ring touching the canvas edge, clear of the seal's face
+    # A corner badge: about 30 % of the icon across with a ring of a pixel or more, its ring touching the
+    # canvas edge, so it sits on the seal's rim and leaves the LX clear.
+    r, edge = size * 0.15 * scale, max(1.0, size / 24) * scale
+    c = big - r - edge
     layer = Image.new('RGBA', (big, big), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer)
     draw.ellipse((c - r - edge, c - r - edge, c + r + edge, c + r + edge), fill=ring)
