@@ -16,6 +16,7 @@
     up,
     down,
     reportHref,
+    title,
   }: {
     /** `Onyxia 3:12, best yet · 0 wipes · 2 deaths · 36 raiders`. */
     meta: string;
@@ -24,6 +25,8 @@
     up: readonly Mover[];
     down: readonly Mover[];
     reportHref: string;
+    /** `Wed 6 Jan`: the raid the movers are from. */
+    title: string;
   } = $props();
 
   const columns = $derived([
@@ -65,7 +68,7 @@
 
 {#if up.length + down.length > 0}
   <Section
-    title="Last night"
+    {title}
     {meta}
     panel
     flush

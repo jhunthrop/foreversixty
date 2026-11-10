@@ -103,9 +103,10 @@
 </script>
 
 {#snippet people(list: readonly GuildRaidSignup[])}
-  {#each list as s, i (s.character_key)}{#if i > 0},&#32;{/if}<b style:color={classColorVar(s.class)}
-      >{s.name}</b
-    >{/each}
+  {#each list as s, i (s.character_key)}<b style:color={classColorVar(s.class)}>{s.name}</b>{i <
+    list.length - 1
+      ? ', '
+      : ''}{/each}
 {/snippet}
 
 <Section

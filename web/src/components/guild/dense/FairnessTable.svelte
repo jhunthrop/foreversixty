@@ -83,10 +83,10 @@
         {#snippet sub()}
           {#if one !== null}{one.spec}{one.last === null
               ? ' · no item yet'
-              : ` · last ${one.last.item}, ${day(one.last.at)}`}{:else}{#each row.raiders as r, i (r.key)}{#if i > 0},&#32;{/if}<b
+              : ` · last ${one.last.item}, ${day(one.last.at)}`}{:else}{#each row.raiders as r, i (r.key)}<b
                 class="whitespace-nowrap"
                 style:color={classColorVar(r.cls)}>{r.name}</b
-              >{/each}{/if}
+              >{i < row.raiders.length - 1 ? ', ' : ''}{/each}{/if}
         {/snippet}
         {#snippet meter()}<Meter
             value={row.since / top}

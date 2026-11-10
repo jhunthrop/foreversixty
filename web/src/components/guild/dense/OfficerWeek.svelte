@@ -220,6 +220,7 @@
       up={movers.up}
       down={movers.down}
       reportHref={guildRaidHref(guildPath, last.id)}
+      title={dayOf(last.starts_at)}
     />
   {/if}
   {#snippet rail()}

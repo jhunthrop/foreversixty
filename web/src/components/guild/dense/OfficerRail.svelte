@@ -67,7 +67,7 @@
         ]
           .filter((p) => p !== '')
           .join(' · ')}
-        wrapTrail
+        href={applicationsHref}
         open
       >
         {#snippet lead()}<ClassCrestRing characterClass={app.character.class ?? ''} size={32} />{/snippet}
@@ -114,12 +114,8 @@
 {#if slipping.length > 0}
   <Section title="Slipping" panel action={{ label: 'Roster', href: '#roster' }} testid="guild-week-slipping">
     {#each slipping as row (row.name)}
-      <Row
-        title={row.name}
-        titleTone={{ classSlug: row.cls as never }}
-        sub={`${row.present} of ${row.nights} nights`}
-        open
-      >
+      <Row title={row.name} titleTone={{ classSlug: row.cls as never }} open>
+        {#snippet lead()}<ClassCrestRing characterClass={row.cls} size={28} />{/snippet}
         {#snippet trail()}<AttendanceStrip cells={row.cells} />{/snippet}
       </Row>
     {/each}
