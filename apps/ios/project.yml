@@ -41,23 +41,31 @@ targets:
     sources:
       - path: App
       # Lane F14: the snapshot, figures, intents and widget views the app and the widget
-      # extension share (the app snapshot-tests the same views the extension draws).
-      - path: Widgets/Shared
+      # extension share (the app snapshot-tests the same views the extension draws). Listed as the
+      # Widgets folder with only Shared included, so the app and the extension share one Widgets
+      # group: Xcode 27.2 refuses a project whose Shared group sits in two groups.
+      - path: Widgets
+        includes: ["Shared/**"]
       # The contract fixtures for fixture mode. A folder reference keeps its on-disk name, so they
       # land in the bundle as `app/` (FixtureTransport.bundledFolder); `name` labels the group only.
       - path: ../../docs/contracts/fixtures/app
         name: Fixtures
         type: folder
         buildPhase: resources
-      # The brand faces from apps/shared/fonts (Barlow 400, 600, 700 and Marcellus 400), copied
+      # The brand faces from apps/shared/fonts (Open Sans 400, 600, 700, Archivo 600, Marcellus 400), copied
       # flat into the bundle and registered under UIAppFonts; FSFont names them by PostScript name.
       - path: ../shared/fonts
         name: Fonts
         buildPhase: resources
-        # Barlow Condensed and Cinzel stay in apps/shared/fonts for the mocks and the Discord
-        # assets; the apps use Barlow and Marcellus only (mobile redesign spec 2.1).
-        excludes: ["*.txt", "BarlowCondensed-*.ttf", "Cinzel-*.ttf"]
+        # Barlow, Barlow Condensed and Cinzel stay in apps/shared/fonts for the older design mocks
+        # and the Discord assets; the apps use Open Sans, Archivo and Marcellus (lane M0).
+        excludes: ["*.txt", "Barlow*.ttf", "Cinzel-*.ttf"]
       - path: ../shared/brand/ios/Brand.xcassets
+        buildPhase: resources
+      # The round-5 art (tools/art/build_art.py): the ground tile, the band behind the bars, Home's
+      # hero and the raid card's cave, bundled as `art/` (DesignSystem `BrandArt`).
+      - path: ../shared/brand/art
+        type: folder
         buildPhase: resources
       # The bundled repo files, each the repo's one copy: the HD class crests, the faction marks and
       # the LX seal (spec §4.3: crests are bundled), and for BiS the spec catalogue the CDN does not
@@ -111,9 +119,10 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         UIAppFonts:
-          - Barlow-Regular.ttf
-          - Barlow-SemiBold.ttf
-          - Barlow-Bold.ttf
+          - OpenSans-Regular.ttf
+          - OpenSans-SemiBold.ttf
+          - OpenSans-Bold.ttf
+          - ArchivoSemiBold-SemiBold.ttf
           - Marcellus-Regular.ttf
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
@@ -169,9 +178,9 @@ targets:
       - path: ../shared/fonts
         name: Fonts
         buildPhase: resources
-        # Barlow Condensed and Cinzel stay in apps/shared/fonts for the mocks and the Discord
-        # assets; the apps use Barlow and Marcellus only (mobile redesign spec 2.1).
-        excludes: ["*.txt", "BarlowCondensed-*.ttf", "Cinzel-*.ttf"]
+        # Barlow, Barlow Condensed and Cinzel stay in apps/shared/fonts for the older design mocks
+        # and the Discord assets; the apps use Open Sans, Archivo and Marcellus (lane M0).
+        excludes: ["*.txt", "Barlow*.ttf", "Cinzel-*.ttf"]
       - path: ../../web/public/icons/hd/crests
         type: folder
         buildPhase: resources
@@ -196,9 +205,10 @@ targets:
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
         UIAppFonts:
-          - Barlow-Regular.ttf
-          - Barlow-SemiBold.ttf
-          - Barlow-Bold.ttf
+          - OpenSans-Regular.ttf
+          - OpenSans-SemiBold.ttf
+          - OpenSans-Bold.ttf
+          - ArchivoSemiBold-SemiBold.ttf
           - Marcellus-Regular.ttf
         FSAPIBaseURL: $(API_BASE_URL)
         FSAPIMode: $(API_MODE)

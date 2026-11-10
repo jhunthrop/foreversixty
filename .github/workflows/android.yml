@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      # The app, apps/shared, docs/contracts, the mocks' region files (the parity tests read them)
+      # The app, apps/shared, docs/contracts, the mocks' region files and avatars (the parity tests read them)
       # and the active build's data (data/builds, from the cache); the screenshot tests only write
       # under design/reviews (docs/runbooks/landing.md,
       # "Checkout").
@@ -45,6 +45,7 @@ jobs:
             !/design/reviews/
             !/design/mocks/
             /design/mocks/app/regions/
+            /design/mocks/data/avatars/
             !/docs/superpowers/reviews/
             !/apps/ios/
       - uses: ./.github/actions/data-builds

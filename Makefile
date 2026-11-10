@@ -466,12 +466,14 @@ bis: simdb
 	  fi
 
 .PHONY: brand-fonts
-# brand-fonts writes the Go renderers' faces (the Discord sheet and tiles,
-# the build and report link previews) into api/internal/brand/fonts: the
-# site's own round-5 subsets (Open Sans 400/600/700, Marcellus 400) from
-# web/src/assets/fonts, unwrapped from woff2 to TTF because x/image reads no
-# woff2, with their OFL licences. Needs fontTools and brotli. Run after the
-# site's subsets change and commit the result; it never runs in CI.
+# brand-fonts writes the native renderers' faces from the site's own round-5
+# subsets (web/src/assets/fonts), unwrapped from woff2 to TTF, with their OFL
+# licences: the Go renderers' (the Discord sheet and tiles, the build and
+# report link previews; x/image reads no woff2) into api/internal/brand/fonts
+# (Open Sans 400/600/700, Marcellus 400), and the apps' into apps/shared/fonts
+# (Open Sans 400/600/700, Archivo 600; the apps keep the upstream Marcellus).
+# Needs fontTools and brotli. Run after the site's subsets change and commit
+# the result; it never runs in CI.
 brand-fonts:
 	python3 -I tools/fonts/brand_fonts.py
 

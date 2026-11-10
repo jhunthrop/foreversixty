@@ -254,7 +254,7 @@ fun TimesLine(facts: RaidFacts, clock: RaidClock, showsEnd: Boolean) {
                 if (index > 0) withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(RaidFacts.SEPARATOR) }
                 val (head, tail) = template.split(MARK, limit = 2).let { it[0] to it.getOrElse(1) { "" } }
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.muted)) { append(head) }
-                // Only the digits are mono; `pm` stays in Barlow (UX should 2).
+                // Only the digits are mono; `pm` stays in the body face (UX should 2).
                 val digits = time.substringBefore(' ')
                 withStyle(ScaledType.mono.toSpanStyle().copy(color = FsColor.strong)) { append(digits) }
                 withStyle(androidx.compose.ui.text.SpanStyle(color = FsColor.strong)) { append(time.removePrefix(digits)) }

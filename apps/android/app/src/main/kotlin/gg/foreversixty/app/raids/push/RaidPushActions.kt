@@ -25,7 +25,7 @@ object RaidPushCategory {
     const val ASK_SPEC = "RAID_ASK_SPEC"
     const val CHOOSE = "RAID_CHOOSE"
 
-    /** Lane F14: the ongoing raid countdown's Late and Out (spec §5.6). */
+    /** The ongoing raid countdown (spec F2): In, Late, Bench and Out, as the sign-up push. */
     const val LIVE = "RAID_LIVE"
 
     const val ACTION_IN = "signup_in"

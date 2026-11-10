@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.rememberAsyncImagePainter
 import gg.foreversixty.app.bis.BisModel
 import gg.foreversixty.app.bis.BisOwner
 import gg.foreversixty.app.bis.BisPhase
@@ -47,8 +48,11 @@ class GearDeps(
         (client.send(ApiEndpoints.getGuildItemNeeds(guildId, item)) as? ApiResult.Success)?.data
 }
 
-/** Whose Gear: the session's current character, its guild, and whether its characters are still arriving. */
-data class GearOwner(val characterKey: String? = null, val guildId: Long? = null, val waiting: Boolean = false)
+/**
+ * Whose Gear: the session's current character, its guild, its Battle.net portrait (the paperdoll's
+ * medallion), and whether its characters are still arriving.
+ */
+data class GearOwner(val characterKey: String? = null, val guildId: Long? = null, val waiting: Boolean = false, val avatarUrl: String? = null)
 
 /**
  * The Gear tab (spec 2026-11-08 4.3): signed in, the character's list with where to go and every slot;
@@ -77,25 +81,28 @@ fun GearRoute(model: BisModel, deps: GearDeps, owner: GearOwner, onSearch: (() -
         }
     }
     var open by remember { mutableStateOf<GearSlotRow?>(null) }
-    Column(Modifier.fillMaxSize()) {
+    val portrait = owner.avatarUrl?.takeIf { it.isNotBlank() }?.let { rememberAsyncImagePainter(it) }
+    content?.let { gear ->
+        GearFlowScreen(
+            gear,
+            build,
+            GearActions(
+                onChange = { model.setPickerOpen(true) },
+                // A place opens the sheet of its best item, which says where else it drops.
+                onWhere = { place -> open = gear.slots.firstOrNull { it.look?.id == place.lead.id } },
+                onSlot = { open = it },
+            ),
+            portrait = portrait,
+            topBar = { RootSearchBar(onSearch, selector) },
+        )
+    } ?: Column(Modifier.fillMaxSize()) {
         RootSearchBar(onSearch, selector)
-        content?.let { gear ->
-            GearFlowScreen(
-                gear,
-                build,
-                GearActions(
-                    onChange = { model.setPickerOpen(true) },
-                    // A place opens the sheet of its best item, which says where else it drops.
-                    onWhere = { place -> open = gear.slots.firstOrNull { it.look.id == place.lead.id } },
-                    onSlot = { open = it },
-                ),
-            )
-        } ?: GearLoading()
+        GearLoading()
     }
     Picker(model)
-    open?.let { row ->
+    open?.takeIf { it.look != null && it.row.pick != null }?.let { row ->
         val sheet = sheetContent(row, content?.unitWord.orEmpty(), deps, build, selection, owner.guildId)
-        GearItemSheet(sheet, build) { open = null }
+        GearItemSheet(sheet) { open = null }
     }
 }
 
@@ -103,15 +110,16 @@ fun GearRoute(model: BisModel, deps: GearDeps, owner: GearOwner, onSearch: (() -
 private fun sheetContent(row: GearSlotRow, unitWord: String, deps: GearDeps, build: String, selection: BisSelection, guildId: Long?): GearSheetContent {
     val res = LocalResources.current
     val composer = remember(build) { GearSheetComposer(res, build) }
+    val look = requireNotNull(row.look) { "a sheet opens on a pick" }
     val loaded by produceState(composer.content(row, unitWord, null, emptyList(), null), row) {
         val request = ItemTooltipRequest(
-            itemId = row.look.id, fallback = row.look, build = build, classSlug = selection.classSlug, spec = selection.spec,
+            itemId = look.id, fallback = look, build = build, classSlug = selection.classSlug, spec = selection.spec,
             specName = null, band = null, bandLabel = null, preset = null, faction = selection.faction,
         )
         val tooltip = deps.catalog.sources(request)?.let { ItemTooltipModel.build(request, it, res) }
-        val sources = deps.catalog.loot(build)?.let { WhereToGo.sources(it)[row.look.id] }.orEmpty()
+        val sources = deps.catalog.loot(build)?.let { WhereToGo.sources(it)[look.id] }.orEmpty()
         value = composer.content(row, unitWord, tooltip, sources, null)
-        val needs = guildId?.let { deps.needs(it, row.look.id) }
+        val needs = guildId?.let { deps.needs(it, look.id) }
         if (needs != null) value = composer.content(row, unitWord, tooltip, sources, needs)
     }
     return loaded

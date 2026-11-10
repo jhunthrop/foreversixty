@@ -259,7 +259,7 @@ struct TimesLine: View {
             let pieces = label.components(separatedBy: "{}")
             let separator = item.offset == 0 ? Text("") : Text(" · ").foregroundStyle(FSColor.muted)
             let head = Text(pieces.first ?? "").foregroundStyle(FSColor.muted)
-            // Only the digits are mono; `pm` stays in Barlow (UX should 2).
+            // Only the digits are mono; `pm` stays in the body face (UX should 2).
             let digits = time.split(separator: " ", maxSplits: 1).map(String.init)
             let figure = Text(digits.first ?? time).font(ScaledType.mono).foregroundStyle(FSColor.strong)
             let unit = Text(digits.count > 1 ? " " + digits[1] : "").foregroundStyle(FSColor.strong)

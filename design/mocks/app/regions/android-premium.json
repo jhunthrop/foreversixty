@@ -9,7 +9,7 @@
     16,
     0,
     380,
-    234
+    152
    ],
    "inventory": {}
   },
@@ -18,14 +18,14 @@
     16,
     16,
     380,
-    120
+    38
    ],
    "inventory": {}
   },
   "head-answer": {
    "box": [
     16,
-    152,
+    70,
     380,
     68
    ],
@@ -34,7 +34,7 @@
   "controls": {
    "box": [
     0,
-    234,
+    152,
     412,
     50
    ],
@@ -45,7 +45,7 @@
   "notes": {
    "box": [
     16,
-    284,
+    202,
     380,
     92
    ],
@@ -54,9 +54,9 @@
   "plate": {
    "box": [
     16,
-    404,
+    322,
     380,
-    1354
+    1375
    ],
    "inventory": {
     "button": 1
@@ -65,9 +65,9 @@
   "section-for-guild-leaders": {
    "box": [
     16,
-    1806,
+    1745,
     380,
-    1554
+    1634
    ],
    "inventory": {
     "button": 2
@@ -76,9 +76,9 @@
   "section-how-the-guild-plans-work": {
    "box": [
     16,
-    3408,
+    3427,
     380,
-    1057
+    1093
    ],
    "inventory": {
     "row": 10
@@ -87,9 +87,9 @@
   "section-questions": {
    "box": [
     16,
-    4513,
+    4568,
     380,
-    548
+    568
    ],
    "inventory": {
     "row": 5
@@ -98,9 +98,9 @@
   "section-what-the-coach-says-after-a-raid": {
    "box": [
     16,
-    5085,
+    5160,
     380,
-    634
+    635
    ],
    "inventory": {
     "row": 4,

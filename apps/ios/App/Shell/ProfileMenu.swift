@@ -24,6 +24,8 @@ struct ProfileMenuSummary: Equatable {
     let tools: [Row]
     let account: [Row]
     let version: String
+    /// The site footer's operator line, `© {year} Commish LLC d/b/a Forever Sixty`, in the year of `now`.
+    let operatorLine: String
 
     /// The level the Switch character list starts at; the rest fold.
     static let switchLevel = 10
@@ -37,6 +39,7 @@ struct ProfileMenuSummary: Equatable {
 
     init(me: Me?, current: AccountCharacter?, facts: AccountFacts, version: String, now: Date) {
         self.version = version
+        operatorLine = Copy.menuLegalOperator(year: String(Calendar(identifier: .gregorian).component(.year, from: now)))
         guard let me, let current else {
             you = nil
             isMain = false
@@ -232,7 +235,10 @@ struct ProfileMenuView: View {
 
     private var footer: some View {
         VStack(alignment: .leading, spacing: 6) {
-            SmallText(summary.version)
+            // The site footer's fan line and operator line (web/src/lib/footer-copy.ts), word for word.
+            SmallText(Copy.menuLegalFan)
+            SmallText(summary.operatorLine)
+            SmallText(summary.version).padding(.top, FSSpace.space2)
             HStack(spacing: 0) {
                 Button(Copy.menuHelp, action: actions.help)
                 SmallText(" · ")

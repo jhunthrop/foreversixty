@@ -9,7 +9,7 @@
     16,
     0,
     361,
-    240
+    178
    ],
    "inventory": {
     "image": 1
@@ -30,7 +30,7 @@
    "box": [
     88,
     60,
-    210,
+    214,
     20
    ],
    "inventory": {}
@@ -40,14 +40,14 @@
     16,
     96,
     361,
-    130
+    68
    ],
    "inventory": {}
   },
   "controls": {
    "box": [
     0,
-    240,
+    178,
     393,
     50
    ],
@@ -60,30 +60,41 @@
   "notes": {
    "box": [
     16,
-    290,
+    244,
     361,
     32
    ],
    "inventory": {}
   },
-  "plate": {
+  "section-talents": {
    "box": [
     16,
-    342,
+    304,
     361,
-    595
+    575
    ],
    "inventory": {
     "button": 22,
     "image": 22
    }
   },
+  "plate": {
+   "box": [
+    16,
+    2450,
+    361,
+    240
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
   "section-point-order": {
    "box": [
     16,
-    1458,
+    1650,
     361,
-    490
+    514
    ],
    "inventory": {
     "image": 51
@@ -92,31 +103,43 @@
   "section-level-60-build": {
    "box": [
     16,
-    985,
+    901,
     361,
-    196
-   ],
-   "inventory": {
-    "button": 2
-   }
-  },
-  "section-in-the-game": {
-   "box": [
-    16,
-    1229,
-    361,
-    181
+    189
    ],
    "inventory": {
     "button": 1
    }
   },
+  "section-in-the-game": {
+   "box": [
+    16,
+    1112,
+    361,
+    176
+   ],
+   "inventory": {
+    "button": 1
+   }
+  },
+  "section-guide-builds": {
+   "box": [
+    16,
+    1310,
+    361,
+    318
+   ],
+   "inventory": {
+    "row": 5,
+    "image": 5
+   }
+  },
   "section-share-this-build": {
    "box": [
     16,
-    1996,
+    2186,
     361,
-    277
+    242
    ],
    "inventory": {
     "button": 2,
@@ -126,9 +149,9 @@
   "section-import-from-addon": {
    "box": [
     16,
-    2321,
+    2450,
     361,
-    205
+    240
    ],
    "inventory": {
     "button": 1

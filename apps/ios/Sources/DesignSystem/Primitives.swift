@@ -4,12 +4,12 @@ import UIKit
 // The flat system's primitives (mobile redesign spec 3.4), named after the web's `ui/*` so a grep
 // finds all three. Each reads tokens only and reports its parity region or item.
 
-/// `ui/Button`: 44 pt, 13/16 700, 4 radius. One primary per screen.
+/// `ui/Button` (round 5, web lib/ui/button.ts): 44 pt, 13/16 700 in sentence case, the 6 pt control
+/// radius; primary their teal with the teal edge, secondary their blue, ghost the gold text, danger
+/// the wipe outline. One primary per screen.
 public struct FSButtonStyle: ButtonStyle {
     public enum Kind: Sendable { case primary, secondary, danger, ghost }
 
-    /// The `#17110a` ink on gold (`.btn.primary`).
-    static let primaryInk = Color(tokenHex: 0x17110A)
     private static let padX: CGFloat = 18
     private static let labelSize: CGFloat = 13
     private static let labelTracking: CGFloat = 0.01
@@ -36,16 +36,15 @@ public struct FSButtonStyle: ButtonStyle {
             .foregroundStyle(foreground.opacity(isEnabled ? 1 : 0.5))
             .padding(.horizontal, Self.padX)
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: small ? Self.smallHeight : FSTarget.min)
-            .background(background(pressed: configuration.isPressed), in: .rect(cornerRadius: FSRadius.control))
-            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).strokeBorder(border, lineWidth: FSStroke.hairline))
+            .background(background(pressed: configuration.isPressed), in: .rect(cornerRadius: Theme.Radius.control))
+            .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control).strokeBorder(border, lineWidth: FSStroke.hairline))
             .contentShape(.rect)
             .parityItem(.button)
     }
 
     private var foreground: Color {
         switch kind {
-        case .primary: Self.primaryInk
-        case .secondary: FSColor.strong
+        case .primary, .secondary: FSColor.strong
         case .danger: FSColor.wipe
         case .ghost: FSColor.gold
         }
@@ -53,15 +52,16 @@ public struct FSButtonStyle: ButtonStyle {
 
     private func background(pressed: Bool) -> Color {
         switch kind {
-        case .primary: pressed ? FSColor.goldHover : FSColor.gold
-        case .secondary, .danger, .ghost: pressed ? FSColor.pressed : .clear
+        case .primary: pressed ? FSColor.tealEdge : FSColor.teal
+        case .secondary: pressed ? FSColor.blueEdge : FSColor.blue
+        case .danger, .ghost: pressed ? FSColor.pressed : .clear
         }
     }
 
     private var border: Color {
         switch kind {
-        case .primary: FSColor.gold
-        case .secondary: FSColor.line
+        case .primary: FSColor.tealEdge
+        case .secondary: FSColor.blueEdge
         case .danger: FSColor.wipe.opacity(0.4)
         case .ghost: .clear
         }
@@ -87,7 +87,7 @@ public struct FSButton: View {
     }
 }
 
-/// `ui/PageHeader`: the Marcellus title (32/38) once per screen, in the class colour or `strong`,
+/// `ui/PageHeader`: the Marcellus title (32/38) once per screen, in the class colour or the cream,
 /// an optional lead (a crest) and one wrapping meta line. Reports `head`, `head-title` and
 /// `head-meta`.
 public struct PageHeader<Lead: View, Meta: View>: View {
@@ -104,7 +104,7 @@ public struct PageHeader<Lead: View, Meta: View>: View {
 
     public init(
         title: String,
-        titleColor: Color = FSColor.strong,
+        titleColor: Color = Theme.Palette.title,
         alignment: HorizontalAlignment = .leading,
         balanced: Bool = false,
         @ViewBuilder lead: () -> Lead,
@@ -162,13 +162,13 @@ public struct PageHeader<Lead: View, Meta: View>: View {
 }
 
 public extension PageHeader where Lead == EmptyView {
-    init(title: String, titleColor: Color = FSColor.strong, alignment: HorizontalAlignment = .leading, @ViewBuilder meta: () -> Meta) {
+    init(title: String, titleColor: Color = Theme.Palette.title, alignment: HorizontalAlignment = .leading, @ViewBuilder meta: () -> Meta) {
         self.init(title: title, titleColor: titleColor, alignment: alignment, lead: { EmptyView() }, meta: meta)
     }
 }
 
 public extension PageHeader where Lead == EmptyView, Meta == EmptyView {
-    init(title: String, titleColor: Color = FSColor.strong, alignment: HorizontalAlignment = .leading, balanced: Bool = false) {
+    init(title: String, titleColor: Color = Theme.Palette.title, alignment: HorizontalAlignment = .leading, balanced: Bool = false) {
         self.init(
             title: title, titleColor: titleColor, alignment: alignment, balanced: balanced, lead: { EmptyView() }, meta: { EmptyView() }
         )
@@ -190,7 +190,7 @@ public struct SmallText: View {
     }
 }
 
-/// `ui/Section`: a title (18/24 700 `strong`) over a `lineSoft` hairline, no box; meta and an
+/// `ui/Section`: a Marcellus title (18/24, cream) over a `lineSoft` hairline, no box; meta and an
 /// action at the right. Reports `section-<slug of the title>`.
 public struct FSSection<Content: View, Trailing: View>: View {
     private let title: String
@@ -206,7 +206,7 @@ public struct FSSection<Content: View, Trailing: View>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .firstTextBaseline, spacing: FSSpace.space3) {
-                Text(title).type(FSType.section).foregroundStyle(FSColor.strong).accessibilityAddTraits(.isHeader)
+                Text(title).type(FSType.section).foregroundStyle(Theme.Palette.title).accessibilityAddTraits(.isHeader)
                 Spacer(minLength: 0)
                 trailing
             }

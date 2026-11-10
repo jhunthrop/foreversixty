@@ -25,31 +25,31 @@ data class FsShadow(val color: Color, val x: Dp, val y: Dp, val blur: Dp, val sp
 private val CenteredLines = LineHeightStyle(LineHeightStyle.Alignment.Center, LineHeightStyle.Trim.None)
 
 object FsColor {
-    val bg = Color(0xFF07090D)
-    val raised = Color(0xFF0D111A)
-    val hover = Color(0xFF131824)
-    val pressed = Color(0xFF1A2030)
+    val bg = Color(0xFF100A06)
+    val raised = Color(0xFF170E09)
+    val hover = Color(0xFF241B15)
+    val pressed = Color(0xFF2E241D)
     // The one selected state's ground (owner 2026-11-09, design/reviews/2026-11-09-selected): on
     // the web the accent tint under a selected row, cell or tab and the viewer's own row, with the
     // accent bar or underline (elevation.selectedBar, selectedUnderline). Keyboard focus stays the
     // gold ring, so the two never read alike. The apps keep the gold wash until the mobile lane
     // adopts the palette.
-    val selected = Color(0x1AE5B955)
-    val line = Color(0xFF262E40)
-    val lineSoft = Color(0xFF1C2230)
-    val text = Color(0xFFE9E4D8)
-    val strong = Color(0xFFF2EEE4)
-    val muted = Color(0xFF9A9484)
-    val nav = Color(0xFFB9B3A4)
-    val gold = Color(0xFFE5B955)
-    val goldHover = Color(0xFFF5D27A)
-    val night = Color(0xFF26405C)
-    val cardTop = Color(0xFF131824)
-    val lineWarm = Color(0xFF3A3326)
-    val lineWarmStrong = Color(0xFF4A4030)
-    val lineCard = Color(0x2BE5B955)
-    val goldDeep = Color(0xFFA8762A)
-    val goldLight = Color(0xFFFBE7A1)
+    val selected = Color(0x290093B2)
+    val line = Color(0xFF3D342D)
+    val lineSoft = Color(0xFF2C241F)
+    val text = Color(0xFFE3DFD9)
+    val strong = Color(0xFFFFFFFF)
+    val muted = Color(0xFF8B8784)
+    val nav = Color(0xFFFFFFFF)
+    val gold = Color(0xFFFFEC71)
+    val goldHover = Color(0xFFF7B90A)
+    val night = Color(0xFF071D2E)
+    val cardTop = Color(0xFF170E09)
+    val lineWarm = Color(0xFF4A3F34)
+    val lineWarmStrong = Color(0xFF82705B)
+    val lineCard = Color(0x8C82705B)
+    val goldDeep = Color(0xFFB8A24A)
+    val goldLight = Color(0xFFFFF6C4)
     val ember = Color(0xFFD66E28)
     val kill = Color(0xFF7FD48A)
     val wipe = Color(0xFFF0736B)
@@ -100,17 +100,77 @@ object FsColor {
     val tierB = Color(0xFF3D94F0)
     val tierC = Color(0xFF1EFF00)
     val tierD = Color(0xFF9D9D9D)
+    // s: the earth ground under the painted tile (lib/ui/assets.ts).
+    val ground = Color(0xFF67563A)
+    // Muted ink on the earth ground, AA on its lightest 200 px window (white at .5 there is 3.2:1).
+    val mutedGround = Color(0xFFE2DCD3)
+    // Muted ink on a surface (white at .5 over the card, 5.3:1); global.css restores it on every
+    // surface over the ground.
+    val mutedCard = Color(0xFF8B8784)
+    // s: the section band under the painted band.
+    val band = Color(0xFF054562)
+    // c: the floating nav bar.
+    val navBar = Color(0xFF0B2F3B)
+    val navy = Color(0xFF001845)
+    // c: display type, every Marcellus heading.
+    val cream = Color(0xFFF3EEE2)
+    // c: the footer heading.
+    val cream2 = Color(0xFFFCEDCF)
+    // c: the primary button (their Buy Now).
+    val teal = Color(0xFF0F6064)
+    // c: the primary button's edge and Premium (their Subscribe, exactly).
+    val tealEdge = Color(0xFF408076)
+    // s: the current tab's underline and the chart accent; as --color-selected-mark, every
+    // selected, current and own mark (the bar, the underline, the Yours tag's edge).
+    val accent = Color(0xFF0093B2)
+    // c: the secondary button (their Upgrade Now).
+    val blue = Color(0xFF114F72)
+    val blueEdge = Color(0xFF1D6A96)
+    // c: their border.
+    val rule = Color(0xFF5A5D70)
+    // c
+    val ruleWarm = Color(0xFF82705B)
+    // The warm outer ring every panel wears.
+    val panelEdge = Color(0x8C82705B)
+    // The framed panel's cream inset line.
+    val frameLine = Color(0x6BF3EEE2)
+    // c: a DPS gain.
+    val gain = Color(0xFF32AE88)
+    // The home hero's flat veil (title 12:1).
+    val veilNight = Color(0x4D071D2E)
+    // The painted band's flat veil.
+    val veilBand = Color(0x61053A54)
+    // The raid plaque's flat veil (text 11.9:1).
+    val veilCave = Color(0x5C0E0906)
+    // c: their footer brown-black.
+    val foot = Color(0xFF170E09)
+    // The client tooltip ground (round 4: the client exactly).
+    val tooltip = Color(0xFF060914)
+    // The client tooltip edge.
+    val tooltipEdge = Color(0xFF8B8F9C)
+    // The client tooltip inner line.
+    val tooltipInner = Color(0xFF2B3040)
+    // The client tooltip yellow: descriptions, the gain line.
+    val tooltipYellow = Color(0xFFFFD100)
+    // A warning's ink: a slow checkout, a busy coach, a warning tag, the sim timeline's warn mark
+    // (Direction B's ember, kept by the P15 sweep).
+    val warn = Color(0xFFD66E28)
+    // The apps' tab bar: the selected tab's icon and label (spec Tab-bar icons).
+    val tabOn = Color(0xFFFFD36B)
+    // The apps' tab bar: an unselected tab, muted white.
+    val tabOff = Color(0xD1FFFFFF)
 }
 
 object FsFont {
-    val body = FontFamily(Font(R.font.barlow_regular, FontWeight.Normal), Font(R.font.barlow_semibold, FontWeight.SemiBold), Font(R.font.barlow_bold, FontWeight.Bold))
+    val body = FontFamily(Font(R.font.opensans_regular, FontWeight.Normal), Font(R.font.opensans_semibold, FontWeight.SemiBold), Font(R.font.opensans_bold, FontWeight.Bold))
     val title = FontFamily(Font(R.font.marcellus_regular, FontWeight.Normal))
+    val nav = FontFamily(Font(R.font.archivosemibold_semibold, FontWeight.SemiBold))
 }
 
 object FsType {
     val title = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 32.sp, lineHeight = 38.sp, letterSpacing = 0.01.em, lineHeightStyle = CenteredLines)
-    val sectionReading = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 20.sp, lineHeight = 26.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
-    val section = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 18.sp, lineHeight = 24.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    val sectionReading = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 20.sp, lineHeight = 26.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
+    val section = TextStyle(fontFamily = FsFont.title, fontWeight = FontWeight.Normal, fontSize = 18.sp, lineHeight = 24.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     val itemLg = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 18.sp, lineHeight = 22.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     val item = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Bold, fontSize = 15.sp, lineHeight = 20.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
     val lead = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.Normal, fontSize = 17.sp, lineHeight = 26.sp, letterSpacing = 0.em, lineHeightStyle = CenteredLines)
@@ -204,28 +264,28 @@ object FsTarget {
 object FsRadius {
     // The flat system's radii (spec P1, 3.4): the one Plate and overlays; segments, selects,
     // fields.
-    val plate = 6.dp
-    val field = 4.dp
+    val plate = 10.dp
+    val field = 6.dp
     val pill = 3.dp
     val control = 4.dp
     val widget = 22.dp
     val sheet = 12.dp
-    val legacyPanel = 12.dp
-    val legacyControl = 8.dp
+    val legacyPanel = 10.dp
+    val legacyControl = 6.dp
     val legacyPill = 6.dp
 }
 
 object FsShape {
     // The flat system's radii (spec P1, 3.4): the one Plate and overlays; segments, selects,
     // fields.
-    val plate = RoundedCornerShape(6.dp)
-    val field = RoundedCornerShape(4.dp)
+    val plate = RoundedCornerShape(10.dp)
+    val field = RoundedCornerShape(6.dp)
     val pill = RoundedCornerShape(3.dp)
     val control = RoundedCornerShape(4.dp)
     val widget = RoundedCornerShape(22.dp)
     val sheet = RoundedCornerShape(12.dp)
-    val legacyPanel = RoundedCornerShape(12.dp)
-    val legacyControl = RoundedCornerShape(8.dp)
+    val legacyPanel = RoundedCornerShape(10.dp)
+    val legacyControl = RoundedCornerShape(6.dp)
     val legacyPill = RoundedCornerShape(6.dp)
 }
 

@@ -292,13 +292,13 @@ def raid_header(answer: str = ANSWER, late_min: int | None = None) -> str:
     """The Raid tab's top (owner ruling 2026-11-09): one compact line, the raid, its time and your answer chip; the
     answers under it change it (F1). The character and role show only when the account has more than one character in
     the guild (ruling 1)."""
-    chip = f'Late, {late_min} min' if late_min else answer
+    chip = f'Late &middot; {late_min} min' if late_min else answer  # lane M2a: one word for Late's minutes, the chip and the rows
     who = f'<span class="s">{F.AS_ME[0].upper()}{F.AS_ME[1:]}</span>' if chars_in_guild(GUILD) > 1 else ''
     answers = ''.join(f'<a class="{"on" if x == answer else ""}" href="#">{x}</a>' for x in ('In', 'Late', 'Bench', 'Out'))
     late = ('<div class="chips">' + ''.join(f'<a class="{"on" if m == late_min else ""}" href="#">{m} min</a>' for m in LATE_MINUTES) + '</div>'
             if answer == 'Late' else '')
     return (f'<section class="card pad rhead"><div class="rl">{ic(F.ONY, 40)}<span class="tx"><b>{F.RAID}</b>'
-            f'<span class="s">8:00 pm CST &middot; in 2 h 48 min</span>{who}</span><span class="achip">{chip}</span></div>'
+            f'<span class="s">8:00 pm CST &middot; pull in 2 h 48 min</span>{who}</span><span class="achip">{chip}</span></div>'
             f'<div class="answers">{answers}</div>{late}</section>')
 
 

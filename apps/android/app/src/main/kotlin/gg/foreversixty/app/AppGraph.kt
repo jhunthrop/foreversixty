@@ -256,6 +256,7 @@ class AppGraph(context: Context, val config: ApiConfig = ApiConfig.fromBuildConf
             signedIn = { tokens.bearerToken() != null },
             currentCharacter = { session.currentCharacter()?.key ?: session.pickedKey.value },
             serverSims = { session.phase.value.me?.entitlements?.serverSims == true },
+            iconBuild = { raids.iconBuild() },
         )
     } else {
         null

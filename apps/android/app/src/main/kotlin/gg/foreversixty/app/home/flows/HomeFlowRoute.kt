@@ -45,7 +45,8 @@ data class HomeExits(
 
 /**
  * The signed-in Home for [character] (spec 2026-11-08 4.1): the upgrades answer from [store], the
- * sections, the raid (answered in place through the Raid tab's controller) and New for you.
+ * sections, the raid (answered in place through the Raid tab's controller) and New for you, with
+ * [topBar] on the hero.
  */
 @Composable
 fun HomeFlowContent(
@@ -56,6 +57,7 @@ fun HomeFlowContent(
     raids: RaidsFeature?,
     activity: ActivityFeature?,
     exits: HomeExits,
+    topBar: @Composable () -> Unit = {},
 ) {
     val res = LocalResources.current
     val context = LocalContext.current
@@ -122,7 +124,7 @@ fun HomeFlowContent(
     (phase as? HomePhase.Loaded)?.offlineSince?.let { since ->
         SavedAnswerStrip(OfflineStamp.format(since, now, ZoneId.systemDefault()), phase.stale, actions.onRetry)
     }
-    HomeFlowScreen(view, actions)
+    HomeFlowScreen(view, actions, topBar)
 }
 
 private fun openRaid(raids: RaidsFeature?, guild: Long?, raid: Long, exits: HomeExits, unanswered: Boolean = false) {

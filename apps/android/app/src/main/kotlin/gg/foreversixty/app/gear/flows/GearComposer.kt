@@ -14,21 +14,33 @@ import kotlin.math.roundToInt
 /** One Where to go tonight row: the place, what it gives, the best item's look as its lead. */
 data class GearWhereRow(val title: String, val line: String, val lead: ItemLook)
 
-/** One Every slot row: the list's pick, `Head · Blacksmithing`, and its gain or Worn. */
+/** One slot of the paperdoll's list: the list's pick (null when the list has none), its gain or Equipped. */
 data class GearSlotRow(
     val slot: String,
-    val look: ItemLook,
+    /** The slot's word, `Head`, `Main hand`. */
+    val label: String,
+    val look: ItemLook?,
+    /** `Head · Blacksmithing`. */
     val source: String,
-    /** `+14.5`, or null when worn or not measured. */
+    /** `+14.5`, or null when equipped or not measured. */
     val gain: String?,
     val worn: Boolean,
     val row: BisRow,
+    /** What the character wears in the slot today, which the pick replaces. */
+    val equipped: ItemLook? = null,
 )
 
-/** Gear's answer (spec 2026-11-08 4.3, mock `gear`): the list it compares against, where to go, every slot. */
+/**
+ * Gear's answer (spec 2026-11-08 4.3, round 5 mock `m-android-gear-frame`): the paperdoll strip (the
+ * spec's list and its set figure), the line naming the list, every slot, then where to go tonight.
+ */
 data class GearContent(
-    val listTitle: String,
-    val onList: String,
+    /** `Fury Warrior`. */
+    val title: String,
+    /** The set's figure, `1004.2`, in [unitWord]; null for a tank list. */
+    val figure: String?,
+    /** `60 raid · Alliance · 4 of 17 slots on the list`. */
+    val facts: String,
     val where: List<GearWhereRow>,
     val slots: List<GearSlotRow>,
     val unitWord: String,
@@ -40,30 +52,35 @@ data class GearContent(
  */
 class GearComposer(private val res: Resources) {
     fun content(list: BisList, faction: String, upgrades: List<HomeUpgrade>, picks: List<RunPick>): GearContent {
-        val gains = upgrades.filter { it.modelled && it.gain != null }.associateBy { it.slot }
-        val slots = list.rows.mapNotNull { row -> slotRow(row, gains[row.slot]) }
+        val bySlot = upgrades.associateBy { it.slot }
+        val slots = list.rows.map { row -> slotRow(row, bySlot[row.slot]) }
+        val onList = res.getString(R.string.gear_onList, slots.count { it.worn }, list.rows.size)
         return GearContent(
-            listTitle = listOf(list.specLabel, list.rangeLabel, faction.replaceFirstChar { it.titlecase(Locale.US) })
+            title = list.specLabel,
+            figure = list.setFigure,
+            facts = listOf(list.rangeLabel, faction.replaceFirstChar { it.titlecase(Locale.US) }, onList)
                 .filter { it.isNotBlank() }
                 .joinToString(SEPARATOR),
-            onList = res.getString(R.string.gear_onList, slots.count { it.worn }, list.rows.size),
             where = where(picks, list),
             slots = slots,
             unitWord = res.getString(list.unit.word),
         )
     }
 
-    private fun slotRow(row: BisRow, upgrade: HomeUpgrade?): GearSlotRow? {
-        val pick = row.pick ?: return null
-        val item = pick.item
-        val gain = upgrade?.takeIf { it.pick.id == item.id }?.gain?.takeIf { it > 0 }
+    private fun slotRow(row: BisRow, upgrade: HomeUpgrade?): GearSlotRow {
+        val pick = row.pick
+        val item = pick?.item
+        val gain = upgrade?.takeIf { it.modelled && it.pick.id == item?.id }?.gain?.takeIf { it > 0 }
+        val equipped = upgrade?.worn?.takeIf { it.known }?.let { ItemLook(it.id, it.name, it.quality, it.icon, it.itemLevel) }
         return GearSlotRow(
             slot = row.slot,
-            look = ItemLook(item.id, item.name, item.quality, item.icon, item.item?.itemLevel),
-            source = pick.slotSource,
-            gain = if (pick.isWorn) null else gain?.let { "+" + BisListBuilder.figure(it) },
-            worn = pick.isWorn,
+            label = row.slotLabel,
+            look = item?.let { ItemLook(it.id, it.name, it.quality, it.icon, it.item?.itemLevel) },
+            source = pick?.slotSource ?: row.slotLabel,
+            gain = if (pick?.isWorn != false) null else gain?.let { "+" + BisListBuilder.figure(it) },
+            worn = pick?.isWorn == true,
             row = row,
+            equipped = equipped.takeIf { pick?.isWorn != true },
         )
     }
 

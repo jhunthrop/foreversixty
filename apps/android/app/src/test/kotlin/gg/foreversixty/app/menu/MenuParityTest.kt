@@ -2,6 +2,7 @@ package gg.foreversixty.app.menu
 
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -53,7 +54,9 @@ class MenuParityTest {
 
     @androidx.compose.runtime.Composable
     private fun Menu(model: MenuModel?, lowOpen: Boolean = false) {
-        ProfileMenu(model, MenuFixtures.lines, MenuActions(), Modifier.width(DRAWER_WIDTH), lowLevelOpen = lowOpen)
+        androidx.compose.runtime.CompositionLocalProvider(LocalPortraitPainter provides MenuFixtures.repoPortraits) {
+            ProfileMenu(model, MenuFixtures.lines, MenuActions(), Modifier.width(DRAWER_WIDTH), lowLevelOpen = lowOpen)
+        }
     }
 
     private companion object {
@@ -103,12 +106,23 @@ object MenuFixtures {
         character("Bankalt", "mage", null, 1, avatar = false),
     )
 
+    /** The mock's portraits (design/mocks/data/avatars/<name>.jpg) for the fixtures' `<name>-avatar.jpg` URLs. */
+    val repoPortraits = PortraitPainterSource { url ->
+        androidx.compose.runtime.remember(url) {
+            val name = url.substringAfterLast('/').removeSuffix("-avatar.jpg")
+            java.io.File(gg.foreversixty.app.home.HomeFixtures.repoRoot, "design/mocks/data/avatars/$name.jpg").takeIf { it.exists() }
+                ?.let { android.graphics.BitmapFactory.decodeFile(it.path) }
+                ?.let { androidx.compose.ui.graphics.painter.BitmapPainter(it.asImageBitmap()) }
+        }
+    }
+
     val lines = MenuLines(
         notifications = "Raids, gear and sims, logs on",
         plan = "Premium · Founder price",
         devices = 3,
         offlineData = "26.6 MB",
         version = "Version 0.1.0 (7) · data 1.60.1.70790",
+        year = 2026,
     )
 
     private fun me(characters: List<AccountCharacter>): Me {

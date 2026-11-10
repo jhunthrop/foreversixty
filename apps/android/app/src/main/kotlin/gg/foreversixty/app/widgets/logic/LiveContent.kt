@@ -2,48 +2,49 @@ package gg.foreversixty.app.widgets.logic
 
 import android.content.res.Resources
 import gg.foreversixty.app.R
+import gg.foreversixty.app.raids.logic.SignupState
 import java.time.Duration
 import java.time.Instant
 import java.util.Locale
 
 /**
- * The ongoing raid notification's words (spec §5.6, board F14.3), all from [RaidFigures]: never a
- * second source. The guild names the card's header; [cancelled] replaces the countdown with
- * `Cancelled` for 5 minutes.
+ * The ongoing raid notification's words (spec F2, mock m-android-lock), all from [RaidFigures]: never a
+ * second source. The zone is the title, [text] the guild and your answer (`Olympus XXVII · You are In`),
+ * [line] the time and who is coming; the chronometer counts down to [countdownTo]. [cancelled] replaces
+ * the answer with `Cancelled` for 5 minutes.
  */
 data class RaidLiveContent(
     val title: String,
     val text: String,
-    val guild: String,
-    val bigText: String,
+    val line: String?,
+    /** The zone's icon, drawn as the notification's large icon when it is on the phone. */
+    val zoneIcon: String?,
     val countdownTo: Instant?,
     val guildId: Long,
     val raidId: Long,
     val description: String,
     val cancelled: Boolean = false,
+    /** Your answer, selected among the four. */
+    val answer: SignupState? = null,
 ) {
     companion object {
         /** Null outside the countdown's window: nothing to show, so the notification goes. */
         fun of(figures: RaidFigures, res: Resources): RaidLiveContent? {
             val guildId = figures.guildId ?: return null
             val raidId = figures.raidId ?: return null
-            val guild = figures.guildName.orEmpty()
             if (figures.liveCancelled) {
                 val cancelled = res.getString(R.string.widget_cancelled)
                 return RaidLiveContent(
-                    title = figures.title, text = cancelled, guild = guild, bigText = cancelled, countdownTo = null,
+                    title = figures.title, text = cancelled, line = null, zoneIcon = figures.zoneIcon, countdownTo = null,
                     guildId = guildId, raidId = raidId, description = "${figures.title}. $cancelled", cancelled = true,
                 )
             }
             if (!figures.liveActive) return null
-            val title = figures.liveTitle ?: return null
-            val you = figures.liveYou.orEmpty()
-            val signedUp = figures.size?.let { res.getString(R.string.widget_signedUp, figures.signedUpCount, it) } ?: figures.signedUp
+            val said = figures.liveAnswer ?: return null
             return RaidLiveContent(
-                title = title, text = you, guild = guild,
-                bigText = listOfNotNull(figures.liveUntil, you, signedUp).joinToString("\n"),
-                countdownTo = figures.liveTarget, guildId = guildId, raidId = raidId,
-                description = listOf(title, you).joinToString(". "),
+                title = figures.title, text = said, line = figures.liveLine, zoneIcon = figures.zoneIcon,
+                countdownTo = figures.liveTarget, guildId = guildId, raidId = raidId, answer = figures.checked,
+                description = listOfNotNull(figures.title, said, figures.liveLine).joinToString(". "),
             )
         }
     }

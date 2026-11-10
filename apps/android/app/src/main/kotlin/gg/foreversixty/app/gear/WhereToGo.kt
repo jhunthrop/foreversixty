@@ -15,6 +15,10 @@ data class ItemSource(
     val boss: String? = null,
     val profession: String? = null,
     val standing: String? = null,
+    /** A dungeon's or raid's level range, the client's Group Finder row ("15-24"). */
+    val levels: IntRange? = null,
+    /** A dungeon's or raid's icon. */
+    val icon: String? = null,
 )
 
 /** One upgrade the player can go and get: the item, its gain over what is worn, and where it comes from. */
@@ -36,10 +40,14 @@ object WhereToGo {
             out.getOrPut(id) { mutableListOf() }.add(source)
         }
         loot.sources.forEach { source ->
+            val levels = source.levelMin?.let { min -> source.levelMax?.let { max -> min..max } }
+            val place = ItemSource(source.kind, source.name, null, levels = levels, icon = source.icon)
             source.bosses.orEmpty().forEach { boss ->
-                boss.items.forEach { id -> add(id, ItemSource(source.kind, source.name, chance(boss.itemChances, id) ?: chance(source.itemChances, id), boss.name.ifBlank { null })) }
+                boss.items.forEach { id ->
+                    add(id, place.copy(chance = chance(boss.itemChances, id) ?: chance(source.itemChances, id), boss = boss.name.ifBlank { null }))
+                }
             }
-            source.trash.orEmpty().forEach { id -> add(id, ItemSource(source.kind, source.name, chance(source.itemChances, id))) }
+            source.trash.orEmpty().forEach { id -> add(id, place.copy(chance = chance(source.itemChances, id))) }
             source.items.orEmpty().forEach { id ->
                 add(id, ItemSource(source.kind, source.name, chance(source.itemChances, id), profession = source.profession, standing = source.standing))
             }

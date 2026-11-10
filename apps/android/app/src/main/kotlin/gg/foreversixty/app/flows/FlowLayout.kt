@@ -34,15 +34,20 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.common.ClassCrest
+import gg.foreversixty.app.designsystem.BandKind
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.FsType
+import gg.foreversixty.app.designsystem.PanelFrame
 import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.ParityRegion
 import gg.foreversixty.app.designsystem.parityContent
 import gg.foreversixty.app.designsystem.parityItem
 import gg.foreversixty.app.designsystem.parityRegion
+import gg.foreversixty.app.designsystem.panel
+import gg.foreversixty.app.designsystem.screenGround
+import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.items.GameIconImage
 
 /**
@@ -59,6 +64,34 @@ fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
             .padding(start = FsSpace.space4, end = FsSpace.space4, top = FsSpace.space2, bottom = FsSpace.space6),
         content = content,
     )
+}
+
+/**
+ * A tab root in the round-5 look (spec Mobile): the painted [band] behind [topBar] (and [head] on
+ * Home's hero), then [notice] and the blocks on the ground, 16 under the band, 14 at the sides and 20
+ * apart. Parity regions are measured from the bottom of [topBar], as the mocks' are from the nav bar.
+ */
+@Composable
+fun FlowBandPage(
+    topBar: @Composable () -> Unit,
+    band: BandKind = BandKind.Band,
+    head: @Composable () -> Unit = {},
+    notice: @Composable () -> Unit = {},
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(Modifier.fillMaxSize().screenGround().verticalScroll(rememberScrollState())) {
+        Column(Modifier.fillMaxWidth().surfaceBand(kind = band)) {
+            topBar()
+            Spacer(Modifier.fillMaxWidth().height(0.dp).parityContent())
+            head()
+        }
+        notice()
+        Column(
+            Modifier.fillMaxWidth().padding(start = BAND_PAGE_SIDE, end = BAND_PAGE_SIDE, top = FsSpace.space4, bottom = BAND_PAGE_BOTTOM),
+            verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
+            content = content,
+        )
+    }
 }
 
 /**
@@ -115,6 +148,8 @@ fun FlowHeadIcon(icon: String?, build: String?) {
 /**
  * A titled section (the mock's Section): 28 above, the title (18/24) with its action or meta on the
  * right, 10 under it and a rule, then [content]. Its region is `section-<slug of the title>`.
+ * With a [panel] (round 5, spec Mobile) the title is the cream display face over the ground with a
+ * gold action, 8 under it, and [content] sits in the round-5 panel with that frame, no rule.
  */
 @Composable
 fun FlowSection(
@@ -123,11 +158,21 @@ fun FlowSection(
     onAction: () -> Unit = {},
     meta: String? = null,
     top: Dp = FsSpace.space7,
+    panel: PanelFrame? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(Modifier.padding(top = top).fillMaxWidth().parityRegion(ParityRegion.section(title))) {
-        Row(Modifier.fillMaxWidth().padding(bottom = SECTION_TITLE_GAP), verticalAlignment = Alignment.Top) {
-            Text(title, style = FsType.section, color = FsColor.strong, modifier = Modifier.semantics { heading() })
+        val round5 = panel != null
+        Row(
+            Modifier.fillMaxWidth().padding(bottom = if (round5) FsSpace.space2 else SECTION_TITLE_GAP),
+            verticalAlignment = if (round5) Alignment.CenterVertically else Alignment.Top,
+        ) {
+            Text(
+                title,
+                style = if (round5) PANEL_TITLE else FsType.section,
+                color = if (round5) FsColor.cream else FsColor.strong,
+                modifier = Modifier.semantics { heading() },
+            )
             // The meta sits beside the title (`Needs you  6 open`); the action at the far end.
             if (meta != null) Text(meta, style = FsType.small, color = FsColor.muted, modifier = Modifier.padding(start = FsSpace.space3, top = ACTION_DROP))
             Spacer(Modifier.weight(1f))
@@ -135,13 +180,28 @@ fun FlowSection(
                 Text(
                     action,
                     style = ACTION,
-                    color = FsColor.strong,
-                    modifier = Modifier.padding(top = ACTION_DROP).clickable(role = Role.Button, onClick = onAction),
+                    color = if (round5) FsColor.gold else FsColor.strong,
+                    modifier = Modifier.padding(top = if (round5) 0.dp else ACTION_DROP).clickable(role = Role.Button, onClick = onAction),
                 )
             }
         }
-        HorizontalDivider(color = FsColor.line)
-        content()
+        if (panel == null) {
+            HorizontalDivider(color = FsColor.line)
+            content()
+        } else {
+            FlowPanel(frame = panel, content = content)
+        }
+    }
+}
+
+/**
+ * The round-5 panel a section's rows sit in (spec Mobile): the brown-black panel with [frame], 16 at
+ * the sides and 8 above and below, so a row's own padding finishes the inset.
+ */
+@Composable
+fun FlowPanel(modifier: Modifier = Modifier, frame: PanelFrame = PanelFrame.None, content: @Composable ColumnScope.() -> Unit) {
+    Box(modifier.fillMaxWidth().panel(frame)) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = FsSpace.space4, vertical = FsSpace.space2), content = content)
     }
 }
 
@@ -176,9 +236,14 @@ fun FlowGap(height: Dp) {
 }
 
 private val CREST = 56.dp
+private val BAND_PAGE_SIDE = 14.dp
+private val BAND_PAGE_BOTTOM = 22.dp
 private val HEAD_BOTTOM = 14.dp
 private val META_GAP = 6.dp
 private val SECTION_TITLE_GAP = 10.dp
 private val ACTION_DROP = 2.dp
 private val SKELETON_RADIUS = 6.dp
 private val ACTION = FsType.bodyStrong.copy(fontSize = 14.sp, lineHeight = 24.sp)
+
+/** A round-5 section title over the ground: the display face at 21 (the mock's `.sh h2`). */
+private val PANEL_TITLE = FsType.sectionReading.copy(fontSize = 21.sp, lineHeight = 26.sp)

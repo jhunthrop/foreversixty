@@ -1,34 +1,27 @@
 Thandrel
-Fury Warrior · 60 · Olympus XXVII
+Fury Warrior · 60 · Olympus XXVII
 Main
 Updated 2 h ago from Battle.net · Refresh
 Switch character
 Lightvow
-Holy Paladin · 60 · Olympus XXVII
+Holy Paladin · 60 · Olympus XXVII
 Kaelor
-Frost Mage · 47
+Frost Mage · 47
 Felsnap
-Beast Mastery Hunter · 34
+Beast Mastery Hunter · 34
 Brewmist
-Enhancement Shaman · 22
+Enhancement Shaman · 22
 Ashmantle
-Affliction Warlock · 18
+Affliction Warlock · 18
 Show low-level characters (2)
 Tools
 Guides
-Your spec's guide, then every class
 Tiers
-Every spec, this week
 Patch notes
-The game and the site
 Sims
-Your server runs and saved sims
 Logs and reports
-Your reports and the coach
 Planner
-Your builds and the guide builds
 Rankings
-Your spec and your guild
 Account
 Notifications
 Raids, gear and sims, logs on
@@ -40,6 +33,8 @@ Offline data
 26.6 MB on this phone
 Settings
 Sign out, delete account
+A fan-made player tool. Not affiliated with Blizzard.
+© 2026 Commish LLC d/b/a Forever Sixty
 Version 0.1.0 (7) · data 1.60.1.70790
 Help
 ·

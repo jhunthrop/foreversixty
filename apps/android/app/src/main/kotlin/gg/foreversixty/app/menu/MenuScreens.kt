@@ -55,6 +55,7 @@ import gg.foreversixty.app.talents.TalentsRoute
 import gg.foreversixty.app.common.NewBuildStrip
 import kotlinx.coroutines.launch
 import java.time.Instant
+import java.time.Year
 
 /** The profile menu as a Material 3 modal drawer, 85% of the width, over the tabs and the tab bar. */
 @Composable
@@ -75,7 +76,8 @@ fun ProfileMenuDrawer(
             ModalDrawerSheet(
                 drawerState = drawer,
                 drawerContainerColor = FsColor.raised,
-                drawerShape = androidx.compose.ui.graphics.RectangleShape,
+                // Material 3's drawer: rounded at its open edge (round 5, mock m-android-menu).
+                drawerShape = androidx.compose.material3.DrawerDefaults.shape,
                 modifier = Modifier.fillMaxWidth(WIDTH).fillMaxHeight(),
                 windowInsets = androidx.compose.foundation.layout.WindowInsets(0.dp),
             ) {
@@ -115,6 +117,7 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
         devices = devices,
         offlineData = offlineSize,
         version = account?.let { AccountCopy.version(it.versionName, it.versionCode, it.dataBuild()) }.orEmpty(),
+        year = Year.now().value,
     )
     ProfileMenu(
         model = model,

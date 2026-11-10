@@ -2171,6 +2171,14 @@ enum Copy {
     /// Privacy
     static var menuPrivacy: String { text("menu.privacy") }
 
+    /// A fan-made player tool. Not affiliated with Blizzard.
+    static var menuLegalFan: String { text("menu.legal.fan") }
+
+    /// © {year} Commish LLC d/b/a Forever Sixty
+    static func menuLegalOperator(year: String) -> String {
+        format("menu.legal.operator", year)
+    }
+
     /// All
     static var activityFilterAll: String { text("activity.filter.all") }
 
@@ -2192,7 +2200,7 @@ enum Copy {
     /// Unread
     static var activityUnread: String { text("activity.unread") }
 
-    /// Nothing yet. Loot, sims, reports and your guild's raids arrive here as they happen.
+    /// Nothing yet. Loot, sims, reports and raids land here.
     static var activityEmpty: String { text("activity.empty") }
 
     /// What changed for your characters: loot, sims, reports, raids.
@@ -2229,7 +2237,7 @@ enum Copy {
     /// Every slot
     static var gearEverySlot: String { text("gear.everySlot") }
 
-    /// Worn
+    /// Equipped
     static var gearWorn: String { text("gear.worn") }
 
     /// {items} · {boss}, {chance}
@@ -2317,6 +2325,16 @@ enum Copy {
     /// {chance} drop chance
     static func gearSheetDropChance(chance: String) -> String {
         format("gear.sheet.dropChance", chance)
+    }
+
+    /// Replaces {item}
+    static func gearSheetReplaces(item: String) -> String {
+        format("gear.sheet.replaces", item)
+    }
+
+    /// {name}, vendor
+    static func gearSheetVendor(name: String) -> String {
+        format("gear.sheet.vendor", name)
     }
 
     /// You
@@ -2426,44 +2444,23 @@ enum Copy {
     /// Guides
     static var menuGuides: String { text("menu.guides") }
 
-    /// Your spec's guide, then every class
-    static var menuGuidesLine: String { text("menu.guides.line") }
-
     /// Tiers
     static var menuTiers: String { text("menu.tiers") }
-
-    /// Every spec, this week
-    static var menuTiersLine: String { text("menu.tiers.line") }
 
     /// Patch notes
     static var menuPatchNotes: String { text("menu.patchNotes") }
 
-    /// The game and the site
-    static var menuPatchNotesLine: String { text("menu.patchNotes.line") }
-
     /// Sims
     static var menuSims: String { text("menu.sims") }
-
-    /// Your server runs and saved sims
-    static var menuSimsLine: String { text("menu.sims.line") }
 
     /// Logs and reports
     static var menuLogs: String { text("menu.logs") }
 
-    /// Your reports and the coach
-    static var menuLogsLine: String { text("menu.logs.line") }
-
     /// Planner
     static var menuPlanner: String { text("menu.planner") }
 
-    /// Your builds and the guide builds
-    static var menuPlannerLine: String { text("menu.planner.line") }
-
     /// Rankings
     static var menuRankings: String { text("menu.rankings") }
-
-    /// Your spec and your guild
-    static var menuRankingsLine: String { text("menu.rankings.line") }
 
     /// Offline data
     static var menuOfflineData: String { text("menu.offlineData") }
@@ -3880,11 +3877,6 @@ enum Copy {
     /// Not saved
     static var widgetNotSaved: String { text("widget.notSaved") }
 
-    /// {n} of {size} signed up
-    static func widgetSignedUp(n: Int, size: Int) -> String {
-        format("widget.signedUp", n, size)
-    }
-
     /// {n} of {size}
     static func widgetOfSize(n: Int, size: Int) -> String {
         format("widget.ofSize", n, size)
@@ -4078,6 +4070,21 @@ enum Copy {
     /// {in} in, {late} late · {tanks} tanks, {healers} heals
     static func liveCounts(`in`: Int, late: Int, tanks: Int, healers: Int) -> String {
         format("live.counts", `in`, late, tanks, healers)
+    }
+
+    /// Starts {time}
+    static func liveStartsAt(time: String) -> String {
+        format("live.startsAt", time)
+    }
+
+    /// Invites {time}
+    static func liveInvitesAt(time: String) -> String {
+        format("live.invitesAt", time)
+    }
+
+    /// {guild} · You are {state}
+    static func liveAnswer(guild: String, state: String) -> String {
+        format("live.answer", guild, state)
     }
 
     /// {n} of {m} combinations
@@ -5449,9 +5456,22 @@ enum Copy {
         format("home.raid.notAnswered", name, role)
     }
 
+    /// You have not answered
+    static var homeRaidNotAnsweredAlone: String { text("home.raid.notAnsweredAlone") }
+
     /// You are {answer}, as {name}, {role}
     static func homeRaidAnswered(answer: String, name: String, role: String) -> String {
         format("home.raid.answered", answer, name, role)
+    }
+
+    /// You are {answer}
+    static func homeRaidAnsweredAlone(answer: String) -> String {
+        format("home.raid.answeredAlone", answer)
+    }
+
+    /// {guild} · {when}
+    static func homeRaidPlace(guild: String, when: String) -> String {
+        format("home.raid.place", guild, when)
     }
 
     /// {raid} · {when}
@@ -5462,6 +5482,11 @@ enum Copy {
     /// {counts} · you have not answered, as {name}, {role}
     static func homeRaidLineSub(counts: String, name: String, role: String) -> String {
         format("home.raid.lineSub", counts, name, role)
+    }
+
+    /// {counts} · you have not answered
+    static func homeRaidLineSubAlone(counts: String) -> String {
+        format("home.raid.lineSubAlone", counts)
     }
 
     /// {in} in, {late} late
@@ -5516,6 +5541,11 @@ enum Copy {
         format("home.live.line", age, counts, answer, name, role)
     }
 
+    /// Pulled {age} · {counts} · you are {answer}
+    static func homeLiveLineAlone(age: String, counts: String, answer: String) -> String {
+        format("home.live.lineAlone", age, counts, answer)
+    }
+
     /// Pulled {age} · {counts}
     static func homeLiveLineNoAnswer(age: String, counts: String) -> String {
         format("home.live.lineNoAnswer", age, counts)
@@ -5561,10 +5591,10 @@ enum Copy {
     /// Check your connection
     static var homeErrorSub: String { text("home.error.sub") }
 
-    /// Your characters are on their way
+    /// No characters yet
     static var homeNewTitle: String { text("home.new.title") }
 
-    /// Battle.net lists a character after you play it and log out.
+    /// Log out in game, then check again.
     static var homeNewLine: String { text("home.new.line") }
 
     /// Check again
@@ -5595,7 +5625,7 @@ enum Copy {
         format("raid.tab.roleLine", role, have, want)
     }
 
-    /// {name} (Late, {n} min)
+    /// {name} (Late · {n} min)
     static func raidTabLateNote(name: String, n: Int) -> String {
         format("raid.tab.lateNote", name, n)
     }
@@ -5661,6 +5691,58 @@ enum Copy {
 
     /// Sign up for your guild's raids from your phone.
     static var raidTabOutLine: String { text("raid.tab.outLine") }
+
+    /// {time} · pull in {until}
+    static func raidTabPullIn(time: String, until: String) -> String {
+        format("raid.tab.pullIn", time, until)
+    }
+
+    /// {h} h {m} min
+    static func raidTabUntilHours(h: Int, m: Int) -> String {
+        format("raid.tab.untilHours", h, m)
+    }
+
+    /// {m} min
+    static func raidTabUntilMinutes(m: Int) -> String {
+        format("raid.tab.untilMinutes", m)
+    }
+
+    /// As {name}, {role}
+    static func raidTabAs(name: String, role: String) -> String {
+        format("raid.tab.as", name, role)
+    }
+
+    /// Who is coming
+    static var raidTabComing: String { text("raid.tab.coming") }
+
+    /// Roster ›
+    static var raidTabRosterLink: String { text("raid.tab.rosterLink") }
+
+    /// Before you pull
+    static var raidTabBeforePull: String { text("raid.tab.beforePull") }
+
+    /// {have} of {want}
+    static func raidTabOfWant(have: Int, want: Int) -> String {
+        format("raid.tab.ofWant", have, want)
+    }
+
+    /// {names} · {n} short
+    static func raidTabShort(names: String, n: Int) -> String {
+        format("raid.tab.short", names, n)
+    }
+
+    /// {names} and {n} more
+    static func raidTabAndMore(names: String, n: Int) -> String {
+        format("raid.tab.andMore", names, n)
+    }
+
+    /// How late
+    static var raidTabHowLate: String { text("raid.tab.howLate") }
+
+    /// Late · {n} min
+    static func raidAnswerLateMinutes(n: Int) -> String {
+        format("raid.answer.lateMinutes", n)
+    }
 
     /// Not answered
     static var raidNaTitle: String { text("raid.na.title") }
