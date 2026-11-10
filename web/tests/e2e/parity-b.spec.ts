@@ -9,9 +9,10 @@
 // (`go test ./internal/site -run TestSharedBuildParityFixtures -update`) from the mock's record
 // (api/internal/site/testdata/shared-survival.json: planner-facts.json `guide`, titled and viewed
 // as web-b). It is served at /b/<id> with the island and its stylesheet from this build's dist.
-// The API's chrome.html is a copy of a production build's header and footer, whose hashed
-// scripts this build does not have: the test puts this build's own chrome in its place
-// (dist/about.html, the file chrome.html is copied from), so the header hydrates as on the site.
+// The API's chrome.html is a copy of an earlier build's header and footer (its scripts load by
+// stable /_chrome/ path, scripts/chrome-aliases.mjs, but its markup can lag): the test puts this
+// build's own chrome in its place (dist/about.html, the file chrome.html is copied from), so the
+// header matches the site it is compared with.
 // The mocks are rendered before the tests (support/parity-mocks.ts). A side-by-side per state
 // and width lands in test-results/parity/b-<state>-<width>.png. Desktop project only: the 390 run
 // is a 390 px desktop viewport, as the mock renders are.
