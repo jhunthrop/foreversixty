@@ -21,12 +21,12 @@ describe('checkoutHref', () => {
 });
 
 describe('buttonLabel', () => {
-  it('says Subscribe for Premium and Subscribe your guild for the guild plans', () => {
+  it('says Subscribe with the price on every plan (the column names the plan)', () => {
     expect(buttonLabel('premium', 'yearly', true)).toBe(
       `Subscribe · ${formatPrice(PLANS.premium.founderYearly, 'yearly')}`,
     );
     expect(buttonLabel('guild', 'monthly', false)).toBe(
-      `Subscribe your guild · ${formatPrice(PLANS.guild.monthly, 'monthly')}`,
+      `Subscribe · ${formatPrice(PLANS.guild.monthly, 'monthly')}`,
     );
   });
 });
@@ -35,16 +35,10 @@ describe('priceCell', () => {
   it('puts the list price and the founder date on one founder line while founder is open', () => {
     const cell = priceCell('premium', 'yearly', true);
     expect(cell.amount).toBe(`$${PLANS.premium.founderYearly}`);
-    expect(cell.founderLine).toBe('Founder price for anyone who subscribes by 6 Jan 2027. $50 after that.');
-    expect(priceCell('premium', 'monthly', true).founderLine).toBe(
-      'Founder price for anyone who subscribes by 6 Jan 2027. $6 a month after that.',
-    );
-    expect(priceCell('guild', 'yearly', true).founderLine).toBe(
-      'Founder price for anyone who subscribes by 6 Jan 2027. $150 after that.',
-    );
-    expect(priceCell('raid_guild', 'monthly', true).founderLine).toBe(
-      'Founder price for anyone who subscribes by 6 Jan 2027. $25 a month after that.',
-    );
+    expect(cell.founderLine).toBe('$50 after 6 Jan 2027.');
+    expect(priceCell('premium', 'monthly', true).founderLine).toBe('$6 a month after 6 Jan 2027.');
+    expect(priceCell('guild', 'yearly', true).founderLine).toBe('$150 after 6 Jan 2027.');
+    expect(priceCell('raid_guild', 'monthly', true).founderLine).toBe('$25 a month after 6 Jan 2027.');
     expect(cell.suffix).toBe(plansPageCopy.price.suffix.yearly);
     expect(cell.secondLine).toBe(perMonthLine(PLANS.premium.founderYearly));
   });

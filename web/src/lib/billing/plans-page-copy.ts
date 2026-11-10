@@ -106,7 +106,6 @@ export const plansPageCopy = {
   premium: {
     name: 'Premium',
     audience: 'For one player',
-    support: 'Free stays complete. Premium pays for the servers and keeps the site going.',
     // Each line's `/premium` anchor (spec 2026-10-29-premium-entry section 8): a contextual link
     // lands on its line, and every line of one anchor is highlighted together. One short sentence a
     // line (redesign plan 2026-11-09, site copy P12): four plan columns share the width.
@@ -130,38 +129,36 @@ export const plansPageCopy = {
   },
   guild: {
     name: 'Guild',
-    audience: `For a guild of up to ${GUILD_TIER_MEMBER_LIMIT} verified members`,
+    audience: `Up to ${GUILD_TIER_MEMBER_LIMIT} verified members`,
+    // One short sentence a line (redesign plan 2026-11-09, site copy P12); the rules carry the detail.
     features: [
-      'Post raids on the site and in Discord; members sign up with one tap.',
-      'See who came: attendance and a report for every raid night from its log.',
-      'The Forever Sixty bot in your Discord: raid posts with buttons, plus /bis and /char lookups.',
-      `${PLANS.guild.seats} Premium seat to give a member, such as your raid leader.`,
-      `Up to ${GUILD_TIER_MEMBER_LIMIT} verified members, so a guild that runs ${RAID_SIZES[2]}- or ${RAID_SIZES[1]}-person raids fits under Guild. Nothing switches off if you grow past it.`,
+      'Raids posted on the site and in Discord, one-tap sign-ups.',
+      'Attendance and a report for every raid night from its log.',
+      'The Forever Sixty bot in Discord: raid posts, /bis and /char.',
+      `${PLANS.guild.seats} Premium seat to give a member.`,
+      `Fits a guild that runs ${RAID_SIZES[2]}- or ${RAID_SIZES[1]}-person raids.`,
     ],
   },
   raidGuild: {
     name: 'Raid guild',
-    audience: 'For a raiding guild of any size',
+    audience: 'Any number of members',
     features: [
-      'Loot council: each drop ranks the raiders it helps most, with what they wear now, their attendance and their loot this tier. Officers award it from the same screen.',
-      'Readiness board: before the pull, one list of who is missing enchants, consumables, talent points or upgrades, worst first.',
+      'Loot council: each drop ranked by the raiders it helps most.',
+      'Readiness board: missing enchants, consumables and talents before the pull.',
       `${PLANS.raid_guild.seats} Premium seats to give members.`,
-      'Any number of members.',
-      'Everything in Guild: raids, sign-ups, attendance and the Discord bot.',
+      'Everything in Guild.',
     ],
   },
   price: {
     suffix: { yearly: ' /year', monthly: ' /month' } as Record<Interval, string>,
     perMonth: (yearlyUsd: number): string => perMonthLine(yearlyUsd),
     orYearly: (yearlyPrice: string): string => `Or ${yearlyPrice}.`,
-    founderUntil: (listPrice: string): string =>
-      `Founder price for anyone who subscribes by ${FOUNDER_LAST_DAY}. ${listPrice} after that.`,
+    founderUntil: (listPrice: string): string => `${listPrice} after ${FOUNDER_LAST_DAY}.`,
     perMember,
     perRaider,
   },
   buttons: {
     subscribe: (price: string): string => `Subscribe · ${price}`,
-    subscribeGuild: (price: string): string => `Subscribe your guild · ${price}`,
   },
   trial: `First ${GUILD_TRIAL_DAYS} days free, once per guild. ${TRIAL_CANCEL}; guild settings shows the date of the first charge.`,
   // Defined but appended to nothing until the trial email ships (B10 ruling 1); that lane appends it
@@ -171,7 +168,7 @@ export const plansPageCopy = {
   // words come from the coach fixture; only the frame is written here.
   coachSample: {
     tag: 'Sample',
-    label: 'What the coach says after a raid',
+    label: 'The coach after a raid',
     context: (spec: string, cls: string, zone: string, size: number, kill: boolean): string =>
       `${spec} ${cls} · ${zone} · ${size}-player ${kill ? 'kill' : 'wipe'}`,
     fixFirst: coachCopy.labelFixFirst,
@@ -236,10 +233,6 @@ export const plansPageCopy = {
       question: 'What happens if I cancel?',
       answer:
         "You keep everything through the end of the period you already paid for. After that, the account works like a free one, and nothing is deleted. A guild's records stay readable for good.",
-    },
-    {
-      question: 'Can I get a refund?',
-      answer: "Email us and we'll sort it out. The refund policy has the details.",
     },
     {
       question: 'Is anything from Battle.net ever paid?',

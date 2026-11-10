@@ -84,5 +84,5 @@ test('Apply at the head and at the end is the support email', async ({ page }) =
   await openPagesState(page, '/creators', 'out');
   await expect(page.getByTestId('creators-apply-top')).toHaveAttribute('href', CREATORS_APPLY_HREF);
   await expect(page.getByTestId('creators-apply-end')).toHaveAttribute('href', CREATORS_APPLY_HREF);
-  await expect(page.getByTestId('creators-terms')).toBeVisible();
+  await expect(page.getByTestId('creators-figures-what-you-get')).toBeVisible();
 });

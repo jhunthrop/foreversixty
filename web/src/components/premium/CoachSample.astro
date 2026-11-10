@@ -57,7 +57,7 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
         <span class="t-label">{copy.then}</span>
         <div class="coach-rows" data-testid="coach-sample-then">
           {view.then.map((item) => (
-            <Row title={item.title} sub={item.why}>
+            <Row title={item.title} sub={item.why} open>
               {item.icon && (
                 <img
                   slot="lead"
@@ -79,7 +79,7 @@ const HIDE_ON_ERROR = "this.style.visibility='hidden'";
         <span class="t-label">{copy.doingWell}</span>
         <div class="coach-rows" data-testid="coach-sample-well">
           {view.doingWell.map((item) => (
-            <Row title={item.text} density="slim">
+            <Row title={item.text} density="slim" open>
               {item.icon && (
                 <img
                   slot="lead"

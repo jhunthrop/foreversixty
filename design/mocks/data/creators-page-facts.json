@@ -5,32 +5,76 @@
   "lead": "If you stream or make videos about World of Warcraft: Forever, you can earn from the players you send us.",
   "apply": "Apply",
   "contentsLabel": "On this page",
-  "glanceLabel": "The terms",
-  "figures": [
+  "answer": {
+   "value": "$2",
+   "unit": "a player",
+   "line": "then 50% of their Premium for 12 months"
+  },
+  "examplesLabel": "One player, first year",
+  "examplesNote": "Before Stripe fees.",
+  "lanes": [
    {
-    "id": "bounty",
-    "label": "Each returning player",
-    "value": "$2"
+    "section": "what-you-get",
+    "label": "The terms",
+    "figures": [
+     {
+      "id": "bounty",
+      "label": "Each returning player",
+      "value": "$2"
+     },
+     {
+      "id": "share",
+      "label": "Their Premium",
+      "value": "50% for 12 months"
+     }
+    ]
    },
    {
-    "id": "share",
-    "label": "Their Premium",
-    "value": "50% for 12 months"
+    "section": "how-players-count",
+    "label": "Counting",
+    "figures": [
+     {
+      "id": "window",
+      "label": "Link window",
+      "value": "30 days"
+     },
+     {
+      "id": "return",
+      "label": "Coming back",
+      "value": "within 14 days"
+     },
+     {
+      "id": "once",
+      "label": "Each account",
+      "value": "once"
+     }
+    ]
    },
    {
-    "id": "window",
-    "label": "Link window",
-    "value": "30 days"
-   },
-   {
-    "id": "minimum",
-    "label": "Minimum payout",
-    "value": "$10"
-   },
-   {
-    "id": "cap",
-    "label": "Monthly cap",
-    "value": "$500"
+    "section": "payouts",
+    "label": "Each month",
+    "figures": [
+     {
+      "id": "close",
+      "label": "Closes",
+      "value": "the 1st"
+     },
+     {
+      "id": "paid",
+      "label": "Paid",
+      "value": "first week"
+     },
+     {
+      "id": "minimum",
+      "label": "Minimum",
+      "value": "$10"
+     },
+     {
+      "id": "cap",
+      "label": "Cap",
+      "value": "$500"
+     }
+    ]
    }
   ],
   "sections": [
@@ -41,7 +85,7 @@
      "$2 for each player you send who comes back. A player comes back when they sign in with Battle.net, import at least one Forever character, and use the site again on a later day within 14 days of signing up.",
      "Half of the Premium they pay, after Stripe’s fees and any refunds, for 12 months from their first payment. Guild plans count when the officer who pays came through you.",
      "Both add up: $2 once when a player comes back, then half of each of their payments for a year.",
-     "Premium on your own account and the Raid guild plan for your guild while you are in the program."
+     "You also get Premium on your own account and the Raid guild plan for your guild while you are in the program."
     ]
    },
    {
@@ -88,5 +132,22 @@
   "monthlyCapUsd": 500
  },
  "applyEmail": "help@foreversixty.gg",
- "applyHref": "mailto:help@foreversixty.gg?subject=Creator%20program"
+ "applyHref": "mailto:help@foreversixty.gg?subject=Creator%20program",
+ "examples": [
+  {
+   "id": "premium-yearly",
+   "label": "Premium, $40 a year",
+   "value": "$22"
+  },
+  {
+   "id": "premium-monthly",
+   "label": "Premium, $5 a month",
+   "value": "$32"
+  },
+  {
+   "id": "raid_guild-yearly",
+   "label": "Raid guild, $200 a year",
+   "value": "$102"
+  }
+ ]
 }

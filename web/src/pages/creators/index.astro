@@ -2,12 +2,14 @@
 // web/src/pages/creators/index.astro
 // /creators: the public page about the creator program (directions mock design/mocks/directions/
 // png/b4-creators-*; parity twin design/mocks/ws_creators.py). A reading page: the PageHeader with
-// Apply, the contents rail from 1024, then one panel holding the lead and a ReadingSection per part
-// of the terms, the terms' figures in the first section's lane, and Apply last. Static, nothing is
-// fetched. The program's server side is not on main, so Apply is an email (lib/creators/copy.ts).
+// the bounty as its answer and Apply, the contents rail from 1024, then one panel holding the lead
+// and a ReadingSection per part of the terms, each with its figures in the lane (the first also
+// what one player is worth in a first year), and Apply last. Static, nothing is fetched. The
+// program's server side is not on main, so Apply is an email (lib/creators/copy.ts).
 import Base from '../../layouts/Base.astro';
 import Button from '../../components/ui/Button.svelte';
 import Facts from '../../components/ui/Facts.svelte';
+import Figure from '../../components/ui/Figure.svelte';
 import LaneBlock from '../../components/ui/LaneBlock.svelte';
 import Page from '../../components/ui/Page.svelte';
 import PageHeader from '../../components/ui/PageHeader.svelte';
@@ -15,24 +17,36 @@ import Prose from '../../components/ui/Prose.svelte';
 import ReadingPanel from '../../components/ui/ReadingPanel.svelte';
 import ReadingSection from '../../components/ui/ReadingSection.svelte';
 import Toc from '../../components/ui/Toc.svelte';
+import { founderOpen } from '../../lib/billing/plans';
 import { CREATORS_APPLY_HREF, programCopy as copy } from '../../lib/creators/copy';
+import { earningsRows } from '../../lib/creators/model';
 import { REGION } from '../../lib/ui/regions';
 
 const escape = (s: string): string => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const paragraphs = (lines: readonly string[]): string => lines.map((l) => `<p>${escape(l)}</p>`).join('');
-const [first, ...rest] = copy.sections;
-const sections = [...copy.sections, copy.applySection];
-const tocItems = sections.map((s) => ({ title: s.title, id: s.id }));
-const facts = copy.figures.map((f) => ({ id: f.id, label: f.label, value: f.value }));
+const tocItems = copy.sections.map((s) => ({ title: s.title, id: s.id }));
+const laneOf = (id: string) => copy.lanes.find((lane) => lane.section === id);
+// Prices at build time: founder prices while the window is open (the nightly build moves them on).
+const examples = earningsRows(founderOpen(new Date()));
 ---
 
 <Base title={copy.pageTitle} description={copy.pageDescription} path="/creators" wide>
   <main id="main" tabindex="-1" data-testid="creators-program">
     <Page layout="reading" tocFrom={1024} tocLabel={copy.contentsLabel} testid="creators-program-body">
       <PageHeader slot="header" title={copy.pageTitle}>
-        <Button slot="actions" tone="primary" href={CREATORS_APPLY_HREF} testid="creators-apply-top">
-          {copy.apply}
-        </Button>
+        <div slot="answer" class="creators-answer">
+          <Figure
+            value={copy.answer.value}
+            unit={copy.answer.unit}
+            caption={copy.answer.line}
+            tone="gold"
+            align="end"
+            testid="creators-answer"
+          />
+          <Button tone="primary" href={CREATORS_APPLY_HREF} testid="creators-apply-top">
+            {copy.apply}
+          </Button>
+        </div>
       </PageHeader>
       <Toc
         slot="toc"
@@ -45,19 +59,38 @@ const facts = copy.figures.map((f) => ({ id: f.id, label: f.label, value: f.valu
         <div class="creators-lead" data-region={REGION.intro}>
           <Prose html={paragraphs([copy.lead])} />
         </div>
-        {first && (
-          <ReadingSection title={first.title} anchor={first.id} testid={`creators-section-${first.id}`}>
-            <LaneBlock slot="lane" label={copy.glanceLabel}>
-              <Facts items={facts} testid="creators-terms" />
-            </LaneBlock>
-            <Prose html={paragraphs(first.paragraphs)} />
-          </ReadingSection>
-        )}
-        {rest.map((section) => (
-          <ReadingSection title={section.title} anchor={section.id} testid={`creators-section-${section.id}`}>
-            <Prose html={paragraphs(section.paragraphs)} />
-          </ReadingSection>
-        ))}
+        {copy.sections.map((section, index) => {
+          const lane = laneOf(section.id);
+          // A slot passed conditionally still opens the lane column, so a section with no figures
+          // renders without the slot at all.
+          return lane ? (
+            <ReadingSection
+              title={section.title}
+              anchor={section.id}
+              testid={`creators-section-${section.id}`}
+            >
+              <div slot="lane" class="creators-lane">
+                <LaneBlock label={lane.label}>
+                  <Facts items={lane.figures} testid={`creators-figures-${section.id}`} />
+                </LaneBlock>
+                {index === 0 && (
+                  <LaneBlock label={copy.examplesLabel} meta={copy.examplesNote}>
+                    <Facts items={examples} testid="creators-examples" />
+                  </LaneBlock>
+                )}
+              </div>
+              <Prose html={paragraphs(section.paragraphs)} />
+            </ReadingSection>
+          ) : (
+            <ReadingSection
+              title={section.title}
+              anchor={section.id}
+              testid={`creators-section-${section.id}`}
+            >
+              <Prose html={paragraphs(section.paragraphs)} />
+            </ReadingSection>
+          );
+        })}
         <ReadingSection
           title={copy.applySection.title}
           anchor={copy.applySection.id}
@@ -76,8 +109,20 @@ const facts = copy.figures.map((f) => ({ id: f.id, label: f.label, value: f.valu
 </Base>
 
 <style>
+  /* The answer: the bounty and its line, Apply beside it. */
+  .creators-answer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 20px;
+  }
   .creators-lead {
     padding: 22px 24px 0;
+  }
+  .creators-lane {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
   .creators-apply {
     padding-top: 14px;

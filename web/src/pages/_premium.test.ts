@@ -39,7 +39,7 @@ describe('the plans page on the round 5 system', () => {
       'plate',
       'section-how-the-guild-plans-work',
       'plate',
-      'section-what-the-coach-says-after-a-raid',
+      'section-the-coach-after-a-raid',
       'plate',
     ]);
   });

@@ -57,8 +57,7 @@ export function checkoutHref(plan: PlanKey, interval: Interval): string {
 
 export function buttonLabel(plan: PlanKey, interval: Interval, founder: boolean): string {
   const price = formatPrice(priceFor(plan, interval, founder), interval);
-  const { subscribe, subscribeGuild } = plansPageCopy.buttons;
-  return plan === 'premium' ? subscribe(price) : subscribeGuild(price);
+  return plansPageCopy.buttons.subscribe(price);
 }
 
 export interface PriceCell {

@@ -150,9 +150,6 @@ const guildPlans = [
                   <Button href="/account#plan">{premiumSourceCopy.buttons.seePlan}</Button>
                 </span>
               </div>
-              <p class="text-small text-muted m-0" data-testid="premium-support">
-                {copy.premium.support}
-              </p>
             </div>
           </div>
         </Plate>
@@ -197,7 +194,6 @@ const guildPlans = [
             </RowGrid>
           </Section>
           <Section title={copy.howItWorks} anchor="guild-leaders" testid="guild-rules" panel>
-            <p class="text-small text-muted plans-members m-0">{copy.guildRegion.members}</p>
             <RowGrid cols={2}>
               {copy.rules.map((rule) => (
                 <Row title={rule.term} sub={rule.sentence} open />
@@ -397,6 +393,9 @@ const guildPlans = [
     flex-direction: column;
     gap: 12px;
   }
+  .guild-on :global(button) {
+    width: 100%;
+  }
   /* Questions and the guild rules beside the sample coach review from 1024. */
   .plans-more {
     display: grid;
@@ -423,9 +422,6 @@ const guildPlans = [
   }
   .plans-history {
     padding-top: 12px;
-  }
-  .plans-members {
-    padding-bottom: 4px;
   }
   @media (max-width: 767px) {
     .plan {

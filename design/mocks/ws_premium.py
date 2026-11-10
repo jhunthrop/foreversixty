@@ -133,7 +133,7 @@ PLANS_CSS = '''<style>
 .plan>.plh{order:0}.plan>.pact{display:flex;flex-direction:column;align-items:stretch;gap:10px;order:1}
 .plan>.rprose,.plan>.psm,.plan>.pfoot{order:2}.plan>.pfoot{margin-top:auto}
 @media(min-width:768px){.plan>.pact{order:3;margin-top:auto;padding-top:4px}}
-.plan .pact .btn{display:flex;width:100%;height:auto;min-height:44px;padding-block:10px;white-space:normal;text-align:center;text-wrap:balance;line-height:22px;box-sizing:border-box}
+.plan .pact button.btn{width:100%}.plan .pact .btn{display:flex;width:100%;height:auto;min-height:44px;padding-block:10px;white-space:normal;text-align:center;text-wrap:balance;line-height:22px;box-sizing:border-box}
 .pmore{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}.pmore>.pmain{display:flex;flex-direction:column;gap:22px;min-width:0}
 @media(min-width:1024px){.pmore{grid-template-columns:minmax(0,1fr) 340px;column-gap:28px;align-items:start}}
 @media(min-width:1760px){.pmore{grid-template-columns:minmax(0,1fr) var(--rail-w)}}
@@ -161,7 +161,6 @@ def premium_column(st: dict) -> str:
         act = f'<p class="lede strong">{e(SRC["premiumCard"][owned])}</p>{LinkBtn(e(SRC["buttons"]["seePlan"]))}'
     else:
         act = _Button(e(pc['button']), tone='subscribe')
-    act += f'<p class="t-small">{e(P["premium"]["support"])}</p>'
     feats = ruled([l['text'] for l in F['premium_lines']], [l['anchor'] if l['first'] else '' for l in F['premium_lines']])
     body = f'<div class="plan">{head}{feats}<p class="t-small psm">{e(P["premium"]["scope"])}</p><div class="pact">{act}</div></div>'
     return plan_cell(body, 'framed')
@@ -257,8 +256,7 @@ def premium_page(state: str) -> str:
     grid = (f'<div class="pgrid" role="group" aria-label="{e(P["title"])}">'
             + free_column(st) + premium_column(st) + guild_column('guild', st) + guild_column('raid_guild', st) + '</div>')
     faq = Section(e(FAQ_TITLE), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2), meta=e(P['foot']), panel=True)
-    rules = Section(e(P['howItWorks']), f'<p class="t-small pmem">{e(P["guildRegion"]["members"])}</p>'
-                    + RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2)
+    rules = Section(e(P['howItWorks']), RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2)
                     + f'<p class="t-small phist">{e(P["historyPromise"])}</p>', panel=True)
     more = f'<div class="pmore"><div class="pmain">{faq}{rules}</div>{coach_rail()}</div>'
     body = head + bar + notes + f'<div class="pc plans"><div class="pstack">{grid}{more}</div></div>' + PLANS_CSS

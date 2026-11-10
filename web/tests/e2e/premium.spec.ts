@@ -80,7 +80,7 @@ test('on launch day the founder line shows once, prices are founder prices, no s
   await expect(premiumButton(page)).toHaveText(`Subscribe · ${premiumPrice('yearly', true)}`);
   await expect(
     page.getByTestId('price-premium').getByTestId('founder-line').filter({ visible: true }),
-  ).toHaveText('Founder price for anyone who subscribes by 6 Jan 2027. $50 after that.');
+  ).toHaveText('$50 after 6 Jan 2027.');
   await expect(
     page.getByTestId('plan-premium').getByText(plansPageCopy.founder.label, { exact: true }),
   ).toHaveCount(0);
@@ -295,9 +295,9 @@ test('an officer paying for a guild on Guild sees it on that column with Manage 
     checkoutGuildCopy.onPlan.youPay('Olympus XXVII', 'guild'),
   );
   await expect(column.getByTestId('guild-on-plan-manage')).toBeVisible();
-  await expect(column.getByRole('link', { name: /^Subscribe your guild/ })).toBeHidden();
+  await expect(column.getByRole('link', { name: /^Subscribe · / })).toBeHidden();
   await expect(
-    page.getByTestId('plan-raid_guild').getByRole('link', { name: /^Subscribe your guild/ }),
+    page.getByTestId('plan-raid_guild').getByRole('link', { name: /^Subscribe · / }),
   ).toBeVisible();
 });
 

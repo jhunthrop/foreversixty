@@ -38,11 +38,18 @@ export interface ProgramSection {
   readonly paragraphs: readonly string[];
 }
 
-/** One figure in the terms at a glance: a label and its value with the unit. */
+/** One figure in a section's lane: a label and its value with the unit. */
 export interface ProgramFigure {
   readonly id: string;
   readonly label: string;
   readonly value: string;
+}
+
+/** A section's figures beside its prose: the lane's label and its figures. */
+export interface ProgramLane {
+  readonly section: string;
+  readonly label: string;
+  readonly figures: readonly ProgramFigure[];
 }
 
 const T = PROGRAM_TERMS;
@@ -55,14 +62,44 @@ export const programCopy = {
   lead: 'If you stream or make videos about World of Warcraft: Forever, you can earn from the players you send us.',
   apply: 'Apply',
   contentsLabel: 'On this page',
-  glanceLabel: 'The terms',
-  figures: [
-    { id: 'bounty', label: 'Each returning player', value: usd(T.bountyUsd) },
-    { id: 'share', label: 'Their Premium', value: `${T.sharePercent}% for ${T.shareMonths} months` },
-    { id: 'window', label: 'Link window', value: `${T.attributionDays} days` },
-    { id: 'minimum', label: 'Minimum payout', value: usd(T.minimumPayoutUsd) },
-    { id: 'cap', label: 'Monthly cap', value: usd(T.monthlyCapUsd) },
-  ] satisfies readonly ProgramFigure[],
+  /** The head's answer: the bounty as the figure, the share on its one line. */
+  answer: {
+    value: usd(T.bountyUsd),
+    unit: 'a player',
+    line: `then ${T.sharePercent}% of their Premium for ${T.shareMonths} months`,
+  },
+  /** The worked examples in the first section's lane (lib/creators/model.ts). */
+  examplesLabel: 'One player, first year',
+  examplesNote: 'Before Stripe fees.',
+  lanes: [
+    {
+      section: 'what-you-get',
+      label: 'The terms',
+      figures: [
+        { id: 'bounty', label: 'Each returning player', value: usd(T.bountyUsd) },
+        { id: 'share', label: 'Their Premium', value: `${T.sharePercent}% for ${T.shareMonths} months` },
+      ],
+    },
+    {
+      section: 'how-players-count',
+      label: 'Counting',
+      figures: [
+        { id: 'window', label: 'Link window', value: `${T.attributionDays} days` },
+        { id: 'return', label: 'Coming back', value: `within ${T.returnDays} days` },
+        { id: 'once', label: 'Each account', value: 'once' },
+      ],
+    },
+    {
+      section: 'payouts',
+      label: 'Each month',
+      figures: [
+        { id: 'close', label: 'Closes', value: 'the 1st' },
+        { id: 'paid', label: 'Paid', value: 'first week' },
+        { id: 'minimum', label: 'Minimum', value: usd(T.minimumPayoutUsd) },
+        { id: 'cap', label: 'Cap', value: usd(T.monthlyCapUsd) },
+      ],
+    },
+  ] satisfies readonly ProgramLane[],
   sections: [
     {
       id: 'what-you-get',
@@ -71,7 +108,7 @@ export const programCopy = {
         `${usd(T.bountyUsd)} for each player you send who comes back. A player comes back when they sign in with Battle.net, import at least one Forever character, and use the site again on a later day within ${T.returnDays} days of signing up.`,
         `Half of the Premium they pay, after Stripe’s fees and any refunds, for ${T.shareMonths} months from their first payment. Guild plans count when the officer who pays came through you.`,
         `Both add up: ${usd(T.bountyUsd)} once when a player comes back, then half of each of their payments for a year.`,
-        'Premium on your own account and the Raid guild plan for your guild while you are in the program.',
+        'You also get Premium on your own account and the Raid guild plan for your guild while you are in the program.',
       ],
     },
     {

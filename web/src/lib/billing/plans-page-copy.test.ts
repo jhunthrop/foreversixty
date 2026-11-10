@@ -80,9 +80,8 @@ describe('plansPageCopy against spec 6.1', () => {
       'Or {yearly price}.',
     ]);
     // Ruling MUST 1 (design/specs/2026-11-08-premium-account.md 0A) replaces the line's words.
-    expect(copy.price.founderUntil('{list}')).toBe(
-      'Founder price for anyone who subscribes by 6 Jan 2027. {list} after that.',
-    );
+    // The redesign (2026-11-09): the founder notice says the deadline once; a column says only its list price.
+    expect(copy.price.founderUntil('{list}')).toBe('{list} after 6 Jan 2027.');
     expect(copy.price.perMonth(PLANS.premium.founderYearly)).toBe(perMonthLine(PLANS.premium.founderYearly));
     expect(copy.price.orYearly('{yearly price}')).toBe('Or {yearly price}.');
   });
@@ -91,7 +90,7 @@ describe('plansPageCopy against spec 6.1', () => {
     // Spec 6.1's guild button read "Subscribe a guild"; the redesign plan (2026-11-09, site copy P12) makes it "your guild".
     expect(row('Buttons')[0]).toBe('Subscribe · {price}');
     expect(copy.buttons.subscribe('{price}')).toBe('Subscribe · {price}');
-    expect(copy.buttons.subscribeGuild('{price}')).toBe('Subscribe your guild · {price}');
+    expect('subscribeGuild' in copy.buttons).toBe(false);
   });
 
   it('History promise', () => {
@@ -121,7 +120,8 @@ describe('plansPageCopy guard', () => {
 });
 
 describe('plansPageCopy Premium against spec B5', () => {
-  it('premium.support', () => expect(copy.premium.support).toBe(key('premium.support')[0]));
+  it('premium.support is gone (site talk, redesign review 2026-11-09)', () =>
+    expect('support' in copy.premium).toBe(false));
   // The redesign plan (2026-11-09, site copy P12) cuts each feature line of spec B5 to one short
   // sentence; the anchors and the numbers' sources stay.
   it('the coach line is the first Premium benefit', () =>
@@ -181,16 +181,25 @@ describe('plansPageCopy guild region against spec B5', () => {
   it.each(['heading', 'lede', 'members'] as const)('guildRegion.%s', (k) =>
     expect(copy.guildRegion[k]).toBe(key(`guildRegion.${k}`)[0]),
   );
-  it('guild.audience', () =>
-    expect(copy.guild.audience).toBe(
-      fill(key('guild.audience')[0] ?? '', { GUILD_TIER_MEMBER_LIMIT: limit }),
-    ));
-  it('guild.features', () =>
-    expect(copy.guild.features).toEqual(key('guild.features').map((s) => fill(s, featureSlots))));
-  it('raidGuild.audience is unchanged', () =>
-    expect(copy.raidGuild.audience).toBe(key('raidGuild.audience')[0]));
+  // The redesign (2026-11-09, site copy P12): four columns side by side, one short sentence a line.
+  it('guild.audience', () => expect(copy.guild.audience).toBe(`Up to ${limit} verified members`));
+  it('guild.features read the seat count and the raid sizes', () => {
+    expect(copy.guild.features[3]).toBe(
+      `${featureSlots['PLANS.guild.seats']} Premium seat to give a member.`,
+    );
+    expect(copy.guild.features[4]).toBe(
+      `Fits a guild that runs ${featureSlots['RAID_SIZES[2]']}- or ${featureSlots['RAID_SIZES[1]']}-person raids.`,
+    );
+  });
+  it('every guild line is one sentence', () => {
+    for (const line of [...copy.guild.features, ...copy.raidGuild.features])
+      expect(line.split('. ')).toHaveLength(1);
+  });
+  it('raidGuild.audience', () => expect(copy.raidGuild.audience).toBe('Any number of members'));
   it('raidGuild.features, loot council first', () => {
-    expect(copy.raidGuild.features).toEqual(key('raidGuild.features').map((s) => fill(s, featureSlots)));
+    expect(copy.raidGuild.features[2]).toBe(
+      `${featureSlots['PLANS.raid_guild.seats']} Premium seats to give members.`,
+    );
     expect(copy.raidGuild.features[0]).toMatch(/^Loot council:/);
     expect(copy.raidGuild.features[0]).not.toBe('Everything in Guild');
   });
@@ -249,7 +258,8 @@ describe('plansPageCopy guild region against spec B5', () => {
   it('the sample coach review follows polish spec 3.6', () => {
     const cell = (k: string): string[] => specCell(POLISH_SPEC, '### 3.6', `\`coachSample.${k}`);
     expect(copy.coachSample.tag).toBe(cell('tag')[0]);
-    expect(copy.coachSample.label).toBe(cell('label')[0]);
+    // The redesign (2026-11-09): shorter, so the Sample tag sits beside it in the rail panel.
+    expect(copy.coachSample.label).toBe('The coach after a raid');
     expect(copy.coachSample.caption).toBe(cell('caption')[0]);
     expect(copy.coachSample.ariaLabel).toBe(cell('ariaLabel')[0]);
     const [kill] = cell('context(');
