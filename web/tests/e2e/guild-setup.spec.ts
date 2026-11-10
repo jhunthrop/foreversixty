@@ -48,6 +48,17 @@ async function stubSetup(page: Page, initial: GuildSetup): Promise<SetupStub> {
     ),
   );
   await page.route(`**/v1/guilds/${SETTINGS_GUILD.id}/setup`, (route) => route.fulfill(envelope(setup)));
+  await page.route(`**/v1/guilds/${SETTINGS_GUILD.id}/discord/bot/channels`, (route) =>
+    route.fulfill(
+      envelope({
+        channels: [
+          { id: 'c1', name: 'raid-signups', category: 'Raids' },
+          { id: 'c2', name: 'recruitment', category: 'Guild' },
+          { id: 'c3', name: 'general', category: 'Guild' },
+        ],
+      }),
+    ),
+  );
   await page.route(`**/v1/guilds/${SETTINGS_GUILD.id}/setup/*`, (route) => {
     const request = route.request();
     const step = request.url().split('/').pop() as SetupStepKey;

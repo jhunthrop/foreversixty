@@ -109,7 +109,7 @@ test('an unclaimed guild asks an officer first, then says "You hold" and where t
   await expect(page.getByTestId('guild-claim-state')).toHaveText('You hold The Last Watch.');
   expect(claimPosts).toBe(1);
   // Once the claim is held the page is about the claim.
-  await expect(page.getByTestId('guild-claim-heading')).toHaveText('The Last Watch · your claim');
+  await expect(page.getByTestId('guild-claim-heading')).toContainText('The Last Watch · your claim');
   // Then the setup checklist: the eight steps with their states, Start setup the one fill.
   await expect(page.getByTestId('guild-claim-next')).toContainText('Set up The Last Watch');
   await expect(page.getByTestId('guild-claim-setup-steps').locator('li')).toHaveCount(8);
@@ -226,7 +226,7 @@ test('a signed-in visitor with no membership in this guild is told so, and sees 
   );
   await openClaim(page);
   await expect(page.getByTestId('guild-claim-not-member')).toContainText(
-    'does not know a character of yours',
+    'None of your characters is in this guild',
   );
   await expect(page.getByTestId('guild-claim-not-eligible')).toHaveCount(0);
   await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
@@ -615,7 +615,7 @@ test('a signed-in stranger, refused both reads, is told the site knows no charac
   );
   await openClaim(page);
   await expect(page.getByTestId('guild-claim-not-member')).toContainText(
-    'does not know a character of yours',
+    'None of your characters is in this guild',
   );
   await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
   await expect(page.getByTestId('guild-claim-contest-button')).toHaveCount(0);

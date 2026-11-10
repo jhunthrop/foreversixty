@@ -179,13 +179,8 @@
           {#snippet sub(item)}
             {@const step = stepOf(item.key)}
             {#if step !== undefined}
-              <span class="flex flex-wrap items-center gap-2 pt-0.5">
-                <Tag tone={stateTone[step.state]} testid={`setup-step-${item.key}-state`}
-                  >{setupCopy.states[step.state]}</Tag
-                >
-                {#if OPTIONAL.has(step.key)}<span class="text-muted text-[13px]">{setupCopy.optional}</span
-                  >{/if}
-              </span>
+              {#if OPTIONAL.has(step.key)}<span class="text-muted text-[13px]">{setupCopy.optional}</span
+                >{/if}
               <SetupStepBody
                 {step}
                 setup={current}
@@ -205,21 +200,26 @@
           {#snippet action(item)}
             {@const step = stepOf(item.key)}
             {#if step !== undefined}
-              {#if step.state === 'todo'}
-                <button
-                  class="text-muted hover:text-text min-h-11 text-[13px] underline"
-                  disabled={busy}
-                  onclick={() => mark(step.key, 'skipped')}
-                  data-testid={`setup-step-${item.key}-skip`}>{setupCopy.skip}</button
+              <span class="flex items-center gap-3">
+                <Tag tone={stateTone[step.state]} testid={`setup-step-${item.key}-state`}
+                  >{setupCopy.states[step.state]}</Tag
                 >
-              {:else if step.marked && (step.state === 'skipped' || CONFIRMABLE.has(step.key))}
-                <button
-                  class="text-muted hover:text-text min-h-11 text-[13px] underline"
-                  disabled={busy}
-                  onclick={() => undo(step.key)}
-                  data-testid={`setup-step-${item.key}-undo`}>{setupCopy.undo}</button
-                >
-              {/if}
+                {#if step.state === 'todo'}
+                  <button
+                    class="text-muted hover:text-text min-h-11 text-[13px] underline"
+                    disabled={busy}
+                    onclick={() => mark(step.key, 'skipped')}
+                    data-testid={`setup-step-${item.key}-skip`}>{setupCopy.skip}</button
+                  >
+                {:else if step.marked && (step.state === 'skipped' || CONFIRMABLE.has(step.key))}
+                  <button
+                    class="text-muted hover:text-text min-h-11 text-[13px] underline"
+                    disabled={busy}
+                    onclick={() => undo(step.key)}
+                    data-testid={`setup-step-${item.key}-undo`}>{setupCopy.undo}</button
+                  >
+                {/if}
+              </span>
             {/if}
           {/snippet}
         </Steps>

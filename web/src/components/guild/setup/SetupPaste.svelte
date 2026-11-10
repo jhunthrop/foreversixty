@@ -30,7 +30,7 @@
   <span class="text-muted text-[13px]">{label}</span>
   <div class="flex flex-col gap-2 sm:flex-row sm:items-start">
     <div class="min-w-0 flex-1">
-      <CodeField value={text} {label} readonly short testid={`${testid}-text`} />
+      <CodeField value={text} {label} readonly testid={`${testid}-text`} />
     </div>
     <Button size="sm" onclick={() => void copy()} testid={`${testid}-copy`}
       >{copied ? setupCopy.invite.copied : setupCopy.invite.copy}</Button
