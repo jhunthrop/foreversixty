@@ -3,11 +3,14 @@
      its class colour, `Holy Paladin · Healer`, the account's other answered characters and the note,
      then the state. A member reads the state as a Tag; an officer gets the in-row In / Late / Bench /
      Out control, which writes the same sign-up the Discord buttons write (its own line on phone).
-     While a change saves the control shows it pressed; a refusal reverts it. -->
+     While a change saves the control shows it pressed; a refusal reverts it. From 1024 the row
+     also carries its figures (PlannerFacts) in fixed columns under the roster's one head line. -->
 <script lang="ts">
   import type { GuildSignupState } from '../../../lib/guild/api';
   import { rowSub, stateTag } from '../../../lib/guild/raid-planner-view';
   import type { RosterRow } from '../../../lib/guild/raid-roster';
+  import { phoneFacts, signed, type PlannerFacts } from '../../../lib/guild/planner-facts';
+  import { PLANNER_FACT_COLUMNS } from './planner-columns';
   import { classTone, ROW_ITEM } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Row from '../../ui/Row.svelte';
@@ -23,9 +26,12 @@
     describedBy,
     busy = false,
     refusal = null,
+    facts = null,
     onSetState,
   }: {
     row: RosterRow;
+    /** The raider's figures; null draws no figure columns. */
+    facts?: PlannerFacts | null;
     /** Replaces the spec line (a non-signer's `No Discord linked`). */
     sub?: string;
     /** The night counts roles (a raid or a run, not a guild event). */
@@ -52,10 +58,19 @@
 </script>
 
 <li class={ROW_ITEM} aria-busy={busy} data-testid="raid-roster-row">
-  <Row title={row.name} titleTone={classTone(row.class)} selected={row.own} wrapTrail={officer}>
+  <Row
+    title={row.name}
+    titleTone={classTone(row.class)}
+    selected={row.own}
+    wrapTrail={officer}
+    density={facts === null ? 'default' : 'slim'}
+  >
     {#snippet lead()}<ClassCrestRing characterClass={row.class} size={28} />{/snippet}
     {#snippet subContent()}
       <span class="block truncate" title={sub ?? rowSub(row, roles)}>{sub ?? rowSub(row, roles)}</span>
+      {#if facts !== null}<span class="block lg:hidden" data-testid="raid-roster-facts-phone"
+          >{phoneFacts(facts)}</span
+        >{/if}
       {#if row.also !== null}<span class="block break-words" data-testid="raid-roster-also">{row.also}</span
         >{/if}
       {#if row.note !== ''}<span class="text-text block break-words" data-testid="raid-roster-note"
@@ -79,6 +94,19 @@
       {:else if row.state !== null}
         {@const tag = stateTag(row.state)}
         <Tag tone={tag.tone} testid="raid-roster-state">{tag.text}</Tag>
+      {/if}
+      {#if facts !== null}
+        <span class="hidden {PLANNER_FACT_COLUMNS} text-[14px] lg:grid" data-testid="raid-roster-facts">
+          <span class="text-strong">
+            {facts.itemLevel ?? '–'}{#if facts.itemLevelDelta !== null}
+              <span class="text-muted ml-1 font-normal">{signed(facts.itemLevelDelta)}</span>{/if}
+          </span>
+          {#if facts.short === null}<span class="text-muted">–</span>
+          {:else if facts.short === 0}<span class="text-kill" aria-label="Ready">✓</span>
+          {:else}<span class="text-wipe">{facts.short} short</span>{/if}
+          <span>{facts.rating ?? '–'}</span>
+          <span>{facts.attendancePct === null ? '–' : `${facts.attendancePct}%`}</span>
+        </span>
       {/if}
     {/snippet}
   </Row>

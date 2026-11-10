@@ -12,7 +12,6 @@ import {
   candidateSub,
   decisionSub,
   recordLine,
-  recordOf,
   decisionTitle,
   defaultNight,
   dropRows,
@@ -192,14 +191,6 @@ describe('the record line (the night report and the member profile)', () => {
     expect(recordLine({ ...record, ms_os: 'ms', votes_no: 0, votes_yes: 4, reason: null })).toBe(
       '4 of 4 yes',
     );
-    expect(recordLine(recordOf({}))).toBe('');
-    expect(recordOf({ votes_yes: 2 })).toEqual({
-      ms_os: null,
-      reason: null,
-      votes_yes: 2,
-      votes_no: null,
-      votes_officers: null,
-    });
   });
 });
 

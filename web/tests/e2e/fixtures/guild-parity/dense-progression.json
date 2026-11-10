@@ -32,35 +32,73 @@
           "report_id": "olympusony1209",
           "date": "2026-12-09",
           "pulls": 2,
-          "killed": true
+          "killed": true,
+          "kill_ms": 225000,
+          "deaths": 12
         },
         {
           "report_id": "olympusony1216",
           "date": "2026-12-16",
           "pulls": 1,
-          "killed": true
+          "killed": true,
+          "kill_ms": 214000,
+          "deaths": 4
         },
         {
           "report_id": "olympusony1223",
           "date": "2026-12-23",
           "pulls": 1,
-          "killed": true
+          "killed": true,
+          "kill_ms": 206000,
+          "deaths": 3
         },
         {
           "report_id": "olympusony1230",
           "date": "2026-12-30",
           "pulls": 1,
-          "killed": true
+          "killed": true,
+          "kill_ms": 198000,
+          "deaths": 5
         },
         {
           "report_id": "olympusony0106",
           "date": "2027-01-06",
           "pulls": 1,
-          "killed": true
+          "killed": true,
+          "kill_ms": 192000,
+          "deaths": 2
         }
       ],
-      "deaths_per_pull": 3.5,
-      "best_by_role": {}
+      "deaths_per_pull": 4.3,
+      "best_by_role": {
+        "tank": {
+          "name": "Bramblehorn",
+          "class": "druid",
+          "spec": "Feral",
+          "metric": "dps",
+          "value": 229.0,
+          "report_id": "olympusony0106",
+          "fight_index": 4
+        },
+        "healer": {
+          "name": "Brightvow",
+          "class": "priest",
+          "spec": "Discipline",
+          "metric": "hps",
+          "value": 357.0,
+          "report_id": "olympusony0106",
+          "fight_index": 4
+        },
+        "dps": {
+          "name": "Steelmane",
+          "class": "warrior",
+          "spec": "Arms",
+          "metric": "dps",
+          "value": 523.0,
+          "report_id": "olympusony0106",
+          "fight_index": 4
+        }
+      }
     }
   ]
 }

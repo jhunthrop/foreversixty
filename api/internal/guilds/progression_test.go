@@ -84,6 +84,9 @@ func TestProgressionCountsOnyxiaAndUnnamedZones(t *testing.T) {
 	if len(onyxia.PullsByNight) != 1 || onyxia.PullsByNight[0].Pulls != 2 || !onyxia.PullsByNight[0].Killed {
 		t.Fatalf("pullsByNight = %+v, want one night, 2 pulls, killed", onyxia.PullsByNight)
 	}
+	if night := onyxia.PullsByNight[0]; night.KillMS == nil || *night.KillMS != 260000 || night.Deaths != 3 {
+		t.Errorf("night kill/deaths = %v/%d, want 260000/3 (the kill's time, 2+1 deaths)", night.KillMS, night.Deaths)
+	}
 	tank := onyxia.BestByRole["tank"]
 	if tank == nil || tank.Name != "Progtank" || tank.Metric != "dps" || tank.Value != 42.0 {
 		t.Errorf("best tank = %+v, want Progtank dps 42.0", tank)

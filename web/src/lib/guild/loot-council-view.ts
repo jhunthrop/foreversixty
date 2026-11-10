@@ -260,18 +260,6 @@ export function recordParts(record: AwardRecord): string[] {
   return parts;
 }
 
-/** A record from an award that may predate the field on its contract (the night report's awards
- *  before the integrator folds AwardRecord into RaidLootAward): every field it lacks is null. */
-export function recordOf(award: Partial<AwardRecord>): AwardRecord {
-  return {
-    ms_os: award.ms_os ?? null,
-    reason: award.reason ?? null,
-    votes_yes: award.votes_yes ?? null,
-    votes_no: award.votes_no ?? null,
-    votes_officers: award.votes_officers ?? null,
-  };
-}
-
 /** The votes, short: "3 of 3 yes" when nobody said no, "3 yes, 1 no of 4" when someone did
  *  ('' when the award kept none). */
 function votesShort(record: AwardRecord): string {

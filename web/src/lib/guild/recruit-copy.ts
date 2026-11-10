@@ -66,6 +66,8 @@ export const recruitCopy = {
     withdrawFailed: 'That did not withdraw. Try again.',
     member: (guild: string) => `You are in ${guild}.`,
     openGuild: 'Open the guild',
+    officerOpen: (n: number) => (n === 1 ? '1 open application' : `${n} open applications`),
+    review: 'Review',
   },
 } as const;
 

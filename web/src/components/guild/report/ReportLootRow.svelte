@@ -8,8 +8,7 @@
 <script lang="ts">
   import activeBuild from '../../../data/active-build.json';
   import type { RaidLootAward } from '../../../lib/guild/attendance-contract';
-  import type { AwardRecord } from '../../../lib/guild/loot-council-api';
-  import { recordLine, recordOf } from '../../../lib/guild/loot-council-view';
+  import { recordLine } from '../../../lib/guild/loot-council-view';
   import { lootIconOf } from '../../../lib/guild/loot-icon';
   import { reportNightCopy as copy } from '../../../lib/guild/report-night-copy';
   import ItemRow from '../../ui/ItemRow.svelte';
@@ -18,14 +17,14 @@
     award,
     boss,
   }: {
-    award: RaidLootAward & Partial<AwardRecord>;
+    award: RaidLootAward;
     /** The boss, '' when the night had one (every row would repeat it). */
     boss: string;
   } = $props();
 
   const build = activeBuild.build;
   const icon = $derived(lootIconOf(award) ?? undefined);
-  const why = $derived(recordLine(recordOf(award)));
+  const why = $derived(recordLine(award));
 </script>
 
 <div data-testid="raid-loot-award">

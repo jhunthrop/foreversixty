@@ -52,7 +52,7 @@ describe('groupAttendance', () => {
     expect(groups.map((g) => g.label)).toEqual([
       'Signed up, not in the log',
       'Late',
-      'Joined from the bench or without a sign-up',
+      'Joined',
       'Present',
       'Bench and out',
     ]);

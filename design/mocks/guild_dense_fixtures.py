@@ -170,7 +170,8 @@ def raid_view(viewer: str, officer: bool) -> dict:
             'not_signed': [{'character_key': r.key, 'name': r.name, 'class': r.cls, 'spec': r.spec, 'group': r.group.lower(),
                             'spec_key': r.spec_key} for r in not_signed],
             'viewer': {'characters': [{'character_key': me.key, 'name': me.name, 'class': me.cls, 'spec': me.spec,
-                                       'role': me.role, 'state': me.answer}]},
+                                       'role': me.role, 'state': me.answer, 'verified': True, 'spec_key': me.spec_key,
+                                       'raid_spec': None, 'default_spec': me.spec_key}]},
             'discord': {'available': True, 'connected': True, 'post_default': True, 'remind_default': True, 'channel_name': 'raids'},
             'discord_post': {'posted_at': D.NEXT_POSTED_AT, 'post_at': None, 'reminded_at': None, 'remind': True},
             'cover': cover(), 'comp_target': {**D.COMP_TARGET, 'source': 'guild'}, 'assignments': None,
@@ -179,6 +180,27 @@ def raid_view(viewer: str, officer: bool) -> dict:
                                     'discord_linked': r.name != 'Skyarcana', 'role': r.role,
                                     'last_week': CELL[r.cells[-1]] if officer else None} for r in not_signed] if officer else [],
             'ping': {'last_pinged_at': None, 'next_allowed_at': None}}
+
+
+def second_raid(viewer: str, officer: bool) -> dict:
+    """Raid 46, Wed 20 Jan: eleven In so far, the post not out yet."""
+    view = raid_view(viewer, officer)
+    early = [r for r in D.ROSTER if r.answer == 'in'][:11]
+    signed = {r.name for r in early}
+    rows = [{**signup(r, viewer), 'state': 'in', 'note': '', 'late_minutes': None} for r in early]
+    counts = {**view['counts'], 'in': len(rows), 'late': 0, 'bench': 0, 'out': 0,
+              'tanks': sum(1 for r in early if r.group == 'Tank'), 'healers': sum(1 for r in early if r.group == 'Healer'),
+              'melee': sum(1 for r in early if r.group == 'Melee'), 'ranged': sum(1 for r in early if r.group == 'Ranged'),
+              'late_groups': {'tanks': 0, 'healers': 0, 'melee': 0, 'ranged': 0}}
+    counts['dps'] = counts['melee'] + counts['ranged']
+    rest = [r for r in D.ROSTER if r.name not in signed]
+    me = D.BY_NAME[viewer]
+    return {**view, 'id': D.SECOND_RAID_ID, 'starts_at': D.SECOND_RAID_AT, 'counts': counts, 'signups': rows,
+            'not_signed': [{'character_key': r.key, 'name': r.name, 'class': r.cls, 'spec': r.spec, 'group': r.group.lower(),
+                            'spec_key': r.spec_key} for r in rest],
+            'viewer': {'characters': [{**view['viewer']['characters'][0], 'state': 'in' if me.name in signed else None}]},
+            'discord_post': {'posted_at': None, 'post_at': '2027-01-14T18:00:00Z', 'reminded_at': None, 'remind': True},
+            'not_signed_raiders': [], 'ping': {'last_pinged_at': None, 'next_allowed_at': None}}
 
 
 # ---- raids 43 and 44 (done): the report's parses for every raider who came
@@ -218,28 +240,47 @@ def raids_page() -> dict:
     for i, (rid, at, rep, kill, wipes, deaths) in enumerate(reversed(D.NIGHTS)):
         idx = len(D.NIGHTS) - 1 - i
         came = [r for r in D.ROSTER if r.cells[idx] == 'P']
-        top = max((r for r in came if r.metric == 'dps' and r.group != 'Tank'), key=lambda r: r.figures[1])
+        def night_fig(r: D.Raider) -> float:
+            return r.figures[1] + D._n(r.name, f'night{idx}', -30, 30)
+        top = max((r for r in came if r.metric == 'dps' and r.group != 'Tank'), key=night_fig)
+        heal = max((r for r in came if r.group == 'Healer'), key=night_fig)
         rows.append({'id': rep, 'title': f'{ZONE_NAME} · raid night', 'zone': ZONE_NAME, 'created_at': at, 'fight_count': 3 + wipes,
                      'kill_count': 1, 'duration_ms': 3_000_000 + kill, 'wipe_count': wipes, 'raiders': len(came), 'deaths': deaths,
-                     'top_hps': None, 'top_dps': {'name': top.name, 'class': top.cls, 'metric': 'dps', 'value': top.figures[1]},
+                     'top_hps': {'name': heal.name, 'class': heal.cls, 'metric': 'hps', 'value': night_fig(heal)},
+                     'top_dps': {'name': top.name, 'class': top.cls, 'metric': 'dps', 'value': night_fig(top)},
                      'fights': [{'index': 0, 'name': None, 'encounter_id': None, 'kill': True, 'duration_ms': 60_000, 'deaths': 0, 'players': len(came)}]
                      + [{'index': 1 + w, 'name': 'Onyxia', 'encounter_id': ENCOUNTER_ID, 'kill': w == wipes, 'duration_ms': kill if w == wipes else 240_000,
                          'deaths': deaths if w == wipes else 5, 'players': len(came)} for w in range(wipes + 1)],
                      'present': [], 'raid_id': rid})
-    return {'rows': rows, 'next_cursor': None}
+    return {'rows': rows, 'next_cursor': None, 'planned': [raid_view(D.OFFICER, True), second_raid(D.OFFICER, True)],
+            'zones': [{'key': ZONE_KEY, 'name': ZONE_NAME, 'kind': 'raid', 'size': 40}], 'guild_timezone': D.ZONE,
+            'discord': {'available': True, 'connected': True, 'post_default': True, 'remind_default': True, 'channel_name': 'raid-signups'}}
+
+
+def best_ref(group: set[str]) -> dict:
+    """The guild's best Onyxia kill figure for a role (best_by_role): the raider with the highest of their two kills."""
+    r = max((x for x in D.ROSTER if x.group in group), key=lambda x: max(x.figures))
+    return {'name': r.name, 'class': r.cls, 'spec': r.spec, 'metric': r.metric, 'value': max(r.figures),
+            'report_id': D.NIGHTS[-1][2], 'fight_index': 4}
 
 
 def progression() -> dict:
     return {'tier': TIER, 'unnamed': [{'zone': 'Barrow Deeps', 'pulls': 0, 'nights': 0}, {'zone': 'Hyjal Summit', 'pulls': 0, 'nights': 0}],
             'encounters': [{'encounter_id': ENCOUNTER_ID, 'name': 'Onyxia', 'zone': ZONE_NAME, 'first_kill_at': D.NIGHTS[0][1],
                             'pulls': TIER['pulls_total'], 'kills': len(D.NIGHTS), 'best_kill_ms': min(n[3] for n in D.NIGHTS),
-                            'pulls_by_night': [{'report_id': n[2], 'date': night_date(n[1]), 'pulls': 1 + n[4], 'killed': True}
-                                               for n in D.NIGHTS],
-                            'deaths_per_pull': round(sum(n[5] for n in D.NIGHTS) / TIER['pulls_total'], 1), 'best_by_role': {}}]}
+                            'pulls_by_night': [{'report_id': n[2], 'date': night_date(n[1]), 'pulls': 1 + n[4], 'killed': True,
+                                                'kill_ms': n[3], 'deaths': n[5] + 5 * n[4]} for n in D.NIGHTS],
+                            'deaths_per_pull': round(sum(n[5] + 5 * n[4] for n in D.NIGHTS) / TIER['pulls_total'], 1),
+                            'best_by_role': {'tank': best_ref({'Tank'}), 'healer': best_ref({'Healer'}),
+                                             'dps': best_ref({'Melee', 'Ranged'})}}]}
 
 
 def guild_page() -> dict:
-    return {'guild': GUILD, 'roster_best': [],
+    best = sorted(D.ROSTER, key=lambda r: -max(r.figures))
+    return {'guild': GUILD, 'roster_best': [{'player': {'key': r.key, 'name': r.name, 'class': r.cls, 'spec': r.spec}, 'encounter': 'Onyxia',
+                                             'encounter_id': ENCOUNTER_ID, 'metric': r.metric, 'value': max(r.figures),
+                                             'fought_at': D.NIGHTS[-1][1], 'execution_score': round(0.7 + r.best_pct / 400, 2)}
+                                            for r in best],
             'reports': [{k: r[k] for k in ('id', 'title', 'zone', 'created_at')} for r in reports()],
             'progression': [{'encounter': 'Onyxia', 'encounter_id': ENCOUNTER_ID, 'difficulty': 1, 'kills': len(D.NIGHTS),
                              'pull_count': TIER['pulls_total'], 'first_kill_at': D.NIGHTS[0][1]}]}

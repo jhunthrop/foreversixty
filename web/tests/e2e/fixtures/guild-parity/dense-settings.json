@@ -23,12 +23,26 @@
   },
   "discord": {
     "available": true,
-    "connected": true,
-    "channel_id": "1300000000000000002",
-    "discord_guild_id": "1300000000000000001",
+    "connected": false,
+    "channel_id": null,
+    "discord_guild_id": null,
     "disabled_reason": null,
     "last_error": null,
     "failures": 0,
-    "post_default": true
+    "post_default": true,
+    "bot_available": true,
+    "bot": {
+      "server_id": "1300000000000000001",
+      "server_name": "Olympus XXVII",
+      "channel_id": "1300000000000000003",
+      "channel_name": "raid-signups",
+      "linked_members": 31,
+      "members": 40,
+      "failures": 0,
+      "last_error": null,
+      "removed_in_discord": false,
+      "channel_unusable": null
+    },
+    "bot_refusal": null
   }
 }

@@ -59,14 +59,14 @@ def nights_table() -> str:
         loot = sum(1 for a in D.AWARDS if a[0] == rid)
         delta = '&ndash;' if prev is None else tone(f'{(kill - prev) / 1000:+.0f} s', 'kill' if kill < prev else 'wipe')
         best = kill == min(x[3] for x in D.NIGHTS)
-        rows.append(StatRow(icon(ONY_ICON, 28, 'q5'), f'<b>{day(at_)}</b>', f"Onyxia's Lair &middot; {3 + wipes} pulls" + (' &middot; <span class="gold">best kill</span>' if best else ''),
-                            [clock(kill), delta, str(wipes), str(deaths), f'{len(came)}', f'{name_html(top)} <span class="mute">{top.figures[1]:.0f}</span>',
-                             f'{name_html(heal)} <span class="mute">{heal.figures[1]:.0f}</span>', str(loot)],
+        tops = f' &middot; Top HPS {name_html(heal)} {heal.figures[1]:.0f} &middot; Top DPS {name_html(top)} {top.figures[1]:.0f}'
+        rows.append(StatRow(icon(ONY_ICON, 28, 'q5'), f'<b>{day(at_)}</b>', f"{3 + wipes} pulls" + (' &middot; <span class="gold">best kill</span>' if best else '') + tops,
+                            [clock(kill), delta, str(wipes), str(deaths), f'{len(came)}', str(loot)],
                             meter=ws_prims.Meter(kill / worst), primary_phone=f'{wipes} wipes &middot; {deaths} deaths'))
         prev = kill
     rows.reverse()
-    return dense(StatTable([('', False), ('Night', False), ('Onyxia kill', False), ('Kill', True), ('vs last', True), ('Wipes', True),
-                            ('Deaths', True), ('Raiders', True), ('Top DPS', True), ('Top HPS', True), ('Loot', True)], rows, 8))
+    return dense(StatTable([('', False), ('Night', False), ('Boss time', False), ('Kill time', True), ('vs last', True), ('Wipes', True),
+                            ('Deaths', True), ('Raiders', True), ('Loot', True)], rows, 6))
 
 
 def raids() -> str:
@@ -162,7 +162,7 @@ def nights_by_boss() -> str:
         came = sum(1 for r in D.ROSTER if r.cells[i] == 'P')
         prev = D.NIGHTS[i - 1][3] if i else None
         delta = '&ndash;' if prev is None else tone(f'{(kill - prev) / 1000:+.0f} s', 'kill' if kill < prev else 'wipe')
-        rows.append(StatRow('', f'<b>{day(at_)}</b>', f'{came} raiders' + (' &middot; first kill' if i == 0 else ''),
+        rows.append(StatRow('', f'<b>{day(at_)}</b>', 'first kill' if i == 0 else 'kill',
                             [clock(kill), delta, str(1 + wipes), str(wipes), str(deaths)], meter=ws_prims.Meter(kill / worst)))
     rows.reverse()
     return dense(StatTable([('', False), ('Night', False), ('Kill time', False), ('Kill', True), ('vs last', True), ('Pulls', True),
@@ -213,19 +213,19 @@ def applicant_row(a: tuple) -> str:
     (aid, name, cls, spec, spec_name, ilvl, metric, value, pct, days, avail, message, yes, no, mine, status, decided) = a
     g = GROUP_OF_SPEC[spec]
     gap = gap_of(g)
-    fills = tone(f'{GROUP_WORD[g]}, {gap} short', 'gold') if gap > 0 else tone(f'{GROUP_WORD[g]}, full', 'mute')
+    fills = f'<span class="gold">{GROUP_WORD[g]}, {gap} short</span>' if gap > 0 else f'<span class="mute">{GROUP_WORD[g]}, full</span>'
     actions = Button('Accept', True, True, act=True) + ' ' + Button('Decline', False, True, tone='ghost', act=True)
-    sub = spec_name + (f' &middot; {message}' if message else '') + (f' &middot; {avail}' if avail else '')
+    sub = f'{spec_name} {fills}<br>' + (message or 'No message') + (f' &middot; Can raid: {avail}' if avail else '')
     return StatRow(crest_img(cls, 28), f'<b style="color:{C[cls]}">{name}</b>', sub,
                    [f'{ilvl} <span class="mute">{ilvl - D.MEDIAN_ILVL:+d}</span>', tone(str(pct), parse_class(pct)) + f' <span class="mute">{value:.0f}</span>',
-                    fills, f'{yes}&ndash;{no} <span class="mute">of {VOTERS}</span>', f'{days} d', actions], bar=False, primary_phone=f'{pct} &middot; {days} d')
+                    f'{days} d', f'{yes}&ndash;{no} <span class="mute">of {VOTERS}</span>', actions], bar=False, primary_phone=f'{pct} &middot; {days} d')
 
 
 def applications() -> str:
     open_ = [a for a in APPLICATIONS if a[15] == 'pending']
     done = [a for a in APPLICATIONS if a[15] != 'pending']
-    table = dense(StatTable([('', False), ('Applicant', False), ('Item level', True), ('Best %', True), ('Fills', True), ('Votes', True),
-                             ('Waiting', True), ('', True)], [applicant_row(a) for a in open_], 6, bar=False))
+    table = dense(StatTable([('', False), ('Applicant', False), ('Item level', True), ('Best %', True), ('Waiting', True), ('Votes', True),
+                             ('', True)], [applicant_row(a) for a in open_], 5, bar=False))
     rec = Rows([Row(f'{a[1]} {"accepted" if a[15] == "accepted" else "declined"}', f'{a[4]} &middot; {a[12]} yes, {a[13]} no &middot; by Dunmaro &middot; {a[9] - a[16]} d ago',
                     lead=crest_img(a[2], 28), title_color=C[a[2]], link=False) for a in done], open_=True)
     gaps = Rows([Row(GROUP_WORD[g], f'{gap_of(g)} short for Wednesday &middot; {sum(1 for a in open_ if GROUP_OF_SPEC[a[3]] == g)} applying',

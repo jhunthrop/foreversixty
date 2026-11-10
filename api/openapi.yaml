@@ -5595,6 +5595,10 @@ components:
         class: { type: [string, "null"], x-name: className }
         spec: { type: [string, "null"] }
         spec_name: { type: [string, "null"] }
+        group:
+          type: [string, "null"]
+          enum: [tank, healer, melee, ranged, null]
+          description: The raid group the spec fights in (the sign-ups' groups); null when the spec is unknown.
         level: { type: [integer, "null"] }
         item_level: { type: [integer, "null"] }
         race: { type: [string, "null"], description: 'Battle.net''s race name ("Dwarf"), else the export''s race; null when neither says.' }
@@ -8972,6 +8976,80 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '422':
           description: "invalid n"
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/guilds/{id}/progression:
+    get:
+      summary: A guild's tier, each table boss's depth and the unnamed zones' pulls
+      description: >-
+        Anyone. A verified member's answer counts the guild's private nights (Cache-Control
+        private); anyone else reads the public numbers. pulls_by_night carries each night's
+        fastest kill (kill_ms, null without a kill) and every death across that night's pulls.
+      operationId: getGuildProgression
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200':
+          description: "The tier and its encounters"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        title: GuildProgression
+                        required: [tier, encounters, unnamed]
+                        properties:
+                          tier:
+                            type: object
+                            required: [name, raids, named_encounters, down, pulls_total]
+                            properties:
+                              name: { type: string }
+                              raids: { type: array, items: { type: string } }
+                              named_encounters: { type: integer }
+                              down: { type: integer }
+                              pulls_total: { type: integer }
+                          encounters:
+                            type: array
+                            items:
+                              type: object
+                              title: GuildEncounterProgress
+                              required: [encounter_id, name, zone, pulls, kills, pulls_by_night, deaths_per_pull, best_by_role]
+                              properties:
+                                encounter_id: { type: integer, format: int64 }
+                                name: { type: string }
+                                zone: { type: string }
+                                first_kill_at: { type: string, format: date-time }
+                                pulls: { type: integer }
+                                kills: { type: integer }
+                                best_kill_ms: { type: integer, format: int64 }
+                                deaths_per_pull: { type: number }
+                                best_by_role: { type: object, additionalProperties: { type: object } }
+                                pulls_by_night:
+                                  type: array
+                                  items:
+                                    type: object
+                                    required: [report_id, date, pulls, killed, kill_ms, deaths]
+                                    properties:
+                                      report_id: { type: string }
+                                      date: { type: string, format: date }
+                                      pulls: { type: integer }
+                                      killed: { type: boolean }
+                                      kill_ms: { type: [integer, "null"], format: int64 }
+                                      deaths: { type: integer }
+                          unnamed:
+                            type: array
+                            items:
+                              type: object
+                              required: [zone, pulls, nights]
+                              properties:
+                                zone: { type: string }
+                                pulls: { type: integer }
+                                nights: { type: integer }
+        '404':
+          description: "No such guild"
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/guilds/{id}/officer/actions:
     get:

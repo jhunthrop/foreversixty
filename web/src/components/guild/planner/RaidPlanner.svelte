@@ -8,7 +8,15 @@
      notes. Phone keeps that order
      in one column. A done raid is GuildRaid's report path, never this page. -->
 <script lang="ts">
-  import type { GuildRaidView } from '../../../lib/guild/api';
+  import {
+    fetchGuildHome,
+    fetchGuildReadiness,
+    type GuildRaidView,
+    type GuildReadinessRow,
+    type GuildRosterRow,
+  } from '../../../lib/guild/api';
+  import { untrack } from 'svelte';
+  import { plannerFacts } from '../../../lib/guild/planner-facts';
   import type { GateFacts } from '../../../lib/guild/plan-gate';
   import { focusOnMount } from '../../../lib/guild/focus-now';
   import {
@@ -103,6 +111,28 @@
     typeof location === 'undefined' ? defaultGrouping(raid) : groupingFrom(location.search, raid),
   );
   let editingComp = $state(false);
+
+  /** The guild's roster (the /home read the page already made, from cache) and, for officers with
+   *  the Raid guild tools, this raid's readiness rows: each sign-up's figures. */
+  let roster = $state<readonly GuildRosterRow[]>([]);
+  let readiness = $state<readonly GuildReadinessRow[] | null>(null);
+  $effect(() => {
+    const guildId = c.guild?.id;
+    if (guildId === undefined) return;
+    const raidId = raid.id;
+    const ended = flags.ended;
+    void untrack(async () => {
+      try {
+        const home = await fetchGuildHome(guildId);
+        roster = home.roster;
+        if (!officer || ended || home.viewer?.raid_guild_tools !== true) return;
+        readiness = (await fetchGuildReadiness(guildId, raidId)).rows;
+      } catch {
+        readiness = null;
+      }
+    });
+  });
+  const facts = $derived(roster.length === 0 ? null : plannerFacts(roster, readiness));
 
   /** The URL is the truth: a reload, a share and Back restore the grouping (spec 3.4). */
   function chooseGrouping(param: string, value: string): void {
@@ -256,6 +286,7 @@
         closed={flags.cancelled}
         busyKey={c.rosterBusy}
         line={c.line}
+        {facts}
         onSetState={(row, state) => c.setRosterState(row, state)}
       />
     </Section>
@@ -279,6 +310,7 @@
         busyKey={c.rosterBusy}
         pinging={c.planner.pinging}
         pingAnswer={c.planner.pingAnswer}
+        {facts}
         onPing={() => void c.planner.ping()}
         onSetState={(row, state) => c.setRosterState(row, state)}
       />

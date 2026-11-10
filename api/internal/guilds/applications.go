@@ -69,14 +69,17 @@ func (in ApplicationInput) normalized() (ApplicationInput, error) {
 
 // ApplicantCharacter is the character an application names, as the site knows it.
 type ApplicantCharacter struct {
-	CharacterKey string     `json:"character_key"`
-	Name         string     `json:"name"`
-	Class        *string    `json:"class"`
-	Spec         *string    `json:"spec"`
-	SpecName     *string    `json:"spec_name"`
-	Level        *int       `json:"level"`
-	ItemLevel    *int       `json:"item_level"`
-	BestParse    *BestParse `json:"best_parse"`
+	CharacterKey string  `json:"character_key"`
+	Name         string  `json:"name"`
+	Class        *string `json:"class"`
+	Spec         *string `json:"spec"`
+	SpecName     *string `json:"spec_name"`
+	// Group is the raid group the spec fights in (raidspec.Group: tank, healer, melee, ranged),
+	// so the officer reads which open seat an applicant fills; null when the spec is unknown.
+	Group     *string    `json:"group"`
+	Level     *int       `json:"level"`
+	ItemLevel *int       `json:"item_level"`
+	BestParse *BestParse `json:"best_parse"`
 	// Race and Faction are the character's from Battle.net, else its export's race; null when
 	// neither says.
 	Race    *string `json:"race"`
@@ -284,7 +287,7 @@ func (s *Store) applicantCharacters(ctx context.Context, keys []string) (map[str
 		}
 		s.raceFromExport(&c, export)
 		if sp, ok := resolveSpec(c.Class, c.Spec, role); ok {
-			c.SpecName = &sp.Name
+			c.SpecName, c.Group = &sp.Name, strp(sp.Group)
 		}
 		out[c.CharacterKey] = c
 	}

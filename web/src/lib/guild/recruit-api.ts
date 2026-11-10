@@ -13,6 +13,7 @@ import {
   type GuildRosterRow,
 } from './api';
 import type { AwardRecord } from './loot-council-api';
+import type { GuildRaidGroup } from './api';
 
 export type ApplicationStatus = 'pending' | 'accepted' | 'declined' | 'withdrawn';
 export type ApplicationVote = 'yes' | 'no';
@@ -97,6 +98,8 @@ export interface ApplicantCharacter {
   class: string | null;
   spec: string | null;
   spec_name: string | null;
+  /** The raid group the spec fights in; null (or absent from an older API) when unknown. */
+  group?: GuildRaidGroup | null;
   level: number | null;
   item_level: number | null;
   best_parse: ApplicantBestParse | null;

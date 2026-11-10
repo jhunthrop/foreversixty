@@ -15,6 +15,7 @@
         "class": "paladin",
         "spec": "paladin-holy",
         "spec_name": "Holy Paladin",
+        "group": "healer",
         "level": 60,
         "item_level": 63,
         "best_parse": {
@@ -51,6 +52,7 @@
         "class": "warlock",
         "spec": "warlock-destruction",
         "spec_name": "Destruction Warlock",
+        "group": "ranged",
         "level": 60,
         "item_level": 60,
         "best_parse": {
@@ -87,6 +89,7 @@
         "class": "warrior",
         "spec": "warrior-protection",
         "spec_name": "Protection Warrior",
+        "group": "tank",
         "level": 60,
         "item_level": 58,
         "best_parse": {
@@ -123,6 +126,7 @@
         "class": "druid",
         "spec": "druid-restoration",
         "spec_name": "Restoration Druid",
+        "group": "healer",
         "level": 60,
         "item_level": 59,
         "best_parse": {
@@ -140,9 +144,13 @@
         "voters": 3,
         "mine": null
       },
-      "decided_by": "Dunmaro",
-      "role_outcome": null,
-      "dm_outcome": null
+      "decided_by": {
+        "name": "Dunmaro",
+        "class": "hunter",
+        "character_key": "us/pvp/dunmaro"
+      },
+      "role_outcome": "granted",
+      "dm_outcome": "not_opted_in"
     },
     {
       "id": 41,
@@ -159,6 +167,7 @@
         "class": "hunter",
         "spec": "hunter-marksmanship",
         "spec_name": "Marksmanship Hunter",
+        "group": "ranged",
         "level": 60,
         "item_level": 57,
         "best_parse": {
@@ -176,9 +185,13 @@
         "voters": 3,
         "mine": null
       },
-      "decided_by": "Dunmaro",
-      "role_outcome": null,
-      "dm_outcome": null
+      "decided_by": {
+        "name": "Dunmaro",
+        "class": "hunter",
+        "character_key": "us/pvp/dunmaro"
+      },
+      "role_outcome": "granted",
+      "dm_outcome": "not_opted_in"
     },
     {
       "id": 39,
@@ -195,6 +208,7 @@
         "class": "rogue",
         "spec": "rogue-combat",
         "spec_name": "Combat Rogue",
+        "group": "melee",
         "level": 60,
         "item_level": 55,
         "best_parse": {
@@ -212,9 +226,15 @@
         "voters": 3,
         "mine": null
       },
-      "decided_by": "Dunmaro",
+      "decided_by": {
+        "name": "Dunmaro",
+        "class": "hunter",
+        "character_key": "us/pvp/dunmaro"
+      },
       "role_outcome": null,
-      "dm_outcome": null
+      "dm_outcome": "not_opted_in"
     }
-  ]
+  ],
+  "pending": 3,
+  "discord_role_id": "123456789012345678"
 }

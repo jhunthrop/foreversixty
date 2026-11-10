@@ -15,6 +15,7 @@
       "class": "paladin",
       "spec": "Holy",
       "spec_name": "Holy Paladin",
+      "group": "healer",
       "level": 60,
       "item_level": 63,
       "best_parse": {

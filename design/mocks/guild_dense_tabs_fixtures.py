@@ -37,6 +37,10 @@ APPLICATIONS = [
 ]
 
 
+SPEC_GROUP = {'paladin-holy': 'healer', 'warlock-destruction': 'ranged', 'warrior-protection': 'tank', 'druid-restoration': 'healer',
+              'hunter-marksmanship': 'ranged', 'rogue-combat': 'melee'}
+
+
 def recruit_card() -> dict:
     base = json.loads((OUT / 'recruit-card.json').read_text())
     upcoming = [D.NEXT_RAID_AT, D.SECOND_RAID_AT]
@@ -53,15 +57,18 @@ def application(a: tuple) -> dict:
     return {'id': aid, 'guild_id': gd.GUILD_ID, 'status': status, 'created_at': created, 'decided_at': decided_at,
             'message': message, 'availability': avail, 'discord_dm': False,
             'character': {'character_key': f'{gd.REGION}/{gd.RULESET}/{name.lower()}', 'name': name, 'class': cls, 'spec': spec,
-                          'spec_name': spec_name, 'level': 60, 'item_level': ilvl,
+                          'spec_name': spec_name, 'group': SPEC_GROUP[spec], 'level': 60, 'item_level': ilvl,
                           'best_parse': {'metric': metric, 'value': value, 'percentile': pct, 'encounter': 'Onyxia',
                                          'report_id': 'parity', 'fight_index': 3}},
             'votes': {'yes': yes, 'no': no, 'voters': gd.VOTERS, 'mine': mine},
-            'decided_by': None if decided is None else gd.VIEWER, 'role_outcome': None, 'dm_outcome': None}
+            'decided_by': None if decided is None else {'name': gd.VIEWER, 'class': 'hunter', 'character_key': f'{gd.REGION}/{gd.RULESET}/dunmaro'},
+            'role_outcome': None if decided is None else 'granted' if status == 'accepted' else None,
+            'dm_outcome': None if decided is None else 'not_opted_in'}
 
 
 def applications() -> dict:
-    return {'rows': [application(a) for a in APPLICATIONS]}
+    return {'rows': [application(a) for a in APPLICATIONS], 'pending': sum(1 for a in APPLICATIONS if a[15] == 'pending'),
+            'discord_role_id': '123456789012345678'}
 
 
 def billing() -> dict:
@@ -70,7 +77,10 @@ def billing() -> dict:
 
 
 def settings() -> dict:
-    return json.loads((OUT / 'settings-settings.json').read_text())
+    """The bot installed, 31 of the 40 raiders linked to Discord."""
+    base = json.loads((OUT / 'settings-settings-bot.json').read_text())
+    bot = {**base['discord']['bot'], 'linked_members': 31, 'members': len(D.ROSTER)}
+    return {**base, 'discord': {**base['discord'], 'bot': bot}}
 
 
 def setup() -> dict:

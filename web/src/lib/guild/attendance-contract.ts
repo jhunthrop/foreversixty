@@ -4,6 +4,7 @@
 // rows carry `no_export`). The key names are the API's own; api.ts re-exports them and
 // `GuildRaidView` carries them.
 import type { GuildRaidRole, GuildSignupState } from './api';
+import type { AwardRecord } from './loot-council-api';
 
 export type RaidPreDoneStatus = 'planned' | 'locked';
 export type RaidMatchHow = 'auto' | 'hand';
@@ -214,7 +215,8 @@ export interface RaidReportParse {
   percentile?: number | null;
 }
 
-export interface RaidLootAward {
+/** One awarded item on the night report, with the council's decision record (api AwardRecord). */
+export interface RaidLootAward extends AwardRecord {
   item_id: number;
   item_name: string;
   quality: number;
