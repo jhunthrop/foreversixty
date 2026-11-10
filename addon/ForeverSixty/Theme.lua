@@ -48,6 +48,10 @@ Theme.HEX = {
 	tooltipText = "d0d0d0",
 	--- The client's own tooltip body white: the addon's plain lines on a player's tooltip (A.2).
 	tooltipBody = "ffffff",
+	--- The client's tooltip ground and edge (GameTooltip's dark navy and grey rim), for the tour's
+	--- drawn example of a tooltip.
+	tooltipGround = "080a16",
+	tooltipEdge = "9095a3",
 	--- The client's own tooltip gold (its item-set and "Requires" lines).
 	clientGold = "ffd100",
 	body = "e9e4d8",

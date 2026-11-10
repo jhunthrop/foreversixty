@@ -9,12 +9,13 @@ local mock = require("wow_mock")
 local L = require("Locale")
 
 describe("Onboarding, the pure model", function()
-	local Onboarding
+	local Onboarding, TourExample
 
 	before_each(function()
 		mock.install({})
 		helper.load("Theme").reset()
 		Onboarding = helper.load("Onboarding")
+		TourExample = helper.load("TourExample")
 	end)
 
 	after_each(function()
@@ -104,6 +105,50 @@ describe("Onboarding, the pure model", function()
 		assert.is_nil(L.tourArrowRight)
 		assert.is_nil(L.tourDot)
 		assert.are.equal(L.settingsTooltipsOnly, L.tourJustTooltips)
+	end)
+
+	it("hovers Tooltips only with the setting's own hint and that it ends the tour", function()
+		assert.are.equal(L.tourJustTooltips, L.tourJustTooltipsHint[1])
+		assert.are.equal(L.settingsTooltipsOnlyHint, L.tourJustTooltipsHint[2].text)
+		assert.are.equal(3, #L.tourJustTooltipsHint)
+	end)
+
+	it("sizes each page to its content, between the floor and the full height", function()
+		assert.are.equal(Onboarding.MIN_HEIGHT, Onboarding.frameHeight(0))
+		assert.are.equal(Onboarding.HEIGHT, Onboarding.frameHeight(2000))
+		local mid = Onboarding.frameHeight(200)
+		assert.is_true(mid > Onboarding.MIN_HEIGHT and mid < Onboarding.HEIGHT)
+	end)
+
+	it("shows the panel's first upgrade as the tooltip shows it: the arrow and its figure, then slot and source",
+		function()
+			local example = TourExample.example({ upgrade = { name = "Ranger Bow", hex = "0070dd", gain = 3.5, unit = "dps",
+				detail = "Ranged · World drop" } })
+			assert.are.equal("Ranger Bow", example.name)
+			assert.are.equal("0070dd", example.hex)
+			assert.is_truthy(example.lines[1][1]:find("+3.5 DPS", 1, true))
+			assert.is_truthy(example.lines[1][1]:find("|T", 1, true))
+			assert.are.equal("tooltipGreen", example.lines[1][2])
+			assert.are.same({ "Ranged · World drop", "tooltipMuted" }, example.lines[2])
+		end)
+
+	it("falls back to the data's pick, Best in slot at the band ahead for a low character", function()
+		local data = {
+			bis = { ["hunter-beast-mastery"] = { [20] = { alliance = {
+				chest = "6468|D|Wailing Caverns: Mutanus the Devourer|0.31",
+			} } } },
+			bisNames = { [6468] = "Deviate Scale Belt" },
+		}
+		local pick = TourExample.dataPick(data, "hunter-beast-mastery", 6, "alliance")
+		assert.are.equal(6468, pick.itemId)
+		assert.are.equal(20, pick.band)
+		assert.is_true(pick.upcoming)
+		local example = TourExample.example({ pick = pick })
+		assert.are.equal("Deviate Scale Belt", example.name)
+		assert.are.same({ string.format(L.tooltipYourBisAt, 20), "clientGold" }, example.lines[1])
+		assert.is_truthy(example.lines[2][1]:find("Mutanus the Devourer", 1, true))
+		assert.is_nil(TourExample.dataPick(data, "hunter-beast-mastery", 6, nil))
+		assert.is_nil(TourExample.example({}))
 	end)
 end)
 

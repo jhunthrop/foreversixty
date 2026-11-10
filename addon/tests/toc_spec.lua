@@ -45,7 +45,8 @@ describe("the TOC", function()
 		-- open it.
 		"surfaces/Panel.lua",
 		-- The first-run tour (spec 3.1): reads the chip, the panel and SiteStatus; Options opens it.
-		"surfaces/Onboarding.lua",
+		-- Its page 2 example reads the panel's upgrades and the item tooltip's lines.
+		"surfaces/TourExample.lua", "surfaces/Onboarding.lua",
 		-- The guild tab (L5.1): reads Score, Comms.seen and the inbox; Options refreshes it.
 		"surfaces/GuildTab.lua",
 		-- The group panel (L5.2): reads Inspect, Score, Comms.seen and the chip's ready-check

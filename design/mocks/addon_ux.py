@@ -662,8 +662,8 @@ OB_W, OB_H = 640, 450
 MARK = b64((ROOT / 'design/logo/foreversixty-mark.svg').read_bytes(), 'image/svg+xml')
 BANNER = b64((ROOT / 'design/mocks/data/icons/inv_bannerpvp_02.jpg').read_bytes(), 'image/jpeg')
 ADDON_ICON = tga_uri(ROOT / 'addon/ForeverSixty/icon.png')
-COMING = (f'<span style="font-size:11px;color:#1a1200;background:{C["gold"]};border-radius:7px;padding:0 6px;'
-          f'margin-left:4px">coming</span>')
+# Onboarding.lua coming(): the plain word in client gold, 6 px after the line.
+COMING = f'<span style="font-size:12px;color:{C["gold"]};margin-left:6px">coming</span>'
 
 
 # The tour wears the panel's chrome (design/specs/2026-11-08-addon-ux.md 4.2 Look; Widgets.umberFrame,
@@ -706,10 +706,13 @@ def flow_arrow(direction):
 
 
 def onboarding(page, heading, content, next_label='Next', extra_right='', total=PAGES, faction='alliance'):
-    left_extra = '<span class="btn" style="padding:0 10px">Tooltips only</span>' if page == 1 else ''
+    left_extra = ('<span class="btn" style="padding:0 10px;position:relative">Tooltips only</span>'
+                  if page == 1 else '')
     skip = '' if page == total else '<span class="btn" style="padding:0 14px">Skip tour</span>'
     back = '' if page == 1 else '<span class="btn">Back</span>'
-    footer = (f'<div style="position:absolute;left:16px;right:16px;bottom:14px;display:flex;align-items:center;'
+    # Onboarding.frameHeight: the page is as tall as its content (24 over the footer, 14 under it),
+    # 240 to 450.
+    footer = (f'<div style="margin:24px 16px 0;padding-bottom:14px;display:flex;align-items:center;'
               f'justify-content:space-between"><span style="display:flex;gap:8px;align-items:center">'
               f'{skip}{left_extra}</span><span style="display:flex;gap:8px">{back}{extra_right}'
               f'<span class="btn" style="padding:0 20px">{next_label}</span></span></div>')
@@ -722,7 +725,8 @@ def onboarding(page, heading, content, next_label='Next', extra_right='', total=
             f'text-shadow:1px 1px 0 #000">{page}</span><span style="font-size:12px;color:{U["bone_dim"]}"> of {total}'
             f'</span></div></div>')
     return (f'<style>@font-face {{ font-family: Title; src: url({TITLE_FONT}); }}</style>'
-            f'<div style="position:relative;width:{OB_W}px;height:{OB_H}px;color:{U["ink"]};'
+            f'<div style="position:relative;width:{OB_W}px;min-height:240px;max-height:{OB_H}px;'
+            f'box-sizing:border-box;color:{U["ink"]};'
             f'background:linear-gradient({U["top"]},{U["ground"]});border:1px solid {U["edge"]};'
             f'box-shadow:inset 0 0 0 1px {U["line"]},0 8px 28px rgba(0,0,0,.7)">'
             f'{band}<div style="position:absolute;top:5px;right:6px;width:20px;height:20px;'
@@ -773,13 +777,25 @@ def board_onboarding_1(guild=True):
                     onboarding(1, 'How Forever Sixty works', diagram, total=PAGES if guild else PAGES - 1))
 
 
+def board_onboarding_1_hover():
+    return board_onboarding_1().replace(
+        'Onboarding, page 1 of 5</b>', 'Onboarding, page 1 of 5, hovering Tooltips only</b>').replace(
+        'Tooltips only</span>', 'Tooltips only' + HOVER_HINT + '</span>', 1)
+
+
+HOVER_HINT = ('<div class="tt" style="position:absolute;left:-30px;bottom:30px;min-width:0;width:300px;'
+              'font-size:12.5px;line-height:16px;text-align:left;color:#fff"><div style="color:#ffd100;font-size:14px;'
+              'line-height:18px">Tooltips only</div><div>Turns off everything but the tooltip lines.</div>'
+              '<div>Ends the tour. /fs help opens it again.</div></div>')
+
+
 def board_onboarding_1_solo():
     return board_onboarding_1(guild=False).replace(
         'Onboarding, page 1 of 5</b> (4 for a character with no guild)',
         'Onboarding, page 1 of 4, a character with no guild</b> (no guild node, no guild clause)')
 
 
-def icon_row(icon, title, text, source=None):
+def icon_row(icon, title, text, source=None, extra=''):
     """drawRows in Onboarding.lua: an optional muted source right-aligned in 160 px, a 30 px icon, the
     title in ink and its line muted under it."""
     src = (f'<div style="width:160px;flex:none;text-align:right;font-size:12px;color:{U["muted"]};'
@@ -787,17 +803,30 @@ def icon_row(icon, title, text, source=None):
     return (f'<div style="display:flex;align-items:flex-start;margin-bottom:8px;min-height:44px">{src}'
             f'{node_icon(icon, 30)}<div style="margin-left:10px"><div style="color:{U["ink"]};font-size:13.5px;'
             f'line-height:17px">{title}</div><div style="font-size:12px;color:{U["muted"]};line-height:15px;'
-            f'margin-top:1px">{text}</div></div></div>')
+            f'margin-top:1px">{text}</div>{extra}</div></div>')
 
 
 ARROW_ICON = tga_uri(ROOT / 'addon/ForeverSixty/media/arrow.tga')
 
 
+def tooltip_card(name, quality, lines):
+    """Onboarding.lua exampleCard: the client's tooltip ground (#080a16) and edge (#9095a3), the item's
+    name in its quality colour, then the lines the addon adds."""
+    body = ''.join(f'<div style="color:{color};font-size:12px;line-height:15px">{text}</div>'
+                   for text, color in lines)
+    return (f'<div style="display:inline-block;margin-top:6px;padding:7px 10px 7px;background:rgba(8,10,22,.94);'
+            f'border:1px solid #9095a3"><div style="color:{QUALITY[quality]};font-size:13.5px;line-height:18px">'
+            f'{name}</div>{body}</div>')
+
+
 def board_onboarding_2():
     rows = (icon_row(ARROW_ICON, 'The green arrow', 'On a bag item, a quest reward or a loot roll that beats what '
                      'you wear.', 'BiS pages')
+            # Level 6 Beast Mastery, alliance, no upgrade yet: Data.lua bis band 20 main_hand, item 5200.
             + icon_row(icon_uri('inv_weapon_bow_02'), 'One line on every item', '+2.2 DPS, Best in slot or Not for '
-                       'you. Shift shows the rest.', 'Spec weights or your sim')
+                       'you. Shift shows the rest.', 'Spec weights or your sim',
+                       tooltip_card('Impaling Harpoon', 3, [('Best in slot at level 20', C['gold']),
+                                    ('The Deadmines · Captain Greenskin · 30% drop', '#b8b8b8')]))
             + icon_row(icon_uri('ability_searingarrow'), 'The gold talent ring', "Your next point, in that build's "
                        'order.', 'Class guide build')
             + icon_row(icon_uri('inv_spear_07'), 'Rotation in your panel', 'The buttons to press at your level, and '
@@ -954,6 +983,7 @@ BOARDS = {
     'panel-raider-60': board_panel_raider,
     'panel-fresh-install': board_panel_fresh,
     'onboarding-1-loop': board_onboarding_1,
+    'onboarding-1-hover': board_onboarding_1_hover,
     'onboarding-1-loop-solo': board_onboarding_1_solo,
     'onboarding-2-site-in-game': board_onboarding_2,
     'onboarding-3-game-to-site': board_onboarding_3,

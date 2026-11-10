@@ -26,6 +26,7 @@ local Prefs = ns.Prefs or require("Prefs")
 local Progress = ns.Progress or require("Progress")
 local Talents = ns.Talents or require("Talents")
 local Chip = ns.Chip or require("Chip")
+local TourExample = ns.TourExample or require("TourExample")
 local SiteStatus = ns.SiteStatus or require("SiteStatus")
 local SettingsPage = ns.SettingsPage or require("Settings")
 
@@ -33,7 +34,10 @@ local Onboarding = {}
 
 Onboarding.FRAME_NAME = "ForeverSixtyOnboarding"
 Onboarding.WIDTH = 640
+--- The tallest a page may grow; each page is sized to its content (Onboarding.frameHeight), never
+--- shorter than MIN_HEIGHT.
 Onboarding.HEIGHT = 450
+Onboarding.MIN_HEIGHT = 240
 --- The content's side inset inside the umber edge.
 Onboarding.PAD = 26
 --- The app QR's size in UI units. Small and labelled "Join the app beta" while the apps are in
@@ -194,12 +198,13 @@ function Onboarding.inputs(data)
 		local point = progress.point
 		input.pointName = Chip.talentName(Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column))
 	end
+	input.upgrade, input.pick = TourExample.inputs(data, input)
 	return input
 end
 
 -- The frame ---------------------------------------------------------------------------------------------
 
-local pools = { text = {}, icon = {}, button = {}, box = {}, rule = {} }
+local pools = { text = {}, icon = {}, button = {}, box = {}, rule = {}, card = {} }
 local used = {}
 
 local function reset()
@@ -287,7 +292,7 @@ local function arrow(parent, direction, left, top)
 	end
 end
 
-local function button(parent, label, onClick)
+local function button(parent, label, onClick, hint)
 	local made = take("button", function()
 		-- The client's own red button, the panel's (Widgets.clientButton), a little taller here.
 		local built = Widgets.clientButton(parent, "", function(self)
@@ -296,11 +301,59 @@ local function button(parent, label, onClick)
 			end
 		end)
 		built:SetHeight(Onboarding.BUTTON_HEIGHT)
+		-- The hover a use gives it (Tooltips only's), none for the rest.
+		built:SetScript("OnEnter", function(self)
+			if self.foreverSixtyHint ~= nil then
+				Theme.showLines(self, self.foreverSixtyHint, "ANCHOR_TOP")
+			end
+		end)
+		built:SetScript("OnLeave", function()
+			Theme.hideTooltip()
+		end)
 		return built
 	end)
 	made:SetText(label)
 	made.foreverSixtyAction = onClick
+	made.foreverSixtyHint = hint
 	return Widgets.fitButton(made, 64, 24)
+end
+
+--- Page 2's example in the client's tooltip look (ground and edge as GameTooltip draws them): the
+--- item's name in its quality colour, then the lines Forever Sixty adds. Returns its height.
+local function exampleCard(parent, example, left, top)
+	local card = take("card", function()
+		local frame = CreateFrame("Frame", nil, parent)
+		Theme.texture(frame, "BACKGROUND", "tooltipGround", 0.94):SetAllPoints(frame)
+		Theme.outline(frame, Theme.SIZES.border, "tooltipEdge")
+		frame.foreverSixtyLines = {}
+		for index = 1, 3 do
+			frame.foreverSixtyLines[index] = Widgets.label(frame, "", "tooltipBody", index == 1 and "normal" or "small")
+		end
+		return frame
+	end)
+	local lines = { { "|cff" .. example.hex .. example.name .. "|r", "tooltipBody" } }
+	for _, line in ipairs(example.lines) do
+		if line[1] ~= nil then
+			lines[#lines + 1] = line
+		end
+	end
+	local y, width = 8, 0
+	for index, region in ipairs(card.foreverSixtyLines) do
+		local line = lines[index]
+		region:SetShown(line ~= nil)
+		if line ~= nil then
+			region:SetText(line[1])
+			region:SetTextColor(Theme.rgb(Theme.HEX[line[2]]))
+			region:ClearAllPoints()
+			region:SetPoint("TOPLEFT", card, "TOPLEFT", 10, -y)
+			local measured = region:GetStringWidth()
+			width = math.max(width, type(measured) == "number" and measured or 160)
+			y = y + (index == 1 and 18 or 15)
+		end
+	end
+	card:SetSize(math.ceil(width) + 20, y + 7)
+	card:SetPoint("TOPLEFT", parent, "TOPLEFT", left, -top)
+	return y + 7
 end
 
 --- A read-only address box the player clicks to select, then Ctrl+C.
@@ -329,6 +382,7 @@ local function drawLoop(content, input)
 	local columnX = { 0, 196, 392 }
 	local rows = { { nodes[1], nodes[2], nodes[3] }, { nodes[6], nodes[5], nodes[4] } }
 	local top = { 0, 140 }
+	local bottom = 0
 	for rowIndex, row in ipairs(rows) do
 		for column, node in ipairs(row) do
 			if node ~= nil then
@@ -338,6 +392,7 @@ local function drawLoop(content, input)
 				title:SetPoint("TOPLEFT", content, "TOPLEFT", columnX[column] + 40, -top[rowIndex])
 				local line = text(content, node.line, "umberMuted", "small", 130)
 				line:SetPoint("TOPLEFT", content, "TOPLEFT", columnX[column] + 40, -top[rowIndex] - 18)
+				bottom = math.max(bottom, top[rowIndex] + 18 + height(line))
 			end
 			if column < 3 and (rowIndex == 1 or row[column] ~= nil) then
 				arrow(content, rowIndex == 1 and "right" or "left", columnX[column] + 174, top[rowIndex] + 12)
@@ -345,6 +400,7 @@ local function drawLoop(content, input)
 		end
 	end
 	arrow(content, "down", columnX[3] + 12, top[1] + 96)
+	return bottom
 end
 
 local function drawRows(content, rows)
@@ -363,16 +419,20 @@ local function drawRows(content, rows)
 		title:SetPoint("TOPLEFT", content, "TOPLEFT", x + 40, -y)
 		local line = text(content, row.line, "umberMuted", "small", Onboarding.WIDTH - 100 - x)
 		line:SetPoint("TOPLEFT", content, "TOPLEFT", x + 40, -y - 18)
-		y = y + math.max(44, 22 + height(line)) + 6
+		local below = 22 + height(line)
+		if row.example ~= nil then
+			below = below + 6 + exampleCard(content, row.example, x + 40, y + below + 6)
+		end
+		y = y + math.max(44, below) + 6
 	end
-	return y
+	return y - 6
 end
 
-local function drawSite(content)
-	drawRows(content, {
+local function drawSite(content, input)
+	return drawRows(content, {
 		{ source = L.tourSiteBis, icon = Theme.MEDIA.arrowInline, title = L.tourArrow, line = L.tourArrowLine },
 		{ source = L.tourSiteWeights, icon = "Interface\\Icons\\INV_Weapon_Bow_02", title = L.tourOneLine,
-			line = L.tourOneLineText },
+			line = L.tourOneLineText, example = TourExample.example(input) },
 		{ source = L.tourSiteBuild, icon = "Interface\\Icons\\Ability_SearingArrow", title = L.tourRing,
 			line = L.tourRingLine },
 		{ source = L.tourSiteRotation, icon = "Interface\\Icons\\INV_Spear_07", title = L.tourRotation,
@@ -381,7 +441,7 @@ local function drawSite(content)
 end
 
 local function drawBack(content)
-	drawRows(content, {
+	return drawRows(content, {
 		{ icon = Onboarding.ICONS.fights, title = L.tourUpload, line = L.tourUploadLine },
 		{ icon = Onboarding.ICONS.back, title = L.tourRated, line = L.tourRatedLine },
 		{ icon = Onboarding.ICONS.site, title = L.tourScore, line = L.tourScoreLine .. " " .. L.tourScoreHide },
@@ -410,6 +470,7 @@ local function drawGuild(content)
 	local later = text(content, L.tourAnswerLater, "umberMuted")
 	later:SetPoint("TOPLEFT", content, "TOPLEFT", 320, -y - 52)
 	coming(content, later)
+	return y + 62 + height(jobNote)
 end
 
 local function drawSetup(content, input)
@@ -493,6 +554,7 @@ local function drawSetup(content, input)
 	label:SetPoint("TOP", qr, "BOTTOM", 0, -4)
 	local address = text(content, Onboarding.APP, "umberMuted", "small")
 	address:SetPoint("TOP", label, "BOTTOM", 0, -2)
+	return math.max(y + height(again), (page.path ~= nil and 54 or 92) + Onboarding.QR_SIZE + 36)
 end
 
 local DRAW = { loop = drawLoop, site = drawSite, back = drawBack, guild = drawGuild, setup = drawSetup }
@@ -509,7 +571,7 @@ function Onboarding.ensure()
 	end
 	local frame = Widgets.umberFrame(UIParent, Onboarding.WIDTH, Onboarding.HEIGHT, Onboarding.FRAME_NAME)
 	frame:SetFrameStrata("DIALOG")
-	frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+	frame:SetPoint("TOP", UIParent, "CENTER", 0, Onboarding.HEIGHT / 2)
 	frame:SetClampedToScreen(true)
 	frame:SetMovable(true)
 	frame:EnableMouse(true)
@@ -551,6 +613,14 @@ function Onboarding.ensure()
 	return frame
 end
 
+--- The window's height for a page whose content is `contentHeight` tall: the title band, the gap
+--- under it, the content, the gap over the footer and the footer, within MIN_HEIGHT..HEIGHT. Pure.
+function Onboarding.frameHeight(contentHeight)
+	local chrome = Theme.SIZES.titleBand + 16 + 24 + Onboarding.BUTTON_HEIGHT + 14
+	local wanted = chrome + math.ceil(type(contentHeight) == "number" and contentHeight or 0)
+	return math.max(Onboarding.MIN_HEIGHT, math.min(Onboarding.HEIGHT, wanted))
+end
+
 --- The title band for page `index` of `count` on `key`, Widgets.setTitleBand's shape. Pure.
 function Onboarding.head(key, index, count, input)
 	return { title = L[HEADINGS[key]], meta = L.tourTitle, classToken = input.classToken, faction = input.faction,
@@ -566,7 +636,7 @@ local function drawFooter(index, count)
 		local skip = button(footer, L.tourSkip, Onboarding.finish)
 		skip:SetPoint("BOTTOMLEFT", footer, "BOTTOMLEFT", 0, 0)
 		if index == 1 then
-			local quiet = button(footer, L.tourJustTooltips, Onboarding.justTooltips)
+			local quiet = button(footer, L.tourJustTooltips, Onboarding.justTooltips, L.tourJustTooltipsHint)
 			quiet:SetPoint("LEFT", skip, "RIGHT", 8, 0)
 		end
 	end
@@ -596,7 +666,7 @@ function Onboarding.draw()
 	Onboarding.page = math.max(1, math.min(Onboarding.page or 1, #keys))
 	local key = keys[Onboarding.page]
 	Widgets.setTitleBand(Onboarding.band, Onboarding.head(key, Onboarding.page, #keys, input))
-	DRAW[key](Onboarding.content, input)
+	frame:SetHeight(Onboarding.frameHeight(DRAW[key](Onboarding.content, input)))
 	drawFooter(Onboarding.page, #keys)
 	frame:Show()
 	return key

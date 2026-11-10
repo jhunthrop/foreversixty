@@ -1532,6 +1532,13 @@ L.tourAgain = "/fs help opens this again."
 L.tourAppBeta = "Join the app beta"
 L.tourSkip = "Skip tour"
 L.tourJustTooltips = "Tooltips only"
+-- Its hover: the button's name as the tooltip's gold title, then in white the setting's own hint and
+-- that it ends the tour.
+L.tourJustTooltipsHint = {
+	L.tourJustTooltips,
+	{ text = L.settingsTooltipsOnlyHint },
+	{ text = "Ends the tour. /fs help opens it again." },
+}
 L.tourNext = "Next"
 L.tourBackButton = "Back"
 L.tourDone = "Done"
