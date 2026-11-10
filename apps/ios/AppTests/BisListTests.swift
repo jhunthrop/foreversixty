@@ -236,7 +236,7 @@ struct BisTooltipTests {
         let band = try #require(file.band(for: BisRange(band: 60, preset: "raid"), faction: "horde"))
         let list = BisListBuilder(items: [], worn: [], timeZone: .gmt).list(file: file, band: band, specLabel: "Protection Warrior", rangeLabel: "60")
         #expect(list.unit == .score)
-        #expect(list.setDpsLine?.hasPrefix("Tank lists rank by score") == true)
+        #expect(list.setDpsLine?.hasPrefix("Ranked by tank score") == true)
         #expect(list.rows.compactMap(\.pick).contains { $0.next.hasSuffix(" score") })
     }
 
