@@ -44,6 +44,10 @@ export interface GameTipModel {
   description: string;
   /** A talent short of its last rank: the next rank's text, under "Next rank". */
   nextRank?: string;
+  /** A talent the planner refuses: why, in the client's red (`Requires 5 points in Fury`). */
+  requirement?: string;
+  /** A last line in gold: the planner's compared band (`Levels 30 to 39 build: 2/3`). */
+  note?: string;
 }
 
 /** A talent's tooltip source: every rank's text, so the rank can be chosen where it is shown. */

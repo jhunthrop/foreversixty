@@ -1,39 +1,28 @@
 // web/src/lib/guides/talent-cells.ts
-// A decoded build as the TalentTrees primitive draws it: each talent's cell, its rank, and the
-// game tooltip key at that rank (rank 1 for an unlearned talent) when the guide's tooltip
-// bundle carries the talent.
-import type { TalentTree } from '../../components/ui/TalentTrees.svelte';
-import { talentTipKey, type GuideTipBundle } from '../tooltips/game-tip';
-import type { DecodedTreeView } from './build-tree';
+// A guide's decoded build as the site's one talent tree draws it (ui/TalentTrees through
+// `viewTrees`): the class's own layout, art and arrows at the build's ranks. Build time only (the
+// talent file is read from disk). The cells carry no tooltip text: each names its tooltip by key
+// and the guide's tooltip host serves it from the page's bundle on first open.
+import { viewTrees } from '../planner/editor-trees';
+import { dataUrl } from '../planner/load';
+import { indexTalents } from '../planner/rules';
+import type { TalentTreeView } from '../ui/talent-tree';
+import { loadTalentFile, type DecodedTreeView } from './build-tree';
 
-export function talentTreesOf(
+export function guideTalentTrees(
+  build: string,
+  classSlug: string,
   trees: readonly DecodedTreeView[],
-  bundle?: Pick<GuideTipBundle, 'talents'>,
-): TalentTree[] {
-  return trees.map((tree) => ({
-    name: tree.name,
-    points: tree.points,
-    talents: tree.talents.map((talent) => ({
-      tier: talent.tier,
-      column: talent.column,
-      name: talent.name,
-      icon: talent.icon,
-      rank: talent.rank,
-      maxRank: talent.max_rank,
-      ...(bundle?.talents[String(talent.id)] === undefined
-        ? {}
-        : { tipKey: talentTipKey(talent.id, Math.max(1, talent.rank)) }),
-    })),
-  }));
-}
-
-/** The trees at a ladder step: the step's talent string ("a-b-c", one digit per talent in each
- *  tree's tier-then-column order, `ladderTalentString`) over the build's own layout. */
-export function treesAtStep(trees: readonly TalentTree[], talents: string): TalentTree[] {
-  const digits = talents.split('-');
-  return trees.map((tree, index) => {
-    const ranks = digits[index] ?? '';
-    const cells = tree.talents.map((cell, i) => ({ ...cell, rank: Number(ranks[i] ?? 0) || 0 }));
-    return { ...tree, points: cells.reduce((sum, cell) => sum + cell.rank, 0), talents: cells };
+): TalentTreeView[] {
+  const file = trees.length === 0 ? undefined : loadTalentFile(build, classSlug);
+  if (file === undefined) return [];
+  return viewTrees({
+    index: indexTalents(file),
+    ranks: new Map(
+      trees.flatMap((tree) => tree.talents.map((talent): [number, number] => [talent.id, talent.rank])),
+    ),
+    classSlug,
+    asset: (path) => dataUrl(build, path),
+    withText: false,
   });
 }

@@ -20,7 +20,7 @@ from html import escape
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_prims import (Button, ClassSpecPicker, Facts, ItemRow, LaneBlock, LevelSlider, Link, Menu, Page, PageHeader, Plate, PlateColumns,
+from ws_prims import (talent_class, talent_tree_dicts, Button, ClassSpecPicker, Facts, ItemRow, LaneBlock, LevelSlider, Link, Menu, Page, PageHeader, Plate, PlateColumns,
                       Prose, ReadingPanel, ReadingSection, Row, RowGrid, Rows, RowsSlim, Section, Skeleton, StatRow, StatTable, Tag, TalentTrees, Toc,
                       build_page, control_bar, crest_img, icon, seg, sel, write, REGION, Meter, QCOL, ItemTip, PaperdollFrame, reading_wrap_script)
 
@@ -45,9 +45,10 @@ def rsaquo(text: str) -> str:
 
 
 # ------------------------------------------------------------------------------------------------ pieces
-def trees_of(decoded: list[dict]) -> list[tuple]:
-    return [(t['name'], t['points'], [(x['tier'], x['column'], icon(x['icon'], 28), x['rank'], x['max_rank']) for x in t['talents']])
-            for t in decoded]
+def trees_of(decoded: list[dict]) -> list[dict]:
+    """A decoded build as the site's one talent tree draws it (web lib/guides/talent-cells.ts `guideTalentTrees`)."""
+    ranks = {x['id']: x['rank'] for t in decoded for x in t['talents']}
+    return talent_tree_dicts(talent_class(next(iter(ranks))), ranks)
 
 
 def points_line(decoded: list[dict]) -> str:

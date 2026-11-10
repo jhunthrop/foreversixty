@@ -1,7 +1,7 @@
 // web/src/components/ui/reading-primitives.test.ts
 // The guides round's primitives (guides spec 2026-11-08 §3A): ReadingSection, LaneBlock, Toc,
-// PlateColumns and PlateColumn, TalentTrees, Prose, LevelSlider; PageHeader's lead and the
-// reading Page's top and contents rail.
+// PlateColumns and PlateColumn, Prose, LevelSlider; PageHeader's lead and the
+// reading Page's top and contents rail. TalentTrees: talent-tree.test.ts.
 import { createRawSnippet, type Component } from 'svelte';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
@@ -13,7 +13,6 @@ import PlateColumn from './PlateColumn.svelte';
 import PlateColumns from './PlateColumns.svelte';
 import Prose from './Prose.svelte';
 import ReadingSection from './ReadingSection.svelte';
-import TalentTrees, { type TalentTree } from './TalentTrees.svelte';
 import Toc from './Toc.svelte';
 
 const text = (html: string) => createRawSnippet(() => ({ render: () => html }));
@@ -21,8 +20,6 @@ const text = (html: string) => createRawSnippet(() => ({ render: () => html }));
 function html<P extends Record<string, unknown>>(component: Component<P>, props: P): string {
   return render(component, { props }).body.replace(/<!--[^>]*-->/g, '');
 }
-
-const BUILD = '1.60.1.70790';
 
 describe('ReadingSection', () => {
   it('is a section region named for its title, anchored, with the lane before the prose in the DOM', () => {
@@ -122,66 +119,6 @@ describe('PlateColumns, PlateColumn', () => {
     expect(plate).toContain('data-testid="glance"');
     expect(plate).toContain('--pcols: 3');
     expect(plate).toContain('data-testid="col"');
-  });
-});
-
-describe('TalentTrees', () => {
-  const trees: TalentTree[] = [
-    {
-      name: 'Frost',
-      points: 7,
-      talents: [
-        {
-          tier: 0,
-          column: 1,
-          name: 'Improved Frostbolt',
-          icon: 'spell_frost_frostbolt02',
-          rank: 5,
-          maxRank: 5,
-          tipKey: 'talent:1:5',
-        },
-        { tier: 1, column: 0, name: 'Frostbite', icon: 'spell_frost_frostarmor', rank: 2, maxRank: 3 },
-        {
-          tier: 6,
-          column: 3,
-          name: 'Ice Barrier',
-          icon: 'spell_ice_lament',
-          rank: 0,
-          maxRank: 1,
-          tipKey: 'talent:3:1',
-        },
-      ],
-    },
-    { name: 'Fire', points: 0, talents: [] },
-  ];
-
-  it('draws a grid per tree with 7 rows of 4 gridcells', () => {
-    const body = html(TalentTrees, { trees, build: BUILD, testid: 'trees' });
-    expect(body).toContain('data-testid="trees"');
-    expect(body.match(/role="grid"/g)).toHaveLength(2);
-    expect(body).toContain('aria-label="Frost talents"');
-    expect(body).toMatch(/<h3[^>]*>Frost <b[^>]*>7<\/b><\/h3>/);
-    expect(body.match(/role="row"/g)).toHaveLength(14);
-    expect(body.match(/role="gridcell"/g)).toHaveLength(56);
-  });
-
-  it('gives each talent a group with its rank badge, state and icon; an unlearned one no badge', () => {
-    const body = html(TalentTrees, { trees, build: BUILD });
-    expect(body.match(/role="group"/g)).toHaveLength(3);
-    expect(body).toMatch(/data-state="full" role="group" aria-label="Improved Frostbolt 5\/5"/);
-    expect(body).toMatch(/aria-label="Frostbite 2\/3"[^>]*><img[^>]*>(?:<!---->)?<b[^>]*>2\/3<\/b>/);
-    expect(body).toMatch(/data-state="part" role="group" aria-label="Frostbite 2\/3"/);
-    expect(body).toMatch(
-      /data-state="off" role="group" aria-label="Ice Barrier 0\/1"[^>]*><img[^>]*><\/span>/,
-    );
-    expect(body).toContain(`src="/data/${BUILD}/icons/spell_frost_frostbolt02.webp"`);
-  });
-
-  it('opens the game tooltip only where the cell carries a tip key, and focuses only those', () => {
-    const body = html(TalentTrees, { trees, build: BUILD });
-    expect(body.match(/data-game-tip=/g)).toHaveLength(2);
-    expect(body).toMatch(/aria-label="Improved Frostbolt 5\/5" tabindex="0" data-game-tip="talent:1:5"/);
-    expect(body).toMatch(/aria-label="Frostbite 2\/3"><img/);
   });
 });
 

@@ -11,10 +11,10 @@
   import { guidesCopy } from '../../lib/guides/copy';
   import { onGuideCharacter, MAX_LEVEL } from '../../lib/guides/guide-character';
   import type { LadderStep } from '../../lib/guides/leveling-builds';
-  import { treesAtStep } from '../../lib/guides/talent-cells';
   import { LINK } from '../../lib/ui/primitives';
   import LevelSlider from '../ui/LevelSlider.svelte';
-  import TalentTrees, { type TalentTree } from '../ui/TalentTrees.svelte';
+  import { treesAtTalents, type TalentTreeView } from '../../lib/ui/talent-tree';
+  import TalentTrees from '../ui/TalentTrees.svelte';
 
   let {
     build,
@@ -30,7 +30,7 @@
     classSlug: string;
     specSlug: string;
     /** The guide's level 60 build as cells: the layout every level draws on. */
-    trees: TalentTree[];
+    trees: TalentTreeView[];
     /** One per level, 10 to 60 (`guideLadderSteps`). */
     steps: LadderStep[];
   } = $props();
@@ -41,7 +41,7 @@
   let sliding = $state(false);
 
   const step = $derived(steps.find((candidate) => candidate.level === level) ?? steps[steps.length - 1]);
-  const shown = $derived(step === undefined ? trees : treesAtStep(trees, step.talents));
+  const shown = $derived(step === undefined ? trees : treesAtTalents(trees, step.talents));
   const plannerHref = $derived(
     `/planner?spec=${encodeURIComponent(spec)}&talents=${encodeURIComponent(step?.talents ?? '')}`,
   );
@@ -87,7 +87,7 @@
     onslide={(on) => (sliding = on)}
     testid="guide-leveling-slider"
   />
-  <TalentTrees trees={shown} {build} testid="guide-leveling-trees" />
+  <TalentTrees mode="compact" trees={shown} {build} testid="guide-leveling-trees" />
   <p class="m-0">
     <a
       class={LINK}

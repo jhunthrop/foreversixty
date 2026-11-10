@@ -82,6 +82,7 @@
         capAfter={view.capAfter}
         capText={view.capText}
         markers={plannerCopy.orderMarkers}
+        build={store.treeVersion}
         testid="planner-order"
       />
     </div>

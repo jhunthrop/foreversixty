@@ -115,8 +115,6 @@ export const plannerCopy = {
   noPointsYet: 'No points spent yet.',
   /** A locked cell's tooltip at a character's level cap (decision P3). */
   noPointsLeft: (level: number): string => `No points left at level ${level}.`,
-  rankOf: (rank: number, max: number): string => `Rank ${rank} of ${max}`,
-  nextRank: 'Next rank',
   reset: 'Reset…',
   resetAsk: 'Clear every point in this build?',
   resetYes: 'Clear all points',

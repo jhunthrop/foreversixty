@@ -10,7 +10,8 @@
   import activeBuild from '../../../data/active-build.json';
   import { fetchBisFile } from '../../../lib/bis/hover';
   import { decodeFS1, orderFromRanks } from '../../../lib/planner/fs1';
-  import { loadTalents } from '../../../lib/planner/load';
+  import { dataUrl, loadTalents } from '../../../lib/planner/load';
+  import { viewTrees } from '../../../lib/planner/editor-trees';
   import { indexTalents } from '../../../lib/planner/rules';
   import type { BuildRecord, TalentFile } from '../../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
@@ -25,13 +26,13 @@
     guideLoadout,
     hasUnaddedBuild,
     loadoutDiff,
-    loadoutTrees,
+    talentRanks,
     savedBuildsMessage,
   } from '../../../lib/sim/talent-loadouts';
   import { talentSplit } from '../../../lib/sim/result-band';
   import { ROW_ITEM } from '../../../lib/ui/primitives';
   import Button from '../../ui/Button.svelte';
-  import TalentTrees from '../../ui/TalentTrees.svelte';
+  import TalentTreesWithTips from '../../ui/TalentTreesWithTips.svelte';
   import ToolSection from './ToolSection.svelte';
 
   let {
@@ -222,11 +223,21 @@
     <!-- /sim/talents: the build's three trees beside its tick, so the page shows what it compares. -->
     <div class="{ROW_ITEM} grid gap-x-6 gap-y-1 py-3 md:grid-cols-[260px_minmax(0,1fr)] md:items-start">
       {@render loadoutCheck(loadout, testid)}
-      <!-- The trees size to their track (TalentTrees reads its box's width): 600 px with the diff
-           beside them from 1024, the full width with the diff under them below; cells up to 44 px. -->
+      <!-- The site's read-only trees (TalentTrees view): 600 px with the diff beside them from 1024,
+           the full width with the diff under them below; the tree tabs below 768. -->
       <div class="grid min-w-0 items-start gap-x-8 gap-y-3 lg:grid-cols-[600px_minmax(0,1fr)]">
-        <div class="sim-loadout-trees min-w-0">
-          <TalentTrees trees={loadoutTrees(index, loadout.talents)} build={character.tree_version} />
+        <div class="min-w-0">
+          <TalentTreesWithTips
+            trees={viewTrees({
+              index,
+              ranks: talentRanks(index, loadout.talents),
+              classSlug: character.class_slug,
+              asset: (file) => dataUrl(character.tree_version, file),
+            })}
+            build={character.tree_version}
+            label={loadout.name}
+            testid={`${testid}-trees`}
+          />
         </div>
         <!-- Each build against the other side: a build against the character's own, the character's
              own against the guide build (h-audit 2026-11-09: its column stood empty). -->
@@ -334,18 +345,3 @@
     {/if}
   </div>
 </ToolSection>
-
-<style>
-  /* A compare page reads the trees, so they take more of the plate than the guide's compact strip. */
-  .sim-loadout-trees :global(.ui-trees-box) {
-    --cell-max: 44px;
-  }
-  /* Below 768 one tree per row at a readable cell, never three trees squeezed to 100 px. */
-  @media (max-width: 767px) {
-    .sim-loadout-trees :global(.ui-trees-box .ui-trees) {
-      /* A tree fills the plate's width: four cells and three gaps, up to 56 px a cell. */
-      --cell: min(56px, calc((100cqw - 3 * var(--cell-gap)) / 4));
-      grid-template-columns: calc(4 * var(--cell) + 3 * var(--cell-gap));
-    }
-  }
-</style>

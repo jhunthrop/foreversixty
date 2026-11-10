@@ -1,7 +1,8 @@
 <!-- web/src/components/GameTooltip.svelte -->
 <!-- The game's spell and talent tooltip: name with its rank on the right, the cost beside the
      range, the cast time beside the cooldown, then the description in the client's gold and,
-     for a talent short of its last rank, the next rank's text. The same panel, placement and
+     for a talent short of its last rank, the next rank's text; a refused talent's requirement in red
+     and a gold note (the planner's band line) last. The same panel, placement and
      open rules as ItemTooltip.svelte: the shared host (BisTooltipHost.svelte) lazy-loads this
      component and mounts it only while open, so a page carries none of its weight until a
      reader asks for a tooltip. The frame is the Overlay primitive's tooltip kind and the spell icon is
@@ -33,6 +34,11 @@
       {/if}
     </div>
   </div>
+  {#if model.requirement}
+    <p class="text-wipe text-[12px] leading-snug" data-testid="game-tooltip-requirement">
+      {model.requirement}
+    </p>
+  {/if}
   {#each model.lines as line, index (index)}
     <div class="text-strong flex flex-wrap justify-between gap-x-3 text-[12px]">
       <span>{line.left}</span>
@@ -51,6 +57,11 @@
     <p class="text-muted text-[12px] leading-snug whitespace-pre-line">
       <span class="text-muted block font-semibold">Next rank</span>
       {model.nextRank}
+    </p>
+  {/if}
+  {#if model.note}
+    <p class="text-gold text-[12px] leading-snug font-semibold" data-testid="game-tooltip-note">
+      {model.note}
     </p>
   {/if}
 </Overlay>

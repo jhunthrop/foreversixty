@@ -2001,3 +2001,181 @@ def Plate(inner: str, label: str = '', frame: str = 'plain') -> str:
     """frame: 'framed' draws the cream inset line (web ui/Plate `frame`)."""
     html = _Plate1(inner, label)
     return html.replace('class="plate"', 'class="plate framed"', 1) if frame == 'framed' else html
+
+
+# ------------------------------------------------ one talent tree (talent-tree lane 2026-11-10; design/reviews/2026-11-10-talent-tree)
+# Every tree on the site is web ui/TalentTrees in a mode (edit: the planner; view: the sim, /sim/talents; compact: a guide), so the
+# mocks draw every tree with one primitive too. The CSS is the built stylesheet itself (web components/ui/talent-tree.css), its
+# `--color-*` tokens read as the mock's own. `talent_tree_dicts` is web lib/planner/editor-trees.ts `viewTrees` over a class's
+# talent file (the cells' states, the spec icon, the art, the arrows); `TalentEditor`, `Trees` and `TalentTrees` all draw through
+# `TalentTreesAll`, the built markup.
+import base64 as _b64
+import json as _json
+from mocklib import ROOT as _ROOT
+
+_TT_CSS = (_ROOT / 'web/src/components/ui/talent-tree.css').read_text()
+PRIM_CSS += ':root{--radius-field:4px;--selected:#0093b229;--shadow-selected-underline:inset 0 -3px 0 #0093b2}\n'
+PRIM_CSS += re.sub(r'/\*.*?\*/', '', _TT_CSS, flags=re.S).replace('var(--color-', 'var(--') + '\n'
+_TT_BUILD = _json.loads((_ROOT / 'web/src/data/active-build.json').read_text())['build']
+_TT_SPECS = _json.loads((_ROOT / 'web/src/data/specs.json').read_text())
+_tt_art: dict[str, str] = {}
+_CELL, _GAP = 44, 8
+_PITCH, _HALF = _CELL + _GAP, _CELL // 2
+
+
+def _tt_img(icon_html: str) -> str:
+    """A mock icon as the built cell's face: the img (or the dark socket) at the cell's size, its fixed size dropped."""
+    html = re.sub(r'\s(?:style|width|height)="[^"]*"', '', icon_html)
+    return html.replace('class="ic"', 'class="tt-ic"').replace('class="ic ', 'class="tt-ic ')
+
+
+def _tt_art_src(bg: str) -> str:
+    if bg not in _tt_art:
+        p = _ROOT / 'data/builds' / _TT_BUILD / 'trees' / f'{bg}.webp'
+        _tt_art[bg] = 'data:image/webp;base64,' + _b64.b64encode(p.read_bytes()).decode() if p.exists() else ''
+    return _tt_art[bg]
+
+
+def _tt_centre(tier: int, col: int) -> tuple[int, int]:
+    return col * _PITCH + _HALF, tier * _PITCH + _HALF
+
+
+def _tt_path(a: dict, b: dict) -> str:
+    """web lib/planner/connectors.ts connectorPath: down a column, across a row, or the elbow."""
+    ax, ay = _tt_centre(a['tier'], a['column'])
+    bx, by = _tt_centre(b['tier'], b['column'])
+    if a['column'] == b['column']:
+        return f'M {ax} {ay + _HALF} V {by - _HALF}'
+    side = 1 if b['column'] > a['column'] else -1
+    if a['tier'] == b['tier']:
+        return f'M {ax + side * _HALF} {ay} H {bx - side * _HALF}'
+    return f'M {ax} {ay + _HALF} V {by} H {bx - side * _HALF}'
+
+
+def _tt_file(class_slug: str) -> dict:
+    return _json.loads((_ROOT / 'data/builds' / _TT_BUILD / 'talents' / f'{class_slug}.json').read_text())
+
+
+def talent_tree_dicts(class_slug: str, ranks: dict[int, int]) -> list[dict]:
+    """A read-only build's trees (web `viewTrees`): untaken greyed, partial green, maxed gold, arrows met in gold."""
+    out = []
+    for index, tree in enumerate(sorted(_tt_file(class_slug)['trees'], key=lambda t: t['position'])):
+        talents = sorted(tree['talents'], key=lambda t: (t['tier'], t['column']))
+        by_id = {t['id']: t for t in talents}
+        cols = max(t['column'] for t in talents) + 1
+        tiers = max(7, max(t['tier'] for t in talents) + 1)
+        cells = []
+        for t in talents:
+            rk = min(t['max_rank'], ranks.get(t['id'], 0))
+            state = 'max' if rk >= t['max_rank'] else ('part' if rk else 'lock')
+            cells.append((t['tier'], t['column'], TalentCell2(icon(t['icon'], 48), t['name'], rk, t['max_rank'], state, editable=False)))
+        conns = sorted((t['prereq_talent_id'], t['id']) for t in talents if t.get('prereq_talent_id') in by_id)
+        connectors = [(_tt_path(by_id[a], by_id[b]), ranks.get(a, 0) >= (by_id[b].get('prereq_rank') or 0)) for a, b in conns]
+        spec = next((s for s in _TT_SPECS if s['class_slug'] == class_slug and s['tree_index'] == index), None)
+        out.append({'name': tree['name'], 'icon_html': icon(spec['icon'], 28) if spec else '',
+                    'points': sum(min(t['max_rank'], ranks.get(t['id'], 0)) for t in talents),
+                    'art_src': _tt_art_src(tree['background']) if tree.get('background') else '',
+                    'cols': cols, 'tiers': tiers, 'viewbox': f'0 0 {cols * _PITCH - _GAP} {tiers * _PITCH - _GAP}',
+                    'connectors': connectors, 'cells': cells})
+    return out
+
+
+def talent_ranks_from_strings(class_slug: str, per_tree: list[str]) -> dict[int, int]:
+    """An engine talents string's trees (`05505`, `5530515`, ``) as talent id to rank: each digit in tier, column order."""
+    ranks: dict[int, int] = {}
+    for index, tree in enumerate(sorted(_tt_file(class_slug)['trees'], key=lambda t: t['position'])):
+        digits = per_tree[index] if index < len(per_tree) else ''
+        for p, t in enumerate(sorted(tree['talents'], key=lambda t: (t['tier'], t['column']))):
+            ranks[t['id']] = min(t['max_rank'], int(digits[p]) if p < len(digits) else 0)
+    return ranks
+
+
+def TalentCell2(icon_html: str, name: str, rank: int, mx: int, state: str, differs: bool = False, extra: str = '',
+                editable: bool = True) -> str:
+    """One talent (web ui/TalentButton). state: avail | part | max | lock. Editable: wrapped in its own tooltip host."""
+    cls = f'tt-cell {state}' + (' diff' if differs else '') + (f' {extra}' if extra else '')
+    dis = ' aria-disabled="true"' if editable and state == 'lock' else ''
+    beside = '' if editable else ' data-tip-beside'
+    btn = (f'<button type="button" class="{cls}" aria-label="{escape(name)}, rank {rank} of {mx}"{dis} data-rank="{rank}" data-state="{state}"{beside}>'
+           f'{_tt_img(icon_html)}<span class="tt-rk" aria-hidden="true">{rank}/{mx}</span></button>')
+    return f'<span class="tt-wrap" data-tip-beside>{btn}</span>' if editable else btn
+
+
+def _tt_head_icon(t: dict, px: int) -> str:
+    html = re.sub(r'\s(?:style|width|height)="[^"]*"', '', t['icon_html'])
+    return html.replace('<img ', f'<img width="{px}" height="{px}" ', 1)
+
+
+def TalentTreesAll(trees: list[dict], mode: str = 'edit', active: int = 0, foot: str = '', label: str = 'Talent trees',
+                   title: str = '', frame: str = 'plain') -> str:
+    """web ui/TalentTrees. trees: {name, icon_html, points, art_src, cols, tiers, viewbox, connectors [(d, met)], cells
+    [(tier, col, cell_html)], reset}. mode: edit (the Plate or a titled Section panel), view (bare, md), compact (bare, sm)."""
+    size = {'edit': 'lg', 'view': 'md', 'compact': 'sm'}[mode]
+    tabs = ''
+    if size != 'sm':
+        tabs = f'<div class="tt-tabs" role="tablist" aria-label="{label}">' + ''.join(
+            f'<button type="button" role="tab" aria-selected="{"true" if i == active else "false"}"><span>{_tt_head_icon(t, 22)}<b>{t["points"]}</b></span>{escape(t["name"])}</button>'
+            for i, t in enumerate(trees)) + '</div>'
+    cols = ''
+    for i, t in enumerate(trees):
+        rows = ''
+        for tier in range(t['tiers']):
+            row = ''.join(f'<span role="gridcell">{next((c[2] for c in t["cells"] if c[0] == tier and c[1] == col), "")}</span>' for col in range(t['cols']))
+            rows += f'<div role="row">{row}</div>'
+        paths = ''.join(f'<path class="halo" d="{d}"/><path class="{"on" if met else "off"}" d="{d}"/>' for d, met in t['connectors'])
+        art = f'<img class="tt-art" src="{t["art_src"]}" alt="" aria-hidden="true">' if t.get('art_src') else ''
+        pts = f'<b class="num{" zero" if not t["points"] else ""}">{t["points"]}</b>'
+        rs = t.get('reset', '').replace('class="trs"', 'class="tt-reset"') if mode == 'edit' else ''
+        panel = f' role="tabpanel" aria-label="{escape(t["name"])}"' if size != 'sm' else f' aria-label="{escape(t["name"])}"'
+        cols += (f'<div class="tt-col{" on" if i == active else ""}"{panel}><div class="tt"><div class="tt-h">{_tt_head_icon(t, 28)}<h3>{escape(t["name"])}</h3>{pts}{rs}</div>'
+                 f'<div class="tt-g" role="grid" aria-label="{escape(t["name"])} talents" style="--cols:{t["cols"]}">{art}'
+                 f'<svg class="tt-arrows" viewBox="{t["viewbox"]}" preserveAspectRatio="none" aria-hidden="true">{paths}</svg>{rows}</div></div></div>')
+    f = f'<div class="tt-f">{foot}</div>' if foot else ''
+    bare = '' if mode == 'edit' else ' data-bare'
+    body = f'<div class="tt-trees" data-size="{size}" data-mode="{mode}"{bare}>{tabs}<div class="tt-cols" style="--n:{len(trees)}">{cols}</div>{f}</div>'
+    if mode != 'edit':
+        return f'<div>{body}</div>'
+    if title:
+        return Section(title, body, panel=True, frame=frame, flush=True)
+    return Plate(body, label)
+
+
+def TalentEditor(trees: list[dict], active: int = 0, foot: str = '', label: str = 'Talent trees', title: str = '', frame: str = 'plain') -> str:
+    """The planner's trees: TalentTreesAll in edit mode."""
+    return TalentTreesAll(trees, 'edit', active, foot, label, title, frame)
+
+
+def Trees(trees: list[dict]) -> str:
+    """A read-only build's trees (the sim's Talents, /sim/talents): TalentTreesAll in view mode."""
+    return TalentTreesAll(trees, 'view')
+
+
+def TalentTrees(trees: list[dict]) -> str:
+    """A guide's trees (At a glance, the Leveling lane): TalentTreesAll in compact mode."""
+    return TalentTreesAll(trees, 'compact')
+
+
+def TalentTip(name: str, rank: int, mx: int, now: str, nxt: str, req: str = '', band: str = '', next_label: str = 'Next rank') -> str:
+    """The talent's game tooltip (web GameTooltip over lib/ui/talent-tree cellTipModel): name and Rank n/m, the refusal in red,
+    this rank (the first rank's text when untaken), the next rank under its label, the band line in gold."""
+    desc = now or (nxt if rank == 0 else '')
+    nx = nxt if rank > 0 else ''
+    r = f'<p style="color:var(--wipe);margin:0;font-size:12px">{escape(req)}</p>' if req else ''
+    d = f'<p style="color:#ffd100;margin:0;font-size:12px">{escape(desc)}</p>' if desc else ''
+    x = (f'<p style="color:var(--muted);margin:0;font-size:12px"><span style="display:block;font-weight:600">{next_label}</span>'
+         f'{escape(nx)}</p>') if nx else ''
+    bd = f'<p style="color:var(--gold);margin:0;font-size:12px;font-weight:600">{escape(band)}</p>' if band else ''
+    return (f'<div class="ttip" role="tooltip"><span style="display:flex;justify-content:space-between;gap:8px"><b>{escape(name)}</b>'
+            f'<span class="r">Rank {rank}/{mx}</span></span>{r}{d}{x}{bd}</div>')
+
+
+_tt_class_of: dict[int, str] = {}
+
+
+def talent_class(talent_id: int) -> str:
+    """The class whose talent file holds this talent id (a guide's facts name the talents, not the class)."""
+    if not _tt_class_of:
+        for f in sorted((_ROOT / 'data/builds' / _TT_BUILD / 'talents').glob('*.json')):
+            for tree in _json.loads(f.read_text())['trees']:
+                _tt_class_of.update({t['id']: f.stem for t in tree['talents']})
+    return _tt_class_of[talent_id]

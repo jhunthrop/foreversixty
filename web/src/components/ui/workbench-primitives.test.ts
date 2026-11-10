@@ -65,22 +65,22 @@ describe('point-order helpers', () => {
 
 describe('PointOrder', () => {
   it('leads with the hidden 0 to 9 marker row', () => {
-    const body = html(PointOrder, { rows: ROWS });
+    const body = html(PointOrder, { build: '1.60.1.70790', rows: ROWS });
     expect(body).toMatch(/^<div class="porder[^"]*"><div class="porder-m[^"]*" aria-hidden="true">/);
     expect(body).toMatch(/(<span[^>]*>\d<\/span>){10}/);
   });
 
   it('renders each row as its label and a list of ten listitem sockets', () => {
-    const body = html(PointOrder, { rows: ROWS });
+    const body = html(PointOrder, { build: '1.60.1.70790', rows: ROWS });
     expect(body.match(/role="list"/g)).toHaveLength(2);
     expect(body.match(/role="listitem"/g)).toHaveLength(20);
     expect(body).toContain('Levels 10 to 19');
   });
 
   it('draws each slot kind: spent and planned icons as tab stops, empty and next sockets', () => {
-    const body = html(PointOrder, { rows: ROWS });
+    const body = html(PointOrder, { build: '1.60.1.70790', rows: ROWS });
     expect(body).toMatch(
-      /role="listitem" tabindex="0" aria-label="Level 10: Endurance Training 1" title="Level 10: Endurance Training 1" data-kind="spent" data-testid="order-point-0"><img[^>]*width="36"[^>]*><b[^>]*>1<\/b>/,
+      /role="listitem" tabindex="0" aria-label="Level 10: Endurance Training 1" title="Level 10: Endurance Training 1" data-kind="spent" data-tip-beside="" data-testid="order-point-0"><img[^>]*width="36"[^>]*><b[^>]*>1<\/b>/,
     );
     expect(body).toMatch(/role="listitem" class="pl[^"]*" tabindex="0"[^>]*data-testid="order-point-1"/);
     expect(body).toMatch(
@@ -103,26 +103,35 @@ describe('PointOrder', () => {
             name: 'Level 10: Deflection 1',
             iconSrc: '/i/d.webp',
             rank: 1,
-            tip: { name: 'Deflection', rankLine: 'Rank 1 of 5', now: 'Parry 1%' },
+            tip: { name: 'Deflection', subtitle: 'Rank 1/5', lines: [], description: 'Parry 1%' },
           },
           { kind: 'ahead' as const, name: 'Level 11: Deflection 2', iconSrc: '/i/d.webp', rank: 2 },
         ],
       },
     ];
-    const body = html(PointOrder, { rows });
-    expect(body).toMatch(/aria-label="Level 10: Deflection 1" data-kind="spent" data-testid="order-point-0"/);
-    expect(body).toMatch(/class="ah[^"]*" tabindex="0"[^>]*data-kind="ahead" data-testid="order-ahead-1"/);
+    const body = html(PointOrder, { build: '1.60.1.70790', rows });
+    expect(body).toMatch(
+      /aria-label="Level 10: Deflection 1" data-kind="spent" data-tip-beside="" data-testid="order-point-0"/,
+    );
+    expect(body).toMatch(
+      /class="ah[^"]*" tabindex="0"[^>]*data-kind="ahead" data-tip-beside="" data-testid="order-ahead-1"/,
+    );
     expect(drawsTalent({ kind: 'ahead', name: '' })).toBe(true);
     expect(holdsPoint({ kind: 'ahead', name: '' })).toBe(false);
   });
 
   it('puts the gold cap line after row capAfter only when it has text', () => {
-    const body = html(PointOrder, { rows: ROWS, capAfter: 0, capText: 'Felsnap is level 19.' });
+    const body = html(PointOrder, {
+      build: '1.60.1.70790',
+      rows: ROWS,
+      capAfter: 0,
+      capText: 'Felsnap is level 19.',
+    });
     expect(body).toMatch(
       /Levels 10 to 19<\/span>.*<\/div><\/div><p class="porder-cap[^"]*">Felsnap is level 19.<\/p>/,
     );
-    expect(html(PointOrder, { rows: ROWS, capAfter: 0 })).not.toContain('porder-cap');
-    expect(html(PointOrder, { rows: ROWS, capText: 'x' })).not.toContain('porder-cap');
+    expect(html(PointOrder, { build: '1.60.1.70790', rows: ROWS, capAfter: 0 })).not.toContain('porder-cap');
+    expect(html(PointOrder, { build: '1.60.1.70790', rows: ROWS, capText: 'x' })).not.toContain('porder-cap');
   });
 });
 

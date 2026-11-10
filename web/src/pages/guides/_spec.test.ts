@@ -131,9 +131,9 @@ describe('/guides/warrior/fury (the page structure)', () => {
     const glance = blockOf(main, 'guide-glance-build', 200_000).split(
       'data-testid="guide-glance-rotation"',
     )[0]!;
-    // The trees are server-rendered: a grid per tree, a group per talent.
+    // The trees are server-rendered: a grid per tree, a button per talent naming its rank.
     expect(glance.match(/role="grid"/g)).toHaveLength(3);
-    expect(glance).toMatch(/role="group" aria-label="[^"]+ \d\/\d"/);
+    expect(glance).toMatch(/class="tt-cell[^"]*" aria-label="[^"]+, rank \d of \d"/);
     const code = encodeURIComponent(entry.data.build as string);
     expect(glance).toMatch(
       new RegExp(

@@ -30,8 +30,7 @@ const ALLOWED: Readonly<Record<string, string>> = {
   'components/sim/SimTimeline.svelte': 'chart: the sim timeline',
   'components/sim/TimelineBrush.svelte': "chart: the timeline's brush",
   'lib/sim/timeline-draw.ts': "chart: the timeline's marks",
-  'components/planner/TreeGrid.svelte': "chart: the talent tree's connectors",
-  'components/ui/TalentEditor.svelte': "chart: the talent tree's connectors",
+  'components/ui/TalentTree.svelte': "chart: the talent tree's connectors",
 };
 
 const SOURCE_FILE = /\.(astro|svelte|ts|css)$/;

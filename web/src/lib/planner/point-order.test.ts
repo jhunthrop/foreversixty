@@ -1,4 +1,5 @@
 // web/src/lib/planner/point-order.test.ts
+import { displayDescription } from '../tooltips/game-tip';
 import { describe, expect, it } from 'vitest';
 import fixtureTalents from '../../fixtures/planner/talents/warrior.json';
 import { aheadOf, pointOrderRows } from './point-order';
@@ -51,10 +52,10 @@ describe('pointOrderRows', () => {
   it('gives each point the talent tooltip: its name, the rank it reached and that rank text', () => {
     const view = pointOrderRows(index, [1001, 1001], null, null, icon);
     const talent = index.byId.get(1001)!;
-    expect(view.rows[0].slots[1].tip).toEqual({
+    expect(view.rows[0].slots[1].tip).toMatchObject({
       name: talent.name,
-      rankLine: `Rank 2 of ${talent.max_rank}`,
-      now: talent.ranks[1].description,
+      subtitle: `Rank 2/${talent.max_rank}`,
+      description: displayDescription(talent.ranks[1].description),
     });
   });
 
