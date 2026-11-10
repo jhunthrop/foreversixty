@@ -197,6 +197,8 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
     # Every band's own BiS page and the role's tier list (SEO lane 2026-11-08), one quiet block under the full list.
     bands = ''.join(Link(e(s)) for s in F['fns']['bandSlugs'])
     lane += f'<p class="t-small gbands">{e(C["bisByLevelLabel"])}{bands}</p><p class="gtier">{Link(rsaquo(C["tierListLink"]))}</p>'
+    # one block, as the built GuideBisLane: its rows and links 28 px apart, and the links may wrap under the prose
+    lane = f'<div class="gbis" data-wrap-list>{lane}</div>'
     return ReadingSection(SEC['best-in-slot'], Prose(b['prose']) + guide_doll(g, faction) if data and b['data'] else Prose(b['prose']), lane, 'best-in-slot',
                           prose_first=True)
 
@@ -217,6 +219,12 @@ def guide_doll(g: dict, faction: str) -> str:
     picks = [r for r in panel['rows'] if not r.get('empty')]
     slots = [{'slot': r['slot'], 'label': f"{r['slotLabel']}: {r['itemName']}", 'covered': False, 'selected': i == 0,
               'icon': r['icon'], 'quality': r['quality']} for i, r in enumerate(picks)]
+    # A two-hander shows greyed in the empty off hand (the built doll's coveredBy): the off hand's own line names it.
+    main = next((r for r in picks if r['slot'] == 'main_hand'), None)
+    off = next((r for r in panel['rows'] if r['slot'] == 'off_hand' and r.get('empty')), None)
+    if main and off and (off.get('emptyCopy') or '').startswith(f"{main['itemName']} is a two-hander"):
+        slots.append({'slot': 'off_hand', 'label': f"{off['slotLabel']}: {main['itemName']}, two-handed", 'covered': True, 'selected': False,
+                      'icon': main['icon'], 'quality': main['quality']})
     first = picks[0]
     centre = ItemTip(first['itemName'], QUALITY_NAME.get(first['quality'], 'common'), [], [], first['sourceDetail'])
     who = 'Alliance' if faction == 'alliance' else 'Horde'
@@ -399,6 +407,7 @@ def states_page() -> str:
 
 
 PAGE_CSS = '''<style>
+.gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.grace{display:contents}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll{margin-top:0}
 .gdoll{container-type:inline-size;margin-top:24px}.gdoll-f{max-width:640px}@container (max-width:422.98px){.gdoll-f{display:none}}
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}
