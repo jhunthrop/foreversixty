@@ -140,7 +140,7 @@ def recent_section(signed_in: bool = False) -> str:
     return Section(rc['heading'], body, panel=True)   # no page lists every public report yet: no action
 
 
-FROM_LINE = 'From the game&rsquo;s Logs folder, up to 4 GB.'   # Upload.svelte FROM_LINE
+FROM_LINE = 'Up to 4 GB.'   # Upload.svelte FROM_LINE
 
 
 def upload_body(state: str) -> str:
@@ -161,7 +161,7 @@ def companion_section(signed_in: bool) -> str:
     lc = COPY['logsCompanionCopy']
     body = f'<div class="up open"><p>{escape(lc["pointer"])}</p><div class="up-act">{LinkButton(lc["pointerLink"], primary=signed_in)}</div>'
     if signed_in:
-        body += f'<span class="t-label">{escape(lc["pairLabel"])}</span><p class="t-small">{escape(COPY["pairingCopy"]["companionFirst"])}</p><div class="up-act">{Button("Get a pairing code", small=True)}</div>'
+        body += f'<span class="t-label">{escape(lc["pairLabel"])}</span><div class="up-act">{Button("Get a pairing code", small=True)}</div>'
     return Section('The companion', body + '</div>', panel=True)
 
 

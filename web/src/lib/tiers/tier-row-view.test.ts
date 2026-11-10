@@ -34,12 +34,16 @@ describe('rankRowProps', () => {
     });
     expect('sub' in arms || 'links' in arms || 'tie' in arms).toBe(false);
     // The column head names the unit.
-    expect(arms.figures).toEqual([{ value: '942.2', label: 'Damage per second', testid: 'tier-number' }]);
+    expect(arms.figures).toEqual([
+      { value: '942.2', label: 'Damage per second', testid: 'tier-number' },
+      // Below 768 the gap column goes: the vs #1 rides under the figure.
+      { value: '−0.8%', label: 'Gap to the top', bare: true, phoneOnly: true, testid: 'tier-gap-phone' },
+    ]);
   });
 
-  it("leaves the leader's gap empty: the column reads against it", () => {
-    expect(rankRowProps(dps[0]!, dps).gap).toMatchObject({ text: '', leader: true });
-    expect(rankRowProps(tanks[0]!, tanks).gap).toMatchObject({ text: '', leader: true });
+  it("reads the leader's gap as best: the column reads against it", () => {
+    expect(rankRowProps(dps[0]!, dps).gap).toMatchObject({ text: 'best', leader: true });
+    expect(rankRowProps(tanks[0]!, tanks).gap).toMatchObject({ text: 'best', leader: true });
   });
 
   it("marks a tank's best of each column, with the reason in a title", () => {

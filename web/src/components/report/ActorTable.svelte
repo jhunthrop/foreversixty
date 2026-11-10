@@ -127,19 +127,29 @@
   function subLine(actor: Actor): string {
     const row = roster.get(actor.guid);
     const who = [row?.spec, row?.class ?? actor.class].filter(Boolean).join(' ');
+    // An overheal that rounds to 0% says nothing: it is left out.
+    const overhealPercent =
+      actor.overheal !== undefined && actor.total > 0 ? Math.round((actor.overheal / actor.total) * 100) : 0;
     const overheal =
-      tab === 'healing' && actor.overheal !== undefined && actor.overheal > 0 && actor.total > 0
-        ? `${formatAmount(actor.overheal)} overheal (${Math.round((actor.overheal / actor.total) * 100)}%)`
+      tab === 'healing' && overhealPercent > 0
+        ? `${formatAmount(actor.overheal ?? 0)} overheal (${overhealPercent}%)`
         : '';
     const dead = deadAt.get(actor.guid);
     return [
       who,
-      row?.item_level ? `item level ${row.item_level}` : '',
+      row?.item_level ? `ilvl ${row.item_level}` : '',
       overheal,
       dead === undefined ? '' : `dead since ${formatDuration(dead)}`,
     ]
       .filter((part) => part !== '')
       .join(' · ');
+  }
+
+  /** The phone's line under the amount: the rate with its unit; Taken / s reads "36.2/s" (the
+   *  plate's title says what was taken). */
+  function phoneRate(actor: Actor): string {
+    const rate = formatRate(timeOf(actor) === 0 ? 0 : actor.effective / (timeOf(actor) / 1000));
+    return tab === 'damage-taken' ? `${rate}/s` : `${rate} ${RATE[tab]}`;
   }
 
   const totalSeconds = $derived(Math.max(durationMs, 1) / 1000);
@@ -241,7 +251,7 @@
   );
 </script>
 
-{#snippet totalName()}Total, {actors.length} {actors.length === 1 ? 'player' : 'players'}{/snippet}
+{#snippet totalName()}Total{/snippet}
 <!-- Divs, not spans: the sub line keeps each span's "Label value" pair on one line, and these are
      sentences that must wrap at 390. -->
 {#snippet absentSub()}{#if mitigatedLine !== ''}<div data-testid="actor-mitigated">
@@ -263,20 +273,22 @@
             subLine={subLine(actor)}
             figures={figures(actor)}
             ofTop={top === 0 ? 0 : actor.effective / top}
-            phone={`${formatRate(timeOf(actor) === 0 ? 0 : actor.effective / (timeOf(actor) / 1000))} ${RATE[tab]}`}
+            phone={phoneRate(actor)}
             href={players.has(actor.guid) ? playerHref(actor.guid) : undefined}
             selected={selected === actor.guid}
             onSelect={onSelectPlayer}
           />
         {/each}
-        <StatRow
-          figures={totalFigures}
-          total
-          name={totalName}
-          sub={absentLine === '' && mitigatedLine === '' ? undefined : absentSub}
-          testid="actor-total"
-        />
+        <!-- One player's row is its own total: no foot row. -->
+        {#if actors.length > 1}
+          <StatRow figures={totalFigures} total name={totalName} testid="actor-total" />
+        {/if}
       </StatTable>
+      <!-- The mitigated and absent lines run the table's full width under it, never squeezed into the
+           name column. -->
+      {#if absentLine !== '' || mitigatedLine !== ''}
+        <div class="text-small text-muted px-5 py-3 max-md:px-[14px]">{@render absentSub()}</div>
+      {/if}
     {/if}
   </div>
 </Section>

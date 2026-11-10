@@ -53,7 +53,8 @@ export function tierFigures(row: TierRow, count: number): RankFigure[] {
     testid: 'tier-number',
     ...bestOf(row.role === 'tank' && isLeader(row), title),
   };
-  if (row.role !== 'tank' || row.effectiveHealth === undefined || row.threat === undefined) return [sorted];
+  if (row.role !== 'tank' || row.effectiveHealth === undefined || row.threat === undefined)
+    return [sorted, phoneGap(row)];
   return [
     sorted,
     {
@@ -71,6 +72,22 @@ export function tierFigures(row: TierRow, count: number): RankFigure[] {
   ];
 }
 
+/** Below 768 the gap column goes: the row's vs #1 rides under its figure instead. */
+function phoneGap(row: TierRow): RankFigure {
+  return {
+    value: gapOf(row),
+    label: tiersCopy.gapLabel[row.role],
+    bare: true,
+    phoneOnly: true,
+    testid: 'tier-gap-phone',
+  };
+}
+
+/** "−7.3%" behind the top spec; the top spec itself reads "best". */
+function gapOf(row: TierRow): string {
+  return isLeader(row) ? tiersCopy.leaderGap : gapText(row);
+}
+
 export function rankRowProps(row: TierRow, rows: readonly TierRow[]): TierRankRowProps {
   const count = rows.length;
   return {
@@ -81,9 +98,9 @@ export function rankRowProps(row: TierRow, rows: readonly TierRow[]): TierRankRo
     fraction: barFraction(row, rows),
     barTone: 'accent',
     figures: tierFigures(row, count),
-    // The leader's gap is empty: the column reads against it (the mock's "vs #1").
+    // The leader's gap reads "best": the column reads against it (the mock's "vs #1").
     gap: {
-      text: isLeader(row) ? '' : gapText(row),
+      text: gapOf(row),
       label: tiersCopy.gapLabel[row.role],
       leader: isLeader(row),
     },

@@ -74,31 +74,25 @@ The leveling build opens with two points in Wand Specialization for the wand tha
 
 **Before the pull.** Buff the raid, then shift into Shadowform and drink back to full: the form costs mana, so never shift on the pull. Start Mind Blast 1.5 seconds before the tank's pull lands so it hits as the boss is engaged, and do not pre-cast it on a tank who opens slowly.
 
-**Opener.** Mind Blast lands as the boss is engaged, then Shadow Word: Pain, Vampiric Embrace, Devouring Plague and Shadow Word: Death. By then Mind Blast is back: Inner Focus first, so it is free and more likely to crit, then Mind Flay. By the end of that string Shadow Weaving is at five stacks.
+**Never clip Mind Flay.** A Mind Blast that comes off cooldown mid-channel waits for the channel to finish.
 
-**Priority.** Keep Shadow Word: Pain up. Keep Devouring Plague up: it is on a 24 second cooldown and heals you as it ticks. Mind Blast on cooldown. Shadow Word: Death on cooldown. Mind Flay with everything else.
+**Vampiric Embrace.** On a fight with group damage it is a lot of healing, and it pays for Shadow Word: Death. On a fight where your group takes nothing, skip it and push damage.
 
-**Never clip Mind Flay.** Improved Mind Flay makes the third tick the biggest, so a Mind Blast that comes off cooldown mid-channel waits for the channel to finish.
+**Execute.** Nothing changes below 20%, except that Early Demise makes Shadow Word: Death crit far more often. Keep Shadow Word: Pain up until the last 6 seconds of a fight: it ticks every 3 seconds and takes two ticks to out-damage the Mind Flay you would cast instead.
 
-**Shadow Word: Death backlash.** Every cast that does not kill the target hits you for 30% of your maximum health. Cast it on cooldown anyway, and keep Vampiric Embrace up so your own damage heals it back.
+**AoE and adds.** Shadow has no real AoE. Put Shadow Word: Pain on adds that will live 15 seconds or more and keep your rotation on the kill target. Mind Flay's 50% slow peels a runner off a healer.
 
-**Vampiric Embrace.** On the boss, keep it up: it costs a global every 30 seconds, a few percent of your own damage, and in return your whole group heals for 20% of every Shadow spell you land. On a fight with group damage that is a lot of healing, and it pays for Shadow Word: Death. On a fight where your group takes nothing, skip it and push damage. That healing goes to your group, so it never shows on your own damage meter.
-
-**Execute.** Nothing changes below 20%, except that Early Demise makes Shadow Word: Death crit far more often. Keep Shadow Word: Pain up until the last 6 seconds of a fight. It ticks every 3 seconds, and it takes two ticks to out-damage the Mind Flay you would cast instead, so once the boss has less than 6 seconds to live, spend the global on Mind Blast, Shadow Word: Death or Mind Flay.
-
-**AoE and adds.** Shadow has no real AoE. Put Shadow Word: Pain on adds that will live 15 seconds or more and keep your rotation on the kill target. Mind Flay slows by 50%, which is a good way to peel a runner off a healer.
-
-**Moving.** Shadow Word: Pain, Devouring Plague, Shadow Word: Death and Vampiric Embrace are all instant. Save a refresh or Shadow Word: Death for when you have to run.
+**Moving.** Shadow Word: Pain, Devouring Plague on its 24 second cooldown, Shadow Word: Death and Vampiric Embrace are all instant. Save a refresh or Shadow Word: Death for when you have to run.
 
 **Threat.** Mind Blast threatens hard. Fade sheds threat for 10 seconds on a 30 second cooldown; use it the moment you climb past the tank, not after the boss turns. If you keep pulling, move a point from Mental Strength into Silent Resolve.
 
 **Mana.** With raid buffs a 3 minute fight does not drain you. On long fights use a Major Mana Potion and a Demonic Rune once you are down that much, and an Undead uses Dark Sacrifice.
 
-**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Troll Berserking and Night Elf Elune's Light whenever they are up, Gnome Eureka! on a Mind Blast and a Shadow Word: Death, and fill the rest of it with Mind Flay, whose ticks it also makes 10% stronger. It skips Shadow Word: Pain and Devouring Plague, so never spend it on a refresh.
+**Cooldowns.** Inner Focus on Mind Blast every time it is up. Trinkets and racials go with your biggest damage: Troll Berserking and Night Elf Elune's Light whenever they are up. Gnome Eureka! goes on a Mind Blast and a Shadow Word: Death, with Mind Flay filling the rest, since it makes its ticks 10% stronger too. It skips Shadow Word: Pain and Devouring Plague, so never spend it on a refresh.
 
 ## Stat priority
 
-Hit matters up to the 16% spell hit cap against a raid boss and adds nothing past it: Shadow Focus gives 5%, your gear finds the rest, and every miss is a lost Mind Blast. Spell power and Shadow power are the same stat to you, and every spell you cast grows with them. Critical strike reaches more than your direct hits: in Forever your DoT ticks and Mind Flay crit, and Shadowform doubles the crit bonus, so a Shadow crit hits for twice a normal hit. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
+Shadow Focus gives 5% of the 16% spell hit cap against a raid boss, your gear finds the rest, and hit past the cap adds nothing. Spell power and Shadow power are the same stat to you. In Forever your DoT ticks and Mind Flay crit, and Shadowform doubles the crit bonus. Intellect is a little crit and a deeper bar; with raid buffs the mana rarely matters. Spell penetration does nothing against raid bosses.
 
 ## Best in slot
 
@@ -110,11 +104,11 @@ Flask of Supreme Power, Elixir of Shadow Power and Greater Arcane Elixir all sta
 
 ## Races
 
-**Human** is the Alliance pick. Ruthless adds 1% critical strike chance to all your spells, and Shadowform doubles every crit's bonus. The Human Spirit adds 10% Spirit, which while leveling is more drinking saved while Spirit Tap is up. The Human priest spells are Divine Grace, a free instant heal on an ally under 50%, and Feedback, which is for PvP.
+**Human** for the Alliance. Ruthless adds 1% critical strike chance to all your spells, and Shadowform doubles every crit's bonus. While leveling, The Human Spirit is more drinking saved while Spirit Tap is up.
 
-**Undead** is the Horde pick, and the strongest Shadow priest of all. Touch of the Grave gives your spells a chance to drain health from the target, up to 5% of your maximum health, at most once every 15 seconds, which takes the edge off Shadow Word: Death's backlash. Dark Sacrifice trades your health for mana once a fight, and Will of the Forsaken breaks fears and charms.
+**Undead** is the Horde pick, and the strongest Shadow priest of all. Touch of the Grave takes the edge off Shadow Word: Death's backlash, and Dark Sacrifice is mana once a fight.
 
-**Night Elf** is as good as Human: Elune's Light is 10% crit for 15 seconds every 3 minutes. **Dwarf** is close behind with Artisan's Precision, 1% hit, plus Stoneform and Desperate Prayer. **Gnome** trails them a little: Eureka! makes Mind Blast and Shadow Word: Death 10% cheaper and 10% stronger, and, whatever the racial's tooltip says about non-periodic abilities, Mind Flay's ticks 10% stronger too, for 8 seconds every 2 minutes, and Expansive Mind adds 5% mana. **Troll** has Berserking, 10% cast speed for 15 seconds every 3 minutes, and falls clearly behind Undead.
+**Night Elf** is as good as Human for Elune's Light. **Dwarf** is close behind with Artisan's Precision, 1% hit. **Gnome** trails them a little: whatever the racial's tooltip says about non-periodic abilities, Eureka! makes Mind Flay's ticks 10% stronger too. **Troll** falls clearly behind Undead.
 
 ## Professions
 
@@ -126,14 +120,28 @@ Tailoring makes a lot of the cloth you wear before raids, so it pays for itself.
 
 Smite does your damage until 10: Shadow Word: Pain at 4, Smite, then the wand. Power Word: Shield comes at 6, Mind Blast at 10, Inner Fire at 12 and Psychic Scream at 14, your way out when a second mob joins.
 
-Your first two talent points go into Wand Specialization at 10 and 11, 25% more wand damage, because the wand finishes most of your mobs at these levels. Spirit Tap takes 12 to 16: at five points every kill doubles your Spirit for 15 seconds and keeps half your regeneration running while you cast, so you barely drink. Shadow Focus starts at 17 for more hit on your Shadow spells.
+Your first two talent points go into Wand Specialization at 10 and 11, because the wand finishes most of your mobs at these levels. Spirit Tap takes 12 to 16, so you barely drink. Shadow Focus starts at 17.
 
 Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
 
 ### Levels 20 to 60
 
-Shadow is how a priest levels. Pull with Mind Blast, put Shadow Word: Pain and Devouring Plague up, shield yourself if the mob reaches you, and finish with Mind Flay or a wand. Spirit Tap procs on every kill that gives experience and lets you chain pulls with little drinking. Your mana runs out before your health does, so keep cheaper ranks on your bars. Shadow Word: Pain rank 3 from 26 through your thirties, then the top rank; at 28, when Mind Flay arrives and your mana runs dry, cast rank 2 for a level or two, since the cheap rank stays up all fight (a Human or Undead goes back to rank 3 at 29). Devouring Plague rank 1 from 30 to 43 (a Human casts rank 2 at 36, a Troll at 37), then rank 2 from 44 to 59 (a Human casts rank 3 at 49); a Human drops back to rank 1 at 50 and 51. Mind Blast rank 4 stays on your bars when rank 5 arrives at 34, for a level or two. When rank 6 arrives at 40, keep rank 4 or 5 for the next four levels instead, whichever your race does best with (a Gnome goes to the top rank at 43), then go back to the top rank. At 50 and 51 a Dwarf, Night Elf or Troll is better off on rank 5 again, a Dwarf through 52. Shadow Word: Death rank 2 from 48 through your fifties; a Human, Dwarf or Night Elf keeps rank 1 at 40, the level rank 2 arrives.
+Shadow is how a priest levels. Pull with Mind Blast, put Shadow Word: Pain and Devouring Plague up, shield yourself if the mob reaches you, and finish with Mind Flay or a wand. Spirit Tap procs on every kill that gives experience and lets you chain pulls.
 
-From 20 the build finishes Shadow Focus at 21, takes Improved Mind Blast to 25 and Improved Shadow Word: Pain at 26 and 27, then Mind Flay at 28. Until 28 the wand is your filler. Improved Mind Flay comes at 29 and 30 and Shadow Weaving at 31 to 33, then two points of Blackout and Vampiric Embrace at 34 to 36, which open Darkness, and Shadowform is your point at 42. The two early points in Wand Specialization cost you those two levels of the form, and they are worth it. If you would rather not wait, reset your talents at your trainer at 40: all 31 points go into Shadow, Shadowform included, and Wand Specialization comes back with your points at 41 and 42. That keeps the early wand and puts you in the form two levels sooner, and it is what most strong Shadow priests do.
+Talent order:
 
-In Shadowform you cannot cast Renew or a heal. Power Word: Shield still works, so shield before the pull and let Vampiric Embrace and Devouring Plague top you up. Leave the form only for a heal you really need. Solo, cast Shadow Word: Death only when it will kill or you are well above half health: the backlash is real.
+- **20 to 27:** Shadow Focus finished at 21, Improved Mind Blast to 25, Improved Shadow Word: Pain at 26 and 27. Until 28 the wand is your filler.
+- **28 to 33:** Mind Flay at 28, Improved Mind Flay at 29 and 30, Shadow Weaving at 31 to 33.
+- **34 to 36:** two points of Blackout and Vampiric Embrace, which open Darkness.
+- **42:** Shadowform. The two early points in Wand Specialization cost you those two levels of the form, and they are worth it.
+
+If you would rather not wait, reset your talents at your trainer at 40: all 31 points go into Shadow, Shadowform included, and Wand Specialization comes back with your points at 41 and 42. That keeps the early wand and puts you in the form two levels sooner, and it is what most strong Shadow priests do.
+
+Your mana runs out before your health does, so keep cheaper ranks on your bars:
+
+- **Shadow Word: Pain:** rank 3 from 26 through your thirties, then the top rank. At 28, when Mind Flay arrives and your mana runs dry, cast rank 2 for a level or two, since the cheap rank stays up all fight (a Human or Undead goes back to rank 3 at 29).
+- **Devouring Plague:** rank 1 from 30 to 43 (a Human casts rank 2 at 36, a Troll at 37), then rank 2 from 44 to 59 (a Human casts rank 3 at 49, and drops back to rank 1 at 50 and 51).
+- **Mind Blast:** rank 4 stays on your bars when rank 5 arrives at 34, for a level or two. When rank 6 arrives at 40, keep rank 4 or 5 for the next four levels instead, whichever your race does best with (a Gnome goes to the top rank at 43), then go back to the top rank. At 50 and 51 a Dwarf, Night Elf or Troll is better off on rank 5 again, a Dwarf through 52.
+- **Shadow Word: Death:** rank 2 from 48 through your fifties; a Human, Dwarf or Night Elf keeps rank 1 at 40, the level rank 2 arrives.
+
+Power Word: Shield still works in Shadowform, so shield before the pull and let Vampiric Embrace and Devouring Plague top you up. Leave the form only for a heal you really need. Solo, cast Shadow Word: Death only when it will kill or you are well above half health: the backlash is real.

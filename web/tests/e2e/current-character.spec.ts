@@ -92,13 +92,6 @@ test.describe('current character', () => {
     await expect(page.getByTestId('import-get-addon')).toHaveAttribute('href', /^\/setup(#|$)/);
   });
 
-  // The scope caveat is the landing head's one meta line now (spec 2026-11-06-sim §4.2, §6).
-  test('the merged scope caveat is on /sim', async ({ page }) => {
-    await page.goto('/sim');
-    await expect(page.getByTestId('sim-head')).toContainText(simPageCopy.landingMeta);
-    await expect(page.getByTestId('sim-head')).toContainText('Damage specs only');
-  });
-
   test("Droptimizer's every-upgrade rows offer Plan it, opening the planner with the item's code", async ({
     page,
   }) => {

@@ -188,7 +188,7 @@ test('before a file is chosen the panel is the drop zone alone, with no Upload b
   await openLogs(page);
   const panel = page.getByTestId('upload');
   await expect(panel.getByTestId('upload-zone')).toContainText('WoWCombatLog.txt');
-  await expect(panel.getByTestId('upload-zone')).toContainText("From the game's Logs folder, up to 4 GB.");
+  await expect(panel.getByTestId('upload-zone')).toContainText('Up to 4 GB.');
   await expect(panel.getByText('Choose a file', { exact: true })).toBeVisible();
   await expect(page.getByTestId('upload-start')).toHaveCount(0);
   await expect(page.getByLabel('Title')).toHaveCount(0);

@@ -27,13 +27,11 @@ sources:
 
 ## What changed from 1.12
 
-- **Pets are reworked.** A pet copies 10% of your attack power and all of your crit, and it takes no stat buffs from other players; your own Heart of the Lion still reaches it. Your gear is what makes it hit.
-- **Aimed Shot is a trained spell** with a 2 second cast, and it shares one 6 second cooldown with Multi-Shot. Aimed Shot outhits Multi-Shot, and in Forever your auto shots keep firing while you cast it, so it takes that cooldown every time it comes up; Multi-Shot is for packs and for when you have to move.
-- **Heart of the Lion** is a hunter spell from level 1: 10% more stats and extra attack power (280 melee and ranged at 60) for everyone near you, and another 10% stats for you.
-- **Aspect of the Beast** gives melee attack power, which makes it the Survival aspect. Aspect of the Hawk stays the ranged one.
-- **Trueshot Aura** is ranged attack power only, 100 at 60 for your party and raid.
-- **Mail from 40.** Hunters wear leather until 40, and good leather stays in the mix after it.
+- **Pets copy 10% of your attack power and all of your crit.**
+- **Aimed Shot:** trained, 2 second cast, one 6 second cooldown shared with Multi-Shot. Auto shots keep firing while you cast it.
+- **Aimed Shot over Multi-Shot** every time the cooldown comes up. Multi-Shot is for packs and for when you have to move.
+- **Heart of the Lion** from level 1: 10% stats and 280 melee and ranged attack power at 60 for everyone near you, and another 10% stats for you.
+- **Aspect of the Beast** gives melee attack power. Survival runs it; Hawk stays the ranged aspect.
+- **Trueshot Aura:** ranged attack power only, 100 at 60, party and raid.
 
 ## Races
-
-Alliance hunters are Dwarf, Night Elf and, new in Forever, Human. Horde hunters are Orc, Troll and Tauren. Skyborne can be hunters on either faction, as the High Order on the Alliance and the Windshapers on the Horde.

@@ -90,11 +90,11 @@ describe('upgradesFacts', () => {
 
   it('reads the whole gap and the slots already best in slot', () => {
     expect(upgradesFacts(result(52.08, 12, 5))).toEqual([
-      { n: '+52.1', text: 'DPS in 12 upgrades' },
+      { n: '+52.1', text: 'DPS' },
       { n: '5', text: 'best in slot' },
     ]);
     expect(upgradesFacts(result(0, 1, 16))).toEqual([{ n: '16', text: 'best in slot' }]);
-    expect(upgradesFacts(result(7.8, 14, 0))).toEqual([{ n: '+7.8', text: 'DPS in 14 upgrades' }]);
+    expect(upgradesFacts(result(7.8, 14, 0))).toEqual([{ n: '+7.8', text: 'DPS' }]);
     expect(upgradesFacts(result(0, 0, 17))).toEqual([]);
     expect(upgradesFacts(undefined)).toEqual([]);
   });

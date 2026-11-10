@@ -18,16 +18,14 @@ export const guidesCopy = {
   simThisBuild: 'Sim this build',
   // --- rebuild (2026-10-04) --------------------------------------------------------------
   /** `/guides` index's own signed-in callout (spec §4.A/§6): `{specName}` and `{className}`
-   *  come from the visitor's own character, e.g. "Your guide: Fury Warrior ›". */
-  signedInCallout: (specName: string, className: string): string => `Your guide: ${specName} ${className} ›`,
+   *  come from the visitor's own character, e.g. "Fury Warrior ›". */
+  signedInCallout: (specName: string, className: string): string => `${specName} ${className} ›`,
   readTheGuide: 'Read the guide',
   yourSpecPill: 'Your spec',
   /** The class landing's spec plate's accessible name. */
   classLandingSpecsHeading: 'Specs',
   buildRailLabel: 'Build',
   /** The rail's Rotation card title; its band label is the head's meta (site alignment §5.4). */
-  rotationRailTitle: 'Rotation',
-  fullPriorityLink: 'Full priority ↓',
   statPriorityRailLabel: 'Stat priority',
   loadInPlanner: 'Load in planner',
   /** Under "Rotation and priority" when the guide has its own raid build: the cards are worked
@@ -43,13 +41,12 @@ export const guidesCopy = {
   loadRaidBuildAriaLabel: 'Load the raid build in the planner',
   simRaidBuildAriaLabel: 'Sim the raid build',
   // --- guides like Wowhead's (W.18, 2026-10-22) ---------------------------------------------
-  /** The one data-source line, in the page's footer beside the Updated stamp, never in the reading flow. */
-  dataSourceLine: (build: string): string =>
-    `Numbers from client build ${build}, checked against launch logs as they come in.`,
   roleLabel: (role: 'dps' | 'healer' | 'tank'): string =>
     role === 'dps' ? 'DPS' : role === 'healer' ? 'Healer' : 'Tank',
+  /** The band's meta: "Updated 7 Nov"; a healer or a tank names its role first (every class has a
+   *  damage spec, so "DPS" tells nothing). */
   headerMeta: (role: 'dps' | 'healer' | 'tank', updated: string): string =>
-    `${guidesCopy.roleLabel(role)} · Updated ${updated}`,
+    role === 'dps' ? `Updated ${updated}` : `${guidesCopy.roleLabel(role)} · Updated ${updated}`,
   strengths: 'Strengths',
   weaknesses: 'Weaknesses',
   inARaid: 'In a raid',
@@ -63,11 +60,9 @@ export const guidesCopy = {
   cooldowns: 'Cooldowns',
   /** A rotation row for a talent only the raid build takes, or a row that needs one. */
   raidBuildTag: 'Raid build only',
-  /** Said once above the lists when a row carries that tag. It never says "level 60 build":
-   *  a raider is level 60 too and read the old wording as his own build (round 22 mage
-   *  wow-player SHOULD). */
-  raidBuildLegend:
-    'Raid build only: needs a talent only the raid build takes. Not on the raid build? Skip that row.',
+  /** A priority row whose rules are word for word the row above's (a cheaper rank, then a
+   *  cheaper spell, at the same thresholds): said once, on the first. */
+  sameRulesAsAbove: 'At the same thresholds',
   /** "Picks for a Human (Alliance).", "Picks for an Undead (Horde)." */
   bisCaption: (race: string, faction: string): string =>
     `Picks for ${/^[AEIOU]/i.test(race) ? 'an' : 'a'} ${race} (${faction}).`,
@@ -79,12 +74,7 @@ export const guidesCopy = {
   notSimChecked: 'Ranked by stats only',
   enchants: 'Enchants',
   consumables: 'Consumables',
-  /** The one thing the enchant table leaves out: each slot's best flat-stat enchant by the band's
-   *  weights (gear-extras.ts) never scores crit, hit or haste (ai-slop P8: no explainer line). */
-  enchantsNote: 'Crit, hit and haste enchants are not listed.',
-  racialsColumn: 'Racials',
 
-  recommendedTag: 'Recommended',
   /** The Stat priority headline's cap: "Hit cap: 16%". Caps arrive formatted with their own
    *  "%" (or as `capReached`); the breakdown joins through `capWithDetail`. */
   hitToCap: (cap: string): string => `Hit cap: ${cap}`,
@@ -126,11 +116,11 @@ export const guidesCopy = {
   /** A stat whose weight is below zero beyond its error: no number is printed for it. */
   noGainNote: (labels: string, plural: boolean, role: GuideRole): string =>
     `${labels} ${plural ? 'show' : 'shows'} as "No gain": more of it does not raise your ${ROLE_OUTPUT[role]} at level 60.`,
-  weightColumn: (anchor: string): string => `Weight (${anchor} = 1.00)`,
-  /** "DPS per point", "HPS per point", "Tank score per point"; "DPS per point or rating" when
-   *  the table prices a rating stat (hit, crit), whose point is a rating point. */
-  perPointColumn: (role: GuideRole, rated: boolean): string =>
-    `${ROLE_RATE_LABEL[role]} per point${rated ? ' or rating' : ''}`,
+  /** The weights column: the 1.00 row is the anchor, so the head says no more. */
+  weightColumn: 'Weight',
+  /** "DPS per point", "HPS per point", "Tank score per point". A rating stat's point is a rating
+   *  point; the note under the table says so once (ratingNote), not the header. */
+  perPointColumn: (role: GuideRole): string => `${ROLE_RATE_LABEL[role]} per point`,
   /** "1 point of spell power = ...", or "1 hit rating = ..." for a rating stat. */
   unitLine: (stat: string, figure: string, role: GuideRole, rated = false): string =>
     rated
@@ -159,15 +149,21 @@ export const guidesCopy = {
   /** "Level 23: Improved Gouge, rank 2"; a level the ladder places no point at reads its level alone. */
   levelingPoint: (level: number, name: string | null, rank: number): string =>
     name === null ? `Level ${level}` : `Level ${level}: ${name}, rank ${rank}`,
-  /** "14 points spent, 37 to go", "1 point spent, 50 to go", "51 points spent, all placed". */
+  /** "14 points spent, 37 to go", "1 point spent, 50 to go"; nothing once every point is placed. */
   levelingPointsSpent: (spent: number, toGo: number): string =>
-    `${spent} ${spent === 1 ? 'point' : 'points'} spent, ${toGo === 0 ? 'all placed' : `${toGo} to go`}`,
+    toGo === 0 ? '' : `${spent} ${spent === 1 ? 'point' : 'points'} spent, ${toGo} to go`,
   previousLevel: 'Previous level',
   nextLevel: 'Next level',
   levelSliderLabel: 'Level',
   levelValueText: (level: number): string => `Level ${level}`,
   loadLevelBuildAriaLabel: (level: number): string => `Load the level ${level} build in the planner`,
-  tocBarLabel: 'On this page',
+  tocBarLabel: 'Jump to',
+  /** A folded section's phone line: "Show 8 races", "Show professions". */
+  foldShow: (what: string): string => `Show ${what}`,
+  /** The Best in slot fold's count: "17 items". */
+  foldItems: (n: number): string => `${n} ${n === 1 ? 'item' : 'items'}`,
+  /** The Enchants and consumables fold's count: "9 enchants and consumables". */
+  foldExtras: (n: number): string => `${n} enchants and consumables`,
   alliancePicksHeading: 'Alliance',
   hordePicksHeading: 'Horde',
   alsoUsed: 'Food, oil and potions',
@@ -185,9 +181,6 @@ export const guidesCopy = {
   /** The At a glance plate's accessible name. */
   glance: 'Summary',
   /** A healer's At a glance rotation column (MUST 2). */
-  healingPriorityRailTitle: 'Healing priority',
-  /** The At a glance filler line when the filler is below the first four (MUST 1). */
-  glanceFiller: (spell: string): string => `Filler: ${spell}`,
   /** A row cast below its top rank on purpose: "Rank 7 (cheap rank)". */
   rankLabel: (rank: number, cheap = false): string => `Rank ${rank}${cheap ? ' (cheap rank)' : ''}`,
   /** The Talents and builds lane's label over the build rows. */

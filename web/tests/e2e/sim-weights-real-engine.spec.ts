@@ -101,7 +101,8 @@ test('a browser-lane weights run at the default precision finishes with a table,
   await expect(page.getByTestId('sim-weights')).toBeVisible();
   // Contract 10.8: the reference stat is always exactly 1.
   await expect(page.getByTestId('sim-weight-attack_power')).toBeVisible();
-  await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('= 1.00');
+  // The top stat reads 1.00 in the Scale column (the caption keeps only haste).
+  await expect(page.getByTestId('sim-weights-table')).toContainText('1.00');
   await expect(page.getByTestId('sim-weight-attack_power')).toContainText(' DPS');
 
   expect(pageErrors).toEqual([]);

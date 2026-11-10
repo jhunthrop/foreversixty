@@ -47,9 +47,9 @@ describe('resourceCard', () => {
     const summary = full.summary.resources[0]!;
     expect(card.title).toBe('Rage');
     expect(card.tiles.map((tile) => tile.label)).toEqual(['Gained', 'Spent', 'Lost at the cap']);
-    expect(card.tiles[0]!.value).toBe(`${Math.round(summary.gained).toLocaleString('en-US')} rage`);
+    expect(card.tiles[0]!.value).toBe(Math.round(summary.gained).toLocaleString('en-US'));
     const share = ((summary.wasted! / summary.gained) * 100).toFixed(1);
-    expect(card.tiles[2]!.value).toBe(`${summary.wasted} rage · ${share}%`);
+    expect(card.tiles[2]!.value).toBe(`${summary.wasted} · ${share}%`);
   });
 
   it('lists that sum to the tiles within 0.5', () => {
@@ -268,9 +268,7 @@ describe('gear card', () => {
 
   it('puts the run’s own measured miss rate under hit, never a fixed cap', () => {
     // Specials: 0 MISS in the fixture's yellow rows. White: 12 + 7 + 4 misses over 63 + 82 + 21 swings.
-    expect(statsBlock(full)?.hit?.reference?.note).toBe(
-      'Missed in this run: 0% of specials · 13.9% of white swings.',
-    );
+    expect(statsBlock(full)?.hit?.reference?.note).toBe('Miss 0% specials · 13.9% white');
   });
 
   it('one weapon keeps the hit line; the skill shows one figure', () => {

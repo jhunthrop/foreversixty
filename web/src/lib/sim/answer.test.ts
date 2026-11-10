@@ -27,7 +27,8 @@ function input(over: Partial<AnswerInput>): AnswerInput {
 describe('simAnswer', () => {
   it('has no sim yet before a run, with Run sim the primary', () => {
     const a = simAnswer(input({}));
-    expect(a).toMatchObject({ state: 'none', label: 'No sim yet', primary: 'run' });
+    // h-audit 2026-11-09: no "No sim yet" label; Run sim is the cue.
+    expect(a).toMatchObject({ state: 'none', label: '', primary: 'run' });
     expect(a.figure).toBeUndefined();
   });
 

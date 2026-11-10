@@ -8,7 +8,7 @@
 import ItemRow from '../ui/ItemRow.svelte';
 import LaneBlock from '../ui/LaneBlock.svelte';
 import { guidesCopy } from '../../lib/guides/copy';
-import type { GuideBisPanel } from '../../lib/guides/guide-bis';
+import { listedBisRows, type GuideBisPanel } from '../../lib/guides/guide-bis';
 
 interface Props {
   build: string;
@@ -17,9 +17,10 @@ interface Props {
 const { build, panel } = Astro.props;
 const faction = panel.faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading;
 const WEAPON_SLOTS: ReadonlySet<string> = new Set(['main_hand', 'off_hand', 'ranged']);
+const rows = listedBisRows(panel);
 const blocks = [
-  { key: 'armour', rows: panel.rows.filter((row) => !WEAPON_SLOTS.has(row.slot)) },
-  { key: 'weapons', rows: panel.rows.filter((row) => WEAPON_SLOTS.has(row.slot)) },
+  { key: 'armour', rows: rows.filter((row) => !WEAPON_SLOTS.has(row.slot)) },
+  { key: 'weapons', rows: rows.filter((row) => WEAPON_SLOTS.has(row.slot)) },
 ].filter((block) => block.rows.length > 0);
 ---
 

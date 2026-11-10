@@ -46,7 +46,7 @@
   import type { CompareSession } from '../../lib/bis/compare-session';
   import { readStoredSources, storeSources } from '../../lib/bis/source-store';
   import type { BisPresetId, Faction, SourceFilterKind } from '../../lib/bis/types';
-  import type { ControlGroup, ControlOption } from '../../lib/ui/primitives';
+  import { controlSummary, type ControlGroup, type ControlOption } from '../../lib/ui/primitives';
   import { bisContext, presetLabel } from '../../lib/bis/page-context';
   import { bandSlug, bisBandPath } from '../../lib/bis/band-path';
   import { bisSeoCopy } from '../../lib/bis/seo-copy';
@@ -163,7 +163,6 @@
         : undefined,
     ].filter((note) => note !== undefined),
   );
-  const factionWord = $derived(state.faction === 'horde' ? bisCopy.factionHorde : bisCopy.factionAlliance);
   /** The selected slot, else the doll's default (the first upgrade, else the first pick). */
   const shownSlot = $derived(
     selected !== null && cells.some((cell) => cell.slot === selected) ? selected : defaultSelection(cells),
@@ -234,6 +233,11 @@
     });
     return list;
   });
+  /** The phone line: range, faction and profile. The spec is the doll's title and the race sits in
+   *  the open stack, so the line fits 390 without cutting a word. */
+  const barSummary = $derived(
+    controlSummary(groupsBar.filter((group) => group.param !== 'spec' && group.param !== 'race')),
+  );
 
   function apply(next: BisPageState, push = true): void {
     if (data.models[bandModelKey(next.faction, next.band, next.preset)] === undefined) return;
@@ -319,9 +323,11 @@
     </p>
   {/if}
   {#if tip}
-    <ItemTooltip model={tip} build={data.build} floating={false}>
-      {#snippet tail()}<BisSlotLines {cell} />{/snippet}
-    </ItemTooltip>
+    <div class="bis-tip" data-form={form} data-picked={selected !== null ? '' : undefined}>
+      <ItemTooltip model={tip} build={data.build} floating={false}>
+        {#snippet tail()}<BisSlotLines {cell} />{/snippet}
+      </ItemTooltip>
+    </div>
   {/if}
   {#if character === undefined}{@render simLink()}{/if}
 {/snippet}
@@ -340,6 +346,7 @@
     {#snippet bar()}
       <ControlBar
         groups={groupsBar}
+        summary={barSummary}
         label="Best in slot controls"
         labelsFrom={1920}
         onchange={onControl}
@@ -359,7 +366,7 @@
             build={data.build}
             title={bisSeoCopy.heading(seoSubject)}
             shortTitle={fullName}
-            meta={bisCopy.frameMeta(model.label, factionWord, state.band >= 60 && seoSubject.preRaid)}
+            meta={bisCopy.frameMeta(model.label, state.band >= 60 && seoSubject.preRaid)}
             figure={figure ? { value: figure.value, unit: model.unit } : undefined}
             avatar={character?.avatar ?? null}
             render={character?.render ?? null}
@@ -391,13 +398,19 @@
         />
       </div>
       <div class="bis-route">
-        <BisItinerary {stops} build={data.build} unit={model.unit} label={`${fullName}, where to go`} />
+        <BisItinerary {stops} build={data.build} label={`${fullName}, where to go`} />
       </div>
     </div>
   </Page>
 </div>
 
 <style>
+  /* The phone list shows a slot's tooltip once the player taps it, never one left open by default. */
+  @media (max-width: 767px) {
+    .bis-tip[data-form='list']:not([data-picked]) {
+      display: none;
+    }
+  }
   .bis-top {
     display: grid;
     grid-template-columns: minmax(0, 1fr);

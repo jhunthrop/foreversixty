@@ -31,4 +31,4 @@ sources:
 
 ## Races
 
-Druids are Night Elf or Tauren as before, and Skyborne can be druids on either faction, with their own sky-blue forms. None of Forever's six new race and class pairs is a druid.
+Skyborne can be druids on either faction, with their own sky-blue forms. None of Forever's six new race and class pairs is a druid.

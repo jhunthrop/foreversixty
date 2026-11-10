@@ -57,7 +57,6 @@
     taken: 'Nobody took damage in this window.',
     healing: 'Nobody healed in this window.',
   };
-  const NOUN: Readonly<Record<Metric, string>> = { done: 'damage', taken: 'damage', healing: 'healing' };
   const TONE: Readonly<Record<Metric, 'accent' | 'muted' | 'kill'>> = {
     done: 'accent',
     taken: 'muted',
@@ -137,10 +136,20 @@
     healing: ['overheal', 'hits', 'crit', 'max'],
   };
   const DETAIL_LABEL = { overheal: 'Overheal', hits: 'Hits', crit: 'Crit', avg: 'Avg', max: 'Max' } as const;
+  /** The metric's detail columns, less Overheal when every row reads 0%: a column of zeros says nothing. */
+  const details = $derived(
+    DETAIL[metric].filter(
+      (id) => id !== 'overheal' || byAbility.some((row) => detailValue(row, id) !== '0%'),
+    ),
+  );
   const columns = $derived([
     ...BASE_COLUMNS,
-    ...(detail ? DETAIL[metric].map((id) => ({ id, label: DETAIL_LABEL[id] })) : []),
+    ...(detail ? details.map((id) => ({ id, label: DETAIL_LABEL[id] })) : []),
   ]);
+  /** A detail's word on the phone's sub line, by its count: "1 hit", "12 hits", "48% crit". */
+  function phoneLabel(row: AbilityTotal, id: (typeof DETAIL)[Metric][number]): string {
+    return id === 'hits' && row.landed === 1 ? 'hit' : DETAIL_LABEL[id].toLowerCase();
+  }
   /** One detail figure; a prorated window marks the amounts it scales, as the Amount column does. */
   function detailValue(row: AbilityTotal, id: (typeof DETAIL)[Metric][number]): string {
     const mark = approximate ? '~' : '';
@@ -155,7 +164,7 @@
 
 <Section
   title={TITLE[metric]}
-  action={tabHref === undefined ? undefined : { label: TAB[metric], href: tabHref }}
+  action={tabHref === undefined ? undefined : { label: TAB[metric], href: tabHref, arrow: true }}
   panel
   flush
   testid={`panel-${metric}`}
@@ -169,16 +178,16 @@
           { value: `${(row.share * 100).toFixed(1)}%` },
           { value: formatRate(row.total / seconds) },
           { value: `${approximate ? '~' : ''}${formatAmount(row.total)}` },
-          ...(detail ? DETAIL[metric].map((id) => ({ value: detailValue(row, id) })) : []),
+          ...(detail ? details.map((id) => ({ value: detailValue(row, id) })) : []),
         ]}
-        {@const phone = `${formatAmount(row.total)} ${NOUN[metric]}`}
+        {@const phone = formatAmount(row.total)}
         {#if detail}
           <!-- On a phone the detail columns fold into the sub line under the name. -->
           <StatRow {figures} {phone}>
             {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
             {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
-            {#snippet sub()}{#each DETAIL[metric] as id, i (id)}<span class="ui-st-phone"
-                  >{i > 0 ? ' · ' : ''}{detailValue(row, id)} {DETAIL_LABEL[id].toLowerCase()}</span
+            {#snippet sub()}{#each details as id, i (id)}<span class="ui-st-phone"
+                  >{i > 0 ? ' · ' : ''}{detailValue(row, id)} {phoneLabel(row, id)}</span
                 >{/each}{/snippet}
             {#snippet meter()}<Meter value={row.share} tone={TONE[metric]} />{/snippet}
           </StatRow>

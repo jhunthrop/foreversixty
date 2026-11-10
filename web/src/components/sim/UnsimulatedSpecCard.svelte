@@ -1,30 +1,37 @@
 <!-- web/src/components/sim/UnsimulatedSpecCard.svelte -->
-<!-- /sim/specs' healer and tank rows (mock design/mocks/ws_simtools.py `web-sim-specs`), open under
-     their own section below the simulated ones: the spec in its class colour and its guide as the
-     trail's action, with no state tag, engine stamp or rotation. The section's heading says why; a line under every
-     row saying it again was the same sentence eight times. -->
+<!-- One of /sim/specs' healer and tank specs (mock design/mocks/ws_simtools.py `web-sim-specs`): the
+     spec's own icon (the class crest when the build has none, as the damage rows lead) and its
+     name in its class colour, a link to its guide, set in one column on a phone (name left, role
+     right, 44 px rows) and four across from 768, under their heading (h-audit 2026-11-09: eight
+     rows of "Guide ›" said nothing a link line does not). No state tag, engine stamp or rotation. -->
 <script lang="ts">
   import { classSpecPath } from '../../lib/sim/gear-card';
   import { classOfSpec, specLabel } from '../../lib/sim/spec-label';
-  import { simCopy } from '../../lib/sim/copy';
-  import ActionLink from '../ui/ActionLink.svelte';
+  import { specLeadIcon } from '../../lib/sim/spec-icon';
   import type { Spec } from '../../lib/sim/specs';
-  import { classTone } from '../../lib/ui/primitives';
-  import Row from '../ui/Row.svelte';
+  import { classColorVar } from '../../lib/report/format';
+  import { simCopy } from '../../lib/sim/copy';
 
   let { spec }: { spec: Spec } = $props();
+  let iconFailed = $state(false);
+  const lead = $derived(specLeadIcon(spec.spec, iconFailed));
 </script>
 
-<Row
-  id={spec.spec}
-  title={specLabel(spec.spec)}
-  titleTone={classTone(classOfSpec(spec.spec))}
-  open
-  testid={`spec-unsimulated-${spec.spec}`}
->
-  {#snippet trail()}
-    <ActionLink href={`/guides/${classSpecPath(spec.spec)}`} data-testid={`spec-guide-${spec.spec}`}
-      >{simCopy.specsGuide}</ActionLink
-    >
-  {/snippet}
-</Row>
+<span id={spec.spec} class="flex min-h-11 min-w-0 items-center" data-testid={`spec-unsimulated-${spec.spec}`}>
+  <a
+    href={`/guides/${classSpecPath(spec.spec)}`}
+    class="flex w-full min-w-0 items-center gap-2 text-[15px] font-bold whitespace-nowrap hover:underline md:inline-flex md:w-auto"
+    style:color={classColorVar(classOfSpec(spec.spec))}
+    data-testid={`spec-guide-${spec.spec}`}
+    ><img
+      src={lead.src}
+      alt=""
+      width="24"
+      height="24"
+      class={lead.crest ? 'rounded-full' : 'rounded-[5px]'}
+      onerror={() => (iconFailed = true)}
+    />{specLabel(spec.spec)}<span class="text-muted ml-auto text-[13px] font-normal md:ml-0"
+      >{simCopy.specsRole[spec.role]}</span
+    ></a
+  >
+</span>

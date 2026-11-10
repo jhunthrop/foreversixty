@@ -45,11 +45,21 @@ function upperFirst(text: string): string {
   return text === '' ? text : text[0]!.toUpperCase() + text.slice(1);
 }
 
-/** Every `- **Name** …: why` (or `— why`) bullet in a Talents section, in order. */
+/** A key talent with no why: `- **Name** (n points)`. Its tooltip says what it does, so a blurb
+ *  that only restated it is left out (h-audit 2026-11-09, ai-slop tell 23). */
+const NAME_ONLY = /^\*\*([^*]+)\*\*(?:\s*\([^)]*\))?\.?$/;
+
+/** Every `- **Name** …: why` (or `— why`) bullet in a Talents section, and every name-only
+ *  `- **Name** (n points)` bullet (an empty why), in order. */
 export function parseTalentBullets(markdown: string): ParsedBullet[] {
   const bullets: ParsedBullet[] = [];
   for (const line of markdown.split(/\r?\n/)) {
     if (!line.startsWith('- **')) continue;
+    const bare = NAME_ONLY.exec(line.slice(2).trim());
+    if (bare !== null) {
+      bullets.push({ names: [bare[1]!.trim()], why: '', raw: line });
+      continue;
+    }
     const match = DASH_SPLIT.exec(line.slice(2));
     if (match === null) continue;
     const names = [...(match[1] ?? '').matchAll(/\*\*([^*]+)\*\*/g)].map((m) => m[1]!.trim());

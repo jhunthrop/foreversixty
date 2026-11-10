@@ -7,6 +7,7 @@ import type { CharacterPage } from '../rankings/api';
 import {
   bestRows,
   buildRows,
+  bossOf,
   characterWaiting,
   characterPageCopy,
   headFacts,
@@ -71,25 +72,44 @@ describe('the upgrade total', () => {
   });
 });
 
+describe('bossOf', () => {
+  it('names the boss without its zone', () => {
+    expect(bossOf('Stratholme: Baron Rivendare')).toBe('Baron Rivendare');
+    expect(bossOf('Wailing Caverns')).toBe('Wailing Caverns');
+  });
+});
+
 describe('characterWaiting', () => {
   const own = {
     key: 'us/normal/felsnap',
     level: 34,
     build: { talents: { points: [23, 0, 0] } },
   } as unknown as MeCharacter;
-  const top = { name: 'Hood', source: 'Wailing Caverns' };
+  const top = { name: 'Hood', source: 'Wailing Caverns', icon: 'inv_helmet_01', quality: 3 };
 
   it('reads unspent talent points, then the top upgrade, as plain facts', () => {
     expect(characterWaiting({ own, top, bisHref: '/bis' })).toEqual([
       { key: 'talents', text: '2 talent points unspent', href: '/planner?character=us%2Fnormal%2Ffelsnap' },
-      { key: 'upgrade', text: 'Upgrade: Hood, Wailing Caverns', href: '/bis' },
+      {
+        key: 'upgrade',
+        lead: 'Upgrade: ',
+        text: 'Hood, Wailing Caverns',
+        href: '/bis',
+        item: { icon: 'inv_helmet_01', quality: 3 },
+      },
     ]);
   });
 
   it('names only the upgrade when every point is spent, and nothing with neither', () => {
     const spent = { ...own, build: { talents: { points: [25, 0, 0] } } } as unknown as MeCharacter;
     expect(characterWaiting({ own: spent, top, bisHref: null })).toEqual([
-      { key: 'upgrade', text: 'Upgrade: Hood, Wailing Caverns', href: null },
+      {
+        key: 'upgrade',
+        lead: 'Upgrade: ',
+        text: 'Hood, Wailing Caverns',
+        href: null,
+        item: { icon: 'inv_helmet_01', quality: 3 },
+      },
     ]);
     expect(characterWaiting({ own: spent, top: null, bisHref: null })).toEqual([]);
   });
@@ -118,6 +138,13 @@ describe('fights and builds', () => {
       value: '1,012',
     });
     expect(rows[0].color).toBe('var(--color-parse-orange)');
+    expect(bestRows([{ ...row, execution_score: 0.9 } as never])[0].sub).toBe('3 Nov · Holy · Execution 90%');
+    const before = { ...row, value: 930, percentile: 88, fought_at: '2026-10-27T20:40:00Z' };
+    const [withHistory] = bestRows([row as never], [row as never, before as never]);
+    expect(withHistory.sub).toBe('3 Nov · Holy');
+    expect(withHistory.since).toBe('+82 vs 27 Oct');
+    expect(bestRows([row as never], [], 'Holy')[0].sub).toBe('3 Nov');
+    expect(withHistory.trend).toEqual([88, 98.4]);
     expect(characterPageCopy.allFights(7)).toBe('All fights (7)');
   });
 
@@ -129,6 +156,6 @@ describe('fights and builds', () => {
     }));
     const rows = buildRows('Priest', builds);
     expect(rows.map((row) => row.split)).toEqual(['1/0/0', '2/0/0', '0/0/0']);
-    expect(rows[0].sub).toMatch(/first seen 1 Nov 2026$/);
+    expect(rows[0].sub).toBe('Discipline · 1 Nov');
   });
 });

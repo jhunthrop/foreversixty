@@ -20,7 +20,7 @@ from mocklib import CLASS_COLOR
 from ws_lib import REGION
 from ws_lib import QCOL
 from ws_prims import (Button, Disclosure, Facts, FeedRow, Figure, ItemRow, Link, MeterClass, Page, PageHeader, PaperdollFrame, Spark,
-                      Plate, Row, Rows, RowsSlim, Section, Skeleton, Tag, build_page, crest_img, icon, write)
+                      Ordered, Plate, Row, Rows, RowsSlim, Section, Skeleton, Tag, build_page, crest_img, icon, write)
 
 ROOT = Path(__file__).resolve().parents[2]
 FIX = ROOT / 'web/tests/e2e/fixtures/character'
@@ -45,11 +45,11 @@ CHAR_CSS = '''
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
 .line{font-size:15px;line-height:24px;color:var(--text);padding-block:6px}
-.stand{display:flex;flex-wrap:wrap;gap:4px 20px;padding-bottom:4px;font-size:15px;line-height:24px}
+@media(max-width:767px){.wait-pre{display:none}}.own-in{margin-top:8px;padding-top:4px;border-top:1px solid var(--line-soft)}.bcells{display:flex;align-items:center;gap:12px}.bcells.narrow{margin-top:4px}@media(min-width:768px){.bcells.narrow{display:none}}@media(max-width:767px){.bcells.wide{display:none}}.bsince{font-size:13px;color:var(--muted);white-space:nowrap}.dsum-end{margin-left:auto;display:inline-flex;align-items:center}
+.dspk{display:inline-block;width:64px}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;padding:0 16px}.disc.dlink>summary{color:var(--gold);font-size:15px}.disc.dlink>summary::before{display:none}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
 .sum-row{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:20px}.notice.facts{gap:4px 20px}
 .frow .st{color:var(--strong)}
 /* round 5 (lane P9): the split from 1280, the frame centred at 640, the answer's sim link beside its figure, the parts' bars */
-@media(max-width:1279px){.char-pg .layout-split{grid-template-columns:minmax(0,1fr)}}
 .char-pg{padding-bottom:48px}.char-pg .frow .k:empty{display:none}
 .doll-c{display:flex;justify-content:center}.doll-w{width:100%;max-width:640px}
 .ans-row{display:flex;align-items:center;gap:20px}
@@ -79,20 +79,25 @@ def sec(title: str, body: str, action: str = '', meta: str = '') -> str:
     return Section(title, f'<div class="sec-b">{body}</div>', Link(f'{action} &rsaquo;') if action else '', meta)
 
 
-def summary(text: str, action: str = '', tone: str = 'gold', standing: list[str] | None = None) -> str:
+def summary(text: str, action: str = '', tone: str = 'gold') -> str:
     act = f'<a class="link" href="#">{action} &rsaquo;</a>' if action else ''
-    stand = ('<p class="stand">' + ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in standing) + '</p>') if standing else ''
-    return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}"><p class="notice {tone}">{text}{act}</p>{stand}</div></div>'
+    return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}"><p class="notice {tone}">{text}{act}</p></div></div>'
 
 
-def waiting_summary(facts: list[str], standing: list[str] | None = None) -> str:
-    """The owner's waiting facts (web characterWaiting), each a link, on one row with the standing links."""
-    links = ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in facts)
-    first = f'<p class="notice gold facts">{links}</p>' if facts else ''
-    stand = ('<p class="stand">' + ''.join(f'<a class="link" href="#">{t} &rsaquo;</a>' for t in standing) + '</p>') if standing else ''
-    if not first and not stand:
+def waiting_summary(facts: list[tuple[str, str]]) -> str:
+    """The owner's waiting facts (web characterWaiting) on a plate (h-audit 2026-11-09): a slim link Row each, the upgrade led by
+    its item's icon, the text one gold line that truncates."""
+    if not facts:
         return ''
-    return f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}">{first}{stand}</div></div>'
+    rows = RowsSlim([Row(f'<span class="wait">{t}</span>', lead=lead, slim=True) for t, lead in facts])
+    return (f'<div class="pc"><div class="sum-row" data-region="{REGION["summary"]}">'
+            f'<div class="plate wait-plate">{rows}</div></div></div>')
+
+
+def standing_section(lines: list[tuple[str, str]]) -> str:
+    """The owner's standing in the rail (character/CharacterStanding, h-audit 2026-11-09): a slim link Row a line, label left, value right."""
+    return panel('Standing', RowsSlim([Row(f'<span class="nb">{label}</span>', trail=f'<b class="st">{value}</b>', slim=True)
+                                       for label, value in lines])) if lines else ''
 
 
 # ------------------------------------------------------------------------------------------------ the alive pass (section 6)
@@ -119,16 +124,30 @@ def sentence(segments: list[dict]) -> str:
     return out
 
 
-def activity_section(feed: str | None) -> str:
+def own_segments(segments: list[dict], name: str) -> list[dict]:
+    """The character's own name out of its own feed rows (web ownActivitySegments): the text after it opens with a capital."""
+    at = next((i for i, s in enumerate(segments) if s.get('style') == 'name' and s['text'] == name), None)
+    if at is None:
+        return segments
+    rest = segments[at + 1:]
+    if not rest or rest[0].get('style'):
+        return segments[:at] + rest
+    text = rest[0]['text'].lstrip()
+    opened = text[:1].upper() + text[1:] if at == 0 else text
+    return segments[:at] + [{**rest[0], 'text': opened}] + rest[1:]
+
+
+def activity_section(feed: str | None, name: str) -> str:
     if not feed:
         return ''
     rows = J(FIX / feed)['rows']
     if not rows:
         return ''
-    return panel('Activity', ''.join(FeedRow(crest_img(r['crest'], 32), sentence(r['segments']), ago(r['at']), '') for r in rows))
+    return panel('Activity', ''.join(FeedRow(crest_img(r['crest'], 32), sentence(own_segments(r['segments'], name)), ago(r['at']), '')
+                                     for r in rows))
 
 
-def standing(home: str | None, guild: bool, spec: str) -> list[str]:
+def standing(home: str | None, guild: bool, spec: str) -> list[tuple[str, str]]:
     if not home:
         return []
     a = J(FIX / home)
@@ -138,20 +157,21 @@ def standing(home: str | None, guild: bool, spec: str) -> list[str]:
         own = gs['you'] or next((r for r in gs['rows'] if r['you']), None)
         if own:
             band = '60' if gs['band'] >= 60 else f"{gs['band']} to {gs['band'] + 9}"
-            out.append(f"#{own['rank']} of {gs['of']} {ROLE_WORD[gs['role']]} in {gs['guild_name']}, {band}{' raid' if gs['preset'] == 'raid' else ''}")
+            out.append((f"{gs['guild_name']} &middot; {band}{' raid' if gs['preset'] == 'raid' else ''}", f"#{own['rank']} of {gs['of']} {ROLE_WORD[gs['role']]}"))
     w = a.get('spec_week')
     if w:
-        out.append(f"{spec}: {w['grade']} on the tier list" if w['grade'] else f"{spec}: #{w['place']} of {w['of']} on the tier list")
+        out.append((f"{spec} tier", w['grade'] if w['grade'] else f"#{w['place']} of {w['of']}"))
     if guild:
         r = J(HOME / 'guild-home-60.json')['next_raid']
         left = datetime.fromisoformat(r['starts_at'].replace('Z', '+00:00')) - NOW
         d, rem = divmod(int(left.total_seconds()) // 60, 1440)
-        out.append(f"{r['title']} in {d} days, {rem // 60} hours")
+        out.append((r['title'], f"{d} days, {rem // 60} hours"))
     return out
 
 
 def ledger(*sections: str) -> str:
-    return f'<div class="pc" style="padding-top:20px"><div class="cmain">{"".join(s for s in sections if s)}</div></div>'
+    """Page layout ledger; `char-pg` carries the built main's section-gap pad under the page, as the split states do."""
+    return f'<div class="char-pg"><div class="pc" style="padding-top:20px"><div class="cmain">{"".join(s for s in sections if s)}</div></div></div>'
 
 
 def figure_text(value: float) -> str:
@@ -263,10 +283,8 @@ def head(ch: Char, owner: dict | None, answer: bool = True) -> str:
     if c.get('guild'):
         meta.append(f"<a class=\"link\" href=\"#\">&lt;{c['guild']['name']}&gt;</a>")
     meta += [c['realm'], f"{'Hardcore' if c['ruleset'] == 'hardcore' else 'Normal'} {c['region'].upper()}"]
-    if ch.page.get('supporter'):
-        meta.append('Supporter')
     if owner:
-        meta.append('Addon &middot; 1 day ago')
+        meta.append('Synced 1 day ago')
     total = ch.total()
     figure = Figure(figure_text(total), '', f'{ch.unit} from upgrades') if total > 0 else ''
     ans = f'<span class="ans-row">{Button("Sim this character", small=True)}{figure}</span>' if answer else ''
@@ -294,7 +312,7 @@ def spark_fact(values: list[float], text: str) -> str:
 
 
 def score_section(ch: Char, owner: bool) -> str:
-    """The rail's Forever Score (character/CharacterScore): Score, Tier, Rating as Facts, then the parts on one scale."""
+    """The rail's Forever Score (character/CharacterScore): Score (in its tier's colour, with the tier word) and Rating as Facts, then the parts."""
     p = ch.page
     if not p.get('score'):
         line = 'No logs yet. Upload a log to get a rating.' if owner else 'No logs yet.'
@@ -305,8 +323,9 @@ def score_section(ch: Char, owner: bool) -> str:
     trend = ([(f"Since {short_date(history[0]['date'] + 'T00:00:00Z')}",
                spark_fact([x['score'] for x in history], f"+{history[-1]['score'] - history[0]['score']:,}".replace(',', '')))]
              if len(history) > 1 else [])
-    facts = Facts([('Score', f"{p['score']:,}"), *trend, ('Tier', f'<span style="color:{tier["color"]}">{tier["label"]}</span>'),
-                   ('Rating', f"{rating['latest']['overall']} of 100")])
+    # The tier is the score's colour and its word on the Score row (h-audit 2026-11-09), never a row of its own.
+    score = f'<span style="color:{tier["color"]}">{p["score"]:,} <span class="t-small" style="color:inherit;font-weight:600">{tier["label"]}</span></span>'
+    facts = Facts([('Score', score), *trend, ('Rating', f"{rating['latest']['overall']} of 100")])
     comps = p['components']
     label = {x['key']: x['label'] for x in LABELS['components']}
     longest = max(PART_MAX.values())
@@ -323,18 +342,34 @@ def parse_color(pct: float) -> str:
     return next(c for floor, c in PARSE if round(pct) >= floor)
 
 
-def fights_section(ch: Char) -> str:
+def fights_section(ch: Char, extra: str = '') -> str:
     p = ch.page
     rows = []
     for f in p['best'][:FIGHTS_SHOWN]:
-        trail = (f'<span class="pct" style="color:{parse_color(f["percentile"])}">{round(f["percentile"])}</span>'
+        # The boss kill by kill (web bestRows, h-audit 2026-11-09): the parse trend and the change since the kill before.
+        kills = sorted((h for h in p['history'] if h['encounter_id'] == f['encounter_id'] and h['difficulty'] == f['difficulty']
+                        and h['metric'] == f['metric'] and h.get('kill') is not False), key=lambda h: h['fought_at'])
+        parses = [h['percentile'] for h in kills if h.get('percentile') is not None]
+        spark = f'<span class="bspk" aria-hidden="true">{Spark(parses)}</span>' if len(parses) > 1 else ''
+        before = [h for h in kills if h['fought_at'] < f['fought_at']]
+        change = round(f['value'] - before[-1]['value']) if before else None
+        # The change since the kill before sits on the parse line (h-audit 2026-11-09).
+        since = (f"<span class=\"bsince\">{'+' if change > 0 else '&minus;' if change < 0 else ''}{abs(change)} vs "
+                 f"{short_date(before[-1]['fought_at'])}</span>") if before else ''
+        cells = since + spark
+        # The delta and spark sit in the trail from 768 and on their own line under the boss below it.
+        trail = ((f'<span class="bcells wide">{cells}</span>' if cells else '')
+                 + f'<span class="pct" style="color:{parse_color(f["percentile"])}">{round(f["percentile"])}</span>'
                  + Figure(f"{f['value']:,}", '', ch.unit, size='sm'))
-        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])} &middot; {f['spec']}", trail=trail, slim=True))
-    return panel('Best per encounter', RowsSlim(rows), f"All fights ({len(p['history'])})")
+        phone = f'<span class="bcells narrow">{cells}</span>' if cells else ''
+        ex = f" &middot; Execution {round(f['execution_score'] * 100)}%" if f.get('execution_score') is not None else ''
+        spec = '' if f['spec'] == SPEC[ch.cls] else f" &middot; {f['spec']}"  # the page's own spec goes without saying
+        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])}{spec}{ex}{phone}", trail=trail, slim=True))
+    return panel('Best per encounter', RowsSlim(rows) + extra, f"All fights ({len(p['history'])})")
 
 
 def builds_section(ch: Char) -> str:
-    rows = [Row(b['talent_split'], f"{b['spec']} &middot; first seen {short_date(b['first_seen'], True)}", slim=True)
+    rows = [Row(b['talent_split'], f"{b['spec']} &middot; {short_date(b['first_seen'])}", slim=True)
             for b in ch.page['builds_seen'][:3]]
     return panel('Builds seen', RowsSlim(rows))
 
@@ -351,21 +386,31 @@ def coach_rows(file: str) -> str:
     return f'<section aria-label="Your coach">{Rows(rows, open_=True, list_=True)}</section>'
 
 
-def owner_sections(premium: bool, coach: str | None = None) -> str:
+def owner_sections(premium: bool, fights: int, coach: str | None = None, latest: dict | None = None, in_panel: bool = False,
+                   scores: list[float] | None = None) -> str:
+    scores = scores or []
+    """One History panel (h-audit 2026-11-09): the charts' Disclosure with the fight count, then the coach's reviews."""
+    wrap = (lambda body: f'<div class="own-in">{body}</div>') if in_panel else (lambda body: panel('History', body))
     if not premium:
-        return panel('History', Rows([Row('Score over time and parse per boss', 'Premium keeps every rated fight.',
-                                          trail=Link('See plans &rsaquo;'), link=False)], open_=True))
-    history = panel('History', Disclosure('Score over time, then parse per boss', ''))
+        return wrap(Rows([Row('Score over time and parse per boss', 'Premium keeps every rated fight.',
+                              trail=Link('See plans &rsaquo;'), link=False)], open_=True))
     body = coach_rows(coach) if coach else ''
-    return history + panel('Coach history', Disclosure('Every review the coach wrote for this character', body, open_=coach is not None))
+    summary = f"Score {latest['score']:,} on {short_date(latest['date'] + 'T00:00:00Z')}" if latest else 'Score and parses'
+    # History and Coach as gold link rows that open in place (web Disclosure `link`, h-audit 2026-11-09).
+    link = lambda html: html.replace('<details class="disc"', '<details class="disc dlink"', 1).replace(
+        '</summary>', '<span aria-hidden="true">&rsaquo;</span></summary>', 1)
+    history = link(Disclosure('History', '', meta=f"{fights} {'fight' if fights == 1 else 'fights'}"))
+    return wrap(history + link(Disclosure('Coach', body, open_=coach is not None)))
 
 
-def waiting(ch: Char, owner: dict) -> list[str]:
+def waiting(ch: Char, owner: dict) -> list[tuple[str, str]]:
+    """(text, lead icon html): the upgrade carries its item's icon."""
     earned = max(0, owner['level'] - 9)
     to_spend = earned - sum(owner['build']['talents']['points'])
     top = ch.top()
-    talents = [f"{to_spend} talent {'point' if to_spend == 1 else 'points'} unspent"] if to_spend > 0 else []
-    return talents + ([f"Upgrade: {top['name']}, {top['source']}"] if top else [])
+    talents = [(f"{to_spend} talent {'point' if to_spend == 1 else 'points'} unspent", '')] if to_spend > 0 else []
+    item = ch.items.get(top['id'], {}) if top else {}
+    return talents + ([(f"<span class=\"wait-pre\">Upgrade: </span>{top['name']}, {top['source'].rsplit(': ', 1)[-1]}", icon(item.get('icon'), 28))] if top else [])
 
 
 # ------------------------------------------------------------------------------------------------ the states
@@ -377,9 +422,14 @@ def felsnap(answer: str = 'character-34.json') -> Char:
     return Char(answer, HOME / 'bis-hunter-beast-mastery.json', HOME / 'items-hunter.json')
 
 
+def O(html: str, order: int, span: bool = False) -> str:
+    """A block's place in the phone flow (web ui/Ordered); a block left out leaves no slot."""
+    return Ordered(html, order, span) if html else ''
+
+
 def split(main: str, rail: str) -> str:
-    """Page layout split with panels, side by side from 1280 (web ui/Page splitFrom={1280})."""
-    return f'<div class="char-pg">{Page("split", main, rail, panels=True)}</div>'
+    """Page layout workbench with panels (h-audit 2026-11-09): side by side from 1280, one ordered flow below it."""
+    return f'<div class="char-pg">{Page("workbench", main, rail, panels=True)}</div>'
 
 
 def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | None = None, home: str | None = None,
@@ -387,11 +437,18 @@ def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | Non
     owner = J(FIX / me)['characters'][0] if me else None
     body = head(ch, owner)
     if owner:
-        body += waiting_summary(waiting(ch, owner), standing(home, 'guild' in owner, SPEC[ch.cls]))
+        body += waiting_summary(waiting(ch, owner))
     logged = bool(ch.page.get('score'))
-    main = (gear_section(ch) + (fights_section(ch) if ch.page['best'] else '') + activity_section(feed)
-            + (owner_sections(premium, coach) if owner and logged else ''))
-    rail = score_section(ch, owner is not None) + (builds_section(ch) if ch.page['builds_seen'] else '')
+    latest = (ch.page.get('score_history') or [None])[-1]
+    fights = len(ch.page['history'])
+    # The owner's History and Coach rows sit under the best fights, in their panel (h-audit 2026-11-09).
+    scores = [x['score'] for x in sorted(ch.page.get('score_history') or [], key=lambda x: x['date'])]
+    inner = owner_sections(premium, fights, coach, latest, in_panel=True, scores=scores) if owner and logged and ch.page['best'] else ''
+    alone = owner_sections(premium, fights, coach, latest) if owner and logged and not ch.page['best'] else ''
+    main = (O(gear_section(ch), 1, True) + O(fights_section(ch, inner) if ch.page['best'] else '', 4, True) + O(alone, 5, True))
+    stand = standing_section(standing(home, 'guild' in owner, SPEC[ch.cls])) if owner else ''
+    rail = (O(score_section(ch, owner is not None), 2) + O(stand, 3) + O(builds_section(ch) if ch.page['builds_seen'] else '', 6)
+            + O(activity_section(feed, ch.page['character']['name']), 7))
     return body + split(main, rail)
 
 
@@ -399,9 +456,9 @@ def state_unread() -> str:
     ch = felsnap('character-34-unread.json')
     owner = J(FIX / 'me-34-unread.json')['characters'][0]
     return (head(ch, owner, answer=False)
-            + summary('Your gear has not been read yet. In game, log in, wait for the world to load, then log out once; it appears here within a minute.', tone='neutral',
-                      standing=standing('home-34.json', False, 'Beast Mastery'))
-            + split(gear_section(ch, 'Best in slot for level 30 to 39', picks=True), score_section(ch, True)))
+            + summary('Your gear has not been read yet. In game, log in, wait for the world to load, then log out once; it appears here within a minute.', tone='neutral')
+            + split(O(gear_section(ch, 'Best in slot for level 30 to 39', picks=True), 1, True),
+                    O(score_section(ch, True), 2) + O(standing_section(standing('home-34.json', False, 'Beast Mastery')), 3)))
 
 
 def lookup() -> str:

@@ -2,9 +2,11 @@
 <!-- One engine action as a row of an open StatTable (sim spec 2026-11-06 §4.5: the Rage sources,
      the aura uptimes): its icon, its name (the tooltip's keyboard stop), a muted sub line, the
      Meter and the figures. The icon is the action's own, else the buff it is; a key with no icon
-     keeps the socket, never a broken image. -->
+     keeps the socket, never a broken image; the engine's rage refund takes ActionMark's refresh glyph. -->
 <script lang="ts">
-  import { actionTip, resolveIconUrl } from '../../lib/sim/action-mark';
+  import { actionTip, resolveIconUrl, REFUND_KEY } from '../../lib/sim/action-mark';
+  import { ICON_REFRESH } from '../../lib/ui/ui-icons';
+  import Icon from '../ui/Icon.svelte';
   import type { CardTables } from '../../lib/sim/card-tables.svelte';
   import type { StatFigure } from '../../lib/ui/stat-table';
   import Meter from '../ui/Meter.svelte';
@@ -44,7 +46,12 @@
 
 <StatRow {figures} {testid}>
   {#snippet icon()}
-    {#if iconUrl !== null}<img
+    {#if action === REFUND_KEY}<span
+        class="text-muted border-line-warm-strong mt-[2px] inline-flex items-center justify-center rounded-[4px] border bg-[var(--color-bg)]"
+        style:width="{ICON_SIZE}px"
+        style:height="{ICON_SIZE}px"
+        data-testid="refund-glyph"><Icon icon={ICON_REFRESH} size={14} /></span
+      >{:else if iconUrl !== null}<img
         src={iconUrl}
         alt=""
         width={ICON_SIZE}

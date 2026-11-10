@@ -46,7 +46,7 @@ sources:
 Deep Holy for Prayer of Mending, with 17 points in Discipline for stronger, cheaper Renews and mana.
 
 - **Prayer of Mending** (1 point): the capstone. It heals its holder on the next hit or direct heal, then jumps. Keep it on the tank.
-- **Spiritual Healing** (3 points): 10% more healing on everything.
+- **Spiritual Healing** (3 points)
 - **Spiritual Guidance** (4 points): a share of your Spirit becomes healing power, so Spirit pays you twice.
 - **Holy Specialization** (5 points) and **Divine Fury** (5 points): 5% crit on Holy spells, and Heal and Greater Heal cast half a second faster.
 - **Improved Healing** (3 points): 15% off Lesser Heal, Heal, Greater Heal and Prayer of Mending.
@@ -61,29 +61,29 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 ## Rotation and priority
 
-**Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Put Fear Ward on the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
+**Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Fear Ward the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
 
-**On the tank.** Prayer of Mending every time it is ready. Renew always up at rank 7 or higher. Go up to the top rank on a tank who is dropping through it. Leave Power Word: Shield on the tank to a Discipline priest: without the shield talents it costs more mana than it saves, and Weakened Soul locks it out for 15 seconds.
+**On the tank.** Renew stays at rank 7 or higher; go up to the top rank on a tank who is dropping through it. Leave Power Word: Shield on the tank to a Discipline priest: without the shield talents it costs more mana than it saves, and Weakened Soul locks it out for 15 seconds.
 
-**The filler is Greater Heal** at your top rank. When it would overheal or your mana runs short, step down to rank 1: it costs far less, and though it has lost a little of your healing bonus by 60, a small heal wastes less on a small hole, so leave ranks 2 and 3 off your bars. Heal rank 4 is cheaper still, but it keeps only about half your bonus, so it is the last step down. With Divine Fury every one of them is a 2.5 second cast.
+**Stepping down.** When the top Greater Heal would overheal or your mana runs short, step down to rank 1: a small heal wastes less on a small hole, so leave ranks 2 and 3 off your bars. Heal rank 4 is cheaper still, but it keeps only about half your bonus, so it is the last step down. With Divine Fury every one of them is a 2.5 second cast.
 
-**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus. At 60, Lesser Heal and the first ranks of Heal and Renew were learned too long ago to scale with your gear and heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank within the ranks you learned from your forties on: Greater Heal rank 1 is the one to keep.
+**Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus: at 60, Lesser Heal and the first ranks of Heal and Renew heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank only within the ranks you learned from your forties on: Greater Heal rank 1 is the one to keep.
 
-**Flash Heal is for emergencies.** In a raid use the top rank, on a tank who is really low or anyone about to die: it is your dearest heal, so spend it there and let Prayer of Mending, Renew and Greater Heal do the rest. While leveling, a lower rank keeps your bar alive. Holy Binding heals you off every one of them.
+**Flash Heal** at the top rank in a raid, a lower rank while leveling. Holy Binding heals you off every one of them.
 
-**Prayer of Healing.** Cast it when three or more players in one group are missing a fair chunk. In Forever it heals the target and the target's party, so target a member of whichever group took the hit: you are not limited to your own party.
+**Prayer of Healing** is not limited to your own party: target a member of whichever group took the hit.
 
-**Overheal.** Start Greater Heal on the tank before the boss swings, and cancel it if he does not need it: a cancelled cast costs no mana. Do not chase small top-ups with the top rank; step down to rank 1, or let Prayer of Mending and Renew cover them.
+**Pre-cast.** Start Greater Heal on the tank before the boss swings and cancel it if he does not need it.
 
-**Inner Focus.** Spend it on a Prayer of Healing, your most expensive heal, or on a Greater Heal for a tank who is about to drop: it makes the spell free and adds 25% crit chance. Do not let it fall on a Renew.
+**Inner Focus** on a Prayer of Healing or on a Greater Heal for a tank who is about to drop. Do not let it fall on a Renew.
 
-**Assignments.** In a raid you will be on a group or on a tank. On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. On a tank, Renew, Prayer of Mending and Greater Heal, with Flash Heal for the spikes. Either way, never stand where the boss's cleave or the raid's AoE lands on you: Twilight Focus helps, it does not make you immune.
+**Assignments.** On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. Stay out of the boss's cleave and the raid's AoE: Twilight Focus helps, it does not make you immune.
 
-**Mana.** Every heal you skip early is mana for the last minute. Sit out of casting for five seconds when you can and Spirit regeneration comes back in full. Drink a Major Mana Potion and use a Demonic Rune once you are down enough that neither wastes, an Undead uses Dark Sacrifice, and a Gnome's Eureka! goes on a string of Prayers of Healing.
+**Mana.** Every heal you skip early is mana for the last minute. Major Mana Potion and Demonic Rune once you are down enough that neither wastes, Dark Sacrifice as an Undead, and a Gnome's Eureka! on a string of Prayers of Healing.
 
 ## Stat priority
 
-Mp5 is mana that keeps coming while you cast, and on a long fight running dry is what ends your healing. Healing power is the size of every heal, though a rank learned far below your level keeps less of it, or none. Spirit pays you twice: Spiritual Guidance turns it into healing, and Meditation keeps half of its regeneration running while you cast. Intellect deepens the bar. A critical heal is a bigger heal, and for Holy that is all it is, since Inspiration only adds armor to the target. Spell power with no healing on it does nothing for a heal.
+Spirit pays you twice, through Spiritual Guidance and Meditation. For Holy a critical heal is only a bigger heal, since Inspiration only adds armor to the target. Spell power with no healing on it does nothing for a heal.
 
 ## Best in slot
 
@@ -95,11 +95,11 @@ Flask of Distilled Wisdom for the mana, Greater Mageblood Elixir, Greater Cleric
 
 ## Races
 
-**Human** is the Alliance pick. The Human Spirit adds 10% Spirit, which Spiritual Guidance turns into healing, and Divine Grace is a free instant heal on an ally under 50% every 10 minutes. Feedback is a PvP spell.
+**Human** for the Alliance. Spiritual Guidance turns The Human Spirit's extra Spirit into healing, and Divine Grace is a free instant heal every 10 minutes.
 
-**Undead** is the Horde pick, and the best Holy priest of all, for Dark Sacrifice: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. Will of the Forsaken breaks fears.
+**Undead** is the Horde pick, and the best Holy priest of all, for Dark Sacrifice: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back.
 
-**Gnome** is close behind Human. Eureka! makes your direct heals 10% stronger and 10% cheaper for 8 seconds every 2 minutes (never Renew), and Expansive Mind adds 5% mana. Contingency Plan is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. **Night Elf** has Elune's Light, 10% crit for 15 seconds, **Troll** Berserking, 10% cast speed, and **Dwarf** Stoneform and Desperate Prayer, a free self heal. Those three heal clearly less.
+**Gnome** is close behind Human. Eureka! works on your direct heals, never Renew, and Contingency Plan goes on the tank before a hard hit. **Night Elf**, **Troll** and **Dwarf** heal clearly less.
 
 ## Professions
 
@@ -109,20 +109,30 @@ Tailoring makes healing cloth you will wear into the first raids. Enchanting sav
 
 ### Levels 1 to 19
 
-Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12. Healing a group before you learn Heal at 16, keep Renew on the tank and use Lesser Heal rank 3 as your filler. Keep Renew on rank 1 through your twenties, except at 16, the level Heal arrives, when rank 2 is worth its mana.
+Until Holy Fire at 20, Smite is your damage: Shadow Word: Pain at 4 first, Smite, then the wand. Power Word: Shield at 6 and Renew at 8 matter most, and Inner Fire follows at 12. Healing a group before you learn Heal at 16, keep Renew on the tank and use Lesser Heal rank 3 as your filler.
 
-Improved Renew takes 10 to 12 for 15% bigger Renews, your main heal at these levels, and Holy Specialization 13 to 17 for more crit on your Holy spells. Divine Fury at 18 and 19 takes a fifth of a second off Heal.
+Improved Renew takes 10 to 12, since Renew is your main heal at these levels, and Holy Specialization 13 to 17. Divine Fury at 18 and 19 takes a fifth of a second off Heal.
 
 Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal'Aran, Darkshore) or the Cinder Wand (Arugal's Folly, Silverpine Forest).
 
 ### Levels 20 to 60
 
-From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting. In dungeons, keep Renew on the tank, Heal as the filler from level 16, and learn to downrank early.
+From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: Smite and Holy Fire hit hard, but they cost so much mana that you drink after every pull. If you level Holy, Holy Fire opens, Smite finishes, and Power Word: Shield keeps you casting.
 
-Your points from 20: Inspiration from 20 to 22, Twilight Focus at 23 and 24 so most hits stop pushing back your casts, Holy Binding at 25, the first level its row opens, since your Flash Heals on the group then heal you as well, and Improved Healing from 26 to 28. Twilight Focus is full at 29, Litany of Light takes 30 and 31, then Spiritual Guidance, Spirit of Redemption and Spiritual Healing, so that all thirty Holy points are in for Prayer of Mending at 40. From 41 go to Discipline: Twin Disciplines and Mental Strength open the row for Meditation, which keeps half your mana regeneration going while you cast and is in by 53, then Inner Focus and Mental Agility. The last three points of Divine Fury close the build at 58 to 60.
+Talent order:
 
-Heal rank 1 is the filler through most of your twenties and early thirties: it keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so a long pull ends with mana to spare. A later rank takes over at a few levels: rank 2 at 27 for a Human, Gnome or Night Elf (a Human stays on it at 28), rank 3 at 28 for a Dwarf, Gnome, Night Elf or Troll, rank 3 at 30 and 31 for an Undead or Troll, and rank 2 or 3 at 32 for everyone but a Troll. From 34 rank 1 has started to lose its bonus, and rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 before you move to rank 4, and to 38 as an Undead. A Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39.
+- **20 to 22:** Inspiration.
+- **23 and 24:** Twilight Focus, so most hits stop pushing back your casts.
+- **25:** Holy Binding, the first level its row opens: your Flash Heals on the group then heal you as well.
+- **26 to 28:** Improved Healing. Twilight Focus is full at 29.
+- **30 and 31:** Litany of Light, then Spiritual Guidance, Spirit of Redemption and Spiritual Healing, so that all thirty Holy points are in for Prayer of Mending at 40.
+- **From 41:** Discipline. Twin Disciplines and Mental Strength open the row for Meditation, in by 53, then Inner Focus and Mental Agility.
+- **58 to 60:** the last three points of Divine Fury close the build.
 
-Renew steps down too: through your twenties the tank's Renew is rank 1, a fraction of the top rank's cost that still keeps most of your healing bonus. Rank 2 and then rank 3 take over between 28 and 36, at levels that differ a little by race, so you finish the dungeon with mana to spare. From there Renew keeps stepping: rank 4 from 40, rank 5 from 45 and rank 6 from about 52 cost far less and keep all or nearly all of your healing bonus, so you can keep Renew up all dungeon; rank 7 takes over at 59, already at 58 as a Human.
+In dungeons, downrank early so a long pull ends with mana to spare:
 
-Greater Heal works the same way: keep rank 1 as the filler all the way to 60, even after rank 4 arrives at 58. A dungeon tank rarely needs the bigger ranks, so the mana they cost is better spent on more casts. At 60, rank 3 and rank 4 heal about the same for their mana.
+- **Heal, 16 to 33:** rank 1 is the filler through most of your twenties and early thirties: it keeps your whole healing bonus until 33 and heals more for its mana than any later rank. A later rank takes over at a few levels: rank 2 at 27 for a Human, Gnome or Night Elf (a Human stays on it at 28), rank 3 at 28 for a Dwarf, Gnome, Night Elf or Troll, rank 3 at 30 and 31 for an Undead or Troll, and rank 2 or 3 at 32 for everyone but a Troll.
+- **Heal, 34 to 39:** rank 1 has started to lose its bonus, and rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 before you move to rank 4, and to 38 as an Undead. A Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39.
+- **Renew, to 39:** rank 1 through your twenties, except at 16, the level Heal arrives, when rank 2 is worth its mana. Rank 1 costs a fraction of the top rank and still keeps most of your healing bonus. Rank 2 and then rank 3 take over between 28 and 36, at levels that differ a little by race.
+- **Renew, 40 to 60:** rank 4 from 40, rank 5 from 45 and rank 6 from about 52 cost far less and keep all or nearly all of your healing bonus, so you can keep Renew up all dungeon. Rank 7 takes over at 59, already at 58 as a Human.
+- **Greater Heal, 40 to 60:** rank 1 as the filler all the way, even after rank 4 arrives at 58: a dungeon tank rarely needs the bigger ranks, so their mana is better spent on more casts. At 60, rank 3 and rank 4 heal about the same for their mana.

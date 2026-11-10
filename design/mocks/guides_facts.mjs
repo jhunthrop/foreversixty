@@ -3,11 +3,11 @@
 // Runs the guide pages' own models, bundled with esbuild from web/node_modules, never retyped:
 //  - the content: web/src/content/guides/**/*.md (frontmatter through `yaml`, the body as Astro's entry.body);
 //  - /guides: the class and spec catalogue, pageUpdatedAt over every guide (index.astro's own fold);
-//  - /guides/<class>: splitClassLanding, guidesCopy.roleLabel (the card line), renderGuideMarkdown ([class]/index.astro's calls);
+//  - /guides/<class>: splitClassLanding, specCardLine (the card line), renderGuideMarkdown ([class]/index.astro's calls);
 //  - /guides/<class>/<spec>: every call [spec].astro and its components make (splitSpecSections, splitOverview,
 //    decodeBuildTrees, guideBuildBlocks, diffBuilds, keyTalentsFor, guideRotation, markRaidBuildRows, withTipKeys,
 //    band60Weights, railStatRows, rankedStatLabels, guideHitCapLine, specGuideData, raceTableFor, recommendedRaceLines,
-//    consumableLines, guideLadderSteps, linkProse over renderGuideMarkdown, headerMeta, dataSourceLine);
+//    consumableLines, guideLadderSteps, linkProse over renderGuideMarkdown, headerMeta);
 //  - the signed-in answer: descriptorLines (lib/character-header) on the home fixtures and the derived guide fixtures
 //    (web/tests/e2e/fixtures/guides, gap G6: a Survival hunter at 34 and 60, a Fire mage at 60), answerCopy's states (lib/account/answer-copy.ts);
 //  - the copy module: lib/guides/copy.ts (guidesCopy), lib/account/answer-copy.ts (answer states).
@@ -52,7 +52,6 @@ import meSurvival from ${src("tests/e2e/fixtures/guides/me-survival-34.json")};
 import meSurvival60 from ${src("tests/e2e/fixtures/guides/me-survival-60.json")};
 import meMage from ${src("tests/e2e/fixtures/guides/me-fire-60.json")};
 import { readSpecCatalog } from ${src("src/lib/bis/load.ts")};
-import { bandTopLevel } from ${src("src/lib/bis/rotation-view.ts")};
 import { latest } from ${src("src/lib/dates.ts")};
 import { guidesCopy } from ${src("src/lib/guides/copy.ts")};
 import { bandSlug } from ${src("src/lib/bis/band-path.ts")};
@@ -60,6 +59,7 @@ import { pillLabelFor } from ${src("src/lib/sources.ts")};
 import { addonCopy } from ${src("src/lib/addon/copy.ts")};
 import { answerCopy } from ${src("src/lib/account/answer-copy.ts")};
 import { descriptorLines } from ${src("src/lib/character-header/descriptor.ts")};
+import { answerDetail } from ${src("src/lib/guides/guide-answer.ts")};
 import { decodeBuildTrees } from ${src("src/lib/guides/build-tree.ts")};
 import { describedBuildTrees, guideRotation } from ${src("src/lib/guides/guide-rotation.ts")};
 import { band60Weights, rankedBisFile } from ${src("src/lib/guides/class-dps.ts")};
@@ -76,13 +76,14 @@ import { guideLadderSteps } from ${src("src/lib/guides/leveling-builds.ts")};
 import { keyTalentsFor, withoutTalentBullets } from ${src("src/lib/guides/key-talents.ts")};
 import { splitOverview } from ${src("src/lib/guides/overview.ts")};
 import { raceTableFor, specKindOf, recommendedRaceLines } from ${src("src/lib/guides/race-table.ts")};
-import { consumableLines } from ${src("src/lib/guides/gear-extras.ts")};
+import { consumableLines, extrasRowCount, mergedEnchants } from ${src("src/lib/guides/gear-extras.ts")};
+import { bisPieceCount } from ${src("src/lib/guides/guide-bis.ts")};
 import { guideStatLane } from ${src("src/lib/guides/stat-lane.ts")};
 import { bandTalentHits } from ${src("src/lib/guides/talent-hit.ts")};
-import { CLASS_LANDING_PANELS, splitClassLanding } from ${src("src/lib/guides/class-landing.ts")};
-import { litTalentsOf, markRaidBuildRows, raidBuildOnlyTalents, talentNamesOf } from ${src("src/lib/guides/rotation-lists.ts")};
-import { atLevel60, glanceRotation, glanceStatRows, markCheapRanks, nextTalentPoint, racesByFaction, topRankAt60 } from ${src("src/lib/guides/glance.ts")};
-import { buildRaces } from ${src("src/lib/guides/build-races.ts")};
+import { CLASS_LANDING_PANELS, specCardLine, splitClassLanding } from ${src("src/lib/guides/class-landing.ts")};
+import { joinPriorityRuns, litTalentsOf, markRaidBuildRows, raidBuildOnlyTalents, talentNamesOf } from ${src("src/lib/guides/rotation-lists.ts")};
+import { atLevel60, markCheapRanks, nextTalentPoint, racesByFaction, topRankAt60 } from ${src("src/lib/guides/glance.ts")};
+import { buildRacesForClass, newRaceSlugsForClass, raceIconsFor } from ${src("src/lib/guides/build-races.ts")};
 
 const build = activeBuild.build;
 const catalog = readSpecCatalog();
@@ -107,8 +108,17 @@ export async function run(entries, SPECS, CLASSES) {
       html: (await renderGuideMarkdown(s.markdown)).replace(/<p><strong>([^<]+)<\\/strong><\\/p>/g, '<p class="glabel">$1</p>') });
     const specGuides = entries.filter((g) => g.data.classSlug === cls && g.data.spec !== undefined);
     const cards = specsOf(cls).flatMap((s) => { const g = specGuides.find((x) => x.data.spec === s.spec_slug); if (!g || !g.data.role) return [];
-      return [{ slug: s.spec_slug, name: s.name, role: g.data.role, icon: s.icon, line: guidesCopy.roleLabel(g.data.role) }]; });
-    landings[cls] = { title: classes.find((c) => c.slug === cls).name, sections, cards, sources: e.data.sources,
+      return [{ slug: s.spec_slug, name: s.name, role: g.data.role, icon: s.icon, line: specCardLine(g.data.role, decodeBuildTrees(build, g.data.raidBuild ?? g.data.build ?? '') ?? [], g.data.statPriority ?? []) ?? '' }]; });
+    // GuideRaceList: the class's races by faction, each its portrait stem (when the build ships one) and the "new" mark
+    const raceList = buildRacesForClass(build, cls);
+    const raceIcons = raceIconsFor(build);
+    const fresh = newRaceSlugsForClass(build, cls);
+    const races = ['alliance', 'horde'].map((faction) => ({ faction,
+      heading: faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading,
+      races: raceList.filter((r) => r.faction === faction).map((r) => ({ name: r.name,
+        icon: raceIcons.get(r.slug)?.split('/').pop().replace(/\.webp$/, '') ?? null, fresh: fresh.has(r.slug) })) }))
+      .filter((group) => group.races.length > 0);
+    landings[cls] = { title: classes.find((c) => c.slug === cls).name, sections, cards, races, sources: e.data.sources,
       updated: dayMonth(e.data.updated) };
   }
 
@@ -134,12 +144,12 @@ export async function run(entries, SPECS, CLASSES) {
   // ---- the signed-in answer's lines, from the fixtures; the Survival and Fire accounts are the derived guide fixtures
   // (web/tests/e2e/fixtures/guides/README.md), the same files the guides parity spec serves.
   const nextOf = (g, level) => { const n = nextTalentPoint(g.leveling.ladder, level); return n === undefined ? null : guidesCopy.nextPointAt(n.level, n.name); };
-  const who = (me) => { const c = me.characters[0]; const d = descriptorLines(c); return { name: c.name, class: c.class, spec: c.spec, level: c.level, race: c.race, faction: c.faction, identity: d.identity, level_line: d.level, talents_at: guidesCopy.talentsAtLevel(c.level) }; };
+  const who = (me) => { const c = me.characters[0]; const d = descriptorLines(c); return { name: c.name, class: c.class, spec: c.spec, level: c.level, race: c.race, faction: c.faction, identity: d.identity, level_line: d.level, detail: answerDetail(c.level, d.identity, c.class), talents_at: guidesCopy.talentsAtLevel(c.level) }; };
   return { build, copy: strip(guidesCopy), tier_answer: strip(answerCopy), sections: [...SPEC_SECTIONS].map((s) => ({ title: s, id: slugify(s) })),
     index, landings, guides, coverage, me: { hunter34: who(me34), survival34: { ...who(meSurvival), next: nextOf(guides['hunter/survival'], 34) }, survival60: who(meSurvival60), warrior60: who(me60), mage60: who(meMage) },
     source_labels: Object.fromEntries(['blizzard', 'datamined', 'community', 'site'].map((k) => [k, pillLabelFor(k)])), setup_title: addonCopy.setupPageTitle,
-    fns: { signedInCallout: { bm: guidesCopy.signedInCallout('Beast Mastery', 'Hunter'), survival: guidesCopy.signedInCallout('Survival', 'Hunter'), fury: guidesCopy.signedInCallout('Fury', 'Warrior') },
-      dataSourceLine: guidesCopy.dataSourceLine(build), unknown: answerCopy.unknown('Felsnap'),
+    fns: { foldShow: guidesCopy.foldShow('%s'), signedInCallout: { bm: guidesCopy.signedInCallout('Beast Mastery', 'Hunter'), survival: guidesCopy.signedInCallout('Survival', 'Hunter'), fury: guidesCopy.signedInCallout('Fury', 'Warrior') },
+      unknown: answerCopy.unknown('Felsnap'),
       levelRangeLabel: Object.fromEntries([20, 30, 40, 50, 60].map((b) => [b, guidesCopy.levelRangeLabel(b)])),
       bandSlugs: [20, 30, 40, 50, 60].map(bandSlug) } };
 }
@@ -166,11 +176,10 @@ async function specPage(entry) {
   const describedCode = raidTrees === undefined ? buildCode : raidCode;
   const unkeyed = guideRotation(build, classSlug, fullSpecId, role, describedTrees);
   const raidOnly = raidTrees === undefined ? new Set() : raidBuildOnlyTalents(talentNamesOf(build, classSlug), litTalentsOf(buildTrees), litTalentsOf(raidTrees));
-  const rotation = unkeyed === undefined ? undefined : markCheapRanks(atLevel60(withTipKeys(markRaidBuildRows(unkeyed, raidOnly), tipBundle)), (name) => topRankAt60(build, classSlug, name), proseOnly('Rotation and priority'));
+  const rotation = unkeyed === undefined ? undefined : markCheapRanks(joinPriorityRuns(atLevel60(withTipKeys(markRaidBuildRows(unkeyed, raidOnly), tipBundle))), (name) => topRankAt60(build, classSlug, name), proseOnly('Rotation and priority'));
   // Each row's rank as the page prints it ("Rank 7 (cheap rank)").
   const ranked_ = (items) => items.map((x) => (x.rank === undefined ? x : { ...x, rankText: guidesCopy.rankLabel(x.rank, x.cheapRank === true) }));
   if (rotation !== undefined) for (const k of ['opener', 'priority', 'cooldowns']) rotation[k] = ranked_(rotation[k]);
-  const glance = rotation === undefined ? { rows: [] } : glanceRotation(rotation.priority, buildRaces(build).map((r) => r.name));
   const ranked = rankedBisFile(build, fullSpecId);
   // The page's own stat model (lib/guides/stat-lane.ts): the plate's rows and the lane's table, caps and notes.
   const lane = guideStatLane(build, classSlug, fullSpecId, entry.data.recommendedRaces, entry.data.statPriority);
@@ -195,10 +204,7 @@ async function specPage(entry) {
   return {
     id: entry.id, classSlug, specSlug, className, specName, role, title: specName + ' ' + className, description: entry.data.description,
     meta: guidesCopy.headerMeta(role, dayMonth(pageUpdatedAt(entry.data.updated, ranked?.generated_at))), tabs,
-    band: { isRaidBuild: raidTrees !== undefined, code: describedCode, trees: describedTrees, rotationBand: String(bandTopLevel(60)),
-      rotationTitle: role === 'healer' ? guidesCopy.healingPriorityRailTitle : guidesCopy.rotationRailTitle,
-      rotation: glance.rows, filler: glance.filler ? guidesCopy.glanceFiller(glance.filler.name) : null,
-      stats: lane?.glanceRows ?? [], hitCap, unitLine: statTable.unitLine },
+    band: { isRaidBuild: raidTrees !== undefined, code: describedCode, trees: describedTrees },
     overview: { strengths: await prose(overview.strengths), weaknesses: await prose(overview.weaknesses), raid: await prose(overview.raid) },
     talents: { blocks, raidDiffLine, keyTalents: strip(keyTalents.map((k) => ({ ...k, talents: k.talents.map((t) => ({ ...t, rankText: t.buildRanks
       ? [guidesCopy.keyTalentBuildRank('leveling', t.buildRanks.leveling, t.maxRank), guidesCopy.keyTalentBuildRank('raid', t.buildRanks.raid, t.maxRank)]
@@ -206,8 +212,12 @@ async function specPage(entry) {
     rotation: { lists: rotation ?? null, forRaidBuild: rotation !== undefined && raidTrees !== undefined, prose: await prose(proseOnly('Rotation and priority')) },
     stats: { table: statTable, prose: await prose(proseOnly('Stat priority')) },
     bis: { data: guideBis ? strip({ ...guideBis, panels: guideBis.panels.map((p) => ({ ...p, caption: guidesCopy.bisCaption(p.raceName, fac(p.faction)) })) }) : null, href: '/bis/' + classSlug + '/' + specSlug, prose: await prose(proseOnly('Best in slot')) },
-    extras: { data: gearExtras ? { ...strip(gearExtras), lines: consumableLines(gearExtras.consumables) } : null, prose: await prose(proseOnly('Enchants and consumables')) },
-    races: { rows: strip(raceRows), groups: strip(racesByFaction(raceRows)), lines: raceLines, prose: await prose(racesProse) },
+    extras: { data: gearExtras ? { ...strip(gearExtras), enchants: strip(mergedEnchants(gearExtras.enchants)), lines: consumableLines(gearExtras.consumables) } : null, prose: await prose(proseOnly('Enchants and consumables')),
+      fold: guidesCopy.foldShow(guidesCopy.foldExtras(extrasRowCount(gearExtras))) },
+    bisFold: guidesCopy.foldShow(guidesCopy.foldItems(bisPieceCount(guideBis))),
+    // GuideRacesLane leads each race with its portrait (RaceIcon 28) when the build ships one: race slug to icon stem
+    races: { rows: strip(raceRows), groups: strip(racesByFaction(raceRows)), lines: raceLines, prose: await prose(racesProse),
+      portraits: Object.fromEntries([...raceIconsFor(build)].map(([slug, url]) => [slug, url.split('/').pop().replace(/\.webp$/, '')])) },
     professions: await prose(proseOnly('Professions')),
     leveling: { early: await prose(early), stripHeading: stripHead.replace(/^#+\\s*/, '').trim(), late: await prose(late), steps: steps.length, ladder: steps.map((x) => ({ level: x.level, name: x.name })), at: { 34: atLevel(34), 60: atLevel(60) } },
     sources: entry.data.sources, statPriority: entry.data.statPriority,

@@ -17,9 +17,9 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
-import { simCopy } from '../../src/lib/sim/copy';
 import { curatedRotationNotes } from './support/rotation-notes';
 import { gotoSim, simCharacter } from './support/sim-page';
+import { obviousNote } from '../../src/lib/sim/rotation-card';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -106,7 +106,11 @@ test('the rotation reads in place in the rail, without losing the character (new
   await expect(section).toContainText('Frost guide');
   const notes = curatedRotationNotes('mage-frost');
   expect(notes.length).toBeGreaterThan(0);
-  for (const note of notes) await expect(section).toContainText(note);
+  // A note that only says "on cooldown" is left off its line (rotation-card.ts obviousNote).
+  for (const note of notes) {
+    if (obviousNote(note)) await expect(section).not.toContainText(note);
+    else await expect(section).toContainText(note);
+  }
 
   // Nothing navigated, so nothing was there to lose.
   expect(page.url()).toBe(url);
@@ -127,36 +131,11 @@ test('the tank’s repro: an Arms Warrior’s rotation reads in place, with no n
   const url = page.url();
   const section = page.getByTestId('sim-rotation-saved-card');
   await section.scrollIntoViewIfNeeded();
-  await expect(section).toContainText(
-    'Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute',
-  );
+  // The rotation reads in place: a note that changes when to press stays, a tooltip restatement
+  // (Bloodrage's "Whenever rage is under 80") is left off (rotation-card.ts obviousNote).
+  await expect(section).toContainText('Bloodrage');
+  await expect(section).not.toContainText('Whenever rage is under 80');
 
   expect(page.url()).toBe(url);
   await expect(simCharacter(page)).toBeVisible();
-});
-
-// task-6-brief.md: "/sim/specs' own per-spec card gains the same rotation prose, so the
-// page a visitor lands on from the strip answers 'what does this rotation do' too."
-test('/sim/specs carries the same rotation prose on the mage-frost card', async ({ page }) => {
-  const specFixture = JSON.parse(
-    readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'fixtures', 'sim', 'specs.json'), 'utf8'),
-  ) as unknown[];
-  await page.route('**/v1/specs**', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ ok: true, data: { specs: specFixture }, error: null, request_id: 'req-test' }),
-    }),
-  );
-
-  await page.goto('/sim/specs');
-  const card = page.getByTestId('spec-mage-frost');
-  await expect(card).toBeVisible();
-  // Final whole-branch review, I2: suffixed with the spec so the 20 damage-spec cards on
-  // this page never share one testid (or one unscoped accessible name) between them.
-  await card.getByTestId('spec-rotation-trigger-mage-frost').click();
-  const steps = card.getByTestId('spec-rotation-steps-mage-frost');
-  for (const note of curatedRotationNotes('mage-frost')) await expect(steps).toContainText(note);
-  // Same trigger text as RotationCard's own -- one voice for "what does this rotation do".
-  await expect(card.getByTestId('spec-rotation-trigger-mage-frost')).toHaveText(simCopy.rotationLink);
 });

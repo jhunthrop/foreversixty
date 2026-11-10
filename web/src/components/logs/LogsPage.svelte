@@ -102,4 +102,10 @@
   :global(html[data-session='1']) .logs-wait {
     visibility: hidden;
   }
+  /* The lead frame's corner flourish sits where a panel heading starts: the Upload heading is set
+     in clear of it, 28 px from the frame's corner, so no glyph touches an ornament. */
+  .logs-body :global([data-testid='logs-upload'] h2) {
+    padding-top: 8px;
+    padding-left: 14px;
+  }
 </style>

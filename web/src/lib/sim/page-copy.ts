@@ -5,7 +5,6 @@
 
 export const simPageCopy = {
   title: 'Simulator',
-  landingMeta: 'Damage specs only. Nothing is uploaded until you save.',
   sections: {
     simYourCharacter: 'Sim your character',
     otherWaysIn: 'Other ways in',
@@ -62,8 +61,6 @@ export const simPageCopy = {
     saved: (date: string): string => `Saved ${date}`,
   },
   answer: {
-    noSim: 'No sim yet',
-    noSimCaption: 'Press Run sim. It runs here, in your browser.',
     notSimulated: 'Not simulated yet',
     notSimulatedCaption: (spec: string): string => `${spec} is not simulated yet; there is nothing to run.`,
     specSupport: 'Spec support ›',

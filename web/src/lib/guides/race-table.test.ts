@@ -19,6 +19,7 @@ import {
   raceTableFor,
   proseNamesRace,
   recommendedRaceLines,
+  shortEffect,
   specKindOf,
   type SpecKind,
 } from './race-table';
@@ -172,19 +173,17 @@ describe('raceTableFor', () => {
   it('words Eureka! the way each class’s own tooltip does: its resource, and no healing but a priest’s', () => {
     if (!described('gnome', 'Eureka!')) return;
     expect(effectOn('warrior', 'melee', 'gnome', 'Eureka!')).toBe(
-      'Makes your non-periodic damaging abilities cost 10% less Rage and deal 10% more damage for 8 seconds on a 2 minute cooldown',
+      '10% less Rage, 10% more non-periodic damage, 8 s / 2 min',
     );
     expect(effectOn('rogue', 'melee', 'gnome', 'Eureka!')).toMatch(
-      /non-periodic damaging abilities cost 10% less Energy/,
+      /^10% less Energy, 10% more non-periodic damage/,
     );
-    expect(effectOn('mage', 'caster', 'gnome', 'Eureka!')).toMatch(
-      /^Makes your damaging abilities cost 10% less Mana/,
-    );
+    expect(effectOn('mage', 'caster', 'gnome', 'Eureka!')).toMatch(/^10% less Mana, 10% more damage,/);
     expect(effectOn('warlock', 'caster', 'gnome', 'Eureka!')).toMatch(
-      /non-periodic damaging abilities cost 10% less Mana/,
+      /^10% less Mana, 10% more non-periodic damage/,
     );
     expect(effectOn('priest', 'healer', 'gnome', 'Eureka!')).toMatch(
-      /non-periodic damaging and healing abilities cost 10% less Mana and deal 10% more damage or healing/,
+      /^10% less Mana, 10% more non-periodic damage or healing, 8 s \/ 2 min$/,
     );
     for (const classSlug of ['warrior', 'rogue', 'mage', 'warlock'])
       expect(effectOn(classSlug, 'melee', 'gnome', 'Eureka!'), classSlug).not.toMatch(/heal/i);
@@ -399,5 +398,19 @@ describe('racial icons', () => {
   it('matches a name the client spells differently (Read Leyline)', () => {
     expect(racialIconsFor(BUILD).get('readleyline')).toBe('ability_mage_incantersabsorbtion');
     expect(racialIconsFor(BUILD).get('eureka')).toBe('inv_gnometoy');
+  });
+});
+
+describe('shortEffect', () => {
+  it('says a racial the way a player does, and leaves other wording alone', () => {
+    expect(shortEffect('Grants 10% critical strike chance for 15 seconds on a 3 minute cooldown')).toBe(
+      '10% crit, 15 s / 3 min',
+    );
+    expect(shortEffect('Increases hit chance with spells and attacks by 1%')).toBe('1% hit');
+    expect(shortEffect('Increases Health by 5%')).toBe('5% health');
+    expect(shortEffect('50% health and mana regeneration for 15 seconds on a 2 minute cooldown')).toBe(
+      '50% health and mana regeneration, 15 s / 2 min',
+    );
+    expect(shortEffect('Shadow Resistance increased by 10')).toBe('Shadow Resistance increased by 10');
   });
 });

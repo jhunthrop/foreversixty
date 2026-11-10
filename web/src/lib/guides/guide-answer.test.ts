@@ -8,7 +8,20 @@ import { answerCopy } from '../account/answer-copy';
 import { pointerForCharacter } from '../account/main-character';
 import { addonCopy } from '../addon/copy';
 import { guidesCopy } from './copy';
-import { guideAnswerFrom, guideCharacterOf, type GuideAnswer, type GuideAnswerPage } from './guide-answer';
+import {
+  answerDetail,
+  guideAnswerFrom,
+  guideCharacterOf,
+  type GuideAnswer,
+  type GuideAnswerPage,
+} from './guide-answer';
+
+describe('answerDetail', () => {
+  it('is the level, race and spec: the spec and the name colour say the class', () => {
+    expect(answerDetail(34, 'Dwarf Beast Mastery Hunter', 'Hunter')).toBe('34 Dwarf Beast Mastery');
+    expect(answerDetail(undefined, 'Orc Fury Warrior', 'Warrior')).toBe('Orc Fury');
+  });
+});
 
 function character(name: string, overrides: Partial<MeCharacter> = {}): MeCharacter {
   return { key: `us/normal/${name.toLowerCase()}`, region: 'us', ruleset: 'normal', name, ...overrides };
@@ -146,9 +159,7 @@ describe('the answer’s links', () => {
   it('anywhere else (another spec, another class, /guides): its own guide', () => {
     for (const page of [{ classSlug: 'hunter', specSlug: 'marksmanship' }, { classSlug: 'mage' }, {}]) {
       const answer = ready(guideAnswerFrom(me, pointerForCharacter(bow), page));
-      expect(answer.links).toEqual([
-        { label: 'Your guide: Survival Hunter ›', href: '/guides/hunter/survival' },
-      ]);
+      expect(answer.links).toEqual([{ label: 'Survival Hunter ›', href: '/guides/hunter/survival' }]);
       expect(answer.next).toBeUndefined();
     }
   });

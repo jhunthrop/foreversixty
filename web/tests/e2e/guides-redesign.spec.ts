@@ -19,8 +19,6 @@ function iconOfSrc(src: string | null): string | undefined {
 }
 
 const specRows = (page: Page) => page.locator('[data-testid^="guide-spec-row-"]');
-const glanceRotationRows = (page: Page) =>
-  page.getByTestId('guide-glance-rotation').locator('.guide-glance-rows > .ui-row');
 const levelingTree = (page: Page) => page.getByTestId('guide-leveling-tree');
 
 /** Scrolls the leveling lane into view and waits for its island (client:visible) to hydrate. */
@@ -120,21 +118,17 @@ test.describe('desktop', () => {
     expect(cat).not.toBe(bear);
   });
 
-  test('/guides/warrior/fury At a glance shows four rotation lines with icons, Load/Sim and the ranked stats', async ({
+  // The plate is the build alone (h-audit 2026-11-09): the Rotation and Stat priority sections
+  // below own their lists, so the plate never repeats them.
+  test('/guides/warrior/fury At a glance is the build with Load and Sim, no rotation or stats', async ({
     page,
   }) => {
     await page.goto('/guides/warrior/fury');
-    await expect(glanceRotationRows(page)).toHaveCount(4);
-    for (const line of await glanceRotationRows(page).all()) {
-      await expect(line.locator('img')).toHaveCount(1);
-    }
+    await expect(page.getByTestId('guide-glance-build')).toBeVisible();
     await expect(page.getByTestId('guide-load-build')).toBeVisible();
     await expect(page.getByTestId('guide-sim-build')).toBeVisible();
-    const stats = page
-      .getByTestId('guide-glance-stats')
-      .getByRole('row')
-      .filter({ hasText: /Attack power|Strength|Agility|Critical strike|Hit|Haste/ });
-    expect(await stats.count()).toBeGreaterThanOrEqual(4);
+    await expect(page.getByTestId('guide-glance-rotation')).toHaveCount(0);
+    await expect(page.getByTestId('guide-glance-stats')).toHaveCount(0);
   });
 
   // The rail's summary Load and the full tree's Load were two buttons that needed distinct
@@ -147,22 +141,6 @@ test.describe('desktop', () => {
     await expect(page.getByTestId('guide-glance-build').getByTestId('guide-load-build')).toHaveCount(1);
   });
 
-  test('/guides/warrior/protection shows the Build, Rotation and Stat priority columns and runs 3-up', async ({
-    page,
-  }) => {
-    // The plate draws a column only when it has real data (a spec with nothing to show has it
-    // omitted and the plate narrows to 2-up or 1-up). Protection publishes a ranked tank BiS
-    // file and a rotation, so it carries all three.
-    await page.goto('/guides/warrior/protection');
-    await expect(page.getByTestId('guide-glance-build')).toBeVisible();
-    await expect(page.getByTestId('guide-glance-rotation')).toBeVisible();
-    await expect(page.getByTestId('guide-glance-stats')).toBeVisible();
-    await expect(page.getByTestId('guide-glance').locator('.ui-pcols')).toHaveCSS(
-      'grid-template-columns',
-      /^[\d.]+px [\d.]+px [\d.]+px$/,
-    );
-  });
-
   test('the leveling tree walks 10 to 60 from the keyboard and the buttons', async ({ page }) => {
     await page.goto('/guides/warrior/fury');
     await hydratedLevelingTree(page);
@@ -171,7 +149,7 @@ test.describe('desktop', () => {
     await expect(slider).toBeEnabled();
     await expect(tree.getByTestId('guide-leveling-trees')).toBeVisible();
     const caption = tree.getByTestId('guide-leveling-caption');
-    await expect(caption).toContainText('51 points spent, all placed');
+    await expect(caption).not.toContainText('points spent');
     await expect(tree.getByTestId('guide-leveling-slider-next')).toBeDisabled();
     // Home is 10, PageUp ten levels on, End is 60.
     await slider.focus();
@@ -188,7 +166,7 @@ test.describe('desktop', () => {
     );
     await slider.focus();
     await page.keyboard.press('End');
-    await expect(caption).toContainText('51 points spent, all placed');
+    await expect(caption).not.toContainText('points spent');
   });
 
   test('the leveling tree’s Load in planner link carries the chosen level’s talent string', async ({
@@ -209,13 +187,9 @@ test.describe('desktop', () => {
 test.describe('phone', () => {
   test.use({ viewport: PHONE });
 
-  test('/guides/warrior/fury At a glance stacks to one column with every line intact', async ({ page }) => {
+  test('/guides/warrior/fury At a glance fits the phone with no sideways scroll', async ({ page }) => {
     await page.goto('/guides/warrior/fury');
-    await expect(glanceRotationRows(page)).toHaveCount(4);
-    await expect(page.getByTestId('guide-glance').locator('.ui-pcols')).toHaveCSS(
-      'grid-template-columns',
-      /^[\d.]+px$/,
-    );
+    await expect(page.getByTestId('guide-glance')).toBeVisible();
     await noSidewaysScroll(page);
   });
 

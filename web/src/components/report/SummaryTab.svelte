@@ -138,7 +138,7 @@
   function subOf(row: RosterRow, realm: string): string {
     const cell = specCell(row, unitClasses);
     const who = row.spec ? row.spec : cell.text === '—' ? '' : cell.text;
-    const level = who === '' && row.item_level ? `item level ${row.item_level}` : '';
+    const level = who === '' && row.item_level ? `ilvl ${row.item_level}` : '';
     return [who, realm, level].filter((part) => part !== '').join(' · ');
   }
 
@@ -160,7 +160,7 @@
         {@const role = roleOf(row.role)}
         <StatRow
           figures={figures(row)}
-          phone={`damage · ${formatRate(row.damage_done / seconds)} DPS`}
+          phone={`${formatRate(row.damage_done / seconds)} DPS`}
           testid={`roster-${row.guid}`}
         >
           {#snippet icon()}<ClassIcon className={cell.class} size={28} />{/snippet}

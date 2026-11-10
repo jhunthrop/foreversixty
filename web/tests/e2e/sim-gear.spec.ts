@@ -81,14 +81,8 @@ test('copy and modify adds the same item again with an enchant, beside the origi
 
 test('the combination count moves as candidates are ticked', async ({ page }) => {
   await loadGear(page);
-  // Neither bulkCopy string here has a regex metacharacter, so the two are safe to
-  // alternate directly rather than through an escaping helper this file would be the only
-  // caller of.
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(
-    new RegExp(
-      `${bulkCopy.combinations(0)}|${bulkCopy.combinationsCounting}|${bulkCopy.combinationsNone.replace(/[.]/g, '\\.')}`,
-    ),
-  );
+  // Nothing ticked, nothing to run: the count says nothing until a tick makes one.
+  await expect(page.getByTestId('sim-combo-count')).toHaveCount(0);
   await page.getByTestId('sim-candidate-head-12640').getByRole('checkbox').check();
   await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1), {
     // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:

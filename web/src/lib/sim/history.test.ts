@@ -1,7 +1,7 @@
 // web/src/lib/sim/history.test.ts
 import { describe, expect, it } from 'vitest';
 import { simCopy } from './copy';
-import { KIND_FILTERS, headlineOf, kindOf, titleOf } from './history';
+import { KIND_FILTERS, headlineOf, kindOf, runDeltas, titleOf } from './history';
 import type { SimListRow } from './types';
 
 const row = (over: Partial<SimListRow> = {}): SimListRow => ({
@@ -49,5 +49,27 @@ describe('KIND_FILTERS', () => {
     for (const filter of KIND_FILTERS) {
       expect(simCopy.kindLabel[filter], filter).toBeTruthy();
     }
+  });
+});
+
+describe('runDeltas', () => {
+  it('reads each run against the earlier run of the same setup', () => {
+    const rows = [
+      row({ sim_id: 'c', dps: 910, created_at: '2026-11-03T00:00:00Z', preset: 'raid' }),
+      row({ sim_id: 'a', dps: 900, created_at: '2026-11-01T00:00:00Z', preset: 'raid' }),
+      row({ sim_id: 'b', dps: 400, created_at: '2026-11-02T00:00:00Z', preset: 'bare' }),
+    ];
+    const deltas = runDeltas(rows);
+    expect(deltas.get('c')).toBeCloseTo(10, 6);
+    expect(deltas.has('a')).toBe(false);
+    expect(deltas.has('b')).toBe(false);
+  });
+
+  it('leaves tool saves out', () => {
+    const rows = [
+      row({ sim_id: 'a', created_at: '2026-11-01T00:00:00Z' }),
+      row({ sim_id: 'g', kind: 'gear', created_at: '2026-11-02T00:00:00Z' }),
+    ];
+    expect(runDeltas(rows).has('g')).toBe(false);
   });
 });

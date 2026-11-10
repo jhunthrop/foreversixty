@@ -15,6 +15,8 @@ from the same sources the build reads (the raid date, the site changelog, the Bi
 """
 import json
 import re
+import subprocess
+import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -38,14 +40,19 @@ FLOOR_MIN, FEED_ROWS, UPGRADES_SHOWN, GUILD_SHOWN = 5, 7, 5, 5
 FRAME_LINE = 'rgba(243,238,226,.42)'  # web --color-frame-line
 GUILD_SIM_TAIL = re.compile(r', #(\d+) of (\d+) DPS in [^,(]+ \([^)]*\)$')  # web lib/home/feed.ts homeRows
 HOME_CSS = f'''
+.ph-wrap>[data-region="head"]{{display:flex;flex-direction:column;justify-content:flex-end;min-height:120px;padding-top:8px}}
+@media(min-width:900px){{.ph-wrap>[data-region="head"]{{min-height:160px}}}}
+.home-out .ph-wrap>[data-region="head"]{{min-height:0;padding-top:0}}
+@media(min-width:1100px){{.hg-feed{{align-self:stretch;display:flex;flex-direction:column}}.hg-feed>section{{display:flex;flex:1;flex-direction:column}}.hg-feed>section>.sbox{{flex:1}}}}
 .ph-meta .t-small+.t-small::before{{content:none}}
 .pad16{{padding:16px}}
 .hans{{display:flex;flex-direction:column;align-items:inherit;gap:2px}}.hans .link{{font-size:13px}}
 .hgrid{{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"lead" "rail" "feed" "foot";align-items:start;gap:var(--gap);padding-top:28px}}
 .hgrid>div{{min-width:0}}.hg-lead{{grid-area:lead}}.hg-feed{{grid-area:feed}}.hg-rail{{grid-area:rail;display:flex;flex-direction:column;gap:var(--gap)}}.hg-foot{{grid-area:foot}}
 @media(min-width:1100px){{.hgrid{{grid-template-columns:minmax(0,1fr) 400px;grid-template-areas:"lead lead" "feed rail" "foot foot"}}}}
+@media(min-width:1280px){{.hgrid{{grid-template-columns:minmax(0,1fr) 440px}}}}@media(min-width:1800px){{.hgrid{{grid-template-columns:minmax(0,1fr) 480px}}}}
 .pq{{display:grid;gap:16px 34px}}
-@media(min-width:900px){{.pq{{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}.pq .prep{{border-top:0;border-left:1px solid {FRAME_LINE};padding:0 0 0 28px}}}}
+@media(min-width:900px){{.pq{{grid-template-columns:minmax(0,1fr) auto}}.pq .prep{{align-self:start;max-width:360px;border-top:0;border-left:1px solid {FRAME_LINE};padding:0 0 0 28px}}}}
 .pt{{font:400 30px/34px var(--font-title);margin:0}}.psub{{margin-top:4px;font-size:15px;line-height:22px}}
 .bigf{{display:flex;flex-wrap:wrap;gap:12px 26px;margin-top:16px}}.bigf .g{{display:flex;gap:26px}}.bigf .rule{{width:1px;background:{FRAME_LINE}}}
 .bigf .f{{display:flex;flex-direction:column}}.bigf b{{font-weight:600;font-size:44px;line-height:1;color:var(--strong)}}
@@ -55,22 +62,26 @@ HOME_CSS = f'''
 .prep{{border-top:1px solid {FRAME_LINE};padding-top:14px}}.prep h3{{font:400 19px/26px var(--font-title)}}
 .prep ul{{margin:8px 0 0;padding:0;list-style:none}}.prep li{{display:flex;gap:10px;align-items:baseline;padding:3px 0;font-size:15px;line-height:22px}}
 .prep li::before{{content:"";flex:none;width:11px;height:11px;border:1px solid {FRAME_LINE}}}
-.frb{{container-type:inline-size}}.fr{{display:grid;gap:20px 34px;align-items:center}}@container (min-width:640px){{.fr{{grid-template-columns:minmax(0,1fr) auto}}}}
-.fr .foot{{margin-top:18px;font-size:15px;line-height:22px}}
-.fr ul{{display:flex;gap:18px;margin:0;padding:0;list-style:none}}
-.fr li{{display:flex;flex-direction:column;align-items:center;gap:8px;width:96px;font:600 14px/18px var(--font-body);text-align:center}}
+/* web HomeFirstRaids: the clock, the guild line beside it, the raids stacked at the right on a wide plaque; in the signed-out
+   rail everything stacks, each raid its 44 px icon and name on a row */
+.frb{{container-type:inline-size}}.fr{{display:grid;gap:20px 40px;align-items:center}}
+.fr .foot{{font-size:15px;line-height:22px}}
+.fr ul{{display:flex;flex-direction:column;gap:12px;margin:0;padding:0 16px 0 0;list-style:none}}
+.fr li{{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:12px;font:700 15px/20px var(--font-body);color:var(--strong)}}
+@container (min-width:640px){{.fr{{grid-template-columns:auto minmax(0,1fr)}}.fr .foot{{align-self:end}}.fr ul{{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;gap:12px 32px}}}}
+@container (min-width:1100px){{.fr{{grid-template-columns:auto minmax(0,1fr) auto}}.fr ul{{grid-column:auto;flex-direction:column}}}}
 .fhd{{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:6px}}.fhd h2{{font:400 22px/28px var(--font-title);margin:0}}
 .lad>*{{break-inside:avoid}}
 .simline{{padding:12px 0 8px;font-size:15px;line-height:22px}}
 .facts{{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;font-size:14px;line-height:20px}}.facts b{{font-weight:600;color:var(--strong)}}
-.upfoot{{padding-top:12px}}
+.upfoot{{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px}}.upfoot .link{{flex:none;font-size:14px}}
+.irow .over{{display:block;color:var(--muted);font-size:13px;line-height:18px}}.irow .over b{{font-weight:600}}
 .irow .tr{{display:flex;align-items:center;gap:12px}}
-@media(max-width:767px){{.irow .worn{{display:none}}}}
 .lbox{{container-type:inline-size}}@container (min-width:900px){{.lad{{columns:2;column-gap:48px}}}}
-.strail{{display:flex;align-items:center;gap:14px}}.strail .meter{{width:120px}}.strail .sfig{{display:flex;justify-content:flex-end;min-width:104px}}.strail .gap{{width:96px;font-size:13px;line-height:18px;text-align:right;color:var(--muted)}}
-@media(max-width:1099px){{.strail .meter{{width:56px}}.strail .gap{{display:none}}}}
-@media(max-width:767px){{.strail .meter{{display:none}}}}
-.fpair{{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:var(--gap)}}@media(min-width:1100px){{.fpair{{grid-template-columns:minmax(0,1fr) 400px}}}}
+.lbox .row .sub{{white-space:nowrap}}
+.strail{{display:flex;align-items:center;gap:14px}}.strail .meter{{width:clamp(56px,36cqi,360px)}}.strail .sfig{{display:flex;justify-content:flex-end;min-width:104px}}
+@container (max-width:519px){{.strail .meter{{display:none}}}}
+.fpair{{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:var(--gap)}}@media(min-width:1100px){{.fpair{{grid-template-columns:minmax(0,1fr) 400px}}}}@media(min-width:1280px){{.fpair{{grid-template-columns:minmax(0,1fr) 440px}}}}@media(min-width:1800px){{.fpair{{grid-template-columns:minmax(0,1fr) 480px}}}}
 .sp h3{{margin:0;padding:8px 0 2px;font:600 13px/18px var(--font-body);color:var(--muted)}}
 .err{{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}}
 .empty-b{{padding-block:12px;font-size:15px;line-height:24px;color:var(--muted)}}
@@ -190,13 +201,15 @@ def guild_plaque(char: dict, guild_home: dict) -> str:
     standing = standing_facts(char, guild_home)
     d = iso(r['starts_at']) - timedelta(hours=6)
     when = f"{d.strftime('%A')} {d.day} {d.strftime('%B')} &middot; 8 pm"  # web lib/home/plaque.ts raidWhen, the viewer's time
-    roles = ''.join(f'<span><b>{c[k]}</b> {k}</span>' for k in ('tanks', 'healers', 'melee', 'ranged'))
+    # the countdown alone is big (h-audit 2026-11-09); signed up and late lead the role line at body size
+    roles = (f'<span><b>{c["in"]}</b> signed up</span><span><b>{c["late"]}</b> late</span>'
+             + ''.join(f'<span><b>{c[k]}</b> {k}</span>' for k in ('tanks', 'healers', 'melee', 'ranged')))
     own = r['own']['state'] if r['own'] else None
     buttons = ''.join(f'<button type="button" class="btn{" primary" if k == "in" else ""} sm" aria-pressed="{str(own == k).lower()}">{label}</button>'
                       for k, label in (('in', "I'm in"), ('late', 'Late'), ('out', "Can't come")))
     prep = (f'<div class="prep"><h3>Before the pull</h3><ul>{"".join(f"<li>{n}</li>" for n in needs)}</ul></div>') if needs else ''
     main = (f'<div style="min-width:0">{plaque_title(r["zone_name"], f"{char["guild"]["name"]} &middot; {when}")}'
-            f'{big_figures([clock_to(r["starts_at"]), [(str(c["in"]), "signed up"), (str(c["late"]), "late")]], True)}'
+            f'{big_figures([clock_to(r["starts_at"])], True)}'
             f'<p class="roles">{roles}</p>'
             + (f'<div style="margin-top:6px">{facts_line(standing)}</div>' if standing else '')
             + f'<div class="acts">{buttons}</div></div>')
@@ -207,9 +220,10 @@ def first_raids_plaque(foot: str = '') -> str:
     at = raids_open()
     clock = clock_to(at)
     head = plaque_title('First raids open', long_day(at)) + big_figures([clock], True) if clock else plaque_title('Raids open now')
-    f = f'<div class="foot">{foot}</div>' if foot else ''
-    raids = '<ul aria-label="First raids">' + ''.join(f'<li>{icon(i, 56)}<span>{n}</span></li>' for n, i in RAIDS) + '</ul>'
-    return Frame(f'<div class="frb"><div class="fr"><div style="min-width:0">{head}{f}</div>{raids}</div></div>', ornate=True, region=REGION['countdowns'])
+    f = f'<div class="foot" style="min-width:0">{foot}</div>' if foot else ''
+    # no raid line: Barrow Deeps and Hyjal Summit have no loot rows yet, and the build lines every raid or none
+    raids = '<ul aria-label="First raids">' + ''.join(f'<li>{icon(i, 44)}<span>{n}</span></li>' for n, i in RAIDS) + '</ul>'
+    return Frame(f'<div class="frb"><div class="fr"><div style="min-width:0">{head}</div>{f}{raids}</div></div>', ornate=True, region=REGION['countdowns'])
 
 
 def grid(lead: str, feed: str, rail: str = '', foot: str = '') -> str:
@@ -246,6 +260,19 @@ def home_rows(rows: list[dict], raid_on_plaque: bool) -> list[dict]:
                                    for s in r['segments']]}
         out.append(r)
     return out
+
+
+def signed_in_rows(rows: list[dict], char: dict, raid_on_plaque: bool) -> list[dict]:
+    """web HomeFeed signed in: lib/home/feed-mix.ts signedInRows on the build's own floor, run through home_feed.mjs (one source:
+    the viewer's guild left off its sims, one row per character, three sims at most, the viewer's spec's site events mixed in)."""
+    request = {'rows': rows, 'spec': spec_key(char), 'ownGuild': (char.get('guild') or {}).get('name'), 'raidOnPlaque': raid_on_plaque}
+    with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False) as f:
+        json.dump(request, f)
+    try:
+        out = subprocess.run(['node', str(Path(__file__).with_name('home_feed.mjs')), f.name], capture_output=True, text=True, check=True)
+    finally:
+        Path(f.name).unlink()
+    return json.loads(out.stdout)
 
 
 def feed_lines(rows: list[dict]) -> str:
@@ -287,10 +314,10 @@ def feed_section(rows: list[dict] | None, state: str = 'ready') -> str:
     return sec('Latest on Forever', body)
 
 
-def frame_section(title: str, body: str, action: str = '') -> str:
+def frame_section(title: str, body: str, action: str = '', plain: bool = False) -> str:
     """A featured rail panel with its title inside (Your upgrades, How to start), carrying the section's region."""
     a = Link(f'{action} &rsaquo;') if action else ''
-    return Frame(f'<div class="fhd"><h2>{title}</h2>{a}</div>{body}', region=region_slug(title))
+    return Frame(f'<div class="fhd"><h2>{title}</h2>{a}</div>{body}', region=region_slug(title), plain=plain)
 
 
 # ------------------------------------------------------------------------------------------------ signed out
@@ -309,11 +336,11 @@ def how_to_start() -> str:
     return frame_section('How to start', Rows([
         Row('Sign in with Battle.net', rank='1'),
         Row('Install the addon and the companion', rank='2'),
-    ], open_=True))
+    ], open_=True), plain=True)
 
 
 def state_out() -> str:
-    head = PageHeader('Pick your class', actions=Button('Sign in with Battle.net', True))
+    head = f'<div class="home-out">{PageHeader("Pick your class")}</div>'
     rows = home_rows(J('feed-out.json')['rows'], False)
     return head + grid(class_picker(headless=True), feed_section(rows), how_to_start() + first_raids_plaque())
 
@@ -374,27 +401,32 @@ def upgrades_section(char: dict, ups: list, items: dict, bis_slots: int) -> str:
         # web lib/home/home-view.ts upgradeLine: the slot (a ring is a Finger, whichever of the two) and the pick's source
         slot = re.sub(r' \d$', '', SLOT_LABELS[s['slot']])
         row = ItemRow(s['item_name'], q, ic, f"{slot} &middot; {s['source']}", gain=(f'+{gain:,.1f}', 'DPS', ''))
+        # web HomeUpgrades: the piece it replaces, "over <name>" in that piece's quality colour, under the source line
         worn = items.get(char['build']['gear'].get(s['slot'])) or {}
-        if worn:
-            wq = {2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5'}.get(worn.get('quality', 1), '')
-            row = row.replace('<span class="tr">', f'<span class="tr"><span class="worn">{icon(worn.get("icon", ""), 28, wq)}</span>', 1)
+        over = (f'over <b style="color:{QCOL.get(worn.get("quality", 1), QCOL[1])}">{worn["name"]}</b>' if worn.get('name')
+                else 'Empty slot')
+        row = row.replace('</span></span><span class="tr">', f'</span><span class="over">{over}</span></span><span class="tr">', 1)
         rows.append(row)
     facts = []
     total = sum(g for g, _ in ups)
     if total > 0:
-        facts.append((f'+{total:,.1f}', f"DPS in {len(ups)} {'upgrade' if len(ups) == 1 else 'upgrades'}"))
+        facts.append((f'+{total:,.1f}', 'DPS'))
     if bis_slots > 0:
         facts.append((str(bis_slots), 'best in slot'))
-    foot = f'<div class="upfoot">{facts_line(facts)}</div>' if facts else ''
-    return frame_section('Your upgrades', f'<div>{"".join(rows)}</div>{foot}', 'Best in slot')
+    more = Link(f'See all {len(ups)} &rsaquo;') if len(ups) > UPGRADES_SHOWN else ''
+    foot = f'<div class="upfoot">{facts_line(facts)}{more}</div>' if facts or more else ''
+    # web HomeUpgrades: a boxed Section, its title and Best in slot link above the panel
+    return sec('Your upgrades', f'<div>{"".join(rows)}</div>{foot}', 'Best in slot')
 
 
 def ladder_row(r: dict, unit: str, top: float, you: dict | None) -> str:
-    """A guild sim: the bar in the class colour against the top of the ladder, the gap to your sim, the figure."""
-    gap = '' if you is None or r['you'] else f"{abs(r['value'] - you['value']):,.1f} {'ahead' if r['value'] >= you['value'] else 'behind'}"
-    trail = (f'<span class="strail">{MeterClass(r["value"] / top if top else 0, CLASS_COLOR[r["class"]])}<span class="gap">{gap}</span>'
+    """web HomeGuildSims: the gap to your sim under the name (lib/home/home-facts.ts simGap, `63.7 DPS ahead of you`), the bar in
+    the class colour against the top of the ladder, as wide as the panel allows, then the figure."""
+    gap = '' if you is None or r['you'] else (f"{abs(r['value'] - you['value']):,.1f} {unit} "
+                                              f"{'ahead of you' if r['value'] >= you['value'] else 'behind you'}")
+    trail = (f'<span class="strail">{MeterClass(r["value"] / top if top else 0, CLASS_COLOR[r["class"]])}'
              f'<span class="sfig"><span class="fig sm"><span class="v">{r["value"]:,.1f}<small>{unit}</small></span></span></span></span>')
-    return Row(r['name'], '', lead=crest_img(r['class'], 28), trail=trail, title_color=CLASS_COLOR[r['class']], rank=str(r['rank']),
+    return Row(r['name'], gap, lead=crest_img(r['class'], 28), trail=trail, title_color=CLASS_COLOR[r['class']], rank=str(r['rank']),
                selected=r['you'], slim=True)
 
 
@@ -430,7 +462,7 @@ def spec_week_section(w: dict, movers: dict | None) -> str:
         sub = f'{move}, {place}'
     else:
         sub = place
-    row = Row(f"{spec_name(w['spec'])} at {band_words(w['band'])}", sub, lead=GradeTile(w['grade']), link=False)
+    row = Row(f"{spec_name(w['spec'])} at {band_words(w['band'])}", sub, lead=GradeTile(w['grade'], bare=True), link=False)
     body = f'<div class="sp">{Rows([row], open_=True)}{movers_block(movers)}</div>'
     return sec('Your spec this week', body, 'Tier list')
 
@@ -444,7 +476,7 @@ def state_in(level: str, feed: str = 'ready', feed_file: str = '', guild_file: s
                     if 'item_id' in s and char['build']['gear'].get(s['slot']) == s['item_id'])
     guild_home = J(guild_file) if 'guild' in char else None
     raid_on_plaque = guild_home is not None and 'next_raid' in guild_home
-    rows = home_rows(J(feed_file or f'feed-{level}.json')['rows'], raid_on_plaque) if feed == 'ready' else None
+    rows = signed_in_rows(J(feed_file or f'feed-{level}.json')['rows'], char, raid_on_plaque) if feed == 'ready' else None
     week = spec_week_section(home['spec_week'], home['movers']) if home['spec_week'] else ''
     foot = (f'<div class="fpair">{guild_sims_section(home["guild_sims"])}{week}</div>' if home['guild_sims'] else week)
     return head_in(char, home) + grid(plaque_in(char, guild_home), feed_section(rows, feed), upgrades_section(char, ups, items, bis_slots), foot)

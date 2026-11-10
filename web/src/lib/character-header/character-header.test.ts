@@ -93,12 +93,9 @@ describe('syncView', () => {
 });
 
 describe('syncText', () => {
-  it('joins the source and the age with a middle dot', () => {
-    expect(syncText({ source: 'Addon', age: '12 minutes ago' })).toBe('Addon \u00b7 12 minutes ago');
-  });
-
-  it('is the age alone when the source is not known', () => {
-    expect(syncText({ source: '', age: '12 minutes ago' })).toBe('12 minutes ago');
+  it('reads "Synced" and the age', () => {
+    expect(syncText({ source: 'Addon', age: '12 minutes ago' })).toBe('Synced 12 minutes ago');
+    expect(syncText({ source: '', age: '12 minutes ago' })).toBe('Synced 12 minutes ago');
   });
 
   it('is the source alone when the build time cannot be read, never a dangling dot (L8.4 fix round 2 item 5)', () => {

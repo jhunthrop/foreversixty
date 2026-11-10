@@ -22,8 +22,11 @@
     devices,
     onCode,
     onPaired,
+    note = true,
   }: {
     devices: readonly Device[];
+    /** The companion-first line above the code button; /logs leaves it out (its card says Get the companion). */
+    note?: boolean;
     /** The code while it is out and unused; null once used, expired or never asked for. */
     onCode?: (code: string | null) => void;
     onPaired?: (device: Device) => void;
@@ -75,7 +78,7 @@
 </script>
 
 <div class="flex flex-col items-start gap-3" data-testid="logs-companion-pair">
-  <span class="text-label text-muted font-bold">{label}</span>
+  <span class="text-strong text-[15px] font-bold">{label}</span>
   {#if paired !== null}
     <p class="text-[14px]" data-testid="pairing-success">{pairingCopy.success(paired.name)}</p>
   {:else if pairing !== null}
@@ -84,9 +87,9 @@
       {pairingCopy.codeLine(Math.round(pairing.expires_in / SECONDS_PER_MINUTE))}
     </p>
   {:else}
-    <p class="text-muted text-[15px] leading-6" data-testid="pairing-companion-first">
-      {pairingCopy.companionFirst}
-    </p>
+    {#if note}<p class="text-muted text-[14px] leading-5" data-testid="pairing-companion-first">
+        {pairingCopy.companionFirst}
+      </p>{/if}
     <Button size="sm" onclick={() => void pair()} disabled={busy} testid="pairing-start"
       >{pairingCopy.action}</Button
     >

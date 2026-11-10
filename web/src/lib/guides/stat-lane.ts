@@ -5,7 +5,6 @@
 // carry no figure. Both blocks read this, so they can never disagree.
 import { band60Weights } from './class-dps';
 import { guidesCopy } from './copy';
-import { glanceStatRows } from './glance';
 import { guideExpertiseCapLine, guideHitCapLine, type GuideHitCapLine } from './hit-cap-line';
 import { railStatRows, railStatValueText, type RailStatRow } from './rail-stats';
 import { bandTalentHits } from './talent-hit';
@@ -22,8 +21,6 @@ export interface StatLaneRow extends RailStatRow {
 export interface StatLane {
   role: GuideRole;
   rows: StatLaneRow[];
-  /** The plate's rows: the ones a player can gear for (glance.ts). */
-  glanceRows: StatLaneRow[];
   hitCap?: GuideHitCapLine;
   expertiseCap?: { text: string };
   weightHead: string;
@@ -61,7 +58,6 @@ export function guideStatLane(
     perPointText: perPointText(row.perPoint),
   }));
   const valued = rows.filter((row) => row.reading === 'value');
-  const anchor = valued.find((row) => row.perPercent === undefined)?.label ?? rows[0]!.label;
   const talentHits = bandTalentHits(build, classSlug, band60.talents);
   const hitCap = guideHitCapLine(band60.hitToCap, talentHits);
   const expertiseCap = guideExpertiseCapLine(band60.expertiseToCap, talentHits);
@@ -81,11 +77,10 @@ export function guideStatLane(
   return {
     role,
     rows,
-    glanceRows: glanceStatRows(rows),
     ...(hitCap === undefined ? {} : { hitCap }),
     ...(expertiseCap === undefined ? {} : { expertiseCap }),
-    weightHead: guidesCopy.weightColumn(anchor),
-    perPointHead: guidesCopy.perPointColumn(role, rated.length > 0),
+    weightHead: guidesCopy.weightColumn,
+    perPointHead: guidesCopy.perPointColumn(role),
     ...(unitRow === undefined
       ? {}
       : {

@@ -3,7 +3,7 @@
 // §4.4): the header selector's character (`selectedCharacter`, never the account's first,
 // bug B1) and its next link. On the guide of its own spec below 60 the next step is the
 // talents at its level, the ladder's next point and its best in slot; at 60 its best in slot
-// and the sim; anywhere else "Your guide: <Spec> <Class> ›". Pure: the mount feeds it the
+// and the sim; anywhere else "<Spec> <Class> ›". Pure: the mount feeds it the
 // account read, the pointer and the page.
 import type { Me, MeCharacter } from '../account/api';
 import { answerCopy } from '../account/answer-copy';
@@ -84,6 +84,14 @@ export function guideCharacterOf(raw: MeCharacter): GuideCharacter | undefined {
     levelLine: lines.level,
     identity: lines.identity,
   };
+}
+
+/** The answer's one line under the name: "34 Dwarf Survival". The name is in the class colour
+ *  and the spec names the class, so "Level" and "Hunter" are dropped (h-audit 2026-11-09). */
+export function answerDetail(level: number | undefined, identity: string, className: string): string {
+  const suffix = ` ${className}`;
+  const who = identity.endsWith(suffix) ? identity.slice(0, -suffix.length) : identity;
+  return [level === undefined ? undefined : String(level), who].filter(Boolean).join(' ');
 }
 
 function linksFor(character: GuideCharacter, page: GuideAnswerPage): { links: AnswerLink[]; next?: string } {

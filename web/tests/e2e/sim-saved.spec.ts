@@ -8,7 +8,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { curatedRotationNotes } from './support/rotation-notes';
-import { gotoSim, simCharacter, gotoSavedSim } from './support/sim-page';
+import { gotoSavedSim, gotoSim, openSimSection, simCharacter } from './support/sim-page';
 import { expect, test } from './support/test';
 import type { CharacterSpec } from '../../src/lib/sim/types';
 
@@ -102,7 +102,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(page.getByTestId('sim-spread-plot')).toHaveCount(0);
 
     // The card below the fold mounts as it nears the viewport.
-    await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+    await openSimSection(page, 'settings');
     await expect(page.getByTestId('sim-settings-runs')).toContainText(
       fixtureResult.iterations_run.toLocaleString('en-US'),
     );
@@ -221,7 +221,7 @@ test('a saved sim names the rotation it used, prints its notes in place, and car
 }) => {
   await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('in_progress')));
   await gotoSavedSim(page, '/sim/simfixtureab');
-  await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
+  await openSimSection(page, 'rotation');
   const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
   await expect(card).toContainText('Fury guide');
@@ -252,7 +252,7 @@ test('a saved sim for a validated spec carries the rotation section with no fide
 }) => {
   await page.route('**/v1/specs', (route) => route.fulfill(fidelityRoute('validated')));
   await gotoSavedSim(page, '/sim/simfixtureab');
-  await page.getByTestId('sim-section-rotation').scrollIntoViewIfNeeded();
+  await openSimSection(page, 'rotation');
   const card = page.getByTestId('sim-rotation-saved-card');
   await expect(card).toBeVisible();
   await expect(card.getByTestId('rotation-line').first()).toBeVisible();
@@ -333,7 +333,7 @@ test.describe('a saved sim renders the results view its own kind calls for', () 
     await page.goto(`/sim/${id}`);
 
     await expect(page.getByTestId('sim-weights')).toBeVisible();
-    await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('= 1.00');
+    await expect(page.getByTestId('sim-weights-table')).toContainText('1.00');
     // A weights result has no gear story (design 7): the strip's grid does not claim one.
     await expect(page.getByTestId('paperdoll-list-slot-head')).toHaveCount(0);
   });
@@ -414,7 +414,7 @@ test('a stale engine version raises the note and names the engine, and is never 
   await page.goto(`/sim/${id}`);
 
   await expect(page.getByTestId('sim-note-stale')).toBeVisible();
-  await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await openSimSection(page, 'settings');
   // This run's Engine fact names the old build (the stale tag beside it retired).
   await expect(page.getByTestId('sim-settings-engine')).toContainText('6a1c2d9');
 

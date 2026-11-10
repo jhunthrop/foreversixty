@@ -28,3 +28,27 @@ export function headlineOf(row: SimListRow): string {
 export function titleOf(row: SimListRow): string {
   return row.title === '' ? specDisplayName(row.spec) : row.title;
 }
+
+/** Runs compare only with a run of the same spec, level band, faction and preset. */
+function setupKey(row: SimListRow): string {
+  return [row.spec, row.band ?? '', row.faction ?? '', row.preset ?? ''].join('|');
+}
+
+/**
+ * Each run's DPS against the run of the same setup saved just before it ("+12.3" in Your sims).
+ * A row with no earlier run of its setup, or that is not a run, has no entry.
+ */
+export function runDeltas(rows: readonly SimListRow[]): Map<string, number> {
+  const runs = rows
+    .filter((row) => kindOf(row) === 'run' && row.dps > 0)
+    .sort((a, b) => a.created_at.localeCompare(b.created_at));
+  const last = new Map<string, number>();
+  const deltas = new Map<string, number>();
+  for (const row of runs) {
+    const key = setupKey(row);
+    const before = last.get(key);
+    if (before !== undefined) deltas.set(row.sim_id, row.dps - before);
+    last.set(key, row.dps);
+  }
+  return deltas;
+}

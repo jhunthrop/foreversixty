@@ -24,7 +24,7 @@
     onSelect,
   }: {
     actor: Actor;
-    /** "{spec} {class} · item level {n}", plus overheal or "dead since" where they apply. */
+    /** "{spec} {class} · ilvl {n}", plus overheal or "dead since" where they apply. */
     subLine: string;
     figures: readonly StatFigure[];
     /** This row's amount over the top row's, 0 to 1. */
@@ -57,7 +57,7 @@
         title={label.title}
         aria-current={selected ? 'true' : undefined}
         data-testid="row-name"
-        onclick={follow}>{label.name}</a
+        onclick={follow}>{label.name}<span class="text-gold ml-1" aria-hidden="true">›</span></a
       >{:else}<b style:color={colour} title={label.title} data-testid="row-name">{label.name}</b
       >{/if}{#if label.realm !== ''}<span class="text-muted ml-1 text-[12px]">· {label.realm}</span
       >{/if}{/snippet}

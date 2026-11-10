@@ -9,7 +9,6 @@
   import { onMount } from 'svelte';
   import PaperdollFrame from '../ui/PaperdollFrame.svelte';
   import ItemTooltip from '../ItemTooltip.svelte';
-  import { bisCopy } from '../../lib/bis/copy';
   import { dollForFaction, type GuideDollView } from '../../lib/guides/guide-bis-doll';
   import type { ItemTooltipModel } from '../../lib/items/tooltip';
   import { defaultSelection, type DollCell } from '../../lib/ui/paperdoll';
@@ -62,7 +61,7 @@
         cells={view.cells}
         {build}
         {title}
-        meta={bisCopy.frameMeta('60', view.raceName, view.preRaid)}
+        meta={view.raceName}
         selected={shownSlot}
         onselect={(slot) => (selected = slot)}
         {centre}

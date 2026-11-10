@@ -39,16 +39,13 @@ export const bisCopy = {
   whoLine: (level: number, raceClass: string | undefined): string =>
     `Level ${level}${raceClass ? ` ${raceClass}` : ''}`,
   offHandCovered: (twoHander: string): string => `${twoHander} is a two-hander: the off hand stays empty.`,
-  /** The title bar's meta: "20 to 29 · Alliance", "Pre-raid 60 · Horde". */
-  frameMeta: (bandLabel: string, faction: string, preRaid = false): string =>
-    `${preRaid ? 'Pre-raid ' : ''}${bandLabel} · ${faction}`,
+  /** The title bar's meta: "20 to 29", "Pre-raid 60". The faction is the control band's. */
+  frameMeta: (bandLabel: string, preRaid = false): string => `${preRaid ? 'Pre-raid ' : ''}${bandLabel}`,
   noDataYet: 'No leveling BiS list yet for this spec.',
   noDataYetBody:
     'The simulator has not ranked this spec’s gear across the level ranges yet. Check back once the nightly ranking run covers it.',
   backToIndex: 'Back to BiS',
   classGuideLink: 'See leveling BiS gear for this class',
-  factionAlliance: 'Alliance',
-  factionHorde: 'Horde',
   levelLabel: (band: number): string => `Level ${band}`,
   bandPillGroupLabel: 'Level range',
   bandHeading: (band: number): string => `Best gear at level ${band}`,

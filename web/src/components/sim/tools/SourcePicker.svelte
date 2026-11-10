@@ -2,10 +2,16 @@
 <!-- Design 6.1. A raid card is one checkbox for every boss; each boss is its own. A source
      gated on a phase that has not opened is hidden until "show unreleased content", and
      then carries the date it opens rather than pretending it is live.
-     There are no zone icons to draw: src/content/zones/*.md carries a title, a continent
-     and a level range, and nothing image-shaped (contract 10.7) -- this picker labels by
-     kind and name and draws none. -->
+     There are no zone icons in the data (src/content/zones/*.md carries a title, a continent and
+     a level range, contract 10.7), so a row leads with its best item's icon instead. Each kind is
+     a Disclosure titled "n of m ticked", open when its list is short; its sources sit in columns
+     (one at 390, up to three at 1440); a row names its usable items and their best item level
+     once, a dungeon its boss count inline; a source this class can use nothing from is left out;
+     reputation is one row per faction with its standings as inline ticks; PvP lists the
+     character's own side and names each rank's best reward; a kind that has not opened says so in
+     one line (lib/sim/source-rows.ts). -->
 <script lang="ts">
+  import { SvelteSet } from 'svelte/reactivity';
   import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
   import { sourceGroupVisibility, triedCount } from '../../../lib/sim/drop-picks';
   import {
@@ -20,9 +26,19 @@
     type LootSource,
   } from '../../../lib/sim/loot';
   import { PHASE_LATER, openDateLabel, phaseLabel, type PhaseRow } from '../../../lib/sim/phase';
+  import {
+    gatedLine,
+    groupByFaction,
+    pvpForFaction,
+    showsSource,
+    sourceItemStats,
+    tickedSources,
+  } from '../../../lib/sim/source-rows';
+  import { rarityClassFor } from '../../../lib/planner/items';
+  import type { Faction } from '../../../lib/bis/types';
   import type { Item } from '../../../lib/planner/types';
   import Disclosure from '../../ui/Disclosure.svelte';
-  import Button from '../../ui/Button.svelte';
+  import ItemIcon from '../../ui/ItemIcon.svelte';
   import ToolSection from './ToolSection.svelte';
 
   let {
@@ -35,10 +51,11 @@
     items,
     known,
     now,
+    treeVersion = '',
+    faction = null,
     ontogglekind,
     ontoggleupcoming,
     ontoggle,
-    plate = false,
   }: {
     loot: LootFile;
     phases: readonly PhaseRow[];
@@ -51,14 +68,22 @@
     /** The engine's `simitems.json` ids, `null` when the build ships none. */
     known: ReadonlySet<number> | null;
     now: Date;
+    /** The build whose icons the rows draw. */
+    treeVersion?: string;
+    /** The character's side: PvP ranks of the other side are left out. */
+    faction?: Faction | null;
     ontogglekind: (kind: string) => void;
     ontoggleupcoming: (value: boolean) => void;
     ontoggle: (sourceId: string, bossId?: string) => void;
-    /** The picker sits on the page's one Plate (/sim/drops). */
-    plate?: boolean;
   } = $props();
 
   const groups = $derived(groupSources(loot));
+  /** One column at 390, two at 768, three at 1280. */
+  const COLUMNS = 'grid grid-cols-1 gap-x-8 md:grid-cols-2 xl:grid-cols-3';
+  /** A kind with this many rows or fewer opens by default; a longer list folds to its summary. */
+  const OPEN_UP_TO = 8;
+  /** The dungeons whose boss list the player opened. */
+  const openBosses = new SvelteSet<string>();
 
   function isPicked(sourceId: string, bossId = ''): boolean {
     return picked.includes(`${sourceId}|${bossId}`);
@@ -73,6 +98,25 @@
     if (source.opens === PHASE_LATER) return bulkCopy.opensLater;
     const date = openDateLabel(phases, source.opens);
     return date === '' ? bulkCopy.notOpenYet : bulkCopy.opensOn(phaseLabel(source.opens), date);
+  }
+
+  /** A kind's rows as the picker shows them: PvP cut to the character's side, empty sources left out. */
+  function rowsOf(kind: string, shown: readonly LootSource[]): LootSource[] {
+    const sided = kind === 'pvp' ? pvpForFaction(shown, faction) : [...shown];
+    return sided.filter((source) =>
+      showsSource(kind, sourceItemStats(itemsOfSource(source), items, known).count),
+    );
+  }
+
+  /** "Honored" from "Timbermaw Hold: Honored": the faction is the row's own heading. */
+  function standingOf(source: LootSource, factionName: string): string {
+    const label = sourceLabel(source);
+    return label.startsWith(`${factionName}: `) ? label.slice(factionName.length + 2) : label;
+  }
+
+  function toggleBosses(sourceId: string): void {
+    if (openBosses.has(sourceId)) openBosses.delete(sourceId);
+    else openBosses.add(sourceId);
   }
 </script>
 
@@ -99,8 +143,105 @@
   {/each}
 {/snippet}
 
-<ToolSection title={bulkCopy.sourcesTitle} testid="sim-source-picker" {plate}>
-  <div class="flex flex-wrap items-center gap-x-5">
+{#snippet sourceRow(source: LootSource, kind: string)}
+  {@const stats = sourceItemStats(itemsOfSource(source), items, known)}
+  {@const bossCount = (source.bosses ?? []).length}
+  <div class="flex flex-col">
+    <div class="flex min-h-11 items-center gap-2">
+      <label class="text-text flex min-w-0 flex-1 items-center gap-2 text-[14px]">
+        <input
+          type="checkbox"
+          class="accent-gold h-5 w-5 shrink-0"
+          data-testid={`sim-source-${source.id}`}
+          checked={isPicked(source.id)}
+          onchange={() => ontoggle(source.id)}
+        />
+        {#if stats.best !== null}<ItemIcon
+            icon={stats.best.icon}
+            quality={stats.best.quality}
+            build={treeVersion}
+            size={24}
+          />{/if}
+        <span class="min-w-0 flex-1 truncate">
+          <span class="text-strong font-bold">{sourceLabel(source)}</span>
+          {#if kind === 'pvp' && stats.best !== null}<span
+              class="text-[13px] {rarityClassFor(stats.best.quality)}"
+            >
+              {stats.best.name}</span
+            >{/if}
+        </span>
+      </label>
+      {#if kind === 'dungeon' && bossCount > 0}
+        <!-- A dungeon's bosses fold under its row (a real build lists 900): the count is the toggle. -->
+        <button
+          type="button"
+          class="text-muted hover:text-text min-h-11 shrink-0 text-[13px] tabular-nums"
+          aria-expanded={openBosses.has(source.id)}
+          data-testid={`sim-source-bosses-${source.id}`}
+          onclick={() => toggleBosses(source.id)}>{bulkCopy.sourceBosses(bossCount)}</button
+        >
+      {/if}
+      <span class="text-muted shrink-0 text-[13px] tabular-nums">
+        {bulkCopy.sourceItems(stats.count)}{#if stats.bestIlvl > 0}<span class="pl-2"
+            >{bulkCopy.sourceBestIlvl(stats.bestIlvl)}</span
+          >{/if}
+      </span>
+    </div>
+    {#if gateLabel(source) !== ''}
+      <p class="text-muted m-0 pl-7 text-[13px]">{gateLabel(source)}</p>
+    {/if}
+    {#if kind !== 'dungeon' || openBosses.has(source.id)}
+      {@render bosses(source)}
+    {/if}
+  </div>
+{/snippet}
+
+{#snippet factionRow(name: string, standings: readonly LootSource[])}
+  <div class="flex flex-col py-1">
+    <span class="text-strong pt-2 text-[14px] leading-5 font-bold">{name}</span>
+    <span class="flex flex-wrap gap-x-4">
+      {#each standings as source (source.id)}
+        <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
+          <input
+            type="checkbox"
+            class="accent-gold h-5 w-5"
+            data-testid={`sim-source-${source.id}`}
+            checked={isPicked(source.id)}
+            onchange={() => ontoggle(source.id)}
+          />
+          {standingOf(source, name)}
+          <span class="text-muted tabular-nums"
+            >{sourceItemStats(itemsOfSource(source), items, known).count}</span
+          >
+        </label>
+      {/each}
+    </span>
+  </div>
+{/snippet}
+
+{#snippet groupBody(kind: string, shown: readonly LootSource[])}
+  {#if kind === 'rep'}
+    <div class={COLUMNS}>
+      {#each groupByFaction(shown) as rep (rep.name)}
+        {@render factionRow(rep.name, rep.standings)}
+      {/each}
+    </div>
+  {:else}
+    {#if kind === 'crafted' && professionSplit(shown, professions).mine.length > 0}
+      <p class="text-muted m-0 text-[13px]">{bulkCopy.sourcesMyProfessions}</p>
+    {/if}
+    <div class={COLUMNS}>
+      {#each shown as source (source.id)}
+        {@render sourceRow(source, kind)}
+      {/each}
+    </div>
+  {/if}
+{/snippet}
+
+<ToolSection title={bulkCopy.sourcesTitle} testid="sim-source-picker">
+  <!-- The kind ticks choose which lists show, not what is simmed: they sit after "Show". -->
+  <div class="flex flex-wrap items-center gap-x-5" role="group" aria-labelledby="sim-sources-show">
+    <span id="sim-sources-show" class="text-muted text-[14px]">{bulkCopy.sourcesShow}</span>
     {#each groups as group (group.kind)}
       <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
         <input
@@ -134,81 +275,63 @@
       showUpcoming,
       now,
     )}
-    {@const shown = visibility.shown}
+    {@const shown = rowsOf(group.kind, visibility.shown)}
     {#if visibility.ticked && group.sources.length > 0}
-      <div class="flex flex-col gap-1 pt-4">
-        <h3 class="text-strong text-[15px] leading-5 font-bold">{SOURCE_KIND_LABELS[group.kind]}</h3>
-        {#if visibility.allGated}
-          <!-- dps D33 (BLOCKER) / newcomer MAJOR "ticking Raids produces an empty void":
-               a ticked kind whose every source is gated used to render nothing here at
-               all. Name the gate instead of vanishing. -->
-          <p class="text-muted text-[13px]" data-testid={`sim-kind-${group.kind}-gated`}>
-            {toolFixCopy.sourcesAllGated}
-          </p>
-          <ul class="flex flex-col gap-1 pl-3">
-            {#each group.sources as source (source.id)}
-              <li class="text-muted text-[13px]">{source.name}: {gateLabel(source)}</li>
-            {/each}
-          </ul>
-          <div class="pt-1">
-            <Button
-              size="sm"
-              testid={`sim-kind-${group.kind}-show-upcoming`}
-              onclick={() => ontoggleupcoming(true)}>{bulkCopy.showUpcoming}</Button
-            >
-          </div>
+      <div class="pt-2" data-testid={`sim-kind-${group.kind}-group`}>
+        {#if visibility.allGated || shown.length === 0}
+          <!-- dps D33 (BLOCKER) / newcomer MAJOR "ticking Raids produces an empty void": a
+               ticked kind whose every source is gated names the gate in one line; the
+               "show unreleased content" tick above opens them. -->
+          {@const gated = gatedLine(
+            group.sources.filter((source) => gateLabel(source) !== ''),
+            gateLabel,
+            bulkCopy.opensLater,
+          )}
+          <!-- One line: the kind, then what opens when (h-audit 2026-11-09). -->
+          <!-- Nothing to tick yet: the kind in the same form as the others, its count "0 of 7 open",
+               opening to the dates (h-audit 2026-11-09). -->
+          <Disclosure
+            summary={SOURCE_KIND_LABELS[group.kind]}
+            meta={bulkCopy.sourcesOpen(
+              group.sources.filter((source) => isOpen(phases, source, now)).length,
+              group.sources.length,
+            )}
+            testid={`sim-kind-${group.kind}-list`}
+          >
+            <p class="text-muted m-0 text-[13px] leading-5" data-testid={`sim-kind-${group.kind}-gated`}>
+              {[
+                ...gated.dated,
+                ...(gated.undated.length > 0 ? [bulkCopy.sourcesNoDate(gated.undated)] : []),
+              ].join(' · ')}
+              <span class="sr-only">{toolFixCopy.sourcesAllGated}</span>
+            </p>
+          </Disclosure>
         {:else}
-          {#if group.kind === 'crafted'}
-            {@const split = professionSplit(shown, professions)}
-            {#if split.mine.length > 0}
-              <p class="text-muted text-[13px]">{bulkCopy.sourcesMyProfessions}</p>
-            {:else}
-              <p class="text-muted text-[13px]">{bulkCopy.sourcesProfessionsUnknown}</p>
+          <Disclosure
+            summary={SOURCE_KIND_LABELS[group.kind]}
+            meta={tickedSources(shown, picked) > 0
+              ? bulkCopy.sourcesTicked(tickedSources(shown, picked), shown.length)
+              : bulkCopy.sourcesCount(shown.length)}
+            open={shown.length <= OPEN_UP_TO}
+            testid={`sim-kind-${group.kind}-list`}
+          >
+            {@render groupBody(group.kind, shown)}
+            <!-- Only a raid's opening is worth a line; a profession's gated recipes are not (h-audit 2026-11-09). -->
+            {@const later =
+              group.kind === 'raid'
+                ? group.sources.filter((source) => !visibility.shown.includes(source))
+                : []}
+            {#if later.length > 0}
+              <!-- The kind's opened sources are rows; the rest are named in one line (h-audit 2026-11-09). -->
+              {@const gatedRest = gatedLine(later, gateLabel, bulkCopy.opensLater)}
+              <p class="text-muted m-0 pt-1 text-[13px]" data-testid={`sim-kind-${group.kind}-later`}>
+                {[
+                  ...gatedRest.dated,
+                  ...(gatedRest.undated.length > 0 ? [bulkCopy.sourcesNoDate(gatedRest.undated)] : []),
+                ].join(' · ')}
+              </p>
             {/if}
-          {/if}
-          {#if group.kind === 'quest'}
-            <p class="text-muted text-[13px]">{bulkCopy.sourcesQuestNote}</p>
-          {/if}
-          {#each shown as source (source.id)}
-            <div class="flex flex-col py-1">
-              <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
-                <input
-                  type="checkbox"
-                  class="accent-gold h-5 w-5"
-                  data-testid={`sim-source-${source.id}`}
-                  checked={isPicked(source.id)}
-                  onchange={() => ontoggle(source.id)}
-                />
-                <span class="text-strong flex-1 font-bold">{sourceLabel(source)}</span>
-                {#if (source.bosses ?? []).length > 0}
-                  <span class="text-muted text-[13px]">{bulkCopy.sourcesWholeRaid}</span>
-                {/if}
-                <span class="text-muted text-[13px] tabular-nums">
-                  {triedCount(itemsOfSource(source), items, known)}
-                </span>
-              </label>
-              {#if gateLabel(source) !== ''}
-                <p class="text-muted pl-7 text-[13px]">{gateLabel(source)}</p>
-              {/if}
-              {#if group.kind === 'dungeon' && (source.bosses ?? []).length > 0}
-                <!-- A dungeon's bosses fold under its row: a real build lists 900 of them. -->
-                <div class="pl-7">
-                  <Disclosure
-                    summary={bulkCopy.sourcesBosses}
-                    meta={String((source.bosses ?? []).length)}
-                    testid={`sim-source-bosses-${source.id}`}
-                  >
-                    {@render bosses(source)}
-                  </Disclosure>
-                </div>
-              {:else}
-                {@render bosses(source)}
-              {/if}
-              {#if (source.trash ?? []).length > 0}
-                <p class="text-muted pl-7 text-[13px]">{bulkCopy.sourcesTrash}</p>
-              {/if}
-            </div>
-          {/each}
+          </Disclosure>
         {/if}
       </div>
     {/if}

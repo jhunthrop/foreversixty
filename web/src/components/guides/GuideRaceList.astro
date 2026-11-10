@@ -3,11 +3,13 @@
 // The races a class can be, on the class landing's Races panel above its prose: Alliance then
 // Horde, each race its portrait (RaceIcon) and its name in the faction's colour, in the build's
 // order (build-races.ts: the build's own combos). A race the build ships no portrait for shows
-// its name alone.
+// its name alone. A pair new in Forever says "new" after the name, so no prose has to.
 import RaceIcon from '../ui/RaceIcon.svelte';
-import { buildRacesForClass, raceIconsFor } from '../../lib/guides/build-races';
+import { buildRacesForClass, newRaceSlugsForClass, raceIconsFor } from '../../lib/guides/build-races';
 import { guidesCopy } from '../../lib/guides/copy';
 import { titleColor } from '../../lib/ui/primitives';
+
+const guideRaceListCopy = { fresh: 'new' } as const;
 
 interface Props {
   build: string;
@@ -16,6 +18,7 @@ interface Props {
 const { build, classSlug } = Astro.props;
 const races = buildRacesForClass(build, classSlug);
 const icons = raceIconsFor(build);
+const fresh = newRaceSlugsForClass(build, classSlug);
 const groups = (['alliance', 'horde'] as const)
   .map((faction) => ({ faction, races: races.filter((race) => race.faction === faction) }))
   .filter((group) => group.races.length > 0);
@@ -35,6 +38,14 @@ const groups = (['alliance', 'horde'] as const)
           >
             {icons.has(race.slug) && <RaceIcon url={icons.get(race.slug)!} name={race.name} size={24} />}
             <span>{race.name}</span>
+            {fresh.has(race.slug) && (
+              <span
+                class="text-small text-muted font-normal"
+                data-testid={`guide-class-race-new-${race.slug}`}
+              >
+                {guideRaceListCopy.fresh}
+              </span>
+            )}
           </li>
         ))}
       </ul>

@@ -24,7 +24,7 @@ describe('the 404 answer', () => {
     expect(answer.state).toBe('ready');
     if (answer.state !== 'ready') return;
     expect(answer.links).toEqual([
-      { label: 'Your guide: Beast Mastery Hunter ›', href: '/guides/hunter/beast-mastery' },
+      { label: 'Beast Mastery Hunter ›', href: '/guides/hunter/beast-mastery' },
       { label: `${answerCopy.bis} ›`, href: '/bis/hunter/beast-mastery?band=30' },
       { label: 'Your character ›', href: '/character/us/normal/felsnap' },
     ]);

@@ -162,7 +162,6 @@
   import { fightGroupScope, groupScope, raidFlaggedPlayers, scopeNoun } from '../../lib/report/group';
   import { splitUnitName } from '../../lib/characters';
   import { reportCopy } from '../../lib/report/copy';
-  import { ratingCopy } from '../../lib/rating/copy';
   import { justUploadedAt } from '../../lib/reports/just-uploaded';
   import {
     ACTOR_TABS,
@@ -173,6 +172,7 @@
     reportFigure,
     reportMeta,
     thisPullFacts,
+    reportMetaTail,
   } from '../../lib/report/frame';
   import { pullNumbers } from '../../lib/report/fights';
   import { createCoachViewerState } from '../../lib/coach/viewer-state.svelte';
@@ -1641,17 +1641,7 @@
           (row) => inSource(row.guid, scopeKey, scopePlayers, friendlySet) || row.guid === state.source,
         ),
   );
-  /** The scope's word for the head's caption. */
-  const scopeWord = $derived(
-    state.source === SOURCE_EVERYONE || (!groupScopeNow.scoped && groupScopeNow.crowded)
-      ? reportCopy.everyoneInRange
-      : state.source === SOURCE_FRIENDLIES && groupScopeNow.scoped
-        ? groupScopeNow.noun === 'raid'
-          ? reportCopy.yourRaid
-          : reportCopy.yourGroup
-        : 'Group',
-  );
-  /** The players and deaths in the Source scope, for the answer and This pull. */
+  /** The players and deaths in the Source scope, for the band's answer and its players tail. */
   const scopeRoster = $derived(
     (wholeScoped?.roster ?? []).filter((row) => inSource(row.guid, scopeKey, scopePlayers, friendlySet)),
   );
@@ -1677,15 +1667,7 @@
         }),
   );
   const pullFacts = $derived(
-    fight === null || nightMode
-      ? []
-      : thisPullFacts({
-          fight,
-          scope: scopeWord,
-          players: scopeRoster.length,
-          deaths: scopeDeaths.length,
-          phases: summary?.phases ?? [],
-        }),
+    fight === null || nightMode ? [] : thisPullFacts({ fight, phases: summary?.phases ?? [] }),
   );
   const isTrashPull = $derived(fight !== null && fight.kind !== 'encounter');
   /** A pull a rating can exist for: a boss pull of a report the API keeps (never the bundled sample). */
@@ -1698,11 +1680,13 @@
   /** The band's meta line: the pull on screen, or the night (zone, date, fight count). */
   const headLine = $derived(
     fight !== null && !nightMode
-      ? reportMeta(facts.zone, fight, pullNumbers(fights).get(fight.index)?.pull, scopeRoster.length)
+      ? reportMeta(facts.zone, fight, pullNumbers(fights).get(fight.index)?.pull)
       : [facts.zone, fights.length > 0 ? facts.date : '', facts.fights]
           .filter((part) => part !== '')
           .join(' · '),
   );
+  /** The meta's last fact (players, or mobs died): a desktop fact, so a phone's meta is one line. */
+  const headTail = $derived(fight !== null && !nightMode ? reportMetaTail(fight, scopeRoster.length) : '');
   /** One player as the Source on an actor tab: the player's own view (decision R5). */
   const playerView = $derived(sourcePlayer !== undefined && ACTOR_TABS.has(state.tab) && !nightMode);
   const playerRow = $derived(base?.roster.find((row) => row.guid === sourcePlayer));
@@ -1771,11 +1755,7 @@
       simHref={null}
     />
   {:else if fight !== null && !nightMode}
-    <ThisPull
-      facts={pullFacts}
-      {simHref}
-      note={state.tab === 'summary' && !rateable ? ratingCopy.noRatingForTrash : ''}
-    />
+    <ThisPull facts={pullFacts} {simHref} />
   {/if}
 {/snippet}
 
@@ -1808,6 +1788,7 @@
       onOpenDeath={openDeaths}
       extra={chartedAbility === null ? null : { label: chartedAbility.label, series: chartedAbility.series }}
       {noun}
+      openOnPhone={state.tab === 'deaths'}
     />
   {/if}
 {/snippet}
@@ -1931,6 +1912,9 @@
         <ReportHead
           title={heading}
           line={headLine}
+          lineTail={headTail}
+          {simHref}
+          pullActions={fight !== null && !nightMode}
           sample={isSampleReport(reportId)}
           {credit}
           {live}
@@ -2019,7 +2003,7 @@
                   {@const label = unitLabel(combatant.name).text}
                   <Row
                     title={label}
-                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · item level ${combatant.item_level ?? 0}`}
+                    sub={`${combatant.spec ?? classOf.get(combatant.guid) ?? ''} · ilvl ${combatant.item_level ?? 0}`}
                     open
                   >
                     {#snippet lead()}<ClassIcon className={classOf.get(combatant.guid)} size={28} />{/snippet}
@@ -2535,7 +2519,7 @@
      cut tab reads as more to scroll, not as a broken label (logs lane review 2026-11-09). */
   @media (max-width: 767px) {
     .report-tabs :global(.ui-tsm-strip) {
-      mask-image: linear-gradient(to right, var(--color-bg) calc(100% - 48px), transparent);
+      mask-image: linear-gradient(to right, var(--color-bg) calc(100% - 120px), transparent);
     }
   }
   /* Damage done by ability beside taken and healing (stacked) where the main column has the room (1440 up). */

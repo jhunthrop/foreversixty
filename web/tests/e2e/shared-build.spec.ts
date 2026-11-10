@@ -131,7 +131,7 @@ test('a populated read-only build keeps every cell inert, in both directions', a
   // band's total, so none of them differ -- Matches, "+5 beyond the build" -- while the cell still
   // carries its rank-differs marker (the gold dot, TalentButton's `diff`). Load hidden (nothing
   // to overwrite into on a read-only build), Edit a copy offered instead, and no See what differs.
-  await expect(page.getByTestId('band-compare-differs')).toHaveText(bandCompareCopy.matches);
+  await expect(page.getByTestId('band-compare-differs')).toHaveText(/^Matches the .+ guide build$/);
   await expect(page.getByTestId('band-compare-beyond')).toHaveText(bandCompareCopy.beyondGuide(5));
   await expect(page.getByTestId('talent-4001')).toHaveClass(/\bdiff\b/);
   await expect(page.getByTestId('band-compare-load')).toHaveCount(0);

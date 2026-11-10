@@ -6,6 +6,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from './support/test';
+import { openSimSection } from './support/sim-page';
 
 const FIXTURES = path.join(import.meta.dirname, '..', '..', 'src', 'fixtures', 'sim');
 function fixture(name: string): Record<string, unknown> {
@@ -53,7 +54,7 @@ test('a Demonology result lists the Succubus and none of the demons never summon
   await expect(damage.getByTestId('ability-row-other:attack/1').first()).toBeVisible();
   await expect(damage).not.toContainText(ABSENT);
 
+  await openSimSection(page, 'buffs');
   const buffs = page.getByTestId('sim-section-buffs');
-  await buffs.scrollIntoViewIfNeeded();
   await expect(buffs).not.toContainText(ABSENT);
 });

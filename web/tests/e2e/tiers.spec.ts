@@ -331,16 +331,13 @@ test('signed out: the spec panel offers sign-in and no row is marked', async ({ 
   await expect(activePanel(page).getByTestId('tier-list')).toBeVisible();
 });
 
-test('signed in on a DPS spec: the panel names it, where it stands, and marks its row', async ({ page }) => {
+test('signed in on a DPS spec: the panel names it and marks its row, with no line repeating it', async ({
+  page,
+}) => {
   await signIn(page, { class: 'Warrior', spec: 'Fury' });
   await page.goto('/tiers');
-  const expected = expectedRows('dps', 'alliance');
-  const index = expected.findIndex((row) => row.entry.spec === 'warrior-fury');
-  const letter = expectedLetters(expected.map((row) => row.metric))[index];
   await expect(page.getByTestId('tier-answer-name')).toHaveText('Fury Warrior');
-  await expect(page.getByTestId('tier-answer-standing')).toHaveText(
-    `Tier ${letter} · #${index + 1} · ${oneDecimal(expected[index]!.metric)} DPS`,
-  );
+  await expect(page.getByTestId('tier-answer-standing')).toBeHidden();
   await expect(page.getByTestId('tier-answer-bis')).toHaveAttribute('href', '/bis/warrior/fury/60');
   await expect(page.getByTestId('tier-answer-guide')).toHaveAttribute('href', '/guides/warrior/fury');
   await expect(page.getByTestId('tier-card-signed-out')).toBeHidden();
@@ -359,7 +356,7 @@ test('signed in on a tank spec: the DPS page points at the Tanks list', async ({
   await expect(activePanel(page).locator('[aria-current="true"]')).toHaveCount(0);
   await page.goto('/tiers/tank');
   await expect(page.getByTestId('tier-answer-name')).toHaveText('Protection Paladin');
-  await expect(page.getByTestId('tier-answer-standing')).toContainText('taken / s');
+  await expect(page.getByTestId('tier-answer-standing')).toBeHidden();
 });
 
 test('the spec panel holds its size from loading to answered: nothing under it moves', async ({ page }) => {

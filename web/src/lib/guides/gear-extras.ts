@@ -197,14 +197,14 @@ export const CONSUMABLE_GIVES: Readonly<Record<string, string>> = {
   flask_of_natural_precision: 'Stamina, and fewer of your attacks dodged or parried',
   flask_of_supreme_power: 'Spell power',
   flask_of_the_titans: '1200 health for two hours',
-  food_baked_salmon: 'Spell damage (well fed)',
-  food_grilled_squid: 'Critical strike (well fed)',
-  food_nightfin_soup: 'Spell damage (well fed)',
-  food_poached_sunscale_salmon: 'Attack power and ranged attack power (well fed)',
-  food_runn_tum_tuber_surprise: 'Intellect (well fed)',
+  food_baked_salmon: 'Spell damage',
+  food_grilled_squid: 'Critical strike',
+  food_nightfin_soup: 'Spell damage',
+  food_poached_sunscale_salmon: 'Attack power and ranged attack power',
+  food_runn_tum_tuber_surprise: 'Intellect',
   food_sages_tea: 'Healing power',
-  food_smoked_desert_dumpling: 'Strength (well fed)',
-  food_tender_wolf_steak: 'Agility (well fed)',
+  food_smoked_desert_dumpling: 'Strength',
+  food_tender_wolf_steak: 'Agility',
   gizzard_gum: 'Spirit',
   greater_arcane_elixir: 'Spell power',
   greater_clerics_elixir: 'Healing power',
@@ -235,6 +235,37 @@ export type ConsumableLine = { header: string } | { row: ConsumableRow };
 
 /** The table's lines: the flask and the elixirs first, all used together, then the food, oil
  *  and potions under their own heading. A flask never replaces an elixir in Classic. */
+/** The enchants a guide lists, one row per enchant: the same enchant on the main hand and the off
+ *  hand is one row, "Main hand and off hand" (h-audit 2026-11-09: "Enchant Weapon - Agility" twice). */
+export function mergedEnchants(rows: readonly EnchantRow[]): EnchantRow[] {
+  const byId = new Map<number, EnchantRow>();
+  for (const row of rows) {
+    const seen = byId.get(row.id);
+    byId.set(
+      row.id,
+      seen === undefined
+        ? row
+        : { ...seen, slotLabel: `${seen.slotLabel} and ${row.slotLabel.toLowerCase()}` },
+    );
+  }
+  return [...byId.values()];
+}
+
+/** How many rows the Enchants and consumables lane lists: the phone fold's count. */
+export function extrasRowCount(extras: GearExtras | undefined): number {
+  return extras === undefined ? 0 : mergedEnchants(extras.enchants).length + extras.consumables.length;
+}
+
+/** A consumable row's line under its name: only what the item's own tooltip does not say, the
+ *  slot a weapon stone or oil goes on ("Critical strike, on the main hand" is "On the main hand");
+ *  none for a plain stat, which restates the tooltip (h-audit 2026-11-09). */
+export function consumableNote(gives: string): string | undefined {
+  const comma = gives.indexOf(', ');
+  if (comma === -1) return undefined;
+  const note = gives.slice(comma + 2);
+  return note.charAt(0).toUpperCase() + note.slice(1);
+}
+
 export function consumableLines(rows: readonly ConsumableRow[]): ConsumableLine[] {
   const kindOrder: Record<ConsumableKind, number> = { flask: 0, elixir: 1, other: 2 };
   const ordered = [...rows].sort((a, b) => kindOrder[a.kind] - kindOrder[b.kind]);

@@ -21,7 +21,6 @@
     ontoggle,
     oncopy,
     onlock,
-    plate = false,
   }: {
     rows: readonly CandidateRow[];
     locked: readonly string[];
@@ -32,8 +31,6 @@
     ontoggle: (key: string) => void;
     oncopy: (key: string, patch: { enchant?: number; suffix?: number }) => void;
     onlock: (slot: Slot) => void;
-    /** The candidates sit on the page's one Plate (/sim/gear). */
-    plate?: boolean;
   } = $props();
 
   /**
@@ -46,7 +43,7 @@
   const bySlot = $derived(new Map(SHOWN.map((slot) => [slot, rows.filter((row) => row.slot === slot)])));
 </script>
 
-<ToolSection title={bulkCopy.candidatesTitle} testid="sim-slot-grid" {plate}>
+<ToolSection title={bulkCopy.candidatesTitle} testid="sim-slot-grid">
   <!-- One message for a genuinely empty grid, rather than 15 empty per-slot groups: a
        freshly-loaded character almost always has at least one equipped row, so this is the
        true-void case (no gear, no bag/bank picks, nothing searched in yet), not the normal

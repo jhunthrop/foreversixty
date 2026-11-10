@@ -1,7 +1,8 @@
 <!-- web/src/components/character/CharacterOwnerSections.svelte -->
-<!-- The owner's extras below the fights (character spec 2026-11-06 C8): History (score over time,
-     then parse per boss) collapsed, its charts' chunk read only when opened; a free owner gets one
-     line to the plans instead. Coach history last, collapsed, Premium only. -->
+<!-- The owner's extras below the fights (character spec 2026-11-06 C8), one History panel since the
+     h-audit review (2026-11-09: two panels each holding one closed line read thin): the score and
+     parse charts collapsed with the fight count beside them, their chunk read only when opened (a
+     free owner gets one line to the plans instead), then the coach's reviews, collapsed, Premium only. -->
 <script lang="ts">
   import type { Component } from 'svelte';
   import type { CharacterPath } from '../../lib/characters';
@@ -12,7 +13,20 @@
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
 
-  let { path, history, coach }: { path: CharacterPath; history: boolean; coach: boolean } = $props();
+  let {
+    path,
+    history,
+    coach,
+    fights,
+    inPanel = false,
+  }: {
+    path: CharacterPath;
+    history: boolean;
+    coach: boolean;
+    fights: number;
+    /** Drawn inside the Best per encounter panel, under its fights, instead of a History panel of its own. */
+    inPanel?: boolean;
+  } = $props();
 
   let historyOpen = $state(false);
   let coachOpen = $state(false);
@@ -46,9 +60,15 @@
   });
 </script>
 
-<Section title={copy.history} panel testid="character-owner-history">
+{#snippet body()}
   {#if history}
-    <Disclosure summary={copy.historyLead} bind:open={historyOpen} testid="character-history-toggle">
+    <Disclosure
+      summary={copy.history}
+      meta={copy.fightCount(fights)}
+      link
+      bind:open={historyOpen}
+      testid="character-history-toggle"
+    >
       {#if charts.current}<charts.current {path} />{/if}
     </Disclosure>
   {:else}
@@ -60,11 +80,21 @@
         >{/snippet}
     </Row>
   {/if}
-</Section>
-{#if coach}
-  <Section title={copy.coach} panel testid="character-coach-section">
-    <Disclosure summary={copy.coachLead} bind:open={coachOpen} testid="character-coach-toggle">
-      {#if reviews.current}<reviews.current {path} />{/if}
-    </Disclosure>
-  </Section>
+  {#if coach}
+    <div data-testid="character-coach-section">
+      <Disclosure summary={copy.coach} link bind:open={coachOpen} testid="character-coach-toggle">
+        {#if reviews.current}<reviews.current {path} />{/if}
+      </Disclosure>
+    </div>
+  {/if}
+{/snippet}
+
+<!-- In the fights panel (`inPanel`, h-audit 2026-11-09): under the best fights, no plate of its own; with no
+     best fights, its own History panel. -->
+{#if inPanel}
+  <div class="border-line-soft mt-2 border-t pt-1" data-testid="character-owner-history">
+    {@render body()}
+  </div>
+{:else}
+  <Section title={copy.history} panel testid="character-owner-history">{@render body()}</Section>
 {/if}

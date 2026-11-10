@@ -1,6 +1,6 @@
 <!-- web/src/components/ui/DropZone.svelte -->
 <!-- The upload target (logs spec 2026-11-07 section 3A, decision P1): a dashed socket, the one dashed
-     surface on the site (as the empty doll socket), 168 px tall, its lines centred. `off` draws it
+     surface on the site (as the empty doll socket), a 96 px strip (h-audit 2026-11-09), its lines centred. `off` draws it
      at 55% with aria-disabled (signed out: the visitor sees what they get). While a file is dragged
      over it the edge and a 6% ground turn gold. The caller owns the file input and its handlers;
      this draws the target and reports drag and drop. -->
@@ -60,8 +60,8 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    min-height: 168px;
-    padding: 20px;
+    min-height: 96px;
+    padding: 16px 20px;
     border: 1px dashed var(--color-line);
     border-radius: 6px;
     text-align: center;

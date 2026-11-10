@@ -24,3 +24,17 @@ export function pillClassFor(kind: SourceKind): string {
 export function pillLabelFor(kind: SourceKind): string {
   return labels[kind];
 }
+
+/** The publishers a source row's kind pill already names: "Blizzard" for a Blizzard source, and
+ *  this site for its own datamined tables and figures. */
+const PILL_PUBLISHERS: readonly string[] = ['Blizzard, ', 'Forever Sixty, '];
+
+/** A source row's link text without the publisher its pill already says: "Blizzard, Class Deep
+ *  Dives: Hunter and Druid" beside a Blizzard pill is "Class Deep Dives: Hunter and Druid" (h-audit
+ *  2026-11-09). A community source keeps its site's name: the pill says only "Community". */
+export function sourceTitle(label: string): string {
+  const prefix = PILL_PUBLISHERS.find((publisher) => label.startsWith(publisher));
+  if (prefix === undefined) return label;
+  const rest = label.slice(prefix.length);
+  return rest.charAt(0).toUpperCase() + rest.slice(1);
+}

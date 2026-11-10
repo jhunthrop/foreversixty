@@ -48,7 +48,7 @@ import classes from ${data("classes.json")};
 import races from ${data("races.json")};
 import combos from ${data("combos.json")};
 import me34 from ${src("tests/e2e/fixtures/home/me-34.json")};
-import { guideBuildRows, ranksTrees } from ${src("src/lib/planner/guide-builds.ts")};
+import { deltaText, guideBuildRows, guideDiff, ranksTrees } from ${src("src/lib/planner/guide-builds.ts")};
 import { aheadOf, pointOrderRows } from ${src("src/lib/planner/point-order.ts")};
 import { decodeFS1, orderFromRanks } from ${src("src/lib/planner/fs1.ts")};
 import { indexTalents, canAddPoint, messages } from ${src("src/lib/planner/rules.ts")};
@@ -89,6 +89,18 @@ const legalRaces = (slug) => { const id = classRow(slug).id; return races.filter
 const raceRow = (slug) => races.find((r) => r.slug === slug);
 
 // One planner state as the page draws it. order: talent ids in spend order; level: the header character's level or null.
+// Build vs guide for one guide row (GuideBuilds.svelte): empty on the build on screen or with nothing spent.
+function guideRowDiff(trees, currentTrees, index) {
+  if (currentTrees === null || trees === currentTrees) return { off: '', delta: '', missing: '' };
+  const names = index.trees.map((tree) => tree.talents.map((talent) => talent.name));
+  const diff = guideDiff(trees, currentTrees, names);
+  return {
+    off: plannerCopy.guideBuildOff(diff.off),
+    delta: deltaText(diff.delta),
+    missing: diff.missing === null ? '' : plannerCopy.guideBuildMissing(diff.missing),
+  };
+}
+
 function state({ cls, race, order = [], level = null, spec = null }) {
   const index = indexTalents(TALENTS[cls]);
   const ranks = ranksByTalent(order);
@@ -118,7 +130,7 @@ function state({ cls, race, order = [], level = null, spec = null }) {
     const names = bandDiffNames(index, ranks, entry.talents);
     const covers = bandCoverage(status, bandPointTotal(index, entry.talents), level === null ? null : available);
     const line = covers !== null ? bandCompareCopy.coversFewer(covers.covered, covers.total)
-      : status.kind === 'matches' ? bandCompareCopy.matches
+      : status.kind === 'matches' ? bandCompareCopy.matches(specDisplayName(specKey))
       : status.kind === 'differs' ? bandCompareCopy.differsNamed(status.count, names.mine, names.theirs, bandLabel)
       : bandCompareCopy.toTakeSuffix;
     // kind: matches (green word) | sentence (a whole sentence: covers or a named difference) | count (gold count, then the line)
@@ -145,12 +157,19 @@ function state({ cls, race, order = [], level = null, spec = null }) {
   // Point order as PlannerOrder draws it: for a character, the spec guide's order past its build (aheadOf).
   const specRow = SPECS.find((s) => s.spec === specKey);
   const guideBuild = GUIDE_BUILDS.find((g) => g.kind === 'leveling' && g.classSlug + '-' + g.specSlug === specKey);
-  const ladder = level !== null && order.length > 0 && guideBuild && specRow ? guideLadderOrder(BUILD, cls, specKey, specRow.tree_index, guideBuild.code) : [];
+  // An empty build previews the spec guide's order (PlannerOrder.svelte, h-audit 2026-11-09).
+  const ladder = (level !== null || order.length === 0) && guideBuild && specRow ? guideLadderOrder(BUILD, cls, specKey, specRow.tree_index, guideBuild.code) : [];
   const aheadPoints = ladder.length > 0 ? aheadOf(index, order, ladder) : [];
+  const previewLine = order.length === 0 && aheadPoints.length > 0 ? plannerCopy.previewLine(specRow.name) : '';
   const orderView = pointOrderRows(index, order, level, me34.characters[0].name, (icon) => icon,
     aheadPoints.length > 0 ? { specName: specRow.name, points: aheadPoints } : null);
   const currentTrees = order.length > 0 ? ranksTrees(index.trees.map((tree) => tree.talents.map((t) => ranks.get(t.id) ?? 0))) : null;
-  const guideBuilds = guideBuildRows(GUIDE_BUILDS, cls).map((row) => ({ ...row, current: row.trees === currentTrees }));
+  const guideBuilds = guideBuildRows(GUIDE_BUILDS, cls).map((row) => ({
+    ...row,
+    current: row.trees === currentTrees,
+    // Build vs guide (GuideBuilds.svelte), once a point is spent: points off, the split's change, the first talent lacking.
+    ...guideRowDiff(row.trees, currentTrees, index),
+  }));
   const points = order.map((id, i) => { const t = index.byId.get(id); const r = order.slice(0, i + 1).filter((x) => x === id).length;
     return { level: levelForIndex(i), name: t.name, icon: t.icon, rank: r, max: t.max_rank, planned: level !== null && i >= available, tip: plannerCopy.pointAt(levelForIndex(i), t.name, r) }; });
   return {
@@ -163,10 +182,10 @@ function state({ cls, race, order = [], level = null, spec = null }) {
     spec: leads ? specLabel(specKey) : '', spec_key: specKey, spec_name: specDisplayName(specKey), siblings: siblingSpecNames(specKey),
     meta: [raceRow(race).name, 'Level ' + shownLevel, leads ? specLabel(specKey) : ''].filter(Boolean).join(' · '),
     trees, points, band: { band, label: bandLabel, heading: bandCompareCopy.heading(bandLabel), load: bandCompareCopy.loadButton(bandLabel),
-      gear: bandCompareCopy.gearRowLabel(bandLabel), none: entry ? '' : bandCompareCopy.noLevelBuild(shownLevel, specDisplayName(specKey), siblingSpecNames(specKey)) },
+      none: entry ? '' : bandCompareCopy.noLevelBuild(shownLevel, specDisplayName(specKey), siblingSpecNames(specKey)) },
     compare,
     text_summary: plannerCopy.shareTextSummary(raceRow(race).name, classRow(cls).name, trees.map((t) => ({ name: t.name, points: t.points })), shownLevel),
-    order_view: orderView, guide_builds: guideBuilds,
+    order_view: orderView, preview_line: previewLine, guide_builds: guideBuilds,
     share_fields: sharedFields({ title: '', gear: {} }, false),
   };
 }
@@ -234,9 +253,10 @@ export default {
     confirming: send({ kind: 'confirming' }, 51, { owner: '' }), signed_out: sendActionFor(null, { kind: 'idle' }),
   },
   notes: {
-    reconstructed: plannerCopy.reconstructedNote, linked: plannerCopy.linkedNote, linked_short: plannerCopy.linkedNoteShort,
-    // The guide's link names its spec: the build is spent in the guide's own levelling order (when the ladder reaches it).
-    guide: survPrefix !== undefined ? plannerCopy.guideOrderNote(specDisplayName('hunter-survival')) : '',
+    // A clean character load and a guide's link carry no note (h-audit 2026-11-09): the header and the Loaded tag say it.
+    reconstructed: '', linked: plannerCopy.linkedNote, linked_short: plannerCopy.linkedNoteShort,
+    // The guide's link names its spec: spent in the guide's own levelling order when the ladder reaches it, else a plain link.
+    guide_reached: survPrefix !== undefined,
     band60: plannerCopy.bandLoadedNote('60'), kept: plannerCopy.keptNote(23, 25, 'Felsnap'), gear_only: plannerCopy.noTalentRanksNote,
     no_class: plannerCopy.noClassNote('monk'), invalid: invalid.ok ? '' : invalid.message,
   },

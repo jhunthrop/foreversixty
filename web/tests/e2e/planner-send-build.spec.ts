@@ -286,6 +286,11 @@ test.describe('Send this build to the addon', () => {
     await expect(page.getByRole('button', { name: /send this build/i })).toHaveCount(0);
     await expect(page.getByText('Send this build to')).toHaveCount(0);
     await expect(page.getByTestId('planner-send')).toHaveCount(0);
-    await expect(page.getByTestId('planner-get-addon')).toHaveAttribute('href', '/setup#addon');
+    // The plate's one addon link is Import's line (h-audit 2026-11-09).
+    await expect(page.getByTestId('planner-in-game').getByTestId('import-get-addon')).toHaveAttribute(
+      'href',
+      '/setup#addon',
+    );
+    await expect(page.getByTestId('planner-get-addon')).toHaveCount(0);
   });
 });

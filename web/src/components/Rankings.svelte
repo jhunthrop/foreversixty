@@ -42,10 +42,8 @@
     rulesetOptions,
     specOptions,
   } from '../lib/rankings/options';
-  import { ownBestFacts } from '../lib/rankings/own-best';
   import { rankRowView } from '../lib/rankings/rank-row-view';
   import { RANK_LEGEND, ownRowPlacement, showRowCrests } from '../lib/rankings/row-view';
-  import { REGION } from '../lib/ui/regions';
   import { LINK, type ControlGroup } from '../lib/ui/primitives';
   import type { RankHead } from '../lib/ui/rank-list';
   import { PENDING_ANSWER, ownRankSpec } from '../lib/rankings/own-rank';
@@ -70,7 +68,6 @@
   import Divided from './ui/Divided.svelte';
   import Page from './ui/Page.svelte';
   import PageHeader from './ui/PageHeader.svelte';
-  import Plate from './ui/Plate.svelte';
   import RankList from './ui/RankList.svelte';
   import RankRow from './ui/RankRow.svelte';
   import Ruled from './ui/Ruled.svelte';
@@ -412,9 +409,6 @@
         },
   );
   const guildBest = $derived(guildRows[0]?.value ?? 0);
-  const ownBest = $derived(
-    page === null || boardView === null || ownKey === null ? [] : ownBestFacts(page, boardView),
-  );
   const pageHref = (n: number): string => urlFor({ ...state, page: n }, encounterSlug);
   const encounterHref = (next: string): string => `/rankings/${next}${rankingsSearch(state, ownDefaults)}`;
   const widen = $derived(
@@ -427,9 +421,6 @@
   );
   const otherEncounters = $derived(encounters.filter((encounter) => encounter.slug !== encounterSlug));
   const boardTitle = $derived(isGuild ? rankingsCopy.guildTitle[guildKind] : cohort);
-  const boardMeta = $derived(
-    isGuild || page === null || page.total === 0 ? undefined : `${page.total.toLocaleString('en-US')} ranked`,
-  );
   /** Nothing ranked where the visitor is looking: the rail offers the companion, what fills it. */
   const nothingRanked = $derived(
     aimed &&
@@ -441,6 +432,12 @@
           : page === null || page.rows.length === 0),
   );
   const showYourRank = $derived(viewer !== null && !isIndex && !isGuild && ownDefaults.class !== '');
+  /** "212 ranked", unless Your rank already says "14th of 212 Fury Warriors" beside it. */
+  const boardMeta = $derived(
+    isGuild || page === null || page.total === 0 || (showYourRank && placement !== 'none')
+      ? undefined
+      : `${page.total.toLocaleString('en-US')} ranked`,
+  );
 
   /** The landing's boards each carry updated_at: the band's stamp shows the newest. */
   function stampUpdated(iso: string): void {
@@ -461,12 +458,17 @@
           <span class:invisible={updatedStamp === null} data-testid="rankings-updated"
             >Updated {updatedStamp ?? UPDATED_PLACEHOLDER}</span
           >
+          <!-- Specs, not characters: the tier list, a link in the band (never a card stranded in the rail). -->
+          <a class={LINK} href={rankingsCopy.tierHref} data-testid="rankings-tier-link"
+            >{rankingsCopy.tierLink} ›</a
+          >
         {/snippet}
       </PageHeader>
     {/snippet}
     {#snippet bar()}
       <ControlBar
         groups={isIndex ? [boardGroup] : groups}
+        inline={isIndex}
         label="Ranking choices"
         labelsFrom={1920}
         summary={isIndex
@@ -484,8 +486,10 @@
     {/snippet}
     {#snippet rail()}
       {#if showYourRank && viewer !== null}
-        <Section title={rankingsCopy.answerLabel} panel frame="framed" testid="rankings-your-rank">
-          <RankingsAnswer spec={answer} character={viewer} best={ownBest} />
+        <!-- A hairline panel, the board the one framed panel; the answer and its next step only: the
+             best kill's figures are the marked row's (h-audit round 8). -->
+        <Section title={rankingsCopy.answerLabel} panel testid="rankings-your-rank">
+          <RankingsAnswer spec={answer} character={viewer} />
           {#if !ownBoard}
             <div class="mt-3">
               <Divided>
@@ -508,20 +512,6 @@
           </p>
         </Section>
       {/if}
-      <!-- The tier list pointer sits beside the board; below 1280, where the rail stacks first,
-           it would push the board down for a link the bar's Tier list door already gives. -->
-      <div class="max-xl:hidden" data-region={REGION.summary}>
-        <Plate flush={false}>
-          <p class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <span>{rankingsCopy.tierQuestion}</span>
-            <a
-              class="{LINK} inline-flex items-center max-md:-my-[10px] max-md:min-h-11"
-              href={rankingsCopy.tierHref}
-              data-testid="rankings-tier-link">{rankingsCopy.tierLink} ›</a
-            >
-          </p>
-        </Plate>
-      </div>
     {/snippet}
 
     {#if isIndex && aimed && encounters.length > 0}
@@ -630,9 +620,9 @@
               {heads}
               figures={4}
               figureWidth={72}
-              links={0}
+              links={1}
               compact
-              phoneFigures={1}
+              phoneFigures={2}
               label={rankingsCopy.ownBest}
               testid="ranking-pinned"
             >
@@ -649,9 +639,9 @@
               heads={placement === 'pinned' ? undefined : heads}
               figures={4}
               figureWidth={72}
-              links={0}
+              links={1}
               compact
-              phoneFigures={1}
+              phoneFigures={2}
               label={cohort}
               testid="ranking-board"
             >

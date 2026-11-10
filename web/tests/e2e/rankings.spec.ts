@@ -62,7 +62,7 @@ test.describe('signed in, desktop', () => {
     await expect(page.getByTestId('control-ruleset')).toHaveValue('normal');
     await expect(yourRank(page).locator('h2')).toHaveText('Your rank');
     await expect(page.getByTestId('rankings-answer-rank')).toHaveText(/^\s*14th\s*of 212 Fury Warriors\s*$/);
-    await expect(answer(page)).toContainText('On Onyxia, Normal ruleset');
+    await expect(answer(page)).not.toContainText('ruleset');
     await expect(page.getByTestId('rankings-answer-parses')).toHaveText('See your parses ›');
     await expect(page.getByTestId('rankings-answer-parses')).toHaveAttribute(
       'href',
@@ -72,7 +72,8 @@ test.describe('signed in, desktop', () => {
     // The board opened on the encounter the character most recently killed, in its own cohort.
     await expect(page).toHaveURL(/\/rankings\/onyxia$/);
     await expect(heading(page)).toHaveText('Fury Warriors');
-    await expect(page.getByTestId('rankings-heading')).toContainText('212 ranked');
+    // Your rank says "of 212 Fury Warriors": the board's head leaves the count to it.
+    await expect(page.getByTestId('rankings-heading')).not.toContainText('212 ranked');
     const board = api.asked.find(
       (url) => url.searchParams.get('character') === OWN_KEY && url.searchParams.get('page') === null,
     );
@@ -83,9 +84,8 @@ test.describe('signed in, desktop', () => {
     expect(board?.searchParams.get('metric')).toBe('dps');
     expect(board?.searchParams.get('distinct')).toBe('character');
 
-    // The rail lists the best kill the board placed.
-    await expect(page.getByTestId('rankings-answer-best')).toContainText('DPS');
-    await expect(page.getByTestId('rankings-answer-best')).toContainText('Executed');
+    // The rail answers with the rank alone: the marked row carries the best kill's figures.
+    await expect(page.getByTestId('rankings-answer-best')).toHaveCount(0);
 
     // The own row is marked where it is, never pinned, with the You tag; the others are not marked.
     const own = page.getByTestId('ranking-14');
@@ -109,8 +109,8 @@ test.describe('signed in, desktop', () => {
     await expect(page.locator('#rankings [data-testid^="character-header"]')).toHaveCount(0);
     await expect(page.locator('#rankings header')).toContainText('Updated 13 Dec');
     await expect(page.getByText(/^Updated /)).toHaveCount(1);
-    await expect(page.locator('#rankings a[href="/tiers"]')).toHaveText('Tier list ›');
-    await expect(page.locator('#rankings')).toContainText('Comparing specs, not characters?');
+    // The tier list is a link in the band, beside the stamp.
+    await expect(page.locator('#rankings header a[href="/tiers"]')).toHaveText('Tier list ›');
     await expect(page.getByTestId('rankings-legend')).toContainText('Percentile');
     await expect(page.getByTestId('rankings-legend').locator('b')).toHaveText([
       '100',
@@ -173,7 +173,7 @@ test.describe('signed in, desktop', () => {
     await expect(page).toHaveURL(/\/rankings\/warden-kelthas$/);
     await expect(page.getByTestId('control-encounter')).toHaveValue('warden-kelthas');
     await expect(page.getByTestId('rankings-answer-rank')).toHaveText(/^\s*3rd\s*of 3 Frost Mages\s*$/);
-    await expect(answer(page)).toContainText('On Warden Kelthas, Normal ruleset');
+    await expect(answer(page)).not.toContainText('ruleset');
     await expect(page.getByTestId('ranking-3')).toHaveAttribute('aria-current', 'true');
     await expect(ownRows(page)).toHaveCount(1);
     expect(await page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept)).toBe(true);
@@ -773,7 +773,7 @@ test('a character page shows the best per encounter and the builds they were see
   await expect(best.getByRole('link', { name: 'All fights (1) ›' })).toHaveAttribute('href', '/logs');
   const builds = page.getByTestId('character-builds');
   await expect(builds).toContainText('31/20/0');
-  await expect(builds).toContainText('Discipline · first seen 9 Dec 2026');
+  await expect(builds).toContainText('Discipline · 9 Dec');
 
   // rankings/api.ts's encounterSlug is the one derivation of this identifier, trailing
   // hyphen trimmed and all. A second, inlined copy here linked "Emeriss (Dream)" to

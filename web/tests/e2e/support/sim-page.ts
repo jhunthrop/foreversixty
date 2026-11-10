@@ -21,6 +21,19 @@ export async function gotoSim(page: Page, url = '/sim'): Promise<void> {
   await expect(page.getByTestId('sim-view')).toBeAttached();
 }
 
+/**
+ * A result's secondary section (settings, rotation, resource, buffs) in view and open. Below
+ * 768 px those start folded to their title (LazySection `fold`), so on a phone this presses the
+ * fold first; on a desktop the section is already there.
+ */
+export async function openSimSection(page: Page, id: string): Promise<void> {
+  const section = page.getByTestId(`sim-section-${id}`);
+  const fold = page.getByTestId(`sim-section-${id}-fold`);
+  await expect(section.or(fold).first()).toBeVisible({ timeout: 15_000 });
+  if (await fold.isVisible()) await fold.click();
+  await section.scrollIntoViewIfNeeded();
+}
+
 /** The loaded character's head: its meta line exists only once a character is up. */
 export function simCharacter(page: Page) {
   return page.getByTestId('sim-head-meta');
@@ -47,6 +60,16 @@ export async function openRunLine(page: Page): Promise<void> {
     .locator('[data-testid="sim-settings"], [data-testid="sim-run-bulk-bar"]')
     .locator('[data-control-bar-toggle]');
   if ((await toggle.isVisible()) && (await toggle.getAttribute('aria-expanded')) !== 'true') {
+    await toggle.click();
+  }
+}
+
+/** Folds the run line back to its one line when a phone step left it open (a no-op at 1440). */
+export async function closeRunLine(page: Page): Promise<void> {
+  const toggle = page
+    .locator('[data-testid="sim-settings"], [data-testid="sim-run-bulk-bar"]')
+    .locator('[data-control-bar-toggle]');
+  if ((await toggle.isVisible()) && (await toggle.getAttribute('aria-expanded')) === 'true') {
     await toggle.click();
   }
 }

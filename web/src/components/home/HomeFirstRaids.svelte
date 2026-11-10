@@ -9,7 +9,7 @@
   import type { Snippet } from 'svelte';
   import { minuteClock } from '../../lib/guild/minute-clock.svelte';
   import { longDay, plaqueClock, plaqueClockLabel, plaqueCopy } from '../../lib/home/plaque';
-  import { raidLine, type RaidFact } from '../../lib/home/raid-facts';
+  import { raidLines, type RaidFact } from '../../lib/home/raid-facts';
   import { REGION } from '../../lib/ui/regions';
   import BigFigures from '../ui/BigFigures.svelte';
   import Frame from '../ui/Frame.svelte';
@@ -34,6 +34,7 @@
 
   const RAID_ICON_PX = 44;
   const clock = minuteClock(() => undefined);
+  const lines = $derived(raidLines(raids, viewer));
   const parts = $derived(raidsOpen === null ? [] : plaqueClock(new Date(raidsOpen), clock.now));
   const open = $derived(parts.length === 0);
 </script>
@@ -56,12 +57,13 @@
           {@render foot()}
         </div>{/if}
       <ul class="home-first-raids" aria-label={plaqueCopy.firstRaids}>
-        {#each raids as raid (raid.name)}
+        {#each raids as raid, index (raid.name)}
+          {@const line = lines[index]}
           <li data-testid="home-raid-zone">
             <ItemIcon icon={raid.icon} {build} size={RAID_ICON_PX} eager />
             <span class="min-w-0">
               <span class="home-first-raid-name">{raid.name}</span>
-              <span class="home-first-raid-line">{raidLine(raid, viewer)}</span>
+              {#if line}<span class="home-first-raid-line">{line}</span>{/if}
             </span>
           </li>
         {/each}

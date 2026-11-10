@@ -83,3 +83,30 @@ export function benchmarkFor(result: SimResult, table: BisBenchmarks): Benchmark
   const margin = confidenceBand({ ...result.dps, error: Math.hypot(result.dps.error, error) });
   return { band, faction, preset, dps, gap, margin, withinNoise: Math.abs(gap) <= margin };
 }
+
+/** A spec's best published raid set at one band, and where it places among the specs. */
+export interface SpecTopSet {
+  dps: number;
+  /** 1 for the highest set DPS of the band. */
+  rank: number;
+  /** Its DPS over the highest's, 0 to 1: the row's bar. */
+  share: number;
+}
+
+/**
+ * Every spec's raid-ready set DPS at `band` (the better of its two factions), ranked high to
+ * low: /sim/specs' figure per row. A spec with no raid band at that level is left out.
+ */
+export function topRaidSets(table: BisBenchmarks, band: number): Map<string, SpecTopSet> {
+  const best = Object.entries(table).flatMap(([spec, { bands }]) => {
+    const raid = bands
+      .filter(([level, , preset]) => level === band && preset === 'raid')
+      .map((row) => row[3]);
+    return raid.length === 0 ? [] : [{ spec, dps: Math.max(...raid) }];
+  });
+  best.sort((a, b) => b.dps - a.dps);
+  const top = best[0]?.dps ?? 0;
+  return new Map(
+    best.map(({ spec, dps }, index) => [spec, { dps, rank: index + 1, share: top > 0 ? dps / top : 0 }]),
+  );
+}

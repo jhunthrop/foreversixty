@@ -521,6 +521,7 @@
       now={new Date(serverRuns.nowMs)}
       onserverretry={() => void serverRuns.reload()}
       onstarted={() => serverRuns.runStarted()}
+      pageSpec={store.character?.spec ?? ''}
     />{/if}
 {/snippet}
 
@@ -561,7 +562,12 @@
     {/if}
   {:else if bootstrap.view === 'specs'}
     {#if specGridLazy.current}
-      <specGridLazy.current rows={specRows} error={specsError} onretry={() => void loadSpecs()} />
+      <specGridLazy.current
+        rows={specRows}
+        error={specsError}
+        onretry={() => void loadSpecs()}
+        benchmarks={bisBenchmarks}
+      />
     {:else}
       <div class="sim-pad"><Skeleton lines={6} testid="sim-lazy-skeleton" /></div>
     {/if}

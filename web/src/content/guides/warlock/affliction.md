@@ -43,7 +43,7 @@ sources:
 
 ## Talents and builds
 
-The leveling build is a real Affliction tree: Soul Siphon and Wrack make the drains carry you while you quest, and two points of Malevolence add crit to every Shadow spell. The raid build is a Wrack build too: it goes to 35 points in Affliction for all five points of Malevolence, Nightfall, Soul Siphon and Wrack, sacrifices the Imp through Demonic Sacrifice for 15% more Shadow damage, and spends its Destruction points on Improved Shadow Bolt: when a Nightfall bolt crits, your Wrack and DoTs take 20% more for 12 seconds.
+The leveling build carries you on Soul Siphon and Wrack while you quest, with two points of Malevolence for crit on every Shadow spell. The raid build goes to 35 points in Affliction for all five points of Malevolence, Nightfall, Soul Siphon and Wrack, sacrifices the Imp through Demonic Sacrifice, and spends its Destruction points on Improved Shadow Bolt, so a Nightfall bolt that crits sets up your Wrack and DoTs.
 
 - **Suppression** (5 points): 5% hit on every spell and 20% less threat. Every warlock build takes all five.
 - **Improved Corruption** (5 points): Corruption becomes instant and hits 10% harder.
@@ -57,33 +57,31 @@ The leveling build is a real Affliction tree: Soul Siphon and Wrack make the dra
 - **Demonic Sacrifice** (1 point, raid): sacrifice the Imp before the pull for Burning Shadow, 15% more Shadow damage for two hours. Nearly everything you cast on a boss is Shadow, so it is worth more than any demon at your side. Summoning any demon ends it.
 - **Improved Shadow Bolt** (5 points, raid): each Shadow Bolt crit makes the boss take 20% more Shadow damage from you for 12 seconds, Wrack and your DoTs included.
 
-The raid build drops Soul Harvest and the three points of Improved Drains (a raid rotation casts no drain), Improved Life Tap, Improved Health Funnel and Improved Voidwalker. It takes the last three points of Malevolence, Nightfall and both points of Improved Bane of Agony, for 10% more damage on the Agony that covers the last minute, and keeps Grim Reach for range. All five points of Malevolence give your Shadow spells 5% crit, DoT ticks and Wrack included. In Demonology it takes Demonic Embrace and Fel Vitality on the way to Demonic Sacrifice, and Demonic Aegis for Demon Armor. With the Imp gone, Immolate is a slow Fire cast that Burning Shadow does nothing for, so the build skips Bane and Aftermath and drops Immolate from the rotation.
+The raid build drops Soul Harvest and the three points of Improved Drains (a raid rotation casts no drain), Improved Life Tap, Improved Health Funnel and Improved Voidwalker. It takes the last three points of Malevolence, Nightfall and both points of Improved Bane of Agony, for 10% more damage on the Agony that covers the last minute, and keeps Grim Reach for range. In Demonology it takes Demonic Embrace and Fel Vitality on the way to Demonic Sacrifice, and Demonic Aegis for Demon Armor. With the Imp gone, Immolate is a slow Fire cast that Burning Shadow does nothing for, so the build skips Bane and Aftermath and drops Immolate from the rotation.
 
 ## Rotation and priority
 
-Before the pull, get set up: Demon Armor on and a Healthstone in your bag. Summon the Imp and sacrifice it with Demonic Sacrifice for Burning Shadow, then Life Tap to full mana while the healers top you off. Summoning any demon after that ends Burning Shadow, so leave the pet slot empty, and sacrifice a fresh Imp after a wipe.
+**Pre-pull.** Demon Armor on and a Healthstone in your bag. Summon the Imp and sacrifice it with Demonic Sacrifice for Burning Shadow, then Life Tap to full while the healers top you off. Any demon you summon after that ends it, so leave the pet slot empty and sacrifice a fresh Imp after a wipe.
 
-Once the tank has the boss: Curse of the Elements first if you hold it, since every spell the raid casts hits harder from that global on, and it lasts five minutes. Then Corruption, Bane of Doom and Siphon Life, and Wrack from then on. Curses and banes have their own slots in Forever, so Curse of the Elements and your bane sit on the boss together. When another warlock holds Curse of the Elements, leave it to them: two of them on one boss do not stack. Your curse slot is then free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid (505 armor), Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard. Amplify Curse also strengthens Curse of Weakness and goes to whichever of the two you cast first, so if you hold Weakness, put your last Bane of Agony up before you refresh Weakness.
+**Curses.** Curse of the Elements goes up first if you hold it, since every spell the raid casts hits harder from that global on. When another warlock holds it, your curse slot is free for whatever the raid leader asks: Curse of Recklessness for a melee-heavy raid (505 armor), Curse of Tongues on a caster, Curse of Weakness on a boss that hits the tank hard. Amplify Curse also strengthens Curse of Weakness and goes to whichever of the two you cast first, so if you hold Weakness, put your last Bane of Agony up before you refresh it.
 
-Bane of Doom is your bane on a boss. It hits once, for a big chunk, when its minute runs out, so recast it the moment it fires. A Doom cast with less than a minute of the fight left never lands, so once the last one has fired, press Amplify Curse and put Bane of Agony up instead. Improved Bane of Agony and Pandemic make that last Agony count.
+**DoTs.** Recast Bane of Doom the moment it fires. Never clip the others: a recast throws away whatever was left on the old one, and Bane of Agony saves its biggest ticks for the end, which Improved Bane of Agony and Pandemic make count. Immolate, while you level without the sacrifice, is the one you recast early.
 
-Never clip a DoT. A recast throws away whatever was left on the old one, and Bane of Agony saves its biggest ticks for the end. Recast Corruption and Siphon Life when they fall off. While you level without the sacrifice, Immolate breaks that rule: start its cast with about 3 seconds left. It lands a moment before the old one ends, and the fresh direct hit is worth the tick you give up.
+**Nightfall.** When a Shadow Trance comes up mid-channel, let the current Wrack finish, then cast the instant Shadow Bolt before the next one.
 
-Wrack is your filler. Once Corruption, your bane and Siphon Life are up, Soul Siphon adds 36% to it, and while it channels your Corruption and Bane of Agony take 10% more. It does more than Shadow Bolt for a fraction of the mana, so channel it whenever nothing needs refreshing. When Nightfall gives you a Shadow Trance, cast the instant Shadow Bolt once your current Wrack ends, before the next one: a crit puts up Improved Shadow Bolt, and for 12 seconds your Wrack and DoTs take 20% more.
+**Mana.** Improved Life Tap in the leveling build adds 20% to every tap. Drink your Major Mana Potion and Demonic Rune on cooldown once you are low enough that none of it is wasted.
 
-Life Tap when you drop below about 10% mana, and Life Tap whenever you have to move with nothing to refresh. Each tap converts its base amount plus your Spirit, and Improved Life Tap in the leveling build adds 20% on top. Drink your Major Mana Potion and Demonic Rune on cooldown once you are low enough that none of it is wasted. The health comes from your healers and your Healthstone.
+**Soul Shards.** Walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
 
-Soul Shards: walk into a raid with a full bag of them. Each Succubus summon, Soulstone, Healthstone and Spellstone costs one, and Portal of Summoning costs five on a one hour cooldown. In Forever, Drain Soul has a chance to give a shard on every target it damages, not only on a kill, so a few Drain Soul ticks on raid trash refill the bag.
+**Execute.** Affliction has no execute spell. Near the end, stop refreshing any DoT that will not get half its ticks in before the boss dies; your last Bane of Agony wants most of its 24 seconds. Channel Wrack instead while your other DoTs are still up.
 
-Your wand is for when you are out of mana with Life Tap unsafe. A wand shot cannot start during a global cooldown, so it never fits between spells.
+**Movement.** Refresh DoTs, or Life Tap with nothing to refresh.
 
-Execute and movement: Affliction has no execute spell. Near the end of a fight, stop refreshing any DoT that will not get half its ticks in before the boss dies. Your last Bane of Agony wants most of its 24 seconds, since its big ticks come last. Channel Wrack instead while your other DoTs are still on the boss. While moving, refresh DoTs or Life Tap.
-
-Adds and AoE: put Corruption and Agony on each of two or three adds that live 15 seconds or more. Rain of Fire for trash packs that stay put. Hellfire burns you as well, so use it only with the pack on top of you and a healer ready.
+**Adds and AoE.** Put Corruption and Agony on each of two or three adds that live 15 seconds or more. Rain of Fire for trash packs that stay put. Hellfire burns you as well, so use it only with the pack on top of you and a healer ready.
 
 ## Stat priority
 
-Hit matters up to the cap and adds nothing past it: Suppression already gives you 5% of it, and a missed bane or Corruption is a whole DoT lost. Spell power feeds every spell you cast, and Shadow power feeds nearly all of them, since almost everything Affliction casts is Shadow. Crit is good for Affliction because DoT ticks crit too, and Pandemic doubles the bonus on all but Immolate's. Intellect is mana, plus a little crit: about 1% for every 60 points. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces.
+Suppression gives you 5% of the hit cap, and a missed bane or Corruption is a whole DoT lost. Shadow power feeds nearly every spell you cast, since almost everything Affliction casts is Shadow. DoT ticks crit too, and Pandemic doubles the bonus on all but Immolate's. Intellect adds about 1% crit for every 60 points. Spirit only matters through Life Tap, so let it decide between two otherwise equal pieces.
 
 ## Best in slot
 
@@ -95,7 +93,7 @@ Flask and elixirs stack as they always have in Classic, and the school elixirs a
 
 ## Races
 
-Human and Orc are the picks. Ruthless is 1% crit on every spell, DoT ticks included, and The Human Spirit's 10% more Spirit makes every Life Tap bigger. Gnome is a step behind: Eureka! gives 8 seconds of 10% more damage and 10% lower cost every two minutes on your direct damage spells, and, whatever the racial's tooltip says about non-periodic abilities, the damage half also reaches Wrack and your drains; Corruption, the banes and Immolate's burn get nothing, so press it as you start a Wrack; Expansive Mind's 5% more mana helps a spec that taps. Orc's Blood Fury is 10% spell power for 15 seconds every two minutes, and Command does nothing once your Imp is sacrificed: press Blood Fury with your trinkets once the DoTs are up. Troll's Berserking is 10% cast speed on a three minute cooldown, a step behind Orc. Undead is about level with Orc for Affliction: Touch of the Grave gives your spells a chance to drain up to 5% of your maximum health from the target, at most once every 15 seconds, which helps a spec that pays for mana in health.
+Human and Orc are the picks. Ruthless is 1% crit on every spell, DoT ticks included, and The Human Spirit makes every Life Tap bigger. Orc's Command does nothing once your Imp is sacrificed; press Blood Fury with your trinkets once the DoTs are up. Gnome is a step behind: whatever its tooltip says about non-periodic abilities, Eureka!'s damage also reaches Wrack and your drains, but not Corruption, the banes or Immolate's burn, so press it as you start a Wrack; Expansive Mind helps a spec that taps. Troll's Berserking is a step behind Orc. Undead is about level with Orc: Touch of the Grave helps a spec that pays for mana in health.
 
 ## Professions
 
@@ -107,10 +105,26 @@ Tailoring and Enchanting: tailored cloth and a couple of enchanted caster pieces
 
 Train Corruption at 4, Life Tap at 6 and Bane of Agony at 8. Do the Voidwalker class quest from your warlock trainer the day you hit 10; it is the pet that makes solo play easy. Drain Life comes at 14.
 
-Your points at 10 and 11 go into Improved Life Tap for 20% more mana from every tap, then Suppression from 12 to 16 for 5% hit and 20% less threat. Improved Corruption starts at 17: each point takes 0.4 seconds off Corruption's 2 second cast, and at 21 it is instant. Until then, open with it while the mob is still running at you.
+- **10 and 11:** Improved Life Tap, for 20% more mana from every tap.
+- **12 to 16:** Suppression.
+- **17 to 21:** Improved Corruption. Each point takes 0.4 seconds off Corruption's 2 second cast, and at 21 it is instant. Until then, open with it while the mob is still running at you.
 
-Wands do most of your killing before 20. Get a Lesser Magic Wand at 5 and a Greater Magic Wand at 13, both made by Enchanting, from an enchanter or the Auction House. Take cloth quest rewards with Intellect and Stamina over anything a vendor sells, and replace your starting weapon with the first quest staff or dagger that gives Intellect or Stamina.
+Wands do most of your killing before 20: a Lesser Magic Wand at 5 and a Greater Magic Wand at 13, both made by Enchanting, from an enchanter or the Auction House. Take cloth quest rewards with Intellect and Stamina over anything a vendor sells, and replace your starting weapon with the first quest staff or dagger that gives Intellect or Stamina.
 
 ### Levels 20 to 60
 
-Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. From 22, press Amplify Curse before every Bane of Agony as soon as it is ready; it costs no global, and until Bane of Doom at 60 there is nothing to hold it for. Drain Life while the DoTs run, and from 40 channel Wrack instead: with Soul Siphon full, three of your effects on the target add 36% to both, and Wrack costs far less mana than the Shadow Bolts it replaces. Wand the mob down when the DoTs are enough. Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards; from 34, Soul Harvest turns each of those kills into mana regeneration, so you drink less. Your talents after Improved Corruption go into Amplify Curse at 22, Pandemic at 23 to 25 and Malevolence at 26 and 27; Grim Reach pays the row for Siphon Life at 30, Soul Siphon comes at 31 to 33 and Shadow Mastery is full at 39, ready for Wrack at 40. Improved Drains and the rest of Soul Harvest come after 40, then Unholy Power for your demon and Bane for a faster Immolate. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit.
+Affliction is the easiest warlock to level. Put Corruption and Bane of Agony on the mob, then Siphon Life from 30, and let your Voidwalker tank. The Succubus comes at 20 and the Felhunter at 30; keep the Voidwalker out until your gear can take a hit. Drain Life while the DoTs run, and wand the mob down when the DoTs are enough.
+
+From 22, press Amplify Curse before every Bane of Agony as soon as it is ready; until Bane of Doom at 60 there is nothing to hold it for. From 40, channel Wrack where you used to Drain Life: with Soul Siphon full, three of your effects on the target add 36% to both, and Wrack costs far less mana than the Shadow Bolts it replaces.
+
+Cast Drain Soul on the last few percent of a mob's health whenever you need Soul Shards; from 34, Soul Harvest turns each of those kills into mana regeneration, so you drink less.
+
+Talents after Improved Corruption:
+
+- **22:** Amplify Curse.
+- **23 to 25:** Pandemic.
+- **26 and 27:** Malevolence.
+- **30:** Siphon Life, with Grim Reach paying the row.
+- **31 to 33:** Soul Siphon.
+- **39:** Shadow Mastery full, ready for Wrack at 40.
+- **After 40:** Improved Drains and the rest of Soul Harvest, then Unholy Power for your demon and Bane for a faster Immolate.

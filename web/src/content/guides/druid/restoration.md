@@ -49,14 +49,14 @@ sources:
 The build is 40 points of Restoration and 11 of Balance. It is built for a tank-healing fight that runs your mana down.
 
 - **Gift of Nature** (5 points): 10% more healing on your heals. In Forever it does not reach Tranquility.
-- **Improved Rejuvenation** (3 points): 15% more from your most-cast spell.
+- **Improved Rejuvenation** (3 points)
 - **Bloom** (1 point): when a Rejuvenation or Regrowth runs out on its own, the target is healed for your Spirit. With HoTs doing most of your healing, it is the best single point you take.
 - **Swiftmend** (1 point): an instant heal for the whole of your own Regrowth or Rejuvenation on the target (another druid's does not count), and in Forever the HoT keeps ticking.
 - **Nature's Swiftness** (1 point): your next Healing Touch is instant, the save for a dying tank.
 - **Naturalist** (5 points): Healing Touch and Wild Growth half a second faster.
 - **Reflection**, **Tranquil Spirit** and **Living Spirit**: half your regeneration keeps going while you cast, a cheaper Healing Touch and Tranquility, and 15% more Spirit.
 - **Improved Tranquility** (2 points): Tranquility with no threat and its cooldown cut from 5 minutes to 2.
-- **Heart of the Wild** (5 points): 10% more Intellect.
+- **Heart of the Wild** (5 points)
 - **Genesis**, **Nature's Majesty** and **Nature's Splendor**: from Balance, 10% more on every HoT tick, crit, and longer Rejuvenation and Regrowth. Moonglow (3 points) is the price of reaching Nature's Splendor, which stretches Rejuvenation by 3 seconds and Regrowth by 6. Pay it and move on.
 - **Improved Regrowth** (1 point): 10% more crit on the Regrowth you keep on the tank.
 
@@ -66,27 +66,25 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
 
 **Before the pull.** Rejuvenation on the tank a few seconds before he pulls. Keep Gift of the Wild up on the raid.
 
-**The tank.** Regrowth and Rejuvenation stay up on the tank for the whole fight. Let each one run out before you recast it: a HoT that runs its full duration triggers Bloom, and a refresh on top of it throws that heal away.
+**The tank.** Regrowth and Rejuvenation stay up on the tank for the whole fight. A refresh on top of a running HoT throws away its Bloom heal.
 
-**Swiftmend** goes on the tank whenever he is under 75%. In Forever it does not consume the HoT, so all it costs is a global and 20% of your base mana. Cast it on cooldown whenever there is damage to heal, not only in an emergency.
+**Swiftmend.** Cast it on cooldown whenever there is damage to heal, not only in an emergency.
 
 **Healing Touch** fills the real holes: a tank under about half, while your mana is ahead of the fight. If your mana is behind, let the HoTs and Swiftmend carry it.
 
-**Nature's Swiftness** into Healing Touch is the save for a tank who is nearly dead.
+**Nature's Swiftness** into Healing Touch is the save for a tank who is nearly dead. A save is no place to save mana, so the Healing Touch you cast with it is always the top rank.
 
-**The party.** A hurt party member gets a Rejuvenation, you included. Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
+**The party.** Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
 
-**Ranks.** In Forever a rank learned far below your level loses its share of your healing power: at 60, ranks 8, 9 and 10 keep all of it, rank 7 most of it, and rank 1 none, though it costs so little that its base heal is still cheap healing. In a raid, keep the top rank on the tank and put rank 7 on a hurt party member: most of the heal for far less mana. When there is no raid behind you and the fight will run you dry, as in a long five-man, rank 1 on the party is the most healing your mana buys, because it costs so little.
+**Ranks.** In Forever a rank learned far below your level loses its share of your healing power: at 60, ranks 8, 9 and 10 keep all of it, rank 7 most of it, and rank 1 none, though it costs so little that its base heal is still cheap healing. In a raid, keep the top rank on the tank and put rank 7 on a hurt party member: most of the heal for far less mana. When there is no raid behind you and the fight will run you dry, as in a long five-man, rank 1 on the party is the most healing your mana buys.
 
-**Ranks while leveling.** From 17, rank 1 is your party Rejuvenation, except at 26 to 29 (from 25 for an Alliance druid) and again at 40 to 42 (below 17, see Levels 1 to 19), where rank 2 is worth its extra mana. Your healing power is still low and your mana runs out first, so the tank's Rejuvenation sits below the newest rank you know all the way to 59, rank 10 included once you learn it at 58: rank 1 through 22, rank 2 from 23 through 39 (a night elf can use rank 3 at 29), rank 4 from 40 to 43, rank 5 from 44 to 48, rank 6 from 49 to 56 and rank 8 from 57 to 59. Use the top rank of Regrowth from 20.
+While leveling, your healing power is still low and your mana runs out first, so the tank's Rejuvenation sits below the newest rank you know all the way to 59, rank 10 included once you learn it at 58. The ranks by level are under [Leveling](#leveling).
 
-When you cast Healing Touch to fill a hole, a lower rank often heals more for your mana than the newest one: rank 2 at 20 (a tauren keeps it to 23, and takes rank 4 at 26 to 28), rank 3 at 30 to 33, rank 4 at 34 to 39, rank 5 at 40 to 45 and rank 6 at 46 to 48. From 21 to 29 (24 to 25 and 29 for a tauren) and from 49, cast the top rank. Nature's Swiftness makes the cast instant, and a save is no place to save mana, so the Healing Touch you cast with it is always the top rank.
-
-**Mana.** Innervate is yours from level 40. Cast it on yourself when you are low: it multiplies your Spirit regeneration, and a Restoration druid carries a lot of Spirit. A Major Mana Potion and a Demonic Rune cover the rest. An Alliance Skyborne also presses Read Leyline every time it is ready: 50% more mana regeneration for 15 seconds. Innervate is the bigger effect and replaces it, and Read Leyline will not cast while Innervate is up, so press it between Innervates.
+**Mana.** Innervate is yours from level 40. A Major Mana Potion and a Demonic Rune cover the rest.
 
 ## Stat priority
 
-A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count for you. Healing power is every heal except Bloom and a rank far below your level, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. MP5 is mana that never stops. Intellect is your pool and a little crit. Spell power with no healing on it adds nothing to your heals.
+A long tank fight runs you out of mana before it runs out of time, which is why the mana stats count for you. Healing power is every heal except Bloom and a rank far below your level, and your HoTs take a big share of it per tick. Crit makes your direct heals land bigger. Spirit is mana through Reflection and Innervate, and it is your Bloom heal. Spell power with no healing on it adds nothing to your heals.
 
 ## Best in slot
 
@@ -96,7 +94,11 @@ Potions and runes work in any form in Forever, though you heal in caster form an
 
 ## Races
 
-Night Elf brings Elune's Light, 10% crit for 15 seconds, which is crit on your Regrowths and Healing Touches alike. On the Horde, Tauren's Endurance is 5% more health, which keeps you alive through raid damage. Skyborne bring Wind Blessed, 2% haste that never turns off, on either faction, which is faster casts, and the Alliance ones add Read Leyline: 50% more health and mana regeneration for 15 seconds on a 2 minute cooldown. Cast it once beside a leyline and you are Attuned for an hour: Attuned doubles Read Leyline's regeneration wherever you are, but entering a raid removes it for good. Press it every time it is ready on a long fight. Innervate is the bigger effect and replaces it, and Read Leyline will not cast while Innervate is up.
+**Night Elf.** Elune's Light is crit on your Regrowths and Healing Touches alike.
+
+**Tauren** on the Horde: Endurance keeps you alive through raid damage.
+
+**Skyborne** on either faction, for Wind Blessed's faster casts. The Alliance ones add Read Leyline: cast it once beside a leyline and you are Attuned for an hour, which doubles its regeneration wherever you are, but entering a raid removes it for good. Press it every time it is ready on a long fight.
 
 ## Professions
 
@@ -108,7 +110,11 @@ Your raid set asks for two crafts that bind on pickup, so only the crafter wears
 
 Healing Touch comes at level 1, Rejuvenation at 4, Regrowth at 12 and Cure Poison at 14. Revive at 12 raises a dead groupmate out of combat. Solo, you kill with Wrath and Moonfire.
 
-Healing a dungeon at these levels, your mana runs out before a long pull does, so the cheap ranks heal more for it. From 10 to 12, put Rejuvenation rank 2 on the tank and the party; at 10 alone a night elf or tauren puts rank 1 on the tank, and a night elf goes all the way to rank 1 of Rejuvenation and Healing Touch that level, while a Skyborne keeps rank 2 of everything. An Alliance Skyborne moves the tank to rank 1 a level early, at 12. From 13 the tank's Rejuvenation is rank 1 and stays there; the party keeps rank 2 at 13 and 14 (a Horde Skyborne already uses rank 1), takes rank 1 at 15, and at 16 a tauren moves to the new rank 3 while everyone else keeps rank 1. Fill holes with Healing Touch rank 2 from 14 to 16; a night elf and either Skyborne drop to rank 1 at 15 and 16, and a Horde Skyborne fills with rank 1 from 13. From 17 to 19 rank 1 of everything wins: Rejuvenation on the tank and the party, Healing Touch for the hole, and Regrowth rank 1 once rank 2 arrives at 18.
+Healing a dungeon at these levels, your mana runs out before a long pull does, so the cheap ranks heal more for it:
+
+- **10 to 12:** Rejuvenation rank 2 on the tank and the party. At 10 alone a night elf or tauren puts rank 1 on the tank, and a night elf goes all the way to rank 1 of Rejuvenation and Healing Touch that level, while a Skyborne keeps rank 2 of everything. An Alliance Skyborne moves the tank to rank 1 a level early, at 12.
+- **13 to 16:** the tank's Rejuvenation is rank 1 and stays there. The party keeps rank 2 at 13 and 14 (a Horde Skyborne already uses rank 1), takes rank 1 at 15, and at 16 a tauren moves to the new rank 3 while everyone else keeps rank 1. Fill holes with Healing Touch rank 2 from 14 to 16; a night elf and either Skyborne drop to rank 1 at 15 and 16, and a Horde Skyborne fills with rank 1 from 13.
+- **17 to 19:** rank 1 of everything: Rejuvenation on the tank and the party, Healing Touch for the hole, and Regrowth rank 1 once rank 2 arrives at 18.
 
 Heart of the Wild takes your points from 10 to 14: 10% more Intellect, 20% more Stamina in Bear Form. Reflection from 15 to 17 keeps half your mana regeneration going while you cast, and Nature's Focus at 18 and 19 saves a heal from pushback more than a quarter of the time.
 
@@ -118,6 +124,17 @@ Druids cannot use wands, so swap the starter weapon for the first quest staff wi
 
 ### Levels 20 to 60
 
-Restoration is the slowest druid to quest with. Level as Feral and switch at 60, or heal dungeons on the way up: Rejuvenation and Regrowth carry a group from the low levels, and Healing Touch covers the big pulls. Which Rejuvenation rank to keep on the tank changes as you level, from rank 1 to 22 and rank 2 at 23 to rank 4 at 40, rank 5 at 44, rank 6 at 49 and rank 8 at 57, and at 20 and from 30 to 48 a lower Healing Touch fills holes better; [Rotation and priority](#rotation-and-priority) lists both by level range. Rank 1 stays on the party, apart from rank 2 at 26 to 29 (25 too for an Alliance druid) and at 40 to 42; the Levels 1 to 19 section has the ranks below 20.
+Restoration is the slowest druid to quest with. Level as Feral and switch at 60, or heal dungeons on the way up: Rejuvenation and Regrowth carry a group from the low levels, and Healing Touch covers the big pulls.
 
-Your points from 20: Bloom at 20 and Nature's Focus's third point at 21, then the first point of Genesis from Balance, three of Gift of Nature, Improved Rejuvenation and Swiftmend by 29, Gift of Nature's fourth point at 30, Living Spirit from 31 to 33 and Gift of Nature's last point at 34. Finish Genesis by 38, then Nature's Majesty, Moonglow and Nature's Splendor by 44: Rejuvenation and Regrowth running longer heal more than anything left in Restoration. Nature's Focus, Improved Regrowth and Improved Tranquility come next, then Tranquil Spirit and Naturalist, and Nature's Swiftness, which needs all five Naturalist points, is your last point at 60.
+Your mana still runs out first, so the cheap ranks keep healing more for it. Use the top rank of Regrowth from 20.
+
+- **Party Rejuvenation:** rank 1 from 17, except rank 2 at 26 to 29 (from 25 for an Alliance druid) and again at 40 to 42.
+- **Tank Rejuvenation:** rank 1 through 22, rank 2 from 23 through 39 (a night elf can use rank 3 at 29), rank 4 from 40 to 43, rank 5 from 44 to 48, rank 6 from 49 to 56 and rank 8 from 57 to 59.
+- **Healing Touch for a hole:** rank 2 at 20 (a tauren keeps it to 23, and takes rank 4 at 26 to 28), rank 3 at 30 to 33, rank 4 at 34 to 39, rank 5 at 40 to 45 and rank 6 at 46 to 48. From 21 to 29 (24 to 25 and 29 for a tauren) and from 49, cast the top rank.
+
+Your points from 20:
+
+- **20 to 29:** Bloom at 20 and Nature's Focus's third point at 21, then the first point of Genesis from Balance, three of Gift of Nature, Improved Rejuvenation and Swiftmend by 29.
+- **30 to 34:** Gift of Nature's fourth point at 30, Living Spirit from 31 to 33 and Gift of Nature's last point at 34.
+- **35 to 44:** finish Genesis by 38, then Nature's Majesty, Moonglow and Nature's Splendor by 44: Rejuvenation and Regrowth running longer heal more than anything left in Restoration.
+- **45 to 60:** Nature's Focus, Improved Regrowth and Improved Tranquility, then Tranquil Spirit and Naturalist, and Nature's Swiftness, which needs all five Naturalist points, is your last point at 60.

@@ -196,7 +196,7 @@
     title={encounterPickerCopy.leadersHeading}
     meta={leaderAt.name}
     panel
-    frame="framed"
+    frame="plain"
     flush
     testid="rankings-leaders"
   >

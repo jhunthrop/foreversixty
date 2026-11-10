@@ -1,12 +1,12 @@
 ---
 // web/src/components/guides/GuideSpellRow.astro
-// One rotation line as a slim open Row (guides spec 2026-11-08 §4.3): the spell icon 28 (a
-// spacer for a line that names no spell), the name opening the game tooltip, its rank ("Rank 7
-// (cheap rank)" where the guide chose it), a Raid build only Tag, and the clause under it.
+// One rotation line as a slim open Row (guides spec 2026-11-08 §4.3): the spell icon 28, the
+// name, rank and tag (GuideSpellName), and the clause under it. A line that names no spell
+// ("Trinkets, racials and potions") takes a Row with no lead at all, never an empty socket: an
+// Astro slot passed conditionally still reaches the Svelte Row as a lead, so it is two Rows.
 import Row from '../ui/Row.svelte';
-import Tag from '../ui/Tag.svelte';
+import GuideSpellName from './GuideSpellName.astro';
 import { dataUrl } from '../../lib/planner/load';
-import { guidesCopy } from '../../lib/guides/copy';
 import type { RotationItem } from '../../lib/guides/rotation-lists';
 
 interface Props {
@@ -17,46 +17,28 @@ interface Props {
   testid?: string;
 }
 const { build, item, rank, testid } = Astro.props;
+const row = { title: item.name, sub: item.clause, density: 'slim' as const, open: true, rank, testid };
 ---
 
-<Row title={item.name} sub={item.clause} density="slim" open {rank} {testid}>
-  <Fragment slot="lead">
-    {item.icon !== undefined ? (
-      <img
-        src={dataUrl(build, `icons/${item.icon}.webp`)}
-        alt=""
-        width="28"
-        height="28"
-        loading="lazy"
-        decoding="async"
-        class="guide-spell-icon"
-      />
-    ) : (
-      <span class="guide-spell-icon" aria-hidden="true" />
-    )}
-  </Fragment>
-  <Fragment slot="titleContent">
-    <span
-      class:list={[item.tipKey !== undefined && 'gtip guide-spell-tip']}
-      tabindex={item.tipKey !== undefined ? 0 : undefined}
-      data-game-tip={item.tipKey}
-    >
-      {item.name}
-    </span>
-    {item.rank !== undefined && (
-      <span class="text-muted text-[13px] font-semibold">
-        {' '}
-        {guidesCopy.rankLabel(item.rank, item.cheapRank === true)}
-      </span>
-    )}
-    {item.raidBuildOnly === true && (
-      <>
-        {' '}
-        <Tag tone="muted">{guidesCopy.raidBuildTag}</Tag>
-      </>
-    )}
-  </Fragment>
-</Row>
+{item.icon !== undefined ? (
+  <Row {...row}>
+    <img
+      slot="lead"
+      src={dataUrl(build, `icons/${item.icon}.webp`)}
+      alt=""
+      width="28"
+      height="28"
+      loading="lazy"
+      decoding="async"
+      class="guide-spell-icon"
+    />
+    <GuideSpellName slot="titleContent" {item} />
+  </Row>
+) : (
+  <Row {...row}>
+    <GuideSpellName slot="titleContent" {item} />
+  </Row>
+)}
 
 <style>
   .guide-spell-icon {
@@ -64,15 +46,6 @@ const { build, item, rank, testid } = Astro.props;
     flex: none;
     width: 28px;
     height: 28px;
-    border-radius: var(--radius-icon);
-  }
-  .guide-spell-tip {
-    position: relative;
-    cursor: pointer;
-  }
-  .guide-spell-tip:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 2px;
     border-radius: var(--radius-icon);
   }
 </style>

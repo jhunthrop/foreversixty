@@ -36,7 +36,6 @@
     treeVersion,
     classSlug = '',
     onadd,
-    plate = false,
   }: {
     items: readonly Item[];
     loot: LootFile;
@@ -45,13 +44,19 @@
     /** The character's class: a relic class's ranged slot reads "Relic". */
     classSlug?: string;
     onadd: (itemId: number) => void;
-    /** The block sits on the page's one Plate. */
-    plate?: boolean;
   } = $props();
 
   let query = $state<ItemQuery>(defaultItemQuery());
 
   const found = $derived(searchItems(items, query, ctx));
+  /** Rows shown per page of hits: the list grows by a page, never a box that cuts a row in half. */
+  const PAGE = 8;
+  let shownCount = $state(PAGE);
+  // A new search starts back at one page.
+  $effect(() => {
+    void [query.text, query.minItemLevel, query.slot, query.sourceId, query.usableOnly];
+    shownCount = PAGE;
+  });
   const matching = $derived(matchCount(items, query, ctx));
   const groups = $derived(groupSources(loot));
   const emptyReason = $derived(noResultsReason(items, query, ctx));
@@ -67,7 +72,7 @@
   );
 </script>
 
-<ToolSection title={bulkCopy.searchLabel} testid="sim-item-search" {plate}>
+<ToolSection title={bulkCopy.searchLabel} testid="sim-item-search">
   <div class="flex flex-wrap items-end gap-3">
     <Field
       id="sim-search-text"
@@ -139,8 +144,8 @@
   {#if found.length === 0}
     <p class="text-muted pt-3 text-[13px]">{noResultsMessage}</p>
   {:else}
-    <div class="mt-2 max-h-[320px] overflow-y-auto">
-      {#each found as item (item.id)}
+    <div class="mt-2">
+      {#each found.slice(0, shownCount) as item (item.id)}
         {@const variant = legendaryVariantLabel(item.id)}
         <Row title={item.name} open density="slim" testid={`sim-search-result-${item.id}`}>
           {#snippet lead()}
@@ -153,15 +158,22 @@
           {/snippet}
           {#snippet trail()}
             <span class="text-muted text-[13px] tabular-nums">{item.item_level}</span>
-            <Button size="sm" testid={`sim-search-add-${item.id}`} onclick={() => onadd(item.id)}
+            <Button tone="ghost" size="sm" testid={`sim-search-add-${item.id}`} onclick={() => onadd(item.id)}
               >{bulkCopy.searchAdd}</Button
             >
           {/snippet}
         </Row>
       {/each}
     </div>
-    {#if found.length < matching}
-      <p class="text-muted pt-2 text-[12px]">{bulkCopy.searchTruncated(found.length, matching)}</p>
-    {/if}
+    <div class="flex flex-wrap items-center gap-x-3 pt-2">
+      {#if shownCount < found.length}
+        <Button tone="ghost" size="sm" testid="sim-search-more" onclick={() => (shownCount += PAGE)}
+          >{bulkCopy.searchMore(Math.min(PAGE, found.length - shownCount))}</Button
+        >
+      {/if}
+      {#if found.length < matching}
+        <p class="text-muted m-0 text-[12px]">{bulkCopy.searchTruncated(found.length, matching)}</p>
+      {/if}
+    </div>
   {/if}
 </ToolSection>

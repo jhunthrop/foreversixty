@@ -59,7 +59,7 @@ def answer(acct: dict | None, loading: bool = False) -> str:
     if body['kind'] == 'count':
         note = body.get('note')
         line = f'<span class="t-small bl-note">{e(note.removesuffix("."))}</span>' if note else ''
-        mid = f'<span class="bl-fig">{Figure(str(body["worn"]), unit=e(body["unit"]))}{Meter(body["bar"])}{line}</span>'
+        mid = f'<span class="bl-fig">{Figure(str(body["worn"]), unit=e(body["unit"]), size="sm")}{Meter(body["bar"])}{line}</span>'
     elif body['kind'] == 'failed':
         mid = f'<span class="t-small" role="alert">{e(body["text"])}</span>'
     else:
@@ -74,13 +74,14 @@ def answer(acct: dict | None, loading: bool = False) -> str:
 def band_bar(selected: int) -> str:
     items = [(e(b['label']), b['band'] == selected, None, '') for b in F['bands']]
     label = next(b['label'] for b in F['bands'] if b['band'] == selected)
-    end = f'<span class="t-small">{e(C["tierQuestion"])}</span>{Link(rsaquo(C["tierLink"]))}'
-    return control_bar([(e(C['bandGroupLabel']), seg(items, label=e(C['bandGroupLabel'])))], e(label), end, label=e(C['bandGroupLabel']))
+    end = Link(rsaquo(C["tierLink"]))
+    return control_bar([(e(C['bandGroupLabel']), seg(items, label=e(C['bandGroupLabel'])))], e(label), end, label=e(C['bandGroupLabel']),
+                       labels_from=1920)
 
 
-def summary(selected: int) -> str:
-    text = next(b['summary'] for b in F['bands'] if b['band'] == selected)
-    return f'<p class="t-small bl-sum" data-region="{REGION["summary"]}">{e(text)}</p>'
+def summary() -> str:
+    # the line under the bar holds only the build's "Your range" link, hidden in every mocked state
+    return f'<p class="t-small bl-sum" data-region="{REGION["summary"]}"></p>'
 
 
 X_GLYPH = ('<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">'
@@ -117,7 +118,7 @@ def landing(state: str) -> str:
         me = F['me'].get(state)
         ch = me['characters'][0] if me else None
         yours = f"{ch['class'].lower()}-{ch['spec'].lower().replace(' ', '-')}" if ch else ''
-    body = head + band_bar(selected) + Page('ledger', summary(selected) + f'<div id="bis-classes">{classes(yours)}</div>') + PAGE_CSS
+    body = head + band_bar(selected) + Page('ledger', summary() + f'<div id="bis-classes">{classes(yours)}</div>') + PAGE_CSS
     who = None
     if acct and acct['answer']['state'] == 'ready':
         ch = acct['answer']['character']
@@ -151,7 +152,6 @@ PAGE_CSS = '''<style>
 .bl-done{box-shadow:inset 2px 0 0 var(--gold)}
 .bl-done a{display:inline-flex;flex-wrap:wrap;gap:0 6px;align-items:center;min-height:44px;color:var(--text)}
 .bl-x{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;background:none;color:var(--muted);cursor:pointer}
-main{padding-bottom:40px}  /* the page's own bottom space (index.astro .bis-landing) */
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
 </style>'''
 

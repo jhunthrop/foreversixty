@@ -172,8 +172,7 @@ function leadGain(row: BisRowModel, deps: DollViewDeps): GainFigure {
     return { value: DOLL.same, basis: { prefix: 'No close alternative' }, tone: 'muted' };
   return {
     value: DOLL.same,
-
-    basis: { prefix: `next: ${signedFigure(different.delta)} vs`, item: itemRef(different.id, deps) },
+    basis: { prefix: `${signedFigure(different.delta)} ${unit} vs`, item: itemRef(different.id, deps) },
     tone: 'muted',
   };
 }
