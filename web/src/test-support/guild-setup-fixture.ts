@@ -56,6 +56,7 @@ export function setupFixture(
     invite: { made: true, joined: 14 },
     sync: { synced: 9, accounts: 24, window_days: 14 },
     visibility: 'public',
+    readiness: null,
     ...extra,
   };
 }

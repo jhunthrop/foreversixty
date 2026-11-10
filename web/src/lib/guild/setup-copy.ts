@@ -70,6 +70,7 @@ export const setupCopy = {
     posted: (channel: string | null): string =>
       channel === null ? 'Posted to Discord' : `Posted to #${channel}`,
     postNow: 'Post now',
+    notPosted: 'Not on Discord yet.',
     noTimezone: 'No time zone',
     nothing: 'nothing planned',
     next: (title: string, when: string): string => `next: ${title} ${when}`,
@@ -102,7 +103,7 @@ export const setupCopy = {
     label: 'Report visibility',
   },
   linkedRole: {
-    line: 'Give members with Forever Sixty Premium a role in your server: Server Settings, Roles, the role, Links, Add requirement, Forever Sixty Premium.',
+    line: 'A role for members with Forever Sixty Premium: Server Settings, Roles, the role, Links, add Forever Sixty Premium.',
     done: 'Done',
   },
   plan: {
@@ -128,6 +129,8 @@ export const setupCopy = {
       },
     ],
     compare: 'Compare plans',
+    readiness: (raid: string, failing: number, signed: number): string =>
+      `For ${raid}, the readiness board would flag ${failing} of ${signed} signed raiders.`,
   },
   settingsRow: {
     label: 'Setup',

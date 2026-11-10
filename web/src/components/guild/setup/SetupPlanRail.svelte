@@ -3,13 +3,13 @@
      for what every claimed guild gets free and what Guild and Raid guild add, and Compare plans.
      No subscribe button: the checklist never sells. -->
 <script lang="ts">
-  import type { SetupPlan } from '../../../lib/guild/setup-api';
+  import type { GuildSetup, SetupPlan } from '../../../lib/guild/setup-api';
   import { setupCopy } from '../../../lib/guild/setup-copy';
   import { planLines, planName } from '../../../lib/guild/setup-model';
   import { LINK } from '../../../lib/ui/primitives';
   import Section from '../../ui/Section.svelte';
 
-  let { plan }: { plan: SetupPlan } = $props();
+  let { plan, readiness = null }: { plan: SetupPlan; readiness?: GuildSetup['readiness'] } = $props();
 
   const lines = planLines();
 </script>
@@ -23,5 +23,10 @@
       </div>
     {/each}
   </dl>
+  {#if readiness !== null && readiness.signed > 0}
+    <p class="text-muted pt-3 text-[13px]" data-testid="setup-plan-readiness">
+      {setupCopy.plan.readiness(readiness.raid_title, readiness.failing, readiness.signed)}
+    </p>
+  {/if}
   <p class="pt-3 text-[14px]"><a class={LINK} href="/premium#guild-leaders">{setupCopy.plan.compare} ›</a></p>
 </Section>

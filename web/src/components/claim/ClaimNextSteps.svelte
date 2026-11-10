@@ -69,7 +69,8 @@
       <li class="{ROW_ITEM} flex min-h-10 items-center gap-3 py-1.5 text-[14px]">
         <StepMark n={row.n} mark={row.mark} />
         <span class="text-strong flex-1">{setupCopy.titles[row.key]}</span>
-        <span class="text-muted text-[13px]">{setupCopy.states[row.state]}</span>
+        {#if row.state !== 'todo'}<span class="text-muted text-[13px]">{setupCopy.states[row.state]}</span
+          >{/if}
       </li>
     {/each}
   </ol>

@@ -129,13 +129,15 @@
           />
         </label>
         <!-- Unchanged, Keep is the step's action; once the number moves, Save is. -->
-        <Button
-          size="sm"
-          tone={rankChanged ? tone : 'ghost'}
-          disabled={busy || !rankChanged}
-          onclick={() => saveSettings({ officer_max_rank_index: rankValue })}
-          testid="setup-ranks-save">{setupCopy.ranks.save}</Button
-        >
+        {#if rankChanged}
+          <Button
+            size="sm"
+            {tone}
+            disabled={busy}
+            onclick={() => saveSettings({ officer_max_rank_index: rankValue })}
+            testid="setup-ranks-save">{setupCopy.ranks.save}</Button
+          >
+        {/if}
         <Button
           size="sm"
           tone={rankChanged ? 'ghost' : tone}
@@ -210,6 +212,9 @@
             >{setupCopy.schedule.plan}</Button
           >
         {:else if nextUnposted && discordReady}
+          <span class="text-muted text-[13px]" data-testid="setup-schedule-unposted"
+            >{setupCopy.schedule.notPosted}</span
+          >
           <Button size="sm" {tone} disabled={busy} onclick={postNext} testid="setup-schedule-post"
             >{setupCopy.schedule.postNow}</Button
           >

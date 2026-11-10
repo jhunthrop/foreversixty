@@ -23,6 +23,7 @@
     items,
     sub,
     action,
+    inlineTrail = false,
     testid,
   }: {
     items: readonly StepItem[];
@@ -30,11 +31,14 @@
     sub: Snippet<[StepItem]>;
     /** The step's one action (nothing for a done step). */
     action?: Snippet<[StepItem]>;
+    /** Below 600 the action stays on the title row instead of a line of its own: a small quiet
+     *  action (Skip, Undo) beside a step whose own controls sit in its body (guild setup). */
+    inlineTrail?: boolean;
     testid?: string;
   } = $props();
 </script>
 
-<div class="ui-steps" data-testid={testid}>
+<div class="ui-steps" data-inline-trail={inlineTrail ? '' : undefined} data-testid={testid}>
   {#each items as item (item.key)}
     <div class="ui-step" data-mark={item.mark}>
       <Row title={item.title} testid={testid === undefined ? undefined : `${testid}-${item.key}`}>
@@ -72,6 +76,14 @@
       grid-column: 1 / -1;
       justify-self: start;
       margin-top: 8px;
+    }
+    .ui-steps[data-inline-trail] .ui-step :global(.ui-row) {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+    .ui-steps[data-inline-trail] .ui-step :global(.ui-row > span:nth-child(3):not(:empty)) {
+      grid-column: auto;
+      justify-self: end;
+      margin-top: 0;
     }
   }
 </style>

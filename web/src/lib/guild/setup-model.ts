@@ -62,7 +62,9 @@ export function scheduleParts(setup: Pick<GuildSetup, 'schedule' | 'plan'>): Set
   return [
     { key: 'timezone', label: p.timezone, done: setup.schedule.timezone !== null },
     { key: 'raid', label: p.raid, done: setup.schedule.planned > 0 },
-    { key: 'comp', label: p.comp, done: setup.plan !== 'none', plan: setupCopy.schedule.guildPlan },
+    setup.plan === 'none'
+      ? { key: 'comp', label: p.comp, done: false, plan: setupCopy.schedule.guildPlan }
+      : { key: 'comp', label: p.comp, done: true },
   ];
 }
 
@@ -139,7 +141,9 @@ export function planLines(): { label: string; text: string }[] {
 /** A rank line with the first names on it: `Rank 1 · 2: Kraggor, Mirelle`. */
 export function rankLine(line: { rank_index: number; members: number; names: readonly string[] }): string {
   const head = setupCopy.ranks.line(line.rank_index, line.members);
-  return line.names.length === 0 ? head : `${head}: ${line.names.join(', ')}`;
+  if (line.names.length === 0) return head;
+  const more = line.members - line.names.length;
+  return `${head}: ${line.names.join(', ')}${more > 0 ? ` +${more}` : ''}`;
 }
 
 /** A channel whose name reads as the recruiting channel, for the picker's first choice. */

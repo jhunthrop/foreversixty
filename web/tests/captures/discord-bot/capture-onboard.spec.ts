@@ -14,7 +14,7 @@ import { targetIn } from '../support/capture-kit';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SITE = 'https://foreversixty.gg';
-const target = targetIn('2026-11-09-f-guild-onboard/round2');
+const target = targetIn('2026-11-09-f-guild-onboard/round3');
 const dumped = JSON.parse(readFileSync(path.join(HERE, 'payloads.json'), 'utf8')) as Dumped[];
 const CLIENTS = [
   { name: 'desktop', width: 640 },
@@ -65,6 +65,7 @@ const applicationPost: Dumped = {
         fields: [
           { name: 'Level', value: '60', inline: true },
           { name: 'Item level', value: '61', inline: true },
+          { name: 'Best parse', value: '96 on Onyxia', inline: true },
           { name: 'Available', value: 'Tue and Thu, 8 pm server' },
         ],
         footer: { text: 'Olympus XXVII · Forever Sixty' },
@@ -83,6 +84,7 @@ const applicationPost: Dumped = {
             label: 'Review application',
             url: `${SITE}/guild/us/normal/olympus-xxvii/applications`,
           },
+          { type: 2, style: 5, label: 'Gear and logs', url: `${SITE}/character/us/normal/mirelle` },
         ],
       },
     ],

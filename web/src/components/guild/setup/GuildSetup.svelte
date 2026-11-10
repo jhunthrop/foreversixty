@@ -165,13 +165,8 @@
     {@const currentSettings = settings}
     {@const id = guildId}
     <Page layout="split" panels testid="guild-setup-page">
-      <Section
-        title={setupCopy.heading}
-        meta={current.finished ? setupCopy.allDone : setupCopy.toDo(current.total - current.done)}
-        panel
-        testid="guild-setup-steps"
-      >
-        <Steps {items} testid="setup-step">
+      <Section title={setupCopy.heading} panel testid="guild-setup-steps">
+        <Steps {items} inlineTrail testid="setup-step">
           {#snippet sub(item)}
             {@const step = stepOf(item.key)}
             {#if step !== undefined}
@@ -204,14 +199,14 @@
                 {/if}
                 {#if step.state === 'todo'}
                   <button
-                    class="text-muted hover:text-text min-h-11 text-[13px] underline"
+                    class="text-muted hover:text-text inline-flex min-h-11 items-center px-1 text-[13px] underline"
                     disabled={busy}
                     onclick={() => mark(step.key, 'skipped')}
                     data-testid={`setup-step-${item.key}-skip`}>{setupCopy.skip}</button
                   >
                 {:else if step.marked && (step.state === 'skipped' || CONFIRMABLE.has(step.key))}
                   <button
-                    class="text-muted hover:text-text min-h-11 text-[13px] underline"
+                    class="text-muted hover:text-text inline-flex min-h-11 items-center px-1 text-[13px] underline"
                     disabled={busy}
                     onclick={() => undo(step.key)}
                     data-testid={`setup-step-${item.key}-undo`}>{setupCopy.undo}</button
@@ -223,7 +218,7 @@
         </Steps>
       </Section>
       {#snippet rail()}
-        <SetupPlanRail plan={current.plan} />
+        <SetupPlanRail plan={current.plan} readiness={current.readiness} />
       {/snippet}
     </Page>
     <div class="min-h-[21px] px-(--page-inset) pt-3">

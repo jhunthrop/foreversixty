@@ -86,6 +86,7 @@ const MIXED: Partial<Record<SetupStepKey, SetupState>> = {
   invite_link: 'done',
   addon_sync: 'done',
   report_visibility: 'done',
+  raid_schedule: 'done',
   linked_role: 'skipped',
 };
 
@@ -112,6 +113,17 @@ function mixedSetup(): GuildSetup {
     },
     sync: { synced: 21, accounts: 31, window_days: 14 },
     visibility: 'guild',
+    schedule: {
+      timezone: 'America/Chicago',
+      planned: 3,
+      next: {
+        id: 31,
+        title: "Onyxia's Lair",
+        starts_at: '2026-12-11T02:00:00Z',
+        posted_at: '2026-11-09T21:00:00Z',
+      },
+    },
+    readiness: { raid_title: "Onyxia's Lair", signed: 18, failing: 7 },
   });
 }
 
@@ -151,7 +163,7 @@ test.describe('the checklist', () => {
   test('Keep and I posted it mark the step done', async ({ page }) => {
     const seen = await stubSetup(page, setupFixture({}));
     await gotoHydrated(page, SETUP_PATH, 'guild-setup-steps');
-    await expect(page.getByTestId('setup-invite-paste-text')).toHaveValue(
+    await expect(page.getByTestId('setup-invite-paste-text')).toHaveText(
       /^Join The Last Watch on Forever Sixty and sign up for raids: http\S+\/guild\/invite\/7Hk2QaLw$/,
     );
     await page.getByTestId('setup-invite-posted').click();
@@ -164,12 +176,13 @@ test.describe('the checklist', () => {
   test('part way: done steps fold to their facts, the to-do ones keep their controls', async ({ page }) => {
     await stubSetup(page, mixedSetup());
     await gotoHydrated(page, SETUP_PATH, 'guild-setup-steps');
-    await expect(page.getByTestId('setup-done-figure')).toContainText('5');
+    await expect(page.getByTestId('setup-done-figure')).toContainText('6');
+    await expect(page.getByTestId('setup-schedule-posted')).toContainText('Posted to #raid-signups');
+    await expect(page.getByTestId('setup-plan-readiness')).toContainText('7 of 18');
     await expect(page.getByTestId('setup-discord-bot-body')).toContainText(
       'Posts in #raid-signups on The Last Watch · 19 of 31 members linked Discord',
     );
     await expect(page.getByTestId('setup-ranks-input')).toHaveCount(0);
-    await expect(page.getByTestId('setup-schedule-plan')).toBeVisible();
     await expect(page.getByTestId('setup-step-linked_role-state')).toHaveText('Skipped');
     await expectNoAxeViolations(page, '[data-testid="guild-setup"]');
     await capture(page, `setup-mixed-${test.info().project.name}`);
