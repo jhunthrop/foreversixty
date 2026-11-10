@@ -90,7 +90,7 @@ private fun NightContent(night: RaidNightSummary, clock: RaidClock, openReport: 
     Text(
         stringResource(R.string.night_meta, night.zoneName, clock.weekday(startsAt), clock.dayMonth(startsAt), night.guildName),
         style = ScaledType.meta,
-        color = FsColor.muted,
+        color = FsColor.mutedGround,
     )
     val figures = @Composable {
         // Before the log (phase before or live) the figures are null and stay off the card.

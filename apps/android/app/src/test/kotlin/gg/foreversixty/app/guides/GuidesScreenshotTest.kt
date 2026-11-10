@@ -98,7 +98,7 @@ class GuidesScreenshotTest {
 
     @Composable
     private fun Root(segment: GuidesSegment, character: AccountCharacter?, content: @Composable () -> Unit) {
-        GuidesRootLayout(GuidesSegment.visible(tiersOn = true), segment, {}, selector = { Selector(character) }, content = content)
+        GuidesRootLayout(GuidesSegment.visible(tiersOn = true), segment, {}, selector = character?.let { { Selector(it) } }, content = content)
     }
 
     @Composable
