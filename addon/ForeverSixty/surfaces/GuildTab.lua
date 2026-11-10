@@ -459,24 +459,12 @@ function GuildTab.rowHint(row)
 	return lines
 end
 
---- The count line, two parts: "14 online of 773" (Online only on), "773 members · 14 online" (off),
---- or once scrolled past the top (`first` above 1) the rows in view, "4–23 of 97" (`first` to
---- `last` of `total`); then "1 running Forever Sixty", or "sharing off" while the share switch is
---- off (`sharing` false). It carries no date: the roster is live. 62 characters at most, the room
---- right of the switch. Pure.
-function GuildTab.countsText(counts, sharing, first, last, total)
-	local head
-	if type(first) == "number" and first > 1 and type(last) == "number" and type(total) == "number" then
-		head = string.format(L.guildTabRange, first, last, total)
-	elseif counts.onlineOnly then
-		head = string.format(L.guildTabOnlineOf, counts.online or 0, counts.total or 0)
-	else
-		head = string.format(L.guildTabMembers, counts.total or 0) .. L.guildTabCountsJoin
-			.. string.format(L.guildTabOnline, counts.online or 0)
-	end
-	local tail = sharing == false and L.guildTabSharingOff
-		or string.format(L.guildTabRunning, counts.live or 0)
-	return head .. L.guildTabCountsJoin .. tail
+--- The count line (design/specs/2026-11-08-addon-ux.md 1.9): "97 members · 3 online". The
+--- pipeline counters (rows in view, guildmates running the addon) stay out of the player's view.
+--- No date: the roster is live. Pure.
+function GuildTab.countsText(counts)
+	return string.format(L.guildTabMembers, counts.total or 0) .. L.guildTabCountsJoin
+		.. string.format(L.guildTabOnline, counts.online or 0)
 end
 
 --- The one line said for the whole list while the ratings cannot be read or are old (fix
@@ -1227,8 +1215,7 @@ function GuildTab.renderRows()
 	end
 	local range = math.max(0, #rows - visible)
 	GuildTab.bar:Update(#rows > 0 and math.min(1, visible / #rows) or 1, range > 0 and offset / range or 0)
-	GuildTab.countsLine:SetText(fitted(GuildTab.countsText(model.counts, model.sharing, #rows > 0 and first or nil,
-		#rows > 0 and last or nil, #rows), GuildTab.innerWidth() - S.guildToggleRoom))
+	GuildTab.countsLine:SetText(fitted(GuildTab.countsText(model.counts), GuildTab.innerWidth() - S.guildToggleRoom))
 	local empty = GuildTab.emptyLine
 	if #rows == 0 then
 		empty:SetText(fitted(model.counts.total == 0 and L.guildTabNoRoster or L.guildTabNobodyOnline,

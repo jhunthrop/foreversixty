@@ -174,20 +174,19 @@ export const addonCopy = {
   setupCompanionDownload: (platform: string): string => `Download for ${platform}`,
   /** Both builds side by side, when the page cannot tell the visitor's system: the group's name. */
   setupDownloadCompanion: 'Download the companion',
-  /** A 2x crop of the 0.2.11 companion's Status page, the Logging state credited to a fictional
-   *  two-word name (docs/superpowers/reviews/companion-premium/). */
+  /** A 2x crop of the 0.2.44 companion's Status page (round-5 window, seal v4), the Logging state
+   *  credited to the fixtures' fictional two-word name; shot by design/mocks/companion/shoot_ui.cjs
+   *  (state logging-credited, 800 px window). */
   setupCompanionCapture: {
     src: '/addon/companion-status.jpg',
     width: 1600,
-    height: 436,
+    height: 460,
     /** The phone source (W.10, P.1): the headline's title and sub line only, a 2x crop of the same
-     *  Status capture, shown at 100% width under 640px; the sub text is 11px at 314px wide. */
-    phoneSrc: '/addon/companion-status-phone.jpg',
-    phoneWidth: 734,
-    phoneHeight: 172,
+     *  Status capture, shown under 640px so the sub line stays near 11px at 314px wide. */
+    narrow: { src: '/addon/companion-status-phone.jpg', width: 912, height: 140 },
     /** The label on the picture while the visitor is signed out: the name in it is not theirs. */
     exampleLabel: 'Example',
-    alt: 'The companion’s Status page: the Forever Sixty header with Status, Reports, Device and Settings, then a green dot beside “Logging”, “Uploading your fights as they end · logging as Bow Jackzon” and the link “Open this report on the site”.',
+    alt: 'The companion’s Status page: Logging, uploading your fights as they end, logging as Bow Jackzon.',
   },
   /** The disclosure that holds the paste box. */
   setupTryExport: 'Try an export',

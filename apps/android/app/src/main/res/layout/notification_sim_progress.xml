@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Lane F14: the server-sim notification's body (spec §5.6, board F14.3). Android 12 and later tint a
-    standard progress bar with the system accent, so the bar is drawn here in the board's gold. The
+    standard progress bar with the system accent, so the bar is drawn here in the notification accent,
+    the seal's turquoise every notification shares. The
     text keeps the system's notification text appearances, so it reads on light and dark shades.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -30,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:layout_marginTop="10dp"
-        android:progressTint="#FFE5B955"
-        android:progressBackgroundTint="#FF9A9484"
-        android:indeterminateTint="#FFE5B955" />
+        android:progressTint="@color/notification_accent"
+        android:progressBackgroundTint="@color/notification_accent_track"
+        android:indeterminateTint="@color/notification_accent" />
 </LinearLayout>

@@ -1,4 +1,6 @@
 // web/src/pages/_sim-tools.test.ts
+import { bulkCopy } from '../lib/sim/copy';
+import { DEFAULT_WEIGHTS_SPEC, parseDefaultWeights } from '../lib/sim/published-weights';
 import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -47,16 +49,34 @@ describe.each(PAGES)('the $name shell', ({ component, path, heading, name }) => 
     expect(html).not.toContain('src="/sim-tools-island.js"');
   });
 
-  it('renders its heading and its own skeleton before the island, so nothing shifts', async () => {
+  it('renders its heading and its first paint before the island, so nothing shifts', async () => {
     const html = await container.renderToString(component);
     expect(html).toContain(heading);
-    expect(html).toContain(TOOL_SKELETONS[name].slice(0, 80));
+    // /sim/weights draws its no-character state instead (the weights shell only, below).
+    if (name !== 'weights') expect(html).toContain(TOOL_SKELETONS[name].slice(0, 80));
   });
 
   it('says what the page needs when there is no JavaScript', async () => {
     const html = await container.renderToString(component);
     expect(html).toContain('needs JavaScript');
     expect(html).toContain('href="/sim"');
+  });
+});
+
+describe('the weights shell only', () => {
+  it('server-renders the default spec’s published weights and hands the same table to the island', async () => {
+    const html = await container.renderToString(Weights);
+    expect(html).not.toContain(TOOL_SKELETONS.weights.slice(0, 80));
+    expect(html).toContain('data-testid="sim-weights-published"');
+    expect(html).toContain('data-testid="sim-source-addon"');
+    expect(html).toContain(bulkCopy.weightsLead);
+    const attr = /data-default-weights="([^"]*)"/.exec(html)?.[1] ?? '';
+    const written = parseDefaultWeights(attr.replaceAll('&quot;', '"').replaceAll('&amp;', '&'));
+    expect(written?.spec).toBe(DEFAULT_WEIGHTS_SPEC);
+    expect(written?.view.rows.length).toBeGreaterThan(0);
+    for (const row of written?.view.rows ?? []) {
+      if (row.significant) expect(html).toContain(row.scaleFactor.toFixed(2));
+    }
   });
 });
 

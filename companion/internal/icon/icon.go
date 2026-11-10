@@ -1,9 +1,10 @@
 // companion/internal/icon/icon.go
-// Package icon carries the tray's Forever Sixty seal v4, rendered by
-// tools/icons/render.py from design/assets/logo/lx-seal-v4*.png. Each
+// Package icon carries the tray's Forever Sixty seal: the flat seal
+// (design/assets/brand/seal-flat), since the tray draws it at 16 to 48 px,
+// rendered by tools/icons/render.py. Each
 // platform's binary embeds only its own tray images (tray_windows.go:
 // the ICOs; tray_other.go: the PNGs). The app icons live beside them in
-// assets/ and are never embedded: seal.ico goes into the Windows exe as a
+// assets/ (the painted seal v4) and are never embedded: seal.ico goes into the Windows exe as a
 // resource (cmd/foreversixty-companion/winres) and seal.icns into the
 // macOS bundle (tools/package-mac-companion.sh).
 package icon

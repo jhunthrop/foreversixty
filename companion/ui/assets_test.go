@@ -20,7 +20,7 @@ func TestTheFacesArtAndSealAreEmbedded(t *testing.T) {
 		"fonts/marcellus-400-subset.woff2",
 		"fonts/archivo-600-subset.woff2",
 		"fonts/jetbrains-mono-500-subset.woff2",
-		"art/ground.webp", "art/band-1200.webp", "seal-64.png",
+		"art/ground.webp", "art/band-1200.webp", "seal.svg",
 		"index.html", "styles.css", "tokens.css", "icons.js", "app.js", "copy.js", "format.js",
 	} {
 		b, err := fs.ReadFile(Assets, name)
@@ -40,6 +40,15 @@ func TestEveryFontFileIsAWoff2(t *testing.T) {
 		if len(b) < 4 || string(b[:4]) != "wOF2" {
 			t.Errorf("%s does not start with the wOF2 signature", f)
 		}
+	}
+}
+
+// The header seal is the site's small flat seal, byte for byte (tools/icons/render.py copies it).
+func TestTheSealIsTheSitesFlatSeal(t *testing.T) {
+	ours, _ := fs.ReadFile(Assets, "seal.svg")
+	theirs, err := os.ReadFile("../../web/public/art/seal-flat-small.svg")
+	if err != nil || !bytes.Equal(ours, theirs) {
+		t.Errorf("seal.svg is not the site's art/seal-flat-small.svg (%v)", err)
 	}
 }
 

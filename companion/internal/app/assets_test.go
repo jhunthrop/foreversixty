@@ -18,7 +18,7 @@ func TestTheTypefacesAndTheSealAreServedWithTheirTypes(t *testing.T) {
 		"/fonts/open-sans-400-subset.woff2":      "font/woff2",
 		"/fonts/open-sans-600-subset.woff2":      "font/woff2",
 		"/fonts/jetbrains-mono-500-subset.woff2": "font/woff2",
-		"/seal-64.png":                           "image/png",
+		"/seal.svg":                              "image/svg+xml",
 		"/art/ground.webp":                       "image/webp",
 		"/styles.css":                            "text/css",
 		"/tokens.css":                            "text/css",

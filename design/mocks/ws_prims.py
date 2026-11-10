@@ -825,6 +825,7 @@ PRIM_CSS += '''
 .btn.is-off{opacity:.45;pointer-events:none}
 .cap{display:block;position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
 .cap img{display:block;width:100%;height:100%;object-fit:contain}
+.cap picture{display:contents}@media(max-width:639px){.cap.has-narrow{aspect-ratio:var(--ar-n)}}
 .cap-wrap{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
 code.c{font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace;color:var(--strong);letter-spacing:.02em}
 code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}
@@ -843,13 +844,21 @@ def Steps(items: list[tuple]) -> str:
     return f'<div class="steps">{Rows(rows)}</div>'
 
 
-def Capture(src: str, w: int, h: int, alt: str, tag: str = '', tall: bool = False, lazy: bool = True) -> str:
-    """A client screenshot at its own aspect, capped at its native width and 420 px high (900 for a portrait capture)."""
+def Capture(src: str, w: int, h: int, alt: str, tag: str = '', tall: bool = False, lazy: bool = True,
+            narrow: dict | None = None) -> str:
+    """A client screenshot at its own aspect, capped at its native width and 420 px high (900 for a portrait capture).
+    `narrow` ({src, width, height}: a tighter crop of the same picture) replaces it under 640 px, as ui/Capture.svelte's does."""
     t = f'{Tag(tag, "muted")}' if tag else ''
     lz = ' loading="lazy"' if lazy else ''
+    image = f'<img src="{src}" width="{w}" height="{h}" alt="{escape(alt, quote=True)}"{lz} decoding="async">'
+    cls, ar_narrow = 'cap', ''
+    if narrow is not None:
+        cls, ar_narrow = 'cap has-narrow', f';--ar-n:{narrow["width"]} / {narrow["height"]}'
+        image = (f'<picture><source media="(max-width: 639px)" srcset="{narrow["src"]}" width="{narrow["width"]}" '
+                 f'height="{narrow["height"]}">{image}</picture>')
     # The picture links to its own file (spec 3A), as the built Capture does.
-    return (f'<div class="cap-wrap"><a class="cap" href="{src}" style="--w:{w}px;--ar:{w} / {h};--mh:{900 if tall else 420}px">'
-            f'<img src="{src}" width="{w}" height="{h}" alt="{escape(alt, quote=True)}"{lz} decoding="async"></a>{t}</div>')
+    return (f'<div class="cap-wrap"><a class="{cls}" href="{src}" '
+            f'style="--w:{w}px;--ar:{w} / {h};--mh:{900 if tall else 420}px{ar_narrow}">{image}</a>{t}</div>')
 
 
 def Code(text: str, big: bool = False) -> str:

@@ -72,7 +72,7 @@ const title =
       ? bisSeoCopy.preRaidTitle(subject)
       : isBandPage
         ? bisSeoCopy.bandTitle(subject, band)
-        : bisSeoCopy.specTitle(subject, firstBand);
+        : bisSeoCopy.specTitle(subject);
 const description =
   firstBand === undefined || band === undefined
     ? bisCopy.metaDescription(specEntry.name, className)

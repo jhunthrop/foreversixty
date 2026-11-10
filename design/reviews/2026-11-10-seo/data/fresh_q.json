@@ -1,0 +1,55 @@
+{
+  "rows": [
+    {
+      "keys": [
+        "seventy upgrades",
+        "https://foreversixty.gg/"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 78
+    },
+    {
+      "keys": [
+        "sim wow",
+        "https://foreversixty.gg/sim"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 98
+    },
+    {
+      "keys": [
+        "sixty upgrades",
+        "https://foreversixty.gg/"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 36
+    },
+    {
+      "keys": [
+        "sixtyupgrades",
+        "https://foreversixty.gg/"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 72.5
+    },
+    {
+      "keys": [
+        "sixtyupgrades forever",
+        "https://foreversixty.gg/"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 6.666666666666667
+    }
+  ],
+  "responseAggregationType": "byPage"
+}

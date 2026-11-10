@@ -105,6 +105,14 @@
         <!-- In, Late, Bench and Out (and Late's minutes) answered from the notification, in the background. -->
         <receiver android:name=".raids.push.RaidActionReceiver" android:exported="false" />
 
+        <!-- The flat seal and its turquoise for any notification FCM draws itself. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification_seal" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/notification_accent" />
+
         <!-- Push (spec 2026-11-08 F1, F4): FCM tokens and data messages, drawn by PushNotifier. -->
         <service android:name=".push.ForeverMessagingService" android:exported="false">
             <intent-filter>

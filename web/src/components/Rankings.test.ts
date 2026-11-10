@@ -37,9 +37,9 @@ describe('Rankings', () => {
 
   it('prints one Updated stamp at most, and names no sign-in control of its own', () => {
     const { body } = render(Rankings, { props: { slug: 'ragnaros' } });
-    // One stamp, held invisible at its width until the board answers (no shift when it does).
-    expect(body.match(/Updated /g) ?? []).toHaveLength(1);
-    expect(body).toMatch(/data-testid="rankings-updated" class="invisible"/);
+    // No date is printed before the board answers; the stamp follows the tier link, so it moves nothing.
+    expect(body).not.toMatch(/Updated /);
+    expect(body).not.toMatch(/data-testid="rankings-updated"/);
     expect(body).not.toMatch(/Sign in with/i);
   });
 

@@ -10,6 +10,7 @@ import links from './src/data/links.json';
 import { assertLinksAreReal } from './src/lib/links';
 import { LOCAL_GUILD_SHELL_PATH } from './src/lib/report/shell-paths';
 import { isNoindexPath } from './src/lib/noindex-paths.mjs';
+import { isSelfCanonical } from './src/lib/sitemap-canonical.mjs';
 import { shipDist } from './scripts/inline-code.mjs';
 import { DUCKDB_WASM_VERSION, RUNTIME_MODULES, stagingDir } from './scripts/duckdb-runtime.mjs';
 
@@ -106,6 +107,8 @@ const shipMinified = {
 };
 
 const webRoot = fileURLToPath(new URL('.', import.meta.url));
+// Astro's default outDir; the sitemap filter reads each built page's canonical out of it.
+const distDir = join(webRoot, 'dist');
 const contractFixtures = fileURLToPath(new URL('../docs/contracts/fixtures', import.meta.url));
 // The words the site and both apps share (apps/shared/copy/shared.json, lib/copy/shared.ts).
 const sharedCopy = fileURLToPath(new URL('../apps/shared/copy', import.meta.url));
@@ -188,7 +191,10 @@ export default defineConfig({
         !page.endsWith('/character') &&
         !page.endsWith('/character/') &&
         !page.endsWith('/app/auth') &&
-        !page.includes('/admin/'),
+        !page.includes('/admin/') &&
+        // An alias canonical to another page (/60/pre-raid while it is the /60 list) stays out:
+        // the sitemap names only URLs the pages themselves ask to be indexed.
+        isSelfCanonical(distDir, page),
       // lastmod comes from each content file's `updated` field, so a page's sitemap entry
       // moves only when its facts do; pages without a content file carry no lastmod.
       serialize: (item) => {

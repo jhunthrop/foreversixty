@@ -143,7 +143,7 @@ func TestEachTrayICOHasEveryWindowsTrayScale(t *testing.T) {
 }
 
 func TestTheTrayIconsCarryADotInTheToneAndOffIsThePlainSeal(t *testing.T) {
-	// The dot sits in the lower right corner of the 32 px icon, centred on (26, 26),
+	// The dot sits over the ring at the lower right of the 32 px icon, centred near (26.8, 26.8),
 	// and is the headline's tone, the same token the window's --tone-* reads
 	// (ui/styles.css); off has no dot there.
 	want := map[string][3]uint32{
@@ -173,7 +173,7 @@ func TestTheTrayIconsCarryADotInTheToneAndOffIsThePlainSeal(t *testing.T) {
 		if near(rgb(plain, 25, 25), want[tone]) {
 			t.Errorf("%s: the plain seal already has this colour at the dot", tone)
 		}
-		if got := rgb(img, 20, 25); !near(got, ring) {
+		if got := rgb(img, 22, 28); !near(got, ring) {
 			t.Errorf("%s: ring pixel = %v, want %v", tone, got, ring)
 		}
 	}

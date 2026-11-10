@@ -17,6 +17,7 @@
   import { TOOL_SKELETONS } from '../../../lib/sim/bulk-skeleton';
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
   import type { Origin } from '../../../lib/sim/candidates';
+  import type { PublishedWeights } from '../../../lib/sim/published-weights';
   import Page from '../../ui/Page.svelte';
   import ToolCharacterLine from './ToolCharacterLine.svelte';
   import { syncTabHrefs } from '../../../lib/sim/tabs';
@@ -25,7 +26,14 @@
   import SourceSwitcher from '../SourceSwitcher.svelte';
   import LoadError from '../../ui/LoadError.svelte';
 
-  let { tool }: { tool: SimTool } = $props();
+  let {
+    tool,
+    defaultWeights = null,
+  }: {
+    tool: SimTool;
+    /** /sim/weights only: the default spec's published figures, read off the mount. */
+    defaultWeights?: PublishedWeights | null;
+  } = $props();
 
   const bootstrap = untrack(() => {
     const { source, ref, code, keep } = parseSimState(window.location.search);
@@ -250,6 +258,7 @@
         {store}
         {me}
         lead={store.character !== null && !switcherOpen ? characterLine : undefined}
+        {defaultWeights}
       />
     {:else}
       {@render lazyFallback(viewLazy)}

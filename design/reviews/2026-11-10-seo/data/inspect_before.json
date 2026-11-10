@@ -1,0 +1,794 @@
+[
+ {
+  "url": "https://foreversixty.gg/sim",
+  "before": 644,
+  "after": 5,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-08T22:31:18Z",
+  "gcanon": "https://foreversixty.gg/sim"
+ },
+ {
+  "url": "https://foreversixty.gg/sources",
+  "before": 190,
+  "after": 2,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-06T09:15:26Z",
+  "gcanon": "https://foreversixty.gg/sources"
+ },
+ {
+  "url": "https://foreversixty.gg/",
+  "before": 324,
+  "after": 34,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T17:38:48Z",
+  "gcanon": "https://foreversixty.gg/"
+ },
+ {
+  "url": "https://foreversixty.gg/tiers/healer",
+  "before": 115,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-16T15:51:02Z",
+  "gcanon": "https://foreversixty.gg/tiers/healer"
+ },
+ {
+  "url": "https://foreversixty.gg/bis",
+  "before": 54,
+  "after": 3,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-08T21:16:17Z",
+  "gcanon": "https://foreversixty.gg/bis"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/druid/feral",
+  "before": 150,
+  "after": 11,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-07T02:49:46Z",
+  "gcanon": "https://foreversixty.gg/guides/druid/feral"
+ },
+ {
+  "url": "https://foreversixty.gg/rankings",
+  "before": 33,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-07T06:19:46Z",
+  "gcanon": "https://foreversixty.gg/rankings"
+ },
+ {
+  "url": "https://foreversixty.gg/tiers/tank",
+  "before": 40,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-16T10:51:04Z",
+  "gcanon": "https://foreversixty.gg/tiers/tank"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/paladin/protection",
+  "before": 12,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-15T23:36:02Z",
+  "gcanon": "https://foreversixty.gg/bis/paladin/protection"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/mage/fire",
+  "before": 40,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-11T10:25:49Z",
+  "gcanon": "https://foreversixty.gg/guides/mage/fire"
+ },
+ {
+  "url": "https://foreversixty.gg/setup",
+  "before": 25,
+  "after": 2,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T14:02:55Z",
+  "gcanon": "https://foreversixty.gg/setup"
+ },
+ {
+  "url": "https://foreversixty.gg/sim/specs",
+  "before": 14,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-17T13:28:32Z",
+  "gcanon": "https://foreversixty.gg/sim/specs"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/paladin/retribution",
+  "before": 37,
+  "after": 0,
+  "state": "Crawled - currently not indexed",
+  "crawl": "2026-10-13T07:50:50Z",
+  "gcanon": "https://foreversixty.gg/bis/paladin/retribution"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/warrior/arms",
+  "before": 1,
+  "after": 0,
+  "state": "Crawled - currently not indexed",
+  "crawl": "2026-10-01T17:16:30Z",
+  "gcanon": "https://foreversixty.gg/bis/warrior/arms"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/hunter",
+  "before": 7,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T15:17:55Z",
+  "gcanon": "https://foreversixty.gg/guides/hunter"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/hunter/survival",
+  "before": 41,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-19T13:31:57Z",
+  "gcanon": "https://foreversixty.gg/guides/hunter/survival"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/paladin/protection",
+  "before": 30,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-19T12:16:53Z",
+  "gcanon": "https://foreversixty.gg/guides/paladin/protection"
+ },
+ {
+  "url": "https://foreversixty.gg/logs",
+  "before": 16,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-12T00:53:23Z",
+  "gcanon": "https://foreversixty.gg/logs"
+ },
+ {
+  "url": "https://foreversixty.gg/planner",
+  "before": 31,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-08T17:53:58Z",
+  "gcanon": "https://foreversixty.gg/planner"
+ },
+ {
+  "url": "http://foreversixty.gg/",
+  "before": 1,
+  "after": 0,
+  "state": "Page with redirect",
+  "crawl": "2026-10-28T16:56:46Z",
+  "gcanon": "https://foreversixty.gg/"
+ },
+ {
+  "url": "http://foreversixty.gg/guides/hunter/survival",
+  "before": 1,
+  "after": 0,
+  "state": "Alternate page with proper canonical tag",
+  "crawl": "2026-10-10T01:47:51Z",
+  "gcanon": "https://foreversixty.gg/guides/hunter/survival"
+ },
+ {
+  "url": "http://foreversixty.gg/guides/mage/fire",
+  "before": 1,
+  "after": 0,
+  "state": "Alternate page with proper canonical tag",
+  "crawl": "2026-09-27T10:02:59Z",
+  "gcanon": "https://foreversixty.gg/guides/mage/fire"
+ },
+ {
+  "url": "http://foreversixty.gg/guides/shaman/restoration",
+  "before": 13,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-09-29T18:42:39Z",
+  "gcanon": "http://foreversixty.gg/guides/shaman/restoration"
+ },
+ {
+  "url": "https://foreversixty.gg/about",
+  "before": 16,
+  "after": 5,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-06T08:11:41Z",
+  "gcanon": "https://foreversixty.gg/about"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/druid/balance",
+  "before": 1,
+  "after": 3,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-06T13:00:27Z",
+  "gcanon": "https://foreversixty.gg/bis/druid/balance"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/druid/feral",
+  "before": 8,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-09T20:35:40Z",
+  "gcanon": "https://foreversixty.gg/bis/druid/feral"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/druid/restoration",
+  "before": 8,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-15T11:43:35Z",
+  "gcanon": "https://foreversixty.gg/bis/druid/restoration"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/hunter/beast-mastery",
+  "before": 1,
+  "after": 0,
+  "state": "Crawled - currently not indexed",
+  "crawl": "2026-10-01T18:50:10Z",
+  "gcanon": "https://foreversixty.gg/bis/hunter/beast-mastery"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/hunter/marksmanship",
+  "before": 1,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-12T19:58:21Z",
+  "gcanon": "https://foreversixty.gg/bis/hunter/marksmanship"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/hunter/survival",
+  "before": 1,
+  "after": 0,
+  "state": "Crawled - currently not indexed",
+  "crawl": "2026-10-01T13:19:08Z",
+  "gcanon": "https://foreversixty.gg/bis/hunter/survival"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/mage/arcane",
+  "before": 2,
+  "after": 1,
+  "state": "Crawled - currently not indexed",
+  "crawl": "2026-10-09T19:45:41Z",
+  "gcanon": "https://foreversixty.gg/bis/mage/arcane"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/paladin/holy",
+  "before": 14,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-13T23:12:33Z",
+  "gcanon": "https://foreversixty.gg/bis/paladin/holy"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/priest/holy",
+  "before": 1,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-01T06:10:31Z",
+  "gcanon": "https://foreversixty.gg/bis/priest/holy"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/rogue/assassination",
+  "before": 1,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-13T00:20:50Z",
+  "gcanon": "https://foreversixty.gg/bis/rogue/assassination"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/rogue/combat",
+  "before": 6,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-10T07:48:48Z",
+  "gcanon": "https://foreversixty.gg/bis/rogue/combat"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/rogue/subtlety",
+  "before": 1,
+  "after": 0,
+  "state": "Crawled - currently not indexed",
+  "crawl": "2026-10-09T23:30:40Z",
+  "gcanon": "https://foreversixty.gg/bis/rogue/subtlety"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/shaman/elemental",
+  "before": 1,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-19T10:11:56Z",
+  "gcanon": "https://foreversixty.gg/bis/shaman/elemental"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/shaman/restoration",
+  "before": 2,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-06T12:10:27Z",
+  "gcanon": "https://foreversixty.gg/bis/shaman/restoration"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/warlock/destruction",
+  "before": 1,
+  "after": 1,
+  "state": "Crawled - currently not indexed",
+  "crawl": "2026-10-09T21:25:40Z",
+  "gcanon": "https://foreversixty.gg/bis/warlock/destruction"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/warrior/fury",
+  "before": 1,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-09T22:40:40Z",
+  "gcanon": "https://foreversixty.gg/bis/warrior/fury"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/warrior/protection",
+  "before": 25,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-14T09:26:17Z",
+  "gcanon": "https://foreversixty.gg/bis/warrior/protection"
+ },
+ {
+  "url": "https://foreversixty.gg/changelog",
+  "before": 7,
+  "after": 2,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T20:30:39Z",
+  "gcanon": "https://foreversixty.gg/changelog"
+ },
+ {
+  "url": "https://foreversixty.gg/character",
+  "before": 2,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-04T23:12:25Z",
+  "gcanon": "https://foreversixty.gg/character"
+ },
+ {
+  "url": "https://foreversixty.gg/guides",
+  "before": 13,
+  "after": 2,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T20:55:38Z",
+  "gcanon": "https://foreversixty.gg/guides"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/druid",
+  "before": 2,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-01T16:01:29Z",
+  "gcanon": "https://foreversixty.gg/guides/druid"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/mage",
+  "before": 6,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-09-29T17:47:30Z",
+  "gcanon": "https://foreversixty.gg/guides/mage"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/paladin",
+  "before": 11,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T23:03:48Z",
+  "gcanon": "https://foreversixty.gg/guides/paladin"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/priest",
+  "before": 7,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T03:53:48Z",
+  "gcanon": "https://foreversixty.gg/guides/priest"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/rogue/subtlety",
+  "before": 10,
+  "after": 1,
+  "state": "Crawled - currently not indexed",
+  "crawl": "2026-11-07T05:04:44Z",
+  "gcanon": "https://foreversixty.gg/guides/rogue/subtlety"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/shaman/elemental",
+  "before": 12,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-09-29T13:03:46Z",
+  "gcanon": "https://foreversixty.gg/guides/shaman/elemental"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/warlock",
+  "before": 13,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T02:38:48Z",
+  "gcanon": "https://foreversixty.gg/guides/warlock"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/warrior",
+  "before": 7,
+  "after": 2,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T21:20:39Z",
+  "gcanon": "https://foreversixty.gg/guides/warrior"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/warrior/fury",
+  "before": 15,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-01T07:25:32Z",
+  "gcanon": "https://foreversixty.gg/guides/warrior/fury"
+ },
+ {
+  "url": "https://foreversixty.gg/guild",
+  "before": 6,
+  "after": 2,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T06:23:48Z",
+  "gcanon": "https://foreversixty.gg/guild"
+ },
+ {
+  "url": "https://foreversixty.gg/login",
+  "before": 5,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-14T12:46:17Z",
+  "gcanon": "https://foreversixty.gg/login"
+ },
+ {
+  "url": "https://foreversixty.gg/premium",
+  "before": 10,
+  "after": 2,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-10T04:03:48Z",
+  "gcanon": "https://foreversixty.gg/premium"
+ },
+ {
+  "url": "https://foreversixty.gg/privacy",
+  "before": 5,
+  "after": 3,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-09T05:08:48Z",
+  "gcanon": "https://foreversixty.gg/privacy"
+ },
+ {
+  "url": "https://foreversixty.gg/rankings/blightbone",
+  "before": 1,
+  "after": 0,
+  "state": "Excluded by \u2018noindex\u2019 tag",
+  "crawl": "2026-11-07T12:05:00Z",
+  "gcanon": "https://foreversixty.gg/rankings"
+ },
+ {
+  "url": "https://foreversixty.gg/rankings/echelon",
+  "before": 2,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-12T16:50:50Z",
+  "gcanon": "https://foreversixty.gg/rankings/echelon"
+ },
+ {
+  "url": "https://foreversixty.gg/rankings/general-kaal",
+  "before": 2,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-13T12:50:51Z",
+  "gcanon": "https://foreversixty.gg/rankings/general-kaal"
+ },
+ {
+  "url": "https://foreversixty.gg/rankings/grand-proctor-beryllia",
+  "before": 1,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-09-30T08:12:44Z",
+  "gcanon": "https://foreversixty.gg/rankings/grand-proctor-beryllia"
+ },
+ {
+  "url": "https://foreversixty.gg/rankings/kryxis-the-voracious",
+  "before": 2,
+  "after": 0,
+  "state": "Excluded by \u2018noindex\u2019 tag",
+  "crawl": "2026-11-04T14:40:09Z",
+  "gcanon": "https://foreversixty.gg/rankings"
+ },
+ {
+  "url": "https://foreversixty.gg/ratings",
+  "before": 1,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-02T12:22:24Z",
+  "gcanon": "https://foreversixty.gg/ratings"
+ },
+ {
+  "url": "https://foreversixty.gg/refunds",
+  "before": 35,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-04T03:23:01Z",
+  "gcanon": "https://foreversixty.gg/refunds"
+ },
+ {
+  "url": "https://foreversixty.gg/reports/5lop7n5kwysf",
+  "before": 1,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-16T17:59:11Z",
+  "gcanon": "https://foreversixty.gg/reports/5lop7n5kwysf"
+ },
+ {
+  "url": "https://foreversixty.gg/reports/sample",
+  "before": 2,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-06T08:37:56Z",
+  "gcanon": "https://foreversixty.gg/reports/sample"
+ },
+ {
+  "url": "https://foreversixty.gg/roadmap",
+  "before": 1,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-02T06:30:34Z",
+  "gcanon": "https://foreversixty.gg/roadmap"
+ },
+ {
+  "url": "https://foreversixty.gg/sim/talents",
+  "before": 4,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-13T17:04:42Z",
+  "gcanon": "https://foreversixty.gg/sim/talents"
+ },
+ {
+  "url": "https://foreversixty.gg/sim/weights",
+  "before": 2,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-08T19:08:58Z",
+  "gcanon": "https://foreversixty.gg/sim/weights"
+ },
+ {
+  "url": "https://foreversixty.gg/terms",
+  "before": 5,
+  "after": 4,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-27T07:54:52Z",
+  "gcanon": "https://foreversixty.gg/terms"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/druid/feral-bear",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/bis/mage/fire",
+  "before": 0,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-07T23:37:07Z",
+  "gcanon": "https://foreversixty.gg/bis/mage/fire"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/mage/frost",
+  "before": 0,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-11-10T02:48:49Z",
+  "gcanon": "https://foreversixty.gg/bis/mage/frost"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/priest/discipline",
+  "before": 0,
+  "after": 0,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-01T06:02:16Z",
+  "gcanon": "https://foreversixty.gg/bis/priest/discipline"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/priest/shadow",
+  "before": 0,
+  "after": 0,
+  "state": "Crawled - currently not indexed",
+  "crawl": "2026-10-21T07:04:25Z",
+  "gcanon": "https://foreversixty.gg/bis/priest/shadow"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/shaman/enhancement",
+  "before": 0,
+  "after": 0,
+  "state": "Crawled - currently not indexed",
+  "crawl": "2026-10-08T19:14:44Z",
+  "gcanon": "https://foreversixty.gg/bis/shaman/enhancement"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/warlock/affliction",
+  "before": 0,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-19T16:26:56Z",
+  "gcanon": "https://foreversixty.gg/bis/warlock/affliction"
+ },
+ {
+  "url": "https://foreversixty.gg/bis/warlock/demonology",
+  "before": 0,
+  "after": 1,
+  "state": "Submitted and indexed",
+  "crawl": "2026-10-19T15:11:52Z",
+  "gcanon": "https://foreversixty.gg/bis/warlock/demonology"
+ },
+ {
+  "url": "https://foreversixty.gg/guides/druid/balance",
+  "before": 0,
+  "after": 0,
+  "state": "URL is unknown to Google",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/druid/feral-bear",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/druid/restoration",
+  "before": 0,
+  "after": 0,
+  "state": "URL is unknown to Google",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/hunter/beast-mastery",
+  "before": 0,
+  "after": 0,
+  "state": "URL is unknown to Google",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/hunter/marksmanship",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/mage/arcane",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/mage/frost",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/paladin/holy",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/paladin/retribution",
+  "before": 0,
+  "after": 0,
+  "state": "URL is unknown to Google",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/priest/discipline",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/priest/holy",
+  "before": 0,
+  "after": 0,
+  "state": "URL is unknown to Google",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/priest/shadow",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/rogue/assassination",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/rogue/combat",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/shaman/enhancement",
+  "before": 0,
+  "after": 0,
+  "state": "URL is unknown to Google",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/shaman/restoration",
+  "before": 0,
+  "after": 0,
+  "state": "URL is unknown to Google",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/warlock/affliction",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/warlock/demonology",
+  "before": 0,
+  "after": 0,
+  "state": "URL is unknown to Google",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/warlock/destruction",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/warrior/arms",
+  "before": 0,
+  "after": 0,
+  "state": "Discovered - currently not indexed",
+  "crawl": null,
+  "gcanon": null
+ },
+ {
+  "url": "https://foreversixty.gg/guides/warrior/protection",
+  "before": 0,
+  "after": 0,
+  "state": "URL is unknown to Google",
+  "crawl": null,
+  "gcanon": null
+ }
+]

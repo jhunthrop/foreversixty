@@ -1,5 +1,7 @@
 // web/src/lib/bis/seo-copy.test.ts
 import { describe, expect, it } from 'vitest';
+import { TITLE_MAX_LENGTH } from '../seo';
+import { readSpecCatalog } from './load';
 import { bisSeoCopy } from './seo-copy';
 
 const fury = { fullName: 'Fury Warrior', preRaid: true };
@@ -8,7 +10,7 @@ const furyRaids = { ...fury, preRaid: false };
 describe('bisSeoCopy', () => {
   it('puts the spec before the class, as players search, and never an em dash', () => {
     const all = [
-      bisSeoCopy.specTitle(fury, 20),
+      bisSeoCopy.specTitle(fury),
       bisSeoCopy.bandTitle(fury, 40),
       bisSeoCopy.bandTitle(fury, 60),
       bisSeoCopy.heading(fury),
@@ -20,9 +22,7 @@ describe('bisSeoCopy', () => {
       expect(text.startsWith('Fury Warrior')).toBe(true);
       expect(text).not.toContain('—');
     }
-    expect(bisSeoCopy.specTitle(fury, 20)).toBe(
-      'Fury Warrior BiS: Pre-Raid and Leveling 20 to 60, WoW Forever',
-    );
+    expect(bisSeoCopy.specTitle(fury)).toBe('Fury Warrior BiS: Pre-Raid and Leveling, WoW Forever');
     expect(bisSeoCopy.bandTitle(fury, 40)).toBe('Fury Warrior BiS, Levels 40 to 49, WoW Forever');
   });
 
@@ -31,12 +31,27 @@ describe('bisSeoCopy', () => {
     expect(bisSeoCopy.meta(furyRaids, 60)).toBe('Best in slot · Level 60');
     expect(bisSeoCopy.bandCrumb(fury, 60)).toBe('Fury Warrior Pre-Raid BiS');
     expect(bisSeoCopy.bandCrumb(furyRaids, 60)).toBe('Fury Warrior BiS, Level 60');
-    expect(bisSeoCopy.specTitle(furyRaids, 20)).not.toContain('Pre-Raid');
+    expect(bisSeoCopy.specTitle(furyRaids)).not.toContain('Pre-Raid');
     expect(bisSeoCopy.bandTitle(furyRaids, 60)).toBe('Fury Warrior BiS, Level 60, WoW Forever');
   });
 
   it('keeps the h1 to the spec heading and names the band in words under it', () => {
     expect(bisSeoCopy.heading(fury)).toBe('Fury Warrior BiS');
     expect(bisSeoCopy.meta(fury, 40)).toBe('Best in slot · Levels 40 to 49');
+  });
+
+  it('keeps every spec page and band page title within the search cut-off', () => {
+    const titles = readSpecCatalog().flatMap((spec) =>
+      [true, false].flatMap((preRaid) => {
+        const subject = { fullName: spec.full_name, preRaid };
+        return [
+          bisSeoCopy.specTitle(subject),
+          bisSeoCopy.preRaidTitle(subject),
+          ...[20, 30, 40, 50, 60].map((band) => bisSeoCopy.bandTitle(subject, band)),
+        ];
+      }),
+    );
+    expect(titles.length).toBeGreaterThan(0);
+    expect(titles.filter((title) => title.length > TITLE_MAX_LENGTH)).toEqual([]);
   });
 });

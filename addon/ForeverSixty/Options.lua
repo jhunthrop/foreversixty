@@ -42,6 +42,7 @@ local LootCouncil = ns.LootCouncil or require("LootCouncil")
 local RaidDrops = ns.RaidDrops or require("RaidDrops")
 local SiteStatus = ns.SiteStatus or require("SiteStatus")
 local Panel = ns.Panel or require("Panel")
+local Onboarding = ns.Onboarding or require("Onboarding")
 
 local Options = {}
 Options.data = Data
@@ -194,9 +195,12 @@ function Options.handle(input)
 	elseif command == "record" then
 		return Recorder.command(rest)
 	elseif command == "welcome" then
-		-- The first-login welcome again (X.7); it does not touch the stamp.
-		return SiteStatus.welcomeLines()
+		-- The tour again (testers' alias of /fs help's tour).
+		Onboarding.open(1)
+		return {}
 	elseif command == "help" then
+		-- The tour on page 1 (design/specs/2026-11-08-addon-ux.md 3.1), then the command list.
+		Onboarding.open(1)
 		-- The player's commands; "/fs help all" adds the testers' two lines, muted (A.2: the
 		-- player's help carries nothing a tester reads).
 		local lines = Options.helpLines()
@@ -715,6 +719,9 @@ function Options.register()
 	-- the compartment entry are its doors.
 	Panel.data = Options.data
 	Panel.register()
+	-- The first-run tour: its events now, its window on the first show.
+	Onboarding.data = Options.data
+	Onboarding.register()
 	MinimapButton.openPanel = function()
 		Panel.data = Options.data
 		return Panel.toggle("compartment")

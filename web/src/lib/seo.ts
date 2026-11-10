@@ -15,7 +15,7 @@ export const TITLE_MAX_LENGTH = 60;
 
 /**
  * The <title> and og:title of a page: the home page's own line, else
- * "<page> · Forever Sixty · WoW Forever". A title that would run past TITLE_MAX_LENGTH keeps the
+ * "<page> · Forever Sixty · WoW Forever" (the brand once, never twice). A title that would run past TITLE_MAX_LENGTH keeps the
  * game tag (what people search for) and drops the brand, which og:site_name still carries.
  */
 export function pageTitle(path: string, title: string): string {
@@ -26,6 +26,9 @@ export function pageTitle(path: string, title: string): string {
     const withBrand = `${title} · ${SITE_NAME}`;
     return withBrand.length <= TITLE_MAX_LENGTH ? withBrand : title;
   }
+  // A title that already names the brand ("About Forever Sixty") takes the game tag alone:
+  // "About Forever Sixty · Forever Sixty · WoW Forever" reads as a template slip to a searcher.
+  if (title.includes(SITE_NAME)) return `${title} · ${TITLE_GAME_TAG}`;
   const branded = `${title} · ${SITE_NAME} · ${TITLE_GAME_TAG}`;
   return branded.length <= TITLE_MAX_LENGTH ? branded : `${title} · ${TITLE_GAME_TAG}`;
 }

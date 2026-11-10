@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The flat seal's turquoise (design/assets/brand/seal-flat): the accent behind the
+         notification small icon, for FCM's default notification and the app's own builders. -->
+    <color name="notification_accent">#FF2C8A9E</color>
+    <!-- The same turquoise at 30% for a progress bar's track: the fill holds 3:1 or better against
+         the track and against both shades (about 4.3:1 on the dark shade, 3.8:1 on the light). -->
+    <color name="notification_accent_track">#4D2C8A9E</color>
+</resources>

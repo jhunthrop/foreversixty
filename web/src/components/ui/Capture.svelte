@@ -2,14 +2,23 @@
 <!-- A client screenshot at its own aspect (setup spec 2026-11-07 section 3A): a 1 px --line-soft
      frame, 4 px radius, --raised behind object-fit: contain, capped at its native width and 420 px
      high (900 for a portrait capture, or `maxHeight`), width and height set so nothing moves as it
-     loads, lazy unless `eager`. The image links to its own file; a sample carries a muted Tag. -->
+     loads, lazy unless `eager`. The image links to its own file; a sample carries a muted Tag. A
+     `narrow` source (a tighter crop of the same picture) replaces it under 640 px, at its own aspect. -->
 <script lang="ts">
   import Tag from './Tag.svelte';
+
+  /** A tighter crop of the same capture, shown under 640 px so its text stays legible. */
+  interface NarrowSource {
+    src: string;
+    width: number;
+    height: number;
+  }
 
   let {
     src,
     width,
     height,
+    narrow,
     alt,
     tag,
     tall = false,
@@ -20,6 +29,7 @@
     src: string;
     width: number;
     height: number;
+    narrow?: NarrowSource;
     alt: string;
     /** A muted Tag under the picture (`Example`). */
     tag?: string;
@@ -34,16 +44,36 @@
   const cap = $derived(maxHeight ?? (tall ? 900 : 420));
 </script>
 
+{#snippet image()}
+  <img {src} {width} {height} {alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+{/snippet}
+
 <div class="ui-capture" data-testid={testid}>
-  <a
-    class="ui-capture-frame"
-    href={src}
-    style:max-width="{width}px"
-    style:max-height="{cap}px"
-    style:aspect-ratio="{width} / {height}"
-  >
-    <img {src} {width} {height} {alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
-  </a>
+  {#if narrow}
+    <a
+      class="ui-capture-frame ui-capture-frame-narrow"
+      href={src}
+      style:max-width="{width}px"
+      style:max-height="{cap}px"
+      style:--capture-ratio="{width} / {height}"
+      style:--capture-ratio-narrow="{narrow.width} / {narrow.height}"
+    >
+      <picture>
+        <source media="(max-width: 639px)" srcset={narrow.src} width={narrow.width} height={narrow.height} />
+        {@render image()}
+      </picture>
+    </a>
+  {:else}
+    <a
+      class="ui-capture-frame"
+      href={src}
+      style:max-width="{width}px"
+      style:max-height="{cap}px"
+      style:aspect-ratio="{width} / {height}"
+    >
+      {@render image()}
+    </a>
+  {/if}
   {#if tag}<Tag tone="muted">{tag}</Tag>{/if}
 </div>
 
@@ -62,6 +92,17 @@
     border: 1px solid var(--color-line-soft);
     border-radius: 4px;
     background: var(--color-raised);
+  }
+  .ui-capture-frame-narrow {
+    aspect-ratio: var(--capture-ratio);
+  }
+  @media (max-width: 639px) {
+    .ui-capture-frame-narrow {
+      aspect-ratio: var(--capture-ratio-narrow);
+    }
+  }
+  .ui-capture-frame picture {
+    display: contents;
   }
   .ui-capture-frame:hover {
     border-color: var(--color-line);

@@ -63,6 +63,27 @@ describe('downloads', () => {
   });
 });
 
+describe('the workers.dev preview host', () => {
+  // workers_dev is on, so foreversixty.<account>.workers.dev serves the whole site; the static
+  // pages there carry noindex from public/_headers, and the Worker marks what it answers itself.
+  it('marks every Worker answer on the preview host noindex', async () => {
+    const response = await worker.fetch(
+      new Request('https://foreversixty.jhunthrop.workers.dev/reports/5lop7n5kwysf'),
+      envWith(),
+    );
+    expect(response.status).toBe(301);
+    expect(response.headers.get('x-robots-tag')).toBe('noindex');
+  });
+
+  it('leaves the real host indexable', async () => {
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/reports/5lop7n5kwysf'),
+      envWith(),
+    );
+    expect(response.headers.get('x-robots-tag')).toBeNull();
+  });
+});
+
 describe('the sample report', () => {
   it('sends the old database id to the bundled page', async () => {
     const response = await worker.fetch(

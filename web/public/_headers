@@ -61,3 +61,10 @@
 /app/*
   Referrer-Policy: no-referrer
   Cache-Control: no-store
+
+# The workers.dev preview host (workers_dev in wrangler.jsonc) serves the whole site as a second
+# host. Its pages carry canonicals to foreversixty.gg; this keeps them out of the index outright,
+# so search signals stay on the one host. The Worker sets the same header on what it answers
+# itself (src/worker.ts markPreviewNoindex), since these rules never reach those responses.
+https://foreversixty.jhunthrop.workers.dev/*
+  X-Robots-Tag: noindex

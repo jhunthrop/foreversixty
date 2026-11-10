@@ -175,6 +175,17 @@ local function ownRealm()
 	return type(GetRealmName) == "function" and GetRealmName() or nil
 end
 
+--- Whether `name` (and `realm`, nil for this realm) is the logged-in character.
+function Score.isOwn(name, realm)
+	local own = Compat.playerName()
+	if own == nil or name == nil then
+		return false
+	end
+	local bare = name:match("^(.-)%-") or name
+	return bare == own and (realm == nil or realm == ownRealm())
+end
+
+
 --- The client's colour for a tier name, as r, g, b, a; nil for a tier this
 --- addon does not know, which shows the score uncoloured.
 function Score.tierColor(tier)
@@ -198,6 +209,30 @@ local function copy(record)
 	return out
 end
 
+--- The inbox's `own_score` message (contract 3) as a record in the nightly file's shape, for the
+--- player's own character only: a player who hid their score is left out of the nightly Data
+--- addon but still sees it. nil without one, or for anyone else.
+function Score.ownRecord(inbox, key)
+	local Codec = ns.Codec or require("Codec")
+	local message = Codec.inboxMessages(inbox, key, Score.OWN_KIND)[1]
+	if type(message) ~= "table" or type(message.score) ~= "number" then
+		return nil
+	end
+	local components = {}
+	for _, component in ipairs(Score.COMPONENTS) do
+		if type(message[component.key]) == "number" then
+			components[component.key] = message[component.key]
+		end
+	end
+	return { score = message.score, tier = message.tier, as_of = message.as_of, fights = message.fights,
+		components = components }
+end
+
+--- The inbox message the player's own record travels in; Codec.inboxMessages reads only the kinds
+--- it lists, so this module adds its own (it loads after Codec).
+Score.OWN_KIND = "own_score"
+;(ns.Codec or require("Codec")).MESSAGE_TYPES[Score.OWN_KIND] = true
+
 --- The record for a character, plus `asOfText` ("as of 4 Nov") and `tierColor`
 --- ({ r, g, b, a }, or nil for a tier it does not know). Nil for a character the
 --- record does not have, and for one with no logs yet: never a zero.
@@ -216,6 +251,11 @@ function Score.forCharacter(name, realm)
 			row = data.characters[name .. "-" .. realm]
 				or data.characters[name .. "-" .. realm:gsub("[%s%-]", "")]
 		end
+	end
+	if (type(row) ~= "table" or type(row.score) ~= "number") and Score.isOwn(name, realm) then
+		-- The player's own score, hidden from others, from the inbox (contract 3 `own_score`).
+		local Export = ns.Export or require("Export")
+		row = Score.ownRecord(_G.ForeverSixtyInbox, Export.characterKey())
 	end
 	if type(row) ~= "table" or type(row.score) ~= "number" then
 		return nil
