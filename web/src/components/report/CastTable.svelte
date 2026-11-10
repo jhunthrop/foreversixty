@@ -20,7 +20,7 @@
   import type { CastCounts } from '../../lib/report/exact';
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
-import { clockDuration } from '../../lib/format/duration';
+  import { clockDuration } from '../../lib/format/duration';
   import Section from '../ui/Section.svelte';
   import Spark from '../ui/Spark.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';

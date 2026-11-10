@@ -60,20 +60,20 @@ export function iconSlot(icon: NonNullable<ListRow['icon']>, colour: string | un
 
 /** The label with the filter's matched run in gold (§A4.3 Filter match). */
 function labelText(label: string, query: string, id: string, colour: string | undefined): HTMLElement {
-  const span = el('span', 'sel-row-label');
-  span.id = id;
-  if (colour !== undefined) span.style.color = colour;
+  const labelEl = el('span', 'sel-row-label');
+  labelEl.id = id;
+  if (colour !== undefined) labelEl.style.color = colour;
   const match = matchSpan(label, query);
   if (match === undefined) {
-    span.textContent = label;
-    return span;
+    labelEl.textContent = label;
+    return labelEl;
   }
-  span.append(
+  labelEl.append(
     label.slice(0, match.start),
     el('mark', 'sel-match', label.slice(match.start, match.end)),
     label.slice(match.end),
   );
-  return span;
+  return labelEl;
 }
 
 export interface RowContext {

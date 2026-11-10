@@ -16,7 +16,7 @@
   // hand-rolled toFixed(1) here would be a second formatter that drifts the day the first
   // one changes.
   import { percent } from '../../lib/format/number';
-  import { oneDecimal } from '../../lib/sim/result-copy';
+  import { oneDecimal } from '../../lib/format/number';
   import { resolveActionName, type ActionNames } from '../../lib/sim/action-names';
   import { simCopy } from '../../lib/sim/copy';
   import { classOfSpec, specLabel } from '../../lib/sim/spec-label';

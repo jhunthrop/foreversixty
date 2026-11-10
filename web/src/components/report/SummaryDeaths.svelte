@@ -7,8 +7,8 @@
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar } from '../../lib/report/format';
   import type { Summary } from '../../lib/report/types';
-import { clockDuration } from '../../lib/format/duration';
-import { compact } from '../../lib/format/number';
+  import { clockDuration } from '../../lib/format/duration';
+  import { compact } from '../../lib/format/number';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import ClassIcon from './ClassIcon.svelte';

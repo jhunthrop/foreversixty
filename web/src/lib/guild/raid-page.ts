@@ -5,9 +5,10 @@
 import type { GuildRaidView } from './api';
 import { countLine, countRatio, countdown, yourTimeLine } from './raid-copy';
 import { raidBreakdownLine } from './raid-comp';
-import { DEFAULT_LOCALE, clockText, zoneAbbreviation } from './raid-time';
+import { zoneAbbreviation } from './raid-time';
 import { chipStatus, raidEndsAt, type RaidChipStatus } from './planned-row';
 import { RAID_DONE_KEY_PREFIX, RAID_ROWS_KEY } from './reserve-keys';
+import { clock, longDay } from '../dates';
 
 /** Spec 4 "Poll": the raid page asks again every 10 s. */
 export const RAID_POLL_MS = 10_000;
@@ -63,27 +64,15 @@ export interface RaidWhen {
 /** Glues the zone to the end time, so a wrap never strands `CST` on its own line. */
 const NO_BREAK_SPACE = '\u00a0';
 
-function longDate(d: Date, tz: string, locale: string): string {
-  const parts = new Intl.DateTimeFormat(locale, {
-    timeZone: tz,
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  }).formatToParts(d);
-  const part = (type: Intl.DateTimeFormatPartTypes): string =>
-    parts.find((p) => p.type === type)?.value ?? '';
-  return `${part('weekday')} ${part('day')} ${part('month')}`;
-}
-
 /** The end clock: a raid that runs to midnight reads `midnight`, never `12:00 am` or `00:00`,
  *  which reads as the start of the day it began (guild loop round 3). */
 export const MIDNIGHT = 'midnight';
 const MIDNIGHT_H23 = '00:00';
 
 function endClock(endsAt: Date, tz: string, locale: string): string {
-  return clockText(endsAt, tz, `${DEFAULT_LOCALE}-u-hc-h23`, true) === MIDNIGHT_H23
+  return clock(endsAt, tz, { locale: 'en-GB', alwaysMinutes: true }) === MIDNIGHT_H23
     ? MIDNIGHT
-    : clockText(endsAt, tz, locale, true);
+    : clock(endsAt, tz, { locale, alwaysMinutes: true });
 }
 
 /** The band's when line (raid comp spec 3.1 line 4): the guild's date, times and zone first, then
@@ -93,8 +82,8 @@ export function raidWhen(raid: GuildRaidView, now: Date, viewerTz: string, local
   const endsAt = raidEndsAt(raid);
   const guildTz = raid.guild_timezone ?? viewerTz;
   return {
-    date: longDate(startsAt, guildTz, locale),
-    start: clockText(startsAt, guildTz, locale, true),
+    date: longDay(startsAt, guildTz),
+    start: clock(startsAt, guildTz, { locale, alwaysMinutes: true }),
     end: `${endClock(endsAt, guildTz, locale)}${NO_BREAK_SPACE}${zoneAbbreviation(guildTz, startsAt)}`,
     yourTime: yourTimeLine(startsAt, guildTz, viewerTz, locale),
     countdown: countdown(startsAt, endsAt, now),

@@ -4,15 +4,17 @@
 // profession, and the viewer's one next step. Pure, so every branch is pinned without a page;
 // GuildWeekOneCard.svelte draws it under the first raids' countdown.
 import phases from '../../data/phases.json';
-import { levelingGuideHref, levelingSpecKey, specNameOf } from '../leveling/leveling-plan';
+import { levelingGuideHref, levelingSpecKey } from '../leveling/leveling-plan';
+import { specRow } from '../sim/spec-label';
 import { SPECS } from '../sim/specs';
 import type { GuildRosterEntry, NextRaidView } from './api';
 import { isPrimaryProfession, professionName } from './professions';
 import { NOBODY_SIGNED_UP, whenPhrase } from './raid-copy';
-import { dateLabel } from './raid-time';
+
 import { RAID_LEVEL } from './readiness-view';
 import { sameSpecName } from './spec-name';
 import { guildGateCopy } from './copy';
+import { viewerZone, weekdayDayMonth } from '../dates';
 
 /** Characters under this are bank alts and fresh rolls, not raiders: the spread leaves them out. */
 const LOWEST_COUNTED_LEVEL = 10;
@@ -41,8 +43,8 @@ export const weekOneCopy = {
 } as const;
 
 /** The tier's raids open on this date, written the way every player knows it: "Wed 9 Dec". */
-export function raidsOpenDay(locale?: string): string {
-  return dateLabel(RAIDS_OPEN_AT, UTC, locale);
+export function raidsOpenDay(): string {
+  return weekdayDayMonth(RAIDS_OPEN_AT, UTC, RAIDS_OPEN_AT);
 }
 
 export function raidsAreOpen(now: Date): boolean {
@@ -200,7 +202,7 @@ export function characterSpecKey(classSlug: string, spec: string | null): string
 }
 
 function raidWhen(raid: NextRaidView, input: WeekOneInput): string {
-  const viewerTz = input.viewerTz ?? new Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const viewerTz = input.viewerTz ?? viewerZone();
   return whenPhrase(
     new Date(raid.starts_at),
     input.now,
@@ -255,7 +257,7 @@ function characterStep(character: WeekOneCharacter, level: number, input: WeekOn
   const specKey = characterSpecKey(character.class, character.spec);
   if (level >= RAID_LEVEL) {
     const slug = SPECS.find((entry) => entry.spec === specKey)?.spec_slug;
-    const before = raidsAreOpen(input.now) ? 'the first raid' : raidsOpenDay(input.locale);
+    const before = raidsAreOpen(input.now) ? 'the first raid' : raidsOpenDay();
     return {
       name: character.name,
       text: ` is level ${RAID_LEVEL}. Check your gear before ${before}.`,
@@ -275,7 +277,7 @@ function characterStep(character: WeekOneCharacter, level: number, input: WeekOn
     action: {
       kind: 'link',
       href: levelingGuideHref(levelingKey) ?? '/guides',
-      label: `Level as ${specNameOf(levelingKey) ?? character.class}`,
+      label: `Level as ${specRow(levelingKey)?.name ?? character.class}`,
     },
     invite: false,
   };

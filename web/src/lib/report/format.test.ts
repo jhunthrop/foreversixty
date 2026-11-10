@@ -1,16 +1,31 @@
 // web/src/lib/report/format.test.ts
 import { describe, expect, it } from 'vitest';
-import { classColorVar, formatClock, formatPerSecond, joinFacts, outcomeLabel, parseTitle, TRASH_PARSE, percentileToken, phaseReached, schoolName, schoolToken, formatAmountLike, formatLanded, formatShare } from './format';
+import {
+  classColorVar,
+  formatClock,
+  formatPerSecond,
+  joinFacts,
+  outcomeLabel,
+  parseTitle,
+  TRASH_PARSE,
+  percentileToken,
+  phaseReached,
+  schoolName,
+  schoolToken,
+  formatAmountLike,
+  formatLanded,
+  formatShare,
+} from './format';
 import { clockDuration, clockDurationPrecise } from '../format/duration';
 import { compact, ordinal, percent } from '../format/number';
 
 describe('report formatting', () => {
   it('formats durations as minutes and seconds, with tenths under a minute', () => {
-    expect(clockDuration(6400)).toBe('6.4s');
-    expect(clockDuration(40000)).toBe('40.0s');
+    expect(clockDuration(6400)).toBe('0:06.4');
+    expect(clockDuration(40000)).toBe('0:40');
     expect(clockDuration(107000)).toBe('1:47');
-    expect(clockDuration(3_723_000)).toBe('62:03');
-    expect(clockDuration(0)).toBe('0.0s');
+    expect(clockDuration(3_723_000)).toBe('1:02:03');
+    expect(clockDuration(0)).toBe('0:00');
   });
 
   it('formats wall-clock times from the engine’s ISO strings', () => {
@@ -66,7 +81,7 @@ describe('report formatting', () => {
 
   it('keeps tenths past a minute in the precise form, and names spell schools', () => {
     expect(clockDurationPrecise(61_400)).toBe('1:01.4');
-    expect(clockDurationPrecise(6400)).toBe('6.4s');
+    expect(clockDurationPrecise(6400)).toBe('0:06.4');
     expect(schoolName(1)).toBe('Physical');
     expect(schoolName(36)).toBe('Fire/Shadow');
     expect(schoolName(undefined)).toBe('Physical');

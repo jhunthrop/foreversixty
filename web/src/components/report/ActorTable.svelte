@@ -12,12 +12,13 @@
   import { formatRate } from '../../lib/report/frame';
   import type { Actor, RosterRow } from '../../lib/report/types';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
-import { clockDuration } from '../../lib/format/duration';
+  import { clockDuration } from '../../lib/format/duration';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
   import ActorRow from './ActorRow.svelte';
   import CopyCsv from './CopyCsv.svelte';
+  import { parseLabel, parseText, percentileToken } from '../../lib/report/format';
 
   type ActorTab = 'damage-done' | 'healing' | 'damage-taken';
 
@@ -115,7 +116,11 @@ import { clockDuration } from '../../lib/format/duration';
         ? [
             placed === undefined
               ? { value: parseFallback || '–', muted: true }
-              : { value: String(Math.floor(placed.percentile)) },
+              : {
+                  value: parseText(placed.percentile),
+                  color: percentileToken(placed.percentile),
+                  label: parseLabel(placed.percentile),
+                },
           ]
         : []),
       { value: `${mark}${compact(actor.effective)}` },

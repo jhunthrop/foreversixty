@@ -10,7 +10,7 @@
   import { applicantFacts } from '../../../lib/guild/applications-view';
   import { seatFill, waitedWords } from '../../../lib/guild/applicant-figures';
   import { outputFigure } from '../../../lib/guild/output-figure';
-  import { percentileToken } from '../../../lib/report/format';
+
   import { classTone } from '../../../lib/ui/primitives';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Button from '../../ui/Button.svelte';
@@ -19,6 +19,7 @@
   import { APPLICANT_ACTIONS, APPLICANT_COLUMNS } from './applicant-columns';
   import { SEP } from '../../../lib/guild/raid-copy';
   import { signed } from '../../../lib/guild/planner-facts';
+  import { parseFigure } from '../../../lib/report/format';
 
   let {
     application,
@@ -79,11 +80,10 @@
       {#if parse === null}<span class="text-muted">–</span>
       {:else}
         <span
-          >{#if parse.percentile !== null}<span
-              class="mr-1 inline-block h-3 w-1 rounded-sm align-[-1px]"
-              style:background={percentileToken(parse.percentile)}
-              aria-hidden="true"
-            ></span><b class="text-strong">{Math.floor(parse.percentile)}</b>{/if}
+          >{#if parse.percentile !== null}{@const figure = parseFigure(parse.percentile)}<b
+              style:color={figure.color}
+              aria-label={figure.label}>{figure.text}</b
+            >{/if}
           <span class="text-muted">{outputFigure(parse.value)}</span></span
         >
       {/if}

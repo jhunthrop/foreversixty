@@ -12,10 +12,11 @@ import { recordLine } from './loot-council-view';
 import { enchantSlotLabel } from './readiness-view';
 import { ratedOf } from './report-night-copy';
 import { outputFigure, topOutputLabel } from './output-figure';
-import { dateLabel } from './raid-time';
+
 import { specClassName } from './spec-name';
 import { profileCopy as copy } from './recruit-copy';
 import type { MemberNote, MemberProfile, ProfileNight } from './recruit-api';
+import { weekdayDayMonth } from '../dates';
 
 const SEP = ' · ';
 
@@ -156,13 +157,13 @@ export function readyTag(profile: MemberProfile): { tone: 'warn'; text: string }
   return { tone: 'warn', text: copy.ready.toFix(row.failing) };
 }
 
-export function readyFacts(profile: MemberProfile, viewerTz: string, locale: string): Fact[] | null {
+export function readyFacts(profile: MemberProfile, viewerTz: string): Fact[] | null {
   const row = profile.readiness;
   if (row === null) return null;
   const logged: Fact = {
     id: 'logged',
     label: copy.ready.logged,
-    value: dateLabel(new Date(row.logged_at), viewerTz, locale),
+    value: weekdayDayMonth(new Date(row.logged_at), viewerTz),
   };
   return [
     gearFact(row.gear_gap),
@@ -251,11 +252,7 @@ export interface AttendanceView {
 }
 
 /** Raids mode: the 4 nights one by one and the 30-raid figure; reports mode: the window's line. */
-export function attendanceView(
-  profile: MemberProfile,
-  viewerTz: string,
-  locale: string,
-): AttendanceView | null {
+export function attendanceView(profile: MemberProfile, viewerTz: string): AttendanceView | null {
   const att = profile.attendance;
   if (att === null) return null;
   if (att.source === 'reports') {
@@ -274,7 +271,7 @@ export function attendanceView(
     .join(SEP);
   if (nights.length === 0) return { columns: [], rows: [], line: line === '' ? copy.noNights : line };
   return {
-    columns: nights.map((night) => dateLabel(new Date(night.starts_at), viewerTz, locale)),
+    columns: nights.map((night) => weekdayDayMonth(new Date(night.starts_at), viewerTz)),
     rows: [{ key: profile.account_key, label: copy.lastNights(nights.length), cells: nights.map(nightCell) }],
     line,
   };
@@ -290,7 +287,7 @@ export interface ProfileLootRow {
 }
 
 /** Loot this tier as ItemRows, newest first: "Awarded Tue 8 Dec". */
-export function lootRows(profile: MemberProfile, viewerTz: string, locale: string): ProfileLootRow[] {
+export function lootRows(profile: MemberProfile, viewerTz: string): ProfileLootRow[] {
   return [...profile.loot.items]
     .sort((a, b) => b.awarded_at.localeCompare(a.awarded_at))
     .map((item, i) => ({
@@ -299,7 +296,7 @@ export function lootRows(profile: MemberProfile, viewerTz: string, locale: strin
       name: item.name ?? `Item ${item.item_id}`,
       quality: item.quality ?? 1,
       icon: item.icon === null || item.icon === '' ? undefined : item.icon,
-      source: [copy.awarded(dateLabel(new Date(item.awarded_at), viewerTz, locale)), recordLine(item)]
+      source: [copy.awarded(weekdayDayMonth(new Date(item.awarded_at), viewerTz)), recordLine(item)]
         .filter((part) => part !== '')
         .join(SEP),
     }));
@@ -318,9 +315,9 @@ export function lootFairness(profile: MemberProfile): { median: string; since: s
 }
 
 /** "Ironbrand · Wed 2 Dec": who wrote it and when; "An officer" for one who left. */
-export function noteSub(note: MemberNote, viewerTz: string, locale: string): string {
+export function noteSub(note: MemberNote, viewerTz: string): string {
   const who = note.author?.name ?? copy.anOfficer;
-  return `${who}${SEP}${dateLabel(new Date(note.created_at), viewerTz, locale)}`;
+  return `${who}${SEP}${weekdayDayMonth(new Date(note.created_at), viewerTz)}`;
 }
 
 /** The notes with one added at the top (newest first), or one removed; never mutated. */

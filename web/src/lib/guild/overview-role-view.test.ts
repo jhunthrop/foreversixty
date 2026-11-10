@@ -213,7 +213,7 @@ describe('raid time and cover rows', () => {
     expect(raidTimeLine(at, 'America/Chicago', 'America/New_York', 'en-US')).toBe(
       'Thu 10 Dec · 8 pm CST · 9 pm EST your time',
     );
-    expect(raidWeekday(at, 'America/Chicago', 'en-US')).toBe('Thursday');
+    expect(raidWeekday(at, 'America/Chicago')).toBe('Thursday');
   });
 
   it('shows the need beside the signed providers, toned, with the bench and talents named', () => {

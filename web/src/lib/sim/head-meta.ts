@@ -7,6 +7,7 @@ import { PLACEHOLDER_CHARACTER_NAMES } from './character';
 import { talentSplit } from './result-band';
 import { specLabel } from './spec-label';
 import type { CharacterSource } from './types';
+import { utcDayMonth } from '../dates';
 
 /** "high-order-skyborne" -> "High Order Skyborne". */
 export function raceWords(slug: string): string {
@@ -28,12 +29,10 @@ export function averageWornItemLevel(
   return ((levels as number[]).reduce((sum, level) => sum + level, 0) / levels.length).toFixed(1);
 }
 
-const DAY_MONTH = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
-
-/** "2026-11-04T…" -> "4 Nov"; null for a missing or unreadable date. */
-export function dayMonth(iso: string): string | null {
-  const date = new Date(iso);
-  return iso === '' || Number.isNaN(date.getTime()) ? null : DAY_MONTH.format(date).replace('Sept', 'Sep');
+/** "2026-11-04T…" -> "4 Nov" in UTC; null for a missing or unreadable date. */
+export function runDay(iso: string): string | null {
+  const day = iso === '' ? '' : utcDayMonth(iso);
+  return day === '' ? null : day;
 }
 
 export interface HeadCharacter {
@@ -55,7 +54,7 @@ export function characterMeta(character: HeadCharacter, itemLevel: string | null
     itemLevel === null
       ? copy.head.metaNoGear(race, spec, character.level, split)
       : copy.head.meta(race, spec, character.level, split, itemLevel);
-  const date = dayMonth(character.source.captured_at);
+  const date = runDay(character.source.captured_at);
   if (character.source.kind === 'addon' && date === null) return [line1.trim()];
   const from = copy.head.sourceKind[character.source.kind] ?? copy.head.sourceKind.manual;
   return [line1.trim(), copy.head.source(from, date)];

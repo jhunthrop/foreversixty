@@ -84,7 +84,7 @@ describe('the standing rows', () => {
     } as NextRaidView;
     expect(raidRow(raid, new Date('2026-11-06T18:00:00Z'))).toEqual({
       label: "Onyxia's Lair",
-      value: '2 days, 2 hours',
+      value: '2 days, 2 hours, 30 min',
     });
     expect(raidRow(raid, new Date('2026-11-09T00:00:00Z'))).toBeNull();
   });

@@ -1,14 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { specString } from '../../test-support/spec-table';
 import { forYouLine } from './raid-copy';
+import { clock, viewerLocale, weekdayDayMonth } from '../dates';
 import {
-  clockText,
-  dateLabel,
   instantToWallClock,
   nextWeekday,
   offsetsDiffer,
-  viewerHourCycle,
-  viewerLocale,
+  stampParts,
   wallClockToInstant,
   zoneAbbreviation,
   zoneOffsetMinutes,
@@ -96,24 +94,20 @@ describe('forYouLine', () => {
 
 describe('labels', () => {
   const instant = new Date('2026-12-11T02:30:00Z');
+  const NOW = new Date('2026-11-10T12:00:00Z');
 
   it('writes minutes only off the hour, and always when asked', () => {
-    expect(clockText(instant, CHICAGO, 'en-US')).toBe('8:30 pm');
-    expect(clockText(new Date('2026-12-11T02:00:00Z'), CHICAGO, 'en-US')).toBe('8 pm');
-    expect(clockText(new Date('2026-12-11T02:00:00Z'), CHICAGO, 'en-US', true)).toBe('8:00 pm');
-  });
-
-  it('writes a 24-hour clock where the locale does', () => {
-    expect(clockText(new Date('2026-12-11T02:00:00Z'), CHICAGO, 'de-DE')).toBe('20:00');
+    expect(clock(instant, CHICAGO, { locale: 'en-US' })).toBe('8:30 pm');
+    expect(clock(new Date('2026-12-11T02:00:00Z'), CHICAGO, { locale: 'en-US' })).toBe('8 pm');
+    expect(clock(new Date('2026-12-11T02:00:00Z'), CHICAGO, { locale: 'en-US', alwaysMinutes: true })).toBe(
+      '8:00 pm',
+    );
   });
 
   it("follows the viewer's language for the hour cycle, keeping the English words", () => {
-    expect(viewerHourCycle('de-DE')).toBe('h23');
-    expect(viewerHourCycle('en-US')).toBe('h12');
     const german = viewerLocale('de-DE');
-    expect(clockText(new Date('2026-12-11T02:00:00Z'), CHICAGO, german)).toBe('20:00');
-    expect(dateLabel(instant, CHICAGO, german)).toBe('Thu 10 Dec');
-    expect(clockText(new Date('2026-12-11T02:00:00Z'), CHICAGO, viewerLocale('en-US'))).toBe('8 pm');
+    expect(clock(new Date('2026-12-11T02:00:00Z'), CHICAGO, { locale: german })).toBe('20:00');
+    expect(weekdayDayMonth(instant, CHICAGO, NOW)).toBe('Thu 10 Dec');
   });
 
   it('falls back to en-US with no navigator (server render)', () => {
@@ -125,9 +119,12 @@ describe('labels', () => {
     expect(zoneAbbreviation(CHICAGO, new Date('2027-07-01T00:00:00Z'))).toBe('CDT');
   });
 
-  it('writes the date on the zone calendar', () => {
-    expect(dateLabel(instant, CHICAGO)).toBe('Thu 10 Dec');
-    expect(dateLabel(instant, 'Europe/Berlin')).toBe('Fri 11 Dec');
+  it('stamps the viewer time and the guild time apart when the offsets differ', () => {
+    expect(stampParts(instant, CHICAGO, NEW_YORK, 'en-US').guildTime).toBe('(9:30 pm guild time)');
+    expect(stampParts(instant, CHICAGO, CHICAGO, 'en-GB')).toEqual({
+      when: 'Thu 10 Dec, 20:30',
+      guildTime: null,
+    });
   });
 });
 

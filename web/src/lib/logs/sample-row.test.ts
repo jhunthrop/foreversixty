@@ -22,7 +22,7 @@ describe('sampleRowFromMeta', () => {
       id: SAMPLE_REPORT_ID,
       title: 'Sanguine Depths, sample log',
       createdAt: '2026-09-26T20:10:04Z',
-      dateLabel: '26 Sept 2026',
+      dateLabel: '26 Sep 2026',
       summary: 'Sanguine Depths · 2 bosses · 4 fights',
     });
   });

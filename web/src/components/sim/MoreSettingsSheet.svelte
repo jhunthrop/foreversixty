@@ -35,6 +35,7 @@
   import BuffPanel from './BuffPanel.svelte';
   import RequestDrawer from './RequestDrawer.svelte';
 
+  import { grouped } from '../../lib/format/number';
   let {
     open,
     settings,
@@ -161,7 +162,7 @@
         sub:
           TARGET_ARMOR_BY_LEVEL[targetLevel] === undefined
             ? undefined
-            : copy.more.armorSub(TARGET_ARMOR_BY_LEVEL[targetLevel].toLocaleString('en-US')),
+            : copy.more.armorSub(grouped(TARGET_ARMOR_BY_LEVEL[targetLevel])),
       },
       { id: 'rotation', label: copy.more.rotation, value: rotationValue, testid: 'sim-rotation' },
     ]}
@@ -203,8 +204,7 @@
 
   {#if premium && onserver && simulated}
     <div class="flex items-center justify-between gap-4 pt-5">
-      <span class="text-text text-[14px]"
-        >{copy.more.serverLine(LANE_ITERATION_CEILING.server.toLocaleString('en-US'))}</span
+      <span class="text-text text-[14px]">{copy.more.serverLine(grouped(LANE_ITERATION_CEILING.server))}</span
       >
       <Button size="sm" {disabled} onclick={onserver} testid="sim-server-run">{copy.bar.runOnServers}</Button>
     </div>

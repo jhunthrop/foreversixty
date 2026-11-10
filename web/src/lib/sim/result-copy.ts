@@ -5,22 +5,6 @@
 // module rather than more keys on copy.ts, which is already past the 800-line ceiling. Settings
 // has its own (settings-copy.ts), because that card is its own chunk.
 
-/** Thousands separators, the way every figure on the page reads ("10,000", "162,715"). */
-export function grouped(value: number): string {
-  return Math.round(value).toLocaleString('en-US');
-}
-
-/** One decimal with separators: "904.4", "1,116.0". */
-export function oneDecimal(value: number): string {
-  return value.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-}
-
-/** "m:ss" of a length in seconds, rounded down: 179.9 s is "2:59". */
-export function clock(seconds: number): string {
-  const whole = Math.floor(seconds);
-  return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`;
-}
-
 export const bandCopy = {
   eyebrow: 'SAVED SIM',
   /** A finished run on /sim: where it ran, which the saved band leaves to its Settings card. */

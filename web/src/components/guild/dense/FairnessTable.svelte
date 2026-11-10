@@ -10,6 +10,7 @@
   import { classColorVar } from '../../../lib/report/format';
   import { counted } from '../../../lib/plural';
   import { fairnessRows, guildItemsPerNight, type FairnessRaider } from '../../../lib/guild/dense/fairness';
+  import { viewerZone, weekdayDayMonth } from '../../../lib/dates';
   import ClassCrestRing from '../../character/ClassCrestRing.svelte';
   import Button from '../../ui/Button.svelte';
   import Section from '../../ui/Section.svelte';
@@ -54,12 +55,7 @@
   const meta = $derived(`${perNight.toFixed(2)} items per raider night`);
 
   function day(iso: string): string {
-    return new Date(iso).toLocaleDateString('en-GB', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      timeZone,
-    });
+    return weekdayDayMonth(new Date(iso), timeZone ?? viewerZone());
   }
 
   const blank = columns.map(() => ({ value: '' }));

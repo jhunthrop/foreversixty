@@ -4,6 +4,7 @@
 // name and never on its own. Pure and node-free; all wording lives in `copy.ts`.
 import { bisCopy } from './copy';
 import type { BisBand, BisHealMetrics, BisHealProfile, RateUnit } from './types';
+import { clockSeconds } from '../format/duration';
 
 /** `HPS` for a healer band, `DPS` for every other band. */
 export function rateUnitOf(band: BisBand): RateUnit {
@@ -45,11 +46,9 @@ function isHealMetrics(metrics: BisBand['metrics']): metrics is BisHealMetrics {
   return metrics !== null && metrics !== undefined && 'hps' in metrics;
 }
 
-/** `192` -> `"3:12"`. */
-export function clockLabel(totalSeconds: number): string {
-  const whole = Math.max(0, Math.floor(totalSeconds));
-  const seconds = whole % 60;
-  return `${Math.floor(whole / 60)}:${seconds < 10 ? '0' : ''}${seconds}`;
+/** `192.7` -> `"3:12"`: rounded down, so a mana bar never lasts longer than the sim saw. */
+function manaClock(totalSeconds: number): string {
+  return clockSeconds(Math.floor(totalSeconds));
 }
 
 function manaCell(manaLastsSec: number, durationSec: number | undefined): HealMetricCell {
@@ -59,10 +58,10 @@ function manaCell(manaLastsSec: number, durationSec: number | undefined): HealMe
       key: 'mana',
       label,
       value: bisCopy.healerManaWholeFightValue,
-      line: bisCopy.healerManaWholeFightLine(durationSec === undefined ? undefined : clockLabel(durationSec)),
+      line: bisCopy.healerManaWholeFightLine(durationSec === undefined ? undefined : manaClock(durationSec)),
     };
   }
-  const clock = clockLabel(manaLastsSec);
+  const clock = manaClock(manaLastsSec);
   return {
     key: 'mana',
     label,

@@ -5,11 +5,12 @@
 import { parseActionKey, resolveActionName, type ActionNames } from './action-names';
 import { formatMargin } from './estimate';
 import { primaryPowerTrack, type PrimaryPower } from './primary-power';
-import { grouped, warningsCopy } from './result-copy';
+import { warningsCopy } from './result-copy';
 import { specDisplayName, specRow } from './spec-label';
 import type { SimSpellFact } from './spell-info';
 import type { SimResult } from './types';
 import { isStale } from './version';
+import { grouped } from '../format/number';
 
 export type WarningId = 'stale' | 'capstone' | 'missing-talent' | 'at-cap' | 'wide-error';
 

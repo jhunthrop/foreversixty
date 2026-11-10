@@ -297,13 +297,13 @@ describe('countdown', () => {
   const end = at('2026-12-10T05:00:00Z');
   const cd = (isoNow: string): string => countdown(start, end, at(isoNow));
 
-  it('counts days, then days and hours', () => {
-    expect(cd('2026-12-08T02:00:00Z')).toBe('in 2 days');
-    expect(cd('2026-12-08T22:00:00Z')).toBe('in 1 day 4 h');
+  it('counts down in the one countdown: days, hours and minutes', () => {
+    expect(cd('2026-12-08T02:00:00Z')).toBe('in 2 days, 0 hours, 0 min');
+    expect(cd('2026-12-08T22:00:00Z')).toBe('in 1 day, 4 hours, 0 min');
   });
 
-  it('counts hours and minutes, then minutes', () => {
-    expect(cd('2026-12-09T20:40:00Z')).toBe('in 5 h 20 min');
+  it('drops the leading zero units: hours and minutes, then minutes', () => {
+    expect(cd('2026-12-09T20:40:00Z')).toBe('in 5 hours, 20 min');
     expect(cd('2026-12-10T01:48:00Z')).toBe('in 12 min');
   });
 
@@ -356,18 +356,18 @@ describe('counts', () => {
 
   it('takes the deadline weekday from the next raid in the viewer zone', () => {
     // 02:00 UTC Friday is Thursday evening in Chicago.
-    expect(nextRaidDeadline('2026-12-11T02:00:00Z', 'en-US', CHICAGO)).toBe('before Thursday');
-    expect(nextRaidDeadline('2026-12-11T02:00:00Z', 'en-US', 'Europe/Berlin')).toBe('before Friday');
-    expect(nextRaidDeadline(undefined, 'en-US', CHICAGO)).toBe('before the next raid');
+    expect(nextRaidDeadline('2026-12-11T02:00:00Z', CHICAGO)).toBe('before Thursday');
+    expect(nextRaidDeadline('2026-12-11T02:00:00Z', 'Europe/Berlin')).toBe('before Friday');
+    expect(nextRaidDeadline(undefined, CHICAGO)).toBe('before the next raid');
   });
 
   it('names the raid the API sends, on the guild calendar, whatever leads the band', () => {
     const onyxia = { title: "Onyxia's Lair", starts_at: '2026-12-11T02:00:00Z' };
     const run = { guild_timezone: CHICAGO } as Parameters<typeof needsDeadline>[1];
-    expect(needsDeadline(onyxia, run, 'en-US', 'Europe/Berlin')).toBe("before Onyxia's Lair, Thu 10 Dec");
-    expect(needsDeadline(onyxia, null, 'en-US', CHICAGO)).toBe("before Onyxia's Lair, Thu 10 Dec");
-    expect(needsDeadline(null, null, 'en-US', CHICAGO)).toBe('before the next raid');
-    expect(needsDeadline(undefined, undefined, 'en-US', CHICAGO)).toBe('before the next raid');
+    expect(needsDeadline(onyxia, run, 'Europe/Berlin')).toBe("before Onyxia's Lair, Thu 10 Dec");
+    expect(needsDeadline(onyxia, null, CHICAGO)).toBe("before Onyxia's Lair, Thu 10 Dec");
+    expect(needsDeadline(null, null, CHICAGO)).toBe('before the next raid');
+    expect(needsDeadline(undefined, undefined, CHICAGO)).toBe('before the next raid');
   });
 });
 

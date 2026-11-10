@@ -11,7 +11,7 @@
   import { noTauntsLine, orderedTaunts, pickedEnemyName } from '../../lib/report/threat-taunts';
   import type { Taunt, ThreatPair } from '../../lib/report/types';
   import { aroundWindow, type TimeWindow } from '../../lib/report/window';
-import { clockDuration } from '../../lib/format/duration';
+  import { clockDuration } from '../../lib/format/duration';
   import Row from '../ui/Row.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';

@@ -5,6 +5,7 @@
 import { priceFor } from './plan-costs';
 import { PLANS, formatPrice, type Interval, type PlanKey } from './plans';
 import { sharedPremiumSupporterChip } from '../copy/shared/premium.generated';
+import { grouped } from '../format/number';
 
 export const checkoutCopy = {
   redirecting: 'Redirecting to secure checkout…',
@@ -67,7 +68,7 @@ function serverSimsOn(runsThisMonth?: number): string {
   if (runsThisMonth === undefined) return 'On';
   if (runsThisMonth === 0) return 'On · no runs yet this month';
   const noun = runsThisMonth === 1 ? 'run' : 'runs';
-  return `On · ${runsThisMonth.toLocaleString('en-US')} ${noun} this month`;
+  return `On · ${grouped(runsThisMonth)} ${noun} this month`;
 }
 
 export const premiumBlockCopy = {

@@ -32,6 +32,7 @@
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
+  import { grouped, upTo } from '../../lib/format/number';
 
   let {
     dataBaseUrl,
@@ -124,7 +125,7 @@
     if (column === 'spell_name' && cellText(cell) === '') return 'Melee';
     if (isNumber(cell) && !RAW_COLUMN.test(column)) {
       const value = typeof cell === 'string' ? Number(cell) : (cell as number | bigint);
-      return value.toLocaleString('en-US', { maximumFractionDigits: 1 });
+      return upTo(Number(value), 1);
     }
     return cellText(cell);
   }
@@ -229,7 +230,7 @@
         {#if note !== ''}
           {note}
         {:else if result !== null}
-          <span class="tabular-nums">{rowsFound.toLocaleString()}</span>
+          <span class="tabular-nums">{grouped(rowsFound)}</span>
           {rowsFound === 1 ? 'row' : 'rows'}{#if rowsFound > rowsShown}
             · <span class="tabular-nums" data-testid="query-truncated">{rowsShown}</span> shown{/if}
           · <span class="tabular-nums">{Math.round(result.elapsedMs)}</span> ms

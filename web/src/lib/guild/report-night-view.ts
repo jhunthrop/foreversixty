@@ -31,7 +31,8 @@ import {
 } from './report-night-copy';
 import { SEP } from './raid-copy';
 import type { StateTone } from './raid-planner-view';
-import { cameRatio, deaths as deathsWord, durationLabel, killTimeLabel } from './attendance-copy';
+import { cameRatio, deaths as deathsWord } from './attendance-copy';
+import { clockDuration, spokenDuration } from '../format/duration';
 
 /** The engine's id for a melee swing. */
 export const MELEE_SPELL_ID = 1;
@@ -87,7 +88,7 @@ export function causeSummary(causes: readonly RaidReportDeath[]): string | null 
 }
 
 function pullSub(pull: RaidReportPull): string {
-  const parts = [pull.attempt === null ? copy.pulls.trash : null, killTimeLabel(pull.duration_ms)];
+  const parts = [pull.attempt === null ? copy.pulls.trash : null, clockDuration(pull.duration_ms)];
   if (pull.deaths > 0) parts.push(deathsWord(pull.deaths));
   const causes = pull.death_causes === null ? null : causeSummary(pull.death_causes);
   if (causes !== null) parts.push(causes);
@@ -129,7 +130,7 @@ export function hitModel(hit: RaidReportHit): HitModel {
     ability: abilityName(hit),
     spellId: hit.spell_id === MELEE_SPELL_ID ? null : hit.spell_id,
     source: hit.source,
-    clock: killTimeLabel(hit.at_ms),
+    clock: clockDuration(hit.at_ms),
     amount: hitAmount(compact(hit.amount), hit.overkill > 0 ? compact(hit.overkill) : null),
   };
 }
@@ -155,7 +156,7 @@ export function deathModels(causes: readonly RaidReportDeath[]): DeathModel[] {
       key: `${death.name}-${death.at_ms}-${index}`,
       name: death.name,
       class: death.class,
-      at: intoPull(killTimeLabel(death.at_ms)),
+      at: intoPull(clockDuration(death.at_ms)),
       killingBlow: blow === null ? null : hitModel(blow),
       before: death.last_hits.filter((hit) => blow === null || !sameHit(hit, blow)).map(hitModel),
     };
@@ -292,7 +293,7 @@ export function raiderDeaths(report: RaidReport): RaiderDeathsModel[] {
           copy.deaths.line(
             death.killing_blow === null ? copy.deaths.unknown : abilityName(death.killing_blow),
             pullTitle(pull.name, pull.attempt),
-            killTimeLabel(death.at_ms),
+            clockDuration(death.at_ms),
           ),
         ),
     );
@@ -313,11 +314,11 @@ export function discordPreview(title: string, report: RaidReport, night: RaidNig
   const killed = report.kill_order.filter((kill) => kill.killed && kill.kill_ms !== null);
   const kills = killed
     .slice(0, DISCORD_MAX_KILLS)
-    .map((kill) => `${kill.name} ${killTimeLabel(kill.kill_ms ?? 0)}`);
+    .map((kill) => `${kill.name} ${clockDuration(kill.kill_ms ?? 0)}`);
   if (killed.length > DISCORD_MAX_KILLS) kills.push(copy.discord.more(killed.length - DISCORD_MAX_KILLS));
   const facts = [
     `${report.headline.wipes} wipe${report.headline.wipes === 1 ? '' : 's'}`,
-    night.duration_ms > 0 ? durationLabel(night.duration_ms) : null,
+    night.duration_ms > 0 ? spokenDuration(night.duration_ms) : null,
     cameRatio(night),
     deathsWord(report.headline.deaths),
   ].filter((part): part is string => part !== null);

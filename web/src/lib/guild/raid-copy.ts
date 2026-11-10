@@ -14,19 +14,12 @@ import type {
   NeedsRaid,
   NextRaidView,
 } from './api';
-import {
-  DEFAULT_LOCALE,
-  clockText,
-  dateLabel,
-  instantToWallClock,
-  offsetsDiffer,
-  wallClockToInstant,
-  zoneAbbreviation,
-} from './raid-time';
+import { calendarDayIn, clock, viewerZone, weekdayDayMonth, weekdayName, weekdayShort } from '../dates';
+import { MINUTE_MS, spokenDuration } from '../format/duration';
+import { SITE_LOCALE } from '../format/number';
+import { countdownText } from '../ui/countdown';
+import { instantToWallClock, offsetsDiffer, wallClockToInstant, zoneAbbreviation } from './raid-time';
 
-const MINUTE_MS = 60_000;
-const HOUR_MS = 60 * MINUTE_MS;
-const DAY_MS = 24 * HOUR_MS;
 /** A day further out than this is written as a date, not a weekday (spec 6.1 `{when}`). */
 const WEEKDAY_WINDOW_DAYS = 6;
 /** A start on the guild's own day reads `Today` before this hour of the guild's clock and
@@ -337,15 +330,9 @@ export function needsBefore(weekday: string | null): string {
 
 /** The needs line's deadline from `home.next_raid.starts_at`: the raid's weekday in the viewer's
  *  zone, or `before the next raid` with none planned (spec 3.4, 6.1 "Needs line"). */
-export function nextRaidDeadline(
-  startsAt: string | undefined,
-  locale: string = DEFAULT_LOCALE,
-  viewerTz: string = browserZone(),
-): string {
+export function nextRaidDeadline(startsAt: string | undefined, viewerTz: string = viewerZone()): string {
   if (startsAt === undefined) return needsBefore(null);
-  return needsBefore(
-    new Intl.DateTimeFormat(locale, { timeZone: viewerTz, weekday: 'long' }).format(new Date(startsAt)),
-  );
+  return needsBefore(weekdayName(new Date(startsAt), viewerTz));
 }
 
 /** The needs line's deadline (guild loop round 3): with the raid named by the API, `before
@@ -354,22 +341,16 @@ export function nextRaidDeadline(
 export function needsDeadline(
   needsRaid: NeedsRaid | null | undefined,
   next: NextRaidView | null | undefined,
-  locale: string = DEFAULT_LOCALE,
-  viewerTz: string = browserZone(),
+  viewerTz: string = viewerZone(),
 ): string {
-  if (needsRaid == null) return nextRaidDeadline(raidDeadlineStart(next), locale, viewerTz);
+  if (needsRaid == null) return nextRaidDeadline(raidDeadlineStart(next), viewerTz);
   const tz = next?.guild_timezone ?? viewerTz;
-  return `before ${needsRaid.title}, ${dateLabel(new Date(needsRaid.starts_at), tz, locale)}`;
+  return `before ${needsRaid.title}, ${weekdayDayMonth(new Date(needsRaid.starts_at), tz)}`;
 }
 
 /** `8:00 pm CST`: a clock with its zone abbreviation (`8 pm CST` when minutes are optional). */
-export function zonedClock(
-  at: Date,
-  tz: string,
-  locale: string = DEFAULT_LOCALE,
-  alwaysMinutes = true,
-): string {
-  return `${clockText(at, tz, locale, alwaysMinutes)} ${zoneAbbreviation(tz, at)}`;
+export function zonedClock(at: Date, tz: string, locale: string = SITE_LOCALE, alwaysMinutes = true): string {
+  return `${clock(at, tz, { locale, alwaysMinutes })} ${zoneAbbreviation(tz, at)}`;
 }
 
 function guildClock(startsAt: Date, tz: string, locale: string): string {
@@ -383,14 +364,13 @@ export function yourTimeLine(
   startsAt: Date,
   guildTz: string,
   viewerTz: string,
-  locale: string = DEFAULT_LOCALE,
+  locale: string = SITE_LOCALE,
   alwaysMinutes = true,
 ): string | null {
   if (!offsetsDiffer(startsAt, viewerTz, guildTz)) return null;
-  const clock = zonedClock(startsAt, viewerTz, locale, alwaysMinutes);
-  const otherDay = calendarDayDiff(startsAt, startsAt, guildTz, viewerTz) !== 0;
-  const weekday = new Intl.DateTimeFormat(locale, { timeZone: viewerTz, weekday: 'short' }).format(startsAt);
-  return compCopy.yourTime(otherDay ? `${weekday} ${clock}` : clock);
+  const time = zonedClock(startsAt, viewerTz, locale, alwaysMinutes);
+  const otherDay = calendarDayIn(startsAt, viewerTz) !== calendarDayIn(startsAt, guildTz);
+  return compCopy.yourTime(otherDay ? `${weekdayShort(startsAt, viewerTz)} ${time}` : time);
 }
 
 /** The form's line under the zone select: the entered guild wall time as the viewer reads it. */
@@ -399,24 +379,13 @@ export function forYouLine(
   time: string,
   guildTz: string,
   viewerTz: string,
-  locale: string = DEFAULT_LOCALE,
+  locale: string = SITE_LOCALE,
 ): string {
   const instant = wallClockToInstant(date, time, guildTz);
   if (!offsetsDiffer(instant, guildTz, viewerTz)) return raidCopy.form.forYouSame;
   return raidCopy.form.forYou(
-    `${dateLabel(instant, viewerTz, locale)}, ${clockText(instant, viewerTz, locale, true)}`,
+    `${weekdayDayMonth(instant, viewerTz)}, ${clock(instant, viewerTz, { locale, alwaysMinutes: true })}`,
   );
-}
-
-/** Calendar days from `from` (read in `fromTz`) to `to` (read in `toTz`, default the same zone). */
-function calendarDayDiff(from: Date, to: Date, fromTz: string, toTz: string = fromTz): number {
-  const asDay = (d: Date, tz: string): number =>
-    Date.parse(`${new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(d)}T00:00:00Z`);
-  return Math.round((asDay(to, toTz) - asDay(from, fromTz)) / DAY_MS);
-}
-
-function browserZone(): string {
-  return new Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
 /** `Today` before 5 pm on the guild's clock, `Tonight` from it. */
@@ -434,37 +403,32 @@ export function whenPhrase(
   now: Date,
   locale: string,
   guildTz: string,
-  viewerTz: string = browserZone(),
+  viewerTz: string = viewerZone(),
 ): string {
   const time = zonedClock(startsAt, guildTz, locale, false);
-  const days = calendarDayDiff(now, startsAt, guildTz);
+  const days = calendarDayIn(startsAt, guildTz) - calendarDayIn(now, guildTz);
   let phrase: string;
   if (days === 0) phrase = `${sameDayWord(startsAt, guildTz)} ${time}`;
   else if (days === 1) phrase = `Tomorrow ${time}`;
   else if (days > 1 && days <= WEEKDAY_WINDOW_DAYS) {
-    const weekday = new Intl.DateTimeFormat(locale, { timeZone: guildTz, weekday: 'long' }).format(startsAt);
-    phrase = `${weekday} ${time}`;
-  } else phrase = `${dateLabel(startsAt, guildTz, locale)}, ${time}`;
+    phrase = `${weekdayName(startsAt, guildTz)} ${time}`;
+  } else phrase = `${weekdayDayMonth(startsAt, guildTz)}, ${time}`;
   const yours = yourTimeLine(startsAt, guildTz, viewerTz, locale, false);
   return yours === null ? phrase : `${phrase} (${yours})`;
 }
 
-/** `2 days`, `1 day 4 h`, `5 h 20 min`, `12 min`. */
-function span(ms: number): string {
-  const days = Math.floor(ms / DAY_MS);
-  const hours = Math.floor((ms % DAY_MS) / HOUR_MS);
-  const minutes = Math.floor((ms % HOUR_MS) / MINUTE_MS);
-  if (days > 0) return `${days} ${plural(days, 'day', 'days')}${hours > 0 ? ` ${hours} h` : ''}`;
-  if (hours > 0) return `${hours} h${minutes > 0 ? ` ${minutes} min` : ''}`;
-  return `${minutes} min`;
+/** `in 1 day, 4 hours, 12 min` (the one countdown), then `started 25 min ago`, `ended 2 h ago`. */
+/** A past span to the whole minute: the band steps on the minute tick, so seconds would sit still. */
+function minutesAgo(ms: number): string {
+  return spokenDuration(Math.round(ms / MINUTE_MS) * MINUTE_MS);
 }
 
 export function countdown(startsAt: Date, endsAt: Date, now: Date): string {
   const untilStart = startsAt.getTime() - now.getTime();
   if (Math.abs(untilStart) < MINUTE_MS) return 'starting now';
-  if (untilStart > 0) return `in ${span(untilStart)}`;
-  if (now.getTime() < endsAt.getTime()) return `started ${span(-untilStart)} ago`;
-  return `ended ${span(now.getTime() - endsAt.getTime())} ago`;
+  if (untilStart > 0) return `in ${countdownText(startsAt, now)}`;
+  if (now.getTime() < endsAt.getTime()) return `started ${minutesAgo(-untilStart)} ago`;
+  return `ended ${minutesAgo(now.getTime() - endsAt.getTime())} ago`;
 }
 
 export interface BandLineArgs {
@@ -555,14 +519,14 @@ export function copyList(
   view: GuildRaidView,
   tz: string,
   comp: CopyListComp,
-  locale: string = DEFAULT_LOCALE,
+  locale: string = SITE_LOCALE,
 ): string {
   const startsAt = new Date(view.starts_at);
   const heads = raidCopy.subheads;
   const { counts } = view;
   const header = [
     view.title,
-    `${dateLabel(startsAt, tz, locale)}, ${guildClock(startsAt, tz, locale)}`,
+    `${weekdayDayMonth(startsAt, tz)}, ${guildClock(startsAt, tz, locale)}`,
     discordStamp(startsAt),
   ].join(SEP);
   const size =

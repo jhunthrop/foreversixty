@@ -4,12 +4,14 @@
 // the talent split is computed once for the whole page.
 import { classRows, raceRows } from '../planner/reference';
 import { PLACEHOLDER_CHARACTER_NAMES, ranksFromTalentsString } from './character';
-import { durationLabel } from './encounter';
+import { clockSeconds } from '../format/duration';
 import { formatMargin } from './estimate';
 import { relativeError } from './precision';
-import { bandCopy, grouped } from './result-copy';
+import { bandCopy } from './result-copy';
 import { specDisplayName, specLabel } from './spec-label';
 import type { SimResult } from './types';
+import { grouped } from '../format/number';
+import { formatDayMonthYear } from '../dates';
 
 export interface BandFact {
   id: 'fight' | 'targets' | 'buffs' | 'consumables' | 'range' | 'runs' | 'saved';
@@ -75,12 +77,7 @@ export function savedDate(iso: string | undefined): string | null {
   if (iso === undefined || iso === '') return null;
   const when = new Date(iso);
   if (Number.isNaN(when.getTime())) return null;
-  return when.toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
+  return formatDayMonthYear(when);
 }
 
 /**
@@ -104,7 +101,7 @@ export function bandFacts(result: SimResult, raidBuffs: readonly string[] | null
     {
       id: 'fight',
       label: facts.fight,
-      value: bandCopy.fight(durationLabel(encounter.duration_sec), variationPercent(encounter.variation)),
+      value: bandCopy.fight(clockSeconds(encounter.duration_sec), variationPercent(encounter.variation)),
     },
     { id: 'targets', label: facts.targets, value: String(encounter.targets) },
     { id: 'buffs', label: facts.buffs, value: buffsFact(result, raidBuffs) },

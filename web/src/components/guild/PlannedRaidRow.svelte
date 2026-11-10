@@ -6,12 +6,12 @@
      block leads a three-line stack. `now` comes from the tab's one minute tick, so rows run no
      timer of their own. Gold shows once a row: the countdown, or the Not signed up chip. -->
 <script lang="ts">
-  import { viewerLocale } from '../../lib/guild/raid-time';
   import type { GuildRaidView } from '../../lib/guild/api';
   import { plannedRowView } from '../../lib/guild/planned-row';
   import { SEP } from '../../lib/guild/raid-copy';
   import { ROW_ITEM } from '../../lib/ui/primitives';
   import { ROW_BAND_HOVER, ROW_RULE } from '../../lib/ui/row';
+  import { viewerLocale } from '../../lib/dates';
   import RaidChip from './RaidChip.svelte';
 
   let {

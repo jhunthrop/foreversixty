@@ -13,6 +13,8 @@
   import Facts from '../ui/Facts.svelte';
   import Section from '../ui/Section.svelte';
 
+  import { grouped } from '../../lib/format/number';
+  import { clockDuration } from '../../lib/format/duration';
   let {
     result,
     children,
@@ -34,13 +36,13 @@
       id: 'iterations',
       testid: 'sim-details-iterations',
       label: simCopy.detailsIterations,
-      value: details.iterations.toLocaleString('en-US'),
+      value: grouped(details.iterations),
     },
     {
       id: 'processing',
       testid: 'sim-details-processing',
       label: simCopy.detailsProcessing,
-      value: `${(details.processingMs / 1000).toFixed(1)} s`,
+      value: clockDuration(details.processingMs),
     },
     {
       id: 'lane',
@@ -66,7 +68,7 @@
   <Facts items={facts} />
   {#if details.hitCeiling}
     <p class="text-muted pt-3 text-[13px] leading-5" data-testid="sim-details-ceiling">
-      {simCopy.targetErrorCeiling(result.request.iterations.toLocaleString('en-US'))}
+      {simCopy.targetErrorCeiling(grouped(result.request.iterations))}
     </p>
   {/if}
   {#if children}<div class="flex flex-wrap gap-2 pt-5">{@render children()}</div>{/if}

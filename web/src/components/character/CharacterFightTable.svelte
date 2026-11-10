@@ -17,11 +17,11 @@
   import { specName } from '../../lib/guild/spec-name';
   import type { CharacterFight } from '../../lib/rankings/api';
   import { RANKING_METRICS } from '../../lib/rankings/url';
-  import { percentileToken, rowLink } from '../../lib/report/format';
+  import { parseLabel, parseText, percentileToken, rowLink } from '../../lib/report/format';
   import { executionHref, executionLabel, executionTitle } from '../../lib/sim/execution';
   import { ROW_ITEM } from '../../lib/ui/primitives';
   import { ROW_BAND_MARK, ROW_BAND_REACH, ROW_BAND_TARGET, ROW_RULE } from '../../lib/ui/row';
-import { compact } from '../../lib/format/number';
+  import { compact } from '../../lib/format/number';
 
   let {
     title,
@@ -84,10 +84,6 @@ import { compact } from '../../lib/format/number';
    */
   function metricLabel(id: string): string {
     return RANKING_METRICS.find((metric) => metric.id === id)?.label ?? id;
-  }
-
-  function percentileAriaLabel(percentile: number | undefined): string | undefined {
-    return percentile === undefined ? undefined : `${Math.round(percentile)} percentile`;
   }
 
   const GRIDS = {
@@ -168,9 +164,9 @@ import { compact } from '../../lib/format/number';
         <span
           class="numeric text-right text-[13px]"
           style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
-          aria-label={percentileAriaLabel(row.percentile)}
+          aria-label={row.percentile === undefined ? undefined : parseLabel(row.percentile)}
         >
-          {row.percentile === undefined ? '' : Math.round(row.percentile)}
+          {row.percentile === undefined ? '' : parseText(row.percentile)}
         </span>
         <a
           class="{rowLink} numeric justify-end text-right"

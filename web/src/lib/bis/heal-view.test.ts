@@ -1,6 +1,6 @@
 // web/src/lib/bis/heal-view.test.ts
 import { describe, expect, it } from 'vitest';
-import { clockLabel, healerSetViewFor, rateUnitForRole, rateUnitOf } from './heal-view';
+import { healerSetViewFor, rateUnitForRole, rateUnitOf } from './heal-view';
 import type { BisBand, BisHealMetrics, BisHealProfile } from './types';
 
 const PROFILE: BisHealProfile = {
@@ -59,15 +59,6 @@ describe('rateUnitForRole', () => {
     expect(rateUnitForRole('healer')).toBe('HPS');
     expect(rateUnitForRole('tank')).toBe('DPS');
     expect(rateUnitForRole(undefined)).toBe('DPS');
-  });
-});
-
-describe('clockLabel', () => {
-  it('formats seconds as m:ss', () => {
-    expect(clockLabel(192)).toBe('3:12');
-    expect(clockLabel(300)).toBe('5:00');
-    expect(clockLabel(65.9)).toBe('1:05');
-    expect(clockLabel(-4)).toBe('0:00');
   });
 });
 

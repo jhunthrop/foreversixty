@@ -1,7 +1,7 @@
 import { expect, test } from './support/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 
-// Fight 3 brushed to its middle: Morrowlyn's one Frostbolt goes off at 5.0s, and the
+// Fight 3 brushed to its middle: Morrowlyn's one Frostbolt goes off at 0:05, and the
 // window's own cast lines say so. The summary keeps only whole-fight starts and
 // failures, so before this the cell read a dash and the count a tilde.
 test('a brushed window reads its casts from the fight’s events', async ({ page }) => {
@@ -15,7 +15,7 @@ test('a brushed window reads its casts from the fight’s events', async ({ page
   await expect(page.getByTestId('cast-approximate-note')).toHaveCount(0);
 });
 
-// Warden Kelthas starts Anima Surge at 14.0s and never lands it, so no window holds a
+// Warden Kelthas starts Anima Surge at 0:14 and never lands it, so no window holds a
 // success of it and the windowed rows alone would never show it. Brushed around the
 // start, the measure gives it a row: one started, one cancelled.
 test('a spell the window only saw started gets a row with its measured counts', async ({ page }) => {
@@ -28,7 +28,7 @@ test('a spell the window only saw started gets a row with its measured counts', 
   await expect(surge.getByTestId('cast-cancelled')).toContainText('1');
 });
 
-// Ashfang bites once at 1.5s of fight 3. Under all friendlies the row is there, filed
+// Ashfang bites once at 0:01.5 of fight 3. Under all friendlies the row is there, filed
 // under its owner and saying which pet it was.
 test('a pet’s cast row sits under its owner and says which pet cast it', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=3&tab=casts');

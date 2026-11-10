@@ -12,10 +12,8 @@ import {
   cameRatio,
   deaths,
   lateOutcome,
-  durationLabel,
   kills,
   killAfter,
-  killTimeLabel,
   metricLabel,
   moveDelta,
   wipes,
@@ -33,7 +31,8 @@ import { discordText, yourNightText } from './night-copy';
 import { SEP, raidCopy } from './raid-copy';
 import { rosterOrder } from './raid-roster';
 import { roleForSpec } from './raid-roles';
-import { DEFAULT_LOCALE, dateLabel } from './raid-time';
+import { weekdayDayMonth } from '../dates';
+import { clockDuration, spokenDuration } from '../format/duration';
 
 export type AttendanceGroupKey = 'noShow' | 'late' | 'joined' | 'present' | 'benchOut';
 
@@ -171,7 +170,6 @@ export function yourNightFacts(
   row: RaidAttendanceRow,
   report: RaidReport | null,
   tz: string,
-  locale: string = DEFAULT_LOCALE,
 ): YourNightFact[] {
   const facts: YourNightFact[] = [];
   const excused: YourNightFact[] = row.excused
@@ -182,7 +180,7 @@ export function yourNightFacts(
   const died = report?.deaths.find((d) => d.character_key === row.character_key);
   facts.push({ kind: 'deaths', text: deaths(died === undefined ? 0 : died.on_wipes + died.on_kills) });
   if (report?.moves.previous != null) {
-    const previousDate = dateLabel(new Date(report.moves.previous.starts_at), tz, locale);
+    const previousDate = weekdayDayMonth(new Date(report.moves.previous.starts_at), tz);
     for (const move of ownMoves(report.moves, row.character_key)) facts.push(moveFact(move, previousDate));
   }
   return [...facts, ...excused];
@@ -197,14 +195,13 @@ export interface DiscordReportInput {
   report: RaidReport;
   /** The raid page's absolute URL with the report anchor. */
   reportUrl: string;
-  locale?: string;
 }
 
 function summaryLine(night: RaidNight): string {
   const figures = [
     night.kills > 0 ? kills(night.kills) : null,
     night.wipes > 0 ? wipes(night.wipes) : null,
-    night.duration_ms > 0 ? durationLabel(night.duration_ms) : null,
+    night.duration_ms > 0 ? spokenDuration(night.duration_ms) : null,
   ].filter((part): part is string => part !== null);
   const head = figures.length === 0 ? '' : `${figures.join(', ')}. `;
   const died = night.deaths > 0 ? ` ${deaths(night.deaths)}.` : '';
@@ -220,7 +217,7 @@ function isKilled(entry: RaidKill): entry is KilledEntry {
 function killsLine(report: RaidReport): string | null {
   const killed = report.kill_order.filter(isKilled);
   if (killed.length === 0) return null;
-  const parts = killed.map((k) => `${k.name} ${killTimeLabel(k.kill_ms)} (${killAfter(k.wipes_before)})`);
+  const parts = killed.map((k) => `${k.name} ${clockDuration(k.kill_ms)} (${killAfter(k.wipes_before)})`);
   return `${discordText.kills} ${parts.join(', ')}`;
 }
 
@@ -260,9 +257,8 @@ function fitLoot(lines: readonly string[], room: number): string[] {
  *  Loot lines give way first when a night has more bosses than the cap leaves room for. */
 export function discordReportText(input: DiscordReportInput): string {
   const { report } = input;
-  const locale = input.locale ?? DEFAULT_LOCALE;
   const head = [
-    [input.title, dateLabel(new Date(input.startsAt), input.tz, locale), input.guildName].join(SEP),
+    [input.title, weekdayDayMonth(new Date(input.startsAt), input.tz), input.guildName].join(SEP),
     summaryLine(input.night),
   ];
   const beforeLoot = present([...head, killsLine(report)]);

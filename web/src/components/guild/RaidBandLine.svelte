@@ -52,7 +52,6 @@
 </script>
 
 <script lang="ts">
-  import { viewerLocale } from '../../lib/guild/raid-time';
   import { tick } from 'svelte';
   import { minuteClock } from '../../lib/ui/minute-clock.svelte';
   import { guildRaidHref } from '../../lib/characters';
@@ -64,6 +63,7 @@
   import { putSignup } from '../../lib/guild/raids-api';
   import { guildGateCopy } from '../../lib/guild/copy';
   import { gateAction, type GateFacts } from '../../lib/guild/plan-gate';
+  import { viewerLocale, viewerZone } from '../../lib/dates';
   import GateActionInline from './GateActionInline.svelte';
   import SignupSegments from './SignupSegments.svelte';
 
@@ -90,7 +90,7 @@
     onStatusLine = () => {},
     now: fixedNow,
     locale = viewerLocale(),
-    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    viewerTimezone = viewerZone(),
     layout = 'band',
   }: {
     guildId: number;

@@ -36,6 +36,8 @@ import type {
 } from './types';
 import type { LootFile } from '../sim/loot';
 
+import { grouped } from '../format/number';
+import { upperFirst } from '../text';
 /** The unit a band's figures are in: damage, healing, or a tank's score. */
 export type GainUnit = 'DPS' | 'HPS' | 'score';
 
@@ -312,10 +314,6 @@ function isTwoHand(slot: BisSlot, details: ReadonlyMap<number, ItemDetail>): boo
   return slot.two_hand ?? details.get(slot.item_id)?.two_hand ?? false;
 }
 
-function capitalise(word: string): string {
-  return word.charAt(0).toUpperCase() + word.slice(1);
-}
-
 /** "Stack agility, then hit rating, then ranged attack power." from the significant weights. */
 export function stackSentence(rows: readonly ScaleRow[]): string | undefined {
   const top = rows
@@ -329,7 +327,7 @@ export function stackSentence(rows: readonly ScaleRow[]): string | undefined {
 
 function trustFacts(file: BisFile, raw: BisBand, info: BandInfo): string[] {
   const facts = [
-    `Level ${bandTopLevel(raw.band)} ${capitalise(raw.race)}`,
+    `Level ${bandTopLevel(raw.band)} ${upperFirst(raw.race)}`,
     `${raw.talent_points} talent points`,
   ];
   const run = file.run;
@@ -341,7 +339,7 @@ function trustFacts(file: BisFile, raw: BisBand, info: BandInfo): string[] {
   const preset = presetOf(raw);
   const meta = file.presets?.[preset];
   facts.push(preset === 'raid' && meta !== undefined ? raidCaptionFor(meta) : bisCopy.presetBareCaption);
-  if (run !== undefined) facts.push(`${run.iterations.set.toLocaleString('en-US')} runs`);
+  if (run !== undefined) facts.push(`${grouped(run.iterations.set)} runs`);
   if (info.setDpsPartial) facts.push(bisCopy.setDpsPartialNote(info.setDpsPartialCount, info.unit));
   return facts;
 }

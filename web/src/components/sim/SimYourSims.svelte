@@ -8,10 +8,10 @@
 <script lang="ts">
   import { rerunSim } from '../../lib/sim/api';
   import { KIND_TITLES, simCopy } from '../../lib/sim/copy';
-  import { dayMonth } from '../../lib/sim/head-meta';
+  import { runDay } from '../../lib/sim/head-meta';
   import { kindOf, runDeltas, titleOf } from '../../lib/sim/history';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
-  import { grouped, oneDecimal } from '../../lib/sim/result-copy';
+  import { grouped, oneDecimal } from '../../lib/format/number';
   import { serverRunsCopy } from '../../lib/sim/server-runs-copy';
   import type { RerunStatus } from '../../lib/sim/server-runs-poll';
   import { rerunOutcome } from '../../lib/sim/server-runs-rerun';
@@ -111,7 +111,7 @@
             <!-- An untitled run of the page's own spec is named by its day alone (h-audit 2026-11-09). -->
             {@const ownRun = kind === 'run' && row.title === '' && row.spec === pageSpec}
             <Row
-              title={ownRun ? dayMonth(row.created_at) : titleOf(row)}
+              title={ownRun ? runDay(row.created_at) : titleOf(row)}
               sub={ownRun
                 ? undefined
                 : [
@@ -120,7 +120,7 @@
                         ? ''
                         : specDisplayName(row.spec)
                       : ((KIND_TITLES as Record<string, string>)[kind] ?? kind),
-                    dayMonth(row.created_at),
+                    runDay(row.created_at),
                   ]
                     .filter((part) => part !== null && part !== '')
                     .join(' · ')}

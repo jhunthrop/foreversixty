@@ -23,9 +23,10 @@
     type WeekOneCharacter,
   } from '../../lib/guild/week-one';
   import type { GuildRosterEntry, NextRaidView } from '../../lib/guild/api';
-  import { viewerLocale } from '../../lib/guild/raid-time';
+
   import { classColorVar } from '../../lib/report/format';
   import { REGION } from '../../lib/ui/regions';
+  import { viewerLocale } from '../../lib/dates';
   import RaidsCountdown from '../RaidsCountdown.svelte';
   import ActionLink from '../ui/ActionLink.svelte';
   import Button from '../ui/Button.svelte';

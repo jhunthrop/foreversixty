@@ -27,6 +27,8 @@ export interface StatFigure {
   tone?: 'kill' | 'wipe' | 'gold';
   /** A colour the figure takes from data (a parse percentile), over the tone. */
   color?: string;
+  /** The cell's spoken name when the figure alone says too little (a parse: "98th percentile"). */
+  label?: string;
   /** The cell's testid, for a test that reads one figure. */
   testid?: string;
 }

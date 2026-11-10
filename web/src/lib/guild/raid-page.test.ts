@@ -71,7 +71,7 @@ describe('raidWhen', () => {
       start: '8:00 pm',
       end: '11:00 pm\u00a0CST',
       yourTime: null,
-      countdown: 'in 2 days 8 h',
+      countdown: 'in 2 days, 8 hours, 0 min',
     });
   });
 

@@ -34,8 +34,8 @@
   import Tag, { type TagTone } from '../ui/Tag.svelte';
   import type { ReportState } from '../../lib/report/url';
   import type { MechanicHit, MechanicKind, MechanicRow, Summary } from '../../lib/report/types';
-import { clockDuration } from '../../lib/format/duration';
-import { compact } from '../../lib/format/number';
+  import { clockDuration } from '../../lib/format/duration';
+  import { compact } from '../../lib/format/number';
 
   let {
     summary,

@@ -21,7 +21,7 @@
   import { clearChartCursor, setChartCursor } from '../../lib/chart/cursor.svelte';
   import { clockLabel, timeTicks } from '../../lib/chart/time-axis';
   import { CHART_INK, inkCss } from '../../lib/chart/theme';
-import { clockDuration } from '../../lib/format/duration';
+  import { clockDuration } from '../../lib/format/duration';
   import SyncedCrosshair from '../chart/SyncedCrosshair.svelte';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Chips from '../ui/Chips.svelte';

@@ -6,6 +6,7 @@ import type { FilterOption } from '../rankings/options';
 import type { GuildRaidDiscord, GuildRaidDiscordPost, GuildRaidView, GuildZoneView } from './api';
 import { forYouLine, raidCopy } from './raid-copy';
 import { instantToWallClock, nextWeekday, wallClockToInstant } from './raid-time';
+import { spokenMinutes } from '../format/duration';
 import type { RaidInput } from './raids-api';
 import { isRaidKey, opensDateOf, opensDayOf, zoneIsOpenOn } from './zone-catalogue';
 
@@ -46,18 +47,11 @@ export interface RaidFormValues {
   remindDayBefore: boolean;
 }
 
-/** `1 h`, `1 h 30 min`. */
-export function durationLabel(minutes: number): string {
-  const hours = Math.floor(minutes / 60);
-  const rest = minutes % 60;
-  return rest === 0 ? `${hours} h` : `${hours} h ${rest} min`;
-}
-
 export function durationOptions(): FilterOption[] {
   const steps = (DURATION_MAX - DURATION_MIN) / DURATION_STEP + 1;
   return Array.from({ length: steps }, (_, i) => {
     const minutes = DURATION_MIN + i * DURATION_STEP;
-    return { value: String(minutes), label: durationLabel(minutes) };
+    return { value: String(minutes), label: spokenMinutes(minutes) };
   });
 }
 

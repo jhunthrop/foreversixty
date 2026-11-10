@@ -13,6 +13,7 @@
 import type { StreamLine } from './exact';
 import { splitUnitName } from '../characters';
 import type { AuraTrack, Summary } from './types';
+import { grouped } from '../format/number';
 
 export type EventKind = 'cast' | 'aura-applied' | 'aura-removed' | 'damage' | 'heal' | 'death';
 
@@ -126,8 +127,7 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
     }
     if (line.kind === 'missed') {
       const verb = MISS_VERBS[line.missType] ?? `avoided (${line.missType.toLowerCase()})`;
-      const soaked =
-        line.missType === 'ABSORB' && line.amount > 0 ? ` (${line.amount.toLocaleString()})` : '';
+      const soaked = line.missType === 'ABSORB' && line.amount > 0 ? ` (${grouped(line.amount)})` : '';
       return {
         atMs: line.atMs,
         kind: 'damage',
@@ -143,11 +143,11 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
     const parts =
       line.kind === 'heal'
         ? line.overheal > 0
-          ? [`${line.overheal.toLocaleString()} over`]
+          ? [`${grouped(line.overheal)} over`]
           : []
         : [
-            ...(line.absorbed > 0 ? [`${line.absorbed.toLocaleString()} absorbed`] : []),
-            ...(line.blocked > 0 ? [`${line.blocked.toLocaleString()} blocked`] : []),
+            ...(line.absorbed > 0 ? [`${grouped(line.absorbed)} absorbed`] : []),
+            ...(line.blocked > 0 ? [`${grouped(line.blocked)} blocked`] : []),
           ];
     const detail = parts.length === 0 ? '' : ` (${parts.join(', ')})`;
     return {

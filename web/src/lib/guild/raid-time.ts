@@ -1,14 +1,12 @@
 // web/src/lib/guild/raid-time.ts
 // Wall-clock and zone arithmetic for guild raids (design/specs/2026-10-26-guild-raids.md 3.5, R4).
 // The form takes the guild's wall clock and the API stores UTC instants, so every conversion
-// here goes through `Intl.DateTimeFormat` alone: no date library, no hand-kept zone table.
+// here goes through `Intl.DateTimeFormat` alone: no date library, no hand-kept zone table. The
+// words (dates, clocks) come from lib/dates.ts; this module only does the zone arithmetic.
+import { clock, weekdayDayMonth } from '../dates';
+import { SITE_LOCALE } from '../format/number';
 
 const MINUTE_MS = 60_000;
-/** The words (weekdays, months, am/pm) are English everywhere; only the hour cycle follows the viewer. */
-export const DEFAULT_LOCALE = 'en-US';
-
-export type HourCycle = 'h12' | 'h23';
-
 type PartName = Intl.DateTimeFormatPartTypes;
 
 function partsOf(formatter: Intl.DateTimeFormat, d: Date): Partial<Record<PartName, string>> {
@@ -23,7 +21,7 @@ const zoneFormatters = new Map<string, Intl.DateTimeFormat>();
 function zoneFormatter(tz: string): Intl.DateTimeFormat {
   const cached = zoneFormatters.get(tz);
   if (cached !== undefined) return cached;
-  const formatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
+  const formatter = new Intl.DateTimeFormat(SITE_LOCALE, {
     timeZone: tz,
     hourCycle: 'h23',
     year: 'numeric',
@@ -40,14 +38,10 @@ function zoneFormatter(tz: string): Intl.DateTimeFormat {
 /** `CST`, `CDT`, `GMT+1`: the zone's short name at that instant; the zone id when it has none. */
 export function zoneAbbreviation(tz: string, at: Date): string {
   return (
-    new Intl.DateTimeFormat(DEFAULT_LOCALE, { timeZone: tz, timeZoneName: 'short' })
+    new Intl.DateTimeFormat(SITE_LOCALE, { timeZone: tz, timeZoneName: 'short' })
       .formatToParts(at)
       .find((part) => part.type === 'timeZoneName')?.value ?? tz
   );
-}
-
-function browserLanguage(): string | undefined {
-  return typeof navigator === 'undefined' ? undefined : navigator.language;
 }
 
 /** The zone's wall clock at an instant, read back as if it were UTC. */
@@ -101,60 +95,17 @@ export function instantToWallClock(d: Date, tz: string): { date: string; time: s
   return { date: `${p.year}-${p.month}-${p.day}`, time: `${p.hour}:${p.minute}` };
 }
 
-/** Whether the locale writes the hour on a 12-hour clock. */
-export function usesTwelveHourClock(locale: string): boolean {
-  return new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions().hour12 === true;
-}
-
-/** The viewer's hour cycle, from their browser language (`de-DE` writes `20:00`). */
-export function viewerHourCycle(language: string | undefined = browserLanguage()): HourCycle {
-  return language !== undefined && !usesTwelveHourClock(language) ? 'h23' : 'h12';
-}
-
-/** The locale every raid clock is written in: English words on the viewer's hour cycle
- *  (`en-US-u-hc-h23` for a German browser), `en-US` on the server. */
-export function viewerLocale(language: string | undefined = browserLanguage()): string {
-  if (language === undefined) return DEFAULT_LOCALE;
-  return viewerHourCycle(language) === 'h23' ? `${DEFAULT_LOCALE}-u-hc-h23` : DEFAULT_LOCALE;
-}
-
-/** `8 pm`, `8:30 pm`, `20:00`: minutes only off the hour unless `alwaysMinutes`. */
-export function clockText(d: Date, tz: string, locale: string, alwaysMinutes = false): string {
-  const twelve = usesTwelveHourClock(locale);
-  const p = partsOf(
-    new Intl.DateTimeFormat(locale, {
-      timeZone: tz,
-      hour: 'numeric',
-      minute: '2-digit',
-      hourCycle: twelve ? 'h12' : 'h23',
-    }),
-    d,
-  );
-  if (!twelve) return `${(p.hour ?? '').padStart(2, '0')}:${p.minute}`;
-  const minutes = alwaysMinutes || p.minute !== '00' ? `:${p.minute}` : '';
-  return `${p.hour}${minutes} ${(p.dayPeriod ?? '').toLowerCase()}`;
-}
-
 /** `Thu 10 Dec, 11:42 pm` in the viewer's zone, and ` (10:42 pm guild time)` apart (null) when the
  *  guild's offset is the same, so a caller can set the guild time in its own muted span. */
 export function stampParts(
   at: Date,
   viewerTz: string,
   guildTz: string,
-  locale: string = DEFAULT_LOCALE,
+  locale: string = SITE_LOCALE,
 ): { when: string; guildTime: string | null } {
-  const when = `${dateLabel(at, viewerTz, locale)}, ${clockText(at, viewerTz, locale, true)}`;
+  const when = `${weekdayDayMonth(at, viewerTz)}, ${clock(at, viewerTz, { locale, alwaysMinutes: true })}`;
   if (!offsetsDiffer(at, viewerTz, guildTz)) return { when, guildTime: null };
-  return { when, guildTime: `(${clockText(at, guildTz, locale, true)} guild time)` };
-}
-
-/** `Thu 10 Dec`, on the zone's calendar. */
-export function dateLabel(d: Date, tz: string, locale: string = DEFAULT_LOCALE): string {
-  const p = partsOf(
-    new Intl.DateTimeFormat(locale, { timeZone: tz, weekday: 'short', day: 'numeric', month: 'short' }),
-    d,
-  );
-  return `${p.weekday} ${p.day} ${p.month}`;
+  return { when, guildTime: `(${clock(at, guildTz, { locale, alwaysMinutes: true })} guild time)` };
 }
 
 /** The form's default instant: the last raid's weekday and guild wall time, a whole number of weeks

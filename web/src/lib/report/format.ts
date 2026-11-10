@@ -6,6 +6,7 @@
 import { killCounts, killCountsLabel } from './kill-counts';
 import type { FightEntry, Phase, Taunt } from './types';
 import { compact, ordinal, percent, thousands } from '../format/number';
+import { CLASS_SLUGS } from '../ui/primitives';
 
 /**
  * An `<a>` is inline: its own box is only as tall as its text, not the `min-h-11` row it
@@ -24,7 +25,6 @@ export const rowLink = 'inline-flex min-h-11 items-center';
 export function tauntKey(taunt: Taunt): string {
   return `${taunt.label ?? ''}|${taunt.at_ms}|${taunt.source_guid}|${taunt.target_guid}|${taunt.spell_id}`;
 }
-
 
 /** The colour token for a school mask's first school; melee (no school) is physical. */
 export function schoolToken(mask: number | undefined): string {
@@ -60,17 +60,12 @@ export function schoolName(mask: number | undefined): string {
   return names.join('/');
 }
 
-
-
-
 export function formatClock(iso: string): string {
   const at = new Date(iso);
   if (Number.isNaN(at.getTime())) return '--:--:--';
   const pad = (n: number): string => String(n).padStart(2, '0');
   return `${pad(at.getUTCHours())}:${pad(at.getUTCMinutes())}:${pad(at.getUTCSeconds())}`;
 }
-
-
 
 /**
  * An amount in the scale its column is read in: when the column's largest figure is
@@ -82,7 +77,6 @@ export function formatAmountLike(n: number, columnMax: number): string {
   if (Math.abs(columnMax) >= 100_000 && Math.abs(safe) < 100_000) return thousands(safe);
   return compact(safe);
 }
-
 
 /**
  * The phase a fight ended in: the last one that started, since the engine writes them in
@@ -123,7 +117,6 @@ export function formatPerSecond(total: number, ms: number): string {
   return (total / (ms / 1000)).toFixed(1);
 }
 
-
 /**
  * A row's landed count. A sim row is a per-fight average rounded to a whole count, so an
  * action that dealt damage in a few fights out of a hundred (a Fire mage's wand) has a count
@@ -144,22 +137,16 @@ export function formatShare(value: number): string {
  * can emit an inferred class from a future expansion -- gets the body colour rather than
  * a guess.
  */
-const CLASS_TOKENS = new Set([
-  'warrior',
-  'paladin',
-  'hunter',
-  'rogue',
-  'priest',
-  'shaman',
-  'mage',
-  'warlock',
-  'druid',
-  'monk',
-]);
+/** `Death Knight` -> `death-knight`: the one class name to slug rule (the API sends names). */
+export function classSlugFromName(className: string): string {
+  return className.toLowerCase().replace(/\s+/g, '-');
+}
+
+const CLASS_TOKENS: ReadonlySet<string> = new Set<string>([...CLASS_SLUGS, 'monk']);
 
 /** A known class's slug (`death-knight`), else undefined. */
 export function classSlug(className: string | undefined): string | undefined {
-  const slug = (className ?? '').toLowerCase().replace(/\s+/g, '-');
+  const slug = classSlugFromName(className ?? '');
   return CLASS_TOKENS.has(slug) ? slug : undefined;
 }
 

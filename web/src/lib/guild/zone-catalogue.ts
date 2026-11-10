@@ -4,6 +4,7 @@
 // option plus a size, and a raid's open day. The API holds the facts; this only words them.
 import type { GuildZoneView } from './api';
 import { raidCopy, SEP } from './raid-copy';
+import { dayMonth, weekdayShort } from '../dates';
 
 /** The `What` option every guild event key folds into; its size is `Group size`'s. */
 export const GUILD_EVENT_KEY = 'event:guild';
@@ -41,10 +42,8 @@ export function groupSizeOptions(zones: readonly GuildZoneView[]): { value: stri
  *  zone the viewer is in. */
 function opensParts(opens: string): { day: string; short: string } {
   const at = new Date(opens);
-  const part = (option: Intl.DateTimeFormatOptions): string =>
-    new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', ...option }).format(at);
-  const short = `${part({ day: 'numeric' })} ${part({ month: 'short' })}`;
-  return { day: `${part({ weekday: 'short' })} ${short}`, short };
+  const short = dayMonth(at, 'UTC');
+  return { day: `${weekdayShort(at, 'UTC')} ${short}`, short };
 }
 
 /** `Wed 9 Dec`; `null` for a zone with no open day. */

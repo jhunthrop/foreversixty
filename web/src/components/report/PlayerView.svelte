@@ -22,7 +22,7 @@
     type RosterRow,
   } from '../../lib/report/types';
   import type { StatColumn, StatFigure, StatSort } from '../../lib/ui/stat-table';
-import { compact, percent } from '../../lib/format/number';
+  import { compact, percent } from '../../lib/format/number';
   import Meter from '../ui/Meter.svelte';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
@@ -230,10 +230,7 @@ import { compact, percent } from '../../lib/format/number';
 {#if part === 'abilities'}
   <Section
     title={`${name}’s ${NOUN[tab]}`}
-    meta={[
-      `${mark}${compact(total)} ${NOUN[tab]} · ${formatRate(total / seconds)} ${RATE[tab]}`,
-      schools,
-    ]
+    meta={[`${mark}${compact(total)} ${NOUN[tab]} · ${formatRate(total / seconds)} ${RATE[tab]}`, schools]
       .filter((part) => part !== '')
       .join(' · ')}
     testid="report-table-card"

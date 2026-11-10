@@ -37,6 +37,13 @@ export function isClassSlug(value: string): value is ClassSlug {
   return CLASS_SLUG_SET.has(value);
 }
 
+/** A class's colour as its token (`var(--color-class-mage)`); an unknown slug reads the strong
+ *  colour. The tokens are the one source: data/classes.json's `color` is for the Discord and
+ *  mock tooling only. */
+export function classColor(classSlug: string): string {
+  return isClassSlug(classSlug) ? `var(--color-class-${classSlug})` : 'var(--color-strong)';
+}
+
 /** A row or title in a character's class colour; an unknown class reads the strong colour. */
 export function classTone(classSlug: string): TitleTone {
   const slug = classSlug.toLowerCase();

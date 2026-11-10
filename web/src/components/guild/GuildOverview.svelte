@@ -42,6 +42,7 @@
   import CompGaps from './dense/CompGaps.svelte';
   import OfficerWeek from './dense/OfficerWeek.svelte';
   import type { GuildTabId } from './GuildTabs.svelte';
+  import { viewerZone } from '../../lib/dates';
 
   /** A report row the Last raid line can summarize (home.reports or the public page's). */
   interface OverviewReport {
@@ -96,7 +97,7 @@
     now?: Date;
   } = $props();
 
-  const viewerTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const viewerTz = viewerZone();
   const clock = minuteClock(() => now);
   const member = $derived(role !== 'public');
 

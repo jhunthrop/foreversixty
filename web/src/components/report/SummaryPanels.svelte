@@ -9,7 +9,7 @@
      pass 2026-11-09), Overheal on Healing, no Crit on Damage taken. -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
-  import { compact } from '../../lib/format/number';
+  import { compact, grouped } from '../../lib/format/number';
   import { formatRate } from '../../lib/report/frame';
   import type { Actor, Summary } from '../../lib/report/types';
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
@@ -153,7 +153,7 @@
   /** One detail figure; a prorated window marks the amounts it scales, as the Amount column does. */
   function detailValue(row: AbilityTotal, id: (typeof DETAIL)[Metric][number]): string {
     const mark = approximate ? '~' : '';
-    if (id === 'hits') return `${mark}${row.landed.toLocaleString('en-US')}`;
+    if (id === 'hits') return `${mark}${grouped(row.landed)}`;
     if (id === 'crit') return row.landed === 0 ? '0%' : `${Math.round((row.crits / row.landed) * 100)}%`;
     if (id === 'avg') return row.landed === 0 ? '0' : compact(Math.round(row.total / row.landed));
     if (id === 'max') return compact(row.max);

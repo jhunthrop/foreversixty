@@ -20,8 +20,8 @@
   import type { ResourceTrack } from '../../lib/report/types';
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
-import { clockDuration } from '../../lib/format/duration';
-import { compact, percent } from '../../lib/format/number';
+  import { clockDuration } from '../../lib/format/duration';
+  import { compact, percent } from '../../lib/format/number';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Section from '../ui/Section.svelte';
   import Spark from '../ui/Spark.svelte';
@@ -200,9 +200,7 @@ import { compact, percent } from '../../lib/format/number';
     return [
       { value: `${mark}${compact(track.gained)}` },
       { value: `${mark}${compact(track.spent)}` },
-      track.wasted === undefined
-        ? { value: '–', muted: true }
-        : { value: `${mark}${compact(track.wasted)}` },
+      track.wasted === undefined ? { value: '–', muted: true } : { value: `${mark}${compact(track.wasted)}` },
       {
         value: `${mark}${track.zero_ms === 0 ? '0:00' : clockDuration(track.zero_ms)}`,
         testid: 'resource-zero',
@@ -264,8 +262,7 @@ import { compact, percent } from '../../lib/format/number';
                       track.spent,
                     )}{#if (track.wasted ?? 0) > 0}{`${SEPARATOR}wasted ${compact(track.wasted ?? 0)}`}{/if}</span
                   >{:else}{SEPARATOR}<span data-testid={hasCap(track) ? 'resource-cap-figures' : undefined}
-                    ><span class="whitespace-nowrap" title="The top of the line"
-                      >peak {compact(peak)}</span
+                    ><span class="whitespace-nowrap" title="The top of the line">peak {compact(peak)}</span
                     >{SEPARATOR}<span
                       class="whitespace-nowrap"
                       title="The lowest point and when it was reached"

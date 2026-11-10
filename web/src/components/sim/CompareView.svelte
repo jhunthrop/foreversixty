@@ -15,6 +15,7 @@
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';
 
+  import { grouped } from '../../lib/format/number';
   let {
     comparison,
     simDuration,
@@ -24,7 +25,7 @@
   // The rounding rule itself (whole percent, own duration) lives once, in compare.ts, so
   // this table's numbers and compareSummaries' own uptime lines can never round differently.
   const pct = (ms: number, of: number): string => `${pctOf(ms, of)}%`;
-  const amount = (value: number): string => Math.round(value).toLocaleString('en-US');
+  const amount = (value: number): string => grouped(value);
 
   const ABILITY_COLUMNS: readonly StatColumn[] = [
     { id: 'actual-casts', label: simCopy.compareActualCasts },

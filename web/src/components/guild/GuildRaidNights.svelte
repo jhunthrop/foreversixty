@@ -14,7 +14,6 @@
   import {
     bossPulls,
     deltaWords,
-    killClock,
     raidNightFigures,
     slowestMs,
     type NightMisses,
@@ -32,6 +31,7 @@
   import Tag from '../ui/Tag.svelte';
   import activeBuild from '../../data/active-build.json';
   import { raidZoneIcon } from '../../lib/first-raids';
+  import { clockDuration } from '../../lib/format/duration';
 
   let {
     rows,
@@ -87,7 +87,7 @@
   function cells(f: RaidNightFigures): StatFigure[] {
     const delta = f.deltaS === null ? DASH : { ...deltaWords(f.deltaS) };
     return [
-      f.bossMs === null ? DASH : { value: killClock(f.bossMs), tone: f.best ? 'gold' : undefined },
+      f.bossMs === null ? DASH : { value: clockDuration(f.bossMs), tone: f.best ? 'gold' : undefined },
       delta,
       { value: String(f.wipes) },
       { value: String(f.row.deaths) },
@@ -169,7 +169,7 @@
               {#if fight.unnamed}
                 <span class="text-muted">no named encounter published</span>
               {:else}
-                <span class="text-muted numeric text-right">{killClock(fight.duration_ms)}</span>
+                <span class="text-muted numeric text-right">{clockDuration(fight.duration_ms)}</span>
                 <span class="justify-self-end">
                   {#if fight.trash}<span class="text-muted">{TRASH_LABEL}</span>
                   {:else}<Tag tone={fight.kill ? 'success' : 'danger'}>{fight.kill ? 'Kill' : 'Wipe'}</Tag

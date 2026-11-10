@@ -12,7 +12,13 @@
 <script lang="ts">
   import { unitLabel } from '../../lib/report/names.svelte';
   import { specCell, type UnitClass } from '../../lib/report/roster-class';
-  import { classColorVar, wholeFightMark } from '../../lib/report/format';
+  import {
+    classColorVar,
+    parseLabel,
+    parseText,
+    percentileToken,
+    wholeFightMark,
+  } from '../../lib/report/format';
   import { formatRate } from '../../lib/report/frame';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
@@ -22,7 +28,7 @@
   import StatTable from '../ui/StatTable.svelte';
   import Meter from '../ui/Meter.svelte';
   import { roleIcon, roleOf } from '../../lib/report/role-icon';
-import { compact } from '../../lib/format/number';
+  import { compact } from '../../lib/format/number';
   import ClassIcon from './ClassIcon.svelte';
 
   let {
@@ -119,7 +125,11 @@ import { compact } from '../../lib/format/number';
       ? [
           placed === undefined
             ? { value: parseFallback || NO_FIGURE, muted: true }
-            : { value: String(Math.floor(placed.percentile)) },
+            : {
+                value: parseText(placed.percentile),
+                color: percentileToken(placed.percentile),
+                label: parseLabel(placed.percentile),
+              },
         ]
       : [];
     return [

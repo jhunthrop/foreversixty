@@ -19,7 +19,7 @@
   import { SpellIcons } from '../../lib/report/spell-icons.svelte';
   import type { AuraTrack } from '../../lib/report/types';
   import type { StatColumn, StatSort } from '../../lib/ui/stat-table';
-import { percent } from '../../lib/format/number';
+  import { percent } from '../../lib/format/number';
   import Meter from '../ui/Meter.svelte';
   import Section from '../ui/Section.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
@@ -315,8 +315,7 @@ import { percent } from '../../lib/format/number';
                   id={`aura-${one.target_guid}-${one.spell_id}`}
                   class="scroll-mt-24 whitespace-nowrap"
                   >{i > 0 ? '· ' : ''}{unitLabel(row, one)}
-                  <b class="text-text font-semibold tabular-nums">{percent(shareOf(rowOf([one])))}</b
-                  ></span
+                  <b class="text-text font-semibold tabular-nums">{percent(shareOf(rowOf([one])))}</b></span
                 >{/each}{#if each.length > EACH_MAX}
                 <span class="whitespace-nowrap">· {each.length - EACH_MAX} more</span>{/if}
             </div>{/if}

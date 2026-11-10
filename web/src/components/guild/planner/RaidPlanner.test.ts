@@ -98,7 +98,7 @@ describe('the head', () => {
 
   it('reads the guild time, the viewer’s own when it differs, the countdown and the counts', () => {
     expect(text(between(html(), 'raid-when', 'raid-count'))).toBe(
-      'Thursday 10 December · 8:00 pm to 11:00 pm CST · in 2 days 8 h',
+      'Thursday 10 December · 8:00 pm to 11:00 pm CST · in 2 days, 8 hours, 0 min',
     );
     expect(text(between(html({}, NOW, NEW_YORK), 'raid-when', 'raid-count'))).toContain(
       '9:00 pm EST your time',

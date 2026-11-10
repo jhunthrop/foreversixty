@@ -38,6 +38,7 @@
   import { planRaid } from '../../lib/guild/raids-tab-controller';
   import { button } from '../../lib/ui/button';
   import type { GateFacts } from '../../lib/guild/plan-gate';
+  import { viewerZone } from '../../lib/dates';
   import GuildPlanGate from './GuildPlanGate.svelte';
   import GuildPlannedRaids from './GuildPlannedRaids.svelte';
   import RaidForm from './RaidForm.svelte';
@@ -87,7 +88,7 @@
     gateFacts,
     guildPath = '',
     now,
-    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    viewerTimezone = viewerZone(),
     onPlanned = () => Promise.resolve(),
     onPlanRefused = () => {},
     openForm = false,

@@ -6,7 +6,7 @@
 <script lang="ts">
   import { schoolName, schoolToken } from '../../lib/report/format';
   import { abilityKey, type Ability } from '../../lib/report/types';
-import { compact } from '../../lib/format/number';
+  import { compact } from '../../lib/format/number';
 
   let {
     abilities,

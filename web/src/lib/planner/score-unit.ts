@@ -9,6 +9,7 @@ import { plannerSimCopy as simCopy } from '../sim/planner-copy';
 import { specRow } from '../sim/spec-label';
 import type { Estimate, SimResult } from '../sim/types';
 
+import { grouped } from '../format/number';
 const UNIT_BY_ROLE = { dps: 'dps', healer: 'hps', tank: 'tank_score' } as const;
 
 /** The unit a spec's headline figure is in; an unknown spec is damage, the common case. */
@@ -51,10 +52,10 @@ export const plannerScoreCopy = {
   failed: (unit: SlotScoreUnit): string => `${SCORE_LABEL[unit]} estimate unavailable for this build.`,
   /** The live figure as the strip prints it: every role a whole number (ruling 2026-11-08:
    *  HPS without a decimal), the same digits the level band's card shows. */
-  figure: (value: number): string => Math.round(value).toLocaleString('en-US'),
+  figure: (value: number): string => grouped(value),
   /** The level band's headline: "41 HPS". */
   bandFigure: (setScore: number, unit: SlotScoreUnit): string =>
-    `${Math.round(setScore).toLocaleString('en-US')} ${scoreUnitWord(unit)}`,
+    `${grouped(setScore)} ${scoreUnitWord(unit)}`,
 } as const;
 
 /** Every role's live run asks the engine for its own figure; damage is the default and

@@ -9,15 +9,12 @@ import { pointerForCharacter } from '../account/main-character';
 import { announcePageLoadedCharacter, writeCurrent, type CurrentCharacter } from '../current-character';
 import { decodeFS1 } from '../planner/fs1';
 import { factionOfRace } from '../race-faction';
+import { upperFirst } from '../text';
 
 export { sameCharacter };
 
 export type PasteResult =
   { ok: true; pointer: CurrentCharacter; account: MeCharacter | null } | { ok: false };
-
-function capitalise(slug: string): string {
-  return slug.charAt(0).toUpperCase() + slug.slice(1);
-}
 
 /** Decodes `input`; a failure carries nothing, the selector shows its one fixed sentence. */
 export function resolvePastedExport(
@@ -37,7 +34,7 @@ export function resolvePastedExport(
   if (account !== null) {
     return { ok: true, account, pointer: { ...pointerForCharacter(account), savedAt: now.toISOString() } };
   }
-  const className = capitalise(classSlug);
+  const className = upperFirst(classSlug);
   const faction = factionOfRace(decoded.build.raceSlug) ?? undefined;
   return {
     ok: true,

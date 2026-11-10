@@ -31,8 +31,8 @@
   import type { SpellIconOf } from '../../lib/guild/report-spell-icons';
   import type { CastRow, CombatantRow, DamageRef, Death, HealRef, PullMark } from '../../lib/report/types';
   import { deathWindow, type TimeWindow } from '../../lib/report/window';
-import { clockDuration, clockDurationPrecise } from '../../lib/format/duration';
-import { compact } from '../../lib/format/number';
+  import { clockDuration, clockDurationPrecise } from '../../lib/format/duration';
+  import { compact } from '../../lib/format/number';
 
   let {
     deaths,
@@ -276,9 +276,7 @@ import { compact } from '../../lib/format/number';
 
   /** "74 / 114" after a hit or a heal; '' when the log carries no health reading. */
   function healthText(after: number | undefined, max: number | undefined): string {
-    return after === undefined || max === undefined || max === 0
-      ? ''
-      : `${compact(after)} / ${compact(max)}`;
+    return after === undefined || max === undefined || max === 0 ? '' : `${compact(after)} / ${compact(max)}`;
   }
   function hitFigures(death: Death, hit: DamageRef, lethal: boolean): StatFigure[] {
     const health =

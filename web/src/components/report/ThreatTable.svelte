@@ -28,7 +28,7 @@
   import type { Actor, Taunt, TargetChange, ThreatPair, ThreatRow } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
-import { compact, percent } from '../../lib/format/number';
+  import { compact, percent } from '../../lib/format/number';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Meter from '../ui/Meter.svelte';
   import Section from '../ui/Section.svelte';

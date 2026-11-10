@@ -5,6 +5,7 @@
 <script lang="ts">
   import { classColorVar } from '../../../lib/report/format';
   import type { Mover } from '../../../lib/guild/dense/week-board';
+  import { grouped } from '../../../lib/format/number';
   import Section from '../../ui/Section.svelte';
   import StatRow from '../../ui/StatRow.svelte';
   import StatTable from '../../ui/StatTable.svelte';
@@ -43,7 +44,7 @@
         value: m.change > 0 ? `+${m.change}` : `−${-m.change}`,
         tone: m.change > 0 ? ('kill' as const) : ('wipe' as const),
       },
-      { value: Math.round(m.value).toLocaleString('en-US') },
+      { value: grouped(m.value) },
     ];
   }
 </script>

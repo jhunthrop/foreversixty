@@ -46,10 +46,11 @@
     type SortColumn,
   } from '../../lib/report/ability-table';
   import { rarityClassFor } from '../../lib/planner/items';
-  import { damageCopy as copy, grouped, oneDecimal } from '../../lib/sim/result-copy';
+  import { damageCopy as copy } from '../../lib/sim/result-copy';
   import { CRIT_NOTE_TIP } from '../../lib/sim/result-tips';
   import { spellTipKey } from '../../lib/tooltips/game-tip';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
+  import { grouped, oneDecimal } from '../../lib/format/number';
   import Meter from '../ui/Meter.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';

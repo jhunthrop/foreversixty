@@ -14,8 +14,8 @@
   import { formatRate } from '../../lib/report/frame';
   import type { Night, NightBoss, NightPlayer } from '../../lib/report/night';
   import type { StatFigure } from '../../lib/ui/stat-table';
-import { clockDuration } from '../../lib/format/duration';
-import { compact, percent } from '../../lib/format/number';
+  import { clockDuration } from '../../lib/format/duration';
+  import { compact, percent } from '../../lib/format/number';
   import Section from '../ui/Section.svelte';
   import StatRow from '../ui/StatRow.svelte';
   import StatTable from '../ui/StatTable.svelte';

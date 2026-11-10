@@ -7,8 +7,9 @@
 <script lang="ts">
   import { guildHref, rulesetLabel } from '../lib/characters';
   import { fetchGuildRankings, type GuildRankingRow } from '../lib/rankings/api';
-  import { dateLabel, viewerLocale } from '../lib/guild/raid-time';
+
   import { homeTopGuildsCopy } from '../lib/rankings/copy';
+  import { viewerZone, weekdayDayMonth } from '../lib/dates';
   import LoadError from './ui/LoadError.svelte';
   import Row from './ui/Row.svelte';
   import Skeleton from './ui/Skeleton.svelte';
@@ -17,9 +18,8 @@
 
   let {
     label = homeTopGuildsCopy.placeholderLabel,
-    viewerTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone,
-    locale = viewerLocale(),
-  }: { label?: string; viewerTimezone?: string; locale?: string } = $props();
+    viewerTimezone = viewerZone(),
+  }: { label?: string; viewerTimezone?: string } = $props();
 
   let rows = $state<GuildRankingRow[]>([]);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
@@ -62,7 +62,7 @@
   <div role="group" aria-label={label} data-testid="home-top-guilds">
     {#each rows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
       {@const where = `${row.guild.region.toUpperCase()} ${rulesetLabel(row.guild.ruleset)}`}
-      {@const killed = homeTopGuildsCopy.lastKill(dateLabel(new Date(row.fought_at), viewerTimezone, locale))}
+      {@const killed = homeTopGuildsCopy.lastKill(weekdayDayMonth(new Date(row.fought_at), viewerTimezone))}
       <Row
         title={row.guild.name}
         rank={String(row.rank)}

@@ -17,6 +17,7 @@
   import { putSignup } from '../../../lib/guild/raids-api';
   import { compGaps, FILLERS_SHOWN, type CompGapRow, type Filler } from '../../../lib/guild/dense/week-board';
   import { GROUP_WORD } from '../../../lib/guild/dense/roster-board';
+  import { clock, viewerLocale } from '../../../lib/dates';
   import Button from '../../ui/Button.svelte';
   import Figure from '../../ui/Figure.svelte';
   import Section from '../../ui/Section.svelte';
@@ -63,7 +64,7 @@
   const pingedText = $derived(
     pingedAt === null
       ? ''
-      : `Pinged ${pingedAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase()}`,
+      : `Pinged ${clock(pingedAt, viewerTz, { locale: viewerLocale(), alwaysMinutes: true })}`,
   );
 
   function named(state: GuildRaidSignup['state']): GuildRaidSignup[] {

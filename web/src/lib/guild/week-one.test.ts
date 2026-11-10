@@ -55,7 +55,7 @@ function input(overrides: Partial<WeekOneInput> = {}): WeekOneInput {
 
 describe('the raids opening', () => {
   it('reads phases.json for the date and counts down to it until it passes', () => {
-    expect(raidsOpenDay('en-US')).toBe('Wed 9 Dec');
+    expect(raidsOpenDay()).toBe('Wed 9 Dec');
     expect(raidsCountdownTarget(BEFORE)).toBe('2026-12-09T00:00:00.000Z');
     expect(raidsCountdownTarget(AFTER)).toBeNull();
   });

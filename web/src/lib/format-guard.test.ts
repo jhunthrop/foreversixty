@@ -51,8 +51,8 @@ const RULES: readonly Rule[] = [
   {
     name: 'a local duration, countdown or relative-time formatter',
     pattern:
-      /\b(?:function|const)\s+(?:durationLabel|killTimeLabel|formatReportLength|formatCooldown|plaqueClock|agoText|relativeTime|formatDuration|formatDurationPrecise|formatAmount|formatPercent|ordinal|span)\b/,
-    owners: ['lib/dates.ts'],
+      /\b(?:function|const)\s+(?:durationLabel|killTimeLabel|formatReportLength|formatCooldown|plaqueClock|agoText|relativeTime|formatDuration|formatDurationPrecise|formatAmount|formatPercent|ordinal)\b|\bfunction\s+span\b/,
+    owners: ['lib/dates.ts', 'lib/format/number.ts', 'lib/format/duration.ts'],
     sample: 'export function durationLabel(ms: number): string {',
   },
   {

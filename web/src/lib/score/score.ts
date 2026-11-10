@@ -12,6 +12,7 @@ import labels from '../../../../docs/contracts/fixtures/score-labels.json';
 import type { MeCharacter } from '../account/api';
 import { characterSlug, type CharacterPath } from '../characters';
 import { scoreCopy } from './copy';
+import { utcDayMonth } from '../dates';
 
 export type ScoreComponentKey = 'gear' | 'experience' | 'parses' | 'attendance' | 'discipline';
 
@@ -88,7 +89,7 @@ export function tierRanges(): { tier: Tier; range: string }[] {
 /** The client's item-quality colour for a tier, or null for a tier the site does not know
  *  (shown uncoloured, as Score.tierColor does in game). */
 export function tierColor(tier: string | null | undefined): string | null {
-  return isTier(tier) ? labels.tiers[tier].color : null;
+  return isTier(tier) ? `var(--color-rarity-${tier})` : null;
 }
 
 export function tierLabel(tier: string | null | undefined): string | null {
@@ -101,10 +102,13 @@ export function tierLabel(tier: string | null | undefined): string | null {
  * variants (tokens.css `--color-rarity-rare-text` / `-epic-text`); the big number, bars,
  * borders and the tier strip keep the exact quality colour from tierColor.
  */
-const TIER_TEXT: Readonly<Partial<Record<Tier, string>>> = { rare: '#3d94f0', epic: '#b866f5' };
+const TIER_TEXT: Readonly<Partial<Record<Tier, string>>> = {
+  rare: 'var(--color-rarity-rare-text)',
+  epic: 'var(--color-rarity-epic-text)',
+};
 
 export function tierTextColor(tier: string | null | undefined): string | null {
-  return isTier(tier) ? (TIER_TEXT[tier] ?? labels.tiers[tier].color) : null;
+  return isTier(tier) ? (TIER_TEXT[tier] ?? tierColor(tier)) : null;
 }
 
 /** The most a score can be: the five ceilings added up. */
@@ -160,17 +164,14 @@ export function hasScore(
   return typeof forever?.score === 'number';
 }
 
-/** Compat.shortDate's month names, so the site's "as of 4 Nov" is the tooltip's. */
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
 /** "2026-11-04" reads "4 Nov" (the addon's Compat.shortDate); anything else is null. */
 export function shortDate(text: string | null | undefined): string | null {
   const match = /^\d{4}-(\d{2})-(\d{2})$/.exec(text ?? '');
   if (match === null) return null;
-  const month = MONTHS[Number(match[1]) - 1];
+  const month = Number(match[1]);
   const day = Number(match[2]);
-  if (month === undefined || day < 1 || day > 31) return null;
-  return `${day} ${month}`;
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  return utcDayMonth(text ?? '');
 }
 
 /** "as of 4 Nov" for a score's date, or null when it has none. */

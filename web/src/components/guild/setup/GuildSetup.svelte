@@ -15,7 +15,7 @@
     type GuildSettingsData,
   } from '../../../lib/guild/api';
   import { GUILD_LOADING } from '../../../lib/guild/layout';
-  import { clockText, dateLabel, viewerLocale } from '../../../lib/guild/raid-time';
+
   import {
     clearSetupStep,
     fetchGuildSetup,
@@ -27,6 +27,7 @@
   import { setupCopy } from '../../../lib/guild/setup-copy';
   import { CONFIRMABLE, OPTIONAL, doneFigure, nextStep, stepMark } from '../../../lib/guild/setup-model';
   import { fetchGuild } from '../../../lib/rankings/api';
+  import { clock, viewerLocale, viewerZone, weekdayDayMonth } from '../../../lib/dates';
   import GuildStatus from '../../GuildStatus.svelte';
   import Figure from '../../ui/Figure.svelte';
   import Page from '../../ui/Page.svelte';
@@ -50,11 +51,10 @@
   const guildPath = $derived(guildHref(path.region, path.ruleset, guildName || path.slug));
   const next = $derived(setup === null ? null : nextStep(setup.steps));
   const locale = viewerLocale();
-  const viewerZone =
-    typeof Intl === 'undefined' ? 'UTC' : Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const zone = viewerZone();
   const when = (iso: string): string => {
     const at = new Date(iso);
-    return `${dateLabel(at, viewerZone, locale)}, ${clockText(at, viewerZone, locale)}`;
+    return `${weekdayDayMonth(at, zone)}, ${clock(at, zone, { locale })}`;
   };
 
   async function load(): Promise<void> {

@@ -15,6 +15,7 @@ import {
 import { utcDayMonth } from '../dates';
 import { bandRangeLabel } from '../planner/band-title';
 import type { RateUnit } from './types';
+import { upperFirst } from '../text';
 
 export { pvpRankTitle };
 
@@ -157,7 +158,7 @@ export const bisCopy = {
   setDpsPartialNote: (count: number, unit: RateUnit = 'DPS'): string =>
     `Set ${unit} leaves out ${count} pick${count === 1 ? '' : 's'} marked not sim-checked`,
   raceTalentsLine: (race: string, points: number): string =>
-    `${capitalise(race)} · ${points} talent point${points === 1 ? '' : 's'} spent`,
+    `${upperFirst(race)} · ${points} talent point${points === 1 ? '' : 's'} spent`,
 
   // --- character panel redesign (bis-character-panel, 2026-09-29) -------------------------
   alternativesLabel: 'Also:',
@@ -357,7 +358,7 @@ export const bisCopy = {
    *  §4.C.1's own explicit warning: the two are unrelated facts that happen to coincide in
    *  the mock's own worked example). */
   thisSetFigureLine: (characterLevel: number, race: string, talentPoints: number): string =>
-    `DPS on the training dummy, level ${characterLevel} ${capitalise(race)}, ${talentPoints} talent point${talentPoints === 1 ? '' : 's'}`,
+    `DPS on the training dummy, level ${characterLevel} ${upperFirst(race)}, ${talentPoints} talent point${talentPoints === 1 ? '' : 's'}`,
   /** The This set card's meta: the day the sim ran ("Simmed 29 Oct"). */
   simmedLine: (generatedAtDate: string): string => `Simmed ${utcDayMonth(generatedAtDate)}`,
   openInSimulator: 'Open in simulator',
@@ -497,10 +498,6 @@ function signedFigure(delta: number, unit: string): string {
   return `${delta < 0 ? '−' : '+'}${Math.abs(delta).toFixed(1)} ${unit}`;
 }
 
-function capitalise(word: string): string {
-  return word.length === 0 ? word : word[0]!.toUpperCase() + word.slice(1);
-}
-
 /** `["A"]` -> `"A"`, `["A", "B"]` -> `"A and B"`, `["A", "B", "C"]` -> `"A, B and C"` --
  *  the one join "New at this band"'s two computed sentences use for an instance/rep list of
  *  any length, English's own list convention (no Oxford comma, one "and" before the last
@@ -534,7 +531,7 @@ export const tankCopy = {
   secondaryLine: (tmi: string, ownDps: string): string => `TMI ${tmi} · own damage ${ownDps} DPS`,
   /** "Against the boss profile, level 60 Troll, 31 talent points". */
   figureLine: (characterLevel: number, race: string, talentPoints: number): string =>
-    `Against the boss profile, level ${characterLevel} ${capitalise(race)}, ${talentPoints} talent point${talentPoints === 1 ? '' : 's'}`,
+    `Against the boss profile, level ${characterLevel} ${upperFirst(race)}, ${talentPoints} talent point${talentPoints === 1 ? '' : 's'}`,
   /** The runner-up row's gap-from-the-pick line, in score points. */
   alternativeGapLabel: (scoreDelta: number): string =>
     Math.abs(scoreDelta) < 0.05 ? 'same score' : signedFigure(scoreDelta, 'score'),

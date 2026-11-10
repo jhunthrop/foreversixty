@@ -22,7 +22,7 @@ from style import footer, header, page, titlebar  # noqa: E402
 VIEWER = ('Thandrel', 'warrior', 60)
 FIRST_PULL = {r['id']: r['first_pull'] for r in W.MINE['rows']}  # the public feed's row has no started_at; the same report's own does
 SAME_LOG_ZONE = {'z2opt2x2gs5u': W.SAMPLE_META['zone']}  # production's report is the sample's log: same zone
-MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec')
+MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
 COMPANION_URL = '#'
 
 LOGS_CSS = PRIMS_CSS + '''

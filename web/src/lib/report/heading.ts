@@ -1,7 +1,7 @@
 // web/src/lib/report/heading.ts
 // A report's title: the uploader's own, else the zone, else the log's date, so an untitled
-// upload of a log with no zone reads "17 Sept 2026 · 42 fights" and not blank, and leads with
-// the logging character when the report is credited ("Bow Jackzon · 17 Sept 2026 · 42 fights").
+// upload of a log with no zone reads "17 Sep 2026 · 42 fights" and not blank, and leads with
+// the logging character when the report is credited ("Bow Jackzon · 17 Sep 2026 · 42 fights").
 import { utcDayMonthYear } from '../dates';
 import type { ReportMeta } from './types';
 

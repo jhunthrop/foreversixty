@@ -43,8 +43,8 @@
   import { classOption } from '../../lib/ui/select-options';
   import { classSlugOf } from '../../lib/report/planner-link';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
-import { clockDuration } from '../../lib/format/duration';
-import { compact } from '../../lib/format/number';
+  import { clockDuration } from '../../lib/format/duration';
+  import { compact } from '../../lib/format/number';
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import Notice from '../ui/Notice.svelte';
   import Section from '../ui/Section.svelte';
@@ -214,8 +214,7 @@ import { compact } from '../../lib/format/number';
   );
   const mark = $derived(threatScaled ? '~' : '');
   /** A difference as sign, mark, magnitude: "+~13,550" and "−~26,473" read the same way round. */
-  const signed = (value: number): string =>
-    `${value >= 0 ? '+' : '−'}${mark}${compact(Math.abs(value))}`;
+  const signed = (value: number): string => `${value >= 0 ? '+' : '−'}${mark}${compact(Math.abs(value))}`;
   /** A player's figure for the picked metric: off the roster row, or the threat table. */
   function rowMetric(row: RosterRow, summary: Summary): number {
     // A window past the shorter pull's end scopes that pull to nothing: no seconds and
@@ -668,8 +667,8 @@ import { compact } from '../../lib/format/number';
         {:else if window === null}
           Both sides show the whole fight. Set a Window above to compare the same stretch of each pull.
         {:else}
-          Both sides show {clockDuration(window.startMs)} to {clockDuration(window.endMs)} of each fight, so a
-          long wipe and a short one are read over the same stretch. Clear the Window above to compare whole fights.
+          Both sides show {clockDuration(window.startMs)} to {clockDuration(window.endMs)} of each fight, so a long
+          wipe and a short one are read over the same stretch. Clear the Window above to compare whole fights.
         {/if}
       </p>
       {#if rightWhole !== null && phases.length === 0}

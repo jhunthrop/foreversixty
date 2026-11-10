@@ -20,12 +20,10 @@
   let {
     raid,
     currentKey = null,
-    locale,
   }: {
     raid: GuildRaidView;
     /** The header selector's current character, drawn first. */
     currentKey?: string | null;
-    locale: string;
   } = $props();
 
   const copy = attendanceCopy.yourNight;
@@ -42,7 +40,7 @@
 <Section title={copy.head} id="raid-your-night" panel testid="raid-your-night">
   <ul>
     {#each rows as row (row.character_key)}
-      {@const facts = yourNightFacts(row, report, raid.guild_timezone, locale)}
+      {@const facts = yourNightFacts(row, report, raid.guild_timezone)}
       {@const awards = awardsOf(row.character_key)}
       <li data-testid="raid-your-night-row">
         <Row title={row.name} titleTone={classTone(row.class)} open>

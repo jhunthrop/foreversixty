@@ -13,13 +13,13 @@ import {
   awardsByReport,
   bossTimeMs,
   deltaWords,
-  killClock,
   raidNightFigures,
   raidNightsMeta,
 } from './raid-nights-table';
 import { settingsFacts, stepsLeft } from './settings-facts';
 import { setupFixture } from '../../test-support/guild-setup-fixture';
 import type { ApplicantCharacter } from './recruit-api';
+import { clockDuration } from '../format/duration';
 
 const ONYXIA = 1084;
 
@@ -82,7 +82,7 @@ describe('the Raids tab nights', () => {
   });
 
   it('writes the clock, the change and the head line', () => {
-    expect(killClock(192_000)).toBe('3:12');
+    expect(clockDuration(192_000)).toBe('3:12');
     expect(deltaWords(-6)).toEqual({ value: '−6 s', tone: 'kill' });
     expect(deltaWords(4)).toEqual({ value: '+4 s', tone: 'wipe' });
     expect(raidNightsMeta(rows, bosses)).toBe('2 nights · 2 kills · best 3:12');

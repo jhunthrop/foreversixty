@@ -27,8 +27,8 @@
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { LINK, RULE_TOP } from '../../lib/ui/primitives';
   import type { StatColumn, StatFigure } from '../../lib/ui/stat-table';
-import { clockDuration } from '../../lib/format/duration';
-import { compact } from '../../lib/format/number';
+  import { clockDuration } from '../../lib/format/duration';
+  import { compact, grouped } from '../../lib/format/number';
   import Button from '../ui/Button.svelte';
   import Field from '../ui/Field.svelte';
   import Section from '../ui/Section.svelte';
@@ -162,7 +162,7 @@ import { compact } from '../../lib/format/number';
   }
 </script>
 
-<Section title="Events" meta={`${matching.length.toLocaleString()} lines`} testid="events-view" panel flush>
+<Section title="Events" meta={`${grouped(matching.length)} lines`} testid="events-view" panel flush>
   <div class="flex flex-col">
     <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 pb-3 md:px-5">
       <EventChips {off} {onPatch} />
@@ -210,7 +210,7 @@ import { compact } from '../../lib/format/number';
           <div class="text-muted flex items-center gap-[14px] px-4 py-3 text-[13px] md:px-5">
             <Button size="sm" testid="events-more" onclick={() => (limit += PAGE)}
               >Show {Math.min(PAGE, unshown)} more</Button
-            ><span class="tabular-nums">{unshown.toLocaleString()} more</span>
+            ><span class="tabular-nums">{grouped(unshown)} more</span>
           </div>
         {/if}
       {/if}
@@ -228,7 +228,7 @@ import { compact } from '../../lib/format/number';
             >{streaming ? 'Loading every hit and heal' : 'Load every hit and heal'}</button
           >{/if}
       {:else}
-        Every hit and heal in the window: <span class="tabular-nums">{streamedCount.toLocaleString()}</span>.
+        Every hit and heal in the window: <span class="tabular-nums">{grouped(streamedCount)}</span>.
       {/if}
       {#if streamError !== ''}<span class="text-wipe" role="alert">{streamError}</span>{/if}
     </p>

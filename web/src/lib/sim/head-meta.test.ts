@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { averageWornItemLevel, characterMeta, dayMonth, raceWords } from './head-meta';
+import { averageWornItemLevel, characterMeta, raceWords, runDay } from './head-meta';
 
 describe('the simulator head meta', () => {
   it('reads the race in words', () => {
@@ -28,7 +28,7 @@ describe('the simulator head meta', () => {
     );
     expect(line1).toMatch(/^Troll .*Warrior · Level 60 · 5\/5\/2 talents · item level 59\.9$/);
     expect(line2).toBe('Gear from the addon, 4 Nov');
-    expect(dayMonth('')).toBeNull();
+    expect(runDay('')).toBeNull();
   });
 
   it('says nothing of an addon export with no capture date (the default)', () => {
