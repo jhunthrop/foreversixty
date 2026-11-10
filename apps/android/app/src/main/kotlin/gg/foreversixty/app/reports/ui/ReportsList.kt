@@ -116,7 +116,7 @@ private fun Loaded(content: ReportsContent, pageFailed: Boolean, viewer: Reports
         Section(stringResource(R.string.reports_thisWeek), sections.thisWeek, viewer, now, copy, actions)
         Section(stringResource(R.string.reports_earlier), sections.earlier, viewer, now, copy, actions)
         Footer(content, pageFailed, actions)
-        Text(stringResource(R.string.reports_footer), style = ScaledType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.reports_footer), style = ScaledType.meta, color = FsColor.mutedGround)
     }
 }
 

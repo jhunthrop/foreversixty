@@ -1,5 +1,6 @@
 package gg.foreversixty.app.bis
 
+import gg.foreversixty.app.designsystem.SectionTitle
 import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,12 +56,7 @@ fun BisPickerContent(context: BisContext, catalog: SpecCatalog, build: String, o
         Modifier.background(GameColors.sheet).verticalScroll(rememberScrollState()).navigationBarsPadding().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(22.dp),
     ) {
-        Text(
-            stringResource(R.string.bis_picker_title),
-            style = MaterialTheme.typography.titleMedium.copy(fontFamily = FsFont.body, fontWeight = FontWeight.ExtraBold),
-            color = FsColor.strong,
-            modifier = Modifier.semantics { heading() },
-        )
+        SectionTitle(stringResource(R.string.bis_picker_title), color = FsColor.strong)
         ClassSpecSections(context, catalog, build, onSelect)
         PickerSection(stringResource(R.string.bis_picker_range)) {
             ChoicePills(BisRange.all, { context.rangeLabel(res, it) }, selection.range, mark = null) { onSelect(selection.copy(range = it)) }

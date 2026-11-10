@@ -66,7 +66,7 @@ class GuidesLogicTest {
         assertEquals(listOf("Shaman", "Mage"), footer?.classNames)
         assertEquals(52_000L, footer?.bytes)
         assertEquals(
-            "Saved on this phone: Shaman, Mage · 52 KB. Guides update by themselves when the game data does.",
+            "Saved on this phone: Shaman, Mage · 52 KB",
             copy().footer(footer),
         )
         assertNull(Guides.footer(index, emptyMap()))
@@ -84,7 +84,7 @@ class GuidesLogicTest {
     @Test
     fun `the card meta is the role and the guide's updated day`() {
         val spec = requireNotNull(Guides.yourGuide(index, GuidesTestData.lightningbolltz))
-        assertEquals("DPS · Updated 1 Nov 2026", copy().cardMeta(spec.role, GuideDates.long(spec.updated)))
+        assertEquals("DPS · Updated 1 Nov", copy().cardMeta(spec.role, GuideDates.long(spec.updated)))
         assertEquals("1 Nov", GuideDates.short("2026-11-01"))
         assertEquals("Healer", copy().role("healer"))
         assertEquals("Tank", copy().role("tank"))
@@ -104,8 +104,8 @@ class GuidesLogicTest {
     @Test
     fun `the head names the recommended races, and a stat chip reads its place`() {
         val guide = GuidesTestData.elemental()
-        assertEquals("Updated 1 Nov 2026 · Recommended races: Dwarf, Orc", copy().headMeta(guide))
-        assertEquals("Updated 1 Nov 2026", copy().headMeta(guide.copy(recommendedRaces = emptyList())))
+        assertEquals("Updated 1 Nov · Recommended races: Dwarf, Orc", copy().headMeta(guide))
+        assertEquals("Updated 1 Nov", copy().headMeta(guide.copy(recommendedRaces = emptyList())))
         assertEquals("Priority 1, Spell power", copy().statLabel(0, guide.statPriority.first()))
     }
 
@@ -226,7 +226,7 @@ class GuidesLogicTest {
     @Test
     fun `changelog rows carry their month and day and a Site or Game tag`() {
         val entry = GuidesTestData.changelog().entries.first()
-        assertEquals("10/28", GuideDates.monthDay(entry.date))
+        assertEquals("28 Oct", GuideDates.monthDay(entry.date))
         assertEquals(ChangeTag.Site, Changes.tag(entry))
         assertEquals(ChangeTag.Game, Changes.tag(entry.copy(kind = "patch")))
         assertEquals("Site", copy().tag(ChangeTag.Site))

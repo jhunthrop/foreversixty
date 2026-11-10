@@ -184,7 +184,7 @@ fun RaidPageContent(
                 }
                 offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, now()), stale, retry) }
                 Column(verticalArrangement = Arrangement.spacedBy(22.dp), modifier = Modifier.padding(16.dp)) {
-                    CountBlock(facts, muted = facts.chip == RaidChip.Cancelled)
+                    CountBlock(facts, muted = facts.chip == RaidChip.Cancelled, ink = FsColor.mutedGround)
                     if (facts.showsOfficerTools && facts.isSignable) OfficerRow(controller, clock)
                     SignupCard(controller, facts, clock, currentKey, requestPermission)
                     if (raid.viewer.raidNight == true) NightRow { openNight(raid.id) }

@@ -117,7 +117,7 @@ fun OfflineDataScreen(state: OfflineDataState, now: Instant, actions: OfflineDat
     Column(Modifier.fillMaxSize().screenGround()) {
         GuildTopBar(stringResource(R.string.offlineData_title), actions.back)
         Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = FsSpace.space4).padding(bottom = FsSpace.space6),
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = FsSpace.space4).padding(top = FsSpace.space4, bottom = FsSpace.space6),
             verticalArrangement = Arrangement.spacedBy(FsSpace.space4),
         ) {
             val report = state.report

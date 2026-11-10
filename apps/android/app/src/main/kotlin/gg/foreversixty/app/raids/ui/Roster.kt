@@ -90,17 +90,12 @@ fun OfficerRow(controller: SignupController, clock: RaidClock) {
                 leadingIcon = if (controller.copied) Icons.Filled.Check else Icons.AutoMirrored.Filled.List,
             )
         }
-        Text(
-            stringResource(
-                when {
-                    ended -> R.string.officer_gate
-                    locked -> R.string.officer_lockedNote
-                    else -> R.string.officer_lockNote
-                },
-            ),
-            style = ScaledType.meta,
-            color = FsColor.muted,
-        )
+        // The state notes only; how locking works is not explained (round 1, cut as an explainer).
+        when {
+            ended -> R.string.officer_gate
+            locked -> R.string.officer_lockedNote
+            else -> null
+        }?.let { note -> Text(stringResource(note), style = ScaledType.meta, color = FsColor.mutedGround) }
         controller.officerError?.let { Text(it, style = ScaledType.meta, color = FsColor.wipe) }
     }
 }

@@ -2895,7 +2895,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Saved on this phone: %1$@ · %2$@. Guides update by themselves when the game data does."
+            "value": "Saved on this phone: %1$@ · %2$@"
           }
         }
       }
@@ -16945,7 +16945,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Search items, characters, guides, talents"
+            "value": "Search items, characters, guides"
           }
         }
       }

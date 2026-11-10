@@ -227,20 +227,20 @@ fun FlowButton(
     selectedState: Boolean? = null,
 ) {
     val shape = RoundedCornerShape(FsRadius.control)
-    val fill = if (primary) Modifier.background(Brush.verticalGradient(listOf(FsColor.goldHover, FsColor.gold)), shape) else Modifier.background(FsColor.raised, shape)
+    val fill = Modifier.background(if (primary) FsColor.teal else FsColor.raised, shape)
     Box(
         modifier
             .heightIn(min = if (small) SMALL_BUTTON else BUTTON)
             .parityItem(ParityItemKind.Button)
             .clip(shape)
             .then(fill)
-            .border(1.dp, if (primary) FsColor.gold else FsColor.line, shape)
+            .border(1.dp, if (primary) FsColor.tealEdge else FsColor.line, shape)
             .clickable(role = Role.Button, onClick = onClick)
             .then(selectedState?.let { on -> Modifier.semantics { selected = on } } ?: Modifier)
             .padding(horizontal = BUTTON_PAD),
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, style = BUTTON_TEXT, color = if (primary) FsColor.bg else FsColor.strong, maxLines = 1)
+        Text(label, style = BUTTON_TEXT, color = FsColor.strong, maxLines = 1)
     }
 }
 

@@ -120,7 +120,6 @@ fun YouScreen(
                 Text(summary.battletag, style = ScaledType.name, color = FsColor.strong)
                 Text(stringResource(R.string.you_signedInWith), style = ScaledType.meta, color = FsColor.mutedGround)
             }
-            if (summary.plan.isPremium) Tag(stringResource(R.string.plan_premium), FsColor.gold)
         }
         AccountCard {
             PlanRow(summary.plan, mayLink, actions.onSeePlans, actions.onPlan)

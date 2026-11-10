@@ -188,8 +188,8 @@ fun ScopeChip(label: String, selected: Boolean, onClick: () -> Unit) {
         val line = if (selected) FsColor.gold else FsColor.line
         Box(
             Modifier.heightIn(min = 36.dp)
-                .background(if (selected) FsColor.gold.copy(alpha = SELECTED_WASH) else Color.Transparent, CircleShape)
-                .border(1.dp, line, CircleShape)
+                .background(if (selected) FsColor.gold.copy(alpha = SELECTED_WASH) else Color.Transparent, RoundedCornerShape(FsRadius.control))
+                .border(1.dp, line, RoundedCornerShape(FsRadius.control))
                 .padding(horizontal = CHIP_PADDING, vertical = 6.dp),
             contentAlignment = Alignment.Center,
         ) {

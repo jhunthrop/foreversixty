@@ -170,7 +170,7 @@ internal fun SavedMark(saved: Boolean, long: Boolean = false) {
     } else {
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(painterResource(R.drawable.ic_cloud_download), contentDescription = null, tint = FsColor.muted, modifier = Modifier.size(18.dp))
-            Text(stringResource(R.string.guides_notSaved), style = ScaledType.meta, color = FsColor.muted)
+            Text(stringResource(R.string.guides_notSaved), style = ScaledType.meta, color = FsColor.mutedGround)
         }
     }
 }

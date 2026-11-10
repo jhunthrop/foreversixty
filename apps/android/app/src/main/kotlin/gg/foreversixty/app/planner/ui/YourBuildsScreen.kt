@@ -103,7 +103,7 @@ private fun BuildsList(phase: YourBuildsPhase.Loaded, state: BuildsPageState, ac
             }
         }
         if (phase.rows.isNotEmpty()) {
-            item { Text(stringResource(R.string.plan_builds_footer), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(top = 4.dp)) }
+            item { Text(stringResource(R.string.plan_builds_footer), style = ScaledType.meta, color = FsColor.mutedGround, modifier = Modifier.padding(top = 4.dp)) }
         }
         state.newBuild?.let { new ->
             item { SectionTitle(stringResource(R.string.plan_builds_newHeader), Modifier.padding(top = 18.dp)) }

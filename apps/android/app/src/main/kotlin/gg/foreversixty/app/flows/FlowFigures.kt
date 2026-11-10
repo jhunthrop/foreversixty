@@ -52,4 +52,4 @@ private fun Figure(figure: FlowFigure, modifier: Modifier) {
 
 private const val COLUMNS = 2
 private val LABEL_GAP = 2.dp
-private val LABEL = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.12.em)
+private val LABEL = FsType.label

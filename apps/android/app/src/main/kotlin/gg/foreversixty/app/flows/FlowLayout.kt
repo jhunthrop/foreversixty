@@ -212,9 +212,9 @@ fun FlowBlock(region: String, top: Dp = FsSpace.space6, content: @Composable Col
     Column(Modifier.padding(top = top).fillMaxWidth().parityRegion(region), content = content)
 }
 
-/** A small line of text (`.t-small`, 13/20, muted). */
+/** A small line of text on the ground (`.t-small`, 13/20, mutedGround: AA on the painted art). */
 @Composable
-fun FlowNote(text: String, modifier: Modifier = Modifier, color: Color = FsColor.muted) {
+fun FlowNote(text: String, modifier: Modifier = Modifier, color: Color = FsColor.mutedGround) {
     Text(text, style = FsType.small, color = color, modifier = modifier)
 }
 

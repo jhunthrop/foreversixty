@@ -174,7 +174,7 @@ fun ShareSheetContent(state: ShareSheetState, onTitle: (String) -> Unit, proceed
             modifier = Modifier.fillMaxWidth(),
         )
         BrandButton(stringResource(R.string.plan_shareProceed), BrandButtonKind.Primary, proceed, busy = state.sharing, height = 48.dp)
-        BrandButton(stringResource(R.string.common_cancel), BrandButtonKind.Secondary, cancel, enabled = !state.sharing, height = 48.dp)
+        BrandButton(stringResource(R.string.common_cancel), BrandButtonKind.Quiet, cancel, enabled = !state.sharing, height = 48.dp)
         if (state.signedIn) Text(stringResource(R.string.plan_shareSignedIn), style = ScaledType.meta, color = FsColor.muted)
     }
 }

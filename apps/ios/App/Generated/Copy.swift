@@ -2817,7 +2817,7 @@ enum Copy {
     /// Search
     static var searchButton: String { text("search.button") }
 
-    /// Search items, characters, guides, talents
+    /// Search items, characters, guides
     static var searchPlaceholder: String { text("search.placeholder") }
 
     /// Cancel
@@ -4367,7 +4367,7 @@ enum Copy {
     /// All classes
     static var guidesClasses: String { text("guides.classes") }
 
-    /// Saved on this phone: {classes} · {size}. Guides update by themselves when the game data does.
+    /// Saved on this phone: {classes} · {size}
     static func guidesFooter(classes: String, size: String) -> String {
         format("guides.footer", classes, size)
     }

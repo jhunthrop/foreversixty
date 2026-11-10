@@ -1,5 +1,7 @@
 package gg.foreversixty.app.premium
 
+import gg.foreversixty.app.account.AccountCopy
+import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.Label12
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -115,6 +117,16 @@ private fun SeePlans() {
     }
 }
 
+/** The price as a Figure (spec 3.4): the amount in gold tabular figures, its period beside it. */
+@Composable
+private fun PriceFigure(price: PlanPrice) {
+    val period = stringResource(if (price.yearly) R.string.plan_price_yearly else R.string.plan_price_monthly, "").trim()
+    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
+        Text(price.amount, style = FsType.figure, color = FsColor.gold)
+        Text(period, style = ScaledType.bodyStrong, color = FsColor.muted, modifier = Modifier.padding(bottom = 4.dp))
+    }
+}
+
 /** F8.4 Plan: the card with the site's plan line, what it includes, and billing where allowed. */
 @Composable
 fun PlanScreen(plan: PlanSummary, mayLink: Boolean, back: (() -> Unit)? = null, onManageBilling: () -> Unit) {
@@ -133,9 +145,15 @@ fun PlanScreen(plan: PlanSummary, mayLink: Boolean, back: (() -> Unit)? = null, 
                 if (plan.founder) Tag(stringResource(R.string.plan_founder), FsColor.gold)
             }
             Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space1)) {
-                Text(PlanCopy.line(plan.line), style = ScaledType.body, color = FsColor.text)
+                when (val line = plan.line) {
+                    // The web's plan head: the price as a gold Figure with its period, then when it renews.
+                    is PlanLine.RenewsPrice -> {
+                        PriceFigure(line.price)
+                        Text(stringResource(R.string.plan_renews, AccountCopy.longDate(line.date)), style = ScaledType.body, color = FsColor.text)
+                    }
+                    else -> Text(PlanCopy.line(line), style = ScaledType.body, color = FsColor.text)
+                }
                 plan.line2?.let { Text(PlanCopy.given(it), style = ScaledType.meta, color = FsColor.muted) }
-                if (plan.founder) Text(stringResource(R.string.plan_founderNote), style = ScaledType.meta, color = FsColor.muted)
             }
             if (plan.includes.isNotEmpty()) Includes(plan.includes)
             when (plan.billingLine(mayLink)) {

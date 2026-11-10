@@ -73,13 +73,18 @@ fun DeleteAccountScreen(
     val lines = consequences.map { AccountCopy.consequence(it) }
     val canDelete = !deleting && DeletionConfirmation.matches(typed, battleTag)
     AccountPage(stringResource(R.string.shared_account_delete_title), back) {
-        Text(stringResource(R.string.shared_account_delete_intro), style = ScaledType.body, color = FsColor.text)
+        Text(stringResource(R.string.shared_account_delete_intro), style = ScaledType.body, color = FsColor.strong)
         BulletGroup(stringResource(R.string.shared_account_delete_deleted_title), DELETED_ITEMS.map { stringResource(it) }, Icons.Filled.Close)
         BulletGroup(stringResource(R.string.shared_account_delete_kept_title), KEPT_ITEMS.map { stringResource(it) }, Icons.Filled.Check, FsColor.muted)
         if (lines.isNotEmpty()) BulletGroup(stringResource(R.string.shared_account_delete_lose_title), lines, Icons.Outlined.Info)
-        ConfirmField(battleTag, typed, onTyped, enabled = !deleting, mismatch = outcome == AccountActionOutcome.ConfirmMismatch)
-        AccountCopy.deletionFailure(outcome)?.let { Text(it, style = ScaledType.body, color = FsColor.wipe) }
-        BrandButton(stringResource(R.string.shared_account_delete_button), BrandButtonKind.Destructive, onDelete, busy = deleting, enabled = canDelete)
+        // The confirmation on one Plate: the field, its failure in wipe and the button read on the panel's dark.
+        AccountCard {
+            Column(Modifier.padding(FsSpace.space4), verticalArrangement = Arrangement.spacedBy(FsSpace.space3)) {
+                ConfirmField(battleTag, typed, onTyped, enabled = !deleting, mismatch = outcome == AccountActionOutcome.ConfirmMismatch)
+                AccountCopy.deletionFailure(outcome)?.let { Text(it, style = ScaledType.body, color = FsColor.wipe) }
+                BrandButton(stringResource(R.string.shared_account_delete_button), BrandButtonKind.Destructive, onDelete, busy = deleting, enabled = canDelete)
+            }
+        }
         Text(stringResource(R.string.shared_account_delete_email), style = ScaledType.meta, color = FsColor.mutedGround)
     }
 }
@@ -87,8 +92,8 @@ fun DeleteAccountScreen(
 @Composable
 private fun ConfirmField(battleTag: String?, typed: String, onTyped: (String) -> Unit, enabled: Boolean, mismatch: Boolean) {
     val label = AccountCopy.deletionPrompt(battleTag)
-    Column(Modifier.padding(top = FsSpace.space2), verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
-        Label12(label)
+    Column(verticalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
+        Label12(label, color = FsColor.text)
         OutlinedTextField(
             value = typed,
             onValueChange = onTyped,

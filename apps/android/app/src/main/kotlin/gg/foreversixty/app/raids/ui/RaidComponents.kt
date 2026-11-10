@@ -171,7 +171,7 @@ fun FillBar(fill: Float, width: Dp?, muted: Boolean = false) {
 
 /** The count block (spec F4.1): the bar, `24 of 40 signed up`, and the role breakdown. */
 @Composable
-fun CountBlock(facts: RaidFacts, muted: Boolean = false) {
+fun CountBlock(facts: RaidFacts, muted: Boolean = false, ink: Color = FsColor.muted) {
     val res = androidx.compose.ui.platform.LocalResources.current
     val line = facts.countLine(res)
     val breakdown = facts.breakdown(res)
@@ -187,7 +187,7 @@ fun CountBlock(facts: RaidFacts, muted: Boolean = false) {
                 Text(line, style = ScaledType.bodyStrong, color = FsColor.strong)
             }
         }
-        Text(breakdown, style = ScaledType.meta, color = FsColor.muted)
+        Text(breakdown, style = ScaledType.meta, color = ink)
     }
 }
 

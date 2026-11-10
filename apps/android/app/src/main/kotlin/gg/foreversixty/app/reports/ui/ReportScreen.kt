@@ -103,7 +103,7 @@ private fun Loaded(report: Report, state: ReportScreenState, now: Instant, copy:
                 Label12(stringResource(R.string.report_tag), color = FsColor.gold)
                 Tag(copy.visibility(report.visibility), FsColor.nav)
             }
-            Text(copy.reportMeta(report), style = ScaledType.meta, color = FsColor.muted)
+            Text(copy.reportMeta(report), style = ScaledType.meta, color = FsColor.mutedGround)
         }
         when (ReportState.of(report.status)) {
             ReportState.Processing -> {
@@ -123,7 +123,7 @@ private fun Loaded(report: Report, state: ReportScreenState, now: Instant, copy:
         ParsesCard(state.parses, copy, actions.retryParses)
         FightsCard(report, copy, actions.openMeters)
         CoachCard(state.coach, copy, actions.retryCoach)
-        Text(stringResource(R.string.report_footer), style = ScaledType.meta, color = FsColor.muted)
+        Text(stringResource(R.string.report_footer), style = ScaledType.meta, color = FsColor.mutedGround)
     }
 }
 

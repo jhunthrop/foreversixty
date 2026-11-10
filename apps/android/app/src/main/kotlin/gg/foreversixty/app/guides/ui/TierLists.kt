@@ -116,6 +116,9 @@ private fun Loaded(file: TiersFile, state: TierListState, actions: TierListActio
     Column(Modifier.padding(top = GuideSpace.rowGap, bottom = GuideSpace.section), verticalArrangement = Arrangement.spacedBy(GuideSpace.rowGap)) {
         Tiers.callout(list, state.yourSpec)?.let { Callout(it, file.build) }
         // The web's anatomy: the tier letter once at the head of its group, then rank, crest, name and the figures.
+        rows.firstOrNull()?.row?.unit?.takeIf { it.isNotEmpty() }?.let { unit ->
+            Box(Modifier.fillMaxWidth().padding(end = 16.dp), contentAlignment = Alignment.CenterEnd) { Label12(unit, color = FsColor.mutedGround) }
+        }
         val heads = rows.indices.filter { i -> i == 0 || rows[i - 1].row.tier != rows[i].row.tier }.toSet()
         QuietRows(rows.withIndex().toList()) { (i, row) ->
             TierRowView(row, rows.size, file.build, letter = row.row.tier.takeIf { i in heads }) { actions.open(row.row.spec) }
@@ -171,7 +174,7 @@ private fun Callout(callout: TierCallout, build: String) {
                 Text(callout.row.detail, style = ScaledType.meta, color = FsColor.muted)
             }
         }
-        callout.note?.let { Text(it, style = ScaledType.meta, color = FsColor.muted) }
+        callout.note?.let { Text(it, style = ScaledType.meta, color = FsColor.mutedGround) }
     }
 }
 
@@ -204,7 +207,7 @@ private fun TierRowView(model: TierRowModel, count: Int, build: String, letter: 
             }
         }
         Text(row.rank.toString(), style = ScaledType.tabular, color = FsColor.muted, modifier = Modifier.widthIn(min = RANK_WIDTH))
-        SpecTile(row.icon, row.classSlug, build, ROW_ICON)
+        ClassCrest(row.classSlug, ROW_ICON)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(row.name, style = ScaledType.bodyStrong, color = classColor(row.classSlug), modifier = Modifier.weight(1f, fill = false))

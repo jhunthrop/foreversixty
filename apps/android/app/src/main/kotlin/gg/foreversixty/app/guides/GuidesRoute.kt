@@ -1,5 +1,7 @@
 package gg.foreversixty.app.guides
 
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Spacer
 import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.designsystem.ScaledType
 import androidx.compose.ui.semantics.semantics
@@ -149,13 +151,13 @@ fun GuidesRootLayout(
     segments: List<GuidesSegment>,
     segment: GuidesSegment,
     onSegment: (GuidesSegment) -> Unit,
-    selector: @Composable () -> Unit = {},
+    selector: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     val res = LocalResources.current
     Column(Modifier.fillMaxSize().screenGround().verticalScroll(rememberScrollState())) {
         Row(Modifier.fillMaxWidth().surfaceBand().heightIn(min = BAR_HEIGHT), verticalAlignment = Alignment.CenterVertically) {
-            selector()
+            if (selector != null) selector() else Spacer(Modifier.width(16.dp))
             Text(stringResource(R.string.guides_title), style = ScaledType.barTitle, color = FsColor.strong, modifier = Modifier.semantics { heading() })
         }
         Column(Modifier.screenMargins().padding(vertical = SEGMENT_GAP)) {

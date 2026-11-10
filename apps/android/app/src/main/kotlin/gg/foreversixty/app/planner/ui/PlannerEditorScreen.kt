@@ -305,7 +305,7 @@ private fun ActionBar(spent: Int, actions: EditorActions) {
         Modifier.fillMaxWidth().background(FsColor.raised).padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        BrandButton(stringResource(R.string.plan_reset), BrandButtonKind.Secondary, actions.reset, Modifier.weight(RESET_WEIGHT), enabled = spent > 0, height = 48.dp)
+        BrandButton(stringResource(R.string.plan_reset), BrandButtonKind.Quiet, actions.reset, Modifier.weight(RESET_WEIGHT), enabled = spent > 0, height = 48.dp)
         BrandButton(
             stringResource(R.string.plan_share), BrandButtonKind.Primary, actions.share, Modifier.weight(1f),
             height = 48.dp, leadingIcon = Icons.Filled.Share, iconScalesWithText = true,

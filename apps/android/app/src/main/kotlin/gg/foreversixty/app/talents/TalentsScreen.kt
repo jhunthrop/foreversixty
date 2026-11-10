@@ -238,7 +238,7 @@ private fun TalentsContent(
                         )
                     }
                     item {
-                        Text(presenter.legend(shown, res), style = ScaledType.meta, color = FsColor.muted, modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp))
+                        Text(presenter.legend(shown, res), style = ScaledType.meta, color = FsColor.mutedGround, modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp))
                     }
                 }
             }

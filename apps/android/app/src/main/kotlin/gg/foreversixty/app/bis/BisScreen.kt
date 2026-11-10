@@ -1,5 +1,6 @@
 package gg.foreversixty.app.bis
 
+import gg.foreversixty.app.designsystem.LoadError
 import gg.foreversixty.app.designsystem.classColor
 import gg.foreversixty.app.designsystem.surfaceBand
 import gg.foreversixty.app.designsystem.ScaledType
@@ -129,9 +130,9 @@ fun BisContent(
                         }
                     }
                 }
-                is BisPhase.NoList -> item { StateNotice(stringResource(R.string.home_answer_noList), FsColor.muted, onTryAgain = null) }
-                BisPhase.NotCached -> item { StateNotice(stringResource(R.string.bis_notCached), FsColor.muted, onTryAgain) }
-                BisPhase.Failed -> item { StateNotice(stringResource(R.string.bis_failed), FsColor.wipe, onTryAgain) }
+                is BisPhase.NoList -> item { StateNotice(stringResource(R.string.home_answer_noList), FsColor.mutedGround, onTryAgain = null) }
+                BisPhase.NotCached -> item { LoadError(stringResource(R.string.bis_notCached), stringResource(R.string.common_tryAgain), onTryAgain, Modifier.padding(top = 10.dp)) }
+                BisPhase.Failed -> item { LoadError(stringResource(R.string.bis_failed), stringResource(R.string.common_tryAgain), onTryAgain, Modifier.padding(top = 10.dp)) }
             }
         }
     }
@@ -215,7 +216,7 @@ private fun SetDpsLine(line: String) {
         }
         append(line.substring(figureEnd))
     }
-    Text(text, style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal), color = FsColor.muted, modifier = Modifier.padding(bottom = 14.dp))
+    Text(text, style = ScaledType.meta, color = FsColor.mutedGround, modifier = Modifier.padding(bottom = 14.dp))
 }
 
 /** One cell of the quiet card: the card's ground, rounded at its ends, divided between rows. */
