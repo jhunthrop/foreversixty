@@ -106,10 +106,8 @@ const (
 	swpFrameChanged = 0x0020
 )
 
-var (
-	getWindowLongPtr = sysUser32.NewProc("GetWindowLongPtrW")
-	setWindowLongPtr = sysUser32.NewProc("SetWindowLongPtrW")
-)
+// getWindowLongPtr reads the style that setWindowLongPtr (closehook_windows.go) writes.
+var getWindowLongPtr = sysUser32.NewProc("GetWindowLongPtrW")
 
 // dialogChrome leaves a fixed window only its close button: the setup and
 // install windows have nothing to minimize or maximize.
