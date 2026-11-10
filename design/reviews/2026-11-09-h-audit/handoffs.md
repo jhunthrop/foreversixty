@@ -31,6 +31,12 @@ These sit in files another in-flight lane owns tonight, so h-audit lists them in
 - ui/SpellIcon.svelte: a missing spell icon shows the browser's broken-image glyph on the guide spec page (Lightning Reflexes, Resourcefulness, Strider Kick, Aspect of the Beast, Rapid Fire, tree nodes); swap to the bordered placeholder on error.
 - planner/TalentCell.svelte (via ui/SpellIcon): talent-tree nodes on the guide spec page show the broken-image glyph on lit nodes and a grey glyph on dimmed ones.
 - content/guides/hunter/survival.md: the opener "Survival levels in melee."; the race prose "Humans can be Hunters for the first time in Forever" and "Skyborne can be Hunters on either faction:" restate the rail; "Enchant Weapon - Agility" listed twice.
+- Guide spec page (round 4):
+  - The footer line "1 point of agility = 0.63 DPS at level 60" repeats the Level 60 label and the DPS column (lib/guides/copy.ts).
+  - The weights header says "DPS per point or rating", but "or rating" qualifies nothing.
+  - The Lone Wolf key-talent blurb restates the Overview prose (GuideBuildsLane).
+  - The survival.md blurbs "You fire no shots in this spec" and "Plain attack power gives only itself".
+  - [spec].astro keeps its own `.guide-page` 40 px bottom padding on top of the body's footer gap. Its mock keeps a `.g-page` wrapper to match; drop both together.
 - GuideRacesLane: "Recommended" pills beside coloured race names on Night Elf, Orc and Troll.
 - The guide spec footer "Numbers from client build 1.60.1.70790, checked against launch logs…" is site meta talk.
 - planner/TreeGrid.svelte and TalentCell.svelte: a tier-gate gutter and a "n more to tier k" line.
@@ -45,6 +51,12 @@ These sit in files another in-flight lane owns tonight, so h-audit lists them in
   - Enchants and consumables rows with no icon;
   - Best in slot repeats the BiS page's 17-slot list;
   - Load and Sim are repeated as text links.
+
+## f-account (footer gap in the mocks)
+- Main's e4f6f961d and de47037db added a page-to-footer gap: global.css `[data-page-body]` is 40 px, and 64 px from 1024. design/mocks/ws_lib.py `_BODY_CSS` doesn't carry it, so every parity spec's site-footer box is ~64 px off on main. f-account's ws_lib.py change fixes it. Until that lands, this lane's parity is green only with that change applied (it was applied uncommitted when this lane was verified).
+
+## f-content (sim-phone)
+- web/tests/e2e/sim-phone.spec.ts reads the This run section. h-audit keeps that section unfolded on phones so the spec stays green. If This run should fold too, the spec needs `openSimSection(page, 'settings')` first.
 
 ## h-doll (later)
 - ui/Paperdoll: item level and enchant state at 1440 on the character doll, and the floating Upgrades card.
