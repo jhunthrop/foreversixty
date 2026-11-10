@@ -86,6 +86,15 @@ for (const [name, open] of PAGES) {
       await routeRealIcons(page);
       await open(page);
       await settleParityPage(page);
+      // Lazy images below the fold load only once scrolled to: walk the page before the shot.
+      await page.evaluate(async () => {
+        for (let y = 0; y < document.body.scrollHeight; y += 800) {
+          window.scrollTo(0, y);
+          await new Promise((resolve) => setTimeout(resolve, 120));
+        }
+        window.scrollTo(0, 0);
+      });
+      await page.waitForLoadState('networkidle');
       await page.screenshot({ path: path.join(OUT, `${name}-${width}.png`), fullPage: true });
     });
   }
