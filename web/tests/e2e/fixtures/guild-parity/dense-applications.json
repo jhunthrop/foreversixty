@@ -1,0 +1,220 @@
+{
+  "rows": [
+    {
+      "id": 48,
+      "guild_id": 2,
+      "status": "pending",
+      "created_at": "2027-01-07T18:00:00Z",
+      "decided_at": null,
+      "message": "Two tiers in a guild that disbanded.",
+      "availability": "Wed",
+      "discord_dm": false,
+      "character": {
+        "character_key": "us/pvp/ashenveil",
+        "name": "Ashenveil",
+        "class": "paladin",
+        "spec": "paladin-holy",
+        "spec_name": "Holy Paladin",
+        "level": 60,
+        "item_level": 63,
+        "best_parse": {
+          "metric": "hps",
+          "value": 612.4,
+          "percentile": 91,
+          "encounter": "Onyxia",
+          "report_id": "parity",
+          "fight_index": 3
+        }
+      },
+      "votes": {
+        "yes": 2,
+        "no": 0,
+        "voters": 3,
+        "mine": "yes"
+      },
+      "decided_by": null,
+      "role_outcome": null,
+      "dm_outcome": null
+    },
+    {
+      "id": 49,
+      "guild_id": 2,
+      "status": "pending",
+      "created_at": "2027-01-08T18:00:00Z",
+      "decided_at": null,
+      "message": "New to Forever, level 60 since launch.",
+      "availability": "",
+      "discord_dm": false,
+      "character": {
+        "character_key": "us/pvp/quillbright",
+        "name": "Quillbright",
+        "class": "warlock",
+        "spec": "warlock-destruction",
+        "spec_name": "Destruction Warlock",
+        "level": 60,
+        "item_level": 60,
+        "best_parse": {
+          "metric": "dps",
+          "value": 488.0,
+          "percentile": 74,
+          "encounter": "Onyxia",
+          "report_id": "parity",
+          "fight_index": 3
+        }
+      },
+      "votes": {
+        "yes": 1,
+        "no": 1,
+        "voters": 3,
+        "mine": null
+      },
+      "decided_by": null,
+      "role_outcome": null,
+      "dm_outcome": null
+    },
+    {
+      "id": 46,
+      "guild_id": 2,
+      "status": "pending",
+      "created_at": "2027-01-03T18:00:00Z",
+      "decided_at": null,
+      "message": "Off tank on Fresh, can main tank.",
+      "availability": "Wed, Sun",
+      "discord_dm": false,
+      "character": {
+        "character_key": "us/pvp/thornlash",
+        "name": "Thornlash",
+        "class": "warrior",
+        "spec": "warrior-protection",
+        "spec_name": "Protection Warrior",
+        "level": 60,
+        "item_level": 58,
+        "best_parse": {
+          "metric": "dps",
+          "value": 301.5,
+          "percentile": 38,
+          "encounter": "Onyxia",
+          "report_id": "parity",
+          "fight_index": 3
+        }
+      },
+      "votes": {
+        "yes": 0,
+        "no": 0,
+        "voters": 3,
+        "mine": null
+      },
+      "decided_by": null,
+      "role_outcome": null,
+      "dm_outcome": null
+    },
+    {
+      "id": 44,
+      "guild_id": 2,
+      "status": "accepted",
+      "created_at": "2026-12-28T18:00:00Z",
+      "decided_at": "2026-12-30T18:00:00Z",
+      "message": "",
+      "availability": "Wed",
+      "discord_dm": false,
+      "character": {
+        "character_key": "us/pvp/oakhallow",
+        "name": "Oakhallow",
+        "class": "druid",
+        "spec": "druid-restoration",
+        "spec_name": "Restoration Druid",
+        "level": 60,
+        "item_level": 59,
+        "best_parse": {
+          "metric": "hps",
+          "value": 540.0,
+          "percentile": 66,
+          "encounter": "Onyxia",
+          "report_id": "parity",
+          "fight_index": 3
+        }
+      },
+      "votes": {
+        "yes": 3,
+        "no": 0,
+        "voters": 3,
+        "mine": null
+      },
+      "decided_by": "Dunmaro",
+      "role_outcome": null,
+      "dm_outcome": null
+    },
+    {
+      "id": 41,
+      "guild_id": 2,
+      "status": "accepted",
+      "created_at": "2026-12-24T18:00:00Z",
+      "decided_at": "2026-12-26T18:00:00Z",
+      "message": "Hunter main, alt warrior.",
+      "availability": "Wed",
+      "discord_dm": false,
+      "character": {
+        "character_key": "us/pvp/brambleshot",
+        "name": "Brambleshot",
+        "class": "hunter",
+        "spec": "hunter-marksmanship",
+        "spec_name": "Marksmanship Hunter",
+        "level": 60,
+        "item_level": 57,
+        "best_parse": {
+          "metric": "dps",
+          "value": 402.0,
+          "percentile": 41,
+          "encounter": "Onyxia",
+          "report_id": "parity",
+          "fight_index": 3
+        }
+      },
+      "votes": {
+        "yes": 3,
+        "no": 0,
+        "voters": 3,
+        "mine": null
+      },
+      "decided_by": "Dunmaro",
+      "role_outcome": null,
+      "dm_outcome": null
+    },
+    {
+      "id": 39,
+      "guild_id": 2,
+      "status": "declined",
+      "created_at": "2026-12-20T18:00:00Z",
+      "decided_at": "2026-12-21T18:00:00Z",
+      "message": "",
+      "availability": "",
+      "discord_dm": false,
+      "character": {
+        "character_key": "us/pvp/saltmarsh",
+        "name": "Saltmarsh",
+        "class": "rogue",
+        "spec": "rogue-combat",
+        "spec_name": "Combat Rogue",
+        "level": 60,
+        "item_level": 55,
+        "best_parse": {
+          "metric": "dps",
+          "value": 330.0,
+          "percentile": 22,
+          "encounter": "Onyxia",
+          "report_id": "parity",
+          "fight_index": 3
+        }
+      },
+      "votes": {
+        "yes": 0,
+        "no": 3,
+        "voters": 3,
+        "mine": null
+      },
+      "decided_by": "Dunmaro",
+      "role_outcome": null,
+      "dm_outcome": null
+    }
+  ]
+}

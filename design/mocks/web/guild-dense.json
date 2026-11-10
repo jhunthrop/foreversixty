@@ -29,6 +29,41 @@
       "id": "dense-loot",
       "path": "/guild/us/pvp/olympus-xxvii#loot",
       "mock": "web-guild-dense-loot.html"
+    },
+    {
+      "id": "dense-raids",
+      "path": "/guild/us/pvp/olympus-xxvii#raids",
+      "mock": "web-guild-dense-raids.html"
+    },
+    {
+      "id": "dense-planner",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/45",
+      "mock": "web-guild-dense-planner.html"
+    },
+    {
+      "id": "dense-raid-member",
+      "path": "/guild/us/pvp/olympus-xxvii/raids/45",
+      "mock": "web-guild-dense-raid-member.html"
+    },
+    {
+      "id": "dense-progression",
+      "path": "/guild/us/pvp/olympus-xxvii#progression",
+      "mock": "web-guild-dense-progression.html"
+    },
+    {
+      "id": "dense-recruit",
+      "path": "/guild/us/pvp/olympus-xxvii/recruit",
+      "mock": "web-guild-dense-recruit.html"
+    },
+    {
+      "id": "dense-applications",
+      "path": "/guild/us/pvp/olympus-xxvii/applications",
+      "mock": "web-guild-dense-applications.html"
+    },
+    {
+      "id": "dense-settings",
+      "path": "/guild/us/pvp/olympus-xxvii#settings",
+      "mock": "web-guild-dense-settings.html"
     }
   ]
 }
