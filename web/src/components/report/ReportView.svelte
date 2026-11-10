@@ -7,6 +7,7 @@
        bar (ReportBar), then a split Page whose main column holds the tab's one Plate first and its
        open Sections after, and whose rail holds This pull and the tab's own rail Sections. -->
 <script lang="ts">
+  import { iconUrl } from '../../lib/ui/assets';
   import { untrack } from 'svelte';
   import { simCompareFightHref } from '../../lib/handoff-links';
   import Notice from '../ui/Notice.svelte';
@@ -114,7 +115,6 @@
   import type { ChartEvent, ChartPhase } from '../../lib/chart/types';
   import type { ThreatPlayer } from '../../lib/chart/threat';
   import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '../../lib/current-character';
-  import { dataUrl } from '../../lib/planner/load';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import Row from '../ui/Row.svelte';
@@ -672,8 +672,7 @@
       deaths.length > 1 ? { start: deaths[0].atMs, end: deaths[deaths.length - 1].atMs + 1000 } : {};
     patch({ tab: 'deaths', openDeaths: keys, ...span });
   }
-  const iconOf = (_spellId: number, stem?: string): string | null =>
-    stem === undefined ? null : dataUrl(activeBuild.build, `icons/${stem}.webp`);
+  const iconOf = (_spellId: number, stem?: string): string | null => iconUrl(activeBuild.build, stem);
   /**
    * The chart marks the scope's own deaths and cooldowns: under the group scope an outsider's death
    * is not drawn over the group's lines. Every other source marks as before (rateMarkers narrows a

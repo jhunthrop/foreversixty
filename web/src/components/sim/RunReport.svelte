@@ -10,9 +10,10 @@
      The one body for a saved run (/sim/<id>, SavedSim.svelte) and a finished run on /sim
      (SimView.svelte, `live`). The head and its answer are the page's own. -->
 <script lang="ts">
+  import { iconUrl } from '../../lib/ui/assets';
   import { onMount, type Snippet } from 'svelte';
   import activeBuild from '../../data/active-build.json';
-  import { dataUrl, loadItems } from '../../lib/planner/load';
+  import { loadItems } from '../../lib/planner/load';
   import type { Item } from '../../lib/planner/types';
   import { abilityTable, type AbilityRow } from '../../lib/report/ability-table';
   import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
@@ -171,7 +172,7 @@
       id: item.id,
       name: item.name,
       quality: item.quality,
-      iconUrl: item.icon === '' ? null : dataUrl(build, `icons/${item.icon}.webp`),
+      iconUrl: iconUrl(build, item.icon),
     };
   }
 

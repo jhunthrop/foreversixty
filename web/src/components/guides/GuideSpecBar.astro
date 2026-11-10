@@ -5,10 +5,10 @@
 // a Jump to select that jumps to a section (from 1024 the contents rail does). On a phone one
 // line, "<Spec> <Class>" and "Jump to", that opens in place onto the specs and the sections as
 // slim rows.
+import { catalogueIconUrl } from '../../lib/ui/assets';
 import ControlBar from '../ui/ControlBar.astro';
 import Row from '../ui/Row.svelte';
 import Select from '../ui/Select.astro';
-import { dataUrl } from '../../lib/planner/load';
 import { guidesCopy } from '../../lib/guides/copy';
 import type { ControlGroup } from '../../lib/ui/primitives';
 
@@ -30,7 +30,7 @@ const groups: ControlGroup[] = [
     options: specs.map((spec) => ({
       value: spec.spec_slug,
       label: spec.name,
-      icon: dataUrl(build, `icons/${spec.icon}.webp`),
+      icon: catalogueIconUrl(build, spec.icon),
       href: `/guides/${classSlug}/${spec.spec_slug}`,
     })),
   },

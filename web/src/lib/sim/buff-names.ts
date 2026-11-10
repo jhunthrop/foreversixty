@@ -11,6 +11,7 @@ import { dataUrl, fetchJson } from '../planner/load';
 import { IMPROVED_SUFFIX } from './buff-id';
 import { simCopy } from './copy';
 import { humanise } from './humanise';
+import { iconUrl } from '../ui/assets';
 
 export interface BuffNames {
   /** Engine id to its display name and the build's icon key (no extension). */
@@ -49,7 +50,7 @@ export function buffLabel(id: string, names: BuffNames | null): string {
 export function buffIcon(build: string, id: string, names: BuffNames | null): string | null {
   const plain = id.endsWith(IMPROVED_SUFFIX) ? id.slice(0, -IMPROVED_SUFFIX.length) : id;
   const icon = names?.entries[plain]?.icon;
-  return icon === undefined || icon === '' ? null : dataUrl(build, `icons/${icon}.webp`);
+  return iconUrl(build, icon);
 }
 
 /**

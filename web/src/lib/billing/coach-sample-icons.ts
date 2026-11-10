@@ -5,13 +5,13 @@
 // resolves to null, and the sample draws nothing and leaves no gap.
 import activeBuild from '../../data/active-build.json';
 import { buildIconExists, spellIcons } from '../data/build-files';
-import { dataUrl } from '../planner/load';
 import type { IconOf } from './coach-sample';
+import { iconUrl } from '../ui/assets';
 
 export function buildSpellIconOf(build: string = activeBuild.build): IconOf {
   const icons = spellIcons(build);
   return (spellId) => {
     const stem = spellId === null ? undefined : icons[String(spellId)];
-    return stem !== undefined && buildIconExists(build, stem) ? dataUrl(build, `icons/${stem}.webp`) : null;
+    return stem !== undefined && buildIconExists(build, stem) ? iconUrl(build, stem) : null;
   };
 }

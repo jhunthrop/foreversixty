@@ -5,9 +5,9 @@
      `unknown` tints it red (an id missing from our data). A
      badge disc sits on the lower right: gold ▲ for an upgrade, green ✓ for the worn pick. -->
 <script lang="ts">
+  import { iconUrl } from '../../lib/ui/assets';
   import { onMount } from 'svelte';
   import { rarityBorderColorFor } from '../../lib/planner/items';
-  import { dataUrl } from '../../lib/planner/load';
   import { itemIconFace } from '../../lib/ui/item-icon';
   import Icon from './Icon.svelte';
   import { ICON_CHECK, ICON_UPGRADE } from '../../lib/ui/ui-icons';
@@ -43,7 +43,11 @@
   /** The icon whose image failed; a new icon gets its own try. */
   let failedIcon = $state<string | undefined>(undefined);
   let image = $state<HTMLImageElement | undefined>(undefined);
-  const face = $derived(itemIconFace({ icon, deferred, mounted, failed: failedIcon === icon }));
+  /** Null for no icon or the client's placeholder: the socket. */
+  const src = $derived(iconUrl(build, icon));
+  const face = $derived(
+    itemIconFace({ icon: src ?? undefined, deferred, mounted, failed: failedIcon === icon }),
+  );
 
   onMount(() => {
     mounted = true;
@@ -69,7 +73,7 @@
   {:else if face === 'image'}
     <img
       bind:this={image}
-      src={dataUrl(build, `icons/${icon}.webp`)}
+      {src}
       alt=""
       width={size}
       height={size}

@@ -11,6 +11,7 @@ import {
   type SettingsBuffs,
 } from './settings-rows';
 import type { SimResult } from './types';
+import { iconUrl } from '../ui/assets';
 
 const result = full as unknown as SimResult;
 const BUFFS: SettingsBuffs = {
@@ -87,7 +88,7 @@ describe('the chips', () => {
       BUFFS,
       WEIGHTS,
       ['physical'],
-      (stem) => `/${stem}.webp`,
+      (stem) => iconUrl('b', stem),
     );
     const [player, target, consumables] = groups;
     expect(player?.count).toBe(2);
@@ -96,7 +97,7 @@ describe('the chips', () => {
     expect(target?.chips.map((chip) => chip.id)).toEqual(['sunder_armor', 'expose_armor']);
     expect(target?.chips[0]?.reason).toBeNull();
     expect(target?.chips[1]?.reason).toBe('replaced by Sunder Armor');
-    expect(target?.chips[0]?.icon).toBe('/s.webp');
+    expect(target?.chips[0]?.icon).toBe('/data/b/icons/s.webp');
     expect(consumables?.count).toBe(8);
   });
 });

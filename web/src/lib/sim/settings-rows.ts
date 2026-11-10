@@ -143,16 +143,16 @@ function replacedBy(id: string, list: readonly string[], buffs: SettingsBuffs): 
 function toChip(id: string, list: readonly string[], buffs: SettingsBuffs, buildUrl: IconUrl): SettingsChip {
   const base = baseId(id);
   const winner = replacedBy(id, list, buffs);
-  const icon = buffs[base]?.icon;
   return {
     id,
     name: chipName(id, buffs),
-    icon: icon === undefined || icon === '' ? null : buildUrl(icon),
+    icon: buildUrl(buffs[base]?.icon),
     reason: winner === undefined ? null : settingsCopy.replacedBy(chipName(winner, buffs)),
   };
 }
 
-export type IconUrl = (stem: string) => string;
+/** A buff's icon url from its stem (lib/ui/assets iconUrl over the run's build). */
+export type IconUrl = (stem: string | undefined) => string | null;
 
 function groupOf(
   id: SettingsChipGroup['id'],
