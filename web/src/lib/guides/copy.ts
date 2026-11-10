@@ -60,6 +60,9 @@ export const guidesCopy = {
   cooldowns: 'Cooldowns',
   /** A rotation row for a talent only the raid build takes, or a row that needs one. */
   raidBuildTag: 'Raid build only',
+  /** A priority row whose rules are word for word the row above's (a cheaper rank, then a
+   *  cheaper spell, at the same thresholds): said once, on the first. */
+  sameRulesAsAbove: 'Same as above',
   /** "Picks for a Human (Alliance).", "Picks for an Undead (Horde)." */
   bisCaption: (race: string, faction: string): string =>
     `Picks for ${/^[AEIOU]/i.test(race) ? 'an' : 'a'} ${race} (${faction}).`,

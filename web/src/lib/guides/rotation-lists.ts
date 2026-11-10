@@ -11,6 +11,7 @@ import type { CollapsedLine } from '../bis/rotation-collapse';
 import { repoRoot, spellIcons } from '../data/build-files';
 import { aplGates, gateWords, type AplGate } from '../bis/apl-gates';
 import type { RacialCooldown } from './race-table';
+import { guidesCopy } from './copy';
 
 export interface RotationItem {
   /** Absent for a step that names no spell ("Then follow the priority list"). */
@@ -300,9 +301,20 @@ export function joinSpellRuns(items: readonly RotationItem[]): RotationItem[] {
   }, []);
 }
 
-/** The lists with their priority's spell runs joined (`joinSpellRuns`). */
+/** Rows whose rules repeat the row above's word for word say so instead of the rules again:
+ *  Greater Heal rank 4, rank 1 and Heal rank 4 at one set of thresholds read once. */
+export function sayRepeatedRulesOnce(items: readonly RotationItem[]): RotationItem[] {
+  return items.map((item, i) =>
+    i > 0 && item.clause !== '' && item.clause === items[i - 1]!.clause
+      ? { ...item, clause: guidesCopy.sameRulesAsAbove }
+      : item,
+  );
+}
+
+/** The lists with their priority's spell runs joined (`joinSpellRuns`) and a repeated rule said
+ *  once (`sayRepeatedRulesOnce`). */
 export function joinPriorityRuns<T extends { priority: RotationItem[] }>(lists: T): T {
-  return { ...lists, priority: joinSpellRuns(lists.priority) };
+  return { ...lists, priority: sayRepeatedRulesOnce(joinSpellRuns(lists.priority)) };
 }
 
 export function rotationListsFrom(
@@ -370,10 +382,8 @@ export function rotationListsFrom(
     const cooldownMs = cutCooldown(facts.cooldownMs, cooldownCuts.get(facts.name));
     if (cooldownMs < COOLDOWN_FLOOR_MS || seen.has(item.name)) continue;
     seen.add(item.name);
-    const fromLine = priority.find((line) => line.name === item.name)?.clause;
-    const when = `${formatCooldown(cooldownMs)} cooldown`;
-    const plain = fromLine === undefined || fromLine === '' || /^on cooldown$/i.test(fromLine);
-    cooldowns.push({ ...item, clause: plain ? when : `${when}. ${fromLine}` });
+    // The cooldown alone: the priority row above already says when to press it (h-guide-spec).
+    cooldowns.push({ ...item, clause: `${formatCooldown(cooldownMs)} cooldown` });
   }
   for (const item of extraCooldowns) {
     if (seen.has(item.name)) continue;

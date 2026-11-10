@@ -12,6 +12,7 @@ import {
   clauseOf,
   inPageWords,
   joinSpellRuns,
+  sayRepeatedRulesOnce,
   cutCooldown,
   formatCooldown,
   litTalentsOf,
@@ -869,6 +870,24 @@ describe('raid build rows', () => {
     expect(only.has('Reckless Swings')).toBe(true);
     expect(only.has('Spearing Strike')).toBe(true);
     expect(only.has('Mortal Strike')).toBe(false);
+  });
+});
+
+describe('sayRepeatedRulesOnce', () => {
+  it('says a rule the row above already says once, on the first row', () => {
+    const rules = 'On the tank below 80% · on a party member below 65%';
+    const rows = sayRepeatedRulesOnce([
+      { name: 'Greater Heal', rank: 4, clause: rules },
+      { name: 'Greater Heal', rank: 1, clause: rules },
+      { name: 'Heal', rank: 4, clause: rules },
+      { name: 'Renew', rank: 7, clause: 'When Renew is not on the tank' },
+    ]);
+    expect(rows.map((row) => row.clause)).toEqual([
+      rules,
+      'Same as above',
+      'Same as above',
+      'When Renew is not on the tank',
+    ]);
   });
 });
 

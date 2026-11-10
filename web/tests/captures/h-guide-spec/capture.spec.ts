@@ -55,6 +55,15 @@ for (const [name, widths, open] of PAGES) {
       await loadLazyImages(page);
       await settleParityPage(page);
       await page.screenshot({ path: path.join(OUT, `${name}-${width}.png`), fullPage: true });
+      // A phone folds the long sections; a second shot opens every fold to show what they hold.
+      const folds = page.locator('details[data-fold]:not([open])');
+      if (width < 768 && (await folds.count()) > 0) {
+        await page.evaluate(() => {
+          for (const fold of document.querySelectorAll<HTMLDetailsElement>('details[data-fold]')) fold.open = true;
+        });
+        await loadLazyImages(page);
+        await page.screenshot({ path: path.join(OUT, `${name}-${width}-open.png`), fullPage: true });
+      }
     });
   }
 }

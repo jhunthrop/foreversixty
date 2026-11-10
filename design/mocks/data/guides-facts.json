@@ -29,6 +29,7 @@
   "priority": "Priority",
   "cooldowns": "Cooldowns",
   "raidBuildTag": "Raid build only",
+  "sameRulesAsAbove": "Same as above",
   "bisCaption": "[fn]",
   "fullListLink": "Full list and alternatives",
   "bisByLevelLabel": "Best in slot by level:",
@@ -3601,7 +3602,7 @@
        "name": "Immolation Trap",
        "rank": 5,
        "icon": "spell_fire_flameshock",
-       "clause": "On cooldown",
+       "clause": "Same as above",
        "tipKey": "spell:14305",
        "rankText": "Rank 5"
       },
@@ -13685,14 +13686,14 @@
        "spellId": 12051,
        "name": "Evocation",
        "icon": "spell_nature_purge",
-       "clause": "8 min cooldown. Below 5% mana, with over 30 s left",
+       "clause": "8 min cooldown",
        "tipKey": "spell:12051"
       },
       {
        "spellId": 11129,
        "name": "Combustion",
        "icon": "spell_fire_sealoffire",
-       "clause": "3 min cooldown. At 5 Improved Scorch stacks on the target",
+       "clause": "3 min cooldown",
        "tipKey": "spell:11129"
       },
       {
@@ -22323,7 +22324,7 @@
        "name": "Greater Heal",
        "rank": 1,
        "icon": "spell_holy_greaterheal",
-       "clause": "On the tank below 80% while your mana is ahead of the boss's health · on a party member below 65% while mana holds · on the tank below 50% when your mana is behind the boss's health · on a party member below 35% when mana is low",
+       "clause": "Same as above",
        "tipKey": "spell:2060",
        "cheapRank": true,
        "rankText": "Rank 1 (cheap rank)"
@@ -22333,7 +22334,7 @@
        "name": "Heal",
        "rank": 4,
        "icon": "spell_holy_heal02",
-       "clause": "On the tank below 80% while your mana is ahead of the boss's health · on a party member below 65% while mana holds · on the tank below 50% when your mana is behind the boss's health · on a party member below 35% when mana is low",
+       "clause": "Same as above",
        "tipKey": "spell:6064",
        "rankText": "Rank 4"
       }
@@ -22353,7 +22354,7 @@
        "name": "Dark Sacrifice",
        "rank": 5,
        "icon": "spell_holy_powerinfusion_shadow",
-       "clause": "10 min cooldown. Below 70% mana and above 70% health, Undead only",
+       "clause": "10 min cooldown",
        "tipKey": "spell:1277328",
        "rankText": "Rank 5"
       },
