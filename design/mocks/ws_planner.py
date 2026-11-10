@@ -289,7 +289,7 @@ def guide_builds(st: dict) -> str:
     """Guide builds as build vs guide (GuideBuilds.svelte): the spec icon, name, build and split; the build on screen carries
     Loaded, every other row its points off, the split's change and the first talent it lacks."""
     def sub(b: dict) -> str:
-        tail = Tag(e(P['guideBuildLoaded']), 'muted') if b['current'] else (f'<span class="gb-miss">{e(b["missing"])}</span>' if b.get('missing') else '')
+        tail = Tag(e(P['guideBuildLoaded']), 'gold') if b['current'] else (f'<span class="gb-miss">{e(b["missing"])}</span>' if b.get('missing') else '')
         return f'<span class="gb-sub">{e(b["label"])} &middot; {"/".join(str(x) for x in b["split"])}{tail}</span>'
 
     def trail(b: dict) -> str:

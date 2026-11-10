@@ -41,13 +41,14 @@ import { decodeBuildTrees } from '../../../lib/guides/build-tree';
 import { describedBuildTrees, guideRotation } from '../../../lib/guides/guide-rotation';
 import { rankedBisFile } from '../../../lib/guides/class-dps';
 import { guidesCopy } from '../../../lib/guides/copy';
-import { atLevel60, glanceRotation, markCheapRanks, topRankAt60 } from '../../../lib/guides/glance';
-import { buildRaces } from '../../../lib/guides/build-races';
+import { atLevel60, markCheapRanks, topRankAt60 } from '../../../lib/guides/glance';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { splitSpecSections, slugify, SPEC_SECTIONS, type SpecSection } from '../../../lib/guides/sections';
 import { diffBuilds, buildDiffLine } from '../../../lib/guides/build-diff';
 import { guideBuildBlocks } from '../../../lib/guides/guide-builds';
 import { guideDollTooltips, guideDollViews } from '../../../lib/guides/guide-bis-doll';
+import { bisPieceCount } from '../../../lib/guides/guide-bis';
+import { extrasRowCount } from '../../../lib/guides/gear-extras';
 import { readItemTooltipModel } from '../../../lib/items/lookup-node';
 import { guideTipsUrl, proseNames, specGuideData, withTipKeys } from '../../../lib/guides/guide-tips';
 import { linkProse } from '../../../lib/guides/prose-tips';
@@ -175,13 +176,6 @@ const rotation =
         (name) => topRankAt60(build, classSlug, name),
         proseOnly('Rotation and priority'),
       );
-const glance =
-  rotation === undefined
-    ? { rows: [] }
-    : glanceRotation(
-        rotation.priority,
-        buildRaces(build).map((race) => race.name),
-      );
 
 // The Best in slot doll: the lane's level 60 picks on the shared paperdoll, each with its tooltip.
 const itemTooltip = (itemId: number) => readItemTooltipModel(build, classSlug, itemId) ?? undefined;
@@ -270,11 +264,6 @@ const jsonLd = [
           code={describedCode}
           trees={talentTreesOf(describedTrees, tipBundle)}
           isRaidBuild={raidTrees !== undefined}
-          rotation={glance}
-          rotationTitle={
-            role === 'healer' ? guidesCopy.healingPriorityRailTitle : guidesCopy.rotationRailTitle
-          }
-          stats={statLane}
         />
       </div>
       <Toc
@@ -339,7 +328,12 @@ const jsonLd = [
           <Prose html={await prose(proseOnly('Stat priority'))} />
         </ReadingSection>
 
-        <ReadingSection title="Best in slot" anchor="best-in-slot" proseFirst>
+        <ReadingSection
+          title="Best in slot"
+          anchor="best-in-slot"
+          proseFirst
+          fold={guidesCopy.foldShow(guidesCopy.foldItems(bisPieceCount(guideBis)))}
+        >
           <Fragment slot="lane">
             <GuideBisLane build={build} classSlug={classSlug} bis={guideBis} specSlug={specSlug} {role} />
           </Fragment>
@@ -354,7 +348,11 @@ const jsonLd = [
         </ReadingSection>
 
         {gearExtras !== undefined ? (
-          <ReadingSection title="Enchants and consumables" anchor="enchants-and-consumables">
+          <ReadingSection
+            title="Enchants and consumables"
+            anchor="enchants-and-consumables"
+            fold={guidesCopy.foldShow(guidesCopy.foldExtras(extrasRowCount(gearExtras)))}
+          >
             <Fragment slot="lane">
               <GuideExtrasLane build={build} extras={gearExtras} tips={tipBundle} />
             </Fragment>

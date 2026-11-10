@@ -907,6 +907,9 @@ export const bulkCopy = {
   talentsSaved: 'Your saved builds',
   talentsLoadouts: 'In-game loadouts',
   talentsAddCustom: 'Add a build',
+  /** A build's talents over the character's own, and under it. */
+  talentsGains: 'Gains',
+  talentsDrops: 'Drops',
   talentsNoSaved: 'No saved builds for this class yet.',
   talentsSavedUnavailable: 'No saved builds',
   setsTitle: 'Whole sets',

@@ -71,9 +71,9 @@
     <b class="text-strong"
       >{step === undefined ? '' : guidesCopy.levelingPoint(step.level, step.name, step.rank)}</b
     >
-    <span class="text-small text-muted"
-      >{guidesCopy.levelingPointsSpent(level - first + 1, last - level)}</span
-    >
+    {#if last > level}<span class="text-small text-muted"
+        >{guidesCopy.levelingPointsSpent(level - first + 1, last - level)}</span
+      >{/if}
   </p>
   <LevelSlider
     {level}

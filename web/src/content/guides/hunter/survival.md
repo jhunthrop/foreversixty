@@ -68,7 +68,7 @@ sources:
 Thirty-three points in Survival take every melee damage talent, thirteen in Marksmanship take Careful Aim, Rapid Killing and Lone Wolf, and five in Beast Mastery take Deadly Aspects.
 
 - **Lone Wolf** (1 point)
-- **Expose Prey** (2 points): your hits on a target with Hunter's Mark have a 10% chance to open Mongoose Bite for 10 seconds, the only way it opens on a boss that is not attacking you
+- **Expose Prey** (2 points)
 - **Lacerating Strikes** (1 point)
 - **Predator's Edge** (5 points)
 - **Savage Strikes** (2 points)

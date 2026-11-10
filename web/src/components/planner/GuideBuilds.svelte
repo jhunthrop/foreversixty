@@ -80,7 +80,7 @@
             {@const diff = diffOf(row.trees)}
             <span class="gb-sub"
               >{`${row.label} · ${row.split.join('/')}`}{#if row.trees === current}<span class="gb-tag"
-                  ><Tag tone="muted">{plannerCopy.guideBuildLoaded}</Tag></span
+                  ><Tag tone="gold">{plannerCopy.guideBuildLoaded}</Tag></span
                 >{:else if diff !== null && diff.missing !== null}<span class="gb-miss"
                   >{plannerCopy.guideBuildMissing(diff.missing)}</span
                 >{/if}</span

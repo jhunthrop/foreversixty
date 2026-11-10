@@ -26,8 +26,6 @@ export const guidesCopy = {
   classLandingSpecsHeading: 'Specs',
   buildRailLabel: 'Build',
   /** The rail's Rotation card title; its band label is the head's meta (site alignment §5.4). */
-  rotationRailTitle: 'Rotation',
-  fullPriorityLink: 'Full priority ↓',
   statPriorityRailLabel: 'Stat priority',
   loadInPlanner: 'Load in planner',
   /** Under "Rotation and priority" when the guide has its own raid build: the cards are worked
@@ -153,9 +151,9 @@ export const guidesCopy = {
   /** "Level 23: Improved Gouge, rank 2"; a level the ladder places no point at reads its level alone. */
   levelingPoint: (level: number, name: string | null, rank: number): string =>
     name === null ? `Level ${level}` : `Level ${level}: ${name}, rank ${rank}`,
-  /** "14 points spent, 37 to go", "1 point spent, 50 to go", "51 points spent". */
+  /** "14 points spent, 37 to go", "1 point spent, 50 to go"; nothing once every point is placed. */
   levelingPointsSpent: (spent: number, toGo: number): string =>
-    `${spent} ${spent === 1 ? 'point' : 'points'} spent${toGo === 0 ? '' : `, ${toGo} to go`}`,
+    toGo === 0 ? '' : `${spent} ${spent === 1 ? 'point' : 'points'} spent, ${toGo} to go`,
   previousLevel: 'Previous level',
   nextLevel: 'Next level',
   levelSliderLabel: 'Level',
@@ -164,6 +162,10 @@ export const guidesCopy = {
   tocBarLabel: 'Jump to',
   /** A folded section's phone line: "Show 8 races", "Show professions". */
   foldShow: (what: string): string => `Show ${what}`,
+  /** The Best in slot fold's count: "17 items". */
+  foldItems: (n: number): string => `${n} ${n === 1 ? 'item' : 'items'}`,
+  /** The Enchants and consumables fold's count: "9 enchants and consumables". */
+  foldExtras: (n: number): string => `${n} enchants and consumables`,
   alliancePicksHeading: 'Alliance',
   hordePicksHeading: 'Horde',
   alsoUsed: 'Food, oil and potions',
@@ -181,9 +183,6 @@ export const guidesCopy = {
   /** The At a glance plate's accessible name. */
   glance: 'Summary',
   /** A healer's At a glance rotation column (MUST 2). */
-  healingPriorityRailTitle: 'Healing priority',
-  /** The At a glance filler line when the filler is below the first four (MUST 1). */
-  glanceFiller: (spell: string): string => `Filler: ${spell}`,
   /** A row cast below its top rank on purpose: "Rank 7 (cheap rank)". */
   rankLabel: (rank: number, cheap = false): string => `Rank ${rank}${cheap ? ' (cheap rank)' : ''}`,
   /** The Talents and builds lane's label over the build rows. */

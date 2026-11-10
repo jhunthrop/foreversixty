@@ -288,15 +288,13 @@
             bulkCopy.opensLater,
           )}
           <!-- One line: the kind, then what opens when (h-audit 2026-11-09). -->
-          <p
-            class="m-0 flex min-h-11 flex-wrap items-center gap-x-2 text-[14px] leading-6"
-            data-testid={`sim-kind-${group.kind}-gated`}
-          >
-            <b class="text-strong text-[15px]">{SOURCE_KIND_LABELS[group.kind]}</b>
-            {#each gated.dated as line (line)}<span class="text-text">· {line}</span>{/each}
-            {#if gated.undated.length > 0}<span class="text-muted"
-                >· {bulkCopy.sourcesNoDate(gated.undated)}</span
-              >{/if}
+          <!-- Nothing to tick: a plain muted line, no heading or group chrome. -->
+          <p class="text-muted m-0 py-1 text-[13px] leading-5" data-testid={`sim-kind-${group.kind}-gated`}>
+            {SOURCE_KIND_LABELS[group.kind]}:
+            {[
+              ...gated.dated,
+              ...(gated.undated.length > 0 ? [bulkCopy.sourcesNoDate(gated.undated)] : []),
+            ].join(' · ')}
             <span class="sr-only">{toolFixCopy.sourcesAllGated}</span>
           </p>
         {:else}

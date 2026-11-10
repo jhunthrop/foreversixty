@@ -30,7 +30,7 @@ const raceIcons = raceIconsFor(build);
 <LaneBlock label={guidesCopy.racialsColumn} testid="guide-race-table">
   {groups.map((group) => (
     <div class="guide-race-group" data-faction={group.faction}>
-      <h4 class="text-label text-muted guide-race-sub font-bold">
+      <h4 class="guide-race-sub">
         {group.faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading}
       </h4>
       <div class="guide-race-rows">
@@ -68,9 +68,14 @@ const raceIcons = raceIconsFor(build);
   .guide-race-group {
     display: contents;
   }
+  /* The faction's name in the lane heading's cream, not a grey caps eyebrow. */
   .guide-race-sub {
     margin: 0;
     padding: 12px 0 2px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--color-cream);
   }
   .guide-race-rows {
     display: flex;

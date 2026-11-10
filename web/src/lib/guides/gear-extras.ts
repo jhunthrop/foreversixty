@@ -235,6 +235,27 @@ export type ConsumableLine = { header: string } | { row: ConsumableRow };
 
 /** The table's lines: the flask and the elixirs first, all used together, then the food, oil
  *  and potions under their own heading. A flask never replaces an elixir in Classic. */
+/** The enchants a guide lists, one row per enchant: the same enchant on the main hand and the off
+ *  hand is one row, "Main hand and off hand" (h-audit 2026-11-09: "Enchant Weapon - Agility" twice). */
+export function mergedEnchants(rows: readonly EnchantRow[]): EnchantRow[] {
+  const byId = new Map<number, EnchantRow>();
+  for (const row of rows) {
+    const seen = byId.get(row.id);
+    byId.set(
+      row.id,
+      seen === undefined
+        ? row
+        : { ...seen, slotLabel: `${seen.slotLabel} and ${row.slotLabel.toLowerCase()}` },
+    );
+  }
+  return [...byId.values()];
+}
+
+/** How many rows the Enchants and consumables lane lists: the phone fold's count. */
+export function extrasRowCount(extras: GearExtras | undefined): number {
+  return extras === undefined ? 0 : mergedEnchants(extras.enchants).length + extras.consumables.length;
+}
+
 /** A consumable row's line under its name: only what the item's own tooltip does not say, the
  *  slot a weapon stone or oil goes on ("Critical strike, on the main hand" is "On the main hand");
  *  none for a plain stat, which restates the tooltip (h-audit 2026-11-09). */

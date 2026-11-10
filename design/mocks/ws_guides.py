@@ -103,22 +103,13 @@ def stat_rows(rows: list[dict], numbered: bool, per_point: bool) -> list[str]:
 
 # ------------------------------------------------------------------------------------------------ the spec guide
 def band(g: dict) -> str:
+    """web GuideGlance: the build alone, its trees with Load and Sim (the sections own Rotation and Stat priority)."""
     b = g['band']
-    cols = []
-    if b['trees']:
-        cols.append((e(C['raidBuild'] if b['isRaidBuild'] else C['buildRailLabel']), '', TalentTrees(trees_of(b['trees'])),
-                     Button(e(C['loadThisBuild']), primary=True) + Button(e(C['simThisBuild']))))
-    if b['rotation']:
-        filler = f'<p class="t-small gl-fill">{e(b["filler"])}</p>' if b.get('filler') else ''   # MUST 1
-        cols.append((e(b['rotationTitle']), e(F['fns']['levelRangeLabel']['60']), RowsSlim([spell_row(x) for x in b['rotation']]) + filler,
-                     Link(e(C['fullPriorityLink']))))
-    if b['stats']:
-        # web GuideGlance: the weights only; the Hit cap line is Stat priority's own
-        cols.append((e(C['statPriorityRailLabel']), e(g['stats']['table']['weightHead']),
-                     StatTable([('', False), ('', False), ('', False), ('', True)], stat_rows(b['stats'], True, False), 1, open_=True), ''))
-    # a phone's band is the build alone (web GuideGlance): Rotation and Stat priority are their sections
-    return f'<div class="g-glance">{PlateColumns(cols, PROPOSED["glance"], frame="framed")}</div>'
-
+    if not b['trees']:
+        return ''
+    col = (e(C['raidBuild'] if b['isRaidBuild'] else C['buildRailLabel']), '', TalentTrees(trees_of(b['trees'])),
+           Button(e(C['loadThisBuild']), primary=True) + Button(e(C['simThisBuild'])))
+    return f'<div class="g-glance">{PlateColumns([col], PROPOSED["glance"], frame="framed")}</div>'
 
 def overview(g: dict) -> str:
     o = g['overview']
@@ -169,7 +160,7 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
         table = StatTable([('', False), (e(F['markup']['statHead']), False), ('', False), (e(t['weightHead']), True), (e(t['perPointHead']), True)],
                           stat_rows(rows, False, True), 2, open_=True)
         # the table is one block: it never wraps under the prose (web GuideStatLane, no StatTable `wrap`)
-        notes = ''.join(f'<p class="t-small">{e(x)}</p>' for x in [t.get('ratingNote'), *t['notes']] if x)
+        notes = ''   # web GuideStatLane: no footnotes under the table
         notes = f'<div class="gnotes" data-wrap-list>{notes}</div>' if notes else ''
         lane = f'<div class="gstat">{LaneBlock(e(C["statPriorityRailLabel"]), cap + table + notes)}</div>'
     else:   # no weights for the spec: the guide's own order, unnumbered weights absent (the shipped fallback)
@@ -201,7 +192,7 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
     # one block, as the built GuideBisLane: its rows and links 28 px apart, and the links may wrap under the prose
     lane = f'<div class="gbis" data-wrap-list>{lane}</div>'
     return ReadingSection(SEC['best-in-slot'], Prose(b['prose']) + guide_doll(g, faction) if data and b['data'] else Prose(b['prose']), lane, 'best-in-slot',
-                          prose_first=True)
+                          prose_first=True, fold=e(g['bisFold']))
 
 
 def wrap_list(html: str) -> str:
@@ -228,7 +219,7 @@ def guide_doll(g: dict, faction: str) -> str:
                       'icon': main['icon'], 'quality': main['quality']})
     first = picks[0]
     centre = ItemTip(first['itemName'], QUALITY_NAME.get(first['quality'], 'common'), [], [], first['sourceDetail'])
-    meta = f"{'Pre-raid ' if panel['preRaid'] else ''}60 · {panel['raceName']}"
+    meta = panel['raceName']   # web GuideBisDoll: the race; the list says level 60
     doll = PaperdollFrame(slots, g['title'], meta, None, centre, f"{g['title']} best in slot, level 60", heading='h2')
     return f'<div class="gdoll"><div class="gdoll-f">{doll}</div></div>'
 
@@ -242,7 +233,7 @@ def extras(g: dict, data: bool = True) -> str:
         rows = []
         for line in x['data']['lines']:
             if 'header' in line:
-                rows.append(f'<h4 class="t-label sub-h">{e(line["header"])}</h4>')
+                rows.append(f'<h4 class="sub-h">{e(line["header"])}</h4>')
             else:
                 r = line['row']
                 # web lib/guides/gear-extras.ts consumableNote: only the slot a stone or oil goes on
@@ -250,7 +241,7 @@ def extras(g: dict, data: bool = True) -> str:
                 rows.append(Row(e(r['name']), e(note[:1].upper() + note[1:]), lead=icon(r.get('icon') or '', 28), link=False))
         lane = (LaneBlock(e(C['enchants']), wrap_list(ench))
                 + LaneBlock(e(C['consumables']), wrap_list(RowsSlim(rows))))
-    return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables')
+    return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables', fold=e(x['fold']))
 
 
 def races(g: dict) -> str:
@@ -259,12 +250,12 @@ def races(g: dict) -> str:
     for grp in r['groups']:   # Alliance then Horde, Recommended first (glance.ts racesByFaction)
         rows = []
         for x in grp['rows']:
-            foot = ''.join(f'<span class="racial">{icon(z["icon"], 20)}<span><b>{e(z["name"])}</b> {e(z["effect"])}</span></span>' for z in x['racials'])
+            foot = ''.join(f'<span class="racial">{icon(z["icon"], 20)}<span><b>{e(z["name"])}</b></span></span>' for z in x['racials'])   # name only: the prose says the numbers
             portrait = r.get('portraits', {}).get(x.get('slug', ''))
             rows.append(Row(e(x['name']), title_color=FACTION[x['faction']], lead=icon(portrait, 28) if portrait else '',
                             link=False, foot=foot, selected=x['recommended']))
         head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
-        body += f'<div class="grace"><h4 class="t-label sub-h">{e(head)}</h4>' + Rows(rows, True) + '</div>'   # one list, never wrapped
+        body += f'<div class="grace"><h4 class="sub-h">{e(head)}</h4>' + Rows(rows, True) + '</div>'   # one list, never wrapped
     lines = ''.join(f'<p class="t-small">{e(t)}</p>' for t in r['lines'])
     return ReadingSection(SEC['races'], Prose(r['prose']), LaneBlock(e(C['racialsColumn']), body + lines), 'races',
                           fold=e(F['fns']['foldShow'].replace('%s', f"{len(r['rows'])} races")))
@@ -408,13 +399,13 @@ def states_page() -> str:
                     ('Answer: another spec or class', 'other', me['warrior60']), ('Answer: the spec is not known yet', 'unknown', None),
                     ('Answer: no character on the account', 'nochar', None), ('Answer: the account read failed', 'error', None)):
         block(t, PageHeader(e(g['title']), CLASS_COLOR['hunter'], crest_img('hunter', 56), [e(g['meta'])], answer(k, m, g)))
-    rot = g['band']['rotation']
+    rot = g['rotation']['lists']['priority']   # the Rotation section's rows (the band shows the build alone)
     block('Rotation row: default, hover, a raid-build-only row', RowsSlim([spell_row(rot[0], '1'),
           spell_row(rot[1], '2').replace('class="row', 'class="row hov', 1), spell_row({**rot[2], 'raidBuildOnly': True}, '3')]))
     block('Spec row on /guides: default, hover, your spec, focus-visible', RowsSlim([
         Row('Beast Mastery', lead=icon(F['index']['classes'][2]['specs'][0]['icon'], 28)),
         Row('Marksmanship', lead=icon(F['index']['classes'][2]['specs'][1]['icon'], 28)).replace('class="row', 'class="row hov', 1),
-        Row('Survival', lead=icon(F['index']['classes'][2]['specs'][2]['icon'], 28), trail=Tag(e(C['yourSpecPill'])), selected=True),
+        Row('Survival', lead=icon(F['index']['classes'][2]['specs'][2]['icon'], 28), selected=True),
         Row('Survival', lead=icon(F['index']['classes'][2]['specs'][2]['icon'], 28)).replace('class="row', 'class="row fv', 1)]))
     block('Contents: the bar&rsquo;s On this page menu open (below 1760); the rail with Rotation current (from 1760)',
           '<div class="st-pair"><div class="st-menu">' + Menu(e(C['tocBarLabel']), [('', [(e(s['title']), '', '', '', s['id'] == 'rotation-and-priority') for s in F['sections']])])
@@ -422,8 +413,6 @@ def states_page() -> str:
     block('Talents by level: at 10 (previous off), 34, 60 (next off)', ''.join(f'<div class="st-lv">{LevelSlider(v, 10, 60, "Level")}</div>' for v in (10, 34, 60)))
     block('Talents by level: loading (the island hydrates when visible; the slider row and the trees are reserved)',
           f'<div class="st-lv">{Skeleton(360, 44)}</div><div class="st-lv">{Skeleton(390, 190)}</div>')
-    block('At a glance: a spec with no rotation entry and no weights (one column; the plate keeps its full width)',
-          f'<div class="st-plate">{PlateColumns([(e(C["buildRailLabel"]), "", TalentTrees(trees_of(g["band"]["trees"])), Button(e(C["loadThisBuild"]), primary=True) + Button(e(C["simThisBuild"])))], PROPOSED["glance"])}</div>')
     block('Best in slot lane: an empty slot and an item whose icon is missing', '<div class="items">'
           + ItemRow('<span class="muted">Nothing better yet</span>', 1, '<span class="ic" style="width:36px;height:36px"></span>', '', 'Trinket')
           + ItemRow('Mark of Fordring', 3, '<span class="ic q3" style="width:36px;height:36px"></span>', 'Quest: In Dreams', 'Neck') + '</div>')
@@ -450,12 +439,13 @@ PAGE_CSS = '''<style>
 @media(min-width:1024px){.g-specs{grid-template-columns:repeat(var(--specs),minmax(0,1fr))}}
 .g-page{padding-bottom:40px}  /* [spec].astro .guide-page's own bottom space, under the page body's gap (ws_lib main) */
 .sw{display:grid;gap:20px var(--gap);grid-template-columns:minmax(0,1fr)}@media(min-width:768px){.sw{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:767px){.g-glance .pcol:not(:first-child){display:none}}
 .rd-lane .rows:not(.slim) .row:not(.slim){min-height:58px}  /* web tokens.css --row-h: a name-only key talent row is the token height */
 .sw-h{margin:0;padding-bottom:8px;font:600 15px/20px var(--font-body);color:#f3eee2}
 .lvl-l{display:flex;flex-direction:column}
 .racial{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:18px;color:var(--muted);width:100%}.racial b{color:var(--text);font-weight:600}
-.sub-h{padding:12px 0 2px;margin:0}
+.sub-h{padding:12px 0 2px;margin:0;font:600 15px/20px var(--font-body);color:#f3eee2;letter-spacing:0;text-transform:none}
+.g-glance .pcol-h h2{font:600 15px/20px var(--font-body);color:#f3eee2;letter-spacing:0;text-transform:none}
+.rd-lane .rows.slim .row .ic:not(img){border:1px solid #82705b;background:var(--bg)}
 .lane-blk .st{--st-name:minmax(max-content,2fr)}   /* GuideStatLane: a stat's name on one line */
 .items{display:flex;flex-direction:column}
 .foot-note{padding-top:16px}

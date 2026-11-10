@@ -18,7 +18,6 @@ interface Props {
   fallback: readonly string[];
 }
 const { stats, fallback } = Astro.props;
-const notes = stats === undefined ? [] : [stats.ratingNote, ...stats.notes].filter((n) => n !== undefined);
 ---
 
 <div class="guide-stat-lane">
@@ -62,25 +61,12 @@ const notes = stats === undefined ? [] : [stats.ratingNote, ...stats.notes].filt
             </StatRow>
           ))}
         </StatTable>
-        {notes.length > 0 && (
-          <div class="guide-stat-notes" data-wrap-list>
-            {notes.map((note) => (
-              <p class="text-small text-muted">{note}</p>
-            ))}
-          </div>
-        )}
       </>
     )}
   </LaneBlock>
 </div>
 
 <style>
-  /* The notes keep the lane block's 8 px rhythm; they can wrap under the prose (lib/ui/reading-wrap.ts). */
-  .guide-stat-notes {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
   /* The stats read as a list of names, not headings (the mock's plain 16/24 names), and the
      empty lead cell takes no height. */
   :global(.guide-stat-lane .ui-st-name) {

@@ -7,7 +7,12 @@ import LaneBlock from '../ui/LaneBlock.svelte';
 import Row from '../ui/Row.svelte';
 import { dataUrl } from '../../lib/planner/load';
 import { guidesCopy } from '../../lib/guides/copy';
-import { consumableLines, consumableNote, type GearExtras } from '../../lib/guides/gear-extras';
+import {
+  consumableLines,
+  consumableNote,
+  mergedEnchants,
+  type GearExtras,
+} from '../../lib/guides/gear-extras';
 import { consumableItemId } from '../../lib/guides/guide-tips';
 import { enchantTipKey, type GuideTipBundle } from '../../lib/tooltips/game-tip';
 
@@ -29,7 +34,7 @@ const lines = consumableLines(extras.consumables);
 {extras.enchants.length > 0 && (
   <LaneBlock label={guidesCopy.enchants} testid="guide-enchants">
     <div class="guide-extras-rows" data-wrap-list>
-      {extras.enchants.map((row) => (
+      {mergedEnchants(extras.enchants).map((row) => (
         <Row title={row.name} sub={row.slotLabel} density="slim" open testid={`guide-enchant-${row.slot}`}>
           <Fragment slot="lead">
             {row.icon !== undefined ? (
@@ -64,7 +69,7 @@ const lines = consumableLines(extras.consumables);
     <div class="guide-extras-rows" data-wrap-list>
       {lines.map((line) =>
         'header' in line ? (
-          <h4 class="text-label text-muted guide-extras-sub font-bold">{line.header}</h4>
+          <h4 class="guide-extras-sub">{line.header}</h4>
         ) : (
           <Row
             title={line.row.name}
@@ -108,20 +113,24 @@ const lines = consumableLines(extras.consumables);
     display: flex;
     flex-direction: column;
   }
+  /* Every row leads with the socket: an icon fills it; a row with none, or a file that does not
+     load, shows the dark frame every missing icon shows, never an empty gap. */
   .guide-extras-icon {
     display: block;
     width: 28px;
     height: 28px;
-    border-radius: var(--radius-icon);
-  }
-  /* No icon for the row: the dark socket every missing icon shows, never an invisible gap. */
-  span.guide-extras-icon {
     border: 1px solid var(--color-line-warm-strong);
+    border-radius: var(--radius-icon);
     background: var(--color-bg);
   }
+  /* A group's name in the lane heading's cream, not a grey caps eyebrow. */
   .guide-extras-sub {
     margin: 0;
     padding: 12px 0 2px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--color-cream);
   }
   .guide-extras-tip {
     position: relative;

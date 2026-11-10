@@ -52,7 +52,7 @@
     color: var(--color-gold);
     font-size: 15px;
   }
-  .ui-disclosure-link > summary::before {
+  .ui-disclosure.ui-disclosure-link > summary::before {
     display: none;
   }
   .ui-disclosure > summary::before {

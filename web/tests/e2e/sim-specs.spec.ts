@@ -100,7 +100,8 @@ test.describe('/sim/specs', () => {
     await page.goto('/sim/specs');
 
     await expect(page.getByRole('heading', { name: simCopy.specsSimulatedHeading })).toBeVisible();
-    await expect(page.getByRole('heading', { name: simCopy.specsUnsimulatedHeading })).toBeVisible();
+    // h-audit 2026-11-09: the healers and tanks are one line of links under the table, not a section.
+    await expect(page.getByTestId('specs-unsimulated')).toContainText(simCopy.specsUnsimulatedHeading);
 
     const unsimulated = page.getByTestId('specs-grid-unsimulated');
     const cards = unsimulated.locator('[data-testid^="spec-unsimulated-"]');

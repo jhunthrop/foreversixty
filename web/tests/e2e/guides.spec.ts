@@ -112,8 +112,7 @@ test.describe('the leveling slider', () => {
     await hydratedLevelingTree(page);
     const caption = levelingTree(page).getByTestId('guide-leveling-caption');
     await expect(caption).toContainText('Level 60:');
-    await expect(caption).toContainText('51 points spent');
-    await expect(caption).not.toContainText('all placed');
+    await expect(caption).not.toContainText('points spent');
     await levelingTree(page).getByTestId('guide-leveling-slider-previous').click();
     await expect(caption).toContainText('Level 59:');
     await expect(caption).toContainText('50 points spent, 1 to go');

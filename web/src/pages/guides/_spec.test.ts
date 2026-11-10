@@ -324,36 +324,15 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(lane).toContain('DPS per point');
     // No "1 point of hit = 0.79 DPS at level 60" line: the per-point column already says it.
     expect(lane).not.toMatch(/>1 (?:point of [a-z][a-z ]*|[a-z][a-z ]* rating) = /);
-    // Hit and crit are priced per rating point; the note under the table says what a point is.
-    expect(lane).toMatch(/>[^<]*per rating point: [^<]*10 hit rating is 1% hit/);
-    // No item at 60 carries haste: its row reads "Not on any item" and the note under the
-    // table gives its per-1% worth.
-    expect(lane).toMatch(/Spell haste: \d+\.\d DPS per 1%, but no item at level 60 has it\./);
-    expect(lane).not.toMatch(/\d per 1%</);
-    expect(lane).toContain('Spell penetration shows as &quot;Not significant&quot;');
+    // No footnotes under the table: a row no item carries says "Not on any item" itself, and a
+    // veteran knows what a rating point is (h-audit 2026-11-09).
+    expect(lane).not.toMatch(/>[^<]*per rating point/);
+    expect(lane).not.toContain('but no item at level 60 has it');
     expect(lane).not.toContain('from school');
-
-    // The plate ranks exactly the rows the table gives a number, in the table's order.
-    // The band carries no Hit cap line (Stat priority owns it); its block ends where the sections start.
-    const glance = blockOf(main, 'guide-glance-stats', 60_000).split('<section id="overview"')[0]!;
-    expect(glance).not.toContain('guide-glance-hit-cap');
-    const ranked = [
-      ...glance.matchAll(
-        /guide-glance-rank[^>]*>(\d+)<\/span>[\s\S]*?class="ui-st-name" role="cell"><span[^>]*>([^<]+)</g,
-      ),
-    ].map((m) => m[2]);
-    const numberedRows = [
-      ...lane.matchAll(
-        /data-testid="guide-stat-table-row-\d+">([\s\S]*?)(?=data-testid="guide-stat-table-row-|$)/g,
-      ),
-    ]
-      .filter((m) => !m[1]!.includes('data-muted'))
-      .map((m) => /class="ui-st-name" role="cell"><span[^>]*>([^<]+)</.exec(m[1]!)?.[1]);
-    expect(ranked.length).toBeGreaterThan(3);
-    expect(ranked).toEqual(numberedRows);
-    // A row a player cannot gear for stays in the full table only.
-    expect(glance).not.toContain('Not on any item');
     expect(lane).toContain('Not on any item');
+    // The band is the build alone: the Rotation and Stat priority sections own their lists.
+    expect(main).not.toContain('data-testid="guide-glance-stats"');
+    expect(main).not.toContain('data-testid="guide-glance-rotation"');
   });
 
   it('puts the level 60 best in slot in the lane, every other band and faction ready as a template', () => {
@@ -427,8 +406,8 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(leveling).toContain('data-testid="guide-leveling-tree"');
     expect(leveling).toContain('client="visible"');
     expect(leveling).toMatch(/data-testid="guide-leveling-caption"[\s\S]*?Level 60: [^<]+, rank \d/);
-    expect(leveling).toContain('51 points spent');
-    expect(leveling).not.toContain('all placed');
+    // Every point placed at 60: the caption says only the level's talent.
+    expect(leveling).not.toContain('points spent');
     expect(leveling).toMatch(/value="60" aria-label="Level" aria-valuetext="Level 60"/);
     expect(leveling).toMatch(/data-testid="guide-leveling-trees"[\s\S]*?role="grid"/);
     expect(leveling).toMatch(
