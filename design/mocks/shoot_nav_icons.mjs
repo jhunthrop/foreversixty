@@ -70,7 +70,7 @@ async function fit(page) {
 const browser = await chromium.launch();
 const shot = (name) => path.join(outDir, `${prefix}-${name}.png`);
 try {
-  for (const width of [1024, 1280, 1440, 1760, 2000]) {
+  for (const width of [1024, 1280, 1440, 1760, 1920, 2000]) {
     const { context, page } = await open(browser, width, 900, "/bis");
     console.log(width, JSON.stringify(await fit(page)));
     await page.screenshot({ path: shot(`header-${width}`), clip: { x: 0, y: 0, width, height: 104 } });
@@ -81,11 +81,14 @@ try {
       await page.waitForTimeout(150);
       await page.screenshot({ path: shot("header-2000-hover-sim"), clip });
       await page.mouse.move(5, 600);
-      await page.locator('[data-door="planner"]').focus();
-      await page.keyboard.press("Shift+Tab");
-      await page.keyboard.press("Tab");
-      await page.waitForTimeout(150);
-      await page.screenshot({ path: shot("header-2000-focus-planner"), clip });
+      for (const door of ["planner", "guides", "logs", "guild", "best-in-slot"]) {
+        // Keyboard focus (Tab from the door before) so :focus-visible draws the ring.
+        await page.locator(`[data-door="${door}"]`).focus();
+        await page.keyboard.press("Shift+Tab");
+        await page.keyboard.press("Tab");
+        await page.waitForTimeout(150);
+        await page.screenshot({ path: shot(`header-2000-focus-${door}`), clip });
+      }
       await page.locator('[data-door-toggle="guild"]').click();
       await page.waitForTimeout(200);
       await page.screenshot({ path: shot("panel-guild-2000"), clip: { x: 0, y: 0, width, height: 460 } });
@@ -102,7 +105,7 @@ try {
       }
       await page.locator('[data-testid="site-search-toggle"]').click();
       await page.waitForTimeout(200);
-      await page.screenshot({ path: shot(`search-${width}`), clip: { x: width - 640, y: 0, width: 640, height: 200 } });
+      await page.screenshot({ path: shot(`search-${width}`), clip: { x: 0, y: 0, width, height: 240 } });
     }
     await context.close();
   }
@@ -126,7 +129,7 @@ try {
     const { context, page } = await open(browser, 1440, 900, "/bis");
     await page.locator(".csel-btn").first().click();
     await page.waitForTimeout(300);
-    await page.screenshot({ path: shot("account-menu-1440"), clip: { x: 640, y: 0, width: 800, height: 700 } });
+    await page.screenshot({ path: shot("account-menu-1440") });
     await context.close();
   }
   if (prefix === "after") {

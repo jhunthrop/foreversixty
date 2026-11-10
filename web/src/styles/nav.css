@@ -99,11 +99,15 @@
   .site-menu-list {
     display: none;
   }
+  /* 8 px of padding each side, taken back by the margin, so the focus ring (2 px, inset 2 px)
+     leaves 4 px clear of the icon and the label without moving the bar. */
   .site-door {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     min-height: 44px;
+    margin-inline: -8px;
+    padding-inline: 8px;
     color: var(--color-nav);
   }
   /* A door's custom icon (lib/ui/ui-icons.ts) leads its label in currentColor, so hover, open and
@@ -192,6 +196,25 @@
     outline-offset: -2px;
     background: var(--color-hover);
   }
+  /* A door with a panel and its chevron read as one unit, so the door's focus ring takes the
+     chevron in (the chevron is its own button, with its own ring when it holds focus), at the
+     plain doors' full bar height. */
+  .site-door[aria-haspopup]:focus-visible {
+    outline: none;
+  }
+  .site-group:has(> .site-door[aria-haspopup]:focus-visible)::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: -6px;
+    right: 0;
+    border: 2px solid var(--color-gold);
+    pointer-events: none;
+  }
+  .site-group:has(> .site-door[aria-haspopup]:focus-visible) > .site-door-toggle {
+    background: var(--color-hover);
+  }
   .site-panel-icon {
     flex-shrink: 0;
     color: var(--color-gold);
@@ -253,12 +276,12 @@
     margin-top: 6px;
     padding: 0 10px;
     border-radius: 0 0 4px 4px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--color-muted);
+    color: var(--color-gold);
   }
   .site-panel-foot:hover {
-    color: var(--color-strong);
+    color: var(--color-gold-hover);
   }
   .site-right {
     order: 3;
@@ -314,7 +337,7 @@
     }
   }
 
-  /* The door icons need about 200 px the bar only has when it is this wide (measured signed in
+  /* The door icons need about 190 px (net of the doors closing up) the bar only has when it is this wide (measured signed in
      with an 18-letter name on the wide column, design/reviews/2026-11-09-nav-icons): below it the
      bar is the labels alone. A size container from 1024 only: below that the account sheet is
      fixed to the viewport, which a container would capture. */
@@ -323,9 +346,13 @@
       container: site-bar / inline-size;
     }
   }
-  @container site-bar (min-width: 1620px) {
+  @container site-bar (min-width: 1600px) {
     .site-door-icon {
       display: block;
+    }
+    /* The doors close up 4 px each while they carry icons: the room a 1920 screen's bar lacks. */
+    .site-doors > .site-group {
+      margin-inline: -2px;
     }
   }
 
@@ -439,6 +466,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      margin-inline: 0;
+      padding-inline: 0;
       min-height: 44px;
       font-size: 16px;
       color: var(--color-strong);
@@ -447,20 +476,18 @@
     .site-door-icon {
       display: block;
     }
-    /* The headed groups' icons match the plain doors' rows: the same size and ink. */
-    .site-menu-heading .site-door-icon {
-      color: var(--color-strong);
-    }
+    /* A headed group's heading is a door too: the plain doors' row type, icon and ink. */
     .site-menu-heading {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      min-height: 44px;
       font-family: var(--font-body);
       text-shadow: none;
-      margin: 0 0 4px;
-      font-size: 13px;
+      margin: 0;
+      font-size: 16px;
       font-weight: 600;
-      color: var(--color-muted);
+      color: var(--color-strong);
     }
     .site-menu-list {
       display: grid;
@@ -514,6 +541,7 @@
   .site-door-premium {
     display: inline-flex;
     align-self: center;
+    margin-inline: 0;
     align-items: center;
     height: 47px;
     padding: 0 22px;

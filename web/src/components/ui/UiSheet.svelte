@@ -10,11 +10,12 @@
   import { PLATE_SURFACE } from '../../lib/ui/primitives';
   import ActionLink from './ActionLink.svelte';
   import {
-    ICON_LINK,
+    ICON_GUILD,
     ICON_LOGS,
     ICON_MANAGE,
     ICON_PREMIUM,
     ICON_RANKINGS,
+    ICON_SETUP,
     ICON_SIM,
   } from '../../lib/ui/ui-icons';
   import SettingsRow from './SettingsRow.svelte';
@@ -146,7 +147,7 @@
           <div data-force="active">
             <SettingsRow
               label="Discord notifications"
-              glyph={ICON_LINK}
+              glyph={ICON_GUILD}
               value="On · 2 events"
               href="#discord"
             />
@@ -156,7 +157,7 @@
       <div class="flex flex-col gap-2">
         {@render label('muted, loading, empty, error, disabled')}
         <div class="{PLATE_SURFACE} overflow-hidden">
-          <SettingsRow label="Quiet value" glyph={ICON_LINK} value="Premium only" muted />
+          <SettingsRow label="Quiet value" glyph={ICON_SETUP} value="Premium only" muted />
           <SettingsRow label="Loading value" glyph={ICON_SIM} loading />
           <SettingsRow label="Empty value" glyph={ICON_RANKINGS} empty />
           <SettingsRow label="Error value" glyph={ICON_LOGS} error="Could not load" />

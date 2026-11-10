@@ -100,14 +100,14 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       {
         label: 'Roster',
         href: '/guild#roster',
-        icon: 'manage',
+        icon: 'character',
         description: 'Everyone the addon has seen, with gear score and last sync',
       },
       {
         label: 'Loot council',
         href: '/guild#loot',
         icon: 'bis',
-        description: 'Who gains most from each drop, by the sim, before the roll',
+        description: 'Who gains most from each drop, by the sim',
       },
       {
         label: 'Guild logs',
