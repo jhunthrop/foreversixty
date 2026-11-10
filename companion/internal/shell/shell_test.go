@@ -123,3 +123,55 @@ func TestTheWindowOpensAtTheSpecSizeAndNeverShrinksBelowTheMinimum(t *testing.T)
 		t.Fatalf("default %dx%d is under the minimum", got.Width, got.Height)
 	}
 }
+
+// fakeLoop records what ran on its "main thread": the functions handed to
+// Dispatch, run one after another by drain.
+type fakeLoop struct {
+	queued     []func()
+	inDispatch bool
+	events     []string
+}
+
+func (f *fakeLoop) Dispatch(fn func()) { f.queued = append(f.queued, fn) }
+func (f *fakeLoop) Terminate() {
+	if f.inDispatch {
+		f.events = append(f.events, "terminate on the loop")
+	} else {
+		f.events = append(f.events, "terminate off the loop")
+	}
+}
+func (f *fakeLoop) drain() {
+	for len(f.queued) > 0 {
+		fn := f.queued[0]
+		f.queued = f.queued[1:]
+		f.inDispatch = true
+		fn()
+		f.inDispatch = false
+	}
+}
+
+// The tray's Quit runs on a goroutine of its own. On Windows the library's
+// Terminate posts WM_QUIT to the calling thread, so called from there it
+// never reached the window's loop: the process stayed up, the icon stayed,
+// and no menu item answered again. The loop is ended from inside it.
+func TestEndLoopTerminatesOnTheLoopAndRemovesTheIconFirst(t *testing.T) {
+	f := &fakeLoop{}
+	endLoop(f, func() { f.events = append(f.events, "icon removed") })
+	if len(f.events) != 0 {
+		t.Fatalf("ran before the loop picked it up: %v", f.events)
+	}
+	f.drain()
+	want := []string{"icon removed", "terminate on the loop"}
+	if strings.Join(f.events, "|") != strings.Join(want, "|") {
+		t.Fatalf("events = %v, want %v", f.events, want)
+	}
+}
+
+func TestEndLoopWithoutAnIconStepStillTerminates(t *testing.T) {
+	f := &fakeLoop{}
+	endLoop(f, nil)
+	f.drain()
+	if strings.Join(f.events, "|") != "terminate on the loop" {
+		t.Fatalf("events = %v", f.events)
+	}
+}

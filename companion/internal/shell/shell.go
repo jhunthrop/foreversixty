@@ -101,3 +101,24 @@ func watchLine[T comparable](ctx context.Context, every time.Duration, read func
 		}
 	}
 }
+
+// loop is the part of the webview that ends its main loop.
+type loop interface {
+	Dispatch(func())
+	Terminate()
+}
+
+// endLoop ends the window's main loop from any goroutine. Terminate must
+// run on the loop's own thread: on Windows the library's Terminate is a
+// PostQuitMessage, which posts WM_QUIT to the calling thread, so the tray's
+// Quit (a goroutine of its own) used to leave the loop running, the
+// process up and the menu dead. beforeEnd, when set, runs there first; the
+// tray removes its icon in it while the loop can still deliver the message.
+func endLoop(w loop, beforeEnd func()) {
+	w.Dispatch(func() {
+		if beforeEnd != nil {
+			beforeEnd()
+		}
+		w.Terminate()
+	})
+}

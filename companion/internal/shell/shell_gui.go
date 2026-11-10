@@ -45,13 +45,22 @@ func Run(ctx context.Context, o Options) error {
 	)
 	quit := make(chan struct{})
 	openReq := make(chan struct{}, 1)
+	// On Windows the tray's window lives on this thread too, so its icon
+	// is removed while the loop still runs: after the loop no one would
+	// deliver the close, and the icon would stay until hovered.
+	var removeIcon func()
+	if runtime.GOOS == "windows" {
+		removeIcon = systray.Quit
+	}
+	// stopAll is called from the tray's goroutine and the context's: the
+	// loop is ended from inside it (endLoop), never from here.
 	stopAll := func() {
 		quitOnce.Do(func() { close(quit) })
 		mu.Lock()
 		w := cur
 		mu.Unlock()
 		if w != nil {
-			w.Terminate()
+			endLoop(w, removeIcon)
 		}
 	}
 	// openWindow brings the window back: a hidden one is shown, a
@@ -138,9 +147,11 @@ func Run(ctx context.Context, o Options) error {
 
 	// Where the close button cannot be caught, the window ending ends
 	// the process: the tray cannot be trusted to outlive the toolkit's
-	// main loop. Windows runs the tray on a thread of its own; on macOS
-	// the tray shares the window's loop, which a hidden window keeps
-	// running, so the close is caught there and the window only hides.
+	// main loop. On Windows the tray's window shares this thread and is
+	// served by the webview's loop, which the close hook keeps running by
+	// hiding the window instead of destroying it; on macOS the tray shares the
+	// window's loop, which a hidden window keeps running, so the close is
+	// caught there and the window only hides.
 	trayOutlives := runtime.GOOS == "windows"
 	hidesOnClose := trayOutlives || runtime.GOOS == "darwin"
 	pendingNotice := false
