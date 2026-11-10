@@ -3277,7 +3277,8 @@ components:
                 items:
                   type: object
                   title: RaidReportLootAward
-                  required: [item_id, item_name, quality, icon, character_key, name, class, by_name, at]
+                  description: The award and its decision record (null on an award made before the council kept records).
+                  required: [item_id, item_name, quality, icon, character_key, name, class, by_name, at, ms_os, reason, votes_yes, votes_no, votes_officers]
                   properties:
                     item_id: { type: integer }
                     item_name: { type: string }
@@ -3288,6 +3289,11 @@ components:
                     class: { type: string, x-name: className }
                     by_name: { type: string }
                     at: { type: string, format: date-time }
+                    ms_os: { type: [string, "null"], enum: [ms, os, null] }
+                    reason: { type: [string, "null"] }
+                    votes_yes: { type: [integer, "null"] }
+                    votes_no: { type: [integer, "null"] }
+                    votes_officers: { type: [integer, "null"], description: "How many officers could vote when the drop was awarded." }
         moves:
           type: object
           title: RaidReportMoves
@@ -5961,9 +5967,10 @@ components:
           oneOf:
             - type: object
               title: ProfileAttendance
-              required: [source, last_4, last_30, nights]
+              required: [source, last_4, last_30, nights, streak]
               properties:
                 source: { type: string, enum: [raids, reports] }
+                streak: { type: integer, description: "Logged raids in a row, newest back, the character came to (present or late; excused skipped), within the last 30; 0 in reports mode." }
                 last_4: { $ref: '#/components/schemas/GuildAttendance' }
                 last_30:
                   oneOf:
@@ -5984,15 +5991,18 @@ components:
         loot:
           type: object
           title: ProfileLoot
-          required: [count, items]
+          required: [count, items, guild_median, nights_since]
           properties:
             count: { type: integer }
+            guild_median: { type: integer, description: "The median award count across the guild's verified roster characters, none counting as zero." }
+            nights_since: { type: [integer, "null"], description: "Logged raids the character came to after their last award (all they came to, with none), within the last 30; null in reports mode." }
             items:
               type: array
               items:
                 type: object
                 title: ProfileLootItem
-                required: [item_id, name, icon, quality, raid_id, awarded_at]
+                description: The award and its decision record (null on an award made before the council kept records).
+                required: [item_id, name, icon, quality, raid_id, awarded_at, ms_os, reason, votes_yes, votes_no, votes_officers]
                 properties:
                   item_id: { type: integer }
                   name: { type: [string, "null"] }
@@ -6000,6 +6010,11 @@ components:
                   quality: { type: [integer, "null"] }
                   raid_id: { type: [integer, "null"], format: int64 }
                   awarded_at: { type: string, format: date-time }
+                  ms_os: { type: [string, "null"], enum: [ms, os, null] }
+                  reason: { type: [string, "null"] }
+                  votes_yes: { type: [integer, "null"] }
+                  votes_no: { type: [integer, "null"] }
+                  votes_officers: { type: [integer, "null"], description: "How many officers could vote when the drop was awarded." }
         readiness:
           oneOf:
             - { $ref: '#/components/schemas/GuildReadinessRow' }

@@ -56,7 +56,8 @@
         "outcome": "present",
         "excused": false
       }
-    ]
+    ],
+    "streak": 1
   },
   "loot": {
     "count": 1,
@@ -67,9 +68,16 @@
         "icon": "inv_misc_cape_16",
         "quality": 4,
         "raid_id": 40,
-        "awarded_at": "2026-12-10T03:03:00Z"
+        "awarded_at": "2026-12-10T03:03:00Z",
+        "ms_os": "ms",
+        "reason": null,
+        "votes_yes": 3,
+        "votes_no": 0,
+        "votes_officers": 3
       }
-    ]
+    ],
+    "guild_median": 0,
+    "nights_since": 0
   },
   "readiness": {
     "character_key": "us/pvp/frostquill",

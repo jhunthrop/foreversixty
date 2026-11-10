@@ -353,6 +353,14 @@ def loot_council():
     return build_page('Loot council', _view(hdr(tabs_active='Loot') + bar + Page('split', main, rail, sticky_rail=True, panels=True)), 'Guild', ('Dunmaro', 'hunter', 'Beast Mastery Hunter &middot; 60'))
 
 
+def _record_line(d):
+    """Why a drop went where it did (loot-council-view recordLine): off spec named, the votes, then the reason."""
+    parts = (['Off spec'] if d.get('ms_os') == 'os' else []) + (
+        [f"{d['votes_yes']} yes, {d['votes_no']} no" + (f" of {d['votes_officers']}" if d.get('votes_officers') is not None else '')]
+        if d.get('votes_yes') is not None and d.get('votes_no') is not None else []) + ([d['reason']] if d.get('reason') else [])
+    return ' &middot; '.join(parts)
+
+
 def _section_body(html):
     """A Section body as the built Section draws it: 12 px under the head row."""
     return f'<div style="padding-top:12px">{html}</div>'
@@ -406,15 +414,16 @@ def raid_report():
                         trail=Select('Fix'), link=False, selected=a['own']) for a in raid['attendance']])
     # The officer's names under the summary (report-attendance-view nightNames): not in the log, late, joined, by name.
     signed_in = {'in', 'late'}
-    groups = [('Signed up, not in the log', [x for x in raid['attendance'] if x['outcome'] == 'no_show']),
+    groups = [('Not in the log', [x for x in raid['attendance'] if x['outcome'] == 'no_show']),
               ('Late', [x for x in raid['attendance'] if x['outcome'] == 'late']),
-              ('Joined from the bench or without a sign-up',
+              ('Joined',
                [x for x in raid['attendance'] if x['outcome'] in ('present', 'late') and x['signed'] not in signed_in])]
     names = ''.join(f'<p class="t-small" style="margin-top:4px">{label}: '
                     + ', '.join(f'<b style="color:{C[x["class"]]}">{x["name"]}</b>' for x in rows) + '</p>'
                     for label, rows in groups if rows)
     att = logged + f'<p>{rd.attendance_summary(raid["night"])}</p>' + names + Disclosure('Fix attendance', fix)
-    lootr = ''.join(ItemRow(a['item_name'], a['quality'], icon(a['icon'], 32, f'q{a["quality"]}'), f'{g["boss"]} &middot; to {a["name"]}')
+    lootr = ''.join(ItemRow(a['item_name'], a['quality'], icon(a['icon'], 32, f'q{a["quality"]}'),
+                            ' &middot; '.join(x for x in (f'{g["boss"]} &middot; to {a["name"]}', _record_line(a)) if x))
                     for g in rep['loot'] for a in g['awards'])
     lines = rd.discord_lines(raid)
     discord = (''.join(f'<p class="t-small">{"<b>" + x + "</b>" if i == 0 else x}</p>' for i, x in enumerate(lines))
@@ -574,7 +583,7 @@ def member_profile():
     Raid ready framed, the last raids and loot this tier; the rail holds their characters, then Officer notes."""
     name, cls, spec, _role, ilvl, _st = ch(gd.PROFILE)
     from guild_fixtures import profile_loot
-    won = [(d['item_id'], d['item_name'], d['icon'], d['quality'], d['at']) for d in profile_loot()]
+    won = [(d['item_id'], d['item_name'], d['icon'], d['quality'], d['at'], _record_line(d)) for d in profile_loot()]
     present = sum(1 for _at, o in gd.PROFILE_NIGHTS if o == 'present')
     figs = Figures([(f'{present} of {len(gd.PROFILE_NIGHTS)}', 'Attendance', '', ''), (str(round(gd.PROFILE_PARSE[1])), f'Top {gd.PROFILE_PARSE[0].upper()}', '', ''),
                     (str(ilvl), 'Item level', '', ''), (str(len(won)), 'Items this tier', '', '')])
@@ -582,7 +591,10 @@ def member_profile():
     last = 'Last raid' if len(gd.PROFILE_NIGHTS) == 1 else f'Last {len(gd.PROFILE_NIGHTS)} raids'  # recruit-copy lastNights
     att = (_grid_table(last, [_day(at) for at, _o in gd.PROFILE_NIGHTS], [(last, [mark[o] for _at, o in gd.PROFILE_NIGHTS])])
            + f'<p style="padding-top:12px;font-size:14px;line-height:22px">{gd.PROFILE_LAST_30[0]} of {"1 raid" if gd.PROFILE_LAST_30[1] == 1 else f"the last {gd.PROFILE_LAST_30[1]} raids"}</p>')
-    loot = '<ul>' + ''.join(f'<li>{ItemRow(n, q, icon(ic, 32, f"q{q}"), f"Awarded {_day(at)}")}</li>' for _i, n, ic, q, at in won) + '</ul>'
+    loot = '<ul>' + ''.join(f'<li>{ItemRow(n, q, icon(ic, 32, f"q{q}"), " &middot; ".join(x for x in (f"Awarded {_day(at)}", why) if x))}</li>'
+                            for _i, n, ic, q, at, why in won) + '</ul>'
+    # The fairness line under the loot (lootFairness): the award came on the guild's one night, so no raid since.
+    loot += '<p style="padding-top:12px;font-size:14px;line-height:22px">No raid since their last item</p>'
     # The notes panel says once that members never see them: no chip per note, no placeholder; Delete is the quiet danger button.
     delete = Button('Delete', small=True, tone='danger').replace('<a ', '<button type="button" ', 1).replace(' href="#"', '', 1).replace('</a>', '</button>')
     notes = Rows([Row(body, f'{who} &middot; {_day(at)}', trail=delete if mine else '', link=False) for _i, body, who, at, mine in gd.PROFILE_NOTES], open_=True)
@@ -592,7 +604,7 @@ def member_profile():
     # Raid ready's roll-up tag shows only when a check fails (readyTag); Frostquill passes every one.
     ready = Section('Raid ready', _ready_facts(ilvl), Link('Open their character'), panel=True)
     main = (ready + Section('Attendance', att, panel=True)
-            + Section('Loot this tier', loot, panel=True))
+            + Section('Loot this tier', loot, meta='Guild median 0', panel=True))
     rail = Section('Characters', characters, panel=True) + Section('Officer notes', notes + addn, panel=True)
     # No "member since" (the roster carries no join date): the rank instead.
     head = PageHeader(name, C[cls], crest_img(cls, 56), meta=[' &middot; '.join([f'{spec} {cls.title()}', 'Level 60', 'Member'])], answer=figs,

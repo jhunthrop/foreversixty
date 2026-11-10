@@ -25,15 +25,21 @@ type ProfileNight struct {
 }
 
 // ProfileAttendance is the attendance section. Source is the guild's attendance source (raids
-// once a raid is logged, else reports); Nights is set in raids mode only, Last30 likewise.
+// once a raid is logged, else reports); Nights is set in raids mode only, Last30 likewise. Streak
+// is the logged raids in a row, newest back, the character came to (present or late; an excused
+// night neither breaks nor adds to it), within the last 30; 0 in reports mode.
 type ProfileAttendance struct {
 	Source string         `json:"source"`
 	Last4  Attendance     `json:"last_4"`
 	Last30 *Attendance    `json:"last_30"`
 	Nights []ProfileNight `json:"nights"`
+	Streak int            `json:"streak"`
+	// history is the last 30 logged raids newest first, the reads Streak and the loot's
+	// NightsSince come from; not sent.
+	history []ProfileNight
 }
 
-// ProfileLootItem is one award to the character this tier.
+// ProfileLootItem is one award to the character this tier, with its decision record.
 type ProfileLootItem struct {
 	ItemID    int       `json:"item_id"`
 	Name      *string   `json:"name"`
@@ -41,12 +47,19 @@ type ProfileLootItem struct {
 	Quality   *int      `json:"quality"`
 	RaidID    *int64    `json:"raid_id"`
 	AwardedAt time.Time `json:"awarded_at"`
+	AwardRecord
 }
 
 // ProfileLoot is the loot this tier section: every award row counts, as the loot council's own.
+// GuildMedian is the median award count across the guild's roster characters (zeros included),
+// the fairness figure the count reads against. NightsSince is how many logged raids the character
+// came to after their last award (every one they came to, with none), within the last 30; null in
+// reports mode, where nights are not kept one by one.
 type ProfileLoot struct {
-	Count int               `json:"count"`
-	Items []ProfileLootItem `json:"items"`
+	Count       int               `json:"count"`
+	Items       []ProfileLootItem `json:"items"`
+	GuildMedian int               `json:"guild_median"`
+	NightsSince *int              `json:"nights_since"`
 }
 
 // MemberProfile is GET /v1/guilds/{id}/members/{account}/profile. Member is null when none of
@@ -90,6 +103,13 @@ func (s *Store) MemberProfile(ctx context.Context, guildID, subjectID int64, cha
 	}
 	if out.Loot, err = s.profileLoot(ctx, guildID, awardKeyOf(*row)); err != nil {
 		return out, err
+	}
+	if out.Loot.GuildMedian, err = s.guildMedianAwards(ctx, guildID, roster); err != nil {
+		return out, err
+	}
+	if out.Attendance != nil && out.Attendance.Source == AttendanceSourceRaids {
+		since := nightsSinceAward(out.Attendance.history, lastAwardAt(out.Loot.Items))
+		out.Loot.NightsSince = &since
 	}
 	if row.Verified {
 		rr := readinessRowOf(*row, s.readinessOf(*row, median))
@@ -168,21 +188,23 @@ func (s *Store) profileAttendance(ctx context.Context, guildID int64, row Roster
 	}
 	l := long[row.CharacterKey]
 	out.Last4, out.Last30 = short[row.CharacterKey], &l
-	if out.Nights, err = s.profileNights(ctx, guildID, row.CharacterKey); err != nil {
+	if out.history, err = s.profileNights(ctx, guildID, row.CharacterKey, attendanceWindowLong); err != nil {
 		return nil, err
 	}
+	out.Nights = out.history[:min(profileShortWindow, len(out.history))]
+	out.Streak = attendanceStreak(out.history)
 	return out, nil
 }
 
-// profileNights is the guild's last profileShortWindow logged raids, newest first, with the
-// character's attendance row on each.
-func (s *Store) profileNights(ctx context.Context, guildID int64, key string) ([]ProfileNight, error) {
+// profileNights is the guild's last window logged raids, newest first, with the character's
+// attendance row on each.
+func (s *Store) profileNights(ctx context.Context, guildID int64, key string, window int) ([]ProfileNight, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select r.id, r.starts_at, a.outcome, coalesce(a.excused, false)
 		from (`+loggedRaids+`) lr
 		join guild_raids r on r.id = lr.id
 		left join guild_raid_attendance a on a.raid_id = r.id and a.character_key = $3
-		order by r.starts_at desc, r.id desc`, guildID, profileShortWindow, key)
+		order by r.starts_at desc, r.id desc`, guildID, window, key)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: profile nights: %w", err)
 	}
@@ -202,15 +224,16 @@ func (s *Store) profileNights(ctx context.Context, guildID int64, key string) ([
 // profileLoot is every award to key in guildID, newest first, named from the loot table.
 func (s *Store) profileLoot(ctx context.Context, guildID int64, key string) (ProfileLoot, error) {
 	out := ProfileLoot{Items: []ProfileLootItem{}}
-	rows, err := s.Pool.Query(ctx, `select item_id, raid_id, awarded_at from loot_awards
-		where guild_id = $1 and character_key = $2 order by awarded_at desc, id desc`, guildID, key)
+	rows, err := s.Pool.Query(ctx, `select la.item_id, la.raid_id, la.awarded_at, `+awardRecordColumns+`
+		from loot_awards la where la.guild_id = $1 and la.character_key = $2
+		order by la.awarded_at desc, la.id desc`, guildID, key)
 	if err != nil {
 		return out, fmt.Errorf("guilds: profile loot: %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var it ProfileLootItem
-		if err := rows.Scan(&it.ItemID, &it.RaidID, &it.AwardedAt); err != nil {
+		if err := rows.Scan(append([]any{&it.ItemID, &it.RaidID, &it.AwardedAt}, it.AwardRecord.scanTargets()...)...); err != nil {
 			return out, fmt.Errorf("guilds: profile loot: %w", err)
 		}
 		it.AwardedAt = it.AwardedAt.UTC()

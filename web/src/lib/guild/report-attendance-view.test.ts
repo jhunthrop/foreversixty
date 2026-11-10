@@ -54,15 +54,15 @@ describe('fixRows', () => {
 });
 
 describe('nightNames', () => {
-  it('names who was not in the log, late or joined, in the groups own words, and nobody present', () => {
+  it('names who was not in the log, late or joined, in shorthand, and nobody present', () => {
     const groups = nightNames([
       attendanceRow({ character_key: 'a', name: 'Absent', signed: 'in', outcome: 'no_show' }),
       attendanceRow({ character_key: 'b', name: 'Here', signed: 'in', outcome: 'present' }),
       attendanceRow({ character_key: 'c', name: 'Walkin', signed: null, outcome: 'present' }),
     ]);
     expect(groups.map((group) => [group.label, group.rows.map((row) => row.name)])).toEqual([
-      ['Signed up, not in the log', ['Absent']],
-      ['Joined from the bench or without a sign-up', ['Walkin']],
+      ['Not in the log', ['Absent']],
+      ['Joined', ['Walkin']],
     ]);
   });
 });

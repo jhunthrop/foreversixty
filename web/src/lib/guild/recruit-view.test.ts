@@ -25,6 +25,7 @@ import {
 import {
   attendanceView,
   characterRows,
+  lootFairness,
   lootRows,
   noteSub,
   profileFigures,
@@ -298,7 +299,13 @@ describe('the member profile', () => {
     const reports = attendanceView(
       {
         ...profile,
-        attendance: { source: 'reports', last_4: { present: 2, nights: 4 }, last_30: null, nights: [] },
+        attendance: {
+          source: 'reports',
+          last_4: { present: 2, nights: 4 },
+          last_30: null,
+          nights: [],
+          streak: 0,
+        },
       },
       TZ,
       LOCALE,
@@ -306,11 +313,43 @@ describe('the member profile', () => {
     expect(reports).toEqual({ columns: [], rows: [], line: '2 of the last 4 logged nights' });
   });
 
+  it('reads loot against the guild: its median, and the raids they came to since their last item', () => {
+    expect(lootFairness(profile)).toEqual({
+      median: 'Guild median 2',
+      since: '1 raid since their last item',
+    });
+    expect(
+      lootFairness({ ...profile, loot: { ...profile.loot, count: 0, items: [], nights_since: 5 } }).since,
+    ).toBe('5 raids since the tier began, nothing yet');
+    expect(lootFairness({ ...profile, loot: { ...profile.loot, nights_since: 0 } }).since).toBe(
+      'No raid since their last item',
+    );
+    expect(lootFairness({ ...profile, loot: { ...profile.loot, nights_since: null } }).since).toBeNull();
+  });
+
+  it('adds the run they are on after the 30-raid figure, from two nights', () => {
+    const run = (streak: number) =>
+      attendanceView({ ...profile, attendance: { ...profile.attendance!, streak } }, TZ, LOCALE)!.line;
+    expect(run(1)).toBe('25 of the last 30 raids');
+    expect(run(4)).toBe('25 of the last 30 raids · 4 in a row');
+  });
+
   it('lists loot newest first and names who wrote each note', () => {
     expect(lootRows(profile, TZ, LOCALE)[0]).toMatchObject({
       name: "Dragonstalker's Helm",
-      source: 'Awarded Mon 30 Nov',
+      source: 'Awarded Mon 30 Nov · 3 yes, 1 no of 4 · Best in slot, every night this month',
     });
+    const unrecorded = profile.loot.items.map((item) => ({
+      ...item,
+      ms_os: null,
+      reason: null,
+      votes_yes: null,
+      votes_no: null,
+      votes_officers: null,
+    }));
+    expect(lootRows({ ...profile, loot: { ...profile.loot, items: unrecorded } }, TZ, LOCALE)[0].source).toBe(
+      'Awarded Mon 30 Nov',
+    );
     expect(noteSub(profile.notes![0], TZ, LOCALE)).toBe('Kraggor · Sat 5 Dec');
     expect(noteSub({ ...profile.notes![0], author: null }, TZ, LOCALE)).toBe('An officer · Sat 5 Dec');
   });

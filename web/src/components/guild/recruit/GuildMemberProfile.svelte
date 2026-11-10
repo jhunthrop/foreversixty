@@ -15,6 +15,7 @@
   import {
     attendanceView,
     characterRows,
+    lootFairness,
     lootRows,
     profileFigures,
     profileHead,
@@ -102,6 +103,7 @@
     {@const characters = characterRows(profile)}
     {@const attendance = attendanceView(profile, viewerTimezone, locale)}
     {@const loot = lootRows(profile, viewerTimezone, locale)}
+    {@const fairness = lootFairness(profile)}
     {@const member = profile.member}
     {#snippet crest()}<ClassCrestRing characterClass={head.classSlug} size={56} />{/snippet}
     {#snippet figures()}
@@ -211,7 +213,7 @@
           {/if}
         {/if}
       </Section>
-      <Section title={copy.loot} panel testid="guild-profile-loot">
+      <Section title={copy.loot} meta={fairness.median} panel testid="guild-profile-loot">
         {#if loot.length === 0}
           <p class="text-muted text-[14px]">{copy.noLoot}</p>
         {:else}
@@ -228,6 +230,9 @@
               </li>
             {/each}
           </ul>
+        {/if}
+        {#if fairness.since !== null}
+          <p class="text-text pt-3 text-[14px]" data-testid="guild-profile-loot-since">{fairness.since}</p>
         {/if}
       </Section>
     </Page>

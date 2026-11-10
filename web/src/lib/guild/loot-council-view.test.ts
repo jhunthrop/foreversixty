@@ -11,6 +11,8 @@ import {
   candidateGain,
   candidateSub,
   decisionSub,
+  recordLine,
+  recordOf,
   decisionTitle,
   defaultNight,
   dropRows,
@@ -174,6 +176,27 @@ describe('the decision record', () => {
     expect(decisionSub({ ...d, ms_os: null, votes_yes: null, votes_no: null, awarded_by: '' }, 'UTC')).toBe(
       'Tue 15 Dec',
     );
+  });
+});
+
+describe('the record line (the night report and the member profile)', () => {
+  it('reads the votes then the reason, off spec named, nothing for an award with no record', () => {
+    const record = {
+      ms_os: 'os' as const,
+      reason: ' Best in slot ',
+      votes_yes: 3,
+      votes_no: 1,
+      votes_officers: 4,
+    };
+    expect(recordLine(record)).toBe('Off spec · 3 yes, 1 no of 4 · Best in slot');
+    expect(recordLine(recordOf({}))).toBe('');
+    expect(recordOf({ votes_yes: 2 })).toEqual({
+      ms_os: null,
+      reason: null,
+      votes_yes: 2,
+      votes_no: null,
+      votes_officers: null,
+    });
   });
 });
 

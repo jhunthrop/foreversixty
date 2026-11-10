@@ -7,6 +7,7 @@ import { characterHrefOfKey } from '../characters';
 import type { GridCell, GridRowModel } from '../ui/cells';
 import type { Fact } from '../ui/facts';
 import type { GuildReadinessGearGap, GuildReadinessRow } from './api';
+import { recordLine } from './loot-council-view';
 import { enchantSlotLabel } from './readiness-view';
 import { ratedOf } from './report-night-copy';
 import { outputFigure, topOutputLabel } from './output-figure';
@@ -235,7 +236,13 @@ export function attendanceView(
   }
   const nights = [...att.nights].sort((a, b) => a.starts_at.localeCompare(b.starts_at));
   const thirty = att.last_30;
-  const line = thirty === null || thirty.nights === 0 ? '' : copy.lastThirty(thirty.present, thirty.nights);
+  const streak = att.streak > 1 ? copy.streak(att.streak) : '';
+  const line = [
+    thirty === null || thirty.nights === 0 ? '' : copy.lastThirty(thirty.present, thirty.nights),
+    streak,
+  ]
+    .filter((part) => part !== '')
+    .join(SEP);
   if (nights.length === 0) return { columns: [], rows: [], line: line === '' ? copy.noNights : line };
   return {
     columns: nights.map((night) => dateLabel(new Date(night.starts_at), viewerTz, locale)),
@@ -263,8 +270,20 @@ export function lootRows(profile: MemberProfile, viewerTz: string, locale: strin
       name: item.name ?? `Item ${item.item_id}`,
       quality: item.quality ?? 1,
       icon: item.icon === null || item.icon === '' ? undefined : item.icon,
-      source: copy.awarded(dateLabel(new Date(item.awarded_at), viewerTz, locale)),
+      source: [copy.awarded(dateLabel(new Date(item.awarded_at), viewerTz, locale)), recordLine(item)]
+        .filter((part) => part !== '')
+        .join(SEP),
     }));
+}
+
+/** The loot panel's fairness lines: the guild's median (the meta) and the raids they came to since
+ *  their last item (null in reports mode, where nights are not kept one by one). */
+export function lootFairness(profile: MemberProfile): { median: string; since: string | null } {
+  const since = profile.loot.nights_since;
+  return {
+    median: copy.guildMedian(profile.loot.guild_median),
+    since: since === null ? null : copy.nightsSince(since, profile.loot.count > 0),
+  };
 }
 
 /** "Ironbrand · Wed 2 Dec": who wrote it and when; "An officer" for one who left. */

@@ -100,7 +100,8 @@
           "outcome": null,
           "excused": false
         }
-      ]
+      ],
+      "streak": 3
     },
     "loot": {
       "count": 1,
@@ -111,9 +112,16 @@
           "icon": "inv_jewelry_ring_13",
           "quality": 4,
           "raid_id": 88,
-          "awarded_at": "2026-12-12T03:40:00Z"
+          "awarded_at": "2026-12-12T03:40:00Z",
+          "ms_os": "ms",
+          "reason": "Best in slot, top attendance",
+          "votes_yes": 3,
+          "votes_no": 0,
+          "votes_officers": 4
         }
-      ]
+      ],
+      "guild_median": 1,
+      "nights_since": 1
     },
     "readiness": {
       "character_key": "us/pvp/obnoxious-yell",

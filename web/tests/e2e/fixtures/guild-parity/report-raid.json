@@ -1095,7 +1095,12 @@
             "name": "Shiverknife",
             "class": "rogue",
             "by_name": "Ironbrand",
-            "at": "2026-12-10T03:01:00Z"
+            "at": "2026-12-10T03:01:00Z",
+            "ms_os": "ms",
+            "reason": null,
+            "votes_yes": 3,
+            "votes_no": 0,
+            "votes_officers": 3
           },
           {
             "item_id": 18813,
@@ -1106,7 +1111,12 @@
             "name": "Thornwicke",
             "class": "warrior",
             "by_name": "Dunmaro",
-            "at": "2026-12-10T03:02:00Z"
+            "at": "2026-12-10T03:02:00Z",
+            "ms_os": "ms",
+            "reason": null,
+            "votes_yes": 3,
+            "votes_no": 0,
+            "votes_officers": 3
           },
           {
             "item_id": 17078,
@@ -1117,7 +1127,12 @@
             "name": "Frostquill",
             "class": "mage",
             "by_name": "Dunmaro",
-            "at": "2026-12-10T03:03:00Z"
+            "at": "2026-12-10T03:03:00Z",
+            "ms_os": "ms",
+            "reason": null,
+            "votes_yes": 3,
+            "votes_no": 0,
+            "votes_officers": 3
           }
         ]
       }

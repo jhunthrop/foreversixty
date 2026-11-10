@@ -58,11 +58,10 @@ export interface NightNamesModel {
 }
 
 /** The officer's names under the summary: who signed up and was not in the log, who came late and
- *  who joined without a sign-up, in the attendance groups' own words and order. */
+ *  who joined, in the attendance groups' order and a raid leader's shorthand. */
 export function nightNames(rows: readonly RaidAttendanceRow[]): NightNamesModel[] {
+  const labels = copy.attendance.names;
   return groupAttendance(rows)
-    .filter((group) => NAMED_GROUPS.has(group.key))
-    .map((group) => ({ key: group.key, label: group.label, rows: group.rows }));
+    .filter((group) => labels[group.key] !== undefined)
+    .map((group) => ({ key: group.key, label: labels[group.key], rows: group.rows }));
 }
-
-const NAMED_GROUPS: ReadonlySet<string> = new Set(['noShow', 'late', 'joined']);

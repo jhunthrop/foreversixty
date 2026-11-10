@@ -189,6 +189,13 @@ export const profileCopy = {
   reportsMode: (present: number, nights: number) =>
     nights === 1 ? `${present} of 1 logged night` : `${present} of the last ${nights} logged nights`,
   loot: 'Loot this tier',
+  /** The loot panel's meta: the guild's median against the raider's count in the head. */
+  guildMedian: (n: number) => `Guild median ${n}`,
+  /** Under the loot: how long they have waited, the fairness figure a council reads. */
+  nightsSince: (n: number, hasItem: boolean) =>
+    `${n === 0 ? 'No raid' : n === 1 ? '1 raid' : `${n} raids`} since ${hasItem ? 'their last item' : 'the tier began, nothing yet'}`,
+  /** After the 30-raid figure: the run they are on. */
+  streak: (n: number) => `${n} in a row`,
   noLoot: 'Nothing awarded this tier.',
   awarded: (day: string) => `Awarded ${day}`,
   notes: 'Officer notes',

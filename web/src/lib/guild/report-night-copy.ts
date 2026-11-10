@@ -54,6 +54,8 @@ export const reportNightCopy = {
   },
   attendance: {
     head: 'Attendance',
+    /** The officer's names under the summary, in a raid leader's shorthand. */
+    names: { noShow: 'Not in the log', late: 'Late', joined: 'Joined' } as Readonly<Record<string, string>>,
     fix: 'Fix attendance',
     fixLabel: (name: string): string => `Fix ${name}'s attendance`,
     fixPlaceholder: 'Fix',

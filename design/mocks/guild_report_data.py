@@ -96,7 +96,7 @@ def report() -> dict:
                                     for p in boss_pulls]},
         'loot': [{'encounter_id': ONYXIA, 'boss': kill[1], 'awards': [
             {'item_id': d['item_id'], 'item_name': d['item_name'], 'quality': d['quality'], 'icon': d['icon'], **who(d['name']), 'by_name': d['awarded_by'],
-             'at': d['at']} for d in awards()]}],
+             'at': d['at'], **{k: d[k] for k in ('ms_os', 'reason', 'votes_yes', 'votes_no', 'votes_officers')}} for d in awards()]}],
         'moves': {'previous': None, 'rows': []},
         'posted_at': None,
     }
