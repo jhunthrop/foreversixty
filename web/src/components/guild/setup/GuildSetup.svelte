@@ -33,7 +33,6 @@
   import PageHeader from '../../ui/PageHeader.svelte';
   import Section from '../../ui/Section.svelte';
   import Steps from '../../ui/Steps.svelte';
-  import Tag from '../../ui/Tag.svelte';
   import SetupPlanRail from './SetupPlanRail.svelte';
   import SetupStepBody from './SetupStepBody.svelte';
 
@@ -130,7 +129,6 @@
     })),
   );
   const stepOf = (key: string): SetupStep | undefined => setup?.steps.find((s) => s.key === key);
-  const stateTone = { done: 'success', todo: 'gold', skipped: 'muted' } as const;
 </script>
 
 {#snippet answer()}
@@ -141,14 +139,12 @@
 {/snippet}
 
 {#snippet crumb()}<a href={guildPath} data-testid="setup-back">‹ {guildName || path.slug}</a>{/snippet}
-{#snippet meta()}<span>{setupCopy.meta}</span>{/snippet}
 
 <div class="reveal flex flex-col" data-testid="guild-setup">
   <PageHeader
     title={guildName === '' ? setupCopy.heading : guildName}
     tone={faction === null ? 'strong' : { faction }}
     {crumb}
-    {meta}
     {answer}
     pending={status === 'loading' && guildName === ''}
     testid="guild-setup-header"
@@ -201,9 +197,12 @@
             {@const step = stepOf(item.key)}
             {#if step !== undefined}
               <span class="flex items-center gap-3">
-                <Tag tone={stateTone[step.state]} testid={`setup-step-${item.key}-state`}
-                  >{setupCopy.states[step.state]}</Tag
                 >
+                {#if step.state === 'skipped'}
+                  <span class="text-muted text-[13px]" data-testid={`setup-step-${item.key}-state`}
+                    >{setupCopy.states.skipped}</span
+                  >
+                {/if}
                 {#if step.state === 'todo'}
                   <button
                     class="text-muted hover:text-text min-h-11 text-[13px] underline"

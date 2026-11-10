@@ -97,8 +97,15 @@ export function inviteLine(i: GuildSetup['invite']): string {
   return i.made ? setupCopy.invite.joined(i.joined) : setupCopy.invite.none;
 }
 
+/** Half the verified accounts synced is done (api setup.go); short of it, the line says how many. */
+export function syncNeeded(s: GuildSetup['sync']): number {
+  return Math.max(0, Math.ceil(s.accounts / 2) - s.synced);
+}
+
 export function syncLine(s: GuildSetup['sync']): string {
-  return setupCopy.sync.line(s.synced, s.accounts, s.window_days);
+  const line = setupCopy.sync.line(s.synced, s.accounts, s.window_days);
+  const need = syncNeeded(s);
+  return s.accounts > 0 && need > 0 ? `${line} · ${setupCopy.sync.needed(Math.ceil(s.accounts / 2))}` : line;
 }
 
 /** The synced share for the bar, 0 with no accounts. */
@@ -121,15 +128,22 @@ export function planName(plan: SetupPlan): string {
   return plan === 'guild' ? setupCopy.plan.guild : setupCopy.plan.none;
 }
 
-/** The plan rail's lists, the prices' own facts from plans.ts. */
-export function planLists(): { heading: string; items: readonly string[] }[] {
-  const p = setupCopy.plan;
-  return [
-    { heading: p.freeHeading, items: p.free },
-    { heading: p.guildHeading, items: p.guildAdds(PLANS.guild.seats, GUILD_TIER_MEMBER_LIMIT) },
-    { heading: p.raidGuildHeading, items: p.raidGuildAdds(PLANS.raid_guild.seats) },
-  ];
+/** The plan rail's three lines, the seats and the member cap from plans.ts. */
+export function planLines(): { label: string; text: string }[] {
+  return setupCopy.plan.lines(
+    { guild: PLANS.guild.seats, raidGuild: PLANS.raid_guild.seats },
+    GUILD_TIER_MEMBER_LIMIT,
+  );
 }
+
+/** A rank line with the first names on it: `Rank 1 · 2: Kraggor, Mirelle`. */
+export function rankLine(line: { rank_index: number; members: number; names: readonly string[] }): string {
+  const head = setupCopy.ranks.line(line.rank_index, line.members);
+  return line.names.length === 0 ? head : `${head}: ${line.names.join(', ')}`;
+}
+
+/** A channel whose name reads as the recruiting channel, for the picker's first choice. */
+export const RECRUIT_CHANNEL = /recruit|apply|application|join/i;
 
 /** The steps the settings row and the claim page count: every step done or skipped hides them. */
 export function setupOpen(setup: Pick<GuildSetup, 'finished'> | null): boolean {

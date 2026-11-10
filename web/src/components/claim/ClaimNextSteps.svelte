@@ -80,6 +80,8 @@
     <Button tone={subscribing ? 'secondary' : 'primary'} href={setupHref} testid="guild-claim-next-setup"
       >{setupCopy.claim.start}</Button
     >
-    <Button href={`${guildBase}#roster`} testid="guild-claim-next-roster">{guildClaimCopy.nextRoster}</Button>
+    <Button tone="ghost" href={`${guildBase}#roster`} testid="guild-claim-next-roster"
+      >{guildClaimCopy.nextRoster}</Button
+    >
   </div>
 </Section>

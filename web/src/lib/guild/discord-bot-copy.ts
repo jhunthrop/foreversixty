@@ -71,15 +71,12 @@ export const guildBotCopy = {
     change: 'Change channel',
     remove: 'Remove',
     removing: 'Removing…',
-    saved: 'Saved. Raids post here with sign-up buttons.',
+    saved: 'Saved.',
     fallbackNote: 'Your webhook channel stays as the fallback if the bot is removed.',
     linkedMembers: (linked: number, members: number): string => {
-      if (linked === 0)
-        return 'No member has linked Discord yet. Members get a link when they press a button.';
+      if (linked === 0) return 'No member has linked Discord yet.';
       if (linked === 1) return `1 of ${members} members has linked Discord.`;
-      const line = `${linked} of ${members} members have linked Discord.`;
-      // With nobody left to link, there are no others to tell about (spec §6.2, round 3).
-      return linked >= members ? line : `${line} The others get a link when they press a button.`;
+      return `${linked} of ${members} members have linked Discord.`;
     },
   },
 
@@ -142,8 +139,8 @@ export const guildBotCopy = {
     failed:
       'Could not add the bot. You need Manage Server in that Discord server and to be an officer of this guild.',
     taken: (guild: string): string =>
-      `That Discord server is linked to ${guild}. One server works with one guild: ask their officers to remove the bot from their guild settings, or add it to another server.`,
+      `That Discord server is linked to ${guild}. Ask their officers to remove the bot, or use another server.`,
     takenExpired:
-      'That Discord server is linked to another guild. One server works with one guild: ask its officers to remove the bot from their guild settings, or add it to another server.',
+      'That Discord server is linked to another guild. Ask its officers to remove the bot, or use another server.',
   },
 } as const;

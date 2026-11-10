@@ -8,9 +8,7 @@ import { guildClaimCopy, guildConsentCopy, guildGateCopy, guildJoinCopy, guildSe
 
 describe('guildClaimCopy', () => {
   it('says what claiming gets an officer of an unclaimed guild', () => {
-    expect(guildClaimCopy.unclaimedForOfficer).toBe(
-      'Nobody has claimed this guild.',
-    );
+    expect(guildClaimCopy.unclaimedForOfficer).toBe('Nobody has claimed this guild.');
   });
 
   it('asks before claiming, without repeating the rules card below it', () => {
@@ -80,9 +78,7 @@ describe('guildSettingsCopy invite block', () => {
     expect(guildSettingsCopy.rotateConfirmLine).toBe(
       'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
     );
-    expect(guildSettingsCopy.tokenShownOnce).toBe(
-      'Copy it now. It cannot be shown again.',
-    );
+    expect(guildSettingsCopy.tokenShownOnce).toBe('Copy it now. It cannot be shown again.');
     expect(guildSettingsCopy.copyButton).toBe('Copy link');
     expect(guildSettingsCopy.copied).toBe('Copied');
     expect(guildSettingsCopy.copyFailed).toBe('Could not copy. Select the link and copy it.');

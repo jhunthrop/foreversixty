@@ -7,7 +7,8 @@ import {
   inviteLine,
   nextStep,
   officerRank,
-  planLists,
+  planLines,
+  rankLine,
   planName,
   recruitingLine,
   recruitingParts,
@@ -80,7 +81,7 @@ describe('facts lines', () => {
       ['Pitch', true],
       ['Nights', true],
       ['Wanted', true],
-      ['Recruit role', false],
+      ['Discord role for recruits', false],
       ['Recruit channel', true],
     ]);
   });
@@ -96,12 +97,15 @@ describe('facts lines', () => {
   });
 
   it('words the invite, sync and visibility steps', () => {
-    expect(inviteLine(setup.invite)).toBe('14 joined by it');
+    expect(inviteLine(setup.invite)).toBe('14 joined');
     expect(inviteLine({ made: false, joined: 0 })).toBe('No link yet');
-    expect(syncLine(setup.sync)).toBe('12 of 24 members synced in the last 14 days');
-    expect(syncShare(setup.sync)).toBe(0.5);
+    expect(syncLine(setup.sync)).toBe('9 of 24 members synced in the last 14 days · 12 needed');
+    expect(syncShare(setup.sync)).toBe(0.375);
     expect(syncShare({ synced: 0, accounts: 0, window_days: 14 })).toBe(0);
-    expect(visibilityLine('guild')).toBe('Raid reports are Guild only');
+    expect(visibilityLine('guild')).toBe('Raid reports: guild only');
+    expect(syncLine({ synced: 9, accounts: 24, window_days: 14 })).toBe(
+      '9 of 24 members synced in the last 14 days · 12 needed',
+    );
   });
 
   it('counts ranks up to the setting as officer ranks', () => {
@@ -112,15 +116,14 @@ describe('facts lines', () => {
 
 describe('the plan rail', () => {
   it('names the plan and lists what is free and what each plan adds', () => {
-    expect(planName('none')).toBe('No plan');
+    expect(planName('none')).toBe('Free');
     expect(planName('raid_guild')).toBe('Raid guild');
-    const lists = planLists();
-    expect(lists.map((l) => l.heading)).toEqual([
-      'Free for every claimed guild',
-      'Guild adds',
-      'Raid guild adds',
-    ]);
-    expect(lists[0]?.items[0]).toBe('The Discord bot and raid posts with sign-up buttons');
-    expect(lists[2]?.items).toContain('The readiness board');
+    const lines = planLines();
+    expect(lines.map((l) => l.label)).toEqual(['Free', 'Guild', 'Raid guild']);
+    expect(lines[0]?.text).toContain('the Discord bot');
+    expect(lines[2]?.text).toContain('readiness board');
+    expect(rankLine({ rank_index: 1, members: 2, names: ['Kraggor', 'Mirelle'] })).toBe(
+      'Rank 1 · 2: Kraggor, Mirelle',
+    );
   });
 });

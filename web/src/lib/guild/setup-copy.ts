@@ -44,7 +44,7 @@ export const setupCopy = {
     linked: (linked: number, members: number): string => `${linked} of ${members} members linked Discord`,
     webhook: 'Raids post through a webhook',
     add: 'Add the Discord bot',
-    free: 'Raid posts with In, Late, Bench and Out buttons, /raid, /signup, /bis and /char. Free.',
+    free: 'In, Late, Bench and Out buttons on raid posts, plus /raid, /signup, /bis and /char.',
     channelLabel: 'Raid channel',
     save: 'Save',
     noChannels: 'The bot sees no channel it can post in.',
@@ -57,7 +57,7 @@ export const setupCopy = {
       pitch: 'Pitch',
       nights: 'Nights',
       wanted: 'Wanted',
-      role: 'Recruit role',
+      role: 'Discord role for recruits',
       channel: 'Recruit channel',
     },
     channelLabel: 'Post applications in',
@@ -67,6 +67,9 @@ export const setupCopy = {
     botFirst: 'Add the Discord bot first to post applications in a channel.',
   },
   schedule: {
+    posted: (channel: string | null): string =>
+      channel === null ? 'Posted to Discord' : `Posted to #${channel}`,
+    postNow: 'Post now',
     noTimezone: 'No time zone',
     nothing: 'nothing planned',
     next: (title: string, when: string): string => `next: ${title} ${when}`,
@@ -77,7 +80,7 @@ export const setupCopy = {
   },
   invite: {
     none: 'No link yet',
-    joined: (n: number): string => `${n} joined by it`,
+    joined: (n: number): string => `${n} joined`,
     pasteLabel: 'Paste in guild chat',
     paste: (guild: string, url: string): string =>
       `Join ${guild} on Forever Sixty and sign up for raids: ${url}`,
@@ -88,47 +91,41 @@ export const setupCopy = {
   sync: {
     line: (synced: number, accounts: number, days: number): string =>
       `${synced} of ${accounts} members synced in the last ${days} days`,
+    needed: (n: number): string => `${n} needed`,
     pasteLabel: 'Paste in guild chat',
     paste: (setupUrl: string): string =>
       `Get the Forever Sixty addon and companion so your gear and the roster sync: ${setupUrl}`,
   },
   visibility: {
-    line: (word: string): string => `Raid reports are ${word}`,
+    line: (word: string): string => `Raid reports: ${word.toLowerCase()}`,
     keep: (word: string): string => `Keep ${word}`,
     label: 'Report visibility',
   },
   linkedRole: {
-    line: 'Give Premium members a role in your server: Server Settings, Roles, the role, Links, Add requirement, Forever Sixty Premium.',
+    line: 'Give members with Forever Sixty Premium a role in your server: Server Settings, Roles, the role, Links, Add requirement, Forever Sixty Premium.',
     done: 'Done',
   },
   plan: {
     heading: 'Plan',
-    none: 'No plan',
+    none: 'Free',
     guild: 'Guild',
     raidGuild: 'Raid guild',
-    freeHeading: 'Free for every claimed guild',
-    free: [
-      'The Discord bot and raid posts with sign-up buttons',
-      'Sign-ups and attendance from them',
-      'The raid calendar',
-      'The recruiting channel',
-      'Member commands /raid, /signup, /bis, /char, /help',
-    ],
-    guildHeading: 'Guild adds',
-    guildAdds: (seats: number, members: number): string[] => [
-      'Comp targets',
-      'Discord pings for non-signers',
-      'Boss assignments',
-      'Log matching and the raid-night report',
-      `${seats} Premium seat`,
-      `Up to ${members} members`,
-    ],
-    raidGuildHeading: 'Raid guild adds',
-    raidGuildAdds: (seats: number): string[] => [
-      'Loot council',
-      'The readiness board',
-      `${seats} Premium seats`,
-      'Any size',
+    lines: (
+      seats: { guild: number; raidGuild: number },
+      members: number,
+    ): { label: string; text: string }[] => [
+      {
+        label: 'Free',
+        text: 'the Discord bot, raid posts and sign-ups, the raid calendar, the recruiting channel, member commands',
+      },
+      {
+        label: 'Guild',
+        text: `comp targets, Discord pings, boss assignments, log matching and the raid-night report; ${seats.guild} Premium seat; up to ${members} members`,
+      },
+      {
+        label: 'Raid guild',
+        text: `loot council and the readiness board; ${seats.raidGuild} Premium seats; any size`,
+      },
     ],
     compare: 'Compare plans',
   },

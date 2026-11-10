@@ -7,10 +7,13 @@
   import { updateGuildSettings } from '../../../lib/guild/api';
   import { guildBotInstallUrl, saveBotChannel } from '../../../lib/guild/discord-bot-api';
   import { inviteUrl } from '../../../lib/guild/invite-link';
+  import { postRaidNow } from '../../../lib/guild/overview-api';
   import { VISIBILITY_OPTIONS } from '../../../lib/guild/settings-view';
   import { saveRecruitChannel, type GuildSetup, type SetupStep } from '../../../lib/guild/setup-api';
   import { setupCopy } from '../../../lib/guild/setup-copy';
   import {
+    RECRUIT_CHANNEL,
+    rankLine,
     discordLine,
     inviteLine,
     officerRank,
@@ -64,7 +67,8 @@
   } = $props();
 
   const todo = $derived(step.state === 'todo');
-  const tone = $derived(primary ? 'primary' : 'secondary');
+  /** The page's one fill sits on the first step to do; every other step's controls are quiet. */
+  const tone = $derived(primary ? 'primary' : 'ghost');
   const testid = $derived(`setup-${step.key.replaceAll('_', '-')}`);
 
   let rankDraft = $state<number | null>(null);
@@ -78,6 +82,15 @@
   const visibility = $derived(settings.default_visibility);
   const visibilityLabel = $derived(VISIBILITY_OPTIONS.find((o) => o.value === visibility)?.label ?? '');
 
+  const nextUnposted = $derived(setup.schedule.next !== null && setup.schedule.next.posted_at === null);
+  const discordReady = $derived(
+    (setup.discord.installed && setup.discord.channel_name !== null) || setup.discord.webhook_connected,
+  );
+  const postNext = (): void =>
+    run(async () => {
+      if (setup.schedule.next !== null) await postRaidNow(guildId, String(setup.schedule.next.id));
+    });
+
   const saveSettings = (patch: Parameters<typeof updateGuildSettings>[1]): void =>
     run(async () => onSettings(await updateGuildSettings(guildId, patch)));
 </script>
@@ -90,8 +103,7 @@
           <span
             class={officerRank(line.rank_index, setup.ranks.officer_max_rank_index)
               ? 'text-strong font-semibold'
-              : 'text-muted'}
-            title={line.names.join(', ')}>{setupCopy.ranks.line(line.rank_index, line.members)}</span
+              : 'text-muted'}>{rankLine(line)}</span
           >
         {/each}
       </p>
@@ -116,15 +128,20 @@
             data-testid="setup-ranks-input"
           />
         </label>
+        <!-- Unchanged, Keep is the step's action; once the number moves, Save is. -->
         <Button
           size="sm"
-          tone={rankChanged ? tone : 'secondary'}
+          tone={rankChanged ? tone : 'ghost'}
           disabled={busy || !rankChanged}
           onclick={() => saveSettings({ officer_max_rank_index: rankValue })}
           testid="setup-ranks-save">{setupCopy.ranks.save}</Button
         >
-        <Button size="sm" tone="ghost" disabled={busy} onclick={onConfirm} testid="setup-ranks-keep"
-          >{setupCopy.ranks.keep(setup.ranks.officer_max_rank_index)}</Button
+        <Button
+          size="sm"
+          tone={rankChanged ? 'ghost' : tone}
+          disabled={busy}
+          onclick={onConfirm}
+          testid="setup-ranks-keep">{setupCopy.ranks.keep(setup.ranks.officer_max_rank_index)}</Button
         >
       </div>
     {/if}
@@ -135,6 +152,7 @@
         {guildId}
         label={setupCopy.discord.channelLabel}
         {busy}
+        {tone}
         onSave={(id) => run(async () => void (await saveBotChannel(guildId, id)))}
         testid="setup-discord-channel"
       />
@@ -159,6 +177,8 @@
             {guildId}
             label={setupCopy.recruiting.channelLabel}
             current={setup.discord.recruit_channel_name}
+            prefer={RECRUIT_CHANNEL}
+            {tone}
             {busy}
             onSave={(id) => run(async () => void (await saveRecruitChannel(guildId, id)))}
             testid="setup-recruit-channel"
@@ -178,11 +198,22 @@
   {:else if step.key === 'raid_schedule'}
     <p class="text-muted text-[13px]">{scheduleLine(setup.schedule, when)}</p>
     <SetupParts parts={scheduleParts(setup)} testid="setup-schedule-parts" />
-    {#if todo}
-      <div class="pt-1">
-        <Button size="sm" {tone} href={`${guildPath}#raids`} testid="setup-schedule-plan"
-          >{setupCopy.schedule.plan}</Button
-        >
+    {#if setup.schedule.next !== null && setup.schedule.next.posted_at !== null}
+      <p class="text-muted text-[13px]" data-testid="setup-schedule-posted">
+        {setupCopy.schedule.posted(setup.discord.channel_name)}
+      </p>
+    {/if}
+    {#if todo || (nextUnposted && discordReady)}
+      <div class="flex flex-wrap items-center gap-3 pt-1">
+        {#if setup.schedule.next === null}
+          <Button size="sm" {tone} href={`${guildPath}#raids`} testid="setup-schedule-plan"
+            >{setupCopy.schedule.plan}</Button
+          >
+        {:else if nextUnposted && discordReady}
+          <Button size="sm" {tone} disabled={busy} onclick={postNext} testid="setup-schedule-post"
+            >{setupCopy.schedule.postNow}</Button
+          >
+        {/if}
       </div>
     {/if}
   {:else if step.key === 'invite_link'}
@@ -208,7 +239,11 @@
   {:else if step.key === 'addon_sync'}
     <p class="text-muted text-[13px]">{syncLine(setup.sync)}</p>
     <div class="max-w-[320px]">
-      <Meter value={syncShare(setup.sync)} tone="gold" testid="setup-sync-meter" />
+      <Meter
+        value={syncShare(setup.sync)}
+        tone={step.state === 'done' ? 'kill' : 'gold'}
+        testid="setup-sync-meter"
+      />
     </div>
     {#if todo}
       <SetupPaste

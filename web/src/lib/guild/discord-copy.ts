@@ -17,7 +17,7 @@ export const guildDiscordCopy = {
   remove: 'Remove',
   removing: 'Removing…',
   removeQuestion: 'Remove this channel? Raids stop posting here and we delete its webhook from Discord.',
-  returnConnected: 'Connected. Send a test message to see it in the channel.',
+  returnConnected: 'Connected.',
   returnDenied: notificationsCopy.returnDenied,
   returnFailed:
     'Could not connect. You need to manage webhooks in that channel and be an officer of this guild. Ask a server admin for the permission, then try again.',

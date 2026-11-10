@@ -54,7 +54,7 @@ export function setupFixture(
     recruiting: { open: false, pitch: false, nights: '', wanted: [], role_set: false },
     schedule: { timezone: 'America/Chicago', planned: 0, next: null },
     invite: { made: true, joined: 14 },
-    sync: { synced: 12, accounts: 24, window_days: 14 },
+    sync: { synced: 9, accounts: 24, window_days: 14 },
     visibility: 'public',
     ...extra,
   };

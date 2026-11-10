@@ -40,7 +40,7 @@ function body(key: SetupStepKey, setup: GuildSetup = setupFixture(), primary = f
 describe('SetupStepBody', () => {
   it('officer ranks: the ranks, the counted officers, the input, Save and Keep', () => {
     const html = body('officer_ranks', setupFixture(), true);
-    expect(html).toContain('Rank 0 · 1');
+    expect(html).toContain('Rank 0 · 1: Dunmaro');
     expect(html).toContain('Rank 3 · 12');
     expect(html).toContain('Ranks 0 to 1 count as officers: 3 members');
     expect(html).toContain('data-testid="setup-ranks-input"');
@@ -51,7 +51,7 @@ describe('SetupStepBody', () => {
     const html = body('discord_bot', setupFixture({ officer_ranks: 'done', invite_link: 'done' }), true);
     expect(html).toMatch(/href="[^"]*\/v1\/guilds\/7\/discord\/bot\/install\?return=setup"/);
     expect(html.split(BUTTON_PRIMARY).length - 1).toBe(1);
-    expect(html).toContain('Free.');
+    expect(html).toContain('/raid, /signup, /bis and /char');
   });
 
   it('a done step shows its facts and no controls', () => {
@@ -71,7 +71,7 @@ describe('SetupStepBody', () => {
 
   it('the addon step shows the synced count, the bar and the paste line', () => {
     const html = body('addon_sync');
-    expect(html).toContain('12 of 24 members synced in the last 14 days');
+    expect(html).toContain('9 of 24 members synced in the last 14 days · 12 needed');
     expect(html).toContain('data-testid="setup-sync-meter"');
     expect(html).toContain('https://foreversixty.gg/setup');
   });

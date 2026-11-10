@@ -92,7 +92,7 @@ describe('the channel after a test or a remove', () => {
 describe('returns from Discord', () => {
   it('connected: the guild line, focus on Send test message, a fresh settings read', () => {
     expect(guildReturnOutcome('connected')).toEqual({
-      status: { ok: true, message: 'Connected. Send a test message to see it in the channel.', stays: true },
+      status: { ok: true, message: 'Connected.', stays: true },
       focus: DISCORD_FOCUS.test,
       refresh: true,
     });

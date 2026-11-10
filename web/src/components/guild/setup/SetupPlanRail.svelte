@@ -1,31 +1,27 @@
 <!-- web/src/components/guild/setup/SetupPlanRail.svelte -->
-<!-- The setup page's Plan panel (guild onboarding spec §3, step 9): the guild's plan, what every
-     claimed guild gets free, what Guild and Raid guild add, and one link to compare. No subscribe
-     button: the checklist never sells. -->
+<!-- The setup page's Plan panel (guild onboarding spec §3): the guild's plan, then one line each
+     for what every claimed guild gets free and what Guild and Raid guild add, and Compare plans.
+     No subscribe button: the checklist never sells. -->
 <script lang="ts">
   import type { SetupPlan } from '../../../lib/guild/setup-api';
   import { setupCopy } from '../../../lib/guild/setup-copy';
-  import { planLists, planName } from '../../../lib/guild/setup-model';
+  import { planLines, planName } from '../../../lib/guild/setup-model';
+  import { LINK } from '../../../lib/ui/primitives';
   import Section from '../../ui/Section.svelte';
 
   let { plan }: { plan: SetupPlan } = $props();
 
-  const lists = planLists();
+  const lines = planLines();
 </script>
 
-<Section
-  title={setupCopy.plan.heading}
-  panel
-  action={{ label: setupCopy.plan.compare, href: '/premium#guild-leaders' }}
-  testid="setup-plan"
->
-  <p class="text-strong text-[14px] font-semibold" data-testid="setup-plan-current">{planName(plan)}</p>
-  {#each lists as list (list.heading)}
-    <div class="pt-3">
-      <h3 class="text-strong text-[14px] font-semibold">{list.heading}</h3>
-      <ul class="mt-1 flex list-disc flex-col gap-0.5 pl-5 text-[13px]">
-        {#each list.items as item (item)}<li>{item}</li>{/each}
-      </ul>
-    </div>
-  {/each}
+<Section title={setupCopy.plan.heading} meta={planName(plan)} panel testid="setup-plan">
+  <dl class="flex flex-col gap-2 text-[13px]" data-testid="setup-plan-lines">
+    {#each lines as line (line.label)}
+      <div>
+        <dt class="text-strong inline font-semibold">{line.label}:</dt>
+        <dd class="text-text inline">{line.text}</dd>
+      </div>
+    {/each}
+  </dl>
+  <p class="pt-3 text-[14px]"><a class={LINK} href="/premium#guild-leaders">{setupCopy.plan.compare} ›</a></p>
 </Section>

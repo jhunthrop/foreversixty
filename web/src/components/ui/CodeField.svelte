@@ -90,5 +90,6 @@
   }
   .codef[readonly] {
     color: var(--color-text);
+    resize: none;
   }
 </style>
