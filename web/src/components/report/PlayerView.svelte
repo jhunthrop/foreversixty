@@ -4,7 +4,7 @@
      abilities (spell icon, name, "{hits} hits · {crits} crits · {min}–{max}", a Meter, Amount, the
      rate, Share, Hits, Crit). Under a window or a filter the split is prorated from the summary
      until it is measured from the fight's events, which it does by itself. `part="gear"` is the
-     Section Gear at the pull under the chart: the shared Paperdoll in report mode, or on a pull
+     Section Gear at the pull under the chart: the shared paperdoll frame in report mode, or on a pull
      with no gear in the log (every trash pull) the one line that says why. -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
@@ -296,7 +296,14 @@
     {#if combatant === undefined || combatant.gear.every((item) => item.ID <= 0)}
       <EmptyLine text={NO_GEAR} testid="report-no-gear" />
     {:else}
-      <GearList gear={combatant.gear} className={row?.class} {dataBuild} {name} framed={false} />
+      <GearList
+        gear={combatant.gear}
+        className={row?.class}
+        {dataBuild}
+        {name}
+        spec={row?.class}
+        figure={total > 0 ? { value: formatRate(total / seconds), unit: RATE[tab] } : undefined}
+      />
     {/if}
   </Section>
 {/if}

@@ -173,7 +173,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(simCharacter(page)).toBeVisible();
     // The stored request's own character, not a guess: the same class and gear the saved
     // sim ran with (src/fixtures/sim/result.json's request.character).
-    await expect(page.getByTestId('sim-gear-doll-slot-head')).toBeVisible();
+    await expect(page.getByTestId('sim-gear-doll').getByTestId('paperdoll-list-slot-head')).toBeVisible();
   });
 });
 
@@ -276,7 +276,7 @@ test('a saved sim whose stored request has no gear says so and draws no doll', a
   await expect(page.getByTestId('sim-saved')).toBeVisible();
   await page.getByTestId('sim-section-gear').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('sim-gear-empty')).toBeVisible();
-  await expect(page.getByTestId('sim-gear-doll-slot-head')).toHaveCount(0);
+  await expect(page.getByTestId('sim-gear-doll').getByTestId('paperdoll-list-slot-head')).toHaveCount(0);
 });
 
 // Defect fix: the name typed into "Name this sim" (SaveSimForm.svelte) used to be discarded
@@ -335,7 +335,7 @@ test.describe('a saved sim renders the results view its own kind calls for', () 
     await expect(page.getByTestId('sim-weights')).toBeVisible();
     await expect(page.getByTestId('sim-weights-scale-caption')).toContainText('= 1.00');
     // A weights result has no gear story (design 7): the strip's grid does not claim one.
-    await expect(page.getByTestId('paperdoll-slot-head')).toHaveCount(0);
+    await expect(page.getByTestId('paperdoll-list-slot-head')).toHaveCount(0);
   });
 });
 

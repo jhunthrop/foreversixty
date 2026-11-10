@@ -60,7 +60,7 @@ describe('wornGain (§4.2 worn)', () => {
 });
 
 describe('dollCellsFromSlots', () => {
-  it('worn: the item, its enchant in green on line 2, else its item level; the gain', () => {
+  it('worn: the item, its item level then its enchant on line 2; the gain', () => {
     const slots = [
       worn('head', 1, {
         enchant: '+8 Stamina',
@@ -73,25 +73,26 @@ describe('dollCellsFromSlots', () => {
       slot: 'head',
       label: 'Head',
       item: { id: 1, name: 'Item 1', quality: 3, icon: 'inv_x' },
-      source: '+8 Stamina',
-      sourceTone: 'enchant',
+      source: 'Item level 62',
+      enchant: '+8 Stamina',
       badge: 'upgrade',
       gain: { value: '+2.0' },
     });
     expect(chest).toMatchObject({ source: 'Item level 62' });
-    expect(chest.sourceTone).toBeUndefined();
+    expect(chest.enchant).toBeUndefined();
     expect(chest.gain).toBeUndefined();
   });
 
-  it('report: the detail line, and never a gain', () => {
+  it('report: the log item level and its enchant, and never a gain', () => {
     const slots = [
       worn('head', 1, {
-        detail: 'Item level 66 · Enchanted',
+        detail: 'Item level 66',
+        enchant: 'Crusader',
         upgrade: { kind: 'gain', value: 2, unit: 'dps', pick: PICK },
       }),
     ];
     const [head] = dollCellsFromSlots(slots, 'report');
-    expect(head.source).toBe('Item level 66 · Enchanted');
+    expect(head).toMatchObject({ source: 'Item level 66', enchant: 'Crusader' });
     expect(head.gain).toBeUndefined();
   });
 

@@ -1,6 +1,8 @@
 <!-- web/src/components/sim/SimGearSection.svelte -->
 <!-- The character's gear (sim spec 2026-11-06 §4.3, §4.5; spec 2026-11-04-sim-results 3.8): the
-     shared Paperdoll in `worn` mode, each slot's client enchant on line 2 (else its item level).
+     shared paperdoll's list form in `worn` mode (the b2 sim result mock: the BiS page owns the
+     frame, the sim lists what it ran), each slot's client enchant after its slot in green (else its
+     item level).
      After a run it is open (no Plate, ruling S3) with the five stats the engine computed, the
      run's own measured miss rate, the set line and the Best in slot link. On the landing and while
      running (`plated`) the doll is the page's one Plate and the section's action is the link. It
@@ -88,6 +90,9 @@
     classSlug={character.class}
     loading={itemsState === 'loading'}
     failed={itemsState === 'failed'}
+    title={gearCopy.listLabel}
+    form="list"
+    head={false}
     label={gearCopy.listLabel}
     testid="sim-gear-doll"
   />
@@ -105,7 +110,11 @@
     <div data-testid="sim-gear-paperdoll">{@render doll()}</div>
   {:else}
     <div data-testid="sim-gear-paperdoll">{@render doll()}</div>
-    {#if stats !== null}
+    {#if result !== null && stats === null}
+      <p class="text-muted pt-4 text-[13px] leading-5" data-testid="sim-stats-older-run">
+        {copy.statsNeedNewerRun}
+      </p>
+    {:else if stats !== null}
       <div class="flex flex-col gap-2 pt-4" data-testid="sim-final-stats">
         <div class="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
           {#each figures as figure (figure.id)}
@@ -117,9 +126,9 @@
           </p>{/if}
       </div>
     {/if}
-    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 pt-3">
-      <span class="text-muted min-w-0 text-[13px] leading-5" data-testid="sim-gear-sets">
-        {#if lines.length > 0}
+    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 pt-4">
+      {#if lines.length > 0}
+        <span class="text-muted min-w-0 text-[13px] leading-5" data-testid="sim-gear-sets">
           {#each lines as line (line.id)}
             <span class="block" data-testid="sim-gear-set"
               >{line.head}{#each line.bonuses as bonus (bonus.text)}
@@ -127,9 +136,9 @@
               {/each}</span
             >
           {/each}
-        {/if}
-      </span>
-      <a class="{LINK} text-[14px]" href={bisHref}>{copy.bisLink} ›</a>
+        </span>
+      {/if}
+      <a class="{LINK} ml-auto text-[14px]" href={bisHref}>{copy.bisLink} ›</a>
     </div>
   {/if}
 </Section>
