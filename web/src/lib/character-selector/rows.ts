@@ -29,6 +29,10 @@ export interface SelectorRow {
   className: string;
   spec?: string;
   level?: number;
+  /** The closed control holds the level's slot (two digits) even before it is known: an account
+   *  row, and the Battle.net pointer's row while `/v1/me` is in flight, whose level arrives with
+   *  the answer. Holding it keeps the chevron still when it lands (CLS). */
+  levelSlot?: boolean;
   /** "Normal", "PvP": a Forever character is its name and ruleset (there are no realms); absent
    *  on a pasted export, which names none. */
   ruleset?: string;
@@ -96,6 +100,7 @@ function rowFromCharacter(character: MeCharacter, current: boolean, now: Date): 
     className: capitalise(classSlug),
     spec: characterSpecName(character),
     level: character.level,
+    levelSlot: true,
     ruleset: rulesetLabel(character.ruleset),
     faction: character.faction,
     sourceWord: sourceWordOf(character),
@@ -213,7 +218,10 @@ function signedOutModel(pointer: CurrentCharacter | null, now: Date): SelectorMo
 export function buildSelectorModel(input: ModelInput): SelectorModel {
   const now = new Date(input.nowMs);
   if (input.me === undefined) {
-    const kept = input.pointer === null ? null : rowFromPointer(input.pointer, '', now);
+    const kept =
+      input.pointer === null
+        ? null
+        : { ...rowFromPointer(input.pointer, '', now), levelSlot: input.pointer.source === 'armory' };
     return { session: 'loading', rows: kept === null ? [] : [kept], current: kept, hasAddonCharacter: false };
   }
   if (input.me === null) return signedOutModel(input.pointer, now);
