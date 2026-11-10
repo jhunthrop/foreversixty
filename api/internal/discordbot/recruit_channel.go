@@ -127,7 +127,7 @@ func (s *Service) PostApplication(ctx context.Context, guildID int64, post guild
 func applicationEmbed(p guilds.ApplicationPost) notify.Embed {
 	e := notify.Embed{
 		Title: fill(recruitCopy.Title, "{Name}", notify.Collapse(p.Character)), URL: p.ReviewURL,
-		Author: p.SpecClass, Description: clipRunes(p.Message, maxApplicationRunes), Color: goldColor,
+		Author: p.SpecClass, Description: clipRunes(p.Message, maxApplicationRunes), Color: accentColor,
 		Footer: fill(recruitCopy.Footer, "{Guild}", notify.Collapse(p.GuildName)),
 	}
 	if p.Level != nil {

@@ -113,7 +113,7 @@ func (s *Service) raidPostFor(ctx context.Context, guildID int64, raid Raid) (no
 	if err != nil {
 		return notify.RaidPosted{}, err
 	}
-	return s.raidPost(g, view), nil
+	return s.raidPost(ctx, g, view), nil
 }
 
 // postFirst records the row due now, leases it so the run cannot send it too, and sends it.
