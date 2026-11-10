@@ -22,6 +22,24 @@ const installPublic = "https://site.test"
 type fakeGuilds struct {
 	standings map[int64]notify.GuildStanding
 	svc       *Service
+	// decided records each Decide; decideErr is its answer.
+	decided   []fakeDecision
+	decideErr error
+}
+
+type fakeDecision struct {
+	guildID, officerID, id int64
+	accept                 bool
+}
+
+func (f *fakeGuilds) Decide(_ context.Context, guildID, officerID, id int64, accept bool) (guilds.Decision, error) {
+	f.decided = append(f.decided, fakeDecision{guildID, officerID, id, accept})
+	if f.decideErr != nil {
+		return guilds.Decision{}, f.decideErr
+	}
+	var d guilds.Decision
+	d.Application.Character.Name = "Mirelle"
+	return d, nil
 }
 
 func (f *fakeGuilds) GuildStanding(_ context.Context, guildID, _ int64) (notify.GuildStanding, bool, error) {

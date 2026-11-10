@@ -128,11 +128,13 @@ type SetupSchedule struct {
 	Next     *SetupRaid `json:"next"`
 }
 
-// SetupRaid is the next raid as the schedule step names it.
+// SetupRaid is the next raid as the schedule step names it; PostedAt is when its Discord post
+// went out, nil while it has not.
 type SetupRaid struct {
-	ID       int64     `json:"id"`
-	Title    string    `json:"title"`
-	StartsAt time.Time `json:"starts_at"`
+	ID       int64      `json:"id"`
+	Title    string     `json:"title"`
+	StartsAt time.Time  `json:"starts_at"`
+	PostedAt *time.Time `json:"posted_at"`
 }
 
 // SetupInvite is the invite link step's facts: whether a link exists and who joined by one.
@@ -282,8 +284,16 @@ func (s *Service) setupSchedule(ctx context.Context, guildID int64) (SetupSchedu
 	if err != nil {
 		return SetupSchedule{}, err
 	}
-	if found {
-		out.Next = &SetupRaid{ID: next.ID, Title: next.Title, StartsAt: next.StartsAt}
+	if !found {
+		return out, nil
+	}
+	out.Next = &SetupRaid{ID: next.ID, Title: next.Title, StartsAt: next.StartsAt}
+	rows, err := s.Store.SchedulesOf(ctx, []int64{next.ID})
+	if err != nil {
+		return SetupSchedule{}, err
+	}
+	if row, ok := rows[next.ID]; ok {
+		out.Next.PostedAt = row.PostedAt
 	}
 	return out, nil
 }

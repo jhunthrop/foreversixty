@@ -21,13 +21,12 @@ var _ guilds.ApplicationPoster = (*Service)(nil)
 
 // recruitCopy is the recruiting post's words.
 var recruitCopy = struct {
-	Title, Level, ItemLevel, Availability, Review, Footer string
+	Title, Level, ItemLevel, Availability, Footer string
 }{
 	Title:        "Application · {Name}",
 	Level:        "Level",
 	ItemLevel:    "Item level",
 	Availability: "Available",
-	Review:       "Review it on Forever Sixty",
 	Footer:       "{Guild} · Forever Sixty",
 }
 
@@ -114,9 +113,8 @@ func (s *Service) PostApplication(ctx context.Context, guildID int64, post guild
 	if !found || in.RemovedInDiscord || in.RecruitChannelID == nil {
 		return guilds.OutcomeNoBot, nil
 	}
-	msg := Message{Embeds: []notify.Embed{applicationEmbed(post)}, Components: []ActionRow{{
-		{Kind: KindButton, Style: StyleLink, Label: recruitCopy.Review, URL: post.ReviewURL},
-	}}}
+	msg := Message{Embeds: []notify.Embed{applicationEmbed(post)},
+		Components: []ActionRow{applicationButtons(post.ID, post.ReviewURL)}}
 	if _, err := s.d.REST.CreateMessage(ctx, *in.RecruitChannelID, msg); err != nil {
 		return refusedOr(err)
 	}

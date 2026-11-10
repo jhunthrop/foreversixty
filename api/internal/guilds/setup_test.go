@@ -88,7 +88,8 @@ func TestSetupDerivesFromTheGuildsData(t *testing.T) {
 			t.Errorf("%s = %s, want done", step, got)
 		}
 	}
-	if v.Plan != planRaidGuild || v.Schedule.Planned != 1 || v.Schedule.Next == nil || v.Invite.Joined != 1 {
+	if v.Plan != planRaidGuild || v.Schedule.Planned != 1 || v.Schedule.Next == nil || v.Schedule.Next.PostedAt != nil ||
+		v.Invite.Joined != 1 {
 		t.Fatalf("facts = plan %s, schedule %+v, invite %+v", v.Plan, v.Schedule, v.Invite)
 	}
 	if len(v.Ranks.Ranks) != 2 || v.Ranks.Ranks[0].RankIndex != 0 || v.Ranks.Ranks[0].Members != 1 ||
