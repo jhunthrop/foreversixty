@@ -1,17 +1,20 @@
 <!-- web/src/components/sim/UnsimulatedSpecCard.svelte -->
 <!-- One of /sim/specs' healer and tank specs (mock design/mocks/ws_simtools.py `web-sim-specs`): the
-     class crest and the spec's name in its class colour, a link to its guide, set in one column on a phone (name left, role right, 44 px rows) and four across from 768,
-     under their heading (h-audit 2026-11-09: eight rows of "Guide ›"
-     said nothing a link line does not). No state tag, engine stamp or rotation. -->
+     spec's own icon (the class crest when the build has none, as the damage rows lead) and its
+     name in its class colour, a link to its guide, set in one column on a phone (name left, role
+     right, 44 px rows) and four across from 768, under their heading (h-audit 2026-11-09: eight
+     rows of "Guide ›" said nothing a link line does not). No state tag, engine stamp or rotation. -->
 <script lang="ts">
-  import { classCrestSrc } from '../../lib/class-crest';
   import { classSpecPath } from '../../lib/sim/gear-card';
   import { classOfSpec, specLabel } from '../../lib/sim/spec-label';
+  import { specLeadIcon } from '../../lib/sim/spec-icon';
   import type { Spec } from '../../lib/sim/specs';
   import { classColorVar } from '../../lib/report/format';
   import { simCopy } from '../../lib/sim/copy';
 
   let { spec }: { spec: Spec } = $props();
+  let iconFailed = $state(false);
+  const lead = $derived(specLeadIcon(spec.spec, iconFailed));
 </script>
 
 <span id={spec.spec} class="flex min-h-11 min-w-0 items-center" data-testid={`spec-unsimulated-${spec.spec}`}>
@@ -21,11 +24,12 @@
     style:color={classColorVar(classOfSpec(spec.spec))}
     data-testid={`spec-guide-${spec.spec}`}
     ><img
-      src={classCrestSrc(classOfSpec(spec.spec))}
+      src={lead.src}
       alt=""
-      width="20"
-      height="20"
-      class="rounded-full"
+      width="24"
+      height="24"
+      class={lead.crest ? 'rounded-full' : 'rounded-[5px]'}
+      onerror={() => (iconFailed = true)}
     />{specLabel(spec.spec)}<span class="text-muted ml-auto text-[13px] font-normal md:ml-0"
       >{simCopy.specsRole[spec.role]}</span
     ></a

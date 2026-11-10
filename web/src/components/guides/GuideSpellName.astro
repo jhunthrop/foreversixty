@@ -1,0 +1,45 @@
+---
+// web/src/components/guides/GuideSpellName.astro
+// A rotation line's title (GuideSpellRow): the name opening the game tooltip, its rank ("Rank 7
+// (cheap rank)" where the guide chose it) and a Raid build only Tag.
+import Tag from '../ui/Tag.svelte';
+import { guidesCopy } from '../../lib/guides/copy';
+import type { RotationItem } from '../../lib/guides/rotation-lists';
+
+interface Props {
+  item: RotationItem;
+}
+const { item } = Astro.props;
+---
+
+<span
+  class:list={[item.tipKey !== undefined && 'gtip guide-spell-tip']}
+  tabindex={item.tipKey !== undefined ? 0 : undefined}
+  data-game-tip={item.tipKey}
+>
+  {item.name}
+</span>
+{item.rank !== undefined && (
+  <span class="text-muted text-[13px] font-semibold">
+    {' '}
+    {guidesCopy.rankLabel(item.rank, item.cheapRank === true)}
+  </span>
+)}
+{item.raidBuildOnly === true && (
+  <>
+    {' '}
+    <Tag tone="muted">{guidesCopy.raidBuildTag}</Tag>
+  </>
+)}
+
+<style>
+  .guide-spell-tip {
+    position: relative;
+    cursor: pointer;
+  }
+  .guide-spell-tip:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+    border-radius: var(--radius-icon);
+  }
+</style>

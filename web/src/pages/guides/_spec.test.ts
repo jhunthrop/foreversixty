@@ -467,7 +467,8 @@ describe('/guides/warrior/arms rotation rows for the raid build', () => {
       .filter((row) => row.includes(`>${guidesCopy.raidBuildTag}</span>`))
       .map((row) => /data-game-tip="[^"]+"[^>]*>([^<]+)</.exec(row)?.[1]);
     expect(tagged.sort()).toEqual(['Reckless Swings', 'Spearing Strike']);
-    expect(rotation).toContain('data-testid="guide-raid-build-legend"');
+    // The tag on the row says it; no grey legend explains it above the lists (h-guide-spec).
+    expect(rotation).not.toContain('data-testid="guide-raid-build-legend"');
     expect(rotation).toContain(`data-testid="guide-rotation-build"`);
   });
 });

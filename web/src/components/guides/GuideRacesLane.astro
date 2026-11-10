@@ -66,18 +66,19 @@ const raceIcons = raceIconsFor(build);
   .guide-race-lane {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 28px;
     min-width: 0;
   }
-  /* The faction label and its rows are the lane block's own items (8 px apart), as the
-     Consumables label is not: a faction is a group of the lane, not a line of a list. */
+  /* A faction is one block, its name over its rows: past the prose the whole block wraps under
+     it (lib/ui/reading-wrap.ts), never a race parted from its racials or its faction. */
   .guide-race-group {
-    display: contents;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
   /* The faction's name in the lane heading's cream, not a grey caps eyebrow. */
   .guide-race-sub {
     margin: 0;
-    padding: 4px 0 2px;
     font-size: 15px;
     font-weight: 600;
     line-height: 20px;

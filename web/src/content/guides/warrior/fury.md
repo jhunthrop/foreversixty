@@ -83,7 +83,7 @@ The build also puts two points in **Improved Berserker Rage**, so every Berserke
 
 **Fears.** Berserker Rage breaks fear and keeps you immune to it for 10 seconds, which is why it waits on Magmadar, Onyxia and Nefarian for Panic, Bellowing Roar and the fear. Death Wish can be pressed while you are feared too: it breaks the fear and keeps you immune for its 30 seconds, so if Berserker Rage is down and you have the 10 rage, it is your second fear break.
 
-**Cooldowns.** Recklessness goes with Death Wish at 20%. Trinkets, Blood Fury, Berserking and Eureka! go on cooldown from the pull; when one comes up close to Death Wish, wait the few seconds and press them together. Elune's Light the same, but never inside Recklessness.
+**Cooldowns.** Recklessness goes with the execute-phase Death Wish. Trinkets, Blood Fury, Berserking and Eureka! go on cooldown from the pull; when one comes up close to Death Wish, wait the few seconds and press them together. Elune's Light the same, but never inside Recklessness.
 
 **Two or more targets.** Swap Heroic Strike for Cleave with two or more mobs in front of you.
 

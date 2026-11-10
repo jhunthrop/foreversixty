@@ -144,4 +144,4 @@ Mana runs out before mobs do in your 20s and 30s, so the newest rank is not alwa
 - **Wrath:** rank 3 at 22 and 23, then rank 4 from 24 all the way through 39, and rank 6 from 46 to 48.
 - **Insect Swarm**, your talent at 27: rank 1 through 38, and rank 3 from 54 to 56.
 
-In your forties and fifties, everywhere else, cast the newest rank.
+Everywhere else, cast the newest rank.

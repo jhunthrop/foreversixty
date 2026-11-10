@@ -109,6 +109,15 @@ describe('collapseRuns', () => {
     ]);
   });
 
+  it('adds no generated words that only repeat the target its note names', () => {
+    const rows = collapseRuns([
+      step('Flash Heal', 7, 'on a party member below 30%', 'a party member below 30%'),
+      step('Flash Heal', 7, 'on a party member below 30%', 'a party member below 30%'),
+    ]);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].condition).toBe('on a party member below 30%');
+  });
+
   it('leaves a single step as it was, without generated words', () => {
     const [row] = collapseRuns([step('Renew', 3, 'Stays on the tank.', 'the tank')]);
     expect(row.condition).toBe('Stays on the tank.');

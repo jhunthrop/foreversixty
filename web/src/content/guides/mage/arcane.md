@@ -73,7 +73,7 @@ Neither build takes Fire's Impact: its stun does nothing to a boss.
 
 **Arcane Power windows.** In a 3 minute fight the pull is your one window; the second is ready as the boss dies, so on a longer fight hold it for a phase where the boss takes extra damage or the adds are down.
 
-**Fillers.** In a raid, Fireball fills until the 18 seconds run out. On the way to 60 there is no Arcane Wrath and no Pyroblast. Past 3 stacks you read the mob's health bar, and on a pull that dies inside a minute that is most of it. On a long dungeon boss stop at 3 and let Frostbolt fill, because the stacked Blasts run you dry before the end.
+**Fillers.** In a raid, Fireball fills until the 18 seconds run out. On the way to 60 there is no Arcane Wrath and no Pyroblast. Past 3 stacks, keep blasting only while your mana bar is fuller than the mob's health bar and you are above 20% mana, and on a pull that dies inside a minute that is most of it. On a long dungeon boss stop at 3 and let Frostbolt fill, because the stacked Blasts run you dry before the end.
 
 **Mana in a 3 minute fight.** In order: a Mana Ruby when you are 1,200 mana down, a Major Mana Potion the next time you are well down, then the Mana Citrine or a Demonic Rune two minutes after the Ruby. Gems and runes share one 2 minute cooldown. The Robe of the Archmage is on its own 5 minute cooldown: use it whenever you are 625 mana down. After all of them comes Evocation, once a fight, with more than 30 seconds left.
 

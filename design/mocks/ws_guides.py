@@ -83,7 +83,8 @@ def answer(kind: str, me: dict | None = None, page: dict | None = None) -> str:
 def spell_row(item: dict, n: str = '') -> str:
     rank = f' <span class="t-small">{e(item["rankText"])}</span>' if item.get('rankText') else ''
     tag = ' ' + Tag(e(C['raidBuildTag']), 'muted') if item.get('raidBuildOnly') else ''
-    return Row(f'{e(item["name"])}{rank}{tag}', e(item.get('clause', '')), lead=icon(item['icon'], 28) if item.get('icon') else '<span class="ic-spacer" style="width:28px;height:28px"></span>', rank=n, link=False)
+    # web GuideSpellRow: a line that names no spell has no lead at all, never an empty socket
+    return Row(f'{e(item["name"])}{rank}{tag}', e(item.get('clause', '')), lead=icon(item['icon'], 28) if item.get('icon') else '', rank=n, link=False)
 
 
 def stat_rows(rows: list[dict], numbered: bool, per_point: bool) -> list[str]:
@@ -138,11 +139,11 @@ def rotation(g: dict, lists: dict | None = None) -> str:
     lists = r['lists'] if lists is None else lists
     lane = ''
     if lists:
+        # web GuideRotationLane: the row's own Raid build only tag, no legend; a whole list wraps under the prose
         notes = (f'<p class="t-small">{e(C["rotationForRaidBuild"])}</p>' if r['forRaidBuild'] else '')
-        if any(x.get('raidBuildOnly') for k in ('opener', 'priority', 'cooldowns') for x in lists[k]):
-            notes += f'<p class="t-small">{e(C["raidBuildLegend"])}</p>'
         blocks = [(C['opener'], lists['opener'], True), (C['priority'], lists['priority'], True), (C['cooldowns'], lists['cooldowns'], False)]
-        lane = notes + ''.join(LaneBlock(e(t), wrap_list(RowsSlim([spell_row(x, str(i + 1) if num else '') for i, x in enumerate(items)]))) for t, items, num in blocks if items)
+        lists_html = ''.join(LaneBlock(e(t), RowsSlim([spell_row(x, str(i + 1) if num else '') for i, x in enumerate(items)])) for t, items, num in blocks if items)
+        lane = notes + f'<div class="gblocks" data-wrap-list>{lists_html}</div>'
     return ReadingSection(SEC['rotation-and-priority'], Prose(r['prose']), lane, 'rotation-and-priority')
 
 
@@ -150,6 +151,7 @@ def stats(g: dict, rows: list[dict] | None = None) -> str:
     s = g['stats']
     t = s['table']
     rows = t['rows'] if rows is None else rows
+    rows = [r for r in rows if r['reading'] != 'not-on-items']   # web GuideStatLane: only what gear offers
     if rows:
         cap = ''
         c = t.get('hitCap')
@@ -230,17 +232,20 @@ def extras(g: dict, data: bool = True) -> str:
     if data and x['data']:
         ench = RowsSlim([Row(e(r['name']), e(r['slotLabel']), lead=icon(r['icon'], 28) if r.get('icon') else '', link=False)
                          for r in x['data']['enchants']])   # MUST 6: the same icon rows as Consumables
-        rows = []
+        # web GuideExtrasLane: the flasks and elixirs under Consumables, each header's rows as a block of its own
+        groups: list[tuple[str, list[str]]] = []
         for line in x['data']['lines']:
             if 'header' in line:
-                rows.append(f'<h4 class="sub-h">{e(line["header"])}</h4>')
-            else:
-                r = line['row']
-                # web lib/guides/gear-extras.ts consumableNote: only the slot a stone or oil goes on
-                note = r['gives'].split(', ', 1)[1] if ', ' in r['gives'] else ''
-                rows.append(Row(e(r['name']), e(note[:1].upper() + note[1:]), lead=icon(r['icon'], 28) if r.get('icon') else '', link=False))
-        lane = (LaneBlock(e(C['enchants']), wrap_list(ench))
-                + LaneBlock(e(C['consumables']), wrap_list(RowsSlim(rows))))
+                groups.append((line['header'], []))
+                continue
+            if not groups:
+                groups.append((C['consumables'], []))
+            r = line['row']
+            # web lib/guides/gear-extras.ts consumableNote: only the slot a stone or oil goes on
+            note = r['gives'].split(', ', 1)[1] if ', ' in r['gives'] else ''
+            groups[-1][1].append(Row(e(r['name']), e(note[:1].upper() + note[1:]), lead=icon(r['icon'], 28) if r.get('icon') else '', link=False))
+        blocks = LaneBlock(e(C['enchants']), ench) + ''.join(LaneBlock(e(label), RowsSlim(rows)) for label, rows in groups)
+        lane = f'<div class="gblocks" data-wrap-list>{blocks}</div>'   # a whole block wraps under the prose, with its label
     return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables', fold=e(x['fold']))
 
 
@@ -255,9 +260,10 @@ def races(g: dict) -> str:
             rows.append(Row(e(x['name']), title_color=FACTION[x['faction']], lead=icon(portrait, 28) if portrait else '',
                             link=False, foot=foot))
         head = C['alliancePicksHeading'] if grp['faction'] == 'alliance' else C['hordePicksHeading']
-        body += f'<div class="grace"><h4 class="sub-h">{e(head)}</h4>' + Rows(rows, True) + '</div>'   # one list, never wrapped
+        body += f'<div class="grace"><h4 class="sub-h">{e(head)}</h4>' + Rows(rows, True) + '</div>'   # a faction wraps whole
     lines = ''.join(f'<p class="t-small">{e(t)}</p>' for t in r['lines'])
-    return ReadingSection(SEC['races'], Prose(r['prose']), LaneBlock(e(C['racialsColumn']), body + lines), 'races',
+    # web GuideRacesLane: no lane title (the section is Races); the factions head their groups
+    return ReadingSection(SEC['races'], Prose(r['prose']), f'<div class="graces" data-wrap-list>{body + lines}</div>', 'races',
                           fold=e(F['fns']['foldShow'].replace('%s', f"{len(r['rows'])} races")))
 
 
@@ -422,7 +428,10 @@ def states_page() -> str:
 
 
 PAGE_CSS = '''<style>
-.gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.grace{display:contents}.gblk{display:flex;flex-direction:column}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll .gdoll-f{margin-top:0}
+.gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.graces,.gblocks{display:flex;flex-direction:column;gap:28px;min-width:0}.grace{display:flex;flex-direction:column;gap:8px}.grace>.sub-h{padding:0}.graces>p{margin:0}
+.gstat .st .stc{grid-template-columns:0 var(--st-name) var(--st-bar) repeat(var(--n),var(--st-fig))}   /* GuideStatLane: no icon track */
+@media(max-width:1023px){.gstat .st .stc{grid-template-columns:0 minmax(0,1fr) auto}}
+@media(min-width:1280px){#leveling .rd.solo{grid-template-columns:minmax(0,1fr)}#leveling .rd.solo>.rd-prose{columns:2 320px;column-gap:var(--gap)}#leveling .lane-blk{break-inside:avoid;margin-bottom:24px}#leveling li,#leveling p{break-inside:avoid}#leveling h3{break-after:avoid}}   /* [spec].astro: Leveling in two columns */.gblk{display:flex;flex-direction:column}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll .gdoll-f{margin-top:0}
 .gdoll{container-type:inline-size}.gdoll-f{max-width:640px;margin-top:24px}@container (max-width:422.98px){.gdoll-f{display:none}}
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}

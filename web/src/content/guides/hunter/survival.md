@@ -86,8 +86,6 @@ The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk
 
 **Aspect.** From 30 to 59 Beast is your only melee aspect: put it up and leave it up. At 60 Aspect of the Falcon gives the same melee attack power as Aspect of the Beast (10 more with Hawk's Ahn'Qiraj rank), and Deadly Aspects procs under either one, so Falcon is not a clear upgrade.
 
-**Mark.** Expose Prey needs a Hunter's Mark, so if no other hunter has marked the boss, you do, before the pull so the mana is back. On a fight longer than two minutes, mark it again when it falls off.
-
 **Mana.** With Resourcefulness your mana holds through Raptor Strike on every swing and Immolation Trap on cooldown. Rapid Fire speeds your swings, so it is a melee cooldown for you.
 
 **Windfury.** Wing Clip is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.
@@ -95,8 +93,6 @@ The build skips the Marksmanship shot talents: Mortal Shots is ranged only, Hawk
 **Threat.** Walk in behind the boss with the rogues once the tank has it; you sit on a fresh tank's heels in the opener. Disengage trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. Feign Death drops all of your threat if it lands; check the message, because either can miss or be resisted. Feign Death is also your answer when something turns on you.
 
 **Trash.** Survival has little cleave of its own. Explosive Trap under the pack is your AoE, and Engineering's explosives are the rest. Lay Freezing Trap before the pull.
-
-**Movement.** Stay on the boss's back. Every second you are not swinging is lost white damage and lost Expose Prey procs.
 
 ## Stat priority
 

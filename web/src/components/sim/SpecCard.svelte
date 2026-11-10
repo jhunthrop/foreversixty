@@ -26,10 +26,7 @@
   import Tag from '../ui/Tag.svelte';
   import type { SpecFidelity } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
-  import { classCrestSrc } from '../../lib/class-crest';
-  import activeBuild from '../../data/active-build.json';
-  import { dataUrl } from '../../lib/planner/load';
-  import { SPEC_BY_KEY } from '../../lib/sim/specs';
+  import { specLeadIcon } from '../../lib/sim/spec-icon';
   import Meter from '../ui/Meter.svelte';
   import type { SpecTopSet } from '../../lib/sim/bis-benchmark';
 
@@ -68,13 +65,8 @@
       .join(' · '),
   );
   /** The spec's own talent-tab icon; the class crest when the build has not published it. */
-  const specIcon = $derived(SPEC_BY_KEY[row.spec]?.icon);
   let iconFailed = $state(false);
-  const leadSrc = $derived(
-    specIcon === undefined || iconFailed
-      ? classCrestSrc(classOfSpec(row.spec))
-      : dataUrl(activeBuild.build, `icons/${specIcon}.webp`),
-  );
+  const lead = $derived(specLeadIcon(row.spec, iconFailed));
 </script>
 
 {#snippet status()}
@@ -105,11 +97,11 @@
 
 {#snippet crest()}
   <img
-    src={leadSrc}
+    src={lead.src}
     alt=""
     width="28"
     height="28"
-    class={specIcon === undefined || iconFailed ? 'rounded-full' : 'rounded-[5px]'}
+    class={lead.crest ? 'rounded-full' : 'rounded-[5px]'}
     onerror={() => (iconFailed = true)}
   />
 {/snippet}

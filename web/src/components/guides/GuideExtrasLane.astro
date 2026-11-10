@@ -2,7 +2,9 @@
 // web/src/components/guides/GuideExtrasLane.astro
 // The Enchants and consumables lane (guides spec 2026-11-08 §4.3, MUST 6): each slot's enchant
 // and every consumable as the same slim icon rows, the enchant opening its spell tooltip and a
-// consumable its item tooltip when the guide's tooltip data carries them.
+// consumable its item tooltip when the guide's tooltip data carries them. Each list is one
+// block with its label: past the prose a whole block wraps under it (lib/ui/reading-wrap.ts),
+// never rows parted from their heading.
 import LaneBlock from '../ui/LaneBlock.svelte';
 import Row from '../ui/Row.svelte';
 import { dataUrl } from '../../lib/planner/load';
@@ -11,6 +13,7 @@ import {
   consumableLines,
   consumableNote,
   mergedEnchants,
+  type ConsumableRow,
   type GearExtras,
 } from '../../lib/guides/gear-extras';
 import { consumableItemId } from '../../lib/guides/guide-tips';
@@ -21,6 +24,10 @@ interface Props {
   extras: GearExtras;
   tips: GuideTipBundle;
 }
+interface ConsumableGroup {
+  label: string;
+  rows: ConsumableRow[];
+}
 const { build, extras, tips } = Astro.props;
 const enchantKey = (id: number): string | undefined =>
   tips.tips[enchantTipKey(id)] === undefined ? undefined : enchantTipKey(id);
@@ -28,57 +35,25 @@ const consumableItem = (id: string): number | undefined => {
   const itemId = consumableItemId(build, id);
   return itemId !== undefined && tips.items[String(itemId)] !== undefined ? itemId : undefined;
 };
-const lines = consumableLines(extras.consumables);
+/** The flasks and elixirs under Consumables, then each header's rows under that header. */
+const groups = consumableLines(extras.consumables).reduce<ConsumableGroup[]>((out, line) => {
+  if ('header' in line) return [...out, { label: line.header, rows: [] }];
+  const last = out.at(-1);
+  if (last === undefined) return [{ label: guidesCopy.consumables, rows: [line.row] }];
+  return [...out.slice(0, -1), { ...last, rows: [...last.rows, line.row] }];
+}, []);
 ---
 
-{extras.enchants.length > 0 && (
-  <LaneBlock label={guidesCopy.enchants} testid="guide-enchants">
-    <div class="guide-extras-rows" data-wrap-list>
-      {mergedEnchants(extras.enchants).map((row) => (
-        <Row title={row.name} sub={row.slotLabel} density="slim" open testid={`guide-enchant-${row.slot}`}>
-          {row.icon !== undefined && (
-            <img
-              slot="lead"
-              src={dataUrl(build, `icons/${row.icon}.webp`)}
-              alt=""
-              width="28"
-              height="28"
-              loading="lazy"
-              decoding="async"
-              class="guide-extras-icon"
-            />
-          )}
-          <span
-            slot="titleContent"
-            class:list={[enchantKey(row.id) !== undefined && 'gtip guide-extras-tip']}
-            tabindex={enchantKey(row.id) !== undefined ? 0 : undefined}
-            data-game-tip={enchantKey(row.id)}
-          >
-            {row.name}
-          </span>
-        </Row>
-      ))}
-    </div>
-  </LaneBlock>
-)}
-{extras.consumables.length > 0 && (
-  <LaneBlock label={guidesCopy.consumables} testid="guide-consumables">
-    <div class="guide-extras-rows" data-wrap-list>
-      {lines.map((line) =>
-        'header' in line ? (
-          <h4 class="guide-extras-sub">{line.header}</h4>
-        ) : (
-          <Row
-            title={line.row.name}
-            sub={consumableNote(line.row.gives)}
-            density="slim"
-            open
-            testid={`guide-consumable-${line.row.id}`}
-          >
-            {line.row.icon !== undefined && (
+<div class="guide-extras-blocks" data-wrap-list>
+  {extras.enchants.length > 0 && (
+    <LaneBlock label={guidesCopy.enchants} testid="guide-enchants">
+      <div class="guide-extras-rows">
+        {mergedEnchants(extras.enchants).map((row) => (
+          <Row title={row.name} sub={row.slotLabel} density="slim" open testid={`guide-enchant-${row.slot}`}>
+            {row.icon !== undefined && (
               <img
                 slot="lead"
-                src={dataUrl(build, `icons/${line.row.icon}.webp`)}
+                src={dataUrl(build, `icons/${row.icon}.webp`)}
                 alt=""
                 width="28"
                 height="28"
@@ -89,20 +64,61 @@ const lines = consumableLines(extras.consumables);
             )}
             <span
               slot="titleContent"
-              class:list={[consumableItem(line.row.id) !== undefined && 'gtip guide-extras-tip']}
-              tabindex={consumableItem(line.row.id) !== undefined ? 0 : undefined}
-              data-bis-item={consumableItem(line.row.id)}
+              class:list={[enchantKey(row.id) !== undefined && 'gtip guide-extras-tip']}
+              tabindex={enchantKey(row.id) !== undefined ? 0 : undefined}
+              data-game-tip={enchantKey(row.id)}
             >
-              {line.row.name}
+              {row.name}
             </span>
           </Row>
-        ),
-      )}
-    </div>
-  </LaneBlock>
-)}
+        ))}
+      </div>
+    </LaneBlock>
+  )}
+  {groups.map((group, index) => (
+    <LaneBlock label={group.label} testid={index === 0 ? 'guide-consumables' : undefined}>
+      <div class="guide-extras-rows">
+        {group.rows.map((row) => (
+          <Row
+            title={row.name}
+            sub={consumableNote(row.gives)}
+            density="slim"
+            open
+            testid={`guide-consumable-${row.id}`}
+          >
+            {row.icon !== undefined && (
+              <img
+                slot="lead"
+                src={dataUrl(build, `icons/${row.icon}.webp`)}
+                alt=""
+                width="28"
+                height="28"
+                loading="lazy"
+                decoding="async"
+                class="guide-extras-icon"
+              />
+            )}
+            <span
+              slot="titleContent"
+              class:list={[consumableItem(row.id) !== undefined && 'gtip guide-extras-tip']}
+              tabindex={consumableItem(row.id) !== undefined ? 0 : undefined}
+              data-bis-item={consumableItem(row.id)}
+            >
+              {row.name}
+            </span>
+          </Row>
+        ))}
+      </div>
+    </LaneBlock>
+  ))}
+</div>
 
 <style>
+  .guide-extras-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
   .guide-extras-rows {
     display: flex;
     flex-direction: column;
@@ -116,15 +132,6 @@ const lines = consumableLines(extras.consumables);
     border: 1px solid var(--color-line-warm-strong);
     border-radius: var(--radius-icon);
     background: var(--color-bg);
-  }
-  /* A group's name in the lane heading's cream, not a grey caps eyebrow. */
-  .guide-extras-sub {
-    margin: 0;
-    padding: 12px 0 2px;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 20px;
-    color: var(--color-cream);
   }
   .guide-extras-tip {
     position: relative;

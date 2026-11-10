@@ -61,9 +61,20 @@ function conditionWords(run: readonly StepLine[]): string {
   return words.every((step) => step !== null) ? describeSteps(words) : '';
 }
 
+/** Whether the generated words only say again the target a note already names: "Cast on a party
+ *  member below 30%." beside the note "on a party member below 30%" (h-guide-spec 2026-11-10). */
+function restatesNotes(words: string, notes: readonly string[]): boolean {
+  const target = (words.replace(/^Cast\s+/, '').split(/[,.]/)[0] ?? '').trim().toLowerCase();
+  return target !== '' && notes.some((note) => note.toLowerCase().includes(target));
+}
+
 function collapseRun(run: readonly StepLine[]): CollapsedLine {
   const [first] = run;
-  const condition = [...distinctNotes(run), conditionWords(run)].filter((part) => part !== '').join(' ');
+  const notes = distinctNotes(run);
+  const words = conditionWords(run);
+  const condition = [...notes, restatesNotes(words, notes) ? '' : words]
+    .filter((part) => part !== '')
+    .join(' ');
   return {
     spellId: first.spellId,
     name: first.name,

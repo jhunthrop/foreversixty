@@ -131,7 +131,9 @@
       <!-- The healers and tanks the simulator does not run: one wrapping line of guide links under
            the table, not a section of their own (h-audit 2026-11-09). -->
       <div class="border-line-soft border-t px-4 py-2" data-testid="specs-unsimulated">
-        <span class="text-label text-muted font-bold">{simCopy.specsUnsimulatedHeading}</span>
+        <h3 class="text-cream m-0 pt-2 text-[15px] leading-5 font-semibold">
+          {simCopy.specsUnsimulatedHeading}
+        </h3>
         <!-- One aligned grid: four across from 768, one column on a phone; each a guide link with its role. -->
         <div class="grid grid-cols-1 gap-x-5 md:grid-cols-4" data-testid="specs-grid-unsimulated">
           {#each unsimulatedSpecs as spec (spec.spec)}

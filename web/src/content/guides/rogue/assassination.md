@@ -126,9 +126,9 @@ Your talents, in order:
 
 - **10 to 14:** Malice, 5% crit on every attack and poison.
 - **15 to 17:** Ruthlessness.
-- **18 and 19:** both points of Improved Slice and Dice.
+- **18 and 19:** both points of Improved Slice and Dice, 30% longer.
 - **20 and 21:** Lethality, for harder Backstab and Sinister Strike crits.
-- **22 to 24:** Improved Gouge, time to get behind the mob.
+- **22 to 24:** Improved Gouge, 1.5 seconds more to get behind the mob.
 - **25 and 26:** Remorseless Attacks, 40% crit on your next Sinister Strike, Backstab or Ambush after a kill.
 
 Drop the Worn Dagger the moment a quest offers a better dagger, so Backstab and Ambush stay open to you, and keep throwing knives for pulling.
