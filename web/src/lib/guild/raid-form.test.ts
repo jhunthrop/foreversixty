@@ -407,38 +407,23 @@ interface HelperArgs {
 
 function helper({ values: v = {}, discord = BOT, post = null, mode = 'create' }: HelperArgs = {}) {
   const filled = values({ postToDiscord: true, ...v });
-  const startsAt = new Date(`${filled.date}T${filled.time}:00-06:00`);
-  return discordHelper({ values: filled, discord, post, mode, startsAt, now: NOW, timezone: CHICAGO });
+  return discordHelper({ values: filled, discord, post, mode });
 }
 
 describe('discordHelper', () => {
-  it('within a week posts now, further out names the day, off says so', () => {
+  it('posts on save however far out, off says so', () => {
     const channel = '#raid-signups';
     expect(helper({ values: { date: '2026-12-05' } }).post).toBe(raidCopy.form.postNow(channel));
-    expect(helper({ values: { date: '2026-12-12' } }).post).toBe(
-      raidCopy.form.postLater(channel, 'Saturday 5 December'),
-    );
-    expect(helper({ values: { date: '2026-12-12' }, discord: WEBHOOK }).post).toBe(
-      raidCopy.form.postLater(null, 'Saturday 5 December'),
-    );
+    expect(helper({ values: { date: '2027-01-30' } }).post).toBe(raidCopy.form.postNow(channel));
+    expect(helper({ values: { date: '2027-01-30' }, discord: WEBHOOK }).post).toBe(raidCopy.form.postNow(null));
     const off = helper({ values: { postToDiscord: false } });
     expect(off.post).toBe(raidCopy.form.postOff);
     expect(off.remind).toBe(raidCopy.form.remindNeedsPost);
     expect(helper().remind).toBe(raidCopy.form.remind);
   });
 
-  it('names the guild-zone day a week before the start', () => {
-    const later = helper({ values: { date: '2026-12-10', time: '20:00' } });
-    expect(later.post).toBe(raidCopy.form.postLater('#raid-signups', 'Thursday 3 December'));
-  });
-
-  it('repeat says each raid posts a week before, and whether the first goes now', () => {
-    expect(helper({ values: { repeat: true, date: '2026-12-05' } }).post).toBe(
-      raidCopy.form.postRepeat(true),
-    );
-    expect(helper({ values: { repeat: true, date: '2026-12-20' } }).post).toBe(
-      raidCopy.form.postRepeat(false),
-    );
+  it('repeat says all four raids post on save', () => {
+    expect(helper({ values: { repeat: true, date: '2026-12-20' } }).post).toBe(raidCopy.form.postRepeat);
   });
 
   it('edit of a bot post shows the posted line; reminded shows Reminder sent', () => {
