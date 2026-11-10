@@ -193,7 +193,7 @@ const guildPlans = [
               ))}
             </RowGrid>
           </Section>
-          <Section title={copy.howItWorks} anchor="guild-leaders" testid="guild-rules" panel>
+          <Section title={copy.howItWorks} anchor="guild-leaders" testid="guild-rules">
             <RowGrid cols={2}>
               {copy.rules.map((rule) => (
                 <Row title={rule.term} sub={rule.sentence} open />
@@ -413,6 +413,11 @@ const guildPlans = [
       grid-template-columns: minmax(0, 1fr) 340px;
       column-gap: 28px;
       align-items: start;
+    }
+    /* The coach sample stays in view beside the longer questions and rules. */
+    .plans-more > :global(:last-child) {
+      position: sticky;
+      top: calc(var(--bar-h) + 12px);
     }
   }
   @media (min-width: 1760px) {

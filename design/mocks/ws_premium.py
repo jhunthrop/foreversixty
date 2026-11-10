@@ -87,6 +87,8 @@ CSS = '''<style>
 .msg{display:flex;flex-direction:column;gap:12px}
 @media(max-width:1023px){.btn.sm{height:44px}}
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
+.ck-on{display:flex;flex-direction:column;gap:4px;padding:20px 24px 12px}.ck-on .m0{margin:0}
+.ck-on-t{margin:0;font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--strong)}.ck-next{display:flex;flex-direction:column;padding:0 8px 12px}
 .statesheet{display:grid;gap:40px}.st-grid{display:grid;gap:24px 40px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}.st-cell{display:flex;flex-direction:column;gap:6px;min-width:0}
 </style>'''
 
@@ -138,7 +140,7 @@ PLANS_CSS = '''<style>
 @media(min-width:1024px){.pmore{grid-template-columns:minmax(0,1fr) 340px;column-gap:28px;align-items:start}}
 @media(min-width:1760px){.pmore{grid-template-columns:minmax(0,1fr) var(--rail-w)}}
 .pc.plans{padding-top:28px}.pc.plans>.pstack{display:flex;flex-direction:column;gap:22px}
-.phist{padding-top:12px}.pmem{padding-bottom:4px}.pmain .rgrid>.row{padding-inline:0}
+.pmain>section>.sec-h+*{margin-top:12px}.phist{padding-top:12px}.pmain p.t-small.phist{max-width:none}.pmem{padding-bottom:4px}.pmain .rgrid>.row{padding-inline:0}
 @media(max-width:767px){.plan{padding:18px 16px}}
 .plan .plh .fig{margin-bottom:4px}   /* PlanPrice's figure keeps 4 px under it */
 main{padding-bottom:40px}@media(min-width:1024px){main{padding-bottom:64px}}   /* Base's page body above the footer */
@@ -198,7 +200,7 @@ def coach_rail() -> str:
     well = ''.join(Row(e(w['text']), lead=icon(w['icon'], 24) if w['icon'] else '', link=False, slim=True) for w in c['doingWell'])
     body = (f'<div class="stack coach" id="coach"><div class="who">{crest_img(c["classSlug"], 40)}<span><b>{e(c["title"])}</b><span class="t-small" style="display:block">{e(c["context"])}</span></span></div>'
             f'<p class="opening">{e(c["opening"])}</p><span class="t-label">{e(cp["fixFirst"])}</span>'
-            + Rows([Row(e(fix['title']), e(fix['why']), lead=icon(fix['icon'], 40), link=False, selected=True)])
+            + Rows([Row(e(fix['title']), e(fix['why']), lead=icon(fix['icon'], 40), link=False)], True)
             + f'<span class="t-label">{e(cp["then"])}</span>{Rows([then], True)}<span class="t-label">{e(cp["doingWell"])}</span>{Rows([well], True)}'
             f'<p class="t-small">{e(cp["caption"])}</p></div>')
     return Section(e(cp['label']), body, action=Tag(e(cp['tag']), 'muted'), panel=True)
@@ -257,7 +259,7 @@ def premium_page(state: str) -> str:
             + free_column(st) + premium_column(st) + guild_column('guild', st) + guild_column('raid_guild', st) + '</div>')
     faq = Section(e(FAQ_TITLE), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2), meta=e(P['foot']), panel=True)
     rules = Section(e(P['howItWorks']), RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2)
-                    + f'<p class="t-small phist">{e(P["historyPromise"])}</p>', panel=True)
+                    + f'<p class="t-small phist">{e(P["historyPromise"])}</p>')
     more = f'<div class="pmore"><div class="pmain">{faq}{rules}</div>{coach_rail()}</div>'
     body = head + bar + notes + f'<div class="pc plans"><div class="pstack">{grid}{more}</div></div>' + PLANS_CSS
     note = f'/premium mock, {state}. Data: premium-facts.json (plans-page-copy.ts, components/premium/model.ts on plans.ts; accounts DERIVED from home fixtures at 2026-11-08T10:00Z).'
@@ -300,9 +302,13 @@ def checkout_page(state: str) -> str:
         head = PageHeader(e(F['plan_table']['premium']['name']), answer=band('premium', change=state in ('redirecting', 'error', 'notopen')))
         plate = checkout_steps(state)
         if state == 'confirmed':
-            # Ruling K2: the renewal line above the three next steps.
-            after = (f'<p class="t-small" style="padding-top:16px">{e(F["checkout_renewal"])}</p>'
-                     f'<div class="acts" style="padding-top:8px">{r(CK["nextSim"])}{r(CK["nextCoach"])}{r(SRC["buttons"]["seePlan"])}</div>')
+            # The redesign review (2026-11-09): no finished checklist; Premium is on, the renewal line, and what it turned
+            # on as rows that go there (web checkout/CheckoutConfirmed.svelte).
+            coach, sims = F['premium_lines'][0]['text'], F['premium_lines'][1]['text']
+            nxt = Row(e(CK['nextCoach']), e(coach)) + Row(e(CK['nextSim']), e(sims)) + Row(e(SRC['buttons']['seePlan']))
+            plate = Plate(f'<div class="ck-on"><p class="ck-on-t" role="status">{e(F["checkout_plan_on"])}</p>'
+                          f'<p class="t-small m0">{e(F["checkout_renewal"])}</p></div>'
+                          f'<nav class="ck-next" aria-label="{e(CK["nextLabel"])}">{nxt}</nav>', 'Checkout', frame='framed')
         body = head + PageForm(plate + after)
     elif state == 'trial':
         # Ruling K1: a guild checkout in its free trial took no payment; row 2 says the card was saved.
@@ -314,7 +320,8 @@ def checkout_page(state: str) -> str:
     elif state == 'owned':
         o = A['seat']['owned']
         who = WHO['free']
-        head = PageHeader(e(F['plan_table']['premium']['name']), answer=band('premium'))
+        # The account already has Premium: the head keeps the answer's box and draws nothing in it (CheckoutHead `owned`).
+        head = PageHeader(e(F['plan_table']['premium']['name']), answer=band('premium')) + '<style>[data-region="head-answer"]{visibility:hidden}</style>'
         inner = (f'<div class="stack" style="padding:16px 20px 20px"><h2 class="t-h3">{e(o["title"])}</h2><p class="lede strong">{e(o["line"])}</p>'
                  + (f'<p class="t-small">{e(o["line2"])}</p>' if o['line2'] else '') + f'<div class="acts">{LinkBtn(e(o["action"]["label"]))}</div></div>')
         body = head + PageForm(Plate(inner, 'Your plan', frame='framed'))

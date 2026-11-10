@@ -417,8 +417,8 @@ body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:aut
 @media(max-width:767px){.pcol .btn{align-self:stretch}}
 .ans-who{display:flex;align-items:center;gap:12px}.ans-who b{font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px;flex-wrap:wrap}
 @media(min-width:900px){.head .ans{min-width:300px}.ans-who{justify-content:flex-end}.ans-links{justify-content:flex-end}}
-.ans-plan{display:flex;flex-direction:column;gap:2px}
-@media(min-width:900px){.ans-plan{align-items:flex-end}}
+.ans-plan{display:flex;flex-direction:column;gap:2px}.ans-line{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+@media(min-width:900px){.ans-plan{align-items:flex-end}.ans-line{justify-content:flex-end}}
 .coach .opening{font-size:15px;line-height:23px}
 .coach .who{display:flex;gap:12px;align-items:center}.coach .who b{font:700 16px/20px var(--font-body);color:var(--strong)}
 .alert{color:var(--strong)}.wipe-t{color:var(--wipe)}
@@ -429,6 +429,8 @@ body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:aut
 .msg{display:flex;flex-direction:column;gap:12px}
 @media(max-width:1023px){.btn.sm{height:44px}}
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
+.ck-on{display:flex;flex-direction:column;gap:4px;padding:20px 24px 12px}.ck-on .m0{margin:0}
+.ck-on-t{margin:0;font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--strong)}.ck-next{display:flex;flex-direction:column;padding:0 8px 12px}
 .statesheet{display:grid;gap:40px}.st-grid{display:grid;gap:24px 40px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}.st-cell{display:flex;flex-direction:column;gap:6px;min-width:0}
 </style><style>
 /* ---- Page: one column, four layouts ---- */
@@ -902,7 +904,7 @@ button.link{all:unset;cursor:pointer;font:600 14px/20px var(--font-body);color:v
 @media(min-width:1024px){.pcols.open .pcol{padding:4px 24px 0}.pcols.open .pcol:first-child{padding-left:0}.pcols.open .pcol:last-child{padding-right:0}}
 .btn.danger{color:var(--wipe);border-color:#f0736b66}.btn.danger:hover{border-color:var(--wipe);color:#ff8f88}
 @media(max-width:1023px){.pcols.swap{display:flex;flex-direction:column}.pcols.swap>.pcol:nth-child(2){order:-1;border-top:0}.pcols.swap>.pcol:first-child{border-top:1px solid var(--line-soft)}}
-.plh{display:flex;flex-direction:column;gap:4px;min-width:0}.plh .nm{display:flex;align-items:center;gap:10px;font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--strong)}
+.plh{display:flex;flex-direction:column;gap:4px;min-width:0}.plh .nm{display:flex;align-items:center;gap:10px;font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--strong)}.plh .nm>*{font-family:var(--font-body);letter-spacing:normal}
 .plh .au{font-size:14px;line-height:20px;color:var(--muted)}.plh .fig{margin-top:8px}.plh .pl2{font-size:13px;line-height:20px;color:var(--muted)}.plh .pl2.gold{color:var(--gold)}
 
 button.btn{cursor:pointer;-webkit-appearance:none;appearance:none}button.btn.sm{padding:0 18px}

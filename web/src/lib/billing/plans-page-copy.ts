@@ -124,8 +124,7 @@ export const plansPageCopy = {
       { text: 'A Discord message when a sim or log is done.', anchor: 'notifications' },
       { text: 'A Supporter mark on your characters and roster.', anchor: null },
     ] as readonly PremiumFeature[],
-    scope:
-      'Sims cover damage specs; healing and tanking specs are not simulated yet. The coach reviews every spec; damage specs get the most findings.',
+    scope: 'Sims cover damage specs. The coach reviews every spec.',
   },
   guild: {
     name: 'Guild',
@@ -184,7 +183,7 @@ export const plansPageCopy = {
     {
       term: 'Verified members',
       sentence:
-        "A verified member is a player with a Forever Sixty account whose character the guild has confirmed: an officer approved it, they joined by the guild's invite link, or the character is in the guild's logs. Each player counts once, however many characters they have in the guild. Discord members without an account do not count.",
+        "Each player counts once, however many characters they have in the guild. A character counts once an officer approves it, it joins by the guild's invite link, or it shows in the guild's logs. Discord members without an account do not count.",
     },
     {
       term: 'Size',
@@ -227,7 +226,7 @@ export const plansPageCopy = {
         'Email help@foreversixty.gg for a refund. Cancelling stops the renewal and the plan runs to the end of the period you paid for; there are no part-period refunds. If you were charged twice, or paid for something that did not work, we put it right.',
     },
   ] as PlanRule[],
-  foot: 'Prices in US dollars. Cancel any time; you keep the plan to the end of the period you paid for.',
+  foot: 'Prices in US dollars.',
   faq: [
     {
       question: 'What happens if I cancel?',
@@ -241,8 +240,7 @@ export const plansPageCopy = {
     },
     {
       question: 'Are there ads?',
-      answer:
-        'No. Not for anyone, paying or not. The site is paid for by Premium and the guild plans, not by ads, and that is not a perk you are buying. It is true for everyone.',
+      answer: 'No, for anyone. The site is paid for by Premium and the guild plans.',
     },
     {
       question: 'Who am I paying?',

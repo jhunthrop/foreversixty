@@ -137,17 +137,26 @@
   {
    "id": "premium-yearly",
    "label": "Premium, $40 a year",
-   "value": "$22"
+   "value": "$22",
+   "sub": "$27 after 6 Jan 2027"
   },
   {
    "id": "premium-monthly",
    "label": "Premium, $5 a month",
-   "value": "$32"
+   "value": "$32",
+   "sub": "$38 after 6 Jan 2027"
+  },
+  {
+   "id": "guild-yearly",
+   "label": "Guild, $120 a year",
+   "value": "$62",
+   "sub": "$77 after 6 Jan 2027"
   },
   {
    "id": "raid_guild-yearly",
    "label": "Raid guild, $200 a year",
-   "value": "$102"
+   "value": "$102",
+   "sub": "$127 after 6 Jan 2027"
   }
  ]
 }

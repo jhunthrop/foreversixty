@@ -23,7 +23,7 @@ PR = F['program']
 
 CSS = '''<style>
 /* page-level layout only (no surfaces): the lead's inset on the panel, Apply under its sentence */
-.cr-lead{padding:22px 24px 0}.cr-apply{padding-top:14px}.cr-ans{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px}.cr-lane{display:flex;flex-direction:column;gap:20px}.cr-cap{display:block;font-size:12px;line-height:16px;color:var(--muted)}
+.cr-lead{padding:22px 24px 0}.cr-apply{padding-top:14px}.cr-ans{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px}.cr-lane{display:flex;flex-direction:column;gap:20px}.cr-lane dd small{display:block;font-size:13px;font-weight:400;color:var(--muted)}.cr-cap{display:block;font-size:12px;line-height:16px;color:var(--muted)}
 main{padding-bottom:40px}@media(min-width:1024px){main{padding-bottom:64px}}
 @media(max-width:767px){.cr-lead{padding:18px 16px 0}.cr-apply .btn{display:flex;width:100%}}
 </style>'''
@@ -39,7 +39,8 @@ def paragraphs(lines: list[str]) -> str:
 
 def facts(rows: list[dict]) -> str:
     """web ui/Facts: each figure's label and its value with the unit."""
-    return '<dl class="kv">' + ''.join(f'<dt>{e(f["label"])}</dt><dd>{e(f["value"])}</dd>' for f in rows) + '</dl>'
+    sub = lambda f: f'<small>{e(f["sub"])}</small>' if f.get('sub') else ''
+    return '<dl class="kv">' + ''.join(f'<dt>{e(f["label"])}</dt><dd>{e(f["value"])}{sub(f)}</dd>' for f in rows) + '</dl>'
 
 
 def lane(section_id: str, first: bool) -> str:

@@ -22,8 +22,11 @@ describe('a player in a creator first year', () => {
     expect(rows.map((r) => r.label)).toEqual([
       `Premium, $${PLANS.premium.founderYearly} a year`,
       `Premium, $${PLANS.premium.founderMonthly} a month`,
+      `Guild, $${PLANS.guild.founderYearly} a year`,
       `Raid guild, $${PLANS.raid_guild.founderYearly} a year`,
     ]);
+    expect(rows[0]?.sub).toBe(`$${PROGRAM_TERMS.bountyUsd + PLANS.premium.yearly / 2} after 6 Jan 2027`);
+    expect(earningsRows(false)[0]?.sub).toBeUndefined();
     expect(rows[0]?.value).toBe(`$${PROGRAM_TERMS.bountyUsd + PLANS.premium.founderYearly / 2}`);
   });
 });

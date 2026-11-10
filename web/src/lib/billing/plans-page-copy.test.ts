@@ -98,7 +98,8 @@ describe('plansPageCopy against spec 6.1', () => {
   });
 
   it('Foot', () => {
-    expect([copy.foot]).toEqual(row('Foot'));
+    // The redesign (2026-11-09): the cancel half is the first question's answer, said once.
+    expect(row('Foot')[0]).toContain(copy.foot);
   });
 
   it('FAQ edits', () => {
@@ -151,11 +152,9 @@ describe('plansPageCopy Premium against spec B5', () => {
       null,
     ]));
   it('has exactly seven features', () => expect(copy.premium.features).toHaveLength(7));
+  // The redesign (2026-11-09): spec B5's scope line cut to its two facts.
   it('premium.scope says the coach covers every spec', () =>
-    expect(copy.premium.scope).toBe(
-      'Sims cover damage specs; healing and tanking specs are not simulated yet. The coach reviews every spec; damage specs get the most findings.',
-    ));
-  it('premium.scope matches the spec', () => expect(copy.premium.scope).toBe(key('premium.scope')[0]));
+    expect(copy.premium.scope).toBe('Sims cover damage specs. The coach reviews every spec.'));
   it('nothing is held any more', () => expect('featuresHeld' in copy.premium).toBe(false));
   it('old Premium features are gone', () =>
     expect(allStrings(copy)).not.toContain('History charts of your score and parses'));
@@ -225,8 +224,10 @@ describe('plansPageCopy guild region against spec B5', () => {
     expect(terms[0]).toBe('Verified members');
     expect(terms[terms.indexOf('Size') + 1]).toBe('Paying together');
   });
-  it('Verified members rule is B5 verbatim and has no Battle.net', () => {
-    expect([copy.rules[0]?.term, copy.rules[0]?.sentence]).toEqual(key('rules[Verified members]'));
+  // The redesign (2026-11-09): the rule leads with the count, not a definition.
+  it('Verified members rule counts each player once and has no Battle.net', () => {
+    expect(copy.rules[0]?.term).toBe(key('rules[Verified members]')[0]);
+    expect(copy.rules[0]?.sentence).toMatch(/^Each player counts once/);
     expect(copy.rules[0]?.sentence).not.toMatch(/Battle\.net/);
   });
   it('Paying together rule', () =>
