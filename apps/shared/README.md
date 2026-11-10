@@ -42,17 +42,21 @@ and the Discord assets (`design/community/discord`); neither app ships them.
 
 ## Brand (`brand/`)
 
-The app icon is the LX seal from `design/logo/foreversixty-mark.svg`, unmodified, scaled and
-placed only. `node web/scripts/build-app-icon.mjs` regenerates it.
+The app icon is a painted tile: the owner's blue ground (`design/assets/art/app-icon-background.jpeg`,
+inside its brass frame, as the companion's macOS icon) with the painted seal v4
+(`design/assets/logo/lx-seal-v4.png`) centred at 78% of the visible tile, scaled and placed only.
+`node web/scripts/build-app-icon.mjs` regenerates every file below; never place one by hand.
 
-- `ios/Brand.xcassets/AppIcon.appiconset/`: the iOS app icon (single 1024 px opaque image; the
-  OS masks it). `apps/ios/project.yml` compiles the catalog in place. The Dark and Tinted
-  appearances are the flat seal (`design/assets/brand/seal-flat/seal-flat-small.svg`) on a
-  transparent ground, Tinted in greyscale; the light appearance stays the painted seal.
-- `android/`: adaptive icon layers. `ic_launcher_foreground.png` (the seal inside the 66/108 safe
-  zone, transparent elsewhere), `ic_launcher_background.png` (flat `#07090d`) and the
-  `ic_launcher.xml` adaptive-icon wrapper. The `forever.app-icon` Gradle plugin copies the PNGs
-  to `mipmap-nodpi` and the XML to `mipmap-anydpi-v26` at build time. The wrapper's
+- `ios/Brand.xcassets/AppIcon.appiconset/`: the iOS app icon (single 1024 px full-bleed image, no
+  alpha channel; the OS masks it). `apps/ios/project.yml` compiles the catalog in place. The Dark
+  and Tinted appearances are the flat seal (`design/assets/brand/seal-flat/seal-flat-small.svg`) on
+  a transparent ground, Tinted in greyscale; the light appearance is the painted tile.
+- `android/`: adaptive icon layers at 432 px (108 dp at xxxhdpi). `ic_launcher_background.png`
+  (the painted ground over the whole canvas), `ic_launcher_foreground.png` (the seal inside the
+  66/108 safe zone, transparent elsewhere), the `ic_launcher.xml` adaptive-icon wrapper and its
+  `ic_launcher_round.xml` alias, and `legacy/mipmap-<density>/` 48 dp square and round PNGs. The
+  `forever.app-icon` Gradle plugin copies the layers to `mipmap-nodpi`, the XML to
+  `mipmap-anydpi-v26` and the legacy buckets as they are at build time. The wrapper's
   `<monochrome>` themed layer and the notification small icon are vector drawables in the app's
   `res/drawable`, both the flat tiny-bold seal with the LX knocked out, emitted by
   `uv run tools/gen_seal_silhouette.py`.
