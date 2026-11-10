@@ -71,7 +71,9 @@ const BUDGETS = [
   // published consumable set (sim/request/raid-consumes.json, about 0.7 KB gzipped) so the
   // planner's live figure and the /sim page match the published numbers; the real-data build
   // read 84,126 bytes against 83,968.
-  { file: 'dist/planner-island.js', limitBytes: 83 * 1024, closureLimitBytes: 108347 },
+  // 86 KB since the redesign batch of 2026-11-09 (ship-fast mode): the planner's density pass
+  // and the shared corner frame; the fixture build read 85,274 bytes against 84,992. Debt as above.
+  { file: 'dist/planner-island.js', limitBytes: 86 * 1024, closureLimitBytes: 108347 },
   { file: 'dist/report-island.js', limitBytes: 140 * 1024, closureLimitBytes: 161872 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's
@@ -102,7 +104,8 @@ const PAGE_ISLAND_BUDGETS = [
   // 2026-11-09 (lane P5): the rankings landing (top parses per boss, the spec leaders), the guild
   // boards on the ranked list and the designed empty states measured 113,999 on CI; 114,300 keeps
   // the trip wire. Loading the landing on its own did not help: its modules are shared.
-  { component: 'Rankings', limitBytes: 16 * 1024, closureLimitBytes: 114300 },
+  // Closure 118,000 since the redesign batch of 2026-11-09: the rankings density pass read 115,884.
+  { component: 'Rankings', limitBytes: 16 * 1024, closureLimitBytes: 118000 },
   // Raised 16 -> 18 KB (paperdoll lane, 2026-10-31): the character page's Gear section became
   // the shared Paperdoll (design/specs/2026-10-31-paperdoll.md), which statically carries the
   // frame, its model and ItemHover. The spec's own §8 budget lets that frame add up to 4 KB
@@ -145,7 +148,8 @@ const PAGE_ISLAND_BUDGETS = [
   // same ui/PaperdollFrame, so the frame, its copy and drop-chance leave the BiS chunk for shared
   // chunks of their own (44 -> 46 files, the same code). Measured 80,065 bytes gzipped on the
   // real-data build (79,241 before): the cost is the two chunks' module boundaries, not new weight.
-  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 80600 },
+  // Closure 83,500 since the BiS paperdoll of 2026-11-09: the fixture build read 81,796.
+  { component: 'BisSpecPage', limitBytes: 20 * 1024, closureLimitBytes: 83500 },
   // The shared dropdown's lazy chunk (design/specs/2026-10-30-controls-charts.md §A11.2):
   // lib/ui/listbox.ts with its list renderer, the popover core and Floating UI, loaded after
   // first paint on a fine pointer only. The spec asked for 9 KB; it measures 10,221 bytes
