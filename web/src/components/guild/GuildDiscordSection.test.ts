@@ -1,7 +1,6 @@
 // web/src/components/guild/GuildDiscordSection.test.ts
 // One static render per raids spec §3.8 state (vitest hands components Svelte's server entry, so
 // the clicks, the returns and focus are Playwright's: tests/e2e/guild-settings-discord.spec.ts).
-import { gateFactsFixture } from '../../test-support/gate-facts';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { notificationsCopy } from '../../lib/account/notifications-copy';
@@ -37,17 +36,14 @@ const SWITCHED_OFF: GuildSettingsDiscord = {
 
 interface Options {
   frozen?: boolean;
-  officerTools?: boolean;
 }
 
-function html(discord: GuildSettingsDiscord, { frozen = false, officerTools = true }: Options = {}): string {
+function html(discord: GuildSettingsDiscord, { frozen = false }: Options = {}): string {
   return render(GuildDiscordSection, {
     props: {
       guildId: GUILD,
       discord,
       frozen,
-      officerTools,
-      gateFacts: gateFactsFixture({ settingsHref: '' }),
       onDiscord: () => {},
       onSettings: () => {},
     },

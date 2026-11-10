@@ -193,11 +193,7 @@
 
 <Page layout="split" panels testid="setup-grid">
   {#snippet header()}
-    <PageHeader
-      title={addonCopy.setupPageTitle}
-      actions={downloadContent}
-      testid="setup-head"
-    ></PageHeader>
+    <PageHeader title={addonCopy.setupPageTitle} actions={downloadContent} testid="setup-head"></PageHeader>
     <SetupBackToClaim />
   {/snippet}
 

@@ -5,7 +5,6 @@ import { GuildApiError, type GuildSettingsDiscord } from './api';
 import {
   DISCORD_FOCUS,
   clearedFailures,
-  guildDiscordCopy,
   guildReturnOutcome,
   removedChannel,
   testRefused,

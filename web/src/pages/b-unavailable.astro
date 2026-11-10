@@ -24,7 +24,9 @@ const sentence =
     <Page layout="form">
       <PageHeader slot="header" title={title} />
       <Plate frame="framed" flush={false} testid="b-unavailable-panel">
-        <p class="m-0" data-testid="b-unavailable-sentence">{sentence}</p>
+        <p class="m-0" data-testid="b-unavailable-sentence">
+          {sentence}
+        </p>
         <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-[10px]">
           <Button tone="primary" href="/planner" testid="b-unavailable-planner">
             Open the build planner

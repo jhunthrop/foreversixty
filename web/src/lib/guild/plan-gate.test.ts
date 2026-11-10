@@ -25,7 +25,6 @@ describe('gateAction, the spec table', () => {
       label: 'Start the 7-day trial',
       href: `${SETTINGS}#billing`,
     });
-    expect(gateAction('discord', facts())).toMatchObject({ href: `${SETTINGS}#billing` });
     expect(gateAction('loot', facts())).toEqual({
       kind: 'link',
       label: 'Start the 7-day trial',

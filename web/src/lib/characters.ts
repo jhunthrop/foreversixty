@@ -194,7 +194,7 @@ export function parseGuildPath(pathname: string): CharacterPath | null {
  */
 function parseGuildSuffixPath(
   pathname: string,
-  suffix: 'claim' | 'settings' | 'recruit' | 'applications',
+  suffix: 'claim' | 'settings' | 'recruit' | 'applications' | 'setup',
 ): CharacterPath | null {
   const parts = pathname
     .replace(/\/+$/, '')

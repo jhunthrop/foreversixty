@@ -88,7 +88,7 @@ describe('facts lines', () => {
 
   it('words the schedule, with comp targets marked as the Guild plan', () => {
     expect(scheduleLine(setup.schedule, () => '')).toBe('America/Chicago · nothing planned');
-    const next = { id: 1, title: "Onyxia's Lair", starts_at: '2026-12-09T02:00:00Z' };
+    const next = { id: 1, title: "Onyxia's Lair", starts_at: '2026-12-09T02:00:00Z', posted_at: null };
     expect(scheduleLine({ timezone: null, planned: 3, next }, () => 'Tue 8 Dec, 8:00 pm')).toBe(
       "No time zone · next: Onyxia's Lair Tue 8 Dec, 8:00 pm · 3 planned",
     );
@@ -101,9 +101,9 @@ describe('facts lines', () => {
     expect(inviteLine({ made: false, joined: 0 })).toBe('No link yet');
     expect(syncLine(setup.sync)).toBe('9 of 24 members synced in the last 14 days · 12 needed');
     expect(syncShare(setup.sync)).toBe(0.375);
-    expect(syncShare({ synced: 0, accounts: 0, window_days: 14 })).toBe(0);
+    expect(syncShare({ synced: 0, accounts: 0, window_days: 14, missing: [] })).toBe(0);
     expect(visibilityLine('guild')).toBe('Raid reports: guild only');
-    expect(syncLine({ synced: 9, accounts: 24, window_days: 14 })).toBe(
+    expect(syncLine({ synced: 9, accounts: 24, window_days: 14, missing: [] })).toBe(
       '9 of 24 members synced in the last 14 days · 12 needed',
     );
   });
