@@ -1226,6 +1226,13 @@
   />
 {/snippet}
 
+<!-- The take-it-with-you parts under In the game: Share (once a point is spent) and Import, unless
+     they sit in the full-width row below. -->
+{#snippet takeItParts()}
+  {#if store.spent > 0 && !importBelow}<SharePanel {store} part />{/if}
+  {#if !importBelow}{@render importSection(true)}{/if}
+{/snippet}
+
 {#snippet importSection(part: boolean)}
   {#if store.talentIndex}
     <ImportBox
@@ -1304,13 +1311,15 @@
         <Ordered order={shared ? 3 : 2}>{@render bandSection()}</Ordered>
         <!-- One take-it-with-you plate (h-audit 2026-11-09): In the game, then Share (once a point is
              spent) and Import under hairlines; last in the phone flow, after the guide builds. -->
+        <!-- A shared build (read-only) has no Share or Import parts, so InGame keeps its own addon line. -->
         <Ordered order={shared ? 2 : 5}
-          ><InGame {store} character={sendCharacter} origin={effectiveOrigin} plainOtherClass={shared}>
-            {#if !store.readOnly}
-              {#if store.spent > 0 && !importBelow}<SharePanel {store} part />{/if}
-              {#if !importBelow}{@render importSection(true)}{/if}
-            {/if}
-          </InGame></Ordered
+          ><InGame
+            {store}
+            character={sendCharacter}
+            origin={effectiveOrigin}
+            plainOtherClass={shared}
+            children={store.readOnly ? undefined : takeItParts}
+          /></Ordered
         >
       {:else if status === 'loading'}
         {#if shared}

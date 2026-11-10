@@ -615,7 +615,9 @@ def b_page(state: str) -> str:
     note = f'<div class="pc" style="padding-top:16px"><div data-region="{REGION["notes"]}" style="max-width:var(--measure-reading)"><p class="notice neutral">{e(SH["note"])} {fork}</p></div></div>'
     foot = WP.tree_foot({**st, 'spent': 0})
     plate = WP.TalentEditor(WP.trees(st, readonly=True), max(range(3), key=lambda i: st['split'][i]), foot)
-    main = WP.Ordered(plate, 1, span=True) + WP.Ordered(WP.order(st), 6, span=True)
+    main = WP.Ordered(plate, 1, span=True)
+    # Point order full width under the trees and the rail (the planner's `below`, h-audit 2026-11-09); on a phone after the trees.
+    below = WP.Ordered(WP.order(st), 1, span=True)
     # Ruling MUST 5: another class's build says so in one plain line above Copy for the game, inside the rail. The planner's
     # own panels (lane P7): WP.Page sets the workbench as panels, WP.TalentEditor is the framed Talents panel.
     # The page's own rail order: the guide build first in the markup, In the game placed first by its order (Planner.svelte).
@@ -623,7 +625,7 @@ def b_page(state: str) -> str:
     who = WHO['free'] if send_key else None
     # The planner's head answer is as wide as its points and link (PlannerAnswer), not the account answer's 300 px; the API
     # page's main holds no bottom pad (the planner page's own does).
-    body = head + note + WP.Page('workbench', main, rail) + WP.PAGE_CSS + '<style>@media(min-width:900px){.head .ans[data-region]{min-width:0}}.pc:has(>.layout-wb){padding-bottom:0}</style>'
+    body = head + note + WP.Page('workbench', main, rail, below=below) + WP.PAGE_CSS + '<style>@media(min-width:900px){.head .ans[data-region]{min-width:0}}.pc:has(>.layout-wb){padding-bottom:0}</style>'
     return render(f'{h1} · {split} · Forever Sixty', body, 'Tools', who, '', f'/b/:id mock ({state}): the API page mounting the planner read-only. Data: planner-facts.json ({key}).')
 
 
