@@ -1,13 +1,15 @@
-"""Renders the Forever Sixty seal v4 into the companion's icons.
+"""Renders the Forever Sixty seal into the companion's icons.
 
     python3 companion/tools/icons/render.py
 
-Reads design/assets/logo/lx-seal-v4*.png (the one logo: the matte seal v4, 2026-11-09) and writes only what something uses:
-    internal/icon/assets/seal-tray-{off,on,warn,bad}.ico    Windows tray, embedded in the Windows binary
-    internal/icon/assets/seal-tray-{off,on,warn,bad}.png    macOS menu bar and Linux tray, embedded there
-    internal/icon/assets/seal.ico     the Windows exe's icon resource (go-winres): window, taskbar, Explorer
-    internal/icon/assets/seal.icns    the macOS bundle's icon (tools/package-mac-companion.sh): Dock, Finder
-    ui/seal-64.png                    the window's header seal (32 px at 2x)
+Reads design/assets/logo/lx-seal-v4*.png (the painted seal v4, 2026-11-09) for the app icons, and the flat seal
+(owner 2026-11-10: design/assets/brand/seal-flat through tools/art/flat_seal.py) for the tray and the window's
+header, where the seal is 44 px or smaller and the painted one turns to mud. It writes only what something uses:
+    internal/icon/assets/seal-tray-{off,on,warn,bad}.ico    Windows tray, embedded in the Windows binary (flat)
+    internal/icon/assets/seal-tray-{off,on,warn,bad}.png    macOS menu bar and Linux tray, embedded there (flat)
+    internal/icon/assets/seal.ico     the Windows exe's icon resource (go-winres): window, taskbar, Explorer (painted)
+    internal/icon/assets/seal.icns    the macOS bundle's icon (tools/package-mac-companion.sh): Dock, Finder (painted)
+    ui/seal.svg                       the window's header seal at 32 px: the site's small flat seal, byte for byte
 seal.ico and seal.icns are never embedded in the binary; each platform's go:embed (internal/icon) carries its
 own tray images alone.
 
@@ -15,7 +17,8 @@ Every PNG is palette-quantized (pngquant at quality 90 to 100, dithered) and the
 (oxipng), keeping the smaller of that and the plain encode; at 16 to 64 px the 256-colour palette holds every
 colour the seal has. Needs pngquant and oxipng on PATH (brew install pngquant oxipng).
 
-The seal is never redrawn. Where the owner's set has a size (16, 24, 32, 40, 48, 64, 128, 256, 512, 1024)
+The seal is never redrawn. Each tray size is the flat seal rendered at that size (the tiny bold seal at 24 px and
+below, the small seal with its swash above). For the painted seal, where the owner's set has a size (16, 24, 32, 40, 48, 64, 128, 256, 512, 1024)
 that file is used as it is; any other size is a Lanczos downscale of the 1768 px master. Windows and Linux
 show the seal full bleed, as every round icon there is. macOS sets an app icon on Apple's grid: the body
 spans 824 of 1024 px over a soft shadow, so the seal stands the size of its Dock neighbours.
@@ -26,8 +29,10 @@ the tray and the Status headline never disagree. The build is deterministic: run
 """
 import io
 import re
+import shutil
 import struct
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -35,6 +40,8 @@ from PIL import Image, ImageDraw, ImageFilter
 
 COMPANION = Path(__file__).resolve().parents[2]
 REPO = COMPANION.parent
+sys.path.insert(0, str(REPO / 'tools/art'))
+from flat_seal import SMALL_SVG, flat_seal  # noqa: E402  (the flat seal at 44 px and below: one source with the site)
 LOGO = REPO / 'design/assets/logo'
 SEAL_VERSION = 'v4'
 MASTER = LOGO / f'lx-seal-{SEAL_VERSION}.png'
@@ -102,7 +109,7 @@ def with_dot(size: int, colour: str, ring: str) -> Image.Image:
     draw = ImageDraw.Draw(layer)
     draw.ellipse((c - r - edge, c - r - edge, c + r + edge, c + r + edge), fill=ring)
     draw.ellipse((c - r, c - r, c + r, c + r), fill=colour)
-    out = seal(size).copy()
+    out = flat_seal(size)
     out.alpha_composite(layer.reduce(scale))  # a box average: no Lanczos ringing on the flat dot
     return out
 
@@ -154,14 +161,14 @@ def main() -> None:
     (OUT / 'seal.ico').write_bytes(ico([(s, seal(s)) for s in ICO_SIZES]))
     (OUT / 'seal.icns').write_bytes(icns())
     ring = token(RING)
-    (OUT / 'seal-tray-off.ico').write_bytes(ico([(s, seal(s)) for s in TRAY_ICO_SIZES]))
-    (OUT / 'seal-tray-off.png').write_bytes(png_bytes(seal(TRAY_PNG_SIZE)))
+    (OUT / 'seal-tray-off.ico').write_bytes(ico([(s, flat_seal(s)) for s in TRAY_ICO_SIZES]))
+    (OUT / 'seal-tray-off.png').write_bytes(png_bytes(flat_seal(TRAY_PNG_SIZE)))
     for tone, name in TONES.items():
         colour = token(name)
         (OUT / f'seal-tray-{tone}.ico').write_bytes(ico([(s, with_dot(s, colour, ring)) for s in TRAY_ICO_SIZES]))
         (OUT / f'seal-tray-{tone}.png').write_bytes(png_bytes(with_dot(TRAY_PNG_SIZE, colour, ring)))
-    (COMPANION / 'ui/seal-64.png').write_bytes(png_bytes(seal(64)))
-    print(f'wrote the seal {SEAL_VERSION} icons to {OUT.relative_to(REPO)} and companion/ui/seal-64.png')
+    shutil.copyfile(SMALL_SVG, COMPANION / 'ui/seal.svg')
+    print(f'wrote the seal icons to {OUT.relative_to(REPO)} and companion/ui/seal.svg')
 
 
 if __name__ == '__main__':
