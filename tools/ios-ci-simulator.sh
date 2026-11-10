@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 # tools/ios-ci-simulator.sh: make, boot and select CI's iOS simulator (ios.yml).
 #
-#   tools/ios-ci-simulator.sh VERSION BUILD         set up: e.g. 26.5 23F77
-#   tools/ios-ci-simulator.sh VERSION BUILD UDID    ensure: keep UDID if it is still available and
-#                                                   booted, else log why and set up again
+#   tools/ios-ci-simulator.sh create VERSION BUILD       pick the runtime (e.g. 26.5 23F77) and make
+#                                                        the job's own iPhone 17 on it, not booted
+#   tools/ios-ci-simulator.sh boot-start UDID            boot UDID in the background, so the job
+#                                                        builds while the simulator boots
+#   tools/ios-ci-simulator.sh boot-wait                  wait for that boot, print its log, fail if
+#                                                        it failed
+#   tools/ios-ci-simulator.sh ensure VERSION BUILD UDID  keep UDID if it is still available and
+#                                                        booted, else log why, make and boot a new one
 #
-# Either way it prints the xcodebuild destination (platform=iOS Simulator,id=<udid>) on stdout
-# and, on Actions, writes SIMULATOR to GITHUB_ENV.
+# create and ensure print the xcodebuild destination (platform=iOS Simulator,id=<udid>) on stdout
+# and, on Actions, write SIMULATOR and SIMULATOR_UDID to GITHUB_ENV.
 #
 # The snapshot goldens are rendered on one runtime (ios.yml, IOS_RUNTIME_*), so the script
 #   1. picks that runtime by version AND build from `simctl list runtimes -j`, downloading it
@@ -18,8 +23,10 @@
 #   3. creates its own iPhone 17 on that runtime identifier and boots it, up to BOOT_ATTEMPTS
 #      times with a shutdown and erase between attempts, waiting on `simctl bootstatus -b`;
 #   4. exports the destination.
-# A booted device has still lost its runtime minutes later ("Unable to find a device matching the
-# provided destination specifier", run 42515970747), so ios.yml ensures again right before testing.
+# A first boot is mostly data migration (8 minutes on a downloaded runtime, run 42842739728), so
+# ios.yml starts it before the build and waits for it only before testing. A booted device has
+# still lost its runtime minutes later ("Unable to find a device matching the provided destination
+# specifier", run 42515970747), so ios.yml ensures again right before testing.
 # It fails with an ::error:: annotation when no iOS <major>.x runtime can be had.
 set -euo pipefail
 
@@ -31,15 +38,15 @@ readonly BOOT_TIMEOUT_SECONDS=600
 readonly RUNTIME_READY_TIMEOUT_SECONDS=180
 readonly DOWNLOAD_ATTEMPTS=2
 readonly POLL_SECONDS=5
+# Where boot-start leaves the background boot's log and exit status for boot-wait.
+readonly BOOT_STATE="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/ios-ci-simulator-boot"
 
 fail() { echo "::error title=iOS simulator::$*" >&2; exit 1; }
 log() { echo "ios-ci-simulator: $*" >&2; }
 # Annotations go to stderr too: stdout carries the values the functions return.
 warn() { echo "::warning title=iOS simulator::$*" >&2; }
 
-[ $# -eq 2 ] || [ $# -eq 3 ] || fail "usage: $0 VERSION BUILD [UDID] (e.g. 26.5 23F77)"
-readonly VERSION="$1" BUILD="$2" KEEP_UDID="${3:-}"
-readonly MAJOR="${VERSION%%.*}"
+usage() { fail "usage: $0 create VERSION BUILD | boot-start UDID | boot-wait | ensure VERSION BUILD UDID (e.g. 26.5 23F77)"; }
 
 # Prints the identifier of the available iOS runtime matching the query, or nothing.
 #   exact        version VERSION and build BUILD
@@ -156,7 +163,7 @@ diagnose() {
 	{ xcrun simctl list runtimes; xcrun simctl runtime list; xcrun simctl list devices available; } >&2 || true
 }
 
-set_up() {
+create_device() {
 	local runtime udid
 	runtime=$(pick_runtime)
 	# Installing a runtime also creates default devices, so a name could match twice: the job makes
@@ -164,27 +171,79 @@ set_up() {
 	udid=$(xcrun simctl create "$DEVICE_NAME" "$DEVICE_TYPE" "$runtime") \
 		|| fail "could not create $DEVICE_TYPE on $runtime"
 	log "created $DEVICE_NAME: $udid"
-	boot_device "$udid" || { diagnose; fail "simulator $udid ($runtime) did not boot after $BOOT_ATTEMPTS attempts"; }
 	echo "$udid"
 }
 
-main() {
-	local udid="$KEEP_UDID" destination
-	if [ -n "$udid" ] && device_usable "$udid"; then
-		log "$udid is still available and booted"
-	else
-		if [ -n "$udid" ]; then
-			warn "simulator $udid is no longer available and booted; setting up a new one"
-			diagnose
-		fi
-		udid=$(set_up)
-	fi
-	destination="platform=iOS Simulator,id=$udid"
+boot_or_fail() {
+	boot_device "$1" || { diagnose; fail "simulator $1 did not boot after $BOOT_ATTEMPTS attempts"; }
+}
+
+# Prints the destination for UDID and, on Actions, exports it.
+export_destination() {
+	local destination="platform=iOS Simulator,id=$1"
 	if [ -n "${GITHUB_ENV:-}" ]; then
-		{ echo "SIMULATOR=$destination"; echo "SIMULATOR_UDID=$udid"; } >>"$GITHUB_ENV"
+		{ echo "SIMULATOR=$destination"; echo "SIMULATOR_UDID=$1"; } >>"$GITHUB_ENV"
 	fi
 	log "destination: $destination"
 	echo "$destination"
 }
 
-main
+# The boot outlives the step that starts it (Actions ends a job's leftover processes only when the
+# job completes); boot-wait reads its status file, which appears when the boot is over.
+boot_start() {
+	rm -f "$BOOT_STATE.status"
+	# The background boot must not write to this step's GITHUB_ENV after the step has ended. The
+	# inner script expands its own positional parameters, hence the single quotes.
+	# shellcheck disable=SC2016
+	nohup env -u GITHUB_ENV bash -c 'bash "$0" boot "$1" >"$2.log" 2>&1; echo $? >"$2.status"' \
+		"$0" "$1" "$BOOT_STATE" >/dev/null 2>&1 &
+	log "booting $1 in the background (log: $BOOT_STATE.log)"
+}
+
+boot_wait() {
+	local deadline=$((SECONDS + BOOT_ATTEMPTS * (BOOT_TIMEOUT_SECONDS + 60))) status
+	while [ ! -s "$BOOT_STATE.status" ]; do
+		if [ "$SECONDS" -ge "$deadline" ]; then
+			cat "$BOOT_STATE.log" >&2 || true
+			fail "the background boot did not finish"
+		fi
+		sleep "$POLL_SECONDS"
+	done
+	cat "$BOOT_STATE.log" >&2
+	status=$(cat "$BOOT_STATE.status")
+	[ "$status" -eq 0 ] || fail "the background boot failed (exit $status)"
+}
+
+ensure() {
+	local udid="$1"
+	if device_usable "$udid"; then
+		log "$udid is still available and booted"
+	else
+		warn "simulator $udid is no longer available and booted; setting up a new one"
+		diagnose
+		udid=$(create_device)
+		boot_or_fail "$udid"
+	fi
+	export_destination "$udid"
+}
+
+main() {
+	case "${1:-}" in
+		create)
+			[ $# -eq 3 ] || usage
+			VERSION="$2" BUILD="$3" MAJOR="${2%%.*}"
+			export_destination "$(create_device)"
+			;;
+		boot) [ $# -eq 2 ] || usage; boot_or_fail "$2" ;;
+		boot-start) [ $# -eq 2 ] || usage; boot_start "$2" ;;
+		boot-wait) [ $# -eq 1 ] || usage; boot_wait ;;
+		ensure)
+			[ $# -eq 4 ] || usage
+			VERSION="$2" BUILD="$3" MAJOR="${2%%.*}"
+			ensure "$4"
+			;;
+		*) usage ;;
+	esac
+}
+
+main "$@"

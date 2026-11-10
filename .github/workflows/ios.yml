@@ -2,9 +2,9 @@ name: ios
 on:
   push:
     branches: [main, 'land/**']
-    paths: ['apps/ios/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml', 'tools/ios-ci-simulator.sh']
+    paths: ['apps/ios/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml', 'tools/ios-ci-simulator.sh', 'tools/ios-ci-free-disk.sh']
   pull_request:
-    paths: ['apps/ios/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml', 'tools/ios-ci-simulator.sh']
+    paths: ['apps/ios/**', 'apps/shared/**', 'web/src/data/specs.json', 'apps/VERSION', 'docs/contracts/**', '.github/workflows/ios.yml', 'tools/ios-ci-simulator.sh', 'tools/ios-ci-free-disk.sh']
   workflow_dispatch:
     inputs:
       record:
@@ -36,63 +36,129 @@ jobs:
     # hand (a record run, `make -C apps/ios snapshots`), which is never a push's check.
     if: vars.LAUNCH_MODE != 'true' || github.event_name == 'workflow_dispatch'
     runs-on: xcode-27
-    # A green run with a runtime download and a first boot takes ~36 minutes (run 42512503765);
-    # the headroom covers a boot retry (tools/ios-ci-simulator.sh). A record run rewrites every
-    # golden it renders, and twice on 2026-11-10 (runs 42916220914, 42934432174) a slow runner spent
-    # ~20 minutes before the tests began, so record runs get 90 and a push's check keeps 60.
+    # The simulator boots while the app builds (tools/ios-ci-simulator.sh boot-start), so a run is
+    # checkout, build and test; the headroom covers a cold cache and a boot retry. A record run
+    # rewrites every golden it renders, and twice on 2026-11-10 (runs 42916220914, 42934432174) a
+    # slow runner spent ~20 minutes before the tests began, so record runs get 90.
     timeout-minutes: ${{ inputs.record && 90 || 60 }}
     defaults:
       run:
         working-directory: apps/ios
     steps:
+      # Without design/reviews and data/builds (~5.5 GB of the tree, two to five minutes of the
+      # full checkout); the tests read the mocks' regions and avatars, and data/builds comes from
+      # the cache (docs/runbooks/landing.md, "Checkout").
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/data/builds/
+            !/data/diffs/
+            !/design/reviews/
+            !/design/mocks/
+            /design/mocks/app/regions/
+            /design/mocks/data/avatars/
+            !/docs/superpowers/reviews/
+            !/apps/android/
+      - uses: ./.github/actions/data-builds
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: ${{ env.XCODE_VERSION }}
-      # A record run writes and attaches every failing golden; two of them filled the runner's disk
-      # mid-test and lost their upload (runs 42908207505 and 42925826117, "No space left on
-      # device"). Before one, the Xcodes this job does not use go.
-      - name: Free disk for a record run
-        if: inputs.record == true
+      # Record runs filled the disk mid-test (runs 42908207505, 42912202294, 42916220914, 42925826117:
+      # "No space left on device"). The image's other simulator runtimes, Xcodes and toolchains go
+      # first, keeping the pinned runtime: ~28 GB free becomes ~116 GB in two minutes (run 42925501706).
+      - name: Free disk space
         working-directory: .
-        run: |
-          df -h / | tail -1
-          selected=$(xcode-select -p | sed 's#/Contents/Developer##')
-          for app in /Applications/Xcode*.app; do
-            [ "$app" = "$selected" ] || [ -L "$app" ] || sudo rm -rf "$app"
-          done
-          df -h / | tail -1
+        run: bash tools/ios-ci-free-disk.sh "$IOS_RUNTIME_BUILD"
       # The runtime build, not just its version: 26.5 resolves to 23F73 while the lanes run 23F77.
-      # tools/ios-ci-simulator.sh picks (or downloads) that runtime, makes its own iPhone 17 on it,
-      # boots it with retries and exports SIMULATOR (id=, never a name: installing a runtime creates
-      # default devices too). A freshly downloaded runtime tested on too early was lost mid-run
-      # ("cannot determine the runtime bundle", run 42503034639).
-      - name: Boot the iOS ${{ env.IOS_RUNTIME_VERSION }} (${{ env.IOS_RUNTIME_BUILD }}) simulator
+      # tools/ios-ci-simulator.sh picks (or downloads) that runtime and makes its own iPhone 17 on
+      # it (id=, never a name: installing a runtime creates default devices too), then boots it in
+      # the background while the app builds. A freshly downloaded runtime tested on too early was
+      # lost mid-run ("cannot determine the runtime bundle", run 42503034639).
+      - name: Start the iOS ${{ env.IOS_RUNTIME_VERSION }} (${{ env.IOS_RUNTIME_BUILD }}) simulator
         working-directory: .
-        run: bash tools/ios-ci-simulator.sh "$IOS_RUNTIME_VERSION" "$IOS_RUNTIME_BUILD"
-      - name: Install XcodeGen
         run: |
-          # GitHub release downloads 504 now and then: retry, then fall back to Homebrew.
-          if curl -fsSL --retry 6 --retry-all-errors --retry-delay 10 -o "$RUNNER_TEMP/xcodegen.zip" \
-              "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip"; then
-            unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
-            echo "$RUNNER_TEMP/xcodegen/bin" >> "$GITHUB_PATH"
-          else
-            echo "::warning::XcodeGen ${XCODEGEN_VERSION} download failed; installing from Homebrew"
-            brew install xcodegen
-          fi
-      - name: Generate the project
-        run: xcodegen generate
-      - name: Cache SwiftPM checkouts
+          destination=$(bash tools/ios-ci-simulator.sh create "$IOS_RUNTIME_VERSION" "$IOS_RUNTIME_BUILD")
+          bash tools/ios-ci-simulator.sh boot-start "${destination##*id=}"
+      - name: Cache XcodeGen
+        id: xcodegen
         uses: actions/cache@v4
         with:
+          path: ${{ runner.temp }}/xcodegen
+          key: xcodegen-${{ runner.os }}-${{ env.XCODEGEN_VERSION }}
+      - name: Install XcodeGen
+        env:
+          CACHE_HIT: ${{ steps.xcodegen.outputs.cache-hit }}
+        run: |
+          if [ "$CACHE_HIT" != true ]; then
+            # GitHub release downloads 504 now and then: retry, then fall back to Homebrew.
+            if ! curl -fsSL --retry 6 --retry-all-errors --retry-delay 10 -o "$RUNNER_TEMP/xcodegen.zip" \
+                "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip"; then
+              echo "::warning::XcodeGen ${XCODEGEN_VERSION} download failed; installing from Homebrew"
+              brew install xcodegen
+              exit 0
+            fi
+            unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
+          fi
+          echo "$RUNNER_TEMP/xcodegen/bin" >> "$GITHUB_PATH"
+      - name: Generate the project
+        run: xcodegen generate
+      # The packages are pinned to exact versions in project.yml's packages section, so the SwiftPM
+      # key is that section (not the whole file, which every lane edits) and the resolving Xcode.
+      # The compilation cache starts afresh each month, so it cannot grow without bound.
+      - name: Key the build caches
+        id: keys
+        run: |
+          echo "packages=$(sed -n '/^packages:/,/^targets:/p' project.yml | shasum -a 256 | cut -c1-16)" >> "$GITHUB_OUTPUT"
+          echo "month=$(date -u +%Y-%m)" >> "$GITHUB_OUTPUT"
+      # ~1 GB of package clones and the Sentry binary (~4 minutes to fetch): restored everywhere,
+      # saved by main only (the cache is near its 10 GB limit, and every branch can read main's).
+      - name: Restore SwiftPM checkouts
+        id: spm
+        uses: actions/cache/restore@v4
+        with:
           path: apps/ios/build/DerivedData/SourcePackages
-          key: spm-${{ runner.os }}-${{ hashFiles('apps/ios/project.yml', 'apps/ios/Package.swift') }}
-      # Simulator only: no Apple Developer account yet, so the build is
-      # ad-hoc signed ("-", project.yml) and needs no certificate or team.
+          key: spm-${{ runner.os }}-xcode${{ env.XCODE_VERSION }}-${{ steps.keys.outputs.packages }}
+      # Xcode's compilation cache, content-addressed, so a fresh checkout's new mtimes do not miss:
+      # the SDK and package modules and every unchanged module's compile jobs. Saved by main only.
+      - name: Restore the compilation cache
+        id: cas
+        uses: actions/cache/restore@v4
+        with:
+          path: apps/ios/build/CompilationCache
+          key: ios-cas-${{ runner.os }}-xcode${{ env.XCODE_VERSION }}-${{ steps.keys.outputs.month }}-${{ github.sha }}
+          restore-keys: ios-cas-${{ runner.os }}-xcode${{ env.XCODE_VERSION }}-${{ steps.keys.outputs.month }}-
+      # Simulator only: no Apple Developer account yet, so the build is ad-hoc signed ("-",
+      # project.yml) and needs no certificate or team. Built once, for the job's simulator (its
+      # architecture only), while it boots; the tests then run without building.
+      - name: Build for testing
+        run: |
+          xcodebuild build-for-testing \
+            -project ForeverSixty.xcodeproj \
+            -scheme ForeverSixty \
+            -destination "$SIMULATOR" \
+            -derivedDataPath build/DerivedData \
+            COMPILATION_CACHE_ENABLE_CACHING=YES \
+            COMPILATION_CACHE_CAS_PATH="$PWD/build/CompilationCache"
+      - name: Save SwiftPM checkouts
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/lane/ci-speed') && steps.spm.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: apps/ios/build/DerivedData/SourcePackages
+          key: ${{ steps.spm.outputs.cache-primary-key }}
+      - name: Save the compilation cache
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/lane/ci-speed') && steps.cas.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: apps/ios/build/CompilationCache
+          key: ${{ steps.cas.outputs.cache-primary-key }}
+      - name: Wait for the simulator
+        working-directory: .
+        run: bash tools/ios-ci-simulator.sh boot-wait
       # In record mode the failing snapshots are rewritten in place (swift-snapshot-testing's
       # SNAPSHOT_TESTING_RECORD, passed to the test runner) and uploaded for the Makefile to pull.
-      - name: Build and test
+      - name: Test
         continue-on-error: ${{ inputs.record == true }}
         env:
           TEST_RUNNER_SNAPSHOT_TESTING_RECORD: ${{ inputs.record == true && 'failed' || 'missing' }}
@@ -103,11 +169,11 @@ jobs:
         # more ensure and try.
         run: |
           for attempt in 1 2; do
-            destination=$(bash ../../tools/ios-ci-simulator.sh "$IOS_RUNTIME_VERSION" "$IOS_RUNTIME_BUILD" "$SIMULATOR_UDID")
+            destination=$(bash ../../tools/ios-ci-simulator.sh ensure "$IOS_RUNTIME_VERSION" "$IOS_RUNTIME_BUILD" "$SIMULATOR_UDID")
             SIMULATOR_UDID=${destination##*id=}
             rm -rf build/ForeverSixty.xcresult
             status=0
-            xcodebuild test \
+            xcodebuild test-without-building \
               -project ForeverSixty.xcodeproj \
               -scheme ForeverSixty \
               -destination "$destination" \
@@ -134,3 +200,27 @@ jobs:
             apps/ios/build/ForeverSixty.xcresult
             apps/ios/AppTests/**/__Snapshots__/**
           retention-days: 7
+  # TEMPORARY (lane/ci-speed): which iOS runtimes the image preinstalls, and how long a fresh
+  # iPhone 17 takes to boot on each. Removed before the lane lands.
+  probe-runtimes:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: xcode-27
+    timeout-minutes: 40
+    steps:
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+      - run: |
+          xcodebuild -version
+          xcrun simctl list runtimes
+          xcrun simctl runtime list
+          xcrun simctl list devicetypes | grep -i iphone
+          xcrun simctl list runtimes -j | python3 -c 'import json,sys; [print(r["identifier"], r["buildversion"], r["isAvailable"], [d["name"] for d in r.get("supportedDeviceTypes",[]) if "iPhone 17" in d["name"]]) for r in json.load(sys.stdin)["runtimes"] if r["platform"]=="iOS"]'
+          for rt in $(xcrun simctl list runtimes -j | python3 -c 'import json,sys; [print(r["identifier"]) for r in json.load(sys.stdin)["runtimes"] if r["platform"]=="iOS" and r["isAvailable"]]'); do
+            echo "== $rt"
+            udid=$(xcrun simctl create "probe" com.apple.CoreSimulator.SimDeviceType.iPhone-17 "$rt") || { echo "create failed on $rt"; continue; }
+            start=$SECONDS
+            xcrun simctl bootstatus "$udid" -b >/dev/null 2>&1 && echo "BOOT $rt $((SECONDS - start))s" || echo "BOOT FAILED $rt"
+            xcrun simctl shutdown "$udid" || true
+            xcrun simctl delete "$udid" || true
+          done
