@@ -50,12 +50,10 @@ var simCopy = map[string]string{
 	addon.SimInvalid:      CopySimInvalid,
 }
 
-// AddonLine is the status page's addon row: "Last synced 4 minutes
-// ago" under an hour, "Last synced 14:03" later the same day, then
-// "Last synced yesterday" and "Last synced 18 days ago", followed by
-// the sim request's state when there is one. Before the site has acked
-// an export it says so rather than going missing. "Today" and the
-// clock are the player's, in now's location.
+// AddonLine is the status page's addon row: "Last synced 4 min ago",
+// "Last synced 2 h ago" or "Last synced 18 d ago", followed by the sim
+// request's state when there is one. Before the site has acked an export
+// it says so rather than going missing.
 func AddonLine(seen time.Time, simState string, now time.Time) string {
 	if seen.IsZero() {
 		return CopyNeverSynced
@@ -73,29 +71,25 @@ func AddonStale(seen, now time.Time) bool {
 	return !seen.IsZero() && now.Sub(seen) > StaleAfter
 }
 
-// since is how long ago, in the words the row uses.
+// agoCeiling is where the age turns into the date, as on the site.
+const agoCeiling = 30 * 24 * time.Hour
+
+// since is how long ago, the site's compact age (web/src/lib/dates.ts compactAgo, held to
+// apps/shared/formats.json): "just now", "5 min ago", "2 h ago", "3 d ago", then the date past
+// 30 days ("1 Oct", in UTC as the site writes it). A time ahead of the clock is "just now".
 func since(seen, now time.Time) string {
-	local := seen.In(now.Location())
-	d := now.Sub(seen)
+	d := max(0, now.Sub(seen))
 	switch {
 	case d < time.Minute:
-		return "less than a minute ago"
-	case d < 2*time.Minute:
-		return "1 minute ago"
+		return "just now"
 	case d < time.Hour:
-		return fmt.Sprintf("%d minutes ago", int(d/time.Minute))
+		return fmt.Sprintf("%d min ago", int(d/time.Minute))
+	case d < 24*time.Hour:
+		return fmt.Sprintf("%d h ago", int(d/time.Hour))
+	case d < agoCeiling:
+		return fmt.Sprintf("%d d ago", int(d/(24*time.Hour)))
 	}
-	y, m, day := local.Date()
-	ny, nm, nday := now.Date()
-	if y == ny && m == nm && day == nday {
-		return local.Format("15:04")
-	}
-	days := int(time.Date(ny, nm, nday, 12, 0, 0, 0, time.UTC).
-		Sub(time.Date(y, m, day, 12, 0, 0, 0, time.UTC)).Hours() / 24)
-	if days <= 1 {
-		return "yesterday"
-	}
-	return fmt.Sprintf("%d days ago", days)
+	return seen.UTC().Format("2 Jan")
 }
 
 // The Status headline: five states and the sign-in wait, first match

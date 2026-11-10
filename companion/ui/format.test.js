@@ -30,11 +30,14 @@ test('a long path is cut at separators only, keeping the drive and the last two 
   assert.strictEqual(FORMAT.pathTruncate('/home/jhunt/Games/World of Warcraft/_classic_era_', 38), '/\u2026/World of Warcraft/_classic_era_');
 });
 
-test('a time is today, yesterday or a short date', () => {
+test('a time is today, yesterday or a short date, on the viewer\'s clock', () => {
   const now = new Date(2026, 9, 15, 21, 0);
-  assert.strictEqual(FORMAT.when(new Date(2026, 9, 15, 20, 14).toISOString(), now, COPY.reports), 'Today 20:14');
-  assert.strictEqual(FORMAT.when(new Date(2026, 9, 14, 20, 14).toISOString(), now, COPY.reports), 'Yesterday 20:14');
-  assert.strictEqual(FORMAT.when(new Date(2026, 9, 7, 9, 5).toISOString(), now, COPY.reports), 'Wed 7 Oct, 09:05');
+  const when = (d, locale) => FORMAT.when(d.toISOString(), now, COPY.reports, locale);
+  assert.strictEqual(when(new Date(2026, 9, 15, 20, 14), 'en-US'), 'Today 8:14 pm');
+  assert.strictEqual(when(new Date(2026, 9, 15, 20, 14), 'en-GB'), 'Today 20:14');
+  assert.strictEqual(when(new Date(2026, 9, 14, 20, 0), 'en-US'), 'Yesterday 8 pm');
+  assert.strictEqual(when(new Date(2026, 9, 7, 9, 5), 'en-US'), 'Wed 7 Oct, 9:05 am');
+  assert.strictEqual(when(new Date(2026, 9, 7, 9, 5), 'de-DE'), 'Wed 7 Oct, 09:05');
   assert.strictEqual(FORMAT.when('not a date', now, COPY.reports), '');
 });
 
@@ -72,8 +75,9 @@ test('every sentence in copy.js is a string or a function that returns one', () 
 
 test('last played is a clock today, a short date otherwise, and honest when unknown', () => {
   const now = new Date(2026, 9, 15, 21, 0);
-  assert.strictEqual(FORMAT.lastPlayed(new Date(2026, 9, 15, 19, 42).toISOString(), now, COPY.status), 'Last played 19:42');
-  assert.strictEqual(FORMAT.lastPlayed(new Date(2026, 9, 14, 9, 5).toISOString(), now, COPY.status), 'Last played 14 Oct 09:05');
+  assert.strictEqual(FORMAT.lastPlayed(new Date(2026, 9, 15, 19, 42).toISOString(), now, COPY.status, 'en-US'), 'Last played 7:42 pm');
+  assert.strictEqual(FORMAT.lastPlayed(new Date(2026, 9, 15, 19, 42).toISOString(), now, COPY.status, 'en-GB'), 'Last played 19:42');
+  assert.strictEqual(FORMAT.lastPlayed(new Date(2026, 9, 14, 9, 5).toISOString(), now, COPY.status, 'en-US'), 'Last played 14 Oct, 9:05 am');
   assert.strictEqual(FORMAT.lastPlayed(undefined, now, COPY.status), 'Not played yet');
   assert.strictEqual(FORMAT.lastPlayed('', now, COPY.status), 'Not played yet');
   assert.strictEqual(FORMAT.lastPlayed('garbage', now, COPY.status), 'Not played yet');
@@ -86,22 +90,38 @@ test('the Device page says whose sign-in the site stopped accepting', () => {
     'Your sign-in is no longer valid. Sign in again to keep uploading.');
 });
 
-test('how long ago says minutes, then the clock, then days', () => {
+test('how long ago is the site\'s compact age', () => {
   const now = new Date(2026, 9, 19, 15, 0, 30);
   const at = (d, h, m, s) => new Date(2026, 9, d, h, m, s || 0).toISOString();
-  const w = COPY.status.ago;
-  assert.strictEqual(FORMAT.ago(at(19, 14, 59, 50), now, w), 'less than a minute ago');
-  assert.strictEqual(FORMAT.ago(at(19, 14, 58, 40), now, w), '1 minute ago');
-  assert.strictEqual(FORMAT.ago(at(19, 14, 58), now, w), '2 minutes ago');
-  assert.strictEqual(FORMAT.ago(at(19, 9, 5), now, w), 'today at 09:05');
-  assert.strictEqual(FORMAT.ago(at(18, 23, 50), now, w), 'yesterday');
-  assert.strictEqual(FORMAT.ago(at(1, 12, 0), now, w), '18 days ago');
-  assert.strictEqual(FORMAT.ago('garbage', now, w), '');
+  assert.strictEqual(FORMAT.ago(at(19, 14, 59, 50), now), 'just now');
+  assert.strictEqual(FORMAT.ago(at(19, 14, 58), now), '2 min ago');
+  assert.strictEqual(FORMAT.ago(at(19, 9, 5), now), '5 h ago');
+  assert.strictEqual(FORMAT.ago(at(1, 12, 0), now), '18 d ago');
+  assert.strictEqual(FORMAT.ago('garbage', now), '');
+});
+
+// The house formats every surface replays (apps/shared/formats.json): the companion's dates,
+// clock and ages read exactly as the site's.
+test('the dates, the clock and the ages are the shared examples', () => {
+  const fixture = JSON.parse(require('node:fs').readFileSync(require('node:path').join(__dirname, '../../apps/shared/formats.json'), 'utf8'));
+  const at = (iso) => new Date(iso);
+  const replay = (cases, fn) => {
+    assert.ok(cases && cases.length > 0, 'the fixture lost a section the companion replays');
+    for (const c of cases) assert.strictEqual(fn(c), c.out, JSON.stringify(c));
+  };
+  replay(fixture.dates.day_month, (c) => FORMAT.dayMonth(at(c.in), c.zone));
+  replay(fixture.dates.weekday_day_month, (c) => FORMAT.weekdayDayMonth(at(c.in), c.zone, at(c.now)));
+  replay(fixture.dates.long_day, (c) => FORMAT.longDay(at(c.in), c.zone));
+  replay(fixture.dates.stamp, (c) => FORMAT.stamp(at(c.in), c.zone, c.locale));
+  replay(fixture.clock, (c) => FORMAT.clock(at(c.in), c.zone, c.locale, c.always_minutes));
+  const now = at(fixture.relative.now);
+  replay(fixture.relative.compact_ago, (c) => FORMAT.compactAgo(at(c.in), now));
+  assert.strictEqual(FORMAT.SITE_LOCALE, fixture.site_locale);
 });
 
 test('the Last sync row counts characters and says how long ago', () => {
-  assert.strictEqual(COPY.status.lastSyncSent(10, '2 minutes ago'), '10 characters, 2 minutes ago');
-  assert.strictEqual(COPY.status.lastSyncSent(1, 'yesterday'), '1 character, yesterday');
+  assert.strictEqual(COPY.status.lastSyncSent(10, '2 min ago'), '10 characters, 2 min ago');
+  assert.strictEqual(COPY.status.lastSyncSent(1, '1 d ago'), '1 character, 1 d ago');
 });
 
 test('a report says who it is credited to, or that it is not yet', () => {
@@ -220,12 +240,12 @@ test('Check for builds now asks once at a time and once every half minute', asyn
 test('the Addon row says when it checked and what it found', () => {
   const now = new Date('2026-10-20T17:45:00Z');
   const at = (secs) => new Date(now.getTime() - secs * 1000).toISOString();
-  const line = (checked) => FORMAT.checkedLine(checked, now, COPY.status, COPY.status.ago);
+  const line = (checked) => FORMAT.checkedLine(checked, now, COPY.status);
   assert.strictEqual(line({ at: at(5), new_builds: 1, for: ['Bow Jackzon'] }), 'Checked just now · 1 build for Bow Jackzon');
   assert.strictEqual(line({ at: at(5), new_builds: 0 }), 'Checked just now · nothing new');
   assert.strictEqual(line({ at: at(5), new_builds: 2, for: ['Bow Jackzon', 'Booty'] }), 'Checked just now · 2 builds for Bow Jackzon, Booty');
   assert.strictEqual(line({ at: at(5), new_builds: 3 }), 'Checked just now · 3 builds');
-  assert.strictEqual(line({ at: at(125), new_builds: 0 }), 'Checked 2 minutes ago · nothing new');
+  assert.strictEqual(line({ at: at(125), new_builds: 0 }), 'Checked 2 min ago · nothing new');
   assert.strictEqual(COPY.status.checkBuilds, 'Fetch my builds from the site');
   assert.strictEqual(COPY.status.checking, 'Fetching…');
 });

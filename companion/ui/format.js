@@ -1,7 +1,7 @@
 // companion/ui/format.js
 // The window's pure helpers: shortening a path, saying a time, naming a
-// character. They take their inputs as arguments (the clock too) so a
-// node test can run them: `node --test companion/ui/format.test.js`.
+// character. They take their inputs as arguments (the clock, the zone and the
+// locale too) so a node test can run them: `node --test companion/ui/format.test.js`.
 'use strict';
 
 const FORMAT = (() => {
@@ -40,44 +40,122 @@ const FORMAT = (() => {
     return (width >= 700 ? 56 : 38) + (wide ? 6 : 0);
   }
 
-  const pad = (n) => String(n).padStart(2, '0');
-  const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  // The house dates and clock, the site's own (web/src/lib/dates.ts), held to the shared examples
+  // in apps/shared/formats.json by format.test.js (owner rulings 2026-11-10: "Sep", the clock in
+  // the viewer's locale). A zone of undefined is the window's own; a locale of undefined is the
+  // window's language.
+  const SITE_LOCALE = 'en-US';
+  const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const FULL_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const MINUTE_MS = 60000;
+  const HOUR_MS = 60 * MINUTE_MS;
+  const DAY_MS = 24 * HOUR_MS;
+  const AGO_CEILING_DAYS = 30;
+  const two = (n) => String(n).padStart(2, '0');
 
-  // when is "Today 20:14", "Yesterday 20:14" or "Tue 14 Oct, 20:14".
-  function when(iso, now, words) {
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return '';
-    const clock = pad(d.getHours()) + ':' + pad(d.getMinutes());
-    if (sameDay(d, now)) return words.today + ' ' + clock;
-    const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-    if (sameDay(d, yesterday)) return words.yesterday + ' ' + clock;
-    return DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ', ' + clock;
+  const viewerLocale = () => (typeof navigator !== 'undefined' && navigator.language) || SITE_LOCALE;
+
+  const twelveHour = new Map();
+  // usesTwelveHourClock: en-US reads 8 pm, en-GB and de-DE read 20:00.
+  function usesTwelveHourClock(locale) {
+    if (!twelveHour.has(locale)) {
+      twelveHour.set(locale, new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions().hour12 === true);
+    }
+    return twelveHour.get(locale);
   }
 
-  // lastPlayed is "Last played 19:42" today, "Last played 15 Oct 19:42"
-  // another day, and "Not played yet" when the time is not known.
-  function lastPlayed(iso, now, words) {
+  // zoned is the instant on the zone's calendar and 24-hour clock.
+  function zoned(d, zone) {
+    const parts = {};
+    const f = new Intl.DateTimeFormat(SITE_LOCALE, {
+      timeZone: zone, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric',
+      weekday: 'short', hour: 'numeric', minute: '2-digit',
+    });
+    for (const p of f.formatToParts(d)) parts[p.type] = p.value;
+    return {
+      year: Number(parts.year), month: Number(parts.month) - 1, day: Number(parts.day),
+      weekday: DAYS.indexOf(parts.weekday), hour: Number(parts.hour) % 24, minute: Number(parts.minute),
+    };
+  }
+
+  const valid = (d) => d instanceof Date && !Number.isNaN(d.getTime());
+
+  // clock is the time of day in the viewer's hour cycle: "8 pm", "8:30 pm" (the minutes on the
+  // hour too with alwaysMinutes), or "20:00".
+  function clock(d, zone, locale, alwaysMinutes) {
+    if (!valid(d)) return '';
+    const { hour, minute } = zoned(d, zone);
+    if (!usesTwelveHourClock(locale || viewerLocale())) return two(hour) + ':' + two(minute);
+    const twelve = hour % 12 === 0 ? 12 : hour % 12;
+    return twelve + (alwaysMinutes || minute !== 0 ? ':' + two(minute) : '') + (hour < 12 ? ' am' : ' pm');
+  }
+
+  // dayMonth is "9 Dec"; weekdayDayMonth "Wed 9 Dec", "Wed 6 Jan 2027" outside now's year;
+  // longDay "Wednesday 9 December".
+  function dayMonth(d, zone) {
+    if (!valid(d)) return '';
+    const at = zoned(d, zone);
+    return at.day + ' ' + MONTHS[at.month];
+  }
+  function weekdayDayMonth(d, zone, now) {
+    if (!valid(d)) return '';
+    const at = zoned(d, zone);
+    const base = DAYS[at.weekday] + ' ' + at.day + ' ' + MONTHS[at.month];
+    return at.year === zoned(now, zone).year ? base : base + ' ' + at.year;
+  }
+  function longDay(d, zone) {
+    if (!valid(d)) return '';
+    const at = zoned(d, zone);
+    return WEEKDAYS[at.weekday] + ' ' + at.day + ' ' + FULL_MONTHS[at.month];
+  }
+
+  // stamp is "19 Oct, 9:40 pm": a day and its clock.
+  function stamp(d, zone, locale) {
+    if (!valid(d)) return '';
+    return dayMonth(d, zone) + ', ' + clock(d, zone, locale);
+  }
+
+  // compactAgo is the site's freshness age: "just now", "5 min ago", "2 h ago", "3 d ago", then
+  // the date past 30 days ("1 Oct", UTC as the site writes it). A time ahead of the clock is
+  // "just now".
+  function compactAgo(d, now) {
+    if (!valid(d)) return '';
+    const elapsed = Math.max(0, now.getTime() - d.getTime());
+    if (elapsed < MINUTE_MS) return 'just now';
+    if (elapsed < HOUR_MS) return Math.floor(elapsed / MINUTE_MS) + ' min ago';
+    if (elapsed < DAY_MS) return Math.floor(elapsed / HOUR_MS) + ' h ago';
+    const days = Math.floor(elapsed / DAY_MS);
+    return days < AGO_CEILING_DAYS ? days + ' d ago' : dayMonth(d, 'UTC');
+  }
+
+  const sameDay = (a, b, zone) => {
+    const x = zoned(a, zone);
+    const y = zoned(b, zone);
+    return x.year === y.year && x.month === y.month && x.day === y.day;
+  };
+
+  // when is "Today 8:14 pm", "Yesterday 8:14 pm" or "Tue 14 Oct, 8:14 pm".
+  function when(iso, now, words, locale, zone) {
+    const d = new Date(iso);
+    if (!valid(d)) return '';
+    const time = clock(d, zone, locale);
+    if (sameDay(d, now, zone)) return words.today + ' ' + time;
+    if (sameDay(d, new Date(now.getTime() - DAY_MS), zone)) return words.yesterday + ' ' + time;
+    return weekdayDayMonth(d, zone, now) + ', ' + time;
+  }
+
+  // lastPlayed is "Last played 7:42 pm" today, "Last played 15 Oct, 7:42 pm" another day, and
+  // "Not played yet" when the time is not known.
+  function lastPlayed(iso, now, words, locale, zone) {
     const d = iso ? new Date(iso) : null;
-    if (!d || Number.isNaN(d.getTime())) return words.notPlayed;
-    const clock = pad(d.getHours()) + ':' + pad(d.getMinutes());
-    if (sameDay(d, now)) return words.lastPlayed + ' ' + clock;
-    return words.lastPlayed + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + clock;
+    if (!valid(d)) return words.notPlayed;
+    if (sameDay(d, now, zone)) return words.lastPlayed + ' ' + clock(d, zone, locale);
+    return words.lastPlayed + ' ' + stamp(d, zone, locale);
   }
 
-  // ago is how long since iso, in the Addon row's words: minutes under
-  // an hour, the clock later the same day, then yesterday and days.
-  // Unreadable time is an empty string.
-  function ago(iso, now, words) {
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return '';
-    const mins = Math.floor((now.getTime() - d.getTime()) / 60000);
-    if (mins < 1) return words.lessThanMinute;
-    if (mins < 2) return words.oneMinute;
-    if (mins < 60) return words.minutes(mins);
-    if (sameDay(d, now)) return words.today(pad(d.getHours()) + ':' + pad(d.getMinutes()));
-    const days = Math.round((new Date(now.getFullYear(), now.getMonth(), now.getDate()) -
-      new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 86400000);
-    return days <= 1 ? words.yesterday : words.days(days);
+  // ago is how long since iso, the site's compact age; an unreadable time is an empty string.
+  function ago(iso, now) {
+    return compactAgo(new Date(iso), now);
   }
 
   // creditText is the suffix after a report's zone: who it is credited to,
@@ -192,10 +270,9 @@ const FORMAT = (() => {
   }
 
   // checkedLine is "Checked just now · 1 build for Bow Jackzon", or
-  // "... · nothing new"; the time is the Addon row's words.
-  function checkedLine(checked, now, words, agoWords) {
-    const mins = Math.floor((now.getTime() - new Date(checked.at).getTime()) / 60000);
-    const when = mins < 1 ? words.checkedJustNow : ago(checked.at, now, agoWords);
+  // "... · nothing new"; the time is the site's compact age.
+  function checkedLine(checked, now, words) {
+    const when = ago(checked.at, now);
     const found = checked.new_builds > 0
       ? words.checkedBuilds(checked.new_builds, (checked.for || []).map(spaced))
       : words.checkedNothing;
@@ -273,7 +350,7 @@ const FORMAT = (() => {
     return { lines, offers };
   }
 
-  return { addonRows, addonSummary, usualCredit, fightRows, pathTruncate, pathBudget, reportCredit, saveStrip, when, lastPlayed, ago, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
+  return { addonRows, addonSummary, usualCredit, fightRows, pathTruncate, pathBudget, reportCredit, saveStrip, when, lastPlayed, ago, clock, dayMonth, weekdayDayMonth, longDay, stamp, compactAgo, SITE_LOCALE, creditText, currentReport, advancedView, checker, checkedLine, characterLabel, characterValue, automaticLabel, countdown, secondsLeft, expiryShare, lastMinute };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;

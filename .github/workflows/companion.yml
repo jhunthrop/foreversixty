@@ -8,7 +8,7 @@ on:
     branches: [main, 'land/**']
     tags: ['companion-v*']
   pull_request:
-    paths: ['companion/**', 'logs/**', 'docs/contracts/**', '.github/workflows/companion.yml', 'tools/package-mac-companion.sh']
+    paths: ['companion/**', 'logs/**', 'docs/contracts/**', 'apps/shared/formats.json', '.github/workflows/companion.yml', 'tools/package-mac-companion.sh']
   workflow_dispatch:
     inputs:
       release:
@@ -61,7 +61,7 @@ jobs:
           fi
           if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE" 2>/dev/null \
              && ! git diff --name-only "$BEFORE" "$GITHUB_SHA" \
-                  | grep -qE '^(companion/|logs/|docs/contracts/|\.github/workflows/companion\.yml|tools/package-mac-companion\.sh)'; then
+                  | grep -qE '^(companion/|logs/|docs/contracts/|apps/shared/formats\.json|\.github/workflows/companion\.yml|tools/package-mac-companion\.sh)'; then
             echo "companion=false" >> "$GITHUB_OUTPUT"
             echo "nothing the companion is built from changed; the test job is skipped"
           else
@@ -129,6 +129,14 @@ jobs:
             echo "coverage ${total}% is under the 80% floor"
             exit 1
           }
+      # The window's formatters (ui/format.js) replay the house formats every surface shares,
+      # apps/shared/formats.json; nothing else runs the window's JavaScript tests.
+      - uses: actions/setup-node@v4
+        if: vars.LAUNCH_MODE != 'true'
+        with: { node-version-file: web/.node-version }
+      - name: the window's formatters
+        if: vars.LAUNCH_MODE != 'true'
+        run: node --test ui/format.test.js
       - name: the window still compiles
         if: vars.LAUNCH_MODE != 'true'
         # Nothing here runs it; this only proves the cgo build is not

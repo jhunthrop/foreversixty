@@ -1,6 +1,8 @@
 package app_test
 
 import (
+	"encoding/json"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -29,11 +31,10 @@ func TestTheAddonCopyIsTheDesignersWords(t *testing.T) {
 	}
 }
 
-func TestTheAddonLineSaysHowLongAgoInLocalTimeAndWhatBecameOfTheSim(t *testing.T) {
-	local := time.FixedZone("EST", -5*3600)
-	now := time.Date(2026, 11, 4, 18, 0, 0, 0, local)
+func TestTheAddonLineSaysHowLongAgoAndWhatBecameOfTheSim(t *testing.T) {
+	now := time.Date(2026, 11, 4, 18, 0, 0, 0, time.FixedZone("EST", -5*3600))
 	at := func(d time.Duration) time.Time { return now.Add(-d) }
-	seenToday := time.Date(2026, 11, 4, 19, 3, 0, 0, time.UTC) // 14:03 in EST
+	seen := at(70 * time.Second)
 
 	for _, c := range []struct {
 		name  string
@@ -42,22 +43,51 @@ func TestTheAddonLineSaysHowLongAgoInLocalTimeAndWhatBecameOfTheSim(t *testing.T
 		want  string
 	}{
 		{"no ack", time.Time{}, addon.SimQueued, app.CopyNeverSynced},
-		{"just now", at(20 * time.Second), "", "Last synced less than a minute ago"},
-		{"a minute", at(70 * time.Second), "", "Last synced 1 minute ago"},
-		{"minutes", at(4 * time.Minute), "", "Last synced 4 minutes ago"},
-		{"under an hour", at(59 * time.Minute), "", "Last synced 59 minutes ago"},
-		{"later today", seenToday, "", "Last synced 14:03"},
-		{"yesterday", time.Date(2026, 11, 3, 19, 3, 0, 0, time.UTC), "", "Last synced yesterday"},
-		{"a few days", at(3*24*time.Hour + time.Hour), "", "Last synced 3 days ago"},
-		{"eighteen days", at(18 * 24 * time.Hour), "", "Last synced 18 days ago"},
-		{"queued", seenToday, addon.SimQueued, "Last synced 14:03" + app.CopySeparator + app.CopySimQueued},
-		{"premium", seenToday, addon.SimNeedsPremium, "Last synced 14:03" + app.CopySeparator + app.CopySimNeedsPremium},
-		{"duplicate", seenToday, addon.SimDuplicate, "Last synced 14:03" + app.CopySeparator + app.CopySimDuplicate},
-		{"invalid", seenToday, addon.SimInvalid, "Last synced 14:03" + app.CopySeparator + app.CopySimInvalid},
-		{"a state with no words", seenToday, "unknown_character", "Last synced 14:03"},
+		{"just now", at(20 * time.Second), "", "Last synced just now"},
+		{"a minute", seen, "", "Last synced 1 min ago"},
+		{"under an hour", at(59 * time.Minute), "", "Last synced 59 min ago"},
+		{"hours", at(5 * time.Hour), "", "Last synced 5 h ago"},
+		{"a few days", at(3*24*time.Hour + time.Hour), "", "Last synced 3 d ago"},
+		{"a month", at(40 * 24 * time.Hour), "", "Last synced 25 Sep"},
+		{"queued", seen, addon.SimQueued, "Last synced 1 min ago" + app.CopySeparator + app.CopySimQueued},
+		{"premium", seen, addon.SimNeedsPremium, "Last synced 1 min ago" + app.CopySeparator + app.CopySimNeedsPremium},
+		{"duplicate", seen, addon.SimDuplicate, "Last synced 1 min ago" + app.CopySeparator + app.CopySimDuplicate},
+		{"invalid", seen, addon.SimInvalid, "Last synced 1 min ago" + app.CopySeparator + app.CopySimInvalid},
+		{"a state with no words", seen, "unknown_character", "Last synced 1 min ago"},
 	} {
 		if got := app.AddonLine(c.seen, c.state, now); got != c.want {
 			t.Errorf("%s: AddonLine = %q, want %q", c.name, got, c.want)
+		}
+	}
+}
+
+// formatsPath is the house formats every surface replays.
+const formatsPath = "../../../apps/shared/formats.json"
+
+// The Addon row's age is the site's compact age, case for case (apps/shared/formats.json).
+func TestTheAddonLineAgeIsTheSitesCompactAge(t *testing.T) {
+	raw, err := os.ReadFile(formatsPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var f struct {
+		Relative struct {
+			Now        time.Time `json:"now"`
+			CompactAgo []struct {
+				In  time.Time `json:"in"`
+				Out string    `json:"out"`
+			} `json:"compact_ago"`
+		} `json:"relative"`
+	}
+	if err := json.Unmarshal(raw, &f); err != nil {
+		t.Fatal(err)
+	}
+	if len(f.Relative.CompactAgo) == 0 {
+		t.Fatalf("%s has no compact_ago cases", formatsPath)
+	}
+	for _, c := range f.Relative.CompactAgo {
+		if got, want := app.AddonLine(c.In, "", f.Relative.Now), app.CopyLastSynced+" "+c.Out; got != want {
+			t.Errorf("AddonLine(%s) = %q, want %q", c.In, got, want)
 		}
 	}
 }

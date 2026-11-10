@@ -63,15 +63,6 @@ const COPY = {
     },
     // The Last sync row's sent line; the other lines come from the snapshot.
     lastSyncSent: (n, ago) => n + (n === 1 ? ' character, ' : ' characters, ') + ago,
-    // How long ago, in the Addon row's words (copy.go since).
-    ago: {
-      lessThanMinute: 'less than a minute ago',
-      oneMinute: '1 minute ago',
-      minutes: (n) => n + ' minutes ago',
-      today: (clock) => 'today at ' + clock,
-      yesterday: 'yesterday',
-      days: (n) => n + ' days ago',
-    },
     // Who a report is credited to. Two states: the name-versus-realm split of
     // why it is not stays in companion.log, because the player's step is the same.
     credit: {
@@ -87,7 +78,6 @@ const COPY = {
     checkBuilds: 'Fetch my builds from the site',
     checking: 'Fetching…',
     checked: (when, found) => 'Checked ' + when + ' · ' + found,
-    checkedJustNow: 'just now',
     checkedBuilds: (n, who) => n + (n === 1 ? ' build' : ' builds') + (who.length ? ' for ' + who.join(', ') : ''),
     checkedNothing: 'nothing new',
     // The Install the addon into <folder> button while it works. The button's label and the
