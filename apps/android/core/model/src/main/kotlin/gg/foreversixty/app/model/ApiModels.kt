@@ -1463,6 +1463,8 @@ data class GuildRosterRow(
     @SerialName("spec_name") val specName: String? = null,
     /** W3-C16: the spec's talent-tab icon stem, withheld with spec. */
     @SerialName("spec_icon") val specIcon: String? = null,
+    /** The raid group the row fights in (raidspec.Group, as the raid page's sign-ups), withheld with spec. */
+    @SerialName("group") val group: String? = null,
     /** Withheld without gear consent. */
     @SerialName("item_level") val itemLevel: Int? = null,
     /** The export's level, else the addon roster's; null when neither carries one or without gear consent. */

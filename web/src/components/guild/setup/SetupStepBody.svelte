@@ -122,7 +122,7 @@
             type="number"
             min="0"
             max="9"
-            class="rounded-control text-strong h-11 w-[64px] border border-white/15 bg-white/[.045] px-3 text-[15px] font-semibold"
+            class="rounded-field text-strong h-11 w-[64px] border border-white/15 bg-white/[.045] px-3 text-[15px] font-semibold"
             value={rankValue}
             oninput={(e) => (rankDraft = Number((e.currentTarget as HTMLInputElement).value))}
             disabled={busy}

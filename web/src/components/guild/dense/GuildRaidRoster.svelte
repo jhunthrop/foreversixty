@@ -333,7 +333,7 @@
 <style>
   @media (max-width: 1023.98px) {
     .filter-scroll {
-      mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+      mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
       scroll-snap-type: x proximity;
     }
   }
