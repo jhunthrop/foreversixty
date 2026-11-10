@@ -347,7 +347,17 @@ const jsonLd = [
           />
         </ReadingSection>
 
-        {gearExtras !== undefined ? (
+        {gearExtras !== undefined && extrasHtml.trim() === '' ? (
+          <ReadingSection
+            title="Enchants and consumables"
+            anchor="enchants-and-consumables"
+            fold={guidesCopy.foldShow(guidesCopy.foldExtras(extrasRowCount(gearExtras)))}
+          >
+            <div class="guide-extras-solo">
+              <GuideExtrasLane build={build} extras={gearExtras} tips={tipBundle} />
+            </div>
+          </ReadingSection>
+        ) : gearExtras !== undefined ? (
           <ReadingSection
             title="Enchants and consumables"
             anchor="enchants-and-consumables"
@@ -449,6 +459,16 @@ const jsonLd = [
     }
     .guide-page :global(#leveling h3) {
       break-after: avoid;
+    }
+    /* A guide with no enchant prose: its lists side by side across the panel, no empty column. */
+    .guide-page :global(#enchants-and-consumables .ui-rd[data-solo]) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .guide-extras-solo :global(.guide-extras-blocks) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      gap: 28px var(--gap);
     }
   }
   .guide-sw {

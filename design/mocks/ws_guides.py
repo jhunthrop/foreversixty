@@ -176,8 +176,13 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
     if data and b['data']:
         panel = next(p for p in b['data']['panels'] if p['band'] == band_no and p['faction'] == faction)
         items, weapons = [], []
+        main = next((r for r in panel['rows'] if r['slot'] == 'main_hand' and not r.get('empty')), None)
         for r in panel['rows']:
             out = weapons if r['slot'] in ('main_hand', 'off_hand', 'ranged') else items
+            # web listedBisRows: an empty off hand under a two-hander is not listed (the doll greys it)
+            if (r['slot'] == 'off_hand' and r.get('empty') and main
+                    and (r.get('emptyCopy') or '').startswith(f"{main['itemName']} is a two-hander")):
+                continue
             if r.get('empty'):
                 # an empty slot names no item: its line is not a tooltip trigger (the built ItemRow's empty state)
                 out.append(ItemRow(f'<span class="muted">{e(r.get("emptyCopy") or "")}</span>', 1, '<span class="ic" style="width:36px;height:36px"></span>', '', e(r['slotLabel']))
@@ -246,6 +251,9 @@ def extras(g: dict, data: bool = True) -> str:
             groups[-1][1].append(Row(e(r['name']), e(note[:1].upper() + note[1:]), lead=icon(r['icon'], 28) if r.get('icon') else '', link=False))
         blocks = LaneBlock(e(C['enchants']), ench) + ''.join(LaneBlock(e(label), RowsSlim(rows)) for label, rows in groups)
         lane = f'<div class="gblocks" data-wrap-list>{blocks}</div>'   # a whole block wraps under the prose, with its label
+        if not x['prose'].strip():   # [spec].astro: no enchant prose, the lists side by side across the panel
+            return ReadingSection(SEC['enchants-and-consumables'], f'<div class="gextras-solo">{lane}</div>', '',
+                                  'enchants-and-consumables', fold=e(x['fold']))
     return ReadingSection(SEC['enchants-and-consumables'], Prose(x['prose']), lane, 'enchants-and-consumables', fold=e(x['fold']))
 
 
@@ -431,7 +439,7 @@ PAGE_CSS = '''<style>
 .gnotes{display:flex;flex-direction:column;gap:8px}.gnotes p{margin:0}.graces,.gblocks{display:flex;flex-direction:column;gap:28px;min-width:0}.grace{display:flex;flex-direction:column;gap:8px}.grace>.sub-h{padding:0}.graces>p{margin:0}
 .gstat .st .stc{grid-template-columns:0 var(--st-name) var(--st-bar) repeat(var(--n),var(--st-fig))}   /* GuideStatLane: no icon track */
 @media(max-width:1023px){.gstat .st .stc{grid-template-columns:0 minmax(0,1fr) auto}}
-@media(min-width:1280px){#leveling .rd.solo{grid-template-columns:minmax(0,1fr)}#leveling .rd.solo>.rd-prose{columns:2 320px;column-gap:var(--gap)}#leveling .lane-blk{break-inside:avoid;margin-bottom:24px}#leveling li,#leveling p{break-inside:avoid}#leveling h3{break-after:avoid}}   /* [spec].astro: Leveling in two columns */.gblk{display:flex;flex-direction:column}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll .gdoll-f{margin-top:0}
+@media(min-width:1280px){#leveling .rd.solo{grid-template-columns:minmax(0,1fr)}#leveling .rd.solo>.rd-prose{columns:2 320px;column-gap:var(--gap)}#leveling .lane-blk{break-inside:avoid;margin-bottom:24px}#leveling li,#leveling p{break-inside:avoid}#leveling h3{break-after:avoid}#enchants-and-consumables .rd.solo{grid-template-columns:minmax(0,1fr)}.gextras-solo .gblocks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:28px var(--gap)}}   /* [spec].astro: Leveling in two columns; extras with no prose side by side */.gblk{display:flex;flex-direction:column}.gbis{display:flex;flex-direction:column;gap:28px}.gbis>p:not(.gbands,.gtier){margin:0}.rprose:empty+.gdoll .gdoll-f{margin-top:0}
 .gdoll{container-type:inline-size}.gdoll-f{max-width:640px;margin-top:24px}@container (max-width:422.98px){.gdoll-f{display:none}}
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}

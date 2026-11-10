@@ -27,8 +27,9 @@ const PAGE = '/guides/mage/frost';
 const BIS_SPEC = 'mage-frost';
 /** The race the ranker played the Horde 30 band as: every nightly re-rank may move it. */
 const HORDE_30_RACE = raceNameFor(ACTIVE_BUILD, bisBand(BIS_SPEC, 'horde', 30, 'bare').race ?? '');
-/** Every gear slot the BiS lane lists, one ItemRow each (an empty slot keeps its row). */
-const BIS_SLOTS = 17;
+/** Every gear slot the BiS lane lists, one ItemRow each (an empty slot keeps its row), less
+ *  Frost's off hand: its staff takes both hands, and the doll draws that greyed (listedBisRows). */
+const BIS_SLOTS = 16;
 
 /** The main-hand enchant the ranker put on the level 60 raid pick, from the build's enchants.json:
  *  the guide's lane must name the same one (a re-rank onto a two-hander moves it). */

@@ -10,6 +10,7 @@ import { decodeBuildTrees } from './build-tree';
 import type { CollapsedLine } from '../bis/rotation-collapse';
 import {
   clauseOf,
+  joinSpellRuns,
   cutCooldown,
   formatCooldown,
   litTalentsOf,
@@ -867,5 +868,31 @@ describe('raid build rows', () => {
     expect(only.has('Reckless Swings')).toBe(true);
     expect(only.has('Spearing Strike')).toBe(true);
     expect(only.has('Mortal Strike')).toBe(false);
+  });
+});
+
+describe('joinSpellRuns', () => {
+  it('joins a run of one spell and rank into one row, every rule kept in order', () => {
+    const rows = joinSpellRuns([
+      { name: 'Flash Heal', rank: 7, clause: 'On the tank below 35%' },
+      { name: 'Greater Heal', rank: 4, clause: 'On the tank below 80%' },
+      { name: 'Greater Heal', rank: 4, clause: 'On a party member below 65%' },
+      { name: 'Greater Heal', rank: 1, clause: 'On the tank below 50%' },
+      { name: 'Greater Heal', rank: 4, clause: 'On a party member below 35%' },
+    ]);
+    expect(rows.map((row) => `${row.name} ${row.rank}: ${row.clause}`)).toEqual([
+      'Flash Heal 7: On the tank below 35%',
+      'Greater Heal 4: On the tank below 80% · on a party member below 65%',
+      'Greater Heal 1: On the tank below 50%',
+      'Greater Heal 4: On a party member below 35%',
+    ]);
+  });
+
+  it('never joins a raid-build-only row to one every build casts', () => {
+    const rows = joinSpellRuns([
+      { name: 'Slam', clause: 'On cooldown' },
+      { name: 'Slam', clause: 'With Reckless Swings up', raidBuildOnly: true },
+    ]);
+    expect(rows).toHaveLength(2);
   });
 });

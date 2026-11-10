@@ -61,18 +61,27 @@ function conditionWords(run: readonly StepLine[]): string {
   return words.every((step) => step !== null) ? describeSteps(words) : '';
 }
 
-/** Whether the generated words only say again the target a note already names: "Cast on a party
- *  member below 30%." beside the note "on a party member below 30%" (h-guide-spec 2026-11-10). */
-function restatesNotes(words: string, notes: readonly string[]): boolean {
-  const target = (words.replace(/^Cast\s+/, '').split(/[,.]/)[0] ?? '').trim().toLowerCase();
-  return target !== '' && notes.some((note) => note.toLowerCase().includes(target));
+/**
+ * The generated words with what a note already says taken out (h-guide-spec 2026-11-10): the
+ * first clause is the target ("Cast on a party member below 30%"). A note that names that target
+ * and says more ("on a party member below 65% while mana holds") is the rule in the guide's own
+ * words, so the words go; a note that is the target alone keeps the words' later clauses.
+ */
+function wordsBeyondNotes(words: string, notes: readonly string[]): string {
+  const [head = '', ...rest] = words.replace(/^Cast\s+/, '').split(/,\s*/);
+  const target = head.replace(/\.$/, '').trim().toLowerCase();
+  const naming = notes.filter((note) => target !== '' && note.toLowerCase().includes(target));
+  if (naming.length === 0) return words;
+  if (naming.some((note) => note.trim().toLowerCase() !== target)) return '';
+  const tail = rest.join(', ').trim();
+  return tail === '' ? '' : tail[0]!.toUpperCase() + tail.slice(1);
 }
 
 function collapseRun(run: readonly StepLine[]): CollapsedLine {
   const [first] = run;
   const notes = distinctNotes(run);
   const words = conditionWords(run);
-  const condition = [...notes, restatesNotes(words, notes) ? '' : words]
+  const condition = [...notes, words === '' ? '' : wordsBeyondNotes(words, notes)]
     .filter((part) => part !== '')
     .join(' ');
   return {

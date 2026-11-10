@@ -62,11 +62,22 @@ export interface GuideBis {
   panels: GuideBisPanel[];
 }
 
+/** The rows the lane lists: every slot but an empty off hand under a two-hander, which the doll
+ *  draws greyed beside it; its row would only say the two-hander takes both hands. */
+export function listedBisRows(panel: Pick<GuideBisPanel, 'rows'>): GuideBisRow[] {
+  const mainHand = panel.rows.find((row) => row.slot === 'main_hand' && !row.empty);
+  const covered =
+    mainHand?.itemName === undefined ? undefined : bisCopy.twoHanderEquippedNamed(mainHand.itemName);
+  return panel.rows.filter(
+    (row) => !(row.slot === 'off_hand' && row.empty && covered !== undefined && row.emptyCopy === covered),
+  );
+}
+
 /** How many pieces the table opens on (its default band and faction): the phone fold's count. */
 export function bisPieceCount(bis: GuideBis | undefined): number {
   if (bis === undefined) return 0;
   const open = bis.panels.find((p) => p.band === bis.defaultBand && p.faction === bis.defaultFaction);
-  return open?.rows.length ?? 0;
+  return open === undefined ? 0 : listedBisRows(open).length;
 }
 
 function rowFor(row: RowView): GuideBisRow {

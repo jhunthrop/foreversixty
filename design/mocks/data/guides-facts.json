@@ -16184,7 +16184,7 @@
     "prose": "<p><span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13454\">Greater Arcane Elixir</span> is your elixir. Bring Major Mana Potions and Demonic Runes to every boss; you will use both.</p>\n",
     "fold": "Show 11 enchants and consumables"
    },
-   "bisFold": "Show 17 items",
+   "bisFold": "Show 16 items",
    "races": {
     "rows": [
      {
@@ -22296,16 +22296,7 @@
        "name": "Flash Heal",
        "rank": 7,
        "icon": "spell_holy_flashheal",
-       "clause": "On the tank below 35%",
-       "tipKey": "spell:10917",
-       "rankText": "Rank 7"
-      },
-      {
-       "spellId": 10917,
-       "name": "Flash Heal",
-       "rank": 7,
-       "icon": "spell_holy_flashheal",
-       "clause": "On a party member below 30%",
+       "clause": "On the tank below 35% · on a party member below 30%",
        "tipKey": "spell:10917",
        "rankText": "Rank 7"
       },
@@ -22323,34 +22314,7 @@
        "name": "Greater Heal",
        "rank": 4,
        "icon": "spell_holy_greaterheal",
-       "clause": "On the tank below 80% while mana % is over boss health %",
-       "tipKey": "spell:10965",
-       "rankText": "Rank 4"
-      },
-      {
-       "spellId": 10965,
-       "name": "Greater Heal",
-       "rank": 4,
-       "icon": "spell_holy_greaterheal",
-       "clause": "On a party member below 65% while mana holds",
-       "tipKey": "spell:10965",
-       "rankText": "Rank 4"
-      },
-      {
-       "spellId": 10965,
-       "name": "Greater Heal",
-       "rank": 4,
-       "icon": "spell_holy_greaterheal",
-       "clause": "On the tank below 50% when mana % is under boss health %",
-       "tipKey": "spell:10965",
-       "rankText": "Rank 4"
-      },
-      {
-       "spellId": 10965,
-       "name": "Greater Heal",
-       "rank": 4,
-       "icon": "spell_holy_greaterheal",
-       "clause": "On a party member below 35% when mana is low",
+       "clause": "On the tank below 80% while mana % is over boss health % · on a party member below 65% while mana holds · on the tank below 50% when mana % is under boss health % · on a party member below 35% when mana is low",
        "tipKey": "spell:10965",
        "rankText": "Rank 4"
       },
@@ -22359,37 +22323,7 @@
        "name": "Greater Heal",
        "rank": 1,
        "icon": "spell_holy_greaterheal",
-       "clause": "On the tank below 80% while mana % is over boss health %",
-       "tipKey": "spell:2060",
-       "cheapRank": true,
-       "rankText": "Rank 1 (cheap rank)"
-      },
-      {
-       "spellId": 2060,
-       "name": "Greater Heal",
-       "rank": 1,
-       "icon": "spell_holy_greaterheal",
-       "clause": "On a party member below 65% while mana holds",
-       "tipKey": "spell:2060",
-       "cheapRank": true,
-       "rankText": "Rank 1 (cheap rank)"
-      },
-      {
-       "spellId": 2060,
-       "name": "Greater Heal",
-       "rank": 1,
-       "icon": "spell_holy_greaterheal",
-       "clause": "On the tank below 50% when mana % is under boss health %",
-       "tipKey": "spell:2060",
-       "cheapRank": true,
-       "rankText": "Rank 1 (cheap rank)"
-      },
-      {
-       "spellId": 2060,
-       "name": "Greater Heal",
-       "rank": 1,
-       "icon": "spell_holy_greaterheal",
-       "clause": "On a party member below 35% when mana is low",
+       "clause": "On the tank below 80% while mana % is over boss health % · on a party member below 65% while mana holds · on the tank below 50% when mana % is under boss health % · on a party member below 35% when mana is low",
        "tipKey": "spell:2060",
        "cheapRank": true,
        "rankText": "Rank 1 (cheap rank)"
@@ -22399,34 +22333,7 @@
        "name": "Heal",
        "rank": 4,
        "icon": "spell_holy_heal02",
-       "clause": "On the tank below 80% while mana % is over boss health %",
-       "tipKey": "spell:6064",
-       "rankText": "Rank 4"
-      },
-      {
-       "spellId": 6064,
-       "name": "Heal",
-       "rank": 4,
-       "icon": "spell_holy_heal02",
-       "clause": "On a party member below 65% while mana holds",
-       "tipKey": "spell:6064",
-       "rankText": "Rank 4"
-      },
-      {
-       "spellId": 6064,
-       "name": "Heal",
-       "rank": 4,
-       "icon": "spell_holy_heal02",
-       "clause": "On the tank below 50% when mana % is under boss health %",
-       "tipKey": "spell:6064",
-       "rankText": "Rank 4"
-      },
-      {
-       "spellId": 6064,
-       "name": "Heal",
-       "rank": 4,
-       "icon": "spell_holy_heal02",
-       "clause": "On a party member below 35% when mana is low",
+       "clause": "On the tank below 80% while mana % is over boss health % · on a party member below 65% while mana holds · on the tank below 50% when mana % is under boss health % · on a party member below 35% when mana is low",
        "tipKey": "spell:6064",
        "rankText": "Rank 4"
       }
@@ -24944,7 +24851,7 @@
     "prose": "<p><span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13511\">Flask of Distilled Wisdom</span> for the mana, <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"250341\">Greater Mageblood Elixir</span>, <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"250333\">Greater Cleric’s Elixir</span> and <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"250338\">Elixir of Sages</span>, <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"249870\">Sage’s Tea</span> for food, <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"20748\">Brilliant Mana Oil</span> on the weapon, and Major Mana Potions with Demonic Runes in the fight. Forever’s Major Mender’s Potions add healing for 30 seconds, but they share the potion cooldown with your mana potion, and on a long fight the mana is worth more.</p>\n",
     "fold": "Show 13 enchants and consumables"
    },
-   "bisFold": "Show 17 items",
+   "bisFold": "Show 16 items",
    "races": {
     "rows": [
      {
@@ -28137,7 +28044,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 0,
-    "priority": 10,
+    "priority": 9,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28228,7 +28135,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 1,
-    "priority": 10,
+    "priority": 5,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28267,7 +28174,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 2,
-    "priority": 12,
+    "priority": 10,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28280,7 +28187,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 1,
-    "priority": 18,
+    "priority": 8,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28293,7 +28200,7 @@
    "raid_build": true,
    "rotation": {
     "opener": 2,
-    "priority": 9,
+    "priority": 8,
     "cooldowns": 5
    },
    "stat_rows": 7,
@@ -28345,7 +28252,7 @@
    "raid_build": true,
    "rotation": {
     "opener": 2,
-    "priority": 8,
+    "priority": 7,
     "cooldowns": 2
    },
    "stat_rows": 0,
@@ -28371,7 +28278,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 2,
-    "priority": 11,
+    "priority": 10,
     "cooldowns": 3
    },
    "stat_rows": 0,

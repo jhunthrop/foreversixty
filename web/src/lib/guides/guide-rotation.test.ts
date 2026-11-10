@@ -109,7 +109,12 @@ describe('every guide card', () => {
       const top = bandTopLevel(60);
       const entry = rotationEntryFor(loadRotations(BUILD, card.spec) ?? [], top)!;
       const kept = rotationLinesFor(entry, BUILD, card.classSlug, card.spec, top, runs);
-      expect(lists.priority.length, `${card.label} priority`).toBe(kept.length);
+      // A run of one spell and rank reads as one row (joinSpellRuns): count the runs.
+      const runsOfKept = kept.filter(
+        (line, i) => i === 0 || line.name !== kept[i - 1]!.name || line.rank !== kept[i - 1]!.rank,
+      );
+      expect(lists.priority.length, `${card.label} priority`).toBeLessThanOrEqual(kept.length);
+      expect(lists.priority.length, `${card.label} priority`).toBeGreaterThanOrEqual(runsOfKept.length);
     }
   });
 

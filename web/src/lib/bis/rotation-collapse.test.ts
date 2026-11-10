@@ -118,6 +118,15 @@ describe('collapseRuns', () => {
     expect(rows[0].condition).toBe('on a party member below 30%');
   });
 
+  it('keeps a generated clause past the target when the note names the target alone', () => {
+    const rows = collapseRuns([
+      step('Heal', 4, 'on the tank', 'the tank'),
+      step('Heal', 4, 'on the tank', 'a party member below 40%'),
+    ]);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].condition).toBe('on the tank Then a party member below 40%.');
+  });
+
   it('leaves a single step as it was, without generated words', () => {
     const [row] = collapseRuns([step('Renew', 3, 'Stays on the tank.', 'the tank')]);
     expect(row.condition).toBe('Stays on the tank.');
