@@ -38,7 +38,7 @@
 <div class="home-in" data-testid="home-signed-in-root">
   {#if !settled}
     <div data-testid="home-loading" role="status">
-      <PageHeader title={homeCopy.loadingTitle} art="hero" pending testid="home-head-loading">
+      <PageHeader title={homeCopy.loadingTitle} art="hero" pending secondHead testid="home-head-loading">
         {#snippet crest()}<span class="skeleton-block block size-12 rounded-full" aria-hidden="true"
           ></span>{/snippet}
       </PageHeader>
