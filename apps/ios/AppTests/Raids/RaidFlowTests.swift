@@ -13,11 +13,12 @@ struct RaidFlowParityTests {
     typealias T = RaidFlowTestData
 
     private func root(_ content: RaidRootContent, _ screen: String, testName: String = #function) async throws {
-        let view = RaidRootView(content: content).environment(\.itemIconSource, RepoItemIconSource())
+        let view = RaidRootView(content: content).environment(\.itemIconSource, RepoItemIconSource()).environment(\.raidIconBuild, HomeFlowTestData.build)
         try await ParityCheck.assert(view, screen: screen, size: Self.device, testName: testName)
     }
 
     @Test("ios-raid") func member() async throws { try await root(T.member(), "raid") }
+    @Test("ios-raid-signup") func signup() async throws { try await root(T.member(late: true), "raid-signup") }
     @Test("ios-raid-officer") func officer() async throws { try await root(T.member(officer: true), "raid-officer") }
     @Test("ios-raid-live") func live() async throws { try await root(T.live, "raid-live") }
     @Test("ios-raid-no-raid") func noRaid() async throws { try await root(T.noRaid, "raid-no-raid") }

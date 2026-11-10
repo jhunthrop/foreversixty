@@ -59,7 +59,8 @@ struct RaidRootComposer {
         return RaidGuildContent(
             night: night,
             next: night == nil ? presenter.nextRaid(inputs) : nil,
-            ready: night == nil ? nil : presenter.ready(extras.night?.ready ?? extras.ready),
+            coming: night == nil ? inputs.raid.map(presenter.coming) ?? [] : [],
+            ready: presenter.ready(extras.night?.ready ?? extras.ready),
             needsYou: presenter.needsYou(inputs, raid: inputs.raid),
             pages: presenter.pages(
                 guild: content.head.name, members: members ?? content.head.members, atCap: atCap, planned: content.planned,

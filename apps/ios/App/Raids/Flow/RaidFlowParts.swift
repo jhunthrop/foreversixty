@@ -44,13 +44,11 @@ struct ReadyChecklistView: View {
     let content: ReadyListContent
     let open: (URL) -> Void
 
-    static let markSize: CGFloat = 22
-
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(content.rows) { row in
                 FSRow(title: row.title, sub: row.line, inset: 0, trailPlacement: .below) {
-                    mark(row.mark)
+                    ReadyMark(mark: row.mark)
                 } trail: {
                     if let fix = row.fix {
                         RaidLinkButton(title: fix) { if let link = row.link { open(link) } }
@@ -61,17 +59,24 @@ struct ReadyChecklistView: View {
             if let stamp = content.stamp { SmallText(stamp).padding(.top, RaidFlowSpacing.line) }
         }
     }
+}
 
-    private func mark(_ mark: ReadyRowContent.Mark) -> some View {
+/// A ready-check mark on its filled disc: green ticked, red missing, gold to do; its word to VoiceOver.
+struct ReadyMark: View {
+    let mark: ReadyRowContent.Mark
+
+    static let size: CGFloat = 22
+
+    var body: some View {
         let (glyph, color, word): (String, Color, String) = switch mark {
         case .ok: ("checkmark", FSColor.kill, Copy.raidReadyOk)
         case .warn: ("exclamationmark", FSColor.gold, Copy.raidReadyWarn)
         case .miss: ("xmark", FSColor.wipe, Copy.raidReadyMiss)
         }
-        return Image(systemName: glyph)
+        Image(systemName: glyph)
             .font(.system(size: 11, weight: .heavy))
             .foregroundStyle(FSColor.bg)
-            .frame(width: Self.markSize, height: Self.markSize)
+            .frame(width: Self.size, height: Self.size)
             .background(color, in: .circle)
             .accessibilityLabel(word)
     }

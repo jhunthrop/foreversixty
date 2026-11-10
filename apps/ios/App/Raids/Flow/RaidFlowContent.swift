@@ -64,15 +64,28 @@ struct ReadyListContent: Equatable {
 /// Raid night on the Raid tab (F2): the live card, then who is in by role with names.
 struct RaidNightRootContent: Equatable {
     let live: RaidLiveContent
-    let roles: [HomeLine]
+    let roles: [RoleLineContent]
+}
+
+/// One role of Who is coming: `Healers`, `5` of `8`, the names (and the short role's gap).
+struct RoleLineContent: Equatable, Identifiable {
+    let role: String
+    let have: Int
+    let want: Int?
+    let names: String
+
+    var id: String { role }
 }
 
 /// The Raid tab for a guild member.
 struct RaidGuildContent: Equatable {
     /// Raid night leads while a raid is live.
     var night: RaidNightRootContent?
-    /// The next raid's card; nil with no raid planned (and while raid night leads).
+    /// The next raid's head; nil with no raid planned (and while raid night leads).
     var next: NextRaidContent?
+    /// Who is coming to the next raid.
+    var coming: [RoleLineContent] = []
+    /// Before you pull (the next raid) or the Ready check (raid night).
     var ready: ReadyListContent?
     var needsYou: NeedsYouContent?
     var pages: GuildPagesContent

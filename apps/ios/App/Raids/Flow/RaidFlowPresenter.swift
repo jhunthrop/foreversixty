@@ -103,10 +103,19 @@ struct RaidFlowPresenter {
     func nightRoot(_ inputs: HomeFlowInputs, night: RaidNightSummary) -> RaidNightRootContent? {
         guard let live = home.raidLive(inputs) else { return nil }
         let target = inputs.raid?.compTarget
-        let roles = [
-            roleLine(Copy.raidGroupTanks, night.coming.tanks, want: target?.tanks, lateShown: true, short: false),
-            roleLine(Copy.raidGroupHealers, night.coming.healers, want: target?.healers, lateShown: true, short: false),
+        let groups: [(label: String, people: [RaidNightPerson], want: Int?)] = [
+            (Copy.raidGroupTanks, night.coming.tanks, target?.tanks),
+            (Copy.raidGroupHealers, night.coming.healers, target?.healers),
+            (Copy.homeRaidDamage, night.coming.damage, target.map { $0.melee + $0.ranged }),
         ]
+        let roles = groups.map { group in
+            let names = Self.names(group.people.map { ($0.name, $0.state, $0.lateMinutes) })
+            let gap = group.want.map { $0 - group.people.count }.flatMap { $0 > 0 ? $0 : nil }
+            return RoleLineContent(
+                role: group.label, have: group.people.count, want: group.want,
+                names: gap.map { Copy.raidTabShort(names: names, n: $0) } ?? names
+            )
+        }
         return RaidNightRootContent(live: RaidLiveContent(eyebrow: live.eyebrow, line: live.line), roles: roles)
     }
 
@@ -122,6 +131,48 @@ struct RaidFlowPresenter {
         if short, let want, want > people.count { line = Copy.raidNightShort(names: line, n: want - people.count) }
         let title = want.map { Copy.raidNightRole(role: label, n: people.count, want: $0) } ?? label
         return HomeLine(title: title, sub: line)
+    }
+
+    /// Who is coming (spec 4.2): tanks, healers and damage with the names of those In or Late (yours
+    /// first, a Late with its minutes), the count against the comp, and the short role's gap.
+    func coming(_ raid: RaidView) -> [RoleLineContent] {
+        let target = raid.compTarget
+        let short = RaidShortRole.of(raid)
+        let coming = raid.signups
+            .filter { SignupState(rawValue: $0.state)?.isComing == true }
+            .sorted { $0.own && !$1.own }
+        let groups: [(wire: String, label: String, want: Int?)] = [
+            ("tank", Copy.raidGroupTanks, target?.tanks),
+            ("healer", Copy.raidGroupHealers, target?.healers),
+            ("dps", Copy.homeRaidDamage, target.map { $0.melee + $0.ranged }),
+        ]
+        return groups.compactMap { group in
+            let people = coming.filter { Self.roleGroup($0.role) == group.wire }
+            guard !people.isEmpty || group.want != nil else { return nil }
+            let names = Self.names(people.map { ($0.name, $0.state, $0.lateMinutes) })
+            let gap = short.flatMap { $0.role == group.wire ? $0.missing : nil }
+            return RoleLineContent(
+                role: group.label, have: people.count, want: group.want,
+                names: gap.map { Copy.raidTabShort(names: names, n: $0) } ?? names
+            )
+        }
+    }
+
+    /// Up to five names in full; more read `Thandrel, Kaelra, Thalrin and 8 more`.
+    static func names(_ people: [(name: String, state: String, lateMinutes: Int?)]) -> String {
+        let words = people.map { person in
+            guard person.state == SignupState.late.rawValue, let minutes = person.lateMinutes else { return person.name }
+            return Copy.raidTabLateNote(name: person.name, n: minutes)
+        }
+        guard words.count > namesInFull else { return words.joined(separator: ", ") }
+        return Copy.raidTabAndMore(names: words.prefix(namedWhenLong).joined(separator: ", "), n: words.count - namedWhenLong)
+    }
+
+    static func roleGroup(_ role: String) -> String {
+        switch role {
+        case "tank", "healer": role
+        default: "dps"
+        }
     }
 
     /// The Ready check (F2): every item, the export's age; nil without an export.

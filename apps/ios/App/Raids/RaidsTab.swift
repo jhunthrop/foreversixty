@@ -157,13 +157,11 @@ struct RaidsTab: View {
         NavigationStack(path: $router.path) {
             RaidRootView(content: rootContent, actions: rootActions)
                 .refreshable { await reload() }
-                .navigationTitle(Copy.tabRaids)
-                .toolbarTitleDisplayMode(.inline)
+                // Round 5 on iOS (m-ios-raid): the tab's large title on the band, under the profile button.
+                .navigationTitle(AppTab.raid.title)
+                .toolbarTitleDisplayMode(.large)
                 .tabRootChrome()
                 .searchButton()
-                // The bar matches Home: no title beside the profile button (the title still names
-                // the back button on a pushed screen).
-                .toolbar(removing: .title)
                 .navigationDestination(for: RaidsRoute.self) { destination($0) }
         }
         .environment(\.raidIconBuild, iconBuild)

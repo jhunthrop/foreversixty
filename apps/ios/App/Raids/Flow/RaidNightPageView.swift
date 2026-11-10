@@ -36,7 +36,7 @@ struct RaidNightPageView: View {
             }
             FSSection(Copy.raidYourSignup) {
                 VStack(alignment: .leading, spacing: 0) {
-                    RaidAnswerButtons(selected: content.selected, answer: actions.answer)
+                    RaidAnswerButtons(selected: content.selected, small: true, answer: actions.answer)
                     if content.lateOpen { LateMinutesChips(late: actions.late) }
                     if let error { SmallText(error, color: FSColor.wipe).padding(.top, RaidFlowSpacing.line) }
                 }

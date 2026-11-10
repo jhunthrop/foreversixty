@@ -29,7 +29,7 @@ struct ApplicantView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            if content.accepted == nil { decision }
+            if content.accepted == nil { decision.parityPinned() }
         }
     }
 
@@ -105,6 +105,8 @@ struct ApplicantFigures: View {
 
     static let columnGap: CGFloat = 24
     static let rowGap: CGFloat = 20
+    /// The figure's 32 pt line (Open Sans's natural line at 28 is 38, M0's metrics).
+    @ScaledMetric(relativeTo: .title2) private var figureLine: CGFloat = 32
 
     var body: some View {
         Grid(alignment: .leading, horizontalSpacing: Self.columnGap, verticalSpacing: Self.rowGap) {
@@ -123,7 +125,7 @@ struct ApplicantFigures: View {
                 .type(TypeRole(face: FSFont.bodyBold, size: 12, lineHeight: 16, scalesWith: .caption))
                 .foregroundStyle(FSColor.muted)
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(figure.value).type(FSType.figure).foregroundStyle(FSColor.strong)
+                Text(figure.value).type(FSType.figure).foregroundStyle(FSColor.strong).frame(height: figureLine)
                 if let unit = figure.unit {
                     Text(unit).font(.custom(FSFont.bodySemibold, size: 13, relativeTo: .footnote)).foregroundStyle(FSColor.muted)
                 }

@@ -20,21 +20,36 @@ enum RaidFlowTestData {
         applicants: HomeLine(title: "1 applicant", sub: "Mirelle, Holy Priest 60, 2 min ago")
     )
 
-    static func member(officer: Bool = false) -> RaidRootContent {
+    /// The round-5 head (m-ios-raid): In, or Late with 30 minutes chosen (m-ios-signup).
+    static func head(late: Bool = false) -> NextRaidContent {
+        var raid = H.raid(answered: late ? .late : .signedIn, late: late)
+        raid.headLine = "8:00 pm CST · pull in 2 h 48 min"
+        raid.who = "As Thandrel, Damage"
+        raid.chip = late ? "Late · 30 min" : "In"
+        raid.lateMinutes = late ? 30 : nil
+        return raid
+    }
+
+    static let coming = [
+        RoleLineContent(role: "Tanks", have: 2, want: 2, names: "Grunvald, Brakka"),
+        RoleLineContent(role: "Healers", have: 5, want: 8, names: "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen · 3 short"),
+        RoleLineContent(role: "Damage", have: 11, want: 30, names: "Thandrel, Kaelra, Thalrin and 8 more"),
+    ]
+
+    static func member(officer: Bool = false, late: Bool = false) -> RaidRootContent {
         .guild(RaidGuildContent(
-            next: H.raid(), needsYou: officer ? NeedsYouContent(meta: "6 open", items: Self.officer) : nil, pages: pages
+            next: head(late: late), coming: coming, ready: ready(elixir: true),
+            needsYou: officer ? NeedsYouContent(meta: "6 open", items: Self.officer) : nil, pages: pages
         ))
     }
 
     static let noRaid = RaidRootContent.guild(RaidGuildContent(pages: pages))
 
     static func ready(elixir: Bool) -> ReadyListContent {
-        let attuned = elixir ? "Attuned to Onyxia’s Lair" : "Attuned"
+        let attuned = "Attuned"
         var rows = [ReadyRowContent(key: "attune.onyxias-lair", mark: .ok, title: "Drakefire Amulet", line: attuned, fix: nil, link: nil)]
         if elixir {
-            rows.append(ReadyRowContent(
-                key: "food", mark: .ok, title: "Elixir of the Mongoose", line: "3 in your bags, from the addon’s last export", fix: nil, link: nil
-            ))
+            rows.append(ReadyRowContent(key: "food", mark: .ok, title: "Elixir of the Mongoose", line: "3 in your bags", fix: nil, link: nil))
         }
         rows += [
             ReadyRowContent(key: "flask", mark: .miss, title: "Flask of the Titans", line: "None in your bags", fix: "Auction house", link: nil),
@@ -53,11 +68,14 @@ enum RaidFlowTestData {
                 line: "Pulled 1 h 12 min ago · 18 in, 3 late · you are In as Thandrel, Damage"
             ),
             roles: [
-                HomeLine(title: "Tanks 2 of 2", sub: "Grunvald, Brakka"),
-                HomeLine(title: "Healers 5 of 8", sub: "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late, 15 min)"),
+                RoleLineContent(role: "Tanks", have: 2, want: 2, names: "Grunvald, Brakka"),
+                RoleLineContent(
+                    role: "Healers", have: 5, want: 8, names: "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late · 15 min) · 3 short"
+                ),
+                RoleLineContent(role: "Damage", have: 11, want: 30, names: "Thandrel, Kaelra, Thalrin and 8 more"),
             ]
         ),
-        ready: ready(elixir: false),
+        ready: ready(elixir: true),
         pages: pages
     ))
 
