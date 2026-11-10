@@ -367,9 +367,26 @@ jobs:
             [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
             $bmp.Save("$PWD\captures\$name.png")
           }
-          $shell = New-Object -ComObject WScript.Shell
+          # The window's one button, clicked as a player would: keys sent to the window never
+          # reach the web view inside it. The button sits at the same place in every mode.
+          Add-Type -TypeDefinition @"
+          using System; using System.Runtime.InteropServices;
+          public static class Mouse {
+            public struct Rect { public int Left, Top, Right, Bottom; }
+            [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out Rect r);
+            [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
+            [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+            [DllImport("user32.dll")] public static extern void mouse_event(uint f, uint x, uint y, uint d, UIntPtr e);
+          }
+          "@
           function Press([System.Diagnostics.Process]$p) {
-            $null = $shell.AppActivate($p.Id); Start-Sleep 1; $shell.SendKeys('{ENTER}')
+            $p.Refresh()
+            $h = $p.MainWindowHandle
+            $null = [Mouse]::SetForegroundWindow($h)
+            $r = New-Object Mouse+Rect
+            $null = [Mouse]::GetWindowRect($h, [ref]$r)
+            $null = [Mouse]::SetCursorPos($r.Left + 92, $r.Top + 315)
+            [Mouse]::mouse_event(2, 0, 0, 0, [UIntPtr]::Zero); [Mouse]::mouse_event(4, 0, 0, 0, [UIntPtr]::Zero)
           }
           function State([string]$when) {
             $run = (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -ErrorAction SilentlyContinue).'Forever Sixty'
