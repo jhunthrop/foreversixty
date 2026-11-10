@@ -14,6 +14,42 @@
         "icon": "inv_misc_head_dragon_black"
       },
       {
+        "id": 4170,
+        "kind": "guildsim.passed",
+        "group": "ladder",
+        "title": "Brakka passed you in the guild ladder",
+        "body": "1196 DPS, +12 over your 1184 (Fury Warrior, 60).",
+        "link": "https://foreversixty.gg/app/guild/2",
+        "occurred_at": "2026-11-07T17:12:40Z",
+        "read": false,
+        "icon": "ability_warrior_innerrage",
+        "segments": [
+          { "text": "1196", "style": "strong" },
+          { "text": " DPS, +" },
+          { "text": "12", "style": "strong" },
+          { "text": " over your 1184 (Fury Warrior, 60)." }
+        ],
+        "crest": "warrior",
+        "figure": 1196.2
+      },
+      {
+        "id": 4163,
+        "kind": "loot.awarded",
+        "group": "gear",
+        "title": "Loot awarded",
+        "body": "Gorvash was awarded Deathbringer by OLYMPUS XXVII.",
+        "link": "https://foreversixty.gg/guild/us/pvp/olympus-xxvii",
+        "occurred_at": "2026-11-07T16:58:03Z",
+        "read": false,
+        "icon": "inv_axe_09",
+        "segments": [
+          { "text": "Gorvash", "style": "name", "class": "warrior" },
+          { "text": " was awarded " },
+          { "text": "Deathbringer", "style": "item", "quality": 4, "item_id": 17068 },
+          { "text": " by OLYMPUS XXVII." }
+        ]
+      },
+      {
         "id": 4151,
         "kind": "sim.finished",
         "group": "gear",
@@ -22,7 +58,8 @@
         "link": "https://foreversixty.gg/sim/r/9f2c41d0",
         "occurred_at": "2026-11-07T15:40:02Z",
         "read": true,
-        "icon": "inv_misc_pocketwatch_01"
+        "icon": "inv_misc_pocketwatch_01",
+        "figure": 1184.3
       }
     ],
     "unread": 3,

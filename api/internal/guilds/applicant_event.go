@@ -57,6 +57,7 @@ func (s *Service) applicantEvent(guildName string, a Application) events.Event {
 		Body:      applicantBody(guildName, a),
 		Link:      s.PublicBaseURL + ApplicantPagePath(a.GuildID, a.ID),
 		Thread:    "guild-" + gid + "-applicants",
+		Collapse:  string(events.GuildApplicant) + "-" + id,
 		Actions: []events.Action{{ID: "application_decline", Title: applicantCopy.Decline, Method: "POST",
 			Path: fmt.Sprintf("/v1/guilds/%d/applications/%d/decline", a.GuildID, a.ID)}},
 		Data: map[string]string{"guild_id": gid, "application_id": id},

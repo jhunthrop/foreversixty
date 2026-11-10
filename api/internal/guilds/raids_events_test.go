@@ -65,7 +65,7 @@ func samplePosted() notify.RaidPosted {
 func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	p := samplePosted()
 	posted := raidPostedEvent(3, p)
-	if posted.Body != "Sign-ups are open: Wed 4 Nov, 20:00 CST." || posted.Thread != "raid-9" || posted.Collapse != "raid.posted-9" {
+	if posted.Body != "Sign-ups are open: Wed 4 Nov, 8:00 pm CST. 12 of 40 signed." || posted.Thread != "raid-9" || posted.Collapse != "raid.posted-9" {
 		t.Fatalf("posted %+v", posted)
 	}
 	if len(posted.Actions) != 4 || posted.Actions[0].Path != "/v1/guilds/3/raids/9/signups/{character}" ||
@@ -79,7 +79,7 @@ func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	if posted.Audience.Kind != events.ToGuildMembers || posted.Data["raid_id"] != "9" {
 		t.Fatalf("posted %+v", posted)
 	}
-	if e := raidShortEvent(3, p); e.Body != "12 of 40 signed, 24 hours out." || e.Audience.Kind != events.ToGuildOfficers {
+	if e := raidShortEvent(3, p, unansweredUnknown); e.Body != "12 of 40 signed, 24 hours out." || e.Audience.Kind != events.ToGuildOfficers {
 		t.Fatalf("short %+v", e)
 	}
 	moved := raidChangedEvent(3, p, false)
@@ -98,10 +98,84 @@ func TestRaidEventsReadPlainlyAndThreadPerRaid(t *testing.T) {
 	if e := rosterSetEvent(3, p, 7, SignupBench, time.Unix(1, 0)); e.Body != raidEventCopy.RosterBench || e.Audience.UserIDs[0] != 7 {
 		t.Fatalf("roster %+v", e)
 	}
-	for _, e := range []events.Event{posted, moved, raidNudgeEvent(3, p, []int64{1}), raidStartingEvent(3, p, time.Hour), raidShortEvent(3, p)} {
+	for _, e := range []events.Event{posted, moved, raidNudgeEvent(3, p, []int64{1}), raidStartingEvent(3, p, time.Hour, events.Users(1), ""), raidShortEvent(3, p, 0)} {
 		if err := e.Validate(); err != nil {
 			t.Fatalf("%s: %v", e.Kind, err)
 		}
+	}
+}
+
+func TestRaidPostedBodyCountsTheSigned(t *testing.T) {
+	open := samplePosted()
+	open.SizeKnown, open.Size = false, 0
+	afternoon := samplePosted()
+	afternoon.StartsAt = time.Date(2026, 11, 5, 15, 30, 0, 0, time.UTC)
+	cases := []struct {
+		name string
+		p    notify.RaidPosted
+		want string
+	}{
+		{"size known", samplePosted(), "Sign-ups are open: Wed 4 Nov, 8:00 pm CST. 12 of 40 signed."},
+		{"open size", open, "Sign-ups are open: Wed 4 Nov, 8:00 pm CST. 12 signed."},
+		{"morning reads am", afternoon, "Sign-ups are open: Thu 5 Nov, 9:30 am CST. 12 of 40 signed."},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := raidPostedEvent(3, c.p).Body; got != c.want {
+				t.Fatalf("body %q, want %q", got, c.want)
+			}
+		})
+	}
+}
+
+func TestRaidShortBodyNamesShortRolesAndUnanswered(t *testing.T) {
+	withTarget := samplePosted()
+	withTarget.Target = &notify.RoleTarget{Tanks: 1, Healers: 8, Melee: 0, Ranged: 0}
+	withTarget.Roster = []notify.RosterLine{
+		{Name: "Brakka", Class: "warrior", Spec: "Protection", Role: "tank", State: "in"},
+		{Name: "Mirelle", Class: "priest", Spec: "Holy", Role: "healer", State: "in"},
+	}
+	cases := []struct {
+		name       string
+		p          notify.RaidPosted
+		unanswered int
+		want       string
+	}{
+		{"roles and unanswered", withTarget, 5, "12 of 40 signed, 24 hours out. Healers 1 of 8, 5 not answered."},
+		{"roles only, count unknown", withTarget, unansweredUnknown, "12 of 40 signed, 24 hours out. Healers 1 of 8."},
+		{"no target, unanswered", samplePosted(), 3, "12 of 40 signed, 24 hours out. 3 not answered."},
+		{"nothing more known", samplePosted(), 0, "12 of 40 signed, 24 hours out."},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := raidShortEvent(3, c.p, c.unanswered).Body; got != c.want {
+				t.Fatalf("body %q, want %q", got, c.want)
+			}
+		})
+	}
+}
+
+func TestRaidStartingBodyNamesTheReadyMiss(t *testing.T) {
+	ok := ReadyItem{Key: "flask", State: ReadyOK, Title: "Flask of the Titans"}
+	cases := []struct {
+		name  string
+		items []ReadyItem
+		want  string
+	}{
+		{"no check", nil, "Starts in 60 minutes."},
+		{"all ok", []ReadyItem{ok, {Key: "enchant.feet", State: ReadyWarn}}, "Starts in 60 minutes."},
+		{"flask", []ReadyItem{{Key: "flask", State: ReadyMiss}, {Key: "food", State: ReadyMiss}}, "Starts in 60 minutes. No flask in your bags."},
+		{"food", []ReadyItem{ok, {Key: "food", State: ReadyMiss}}, "Starts in 60 minutes. No buff food in your bags."},
+		{"attunement first", []ReadyItem{{Key: "attune.onyxias-lair", State: ReadyMiss}, {Key: "food", State: ReadyMiss}}, "Starts in 60 minutes. Not attuned."},
+		{"level", []ReadyItem{{Key: "level", State: ReadyMiss, Line: "You are level 58"}}, "Starts in 60 minutes. You are level 58."},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			e := raidStartingEvent(3, samplePosted(), startingLead, events.Users(7), readyMissLine(c.items))
+			if e.Body != c.want || e.Audience.UserIDs[0] != 7 {
+				t.Fatalf("starting %q to %+v, want %q", e.Body, e.Audience, c.want)
+			}
+		})
 	}
 }
 

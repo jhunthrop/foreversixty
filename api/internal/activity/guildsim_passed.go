@@ -90,12 +90,14 @@ func (w *GuildSimWriter) passedEvent(f simFacts, simID string, r LadderRow) even
 	if f.preset != barePreset {
 		words += " " + f.preset
 	}
+	segments := Segmentf(passedCopy.Body, Strong(FormatFigure(f.value)), Text(unit),
+		Strong(formatLead(f.value, r.Value)), Text(FormatFigure(r.Value)), Text(SpecName(f.spec)), Text(words))
+	value := f.value
 	return events.Event{
 		Kind: events.GuildSimPassed, Audience: events.Users(r.userID),
 		DedupeKey: "guildsim.passed:" + simID + ":" + r.Key,
 		Title:     fmt.Sprintf(passedCopy.Title, f.name),
-		Body: fmt.Sprintf(passedCopy.Body, FormatFigure(f.value), unit, formatLead(f.value, r.Value),
-			FormatFigure(r.Value), SpecName(f.spec), words),
+		Body:      events.SegmentsText(segments), Segments: segments, Crest: f.class, Figure: &value,
 		Link: fmt.Sprintf(guildLinkFormat, w.PublicBaseURL, f.guildID), Icon: specs.ByKey[f.spec].Icon,
 		Data: map[string]string{
 			"guild_id": strconv.FormatInt(f.guildID, 10), "sim_id": simID, "character_key": f.key,

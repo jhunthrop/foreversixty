@@ -2,7 +2,7 @@
   "aps": {
     "alert": {
       "title": "Onyxia's Lair",
-      "body": "Starts in 60 minutes."
+      "body": "Starts in 60 minutes. No flask in your bags."
     },
     "sound": "default",
     "thread-id": "raid-7",

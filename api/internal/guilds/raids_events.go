@@ -13,6 +13,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -25,12 +26,14 @@ import (
 // raidCopy is the words of the raid notifications. Every line names only what the raid page
 // shows a member.
 var raidEventCopy = struct {
-	Posted, Nudge, Moved, Cancelled, RosterIn, RosterBench, RosterOther string
-	Starting, Short, ShortOpen, LateChange                              string
-	MovedIn, MovedBench, MovedLate, MovedOut                            string
-	ActionIn, ActionLate, ActionBench, ActionOut                        string
+	Posted, SignedOf, SignedOpen, Nudge, Moved, Cancelled, RosterIn, RosterBench, RosterOther string
+	Starting, Short, ShortRole, ShortNotIn, LateChange                                        string
+	MovedIn, MovedBench, MovedLate, MovedOut                                                  string
+	ActionIn, ActionLate, ActionBench, ActionOut                                              string
 }{
-	Posted:      "Sign-ups are open: %s.",
+	Posted:      "Sign-ups are open: %s. %s.",
+	SignedOf:    "%d of %d signed",
+	SignedOpen:  "%d signed",
 	Nudge:       "%s is today at %s. Are you coming?",
 	Moved:       "Moved to %s.",
 	Cancelled:   "This raid was cancelled.",
@@ -38,8 +41,9 @@ var raidEventCopy = struct {
 	RosterBench: "The roster is set. You are on the bench.",
 	RosterOther: "The roster is set.",
 	Starting:    "Starts in %d minutes.",
-	Short:       "%d of %d signed, 24 hours out.",
-	ShortOpen:   "%d signed, 24 hours out.",
+	Short:       "%s, 24 hours out.",
+	ShortRole:   "%s %d of %d",
+	ShortNotIn:  "%d not answered",
 	LateChange:  "%s changed to Out, %s before the start.",
 	MovedIn:     "An officer moved %s to In.",
 	MovedBench:  "An officer moved %s to the bench.",
@@ -51,8 +55,9 @@ var raidEventCopy = struct {
 	ActionOut:   "Out",
 }
 
-// raidWhenLayout is the start as a notification words it, in the guild's raid zone.
-const raidWhenLayout = "Mon 2 Jan, 15:04 MST"
+// raidWhenLayout is the start as a notification words it, in the guild's raid zone: the
+// needs line's day and the confirmations' 12-hour time ("Thu 5 Nov, 8:00 pm CST").
+const raidWhenLayout = raidDayLayout + ", " + confirmationTimeLayout
 
 // SignupCharacterPlaceholder stands for the account's character in an action's path: the app
 // puts the {region}/{ruleset}/{name} of the character it answers for in its place.
@@ -61,6 +66,16 @@ const SignupCharacterPlaceholder = "{character}"
 // raidWhen is p's start in its zone (UTC when the guild set none).
 func raidWhen(p notify.RaidPosted) string {
 	return p.StartsAt.In(raidLocation(p.Timezone)).Format(raidWhenLayout)
+}
+
+// signedWords is p's In and Late count against its size ("24 of 40 signed"), the count alone
+// for a raid of open size ("24 signed").
+func signedWords(p notify.RaidPosted) string {
+	signed := p.Counts.In + p.Counts.Late
+	if p.SizeKnown {
+		return fmt.Sprintf(raidEventCopy.SignedOf, signed, p.Size)
+	}
+	return fmt.Sprintf(raidEventCopy.SignedOpen, signed)
 }
 
 // signupActions are the In, Late, Bench and Out buttons: the sign-up PUT the app calls with
@@ -99,7 +114,7 @@ func raidKey(kind events.Kind, p notify.RaidPosted, extra ...string) string {
 func raidPostedEvent(guildID int64, p notify.RaidPosted) events.Event {
 	e := raidEvent(events.RaidPosted, guildID, p, fmt.Sprintf("%s:%d", events.RaidPosted, p.RaidID),
 		events.Audience{Kind: events.ToGuildMembers, GuildID: guildID})
-	e.Body = fmt.Sprintf(raidEventCopy.Posted, raidWhen(p))
+	e.Body = fmt.Sprintf(raidEventCopy.Posted, raidWhen(p), signedWords(p))
 	e.Actions = signupActions(guildID, p.RaidID)
 	return e
 }
@@ -139,22 +154,46 @@ func rosterSetEvent(guildID int64, p notify.RaidPosted, userID int64, state stri
 	return e
 }
 
-func raidStartingEvent(guildID int64, p notify.RaidPosted, lead time.Duration) events.Event {
-	e := raidEvent(events.RaidStarting, guildID, p, raidKey(events.RaidStarting, p),
-		events.Audience{Kind: events.ToRaidInLate, GuildID: guildID, RaidID: p.RaidID})
-	e.Body = fmt.Sprintf(raidEventCopy.Starting, int(lead.Minutes()))
+// raidStartingEvent is raid.starting to aud; miss is the first thing the recipient's ready
+// check misses ("No flask in your bags."), "" when none or not known.
+func raidStartingEvent(guildID int64, p notify.RaidPosted, lead time.Duration, aud events.Audience, miss string) events.Event {
+	e := raidEvent(events.RaidStarting, guildID, p, raidKey(events.RaidStarting, p), aud)
+	e.Body = joinSentences(fmt.Sprintf(raidEventCopy.Starting, int(lead.Minutes())), miss)
 	return e
 }
 
-func raidShortEvent(guildID int64, p notify.RaidPosted) events.Event {
+// unansweredUnknown is raid.short's not-answered count when it could not be read.
+const unansweredUnknown = -1
+
+// raidShortEvent is raid.short: the signed count, then the roles below the comp target and
+// how many have not answered, each only when known and not nothing.
+func raidShortEvent(guildID int64, p notify.RaidPosted, unanswered int) events.Event {
 	e := raidEvent(events.RaidShort, guildID, p, raidKey(events.RaidShort, p),
 		events.Audience{Kind: events.ToGuildOfficers, GuildID: guildID})
-	signed := p.Counts.In + p.Counts.Late
-	e.Body = fmt.Sprintf(raidEventCopy.ShortOpen, signed)
-	if p.SizeKnown {
-		e.Body = fmt.Sprintf(raidEventCopy.Short, signed, p.Size)
+	var gaps []string
+	for _, r := range notify.ShortRoles(p) {
+		gaps = append(gaps, fmt.Sprintf(raidEventCopy.ShortRole, r.Name, r.Have, r.Want))
 	}
+	if unanswered > 0 {
+		gaps = append(gaps, fmt.Sprintf(raidEventCopy.ShortNotIn, unanswered))
+	}
+	gapLine := ""
+	if len(gaps) > 0 {
+		gapLine = strings.Join(gaps, ", ") + "."
+	}
+	e.Body = joinSentences(fmt.Sprintf(raidEventCopy.Short, signedWords(p)), gapLine)
 	return e
+}
+
+// joinSentences is the non-empty sentences one after another.
+func joinSentences(sentences ...string) string {
+	var out []string
+	for _, s := range sentences {
+		if s != "" {
+			out = append(out, s)
+		}
+	}
+	return strings.Join(out, " ")
 }
 
 func lateChangeEvent(guildID int64, p notify.RaidPosted, characterKey, name string, before time.Duration) events.Event {

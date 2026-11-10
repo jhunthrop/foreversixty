@@ -1,6 +1,10 @@
 package activity
 
-import "time"
+import (
+	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/events"
+)
 
 // The feed's event kinds (GET /v1/feed rows[].kind).
 const (
@@ -36,21 +40,25 @@ var KindTag = map[string]string{
 	KindGuildSim:     TagYourGuild,
 }
 
-// The segment styles (rows[].segments[].style). Plain text has none.
+// The segment styles (rows[].segments[].style), the events package's: the feed and the
+// Activity inbox share one segment builder.
 const (
-	StyleStrong = "strong"
-	StyleName   = "name"
-	StyleItem   = "item"
+	StyleStrong = events.StyleStrong
+	StyleName   = events.StyleName
+	StyleItem   = events.StyleItem
 )
 
-// Segment is one run of a row's sentence.
-type Segment struct {
-	Text    string `json:"text"`
-	Style   string `json:"style,omitempty"`
-	Class   string `json:"class,omitempty"`
-	Quality *int   `json:"quality,omitempty"`
-	ItemID  *int   `json:"item_id,omitempty"`
-}
+// Segment is one run of a row's sentence (events.Segment).
+type Segment = events.Segment
+
+// The segment builders, the events package's.
+var (
+	Text     = events.Text
+	Segmentf = events.Segmentf
+	Strong   = events.Strong
+	Name     = events.Name
+	Item     = events.Item
+)
 
 // Event is one feed row as it is written.
 type Event struct {
@@ -70,18 +78,4 @@ type Event struct {
 	// ReportID is the report that wrote the row, if one did: the feed shows the row only while
 	// that report is public evidence (feed.go's reportVisible).
 	ReportID string
-}
-
-// Text is a plain segment.
-func Text(s string) Segment { return Segment{Text: s} }
-
-// Strong is a bold segment.
-func Strong(s string) Segment { return Segment{Text: s, Style: StyleStrong} }
-
-// Name is a character's name in its class colour.
-func Name(s, class string) Segment { return Segment{Text: s, Style: StyleName, Class: class} }
-
-// Item is an item's name in its quality colour.
-func Item(name string, id, quality int) Segment {
-	return Segment{Text: name, Style: StyleItem, ItemID: &id, Quality: &quality}
 }

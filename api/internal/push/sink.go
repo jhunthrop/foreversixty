@@ -33,7 +33,7 @@ func MessageOf(e events.Event, t Token) Message {
 		Thread: e.Thread, Collapse: e.Collapse, Actions: e.Actions, Data: e.Data,
 	}
 	if len(e.Actions) > 0 {
-		m.Category = RaidSignupCategory
+		m.Category = categoryOf(e.Kind)
 	}
 	if spec, ok := events.Lookup(e.Kind); ok {
 		m.TimeSensitive = spec.TimeSensitive

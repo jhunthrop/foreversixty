@@ -77,6 +77,10 @@ var ColorParseOrange = color.NRGBA{R: 0xFF, G: 0x80, B: 0x00, A: 0xFF}
 
 var ColorParsePink = color.NRGBA{R: 0xE2, G: 0x68, B: 0xA8, A: 0xFF}
 
+// The pink step as text on the apps' panels (spec W3 section 4 Parse number), lightened as the
+// rarity text colours are (brand S5).
+var ColorParsePinkText = color.NRGBA{R: 0xF0, G: 0x8C, B: 0xC0, A: 0xFF}
+
 var ColorParseGold = color.NRGBA{R: 0xE5, G: 0xCC, B: 0x80, A: 0xFF}
 
 var ColorSchoolPhysical = color.NRGBA{R: 0xE8, G: 0xC9, B: 0x6A, A: 0xFF}
@@ -234,6 +238,9 @@ var ColorForeverTabOn = color.NRGBA{R: 0xFF, G: 0xD3, B: 0x6B, A: 0xFF}
 
 // The apps' tab bar: an unselected tab, muted white.
 var ColorForeverTabOff = color.NRGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0xD1}
+
+// The apps' paperdoll: the ground behind the sockets (spec W3 section 4, brand S5).
+var ColorForeverPaperdollGround = color.NRGBA{R: 0x14, G: 0x17, B: 0x1F, A: 0xFF}
 
 const Space1 = 4
 

@@ -1,0 +1,26 @@
+{
+  "aps": {
+    "alert": {
+      "title": "New applicant: Mirelle, Holy Priest 60",
+      "body": "Holy priest, 60, full T1. Raided MC and Ony on the last server, can make every Thursday and Sunday."
+    },
+    "sound": "default",
+    "thread-id": "guild-2-applicants",
+    "category": "GUILD_APPLICANT"
+  },
+  "kind": "guild.applicant",
+  "group": "officer",
+  "link": "https://foreversixty.gg/app/guild/2/applicants/31",
+  "actions": [
+    {
+      "id": "application_decline",
+      "title": "Decline",
+      "method": "POST",
+      "path": "/v1/guilds/2/applications/31/decline"
+    }
+  ],
+  "data": {
+    "application_id": "31",
+    "guild_id": "2"
+  }
+}

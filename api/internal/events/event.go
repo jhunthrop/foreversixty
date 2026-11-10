@@ -69,6 +69,13 @@ type Event struct {
 	// Icon is the Activity row's icon, a name under /data/{build}/icons (icons.go); "" takes the
 	// kind's group's.
 	Icon string
+	// Segments are the Activity row's styled sentence (names in class colour, items with
+	// quality and id), nil for a row that shows Body alone; Crest is the class slug of the other
+	// player the row is about ("" for none); Figure is the row's number (a sim's DPS), nil
+	// without one. Push reads Body only.
+	Segments []Segment
+	Crest    string
+	Figure   *float64
 	// Source is the producer's typed fact, for a channel that renders it in full (the
 	// Discord embeds read notify.SimFinished and notify.UploadParsed). nil otherwise.
 	Source any

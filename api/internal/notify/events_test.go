@@ -132,6 +132,12 @@ func TestSimAndUploadEventsReadPlainly(t *testing.T) {
 	if e := SimFinishedEvent("", named); e.Title != "Your sim finished" {
 		t.Fatalf("unknown spec %+v", e)
 	}
+	if sim.Figure == nil || *sim.Figure != sampleSim(4).DPS {
+		t.Fatalf("sim figure %v", sim.Figure)
+	}
+	if e := SimFinishedEvent("", named); e.Figure != nil {
+		t.Fatalf("a sim without DPS has no figure, got %v", *e.Figure)
+	}
 }
 
 // The Activity icons, the mocks': a sim shows the pocketwatch, a report its zone's (the generic

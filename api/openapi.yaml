@@ -4328,6 +4328,15 @@ components:
             Any other row, and rows written before icons, its group's: raids inv_misc_book_09,
             gear inv_misc_bag_10, logs inv_misc_book_11, ladder inv_misc_pocketwatch_01, tiers
             inv_misc_book_09, officer inv_scroll_08, account inv_misc_gear_01.
+        segments:
+          type: array
+          items: { $ref: '#/components/schemas/FeedSegment' }
+          description: >-
+            The body styled as the feed's rows are (names in class colour, items with quality and
+            id, strong figures); its texts joined are the body. Absent on a row that has only the
+            plain body: loot.awarded and guildsim.passed carry it.
+        crest: { type: string, description: "The class slug of the other player the row is about (guildsim.passed's passer); absent otherwise." }
+        figure: { type: number, description: "The row's number when it has one: sim.finished's DPS, guildsim.passed's figure. Absent otherwise." }
     ActivityPage:
       type: object
       required: [rows, unread, next_before]
@@ -5112,7 +5121,7 @@ components:
     # Push payloads (lane A2, api/internal/push): what APNs and FCM hand the app -------------
     ApnsPayload:
       type: object
-      x-fixtures: [push.raid-posted.apns, push.raid-starting.apns]
+      x-fixtures: [push.raid-posted.apns, push.raid-starting.apns, push.raid-short.apns, push.guild-applicant.apns]
       required: [aps, kind, link, data]
       properties:
         aps:
@@ -5127,7 +5136,7 @@ components:
                 body: { type: string }
             sound: { type: string, enum: [default] }
             thread-id: { type: string, description: "raid-<raid id>" }
-            category: { type: string, enum: [RAID_SIGNUP] }
+            category: { type: string, enum: [RAID_SIGNUP, GUILD_APPLICANT] }
             interruption-level: { type: string, enum: [time-sensitive] }
         kind: { type: string }
         group:
@@ -5149,7 +5158,7 @@ components:
             {name}, appended to the in or late body). Lane F4 contract, A2 pending.
     FcmMessage:
       type: object
-      x-fixtures: [push.raid-posted.fcm]
+      x-fixtures: [push.raid-posted.fcm, push.raid-short.fcm, push.guild-applicant.fcm]
       required: [message]
       properties:
         message:
@@ -5189,12 +5198,15 @@ components:
                 collapse_key: { type: string }
     PushAction:
       type: object
-      description: 'One notification button. The app replaces {character} in path with the region/ruleset/name it answers for.'
-      required: [id, title, method, path, body]
+      description: >-
+        One notification button. The app replaces {character} in path with the region/ruleset/name
+        it answers for. The sign-up buttons (RAID_SIGNUP) PUT a body; guild.applicant's Decline
+        (GUILD_APPLICANT) POSTs none.
+      required: [id, title, method, path]
       properties:
-        id: { type: string, enum: [signup_in, signup_late, signup_bench, signup_out] }
+        id: { type: string, enum: [signup_in, signup_late, signup_bench, signup_out, application_decline] }
         title: { type: string }
-        method: { type: string, enum: [PUT] }
+        method: { type: string, enum: [PUT, POST] }
         path: { type: string }
         body:
           type: object
@@ -5769,6 +5781,8 @@ components:
         state: { type: string, enum: [ok, miss, warn] }
         title: { type: string }
         line: { type: string }
+        item_id: { type: integer, description: "The item the line is about: the flask or food in the bags, the attunement item, the unenchanted slot's item. Absent when it names none." }
+        icon: { type: string, description: "That item's icon, a name under /data/{build}/icons; absent when the data has none (consumables)." }
         where:
           x-name: whereToGet
           oneOf:

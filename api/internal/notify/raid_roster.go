@@ -213,6 +213,35 @@ func listFields(roster []RosterLine, marks Marks, lim rosterLimits) []EmbedField
 	return fields
 }
 
+// name is the group's word alone, its label before the count ("Healers").
+func (g rosterGroup) name() string {
+	name, _, _ := strings.Cut(g.label, rosterCopy.Sep)
+	return name
+}
+
+// RoleShort is one role group below the raid's comp target: its name, its In count and the
+// target.
+type RoleShort struct {
+	Name       string
+	Have, Want int
+}
+
+// ShortRoles is p's role groups with fewer In than its comp target, in roster order; nil for
+// a raid without a target and for a guild event.
+func ShortRoles(p RaidPosted) []RoleShort {
+	if p.Target == nil || p.NoRoles {
+		return nil
+	}
+	var out []RoleShort
+	for _, g := range rosterGroups {
+		have, want := len(inGroup(p.Roster, g)), p.Target.of(g.group)
+		if have < want {
+			out = append(out, RoleShort{Name: g.name(), Have: have, Want: want})
+		}
+	}
+	return out
+}
+
 func inGroup(roster []RosterLine, g rosterGroup) []RosterLine {
 	var out []RosterLine
 	for _, r := range sortedState(roster, rosterIn) {
