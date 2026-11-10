@@ -29,8 +29,8 @@ function expectGuildFiguresFollow(c: Copy, perMemberLine: Copy['price']['perMemb
 function expectModelPricesFollow(model: Model): void {
   expect(model.priceCell('guild', 'yearly', true).amount).toBe('$90');
   expect(model.priceCell('raid_guild', 'yearly', true).amount).toBe('$300');
-  expect(model.buttonLabel('raid_guild', 'yearly', true)).toBe('Subscribe a guild · $300 a year');
-  expect(model.buttonLabel('guild', 'monthly', true)).toBe('Subscribe a guild · $9 a month');
+  expect(model.buttonLabel('raid_guild', 'yearly', true)).toBe('Subscribe your guild · $300 a year');
+  expect(model.buttonLabel('guild', 'monthly', true)).toBe('Subscribe your guild · $9 a month');
   expect(model.trialParts().lead).toBe('First 9 days free');
 }
 

@@ -88,9 +88,10 @@ describe('plansPageCopy against spec 6.1', () => {
   });
 
   it('Buttons', () => {
-    expect(row('Buttons')).toEqual(['Subscribe · {price}', 'Subscribe a guild · {price}']);
+    // Spec 6.1's guild button read "Subscribe a guild"; the redesign plan (2026-11-09, site copy P12) makes it "your guild".
+    expect(row('Buttons')[0]).toBe('Subscribe · {price}');
     expect(copy.buttons.subscribe('{price}')).toBe('Subscribe · {price}');
-    expect(copy.buttons.subscribeGuild('{price}')).toBe('Subscribe a guild · {price}');
+    expect(copy.buttons.subscribeGuild('{price}')).toBe('Subscribe your guild · {price}');
   });
 
   it('History promise', () => {
@@ -121,28 +122,34 @@ describe('plansPageCopy guard', () => {
 
 describe('plansPageCopy Premium against spec B5', () => {
   it('premium.support', () => expect(copy.premium.support).toBe(key('premium.support')[0]));
-  it('the coach line is the first Premium benefit', () => {
-    expect(copy.premium.features[0]?.text).toBe(key('premium.features[0]')[0]);
-    expect(copy.premium.features[0]?.text).toMatch(/^Coach: after every logged raid, /);
-  });
-  it('premium.features[1] from CAPS', () =>
+  // The redesign plan (2026-11-09, site copy P12) cuts each feature line of spec B5 to one short
+  // sentence; the anchors and the numbers' sources stay.
+  it('the coach line is the first Premium benefit', () =>
+    expect(copy.premium.features[0]).toEqual({
+      text: 'Coach: what to fix first after every logged raid.',
+      anchor: 'coach',
+    }));
+  it('the sim lines read CAPS and LANE_ITERATION_CEILING', () => {
     expect(copy.premium.features[1]?.text).toBe(
-      fill(key('premium.features[1]')[0] ?? '', {
-        'CAPS.server': count(CAPS.server),
-        'CAPS.browser': count(CAPS.browser),
-      }),
-    ));
-  it('premium.features[2]', () => expect(copy.premium.features[2]?.text).toBe(key('premium.features[2]')[0]));
-  it('premium.features[3] from LANE_ITERATION_CEILING', () =>
+      `Sims of up to ${count(CAPS.server)} combinations; ${count(CAPS.browser)} in the browser.`,
+    );
     expect(copy.premium.features[3]?.text).toBe(
-      fill(key('premium.features[3]')[0] ?? '', {
-        'LANE_ITERATION_CEILING.server': count(LANE_ITERATION_CEILING.server),
-        'LANE_ITERATION_CEILING.browser': count(LANE_ITERATION_CEILING.browser),
-      }),
-    ));
-  it.each([4, 5, 6])('premium.features[%i]', (i) =>
-    expect(copy.premium.features[i]?.text).toBe(key(`premium.features[${i}]`)[0]),
-  );
+      `Runs of up to ${count(LANE_ITERATION_CEILING.server)} iterations, not ${count(LANE_ITERATION_CEILING.browser)}.`,
+    );
+  });
+  it('every line is one sentence', () => {
+    for (const line of copy.premium.features) expect(line.text.split('. ')).toHaveLength(1);
+  });
+  it('the anchors stay in order', () =>
+    expect(copy.premium.features.map((line) => line.anchor)).toEqual([
+      'coach',
+      'server-sims',
+      'server-sims',
+      'server-sims',
+      'history',
+      'notifications',
+      null,
+    ]));
   it('has exactly seven features', () => expect(copy.premium.features).toHaveLength(7));
   it('premium.scope says the coach covers every spec', () =>
     expect(copy.premium.scope).toBe(

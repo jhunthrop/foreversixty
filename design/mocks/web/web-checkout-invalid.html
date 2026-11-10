@@ -412,7 +412,7 @@ body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:aut
 .acts{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center}
 .lede{font-size:15px;line-height:24px;max-width:72ch}.t-small{max-width:80ch}
 .fd{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap}
-.pcol .rprose.ruled li{padding-block:8px}.pcol .rprose.lane{font-size:15px;line-height:22px}
+.pcol .rprose.ruled li,.plan .rprose.ruled li{padding-block:8px}.pcol .rprose.lane,.plan .rprose.lane{font-size:15px;line-height:22px}
 .pcol .btn{align-self:flex-start}
 @media(max-width:767px){.pcol .btn{align-self:stretch}}
 .ans-who{display:flex;align-items:center;gap:12px}.ans-who b{font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px;flex-wrap:wrap}
@@ -902,7 +902,7 @@ button.link{all:unset;cursor:pointer;font:600 14px/20px var(--font-body);color:v
 @media(min-width:1024px){.pcols.open .pcol{padding:4px 24px 0}.pcols.open .pcol:first-child{padding-left:0}.pcols.open .pcol:last-child{padding-right:0}}
 .btn.danger{color:var(--wipe);border-color:#f0736b66}.btn.danger:hover{border-color:var(--wipe);color:#ff8f88}
 @media(max-width:1023px){.pcols.swap{display:flex;flex-direction:column}.pcols.swap>.pcol:nth-child(2){order:-1;border-top:0}.pcols.swap>.pcol:first-child{border-top:1px solid var(--line-soft)}}
-.plh{display:flex;flex-direction:column;gap:4px;min-width:0}.plh .nm{display:flex;align-items:center;gap:10px;font:700 22px/28px var(--font-body);color:var(--strong)}
+.plh{display:flex;flex-direction:column;gap:4px;min-width:0}.plh .nm{display:flex;align-items:center;gap:10px;font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--strong)}
 .plh .au{font-size:14px;line-height:20px;color:var(--muted)}.plh .fig{margin-top:8px}.plh .pl2{font-size:13px;line-height:20px;color:var(--muted)}.plh .pl2.gold{color:var(--gold)}
 
 button.btn{cursor:pointer;-webkit-appearance:none;appearance:none}button.btn.sm{padding:0 18px}
@@ -1019,6 +1019,8 @@ table.gridm.edge :is(th,td):last-child{padding-right:20px}
 @media(min-width:1280px){.layout-wb.panels{column-gap:28px}.layout-wb.panels>.main,.layout-wb.panels>.rail{gap:22px}}
 
 @media(max-width:767px){.porder-r .porder-s>span,.porder-r .porder-s img,.porder-r .porder-s .ic,.porder-r .porder-s .em{width:100%!important;max-width:30px;height:auto!important;aspect-ratio:1}.porder-r .porder-s img,.porder-r .porder-s .ic{display:block}}
+
+.btn.subscribe{background:var(--teal-edge);border-color:var(--teal-edge);color:var(--strong)}
 </style></main><!-- /premium/checkout mock, invalid. Data: premium-facts.json (lib/billing/copy.ts checkoutCopy, checkout-guild-copy.ts, premium-owned.ts on the seat account). --><style data-system="round5">
 :root{--bg:#100a06;--raised:#170e09;--hover:#241b15;--line:#3d342d;--line-soft:#2c241f;--text:#e3dfd9;--strong:#fff;
 --muted:#e2dcd3;--nav:#fff;--gold:#ffec71;--gold-hover:#f7b90a;--cream:#f3eee2;--accent:#0093b2;--teal:#0f6064;
@@ -1046,6 +1048,15 @@ section>.sec-h:has(+ .sbox){border-bottom:0}
 .band-r5{background:var(--band);border-bottom:1px solid #000}
 .fs-chrome:not(.fs-foot){padding-top:16px;background:var(--band)}
 @media(max-width:1023px){.fs-chrome:not(.fs-foot){padding-top:8px}}
+/* the last band piece fades into the ground over --band-fade (web ui/band.css); over a last control bar the band above
+   it carries the fade under the bar, so a stuck bar keeps a clean foot */
+:root{--band-fade:120px;--band-bar-reach:calc(var(--bar-h) + 1px)}
+@media(max-width:767px){:root{--band-fade:64px;--band-bar-reach:49px}}
+body{isolation:isolate}
+:is(.band-r5:not(:has(~ .band-r5,~ .cbar)),.band-r5:has(~ .cbar):not(:has(~ .cbar ~ .band-r5)),body:not(:has(main .band-r5,main .cbar)) .fs-chrome:not(.fs-foot),body:not(:has(main .band-r5)):has(main .cbar) .fs-chrome:not(.fs-foot)){--band-reach:var(--band-fade);position:relative;background:none;border-bottom:0}
+:is(.band-r5:not(:has(~ .band-r5,~ .cbar)),.band-r5:has(~ .cbar):not(:has(~ .cbar ~ .band-r5)),body:not(:has(main .band-r5,main .cbar)) .fs-chrome:not(.fs-foot),body:not(:has(main .band-r5)):has(main .cbar) .fs-chrome:not(.fs-foot))::before{content:"";position:absolute;inset:0 0 calc(-1*var(--band-reach));z-index:-1;pointer-events:none;background:var(--band);mask-image:linear-gradient(#000 calc(100% - var(--band-fade)),rgba(0,0,0,.82) calc(100% - var(--band-fade)*.75),rgba(0,0,0,.5) calc(100% - var(--band-fade)*.5),rgba(0,0,0,.18) calc(100% - var(--band-fade)*.25),transparent)}
+:is(.band-r5:has(~ .cbar):not(:has(~ .cbar ~ .band-r5)),body:not(:has(main .band-r5)):has(main .cbar) .fs-chrome:not(.fs-foot)){--band-reach:calc(var(--band-bar-reach) + var(--band-fade))}
+.cbar:not(:has(~ .band-r5)){border-bottom:0}
 .plate{background:var(--raised);border:1px solid #000;border-radius:10px;box-shadow:0 0 0 1px rgba(130,112,91,.55)}
 .cbar{background:var(--band);border-block:1px solid rgba(255,255,255,.14)}
 .cbar .pc{row-gap:12px}

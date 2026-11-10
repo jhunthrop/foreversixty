@@ -350,7 +350,7 @@
         <a href={PREMIUM_HREF} class={LINK}>{checkoutGuildCopy.invalidLink.button} ›</a>
       </p>
     {:else if ownedMe !== null}
-      <Plate label={premiumSourceCopy.buttons.seePlan}>
+      <Plate label={premiumSourceCopy.buttons.seePlan} frame="framed">
         <div class="checkout-owned">
           <PremiumOwnedPanel
             me={ownedMe}

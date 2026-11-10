@@ -70,13 +70,13 @@ CSS = '''<style>
 .acts{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center}
 .lede{font-size:15px;line-height:24px;max-width:72ch}.t-small{max-width:80ch}
 .fd{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap}
-.pcol .rprose.ruled li{padding-block:8px}.pcol .rprose.lane{font-size:15px;line-height:22px}
+.pcol .rprose.ruled li,.plan .rprose.ruled li{padding-block:8px}.pcol .rprose.lane,.plan .rprose.lane{font-size:15px;line-height:22px}
 .pcol .btn{align-self:flex-start}
 @media(max-width:767px){.pcol .btn{align-self:stretch}}
 .ans-who{display:flex;align-items:center;gap:12px}.ans-who b{font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px;flex-wrap:wrap}
 @media(min-width:900px){.head .ans{min-width:300px}.ans-who{justify-content:flex-end}.ans-links{justify-content:flex-end}}
-.ans-plan{display:flex;flex-direction:column;gap:2px}
-@media(min-width:900px){.ans-plan{align-items:flex-end}}
+.ans-plan{display:flex;flex-direction:column;gap:2px}.ans-line{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+@media(min-width:900px){.ans-plan{align-items:flex-end}.ans-line{justify-content:flex-end}}
 .coach .opening{font-size:15px;line-height:23px}
 .coach .who{display:flex;gap:12px;align-items:center}.coach .who b{font:700 16px/20px var(--font-body);color:var(--strong)}
 .alert{color:var(--strong)}.wipe-t{color:var(--wipe)}
@@ -122,7 +122,34 @@ def price_key(plan: str, interval: str, founder: bool) -> dict:
     return F['priced'][f'{plan}:{interval}:{"founder" if founder else "list"}']
 
 
-def premium_column(st: dict) -> tuple:
+# The four plans side by side (directions mock b4-premium; web pages/premium.astro): each a Plate holding one plan, Premium
+# framed with the teal Subscribe. One column on a phone with Premium first and every buy button under its price; two from 768
+# and four from 1280, every buy button closing its panel. Questions and the guild rules beside the coach sample from 1024.
+PLANS_CSS = '''<style>
+.pgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}.pgrid>:nth-child(2){order:-1}
+@media(min-width:768px){.pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.pgrid>:nth-child(2){order:0}}
+@media(min-width:1280px){.pgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.plan{display:flex;flex-direction:column;gap:12px;height:100%;min-width:0;padding:22px 24px;box-sizing:border-box}
+.plan>.plh{order:0}.plan>.pact{display:flex;flex-direction:column;align-items:stretch;gap:10px;order:1}
+.plan>.rprose,.plan>.psm,.plan>.pfoot{order:2}.plan>.pfoot{margin-top:auto}
+@media(min-width:768px){.plan>.pact{order:3;margin-top:auto;padding-top:4px}}
+.plan .pact .btn{display:flex;width:100%;height:auto;min-height:44px;padding-block:10px;white-space:normal;text-align:center;text-wrap:balance;line-height:22px;box-sizing:border-box}
+.pmore{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}.pmore>.pmain{display:flex;flex-direction:column;gap:22px;min-width:0}
+@media(min-width:1024px){.pmore{grid-template-columns:minmax(0,1fr) 340px;column-gap:28px;align-items:start}}
+@media(min-width:1760px){.pmore{grid-template-columns:minmax(0,1fr) var(--rail-w)}}
+.pc.plans{padding-top:28px}.pc.plans>.pstack{display:flex;flex-direction:column;gap:22px}
+.phist{padding-top:12px}.pmem{padding-bottom:4px}.pmain .rgrid>.row{padding-inline:0}
+@media(max-width:767px){.plan{padding:18px 16px}}
+.plan .plh .fig{margin-bottom:4px}   /* PlanPrice's figure keeps 4 px under it */
+main{padding-bottom:40px}@media(min-width:1024px){main{padding-bottom:64px}}   /* Base's page body above the footer */
+</style>'''
+
+
+def plan_cell(inner: str, frame: str = 'plain') -> str:
+    return Plate(inner, frame=frame)
+
+
+def premium_column(st: dict) -> str:
     pc = price_key('premium', st['interval'], st['founder'])
     c = pc['cell']
     lines = [(e(c['secondLine']), '')] + ([(e(c['founderLine']), 'gold')] if c['founderLine'] else [])
@@ -133,36 +160,35 @@ def premium_column(st: dict) -> tuple:
     if owned:
         act = f'<p class="lede strong">{e(SRC["premiumCard"][owned])}</p>{LinkBtn(e(SRC["buttons"]["seePlan"]))}'
     else:
-        act = LinkBtn(e(pc['button']), primary=True)
+        act = _Button(e(pc['button']), tone='subscribe')
+    act += f'<p class="t-small">{e(P["premium"]["support"])}</p>'
     feats = ruled([l['text'] for l in F['premium_lines']], [l['anchor'] if l['first'] else '' for l in F['premium_lines']])
-    body = f'<div class="stack">{head}{act}<p class="t-small">{e(P["premium"]["support"])}</p>{feats}<p class="t-small">{e(P["premium"]["scope"])}</p></div>'
-    return ('', '', body, '')
+    body = f'<div class="plan">{head}{feats}<p class="t-small psm">{e(P["premium"]["scope"])}</p><div class="pact">{act}</div></div>'
+    return plan_cell(body, 'framed')
 
 
-def free_column(st: dict) -> tuple:
+def free_column(st: dict) -> str:
     mine = st.get('signed') and not st.get('owned')
     tag = Tag(e(YOUR_PLAN), 'kill') if mine else ''
     head = PlanHead(e(P['free']['name']), e(P['free']['audience']), e(P['free']['price']), '', [(e(P['free']['note']), '')], tag, level=2)
-    foot = '' if st.get('signed') else r(F['my_reports']['signInAction'])
-    body = f'<div class="stack">{head}{ruled(P["free"]["features"])}</div>'
-    return ('', '', body, foot)
+    foot = '' if st.get('signed') else f'<span class="pfoot">{r(F["my_reports"]["signInAction"])}</span>'
+    return plan_cell(f'<div class="plan">{head}{ruled(P["free"]["features"])}{foot}</div>')
 
 
-def guild_column(plan: str, st: dict) -> tuple:
+def guild_column(plan: str, st: dict) -> str:
     block = P['guild'] if plan == 'guild' else P['raidGuild']
     pc = price_key(plan, st['interval'], st['founder'])
     c = pc['cell']
     lines = [(e(c['secondLine']), '')] + ([(e(c['founderLine']), 'gold')] if c['founderLine'] else []) + [(e(pc['cost']), '')]
     on = st.get('guild_on') == plan
     tag = Tag('Olympus XXVII', 'kill') if on else ''
-    head = PlanHead(e(block['name']), e(block['audience']), e(c['amount']), e(c['suffix'].strip()), lines, tag)
+    head = PlanHead(e(block['name']), e(block['audience']), e(c['amount']), e(c['suffix'].strip()), lines, tag, level=2)
     if on:
         act = f'<p class="lede strong">{e(F["guild_on_line"])}</p>{Btn(e(GC["onPlan"]["manageBilling"]))}'
     else:
         act = LinkBtn(e(pc['button']))
-    trial = f'<p class="t-small"><b class="strong">{e(F["trial"]["lead"])}</b>{e(F["trial"]["rest"])}</p>'
-    body = f'<div class="stack">{head}{act}{trial}{ruled(block["features"])}</div>'
-    return ('', '', body, '')
+    trial = f'<p class="t-small psm"><b class="strong">{e(F["trial"]["lead"])}</b>{e(F["trial"]["rest"])}</p>'
+    return plan_cell(f'<div class="plan">{head}{ruled(block["features"])}{trial}<div class="pact">{act}</div></div>')
 
 
 def coach_rail() -> str:
@@ -176,7 +202,7 @@ def coach_rail() -> str:
             + Rows([Row(e(fix['title']), e(fix['why']), lead=icon(fix['icon'], 40), link=False, selected=True)])
             + f'<span class="t-label">{e(cp["then"])}</span>{Rows([then], True)}<span class="t-label">{e(cp["doingWell"])}</span>{Rows([well], True)}'
             f'<p class="t-small">{e(cp["caption"])}</p></div>')
-    return Section(e(cp['label']), body, meta=Tag(e(cp['tag']), 'muted'))
+    return Section(e(cp['label']), body, action=Tag(e(cp['tag']), 'muted'), panel=True)
 
 
 def premium_answer(key: str) -> str:
@@ -188,8 +214,9 @@ def premium_answer(key: str) -> str:
     when = f'{h["when"]["label"]} {h["when"]["date"]}' if h['when'] else ''
     sub = ' · '.join(x for x in [when, h['extra'] or ''] if x)
     tag = Tag(e(AP['founder']['pill'])) if a['plan']['founder'] else ''
-    return (f'<div class="ans-plan">{Figure(e(h["name"]), e(ACC["planLabel"]), size="sm")}'
-            + (f'<span class="t-small">{e(sub)} {tag}</span>' if sub or tag else '') + f'{r(SRC["buttons"]["seePlan"])}</div>')
+    # Compact (batch F): the figure, then one line with the date or source, the Founder mark and the link.
+    line = (f'<span>{e(sub)}</span>' if sub else '') + tag + r(SRC['buttons']['seePlan'])
+    return f'<div class="ans-plan">{Figure(e(h["name"]), e(ACC["planLabel"]), size="sm")}<span class="t-small ans-line">{line}</span></div>'
 
 
 PREMIUM_STATES = {
@@ -209,10 +236,9 @@ PREMIUM_STATES = {
 def premium_page(state: str) -> str:
     st = PREMIUM_STATES[state]
     key = st.get('signed')
-    head = PageHeader(e(P['title']), answer=premium_answer(key), lead=e(P['band']['lede']))
+    head = PageHeader(e(P['title']), answer=premium_answer(key))
     iv = seg([(e(P['interval']['labels']['yearly']), st['interval'] == 'yearly', None, ''), (e(P['interval']['labels']['monthly']), st['interval'] == 'monthly', None, '')], label=e(P['interval']['groupLabel']))
-    end = f'<span class="t-small">{e(P["band"]["guildLead"])}</span>{Link(e(P["band"]["guildLink"]) + " &rsaquo;")}'
-    bar = control_bar([(e(P['interval']['groupLabel']), iv)], f'{e(P["interval"]["labels"][st["interval"]])}', end, label=e(P['interval']['groupLabel']))
+    bar = control_bar([(e(P['interval']['groupLabel']), iv)], f'{e(P["interval"]["labels"][st["interval"]])}', '', label=e(P['interval']['groupLabel']))
     notices = ''
     if st['founder']:
         notices += Notice(f'{Tag(e(P["founder"]["label"]))} {e(P["founder"]["open"])}', tone='neutral')
@@ -228,13 +254,14 @@ def premium_page(state: str) -> str:
     # one .pc around the region, the Notices' own .pc wrappers dropped.
     inner = notices.replace('<div class="pc">', '').replace('</p></div>', '</p>')
     notes = f'<div class="pc"><div data-region="{REGION["notes"]}">{inner}</div></div>' if notices else ''
-    plate = Plate(Columns([free_column(st), premium_column(st)], open_=False, second_first=True), 'Plans for a player')
-    gr = P['guildRegion']
-    guild = Section(e(gr['heading']), f'<div class="stack" id="guild-leaders"><p class="lede">{e(gr["lede"])}</p><p class="t-small">{e(gr["members"])}</p>'
-                    + Columns([guild_column('guild', st), guild_column('raid_guild', st)]) + f'<p class="t-small">{e(P["historyPromise"])}</p></div>')
-    rules = Section(e(P['howItWorks']), RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2))
-    faq = Section(e(FAQ_TITLE), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2), meta=e(P['foot']))
-    body = head + bar + notes + Page('split', plate + guild + rules + faq, coach_rail())
+    grid = (f'<div class="pgrid" role="group" aria-label="{e(P["title"])}">'
+            + free_column(st) + premium_column(st) + guild_column('guild', st) + guild_column('raid_guild', st) + '</div>')
+    faq = Section(e(FAQ_TITLE), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2), meta=e(P['foot']), panel=True)
+    rules = Section(e(P['howItWorks']), f'<p class="t-small pmem">{e(P["guildRegion"]["members"])}</p>'
+                    + RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2)
+                    + f'<p class="t-small phist">{e(P["historyPromise"])}</p>', panel=True)
+    more = f'<div class="pmore"><div class="pmain">{faq}{rules}</div>{coach_rail()}</div>'
+    body = head + bar + notes + f'<div class="pc plans"><div class="pstack">{grid}{more}</div></div>' + PLANS_CSS
     note = f'/premium mock, {state}. Data: premium-facts.json (plans-page-copy.ts, components/premium/model.ts on plans.ts; accounts DERIVED from home fixtures at 2026-11-08T10:00Z).'
     return render(f'{P["title"]} · Forever Sixty', body, 'Premium', who_of(key), chrome_of(key), note)
 
@@ -265,7 +292,7 @@ def checkout_steps(state: str) -> str:
         rows = [s1, ('miss', 2, pay, f'<span class="miss" role="alert">{e(CK["genericFailure"])}</span>', Btn(e(CK['retry']), primary=True)), ('todo', 3, on, '', '')]
     else:  # notopen
         rows = [s1, ('miss', 2, pay, f'<span class="miss" role="alert">{e(CK["notOpenYet"])}</span>', ''), ('todo', 3, on, '', '')]
-    return Plate(Steps(rows), 'Checkout')
+    return Plate(Steps(rows), 'Checkout', frame='framed')
 
 
 def checkout_page(state: str) -> str:
@@ -285,14 +312,14 @@ def checkout_page(state: str) -> str:
         rows = [('ok', 1, e(STEPS['signIn']), f'<span class="tx">{e(F["checkout_signed_in"])}</span>', ''),
                 ('ok', 2, e(STEPS['pay']), e(F['checkout_trial_saved']), ''),
                 ('ok', 3, e(F['plan_table']['guild']['name'] + ' on'), f'<span class="tx" role="status">{e(CK["confirmed"])}</span>', '')]
-        body = head + PageForm(Plate(Steps(rows), 'Checkout'))
+        body = head + PageForm(Plate(Steps(rows), 'Checkout', frame='framed'))
     elif state == 'owned':
         o = A['seat']['owned']
         who = WHO['free']
         head = PageHeader(e(F['plan_table']['premium']['name']), answer=band('premium'))
         inner = (f'<div class="stack" style="padding:16px 20px 20px"><h2 class="t-h3">{e(o["title"])}</h2><p class="lede strong">{e(o["line"])}</p>'
                  + (f'<p class="t-small">{e(o["line2"])}</p>' if o['line2'] else '') + f'<div class="acts">{LinkBtn(e(o["action"]["label"]))}</div></div>')
-        body = head + PageForm(Plate(inner, 'Your plan'))
+        body = head + PageForm(Plate(inner, 'Your plan', frame='framed'))
     elif state == 'guild':
         fn = F['guild_checkout_fns']
         head = PageHeader(e(GC['band']['title']), answer=band('guild'), lead=e(GC['lead']['someClaimed']))

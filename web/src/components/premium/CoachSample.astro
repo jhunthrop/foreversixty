@@ -1,6 +1,6 @@
 ---
 // web/src/components/premium/CoachSample.astro
-// /premium's rail (premium spec 2026-11-08 section 4.8): one sample coach review, rendered at build
+// /premium's rail panel (premium spec 2026-11-08 section 4.8): one sample coach review, rendered at build
 // from the coach's own Fury fixture, labelled Sample in its head and its caption. Static.
 import Row from '../ui/Row.svelte';
 import Section from '../ui/Section.svelte';
@@ -19,7 +19,7 @@ const copy = plansPageCopy.coachSample;
 const HIDE_ON_ERROR = "this.style.visibility='hidden'";
 ---
 
-<Section title={copy.label} testid="coach-sample">
+<Section title={copy.label} testid="coach-sample" panel>
   <Tag slot="head" tone="muted" testid="coach-sample-tag">
     {copy.tag}
   </Tag>

@@ -757,11 +757,11 @@
     <string name="menu_out_title">Forever Sixty</string>
     <string name="about_notAffiliated">Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.</string>
     <string name="plan_includes">What your plan includes</string>
-    <string name="plan_feature_coach">Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.</string>
-    <string name="plan_feature_serverSims">Server sims keep running, and the site tells you when they finish.</string>
-    <string name="plan_feature_history">See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.</string>
-    <string name="plan_feature_discord">A message in your own Discord channel when a server sim finishes or a log is parsed.</string>
-    <string name="plan_feature_supporter">A Supporter mark beside your name on your characters and in your guild\'s roster.</string>
+    <string name="plan_feature_coach">Coach: what to fix first after every logged raid.</string>
+    <string name="plan_feature_serverSims">Server sims finish with the tab closed.</string>
+    <string name="plan_feature_history">Your Forever Score and boss parses over time.</string>
+    <string name="plan_feature_discord">A Discord message when a sim or log is done.</string>
+    <string name="plan_feature_supporter">A Supporter mark on your characters and roster.</string>
     <string name="plan_manage">Manage billing on foreversixty.gg</string>
     <string name="plan_managedOnWeb">Billing is managed on foreversixty.gg.</string>
     <string name="plan_freeForAll">Raid sign-ups, best in slot, talents and your character are free for everyone, in the app and on the web.</string>

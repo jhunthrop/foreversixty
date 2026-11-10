@@ -1,0 +1,94 @@
+---
+// web/src/pages/creators/index.astro
+// /creators: the public page about the creator program (directions mock design/mocks/directions/
+// png/b4-creators-*; parity twin design/mocks/ws_creators.py). A reading page: the PageHeader with
+// Apply, the contents rail from 1024, then one panel holding the lead and a ReadingSection per part
+// of the terms, the terms' figures in the first section's lane, and Apply last. Static, nothing is
+// fetched. The program's server side is not on main, so Apply is an email (lib/creators/copy.ts).
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/ui/Button.svelte';
+import Facts from '../../components/ui/Facts.svelte';
+import LaneBlock from '../../components/ui/LaneBlock.svelte';
+import Page from '../../components/ui/Page.svelte';
+import PageHeader from '../../components/ui/PageHeader.svelte';
+import Prose from '../../components/ui/Prose.svelte';
+import ReadingPanel from '../../components/ui/ReadingPanel.svelte';
+import ReadingSection from '../../components/ui/ReadingSection.svelte';
+import Toc from '../../components/ui/Toc.svelte';
+import { CREATORS_APPLY_HREF, programCopy as copy } from '../../lib/creators/copy';
+import { REGION } from '../../lib/ui/regions';
+
+const escape = (s: string): string => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const paragraphs = (lines: readonly string[]): string => lines.map((l) => `<p>${escape(l)}</p>`).join('');
+const [first, ...rest] = copy.sections;
+const sections = [...copy.sections, copy.applySection];
+const tocItems = sections.map((s) => ({ title: s.title, id: s.id }));
+const facts = copy.figures.map((f) => ({ id: f.id, label: f.label, value: f.value }));
+---
+
+<Base title={copy.pageTitle} description={copy.pageDescription} path="/creators" wide>
+  <main id="main" tabindex="-1" data-testid="creators-program">
+    <Page layout="reading" tocFrom={1024} tocLabel={copy.contentsLabel} testid="creators-program-body">
+      <PageHeader slot="header" title={copy.pageTitle}>
+        <Button slot="actions" tone="primary" href={CREATORS_APPLY_HREF} testid="creators-apply-top">
+          {copy.apply}
+        </Button>
+      </PageHeader>
+      <Toc
+        slot="toc"
+        label={copy.contentsLabel}
+        items={tocItems}
+        current={tocItems[0]?.id}
+        testid="creators-toc"
+      />
+      <ReadingPanel testid="creators-panel">
+        <div class="creators-lead" data-region={REGION.intro}>
+          <Prose html={paragraphs([copy.lead])} />
+        </div>
+        {first && (
+          <ReadingSection title={first.title} anchor={first.id} testid={`creators-section-${first.id}`}>
+            <LaneBlock slot="lane" label={copy.glanceLabel}>
+              <Facts items={facts} testid="creators-terms" />
+            </LaneBlock>
+            <Prose html={paragraphs(first.paragraphs)} />
+          </ReadingSection>
+        )}
+        {rest.map((section) => (
+          <ReadingSection title={section.title} anchor={section.id} testid={`creators-section-${section.id}`}>
+            <Prose html={paragraphs(section.paragraphs)} />
+          </ReadingSection>
+        ))}
+        <ReadingSection
+          title={copy.applySection.title}
+          anchor={copy.applySection.id}
+          testid="creators-section-apply"
+        >
+          <Prose html={paragraphs(copy.applySection.paragraphs)} />
+          <div class="creators-apply">
+            <Button tone="primary" href={CREATORS_APPLY_HREF} testid="creators-apply-end">
+              {copy.applyAction}
+            </Button>
+          </div>
+        </ReadingSection>
+      </ReadingPanel>
+    </Page>
+  </main>
+</Base>
+
+<style>
+  .creators-lead {
+    padding: 22px 24px 0;
+  }
+  .creators-apply {
+    padding-top: 14px;
+  }
+  @media (max-width: 767px) {
+    .creators-lead {
+      padding: 18px 16px 0;
+    }
+    .creators-apply :global(a) {
+      display: flex;
+      width: 100%;
+    }
+  }
+</style>

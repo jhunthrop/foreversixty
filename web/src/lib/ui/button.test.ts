@@ -6,10 +6,11 @@ import {
   BUTTON_PRIMARY,
   BUTTON_SECONDARY,
   BUTTON_SM,
+  BUTTON_SUBSCRIBE,
   button,
 } from './button';
 
-const ALL = [BUTTON_PRIMARY, BUTTON_SECONDARY, BUTTON_GHOST, BUTTON_DANGER];
+const ALL = [BUTTON_PRIMARY, BUTTON_SECONDARY, BUTTON_GHOST, BUTTON_DANGER, BUTTON_SUBSCRIBE];
 
 describe('button recipes', () => {
   it.each(ALL)(
@@ -44,6 +45,13 @@ describe('button recipes', () => {
     expect(BUTTON_GHOST).toContain('bg-transparent');
     expect(BUTTON_GHOST).toContain('px-[10px]');
     expect(BUTTON_GHOST).toContain('hover:text-gold-hover');
+  });
+
+  it("subscribe is Blizzard's flat teal Subscribe: teal-edge fill and border, white label", () => {
+    expect(BUTTON_SUBSCRIBE).toContain('bg-teal-edge');
+    expect(BUTTON_SUBSCRIBE).toContain('border-teal-edge');
+    expect(BUTTON_SUBSCRIBE).toContain('text-strong');
+    expect(button('subscribe')).toBe(`${BUTTON_SUBSCRIBE} ${BUTTON_MD}`);
   });
 
   it('danger is wipe ink on a 40 % wipe hairline, never filled; hover takes the full border', () => {

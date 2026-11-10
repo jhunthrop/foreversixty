@@ -21,12 +21,12 @@ describe('checkoutHref', () => {
 });
 
 describe('buttonLabel', () => {
-  it('says Subscribe for Premium and Subscribe a guild for the guild plans', () => {
+  it('says Subscribe for Premium and Subscribe your guild for the guild plans', () => {
     expect(buttonLabel('premium', 'yearly', true)).toBe(
       `Subscribe · ${formatPrice(PLANS.premium.founderYearly, 'yearly')}`,
     );
     expect(buttonLabel('guild', 'monthly', false)).toBe(
-      `Subscribe a guild · ${formatPrice(PLANS.guild.monthly, 'monthly')}`,
+      `Subscribe your guild · ${formatPrice(PLANS.guild.monthly, 'monthly')}`,
     );
   });
 });

@@ -108,36 +108,22 @@ export const plansPageCopy = {
     audience: 'For one player',
     support: 'Free stays complete. Premium pays for the servers and keeps the site going.',
     // Each line's `/premium` anchor (spec 2026-10-29-premium-entry section 8): a contextual link
-    // lands on its line, and every line of one anchor is highlighted together.
+    // lands on its line, and every line of one anchor is highlighted together. One short sentence a
+    // line (redesign plan 2026-11-09, site copy P12): four plan columns share the width.
     features: [
+      { text: 'Coach: what to fix first after every logged raid.', anchor: 'coach' },
       {
-        text: 'Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.',
-        anchor: 'coach',
-      },
-      {
-        text: `Try up to ${count(CAPS.server)} gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at ${count(CAPS.browser)}.`,
+        text: `Sims of up to ${count(CAPS.server)} combinations; ${count(CAPS.browser)} in the browser.`,
         anchor: 'server-sims',
       },
+      { text: 'Server sims finish with the tab closed.', anchor: 'server-sims' },
       {
-        text: 'Close the tab. Server sims keep running, and the site tells you when they finish.',
+        text: `Runs of up to ${count(LANE_ITERATION_CEILING.server)} iterations, not ${count(LANE_ITERATION_CEILING.browser)}.`,
         anchor: 'server-sims',
       },
-      {
-        text: `Runs go up to ${count(LANE_ITERATION_CEILING.server)} iterations instead of ${count(LANE_ITERATION_CEILING.browser)}, so close upgrades come out clear.`,
-        anchor: 'server-sims',
-      },
-      {
-        text: 'See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.',
-        anchor: 'history',
-      },
-      {
-        text: 'A message in your own Discord channel when a server sim finishes or a log is parsed.',
-        anchor: 'notifications',
-      },
-      {
-        text: "A Supporter mark beside your name on your characters and in your guild's roster.",
-        anchor: null,
-      },
+      { text: 'Your Forever Score and boss parses over time.', anchor: 'history' },
+      { text: 'A Discord message when a sim or log is done.', anchor: 'notifications' },
+      { text: 'A Supporter mark on your characters and roster.', anchor: null },
     ] as readonly PremiumFeature[],
     scope:
       'Sims cover damage specs; healing and tanking specs are not simulated yet. The coach reviews every spec; damage specs get the most findings.',
@@ -175,7 +161,7 @@ export const plansPageCopy = {
   },
   buttons: {
     subscribe: (price: string): string => `Subscribe · ${price}`,
-    subscribeGuild: (price: string): string => `Subscribe a guild · ${price}`,
+    subscribeGuild: (price: string): string => `Subscribe your guild · ${price}`,
   },
   trial: `First ${GUILD_TRIAL_DAYS} days free, once per guild. ${TRIAL_CANCEL}; guild settings shows the date of the first charge.`,
   // Defined but appended to nothing until the trial email ships (B10 ruling 1); that lane appends it

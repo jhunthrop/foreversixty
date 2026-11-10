@@ -61,7 +61,7 @@
   ]);
 </script>
 
-<Plate label="Checkout" testid="checkout-plate">
+<Plate label="Checkout" testid="checkout-plate" frame="framed">
   <Steps {items} testid="checkout-steps">
     {#snippet sub(item)}
       {#if item.key === 'signin'}

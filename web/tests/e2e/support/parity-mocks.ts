@@ -218,6 +218,18 @@ export function renderBisLandingMocks(mocks: readonly string[]): string {
   return dir;
 }
 
+/**
+ * The public /creators mock (ws_creators.py) from this checkout's lib/creators/copy.ts:
+ * creators_facts.mjs bundles the copy, ws_creators.py draws web-creators.html. Returns the folder.
+ */
+export function renderCreatorsMocks(): string {
+  const dir = freshDir('creators');
+  const facts = path.join(dir, 'creators-page-facts.json');
+  run('node', [path.join(GENERATORS, 'creators_facts.mjs'), facts]);
+  run(PYTHON, [path.join(GENERATORS, 'ws_creators.py')], { FS_CREATORS_FACTS: facts, FS_MOCK_OUT: dir });
+  return dir;
+}
+
 /** The /app/auth mocks (ws_app_auth.py), from the page's copy module. Returns the folder. */
 export function renderAppAuthMocks(): string {
   const dir = freshDir('app-auth');

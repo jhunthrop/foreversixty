@@ -50,31 +50,31 @@
    "support": "Free stays complete. Premium pays for the servers and keeps the site going.",
    "features": [
     {
-     "text": "Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.",
+     "text": "Coach: what to fix first after every logged raid.",
      "anchor": "coach"
     },
     {
-     "text": "Try up to 5,000 gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at 400.",
+     "text": "Sims of up to 5,000 combinations; 400 in the browser.",
      "anchor": "server-sims"
     },
     {
-     "text": "Close the tab. Server sims keep running, and the site tells you when they finish.",
+     "text": "Server sims finish with the tab closed.",
      "anchor": "server-sims"
     },
     {
-     "text": "Runs go up to 100,000 iterations instead of 30,000, so close upgrades come out clear.",
+     "text": "Runs of up to 100,000 iterations, not 30,000.",
      "anchor": "server-sims"
     },
     {
-     "text": "See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.",
+     "text": "Your Forever Score and boss parses over time.",
      "anchor": "history"
     },
     {
-     "text": "A message in your own Discord channel when a server sim finishes or a log is parsed.",
+     "text": "A Discord message when a sim or log is done.",
      "anchor": "notifications"
     },
     {
-     "text": "A Supporter mark beside your name on your characters and in your guild's roster.",
+     "text": "A Supporter mark on your characters and roster.",
      "anchor": null
     }
    ],
@@ -291,7 +291,7 @@
     "secondLine": "$10 a month, billed yearly",
     "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $150 after that."
    },
-   "button": "Subscribe a guild · $120 a year",
+   "button": "Subscribe your guild · $120 a year",
    "cost": "$4.80 per member a year at 25 members.",
    "href": "/premium/checkout?plan=guild&interval=yearly",
    "price": "$120 a year"
@@ -303,7 +303,7 @@
     "secondLine": "$12.50 a month, billed yearly",
     "founderLine": null
    },
-   "button": "Subscribe a guild · $150 a year",
+   "button": "Subscribe your guild · $150 a year",
    "cost": "$6 per member a year at 25 members.",
    "href": "/premium/checkout?plan=guild&interval=yearly",
    "price": "$150 a year"
@@ -315,7 +315,7 @@
     "secondLine": "Or $120 a year.",
     "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $15 a month after that."
    },
-   "button": "Subscribe a guild · $12 a month",
+   "button": "Subscribe your guild · $12 a month",
    "cost": "$0.48 per member a month at 25 members.",
    "href": "/premium/checkout?plan=guild&interval=monthly",
    "price": "$12 a month"
@@ -327,7 +327,7 @@
     "secondLine": "Or $150 a year.",
     "founderLine": null
    },
-   "button": "Subscribe a guild · $15 a month",
+   "button": "Subscribe your guild · $15 a month",
    "cost": "$0.60 per member a month at 25 members.",
    "href": "/premium/checkout?plan=guild&interval=monthly",
    "price": "$15 a month"
@@ -339,7 +339,7 @@
     "secondLine": "$16.67 a month, billed yearly",
     "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $250 after that."
    },
-   "button": "Subscribe a guild · $200 a year",
+   "button": "Subscribe your guild · $200 a year",
    "cost": "$5 per raider a year in a 40-person raid, $10 in a 20, $20 in a 10.",
    "href": "/premium/checkout?plan=raid_guild&interval=yearly",
    "price": "$200 a year"
@@ -351,7 +351,7 @@
     "secondLine": "$20.83 a month, billed yearly",
     "founderLine": null
    },
-   "button": "Subscribe a guild · $250 a year",
+   "button": "Subscribe your guild · $250 a year",
    "cost": "$6.25 per raider a year in a 40-person raid, $12.50 in a 20, $25 in a 10.",
    "href": "/premium/checkout?plan=raid_guild&interval=yearly",
    "price": "$250 a year"
@@ -363,7 +363,7 @@
     "secondLine": "Or $200 a year.",
     "founderLine": "Founder price for anyone who subscribes by 6 Jan 2027. $25 a month after that."
    },
-   "button": "Subscribe a guild · $20 a month",
+   "button": "Subscribe your guild · $20 a month",
    "cost": "$0.50 per raider a month in a 40-person raid, $1 in a 20, $2 in a 10.",
    "href": "/premium/checkout?plan=raid_guild&interval=monthly",
    "price": "$20 a month"
@@ -375,7 +375,7 @@
     "secondLine": "Or $250 a year.",
     "founderLine": null
    },
-   "button": "Subscribe a guild · $25 a month",
+   "button": "Subscribe your guild · $25 a month",
    "cost": "$0.63 per raider a month in a 40-person raid, $1.25 in a 20, $2.50 in a 10.",
    "href": "/premium/checkout?plan=raid_guild&interval=monthly",
    "price": "$25 a month"
@@ -383,37 +383,37 @@
  },
  "premium_lines": [
   {
-   "text": "Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.",
+   "text": "Coach: what to fix first after every logged raid.",
    "anchor": "coach",
    "first": true
   },
   {
-   "text": "Try up to 5,000 gear, talent or drop combinations in one sim and find your best DPS. Your browser stops at 400.",
+   "text": "Sims of up to 5,000 combinations; 400 in the browser.",
    "anchor": "server-sims",
    "first": true
   },
   {
-   "text": "Close the tab. Server sims keep running, and the site tells you when they finish.",
+   "text": "Server sims finish with the tab closed.",
    "anchor": "server-sims",
    "first": false
   },
   {
-   "text": "Runs go up to 100,000 iterations instead of 30,000, so close upgrades come out clear.",
+   "text": "Runs of up to 100,000 iterations, not 30,000.",
    "anchor": "server-sims",
    "first": false
   },
   {
-   "text": "See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.",
+   "text": "Your Forever Score and boss parses over time.",
    "anchor": "history",
    "first": true
   },
   {
-   "text": "A message in your own Discord channel when a server sim finishes or a log is parsed.",
+   "text": "A Discord message when a sim or log is done.",
    "anchor": "notifications",
    "first": true
   },
   {
-   "text": "A Supporter mark beside your name on your characters and in your guild's roster.",
+   "text": "A Supporter mark on your characters and roster.",
    "anchor": null,
    "first": false
   }
@@ -1098,7 +1098,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "characters": [
@@ -1217,7 +1217,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "characters": [
@@ -1309,7 +1309,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/warrior/fury?faction=alliance#band-alliance-60"
+     "href": "/bis/warrior/fury/60"
     }
    },
    "characters": [
@@ -1426,7 +1426,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "characters": [
@@ -1519,7 +1519,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "characters": [
@@ -1609,7 +1609,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "characters": [
@@ -1700,7 +1700,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "characters": [
@@ -1801,7 +1801,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "characters": [
@@ -1901,7 +1901,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "characters": [
@@ -1975,7 +1975,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/hunter/beast-mastery?faction=alliance#band-alliance-30"
+     "href": "/bis/hunter/beast-mastery/30-39"
     }
    },
    "characters": [
@@ -2065,7 +2065,7 @@
     },
     "bis": {
      "label": "Best in slot",
-     "href": "/bis/warrior/fury?faction=alliance#band-alliance-60"
+     "href": "/bis/warrior/fury/60"
     }
    },
    "characters": [
