@@ -83,22 +83,42 @@ func TestTheWindowsAppIconHasEverySizeWindowsDraws(t *testing.T) {
 	icoSizes(t, asset(t, "seal.ico"), []int{16, 20, 24, 32, 40, 48, 64, 256})
 }
 
-// The bundle icon: one PNG per pixel size macOS draws, 16 to 512, and
-// nothing repeated.
-func TestTheMacAppIconHasOneEntryPerPixelSize(t *testing.T) {
+// The bundle icon, as Apple's iconutil packs a full .iconset (tools/icons/render.py):
+// 16 and 32 px as ARGB (ic04, ic05), every other size a 32-bit RGBA PNG. A palette
+// PNG in an icns is what Finder drew as red and green noise (2026-11-10).
+func TestTheMacAppIconIsAppleShaped(t *testing.T) {
 	b := asset(t, "seal.icns")
 	if string(b[:4]) != "icns" || int(binary.BigEndian.Uint32(b[4:])) != len(b) {
 		t.Fatal("bad icns header")
 	}
-	want := map[string]int{"icp4": 16, "icp5": 32, "icp6": 64, "ic07": 128, "ic08": 256, "ic09": 512}
+	want := map[string]int{
+		"ic04": 16, "ic05": 32, "ic11": 32, "ic12": 64, "ic07": 128,
+		"ic13": 256, "ic08": 256, "ic14": 512, "ic09": 512,
+	}
 	for p := 8; p < len(b); {
 		typ := string(b[p : p+4])
 		n := int(binary.BigEndian.Uint32(b[p+4:]))
+		body := b[p+8 : p+n]
+		p += n
+		if typ == "info" {
+			continue
+		}
 		w, ok := want[typ]
 		if !ok {
 			t.Fatalf("unexpected element %q", typ)
 		}
-		img := decode(t, b[p+8:p+n], w)
+		delete(want, typ)
+		if typ == "ic04" || typ == "ic05" {
+			if string(body[:4]) != "ARGB" {
+				t.Errorf("%s is not ARGB", typ)
+			}
+			continue
+		}
+		// IHDR's colour type, byte 25 of the file: 6 is RGBA, 3 a palette.
+		if len(body) < 26 || body[25] != 6 {
+			t.Errorf("%s is not an RGBA PNG", typ)
+		}
+		img := decode(t, body, w)
 		// Apple's grid: the corner is clear, the centre is the seal.
 		if _, _, _, a := img.At(w/2, w/2).RGBA(); a == 0 {
 			t.Errorf("%s: the middle is transparent", typ)
@@ -106,8 +126,6 @@ func TestTheMacAppIconHasOneEntryPerPixelSize(t *testing.T) {
 		if _, _, _, a := img.At(0, 0).RGBA(); a != 0 {
 			t.Errorf("%s: the corner is not transparent", typ)
 		}
-		delete(want, typ)
-		p += n
 	}
 	if len(want) != 0 {
 		t.Errorf("missing elements %v", want)
@@ -115,9 +133,10 @@ func TestTheMacAppIconHasOneEntryPerPixelSize(t *testing.T) {
 }
 
 // The icons are the small files the owner asked for (2026-11-09: the
-// first cut added about 2.5 MB to every binary).
+// first cut added about 2.5 MB to every binary). seal.icns rides only in
+// the Mac app bundle, never a binary; seal.ico is the exe's resource.
 func TestTheIconFilesStaySmall(t *testing.T) {
-	for name, max := range map[string]int{"seal.icns": 160 << 10, "seal.ico": 64 << 10} {
+	for name, max := range map[string]int{"seal.icns": 1 << 20, "seal.ico": 96 << 10} {
 		if n := len(asset(t, name)); n > max {
 			t.Errorf("%s is %d bytes, over %d", name, n, max)
 		}

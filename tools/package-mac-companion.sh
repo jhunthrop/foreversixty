@@ -119,22 +119,34 @@ notarize() { # notarize <file>: submits, waits, and prints Apple's log when it i
 	fi
 }
 
-disk_image() { # disk_image <dmg>: the app beside a link to Applications, to drag it onto
-	local stage=$work/dmg attempt
-	mkdir -p "$stage"
-	ditto "$APP" "$stage/$APP_NAME.app"
-	ln -s /Applications "$stage/Applications"
-	# hdiutil fails now and then with "Resource busy" on a hosted runner; it is retried.
+hdiutil_retry() { # hdiutil_retry <args>: hdiutil fails now and then with "Resource busy" on a hosted runner
+	local attempt
 	for attempt in 1 2 3; do
-		if hdiutil create -volname "$APP_NAME" -srcfolder "$stage" -fs HFS+ \
-			-format UDZO -ov "$1"; then
+		if hdiutil "$@"; then
 			return
 		fi
-		echo "hdiutil failed (attempt $attempt); retrying" >&2
+		echo "hdiutil $1 failed (attempt $attempt); retrying" >&2
 		sleep $((attempt * 5))
 	done
-	echo "package-mac-companion: could not make the disk image" >&2
+	echo "package-mac-companion: hdiutil $1 kept failing" >&2
 	exit 1
+}
+
+disk_image() { # disk_image <dmg>: the app beside a link to Applications, under the seal as the volume icon
+	local stage=$work/dmg rw=$work/rw.dmg mount=$work/mnt
+	mkdir -p "$stage" "$mount"
+	ditto "$APP" "$stage/$APP_NAME.app"
+	ln -s /Applications "$stage/Applications"
+	# The volume's icon is the app's own seal.icns. Finder reads it only when the volume root carries
+	# the custom-icon flag, which survives only when set on the mounted volume itself: so a writable
+	# image is made, mounted, flagged and then compressed.
+	cp "$ROOT/$ICON" "$stage/.VolumeIcon.icns"
+	hdiutil_retry create -volname "$APP_NAME" -srcfolder "$stage" -fs HFS+ -format UDRW -ov "$rw"
+	hdiutil_retry attach "$rw" -nobrowse -noautoopen -mountpoint "$mount"
+	SetFile -a C "$mount"
+	SetFile -a V "$mount/.VolumeIcon.icns"
+	hdiutil_retry detach "$mount"
+	hdiutil_retry convert "$rw" -format UDZO -ov -o "$1"
 }
 
 mkdir -p "$OUT"

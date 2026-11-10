@@ -13,9 +13,11 @@ header, where the seal is 44 px or smaller and the painted one turns to mud. It 
 seal.ico and seal.icns are never embedded in the binary; each platform's go:embed (internal/icon) carries its
 own tray images alone.
 
-Every PNG is palette-quantized (pngquant at quality 90 to 100, dithered) and then losslessly recompressed
+Every loose PNG is palette-quantized (pngquant at quality 90 to 100, dithered) and then losslessly recompressed
 (oxipng), keeping the smaller of that and the plain encode; at 16 to 64 px the 256-colour palette holds every
-colour the seal has. Needs pngquant and oxipng on PATH (brew install pngquant oxipng).
+colour the seal has. Needs pngquant and oxipng on PATH (brew install pngquant oxipng). The images inside an
+.ico or .icns stay 32-bit RGBA: Windows documents only that for PNG icon entries, and Finder drew palette PNGs
+in an .icns as noise. The .icns is packed by Apple's iconutil, so this runs on a Mac.
 
 The seal is never redrawn. Each tray size is the flat seal rendered at that size (the tiny bold seal at 24 px and
 below, the small seal with its swash above). For the painted seal, where the owner's set has a size (16, 24, 32, 40, 48, 64, 128, 256, 512, 1024)
@@ -59,10 +61,10 @@ TRAY_PNG_SIZE = 32  # macOS draws the menu-bar image at 16 pt (getlantern/systra
 DOT_RADIUS = 0.12  # of the icon's side
 TONES = {'on': '--color-kill', 'warn': '--color-gold-hover', 'bad': '--color-wipe'}
 RING = '--color-raised'  # the dot's ring, so it reads on a light taskbar and a dark one
-# One entry per pixel size macOS draws, 16 to 512: AppKit picks a representation by pixels, so 16 pt at 2x takes
-# the 32 px entry and 256 pt at 2x the 512 px one, and the @2x types (ic11 to ic14) would only repeat the bytes.
-# No 1024: nothing short of a 512 pt Finder icon on a Retina screen asks for it, and the Dock tops out at 256 pt.
-ICNS_TYPES = (('icp4', 16), ('icp5', 32), ('icp6', 64), ('ic07', 128), ('ic08', 256), ('ic09', 512))
+# Apple's .iconset point sizes, each at 1x and 2x; iconutil (macOS only) packs them. No 1024 px (512 pt @2x): it
+# alone would double the file, and nothing short of a 512 pt Finder icon on a Retina screen asks for it.
+ICONSET_POINTS = (16, 32, 128, 256, 512)
+ICONSET_MAX_PX = 512
 
 _cache: dict[int, Image.Image] = {}
 
@@ -142,9 +144,19 @@ def png_bytes(im: Image.Image) -> bytes:
     return best if len(best) < len(plain) else plain
 
 
+def rgba_png(im: Image.Image) -> bytes:
+    """A 32-bit RGBA PNG, never a palette one: what icon containers are documented to hold. oxipng recompresses it
+    losslessly with the colour type kept (--nc)."""
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp) / 'out.png'
+        im.convert('RGBA').save(out, 'PNG', optimize=True)
+        subprocess.run([*OXIPNG, '--nc', str(out)], check=True)
+        return out.read_bytes()
+
+
 def ico(images: list[tuple[int, Image.Image]]) -> bytes:
     """ICONDIR, one ICONDIRENTRY per image, then PNG blobs (Windows reads PNG entries since Vista)."""
-    blobs = [png_bytes(im) for _, im in images]
+    blobs = [rgba_png(im) for _, im in images]
     head = struct.pack('<HHH', 0, 1, len(images))
     offset = 6 + 16 * len(images)
     for (size, _), blob in zip(images, blobs):
@@ -155,11 +167,20 @@ def ico(images: list[tuple[int, Image.Image]]) -> bytes:
 
 
 def icns() -> bytes:
-    elems = b''
-    for kind, size in ICNS_TYPES:
-        blob = png_bytes(mac_seal(size))
-        elems += kind.encode('ascii') + struct.pack('>I', 8 + len(blob)) + blob
-    return b'icns' + struct.pack('>I', 8 + len(elems)) + elems
+    """Apple's own iconutil over a full .iconset of plain RGBA PNGs, so every type code is the one Apple writes.
+
+    The hand-packed file this replaced (2026-11-10) put palette PNGs under icp4 and icp5, and Finder drew the 16
+    and 32 pt sizes (the sidebar, list views, the mounted disk image) as red and green noise."""
+    with tempfile.TemporaryDirectory() as tmp:
+        iconset = Path(tmp) / 'seal.iconset'
+        iconset.mkdir()
+        for points in ICONSET_POINTS:
+            for scale, suffix in ((1, ''), (2, '@2x')):
+                if points * scale <= ICONSET_MAX_PX:
+                    (iconset / f'icon_{points}x{points}{suffix}.png').write_bytes(rgba_png(mac_seal(points * scale)))
+        out = Path(tmp) / 'seal.icns'
+        subprocess.run(['iconutil', '-c', 'icns', '-o', str(out), str(iconset)], check=True)
+        return out.read_bytes()
 
 
 def main() -> None:
