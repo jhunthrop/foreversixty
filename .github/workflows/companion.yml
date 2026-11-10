@@ -401,7 +401,7 @@ jobs:
           $setup = Start-Process dist\foreversixty-companion-setup.exe -PassThru
           Start-Sleep 8; Snap 'win-1-setup'
           $clicked = Get-Date; Press $setup
-          Start-Sleep 1; Snap 'win-2-installing'
+          Start-Sleep -Milliseconds 250; Snap 'win-2-installing'
           $setup.WaitForExit(30000) | Out-Null
           "setup finished $([int]((Get-Date) - $clicked).TotalMilliseconds) ms after the click"
           Start-Sleep 12; Snap 'win-3-first-run'

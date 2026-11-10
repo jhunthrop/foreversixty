@@ -175,7 +175,7 @@ func (winSystem) RemoveAfterExit(dir string) error {
 	cmd.Dir = os.TempDir() // a process's working folder cannot be deleted
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		HideWindow:    true,
-		CreationFlags: windows.CREATE_NO_WINDOW | windows.DETACHED_PROCESS,
+		CreationFlags: windows.CREATE_NO_WINDOW, // not DETACHED_PROCESS: ping would then open a console of its own
 		CmdLine:       `cmd.exe /c ping -n 4 127.0.0.1 >nul & rmdir /s /q "` + dir + `"`,
 	}
 	if err := cmd.Start(); err != nil {
