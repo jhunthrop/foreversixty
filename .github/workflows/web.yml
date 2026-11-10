@@ -753,8 +753,9 @@ jobs:
       # The API's /b pages wear the site's header and footer from api/internal/site/chrome.html,
       # a snapshot of this build's chrome (component audit 2026-11-10, cluster 20). It is
       # regenerated here from the build just deployed, never by hand: when the chrome changed,
-      # the bot commits the two snapshot files and dispatches the api deploy (a push made with
-      # GITHUB_TOKEN starts no workflow of its own), with the data bots' rebase and retry.
+      # the bot commits the snapshot and the /b parity fixtures built on it and dispatches the
+      # api deploy (a push made with GITHUB_TOKEN starts no workflow of its own), with the data
+      # bots' rebase and retry. Island uids are numbered, so an unchanged chrome commits nothing.
       - uses: actions/setup-go@v5
         with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
       - name: Regenerate the API's chrome snapshot from this build
@@ -763,14 +764,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           go test ./internal/site -run TestChromeSnapshotMatchesTheBuiltSite -update
-          go test ./internal/site -run TestChrome
-          if git diff --quiet -- internal/site/chrome.html internal/site/testdata/chrome.html; then
+          snapshot="internal/site/chrome.html internal/site/testdata/chrome.html ../web/tests/e2e/fixtures/shared-build"
+          if git diff --quiet -- $snapshot; then
             echo "the chrome snapshot is current"
             exit 0
           fi
+          # The /b parity fixtures are the API page with that chrome in it (TestSharedBuildParityFixtures).
+          go test ./internal/site -run TestSharedBuildParityFixtures -update
+          go test ./internal/site
           git config user.name "forever-data-bot"
           git config user.email "bot@foreversixty.gg"
-          git add internal/site/chrome.html internal/site/testdata/chrome.html
+          git add $snapshot
           git commit -m "chore(site): regenerate the chrome snapshot from $GITHUB_SHA"
           for attempt in 1 2 3 4 5; do
             if git pull --rebase --autostash --quiet origin main && git push --quiet origin HEAD:main; then

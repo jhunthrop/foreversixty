@@ -77,7 +77,30 @@ func extractChrome(page string) (header, footer string, err error) {
 var hashedScript = regexp.MustCompile(`/_astro/([^"'\s/]+)\.[A-Za-z0-9_-]{8}\.js`)
 
 func stableScripts(chrome string) string {
-	return hashedScript.ReplaceAllString(chrome, "/_chrome/$1.js")
+	return stableIslands(hashedScript.ReplaceAllString(chrome, "/_chrome/$1.js"))
+}
+
+// islandUID is an <astro-island>'s uid, which Astro draws afresh on every build. The snapshot
+// numbers them in document order instead (chrome0, chrome1 ...), unique within the page as
+// Astro needs, so a build that changed nothing in the chrome regenerates the same file and the
+// deploy's regeneration step commits nothing.
+var islandUID = regexp.MustCompile(`(<astro-island\s+uid=")[^"]*"`)
+
+func stableIslands(chrome string) string {
+	n := 0
+	return islandUID.ReplaceAllStringFunc(chrome, func(m string) string {
+		out := islandUID.ReplaceAllString(m, fmt.Sprintf(`${1}chrome%d"`, n))
+		n++
+		return out
+	})
+}
+
+func TestStableIslandsNumbersTheUIDs(t *testing.T) {
+	got := stableIslands(`<astro-island uid="ZC0onP" ssr></astro-island><astro-island uid="Z1x" ssr>`)
+	want := `<astro-island uid="chrome0" ssr></astro-island><astro-island uid="chrome1" ssr>`
+	if got != want {
+		t.Fatalf("got %s\nwant %s", got, want)
+	}
 }
 
 // TestChromeLoadsScriptsByStablePath: no hashed site script in the served chrome, and the
