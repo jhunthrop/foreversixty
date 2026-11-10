@@ -68,6 +68,11 @@
       grid-column: auto;
       padding-top: 0;
     }
+    /* The bar stays on the row here, so the figure keeps its own track after it. */
+    .ui-pcol :global(.ui-st[data-open='true'] .ui-st-r .ui-st-f[data-primary='true']) {
+      grid-row: auto;
+      grid-column: auto;
+    }
   }
   .ui-pcol-foot {
     margin-top: auto;
