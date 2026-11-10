@@ -4,23 +4,12 @@
   "height": 915
  },
  "regions": {
-  "controls": {
-   "box": [
-    16,
-    0,
-    396,
-    58
-   ],
-   "inventory": {
-    "button": 6
-   }
-  },
   "section-empty": {
    "box": [
     14,
-    75,
+    16,
     384,
-    73
+    53
    ],
    "inventory": {}
   }

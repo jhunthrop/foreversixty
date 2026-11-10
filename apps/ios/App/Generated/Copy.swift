@@ -2192,7 +2192,7 @@ enum Copy {
     /// Unread
     static var activityUnread: String { text("activity.unread") }
 
-    /// Nothing yet. Loot, sims, reports and your guild's raids arrive here as they happen.
+    /// Nothing yet. Loot, sims, reports and raids land here.
     static var activityEmpty: String { text("activity.empty") }
 
     /// What changed for your characters: loot, sims, reports, raids.

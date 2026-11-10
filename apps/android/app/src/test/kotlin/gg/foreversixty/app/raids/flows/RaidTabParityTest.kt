@@ -10,7 +10,10 @@ import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.home.flows.OfficerItems
 import gg.foreversixty.app.home.flows.RaidLiveModel
 import gg.foreversixty.app.menu.LocalOpenMenu
-import gg.foreversixty.app.menu.ProfileBar
+import gg.foreversixty.app.menu.CharacterBar
+import gg.foreversixty.app.menu.LocalPortraitPainter
+import gg.foreversixty.app.menu.MenuFixtures
+import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
 import gg.foreversixty.app.navigation.TabBadges
@@ -54,7 +57,7 @@ class RaidTabParityTest {
     private fun state(screen: String, view: RaidTabView, raid: Int = 0, activity: Int = 3, fontScale: Float = 1f) =
         ParityCheck.state(compose, screen, fontScale = fontScale) {
             Tab(TabBadges(raid = raid, activity = activity)) {
-                RaidTabScreen(view, RaidTabActions(), topBar = { ProfileBar(null, "Raid") })
+                RaidTabScreen(view, RaidTabActions(), topBar = { CharacterBar(barFor(view), "Raid") })
             }
         }
 
@@ -66,8 +69,16 @@ class RaidTabParityTest {
                 LocalOpenMenu provides {},
                 LocalRaidIconBuild provides ActivityFixtures.BUILD,
                 LocalItemIconPainter provides gg.foreversixty.app.home.HomeFixtures.repoIcons,
+                LocalPortraitPainter provides MenuFixtures.repoPortraits,
             ) { content() }
         }
+    }
+
+    /** The bar's character: none signed out, Felsnap while leveling, else Thandrel (the mocks' portraits). */
+    private fun barFor(view: RaidTabView): AccountCharacter? = when (view) {
+        RaidTabView.SignedOut -> null
+        is RaidTabView.Leveler -> MenuFixtures.all.first { it.name == "Felsnap" }
+        else -> MenuFixtures.thandrel
     }
 }
 

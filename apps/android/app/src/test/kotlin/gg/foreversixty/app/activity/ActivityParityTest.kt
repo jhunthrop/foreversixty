@@ -58,7 +58,7 @@ class ActivityParityTest {
         val crests = ActivityFixtures.rows.associate { it.kind to Activity.crestClass(it, specs) }
         assertEquals("warrior", crests["guildsim.passed"])
         assertEquals("warrior", crests["tier.moved"])
-        assertEquals("warrior", crests["bis.changed"])
+        assertEquals(null, crests["bis.changed"])
         assertEquals(null, crests["loot.awarded"])
         assertEquals(null, crests["report.ready"])
         val hunter = ActivityFixtures.rows.first { it.kind == "tier.moved" }.copy(title = "Beast Mastery Hunter moved to A")

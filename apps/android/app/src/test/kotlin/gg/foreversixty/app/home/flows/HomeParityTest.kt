@@ -10,7 +10,10 @@ import gg.foreversixty.app.flows.TallyItem
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.menu.LocalOpenMenu
-import gg.foreversixty.app.menu.ProfileBar
+import gg.foreversixty.app.menu.CharacterBar
+import gg.foreversixty.app.menu.LocalPortraitPainter
+import gg.foreversixty.app.menu.MenuFixtures
+import gg.foreversixty.app.model.AccountCharacter
 import gg.foreversixty.app.model.ActivityRow
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
@@ -63,10 +66,21 @@ class HomeParityTest {
         ParityCheck.state(compose, screen, fontScale = fontScale) {
             Tab(TabBadges(raid = raid, activity = activity)) {
                 HomeFlowScreen(view, HomeActions()) {
-                    CompositionLocalProvider(LocalOpenMenu provides {}) { ProfileBar(null) }
+                    CompositionLocalProvider(LocalOpenMenu provides {}, LocalPortraitPainter provides MenuFixtures.repoPortraits) { CharacterBar(barFor(view)) }
                 }
             }
         }
+
+    /** The bar's character: none before one arrives, Felsnap while leveling, else Thandrel (the mocks' portraits). */
+    private fun barFor(view: HomeView): AccountCharacter? {
+        val name = when (view) {
+            HomeView.NoCharacter -> return null
+            is HomeView.Blocks -> view.head.name
+            is HomeView.Loading -> view.head.name
+            is HomeView.Failed -> view.head.name
+        }
+        return MenuFixtures.all.first { it.name == name }
+    }
 
     @Composable
     private fun Tab(badges: TabBadges, content: @Composable () -> Unit) {

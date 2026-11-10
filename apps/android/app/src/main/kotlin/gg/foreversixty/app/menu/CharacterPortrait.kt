@@ -34,7 +34,7 @@ import gg.foreversixty.app.designsystem.parityItem
  * The Battle.net portrait in a faction-coloured ring with the faction emblem as a badge on its top right:
  * the profile button and the menu's characters only (DESIGN-SYSTEM.md tenet 2, the owner's scoped
  * exception; everywhere else is the class crest). Without a portrait, the [className]'s crest fills the
- * ring (the profile button), else the person glyph (the menu's rows, as the mock draws Ashmantle); the badge stays. With no faction (signed out, no character), the glyph alone in a muted ring.
+ * ring and the badge stays (one crest language, never a generic figure); with no class known, the person glyph.
  * The parity inventory counts the portrait and the badge as images, as the mock's two `img`s.
  */
 @Composable

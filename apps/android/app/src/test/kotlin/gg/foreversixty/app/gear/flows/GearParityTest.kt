@@ -40,6 +40,9 @@ import gg.foreversixty.app.items.ItemQuality
 import gg.foreversixty.app.items.ItemTooltipModel
 import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.menu.LocalOpenMenu
+import gg.foreversixty.app.menu.CharacterBar
+import gg.foreversixty.app.menu.LocalPortraitPainter
+import gg.foreversixty.app.menu.MenuFixtures
 import gg.foreversixty.app.menu.ProfileBar
 import gg.foreversixty.app.model.ItemHolder
 import gg.foreversixty.app.model.ItemNeed
@@ -138,13 +141,13 @@ class GearParityTest {
 
     @Composable
     private fun Gear() {
-        GearFlowScreen(GearFixtures.content, BUILD, GearActions(), portrait = portrait, topBar = { ProfileBar(null, "Gear") })
+        GearFlowScreen(GearFixtures.content, BUILD, GearActions(), portrait = portrait, topBar = { CharacterBar(MenuFixtures.thandrel, "Gear") })
     }
 
     @Composable
     private fun Tab(content: @Composable () -> Unit) {
         ForeverTabScaffold(selected = ForeverTab.Gear, onSelect = {}, badges = TabBadges(raid = 1, activity = 3)) {
-            CompositionLocalProvider(LocalOpenMenu provides {}) { Icons(content) }
+            CompositionLocalProvider(LocalOpenMenu provides {}, LocalPortraitPainter provides MenuFixtures.repoPortraits) { Icons(content) }
         }
     }
 

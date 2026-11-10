@@ -11,7 +11,7 @@ states say so); the guild's raid is Onyxia's Lair, Wed 6 Jan, 8:00 pm CST, four 
 from __future__ import annotations
 
 from mocklib import CLASS_COLOR
-from ws_app_frame import AVATAR, DEFAULT, app_page, glyph, portrait
+from ws_app_frame import AVATAR, BADGE, DEFAULT, FACTION_MARK, FACTION_RING, app_page, glyph, portrait
 from ws_lib import QCOL, region_slug
 from ws_prims import (Button, Checklist, Countdown, Figures, ItemRow, PageHeader, Row, Rows, Section, Skeleton, Switch,
                       Tag, Tally, build_page, crest_img, icon)
@@ -230,6 +230,16 @@ MENU_R5_CSS = """
 """
 
 
+def _r5_portrait(faction: str, avatar: str | None, cls: str, px: int) -> str:
+    """portrait() in round 5 on Android: a character with no Battle.net portrait shows its class crest in the faction ring."""
+    if avatar:
+        return portrait(faction, avatar, px)
+    b = round(px * BADGE)
+    crest = crest_img(cls, px).replace('class="crest"', 'class="pf-img"', 1)
+    badge = f'<img class="pf-badge" src="{FACTION_MARK.format(faction=faction)}" alt="" style="width:{b}px;height:{b}px">'
+    return f'<span class="pf" style="width:{px}px;height:{px}px;--ring:{FACTION_RING[faction]}">{crest}{badge}</span>'
+
+
 def _menu_r5(state: str) -> str:
     """The Android drawer's body in round 5 (MENU_R5_CSS); the characters, tools and account rows are menu()'s."""
     def section(title: str, rows: str) -> str:
@@ -250,10 +260,10 @@ def _menu_r5(state: str) -> str:
                '<span class="tag">Main</span></div></div></div>'
                '<p class="stamp">Updated 2 h ago from Battle.net&nbsp;&middot;&nbsp;<a href="#">Refresh</a></p></div></div>')
         others = CHARACTERS[1:] if state != 'one' else []
-        chars = [f'<div class="row ch">{portrait(f, av, 40)}<div><b class="t" style="color:{CLASS_COLOR[c]}">{n}</b><span class="s">{s}</span></div></div>'
+        chars = [f'<div class="row ch">{_r5_portrait(f, av, c, 40)}<div><b class="t" style="color:{CLASS_COLOR[c]}">{n}</b><span class="s">{s}</span></div></div>'
                  for n, c, s, _, av, f in others]
         if state == 'low':
-            chars += [f'<div class="row ch">{portrait("alliance", None, 40)}<div><b class="t" style="color:{CLASS_COLOR[c]}">{n}</b><span class="s">{s}</span></div></div>'
+            chars += [f'<div class="row ch">{_r5_portrait("alliance", None, c, 40)}<div><b class="t" style="color:{CLASS_COLOR[c]}">{n}</b><span class="s">{s}</span></div></div>'
                       for n, c, s in LOW]
         fold = (f'<a class="fold" href="#">{"Hide low-level characters" if state == "low" else "Show low-level characters (2)"}</a>' if others else '')
         body = ((section('Switch character', ''.join(chars) + fold) if others else '')
@@ -731,8 +741,8 @@ ACTIVITY = [
                    ('inv_misc_book_09', 'Fury Warrior BiS changed', 'A new pick for Hands: Theramore Gauntlets', 'Gear and sims', 'Tue', False)]),
 ]
 GROUPS = ['All', 'Raids', 'Gear and sims', 'Logs', 'Guild ladder', 'Tiers']
-# The rows about a class wear its crest (one crest language, lane M4a): a guildmate's spec icon, a spec's tier or BiS move.
-ACTIVITY_CRESTS = {'ability_warrior_innerrage': 'warrior', 'Fury Warrior moved to S': 'warrior', 'Fury Warrior BiS changed': 'warrior'}
+# The rows about a class wear its crest (one crest language, lane M4a): a guildmate's spec icon, a spec's tier move.
+ACTIVITY_CRESTS = {'ability_warrior_innerrage': 'warrior', 'Fury Warrior moved to S': 'warrior'}
 
 # Round 5 on Android's Activity tab (lane M4a; spec 2026-11-09-directions.md Mobile, mock directions/png/m-android-activity.png):
 # the blue band carries the bar and the group chips (36 faces in 48 dp targets, the first teal), then a panel per day on the
@@ -771,11 +781,10 @@ def _activity_r5(state: str) -> str:
     if state == 'out':
         return ('<div class="blk-r5" data-region="section-activity"><div class="pn"><p class="note">What changed for your characters: loot, sims, '
                 'reports, raids.</p><a class="btn wide" href="#">Sign in with Battle.net</a></div></div>')
+    if state == 'empty':  # nothing to filter: no chips under the bar
+        return '<div class="blk-r5" data-region="section-empty"><div class="pn"><p class="note">Nothing yet. Loot, sims, reports and raids land here.</p></div></div>'
     chips = ''.join(f'<a class="btn{" on" if g == "All" else ""}" href="#">{g}</a>' for g in GROUPS)
     band = f'<div class="bandc"><div class="chips" data-region="controls">{chips}</div></div>'
-    if state == 'empty':
-        return band + ('<div class="blk-r5" data-region="section-empty"><div class="pn"><p class="note">Nothing yet. Loot, sims, reports and '
-                       'your guild&rsquo;s raids arrive here as they happen.</p></div></div>')
     days = ''
     for when, rows in ACTIVITY:
         act = '<span class="act">Mark all read</span>' if when == 'Today' else ''
@@ -804,7 +813,7 @@ def activity(state: str):
         chips = '<div class="chiprow" data-region="controls">' + ''.join(Button(g, primary=(g == 'All'), small=True) for g in GROUPS) + '</div>'
         if state == 'empty':
             body = (PageHeader('Activity') + chips
-                    + '<p class="t-small" style="margin-top:16px">Nothing yet. Loot, sims, reports and your guild&rsquo;s raids arrive here as they happen.</p>')
+                    + '<p class="t-small" style="margin-top:16px">Nothing yet. Loot, sims, reports and raids land here.</p>')
             return app_page(platform, _page(body, 'Activity'), 'activity')
         secs = ''
         for when, rows in ACTIVITY:

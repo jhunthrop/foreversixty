@@ -122,7 +122,9 @@ fun ActivityScreen(
     actions: ActivityActions,
     bar: @Composable () -> Unit,
 ) {
-    FlowBandPage(bar, head = { Filters(filter, actions.onFilter) }) {
+    // An empty inbox under All has nothing to filter; a filter's own empty page keeps the chips to go back.
+    val nothingAtAll = state is ActivityState.Loaded && state.rows.isEmpty() && filter == ActivityFilter.All
+    FlowBandPage(bar, head = { if (!nothingAtAll) Filters(filter, actions.onFilter) }) {
         when (state) {
             ActivityState.Loading -> Box(Modifier.fillMaxWidth().padding(FsSpace.space8), Alignment.Center) { CircularProgressIndicator(color = FsColor.gold) }
             ActivityState.Failed -> FlowPanel {

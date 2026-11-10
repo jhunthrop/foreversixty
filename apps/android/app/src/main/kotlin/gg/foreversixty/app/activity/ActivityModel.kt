@@ -47,8 +47,8 @@ sealed interface ActivityLanding {
 object Activity {
     private const val WEEK_DAYS = 7L
 
-    /** The kinds whose title opens on a spec's full name (`Fury Warrior BiS changed`). */
-    private val NAMED_SPEC_KINDS = setOf("tier.moved", "bis.changed")
+    /** The kinds whose title opens on a spec's full name (`Fury Warrior moved to S`); a BiS change keeps its icon, it is about an item. */
+    private val NAMED_SPEC_KINDS = setOf("tier.moved")
 
     fun items(rows: List<ActivityRow>): List<ActivityItem> = rows.mapNotNull { row ->
         val at = runCatching { Instant.parse(row.occurredAt) }.getOrNull() ?: return@mapNotNull null
@@ -72,7 +72,7 @@ object Activity {
 
     /**
      * The class a row is about, drawn as its crest (one crest language, never a square spec icon): the
-     * spec icon the server sends for a guildmate (guildsim.passed), else the spec a tier or BiS row names
+     * spec icon the server sends for a guildmate (guildsim.passed), else the spec a tier move names
      * at its start (`Fury Warrior moved to S`). Null for every other row: it keeps its game icon.
      */
     fun crestClass(row: ActivityRow, specs: SpecCatalog): String? =

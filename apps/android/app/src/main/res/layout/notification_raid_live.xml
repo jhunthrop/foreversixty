@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Raid night's ongoing notification, expanded (spec 2026-11-08 F2, mock m-android-lock): the zone's
-    icon beside the zone and your answer, the time and who is coming, then In, Late, Bench and Out as
-    four pills, your answer in the teal edge (token color.brand.tealEdge). Android draws at most three
-    action buttons, so the four answers live here. The text keeps the system's notification text
-    appearances, so it reads on light and dark shades; the countdown is the header's chronometer.
+    Raid night's ongoing notification (spec 2026-11-08 F2, mock m-android-lock): the zone's icon beside
+    the zone and your answer with the countdown big at the end; expanded, the time and who is coming,
+    then In, Late, Bench and Out as four pills, your answer in the teal edge (token color.brand.tealEdge).
+    Android draws at most three action buttons, so the four answers live here. Collapsed, the top row
+    alone. The text keeps the system's notification text appearances, so it reads on light and dark shades.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -47,6 +47,16 @@
                 android:ellipsize="end"
                 android:maxLines="1" />
         </LinearLayout>
+
+        <!-- The countdown to the pull (or invites), the card's figure as in the mock. -->
+        <Chronometer
+            android:id="@+id/live_countdown"
+            style="@style/TextAppearance.Compat.Notification.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textSize="24sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
@@ -57,6 +67,7 @@
         android:layout_marginTop="8dp" />
 
     <LinearLayout
+        android:id="@+id/live_answers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"

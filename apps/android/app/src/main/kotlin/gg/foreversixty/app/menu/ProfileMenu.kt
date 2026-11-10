@@ -230,7 +230,7 @@ private fun CharacterRow(character: AccountCharacter, last: Boolean, onSwitch: (
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(FsSpace.space3),
     ) {
-        CharacterPortrait(character.avatarUrl, character.faction, PORTRAIT)
+        CharacterPortrait(character.avatarUrl, character.faction, PORTRAIT, className = character.className)
         Column {
             Text(character.name, style = FsType.item, color = classColor(character.className))
             Text(characterLine(character), style = SUB, color = FsColor.muted)
@@ -279,9 +279,9 @@ private fun MenuRow(@StringRes title: Int, line: String?, last: Boolean, onClick
 
 @Composable
 private fun Footer(version: String, actions: MenuActions) {
-    Column(Modifier.padding(top = FsSpace.space6, bottom = FsSpace.space6)) {
+    Column(Modifier.padding(top = FsSpace.space6, bottom = FsSpace.space4)) {
         Text(version, style = FsType.small, color = FsColor.muted)
-        Row(Modifier.padding(top = FsSpace.space1)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             FooterLink(R.string.menu_help, actions.onHelp)
             Text(" · ", style = FsType.small, color = FsColor.muted)
             FooterLink(R.string.menu_privacy, actions.onPrivacy)
@@ -295,7 +295,10 @@ private fun FooterLink(@StringRes text: Int, onClick: () -> Unit) {
         stringResource(text),
         style = FsType.small.copy(fontWeight = FsType.bodyStrong.fontWeight),
         color = FsColor.gold,
-        modifier = Modifier.clickable(role = Role.Button, onClick = onClick),
+        modifier = Modifier
+            .heightIn(min = FsTarget.min)
+            .wrapContentHeight(Alignment.CenterVertically)
+            .clickable(role = Role.Button, onClick = onClick),
     )
 }
 
@@ -305,7 +308,7 @@ private fun characterLine(character: AccountCharacter): String = listOfNotNull(
     listOfNotNull(character.spec, character.className).joinToString(" ") { AccountCopy.words(it) }.takeIf { it.isNotEmpty() },
     character.level?.toString(),
     character.guild?.name,
-).joinToString(" · ")
+).joinToString(LINE_DOT)
 
 @StringRes
 private fun labelOf(destination: MenuDestination): Int = when (destination) {
@@ -332,6 +335,9 @@ private fun accountLine(destination: MenuDestination, lines: MenuLines): String?
     MenuDestination.Settings -> stringResource(R.string.menu_settings_line)
     else -> null
 }
+
+/** The line's separator, held to the word before it so a wrap never starts a line on a dot. */
+private const val LINE_DOT = " · "
 
 private val CREST = 56.dp
 private val PORTRAIT = 40.dp
