@@ -175,7 +175,7 @@ export type UiIconName = keyof typeof UI_ICONS;
 
 // ---------------------------------------------------------------------------------------------
 // The apps' vectors (lane M0): the owner's traced tab icons (design/assets/icons/nav, spec
-// "Tab-bar icons"; the unified set above has no raid, gear or activity glyph) and the lead
+// "Tab-bar icons"; the unified set above has no gear or activity glyph; Guild is its door) and the lead
 // panel's corner ornament (design/assets/ornaments/corner-filigree.svg, ui/FrameCorners.svelte),
 // as an iOS template image set (SVG, vector kept) in apps/shared/brand/ios/Brand.xcassets and an
 // Android VectorDrawable in the design system's res/drawable. Never hand-copied paths: each is the
@@ -187,10 +187,18 @@ export const NATIVE_IOS_DIR = path.join(APPS, 'shared/brand/ios/Brand.xcassets/V
 export const NATIVE_ANDROID_DIR = path.join(APPS, 'android/core/designsystem/src/main/res/drawable');
 const THICKEN = JSON.parse(readFileSync(path.join(ASSETS, 'icons/nav/thicken.json'), 'utf8'));
 /** Each native vector: its asset name, its source and its drawn size in pt / dp. */
+/** The tab icons' sources: the owner's traced nav set, and for Guild the site's own Guild door
+ *  (icons/ui/guild.svg, the glyph the header's Guild draws; spec 2026-11-10-guild-tab.md section 1). */
+const TAB_SOURCES = {
+  home: 'icons/nav/home.svg',
+  guild: 'icons/ui/guild.svg',
+  gear: 'icons/nav/gear.svg',
+  activity: 'icons/nav/activity.svg',
+};
 const NATIVE_VECTORS = [
-  ...['home', 'raid', 'gear', 'activity'].map((name) => ({
+  ...Object.entries(TAB_SOURCES).map(([name, source]) => ({
     name: `tab-${name}`,
-    source: `icons/nav/${name}.svg`,
+    source,
     size: 24,
     stroke: THICKEN[name] ?? 0,
   })),

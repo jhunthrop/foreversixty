@@ -24,7 +24,7 @@ describe('UI_ICONS', () => {
     for (const [file, text] of expected) expect(readFileSync(file, 'utf8')).toBe(text);
     const sets = readdirSync(NATIVE_IOS_DIR).filter((name) => name.endsWith('.imageset'));
     expect(sets.sort()).toEqual(
-      ['frame-corner', 'tab-activity', 'tab-gear', 'tab-home', 'tab-raid'].map((n) => `${n}.imageset`),
+      ['frame-corner', 'tab-activity', 'tab-gear', 'tab-guild', 'tab-home'].map((n) => `${n}.imageset`),
     );
     const vectors = readdirSync(NATIVE_ANDROID_DIR).filter((name) => /^ic_(tab_|frame_)/.test(name));
     expect(

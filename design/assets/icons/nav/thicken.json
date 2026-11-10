@@ -1,5 +1,5 @@
 {
-  "$description": "The tab icons that break up at 24 px (the swords' grips, the horn's strap) and the same-colour stroke, in viewBox units, that holds them: about two-thirds of a pixel at 24. The traced files stay as traced; design/mocks/directions/nav_icons_check.py adds it at embed time and web/scripts/gen-ui-icons.mjs bakes it into the apps' vectors.",
-  "raid": 22,
+  "$description": "The tab icons that break up at 24 px (the horn's strap, the guild banner's rod and finials) and the same-colour stroke, in viewBox units, that holds them: about two-thirds of a pixel at 24 (22 on the nav set's 794 box, 52 on the Guild door's 1886). The traced files stay as traced; design/mocks/directions/nav_icons_check.py and design/mocks/ws_app_frame.py add it at embed time and web/scripts/gen-ui-icons.mjs bakes it into the apps' vectors.",
+  "guild": 52,
   "activity": 22
 }

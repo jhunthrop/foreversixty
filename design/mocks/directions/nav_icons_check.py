@@ -6,7 +6,9 @@ import json
 from assets import owner_asset
 from common import write
 
-NAV_ICONS = ('home', 'raid', 'gear', 'activity')
+NAV_ICONS = ('home', 'guild', 'gear', 'activity')
+# Guild is the site's own Guild door, not a nav trace (spec 2026-11-10-guild-tab.md section 1).
+SOURCES = {'guild': 'icons/ui/guild.svg'}
 SELECTED, MUTED, BAR = '#ffd36b', 'rgba(255,255,255,.7)', '#0b2f3b'
 # At 24 px the swords' grips and the horn's strap break up; a same-colour stroke of 22 units (viewBox 794, about
 # two-thirds of a pixel at 24) holds them, applied at embed time so the owner's files stay as traced. One source with
@@ -16,7 +18,7 @@ THICKEN = {k: v for k, v in json.loads(owner_asset('icons/nav/thicken.json').rea
 
 def nav_svg(name: str, px: int) -> str:
     """The owner's traced icon, tintable (currentColor), sized, thickened where it breaks up at small sizes."""
-    body = owner_asset(f'icons/nav/{name}.svg').read_text()
+    body = owner_asset(SOURCES.get(name, f'icons/nav/{name}.svg')).read_text()
     if name in THICKEN:
         body = body.replace('fill="currentColor"', f'fill="currentColor" stroke="currentColor" stroke-width="{THICKEN[name]}" stroke-linejoin="round"')
     return body.replace('<svg ', f'<svg width="{px}" height="{px}" aria-hidden="true" ', 1)
