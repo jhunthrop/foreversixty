@@ -68,6 +68,18 @@
   );
   const shownCell = $derived(cells.find((cell) => cell.slot === shownSlot));
 
+  /** The client's compound enchant ("Defense +7/Stamina +10/Block Value +15") breaks only at its
+   *  slashes in the frame's narrow centre: each part keeps its words together. */
+  const ZERO_WIDTH_SPACE = String.fromCharCode(0x200b);
+  const NO_BREAK_SPACE = String.fromCharCode(0xa0);
+  function breakable(enchant: string | undefined): string | undefined {
+    if (enchant === undefined || !enchant.includes('/')) return enchant;
+    return enchant
+      .split('/')
+      .map((part) => part.replaceAll(' ', NO_BREAK_SPACE))
+      .join(`/${ZERO_WIDTH_SPACE}`);
+  }
+
   /** The client tooltips fetched so far, by item id; null where the items file has no row. The
    *  tooltip and its lookup load on first use, off the report and sim islands' startup. */
   let tips = $state<Record<number, ItemTooltipModel | null>>({});
@@ -105,11 +117,11 @@
     {@const tip = tips[cell.item.id]}
     {@const gain = cell.gain}
     {#if tip && ItemTooltip && gain}
-      <ItemTooltip model={tip} {build} floating={false} enchant={cell.enchant}>
+      <ItemTooltip model={tip} {build} floating={false} enchant={breakable(cell.enchant)}>
         {#snippet tail()}{@render gainLine(gain)}{/snippet}
       </ItemTooltip>
     {:else if tip && ItemTooltip}
-      <ItemTooltip model={tip} {build} floating={false} enchant={cell.enchant} />
+      <ItemTooltip model={tip} {build} floating={false} enchant={breakable(cell.enchant)} />
     {:else}
       <Overlay kind="tooltip" role="group" label={cell.label} class="w-full px-3 py-[10px]">
         <ItemRow
