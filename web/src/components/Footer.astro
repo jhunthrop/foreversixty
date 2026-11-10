@@ -6,7 +6,7 @@
 // /about and /terms (lib/legal-notice.ts). Copy lives in lib/footer-copy.ts. Below lg the row
 // wraps: the seal and name, the links, then the line. Every link is a 44 x 44 px target on a phone
 // (tenet 4).
-import { FOOTER_FAN_LINE, FOOTER_LINKS } from '../lib/footer-copy';
+import { FOOTER_FAN_LINE, FOOTER_LINKS, footerOperatorLine } from '../lib/footer-copy';
 import Seal from './Seal.astro';
 import { REGION } from '../lib/ui/regions';
 import { SITE_NAME } from '../lib/seo';
@@ -32,6 +32,9 @@ const LINK_CLASS =
     </nav>
     <p class="text-muted basis-full text-[13px] leading-5 lg:ml-auto lg:basis-auto lg:text-right">
       {FOOTER_FAN_LINE}
+      <span class="block" data-testid="footer-operator">
+        {footerOperatorLine(new Date().getFullYear())}
+      </span>
     </p>
   </div>
 </footer>

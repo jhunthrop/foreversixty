@@ -34,6 +34,10 @@ export const FOOTER_LINKS: readonly FooterLink[] = [
  *  (lib/legal-notice.ts). */
 export const FOOTER_FAN_LINE = 'A fan-made player tool. Not affiliated with Blizzard.';
 
+/** The operator under the fan line (owner 2026-11-10): the legal entity and its trade name on every
+ *  page. The year is the build's, so it never goes stale. */
+export const footerOperatorLine = (year: number): string => `© ${year} Commish LLC d/b/a Forever Sixty`;
+
 export const FOOTER_COLUMNS: readonly FooterColumn[] = [
   {
     heading: 'Play',
