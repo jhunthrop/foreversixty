@@ -175,7 +175,7 @@
   }
   .gear-at-pull-doll {
     width: 100%;
-    max-width: 520px;
+    max-width: 470px;
   }
   .gear-at-pull-list {
     display: flex;
@@ -197,7 +197,7 @@
   /* The frame beside its list once both fit; the frame's own list form says it all on a phone. */
   @container (min-width: 760px) {
     .gear-at-pull {
-      grid-template-columns: minmax(0, 520px) minmax(240px, 1fr);
+      grid-template-columns: minmax(0, 470px) minmax(280px, 1fr);
       align-items: start;
     }
   }
