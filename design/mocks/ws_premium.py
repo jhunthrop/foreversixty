@@ -259,7 +259,7 @@ def premium_page(state: str) -> str:
             + free_column(st) + premium_column(st) + guild_column('guild', st) + guild_column('raid_guild', st) + '</div>')
     faq = Section(e(FAQ_TITLE), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2), meta=e(P['foot']), panel=True)
     rules = Section(e(P['howItWorks']), RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2)
-                    + f'<p class="t-small phist">{e(P["historyPromise"])}</p>')
+                    + f'<p class="t-small phist">{e(P["historyPromise"])}</p>', panel=True)
     more = f'<div class="pmore"><div class="pmain">{faq}{rules}</div>{coach_rail()}</div>'
     body = head + bar + notes + f'<div class="pc plans"><div class="pstack">{grid}{more}</div></div>' + PLANS_CSS
     note = f'/premium mock, {state}. Data: premium-facts.json (plans-page-copy.ts, components/premium/model.ts on plans.ts; accounts DERIVED from home fixtures at 2026-11-08T10:00Z).'
@@ -305,7 +305,7 @@ def checkout_page(state: str) -> str:
             # The redesign review (2026-11-09): no finished checklist; Premium is on, the renewal line, and what it turned
             # on as rows that go there (web checkout/CheckoutConfirmed.svelte).
             coach, sims = F['premium_lines'][0]['text'], F['premium_lines'][1]['text']
-            nxt = Row(e(CK['nextCoach']), e(coach)) + Row(e(CK['nextSim']), e(sims)) + Row(e(SRC['buttons']['seePlan']))
+            nxt = Row(e(CK['nextCoach']), e(coach)) + Row(e(CK['nextSim']), e(sims)) + Row(e(SRC['buttons']['seePlan']), e(CK['seePlanSub']))
             plate = Plate(f'<div class="ck-on"><p class="ck-on-t" role="status">{e(F["checkout_plan_on"])}</p>'
                           f'<p class="t-small m0">{e(F["checkout_renewal"])}</p></div>'
                           f'<nav class="ck-next" aria-label="{e(CK["nextLabel"])}">{nxt}</nav>', 'Checkout', frame='framed')

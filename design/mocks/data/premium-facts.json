@@ -478,6 +478,7 @@
   "nextSim": "Run a server sim",
   "nextCoach": "Upload a log for the coach",
   "planOn": "[fn]",
+  "seePlanSub": "Renewal date, receipts and cancel",
   "nextLabel": "What to do next"
  },
  "billing_block": {

@@ -193,7 +193,7 @@ const guildPlans = [
               ))}
             </RowGrid>
           </Section>
-          <Section title={copy.howItWorks} anchor="guild-leaders" testid="guild-rules">
+          <Section title={copy.howItWorks} anchor="guild-leaders" testid="guild-rules" panel>
             <RowGrid cols={2}>
               {copy.rules.map((rule) => (
                 <Row title={rule.term} sub={rule.sentence} open />

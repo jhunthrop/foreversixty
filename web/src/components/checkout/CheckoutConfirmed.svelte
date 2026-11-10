@@ -16,7 +16,7 @@
   const NEXT = [
     { title: checkoutCopy.nextCoach, sub: coach?.text ?? '', href: '/logs' },
     { title: checkoutCopy.nextSim, sub: sims?.text ?? '', href: '/sim' },
-    { title: premiumSourceCopy.buttons.seePlan, sub: '', href: '/account#plan' },
+    { title: premiumSourceCopy.buttons.seePlan, sub: checkoutCopy.seePlanSub, href: '/account#plan' },
   ];
 </script>
 

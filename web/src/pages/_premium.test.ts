@@ -23,7 +23,7 @@ describe('the plans page on the round 5 system', () => {
     expect(text).not.toContain(plansPageCopy.band.heading);
   });
 
-  it('carries its regions in order: four plan panels, then Questions, the open rules and the coach sample', async () => {
+  it('carries its regions in order: four plan panels, then Questions, the rules and the coach sample', async () => {
     const doc = await renderPremium();
     const order = regions(doc).filter((r) => !r.startsWith('head-') || r === 'head-answer');
     expect(order).toEqual([
@@ -38,6 +38,7 @@ describe('the plans page on the round 5 system', () => {
       'section-questions',
       'plate',
       'section-how-the-guild-plans-work',
+      'plate',
       'section-the-coach-after-a-raid',
       'plate',
     ]);
