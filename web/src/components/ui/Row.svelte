@@ -43,8 +43,9 @@
     selected?: boolean;
     density?: 'default' | 'slim';
     open?: boolean;
-    /** Below 768 the trail takes its own line under the body (an in-row Segmented). */
-    wrapTrail?: boolean;
+    /** Below 768 the trail takes its own line under the body (an in-row Segmented); `xl`, below
+     *  1280 (a trail of figures and actions too wide for a split page's main column). */
+    wrapTrail?: boolean | 'xl';
     /** The title in a 180 px label column, the trail filling the rest (a field and its button). */
     fillTrail?: boolean;
     testid?: string;
@@ -112,7 +113,11 @@
     class={[
       'flex items-center gap-3',
       fillTrail && 'ui-row-trail',
-      wrapTrail ? 'max-md:col-span-full max-md:mt-2 md:justify-self-end' : 'justify-self-end',
+      wrapTrail === 'xl'
+        ? 'max-xl:col-span-full max-xl:mt-2 xl:justify-self-end'
+        : wrapTrail
+          ? 'max-md:col-span-full max-md:mt-2 md:justify-self-end'
+          : 'justify-self-end',
       !trail && 'max-[600px]:hidden',
     ]}
     >{#if trail}{@render trail()}{/if}</span

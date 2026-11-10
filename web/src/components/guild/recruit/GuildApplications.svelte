@@ -163,7 +163,7 @@
           <p class="text-muted text-[14px]" data-testid="guild-applications-none">{copy.none}</p>
         {:else}
           <div role="region" aria-label={copy.open} data-testid="guild-applications-plate">
-            <div class="hidden justify-end gap-x-3 pb-1 lg:flex" aria-hidden="true">
+            <div class="hidden justify-end gap-x-3 pb-1 xl:flex" aria-hidden="true">
               <span class="{APPLICANT_COLUMNS} text-label text-muted grid font-bold">
                 {#each APPLICANT_HEADS as head (head)}<span>{head}</span>{/each}
               </span>

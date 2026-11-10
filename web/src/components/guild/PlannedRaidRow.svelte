@@ -72,7 +72,7 @@
   data-testid={testid}
 >
   <span
-    class="hidden min-h-16 grid-cols-[56px_minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_176px_16px] items-center gap-4 px-3.5 py-[7px] md:grid lg:grid-cols-[56px_minmax(0,1.5fr)_minmax(136px,0.8fr)_minmax(max-content,1.2fr)_176px_16px]"
+    class="hidden min-h-16 grid-cols-[56px_minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_176px_16px] items-center gap-4 px-3.5 py-[7px] md:grid lg:grid-cols-[56px_minmax(0,1.5fr)_minmax(136px,0.8fr)_minmax(340px,1.2fr)_176px_16px]"
     data-testid={`${testid}-desktop`}
   >
     {@render dateBlock('h-14 w-14')}

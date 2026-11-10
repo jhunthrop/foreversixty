@@ -1,6 +1,6 @@
 <!-- web/src/components/guild/recruit/ApplicantRow.svelte -->
 <!-- One open application (guild dense spec, h-guild-tabs): crest, the name in class colour, the spec
-     over the message and availability; from 1024 the figures in fixed columns under the list's head
+     over the message and availability; from 1280 the figures in fixed columns under the list's head
      line (item level, best boss kill as a percentile and its figure, the seat the spec fills for the
      next raid, days waiting), then the officers' Votes with the viewer's own, Accept and Decline. -->
 <script lang="ts">
@@ -50,13 +50,13 @@
 <Row
   title={character.name}
   titleTone={classTone(character.class ?? '')}
-  wrapTrail
+  wrapTrail="xl"
   density="slim"
   testid={`guild-application-${application.id}`}
 >
   {#snippet lead()}<ClassCrestRing characterClass={character.class ?? ''} size={28} />{/snippet}
   {#snippet subContent()}
-    <span class="lg:hidden">{applicantFacts(character)}</span><span class="hidden lg:inline"
+    <span class="xl:hidden">{applicantFacts(character)}</span><span class="hidden xl:inline"
       >{character.spec_name ?? ''}</span
     >{#if fill !== null}{' '}<span
         class="whitespace-nowrap {fill.short ? 'text-gold' : 'text-muted'}"
@@ -70,7 +70,7 @@
     >{#if error !== ''}<span class="text-wipe block" role="alert">{error}</span>{/if}
   {/snippet}
   {#snippet trail()}
-    <span class="hidden {APPLICANT_COLUMNS} text-[14px] lg:grid" data-testid="guild-application-figures">
+    <span class="hidden {APPLICANT_COLUMNS} text-[14px] xl:grid" data-testid="guild-application-figures">
       <span class="text-strong"
         >{character.item_level ?? '–'}{#if median !== null && character.item_level !== null}<span
             class="text-muted ml-1 font-normal">{signed(character.item_level - median)}</span

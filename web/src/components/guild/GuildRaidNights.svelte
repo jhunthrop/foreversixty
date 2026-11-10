@@ -160,7 +160,7 @@
         <ul class="grid gap-x-6 sm:grid-cols-2 xl:grid-cols-3" data-testid={`guild-raid-fights-${f.row.id}`}>
           {#each nightFights(f.row, bossIds) as fight (fight.index)}
             <li
-              class="flex min-h-8 items-center gap-3 text-[13px]"
+              class="grid min-h-8 grid-cols-[minmax(0,1fr)_48px_56px] items-center gap-3 text-[13px]"
               data-testid={fight.trash ? 'guild-raid-fight-trash' : 'guild-raid-fight'}
             >
               <span class={fight.trash || fight.unnamed ? 'text-muted' : 'text-strong font-semibold'}
@@ -169,8 +169,8 @@
               {#if fight.unnamed}
                 <span class="text-muted">no named encounter published</span>
               {:else}
-                <span class="text-muted numeric">{killClock(fight.duration_ms)}</span>
-                <span class="ml-auto">
+                <span class="text-muted numeric text-right">{killClock(fight.duration_ms)}</span>
+                <span class="justify-self-end">
                   {#if fight.trash}<span class="text-muted">{TRASH_LABEL}</span>
                   {:else}<Tag tone={fight.kill ? 'success' : 'danger'}>{fight.kill ? 'Kill' : 'Wipe'}</Tag
                     >{/if}

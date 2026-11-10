@@ -248,7 +248,7 @@ def raids_page() -> dict:
                      'kill_count': 2, 'duration_ms': 3_000_000 + kill, 'wipe_count': wipes, 'raiders': len(came), 'deaths': deaths + 5 * wipes,
                      'top_hps': {'name': heal.name, 'class': heal.cls, 'metric': 'hps', 'value': night_fig(heal)},
                      'top_dps': {'name': top.name, 'class': top.cls, 'metric': 'dps', 'value': night_fig(top)},
-                     'fights': [{'index': 0, 'name': None, 'encounter_id': None, 'kill': True, 'duration_ms': 60_000, 'deaths': 0, 'players': len(came)}]
+                     'fights': [{'index': 0, 'name': 'Onyxian Warder', 'encounter_id': None, 'kill': True, 'duration_ms': 60_000, 'deaths': 0, 'players': len(came)}]
                      + [{'index': 1 + w, 'name': 'Onyxia', 'encounter_id': ENCOUNTER_ID, 'kill': w == wipes, 'duration_ms': kill if w == wipes else 240_000,
                          'deaths': deaths if w == wipes else 5, 'players': len(came)} for w in range(wipes + 1)],
                      'present': [], 'raid_id': rid})

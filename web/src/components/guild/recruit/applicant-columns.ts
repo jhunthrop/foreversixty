@@ -6,5 +6,5 @@ export const APPLICANT_COLUMNS =
 
 export const APPLICANT_HEADS: readonly string[] = ['Item level', 'Best %', 'Waiting'];
 
-/** The votes and the two decisions keep one width from 1024, so the figures line up under the head. */
-export const APPLICANT_ACTIONS = 'lg:w-[272px] lg:flex-nowrap';
+/** The votes and the two decisions keep one width from 1280, so the figures line up under the head. */
+export const APPLICANT_ACTIONS = 'xl:w-[272px] xl:flex-nowrap';

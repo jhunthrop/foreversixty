@@ -26,7 +26,7 @@
       "fights": [
         {
           "index": 0,
-          "name": null,
+          "name": "Onyxian Warder",
           "encounter_id": null,
           "kill": true,
           "duration_ms": 60000,
@@ -72,7 +72,7 @@
       "fights": [
         {
           "index": 0,
-          "name": null,
+          "name": "Onyxian Warder",
           "encounter_id": null,
           "kill": true,
           "duration_ms": 60000,
@@ -118,7 +118,7 @@
       "fights": [
         {
           "index": 0,
-          "name": null,
+          "name": "Onyxian Warder",
           "encounter_id": null,
           "kill": true,
           "duration_ms": 60000,
@@ -164,7 +164,7 @@
       "fights": [
         {
           "index": 0,
-          "name": null,
+          "name": "Onyxian Warder",
           "encounter_id": null,
           "kill": true,
           "duration_ms": 60000,
@@ -210,7 +210,7 @@
       "fights": [
         {
           "index": 0,
-          "name": null,
+          "name": "Onyxian Warder",
           "encounter_id": null,
           "kill": true,
           "duration_ms": 60000,
