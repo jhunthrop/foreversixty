@@ -23,3 +23,9 @@ Not taken: /setup 1024 step-3 row (the shared Steps primitive).
 - ai-slop-reviewer: Verdict: FAIL (the same overlap).
 - info-density-reviewer: Verdict: DENSE WITH ADDITIONS (no MUST items).
 Fixed: in the rail (from 1024) each Plan value sits under its label, as the phone stacks them.
+
+## Confirmation round (e4854e3cf)
+- wow-player: Verdict: SHIP. The Plan overlap is fixed at 1440, 1024 and 390.
+- ux-designer: Verdict: SHIP
+- ai-slop-reviewer: Verdict: PASS WITH FIXES. (no blocking tell; open notes are copy: step sub-lines, billing lines in lib/billing, chips)
+- info-density-reviewer: Verdict: DENSE WITH ADDITIONS (no MUST items).
