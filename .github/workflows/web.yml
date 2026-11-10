@@ -175,7 +175,8 @@ jobs:
   # that stays in `e2e`, which launch mode skips (about 17 minutes a shard).
   parity:
     needs: build
-    if: github.event_name != 'schedule'
+    # SHIP_FAST (owner, 2026-11-09, during the redesign): parity runs only on a full dispatch.
+    if: github.event_name != 'schedule' && (vars.SHIP_FAST != 'true' || inputs.full)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults: { run: { working-directory: web } }
