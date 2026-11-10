@@ -15,6 +15,10 @@ on:
         description: Cut a release from this commit even if nothing under companion/ changed
         type: boolean
         default: false
+      dry_run:
+        description: Build, sign and notarize every installer as the next version, but publish and tag nothing (the builds stay as this run's artifacts)
+        type: boolean
+        default: false
 permissions: { contents: read }
 concurrency:
   group: companion-${{ startsWith(github.ref, 'refs/heads/land/') && github.sha || github.ref }}
@@ -163,6 +167,7 @@ jobs:
         env:
           BEFORE: ${{ github.event.before }}
           FORCE: ${{ github.event.inputs.release }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
           if [[ "$GITHUB_REF" == refs/tags/companion-v* ]]; then
             echo "release=true" >> "$GITHUB_OUTPUT"
@@ -177,7 +182,7 @@ jobs:
           # up by the next push, because the tree still differs from the last tag.
           last=$(git tag --list 'companion-v*' --sort=-v:refname | head -1)
           changed=false
-          if [ "$FORCE" = "true" ]; then
+          if [ "$FORCE" = "true" ] || [ "$DRY_RUN" = "true" ]; then
             changed=true
           elif [ -n "$last" ]; then
             if git diff --name-only "$last" "$GITHUB_SHA" \
@@ -202,7 +207,11 @@ jobs:
           fi
           echo "release=true" >> "$GITHUB_OUTPUT"
           echo "tag=$next" >> "$GITHUB_OUTPUT"
-          echo "releasing $next (previous: ${last:-none})"
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "dry run: building $next (previous: ${last:-none}); nothing is published or tagged"
+          else
+            echo "releasing $next (previous: ${last:-none})"
+          fi
 
   build:
     needs: [test, version]
@@ -301,6 +310,8 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # The companion is signed first, because the setup program carries it: the setup is
+      # built around the signed exe, then signed itself by the same profile.
       - name: Sign for Windows
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
         uses: azure/artifact-signing-action@v2
@@ -313,16 +324,48 @@ jobs:
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
 
-      - name: Check the Windows signature
-        # A release never carries a binary the OS would call unsigned: the
-        # signature must verify and name the company.
+      # foreversixty-companion-setup.exe (companion/packaging/windows/companion.iss): the
+      # download /setup offers, a one-screen install for the player's own account. The bare exe
+      # beside it stays in the release for the updater and for installs made before the setup
+      # existed. Inno Setup 6 is on the hosted Windows image; it is installed if an image drops it.
+      - name: Build the Windows setup
+        if: matrix.goos == 'windows'
+        shell: pwsh
+        run: |
+          $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe'
+          if (-not (Test-Path $iscc)) {
+            choco install innosetup -y --no-progress
+            if ($LASTEXITCODE -ne 0) { throw "could not install Inno Setup" }
+          }
+          $version = $env:TAG -replace '^companion-v', ''
+          & $iscc "/DAppVersion=$version" "/DSourceExe=$PWD\dist\$env:ASSET" "/O$PWD\dist" packaging\windows\companion.iss
+          if ($LASTEXITCODE -ne 0) { throw "iscc failed ($LASTEXITCODE)" }
+          Get-Item dist\foreversixty-companion-setup.exe | Format-List Name, Length
+
+      - name: Sign the Windows setup
+        if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
+        uses: azure/artifact-signing-action@v2
+        with:
+          endpoint: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.AZURE_SIGNING_PROFILE }}
+          files: ${{ github.workspace }}\companion\dist\foreversixty-companion-setup.exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Check the Windows signatures
+        # A release never carries a binary the OS would call unsigned: each signature must
+        # verify and name the company, the companion's and the setup program's alike.
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
         shell: pwsh
         run: |
-          $sig = Get-AuthenticodeSignature "dist/$env:ASSET"
-          "status: $($sig.Status); signer: $($sig.SignerCertificate.Subject)"
-          if ($sig.Status -ne 'Valid') { throw "the Windows binary is not validly signed: $($sig.StatusMessage)" }
-          if ($sig.SignerCertificate.Subject -notmatch 'Commish LLC') { throw "unexpected signer: $($sig.SignerCertificate.Subject)" }
+          foreach ($file in @("dist/$env:ASSET", "dist/foreversixty-companion-setup.exe")) {
+            $sig = Get-AuthenticodeSignature $file
+            "${file}: status $($sig.Status); signer $($sig.SignerCertificate.Subject)"
+            if ($sig.Status -ne 'Valid') { throw "$file is not validly signed: $($sig.StatusMessage)" }
+            if ($sig.SignerCertificate.Subject -notmatch 'Commish LLC') { throw "unexpected signer on ${file}: $($sig.SignerCertificate.Subject)" }
+          }
 
       - name: Unsigned Windows build
         if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE == ''
@@ -503,7 +546,9 @@ jobs:
     # The Mac build must pass too, signed or not: a release without its Mac app would
     # take the Mac download offline (see build-mac).
     needs: [build, build-mac, version]
-    if: ${{ !cancelled() && needs.build.result == 'success' && needs.build-mac.result == 'success' && needs.version.outputs.release == 'true' }}
+    # A dry run (workflow_dispatch with dry_run) stops before this job: its builds stay as the
+    # run's artifacts, and no tag, release or feed entry is made.
+    if: ${{ !cancelled() && needs.build.result == 'success' && needs.build-mac.result == 'success' && needs.version.outputs.release == 'true' && github.event.inputs.dry_run != 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions: { contents: write }

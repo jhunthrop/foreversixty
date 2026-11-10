@@ -16,11 +16,13 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/app"
 	"github.com/jhunthrop/foreversixty/companion/internal/browser"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
+	"github.com/jhunthrop/foreversixty/companion/internal/install"
 	"github.com/jhunthrop/foreversixty/companion/internal/instance"
 	"github.com/jhunthrop/foreversixty/companion/internal/logging"
 	"github.com/jhunthrop/foreversixty/companion/internal/paths"
@@ -37,6 +39,10 @@ var startNew updater.Starter = updater.StartDetached
 
 func defaultOpen(u string) error { return browser.Open(u) }
 
+// Every desktop toolkit here wants its loop on the main thread, and the
+// first-launch window (install) opens before the shell's.
+func init() { runtime.LockOSThread() }
+
 func main() {
 	if err := run(os.Args[1:], os.Stdout); err != nil {
 		fmt.Fprintln(os.Stderr, "foreversixty-companion:", err)
@@ -50,6 +56,7 @@ func run(args []string, out *os.File) error {
 	headless := fs.Bool("headless", false, "run without a tray icon or a window")
 	debug := fs.Bool("debug", false, "log at debug level")
 	version := fs.Bool("version", false, "print the version and exit")
+	finish := install.RegisterFlags(fs)
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
@@ -85,6 +92,12 @@ func run(args []string, out *os.File) error {
 		return err
 	}
 	defer func() { lock.Release() }()
+	// A Mac copy opened from the download moves itself to Applications and
+	// starts again from there, before an update could be swapped into the
+	// download.
+	if !*headless && offerInstall(log, func() { lock.Release() }) {
+		return nil
+	}
 	// Before anything else: a staged update becomes the program, and
 	// the new build is started here, so one double-click after an update
 	// is enough. The claim is let go just before, or the new build would
@@ -147,6 +160,10 @@ func run(args []string, out *os.File) error {
 		defer close(done)
 		_ = a.Run(ctx)
 	}()
+	if finish.Moved && install.Supported {
+		home, _ := os.UserHomeDir()
+		go func() { _ = finish.Complete(ctx, install.NewSystem(), home, log) }()
+	}
 
 	// The shell owns the main goroutine: every desktop toolkit here
 	// requires its loop to run on it.
@@ -167,6 +184,47 @@ func run(args []string, out *os.File) error {
 	stop()
 	<-done
 	return err
+}
+
+// offerInstall shows the Mac's "Move Forever Sixty to Applications?" when
+// the app runs from anywhere else, and reports whether this process should
+// end: the installed copy was started, or the player closed the window.
+func offerInstall(log *slog.Logger, release func()) bool {
+	if !install.Supported {
+		return false
+	}
+	exe, err := os.Executable()
+	if err != nil {
+		return false
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return false
+	}
+	plan := install.Decide(updater.BundleRoot(exe), install.Detect(home))
+	if !plan.Move {
+		return false
+	}
+	log.Info("the app runs outside Applications; offering to move it", "component", "main", "from", plan.Original)
+	moved, err := install.Offer(install.OfferOptions{
+		Plan: plan, Home: home, Log: log, System: install.NewSystem(),
+		Prompt: promptWindow, BeforeRelaunch: release,
+	})
+	if err != nil {
+		log.Warn("could not show the move window; running from here", "component", "main", "err", err.Error())
+		return false
+	}
+	if !moved {
+		log.Info("the move window was closed; quitting until the next launch", "component", "main")
+	}
+	return true
+}
+
+// promptWindow is install's window: small, fixed, and the companion's own look.
+func promptWindow(url string, bind func(closeWindow func()) map[string]any) error {
+	return shell.Prompt(shell.PromptOptions{
+		URL: url, Title: "Forever Sixty", Width: install.WindowWidth, Height: install.WindowHeight, Bind: bind,
+	})
 }
 
 // handOff is what a second launch does: say so in the log, open the

@@ -3,14 +3,14 @@
     {
       "os": "windows",
       "platform": "Windows",
-      "asset": "foreversixty-companion_windows_amd64.exe",
-      "firstRun": "Signed by Commish LLC. If SmartScreen still asks while the certificate is new, choose More info, then Run anyway."
+      "asset": "foreversixty-companion-setup.exe",
+      "firstRun": "Signed by Commish LLC. Open the download and Forever Sixty sets itself up, for your Windows account only, with no admin needed. If SmartScreen asks, choose More info, then Run anyway."
     },
     {
       "os": "mac",
       "platform": "Mac",
-      "asset": "foreversixty-companion_darwin_universal.dmg",
-      "firstRun": "Signed by Commish LLC and notarized by Apple. Open the disk image, then drag Forever Sixty to Applications. macOS 12 or later."
+      "asset": "foreversixty-companion_darwin_universal.app.zip",
+      "firstRun": "Signed by Commish LLC and notarized by Apple. Open the download and Forever Sixty moves itself to Applications, then sets itself up. macOS 12 or later."
     }
   ]
 }

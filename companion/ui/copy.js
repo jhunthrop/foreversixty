@@ -223,6 +223,16 @@ const COPY = {
     savedVisibility: (words) => 'Saved. New reports will be ' + words + '. The report in progress keeps its setting.',
     rulesets: { normal: 'Normal', pvp: 'PvP', rp: 'Roleplaying', hardcore: 'Hardcore' },
   },
+
+  // The Mac's first launch from a download (install.html, internal/install).
+  install: {
+    title: 'Move Forever Sixty to Applications?',
+    lede: 'It runs from there and keeps itself up to date. The download goes in the Trash.',
+    openAtLogin: 'Open at login',
+    move: 'Move to Applications',
+    moving: 'Moving…',
+    failed: 'That did not work. Close this window and open Forever Sixty again to try once more.',
+  },
 };
 
 if (typeof module !== 'undefined') module.exports = COPY;

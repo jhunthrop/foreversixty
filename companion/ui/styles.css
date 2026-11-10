@@ -544,6 +544,20 @@ footer a:hover, footer a:focus-visible { color: var(--color-gold); }
 @keyframes page-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes breathe { from { opacity: 0.6; transform: scale(1); } to { opacity: 0; transform: scale(2.2); } }
 
+/* ---- the Mac's first-launch window (install.html): the band, then one lead panel -------------- */
+
+.prompt main { display: flex; align-items: center; }
+.prompt .page { padding-top: 24px; }
+.prompt h1 {
+  margin: 0;
+  font: 400 24px/30px var(--font-title);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-cream);
+}
+.prompt .lede { margin-top: 10px; }
+.prompt .switch { margin-top: 18px; }
+.prompt #move { margin-top: 22px; }
+
 /* Reduced motion: everything is instant except the spinner, which turns slowly. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
