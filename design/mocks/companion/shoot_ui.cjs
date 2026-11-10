@@ -60,7 +60,7 @@ const STATES = [
   { name: 'no-folder-status', snap: () => fixture('status-no-folder'), page: 'status' },
   { name: 'no-folder-settings', snap: () => fixture('status-no-folder'), page: 'settings' },
   { name: 'folder-added', snap: () => fixture('status-no-folder'), page: 'settings', post: { 'api/folders/pick': ok(fixture('status-ready')) },
-    act: async (p) => { await p.click('#add-folder'); }, after: () => fixture('status-ready') },
+    act: async (p) => { await p.click('#add-folder'); await p.evaluate(() => { const m = document.getElementById('main'); m.scrollTop = m.scrollHeight; }); }, after: () => fixture('status-ready') },
   { name: 'folder-not-wow', snap: () => fixture('status-ready'), page: 'settings', post: { 'api/folders/pick': fail('not_wow', 'That folder is not a World of Warcraft folder. Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder.') }, act: async (p) => p.click('#add-folder') },
   // watching
   { name: 'ready', snap: () => merge('status-ready', { addon_update: ADDON_LINES }), page: 'status' },
