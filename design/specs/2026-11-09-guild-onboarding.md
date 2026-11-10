@@ -49,7 +49,7 @@ No other gate was widened or narrowed.
 | `/raid`, `/signup` | `cmd_raid.go`, `cmd_signup.go` | linked member | unchanged |
 | `/bis`, `/char`, `/report`, `/attendance`, `/link`, `/help` | `cmd_*.go` | free | unchanged |
 | `/readiness` | `cmd_readiness.go` → `guilds.readinessGate` | officer + plan, then Raid guild | officer, then Raid guild. A free guild gets the Raid guild sentence and `Move to Raid guild` (checkout `plan=raid_guild`) |
-| Application post | `discordbot.PostApplication` (new) | n/a | free |
+| Application post, with Accept and Decline | `discordbot.PostApplication`, `applicationPress` (new) | n/a | free; Accept/Decline need a linked verified officer and an unfrozen claim, and run the site's `Decide` |
 | Accepted applicant's role and DM | `GrantGuildRole`, `DirectMessage` | officer | unchanged |
 | Ping on Discord | `POST …/raids/{raid}/ping` | officer + plan | unchanged |
 | Assignments post | `POST …/raids/{raid}/assignments/post` | officer + plan | unchanged |
@@ -89,33 +89,32 @@ A step is **done** when the guild's data says so. Otherwise it is **skipped** or
 | 1 | Officer ranks | `officer_max_rank_index` ≠ 1 (the column default) | `done` = keep the current ranks | Each rank's count and names from the roster's `rank_index`; `Officers are ranks 0 to [n]` with Save; `Keep 0 to n` |
 | 2 | Discord bot | the bot is installed with a raid channel, or (no bot in the deployment) the webhook is connected | skip only | `Add the Discord bot` (install with `?return=setup`, back to the checklist); a channel picker once installed |
 | 3 | Recruiting | recruiting open, a pitch, wanted lines, and a recruiting channel | skip only | Parts: Pitch, Nights, Wanted, Recruit role, Recruit channel; the recruiting channel picker; `Edit the pitch` |
-| 4 | Raid schedule | `raid_timezone` set and a planned or locked raid still ahead | skip only | Parts: Time zone, First raid, Comp targets (tagged Guild); `Plan a raid` |
+| 4 | Raid schedule | `raid_timezone` set and a planned or locked raid still ahead | skip only | Parts: Time zone, First raid, Comp targets (tagged Guild); `Plan a raid`; with a raid ahead, `Posted to #channel` or `Post now` (any state) |
 | 5 | Guild invite link | a link exists and at least one account joined by one | `done` = I posted it | The invite link field; `Paste in guild chat` with the exact line `Join <Guild> on Forever Sixty and sign up for raids: <url>`; `I posted it` |
-| 6 | Addon and companion | at least half of the verified accounts have an addon export in the last 14 days | skip only | `<n> of <m> members synced in the last 14 days` with a bar; the paste line `Get the Forever Sixty addon and companion so your gear and the roster sync: https://foreversixty.gg/setup` |
+| 6 | Addon and companion | at least half of the verified accounts have an addon export in the last 14 days | skip only | `<n> of <m> members synced in the last 14 days` (short of half: `· <half> needed`) with a bar, green when done; the paste line `Get the Forever Sixty addon and companion so your gear and the roster sync: https://foreversixty.gg/setup` |
 | 7 | Report visibility | `default_visibility` ≠ `public` | `done` = keep Public | Public, Unlisted, Guild only; `Keep Public` |
 | 8 | Discord linked role (optional) | never derivable: the role lives in the officer's server | `done` | The Server Settings path to the Forever Sixty Premium requirement; `Done` |
 
 The plan is not a step. It is the rail's Plan panel:
 
-- the current plan;
-- `Free for every claimed guild`;
-- `Guild adds`;
-- `Raid guild adds`;
-- one `Compare plans` link (`/premium#guild-leaders`).
+- the current plan (`Free`, `Guild` or `Raid guild`) as its meta;
+- three lines: `Free:`, `Guild:` and `Raid guild:`;
+- `Compare plans` (`/premium#guild-leaders`).
 
 There is no subscribe button.
 
-Every step except the plan has `Skip`. A marked step has `Undo`. The first step to do carries the page's one primary. The checklist reads again after each write and when the window regains focus, so a bot install, a raid planned on the guild page or a member's sync shows without a reload.
+Every step except the plan has `Skip`. A marked step has `Undo`. The step's mark carries its state: a check for done, the number in a ring for to do, a dash for skipped. Only `Skipped` is also written. The first step to do carries the page's one primary, and every other step's controls are quiet (ghost). On step 1, `Keep 0 to n` is the action until the number changes; then `Save` is. The checklist reads again after each write and when the window regains focus, so a bot install, a raid planned on the guild page or a member's sync shows without a reload.
 
 ### 2.3 The recruiting channel
 
-The officer picks it from the bot's server channels (`PUT …/discord/bot/recruit-channel`; `""` clears it). Each new application then posts there as an embed:
+The officer picks it from the bot's server channels (`PUT …/discord/bot/recruit-channel`; `""` clears it). The picker guesses only a channel whose name reads as recruiting (`recruit`, `apply`, `application`, `join`). It never guesses the raid channel. Each new application then posts there as an embed:
 
 - `Application · <Name>`;
 - the spec and class as the author line;
 - the message, cut at 600 characters;
 - Level, Item level and Available fields;
-- a `Review it on Forever Sixty` link button to the applications page.
+- `Accept` and `Decline` buttons: a linked verified officer decides in Discord through the site's own `Decide`, so the recruit role, the DM and the votes all follow, and the answer is ephemeral;
+- a `Review application` link to the applications page.
 
 The post goes out after the apply has answered, so a failure never fails the application.
 

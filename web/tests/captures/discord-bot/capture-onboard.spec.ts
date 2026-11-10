@@ -14,7 +14,7 @@ import { targetIn } from '../support/capture-kit';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SITE = 'https://foreversixty.gg';
-const target = targetIn('2026-11-09-f-guild-onboard/round1');
+const target = targetIn('2026-11-09-f-guild-onboard/round2');
 const dumped = JSON.parse(readFileSync(path.join(HERE, 'payloads.json'), 'utf8')) as Dumped[];
 const CLIENTS = [
   { name: 'desktop', width: 640 },
@@ -75,10 +75,12 @@ const applicationPost: Dumped = {
       {
         type: 1,
         components: [
+          { type: 2, style: 3, label: 'Accept', custom_id: 'gapp:accept:12' },
+          { type: 2, style: 2, label: 'Decline', custom_id: 'gapp:decline:12' },
           {
             type: 2,
             style: 5,
-            label: 'Review it on Forever Sixty',
+            label: 'Review application',
             url: `${SITE}/guild/us/normal/olympus-xxvii/applications`,
           },
         ],

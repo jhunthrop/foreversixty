@@ -122,8 +122,8 @@ test.describe('the checklist', () => {
     await stubSetup(page, setupFixture());
     await gotoHydrated(page, SETUP_PATH, 'guild-setup-steps');
     await expect(page.getByTestId('setup-done-figure')).toContainText('1');
-    await expect(page.getByTestId('setup-step-officer_ranks-state')).toHaveText('To do');
-    await expect(page.getByTestId('setup-step-invite_link-state')).toHaveText('Done');
+    await expect(page.locator('[aria-label="Step 5: Done"]')).toBeVisible();
+    await expect(page.getByTestId('setup-step-officer_ranks-state')).toHaveCount(0);
     await expect(page.locator('[aria-label="Step 1: Next"]')).toBeVisible();
     await expect(page.getByTestId('setup-discord-add')).toHaveAttribute(
       'href',
@@ -141,7 +141,7 @@ test.describe('the checklist', () => {
     await page.getByTestId('setup-step-linked_role-skip').click();
     await expect(page.getByTestId('setup-step-linked_role-state')).toHaveText('Skipped');
     await page.getByTestId('setup-step-linked_role-undo').click();
-    await expect(page.getByTestId('setup-step-linked_role-state')).toHaveText('To do');
+    await expect(page.getByTestId('setup-step-linked_role-state')).toHaveCount(0);
     expect(seen.marks.map((m) => [m.method, m.step])).toEqual([
       ['PUT', 'linked_role'],
       ['DELETE', 'linked_role'],
@@ -155,9 +155,9 @@ test.describe('the checklist', () => {
       /^Join The Last Watch on Forever Sixty and sign up for raids: http\S+\/guild\/invite\/7Hk2QaLw$/,
     );
     await page.getByTestId('setup-invite-posted').click();
-    await expect(page.getByTestId('setup-step-invite_link-state')).toHaveText('Done');
+    await expect(page.locator('[aria-label="Step 5: Done"]')).toBeVisible();
     await page.getByTestId('setup-ranks-keep').click();
-    await expect(page.getByTestId('setup-step-officer_ranks-state')).toHaveText('Done');
+    await expect(page.locator('[aria-label="Step 1: Done"]')).toBeVisible();
     expect(seen.marks.every((m) => m.body.includes('"done"'))).toBe(true);
   });
 
@@ -181,16 +181,25 @@ test.describe('the checklist', () => {
       'done'
     >;
     const allDone = setupFixture(all);
+    let posts = 0;
+    await page.route(`**/v1/guilds/${SETTINGS_GUILD.id}/raids/31/discord/post`, (route) => {
+      posts += 1;
+      return route.fulfill(envelope({}));
+    });
+    const next = { id: 31, title: "Onyxia's Lair", starts_at: '2026-12-11T02:00:00Z', posted_at: null };
     await stubSetup(page, {
       ...mixedSetup(),
       steps: allDone.steps,
       done: 8,
       finished: true,
       plan: 'raid_guild',
+      schedule: { timezone: 'America/Chicago', planned: 3, next },
     });
     await gotoHydrated(page, SETUP_PATH, 'guild-setup-steps');
     await expect(page.getByTestId('setup-done-figure')).toContainText('8');
-    await expect(page.getByTestId('setup-plan-current')).toHaveText('Raid guild');
+    await expect(page.getByTestId('setup-plan')).toContainText('Raid guild');
+    await page.getByTestId('setup-schedule-post').click();
+    await expect.poll(() => posts).toBe(1);
     await capture(page, `setup-done-${test.info().project.name}`);
   });
 });

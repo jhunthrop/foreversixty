@@ -8,9 +8,7 @@ import type { Locator, Page } from '@playwright/test';
 import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import { notificationsCopy as copy } from '../../src/lib/account/notifications-copy';
 import { guildDiscordCopy } from '../../src/lib/guild/discord-copy';
-import { GUILD_ID } from '../../src/fixtures/guild/mock-guild';
-import { CLAIM_HOLDER_CAN, guildBilling } from '../../src/test-support/billing-fixtures';
-import { GUILD_URL, raidsMe, stubGuildRaids } from './support/guild-raids';
+import { GUILD_URL, stubGuildRaids } from './support/guild-raids';
 import {
   DISCORD_SETTINGS_URL,
   GUILD_CONNECT_HREF,
@@ -18,12 +16,11 @@ import {
   SETTINGS_GUILD_PATH,
   SWITCHED_OFF,
   guildChannel,
-  settingsBody,
   stubGuildDiscord,
   type GuildDiscordStubOptions,
 } from './support/guild-discord';
 import { gotoHydrated } from './support/hydrated';
-import { envelope, expectNoAxeViolations } from './support/officer-tools';
+import { expectNoAxeViolations } from './support/officer-tools';
 import { fieldBox } from './support/select';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
