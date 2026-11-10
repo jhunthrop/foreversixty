@@ -1,7 +1,7 @@
 ---
 // web/src/components/guides/GuideRotationLane.astro
 // The Rotation and priority lane (guides spec 2026-11-08 §4.3): "For the raid build." when it
-// applies, then Opener and Priority (numbered) and Cooldowns as slim spell rows. A row for a
+// applies and no row carries a Raid build only tag (the tags say it), then Opener and Priority (numbered) and Cooldowns as slim spell rows. A row for a
 // talent only the raid build takes carries its own Raid build only tag, with no legend above.
 // The lists are the guide's own (guideRotation), every line at its full clause. Past the prose,
 // a whole list wraps under it with its heading (lib/ui/reading-wrap.ts), never a list split from
@@ -17,6 +17,8 @@ interface Props {
   forRaidBuild: boolean;
 }
 const { build, lists, forRaidBuild } = Astro.props;
+// The rows' own Raid build only tags already say whose list it is: the line goes when one shows.
+const tagged = [...lists.opener, ...lists.priority, ...lists.cooldowns].some((item) => item.raidBuildOnly);
 const blocks = [
   { key: 'opener', label: guidesCopy.opener, items: lists.opener, numbered: true },
   { key: 'priority', label: guidesCopy.priority, items: lists.priority, numbered: true },
@@ -24,7 +26,7 @@ const blocks = [
 ].filter((block) => block.items.length > 0);
 ---
 
-{forRaidBuild && (
+{forRaidBuild && !tagged && (
   <p class="text-small text-muted m-0" data-testid="guide-rotation-build">
     {guidesCopy.rotationForRaidBuild}
   </p>

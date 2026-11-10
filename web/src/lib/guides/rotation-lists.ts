@@ -118,13 +118,25 @@ export function formatCooldown(ms: number): string {
   return rest === 0 ? `${minutes} min` : `${minutes} min ${rest} s`;
 }
 
+/** The in-game panel's shorthand (curated `panel_when`, sized for the addon's line) in the page's
+ *  words: a sentence on a guide reads "mana % is over boss health %" as a placeholder. */
+const PANEL_SHORTHAND: readonly (readonly [RegExp, string])[] = [
+  [/\bmana % is over boss health %/g, "your mana is ahead of the boss's health"],
+  [/\bmana % is under boss health %/g, "your mana is behind the boss's health"],
+];
+
+/** A panel line with its shorthand written out (PANEL_SHORTHAND). */
+export function inPageWords(condition: string): string {
+  return PANEL_SHORTHAND.reduce((text, [shorthand, words]) => text.replace(shorthand, words), condition);
+}
+
 function lineItem(line: CollapsedLine): RotationItem {
   return {
     spellId: line.spellId,
     name: line.name,
     rank: line.rank,
     icon: line.icon,
-    clause: clauseOf(line.condition, line.name),
+    clause: clauseOf(inPageWords(line.condition), line.name),
   };
 }
 
@@ -270,21 +282,27 @@ function withTalentGates(
 /** Joins a run of priority rows that cast the same spell at the same rank: one row, its rules in
  *  order ("On the tank below 80% while … · on a party member below 65% while …"), so a healer's
  *  four thresholds read as one line, not four stacked copies of one sentence frame (h-guide-spec
- *  2026-11-10). Every rule stays; rows a different spell parts are never joined. */
+ *  2026-11-10). Every rule stays; rows a different spell parts are never joined, nor a raid build
+ *  row and one every build casts: run it after `markRaidBuildRows`. */
 export function joinSpellRuns(items: readonly RotationItem[]): RotationItem[] {
   const same = (a: RotationItem, b: RotationItem): boolean =>
-    a.name === b.name &&
-    a.rank === b.rank &&
-    a.raidBuildOnly === b.raidBuildOnly &&
-    (a.needs ?? []).join('|') === (b.needs ?? []).join('|');
+    a.name === b.name && a.rank === b.rank && a.raidBuildOnly === b.raidBuildOnly;
   return items.reduce<RotationItem[]>((out, item) => {
     const last = out.at(-1);
-    if (last === undefined || !same(last, item) || item.clause === '' || last.clause.includes(item.clause)) {
-      return last !== undefined && same(last, item) ? out : [...out, item];
-    }
-    const rule = item.clause[0]!.toLowerCase() + item.clause.slice(1);
-    return [...out.slice(0, -1), { ...last, clause: `${last.clause} · ${rule}` }];
+    if (last === undefined || !same(last, item)) return [...out, item];
+    const needs = [...new Set([...(last.needs ?? []), ...(item.needs ?? [])])];
+    const said = item.clause === '' || last.clause.includes(item.clause);
+    const rule = said ? '' : ` · ${item.clause[0]!.toLowerCase()}${item.clause.slice(1)}`;
+    return [
+      ...out.slice(0, -1),
+      { ...last, clause: `${last.clause}${rule}`, ...(needs.length === 0 ? {} : { needs }) },
+    ];
   }, []);
+}
+
+/** The lists with their priority's spell runs joined (`joinSpellRuns`). */
+export function joinPriorityRuns<T extends { priority: RotationItem[] }>(lists: T): T {
+  return { ...lists, priority: joinSpellRuns(lists.priority) };
 }
 
 export function rotationListsFrom(
@@ -308,20 +326,18 @@ export function rotationListsFrom(
    *  leaves). Its rows are already that build's own, so the gate is not worded. */
   settled: GateSettled = () => false,
 ): RotationLists {
-  const priority = joinSpellRuns(
-    lines
-      .filter((line) => buildRuns(line.gates ?? []))
-      .map((line) => {
-        const item = lineItem(line);
-        const gates = line.gates ?? [];
-        const needs = neededSpells(gates, spellFacts);
-        return {
-          ...item,
-          clause: withTalentGates(item.clause, gates, spellFacts, settled),
-          ...(needs === undefined ? {} : { needs }),
-        };
-      }),
-  );
+  const priority = lines
+    .filter((line) => buildRuns(line.gates ?? []))
+    .map((line) => {
+      const item = lineItem(line);
+      const gates = line.gates ?? [];
+      const needs = neededSpells(gates, spellFacts);
+      return {
+        ...item,
+        clause: withTalentGates(item.clause, gates, spellFacts, settled),
+        ...(needs === undefined ? {} : { needs }),
+      };
+    });
 
   // The opener is the APL's pre-pull casts and nothing else: with none, there is no opener to
   // print (a row that is not a spell is not an opener step).

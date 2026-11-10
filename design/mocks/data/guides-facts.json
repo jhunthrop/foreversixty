@@ -22314,7 +22314,7 @@
        "name": "Greater Heal",
        "rank": 4,
        "icon": "spell_holy_greaterheal",
-       "clause": "On the tank below 80% while mana % is over boss health % · on a party member below 65% while mana holds · on the tank below 50% when mana % is under boss health % · on a party member below 35% when mana is low",
+       "clause": "On the tank below 80% while your mana is ahead of the boss's health · on a party member below 65% while mana holds · on the tank below 50% when your mana is behind the boss's health · on a party member below 35% when mana is low",
        "tipKey": "spell:10965",
        "rankText": "Rank 4"
       },
@@ -22323,7 +22323,7 @@
        "name": "Greater Heal",
        "rank": 1,
        "icon": "spell_holy_greaterheal",
-       "clause": "On the tank below 80% while mana % is over boss health % · on a party member below 65% while mana holds · on the tank below 50% when mana % is under boss health % · on a party member below 35% when mana is low",
+       "clause": "On the tank below 80% while your mana is ahead of the boss's health · on a party member below 65% while mana holds · on the tank below 50% when your mana is behind the boss's health · on a party member below 35% when mana is low",
        "tipKey": "spell:2060",
        "cheapRank": true,
        "rankText": "Rank 1 (cheap rank)"
@@ -22333,7 +22333,7 @@
        "name": "Heal",
        "rank": 4,
        "icon": "spell_holy_heal02",
-       "clause": "On the tank below 80% while mana % is over boss health % · on a party member below 65% while mana holds · on the tank below 50% when mana % is under boss health % · on a party member below 35% when mana is low",
+       "clause": "On the tank below 80% while your mana is ahead of the boss's health · on a party member below 65% while mana holds · on the tank below 50% when your mana is behind the boss's health · on a party member below 35% when mana is low",
        "tipKey": "spell:6064",
        "rankText": "Rank 4"
       }
@@ -28044,7 +28044,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 0,
-    "priority": 9,
+    "priority": 10,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28135,7 +28135,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 1,
-    "priority": 5,
+    "priority": 10,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28174,7 +28174,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 2,
-    "priority": 10,
+    "priority": 12,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28187,7 +28187,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 1,
-    "priority": 8,
+    "priority": 18,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28200,7 +28200,7 @@
    "raid_build": true,
    "rotation": {
     "opener": 2,
-    "priority": 8,
+    "priority": 9,
     "cooldowns": 5
    },
    "stat_rows": 7,
@@ -28252,7 +28252,7 @@
    "raid_build": true,
    "rotation": {
     "opener": 2,
-    "priority": 7,
+    "priority": 8,
     "cooldowns": 2
    },
    "stat_rows": 0,
@@ -28278,7 +28278,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 2,
-    "priority": 10,
+    "priority": 11,
     "cooldowns": 3
    },
    "stat_rows": 0,

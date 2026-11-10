@@ -81,7 +81,7 @@ import { bisPieceCount } from ${src("src/lib/guides/guide-bis.ts")};
 import { guideStatLane } from ${src("src/lib/guides/stat-lane.ts")};
 import { bandTalentHits } from ${src("src/lib/guides/talent-hit.ts")};
 import { CLASS_LANDING_PANELS, specCardLine, splitClassLanding } from ${src("src/lib/guides/class-landing.ts")};
-import { litTalentsOf, markRaidBuildRows, raidBuildOnlyTalents, talentNamesOf } from ${src("src/lib/guides/rotation-lists.ts")};
+import { joinPriorityRuns, litTalentsOf, markRaidBuildRows, raidBuildOnlyTalents, talentNamesOf } from ${src("src/lib/guides/rotation-lists.ts")};
 import { atLevel60, markCheapRanks, nextTalentPoint, racesByFaction, topRankAt60 } from ${src("src/lib/guides/glance.ts")};
 import { buildRacesForClass, newRaceSlugsForClass, raceIconsFor } from ${src("src/lib/guides/build-races.ts")};
 
@@ -176,7 +176,7 @@ async function specPage(entry) {
   const describedCode = raidTrees === undefined ? buildCode : raidCode;
   const unkeyed = guideRotation(build, classSlug, fullSpecId, role, describedTrees);
   const raidOnly = raidTrees === undefined ? new Set() : raidBuildOnlyTalents(talentNamesOf(build, classSlug), litTalentsOf(buildTrees), litTalentsOf(raidTrees));
-  const rotation = unkeyed === undefined ? undefined : markCheapRanks(atLevel60(withTipKeys(markRaidBuildRows(unkeyed, raidOnly), tipBundle)), (name) => topRankAt60(build, classSlug, name), proseOnly('Rotation and priority'));
+  const rotation = unkeyed === undefined ? undefined : markCheapRanks(joinPriorityRuns(atLevel60(withTipKeys(markRaidBuildRows(unkeyed, raidOnly), tipBundle))), (name) => topRankAt60(build, classSlug, name), proseOnly('Rotation and priority'));
   // Each row's rank as the page prints it ("Rank 7 (cheap rank)").
   const ranked_ = (items) => items.map((x) => (x.rank === undefined ? x : { ...x, rankText: guidesCopy.rankLabel(x.rank, x.cheapRank === true) }));
   if (rotation !== undefined) for (const k of ['opener', 'priority', 'cooldowns']) rotation[k] = ranked_(rotation[k]);

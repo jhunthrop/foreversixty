@@ -469,6 +469,7 @@ describe('/guides/warrior/arms rotation rows for the raid build', () => {
     expect(tagged.sort()).toEqual(['Reckless Swings', 'Spearing Strike']);
     // The tag on the row says it; no grey legend explains it above the lists (h-guide-spec).
     expect(rotation).not.toContain('data-testid="guide-raid-build-legend"');
-    expect(rotation).toContain(`data-testid="guide-rotation-build"`);
+    // Tagged rows say whose list it is: no "For the raid build." line beside them.
+    expect(rotation).not.toContain(`data-testid="guide-rotation-build"`);
   });
 });

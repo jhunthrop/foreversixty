@@ -10,6 +10,7 @@ import { decodeBuildTrees } from './build-tree';
 import type { CollapsedLine } from '../bis/rotation-collapse';
 import {
   clauseOf,
+  inPageWords,
   joinSpellRuns,
   cutCooldown,
   formatCooldown,
@@ -868,6 +869,17 @@ describe('raid build rows', () => {
     expect(only.has('Reckless Swings')).toBe(true);
     expect(only.has('Spearing Strike')).toBe(true);
     expect(only.has('Mortal Strike')).toBe(false);
+  });
+});
+
+describe('inPageWords', () => {
+  it("writes the panel's mana-against-boss shorthand out", () => {
+    expect(inPageWords('on the tank below 80% while mana % is over boss health %')).toBe(
+      "on the tank below 80% while your mana is ahead of the boss's health",
+    );
+    expect(inPageWords('when mana % is under boss health % and Innervate is down')).toBe(
+      "when your mana is behind the boss's health and Innervate is down",
+    );
   });
 });
 
