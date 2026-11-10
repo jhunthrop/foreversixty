@@ -8,8 +8,8 @@
     "headline": {
       "key": "no_folder",
       "tone": "bad",
-      "title": "No Classic beta install found",
-      "sub": "Pick its folder in Settings.",
+      "title": "No WoW Forever install found",
+      "sub": "Pick its _forever_ folder in Settings.",
       "action": {
         "label": "Open Settings",
         "page": "settings"

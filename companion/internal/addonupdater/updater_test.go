@@ -389,7 +389,22 @@ func TestGameRunningGate(t *testing.T) {
 			t.Errorf("%s: GameRunning = %v, want %v", tc.name, got, tc.want)
 		}
 	}
-	for name, want := range map[string]bool{"Wow.exe": true, "WowB.exe": true, "WowT.exe": true, "WowClassic.exe": true, "wowclassic.EXE": true,
+	// The live game's _forever_: its client counts whether its executable is
+	// the plain "World of Warcraft" (as in the beta's .app) or names Forever.
+	live := filepath.Join(string(filepath.Separator)+"games", "World of Warcraft", "_forever_")
+	for _, name := range []string{"World of Warcraft", "World of Warcraft Forever"} {
+		procs := []Proc{{Name: name, Path: filepath.Join(live, name+".app", "Contents", "MacOS", name)}}
+		if !GameRunning(live, procs) {
+			t.Errorf("the live Mac client %q is not seen as running", name)
+		}
+		if GameRunning(era, procs) {
+			t.Errorf("the live Mac client %q counts for another install", name)
+		}
+	}
+	if !GameRunning(live, []Proc{{Name: "Wow.exe", Path: filepath.Join(live, "Wow.exe")}}) {
+		t.Error("the live Windows client is not seen as running")
+	}
+	for name, want := range map[string]bool{"World of Warcraft Forever": true, "World of Warcraft Forever.app": false, "Wow.exe": true, "WowB.exe": true, "WowT.exe": true, "WowClassic.exe": true, "wowclassic.EXE": true,
 		"Wow-64.exe": true, "WowError.exe": true, "Showow.exe": false, "Wow.txt": false, "BlizzardError.exe": false,
 		"World of Warcraft": true, "World of Warcraft Classic": true, "World of Warcraft Classic Beta": true,
 		"World of Warcraft Launcher": false, "World of Warcraft Beta.app": false, "Battle.net": false} {
@@ -544,7 +559,7 @@ func TestSwitchOffDisablesChecksAndInstalls(t *testing.T) {
 		t.Errorf("installed with the switch off: %s", v)
 	}
 	// The button still works on press.
-	bare := g.install("_classic_beta_", "", "")
+	bare := g.install("_forever_", "", "")
 	u.o.Installs = func() []string { return []string{in, bare} }
 	if err := u.Install(context.Background(), bare); err != nil {
 		t.Fatalf("Install with the switch off: %v", err)
@@ -1083,7 +1098,7 @@ func TestDefaultsAreSane(t *testing.T) {
 func stageWhileRunning(t *testing.T, sk minisign.PrivateKey, fd *feed, g *game) string {
 	t.Helper()
 	fd.publish(signedAddon(t, sk, "2.0.16"))
-	in := g.install("_classic_beta_", "2.0.15", "")
+	in := g.install("_forever_", "2.0.15", "")
 	g.running[in] = true
 	return in
 }

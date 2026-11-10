@@ -22,8 +22,10 @@ var clientName = regexp.MustCompile(`(?i)^wow[a-z0-9_-]*\.exe$`)
 // macClientName matches the game's macOS executables, the file inside each
 // client's .app: "World of Warcraft" (in World of Warcraft Beta.app, the
 // Forever beta's), "World of Warcraft Classic" and their test kin. The
-// Battle.net folder's "World of Warcraft Launcher" is not a client.
-var macClientName = regexp.MustCompile(`(?i)^World of Warcraft( (Classic|Beta|Public Test|PTR|Test))*$`)
+// live game's .app in _forever_ is not confirmed yet, so a "World of
+// Warcraft Forever" executable counts too. The Battle.net folder's
+// "World of Warcraft Launcher" is not a client.
+var macClientName = regexp.MustCompile(`(?i)^World of Warcraft( (Classic|Beta|Forever|Public Test|PTR|Test))*$`)
 
 // IsClientName reports whether an executable name is a World of Warcraft
 // client's, on Windows (and under Wine) or on macOS.

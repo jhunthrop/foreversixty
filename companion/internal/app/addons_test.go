@@ -179,10 +179,10 @@ func TestTheAddonRowOffersTheInstallWhereItIsMissing(t *testing.T) {
 	w := newAddonWorld(t)
 	w.srv.SetReleases(w.signer.data(t, "2026.10.21"), w.signer.addon(t, "2.0.16"))
 	v := w.app.Snapshot().AddonUpdate
-	if len(v.Lines) != 1 || v.Lines[0].Text != "Addon not found in Classic beta" {
+	if len(v.Lines) != 1 || v.Lines[0].Text != "Addon not found in WoW Forever" {
 		t.Fatalf("lines = %+v", v.Lines)
 	}
-	if len(v.Offers) != 1 || v.Offers[0].Label != "Install the addon into Classic beta" || v.Offers[0].Path != w.game {
+	if len(v.Offers) != 1 || v.Offers[0].Label != "Install the addon into WoW Forever" || v.Offers[0].Path != w.game {
 		t.Fatalf("offers = %+v", v.Offers)
 	}
 
@@ -303,7 +303,7 @@ func TestABuildWithoutAKeyOffersNoInstall(t *testing.T) {
 	if len(v.Offers) != 0 {
 		t.Errorf("offers = %+v; a build that cannot verify a zip must not offer to install one", v.Offers)
 	}
-	if len(v.Lines) != 1 || v.Lines[0].Text != "Addon not found in Classic beta" {
+	if len(v.Lines) != 1 || v.Lines[0].Text != "Addon not found in WoW Forever" {
 		t.Errorf("lines = %+v", v.Lines)
 	}
 }
@@ -341,7 +341,7 @@ func TestNoOfferIsMadeForAnotherGamesInstall(t *testing.T) {
 		t.Errorf("offers = %+v", v.Offers)
 	}
 	if len(v.Lines) != 2 {
-		t.Errorf("lines = %+v, want the Classic beta's two", v.Lines)
+		t.Errorf("lines = %+v, want the WoW Forever install's two", v.Lines)
 	}
 }
 

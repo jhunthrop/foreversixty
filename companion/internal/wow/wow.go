@@ -22,11 +22,27 @@ import (
 const LogGlob = "WoWCombatLog*.txt"
 
 // ForeverFlavors are the flavour folders Forever Sixty runs on, and the
-// only ones the companion lists, watches or writes to. Today that is the
-// Classic beta; the Forever realms' folder is added here when they open.
-// Retail, Anniversary and Era are other games, and a private server's
-// folder is not ours to touch.
-var ForeverFlavors = []string{"_classic_beta_"}
+// only ones the companion lists, watches or writes to, most preferred
+// first: the live game's _forever_ (since 4 November 2026), then the
+// Classic beta's _classic_beta_ for the testers still on it. Retail,
+// Anniversary and Era are other games, and a private server's folder is
+// not ours to touch.
+var ForeverFlavors = []string{LiveFlavor, "_classic_beta_"}
+
+// LiveFlavor is the live game's flavour folder, the one every message
+// tells the player to pick.
+const LiveFlavor = "_forever_"
+
+// flavorRank is a Forever flavour's place in ForeverFlavors, so a scan
+// lists the live game before the beta.
+func flavorRank(folder string) int {
+	for i, f := range ForeverFlavors {
+		if strings.EqualFold(f, folder) {
+			return i
+		}
+	}
+	return len(ForeverFlavors)
+}
 
 // IsForever reports whether a flavour folder name is a Forever variant.
 func IsForever(folder string) bool {
@@ -121,8 +137,9 @@ func installAt(dir string) Install {
 	}
 }
 
-// Scan returns the Forever installs at or one level below root, sorted
-// by path so two runs agree. Other games' folders are not returned.
+// Scan returns the Forever installs at or one level below root, the live
+// game's first and then by path, so two runs agree and a tie between
+// installs goes to _forever_. Other games' folders are not returned.
 func Scan(root string) []Install {
 	var out []Install
 	for _, in := range scanAll(root) {
@@ -130,6 +147,7 @@ func Scan(root string) []Install {
 			out = append(out, in)
 		}
 	}
+	sort.SliceStable(out, func(i, j int) bool { return flavorRank(out[i].Flavor) < flavorRank(out[j].Flavor) })
 	return out
 }
 
@@ -159,7 +177,7 @@ func scanAll(root string) []Install {
 
 // ErrNotAnInstall says a picked folder is not the game.
 var ErrNotAnInstall = errors.New("that folder is not a World of Warcraft install: " +
-	"pick the folder that contains WTF and Logs, such as _classic_beta_")
+	"pick the folder that contains WTF and Logs, such as " + LiveFlavor)
 
 // Refusal says a folder is a World of Warcraft install that is not a
 // Forever variant.
@@ -174,12 +192,15 @@ type Refusal struct {
 
 func (r *Refusal) Error() string { return "not a Forever variant: " + r.Path }
 
+// PickWords names the folder to pick, in the player's words.
+const PickWords = "Forever Sixty runs on WoW Forever; pick its " + LiveFlavor + " folder."
+
 // Words is the refusal in the player's words.
 func (r *Refusal) Words() string {
 	if r.Known {
-		return "That is " + FlavorName(r.Folder) + ". Forever Sixty runs on the Classic beta; pick its folder, _classic_beta_."
+		return "That is " + FlavorName(r.Folder) + ". " + PickWords
 	}
-	return "Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder."
+	return PickWords
 }
 
 // Pick validates a folder the player chose. It accepts either a
@@ -277,6 +298,8 @@ func FlavorName(folder string) string {
 		return "Classic Anniversary"
 	case "_classic_era_":
 		return "Classic Era"
+	case LiveFlavor:
+		return "WoW Forever"
 	case "_classic_beta_":
 		return "Classic beta"
 	case "_retail_":

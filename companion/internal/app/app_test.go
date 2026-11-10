@@ -84,7 +84,7 @@ func (c *countingSecret) count() int {
 // folder to tail and one account's SavedVariables.
 func newGame(t *testing.T) string {
 	t.Helper()
-	game := filepath.Join(t.TempDir(), "_classic_beta_")
+	game := filepath.Join(t.TempDir(), "_forever_")
 	for _, p := range []string{
 		filepath.Join(game, "Logs"),
 		filepath.Join(game, "WTF", "Account", "ACCOUNT#1", "SavedVariables"),
@@ -871,7 +871,7 @@ func TestTheInboxGoesToTheForeverInstallAndNeverToAnotherGame(t *testing.T) {
 		return filepath.Join(game, "WTF", "Account", "ACCOUNT#1", "SavedVariables", "ForeverSixty.lua")
 	}
 	if _, err := os.Stat(addon.InboxPath(sv(h.game))); err != nil {
-		t.Errorf("the Classic beta got no inbox: %v", err)
+		t.Errorf("the WoW Forever install got no inbox: %v", err)
 	}
 	for _, other := range []string{retail, anni} {
 		if _, err := os.Stat(addon.InboxPath(sv(other))); err == nil {
@@ -879,6 +879,6 @@ func TestTheInboxGoesToTheForeverInstallAndNeverToAnotherGame(t *testing.T) {
 		}
 	}
 	if n := len(h.app.Snapshot().Installs); n != 1 {
-		t.Errorf("%d installs listed, want the Classic beta alone", n)
+		t.Errorf("%d installs listed, want the WoW Forever install alone", n)
 	}
 }

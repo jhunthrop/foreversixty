@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.43
+
+- WoW Forever went live in its own game folder, `_forever_`, and the companion now finds it: it lists, watches and keeps the addon up to date in `_forever_` first, and still in the Classic beta's `_classic_beta_` for testers. With both, the live game is watched unless the beta was played more recently. Every message that asks for a folder now names `_forever_`, and a picked `_forever_` folder is accepted instead of refused.
+
 ## 0.2.39
 
 - Raid answers from the game reach the site: when you answer a raid with the addon panel's Tonight buttons, the companion sends the answer with your next sync, and once the site has taken it (or refused it, because you answered later on the site, the app or Discord, or the raid closed) it takes the answer out of the addon's saved file. Nothing else in that file is touched. The inbox tells the addon this companion carries raid answers, so the panel offers them only with a companion that sends them.

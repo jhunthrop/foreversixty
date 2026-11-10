@@ -39,31 +39,35 @@ func errorCode(body map[string]any) string {
 }
 
 func TestAPickedFolderIsValidatedAddedAndStoredByItsOwnPath(t *testing.T) {
-	h := newHarness(t)
-	beta := newInstall(t, "_classic_beta_")
-	h.pick = beta
-	code, body := h.call(http.MethodPost, h.url("/api/folders/pick"), nil)
-	if code != http.StatusOK || body["ok"] != true {
-		t.Fatalf("pick = %d %v", code, body)
-	}
-	if got := h.storedPaths(); len(got) != 2 || got[1] != beta {
-		t.Fatalf("wow_paths = %v", got)
-	}
-	var added *app.InstallStatus
-	for _, in := range h.app.Snapshot().Installs {
-		if in.Path == beta {
-			added = &in
-		}
-	}
-	if added == nil || !added.Added || added.FlavorName != "Classic beta" || added.Watching {
-		t.Fatalf("the new install = %+v", added)
+	for flavor, name := range map[string]string{"_forever_": "WoW Forever", "_classic_beta_": "Classic beta"} {
+		t.Run(flavor, func(t *testing.T) {
+			h := newHarness(t)
+			picked := newInstall(t, flavor)
+			h.pick = picked
+			code, body := h.call(http.MethodPost, h.url("/api/folders/pick"), nil)
+			if code != http.StatusOK || body["ok"] != true {
+				t.Fatalf("pick = %d %v", code, body)
+			}
+			if got := h.storedPaths(); len(got) != 2 || got[1] != picked {
+				t.Fatalf("wow_paths = %v", got)
+			}
+			var added *app.InstallStatus
+			for _, in := range h.app.Snapshot().Installs {
+				if in.Path == picked {
+					added = &in
+				}
+			}
+			if added == nil || !added.Added || added.FlavorName != name || added.Watching {
+				t.Fatalf("the new install = %+v", added)
+			}
+		})
 	}
 }
 
 func TestAFolderAboveTheInstallsAddsTheForeverOnesOnly(t *testing.T) {
 	h := newHarness(t)
 	root := t.TempDir()
-	for _, f := range []string{"_classic_beta_", "_retail_", "_anniversary_"} {
+	for _, f := range []string{"_classic_beta_", "_forever_", "_retail_", "_anniversary_"} {
 		for _, p := range []string{filepath.Join(root, f, "WTF"), filepath.Join(root, f, "Logs")} {
 			if err := os.MkdirAll(p, 0o755); err != nil {
 				t.Fatal(err)
@@ -75,11 +79,11 @@ func TestAFolderAboveTheInstallsAddsTheForeverOnesOnly(t *testing.T) {
 		t.Fatal("pick failed")
 	}
 	got := h.storedPaths()
-	if len(got) != 2 || got[1] != filepath.Join(root, "_classic_beta_") {
-		t.Fatalf("wow_paths = %v, want the game folder and the Classic beta by its own path", got)
+	if len(got) != 3 || got[1] != filepath.Join(root, "_forever_") || got[2] != filepath.Join(root, "_classic_beta_") {
+		t.Fatalf("wow_paths = %v, want the game folder, then _forever_ and the Classic beta by their own paths", got)
 	}
 	for _, in := range h.app.Snapshot().Installs {
-		if in.Flavor != "_classic_beta_" {
+		if in.Flavor != "_forever_" && in.Flavor != "_classic_beta_" {
 			t.Errorf("an install of %s is listed", in.Flavor)
 		}
 	}
@@ -88,8 +92,8 @@ func TestAFolderAboveTheInstallsAddsTheForeverOnesOnly(t *testing.T) {
 func TestARetailFolderIsRefusedInWordsThatSayWhy(t *testing.T) {
 	h := newHarness(t)
 	for pick, want := range map[string]string{
-		newInstall(t, "_retail_"):      "That is Retail. Forever Sixty runs on the Classic beta; pick its folder, _classic_beta_.",
-		newInstall(t, "_private_srv_"): "Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder.",
+		newInstall(t, "_retail_"):      "That is Retail. Forever Sixty runs on WoW Forever; pick its _forever_ folder.",
+		newInstall(t, "_private_srv_"): "Forever Sixty runs on WoW Forever; pick its _forever_ folder.",
 	} {
 		h.pick = pick
 		code, body := h.call(http.MethodPost, h.url("/api/folders/pick"), nil)
@@ -125,7 +129,7 @@ func TestAFolderThatIsNotTheGameIsRefusedWithTheDesignersSentence(t *testing.T) 
 		t.Fatalf("pick = %d %v", code, body)
 	}
 	if msg := body["error"].(map[string]any)["message"]; msg !=
-		"That folder is not a World of Warcraft folder. Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder." {
+		"That folder is not a World of Warcraft folder. Forever Sixty runs on WoW Forever; pick its _forever_ folder." {
 		t.Errorf("message = %q", msg)
 	}
 	if got := h.storedPaths(); len(got) != 1 {
@@ -209,7 +213,7 @@ func TestTheSnapshotCarriesTheNewFieldsAndNeverAnErrorsText(t *testing.T) {
 		t.Fatalf("installs = %+v", s.Installs)
 	}
 	in := s.Installs[0]
-	if in.FlavorName != "Classic beta" || !in.Watching || !in.Added || in.Path != h.game {
+	if in.FlavorName != "WoW Forever" || !in.Watching || !in.Added || in.Path != h.game {
 		t.Errorf("install = %+v", in)
 	}
 	if in.AdvancedLogHelp != app.CopyAdvancedRowHelp {

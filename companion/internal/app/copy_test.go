@@ -105,7 +105,7 @@ func TestEveryFailureCodeHasASentenceThatCarriesNoCause(t *testing.T) {
 		t.Errorf("bad code = %q", got)
 	}
 	if got := app.Message(app.CodeNotWoW); got !=
-		"That folder is not a World of Warcraft folder. Forever Sixty runs on the Classic beta; pick its _classic_beta_ folder." {
+		"That folder is not a World of Warcraft folder. Forever Sixty runs on WoW Forever; pick its _forever_ folder." {
 		t.Errorf("not wow = %q", got)
 	}
 }

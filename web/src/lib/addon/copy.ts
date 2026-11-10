@@ -165,7 +165,7 @@ export const addonCopy = {
    *  ForeverSixty and ForeverSixtyInbox; addon-data-release.yml ForeverSixtyData). */
   setupHandInstall: 'Installing by hand',
   setupHandInstallBody:
-    'Unzip both into World of Warcraft\\<your Forever game folder>\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.',
+    'Unzip both into World of Warcraft\\_forever_\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.',
   /** The paste field's label (the Section title is `setupTryExport`). */
   pasteFieldLabel: 'Addon export',
   setupCompanionLine: (device: string, seen: string): string =>
