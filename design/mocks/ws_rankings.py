@@ -145,7 +145,7 @@ def encounter_rows(encs: list[dict]) -> str:
 
 
 def head(meta: str) -> str:
-    return PageHeader(escape(RC['h1']), meta=[meta, Link(escape(RC['tierLink']) + ' &rsaquo;')])
+    return PageHeader(escape(RC['h1']), meta=[meta, Link(escape(RC['tierLink']) + ' &rsaquo;')], lead=escape(RC['lead']))
 
 
 def page(title: str, html: str, who: tuple | None, note: str) -> str:

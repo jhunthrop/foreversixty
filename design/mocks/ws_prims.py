@@ -66,6 +66,8 @@ a.row:hover,.row.hov{background:var(--hover)}
 .meter.kill>i{background:var(--kill)}.meter.muted>i{background:#5a5a52}
 .meter.seg{display:flex;gap:2px;background:none}.meter.seg>i{border-radius:0}
 /* ---- Tag, Field ---- */
+/* web ui/Tag: 22 px, 0 8 px (site-alignment 1: "A state on a thing is a Tag: 22 px") */
+.pill.tag{height:22px;padding:0 8px}
 .tag.kill{color:var(--kill);border-color:#7fd48a66}.tag.muted{color:var(--muted);border-color:var(--line)}.tag.wipe{color:var(--wipe);border-color:#f0736b66}
 .field{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:4px;background:#0a0d14;color:var(--muted);font-size:14px;min-width:0}
 .field.grow{flex:1;min-width:200px}
@@ -151,16 +153,18 @@ def TabStrip(tabs: list[str], active: str, counts: dict | None = None) -> str:
 
 
 def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '',
-               crumb: str = '', notice: str = '', pending: bool = False) -> str:
+               crumb: str = '', notice: str = '', pending: bool = False, second_head: bool = False) -> str:
     """web ui/PageHeader: `crumb` a way back on the band above the title, `notice` one line under the row, `pending` a title
-    not known yet (a skeleton holds the row, the h1 is sr-only)."""
+    not known yet (a skeleton holds the row, the h1 is sr-only). `second_head`: a pending head beside the page's own
+    server-rendered head (home's signed-in skeleton), its title a sr-only paragraph, never a second h1."""
     m = f'<div class="ph-meta" data-region="{REGION["head_meta"]}">{"".join(f"<span class=\"t-small\">{x}</span>" for x in meta)}</div>' if meta else ''
     color = f' style="color:{title_color}"' if title_color else ''
     ans = f'<div class="ans" data-region="{REGION["head_answer"]}">{answer}</div>' if answer else ''
     acts = f'<div class="ph-actions">{actions}</div>' if actions else ''
     right = f'<div class="ph-side">{acts}{ans}</div>' if (ans or acts) else ''
     # round 5: the title band (web ui/PageHeader): the painted band, full bleed, the head back in the column
-    h1 = (f'<span class="skel ph-title-sk" aria-hidden="true"></span><h1 class="sr-only">{title}</h1>' if pending
+    sr_tag = 'p' if second_head else 'h1'
+    h1 = (f'<span class="skel ph-title-sk" aria-hidden="true"></span><{sr_tag} class="sr-only">{title}</{sr_tag}>' if pending
           else f'<h1 class="t-title"{color}>{title}</h1>')
     cr = f'<div class="ph-crumb t-small">{crumb}</div>' if crumb else ''
     nt = f'<div class="ph-notice t-small">{notice}</div>' if notice else ''
@@ -946,9 +950,10 @@ _Page0 = Page
 
 
 def PageHeader(title: str, title_color: str = '', crest: str = '', meta: list[str] | None = None, answer: str = '', actions: str = '', tabs: str = '',
-               lead: str = '', crumb: str = '', notice: str = '', pending: bool = False) -> str:
+               lead: str = '', crumb: str = '', notice: str = '', pending: bool = False, second_head: bool = False) -> str:
     """PageHeader with the optional Lead sentence under the meta line (inside head-title, so the regions are unchanged)."""
-    html = _PageHeader0(title, title_color, crest, meta, answer, actions, tabs, crumb=crumb, notice=notice, pending=pending)
+    html = _PageHeader0(title, title_color, crest, meta, answer, actions, tabs, crumb=crumb, notice=notice, pending=pending,
+                        second_head=second_head)
     if not lead:
         return html
     at = re.search(r'<div class="ph-meta" data-region="head-meta">.*?</span></div>', html) if meta else None

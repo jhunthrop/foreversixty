@@ -66,7 +66,8 @@ async function openOwner(page: Page, premium: boolean, history: HistoryStub, has
 test('the Premium owner’s Coach history is closed, and nothing is read until it opens', async ({ page }) => {
   const asked = await serveOwner(page, true, { first: HISTORY_PAGES.first });
   const toggle = page.getByTestId('character-coach-toggle');
-  await expect(toggle.locator('summary')).toHaveText(/Every review the coach wrote for this character/);
+  // The coach's reviews fold under the History panel as one line (h-audit 2026-11-09).
+  await expect(toggle.locator('summary')).toHaveText(/^Coach/);
   await page.waitForLoadState('networkidle');
   await expect(list(page)).toHaveCount(0);
   expect(asked).toEqual([]);

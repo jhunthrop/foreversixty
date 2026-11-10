@@ -203,8 +203,17 @@ _CHROME_MARK = '<!--fs-chrome:%s-->'
 _TEMPLATE_WHO = ('Felsnap', 'hunter', '34')
 # Base.astro's body: a full-height column with the footer pushed to the bottom of a short page.
 # The page body's breath above the footer (web global.css [data-page-body], owner 2026-11-09): 40 px, 64 from 1024.
-_BODY_CSS = ('body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:auto}'
-             'main{padding-bottom:40px}@media(min-width:1024px){main{padding-bottom:64px}}')   # the character template-in.json was captured with (home fixtures)
+PAGE_FOOT_GAP, PAGE_FOOT_GAP_LG = 40, 64
+
+
+def main_foot_padding(own: str = '0px') -> str:
+    """main's padding-bottom: its own (a page's `pb-(--section-gap)` on <main>) plus the page body's breath, which in the build
+    sits on Base.astro's wrapper around main, so the two add."""
+    return (f'main{{padding-bottom:calc({own} + {PAGE_FOOT_GAP}px)}}'
+            f'@media(min-width:1024px){{main{{padding-bottom:calc({own} + {PAGE_FOOT_GAP_LG}px)}}}}')
+
+
+_BODY_CSS = ('body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:auto}' + main_foot_padding())   # the character template-in.json was captured with (home fixtures)
 
 
 def _chrome_file(name: str) -> dict:

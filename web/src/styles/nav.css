@@ -730,9 +730,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* The level is two digits: it never gives way, the name and short line do. */
+  /* The level is two digits: it never gives way, the name and short line do. Its slot is held
+     before the level is known (rows.ts levelSlot), so the chevron stays put when it lands. */
   .csel-level {
     flex-shrink: 0;
+    min-width: 2ch;
+    font-variant-numeric: tabular-nums;
   }
   .csel-chev {
     flex-shrink: 0;

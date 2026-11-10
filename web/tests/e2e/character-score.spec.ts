@@ -169,7 +169,8 @@ test('Best per encounter: one Row per boss with its parse and date, then the lin
   const best = page.getByTestId('character-best');
   await expect(best.getByRole('heading', { name: 'Best per encounter' })).toBeVisible();
   await expect(best).toContainText('Warden Kelthas');
-  await expect(best).toContainText('9 Dec · Discipline');
+  // The page's own spec goes without saying (h-audit round 6): the date, then the execution.
+  await expect(best).toContainText('9 Dec · Execution 94%');
   await expect(best.getByLabel('96 percentile')).toHaveText('96');
   await expect(best).toContainText('Deep Warden');
   await expect(best.getByRole('link', { name: 'All fights (2) ›' })).toHaveAttribute('href', '/logs');
