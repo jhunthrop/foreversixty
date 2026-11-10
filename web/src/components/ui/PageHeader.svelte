@@ -34,6 +34,7 @@
     tabs,
     titleTestid = 'page-title',
     pending = false,
+    secondHead = false,
     testid,
     art = 'band',
   }: {
@@ -58,6 +59,10 @@
     /** The title is not known yet (an account read in flight): its skeleton holds the row, the
      *  heading is for a screen reader only, and the head reads busy. */
     pending?: boolean;
+    /** A head that holds a place beside the page's own server-rendered head (home's signed-in
+     *  skeleton under the signed-out page): its pending title is screen-reader text, not a
+     *  second h1. */
+    secondHead?: boolean;
     testid?: string;
     /** The band's art: the painted blue band (every page), or home's camp-road hero. */
     art?: BandArt;
@@ -80,7 +85,8 @@
           {#if crest}{@render crest()}{/if}
           <div class="min-w-0">
             {#if pending}<span class="skeleton-block ui-title-skeleton" aria-hidden="true"></span>
-              <h1 class="sr-only" data-testid={titleTestid}>{title}</h1>
+              {#if secondHead}<p class="sr-only" data-testid={titleTestid}>{title}</p>
+              {:else}<h1 class="sr-only" data-testid={titleTestid}>{title}</h1>{/if}
             {:else}<h1 class="ui-title" style:color={titleColor(tone)} data-testid={titleTestid}>
                 {title}
               </h1>{/if}

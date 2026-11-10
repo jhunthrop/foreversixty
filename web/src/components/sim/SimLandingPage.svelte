@@ -38,7 +38,7 @@
   } = $props();
 </script>
 
-<PageHeader title={copy.title} testid="sim-head">
+<PageHeader title={copy.title} lead={copy.lead} testid="sim-head">
   {#snippet tabs()}<SimToolTabs />{/snippet}
 </PageHeader>
 {#if notice}{@render notice()}{/if}

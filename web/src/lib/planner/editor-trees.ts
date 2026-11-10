@@ -37,6 +37,12 @@ export interface EditorTreesInput {
   asset: (path: string) => string;
 }
 
+/** A tree's head icon: its spec's icon from the generated spec list, '' when it has none. */
+export function treeIconSrc(classSlug: string, treeIndex: number, asset: (path: string) => string): string {
+  const icon = SPECS.find((row) => row.class_slug === classSlug && row.tree_index === treeIndex)?.icon;
+  return icon === undefined ? '' : asset(`icons/${icon}.webp`);
+}
+
 export function editorTrees({
   index,
   order,
@@ -57,7 +63,6 @@ export function editorTrees({
     // Every tree is drawn at the game frame's seven tiers (a trimmed tree too), so the Plate's
     // ready height is the one its loading reserve holds (spec 5.2).
     const size = { ...gridSize(tree), tiers: Math.max(GAME_TIERS, gridSize(tree).tiers) };
-    const icon = SPECS.find((row) => row.class_slug === classSlug && row.tree_index === treeIndex)?.icon;
     const cells: EditorCell[] = gridCells(tree).map(({ talent, tier, column }) => {
       const rank = ranks.get(talent.id) ?? 0;
       const decision = readOnly
@@ -107,7 +112,7 @@ export function editorTrees({
     return {
       id: tree.id,
       name: tree.name,
-      iconSrc: icon === undefined ? '' : asset(`icons/${icon}.webp`),
+      iconSrc: treeIconSrc(classSlug, treeIndex, asset),
       points,
       ...(tree.background ? { artSrc: asset(`trees/${tree.background}.webp`) } : {}),
       columns: size.columns,

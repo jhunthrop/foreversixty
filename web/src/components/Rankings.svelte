@@ -292,8 +292,6 @@
     );
   });
 
-  /** The stamp's width before the board answers: a date as long as most. */
-  const UPDATED_PLACEHOLDER = '13 Dec';
   const updatedStamp = $derived(updatedAt === null ? null : formatDate(new Date(updatedAt)));
 
   // ---- the page's frame (spec 2026-11-07 section 7, directions b1-rankings)
@@ -452,16 +450,17 @@
 <div data-testid="rankings" id="rankings" class="flex flex-col">
   <Page layout="split" splitFrom={1280} panels railFirst testid="rankings-page">
     {#snippet header()}
-      <PageHeader title={rankingsCopy.h1}>
+      <PageHeader title={rankingsCopy.h1} lead={rankingsCopy.lead}>
         {#snippet meta()}
-          <!-- The stamp's box is there from the first paint, so the board's answer moves nothing. -->
-          <span class:invisible={updatedStamp === null} data-testid="rankings-updated"
-            >Updated {updatedStamp ?? UPDATED_PLACEHOLDER}</span
-          >
-          <!-- Specs, not characters: the tier list, a link in the band (never a card stranded in the rail). -->
+          <!-- Specs, not characters: the tier list, a link in the band (never a card stranded in the rail).
+               It leads the line, so the stamp arriving after it moves nothing; no date is printed
+               until the board names a real one. -->
           <a class={LINK} href={rankingsCopy.tierHref} data-testid="rankings-tier-link"
             >{rankingsCopy.tierLink} ›</a
           >
+          {#if updatedStamp !== null}<span data-testid="rankings-updated"
+              >{rankingsCopy.updated(updatedStamp)}</span
+            >{/if}
         {/snippet}
       </PageHeader>
     {/snippet}
@@ -504,14 +503,9 @@
           {/if}
         </Section>
       {/if}
-      {#if nothingRanked}
-        <Section title={scoreCopy.explainerLogsHeading} panel testid="rankings-companion">
-          <p class="text-small text-muted">{scoreCopy.explainerLogsBody}</p>
-          <p class="mt-3">
-            <Button href={scoreCopy.explainerLogsHref}>{scoreCopy.explainerLogsButton}</Button>
-          </p>
-        </Section>
-      {/if}
+      <!-- From 1280, beside the board. Below it the rail stacks first, and this arriving after the
+           board answered pushed the board down (CLS 0.09 at 360): there it follows the board. -->
+      {#if nothingRanked}<div class="max-xl:hidden">{@render companion('rankings-companion')}</div>{/if}
     {/snippet}
 
     {#if isIndex && aimed && encounters.length > 0}
@@ -692,8 +686,18 @@
         {/if}
       </Section>
     {/if}
+    {#if nothingRanked}<div class="xl:hidden">{@render companion('rankings-companion-below')}</div>{/if}
   </Page>
 </div>
+
+{#snippet companion(testid: string)}
+  <Section title={scoreCopy.explainerLogsHeading} panel {testid}>
+    <p class="text-small text-muted">{scoreCopy.explainerLogsBody}</p>
+    <p class="mt-3">
+      <Button href={scoreCopy.explainerLogsHref}>{scoreCopy.explainerLogsButton}</Button>
+    </p>
+  </Section>
+{/snippet}
 
 {#snippet rankRow(row: RankingRowData, you: boolean, testid: string, label?: string)}
   {#if boardView !== null}

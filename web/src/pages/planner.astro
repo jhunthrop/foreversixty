@@ -15,12 +15,15 @@ import type { GuideBuild } from '../lib/planner/guide-builds';
 import { searchCopy } from '../lib/search-copy';
 import { webApplicationLd } from '../lib/seo';
 
-// The opening class's tree art, painted by the loading Plate (the page's largest paint).
-const openingArt = (loadTalentFile(activeBuild.build, DEFAULT_CLASS_SLUG)?.trees ?? [])
+// The opening class's trees, left to right: their art painted by the loading Plate (the page's
+// largest paint) and their names as its heads, so the first paint names the trees it draws.
+const openingTreeFiles = (loadTalentFile(activeBuild.build, DEFAULT_CLASS_SLUG)?.trees ?? [])
   .slice()
-  .sort((a, b) => a.position - b.position)
+  .sort((a, b) => a.position - b.position);
+const openingArt = openingTreeFiles
   .filter((tree) => tree.background)
   .map((tree) => `trees/${tree.background}.webp`);
+const openingTrees = openingTreeFiles.map((tree) => tree.name);
 // Every spec guide's published builds (its levelling build, and its raid build where it has one):
 // the rail's Guide builds for the class on screen.
 const guideBuilds: GuideBuild[] = (await getCollection('guides')).flatMap((guide) => {
@@ -63,6 +66,7 @@ const jsonLd = [
       treeVersion={activeBuild.build}
       classSlug={DEFAULT_CLASS_SLUG}
       {openingArt}
+      {openingTrees}
       {guideBuilds}
     />
   </main>

@@ -102,6 +102,7 @@
       src={capture.src}
       width={capture.width}
       height={capture.height}
+      narrow={capture.narrow}
       alt={capture.alt}
       tag={capture.exampleLabel}
       eager

@@ -22,6 +22,9 @@ Sources, so nothing is invented:
   figure is derived here from band-20 dps_per_point (see tunic_gain); the level 60 gains are
   illustrative layout figures (the build reads Progress.pickGain) and are labelled so in the spec.
 
+The app QR code is drawn by segno (pip install segno) at error correction H, the same encoding the
+addon's build step bakes into its texture.
+
 Font: the client draws every tooltip and frame in Friz Quadrata, which ships only inside the
 client's archive. Marcellus (apps/shared/fonts, OFL) is the closest flared glyphic face in the
 repo and stands in for it.
@@ -504,34 +507,6 @@ def talent_illustration():
             f'background:#ffd100;color:#1a1200">13</div></div>')
 
 
-def board_welcome():
-    rows = [
-        (bag_slot_illustration(), 'Green arrow: it beats what you wear. Hover for how much.'),
-        (talent_illustration(), 'Gold ring: your next talent point.'),
-    ]
-    items = ''.join(
-        f'<div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">{ill}'
-        f'<div style="font-size:13px;color:#e8e8e8;line-height:17px">{t}</div></div>' for ill, t in rows)
-    callout = (f'<div class="tt" style="width:300px;padding:10px 12px 10px">'
-               f'<div style="color:{C["gold"]};font-size:14px;margin-bottom:8px">Forever Sixty is on</div>'
-               f'<div style="font-size:13px;color:#e8e8e8;line-height:17px;margin-bottom:10px">This line is your next '
-               f'step. Click it for your upgrades, talents and rotation.</div>{items}'
-               f'<div style="font-size:13px;color:#e8e8e8;margin:2px 0 10px">Hold '
-               f'<span style="color:{C["gold"]}">Shift</span> on a tooltip for the details.</div>'
-               f'<div style="display:flex;justify-content:space-between;align-items:center">'
-               f'<span class="small">/fs help shows this again</span>'
-               f'<span class="btn" style="padding:0 18px">Got it</span></div>'
-               f'<div style="position:absolute;top:14px;right:-9px;width:0;height:0;border-top:8px solid transparent;'
-               f'border-bottom:8px solid transparent;border-left:9px solid #9095a3"></div></div>')
-    scene = (f'<div style="position:relative;width:800px;height:420px;margin-top:20px">'
-             f'<div style="position:absolute;left:0;top:0">{callout}</div>'
-             f'<div style="position:absolute;left:330px;top:30px">'
-             f'{minimap(chip("Next talent at 25: Lethal Attacks", ring=.9), 160)}</div></div>')
-    body = (f'<p class="cap"><b>First login only</b> · a callout docked to the chip, once per account, never in combat '
-            f'or an instance; Got it, Escape or a click on the chip dismisses it for good</p>{scene}')
-    return page(body)
-
-
 # =================================================================================================
 # Loot roll
 # =================================================================================================
@@ -592,7 +567,7 @@ def score_fact(score, tier):
     return f'<span class="small">Forever Score <span style="color:{TIER[tier]}">{score}</span></span>'
 
 
-def board_panel_leveller():
+def leveller_panel():
     upgrades = ('<div class="sect">Upgrades</div>'
                 + upgrade_row('inv_weapon_bow_11', iname(3021), '3.5', 'Ranged · World drop')
                 + upgrade_row('inv_belt_26', iname(10403), '1.1', 'Waist · The Deadmines · Captain Greenskin · 30%')
@@ -609,8 +584,12 @@ def board_panel_leveller():
                 + spell_row('ability_hunter_quickshot', 'Serpent Sting', 'Under 1.5 seconds left')
                 + spell_row('ability_impalingbolt', 'Arcane Shot', 'To fill a gap')
                 + spell_row('ability_hunter_runningshot', 'Rapid Fire', 'At level 26', dim=True))
-    p = panel('Bow Jackzon', 'Level 24 Hunter · Employed Millennials', [upgrades, talents, rotation],
-              score=score_fact(1240, 'Rare'))
+    return panel('Bow Jackzon', 'Level 24 Hunter · Employed Millennials', [upgrades, talents, rotation],
+                 score=score_fact(1240, 'Rare'))
+
+
+def board_panel_leveller():
+    p = leveller_panel()
     body = (f'<p class="cap"><b>Levelling</b> · Bow Jackzon, level 24 Beast Mastery, guild without a planned raid; '
             f'the rotation is Data.lua\'s band 22, every line</p><div style="padding:16px 0 0 16px">{p}</div>')
     return page(body)
@@ -675,6 +654,329 @@ def board_panel_fresh():
     return page(body)
 
 
+# =================================================================================================
+# First-run onboarding: six short pages on one loop (site, addon, companion, guild)
+# =================================================================================================
+PAGES = 5
+OB_W, OB_H = 640, 450
+MARK = b64((ROOT / 'design/logo/foreversixty-mark.svg').read_bytes(), 'image/svg+xml')
+BANNER = b64((ROOT / 'design/mocks/data/icons/inv_bannerpvp_02.jpg').read_bytes(), 'image/jpeg')
+ADDON_ICON = tga_uri(ROOT / 'addon/ForeverSixty/icon.png')
+# Onboarding.lua coming(): the plain word in client gold, 6 px after the line.
+COMING = f'<span style="font-size:12px;color:{C["gold"]};margin-left:6px">coming</span>'
+
+
+# The tour wears the panel's chrome (design/specs/2026-11-08-addon-ux.md 4.2 Look; Widgets.umberFrame,
+# Widgets.titleBand, Widgets.clientButton): the umber ground, the title band with the bronze-ring
+# medallion and faction notch, the page heading in bone in the title face over a muted
+# "Welcome to Forever Sixty", "2 of 5" on the right, the client's red X and red buttons.
+# Marcellus stands in for the client's MORPHEUS title face here too (mixed case, like the build).
+U = {'top': '#2a1c12', 'ground': '#1d130c', 'edge': '#4a3a26', 'line': '#0b0705', 'bone': '#e9dcc2',
+     'bone_dim': '#b9ab8f', 'ink': '#f3ecdc', 'muted': '#a69a85', 'brass': '#c9a46a',
+     'alliance': '#2f6fd6', 'horde': '#b8261c'}
+TITLE_FONT = b64((ROOT / 'apps/shared/fonts/Marcellus-Regular.ttf').read_bytes(), 'font/ttf')
+RING = tga_uri(ROOT / 'addon/ForeverSixty/media/medallion-ring.tga')
+NOTCH = tga_uri(ROOT / 'addon/ForeverSixty/media/medallion-notch.tga')
+# Onboarding.ARROW_PARTS: { x, y, width, height } in a 16 x 10 box pointing right.
+ARROW_PARTS = [(0, 4, 10, 2), (10, 0, 2, 10), (12, 2, 2, 6), (14, 4, 2, 2)]
+
+
+def medallion(faction='alliance', size=44):
+    inset = 6
+    return (f'<div style="position:relative;width:{size}px;height:{size}px;flex:none">'
+            f'<div style="position:absolute;inset:{inset}px;border-radius:50%;background:#000 url({CREST}) center/100%">'
+            f'</div><img src="{RING}" style="position:absolute;inset:0;width:100%;height:100%">'
+            f'<div style="position:absolute;inset:0;background:{U[faction]};-webkit-mask:url({NOTCH}) center/100%">'
+            f'</div></div>')
+
+
+def flow_arrow(direction):
+    """Onboarding.arrowParts: the right arrow, mirrored for left, turned for down; brass rectangles."""
+    parts = []
+    for x, y, w, h in ARROW_PARTS:
+        if direction == 'left':
+            x = 16 - x - w
+        elif direction == 'down':
+            x, y, w, h = y, x, h, w
+        parts.append(f'<div style="position:absolute;left:{x}px;top:{y}px;width:{w}px;height:{h}px;'
+                     f'background:{U["brass"]}"></div>')
+    box = (10, 16) if direction == 'down' else (16, 10)
+    return (f'<div style="position:relative;width:{box[0]}px;height:{box[1]}px;flex:none;margin:12px 3px 0">'
+            f'{"".join(parts)}</div>')
+
+
+def onboarding(page, heading, content, next_label='Next', extra_right='', total=PAGES, faction='alliance'):
+    left_extra = ('<span class="btn" style="padding:0 10px;position:relative">Tooltips only</span>'
+                  if page == 1 else '')
+    skip = '' if page == total else '<span class="btn" style="padding:0 14px">Skip tour</span>'
+    back = '' if page == 1 else '<span class="btn">Back</span>'
+    # Onboarding.frameHeight: the page is as tall as its content (24 over the footer, 14 under it),
+    # 240 to 450.
+    footer = (f'<div style="margin:24px 16px 0;padding-bottom:14px;display:flex;align-items:center;'
+              f'justify-content:space-between"><span style="display:flex;gap:8px;align-items:center">'
+              f'{skip}{left_extra}</span><span style="display:flex;gap:8px">{back}{extra_right}'
+              f'<span class="btn" style="padding:0 20px">{next_label}</span></span></div>')
+    band = (f'<div style="height:64px;display:flex;align-items:center;gap:12px;padding:0 42px 0 12px;'
+            f'border-bottom:1px solid {U["line"]};box-shadow:0 1px 0 {U["edge"]}">{medallion(faction)}'
+            f'<div style="flex:1;min-width:0"><div style="font-family:Title,serif;font-size:19px;color:{U["bone"]};'
+            f'text-shadow:1px 1px 0 #000;line-height:22px">{heading}</div>'
+            f'<div style="font-size:12px;color:{U["muted"]};margin-top:3px">Welcome to Forever Sixty</div></div>'
+            f'<div style="white-space:nowrap"><span style="font-family:Title,serif;font-size:17px;color:{U["ink"]};'
+            f'text-shadow:1px 1px 0 #000">{page}</span><span style="font-size:12px;color:{U["bone_dim"]}"> of {total}'
+            f'</span></div></div>')
+    return (f'<style>@font-face {{ font-family: Title; src: url({TITLE_FONT}); }}</style>'
+            f'<div style="position:relative;width:{OB_W}px;min-height:240px;max-height:{OB_H}px;'
+            f'box-sizing:border-box;color:{U["ink"]};'
+            f'background:linear-gradient({U["top"]},{U["ground"]});border:1px solid {U["edge"]};'
+            f'box-shadow:inset 0 0 0 1px {U["line"]},0 8px 28px rgba(0,0,0,.7)">'
+            f'{band}<div style="position:absolute;top:5px;right:6px;width:20px;height:20px;'
+            f'border-radius:3px;background:linear-gradient(#8a1c12,#4e0b06);border:1px solid #c7a24a;color:#ffd9a0;'
+            f'font-size:13px;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;'
+            f'font-weight:bold">×</div>'
+            f'<div style="padding:16px 26px 0 26px">{content}</div>{footer}</div>')
+
+
+def ob_board(caption, frame):
+    return page(f'<p class="cap">{caption}</p><div style="padding:18px 0 0 18px">{frame}</div>')
+
+
+def node_icon(uri, size=40, round_=False):
+    radius = '50%' if round_ else '4px'
+    return (f'<div style="width:{size}px;height:{size}px;border-radius:{radius};background:#000 url({uri}) center/100%;'
+            f'box-shadow:0 0 0 1px #000,0 0 0 2px {U["edge"]};flex:none"></div>')
+
+
+def loop_cell(icon, title, text):
+    return (f'<div style="width:172px;display:flex;gap:9px;align-items:flex-start">{icon}'
+            f'<div><div style="color:{U["ink"]};font-size:13.5px;line-height:16px">{title}</div>'
+            f'<div style="font-size:11.5px;color:{U["muted"]};line-height:14px">{text}</div></div></div>')
+
+
+def board_onboarding_1(guild=True):
+    top = [loop_cell(node_icon(CREST, 36, round_=True), 'Your character', 'Imported from Battle.net when you sign in.'),
+           loop_cell(node_icon(ADDON_ICON, 36), 'foreversixty.gg', 'Best in slot for your level, the sim on your gear, '
+                     'guides, tiers.'),
+           loop_cell(node_icon(icon_uri('inv_misc_bag_08'), 36), 'In game', 'The arrow on your bags, the talent '
+                     'ring, your panel.')]
+    guild_cell = loop_cell(node_icon(BANNER, 36), 'Your guild', 'Raids from the site, in your Discord and in game.')
+    bottom = [guild_cell if guild else '<div style="width:172px"></div>',
+              loop_cell(node_icon(icon_uri('inv_misc_book_09'), 36), 'Back on the site', 'Your fights rated, the '
+                        'coach, your Forever Score.'),
+              loop_cell(node_icon(icon_uri('ability_warrior_battleshout'), 36), 'Your fights', 'The companion app '
+                        'uploads each one.')]
+    row1 = f'<div style="display:flex;align-items:flex-start;gap:6px">{top[0]}{flow_arrow("right")}{top[1]}' \
+           f'{flow_arrow("right")}{top[2]}</div>'
+    down = (f'<div style="display:flex;justify-content:flex-end;padding-right:150px;margin:6px 0">'
+            f'{flow_arrow("down")}</div>')
+    first_arrow = flow_arrow('left') if guild else '<div style="width:22px"></div>'
+    row2 = f'<div style="display:flex;align-items:flex-start;gap:6px">{bottom[0]}{first_arrow}{bottom[1]}' \
+           f'{flow_arrow("left")}{bottom[2]}</div>'
+    diagram = f'<div style="width:586px;padding-top:6px">{row1}{down}{row2}</div>'
+    return ob_board('<b>Onboarding, page 1 of 5</b> (4 for a character with no guild) · how the pieces connect. '
+                    'Skip tour (and Escape) ends it for good; Tooltips only turns the setting on and ends it',
+                    onboarding(1, 'How Forever Sixty works', diagram, total=PAGES if guild else PAGES - 1))
+
+
+def board_onboarding_1_hover():
+    return board_onboarding_1().replace(
+        'Onboarding, page 1 of 5</b>', 'Onboarding, page 1 of 5, hovering Tooltips only</b>').replace(
+        'Tooltips only</span>', 'Tooltips only' + HOVER_HINT + '</span>', 1)
+
+
+HOVER_HINT = ('<div class="tt" style="position:absolute;left:-30px;bottom:30px;min-width:0;width:300px;'
+              'font-size:12.5px;line-height:16px;text-align:left;color:#fff"><div style="color:#ffd100;font-size:14px;'
+              'line-height:18px">Tooltips only</div><div>Turns off everything but the tooltip lines.</div>'
+              '<div>Ends the tour. /fs help opens it again.</div></div>')
+
+
+def board_onboarding_1_solo():
+    return board_onboarding_1(guild=False).replace(
+        'Onboarding, page 1 of 5</b> (4 for a character with no guild)',
+        'Onboarding, page 1 of 4, a character with no guild</b> (no guild node, no guild clause)')
+
+
+def icon_row(icon, title, text, source=None, extra=''):
+    """drawRows in Onboarding.lua: an optional muted source right-aligned in 160 px, a 30 px icon, the
+    title in ink and its line muted under it."""
+    src = (f'<div style="width:160px;flex:none;text-align:right;font-size:12px;color:{U["muted"]};'
+           f'line-height:15px;margin-right:16px">{source}</div>' if source else '')
+    return (f'<div style="display:flex;align-items:flex-start;margin-bottom:8px;min-height:44px">{src}'
+            f'{node_icon(icon, 30)}<div style="margin-left:10px"><div style="color:{U["ink"]};font-size:13.5px;'
+            f'line-height:17px">{title}</div><div style="font-size:12px;color:{U["muted"]};line-height:15px;'
+            f'margin-top:1px">{text}</div>{extra}</div></div>')
+
+
+ARROW_ICON = tga_uri(ROOT / 'addon/ForeverSixty/media/arrow.tga')
+
+
+def tooltip_card(name, quality, lines):
+    """Onboarding.lua exampleCard: the client's tooltip ground (#080a16) and edge (#9095a3), the item's
+    name in its quality colour, then the lines the addon adds."""
+    body = ''.join(f'<div style="color:{color};font-size:12px;line-height:15px">{text}</div>'
+                   for text, color in lines)
+    return (f'<div style="display:inline-block;margin-top:6px;padding:7px 10px 7px;background:rgba(8,10,22,.94);'
+            f'border:1px solid #9095a3"><div style="color:{QUALITY[quality]};font-size:13.5px;line-height:18px">'
+            f'{name}</div>{body}</div>')
+
+
+def example_card():
+    """TourExample for Bow Jackzon (level 6, no build, no upgrade): the Beast Mastery band-20 main hand
+    from the shipped BiS data, never a hand-typed item, so a nightly refresh redraws it."""
+    pick = next(s for s in BAND20['slots'] if s['slot'] == 'main_hand')
+    place, boss = pick['source'].split(': ', 1)
+    source = f'{place} · {boss} · {round(pick["chance"] * 100)}% drop' if pick.get('chance') else pick['source']
+    return tooltip_card(pick['item_name'], ITEMS[pick['item_id']]['quality'],
+                        [(f'Best in slot at level {BAND20["band"]}', C['gold']), (source, '#b8b8b8')])
+
+
+def board_onboarding_2():
+    rows = (icon_row(ARROW_ICON, 'The green arrow', 'On a bag item, a quest reward or a loot roll that beats what '
+                     'you wear.', 'BiS pages')
+            # Level 6 Beast Mastery, alliance, no upgrade yet: Data.lua bis band 20 main_hand, item 5200.
+            + icon_row(icon_uri('inv_weapon_bow_02'), 'One line on every item', '+2.2 DPS, Best in slot or Not for '
+                       'you. Shift shows the rest.', 'Spec weights or your sim',
+                       example_card())
+            + icon_row(icon_uri('ability_searingarrow'), 'The gold talent ring', "Your next point, in that build's "
+                       'order.', 'Class guide build')
+            + icon_row(icon_uri('inv_spear_07'), 'Rotation in your panel', 'The buttons to press at your level, and '
+                       'what changes next.', 'Class guide rotation'))
+    return ob_board('<b>Page 2</b> · what the site gives you in game; each row names where it comes from',
+                    onboarding(2, 'The site, in your game', rows))
+
+
+def board_onboarding_3():
+    rows = (icon_row(icon_uri('ability_warrior_battleshout'), 'The companion uploads your fights',
+                     'The companion reads your combat log and sends each fight as it ends. Turn on Advanced Combat '
+                     'Logging once (System, Network), then type /combatlog when you play.')
+            + icon_row(icon_uri('inv_misc_book_09'), 'The site rates them and coaches you',
+                       'Each fight gets a report, a percentile and the one thing that cost you most, like '
+                       '"biggest loss: standing in fire".')
+            + icon_row(ADDON_ICON, 'Your Forever Score', 'Gear, experience, parses, attendance and preparation, in '
+                       'one number, on your tooltip for players with Forever Sixty and Forever Sixty Data. '
+                       'Settings can hide it from others.'))
+    return ob_board('<b>Page 3</b> · what the game gives back', onboarding(3, 'Your game, back to the site', rows))
+
+
+def answer_place(name, live):
+    tag = '' if live else COMING
+    color = U['ink'] if live else U['muted']
+    return f'<div style="font-size:13px;color:{color};margin-bottom:5px">{name}{tag}</div>'
+
+
+def board_onboarding_4():
+    chip_line = f'<div style="font-size:13.5px;color:{U["ink"]}">Tonight 8:00 pm: Onyxia\'s Lair</div>'
+    content = (f'<div style="font-size:13.5px;color:{U["ink"]};margin:0 0 14px">Your officers post a raid on the site '
+               f'(and in your Discord, if your guild has linked it). On raid day, it is here:</div>'
+               f'<div style="display:flex;gap:28px;align-items:flex-start">'
+               f'<div style="width:300px">{chip_line}<div style="font-size:12px;color:{U["muted"]};margin:8px 0 14px">The line by your '
+               f'minimap, on raid day.</div>'
+               f'<div style="font-size:13px">Job: <span style="color:{C["gold"]}">Whelps, west cave</span>'
+               f'</div><div style="font-size:12px;color:{U["muted"]};margin-top:2px">In your panel, and in chat when you zone in.</div></div>'
+               f'<div><div style="color:{U["ink"]};font-size:14px;margin-bottom:6px">Answer In, Late, Bench or Out</div>'
+               f'{answer_place("On foreversixty.gg", True)}{answer_place("In Discord, on the raid post", True)}'
+               f'<div style="font-size:12px;color:{U["muted"]};margin:2px 0 0">In game and on the phone app{COMING}</div>'
+               f'</div></div>')
+    return ob_board('<b>Page 4, only for a character in a guild</b> · your guild, everywhere. One muted "coming" '
+                    'line for what is not live (in-game answers need the sign-up contract; the apps are not in the '
+                    'stores yet)', onboarding(4, 'Your guild, everywhere', content))
+
+
+def url_box(url):
+    return (f'<div style="height:22px;padding:0 9px;display:inline-flex;align-items:center;font-size:13px;color:{U["ink"]};'
+            f'background:#0b0705;border:1px solid #4a3a26;border-radius:2px;min-width:200px">{url}</div>')
+
+
+APP_URL = 'https://foreversixty.gg/app'
+
+
+QR_ASSET = ROOT / 'design/assets/app-qr.png'
+
+
+def qr_uri():
+    """The phone-app QR: the web lane's design/assets/app-qr.png once it exists; until then segno at
+    error correction H with a 4-module quiet zone, black on white (the same encoding)."""
+    if QR_ASSET.exists():
+        return b64(QR_ASSET.read_bytes(), 'image/png')
+    import segno
+    buf = io.BytesIO()
+    segno.make(APP_URL, error='h').save(buf, kind='svg', scale=4, border=4, dark='#000', light='#fff')
+    return b64(buf.getvalue(), 'image/svg+xml')
+
+
+def qr_block():
+    """Onboarding.QR_SIZE (48) while the apps are in testing, labelled Join the app beta."""
+    return (f'<div style="width:120px;flex:none;text-align:center;padding-top:4px">'
+            f'<img src="{qr_uri()}" style="width:48px;height:48px">'
+            f'<div style="font-size:12px;color:{U["ink"]};margin-top:4px">Join the app beta</div>'
+            f'<div style="font-size:12px;color:{U["muted"]};margin-top:1px">foreversixty.gg/app</div></div>')
+
+
+SPECS = [('Beast Mastery', 'Your pet fights, Bestial Wrath'),
+         ('Marksmanship', 'Bows and guns, Barrage and Sniper Shot'),
+         ('Survival', 'Melee hunter, traps and Lacerating Strikes')]
+
+
+def path_tiles(build_word='leveling'):
+    """drawSetup with no build: Pick your path, the note, one red client button per spec (188 wide, 196
+    apart) with its playstyle muted under it."""
+    tiles = ''.join(f'<div style="width:188px"><span class="btn" style="width:188px">{name}</span>'
+                    f'<div style="font-size:12px;color:{U["muted"]};line-height:15px;margin-top:6px">{text}</div>'
+                    f'</div>' for name, text in SPECS)
+    return (f'<div style="font-size:13.5px;color:{U["ink"]};margin-bottom:6px">Pick your path '
+            f'<span style="font-size:12px;color:{U["muted"]};margin-left:6px">loads its {build_word} build</span></div>'
+            f'<div style="display:flex;gap:8px;margin-bottom:18px">{tiles}</div>')
+
+
+def connect_rows(seen=None):
+    if seen is not None:
+        return (f'<div style="font-size:13.5px;color:{C["green"]};margin-bottom:2px">The companion has run</div>'
+                f'<div style="font-size:12px;color:{U["muted"]};margin-bottom:10px">The site saw Bow Jackzon {seen}.'
+                f'</div>')
+    rows = [
+        ('Sign in on the site', 'Sign in with Battle.net. Upgrades, talents and rotation work without it.',
+         url_box('foreversixty.gg')),
+        ('Get the companion for your PC', 'Uploads your fights for reports and the coach, and keeps your builds in '
+         'step with the site.', url_box('foreversixty.gg/setup')),
+    ]
+    return ''.join(f'<div style="margin-bottom:10px"><div style="color:{U["ink"]};font-size:13.5px">{t}</div>'
+                   f'<div style="font-size:12px;color:{U["muted"]};margin:1px 0 4px">{d}</div>{u}</div>'
+                   for t, d, u in rows)
+
+
+LINKS_LINE = f'<div style="font-size:12px;color:{U["muted"]}">Click a box, then Ctrl+C.</div>'
+DONE_LINE = f'<div style="font-size:12px;color:{U["muted"]};margin-top:4px">/fs help opens this again.</div>'
+
+
+def setup_page(top, connect, page_no, total, boxes=True):
+    content = (f'{top}<div style="display:flex;gap:20px"><div style="flex:1">{connect}'
+               f'{LINKS_LINE if boxes else ""}{DONE_LINE}</div>{qr_block()}</div>')
+    return onboarding(page_no, 'Set it up', content, next_label='Done', total=total,
+                      extra_right='<span class="btn">Open my panel</span>')
+
+
+def board_onboarding_5():
+    return ob_board('<b>Last page</b> · set it up. Level 6, no build, no guild, so this is page 4 of 4: one button '
+                    'per spec with its playstyle, nothing pre-picked, and Done closes the tour',
+                    setup_page(path_tiles(), connect_rows(), 4, 4))
+
+
+def board_onboarding_5_connected():
+    top = (f'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px">'
+           f'<div><span style="font-size:13.5px;color:{U["ink"]}">Your path: Beast Mastery leveling</span>'
+           f'<span style="font-size:12px;color:{U["muted"]};margin-left:10px">15 of 15 points</span>'
+           f'<div style="font-size:12px;color:{U["muted"]};margin-top:3px">Next point at level 25: Lethal Attacks'
+           f'</div></div><span class="btn">Change</span></div>')
+    return ob_board('<b>Last page, a character already set up</b> · level 24, in a guild (page 5 of 5), following a '
+                    'build, with an ack in the inbox. Past 3 days without one, the line turns to the warning colour: '
+                    '"The site has not seen Bow Jackzon in 4 days. Is the companion running?"',
+                    setup_page(top, connect_rows('2 hours ago'), 5, 5, boxes=False))
+
+
+def board_onboarding_5_sixty():
+    return ob_board('<b>Last page at level 60, no build yet</b> · the same buttons load the raid build',
+                    setup_page(path_tiles(build_word='raid'), connect_rows(), 5, 5))
+
+
 BOARDS = {
     'item-tooltip-before': board_item_before,
     'item-tooltip-after': board_item_after,
@@ -686,10 +988,18 @@ BOARDS = {
     'player-tooltip-before': board_player_before,
     'player-tooltip-after': board_player_after,
     'chip-pulse': board_chip,
-    'welcome': board_welcome,
     'panel-leveller-24': board_panel_leveller,
     'panel-raider-60': board_panel_raider,
     'panel-fresh-install': board_panel_fresh,
+    'onboarding-1-loop': board_onboarding_1,
+    'onboarding-1-hover': board_onboarding_1_hover,
+    'onboarding-1-loop-solo': board_onboarding_1_solo,
+    'onboarding-2-site-in-game': board_onboarding_2,
+    'onboarding-3-game-to-site': board_onboarding_3,
+    'onboarding-4-guild': board_onboarding_4,
+    'onboarding-5-set-up': board_onboarding_5,
+    'onboarding-5-set-up-done': board_onboarding_5_connected,
+    'onboarding-5-set-up-60': board_onboarding_5_sixty,
 }
 
 

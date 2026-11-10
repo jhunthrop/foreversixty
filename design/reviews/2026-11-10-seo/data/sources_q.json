@@ -1,0 +1,25 @@
+{
+  "rows": [
+    {
+      "keys": [
+        "2026-10-29",
+        "classify forever"
+      ],
+      "clicks": 7,
+      "impressions": 126,
+      "ctr": 0.055555555555555552,
+      "position": 3.9841269841269842
+    },
+    {
+      "keys": [
+        "2026-10-29",
+        "classify-forever"
+      ],
+      "clicks": 0,
+      "impressions": 23,
+      "ctr": 0,
+      "position": 3.652173913043478
+    }
+  ],
+  "responseAggregationType": "byPage"
+}

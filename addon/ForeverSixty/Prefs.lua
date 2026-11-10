@@ -51,6 +51,9 @@ Prefs.DEFAULTS = {
 	-- "Tooltips only" (spec 3.3): on, it turned the chip, the talent marks and the slot marks off in one
 	-- step; each keeps its own switch afterwards.
 	tooltipsOnly = false,
+	-- "Show my Forever Score to others" (design/specs/2026-11-08-addon-ux.md 3.1, owner ruling): on by
+	-- default; off, the export tells the site to leave this player out of the nightly ratings.
+	showScore = true,
 	-- On by default: the export written at logout is what feeds the
 	-- companion, and a player who installed the companion did not ask to
 	-- turn it on a second time.

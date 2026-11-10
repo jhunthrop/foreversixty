@@ -176,7 +176,9 @@ def companion_section(state: str) -> str:
         return escape(s).replace('/combatlog', Code('/combatlog'))
     rows = Rows([Row(withcode(s), rank=str(i + 1), link=False) for i, s in enumerate(howto)], open_=True)
     cap = A['setupCompanionCapture']
-    pic = Capture(img(cap['src']), cap['width'], cap['height'], cap['alt'], tag=cap['exampleLabel'], lazy=False)
+    narrow = {**cap['narrow'], 'src': img(cap['narrow']['src'])}
+    pic = Capture(img(cap['src']), cap['width'], cap['height'], cap['alt'], tag=cap['exampleLabel'], lazy=False,
+                  narrow=narrow)
     pair = ''
     if state not in ('out', 'mac', 'mobile', 'unknown', 'export', 'error', 'loading', 'signin-failed'):
         lc = FACTS['logs_companion']

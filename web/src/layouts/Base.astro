@@ -104,8 +104,9 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <link rel="preload" href={openSans600Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={archivo600Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={marcellus400Url} as="font" type="font/woff2" crossorigin />
-    <link rel="icon" href={FAVICON.ico} sizes="any" />
-    <link rel="icon" href={FAVICON.png32} type="image/png" sizes="32x32" />
+    {/* The ico names a size so Chrome does not prefer it over the SVG (sizes="any" would). */}
+    <link rel="icon" href={FAVICON.ico} sizes="32x32" />
+    <link rel="icon" href={FAVICON.svg} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={FAVICON.appleTouch} />
     <meta property="og:title" content={fullTitle} data-og="og-title" />
     <meta property="og:description" content={description} data-og="og-description" />

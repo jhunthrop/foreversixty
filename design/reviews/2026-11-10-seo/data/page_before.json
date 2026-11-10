@@ -1,0 +1,635 @@
+{
+  "rows": [
+    {
+      "keys": [
+        "https://foreversixty.gg/sim"
+      ],
+      "clicks": 70,
+      "impressions": 644,
+      "ctr": 0.10869565217391304,
+      "position": 6.9984472049689437
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/sources"
+      ],
+      "clicks": 12,
+      "impressions": 190,
+      "ctr": 0.063157894736842107,
+      "position": 4.0315789473684216
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/"
+      ],
+      "clicks": 11,
+      "impressions": 324,
+      "ctr": 0.033950617283950615,
+      "position": 6.1111111111111107
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/tiers/healer"
+      ],
+      "clicks": 7,
+      "impressions": 115,
+      "ctr": 0.060869565217391307,
+      "position": 9.1304347826086953
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis"
+      ],
+      "clicks": 5,
+      "impressions": 54,
+      "ctr": 0.092592592592592587,
+      "position": 15.722222222222221
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/druid/feral"
+      ],
+      "clicks": 4,
+      "impressions": 150,
+      "ctr": 0.026666666666666668,
+      "position": 10.76
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/rankings"
+      ],
+      "clicks": 4,
+      "impressions": 33,
+      "ctr": 0.12121212121212122,
+      "position": 7.5757575757575761
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/tiers/tank"
+      ],
+      "clicks": 3,
+      "impressions": 40,
+      "ctr": 0.075,
+      "position": 6.75
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/paladin/protection"
+      ],
+      "clicks": 2,
+      "impressions": 12,
+      "ctr": 0.16666666666666666,
+      "position": 7.083333333333333
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/mage/fire"
+      ],
+      "clicks": 2,
+      "impressions": 40,
+      "ctr": 0.05,
+      "position": 9.325
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/setup"
+      ],
+      "clicks": 2,
+      "impressions": 25,
+      "ctr": 0.08,
+      "position": 12.12
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/sim/specs"
+      ],
+      "clicks": 2,
+      "impressions": 14,
+      "ctr": 0.14285714285714285,
+      "position": 6.4285714285714288
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/paladin/retribution"
+      ],
+      "clicks": 1,
+      "impressions": 37,
+      "ctr": 0.027027027027027029,
+      "position": 9.7567567567567561
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/warrior/arms"
+      ],
+      "clicks": 1,
+      "impressions": 1,
+      "ctr": 1,
+      "position": 5
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/hunter"
+      ],
+      "clicks": 1,
+      "impressions": 7,
+      "ctr": 0.14285714285714285,
+      "position": 4.5714285714285712
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/hunter/survival"
+      ],
+      "clicks": 1,
+      "impressions": 41,
+      "ctr": 0.024390243902439025,
+      "position": 8.9024390243902438
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/paladin/protection"
+      ],
+      "clicks": 1,
+      "impressions": 30,
+      "ctr": 0.033333333333333333,
+      "position": 10.6
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/logs"
+      ],
+      "clicks": 1,
+      "impressions": 16,
+      "ctr": 0.0625,
+      "position": 15.25
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/planner"
+      ],
+      "clicks": 1,
+      "impressions": 31,
+      "ctr": 0.032258064516129031,
+      "position": 19.129032258064516
+    },
+    {
+      "keys": [
+        "http://foreversixty.gg/"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "keys": [
+        "http://foreversixty.gg/guides/hunter/survival"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "keys": [
+        "http://foreversixty.gg/guides/mage/fire"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "keys": [
+        "http://foreversixty.gg/guides/shaman/restoration"
+      ],
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 20.23076923076923
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/about"
+      ],
+      "clicks": 0,
+      "impressions": 16,
+      "ctr": 0,
+      "position": 5.75
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/druid/balance"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/druid/feral"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 6.125
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/druid/restoration"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 6.875
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/hunter/beast-mastery"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/hunter/marksmanship"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/hunter/survival"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/mage/arcane"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 8.5
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/paladin/holy"
+      ],
+      "clicks": 0,
+      "impressions": 14,
+      "ctr": 0,
+      "position": 8.0714285714285712
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/priest/holy"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 18
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/rogue/assassination"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/rogue/combat"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/rogue/subtlety"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/shaman/elemental"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/shaman/restoration"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6.5
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/warlock/destruction"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/warrior/fury"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/bis/warrior/protection"
+      ],
+      "clicks": 0,
+      "impressions": 25,
+      "ctr": 0,
+      "position": 7.16
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/changelog"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 7.2857142857142856
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/character"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 9.5
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides"
+      ],
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 15.307692307692308
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/druid"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 9.5
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/mage"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 20.833333333333332
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/paladin"
+      ],
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0,
+      "position": 16.18181818181818
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/priest"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 23.142857142857142
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/rogue/subtlety"
+      ],
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/shaman/elemental"
+      ],
+      "clicks": 0,
+      "impressions": 12,
+      "ctr": 0,
+      "position": 16.666666666666664
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/warlock"
+      ],
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 17.923076923076923
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/warrior"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 8.2857142857142847
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guides/warrior/fury"
+      ],
+      "clicks": 0,
+      "impressions": 15,
+      "ctr": 0,
+      "position": 13.2
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/guild"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 7.166666666666667
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/login"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 7.6
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/premium"
+      ],
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 13.8
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/privacy"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 2.4
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/rankings/blightbone"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/rankings/echelon"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/rankings/general-kaal"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 7.5
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/rankings/grand-proctor-beryllia"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/rankings/kryxis-the-voracious"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/ratings"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/refunds"
+      ],
+      "clicks": 0,
+      "impressions": 35,
+      "ctr": 0,
+      "position": 9.6857142857142851
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/reports/5lop7n5kwysf"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 19
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/reports/sample"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 12
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/roadmap"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/sim/talents"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/sim/weights"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 3.5
+    },
+    {
+      "keys": [
+        "https://foreversixty.gg/terms"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 5.4
+    }
+  ],
+  "responseAggregationType": "byPage"
+}
