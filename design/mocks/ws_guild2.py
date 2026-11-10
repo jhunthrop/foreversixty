@@ -555,9 +555,10 @@ def all_pages() -> dict:
     import ws_guild_directory
     import ws_guild_raids
     import ws_guild_settings
+    import ws_guild_setup
     import ws_guild_states
     import ws_guild_tabs
-    return {**PAGES, **ws_guild_states.PAGES, **ws_guild_tabs.PAGES, **ws_guild_raids.PAGES, **ws_guild_settings.PAGES, **ws_guild_directory.PAGES}
+    return {**PAGES, **ws_guild_states.PAGES, **ws_guild_tabs.PAGES, **ws_guild_raids.PAGES, **ws_guild_settings.PAGES, **ws_guild_directory.PAGES, **ws_guild_setup.PAGES}
 
 
 if __name__ == '__main__':

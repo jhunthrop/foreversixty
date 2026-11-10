@@ -26,7 +26,7 @@ const (
 // Discord's authorize page with the account flow's redirect URI.
 func (s *Service) guildConnect(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
-	guildID, _, ok := s.guildOfficer(w, r, true)
+	guildID, _, ok := s.guildOfficer(w, r)
 	if !ok {
 		return
 	}
@@ -101,7 +101,7 @@ func (s *Service) dispatchState(w http.ResponseWriter, r *http.Request, cs Conne
 
 // guildCallback finishes a guild connect. It answers failed unless the session is the
 // officer who started it, inside ten minutes, and still a verified officer of a guild with
-// the plan and no contested claim; denied when the officer refused at Discord.
+// no contested claim; denied when the officer refused at Discord.
 func (s *Service) guildCallback(w http.ResponseWriter, r *http.Request, cs ConnectState) {
 	httpx.CachePrivateNoStore(w)
 	standing, found, err := s.Guilds.GuildStanding(r.Context(), cs.GuildID, cs.UserID)
@@ -122,7 +122,7 @@ func (s *Service) guildCallback(w http.ResponseWriter, r *http.Request, cs Conne
 		back(outcomeDenied)
 		return
 	}
-	if !standing.Officer || !standing.Plan || standing.Frozen {
+	if !standing.Officer || standing.Frozen {
 		back(outcomeFailed)
 		return
 	}

@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
-	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 )
 
 // The refusals SignUp answers with, besides the store's ErrRaidLocked, ErrRaidCancelled and
@@ -25,7 +24,6 @@ var (
 	ErrNotYourCharacter     = errors.New("guilds: that character belongs to another account")
 	ErrCharacterNotVerified = errors.New("guilds: character is not verified in this guild")
 	ErrSignupRateLimited    = errors.New("guilds: too many sign-ups just now")
-	ErrPlanRequired         = errors.New("guilds: the guild plan is required")
 	ErrClaimContested       = errors.New("guilds: the guild's claim is contested")
 )
 
@@ -226,7 +224,7 @@ func (s *Service) signupStanding(ctx context.Context, actorID int64, raid Raid, 
 	if err != nil {
 		return false, err
 	}
-	if !officer || !s.officerTools(ctx, raid.GuildID, actorID) {
+	if !officer {
 		return false, nil
 	}
 	// Writing to a locked raid is an officer power, frozen like the others.
@@ -236,8 +234,9 @@ func (s *Service) signupStanding(ctx context.Context, actorID int64, raid Raid, 
 	return true, nil
 }
 
-// officerGateFor is officerRaidGate as errors: a verified officer or leader (else
-// ErrNotYourCharacter, the only reason the sign-up asks), the guild plan, the claim freeze.
+// officerGateFor is the free calendar gate as errors: a verified officer or leader (else
+// ErrNotYourCharacter, the only reason the sign-up asks) and the claim freeze. Answering for a
+// member is part of the free sign-ups (owner ruling 2026-11-09).
 func (s *Service) officerGateFor(ctx context.Context, guildID, actorID int64) error {
 	officer, err := s.officerOrLeaderOf(ctx, guildID, actorID)
 	if err != nil {
@@ -245,16 +244,6 @@ func (s *Service) officerGateFor(ctx context.Context, guildID, actorID int64) er
 	}
 	if !officer {
 		return ErrNotYourCharacter
-	}
-	if s.Entitlements == nil {
-		return ErrPlanRequired
-	}
-	ok, _, err := s.Entitlements.CanForGuild(ctx, guildID, actorID, entitlements.FeatureOfficerViews)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		return ErrPlanRequired
 	}
 	return s.notFrozen(ctx, guildID, actorID)
 }

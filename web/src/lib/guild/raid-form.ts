@@ -225,28 +225,12 @@ export function discordFormPart(discord: GuildRaidDiscord | null): DiscordFormPa
   return discord.connected ? 'box' : 'line';
 }
 
-/** A post goes out at once when the raid starts within this many hours (P.4: 7 days). */
-const POST_HORIZON_HOURS = 168;
-const HOUR_MS = 3_600_000;
 const CHANNEL_NAME_MAX = 60;
 
 /** `#raid-signups`, the name cut at 60 characters and a `…`; `null` for a webhook. */
 export function channelLabel(name: string | null): string | null {
   if (name === null) return null;
   return name.length > CHANNEL_NAME_MAX ? `#${name.slice(0, CHANNEL_NAME_MAX)}…` : `#${name}`;
-}
-
-/** `Thursday 3 December`: the day a week before the start, on the guild's calendar. */
-function weekBefore(start: Date, timezone: string): string {
-  const day = new Date(start.getTime() - POST_HORIZON_HOURS * HOUR_MS);
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: timezone,
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  }).formatToParts(day);
-  const at = (type: Intl.DateTimeFormatPartTypes): string => parts.find((p) => p.type === type)?.value ?? '';
-  return `${at('weekday')} ${at('day')} ${at('month')}`;
 }
 
 /** The lines and rows the Discord block draws (spec P.3). */
@@ -262,9 +246,6 @@ export interface DiscordHelperArgs {
   discord: GuildRaidDiscord;
   post: GuildRaidDiscordPost | null;
   mode: RaidFormMode;
-  startsAt: Date | null;
-  now: Date;
-  timezone: string;
 }
 
 function postRowOf(discord: GuildRaidDiscord, post: GuildRaidDiscordPost | null, mode: RaidFormMode) {
@@ -272,14 +253,10 @@ function postRowOf(discord: GuildRaidDiscord, post: GuildRaidDiscordPost | null,
   return discord.channel_name === null ? 'webhookMoved' : 'posted';
 }
 
+/** A save posts at once, however far out the raid starts (owner ruling 2026-11-09). */
 function postLine(args: DiscordHelperArgs, channel: string | null): string {
-  const { values, startsAt, now, timezone } = args;
-  if (!values.postToDiscord) return raidCopy.form.postOff;
-  const within = startsAt === null || startsAt.getTime() - now.getTime() <= POST_HORIZON_HOURS * HOUR_MS;
-  if (values.repeat) return raidCopy.form.postRepeat(within);
-  return within
-    ? raidCopy.form.postNow(channel)
-    : raidCopy.form.postLater(channel, weekBefore(startsAt, timezone));
+  if (!args.values.postToDiscord) return raidCopy.form.postOff;
+  return args.values.repeat ? raidCopy.form.postRepeat : raidCopy.form.postNow(channel);
 }
 
 /** Whether the reminder row is switched off for want of a post: only a raid yet to be posted. */

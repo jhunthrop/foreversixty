@@ -18,6 +18,7 @@
     parseGuildRaidPath,
     parseGuildRecruitPath,
     parseGuildSettingsPath,
+    parseGuildSetupPath,
   } from '../lib/characters';
   import { createLazyComponent, type LazyLoadState } from '../lib/report/lazy-component.svelte';
   import { onCurrentCharacterSwitch } from '../lib/current-character-events';
@@ -37,6 +38,7 @@
   // This island's entry is at its budget: each view off the guild page is its own chunk.
   const raidLazy = createLazyComponent(() => import('./GuildRaid.svelte'));
   const settingsLazy = createLazyComponent(() => import('./GuildSettings.svelte'));
+  const setupLazy = createLazyComponent(() => import('./guild/setup/GuildSetup.svelte'));
   const claimLazy = createLazyComponent(() => import('./GuildClaim.svelte'));
   const joinLazy = createLazyComponent(() => import('./GuildJoin.svelte'));
   const recruitLazy = createLazyComponent(() => import('./guild/recruit/GuildRecruit.svelte'));
@@ -49,6 +51,7 @@
 
   const claimPath = $derived(parseGuildClaimPath(resolvedPath));
   const settingsPath = $derived(parseGuildSettingsPath(resolvedPath));
+  const setupPath = $derived(parseGuildSetupPath(resolvedPath));
   const inviteToken = $derived(parseGuildInviteToken(resolvedPath));
   const raidPath = $derived(parseGuildRaidPath(resolvedPath));
   const recruitPath = $derived(parseGuildRecruitPath(resolvedPath));
@@ -70,6 +73,7 @@
     if (isGuildLandingPath(resolvedPath)) return;
     if (claimPath !== null) claimLazy.load();
     else if (settingsPath !== null) settingsLazy.load();
+    else if (setupPath !== null) setupLazy.load();
     else if (inviteToken !== null) joinLazy.load();
     else if (raidPath !== null) raidLazy.load();
     else if (recruitPath !== null) recruitLazy.load();
@@ -113,6 +117,15 @@
       <div class="flex flex-col gap-6">
         <PageHeader title={guildSettingsCopy.heading} />
         {@render chunkPending(settingsLazy, 'guild-settings-chunk', GUILD_LOADING.settings.minHeight)}
+      </div>
+    {/if}
+  {:else if setupPath !== null}
+    {#if setupLazy.current}
+      <setupLazy.current path={setupPath} />
+    {:else}
+      <div class="flex flex-col gap-6">
+        <PageHeader title={guildSettingsCopy.heading} />
+        {@render chunkPending(setupLazy, 'guild-setup-chunk', GUILD_LOADING.settings.minHeight)}
       </div>
     {/if}
   {:else if inviteToken !== null}

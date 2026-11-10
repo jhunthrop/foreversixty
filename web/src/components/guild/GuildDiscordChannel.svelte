@@ -21,7 +21,6 @@
     confirming,
     busy,
     status,
-    gateId,
     frozen,
     onTest,
     onAskRemove,
@@ -36,8 +35,6 @@
     confirming: boolean;
     busy: 'test' | 'remove' | null;
     status: DiscordStatus | null;
-    /** The gate sentence's id in officer-read-only: tests and connect are off, Remove stays. */
-    gateId: string | undefined;
     frozen: boolean;
     onTest: () => void;
     onAskRemove: () => void;
@@ -53,18 +50,10 @@
   const idAt = $derived(lineTwo.lastIndexOf(' ') + 1);
   const openUrl = $derived(openInDiscordUrl({ guild_id: discord.discord_guild_id, channel_id: channelId }));
   const warning = $derived(switchedOff ? null : failureWarning(discord));
-  const gated = $derived(frozen || gateId !== undefined);
 </script>
 
 {#snippet replace()}
-  <DiscordReplace
-    source="connected"
-    disabled={busy !== null}
-    href={connectHref}
-    {gated}
-    describedBy={gateId}
-    {onStuck}
-  />
+  <DiscordReplace source="connected" disabled={busy !== null} href={connectHref} gated={frozen} {onStuck} />
 {/snippet}
 
 <div class="flex flex-col gap-0.5" data-testid="discord-destination">
@@ -107,7 +96,6 @@
     {confirming}
     removeQuestion={guildDiscordCopy.removeQuestion}
     {busy}
-    {gateId}
     disabled={frozen}
     removeLabel={guildDiscordCopy.remove}
     removingLabel={guildDiscordCopy.removing}

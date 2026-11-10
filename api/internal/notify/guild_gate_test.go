@@ -8,10 +8,10 @@ import (
 )
 
 func TestGuildOfficerGateIsExported(t *testing.T) {
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /gate/{id}", func(w http.ResponseWriter, r *http.Request) {
-		if _, _, ok := GuildOfficerGate(w, r, g.access, true, func(string, error) {}); ok {
+		if _, _, ok := GuildOfficerGate(w, r, g.access, func(string, error) {}); ok {
 			w.WriteHeader(http.StatusNoContent)
 		}
 	})

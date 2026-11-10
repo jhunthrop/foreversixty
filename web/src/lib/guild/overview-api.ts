@@ -156,6 +156,20 @@ export async function pingRaid(
   return result;
 }
 
+/** Officers: post an unposted raid now, or repost a posted one as a new message; answers the
+ *  raid view. 409 `no_channel` without a Discord channel, 502 `post_failed` when it did not land. */
+export async function postRaidNow(
+  guildId: number,
+  raidId: RaidId,
+  apiBase: string = API_BASE_URL,
+): Promise<GuildRaidView> {
+  const raid = await call<GuildRaidView>(`${raidPath(guildId, raidId)}/discord/post`, apiBase, {
+    method: 'POST',
+  });
+  invalidateGuild(guildId, apiBase);
+  return raid;
+}
+
 /** Officers: this raid's own seats per role; answers the raid view. */
 export async function setCompTarget(
   guildId: number,

@@ -3,26 +3,14 @@
      open Rows with a 26 px numbered mark and the step's one action in the trail. Marks: `ok` done
      (kill, a check), `next` the first step not done (gold, its number; its row carries the page's
      one primary Button), `todo` not done (a ring, the number muted), `warn` needs the player (gold
-     "!"), `miss` failed (wipe "×"), `busy` running (a ring with a gold arc turning once a second).
+     "!"), `miss` failed (wipe "×"), `busy` running (a ring with a gold arc turning once a second),
+     `skip` passed over on purpose (a muted dash in a ring; guild setup 2026-11-09).
      The rows are not focusable; Tab reaches each action in order. The Plate around it names the
      list ("Your setup"). -->
-<script lang="ts" module>
-  export type StepsMark = 'ok' | 'next' | 'todo' | 'warn' | 'miss' | 'busy';
-
-  /** The mark's accessible word: "Step 2: Next". */
-  export const STEP_MARK_WORD: Readonly<Record<StepsMark, string>> = {
-    ok: 'Done',
-    next: 'Next',
-    todo: 'Not done',
-    warn: 'To do',
-    miss: 'Failed',
-    busy: 'In progress',
-  };
-</script>
-
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import Row from './Row.svelte';
+  import StepMark, { type StepsMark } from './StepMark.svelte';
 
   interface StepItem {
     key: string;
@@ -35,6 +23,7 @@
     items,
     sub,
     action,
+    inlineTrail = false,
     testid,
   }: {
     items: readonly StepItem[];
@@ -42,23 +31,19 @@
     sub: Snippet<[StepItem]>;
     /** The step's one action (nothing for a done step). */
     action?: Snippet<[StepItem]>;
+    /** Below 600 the action stays on the title row instead of a line of its own: a small quiet
+     *  action (Skip, Undo) beside a step whose own controls sit in its body (guild setup). */
+    inlineTrail?: boolean;
     testid?: string;
   } = $props();
-
-  const GLYPH: Partial<Record<StepsMark, string>> = { ok: '✓', warn: '!', miss: '×', busy: '' };
 </script>
 
-<div class="ui-steps" data-testid={testid}>
+<div class="ui-steps" data-inline-trail={inlineTrail ? '' : undefined} data-testid={testid}>
   {#each items as item (item.key)}
     <div class="ui-step" data-mark={item.mark}>
       <Row title={item.title} testid={testid === undefined ? undefined : `${testid}-${item.key}`}>
         {#snippet lead()}
-          <span
-            class="ui-step-mark"
-            data-mark={item.mark}
-            role="img"
-            aria-label={`Step ${item.n}: ${STEP_MARK_WORD[item.mark]}`}>{GLYPH[item.mark] ?? item.n}</span
-          >
+          <StepMark n={item.n} mark={item.mark} />
         {/snippet}
         {#snippet subContent()}{@render sub(item)}{/snippet}
         {#snippet trail()}{#if action}{@render action(item)}{/if}{/snippet}
@@ -81,54 +66,6 @@
     font-size: 14px;
     line-height: 20px;
   }
-  .ui-step-mark {
-    position: relative;
-    display: inline-flex;
-    flex: none;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    font:
-      700 13px/26px var(--font-body),
-      sans-serif;
-    font-variant-numeric: tabular-nums;
-  }
-  .ui-step-mark[data-mark='ok'] {
-    background: var(--color-kill);
-    color: var(--color-bg);
-  }
-  .ui-step-mark[data-mark='next'],
-  .ui-step-mark[data-mark='warn'] {
-    background: var(--color-gold);
-    color: var(--color-bg);
-  }
-  .ui-step-mark[data-mark='miss'] {
-    background: var(--color-wipe);
-    color: var(--color-bg);
-  }
-  .ui-step-mark[data-mark='todo'] {
-    box-shadow: inset 0 0 0 1.5px var(--color-line);
-    color: var(--color-muted);
-  }
-  .ui-step-mark[data-mark='busy'] {
-    box-shadow: inset 0 0 0 2px var(--color-line);
-  }
-  .ui-step-mark[data-mark='busy']::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 2px solid transparent;
-    border-top-color: var(--color-gold);
-    border-radius: 50%;
-    animation: ui-step-spin 1s linear infinite;
-  }
-  @keyframes ui-step-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
   @media (max-width: 599px) {
     .ui-step :global(.ui-row) {
       align-items: start;
@@ -139,6 +76,14 @@
       grid-column: 1 / -1;
       justify-self: start;
       margin-top: 8px;
+    }
+    .ui-steps[data-inline-trail] .ui-step :global(.ui-row) {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+    .ui-steps[data-inline-trail] .ui-step :global(.ui-row > span:nth-child(3):not(:empty)) {
+      grid-column: auto;
+      justify-self: end;
+      margin-top: 0;
     }
   }
 </style>

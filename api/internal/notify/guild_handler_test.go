@@ -8,7 +8,7 @@ import (
 )
 
 func TestGuildTestPostsTheGuildEmbed(t *testing.T) {
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	g.saveGuildHook(connectedHook)
 	if status, raw, _ := g.call("POST", g.route("/test"), ""); status != http.StatusNoContent {
 		t.Fatalf("status %d: %s", status, raw)
@@ -27,7 +27,7 @@ func TestGuildTestPostsTheGuildEmbed(t *testing.T) {
 
 func TestGuildTestFailureDoesNotCountAndSuccessSwitchesBackOn(t *testing.T) {
 	ctx := context.Background()
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	g.saveGuildHook(connectedHook)
 	for i := 0; i < MaxFailures; i++ {
 		if _, err := g.svc.GuildStore.RecordFailure(ctx, g.gid, "boom", true); err != nil {
@@ -56,8 +56,8 @@ func TestGuildTestFailureDoesNotCountAndSuccessSwitchesBackOn(t *testing.T) {
 
 func TestGuildTestGates(t *testing.T) {
 	member := GuildStanding{Name: "Olympus XXVII", Path: guildPath}
-	noPlan, frozen := officerWithPlan(), officerWithPlan()
-	noPlan.Plan, frozen.Frozen = false, true
+	frozen := verifiedOfficer()
+	frozen.Frozen = true
 	cases := []struct {
 		name     string
 		standing GuildStanding
@@ -66,9 +66,8 @@ func TestGuildTestGates(t *testing.T) {
 		code     string
 	}{
 		{"member", member, true, http.StatusNotFound, "not_found"},
-		{"no plan", noPlan, true, http.StatusForbidden, "guild_plan_required"},
 		{"frozen", frozen, true, http.StatusConflict, "claim_contested"},
-		{"nothing saved", officerWithPlan(), false, http.StatusNotFound, "not_found"},
+		{"nothing saved", verifiedOfficer(), false, http.StatusNotFound, "not_found"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -87,10 +86,8 @@ func TestGuildTestGates(t *testing.T) {
 	}
 }
 
-func TestGuildRemoveDeletesWithoutThePlan(t *testing.T) {
-	standing := officerWithPlan()
-	standing.Plan = false
-	g := newGuildAPI(t, standing)
+func TestGuildRemoveDeletes(t *testing.T) {
+	g := newGuildAPI(t, verifiedOfficer())
 	g.saveGuildHook(connectedHook)
 	if status, raw, _ := g.call("DELETE", g.route(""), ""); status != http.StatusNoContent {
 		t.Fatalf("status %d: %s", status, raw)
@@ -134,7 +131,7 @@ func TestGuildTestEmbedEscapesTheName(t *testing.T) {
 }
 
 func TestGuildTestRouteIsLimitedToFivePerMinute(t *testing.T) {
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	g.saveGuildHook(connectedHook)
 	for i := 1; i <= testsPerMinute; i++ {
 		if status, _, _ := g.call("POST", g.route("/test"), ""); status != http.StatusNoContent {

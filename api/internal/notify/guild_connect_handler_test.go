@@ -27,19 +27,10 @@ func TestGuildConnectHidesTheRouteFromNonOfficers(t *testing.T) {
 	}
 }
 
-func TestGuildConnectWithoutThePlanIs403(t *testing.T) {
-	standing := officerWithPlan()
-	standing.Plan = false
-	g := newGuildAPI(t, standing)
-	status, raw, _ := g.call("GET", g.route("/connect"), "")
-	if status != http.StatusForbidden || !strings.Contains(raw, `"guild_plan_required"`) ||
-		!strings.Contains(raw, refusal.RaidPlanRequired) {
-		t.Fatalf("status %d: %s", status, raw)
-	}
-}
-
+// A verified officer of a guild with no plan connects: the channel is free (owner ruling
+// 2026-11-09).
 func TestGuildConnectWritesAStateAndRedirectsToDiscord(t *testing.T) {
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	state := g.startGuildConnect()
 	if len(state) < 40 {
 		t.Fatalf("state %q is too short to be 32 random bytes", state)
@@ -57,7 +48,7 @@ func TestGuildConnectWritesAStateAndRedirectsToDiscord(t *testing.T) {
 }
 
 func TestGuildCallbackSavesTheChannelAndRedirectsConnected(t *testing.T) {
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	var logs bytes.Buffer
 	g.svc.Log = slog.New(slog.NewTextHandler(&logs, nil))
 	old := "https://discord.com/api/webhooks/999/OLDtoken"
@@ -90,7 +81,7 @@ func TestGuildCallbackSavesTheChannelAndRedirectsConnected(t *testing.T) {
 }
 
 func TestGuildCallbackDeniedAtDiscord(t *testing.T) {
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	state := g.startGuildConnect()
 	_, loc := g.callback("error=access_denied&state="+url.QueryEscape(state), nil)
 	g.assertGuildOutcome(loc, outcomeDenied)
@@ -121,13 +112,6 @@ func TestGuildCallbackFailures(t *testing.T) {
 			g.access.set(GuildStanding{Name: "Olympus XXVII", Path: guildPath})
 			return state
 		},
-		"the plan ended": func(g *guildHarness) string {
-			state := g.startGuildConnect()
-			lapsed := officerWithPlan()
-			lapsed.Plan = false
-			g.access.set(lapsed)
-			return state
-		},
 		"the exchange failed": func(g *guildHarness) string {
 			g.oauth.Err = ErrExchange
 			return g.startGuildConnect()
@@ -135,7 +119,7 @@ func TestGuildCallbackFailures(t *testing.T) {
 	}
 	for name, setup := range cases {
 		t.Run(name, func(t *testing.T) {
-			g := newGuildAPI(t, officerWithPlan())
+			g := newGuildAPI(t, verifiedOfficer())
 			state := setup(g)
 			_, loc := g.callback("code="+authCode+"&state="+url.QueryEscape(state), nil)
 			g.assertGuildOutcome(loc, outcomeFailed)
@@ -147,7 +131,7 @@ func TestGuildCallbackFailures(t *testing.T) {
 }
 
 func TestGuildCallbackUnknownStateIsTheAccountsFailure(t *testing.T) {
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	_, loc := g.callback("code="+authCode+"&state=forged", nil)
 	g.assertOutcome(loc, outcomeFailed)
 	if len(g.oauth.Codes()) != 0 {
@@ -157,7 +141,7 @@ func TestGuildCallbackUnknownStateIsTheAccountsFailure(t *testing.T) {
 
 func TestGuildRoutesAreOffWithoutConnect(t *testing.T) {
 	h := newAPIWith(t, nil, func(s *Service) {
-		s.Guilds = &fakeGuildAccess{standing: officerWithPlan(), found: true}
+		s.Guilds = &fakeGuildAccess{standing: verifiedOfficer(), found: true}
 		s.GuildStore = &GuildStore{Pool: s.Store.Pool}
 	})
 	if h.svc.GuildConnectEnabled() {
@@ -169,7 +153,7 @@ func TestGuildRoutesAreOffWithoutConnect(t *testing.T) {
 }
 
 func TestGuildConnectWithAFrozenClaimIs409(t *testing.T) {
-	standing := officerWithPlan()
+	standing := verifiedOfficer()
 	standing.Frozen = true
 	g := newGuildAPI(t, standing)
 	status, raw, _ := g.call("GET", g.route("/connect"), "")

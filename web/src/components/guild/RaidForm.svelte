@@ -34,7 +34,6 @@
     raidPayload,
     repeatHelper,
     splitAtLink,
-    startOf,
     validateRaidForm,
     type RaidFormErrors,
     type RaidFormField,
@@ -147,9 +146,6 @@
       discord: discord ?? CLOSED_DISCORD,
       post: raid?.discord_post ?? null,
       mode,
-      startsAt: startOf(values),
-      now: clock(),
-      timezone: values.timezone,
     }),
   );
   const discordLine = splitAtLink(raidCopy.form.connectDiscord, raidCopy.form.connectDiscordLink);

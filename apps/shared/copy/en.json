@@ -406,7 +406,7 @@
     "officer.move.addIn": "Add as In",
     "officer.move.addBench": "Add as Bench",
     "officer.add": "Add",
-    "officer.gate": "Planning and running raids are part of the guild plan.",
+    "officer.gate": "Comp targets, Discord pings, assignments and log matching are part of the guild plan.",
 
     "night.title": "Your raid night",
     "night.meta": "{zone} · {weekday} {date} · {guild}",

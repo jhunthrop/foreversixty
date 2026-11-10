@@ -76,7 +76,7 @@ export const plansPageCopy = {
   },
   guildRegion: {
     heading: 'For guild leaders',
-    lede: 'One officer pays, and the whole guild gets raids, sign-ups and attendance.',
+    lede: 'The Discord bot, raid posts, sign-ups and the recruiting channel are free for every claimed guild. A plan adds the officer tools. Members never pay.',
     members:
       'Plans count verified members: players with a Forever Sixty account whose character the guild has confirmed. People in your Discord without an account do not count.',
   },
@@ -131,9 +131,9 @@ export const plansPageCopy = {
     audience: `Up to ${GUILD_TIER_MEMBER_LIMIT} verified members`,
     // One short sentence a line (redesign plan 2026-11-09, site copy P12); the rules carry the detail.
     features: [
-      'Raids posted on the site and in Discord, one-tap sign-ups.',
+      'Comp targets, a ping for whoever has not signed, boss assignments.',
       'Attendance and a report for every raid night from its log.',
-      'The Forever Sixty bot in Discord: raid posts, /bis and /char.',
+      "Logs matched to raids, attendance fixes, the night's report in Discord.",
       `${PLANS.guild.seats} Premium seat to give a member.`,
       `Fits a guild that runs ${RAID_SIZES[2]}- or ${RAID_SIZES[1]}-person raids.`,
     ],

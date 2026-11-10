@@ -485,7 +485,8 @@ test('a cancelled raid keeps its row on the Raids tab with the Cancelled chip', 
 });
 
 const BOT_CHANNEL = { discordConnected: true, postDefault: true, channelName: 'raid-signups' } as const;
-const LATER_HELPER = raidCopy.form.postLater('#raid-signups', 'Thursday 10 December');
+/** A save posts at once, however far out (owner ruling 2026-11-09). */
+const POST_HELPER = raidCopy.form.postNow('#raid-signups');
 /** A raid posted through the bot to #raid-signups, before its reminder. */
 const POSTED = {
   posted_at: '2026-12-01T18:00:00Z',
@@ -505,7 +506,7 @@ test.describe('Post to Discord and the reminder (guided cards P.3)', () => {
     await expect(post).toHaveAttribute('aria-checked', 'true');
     await expect(remind).toHaveAttribute('role', 'switch');
     await expect(remind).toBeChecked();
-    await expect(page.getByTestId('raid-form-discord-helper')).toHaveText(LATER_HELPER);
+    await expect(page.getByTestId('raid-form-discord-helper')).toHaveText(POST_HELPER);
     await expect(page.getByTestId('raid-form-remind-helper')).toHaveText(raidCopy.form.remind);
     await expectNoAxeViolations(page, '[data-testid="raid-form-create"]');
     await post.focus();

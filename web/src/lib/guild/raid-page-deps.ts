@@ -14,7 +14,7 @@ import {
 } from './attendance-api';
 import { fetchGuildHome, fetchGuildRaids } from './api';
 import { clearAssignment, postAssignments, setAssignment } from './assignments-api';
-import { pingRaid, resetCompTarget, setCompTarget } from './overview-api';
+import { pingRaid, postRaidNow, resetCompTarget, setCompTarget } from './overview-api';
 import { browserStorage } from './reserve-keys';
 import type { RaidPageDeps, RaidRoute } from './raid-page-types';
 import { fetchGuildRaid, putSignup, refetchGuildRaid, setRaidStatus, updateRaid } from './raids-api';
@@ -38,6 +38,7 @@ export function liveRaidPageDeps(route: RaidRoute): RaidPageDeps {
     putCompTarget: (guildId, raidId, target) => setCompTarget(guildId, raidId, target),
     deleteCompTarget: (guildId, raidId) => resetCompTarget(guildId, raidId),
     pingRaid: (guildId, raidId) => pingRaid(guildId, raidId),
+    postRaidNow: (guildId, raidId) => postRaidNow(guildId, raidId),
     putAssignment: (guildId, raidId, encounterId, slot, keys) =>
       setAssignment(guildId, raidId, encounterId, slot, keys),
     deleteAssignment: (guildId, raidId, encounterId, slot) =>

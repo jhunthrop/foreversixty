@@ -189,16 +189,10 @@ describe('raidCopy constants, verbatim from spec 6.1', () => {
   it('form strings match P.7', () => {
     const f = raidCopy.form;
     const ch = { channel: '#raid-signups' };
-    const day = { Weekday: 'Thursday', d: '3', Month: 'December' };
     expect(f.remindDayBefore).toBe(str2('`form.remindDayBefore`'));
     expect(f.postNow('#raid-signups')).toBe(str2('`form.postNow`', 0, ch));
     expect(f.postNow(null)).toBe(str2('`form.postNow`', 1));
-    expect(f.postLater('#raid-signups', 'Thursday 3 December')).toBe(
-      str2('`form.postLater`', 0, { ...ch, ...day }),
-    );
-    expect(f.postLater(null, 'Thursday 3 December')).toBe(str2('`form.postLater`', 1, day));
-    expect(f.postRepeat(true)).toBe(str2('`form.postRepeat`', 0));
-    expect(f.postRepeat(false)).toBe(str2('`form.postRepeat`', 1));
+    expect(f.postRepeat).toBe(str2('`form.postRepeat`'));
     expect(f.postOff).toBe(str2('`form.postOff`'));
     expect(f.remind).toBe(str2('`form.remind`'));
     expect(f.remindNeedsPost).toBe(str2('`form.remindNeedsPost`'));

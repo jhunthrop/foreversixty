@@ -24,7 +24,6 @@
 
   const OUTLINE = button('secondary');
   const CHANNEL_UNUSABLE = 'channel_unusable';
-  const PLAN_REQUIRED = 'guild_plan_required';
   const SELECT_ID = 'guild-bot-channel';
   const EMPTY_PRESS_ID = 'guild-bot-channel-empty';
 
@@ -130,8 +129,6 @@
   }
 
   async function onSaveFailed(error: unknown): Promise<void> {
-    if (error instanceof GuildApiError && error.code === PLAN_REQUIRED)
-      return onStatus({ ok: false, message: guildBotCopy.planEnded, planEnded: true }, true);
     if (error instanceof GuildApiError && error.code === CHANNEL_UNUSABLE) {
       await load(false);
       return onStatus({ ok: false, message: guildBotCopy.picker.race }, true);

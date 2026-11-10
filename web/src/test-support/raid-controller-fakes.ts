@@ -89,6 +89,7 @@ export function deps(extra: Partial<RaidPageDeps> = {}): RaidPageDeps {
         no_discord_names: [],
         next_allowed_at: null,
       }),
+    postRaidNow: () => Promise.resolve(plannedRaid()),
     putAssignment: () => Promise.resolve(plannedRaid()),
     deleteAssignment: () => Promise.resolve(plannedRaid()),
     postAssignments: () =>

@@ -156,6 +156,8 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	}
 	mountRaidMatchRoutes(mux, s, officerLimit)
 	mountRaidReportRoutes(mux, s, officerLimit)
+	mountRaidPostNowRoute(mux, s, officerLimit)
+	mountSetupRoutes(mux, s, officerLimit)
 	mountRaidOverviewRoutes(mux, s, officerLimit)
 	mountRaidAssignmentRoutes(mux, s, officerLimit)
 	mux.Handle("PUT /v1/guilds/{id}/raids/{raid}/signups/{region}/{ruleset}/{name}",

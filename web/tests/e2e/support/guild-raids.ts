@@ -271,7 +271,8 @@ const REFUSAL_LINES: Record<string, string> = {
   raid_locked: 'This raid is locked.',
   raid_cancelled: 'This raid was cancelled.',
   raid_cap: 'A guild plans at most 12 raids ahead.',
-  guild_plan_required: 'Planning and running raids are part of the guild plan.',
+  guild_plan_required:
+    'Comp targets, Discord pings, assignments and log matching are part of the guild plan.',
   conflict: 'The raid moved on.',
 };
 

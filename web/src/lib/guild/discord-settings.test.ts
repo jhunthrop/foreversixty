@@ -71,12 +71,6 @@ describe('test outcomes', () => {
     expect(testRefused(new GuildApiError('boom', 500)).message).toBe(notificationsCopy.testOurError);
     expect(testRefused(new Error('offline')).message).toBe(notificationsCopy.testOurError);
   });
-
-  it('a guild_plan_required refusal ends the officer tools', () => {
-    const refused = testRefused(new GuildApiError('Planning…', 403, 'guild_plan_required'));
-    expect(refused).toEqual({ ok: false, message: guildDiscordCopy.planEnded, planEnded: true });
-    expect(guildDiscordCopy.planEnded).toBe("Not saved. This guild's officer tools have ended.");
-  });
 });
 
 describe('the channel after a test or a remove', () => {
@@ -98,7 +92,7 @@ describe('the channel after a test or a remove', () => {
 describe('returns from Discord', () => {
   it('connected: the guild line, focus on Send test message, a fresh settings read', () => {
     expect(guildReturnOutcome('connected')).toEqual({
-      status: { ok: true, message: 'Connected. Send a test message to see it in the channel.', stays: true },
+      status: { ok: true, message: 'Connected.', stays: true },
       focus: DISCORD_FOCUS.test,
       refresh: true,
     });

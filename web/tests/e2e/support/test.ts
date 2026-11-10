@@ -95,6 +95,8 @@ export const GUILD_OVERVIEW_READS: readonly string[] = [
   '**/v1/guilds/*/loot/nights*',
   '**/v1/guilds/*/applications*',
   '**/v1/guilds/*/members/*/profile',
+  // The setup checklist the settings page and the claim page read (guild onboarding 2026-11-09).
+  '**/v1/guilds/*/setup',
 ];
 
 export async function apiUnreachable(page: Page, ...globs: readonly string[]): Promise<void> {

@@ -161,16 +161,16 @@ describe('the body', () => {
     expect(body).not.toContain('data-testid="raid-roster-state"');
   });
 
-  it('disables the officer control of a cancelled raid, or in read-only, naming the gate', () => {
+  it('disables the officer control of a cancelled raid; with no plan it stays live (free calendar)', () => {
     const cancelled = officer({ raid: full({ status: 'cancelled' }) });
     expect(cancelled).toMatch(/class="opacity-60" data-testid="raid-roster"/);
     expect(
       /<button[^>]*data-testid="raid-roster-state-us\/pvp\/frostquill-in"[^>]*>/.exec(cancelled)?.[0],
     ).toMatch(/ disabled/);
-    const readOnly = officer({ officerToolsField: false });
-    expect(readOnly).toMatch(
-      /aria-describedby="officer-tools-gate-raids"[^>]*data-testid="raid-roster-state-us\/pvp\/frostquill"/,
-    );
+    const noPlan = officer({ officerToolsField: false });
+    expect(
+      /<button[^>]*data-testid="raid-roster-state-us\/pvp\/frostquill-in"[^>]*>/.exec(noPlan)?.[0],
+    ).not.toMatch(/ disabled/);
   });
 
   it('says nobody has signed up yet', () => {

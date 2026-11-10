@@ -758,7 +758,6 @@
       onApprove={approveFromCard}
       onPlan={planFromCard}
       {bandSignsUp}
-      planGated={!officerTools}
     />
   {/if}
 {/snippet}
@@ -773,7 +772,6 @@
         guildId={home.guild.id}
         nextRaid={home.next_raid ?? null}
         officer={officerView}
-        {officerTools}
         {gateFacts}
         {guildPath}
         currentKey={myCharacterKey}
@@ -1060,7 +1058,6 @@
           guildTimezone={raids?.guild_timezone ?? null}
           discord={raids?.discord}
           officer={role === 'officer'}
-          {officerTools}
           memberView={myGuildMembership?.verified === true}
           {settingsHref}
           {gateFacts}
@@ -1142,8 +1139,6 @@
           {contestBusy}
           {contestError}
           {showContestConfirm}
-          {officerTools}
-          onPlanRefused={() => (officerToolsEnded = true)}
           onCrestChanged={() => void onCrestChanged()}
           onContestStart={() => {
             showContestConfirm = true;

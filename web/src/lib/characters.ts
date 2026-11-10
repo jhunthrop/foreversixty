@@ -214,6 +214,11 @@ export function parseGuildSettingsPath(pathname: string): CharacterPath | null {
   return parseGuildSuffixPath(pathname, 'settings');
 }
 
+/** `.../setup`: the officer's setup checklist after a claim. */
+export function parseGuildSetupPath(pathname: string): CharacterPath | null {
+  return parseGuildSuffixPath(pathname, 'setup');
+}
+
 /** `.../recruit`: the guild's public recruiting card and the application form. */
 export function parseGuildRecruitPath(pathname: string): CharacterPath | null {
   return parseGuildSuffixPath(pathname, 'recruit');
@@ -297,6 +302,11 @@ export function guildClaimHref(region: string, ruleset: string, name: string): s
 
 export function guildSettingsHref(region: string, ruleset: string, name: string): string {
   return `${guildHref(region, ruleset, name)}/settings`;
+}
+
+/** The officer's setup checklist. */
+export function guildSetupHref(region: string, ruleset: string, name: string): string {
+  return `${guildHref(region, ruleset, name)}/setup`;
 }
 
 /** The guild's recruiting card, under the guild page's own path (`guildHref`). */
