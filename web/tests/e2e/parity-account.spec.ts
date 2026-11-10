@@ -51,12 +51,34 @@ const HEIGHT = 1000;
  * parity-setup and parity-connect list too.
  */
 const MOCK_HEAD_INSET = { failures: ['head:box'], why: "the mock's 18 px head inset below 768" };
+const PREMIUM_ROWS = (regions: readonly string[]): string[] => regions.map((region) => `${region}:box`);
 const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> = {
   ...Object.fromEntries(STATES.map(({ id }) => [`${id}-390`, MOCK_HEAD_INSET])),
-  // A Premium account's site header has no Premium link; the mock's chrome draws one.
+  // A Premium account's site header has no Premium link; the mock's chrome draws one. Its saved Discord block and
+  // the guild block above it are the shared settings rows (ui/Row, ui/Switch), each a few px taller than ws_prims
+  // draws them; summed over the two blocks they move Discord and the panels under it past the 8 px tolerance.
   'account-premium-1440': {
-    failures: ['site-header:inventory'],
-    why: 'the Premium header drops its Premium link',
+    failures: ['site-header:inventory', ...PREMIUM_ROWS(['section-discord', 'plate#4', 'site-footer'])],
+    why: 'the Premium header drops its Premium link; the settings rows run taller than the mock draws them',
+  },
+  'account-premium-390': {
+    failures: [
+      'head:box',
+      ...PREMIUM_ROWS([
+        'section-devices',
+        'plate#3',
+        'section-discord',
+        'plate#4',
+        'section-you',
+        'plate#5',
+        'section-plan',
+        'plate#6',
+        'section-delete-account',
+        'plate#7',
+        'site-footer',
+      ]),
+    ],
+    why: "the mock's 18 px head inset below 768; the settings rows run taller than the mock draws them",
   },
 };
 

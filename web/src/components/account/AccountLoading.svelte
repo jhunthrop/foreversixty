@@ -19,7 +19,8 @@
   import AccountOut from './AccountOut.svelte';
   import CharacterListIntro from './CharacterListIntro.svelte';
 
-  const RAIL = [accountPageCopy.youLabel, accountPageCopy.devicesLabel, notificationsCopy.label];
+  const LEFT_AFTER = [accountPageCopy.devicesLabel, notificationsCopy.label];
+  const RAIL = [accountPageCopy.youLabel, accountPageCopy.planLabel, accountPageCopy.deleteSection.title];
 </script>
 
 <div class="account-when-out"><AccountOut /></div>
@@ -31,15 +32,21 @@
         <Skeleton lines={2} rowHeight="h-[56px]" testid="account-characters-skeleton" />
         <CharacterListIntro />
       </Section>
-      <Section title={accountPageCopy.planLabel} panel>
-        <Skeleton lines={4} rowHeight="h-5" testid="account-plan-skeleton" />
-      </Section>
+      {#each LEFT_AFTER as title (title)}
+        <Section {title} panel>
+          <Skeleton lines={3} rowHeight="h-5" testid="account-{title.toLowerCase()}-skeleton" />
+        </Section>
+      {/each}
     </div>
     {#snippet rail()}
       <div class="account-loading session-reserve account-rail-skeleton" data-testid="account-rail-skeleton">
         {#each RAIL as title (title)}
           <Section {title} panel>
-            <Skeleton lines={3} rowHeight="h-5" testid="account-{title.toLowerCase()}-skeleton" />
+            <Skeleton
+              lines={3}
+              rowHeight="h-5"
+              testid="account-{title.toLowerCase().replace(' ', '-')}-skeleton"
+            />
           </Section>
         {/each}
       </div>

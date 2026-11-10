@@ -29,7 +29,7 @@
   });
 </script>
 
-<div class="flex flex-col items-start gap-3 px-5 pt-4 pb-5" data-testid="login">
+<div class="flex flex-col items-start gap-3 px-5 pt-4 pb-1" data-testid="login">
   {#if me !== null}
     <p class="text-[15px] leading-6">{accountSignInCopy.signedInAs(displayName)}</p>
     <Button tone="primary" href="/account" testid="login-go-account">{accountSignInCopy.goAccount}</Button>

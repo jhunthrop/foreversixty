@@ -40,7 +40,7 @@ test('not signed in: the code, the Battle.net hand-off with next, then pending a
   await expect(page.getByRole('region', { name: 'The companion' })).toBeVisible();
   // Device and Platform keep their rows until a session can look the code up (ruling C2).
   await expect(page.getByTestId('connect-facts').getByText('Shown once you sign in')).toHaveCount(2);
-  // The box signing in never moves: the same three rows at the same height once signed in. Read
+  // The box signing in never moves: the same two rows at the same height once signed in. Read
   // off the page, not pinned: a Facts row is 41 px on macOS and rounds to 41.33 on Linux.
   const signedOutFacts = await page.getByTestId('connect-facts').boundingBox();
   await expect(page.getByText('Forever Sixty will see your BattleTag and character list.')).toBeVisible();
@@ -64,7 +64,7 @@ test('not signed in: the code, the Battle.net hand-off with next, then pending a
   await gotoHydrated(page, '/connect?code=KQ4-7TM', 'connect');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Connect JHUNT-PC to Thrall#1234?');
   await expect(page.getByTestId('connect-device')).toHaveText('JHUNT-PC');
-  await expect(page.getByTestId('connect-facts').locator('dt')).toHaveText(['Code', 'Device', 'Platform']);
+  await expect(page.getByTestId('connect-facts').locator('dt')).toHaveText(['Device', 'Platform']);
   await expect(page.getByTestId('connect-signout')).toHaveText('Sign out.');
   await expect(page.getByTestId('connect-code-check')).toHaveText(
     'Only press Connect if this code matches the one in the companion window.',
@@ -162,7 +162,7 @@ test('the platform reads as a player says it, and the form column is 560 px from
     body: ok({ name: 'JHUNT-PC', platform: 'windows/amd64', expires_in: 540 }),
   });
   await gotoHydrated(page, '/connect?code=KQ4-7TM', 'connect');
-  await expect(page.getByTestId('connect-facts').locator('dd').nth(2)).toHaveText('Windows');
+  await expect(page.getByTestId('connect-facts').locator('dd').nth(1)).toHaveText('Windows');
   const plate = await page.getByRole('region', { name: 'The companion' }).boundingBox();
   expect(plate!.width).toBe(560);
 });

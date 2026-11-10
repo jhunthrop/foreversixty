@@ -51,6 +51,24 @@ const VIEWS: ReadonlyArray<{ view: string; open: (page: Page) => Promise<void>; 
 
 const only = process.env.ACCOUNT_CAPTURE_VIEWS?.split(',');
 
+/** A full-page capture never scrolls, so lazy captures below the fold would shoot empty: load them all first. */
+async function loadLazyImages(page: Page): Promise<void> {
+  await page.evaluate(async () => {
+    const images = [...document.querySelectorAll('img')];
+    for (const image of images) image.loading = 'eager';
+    await Promise.all(
+      images.map((image) =>
+        image.complete
+          ? null
+          : new Promise((resolve) => {
+              image.addEventListener('load', resolve, { once: true });
+              image.addEventListener('error', resolve, { once: true });
+            }),
+      ),
+    );
+  });
+}
+
 test.describe('Account lane review captures', () => {
   test.skip(() => process.env.ACCOUNT_CAPTURE !== '1', 'a capture tool, run on demand');
   test.skip(({ isMobile }) => isMobile, 'the widths are set per capture');
@@ -70,6 +88,7 @@ test.describe('Account lane review captures', () => {
         await prepareParityPage(page);
         await open(page);
         await settleParityPage(page);
+        await loadLazyImages(page);
         await page.screenshot({ path: path.join(OUT, `build-${view}-${width}.png`), fullPage: true });
         await page.unrouteAll({ behavior: 'ignoreErrors' });
 

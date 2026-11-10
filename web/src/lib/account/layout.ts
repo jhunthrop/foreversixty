@@ -3,29 +3,25 @@
 // 2026-10-25-discord-notifications section 9.1): the loading page draws the ready page's
 // layout, so these tables are the single source for the floors that global.css's
 // "account loading reserve" block repeats as CSS (layout-reserve.test.ts asserts the two agree).
-// The 2026-11-08 page (premium spec 7) keeps the mechanism: `left` is now the main column (Characters,
-// Plan, Guild) and `rail` the rail (Devices, Discord, You); a stored height is what reserves them,
-// and the floors below are the shipped page's, met only on a first visit. `npm run lhci`'s own account.html run cannot confirm any of it: its sandbox
-// has no CORS allowance for localhost to call the real API, so it always lands on the
+// The page on panels (redesign 2026-11-09, directions mock b4-account) keeps the mechanism: `left`
+// is the main column (Characters, Guild, Devices, Discord) and `rail` the rail (You, Plan, Delete
+// account); a stored height is what reserves them, and the floors below are the shipped page's,
+// met only on a first visit. `npm run lhci`'s own account.html run cannot confirm any of it: its
+// sandbox has no CORS allowance for localhost to call the real API, so it always lands on the
 // `failed`/LoadError branch instead.
 
 import type { Me } from './api';
 import { storage } from '../layout-reserve';
 
-/** The gap between the page's stacked blocks (Tailwind `gap-8`). */
-export const SECTION_GAP_PX = 32;
-
-/** The gap between the rail's Plan block and the Discord block under it (`gap-4`). */
-export const PLAN_GAP_PX = 16;
+/** The gap between the page's panels (ui/Page `panels`: `--section-gap` 22 px). */
+export const SECTION_GAP_PX = 22;
 
 // ---- The loading reserve (experience spec 2026-10-25-discord-notifications §9.1) ----------
 // The loading state draws the ready page's skeleton at its real positions. Two buckets:
-// `lg` is the 12-column grid at 1024 and up (measured at 1440), `stack` is the one-column
-// page below it (measured at 390). The header, left and rail floors were measured on a
-// FOREVER_DATA=fixture build with a stubbed, empty account (no characters, devices, reports or
-// guilds) and rounded down, so a floor never out-grows the real panel. The Discord floors were
-// measured on the shipped panels (Task 3a) and rounded up to 5.
-// All apply only when no rendered height is stored.
+// `lg` is the split page at 1024 and up (measured at 1440), `stack` is the one-column page
+// below it (measured at 390). Each floor is a panel of the ready page measured on a
+// FOREVER_DATA=fixture build (2026-11-09) and rounded down to 5, so a floor never out-grows the
+// real panel. All apply only when no rendered height is stored.
 
 export type ReserveBucket = 'lg' | 'stack';
 
@@ -38,82 +34,39 @@ export interface BucketPx {
 /** What `data-discord` on `<html>` says the Discord block will be. */
 export type HintState = 'none' | 'free' | 'connect' | 'form' | 'saved' | 'off' | 'lapsed';
 
-/** The ready header row: 44 px beside the title at 1024 and up, the stacked row below it. */
-export const HEADER_ROW_H: BucketPx = { lg: 60, stack: 110 };
-
-/** An empty Characters panel, an empty Your reports panel and the 32 px gap between them, measured
- *  2026-11-06 at 356 / 504 and rounded down to 5; the stacked one re-measured 2026-11-07 at 478 once
- *  Your reports' empty line became the logs redesign's one-line Row text. The empty panel draws no last-raid coach line
- *  (spec 2026-11-04-account-characters: it shows under the rows only), so the floor holds none;
- *  an account with characters is taller, and its stored height takes over after the first visit. */
-export const LEFT_FLOOR: BucketPx = { lg: 355, stack: 475 };
-
-/** The Plan card for a free account: head, four settings rows and the See plans foot (polish task 4, measured 380 / 460 on the empty fixture account at 1440 / 390). */
-const PLAN_EMPTY_FLOOR: BucketPx = { lg: 380, stack: 460 };
-
-/**
- * What the tallest Plan card adds to the free one (polish task 4): a seat holder with a personal
- * portal draws the plan note under the head, the given-by line 2 and the Billing history button
- * where the free card draws See plans. Measured 431 against 390 at 1440 and 513 against 472 at 390
- * on the fixture account, so 41 px at both widths, held at 45. The card never draws shorter than
- * the stored reserve says, so only a first load with nothing stored sees this floor.
- */
-export const PLAN_HEADLINE_RESERVE: BucketPx = { lg: 45, stack: 45 };
-
-/** One 13 px `{Guild} has no plan.` line under a guild row in the Plan panel (20 px line). The
- *  reserve holds one row; an account with more no-plan guilds grows the panel, which is not a
- *  first-load shift (the stored height takes over). */
-export const PLAN_NO_PLAN_ROW_RESERVE = 20;
-
-/** The rail's panels with nothing extra in them (Devices, You, Plan at its tallest headline). */
-export const RAIL_FLOORS: Readonly<Record<'devices' | 'you' | 'plan', BucketPx>> = {
-  devices: { lg: 270, stack: 290 },
-  you: { lg: 170, stack: 190 },
-  plan: {
-    lg: PLAN_EMPTY_FLOOR.lg + PLAN_HEADLINE_RESERVE.lg + PLAN_NO_PLAN_ROW_RESERVE,
-    stack: PLAN_EMPTY_FLOOR.stack + PLAN_HEADLINE_RESERVE.stack + PLAN_NO_PLAN_ROW_RESERVE,
-  },
+/** The main column's panels with nothing extra in them: an empty Characters panel and Devices with no device. */
+export const LEFT_FLOORS: Readonly<Record<'characters' | 'devices', BucketPx>> = {
+  characters: { lg: 225, stack: 270 },
+  devices: { lg: 145, stack: 215 },
 };
 
-/** The Discord block's height by the state `/v1/me` puts it in; `none` draws no card. */
+/** The rail's panels: You (no Discord rows: they are the Discord panel's), the free Plan, Delete account. */
+export const RAIL_FLOORS: Readonly<Record<'you' | 'plan' | 'delete', BucketPx>> = {
+  you: { lg: 350, stack: 350 },
+  plan: { lg: 295, stack: 340 },
+  delete: { lg: 180, stack: 160 },
+};
+
+/** The Discord panel's notifications block by the state `/v1/me` puts it in; `none` draws no panel. */
 export const DISCORD_FLOORS: Readonly<Record<HintState, BucketPx>> = {
   none: { lg: 0, stack: 0 },
-  free: { lg: 180, stack: 180 },
-  connect: { lg: 340, stack: 360 },
-  form: { lg: 735, stack: 765 },
-  saved: { lg: 530, stack: 650 },
-  off: { lg: 645, stack: 765 },
-  lapsed: { lg: 535, stack: 580 },
+  free: { lg: 140, stack: 155 },
+  connect: { lg: 295, stack: 355 },
+  form: { lg: 535, stack: 660 },
+  saved: { lg: 345, stack: 440 },
+  off: { lg: 420, stack: 535 },
+  lapsed: { lg: 385, stack: 410 },
 };
 
-/** What `data-discord-link` on `<html>` says the You panel's Discord link row will be. */
+/** What `data-discord-link` on `<html>` says the Discord panel's link rows will be. */
 export type LinkHintState = 'none' | 'unlinked' | 'suggested' | 'linked';
 
-/** The link row's own height in the You panel, its gap included (experience spec 2026-10-27-discord-bot 3.2). */
-export const ACCOUNT_DISCORD_LINK_ROW_RESERVE: Readonly<Record<LinkHintState, BucketPx>> = {
-  none: { lg: 0, stack: 0 },
-  unlinked: { lg: 155, stack: 175 },
-  suggested: { lg: 155, stack: 155 },
-  linked: { lg: 135, stack: 135 },
-};
-
-/** The Discord Premium role row under the link row; it shows whenever the link row does. */
-export const ACCOUNT_DISCORD_ROLE_ROW_RESERVE: Readonly<BucketPx> = { lg: 172, stack: 191 };
-
-const withRoleRow = (row: BucketPx): BucketPx =>
-  row.lg === 0
-    ? row
-    : {
-        lg: row.lg + ACCOUNT_DISCORD_ROLE_ROW_RESERVE.lg,
-        stack: row.stack + ACCOUNT_DISCORD_ROLE_ROW_RESERVE.stack,
-      };
-
-/** Both Discord rows' height in the You panel by the link row's state. */
+/** The link row and the Premium role row under it (both show whenever the link row does), by the link row's state. */
 export const ACCOUNT_DISCORD_LINK_RESERVE: Readonly<Record<LinkHintState, BucketPx>> = {
-  none: withRoleRow(ACCOUNT_DISCORD_LINK_ROW_RESERVE.none),
-  unlinked: withRoleRow(ACCOUNT_DISCORD_LINK_ROW_RESERVE.unlinked),
-  suggested: withRoleRow(ACCOUNT_DISCORD_LINK_ROW_RESERVE.suggested),
-  linked: withRoleRow(ACCOUNT_DISCORD_LINK_ROW_RESERVE.linked),
+  none: { lg: 0, stack: 0 },
+  unlinked: { lg: 120, stack: 200 },
+  suggested: { lg: 120, stack: 200 },
+  linked: { lg: 110, stack: 180 },
 };
 
 /** Read back by the pre-paint script in Base.astro. */
@@ -212,17 +165,22 @@ export function discordLinkHint(me: Me | null): LinkHintState {
   return me.discord_link_suggested ? 'suggested' : 'unlinked';
 }
 
-/** The rail's floor with nothing stored: its three panels, the gaps, and the Discord block under Plan. */
-export function railFloor(state: HintState, bucket: ReserveBucket): number {
-  const panels = RAIL_FLOORS.devices[bucket] + RAIL_FLOORS.you[bucket] + RAIL_FLOORS.plan[bucket];
+/** The main column's floor with nothing stored: Characters and Devices, and the Discord panel when there is one. */
+export function leftFloor(state: HintState, bucket: ReserveBucket): number {
+  const panels = LEFT_FLOORS.characters[bucket] + SECTION_GAP_PX + LEFT_FLOORS.devices[bucket];
   const discord = DISCORD_FLOORS[state][bucket];
-  return panels + 2 * SECTION_GAP_PX + (discord > 0 ? PLAN_GAP_PX + discord : 0);
+  return panels + (discord > 0 ? SECTION_GAP_PX + discord : 0);
 }
 
-/** The reserved grid's height under the header row when nothing is stored (the taller column). */
+/** The rail's floor with nothing stored: its three panels and the two gaps. */
+export function railFloor(bucket: ReserveBucket): number {
+  return RAIL_FLOORS.you[bucket] + RAIL_FLOORS.plan[bucket] + RAIL_FLOORS.delete[bucket] + 2 * SECTION_GAP_PX;
+}
+
+/** The reserved split's height under the head when nothing is stored (the taller column; stacked below 1024). */
 export function gridFloor(state: HintState, bucket: ReserveBucket): number {
-  const left = LEFT_FLOOR[bucket];
-  const rail = railFloor(state, bucket);
+  const left = leftFloor(state, bucket);
+  const rail = railFloor(bucket);
   return bucket === 'lg' ? Math.max(left, rail) : left + SECTION_GAP_PX + rail;
 }
 

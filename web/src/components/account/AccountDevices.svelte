@@ -99,7 +99,9 @@
         Type this into the companion within {Math.round(pairing.expires_in / 60)} minutes.
       </p>
     {:else}
-      {#if devices.length === 0}<p class="text-small text-muted">{accountPageCopy.noDevices}</p>{/if}
+      {#if devices.length === 0}<p class="text-small text-muted max-w-[80ch]">
+          {accountPageCopy.noDevices}
+        </p>{/if}
       <div class="flex flex-wrap items-center gap-x-4 gap-y-[10px]">
         {#if companionsOf(devices).length === 0}
           <a

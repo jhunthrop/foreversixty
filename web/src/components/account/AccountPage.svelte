@@ -1,8 +1,8 @@
 <!-- web/src/components/account/AccountPage.svelte -->
 <!-- /account (premium spec 2026-11-08 sections 7, 7A) as one island over one `/v1/me` read: the head
      (the title alone, directions mock b4-account), then a split page of panels. Main: the framed
-     Characters panel, the Plan, the Guilds; rail: You (BattleTag, sign-in, Sign out, the pseudonym),
-     Devices, Discord, Delete account. Signed out it is a form page with the Battle.net button; a failed
+     Characters panel, the Guilds, Devices and Discord; rail: You (BattleTag, sign-in, Sign out, the
+     pseudonym), the Plan, Delete account. Signed out it is a form page with the Battle.net button; a failed
      read is the Characters panel with Try again; while it loads, the
      ready page's shape (AccountLoading). The page owns the account and every call; the sections
      draw it and report what the viewer chose. -->
@@ -424,27 +424,6 @@
         {refreshResult}
         {now}
       />
-      <AccountPremiumBlock
-        plan={planLine}
-        {pastDue}
-        busy={billingBusy}
-        error={errorIn('plan')}
-        onBilling={() => void onManageBilling()}
-        seePlans={!onPremium(me, now)}
-        entitlements={me.entitlements}
-        characters={me.characters}
-        mainKey={me.main_character_key}
-        serverRunsThisMonth={me.server_sims?.runs_this_month}
-        notifications={premiumRowVisible(me)
-          ? { value: premiumRowValue(me), linked: premiumRowLinked(me) }
-          : null}
-      >
-        {#snippet offer()}
-          {#if shownOffer !== null}
-            <AccountSeatOffer offer={shownOffer} zone={viewerZone()} onAnswered={onOfferAnswered} />
-          {/if}
-        {/snippet}
-      </AccountPremiumBlock>
       {#if me.guilds.length > 0}
         <Section title={accountPageCopy.guildLabel} anchor="guild" testid="account-guilds-panel" panel>
           <div class="flex flex-col gap-8" data-testid="account-guilds">
@@ -467,6 +446,17 @@
             </p>{/if}
         </Section>
       {/if}
+      <AccountDevices
+        {devices}
+        {pairing}
+        {pairedDevice}
+        {busy}
+        error={errorIn('devices')}
+        {now}
+        {onPair}
+        {onRevoke}
+      />
+      <AccountDiscord me={me!} {now} />
 
       {#snippet rail()}
         <AccountYou
@@ -479,17 +469,27 @@
           {onAnonymize}
           {onSignOut}
         />
-        <AccountDevices
-          {devices}
-          {pairing}
-          {pairedDevice}
-          {busy}
-          error={errorIn('devices')}
-          {now}
-          {onPair}
-          {onRevoke}
-        />
-        <AccountDiscord me={me!} {now} />
+        <AccountPremiumBlock
+          plan={planLine}
+          {pastDue}
+          busy={billingBusy}
+          error={errorIn('plan')}
+          onBilling={() => void onManageBilling()}
+          seePlans={!onPremium(me, now)}
+          entitlements={me.entitlements}
+          characters={me.characters}
+          mainKey={me.main_character_key}
+          serverRunsThisMonth={me.server_sims?.runs_this_month}
+          notifications={premiumRowVisible(me)
+            ? { value: premiumRowValue(me), linked: premiumRowLinked(me) }
+            : null}
+        >
+          {#snippet offer()}
+            {#if shownOffer !== null}
+              <AccountSeatOffer offer={shownOffer} zone={viewerZone()} onAnswered={onOfferAnswered} />
+            {/if}
+          {/snippet}
+        </AccountPremiumBlock>
         <AccountDelete
           battletag={me!.user.battletag}
           open={deleteOpen}

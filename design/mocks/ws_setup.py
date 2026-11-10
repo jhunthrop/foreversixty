@@ -70,7 +70,8 @@ section>.sec-h+*{margin-top:12px}
 .paste textarea{width:100%;min-height:72px;resize:vertical;font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace}
 .kv code.c{font-size:14px}.kv dd .t-small{font-weight:400}
 .surf .row{align-items:start;align-content:start}.surf .row .foot{padding-top:12px}.surf .cap{--mh:240px!important}
-.cmds .kv dt{color:var(--text);padding-right:12px}.cmds .kv{grid-template-columns:minmax(0,1fr) auto}.cmds .kv dd{white-space:nowrap}
+.cmds .kv dt{color:var(--text);padding-right:12px}
+.cc{display:flex;flex-direction:column;gap:8px}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.cmds .kv{grid-template-columns:minmax(0,1fr) auto}.cmds .kv dd{white-space:nowrap}
 .alert{color:var(--strong)}.steps .row .sub .tx{color:var(--text)}
 .surf-fold{display:none}.surf-fold summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold)}
 @media(max-width:767px){.surf-fold{display:block}.surf{display:none}}
@@ -156,7 +157,7 @@ def row_done(state: str, n: int) -> bool:
 
 # ------------------------------------------------------------------------------------------------ /setup: the sections
 def addon_section(state: str) -> str:
-    hand = (f'<div class="hand"><span class="t-label">{escape(A["setupHandInstall"])}</span><p class="t-small">{escape(A["installDataLead"])}</p>'
+    hand = (f'<div class="hand"><span class="t-label">{escape(A["setupHandInstall"])}</span>'
             f'<p class="t-small">{escape(A["setupHandInstallBody"])}</p>'
             f'<div class="acts">{arrow(A["installZip"])}{arrow(A["installDataRelease"])}</div><p class="t-small">{escape(FACTS["data_build"])}</p></div>')
     # U4 (rulings): once row 2 is ticked its button is gone; CurseForge stays here for a second PC.
@@ -257,40 +258,39 @@ def setup_page(state: str) -> str:
 
 # ------------------------------------------------------------------------------------------------ /connect
 def connect_page(state: str) -> str:
+    """The framed plate (directions mock b4-connect): the check line and the code at display size, Device and Platform
+    under it, the consent line, the actions. The code never moves between loading, signed out and pending (MUST 3)."""
     L = FACTS['lookup']
-    code = Code(FACTS['code'])
+    big = f'<span class="sr-only">{escape(C["codeRowLabel"])}</span>{Code(FACTS["code"], big=True)}'
     after = f'<span class="t-small">{escape(C["afterSignIn"])}</span>'
-    # One order in every state (rulings MUST 3): the code the player checks never moves.
-    device = [(escape(C['codeRowLabel']), code), (escape(C['deviceLabel']), escape(L['name'])), (escape(C['platformLabel']), escape(L['platform']))]
+    device = [(escape(C['deviceLabel']), escape(L['name'])), (escape(C['platformLabel']), escape(L['platform']))]
     title, meta, crest = C['title'], '', ''
-    facts, lines, acts = device, [], ''
-    consent = f'<p class="t-small">{escape(C["consent"])}</p>'
+    check, facts, consent, acts, tag = '', device, False, '', ''
     if state == 'loading':
-        meta = C['checking']
-        facts = [(Skeleton(64, 14), Skeleton(120, 14))] * 3
+        meta, check = C['checking'], C['pendingCodeCheck']
+        big = '<span class="skeleton" style="display:block;width:150px;height:30px"></span>'
+        facts = [(Skeleton(64, 14), Skeleton(120, 14))] * 2
         acts = f'<div class="acts">{Skeleton(200, 44)}{Skeleton(96, 44)}</div>'
     elif state == 'out':
-        meta = C['signedOutLead']
-        facts = [(escape(C['codeRowLabel']), code), (escape(C['deviceLabel']), after), (escape(C['platformLabel']), after)]
-        lines = [f'<p class="t-small">{escape(C["codeCheck"])}</p>', consent]
+        meta, check, consent = C['signedOutLead'], C['codeCheck'], True
+        facts = [(escape(C['deviceLabel']), after), (escape(C['platformLabel']), after)]
         acts = f'<div class="acts">{LinkButton(C["battlenet"], primary=True)}</div>'
     elif state in ('pending', 'connecting'):
         title, meta = FACTS['connect_fns']['pendingTitle'], C['pendingBody']
+        check, consent = C['pendingCodeCheck'], True
         busy = state == 'connecting'
-        lines = [f'<p class="t-small">{escape(C["pendingCodeCheck"])}</p>', consent]
         acts = (f'<div class="acts">{Button(C["connecting"] if busy else C["connect"], primary=True, off=busy)}{Button(C["cancel"], off=busy)}</div>'
                 f'<p class="t-small">{escape(C["notYou"])} {Link(escape(C["signOut"]) + ".")}</p>')
     elif state == 'success':
         title, meta = C['successTitle'], C['successBody']
         crest = '<span class="mark-ok ok" role="img" aria-label="Done">&#10003;</span>'
-        facts = [(escape(C['codeRowLabel']), code + ' ' + Tag(C['connectedTag'], 'kill'))] + device[1:]
+        tag = Tag(C['connectedTag'], 'kill')
         acts = f'<div class="acts">{LinkButton(C["getSetUp"], primary=True)}{LinkButton(C["yourAccount"])}</div>'
     elif state == 'cancelled':
         title, meta = C['cancelledTitle'], C['cancelledBody']
         acts = f'<div class="acts">{LinkButton(C["close"])}</div>'
     elif state == 'expired':
-        title, meta = C['expiredTitle'], C['expiredBody']
-        facts = [(escape(C['codeRowLabel']), code)]
+        title, meta, facts = C['expiredTitle'], C['expiredBody'], []
         acts = f'<div class="acts">{LinkButton(C["backHome"])}</div>'
     elif state == 'used':
         title, meta = C['usedTitle'], C['usedBody']
@@ -298,7 +298,11 @@ def connect_page(state: str) -> str:
     elif state == 'failed':
         title, meta = C['failedTitle'], C['failedBody']
         acts = f'<div class="acts">{Button(C["tryAgain"], primary=True)}</div>'
-    inner = f'<div class="body" style="padding:8px 20px 20px">{Facts(facts)}{"".join(lines)}{acts}</div>'
+    line = f'<p class="t-small">{escape(check)}</p>' if check else ''
+    code = f'<div class="cc">{line}<div class="acts">{big}{tag}</div></div>'
+    rows = Facts(facts) if facts else ''
+    agree = f'<p class="t-small">{escape(C["consent"])}</p>' if consent else ''
+    inner = f'<div class="body" style="padding:18px 20px 20px">{code}{rows}{agree}{acts}</div>'
     head = PageHeader(escape(title), crest=crest, meta=[escape(meta)])
     if state == 'failed':
         head = head.replace('<span class="t-small">', '<span class="t-small" role="alert">', 1)

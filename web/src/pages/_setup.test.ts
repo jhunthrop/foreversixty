@@ -35,7 +35,6 @@ const STRING_COPY_KEYS = [
   'installCurseForge',
   'installWago',
   'installZip',
-  'installDataLead',
   'installDataRelease',
   'flowOutTitle',
   'flowOutBody',

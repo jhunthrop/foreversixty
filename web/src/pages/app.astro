@@ -2,7 +2,7 @@
 // web/src/pages/app.astro
 // foreversixty.gg/app: the permanent link the apps' QR codes open (mock web-app,
 // design/mocks/ws_app_beta.py; parity tests/e2e/parity-app-beta.spec.ts). The PageHeader (the
-// apps, Coming soon, the lead), then a split Page of panels: what the apps do (framed) and the
+// apps, Coming soon), then a split Page of panels: what the apps do (framed) and the
 // tester signup in main, the QR for this page in the rail from 768 (a phone is already here, so it never shows
 // one). The switch is src/data/apps.json: with a store link in it the signup gives way to the
 // store buttons, and a phone whose store is live goes straight there. The QR is drawn here at
@@ -26,7 +26,7 @@ const qr = await appQrSvg();
 <Base title={copy.pageTitle} description={copy.pageDescription} path="/app" wide>
   <main id="main" tabindex="-1" data-testid="app-beta-page">
     <Page layout="split" panels>
-      <PageHeader slot="header" title={copy.heading} lead={copy.lead}>
+      <PageHeader slot="header" title={copy.heading}>
         <span slot="meta">
           <Tag testid="app-beta-soon">{copy.soon}</Tag>
         </span>

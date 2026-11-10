@@ -318,11 +318,12 @@ def characters_section(a: dict, refreshing: bool = False) -> str:
         src = Tag(e(CL['addonSource'] if c['source'] == 'addon' else (CL['battlenetSource'] if c['source'] else CL['noBuildYet'])), 'muted')
         setmain = '' if c['main'] else Btn(e(CL['setAsMain']), small=True)
         sub = e(c['descriptor']) + (f'<br>{e(c["guild"])}' if c['guild'] else '')
+        ilvl = f'<span class="strong num">{e(c["itemLevel"])}</span>' if c.get('itemLevel') else ''
         rows.append(Row(f'<span class="fd"><span style="color:{CLASS_COLOR.get(c["cls"], "#f2eee4")}">{e(c["name"])}</span>{tags}</span>', sub, lead=crest_img(c['cls'], 40),
-                        trail=f'{src}{setmain}{r(CL['open'])}', link=False))
+                        trail=f'{ilvl}{src}{setmain}{r(CL['open'])}', link=False))
     refresh = f'<span class="t-small">{e(CL["refreshing"])}</span>' if refreshing else r(CL['refreshFromBattlenet'])
     if not rows:
-        inner = (f'<div class="stack" style="padding:16px 20px 20px"><p class="lede warn-t" style="color:var(--gold)">{e(CL["empty"])}</p>'
+        inner = (f'<div class="stack" style="padding:16px 20px 20px"><p class="lede">{e(CL["empty"])}</p>'
                  f'<div class="acts">{LinkBtn(e(CL["getSetUp"]), primary=True)}{LinkBtn(e(CL["pasteAnExport"]))}</div></div>')
         return Section(e(CL['heading']), inner, action=refresh, panel=True, frame='framed', flush=True)
     foot = (f'<div class="acc-foot"><p class="t-small" style="padding-top:12px">{e(CL["introBattlenetLine"])} {Link(e(CL["introInstallAddonLink"]))} {e(CL["introAddonTail"])} '
@@ -435,9 +436,9 @@ def discord_section(a: dict, unlinking: bool = False) -> str:
     st = a['discord']['state']
     if st == 'saved':
         nt = (f'<div class="stack tight"><span class="t-label">{e(NC["headLabel"])}</span><p class="lede acts"><span>{e(NC["destinationChannel"])}</span>{r(NC["openInDiscord"])}</p>'
-              f'{Switch(e(NC["eventSimFinished"]))}{Switch(e(NC["eventUploadParsed"]))}{Switch(e(NC["eventUploadPrivate"]), on=False)}'
-              f'<span class="t-small">{e(NC["eventsNote"])}</span>'
-              f'<div class="acts">{Btn(e(NC["test"]), small=True)}</div><div class="acts">{Btn(e(NC["remove"]), small=True, tone="danger")}</div>'
+              f'{Switch(e(NC["eventSimFinished"]))}{Switch(e(NC["eventUploadParsed"]))}'
+              f'{Switch(e(NC["eventUploadPrivate"]) + f"<span class=t-small style=display:block>{e(NC["eventsNote"])}</span>", on=False)}'
+              f'<div class="acts">{Btn(e(NC["test"]), small=True)}{Btn(e(NC["remove"]), small=True, tone="danger")}</div>'
               f'<p class="acts">{r(NC["reconnect"])}<span class="t-small">{e(NC["reconnectAside"])}</span></p></div>')
     else:
         nt = f'<div class="stack tight"><span class="t-label">{e(NC["headLabel"])}</span><p class="t-small">{e(NC["freeSentence"])}</p><p>{r(NC["seePlans"])}</p></div>'
@@ -499,8 +500,9 @@ def account_page(state: str) -> str:
         if state == 'loading':
             sk = lambda n: ''.join(Skeleton(560, 14) + '<br>' for _ in range(n))
             plate = Section(e(CL['heading']), f'<div class="stack" role="status" aria-busy="true">{"".join(Skeleton(480, 56) for _ in range(2))}</div>', panel=True, frame='framed')
-            plate += Section(e(ACC['planLabel']), f'<div class="stack">{Skeleton(300, 20)}{Skeleton(240, 20)}{Skeleton(160, 44)}</div>', panel=True)
-            rail = ''.join(Section(t, f'<div class="stack">{Skeleton(300, 20)}{Skeleton(240, 20)}{Skeleton(160, 44)}</div>', panel=True) for t in (ACC['youLabel'], ACC['devicesLabel'], NC['label']))
+            sk = f'<div class="stack">{Skeleton(300, 20)}{Skeleton(240, 20)}{Skeleton(160, 44)}</div>'
+            plate += ''.join(Section(t, sk, panel=True) for t in (ACC['devicesLabel'], NC['label']))
+            rail = ''.join(Section(t, sk, panel=True) for t in (ACC['youLabel'], ACC['planLabel'], ACC['deleteSection']['title']))
             body = head + Page('split', plate, rail, panels=True)
         else:
             inner = f'<div class="stack"><p class="alert" role="alert">{e(F["account_failed"])}</p><div class="acts">{Btn(e(CK['retry']), primary=True)}</div></div>'
@@ -510,10 +512,10 @@ def account_page(state: str) -> str:
     a = A[st.get('acct', state)]
     confirm = st.get('confirm', False)
     head = PageHeader(e(ACC['title']))
-    # Main: the characters (the framed panel), then the plan and the guilds (rows that want the width); rail: who you are,
-    # then the connections, Delete account last (directions mock b4-account).
-    main = characters_section(a) + plan_section(a) + guilds_section(a, asking=confirm)
-    rail = you_section(a) + devices_section(st['dev'], revoking=confirm) + discord_section(a, unlinking=confirm) + delete_section()
+    # Main: the characters (the framed panel), the guilds, then the connections; rail: who you are, the plan, Delete
+    # account last (directions mock b4-account).
+    main = characters_section(a) + guilds_section(a, asking=confirm) + devices_section(st['dev'], revoking=confirm) + discord_section(a, unlinking=confirm)
+    rail = you_section(a) + plan_section(a) + delete_section()
     body = head + Page('split', main, rail, panels=True) + (delete_dialog(a) if st.get('dialog') else '')
     key = st.get('acct', state)
     note = f'/account mock, {state}. Data: premium-facts.json (account models on the {key} account, DERIVED from home fixtures; devices {st["dev"]}).'

@@ -1242,7 +1242,6 @@
   "installCurseForge": "Install from CurseForge",
   "installWago": "Install from Wago Addons",
   "installZip": "Download the zip",
-  "installDataLead": "Forever Sixty Data carries the Forever Scores and guild standings the addon shows, updated nightly. CurseForge and Wago add it for you; a hand install needs both.",
   "installDataHint": "Forever Sixty Data adds the item scores the addon uses, updated nightly. CurseForge and Wago install it for you.",
   "installDataRelease": "Latest data release",
   "currentDataBuild": "[fn]",
@@ -1527,6 +1526,7 @@
  },
  "characters": {
   "heading": "Characters",
+  "itemLevel": "[fn]",
   "empty": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.",
   "emptyLead": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.",
   "emptyKorea": "Playing in Korea? Install the addon and the companion, or paste an export.",

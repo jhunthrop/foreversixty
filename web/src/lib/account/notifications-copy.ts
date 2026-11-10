@@ -81,8 +81,8 @@ export const notificationsCopy = {
   test: 'Send test message',
   testing: 'Sending…',
   testAndSwitchOn: 'Test and switch on',
-  remove: 'Unlink Discord',
-  removing: 'Unlinking…',
+  remove: 'Remove channel',
+  removing: 'Removing…',
   removeQuestionPasted:
     'Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.',
   removeQuestionConnected: 'Remove this connection? Posts stop and we delete its webhook from Discord.',

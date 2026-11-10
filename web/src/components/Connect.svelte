@@ -1,10 +1,10 @@
 <!-- web/src/components/Connect.svelte -->
 <!-- /connect: where the companion's "Sign in with Battle.net" lands (setup spec 2026-11-07
      section 6). Page layout "form": the PageHeader says the state (its H1 is the state's title,
-     so a screen reader hears it), then one Plate, "The companion": the Facts in one order in
-     every state (Code, Device, Platform; ruling C2), the check and consent lines, the actions.
-     The Facts keep three rows from loading through signed out to pending, so signing in never
-     moves the code. A bare link cannot attach a stranger's companion: the code and the device
+     so a screen reader hears it), then one framed Plate, "The companion": the check line and the
+     code at display size (directions mock b4-connect), Device and Platform under it, the consent
+     line, the actions. The check line, the code slot and the two Facts rows hold from loading
+     through signed out to pending, so signing in never moves the code. A bare link cannot attach a stranger's companion: the code and the device
      are shown, and a signed-in click on Connect is the only way the approve call is ever made. -->
 <script lang="ts">
   import { onMount } from 'svelte';
@@ -64,36 +64,36 @@
     return [title, connectCopy.pendingBody];
   });
 
-  /** The Facts, Code first in every state; Device and Platform once a device is known. */
+  /** The line over the code, while there is a code to check: the code itself never moves (rulings MUST 3). */
+  const codeCheck = $derived.by((): string => {
+    if (state === 'signedOut') return connectCopy.codeCheck;
+    if (state === 'pending' || state === 'loading') return connectCopy.pendingCodeCheck;
+    return '';
+  });
+
+  /** Device and Platform under the code, once a device is known (or what signing in will show). */
   const facts = $derived.by((): Fact[] => {
     if (state === 'loading')
-      return [connectCopy.codeRowLabel, connectCopy.deviceLabel, connectCopy.platformLabel].map((label) => ({
+      return [connectCopy.deviceLabel, connectCopy.platformLabel].map((label) => ({
         id: label,
         label,
         content: skeletonValue,
       }));
-    const codeRow: Fact = { id: 'code', label: connectCopy.codeRowLabel, content: codeValue };
-    if (state === 'expired') return [codeRow];
+    if (state === 'expired') return [];
     if (state === 'signedOut')
       return [
-        codeRow,
         { id: 'device', label: connectCopy.deviceLabel, content: afterSignIn },
         { id: 'platform', label: connectCopy.platformLabel, content: afterSignIn },
       ];
-    if (device === null) return [codeRow];
+    if (device === null) return [];
     return [
-      codeRow,
       { id: 'device', label: connectCopy.deviceLabel, value: device.name, testid: 'connect-device' },
       { id: 'platform', label: connectCopy.platformLabel, value: platformLabel(device.platform) },
     ];
   });
 
-  /** The check and consent lines under the Facts (Small). */
-  const lines = $derived.by((): string[] => {
-    if (state === 'signedOut') return [connectCopy.codeCheck, connectCopy.consent];
-    if (state === 'pending') return [connectCopy.pendingCodeCheck, connectCopy.consent];
-    return [];
-  });
+  /** The consent line under the Facts (Small). */
+  const consent = $derived(state === 'signedOut' || state === 'pending');
 
   async function load(): Promise<void> {
     state = 'loading';
@@ -174,9 +174,6 @@
 {#snippet skeletonValue()}<span class="skeleton-block my-[3px] ml-auto h-[14px] w-[120px]" aria-hidden="true"
   ></span>{/snippet}
 
-{#snippet codeValue()}<Code text={shownCode} testid="connect-code" />{#if state === 'success'}
-    <Tag tone="success" testid="connect-connected">{connectCopy.connectedTag}</Tag>{/if}{/snippet}
-
 {#snippet afterSignIn()}<span class="text-small text-muted font-normal">{connectCopy.afterSignIn}</span
   >{/snippet}
 
@@ -201,15 +198,22 @@
   <Page layout="form" {header}>
     <Plate label={addonCopy.setupStep3Title} frame="framed">
       <div class="connect-body" aria-busy={state === 'loading' ? 'true' : undefined}>
-        <Facts items={facts} testid="connect-facts" />
-        {#each lines as line (line)}
-          <p
-            class="text-muted"
-            data-testid={line === connectCopy.pendingCodeCheck ? 'connect-code-check' : undefined}
-          >
-            {line}
-          </p>
-        {/each}
+        <div class="flex flex-col gap-2">
+          {#if codeCheck !== ''}<p class="text-muted" data-testid="connect-code-check">{codeCheck}</p>{/if}
+          <div class="flex flex-wrap items-center gap-3">
+            {#if state === 'loading'}
+              <span class="skeleton-block h-[30px] w-[150px]" aria-hidden="true"></span>
+            {:else}
+              <span class="sr-only">{connectCopy.codeRowLabel}</span>
+              <Code text={shownCode} big testid="connect-code" />
+            {/if}
+            {#if state === 'success'}<Tag tone="success" testid="connect-connected"
+                >{connectCopy.connectedTag}</Tag
+              >{/if}
+          </div>
+        </div>
+        {#if facts.length > 0}<Facts items={facts} testid="connect-facts" />{/if}
+        {#if consent}<p class="text-muted">{connectCopy.consent}</p>{/if}
         <div class="flex flex-wrap items-center gap-3">
           {#if state === 'loading'}
             <span class="skeleton-block h-11 w-[200px]" aria-hidden="true"></span>
@@ -258,7 +262,7 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    padding: 8px 20px 20px;
+    padding: 18px 20px 20px;
   }
   .connect-body > p {
     font-size: 15px;

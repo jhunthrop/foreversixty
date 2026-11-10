@@ -180,7 +180,7 @@
       {#if refreshing}<span class="refresh-bar" aria-hidden="true" data-testid="bnet-refresh-bar"></span>{/if}
       {#if characters.length === 0}
         <div class="flex flex-col gap-3 px-5 pt-4 pb-5" data-testid="account-characters-empty">
-          <p class="text-gold max-w-[72ch] text-[15px] leading-6">
+          <p class="max-w-[72ch] text-[15px] leading-6">
             {viaBattlenet ? characterListCopy.empty : characterListCopy.emptyByEmail}
           </p>
           <div class="flex flex-wrap items-center gap-x-4 gap-y-[10px]">
@@ -216,6 +216,10 @@
                 >{/if}
             {/snippet}
             {#snippet trail()}
+              {#if character.item_level !== undefined}<span
+                  class="text-strong text-[15px] whitespace-nowrap tabular-nums"
+                  data-testid="character-item-level">{characterListCopy.itemLevel(character.item_level)}</span
+                >{/if}
               <Tag tone="muted" testid="character-source">{sourceOf(character)}</Tag>
               {#if !isMain && onSetMain !== undefined}
                 <button

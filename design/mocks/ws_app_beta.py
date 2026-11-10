@@ -98,7 +98,7 @@ def app_page(state: str) -> str:
     qr = (f'<div class="qr"><div class="code" role="img" aria-label="{a(C["qrAlt"])}">{A["qr"]}</div>'
           f'<p class="t-small">{e(C["qrLine"])}</p></div>')
     rail = f'<div class="qr-rail">{Section(e(C["qrTitle"]), qr, panel=True)}</div>'
-    head = PageHeader(e(C['heading']), meta=[Tag(e(C['soon']))], lead=e(C['lead']))
+    head = PageHeader(e(C['heading']), meta=[Tag(e(C['soon']))])
     body = head + Page("split", main, rail, panels=True)
     return render(f'{e(C["pageTitle"])} · Forever Sixty', body, f'/app mock, {state}. Data: app-beta-facts.json (lib/app-beta/copy.ts, qr.ts).')
 

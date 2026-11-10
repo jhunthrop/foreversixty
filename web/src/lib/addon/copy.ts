@@ -105,10 +105,6 @@ export const addonCopy = {
   installCurseForge: 'Install from CurseForge',
   installWago: 'Install from Wago Addons',
   installZip: 'Download the zip',
-  /** The nightly ratings pack is its own addon (ForeverSixtyData): a manager that honours
-   *  required dependencies installs it with the addon; a hand install needs both. */
-  installDataLead:
-    'Forever Sixty Data carries the Forever Scores and guild standings the addon shows, updated nightly. CurseForge and Wago add it for you; a hand install needs both.',
   /** The one quiet line under the install buttons (UX review r5, finding 2). */
   installDataHint:
     'Forever Sixty Data adds the item scores the addon uses, updated nightly. CurseForge and Wago install it for you.',

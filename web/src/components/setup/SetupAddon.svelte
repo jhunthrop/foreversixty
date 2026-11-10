@@ -32,7 +32,6 @@
     </div>
     <Divided testid="setup-hand-install">
       <span class="text-label text-muted font-bold">{addonCopy.setupHandInstall}</span>
-      <p class="text-small text-muted">{addonCopy.installDataLead}</p>
       <p class="text-small text-muted">{addonCopy.setupHandInstallBody}</p>
       <div class="setup-acts gap-5">
         {#each handLinks as link (link.href)}
