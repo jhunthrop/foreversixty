@@ -181,10 +181,9 @@ export function outputGroups(parses: readonly RaidReportParse[]): OutputGroup[] 
       ...parse,
       figure: outputFigure(parse.value),
       unit: outputUnit(parse.metric),
-      sub:
-        parse.rating === null
-          ? roleWord(parse.role)
-          : `${roleWord(parse.role)}${SEP}${ratedOf(parse.rating)}`,
+      sub: [roleNote(parse), parse.rating === null ? '' : ratedOf(parse.rating)]
+        .filter((part) => part !== '')
+        .join(SEP),
     });
     groups.set(parse.fight_index, group);
   }
@@ -193,6 +192,13 @@ export function outputGroups(parses: readonly RaidReportParse[]): OutputGroup[] 
 
 const ROLE_WORDS: Readonly<Record<string, string>> = { tank: 'Tank', healer: 'Healer', dps: 'DPS' };
 const roleWord = (role: string): string => ROLE_WORDS[role] ?? role;
+
+/** The role only where the figure's unit does not already say it (a tank's DPS); a DPS's DPS and a
+ *  healer's HPS read the rating alone. */
+function roleNote(parse: RaidReportParse): string {
+  const implied = parse.metric === 'hps' ? 'healer' : 'dps';
+  return parse.role === implied ? '' : roleWord(parse.role);
+}
 
 export interface ConsumablesModel {
   columns: string[];

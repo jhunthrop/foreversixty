@@ -113,13 +113,18 @@ describe('causes', () => {
 });
 
 describe('outputGroups', () => {
-  it('groups by kill in the API order, the guild unit, the rating only when computed', () => {
+  it('groups by kill in the API order, the guild unit, the rating only when computed, the role only when the unit hides it', () => {
     const [group] = outputGroups(report.parses);
     expect(group.boss).toBe('Onyxia');
     expect(group.rows.map((r) => [r.name, r.figure, r.unit, r.sub])).toEqual([
-      ['Pyrewisp', '812', 'DPS', 'DPS · rated 96 of 100'],
-      ['Menda', '1,204', 'HPS', 'Healer'],
+      ['Pyrewisp', '812', 'DPS', 'rated 96 of 100'],
+      ['Menda', '1,204', 'HPS', ''],
     ]);
+  });
+
+  it('names the role when the figure does not, as for a tank on DPS', () => {
+    const [tank] = outputGroups([{ ...report.parses[0], role: 'tank', rating: null }])[0].rows;
+    expect(tank.sub).toBe('Tank');
   });
 });
 

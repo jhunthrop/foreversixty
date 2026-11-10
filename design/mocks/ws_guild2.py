@@ -374,7 +374,7 @@ def raid_report():
                        f'({d["killing_blow"]["overkill"]:,} overkill)') for d in shown['death_causes']])
     insp = Inspector(rd.pull_title(shown), [('Deaths', deaths)], rd.pull_title(shown), rd.pull_sub(shown))
     pulls = f'<div role="group" aria-label="Every pull of the night">{Split(Rows(rows), insp)}</div>'
-    output = Rows([Row(p['name'], f'DPS &middot; rated {p["rating"]} of 100', lead=crest_img(p['class'], 24), title_color=C[p['class']],
+    output = Rows([Row(p['name'], f'rated {p["rating"]} of 100', lead=crest_img(p['class'], 24), title_color=C[p['class']],
                        trail=Figure(str(p['value']), '', 'DPS', size='sm'), link=True, selected=p['name'] == rd.VIEWER, slim=True) for p in rep['parses']], open_=True)
     # One reason said once, naming every pull it covers (report-night-view unknownLines).
     titles = [rd.pull_title(b) for b in rep['consumables']['by_pull']]
@@ -421,7 +421,7 @@ def raid_report():
                + f'<div style="display:flex;gap:12px;padding-top:12px">{Button("Post to Discord", primary=True, small=True, act=True)}{Button("Copy for Discord", small=True, act=True)}{Live()}</div>')
     # Round 5 (lane h-edges): every section on its panel, the pulls framed and edge to edge for the Inspector.
     main = (Section('Pulls', pulls, meta=f'{len(rep["pulls"])} fights', panel=True, flush=True)
-            + Section('Deaths', died, meta=f'{len(rep["deaths"])} raiders', panel=True) + Section('DPS and HPS', output, meta='Boss kills', panel=True) + Section('Consumables by pull', unknown, panel=True))
+            + Section('Deaths', died, meta=f'{len(rep["deaths"])} raiders', panel=True) + Section('DPS and HPS', output, meta='Boss kills', panel=True) + Section('Consumables by pull', _section_body(unknown)))  # no sheet to read: the line is prose on the ground
     rail = Section('Attendance', att, panel=True) + Section('Loot awarded', lootr, panel=True) + Section('Discord summary', _section_body(discord))  # ReportDiscord: lane f-content's file, still open
     h = rep['headline']
     fig = Figures([(str(h['kills']), 'Kills', '', 'kill'), (str(h['wipes']), 'Wipes', '', 'wipe'), (str(h['attempts']), 'Attempts', '', ''), (str(h['deaths']), 'Deaths', '', '')])
