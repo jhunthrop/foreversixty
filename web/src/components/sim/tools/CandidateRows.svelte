@@ -110,7 +110,7 @@
         <span class="text-muted text-[13px] tabular-nums">{row.item.item_level}</span>
         <button
           type="button"
-          class={button('secondary', 'sm')}
+          class={button('ghost', 'sm')}
           aria-expanded={openKey === key}
           disabled={locked || !row.known}
           onclick={() => (openKey = openKey === key ? null : key)}

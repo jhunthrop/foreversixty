@@ -8,6 +8,7 @@ import type { BisFile } from '../bis/types';
 import { decodeFS1 } from '../planner/fs1';
 import { factionOfRace } from '../race-faction';
 import { talentSplit } from './result-band';
+import { ranksFromTalentsString } from './character';
 import type { TalentIndex } from '../planner/rules';
 import { bulkCopy } from './copy';
 import { poolQualityCopy } from './pool-quality-copy';
@@ -80,4 +81,40 @@ export function guideLoadout(file: BisFile, level: number, race: string): Talent
   const entry = selectBand(file, band, faction);
   if (entry === undefined || entry.talents === '') return null;
   return { name: bulkCopy.talentsGuide(band, talentSplit(entry.talents)), talents: entry.talents };
+}
+
+/** One talent of a loadout's tree, the shape ui/TalentTrees.svelte draws. */
+export interface LoadoutTalent {
+  tier: number;
+  column: number;
+  name: string;
+  icon: string;
+  rank: number;
+  maxRank: number;
+}
+
+export interface LoadoutTree {
+  name: string;
+  points: number;
+  talents: LoadoutTalent[];
+}
+
+/**
+ * A loadout's engine talents string ("05505-5530515-") as its three trees, each talent with the
+ * rank the string gives it: /sim/talents draws every build it can compare (ui/TalentTrees).
+ */
+export function loadoutTrees(index: TalentIndex, talents: string): LoadoutTree[] {
+  const ranks = ranksFromTalentsString(talents);
+  return index.trees.map((tree, treeIndex) => {
+    const treeRanks = ranks[treeIndex] ?? [];
+    const cells = tree.talents.map((talent, position) => ({
+      tier: talent.tier,
+      column: talent.column,
+      name: talent.name,
+      icon: talent.icon,
+      rank: Math.min(talent.max_rank, treeRanks[position] ?? 0),
+      maxRank: talent.max_rank,
+    }));
+    return { name: tree.name, points: cells.reduce((sum, cell) => sum + cell.rank, 0), talents: cells };
+  });
 }

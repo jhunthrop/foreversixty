@@ -26,7 +26,7 @@
   import { simAnswer, type StoppedSnapshot } from '../../lib/sim/answer';
   import { fetchSpecs, listMySims } from '../../lib/sim/api';
   import type { BisSetClass } from '../../lib/sim/bis-set-rail';
-  import type { BisBenchmarks } from '../../lib/sim/bis-benchmark';
+  import { benchmarkFor, type BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import type { PrerenderedNote } from '../../lib/sim/prerender-notes';
   import { codeForCharacterSpec } from '../../lib/sim/character';
   import { followCurrentCharacter, simHoldsWork } from '../../lib/sim/follow-current-character';
@@ -482,6 +482,7 @@
       detail: store.detail,
       stopped: store.message === simCopy.stopped ? stopped : null,
       lastLane,
+      benchmark: store.result === null ? null : benchmarkFor(store.result, bisBenchmarks),
     }),
   );
 
@@ -561,7 +562,12 @@
     {/if}
   {:else if bootstrap.view === 'specs'}
     {#if specGridLazy.current}
-      <specGridLazy.current rows={specRows} error={specsError} onretry={() => void loadSpecs()} />
+      <specGridLazy.current
+        rows={specRows}
+        error={specsError}
+        onretry={() => void loadSpecs()}
+        benchmarks={bisBenchmarks}
+      />
     {:else}
       <div class="sim-pad"><Skeleton lines={6} testid="sim-lazy-skeleton" /></div>
     {/if}

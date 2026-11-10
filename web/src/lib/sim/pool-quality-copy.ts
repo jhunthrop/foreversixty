@@ -65,8 +65,7 @@ export const poolQualityCopy = {
    * BUILD needs no account at all, and the ranked table below runs on whatever is ticked,
    * saved builds or not (`bulk-store.svelte.ts`'s `addLoadout` has no sign-in gate).
    */
-  talentsSavedSignedOut:
-    'Sign in to save builds and see them here. Paste one below with ADD A BUILD instead.',
+  talentsSavedSignedOut: 'Sign in to see your saved builds.',
 
   /**
    * TalentCandidates.svelte, newcomer round 4 (review.md:83-110): the outer toggle that

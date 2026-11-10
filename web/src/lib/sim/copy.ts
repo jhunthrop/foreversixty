@@ -634,7 +634,7 @@ export const simCopy = {
    */
   /** The eyebrow over every simulator page's h1. */
   pageEyebrow: 'Tools',
-  scopeNote: 'The simulator runs damage specs only. Healing and tanking specs are not simulated yet.',
+  scopeNote: 'Damage specs only.',
   /** `/sim/specs`: heading over the 20 dps cards the grid has always shown. */
   specsSimulatedHeading: 'Damage specs',
   /** `/sim/specs`: heading over the 8 healer/tank cards, grouped below rather than
@@ -642,6 +642,12 @@ export const simCopy = {
   specsUnsimulatedHeading: 'Healers and tanks',
   /** A healer or tank row's way on: its guide. */
   specsGuide: 'Guide',
+  /** A tool page's character line when the talents stop short of the level. */
+  talentPointsOf: (points: number, max: number): string => `${points} of ${max} talent points`,
+  /** `/sim/specs`: the damage list's meta, naming what each row's figure is. */
+  specsTopSetMeta: 'Raid BiS DPS at 60',
+  /** A damage spec's place among the specs by that figure. */
+  specsTopSetRank: (rank: number): string => `#${rank}`,
   /**
    * Fix round 1, Finding B: the `<Base description="...">` strings are what a healer or
    * tank reads in a search result or a link preview -- the first place the DPS-only claim
@@ -903,7 +909,7 @@ export const bulkCopy = {
   talentsLoadouts: 'In-game loadouts',
   talentsAddCustom: 'Add a build',
   talentsNoSaved: 'No saved builds for this class yet.',
-  talentsSavedUnavailable: 'Your saved builds could not be read; the rest of the page still works.',
+  talentsSavedUnavailable: 'Saved builds did not load.',
   setsTitle: 'Whole sets',
   setsIntro: 'A set replaces every slot at once. Paste a second export string to add one.',
   setsPaste: 'Paste an export string',
@@ -916,7 +922,7 @@ export const bulkCopy = {
   combinations: (n: number): string =>
     `${n.toLocaleString('en-US')} valid ${n === 1 ? 'combination' : 'combinations'}`,
   combinationsCounting: 'Counting combinations…',
-  combinationsNone: 'Nothing to try yet. Tick an item, a build or a source that fits your character.',
+  combinationsNone: 'Nothing ticked yet.',
   precisionLabel: 'Precision',
   precisionFast: 'Fast',
   precisionNormal: 'Normal',
@@ -996,12 +1002,15 @@ export const bulkCopy = {
   sourcesQuestNote: 'Off by default: a quest reward is a one-time source.',
   sourcesMyProfessions: 'My professions',
   sourcesAllProfessions: 'All professions',
-  sourcesProfessionsUnknown:
-    'Nothing has recorded this character’s professions, so every profession is listed.',
-  sourcesTrash: 'Trash and chests',
+  sourcesProfessionsUnknown: 'All professions',
   /** A run asked for with no character loaded (bulk-store-request.ts). */
   needCharacter: 'Load a character first.',
-  sourcesWholeRaid: 'Every boss',
+  /** A source row's figures: the items this class can try, and the best item level among them. */
+  sourceItems: (count: number): string =>
+    `${count.toLocaleString('en-US')} ${count === 1 ? 'item' : 'items'}`,
+  sourceBestIlvl: (ilvl: number): string => `ilvl ${ilvl}`,
+  /** A ticked kind whose every source is gated: the undated ones named in one line. */
+  sourcesNoDate: (names: readonly string[]): string => `No date yet: ${names.join(', ')}`,
   /** A dungeon's folded boss list (mock design/mocks/ws_simtools.py). */
   sourcesBosses: 'Bosses',
   showUpcoming: 'Show unreleased content',
@@ -1082,7 +1091,7 @@ export const bulkCopy = {
    * rather than discovered a minute later.
    */
   weightsCostNote: (totalIterations: number): string =>
-    `${totalIterations.toLocaleString('en-US')} engine iterations in your browser: a baseline pass plus a low and a high pass for each stat weighed.`,
+    `${totalIterations.toLocaleString('en-US')} iterations`,
   /** bulk-store.svelte.ts's `baseRequest` refusal when `stats` is empty: `WeightsSpec.
    *  Reference` is required (contract 10.8), so an empty list has nothing to send. */
   weightsNeedStats: 'Pick at least one stat to weigh.',

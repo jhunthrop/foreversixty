@@ -5,7 +5,7 @@
 
 export const simPageCopy = {
   title: 'Simulator',
-  landingMeta: 'Damage specs only. Nothing is uploaded until you save.',
+  landingMeta: 'Damage specs only.',
   sections: {
     simYourCharacter: 'Sim your character',
     otherWaysIn: 'Other ways in',
@@ -63,7 +63,6 @@ export const simPageCopy = {
   },
   answer: {
     noSim: 'No sim yet',
-    noSimCaption: 'Press Run sim. It runs here, in your browser.',
     notSimulated: 'Not simulated yet',
     notSimulatedCaption: (spec: string): string => `${spec} is not simulated yet; there is nothing to run.`,
     specSupport: 'Spec support ›',
@@ -76,6 +75,8 @@ export const simPageCopy = {
     runningBrowser: 'Running in your browser',
     runningCaption: (band: string, done: string, total: string): string =>
       `± ${band} DPS · ${done} of ${total} runs`,
+    /** The result against its spec's published raid set: " · −99.6 vs BiS". */
+    vsBis: (gap: string): string => ` · ${gap} vs BiS`,
     /** A finished result names no lane: the band says how sure it is. */
     resultLabel: '',
     stoppedLabel: (done: string, total: string): string => `Stopped at ${done} of ${total} runs`,

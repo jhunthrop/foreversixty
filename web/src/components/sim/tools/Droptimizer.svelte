@@ -14,6 +14,7 @@
   import type { BulkResult } from '../../../lib/sim/bulk-types';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { pickedWithNothingTried } from '../../../lib/sim/drop-picks';
+  import { factionOfRace } from '../../../lib/race-faction';
   import type { Snippet } from 'svelte';
   import Page from '../../ui/Page.svelte';
   import BulkRunBar from './BulkRunBar.svelte';
@@ -69,8 +70,12 @@
       onpin={pin}
     />
   {/if}
+  {#if store.result === null && store.pickedBosses.length === 0}
+    <p class="text-small text-muted m-0" data-testid="sim-drops-nothing">{bulkCopy.dropsNothing}</p>
+  {/if}
   {#if store.character !== null}
     <SourcePicker
+      faction={factionOfRace(store.character.race_slug)}
       plate
       loot={store.loot}
       phases={store.phases}
@@ -85,8 +90,5 @@
       ontoggleupcoming={(value) => store.setShowUpcoming(value)}
       ontoggle={(sourceId, bossId) => store.toggleSource(sourceId, bossId)}
     />
-  {/if}
-  {#if store.result === null && store.pickedBosses.length === 0}
-    <p class="text-small text-muted m-0" data-testid="sim-drops-nothing">{bulkCopy.dropsNothing}</p>
   {/if}
 </Page>

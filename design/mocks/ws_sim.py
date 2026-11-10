@@ -440,7 +440,7 @@ def rotation_section(ran: bool = True) -> str:
             total = round(sum(CASTS[k] for k in other))
             sub = f'This run: {", ".join(act_name(k) for k in other)}.' if ran else 'Trinkets, racials and potions, as each comes off cooldown.'
             cnt = (f'{total} cast{"s" if total != 1 else ""}' if total else 'Not cast in this run')
-            r = Row(rot_title(other[0] if ran and other else '', 'Other cooldowns as they come up'), sub, rank=str(i + 1),
+            r = Row(rot_title(other[0] if ran and other else '', 'Other cooldowns as they come up'), sub if ran else '', rank=str(i + 1), slim=not ran,
                     trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
             lines.append(r if total or not ran else f'<div class="dim">{r}</div>')
             continue
@@ -448,7 +448,7 @@ def rotation_section(ran: bool = True) -> str:
         key = f'spell:{sid}'
         n = CASTS.get(key, 0)
         cnt = f'{n} cast{"s" if n != 1 else ""}' if n else 'Not cast in this run'
-        r = Row(rot_title(key, spell_name(sid), rank_of(sid)), notes.get(i, p.get('notes', '')),
+        r = Row(rot_title(key, spell_name(sid), rank_of(sid)), notes.get(i, p.get('notes', '')) if ran else '', slim=not ran,
                 rank=str(i + 1), trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
         lines.append(r if n or not ran else f'<div class="dim">{r}</div>')
     body = (f'<div class="rot"><h3 class="t-label rot-l">Before the pull</h3>{Rows(pre, open_=True)}<h3 class="t-label rot-l">Then, from the top at every decision</h3>'
@@ -753,7 +753,7 @@ def result_actions(signed_in: bool = True) -> str:
 
 def answer_none() -> str:
     """Signed in, the character loaded, not run: the shipped answer while G1 is open (no saved sim can be matched to a character)."""
-    return '<span class="t-label">No sim yet</span><span class="fig-cap">Press Run sim. It runs here, in your browser.</span>'
+    return '<span class="t-label">No sim yet</span>'
 
 
 def answer_last() -> str:
@@ -864,7 +864,7 @@ def finish(title: str, body: str, who) -> str:
 
 # ---- 1. /sim, signed out, no character
 def landing_out() -> str:
-    head = PageHeader('Simulator', meta=['Damage specs only. Nothing is uploaded until you save.'], tabs=TabStrip(TOOLS, 'Quick sim'))
+    head = PageHeader('Simulator', meta=['Damage specs only.'], tabs=TabStrip(TOOLS, 'Quick sim'))
     paste = (Form('Addon export or build code', [('', Input('FS1:&hellip;', 'Addon export or build code', grow=True), True)], Button('Run', primary=True))
              + f'<p class="t-small paste-hint">In game: /fs copy, then paste here. {Link("Get set up &rsaquo;")}</p>')
     # ui/Row `fillTrail`: a 180 px label column, the control filling the rest (the field grows, Load beside it)
@@ -925,7 +925,7 @@ def states() -> str:
         return f'<section class="st-blk"><h2 class="t-h3">{t}</h2>{html}</section>'
     hdr = lambda ans, title='Thandrel', cls=CLS, meta=f'{RACE} {SPEC_LABEL} &middot; Level 60': PageHeader(title, crest=crest_img(cls, 56), meta=[meta], answer=ans)
     sheet = [
-        blk('No sim yet for this character', hdr('<span class="t-label">No sim yet</span><span class="fig-cap">Press Run sim. It runs here, in your browser.</span>') + run_bar()),
+        blk('No sim yet for this character', hdr('<span class="t-label">No sim yet</span>') + run_bar()),
         blk('Engine loading (the first run on this device)', hdr(f'<span class="t-label">Loading the engine</span><span class="fig-cap">The engine is about 4 MB. It loads once and is cached after that.</span><span class="ans-meter">{Meter(.35)}</span>') + run_bar('engine')),
         blk('On our servers: queued (Premium)', hdr(f'<span class="t-label">On our servers</span><span class="fig-cap"><b>Starting</b></span><span class="ans-meter">{Meter(0, "muted")}</span>') + run_bar('server')),
         blk('On our servers: running', hdr(f'<span class="t-label">On our servers</span><span class="fig-cap"><b>Running</b> &middot; takes about 2 minutes</span><span class="ans-meter">{Meter(.4)}</span>') + run_bar('server')),

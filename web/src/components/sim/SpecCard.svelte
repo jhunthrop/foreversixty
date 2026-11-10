@@ -20,6 +20,7 @@
   // hand-rolled toFixed(1) here would be a second formatter that drifts the day the first
   // one changes.
   import { formatPercent } from '../../lib/report/format';
+  import { oneDecimal } from '../../lib/sim/result-copy';
   import { resolveActionName, type ActionNames } from '../../lib/sim/action-names';
   import { simCopy } from '../../lib/sim/copy';
   import { classOfSpec, specLabel } from '../../lib/sim/spec-label';
@@ -31,11 +32,14 @@
   import { loadRotationNotes, rotationNotesFor, type RotationNotes } from '../../lib/sim/rotations';
   import type { SpecFidelity } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
+  import { classCrestSrc } from '../../lib/class-crest';
+  import type { SpecTopSet } from '../../lib/sim/bis-benchmark';
 
   let {
     row,
     actionNames = null,
     compact = false,
+    top = null,
   }: {
     row: SpecFidelity;
     /**
@@ -47,6 +51,8 @@
      */
     actionNames?: ActionNames | null;
     compact?: boolean;
+    /** The spec's raid BiS set at 60 and its place among the specs (/sim/specs); null hides it. */
+    top?: SpecTopSet | null;
   } = $props();
 
   const noParses = $derived(row.median_gap === null);
@@ -125,8 +131,14 @@
   {/if}
 {/snippet}
 
+{#snippet crest()}
+  <img src={classCrestSrc(classOfSpec(row.spec))} alt="" width="28" height="28" class="rounded-full" />
+{/snippet}
+
 <Row
   id={row.spec}
+  lead={compact ? undefined : crest}
+  density={compact ? 'default' : 'slim'}
   title={specLabel(row.spec)}
   titleTone={classTone(classOfSpec(row.spec))}
   titleContent={title}
@@ -136,8 +148,24 @@
   open={false}
 >
   {#snippet trail()}
-    <Tag tone={row.state === 'validated' ? 'success' : 'muted'} testid="spec-state"
-      >{specStateLabel(row.state)}</Tag
-    >
+    <!-- A spec no parse has measured carries no Tag on the list: it runs, and "Not yet" beside
+         every unmeasured row read as "not simulated". The in-page card (compact) keeps it. -->
+    <span class="flex items-center gap-3">
+      {#if compact || !noParses}
+        <Tag tone={row.state === 'validated' ? 'success' : 'muted'} testid="spec-state"
+          >{specStateLabel(row.state)}</Tag
+        >
+      {/if}
+      {#if top !== null}
+        <span class="text-muted w-8 text-right text-[13px] tabular-nums" data-testid="spec-top-rank"
+          >{simCopy.specsTopSetRank(top.rank)}</span
+        >
+        <span
+          class="text-strong w-[92px] text-right text-[15px] font-bold tabular-nums"
+          data-testid="spec-top-dps"
+          >{oneDecimal(top.dps)} <span class="text-muted text-[13px] font-normal">DPS</span></span
+        >
+      {/if}
+    </span>
   {/snippet}
 </Row>

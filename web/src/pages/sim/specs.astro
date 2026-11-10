@@ -6,6 +6,11 @@ import Base from '../../layouts/Base.astro';
 import SimToolHead from '../../components/sim/SimToolHead.svelte';
 import SpecGrid from '../../components/sim/SpecGrid.svelte';
 import IslandScript from '../../components/IslandScript.astro';
+import activeBuild from '../../data/active-build.json';
+import { loadBisBenchmarks } from '../../lib/sim/bis-benchmark-load';
+
+// Each damage row's raid BiS DPS at 60 (lib/sim/bis-benchmark.ts), build-time data.
+const bisBenchmarks = loadBisBenchmarks(activeBuild.build);
 ---
 
 <Base
@@ -20,8 +25,8 @@ import IslandScript from '../../components/IslandScript.astro';
          Lighthouse), and SpecGrid's no-rows render is the shell's reservation (round 5), the
          same component the island mounts, so the mount moves nothing. -->
     <SimToolHead tool="specs" title="Spec support" />
-    <div id="sim" data-sim-mount data-sim-view="specs">
-      <SpecGrid rows={null} error={null} onretry={() => {}} />
+    <div id="sim" data-sim-mount data-sim-view="specs" data-bis-benchmarks={JSON.stringify(bisBenchmarks)}>
+      <SpecGrid rows={null} error={null} onretry={() => {}} benchmarks={bisBenchmarks} />
       <noscript>
         <p class="text-muted px-[var(--page-inset)] text-[14px]">
           Spec support needs JavaScript. The <a href="/sim">simulator</a> does too.

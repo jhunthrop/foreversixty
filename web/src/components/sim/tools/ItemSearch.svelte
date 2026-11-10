@@ -153,7 +153,7 @@
           {/snippet}
           {#snippet trail()}
             <span class="text-muted text-[13px] tabular-nums">{item.item_level}</span>
-            <Button size="sm" testid={`sim-search-add-${item.id}`} onclick={() => onadd(item.id)}
+            <Button tone="ghost" size="sm" testid={`sim-search-add-${item.id}`} onclick={() => onadd(item.id)}
               >{bulkCopy.searchAdd}</Button
             >
           {/snippet}

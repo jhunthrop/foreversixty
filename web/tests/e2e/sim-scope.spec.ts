@@ -42,9 +42,8 @@ test.describe('the DPS-only scope sentence', () => {
   }
 
   test('is the exact sentence task-2-brief.md specifies', () => {
-    expect(simCopy.scopeNote).toBe(
-      'The simulator runs damage specs only. Healing and tanking specs are not simulated yet.',
-    );
+    // h-audit 2026-11-09: cut to the fact; the healer and tank rows on /sim/specs say the rest.
+    expect(simCopy.scopeNote).toBe('Damage specs only.');
   });
 
   // 2026-09-26 layout pass, Finding 3: a signed-out visitor never reads the restriction

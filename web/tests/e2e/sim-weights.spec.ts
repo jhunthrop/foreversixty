@@ -101,7 +101,8 @@ test('the stat picker defaults to the spec’s reference stat, first and ticked'
   );
   await loadWeights(page);
   await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeChecked();
-  await expect(page.getByTestId('sim-weights-reference')).toHaveText(/Attack power/);
+  // The reference reads as its locked tick (h-audit 2026-11-09 cut the "Reference: …" line).
+  await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeDisabled();
 });
 
 // D45 (MAJOR, dps-minmaxer review round 1): the picker used to offer the full retail stat

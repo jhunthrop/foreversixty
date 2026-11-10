@@ -24,9 +24,12 @@
     customLoadouts,
     guideLoadout,
     hasUnaddedBuild,
+    loadoutTrees,
     savedBuildsMessage,
   } from '../../../lib/sim/talent-loadouts';
+  import { talentSplit } from '../../../lib/sim/result-band';
   import Button from '../../ui/Button.svelte';
+  import TalentTrees from '../../ui/TalentTrees.svelte';
   import ToolSection from './ToolSection.svelte';
 
   let {
@@ -190,7 +193,7 @@
   {/if}
 {/snippet}
 
-{#snippet loadoutRow(loadout: TalentLoadout, testid: string)}
+{#snippet loadoutCheck(loadout: TalentLoadout, testid: string)}
   <label class="text-text flex min-h-11 items-center gap-3 text-[14px]">
     <input
       type="checkbox"
@@ -199,8 +202,25 @@
       checked={isPicked(loadout)}
       onchange={(event) => ontoggle(loadout, event.currentTarget.checked)}
     />
-    {loadout.name}
+    <span class="min-w-0 flex-1">{loadout.name}</span>
+    {#if plate && !loadout.name.includes(talentSplit(loadout.talents))}
+      <span class="text-muted text-[13px] tabular-nums">{talentSplit(loadout.talents)}</span>
+    {/if}
   </label>
+{/snippet}
+
+{#snippet loadoutRow(loadout: TalentLoadout, testid: string)}
+  {#if plate && index !== null}
+    <!-- /sim/talents: the build's three trees beside its tick, so the page shows what it compares. -->
+    <div
+      class="border-line-soft grid gap-x-6 gap-y-1 border-b py-3 last:border-b-0 md:grid-cols-[260px_minmax(0,1fr)] md:items-start"
+    >
+      {@render loadoutCheck(loadout, testid)}
+      <TalentTrees trees={loadoutTrees(index, loadout.talents)} build={character.tree_version} />
+    </div>
+  {:else}
+    {@render loadoutCheck(loadout, testid)}
+  {/if}
 {/snippet}
 
 <ToolSection title={bulkCopy.talentBuildsTitle} testid="sim-talent-candidates" {plate}>

@@ -87,8 +87,6 @@
 </script>
 
 <ToolSection title={bulkCopy.setsTitle} testid="sim-named-sets" {plate}>
-  <p class="text-muted text-[13px]">{bulkCopy.setsIntro}</p>
-
   {#if rows.length > 0}
     <div class="pt-1">
       {#each rows as set (set.name)}

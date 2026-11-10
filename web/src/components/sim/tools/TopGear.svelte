@@ -1,8 +1,8 @@
 <!-- web/src/components/sim/tools/TopGear.svelte -->
 <!-- /sim/gear and /sim/talents are the same island (mock design/mocks/ws_simtools.py): the run
      line, then the split page. Top gear: the candidate grid on the page's one Plate in the main
-     column, the results above it once a run finishes, and the ways to add candidates (an item
-     search, the consumables to try, whole sets, talent builds) as open sections in the rail.
+     column, the results above it once a run finishes, the consumables to try, whole sets and talent
+     builds under it, and the item search alone in the rail.
      Talents: gear is locked to what is worn, so the talent builds are the Plate and there is no
      rail. `store.tool` is the whole difference, read once here. -->
 <script lang="ts">
@@ -61,24 +61,9 @@
       oncopy={(key, patch) => store.copyAndModify(key, patch)}
       onlock={(slot: Slot) => store.toggleLock(slot)}
     />
-  {:else if store.character !== null}
-    <TalentCandidates
-      plate
-      character={store.character}
-      picked={store.loadouts}
-      ontoggle={(loadout, on) => (on ? store.addLoadout(loadout) : store.removeLoadout(loadout.name))}
-      onpendingcustom={(pending) => store.setPendingCustomBuild(pending)}
-    />
-  {/if}
-  {#snippet rail()}
-    <ItemSearch
-      items={[...store.items.values()]}
-      loot={store.loot}
-      ctx={{ level: MAX_LEVEL, sourcesByItem: store.sourceIndex, known: store.knownItems }}
-      treeVersion={store.character?.tree_version ?? ''}
-      classSlug={store.character?.class_slug ?? ''}
-      onadd={(itemId) => store.addSearchItem(itemId)}
-    />
+    <!-- The other ways to add a candidate stack under the grid, so the main column carries the
+         page's work and the rail holds the item search alone (h-audit 2026-11-09: a two-row grid
+         beside a four-panel rail left the column empty). -->
     <ConsumableCandidates
       picked={store.consumableIds}
       buffs={store.simBuffs}
@@ -101,5 +86,23 @@
         onpendingcustom={(pending) => store.setPendingCustomBuild(pending)}
       />
     {/if}
+  {:else if store.character !== null}
+    <TalentCandidates
+      plate
+      character={store.character}
+      picked={store.loadouts}
+      ontoggle={(loadout, on) => (on ? store.addLoadout(loadout) : store.removeLoadout(loadout.name))}
+      onpendingcustom={(pending) => store.setPendingCustomBuild(pending)}
+    />
+  {/if}
+  {#snippet rail()}
+    <ItemSearch
+      items={[...store.items.values()]}
+      loot={store.loot}
+      ctx={{ level: MAX_LEVEL, sourcesByItem: store.sourceIndex, known: store.knownItems }}
+      treeVersion={store.character?.tree_version ?? ''}
+      classSlug={store.character?.class_slug ?? ''}
+      onadd={(itemId) => store.addSearchItem(itemId)}
+    />
   {/snippet}
 </Page>

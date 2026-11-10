@@ -11,12 +11,19 @@
   import type { Spec } from '../../lib/sim/specs';
   import { classTone } from '../../lib/ui/primitives';
   import Row from '../ui/Row.svelte';
+  import { classCrestSrc } from '../../lib/class-crest';
 
   let { spec }: { spec: Spec } = $props();
 </script>
 
+{#snippet crest()}
+  <img src={classCrestSrc(classOfSpec(spec.spec))} alt="" width="28" height="28" class="rounded-full" />
+{/snippet}
+
 <Row
   id={spec.spec}
+  lead={crest}
+  density="slim"
   title={specLabel(spec.spec)}
   titleTone={classTone(classOfSpec(spec.spec))}
   open

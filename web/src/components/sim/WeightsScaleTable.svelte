@@ -59,7 +59,7 @@
   }
 </script>
 
-<div class="flex flex-col gap-2" data-testid="sim-weights-table">
+<div class="sim-weights-table flex flex-col gap-2" data-testid="sim-weights-table">
   <p class="text-muted text-[13px]" data-testid="sim-weights-scale-caption">{caption}</p>
   <StatTable columns={COLUMNS} nameHead="Stat" open label="Stat weights">
     {#each view.rows as row (row.stat)}
@@ -75,3 +75,11 @@
     {/each}
   </StatTable>
 </div>
+
+<style>
+  /* A stat has no game icon, so the table drops StatTable's icon track rather than leave an empty
+     socket's width at the head of every row. */
+  .sim-weights-table :global(.ui-st) {
+    --st-icon: 0px;
+  }
+</style>

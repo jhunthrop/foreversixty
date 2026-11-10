@@ -112,6 +112,7 @@
   const primaryLabel = $derived(
     running ? bulkCopy.stopBulk : store.result !== null ? bulkCopy.runBulkAgain : bulkCopy.runBulk,
   );
+  const hasCount = $derived(store.combinations !== null && store.combinations > 0);
   const NOTE = 'text-small text-muted m-0';
   const BLOCK = 'm-0 text-[14px] leading-5 text-strong';
 </script>
@@ -136,11 +137,12 @@
 <div class="flex flex-col gap-1 px-[var(--page-inset)] pt-3" data-testid="sim-run-notes">
   <p class="m-0 flex flex-wrap items-baseline gap-x-3 text-[14px] leading-5">
     {#if combinationTool && countLabel !== ''}<span
-        class="text-strong font-semibold tabular-nums"
+        class="tabular-nums {hasCount ? 'text-strong font-semibold' : 'text-muted'}"
         data-testid="sim-combo-count">{countLabel}</span
       >{/if}
     {#if combinationTool}
-      <span class="text-muted">{bulkCopy.precisionNote[store.precision]}</span>
+      <!-- The stage ladder only means something once there are combinations to run. -->
+      {#if hasCount}<span class="text-muted">{bulkCopy.precisionNote[store.precision]}</span>{/if}
     {:else}
       <span class="text-muted" data-testid="sim-weights-cost-note"
         >{bulkCopy.weightsCostNote(weightsCost)}</span

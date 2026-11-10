@@ -72,9 +72,11 @@ test.describe('/sim/specs', () => {
     await expect(frost.getByTestId('spec-state')).toHaveText('In progress');
 
     // druid-feral is a dps spec the fixture's own /v1/specs answer says nothing about: the
-    // grid still renders it, as "Not yet" with no figure, rather than leaving it out.
+    // grid still renders it, with no Tag and no figure (h-audit 2026-11-09: "Not yet" beside
+    // every unmeasured spec read as "not simulated"), rather than leaving it out.
     const feral = page.getByTestId('spec-druid-feral');
-    await expect(feral.getByTestId('spec-state')).toHaveText('Not yet');
+    await expect(feral).toBeVisible();
+    await expect(feral.getByTestId('spec-state')).toHaveCount(0);
     await expect(feral.getByTestId('spec-figure')).toHaveCount(0);
 
     // C1: rogue-combat is the fixture's own default (unmeasured) card -- null updated_at,
@@ -84,7 +86,7 @@ test.describe('/sim/specs', () => {
     // never have been reached. This one names the card and asserts it renders no footer at
     // all, rather than a footer built from a null date.
     const rogue = page.getByTestId('spec-rogue-combat');
-    await expect(rogue.getByTestId('spec-state')).toHaveText('Not yet');
+    await expect(rogue).toBeVisible();
     await expect(rogue.getByTestId('spec-footer')).toHaveCount(0);
   });
 

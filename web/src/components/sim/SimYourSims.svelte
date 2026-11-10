@@ -9,9 +9,9 @@
   import { rerunSim } from '../../lib/sim/api';
   import { KIND_TITLES, simCopy } from '../../lib/sim/copy';
   import { dayMonth } from '../../lib/sim/head-meta';
-  import { kindOf, titleOf } from '../../lib/sim/history';
+  import { kindOf, runDeltas, titleOf } from '../../lib/sim/history';
   import { simPageCopy as copy } from '../../lib/sim/page-copy';
-  import { grouped } from '../../lib/sim/result-copy';
+  import { grouped, oneDecimal } from '../../lib/sim/result-copy';
   import { serverRunsCopy } from '../../lib/sim/server-runs-copy';
   import type { RerunStatus } from '../../lib/sim/server-runs-poll';
   import { rerunOutcome } from '../../lib/sim/server-runs-rerun';
@@ -56,6 +56,10 @@
       .sort((a, b) => b.created_at.localeCompare(a.created_at))
       .slice(0, SHOWN),
   );
+
+  /** Each run against the run of its setup before it, from every row read, not only the shown five. */
+  const deltas = $derived(runDeltas(rows ?? []));
+  const signed = (delta: number): string => `${delta >= 0 ? '+' : '−'}${oneDecimal(Math.abs(delta))}`;
 
   let rerunStatus = $state<Record<string, RerunStatus>>({});
   async function rerun(simId: string): Promise<void> {
@@ -119,6 +123,8 @@
                     value={grouped(row.dps)}
                     unit="DPS"
                     size="sm"
+                    align="end"
+                    caption={deltas.has(row.sim_id) ? signed(deltas.get(row.sim_id) ?? 0) : undefined}
                   />{/if}
               {/snippet}
             </Row>

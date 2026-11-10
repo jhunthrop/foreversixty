@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 from mocklib import CLASS_COLOR
-from ws_prims import Facts, Field, FormRow, Notice, Page, PageHeader, Plate, Row, Rows, Section, TabStrip, build_page, write
+from ws_prims import Facts, Field, FormRow, Notice, Page, PageHeader, Plate, Row, Rows, Section, TabStrip, TalentTrees, build_page, write
 import ws_sim as S
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -36,7 +36,7 @@ SPECS = json.loads((DATA_ROOT / 'data/curated/specs.json').read_text())
 CLASS_NAME = S.CLASS_NAME
 QUALITY = S.QUALITY
 
-SCOPE = 'The simulator runs damage specs only. Healing and tanking specs are not simulated yet.'
+SCOPE = 'Damage specs only.'
 TITLES = {'gear': 'Top gear', 'talents': 'Talents', 'drops': 'Droptimizer', 'weights': 'Weights', 'specs': 'Spec support'}
 
 
@@ -86,10 +86,9 @@ def check(label: str = '', checked: bool = False, disabled: bool = False) -> str
 # ---- the run bar and its standing lines (BulkRunBar: SimRunBar with the tool's words)
 def run_bar(tool: str) -> str:
     bar = S.run_bar('disabled' if tool != 'weights' else 'ready')
-    count = '' if tool == 'weights' else '<b>Nothing to try yet. Tick an item, a build or a source that fits your character.</b>'
-    note = ('One run per stat at the chosen precision: 6 stats, about 60,000 runs.' if tool == 'weights'
-            else 'Three stages: everything at 100 iterations, the survivors at 1,000, the finalists at 3,000.')
-    return bar + f'<div class="pc run-notes"><p>{count}<span class="t-small">{note}</span></p></div>'
+    # Nothing ticked: the count reads muted and the stage ladder waits for a count (BulkRunBar `hasCount`).
+    line = '<span class="t-small">3,120 iterations</span>' if tool == 'weights' else '<span class="t-small">Nothing ticked yet.</span>'
+    return bar + f'<div class="pc run-notes"><p>{line}</p></div>'
 
 
 # ---- the character line (ToolCharacterLine, region `summary`)
@@ -97,8 +96,8 @@ def character_line() -> str:
     level = sum(ITEMS[i]['item_level'] for i in WORN.values()) / len(WORN)
     return (f'<div class="tool-who" data-region="summary"><p class="who-line">{S.crest_img("warrior", 24)}<span>Orc Fury Warrior &middot; Level {LEVEL}</span>'
             f'<span class="t-small">Item level {level:.1f}</span><span class="t-small">Entered by hand</span>'
-            f'<span class="who-acts"><a class="link" href="#">Open in planner &rsaquo;</a>{btn("Change source")}</span></p>'
-            f'<p class="t-small">24 talent points. Simmed as a level {LEVEL} with these talents.</p></div>')
+            f'<span class="t-small num">20 of 51 talent points</span>'
+            f'<span class="who-acts"><a class="link" href="#">Open in planner &rsaquo;</a>{btn("Change source")}</span></p></div>')
 
 
 # ---- Top gear: the candidates (SlotGrid, CandidateRows)
@@ -131,11 +130,11 @@ def consumables() -> str:
     table = json.loads((DATA_ROOT / 'sim/request/raid-consumes.json').read_text())['specs'][SPEC]
     ids = list(dict.fromkeys([r for r in table if r['from_level'] <= LEVEL][-1]['consumes']))
     rows = ''.join(f'<li><label class="opt">{check()}{x.replace("_", " ")}</label></li>' for x in ids)
-    return Section('Try each', f'<p class="t-small">Try each of these as a candidate rather than a setting.</p><ul class="opts ce">{rows}</ul>')
+    return Section('Try each', f'<ul class="opts ce cols3">{rows}</ul>')
 
 
 def whole_sets() -> str:
-    return Section('Whole sets', '<p class="t-small">A set replaces every slot at once. Paste a second export string to add one.</p>'
+    return Section('Whole sets', ''
                    '<div class="sets-f"><label class="fl w160"><span class="t-label">Name</span><input class="fld" placeholder="Name"></label>'
                    '<label class="fl grow"><span class="t-label">Paste an export string</span><input class="fld" placeholder="Paste an export string"></label>'
                    '<button type="button" class="btn">Add set</button></div>')
@@ -147,16 +146,47 @@ def guide_split() -> str:
     return '/'.join(str(sum(int(c) for c in tree)) for tree in band['talents'].split('-'))
 
 
+# The character's own talents (TOOL_CHARACTER's `0/5530515/0`), one digit string per tree.
+OWN_TALENTS = ['0', '5530515', '0']
+
+
+def guide_talents() -> list[str]:
+    f = json.loads((B / 'bis' / f'{SPEC}.json').read_text())
+    band = next(b for b in f['bands'] if b['band'] == LEVEL and b['faction'] == 'horde' and b.get('preset') == 'raid')
+    return band['talents'].split('-')
+
+
+def loadout_trees(per_tree: list[str]) -> str:
+    """web lib/sim/talent-loadouts.ts loadoutTrees: each tree's talents at the rank the string gives them, in ui/TalentTrees."""
+    file = json.loads((B / 'talents' / 'warrior.json').read_text())
+    trees = []
+    for i, tree in enumerate(sorted(file['trees'], key=lambda t: t['position'])):
+        digits = per_tree[i] if i < len(per_tree) else ''
+        cells = [(x['tier'], x['column'], S.gicon(x['icon'], 24), min(x['max_rank'], int(digits[p]) if p < len(digits) else 0), x['max_rank'])
+                 for p, x in enumerate(tree['talents'])]
+        trees.append((tree['name'], sum(c[3] for c in cells), cells))
+    return TalentTrees(trees)
+
+
 def talent_builds(plated: bool = False) -> str:
     # The published set's own talents at the character's band (web lib/sim/talent-loadouts.ts guideLoadout)
-    body = (f'<div class="tb"><label class="opt">{check()}Your current build</label><label class="opt">{check()}Guide build, level {LEVEL} &middot; {guide_split()}</label>'
+    own_split = '/'.join(str(sum(int(c) for c in t)) for t in OWN_TALENTS)
+    own = f'<label class="opt">{check()}<span class="grow-n">Your current build</span>' + (f'<span class="t-small num">{own_split}</span>' if plated else '') + '</label>'
+    guide = f'<label class="opt">{check()}<span class="grow-n">Guide build, level {LEVEL} &middot; {guide_split()}</span></label>'
+    if plated:
+        # /sim/talents: each build's three trees beside its tick (TalentCandidates `plate`)
+        own = f'<div class="tb-row">{own}{loadout_trees(OWN_TALENTS)}</div>'
+        guide = f'<div class="tb-row">{guide}{loadout_trees(guide_talents())}</div>'
+    body = (f'<div class="tb">{own}{guide}'
             f'<h3 class="t-h4">Your saved builds</h3>'
-            f'<p class="t-small">Your saved builds could not be read; the rest of the page still works.</p><div class="bt">{btn("Add a build")}</div></div>')
+            f'<p class="t-small">Saved builds did not load.</p><div class="bt">{btn("Add a build")}</div></div>')
     return Section('Talent builds', body, frame='framed' if plated else 'plain')
 
 
 def gear() -> str:
-    return finish('Top gear', head('gear') + run_bar('gear') + split([character_line(), candidates()], [item_search(), consumables(), whole_sets(), talent_builds()]))
+    # The other ways to add a candidate stack under the grid; the rail holds the item search alone (TopGear.svelte).
+    return finish('Top gear', head('gear') + run_bar('gear')
+                  + split([character_line(), candidates(), consumables(), whole_sets(), talent_builds()], [item_search()]))
 
 
 def talents() -> str:
@@ -196,29 +226,42 @@ def drops() -> str:
     for kind, label in kinds:
         srcs = [s for s in loot if s['kind'] == kind]
         shown = [s for s in srcs if is_open(s)]
+        if kind == 'pvp':
+            # The character's own side (lib/sim/source-rows.ts pvpForFaction): an Orc is Horde.
+            shown = [s for s in shown if s.get('faction') in (None, 'horde')]
         if not srcs:
             continue
         if not shown:
-            lis = ''.join(f'<li class="t-small">{s["name"]}: {"Opens later" if s.get("opens") == "later" else "first raids"}</li>' for s in srcs)
-            groups.append(f'<div class="src-g"><h3 class="t-h4">{label}</h3><p class="t-small">Nothing here has opened yet. Here is what is known about each:</p>'
-                          f'<ul class="gated">{lis}</ul><div class="gb">{btn("Show unreleased content")}</div></div>')
+            # One line (SourcePicker's gated kind): the dated sources with their date, the rest named once.
+            undated = ', '.join(s['name'] for s in srcs)
+            groups.append(f'<div class="src-g"><h3 class="t-h4">{label}</h3>'
+                          f'<p class="t-small">Nothing here has opened yet. <span>No date yet: {undated}.</span></p></div>')
             continue
         rows = ''
-        for s in shown:
-            bosses = s.get('bosses') or []
-            every = '<span class="t-small">Every boss</span>' if bosses else ''
-            rows += f'<div class="src"><label class="opt">{check()}<b class="grow-n">{s["name"]}</b>{every}<span class="t-small num">{len(s.get("items", []))}</span></label>'
-            if kind == 'dungeon' and bosses:
-                rows += f'<div class="indent"><details class="disc"><summary>Bosses <span class="t-small">{len(bosses)}</span></summary></details></div>'
-            elif bosses:
-                rows += ''.join(f'<label class="opt indent">{check()}<span class="grow-n">{x.get("name") or s["name"]}</span></label>' for x in bosses)
-            if s.get('trash'):
-                rows += '<p class="t-small indent">Trash and chests</p>'
-            rows += '</div>'
-        note = '<p class="t-small">Nothing has recorded this character&rsquo;s professions, so every profession is listed.</p>' if kind == 'crafted' else ''
-        groups.append(f'<div class="src-g"><h3 class="t-h4">{label}</h3>{note}{rows}</div>')
+        if kind == 'rep':
+            # One row per faction, its standings as inline ticks (lib/sim/source-rows.ts groupByFaction).
+            factions: dict[str, list[dict]] = {}
+            for s in shown:
+                factions.setdefault(s['name'], []).append(s)
+            for name, standings in factions.items():
+                ticks = ''.join(f'<label class="opt sm">{check()}{(s.get("standing") or "").title()} <span class="t-small num">{len(s.get("items", []))}</span></label>'
+                                for s in standings)
+                rows += f'<div class="src"><b class="rep-n">{name}</b><span class="rep-t">{ticks}</span></div>'
+        else:
+            for s in shown:
+                bosses = s.get('bosses') or []
+                rows += (f'<div class="src"><label class="opt">{check()}<b class="grow-n">{s["name"]}</b>'
+                         f'<span class="t-small num">{len(s.get("items", []))} items</span></label>')
+                if kind == 'dungeon' and bosses:
+                    rows += f'<div class="indent"><details class="disc"><summary>Bosses <span class="t-small">{len(bosses)}</span></summary></details></div>'
+                elif bosses:
+                    rows += ''.join(f'<label class="opt indent">{check()}<span class="grow-n">{x.get("name") or s["name"]}</span></label>' for x in bosses)
+                rows += '</div>'
+        note = '<p class="t-small">All professions</p>' if kind == 'crafted' else ''
+        groups.append(f'<div class="src-g"><h3 class="t-h4">{label}</h3>{note}<div class="src-cols">{rows}</div></div>')
     body = f'<div><div class="kinds">{toggles}</div>{"".join(groups)}</div>'
-    return finish('Droptimizer', head('drops') + run_bar('drops') + ledger(character_line(), Section('Sources', body, frame='framed'), '<p class="t-small">No source ticked yet.</p>'))
+    return finish('Droptimizer', head('drops') + run_bar('drops')
+                  + ledger(character_line(), '<p class="t-small">No source ticked yet.</p>', Section('Sources', body, frame='framed')))
 
 
 # ---- Weights: the caution, the stats to weigh in the rail; the scale factors arrive with a run
@@ -227,8 +270,9 @@ def weights() -> str:
     stats = row.get('stats') or list(row['weights'])
     picks = ''.join(f'<li><label class="opt">{check(checked=True, disabled=i == 0)}{s}</label></li>' for i, s in enumerate(stats))
     caution = '<p class="notice">Weights hold near the gear you have on. For a real choice, sim the items. <a class="link" href="#">Open Top Gear &rsaquo;</a></p>'
-    rail = Section('Stats to weigh', f'<div class="wbody"><p class="t-small">Normalised to: {stats[0]}</p><ul class="opts two">{picks}</ul></div>')
-    return finish('Weights', head('weights') + run_bar('weights') + split([character_line(), caution, published_weights()], [rail]))
+    # The stats to weigh as one row of ticks over the table (StatWeights.svelte); the reference is its locked tick.
+    pick = Section('Stats to weigh', f'<ul class="opts row">{picks}</ul>')
+    return finish('Weights', head('weights') + run_bar('weights') + ledger(character_line(), caution, pick, published_weights()))
 
 
 # Before a run, the weights the ranker published for the character's band (web lib/sim/published-weights.ts): the level 60
@@ -285,17 +329,41 @@ def gear_empty() -> str:
 # ---- Spec support (SpecGrid): every damage spec on the Plate, "Not yet" until a parse is measured; healers and tanks open below
 def specs() -> str:
     notes = json.loads((DATA_ROOT / 'data/curated/rotation-notes.json').read_text()) if (DATA_ROOT / 'data/curated/rotation-notes.json').exists() else {}
+    top = top_raid_sets()
     rows = []
     for s in [s for s in SPECS if s['role'] == 'dps']:
         label = f"{s['name']} {CLASS_NAME[s['class_slug']]}"
         foot = '<details class="disc"><summary>What it does</summary></details>' if notes.get(s['spec'], True) else ''
-        # SpecCard: What it does on the name's line; no parses, so no status line under it (the tag says it)
-        rows.append(Row(f'<span class="spec-t"><span>{label}</span>{foot}</span>', '',
-                        trail='<span class="tag muted">Not yet</span>', title_color=CLASS_COLOR[s['class_slug']], link=False))
-    # UnsimulatedSpecCard: the spec in its class colour, its guide the trail's action; the heading says why
-    others = [Row(f"{s['name']} {CLASS_NAME[s['class_slug']]}", trail=f'<span class="alink">{S.Link("Guide &rsaquo;")}</span>', title_color=CLASS_COLOR[s['class_slug']], link=False)
+        # SpecCard: the crest, What it does on the name's line; no parses, so no Tag; the raid BiS set at 60 and its place
+        fig = top.get(s['spec'])
+        trail = (f'<span class="spec-fig"><span class="t-small num rk">#{fig[1]}</span><span class="num dps">{fig[0]:,.1f} '
+                 f'<span class="t-small">DPS</span></span></span>') if fig else ''
+        rows.append(Row(f'<span class="spec-t"><span>{label}</span>{foot}</span>', '', lead=S.crest_img(s['class_slug'], 28),
+                        trail=trail, title_color=CLASS_COLOR[s['class_slug']], link=False, slim=True))
+    # UnsimulatedSpecCard: the crest, the spec in its class colour, its guide the trail's action; the heading says why
+    others = [Row(f"{s['name']} {CLASS_NAME[s['class_slug']]}", lead=S.crest_img(s['class_slug'], 28), trail=f'<span class="alink">{S.Link("Guide &rsaquo;")}</span>',
+                  title_color=CLASS_COLOR[s['class_slug']], link=False, slim=True)
               for s in SPECS if s['role'] != 'dps']
-    return finish('Spec support', head('specs') + ledger(Section('Damage specs', Rows(rows), frame='framed', flush=True), Section('Healers and tanks', Rows(others, open_=True))))
+    meta = 'Raid BiS DPS at 60' if top else ''
+    return finish('Spec support', head('specs') + ledger(Section('Damage specs', Rows(rows), meta=meta, frame='framed', flush=True),
+                                                         Section('Healers and tanks', Rows(others, open_=True))))
+
+
+def top_raid_sets() -> dict[str, tuple[float, int]]:
+    """web lib/sim/bis-benchmark.ts topRaidSets over bis-benchmark-load.ts's bands: each damage spec's best level 60 raid set DPS
+    (either faction), ranked high to low."""
+    best = {}
+    for s in SPECS:
+        path = B / 'bis' / f"{s['spec']}.json"
+        if s['role'] != 'dps' or not path.exists():
+            continue
+        bands = [b for b in json.loads(path.read_text())['bands']
+                 if (b.get('role') or 'dps') == 'dps' and not b.get('set_dps_partial') and b.get('set_dps', 0) > 0
+                 and b['band'] == LEVEL and (b.get('preset') or 'bare') == 'raid']
+        if bands:
+            best[s['spec']] = max(b['set_dps'] for b in bands)
+    ranked = sorted(best.items(), key=lambda kv: -kv[1])
+    return {spec: (dps, i + 1) for i, (spec, dps) in enumerate(ranked)}
 
 
 TOOL_CSS = '''<style>
@@ -317,7 +385,12 @@ TOOL_CSS = '''<style>
 .sets-f{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;padding-top:19px}.pad{padding:16px}.kinds{display:flex;flex-wrap:wrap;gap:0 20px}
 .src-g{display:flex;flex-direction:column;gap:4px;padding-top:16px}.src{display:flex;flex-direction:column;padding:4px 0}.indent{padding-left:28px}.grow-n{flex:1}.src p.indent{margin:0;line-height:19.5px}.src .disc>summary{display:flex;align-items:center;height:44px;box-sizing:border-box}.src-g .t-h4{margin:0;font-size:15px;line-height:20px}
 .pn-b .hits{max-height:320px}.pn-b>.search-f{padding-bottom:16px}.spec-t{display:flex;flex-wrap:wrap;align-items:center;column-gap:16px}.spec-t .disc{font-weight:400}.rail-col .pn-b>.tb{padding-top:0}.pn-b>.opts.ce{padding-top:0}.pn-b .sets-f{padding-top:8px}.pn-b>.cands{padding-top:12px}
-.alink{display:inline-flex;align-items:center;min-height:44px}.wt-pub{display:flex;flex-direction:column;gap:8px}.wt-pub p{margin:0;font-size:13px}.gated{display:flex;flex-direction:column;gap:4px;margin:0;padding-left:12px;list-style:none}.gated li{line-height:19.5px}.gb{padding-top:4px}</style>'''
+.alink{display:inline-flex;align-items:center;min-height:44px}.wt-pub{display:flex;flex-direction:column;gap:8px}.wt-pub p{margin:0;font-size:13px}.gated{display:flex;flex-direction:column;gap:4px;margin:0;padding-left:12px;list-style:none}.gated li{line-height:19.5px}.gb{padding-top:4px}
+.wt-pub .st .stc{grid-template-columns:0 var(--st-name) var(--st-bar) repeat(var(--n),var(--st-fig))}@media(max-width:1023px){.wt-pub .st .stc{grid-template-columns:0 minmax(0,1fr) auto}}
+.opts.row{display:flex;flex-wrap:wrap;gap:0 24px}.opts.cols3{display:grid;grid-template-columns:1fr;gap:0 24px}@media(min-width:768px){.opts.cols3{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.opts.cols3{grid-template-columns:1fr 1fr 1fr}}
+.src-cols{display:grid;grid-template-columns:1fr;column-gap:32px}@media(min-width:768px){.src-cols{grid-template-columns:1fr 1fr}}@media(min-width:1280px){.src-cols{grid-template-columns:1fr 1fr 1fr}}.rep-n{padding-top:8px;font-size:14px;line-height:20px}.rep-t{display:flex;flex-wrap:wrap;gap:0 16px}.opt.sm{font-size:13px}
+.tb-row{display:grid;gap:4px 24px;padding:12px 0;border-bottom:1px solid var(--line-soft,var(--line));align-self:stretch}.tb-row:last-of-type{border-bottom:0}@media(min-width:768px){.tb-row{grid-template-columns:260px minmax(0,1fr);align-items:start}}
+.spec-fig{display:flex;align-items:center;gap:12px}.spec-fig .rk{width:32px;text-align:right}.spec-fig .dps{width:92px;text-align:right;font-weight:700}</style>'''
 
 
 def finish(title: str, body: str) -> str:

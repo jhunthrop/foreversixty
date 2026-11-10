@@ -6,7 +6,13 @@ import type { TalentFile } from '../planner/types';
 import { bulkCopy } from './copy';
 import { poolQualityCopy } from './pool-quality-copy';
 import type { BisFile } from '../bis/types';
-import { customLoadouts, guideLoadout, hasUnaddedBuild, savedBuildsMessage } from './talent-loadouts';
+import {
+  customLoadouts,
+  guideLoadout,
+  hasUnaddedBuild,
+  loadoutTrees,
+  savedBuildsMessage,
+} from './talent-loadouts';
 import type { TalentLoadout } from './types';
 
 describe('guideLoadout', () => {
@@ -115,5 +121,23 @@ describe('savedBuildsMessage', () => {
 
   it('keeps the original message for a real read failure', () => {
     expect(savedBuildsMessage(false)).toBe(bulkCopy.talentsSavedUnavailable);
+  });
+});
+
+describe('loadoutTrees', () => {
+  const index = indexTalents(talentsFixture as unknown as TalentFile);
+
+  it('reads one tree per talent tab, each talent at the rank its position in the string gives it', () => {
+    const trees = loadoutTrees(index, '23');
+    expect(trees).toHaveLength(index.trees.length);
+    const [first, second] = index.trees[0].talents;
+    expect(trees[0].talents[0]).toMatchObject({ name: first.name, rank: Math.min(2, first.max_rank) });
+    expect(trees[0].points).toBe(Math.min(2, first.max_rank) + Math.min(3, second.max_rank));
+    expect(trees[1].points).toBe(0);
+  });
+
+  it('never draws a rank past the talent’s own maximum', () => {
+    const [first] = loadoutTrees(index, '9');
+    expect(first.talents[0].rank).toBe(index.trees[0].talents[0].max_rank);
   });
 });

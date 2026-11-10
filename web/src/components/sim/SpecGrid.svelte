@@ -13,6 +13,7 @@
   import { nonDpsSpecs } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import { specSkeletonSlots } from '../../lib/sim/spec-skeleton';
+  import { topRaidSets, type BisBenchmarks } from '../../lib/sim/bis-benchmark';
   import Button from '../ui/Button.svelte';
   import Page from '../ui/Page.svelte';
   import Row from '../ui/Row.svelte';
@@ -25,11 +26,18 @@
     rows,
     error,
     onretry,
+    benchmarks = {},
   }: {
     rows: SpecFidelity[] | null;
     error: string | null;
     onretry: () => void;
+    /** The published sets (lib/sim/bis-benchmark.ts): each damage row's raid BiS DPS at 60. */
+    benchmarks?: BisBenchmarks;
   } = $props();
+
+  /** The level whose raid sets the list reads. */
+  const TOP_SET_BAND = 60;
+  const topSets = $derived(topRaidSets(benchmarks, TOP_SET_BAND));
 
   const skeletonSlots = specSkeletonSlots();
   /** How long a `#<spec>` arrival keeps its card in view while the list above it settles. */
@@ -73,7 +81,14 @@
 </script>
 
 <Page layout="ledger" panels>
-  <Section title={simCopy.specsSimulatedHeading} panel frame="framed" flush testid="specs-simulated">
+  <Section
+    title={simCopy.specsSimulatedHeading}
+    meta={topSets.size > 0 ? simCopy.specsTopSetMeta : undefined}
+    panel
+    frame="framed"
+    flush
+    testid="specs-simulated"
+  >
     <div>
       <div data-testid="specs-grid">
         {#if rows === null}
@@ -99,7 +114,7 @@
           {/each}
         {:else}
           {#each mergeSpecRows(rows) as row (row.spec)}
-            <SpecCard {row} />
+            <SpecCard {row} top={topSets.get(row.spec) ?? null} />
           {/each}
         {/if}
       </div>

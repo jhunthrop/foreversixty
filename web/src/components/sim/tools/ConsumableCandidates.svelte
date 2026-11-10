@@ -36,8 +36,7 @@
 </script>
 
 <ToolSection title={bulkCopy.tryEach} testid="sim-consumables" {plate}>
-  <p class="text-muted text-[13px]">{bulkCopy.consumableCandidates}</p>
-  <ul class="flex flex-col pt-1">
+  <ul class="grid grid-cols-1 gap-x-6 pt-1 md:grid-cols-2 xl:grid-cols-3">
     {#each offered as id (id)}
       <li>
         <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">

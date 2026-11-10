@@ -2,7 +2,8 @@
 <!-- What the engine is told to press, in words (sim spec 2026-11-06 §4.3, §4.5; spec
      2026-11-04-sim-results 3.11): an open Section of open Rows, the curated APL's own notes, and
      after a run this run's casts per fight beside each line, a line the run never cast dimmed.
-     Before a run (no `result`) it is the same lines with nothing counted. The guide is the
+     Before a run (no `result`) it is the same lines, slim and without their notes (the guide
+     teaches them; h-audit 2026-11-09), with nothing counted. The guide is the
      section's action. The spec's fidelity note lives in the page's answer (§4.6), not here. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
@@ -118,7 +119,13 @@
     <div data-testid="rotation-priority">
       {#each rows.priority as row (row.key)}
         <div class={row.dimmed ? 'opacity-50' : ''} data-testid="rotation-line" data-dimmed={row.dimmed}>
-          <Row title={row.name} sub={row.note === '' ? undefined : row.note} rank={String(row.number)} open>
+          <Row
+            title={row.name}
+            sub={result === null || row.note === '' ? undefined : row.note}
+            rank={String(row.number)}
+            density={result === null ? 'slim' : 'default'}
+            open
+          >
             {#snippet titleContent()}{@render title(row.name, row.action)}{/snippet}
             {#snippet trail()}{#if row.casts !== null}{@render count(
                   row.dimmed ? copy.notCast : copy.casts(row.casts),

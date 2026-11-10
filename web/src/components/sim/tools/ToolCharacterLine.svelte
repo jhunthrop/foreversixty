@@ -4,7 +4,7 @@
      level, the item level and where the gear came from, then "Change" (the source switcher) and
      "Open in planner". The worn set is the candidates themselves on Top gear, and the doll on
      /sim; a tool page does not draw it a second time. A level note, when the talents stop short
-     of the character's level, sits under the line. -->
+     of the character's level, sits on the line as "20 of 51 talent points". -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { classColorVar } from '../../../lib/report/format';
@@ -13,10 +13,9 @@
   import { slotsFromWorn } from '../../../lib/gear/paperdoll-slots';
   import { loadTalents } from '../../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../../lib/planner/rules';
-  import type { Item, TalentFile } from '../../../lib/planner/types';
+  import { MAX_POINTS, type Item, type TalentFile } from '../../../lib/planner/types';
   import { plannerHrefFor, type SimCharacter } from '../../../lib/sim/character';
   import { simCopy } from '../../../lib/sim/copy';
-  import { handoffCopy } from '../../../lib/sim/handoff-copy';
   import { sourcePill } from '../../../lib/sim/sources';
   import { specLabel } from '../../../lib/sim/spec-label';
   import { LINK } from '../../../lib/ui/primitives';
@@ -57,9 +56,10 @@
     return averageItemLevel(slotsFromWorn(character.gear, { lookup: (id) => items.get(id) }));
   });
   const source = $derived(sourcePill(character.source, new Date(), character.name));
+  /** Talents short of the character's level (a planner build sent at 60): the count, on the line. */
   const levelNote = $derived(
     character.talent_level < character.level
-      ? `${character.point_order.length} talent points. ${handoffCopy.simmedAtLevel(character.level)}`
+      ? simCopy.talentPointsOf(character.point_order.length, MAX_POINTS)
       : '',
   );
 </script>
@@ -77,7 +77,9 @@
         >{gearCopy.paperdoll.averageItemLevel(itemLevel)}</span
       >{/if}
     <span class="text-muted" data-testid="paperdoll-source">{source}</span>
-    <span class="ml-auto flex items-center gap-4">
+    {#if levelNote !== ''}<span class="text-muted tabular-nums" data-testid="sim-level-note">{levelNote}</span
+      >{/if}
+    <span class="ml-auto flex items-center gap-4 max-md:w-full max-md:justify-between">
       <a
         class="{LINK} text-[14px] [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:inline-block [@media(pointer:coarse)]:py-3"
         href={plannerHrefFor(character, talentIndex)}
@@ -86,5 +88,4 @@
       <Button size="sm" onclick={onchange} testid="sim-change-source">{simCopy.changeSource}</Button>
     </span>
   </p>
-  {#if levelNote !== ''}<p class="text-small text-muted m-0" data-testid="sim-level-note">{levelNote}</p>{/if}
 </div>
