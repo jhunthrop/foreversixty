@@ -111,8 +111,11 @@ struct ProfileMenuActions {
     var privacy: () -> Void = {}
 }
 
-/// The profile menu's content (mocks ios-menu, -one, -low, -out): You, Switch character, Tools,
-/// Account and the footer; signed out, Sign in and the tools that work without an account.
+/// The profile menu's content in the round-5 look (mocks ios-menu, -one, -low, -out and m-ios-menu):
+/// You on the painted band (the portrait, the name in the display face in the class colour, the
+/// line, Main, the stamp with Refresh), then on the drawer's panel Switch character, Tools as labels
+/// alone (owner ruling 2026-11-09), Account and the footer; signed out, Sign in and the tools that work
+/// without an account.
 struct ProfileMenuView: View {
     let summary: ProfileMenuSummary
     var signingIn = false
@@ -121,11 +124,13 @@ struct ProfileMenuView: View {
 
     static let youPortrait: CGFloat = 56
     static let rowPortrait: CGFloat = 40
-    /// `.drawer { padding-top: calc(var(--status) + 12px) }`: the mock's drawer starts at the
-    /// content's top and pads by the status bar again, so the head sits 66 under the safe area.
-    static let topInset: CGFloat = 66
-    /// `.drawer section { margin-top: 24px }`.
-    static let sectionGap: CGFloat = 24
+    /// The band runs under the status bar; You sits 18 under it (the mock's `--status`, 54).
+    static let statusBar: CGFloat = 54
+    static let side: CGFloat = 18
+    static let youTop: CGFloat = 18
+    static let youBottom: CGFloat = 12
+    static let rowMin: CGFloat = 48
+    static let rowPad: CGFloat = 7
 
     init(summary: ProfileMenuSummary, signingIn: Bool = false, showsLowLevel: Bool = false, actions: ProfileMenuActions = ProfileMenuActions()) {
         self.summary = summary
@@ -137,104 +142,122 @@ struct ProfileMenuView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                if let you = summary.you {
-                    youBlock(you)
-                    switchSection
-                    rowsSection(Copy.menuTools, summary.tools)
-                    rowsSection(Copy.menuAccount, summary.account)
-                } else {
-                    signedOut
-                    rowsSection(Copy.menuTools, summary.tools)
+                Group {
+                    if let you = summary.you { youBlock(you) } else { signedOut }
                 }
-                footer
+                .padding(.horizontal, Self.side)
+                .padding(.top, Self.statusBar + Self.youTop)
+                .padding(.bottom, Self.youBottom)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background { BandArt() }
+                .overlay(alignment: .bottom) { Color.black.frame(height: FSStroke.hairline) }
+                VStack(alignment: .leading, spacing: 0) {
+                    if summary.you != nil {
+                        switchSection
+                        rowsSection(Copy.menuTools, summary.tools, lines: false)
+                        rowsSection(Copy.menuAccount, summary.account, lines: true)
+                    } else {
+                        rowsSection(Copy.menuTools, summary.tools, lines: false)
+                    }
+                    footer
+                }
+                .padding(.horizontal, Self.side)
             }
-            .padding(.top, Self.topInset)
-            .padding(.horizontal, FSSpace.gutterPhone)
-            .padding(.bottom, FSSpace.space6)
             .parityContent()
         }
+        .ignoresSafeArea(edges: .top)
         .background(FSColor.raised)
     }
 
     private func youBlock(_ you: AccountCharacter) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            PageHeader(title: you.name, titleColor: ClassColor.of(you.className)) {
+            HStack(spacing: FSSpace.space4) {
                 CharacterPortrait(you, size: Self.youPortrait)
-            } meta: {
-                WrapLayout(spacing: 6) {
-                    SmallText(AccountCopy.characterLine(you))
-                    if summary.isMain { FSTag(Copy.menuCharacterMain, tone: .gold) }
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(you.name)
+                        .type(TypeRole(face: FSFont.title, size: 26, lineHeight: 32, scalesWith: .title2))
+                        .foregroundStyle(ClassColor.of(you.className))
+                        .accessibilityAddTraits(.isHeader)
+                    VStack(alignment: .leading, spacing: FSSpace.space1) {
+                        Text(AccountCopy.characterLine(you)).type(FSType.small).foregroundStyle(FSColor.text)
+                        if summary.isMain { MainTag() }
+                    }
+                    .parityRegion(.headMeta)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(.horizontal, FSSpace.gutterPhone)
+            .parityRegion(.headTitle)
+            .parityRegion(.head)
             if let stamp = summary.stamp {
                 HStack(spacing: 0) {
-                    SmallText(stamp + " · ")
+                    Text(stamp + " · ").type(TypeRole(face: FSFont.body, size: 12, lineHeight: 16, scalesWith: .caption))
                     Button(Copy.menuRefresh, action: actions.refresh)
-                        .font(.custom(FSFont.bodySemibold, size: FSType.small.size, relativeTo: .footnote))
+                        .font(.custom(FSFont.bodySemibold, size: 12, relativeTo: .caption))
                         .foregroundStyle(FSColor.gold)
                 }
-                .padding(.top, 6)
+                .foregroundStyle(FSColor.text)
+                .frame(minHeight: FSTarget.min + FSSpace.space1)
+                .padding(.top, FSSpace.space1)
             }
         }
+    }
+
+    private var signedOut: some View {
+        VStack(alignment: .leading, spacing: FSSpace.space1) {
+            Text(Copy.appName)
+                .type(TypeRole(face: FSFont.title, size: 26, lineHeight: 32, scalesWith: .title2))
+                .foregroundStyle(FSColor.cream)
+                .accessibilityAddTraits(.isHeader)
+            Text(Copy.signinBody).type(FSType.small).foregroundStyle(FSColor.text).parityRegion(.headMeta)
+            FSButton(Copy.signinButton, kind: .primary, action: actions.signIn)
+                .disabled(signingIn)
+                .padding(.top, FSSpace.space3)
+                .padding(.bottom, FSSpace.space1)
+        }
+        .parityRegion(.headTitle)
+        .parityRegion(.head)
     }
 
     @ViewBuilder
     private var switchSection: some View {
         if !summary.others.isEmpty || !summary.lowLevel.isEmpty {
-            FSSection(Copy.menuSwitch) {
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(summary.others + (showsLowLevel ? summary.lowLevel : []), id: \.key) { character in
-                        Button { actions.pick(character) } label: {
-                            FSRow(
-                                title: character.name, titleColor: ClassColor.of(character.className),
-                                sub: AccountCopy.characterLine(character), inset: 0
-                            ) { CharacterPortrait(character, size: Self.rowPortrait) }
-                        }
-                        .buttonStyle(RowPressStyle())
-                    }
-                    if !summary.lowLevel.isEmpty {
-                        Button(showsLowLevel ? Copy.menuLowLevelHide : Copy.menuLowLevelShow(n: summary.lowLevel.count)) {
-                            showsLowLevel.toggle()
-                        }
-                        .font(.custom(FSFont.bodySemibold, size: FSType.item.size, relativeTo: .body))
-                        .foregroundStyle(FSColor.gold)
-                        .frame(minHeight: FSTarget.min)
-                    }
-                }
-                .padding(.top, FSSpace.space1)
-            }
-            .padding(.top, Self.sectionGap)
-        }
-    }
-
-    private func rowsSection(_ title: String, _ rows: [ProfileMenuSummary.Row]) -> some View {
-        FSSection(title) {
-            VStack(spacing: 0) {
-                ForEach(rows) { row in
-                    Button { actions.open(row.destination) } label: {
-                        FSRow(title: row.title, sub: row.line.isEmpty ? nil : row.line, inset: 0) { EmptyView() }
+            let shown = summary.others + (showsLowLevel ? summary.lowLevel : [])
+            MenuSection(title: Copy.menuSwitch) {
+                ForEach(Array(shown.enumerated()), id: \.element.key) { index, character in
+                    Button { actions.pick(character) } label: {
+                        MenuRow(
+                            title: character.name, titleColor: ClassColor.of(character.className), sub: AccountCopy.characterLine(character),
+                            last: index == shown.count - 1 && summary.lowLevel.isEmpty
+                        ) { CharacterPortrait(character, size: Self.rowPortrait) }
                     }
                     .buttonStyle(RowPressStyle())
                 }
+                if !summary.lowLevel.isEmpty {
+                    Button(showsLowLevel ? Copy.menuLowLevelHide : Copy.menuLowLevelShow(n: summary.lowLevel.count)) {
+                        showsLowLevel.toggle()
+                    }
+                    .font(.custom(FSFont.bodySemibold, size: FSType.item.size, relativeTo: .body))
+                    .foregroundStyle(FSColor.gold)
+                    .frame(minHeight: Self.rowMin)
+                }
             }
-            .padding(.top, FSSpace.space1)
         }
-        .padding(.top, Self.sectionGap)
     }
 
-    private var signedOut: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            PageHeader(title: Copy.appName) { SmallText(Copy.signinBody) }
-                .padding(.horizontal, FSSpace.gutterPhone)
-            FSButton(Copy.signinButton, kind: .primary, action: actions.signIn)
-                .disabled(signingIn)
-                .padding(.top, FSSpace.space5)
+    /// Tools are labels alone (owner, 2026-11-09); Account rows say what they hold.
+    private func rowsSection(_ title: String, _ rows: [ProfileMenuSummary.Row], lines: Bool) -> some View {
+        MenuSection(title: title) {
+            ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
+                Button { actions.open(row.destination) } label: {
+                    MenuRow(title: row.title, sub: lines && !row.line.isEmpty ? row.line : nil, last: index == rows.count - 1) { EmptyView() }
+                }
+                .buttonStyle(RowPressStyle())
+            }
         }
     }
 
     private var footer: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: FSSpace.space1) {
             // The site footer's fan line and operator line (web/src/lib/footer-copy.ts), word for word.
             SmallText(Copy.menuLegalFan)
             SmallText(summary.operatorLine)
@@ -247,6 +270,65 @@ struct ProfileMenuView: View {
             .font(.custom(FSFont.bodySemibold, size: FSType.small.size, relativeTo: .footnote))
             .foregroundStyle(FSColor.gold)
         }
-        .padding(.top, FSSpace.space7)
+        .padding(.vertical, FSSpace.space6)
+    }
+}
+
+/// `Main`: the gold outline tag under the line.
+private struct MainTag: View {
+    var body: some View {
+        Text(Copy.menuCharacterMain)
+            .font(.custom(FSFont.bodySemibold, size: 12, relativeTo: .caption))
+            .foregroundStyle(FSColor.gold)
+            .padding(.horizontal, FSSpace.space2)
+            .padding(.vertical, 1)
+            .overlay(RoundedRectangle(cornerRadius: FSRadius.control).strokeBorder(FSColor.gold, lineWidth: FSStroke.hairline))
+            .fixedSize()
+    }
+}
+
+/// A menu section: the cream display title at 16 (14 above, 6 under), then its rows.
+private struct MenuSection<Content: View>: View {
+    let title: String
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(title)
+                .type(TypeRole(face: FSFont.title, size: 16, lineHeight: 22, scalesWith: .headline))
+                .foregroundStyle(FSColor.cream)
+                .accessibilityAddTraits(.isHeader)
+                .padding(.top, 14)
+                .padding(.bottom, 6)
+            content
+        }
+        .parityRegion(.section(title))
+    }
+}
+
+/// A menu row: 48 tall at least, 7 above and below, the title 15 bold, its line 13 muted, a rule under
+/// it unless it is the last.
+private struct MenuRow<Lead: View>: View {
+    let title: String
+    var titleColor: Color = FSColor.strong
+    let sub: String?
+    let last: Bool
+    @ViewBuilder let lead: Lead
+
+    var body: some View {
+        HStack(spacing: FSSpace.space3) {
+            lead
+            VStack(alignment: .leading, spacing: 0) {
+                Text(title).type(FSType.item).foregroundStyle(titleColor)
+                if let sub { Text(sub).type(RowType.sub).foregroundStyle(FSColor.muted) }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.vertical, ProfileMenuView.rowPad)
+        .frame(minHeight: ProfileMenuView.rowMin)
+        .overlay(alignment: .bottom) { if !last { Hairline(FSColor.line) } }
+        .contentShape(.rect)
+        .accessibilityElement(children: .combine)
+        .parityItem(.row)
     }
 }
