@@ -771,6 +771,9 @@ code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}
 @media(min-width:1280px){.rd{grid-template-columns:var(--measure-reading) minmax(0,640px);grid-template-areas:"prose lane"}.rd.solo{grid-template-columns:var(--measure-reading)}}
 .rd>.rd-prose{grid-area:prose;min-width:0}.rd>.rd-lane{grid-area:lane;min-width:0;display:flex;flex-direction:column;gap:28px}
 .lane-blk{display:flex;flex-direction:column;gap:8px;min-width:0}.lane-blk>.t-label{padding-bottom:2px}
+.rsec-fold-sum{display:none}
+@media(max-width:767px){.rsec-fold-sum{display:flex;align-items:center;min-height:44px;color:var(--gold);font-size:15px;font-weight:600;line-height:24px;list-style:none}.rsec-fold-sum::-webkit-details-marker{display:none}.rsec-fold::details-content{content-visibility:hidden}}
+.lane-lbl{margin:0;font:600 15px/20px var(--font-body);color:#f3eee2;letter-spacing:0;text-transform:none}
 .rprose{font-size:16px;line-height:26px;color:var(--text);max-width:var(--measure-reading);overflow-wrap:break-word}
 .rprose.lane{font-size:15px;line-height:24px}
 .rprose p{margin:0 0 14px}.rprose>:last-child{margin-bottom:0}
