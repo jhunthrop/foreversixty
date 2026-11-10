@@ -85,6 +85,11 @@ export const plannerCopy = {
    *  repeated here so the planner island does not carry the guides' whole copy. */
   guideLevelingBuild: 'Level 60 build',
   guideRaidBuild: 'Raid build',
+  /** In the game, under Copy for the game: the one line on using it, linked to the addon's setup step. */
+  pasteHint: 'In game: /fs, then paste.',
+  pasteHintHref: '/setup#addon',
+  /** Point order's column heads: the level past the row's first (ruling 2026-11-09: digits read as ranks). */
+  orderMarkers: Array.from({ length: 10 }, (_, step) => `+${step}`) as readonly string[],
   /** Points spent past a character's level (decision P4). */
   plannedAhead: (n: number): string => `${n} planned ahead`,
   /** Point order's line after the character's level row (decision P4). */
@@ -241,7 +246,9 @@ export const bandCompareCopy = {
   differsSuffix: 'of your points differ from this build',
   /** A build inside the band's, only short of it: the count leads, this text follows it. */
   toTakeSuffix: 'points left',
-  matches: 'Matches',
+  /** The level card on a build that is its guide's: "Matches the Survival guide build". */
+  matches: (specName: string): string =>
+    specName === '' ? 'Matches' : `Matches the ${specName} guide build`,
   /** The quiet note under the line when the build holds points past the band's own total. */
   beyondGuide: (n: number): string => `+${n} beyond the build`,
   /** The difference named, not counted (ruling Q1): "Differs by 2 points: this build takes

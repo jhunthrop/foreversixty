@@ -160,7 +160,12 @@
         {/if}
       {/if}
       <!-- No Copy for the game until a point is spent (h-audit 2026-11-09: a dim button read as unstyled). -->
-      {#if store.spent > 0}<CopyForGame code={addonCode} primary={character === null || otherClass} />{/if}
+      {#if store.spent > 0}<CopyForGame code={addonCode} primary={character === null || otherClass} />
+        <p class="text-small">
+          <a class={LINK} href={plannerCopy.pasteHintHref} data-testid="planner-paste-hint"
+            >{plannerCopy.pasteHint} ›</a
+          >
+        </p>{/if}
       <!-- With Import under it (the take-it-with-you plate), its own line carries the addon link. -->
       {#if character === null && children === undefined}
         <p>

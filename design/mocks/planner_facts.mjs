@@ -130,7 +130,7 @@ function state({ cls, race, order = [], level = null, spec = null }) {
     const names = bandDiffNames(index, ranks, entry.talents);
     const covers = bandCoverage(status, bandPointTotal(index, entry.talents), level === null ? null : available);
     const line = covers !== null ? bandCompareCopy.coversFewer(covers.covered, covers.total)
-      : status.kind === 'matches' ? bandCompareCopy.matches
+      : status.kind === 'matches' ? bandCompareCopy.matches(specDisplayName(specKey))
       : status.kind === 'differs' ? bandCompareCopy.differsNamed(status.count, names.mine, names.theirs, bandLabel)
       : bandCompareCopy.toTakeSuffix;
     // kind: matches (green word) | sentence (a whole sentence: covers or a named difference) | count (gold count, then the line)

@@ -260,7 +260,9 @@
           {#if coverage !== null}
             {bandCompareCopy.coversFewer(coverage.covered, coverage.total)}
           {:else if status?.kind === 'matches'}
-            <Tag tone="success">{bandCompareCopy.matches}</Tag>
+            <Tag tone="success"
+              >{bandCompareCopy.matches(specKey !== null ? specDisplayName(specKey) : '')}</Tag
+            >
           {:else if status?.kind === 'differs'}
             {namedLine}
           {:else if status?.kind === 'toTake'}

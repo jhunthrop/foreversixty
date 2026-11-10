@@ -195,7 +195,7 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
     body = ''
     if send is not None and plain_block and send.get('otherClass'):
         # Ruling MUST 5 (premium round): another class's build is one plain line above Copy for the game.
-        body += f'<p class="pl-line">{e(send["label"])}</p>' + (f'<div class="pl-acts">{copy_btn}</div>' if copy_btn else '') + failed
+        body += f'<p class="pl-line">{e(send["label"])}</p>' + (f'<div class="pl-acts">{copy_btn}</div><p class="t-small">{Link(e(P["pasteHint"]) + " &rsaquo;")}</p>' if copy_btn else '') + failed
     elif send is not None:
         btn = Button(e(send['label']), primary=not send.get('otherClass')).replace('class="btn', 'class="btn is-off' if send.get('disabled') else 'class="btn', 1)
         sec = send.get('secondary') or {}
@@ -208,9 +208,9 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
             role = ' role="alert"' if n['tone'] == 'error' else ' role="status"'
             note = f'<p class="pl-note {tone}"{role}>{e(n["text"])}{link}</p>' + (f'<p class="t-small">{e(n["detail"])}</p>' if n.get('detail') else '')
         body += f'<div class="pl-acts">{btn}{sec_btn}</div>{note}'
-        body += (f'<div class="pl-acts">{copy_btn}</div>' if copy_btn else '') + failed
+        body += (f'<div class="pl-acts">{copy_btn}</div><p class="t-small">{Link(e(P["pasteHint"]) + " &rsaquo;")}</p>' if copy_btn else '') + failed
     else:
-        body += (f'<div class="pl-acts">{copy_btn}</div>' if copy_btn else '') + failed
+        body += (f'<div class="pl-acts">{copy_btn}</div><p class="t-small">{Link(e(P["pasteHint"]) + " &rsaquo;")}</p>' if copy_btn else '') + failed
         # With Import under it, Import's own line carries the addon link (h-audit 2026-11-09).
         body += '' if parts else f'<p>{Link(r(C["cta"]["getAddonAndCompanion"]))}</p>'
     return Section(e(P['inGameTitle']), (f'<div class="pl-sec">{body}</div>' if body else '') + parts)
@@ -277,9 +277,9 @@ def order(st: dict) -> str:
         rows.append((e(row['label']), slots))
     preview = not st['points'] and any(slot['kind'] == 'ahead' for row in view['rows'] for slot in row['slots'])
     if st['points']:
-        body = PointOrder(rows, view['capAfter'], e(view['capText']))
+        body = PointOrder(rows, view['capAfter'], e(view['capText']), markers=P['orderMarkers'])
     elif preview:
-        body = f'<p class="t-small pl-pad">{e(st["preview_line"])}</p>' + PointOrder(rows, view['capAfter'], e(view['capText']))
+        body = f'<p class="t-small pl-pad">{e(st["preview_line"])}</p>' + PointOrder(rows, view['capAfter'], e(view['capText']), markers=P['orderMarkers'])
     else:
         body = f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>'
     return Section(e(P['pointOrderTitle']), body)

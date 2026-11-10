@@ -1199,11 +1199,12 @@ def TalentTip(name: str, rank: int, mx: int, now: str, nxt: str, req: str = '', 
     return f'<div class="ttip" role="tooltip"><b>{escape(name)}</b><span class="r">Rank {rank} of {mx}</span>{n}{x}{r}{bd}</div>'
 
 
-def PointOrder(rows: list[tuple[str, list[str]]], cap_after: int = -1, cap_text: str = '') -> str:
+def PointOrder(rows: list[tuple[str, list[str]]], cap_after: int = -1, cap_text: str = '', markers: list[str] | None = None) -> str:
     """rows: (label, slots html). A slot: an icon with its rank, an empty socket, the next socket (gold). `cap_after`: the row
     index after which the character's level line sits (points past it are planned ahead). A faint 0 to 9 marker sits over
     the first row: the last digit of each socket's level."""
-    out = '<div class="porder-m" aria-hidden="true"><span></span><div class="porder-s">' + ''.join(f'<span>{d}</span>' for d in range(10)) + '</div></div>'
+    heads = markers if markers is not None else [str(d) for d in range(10)]  # additive: the built `markers`
+    out = '<div class="porder-m" aria-hidden="true"><span></span><div class="porder-s">' + ''.join(f'<span>{d}</span>' for d in heads) + '</div></div>'
     for i, (lab, slots) in enumerate(rows):
         out += f'<div class="porder-r"><span class="t-small">{lab}</span><div class="porder-s" role="list">{"".join(slots)}</div></div>'
         if i == cap_after and cap_text:

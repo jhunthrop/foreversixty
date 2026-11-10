@@ -76,7 +76,14 @@
       </p>{/if}
     <!-- The rows meet the heading's hairline (the mock's rhythm). -->
     <div class={panel ? '' : '-mt-3'}>
-      <PointOrder rows={view.rows} capAfter={view.capAfter} capText={view.capText} testid="planner-order" />
+      <!-- The heads read as levels past the row's first ("+0" to "+9"), never as rank counts (ruling 2026-11-09). -->
+      <PointOrder
+        rows={view.rows}
+        capAfter={view.capAfter}
+        capText={view.capText}
+        markers={plannerCopy.orderMarkers}
+        testid="planner-order"
+      />
     </div>
   {/if}
 </Section>
