@@ -8,8 +8,8 @@ var officerCopy = struct {
 	ReportPrefix string
 	// The report's field names.
 	KillOrder, MostDeaths, Consumables, Loot string
-	// LootAll is the Loot field when every item follows ("4 items:"); otherwise LootCount and
-	// LootFirst: "10 items." and " The first 8:".
+	// LootAll is the Loot field when every item follows ("4 items"); otherwise LootCount and
+	// LootFirst: "10 items" and ", the best 8 below".
 	LootAll, LootCount, LootFirst string
 	// LootTo is an award's source line.
 	LootTo string
@@ -50,9 +50,9 @@ var officerCopy = struct {
 	MostDeaths:            "Most deaths",
 	Consumables:           "Consumables",
 	Loot:                  "Loot",
-	LootAll:               "{n} items:",
-	LootCount:             "{n} items.",
-	LootFirst:             " The first {k}:",
+	LootAll:               "{n} items",
+	LootCount:             "{n} items",
+	LootFirst:             ", the best {k} below",
 	LootTo:                "to {Name} · {Boss}",
 	OpenReport:            "Open the report",
 	ReportNone:            "No raid logged yet.",

@@ -27,7 +27,9 @@ func TestDumpReviewCards(t *testing.T) {
 		"card-build": func() ([]byte, error) { return Render(sample()) },
 		"card-report": func() ([]byte, error) {
 			return RenderReport(ReportInput{Title: "Thursday Onyxia", Zone: "Onyxia's Lair",
-				Bosses: []Boss{wipe("Onyxia"), kill("Onyxia", 102)}, DurationMS: int64(74 * time.Minute / time.Millisecond), Deaths: 6})
+				// The night /report and the report post show: 3 wipes, a 1:42 kill, 2 h 41 min, 14 deaths.
+				Bosses:     []Boss{wipe("Onyxia"), wipe("Onyxia"), wipe("Onyxia"), kill("Onyxia", 102)},
+				DurationMS: int64(161 * time.Minute / time.Millisecond), Deaths: 14})
 		},
 		"card-report-mc": func() ([]byte, error) {
 			return RenderReport(ReportInput{Title: "Olympus XXVII Thursday Molten Core", Zone: "Molten Core", Bosses: mc,

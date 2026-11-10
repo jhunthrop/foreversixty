@@ -91,11 +91,16 @@ func (r *renderer) fitEmpty(kind string, sl Slot) (cellText, error) {
 	}
 	ct := cellText{label: wrapWords(words, d(textW+fitSlack))}
 	if kind == KindChar && sl.Gain != "" && !sl.TwoHandOff {
-		gold, err := r.faces.text(styleGold)
-		if err != nil {
-			return cellText{}, err
+		ct.gold, ct.goldInk, ct.goldStyle = sl.Gain, colorGold, styleGold
+		if pick := named(CopyBisPick, sl.Pick); pick != "" {
+			fitted, ok, err := r.shrinkToFit(styleGold, pick)
+			if err != nil {
+				return cellText{}, err
+			}
+			if ok {
+				ct.gold, ct.goldStyle = pick, fitted
+			}
 		}
-		ct.gold, ct.goldInk, ct.goldStyle = firstFitting(gold, d(textW+fitSlack), named(CopyBisPick, sl.Pick), sl.Gain), colorGold, styleGold
 	}
 	return ct, nil
 }
@@ -108,22 +113,6 @@ func named(prefix, name string) string {
 	return prefix + name
 }
 
-// firstFitting is the first non-empty line that draws within maxW; the last one when none does.
-// Nothing is cut.
-func firstFitting(t text, maxW float64, lines ...string) string {
-	last := ""
-	for _, l := range lines {
-		if l == "" {
-			continue
-		}
-		if t.width(l) <= maxW {
-			return l
-		}
-		last = l
-	}
-	return last
-}
-
 // gainLine is a worn /char cell's last line, its ink and style: a modelled gain in the gain
 // green, naming the pick when it fits ("+11.0 DPS · Dawn Armor"); a pick with no figure in the
 // meta's muted regular ("Upgrade: Dawn Armor", else "Gain not modelled yet"); "" with no upgrade.
@@ -132,16 +121,38 @@ func (r *renderer) gainLine(sl Slot) (string, color.RGBA, style, error) {
 		return "", color.RGBA{}, styleGold, nil
 	}
 	st, ink := styleGold, colorGain
-	lines := []string{named(sl.Gain+metaJoin, sl.Pick), sl.Gain}
+	withPick, bare := named(sl.Gain+metaJoin, sl.Pick), sl.Gain
 	if !isFigure(sl.Gain) {
+		// A pick with no figure names the pick; with none that fits, the line stays empty.
 		st, ink = styleMeta, colorMuted
-		lines = []string{named(CopyUpgradePick, sl.Pick), sl.Gain}
+		withPick, bare = named(CopyUpgradePick, sl.Pick), ""
 	}
-	t, err := r.faces.text(st)
-	if err != nil {
-		return "", color.RGBA{}, st, err
+	if withPick != "" {
+		if fitted, ok, err := r.shrinkToFit(st, withPick); err != nil || ok {
+			return withPick, ink, fitted, err
+		}
 	}
-	return firstFitting(t, d(textW+fitSlack), lines...), ink, st, nil
+	return bare, ink, st, nil
+}
+
+// pickMinPx is the smallest a gain line shrinks to so it can name its pick.
+const pickMinPx = 15
+
+// shrinkToFit is st at the largest size from its own down to pickMinPx at which line fits the
+// cell's text box; ok is false when none does.
+func (r *renderer) shrinkToFit(st style, line string) (style, bool, error) {
+	for px := st.size; px >= pickMinPx; px-- {
+		try := st
+		try.size = px
+		t, err := r.faces.text(try)
+		if err != nil {
+			return st, false, err
+		}
+		if t.width(line) <= d(textW+fitSlack) {
+			return try, true, nil
+		}
+	}
+	return st, false, nil
 }
 
 // fitName draws the name on one line at 20 px, shrinking 1 px at a time to 14 px; a name still

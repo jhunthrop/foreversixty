@@ -46,3 +46,18 @@ func TestRaidPostWithoutTargetOrGaps(t *testing.T) {
 		}
 	}
 }
+
+// A group past its target says how far over, so three tanks against two never reads "3 of 2".
+func TestRaidPostSaysOverTarget(t *testing.T) {
+	in := onyxiaThursday()
+	for _, n := range []string{"Ironvale", "Stonebrow", "Kraggor"} {
+		in.Roster = append(in.Roster, RosterLine{Name: n, Class: "warrior", Spec: "Protection", Role: "tank", State: "in"})
+	}
+	in.Target = &RoleTarget{Tanks: 2, Healers: 8, Melee: 10, Ranged: 20}
+	e := RaidPostEmbed(RaidPost{RaidPosted: in, State: PostOpen}, fixedFinish)
+	for _, f := range e.Fields {
+		if strings.HasPrefix(f.Name, "Tanks") && f.Name != "Tanks · 3 of 2, 1 over" {
+			t.Fatalf("heading %q", f.Name)
+		}
+	}
+}

@@ -324,7 +324,7 @@ Site strings join `raidCopy.form` (beside `postToDiscord`); Discord strings join
 | `form.reminded` | `Reminder sent.` |
 | `post.tomorrowTitle` | `Tomorrow: {Title} · {Weekday} {d} {Month}` |
 | `post.tomorrowDescription` | none (round 5, 2026-11-09: the title's `Tomorrow:` says it) |
-| `reminder.line` | `{Title} is tomorrow, <t:{unix}:F> (<t:{unix}:R>). {signed} of {size} signed up so far.` Unknown size: `{n} signed up so far.` Nobody: `Nobody has signed up yet.` |
+| `reminder.line` | `{Title} is tomorrow, <t:{unix}:t>. {signed} of {size} signed up so far.` Unknown size: `{n} signed up so far.` Nobody: `Nobody has signed up yet.` |
 | `reminder.webhookLink` | `[Sign up on Forever Sixty]({raid url})` |
 | `roster.signed` | `**{signed} of {size}**`; unknown size `**{n} signed up**`; nobody `None yet` (the `Signed up` field's value; the role clauses and the `Bench {n} · Out {n}` line leave the post) |
 | `roster.tanks` | `Tanks · {n}` |

@@ -78,7 +78,7 @@ func TestBossRowsSplitKillsFromWipes(t *testing.T) {
 	rows := bossRows(f, []Boss{{Name: "Kelthas", Kill: true, DurationMS: 102_000}, {Name: "Emberdeep"}, {Name: "Emberdeep"},
 		{Name: "Majordomo Executus"}, {Name: "Majordomo Executus", Kill: true, DurationMS: 181_000},
 		{Name: "Garr", Kill: true, DurationMS: 95_000}, {Name: "Ragnaros"}}, Width-2*marginX)
-	if len(rows) != 2 || rows[0].label != copyKilled || rows[0].names != "Kelthas 1:42 · Majordomo Executus 3:01 · Garr 1:35" ||
+	if len(rows) != 2 || rows[0].label != copyKilled || rows[0].names != "Kelthas 1:42 · Majordomo Executus 3:01 after 1 wipe · Garr 1:35" ||
 		rows[1].label != copyWiped || rows[1].names != "Emberdeep (2 wipes) · Ragnaros (1 wipe)" {
 		t.Fatalf("rows = %+v", rows)
 	}

@@ -109,6 +109,7 @@ func dumpBisFrames(d frameDumper) {
 	w := newBisWorld(t)
 	w.svc.now = func() time.Time { return boardClock }
 	writeBis(t, w.lg.dir, "hunter-beast-mastery", realHunterBands(t))
+	copyGearLoot(t, w.lg.dir)
 	stranger := "d-stranger"
 	press := func(user, id string, values ...string) Message { return w.pressBis(t, user, id, values...).Message }
 
@@ -294,5 +295,17 @@ func onyxiaLootLevels() map[int]trees.Item {
 		17068: {ID: 17068, ItemLevel: 75}, 17075: {ID: 17075, ItemLevel: 74}, 18205: {ID: 18205, ItemLevel: 71},
 		18813: {ID: 18813, ItemLevel: 73}, 17078: {ID: 17078, ItemLevel: 72}, 16908: {ID: 16908, ItemLevel: 76},
 		16914: {ID: 16914, ItemLevel: 76},
+	}
+}
+
+// copyGearLoot puts the gear panel's loot.json (testdata/gear-panel) beside the bands, so the
+// result's source lines are the page's own ("Quest: ...", "Vendor: ..."), not kind words.
+func copyGearLoot(t *testing.T, dir string) {
+	raw, err := os.ReadFile(filepath.Join(gearData, gearBuild, "loot.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, lookupBuild, "loot.json"), raw, 0o600); err != nil {
+		t.Fatal(err)
 	}
 }

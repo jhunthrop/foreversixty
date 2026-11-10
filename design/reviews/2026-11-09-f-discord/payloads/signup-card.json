@@ -7,7 +7,7 @@
       {
         "title": "Onyxia's Lair · Saturday 12 December",
         "description": "You have not signed up yet.",
-        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/150",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/229",
         "fields": [
           {
             "name": "When",
@@ -37,18 +37,18 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "gsgn:1:raid:150:us/normal/duskstrider",
+            "custom_id": "gsgn:1:raid:229:us/normal/duskstrider",
             "placeholder": "Choose a raid",
             "options": [
               {
                 "label": "Onyxia's Lair · Sat 12 Dec",
-                "value": "150",
+                "value": "229",
                 "description": "0 of 40 signed up",
                 "default": true
               },
               {
                 "label": "Molten Core · Tue 15 Dec",
-                "value": "151",
+                "value": "230",
                 "description": "0 of 40 signed up"
               }
             ]
@@ -60,7 +60,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "gsgn:1:char:150:us/normal/duskstrider",
+            "custom_id": "gsgn:1:char:229:us/normal/duskstrider",
             "placeholder": "Choose a character",
             "options": [
               {
@@ -85,31 +85,31 @@
             "type": 2,
             "style": 2,
             "label": "In",
-            "custom_id": "gsgn:1:in:150:us/normal/duskstrider"
+            "custom_id": "gsgn:1:in:229:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "gsgn:1:late:150:us/normal/duskstrider"
+            "custom_id": "gsgn:1:late:229:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "gsgn:1:bench:150:us/normal/duskstrider"
+            "custom_id": "gsgn:1:bench:229:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "gsgn:1:out:150:us/normal/duskstrider"
+            "custom_id": "gsgn:1:out:229:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 5,
             "label": "Raid page",
-            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/150"
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/229"
           }
         ]
       }

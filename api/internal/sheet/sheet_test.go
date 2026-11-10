@@ -138,7 +138,11 @@ func TestEveryCellState(t *testing.T) {
 		{"char worn, tank gain", KindChar, Slot{Slot: "chest", Name: "Shadowcraft Tunic", Quality: 3, Icon: "inv_chest_leather_07", ItemLevel: 63, Gain: "+4.0 points"},
 			"Shadowcraft Tunic", []string{"Chest · item level 63"}, "+4.0 points", qualityText[3]},
 		{"char worn, not modelled", KindChar, Slot{Slot: "head", Name: "Outlaw's Collar", Quality: 4, Icon: "inv_misc_bandana_03", ItemLevel: 65, Gain: CopyNotModelled},
-			"Outlaw's Collar", []string{"Head · item level 65"}, CopyNotModelled, qualityText[4]},
+			"Outlaw's Collar", []string{"Head · item level 65"}, "", qualityText[4]},
+		{"char worn, not modelled, its pick named", KindChar, Slot{Slot: "head", Name: "Outlaw's Collar", Quality: 4, Icon: "inv_misc_bandana_03", ItemLevel: 65, Gain: CopyNotModelled, Pick: "Beastmaster's Cap"},
+			"Outlaw's Collar", []string{"Head · item level 65"}, "Upgrade: Beastmaster's Cap", qualityText[4]},
+		{"char worn, gain naming its pick", KindChar, Slot{Slot: "chest", Name: "Shadowcraft Tunic", Quality: 3, Icon: "inv_chest_leather_07", ItemLevel: 63, Gain: "+11.0 DPS", Pick: "Dawn Armor"},
+			"Shadowcraft Tunic", []string{"Chest · item level 63"}, "+11.0 DPS · Dawn Armor", qualityText[3]},
 		{"unknown item", KindBis, Slot{Slot: "head", Name: "Mystery Hood", Quality: -1, Meta: "Vendor: Mokvar"},
 			"Mystery Hood", []string{"Head · Vendor: Mokvar"}, "", colorText},
 	}

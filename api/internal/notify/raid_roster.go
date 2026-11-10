@@ -13,6 +13,7 @@ import (
 var rosterCopy = struct {
 	Tanks, Healers, Melee, Ranged string // each takes %d
 	OfTarget                      string // a group heading with its target: %s the heading, %d
+	OverTarget                    string // a group past its target: %s the heading, %d the target, %d over
 	In                            string // a guild event's In list; takes %d
 	Late, Bench, Out              string // each takes %d
 	Continued                     string
@@ -22,7 +23,7 @@ var rosterCopy = struct {
 	Sep                           string // between a name and its spec or class in a text line
 	EmojiFormat                   string // %s the emoji name, %s its id, %s the name
 }{
-	Tanks: "Tanks · %d", Healers: "Healers · %d", Melee: "Melee · %d", Ranged: "Ranged · %d", OfTarget: "%s of %d",
+	Tanks: "Tanks · %d", Healers: "Healers · %d", Melee: "Melee · %d", Ranged: "Ranged · %d", OfTarget: "%s of %d", OverTarget: "%s of %d, %d over",
 	In: "In · %d", Late: "Late · %d", Bench: "Bench · %d", Out: "Out · %d",
 	Continued: "​", Empty: "None yet", More: "and %d more", OutJoin: ", ", Sep: " · ",
 	EmojiFormat: "<:%s:%s> %s",
@@ -156,7 +157,11 @@ func rosterFieldsWithin(roster []RosterLine, marks Marks, target *RoleTarget, li
 			rows := inGroup(roster, g)
 			heading := fmt.Sprintf(g.label, len(rows))
 			if target != nil {
-				heading = fmt.Sprintf(rosterCopy.OfTarget, heading, target.of(g.group))
+				want := target.of(g.group)
+				heading = fmt.Sprintf(rosterCopy.OfTarget, heading, want)
+				if over := len(rows) - want; over > 0 {
+					heading = fmt.Sprintf(rosterCopy.OverTarget, fmt.Sprintf(g.label, len(rows)), want, over)
+				}
 			}
 			fields = append(fields, groupFields(heading, lines(rows, marks), lim.group[i])...)
 		}

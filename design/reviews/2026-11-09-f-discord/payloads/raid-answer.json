@@ -7,7 +7,7 @@
       {
         "title": "Onyxia's Lair · Thursday 10 December",
         "description": "You have not signed up yet.",
-        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/160",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/239",
         "fields": [
           {
             "name": "When",
@@ -65,31 +65,31 @@
             "type": 2,
             "style": 2,
             "label": "In",
-            "custom_id": "raid:160:in"
+            "custom_id": "raid:239:in"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "raid:160:late"
+            "custom_id": "raid:239:late"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "raid:160:bench"
+            "custom_id": "raid:239:bench"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "raid:160:out"
+            "custom_id": "raid:239:out"
           },
           {
             "type": 2,
             "style": 5,
             "label": "Raid page",
-            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/160"
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/239"
           }
         ]
       }

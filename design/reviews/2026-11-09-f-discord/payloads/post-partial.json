@@ -73,25 +73,25 @@
             "type": 2,
             "style": 2,
             "label": "In",
-            "custom_id": "raid:154:in"
+            "custom_id": "raid:233:in"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "raid:154:late"
+            "custom_id": "raid:233:late"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "raid:154:bench"
+            "custom_id": "raid:233:bench"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "raid:154:out"
+            "custom_id": "raid:233:out"
           },
           {
             "type": 2,
@@ -105,7 +105,7 @@
     "allowed_mentions": {
       "parse": []
     },
-    "nonce": "r4a.mwa790b9",
+    "nonce": "r6h.mwa7fiz2",
     "enforce_nonce": true
   }
 }

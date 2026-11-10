@@ -3,7 +3,7 @@
   "title": "the reminder as a reply under the post",
   "clock": "2026-12-10T02:00:00Z",
   "message": {
-    "content": "**Onyxia's Lair is tomorrow**, \u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e). 33 of 40 signed up so far.",
+    "content": "**Onyxia's Lair is tomorrow**, \u003ct:1796954400:t\u003e. 33 of 40 signed up so far.",
     "components": [
       {
         "type": 1,
@@ -12,25 +12,25 @@
             "type": 2,
             "style": 2,
             "label": "In",
-            "custom_id": "raid:157:in"
+            "custom_id": "raid:236:in"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "raid:157:late"
+            "custom_id": "raid:236:late"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "raid:157:bench"
+            "custom_id": "raid:236:bench"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "raid:157:out"
+            "custom_id": "raid:236:out"
           },
           {
             "type": 2,
@@ -44,7 +44,7 @@
     "allowed_mentions": {
       "parse": []
     },
-    "nonce": "q4d.tpuyw0",
+    "nonce": "q6k.tpuyw0",
     "enforce_nonce": true,
     "message_reference": {
       "message_id": "m1",
@@ -73,7 +73,7 @@
             "inline": true
           },
           {
-            "name": "Tanks · 3 of 2",
+            "name": "Tanks · 3 of 2, 1 over",
             "value": "\u003c:fs_warrior_protection:1301000000000000028\u003e Ironvale\n\u003c:fs_warrior_protection:1301000000000000028\u003e Kraggor\n\u003c:fs_druid_feral_bear:1301000000000000003\u003e Bramblehide",
             "inline": true
           },
@@ -123,25 +123,25 @@
             "type": 2,
             "style": 2,
             "label": "In",
-            "custom_id": "raid:157:in"
+            "custom_id": "raid:236:in"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "raid:157:late"
+            "custom_id": "raid:236:late"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "raid:157:bench"
+            "custom_id": "raid:236:bench"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "raid:157:out"
+            "custom_id": "raid:236:out"
           },
           {
             "type": 2,

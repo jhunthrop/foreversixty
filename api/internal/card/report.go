@@ -35,9 +35,10 @@ const (
 	copyNoBosses  = "No boss fights yet"
 	copyLogZone   = "Combat log"
 	copyMoreBoss  = " and %d more"
-	copyWipesOne  = "%s (1 wipe)"
-	copyWipesMany = "%s (%d wipes)"
+	copyWipesOne  = "1 wipe"
+	copyWipesMany = "%d wipes"
 	copyKillTime  = "%s %s"
+	copyKillAfter = "%s %s after %s"
 	copyDeathsOne = "1 death"
 	copyDeaths    = "%d deaths"
 	reportLabelGp = 14 // between "Killed" and the names
@@ -126,12 +127,12 @@ func bossRows(f *faces, bosses []Boss, maxWidth int) []bossRow {
 	killedWords, wipedWords := make([]string, len(killed)), make([]string, len(wiped))
 	for i, b := range killed {
 		killedWords[i] = fmt.Sprintf(copyKillTime, b.name, notify.KillClock(b.kill))
+		if b.wipes > 0 {
+			killedWords[i] = fmt.Sprintf(copyKillAfter, b.name, notify.KillClock(b.kill), wipeWords(b.wipes))
+		}
 	}
 	for i, b := range wiped {
-		wipedWords[i] = fmt.Sprintf(copyWipesMany, b.name, b.wipes)
-		if b.wipes == 1 {
-			wipedWords[i] = fmt.Sprintf(copyWipesOne, b.name)
-		}
+		wipedWords[i] = fmt.Sprintf("%s (%s)", b.name, wipeWords(b.wipes))
 	}
 	for _, g := range []struct {
 		label string
@@ -174,6 +175,14 @@ func nameLines(face font.Face, names []string, maxWidth, most int) []string {
 		names = names[used:]
 	}
 	return lines
+}
+
+// wipeWords is "1 wipe" or "3 wipes".
+func wipeWords(n int) string {
+	if n == 1 {
+		return copyWipesOne
+	}
+	return fmt.Sprintf(copyWipesMany, n)
 }
 
 // bossNight is one boss over the night: its kill time, zero when it never died, and the wipes.

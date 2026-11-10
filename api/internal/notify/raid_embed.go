@@ -68,7 +68,7 @@ var raidCopy = struct {
 	BuffsShort      string // %s the buffs with too few bringers
 	BuffsJoin       string
 	// The reminder line (spec 2026-10-28 §P.7).
-	ReminderLead        string // %s the escaped title, %d the unix start, twice
+	ReminderLead        string // %s the escaped title, %d the unix start
 	ReminderCount       string // %d signed up, %d the raid size
 	ReminderCountOpen   string // %d signed up, size unknown
 	ReminderNobody      string
@@ -107,7 +107,7 @@ var raidCopy = struct {
 	BuffsShort:     "Short: %s",
 	BuffsJoin:      ", ",
 
-	ReminderLead:        "**%s is tomorrow**, <t:%d:F> (<t:%d:R>).",
+	ReminderLead:        "**%s is tomorrow**, <t:%d:t>.",
 	ReminderCount:       "%d of %d signed up so far.",
 	ReminderCountOpen:   "%d signed up so far.",
 	ReminderNobody:      "Nobody has signed up yet.",

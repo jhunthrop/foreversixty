@@ -35,7 +35,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**Beastmaster's Cap**\nHead · Gain not modelled yet\n-# Alliance quest"
+                "content": "**Beastmaster's Cap**\nHead · Gain not modelled yet\n-# Quest: Saving the Best for Last · requires level 58"
               }
             ],
             "accessory": {
@@ -51,7 +51,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**Amulet of the Darkmoon**\nNeck · +0.3 DPS\n-# Alliance quest"
+                "content": "**Amulet of the Darkmoon**\nNeck · +0.3 DPS\n-# Quest: 1200 Tickets - Amulet of the Darkmoon · requires level 55"
               }
             ],
             "accessory": {
@@ -67,7 +67,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**Darkspear Pauldrons**\nShoulder · Same DPS as the next best\n-# Vendors"
+                "content": "**Darkspear Pauldrons**\nShoulder · Same DPS as the next best\n-# Vendor: Creeg Bothunk"
               }
             ],
             "accessory": {
@@ -83,7 +83,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**Cape of the Black Baron**\nBack · +0.9 DPS\n-# Dungeons"
+                "content": "**Cape of the Black Baron**\nBack · +0.9 DPS\n-# Stratholme · Baron Rivendare"
               }
             ],
             "accessory": {
@@ -99,7 +99,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**Dawn Armor**\nChest · +5.4 DPS\n-# Crafted"
+                "content": "**Dawn Armor**\nChest · +5.4 DPS\n-# Crafted: Leatherworking"
               }
             ],
             "accessory": {
@@ -115,7 +115,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**Beastmaster's Bindings**\nWrist · Same DPS as the next best\n-# Alliance quest"
+                "content": "**Beastmaster's Bindings**\nWrist · Same DPS as the next best\n-# Quest: An Earnest Proposition · requires level 58"
               }
             ],
             "accessory": {
@@ -131,7 +131,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**Raider Gloves**\nHands · Same DPS as the next best\n-# Vendors"
+                "content": "**Raider Gloves**\nHands · Same DPS as the next best\n-# Vendor: Creeg Bothunk"
               }
             ],
             "accessory": {
@@ -147,7 +147,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**Belt of Preserved Heads**\nWaist · +0.4 DPS\n-# Alliance quest"
+                "content": "**Belt of Preserved Heads**\nWaist · +0.4 DPS\n-# Quest: A Collection of Heads · requires level 58"
               }
             ],
             "accessory": {
@@ -163,7 +163,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "**Sentinel's Chain Leggings**\nLegs · +7.4 DPS\n-# Vendors"
+                "content": "**Sentinel's Chain Leggings**\nLegs · +7.4 DPS\n-# Vendor: Illiyana Moonblaze"
               }
             ],
             "accessory": {
@@ -183,7 +183,7 @@
             "type": 2,
             "style": 2,
             "label": "Share in channel",
-            "custom_id": "share:wp-DxlIX0lgXsYNh7RruD3BZ2U_GZ0MRlYYUY6c8Mu0"
+            "custom_id": "share:z3nKUEBgKQS2izmQU4rtMiTtq21lttyOtBeVmOCPVxo"
           },
           {
             "type": 2,

@@ -89,7 +89,7 @@ var (
 	styleRange   = style{face: brand.OpenSans400, size: 14, lineHeight: 18}
 	styleILvlLab = style{face: brand.OpenSans600, size: 14, lineHeight: 18}
 	styleILvl    = style{face: brand.Marcellus400, size: 34, lineHeight: 38}
-	styleGainSum = style{face: brand.Marcellus400, size: 26, lineHeight: 30}
+	styleGainSum = style{face: brand.Marcellus400, size: 22, lineHeight: 26}
 	styleFaction = style{face: brand.OpenSans600, size: 14, lineHeight: 18}
 )
 

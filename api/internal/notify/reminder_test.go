@@ -87,7 +87,7 @@ func TestTomorrowEmbed(t *testing.T) {
 func TestReminderLine(t *testing.T) {
 	in := onyxiaThursday()
 	in.Counts = RaidCounts{In: 30, Late: 3}
-	const lead = "**Onyxia's Lair is tomorrow**, <t:1796954400:F> (<t:1796954400:R>)."
+	const lead = "**Onyxia's Lair is tomorrow**, <t:1796954400:t>."
 	if got, want := ReminderLine(in), lead+" 33 of 40 signed up so far."; got != want {
 		t.Fatalf("got %q want %q", got, want)
 	}
