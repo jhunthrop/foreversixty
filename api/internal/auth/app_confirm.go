@@ -15,10 +15,10 @@ var appConfirmCopy = struct {
 	Title, Heading, Body, Button, NotYou string
 }{
 	Title:   "Sign in to the Forever Sixty app",
-	Heading: "Sign in to the Forever Sixty app on your phone",
-	Body:    "Continue to Battle.net to sign in. The Forever Sixty app on your phone finishes the sign-in.",
+	Heading: "Sign in to the app",
+	Body:    "Sign in on Battle.net and the app picks it up from there.",
 	Button:  "Continue to Battle.net",
-	NotYou:  "If you didn't start a sign-in from the Forever Sixty app on your phone, close this page.",
+	NotYou:  "Didn't start this sign-in from the app? Close this page.",
 }
 
 // appConfirmPage is self-contained: no script, no form, no image, no font, nothing fetched.
@@ -63,7 +63,7 @@ body{margin:0;min-height:100vh;background:%[1]s;color:%[2]s;font:16px/1.55 %[3]s
 .band{background:linear-gradient(%[4]s 0,%[4]s calc(100%% - 96px),%[1]s 100%%);padding:0 18px 96px}
 .col{max-width:560px;margin:0 auto}
 .mark{display:block;padding:18px 0 0;font:400 22px/1 %[5]s;color:%[6]s;letter-spacing:-.015em}
-h1{margin:0;padding:22px 0 0;font:400 21px/25px %[5]s;letter-spacing:-.015em;color:%[6]s;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+h1{margin:0;padding:22px 0 0;font:400 21px/25px %[5]s;letter-spacing:-.015em;color:%[6]s;text-shadow:0 1px 2px rgba(0,0,0,.45);text-wrap:balance}
 main{margin-top:-76px;padding:0 18px 40px}
 .panel{position:relative;background:%[7]s;border:1px solid #000;box-shadow:0 0 0 1px %[8]s;border-radius:%[9]dpx;padding:22px 24px}
 .panel::before{content:"";position:absolute;inset:6px;border:1px solid %[10]s;border-radius:%[11]dpx;pointer-events:none}

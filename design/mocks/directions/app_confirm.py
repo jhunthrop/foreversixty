@@ -33,7 +33,7 @@ body{{margin:0;min-height:100vh;background:{TOKENS['earth']};color:{TOKENS['text
 .band{{background:linear-gradient({TOKENS['band']} 0,{TOKENS['band']} calc(100% - 96px),{TOKENS['earth']} 100%);padding:0 18px 96px}}
 .col{{max-width:560px;margin:0 auto}}
 .mark{{display:block;padding:18px 0 0;font:400 22px/1 {TITLE_FONT};color:{TOKENS['cream']};letter-spacing:-.015em}}
-h1{{margin:0;padding:22px 0 0;font:400 21px/25px {TITLE_FONT};letter-spacing:-.015em;color:{TOKENS['cream']};text-shadow:0 1px 2px rgba(0,0,0,.45)}}
+h1{{margin:0;padding:22px 0 0;font:400 21px/25px {TITLE_FONT};letter-spacing:-.015em;color:{TOKENS['cream']};text-shadow:0 1px 2px rgba(0,0,0,.45);text-wrap:balance}}
 main{{margin-top:-76px;padding:0 18px 40px}}
 .panel{{position:relative;background:{TOKENS['card']};border:1px solid #000;box-shadow:0 0 0 1px rgba(130,112,91,.55);border-radius:{R_LG}px;padding:22px 24px}}
 .panel::before{{content:"";position:absolute;inset:6px;border:1px solid {FRAME_LINE};border-radius:{R_LG - 4}px;pointer-events:none}}

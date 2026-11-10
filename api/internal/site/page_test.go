@@ -85,7 +85,7 @@ func TestNotFoundPageOffersThePlannerTheGuidesAndAsksTheSender(t *testing.T) {
 		`<div class="b-band ui-band ui-band-end full-bleed" data-art="band">`,
 		`<h1 class="b-title" data-testid="page-title">Build not found</h1>`,
 		`<div class="b-panel ui-surface ui-framed" data-region="plate" data-testid="b-message-panel">`,
-		`data-testid="b-message-sentence">That link does not point at a saved build. It may have been mistyped. ` +
+		`data-testid="b-message-sentence">That link does not point at a saved build. ` +
 			`<span data-testid="b-message-ask">Ask whoever sent it for a fresh link.</span></p>`,
 		`<a href="https://foreversixty.gg/planner" class="` + primaryButtonClass + `">Open the build planner</a>`,
 		`<a class="` + linkClass + `" href="https://foreversixty.gg/guides">Talent builds in the class guides ›</a>`,
