@@ -112,7 +112,12 @@ describe('/guides/warrior/fury (the page structure)', () => {
       'head-answer',
       'controls',
       'plate',
-      ...ANCHORS.map((anchor) => `section-${anchor}`),
+      // The Best in slot section's doll (the shared PaperdollFrame) carries its own three regions.
+      ...ANCHORS.flatMap((anchor) =>
+        anchor === 'best-in-slot'
+          ? [`section-${anchor}`, 'slots', 'paperdoll-medallion', 'paperdoll-centre']
+          : [`section-${anchor}`],
+      ),
       'section-sources',
       'footer-note',
     ]);
@@ -387,7 +392,9 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       expect(bis).toContain(`href="${href}"`);
     expect(bis).toMatch(/href="\/tiers"[^>]*data-testid="guide-tier-list"/);
     expect(bis).not.toContain('named honestly');
-    expect(bis).not.toMatch(/<astro-island/);
+    // The lane's list is server-rendered; only the doll in the prose column hydrates.
+    expect(bis.split('class="ui-rd-prose')[0]).not.toMatch(/<astro-island/);
+    expect(bis).toContain('data-testid="guide-bis-doll"');
   });
 
   it('adds the enchant and consumable choices and the race lane', () => {

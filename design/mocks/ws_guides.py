@@ -22,7 +22,7 @@ from pathlib import Path
 from mocklib import CLASS_COLOR
 from ws_prims import (Button, ClassSpecPicker, Facts, ItemRow, LaneBlock, LevelSlider, Link, Menu, Page, PageHeader, Plate, PlateColumns,
                       Prose, ReadingPanel, ReadingSection, Row, RowGrid, Rows, RowsSlim, Section, Skeleton, StatRow, StatTable, Tag, TalentTrees, Toc,
-                      build_page, control_bar, crest_img, icon, seg, sel, write, REGION, Meter, QCOL)
+                      build_page, control_bar, crest_img, icon, seg, sel, write, REGION, Meter, QCOL, ItemTip, PaperdollFrame)
 
 HERE = Path(__file__).resolve().parent
 F = json.loads(Path(os.environ.get('FS_GUIDES_FACTS') or HERE / 'data' / 'guides-facts.json').read_text())
@@ -194,7 +194,25 @@ def gear(g: dict, band_no: int = 60, faction: str = 'alliance', data: bool = Tru
     # Every band's own BiS page and the role's tier list (SEO lane 2026-11-08), one quiet block under the full list.
     bands = ''.join(Link(e(s)) for s in F['fns']['bandSlugs'])
     lane += f'<p class="t-small gbands">{e(C["bisByLevelLabel"])}{bands}</p><p class="gtier">{Link(rsaquo(C["tierListLink"]))}</p>'
-    return ReadingSection(SEC['best-in-slot'], Prose(b['prose']), lane, 'best-in-slot')
+    return ReadingSection(SEC['best-in-slot'], Prose(b['prose']) + guide_doll(g, faction) if data and b['data'] else Prose(b['prose']), lane, 'best-in-slot')
+
+
+QUALITY_NAME = {0: 'poor', 1: 'common', 2: 'uncommon', 3: 'rare', 4: 'epic', 5: 'legendary'}
+
+
+def guide_doll(g: dict, faction: str) -> str:
+    """The Best in slot doll (web guides/GuideBisDoll.svelte): the level 60 picks on the shared PaperdollFrame in the prose
+    column, the first pick's client tooltip in its centre; under the frame's 423 px it steps aside (the lane lists the picks)."""
+    panel = next(p for p in g['bis']['data']['panels'] if p['band'] == 60 and p['faction'] == faction)
+    picks = [r for r in panel['rows'] if not r.get('empty')]
+    slots = [{'slot': r['slot'], 'label': f"{r['slotLabel']}: {r['itemName']}", 'covered': False, 'selected': i == 0,
+              'icon': r['icon'], 'quality': r['quality']} for i, r in enumerate(picks)]
+    first = picks[0]
+    centre = ItemTip(first['itemName'], QUALITY_NAME.get(first['quality'], 'common'), [], [], first['sourceDetail'])
+    who = 'Alliance' if faction == 'alliance' else 'Horde'
+    meta = f"{'Pre-raid ' if panel['preRaid'] else ''}60 · {panel['raceName']} ({who})"
+    doll = PaperdollFrame(slots, g['title'], meta, None, centre, f"{g['title']} best in slot, level 60", heading='h2')
+    return f'<div class="gdoll"><div class="gdoll-f">{doll}</div></div>'
 
 
 def extras(g: dict, data: bool = True) -> str:
@@ -371,6 +389,7 @@ def states_page() -> str:
 
 
 PAGE_CSS = '''<style>
+.gdoll{container-type:inline-size;margin-top:24px}.gdoll-f{max-width:640px}@container (max-width:422.98px){.gdoll-f{display:none}}
 /* page-level layout only (no surfaces): the answer box's inner rows, column splits, spacing */
 .ans-row{display:flex;align-items:center;gap:12px}.ans-who{display:flex;flex-direction:column;min-width:0}.ans-name{font:700 18px/22px var(--font-body)}
 .ans-links{display:flex;gap:4px 16px;flex-wrap:wrap}
