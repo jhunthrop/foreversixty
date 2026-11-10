@@ -1,12 +1,11 @@
 ---
 // web/src/components/tiers/TierSpecCard.astro
-// The spec panel beside the tier list (directions mock g-tiers; a framed panel, as the mock draws it): signed
-// out, one quiet link (no panel: there is nothing to show yet); signed in, the visitor's spec in its
-// class colour, its row marked on the list (so no standing line repeats it) or, for a spec on another
-// role, a link to that list, then its Best in slot and Guide. The signed-in half is a template lib/tiers/tier-client.ts fills after load, reserved at its final size while the
-// account loads, so nothing under it moves.
-import Frame from '../ui/Frame.svelte';
-import { button } from '../../lib/ui/button';
+// The visitor's spec beside the tier list (directions mock g-tiers), quiet, never a panel (h-audit
+// 2026-11-09: the row on the list is the answer, marked): signed out, one link to sign in; signed in,
+// the spec's name in its class colour and its Best in slot › and Guide › links, or, for a spec on
+// another role, a link to that list first. A read that fails or names no spec says so with its one
+// action. The signed-in half is a template lib/tiers/tier-client.ts fills after load, reserved at its
+// final size while the account loads, so nothing under it moves.
 import { LINK } from '../../lib/ui/primitives';
 import { REGION } from '../../lib/ui/regions';
 import { tiersCopy } from '../../lib/tiers/tier-copy';
@@ -18,8 +17,6 @@ interface Props {
 
 const { path } = Astro.props;
 const copy = tiersCopy.card;
-const PRIMARY = button('primary');
-const SECONDARY = button('secondary');
 ---
 
 <div data-region={REGION.headAnswer} data-testid="tier-card" id="tier-answer">
@@ -29,35 +26,32 @@ const SECONDARY = button('secondary');
     </a>
   </p>
   <div data-signed-in-only>
-    <Frame>
-      <div class="tier-card-skeleton" role="status" aria-busy="true" data-answer-skeleton>
-        <span class="sr-only">Loading</span>
-        <span class="skeleton-block tier-sk-name" aria-hidden="true"></span>
-        <span class="skeleton-block tier-sk-line" aria-hidden="true"></span>
-        <span class="skeleton-block tier-sk-actions" aria-hidden="true"></span>
+    <div class="tier-card-skeleton" role="status" aria-busy="true" data-answer-skeleton>
+      <span class="sr-only">Loading</span>
+      <span class="skeleton-block tier-sk-name" aria-hidden="true"></span>
+      <span class="skeleton-block tier-sk-line" aria-hidden="true"></span>
+    </div>
+    <div class="tier-card-body" data-answer-body hidden data-testid="tier-answer-body">
+      <h2 class="tier-card-name" data-field="name" data-testid="tier-answer-name"></h2>
+      <p class="tier-card-line">
+        <span data-field="standing" data-testid="tier-answer-standing"></span>
+        <a class={LINK} data-field="other" href="/tiers" hidden data-testid="tier-answer-other"></a>
+      </p>
+      <div class="tier-card-actions" data-field="links">
+        <a class={LINK} data-field="bis" href="/bis" data-testid="tier-answer-bis">
+          {copy.bis} ›
+        </a>
+        <a class={LINK} data-field="guide" href="/guides" data-testid="tier-answer-guide">
+          {copy.guide} ›
+        </a>
+        <button type="button" class={LINK} data-field="choose" hidden>
+          {copy.choose} ›
+        </button>
+        <button type="button" class={LINK} data-field="retry" hidden>
+          {copy.retry}
+        </button>
       </div>
-      <div class="tier-card-body" data-answer-body hidden data-testid="tier-answer-body">
-        <h2 class="text-section" data-field="name" data-testid="tier-answer-name"></h2>
-        <p class="tier-card-line">
-          <span data-field="standing" data-testid="tier-answer-standing"></span>
-          <a class={LINK} data-field="other" href="/tiers" hidden data-testid="tier-answer-other"></a>
-        </p>
-        <div class="tier-card-actions" data-field="links">
-          <a class={PRIMARY} data-field="bis" href="/bis" data-testid="tier-answer-bis">
-            {copy.bis}
-          </a>
-          <a class={SECONDARY} data-field="guide" href="/guides" data-testid="tier-answer-guide">
-            {copy.guide}
-          </a>
-          <button type="button" class={SECONDARY} data-field="choose" hidden>
-            {copy.choose}
-          </button>
-          <button type="button" class={SECONDARY} data-field="retry" hidden>
-            {copy.retry}
-          </button>
-        </div>
-      </div>
-    </Frame>
+    </div>
   </div>
 </div>
 
@@ -67,9 +61,9 @@ const SECONDARY = button('secondary');
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
-    /* The panel holds its final size in every state: heading, line, then the 44 px buttons. */
-    min-height: 114px;
+    gap: 2px;
+    /* Every state holds the same two lines: the name, then its links (or its one message). */
+    min-height: 48px;
   }
   .tier-card-body[hidden],
   .tier-card-skeleton[hidden],
@@ -78,35 +72,33 @@ const SECONDARY = button('secondary');
   .tier-card-line [hidden] {
     display: none;
   }
-  .tier-card-quiet {
-    margin: 0;
-    font-size: 15px;
-    line-height: 24px;
-  }
+  .tier-card-quiet,
   .tier-card-line {
     margin: 0;
     font-size: 15px;
     line-height: 24px;
-    font-weight: 600;
+  }
+  .tier-card-name {
+    margin: 0;
+    font: 700 15px/22px var(--font-body);
     color: var(--color-strong);
+  }
+  .tier-card-line {
+    color: var(--color-text);
   }
   .tier-card-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 10px;
+    gap: 16px;
+    font-size: 15px;
+    line-height: 24px;
   }
   .tier-sk-name {
-    width: 180px;
-    height: 28px;
+    width: 160px;
+    height: 22px;
   }
   .tier-sk-line {
-    width: 220px;
-    height: 24px;
-  }
-  .tier-sk-actions {
-    width: 230px;
-    height: 44px;
-    margin-top: 10px;
+    width: 180px;
+    height: 22px;
   }
 </style>

@@ -2494,7 +2494,7 @@
      cut tab reads as more to scroll, not as a broken label (logs lane review 2026-11-09). */
   @media (max-width: 767px) {
     .report-tabs :global(.ui-tsm-strip) {
-      mask-image: linear-gradient(to right, var(--color-bg) calc(100% - 48px), transparent);
+      mask-image: linear-gradient(to right, var(--color-bg) calc(100% - 88px), transparent);
     }
   }
   /* Damage done by ability beside taken and healing (stacked) where the main column has the room (1440 up). */

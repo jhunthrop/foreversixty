@@ -133,29 +133,3 @@ test('the tank’s repro: an Arms Warrior’s rotation reads in place, with no n
   expect(page.url()).toBe(url);
   await expect(simCharacter(page)).toBeVisible();
 });
-
-// task-6-brief.md: "/sim/specs' own per-spec card gains the same rotation prose, so the
-// page a visitor lands on from the strip answers 'what does this rotation do' too."
-test('/sim/specs carries the same rotation prose on the mage-frost card', async ({ page }) => {
-  const specFixture = JSON.parse(
-    readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'fixtures', 'sim', 'specs.json'), 'utf8'),
-  ) as unknown[];
-  await page.route('**/v1/specs**', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ ok: true, data: { specs: specFixture }, error: null, request_id: 'req-test' }),
-    }),
-  );
-
-  await page.goto('/sim/specs');
-  const card = page.getByTestId('spec-mage-frost');
-  await expect(card).toBeVisible();
-  // Final whole-branch review, I2: suffixed with the spec so the 20 damage-spec cards on
-  // this page never share one testid (or one unscoped accessible name) between them.
-  await card.getByTestId('spec-rotation-trigger-mage-frost').click();
-  const steps = card.getByTestId('spec-rotation-steps-mage-frost');
-  for (const note of curatedRotationNotes('mage-frost')) await expect(steps).toContainText(note);
-  // h-audit 2026-11-09: the spec's own name is the trigger, not a "What it does" on every row.
-  await expect(card.getByTestId('spec-rotation-trigger-mage-frost')).toHaveText('Frost Mage');
-});

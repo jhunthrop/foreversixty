@@ -48,7 +48,7 @@ import classes from ${data("classes.json")};
 import races from ${data("races.json")};
 import combos from ${data("combos.json")};
 import me34 from ${src("tests/e2e/fixtures/home/me-34.json")};
-import { guideBuildRows, ranksTrees, treesOff } from ${src("src/lib/planner/guide-builds.ts")};
+import { deltaText, guideBuildRows, guideDiff, ranksTrees } from ${src("src/lib/planner/guide-builds.ts")};
 import { aheadOf, pointOrderRows } from ${src("src/lib/planner/point-order.ts")};
 import { decodeFS1, orderFromRanks } from ${src("src/lib/planner/fs1.ts")};
 import { indexTalents, canAddPoint, messages } from ${src("src/lib/planner/rules.ts")};
@@ -89,6 +89,18 @@ const legalRaces = (slug) => { const id = classRow(slug).id; return races.filter
 const raceRow = (slug) => races.find((r) => r.slug === slug);
 
 // One planner state as the page draws it. order: talent ids in spend order; level: the header character's level or null.
+// Build vs guide for one guide row (GuideBuilds.svelte): empty on the build on screen or with nothing spent.
+function guideRowDiff(trees, currentTrees, index) {
+  if (currentTrees === null || trees === currentTrees) return { off: '', delta: '', missing: '' };
+  const names = index.trees.map((tree) => tree.talents.map((talent) => talent.name));
+  const diff = guideDiff(trees, currentTrees, names);
+  return {
+    off: plannerCopy.guideBuildOff(diff.off),
+    delta: deltaText(diff.delta),
+    missing: diff.missing === null ? '' : plannerCopy.guideBuildMissing(diff.missing),
+  };
+}
+
 function state({ cls, race, order = [], level = null, spec = null }) {
   const index = indexTalents(TALENTS[cls]);
   const ranks = ranksByTalent(order);
@@ -125,7 +137,8 @@ function state({ cls, race, order = [], level = null, spec = null }) {
     const kind = covers !== null || status.kind === 'differs' ? 'sentence' : status.kind === 'matches' ? 'matches' : 'count';
     compare = { status, kind, differs: [...diff.diffTalentIds], bandRank: Object.fromEntries(diff.bandRankById), line,
       beyond: status.kind === 'toTake' || covers !== null ? '' : (status.beyond > 0 ? bandCompareCopy.beyondGuide(status.beyond) : ''),
-      talents: entry.talents };
+      talents: entry.talents,
+      past: covers !== null && names.mine.length > 0 ? bandCompareCopy.coversPast(names.mine) : '' };
   }
   const trees = index.trees.map((tree, ti) => {
     const size = gridSize(tree);
@@ -145,16 +158,18 @@ function state({ cls, race, order = [], level = null, spec = null }) {
   // Point order as PlannerOrder draws it: for a character, the spec guide's order past its build (aheadOf).
   const specRow = SPECS.find((s) => s.spec === specKey);
   const guideBuild = GUIDE_BUILDS.find((g) => g.kind === 'leveling' && g.classSlug + '-' + g.specSlug === specKey);
-  const ladder = level !== null && order.length > 0 && guideBuild && specRow ? guideLadderOrder(BUILD, cls, specKey, specRow.tree_index, guideBuild.code) : [];
+  // An empty build previews the spec guide's order (PlannerOrder.svelte, h-audit 2026-11-09).
+  const ladder = (level !== null || order.length === 0) && guideBuild && specRow ? guideLadderOrder(BUILD, cls, specKey, specRow.tree_index, guideBuild.code) : [];
   const aheadPoints = ladder.length > 0 ? aheadOf(index, order, ladder) : [];
+  const previewLine = order.length === 0 && aheadPoints.length > 0 ? plannerCopy.previewLine(specRow.name) : '';
   const orderView = pointOrderRows(index, order, level, me34.characters[0].name, (icon) => icon,
     aheadPoints.length > 0 ? { specName: specRow.name, points: aheadPoints } : null);
   const currentTrees = order.length > 0 ? ranksTrees(index.trees.map((tree) => tree.talents.map((t) => ranks.get(t.id) ?? 0))) : null;
   const guideBuilds = guideBuildRows(GUIDE_BUILDS, cls).map((row) => ({
     ...row,
     current: row.trees === currentTrees,
-    // A row's points the build on screen lacks (GuideBuilds.svelte's trail), once a point is spent.
-    off: currentTrees !== null && row.trees !== currentTrees ? plannerCopy.guideBuildOff(treesOff(row.trees, currentTrees)) : '',
+    // Build vs guide (GuideBuilds.svelte), once a point is spent: points off, the split's change, the first talent lacking.
+    ...guideRowDiff(row.trees, currentTrees, index),
   }));
   const points = order.map((id, i) => { const t = index.byId.get(id); const r = order.slice(0, i + 1).filter((x) => x === id).length;
     return { level: levelForIndex(i), name: t.name, icon: t.icon, rank: r, max: t.max_rank, planned: level !== null && i >= available, tip: plannerCopy.pointAt(levelForIndex(i), t.name, r) }; });
@@ -171,7 +186,7 @@ function state({ cls, race, order = [], level = null, spec = null }) {
       gear: bandCompareCopy.gearRowLabel(bandLabel), none: entry ? '' : bandCompareCopy.noLevelBuild(shownLevel, specDisplayName(specKey), siblingSpecNames(specKey)) },
     compare,
     text_summary: plannerCopy.shareTextSummary(raceRow(race).name, classRow(cls).name, trees.map((t) => ({ name: t.name, points: t.points })), shownLevel),
-    order_view: orderView, guide_builds: guideBuilds,
+    order_view: orderView, preview_line: previewLine, guide_builds: guideBuilds,
     share_fields: sharedFields({ title: '', gear: {} }, false),
   };
 }

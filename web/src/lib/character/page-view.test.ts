@@ -84,7 +84,8 @@ describe('characterWaiting', () => {
       { key: 'talents', text: '2 talent points unspent', href: '/planner?character=us%2Fnormal%2Ffelsnap' },
       {
         key: 'upgrade',
-        text: 'Upgrade: Hood, Wailing Caverns',
+        lead: 'Upgrade: ',
+        text: 'Hood, Wailing Caverns',
         href: '/bis',
         item: { icon: 'inv_helmet_01', quality: 3 },
       },
@@ -96,7 +97,8 @@ describe('characterWaiting', () => {
     expect(characterWaiting({ own: spent, top, bisHref: null })).toEqual([
       {
         key: 'upgrade',
-        text: 'Upgrade: Hood, Wailing Caverns',
+        lead: 'Upgrade: ',
+        text: 'Hood, Wailing Caverns',
         href: null,
         item: { icon: 'inv_helmet_01', quality: 3 },
       },
@@ -129,6 +131,10 @@ describe('fights and builds', () => {
     });
     expect(rows[0].color).toBe('var(--color-parse-orange)');
     expect(bestRows([{ ...row, execution_score: 0.9 } as never])[0].sub).toBe('3 Nov · Holy · Execution 90%');
+    const before = { ...row, value: 930, percentile: 88, fought_at: '2026-10-27T20:40:00Z' };
+    const [withHistory] = bestRows([row as never], [row as never, before as never]);
+    expect(withHistory.sub).toBe('3 Nov · Holy · +82 since 27 Oct');
+    expect(withHistory.trend).toEqual([88, 98.4]);
     expect(characterPageCopy.allFights(7)).toBe('All fights (7)');
   });
 

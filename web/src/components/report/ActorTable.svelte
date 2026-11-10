@@ -145,11 +145,11 @@
       .join(' · ');
   }
 
-  /** The phone's line under the amount: the rate with its unit, but Taken / s reads as the number
-   *  alone (the plate's title says what was taken). */
+  /** The phone's line under the amount: the rate with its unit; Taken / s reads "36.2/s" (the
+   *  plate's title says what was taken). */
   function phoneRate(actor: Actor): string {
     const rate = formatRate(timeOf(actor) === 0 ? 0 : actor.effective / (timeOf(actor) / 1000));
-    return tab === 'damage-taken' ? rate : `${rate} ${RATE[tab]}`;
+    return tab === 'damage-taken' ? `${rate}/s` : `${rate} ${RATE[tab]}`;
   }
 
   const totalSeconds = $derived(Math.max(durationMs, 1) / 1000);
@@ -279,18 +279,14 @@
             onSelect={onSelectPlayer}
           />
         {/each}
-        <!-- One player's row is its own total: no foot row, its absent and mitigated lines under the table. -->
+        <!-- One player's row is its own total: no foot row. -->
         {#if actors.length > 1}
-          <StatRow
-            figures={totalFigures}
-            total
-            name={totalName}
-            sub={absentLine === '' && mitigatedLine === '' ? undefined : absentSub}
-            testid="actor-total"
-          />
+          <StatRow figures={totalFigures} total name={totalName} testid="actor-total" />
         {/if}
       </StatTable>
-      {#if actors.length === 1 && (absentLine !== '' || mitigatedLine !== '')}
+      <!-- The mitigated and absent lines run the table's full width under it, never squeezed into the
+           name column. -->
+      {#if absentLine !== '' || mitigatedLine !== ''}
         <div class="text-small text-muted px-5 py-3 max-md:px-[14px]">{@render absentSub()}</div>
       {/if}
     {/if}

@@ -146,6 +146,12 @@
   const beyond = $derived(
     status === null || status.kind === 'toTake' || coverage !== null ? 0 : status.beyond,
   );
+  /** Covering fewer points than the character has: the talents past the band's build, named. */
+  const pastLine = $derived.by(() => {
+    if (coverage === null || store.talentIndex === null || bandEntry === undefined) return '';
+    const names = bandDiffNames(store.talentIndex, store.ranks, bandEntry.talents);
+    return names.mine.length > 0 ? bandCompareCopy.coversPast(names.mine) : '';
+  });
   /** The difference named, not counted (ruling Q1). */
   const namedLine = $derived.by(() => {
     if (status?.kind !== 'differs' || store.talentIndex === null || bandEntry === undefined) return '';
@@ -249,6 +255,9 @@
           {bandCompareCopy.toTakeSuffix}
         {/if}
       </p>
+      {#if pastLine !== ''}
+        <p class="text-small text-muted" data-testid="band-compare-past">{pastLine}</p>
+      {/if}
       {#if beyond > 0}
         <p class="text-small text-muted" data-testid="band-compare-beyond">
           {bandCompareCopy.beyondGuide(beyond)}

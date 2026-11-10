@@ -106,11 +106,19 @@
 
   <div class="flex flex-wrap items-end gap-3 pt-3">
     <div class="w-40">
-      <Field id="sim-set-name" label="Name" placeholder="Name" testid="sim-set-name" bind:value={name} />
+      <Field
+        id="sim-set-name"
+        label="Name"
+        labelHidden
+        placeholder="Name"
+        testid="sim-set-name"
+        bind:value={name}
+      />
     </div>
     <Field
       id="sim-set-input"
       label={bulkCopy.setsPaste}
+      labelHidden
       placeholder={bulkCopy.setsPaste}
       grow
       invalid={error !== ''}

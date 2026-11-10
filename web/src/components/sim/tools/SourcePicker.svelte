@@ -230,12 +230,8 @@
       {/each}
     </div>
   {:else}
-    {#if kind === 'crafted'}
-      <p class="text-muted m-0 text-[13px]">
-        {professionSplit(shown, professions).mine.length > 0
-          ? bulkCopy.sourcesMyProfessions
-          : bulkCopy.sourcesProfessionsUnknown}
-      </p>
+    {#if kind === 'crafted' && professionSplit(shown, professions).mine.length > 0}
+      <p class="text-muted m-0 text-[13px]">{bulkCopy.sourcesMyProfessions}</p>
     {/if}
     <div class={COLUMNS}>
       {#each shown as source (source.id)}
@@ -246,7 +242,9 @@
 {/snippet}
 
 <ToolSection title={bulkCopy.sourcesTitle} testid="sim-source-picker" {plate}>
-  <div class="flex flex-wrap items-center gap-x-5">
+  <!-- The kind ticks choose which lists show, not what is simmed: they sit after "Show". -->
+  <div class="flex flex-wrap items-center gap-x-5" role="group" aria-labelledby="sim-sources-show">
+    <span id="sim-sources-show" class="text-muted text-[14px]">{bulkCopy.sourcesShow}</span>
     {#each groups as group (group.kind)}
       <label class="text-text flex min-h-11 items-center gap-2 text-[14px]">
         <input
@@ -304,7 +302,9 @@
         {:else}
           <Disclosure
             summary={SOURCE_KIND_LABELS[group.kind]}
-            meta={bulkCopy.sourcesTicked(tickedSources(shown, picked), shown.length)}
+            meta={tickedSources(shown, picked) > 0
+              ? bulkCopy.sourcesTicked(tickedSources(shown, picked), shown.length)
+              : bulkCopy.sourcesCount(shown.length)}
             open={shown.length <= OPEN_UP_TO}
             testid={`sim-kind-${group.kind}-list`}
           >

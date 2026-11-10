@@ -81,14 +81,7 @@
 </script>
 
 <Page layout="ledger" panels>
-  <Section
-    title={simCopy.specsSimulatedHeading}
-    meta={topSets.size > 0 ? simCopy.specsTopSetMeta : undefined}
-    panel
-    frame="framed"
-    flush
-    testid="specs-simulated"
-  >
+  <Section title={simCopy.specsSimulatedHeading} panel frame="framed" flush testid="specs-simulated">
     <div>
       <div data-testid="specs-grid">
         {#if rows === null}

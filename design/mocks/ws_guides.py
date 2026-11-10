@@ -316,7 +316,7 @@ def class_page(cls: str, kind: str = 'out', me_key: str = '') -> str:
     srcs = Section(PROPOSED['sources'], RowsSlim([Row(f'<span class="gold link">{e(s["label"])}</span>', lead=Tag(e(F['source_labels'][s['kind']]), 'muted')) for s in L['sources']]))
     ans = '' if kind == 'out' else answer(kind, me)
     head = PageHeader(e(L['title']), CLASS_COLOR[cls], crest_img(cls, 56), [f'Updated {e(L["updated"])}'], ans)
-    html = head + Page('ledger', f'<div class="g-ledger">{specs}</div>') + Page('split', main + srcs, rail) + PAGE_CSS
+    html = head + Page('ledger', f'<div class="g-ledger">{specs}</div>') + Page('split', main, rail + srcs) + PAGE_CSS
     who = (me['name'], me['class'].lower(), f"Level {me['level']}") if me else None
     return build_page(f'{L["title"]} guides', html, 'Guides', who, f'Class landing mock (design/specs/2026-11-08-guides.md); data guides-facts.json, build {F["build"]}.')
 

@@ -362,7 +362,7 @@ def chart(R: Report, fi: int, metric: str, source: str) -> str:
     marks = [(d['at_ms'] / 1000, '#f0736b') for d in s['deaths'] if d['guid'] in fr]
     lc = LineChart(series, dur, 180, phases, marks, label=f'{title}, per player', step_ms=1000)
     # The whole fight's figure is the band's answer: no head meta; the phone's fold reads Show chart, the figure after it.
-    phone = Disclosure(f'Show chart <span class="t-small muted">{meta}</span>', LineChart(series, dur, 140, phases, marks, label=title, step_ms=1000))
+    phone = Disclosure('Chart', LineChart(series, dur, 140, phases, marks, label=title, step_ms=1000))
     return Section(title, f'<div class="lc-only-d">{lc}</div><div class="lc-only-m">{phone}</div>', panel=True)
 
 

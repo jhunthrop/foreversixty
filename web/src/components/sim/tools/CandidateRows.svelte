@@ -74,7 +74,7 @@
 <div class="flex flex-col">
   {#each rows as row (candidateKey(row))}
     {@const key = candidateKey(row)}
-    <Row title={row.item.name} open wrapTrail testid={testId(row)}>
+    <Row title={row.item.name} open testid={testId(row)}>
       {#snippet lead()}
         <!-- The label is the 44 px hit target around the 20 px mark. -->
         <label class="-mx-3 inline-flex min-h-11 min-w-11 items-center justify-center">
@@ -95,7 +95,8 @@
         </ItemHover>
       {/snippet}
       {#snippet subContent()}
-        {originLabel(row.origin)}
+        <!-- A worn piece says nothing: the slot heading and its lock already name it (h-audit 2026-11-09). -->
+        {#if row.origin !== 'equipped'}{originLabel(row.origin)}{/if}
         <!-- The engine's SimDatabase does not carry this item id (sim-items.ts's
              `isKnownItem`, set on the row when it was added). The checkbox is disabled
              rather than the row hidden -- the item is real, and vanishing it would look like

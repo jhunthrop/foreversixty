@@ -19,9 +19,8 @@
 
   let { view }: { view: ScaleView } = $props();
 
-  const caption = $derived(
-    view.hasteCaption === undefined ? view.noteLine : `${view.noteLine} ${view.hasteCaption}`,
-  );
+  /** Haste per 1% (owner rule: never a row); the normalisation the column heads already say is not repeated. */
+  const caption = $derived(view.hasteCaption ?? '');
   /** Two decimals, as the scale; an error that rounds to nothing says so (formatWeightError). */
   function errorLabel(error: number): string {
     const text = formatWeightError(error);
@@ -60,7 +59,9 @@
 </script>
 
 <div class="sim-weights-table flex flex-col gap-2" data-testid="sim-weights-table">
-  <p class="text-muted text-[13px]" data-testid="sim-weights-scale-caption">{caption}</p>
+  {#if caption !== ''}<p class="text-muted m-0 text-[13px]" data-testid="sim-weights-scale-caption">
+      {caption}
+    </p>{/if}
   <StatTable columns={COLUMNS} nameHead="Stat" open label="Stat weights">
     {#each view.rows as row (row.stat)}
       <StatRow figures={figuresOf(row)} phone={phoneLine(row)} testid={`sim-weight-${row.stat}`}>

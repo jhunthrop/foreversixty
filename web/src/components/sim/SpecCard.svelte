@@ -1,19 +1,15 @@
 <!-- web/src/components/sim/SpecCard.svelte -->
 <!-- "Can I trust this" in one row of /sim/specs' Plate (mock design/mocks/ws_simtools.py
      `web-sim-specs`): the spec in its class colour, the measured gap and the state's note under it,
-     the state as a Tag at the right, then the rotation, the worst actions and the engine stamp on
+     the state as a Tag at the right, then the worst actions and the engine stamp on
      the row's foot. The figure is whatever the validation job measured,
      published either way -- the design's whole point is that the answer lives on the site
      rather than in a footnote, so a bad gap is shown as plainly as a good one.
      The cast-gap rows read actual first: the player's own number is the one they recognise
      from their own log, and the simmed one is the claim being made about it.
 
-     Task 6 (newcomer BLOCKER): this is the page RotationCard's "what it does" drawer links
-     out to for the fidelity detail, so it answers "what does this rotation do" itself too,
-     from the same rotations.ts the drawer reads -- one source, so the two can never
-     disagree about what a spec's rotation is. Hidden in `compact` the same way
-     worst_actions and the footer already are, and absent entirely for a spec with no
-     curated step notes rather than an empty disclosure with nothing to open. -->
+     The rotation reads on /sim, in its rail: this list carries no toggle for it (h-audit
+     2026-11-09: an unlabelled caret on every row). -->
 <script lang="ts">
   // formatPercent is the site's one percentage formatter: one decimal and a % sign. Every
   // other caller in report/format.ts pre-multiplies by 100 exactly as this does, so a
@@ -26,10 +22,8 @@
   import { classOfSpec, specLabel } from '../../lib/sim/spec-label';
   import { specStateLabel, specStateNote } from '../../lib/sim/spec-state';
   import { classTone } from '../../lib/ui/primitives';
-  import Disclosure from '../ui/Disclosure.svelte';
   import Row from '../ui/Row.svelte';
   import Tag from '../ui/Tag.svelte';
-  import { loadRotationNotes, rotationNotesFor, type RotationNotes } from '../../lib/sim/rotations';
   import type { SpecFidelity } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
   import { classCrestSrc } from '../../lib/class-crest';
@@ -73,14 +67,6 @@
       .filter((part) => part !== '')
       .join(' · '),
   );
-  // The notes chunk (rotations.ts) is shared by every card; the disclosure appears once it lands.
-  let notes = $state<RotationNotes>({});
-  loadRotationNotes().then(
-    (loaded) => (notes = loaded),
-    (error: unknown) => console.error('sim: the rotation notes did not load', error),
-  );
-  const rotationSteps = $derived(rotationNotesFor(row.spec, notes));
-  const showRotation = $derived(!compact && rotationSteps.length > 0);
   /** The spec's own talent-tab icon; the class crest when the build has not published it. */
   const specIcon = $derived(SPEC_BY_KEY[row.spec]?.icon);
   let iconFailed = $state(false);
@@ -90,32 +76,6 @@
       : dataUrl(activeBuild.build, `icons/${specIcon}.webp`),
   );
 </script>
-
-{#snippet title()}
-  <!-- The spec's name is its own toggle for the rotation steps (h-audit 2026-11-09: a "What it
-       does" beside every row was the same words eighteen times); opened, the steps take the line
-       under the name. -->
-  {#if showRotation}
-    <span class="sim-spec-name block font-bold">
-      <Disclosure
-        summary={specLabel(row.spec)}
-        testid={`spec-rotation-panel-${row.spec}`}
-        summaryTestid={`spec-rotation-trigger-${row.spec}`}
-      >
-        <ol
-          class="text-text m-0 flex list-decimal flex-col gap-1 pl-5 text-[14px] font-normal"
-          data-testid={`spec-rotation-steps-${row.spec}`}
-        >
-          {#each rotationSteps as step, index (index)}
-            <li>{step}</li>
-          {/each}
-        </ol>
-      </Disclosure>
-    </span>
-  {:else}
-    <span>{specLabel(row.spec)}</span>
-  {/if}
-{/snippet}
 
 {#snippet status()}
   <!-- A spec with no parses says so once, in its Tag; on the in-page card (compact) the line
@@ -160,7 +120,6 @@
   density={compact ? 'default' : 'slim'}
   title={specLabel(row.spec)}
   titleTone={classTone(classOfSpec(row.spec))}
-  titleContent={title}
   subContent={!noParses || compact ? status : undefined}
   foot={!compact && (row.worst_actions.length > 0 || footer !== '') ? details : undefined}
   testid={`spec-${row.spec}`}
@@ -189,14 +148,3 @@
     </span>
   {/snippet}
 </Row>
-
-<style>
-  /* The name keeps its class colour and the row's 15 px bold as the toggle; one line at 390. */
-  .sim-spec-name :global(.ui-disclosure > summary) {
-    min-height: 0;
-    color: inherit;
-    font-size: 15px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-</style>

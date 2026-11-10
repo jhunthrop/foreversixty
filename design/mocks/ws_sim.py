@@ -323,8 +323,9 @@ def benchmark_row() -> str:
     gap, margin = MEAN - dps, Z95 * (ERR ** 2 + err ** 2) ** .5
     mag = round(abs(gap), 1)
     gap_txt = f'{round(mag):,}' if mag >= 10 or mag == 0 else f'{mag:.1f}'
-    sub = f'{gap_txt} DPS {"under" if gap < 0 else "over"} &middot; {abs(gap) / dps * 100:.1f}% &middot; &plusmn; {margin:.1f}'
-    return Rows([Row(f'Level {band_row["band"]} {REQ["preset"]} BiS', sub, trail=Figure(fnum(dps), unit='DPS', size='sm'))], open_=True)
+    # "1,004.0 · 9.9% under": the set's DPS and the run against it, once (DpsDistribution).
+    trail = f'<span class="num"><b>{fnum(dps)}</b> <span class="t-small">&middot; {abs(gap) / dps * 100:.1f}% {"under" if gap < 0 else "over"}</span></span>'
+    return Rows([Row(f'Level {band_row["band"]} {REQ["preset"]} BiS', '', trail=trail)], open_=True)
 
 
 # "No effect on your damage": the shipped rule, lib/sim/buff-effect.ts hasNoDamageEffect, read from the data (ruling M4).
@@ -442,7 +443,7 @@ def rotation_section(ran: bool = True) -> str:
             total = round(sum(CASTS[k] for k in other))
             sub = f'This run: {", ".join(act_name(k) for k in other)}.' if ran else 'Trinkets, racials and potions, as each comes off cooldown.'
             cnt = (f'{total} cast{"s" if total != 1 else ""}' if total else 'Not cast in this run')
-            r = Row(rot_title(other[0] if ran and other else '', 'Other cooldowns as they come up'), sub if ran else '', rank=str(len(lines) + 1), slim=not ran,
+            r = Row(rot_title(other[0] if ran and other else '', 'Other cooldowns as they come up'), sub, rank=str(len(lines) + 1),
                     trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
             if total or not ran:
                 lines.append(r)
@@ -451,7 +452,10 @@ def rotation_section(ran: bool = True) -> str:
         key = f'spell:{sid}'
         n = CASTS.get(key, 0)
         cnt = f'{n} cast{"s" if n != 1 else ""}' if n else 'Not cast in this run'
-        r = Row(rot_title(key, spell_name(sid), rank_of(sid)), notes.get(i, p.get('notes', '')) if ran else '', slim=not ran,
+        note = notes.get(i, p.get('notes', ''))
+        if ran and note.lower().startswith('on cooldown'):   # rotation-card.ts obviousNote: the cast count says it
+            note = ''
+        r = Row(rot_title(key, spell_name(sid), rank_of(sid)), note,
                 rank=str(len(lines) + 1), trail=(f'<span class="cnt">{cnt}</span>' if ran else ''), link=False)
         if n or not ran:
             lines.append(r)

@@ -47,7 +47,7 @@ HOME_CSS = f'''
 .hgrid>div{{min-width:0}}.hg-lead{{grid-area:lead}}.hg-feed{{grid-area:feed}}.hg-rail{{grid-area:rail;display:flex;flex-direction:column;gap:var(--gap)}}.hg-foot{{grid-area:foot}}
 @media(min-width:1100px){{.hgrid{{grid-template-columns:minmax(0,1fr) 400px;grid-template-areas:"lead lead" "feed rail" "foot foot"}}}}
 .pq{{display:grid;gap:16px 34px}}
-@media(min-width:900px){{.pq{{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}}.pq .prep{{border-top:0;border-left:1px solid {FRAME_LINE};padding:0 0 0 28px}}}}
+@media(min-width:900px){{.pq{{grid-template-columns:minmax(0,1fr) auto}}.pq .prep{{align-self:start;max-width:360px;border-top:0;border-left:1px solid {FRAME_LINE};padding:0 0 0 28px}}}}
 .pt{{font:400 30px/34px var(--font-title);margin:0}}.psub{{margin-top:4px;font-size:15px;line-height:22px}}
 .bigf{{display:flex;flex-wrap:wrap;gap:12px 26px;margin-top:16px}}.bigf .g{{display:flex;gap:26px}}.bigf .rule{{width:1px;background:{FRAME_LINE}}}
 .bigf .f{{display:flex;flex-direction:column}}.bigf b{{font-weight:600;font-size:44px;line-height:1;color:var(--strong)}}

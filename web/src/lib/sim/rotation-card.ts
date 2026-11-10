@@ -46,6 +46,14 @@ interface Pressed {
 /** "Other cooldowns as they come up" names no one spell: the game's pocket watch stands for it. */
 export const OTHER_COOLDOWNS_ICON = 'inv_misc_pocketwatch_01';
 
+/**
+ * A note that only says to press it on cooldown ("On cooldown: the button you lose the most by
+ * delaying."): after a run the cast count says as much, so the result card leaves it out.
+ */
+export function obviousNote(note: string): boolean {
+  return /^on cooldown\b/i.test(note.trim());
+}
+
 function pressKey(action: string): string | null {
   const parsed = parseActionKey(action);
   if (parsed === null || parsed.kind === 'other' || parsed.kind === 'unknown' || parsed.tag !== 0)

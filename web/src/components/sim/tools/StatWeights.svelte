@@ -1,6 +1,6 @@
 <!-- web/src/components/sim/tools/StatWeights.svelte -->
 <!-- /sim/weights (mock design/mocks/ws_simtools.py): the run line, the stats to weigh as one row of
-     ticks with Top Gear as its link (the explainer notice was cut, h-audit 2026-11-09), then the
+     ticks (the explainer notice and its Top Gear link were cut, h-audit 2026-11-09), then the
      scale factors on the page's framed panel.
 
      The reference stat always leads `store.stats`: the engine normalises its weights to it,
@@ -98,12 +98,7 @@
   {#if lead}{@render lead()}{/if}
   <!-- The stats to weigh as one row of ticks over the table they fill (h-audit 2026-11-09: alone in
        the rail it sat 400 px short of the table). The reference stat is its locked tick. -->
-  <Section
-    title={bulkCopy.weightsPick}
-    action={{ label: bulkCopy.weightsWarningLink, href: '/sim/gear' }}
-    panel
-    testid="sim-weights-pick"
-  >
+  <Section title={bulkCopy.weightsPick} panel testid="sim-weights-pick">
     <ul class="m-0 flex list-none flex-wrap gap-x-6 p-0">
       {#each pickable as stat (stat.id)}
         <li>

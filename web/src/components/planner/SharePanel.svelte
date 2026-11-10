@@ -33,8 +33,9 @@
   import Button from '../ui/Button.svelte';
   import Field from '../ui/Field.svelte';
   import Section from '../ui/Section.svelte';
+  import PlannerPart from './PlannerPart.svelte';
 
-  let { store }: { store: PlannerStore } = $props();
+  let { store, part = false }: { store: PlannerStore; part?: boolean } = $props();
 
   // Per-instance, not a literal id: Top Gear mounts a second, inline Planner (and so a
   // second SharePanel) on the same page, and two static `id="share-confirm-heading"`
@@ -324,7 +325,7 @@
 
 <svelte:window onkeydown={confirmOpen ? onConfirmKeydown : undefined} />
 
-<Section title={plannerCopy.shareTitle} panel testid="share-panel">
+{#snippet body()}
   <div class="pl-sec">
     <div class="pl-acts pl-end">
       <div class="pl-field">
@@ -444,4 +445,10 @@
       </div>
     {/if}
   </div>
-</Section>
+{/snippet}
+
+{#if part}
+  <PlannerPart title={plannerCopy.shareTitle} testid="share-panel">{@render body()}</PlannerPart>
+{:else}
+  <Section title={plannerCopy.shareTitle} panel testid="share-panel">{@render body()}</Section>
+{/if}

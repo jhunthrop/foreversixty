@@ -10,8 +10,7 @@
 <script lang="ts">
   import { bisPageHref } from '../../lib/bis/hover';
   import type { BenchmarkMatch } from '../../lib/sim/bis-benchmark';
-  import { gainLabel } from '../../lib/sim/combos';
-  import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
+  import { confidenceBand } from '../../lib/sim/estimate';
   import { grouped, oneDecimal, spreadCopy } from '../../lib/sim/result-copy';
   import { spreadOf, type SpreadBar } from '../../lib/sim/spread';
   import type { DpsHistogram, Estimate } from '../../lib/sim/types';
@@ -37,12 +36,7 @@
   const gapLine = $derived(
     benchmark === null
       ? ''
-      : spreadCopy.benchmarkGap(
-          gainLabel(benchmark.gap),
-          benchmark.gap < 0,
-          oneDecimal(Math.abs(benchmark.gap / benchmark.dps) * 100),
-          formatMargin(benchmark.margin),
-        ),
+      : spreadCopy.benchmarkGap(oneDecimal(Math.abs(benchmark.gap / benchmark.dps) * 100), benchmark.gap < 0),
   );
 
   /** The readout's width and the side of the plot past which it flips left. */
@@ -199,12 +193,15 @@
   {#if benchmark !== null}
     <Row
       title={spreadCopy.benchmark(benchmark.band, benchmark.preset)}
-      sub={gapLine}
       href={bisPageHref(spec, benchmark.faction, benchmark.band)}
       open
       testid="sim-spread-benchmark"
     >
-      {#snippet trail()}<Figure value={oneDecimal(benchmark.dps)} unit="DPS" size="sm" />{/snippet}
+      <!-- "1,004.0 · 9.9% under": the set's DPS and the run against it, once (h-audit 2026-11-09). -->
+      {#snippet trail()}<span class="text-[15px] tabular-nums"
+          ><b class="text-strong">{oneDecimal(benchmark.dps)}</b>
+          <span class="text-muted">· {gapLine}</span></span
+        >{/snippet}
     </Row>
   {/if}
 </div>

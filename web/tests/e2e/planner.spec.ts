@@ -337,7 +337,7 @@ test('reset asks before it clears the build', async ({ page }) => {
   await expect(pointsSpent(page)).toHaveText(spentIs(0));
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '0');
   await expect(page.getByTestId('planner-order').locator('[data-kind="spent"]')).toHaveCount(0);
-  await expect(page.getByTestId('planner-point-order')).toHaveCount(0);
+  await expect(page.getByTestId('planner-point-order')).toContainText('No points spent yet.');
 });
 
 // The order is the one part of the planner that grows without bound, and the phone layout

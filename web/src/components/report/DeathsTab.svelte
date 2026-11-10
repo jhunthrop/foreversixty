@@ -1,15 +1,16 @@
 <!-- web/src/components/report/DeathsTab.svelte -->
 <!-- The Deaths tab's Plate (logs spec 2026-11-07 6.2, the SHOULDs as ruled): one block per death
      in the scope, in the order they happened. A Row: the time, the crest, the name, "Killed by
-     {source} · {ability} · {amount} ({overkill} overkill) · {max} health", and The 20 s before it ›
+     {source} · {ability} · {amount} ({overkill} overkill) · {max} health", and Last 20 s ›
      (the window). Then one StatTable, Last hits and heals, in time order: a hit reads its ability,
      "{time} · from {source}", −amount and the health after as numbers ("74 / 114") with a red
      Meter, "dead" and a Killing blow Tag on the killing blow; a heal received is a green row with
      +amount and a green Meter. On a phone each row's line under the amount is the health after. The foot: the
      run-up in one sentence, what they held, and "No healing landed in the last 10 seconds." when
-     none did. With more than one death, the first stays open and the rest fold to their Row (time,
-     name, killer, The 20 s before it), so who died and to what reads at a glance (h-audit 2026-11-09);
-     a block the reader opens stays open in the url. -->
+     none did. With more than one death they read as an accordion: one card open (the first, until
+     the reader opens another; the url keeps it), the rest folded to their Row. Each Row has one
+     control at its right: Open on a folded card, Last 20 s › (the window) on the open one
+     (h-audit 2026-11-09). -->
 <script lang="ts">
   import EmptyLine from './EmptyLine.svelte';
   import CopyCsv from './CopyCsv.svelte';
@@ -98,16 +99,11 @@
   });
   const foldAll = $derived(ordered.length > FOLD_ABOVE);
   const keyOf = (death: Death): string => `${death.guid}-${death.at_ms}`;
-  /** The first death is open until the reader opens another by hand. */
+  /** One card open: the one the url names, else the first. */
   const isOpen = (death: Death): boolean =>
-    !foldAll || opened.has(keyOf(death)) || (open.length === 0 && death === ordered[0]);
-  function toggle(death: Death): void {
-    const key = keyOf(death);
-    // The first card's default-open state becomes explicit once the reader touches any card.
-    const current = open.length === 0 && ordered[0] !== undefined ? [keyOf(ordered[0])] : open;
-    onPatch({
-      openDeaths: current.includes(key) ? current.filter((entry) => entry !== key) : [...current, key],
-    });
+    !foldAll || (opened.size > 0 ? opened.has(keyOf(death)) : death === ordered[0]);
+  function openCard(death: Death): void {
+    onPatch({ openDeaths: [keyOf(death)] });
   }
 
   type LastEvent =
@@ -349,7 +345,8 @@
     type="button"
     class="text-gold text-[14px] font-semibold whitespace-nowrap [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
     data-testid="death-window"
-    onclick={() => onWindow(deathWindow(death.at_ms, durationMs))}>The 20 s before it ›</button
+    title="Set the window to the 20 seconds before this death"
+    onclick={() => onWindow(deathWindow(death.at_ms, durationMs))}>Last 20 s ›</button
   >
 {/snippet}
 
@@ -365,24 +362,24 @@
       {@const colour = classColorVar(death.class ?? classOf.get(death.guid))}
       {@const footLine = foot(death, card)}
       <div class="death-block" data-testid={`death-${death.guid}`} id={`death-${death.guid}-${death.at_ms}`}>
-        <Row title={unitLabel(death.name).text} sub={killedBy(death, card)} wrapTrail>
+        <Row title={unitLabel(death.name).text} sub={killedBy(death, card)}>
           {#snippet lead()}<span class="text-muted text-[13px] tabular-nums" data-testid="death-label"
               >{#if death.label}{death.label} ·
               {/if}{formatDuration(inPull(death))}</span
             ><ClassIcon className={death.class ?? classOf.get(death.guid)} size={32} />{/snippet}
           {#snippet titleContent()}<span style:color={colour}>{unitLabel(death.name).text}</span>{/snippet}
           {#snippet trail()}
-            <!-- One control a row: the fold toggle while deaths fold, else the window. -->
-            {#if foldAll}
+            <!-- One control a row: Open on a folded card, the window on the open one. -->
+            {#if isOpen(death)}
+              {@render windowButton(death)}
+            {:else}
               <button
                 type="button"
-                class="text-nav text-[14px] font-semibold [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
-                aria-expanded={isOpen(death)}
+                class="text-nav text-[14px] font-semibold whitespace-nowrap [@media(pointer:coarse)]:-my-3 [@media(pointer:coarse)]:py-3"
+                aria-expanded="false"
                 data-testid="death-toggle"
-                onclick={() => toggle(death)}>{isOpen(death) ? 'Fold' : 'Open'}</button
+                onclick={() => openCard(death)}>Open</button
               >
-            {:else}
-              {@render windowButton(death)}
             {/if}
           {/snippet}
         </Row>
@@ -438,7 +435,6 @@
                 >{/if}
             </p>
           {/if}
-          {#if foldAll}<div class="px-4 pb-3">{@render windowButton(death)}</div>{/if}
         {/if}
       </div>
     {/each}

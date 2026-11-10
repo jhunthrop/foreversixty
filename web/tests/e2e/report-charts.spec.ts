@@ -122,10 +122,11 @@ test.describe('the 40-player damage chart (spec D5, capture 10)', () => {
     // The head's raid figure is all 40 players' DPS added before rounding: the Section's meta from
     // 768, the folded chart's summary below it (TimeChart).
     const figure = `Raid ${raid40DpsSum().toLocaleString('en-US')} DPS`;
-    // The band's answer is that figure; the phone's folded chart repeats it after Show chart.
+    // The band's answer is that figure: neither the chart's head nor the phone's fold repeats it.
     if (isPhone(page))
-      await expect(page.getByTestId('chart-collapsed').locator('summary')).toContainText(figure);
+      await expect(page.getByTestId('chart-collapsed').locator('summary')).toHaveText('Chart');
     else await expect(chart.getByTestId('chart-head-meta')).toHaveCount(0);
+    await expect(page.getByTestId('report-answer')).toContainText(figure.replace(/^Raid | DPS$/g, ''));
   });
 
   test('the submerge draws flat at zero for every line', async ({ page }) => {

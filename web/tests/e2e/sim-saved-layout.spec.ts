@@ -15,6 +15,10 @@ const TIMELINE_MARK = 'timeline-toolbar';
 
 /** Scrolls the page top to bottom so every card nears the viewport and loads, then settles. */
 async function loadEveryCard(page: Page): Promise<void> {
+  // Below 768 the secondary sections start folded (LazySection `fold`): open them all first.
+  const folds = page.locator('[data-testid^="sim-section-"][data-testid$="-fold"]');
+  await expect(folds.or(page.getByTestId('sim-section-settings')).first()).toBeVisible();
+  for (const fold of await folds.all()) await fold.click();
   const height = await page.evaluate(() => document.documentElement.scrollHeight);
   for (let y = 0; y <= height + 1200; y += 500) {
     await page.evaluate((top) => window.scrollTo(0, top), y);
@@ -23,9 +27,9 @@ async function loadEveryCard(page: Page): Promise<void> {
   await expect(page.locator('[data-testid$="-skeleton"]')).toHaveCount(0);
 }
 
-/** The lazy holders (LazySection's `sim-section-<id>`), not their skeleton or error inside. */
+/** The lazy holders (LazySection's `sim-section-<id>`), not their skeleton or error inside, nor a phone fold's wrapper. */
 const HOLDERS =
-  'div[data-testid^="sim-section-"]:not([data-testid$="-skeleton"]):not([data-testid$="-error"])';
+  'div[data-testid^="sim-section-"]:not([data-testid$="-skeleton"]):not([data-testid$="-error"]):not([data-testid$="-folded"])';
 
 /** Each lazy holder's box against its section's, and what is left of its reserve. */
 function sectionBoxes(page: Page): Promise<{ id: string; box: number; card: number; minHeight: string }[]> {

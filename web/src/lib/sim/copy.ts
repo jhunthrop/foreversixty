@@ -635,8 +635,6 @@ export const simCopy = {
   specsUnsimulatedHeading: 'Healers and tanks',
   /** A tool page's character line when the talents stop short of the level. */
   talentPoints: (points: number): string => `${points} talent points`,
-  /** `/sim/specs`: the damage list's meta, naming what each row's figure is. */
-  specsTopSetMeta: 'Raid BiS DPS at 60',
   /** A damage spec's place among the specs by that figure. */
   specsTopSetRank: (rank: number): string => `#${rank}`,
   /**
@@ -838,7 +836,7 @@ export const bulkCopy = {
   notInSimulator: 'Not in the simulator’s item table',
   /** The Top gear candidates block's title. */
   candidatesTitle: 'Candidates',
-  lockSlot: 'Lock to equipped',
+  lockSlot: 'Lock',
   lockedSlot: 'Locked',
   copyAndModify: 'Copy and modify',
   withEnchant: 'With enchant',
@@ -878,6 +876,8 @@ export const bulkCopy = {
   // --- item search ---
   searchLabel: 'Find an item',
   searchPlaceholder: 'Name',
+  /** Shows the next page of hits. */
+  searchMore: (count: number): string => `${count} more`,
   searchMinItemLevel: 'Minimum item level',
   searchSlot: 'Slot',
   searchSource: 'Source',
@@ -993,7 +993,6 @@ export const bulkCopy = {
   sourcesQuestNote: 'Off by default: a quest reward is a one-time source.',
   sourcesMyProfessions: 'My professions',
   sourcesAllProfessions: 'All professions',
-  sourcesProfessionsUnknown: 'All professions',
   /** A run asked for with no character loaded (bulk-store-request.ts). */
   needCharacter: 'Load a character first.',
   /** A source row's figures: the items this class can try, and the best item level among them. */
@@ -1003,6 +1002,10 @@ export const bulkCopy = {
   sourceBosses: (count: number): string => `${count} ${count === 1 ? 'boss' : 'bosses'}`,
   /** A kind's summary: how many of its sources carry a tick. */
   sourcesTicked: (ticked: number, total: number): string => `${ticked} of ${total} ticked`,
+  /** A kind's summary while none of its sources is ticked. */
+  sourcesCount: (count: number): string => `${count} ${count === 1 ? 'source' : 'sources'}`,
+  /** The label before the kind ticks: they choose which lists show. */
+  sourcesShow: 'Show',
   /** A ticked kind whose every source is gated: the undated ones named in one line. */
   sourcesNoDate: (names: readonly string[]): string => `No date yet: ${names.join(', ')}`,
   /** A dungeon's folded boss list (mock design/mocks/ws_simtools.py). */
@@ -1073,19 +1076,6 @@ export const bulkCopy = {
           : `${swingy.slice(0, -1).join(', ')} and ${swingy[swingy.length - 1]}`;
     return `A greyed row cannot be told apart from zero. The ± on every other row is a floor, not the full picture: for ${named}, the real run-to-run swing can run four to ten times wider.`;
   },
-  /**
-   * Task 8, sub-item 2: the precision control's own bare "Fast"/"Normal"/"High" no longer
-   * says a number for a weights run (BulkRunBar.svelte's `precisionLabelFor`) -- the wire's
-   * own `iterations` field was never the real cost to begin with (a weights sweep runs a
-   * baseline plus a low and a high pass per stat weighed, each at up to eight times that
-   * count: `weights.ts`'s `weightsEngineIterations`, contract 10.9), so a bare "Normal,
-   * 3,000 iterations" label was quietly wrong by 68x for an eight-stat spec. This note
-   * replaces that claim with the true total, recomputed for whichever precision and however
-   * many stats are ticked right now, so "Normal" costs something the reader chose knowingly
-   * rather than discovered a minute later.
-   */
-  weightsCostNote: (totalIterations: number): string =>
-    `${totalIterations.toLocaleString('en-US')} iterations`,
   /** bulk-store.svelte.ts's `baseRequest` refusal when `stats` is empty: `WeightsSpec.
    *  Reference` is required (contract 10.8), so an empty list has nothing to send. */
   weightsNeedStats: 'Pick at least one stat to weigh.',

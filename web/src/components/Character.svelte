@@ -24,6 +24,7 @@
     plannerHref,
     topUpgrade,
     upgradeTotal,
+    type WaitingFact,
   } from '../lib/character/page-view';
   import { upgradeRows } from '../lib/character/upgrades';
   import { STALE_SEPARATOR, syncText, syncView } from '../lib/character-header/sync';
@@ -31,7 +32,6 @@
   import { characterKey, nameFromSlug, parseCharacterPath, type CharacterPath } from '../lib/characters';
   import { onCurrentCharacterChange, onCurrentCharacterSwitch, readCurrent } from '../lib/current-character';
   import { viewerFromMe } from '../lib/coach/viewer';
-  import { premiumBlockCopy } from '../lib/billing/copy';
   import { simViewedCharacterHref } from '../lib/handoff-links';
   import { button as buttonClass } from '../lib/ui/button';
   import { bandPricer, UNPRICED } from '../lib/gear/gain-pricer';
@@ -61,8 +61,11 @@
   import PageHeader from './ui/PageHeader.svelte';
   import Plate from './ui/Plate.svelte';
   import ItemIcon from './ui/ItemIcon.svelte';
+  import Ordered from './ui/Ordered.svelte';
   import Row from './ui/Row.svelte';
   import Section from './ui/Section.svelte';
+  import Spark from './ui/Spark.svelte';
+  import SupporterChip from './SupporterChip.svelte';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -236,7 +239,9 @@
   const unloggedName = $derived(resolved === null ? '' : nameFromSlug(decodeURIComponent(resolved.slug)));
 </script>
 
-{#snippet waitingText(text: string)}<span class="text-gold block truncate font-semibold">{text}</span
+<!-- The upgrade's "Upgrade:" lead drops on a phone, so the item and its source fit one line. -->
+{#snippet waitingText(fact: WaitingFact)}<span class="text-gold block truncate font-semibold"
+    >{#if fact.lead !== undefined}<span class="max-md:hidden">{fact.lead}</span>{/if}{fact.text}</span
   >{/snippet}
 
 {#snippet headSkeleton()}
@@ -278,7 +283,9 @@
 {:else if resolved !== null && (status === 'unlogged' || bare)}
   <CharacterMissing path={resolved} name={data?.character.name ?? unloggedName} {signedIn} />
 {:else if data !== null && resolved !== null}
-  <Page layout="split" panels splitFrom={1280} testid="character">
+  <!-- A workbench (h-audit 2026-11-09): main and the rail side by side from 1280; below it one flow,
+       the gear, then Score and Standing, then the fights (each ui/Ordered), the rail sticky beside main. -->
+  <Page layout="workbench" panels stickyRail testid="character">
     {#snippet header()}
       <PageHeader
         title={data.character.name}
@@ -296,9 +303,7 @@
                 >{fact.text}</a
               >{:else}<span data-testid={`character-fact-${fact.key}`}>{fact.text}</span>{/if}
           {/each}
-          {#if data.supporter === true}<span data-testid="supporter-chip"
-              >{premiumBlockCopy.supporterChip}</span
-            >{/if}
+          {#if data.supporter === true}<SupporterChip />{/if}
           {#if sync !== null}<span data-testid="character-sync"
               >{syncText(sync)}{#if sync.staleTail !== null}{STALE_SEPARATOR}<span class="text-wipe"
                   >{sync.staleTail}</span
@@ -353,7 +358,7 @@
                         size={28}
                         eager
                       />{/snippet}
-                    {#snippet titleContent()}{@render waitingText(fact.text)}{/snippet}
+                    {#snippet titleContent()}{@render waitingText(fact)}{/snippet}
                   </Row>
                 {:else}
                   <Row
@@ -363,7 +368,7 @@
                     open
                     testid={`character-waiting-${fact.key}`}
                   >
-                    {#snippet titleContent()}{@render waitingText(fact.text)}{/snippet}
+                    {#snippet titleContent()}{@render waitingText(fact)}{/snippet}
                   </Row>
                 {/if}
               {/each}
@@ -373,86 +378,103 @@
     {/snippet}
     {#snippet rail()}
       {#if data.score_hidden !== true}
-        <CharacterScore
-          path={resolved}
-          {forever}
-          {owned}
-          fought={data.best.length > 0}
-          history={data.score_history ?? []}
-        />
+        <Ordered order={2}
+          ><CharacterScore
+            path={resolved}
+            {forever}
+            {owned}
+            fought={data.best.length > 0}
+            history={data.score_history ?? []}
+          /></Ordered
+        >
       {/if}
       {#if own !== null && meRead !== null}
-        <CharacterStanding me={meRead} {own} specName={pageSpec(data, own)} {now} />
+        <Ordered order={3}
+          ><CharacterStanding me={meRead} {own} specName={pageSpec(data, own)} {now} /></Ordered
+        >
       {/if}
       {#if data.builds_seen.length > 0}
-        <Section title={copy.builds} panel testid="character-builds">
-          {#each buildRows(data.character.class, data.builds_seen) as row (row.key)}
-            <Row title={row.split} sub={row.sub} href={plannerHref(own)} density="slim" open />
-          {/each}
-        </Section>
+        <Ordered order={6}
+          ><Section title={copy.builds} testid="character-builds">
+            {#each buildRows(data.character.class, data.builds_seen) as row (row.key)}
+              <Row title={row.split} sub={row.sub} href={plannerHref(own)} density="slim" open />
+            {/each}
+          </Section></Ordered
+        >
       {/if}
       <!-- The rail carries the activity beside the gear and fights (h-audit 2026-11-09): main runs
            long with the paperdoll, so the rail takes the feed instead of ending under Builds seen. -->
-      <CharacterActivity
-        characterKey={characterKey(resolved.region, resolved.ruleset, resolved.slug)}
-        characterName={data.character.name}
-        {signedIn}
-        {build}
-        {now}
-      />
+      <Ordered order={7}
+        ><CharacterActivity
+          characterKey={characterKey(resolved.region, resolved.ruleset, resolved.slug)}
+          characterName={data.character.name}
+          {signedIn}
+          {build}
+          {now}
+        /></Ordered
+      >
     {/snippet}
     {#if gear.length > 0}
-      <CharacterGear
-        sectionTitle={unread ? notReadCopy.bestInSlot(bandLevel) : copy.gear}
-        title={specClassLabel(data.character.class, pageSpec(data, own))}
-        meta={level === null ? undefined : copy.levelMeta(level)}
-        avatar={data.character.avatar_url ?? own?.avatar_url ?? null}
-        {cells}
-        {gear}
-        {band}
-        {table}
-        upgrades={unread ? [] : upgradeRows(slots, classSlug ?? '')}
-        {unit}
-        {build}
-        bisHref={specBis}
-        loading={context === undefined}
-        {note}
-      />
+      <Ordered order={1} span
+        ><CharacterGear
+          sectionTitle={unread ? notReadCopy.bestInSlot(bandLevel) : copy.gear}
+          title={specClassLabel(data.character.class, pageSpec(data, own))}
+          meta={level === null ? undefined : copy.levelMeta(level)}
+          avatar={data.character.avatar_url ?? own?.avatar_url ?? null}
+          {cells}
+          {gear}
+          {band}
+          {table}
+          upgrades={unread ? [] : upgradeRows(slots, classSlug ?? '')}
+          {unit}
+          {build}
+          bisHref={specBis}
+          loading={context === undefined}
+          {note}
+        /></Ordered
+      >
     {/if}
     {#if data.best.length > 0}
-      <Section
-        title={copy.best}
-        panel
-        action={{ label: copy.allFights(data.history.length), href: characterHrefs.logs }}
-        testid="character-best"
+      <Ordered order={4} span
+        ><Section
+          title={copy.best}
+          panel
+          action={{ label: copy.allFights(data.history.length), href: characterHrefs.logs }}
+          testid="character-best"
+        >
+          {#each bestRows(data.best, data.history) as row (row.key)}
+            <Row
+              title={row.boss}
+              sub={row.sub}
+              href={characterHrefs.encounter(encounterSlug(row.encounter))}
+              density="slim"
+              open
+            >
+              {#snippet trail()}
+                {#if row.trend.length > 1}<span class="w-12" aria-hidden="true"
+                    ><Spark values={row.trend} /></span
+                  >{/if}
+                {#if row.percentile !== null}<span
+                    class="w-8 text-right text-[15px] leading-5 font-bold tabular-nums"
+                    style:color={row.color}
+                    aria-label={`${row.percentile} percentile`}>{row.percentile}</span
+                  >{/if}
+                <Figure value={row.value} unit={row.unit} size="sm" align="end" />
+              {/snippet}
+            </Row>
+          {/each}
+        </Section></Ordered
       >
-        {#each bestRows(data.best) as row (row.key)}
-          <Row
-            title={row.boss}
-            sub={row.sub}
-            href={characterHrefs.encounter(encounterSlug(row.encounter))}
-            density="slim"
-            open
-          >
-            {#snippet trail()}
-              {#if row.percentile !== null}<span
-                  class="w-8 text-right text-[15px] leading-5 font-bold tabular-nums"
-                  style:color={row.color}
-                  aria-label={`${row.percentile} percentile`}>{row.percentile}</span
-                >{/if}
-              <Figure value={row.value} unit={row.unit} size="sm" align="end" />
-            {/snippet}
-          </Row>
-        {/each}
-      </Section>
     {/if}
     {#if own !== null && scored}
-      <CharacterOwnerSections
-        path={resolved}
-        history={historyEntitled}
-        coach={coachEntitled}
-        fights={data.history.length}
-      />
+      <Ordered order={5} span
+        ><CharacterOwnerSections
+          path={resolved}
+          history={historyEntitled}
+          coach={coachEntitled}
+          fights={data.history.length}
+        /></Ordered
+      >
     {/if}
   </Page>
   {#if classSlug !== null && gear.length > 0}

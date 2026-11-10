@@ -127,9 +127,8 @@ export const spreadCopy = {
   },
   /** The published set the run is read against (lib/sim/bis-benchmark.ts): "Level 60 raid BiS". */
   benchmark: (band: number, preset: 'raid' | 'bare'): string => `Level ${band} ${preset} BiS`,
-  /** "100 DPS under · 9.9% · ± 2.3": the run against the set. */
-  benchmarkGap: (dps: string, under: boolean, percent: string, margin: string): string =>
-    `${dps} DPS ${under ? 'under' : 'over'} · ${percent}% · ± ${margin}`,
+  /** "9.9% under": the run against the set, beside the set's DPS. */
+  benchmarkGap: (percent: string, under: boolean): string => `${percent}% ${under ? 'under' : 'over'}`,
 } as const;
 
 export const pageErrorCopy = {

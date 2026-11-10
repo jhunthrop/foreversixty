@@ -1219,10 +1219,11 @@
   />
 {/snippet}
 
-{#snippet importSection()}
+{#snippet importSection(part: boolean)}
   {#if store.talentIndex}
     <ImportBox
       panel={standalone}
+      {part}
       talents={store.talentIndex}
       activeBuild={activeBuild.build}
       onimport={(build, pastedCode) => {
@@ -1246,7 +1247,7 @@
 {/snippet}
 
 {#if standalone}
-  <Page layout="workbench" panels testid="planner">
+  <Page layout="workbench" panels stickyRail testid="planner">
     {#snippet header()}
       <PageHeader title={headTitle} tone={classTone(store.classSlug)} testid="planner-head">
         {#snippet crest()}
@@ -1294,13 +1295,15 @@
       {#if status === 'ready'}
         <!-- A shared build leads with In the game (spec section 8); the planner with its level build. -->
         <Ordered order={shared ? 3 : 2}>{@render bandSection()}</Ordered>
-        <Ordered order={shared ? 2 : 3}
-          ><InGame
-            {store}
-            character={sendCharacter}
-            origin={effectiveOrigin}
-            plainOtherClass={shared}
-          /></Ordered
+        <!-- One take-it-with-you plate (h-audit 2026-11-09): In the game, then Share (once a point is
+             spent) and Import under hairlines; last in the phone flow, after the guide builds. -->
+        <Ordered order={shared ? 2 : 5}
+          ><InGame {store} character={sendCharacter} origin={effectiveOrigin} plainOtherClass={shared}>
+            {#if !store.readOnly}
+              {#if store.spent > 0}<SharePanel {store} part />{/if}
+              {@render importSection(true)}
+            {/if}
+          </InGame></Ordered
         >
         <!-- Only a class with a guide build takes a slot: an empty one would still hold a flow gap. -->
         {#if guideBuilds.some((build) => build.classSlug === store.classSlug)}
@@ -1318,18 +1321,10 @@
     {/snippet}
     <Ordered order={1} span>{@render plate()}</Ordered>
     {#if status === 'ready'}
-      <!-- Point order shows once a point is spent (h-audit 2026-11-09): before that it is one empty line. -->
-      {#if store.spent > 0}
-        <Ordered order={6} span
-          ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
-        >
-      {/if}
-      <!-- Share and Import sit under Point order from 1280 (h-audit 2026-11-09): the rail ran 300 px
-           past the trees while main ended at the order; below 1280 they pair up in the flow. -->
-      {#if !store.readOnly}
-        {#if store.spent > 0}<Ordered order={7}><SharePanel {store} /></Ordered>{/if}
-        <Ordered order={8}>{@render importSection()}</Ordered>
-      {/if}
+      <!-- Point order straight after the trees in the phone flow (h-audit 2026-11-09). -->
+      <Ordered order={1} span
+        ><PlannerOrder {store} characterName={sendCharacter?.name ?? null} panel /></Ordered
+      >
     {/if}
   </Page>
 {:else}
@@ -1341,7 +1336,7 @@
     {#if status === 'ready'}
       <PlannerOrder {store} />
       {@render bandSection()}
-      {@render importSection()}
+      {@render importSection(false)}
     {/if}
   </div>
 {/if}

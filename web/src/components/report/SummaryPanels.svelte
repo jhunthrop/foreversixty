@@ -146,6 +146,10 @@
     ...BASE_COLUMNS,
     ...(detail ? details.map((id) => ({ id, label: DETAIL_LABEL[id] })) : []),
   ]);
+  /** A detail's word on the phone's sub line, by its count: "1 hit", "12 hits", "48% crit". */
+  function phoneLabel(row: AbilityTotal, id: (typeof DETAIL)[Metric][number]): string {
+    return id === 'hits' && row.landed === 1 ? 'hit' : DETAIL_LABEL[id].toLowerCase();
+  }
   /** One detail figure; a prorated window marks the amounts it scales, as the Amount column does. */
   function detailValue(row: AbilityTotal, id: (typeof DETAIL)[Metric][number]): string {
     const mark = approximate ? '~' : '';
@@ -183,7 +187,7 @@
             {#snippet icon()}<SpellIcon url={spellIcon(row.spellId, row.name, row.school)} />{/snippet}
             {#snippet name()}<b class="text-strong">{row.name}</b>{/snippet}
             {#snippet sub()}{#each details as id, i (id)}<span class="ui-st-phone"
-                  >{i > 0 ? ' · ' : ''}{detailValue(row, id)} {DETAIL_LABEL[id].toLowerCase()}</span
+                  >{i > 0 ? ' · ' : ''}{detailValue(row, id)} {phoneLabel(row, id)}</span
                 >{/each}{/snippet}
             {#snippet meter()}<Meter value={row.share} tone={TONE[metric]} />{/snippet}
           </StatRow>

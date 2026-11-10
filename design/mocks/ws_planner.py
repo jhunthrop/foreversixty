@@ -167,7 +167,7 @@ def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = 
         line = f'<p class="pl-line">{e(cmp["line"])}</p>'
     else:
         line = f'<p class="pl-line"><b class="gold num">{s["count"]}</b> {e(cmp["line"])}</p>'
-    beyond = f'<p class="t-small">{e(cmp["beyond"])}</p>' if cmp['beyond'] else ''
+    beyond = (f'<p class="t-small">{e(cmp["past"])}</p>' if cmp.get('past') else '') + (f'<p class="t-small">{e(cmp["beyond"])}</p>' if cmp['beyond'] else '')
     if confirm:
         acts = f'<p class="t-small">{e(C["band"]["loadConfirmMessage"])}</p><div class="pl-acts">{Button(e(C["band"]["loadConfirmProceed"]))}{Button(e(C["band"]["loadConfirmCancel"]))}</div>'
     else:
@@ -178,7 +178,12 @@ def compare(st: dict, confirm: bool = False, loaded: str = '', readonly: bool = 
     return Section(e(b['heading']), f'<div class="pl-sec">{line}{beyond}{acts}{ld}{gear}</div>')
 
 
-def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: bool = False) -> str:
+def part(title: str, body: str) -> str:
+    """One part of the take-it-with-you plate (planner/PlannerPart.svelte): a hairline, a small heading, the body."""
+    return f'<div class="pl-part"><h3 class="pl-part-h">{title}</h3>{body}</div>'
+
+
+def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: bool = False, parts: str = '') -> str:
     """The addon handoff. send: a sendActionFor result (signed in) or None (signed out: Copy for the game is the primary)."""
     copy_label = {'idle': C['addon']['copyForGame'], 'copied': C['addon']['copiedForGame'], 'failed': C['addon']['copyForGame']}[copy_state]
     # Q6: signed in, Send is the gold primary and Copy sits under it; Copy is the primary signed out or on another class's build.
@@ -207,10 +212,10 @@ def in_game(st: dict, send: dict | None, copy_state: str = 'idle', plain_block: 
     else:
         body += (f'<div class="pl-acts">{copy_btn}</div>' if copy_btn else '') + failed
         body += f'<p>{Link(r(C["cta"]["getAddonAndCompanion"]))}</p>'
-    return Section(e(P['inGameTitle']), f'<div class="pl-sec">{body}</div>')
+    return Section(e(P['inGameTitle']), f'<div class="pl-sec">{body}</div>{parts}')
 
 
-def share(st: dict, mode: str = 'idle') -> str:
+def share_body(st: dict, mode: str = 'idle') -> str:
     """Share this build: title, Share, Copy as text, the sim on the card. mode: idle | confirm | saved | failed | ratelimit."""
     title = f'<label class="pl-field"><span class="t-label">{e(P["shareTitleLabel"])}</span>{Field(e(P["shareTitlePlaceholder"]), e(P["shareTitleLabel"]))}</label>'
     off = st['spent'] == 0
@@ -228,10 +233,14 @@ def share(st: dict, mode: str = 'idle') -> str:
     elif mode in ('failed', 'ratelimit'):
         msg = C['save_failed'] if mode == 'failed' else C['rate_limit']
         body += f'<div class="pl-confirm" role="alert"><p class="wipe">{e(msg)}</p><div class="pl-acts">{Button(e(P["retry"]), small=True)}</div></div>'
-    return Section(e(P['shareTitle']), f'<div class="pl-sec">{body}</div>')
+    return f'<div class="pl-sec">{body}</div>'
 
 
-def importer(st: dict, mode: str = 'idle') -> str:
+def share(st: dict, mode: str = 'idle') -> str:
+    return Section(e(P['shareTitle']), share_body(st, mode))
+
+
+def importer_body(st: dict, mode: str = 'idle') -> str:
     A = C['addon']
     text = {'idle': A['importPlaceholder'], 'bad': 'FS9:nope', 'switch': 'FS1:1.60.1.70790:priest:human:00500503103/…'}[mode]
     field = CodeField(text, placeholder=mode == 'idle', bad=mode == 'bad', label=A['importTitle'])
@@ -242,7 +251,11 @@ def importer(st: dict, mode: str = 'idle') -> str:
         msg = f'<p class="pl-note muted" role="status">{e(A["importSwitching"])}</p>'
     imp = Button(e(A['importAction'])).replace('class="btn', 'class="btn is-off' if mode == 'idle' else 'class="btn', 1)
     body = f'{field}<div class="pl-acts">{imp}</div>{msg}<p class="t-small">{e(A["importNoExport"])} {Link(r(A["importGetAddon"]))}</p>'
-    return Section(e(A['importTitle']), f'<div class="pl-sec">{body}</div>')
+    return f'<div class="pl-sec">{body}</div>'
+
+
+def importer(st: dict, mode: str = 'idle') -> str:
+    return Section(e(C['addon']['importTitle']), importer_body(st, mode))
 
 
 def order(st: dict) -> str:
@@ -261,18 +274,29 @@ def order(st: dict) -> str:
             else:
                 slots.append(OrderSlot(icon(slot['iconSrc'], 36), slot['name'], str(slot['rank']), kind))
         rows.append((e(row['label']), slots))
-    body = PointOrder(rows, view['capAfter'], e(view['capText'])) if st['points'] else f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>'
+    preview = not st['points'] and any(slot['kind'] == 'ahead' for row in view['rows'] for slot in row['slots'])
+    if st['points']:
+        body = PointOrder(rows, view['capAfter'], e(view['capText']))
+    elif preview:
+        body = f'<p class="t-small pl-pad">{e(st["preview_line"])}</p>' + PointOrder(rows, view['capAfter'], e(view['capText']))
+    else:
+        body = f'<p class="t-small pl-pad">{e(P["noPointsYet"])}</p>'
     return Section(e(P['pointOrderTitle']), body)
 
 
 def guide_builds(st: dict) -> str:
-    """Guide builds (GuideBuilds.svelte): the class's published guide builds, the spec icon, name, build and split; the build on
-    screen is the selected row."""
+    """Guide builds as build vs guide (GuideBuilds.svelte): the spec icon, name, build and split; the build on screen carries
+    Loaded, every other row its points off, the split's change and the first talent it lacks."""
     def sub(b: dict) -> str:
-        loaded = Tag(e(P['guideBuildLoaded']), 'muted') if b['current'] else ''
-        return f'<span class="gb-sub">{e(b["label"])} &middot; {"/".join(str(x) for x in b["split"])}{loaded}</span>'
-    rows = [Row(e(b['name']), sub(b), lead=icon(b['icon'], 28) if b.get('icon') else '',
-                trail=f'<span class="t-small">{e(b["off"])}</span>' if b.get('off') else '', slim=True) for b in st['guide_builds']]
+        tail = Tag(e(P['guideBuildLoaded']), 'muted') if b['current'] else (f'<span>{e(b["missing"])}</span>' if b.get('missing') else '')
+        return f'<span class="gb-sub">{e(b["label"])} &middot; {"/".join(str(x) for x in b["split"])}{tail}</span>'
+
+    def trail(b: dict) -> str:
+        if not b.get('off'):
+            return ''
+        return f'<span class="gb-off"><span class="strong">{e(b["off"])}</span><span class="t-small">{e(b["delta"])}</span></span>'
+    rows = [Row(e(b['name']), sub(b), lead=icon(b['icon'], 28) if b.get('icon') else '', trail=trail(b), slim=True)
+            for b in st['guide_builds']]
     return Section(e(P['guideBuildsTitle']), Rows(rows, open_=True)) if rows else ''
 
 
@@ -285,11 +309,12 @@ def planner(key: str, *, signed: str = 'out', send_key: str | None = None, note:
     plate = TalentEditor(trees(st), lead_tree, tree_foot(st, status, status_tone, reset_open))
     send = F['send'][send_key] if send_key else None
     # Share and Import under Point order (h-audit 2026-11-09): the rail ended 300 px below main.
-    main = (Ordered(plate, 1, span=True) + (Ordered(order(st), 6, span=True) if st['points'] else '')
-            + (Ordered(share(st, share_mode), 7) if st['spent'] else '')
-            + Ordered(importer(st, import_mode), 8))
+    main = Ordered(plate, 1, span=True) + Ordered(order(st), 1, span=True)
     gb = guide_builds(st)
-    rail = Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state), 3) + (Ordered(gb, 4) if gb else '')
+    # One take-it-with-you plate (h-audit 2026-11-09): Share (once a point is spent) and Import as parts of In the game.
+    parts = ((part(e(P['shareTitle']), share_body(st, share_mode)) if st['spent'] else '')
+             + part(e(C['addon']['importTitle']), importer_body(st, import_mode)))
+    rail = Ordered(compare(st, confirm, loaded), 2) + Ordered(in_game(st, send, copy_state, parts=parts), 5) + (Ordered(gb, 4) if gb else '')
     # Ruling MUST 1: the build's origin is said once; the gold origin line drops whenever the note shows.
     body = (head(st, signed != 'out', st.get('origin', '') if origin and not note else '') + bar(st, open_m) + notes(note, note_short)
             + Page('workbench', main, rail) + PAGE_CSS)
@@ -373,6 +398,8 @@ PAGE_CSS = '''<style>
 @media(max-width:767px){main .btn.sm{height:44px}}
 
 .pl-sec{display:flex;flex-direction:column;gap:12px;padding-top:2px}.pl-pad{padding-top:2px}
+.gb-off{display:flex;flex-direction:column;align-items:flex-end;font-size:13px;line-height:18px;white-space:nowrap}
+.pl-part{margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft)}.pl-part-h{margin:0 0 10px;font:600 15px/20px var(--font-body);color:var(--strong)}
 .pl-acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.pl-acts.pl-end{align-items:flex-end}
 .pl-line{font-size:15px;line-height:22px}.pl-note{font-size:14px;line-height:20px}.pl-note.muted{color:var(--muted)}
 .pl-gear{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding-top:10px;border-top:1px solid var(--line-soft)}

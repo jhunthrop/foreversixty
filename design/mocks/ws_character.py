@@ -20,7 +20,7 @@ from mocklib import CLASS_COLOR
 from ws_lib import REGION
 from ws_lib import QCOL
 from ws_prims import (Button, Disclosure, Facts, FeedRow, Figure, ItemRow, Link, MeterClass, Page, PageHeader, PaperdollFrame, Spark,
-                      Plate, Row, Rows, RowsSlim, Section, Skeleton, Tag, build_page, crest_img, icon, write)
+                      Ordered, Plate, Row, Rows, RowsSlim, Section, Skeleton, Tag, build_page, crest_img, icon, write)
 
 ROOT = Path(__file__).resolve().parents[2]
 FIX = ROOT / 'web/tests/e2e/fixtures/character'
@@ -45,11 +45,10 @@ CHAR_CSS = '''
 .err{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:44px;font-size:14px;color:var(--muted)}
 .cell.sk{align-items:center}.cell.sk .bd{gap:8px}
 .line{font-size:15px;line-height:24px;color:var(--text);padding-block:6px}
-.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
+@media(max-width:767px){.wait-pre{display:none}}.bspk{display:inline-block;width:48px}.wait-plate{margin-top:16px;width:100%;max-width:var(--measure-reading);padding:0 16px}.wait{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--gold);font-weight:600}
 .sum-row{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:20px}.notice.facts{gap:4px 20px}
 .frow .st{color:var(--strong)}
 /* round 5 (lane P9): the split from 1280, the frame centred at 640, the answer's sim link beside its figure, the parts' bars */
-@media(max-width:1279px){.char-pg .layout-split{grid-template-columns:minmax(0,1fr)}}
 .char-pg{padding-bottom:48px}.char-pg .frow .k:empty{display:none}
 .doll-c{display:flex;justify-content:center}.doll-w{width:100%;max-width:640px}
 .ans-row{display:flex;align-items:center;gap:20px}
@@ -283,7 +282,7 @@ def head(ch: Char, owner: dict | None, answer: bool = True) -> str:
         meta.append(f"<a class=\"link\" href=\"#\">&lt;{c['guild']['name']}&gt;</a>")
     meta += [c['realm'], f"{'Hardcore' if c['ruleset'] == 'hardcore' else 'Normal'} {c['region'].upper()}"]
     if ch.page.get('supporter'):
-        meta.append('Supporter')
+        meta.append(Tag('Supporter'))
     if owner:
         meta.append('Synced 1 day ago')
     total = ch.total()
@@ -347,17 +346,26 @@ def fights_section(ch: Char) -> str:
     p = ch.page
     rows = []
     for f in p['best'][:FIGHTS_SHOWN]:
-        trail = (f'<span class="pct" style="color:{parse_color(f["percentile"])}">{round(f["percentile"])}</span>'
+        # The boss kill by kill (web bestRows, h-audit 2026-11-09): the parse trend and the change since the kill before.
+        kills = sorted((h for h in p['history'] if h['encounter_id'] == f['encounter_id'] and h['difficulty'] == f['difficulty']
+                        and h['metric'] == f['metric'] and h.get('kill') is not False), key=lambda h: h['fought_at'])
+        parses = [h['percentile'] for h in kills if h.get('percentile') is not None]
+        spark = f'<span class="bspk" aria-hidden="true">{Spark(parses)}</span>' if len(parses) > 1 else ''
+        trail = (spark + f'<span class="pct" style="color:{parse_color(f["percentile"])}">{round(f["percentile"])}</span>'
                  + Figure(f"{f['value']:,}", '', ch.unit, size='sm'))
         ex = f" &middot; Execution {round(f['execution_score'] * 100)}%" if f.get('execution_score') is not None else ''
-        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])} &middot; {f['spec']}{ex}", trail=trail, slim=True))
+        before = [h for h in kills if h['fought_at'] < f['fought_at']]
+        change = round(f['value'] - before[-1]['value']) if before else None
+        since = (f" &middot; {'+' if change > 0 else '&minus;' if change < 0 else ''}{abs(change)} since {short_date(before[-1]['fought_at'])}"
+                 if before else '')
+        rows.append(Row(f['encounter'], f"{short_date(f['fought_at'])} &middot; {f['spec']}{ex}{since}", trail=trail, slim=True))
     return panel('Best per encounter', RowsSlim(rows), f"All fights ({len(p['history'])})")
 
 
 def builds_section(ch: Char) -> str:
     rows = [Row(b['talent_split'], f"{b['spec']} &middot; {short_date(b['first_seen'])}", slim=True)
             for b in ch.page['builds_seen'][:3]]
-    return panel('Builds seen', RowsSlim(rows))
+    return sec('Builds seen', RowsSlim(rows))  # a plain list on the ground (h-audit 2026-11-09)
 
 
 def coach_rows(file: str) -> str:
@@ -389,7 +397,7 @@ def waiting(ch: Char, owner: dict) -> list[tuple[str, str]]:
     top = ch.top()
     talents = [(f"{to_spend} talent {'point' if to_spend == 1 else 'points'} unspent", '')] if to_spend > 0 else []
     item = ch.items.get(top['id'], {}) if top else {}
-    return talents + ([(f"Upgrade: {top['name']}, {top['source']}", icon(item.get('icon'), 28))] if top else [])
+    return talents + ([(f"<span class=\"wait-pre\">Upgrade: </span>{top['name']}, {top['source']}", icon(item.get('icon'), 28))] if top else [])
 
 
 # ------------------------------------------------------------------------------------------------ the states
@@ -401,9 +409,14 @@ def felsnap(answer: str = 'character-34.json') -> Char:
     return Char(answer, HOME / 'bis-hunter-beast-mastery.json', HOME / 'items-hunter.json')
 
 
+def O(html: str, order: int, span: bool = False) -> str:
+    """A block's place in the phone flow (web ui/Ordered); a block left out leaves no slot."""
+    return Ordered(html, order, span) if html else ''
+
+
 def split(main: str, rail: str) -> str:
-    """Page layout split with panels, side by side from 1280 (web ui/Page splitFrom={1280})."""
-    return f'<div class="char-pg">{Page("split", main, rail, panels=True)}</div>'
+    """Page layout workbench with panels (h-audit 2026-11-09): side by side from 1280, one ordered flow below it."""
+    return f'<div class="char-pg">{Page("workbench", main, rail, panels=True)}</div>'
 
 
 def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | None = None, home: str | None = None,
@@ -413,11 +426,11 @@ def state_ready(ch: Char, me: str | None, premium: bool = False, feed: str | Non
     if owner:
         body += waiting_summary(waiting(ch, owner))
     logged = bool(ch.page.get('score'))
-    main = (gear_section(ch) + (fights_section(ch) if ch.page['best'] else '')
-            + (owner_sections(premium, len(ch.page['history']), coach) if owner and logged else ''))
+    main = (O(gear_section(ch), 1, True) + O(fights_section(ch) if ch.page['best'] else '', 4, True)
+            + O(owner_sections(premium, len(ch.page['history']), coach) if owner and logged else '', 5, True))
     stand = standing_section(standing(home, 'guild' in owner, SPEC[ch.cls])) if owner else ''
-    rail = (score_section(ch, owner is not None) + stand + (builds_section(ch) if ch.page['builds_seen'] else '')
-            + activity_section(feed, ch.page['character']['name']))
+    rail = (O(score_section(ch, owner is not None), 2) + O(stand, 3) + O(builds_section(ch) if ch.page['builds_seen'] else '', 6)
+            + O(activity_section(feed, ch.page['character']['name']), 7))
     return body + split(main, rail)
 
 
@@ -426,8 +439,8 @@ def state_unread() -> str:
     owner = J(FIX / 'me-34-unread.json')['characters'][0]
     return (head(ch, owner, answer=False)
             + summary('Your gear has not been read yet. In game, log in, wait for the world to load, then log out once; it appears here within a minute.', tone='neutral')
-            + split(gear_section(ch, 'Best in slot for level 30 to 39', picks=True),
-                    score_section(ch, True) + standing_section(standing('home-34.json', False, 'Beast Mastery'))))
+            + split(O(gear_section(ch, 'Best in slot for level 30 to 39', picks=True), 1, True),
+                    O(score_section(ch, True), 2) + O(standing_section(standing('home-34.json', False, 'Beast Mastery')), 3)))
 
 
 def lookup() -> str:

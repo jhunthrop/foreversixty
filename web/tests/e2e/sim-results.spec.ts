@@ -7,7 +7,7 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from './support/test';
 import { simPageCopy } from '../../src/lib/sim/page-copy';
-import { gotoSim, pasteAndRun, SIM_FURY as FURY, simCharacter } from './support/sim-page';
+import { gotoSim, openSimSection, pasteAndRun, SIM_FURY as FURY, simCharacter } from './support/sim-page';
 
 // The paste Plate's Run loads and runs in one click. The fake engine (engine-fake.ts) answers
 // with src/fixtures/sim/result.json's own summary, whatever DPS its seeded normal invents.
@@ -72,7 +72,7 @@ test('the deeper sections load as they near the viewport, down to This run', asy
 
   await page.getByTestId('sim-section-timeline').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('sim-section-timeline')).toBeVisible();
-  await page.getByTestId('sim-section-settings').scrollIntoViewIfNeeded();
+  await openSimSection(page, 'settings');
   await expect(page.getByTestId('sim-settings-card')).toBeVisible({ timeout: 10_000 });
   await expect(page.getByTestId('sim-copy-json')).toBeVisible();
 });

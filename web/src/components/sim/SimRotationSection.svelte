@@ -2,8 +2,8 @@
 <!-- What the engine is told to press, in words (sim spec 2026-11-06 §4.3, §4.5; spec
      2026-11-04-sim-results 3.11): an open Section of open Rows, the curated APL's own notes, and
      after a run this run's casts per fight beside each line, a line the run never cast dimmed.
-     Before a run (no `result`) it is the same lines, slim and without their notes (the guide
-     teaches them; h-audit 2026-11-09), with nothing counted. The guide is the
+     Before a run (no `result`) it is the same lines with nothing counted; after one, a line
+     whose note only says "on cooldown" drops the note (h-audit 2026-11-09). The guide is the
      section's action. The spec's fidelity note lives in the page's answer (§4.6), not here. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
@@ -12,6 +12,7 @@
   import { classSpecPath } from '../../lib/sim/gear-card';
   import { rotationCardCopy as copy } from '../../lib/sim/input-cards-copy';
   import {
+    obviousNote,
     OTHER_COOLDOWNS_ICON,
     plannedRotationRows,
     rotationActionKeys,
@@ -131,9 +132,8 @@
         <div class={row.dimmed ? 'opacity-50' : ''} data-testid="rotation-line" data-dimmed={row.dimmed}>
           <Row
             title={row.name}
-            sub={result === null || row.note === '' ? undefined : row.note}
+            sub={result !== null && obviousNote(row.note) ? undefined : row.note || undefined}
             rank={String(row.number)}
-            density={result === null ? 'slim' : 'default'}
             open
           >
             {#snippet titleContent()}{@render title(row.name, row.action)}{/snippet}

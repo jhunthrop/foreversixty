@@ -329,7 +329,7 @@
   {#if wide.current}
     {@render plot()}
   {:else}
-    <Disclosure summary={chartCopy.showChart} {meta} bind:open={chartOpen} testid="chart-collapsed">
+    <Disclosure summary={chartCopy.chartFold} meta={headMeta} bind:open={chartOpen} testid="chart-collapsed">
       {@render controls()}
       {@render plot()}
     </Disclosure>

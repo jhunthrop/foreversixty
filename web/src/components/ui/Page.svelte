@@ -168,6 +168,10 @@
     order: var(--o, 0);
     min-width: 0;
   }
+  /* An Ordered whose region drew nothing (a panel with nothing true to say) holds no gap. */
+  .ui-page[data-layout='workbench'] :global([data-order]:empty) {
+    display: none;
+  }
   @media (min-width: 1024px) and (max-width: 1279px) {
     .ui-page[data-layout='workbench'] {
       grid-template-columns: repeat(2, minmax(0, 1fr));

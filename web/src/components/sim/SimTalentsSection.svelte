@@ -2,8 +2,9 @@
 <!-- The character's talents as three flat read-only trees (sim spec 2026-11-06 §4.5 item 4, the
      mock's `Trees`; spec 2026-11-04-sim-results 4.7): an open Section with the split as its meta
      and Open in planner as its action, each tree its name and points over the planner's own grid
-     (36 px cells, gold ring full, green ring partial, greyscale untaken, rank badge), one column
-     below 768 (§8), the game tooltip on every cell. It reads the request only, so the landing shows
+     (36 px cells, gold ring full, green ring partial, greyscale untaken, rank badge), below 768
+     only each tree's name and points, so the phone reads the split (h-audit 2026-11-09); the game
+     tooltip on every cell. It reads the request only, so the landing shows
      it before a run. A string that does not fit today's trees keeps its split and says why nothing
      is drawn. -->
 <script lang="ts">
@@ -113,7 +114,7 @@
     {:else if view.kind === 'unfit'}
       <p class="text-text text-[15px]" data-testid="sim-talents-unfit">{copy.doesNotFit}</p>
     {:else}
-      <div class="sim-trees grid grid-cols-1 gap-[var(--gap)] md:grid-cols-3" data-testid="sim-talents-trees">
+      <div class="sim-trees grid grid-cols-3 gap-[var(--gap)]" data-testid="sim-talents-trees">
         {#each view.index.trees as tree, i (tree.id)}
           <div class="min-w-0" data-testid={`tree-panel-${tree.id}`}>
             <h3 class="text-strong flex items-baseline gap-2 pb-2 text-[15px] leading-5 font-bold">
@@ -122,7 +123,8 @@
                 >{view.store.split[i] ?? 0}</span
               >
             </h3>
-            <TreeGrid store={view.store} {tree} readOnly plain />
+            <!-- Below 768 a tree is its name and points (the split); the grid is the planner's to show. -->
+            <div class="max-md:hidden"><TreeGrid store={view.store} {tree} readOnly plain /></div>
           </div>
         {/each}
       </div>

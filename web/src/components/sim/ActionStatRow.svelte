@@ -46,7 +46,12 @@
 
 <StatRow {figures} {testid}>
   {#snippet icon()}
-    {#if iconUrl !== null}<img
+    {#if action === REFUND_KEY}<span
+        class="text-muted border-line-warm-strong mt-[2px] inline-flex items-center justify-center rounded-[4px] border bg-[var(--color-bg)]"
+        style:width="{ICON_SIZE}px"
+        style:height="{ICON_SIZE}px"
+        data-testid="refund-glyph"><Icon icon={ICON_REFRESH} size={14} /></span
+      >{:else if iconUrl !== null}<img
         src={iconUrl}
         alt=""
         width={ICON_SIZE}
@@ -56,12 +61,7 @@
         class="mt-[2px] block rounded-[4px]"
         data-game-tip={opens.tip}
         data-bis-item={opens.item}
-      />{:else if action === REFUND_KEY}<span
-        class="text-muted mt-[2px] inline-flex items-center justify-center"
-        style:width="{ICON_SIZE}px"
-        style:height="{ICON_SIZE}px"
-        data-testid="refund-glyph"><Icon icon={ICON_REFRESH} size={14} /></span
-      >{/if}
+      />{/if}
   {/snippet}
   {#snippet name()}
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->

@@ -8,6 +8,7 @@
      retired character card. On a shared build (`plainOtherClass`) another class's build is one
      plain line above Copy for the game instead of the disabled send (premium spec ruling MUST 5). -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import type { MeCharacter } from '../../lib/account/api';
   import { ctaCopy } from '../../lib/addon/cta-copy';
   import { plannerCharacterCardCopy as cardCopy, plannerCopy } from '../../lib/planner/copy';
@@ -26,6 +27,7 @@
     character,
     origin = null,
     plainOtherClass = false,
+    children,
   }: {
     store: PlannerStore;
     /** The header selector's character (null signed out or with none): the send is aimed at it. */
@@ -35,6 +37,8 @@
     /** Another class's build says so in one plain line above Copy for the game, with no disabled
      *  send button (premium spec 2026-11-08 ruling MUST 5): the shared build page. */
     plainOtherClass?: boolean;
+    /** The rest of the take-it-with-you plate (Share, Import as PlannerParts) under the handoff. */
+    children?: Snippet;
   } = $props();
 
   let sendState = $state<SendState>({ kind: 'idle' });
@@ -163,4 +167,5 @@
       </p>
     {/if}
   </div>
+  {#if children}{@render children()}{/if}
 </Section>

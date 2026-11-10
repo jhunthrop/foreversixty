@@ -62,6 +62,37 @@ export function treesOff(guide: string, mine: string): number {
   }, 0);
 }
 
+/** A guide build against the build on screen: the points off, the first talent the guide takes that
+ *  the build on screen lacks (tree order, then the tree's own talent order), and the split's change
+ *  tree by tree (the guide's minus the build's). */
+export interface GuideDiff {
+  off: number;
+  missing: string | null;
+  delta: number[];
+}
+
+export function guideDiff(guide: string, mine: string, names: readonly (readonly string[])[]): GuideDiff {
+  const mineTrees = mine.split('/');
+  let missing: string | null = null;
+  guide.split('/').forEach((tree, at) => {
+    const own = mineTrees[at] ?? '';
+    [...tree].forEach((digit, i) => {
+      if (missing === null && Number(digit) > Number(own[i] ?? 0)) missing = names[at]?.[i] ?? null;
+    });
+  });
+  const mineSplit = treesSplit(mine);
+  return {
+    off: treesOff(guide, mine),
+    missing,
+    delta: treesSplit(guide).map((points, at) => points - (mineSplit[at] ?? 0)),
+  };
+}
+
+/** A split change as a player reads it: "+2/−2/0". */
+export function deltaText(delta: readonly number[]): string {
+  return delta.map((n) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '0')).join('/');
+}
+
 /** Points per tree of a tree ranks segment. */
 export function treesSplit(trees: string): number[] {
   return trees.split('/').map((tree) => [...tree].reduce((sum, digit) => sum + Number(digit), 0));

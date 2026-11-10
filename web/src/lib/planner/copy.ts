@@ -79,6 +79,8 @@ export const plannerCopy = {
   guideBuildLoaded: 'Loaded',
   /** A guide build row's distance from the build on screen: "3 points off". */
   guideBuildOff: (points: number): string => `${points} ${points === 1 ? 'point' : 'points'} off`,
+  /** A guide build row's first talent the build on screen lacks: "Missing Lacerate". */
+  guideBuildMissing: (talent: string): string => `Missing ${talent}`,
   /** The guide's own build names (guidesCopy.levelingBuild, raidBuild; guide-builds.test.ts holds them equal):
    *  repeated here so the planner island does not carry the guides' whole copy. */
   guideLevelingBuild: 'Level 60 build',
@@ -87,6 +89,8 @@ export const plannerCopy = {
   plannedAhead: (n: number): string => `${n} planned ahead`,
   /** Point order's line after the character's level row (decision P4). */
   levelLine: (name: string, level: number): string => `${name} is level ${level}.`,
+  /** Above an empty build's Point order, the spec guide's order it previews, dimmed. */
+  previewLine: (specName: string): string => `${specName} guide order`,
   /** The same line when the spec guide's order fills the sockets past the character's level. */
   aheadLine: (name: string, level: number, specName: string): string =>
     `${name} is ${level}. Then ${specName} guide order.`,
@@ -256,6 +260,8 @@ export const bandCompareCopy = {
   },
   /** A band build that covers fewer points than the character has (ruling MUST 3): never "Matches". */
   coversFewer: (covered: number, total: number): string => `${covered} of ${total} points`,
+  /** Under coversFewer: the build's talents past the band's build, named (h-audit 2026-11-09). */
+  coversPast: (names: readonly string[]): string => `Past it: ${listOf(names)}`,
   loadButton: (bandLabel: string): string => `Load the ${lowerBandPhrase(bandLabel)} build`,
   /** The line under the panel after a load: cut at a character's level, or the band's whole build. */
   loadedLine: (level: number, points: number, of: number): string =>

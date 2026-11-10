@@ -1,7 +1,32 @@
 import { describe, expect, it } from 'vitest';
 import { guidesCopy } from '../guides/copy';
 import { plannerCopy } from './copy';
-import { codeTrees, guideBuildRows, ranksTrees, treesOff, treesSplit, type GuideBuild } from './guide-builds';
+import {
+  codeTrees,
+  deltaText,
+  guideBuildRows,
+  guideDiff,
+  ranksTrees,
+  treesOff,
+  treesSplit,
+  type GuideBuild,
+} from './guide-builds';
+
+describe('guideDiff', () => {
+  const names = [
+    ['Improved Aspect', 'Endurance'],
+    ['Lacerate', 'Savagery'],
+  ];
+
+  it('names the first talent the guide takes that the build lacks, and the split change', () => {
+    expect(guideDiff('5/32', '5/22', names)).toEqual({ off: 1, missing: 'Lacerate', delta: [0, 1] });
+    expect(guideDiff('5/', '53/', names)).toEqual({ off: 0, missing: null, delta: [-3, 0] });
+  });
+
+  it('reads the change as a player writes it', () => {
+    expect(deltaText([2, -2, 0])).toBe('+2/−2/0');
+  });
+});
 
 const SURVIVAL = 'FS1:1.60.1.70790:hunter:night-elf:5/005005201/500230230050222151:';
 const BM = 'FS1:1.60.1.70790:hunter:night-elf:5420001505001251/00524510012/0:';

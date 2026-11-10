@@ -19,7 +19,7 @@ from pathlib import Path
 
 from mocklib import CLASS_COLOR
 from ws_lib import REGION
-from ws_prims import (Button, ColumnHeads, Frame, Link, Page, PageHeader, Plate, RankGroup, RankList, RankRow, Skeleton,
+from ws_prims import (ColumnHeads, Link, Page, PageHeader, Plate, RankGroup, RankList, RankRow, Skeleton,
                       build_page, control_bar, crest_img, seg, write)
 
 DATA_ROOT = Path(os.environ.get('FS_DATA_ROOT', Path(__file__).resolve().parents[2]))
@@ -207,30 +207,28 @@ def bar(role: str, faction: str, open_m: bool = False) -> str:
 
 
 def card(role: str, lists: dict, signed_in: bool, state: str = 'ready') -> str:
-    """The spec panel in the rail (TierSpecCard.astro). state: ready | loading | unknown."""
-    if not signed_in:   # a quiet link, no panel (TierSpecCard.astro)
+    """The visitor's spec in the rail (TierSpecCard.astro), quiet, never a panel. state: ready | loading | unknown."""
+    if not signed_in:
         return f'<p class="tier-quiet">{Link("Sign in to mark your spec &rsaquo;")}</p>'
     if state == 'loading':
-        return f'<div class="sk">{Skeleton(180, 28)}{Skeleton(220, 24)}{Skeleton(230, 44)}</div>'
+        return f'<div class="tc">{Skeleton(160, 22)}{Skeleton(180, 22)}</div>'
+    links = f'<div class="ca">{Link("Best in slot &rsaquo;")}{Link("Guide &rsaquo;")}</div>'
     if state == 'unknown':
-        return (f'<h2>Your spec</h2><p class="cl">Thandrel&rsquo;s spec is not known yet.</p>'
-                f'<div class="ca">{Button("Choose a character")}</div>')
+        return (f'<div class="tc"><h2>Your spec</h2><p class="cl">Thandrel&rsquo;s spec is not known yet.</p>'
+                f'<div class="ca">{Link("Choose a character &rsaquo;")}</div></div>')
     me_role = next(rl for rl, lst in lists.items() if any(r['spec'] == YOU_SPEC for r in lst[0]))
     me = next(r for r in lists[me_role][0] if r['spec'] == YOU_SPEC)
-    if me_role != role:
-        return (f'<h2>{full_name(me)}</h2><p class="cl">{Link(f"On the {TAB_LABEL[me_role]} list &rsaquo;")}</p>'
-                f'<div class="ca">{Button("Best in slot", True)}{Button("Guide")}</div>')
-    # The row is marked on the list beside it: no standing line repeats its tier, place and figure.
-    return (f'<div class="cb"><h2 style="color:var(--class-{YOU[1]})">{full_name(me)}</h2>'
-            f'<div class="ca">{Button("Best in slot", True)}{Button("Guide")}</div></div>')
+    other = f'<p class="cl">{Link(f"On the {TAB_LABEL[me_role]} list &rsaquo;")}</p>' if me_role != role else ''
+    # The row is marked on the list beside it: the name in its class colour and its two links, no panel.
+    return f'<div class="tc"><h2 style="color:var(--class-{YOU[1]})">{full_name(me)}</h2>{other}{links}</div>'
 
 
 PAGE_CSS = '''<style>
-/* page-level layout only (no surfaces): the spec panel's type and rhythm (TierSpecCard.astro) */
-.frame h2{font:400 22px/28px var(--font-title);letter-spacing:-.015em}
-.frame .cl{margin-top:6px;font:600 15px/24px var(--font-body);color:var(--strong)}
-.frame .ca{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}.frame .btn{height:44px;display:inline-flex;align-items:center}
-.frame .sk,.frame .cb{display:flex;flex-direction:column;gap:6px;min-height:114px}.frame .cb .ca{margin-top:10px}
+/* page-level layout only (no surfaces): the spec line's type and rhythm (TierSpecCard.astro) */
+.tc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:48px}
+.tc h2{margin:0;font:700 15px/22px var(--font-body);color:var(--strong)}
+.tc .cl{margin:0;font:400 15px/24px var(--font-body)}
+.tc .ca{display:flex;flex-wrap:wrap;gap:16px;font:400 15px/24px var(--font-body)}
 .tier-quiet{margin:0;font:400 15px/24px var(--font-body)}
 .tiers-end{padding-bottom:var(--section-gap)}
 .statesheet{display:grid;gap:32px}.statesheet h2{margin-bottom:10px}
@@ -246,8 +244,7 @@ def tiers_page(role: str, faction: str = 'alliance', signed_in: bool = False, op
     header = PageHeader('Tier list at 60', meta=[meta_line(role, meta)])
     plate = Plate(the_list(lst, role, ranked_, YOU_SPEC if signed_in else '', hover_spec), list_label(role, faction))
     inner = card(role, lists, signed_in, answer_state)
-    rail = (Frame(inner, False, REGION['head_answer']) if signed_in
-            else f'<div data-region="{REGION["head_answer"]}">{inner}</div>')
+    rail = f'<div data-region="{REGION["head_answer"]}">{inner}</div>'
     body = header + bar(role, faction, open_m) + f'<div class="tiers-end">{Page("split", plate, rail)}</div>' + PAGE_CSS
     note = (f'Tier list mock (directions mock g-tiers, round 5), built only from ws_prims. Data: build {BUILD}, band 60, preset raid, '
             f'{faction}; ranked by the shipped tier rules. Signed-in character "Thandrel" is a sample.')
@@ -275,7 +272,7 @@ def states_page() -> str:
     for t, st, role, signed in (('Spec panel: signed out', 'ready', 'dps', False), ('Spec panel: loading (reserved at its final size)', 'loading', 'dps', True),
                                 ('Spec panel: spec not known', 'unknown', 'dps', True),
                                 ('Spec panel: your spec is on another role&rsquo;s list (tank page, Fury Warrior)', 'ready', 'tank', True)):
-        blocks += f'<section><h2 class="t-h3">{t}</h2><div style="max-width:340px">{Frame(card(role, lists, signed, st), True)}</div></section>'
+        blocks += f'<section><h2 class="t-h3">{t}</h2><div style="max-width:340px">{card(role, lists, signed, st)}</div></section>'
     body = '<div class="pc" style="padding-top:24px"><h1 class="t-title">Tier list: states</h1></div>' + Page('ledger', f'<div class="statesheet">{blocks}</div>') + PAGE_CSS
     return build_page('Tier list states', body, 'Tools', YOU, 'Tier list states sheet; data as web-tiers.')
 

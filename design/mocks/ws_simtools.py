@@ -86,7 +86,8 @@ def check(label: str = '', checked: bool = False, disabled: bool = False) -> str
 def run_bar(tool: str) -> str:
     bar = S.run_bar('disabled' if tool != 'weights' else 'ready')
     # Nothing ticked: the count reads muted and the stage ladder waits for a count (BulkRunBar `hasCount`).
-    line = '<span class="t-small">3,120 iterations</span>' if tool == 'weights' else '<span class="t-small">0 valid combinations</span>'
+    # A weights run says nothing under the bar (BulkRunBar).
+    line = '' if tool == 'weights' else '<span class="t-small">0 valid combinations</span>'
     return bar + f'<div class="pc run-notes"><p>{line}</p></div>'
 
 
@@ -105,8 +106,8 @@ def candidate(slot_label: str, iid: int) -> str:
     lead = check(it['name']) + S.gicon(it['icon'], 32, it['quality'])
     trail = f'<span class="t-small num">{it["item_level"]}</span>{btn("Copy and modify", expanded=False)}'
     title = f'<button type="button" class="hover-name">{item_name(iid)}</button>'
-    return (f'<div class="cand-group"><div class="cand-h"><h3 class="t-h4">{slot_label}</h3><label class="t-small lock">{check()}Lock to equipped</label></div>'
-            + Rows([Row(title, 'Equipped', lead=lead, trail=trail, link=False)], open_=True) + '</div>')
+    return (f'<div class="cand-group"><div class="cand-h"><h3 class="t-h4">{slot_label}</h3><label class="t-small lock">{check()}Lock</label></div>'
+            + Rows([Row(title, '', lead=lead, trail=trail, link=False)], open_=True) + '</div>')
 
 
 def candidates() -> str:
@@ -114,7 +115,8 @@ def candidates() -> str:
 
 
 def item_search() -> str:
-    usable = sorted((i for i in ITEMS.values() if i.get('item_level')), key=lambda i: (-i['item_level'], i['name']))[:100]
+    # The first page of hits, then a button for the next (ItemSearch PAGE): no box that cuts a row in half.
+    usable = sorted((i for i in ITEMS.values() if i.get('item_level')), key=lambda i: (-i['item_level'], i['name']))[:8]
     rows = ''.join(f'<div class="hit">{S.gicon(i["icon"], 28, i["quality"])}<span class="hit-n">{item_name(i["id"])}</span>'
                    f'<span class="t-small num">{i["item_level"]}</span>{btn("Add")}</div>' for i in usable)
     filters = (f'<div class="search-f"><input type="search" class="fld grow" placeholder="Name" aria-label="Name">'
@@ -122,7 +124,7 @@ def item_search() -> str:
                f'<label class="fl"><span class="t-label">Slot</span><select class="fld w160"><option>Any slot</option></select></label>'
                f'<span class="fl"><span class="t-label">Source</span><button type="button" class="fld w240 sel" aria-expanded="false">Anywhere</button></span>'
                f'<span class="sw-l"><button type="button" role="switch" aria-checked="true" class="sw"></button>Only items this character can equip</span></div>')
-    return Section('Find an item', filters + f'<div class="hits">{rows}</div><p class="t-small trunc">Showing the first 100.</p>')
+    return Section('Find an item', filters + f'<div class="hits">{rows}</div><div class="more">{btn("8 more")}<p class="t-small trunc">Showing 100 of 9,026. Narrow the search.</p></div>')
 
 
 def consumables() -> str:
@@ -134,8 +136,8 @@ def consumables() -> str:
 
 def whole_sets() -> str:
     return Section('Whole sets', ''
-                   '<div class="sets-f"><label class="fl w160"><span class="t-label">Name</span><input class="fld" placeholder="Name"></label>'
-                   '<label class="fl grow"><span class="t-label">Paste an export string</span><input class="fld" placeholder="Paste an export string"></label>'
+                   '<div class="sets-f"><label class="fl w160"><input class="fld" placeholder="Name" aria-label="Name"></label>'
+                   '<label class="fl grow"><input class="fld" placeholder="Paste an export string" aria-label="Paste an export string"></label>'
                    '<button type="button" class="btn">Add set</button></div>')
 
 
@@ -284,12 +286,12 @@ def drops() -> str:
                 if kind != 'dungeon' and bosses:
                     rows += ''.join(f'<label class="opt indent">{check()}<span class="grow-n">{x.get("name") or s["name"]}</span></label>' for x in bosses)
                 rows += '</div>'
-        note = '<p class="t-small">All professions</p>' if kind == 'crafted' else ''
+        note = ''   # nothing records the fixture's professions: no line (SourcePicker)
         # Each kind is a Disclosure titled with its ticked count, open when the list is short (OPEN_UP_TO).
         opened = ' open' if len(shown) <= 8 else ''
         inner = f'<div class="disc-b">{note}<div class="src-cols">{rows}</div></div>' if opened else ''
-        groups.append(f'<div class="src-g"><details class="disc"{opened}><summary>{label} <span class="t-small">0 of {len(shown)} ticked</span></summary>{inner}</details></div>')
-    body = f'<div><div class="kinds">{toggles}</div>{"".join(groups)}</div>'
+        groups.append(f'<div class="src-g"><details class="disc"{opened}><summary>{label} <span class="t-small">{len(shown)} {"source" if len(shown) == 1 else "sources"}</span></summary>{inner}</details></div>')
+    body = f'<div><div class="kinds" role="group"><span class="t-small">Show</span>{toggles}</div>{"".join(groups)}</div>'
     return finish('Droptimizer', head('drops') + run_bar('drops')
                   + ledger(character_line(), Section('Sources', body, frame='framed')))
 
@@ -300,7 +302,7 @@ def weights() -> str:
     stats = row.get('stats') or list(row['weights'])
     picks = ''.join(f'<li><label class="opt">{check(checked=True, disabled=i == 0)}{s}</label></li>' for i, s in enumerate(stats))
     # The stats to weigh as one row of ticks over the table (StatWeights.svelte); the reference is its locked tick.
-    pick = Section('Stats to weigh', f'<ul class="opts row">{picks}</ul>', action=S.Link('Open Top Gear &rsaquo;'))
+    pick = Section('Stats to weigh', f'<ul class="opts row">{picks}</ul>')
     return finish('Weights', head('weights') + run_bar('weights') + ledger(character_line(), pick, published_weights()))
 
 
@@ -334,12 +336,12 @@ def published_weights() -> str:
         trs.append(S.StatRow('', name, sub, [f'{sf:.2f}', f'{w["dps_per_point"]:.3f} DPS', err_txt], primary_phone=f'{w["dps_per_point"]:.3f} DPS &middot; {err_txt}',
                              meter=S.Meter(min(1, max(.04, sf)))))
     top = STAT_LABEL[next(w for w in rows if reading(w) == 'value')['stat']]
-    cap = f'Per point of stat, normalized to {top} = 1.00, with DPS per point and the sim error.'
+    cap = ''   # the column heads say the normalisation; the caption keeps haste per 1% (owner rule)
     if haste:
         hs = band['haste_scale_factor'] / divisor
-        cap += f' Haste: {hs:.2f} per 1%' + ('' if band.get('haste_on_items', True) else ', not in the table because no item at this level range has it')
+        cap += f'Haste: {hs:.2f} per 1%' + ('' if band.get('haste_on_items', True) else ', not in the table because no item at this level range has it')
     table = S.StatTable([('', False), ('Stat', False), ('', False), ('Scale', True), ('Per point', True), ('Error', True)], trs, 3, open_=True)
-    body = f'<div class="wt-pub"><p class="t-small">{cap}</p>{table}</div>'
+    body = f'<div class="wt-pub">{f"<p class=t-small>{cap}</p>" if cap else ""}{table}</div>'
     return Section('Published weights', body, action=S.Link(f'Level {LEVEL} raid set &rsaquo;'), frame='framed')
 
 
@@ -365,7 +367,7 @@ def specs() -> str:
         label = f"{s['name']} {CLASS_NAME[s['class_slug']]}"
         # SpecCard: the spec's name is the toggle for its rotation steps; no parses, so no Tag; the raid BiS set at 60,
         # its place and its bar, the unit once in the section's meta
-        title = f'<details class="disc spec-n"><summary>{label}</summary></details>' if notes.get(s['spec'], True) else label
+        title = label   # the rotation reads on /sim: no toggle on this list
         fig = top.get(s['spec'])
         trail = (f'<span class="spec-fig"><span class="t-small num rk">#{fig[1]}</span><span class="sbar">{S.Meter(fig[0] / best)}</span>'
                  f'<span class="num dps">{fig[0]:,.1f}</span></span>') if fig else ''
@@ -373,7 +375,7 @@ def specs() -> str:
     # UnsimulatedSpecCard: one wrapping line of links, each the crest and the spec in its class colour, to its guide
     others = ''.join(f'<a class="un-l" href="#" style="color:{CLASS_COLOR[s["class_slug"]]}">{S.crest_img(s["class_slug"], 20)}{s["name"]} {CLASS_NAME[s["class_slug"]]}</a>'
                      for s in SPECS if s['role'] != 'dps')
-    meta = 'Raid BiS DPS at 60' if top else ''
+    meta = ''
     return finish('Spec support', head('specs') + ledger(Section('Damage specs', Rows(rows), meta=meta, frame='framed', flush=True),
                                                          Section('Healers and tanks', f'<div class="un">{others}</div>')))
 
@@ -400,7 +402,7 @@ TOOL_CSS = '''<style>
 .fld{box-sizing:border-box;height:40px;padding:0 12px;font:600 14px/20px var(--font-body);color:var(--text);background:transparent;border:1px solid var(--line);border-radius:4px}
 .fld.grow,.fl.grow{flex:1;min-width:220px}.fl.grow .fld{width:100%}.w24{width:96px}.w160,.fl.w160 .fld{width:160px}.w240{width:240px;text-align:left}
 .tb{display:flex;flex-direction:column;align-items:flex-start}.tb .t-h4{padding-top:12px;margin:0;font-size:15px;line-height:20px}.tb p{padding-top:4px;margin:0}.tb .bt{padding-top:12px}.rail-col .tb{padding-top:11px}
-.hits{margin-top:8px;max-height:343px;overflow-y:auto}.trunc{padding-top:8px;margin:0;font-size:12px}
+.hits{margin-top:8px}.trunc{margin:0;font-size:12px}.more{display:flex;flex-wrap:wrap;align-items:center;gap:0 12px;padding-top:8px}
 .run-notes p{display:flex;flex-wrap:wrap;gap:0 12px;align-items:baseline;margin:0;padding-top:12px;font-size:14px;line-height:20px}
 .tool-who{display:flex;flex-direction:column;gap:4px;padding:14px 0 4px}
 .who-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0;font-size:15px;line-height:24px}
