@@ -32,7 +32,8 @@ type PromptOptions struct {
 
 type promptWindow struct{ w webview.WebView }
 
-func (p promptWindow) Close()         { p.w.Dispatch(p.w.Terminate) }
+// Close ends the loop the one way the shell ends it (endLoop): on the loop's own thread.
+func (p promptWindow) Close()         { endLoop(p.w, nil) }
 func (p promptWindow) Eval(js string) { p.w.Dispatch(func() { p.w.Eval(js) }) }
 
 // Prompt shows the window and blocks until it is closed.
