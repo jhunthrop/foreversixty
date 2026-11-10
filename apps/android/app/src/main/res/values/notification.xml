@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The flat seal's turquoise (design/assets/brand/seal-flat): the accent behind the
+         notification small icon, for FCM's default notification and the app's own builders. -->
+    <color name="notification_accent">#FF2C8A9E</color>
+</resources>

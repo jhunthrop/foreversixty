@@ -44,11 +44,16 @@ The app icon is the LX seal from `design/logo/foreversixty-mark.svg`, unmodified
 placed only. `node web/scripts/build-app-icon.mjs` regenerates it.
 
 - `ios/Brand.xcassets/AppIcon.appiconset/`: the iOS app icon (single 1024 px opaque image; the
-  OS masks it). `apps/ios/project.yml` compiles the catalog in place.
+  OS masks it). `apps/ios/project.yml` compiles the catalog in place. The Dark and Tinted
+  appearances are the flat seal (`design/assets/brand/seal-flat/seal-flat-small.svg`) on a
+  transparent ground, Tinted in greyscale; the light appearance stays the painted seal.
 - `android/`: adaptive icon layers. `ic_launcher_foreground.png` (the seal inside the 66/108 safe
   zone, transparent elsewhere), `ic_launcher_background.png` (flat `#07090d`) and the
   `ic_launcher.xml` adaptive-icon wrapper. The `forever.app-icon` Gradle plugin copies the PNGs
-  to `mipmap-nodpi` and the XML to `mipmap-anydpi-v26` at build time.
+  to `mipmap-nodpi` and the XML to `mipmap-anydpi-v26` at build time. The wrapper's
+  `<monochrome>` themed layer and the notification small icon are vector drawables in the app's
+  `res/drawable`, both the flat tiny-bold seal with the LX knocked out, emitted by
+  `uv run tools/gen_seal_silhouette.py`.
 
 ## Crests and icons: one crest language
 

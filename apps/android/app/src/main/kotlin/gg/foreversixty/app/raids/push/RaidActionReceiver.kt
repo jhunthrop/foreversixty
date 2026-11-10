@@ -72,8 +72,7 @@ class RaidActionReceiver : BroadcastReceiver() {
         askMinutes: Boolean,
     ) {
         val body = if (askMinutes) listOf(answer.body, context.getString(R.string.push_late_question)).filter { it.isNotEmpty() }.joinToString("\n") else answer.body
-        val builder = NotificationCompat.Builder(context, PushGroup.Raids.channelId)
-            .setSmallIcon(R.drawable.ic_notification_seal)
+        val builder = PushNotifier.builder(context, PushGroup.Raids.channelId)
             .setContentTitle(answer.title)
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))

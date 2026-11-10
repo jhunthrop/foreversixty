@@ -25,8 +25,7 @@ object PushNotifier {
         PushGroup.createChannels(context)
         val tag = message.collapse ?: "${message.kind}-${message.title.hashCode()}"
         val id = message.group.ordinal + 1
-        val builder = NotificationCompat.Builder(context, message.group.channelId)
-            .setSmallIcon(R.drawable.ic_notification_seal)
+        val builder = builder(context, message.group.channelId)
             .setContentTitle(message.title)
             .setContentText(message.body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message.body))
@@ -38,6 +37,12 @@ object PushNotifier {
         }
         notify(context, tag, id, builder.build())
     }
+
+    /** A push's builder on [channelId]: the flat seal as the small icon over the seal's turquoise. */
+    fun builder(context: Context, channelId: String): NotificationCompat.Builder =
+        NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.ic_notification_seal)
+            .setColor(ContextCompat.getColor(context, R.color.notification_accent))
 
     /** Posts when the player allowed notifications (Android 13 and up ask; 9 to 12 never do). */
     fun notify(context: Context, tag: String?, id: Int, notification: Notification) {
