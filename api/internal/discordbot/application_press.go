@@ -22,11 +22,12 @@ const (
 
 // applicationCopy is the presses' words.
 var applicationCopy = struct {
-	Accept, Decline, Review, Unlinked, OfficersOnly, Accepted, Declined, Closed, Failed string
+	Accept, Decline, Review, Character, Unlinked, OfficersOnly, Accepted, Declined, Closed, Failed string
 }{
 	Accept:       "Accept",
 	Decline:      "Decline",
 	Review:       "Review application",
+	Character:    "Gear and logs",
 	Unlinked:     "Link your Discord account to decide applications.",
 	OfficersOnly: "Only officers decide applications.",
 	Accepted:     "Accepted {Name}.",
@@ -35,8 +36,9 @@ var applicationCopy = struct {
 	Failed:       "That did not save. Try again.",
 }
 
-// applicationButtons are the post's row: Accept, Decline, then the review link.
-func applicationButtons(id int64, reviewURL string) ActionRow {
+// applicationButtons are the post's row: Accept, Decline, the review link and the character's
+// page (its gear and logs).
+func applicationButtons(id int64, reviewURL, characterURL string) ActionRow {
 	idText := strconv.FormatInt(id, 10)
 	return ActionRow{
 		{Kind: KindButton, Style: StyleSuccess, Label: applicationCopy.Accept,
@@ -44,6 +46,7 @@ func applicationButtons(id int64, reviewURL string) ActionRow {
 		{Kind: KindButton, Style: StyleSecondary, Label: applicationCopy.Decline,
 			CustomID: strings.Join([]string{prefixApplication, applicationReject, idText}, idSeparator)},
 		{Kind: KindButton, Style: StyleLink, Label: applicationCopy.Review, URL: reviewURL},
+		{Kind: KindButton, Style: StyleLink, Label: applicationCopy.Character, URL: characterURL},
 	}
 }
 

@@ -76,7 +76,9 @@ func TestPostApplicationUsesTheRecruitingChannel(t *testing.T) {
 	h.callback(h.gid, "code=c", h.officerActor())
 	ctx := context.Background()
 	level, ilvl := 60, 61
-	post := guilds.ApplicationPost{ID: 5, GuildName: "Olympus XXVII", Character: "Thornhide", SpecClass: "Restoration Druid",
+	pct := 96.0
+	post := guilds.ApplicationPost{ID: 5, CharacterKey: "us/normal/mirelle",
+		BestParse: &guilds.BestParse{Percentile: &pct, Encounter: "Onyxia"}, GuildName: "Olympus XXVII", Character: "Thornhide", SpecClass: "Restoration Druid",
 		Message: "Two tiers of heals.", Availability: "Tue and Thu", ReviewURL: "https://site.test/guild/x/applications",
 		Level: &level, ItemLevel: &ilvl}
 	if word, err := h.svc.PostApplication(ctx, h.gid, post); err != nil || word != guilds.OutcomeNoBot {
@@ -100,11 +102,11 @@ func TestPostApplicationUsesTheRecruitingChannel(t *testing.T) {
 	}
 	e := sent.Message.Embeds[0]
 	if e.Title != "Application · Thornhide" || e.Author != "Restoration Druid" || e.Description != post.Message ||
-		len(e.Fields) != 3 || e.Footer != "Olympus XXVII · Forever Sixty" {
+		len(e.Fields) != 4 || e.Footer != "Olympus XXVII · Forever Sixty" {
 		t.Fatalf("embed = %+v", e)
 	}
 	row := sent.Message.Components[0]
-	if len(row) != 3 || row[0].CustomID != "gapp:accept:5" || row[2].URL != post.ReviewURL || !strings.Contains(row[2].Label, "Review") {
+	if len(row) != 4 || row[0].CustomID != "gapp:accept:5" || row[2].URL != post.ReviewURL || !strings.Contains(row[2].Label, "Review") {
 		t.Fatalf("row = %+v", row)
 	}
 }

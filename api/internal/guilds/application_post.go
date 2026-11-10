@@ -16,7 +16,11 @@ const applicationPostBudget = 8 * time.Second
 // ApplicationPost is a new application as the recruiting channel shows it. ReviewURL is the
 // applications page; SpecClass the character's "Holy Priest" line, empty when unknown.
 type ApplicationPost struct {
-	ID                                                                int64
+	ID int64
+	// CharacterKey is the applicant's character (its page is the gear and the logs); BestParse
+	// its best ranked parse, nil without one.
+	CharacterKey                                                      string
+	BestParse                                                         *BestParse
 	GuildName, Character, SpecClass, Message, Availability, ReviewURL string
 	Level, ItemLevel                                                  *int
 }
@@ -54,7 +58,8 @@ func (s *Service) postApplication(ctx context.Context, guildID int64, a Applicat
 
 func (s *Service) applicationPostOf(g Guild, a Application) ApplicationPost {
 	return ApplicationPost{
-		ID: a.ID, GuildName: g.Name, Character: a.Character.Name, SpecClass: specClassOf(a.Character),
+		ID: a.ID, CharacterKey: a.Character.CharacterKey, BestParse: a.Character.BestParse,
+		GuildName: g.Name, Character: a.Character.Name, SpecClass: specClassOf(a.Character),
 		Message: a.Message, Availability: a.Availability, Level: a.Character.Level, ItemLevel: a.Character.ItemLevel,
 		ReviewURL: strings.TrimRight(s.PublicBaseURL, "/") + GuildPagePath(g) + "/applications",
 	}

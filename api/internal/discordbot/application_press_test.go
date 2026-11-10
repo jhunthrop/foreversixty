@@ -15,9 +15,9 @@ func applicationPressOf(customID, discordUser string) Interaction {
 }
 
 func TestApplicationButtonsCarryTheID(t *testing.T) {
-	row := applicationButtons(42, "https://site.test/apps")
-	if len(row) != 3 || row[0].CustomID != "gapp:accept:42" || row[1].CustomID != "gapp:decline:42" ||
-		row[2].URL != "https://site.test/apps" {
+	row := applicationButtons(42, "https://site.test/apps", "https://site.test/character/us/pvp/mirelle")
+	if len(row) != 4 || row[0].CustomID != "gapp:accept:42" || row[1].CustomID != "gapp:decline:42" ||
+		row[2].URL != "https://site.test/apps" || row[3].URL != "https://site.test/character/us/pvp/mirelle" {
 		t.Fatalf("row = %+v", row)
 	}
 	for _, c := range []struct {

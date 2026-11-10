@@ -77,6 +77,17 @@ type SetupView struct {
 	Invite     SetupInvite     `json:"invite"`
 	Sync       SetupSync       `json:"sync"`
 	Visibility string          `json:"visibility"`
+	// Readiness is what the Raid guild readiness board would flag for the next raid, counts
+	// only, for a guild without Raid guild; nil with Raid guild or no raid ahead.
+	Readiness *SetupReadiness `json:"readiness"`
+}
+
+// SetupReadiness is the readiness board's counts for the next raid: the raiders signed In or
+// Late and how many of them have something to fix.
+type SetupReadiness struct {
+	RaidTitle string `json:"raid_title"`
+	Signed    int    `json:"signed"`
+	Failing   int    `json:"failing"`
 }
 
 // SetupStepView is one step and its state; Marked is true when the state came from a mark.
@@ -186,7 +197,29 @@ func (s *Service) setupFacts(ctx context.Context, g Guild, viewerID int64) (Setu
 			return SetupView{}, fmt.Errorf("guilds: setup %d: %w", g.ID, err)
 		}
 	}
+	if v.Plan != planRaidGuild && v.Schedule.Next != nil {
+		preview, err := s.setupReadiness(ctx, g.ID)
+		if err != nil {
+			return SetupView{}, fmt.Errorf("guilds: setup %d: %w", g.ID, err)
+		}
+		v.Readiness = preview
+	}
 	return v, nil
+}
+
+// setupReadiness is the next raid's readiness counts, the board's own rule (readinessAnswerOf).
+func (s *Service) setupReadiness(ctx context.Context, guildID int64) (*SetupReadiness, error) {
+	now := time.Now()
+	raid, found, err := s.Store.NextRaid(ctx, guildID, now)
+	if err != nil || !found {
+		return nil, err
+	}
+	view, err := s.Store.Readiness(ctx, guildID, true, &raid)
+	if err != nil {
+		return nil, err
+	}
+	ans := readinessAnswerOf(raid, view, now)
+	return &SetupReadiness{RaidTitle: raid.Title, Signed: ans.Signed, Failing: ans.Failing}, nil
 }
 
 // withSteps derives each step's state from the facts and the marks.

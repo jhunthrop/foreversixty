@@ -21,13 +21,15 @@ var _ guilds.ApplicationPoster = (*Service)(nil)
 
 // recruitCopy is the recruiting post's words.
 var recruitCopy = struct {
-	Title, Level, ItemLevel, Availability, Footer string
+	Title, Level, ItemLevel, Availability, Footer, BestParse, Parse string
 }{
 	Title:        "Application · {Name}",
 	Level:        "Level",
 	ItemLevel:    "Item level",
 	Availability: "Available",
 	Footer:       "{Guild} · Forever Sixty",
+	BestParse:    "Best parse",
+	Parse:        "{pct} on {Boss}",
 }
 
 // maxApplicationRunes caps the message the post quotes; the applications page has the rest.
@@ -114,7 +116,7 @@ func (s *Service) PostApplication(ctx context.Context, guildID int64, post guild
 		return guilds.OutcomeNoBot, nil
 	}
 	msg := Message{Embeds: []notify.Embed{applicationEmbed(post)},
-		Components: []ActionRow{applicationButtons(post.ID, post.ReviewURL)}}
+		Components: []ActionRow{applicationButtons(post.ID, post.ReviewURL, s.characterURL(post.CharacterKey))}}
 	if _, err := s.d.REST.CreateMessage(ctx, *in.RecruitChannelID, msg); err != nil {
 		return refusedOr(err)
 	}
@@ -133,6 +135,11 @@ func applicationEmbed(p guilds.ApplicationPost) notify.Embed {
 	}
 	if p.ItemLevel != nil {
 		e.Fields = append(e.Fields, notify.EmbedField{Name: recruitCopy.ItemLevel, Value: strconv.Itoa(*p.ItemLevel), Inline: true})
+	}
+	if b := p.BestParse; b != nil && b.Percentile != nil && b.Encounter != "" {
+		pct := strconv.Itoa(int(*b.Percentile))
+		e.Fields = append(e.Fields, notify.EmbedField{Name: recruitCopy.BestParse, Inline: true,
+			Value: fill(recruitCopy.Parse, "{pct}", pct, "{Boss}", notify.Collapse(b.Encounter))})
 	}
 	if p.Availability != "" {
 		e.Fields = append(e.Fields, notify.EmbedField{Name: recruitCopy.Availability, Value: notify.Collapse(p.Availability)})

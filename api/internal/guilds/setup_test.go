@@ -92,6 +92,9 @@ func TestSetupDerivesFromTheGuildsData(t *testing.T) {
 		v.Invite.Joined != 1 {
 		t.Fatalf("facts = plan %s, schedule %+v, invite %+v", v.Plan, v.Schedule, v.Invite)
 	}
+	if v.Readiness != nil {
+		t.Fatalf("a Raid guild gets no preview: %+v", v.Readiness)
+	}
 	if len(v.Ranks.Ranks) != 2 || v.Ranks.Ranks[0].RankIndex != 0 || v.Ranks.Ranks[0].Members != 1 ||
 		v.Ranks.Ranks[1].Members != 4 || v.Ranks.Officers != 1 {
 		t.Fatalf("ranks = %+v", v.Ranks)
@@ -154,5 +157,17 @@ func TestSpecClassName(t *testing.T) {
 		if got := specClassName(c.spec, c.class); got != c.want {
 			t.Errorf("specClassName(%v, %q) = %q, want %q", c.spec, c.class, got, c.want)
 		}
+	}
+}
+
+// A guild without Raid guild sees what the readiness board would flag for its next raid.
+func TestSetupPreviewsReadinessWithoutRaidGuild(t *testing.T) {
+	w := newRaidWorld(t, false)
+	raid := w.createRaid(t)
+	w.as(w.member)
+	w.signup(t, raid.ID, memberKeyA, `{"state":"in"}`)
+	v := w.setup(t)
+	if v.Readiness == nil || v.Readiness.Signed != 1 || v.Readiness.RaidTitle == "" {
+		t.Fatalf("preview = %+v", v.Readiness)
 	}
 }
