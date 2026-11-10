@@ -10,22 +10,28 @@ import UIKit
 public struct FSButtonStyle: ButtonStyle {
     public enum Kind: Sendable { case primary, secondary, danger, ghost }
 
-    private static let padX: CGFloat = 18
+    public static let padX: CGFloat = 18
+    /// The side padding of a button in a row of equal buttons.
+    public static let padXTight: CGFloat = 4
     private static let labelSize: CGFloat = 13
     private static let labelTracking: CGFloat = 0.01
 
     private let kind: Kind
     private let fullWidth: Bool
     private let small: Bool
+    private let padX: CGFloat
     @Environment(\.isEnabled) private var isEnabled
 
     /// `.btn.sm`: a chip in a row of filters, 36 high inside its 44 pt target.
-    static let smallHeight: CGFloat = 36
+    public static let smallHeight: CGFloat = 36
 
-    public init(_ kind: Kind = .secondary, fullWidth: Bool = true, small: Bool = false) {
+    /// `padX`: the label's side padding; a row of equal buttons (the raid's four answers) sets 4 so a
+    /// word like `Bench` keeps one line at 393 pt.
+    public init(_ kind: Kind = .secondary, fullWidth: Bool = true, small: Bool = false, padX: CGFloat = Self.padX) {
         self.kind = kind
         self.fullWidth = fullWidth
         self.small = small
+        self.padX = padX
     }
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -34,7 +40,7 @@ public struct FSButtonStyle: ButtonStyle {
             .tracking(Self.labelTracking * Self.labelSize)
             .multilineTextAlignment(.center)
             .foregroundStyle(foreground.opacity(isEnabled ? 1 : 0.5))
-            .padding(.horizontal, Self.padX)
+            .padding(.horizontal, padX)
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: small ? Self.smallHeight : FSTarget.min)
             .background(background(pressed: configuration.isPressed), in: .rect(cornerRadius: Theme.Radius.control))
             .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control).strokeBorder(border, lineWidth: FSStroke.hairline))

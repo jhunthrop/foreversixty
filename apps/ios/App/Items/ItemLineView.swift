@@ -14,6 +14,8 @@ struct ItemLineView: View {
     /// The words under the gain (`over your worn`); nil for none.
     var caption: String?
     let build: String
+    /// The row's own side padding: 0 on a round-5 panel, which carries it.
+    var inset: CGFloat = FSSpace.space4
 
     static let minHeight: CGFloat = 58
     /// Measured on the mocks' rows: a one-line-source row is 62 high.
@@ -47,7 +49,7 @@ struct ItemLineView: View {
                 .fixedSize()
             }
         }
-        .padding(.horizontal, FSSpace.space4)
+        .padding(.horizontal, inset)
         .padding(.vertical, FSSpace.space2)
         .frame(minHeight: Self.minHeight)
         .contentShape(.rect)

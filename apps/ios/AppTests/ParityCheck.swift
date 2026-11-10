@@ -16,22 +16,13 @@ enum ParityCheck {
         let lane: String
     }
 
-    /// EXPECTED_DRIFT, per screen. Batch I (2026-11-10): M0's Open Sans metrics and the round-5
-    /// mocks moved these regions; the iOS screens keep their old layouts until their tab lanes.
+    /// EXPECTED_DRIFT, per screen. Lanes M1i to M5i (2026-11-10) took the restyled tabs to their
+    /// round-5 mocks; what is left is text metrics: the runner's Chromium sets Open Sans a few points
+    /// narrower than iOS, so `Main hand · Fel Ancient, Ashenvale` holds one line in the mock and wraps
+    /// on the phone, moving New for you 13 down.
     static let expectedDrift: [String: [Drift]] = [
-        "activity": batchI("M4i", ["section-this-week: y"]),
-        "home-raid-day-officer": batchI("M1i", ["section-next-upgrades: y"]),
-        "menu": batchI("M5i", menuHead + ["section-switch-character: y", "section-tools: y", "section-account: y"]),
-        "menu-one": batchI("M5i", menuHead + ["section-tools: y", "section-account: y"]),
-        "menu-low": batchI("M5i", menuHead + ["section-switch-character: y", "section-tools: y", "section-account: y"]),
+        "home-34": [Drift(prefix: "section-new-for-you: y", since: "2026-11-10", lane: "M1i")],
     ]
-
-    /// The profile menu's head: the round-5 mock's head is taller than the old iOS one.
-    private static let menuHead = ["head: height", "head-title: height", "head-meta: height"]
-
-    private static func batchI(_ lane: String, _ prefixes: [String]) -> [Drift] {
-        prefixes.map { Drift(prefix: $0, since: "2026-11-10", lane: lane) }
-    }
 
     /// Room under the content for the safe area and the screen's own bottom padding.
     static let textSlack: CGFloat = 200

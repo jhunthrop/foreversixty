@@ -116,18 +116,26 @@ public struct FSTally: View {
         self.items = items
     }
 
-    static var columnGap: CGFloat { FSSpace.space4 }
+    static var columnGap: CGFloat { FSSpace.space3 }
+    /// A role and its count at 14/20 bold: `Damage 11/30` holds one line in a third of 393 pt.
+    static var role: TypeRole { TypeRole(face: FSFont.bodyBold, size: 14, lineHeight: 20, scalesWith: .body, tabular: true) }
     static var meterHeight: CGFloat { 8 }
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     public var body: some View {
-        HStack(alignment: .top, spacing: Self.columnGap) {
+        // At the accessibility sizes the roles go one per line, full width, so no role name is clipped.
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: FSSpace.space3))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: Self.columnGap))
+        layout {
             ForEach(items) { item in
                 VStack(alignment: .leading, spacing: 6) {
-                    HStack(spacing: FSSpace.space2) {
-                        Text(item.label).type(FSType.item).foregroundStyle(FSColor.strong).lineLimit(1)
+                    HStack(spacing: FSSpace.space1) {
+                        Text(item.label).type(Self.role).foregroundStyle(FSColor.strong).lineLimit(1)
                         Spacer(minLength: 0)
                         Text("\(item.have)/\(item.want)")
-                            .type(TypeRole(face: FSFont.bodyBold, size: 15, lineHeight: 20, scalesWith: .body, tabular: true))
+                            .type(Self.role)
                             .foregroundStyle(item.met ? FSColor.kill : (item.near ? FSColor.gold : FSColor.wipe))
                     }
                     FSMeter(fraction: item.fraction, tone: item.met ? .kill : .gold)
