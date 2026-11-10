@@ -1,7 +1,7 @@
 {
   "build": "1.60.1.70790",
   "product": "wowf",
-  "fetched_at": "2026-11-10T05:06:00.406642Z",
+  "fetched_at": "2026-11-10T05:27:22.957260Z",
   "files": {
     "addon-builds.json": "7bceba9195989ea7d21257d08a17cfcd0caa464718ae8041ea8aa25b4ba596bd",
     "addon-data.json": "7dbbae70eacb4ed6ee047d7940ad1dcf491362dd65372143db840d201de16520",
@@ -2117,8 +2117,8 @@
     "items/warlock.json": "1e5295288d31affb9a1fe3f868b7c1392236a5099fa225e896f25f9fd964d654",
     "items/warrior.json": "90c4b0e504f2755aab0b7810ef9837d2f0f865130e6adc094605c01a7804ff05",
     "items.json": "99489dc25ecea9996be6543b2b6459fc24646d18b2814bffbec433cce2d5dc71",
-    "levels.json": "d12e786efbbe115488a18f2a0e419cbec0530c96d0aa85aa2d9d24ee287dacb5",
-    "loot.json": "57fe3c913c63001ceadaa1eb2d4140ce12427090071db5ef95887bd9ebafdf95",
+    "levels.json": "5d3e4e132b3f185103505e46e7f1ff202ef17c3cee8e76d88ee8a8ad6bd8f633",
+    "loot.json": "f65242684a2d6e510a40914e851f1c354c0cefd8681a8721b6a9258efa9ed439",
     "raceicons.json": "9aa220eea155f8bed3428477e268f4143076f1730d0133f7524a2dfe2166a99c",
     "races.json": "eb0e9bbb9f6ccd5326073cdde5dd3d5a95dc94efe0b9eacad32eae0083adfacd",
     "racialicons.json": "260946a2dc33acdd6986281ea4536a0b9250c8d48e7688048532bac6fba63b92",
