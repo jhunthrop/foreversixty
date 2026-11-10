@@ -348,7 +348,9 @@ jobs:
           if ($env:AZURE_SIGNING_PROFILE) {
             $sign = Join-Path $PWD 'packaging\windows\sign.ps1'
             $flags += '/DSign'
-            $flags += '/Sazure=pwsh -NoProfile -ExecutionPolicy Bypass -File "' + $sign + '" $f'
+            # $q is Inno's own quote: a literal " here reaches iscc escaped as \" (PowerShell 7's
+            # native argument passing), and Inno then runs a path that starts with a backslash.
+            $flags += '/Sazure=pwsh -NoProfile -ExecutionPolicy Bypass -File $q' + $sign + '$q $f'
           }
           & $iscc @flags packaging\windows\companion.iss
           if ($LASTEXITCODE -ne 0) { throw "iscc failed ($LASTEXITCODE)" }
