@@ -4,8 +4,27 @@ import (
 	"bytes"
 	"encoding/binary"
 	"image/png"
+	"os"
+	"regexp"
+	"strconv"
 	"testing"
 )
+
+// tokenRGB reads a hex colour token from the window's generated tokens
+// (ui/tokens.css), which the tray dots share with the Status headline.
+func tokenRGB(t *testing.T, name string) [3]uint32 {
+	t.Helper()
+	css, err := os.ReadFile("../../ui/tokens.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := regexp.MustCompile(`(?m)^\s*` + regexp.QuoteMeta(name) + `:\s*#([0-9a-f]{6});`).FindSubmatch(css)
+	if m == nil {
+		t.Fatalf("ui/tokens.css has no hex %s", name)
+	}
+	v, _ := strconv.ParseUint(string(m[1]), 16, 32)
+	return [3]uint32{uint32(v >> 16), uint32(v >> 8 & 0xff), uint32(v & 0xff)}
+}
 
 func decode(t *testing.T, b []byte, want int) {
 	t.Helper()
@@ -44,7 +63,7 @@ func TestICOHasEverySizeAsPNG(t *testing.T) {
 		t.Fatal("not an ICO header")
 	}
 	n := int(binary.LittleEndian.Uint16(b[4:]))
-	want := []int{16, 24, 32, 48, 64, 128, 256}
+	want := []int{16, 20, 24, 32, 40, 48, 64, 128, 256}
 	if n != len(want) {
 		t.Fatalf("%d entries, want %d", n, len(want))
 	}
@@ -90,8 +109,14 @@ func TestICNSTableCoversSixteenToFiveTwelveAtTwoX(t *testing.T) {
 
 func TestTheTrayIconsCarryADotInTheToneAndOffIsThePlainSeal(t *testing.T) {
 	// The dot sits at the lower right of the 32 px icon, centred on (25, 25),
-	// and is the headline's tone; the upper left is the seal and not the dot.
-	want := map[string][3]uint32{"on": {0x7b, 0xff, 0x5c}, "warn": {0xe8, 0x88, 0x3a}, "bad": {0xff, 0x6b, 0x5c}}
+	// and is the headline's tone, the same token the window's --tone-* reads
+	// (ui/styles.css); the upper left is the seal and not the dot.
+	want := map[string][3]uint32{
+		"on":   tokenRGB(t, "--color-kill"),
+		"warn": tokenRGB(t, "--color-gold-hover"),
+		"bad":  tokenRGB(t, "--color-wipe"),
+	}
+	ring := tokenRGB(t, "--color-raised")
 	plain, _ := png.Decode(bytes.NewReader(PNG()))
 	for _, tone := range Tones {
 		img, err := png.Decode(bytes.NewReader(TrayPNG(tone)))
@@ -110,10 +135,10 @@ func TestTheTrayIconsCarryADotInTheToneAndOffIsThePlainSeal(t *testing.T) {
 		if pr>>8 == got[0] && pg>>8 == got[1] && pb>>8 == got[2] && pa>>8 == 0xff {
 			t.Errorf("%s: the plain seal already has this colour at the dot", tone)
 		}
-		// The ring is the page colour, between the dot and the seal.
-		rr, rg, rb, _ := img.At(25-7, 25).RGBA()
-		if rr>>8 != 0x07 || rg>>8 != 0x09 || rb>>8 != 0x0d {
-			t.Errorf("%s: ring pixel = %02x%02x%02x, want 07090d", tone, rr>>8, rg>>8, rb>>8)
+		// The ring is the panel colour, between the dot and the seal.
+		rr, rg, rb, _ := img.At(25-8, 25).RGBA()
+		if got := [3]uint32{rr >> 8, rg >> 8, rb >> 8}; got != ring {
+			t.Errorf("%s: ring pixel = %v, want %v", tone, got, ring)
 		}
 	}
 	for _, tone := range []string{"off", "", "unknown"} {
@@ -123,13 +148,14 @@ func TestTheTrayIconsCarryADotInTheToneAndOffIsThePlainSeal(t *testing.T) {
 	}
 }
 
-func TestEachTrayICOHasSixteenTwentyFourThirtyTwoAndFortyEight(t *testing.T) {
+// Windows draws the tray at 16 px a scale step: 100, 125, 150, 200, 250 and 300 %.
+func TestEachTrayICOHasEveryWindowsTrayScale(t *testing.T) {
 	for _, tone := range Tones {
 		b := TrayICO(tone)
 		if len(b) < 6 || binary.LittleEndian.Uint16(b[0:]) != 0 || binary.LittleEndian.Uint16(b[2:]) != 1 {
 			t.Fatalf("%s: not an ICO header", tone)
 		}
-		want := []int{16, 24, 32, 48}
+		want := []int{16, 20, 24, 32, 40, 48}
 		if n := int(binary.LittleEndian.Uint16(b[4:])); n != len(want) {
 			t.Fatalf("%s: %d entries, want %d", tone, n, len(want))
 		}

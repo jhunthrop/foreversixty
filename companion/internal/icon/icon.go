@@ -1,6 +1,6 @@
 // companion/internal/icon/icon.go
-// Package icon carries the Forever Sixty seal, rendered by
-// tools/icons/render.mjs from web/public/favicon.svg and embedded here:
+// Package icon carries the Forever Sixty seal v3, rendered by
+// tools/icons/render.py from design/assets/logo/lx-seal-v3*.png and embedded here:
 // the tray icon on every platform, the ICO the Windows tray wants, and
 // the ICO and ICNS the Windows resource and the macOS bundle are built
 // from.
@@ -38,7 +38,8 @@ func PNGSize(size int) []byte {
 	return nil
 }
 
-// ICO is the multi-size icon for Windows (16 to 256 px).
+// ICO is the multi-size icon for Windows (16 to 256 px, with the 125 %
+// and 250 % steps, 20 and 40).
 func ICO() []byte { return read("seal.ico") }
 
 // Tones are the headline tones that carry a dot on the tray icon. The
@@ -56,7 +57,7 @@ func hasDot(tone string) bool {
 
 // TrayICO is the Windows tray icon for a headline tone: the seal with a
 // green (on), amber (warn) or red (bad) dot at its lower right, 16 to 48
-// px. Tone off, and any tone this does not know, is the plain seal.
+// px at every display scale step. Tone off, and any tone this does not know, is the plain seal.
 func TrayICO(tone string) []byte {
 	if !hasDot(tone) {
 		return ICO()

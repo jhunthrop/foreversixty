@@ -1,25 +1,25 @@
 <!doctype html>
 <html lang="en">
 <head>
-<style>html{background:#07090d}</style>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Forever Sixty</title>
-<link rel="preload" href="fonts/cinzel-700-subset.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/barlow-400-subset.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/barlow-600-subset.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/jetbrains-mono-500-subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/marcellus-400-subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/open-sans-400-subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/open-sans-600-subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/archivo-600-subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="top">
-  <header>
-    <a class="wordmark" id="wordmark" href="https://foreversixty.gg" data-open><img class="seal" src="seal.svg" width="28" height="28" alt="">Forever Sixty</a>
+  <header class="col">
+    <a class="wordmark" id="wordmark" href="https://foreversixty.gg" data-open><img class="seal" src="seal-64.png" width="32" height="32" alt="">Forever Sixty</a>
     <nav aria-label="Pages">
-      <button data-page="status" aria-current="page">Status</button>
-      <button data-page="reports">Reports</button>
-      <button data-page="device">Device</button>
-      <button data-page="settings">Settings</button>
+      <button data-page="status" data-icon="upload" aria-current="page">Status</button>
+      <button data-page="reports" data-icon="logs">Reports</button>
+      <button data-page="device" data-icon="account">Device</button>
+      <button data-page="settings" data-icon="setup">Settings</button>
     </nav>
   </header>
 </div>
@@ -33,7 +33,7 @@
   <div class="col page">
     <section id="status">
       <h2 class="sr" tabindex="-1">Status</h2>
-      <div class="panel headline" id="headline" aria-live="polite"></div>
+      <div class="panel lead headline" id="headline" aria-live="polite"></div>
       <div class="panel rows secondary" id="status-rows"></div>
       <h3 id="folders-title">Game folders</h3>
       <div class="panel list" id="installs"></div>
@@ -50,7 +50,7 @@
 
     <section id="device" hidden>
       <h2 tabindex="-1">This device</h2>
-      <div class="panel" id="device-panel"></div>
+      <div class="panel lead" id="device-panel"></div>
     </section>
 
     <section id="settings" hidden>
@@ -58,12 +58,12 @@
       <div class="panel">
         <div class="group">
           <label for="visibility" id="visibility-label">New reports are</label>
-          <select id="visibility">
+          <div class="select"><select id="visibility">
             <option value="public">Public</option>
             <option value="unlisted">Unlisted</option>
             <option value="private">Private</option>
             <option value="guild">Guild only</option>
-          </select>
+          </select></div>
           <p class="help" id="visibility-help"></p>
         </div>
 
@@ -74,7 +74,7 @@
 
         <div class="group">
           <label for="logging-character" id="character-label">Reports are credited to</label>
-          <select id="logging-character"></select>
+          <div class="select"><select id="logging-character"></select></div>
           <p class="help" id="character-help"></p>
         </div>
 
@@ -98,13 +98,14 @@
     </section>
   </div>
 </main>
-<div class="bar update" id="update-bar" role="status" hidden><span class="pip" aria-hidden="true"></span><span id="update-text"></span></div>
+<div class="bar update" id="update-bar" role="status" hidden><span id="update-text"></span></div>
 <footer id="footer">
-  <div class="inner">
+  <div class="inner col">
     <span class="foot-left" id="foot-version">Companion</span>
     <a class="foot-right" id="foot-site" href="https://foreversixty.gg" data-open>foreversixty.gg</a>
   </div>
 </footer>
+<script src="icons.js"></script>
 <script src="copy.js"></script>
 <script src="format.js"></script>
 <script src="app.js"></script>

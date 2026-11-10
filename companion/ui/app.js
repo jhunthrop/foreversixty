@@ -41,29 +41,33 @@ function h(tag, props, ...kids) {
   return el;
 }
 
-// icon is an inline SVG on a 24 px grid, 2 px stroke, round caps, in the
-// colour of the text around it. Nothing on screen is a text glyph or an
-// emoji: the system font a glyph falls back to is not ours.
-const ICONS = {
-  check: ['M20 6 9 17l-5-5'],
-  triangle: ['M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z', 'M12 9v4M12 17h.01'],
-  file: ['M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z', 'M14 2v6h6M8 13h8M8 17h6'],
-  chevron: ['m9 18 6-6-6-6'],
-};
-function icon(name, size, cls) {
-  const NS = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(NS, 'svg');
-  svg.setAttribute('viewBox', '0 0 24 24');
-  svg.setAttribute('width', String(size));
-  svg.setAttribute('height', String(size));
-  svg.setAttribute('class', 'icon' + (cls ? ' ' + cls : ''));
+// icon is one glyph of the site's set (icons.js, generated from
+// design/assets/icons/ui), in the colour of the text around it: a custom
+// glyph as one even-odd shape, a line glyph as a 2 px round stroke on the
+// 24 px grid, as the site's ui/Icon draws them. Nothing on screen is a
+// text glyph or an emoji: the system font a glyph falls back to is not ours.
+const SVG_NS = 'http://www.w3.org/2000/svg';
+function svgOf(box, body, attrs) {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 ' + box + ' ' + box);
   svg.setAttribute('aria-hidden', 'true');
-  for (const d of ICONS[name]) {
-    const p = document.createElementNS(NS, 'path');
-    p.setAttribute('d', d);
-    svg.append(p);
-  }
+  svg.setAttribute('focusable', 'false');
+  for (const [k, v] of Object.entries(attrs)) svg.setAttribute(k, v);
+  svg.innerHTML = body; // generated markup from icons.js: paths and circles, never data
   return svg;
+}
+function icon(name, size, cls) {
+  const g = UI_ICONS[name];
+  const paint = g.kind === 'line'
+    ? { fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }
+    : { fill: 'currentColor' };
+  return svgOf(g.box, g.body, Object.assign({ width: String(size), height: String(size), class: 'icon' + (cls ? ' ' + cls : '') }, paint));
+}
+
+// frameCorners are the lead panel's four corner flourishes (the site's
+// ui/FrameCorners), one generated path mirrored per corner.
+function frameCorners() {
+  return ['tl', 'tr', 'br', 'bl'].map((c) => svgOf(FRAME_CORNER.box, FRAME_CORNER.body, { class: 'corner ' + c, fill: 'currentColor' }));
 }
 
 // ---- talking to the companion ----------------------------------------
@@ -103,15 +107,16 @@ function note(id, kind, text) {
 }
 
 // busy disables a button and gives it a "doing it" label while fn runs.
+// Its glyph, if it has one, comes back with its label.
 async function busy(btn, label, fn) {
-  const was = btn.textContent;
+  const was = [...btn.childNodes];
   btn.disabled = true;
   btn.textContent = label;
   try {
     return await fn();
   } finally {
     btn.disabled = false;
-    btn.textContent = was;
+    btn.replaceChildren(...was);
   }
 }
 
@@ -140,7 +145,7 @@ function showBar(id, text, ms) {
   bar.hidden = false;
   if (id === 'poll-bar') {
     // The poll bar is the one with a mark: the companion's service is not answering.
-    bar.replaceChildren(icon('triangle', 16), h('span', { text }));
+    bar.replaceChildren(dot('bad'), h('span', { text }));
   } else {
     const t = bar.querySelector('span') || bar;
     t.textContent = text;
@@ -152,8 +157,8 @@ function showBar(id, text, ms) {
 // copiedLabel is the "Copied." a Copy link button says for two seconds,
 // with the check before it, then goes back to its own words.
 function copiedLabel(btn, was, copied) {
-  btn.replaceChildren(icon('check', 12, 'ok'), copied);
-  setTimeout(() => { btn.textContent = was; }, 2000);
+  btn.replaceChildren(icon('check', 14, 'ok'), copied);
+  setTimeout(() => { btn.replaceChildren(...[].concat(was)); }, 2000);
 }
 
 async function copyText(text) {
@@ -263,6 +268,7 @@ function renderStatus(s) {
     // Connecting shows a spinner where every other state has its dot.
     const mark = hd.key === 'connecting' ? h('span', { class: 'spinner', 'aria-hidden': 'true' }) : dot(hd.tone);
     el.append(
+      ...frameCorners(),
       h('div', { class: 'head' }, mark, h('div', { class: 'title', text: hd.title })),
       h('p', { class: 'sub', text: hd.sub }),
     );
@@ -271,9 +277,13 @@ function renderStatus(s) {
       // The account button is for signing in and nothing else.
       const account = hd.key === 'not_connected' || hd.key === 'signed_out';
       actions.push(h('button', { class: account ? 'account' : 'action primary big', type: 'button', 'data-fid': 'headline-action',
-        onclick: () => show(hd.action.page, true) }, hd.action.label));
+        onclick: () => show(hd.action.page, true) }, account ? icon('account', 18) : null, hd.action.label));
     }
-    if (hd.key === 'logging' && reportURL) actions.push(ext(COPY.status.reportLogging, reportURL, { 'data-fid': 'headline-report' }));
+    if (hd.key === 'logging' && reportURL) {
+      const a = ext(COPY.status.reportLogging, reportURL, { 'data-fid': 'headline-report' });
+      a.prepend(icon('link', 16));
+      actions.push(a);
+    }
     if (actions.length) el.append(h('div', { class: 'actions' }, ...actions));
     if (hd.key !== lastHeadlineKey) {
       lastHeadlineKey = hd.key;
@@ -338,14 +348,14 @@ function renderStatus(s) {
       const working = rows.installing === o.path;
       v.append(h('button', { class: 'ghost small check-builds', type: 'button', 'data-fid': 'install-addon-' + o.path,
         disabled: !!rows.installing || rows.failed, onclick: () => onInstallAddon(o.path) },
-      working ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : null,
+      working ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : icon('download', 16),
       working ? COPY.status.installingAddon : o.label));
     }
     if (rows.checkError) v.append(h('span', { class: 'sub warn', text: rows.checkError }));
     if (rows.paired) {
       v.append(h('button', { class: 'ghost small check-builds', type: 'button', 'data-fid': 'check-builds',
         disabled: rows.checking || !rows.canCheck || rows.failed, onclick: onCheckBuilds },
-      rows.checking ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : null,
+      rows.checking ? h('span', { class: 'spinner small', 'aria-hidden': 'true' }) : icon('refresh', 14),
       rows.checking ? COPY.status.checking : COPY.status.checkBuilds));
     }
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.addon }), v));
@@ -433,7 +443,7 @@ function advancedLabel(i, headlineKey) {
   if (adv.kind === 'unknown') return h('span', { class: 'adv', text: adv.text });
   if (adv.kind === 'on') return h('span', { class: 'adv on' }, icon('check', 14), adv.text);
   if (adv.kind === 'muted') return h('span', { class: 'adv', text: adv.text });
-  return h('span', { class: 'adv off' }, icon('triangle', 14), adv.text);
+  return h('span', { class: 'adv off' }, dot('warn'), adv.text);
 }
 
 // ---- Reports ---------------------------------------------------------
@@ -453,9 +463,9 @@ function renderReports(s) {
       const box = h('div', { class: 'empty' });
       if (!s.paired) {
         box.append(h('p', { class: 'big-line', text: COPY.reports.unpairedTitle }),
-          h('button', { class: 'account', type: 'button', onclick: () => show('device', true) }, COPY.reports.unpairedButton));
+          h('button', { class: 'account', type: 'button', onclick: () => show('device', true) }, icon('account', 18), COPY.reports.unpairedButton));
       } else {
-        box.append(icon('file', 32, 'big-icon'), h('p', { class: 'big-line', text: COPY.reports.emptyTitle }),
+        box.append(icon('logs', 40, 'big-icon'), h('p', { class: 'big-line', text: COPY.reports.emptyTitle }),
           h('p', { class: 'note', text: COPY.reports.emptyBody }));
       }
       el.append(box);
@@ -495,9 +505,9 @@ function reportRow(r, now) {
   parts.forEach((p, n) => { if (n) meta.append(credit.separator); meta.append(p); });
   const li = h('li', {}, marker, h('div', { class: 'what' }, h('div', { class: 'zone' }, title), meta));
   if (r.url) {
-    const btn = h('button', { class: 'ghost small', type: 'button', 'data-fid': 'copy-' + r.key }, COPY.reports.copyLink);
+    const btn = h('button', { class: 'action small', type: 'button', 'data-fid': 'copy-' + r.key }, icon('link', 14), COPY.reports.copyLink);
     btn.addEventListener('click', async () => {
-      if (await copyText(r.url)) copiedLabel(btn, COPY.reports.copyLink, COPY.reports.copied);
+      if (await copyText(r.url)) copiedLabel(btn, [icon('link', 14), COPY.reports.copyLink], COPY.reports.copied);
     });
     li.append(btn);
   } else {
@@ -518,7 +528,7 @@ function renderDevice(s) {
     l: { open: local.pairOpen, confirm: local.confirmForget, forgot: local.forgot, flash: local.flash, copied: local.copied, busy: local.busyPair, starting: local.starting },
   };
   region('device', $('device-panel'), data, (el) => {
-    el.replaceChildren();
+    el.replaceChildren(...frameCorners());
     if (s.paired) el.append(...pairedView(s));
     else if (connecting) el.append(...signingInView(c));
     else el.append(...notConnectedView(s, c));
@@ -534,7 +544,7 @@ function notConnectedView(s, c) {
   body.push(h('p', { class: 'lede', text: COPY.device.intro }));
   const btn = h('button', { class: 'account', type: 'button', id: 'connect', 'data-fid': 'connect',
     onclick: startConnect });
-  btn.append(local.starting ? COPY.device.starting : (failed ? COPY.device.tryAgain : COPY.device.signIn));
+  btn.append(icon('account', 18), local.starting ? COPY.device.starting : (failed ? COPY.device.tryAgain : COPY.device.signIn));
   if (local.starting) btn.disabled = true;
   body.push(h('div', { class: 'cta' }, btn));
   body.push(h('p', { class: 'fine', text: COPY.device.signInNote }));
@@ -618,7 +628,7 @@ function pairedView(s) {
   body.push(h('div', { class: 'row device-saved' }, h('span', { class: 'k', text: COPY.device.savedIn }),
     h('span', { class: 'v', text: s.token_backend_name },
       s.token_backend_note ? h('span', { class: 'sub', text: s.token_backend_note }) : null)));
-  body.push(h('details', {}, h('summary', {}, icon('chevron', 14), COPY.device.details),
+  body.push(h('details', {}, h('summary', {}, icon('chevron-right', 14), COPY.device.details),
     h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.device.deviceName }), h('span', { class: 'v mono', text: s.device_name })),
     h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.device.api }), h('span', { class: 'v mono', text: s.api_base_url }))));
   if (local.confirmForget) {
@@ -630,7 +640,7 @@ function pairedView(s) {
   } else {
     body.push(h('div', { class: 'buttons' },
       h('button', { class: 'action', type: 'button', 'data-fid': 'my-reports', onclick: () => openLink(s.site_base_url + '/logs') }, COPY.device.openReports),
-      h('button', { class: 'ghost', type: 'button', 'data-fid': 'forget', onclick: askForget }, COPY.device.forget)));
+      h('button', { class: 'ghost', type: 'button', 'data-fid': 'forget', onclick: askForget }, icon('sign-out', 16), COPY.device.forget)));
   }
   body.push(h('p', { class: 'note', id: 'device-note', role: 'status' }));
   return [
@@ -902,8 +912,13 @@ $('tray-bar-dismiss').addEventListener('click', () => { $('tray-bar').hidden = t
 $('tray-bar-dismiss').textContent = COPY.dismiss;
 if (window.__trayNotice) window.trayNotice(window.__trayNotice);
 
-// The labels that never change are written once.
+// The labels that never change are written once, the page tabs with their door glyphs.
 document.title = COPY.title;
+for (const b of document.querySelectorAll('nav button')) b.prepend(icon(b.dataset.icon, 18));
+// A select's chevron is the line family's, painted through a mask in the muted ink (styles.css .select).
+document.documentElement.style.setProperty('--chevron', 'url("data:image/svg+xml,' + encodeURIComponent(
+  '<svg xmlns="' + SVG_NS + '" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+  UI_ICONS['chevron-down'].body + '</svg>') + '")');
 $('folders-title').textContent = COPY.status.folders;
 $('reports-all').textContent = COPY.reports.all;
 $('visibility-label').textContent = COPY.settings.visibility;

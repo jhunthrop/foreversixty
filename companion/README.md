@@ -215,14 +215,22 @@ on the site.
 
 ## Icons
 
-The Forever Sixty seal (`web/public/favicon.svg`) is the app's icon everywhere the OS shows one:
-the window and taskbar, the tray, Explorer (the Windows exe carries it as a resource, with the
-product and company fields). The rendered files live in
-`internal/icon/assets/` and are committed; to regenerate them after the seal changes:
+The Forever Sixty seal v3 (`design/assets/logo/lx-seal-v3*.png`, the site's one logo) is the app's icon everywhere the
+OS shows one: the window and taskbar, the Dock, the tray or menu bar, Explorer (the Windows exe carries it as a
+resource, with the product and company fields). Windows and Linux show it full bleed; the macOS `.icns` sets it on
+Apple's icon grid (824 of 1024 px, over a soft shadow) so it stands the size of its Dock neighbours. The tray is the
+seal with a dot in the Status headline's tone (green, amber, red; the same tokens the window uses), drawn in colour
+on every platform, macOS included: a template image is drawn from its alpha alone and would erase both the seal's
+colours and the tone dot. The rendered files live in `internal/icon/assets/` (and the window's header seal in
+`ui/seal-64.png`) and are committed; to regenerate them after the seal changes:
 
 ```sh
-node tools/icons/render.mjs   # needs `pnpm install` in web/ for resvg; WEB_NODE_MODULES=... if it lives elsewhere
+python3 companion/tools/icons/render.py   # Pillow; from the repository root
 ```
+
+The window's look comes from the site's single sources, generated or copied into `ui/`, never edited there:
+`ui/tokens.css` (`node design/tokens/build.mjs`), `ui/icons.js` (`node web/scripts/gen-ui-icons.mjs`), the faces in
+`ui/fonts/` and the band and ground in `ui/art/` (`python3 tools/art/build_art.py`).
 
 The Windows resource is built from `cmd/foreversixty-companion/winres/winres.json` by the release
 workflow (go-winres), not committed.

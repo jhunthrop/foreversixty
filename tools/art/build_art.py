@@ -4,7 +4,8 @@
 
 Reads design/assets (the owner's sources) and the mock pipeline's processing (design/mocks/directions: art.py for the
 periodic, band-shaped ground tile; paperdoll/ for the cleaned frame and slots.json), and writes every file the site
-serves under web/public/art plus web/src/lib/ui/paperdoll-slots.json. web/src/lib/ui/assets.ts is the one module that
+serves under web/public/art plus web/src/lib/ui/paperdoll-slots.json, and the desktop companion's copy of the ground
+and the band (companion/ui/art, embedded in its binary). web/src/lib/ui/assets.ts is the one module that
 names these files; pages never hard-code a path. The build is deterministic: run twice, the outputs are identical.
 
 Generated art is the owner's explicit choice (2026-11-09): background only, never captioned as a screenshot.
@@ -22,6 +23,9 @@ DESIGN = REPO / 'design'
 DIRECTIONS = DESIGN / 'mocks/directions'
 OUT = REPO / 'web/public/art'
 SLOTS_OUT = REPO / 'web/src/lib/ui/paperdoll-slots.json'
+COMPANION_OUT = REPO / 'companion/ui/art'
+# The companion window is one 800 px window: the ground tile and the phone-width band, byte for byte the site's files.
+COMPANION_ART = ('ground.webp', 'band-1200.webp')
 
 sys.path.insert(0, str(DIRECTIONS))
 from art import ground_tile  # noqa: E402  (the mock pipeline's tile: one source for mocks, web and apps)
@@ -99,11 +103,18 @@ def build_paperdoll() -> None:
     SLOTS_OUT.write_text(json.dumps(slots, indent=1) + '\n')
 
 
+def build_companion() -> None:
+    COMPANION_OUT.mkdir(parents=True, exist_ok=True)
+    for name in COMPANION_ART:
+        shutil.copyfile(OUT / name, COMPANION_OUT / name)
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     build_art()
     build_seals()
     build_paperdoll()
+    build_companion()
     for path in sorted(OUT.iterdir()):
         print(f'{path.relative_to(REPO)}  {path.stat().st_size // 1024} KB')
 
