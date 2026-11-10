@@ -4,7 +4,8 @@
      the plan picked on /premium: the price in gold with the Founder mark, its second line (a
      guild plan: the size line and the trial), and `Change plan ›` before payment. It needs only
      the URL, so it draws before /v1/me answers; before the URL is read (the static render) the
-     title and answer hold their boxes empty. -->
+     title and answer hold their boxes empty. An account that already has Premium (`owned`) keeps
+     the answer's box and draws nothing in it: no price for a player who is not paying one. -->
 <script lang="ts">
   import { checkoutGuildCopy as copy } from '../../lib/billing/checkout-guild-copy';
   import { PLANS, type Interval, type PlanKey } from '../../lib/billing/plans';
@@ -20,6 +21,7 @@
     founder,
     invalid = false,
     showChange = true,
+    owned = false,
   }: {
     /** Null until the launcher has read the query string, and for an invalid link. */
     plan: PlanKey | null;
@@ -28,6 +30,8 @@
     invalid?: boolean;
     /** `Change plan ›` shows only before payment. */
     showChange?: boolean;
+    /** The account already has Premium: the answer keeps its box, empty. */
+    owned?: boolean;
   } = $props();
 
   const pending = $derived(plan === null && !invalid);
@@ -41,7 +45,7 @@
   const cell = $derived(shown === null ? null : priceCell(shown, interval, founder));
 </script>
 
-<div class="checkout-head" class:is-pending={pending} data-testid="checkout-band">
+<div class="checkout-head" class:is-pending={pending} class:is-owned={owned} data-testid="checkout-band">
   <PageHeader {title} tone="strong">
     {#snippet answer()}
       {#if cell !== null && shown !== null}
@@ -94,7 +98,8 @@
     gap: 8px;
   }
   .is-pending :global(h1),
-  .is-pending .checkout-plan {
+  .is-pending .checkout-plan,
+  .is-owned :global([data-region='head-answer']) {
     visibility: hidden;
   }
   /* checkout.astro's head script marks a guild checkout before first paint: its title, size line

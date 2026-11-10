@@ -29,10 +29,11 @@ describe('/connect', () => {
     expect(html.match(/data-region="plate"/g)?.length).toBe(1);
   });
 
-  it('keeps three Facts rows while loading, so signing in never moves the code', async () => {
+  it('holds the code line and the two Facts rows while loading, so signing in never moves the code', async () => {
+    expect(html).toContain(connectCopy.pendingCodeCheck);
+    expect(html.indexOf('skeleton-block h-[30px]')).toBeLessThan(html.indexOf('data-testid="connect-facts"'));
     const facts = /<dl[^>]*data-testid="connect-facts"[^>]*>([\s\S]*?)<\/dl>/.exec(html)?.[1] ?? '';
-    expect(facts.match(/<dt[ >]/g)?.length).toBe(3);
-    expect(facts).toContain(connectCopy.codeRowLabel);
+    expect(facts.match(/<dt[ >]/g)?.length).toBe(2);
   });
 
   it('carries the mock regions and one h1', async () => {

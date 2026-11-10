@@ -44,7 +44,7 @@ func (s *Service) RaidPostFacts(ctx context.Context, raidID int64) (RaidPostFact
 	if err != nil {
 		return RaidPostFacts{}, false, err
 	}
-	post := notify.RaidPost{RaidPosted: s.raidPost(g, view)}
+	post := notify.RaidPost{RaidPosted: s.raidPost(ctx, g, view)}
 	if view.Night != nil {
 		post.Came, post.CameOf = view.Night.Came, view.Night.Signed
 	}

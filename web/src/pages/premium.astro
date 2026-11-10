@@ -1,19 +1,19 @@
 ---
 // web/src/pages/premium.astro
-// The plans page in the flat system (design/specs/2026-11-08-premium-account.md sections 4, 5):
-// the PageHeader (`Plans`, signed in the account's plan as the answer), the interval bar,
-// the founder line and at most one state line, then the one Plate (Free and Premium, Premium first
-// on a phone), the guild plans, the rules and the questions open, and the sample coach review in
-// the rail. Static: both intervals and both founder states are in the DOM in fixed cells, and the
-// pre-paint attributes (`data-iv` from ?interval=, `data-founder` from the window's closing
-// instant, `data-premium` from the stored source) pick one. Signed out nothing is fetched; signed
-// in one small module reads /v1/me (premium-account.ts, gap G1).
+// The plans page on the round 5 system (directions mock design/mocks/directions/png/b4-premium-*;
+// parity twin design/mocks/ws_premium.py): the PageHeader (`Plans`, signed in the account's plan as
+// the answer), the interval bar, the founder line and at most one state line, then the four plans
+// side by side as panels (Free, Premium framed with the teal Subscribe, Guild, Raid guild; Premium
+// first on a phone), then Questions and the guild rules beside the sample coach review. Static:
+// both intervals and both founder states are in the DOM in fixed cells, and the pre-paint
+// attributes (`data-iv` from ?interval=, `data-founder` from the window's closing instant,
+// `data-premium` from the stored source) pick one. Signed out nothing is fetched; signed in one
+// small module reads /v1/me (premium-account.ts, gap G1) for payer, seat, grant and free.
 import Base from '../layouts/Base.astro';
 import CoachSample from '../components/premium/CoachSample.astro';
 import PlanFeatures from '../components/premium/PlanFeatures.astro';
 import PlanPrice from '../components/premium/PlanPrice.astro';
 import Button from '../components/ui/Button.svelte';
-import Columns from '../components/ui/Columns.svelte';
 import ControlBar from '../components/ui/ControlBar.astro';
 import Notice from '../components/ui/Notice.svelte';
 import Page from '../components/ui/Page.svelte';
@@ -81,14 +81,7 @@ const guildPlans = [
       label={copy.interval.groupLabel}
       groups={[intervalGroup]}
       testid="interval-bar"
-    >
-      <span slot="end" class="plans-bar-end">
-        <span class="text-small text-muted">{copy.band.guildLead}</span>
-        <a class={LINK} href="#guild-leaders" data-testid="band-guild-link">
-          {copy.band.guildLink} ›
-        </a>
-      </span>
-    </ControlBar>
+    />
     <div class="plans-notes">
       <div data-region={REGION.notes}>
         <p class="plans-founder" data-fd="open" data-testid="founder-row">
@@ -102,16 +95,15 @@ const guildPlans = [
       </div>
     </div>
 
-    <Page layout="split">
-      <Plate label="Plans for a player" testid="plans-plate">
-        <Columns count={2} open={false} secondFirst>
-          <div data-testid="plan-free" id="free">
+    <Page layout="ledger" panels>
+      <div class="plan-grid" role="group" aria-label={copy.title} data-testid="plans-plate">
+        <Plate>
+          <div class="plan" data-testid="plan-free" id="free">
             <PlanHead
               name={copy.free.name}
               audience={copy.free.audience}
               value={copy.free.price}
               level={2}
-
               lines={[{ text: copy.free.note }]}
             >
               <span slot="tag" class="your-plan your-plan-free">
@@ -127,59 +119,58 @@ const guildPlans = [
               {myReportsCopy.signInAction} ›
             </a>
           </div>
-          <div data-testid="plan-premium" id="premium">
+        </Plate>
+        <Plate frame="framed">
+          <div class="plan plan-sold" data-testid="plan-premium" id="premium">
             <PlanHead name={copy.premium.name} audience={copy.premium.audience} value="" level={2}>
               <span slot="tag" class="your-plan your-plan-premium">
                 <Tag tone="success">{copy.yourPlanTag}</Tag>
               </span>
               <PlanPrice slot="price" plan="premium" gold />
             </PlanHead>
+            <PlanFeatures features={copy.premium.features} testid="premium-features" />
+            <p class="text-small text-muted plan-small m-0" data-testid="premium-scope">
+              {copy.premium.scope}
+            </p>
             <div class="plan-act">
               {priced('premium').map((b) => (
                 <span class="plan-btn" data-iv={b.interval} data-fd={b.fd}>
-                  <Button tone="primary" href={b.href}>
+                  <Button tone="subscribe" href={b.href}>
                     {b.label}
                   </Button>
                 </span>
               ))}
+              <div class="plan-owned">
+                {OWNED.map(([source, line]) => (
+                  <p class="owned-line" data-source={source}>
+                    {line}
+                  </p>
+                ))}
+                <span>
+                  <Button href="/account#plan">{premiumSourceCopy.buttons.seePlan}</Button>
+                </span>
+              </div>
             </div>
-            <div class="plan-owned">
-              {OWNED.map(([source, line]) => (
-                <p class="owned-line" data-source={source}>
-                  {line}
-                </p>
-              ))}
-              <span>
-                <Button href="/account#plan">{premiumSourceCopy.buttons.seePlan}</Button>
-              </span>
-            </div>
-            <p class="text-small text-muted m-0" data-testid="premium-support">
-              {copy.premium.support}
-            </p>
-            <PlanFeatures features={copy.premium.features} testid="premium-features" />
-            <p class="text-small text-muted m-0" data-testid="premium-scope">
-              {copy.premium.scope}
-            </p>
           </div>
-        </Columns>
-      </Plate>
-
-      <Section title={copy.guildRegion.heading} anchor="guild-leaders">
-        <div class="plans-stack">
-          <p class="plans-lede">{copy.guildRegion.lede}</p>
-          <p class="text-small text-muted m-0">{copy.guildRegion.members}</p>
-          <Columns count={2}>
-            {guildPlans.map(({ tier, block }) => (
-              <div data-testid={`plan-${tier}`} data-guild-column={tier}>
-                <PlanHead name={block.name} audience={block.audience} value="">
-                  <span slot="tag" class="guild-tag">
-                    <Tag tone="success">
-                      <span data-guild-tag></span>
-                    </Tag>
-                  </span>
-                  <PlanPrice slot="price" plan={tier} />
-                </PlanHead>
-                <div class="plan-act guild-subscribe">
+        </Plate>
+        {guildPlans.map(({ tier, block }) => (
+          <Plate>
+            <div class="plan" data-testid={`plan-${tier}`} data-guild-column={tier} id={tier}>
+              <PlanHead name={block.name} audience={block.audience} value="" level={2}>
+                <span slot="tag" class="guild-tag">
+                  <Tag tone="success">
+                    <span data-guild-tag></span>
+                  </Tag>
+                </span>
+                <PlanPrice slot="price" plan={tier} />
+              </PlanHead>
+              <PlanFeatures features={block.features} />
+              <p class="text-small text-muted plan-small m-0">
+                <b class="text-strong">{trial.lead}</b>
+                {trial.rest}
+              </p>
+              <div class="plan-act">
+                <div class="guild-subscribe">
                   {priced(tier).map((b) => (
                     <span class="plan-btn" data-iv={b.interval} data-fd={b.fd}>
                       <Button href={b.href}>{b.label}</Button>
@@ -187,37 +178,35 @@ const guildPlans = [
                   ))}
                 </div>
                 <div class="guild-on" data-premium-slot="guild" data-tier={tier}></div>
-                <p class="text-small text-muted m-0">
-                  <b class="text-strong">{trial.lead}</b>
-                  {trial.rest}
-                </p>
-                <PlanFeatures features={block.features} />
               </div>
-            ))}
-          </Columns>
-          <p class="text-small text-muted m-0" data-testid="history-promise">
-            {copy.historyPromise}
-          </p>
+            </div>
+          </Plate>
+        ))}
+      </div>
+
+      <div class="plans-more">
+        <div class="plans-more-main">
+          <Section title={copy.faqTitle} meta={copy.foot} anchor="faq" testid="plans-faq" panel>
+            <RowGrid cols={2}>
+              {copy.faq.map((entry) => (
+                <Row title={entry.question} sub={entry.answer} open />
+              ))}
+            </RowGrid>
+            <div class="plans-rules" id="guild-leaders" data-testid="guild-rules">
+              <h3 class="plans-rules-title">{copy.howItWorks}</h3>
+              <RowGrid cols={2}>
+                {copy.rules.map((rule) => (
+                  <Row title={rule.term} sub={rule.sentence} open />
+                ))}
+              </RowGrid>
+              <p class="text-small text-muted plans-history m-0" data-testid="history-promise">
+                {copy.historyPromise}
+              </p>
+            </div>
+          </Section>
         </div>
-      </Section>
-
-      <Section title={copy.howItWorks} testid="guild-rules">
-        <RowGrid cols={2}>
-          {copy.rules.map((rule) => (
-            <Row title={rule.term} sub={rule.sentence} open />
-          ))}
-        </RowGrid>
-      </Section>
-
-      <Section title={copy.faqTitle} meta={copy.foot} anchor="faq" testid="plans-faq">
-        <RowGrid cols={2}>
-          {copy.faq.map((entry) => (
-            <Row title={entry.question} sub={entry.answer} open />
-          ))}
-        </RowGrid>
-      </Section>
-
-      <CoachSample slot="rail" />
+        <CoachSample />
+      </div>
     </Page>
   </main>
 
@@ -280,7 +269,7 @@ const guildPlans = [
   .plans-page [data-on-plan='true'] .guild-tag {
     display: inline-flex;
   }
-  :root[data-premium] .plans-page [data-testid='plan-premium'] .plan-act,
+  :root[data-premium] .plans-page [data-testid='plan-premium'] .plan-btn,
   .plans-page [data-on-plan='true'] .guild-subscribe {
     display: none;
   }
@@ -298,12 +287,6 @@ const guildPlans = [
       min-width: 300px;
     }
   }
-  .plans-bar-end {
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px 12px;
-  }
   .plans-notes {
     padding-inline: var(--page-inset);
   }
@@ -319,36 +302,89 @@ const guildPlans = [
     line-height: 24px;
     color: var(--color-text);
   }
+  /* The four plans: one column on a phone (Premium first), two from 768, four from 1280. */
+  .plan-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .plan-grid > :global(*:nth-child(2)) {
+    order: -1;
+  }
+  @media (min-width: 768px) {
+    .plan-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .plan-grid > :global(*:nth-child(2)) {
+      order: 0;
+    }
+  }
+  @media (min-width: 1280px) {
+    .plan-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .plan {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    min-width: 0;
+    padding: 22px 24px;
+  }
+  /* On a phone the plan's buy button sits under its price, in the first screen (PR3); from 768
+     every plan's button closes its panel, level across the row. */
+  .plan-act {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    order: 1;
+  }
+  .plan :global(.ui-plh) {
+    order: 0;
+  }
+  .plan :global(.plan-features),
+  .plan-small,
+  .plan-foot {
+    order: 2;
+  }
+  @media (min-width: 768px) {
+    .plan-act {
+      order: 3;
+      margin-top: auto;
+      padding-top: 4px;
+    }
+  }
+  .plan-btn :global(.ui-btn),
+  .plan-btn :global(a),
+  .plan-owned :global(a) {
+    width: 100%;
+  }
+  /* A guild's label ("Subscribe your guild · $120 a year") wraps in a quarter of the page column
+     rather than running past its panel. */
+  .plan-btn :global(a) {
+    display: flex;
+    height: auto;
+    min-height: 44px;
+    padding-block: 10px;
+    white-space: normal;
+    text-align: center;
+    text-wrap: balance;
+  }
   .plan-foot {
     margin-top: auto;
   }
-  .plan-act {
-    display: grid;
-    justify-items: start;
-  }
-
   .plan-owned {
     flex-direction: column;
     gap: 12px;
-    align-items: flex-start;
+    align-items: stretch;
   }
   .owned-line {
     margin: 0;
     font-size: 15px;
     line-height: 24px;
     color: var(--color-strong);
-  }
-  .plans-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-width: 0;
-  }
-  .plans-lede {
-    margin: 0;
-    max-width: 72ch;
-    font-size: 15px;
-    line-height: 24px;
   }
   .guild-on:empty {
     display: none;
@@ -358,16 +394,62 @@ const guildPlans = [
     flex-direction: column;
     gap: 12px;
   }
-  @media (max-width: 767px) {
-    .plan-act,
-    .plan-btn,
-    .plan-btn :global(.ui-btn),
-    .plan-btn :global(a),
-    .plan-owned :global(a) {
-      width: 100%;
+  .guild-on :global(button) {
+    width: 100%;
+  }
+  /* Questions and the guild rules beside the sample coach review from 1024. */
+  .plans-more {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--section-gap);
+  }
+  /* The guild rules under the questions, on the same panel: one prose panel on the page. */
+  .plans-rules {
+    padding-top: 20px;
+    scroll-margin-top: calc(var(--bar-h) + 12px);
+  }
+  .plans-rules-title {
+    margin: 0;
+    padding-bottom: 4px;
+    font: 400 20px/26px var(--font-heading);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-cream);
+  }
+  /* On a phone the coach sample comes before the long prose. */
+  @media (max-width: 1023px) {
+    .plans-more > :global(:last-child) {
+      order: -1;
     }
-    .plans-page :global(.plan-btn a) {
-      display: flex;
+  }
+  .plans-more-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-gap);
+    min-width: 0;
+  }
+  @media (min-width: 1024px) {
+    .plans-more {
+      grid-template-columns: minmax(0, 1fr) 340px;
+      column-gap: 28px;
+      align-items: start;
+    }
+    /* The coach sample stays in view beside the longer questions and rules. */
+    .plans-more > :global(:last-child) {
+      position: sticky;
+      top: calc(var(--bar-h) + 12px);
+    }
+  }
+  @media (min-width: 1760px) {
+    .plans-more {
+      grid-template-columns: minmax(0, 1fr) var(--rail-w);
+    }
+  }
+  .plans-history {
+    padding-top: 12px;
+  }
+  @media (max-width: 767px) {
+    .plan {
+      padding: 18px 16px;
     }
   }
 </style>

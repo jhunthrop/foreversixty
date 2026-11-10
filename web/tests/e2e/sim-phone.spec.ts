@@ -103,7 +103,7 @@ async function targetsAreBigEnough(page: Page): Promise<void> {
 
 /**
  * Every bordered card on the page -- the flat pages' Plate (`.ui-plate`, spec 2026-11-06-sim
- * §4.1) and `.rounded-panel` (CompareView's two tables) -- keeps the page's 18px
+ * §4.1) and `.rounded-plate` (CompareView's two tables) -- keeps the page's 18px
  * gutter on both edges, either through its own `mx-[18px]` or a parent's. Scoped to `#sim`,
  * the island's own mount point on all three /sim routes, the same way report-phone.spec.ts
  * scopes its own island-only checks to `#report`: the shared header and footer are every
@@ -114,7 +114,7 @@ async function sectionsKeepGutter(page: Page): Promise<void> {
   const edges = await page.evaluate(() =>
     [
       ...document.querySelectorAll(
-        '#sim .ui-plate, #sim .rounded-panel, #sim .card-surface, #sim .card-surface-quiet',
+        '#sim .ui-plate, #sim .rounded-plate, #sim .card-surface, #sim .card-surface-quiet',
       ),
     ]
       .filter((element) => {

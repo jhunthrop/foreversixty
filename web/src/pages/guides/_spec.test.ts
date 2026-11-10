@@ -112,7 +112,12 @@ describe('/guides/warrior/fury (the page structure)', () => {
       'head-answer',
       'controls',
       'plate',
-      ...ANCHORS.map((anchor) => `section-${anchor}`),
+      // The Best in slot section's doll (the shared PaperdollFrame) carries its own three regions.
+      ...ANCHORS.flatMap((anchor) =>
+        anchor === 'best-in-slot'
+          ? [`section-${anchor}`, 'slots', 'paperdoll-medallion', 'paperdoll-centre']
+          : [`section-${anchor}`],
+      ),
       'section-sources',
       'footer-note',
     ]);
@@ -145,7 +150,8 @@ describe('/guides/warrior/fury (the page structure)', () => {
     expect(main).toMatch(/<h1[^>]*style="color: var\(--color-class-warrior\);">Fury Warrior<\/h1>/);
     expect(main).toMatch(/data-region="head-meta"[^>]*><span[^>]*>DPS · Updated \d{1,2} [A-Z][a-z]{2}</);
     expect(main).not.toContain('ui-page-header-lead');
-    expect(main).toMatch(/<p class="guide-lede[^"]*"[^>]*data-testid="guide-summary"[^>]*>[^<]{20,}<\/p>/);
+    // No lede under the band (owner 2026-11-09: the "<Spec> is the" sentences were struck from every guide).
+    expect(main).not.toContain('data-testid="guide-summary"');
     const answer = blockOf(main, 'guide-answer', 2000);
     expect(main.indexOf('data-region="head-answer"')).toBeLessThan(main.indexOf('id="guide-answer"'));
     expect(main).toMatch(
@@ -243,16 +249,14 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       main.indexOf('<section id="leveling"'),
     );
     expect(frost).toMatch(/DPS · Updated \d{1,2} [A-Z][a-z]{2}</);
-    // The lede is the Overview's own sentence, not the frontmatter description.
-    expect(frost).toMatch(
-      /<p class="guide-lede[^"]*"[^>]*data-testid="guide-summary"[^>]*>Frost casts Frostbolt behind Ice Barrier/,
-    );
+    // No lede: neither the Overview's old sentence nor the frontmatter description shows under the band.
+    expect(frost).not.toContain('Frost casts Frostbolt behind Ice Barrier');
   });
 
   it('lays the Overview out as strengths and weaknesses beside the raid role lane', () => {
     const overview = sectionOf(mainOf(frost), 'overview');
     expect(overview).toMatch(
-      /class="ui-rd-lane[^"]*"><div class="ui-lane-block[^"]*" data-testid="guide-overview-raid"/,
+      /class="ui-rd-lane[^"]*"[^>]*><div class="ui-lane-block[^"]*" data-testid="guide-overview-raid"/,
     );
     expect(overview).toContain(`>${guidesCopy.inARaid}</h3>`);
     expect(overview).toMatch(/class="ui-prose ui-prose--plus[^"]*" data-testid="guide-strengths"/);
@@ -387,7 +391,9 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
       expect(bis).toContain(`href="${href}"`);
     expect(bis).toMatch(/href="\/tiers"[^>]*data-testid="guide-tier-list"/);
     expect(bis).not.toContain('named honestly');
-    expect(bis).not.toMatch(/<astro-island/);
+    // The lane's list is server-rendered; only the doll in the prose column hydrates.
+    expect(bis.split('class="ui-rd-prose')[0]).not.toMatch(/<astro-island/);
+    expect(bis).toContain('data-testid="guide-bis-doll"');
   });
 
   it('adds the enchant and consumable choices and the race lane', () => {

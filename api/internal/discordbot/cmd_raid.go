@@ -63,6 +63,7 @@ func (s *Service) cmdRaid(ctx context.Context, in Interaction) (Reply, error) {
 		// No raid is planned, so the next night is a run or an event: say which.
 		msg.Content = fill(commandCopy.RaidFallback, "{kind}", word)
 	}
+	msg = sealFooters(msg, s.sealURL())
 	msg.Ephemeral = true
 	return Reply{Message: msg}, nil
 }

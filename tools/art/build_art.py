@@ -4,13 +4,15 @@
 
 Reads design/assets (the owner's sources) and the mock pipeline's processing (design/mocks/directions: art.py for the
 periodic, band-shaped ground tile; paperdoll/ for the cleaned frame and slots.json), and writes every file the site
-serves under web/public/art plus web/src/lib/ui/paperdoll-slots.json. web/src/lib/ui/assets.ts is the one module that
+serves under web/public/art plus web/src/lib/ui/paperdoll-slots.json, and the desktop companion's copy of the ground
+and the band (companion/ui/art, embedded in its binary). web/src/lib/ui/assets.ts is the one module that
 names these files; pages never hard-code a path. The build is deterministic: run twice, the outputs are identical.
 
 Generated art is the owner's explicit choice (2026-11-09): background only, never captioned as a screenshot.
 """
 import json
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -21,6 +23,9 @@ DESIGN = REPO / 'design'
 DIRECTIONS = DESIGN / 'mocks/directions'
 OUT = REPO / 'web/public/art'
 SLOTS_OUT = REPO / 'web/src/lib/ui/paperdoll-slots.json'
+COMPANION_OUT = REPO / 'companion/ui/art'
+# The companion window is one 800 px window: the ground tile and the phone-width band, byte for byte the site's files.
+COMPANION_ART = ('ground.webp', 'band-1200.webp')
 
 sys.path.insert(0, str(DIRECTIONS))
 from art import ground_tile  # noqa: E402  (the mock pipeline's tile: one source for mocks, web and apps)
@@ -32,13 +37,17 @@ ART = {
     'hero': ('art/hero-road-camp-wide.jpeg', (1200, 2400)),
     'cave': ('art/raid-panel-cave.jpeg', (800, 1600)),
 }
-# One logo (owner 2026-11-09): the seal v3, cut out with real transparency, everywhere: nav, footer,
-# favicons and the link preview (which reads the apple-touch icon). Its bold rim holds at 16 px.
-SEAL_SOURCE = 'logo/lx-seal-v3.png'
-SEALS = {'seal-88': (SEAL_SOURCE, 176), 'seal-128': ('logo/lx-seal-v3-256.png', 256)}
-FAVICONS = {'favicon-32.png': ('logo/lx-seal-v3-32.png', 32), 'apple-touch-icon.png': (SEAL_SOURCE, 180)}
-# favicon.ico carries the owner's sized renders, never a downscale of one size.
-FAVICON_ICO = ('logo/lx-seal-v3-16.png', 'logo/lx-seal-v3-32.png', 'logo/lx-seal-v3-48.png')
+# One logo (owner 2026-11-09): the matte seal v4 (tools/art/cut_seal.py cuts it out with real transparency),
+# everywhere: nav, footer, favicons and the link preview (which reads the apple-touch icon). Its bold rim holds at 16 px.
+SEAL_VERSION = 'v4'
+SEAL_SOURCE = f'logo/lx-seal-{SEAL_VERSION}.png'
+SEALS = {'seal-88': (SEAL_SOURCE, 176), 'seal-128': (f'logo/lx-seal-{SEAL_VERSION}-256.png', 256)}
+# seal-400.png is the Discord webhook avatar and footer icon (api/internal/notify), the Go cards' seal
+# (make sheet-assets copies it into api/internal/brand/art) and the apps' bundled seal.
+FAVICONS = {'favicon-32.png': (f'logo/lx-seal-{SEAL_VERSION}-32.png', 32), 'apple-touch-icon.png': (SEAL_SOURCE, 180),
+            'seal-400.png': (f'logo/lx-seal-{SEAL_VERSION}-512.png', 400)}
+# favicon.ico carries the sized renders, never a downscale of one size.
+FAVICON_ICO = tuple(f'logo/lx-seal-{SEAL_VERSION}-{px}.png' for px in (16, 32, 48))
 OG_SIZE, OG_BOX = (1200, 630), (1180, 480, 2600, 1225)  # art_crops.py: the glow over the pass, the road's head
 
 
@@ -67,11 +76,20 @@ def build_art() -> None:
     og.save(OUT / 'og-art.jpg', 'JPEG', quality=86, optimize=True)
 
 
+def compress_png(path: Path) -> None:
+    """pngquant (quality 90 to 100, kept only if smaller) then lossless oxipng; both on PATH (brew install)."""
+    subprocess.run(['pngquant', '--quality=90-100', '--skip-if-larger', '--force', '--strip',
+                    '--output', str(path), str(path)], check=False)
+    subprocess.run(['oxipng', '-o', '4', '--strip', 'safe', '-q', str(path)], check=True)
+
+
 def build_seals() -> None:
     for name, (rel, px) in SEALS.items():
         Image.open(source(rel)).convert('RGBA').resize((px, px), Image.LANCZOS).save(OUT / f'{name}.webp', 'WEBP', quality=88, method=6)
     for name, (rel, px) in FAVICONS.items():
-        Image.open(source(rel)).convert('RGBA').resize((px, px), Image.LANCZOS).save(REPO / 'web/public' / name, optimize=True)
+        path = REPO / 'web/public' / name
+        Image.open(source(rel)).convert('RGBA').resize((px, px), Image.LANCZOS).save(path)
+        compress_png(path)
     sized = [Image.open(source(rel)).convert('RGBA') for rel in FAVICON_ICO]
     largest = sized[-1]
     largest.save(REPO / 'web/public/favicon.ico', format='ICO', sizes=[im.size for im in sized],
@@ -85,11 +103,18 @@ def build_paperdoll() -> None:
     SLOTS_OUT.write_text(json.dumps(slots, indent=1) + '\n')
 
 
+def build_companion() -> None:
+    COMPANION_OUT.mkdir(parents=True, exist_ok=True)
+    for name in COMPANION_ART:
+        shutil.copyfile(OUT / name, COMPANION_OUT / name)
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     build_art()
     build_seals()
     build_paperdoll()
+    build_companion()
     for path in sorted(OUT.iterdir()):
         print(f'{path.relative_to(REPO)}  {path.stat().st_size // 1024} KB')
 

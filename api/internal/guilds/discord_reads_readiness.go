@@ -36,7 +36,7 @@ type ReadinessAnswer struct {
 }
 
 // NextRaidReadiness is the next raid's readiness for viewerID. It refuses with ErrNotOfficer,
-// ErrPlanRequired, ErrRaidGuildRequired or ErrClaimContested.
+// ErrRaidGuildRequired (ErrRaidGuildGranted on a granted plan) or ErrClaimContested.
 func (s *Service) NextRaidReadiness(ctx context.Context, guildID, viewerID int64, now time.Time) (ReadinessAnswer, error) {
 	if err := s.readinessGate(ctx, guildID, viewerID); err != nil {
 		return ReadinessAnswer{}, err
@@ -70,13 +70,18 @@ func (s *Service) RaidReadiness(ctx context.Context, guildID, viewerID, raidID i
 	return readinessAnswerOf(raid, view, time.Now()), nil
 }
 
-// readinessGate is the officer routes' gate (officerGateFor), then the Raid guild tools.
+// readinessGate is the officer gate (officerGateFor), then the Raid guild tools: the board
+// stays Raid guild when the bot went free (owner ruling 2026-11-09), so a free or Guild-tier
+// guild gets ErrRaidGuildRequired and its upgrade link.
 func (s *Service) readinessGate(ctx context.Context, guildID, viewerID int64) error {
 	if err := s.officerGateFor(ctx, guildID, viewerID); err != nil {
 		if errors.Is(err, ErrNotYourCharacter) {
 			return ErrNotOfficer
 		}
 		return err
+	}
+	if s.Entitlements == nil {
+		return ErrRaidGuildRequired
 	}
 	ok, _, err := s.Entitlements.CanForGuild(ctx, guildID, viewerID, entitlements.FeatureRaidGuildTools)
 	if err != nil {
@@ -142,7 +147,7 @@ func readinessLine(row ReadinessRow, now time.Time) string {
 		parts = append(parts, "No enchant: "+strings.Join(labels, ", "))
 	}
 	if row.Consumables.State == "short" {
-		parts = append(parts, "Short")
+		parts = append(parts, "Consumables short")
 	}
 	if n := row.TalentPointsUnspent; n > 0 {
 		parts = append(parts, fmt.Sprintf("%d unspent talent point%s", n, plural(n)))

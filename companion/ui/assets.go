@@ -15,7 +15,7 @@ import (
 
 // Assets is index.html and what it loads.
 //
-//go:embed index.html app.js copy.js format.js styles.css seal.svg fonts/*.woff2
+//go:embed index.html app.js copy.js format.js icons.js styles.css tokens.css seal-64.png art/*.webp fonts/*.woff2
 var Assets embed.FS
 
 // Go's built-in table of extensions has no .woff2, and on Windows the

@@ -15,16 +15,15 @@ import {
   ACCOUNT_RESERVE_MAX_PX,
   ACCOUNT_DISCORD_LINK_RESERVE,
   DISCORD_FLOORS,
-  HEADER_ROW_H,
-  LEFT_FLOOR,
-  PLAN_HEADLINE_RESERVE,
-  PLAN_NO_PLAN_ROW_RESERVE,
+  LEFT_FLOORS,
   RAIL_FLOORS,
+  SECTION_GAP_PX,
   currentBucket,
   discordHintState,
   discordLinkHint,
   type LinkHintState,
   gridFloor,
+  leftFloor,
   railFloor,
   readAccountReserve,
   recordAccountReserve,
@@ -67,42 +66,22 @@ function declared(bucket: ReserveBucket, selector: string, property: string): st
 const px = (value: number): string => `${value}px`;
 
 describe('global.css agrees with layout.ts', () => {
-  it.each(BUCKETS)('header row, left column and rail panels at %s', (bucket) => {
-    expect(declared(bucket, "html[data-session='1'] .account-header-reserve", 'min-height')).toBe(
-      px(HEADER_ROW_H[bucket]),
-    );
-    expect(declared(bucket, '.account-left-skeleton', 'min-height')).toBe(
-      `max(var(--account-left-reserve, 0px), ${px(LEFT_FLOOR[bucket])})`,
-    );
-    for (const key of ['devices', 'plan'] as const) {
-      expect(declared(bucket, `.account-${key}-skeleton`, 'min-height')).toBe(px(RAIL_FLOORS[key][bucket]));
-    }
-    expect(declared(bucket, '.account-you-skeleton', 'min-height')).toBe(
-      `calc(${px(RAIL_FLOORS.you[bucket])} + var(--account-link-floor, 0px))`,
-    );
-  });
-
-  it.each(BUCKETS)('the rail floor and the Discord block by state at %s', (bucket) => {
-    expect(declared(bucket, '.account-rail-skeleton', '--account-rail-floor')).toBe(
-      px(railFloor('none', bucket)),
+  it.each(BUCKETS)('the main column floor by Discord state at %s', (bucket) => {
+    expect(declared(bucket, '.account-left-skeleton', '--account-left-floor')).toBe(
+      px(leftFloor('none', bucket)),
     );
     for (const state of DISCORD_STATES) {
       expect(
-        declared(bucket, `html[data-discord='${state}'] .account-rail-skeleton`, '--account-rail-floor'),
-      ).toBe(px(railFloor(state, bucket)));
-      const discord = `html[data-discord='${state}'] .account-discord-skeleton`;
-      expect(declared(bucket, discord, 'min-height')).toBe(px(DISCORD_FLOORS[state][bucket]));
-      expect(declared(bucket, discord, 'display')).toBe('flex');
+        declared(bucket, `html[data-discord='${state}'] .account-left-skeleton`, '--account-left-floor'),
+      ).toBe(px(leftFloor(state, bucket)));
     }
   });
 
-  it('shows the rail at its stored height when there is one, else at its floor plus the link row', () => {
-    expect(css).toContain(
-      'min-height: var(--account-rail-reserve, calc(var(--account-rail-floor) + var(--account-link-floor, 0px)))',
-    );
+  it.each(BUCKETS)('the rail floor at %s', (bucket) => {
+    expect(declared(bucket, '.account-rail-skeleton', '--account-rail-floor')).toBe(px(railFloor(bucket)));
   });
 
-  it.each(BUCKETS)('the Discord link row floors by state at %s', (bucket) => {
+  it.each(BUCKETS)('the Discord link rows by state at %s', (bucket) => {
     for (const state of ['unlinked', 'suggested', 'linked'] as const) {
       expect(declared(bucket, `html[data-discord-link='${state}']`, '--account-link-floor')).toBe(
         px(ACCOUNT_DISCORD_LINK_RESERVE[state][bucket]),
@@ -110,44 +89,32 @@ describe('global.css agrees with layout.ts', () => {
     }
   });
 
-  it('draws no Discord block for `none` (the default)', () => {
-    expect(css).toMatch(/\.account-discord-skeleton\s*\{\s*display:\s*none;/);
+  it('holds each column at its stored height when there is one, else at its floor (the main column plus the link rows)', () => {
+    expect(css).toContain(
+      'min-height: var(--account-left-reserve, calc(var(--account-left-floor) + var(--account-link-floor, 0px)))',
+    );
+    expect(css).toContain('max-height: var(--account-left-reserve, none)');
+    expect(css).toContain('min-height: var(--account-rail-reserve, var(--account-rail-floor))');
+    expect(css).toContain('max-height: var(--account-rail-reserve, none)');
   });
 });
 
 describe('the floors', () => {
-  it('sum the rail as three panels, two gaps and the Discord block under Plan', () => {
-    expect(railFloor('none', 'lg')).toBe(
-      270 + 170 + 380 + PLAN_HEADLINE_RESERVE.lg + PLAN_NO_PLAN_ROW_RESERVE + 64,
-    );
-    expect(railFloor('form', 'lg')).toBe(
-      270 +
-        170 +
-        380 +
-        PLAN_HEADLINE_RESERVE.lg +
-        PLAN_NO_PLAN_ROW_RESERVE +
-        64 +
-        16 +
-        DISCORD_FLOORS.form.lg,
-    );
-    expect(railFloor('connect', 'stack')).toBe(
-      290 + 190 + 460 + PLAN_HEADLINE_RESERVE.stack + PLAN_NO_PLAN_ROW_RESERVE + 64 + 16 + 360,
+  it('sum the main column as Characters, Devices and the Discord panel, 22 px apart', () => {
+    expect(SECTION_GAP_PX).toBe(22);
+    expect(leftFloor('none', 'lg')).toBe(LEFT_FLOORS.characters.lg + 22 + LEFT_FLOORS.devices.lg);
+    expect(leftFloor('form', 'stack')).toBe(
+      LEFT_FLOORS.characters.stack + 22 + LEFT_FLOORS.devices.stack + 22 + DISCORD_FLOORS.form.stack,
     );
   });
 
-  it('reserve the Plan card for its tallest head: a seat holder with a Billing history button and a wrapped line 2', () => {
-    expect(PLAN_HEADLINE_RESERVE).toEqual({ lg: 45, stack: 45 });
-    expect(PLAN_NO_PLAN_ROW_RESERVE).toBe(20);
-    expect(RAIL_FLOORS.plan).toEqual({ lg: 380 + 45 + 20, stack: 460 + 45 + 20 });
-  });
-
-  it('hold no coach line in the left floor: the empty Characters panel draws none', () => {
-    expect(LEFT_FLOOR).toEqual({ lg: 355, stack: 475 });
+  it('sum the rail as You, Plan and Delete account, 22 px apart', () => {
+    expect(railFloor('lg')).toBe(RAIL_FLOORS.you.lg + RAIL_FLOORS.plan.lg + RAIL_FLOORS.delete.lg + 44);
   });
 
   it('take the taller column at lg and stack the two below it', () => {
-    expect(gridFloor('none', 'lg')).toBe(Math.max(LEFT_FLOOR.lg, railFloor('none', 'lg')));
-    expect(gridFloor('none', 'stack')).toBe(LEFT_FLOOR.stack + 32 + railFloor('none', 'stack'));
+    expect(gridFloor('saved', 'lg')).toBe(Math.max(leftFloor('saved', 'lg'), railFloor('lg')));
+    expect(gridFloor('none', 'stack')).toBe(leftFloor('none', 'stack') + 22 + railFloor('stack'));
   });
 });
 

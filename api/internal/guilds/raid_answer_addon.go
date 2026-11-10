@@ -91,7 +91,7 @@ func addonOutcome(err error) (AddonAnswerOutcome, error) {
 	case errors.Is(err, ErrNotFound):
 		return refusedFor(AddonAnswerNotFound), nil
 	case errors.Is(err, ErrNotMember), errors.Is(err, ErrCharacterNotFound), errors.Is(err, ErrNotYourCharacter),
-		errors.Is(err, ErrCharacterNotVerified), errors.Is(err, ErrPlanRequired):
+		errors.Is(err, ErrCharacterNotVerified):
 		return refusedFor(AddonAnswerNotYours), nil
 	}
 	var role *RoleNotOfClassError

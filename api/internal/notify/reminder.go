@@ -25,7 +25,7 @@ const maxReminderTitleRunes = 400
 func ReminderLine(in RaidPosted) string {
 	unix := in.StartsAt.Unix()
 	title := escapedWithin(collapse(in.Title), maxRaidTitleRunes, maxReminderTitleRunes)
-	return fmt.Sprintf(raidCopy.ReminderLead, title, unix, unix) + " " + reminderCount(in)
+	return fmt.Sprintf(raidCopy.ReminderLead, title, unix) + " " + reminderCount(in)
 }
 
 func reminderCount(in RaidPosted) string {

@@ -22,12 +22,10 @@ const (
 )
 
 // GuildStanding is a viewer's standing in a guild as the channel routes need it. The
-// guilds package answers it, so the rank, plan and freeze rules stay there.
+// guilds package answers it, so the rank and freeze rules stay there.
 type GuildStanding struct {
 	// Officer is a verified officer or leader of the guild.
 	Officer bool
-	// Plan is the guild plan (the officer views feature, a grant included).
-	Plan bool
 	// Frozen is a contested claim: officer actions wait for a moderator.
 	Frozen bool
 	// Name is the guild's display name; Path its page on the site ("/guild/us/normal/slug").
@@ -58,22 +56,22 @@ func (s *Service) mountGuild(mux *http.ServeMux) {
 	connectLimit := httpx.RateLimitByKey(connectsPerMinute, time.Minute, auth.AccountRateLimitKey)
 	mux.Handle("GET "+guildConnectPath, connectLimit(auth.RequireSession(s.guildConnect)))
 	mux.Handle("POST "+guildTestPath, limit(auth.RequireSession(s.guildTest)))
-	// Remove is never behind the plan: stopping posts must always work.
 	mux.HandleFunc("DELETE "+guildChannelPath, auth.RequireSession(s.guildRemove))
 }
 
 // guildOfficer is GuildOfficerGate for the webhook channel routes.
-func (s *Service) guildOfficer(w http.ResponseWriter, r *http.Request, needPlan bool) (int64, GuildStanding, bool) {
-	return GuildOfficerGate(w, r, s.Guilds, needPlan, func(op string, err error) {
+func (s *Service) guildOfficer(w http.ResponseWriter, r *http.Request) (int64, GuildStanding, bool) {
+	return GuildOfficerGate(w, r, s.Guilds, func(op string, err error) {
 		s.logger().Error("notify", "id", httpx.RequestIDFrom(r.Context()), "op", op, "err", err)
 	})
 }
 
 // GuildOfficerGate runs the guild routes' checks in order: a verified officer or leader
-// (404 for anyone else, so a non-member never learns the route), the guild plan when
-// needPlan (403 guild_plan_required), and the claim freeze (409). A lookup error is logged
-// through fail and answered 500. ok is false once it has answered.
-func GuildOfficerGate(w http.ResponseWriter, r *http.Request, access GuildAccess, needPlan bool, fail func(op string, err error)) (int64, GuildStanding, bool) {
+// (404 for anyone else, so a non-member never learns the route) and the claim freeze (409).
+// No plan: the Discord channel and the bot are free for any claimed guild's officers (owner
+// ruling 2026-11-09). A lookup error is logged through fail and answered 500. ok is false
+// once it has answered.
+func GuildOfficerGate(w http.ResponseWriter, r *http.Request, access GuildAccess, fail func(op string, err error)) (int64, GuildStanding, bool) {
 	guildID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil || guildID <= 0 {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", noGuildMessage, nil)
@@ -86,8 +84,6 @@ func GuildOfficerGate(w http.ResponseWriter, r *http.Request, access GuildAccess
 		httpx.WriteError(w, r, http.StatusInternalServerError, "internal", "could not save that just now", nil)
 	case !found || !standing.Officer:
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", noGuildMessage, nil)
-	case needPlan && !standing.Plan:
-		httpx.WriteError(w, r, http.StatusForbidden, "guild_plan_required", refusal.RaidPlanRequired, nil)
 	case standing.Frozen:
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested", refusal.ClaimContested, nil)
 	default:
@@ -98,7 +94,7 @@ func GuildOfficerGate(w http.ResponseWriter, r *http.Request, access GuildAccess
 
 func (s *Service) guildTest(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
-	guildID, standing, ok := s.guildOfficer(w, r, true)
+	guildID, standing, ok := s.guildOfficer(w, r)
 	if !ok {
 		return
 	}
@@ -127,7 +123,7 @@ func (s *Service) guildTest(w http.ResponseWriter, r *http.Request) {
 
 func (s *Service) guildRemove(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
-	guildID, _, ok := s.guildOfficer(w, r, false)
+	guildID, _, ok := s.guildOfficer(w, r)
 	if !ok {
 		return
 	}

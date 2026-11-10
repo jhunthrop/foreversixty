@@ -27,8 +27,6 @@ sources:
 
 ## Overview
 
-A dagger in each hand, Backstab from behind, Eviscerate at four points and Adrenaline Rush with Blade Flurry for the burst.
-
 ### Strengths
 
 - The most forgiving raid rotation of the three trees: one builder, two finishers

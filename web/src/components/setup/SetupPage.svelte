@@ -1,17 +1,16 @@
 <!-- web/src/components/setup/SetupPage.svelte -->
-<!-- /setup (setup spec 2026-11-07 sections 4 and 5) as one island, because the head's answer, the
-     one Plate's three steps, The addon's and The companion's quiet links and the pairing block all
-     follow one account read: the PageHeader (with a character, the answer is that character), the
-     claim's way back, then a split Page whose one Plate is "Your setup" (lib/setup/steps.ts's
-     rows), The addon, The companion and What it does in the game; the rail holds Try an export, the
-     commands, the handshake and the two flows.
+<!-- /setup (setup spec 2026-11-07 sections 4 and 5; directions mock b4-setup) as one island, because
+     the head's download, the framed plate's three steps, The addon's and The companion's quiet links
+     and the pairing block all follow one account read: the PageHeader (its answer the companion's
+     download), the claim's way back, then a split Page of panels whose framed Plate is "Your setup"
+     (lib/setup/steps.ts's rows), then the panels The addon, The companion and What it does in the
+     game; the rail's panels hold Try an export, the commands, the handshake and the two flows.
 
      The server markup is the signed-out page, with both companion builds offered: the island
      reads the visitor's system on mount and the Download step becomes their own build (or, on a
      phone, the link to copy). Until the island mounts, the plate draws the rows the
      pre-paint hints on <html> point at (data-session: the loading rows; data-pointer: the addon
-     ticked), so nothing flips after paint (W.10); a hinted visitor with a stored character has the
-     head answer's box reserved. -->
+     ticked), so nothing flips after paint (W.10). -->
 <script lang="ts">
   import { onMount } from 'svelte';
   import { invalidateMe, battlenetStartUrl, type Device, type Me } from '../../lib/account/api';
@@ -23,10 +22,9 @@
     takeSnapshot,
   } from '../../lib/account/refresh-snapshot';
   import { addonCopy } from '../../lib/addon/copy';
-  import { readCurrent, type CurrentCharacter } from '../../lib/current-character';
+  import { readCurrent } from '../../lib/current-character';
   import { onCurrentCharacterChange } from '../../lib/current-character-events';
   import { sessionHinted } from '../../lib/data/query';
-  import { setupAnswer } from '../../lib/setup/answer';
   import { fetchCompanionRelease, type CompanionRelease } from '../../lib/setup/release';
   import { SETUP_REFRESHED } from '../../lib/setup/links';
   import { loadSetupState } from '../../lib/setup/state';
@@ -37,7 +35,6 @@
   import PageHeader from '../ui/PageHeader.svelte';
   import Plate from '../ui/Plate.svelte';
   import SetupAddon from './SetupAddon.svelte';
-  import SetupAnswer from './SetupAnswer.svelte';
   import CompanionDownload from './CompanionDownload.svelte';
   import SetupCompanion from './SetupCompanion.svelte';
   import SetupRail from './SetupRail.svelte';
@@ -57,7 +54,6 @@
   let release = $state<CompanionRelease | null>(null);
   let copied = $state(false);
   let pointer = $state(false);
-  let current = $state<CurrentCharacter | null>(null);
   let signinFailed = $state(false);
   let refreshFailed = $state(false);
   let refreshing = $state(false);
@@ -92,8 +88,7 @@
     mounted = true;
     platform = visitorPlatform(navigator);
     void fetchCompanionRelease().then((fresh) => (release = fresh));
-    current = readCurrent();
-    pointer = current !== null;
+    pointer = readCurrent() !== null;
     const params = new URLSearchParams(window.location.search);
     signinFailed = params.get('signin') === 'failed';
     const refreshed = params.get('refreshed') === '1';
@@ -105,8 +100,7 @@
       if (refreshed && fresh !== null) refreshFailed = compareSnapshot(before, fresh).kind === 'error';
     });
     const unsubscribe = onCurrentCharacterChange(() => {
-      current = readCurrent();
-      pointer = current !== null;
+      pointer = readCurrent() !== null;
     });
     // Back from Battle.net with the browser's Back: the refresh is not starting any more.
     const reset = (event: PageTransitionEvent): void => {
@@ -177,20 +171,12 @@
   ];
   const settled = $derived(mounted && session !== 'loading');
   const signedIn = $derived(session === 'in' && me !== null);
-  const answer = $derived(signedIn ? setupAnswer(me, current) : null);
   const addonDone = $derived(rows[1]?.mark === 'ok');
 </script>
 
-{#snippet answerContent()}
-  {#if answer !== null}
-    <SetupAnswer {answer} />
-  {:else if !settled}
-    <span class="setup-answer-reserve" aria-hidden="true"></span>
-  {/if}
-{/snippet}
-
 <!-- The companion's download at the top, in every state (owner 2026-11-08), never gold (the plate
-     keeps the page's one primary): the head's actions, beside the answer (ui/PageHeader). -->
+     keeps the page's one primary): the head's actions alone (ui/PageHeader); the signed-in
+     character is the header's and the Sign in step's. -->
 {#snippet downloadContent()}
   <div class="setup-head-download">
     <CompanionDownload
@@ -205,18 +191,13 @@
   </div>
 {/snippet}
 
-<Page layout="split" testid="setup-grid">
+<Page layout="split" panels testid="setup-grid">
   {#snippet header()}
-    <PageHeader
-      title={addonCopy.setupPageTitle}
-      answer={answerContent}
-      actions={downloadContent}
-      testid="setup-head"
-    ></PageHeader>
+    <PageHeader title={addonCopy.setupPageTitle} actions={downloadContent} testid="setup-head"></PageHeader>
     <SetupBackToClaim />
   {/snippet}
 
-  <Plate label="Your setup" testid="setup-plate">
+  <Plate label="Your setup" frame="framed" testid="setup-plate">
     <div class={mounted ? undefined : 'setup-hint'} data-hint={mounted ? undefined : 'out'}>
       <SetupStepList
         rows={mounted ? rows : HINT_OUT_ROWS}
@@ -260,26 +241,12 @@
 </Page>
 
 <style>
-  /* The plate starts 28 px under the head at every width (the mock's split page); the primitive
-     tightens to 20 below 1024. */
-  :global(.ui-page.ui-page[data-testid='setup-grid']) {
-    padding-top: 28px;
-  }
   /* The pre-paint swap: signed out (with or without a stored character) or session hinted. */
   :global(html[data-session='1']) .setup-hint:not([data-hint='in']),
   :global(html:not([data-session='1'])) .setup-hint[data-hint='in'],
   :global(html:not([data-session='1'])[data-pointer='1']) .setup-hint[data-hint='out'],
   :global(html:not([data-pointer='1'])) .setup-hint[data-hint='pointer'] {
     display: none;
-  }
-  /* A hinted visitor with a stored character: the answer's final box, held until the reads answer. */
-  .setup-answer-reserve {
-    display: none;
-  }
-  :global(html[data-session='1'][data-pointer='1']) .setup-answer-reserve {
-    display: block;
-    width: 300px;
-    height: 70px;
   }
   /* The Sections' shared body: a column, reading lines, quiet link rows. */
   :global(.setup-body) {

@@ -43,7 +43,7 @@ func TestReportReadyEmbedSummarisesTheNight(t *testing.T) {
 	for _, f := range e.Fields {
 		got[f.Name] = f
 	}
-	if got["Time"].Value != "2:03:04" || got["Deaths"].Value != "7" {
+	if got["Time"].Value != "2 h 3 min" || got["Deaths"].Value != "7" {
 		t.Fatalf("time %q deaths %q", got["Time"].Value, got["Deaths"].Value)
 	}
 	if v := got["Top parses"].Value; v != "Frostquill 812 DPS on Onyxia\nDoom\\_whisper 744 DPS on Onyxia" || got["Top parses"].Inline {

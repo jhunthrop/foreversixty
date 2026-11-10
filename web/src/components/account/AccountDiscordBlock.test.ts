@@ -407,7 +407,7 @@ describe('saved, connected', () => {
       /<a[^>]*href="https:\/\/api\.foreversixty\.gg\/v1\/notifications\/discord\/connect"[^>]*data-testid="discord-replace"/,
     );
     expect(text(body)).toContain(notificationsCopy.reconnect);
-    expect(text(body)).toContain(notificationsCopy.reconnectNote);
+    expect(text(body)).toContain(notificationsCopy.reconnectAside);
     expect(text(body)).not.toContain(notificationsCopy.replace);
     expect(body.indexOf('discord-replace')).toBeGreaterThan(body.indexOf('discord-status'));
     expect(filledControls(body)).toBe(0);
@@ -432,7 +432,7 @@ describe('saved, pasted, with connect on', () => {
     const body = html(meWith(true, connectOn(discordBlock())));
     expect(body).toMatch(/<button[^>]*data-testid="discord-replace"/);
     expect(text(body)).toContain(notificationsCopy.replace);
-    expect(text(body)).not.toContain(notificationsCopy.reconnectNote);
+    expect(text(body)).not.toContain(notificationsCopy.reconnectAside);
   });
 });
 

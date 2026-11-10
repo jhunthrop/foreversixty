@@ -126,7 +126,7 @@ func (s *Service) bisCardMessage(c bisCard) Message {
 
 func (s *Service) bisCardEmbed(c bisCard) notify.Embed {
 	p := c.Picks
-	e := notify.Embed{Author: guideCopy.BisAuthor, Description: c.Lead, Color: goldColor, Title: guideCopy.BisTitleNone}
+	e := notify.Embed{Author: guideCopy.BisAuthor, Description: c.Lead, Color: accentColor, Title: guideCopy.BisTitleNone}
 	if p.Class == "" {
 		return e
 	}

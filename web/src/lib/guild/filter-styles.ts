@@ -3,5 +3,5 @@
 // Tailwind utilities only (no scoped <style>): these tabs mount after an async fetch, so a scoped
 // block's CSS is dropped from the SSR-critical-CSS inlining pass.
 export const FILTER_BTN =
-  'border-line h-11 rounded-control border px-3 text-[12px] font-semibold text-text lg:h-8';
-export const FILTER_BTN_ON = 'border-gold text-gold bg-gold/8';
+  'border-line h-11 rounded-field border px-3 text-[12px] font-semibold text-text lg:h-8';
+export const FILTER_BTN_ON = 'border-selected-mark text-strong bg-selected';

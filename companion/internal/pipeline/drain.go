@@ -306,6 +306,32 @@ type Status struct {
 	// character once the addon has named it, else the name the log
 	// gave. It is the last one seen when no report is open.
 	Detected string `json:"detected,omitempty"`
+	// Held is the item at the head of the queue once an upload of it has
+	// failed: everything behind it waits until it goes. Nil while the
+	// head has never failed.
+	Held *Held `json:"held,omitempty"`
+}
+
+// Held is what holds the queue: the kind of item, the fight's number in
+// its report (zero for anything but a fight) and how many tries failed.
+// The error's text stays in companion.log; the window never shows it.
+type Held struct {
+	Kind     string `json:"kind"`
+	Fight    int    `json:"fight,omitempty"`
+	Attempts int    `json:"attempts"`
+}
+
+// heldBy is the queue's head as a Held, or nil while it has never failed.
+func heldBy(q *queue.Queue) *Held {
+	it, err := q.Peek()
+	if err != nil || it.Attempts == 0 {
+		return nil
+	}
+	h := &Held{Kind: string(it.Kind), Attempts: it.Attempts}
+	if it.Kind == queue.Fight {
+		h.Fight = it.FightIndex + 1
+	}
+	return h
 }
 
 // Status reports what the pipeline is doing right now.
@@ -317,6 +343,7 @@ func (p *Pipeline) Status() Status {
 	if n, err := p.o.Queue.Waiting(queue.Fight); err == nil {
 		s.QueuedFights = n
 	}
+	s.Held = heldBy(p.o.Queue)
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	s.Detected = p.lastDetected

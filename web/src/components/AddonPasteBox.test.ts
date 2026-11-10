@@ -18,7 +18,7 @@ describe('AddonPasteBox', () => {
 
   it('draws no card surface (the flat system)', () => {
     const { body } = render(AddonPasteBox, { props: { signedIn: true } });
-    expect(body).not.toMatch(/bg-raised|rounded-panel|border-line-warm/);
+    expect(body).not.toMatch(/bg-raised|rounded-plate/);
     // Before any decode the status block (and its skeleton) is absent.
     expect(body).not.toContain('addon-paste-status-skeleton');
   });

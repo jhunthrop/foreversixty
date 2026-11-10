@@ -1,9 +1,10 @@
 // companion/internal/shell/chrome.go
 // The window chrome's numbers, kept apart from the Win32 calls that use
 // them so a test on any platform can pin them to the design tokens in
-// ui/styles.css. The title bar is the header's colour, so the header
-// reads as one band with it; the page behind the webview is the page's
-// colour, so nothing flashes white while the webview starts.
+// ui/tokens.css (generated from design/tokens/tokens.json). The title bar
+// is the site's nav-bar teal, the colour the window's painted band opens
+// with, so the caption reads as one band with it; the page behind the
+// webview is the brown ground, so nothing flashes white while it starts.
 package shell
 
 // rect is a screen rectangle in pixels, as Win32 has it.
@@ -14,17 +15,18 @@ func colorRef(r, g, b uint8) uint32 {
 	return uint32(b)<<16 | uint32(g)<<8 | uint32(r)
 }
 
-// The tokens, as ui/styles.css has them (--header, --nav, --line, --bg).
+// The tokens, as ui/tokens.css has them (--color-nav-bar, --color-cream,
+// --color-foot, --color-ground).
 var (
-	captionColor = colorRef(0x0b, 0x10, 0x18) // #0b1018
-	captionText  = colorRef(0xb9, 0xb3, 0xa4) // #b9b3a4
-	borderColor  = colorRef(0x26, 0x2e, 0x40) // #262e40
-	pageColor    = colorRef(0x07, 0x09, 0x0d) // #07090d
+	captionColor = colorRef(0x0b, 0x2f, 0x3b) // #0b2f3b
+	captionText  = colorRef(0xf3, 0xee, 0xe2) // #f3eee2
+	borderColor  = colorRef(0x17, 0x0e, 0x09) // #170e09
+	pageColor    = colorRef(0x67, 0x56, 0x3a) // #67563a
 )
 
 // pageARGB is the page colour as the webview's own default background
 // wants it, 0xAARRGGBB as hex digits (WEBVIEW2_DEFAULT_BACKGROUND_COLOR).
-const pageARGB = "FF07090D"
+const pageARGB = "FF67563A"
 
 // MinWidth and MinHeight are the smallest the window may be dragged to;
 // the page is laid out for 560 wide and up.

@@ -548,7 +548,7 @@ test.describe('a connected channel (connect lane)', () => {
     const reconnect = page.getByTestId('discord-replace');
     await expect(reconnect).toContainText(copy.reconnect);
     await expect(reconnect).toHaveAttribute('href', CONNECT_HREF);
-    await expect(page.getByTestId('discord-replace-note')).toHaveText(copy.reconnectNote);
+    await expect(page.getByTestId('discord-replace-note')).toHaveText(copy.reconnectAside);
     const html = await page.content();
     expect(html).not.toContain(WEBHOOK_TOKEN);
     expect(html).not.toContain(WEBHOOK_ID);

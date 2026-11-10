@@ -56,6 +56,6 @@ describe('ReportRow', () => {
 
   it('draws no surface of its own: the row is the ui Row', () => {
     expect(html({})).toContain('ui-row');
-    expect(html({})).not.toMatch(/rounded-panel|bg-raised|card-surface/);
+    expect(html({})).not.toMatch(/rounded-plate|bg-raised|card-surface/);
   });
 });

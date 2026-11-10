@@ -1,7 +1,7 @@
 <!-- web/src/components/ui/Toc.svelte -->
 <!-- The contents rail of a reading page (guides spec 2026-11-08 §3A): a label, then one link per
      section, 14/18 600 in --color-nav on 32 px rows with a 2 px --color-line-soft bar; the current
-     one gold with a gold bar (`aria-current="location"`, kept by the page's observer). -->
+     one white over the accent bar, the selected state (`aria-current="location"`, kept by the page's observer). -->
 <script lang="ts">
   let {
     label,
@@ -58,7 +58,7 @@
     outline-offset: 2px;
   }
   .ui-toc a[aria-current] {
-    color: var(--color-gold);
-    box-shadow: inset 2px 0 0 var(--color-gold);
+    color: var(--color-strong);
+    box-shadow: inset 2px 0 0 var(--color-selected-mark);
   }
 </style>

@@ -1,6 +1,8 @@
 <!-- web/src/components/ui/TalentTrees.svelte -->
 <!-- A build's three talent trees side by side at the compact cell (guides spec 2026-11-08 §3A):
-     24 px cells (28 from 1760, 22 below 768), 4 px gaps, the three under 400 px wide. The
+     the cell sizes itself from the width it is given (a container query: the three trees fill it,
+     from 18 to 32 px a cell), so the trees never run out of a lane or a plate column at any page
+     width; under the 18 px floor the trees stack. The
      planner's read-only semantics: a grid per tree, a row per tier, a gridcell per column, a group
      per talent; a learned talent carries its rank badge and a gold (full) or green (partial) ring,
      an unlearned one is greyed. Each talent opens the game tooltip (`data-game-tip`) when the
@@ -46,44 +48,64 @@
     cell.rank === 0 ? 'off' : cell.rank >= cell.maxRank ? 'full' : 'part';
 </script>
 
-<div class="ui-trees" data-testid={testid}>
-  {#each trees as tree (tree.name)}
-    <div class="ui-tree">
-      <h3>{tree.name} <b class="tabular-nums">{tree.points}</b></h3>
-      <div class="ui-tree-grid" role="grid" aria-label={`${tree.name} talents`}>
-        {#each { length: tiers }, tier (tier)}
-          <div role="row">
-            {#each { length: columns }, column (column)}
-              {@const cell = cellAt(tree, tier, column)}
-              <span role="gridcell"
-                >{#if cell}<span
-                    class="ui-tree-cell"
-                    data-state={state(cell)}
-                    role="group"
-                    aria-label={`${cell.name} ${cell.rank}/${cell.maxRank}`}
-                    tabindex={cell.tipKey ? 0 : undefined}
-                    data-game-tip={cell.tipKey}
-                    ><img
-                      src={dataUrl(build, `icons/${cell.icon}.webp`)}
-                      alt=""
-                      width="24"
-                      height="24"
-                    />{#if cell.rank > 0}<b>{cell.rank}/{cell.maxRank}</b>{/if}</span
-                  >{/if}</span
-              >
-            {/each}
-          </div>
-        {/each}
+<div class="ui-trees-box" style:--cols={columns}>
+  <div class="ui-trees" data-testid={testid}>
+    {#each trees as tree (tree.name)}
+      <div class="ui-tree">
+        <h3>{tree.name} <b class="tabular-nums">{tree.points}</b></h3>
+        <div class="ui-tree-grid" role="grid" aria-label={`${tree.name} talents`}>
+          {#each { length: tiers }, tier (tier)}
+            <div role="row">
+              {#each { length: columns }, column (column)}
+                {@const cell = cellAt(tree, tier, column)}
+                <span role="gridcell"
+                  >{#if cell}<span
+                      class="ui-tree-cell"
+                      data-state={state(cell)}
+                      role="group"
+                      aria-label={`${cell.name} ${cell.rank}/${cell.maxRank}`}
+                      tabindex={cell.tipKey ? 0 : undefined}
+                      data-game-tip={cell.tipKey}
+                      ><img
+                        src={dataUrl(build, `icons/${cell.icon}.webp`)}
+                        alt=""
+                        width="24"
+                        height="24"
+                      />{#if cell.rank > 0}<b>{cell.rank}/{cell.maxRank}</b>{/if}</span
+                    >{/if}</span
+                >
+              {/each}
+            </div>
+          {/each}
+        </div>
       </div>
-    </div>
-  {/each}
+    {/each}
+  </div>
 </div>
 
 <style>
+  /* The trees fill their box: three trees of --cols cells, --cell-gap between cells and
+     --tree-gap between trees, the cell what is left over, kept between the floor and the cap. */
+  .ui-trees-box {
+    --cell-gap: 4px;
+    --tree-gap: 16px;
+    --cell-min: 18px;
+    --cell-max: 32px;
+    container-type: inline-size;
+  }
   .ui-trees {
+    --cell: clamp(
+      var(--cell-min),
+      calc(
+        (100cqw - 2 * var(--tree-gap) - 3 * (var(--cols) - 1) * var(--cell-gap)) / (3 * var(--cols)) - 0.5px
+      ),
+      var(--cell-max)
+    );
+    /* Each tree is as wide as its cells, never its name: a long name ("Marksmanship 20") may run
+       into the gap, and the trees still fit the box. */
     display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(3, max-content);
+    gap: var(--tree-gap);
+    grid-template-columns: repeat(3, calc(var(--cols) * var(--cell) + (var(--cols) - 1) * var(--cell-gap)));
   }
   .ui-tree h3 {
     display: flex;
@@ -102,8 +124,8 @@
   }
   .ui-tree-grid {
     display: grid;
-    grid-template-columns: repeat(4, 24px);
-    gap: 4px;
+    grid-template-columns: repeat(var(--cols), var(--cell));
+    gap: var(--cell-gap);
   }
   .ui-tree-grid > [role='row'] {
     display: contents;
@@ -111,8 +133,8 @@
   .ui-tree-cell {
     position: relative;
     display: block;
-    width: 24px;
-    height: 24px;
+    width: var(--cell);
+    height: var(--cell);
     cursor: pointer;
   }
   .ui-tree-cell img {
@@ -157,26 +179,15 @@
       min-height: 42px;
       align-content: flex-end;
     }
-    .ui-trees {
-      grid-template-columns: repeat(3, minmax(0, max-content));
-      gap: 10px;
-    }
-    .ui-tree-grid {
-      grid-template-columns: repeat(4, 22px);
-      gap: 3px;
-    }
-    .ui-tree-cell {
-      width: 22px;
-      height: 22px;
+    .ui-trees-box {
+      --cell-gap: 3px;
+      --tree-gap: 10px;
     }
   }
-  @media (min-width: 1760px) {
-    .ui-tree-grid {
-      grid-template-columns: repeat(4, 28px);
-    }
-    .ui-tree-cell {
-      width: 28px;
-      height: 28px;
+  /* Under the floor (three 18 px trees no longer fit) the trees stack, one under the other. */
+  @container (max-width: 270px) {
+    .ui-trees {
+      grid-template-columns: calc(var(--cols) * var(--cell) + (var(--cols) - 1) * var(--cell-gap));
     }
   }
 </style>

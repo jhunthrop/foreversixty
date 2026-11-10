@@ -29,7 +29,7 @@
   });
 </script>
 
-<div class="flex flex-col items-start gap-3 px-5 pt-4 pb-5" data-testid="login">
+<div class="flex flex-col items-start gap-3 px-5 pt-4 pb-1" data-testid="login">
   {#if me !== null}
     <p class="text-[15px] leading-6">{accountSignInCopy.signedInAs(displayName)}</p>
     <Button tone="primary" href="/account" testid="login-go-account">{accountSignInCopy.goAccount}</Button>
@@ -41,7 +41,7 @@
     <p class="text-muted text-[13px] leading-5">{accountSignInCopy.privacy}</p>
   {/if}
   <!-- The error line's height, reserved so the session landing never shoves the page. -->
-  <p class="min-h-5 text-[14px] leading-5" role="status">
+  <p class="-mt-3 min-h-5 text-[14px] leading-5" role="status">
     {#if session.status === 'failed'}{ACCOUNT_FAILED}{/if}
   </p>
 </div>

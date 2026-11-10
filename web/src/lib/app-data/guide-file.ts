@@ -312,7 +312,7 @@ export function buildGuideFile(
     icon: entry.icon,
     title: data.title,
     updated: isoDay(pageUpdatedAt(data.updated, rankedBisFile(build, spec)?.generated_at)),
-    summary: overview.summary !== '' ? overview.summary : (data.description ?? ''),
+    summary: data.description ?? '',
     role_line: roleLineOf(raid),
     recommended_races: data.recommendedRaces.flatMap((slug) => {
       const row = raceRows.find((candidate) => candidate.slug === slug);

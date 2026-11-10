@@ -7,6 +7,7 @@
   import Icon from '../ui/Icon.svelte';
   import { ICON_CHEVRON_RIGHT } from '../../lib/ui/ui-icons';
   import type { Readout } from '../../lib/character/history-chart';
+  import { ROW_HOVER } from '../../lib/ui/row';
 
   let {
     readout,
@@ -32,8 +33,8 @@
   /** A step is an icon button with no box (the flat system): the row hover ground and gold glyph on
    *  hover, a gold focus ring, a muted glyph at half strength when there is nothing further. */
   const STEP =
-    'rounded-control inline-flex size-11 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
-  const ENABLED = 'text-text hover:bg-row-hover hover:text-gold-hover active:text-gold-hover';
+    'rounded-field inline-flex size-11 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
+  const ENABLED = `text-text ${ROW_HOVER} hover:text-gold-hover active:text-gold-hover`;
   const DISABLED = 'text-muted/50 cursor-default';
 </script>
 

@@ -16,6 +16,7 @@ import {
 } from './support/guild-recruit';
 import { GUILD_ID } from '../../src/fixtures/guild/mock-guild';
 import { buildMockApplication } from '../../src/fixtures/guild/mock-recruit';
+import { openRosterAccounts } from './support/guild-roster-accounts';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
@@ -233,7 +234,12 @@ test.describe('the member profile', () => {
       raidGuildTools: true,
       claimHolder: true,
     });
-    await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-roster-tab');
+    await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-raid-roster');
+    // The raid roster's name links too; the account table's carry the testid.
+    await expect(
+      page.getByTestId('guild-raid-roster').getByRole('link', { name: 'Zulmara' }),
+    ).toHaveAttribute('href', /\/members\/u%3A\d+$/);
+    await openRosterAccounts(page);
     const link = page.locator('a[data-testid="guild-roster-name"]', { hasText: 'Zulmara' });
     await expect(link).toHaveAttribute('href', /\/members\/u%3A\d+$/);
   });

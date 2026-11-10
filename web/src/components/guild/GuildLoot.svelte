@@ -38,6 +38,9 @@
   import LootCandidates from './loot/LootCandidates.svelte';
   import LootDrops from './loot/LootDrops.svelte';
   import MemberFlag from './loot/MemberFlag.svelte';
+  import FairnessTable from './dense/FairnessTable.svelte';
+  import type { GuildRosterRow } from '../../lib/guild/api';
+  import { fetchRecentAttendance, type GuildRecentAttendance } from '../../lib/guild/overview-api';
 
   let {
     guildId,
@@ -49,6 +52,7 @@
     timeZone,
     onRefused,
     deps,
+    roster = [],
   }: {
     guildId: number;
     officer: boolean;
@@ -64,6 +68,8 @@
     onRefused: (gate: 'plan' | 'raid-guild') => void;
     /** Tests and captures inject the API. */
     deps?: LootCouncilDeps;
+    /** The guild's roster (the home's), for the officers' fairness table. */
+    roster?: readonly GuildRosterRow[];
   } = $props();
 
   const build = activeBuild.build;
@@ -76,6 +82,16 @@
   const council = new LootCouncilState({ guildId, officer, onRefused: (gate) => onRefused(gate), deps });
   $effect(() => {
     void council.load();
+  });
+
+  /** The fairness table's window: the tier's raid nights. */
+  const FAIRNESS_NIGHTS = 12;
+  let grid = $state<GuildRecentAttendance | null>(null);
+  $effect(() => {
+    if (!officer) return;
+    void fetchRecentAttendance(guildId, FAIRNESS_NIGHTS, true)
+      .then((page) => (grid = page))
+      .catch(() => (grid = null));
   });
 
   const canAct = $derived(officerTools && raidGuildTools);
@@ -152,6 +168,9 @@
         onSelect={pick}
         onOpen={council.open}
       />
+      {#if officer && grid !== null && council.nights !== null && roster.length > 0}
+        <FairnessTable {roster} loot={council.nights} {grid} {timeZone} />
+      {/if}
       {#snippet rail()}
         <div id="guild-loot-rail" class="flex scroll-mt-[96px] flex-col gap-[22px]">
           {#if council.selected === null}

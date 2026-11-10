@@ -42,8 +42,6 @@ sources:
 
 ## Overview
 
-Two DoTs on the boss, Wrath to bank Eclipse charges and fast Starfires to spend them, all from a form that gives your group crit.
-
 ### Strengths
 
 - Moonkin Form gives everyone within 45 yards 3% crit, on spells and attacks alike

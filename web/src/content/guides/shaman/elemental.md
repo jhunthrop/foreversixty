@@ -27,8 +27,6 @@ sources:
 
 ## Overview
 
-Flame Shock kept ticking, Lightning Bolt for almost every cast, Lightning Mastery with your cooldowns, and Chain Lightning on more than one target.
-
 ### Strengths
 
 - Call of Thunder and Elemental Fury make your Lightning Bolts crit often and crit for double

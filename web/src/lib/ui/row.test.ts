@@ -49,9 +49,12 @@ describe('row bands (row-band sweep 2026-11-01)', () => {
     // Rounded only while lit: an unlit row's hairline runs straight to its ends.
     expect(GLOBAL_CSS).toMatch(/\.row-band \{\s*transition:/);
     expect(GLOBAL_CSS).toMatch(
-      /:is\(\.row-band-own, \.row-band-mark, \.row-band-target:target, \.row-band-hover:active\) \{\s*border-radius: var\(--radius-control\);/,
+      /:is\(\.row-band-own, \.row-band-mark, \.row-band-target:target, \.row-band-hover:active\) \{\s*border-radius: var\(--radius-field\);/,
     );
-    expect(GLOBAL_CSS).toMatch(/\.row-band-own \{\s*background-color: var\(--row-hover\);/);
+    // The own, marked and addressed rows are the one selected state (accent tint and bar).
+    expect(GLOBAL_CSS).toMatch(
+      /\.row-band-own,\s*\.row-band-mark,\s*\.row-band-target:target \{\s*background-color: var\(--color-selected\);\s*box-shadow: var\(--shadow-selected-bar\);/,
+    );
     expect(GLOBAL_CSS).toContain(
       '.row-rule:has(+ :is(.row-band-own, .row-band-mark, .row-band-target:target',
     );

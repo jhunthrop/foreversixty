@@ -175,46 +175,39 @@ func TestCreateRaidValidation(t *testing.T) {
 	})
 }
 
-// TestOfficerRaidWritesNeedThePlan: members are refused first (forbidden), an officer without
-// the plan gets guild_plan_required on every write, and still signs up their own character.
-func TestOfficerRaidWritesNeedThePlan(t *testing.T) {
-	const planMessage = "Planning and running raids are part of the guild plan."
-	w := newRaidWorld(t, true)
+// TestRaidCalendarWritesAreOfficerOnlyAndFree: members are refused (forbidden); an officer of a
+// guild with no plan writes the calendar and answers for a member (owner ruling 2026-11-09: the
+// bot is free, and its raid posts need raids).
+func TestRaidCalendarWritesAreOfficerOnlyAndFree(t *testing.T) {
+	w := newRaidWorld(t, false)
 	raid := w.createRaid(t)
-	if _, err := w.h.pool.Exec(t.Context(), `delete from entitlements where guild_id = $1`, w.gid); err != nil {
-		t.Fatal(err)
+	w.as(w.officer)
+	if res := w.putSignup(raid.ID, officerKey, `{"state":"in"}`); res.StatusCode != http.StatusOK {
+		t.Fatalf("own PUT = %d: %s", res.StatusCode, readBody(res))
 	}
-	patch := raidBody(futureStart(), 0)
-	writes := []struct{ method, path, body string }{
-		{http.MethodPost, w.path("/raids"), raidBody(futureStart(), 0)},
-		{http.MethodPatch, w.path("/raids/%d", raid.ID), patch},
-		{http.MethodPost, w.path("/raids/%d/lock", raid.ID), ""},
-		{http.MethodPost, w.path("/raids/%d/unlock", raid.ID), ""},
-		{http.MethodPost, w.path("/raids/%d/cancel", raid.ID), ""},
+	if res := w.putSignup(raid.ID, member2Key, `{"state":"in"}`); res.StatusCode != http.StatusOK {
+		t.Fatalf("for a member = %d: %s", res.StatusCode, readBody(res))
+	}
+	writes := []struct {
+		method, path, body string
+		want               int
+	}{
+		{http.MethodPost, w.path("/raids"), raidBody(futureStart(), 0), http.StatusCreated},
+		{http.MethodPatch, w.path("/raids/%d", raid.ID), raidBody(futureStart(), 0), http.StatusOK},
+		{http.MethodPost, w.path("/raids/%d/lock", raid.ID), "", http.StatusOK},
+		{http.MethodPost, w.path("/raids/%d/unlock", raid.ID), "", http.StatusOK},
+		{http.MethodPost, w.path("/raids/%d/cancel", raid.ID), "", http.StatusOK},
 	}
 	for _, wr := range writes {
 		t.Run(wr.method+" "+wr.path, func(t *testing.T) {
 			w.as(w.member)
 			expectError(t, w.h.do(wr.method, wr.path, wr.body), http.StatusForbidden, "forbidden")
 			w.as(w.officer)
-			e := expectError(t, w.h.do(wr.method, wr.path, wr.body), http.StatusForbidden, "guild_plan_required")
-			if e.Message != planMessage {
-				t.Fatalf("message = %q", e.Message)
+			if res := w.h.do(wr.method, wr.path, wr.body); res.StatusCode != wr.want {
+				t.Fatalf("officer, no plan = %d: %s", res.StatusCode, readBody(res))
 			}
 		})
 	}
-	t.Run("own sign-up still saves", func(t *testing.T) {
-		w.as(w.officer)
-		res := w.putSignup(raid.ID, officerKey, `{"state":"in"}`)
-		if res.StatusCode != http.StatusOK {
-			t.Fatalf("own PUT = %d: %s", res.StatusCode, readBody(res))
-		}
-		res.Body.Close()
-	})
-	t.Run("someone else's sign-up needs the plan", func(t *testing.T) {
-		w.as(w.officer)
-		expectError(t, w.putSignup(raid.ID, member2Key, `{"state":"in"}`), http.StatusForbidden, "guild_plan_required")
-	})
 }
 
 func TestRaidStatusTransitions(t *testing.T) {

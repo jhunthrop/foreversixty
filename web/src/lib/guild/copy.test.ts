@@ -8,9 +8,7 @@ import { guildClaimCopy, guildConsentCopy, guildGateCopy, guildJoinCopy, guildSe
 
 describe('guildClaimCopy', () => {
   it('says what claiming gets an officer of an unclaimed guild', () => {
-    expect(guildClaimCopy.unclaimedForOfficer).toBe(
-      'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
-    );
+    expect(guildClaimCopy.unclaimedForOfficer).toBe('Nobody has claimed this guild.');
   });
 
   it('asks before claiming, without repeating the rules card below it', () => {
@@ -21,12 +19,6 @@ describe('guildClaimCopy', () => {
   it('says what the claimant holds and where to go next', () => {
     expect(guildClaimCopy.youHold('Lifecycle Test')).toBe('You hold Lifecycle Test.');
     expect(guildClaimCopy.nextRoster).toBe('Approve your officers and members');
-    expect(guildClaimCopy.nextInvite).toBe('Make an invite link');
-    expect(guildClaimCopy.nextPlan).toBe('Plan an event');
-    expect(guildClaimCopy.nextDiscord).toBe('Add the Discord bot');
-    expect(guildClaimCopy.nextGated).toBe(
-      'Events and the Discord bot are part of the Guild and Raid guild plans.',
-    );
   });
 
   it('asks before releasing', () => {
@@ -86,9 +78,7 @@ describe('guildSettingsCopy invite block', () => {
     expect(guildSettingsCopy.rotateConfirmLine).toBe(
       'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
     );
-    expect(guildSettingsCopy.tokenShownOnce).toBe(
-      'Copy it now. For safety we keep only a fingerprint, so it cannot be shown again after you leave this page.',
-    );
+    expect(guildSettingsCopy.tokenShownOnce).toBe('Copy it now. It cannot be shown again.');
     expect(guildSettingsCopy.copyButton).toBe('Copy link');
     expect(guildSettingsCopy.copied).toBe('Copied');
     expect(guildSettingsCopy.copyFailed).toBe('Could not copy. Select the link and copy it.');
@@ -129,9 +119,8 @@ describe('guildGateCopy', () => {
     const part = (label: string, index: number): string =>
       specString(gating, '## 5. Copy, verbatim', label, index);
     expect(guildGateCopy.lead.raids).toBe(part('Gate part 1', 0));
-    expect(guildGateCopy.lead.discord).toBe(part('Gate part 1', 1));
-    expect(guildGateCopy.lead.loot).toBe(part('Gate part 1', 2));
-    expect(guildGateCopy.lead.readiness).toBe(part('Gate part 1', 3));
+    expect(guildGateCopy.lead.loot).toBe(part('Gate part 1', 1));
+    expect(guildGateCopy.lead.readiness).toBe(part('Gate part 1', 2));
     expect(guildGateCopy.startTrial).toBe(part('Gate part 2', 0));
     expect(guildGateCopy.subscribe).toBe(part('Gate part 2', 1));
     expect(guildGateCopy.moveToRaidGuild).toBe(part('Gate part 2', 2));

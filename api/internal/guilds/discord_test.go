@@ -161,24 +161,22 @@ func TestRaidViewCountsAnActiveBotAsConnected(t *testing.T) {
 	}
 }
 
-func TestGuildStandingFollowsRankPlanAndFreeze(t *testing.T) {
+// The standing reads no plan: the Discord routes are free (owner ruling 2026-11-09).
+func TestGuildStandingFollowsRankAndFreeze(t *testing.T) {
 	ctx := context.Background()
 	w := newRaidWorld(t, false)
 	standing, found, err := w.h.svc.GuildStanding(ctx, w.gid, w.officer)
-	if err != nil || !found || !standing.Officer || standing.Plan || standing.Frozen ||
+	if err != nil || !found || !standing.Officer || standing.Frozen ||
 		standing.Name != "Olympus" || standing.Path != "/guild/us/hardcore/olympus" {
 		t.Fatalf("officer without plan = %+v found=%v err=%v", standing, found, err)
-	}
-	if _, err := w.h.pool.Exec(ctx, scopedGrantSQL, w.gid); err != nil {
-		t.Fatal(err)
 	}
 	if _, err := w.h.pool.Exec(ctx, `update guilds set claim_contested_at = now() where id = $1`, w.gid); err != nil {
 		t.Fatal(err)
 	}
-	if standing, _, _ := w.h.svc.GuildStanding(ctx, w.gid, w.officer); !standing.Plan || !standing.Frozen {
-		t.Fatalf("officer with plan, frozen = %+v", standing)
+	if standing, _, _ := w.h.svc.GuildStanding(ctx, w.gid, w.officer); !standing.Officer || !standing.Frozen {
+		t.Fatalf("officer, frozen = %+v", standing)
 	}
-	if standing, _, _ := w.h.svc.GuildStanding(ctx, w.gid, w.member); standing.Officer || standing.Plan {
+	if standing, _, _ := w.h.svc.GuildStanding(ctx, w.gid, w.member); standing.Officer {
 		t.Fatalf("member = %+v", standing)
 	}
 	if _, found, err := w.h.svc.GuildStanding(ctx, w.gid+999, w.officer); found || err != nil {

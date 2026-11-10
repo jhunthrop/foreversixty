@@ -81,8 +81,8 @@ export const notificationsCopy = {
   test: 'Send test message',
   testing: 'Sending…',
   testAndSwitchOn: 'Test and switch on',
-  remove: 'Unlink Discord',
-  removing: 'Unlinking…',
+  remove: 'Remove channel',
+  removing: 'Removing…',
   removeQuestionPasted:
     'Remove this webhook? Posts stop and we forget the URL. It stays in Discord until you delete it there.',
   removeQuestionConnected: 'Remove this connection? Posts stop and we delete its webhook from Discord.',
@@ -96,6 +96,8 @@ export const notificationsCopy = {
   connectInstead: 'Connect a Discord channel instead',
   reconnect: 'Connect a different channel',
   reconnectNote: 'Connecting again replaces this channel and removes its webhook from Discord.',
+  /** The account's saved view: the note on the link's own line (a quiet aside, not a paragraph). */
+  reconnectAside: 'The old channel stops getting posts.',
   returnConnected: 'Connected. Send a test message to see it in your channel.',
   returnDenied: 'Cancelled in Discord. Nothing was connected.',
   returnFailed:

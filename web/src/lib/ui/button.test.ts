@@ -6,10 +6,11 @@ import {
   BUTTON_PRIMARY,
   BUTTON_SECONDARY,
   BUTTON_SM,
+  BUTTON_SUBSCRIBE,
   button,
 } from './button';
 
-const ALL = [BUTTON_PRIMARY, BUTTON_SECONDARY, BUTTON_GHOST, BUTTON_DANGER];
+const ALL = [BUTTON_PRIMARY, BUTTON_SECONDARY, BUTTON_GHOST, BUTTON_DANGER, BUTTON_SUBSCRIBE];
 
 describe('button recipes', () => {
   it.each(ALL)(
@@ -46,6 +47,13 @@ describe('button recipes', () => {
     expect(BUTTON_GHOST).toContain('hover:text-gold-hover');
   });
 
+  it("subscribe is Blizzard's flat teal Subscribe: teal-edge fill and border, white label", () => {
+    expect(BUTTON_SUBSCRIBE).toContain('bg-teal-edge');
+    expect(BUTTON_SUBSCRIBE).toContain('border-teal-edge');
+    expect(BUTTON_SUBSCRIBE).toContain('text-strong');
+    expect(button('subscribe')).toBe(`${BUTTON_SUBSCRIBE} ${BUTTON_MD}`);
+  });
+
   it('danger is wipe ink on a 40 % wipe hairline, never filled; hover takes the full border', () => {
     expect(BUTTON_DANGER).toContain('text-wipe');
     expect(BUTTON_DANGER).toContain('bg-transparent');
@@ -58,8 +66,11 @@ describe('button recipes', () => {
     for (const recipe of ALL) expect(recipe).not.toMatch(/linear-gradient|glow|shadow-\[/);
   });
 
-  it('a pressed toggle takes the white edge, on every tone', () => {
-    for (const recipe of ALL) expect(recipe).toContain('aria-pressed:border-strong aria-pressed:ring-1');
+  it('a pressed toggle takes the selected accent edge, on every tone', () => {
+    for (const recipe of ALL)
+      expect(recipe).toContain(
+        'aria-pressed:border-selected-mark aria-pressed:ring-1 aria-pressed:ring-selected-mark',
+      );
   });
 
   it('hover applies only where a pointer can hover', () => {

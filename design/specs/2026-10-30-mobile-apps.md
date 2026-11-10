@@ -1235,7 +1235,7 @@ Keys live in one string catalogue per app: `Localizable.xcstrings` on iOS and `s
 | `officer.menu.head` | `{name} · {state} as {role}` | |
 | `officer.move.in` / `.bench` / `.remove` / `.addIn` / `.addBench` | `Move to In` / `Move to Bench` / `Remove from the raid` / `Add as In` / `Add as Bench` | |
 | `officer.add` | `Add` | |
-| `officer.gate` | `Planning and running raids are part of the guild plan.` | API `refusal.RaidPlanRequired` |
+| `officer.gate` | `Comp targets, Discord pings, assignments and log matching are part of the guild plan.` | API `refusal.RaidPlanRequired` (owner ruling 2026-11-09: the calendar is free) |
 | `night.title` | `Your raid night` | |
 | `night.meta` | `{zone} · {weekday} {date} · {guild}` | |
 | `night.kill` / `.wipes` / `.best` | `kill` / `kills`, `wipe` / `wipes`, `new best` / `new bests` | |

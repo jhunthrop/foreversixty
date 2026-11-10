@@ -30,9 +30,7 @@
     changing,
     focusSelect,
     onSaving,
-    readOnly,
     frozen,
-    gateId,
     confirming,
     busy,
     status,
@@ -55,9 +53,7 @@
     focusSelect: boolean;
     /** The picker's save in flight: Escape must not unmount it and lose a refusal. */
     onSaving: (saving: boolean) => void;
-    readOnly: boolean;
     frozen: boolean;
-    gateId: string | undefined;
     confirming: boolean;
     busy: 'test' | 'remove' | null;
     status: DiscordStatus | null;
@@ -72,7 +68,7 @@
     onStuck: () => void;
   } = $props();
 
-  const gated = $derived(readOnly || frozen);
+  const gated = $derived(frozen);
   const channelName = $derived(bot.channel_name ?? '');
   const openUrl = $derived(openInDiscordUrl({ guild_id: bot.server_id, channel_id: bot.channel_id ?? '' }));
   const warning = $derived(botFailureWarning(bot));
@@ -116,7 +112,6 @@
       <button
         class="{button(gated ? 'secondary' : 'primary')} {dimmed}"
         disabled={off || gated}
-        aria-describedby={gateId}
         onclick={onChange}
         data-testid="bot-choose-channel"
       >
@@ -150,7 +145,6 @@
       testid="bot-add"
       href={installHref}
       {gated}
-      describedBy={gateId}
       {onStuck}
     />
     <div id="guild-discord-status" tabindex="-1" class="outline-none"><DiscordStatusLine {status} /></div>
@@ -183,9 +177,6 @@
     {guildBotCopy.installed.linkedMembers(bot.linked_members, bot.members)}
   </p>
   <div class="flex flex-col">
-    {#if readOnly}
-      <p class="text-muted mb-3 text-[13px]" data-testid="bot-read-only">{guildBotCopy.installed.readOnly}</p>
-    {/if}
     {#if confirming}
       <GuildBotRemoveQuestion
         server={bot.server_name}
@@ -199,21 +190,14 @@
       <div class="flex flex-wrap gap-3">
         <button
           class="{OUTLINE} {dimmed}"
-          disabled={off || readOnly}
-          aria-describedby={gateId}
+          disabled={off}
           aria-busy={busy === 'test'}
           onclick={onTest}
           data-testid="bot-test"
         >
           {busy === 'test' ? guildBotCopy.installed.testing : guildBotCopy.installed.test}
         </button>
-        <button
-          class="{OUTLINE} {dimmed}"
-          disabled={off || readOnly}
-          aria-describedby={gateId}
-          onclick={onChange}
-          data-testid="bot-change"
-        >
+        <button class="{OUTLINE} {dimmed}" disabled={off} onclick={onChange} data-testid="bot-change">
           {guildBotCopy.installed.change}
         </button>
         <button

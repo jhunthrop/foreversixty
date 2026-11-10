@@ -43,6 +43,8 @@ export const FRAME_SIZE = { width: spec.size[0], height: spec.size[1] } as const
 export const MEDALLION_BOX: FrameBox = spec.medallion;
 export const TITLE_BOX: FrameBox = spec.title;
 export const CENTRE_BOX: FrameBox = spec.centre;
+/** The knot border's inner gold line: the frame's own marble shows inside it, and the centre sits centred in it. */
+export const INNER_BOX: FrameBox = spec.inner;
 
 /** One slot's box; throws on a slot the frame does not have, so a typo fails loudly. */
 export function slotBox(slot: string): FrameBox {

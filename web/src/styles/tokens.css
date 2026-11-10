@@ -12,7 +12,12 @@
   --color-raised: #170e09;
   --color-hover: #241b15;
   --color-pressed: #2e241d;
-  --color-selected: rgba(255, 255, 255, 0.07);
+  /* The one selected state's ground (owner 2026-11-09, design/reviews/2026-11-09-selected): on the
+     web the accent tint under a selected row, cell or tab and the viewer's own row, with the accent
+     bar or underline (elevation.selectedBar, selectedUnderline). Keyboard focus stays the gold
+     ring, so the two never read alike. The apps keep the gold wash until the mobile lane adopts the
+     palette. */
+  --color-selected: rgba(0, 147, 178, 0.16);
   --color-line: #3d342d;
   --color-line-soft: #2c241f;
   --color-text: #e3dfd9;
@@ -22,25 +27,6 @@
   --color-gold: #ffec71;
   --color-gold-hover: #f7b90a;
   --color-night: #071d2e;
-
-  /* Direction B (polish spec 4.2), retired surface by surface as pages and screens move to the flat
-     system; nothing new reads these. */
-  --color-card-top: #170e09;
-  --color-line-warm: #4a3f34;
-  --color-line-warm-strong: #82705b;
-  --color-line-card: rgba(130, 112, 91, 0.55);
-  --color-gold-deep: #b8a24a;
-  --color-gold-light: #fff6c4;
-  --color-ember: #d66e28;
-  --row-hover: rgba(255, 255, 255, 0.05);
-  --color-row-hover: var(--row-hover);
-  /* A link row's hover band (global.css .row-band-hover): a raised ground with a hairline ring, so
-     the rounded band reads on the dark card at every width. */
-  --row-band-hover: #241b15;
-  --tile: rgba(255, 236, 113, 0.12);
-  --color-tile: var(--tile);
-  --tile-ink: #ffec71;
-  --color-tile-ink: var(--tile-ink);
 
   /* A kill and a wipe, a death on a chart, a good and a bad number: read at a glance across a whole
      report, so they get their own hues rather than borrowing gold or the class colours. Kill and
@@ -126,8 +112,10 @@
   --color-teal: #0f6064;
   /* c: the primary button's edge and Premium (their Subscribe, exactly). */
   --color-teal-edge: #408076;
-  /* s: the current tab's underline and the chart accent. */
+  /* s: the current tab's underline and the chart accent; as --color-selected-mark, every selected,
+     current and own mark (the bar, the underline, the Yours tag's edge). */
   --color-accent: #0093b2;
+  --color-selected-mark: var(--color-accent);
   /* c: the secondary button (their Upgrade Now). */
   --color-blue: #114f72;
   --color-blue-edge: #1d6a96;
@@ -157,6 +145,9 @@
   --color-tooltip-inner: #2b3040;
   /* The client tooltip yellow: descriptions, the gain line. */
   --color-tooltip-yellow: #ffd100;
+  /* A warning's ink: a slow checkout, a busy coach, a warning tag, the sim timeline's warn mark
+     (Direction B's ember, kept by the P15 sweep). */
+  --color-warn: #d66e28;
 
   /* Web: Open Sans 400, 600 and 700 (theirs exactly), body, labels and figures; 'Open Sans
      Fallback' (fonts.css) is a size-adjusted Arial. The apps keep Barlow until the mobile lane
@@ -249,19 +240,17 @@
   --radius-plate: 10px;
   --radius-field: 6px;
   --radius-icon: 3px;
-
-  /* Direction B (polish spec 4.4): cards and buttons, inputs, tiles and tags. Retired as surfaces
-     move. */
-  --radius-panel: 10px;
-  --radius-control: 6px;
-  --radius-pill: 6px;
-
   /* The client tooltip keeps the client's own corner. */
   --radius-tooltip: 4px;
 
   /* Overlays and tooltips. Native sheets use the platform's own scrim and no extra shadow. */
   --shadow-overlay: 0 12px 32px rgba(0, 0, 0, 0.6);
   --row-band-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  /* The selected mark on a row, cell or list item: a 3 px accent bar on its left edge, over the
+     selected ground. */
+  --shadow-selected-bar: inset 3px 0 0 #0093b2;
+  /* The selected mark on a tab or segment: a 3 px accent rule along its bottom edge. */
+  --shadow-selected-underline: inset 0 -3px 0 #0093b2;
 }
 
 /* The wide column (spec 3.2, owner decision 2026-11-05): a page built from the ui/ primitives sets

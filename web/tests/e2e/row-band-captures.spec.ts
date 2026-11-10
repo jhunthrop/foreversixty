@@ -63,7 +63,7 @@ const hoverFirst =
 const GUILD_TABS = ['overview', 'roster', 'raids', 'progression', 'readiness', 'loot', 'settings'] as const;
 const GUILD_TAB_FOCUS: Partial<Record<(typeof GUILD_TABS)[number], string[]>> = {
   roster: ['guild-roster-card'],
-  readiness: ['guild-readiness-rows'],
+  readiness: ['guild-readiness-board'],
 };
 
 const SHOTS: Shot[] = [
@@ -223,11 +223,11 @@ function audit(page: Page): Promise<unknown[]> {
       const cs = getComputedStyle(el);
       const tinted = cs.backgroundColor.startsWith('rgba(') && cs.backgroundColor !== 'rgba(0, 0, 0, 0)';
       const cls = typeof el.className === 'string' ? el.className : '';
-      const hover = /hover:bg-|bg-row-hover|hover:bg/.test(cls);
+      const hover = /hover:bg-|hover:bg/.test(cls);
       if (!tinted && !hover) continue;
       const r = el.getBoundingClientRect();
       if (r.width < 200 || r.height < 24 || r.height > 400) continue;
-      const card = el.parentElement?.closest('.card-surface, .card-surface-quiet, [class*="rounded-panel"]');
+      const card = el.parentElement?.closest('.card-surface, .card-surface-quiet, [class*="rounded-plate"]');
       if (!card) continue;
       const c = card.getBoundingClientRect();
       const inset = Math.round(r.left - c.left);

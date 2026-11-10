@@ -7,10 +7,13 @@ import { GuildApiError, type GuildRaidView } from './api';
 import type { NightActionHost } from './night-actions.svelte';
 import type { GuildCompRole } from './overview-api';
 import { pingLine } from './overview-role-view';
-import { raidCopy } from './raid-copy';
+import { raidCopy, raidPostCopy } from './raid-copy';
 import type { RaidPageDeps, RaidRoute } from './raid-page-types';
 
-type PlannerDeps = Pick<RaidPageDeps, 'putCompTarget' | 'deleteCompTarget' | 'pingRaid' | 'now'>;
+type PlannerDeps = Pick<
+  RaidPageDeps,
+  'putCompTarget' | 'deleteCompTarget' | 'pingRaid' | 'postRaidNow' | 'now'
+>;
 
 const PING_FAILED = 'The ping did not go out. Try again.';
 const COMP_FAILED = 'The target did not save. Try again.';
@@ -23,6 +26,9 @@ export class PlannerActions {
   pinging = $state(false);
   /** The ping's answer, or why it failed. */
   pingAnswer = $state<string | null>(null);
+  posting = $state(false);
+  /** Post now / Repost's answer, or why it failed. */
+  postAnswer = $state<string | null>(null);
 
   private readonly host: NightActionHost;
   private readonly deps: PlannerDeps;
@@ -64,6 +70,26 @@ export class PlannerActions {
       this.compBusy = null;
     }
   }
+
+  /** Posts the raid to Discord now, or reposts it as a new message; the view comes back. */
+  postNow = async (): Promise<boolean> => {
+    if (this.posting) return false;
+    const repost = this.host.raid()?.discord_post?.posted_at != null;
+    this.posting = true;
+    try {
+      this.host.applyRaid(await this.host.write((id) => this.deps.postRaidNow(id, this.raidId)));
+      this.postAnswer = repost ? raidPostCopy.reposted : raidPostCopy.posted;
+      return true;
+    } catch (thrown) {
+      this.postAnswer =
+        thrown instanceof GuildApiError && thrown.code === 'no_channel'
+          ? raidPostCopy.noChannel
+          : this.host.refusalLine(thrown, raidCopy.races.officerToolsEnded, raidPostCopy.failed);
+      return false;
+    } finally {
+      this.posting = false;
+    }
+  };
 
   /** Pings the non-signers; the raid's throttle moves to the answer's next allowed time. */
   ping = async (): Promise<boolean> => {

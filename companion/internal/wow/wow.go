@@ -44,6 +44,36 @@ func flavorRank(folder string) int {
 	return len(ForeverFlavors)
 }
 
+// FlavorInfo is the file the game writes in every flavour folder, naming
+// the client's product: "Product Flavor!STRING:0" and then the product,
+// "wowf" for the live game and "wow_classic_beta" for the beta.
+const FlavorInfo = ".flavor.info"
+
+// foreverProducts maps each Forever product to the flavour it is, so an
+// install in a renamed or custom folder is still the live game or the beta.
+var foreverProducts = map[string]string{"wowf": LiveFlavor, "wow_classic_beta": "_classic_beta_"}
+
+// otherProducts are the other games a player may have beside Forever, so
+// a refusal names the game the file says, not the folder it sits in.
+var otherProducts = map[string]string{"wow": "_retail_", "wow_anniversary": "_anniversary_", "wow_classic_era": "_classic_era_"}
+
+// productAt is the product a flavour folder's .flavor.info names, lower
+// case, or "" when the file is missing or says nothing.
+func productAt(dir string) string {
+	b, err := os.ReadFile(filepath.Join(dir, FlavorInfo))
+	if err != nil {
+		return ""
+	}
+	for _, line := range strings.Split(string(b), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.Contains(line, "!") { // the header, "Product Flavor!STRING:0"
+			continue
+		}
+		return strings.ToLower(line)
+	}
+	return ""
+}
+
 // IsForever reports whether a flavour folder name is a Forever variant.
 func IsForever(folder string) bool {
 	for _, f := range ForeverFlavors {
@@ -64,6 +94,22 @@ type Install struct {
 	// Logs is <Path>/Logs and WTF is <Path>/WTF.
 	Logs string `json:"logs"`
 	WTF  string `json:"wtf"`
+	// Product is what the folder's .flavor.info names ("wowf"), or "" where
+	// it has none. A Forever product sets Flavor to its folder, whatever
+	// the directory is called.
+	Product string `json:"product,omitempty"`
+}
+
+// Forever reports whether the install is a Forever variant: by its
+// .flavor.info product where the folder has one, by its folder name where
+// it does not. The product wins, so a folder named _forever_ that holds
+// another game is not ours.
+func (i Install) Forever() bool {
+	if i.Product != "" {
+		_, ok := foreverProducts[i.Product]
+		return ok
+	}
+	return IsForever(i.Flavor)
 }
 
 // Candidates are the paths the companion looks in before asking the
@@ -129,12 +175,19 @@ func isInstall(dir string) bool {
 }
 
 func installAt(dir string) Install {
-	return Install{
-		Path:   dir,
-		Flavor: filepath.Base(dir),
-		Logs:   filepath.Join(dir, "Logs"),
-		WTF:    filepath.Join(dir, "WTF"),
+	in := Install{
+		Path:    dir,
+		Flavor:  filepath.Base(dir),
+		Logs:    filepath.Join(dir, "Logs"),
+		WTF:     filepath.Join(dir, "WTF"),
+		Product: productAt(dir),
 	}
+	if flavor, ok := foreverProducts[in.Product]; ok {
+		in.Flavor = flavor
+	} else if flavor, ok := otherProducts[in.Product]; ok {
+		in.Flavor = flavor
+	}
+	return in
 }
 
 // Scan returns the Forever installs at or one level below root, the live
@@ -143,7 +196,7 @@ func installAt(dir string) Install {
 func Scan(root string) []Install {
 	var out []Install
 	for _, in := range scanAll(root) {
-		if IsForever(in.Flavor) {
+		if in.Forever() {
 			out = append(out, in)
 		}
 	}
@@ -218,7 +271,9 @@ func Pick(path string) ([]Install, error) {
 	if len(found) == 0 {
 		if other := scanAll(path); len(other) > 0 {
 			r := &Refusal{Folder: other[0].Flavor, Path: other[0].Path}
-			r.Known = len(other) == 1 && FlavorName(r.Folder) != r.Folder
+			// A Forever folder name that its file says is some other, unknown
+			// product is not named: "That is WoW Forever" would be wrong.
+			r.Known = len(other) == 1 && FlavorName(r.Folder) != r.Folder && !IsForever(r.Folder)
 			return nil, r
 		}
 		return nil, ErrNotAnInstall

@@ -45,8 +45,6 @@ sources:
 
 ## Overview
 
-Bestial Wrath and Rapid Fire together on the pull, Bestial Wrath again at two minutes, and Auto Shot never stops while the cat bites.
-
 ### Strengths
 
 - The pet takes 10% of your attack power and all of your crit, so every upgrade you wear makes it hit harder

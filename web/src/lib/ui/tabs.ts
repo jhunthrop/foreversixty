@@ -34,7 +34,7 @@ export const TAB_STRIP = {
     'whitespace-nowrap transition-colors duration-[120ms] motion-reduce:transition-none ' +
     'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold',
   /** Round 5's one tab look (ui/segmented.css too): the current tab white over the cyan accent rule. */
-  active: 'border-accent text-strong',
+  active: 'border-selected-mark text-strong',
   idle: 'border-transparent text-nav hover:text-strong',
   disabled: 'border-transparent text-muted cursor-not-allowed',
   suffix: 'text-muted ml-1 text-[10px] tracking-normal normal-case',

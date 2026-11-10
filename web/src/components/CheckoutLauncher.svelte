@@ -47,6 +47,7 @@
     showsGuildStep,
     type CheckoutParams,
   } from '../lib/billing/checkout-params';
+  import CheckoutConfirmed from './checkout/CheckoutConfirmed.svelte';
   import CheckoutHead from './checkout/CheckoutHead.svelte';
   import CheckoutSteps, { type CheckoutPhase } from './checkout/CheckoutSteps.svelte';
   import Page from './ui/Page.svelte';
@@ -318,6 +319,7 @@
   {founder}
   {invalid}
   showChange={phase === 'redirecting' || phase === 'error' || phase === 'refused'}
+  owned={ownedMe !== null}
 />
 
 {#if stepShown && request !== null && request.plan !== 'premium'}
@@ -350,7 +352,7 @@
         <a href={PREMIUM_HREF} class={LINK}>{checkoutGuildCopy.invalidLink.button} ›</a>
       </p>
     {:else if ownedMe !== null}
-      <Plate label={premiumSourceCopy.buttons.seePlan}>
+      <Plate label={premiumSourceCopy.buttons.seePlan} frame="framed">
         <div class="checkout-owned">
           <PremiumOwnedPanel
             me={ownedMe}
@@ -365,6 +367,8 @@
           {checkoutCopy.genericFailure}
         </p>
       {/if}
+    {:else if phase === 'confirmed' && request !== null && !isGuildPlan(request.plan)}
+      <CheckoutConfirmed planName={PLANS[request.plan].name} {renewal} />
     {:else}
       <div>
         <CheckoutSteps
@@ -377,16 +381,6 @@
           onRetry={request === null ? undefined : () => void launch(request!)}
           onCheckAgain={request === null ? undefined : () => void pollForEntitlement(request!)}
         />
-        {#if phase === 'confirmed' && request !== null && !isGuildPlan(request.plan)}
-          {#if renewal !== null}<p class="text-small text-muted m-0 pt-4" data-testid="checkout-renewal">
-              {renewal}
-            </p>{/if}
-          <p class="checkout-next" data-testid="checkout-next">
-            <a class={LINK} href="/sim">{checkoutCopy.nextSim} ›</a>
-            <a class={LINK} href="/logs">{checkoutCopy.nextCoach} ›</a>
-            <a class={LINK} href="/account#plan">{premiumSourceCopy.buttons.seePlan} ›</a>
-          </p>
-        {/if}
       </div>
     {/if}
   </Page>
@@ -395,12 +389,5 @@
 <style>
   .checkout-owned {
     padding: 16px 20px 20px;
-  }
-  .checkout-next {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 16px;
-    margin: 0;
-    padding-top: 8px;
   }
 </style>

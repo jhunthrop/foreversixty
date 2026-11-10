@@ -46,53 +46,41 @@ const HEIGHT = 1000;
 /**
  * Known differences (design/parity.md EXPECTED_DRIFT), keyed `<id>-<width>`: each lists the
  * `region:kind` failures expected; every other region is still compared, and the test fails once
- * a listed failure is gone so its entry is deleted. Each is a mock against the build's rule, raised
- * with the coordinator (premium round, 2026-11-08):
- *  - Devices: `Use a pairing code instead` / `Pair another computer` asks the API for a code in
- *    place, an action, so the build draws a <button> (the sim ruling: a <button> for an action);
- *    the mock draws a link.
- *  - Discord: `Link Discord` and `Link Premium role` leave for Discord, navigations, so the build
- *    keeps them links (middle-click, long-press; DiscordConnectLink); the mock draws buttons.
- *  - Discord with a channel (Premium): the shipped block keeps `Open in Discord ›`, the private
- *    logs note, Remove beside Send test message and the reconnect note, which the mock leaves out;
- *    the section is taller, and You, Delete account and the footer under it move down.
- *  - At 1440 the site header of a Premium account has no Premium link; the mock's chrome draws one.
+ * a listed failure is gone so its entry is deleted. Below 768 the mock puts the 18 px page inset
+ * outside the head region (.pc), PageHeader inside it; a primitive/mock-library question, the drift
+ * parity-setup and parity-connect list too.
  */
-const DEVICES_ACTION = 'section-devices:inventory';
-const DISCORD_LINKS = 'section-discord:inventory';
-const DISCORD_SAVED = [
-  'section-discord:inventory',
-  'section-discord:box',
-  'section-you:box',
-  'section-delete-account:box',
-  'site-footer:box',
-];
-const WHY =
-  'the pairing entry is an action (a button) and the Discord links navigate (links); the mock draws them ' +
-  'the other way round. Premium: the saved Discord block keeps Open in Discord, the private note, Remove ' +
-  'and the reconnect note, and the header drops its Premium link';
-/** Below 768 the mock puts the 18 px page inset outside the head region (.pc), PageHeader inside it;
- *  a primitive/mock-library question, the drift parity-setup and parity-connect list too. */
-const MOCK_HEAD_INSET = 'head:box';
-const drift = (failures: readonly string[], width: number) => ({
-  failures: width === 390 ? [MOCK_HEAD_INSET, ...failures] : failures,
-  why: width === 390 ? `${WHY}; and the mock's 18 px head inset below 768` : WHY,
-});
-const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> =
-  Object.fromEntries(
-    WIDTHS.flatMap((width) => [
-      [`account-${width}`, drift([DEVICES_ACTION, DISCORD_LINKS], width)],
-      [`account-new-${width}`, drift([DEVICES_ACTION, DISCORD_LINKS], width)],
-      [`account-delete-${width}`, drift([DEVICES_ACTION, DISCORD_LINKS], width)],
-      [
-        `account-premium-${width}`,
-        drift(
-          [...(width === 1440 ? ['site-header:inventory'] : []), DEVICES_ACTION, ...DISCORD_SAVED],
-          width,
-        ),
-      ],
-    ]),
-  );
+const MOCK_HEAD_INSET = { failures: ['head:box'], why: "the mock's 18 px head inset below 768" };
+const PREMIUM_ROWS = (regions: readonly string[]): string[] => regions.map((region) => `${region}:box`);
+const EXPECTED_DRIFT: Readonly<Record<string, { failures: readonly string[]; why: string }>> = {
+  ...Object.fromEntries(STATES.map(({ id }) => [`${id}-390`, MOCK_HEAD_INSET])),
+  // A Premium account's site header has no Premium link; the mock's chrome draws one. Its saved Discord block and
+  // the guild block above it are the shared settings rows (ui/Row, ui/Switch), each a few px taller than ws_prims
+  // draws them; summed over the two blocks they move Discord and the panels under it past the 8 px tolerance.
+  'account-premium-1440': {
+    failures: ['site-header:inventory', ...PREMIUM_ROWS(['section-discord', 'plate#4', 'site-footer'])],
+    why: 'the Premium header drops its Premium link; the settings rows run taller than the mock draws them',
+  },
+  'account-premium-390': {
+    failures: [
+      'head:box',
+      ...PREMIUM_ROWS([
+        'section-devices',
+        'plate#3',
+        'section-discord',
+        'plate#4',
+        'section-you',
+        'plate#5',
+        'section-plan',
+        'plate#6',
+        'section-delete-account',
+        'plate#7',
+        'site-footer',
+      ]),
+    ],
+    why: "the mock's 18 px head inset below 768; the settings rows run taller than the mock draws them",
+  },
+};
 
 test.describe('/account mock parity', () => {
   test.skip(({ isMobile }) => isMobile, 'the parity mocks are desktop captures');

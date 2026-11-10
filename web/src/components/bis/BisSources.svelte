@@ -254,14 +254,15 @@
     min-height: 32px;
     padding: 0 10px;
     border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
-    border-radius: var(--radius-control, 6px);
+    border-radius: var(--radius-field);
     color: var(--color-muted);
     font-size: 13px;
     font-weight: 600;
   }
   .bis-chip[aria-pressed='true'] {
-    border-color: var(--color-gold);
-    color: var(--color-gold);
+    border-color: var(--color-selected-mark);
+    background: var(--color-selected);
+    color: var(--color-strong);
   }
   .bis-chip:focus-visible {
     outline: 2px solid var(--color-gold);

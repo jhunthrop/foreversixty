@@ -76,7 +76,6 @@ describe('guildBotCopy, verbatim from spec 6.1', () => {
     ]);
     expect(i.channel('raid-signups')).toBe(row('Installed', 1, { channel: 'raid-signups' }));
     expectRow('Fallback note', [i.fallbackNote]);
-    expect(i.readOnly).toBe(row('Read-only', 2));
   });
 
   it('pins the linked members in its three forms', () => {
@@ -98,8 +97,7 @@ describe('guildBotCopy, verbatim from spec 6.1', () => {
     expectRow('Remove question', [DATA, DATA, DATA, q.confirm, q.cancel, DATA, q.failed]);
   });
 
-  it('pins the read-only refusal and the install returns', () => {
-    expect(guildBotCopy.planEnded).toBe(row('Read-only', 3));
+  it('pins the install returns', () => {
     const r = guildBotCopy.returns;
     expectRow('Install returns', [r.installed, r.denied, r.failed, DATA, r.takenExpired]);
     expect(r.taken('Mograine Raiders')).toBe(row('Install returns', 3, { Guild: 'Mograine Raiders' }));

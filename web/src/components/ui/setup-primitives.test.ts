@@ -13,7 +13,8 @@ import Capture from './Capture.svelte';
 import Code from './Code.svelte';
 import Divided from './Divided.svelte';
 import Facts from './Facts.svelte';
-import Steps, { STEP_MARK_WORD } from './Steps.svelte';
+import { STEP_MARK_WORD } from './StepMark.svelte';
+import Steps from './Steps.svelte';
 
 function html<P extends Record<string, unknown>>(component: Component<P>, props: P): string {
   return render(component, { props }).body.replace(/<!--[^>]*-->/g, '');
@@ -46,6 +47,7 @@ describe('Steps', () => {
       warn: 'To do',
       miss: 'Failed',
       busy: 'In progress',
+      skip: 'Skipped',
     });
   });
 });

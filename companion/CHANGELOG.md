@@ -1,5 +1,14 @@
 # Companion changelog
 
+## 0.2.44
+
+- The window takes the site's new look: the painted blue band with the seal and the four pages, the brown ground, the framed headline, the teal buttons, and the site's own type and icons.
+- Status leads with the fights the site holds. The Current report row reads zone, start and visibility, with when the log was last written.
+- An upload that keeps failing now says which fight is holding the queue and how often it has failed. The headline and the tray turn amber while it does.
+- The app and tray icons are the new seal on Windows, macOS and Linux, at a fraction of the old icons' size. Each build now carries only its own platform's tray icons.
+- After this update the new icon shows straight away. On a Mac the app's bundle is touched, so the Dock and Finder read the icon again. On Windows, Explorer is told that icons changed, so shortcuts and the taskbar refresh without a reboot. Both steps are best effort and never hold up an update.
+- A game folder is now recognised by the `.flavor.info` file the game writes in it (`wowf` is the live game), so a renamed or custom install path works. A `_forever_` folder holding another game is refused, and the refusal names that game.
+
 ## 0.2.43
 
 - WoW Forever went live in its own game folder, `_forever_`, and the companion now finds it: it lists, watches and keeps the addon up to date in `_forever_` first, and still in the Classic beta's `_classic_beta_` for testers. With both, the live game is watched unless the beta was played more recently. Every message that asks for a folder now names `_forever_`, and a picked `_forever_` folder is accepted instead of refused.

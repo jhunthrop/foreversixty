@@ -1,6 +1,23 @@
 // companion/internal/app/headline.go
 package app
 
+import "github.com/jhunthrop/foreversixty/companion/internal/pipeline"
+
+// withHeld turns the Logging headline amber while a failed upload holds
+// the queue, so the tray says so too; the Status page's Queued row says
+// which fight and how often. A title that already names a problem (not
+// credited) keeps its words and takes the tone alone.
+func withHeld(h Headline, held *pipeline.Held) Headline {
+	if h.Key != "logging" || held == nil {
+		return h
+	}
+	if h.Tone == "on" {
+		h.Title = CopyLoggingTitleHeld
+	}
+	h.Tone = "warn"
+	return h
+}
+
 // Headline is the one line the Status page opens with, and the tray
 // repeats: "is my raid going to be uploaded?" in words and a colour.
 type Headline struct {

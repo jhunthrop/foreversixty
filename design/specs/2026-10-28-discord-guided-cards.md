@@ -177,12 +177,12 @@ Discord strings live in a new copy struct `guideCopy` (`api/internal/discordbot/
 | `bis.title.none` | `Choose a class` |
 | `bis.title.class` | `{Class} · choose a spec` |
 | `bis.title.ready` | `{Spec} {Class} · {band label}` |
-| `bis.lead.unlinked` | `Choose a class, a spec and a range, then Show BiS. Link Discord and this starts from your character.` |
-| `bis.lead.none` | `Choose a class, a spec and a range, then Show BiS.` |
+| `bis.lead.unlinked` | `Link Discord and this starts from your character.` |
+| `bis.lead.none` | none (2026-11-09: the selects say what to pick) |
 | `bis.lead.main` | `Picked from your main, {Name}. Show BiS, or change a pick.` (`{Name}` in bold) |
 | `bis.lead.class` | `Now choose a {Class} spec.` |
 | `bis.lead.ready` | `Ready. Show BiS, or change a pick.` |
-| `bis.lead.slot` | `For {Slot} only. Choose a class, a spec and a range, then Show BiS.` |
+| `bis.lead.slot` | `For {Slot} only.` |
 | `bis.lead.unknownSpec` | `No {Class} spec by that name. Choose one.`; without a class `No spec by that name. Choose one.` |
 | `bis.nudge.spec` | `Choose a spec first.` (bold) + ` Then Show BiS.` |
 | `bis.nudge.both` | `Choose a class and a spec first.` (bold) + ` Then Show BiS.` |
@@ -262,7 +262,7 @@ Reference: the in-game Calendar's event creation, where an invite goes out on sa
 
 Mount, order and the flat form grammar are G1's. Item 8 becomes, when the guild has a channel (a bot channel or a webhook; `discord.connected`):
 1. `Post to Discord`: the form's existing `CHECK_ROW` checkbox markup (the `Also plan the next 3 weeks` row) with `role="switch"` on the input, so assistive technology announces on and off. The site has no switch control and this amendment invents none (tenet 10); the coordinator's "switch" is its role, not a new look. Default: the guild's `discord.post_default`, which starts `true`.
-2. Its helper, 13 px `--muted`, `aria-describedby` from the input, 4 px under the row: `form.postNow` (the raid starts within 7 days), `form.postLater` (further out), `form.postRepeat` (the repeat box is checked), or with the switch off `form.postOff`.
+2. Its helper, 13 px `--muted`, `aria-describedby` from the input, 4 px under the row: `form.postNow` (any start date, owner ruling 2026-11-09), `form.postRepeat` (the repeat box is checked), or with the switch off `form.postOff`.
 3. 8 px gap, `Remind the day before`: the same markup, indented 24 px so its box aligns with the first label's text. Default: the guild's `discord.remind_default`, which starts `true`. With `Post to Discord` off it is native `disabled` in the shared `DISABLED_LOOK`, keeps its value, and is described by `form.remindNeedsPost`. On, its helper is `form.remind`.
 4. The G1 actions row.
 
@@ -281,9 +281,8 @@ States: the rows are 44 px tall at every width (the label is the hit area); focu
 
 | Event | Bot channel | Webhook channel |
 |---|---|---|
-| A raid is saved with `Post to Discord` on and it starts within 7 days (168 h) | The post goes out at once (`post-scheduled`, `Signed up` reads `None yet`) | The webhook post goes out at once |
-| Saved further out | The post is scheduled for 7 days before the start (`post_at`) and goes out then | Same |
-| A repeat (`Also plan the next 3 weeks`) | The first raid as above; each later raid at 7 days before its start, so the channel holds one week of raids at a time | Same |
+| A raid is saved with `Post to Discord` on, however far out it starts (owner ruling 2026-11-09) | The post goes out at once (`post-scheduled`, `Signed up` reads `None yet`) | The webhook post goes out at once |
+| A repeat (`Also plan the next 3 weeks`) | Every raid of the repeat posts at once | Same |
 | 24 h before the start, `Remind the day before` on, the raid planned and not locked | The reminder (§P.5) | The webhook reminder (§P.5) |
 | The post went out less than 12 h before the reminder time (a raid scheduled late) | No reminder: the post itself is fresh | Same |
 | The raid is moved after the reminder | The reminder message, if one was posted, is deleted; the post reads `Moved:` (§3.3.1); a new reminder is scheduled 24 h before the new start | The old reminder is deleted (webhook message delete); a new one is scheduled |
@@ -315,16 +314,15 @@ Site strings join `raidCopy.form` (beside `postToDiscord`); Discord strings join
 | `form.postToDiscord` | `Post to Discord` (unchanged) |
 | `form.remindDayBefore` | `Remind the day before` |
 | `form.postNow` | `Posts to {channel} as soon as you save.`; through a webhook `Posts to your Discord channel as soon as you save.` |
-| `form.postLater` | `Posts to {channel} on {Weekday} {d} {Month}, a week before the raid.`; through a webhook `Posts to your Discord channel on {Weekday} {d} {Month}, a week before the raid.` |
-| `form.postRepeat` | `Each raid posts a week before it starts; the first posts as soon as you save.` when the first raid is within 7 days, else `Each raid posts a week before it starts.` |
+| `form.postRepeat` | `All four raids post as soon as you save.` |
 | `form.postOff` | `This raid will not post to Discord.` |
 | `form.remind` | `Posts a reminder 24 hours before the start.` |
 | `form.remindNeedsPost` | `Turn on Post to Discord to send a reminder.` |
 | `form.posted` | `Posted to {channel}. The post updates itself.` |
 | `form.reminded` | `Reminder sent.` |
 | `post.tomorrowTitle` | `Tomorrow: {Title} · {Weekday} {d} {Month}` |
-| `post.tomorrowDescription` | `The raid is tomorrow. Sign up with the buttons below.` |
-| `reminder.line` | `{Title} is tomorrow, <t:{unix}:F> (<t:{unix}:R>). {signed} of {size} signed up so far.` Unknown size: `{n} signed up so far.` Nobody: `Nobody has signed up yet.` |
+| `post.tomorrowDescription` | none (round 5, 2026-11-09: the title's `Tomorrow:` says it) |
+| `reminder.line` | `{Title} is tomorrow, <t:{unix}:t>. {signed} of {size} signed up so far.` Unknown size: `{n} signed up so far.` Nobody: `Nobody has signed up yet.` |
 | `reminder.webhookLink` | `[Sign up on Forever Sixty]({raid url})` |
 | `roster.signed` | `**{signed} of {size}**`; unknown size `**{n} signed up**`; nobody `None yet` (the `Signed up` field's value; the role clauses and the `Bench {n} · Out {n}` line leave the post) |
 | `roster.tanks` | `Tanks · {n}` |
@@ -536,7 +534,7 @@ G10. `Change picks` on every `/bis` answer, typed or carded, never on the public
 
 P1. Posting defaults on, reminder on (the coordinator's ruling).
 
-P2. A raid posts at once when it starts within 7 days, else 7 days before it starts. This honours "as soon as the raid is scheduled" for the week being planned, and stops a 4-week repeat from putting four posts in the channel at once; the owner's "5 days before" sits inside the window.
+P2. Superseded by the owner's ruling of 2026-11-09: a raid posts at once when saved, however far out (guilds sign up weeks ahead). Was: a raid posts at once when it starts within 7 days, else 7 days before it starts. This honours "as soon as the raid is scheduled" for the week being planned, and stops a 4-week repeat from putting four posts in the channel at once; the owner's "5 days before" sits inside the window.
 
 P3. "Edits the original when nothing changed" reads as: the post is still the newest message, so the reminder edits it into `Tomorrow`; otherwise a reply. This is the spec's reading of the coordinator's words; if the coordinator meant "when the raid itself did not change", the only difference is that a moved raid's reminder would always be a new message, and §P.4 already deletes and reschedules it.
 
@@ -575,7 +573,7 @@ P13. The raid page asks the spec too (§P.10.7): the same select and copy, saved
 9. Failures: a handler error on a card press keeps the card and sets the lead to `card.failure`.
 10. Limits: every card id at most 100 characters; at most 5 rows; every select 1 to 25 options; labels, descriptions and placeholders inside Discord's 100 and 150; no card id or value names another account outside the officer `/attendance` values.
 11. Registration: the §G.8 option changes, and the commands hash changes.
-12. Posting: a save within 7 days posts at once; further out sets `post_at` 7 days before; a repeat posts one at a time; the reminder at start minus 24 h edits the post into `Tomorrow` when it is the newest message, else replies with the five components and no mentions; no reminder when the post is under 12 h old; move, cancel and lock delete the reminder; a webhook reminder carries the masked link and no components; every posted raid URL passes the `parseGuildRaidPath` mirror.
+12. Posting: a save posts at once at any start date; a repeat posts every raid at once; the reminder at start minus 24 h edits the post into `Tomorrow` when it is the newest message, else replies with the five components and no mentions; no reminder when the post is under 12 h old; move, cancel and lock delete the reminder; a webhook reminder carries the masked link and no components; every posted raid URL passes the `parseGuildRaidPath` mirror.
 13. The payload dump (`payload-dump.go.txt`) gains every card frame and both reminder forms, so the reviewers' boards render from the real handlers.
 14. Roster: the post's fields are `When`, `Guild time`, `Signed up` (inline, `roster.signed`), then `Tanks`, `Healers`, `Melee`, `Ranged`, `Late`, `Bench` (inline) and `Out` (full width) per §P.9.2; nobody In or Late draws no groups; an empty group draws `None yet`; lines sort by class then name, Out by name; Melee and Ranged split per §P.9.4, a spec-less Rogue in Melee and a spec-less Mage in Ranged.
 15. Roster limits: a 17-line group draws a U+200B continuation; a 40-line group draws 31 lines and `and 9 more`; Bench at 11 draws 9 and `and 2 more`; every field value at most 1024; at most 25 fields; 120 sign-ups keep the embed under 6000 through the guard.
@@ -598,7 +596,7 @@ The mock boards above, then the same frames rendered from the real handlers' `pa
 | D14 | `/char` bare linked and unlinked, the modal open, an unknown name | x | x |
 | D15 | `/signup` bare with two raids and two characters, a status press | x | x |
 | D16 | `/attendance` officer select, `/readiness` and `/report` with their selects | x | x |
-| D17 | A raid saved within 7 days posting at once; the `Tomorrow` edit; the reply reminder; a webhook reminder; a cancel deleting the reminder | x | x |
+| D17 | A raid saved posting at once; the `Tomorrow` edit; the reply reminder; a webhook reminder; a cancel deleting the reminder | x | x |
 | D18 | The roster post at 8 of 40, 33 of 40 and 40 of 40, in a server where the bot has never posted (the application emoji render without any server permission); one spec's emoji deleted (the text line); the phone client's inline layout | x | x |
 | D19 | `In` with no spec known: the card, the pick, the outcome, `Change spec`, the next press with no card | x | x |
 

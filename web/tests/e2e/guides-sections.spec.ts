@@ -101,9 +101,7 @@ for (const [label, viewport] of [
       await expect(page.locator('[data-region="head-meta"]')).toContainText(
         /DPS · Updated \d{1,2} [A-Z][a-z]{2}/,
       );
-      await expect(page.getByTestId('guide-summary')).toContainText(
-        'Frost casts Frostbolt behind Ice Barrier',
-      );
+      await expect(page.getByTestId('guide-summary')).toHaveCount(0);
       await noSidewaysScroll(page);
     });
 
@@ -185,7 +183,10 @@ for (const [label, viewport] of [
       await page.goto(PAGE);
       await expect(bisPanel(page)).toHaveAttribute('data-panel', '60-alliance');
       await expect(bisPanel(page).locator('.ui-lane-head h3')).toHaveText('Level 60');
-      await expect(bisPanel(page).locator('.ui-item-row[data-testid^="guide-bis-"]')).toHaveCount(BIS_SLOTS);
+      // From 1280 the weapon rows may wrap under the doll (lib/ui/reading-wrap.ts): the section holds every slot.
+      await expect(page.locator('#best-in-slot .ui-item-row[data-testid^="guide-bis-"]')).toHaveCount(
+        BIS_SLOTS,
+      );
       await expect(bisPanel(page).getByTestId('guide-bis-head')).toContainText('Head');
       await expect(bisPanel(page).getByTestId('guide-bis-head').locator('img')).toHaveCount(1);
       await expect(page.getByTestId('guide-bis-full-list')).toHaveAttribute('href', '/bis/mage/frost/60');
@@ -238,7 +239,10 @@ for (const [label, viewport] of [
     test('has a racials lane with the recommended races marked', async ({ page }) => {
       await page.goto(PAGE);
       const lane = page.getByTestId('guide-race-table');
-      await expect(lane.locator('[data-testid^="guide-race-"]')).toHaveCount(6);
+      // From 1280 the lane's last rows may wrap under the prose (lib/ui/reading-wrap.ts): count the section's.
+      await expect(
+        page.locator('#races [data-testid^="guide-race-"]:not([data-testid="guide-race-table"])'),
+      ).toHaveCount(6);
       const gnome = page.getByTestId('guide-race-gnome');
       await expect(gnome).toContainText('Recommended');
       await expect(gnome).toContainText('Eureka!');

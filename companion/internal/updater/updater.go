@@ -420,6 +420,7 @@ func ApplyAndRelaunch(o LaunchOptions) bool {
 	}
 	o.Log.Info("installed the staged update; starting the new build",
 		"component", "updater", "path", o.Exe)
+	refreshIcons(o.Exe, o.Log, time.Now())
 	if o.BeforeStart != nil {
 		o.BeforeStart()
 	}

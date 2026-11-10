@@ -35,7 +35,7 @@
     busy: 'save' | 'events' | 'test' | 'remove' | null;
     gateId?: string;
     disabled?: boolean;
-    /** The remove button's words; the guild section keeps Remove, the account card says Unlink Discord. */
+    /** The remove button's words; the guild section keeps Remove, the account card says Remove channel. */
     removeLabel?: string;
     removingLabel?: string;
     /** The send glyph on the test button; the guild section is too narrow for it at 360 px. */

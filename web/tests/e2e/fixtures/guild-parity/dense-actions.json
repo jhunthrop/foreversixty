@@ -1,0 +1,22 @@
+{
+  "approvals": {
+    "count": 3,
+    "names": ["Brambleshot", "Mirelocke", "Oakhallow"]
+  },
+  "applications": {
+    "count": 2,
+    "names": ["Ashenveil", "Quillbright"]
+  },
+  "not_signed": {
+    "raid_id": 45,
+    "count": 7,
+    "names": ["Voidcall", "Skyarcana", "Starnettle", "Ironhide", "Rainsong", "Duskfang", "Moonquill"]
+  },
+  "drops_to_award": {
+    "tracked": true,
+    "count": 2,
+    "raid_id": 44,
+    "label": "Onyxia, Wed 6 Jan",
+    "awarded": 1
+  }
+}

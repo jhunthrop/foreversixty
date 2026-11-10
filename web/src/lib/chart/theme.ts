@@ -52,7 +52,7 @@ export const CHART_INK = {
   /** A death's line and marker. */
   death: ink('--color-death'),
   /** A warning wash (a capped resource, an ember note). */
-  warn: ink('--color-ember', 0.07),
+  warn: ink('--color-warn', 0.07),
 } as const satisfies Record<string, ChartInk>;
 
 export type ChartRole = keyof typeof CHART_INK;

@@ -17,7 +17,6 @@
     installHref,
     webhookHref,
     gated,
-    gateId,
     busy,
     status,
     onStuck,
@@ -26,7 +25,6 @@
     installHref: string;
     webhookHref: string;
     gated: boolean;
-    gateId: string | undefined;
     busy: boolean;
     status: DiscordStatus | null;
     onStuck: () => void;
@@ -43,7 +41,6 @@
       href={installHref}
       {busy}
       {gated}
-      describedBy={gateId}
       {onStuck}
     />
   </div>
@@ -56,7 +53,6 @@
       href={installHref}
       {busy}
       {gated}
-      describedBy={gateId}
       {onStuck}
     />
     <p class="text-muted mt-2 text-[13px]" data-testid="bot-explanation">{guildBotCopy.addExplanation}</p>
@@ -71,7 +67,6 @@
         href={webhookHref}
         {busy}
         {gated}
-        describedBy={gateId}
         {onStuck}
       />
       <p class="text-muted text-[13px]">{guildBotCopy.webhookPathNote}</p>

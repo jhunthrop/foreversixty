@@ -23,8 +23,6 @@ sources:
 
 ## Overview
 
-Discipline heals the tank with Penance on cooldown, a shield to open Renewed Hope, and crits that leave Divine Aegis shields behind.
-
 ### Strengths
 
 - Penance is a short channel of three heals every 12 seconds

@@ -61,7 +61,7 @@ func (s *Service) installOf(w http.ResponseWriter, r *http.Request, guildID int6
 
 func (s *Service) channelsList(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
-	guildID, _, ok := s.officer(w, r, true)
+	guildID, _, ok := s.officer(w, r)
 	if !ok {
 		return
 	}
@@ -93,7 +93,7 @@ func decodeChannel(w http.ResponseWriter, r *http.Request) (string, bool) {
 
 func (s *Service) channelSave(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
-	guildID, _, ok := s.officer(w, r, true)
+	guildID, _, ok := s.officer(w, r)
 	if !ok {
 		return
 	}
@@ -137,7 +137,7 @@ func findChannel(channels []Channel, id string) (Channel, bool) {
 
 func (s *Service) botTest(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
-	guildID, standing, ok := s.officer(w, r, true)
+	guildID, standing, ok := s.officer(w, r)
 	if !ok {
 		return
 	}
@@ -204,7 +204,7 @@ func sanitizeDiscordText(text string) string {
 
 func (s *Service) botRemove(w http.ResponseWriter, r *http.Request) {
 	httpx.CachePrivateNoStore(w)
-	guildID, _, ok := s.officer(w, r, false)
+	guildID, _, ok := s.officer(w, r)
 	if !ok {
 		return
 	}

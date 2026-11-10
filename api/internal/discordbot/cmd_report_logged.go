@@ -31,7 +31,7 @@ func (s *Service) loggedNightReply(ctx context.Context, guildID, viewer int64, u
 		note = plannedNote(ans.PlannedRaid.Title, s.raidPageURL(ctx, ans.PlannedRaid.ID))
 	}
 	embeds := []notify.Embed{loggedNightEmbed(ans, link, note)}
-	closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
+	s.closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
 	button := Component{Kind: KindButton, Style: StyleLink, Label: officerCopy.OpenReport, URL: link}
 	msg := Message{Embeds: embeds, Components: []ActionRow{{button}}}
 	msg = s.withCoachLines(ctx, msg, viewer, ans.ReportID)

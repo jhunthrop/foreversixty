@@ -70,7 +70,9 @@ describe('RaidOfficerRow', () => {
     }
     expect(button(body, 'raid-officer-copy')).not.toMatch(DISABLED);
     expect(body).toContain(`id="${GATE}"`);
-    expect(text(body)).toContain('Planning raids and events is part of the Guild and Raid guild plans.');
+    expect(text(body)).toContain(
+      'Comp targets, pings, assignments and log matching are part of the Guild and Raid guild plans.',
+    );
     expect(text(body)).toContain('Start the 7-day trial');
   });
 

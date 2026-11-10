@@ -8,7 +8,7 @@ import (
 )
 
 func TestWebhookConnectStillReturnsThroughTheSharedCallback(t *testing.T) {
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	var linkCalls int
 	g.svc.OnState(StateKindLink, func(http.ResponseWriter, *http.Request, ConnectState) { linkCalls++ })
 	state := g.startGuildConnect()
@@ -20,7 +20,7 @@ func TestWebhookConnectStillReturnsThroughTheSharedCallback(t *testing.T) {
 }
 
 func TestCallbackDispatchesAStateByKind(t *testing.T) {
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	var got ConnectState
 	g.svc.OnState(StateKindLink, func(w http.ResponseWriter, _ *http.Request, cs ConnectState) {
 		got = cs

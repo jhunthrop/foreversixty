@@ -1,4 +1,4 @@
-// design/tokens/tokens.test.mjs: the three token outputs must be what design/tokens/build.mjs
+// design/tokens/tokens.test.mjs: the token outputs (web, iOS, Android, the companion) must be what design/tokens/build.mjs
 // writes from tokens.json today, and each must open with the GENERATED line (a hand edit that
 // removed it fails too). Run: node --test design/tokens/tokens.test.mjs (the web unit job and mobile-codegen.yml).
 import assert from 'node:assert/strict';

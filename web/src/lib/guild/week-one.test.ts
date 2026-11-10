@@ -155,7 +155,7 @@ describe('the officer step', () => {
   it('an empty calendar on a guild with no plan names the plan planning needs', () => {
     const step = weekOneStep(input({ ...officer, planGated: true }));
     expect(step.text).toBe(
-      'Nothing on the calendar yet. Planning raids and events is part of the Guild and Raid guild plans.',
+      'Nothing on the calendar yet. Comp targets, pings, assignments and log matching are part of the Guild and Raid guild plans.',
     );
     expect(step.action).toEqual({ kind: 'plan', label: 'Plan an event' });
   });

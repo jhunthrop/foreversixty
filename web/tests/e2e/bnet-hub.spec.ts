@@ -14,7 +14,7 @@ const fulfil = (body: unknown, status = 200) => ({
   body: JSON.stringify(body),
 });
 
-test("signing in lands on the account with the main character as the head's answer", async ({ page }) => {
+test('signing in lands on the account with the main character first', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(fulfil({ ok: true, data: meBnetFixture, error: null, request_id: 'r' })),
   );
@@ -53,9 +53,8 @@ test("signing in lands on the account with the main character as the head's answ
     'Thoradin is your current character',
   );
   await expect.poll(() => new URL(page.url()).search).toBe('');
-  // The head's answer is the main character (premium spec 2026-11-08 7.1): Open goes to its page.
-  const answer = page.getByTestId('account-head');
-  await expect(answer).toContainText('Thoradin');
-  const open = answer.getByTestId('setup-answer-open');
-  await expect(open).toHaveAttribute('href', '/character/us/pvp/thoradin');
+  // The main character leads the Characters panel: Open goes to its page.
+  const row = page.getByTestId('account-character-row').first();
+  await expect(row).toContainText('Thoradin');
+  await expect(row.getByTestId('character-open')).toHaveAttribute('href', '/character/us/pvp/thoradin');
 });

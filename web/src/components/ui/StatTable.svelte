@@ -4,7 +4,8 @@
      shared by the heads and every StatRow. On the Plate it is the ability table; `open` (no Plate,
      no side padding) it is the Rage sources and the aura uptimes. An ARIA table: the heads are
      columnheaders, a sortable head holds a button and carries aria-sort; with no `nameHead` the
-     table draws no head row (an open list whose columns explain themselves). -->
+     table draws no head row (an open list whose columns explain themselves). `wrap` lets a reading
+     section's lane carry its rows under the prose, the head row repeated (lib/ui/reading-wrap.ts). -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { ariaSortOf, sortMark, type StatColumn, type StatSort } from '../../lib/ui/stat-table';
@@ -16,9 +17,12 @@
     barHead = '',
     bar = true,
     open = false,
+    dense = false,
+    action = false,
     sort,
     onsort,
     label,
+    wrap = false,
     testid,
     children,
   }: {
@@ -31,11 +35,17 @@
     /** Whether the rows carry a Meter column. */
     bar?: boolean;
     open?: boolean;
+    /** 40 px rows at 14 px, for a table of forty raiders (guild roster, readiness, loot). */
+    dense?: boolean;
+    /** A last fixed-width column for each row's one action (StatRow `action`): Nudge on the guild readiness board. */
+    action?: boolean;
     sort?: StatSort;
     /** A sortable head was pressed. */
     onsort?: (column: string) => void;
     /** The table's accessible name. */
     label?: string;
+    /** In a reading section's lane: the rows may wrap under the prose, the head row with them. */
+    wrap?: boolean;
     testid?: string;
     /** The StatRows. */
     children: Snippet;
@@ -47,12 +57,15 @@
   role="table"
   aria-label={label}
   data-open={open ? 'true' : undefined}
+  data-dense={dense ? 'true' : undefined}
+  data-action={action ? 'true' : undefined}
   data-bar={bar ? 'true' : 'false'}
   style:--st-n={columns.length}
+  data-wrap-list={wrap ? '' : undefined}
   data-testid={testid}
 >
   {#if nameHead !== undefined}
-    <div class="ui-st-h ui-st-c" role="row">
+    <div class="ui-st-h ui-st-c" role="row" data-wrap-repeat={wrap ? '' : undefined}>
       <span aria-hidden="true"></span>
       <span class="ui-st-head" role="columnheader">{nameHead}</span>
       {#if bar}
@@ -82,6 +95,7 @@
           {:else}{column.label}{/if}
         </span>
       {/each}
+      {#if action}<span aria-hidden="true"></span>{/if}
     </div>
   {/if}
   {@render children()}

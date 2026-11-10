@@ -202,7 +202,9 @@ CHROME = Path(__file__).resolve().parent / 'data' / 'chrome'
 _CHROME_MARK = '<!--fs-chrome:%s-->'
 _TEMPLATE_WHO = ('Felsnap', 'hunter', '34')
 # Base.astro's body: a full-height column with the footer pushed to the bottom of a short page.
-_BODY_CSS = 'body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:auto}'   # the character template-in.json was captured with (home fixtures)
+# The page body's breath above the footer (web global.css [data-page-body], owner 2026-11-09): 40 px, 64 from 1024.
+_BODY_CSS = ('body{display:flex;flex-direction:column;min-height:100vh}.fs-foot{margin-top:auto}'
+             'main{padding-bottom:40px}@media(min-width:1024px){main{padding-bottom:64px}}')   # the character template-in.json was captured with (home fixtures)
 
 
 def _chrome_file(name: str) -> dict:

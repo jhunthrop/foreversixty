@@ -30,7 +30,7 @@ describe('/app', () => {
 
   it('says the apps are coming and only what they do', () => {
     const text = decode(html);
-    for (const line of [copy.heading, copy.soon, copy.lead, ...copy.features]) expect(text).toContain(line);
+    for (const line of [copy.heading, copy.soon, ...copy.features]) expect(text).toContain(line);
   });
 
   it('offers the tester signup while the store links are null', () => {

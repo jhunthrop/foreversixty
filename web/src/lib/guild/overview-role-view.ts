@@ -1,7 +1,7 @@
 // web/src/lib/guild/overview-role-view.ts
 // The role-aware Overview's pure models (web layout spec 2026-11-05 section 7.1): the member's
-// private checklist rows and its one-line verdict (D12: Ready / Almost / Getting started, never a
-// floor), the officer's Action needed rows, comp against the target, and the attendance grid.
+// private checklist rows, comp against the target, the raid time and the buff cover. The officer's
+// counts and attendance are the dense week's (lib/guild/dense).
 // Rows whose source is not tracked yet are dropped here, never drawn with a stand-in (7.4).
 import { bisHref } from '../character-profile';
 import { counted } from '../plural';
@@ -12,15 +12,11 @@ import { coverSigned, coverTone } from './cover-view';
 import { DEFAULT_LOCALE, clockText, dateLabel, offsetsDiffer, zoneAbbreviation } from './raid-time';
 import { enchantSlotLabel as slotWord } from './readiness-view';
 import type {
-  AttendanceCell,
   ChecklistItem,
-  ChecklistVerdict,
   GuildChecklist,
   GuildCompRole,
   GuildCompTarget,
-  GuildOfficerActions,
   GuildPingResult,
-  GuildRecentAttendance,
 } from './overview-api';
 
 export interface ChecklistRow {
@@ -29,14 +25,6 @@ export interface ChecklistRow {
   title: string;
   sub: string;
   fix: { label: string; href: string } | null;
-}
-
-const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-
-/** "two things" in the verdict line; digits from ten. */
-function things(count: number): string {
-  const word = WORDS[count] ?? String(count);
-  return `${word} ${count === 1 ? 'thing' : 'things'}`;
 }
 
 function listWords(items: readonly string[]): string {
@@ -111,8 +99,7 @@ function flaskFoodRow(item: ChecklistItem): ChecklistRow {
     };
   const title =
     FLASK_FOOD_MISSING[missing.length > 1 ? 'both' : (missing[0] ?? 'both')] ?? FLASK_FOOD_MISSING.both!;
-  const sub =
-    names.length > 0 ? `You have ${listWords(names)}.` : 'Bring a flask or a raid elixir, and buff food.';
+  const sub = names.length > 0 ? `You have ${listWords(names)}.` : 'Bring a flask or elixir, and food.';
   return { key: item.key, tone: 'warn', title, sub, fix: null };
 }
 
@@ -224,65 +211,9 @@ function actionableRow(item: ChecklistItem): ChecklistRow[] {
   return [];
 }
 
-const VERDICT_WORD: Readonly<Record<ChecklistVerdict, string>> = {
-  ready: 'Ready to raid',
-  almost: 'Almost there',
-  getting_started: 'Getting started',
-};
-
-export function verdictWord(verdict: ChecklistVerdict): string {
-  return VERDICT_WORD[verdict];
-}
-
-/** The member's Notice: "Almost there: two things before Thursday." (`day` is the raid's weekday). */
-export function verdictLine(
-  verdict: ChecklistVerdict,
-  rows: readonly ChecklistRow[],
-  day: string | null,
-): string {
-  const open = rows.filter((row) => row.tone !== 'ok').length;
-  const when = day === null ? 'before the raid' : `before ${day}`;
-  if (verdict === 'ready' || open === 0) return day === null ? 'Ready to raid.' : `Ready to raid on ${day}.`;
-  return `${VERDICT_WORD[verdict]}: ${things(open)} ${when}.`;
-}
-
-export interface ActionRow {
-  key: 'approvals' | 'applications' | 'not_signed' | 'drops';
-  title: string;
-  sub: string;
-}
-
 function names(list: readonly string[], max = 3): string {
   if (list.length <= max) return list.join(', ');
   return `${list.slice(0, max).join(', ')} and ${list.length - max} more`;
-}
-
-/** Officer Action needed: only what has something waiting, in the order an officer clears it. */
-export function actionRows(actions: GuildOfficerActions, day: string | null): ActionRow[] {
-  const rows: ActionRow[] = [];
-  const { approvals, not_signed: notSigned, drops_to_award: drops } = actions;
-  if (approvals.count > 0)
-    rows.push({
-      key: 'approvals',
-      title: `${counted(approvals.count, 'raider')} waiting for approval`,
-      sub: names(approvals.names),
-    });
-  const applications = actions.applications;
-  if (applications !== undefined && applications.count > 0)
-    rows.push({
-      key: 'applications',
-      title: counted(applications.count, 'application'),
-      sub: names(applications.names),
-    });
-  if (notSigned.count > 0 && notSigned.raid_id !== null)
-    rows.push({
-      key: 'not_signed',
-      title: `${notSigned.count} not signed up for ${day ?? 'the next raid'}`,
-      sub: names(notSigned.names),
-    });
-  if (drops !== null && drops.tracked && (drops.count ?? 0) > 0)
-    rows.push({ key: 'drops', title: `${counted(drops.count ?? 0, 'drop')} to award`, sub: drops.label });
-  return rows;
 }
 
 const ROLE_LABEL: Readonly<Record<GuildCompRole, string>> = {
@@ -322,37 +253,6 @@ export function compGridRows(counts: GuildRaidCounts, target: GuildCompTarget): 
       ],
     };
   });
-}
-
-const CELL: Readonly<Record<AttendanceCell, { tone: CellTone; text: string; label: string }>> = {
-  present: { tone: 'ok', text: '✓', label: 'There' },
-  absent: { tone: 'miss', text: '×', label: 'Missed' },
-  bench: { tone: 'warn', text: 'B', label: 'Bench' },
-  none: { tone: 'none', text: '—', label: 'Not in the guild yet' },
-};
-
-export interface GridRow {
-  key: string;
-  label: string;
-  sub: string;
-  cells: { tone: CellTone; text: string; label: string }[];
-}
-
-/** The attendance section's title: "Attendance, last raid" for one night, "Attendance, last 4 raids" for four. */
-export function attendanceTitle(raids: number): string {
-  return raids === 1 ? 'Attendance, last raid' : `Attendance, last ${raids} raids`;
-}
-
-/** The officer's attendance grid: slipping first, then the bench, each by name. */
-export function attendanceGridRows(page: GuildRecentAttendance): GridRow[] {
-  return [...page.rows]
-    .sort((a, b) => Number(b.slipping) - Number(a.slipping) || a.name.localeCompare(b.name))
-    .map((row) => ({
-      key: row.account_key,
-      label: row.name,
-      sub: row.slipping ? 'slipping' : 'bench',
-      cells: row.cells.map((cell) => CELL[cell]),
-    }));
 }
 
 /** The weekday a raid falls on in the guild's zone, for "before Thursday". */

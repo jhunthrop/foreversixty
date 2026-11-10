@@ -9,24 +9,15 @@ import { guildDiscordCopy } from './discord-copy';
 
 export { guildDiscordCopy };
 
-/** A status line's content. `stays` holds until the next press; `planEnded` turns the section
- *  read-only and takes focus (gate spec §4). */
+/** A status line's content. `stays` holds until the next press. */
 export interface DiscordStatus {
   ok: boolean;
   message: string;
   stays?: boolean;
-  planEnded?: boolean;
 }
 
 const STATUS_RATE_LIMITED = 429;
 const STATUS_DISCORD_REFUSED = 502;
-const PLAN_REQUIRED = 'guild_plan_required';
-
-const isPlanRefusal = (error: unknown): boolean =>
-  error instanceof GuildApiError && error.code === PLAN_REQUIRED;
-
-const planEnded = (): DiscordStatus => ({ ok: false, message: guildDiscordCopy.planEnded, planEnded: true });
-
 /** A test that Discord took: switched off, it says posts are on again (account §6.1). */
 export function testSent(wasSwitchedOff: boolean): DiscordStatus {
   return {
@@ -36,9 +27,8 @@ export function testSent(wasSwitchedOff: boolean): DiscordStatus {
   };
 }
 
-/** A refused test: Discord's own words on a 502, the wait line on a 429, the plan line on a 403. */
+/** A refused test: Discord's own words on a 502, the wait line on a 429. */
 export function testRefused(error: unknown): DiscordStatus {
-  if (isPlanRefusal(error)) return planEnded();
   if (!(error instanceof GuildApiError)) return { ok: false, message: notificationsCopy.testOurError };
   if (error.status === STATUS_DISCORD_REFUSED)
     return { ok: false, message: notificationsCopy.testFailed(error.message) };

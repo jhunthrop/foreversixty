@@ -59,6 +59,8 @@ export interface RaidPageDeps {
   deleteCompTarget: (guildId: number, raidId: string) => Promise<GuildRaidView>;
   /** Ping on Discord: one message under the raid's post naming the non-signers. */
   pingRaid: (guildId: number, raidId: string) => Promise<GuildPingResult>;
+  /** Post now (unposted) or Repost (posted): answers the raid view. */
+  postRaidNow: (guildId: number, raidId: string) => Promise<GuildRaidView>;
   /** The assignments (officers): a slot's names in order, a cleared slot, the Discord post. */
   putAssignment: (
     guildId: number,

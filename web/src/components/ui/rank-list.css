@@ -145,7 +145,7 @@
   background: var(--color-selected);
 }
 .ui-rank-row[aria-current='true']::before {
-  background: var(--color-gold);
+  background: var(--color-selected-mark);
 }
 .ui-rr-rank {
   text-align: right;
@@ -413,12 +413,6 @@
 .ui-rank-list[data-compact='true'] .ui-rank-row {
   min-height: 48px;
   padding-block: 6px;
-}
-.ui-rank-list[data-compact='true'] .ui-rank-row[aria-current='true'] {
-  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
-}
-.ui-rank-list[data-compact='true'] .ui-rank-row[aria-current='true']::before {
-  background: var(--color-accent);
 }
 /* A compact list keeps the one-line row and its heads from 1024 (it has the column's full width
    there, its rail stacked above it); below 1024 it is the stacked row. */

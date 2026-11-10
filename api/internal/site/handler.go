@@ -116,14 +116,21 @@ func (d Deps) card(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	desc := builds.Describe(d.Data, b)
+	// A sim lookup failure is logged and the card drawn without its DPS, as the page does.
+	desc, err := builds.Describe(d.Data, b).WithSimDPS(r.Context(), b.ID, d.Sims)
+	if err != nil {
+		d.logger().Error("site", "id", httpx.RequestIDFrom(r.Context()), "op", "card_dps", "build", b.ID, "err", err)
+	}
 	img, err := card.Render(card.Input{
 		Title:      desc.Title,
 		Race:       desc.RaceName,
 		Class:      desc.ClassName,
+		ClassSlug:  desc.ClassSlug,
 		ClassColor: desc.ClassColor,
 		Split:      desc.Split,
+		Trees:      desc.TreeNames,
 		Level:      desc.Level,
+		DPS:        desc.DPSLine,
 	})
 	if err != nil {
 		// The spec requires a 200 here, so an unfurl still shows something,

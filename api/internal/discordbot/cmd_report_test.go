@@ -28,6 +28,8 @@ type officerGuilds struct {
 	done      []guilds.Raid
 	raidReady map[int64]guilds.ReadinessAnswer
 	reports   map[int64]*guilds.ReportAnswer
+	// items answers BuildItem by id; an id it does not hold reads item level 74.
+	items map[int]trees.Item
 }
 
 func (o *officerGuilds) PlannedRaids(ctx context.Context, guildID int64, now time.Time) ([]guilds.Raid, error) {
@@ -95,7 +97,10 @@ func (o *officerGuilds) NextRaidReadiness(context.Context, int64, int64, time.Ti
 }
 
 func (o *officerGuilds) ActiveBuild() (string, bool) { return lookupBuild, true }
-func (o *officerGuilds) BuildItem(string, string, int) (trees.Item, bool) {
+func (o *officerGuilds) BuildItem(_, _ string, id int) (trees.Item, bool) {
+	if it, ok := o.items[id]; ok {
+		return it, true
+	}
 	return trees.Item{ItemLevel: 74}, true
 }
 
@@ -196,11 +201,11 @@ func TestReportMemberAndOfficer(t *testing.T) {
 	if _, ok := fields[segment(3)]; ok {
 		t.Fatal("a member sees Consumables")
 	}
-	if fields[segment(4)] != "10 items. The first 8:" {
+	if fields[segment(4)] != "10 items, the best 8 below" {
 		t.Fatalf("loot = %q", fields[segment(4)])
 	}
-	if len(member.Message.Embeds) != 9 || member.Message.Embeds[1].Color != qualityColors[4] ||
-		member.Message.Embeds[8].Color == qualityColors[4] || !strings.Contains(member.Message.Embeds[1].Description, "to Pyrewisp · Onyxia") {
+	if len(member.Message.Embeds) != 9 || member.Message.Embeds[1].Color != qualityColor(4) ||
+		member.Message.Embeds[8].Color == qualityColor(4) || !strings.Contains(member.Message.Embeds[1].Description, "to Pyrewisp · Onyxia") {
 		t.Fatalf("loot embeds = %+v", member.Message.Embeds[1:])
 	}
 	if hasShare(member) || !member.Message.Ephemeral {

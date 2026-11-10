@@ -20,7 +20,7 @@ export const guildHomeCopy = {
   /** Day one: a guild exists on the site only once a member's character brings it (an addon
    *  sync or a Battle.net import names the guild), so a right name can still miss. */
   notHereYet:
-    'Spelled right? Then it is not on Forever Sixty yet. A guild shows up once one of its members signs in and imports a character, or syncs the addon.',
+    'Not on Forever Sixty yet. A guild shows up once a member signs in and imports a character, or syncs the addon.',
   notHereYetAction: 'Get set up',
   notHereYetHref: '/setup',
   /** `Did you mean ` + up to three links `{Guild} ({where})`, joined `, ` and ` or `, + `?`
@@ -32,7 +32,7 @@ export const guildHomeCopy = {
     if (index === 0) return '';
     return index === count - 1 ? ' or ' : ', ';
   },
-  lede: "A guild's progression per boss, pull counts, kill dates and roster bests. Its roster, raid nights and loot sit in the tabs once it has loaded.",
+  lede: 'Progression, roster, raid nights and loot.',
   reportsHeading: "This week's reports",
   // The public block's own reports heading (UX review defect 2, 2026-09-28): distinguishes
   // it from the member section's "This week's reports" above -- both can render on the same
@@ -121,9 +121,8 @@ export const guildClaimCopy = {
   // Once the viewer holds the claim the page is about the claim, not about making one.
   headingHeld: (guildName: string): string => (guildName === '' ? 'Your claim' : `${guildName} · your claim`),
   unclaimed: 'Nobody has claimed this guild yet.',
-  // What an officer who may claim reads: what claiming gets them.
-  unclaimedForOfficer:
-    'Nobody has claimed this guild. Claiming lets you approve members, set report visibility and manage billing.',
+  // What an officer who may claim reads.
+  unclaimedForOfficer: 'Nobody has claimed this guild.',
   // Claiming asks first; the rules sit in their own card right below, so the question is bare.
   claimConfirmLine: (guildName: string): string => `Claim ${guildName === '' ? 'this guild' : guildName}?`,
   claimConfirmButton: 'Yes, claim it',
@@ -131,11 +130,6 @@ export const guildClaimCopy = {
   youHold: (guildName: string): string => `You hold ${guildName === '' ? 'this guild' : guildName}.`,
   nextHeading: 'Next',
   nextRoster: 'Approve your officers and members',
-  nextInvite: 'Make an invite link',
-  nextPlan: 'Plan an event',
-  nextDiscord: 'Add the Discord bot',
-  // A guild with no plan: the gate sentence's part 1 for both, no link (the plan lives on the tabs).
-  nextGated: 'Events and the Discord bot are part of the Guild and Raid guild plans.',
   releaseConfirmLine: (guildName: string): string =>
     `Release your claim on ${guildName === '' ? 'this guild' : guildName}? Officers will have to claim it again.`,
   releaseConfirmButton: 'Release',
@@ -156,17 +150,16 @@ export const guildClaimCopy = {
   notEligible: 'Only an officer or the guild master of this guild can claim it.',
   // A claim link made for a plan (spec 2026-10-27 section 9.3): what the link is for, then the order.
   planLine: (guildName: string, planName: string, price: string): string =>
-    `This link is for subscribing ${guildName} to the ${planName} plan (${price}). Claim the guild first; then the plan is one step.`,
+    `This link is for subscribing ${guildName} to the ${planName} plan (${price}). Claim the guild first, then subscribe.`,
   // A plain member, the common visitor here: what is true, then what to do with the link below.
   memberHandoff: (guildName: string): string =>
     `You are a member of ${guildName}, so only its guild master can claim it. Send them this page's link.`,
   // After a save on /setup that came from a claim link (spec section 9.3).
   backToClaim: (guildName: string): string => `Back to ${possessive(guildName)} claim`,
   // /setup's Notice over that link, once the account knows a character in the guild (setup spec 4.6).
-  setupClaimReady: (guildName: string): string => `The site knows a character of yours in ${guildName}.`,
+  setupClaimReady: (guildName: string): string => `You have a character in ${guildName}.`,
   // Signed in, but no character of theirs in this guild as far as the site knows.
-  notAMember:
-    'The site does not know a character of yours in this guild. Save one on Get set up and this page will know your rank.',
+  notAMember: 'None of your characters is in this guild. Add one on Get set up.',
   // The state as a member may read it: the home says claimed, but never by whom.
   claimedByAnOfficer: 'This guild has been claimed by one of its officers.',
   backToGuild: (guildName: string): string => (guildName === '' ? 'Guild page' : guildName),
@@ -204,15 +197,13 @@ export const guildSettingsCopy = {
   rotateConfirmLine:
     'Make a new link? The old one stops working, so anyone you sent it to needs the new one.',
   rotateCancel: 'Cancel',
-  tokenShownOnce:
-    'Copy it now. For safety we keep only a fingerprint, so it cannot be shown again after you leave this page.',
+  tokenShownOnce: 'Copy it now. It cannot be shown again.',
   linkLabel: 'Invite link',
   copyButton: uiCopy.copyLink,
   copied: uiCopy.copiedLink,
   copyFailed: uiCopy.copyLinkFailed,
   shareButton: uiCopy.shareLink,
   inviteShareTitle: 'Join our guild on Forever Sixty',
-  inviteShareText: 'Use this link to join our guild on Forever Sixty.',
   currentLinkMade: (date: string): string =>
     `Made ${date}. It still works, but it cannot be shown again. Make a new one to copy it.`,
   /** A kept link's line: `Made 12 Nov.`, or `Made 12 Nov by` + the maker's name + `.`. */
@@ -414,8 +405,7 @@ export const guildRosterModelCopy = {
 export const guildGateCopy = {
   // Spec 2026-11-05 §3.2, part 1 by feature; part 2 by viewer (lib/guild/plan-gate.ts).
   lead: {
-    raids: 'Planning raids and events is part of the Guild and Raid guild plans.',
-    discord: 'Posting to Discord is part of the Guild and Raid guild plans.',
+    raids: 'Comp targets, pings, assignments and log matching are part of the Guild and Raid guild plans.',
     loot: 'Awarding loot is part of Raid guild.',
     readiness: 'Nudge is part of Raid guild.',
   },

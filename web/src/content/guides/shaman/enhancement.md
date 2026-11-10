@@ -27,8 +27,6 @@ sources:
 
 ## Overview
 
-One weapon and its imbue, Stormstrike on cooldown, and a free instant Lightning Bolt whenever Maelstrom Weapon reaches five stacks.
-
 ### Strengths
 
 - Windfury Weapon's extra swings are free attacks with bonus attack power

@@ -43,8 +43,9 @@ func TestReminderCopyMatchesTheSpec(t *testing.T) {
 	if e.Title != wantTitle {
 		t.Fatalf("title = %q, want %q", e.Title, wantTitle)
 	}
-	if want := guidedCell(t, "post.tomorrowDescription")[0]; e.Description != want {
-		t.Fatalf("description = %q, want %q", e.Description, want)
+	// Round 5 (2026-11-09): the title's "Tomorrow:" says it; the post carries no description.
+	if e.Description != "" {
+		t.Fatalf("description = %q, want none", e.Description)
 	}
 
 	line := guidedCell(t, "reminder.line")
@@ -75,7 +76,7 @@ func TestTomorrowEmbed(t *testing.T) {
 	e := RaidPostEmbed(RaidPost{RaidPosted: onyxiaThursday(), State: PostTomorrow}, fixedFinish)
 	open := RaidPostEmbed(RaidPost{RaidPosted: onyxiaThursday(), State: PostOpen}, fixedFinish)
 	if e.Title != "Tomorrow: Onyxia's Lair · Thursday 10 December" ||
-		e.Description != "The raid is tomorrow. Sign up with the buttons below." {
+		e.Description != "" {
 		t.Fatalf("embed = %q / %q", e.Title, e.Description)
 	}
 	if e.Color != open.Color || len(e.Fields) != len(open.Fields) || e.Fields[0] != open.Fields[0] {
@@ -86,7 +87,7 @@ func TestTomorrowEmbed(t *testing.T) {
 func TestReminderLine(t *testing.T) {
 	in := onyxiaThursday()
 	in.Counts = RaidCounts{In: 30, Late: 3}
-	const lead = "**Onyxia's Lair is tomorrow**, <t:1796954400:F> (<t:1796954400:R>)."
+	const lead = "**Onyxia's Lair is tomorrow**, <t:1796954400:t>."
 	if got, want := ReminderLine(in), lead+" 33 of 40 signed up so far."; got != want {
 		t.Fatalf("got %q want %q", got, want)
 	}

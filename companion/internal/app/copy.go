@@ -101,7 +101,7 @@ func since(seen, now time.Time) string {
 // The Status headline: five states and the sign-in wait, first match
 // wins (see Headline). The tray shows the title word for word.
 const (
-	CopyConnectingTitle = "Waiting for you to sign in..."
+	CopyConnectingTitle = "Waiting for you to sign in…"
 	CopyConnectingSub   = "Finish in your browser. The companion connects by itself."
 	CopyConnectingBtn   = "Show the sign-in"
 
@@ -122,10 +122,13 @@ const (
 		CopyAdvancedHow
 
 	CopyReadyTitle = "Ready"
-	CopyReadySub   = "Waiting for a combat log. In game, type /combatlog once to start logging. It switches off if you type it again, so leave it if it is already on."
+	CopyReadySub   = "Waiting for a combat log. Turn /combatlog on in game."
 
 	CopyLoggingTitle = "Logging"
-	CopyLoggingSub   = "Uploading your fights as they end"
+	// CopyLoggingTitleHeld is the Logging title while a failed upload
+	// holds the queue (withHeld); the Queued row names the fight.
+	CopyLoggingTitleHeld = CopyLoggingTitle + CopySeparator + "an upload is retrying"
+	CopyLoggingSub       = "Uploading your fights as they end"
 	// CopyLoggingTitleNotCredited is the Logging title while the open report is
 	// not credited to the player yet. This is the one Logging state that is
 	// amber: the headline carries the one thing the player must do (log out

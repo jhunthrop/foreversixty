@@ -117,6 +117,9 @@ The **Reports** page lists the newest reports the moment they have an id, live o
 | Reports are credited to | Automatic by default: the companion reads who is logging from the combat log itself (the game marks the logging player's own units in every line), then finds that character among the ones the addon has exported, so a report is credited to the right region and ruleset with nothing to pick. If the addon has not exported the character yet, the report is credited the moment it has (log out once with the addon loaded). Pick a character from the list only if Automatic is wrong; the Status page and this setting both show who it currently reads |
 
 The companion watches the install you played most recently; the Status page tags it Watching.
+It knows a game folder by the `.flavor.info` file the game writes in it (`wowf` is the live game,
+`wow_classic_beta` the beta), so a renamed or custom install path works; a folder without that file is
+known by its name.
 
 Where the companion keeps its files:
 
@@ -215,14 +218,27 @@ on the site.
 
 ## Icons
 
-The Forever Sixty seal (`web/public/favicon.svg`) is the app's icon everywhere the OS shows one:
-the window and taskbar, the tray, Explorer (the Windows exe carries it as a resource, with the
-product and company fields). The rendered files live in
-`internal/icon/assets/` and are committed; to regenerate them after the seal changes:
+The Forever Sixty seal v4 (`design/assets/logo/lx-seal-v4*.png`, the site's one logo) is the app's icon everywhere the
+OS shows one: the window and taskbar, the Dock, the tray or menu bar, Explorer (the Windows exe carries it as a
+resource, with the product and company fields). Windows and Linux show it full bleed; the macOS `.icns` sets it on
+Apple's icon grid (824 of 1024 px, over a soft shadow) so it stands the size of its Dock neighbours. The tray is the
+seal with a dot in the Status headline's tone (green, amber, red; the same tokens the window uses), drawn in colour
+on every platform, macOS included: a template image is drawn from its alpha alone and would erase both the seal's
+colours and the tone dot. The rendered files live in `internal/icon/assets/` (and the window's header seal in
+`ui/seal-64.png`) and are committed. Each binary embeds only its own tray images (the four tray ICOs on Windows,
+the four 32 px tray PNGs on macOS and Linux); `seal.ico` reaches the Windows exe as its icon resource and
+`seal.icns` the macOS bundle, and neither is embedded. Every PNG is palette-quantized and recompressed, so the
+icons add about 90 KB to a Windows binary (tray ICOs and the resource) and 7 KB to a macOS or Linux one. To
+regenerate them after the seal changes:
 
 ```sh
-node tools/icons/render.mjs   # needs `pnpm install` in web/ for resvg; WEB_NODE_MODULES=... if it lives elsewhere
+brew install pngquant oxipng              # once
+python3 companion/tools/icons/render.py   # Pillow; from the repository root
 ```
+
+The window's look comes from the site's single sources, generated or copied into `ui/`, never edited there:
+`ui/tokens.css` (`node design/tokens/build.mjs`), `ui/icons.js` (`node web/scripts/gen-ui-icons.mjs`), the faces in
+`ui/fonts/` and the band and ground in `ui/art/` (`python3 tools/art/build_art.py`).
 
 The Windows resource is built from `cmd/foreversixty-companion/winres/winres.json` by the release
 workflow (go-winres), not committed.

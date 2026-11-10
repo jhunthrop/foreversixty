@@ -125,14 +125,20 @@ func TestHelpListsEveryCommand(t *testing.T) {
 	if e.Footer != "Forever Sixty" || e.Color != notify.BrandEmbed("", "", time.Time{}).Color {
 		t.Fatalf("footer %q color %d", e.Footer, e.Color)
 	}
+	// Every command but /help itself, which the player just ran.
 	lines := strings.Split(e.Description, "\n")
-	if len(lines) != 9 {
+	if len(lines) != 8 {
 		t.Fatalf("%d lines", len(lines))
 	}
 	desc := descriptionSegments(t)
-	for i, c := range Commands() {
+	i := 0
+	for _, c := range Commands() {
+		if c.Name == helpCommand {
+			continue
+		}
 		if want := fmt.Sprintf("**/%s** %s", c.Name, desc[c.Name]); lines[i] != want {
 			t.Errorf("line %d = %q, want %q", i, lines[i], want)
 		}
+		i++
 	}
 }

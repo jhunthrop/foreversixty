@@ -834,11 +834,12 @@ code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}
 .pcol .st-r{min-height:40px;padding-block:6px}.pcol .st-r .nm b{white-space:nowrap}
 @media(max-width:1023px){.pcol .st .stc{grid-template-columns:28px minmax(0,1fr) minmax(0,96px) auto}.pcol .st.open .st-r .br{display:block;grid-column:auto;padding-top:0}.pcol .st.open .st-r .f.p{grid-row:auto;grid-column:auto}}.pcol .rows.slim .row{padding-block:7px}
 .pcol-f{margin-top:auto;display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding-top:4px}
-.trees.cmp{gap:16px;grid-template-columns:repeat(3,max-content)}.trees.cmp .tg>[role=row]{display:contents}.trees.cmp .tc{display:block}.trees.cmp .tr h3{font-size:13px;line-height:18px;padding-bottom:6px;white-space:nowrap}
-.trees.cmp .tg{grid-template-columns:repeat(4,24px);gap:4px}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:24px!important;height:24px!important}
+.tbox{--cg:4px;--tg:16px;container-type:inline-size}
+.trees.cmp{--cell:clamp(18px,calc((100cqw - 2 * var(--tg) - 9 * var(--cg)) / 12 - 0.5px),32px);gap:var(--tg);grid-template-columns:repeat(3,calc(4 * var(--cell) + 3 * var(--cg)))}.trees.cmp .tg>[role=row]{display:contents}.trees.cmp .tc{display:block}.trees.cmp .tr h3{font-size:13px;line-height:18px;padding-bottom:6px;white-space:nowrap}
+.trees.cmp .tg{grid-template-columns:repeat(4,var(--cell));gap:var(--cg)}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:var(--cell)!important;height:var(--cell)!important}
 .trees.cmp .tc b{font-size:10px;line-height:12px;right:-3px;bottom:-4px}
-@media(min-width:1760px){.trees.cmp .tg{grid-template-columns:repeat(4,28px)}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:28px!important;height:28px!important}}
-@media(max-width:767px){.trees.cmp .tr h3{white-space:normal;flex-wrap:wrap;column-gap:6px;row-gap:0;min-height:42px;align-content:flex-end}.trees.cmp{grid-template-columns:repeat(3,minmax(0,max-content));gap:10px}.trees.cmp .tg{grid-template-columns:repeat(4,22px);gap:3px}.trees.cmp .tc,.trees.cmp .tc img,.trees.cmp .tc .ic{width:22px!important;height:22px!important}}
+@media(max-width:767px){.trees.cmp .tr h3{white-space:normal;flex-wrap:wrap;column-gap:6px;row-gap:0;min-height:42px;align-content:flex-end}.tbox{--cg:3px;--tg:10px}}
+@container (max-width:270px){.trees.cmp{grid-template-columns:calc(4 * var(--cell) + 3 * var(--cg))}}
 .lvl{display:flex;align-items:center;gap:10px}.lvl .bt{all:unset;box-sizing:border-box;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:4px;color:var(--nav);font-size:18px}
 .lvl .bt:hover{color:var(--strong);border-color:var(--gold)}.lvl .bt.off{opacity:.45}
 .lvl .rg{position:relative;flex:1;height:44px;display:flex;align-items:center}.lvl .rg .tk{height:4px;width:100%;border-radius:2px;background:var(--line-soft)}
@@ -987,7 +988,7 @@ button.link{all:unset;cursor:pointer;font:600 14px/20px var(--font-body);color:v
 @media(min-width:1024px){.pcols.open .pcol{padding:4px 24px 0}.pcols.open .pcol:first-child{padding-left:0}.pcols.open .pcol:last-child{padding-right:0}}
 .btn.danger{color:var(--wipe);border-color:#f0736b66}.btn.danger:hover{border-color:var(--wipe);color:#ff8f88}
 @media(max-width:1023px){.pcols.swap{display:flex;flex-direction:column}.pcols.swap>.pcol:nth-child(2){order:-1;border-top:0}.pcols.swap>.pcol:first-child{border-top:1px solid var(--line-soft)}}
-.plh{display:flex;flex-direction:column;gap:4px;min-width:0}.plh .nm{display:flex;align-items:center;gap:10px;font:700 22px/28px var(--font-body);color:var(--strong)}
+.plh{display:flex;flex-direction:column;gap:4px;min-width:0}.plh .nm{display:flex;align-items:center;gap:10px;font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--strong)}.plh .nm>*{font-family:var(--font-body);letter-spacing:normal}
 .plh .au{font-size:14px;line-height:20px;color:var(--muted)}.plh .fig{margin-top:8px}.plh .pl2{font-size:13px;line-height:20px;color:var(--muted)}.plh .pl2.gold{color:var(--gold)}
 
 button.btn{cursor:pointer;-webkit-appearance:none;appearance:none}button.btn.sm{padding:0 18px}
@@ -1088,10 +1089,15 @@ table.gridm.edge :is(th,td):last-child{padding-right:20px}
 .rpanel .rsec>.sec-h h2{font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--cream)}
 .rpanel .rd{padding-top:12px}
 @media(max-width:767px){.rpanel>.rsec{padding:18px 16px}}
-@media(min-width:1280px){.rpanel .rd:not(.solo){grid-template-columns:minmax(0,1fr) minmax(0,380px);column-gap:28px}
+@media(min-width:1280px){.rpanel .rd:not(.solo){grid-template-columns:minmax(0,var(--measure-reading,720px)) minmax(380px,1fr);column-gap:28px}
 .rpanel .rd:not(.solo)>.rd-lane{padding-left:18px;border-left:1px solid var(--line-soft)}}
 .plate.framed{position:relative}
 .plate.framed::before{content:"";position:absolute;inset:6px;border:1px solid rgba(243,238,226,.42);border-radius:6px;pointer-events:none}
+
+.rd-more{display:none}.rd-more:not(:empty){display:block;margin-top:24px;padding-top:16px;border-top:1px solid var(--line-soft);columns:340px;column-gap:28px}
+.rd-more [data-wrapped]{break-inside:avoid}
+@media(max-width:1279.98px){.rd[data-prose-first]{grid-template-areas:'prose' 'lane'}}
+@media(min-width:1280px){.rd{align-items:start}.rd[data-lane-sticky]>.rd-lane{position:sticky;top:12px}}
 
 .cspick{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
 @media(min-width:768px){.cspick{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -1107,6 +1113,8 @@ table.gridm.edge :is(th,td):last-child{padding-right:20px}
 
 .layout-wb>.below{display:contents}
 @media(min-width:1280px){.layout-wb>.below{grid-column:1/-1;display:flex;flex-direction:column;gap:var(--section-gap);min-width:0}}
+
+.btn.subscribe{background:var(--teal-edge);border-color:var(--teal-edge);color:var(--strong)}
 </style></main><!-- Simulator tools mock (design/specs/2026-11-06-sim.md grammar), built only from ws_prims. Character: a level 60 Orc Fury Warrior entered by hand (Lionheart Helm, Arcanite Reaper); items, sources, consumables and stats from build 1.60.1.70790. --><style data-system="round5">
 :root{--bg:#100a06;--raised:#170e09;--hover:#241b15;--line:#3d342d;--line-soft:#2c241f;--text:#e3dfd9;--strong:#fff;
 --muted:#e2dcd3;--nav:#fff;--gold:#ffec71;--gold-hover:#f7b90a;--cream:#f3eee2;--accent:#0093b2;--teal:#0f6064;

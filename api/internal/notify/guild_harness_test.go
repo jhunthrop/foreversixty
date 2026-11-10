@@ -31,9 +31,9 @@ func (f *fakeGuildAccess) set(s GuildStanding) {
 	f.standing = s
 }
 
-// officerWithPlan is the standing that may connect and test.
-func officerWithPlan() GuildStanding {
-	return GuildStanding{Officer: true, Plan: true, Name: "Olympus XXVII", Path: guildPath}
+// verifiedOfficer is the standing that may connect and test.
+func verifiedOfficer() GuildStanding {
+	return GuildStanding{Officer: true, Name: "Olympus XXVII", Path: guildPath}
 }
 
 type guildHarness struct {

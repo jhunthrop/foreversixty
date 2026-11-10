@@ -150,9 +150,11 @@ func TestReadinessGateRunsOnEveryCall(t *testing.T) {
 	if _, err := w.h.svc.NextRaidReadiness(ctx, w.gid, w.officer, time.Now()); !errors.Is(err, ErrRaidGuildRequired) {
 		t.Fatalf("guild tier = %v", err)
 	}
+	// The bot is free, the board stays Raid guild: no plan reads as the Raid guild refusal.
 	w.dropPlan(t)
-	if _, err := w.h.svc.NextRaidReadiness(ctx, w.gid, w.officer, time.Now()); !errors.Is(err, ErrPlanRequired) {
-		t.Fatalf("lapsed = %v", err)
+	if _, err := w.h.svc.NextRaidReadiness(ctx, w.gid, w.officer, time.Now()); !errors.Is(err, ErrRaidGuildRequired) ||
+		errors.Is(err, ErrRaidGuildGranted) {
+		t.Fatalf("no plan = %v", err)
 	}
 	w.grantPlan(t)
 	w.setContested(t, true)
@@ -198,7 +200,7 @@ func TestReadinessListsTenRowsThenTheRest(t *testing.T) {
 	}
 	rows = append(rows, ReadinessRow{Name: "Ready"})
 	got := readinessAnswerOf(Raid{ID: 1}, ReadinessView{Rows: rows}, time.Now())
-	if got.Signed != 13 || got.Failing != 12 || len(got.Rows) != 10 || got.More != 2 || got.Rows[0] != "Raider · Short" {
+	if got.Signed != 13 || got.Failing != 12 || len(got.Rows) != 10 || got.More != 2 || got.Rows[0] != "Raider · Consumables short" {
 		t.Fatalf("answer = %+v", got)
 	}
 }

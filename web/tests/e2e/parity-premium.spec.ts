@@ -1,6 +1,6 @@
 // web/tests/e2e/parity-premium.spec.ts
 // /premium and /premium/checkout against their mocks (design/parity.md, design/specs/2026-11-08-premium-account.md
-// section 14): /premium signed out, signed in on a free account and holding a guild seat, and the
+// section 14): /premium signed out and signed in as each source (free, a guild seat, paying, a grant), and the
 // checkout back from Stripe with Premium on, at 1440 and 390; every region compared for its blocks
 // and box (support/parity.ts). The mocks are rendered before the tests from the copy modules and
 // the facts reader's own accounts (support/premium-page.ts), at the mocks' pinned clock. A
@@ -23,6 +23,8 @@ const STATES: readonly { id: string; state: PremiumPageState; mock: string }[] =
   { id: 'premium', state: 'out', mock: 'web-premium' },
   { id: 'premium-free', state: 'free', mock: 'web-premium-free' },
   { id: 'premium-seat', state: 'seat', mock: 'web-premium-seat' },
+  { id: 'premium-own', state: 'own', mock: 'web-premium-own' },
+  { id: 'premium-grant', state: 'grant', mock: 'web-premium-grant' },
   { id: 'checkout-confirmed', state: 'checkout-confirmed', mock: 'web-checkout-confirmed' },
   { id: 'checkout-owned', state: 'checkout-owned', mock: 'web-checkout-owned' },
 ];
@@ -43,14 +45,14 @@ const PREMIUM_DOOR =
 const MOCK_PHONE_BAR =
   "below 768 the mock library's ControlBar line is a details/summary (ws_lib.control_bar); the built " +
   "ControlBar's is a button with aria-expanded, the same disclosure (every lane's bar shares it)";
-const PAID = new Set(['premium-seat', 'checkout-confirmed', 'checkout-owned']);
+const PAID = new Set([
+  'premium-seat',
+  'premium-own',
+  'premium-grant',
+  'checkout-confirmed',
+  'checkout-owned',
+]);
 const HAS_BAR = (id: string) => id.startsWith('premium');
-const SECTION_META =
-  "the built Section's head with a meta line (Questions) is 12 px taller than the mock library's sec-h, " +
-  'which moves the footer by the same 12 px';
-const PHONE_ROWS =
-  "at 354 px the built open Rows of the rules wrap a line fewer than the mock's, and the rail's coach " +
-  'sample a line more; every block and its order match, only the heights below the Plate move';
 const drift = (id: string, width: number): { failures: string[]; why: string[] } => {
   const failures: string[] = [];
   const why: string[] = [];
@@ -59,18 +61,7 @@ const drift = (id: string, width: number): { failures: string[]; why: string[] }
     why.push(reason);
   };
   if (width === 390) add(MOCK_HEAD_INSET, 'head:box');
-  if (width === 390 && HAS_BAR(id)) {
-    add(MOCK_PHONE_BAR, 'controls:inventory');
-    add(
-      PHONE_ROWS,
-      'section-how-the-guild-plans-work:box',
-      'section-questions:box',
-      'section-what-the-coach-says-after-a-raid:box',
-      'site-footer:box',
-    );
-    if (id !== 'premium') failures.push('plate:box');
-  }
-  if (width === 1440 && HAS_BAR(id)) add(SECTION_META, 'section-questions:box', 'site-footer:box');
+  if (width === 390 && HAS_BAR(id)) add(MOCK_PHONE_BAR, 'controls:inventory');
   if (width === 1440 && PAID.has(id)) add(PREMIUM_DOOR, 'site-header:inventory');
   return { failures, why };
 };

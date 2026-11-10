@@ -89,7 +89,7 @@ test.describe('the 404', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('No page here');
     await expect(page.getByTestId('nf-path')).toHaveText('/this-page-does-not-exist');
     await expect(page.getByTestId('nf-suggest')).toBeHidden();
-    await expect(page.locator('[data-region="plate"]')).toHaveCount(1);
+    await expect(page.locator('[data-region="plate"]:visible')).toHaveCount(1);
     await expect(page.getByTestId('nf-answer')).toBeHidden();
     const hunter = page.getByTestId('not-found-class-hunter');
     await expect(hunter.getByRole('link', { name: 'Hunter' })).toHaveAttribute('href', '/guides/hunter');

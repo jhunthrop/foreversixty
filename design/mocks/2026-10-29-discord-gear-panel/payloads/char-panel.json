@@ -35,14 +35,14 @@
           },
           {
             "type": 10,
-            "content": "**Top upgrades** · level 60 Phase 1 raid\n-# By DPS gained, against the guide build."
+            "content": "**Top upgrades** · level 60 Phase 1 raid"
           },
           {
             "type": 9,
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_epic:1302600000000000004> **Hyper Deluxe Sniper Rifle Mk XVII**\nRanged · +23.1 DPS\n-# Epic · item level 65 · Crafted: Engineering\n-# Replaces Dark Iron Rifle, item level 55"
+                "content": "<:fs_q_epic:1302600000000000004> **Hyper Deluxe Sniper Rifle Mk XVII**\nRanged · +23.1 DPS\n-# item level 65 · Crafted: Engineering\n-# Replaces Dark Iron Rifle, item level 55"
               }
             ],
             "accessory": {
@@ -58,7 +58,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_epic:1302600000000000004> **Dawn Armor**\nChest · +11.0 DPS\n-# Epic · item level 61 · Crafted: Leatherworking\n-# Replaces Shadowcraft Tunic, item level 63"
+                "content": "<:fs_q_epic:1302600000000000004> **Dawn Armor**\nChest · +11.0 DPS\n-# item level 61 · Crafted: Leatherworking\n-# Replaces Shadowcraft Tunic, item level 63"
               }
             ],
             "accessory": {
@@ -74,7 +74,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "<:fs_q_epic:1302600000000000004> **Sentinel's Chain Leggings**\nLegs · +9.3 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze\n-# Replaces Marshal's Chain Legplates, item level 71"
+                "content": "<:fs_q_epic:1302600000000000004> **Sentinel's Chain Leggings**\nLegs · +9.3 DPS\n-# item level 78 · Vendor: Illiyana Moonblaze\n-# Replaces Marshal's Chain Legplates, item level 71"
               }
             ],
             "accessory": {
@@ -84,10 +84,6 @@
               },
               "description": "Sentinel's Chain Leggings, Epic legs item"
             }
-          },
-          {
-            "type": 10,
-            "content": "-# 6 more upgrades on the character page."
           }
         ]
       },
@@ -109,7 +105,7 @@
           {
             "type": 2,
             "style": 5,
-            "label": "Character page",
+            "label": "All 9 upgrades",
             "url": "https://foreversixty.gg/character/us/normal/zulmara"
           }
         ]

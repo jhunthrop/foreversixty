@@ -11,7 +11,8 @@
   import { checkoutCopy } from '../../lib/billing/copy';
   import Button from '../ui/Button.svelte';
   import Plate from '../ui/Plate.svelte';
-  import Steps, { type StepsMark } from '../ui/Steps.svelte';
+  import type { StepsMark } from '../ui/StepMark.svelte';
+  import Steps from '../ui/Steps.svelte';
 
   let {
     phase,
@@ -61,7 +62,7 @@
   ]);
 </script>
 
-<Plate label="Checkout" testid="checkout-plate">
+<Plate label="Checkout" testid="checkout-plate" frame="framed">
   <Steps {items} testid="checkout-steps">
     {#snippet sub(item)}
       {#if item.key === 'signin'}
@@ -77,7 +78,7 @@
         {/if}
       {:else if back}
         <span
-          class={phase === 'slow' ? 'text-ember' : 'text-text'}
+          class={phase === 'slow' ? 'text-warn' : 'text-text'}
           role="status"
           data-testid="checkout-message">{message}</span
         >

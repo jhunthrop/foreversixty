@@ -23,8 +23,6 @@ sources:
 
 ## Overview
 
-Prayer of Mending and Renew on the tank, Greater Heal as the filler, and Prayer of Healing for a hurt group.
-
 ### Strengths
 
 - Prayer of Mending: up to five heals for one cast, the cheapest healing you have all fight

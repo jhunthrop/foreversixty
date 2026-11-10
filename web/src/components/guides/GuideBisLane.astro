@@ -41,6 +41,7 @@ const href = specLinkHref({
 
 <div
   class="guide-bis-lane"
+  data-wrap-list
   data-testid="guide-bis"
   data-guide-class={classSlug}
   data-default-faction={bis?.defaultFaction ?? 'alliance'}
@@ -64,7 +65,7 @@ const href = specLinkHref({
     </a>
   </p>
   <p class="guide-bis-bands m-0 text-small text-muted" data-testid="guide-bis-bands">
-    {guidesCopy.bisByLevelLabel}
+    <span class="guide-bis-bands-label">{guidesCopy.bisByLevelLabel}</span>
     {bandLinks.map((link) => (
       <a class={LINK} href={link.href}>
         {link.label}
@@ -104,5 +105,10 @@ const href = specLinkHref({
   }
   .guide-bis-bands + p {
     margin-top: -16px;
+  }
+  @media (max-width: 767px) {
+    .guide-bis-bands-label {
+      flex-basis: 100%;
+    }
   }
 </style>

@@ -46,7 +46,7 @@ func TestGuildDelivererOwnTimeoutStillCounts(t *testing.T) {
 }
 
 func TestGuildConnectIsLimitedToTwentyPerMinute(t *testing.T) {
-	g := newGuildAPI(t, officerWithPlan())
+	g := newGuildAPI(t, verifiedOfficer())
 	for i := 1; i <= connectsPerMinute; i++ {
 		if res, _ := g.get(g.route("/connect")); res.StatusCode != http.StatusFound {
 			t.Fatalf("call %d status %d", i, res.StatusCode)

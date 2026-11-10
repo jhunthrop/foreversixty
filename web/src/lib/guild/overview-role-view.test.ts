@@ -1,17 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { GuildRaidCounts } from './api';
-import type { GuildChecklist, GuildOfficerActions } from './overview-api';
-import {
-  actionRows,
-  attendanceGridRows,
-  attendanceTitle,
-  checklistRows,
-  compGridRows,
-  coverGridRows,
-  raidTimeLine,
-  raidWeekday,
-  verdictLine,
-} from './overview-role-view';
+import type { GuildChecklist } from './overview-api';
+import { checklistRows, compGridRows, coverGridRows, raidTimeLine, raidWeekday } from './overview-role-view';
 
 const checklist = (
   items: GuildChecklist['items'],
@@ -85,7 +75,6 @@ describe('checklistRows', () => {
         fix: { label: 'How', href: '/setup' },
       }),
     ]);
-    expect(verdictLine('almost', rows, 'Thursday')).toBe('Almost there: one thing before Thursday.');
   });
 
   it('asks the member to share quests and bags the export cannot see, each linking the setup', () => {
@@ -183,91 +172,6 @@ describe('checklistRows', () => {
   });
 });
 
-describe('verdictLine (D12)', () => {
-  const open = checklistRows(
-    checklist([
-      { key: 'gear_gap', state: 'fail', upgrades: 1, slots: ['hands'] },
-      { key: 'enchants', state: 'fail', missing_slots: ['chest'] },
-    ]),
-  );
-
-  it('counts the open checks in words', () => {
-    expect(verdictLine('almost', open, 'Thursday')).toBe('Almost there: two things before Thursday.');
-  });
-
-  it('never says floor, and reads ready when nothing is open', () => {
-    expect(verdictLine('ready', [], 'Thursday')).toBe('Ready to raid on Thursday.');
-    expect(verdictLine('getting_started', open, null)).toBe('Getting started: two things before the raid.');
-    expect(verdictLine('almost', open, null)).not.toMatch(/floor/i);
-  });
-});
-
-describe('actionRows', () => {
-  const base: GuildOfficerActions = {
-    approvals: { count: 0, names: [] },
-    not_signed: { raid_id: 7, count: 0, names: [] },
-    drops_to_award: {
-      tracked: false,
-      count: null,
-      raid_id: 3,
-      label: "Onyxia's Lair, Tue 8 Dec",
-      awarded: 0,
-    },
-  };
-
-  it('shows only what is waiting, and hides untracked drops', () => {
-    expect(actionRows(base, 'Thursday')).toEqual([]);
-  });
-
-  it('words approvals and non-signers, naming three then a count', () => {
-    const rows = actionRows(
-      {
-        ...base,
-        approvals: { count: 1, names: ['Nightlatch'] },
-        not_signed: { raid_id: 7, count: 4, names: ['Voidcall', 'Skyarcana', 'Starnettle', 'Ashveil'] },
-      },
-      'Thursday',
-    );
-    expect(rows).toEqual([
-      { key: 'approvals', title: '1 raider waiting for approval', sub: 'Nightlatch' },
-      {
-        key: 'not_signed',
-        title: '4 not signed up for Thursday',
-        sub: 'Voidcall, Skyarcana, Starnettle and 1 more',
-      },
-    ]);
-  });
-
-  it('counts the pending applications after approvals, and none when an older API sends none', () => {
-    const rows = actionRows(
-      {
-        ...base,
-        approvals: { count: 1, names: ['Nightlatch'] },
-        applications: { count: 2, names: ['Ashenveil', 'Quillbright'] },
-      },
-      null,
-    );
-    expect(rows.map((row) => row.key)).toEqual(['approvals', 'applications']);
-    expect(rows[1]).toEqual({ key: 'applications', title: '2 applications', sub: 'Ashenveil, Quillbright' });
-    expect(actionRows({ ...base, applications: { count: 1, names: ['Ashenveil'] } }, null)[0].title).toBe(
-      '1 application',
-    );
-    expect(actionRows({ ...base, applications: { count: 0, names: [] } }, null)).toEqual([]);
-  });
-
-  it("counts the loot council's open drops of its newest night, and none once all are awarded", () => {
-    const drops = { tracked: true, count: 3, raid_id: 3, label: "Onyxia's Lair, Tue 8 Dec", awarded: 2 };
-    expect(actionRows({ ...base, drops_to_award: drops }, null)).toEqual([
-      { key: 'drops', title: '3 drops to award', sub: "Onyxia's Lair, Tue 8 Dec" },
-    ]);
-    expect(actionRows({ ...base, drops_to_award: { ...drops, count: 1 } }, null)[0].title).toBe(
-      '1 drop to award',
-    );
-    expect(actionRows({ ...base, drops_to_award: { ...drops, count: 0 } }, null)).toEqual([]);
-    expect(actionRows({ ...base, drops_to_award: null }, null)).toEqual([]);
-  });
-});
-
 describe('comp against the target', () => {
   const counts: GuildRaidCounts = {
     in: 23,
@@ -299,41 +203,6 @@ describe('comp against the target', () => {
     const [tanks, healers] = compGridRows(full, target);
     expect(tanks.cells.map((c) => `${c.tone}:${c.text}`)).toEqual(['none:2', 'ok:2', 'none:—']);
     expect(healers.cells.map((c) => `${c.tone}:${c.text}`)).toEqual(['none:8', 'warn:6', 'warn:2']);
-  });
-});
-
-describe('attendanceTitle', () => {
-  it('says one raid in the singular and counts several', () => {
-    expect(attendanceTitle(1)).toBe('Attendance, last raid');
-    expect(attendanceTitle(4)).toBe('Attendance, last 4 raids');
-  });
-});
-
-describe('attendanceGridRows', () => {
-  it('puts slipping raiders first and maps each night to a mark', () => {
-    const rows = attendanceGridRows({
-      raids: [],
-      rows: [
-        {
-          name: 'Cinderglass',
-          class: 'mage',
-          account_key: 'a',
-          cells: ['bench', 'present'],
-          slipping: false,
-        },
-        {
-          name: 'Pinefeather',
-          class: 'druid',
-          account_key: 'b',
-          cells: ['present', 'absent'],
-          slipping: true,
-        },
-      ],
-    });
-    expect(rows.map((r) => [r.label, r.sub, r.cells.map((c) => c.text).join('')])).toEqual([
-      ['Pinefeather', 'slipping', '✓×'],
-      ['Cinderglass', 'bench', 'B✓'],
-    ]);
   });
 });
 

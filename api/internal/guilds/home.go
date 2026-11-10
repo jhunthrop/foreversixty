@@ -145,8 +145,11 @@ type RosterRow struct {
 	Role           *string `json:"role,omitempty"`
 	// SpecName ("Holy Paladin") and SpecIcon are the catalogue's words for Spec
 	// (describeRosterRows), omitted with it.
-	SpecName  *string `json:"spec_name,omitempty"`
-	SpecIcon  *string `json:"spec_icon,omitempty"`
+	SpecName *string `json:"spec_name,omitempty"`
+	SpecIcon *string `json:"spec_icon,omitempty"`
+	// Group is the raid group the row fights in (tank, healer, melee or ranged; raidspec.Group,
+	// the rule the raid page's sign-ups use), omitted with the spec (describeRosterRows).
+	Group     *string `json:"group,omitempty"`
 	ItemLevel *int    `json:"item_level,omitempty"`
 	// Level is the character's level: its export's level= section, else the guild's newest
 	// addon roster snapshot's line (homeAddonSnapshot); null when neither carries one. Both are

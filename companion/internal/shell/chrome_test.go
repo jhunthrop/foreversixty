@@ -1,23 +1,45 @@
 package shell
 
-import "testing"
+import (
+	"fmt"
+	"os"
+	"regexp"
+	"strconv"
+	"strings"
+	"testing"
+)
 
-// The title bar is the header's colour, so a change to a token in
-// ui/styles.css is a change here; these are the values the design spec
-// gives as COLORREFs (0x00BBGGRR).
-func TestTheTitleBarColoursAreTheHeaderTokens(t *testing.T) {
-	for name, c := range map[string][2]uint32{
-		"caption #0b1018": {captionColor, 0x0018100B},
-		"text #b9b3a4":    {captionText, 0x00A4B3B9},
-		"border #262e40":  {borderColor, 0x00402E26},
-		"page #07090d":    {pageColor, 0x000D0907},
+// tokenRef is a hex token of ui/tokens.css as a COLORREF (0x00BBGGRR).
+func tokenRef(t *testing.T, css []byte, name string) uint32 {
+	t.Helper()
+	m := regexp.MustCompile(`(?m)^\s*` + regexp.QuoteMeta(name) + `:\s*#([0-9a-f]{6});`).FindSubmatch(css)
+	if m == nil {
+		t.Fatalf("ui/tokens.css has no hex %s", name)
+	}
+	v, _ := strconv.ParseUint(string(m[1]), 16, 32)
+	return colorRef(uint8(v>>16), uint8(v>>8), uint8(v))
+}
+
+// The title bar and the page behind the webview are the window's tokens,
+// so a change in design/tokens is a change here.
+func TestTheTitleBarColoursAreTheWindowTokens(t *testing.T) {
+	css, err := os.ReadFile("../../ui/tokens.css")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for name, got := range map[string]uint32{
+		"--color-nav-bar": captionColor,
+		"--color-cream":   captionText,
+		"--color-foot":    borderColor,
+		"--color-ground":  pageColor,
 	} {
-		if c[0] != c[1] {
-			t.Errorf("%s = %#08x, want %#08x", name, c[0], c[1])
+		if want := tokenRef(t, css, name); got != want {
+			t.Errorf("%s = %#08x, want %#08x", name, got, want)
 		}
 	}
-	if pageARGB != "FF07090D" {
-		t.Errorf("pageARGB = %s", pageARGB)
+	r, g, b := pageColor&0xff, pageColor>>8&0xff, pageColor>>16&0xff
+	if want := fmt.Sprintf("FF%02X%02X%02X", r, g, b); !strings.EqualFold(pageARGB, want) {
+		t.Errorf("pageARGB = %s, want %s", pageARGB, want)
 	}
 }
 

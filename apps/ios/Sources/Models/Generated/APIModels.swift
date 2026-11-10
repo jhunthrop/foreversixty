@@ -3822,6 +3822,8 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
     public let specName: String?
     /// W3-C16: the spec's talent-tab icon stem, withheld with spec.
     public let specIcon: String?
+    /// The raid group the row fights in (raidspec.Group, as the raid page's sign-ups), withheld with spec.
+    public let group: String?
     /// Withheld without gear consent.
     public let itemLevel: Int?
     /// The export's level, else the addon roster's; null when neither carries one or without gear consent.
@@ -3855,6 +3857,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         role: String? = nil,
         specName: String? = nil,
         specIcon: String? = nil,
+        group: String? = nil,
         itemLevel: Int? = nil,
         level: Int? = nil,
         attendance30: GuildAttendance? = nil,
@@ -3885,6 +3888,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         self.role = role
         self.specName = specName
         self.specIcon = specIcon
+        self.group = group
         self.itemLevel = itemLevel
         self.level = level
         self.attendance30 = attendance30
@@ -3917,6 +3921,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         case role
         case specName
         case specIcon
+        case group
         case itemLevel
         case level
         case attendance30

@@ -115,8 +115,8 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 	// base is a paired companion that is logging a report credited to credit.
 	base := func(credit Credit) Snapshot {
 		installs := []InstallStatus{
-			{Path: `C:\Program Files (x86)\World of Warcraft\_classic_beta_`, Flavor: "_classic_beta_",
-				FlavorName: "Classic beta", Watching: true, Added: true, LastPlayed: &watched,
+			{Path: `C:\Program Files (x86)\World of Warcraft\_forever_`, Flavor: "_forever_",
+				FlavorName: "WoW Forever", Watching: true, Added: true, LastPlayed: &watched,
 				Advanced: true, AdvancedKnown: true},
 		}
 		s := Snapshot{
@@ -141,7 +141,7 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 	// headline recomputes the headline from what a case changed.
 	headline := func(s *Snapshot) {
 		connecting := s.Connect.State == ConnectWaiting || s.Connect.State == ConnectBlocked
-		s.Headline = headlineFor(s.Paired, connecting, s.SignedOut != nil, s.Pipeline.Logging, s.Credit, s.Installs)
+		s.Headline = withHeld(headlineFor(s.Paired, connecting, s.SignedOut != nil, s.Pipeline.Logging, s.Credit, s.Installs), s.Pipeline.Held)
 	}
 	// unpaired is a companion that has never signed in.
 	unpaired := func() Snapshot {
@@ -225,6 +225,14 @@ func TestTheStatusFixturesAreWhatTheCompanionSends(t *testing.T) {
 		{"status-uploading-some.json", func() Snapshot {
 			s := base(credited)
 			s.Pipeline.Fights, s.Pipeline.Queued, s.Pipeline.QueuedFights = 5, 4, 2
+			return s
+		}},
+		// The fight at the head failed twice: it holds the two behind it, in order.
+		{"status-upload-held.json", func() Snapshot {
+			s := base(credited)
+			s.Pipeline.Fights, s.Pipeline.Queued, s.Pipeline.QueuedFights = 6, 3, 3
+			s.Pipeline.Held = &pipeline.Held{Kind: "fight", Fight: 4, Attempts: 2}
+			headline(&s)
 			return s
 		}},
 		{"status-advanced-off.json", func() Snapshot {

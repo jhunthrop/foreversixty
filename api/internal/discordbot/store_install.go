@@ -24,14 +24,16 @@ type Store struct {
 
 // Install is a guild's one Discord server and its raid channel.
 type Install struct {
-	GuildID          int64
-	ServerID         string
-	ServerName       string
-	ChannelID        *string
-	ChannelName      *string
-	Failures         int
-	LastError        *string
-	RemovedInDiscord bool
+	GuildID     int64
+	ServerID    string
+	ServerName  string
+	ChannelID   *string
+	ChannelName *string
+	// RecruitChannelID and RecruitChannelName are the channel new applications post in.
+	RecruitChannelID, RecruitChannelName *string
+	Failures                             int
+	LastError                            *string
+	RemovedInDiscord                     bool
 	// ChannelUnusable is set while the bot is in the server but cannot post in ChannelID.
 	ChannelUnusable *ChannelUnusable
 	// PostDefault is the raid form's remembered "Post to Discord" box.
@@ -58,14 +60,16 @@ type BindResult struct {
 }
 
 const installColumns = `guild_id, server_id, server_name, channel_id, channel_name, failures,
-	last_error, removed_in_discord, channel_unusable_reason, channel_unusable_missing, post_default, remind_default, installed_by, updated_at`
+	last_error, removed_in_discord, channel_unusable_reason, channel_unusable_missing, post_default, remind_default, installed_by, updated_at,
+	recruit_channel_id, recruit_channel_name`
 
 func scanInstall(row pgx.Row) (Install, error) {
 	var in Install
 	var reason *string
 	var missing []string
 	err := row.Scan(&in.GuildID, &in.ServerID, &in.ServerName, &in.ChannelID, &in.ChannelName,
-		&in.Failures, &in.LastError, &in.RemovedInDiscord, &reason, &missing, &in.PostDefault, &in.RemindDefault, &in.InstalledBy, &in.UpdatedAt)
+		&in.Failures, &in.LastError, &in.RemovedInDiscord, &reason, &missing, &in.PostDefault, &in.RemindDefault, &in.InstalledBy, &in.UpdatedAt,
+		&in.RecruitChannelID, &in.RecruitChannelName)
 	if reason != nil {
 		in.ChannelUnusable = &ChannelUnusable{Reason: *reason, Missing: append([]string{}, missing...)}
 	}

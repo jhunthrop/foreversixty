@@ -50,7 +50,7 @@ describe('GuildReadiness', () => {
     expect(markup).toContain('id="officer-tools-gate-readiness"');
     const gateAt = markup.indexOf('data-testid="guild-readiness-plan-gate"');
     expect(gateAt).toBeGreaterThan(markup.indexOf('<h2'));
-    expect(gateAt).toBeLessThan(markup.indexOf('data-testid="guild-readiness-rows"'));
+    expect(gateAt).toBeLessThan(markup.indexOf('data-testid="guild-readiness-board"'));
     const gate = markup.slice(gateAt, markup.indexOf('</p>', gateAt));
     expect(text(gate)).toContain(`${guildGateCopy.lead.readiness} ${guildGateCopy.startTrial}`);
     expect(gate).toContain(`href="${SETTINGS_HREF}?plan=raid_guild#billing"`);
@@ -68,7 +68,7 @@ describe('GuildReadiness', () => {
   });
 
   it('shows the Read-only label beside the h2 for members only, as Loot does', () => {
-    expect(text(html(false, false))).toContain(`Short of something ${guildGateCopy.readOnly}`);
+    expect(text(html(false, false))).toMatch(new RegExp(`ready ${guildGateCopy.readOnly}`));
     expect(text(html(true, false))).not.toContain(guildGateCopy.readOnly);
     expect(text(html(true, true))).not.toContain(guildGateCopy.readOnly);
   });
@@ -80,8 +80,6 @@ describe('GuildReadiness', () => {
     for (const tag of tags) {
       expect(tag).toMatch(/\sdisabled(=""|\s|>)/);
       expect(tag).toContain('aria-describedby="officer-tools-gate-readiness"');
-      expect(tag).toContain('disabled:not-aria-busy:opacity-45');
-      expect(tag).toContain('disabled:cursor-not-allowed');
     }
     expect(text(markup)).not.toContain('Nudge copies a message you can paste to them.');
   });
@@ -157,7 +155,7 @@ describe('GuildReadiness next-raid filter', () => {
     expect(markup).toContain('aria-pressed="true"');
     const copy = text(markup).replace(/&#39;/g, "'");
     expect(copy).toContain('Next raid only');
-    expect(copy).toContain('Short of something In or Late for Thu 10 Dec');
+    expect(copy).toContain('ready for Thu 10 Dec');
   });
 
   it('lists a raider with no export by exception, and nothing else about them', () => {
@@ -214,7 +212,7 @@ describe('GuildReadiness by exception', () => {
     }).body;
   }
 
-  it('names every shortfall in one gold line, and the clean raiders as ready', () => {
+  it('names every shortfall under the raider, and the clean raiders as ready', () => {
     const short = {
       ...clean,
       character_key: 'us/pvp/short',
@@ -225,20 +223,20 @@ describe('GuildReadiness by exception', () => {
       failing: 3,
     };
     const markup = board([clean, short]);
-    expect(text(markup)).toContain('2 enchants missing · consumables short · 1 talent point unspent');
-    expect(text(markup)).toContain(
-      `1 ready Best in slot or no upgrades, enchanted, stocked, every point spent ${clean.name}`,
-    );
+    expect(text(markup)).toContain('2 enchants missing, consumables short, 1 talent point unspent');
+    expect(text(markup)).toContain('1 of 2 ready');
+    expect(text(markup)).toContain('Ready 1');
     expect(markup.match(/data-testid="guild-readiness-nudge-/g)).toHaveLength(1);
   });
 
-  it('says Nobody when everyone is ready', () => {
-    expect(text(board([clean]))).toContain('Short of something Nobody.');
+  it('reads everyone ready when nobody is short', () => {
+    expect(text(board([clean]))).toContain('1 of 1 ready');
+    expect(board([clean])).not.toContain('data-testid="guild-readiness-shortfalls"');
   });
 
   it('reads the raid asks: attunement, flask and food', () => {
     const asks = { ...clean, attuned: false, flask_food: { flask_or_elixir: false, food: true } };
-    expect(text(board([asks], true))).toContain('no flask or raid elixir · not attuned');
+    expect(text(board([asks], true))).toContain('no flask or elixir, not attuned');
   });
 
   it('puts the leveling characters on their own panel, never graded', () => {

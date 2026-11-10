@@ -293,7 +293,7 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
-  class="csel-panel ui-overlay ui-framed"
+  class="csel-panel ui-overlay"
   data-kind={sheet ? 'sheet' : 'menu'}
   role="dialog"
   aria-label={selectorCopy.dialogLabel}

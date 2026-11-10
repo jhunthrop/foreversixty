@@ -113,13 +113,41 @@ func rosterWorld(t *testing.T, roster []notify.RosterLine) *postWorld {
 	t.Helper()
 	w := newPostWorld(t)
 	w.svc.emoji = &EmojiRegistry{API: boardMarks()}
+	w.svc.d.PublicBaseURL = reviewSite // the post's footer carries the seal, as in production
 	setRoster(w, roster)
 	return w
 }
 
 func setRoster(w *postWorld, roster []notify.RosterLine) {
 	boardRaid(w, countsOf(roster))
-	w.facts.edit(w.raidID, func(f *guilds.RaidPostFacts) { f.Post.Roster = roster })
+	w.facts.edit(w.raidID, func(f *guilds.RaidPostFacts) {
+		f.Post.Roster = roster
+		// Onyxia's default comp target and the cover the roster brings, as the guilds read fills them.
+		f.Post.Target = &notify.RoleTarget{Tanks: 2, Healers: 8, Melee: 10, Ranged: 20}
+		f.Post.Missing = boardMissing(roster)
+	})
+}
+
+// boardMissing is the raid buffs no class signed In or Late brings, from the cover catalogue's
+// class providers (guilds/raids_cover_catalogue.go), in its order.
+func boardMissing(roster []notify.RosterLine) []string {
+	present := map[string]bool{}
+	for _, r := range roster {
+		if r.State == "in" || r.State == "late" {
+			present[r.Class] = true
+		}
+	}
+	var missing []string
+	for _, b := range []struct{ class, buff string }{
+		{"warrior", "Battle Shout"}, {"priest", "Power Word: Fortitude"}, {"mage", "Arcane Intellect"},
+		{"druid", "Mark of the Wild"}, {"paladin", "Blessing of Kings"}, {"paladin", "Blessing of Might"},
+		{"shaman", "Windfury Totem"},
+	} {
+		if !present[b.class] {
+			missing = append(missing, b.buff)
+		}
+	}
+	return missing
 }
 
 func lastEdit(w *postWorld) Message {
@@ -144,13 +172,14 @@ func dumpPostFrames(d frameDumper) {
 	w.postedOnce(t)
 	w.rest.Latest = "m1"
 	w.remindDue(t)
-	d.write(dumpFrame{ID: "post-tomorrow", Title: "the reminder as an edit of the post", Message: stamped(marshalled(t, lastEdit(w)))})
+	d.write(dumpFrame{ID: "post-tomorrow", Title: "the reminder as an edit of the post", Clock: reminderClock,
+		Message: stamped(marshalled(t, lastEdit(w)))})
 
 	r := rosterWorld(t, boardRoster33())
 	r.postedOnce(t)
 	r.rest.Latest, r.rest.ReplyID = "other", "r1"
 	r.remindDue(t)
-	d.write(dumpFrame{ID: "post-reminder", Title: "the reminder as a reply under the post",
+	d.write(dumpFrame{ID: "post-reminder", Title: "the reminder as a reply under the post", Clock: reminderClock,
 		Above: stamped(marshalled(t, lastEdit(r))), Message: marshalled(t, r.replies()[0].Message)})
 
 	posted := r.facts.by[r.raidID].Post.RaidPosted
@@ -160,9 +189,12 @@ func dumpPostFrames(d frameDumper) {
 	}
 	contents := r.poster.Contents()
 	last := contents[len(contents)-1]
-	d.write(dumpFrame{ID: "post-reminder-webhook", Title: "the reminder through a webhook",
+	d.write(dumpFrame{ID: "post-reminder-webhook", Title: "the reminder through a webhook", Clock: reminderClock,
 		Message: stamped(marshalled(t, Message{Content: last.Content, Embeds: last.Embeds}))})
 }
+
+// reminderClock is when the day-before reminder is read: the evening before the raid.
+var reminderClock = boardStart.Add(-24 * time.Hour)
 
 // dumpSpecFrames: Aurelith, a paladin with no spec, presses In on the post (33 of 40 already
 // signed), picks Holy, and the outcome lands in place with Change spec.

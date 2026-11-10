@@ -24,9 +24,9 @@
     "detected_character": "",
     "installs": [
       {
-        "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_",
-        "flavor": "_classic_beta_",
-        "flavor_name": "Classic beta",
+        "path": "C:\\Program Files (x86)\\World of Warcraft\\_forever_",
+        "flavor": "_forever_",
+        "flavor_name": "WoW Forever",
         "watching": true,
         "added": true,
         "last_played": "2026-10-20T17:40:00Z",
@@ -76,14 +76,14 @@
       "enabled": true,
       "lines": [
         {
-          "text": "Addon not found in Classic beta",
+          "text": "Addon not found in WoW Forever",
           "tone": "muted"
         }
       ],
       "offers": [
         {
-          "path": "C:\\Program Files (x86)\\World of Warcraft\\_classic_beta_",
-          "label": "Install the addon into Classic beta"
+          "path": "C:\\Program Files (x86)\\World of Warcraft\\_forever_",
+          "label": "Install the addon into WoW Forever"
         }
       ]
     }

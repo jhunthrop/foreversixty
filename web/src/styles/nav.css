@@ -675,7 +675,7 @@
   }
   .csel-mark[data-mark='stale'],
   .csel-mark[data-mark='session'] {
-    --mark-color: var(--color-ember);
+    --mark-color: var(--color-warn);
   }
   .csel-mark[data-mark='failed'] {
     --mark-color: var(--color-wipe);
@@ -1000,9 +1000,8 @@
   /* The panel and the hover tip are the overlay surface (`ui-overlay`, kinds menu and tooltip:
      ui/overlay.css); their parts take the overlay's hairlines (`ui-overlay-rule-t`/`-b`), the
      list's fade and the sheet's grab handle from it too. This places them. */
-  /* Round 5 (directions mock b4-account-menu): the overlay framed with the panel's cream inset
-     line (ui/panel.css .ui-framed); every part sits 10 px inside the panel edge, its text 8 px
-     further in, so a row's tint and rail clear the inset line. */
+  /* An overlay has one edge (ui/overlay.css): no inset frame line. Every part sits 10 px inside the
+     panel edge, its text 8 px further in. */
   .csel-panel {
     position: absolute;
     z-index: 20;
@@ -1049,7 +1048,7 @@
     color: var(--color-gold-hover);
   }
   .csel-manage:focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-gold);
     outline-offset: 2px;
     border-radius: var(--radius-field);
   }
@@ -1093,8 +1092,9 @@
   .csel-row:hover:not(.is-current) {
     background: var(--color-hover);
   }
+  /* The current character: the one selected state (the accent tint, rail and check). */
   .csel-row.is-current {
-    background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+    background: var(--color-selected);
   }
   .csel-row.is-current::before {
     content: '';
@@ -1104,7 +1104,7 @@
     left: 0;
     width: 3px;
     border-radius: 2px;
-    background: var(--color-accent);
+    background: var(--color-selected-mark);
   }
   .csel-row-main {
     display: grid;
@@ -1129,7 +1129,7 @@
     background: var(--color-pressed);
   }
   .csel-row-main:focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-gold);
     outline-offset: -2px;
   }
   /* The ringed crest (ClassCrestRing's recipe): the class ring at 55 %, full on hover and focus. */
@@ -1173,7 +1173,7 @@
     object-fit: contain;
   }
   .csel-check {
-    color: var(--color-accent);
+    color: var(--color-selected-mark);
   }
   .csel-r2 {
     line-height: 1.45;
@@ -1192,7 +1192,7 @@
     text-overflow: ellipsis;
   }
   .csel-r3 .is-stale {
-    color: var(--color-ember);
+    color: var(--color-warn);
   }
   .csel-r3.is-failed {
     color: var(--color-wipe);
@@ -1239,7 +1239,7 @@
     color: var(--color-muted);
   }
   .csel-note.is-ember {
-    color: var(--color-ember);
+    color: var(--color-warn);
   }
   /* "Restored your last character" and its Forget (restored.ts): the note's muted line with the
      Manage link's quiet action at its end; the action's 44px row sets the height. */
@@ -1323,8 +1323,8 @@
     width: 32px;
     height: 32px;
     border-radius: var(--radius-field);
-    background: var(--tile);
-    color: var(--tile-ink);
+    background: color-mix(in srgb, var(--color-gold) 12%, transparent);
+    color: var(--color-gold);
   }
   .csel-tile.is-quiet {
     background: rgb(255 255 255 / 0.05);
@@ -1467,7 +1467,7 @@
     justify-content: center;
     min-height: 44px;
     border: 1px solid var(--color-teal-edge);
-    border-radius: var(--radius-control);
+    border-radius: var(--radius-field);
     background: var(--color-teal);
     color: var(--color-strong);
     font-size: 15px;
@@ -1509,12 +1509,6 @@
       border-radius: var(--radius-plate) var(--radius-plate) 0 0;
       box-shadow: none;
       padding-bottom: calc(12px + env(safe-area-inset-bottom));
-    }
-    /* The sheet's inset line opens at the bottom edge, as the sheet does. */
-    .csel-panel.ui-framed::before {
-      bottom: -1px;
-      border-bottom: 0;
-      border-radius: calc(var(--radius-plate) - 4px) calc(var(--radius-plate) - 4px) 0 0;
     }
     .csel-grab {
       display: grid;

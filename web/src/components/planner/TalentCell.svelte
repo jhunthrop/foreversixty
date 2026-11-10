@@ -140,7 +140,7 @@
     <!-- CELL_FACE's opacity-40 (locked state) is left off this span deliberately: on an
          <img> it lets the tree's own art show through a hair, which is fine since images
          carry no text contrast requirement, but blended onto this span's actual glyphs it
-         drops --color-muted on --color-card-top from ~5.9:1 to ~2:1 (axe color-contrast) --
+         drops --color-muted on --color-raised from ~5.9:1 to ~2:1 (axe color-contrast) --
          real text a low-vision reader still needs to make out. The frame and pill already
          carry the locked state; the mark itself stays fully legible. -->
     <span class="text-muted heading-name text-[13px]" aria-hidden="true">
@@ -164,7 +164,7 @@
       height="40"
       loading="eager"
       decoding="async"
-      class={`rounded-control h-10 w-10 object-cover md:h-11 md:w-11 lg:h-12 lg:w-12 ${CELL_FACE[state]}`}
+      class={`rounded-field h-10 w-10 object-cover md:h-11 md:w-11 lg:h-12 lg:w-12 ${CELL_FACE[state]}`}
       onerror={() => (iconBroken = true)}
       onload={(event) => {
         // A 1x1 file is the data pipeline's placeholder for art it has not produced yet
@@ -182,7 +182,7 @@
        stays free to hang outside the cell by its own -4px offset at every width, the same
        as it always has at lg. -->
   <span
-    class={`rounded-pill bg-bg numeric absolute -right-1 -bottom-1 border px-1 text-[11px] leading-[14px] whitespace-nowrap ${CELL_PILL[state]}`}
+    class={`rounded-field bg-bg numeric absolute -right-1 -bottom-1 border px-1 text-[11px] leading-[14px] whitespace-nowrap ${CELL_PILL[state]}`}
   >
     {rank}/{talent.max_rank}
   </span>
@@ -255,7 +255,7 @@
       data-testid={`talent-${talent.id}`}
       data-rank={rank}
       data-state={state}
-      class={`rounded-control relative flex h-11 w-11 items-center justify-center border bg-white/[.04] md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
+      class={`rounded-field relative flex h-11 w-11 items-center justify-center border bg-white/[.04] md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
       onfocus={onfocuscell}
     >
       {@render face()}
@@ -269,7 +269,7 @@
       data-testid={`talent-${talent.id}`}
       data-rank={rank}
       data-state={state}
-      class={`rounded-control relative flex h-11 w-11 items-center justify-center border bg-white/[.04] md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
+      class={`rounded-field relative flex h-11 w-11 items-center justify-center border bg-white/[.04] md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
       onclick={add}
       oncontextmenu={removeOnContextMenu}
       onfocus={() => {

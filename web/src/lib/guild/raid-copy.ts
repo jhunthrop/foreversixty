@@ -36,6 +36,18 @@ export const TONIGHT_FROM_HOUR = 17;
  *  as an expression (`{SEP}`). */
 export const SEP = ' · ';
 
+/** The raid page's Post now / Repost (owner ruling 2026-11-09). */
+export const raidPostCopy = {
+  postNow: 'Post now',
+  repost: 'Repost',
+  notPosted: 'Not on Discord yet.',
+  postedTo: (channel: string | null, when: string): string => `Posted to ${channel ?? 'Discord'} ${when}.`,
+  posted: 'Posted.',
+  reposted: 'Reposted as a new message.',
+  noChannel: 'Pick a Discord channel in Settings first.',
+  failed: 'The post did not go out. Try again.',
+} as const;
+
 export const raidCopy = {
   planButton: 'Plan an event',
   cap: 'A guild plans at most 12 raids ahead.',
@@ -141,12 +153,7 @@ export const raidCopy = {
     remindDayBefore: 'Remind the day before',
     postNow: (channel: string | null): string =>
       `Posts to ${channel ?? 'your Discord channel'} as soon as you save.`,
-    postLater: (channel: string | null, day: string): string =>
-      `Posts to ${channel ?? 'your Discord channel'} on ${day}, a week before the raid.`,
-    postRepeat: (firstWithinWeek: boolean): string =>
-      firstWithinWeek
-        ? 'Each raid posts a week before it starts; the first posts as soon as you save.'
-        : 'Each raid posts a week before it starts.',
+    postRepeat: 'All four raids post as soon as you save.',
     postOff: 'This raid will not post to Discord.',
     remind: 'Posts a reminder 24 hours before the start.',
     remindNeedsPost: 'Turn on Post to Discord to send a reminder.',
@@ -196,8 +203,6 @@ export const raidCopy = {
     /** Between the start and end clocks: `8:00 pm to 11:00 pm`. */
     timeTo: 'to',
   },
-  changelog:
-    "Added raid sign-ups. Officers plan raids on the guild's Raids tab and members sign up in one tap, from the raid page or the guild page.",
 } as const;
 
 /** What each kind of night is called in a sentence (guild events spec 3.5). */

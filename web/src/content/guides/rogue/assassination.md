@@ -27,8 +27,6 @@ sources:
 
 ## Overview
 
-Mutilate with two daggers: two combo points a strike, Seal Fate crits for a third and a Cold Blood Eviscerate whenever it is up.
-
 ### Strengths
 
 - Mutilate has no facing requirement, so you never lose damage chasing a boss's back

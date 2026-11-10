@@ -163,7 +163,7 @@
           </p>
         {/if}
         {#if view.state === 'busy'}
-          <p class="text-small text-ember mb-3" data-testid="coach-busy">
+          <p class="text-small text-warn mb-3" data-testid="coach-busy">
             {full === null ? coachCopy.busy : busyLine(full)}
           </p>
         {/if}

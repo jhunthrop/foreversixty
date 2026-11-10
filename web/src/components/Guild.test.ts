@@ -25,7 +25,7 @@ describe('Guild', () => {
   it('server-renders the lede, so the first paint is text the island does not change (W.16)', () => {
     const { body } = render(Guild, { props: { path: PATH } });
     expect(body).toContain('data-testid="guild-lede"');
-    expect(body).toContain('raid nights and loot sit in the tabs');
+    expect(body).toContain('Progression, roster, raid nights and loot.');
   });
 
   it('gives the loading state an h1, so the page still has one before the guild name loads (axe page-has-heading-one)', () => {

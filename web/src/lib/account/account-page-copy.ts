@@ -30,8 +30,12 @@ import {
 
 export const accountPageCopy = {
   title: 'Your account',
-  signedInWithBattlenet: 'Signed in with Battle.net',
-  signedInByEmail: 'Signed in by email',
+  /** The You panel's facts: who is signed in, and how. */
+  battletagLabel: 'BattleTag',
+  emailLabel: 'Email',
+  signInLabel: 'Sign-in',
+  signInBattlenet: 'Battle.net',
+  signInEmail: 'Email',
   signOut: 'Sign out',
   devicesLabel: 'Devices',
   youLabel: 'You',

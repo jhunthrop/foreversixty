@@ -6,21 +6,6 @@
   },
   "states": [
     {
-      "id": "member",
-      "path": "/guild/us/pvp/olympus-xxvii",
-      "mock": "web-guild-member.html"
-    },
-    {
-      "id": "officer",
-      "path": "/guild/us/pvp/olympus-xxvii",
-      "mock": "web-guild-officer.html"
-    },
-    {
-      "id": "loot",
-      "path": "/guild/us/pvp/olympus-xxvii#loot",
-      "mock": "web-guild-loot.html"
-    },
-    {
       "id": "raid",
       "path": "/guild/us/pvp/olympus-xxvii/raids/41",
       "mock": "web-guild-raid.html"
@@ -46,19 +31,9 @@
       "mock": "web-guild-profile.html"
     },
     {
-      "id": "roster",
-      "path": "/guild/us/pvp/olympus-xxvii#roster",
-      "mock": "web-guild-roster.html"
-    },
-    {
       "id": "progression",
       "path": "/guild/us/pvp/olympus-xxvii#progression",
       "mock": "web-guild-progression.html"
-    },
-    {
-      "id": "readiness",
-      "path": "/guild/us/pvp/olympus-xxvii#readiness",
-      "mock": "web-guild-readiness.html"
     },
     {
       "id": "before-raids",

@@ -25,6 +25,7 @@ import {
 } from '../../src/fixtures/guild/mock-guild';
 import { guildBillingRead } from '../../src/test-support/billing-fixtures';
 import { stubLootCouncil } from './support/officer-tools';
+import { openRosterAccounts } from './support/guild-roster-accounts';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
@@ -250,6 +251,7 @@ test.describe('tab strip renders and hash-routes', () => {
     }
     await page.getByTestId('guild-tab-roster').click();
     await expect(page).toHaveURL(/#roster$/);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-tab')).toBeVisible();
 
     await page.getByTestId('guild-tab-readiness').click();
@@ -288,6 +290,7 @@ test.describe('tab strip renders and hash-routes', () => {
   }) => {
     await stubCore(page, null);
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-overview-tab')).toBeVisible();
     await expect(page.getByTestId('guild-roster-tab')).toHaveCount(0);
   });
@@ -299,6 +302,7 @@ test.describe('roster: pin, sort, officer controls', () => {
   }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     const rows = page.getByTestId('guild-roster-rows').locator('.guild-roster-row');
     await expect(rows.first()).toContainText('(you)');
 
@@ -310,6 +314,7 @@ test.describe('roster: pin, sort, officer controls', () => {
   }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-approve-all')).toBeVisible();
     const approveButtons = page.getByTestId('guild-roster-approve');
     const count = await approveButtons.count();
@@ -323,6 +328,7 @@ test.describe('roster: pin, sort, officer controls', () => {
   test('a member never sees Approve, Approve all, or Remove', async ({ page }) => {
     await stubCore(page, VIEWER_MEMBER, 'member');
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-tab')).toBeVisible();
     await expect(page.getByTestId('guild-roster-approve')).toHaveCount(0);
     await expect(page.getByTestId('guild-roster-approve-all')).toHaveCount(0);
@@ -344,6 +350,7 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
       route.fulfill(envelope(buildMockHome(VIEWER_MEMBER, undefined, null, withSnapshot))),
     );
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-rows')).toBeVisible();
   }
 
@@ -382,7 +389,8 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
     page,
   }) => {
     await openRoster(page, true);
-    await expect(page.locator('[role="columnheader"]')).toHaveCount(0);
+    // The account table (the raid roster above it is a StatTable with its own head).
+    await expect(page.getByTestId('guild-roster-tab').locator('[role="columnheader"]')).toHaveCount(0);
     await expect(page.getByTestId('guild-roster-sort-header')).toHaveCount(0);
     const sort = page.getByTestId('guild-roster-sort');
     await expect(sort).toContainText('Sort');
@@ -435,6 +443,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
     await page.clock.setFixedTime(new Date('2026-12-22T21:46:00Z'));
     await stubCore(page, VIEWER_MEMBER, 'member');
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     const home = buildMockHome(VIEWER_MEMBER);
     const waiting = home.roster.filter((r) => !r.verified).length;
     await expect(page.getByTestId('guild-roster-counts')).toHaveText(
@@ -462,6 +471,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
   test('the "No account" chip narrows the roster to the names with no account', async ({ page }) => {
     await stubCore(page, VIEWER_MEMBER, 'member');
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await page.getByTestId('guild-roster-filter-noaccount').click();
     await expect(page.getByTestId('guild-roster-entries').getByTestId('guild-roster-entry')).toHaveCount(1);
     await expect(page.getByTestId('guild-roster-rows')).toHaveCount(0);
@@ -478,6 +488,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
   }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-approve-explains')).toHaveCount(0);
     const list = page.getByTestId('guild-roster-unverified-list');
     // A member waits with no rank tag (batch 3).
@@ -500,6 +511,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
       );
     });
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await page.getByTestId('guild-roster-approve-all').click();
     await expect(page.getByTestId('guild-roster-approve-all-confirm')).toHaveCount(0);
     await expect.poll(() => called).toBe(true);
@@ -524,6 +536,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
       return route.fulfill(envelope({ approved: waiting.map((r) => r.character_key) }));
     });
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await page.getByTestId('guild-roster-approve-all').click();
     await expect(page.getByTestId('guild-roster-approve-all-confirm')).toContainText(
       `Approve ${waiting.length}, including 1 officer?`,
@@ -557,6 +570,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
       return route.continue();
     });
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await page.locator('[data-testid="guild-roster-decline"][aria-label="Decline Rootgall"]').click();
     await expect(page.getByTestId('guild-roster-decline-confirm')).toContainText(
       'Remove Rootgall from the waiting list? They can ask again.',
@@ -590,6 +604,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
       ),
     );
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-tab')).toBeVisible();
     await expect(page.getByTestId('guild-roster-approve')).toHaveCount(0);
     await expect(page.getByTestId('guild-roster-approve-all')).toHaveCount(0);
@@ -612,6 +627,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
       ),
     );
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     const own = page
       .getByTestId('guild-roster-rows')
       .locator('.guild-roster-row')
@@ -629,6 +645,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
   }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     const own = page
       .getByTestId('guild-roster-rows')
       .locator('.guild-roster-row')
@@ -650,6 +667,7 @@ test.describe('roster: everyone the addon saw, with a word beside each', () => {
     await page.setViewportSize({ width: 390, height: 900 });
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-entries')).toBeVisible();
     const entry = page.locator('[data-testid="guild-roster-entry"][data-state="no_account"]');
     const [n, s, g] = await Promise.all([
@@ -687,6 +705,7 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
     await page.clock.setFixedTime(new Date('2026-12-22T21:46:00Z'));
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-rows')).toBeVisible();
     await expect(page.getByTestId('guild-roster-entries')).toBeVisible();
 
@@ -770,6 +789,7 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
       route.fulfill(envelope({ ...buildMockHome(VIEWER_OFFICER), roster: [], pending: [] })),
     );
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-entries')).toBeVisible();
     await expect(page.getByTestId('guild-roster-ranks-pending')).toHaveText(
       'Ranks show once the addon sends them.',
@@ -779,6 +799,7 @@ test.describe('roster at 390px: three blocks under the name, nothing past the ed
   test('the ranks line is gone once the addon has sent ranks', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-rows')).toBeVisible();
     await expect(page.getByTestId('guild-roster-ranks-pending')).toHaveCount(0);
   });
@@ -871,11 +892,9 @@ test.describe('readiness: worst-first sort and officer Nudge', () => {
     await stubDepthEndpoints(page);
     await page.goto(`${GUILD_URL}#readiness`);
     const readiness = buildMockReadiness();
-    // Each row renders twice (a desktop grid row and a phone stacked card sharing the same
-    // testid, GuildReadiness.svelte) -- only one is ever visible at a given viewport, so
-    // this must filter to :visible rather than take the first DOM match.
+    // The board (dense/ReadinessBoard.svelte): one row per raider short of something, worst first.
     const rows = page
-      .getByTestId('guild-readiness-rows')
+      .getByTestId('guild-readiness-board')
       .locator('[data-testid^="guild-readiness-row-"]:visible');
     await expect(rows.first()).toBeVisible();
     const sorted = [...readiness.rows].sort(
@@ -1108,6 +1127,7 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
       ),
     );
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-approve').first()).toBeDisabled();
     await expect(page.getByTestId('guild-roster-remove').first()).toBeDisabled();
   });
@@ -1131,6 +1151,7 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
       return route.fulfill(envelope({ character_key: 'us/pvp/rootgall', status: 'approved' }));
     });
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     const approveButton = page.locator('[data-testid="guild-roster-approve"][aria-label="Approve Rootgall"]');
     await approveButton.click();
     await expect.poll(() => approveCalled).toBe(true);
@@ -1152,6 +1173,7 @@ test.describe('claim, contest and roster mutations (unchanged v1 mechanism)', ()
       }),
     );
     await page.goto(`${GUILD_URL}#roster`);
+    await openRosterAccounts(page);
     const removeButton = page.locator('[data-testid="guild-roster-remove"][aria-label="Remove Sunderfel"]');
     await removeButton.click();
     await expect(page.getByTestId('guild-roster-remove-confirm')).toContainText(
@@ -1348,6 +1370,7 @@ test.describe('guild facts read as sentences (P.1)', () => {
       await page.setViewportSize({ width, height: 900 });
       await stubCore(page, VIEWER_OFFICER, 'leader');
       await page.goto(`${GUILD_URL}#roster`);
+      await openRosterAccounts(page);
       const stats = page.getByTestId('guild-roster-facts').first();
       await expect(stats).toBeVisible();
       expect(await stats.evaluate((el) => getComputedStyle(el).fontFamily)).not.toMatch(/mono/i);
@@ -1378,8 +1401,8 @@ test.describe('guild facts read as sentences (P.1)', () => {
     const lineBox = await raidLine.boundingBox();
     expect(lineBox).not.toBeNull();
     expect(lineBox!.y).toBeLessThan(300);
-    // The waiting card leads the tab, so the Roster card's head is what starts above the fold.
-    const card = page.getByTestId('guild-roster-card');
+    // The raid roster leads the tab (dense spec 5.2): its head starts above the fold.
+    const card = page.getByTestId('guild-raid-roster');
     await expect(card).toBeVisible();
     const box = await card.boundingBox();
     expect(box).not.toBeNull();

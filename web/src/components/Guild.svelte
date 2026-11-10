@@ -109,7 +109,7 @@
   // exceeded `scripts/check-island-size.mjs`'s 16KB gzip budget.
   // The Overview is the first tab but its own chunk: the role-aware modules keep the entry in budget.
   const overviewLazy = createLazyComponent(() => import('./guild/GuildOverview.svelte'));
-  const rosterLazy = createLazyComponent(() => import('./guild/GuildRosterTable.svelte'));
+  const rosterLazy = createLazyComponent(() => import('./guild/dense/GuildRaidRoster.svelte'));
   const raidsLazy = createLazyComponent(() => import('./guild/GuildRaids.svelte'));
   const progressionLazy = createLazyComponent(() => import('./guild/GuildProgression.svelte'));
   const readinessLazy = createLazyComponent(() => import('./guild/GuildReadiness.svelte'));
@@ -413,7 +413,10 @@
    *  empty block never pushes the tab's content down (the Overview carries the raid and the needs). */
   const roleLineShown = $derived(
     home !== null &&
-      ((myLevelingLine === null && home.standing != null && standingSentence(home.standing) !== '') ||
+      ((activeTab !== 'overview' &&
+        myLevelingLine === null &&
+        home.standing != null &&
+        standingSentence(home.standing) !== '') ||
         myLevelingLine !== null ||
         (activeTab === 'roster' && showsBandLine(myGuildMembership?.verified === true, role)) ||
         (activeTab !== 'overview' && role === 'member' && needs !== null) ||
@@ -755,7 +758,6 @@
       onApprove={approveFromCard}
       onPlan={planFromCard}
       {bandSignsUp}
-      planGated={!officerTools}
     />
   {/if}
 {/snippet}
@@ -770,7 +772,6 @@
         guildId={home.guild.id}
         nextRaid={home.next_raid ?? null}
         officer={officerView}
-        {officerTools}
         {gateFacts}
         {guildPath}
         currentKey={myCharacterKey}
@@ -902,7 +903,7 @@
                    separate from the claim/settings row below it (unchanged v1 mechanism),
                    rather than the two fighting over the same slot. -->
             <div class="flex flex-col gap-1" data-testid="guild-overview-standing">
-              {#if myLevelingLine === null && home.standing !== null && home.standing !== undefined}
+              {#if activeTab !== 'overview' && myLevelingLine === null && home.standing !== null && home.standing !== undefined}
                 {@const sentence = standingSentence(home.standing)}
                 <!-- No line when the spec has no peer to rank against: the old "the only ... Hunter"
                        gloss read as a second spec beside the header chip's. -->
@@ -976,6 +977,7 @@
           nextRaid={home?.next_raid ?? null}
           {guildPath}
           myRow={myRosterRow}
+          roster={home?.roster ?? []}
           you={showsBandLine(myGuildMembership?.verified === true, role) ? youRow : undefined}
           reports={home?.reports ?? data.reports}
           summary={home?.summary}
@@ -991,26 +993,39 @@
     {:else if activeTab === 'roster' && home !== null}
       {#if rosterLazy.current}
         <rosterLazy.current
+          guildId={guildId ?? 0}
           roster={home.roster}
           pending={home.pending ?? []}
-          members={home.members}
-          counts={home.counts}
-          {can}
-          {myCharacterKey}
-          {rosterBusy}
-          {rosterActionError}
-          frozen={home.claim.frozen}
-          {removeOverridesFrozen}
+          nextRaidId={home.next_raid?.id ?? null}
+          officer={officerView}
+          canApprove={can.includes('approve')}
+          busy={rosterBusy !== null}
           onApprove={(row) => void onApprove(row)}
-          onRemove={(row) => void onRemove(row)}
-          onRemoveMember={(entry) => void onRemoveMember(entry)}
           onDecline={(row) => void onRemove(row)}
           onApproveAll={() => void onApproveAll()}
-          {rowPath}
           profileHref={(row) => rosterProfileHref(row, { officer: officerView, myCharacterKey, guildPath })}
-          mySiteSpec={myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null)}
-          attendanceSource={attendanceSourceOf(home)}
-          {focusApproveAll}
+          table={{
+            roster: home.roster,
+            pending: home.pending ?? [],
+            members: home.members,
+            counts: home.counts,
+            can,
+            myCharacterKey,
+            rosterBusy,
+            rosterActionError,
+            frozen: home.claim.frozen,
+            removeOverridesFrozen,
+            onApprove: (row) => void onApprove(row),
+            onRemove: (row) => void onRemove(row),
+            onRemoveMember: (entry) => void onRemoveMember(entry),
+            onDecline: (row) => void onRemove(row),
+            onApproveAll: () => void onApproveAll(),
+            rowPath,
+            profileHref: (row) => rosterProfileHref(row, { officer: officerView, myCharacterKey, guildPath }),
+            mySiteSpec: myCharacterKey === null ? null : (mySiteSpecs.get(myCharacterKey) ?? null),
+            attendanceSource: attendanceSourceOf(home),
+            focusApproveAll,
+          }}
         />
       {:else}
         <Skeleton lines={6} minHeight="min-h-[320px]" testid="guild-roster-skeleton" />
@@ -1043,7 +1058,6 @@
           guildTimezone={raids?.guild_timezone ?? null}
           discord={raids?.discord}
           officer={role === 'officer'}
-          {officerTools}
           memberView={myGuildMembership?.verified === true}
           {settingsHref}
           {gateFacts}
@@ -1087,6 +1101,7 @@
           onToggleNextRaid={() => (readinessNextRaidOnly = !readinessNextRaidOnly)}
           {guildId}
           guildTimezone={readinessView.guildTimezone}
+          median={readiness?.all.median_item_level ?? null}
           officer={officerView}
           {officerTools}
           {raidGuildTools}
@@ -1102,6 +1117,7 @@
           {officerTools}
           {raidGuildTools}
           ownKeys={[...myCharacterKeys]}
+          roster={home?.roster ?? []}
           {gateFacts}
           timeZone={home?.next_raid?.guild_timezone ?? undefined}
           onRefused={(gate) => {
@@ -1123,8 +1139,6 @@
           {contestBusy}
           {contestError}
           {showContestConfirm}
-          {officerTools}
-          onPlanRefused={() => (officerToolsEnded = true)}
           onCrestChanged={() => void onCrestChanged()}
           onContestStart={() => {
             showContestConfirm = true;

@@ -143,19 +143,20 @@ function capitalize(value: string): string {
 export function readinessShortfalls(
   row: GuildReadinessRow,
   raid: { attunement?: boolean } | null = null,
+  upgradesShort = true,
 ): string[] {
   if (row.no_export) return [NO_EXPORT];
   const out: string[] = [];
   const upgrades = row.gear_gap?.upgrades ?? 0;
-  if (upgrades > 0) out.push(counted(upgrades, 'upgrade'));
+  if (upgradesShort && upgrades > 0) out.push(counted(upgrades, 'upgrade'));
   const missing = row.enchants.checked ? row.enchants.missing_slots.length : 0;
   if (missing > 0) out.push(`${counted(missing, 'enchant')} missing`);
   // What the bags lack, named when the export says (a flask or raid elixir, buff food); short
   // without a name only when it does not.
   const flaskFood = row.flask_food;
   const lacks: string[] = [];
-  if (flaskFood != null && !flaskFood.flask_or_elixir) lacks.push('no flask or raid elixir');
-  if (flaskFood != null && !flaskFood.food) lacks.push('no buff food');
+  if (flaskFood != null && !flaskFood.flask_or_elixir) lacks.push('no flask or elixir');
+  if (flaskFood != null && !flaskFood.food) lacks.push('no food');
   if (lacks.length > 0) out.push(...lacks);
   else if (row.consumables.state === 'short') out.push('consumables short');
   if (row.talent_points_unspent > 0)
@@ -166,9 +167,18 @@ export function readinessShortfalls(
 
 /** The board's three lists: who is short of something (worst first), who is ready, and who is still
  *  leveling. A raider the site could read nothing for is short of their export. */
+/** How many things a raider is missing for the raid: every unenchanted slot counts, as does each
+ *  other shortfall (flask, food, talents, attunement, the export). */
+export function missingCount(row: GuildReadinessRow, shortfalls: readonly string[]): number {
+  const slots = row.enchants.checked ? row.enchants.missing_slots.length : 0;
+  return shortfalls.length + Math.max(0, slots - 1);
+}
+
 export function readinessLists(
   rows: readonly GuildReadinessRow[],
   raid: { attunement?: boolean } | null = null,
+  /** False on the dense matrix: the gain to BiS is its own column, not a shortfall. */
+  upgradesShort = true,
 ): {
   short: { row: GuildReadinessRow; shortfalls: string[] }[];
   ready: GuildReadinessRow[];
@@ -178,7 +188,7 @@ export function readinessLists(
   const short: { row: GuildReadinessRow; shortfalls: string[] }[] = [];
   const ready: GuildReadinessRow[] = [];
   for (const row of graded) {
-    const shortfalls = readinessShortfalls(row, raid);
+    const shortfalls = readinessShortfalls(row, raid, upgradesShort);
     if (shortfalls.length > 0) short.push({ row, shortfalls });
     else if (anyCheckRead(row)) ready.push(row);
     else short.push({ row, shortfalls: [NOTHING_SHARED] });

@@ -19,7 +19,7 @@
 </script>
 
 {#if shown}
-  <Section title={notificationsCopy.label} anchor="discord" testid="account-discord-section">
+  <Section title={notificationsCopy.label} anchor="discord" testid="account-discord-section" panel>
     <div class="flex flex-col gap-3">
       {#if linkOn}
         <div>

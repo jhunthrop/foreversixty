@@ -129,3 +129,38 @@ describe('rarity text tokens', () => {
     expect(contrastRatio(hex as string, background as string)).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
   });
 });
+
+describe('the P15 sweep (plan 2026-11-09-redesign, Wave 2)', () => {
+  const LEGACY = [
+    'color-card-top',
+    'color-line-warm',
+    'color-line-warm-strong',
+    'color-line-card',
+    'color-gold-deep',
+    'color-gold-light',
+    'color-ember',
+    'row-hover',
+    'color-row-hover',
+    'row-band-hover',
+    'tile',
+    'color-tile',
+    'tile-ink',
+    'color-tile-ink',
+    'radius-panel',
+    'radius-control',
+    'radius-pill',
+  ];
+
+  it('leaves no Direction B legacy token in tokens.css', () => {
+    const source = readFileSync(TOKENS_FILE, 'utf8');
+    for (const name of LEGACY) expect(source, name).not.toMatch(new RegExp(`--${name}:`));
+  });
+
+  it('keeps the warning ink as its own token, AA as text on the card', () => {
+    const tokens = readColorTokens();
+    expect(tokens.get('warn')).toBe('#d66e28');
+    expect(
+      contrastRatio(tokens.get('warn') as string, tokens.get('raised') as string),
+    ).toBeGreaterThanOrEqual(AA_NORMAL_TEXT);
+  });
+});

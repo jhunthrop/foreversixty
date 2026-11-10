@@ -5,8 +5,8 @@
      side (spec section 2.6) -- a 403 from that call IS the "you are not an officer" signal,
      read directly rather than re-derived from /v1/me client side. -->
 <script lang="ts">
-  import { guildClaimHref, type CharacterPath } from '../lib/characters';
-  import { fetchMeFresh, refetchMe, type Me, type MeGuild } from '../lib/account/api';
+  import { guildClaimHref, guildSetupHref, type CharacterPath } from '../lib/characters';
+  import { fetchMeFresh, refetchMe, type Me } from '../lib/account/api';
   import { onWindowFocus } from '../lib/data/query';
   import {
     GuildApiError,
@@ -18,8 +18,11 @@
   } from '../lib/guild/api';
   import { guildSettingsCopy } from '../lib/guild/copy';
   import { can } from '../lib/guild/roster-model';
-  import { settingsWords } from '../lib/guild/settings-view';
-  import { gateFactsFrom } from '../lib/guild/plan-gate';
+  import { settingsWords, VISIBILITY_OPTIONS } from '../lib/guild/settings-view';
+  import { fetchGuildSetup, type GuildSetup } from '../lib/guild/setup-api';
+  import { setupCopy } from '../lib/guild/setup-copy';
+  import { setupOpen } from '../lib/guild/setup-model';
+  import Notice from './ui/Notice.svelte';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { guildDiscordReserve } from '../lib/guild/discord-state';
   import { createLazyComponent } from '../lib/report/lazy-component.svelte';
@@ -33,17 +36,10 @@
   import Page from './ui/Page.svelte';
   import PageHeader from './ui/PageHeader.svelte';
   import Section from './ui/Section.svelte';
-  import type { SelectOption } from '../lib/ui/listbox-model';
   import Select from './ui/Select.svelte';
   import SettingsRow from './ui/SettingsRow.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
   import { button } from '../lib/ui/button';
-
-  const VISIBILITY_OPTIONS: readonly SelectOption[] = [
-    { value: 'public', label: 'Public' },
-    { value: 'unlisted', label: 'Unlisted' },
-    { value: 'guild', label: 'Guild only' },
-  ];
 
   // The Discord section (raids spec 3.8) is its own chunk: GuildShell's entry is at its budget.
   const discordLazy = createLazyComponent(() => import('./guild/GuildDiscordSection.svelte'));
@@ -52,25 +48,20 @@
     path,
     embedded = false,
     crest,
-    officerTools,
-    onPlanRefused,
   }: {
     path: CharacterPath;
     /** Inside the guild page's Settings tab: the page's own head stands, so no h1 of its own. */
     embedded?: boolean;
     /** The guild crest row (officers only), drawn at the foot of the Records card. */
     crest?: Snippet;
-    /** From the guild page's Settings tab; the standalone route leaves it out. */
-    officerTools?: boolean;
-    onPlanRefused?: () => void;
   } = $props();
 
   let guildId = $state<number | null>(null);
   /** Whether this account may release the claim (the `release` word on its /v1/me guild entry). */
   let mayRelease = $state(false);
-  /** This account's /v1/me guild entry: its rank and whether the trial is open, for the gate. */
-  let myEntry = $state<MeGuild | null>(null);
   let guildName = $state('');
+  /** The setup checklist, best-effort: the row above the page shows until every step is settled. */
+  let setup = $state<GuildSetup | null>(null);
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
   let notice = $state('');
@@ -92,6 +83,9 @@
       guildName = page.guild.name;
       settings = await fetchGuildSettings(page.guild.id, undefined, (fresh) => (settings = fresh));
       status = 'ready';
+      void fetchGuildSetup(page.guild.id)
+        .then((fresh) => (setup = fresh))
+        .catch(() => (setup = null));
     } catch (thrown) {
       status = thrown instanceof GuildApiError && thrown.status === 403 ? 'forbidden' : 'failed';
       return;
@@ -109,7 +103,6 @@
 
   function applyBilling(me: Me | null): void {
     const entry = me?.guilds.find((g) => g.id === guildId);
-    myEntry = entry ?? null;
     mayRelease = entry === undefined ? false : can(entry.can, 'release');
   }
 
@@ -183,18 +176,6 @@
   $effect(() => {
     if (settings?.discord !== undefined) discordLazy.load();
   });
-
-  /** Only Discord is gated here, a feature of both plans: the plan flags do not change its link. */
-  const gateFacts = $derived(
-    gateFactsFrom({
-      claim: settings?.claim ?? null,
-      membership: myEntry,
-      officerTools: false,
-      raidGuildTools: false,
-      settingsHref: '',
-      claimHref: guildClaimHref(path.region, path.ruleset, guildName),
-    }),
-  );
 </script>
 
 {#snippet notes()}
@@ -240,7 +221,7 @@
             type="number"
             min="0"
             aria-labelledby={labelId}
-            class="rounded-control text-strong h-11 w-[72px] border border-white/15 bg-white/[.045] px-3 text-[15px] font-semibold disabled:opacity-45 {busy
+            class="rounded-field text-strong h-11 w-[72px] border border-white/15 bg-white/[.045] px-3 text-[15px] font-semibold disabled:opacity-45 {busy
               ? BUSY_CLASS
               : ''}"
             bind:value={rankDraft}
@@ -327,6 +308,18 @@
     <p class="text-[14px]" data-testid="guild-settings-forbidden">{guildSettingsCopy.forbidden}</p>
   {:else if settings !== null}
     {@const current = settings}
+    {#if setup !== null && setupOpen(setup)}
+      <div class="px-(--page-inset) pb-3">
+        <Notice
+          text={`${setupCopy.settingsRow.label} · ${setupCopy.settingsRow.progress(setup.done, setup.total)}`}
+          action={{
+            label: setupCopy.settingsRow.link,
+            href: guildSetupHref(path.region, path.ruleset, guildName || path.slug),
+          }}
+          testid="guild-settings-setup-row"
+        />
+      </div>
+    {/if}
     <Page layout="split" panels testid="guild-settings-page">
       {#if guildId !== null}
         <GuildBillingSection {guildId} {path} {guildName} />
@@ -337,9 +330,6 @@
             {guildId}
             discord={settings.discord}
             {frozen}
-            {officerTools}
-            {gateFacts}
-            {onPlanRefused}
             onDiscord={(discord) => {
               if (settings !== null) settings = { ...settings, discord };
             }}

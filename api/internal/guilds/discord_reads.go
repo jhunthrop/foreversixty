@@ -14,8 +14,8 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
-// The refusals of the bot's officer reads. ErrPlanRequired and ErrClaimContested (the sign-up
-// service's) complete the set.
+// The refusals of the bot's officer reads. ErrClaimContested (the sign-up service's) completes
+// the set.
 var (
 	// ErrNotOfficer is a viewer who is not a verified officer or leader of the guild.
 	ErrNotOfficer = errors.New("guilds: not a verified officer of the guild")

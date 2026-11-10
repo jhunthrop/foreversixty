@@ -133,7 +133,8 @@ func New(d Deps) *Service {
 	s.commands, s.components = s.commandRoutes(), s.componentRoutes()
 	if d.Notify != nil {
 		d.Notify.OnState(notify.StateKindLink, s.linkCallback)
-		d.Notify.OnState(notify.StateKindBotInstall, s.installCallback)
+		d.Notify.OnState(notify.StateKindBotInstall, s.installCallback(botOutcomeParam))
+		d.Notify.OnState(notify.StateKindBotInstallSetup, s.installCallback(botSetupOutcomeParam))
 	}
 	s.autocompletes, s.updating = s.autocompleteRoutes(), updateComponents()
 	return s
@@ -170,7 +171,7 @@ func (s *Service) StartDrainer(stop context.Context, d *Drainer) {
 
 // NewDrainer is a drainer over the service's store and REST client, reading facts from facts.
 func (s *Service) NewDrainer(facts PostFacts) *Drainer {
-	return &Drainer{Store: s.d.Store, REST: s.d.REST, Facts: facts, Marks: s.emoji, Log: s.log}
+	return &Drainer{Store: s.d.Store, REST: s.d.REST, Facts: facts, Marks: s.emoji, SealURL: s.sealURL(), Log: s.log}
 }
 
 // serverGuild is the guild the interaction's server is installed for.

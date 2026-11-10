@@ -38,6 +38,8 @@ section>.sec-h+*{margin-top:12px}
 .f{display:flex;flex-direction:column;gap:6px;min-width:0}.f .err{color:var(--wipe);font-size:13px;line-height:20px}
 input.field.bad{border-color:var(--wipe)}
 .f .seg{align-self:flex-start}
+/* the built controls (lib/ui/field.ts FIELD_HEIGHT h-11 md:h-10, ui/segmented.css 44 px items) */
+.beta .seg a{height:44px}@media(max-width:767px){.beta input.field{height:44px}}
 .send{display:flex;flex-direction:column;align-items:flex-start;gap:8px}.send p{margin:0}.send .alert{color:var(--wipe)}
 .qr{display:flex;flex-direction:column;align-items:flex-start;gap:12px}.qr p{margin:0}.qr .code{width:200px;line-height:0}
 .qr .code svg{width:100%;height:auto}
@@ -92,12 +94,12 @@ def signup(state: str) -> str:
 
 def app_page(state: str) -> str:
     feats = '<ul class="feats">' + ''.join(f'<li>{e(line)}</li>' for line in C['features']) + '</ul>'
-    main = Section(e(C['featuresTitle']), feats) + Section(e(C['formTitle']), signup(state))
+    main = Section(e(C['featuresTitle']), feats, panel=True, frame='framed') + Section(e(C['formTitle']), signup(state), panel=True)
     qr = (f'<div class="qr"><div class="code" role="img" aria-label="{a(C["qrAlt"])}">{A["qr"]}</div>'
           f'<p class="t-small">{e(C["qrLine"])}</p></div>')
-    rail = f'<div class="qr-rail">{Section(e(C["qrTitle"]), qr)}</div>'
-    head = PageHeader(e(C['heading']), meta=[Tag(e(C['soon']))], lead=e(C['lead']))
-    body = head + f'<div class="page-foot">{Page("split", main, rail)}</div>'
+    rail = f'<div class="qr-rail">{Section(e(C["qrTitle"]), qr, panel=True)}</div>'
+    head = PageHeader(e(C['heading']), meta=[Tag(e(C['soon']))])
+    body = head + Page("split", main, rail, panels=True)
     return render(f'{e(C["pageTitle"])} · Forever Sixty', body, f'/app mock, {state}. Data: app-beta-facts.json (lib/app-beta/copy.ts, qr.ts).')
 
 

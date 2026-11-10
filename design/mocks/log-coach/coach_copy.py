@@ -27,7 +27,7 @@ LAST_RAID_FREE = 'Last raid · {zone}, {date} · {count} things to fix · First:
 LAST_RAID_NONE = 'Last raid · no log in the last 14 days'
 LAST_RAID_PENDING = 'Last raid · {zone}, {date} · Reading your pulls…'
 
-DISCORD_LINE = "Fix first: {stem} — on {n} of {m} bosses. [Open your coach's review]({url})"
+DISCORD_LINE = "Fix first: {stem}, on {n} of {m} bosses. [Open your coach's review]({url})"
 DISCORD_PENDING = "[Your coach's review is on the site.]({url})"
 RAID_NIGHT = "Coach reviews for tonight's pulls are ready on Forever Sixty and in /report."
 

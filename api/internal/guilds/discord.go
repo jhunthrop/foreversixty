@@ -16,7 +16,6 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
-	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 )
 
@@ -51,15 +50,19 @@ type SettingsDiscord struct {
 
 // SettingsBot is settings.discord.bot.
 type SettingsBot struct {
-	ServerID         string  `json:"server_id"`
-	ServerName       string  `json:"server_name"`
-	ChannelID        *string `json:"channel_id"`
-	ChannelName      *string `json:"channel_name"`
-	LinkedMembers    int     `json:"linked_members"`
-	Members          int     `json:"members"`
-	Failures         int     `json:"failures"`
-	LastError        *string `json:"last_error"`
-	RemovedInDiscord bool    `json:"removed_in_discord"`
+	ServerID    string  `json:"server_id"`
+	ServerName  string  `json:"server_name"`
+	ChannelID   *string `json:"channel_id"`
+	ChannelName *string `json:"channel_name"`
+	// RecruitChannelID and RecruitChannelName are where the bot posts new applications; null
+	// until an officer picks one.
+	RecruitChannelID   *string `json:"recruit_channel_id"`
+	RecruitChannelName *string `json:"recruit_channel_name"`
+	LinkedMembers      int     `json:"linked_members"`
+	Members            int     `json:"members"`
+	Failures           int     `json:"failures"`
+	LastError          *string `json:"last_error"`
+	RemovedInDiscord   bool    `json:"removed_in_discord"`
 	// ChannelUnusable is null while the bot can post in its channel.
 	ChannelUnusable *ChannelUnusable `json:"channel_unusable"`
 }
@@ -110,8 +113,9 @@ func GuildPagePath(g Guild) string {
 }
 
 // GuildStanding implements notify.GuildAccess with this package's own rules: a verified
-// officer or leader (verifiedOfficerOrLeader's), the guild plan (requireGuildPlan's,
-// asked for an officer only) and the claim freeze (freezeCheck's, no moderator bypass).
+// officer or leader (verifiedOfficerOrLeader's) and the claim freeze (freezeCheck's, no
+// moderator bypass). The Discord routes are free for any claimed guild's officers (owner
+// ruling 2026-11-09), so no plan is read.
 func (s *Service) GuildStanding(ctx context.Context, guildID, userID int64) (notify.GuildStanding, bool, error) {
 	g, err := s.Store.getGuild(ctx, guildID)
 	if errors.Is(err, ErrNotFound) {
@@ -128,12 +132,6 @@ func (s *Service) GuildStanding(ctx context.Context, guildID, userID int64) (not
 		Officer: verified && (rank == "officer" || rank == "leader"),
 		Frozen:  claimState(g, time.Now()).Frozen,
 		Name:    g.Name, Path: GuildPagePath(g),
-	}
-	if standing.Officer && s.Entitlements != nil {
-		standing.Plan, _, err = s.Entitlements.CanForGuild(ctx, guildID, userID, entitlements.FeatureOfficerViews)
-		if err != nil {
-			return notify.GuildStanding{}, false, fmt.Errorf("guilds: standing %d: plan: %w", guildID, err)
-		}
 	}
 	return standing, true, nil
 }

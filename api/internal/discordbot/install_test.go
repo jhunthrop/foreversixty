@@ -22,6 +22,24 @@ const installPublic = "https://site.test"
 type fakeGuilds struct {
 	standings map[int64]notify.GuildStanding
 	svc       *Service
+	// decided records each Decide; decideErr is its answer.
+	decided   []fakeDecision
+	decideErr error
+}
+
+type fakeDecision struct {
+	guildID, officerID, id int64
+	accept                 bool
+}
+
+func (f *fakeGuilds) Decide(_ context.Context, guildID, officerID, id int64, accept bool) (guilds.Decision, error) {
+	f.decided = append(f.decided, fakeDecision{guildID, officerID, id, accept})
+	if f.decideErr != nil {
+		return guilds.Decision{}, f.decideErr
+	}
+	var d guilds.Decision
+	d.Application.Character.Name = "Mirelle"
+	return d, nil
 }
 
 func (f *fakeGuilds) GuildStanding(_ context.Context, guildID, _ int64) (notify.GuildStanding, bool, error) {
@@ -59,7 +77,7 @@ type installHarness struct {
 }
 
 func officerStanding(name, path string) notify.GuildStanding {
-	return notify.GuildStanding{Officer: true, Plan: true, Name: name, Path: path}
+	return notify.GuildStanding{Officer: true, Name: name, Path: path}
 }
 
 func newInstallHarness(t *testing.T) *installHarness {
@@ -135,7 +153,7 @@ func (h *installHarness) callback(guildID int64, query string, actor auth.Actor)
 	req := httptest.NewRequest(http.MethodGet, "/v1/notifications/discord/callback?"+query, nil)
 	req = req.WithContext(auth.WithActor(req.Context(), actor))
 	rec := httptest.NewRecorder()
-	h.svc.installCallback(rec, req, cs)
+	h.svc.installCallback(botOutcomeParam)(rec, req, cs)
 	return rec.Header().Get("Location")
 }
 
@@ -194,7 +212,6 @@ func TestInstallStartGate(t *testing.T) {
 		code   string
 	}{
 		{"member", func(s *notify.GuildStanding) { s.Officer = false }, http.StatusNotFound, "not_found"},
-		{"no plan", func(s *notify.GuildStanding) { s.Plan = false }, http.StatusForbidden, "guild_plan_required"},
 		{"frozen", func(s *notify.GuildStanding) { s.Frozen = true }, http.StatusConflict, "claim_contested"},
 	}
 	for _, tc := range cases {
@@ -267,10 +284,6 @@ func TestInstallCallbackOutcomes(t *testing.T) {
 		cases := map[string]func(*installHarness) auth.Actor{
 			"demoted": func(h *installHarness) auth.Actor {
 				h.setStanding(func(s *notify.GuildStanding) { s.Officer = false })
-				return h.officerActor()
-			},
-			"no plan": func(h *installHarness) auth.Actor {
-				h.setStanding(func(s *notify.GuildStanding) { s.Plan = false })
 				return h.officerActor()
 			},
 			"frozen": func(h *installHarness) auth.Actor {
@@ -427,7 +440,6 @@ func TestRemoveLeavesTheServerWithoutThePlan(t *testing.T) {
 		`insert into guild_notification_webhooks (guild_id, token_box, channel_id) values ($1, '\x00', 'w1')`, h.gid); err != nil {
 		t.Fatal(err)
 	}
-	h.setStanding(func(s *notify.GuildStanding) { s.Plan = false })
 	if rec := h.do(http.MethodDelete, h.path(h.gid, ""), ""); rec.Code != http.StatusNoContent {
 		t.Fatalf("status %d: %s", rec.Code, rec.Body.String())
 	}

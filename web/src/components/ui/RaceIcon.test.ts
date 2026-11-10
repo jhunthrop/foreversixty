@@ -13,7 +13,7 @@ describe('RaceIcon', () => {
     const body = html({ url, name: 'Night Elf' });
     expect(body).toContain('title="Night Elf"');
     expect(body).toContain(`src="${url}"`);
-    expect(body).toContain('border-line-warm-strong');
+    expect(body).toContain('border-rule-warm');
     expect(body).toContain('width: 28px');
   });
 

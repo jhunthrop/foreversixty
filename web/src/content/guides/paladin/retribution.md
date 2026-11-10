@@ -33,8 +33,6 @@ sources:
 
 ## Overview
 
-Keep a Seal up on a two-hander, Judge every 8 seconds, Holy Strike on cooldown, and finish with an instant Hammer of Wrath.
-
 ### Strengths
 
 - The fastest way to level a paladin, with Sanctified Judgement paying for most of your Seals

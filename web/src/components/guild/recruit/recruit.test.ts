@@ -13,10 +13,8 @@ import {
 } from '../../../fixtures/guild/mock-recruit';
 import type { Me } from '../../../lib/account/me-types';
 import { ApplicationsPage } from '../../../lib/guild/applications-page.svelte';
-import type { GuildOfficerActions } from '../../../lib/guild/overview-api';
 import { ProfilePage } from '../../../lib/guild/profile-page.svelte';
 import { RecruitPage } from '../../../lib/guild/recruit-page.svelte';
-import OfficerActions from '../overview/OfficerActions.svelte';
 import ApplyForm from './ApplyForm.svelte';
 import GuildApplications from './GuildApplications.svelte';
 import GuildMemberProfile from './GuildMemberProfile.svelte';
@@ -235,27 +233,5 @@ describe('the member profile', () => {
     expect(out).toContain('Zulmara');
     expect(out).not.toMatch(/note/i);
     expect(out).not.toContain('Officers only');
-  });
-});
-
-describe('Action needed', () => {
-  it('an officer gets the applications row with Open to the applications page', () => {
-    const actions: GuildOfficerActions = {
-      approvals: { count: 0, names: [] },
-      applications: { count: 2, names: ['Ashenveil', 'Quillbright'] },
-      not_signed: { raid_id: null, count: 0, names: [] },
-      drops_to_award: null,
-    };
-    const out = html(OfficerActions, {
-      guildId: 2024,
-      actions,
-      day: null,
-      canPing: false,
-      onSelectTab: noop,
-      guildPath: '/guild/us/pvp/olympus-xxvii',
-    });
-    expect(out).toContain('2 applications');
-    expect(out).toContain('Ashenveil, Quillbright');
-    expect(out).toContain('href="/guild/us/pvp/olympus-xxvii/applications"');
   });
 });

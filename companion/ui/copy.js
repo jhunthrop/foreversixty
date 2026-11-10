@@ -14,7 +14,7 @@ const COPY = {
 
   // Shown when the companion's own service does not answer. The cause
   // is never printed.
-  localDown: 'The companion stopped responding, so your fights may not be uploading. Right-click its icon in the system tray (bottom right, under the ^ arrow), choose Quit, then open it again.',
+  localDown: 'The companion stopped answering, so fights are not uploading. Quit it from the tray icon and open it again.',
   trayNotice: 'Still running in the tray. Use Quit from the tray icon to stop logging.',
   dismiss: 'Dismiss',
 
@@ -26,7 +26,7 @@ const COPY = {
     product: 'Companion',
     version: (v) => 'Companion ' + v,
     site: 'foreversixty.gg',
-    updateReady: 'Update ready. Quit the companion from the tray icon and start it again to install it. Uploads pause while it restarts, so pick a quiet moment.',
+    updateReady: 'Update ready. Quit the companion from the tray icon and open it again to install it.',
     // After "Companion 0.2.13", for the first half minute after a new version's first launch.
     justUpdated: 'just updated',
     joint: ' · ',
@@ -34,6 +34,14 @@ const COPY = {
 
   status: {
     reportLogging: 'Open this report on the site',
+    // The figure at the right of the headline: the fights the site holds.
+    figFights: (n) => (n === 1 ? 'fight uploaded' : 'fights uploaded'),
+    // Under the Queued row once the fight at the head has failed: it holds the rest, in order.
+    held: (h) => (h.fight ? 'Fight ' + h.fight : 'The raw log') + ' failed ' + h.attempts + (h.attempts === 1 ? ' time' : ' times') +
+      ' and retries on its own; the rest wait behind it.',
+    // The Current report row's second line: when the combat log last grew.
+    logWritten: (ago) => 'Log written ' + ago,
+    upToDate: 'up to date',
     // The headline while the companion's own service does not answer; the
     // cards under it keep the last numbers it sent, dimmed.
     unavailableTitle: 'Status unavailable',
@@ -76,8 +84,8 @@ const COPY = {
       separator: ' · ',
     },
     // The Addon row's Check for builds now button and the line it leaves.
-    checkBuilds: 'Check for builds now',
-    checking: 'Checking…',
+    checkBuilds: 'Fetch my builds from the site',
+    checking: 'Fetching…',
     checked: (when, found) => 'Checked ' + when + ' · ' + found,
     checkedJustNow: 'just now',
     checkedBuilds: (n, who) => n + (n === 1 ? ' build' : ' builds') + (who.length ? ' for ' + who.join(', ') : ''),
@@ -86,7 +94,7 @@ const COPY = {
     // version lines come from the snapshot (copy.go).
     installingAddon: 'Installing…',
     noReport: 'None yet',
-    starting: 'Starting...',
+    starting: 'Starting…',
     folders: 'Game folders',
     noFolders: 'None found yet.',
     noInstall: 'No WoW Forever install found. Pick its _forever_ folder in',
@@ -106,16 +114,14 @@ const COPY = {
   reports: {
     all: 'Open all my reports on the site',
     emptyTitle: 'No reports yet.',
-    emptyBody: 'In game, type /combatlog once to start logging. It switches off if you type it again, so leave it if it is already on.',
-    // One muted line over the list while any row reads "not credited yet".
-    notCreditedHint: 'Not credited yet? Log out once in game with the addon loaded.',
+    emptyBody: 'Turn /combatlog on in game and your raids land here.',
     unpairedTitle: 'Sign in first.',
     unpairedButton: 'Sign in with Battle.net',
     unnamed: 'Unnamed report',
     inProgress: 'in progress',
     // A report the site has not created yet. The companion creates it on its next upload try.
     notOnSite: 'not on the site yet',
-    notOnSiteWhen: 'uploads when the site is reachable',
+    notOnSiteWhen: 'uploads when the site answers',
     fights: (n) => n + (n === 1 ? ' fight' : ' fights'),
     copyLink: 'Copy link',
     copied: 'Copied.',
@@ -135,18 +141,18 @@ const COPY = {
     fallbackPlaceholder: 'Paste the code',
     fallbackHelp: 'On foreversixty.gg open Logs and press Pair a device.',
     fallbackButton: 'Connect with code',
-    fallbackBusy: 'Connecting...',
+    fallbackBusy: 'Connecting…',
     tryAgain: 'Try again',
-    starting: 'Opening your browser...',
+    starting: 'Opening your browser…',
     // Signing in
-    waiting: 'Waiting for you to sign in...',
+    waiting: 'Waiting for you to sign in…',
     checkCode: 'Check that your browser shows this code:',
     // Under the heading while the sign-in page is open in the player's browser.
     opened: 'Your browser has opened. Sign in with Battle.net there, then come back.',
     countdown: (m, s) => 'Expires in ' + m + ':' + String(s).padStart(2, '0'),
     reopen: 'Open the browser again',
     cancel: 'Cancel',
-    trouble: 'Having trouble reaching the site. Still trying...',
+    trouble: 'Having trouble reaching the site. Still trying…',
     // Browser blocked
     blocked: 'Could not open your browser. Copy this link into any browser, on this PC or another.',
     copyLink: 'Copy link',
@@ -156,9 +162,12 @@ const COPY = {
     connectedAs: (who) => (who ? 'Connected as ' + who : 'Connected'),
     flash: 'Connected. The companion is ready.',
     savedIn: 'Saved in',
-    details: 'Details',
-    deviceName: 'Device name',
-    api: 'API',
+    // The connected page's facts, from the snapshot.
+    engine: 'Log parser',
+    uploaded: 'Uploaded from this PC',
+    uploadedValue: (reports, fights) => reports + (reports === 1 ? ' report, ' : ' reports, ') + fights + (fights === 1 ? ' fight' : ' fights'),
+    addonSeen: 'Addon last seen in game',
+    joint: ' · ',
     openReports: 'Open my reports',
     forget: 'Forget this device',
     forgetAsk: 'Forget this device? Uploads stop until you sign in again. Your reports on the site stay.',
@@ -168,7 +177,7 @@ const COPY = {
     forgottenLocal: 'Forgotten on this PC. To remove it from your account too, open ',
     forgottenLink: 'Account > Devices',
     forgottenLocalEnd: ' on foreversixty.gg.',
-    forgetting: 'Forgetting...',
+    forgetting: 'Forgetting…',
     emptyCode: 'Paste the code from the site first.',
   },
 
@@ -192,9 +201,9 @@ const COPY = {
     folders: 'Game folders',
     foundAutomatically: 'Found automatically',
     remove: 'Remove',
-    removing: 'Removing...',
-    addFolder: 'Add a folder...',
-    adding: 'Choosing...',
+    removing: 'Removing…',
+    addFolder: 'Add a folder…',
+    adding: 'Choosing…',
     folderAdded: 'Added.',
     folderAddedPending: 'Added. Switching to the new folder when the current report closes.',
     folderRemoved: 'Removed.',
@@ -202,14 +211,14 @@ const COPY = {
     character: 'Reports are credited to',
     characterAuto: 'Automatic (read from the log)',
     characterAutoNow: (name) => 'Automatic (currently ' + name + ')',
-    characterHelp: 'Automatic reads who is logging from the combat log itself. Pick a character only if that is wrong.',
+    characterHelp: 'Pick a character only if Automatic is wrong.',
     keepAddon: 'Keep the addon up to date',
-    keepAddonHelp: 'Installs new Forever Sixty addon and data versions into every game folder here, when the game is closed. CurseForge and Wago users can leave this on; they get the same files.',
+    keepAddonHelp: 'New versions go in when the game is closed. CurseForge and Wago users can leave this on; they get the same files.',
     savedKeep: { on: 'Saved. The addon will be kept up to date.', off: 'Saved. The companion will not update the addon.' },
     save: 'Save changes',
     noChanges: 'No changes',
     unsaved: 'Unsaved changes',
-    saving: 'Saving...',
+    saving: 'Saving…',
     saved: 'Saved.',
     savedVisibility: (words) => 'Saved. New reports will be ' + words + '. The report in progress keeps its setting.',
     rulesets: { normal: 'Normal', pvp: 'PvP', rp: 'Roleplaying', hardcore: 'Hardcore' },

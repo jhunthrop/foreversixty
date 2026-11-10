@@ -100,15 +100,9 @@ export const addonCopy = {
   // --- /addon page ---
   pageDescription:
     'The addon brings your character here: gear and talents, bags and bank, your professions, an in-game build guide, and a fresh export the moment you log out.',
-  pageNoNetwork:
-    'The addon never talks to the network. Everything it knows is generated here and carried in the strings you copy.',
   installCurseForge: 'Install from CurseForge',
   installWago: 'Install from Wago Addons',
   installZip: 'Download the zip',
-  /** The nightly ratings pack is its own addon (ForeverSixtyData): a manager that honours
-   *  required dependencies installs it with the addon; a hand install needs both. */
-  installDataLead:
-    'Forever Sixty Data carries the Forever Scores and guild standings the addon shows, updated nightly. CurseForge and Wago add it for you; a hand install needs both.',
   /** The one quiet line under the install buttons (UX review r5, finding 2). */
   installDataHint:
     'Forever Sixty Data adds the item scores the addon uses, updated nightly. CurseForge and Wago install it for you.',
@@ -154,12 +148,6 @@ export const addonCopy = {
   setupImportWait: 'Your characters can take up to two minutes to arrive.',
   /** Step 1 after `?signin=failed` (the API's callback redirect). */
   setupSignInFailed: 'Battle.net sign-in did not finish. Nothing was saved.',
-  /** The head's character line, the client's own order ("Level 34 Hunter"). */
-  setupLevelLine: (level: number, spec: string, cls: string): string =>
-    `Level ${level} ${spec ? `${spec} ` : ''}${cls}`,
-  setupOpenCharacter: (name: string): string => `Open ${name}`,
-  /** The nav's own label for the BiS page. */
-  setupBis: 'Best in slot',
   /** The hand install under The addon: the folders each zip holds (addon-release.yml ships
    *  ForeverSixty and ForeverSixtyInbox; addon-data-release.yml ForeverSixtyData). */
   setupHandInstall: 'Installing by hand',
@@ -215,7 +203,7 @@ export const addonCopy = {
    *  about it. `width`/`height` are the files' own pixel sizes, for the fixed aspect box. */
   surfacesTitle: 'What it does in the game',
   /** On a phone the surfaces fold behind this one row (setup rulings U5); open from 768. */
-  surfacesShow: 'Show every surface, with pictures from the game',
+  surfacesShow: 'Show the screenshots',
   surfaces: [
     {
       section: '4.1',

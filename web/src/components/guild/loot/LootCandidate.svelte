@@ -49,6 +49,8 @@
 
   const slug = $derived(classSlugFromName(candidate.class));
   const tag = $derived(msOsTag(candidate));
+  /** More than half the council. */
+  const majority = $derived(Math.floor(candidate.votes.voters / 2) + 1);
 </script>
 
 <Row
@@ -76,8 +78,21 @@
       testid="guild-loot-votes"
     />
     {#if !closed && !confirming}
-      <span class="ml-auto">
-        <Button size="sm" disabled={!canAct || busy} onclick={onAsk} testid="guild-loot-award">Award</Button>
+      <span class="ml-auto flex items-center gap-2">
+        <span class="text-small text-muted" data-testid="guild-loot-majority"
+          >{candidate.votes.yes >= majority
+            ? 'Majority reached'
+            : `${majority - candidate.votes.yes} more yes for a majority`}</span
+        >
+        <span class={candidate.votes.yes >= majority ? '' : 'opacity-50'}
+          ><Button
+            size="sm"
+            tone={candidate.votes.yes >= majority ? 'primary' : 'ghost'}
+            disabled={!canAct || busy}
+            onclick={onAsk}
+            testid="guild-loot-award">Award</Button
+          ></span
+        >
       </span>
     {/if}
     {#if confirming}

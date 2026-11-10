@@ -63,8 +63,8 @@
      icon with the rank it reached, a tab stop with its name; with a `tip`, the game's talent
      tooltip opens beside it on hover and focus. A planned one (past the character's level) dims;
      an `ahead` one (the guide's point past the build) dims further on a dashed ring; an empty
-     level is dashed --line, the next point dashed gold. The gold cap line follows row `capAfter`
-     when `capText` is given. Nothing scrolls sideways. -->
+     level is dashed --line, the next point dashed gold. The accent cap line (the character's level)
+     follows row `capAfter` when `capText` is given. Nothing scrolls sideways. -->
 
 <div class="porder" data-testid={testid}>
   <div class="porder-m" aria-hidden="true">
@@ -266,15 +266,16 @@
     padding: 10px 0;
     font-size: 13px;
     line-height: 18px;
-    color: var(--color-gold);
+    color: var(--color-strong);
     border-bottom: 1px solid var(--color-line-soft);
   }
+  /* The character's own level: the selected state's accent mark. */
   .porder-cap::before {
     content: '';
     flex: none;
     width: 10px;
-    height: 2px;
-    background: var(--color-gold);
+    height: 3px;
+    background: var(--color-selected-mark);
   }
   @media (max-width: 767px) {
     .porder-m {

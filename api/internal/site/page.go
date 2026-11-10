@@ -82,7 +82,7 @@ const askSenderLine = "Ask whoever sent it for a fresh link."
 // `button('primary')`, lib/ui/primitives.ts `LINK`): Tailwind utilities the site already uses, so
 // planner-island.css carries every one. page_test.go holds each token to those two files.
 const (
-	primaryButtonClass = "rounded-control button-label inline-flex items-center justify-center gap-2 border px-[18px] whitespace-nowrap " +
+	primaryButtonClass = "rounded-field button-label inline-flex items-center justify-center gap-2 border px-[18px] whitespace-nowrap " +
 		"transition-[filter,background-color,border-color] duration-[120ms] " +
 		"focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold " +
 		"border-transparent text-bg bg-[linear-gradient(180deg,#f0cc6c,#c99a3a)] " +

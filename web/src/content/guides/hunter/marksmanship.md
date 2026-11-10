@@ -45,8 +45,6 @@ sources:
 
 ## Overview
 
-Marksmanship's damage is your own shots: Aimed Shot and Multi-Shot on their shared cooldown, Sniper Shot in a raid, Serpent Sting rolling. In a raid, no pet: Lone Wolf.
-
 ### Strengths
 
 - Barrage, Mortal Shots and Ranged Weapon Specialization all boost Aimed Shot and Multi-Shot, the shots on your shared cooldown

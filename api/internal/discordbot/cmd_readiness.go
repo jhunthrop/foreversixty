@@ -15,8 +15,6 @@ import (
 const (
 	// readinessTab is the guild page's Readiness tab, by fragment like rosterTab.
 	readinessTab = "#readiness"
-	// goldColor is #e5b955, a neutral answer.
-	goldColor = 15055189
 	// readinessLineMax bounds one failing row; the guilds read keeps the rows inside a field.
 	readinessLineMax = 300
 	// readinessMoreReserve is room kept in the field for the "+n more on the board" line.
@@ -69,7 +67,7 @@ func (s *Service) readinessReply(ctx context.Context, guildID int64, viewer *int
 	}
 	board := s.d.PublicBaseURL + path + readinessTab
 	embeds := []notify.Embed{readinessEmbed(ans, board, zone)}
-	closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
+	s.closeEmbeds(embeds, fill(guildFooter, "{Guild}", notify.Collapse(g.Name)), s.now())
 	link := Component{Kind: KindButton, Style: StyleLink, Label: officerCopy.Board, URL: board}
 	raids, err := s.signableRaids(ctx, guildID)
 	if err != nil {
@@ -106,8 +104,6 @@ func (s *Service) readinessRefusal(err error, guildName, billing string) (Reply,
 	switch {
 	case errors.Is(err, guilds.ErrNotOfficer):
 		return pressReply(fill(officerCopy.NotOfficer, "{Guild}", guildName), false), true
-	case errors.Is(err, guilds.ErrPlanRequired):
-		return pressReply(officerCopy.PlanLapsed, false, planLink(officerCopy.Subscribe)), true
 	case errors.Is(err, guilds.ErrRaidGuildGranted):
 		return grantedPlanReply(), true
 	case errors.Is(err, guilds.ErrRaidGuildRequired):
@@ -131,7 +127,7 @@ func readinessEmbed(ans guilds.ReadinessAnswer, board, zone string) notify.Embed
 	z := zone
 	e := notify.Embed{
 		Title: officerCopy.ReadinessTitle + raidTitle(ans.Raid.Title, ans.Raid.StartsAt, &z), URL: board,
-		Color: goldColor, Description: readinessLead(ans),
+		Color: accentColor, Description: readinessLead(ans),
 	}
 	if ans.Failing == 0 {
 		return e

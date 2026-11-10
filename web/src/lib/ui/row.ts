@@ -11,10 +11,10 @@ export const ROW =
 export const ROW_OPEN = ROW.replace('border-t px-5', 'border-b px-0 last:border-b-0');
 
 /** The hover ground alone, for a row that holds its own links and buttons (a character row). */
-export const ROW_HOVER = 'transition-colors duration-[120ms] hover:bg-row-hover';
+export const ROW_HOVER = 'transition-colors duration-[120ms] hover:bg-hover';
 
 export const ROW_INTERACTIVE =
-  'cursor-pointer transition-colors duration-[120ms] hover:bg-row-hover active:bg-gold/10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold';
+  'cursor-pointer transition-colors duration-[120ms] hover:bg-hover active:bg-gold/10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-gold';
 
 /**
  * Row bands (ui/row.css `.row-band`): a row that lights up inside a list is a rounded band whose
@@ -32,10 +32,10 @@ export const ROW_BAND_REACH = {
  *  (ui/row.css keys the neighbour selectors to it, never to a universal subject). */
 export const ROW_RULE = 'row-rule';
 
-/** The viewer's own row: the gold wash on a band. */
+/** The viewer's own row: the selected state (accent tint and bar) on a band. */
 export const ROW_BAND_OWN = 'row-band row-band-own';
 
-/** A marked row (a selected fight): the 8% gold wash and the 2 px gold edge on a band. */
+/** A marked row (a selected fight): the selected state (accent tint and bar) on a band. */
 export const ROW_BAND_MARK = 'row-band row-band-mark';
 
 /** A row the address may name (`#id`): the marked look while it is the target. */

@@ -2,37 +2,40 @@
 // web/src/pages/b-unavailable.astro
 // Served by src/worker.ts with status 503 when api.foreversixty.gg cannot answer a /b/:id
 // request. Static, so it works precisely when nothing else does. The message page of the shared
-// build (premium spec 2026-11-08 section 8, mock web-b-unavailable): the PageHeader with the
-// sentence as its meta line over the form layout, then the planner as the primary and the guides'
-// builds as a link, the shape of the API's own not-found and error pages (api/internal/site/page.go).
+// build (round 5, directions mock b4-unavailable): the title band, then one framed panel with the
+// sentence, the planner as the primary and the guides' builds as a link, the shape of the API's
+// own not-found and error pages (api/internal/site/page.go).
 import Base from '../layouts/Base.astro';
 import Button from '../components/ui/Button.svelte';
 import Page from '../components/ui/Page.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
+import Plate from '../components/ui/Plate.svelte';
 import { LINK } from '../lib/ui/primitives';
 
 const title = 'Build unavailable';
 const sentence =
-  'The Forever Sixty API is not answering. The build is not lost: the link works again once the API is back.';
+  'Shared builds can’t load right now. The build is safe and the link will work again soon. ' +
+  'The build planner works in the meantime.';
 ---
 
 <Base title={title} description="This shared build cannot be loaded right now." path="/b-unavailable">
   <meta slot="head" name="robots" content="noindex" />
   <main id="main" tabindex="-1">
     <Page layout="form">
-      <PageHeader slot="header" title={title}>
-        <span slot="meta" class="max-w-[80ch]">
+      <PageHeader slot="header" title={title} />
+      <Plate frame="framed" flush={false} testid="b-unavailable-panel">
+        <p class="m-0" data-testid="b-unavailable-sentence">
           {sentence}
-        </span>
-      </PageHeader>
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-[10px]">
-        <Button tone="primary" href="/planner" testid="b-unavailable-planner">
-          Open the build planner
-        </Button>
-        <a class={LINK} href="/guides">
-          Talent builds in the class guides ›
-        </a>
-      </div>
+        </p>
+        <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-[10px]">
+          <Button tone="primary" href="/planner" testid="b-unavailable-planner">
+            Open the build planner
+          </Button>
+          <a class={LINK} href="/guides">
+            Talent builds in the class guides ›
+          </a>
+        </div>
+      </Plate>
     </Page>
   </main>
 </Base>

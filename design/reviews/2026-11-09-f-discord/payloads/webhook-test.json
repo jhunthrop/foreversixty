@@ -1,0 +1,22 @@
+{
+  "id": "webhook-test",
+  "title": "webhook: Send test message",
+  "clock": "2026-12-10T22:00:00Z",
+  "message": {
+    "avatar_url": "https://foreversixty.gg/seal-400.png",
+    "embeds": [
+      {
+        "title": "Test message from Forever Sixty",
+        "description": "Your webhook works. You will get a message here when a server sim finishes or a combat log you upload finishes parsing.",
+        "url": "https://foreversixty.gg/account#discord",
+        "footer": {
+          "text": "Forever Sixty",
+          "icon_url": "https://foreversixty.gg/seal-400.png"
+        },
+        "timestamp": "2026-12-10T22:00:00Z",
+        "color": 37810
+      }
+    ],
+    "username": "Forever Sixty"
+  }
+}

@@ -5,7 +5,7 @@
      and a gain Figure. One level of emphasis: the name; then the gain; the source is muted. The icon
      and name carry `data-bis-item`, so the page's one tooltip host (BisTooltipHost) opens the real
      item on hover, focus and long-press. With no item it reads the empty slot's reason. With
-     `onselect` the whole row is one button (aria-pressed, the gold selected ground), its name no
+     `onselect` the whole row is one button (aria-pressed, the selected state's accent tint and bar), its name no
      longer a tab stop of its own. -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -87,7 +87,7 @@
       slotLabel ? 'ui-item-row--slot' : 'grid-cols-[auto_minmax(0,1fr)_auto]',
       onselect &&
         'hover:bg-hover active:bg-pressed focus-visible:outline-gold cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2',
-      selected && 'bg-selected shadow-[inset_3px_0_0_var(--color-accent)]',
+      selected && 'bg-selected shadow-selected-bar',
     ]}
     data-testid={testid}
     data-item-id={item?.id}

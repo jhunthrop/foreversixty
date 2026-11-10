@@ -1,0 +1,166 @@
+{
+  "account_key": "acct-hollowmend",
+  "member": {
+    "character_key": "us/pvp/hollowmend",
+    "region": "us",
+    "ruleset": "pvp",
+    "name": "Hollowmend",
+    "class": "priest",
+    "spec": "Holy",
+    "spec_name": "Holy Priest",
+    "role": "healer",
+    "rank": "member",
+    "verified": true,
+    "logged_recently": true,
+    "logged_at": "2027-01-09T19:30:00Z",
+    "group": "healer",
+    "item_level": 63,
+    "level": 60,
+    "consent": "gear_bags",
+    "is_main": true,
+    "attendance": {
+      "present": 5,
+      "nights": 5
+    },
+    "attendance_30": {
+      "present": 5,
+      "nights": 5
+    },
+    "best_parse": {
+      "metric": "hps",
+      "value": 296.0,
+      "percentile": 82,
+      "encounter": "Onyxia",
+      "report_id": "olympusony0106",
+      "fight_index": 4
+    },
+    "rating": {
+      "overall": 86,
+      "output": 98,
+      "survival": 90,
+      "mechanics": 95,
+      "utility": 88,
+      "preparation": 82,
+      "activity": 82
+    },
+    "professions": ["skinning", "tailoring"],
+    "account_key": "acct-hollowmend",
+    "last_report_at": null,
+    "sim_export": true,
+    "may_remove": true,
+    "addon": {
+      "level": 60,
+      "spec": "priest-holy",
+      "gear_gap": 11,
+      "build": null,
+      "seen_at": "2027-01-09 13:30",
+      "snapshot_at": "2027-01-09T19:30:00Z"
+    }
+  },
+  "characters": [
+    {
+      "character_key": "us/pvp/hollowmend",
+      "name": "Hollowmend",
+      "class": "priest",
+      "is_main": true
+    }
+  ],
+  "attendance": {
+    "source": "raids",
+    "last_4": {
+      "present": 4,
+      "nights": 4
+    },
+    "last_30": {
+      "present": 5,
+      "nights": 5
+    },
+    "nights": [
+      {
+        "raid_id": 40,
+        "starts_at": "2026-12-10T02:00:00Z",
+        "outcome": "present",
+        "excused": false
+      },
+      {
+        "raid_id": 41,
+        "starts_at": "2026-12-17T02:00:00Z",
+        "outcome": "present",
+        "excused": false
+      },
+      {
+        "raid_id": 42,
+        "starts_at": "2026-12-24T02:00:00Z",
+        "outcome": "present",
+        "excused": false
+      },
+      {
+        "raid_id": 43,
+        "starts_at": "2026-12-31T02:00:00Z",
+        "outcome": "present",
+        "excused": false
+      },
+      {
+        "raid_id": 44,
+        "starts_at": "2027-01-07T02:00:00Z",
+        "outcome": "present",
+        "excused": false
+      }
+    ]
+  },
+  "loot": {
+    "count": 1,
+    "items": [
+      {
+        "item_id": 17064,
+        "name": "Shard of the Scale",
+        "icon": "inv_misc_monsterscales_15",
+        "quality": 4,
+        "raid_id": 41,
+        "awarded_at": "2026-12-17T03:02:00Z"
+      }
+    ]
+  },
+  "readiness": {
+    "character_key": "us/pvp/hollowmend",
+    "name": "Hollowmend",
+    "class": "priest",
+    "spec": "Holy",
+    "consent": "gear_bags",
+    "level": 60,
+    "gear_gap": {
+      "upgrades": 2,
+      "gain_dps": 11.0,
+      "not_sim_checked": 0,
+      "unit": "hps"
+    },
+    "enchants": {
+      "missing_slots": [],
+      "checked": true
+    },
+    "consumables": {
+      "state": "short"
+    },
+    "talent_points_unspent": 0,
+    "talent_points_read": true,
+    "item_level": 63,
+    "item_level_delta": 1,
+    "logged_at": "2027-01-09T19:30:00Z",
+    "failing": 1,
+    "no_export": false,
+    "synced_before_cutoff": true,
+    "attuned": true,
+    "resistances": {
+      "fire": 8,
+      "nature": 0,
+      "frost": 0,
+      "shadow": 0,
+      "arcane": 0
+    },
+    "flask_food": {
+      "flask_or_elixir": false,
+      "food": false
+    },
+    "nudge_text": "Hollowmend, before Wednesday: flask_food"
+  }
+}

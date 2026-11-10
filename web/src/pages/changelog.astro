@@ -17,6 +17,7 @@ import LaneBlock from '../components/ui/LaneBlock.svelte';
 import Page from '../components/ui/Page.svelte';
 import PageHeader from '../components/ui/PageHeader.svelte';
 import Prose from '../components/ui/Prose.svelte';
+import ReadingPanel from '../components/ui/ReadingPanel.svelte';
 import ReadingSection from '../components/ui/ReadingSection.svelte';
 import Row from '../components/ui/Row.svelte';
 import Tag from '../components/ui/Tag.svelte';
@@ -49,14 +50,14 @@ const comingUp = comingUpRows(
 const counts = showCounts(entries);
 const updated = latest(collection.map((entry) => entry.data.updated));
 const empty = SHOWS.filter((show) => counts[show] === 0);
-/** A month (and its contents links) a filter leaves empty, hidden under that filter. */
+/** A month (its panel and its contents links) a filter leaves empty, hidden under that filter. */
 const hideCss = (['game', 'site'] as const satisfies readonly ChangelogShow[])
   .flatMap((show) =>
     months
       .filter((month) => month.counts[show] === 0)
       .map(
         (month) =>
-          `html[data-cl-show='${show}'] :is([id='${month.anchor}'], li:has(> [data-toc-link='${month.anchor}']), [data-testid='cl-month-${month.anchor}'])`,
+          `html[data-cl-show='${show}'] :is([id='${month.anchor}'], li:has(> [data-toc-link='${month.anchor}']), [data-testid='cl-month-${month.anchor}'], [data-testid='changelog-panel-${month.anchor}'])`,
       ),
   )
   .join(',');
@@ -87,49 +88,53 @@ const hideCss = (['game', 'site'] as const satisfies readonly ChangelogShow[])
       )}
 
       {comingUp.length > 0 && (
-        <ReadingSection title={changelogCopy.comingUp} anchor="coming-up" testid="changelog-coming-up">
-          <LaneBlock slot="lane" label={guidesCopy.sources}>
-            <div class="flex flex-col">
-              <Row title={COMING_UP_SOURCE.label} href={COMING_UP_SOURCE.url} density="slim" open>
-                <span slot="titleContent" class="text-gold font-semibold">
-                  {COMING_UP_SOURCE.label}
-                </span>
-              </Row>
-            </div>
-          </LaneBlock>
-          <Prose html={comingUpHtml(comingUp)} />
-        </ReadingSection>
+        <ReadingPanel testid="changelog-coming-up-panel">
+          <ReadingSection title={changelogCopy.comingUp} anchor="coming-up" testid="changelog-coming-up">
+            <LaneBlock slot="lane" label={guidesCopy.sources}>
+              <div class="flex flex-col">
+                <Row title={COMING_UP_SOURCE.label} href={COMING_UP_SOURCE.url} density="slim" open>
+                  <span slot="titleContent" class="text-gold font-semibold">
+                    {COMING_UP_SOURCE.label}
+                  </span>
+                </Row>
+              </div>
+            </LaneBlock>
+            <Prose html={comingUpHtml(comingUp)} />
+          </ReadingSection>
+        </ReadingPanel>
       )}
 
       {months.map((month) => (
-        <DatedGroup title={month.title} anchor={month.anchor} testid={`changelog-month-${month.anchor}`}>
-          <Fragment slot="metaContent">
-            {SHOWS.map((show) => (
-              <span data-cl-for={show}>{changelogCopy.changes(month.counts[show])}</span>
+        <ReadingPanel testid={`changelog-panel-${month.anchor}`}>
+          <DatedGroup title={month.title} anchor={month.anchor} testid={`changelog-month-${month.anchor}`}>
+            <Fragment slot="metaContent">
+              {SHOWS.map((show) => (
+                <span data-cl-for={show}>{changelogCopy.changes(month.counts[show])}</span>
+              ))}
+            </Fragment>
+            {month.entries.map((entry) => (
+              <Dated
+                anchor={entry.id}
+                iso={entry.iso}
+                date={entry.date}
+                title={entry.title}
+                folded={entry.folded}
+                show={entry.show}
+              >
+                <Fragment slot="tags">
+                  {entry.show !== 'site' && <Tag tone="muted">{entry.kindLabel}</Tag>}
+                  <span class="cl-new" data-cl-new hidden>
+                    <Tag>{changelogCopy.newTag}</Tag>
+                  </span>
+                </Fragment>
+                <Fragment slot="lane">
+                  <ChangelogLane entry={entry} />
+                </Fragment>
+                {entry.html !== '' ? <Prose html={entry.html} /> : <p class="cl-note">{entry.noteAsBody}</p>}
+              </Dated>
             ))}
-          </Fragment>
-          {month.entries.map((entry) => (
-            <Dated
-              anchor={entry.id}
-              iso={entry.iso}
-              date={entry.date}
-              title={entry.title}
-              folded={entry.folded}
-              show={entry.show}
-            >
-              <Fragment slot="tags">
-                <Tag tone="muted">{entry.kindLabel}</Tag>
-                <span class="cl-new" data-cl-new hidden>
-                  <Tag>{changelogCopy.newTag}</Tag>
-                </span>
-              </Fragment>
-              <Fragment slot="lane">
-                <ChangelogLane entry={entry} />
-              </Fragment>
-              {entry.html !== '' ? <Prose html={entry.html} /> : <p class="cl-note">{entry.noteAsBody}</p>}
-            </Dated>
-          ))}
-        </DatedGroup>
+          </DatedGroup>
+        </ReadingPanel>
       ))}
       {empty.map((show) => (
         <p class="text-muted cl-empty" data-cl-empty={show} data-region={REGION.notes}>
@@ -166,7 +171,7 @@ const hideCss = (['game', 'site'] as const satisfies readonly ChangelogShow[])
   }
   :global(html[data-cl-show='game'] [data-show='site']),
   :global(html[data-cl-show='site'] [data-show='game']),
-  :global(html[data-cl-show='site'] #coming-up),
+  :global(html[data-cl-show='site'] [data-testid='changelog-coming-up-panel']),
   :global(html:not([data-cl-show='all']) [data-cl-empty='all']),
   :global(html:not([data-cl-show='game']) [data-cl-empty='game']),
   :global(html:not([data-cl-show='site']) [data-cl-empty='site']) {

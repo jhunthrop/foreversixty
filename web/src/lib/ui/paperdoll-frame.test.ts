@@ -5,7 +5,9 @@ import {
   FRAME_BOTTOM,
   FRAME_LEFT,
   FRAME_RIGHT,
+  FRAME_SIZE,
   FRAME_SLOTS,
+  INNER_BOX,
   MIN_FRAME_PX,
   MIN_SLOT_PX,
   boxStyle,
@@ -32,6 +34,18 @@ describe('the paperdoll frame', () => {
     for (const slot of FRAME_BOTTOM) expect(slotBox(slot).y).toBeGreaterThan(CENTRE_BOX.y + CENTRE_BOX.h - 5);
     const ys = FRAME_LEFT.map((slot) => slotBox(slot).y);
     expect(ys).toEqual(ys.toSorted((a, b) => a - b));
+  });
+
+  it('centres the centre box inside the frame’s inner edges: equal insets within 1 px of the 2x frame', () => {
+    const toPx = (pct: number): number => (pct * FRAME_SIZE.width) / 100;
+    const toPy = (pct: number): number => (pct * FRAME_SIZE.height) / 100;
+    const left = toPx(CENTRE_BOX.x - INNER_BOX.x);
+    const right = toPx(INNER_BOX.x + INNER_BOX.w - CENTRE_BOX.x - CENTRE_BOX.w);
+    const top = toPy(CENTRE_BOX.y - INNER_BOX.y);
+    const bottom = toPy(INNER_BOX.y + INNER_BOX.h - CENTRE_BOX.y - CENTRE_BOX.h);
+    expect(Math.abs(left - right)).toBeLessThanOrEqual(1);
+    expect(Math.abs(top - bottom)).toBeLessThanOrEqual(1);
+    expect(Math.min(left, right, top, bottom)).toBeGreaterThanOrEqual(0);
   });
 
   it('fails loudly on a slot the frame does not have', () => {

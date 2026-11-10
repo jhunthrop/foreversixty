@@ -234,6 +234,11 @@ export interface GuildRosterRow {
    *  that could drift from the server's own (the web lane's earlier plan before this
    *  contract landed; superseded now that the field is sent directly). */
   role?: 'tank' | 'healer' | 'dps';
+  /** The catalogue's full spec name ("Holy Paladin"), withheld with `spec`. */
+  spec_name?: string;
+  /** The raid group the row fights in (server-derived, as the raid page's sign-ups); absent
+   *  with the spec, and from an API that predates it. */
+  group?: GuildRaidGroup;
   rank: GuildRank;
   verified: boolean;
   /** The account shows the Supporter mark; absent from an API that predates it. */
@@ -431,6 +436,9 @@ export interface GuildBot {
   removed_in_discord: boolean;
   /** Null when the channel works; an older API's absent key is read as null. */
   channel_unusable: GuildChannelUnusable | null;
+  /** Where new applications post (guild onboarding 2026-11-09); null or absent until picked. */
+  recruit_channel_id?: string | null;
+  recruit_channel_name?: string | null;
 }
 
 /** One entry of `GET …/discord/bot/channels`, in Discord's order. */

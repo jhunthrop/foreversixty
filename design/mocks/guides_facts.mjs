@@ -204,7 +204,6 @@ async function specPage(entry) {
   const blocks = buildCode === undefined ? [] : guideBuildBlocks(buildCode, raidCode).map((b) => ({ ...strip(b), trees: decodeBuildTrees(build, b.code), load: loadBuildHref(b.code), sim: simBuildHref(b.code) }));
   return {
     id: entry.id, classSlug, specSlug, className, specName, role, title: specName + ' ' + className, description: entry.data.description,
-    summary: overview.summary !== '' ? overview.summary : entry.data.description,
     meta: guidesCopy.headerMeta(role, dayMonth(pageUpdatedAt(entry.data.updated, ranked?.generated_at))), tabs,
     band: { isRaidBuild: raidTrees !== undefined, code: describedCode, trees: describedTrees, rotationBand: String(bandTopLevel(60)),
       rotationTitle: role === 'healer' ? guidesCopy.healingPriorityRailTitle : guidesCopy.rotationRailTitle,

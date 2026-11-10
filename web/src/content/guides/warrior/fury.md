@@ -38,8 +38,6 @@ sources:
 
 ## Overview
 
-Berserker Stance all fight, Bloodthirst and Whirlwind on cooldown, Heroic Strike to bleed off spare rage, and Death Wish and Recklessness held for the Executes.
-
 ### Strengths
 
 - Two weapons and Flurry mean a constant stream of swings and rage

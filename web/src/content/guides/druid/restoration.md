@@ -26,8 +26,6 @@ sources:
 
 ## Overview
 
-Restoration heals with time: Regrowth and Rejuvenation on the tank all fight, Swiftmend as an extra heal, Bloom when the HoTs run out, and Healing Touch for the holes.
-
 ### Strengths
 
 - Swiftmend no longer eats the heal over time in Forever, so it is a second heal on a 15 second cooldown

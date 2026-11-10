@@ -141,8 +141,6 @@ func (s *Service) writeSignupErr(w http.ResponseWriter, r *http.Request, err err
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "that character is not verified in this guild", nil)
 	case errors.Is(err, ErrCharacterNotVerified):
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "verify that character before signing it up", nil)
-	case errors.Is(err, ErrPlanRequired):
-		httpx.WriteError(w, r, http.StatusForbidden, "guild_plan_required", refusal.RaidPlanRequired, nil)
 	case errors.Is(err, ErrClaimContested):
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested", refusal.ClaimContested, nil)
 	case errors.Is(err, ErrSignupRateLimited):

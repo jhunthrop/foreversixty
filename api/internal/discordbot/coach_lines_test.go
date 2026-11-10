@@ -49,9 +49,9 @@ func TestCoachLineTextVariants(t *testing.T) {
 		in   CoachLine
 		want string
 	}{
-		"several": {line("A", "Bloodthirst casts lost", 5, 8), "Fix first: Bloodthirst casts lost — on 5 of 8 bosses" + open},
+		"several": {line("A", "Bloodthirst casts lost", 5, 8), "Fix first: Bloodthirst casts lost, on 5 of 8 bosses" + open},
 		"one":     {line("A", "Bloodthirst casts lost", 1, 1), "Fix first: Bloodthirst casts lost" + open},
-		"all":     {line("A", "Bloodthirst casts lost", 8, 8), "Fix first: Bloodthirst casts lost — on all 8 bosses" + open},
+		"all":     {line("A", "Bloodthirst casts lost", 8, 8), "Fix first: Bloodthirst casts lost, on all 8 bosses" + open},
 		"pending": {CoachLine{Character: "A", Pending: true, URL: coachURL}, "[Your coach's review is on the site.](" + coachURL + ")"},
 		"nocount": {line("A", "Stem", 0, 0), "Fix first: Stem" + open},
 	} {
@@ -65,8 +65,8 @@ func TestReport_PremiumOwnerGetsOneLinePerCharacter(t *testing.T) {
 	w, fc := coachWorld(t, line("Zulmara", zulmaraStem, 5, 8), line("Vexlash", "Early pulls", 8, 8))
 	rep := w.run(t, pressDiscord, "report")
 	got := headFields(rep)[coachCopy.FieldName]
-	want := "**Zulmara** · Fix first: " + zulmaraStem + " — on 5 of 8 bosses. [Open your coach's review](" + coachURL + ")\n" +
-		"**Vexlash** · Fix first: Early pulls — on all 8 bosses. [Open your coach's review](" + coachURL + ")"
+	want := "**Zulmara** · Fix first: " + zulmaraStem + ", on 5 of 8 bosses. [Open your coach's review](" + coachURL + ")\n" +
+		"**Vexlash** · Fix first: Early pulls, on all 8 bosses. [Open your coach's review](" + coachURL + ")"
 	if got != want {
 		t.Fatalf("field = %q", got)
 	}

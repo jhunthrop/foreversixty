@@ -1,9 +1,9 @@
 <!-- web/src/components/guild/GuildDiscordSection.svelte -->
 <!-- Guild settings · Discord (raids spec §3.8): the guild's one channel for raid posts, a flat
      section under Billing. Not connected: the gold connect link to the guild's route on the API
-     origin. Connected and switched off: GuildDiscordChannel. Officer-read-only draws the gate
-     sentence, a connect link that goes nowhere and disabled tests, and keeps Remove live; a frozen
-     claim turns every control off. A return from Discord (`?discord=`) is read once, dropped from
+     origin. Connected and switched off: GuildDiscordChannel. The section is free for any claimed
+     guild's officers (owner ruling 2026-11-09), so no plan gate draws here; a frozen claim turns
+     every control off. A return from Discord (`?discord=`) is read once, dropped from
      the address with `#discord` kept, and the section scrolled to; `connected` holds the connected
      height until the settings read answers. Words and outcomes: lib/guild/discord-settings.ts.
      With the bot on for the deployment (discord bot spec §3.1) the section adds the bot's states:
@@ -15,7 +15,7 @@
   import { onMount } from 'svelte';
   import { createFocusQueue } from '../../lib/account/discord-return.svelte';
   import { notificationsCopy } from '../../lib/account/notifications-copy';
-  import { fetchGuildHome, type GuildSettingsData, type GuildSettingsDiscord } from '../../lib/guild/api';
+  import type { GuildSettingsData, GuildSettingsDiscord } from '../../lib/guild/api';
   import { guildDiscordConnectUrl, removeGuildDiscord, testGuildDiscord } from '../../lib/guild/discord-api';
   import { guildBotInstallUrl, removeGuildBot, testGuildBot } from '../../lib/guild/discord-bot-api';
   import { guildBotCopy } from '../../lib/guild/discord-bot-copy';
@@ -43,41 +43,26 @@
   import GuildDiscordAdd from './GuildDiscordAdd.svelte';
   import GuildDiscordBot from './GuildDiscordBot.svelte';
   import GuildDiscordChannel from './GuildDiscordChannel.svelte';
-  import type { GateFacts } from '../../lib/guild/plan-gate';
-  import GuildPlanGate from './GuildPlanGate.svelte';
 
   /** How long `Removed.` stays (account spec 4.3); a `stays` line holds until the next press. */
   const STATUS_MS = 4000;
-  const GATE_ID = 'officer-tools-gate-discord';
 
   let {
     guildId,
     discord,
     frozen,
-    officerTools,
-    gateFacts,
     onDiscord,
     onSettings,
-    onPlanRefused = () => {},
   }: {
     guildId: number;
     discord: GuildSettingsDiscord;
     frozen: boolean;
-    /** From the guild page (`home.viewer.officer_tools`); left out on the standalone settings
-     *  route, where the section reads the guild's `/home` itself. */
-    officerTools?: boolean;
-    /** The gate sentence's facts (spec 2026-11-05 §3.2). */
-    gateFacts: GateFacts;
     /** The channel after a test or a remove, applied to the page's settings in place. */
     onDiscord: (next: GuildSettingsDiscord) => void;
     /** A fresh settings read (the `connected` return's). */
     onSettings: (fresh: GuildSettingsData) => void;
-    /** A `guild_plan_required` refusal: the guild page turns its other tabs read-only too. */
-    onPlanRefused?: () => void;
   } = $props();
 
-  let homeTools = $state<boolean | null>(null);
-  let planEnded = $state(false);
   let confirming = $state(false);
   let busy = $state<'test' | 'remove' | null>(null);
   let status = $state<DiscordStatus | null>(null);
@@ -97,9 +82,6 @@
   const botOn = $derived(discord.bot_available === true);
   const view = $derived(guildBotView(discord, changing));
   const installHref = $derived(guildBotInstallUrl(guildId));
-  const tools = $derived(officerTools ?? homeTools ?? true);
-  const readOnly = $derived(!frozen && (planEnded || !tools));
-  const gateId = $derived(readOnly ? GATE_ID : undefined);
   const connectHref = $derived(guildDiscordConnectUrl(guildId));
   const returns = new GuildDiscordReturns({
     guildId: () => guildId,
@@ -117,7 +99,6 @@
     busy,
     returns.settling,
     returns.botSettling,
-    readOnly,
   ]);
   /** The bot's states hold their reserved heights live, as the chunk placeholder does, so a save
    *  from the can't-be-used notice to state 2 moves the page by the cap change only (A.2, item 17). */
@@ -135,7 +116,7 @@
     if (next.ok && next.stays !== true) statusTimer = setTimeout(() => (status = null), STATUS_MS);
   }
 
-  /** A status from a child: a plan refusal turns the section read-only; `focusLine` moves focus. */
+  /** A status from a child; `focusLine` moves focus to it. */
   function report(next: DiscordStatus | null, focusLine = false): void {
     if (next === null) {
       clearTimeout(statusTimer);
@@ -143,20 +124,10 @@
       return;
     }
     show(next);
-    if (next.planEnded === true) {
-      planEnded = true;
-      onPlanRefused();
-    }
     if (focusLine) focus.request(DISCORD_FOCUS.status);
   }
 
-  onMount(() => {
-    returns.take();
-    if (officerTools !== undefined) return;
-    fetchGuildHome(guildId)
-      .then((home) => (homeTools = home.viewer?.officer_tools ?? true))
-      .catch(() => (homeTools = null));
-  });
+  onMount(() => returns.take());
 
   async function run(kind: 'test' | 'remove', action: () => Promise<void>): Promise<unknown> {
     busy = kind;
@@ -250,14 +221,12 @@
         >{/if}
     {/snippet}
     <div class="flex flex-col gap-3">
-      {#if readOnly}<GuildPlanGate tab="discord" facts={gateFacts} />{/if}
       {#snippet addParts(variant: 'nothing' | 'offer')}
         <GuildDiscordAdd
           {variant}
           {installHref}
           webhookHref={connectHref}
-          gated={frozen || readOnly}
-          {gateId}
+          gated={frozen}
           busy={busy !== null}
           {status}
           onStuck={() => show(connectStuck())}
@@ -279,9 +248,7 @@
             {changing}
             {focusSelect}
             onSaving={(saving) => (pickerSaving = saving)}
-            {readOnly}
             {frozen}
-            {gateId}
             {confirming}
             {busy}
             {status}
@@ -305,8 +272,7 @@
             testid="discord-connect"
             href={connectHref}
             busy={busy !== null}
-            gated={frozen || readOnly}
-            describedBy={gateId}
+            gated={frozen}
             onStuck={() => show(connectStuck())}
           />
           <p class="text-muted mt-2 text-[13px]" data-testid="discord-explanation">
@@ -325,7 +291,6 @@
             {confirming}
             {busy}
             {status}
-            {gateId}
             {frozen}
             onTest={() => void test()}
             onAskRemove={askRemove}

@@ -27,8 +27,6 @@ sources:
 
 ## Overview
 
-Fire casts a 3 second Fireball, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites.
-
 ### Strengths
 
 - Five points of Accelerant make Fireball a 3 second cast, and with Missile Barrage every Fireball has a 20% chance at a free, fast Arcane Missiles

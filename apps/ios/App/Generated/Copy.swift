@@ -1401,7 +1401,7 @@ enum Copy {
     /// Add
     static var officerAdd: String { text("officer.add") }
 
-    /// Planning and running raids are part of the guild plan.
+    /// Comp targets, Discord pings, assignments and log matching are part of the guild plan.
     static var officerGate: String { text("officer.gate") }
 
     /// Your raid night
@@ -2482,19 +2482,19 @@ enum Copy {
     /// What your plan includes
     static var planIncludes: String { text("plan.includes") }
 
-    /// Coach: after every logged raid, what to fix first. It names the casts you missed, the buffs you let drop and the consumables you skipped.
+    /// Coach: what to fix first after every logged raid.
     static var planFeatureCoach: String { text("plan.feature.coach") }
 
-    /// Server sims keep running, and the site tells you when they finish.
+    /// Server sims finish with the tab closed.
     static var planFeatureServerSims: String { text("plan.feature.serverSims") }
 
-    /// See if you are improving: your Forever Score and every boss parse on a chart over time, with the fights behind each point.
+    /// Your Forever Score and boss parses over time.
     static var planFeatureHistory: String { text("plan.feature.history") }
 
-    /// A message in your own Discord channel when a server sim finishes or a log is parsed.
+    /// A Discord message when a sim or log is done.
     static var planFeatureDiscord: String { text("plan.feature.discord") }
 
-    /// A Supporter mark beside your name on your characters and in your guild's roster.
+    /// A Supporter mark on your characters and roster.
     static var planFeatureSupporter: String { text("plan.feature.supporter") }
 
     /// Manage billing on foreversixty.gg

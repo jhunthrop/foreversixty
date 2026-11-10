@@ -1,10 +1,9 @@
 // web/src/lib/guild/discord-bot-copy.ts
 // The guild settings' bot sentences (discord bot spec §6.1, "On the site"): the add path, the
 // picker, the installed and removed states, the remove question and the install returns. The
-// webhook's own words stay in discord-copy.ts; the plan-ended and gate lines are raidCopy's.
+// webhook's own words stay in discord-copy.ts.
 // Functions take the data, so no number or name is typed into prose. No runtime import beyond
 // the copy modules, so a Playwright spec can read it.
-import { raidCopy } from './raid-copy';
 
 /** A server name is shown whole up to this many characters, then cut with an ellipsis (§3.1). */
 const SERVER_NAME_LIMIT = 60;
@@ -33,7 +32,7 @@ export function joinPermissions(missing: readonly string[]): string {
 export const guildBotCopy = {
   add: 'Add the Forever Sixty bot',
   addExplanation:
-    'Raid posts get In, Late, Bench and Out buttons, and members can ask /raid, /bis and /char in the server. Discord asks which server; you need Manage Server in it.',
+    'Raid posts get In, Late, Bench and Out buttons; /raid, /bis and /char work in the server. Needs Manage Server.',
   webhookPath: 'Connect a channel without the bot',
   webhookPathNote: 'Raids post there, and members sign up on Forever Sixty.',
   offer:
@@ -72,16 +71,12 @@ export const guildBotCopy = {
     change: 'Change channel',
     remove: 'Remove',
     removing: 'Removing…',
-    saved: 'Saved. Raids post here with sign-up buttons.',
+    saved: 'Saved.',
     fallbackNote: 'Your webhook channel stays as the fallback if the bot is removed.',
-    readOnly: 'Members can still sign up with the buttons on posted raids and use the commands.',
     linkedMembers: (linked: number, members: number): string => {
-      if (linked === 0)
-        return 'No member has linked Discord yet. Members get a link when they press a button.';
+      if (linked === 0) return 'No member has linked Discord yet.';
       if (linked === 1) return `1 of ${members} members has linked Discord.`;
-      const line = `${linked} of ${members} members have linked Discord.`;
-      // With nobody left to link, there are no others to tell about (spec §6.2, round 3).
-      return linked >= members ? line : `${line} The others get a link when they press a button.`;
+      return `${linked} of ${members} members have linked Discord.`;
     },
   },
 
@@ -92,7 +87,7 @@ export const guildBotCopy = {
       `${failures === 1 ? 'The last post' : `The last ${failures} posts`} to #${shortServerName(channel)} failed. Send a test message to check.`,
     permissions: (channel: string): string =>
       `Discord refused it for a missing permission. In Discord, give the Forever Sixty role View Channel, Send Messages and Embed Links in #${shortServerName(channel)}.`,
-    noAnswer: 'Discord did not answer, so the post is tried again on its own.',
+    noAnswer: 'Discord did not answer. Retrying.',
   },
 
   removedInDiscord: {
@@ -144,10 +139,8 @@ export const guildBotCopy = {
     failed:
       'Could not add the bot. You need Manage Server in that Discord server and to be an officer of this guild.',
     taken: (guild: string): string =>
-      `That Discord server is linked to ${guild}. One server works with one guild: ask their officers to remove the bot from their guild settings, or add it to another server.`,
+      `That Discord server is linked to ${guild}. Ask their officers to remove the bot, or use another server.`,
     takenExpired:
-      'That Discord server is linked to another guild. One server works with one guild: ask its officers to remove the bot from their guild settings, or add it to another server.',
+      'That Discord server is linked to another guild. Ask its officers to remove the bot, or use another server.',
   },
-
-  planEnded: raidCopy.races.officerToolsEnded,
 } as const;

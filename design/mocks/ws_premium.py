@@ -70,13 +70,13 @@ CSS = '''<style>
 .acts{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:center}
 .lede{font-size:15px;line-height:24px;max-width:72ch}.t-small{max-width:80ch}
 .fd{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap}
-.pcol .rprose.ruled li{padding-block:8px}.pcol .rprose.lane{font-size:15px;line-height:22px}
+.pcol .rprose.ruled li,.plan .rprose.ruled li{padding-block:8px}.pcol .rprose.lane,.plan .rprose.lane{font-size:15px;line-height:22px}
 .pcol .btn{align-self:flex-start}
 @media(max-width:767px){.pcol .btn{align-self:stretch}}
 .ans-who{display:flex;align-items:center;gap:12px}.ans-who b{display:block;font:700 18px/22px var(--font-body)}.ans-links{display:flex;gap:16px;flex-wrap:wrap;font-size:16px}  /* the links take the page head's 16 px */
 @media(min-width:900px){.head .ans:has(>.ans-plan),.head .ans:has(>.ans-who){min-width:300px}.ans-who{justify-content:flex-end;text-align:right}.ans-links{justify-content:flex-end}}
-.ans-plan{display:flex;flex-direction:column;gap:2px}
-@media(min-width:900px){.ans-plan{align-items:flex-end}}
+.ans-plan{display:flex;flex-direction:column;gap:2px}.ans-line{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+@media(min-width:900px){.ans-plan{align-items:flex-end}.ans-line{justify-content:flex-end}}
 .coach .opening{font-size:15px;line-height:23px}
 .coach .who{display:flex;gap:12px;align-items:center}.coach .who b{font:700 16px/20px var(--font-body);color:var(--strong)}
 .alert{color:var(--strong)}.wipe-t{color:var(--wipe)}
@@ -87,13 +87,17 @@ CSS = '''<style>
 .msg{display:flex;flex-direction:column;gap:12px}
 @media(max-width:1023px){.btn.sm{height:44px}}
 @media(max-width:767px){.cbar .pc{padding-block:0;min-height:0}}   /* the phone bar is its 48 px line, as the built ControlBar */
+.ck-on{display:flex;flex-direction:column;gap:4px;padding:20px 24px 12px}.ck-on .m0{margin:0}
+.ck-on-t{margin:0;font:400 24px/30px var(--font-title);letter-spacing:-.015em;color:var(--strong)}.ck-next{display:flex;flex-direction:column;padding:0 8px 12px}
 .statesheet{display:grid;gap:40px}.st-grid{display:grid;gap:24px 40px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}.st-cell{display:flex;flex-direction:column;gap:6px;min-width:0}
 </style>'''
 
 
 # The account page's Sections open on a 12 px gap under the heading's hairline, as the built ui/Section (pt-3);
 # /premium's and /b/:id's Sections open on a Plate, Columns or the planner's own blocks, which carry their own.
-ACCOUNT_CSS = '<style>section>.sec-h+*{margin-top:12px}</style>'
+ACCOUNT_CSS = ('<style>section>.sec-h+*{margin-top:12px}.acc-foot{padding:0 20px 10px}'
+               '@media(min-width:1024px){.plan-rows .row>.trail{grid-column:1/-1;justify-self:start}}'
+               '@media(max-width:767px){.acc-foot{padding:0 14px 8px}}</style>')
 
 
 def render(title: str, body: str, nav: str, who, chrome_state: str, note: str, extra_css: str = '') -> str:
@@ -122,7 +126,34 @@ def price_key(plan: str, interval: str, founder: bool) -> dict:
     return F['priced'][f'{plan}:{interval}:{"founder" if founder else "list"}']
 
 
-def premium_column(st: dict) -> tuple:
+# The four plans side by side (directions mock b4-premium; web pages/premium.astro): each a Plate holding one plan, Premium
+# framed with the teal Subscribe. One column on a phone with Premium first and every buy button under its price; two from 768
+# and four from 1280, every buy button closing its panel. Questions and the guild rules beside the coach sample from 1024.
+PLANS_CSS = '''<style>
+.pgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}.pgrid>:nth-child(2){order:-1}
+@media(min-width:768px){.pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.pgrid>:nth-child(2){order:0}}
+@media(min-width:1280px){.pgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.plan{display:flex;flex-direction:column;gap:12px;height:100%;min-width:0;padding:22px 24px;box-sizing:border-box}
+.plan>.plh{order:0}.plan>.pact{display:flex;flex-direction:column;align-items:stretch;gap:10px;order:1}
+.plan>.rprose,.plan>.psm,.plan>.pfoot{order:2}.plan>.pfoot{margin-top:auto}
+@media(min-width:768px){.plan>.pact{order:3;margin-top:auto;padding-top:4px}}
+.plan .pact button.btn{width:100%}.plan .pact .btn{display:flex;width:100%;height:auto;min-height:44px;padding-block:10px;white-space:normal;text-align:center;text-wrap:balance;line-height:22px;box-sizing:border-box}
+.pmore{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}.pmore>.pmain{display:flex;flex-direction:column;gap:22px;min-width:0}
+@media(min-width:1024px){.pmore{grid-template-columns:minmax(0,1fr) 340px;column-gap:28px;align-items:start}}
+@media(min-width:1760px){.pmore{grid-template-columns:minmax(0,1fr) var(--rail-w)}}
+.pc.plans{padding-top:28px}.pc.plans>.pstack{display:flex;flex-direction:column;gap:22px}
+.prules{padding-top:20px}.prules-t{margin:0;padding-bottom:4px;font:400 20px/26px var(--font-title);letter-spacing:-.015em;color:var(--cream)}@media(max-width:1023px){.pmore>:last-child{order:-1}}.pmain .rgrid>.row{padding-inline:0}.phist{padding-top:12px}.pmain p.t-small.phist{max-width:none}.pmem{padding-bottom:4px}.pmain .rgrid>.row{padding-inline:0}
+@media(max-width:767px){.plan{padding:18px 16px}}
+.plan .plh .fig{margin-bottom:4px}   /* PlanPrice's figure keeps 4 px under it */
+main{padding-bottom:40px}@media(min-width:1024px){main{padding-bottom:64px}}   /* Base's page body above the footer */
+</style>'''
+
+
+def plan_cell(inner: str, frame: str = 'plain') -> str:
+    return Plate(inner, frame=frame)
+
+
+def premium_column(st: dict) -> str:
     pc = price_key('premium', st['interval'], st['founder'])
     c = pc['cell']
     lines = [(e(c['secondLine']), '')] + ([(e(c['founderLine']), 'gold')] if c['founderLine'] else [])
@@ -133,36 +164,34 @@ def premium_column(st: dict) -> tuple:
     if owned:
         act = f'<p class="lede strong">{e(SRC["premiumCard"][owned])}</p>{LinkBtn(e(SRC["buttons"]["seePlan"]))}'
     else:
-        act = LinkBtn(e(pc['button']), primary=True)
+        act = _Button(e(pc['button']), tone='subscribe')
     feats = ruled([l['text'] for l in F['premium_lines']], [l['anchor'] if l['first'] else '' for l in F['premium_lines']])
-    body = f'<div class="stack">{head}{act}<p class="t-small">{e(P["premium"]["support"])}</p>{feats}<p class="t-small">{e(P["premium"]["scope"])}</p></div>'
-    return ('', '', body, '')
+    body = f'<div class="plan">{head}{feats}<p class="t-small psm">{e(P["premium"]["scope"])}</p><div class="pact">{act}</div></div>'
+    return plan_cell(body, 'framed')
 
 
-def free_column(st: dict) -> tuple:
+def free_column(st: dict) -> str:
     mine = st.get('signed') and not st.get('owned')
     tag = Tag(e(YOUR_PLAN), 'kill') if mine else ''
     head = PlanHead(e(P['free']['name']), e(P['free']['audience']), e(P['free']['price']), '', [(e(P['free']['note']), '')], tag, level=2)
-    foot = '' if st.get('signed') else r(F['my_reports']['signInAction'])
-    body = f'<div class="stack">{head}{ruled(P["free"]["features"])}</div>'
-    return ('', '', body, foot)
+    foot = '' if st.get('signed') else f'<span class="pfoot">{r(F["my_reports"]["signInAction"])}</span>'
+    return plan_cell(f'<div class="plan">{head}{ruled(P["free"]["features"])}{foot}</div>')
 
 
-def guild_column(plan: str, st: dict) -> tuple:
+def guild_column(plan: str, st: dict) -> str:
     block = P['guild'] if plan == 'guild' else P['raidGuild']
     pc = price_key(plan, st['interval'], st['founder'])
     c = pc['cell']
     lines = [(e(c['secondLine']), '')] + ([(e(c['founderLine']), 'gold')] if c['founderLine'] else []) + [(e(pc['cost']), '')]
     on = st.get('guild_on') == plan
     tag = Tag('Olympus XXVII', 'kill') if on else ''
-    head = PlanHead(e(block['name']), e(block['audience']), e(c['amount']), e(c['suffix'].strip()), lines, tag)
+    head = PlanHead(e(block['name']), e(block['audience']), e(c['amount']), e(c['suffix'].strip()), lines, tag, level=2)
     if on:
         act = f'<p class="lede strong">{e(F["guild_on_line"])}</p>{Btn(e(GC["onPlan"]["manageBilling"]))}'
     else:
         act = LinkBtn(e(pc['button']))
-    trial = f'<p class="t-small"><b class="strong">{e(F["trial"]["lead"])}</b>{e(F["trial"]["rest"])}</p>'
-    body = f'<div class="stack">{head}{act}{trial}{ruled(block["features"])}</div>'
-    return ('', '', body, '')
+    trial = f'<p class="t-small psm"><b class="strong">{e(F["trial"]["lead"])}</b>{e(F["trial"]["rest"])}</p>'
+    return plan_cell(f'<div class="plan">{head}{ruled(block["features"])}{trial}<div class="pact">{act}</div></div>')
 
 
 def coach_rail() -> str:
@@ -173,10 +202,10 @@ def coach_rail() -> str:
     well = ''.join(Row(e(w['text']), lead=icon(w['icon'], 24) if w['icon'] else '', link=False, slim=True) for w in c['doingWell'])
     body = (f'<div class="stack coach" id="coach"><div class="who">{crest_img(c["classSlug"], 40)}<span><b>{e(c["title"])}</b><span class="t-small" style="display:block">{e(c["context"])}</span></span></div>'
             f'<p class="opening">{e(c["opening"])}</p><span class="t-label">{e(cp["fixFirst"])}</span>'
-            + Rows([Row(e(fix['title']), e(fix['why']), lead=icon(fix['icon'], 40), link=False, selected=True)])
+            + Rows([Row(e(fix['title']), e(fix['why']), lead=icon(fix['icon'], 40), link=False)], True)
             + f'<span class="t-label">{e(cp["then"])}</span>{Rows([then], True)}<span class="t-label">{e(cp["doingWell"])}</span>{Rows([well], True)}'
             f'<p class="t-small">{e(cp["caption"])}</p></div>')
-    return Section(e(cp['label']), body, meta=Tag(e(cp['tag']), 'muted'))
+    return Section(e(cp['label']), body, action=Tag(e(cp['tag']), 'muted'), panel=True)
 
 
 def premium_answer(key: str) -> str:
@@ -188,8 +217,9 @@ def premium_answer(key: str) -> str:
     when = f'{h["when"]["label"]} {h["when"]["date"]}' if h['when'] else ''
     sub = ' · '.join(x for x in [when, h['extra'] or ''] if x)
     tag = Tag(e(AP['founder']['pill'])) if a['plan']['founder'] else ''
-    return (f'<div class="ans-plan">{Figure(e(h["name"]), e(ACC["planLabel"]), size="sm")}'
-            + (f'<span class="t-small">{e(sub)} {tag}</span>' if sub or tag else '') + f'{r(SRC["buttons"]["seePlan"])}</div>')
+    # Compact (batch F): the figure, then one line with the date or source, the Founder mark and the link.
+    line = (f'<span>{e(sub)}</span>' if sub else '') + tag + r(SRC['buttons']['seePlan'])
+    return f'<div class="ans-plan">{Figure(e(h["name"]), e(ACC["planLabel"]), size="sm")}<span class="t-small ans-line">{line}</span></div>'
 
 
 PREMIUM_STATES = {
@@ -211,8 +241,7 @@ def premium_page(state: str) -> str:
     key = st.get('signed')
     head = PageHeader(e(P['title']), answer=premium_answer(key))
     iv = seg([(e(P['interval']['labels']['yearly']), st['interval'] == 'yearly', None, ''), (e(P['interval']['labels']['monthly']), st['interval'] == 'monthly', None, '')], label=e(P['interval']['groupLabel']))
-    end = f'<span class="t-small">{e(P["band"]["guildLead"])}</span>{Link(e(P["band"]["guildLink"]) + " &rsaquo;")}'
-    bar = control_bar([(e(P['interval']['groupLabel']), iv)], f'{e(P["interval"]["labels"][st["interval"]])}', end, label=e(P['interval']['groupLabel']))
+    bar = control_bar([(e(P['interval']['groupLabel']), iv)], f'{e(P["interval"]["labels"][st["interval"]])}', '', label=e(P['interval']['groupLabel']))
     notices = ''
     if st['founder']:
         notices += Notice(f'{Tag(e(P["founder"]["label"]))} {e(P["founder"]["open"])}', tone='neutral')
@@ -228,13 +257,16 @@ def premium_page(state: str) -> str:
     # one .pc around the region, the Notices' own .pc wrappers dropped.
     inner = notices.replace('<div class="pc">', '').replace('</p></div>', '</p>')
     notes = f'<div class="pc"><div data-region="{REGION["notes"]}">{inner}</div></div>' if notices else ''
-    plate = Plate(Columns([free_column(st), premium_column(st)], open_=False, second_first=True), 'Plans for a player')
-    gr = P['guildRegion']
-    guild = Section(e(gr['heading']), f'<div class="stack" id="guild-leaders"><p class="lede">{e(gr["lede"])}</p><p class="t-small">{e(gr["members"])}</p>'
-                    + Columns([guild_column('guild', st), guild_column('raid_guild', st)]) + f'<p class="t-small">{e(P["historyPromise"])}</p></div>')
-    rules = Section(e(P['howItWorks']), RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2))
-    faq = Section(e(FAQ_TITLE), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2), meta=e(P['foot']))
-    body = head + bar + notes + Page('split', plate + guild + rules + faq, coach_rail())
+    grid = (f'<div class="pgrid" role="group" aria-label="{e(P["title"])}">'
+            + free_column(st) + premium_column(st) + guild_column('guild', st) + guild_column('raid_guild', st) + '</div>')
+    # The guild rules under the questions on one panel (the redesign review: one prose panel on the page).
+    rules = (f'<div class="prules" id="guild-leaders"><h3 class="prules-t">{e(P["howItWorks"])}</h3>'
+             + RowGrid([Row(e(x['term']), e(x['sentence']), link=False) for x in P['rules']], 2)
+             + f'<p class="t-small phist">{e(P["historyPromise"])}</p></div>')
+    faq = Section(e(FAQ_TITLE), RowGrid([Row(e(x['question']), e(x['answer']), link=False) for x in P['faq']], 2) + rules,
+                  meta=e(P['foot']), panel=True)
+    more = f'<div class="pmore"><div class="pmain">{faq}</div>{coach_rail()}</div>'
+    body = head + bar + notes + f'<div class="pc plans"><div class="pstack">{grid}{more}</div></div>' + PLANS_CSS
     note = f'/premium mock, {state}. Data: premium-facts.json (plans-page-copy.ts, components/premium/model.ts on plans.ts; accounts DERIVED from home fixtures at 2026-11-08T10:00Z).'
     return render(f'{P["title"]} · Forever Sixty', body, 'Premium', who_of(key), chrome_of(key), note)
 
@@ -265,7 +297,7 @@ def checkout_steps(state: str) -> str:
         rows = [s1, ('miss', 2, pay, f'<span class="miss" role="alert">{e(CK["genericFailure"])}</span>', Btn(e(CK['retry']), primary=True)), ('todo', 3, on, '', '')]
     else:  # notopen
         rows = [s1, ('miss', 2, pay, f'<span class="miss" role="alert">{e(CK["notOpenYet"])}</span>', ''), ('todo', 3, on, '', '')]
-    return Plate(Steps(rows), 'Checkout')
+    return Plate(Steps(rows), 'Checkout', frame='framed')
 
 
 def checkout_page(state: str) -> str:
@@ -275,9 +307,13 @@ def checkout_page(state: str) -> str:
         head = PageHeader(e(F['plan_table']['premium']['name']), answer=band('premium', change=state in ('redirecting', 'error', 'notopen')))
         plate = checkout_steps(state)
         if state == 'confirmed':
-            # Ruling K2: the renewal line above the three next steps.
-            after = (f'<p class="t-small" style="padding-top:16px">{e(F["checkout_renewal"])}</p>'
-                     f'<div class="acts" style="padding-top:8px">{r(CK["nextSim"])}{r(CK["nextCoach"])}{r(SRC["buttons"]["seePlan"])}</div>')
+            # The redesign review (2026-11-09): no finished checklist; Premium is on, the renewal line, and what it turned
+            # on as rows that go there (web checkout/CheckoutConfirmed.svelte).
+            coach, sims = F['premium_lines'][0]['text'], F['premium_lines'][1]['text']
+            nxt = Row(e(CK['nextCoach']), e(coach)) + Row(e(CK['nextSim']), e(sims)) + Row(e(SRC['buttons']['seePlan']), e(CK['seePlanSub']))
+            plate = Plate(f'<div class="ck-on"><p class="ck-on-t" role="status">{e(F["checkout_plan_on"])}</p>'
+                          f'<p class="t-small m0">{e(F["checkout_renewal"])}</p></div>'
+                          f'<nav class="ck-next" aria-label="{e(CK["nextLabel"])}">{nxt}</nav>', 'Checkout', frame='framed')
         body = head + PageForm(plate + after)
     elif state == 'trial':
         # Ruling K1: a guild checkout in its free trial took no payment; row 2 says the card was saved.
@@ -285,14 +321,15 @@ def checkout_page(state: str) -> str:
         rows = [('ok', 1, e(STEPS['signIn']), f'<span class="tx">{e(F["checkout_signed_in"])}</span>', ''),
                 ('ok', 2, e(STEPS['pay']), e(F['checkout_trial_saved']), ''),
                 ('ok', 3, e(F['plan_table']['guild']['name'] + ' on'), f'<span class="tx" role="status">{e(CK["confirmed"])}</span>', '')]
-        body = head + PageForm(Plate(Steps(rows), 'Checkout'))
+        body = head + PageForm(Plate(Steps(rows), 'Checkout', frame='framed'))
     elif state == 'owned':
         o = A['seat']['owned']
         who = WHO['free']
-        head = PageHeader(e(F['plan_table']['premium']['name']), answer=band('premium'))
+        # The account already has Premium: the head keeps the answer's box and draws nothing in it (CheckoutHead `owned`).
+        head = PageHeader(e(F['plan_table']['premium']['name']), answer=band('premium')) + '<style>[data-region="head-answer"]{visibility:hidden}</style>'
         inner = (f'<div class="stack" style="padding:16px 20px 20px"><h2 class="t-h3">{e(o["title"])}</h2><p class="lede strong">{e(o["line"])}</p>'
                  + (f'<p class="t-small">{e(o["line2"])}</p>' if o['line2'] else '') + f'<div class="acts">{LinkBtn(e(o["action"]["label"]))}</div></div>')
-        body = head + PageForm(Plate(inner, 'Your plan'))
+        body = head + PageForm(Plate(inner, 'Your plan', frame='framed'))
     elif state == 'guild':
         fn = F['guild_checkout_fns']
         head = PageHeader(e(GC['band']['title']), answer=band('guild'), lead=e(GC['lead']['someClaimed']))
@@ -310,16 +347,6 @@ def checkout_page(state: str) -> str:
 
 
 # ================================================================================================ /account
-def account_answer(a: dict) -> str:
-    x = a['answer']
-    if not x:
-        return ''
-    cls = x['classSlug']
-    links = r(x['open']['label']) + (r(x['bis']['label']) if x['bis'] else '')
-    return (f'<span class="ans-who">{crest_img(cls, 40)}<span><b style="color:{CLASS_COLOR[cls]}">{e(x["name"])}</b>'
-            f'<span class="t-small" style="display:block">{e(x["levelLine"])}</span></span></span><span class="ans-links">{links}</span>')
-
-
 def characters_section(a: dict, refreshing: bool = False) -> str:
     rows = []
     for c in a['characters']:
@@ -327,16 +354,17 @@ def characters_section(a: dict, refreshing: bool = False) -> str:
         src = Tag(e(CL['addonSource'] if c['source'] == 'addon' else (CL['battlenetSource'] if c['source'] else CL['noBuildYet'])), 'muted')
         setmain = '' if c['main'] else Btn(e(CL['setAsMain']), small=True)
         sub = e(c['descriptor']) + (f'<br>{e(c["guild"])}' if c['guild'] else '')
+        ilvl = f'<span class="strong num">{e(c["itemLevel"])}</span>' if c.get('itemLevel') else ''
         rows.append(Row(f'<span class="fd"><span style="color:{CLASS_COLOR.get(c["cls"], "#f2eee4")}">{e(c["name"])}</span>{tags}</span>', sub, lead=crest_img(c['cls'], 40),
-                        trail=f'{src}{setmain}{r(CL['open'])}', link=False))
+                        trail=f'{ilvl}{src}{setmain}{r(CL['open'])}', link=False))
     refresh = f'<span class="t-small">{e(CL["refreshing"])}</span>' if refreshing else r(CL['refreshFromBattlenet'])
     if not rows:
-        inner = (f'<div class="stack" style="padding:16px 20px 20px"><p class="lede warn-t" style="color:var(--gold)">{e(CL["empty"])}</p>'
+        inner = (f'<div class="stack" style="padding:16px 20px 20px"><p class="lede">{e(CL["empty"])}</p>'
                  f'<div class="acts">{LinkBtn(e(CL["getSetUp"]), primary=True)}{LinkBtn(e(CL["pasteAnExport"]))}</div></div>')
-        return Section(e(CL['heading']), Plate(inner, e(CL['heading'])), action=refresh)
-    foot = (f'<p class="t-small" style="padding-top:12px">{e(CL["introBattlenetLine"])} {Link(e(CL["introInstallAddonLink"]))} {e(CL["introAddonTail"])} '
-            f'{Link(e(CL["introPasteLink"]))} {e(CL["introPasteTail"])}</p><p style="padding-top:8px">{r(ACC["reportsLink"])}</p>')
-    return Section(e(CL['heading']), Plate(Rows(rows), e(CL['heading'])) + foot, action=refresh, meta=e(a['imported'] or ''))
+        return Section(e(CL['heading']), inner, action=refresh, panel=True, frame='framed', flush=True)
+    foot = (f'<div class="acc-foot"><p class="t-small" style="padding-top:12px">{e(CL["introBattlenetLine"])} {Link(e(CL["introInstallAddonLink"]))} {e(CL["introAddonTail"])} '
+            f'{Link(e(CL["introPasteLink"]))} {e(CL["introPasteTail"])}</p><p style="padding-top:8px">{r(ACC["reportsLink"])}</p></div>')
+    return Section(e(CL['heading']), Rows(rows) + foot, action=refresh, meta=e(a['imported'] or ''), panel=True, frame='framed', flush=True)
 
 
 def plan_section(a: dict, offer_state: str = '') -> str:
@@ -383,8 +411,8 @@ def plan_section(a: dict, offer_state: str = '') -> str:
         acts.append(Btn(e(SRC['buttons']['history'])))
     if a['source'] == 'none' and not p['ended']:
         acts.append(LinkBtn(e(BB['seePlans']), primary=True))
-    body = f'<div class="stack" id="plan">{top}{lines}{offer}{RowsSlim(rows)}<div class="acts">{"".join(acts)}</div></div>'
-    return Section(e(ACC['planLabel']), body)
+    body = f'<div class="stack" id="plan">{top}{lines}{offer}<div class="plan-rows">{RowsSlim(rows)}</div><div class="acts">{"".join(acts)}</div></div>'
+    return Section(e(ACC['planLabel']), body, panel=True)
 
 
 def guilds_section(a: dict, asking: bool = False) -> str:
@@ -408,7 +436,7 @@ def guilds_section(a: dict, asking: bool = False) -> str:
         else:
             leave = f'<div class="acts">{Btn(e(CON["leave"]), small=True, tone="danger")}</div>'
         blocks.append(RowsSlim(rows, True) + leave)
-    return Section(e(ACC['guildLabel']), f'<div class="stack">{"".join(blocks)}</div>')
+    return Section(e(ACC['guildLabel']), f'<div class="stack">{"".join(blocks)}</div>', panel=True)
 
 
 def devices_section(dev: str, revoking: bool = False, pairing: bool = False) -> str:
@@ -420,13 +448,14 @@ def devices_section(dev: str, revoking: bool = False, pairing: bool = False) -> 
             rows.append(Row(e(d['revoke'][0]), trail=f'{Btn(e(DC["revoke"]), small=True, tone="danger")}{Btn(e(DC["cancel"]), small=True)}', link=False))
         else:
             rows.append(Row(e(name), e(sub), trail=Btn(e(DC['revoke']), small=True), link=False))
+    entry = f'<button type="button" class="link">{e(d["entry"])} &rsaquo;</button>'
     if pairing:
         tail = f'<p class="t-small">{e(DC["codeFallbackLine"])}</p><code class="c big">4821-9930</code>'
     elif not rows:
-        tail = f'<p class="t-small">{e(ACC["noDevices"])}</p><div class="acts">{LinkBtn(e(ACC["downloadCompanion"]))}{Link(e(d["entry"]) + " &rsaquo;")}</div>'
+        tail = f'<p class="t-small">{e(ACC["noDevices"])}</p><div class="acts">{LinkBtn(e(ACC["downloadCompanion"]))}{entry}</div>'
     else:
-        tail = f'<div class="acts">{Link(e(d["entry"]) + " &rsaquo;")}</div>'
-    return Section(e(ACC['devicesLabel']), f'<div class="stack dev">{Rows(rows, True) if rows else ""}{tail}</div>')
+        tail = f'<div class="acts">{entry}</div>'
+    return Section(e(ACC['devicesLabel']), f'<div class="stack dev">{Rows(rows, True) if rows else ""}{tail}</div>', panel=True)
 
 
 def discord_section(a: dict, unlinking: bool = False) -> str:
@@ -436,29 +465,34 @@ def discord_section(a: dict, unlinking: bool = False) -> str:
     elif link:
         top = Row(f'{e(DL["linkedLead"])} <b class="strong">{e(link["display_name"])}</b>', trail=Btn(e(DL['unlink']), small=True), link=False)
     else:
-        top = Row(e(DL['lead']), trail=Btn(e(DL['link']), small=True), link=False)
+        top = Row(e(DL['lead']), trail=LinkBtn(e(DL['link']), small=True), link=False)
     # Ruling A4 / MUST 3: an account that already has Premium is told the role turns on as soon as it links.
     lead = DR['leadOwned'] if a['source'] != 'none' else DR['lead']
-    role = Row(e(DR['label']), e(lead), trail=Btn(e(DR['link']), small=True), link=False)
+    role = Row(e(DR['label']), e(lead), trail=LinkBtn(e(DR['link']), small=True), link=False)
     st = a['discord']['state']
     if st == 'saved':
-        nt = (f'<div class="stack tight"><span class="t-label">{e(NC["headLabel"])}</span><p class="lede">{e(NC["destinationChannel"])}</p>'
-              f'{Switch(e(NC["eventSimFinished"]))}{Switch(e(NC["eventUploadParsed"]))}{Switch(e(NC["eventUploadPrivate"]), on=False)}'
-              f'<div class="acts">{Btn(e(NC["test"]), small=True)}{Link(e(NC["reconnect"]) + " &rsaquo;")}</div></div>')
+        nt = (f'<div class="stack tight"><span class="t-label">{e(NC["headLabel"])}</span><p class="lede acts"><span>{e(NC["destinationChannel"])}</span>{r(NC["openInDiscord"])}</p>'
+              f'{Switch(e(NC["eventSimFinished"]))}{Switch(e(NC["eventUploadParsed"]))}'
+              f'{Switch(e(NC["eventUploadPrivate"]) + f"<span class=t-small style=display:block>{e(NC["eventsNote"])}</span>", on=False)}'
+              f'<div class="acts">{Btn(e(NC["test"]), small=True)}{Btn(e(NC["remove"]), small=True, tone="danger")}</div>'
+              f'<p class="acts">{r(NC["reconnect"])}<span class="t-small">{e(NC["reconnectAside"])}</span></p></div>')
     else:
         nt = f'<div class="stack tight"><span class="t-label">{e(NC["headLabel"])}</span><p class="t-small">{e(NC["freeSentence"])}</p><p>{r(NC["seePlans"])}</p></div>'
-    return Section(e(NC['label']), f'<div class="stack" id="discord">{Rows([top, role], True)}{nt}</div>')
+    return Section(e(NC['label']), f'<div class="stack" id="discord">{Rows([top, role], True)}{nt}</div>', panel=True)
 
 
 def you_section(a: dict) -> str:
+    """The rail's first panel (directions mock b4-account): who is signed in and how, Sign out, then the pseudonym."""
+    who = Facts([(e(ACC['battletagLabel']), e(a['battletag'])), (e(ACC['signInLabel']), f'<span class="muted">{e(ACC["signInBattlenet"])}</span>')])
     sw = Switch(e(ACC['pseudonymLabel']), on=False)
-    return Section(e(ACC['youLabel']), f'<div class="stack">{sw}<p class="t-small">{e(ACC["pseudonymNote"])}</p></div>')
+    return Section(e(ACC['youLabel']), f'<div class="stack">{who}<div class="acts">{Btn(e(ACC["signOut"]), small=True)}</div>{sw}'
+                   f'<p class="t-small">{e(ACC["pseudonymNote"])}</p></div>', panel=True)
 
 
 def delete_section() -> str:
     """The rail's last Section (gap G6 closed 2026-11-07): one line and the danger Button that opens the confirm dialog."""
     ds = ACC['deleteSection']
-    return Section(e(ds['title']), f'<div class="stack"><p class="t-small">{e(ds["line"])}</p><div class="acts">{Btn(e(ds["button"]), small=True, tone="danger")}</div></div>')
+    return Section(e(ds['title']), f'<div class="stack"><p class="t-small">{e(ds["line"])}</p><div class="acts">{Btn(e(ds["button"]), small=True, tone="danger")}</div></div>', panel=True)
 
 
 def dialog_line(line: dict) -> str:
@@ -498,25 +532,27 @@ def account_page(state: str) -> str:
         body = head + PageForm(Plate(inner, 'Sign in'))
         return render(f'{ACC["title"]} · Forever Sixty', body, '', None, '', '/account mock, signed out. Copy: signin-copy.ts.', extra_css=ACCOUNT_CSS)
     if state in ('loading', 'error'):
-        head = PageHeader(e(ACC['title']), meta=[Skeleton(220, 14)] if state == 'loading' else None)
+        head = PageHeader(e(ACC['title']))
         if state == 'loading':
             sk = lambda n: ''.join(Skeleton(560, 14) + '<br>' for _ in range(n))
-            plate = Section(e(CL['heading']), Plate(f'<div class="stack" style="padding:16px 20px" role="status" aria-busy="true">{"".join(Skeleton(480, 56) for _ in range(2))}</div>', e(CL['heading'])))
-            rail = ''.join(Section(t, f'<div class="stack">{Skeleton(300, 20)}{Skeleton(240, 20)}{Skeleton(160, 44)}</div>') for t in (ACC['planLabel'], ACC['guildLabel'], ACC['devicesLabel'], NC['label']))
-            body = head + Page('split', plate, rail)
+            plate = Section(e(CL['heading']), f'<div class="stack" role="status" aria-busy="true">{"".join(Skeleton(480, 56) for _ in range(2))}</div>', panel=True, frame='framed')
+            sk = f'<div class="stack">{Skeleton(300, 20)}{Skeleton(240, 20)}{Skeleton(160, 44)}</div>'
+            plate += ''.join(Section(t, sk, panel=True) for t in (ACC['devicesLabel'], NC['label']))
+            rail = ''.join(Section(t, sk, panel=True) for t in (ACC['youLabel'], ACC['planLabel'], ACC['deleteSection']['title']))
+            body = head + Page('split', plate, rail, panels=True)
         else:
-            inner = f'<div class="stack" style="padding:16px 20px 20px"><p class="alert" role="alert">{e(F["account_failed"])}</p><div class="acts">{Btn(e(CK['retry']), primary=True)}</div></div>'
-            body = head + Page('split', Section(e(CL['heading']), Plate(inner, e(CL['heading']))), '')
+            inner = f'<div class="stack"><p class="alert" role="alert">{e(F["account_failed"])}</p><div class="acts">{Btn(e(CK['retry']), primary=True)}</div></div>'
+            body = head + Page('split', Section(e(CL['heading']), inner, panel=True, frame='framed'), '', panels=True)
         return render(f'{ACC["title"]} · Forever Sixty', body, '', None, 'pending', f'/account mock, {state}.', extra_css=ACCOUNT_CSS)
     st = ACCOUNT_STATES[state]
     a = A[st.get('acct', state)]
     confirm = st.get('confirm', False)
-    meta = [e(a['battletag']), e(ACC['signedInWithBattlenet']), Btn(e(ACC['signOut']), small=True)]
-    head = PageHeader(e(ACC['title']), meta=meta, answer=account_answer(a))
-    # Main: the characters (the Plate), then the plan and the guilds (rows that want the width); rail: the connections.
-    main = characters_section(a) + plan_section(a) + guilds_section(a, asking=confirm)
-    rail = devices_section(st['dev'], revoking=confirm) + discord_section(a, unlinking=confirm) + you_section(a) + delete_section()
-    body = head + Page('split', main, rail) + (delete_dialog(a) if st.get('dialog') else '')
+    head = PageHeader(e(ACC['title']))
+    # Main: the characters (the framed panel), the guilds, then the connections; rail: who you are, the plan, Delete
+    # account last (directions mock b4-account).
+    main = characters_section(a) + guilds_section(a, asking=confirm) + devices_section(st['dev'], revoking=confirm) + discord_section(a, unlinking=confirm)
+    rail = you_section(a) + plan_section(a) + delete_section()
+    body = head + Page('split', main, rail, panels=True) + (delete_dialog(a) if st.get('dialog') else '')
     key = st.get('acct', state)
     note = f'/account mock, {state}. Data: premium-facts.json (account models on the {key} account, DERIVED from home fixtures; devices {st["dev"]}).'
     return render(f'{ACC["title"]} · Forever Sixty', body, '', who_of(key) if key != 'new' else None, chrome_of(key), note, extra_css=ACCOUNT_CSS)
@@ -555,7 +591,13 @@ def b_page(state: str) -> str:
             text = ''.join(re.findall(r"'([^']*)'", parts))
         planner = re.search(r'class="[^"]*">([^<]+)</a></p>', (ROOT / 'api/internal/site/page.go').read_text()).group(1)
         ask = f'<p class="t-small">{e(PROPOSED["askSender"])}</p>' if state == 'missing' else ''
-        body = PageHeader(e(title), meta=[e(text)]) + PageForm(f'<div class="stack">{ask}<div class="acts">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
+        if state == 'unavailable':
+            # Round 5 (directions mock b4-unavailable): the sentence and the two ways on one framed panel under the title band.
+            panel = (f'<div class="plate framed" data-region="{REGION["plate"]}" style="padding:22px 24px"><p style="margin:0">{e(text)}</p>'
+                     f'<div class="acts" style="margin-top:16px">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
+            body = PageHeader(e(title)) + PageForm(panel)
+        else:
+            body = PageHeader(e(title), meta=[e(text)]) + PageForm(f'<div class="stack">{ask}<div class="acts">{LinkBtn(e(planner), primary=True)}{r(PROPOSED["guideLink"])}</div></div>')
         return render(f'{title} · Forever Sixty', body, '', None, '', f'/b/:id mock, {state}: the API message page (api/internal/site/handler.go, page.go messagePage).')
     cfg = {'shared': ('guide', 'Survival raid build', None, 41), 'you': ('guide', 'Survival raid build', 'others', 41),
            'holy': ('holy', 'Holy raid healing', 'other_class', 7), 'fire': ('fire', '', None, 12)}[state]

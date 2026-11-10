@@ -6,14 +6,9 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { GuildRaidView, NextRaidView } from '../../../lib/guild/api';
-  import activeBuild from '../../../data/active-build.json';
-  import { raidZoneIcon } from '../../../lib/first-raids';
-  import { raidTimeLine } from '../../../lib/guild/overview-role-view';
-  import { countdown } from '../../../lib/guild/raid-copy';
   import Figure from '../../ui/Figure.svelte';
-  import ItemIcon from '../../ui/ItemIcon.svelte';
-  import Row from '../../ui/Row.svelte';
   import Section from '../../ui/Section.svelte';
+  import NextRaidRow from './NextRaidRow.svelte';
 
   let {
     next,
@@ -33,11 +28,6 @@
     now: Date;
     you?: Snippet;
   } = $props();
-
-  const build = activeBuild.build;
-  const guildTz = $derived(next.guild_timezone ?? viewerTz);
-  const startsAt = $derived(new Date(next.starts_at));
-  const endsAt = $derived(new Date(startsAt.getTime() + (raid?.duration_minutes ?? 180) * 60_000));
 </script>
 
 <Section
@@ -46,21 +36,7 @@
   action={officer ? { label: 'Open the planner', href: planHref } : undefined}
   testid="guild-overview-next-raid"
 >
-  <Row title={next.zone_name} open={false}>
-    {#snippet lead()}<ItemIcon icon={raidZoneIcon(next.zone_name)} quality={5} {build} size={40} />{/snippet}
-    {#snippet subContent()}<span data-testid="guild-next-raid-time"
-        >{raidTimeLine(next.starts_at, guildTz, viewerTz)}</span
-      >{/snippet}
-    {#snippet trail()}
-      <Figure
-        value={countdown(startsAt, endsAt, now)}
-        size="sm"
-        tone="gold"
-        align="end"
-        testid="guild-next-raid-countdown"
-      />
-    {/snippet}
-  </Row>
+  <NextRaidRow {next} durationMinutes={raid?.duration_minutes ?? 180} {viewerTz} {now} />
   {#if you}<div data-testid="guild-next-raid-you">{@render you()}</div>{/if}
   {#if officer && raid !== null}
     <div class="flex flex-wrap gap-x-8 gap-y-3 pt-3" data-testid="guild-next-raid-figures">

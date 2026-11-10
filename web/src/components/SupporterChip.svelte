@@ -7,8 +7,8 @@
 </script>
 
 <span
-  class="text-label text-gold rounded-control shrink-0 border px-2 py-0.5 font-bold"
-  style:border-color="var(--color-line-warm)"
+  class="text-label text-gold rounded-field shrink-0 border px-2 py-0.5 font-bold"
+  style:border-color="var(--color-line)"
   title={premiumBlockCopy.supporterTooltip}
   data-testid="supporter-chip">{premiumBlockCopy.supporterChip}</span
 >

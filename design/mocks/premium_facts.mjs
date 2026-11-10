@@ -8,7 +8,7 @@
 //  - /account: lib/account/account-page-copy.ts, character-list-copy.ts, devices-copy.ts, signin-copy.ts, discord-link-copy.ts,
 //    discord-role-copy.ts, notifications-copy.ts, delete-confirm.ts (the delete dialog's confirm word), lib/guild/copy.ts guildConsentCopy, lib/billing/account-plan-copy.ts; the models
 //    accountPlanLine and guildRowPlanLine (plan-line.ts), guildPlanTag / notVerifiedMark / guildRowNextStep (guild-row-line.ts),
-//    characterDescriptor, mainCharacter, setupAnswer (the head answer), deviceStatusLine, premiumRowValue / premiumRowLinked /
+//    characterDescriptor, mainCharacter, deviceStatusLine, premiumRowValue / premiumRowLinked /
 //    blockState (notifications.ts), offerStatusLine; the planner's shared-link copy for /b/:id.
 // Every state's account is a fixture (web/tests/e2e/fixtures/home/me-34.json Felsnap, me-60.json Thandrel, me-new.json) with
 // the billing, seat, guild and Discord fields of that state set here: DERIVED, marked per state below. The clock is pinned to
@@ -53,7 +53,6 @@ import { accountPlanLine, guildRowPlanLine, premiumSource } from ${src("src/lib/
 import { guildPlanTag, notVerifiedMark, guildRowNextStep } from ${src("src/lib/account/guild-row-line.ts")};
 import { characterDescriptor } from ${src("src/lib/account/character-descriptor.ts")};
 import { mainCharacter } from ${src("src/lib/account/main-character.ts")};
-import { setupAnswer } from ${src("src/lib/setup/answer.ts")};
 import { deviceStatusLine } from ${src("src/lib/reports/device-status.ts")};
 import { premiumRowValue, premiumRowLinked, premiumRowVisible, blockState } from ${src("src/lib/account/notifications.ts")};
 import { offerStatusLine } from ${src("src/lib/account/seat-offer-flow.ts")};
@@ -154,9 +153,9 @@ const view = (me, key) => {
     // The delete dialog's field label: what this account types to confirm (its BattleTag, or "delete").
     deleteConfirm: accountPageCopy.deleteDialog.confirmLabel(confirmWordFor(me.user.battletag)),
     deleteWord: confirmWordFor(me.user.battletag),
-    answer: setupAnswer(me, null),
     characters: me.characters.map((c) => ({ name: c.name, cls: (c.class ?? '').toLowerCase(), descriptor: characterDescriptor(c), guild: c.guild?.name ?? null,
-      main: main?.key === c.key, source: c.build ? c.build.source : null, level: c.level ?? null })),
+      main: main?.key === c.key, source: c.build ? c.build.source : null, level: c.level ?? null,
+      itemLevel: c.item_level === undefined ? null : characterListCopy.itemLevel(c.item_level) })),
     imported: me.bnet_imported_at ? characterListCopy.updatedFrom(me.bnet_imported_at, NOW) : null,
     guilds: me.guilds.map((g) => ({ name: g.name, rank: g.rank ?? null, consent: g.consent ?? 'gear', tag: guildPlanTag(g), mark: notVerifiedMark(g), next: guildRowNextStep(g),
       planLine: g.plan ? guildRowPlanLine(g.plan, Z) : null, can: g.can ?? [], claim: g.claim ?? null, step: g.subscribe?.step ?? null,
@@ -203,6 +202,7 @@ export default {
   // Ruling K1: a guild checkout in its trial saved a card and charges at the trial's end (7 days from now).
   checkout_trial_saved: checkoutCopy.trialSaved(utcDayMonthYear(days(7))),
   // Ruling K2: the renewal line above the next steps, on the paid Premium account's own renewal date.
+  checkout_plan_on: checkoutCopy.planOn(PLANS.premium.name),
   checkout_renewal: checkoutCopy.renewalLine(formatPrice(priceFor('premium', 'yearly', true), 'yearly'), accounts.premium.plan.head.when.date),
   checkout_signed_in: checkoutCopy.signedInAs(me60.user.battletag),
   guild_on_line: checkoutGuildCopy.onPlan.youPay(olympus.name, 'guild'), guild_settings: settingsWords.guildSettingsLink,

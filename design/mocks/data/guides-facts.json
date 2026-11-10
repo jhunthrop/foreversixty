@@ -37,7 +37,6 @@
   "fullListLink": "Full list and alternatives",
   "bisByLevelLabel": "Best in slot by level:",
   "tierListLink": "Where it ranks at 60",
-  "preRaidNote": "Your best gear before the first raid opens.",
   "notSimChecked": "Ranked by stats only",
   "enchants": "Enchants",
   "consumables": "Consumables",
@@ -90,7 +89,7 @@
   "noCharacter": "No character on this account yet.",
   "barLabel": "Guide choices",
   "specGroupLabel": "Spec",
-  "glance": "At a glance",
+  "glance": "Summary",
   "healingPriorityRailTitle": "Healing priority",
   "glanceFiller": "[fn]",
   "rankLabel": "[fn]",
@@ -391,13 +390,13 @@
      "heading": "What changed from 1.12",
      "id": "what-changed-from-1-12",
      "panel": false,
-     "html": "<ul>\n<li><strong>Pets are reworked.</strong> A pet copies 10% of your attack power and all of your crit, and it takes no stat buffs from other players; your own Heart of the Lion still reaches it. Your gear is what makes it hit.</li>\n<li><strong>Aimed Shot is a trained spell</strong> with a 2 second cast, and it shares one 6 second cooldown with Multi-Shot. Aimed Shot outhits Multi-Shot, and in Forever your auto shots keep firing while you cast it, so it takes that cooldown every time it comes up; Multi-Shot is for packs and for when you have to move.</li>\n<li><strong>Heart of the Lion</strong> is a hunter spell from level 1: 10% more stats and extra attack power (280 melee and ranged at 60) for everyone near you, and another 10% stats for you.</li>\n<li><strong>Aspect of the Beast</strong> gives melee attack power, which makes it the Survival aspect. Aspect of the Hawk stays the ranged one.</li>\n<li><strong>Trueshot Aura</strong> is ranged attack power only, 100 at 60 for your party and raid.</li>\n<li><strong>Mail from 40.</strong> Hunters wear leather until 40, and good leather stays in the mix after it.</li>\n</ul>\n"
+     "html": "<ul>\n<li><strong>Pets copy 10% of your attack power and all of your crit.</strong></li>\n<li><strong>Aimed Shot:</strong> trained, 2 second cast, one 6 second cooldown shared with Multi-Shot. Auto shots keep firing while you cast it.</li>\n<li><strong>Aimed Shot over Multi-Shot</strong> every time the cooldown comes up. Multi-Shot is for packs and for when you have to move.</li>\n<li><strong>Heart of the Lion</strong> from level 1: 10% stats and 280 melee and ranged attack power at 60 for everyone near you, and another 10% stats for you.</li>\n<li><strong>Aspect of the Beast</strong> gives melee attack power. Survival runs it; Hawk stays the ranged aspect.</li>\n<li><strong>Trueshot Aura:</strong> ranged attack power only, 100 at 60, party and raid.</li>\n<li><strong>Mail from 40.</strong></li>\n</ul>\n"
     },
     {
      "heading": "Races",
      "id": "races",
      "panel": true,
-     "html": "<p>Alliance hunters are Dwarf, Night Elf and, new in Forever, Human. Horde hunters are Orc, Troll and Tauren. Skyborne can be hunters on either faction, as the High Order on the Alliance and the Windshapers on the Horde.</p>\n"
+     "html": ""
     }
    ],
    "cards": [
@@ -406,21 +405,75 @@
      "name": "Beast Mastery",
      "role": "dps",
      "icon": "ability_hunter_beasttaming",
-     "line": "DPS"
+     "line": "31/20/0"
     },
     {
      "slug": "marksmanship",
      "name": "Marksmanship",
      "role": "dps",
      "icon": "ability_marksmanship",
-     "line": "DPS"
+     "line": "5/33/13"
     },
     {
      "slug": "survival",
      "name": "Survival",
      "role": "dps",
      "icon": "ability_hunter_swiftstrike",
-     "line": "DPS"
+     "line": "5/13/33"
+    }
+   ],
+   "races": [
+    {
+     "faction": "alliance",
+     "heading": "Alliance",
+     "races": [
+      {
+       "name": "Human",
+       "icon": "achievement_character_human_male",
+       "fresh": true
+      },
+      {
+       "name": "Dwarf",
+       "icon": "achievement_character_dwarf_male",
+       "fresh": false
+      },
+      {
+       "name": "Night Elf",
+       "icon": "achievement_character_nightelf_male",
+       "fresh": false
+      },
+      {
+       "name": "High Order Skyborne",
+       "icon": "achievement_character_bloodelf_male",
+       "fresh": true
+      }
+     ]
+    },
+    {
+     "faction": "horde",
+     "heading": "Horde",
+     "races": [
+      {
+       "name": "Orc",
+       "icon": "achievement_character_orc_male",
+       "fresh": false
+      },
+      {
+       "name": "Tauren",
+       "icon": "achievement_character_tauren_male",
+       "fresh": false
+      },
+      {
+       "name": "Troll",
+       "icon": "achievement_character_troll_male",
+       "fresh": false
+      },
+      {
+       "name": "Windshaper Skyborne",
+       "icon": "achievement_character_bloodelf_male",
+       "fresh": true
+      }
+     ]
     }
    ],
    "sources": [
@@ -464,19 +517,19 @@
      "heading": "What changed from 1.12",
      "id": "what-changed-from-1-12",
      "panel": false,
-     "html": "<p>Forever keeps that whole kit and rebuilds the three trees underneath, so a 1.12 mage will recognise the spells and still have to relearn the rotation.</p>\n<ul>\n<li><strong>Personal debuffs.</strong> Improved Scorch and Winter’s Chill now only boost your own spells. Every Fire mage keeps their own Scorch stacks, and nobody else’s Scorches help you.</li>\n<li><strong>Ice Block comes earlier.</strong> It is still a Frost talent, but it sits at 15 points instead of 20, with Cold Snap below it now. Fire mages never get there, and the Arcane builds have no spare point for it, so only Frost mages carry Ice Block.</li>\n<li><strong>Armor and threat.</strong> Mage Armor is the raid armor and now keeps half your mana regeneration running while you cast; Ice Armor is for when things hit you. There is no Molten Armor or Invisibility, so threat is handled with Arcane Subtlety, Burning Soul and Frost Channeling, and by not out-casting your tank.</li>\n<li><strong>One hit stat.</strong> Hit now counts for spells and attacks alike, and Precision in the Frost tree adds 6% hit to every school where 1.12’s Elemental Precision covered only Fire and Frost, which is why the Arcane and Fire builds both dip three points there.</li>\n<li><strong>New spells.</strong> Arcane Blast, Arcane Wrath, Ice Lance on an 8 second cooldown, Heating Up, Fingers of Frost and Missile Barrage are new talents, Frostfire Bolt is trained at 40, 50 and 60, and Teleport: Dalaran at 50.</li>\n</ul>\n"
+     "html": "<ul>\n<li><strong>Personal debuffs.</strong> Improved Scorch and Winter’s Chill now only boost your own spells. Every Fire mage keeps their own Scorch stacks, and nobody else’s Scorches help you.</li>\n<li><strong>Ice Block comes earlier.</strong> It is still a Frost talent, but it sits at 15 points instead of 20, with Cold Snap below it now. Fire mages never get there, and the Arcane builds have no spare point for it, so only Frost mages carry Ice Block.</li>\n<li><strong>Armor and threat.</strong> Raid in Mage Armor, which now keeps half your mana regeneration running while you cast; Ice Armor is for when things hit you. There is no Molten Armor or Invisibility, so threat is handled with Arcane Subtlety, Burning Soul and Frost Channeling, and by not out-casting your tank.</li>\n<li><strong>One hit stat.</strong> Hit now counts for spells and attacks alike, and Precision in the Frost tree adds 6% hit to every school where 1.12’s Elemental Precision covered only Fire and Frost, which is why the Arcane and Fire builds both dip three points there.</li>\n<li><strong>New spells.</strong> Arcane Blast, Arcane Wrath, Ice Lance on an 8 second cooldown, Heating Up, Fingers of Frost and Missile Barrage are new talents, Frostfire Bolt is trained at 40, 50 and 60, and Teleport: Dalaran at 50.</li>\n</ul>\n"
     },
     {
      "heading": "Races",
      "id": "races",
      "panel": true,
-     "html": "<ul>\n<li><strong>Orc Mage</strong> is new for Forever and gives the Horde a third mage race, with Blood Fury’s spell power on a 2 minute cooldown.</li>\n<li><strong>Skyborne</strong> can be mages too, but only the Alliance High Order Skyborne; the Horde Windshapers cannot.</li>\n<li><strong>Gnome</strong> is the Alliance pick for Arcane and Frost: Eureka! makes your damage spells, all but Arcane Wrath, hit 10% harder and cost 10% less for 8 seconds, every 2 minutes. Arcane Power comes back every 3, so pair Eureka! with it whenever both are ready. <strong>Human</strong> is the Alliance pick for Fire: Ruthless adds 1% crit, which Fire turns into Ignite. On the Horde, <strong>Undead</strong> is the pick for all three specs, with Orc close behind.</li>\n</ul>\n"
+     "html": "<ul>\n<li><strong>Orc Mage</strong> is new for Forever and gives the Horde a third mage race, with Blood Fury’s spell power on a 2 minute cooldown.</li>\n<li><strong>Skyborne</strong> can be mages too, but only the Alliance High Order Skyborne; the Horde Windshapers cannot.</li>\n<li>On the Alliance, Arcane and Frost take a <strong>Gnome</strong>: Eureka! makes your damage spells, all but Arcane Wrath, hit 10% harder and cost 10% less for 8 seconds, every 2 minutes. Arcane Power comes back every 3, so pair Eureka! with it whenever both are ready. Fire takes a <strong>Human</strong>: Ruthless adds 1% crit, which Fire turns into Ignite. On the Horde, <strong>Undead</strong> is the pick for all three specs, with Orc close behind.</li>\n</ul>\n"
     },
     {
      "heading": "Raids and leveling",
      "id": "raids-and-leveling",
      "panel": true,
-     "html": "<p>All three are raid specs. Fire builds its Scorch stacks and burns into a big Combustion and needs every gem, potion and rune on a long fight, Arcane puts the most damage into its Arcane Power windows, and Frost is the easiest to level and the safest in a bad pull.</p>\n"
+     "html": "<p>Fire builds its Scorch stacks and burns into a big Combustion and needs every gem, potion and rune on a long fight, Arcane puts the most damage into its Arcane Power windows, and Frost is the easiest to level and the safest in a bad pull.</p>\n"
     }
    ],
    "cards": [
@@ -485,21 +538,65 @@
      "name": "Arcane",
      "role": "dps",
      "icon": "spell_holy_magicalsentry",
-     "line": "DPS"
+     "line": "32/16/3"
     },
     {
      "slug": "fire",
      "name": "Fire",
      "role": "dps",
      "icon": "spell_fire_firebolt02",
-     "line": "DPS"
+     "line": "14/34/3"
     },
     {
      "slug": "frost",
      "name": "Frost",
      "role": "dps",
      "icon": "spell_frost_frostbolt02",
-     "line": "DPS"
+     "line": "15/5/31"
+    }
+   ],
+   "races": [
+    {
+     "faction": "alliance",
+     "heading": "Alliance",
+     "races": [
+      {
+       "name": "Human",
+       "icon": "achievement_character_human_male",
+       "fresh": false
+      },
+      {
+       "name": "Gnome",
+       "icon": "achievement_character_gnome_male",
+       "fresh": false
+      },
+      {
+       "name": "High Order Skyborne",
+       "icon": "achievement_character_bloodelf_male",
+       "fresh": true
+      }
+     ]
+    },
+    {
+     "faction": "horde",
+     "heading": "Horde",
+     "races": [
+      {
+       "name": "Orc",
+       "icon": "achievement_character_orc_male",
+       "fresh": true
+      },
+      {
+       "name": "Undead",
+       "icon": "achievement_character_undead_male",
+       "fresh": false
+      },
+      {
+       "name": "Troll",
+       "icon": "achievement_character_troll_male",
+       "fresh": false
+      }
+     ]
     }
    ],
    "sources": [
@@ -539,7 +636,7 @@
      "heading": "Races",
      "id": "races",
      "panel": true,
-     "html": "<p class=\"glabel\">Race picks.</p>\n<ul>\n<li>Discipline: Human on Alliance for The Human Spirit and Divine Grace, with Gnome level with it at 60. Undead on Horde for Dark Sacrifice.</li>\n<li>Holy: Human on Alliance for The Human Spirit and Divine Grace, with Gnome close. Undead on Horde for Dark Sacrifice.</li>\n<li>Shadow: Human on Alliance for Ruthless, with Night Elf just as good and Dwarf close. Undead on Horde for Touch of the Grave, well ahead of Troll.</li>\n<li><strong>The Gnome priest</strong> is new. Gnomes bring Eureka! (8 seconds of 10% cheaper and 10% stronger direct heals and damage spells every 2 minutes, and 10% stronger Mind Flay and Penance ticks; never Shadow Word: Pain, Devouring Plague, Renew or a shield), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. At 60 a Gnome heals as well as a Human as Discipline.</li>\n</ul>\n<p class=\"glabel\">Each race has its own two priest spells.</p>\n<ul>\n<li>Human: Divine Grace (a free instant heal that clears Weakened Soul) and Feedback.</li>\n<li>Dwarf: Desperate Prayer and Chastise.</li>\n<li>Night Elf: Elune’s Grace and Starshards.</li>\n<li>Undead: Dark Sacrifice (health for mana, once a fight) and Touch of Weakness.</li>\n<li>Troll: Hex of Weakness and Shadowguard.</li>\n</ul>\n<p>Skyborne, Forever’s new neutral race, cannot be priests: they play warrior, hunter, rogue, shaman, mage or druid.</p>\n"
+     "html": "<p class=\"glabel\">Race picks.</p>\n<ul>\n<li>Discipline: Human on Alliance for The Human Spirit and Divine Grace, with Gnome level with it at 60. Undead on Horde for Dark Sacrifice.</li>\n<li>Holy: Human on Alliance for The Human Spirit and Divine Grace, with Gnome close. Undead on Horde for Dark Sacrifice.</li>\n<li>Shadow: Human on Alliance for Ruthless, with Night Elf just as good and Dwarf close. Undead on Horde for Touch of the Grave, well ahead of Troll.</li>\n<li><strong>The Gnome priest</strong> is new. Gnomes bring Eureka! (8 seconds of 10% cheaper and 10% stronger direct heals and damage spells every 2 minutes, and 10% stronger Mind Flay and Penance ticks; never Shadow Word: Pain, Devouring Plague, Renew or a shield), Expansive Mind (5% more mana) and Escape Artist. Their priest spells are Contingency Plan, a ward that shields and heals an ally who drops under 35%, and Confounding Flash, which confuses nearby enemies. At 60 a Gnome heals as well as a Human as Discipline.</li>\n</ul>\n<p class=\"glabel\">Each race has its own two priest spells.</p>\n<ul>\n<li>Human: Divine Grace (a free instant heal that clears Weakened Soul) and Feedback.</li>\n<li>Dwarf: Desperate Prayer and Chastise.</li>\n<li>Night Elf: Elune’s Grace and Starshards.</li>\n<li>Undead: Dark Sacrifice (health for mana, once a fight) and Touch of Weakness.</li>\n<li>Troll: Hex of Weakness and Shadowguard.</li>\n</ul>\n<p>Skyborne cannot be priests.</p>\n"
     }
    ],
    "cards": [
@@ -548,21 +645,65 @@
      "name": "Discipline",
      "role": "healer",
      "icon": "spell_holy_wordfortitude",
-     "line": "Healer"
+     "line": "Healer · 29/22/0"
     },
     {
      "slug": "holy",
      "name": "Holy",
      "role": "healer",
      "icon": "spell_holy_guardianspirit",
-     "line": "Healer"
+     "line": "Healer · 17/34/0"
     },
     {
      "slug": "shadow",
      "name": "Shadow",
      "role": "dps",
      "icon": "spell_shadow_shadowwordpain",
-     "line": "DPS"
+     "line": "18/0/33"
+    }
+   ],
+   "races": [
+    {
+     "faction": "alliance",
+     "heading": "Alliance",
+     "races": [
+      {
+       "name": "Human",
+       "icon": "achievement_character_human_male",
+       "fresh": false
+      },
+      {
+       "name": "Dwarf",
+       "icon": "achievement_character_dwarf_male",
+       "fresh": false
+      },
+      {
+       "name": "Night Elf",
+       "icon": "achievement_character_nightelf_male",
+       "fresh": false
+      },
+      {
+       "name": "Gnome",
+       "icon": "achievement_character_gnome_male",
+       "fresh": true
+      }
+     ]
+    },
+    {
+     "faction": "horde",
+     "heading": "Horde",
+     "races": [
+      {
+       "name": "Undead",
+       "icon": "achievement_character_undead_male",
+       "fresh": false
+      },
+      {
+       "name": "Troll",
+       "icon": "achievement_character_troll_male",
+       "fresh": false
+      }
+     ]
     }
    ],
    "sources": [
@@ -600,7 +741,6 @@
    "role": "dps",
    "title": "Survival Hunter",
    "description": "How to play a melee Survival Hunter in Forever: talents, the Raptor Strike and Mongoose Bite priority, Lone Wolf, stats, consumables and race picks.",
-   "summary": "Survival is a melee spec in Forever: two weapons, Raptor Strike queued every time it comes off cooldown, Mongoose Bite whenever it lights up, and no pet in a raid.",
    "meta": "DPS · Updated 7 Nov",
    "tabs": [
     {
@@ -1948,7 +2088,7 @@
       "name": "Hunter's Mark",
       "rank": 4,
       "icon": "ability_hunter_snipershot",
-      "clause": "Whenever the target is not marked",
+      "clause": "When Hunter's Mark is not on the target",
       "tipKey": "spell:14325",
       "rankText": "Rank 4"
      },
@@ -1957,7 +2097,7 @@
       "name": "Raptor Strike",
       "rank": 8,
       "icon": "ability_meleedamage",
-      "clause": "On every swing it is ready",
+      "clause": "On cooldown",
       "tipKey": "spell:14266",
       "rankText": "Rank 8"
      },
@@ -1966,7 +2106,7 @@
       "name": "Mongoose Bite",
       "rank": 4,
       "icon": "ability_hunter_swiftstrike",
-      "clause": "The moment it lights up",
+      "clause": "When it lights up, after a dodge or a hit on a marked target",
       "tipKey": "spell:14271",
       "rankText": "Rank 4"
      },
@@ -1975,7 +2115,7 @@
       "name": "Lacerate",
       "rank": 4,
       "icon": "ability_gouge",
-      "clause": "Whenever its bleed is not on the target",
+      "clause": "When Lacerate is not ticking on the target",
       "tipKey": "spell:1299332",
       "rankText": "Rank 4"
      }
@@ -3524,7 +3664,7 @@
        "name": "Hunter's Mark",
        "rank": 4,
        "icon": "ability_hunter_snipershot",
-       "clause": "Whenever the target is not marked",
+       "clause": "When Hunter's Mark is not on the target",
        "tipKey": "spell:14325",
        "rankText": "Rank 4"
       },
@@ -3533,7 +3673,7 @@
        "name": "Raptor Strike",
        "rank": 8,
        "icon": "ability_meleedamage",
-       "clause": "On every swing it is ready",
+       "clause": "On cooldown",
        "tipKey": "spell:14266",
        "rankText": "Rank 8"
       },
@@ -3542,7 +3682,7 @@
        "name": "Mongoose Bite",
        "rank": 4,
        "icon": "ability_hunter_swiftstrike",
-       "clause": "The moment it lights up",
+       "clause": "When it lights up, after a dodge or a hit on a marked target",
        "tipKey": "spell:14271",
        "rankText": "Rank 4"
       },
@@ -3551,7 +3691,7 @@
        "name": "Lacerate",
        "rank": 4,
        "icon": "ability_gouge",
-       "clause": "Whenever its bleed is not on the target",
+       "clause": "When Lacerate is not ticking on the target",
        "tipKey": "spell:1299332",
        "rankText": "Rank 4"
       },
@@ -3559,7 +3699,7 @@
        "spellId": 1317257,
        "name": "Strider Kick",
        "icon": "ability_hunter_pet_tallstrider",
-       "clause": "On its 8 second cooldown once the bleed is rolling",
+       "clause": "On cooldown",
        "tipKey": "spell:1317257"
       },
       {
@@ -3576,7 +3716,7 @@
        "name": "Wing Clip",
        "rank": 3,
        "icon": "ability_rogue_trip",
-       "clause": "On any free global under a Windfury Totem, as a cheap melee special that can proc Windfury",
+       "clause": "With Windfury Totem up, when nothing else is ready",
        "tipKey": "spell:14268",
        "rankText": "Rank 3"
       }
@@ -3605,7 +3745,7 @@
      ]
     },
     "forRaidBuild": false,
-    "prose": "<p>In a raid, dismiss your pet before the pull; <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> only works with no pet out. Mark the boss with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span> first, so the mana is back by the pull, then put up <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and leave it up. At 60, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:469145\">Aspect of the Falcon</span> gives the same melee attack power as Beast (10 more once you own Hawk’s Ahn’Qiraj rank), and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span> procs from your swings under either one, so Falcon is not a clear upgrade. From 30 to 59 Beast is the only melee aspect you have. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> needs a mark on the target, so if no other hunter has marked it, you do, and on a fight longer than two minutes you mark it again when it falls off.</p>\n<p>Walk in behind the boss with the rogues once the tank has it. On the pull, press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span>, your trinkets and your racial (<span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> or <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span>) together. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.</p>\n<p>Then work through your melee priority: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> is the button you watch for: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> opens it off your own hits. Keep Lacerate’s bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> fill what is left. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.</p>\n<p>You fire no shots in this spec. Your bow or gun is there for its stats.</p>\n<p><strong>Threat.</strong> You sit on a fresh tank’s heels in the opener. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14273\">Disengage</span> trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> drops all of your threat if it lands; check the message, because either can miss or be resisted. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> is also your answer when something turns on you.</p>\n<p><strong>Trash.</strong> Survival has little cleave of its own. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14317\">Explosive Trap</span> under the pack is your AoE, and Engineering’s explosives are the rest. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14311\">Freezing Trap</span> is your crowd control, laid before the pull.</p>\n<p><strong>Movement.</strong> Stay on the boss’s back. Every second you are not swinging is lost white damage and lost <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> procs.</p>\n"
+    "prose": "<p>In a raid, dismiss your pet before the pull; <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> only works with no pet out. Mark the boss with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span> first, so the mana is back by the pull, then put up <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and leave it up. At 60, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:469145\">Aspect of the Falcon</span> gives the same melee attack power as Beast (10 more once you own Hawk’s Ahn’Qiraj rank), and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span> procs from your swings under either one, so Falcon is not a clear upgrade. From 30 to 59 Beast is the only melee aspect you have. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> needs a mark on the target, so if no other hunter has marked it, you do, and on a fight longer than two minutes you mark it again when it falls off.</p>\n<p>Walk in behind the boss with the rogues once the tank has it. On the pull, press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span>, your trinkets and your racial (<span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> or <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span>) together. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> speeds your melee swings in Forever, so it is a melee cooldown for you. Its five minute cooldown gives you one in a normal boss fight.</p>\n<p>Then work through your melee priority: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> replaces your next white hit instead of costing a global, so the only mistake is letting it sit unqueued. Watch for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> opens it off your own hits. Keep Lacerate’s bleed on the boss between Mongoose Bites; it crits like every bleed in Forever, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> fill what is left. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> is only a filler while a Windfury Totem reaches you; in a group without a shaman, leave it alone.</p>\n<p>You fire no shots in this spec. Your bow or gun is there for its stats.</p>\n<p><strong>Threat.</strong> You sit on a fresh tank’s heels in the opener. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14273\">Disengage</span> trims some threat on a 5 second cooldown, but it turns off your auto attack, so start swinging again the moment it lands. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> drops all of your threat if it lands; check the message, because either can miss or be resisted. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> is also your answer when something turns on you.</p>\n<p><strong>Trash.</strong> Survival has little cleave of its own. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14317\">Explosive Trap</span> under the pack is your AoE, and Engineering’s explosives are the rest. Lay <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14311\">Freezing Trap</span> before the pull.</p>\n<p><strong>Movement.</strong> Stay on the boss’s back. Every second you are not swinging is lost white damage and lost <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span> procs.</p>\n"
    },
    "stats": {
     "table": {
@@ -4476,7 +4616,7 @@
          "empty": false,
          "itemId": 17778,
          "itemName": "Sagebrush Girdle",
-         "quality": 3,
+         "quality": 2,
          "icon": "inv_belt_25",
          "sourceKind": "quest",
          "sourceDetail": "Quest: Vyletongue Corruption · requires level 41",
@@ -4491,8 +4631,8 @@
          "itemName": "Knight's Chain Legplates",
          "quality": 3,
          "icon": "inv_pants_01",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Captain Dirgehammer",
+         "sourceKind": "pvp",
+         "sourceDetail": "PvP rank 6 · Knight · Alliance",
          "notSimChecked": false,
          "typeLabel": "Mail"
         },
@@ -5586,7 +5726,7 @@
          "empty": false,
          "itemId": 17778,
          "itemName": "Sagebrush Girdle",
-         "quality": 3,
+         "quality": 2,
          "icon": "inv_belt_25",
          "sourceKind": "quest",
          "sourceDetail": "Quest: Vyletongue Corruption · requires level 41",
@@ -5601,8 +5741,8 @@
          "itemName": "Stone Guard's Chain Legplates",
          "quality": 3,
          "icon": "inv_pants_01",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Lady Palanseer",
+         "sourceKind": "pvp",
+         "sourceDetail": "PvP rank 6 · Stone Guard · Horde",
          "notSimChecked": false,
          "typeLabel": "Mail"
         },
@@ -5750,8 +5890,8 @@
          "itemName": "Darkspear Pauldrons",
          "quality": 4,
          "icon": "inv_shoulder_06",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Creeg Bothunk",
+         "sourceKind": "rep",
+         "sourceDetail": "Darkspear Raiders (exalted)",
          "notSimChecked": false,
          "typeLabel": "Leather"
         },
@@ -5940,7 +6080,7 @@
      ]
     },
     "href": "/bis/hunter/survival",
-    "prose": "<p>Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Survival dual-wields, and Predator’s Edge’s 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick. The full lists by level are on the <a href=\"/bis/hunter/survival\">Survival best in slot page</a>.</p>\n"
+    "prose": "<p>Hunters wear leather until 40 and can wear mail from 40, but leather pieces stay in your best gear after it: a strong leather piece often beats the mail you can get, so your list mixes both at 60. Survival dual-wields, and Predator’s Edge’s 50% off-hand bonus lifts the off hand to three quarters of a main-hand swing, so it is a real weapon: pick it for damage and speed, not just stats. The ranged slot is a stat stick.</p>\n"
    },
    "extras": {
     "data": {
@@ -6390,13 +6530,25 @@
      }
     ],
     "lines": [],
-    "prose": "<p>Night Elf for the Alliance: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span> is 10% crit for 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes your special crits hit harder, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on the pull. Human’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> is next, and Dwarf’s 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.</p>\n<p>Orc and Troll are level for the Horde. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> is 10% attack power for 15 seconds every two minutes, so it goes on the pull with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> and again at two and four minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> is 10% attack speed for 15 seconds every three minutes and stacks with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on your swings.</p>\n<p>Skyborne can be Hunters on either faction: Wind Blessed’s 2% haste speeds both of your weapons.</p>\n"
+    "prose": "<p>Night Elf for the Alliance: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span> is 10% crit for 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> makes your special crits hit harder, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on the pull. Human’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> is next, and Dwarf’s 1% hit comes last even for a dual-wielder. Humans can be Hunters for the first time in Forever.</p>\n<p>Orc and Troll are level for the Horde. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> is 10% attack power for 15 seconds every two minutes, so it goes on the pull with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> and again at two and four minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> is 10% attack speed for 15 seconds every three minutes and stacks with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:3045\">Rapid Fire</span> on your swings.</p>\n<p>Skyborne can be Hunters on either faction: Wind Blessed’s 2% haste speeds both of your weapons.</p>\n",
+    "portraits": {
+     "dwarf": "achievement_character_dwarf_male",
+     "gnome": "achievement_character_gnome_male",
+     "high-order-skyborne": "achievement_character_bloodelf_male",
+     "human": "achievement_character_human_male",
+     "night-elf": "achievement_character_nightelf_male",
+     "orc": "achievement_character_orc_male",
+     "tauren": "achievement_character_tauren_male",
+     "troll": "achievement_character_troll_male",
+     "undead": "achievement_character_undead_male",
+     "windshaper-skyborne": "achievement_character_bloodelf_male"
+    }
    },
-   "professions": "<p>Enchanting is the profession your best in slot list asks for. Molten Heart of the Mountain and <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249469\">Frozen Heart of the Mountain</span> are Enchanting trinkets that bind on pickup, so nobody can make them for you. Heartseeker, the blacksmith’s dagger in your off hand, binds when equipped, so buy one and do not train Blacksmithing for it. Engineering gives Survival the AoE it lacks: grenades and explosives on trash. Skinning pays for your leveling.</p>\n",
+   "professions": "<p>Your raid set asks for Enchanting. Molten Heart of the Mountain and <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249469\">Frozen Heart of the Mountain</span> are Enchanting trinkets that bind on pickup, so nobody can make them for you. Heartseeker, the blacksmith’s dagger in your off hand, binds when equipped, so buy one and do not train Blacksmithing for it. Engineering gives Survival the AoE it lacks: grenades and explosives on trash. Skinning pays for your leveling.</p>\n",
    "leveling": {
     "early": "<h3 id=\"levels-1-to-19\">Levels 1 to 19</h3>\n<p>Train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:409580\">Heart of the Lion</span> at level 1 and keep it up all the way to 60: 10% more stats and extra attack power (280 at 60) for everyone near you, and another 10% stats for you. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> from level 1 is your main button, with new ranks at 8 and 16. Train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13163\">Aspect of the Monkey</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25295\">Serpent Sting</span> at 4, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span> at 6, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> at 12 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> at 16, which lights up after you dodge.</p>\n<p>At 10 your trainer starts the taming quests, which end by teaching <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1515\">Tame Beast</span>. Tame a beast at your level, feed it to keep it happy, and train <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13544\">Mend Pet</span> at 12.</p>\n<p>Your first five points go into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104996:5\">Improved Tracking</span>, 1% damage per point against whatever you are tracking: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1494\">Track Beasts</span> from level 1, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19883\">Track Humanoids</span> at 10, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19884\">Track Undead</span> at 18. Keep the right one on. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104993:2\">Savage Strikes</span> at 15 and 16 adds 2% crit to your melee abilities per point, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104992:3\">Survivalist</span> from 17 adds 2% health per point.</p>\n<p>Take quest rewards over vendor gear, Agility first. Your melee weapon is your damage: replace the starting one with the first slow two-handed quest reward you find, since <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> adds its damage on top of the weapon hit. Wear leather until 40. From 40 you can wear mail, but keep a leather piece whenever it is the better one.</p>\n",
     "stripHeading": "Levels 20 to 60",
-    "late": "<p>Survival levels in melee. Keep a pet out while you level: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> is the last point this build takes, at 60, and until then the pet holds aggro and adds damage. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> pays off in a raid, where you get the raid buffs and your pet gets none, so your own hits carry more of the damage. Out in the world at 60 a pet still adds a little more damage than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> does and takes the hits for you, so keep it out while you quest and farm. The talent does nothing while your pet is out, so dismiss the pet before a raid pull and call it back afterwards.</p>\n<p>Open with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span>, send the pet, then walk in and queue <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>. Press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> whenever it lights up, and from 30 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span> on anything that will live long enough to bleed. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> a runner. Wear <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13163\">Aspect of the Monkey</span> until 30: its dodges open <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>. At 30 switch to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and keep it up. Throw <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> under anything that will live long enough to burn. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> at 30 resets a bad pull. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5118\">Aspect of the Cheetah</span> at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.</p>\n<p>Spend 25 to 29 on <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> and take <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> at 30, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110860:2\">Survivalist’s Discipline</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span>, with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104984:1\">Lacerating Strikes</span> at 40 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span> full at 42. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span> from 43, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105011:5\">Lethal Attacks</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span> take you to 57, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105005:2\">Rapid Killing</span> comes at 58 and 59, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> is the last point at 60.</p>\n<p>At 26 <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.</p>\n<p>At 31 you have only the first point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, and for that one level <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 1 is the better button: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 31 and put rank 5 on at 32, when you train it and the second point makes every rank cheap.</p>\n<p>Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.</p>\n<p>At 46 the new <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank costs more, and with a trap on every pull your mana starts to run short over a chain of them. Rank 6 of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, trained at 40, is the one to use until then, though a Troll does a touch better keeping rank 5 at 40 itself. For 46 and 47, keep rank 5 on your bar instead: most of the hit is your weapon, so it does nearly what rank 6 does for less mana, and the mana it saves goes into traps. Drag rank 5 back from the spellbook as you did at 26. At 48 put rank 7 on the bar. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.</p>\n",
+    "late": "<p>Survival levels in melee. Keep a pet out while you level: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> is the last point this build takes, at 60, and until then the pet holds aggro and adds damage. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> pays off in a raid, where you get the raid buffs and your pet gets none, so your own hits carry more of the damage. Out in the world at 60 a pet still adds a little more damage than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> does and takes the hits for you, so keep it out while you quest and farm. The talent does nothing while your pet is out, so dismiss the pet before a raid pull and call it back afterwards.</p>\n<p>Open with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14325\">Hunter’s Mark</span>, send the pet, then walk in and queue <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>. Press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span> whenever it lights up, and from 30 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299332\">Lacerate</span> on anything that will live long enough to bleed. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14268\">Wing Clip</span> a runner. Wear <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13163\">Aspect of the Monkey</span> until 30: its dodges open <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14271\">Mongoose Bite</span>. At 30 switch to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1299447\">Aspect of the Beast</span> and keep it up. Throw <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> under anything that will live long enough to burn. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5384\">Feign Death</span> at 30 resets a bad pull. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:5118\">Aspect of the Cheetah</span> at 20 is your run speed between quests, but it dazes you when you are hit, so never wear it into a fight.</p>\n<p>Spend 25 to 29 on <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110861:5\">Predator’s Edge</span> and take <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1317257\">Strider Kick</span> at 30, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104985:2\">Expose Prey</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110860:2\">Survivalist’s Discipline</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span>, with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104984:1\">Lacerating Strikes</span> at 40 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110859:5\">Lightning Reflexes</span> full at 42. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104960:5\">Deadly Aspects</span> from 43, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105011:5\">Lethal Attacks</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105008:5\">Careful Aim</span> take you to 57, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105005:2\">Rapid Killing</span> comes at 58 and 59, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105007:1\">Lone Wolf</span> is the last point at 60.</p>\n<p>At 26 <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank 2 arrives, and with a trap on every pull your mana runs short. From 26 to 29 keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 3 on your bar instead of rank 4: most of the hit is your weapon, so it does nearly what rank 4 does for less mana, and the mana it saves goes into traps. On a Horde character rank 2 is better again: an Orc, a Troll or a Windshaper Skyborne at 26 and 27, a Tauren at 26 to 28. Drag the lower rank onto your bar from the spellbook at 26 and put rank 4 back at 30.</p>\n<p>At 31 you have only the first point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:104983:2\">Resourcefulness</span>, and for that one level <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span> rank 1 does more: it costs almost nothing, and the mana goes into traps. Drag it onto the bar at 31 and put rank 5 on at 32, when you train it and the second point makes every rank cheap.</p>\n<p>Mail at 40 is the biggest armor upgrade you will get, and from 20 you can carry two weapons.</p>\n<p>At 46 the new <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14305\">Immolation Trap</span> rank costs more, and with a trap on every pull your mana starts to run short over a chain of them. Rank 6 of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14266\">Raptor Strike</span>, trained at 40, is the one to use until then, though a Troll does a touch better keeping rank 5 at 40 itself. For 46 and 47, keep rank 5 on your bar instead: most of the hit is your weapon, so it does nearly what rank 6 does for less mana, and the mana it saves goes into traps. Drag rank 5 back from the spellbook as you did at 26. At 48 put rank 7 on the bar. On a Horde character rank 5 is still the better button: an Orc, Troll or Tauren at 48 and 49, a Windshaper Skyborne at 48.</p>\n",
     "steps": 51,
     "ladder": [
      {
@@ -9322,7 +9474,6 @@
    "role": "dps",
    "title": "Fire Mage",
    "description": "Fire Mage in Forever: the pre-pull Pyroblast, Fireball, Heating Up and Combustion, Ignite and threat, mana over a boss fight, talents, stats and leveling.",
-   "summary": "Fire casts a 3 second Fireball, keeps its own Improved Scorch stacks up, turns crits into fast Pyroblasts with Heating Up, and cashes Combustion into a run of Ignites.",
    "meta": "DPS · Updated 7 Nov",
    "tabs": [
     {
@@ -10675,14 +10826,14 @@
       "spellId": 12051,
       "name": "Evocation",
       "icon": "spell_nature_purge",
-      "clause": "When you are nearly dry and more than 30 seconds of the fight remain",
+      "clause": "Below 5% mana, with over 30 s left",
       "tipKey": "spell:12051"
      },
      {
       "spellId": 11129,
       "name": "Combustion",
       "icon": "spell_fire_sealoffire",
-      "clause": "Once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one",
+      "clause": "At 5 Improved Scorch stacks on the target",
       "tipKey": "spell:11129"
      },
      {
@@ -10690,7 +10841,7 @@
       "name": "Scorch",
       "rank": 7,
       "icon": "spell_fire_soulburn",
-      "clause": "To build Improved Scorch to 5 stacks, or to refresh it with 5 seconds or less left",
+      "clause": "To 5 Improved Scorch stacks or under 5 s left",
       "tipKey": "spell:10207",
       "rankText": "Rank 7"
      },
@@ -10699,7 +10850,7 @@
       "name": "Pyroblast",
       "rank": 8,
       "icon": "spell_fire_fireball02",
-      "clause": "Only on 3 stacks of Heating Up, when it is a 1.5 second cast",
+      "clause": "At 3 Heating Up stacks",
       "needs": [
        "Heating Up"
       ],
@@ -10707,7 +10858,7 @@
       "rankText": "Rank 8"
      }
     ],
-    "filler": "Filler: Fireball",
+    "filler": null,
     "stats": [
      {
       "label": "Hit",
@@ -13629,7 +13780,7 @@
       "why": "Each cast adds 12% of your Intellect as spell damage to every spell for 18 seconds"
      }
     ],
-    "prose": "<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> asks for 30 points above it. The Fire damage talents above it come to 26, and five ranks of <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105795:5\">Accelerant</span></strong> make it 31. Fire skips <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13021\">Blast Wave</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105791:0\">Improved Flamestrike</span>, which are AoE only, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105793:0\">Flame Throwing</span>: 6 more yards are worth less to a raid caster than a faster <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>. Two ranks of <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105789:2\">Burning Soul</span></strong> stay for the threat: 20% less threat from your Fire spells and a 47% chance to keep a cast from being pushed back.</p>\n<p>The other 17 points buy hit and a little Arcane. Three go into <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105778:3\">Precision</span></strong> in Frost for 6% hit. Fourteen in Arcane take <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105813:5\">Improved Channeling</span></strong>, which opens the tree and keeps your Missiles from being pushed back, <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105810:5\">Arcane Concentration</span></strong> (a free spell 10% of the time), <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span></strong>, <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span></strong> and a point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105812:1\">Arcane Subtlety</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105815:0\">Wand Specialization</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105802:0\">Arcane Resilience</span> do nothing on a boss, and Arcane Meditation’s regeneration is worth less than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span>, so all three are left out.</p>\n<p>The level 60 build is the raid build with one change for the open world: <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105815:0\">Wand Specialization</span></strong> takes two of Improved Channeling’s points, because a leveling mage finishes mobs with the wand while the mana comes back, and 25% more wand damage is worth more there than pushback protection on <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25345\">Arcane Missiles</span>. It spends its points in a different order on the way up, set out under Leveling. Swap those two points back into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105813:5\">Improved Channeling</span> when you start raiding. <a href=\"/planner?class=mage\">Open the planner</a> to change the build.</p>\n"
+    "prose": "<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> asks for 30 points above it. The Fire damage talents above it come to 26, and five ranks of <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105795:5\">Accelerant</span></strong> make it 31. Fire skips <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:13021\">Blast Wave</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105791:0\">Improved Flamestrike</span>, which are AoE only, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105793:0\">Flame Throwing</span>: 6 more yards are worth less to a raid caster than a faster <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>. Two ranks of <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105789:2\">Burning Soul</span></strong> stay for the threat: 20% less threat from your Fire spells and a 47% chance to keep a cast from being pushed back.</p>\n<p>The other 17 points buy hit and a little Arcane. Three go into <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105778:3\">Precision</span></strong> in Frost for 6% hit. Fourteen in Arcane take <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105813:5\">Improved Channeling</span></strong>, which opens the tree and keeps your Missiles from being pushed back, <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105810:5\">Arcane Concentration</span></strong> (a free spell 10% of the time), <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span></strong>, <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span></strong> and a point of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105812:1\">Arcane Subtlety</span>. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105815:0\">Wand Specialization</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105802:0\">Arcane Resilience</span> do nothing on a boss, and Arcane Meditation’s regeneration is worth less than <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105809:2\">Missile Barrage</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1239700\">Arcane Blast</span>, so all three are left out.</p>\n<p>The level 60 build is the raid build with one change for the open world: <strong><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105815:0\">Wand Specialization</span></strong> takes two of Improved Channeling’s points, because a leveling mage finishes mobs with the wand while the mana comes back, and 25% more wand damage is worth more there than pushback protection on <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25345\">Arcane Missiles</span>. It spends its points in a different order on the way up. Swap those two points back into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105813:5\">Improved Channeling</span> when you start raiding.</p>\n"
    },
    "rotation": {
     "lists": {
@@ -13649,14 +13800,14 @@
        "spellId": 12051,
        "name": "Evocation",
        "icon": "spell_nature_purge",
-       "clause": "When you are nearly dry and more than 30 seconds of the fight remain",
+       "clause": "Below 5% mana, with over 30 s left",
        "tipKey": "spell:12051"
       },
       {
        "spellId": 11129,
        "name": "Combustion",
        "icon": "spell_fire_sealoffire",
-       "clause": "Once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one",
+       "clause": "At 5 Improved Scorch stacks on the target",
        "tipKey": "spell:11129"
       },
       {
@@ -13664,7 +13815,7 @@
        "name": "Scorch",
        "rank": 7,
        "icon": "spell_fire_soulburn",
-       "clause": "To build Improved Scorch to 5 stacks, or to refresh it with 5 seconds or less left",
+       "clause": "To 5 Improved Scorch stacks or under 5 s left",
        "tipKey": "spell:10207",
        "rankText": "Rank 7"
       },
@@ -13673,7 +13824,7 @@
        "name": "Pyroblast",
        "rank": 8,
        "icon": "spell_fire_fireball02",
-       "clause": "Only on 3 stacks of Heating Up, when it is a 1.5 second cast",
+       "clause": "At 3 Heating Up stacks",
        "needs": [
         "Heating Up"
        ],
@@ -13685,7 +13836,7 @@
        "name": "Fire Blast",
        "rank": 7,
        "icon": "spell_fire_fireball",
-       "clause": "Every time it is off cooldown",
+       "clause": "On cooldown",
        "tipKey": "spell:10199",
        "rankText": "Rank 7"
       },
@@ -13694,7 +13845,7 @@
        "name": "Arcane Missiles",
        "rank": 7,
        "icon": "spell_nature_starfall",
-       "clause": "The moment Missile Barrage procs, while the proc is up",
+       "clause": "While Missile Barrage is up",
        "needs": [
         "Missile Barrage"
        ],
@@ -13706,7 +13857,7 @@
        "name": "Arcane Blast",
        "rank": 5,
        "icon": "spell_arcane_blast",
-       "clause": "Whenever its buff has dropped, once, then back to Fire",
+       "clause": "When you have no Arcane Blast buff",
        "needs": [
         "Arcane Blast"
        ],
@@ -13718,7 +13869,7 @@
        "name": "Scorch",
        "rank": 7,
        "icon": "spell_fire_soulburn",
-       "clause": "When Fire Blast is back before a Scorch would finish",
+       "clause": "When Fire Blast is ready before Scorch finishes",
        "needs": [
         "Arcane Blast"
        ],
@@ -13730,7 +13881,7 @@
        "name": "Fireball",
        "rank": 11,
        "icon": "spell_fire_flamebolt",
-       "clause": "The filler once you have Arcane Blast",
+       "clause": "As your filler once you have Arcane Blast",
        "needs": [
         "Arcane Blast"
        ],
@@ -13743,14 +13894,14 @@
        "spellId": 12051,
        "name": "Evocation",
        "icon": "spell_nature_purge",
-       "clause": "8 min cooldown. When you are nearly dry and more than 30 seconds of the fight remain",
+       "clause": "8 min cooldown. Below 5% mana, with over 30 s left",
        "tipKey": "spell:12051"
       },
       {
        "spellId": 11129,
        "name": "Combustion",
        "icon": "spell_fire_sealoffire",
-       "clause": "3 min cooldown. Once the boss carries 5 Improved Scorch stacks, with your on-use trinkets and your damage racial if your race has one",
+       "clause": "3 min cooldown. At 5 Improved Scorch stacks on the target",
        "tipKey": "spell:11129"
       },
       {
@@ -14228,7 +14379,7 @@
          "empty": false,
          "itemId": 6750,
          "itemName": "Snake Hoop",
-         "quality": 2,
+         "quality": 3,
          "icon": "inv_jewelry_ring_06",
          "sourceKind": "quest",
          "sourceDetail": "Quest: Willix the Importer · requires level 23",
@@ -15234,8 +15385,8 @@
          "itemName": "Darkspear Raider's Cloak",
          "quality": 3,
          "icon": "inv_misc_cape_20",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Creeg Bothunk",
+         "sourceKind": "rep",
+         "sourceDetail": "Darkspear Raiders (honored)",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -15323,7 +15474,7 @@
          "empty": false,
          "itemId": 6750,
          "itemName": "Snake Hoop",
-         "quality": 2,
+         "quality": 3,
          "icon": "inv_jewelry_ring_06",
          "sourceKind": "quest",
          "sourceDetail": "Quest: Willix the Importer · requires level 23",
@@ -15565,8 +15716,8 @@
          "itemName": "Darkspear Voodoo Seal",
          "quality": 3,
          "icon": "inv_misc_rune_06",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Creeg Bothunk",
+         "sourceKind": "rep",
+         "sourceDetail": "Darkspear Raiders (friendly)",
          "notSimChecked": false
         },
         {
@@ -15798,8 +15949,8 @@
          "itemName": "Darkspear Voodoo Seal",
          "quality": 3,
          "icon": "inv_misc_rune_06",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Creeg Bothunk",
+         "sourceKind": "rep",
+         "sourceDetail": "Darkspear Raiders (friendly)",
          "notSimChecked": false
         },
         {
@@ -16433,9 +16584,21 @@
      }
     ],
     "lines": [],
-    "prose": "<p><strong>Human</strong> is the Alliance pick for Fire: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> adds 1% crit with all spells, which Fire turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit. <strong>Gnome</strong> is just behind: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana, so press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and again the moment it is back. On the Horde, <strong>Undead</strong> is the pick: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Touch of the Grave\">Touch of the Grave</span> gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears. <strong>Orc</strong> is next: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> adds 10% spell power for 15 seconds every 2 minutes, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and on cooldown after that. <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> adds 10% cast speed for 15 seconds every 3 minutes and lines up with every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span>, but falls behind both. <strong>Skyborne</strong> can be mages only on the Alliance, and played without <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Read Leyline\">Read Leyline</span> it does the least Fire damage of the lot.</p>\n"
+    "prose": "<p>On the Alliance, take a <strong>Human</strong>: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Ruthless\">Ruthless</span> adds 1% crit with all spells, which Fire turns into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105786:1\">Heating Up</span>, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit. <strong>Gnome</strong> is just behind: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your damage spells hit 10% harder and cost 10% less for 8 seconds on a 2 minute cooldown, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana, so press <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and again the moment it is back. On the Horde, take <strong>Undead</strong>: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Touch of the Grave\">Touch of the Grave</span> gives your spells a 30% chance to drain 5% of your maximum health from the boss, at most once every 15 seconds, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears. <strong>Orc</strong> is next: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Blood Fury\">Blood Fury</span> adds 10% spell power for 15 seconds every 2 minutes, so press it with <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span> on the pull and on cooldown after that. <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span> adds 10% cast speed for 15 seconds every 3 minutes and lines up with every <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:11129\">Combustion</span>, but falls behind both. <strong>Skyborne</strong> can be mages only on the Alliance, and played without <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Read Leyline\">Read Leyline</span> it does the least Fire damage of the lot.</p>\n",
+    "portraits": {
+     "dwarf": "achievement_character_dwarf_male",
+     "gnome": "achievement_character_gnome_male",
+     "high-order-skyborne": "achievement_character_bloodelf_male",
+     "human": "achievement_character_human_male",
+     "night-elf": "achievement_character_nightelf_male",
+     "orc": "achievement_character_orc_male",
+     "tauren": "achievement_character_tauren_male",
+     "troll": "achievement_character_troll_male",
+     "undead": "achievement_character_undead_male",
+     "windshaper-skyborne": "achievement_character_bloodelf_male"
+    }
    },
-   "professions": "<p>Tailoring and Enchanting are the standard pair, and your raid set needs both: <span class=\"gtip gtip-item text-rarity-epic-text\" tabindex=\"0\" data-bis-item=\"14152\">Robe of the Archmage</span> is a Tailoring craft and <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249469\">Frozen Heart of the Mountain</span> an Enchanting one, and both bind on pickup, so nobody can make them for you. Enchanting also puts the spell power enchants on your own gear. The goggles in the head slot need 270 Engineering to wear: without it, take the best head you can wear and keep your two professions. Alchemy pays for itself once you raid every week, because Fire drinks a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13444\">Major Mana Potion</span> on every boss.</p>\n",
+   "professions": "<p>Take Tailoring and Enchanting, since your raid set needs both: <span class=\"gtip gtip-item text-rarity-epic-text\" tabindex=\"0\" data-bis-item=\"14152\">Robe of the Archmage</span> is a Tailoring craft and <span class=\"gtip gtip-item text-rarity-rare-text\" tabindex=\"0\" data-bis-item=\"249469\">Frozen Heart of the Mountain</span> an Enchanting one, and both bind on pickup, so nobody can make them for you. Enchanting also puts the spell power enchants on your own gear. The goggles in the head slot need 270 Engineering to wear: without it, take the best head you can wear and keep your two professions. Alchemy pays for itself once you raid every week, because Fire drinks a <span class=\"gtip gtip-item text-rarity-common\" tabindex=\"0\" data-bis-item=\"13444\">Major Mana Potion</span> on every boss.</p>\n",
    "leveling": {
     "early": "<h3 id=\"levels-1-to-19\">Levels 1 to 19</h3>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span> is trained at 1 with new ranks at 6, 12 and 18, so visit the trainer every even level. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25304\">Frostbolt</span> at 4 is your slow, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span> at 6 is the instant finisher, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10230\">Frost Nova</span> at 10 buys distance and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10216\">Flamestrike</span> at 16 hits packs.</p>\n<p>From 10 to 14 put five points into <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105796:5\">Incineration</span>, 10% more crit on <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10199\">Fire Blast</span>, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105795:5\">Accelerant</span> at 15 to cut 0.1 sec off <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25306\">Fireball</span>, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105794:5\">Ignite</span> from 16 to 19 so every Fire crit burns for more.</p>\n<p>Wand mobs down from half health to save mana: Lesser Magic Wand at 5 and Greater Magic Wand at 13 come from Enchanting, and Riptear’s Spare Arm (Rear Guard Patrol, Horde) or Elven Wand (Alliance, Bashal’Aran, Darkshore) are early quest wands. Your trainer’s level 10 class quest pays a staff or an orb; take the staff and retire the starter one. Wear cloth quest rewards over vendor gear, Intellect and Stamina first.</p>\n",
     "stripHeading": "Levels 20 to 60",
@@ -19347,7 +19510,6 @@
    "role": "healer",
    "title": "Holy Priest",
    "description": "How to heal as a Holy Priest in Forever: talents, downranking, Prayer of Mending, Prayer of Healing, Lightwell, mana over a long fight, assignments and races.",
-   "summary": "Holy is the priest who heals everything: Prayer of Mending and Renew on the tank, Greater Heal as the filler, and Prayer of Healing for a hurt group.",
    "meta": "Healer · Updated 7 Nov",
    "tabs": [
     {
@@ -20719,11 +20881,20 @@
     "rotationTitle": "Healing priority",
     "rotation": [
      {
+      "spellId": 1277328,
+      "name": "Dark Sacrifice",
+      "rank": 5,
+      "icon": "spell_holy_powerinfusion_shadow",
+      "clause": "Below 70% mana and above 70% health, Undead only",
+      "tipKey": "spell:1277328",
+      "rankText": "Rank 5"
+     },
+     {
       "spellId": 1240827,
       "name": "Prayer of Mending",
       "rank": 3,
       "icon": "spell_holy_prayerofmendingtga",
-      "clause": "On the tank every time it is ready",
+      "clause": "On cooldown, on the tank",
       "tipKey": "spell:1240827",
       "rankText": "Rank 3"
      },
@@ -20732,7 +20903,7 @@
       "name": "Renew",
       "rank": 7,
       "icon": "spell_holy_renew",
-      "clause": "Keep Renew on the tank all fight",
+      "clause": "When Renew is not on the tank",
       "tipKey": "spell:10927",
       "cheapRank": true,
       "rankText": "Rank 7 (cheap rank)"
@@ -20742,21 +20913,12 @@
       "name": "Flash Heal",
       "rank": 7,
       "icon": "spell_holy_flashheal",
-      "clause": "On a tank who is really low or on anyone about to die",
-      "tipKey": "spell:10917",
-      "rankText": "Rank 7"
-     },
-     {
-      "spellId": 10917,
-      "name": "Flash Heal",
-      "rank": 7,
-      "icon": "spell_holy_flashheal",
-      "clause": "On a party member under 30%",
+      "clause": "On the tank below 35%",
       "tipKey": "spell:10917",
       "rankText": "Rank 7"
      }
     ],
-    "filler": "Filler: Greater Heal",
+    "filler": null,
     "stats": [
      {
       "label": "MP5",
@@ -20803,7 +20965,7 @@
     "unitLine": "1 point of mp5 = 0.57 HPS at level 60"
    },
    "overview": {
-    "strengths": "<ul>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span> is the cheapest healing you can cast all fight: up to five heals for one cast</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25316\">Prayer of Healing</span> heals any five-player group at once, not only your own</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span> turn Spirit into both healing and mana</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:27871\">Lightwell</span> heals the melee while you heal the tank, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105856:1\">Holy Binding</span> heals you every time you <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10917\">Flash Heal</span> someone else</li>\n</ul>\n",
+    "strengths": "<ul>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span>: up to five heals for one cast, the cheapest healing you have all fight</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25316\">Prayer of Healing</span> heals any five-player group at once, not only your own</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span> turn Spirit into both healing and mana</li>\n<li><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:27871\">Lightwell</span> heals the melee while you heal the tank, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105856:1\">Holy Binding</span> heals you every time you <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10917\">Flash Heal</span> someone else</li>\n</ul>\n",
     "weaknesses": "<ul>\n<li>Mana is the limit on every long fight</li>\n<li>Your shield is untalented and Weakened Soul limits it, so most of your healing answers damage that has already landed</li>\n<li>Slow heals on a spiky tank need you to pre-cast and cancel</li>\n</ul>\n",
     "raid": "<ul>\n<li><strong>Role:</strong> Raid and group healer, and a strong second tank healer</li>\n<li><strong>Brings:</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10938\">Power Word: Fortitude</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:27841\">Divine Spirit</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6346\">Fear Ward</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:27871\">Lightwell</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10958\">Shadow Protection</span></li>\n</ul>\n"
    },
@@ -22368,7 +22530,7 @@
       "why": "Regeneration while casting, a deeper bar, and a free spell every 3 minutes"
      }
     ],
-    "prose": "<p>Deep Holy for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span>, with 17 points in Discipline for stronger, cheaper Renews and mana.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105854:1\">Spirit of Redemption</span> is the step to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span>, and if you die it gives you 15 seconds of free heals: keep casting, a death in the last seconds of a hard pull still heals the raid through. <a href=\"/planner?class=priest\">Open the planner</a> to change the build.</p>\n"
+    "prose": "<p>Deep Holy for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span>, with 17 points in Discipline for stronger, cheaper Renews and mana.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105854:1\">Spirit of Redemption</span> is the step to <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span>, and if you die it gives you 15 seconds of free heals: keep casting, a death in the last seconds of a hard pull still heals the raid through.</p>\n"
    },
    "rotation": {
     "lists": {
@@ -22389,7 +22551,7 @@
        "name": "Dark Sacrifice",
        "rank": 5,
        "icon": "spell_holy_powerinfusion_shadow",
-       "clause": "Undead only, once you are under 70% mana and still healthy",
+       "clause": "Below 70% mana and above 70% health, Undead only",
        "tipKey": "spell:1277328",
        "rankText": "Rank 5"
       },
@@ -22398,7 +22560,7 @@
        "name": "Prayer of Mending",
        "rank": 3,
        "icon": "spell_holy_prayerofmendingtga",
-       "clause": "On the tank every time it is ready",
+       "clause": "On cooldown, on the tank",
        "tipKey": "spell:1240827",
        "rankText": "Rank 3"
       },
@@ -22407,7 +22569,7 @@
        "name": "Renew",
        "rank": 7,
        "icon": "spell_holy_renew",
-       "clause": "Keep Renew on the tank all fight",
+       "clause": "When Renew is not on the tank",
        "tipKey": "spell:10927",
        "cheapRank": true,
        "rankText": "Rank 7 (cheap rank)"
@@ -22417,7 +22579,7 @@
        "name": "Flash Heal",
        "rank": 7,
        "icon": "spell_holy_flashheal",
-       "clause": "On a tank who is really low or on anyone about to die",
+       "clause": "On the tank below 35%",
        "tipKey": "spell:10917",
        "rankText": "Rank 7"
       },
@@ -22426,7 +22588,7 @@
        "name": "Flash Heal",
        "rank": 7,
        "icon": "spell_holy_flashheal",
-       "clause": "On a party member under 30%",
+       "clause": "On a party member below 30% Cast on a party member below 30%",
        "tipKey": "spell:10917",
        "rankText": "Rank 7"
       },
@@ -22435,7 +22597,7 @@
        "name": "Prayer of Healing",
        "rank": 4,
        "icon": "spell_holy_prayerofhealing02",
-       "clause": "Once three of your four party members are under 85%",
+       "clause": "When 3 party members are below 85%",
        "tipKey": "spell:10961",
        "rankText": "Rank 4"
       },
@@ -22444,7 +22606,7 @@
        "name": "Greater Heal",
        "rank": 4,
        "icon": "spell_holy_greaterheal",
-       "clause": "The filler while your mana keeps pace with the fight",
+       "clause": "On the tank below 80% while mana % is over boss health %",
        "tipKey": "spell:10965",
        "rankText": "Rank 4"
       },
@@ -22453,7 +22615,25 @@
        "name": "Greater Heal",
        "rank": 4,
        "icon": "spell_holy_greaterheal",
-       "clause": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole",
+       "clause": "On a party member below 65% while mana holds Cast on a party member below 65%, when your mana is at least 90% of the share of the fight left",
+       "tipKey": "spell:10965",
+       "rankText": "Rank 4"
+      },
+      {
+       "spellId": 10965,
+       "name": "Greater Heal",
+       "rank": 4,
+       "icon": "spell_holy_greaterheal",
+       "clause": "On the tank below 50% when mana % is under boss health %",
+       "tipKey": "spell:10965",
+       "rankText": "Rank 4"
+      },
+      {
+       "spellId": 10965,
+       "name": "Greater Heal",
+       "rank": 4,
+       "icon": "spell_holy_greaterheal",
+       "clause": "On a party member below 35% when mana is low Cast on a party member below 35%",
        "tipKey": "spell:10965",
        "rankText": "Rank 4"
       },
@@ -22462,7 +22642,7 @@
        "name": "Greater Heal",
        "rank": 1,
        "icon": "spell_holy_greaterheal",
-       "clause": "Once you have higher ranks, when the top rank would overheal or your mana runs short",
+       "clause": "On the tank below 80% while mana % is over boss health %",
        "tipKey": "spell:2060",
        "cheapRank": true,
        "rankText": "Rank 1 (cheap rank)"
@@ -22472,7 +22652,27 @@
        "name": "Greater Heal",
        "rank": 1,
        "icon": "spell_holy_greaterheal",
-       "clause": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole too",
+       "clause": "On a party member below 65% while mana holds Cast on a party member below 65%, when your mana is at least 90% of the share of the fight left",
+       "tipKey": "spell:2060",
+       "cheapRank": true,
+       "rankText": "Rank 1 (cheap rank)"
+      },
+      {
+       "spellId": 2060,
+       "name": "Greater Heal",
+       "rank": 1,
+       "icon": "spell_holy_greaterheal",
+       "clause": "On the tank below 50% when mana % is under boss health %",
+       "tipKey": "spell:2060",
+       "cheapRank": true,
+       "rankText": "Rank 1 (cheap rank)"
+      },
+      {
+       "spellId": 2060,
+       "name": "Greater Heal",
+       "rank": 1,
+       "icon": "spell_holy_greaterheal",
+       "clause": "On a party member below 35% when mana is low Cast on a party member below 35%",
        "tipKey": "spell:2060",
        "cheapRank": true,
        "rankText": "Rank 1 (cheap rank)"
@@ -22482,7 +22682,7 @@
        "name": "Heal",
        "rank": 4,
        "icon": "spell_holy_heal02",
-       "clause": "The step down when Greater Heal rank 1 costs more than you can spend",
+       "clause": "On the tank below 80% while mana % is over boss health %",
        "tipKey": "spell:6064",
        "rankText": "Rank 4"
       },
@@ -22491,7 +22691,25 @@
        "name": "Heal",
        "rank": 4,
        "icon": "spell_holy_heal02",
-       "clause": "When your mana falls behind the fight, only on a tank under 50% or a party member under 35%, so it waits for a deeper hole",
+       "clause": "On a party member below 65% while mana holds Cast on a party member below 65%, when your mana is at least 90% of the share of the fight left",
+       "tipKey": "spell:6064",
+       "rankText": "Rank 4"
+      },
+      {
+       "spellId": 6064,
+       "name": "Heal",
+       "rank": 4,
+       "icon": "spell_holy_heal02",
+       "clause": "On the tank below 50% when mana % is under boss health %",
+       "tipKey": "spell:6064",
+       "rankText": "Rank 4"
+      },
+      {
+       "spellId": 6064,
+       "name": "Heal",
+       "rank": 4,
+       "icon": "spell_holy_heal02",
+       "clause": "On a party member below 35% when mana is low Cast on a party member below 35%",
        "tipKey": "spell:6064",
        "rankText": "Rank 4"
       }
@@ -22511,7 +22729,7 @@
        "name": "Dark Sacrifice",
        "rank": 5,
        "icon": "spell_holy_powerinfusion_shadow",
-       "clause": "10 min cooldown. Undead only, once you are under 70% mana and still healthy",
+       "clause": "10 min cooldown. Below 70% mana and above 70% health, Undead only",
        "tipKey": "spell:1277328",
        "rankText": "Rank 5"
       },
@@ -23394,8 +23612,8 @@
          "itemName": "Knight's Satin Leggings",
          "quality": 3,
          "icon": "inv_pants_13",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Captain Dirgehammer",
+         "sourceKind": "pvp",
+         "sourceDetail": "PvP rank 6 · Knight · Alliance",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -24289,8 +24507,8 @@
          "itemName": "Darkspear Signet",
          "quality": 3,
          "icon": "inv_jewelry_ring_28",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Creeg Bothunk",
+         "sourceKind": "rep",
+         "sourceDetail": "Darkspear Raiders (honored)",
          "notSimChecked": false
         },
         {
@@ -24325,8 +24543,8 @@
          "itemName": "Darkspear Voodoo Seal",
          "quality": 3,
          "icon": "inv_misc_rune_06",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Creeg Bothunk",
+         "sourceKind": "rep",
+         "sourceDetail": "Darkspear Raiders (friendly)",
          "notSimChecked": false
         },
         {
@@ -24489,8 +24707,8 @@
          "itemName": "Stone Guard's Satin Leggings",
          "quality": 3,
          "icon": "inv_pants_13",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Lady Palanseer",
+         "sourceKind": "pvp",
+         "sourceDetail": "PvP rank 6 · Stone Guard · Horde",
          "notSimChecked": false,
          "typeLabel": "Cloth"
         },
@@ -24551,8 +24769,8 @@
          "itemName": "Darkspear Voodoo Seal",
          "quality": 3,
          "icon": "inv_misc_rune_06",
-         "sourceKind": "vendor",
-         "sourceDetail": "Vendor: Creeg Bothunk",
+         "sourceKind": "rep",
+         "sourceDetail": "Darkspear Raiders (friendly)",
          "notSimChecked": false
         },
         {
@@ -25200,13 +25418,25 @@
      }
     ],
     "lines": [],
-    "prose": "<p><strong>Human</strong> is the Alliance pick. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit, which <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> turns into healing, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277378\">Divine Grace</span> is a free instant heal on an ally under 50% every 10 minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19275\">Feedback</span> is a PvP spell.</p>\n<p><strong>Undead</strong> is the Horde pick, and the best Holy priest of all, for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277328\">Dark Sacrifice</span>: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears.</p>\n<p><strong>Gnome</strong> is close behind Human. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your direct heals 10% stronger and 10% cheaper for 8 seconds every 2 minutes (never <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span>), and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277640\">Contingency Plan</span> is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. <strong>Night Elf</strong> has <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span>, 10% crit for 15 seconds, <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span>, 10% cast speed, and <strong>Dwarf</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Stoneform\">Stoneform</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19243\">Desperate Prayer</span>, a free self heal. Those three heal clearly less.</p>\n"
+    "prose": "<p><strong>Human</strong> is the Alliance pick. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:The Human Spirit\">The Human Spirit</span> adds 10% Spirit, which <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span> turns into healing, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277378\">Divine Grace</span> is a free instant heal on an ally under 50% every 10 minutes. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19275\">Feedback</span> is a PvP spell.</p>\n<p><strong>Undead</strong> is the Horde pick, and the best Holy priest of all, for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277328\">Dark Sacrifice</span>: once a fight, trade your own health for well over a thousand mana while the raid is quiet, then heal yourself back. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Will of the Forsaken\">Will of the Forsaken</span> breaks fears.</p>\n<p><strong>Gnome</strong> is close behind Human. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Eureka!\">Eureka!</span> makes your direct heals 10% stronger and 10% cheaper for 8 seconds every 2 minutes (never <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span>), and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Expansive Mind\">Expansive Mind</span> adds 5% mana. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1277640\">Contingency Plan</span> is a ward that shields and heals an ally who drops under 35%: put it on the tank before a hard hit. <strong>Night Elf</strong> has <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Elune's Light\">Elune’s Light</span>, 10% crit for 15 seconds, <strong>Troll</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Berserking\">Berserking</span>, 10% cast speed, and <strong>Dwarf</strong> <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"racial:Stoneform\">Stoneform</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:19243\">Desperate Prayer</span>, a free self heal. Those three heal clearly less.</p>\n",
+    "portraits": {
+     "dwarf": "achievement_character_dwarf_male",
+     "gnome": "achievement_character_gnome_male",
+     "high-order-skyborne": "achievement_character_bloodelf_male",
+     "human": "achievement_character_human_male",
+     "night-elf": "achievement_character_nightelf_male",
+     "orc": "achievement_character_orc_male",
+     "tauren": "achievement_character_tauren_male",
+     "troll": "achievement_character_troll_male",
+     "undead": "achievement_character_undead_male",
+     "windshaper-skyborne": "achievement_character_bloodelf_male"
+    }
    },
    "professions": "<p>Tailoring makes healing cloth you will wear into the first raids. Enchanting saves you the enchanting bill. Alchemy makes the flask and the elixirs you burn every raid, and that is the profession that saves a healer the most gold.</p>\n",
    "leveling": {
     "early": "<h3 id=\"levels-1-to-19\">Levels 1 to 19</h3>\n<p>Until <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> at 20, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> is your damage: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10894\">Shadow Word: Pain</span> at 4 first, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span>, then the wand. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10901\">Power Word: Shield</span> at 6 and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> at 8 matter most, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10952\">Inner Fire</span> follows at 12. Healing a group before you learn <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> at 16, keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on the tank and use <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:2053\">Lesser Heal</span> rank 3 as your filler. Keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on rank 1 through your twenties, except at 16, the level <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> arrives, when rank 2 is worth its mana.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105866:3\">Improved Renew</span> takes 10 to 12 for 15% bigger Renews, your main heal at these levels, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:110855:5\">Holy Specialization</span> 13 to 17 for more crit on your Holy spells. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105863:5\">Divine Fury</span> at 18 and 19 takes a fifth of a second off <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span>.</p>\n<p>Wear cloth, take quest rewards over vendor gear, and swap the starting mace for the first quest staff or caster mace. Get a wand early: a Lesser Magic Wand from an Enchanter at 5, a Greater Magic Wand at 13, or a quest wand such as the Elven Wand (Bashal’Aran, Darkshore) or the Cinder Wand (Arugal’s Folly, Silverpine Forest).</p>\n",
     "stripHeading": "Levels 20 to 60",
-    "late": "<p>From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> hit hard, but they cost so much mana that you drink after every pull. If you level Holy, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> opens, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> finishes, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10901\">Power Word: Shield</span> keeps you casting. In dungeons, keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on the tank, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> as the filler from level 16, and learn to downrank early.</p>\n<p>Your points from 20: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105860:3\">Inspiration</span> from 20 to 22, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105867:3\">Twilight Focus</span> at 23 and 24 so most hits stop pushing back your casts, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105856:1\">Holy Binding</span> at 25, the first level its row opens, since your Flash Heals on the group then heal you as well, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105858:3\">Improved Healing</span> from 26 to 28. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105867:3\">Twilight Focus</span> is full at 29, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105855:2\">Litany of Light</span> takes 30 and 31, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105854:1\">Spirit of Redemption</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105852:3\">Spiritual Healing</span>, so that all thirty Holy points are in for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span> at 40. From 41 go to Discipline: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105849:5\">Twin Disciplines</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105837:5\">Mental Strength</span> open the row for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span>, which keeps half your mana regeneration going while you cast and is in by 53, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14751\">Inner Focus</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105842:3\">Mental Agility</span>. The last three points of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105863:5\">Divine Fury</span> close the build at 58 to 60.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> rank 1 is the filler through most of your twenties and early thirties: it keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so a long pull ends with mana to spare. A later rank takes over at a few levels: rank 2 at 27 for a Human, Gnome or Night Elf (a Human stays on it at 28), rank 3 at 28 for a Dwarf, Gnome, Night Elf or Troll, rank 3 at 30 and 31 for an Undead or Troll, and rank 2 or 3 at 32 for everyone but a Troll. From 34 rank 1 has started to lose its bonus, and rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 before you move to rank 4, and to 38 as an Undead. A Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> steps down too: through your twenties the tank’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> is rank 1, a fraction of the top rank’s cost that still keeps most of your healing bonus. Rank 2 and then rank 3 take over between 28 and 36, at levels that differ a little by race, so you finish the dungeon with mana to spare. From there <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> keeps stepping: rank 4 from 40, rank 5 from 45 and rank 6 from about 52 cost far less and keep all or nearly all of your healing bonus, so you can keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> up all dungeon; rank 7 takes over at 59, already at 58 as a Human.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span> is the same story: keep rank 1 as the filler all the way to 60, even after rank 4 arrives at 58. A dungeon tank rarely needs the bigger ranks, so the mana they cost is better spent on more casts. At 60, rank 3 and rank 4 heal about the same for their mana.</p>\n",
+    "late": "<p>From 20 you can keep leveling Holy in groups, or respec to Shadow at the trainer for faster solo questing and come back to Holy at 60. Solo, Holy is slow: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> hit hard, but they cost so much mana that you drink after every pull. If you level Holy, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:15261\">Holy Fire</span> opens, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10934\">Smite</span> finishes, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:10901\">Power Word: Shield</span> keeps you casting. In dungeons, keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> on the tank, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> as the filler from level 16, and learn to downrank early.</p>\n<p>Your points from 20: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105860:3\">Inspiration</span> from 20 to 22, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105867:3\">Twilight Focus</span> at 23 and 24 so most hits stop pushing back your casts, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105856:1\">Holy Binding</span> at 25, the first level its row opens, since your Flash Heals on the group then heal you as well, and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105858:3\">Improved Healing</span> from 26 to 28. <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105867:3\">Twilight Focus</span> is full at 29, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105855:2\">Litany of Light</span> takes 30 and 31, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105853:4\">Spiritual Guidance</span>, <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105854:1\">Spirit of Redemption</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105852:3\">Spiritual Healing</span>, so that all thirty Holy points are in for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:1240827\">Prayer of Mending</span> at 40. From 41 go to Discipline: <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105849:5\">Twin Disciplines</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105837:5\">Mental Strength</span> open the row for <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105843:3\">Meditation</span>, which keeps half your mana regeneration going while you cast and is in by 53, then <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:14751\">Inner Focus</span> and <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105842:3\">Mental Agility</span>. The last three points of <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"talent:105863:5\">Divine Fury</span> close the build at 58 to 60.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:6064\">Heal</span> rank 1 is the filler through most of your twenties and early thirties: it keeps your whole healing bonus until 33 and heals more for its mana than any later rank, so a long pull ends with mana to spare. A later rank takes over at a few levels: rank 2 at 27 for a Human, Gnome or Night Elf (a Human stays on it at 28), rank 3 at 28 for a Dwarf, Gnome, Night Elf or Troll, rank 3 at 30 and 31 for an Undead or Troll, and rank 2 or 3 at 32 for everyone but a Troll. From 34 rank 1 has started to lose its bonus, and rank 4 costs more mana than its extra healing is worth in its first levels, so keep rank 3 from 34 to 37 before you move to rank 4, and to 38 as an Undead. A Troll stays on rank 1 at 34 and casts rank 2 at 38 and 39, and an Undead casts rank 2 at 39.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> steps down too: through your twenties the tank’s <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> is rank 1, a fraction of the top rank’s cost that still keeps most of your healing bonus. Rank 2 and then rank 3 take over between 28 and 36, at levels that differ a little by race, so you finish the dungeon with mana to spare. From there <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> keeps stepping: rank 4 from 40, rank 5 from 45 and rank 6 from about 52 cost far less and keep all or nearly all of your healing bonus, so you can keep <span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25315\">Renew</span> up all dungeon; rank 7 takes over at 59, already at 58 as a Human.</p>\n<p><span class=\"gtip\" tabindex=\"0\" data-game-tip=\"spell:25314\">Greater Heal</span> works the same way: keep rank 1 as the filler all the way to 60, even after rank 4 arrives at 58. A dungeon tank rarely needs the bigger ranks, so the mana they cost is better spent on more casts. At 60, rank 3 and rank 4 heal about the same for their mana.</p>\n",
     "steps": 51,
     "ladder": [
      {
@@ -28188,7 +28418,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 0,
-    "priority": 9,
+    "priority": 10,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28279,7 +28509,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 1,
-    "priority": 7,
+    "priority": 10,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28318,7 +28548,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 2,
-    "priority": 11,
+    "priority": 12,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28331,7 +28561,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 1,
-    "priority": 12,
+    "priority": 18,
     "cooldowns": 5
    },
    "stat_rows": 5,
@@ -28422,7 +28652,7 @@
    "raid_build": false,
    "rotation": {
     "opener": 2,
-    "priority": 10,
+    "priority": 11,
     "cooldowns": 3
    },
    "stat_rows": 0,
@@ -28519,6 +28749,7 @@
    "faction": "alliance",
    "identity": "Dwarf Beast Mastery Hunter",
    "level_line": "Level 34",
+   "detail": "34 Dwarf Beast Mastery",
    "talents_at": "Talents at level 34"
   },
   "survival34": {
@@ -28530,6 +28761,7 @@
    "faction": "alliance",
    "identity": "Dwarf Survival Hunter",
    "level_line": "Level 34",
+   "detail": "34 Dwarf Survival",
    "talents_at": "Talents at level 34",
    "next": "Next point at 35: Survivalist's Discipline"
   },
@@ -28542,6 +28774,7 @@
    "faction": "alliance",
    "identity": "Night Elf Survival Hunter",
    "level_line": "Level 60",
+   "detail": "60 Night Elf Survival",
    "talents_at": "Talents at level 60"
   },
   "warrior60": {
@@ -28553,6 +28786,7 @@
    "faction": "alliance",
    "identity": "Human Fury Warrior",
    "level_line": "Level 60",
+   "detail": "60 Human Fury",
    "talents_at": "Talents at level 60"
   },
   "mage60": {
@@ -28564,6 +28798,7 @@
    "faction": "alliance",
    "identity": "Human Fire Mage",
    "level_line": "Level 60",
+   "detail": "60 Human Fire",
    "talents_at": "Talents at level 60"
   }
  },

@@ -8,9 +8,7 @@ import type { Locator, Page } from '@playwright/test';
 import { apiUnreachable, expect, test, GUILD_OVERVIEW_READS } from './support/test';
 import { notificationsCopy as copy } from '../../src/lib/account/notifications-copy';
 import { guildDiscordCopy } from '../../src/lib/guild/discord-copy';
-import { GUILD_ID } from '../../src/fixtures/guild/mock-guild';
-import { CLAIM_HOLDER_CAN, guildBilling } from '../../src/test-support/billing-fixtures';
-import { GUILD_URL, raidsMe, stubGuildRaids } from './support/guild-raids';
+import { GUILD_URL, stubGuildRaids } from './support/guild-raids';
 import {
   DISCORD_SETTINGS_URL,
   GUILD_CONNECT_HREF,
@@ -18,12 +16,11 @@ import {
   SETTINGS_GUILD_PATH,
   SWITCHED_OFF,
   guildChannel,
-  settingsBody,
   stubGuildDiscord,
   type GuildDiscordStubOptions,
 } from './support/guild-discord';
 import { gotoHydrated } from './support/hydrated';
-import { envelope, expectNoAxeViolations } from './support/officer-tools';
+import { expectNoAxeViolations } from './support/officer-tools';
 import { fieldBox } from './support/select';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
@@ -172,67 +169,22 @@ test.describe('connected', () => {
     await expect(section(page).getByRole('status')).toHaveText(copy.testSentSwitchedOn);
     await expect(section(page).getByTestId('discord-notice')).toHaveCount(0);
   });
-
-  test('a 403 guild_plan_required turns the section read-only and focuses the line', async ({ page }) => {
-    await open(page, {
-      discord: guildChannel(),
-      testRefusal: {
-        status: 403,
-        code: 'guild_plan_required',
-        message: 'Planning and running raids are part of the guild plan.',
-      },
-    });
-    await section(page).getByTestId('discord-test').click();
-    await expect(page.locator('#guild-discord-status')).toBeFocused();
-    await expect(section(page).getByRole('alert')).toHaveText(guildDiscordCopy.planEnded);
-    await expect(section(page).getByTestId('discord-test')).toBeDisabled();
-    await expect(page.locator('#officer-tools-gate-discord')).toBeVisible();
-    await expect(section(page).getByTestId('discord-remove')).toBeEnabled();
-  });
 });
 
-test.describe('officer-read-only', () => {
-  test('not connected: connect has aria-disabled and no href; Subscribe your guild scrolls to Billing', async ({
-    page,
-  }) => {
-    await page.setViewportSize(PHONE);
+// Owner ruling 2026-11-09: the Discord section is free for any claimed guild's officers.
+test.describe('a guild with no plan', () => {
+  test('connects and tests like any other', async ({ page }) => {
     await open(page, { discord: NOT_CONNECTED, officerTools: false, claimHolder: true });
     const connect = section(page).getByTestId('discord-connect');
-    await expect(connect).toHaveAttribute('aria-disabled', 'true');
-    expect(await connect.getAttribute('href')).toBeNull();
-    await expect(connect).toHaveAttribute('aria-describedby', 'officer-tools-gate-discord');
-    await page.locator('#officer-tools-gate-discord a').click();
-    await expect(page).toHaveURL(/#billing$/);
-    await expect(page.getByTestId('guild-settings-billing')).toBeInViewport();
+    await expect(connect).not.toHaveAttribute('aria-disabled', 'true');
+    expect(await connect.getAttribute('href')).not.toBeNull();
+    await expect(page.locator('#officer-tools-gate-discord')).toHaveCount(0);
   });
 
-  test('on the guild page Settings tab, Subscribe your guild scrolls to Billing and the tab stays', async ({
-    page,
-  }) => {
-    await stubGuildRaids(page, { viewer: 'officer', officerTools: false });
-    const me = raidsMe('officer');
-    const billingMe = {
-      ...me,
-      guilds: me.guilds.map((g) => ({ ...g, can: [...CLAIM_HOLDER_CAN], plan: guildBilling() })),
-    };
-    await page.route('**/v1/me', (route) => route.fulfill(envelope(billingMe)));
-    await page.route(`**/v1/guilds/${GUILD_ID}/settings`, (route) =>
-      route.fulfill(envelope(settingsBody(NOT_CONNECTED, false, true))),
-    );
-    await gotoHydrated(page, `${GUILD_URL}#settings`, 'guild-settings-tab');
-    await page.locator('#officer-tools-gate-discord a').click();
-    await expect(page.getByTestId('guild-settings-tab')).toBeVisible();
-    await expect(page.getByTestId('guild-settings-billing')).toBeInViewport();
-    await expect(page.getByTestId('guild-tab-settings')).toHaveAttribute('aria-selected', 'true');
-  });
-
-  test('connected: test disabled, Remove still removes', async ({ page }) => {
-    const seen = await open(page, { discord: guildChannel(), officerTools: false });
-    await expect(section(page).getByTestId('discord-test')).toBeDisabled();
-    await section(page).getByTestId('discord-remove').click();
-    await section(page).getByTestId('discord-remove-confirm').click();
-    await expect(section(page).getByTestId('discord-connect')).toHaveAttribute('aria-disabled', 'true');
-    expect(seen.deletes).toBe(1);
+  test('connected: test and Remove are live', async ({ page }) => {
+    await open(page, { discord: guildChannel(), officerTools: false });
+    await expect(section(page).getByTestId('discord-test')).toBeEnabled();
+    await expect(section(page).getByTestId('discord-remove')).toBeEnabled();
   });
 
   test('frozen: every control is off, Remove included', async ({ page }) => {

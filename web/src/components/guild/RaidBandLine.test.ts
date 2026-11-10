@@ -217,7 +217,7 @@ describe('RaidBandLine none planned', () => {
   it('gives a gated officer the gate sentence, no live link', () => {
     const body = html({ nextRaid: null, officer: true, officerTools: false });
     expect(text(body, 'guild-raid-line-none')).toBe(
-      'Nothing planned yet. Planning raids and events is part of the Guild and Raid guild plans.',
+      'Nothing planned yet. Comp targets, pings, assignments and log matching are part of the Guild and Raid guild plans.',
     );
     expect(body).not.toContain('guild-raid-line-plan');
     expect(body).not.toContain('href="#raids"');
@@ -226,7 +226,7 @@ describe('RaidBandLine none planned', () => {
   it('gives a gated guild master the same trial link as the Raids tab (guild round 3)', () => {
     const body = html({ nextRaid: null, officer: true, officerTools: false, gateFacts: gateFactsFixture() });
     expect(text(body, 'guild-raid-line-none')).toBe(
-      'Nothing planned yet. Planning raids and events is part of the Guild and Raid guild plans. Start the 7-day trial.',
+      'Nothing planned yet. Comp targets, pings, assignments and log matching are part of the Guild and Raid guild plans. Start the 7-day trial.',
     );
     expect(body).toContain(`href="${GATE_SETTINGS_HREF}#billing"`);
   });

@@ -829,7 +829,7 @@ func (a *App) Headline() Headline {
 	a.mu.Lock()
 	signedOut := a.signedOut != nil
 	a.mu.Unlock()
-	return headlineFor(a.paired(signedOut), connecting, signedOut, st.Logging, a.currentCredit(st.ReportKey), installs)
+	return withHeld(headlineFor(a.paired(signedOut), connecting, signedOut, st.Logging, a.currentCredit(st.ReportKey), installs), st.Held)
 }
 
 // ReportsURL is the player's reports on the site.
@@ -901,7 +901,7 @@ func (a *App) Snapshot() Snapshot {
 		}
 		s.Reports = append(s.Reports, row)
 	}
-	s.Headline = headlineFor(paired, connecting, so != nil, s.Pipeline.Logging, s.Credit, s.Installs)
+	s.Headline = withHeld(headlineFor(paired, connecting, so != nil, s.Pipeline.Logging, s.Credit, s.Installs), s.Pipeline.Held)
 	for _, p := range a.savedVariables() {
 		// Through the cache: this runs on a two-second poll and the
 		// file behind it is megabytes of Lua. The stamp is the sync's

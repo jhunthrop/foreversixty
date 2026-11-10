@@ -261,7 +261,7 @@ label:has(input[type='checkbox']:disabled) {
     gap: 6px;
     height: 22px;
     padding: 0 8px;
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-field);
     /* Tag's type (ui/Tag.svelte): 12 px 600 in sentence case; source pills keep their colours. */
     font-size: 12px;
     font-weight: 600;
@@ -428,162 +428,92 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
 }
 
 /* /account's loading state draws the ready page's layout (experience spec
-   2026-10-25-discord-notifications 9.1): the header row, the left column, and the rail's
-   blocks, each at its measured floor. Base.astro sets --account-left-reserve and
-   --account-rail-reserve (the last rendered column heights) and data-discord (which Discord
-   block the ready page draws) before first paint; a stored height wins over the floors. The
-   stack numbers are the page below 1024px (measured at 390), the media block the 12-column
-   grid (measured at 1440). A visitor with no session hint keeps the collapsed `.session-reserve`
+   2026-10-25-discord-notifications 9.1): the main column (Characters, Devices, Discord) and the
+   rail (You, Plan, Delete account), each at its measured floor. Base.astro sets
+   --account-left-reserve and --account-rail-reserve (the last rendered column heights),
+   data-discord (which Discord block the ready page draws) and data-discord-link (its link rows)
+   before first paint; a stored height wins over the floors. The stack numbers are the page below
+   1024px (measured at 390), the media block the split (measured at 1440). A visitor with no session hint keeps the collapsed `.session-reserve`
    state above and below: no skeletons, the sign-in prompt only. */
 /* account loading reserve:begin (mirrors lib/account/layout.ts's tables; layout-reserve.test.ts keeps them equal) */
+.account-left-skeleton {
+  min-height: var(--account-left-reserve, calc(var(--account-left-floor) + var(--account-link-floor, 0px)));
+  /* With a stored height a column is exactly that tall: a floor sum above it is clipped, not pushed
+     into the footer. */
+  max-height: var(--account-left-reserve, none);
+  overflow: clip;
+}
 .account-rail-skeleton {
-  min-height: var(--account-rail-reserve, calc(var(--account-rail-floor) + var(--account-link-floor, 0px)));
-  /* With a stored height the rail is exactly that tall: a floor sum above it (a Plan panel with
-     no Premium row is shorter than its floor) is clipped, not pushed into the footer. */
+  min-height: var(--account-rail-reserve, var(--account-rail-floor));
   max-height: var(--account-rail-reserve, none);
   overflow: clip;
 }
-.account-discord-skeleton {
-  display: none;
+.account-left-skeleton {
+  --account-left-floor: 507px;
+}
+html[data-discord='free'] .account-left-skeleton {
+  --account-left-floor: 684px;
+}
+html[data-discord='connect'] .account-left-skeleton {
+  --account-left-floor: 884px;
+}
+html[data-discord='form'] .account-left-skeleton {
+  --account-left-floor: 1189px;
+}
+html[data-discord='saved'] .account-left-skeleton {
+  --account-left-floor: 969px;
+}
+html[data-discord='off'] .account-left-skeleton {
+  --account-left-floor: 1064px;
+}
+html[data-discord='lapsed'] .account-left-skeleton {
+  --account-left-floor: 939px;
 }
 html[data-discord-link='unlinked'] {
-  --account-link-floor: 366px;
+  --account-link-floor: 200px;
 }
 html[data-discord-link='suggested'] {
-  --account-link-floor: 346px;
+  --account-link-floor: 200px;
 }
 html[data-discord-link='linked'] {
-  --account-link-floor: 326px;
-}
-html[data-session='1'] .account-header-reserve {
-  min-height: 110px;
-}
-.account-left-skeleton {
-  min-height: max(var(--account-left-reserve, 0px), 475px);
-}
-.account-devices-skeleton {
-  min-height: 290px;
-}
-.account-you-skeleton {
-  min-height: calc(190px + var(--account-link-floor, 0px));
-}
-.account-plan-skeleton {
-  min-height: 525px;
+  --account-link-floor: 180px;
 }
 .account-rail-skeleton {
-  --account-rail-floor: 1069px;
-}
-html[data-discord='free'] .account-rail-skeleton {
-  --account-rail-floor: 1265px;
-}
-html[data-discord='free'] .account-discord-skeleton {
-  display: flex;
-  min-height: 180px;
-}
-html[data-discord='connect'] .account-rail-skeleton {
-  --account-rail-floor: 1445px;
-}
-html[data-discord='connect'] .account-discord-skeleton {
-  display: flex;
-  min-height: 360px;
-}
-html[data-discord='form'] .account-rail-skeleton {
-  --account-rail-floor: 1850px;
-}
-html[data-discord='form'] .account-discord-skeleton {
-  display: flex;
-  min-height: 765px;
-}
-html[data-discord='saved'] .account-rail-skeleton {
-  --account-rail-floor: 1735px;
-}
-html[data-discord='saved'] .account-discord-skeleton {
-  display: flex;
-  min-height: 650px;
-}
-html[data-discord='off'] .account-rail-skeleton {
-  --account-rail-floor: 1850px;
-}
-html[data-discord='off'] .account-discord-skeleton {
-  display: flex;
-  min-height: 765px;
-}
-html[data-discord='lapsed'] .account-rail-skeleton {
-  --account-rail-floor: 1665px;
-}
-html[data-discord='lapsed'] .account-discord-skeleton {
-  display: flex;
-  min-height: 580px;
+  --account-rail-floor: 894px;
 }
 @media (min-width: 1024px) {
+  .account-left-skeleton {
+    --account-left-floor: 392px;
+  }
+  html[data-discord='free'] .account-left-skeleton {
+    --account-left-floor: 554px;
+  }
+  html[data-discord='connect'] .account-left-skeleton {
+    --account-left-floor: 709px;
+  }
+  html[data-discord='form'] .account-left-skeleton {
+    --account-left-floor: 949px;
+  }
+  html[data-discord='saved'] .account-left-skeleton {
+    --account-left-floor: 759px;
+  }
+  html[data-discord='off'] .account-left-skeleton {
+    --account-left-floor: 834px;
+  }
+  html[data-discord='lapsed'] .account-left-skeleton {
+    --account-left-floor: 799px;
+  }
   html[data-discord-link='unlinked'] {
-    --account-link-floor: 327px;
+    --account-link-floor: 120px;
   }
   html[data-discord-link='suggested'] {
-    --account-link-floor: 327px;
+    --account-link-floor: 120px;
   }
   html[data-discord-link='linked'] {
-    --account-link-floor: 307px;
-  }
-  html[data-session='1'] .account-header-reserve {
-    min-height: 60px;
-  }
-  .account-left-skeleton {
-    min-height: max(var(--account-left-reserve, 0px), 355px);
-  }
-  .account-devices-skeleton {
-    min-height: 270px;
-  }
-  .account-you-skeleton {
-    min-height: calc(170px + var(--account-link-floor, 0px));
-  }
-  .account-plan-skeleton {
-    min-height: 445px;
+    --account-link-floor: 110px;
   }
   .account-rail-skeleton {
-    --account-rail-floor: 949px;
-  }
-  html[data-discord='free'] .account-rail-skeleton {
-    --account-rail-floor: 1145px;
-  }
-  html[data-discord='free'] .account-discord-skeleton {
-    display: flex;
-    min-height: 180px;
-  }
-  html[data-discord='connect'] .account-rail-skeleton {
-    --account-rail-floor: 1305px;
-  }
-  html[data-discord='connect'] .account-discord-skeleton {
-    display: flex;
-    min-height: 340px;
-  }
-  html[data-discord='form'] .account-rail-skeleton {
-    --account-rail-floor: 1700px;
-  }
-  html[data-discord='form'] .account-discord-skeleton {
-    display: flex;
-    min-height: 735px;
-  }
-  html[data-discord='saved'] .account-rail-skeleton {
-    --account-rail-floor: 1495px;
-  }
-  html[data-discord='saved'] .account-discord-skeleton {
-    display: flex;
-    min-height: 530px;
-  }
-  html[data-discord='off'] .account-rail-skeleton {
-    --account-rail-floor: 1610px;
-  }
-  html[data-discord='off'] .account-discord-skeleton {
-    display: flex;
-    min-height: 645px;
-  }
-  html[data-discord='lapsed'] .account-rail-skeleton {
-    --account-rail-floor: 1500px;
-  }
-  html[data-discord='lapsed'] .account-discord-skeleton {
-    display: flex;
-    min-height: 535px;
+    --account-rail-floor: 869px;
   }
 }
 /* account loading reserve:end */

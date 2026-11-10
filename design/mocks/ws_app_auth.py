@@ -11,7 +11,7 @@ from html import escape
 from pathlib import Path
 
 from mocklib import ROOT
-from ws_prims import Button, PageForm, PageHeader, build_page, write
+from ws_prims import Button, PageForm, PageHeader, Plate, build_page, write
 
 COPY = dict(re.findall(r"^\s+(\w+): ['\"](.+?)['\"],$", (Path(ROOT) / 'web/src/lib/app-links/handoff-copy.ts').read_text(), re.M))
 
@@ -22,9 +22,12 @@ def e(text: str) -> str:
 
 def page(code: bool) -> str:
     first = Button(e(COPY['button']), primary=True, act=True) if code else f'<p class="t-small">{e(COPY["missing"])}</p>'
-    main = f'<div class="aa">{first}<p class="t-small">{e(COPY["notYou"])}</p></div>'
-    css = '<style>.aa{display:flex;flex-direction:column;align-items:flex-start;gap:12px}</style>'
-    body = PageHeader(e(COPY['heading']), meta=[e(COPY['body'])]) + PageForm(main) + css
+    main = f'<div class="aa"><p class="lead">{e(COPY["body"])}</p>{first}<p class="t-small">{e(COPY["notYou"])}</p></div>'
+    css = ('<style>.aa{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:16px 20px 18px}'
+           '.aa .lead{font-size:16px;line-height:24px;color:var(--strong)}</style>')
+    # Directions mock b4-app-auth: the title alone in the band, the sentence, the one primary and the note on a framed panel.
+    plate = Plate(main, e(COPY['heading'])).replace('class="plate"', 'class="plate framed"', 1)
+    body = PageHeader(e(COPY['heading'])) + PageForm(plate) + css
     return build_page(e(COPY['title']), body, '', None, '/app/auth mock (design/specs/2026-11-07-bis-landing.md section 7).')
 
 

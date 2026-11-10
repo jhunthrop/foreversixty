@@ -46,9 +46,9 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 		m := w.command(t, pressDiscord, "bis", map[string]string{"class": "warrior", "spec": "fury", "slot": "head", "phase": "p1"}).Message
 		assertCardLimits(t, m)
 		want := []string{"### Head · Fury Warrior\nBest in slot · level 60 Phase 1 raid · Alliance",
-			"**Pick head**\nHead · +15.0 DPS\n-# Epic · item level 61 · Source head",
+			"**Pick head**\nHead · +15.0 DPS\n-# item level 61 · Source head",
 			panelCopy.BisSlotNext,
-			"**Alt one head**\nHead · −15.0 DPS vs the best pick\n-# Epic · item level 61 · PvP rank 14 · Lieutenant Commander · Alliance",
+			"**Alt one head**\nHead · −15.0 DPS vs the best pick\n-# item level 61 · PvP rank 14 · Lieutenant Commander · Alliance",
 			// An item the build does not know: no quality word or item level.
 			"**Alt two head**\nHead · −18.0 DPS vs the best pick\n-# Blacksmithing"}
 		if got := textsOf(m); strings.Join(got, "|") != strings.Join(want, "|") {
@@ -73,13 +73,13 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 		m := w.command(t, pressDiscord, "bis", map[string]string{"spec": "warrior-fury", "phase": "p1"}).Message
 		assertCardLimits(t, m)
 		want := []string{"### Fury Warrior\nBest in slot · level 60 Phase 1 raid · Alliance\n-# Head to Legs, 9 of 17 slots. Each gain is over the next best item.",
-			"**Pick head**\nHead · +15.0 DPS\n-# Epic · item level 61 · Source head",
-			"**Pick neck**\nNeck · +2.0 DPS\n-# Epic · item level 61 · Source neck",
+			"**Pick head**\nHead · +15.0 DPS\n-# item level 61 · Source head",
+			"**Pick neck**\nNeck · +2.0 DPS\n-# item level 61 · Source neck",
 			"**Shoulder** · no pick for this range.",
-			"**Pick back**\nBack · +0.5 DPS\n-# Epic · item level 61 · Source back",
+			"**Pick back**\nBack · +0.5 DPS\n-# item level 61 · Source back",
 			"**Chest** · no pick for this range.", "**Wrist** · no pick for this range.",
 			"**Hands** · no pick for this range.", "**Waist** · no pick for this range.",
-			"**Pick legs**\nLegs · +9.0 DPS\n-# Epic · item level 61 · Source legs"}
+			"**Pick legs**\nLegs · +9.0 DPS\n-# item level 61 · Source legs"}
 		if got := textsOf(m); strings.Join(got, "|") != strings.Join(want, "|") {
 			t.Fatalf("texts = %q", got)
 		}
@@ -99,8 +99,8 @@ func TestBisWithAndWithoutSlot(t *testing.T) {
 		assertCardLimits(t, two.Message)
 		texts := textsOf(two.Message)
 		if !strings.HasSuffix(texts[0], "-# Feet to Ranged, 8 of 17 slots. Each gain is over the next best item.") ||
-			texts[1] != "**Pick feet**\nFeet · +1.0 DPS\n-# Epic · item level 61 · Source feet" ||
-			texts[2] != "**Pick finger1**\nFinger 1 · +20.0 DPS\n-# Epic · item level 61 · Source finger1" ||
+			texts[1] != "**Pick feet**\nFeet · +1.0 DPS\n-# item level 61 · Source feet" ||
+			texts[2] != "**Pick finger1**\nFinger 1 · +20.0 DPS\n-# item level 61 · Source finger1" ||
 			texts[len(texts)-1] != "**Ranged** · no pick for this range." || len(texts) != 9 {
 			t.Fatalf("page 2 = %q", texts)
 		}

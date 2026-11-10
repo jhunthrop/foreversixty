@@ -1,0 +1,2421 @@
+{
+  "guild": {
+    "id": 2,
+    "name": "Olympus XXVII",
+    "region": "us",
+    "ruleset": "pvp",
+    "faction": "alliance",
+    "crest_url": null
+  },
+  "viewer": {
+    "role": "member",
+    "character_key": "us/pvp/hollowmend",
+    "verified": true,
+    "officer_tools": false,
+    "raid_guild_tools": true,
+    "verify": {
+      "has_approver": true
+    }
+  },
+  "claim": {
+    "state": "claimed",
+    "since": "2026-11-12T00:00:00Z",
+    "frozen": false,
+    "yours": false,
+    "claimed_by": {
+      "name": "Dunmaro",
+      "class": "hunter",
+      "character_key": "us/pvp/dunmaro"
+    }
+  },
+  "summary": {
+    "raiders": 40,
+    "waiting_for_approval": 0,
+    "below_rating_floor": 5,
+    "tier": {
+      "name": "First tier",
+      "raids": ["Barrow Deeps", "Hyjal Summit", "Onyxia's Lair"],
+      "named_encounters": 1,
+      "down": 1,
+      "pulls_total": 6
+    },
+    "named_encounters_down": 1,
+    "pulls_this_tier": 6,
+    "updated_at": "2027-01-09T19:30:00Z"
+  },
+  "standing": {
+    "spec": "Holy",
+    "class": "priest",
+    "same_spec_count": 2,
+    "rank_by_item_level": 1,
+    "item_level": 63,
+    "needs_before_next_raid": ["Flask or elixir", "Buff food"],
+    "needs_raid": {
+      "title": "Onyxia's Lair",
+      "starts_at": "2027-01-14T02:00:00Z",
+      "character_key": "us/pvp/hollowmend"
+    }
+  },
+  "reports": [
+    {
+      "id": "olympusony0106",
+      "title": "Onyxia's Lair \u00b7 raid night",
+      "zone": "Onyxia's Lair",
+      "created_at": "2027-01-07T02:00:00Z",
+      "fight_count": 3,
+      "kill_count": 1,
+      "duration_ms": 3192000
+    },
+    {
+      "id": "olympusony1230",
+      "title": "Onyxia's Lair \u00b7 raid night",
+      "zone": "Onyxia's Lair",
+      "created_at": "2026-12-31T02:00:00Z",
+      "fight_count": 3,
+      "kill_count": 1,
+      "duration_ms": 3198000
+    },
+    {
+      "id": "olympusony1223",
+      "title": "Onyxia's Lair \u00b7 raid night",
+      "zone": "Onyxia's Lair",
+      "created_at": "2026-12-24T02:00:00Z",
+      "fight_count": 3,
+      "kill_count": 1,
+      "duration_ms": 3206000
+    },
+    {
+      "id": "olympusony1216",
+      "title": "Onyxia's Lair \u00b7 raid night",
+      "zone": "Onyxia's Lair",
+      "created_at": "2026-12-17T02:00:00Z",
+      "fight_count": 3,
+      "kill_count": 1,
+      "duration_ms": 3214000
+    },
+    {
+      "id": "olympusony1209",
+      "title": "Onyxia's Lair \u00b7 raid night",
+      "zone": "Onyxia's Lair",
+      "created_at": "2026-12-10T02:00:00Z",
+      "fight_count": 4,
+      "kill_count": 1,
+      "duration_ms": 3225000
+    }
+  ],
+  "roster": [
+    {
+      "character_key": "us/pvp/thornwicke",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Thornwicke",
+      "class": "warrior",
+      "spec": "Protection",
+      "spec_name": "Protection Warrior",
+      "role": "tank",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "tank",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 227.0,
+        "percentile": 77,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 78,
+        "output": 77,
+        "survival": 85,
+        "mechanics": 71,
+        "utility": 76,
+        "preparation": 74,
+        "activity": 81
+      },
+      "professions": ["alchemy", "blacksmithing"],
+      "account_key": "acct-thornwicke",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "warrior-protection",
+        "gear_gap": null,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/ironbrand",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Ironbrand",
+      "class": "paladin",
+      "spec": "Holy",
+      "spec_name": "Holy Paladin",
+      "role": "healer",
+      "rank": "leader",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "healer",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "hps",
+        "value": 253.0,
+        "percentile": 89,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 89,
+        "output": 85,
+        "survival": 92,
+        "mechanics": 94,
+        "utility": 99,
+        "preparation": 78,
+        "activity": 95
+      },
+      "professions": ["alchemy", "mining"],
+      "account_key": "acct-ironbrand",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": false,
+      "addon": {
+        "level": 60,
+        "spec": "paladin-holy",
+        "gear_gap": 2,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/valomira",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Valomira",
+      "class": "paladin",
+      "spec": "Holy",
+      "spec_name": "Holy Paladin",
+      "role": "healer",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "healer",
+      "item_level": 61,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "hps",
+        "value": 272.0,
+        "percentile": 94,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 67,
+        "output": 76,
+        "survival": 61,
+        "mechanics": 66,
+        "utility": 73,
+        "preparation": 55,
+        "activity": 61
+      },
+      "professions": ["mining", "tailoring"],
+      "account_key": "acct-valomira",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "paladin-holy",
+        "gear_gap": 15,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/seraphine",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Seraphine",
+      "class": "paladin",
+      "spec": "Retribution",
+      "spec_name": "Retribution Paladin",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 64,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 512.0,
+        "percentile": 91,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 79,
+        "output": 70,
+        "survival": 79,
+        "mechanics": 73,
+        "utility": 70,
+        "preparation": 86,
+        "activity": 73
+      },
+      "professions": ["mining"],
+      "account_key": "acct-seraphine",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "paladin-retribution",
+        "gear_gap": 19,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/dunmaro",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Dunmaro",
+      "class": "hunter",
+      "spec": "Beast Mastery",
+      "spec_name": "Beast Mastery Hunter",
+      "role": "dps",
+      "rank": "officer",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 485.0,
+        "percentile": 84,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 69,
+        "output": 66,
+        "survival": 80,
+        "mechanics": 77,
+        "utility": 58,
+        "preparation": 62,
+        "activity": 62
+      },
+      "professions": ["alchemy", "mining"],
+      "account_key": "acct-dunmaro",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": false,
+      "addon": {
+        "level": 60,
+        "spec": "hunter-beast-mastery",
+        "gear_gap": 7,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/pinefeather",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Pinefeather",
+      "class": "hunter",
+      "spec": "Marksmanship",
+      "spec_name": "Marksmanship Hunter",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 60,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 4,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 4,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 389.0,
+        "percentile": 51,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 47,
+        "output": 51,
+        "survival": 35,
+        "mechanics": 52,
+        "utility": 55,
+        "preparation": 56,
+        "activity": 59
+      },
+      "professions": ["engineering", "leatherworking"],
+      "account_key": "acct-pinefeather",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "hunter-marksmanship",
+        "gear_gap": 20,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/skytalon",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Skytalon",
+      "class": "hunter",
+      "spec": "Survival",
+      "spec_name": "Survival Hunter",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 60,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 427.0,
+        "percentile": 38,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 88,
+        "output": 84,
+        "survival": 76,
+        "mechanics": 80,
+        "utility": 94,
+        "preparation": 86,
+        "activity": 78
+      },
+      "professions": ["leatherworking"],
+      "account_key": "acct-skytalon",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "hunter-survival",
+        "gear_gap": 5,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/shiverknife",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Shiverknife",
+      "class": "rogue",
+      "spec": "Assassination",
+      "spec_name": "Assassination Rogue",
+      "role": "dps",
+      "rank": "officer",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 64,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 470.0,
+        "percentile": 74,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 88,
+        "output": 95,
+        "survival": 96,
+        "mechanics": 89,
+        "utility": 96,
+        "preparation": 88,
+        "activity": 84
+      },
+      "professions": ["engineering", "tailoring"],
+      "account_key": "acct-shiverknife",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": false,
+      "addon": {
+        "level": 60,
+        "spec": "rogue-assassination",
+        "gear_gap": 22,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/blacktide",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Blacktide",
+      "class": "rogue",
+      "spec": "Combat",
+      "spec_name": "Combat Rogue",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 60,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 424.0,
+        "percentile": 80,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 95,
+        "output": 91,
+        "survival": 86,
+        "mechanics": 83,
+        "utility": 91,
+        "preparation": 87,
+        "activity": 99
+      },
+      "professions": ["alchemy", "mining"],
+      "account_key": "acct-blacktide",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "rogue-combat",
+        "gear_gap": 21,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/hollowmend",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Hollowmend",
+      "class": "priest",
+      "spec": "Holy",
+      "spec_name": "Holy Priest",
+      "role": "healer",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "healer",
+      "item_level": 63,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "hps",
+        "value": 296.0,
+        "percentile": 82,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 86,
+        "output": 98,
+        "survival": 90,
+        "mechanics": 95,
+        "utility": 88,
+        "preparation": 82,
+        "activity": 82
+      },
+      "professions": ["skinning", "tailoring"],
+      "account_key": "acct-hollowmend",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "priest-holy",
+        "gear_gap": 11,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/dawnweaver",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Dawnweaver",
+      "class": "priest",
+      "spec": "Holy",
+      "spec_name": "Holy Priest",
+      "role": "healer",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "healer",
+      "item_level": 61,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "hps",
+        "value": 286.0,
+        "percentile": 56,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 84,
+        "output": 87,
+        "survival": 78,
+        "mechanics": 75,
+        "utility": 91,
+        "preparation": 78,
+        "activity": 78
+      },
+      "professions": ["engineering", "leatherworking"],
+      "account_key": "acct-dawnweaver",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "priest-holy",
+        "gear_gap": 15,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/voidcall",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Voidcall",
+      "class": "priest",
+      "spec": "Shadow",
+      "spec_name": "Shadow Priest",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": false,
+      "logged_at": "2027-01-01T19:30:00Z",
+      "group": "ranged",
+      "item_level": 59,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 3,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 3,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 410.0,
+        "percentile": 79,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 56,
+        "output": 44,
+        "survival": 66,
+        "mechanics": 49,
+        "utility": 65,
+        "preparation": 44,
+        "activity": 59
+      },
+      "professions": ["alchemy", "blacksmithing"],
+      "account_key": "acct-voidcall",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "priest-shadow",
+        "gear_gap": 20,
+        "build": null,
+        "seen_at": "2027-01-01 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/stonetide",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Stonetide",
+      "class": "shaman",
+      "spec": "Restoration",
+      "spec_name": "Restoration Shaman",
+      "role": "healer",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "healer",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "hps",
+        "value": 295.0,
+        "percentile": 61,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 80,
+        "output": 80,
+        "survival": 74,
+        "mechanics": 91,
+        "utility": 82,
+        "preparation": 72,
+        "activity": 69
+      },
+      "professions": ["herbalism", "tailoring"],
+      "account_key": "acct-stonetide",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "shaman-restoration",
+        "gear_gap": 3,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/emberfall",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Emberfall",
+      "class": "shaman",
+      "spec": "Elemental",
+      "spec_name": "Elemental Shaman",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 428.0,
+        "percentile": 43,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 77,
+        "output": 69,
+        "survival": 66,
+        "mechanics": 74,
+        "utility": 89,
+        "preparation": 76,
+        "activity": 70
+      },
+      "professions": ["alchemy", "leatherworking"],
+      "account_key": "acct-emberfall",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "shaman-elemental",
+        "gear_gap": 3,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/groundshock",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Groundshock",
+      "class": "shaman",
+      "spec": "Enhancement",
+      "spec_name": "Enhancement Shaman",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 64,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 451.0,
+        "percentile": 53,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 66,
+        "output": 63,
+        "survival": 64,
+        "mechanics": 72,
+        "utility": 77,
+        "preparation": 59,
+        "activity": 70
+      },
+      "professions": ["enchanting", "leatherworking"],
+      "account_key": "acct-groundshock",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "shaman-enhancement",
+        "gear_gap": 14,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/frostquill",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Frostquill",
+      "class": "mage",
+      "spec": "Frost",
+      "spec_name": "Frost Mage",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 65,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 433.0,
+        "percentile": 53,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 90,
+        "output": 99,
+        "survival": 86,
+        "mechanics": 83,
+        "utility": 99,
+        "preparation": 99,
+        "activity": 79
+      },
+      "professions": ["blacksmithing", "leatherworking"],
+      "account_key": "acct-frostquill",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "mage-frost",
+        "gear_gap": 0,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/cinderglass",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Cinderglass",
+      "class": "mage",
+      "spec": "Fire",
+      "spec_name": "Fire Mage",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 60,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 2,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 2,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 422.0,
+        "percentile": 80,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 75,
+        "output": 63,
+        "survival": 83,
+        "mechanics": 86,
+        "utility": 72,
+        "preparation": 85,
+        "activity": 75
+      },
+      "professions": ["alchemy", "herbalism"],
+      "account_key": "acct-cinderglass",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "mage-fire",
+        "gear_gap": 16,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/skyarcana",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Skyarcana",
+      "class": "mage",
+      "spec": "Arcane",
+      "spec_name": "Arcane Mage",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": false,
+      "logged_at": "2026-12-31T19:30:00Z",
+      "group": "ranged",
+      "item_level": 60,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 2,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 2,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 386.0,
+        "percentile": 41,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 74,
+        "output": 77,
+        "survival": 82,
+        "mechanics": 76,
+        "utility": 62,
+        "preparation": 73,
+        "activity": 76
+      },
+      "professions": ["leatherworking"],
+      "account_key": "acct-skyarcana",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "mage-arcane",
+        "gear_gap": 9,
+        "build": null,
+        "seen_at": "2026-12-31 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/doomwhisper",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Doomwhisper",
+      "class": "warlock",
+      "spec": "Affliction",
+      "spec_name": "Affliction Warlock",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 66,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 478.0,
+        "percentile": 59,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 72,
+        "output": 84,
+        "survival": 62,
+        "mechanics": 84,
+        "utility": 61,
+        "preparation": 65,
+        "activity": 78
+      },
+      "professions": ["enchanting", "skinning"],
+      "account_key": "acct-doomwhisper",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "warlock-affliction",
+        "gear_gap": 8,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/grimsworn",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Grimsworn",
+      "class": "warlock",
+      "spec": "Demonology",
+      "spec_name": "Demonology Warlock",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 61,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 4,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 4,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 450.0,
+        "percentile": 47,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 59,
+        "output": 49,
+        "survival": 53,
+        "mechanics": 62,
+        "utility": 51,
+        "preparation": 50,
+        "activity": 57
+      },
+      "professions": ["mining", "tailoring"],
+      "account_key": "acct-grimsworn",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "warlock-demonology",
+        "gear_gap": 2,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/hexmarrow",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Hexmarrow",
+      "class": "warlock",
+      "spec": "Destruction",
+      "spec_name": "Destruction Warlock",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 494.0,
+        "percentile": 38,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 90,
+        "output": 99,
+        "survival": 94,
+        "mechanics": 99,
+        "utility": 90,
+        "preparation": 80,
+        "activity": 91
+      },
+      "professions": ["herbalism", "tailoring"],
+      "account_key": "acct-hexmarrow",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "warlock-destruction",
+        "gear_gap": 19,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/mossveil",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Mossveil",
+      "class": "druid",
+      "spec": "Restoration",
+      "spec_name": "Restoration Druid",
+      "role": "healer",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "healer",
+      "item_level": 63,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "hps",
+        "value": 328.0,
+        "percentile": 81,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 73,
+        "output": 61,
+        "survival": 73,
+        "mechanics": 81,
+        "utility": 70,
+        "preparation": 80,
+        "activity": 71
+      },
+      "professions": ["mining"],
+      "account_key": "acct-mossveil",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "druid-restoration",
+        "gear_gap": 25,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/starnettle",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Starnettle",
+      "class": "druid",
+      "spec": "Balance",
+      "spec_name": "Balance Druid",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": false,
+      "logged_at": "2027-01-07T19:30:00Z",
+      "group": "ranged",
+      "item_level": 66,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 4,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 4,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 511.0,
+        "percentile": 71,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 61,
+        "output": 68,
+        "survival": 50,
+        "mechanics": 49,
+        "utility": 61,
+        "preparation": 72,
+        "activity": 61
+      },
+      "professions": ["enchanting", "herbalism"],
+      "account_key": "acct-starnettle",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "druid-balance",
+        "gear_gap": 5,
+        "build": null,
+        "seen_at": "2027-01-07 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/nightlatch",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Nightlatch",
+      "class": "rogue",
+      "spec": "Subtlety",
+      "spec_name": "Subtlety Rogue",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 58,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 2,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 2,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 416.0,
+        "percentile": 90,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 60,
+        "output": 59,
+        "survival": 61,
+        "mechanics": 62,
+        "utility": 62,
+        "preparation": 69,
+        "activity": 72
+      },
+      "professions": ["alchemy", "herbalism"],
+      "account_key": "acct-nightlatch",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "rogue-subtlety",
+        "gear_gap": 12,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/ironhide",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Ironhide",
+      "class": "warrior",
+      "spec": "Protection",
+      "spec_name": "Protection Warrior",
+      "role": "tank",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "tank",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 3,
+        "nights": 3
+      },
+      "attendance_30": {
+        "present": 3,
+        "nights": 3
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 201.0,
+        "percentile": 97,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 89,
+        "output": 86,
+        "survival": 82,
+        "mechanics": 91,
+        "utility": 79,
+        "preparation": 98,
+        "activity": 99
+      },
+      "professions": ["mining", "skinning"],
+      "account_key": "acct-ironhide",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "warrior-protection",
+        "gear_gap": null,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/bramblehorn",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Bramblehorn",
+      "class": "druid",
+      "spec": "Feral",
+      "spec_name": "Feral Druid",
+      "role": "tank",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "tank",
+      "item_level": 64,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 229.0,
+        "percentile": 65,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 48,
+        "output": 50,
+        "survival": 58,
+        "mechanics": 46,
+        "utility": 46,
+        "preparation": 46,
+        "activity": 41
+      },
+      "professions": ["enchanting", "engineering"],
+      "account_key": "acct-bramblehorn",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "druid-feral",
+        "gear_gap": null,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/sunmantle",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Sunmantle",
+      "class": "paladin",
+      "spec": "Holy",
+      "spec_name": "Holy Paladin",
+      "role": "healer",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "healer",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 2,
+        "nights": 2
+      },
+      "attendance_30": {
+        "present": 2,
+        "nights": 2
+      },
+      "best_parse": {
+        "metric": "hps",
+        "value": 341.0,
+        "percentile": 51,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 94,
+        "output": 99,
+        "survival": 96,
+        "mechanics": 97,
+        "utility": 99,
+        "preparation": 90,
+        "activity": 95
+      },
+      "professions": ["alchemy", "skinning"],
+      "account_key": "acct-sunmantle",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "paladin-holy",
+        "gear_gap": 3,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/rainsong",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Rainsong",
+      "class": "shaman",
+      "spec": "Restoration",
+      "spec_name": "Restoration Shaman",
+      "role": "healer",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "healer",
+      "item_level": 63,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 4,
+        "nights": 4
+      },
+      "attendance_30": {
+        "present": 4,
+        "nights": 4
+      },
+      "best_parse": {
+        "metric": "hps",
+        "value": 286.0,
+        "percentile": 74,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 85,
+        "output": 88,
+        "survival": 76,
+        "mechanics": 92,
+        "utility": 84,
+        "preparation": 90,
+        "activity": 88
+      },
+      "professions": ["enchanting", "skinning"],
+      "account_key": "acct-rainsong",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "shaman-restoration",
+        "gear_gap": 10,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/brightvow",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Brightvow",
+      "class": "priest",
+      "spec": "Discipline",
+      "spec_name": "Discipline Priest",
+      "role": "healer",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "healer",
+      "item_level": 64,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "hps",
+        "value": 357.0,
+        "percentile": 40,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 83,
+        "output": 76,
+        "survival": 80,
+        "mechanics": 94,
+        "utility": 82,
+        "preparation": 95,
+        "activity": 82
+      },
+      "professions": ["engineering", "skinning"],
+      "account_key": "acct-brightvow",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "priest-discipline",
+        "gear_gap": 9,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/gorehowl",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Gorehowl",
+      "class": "warrior",
+      "spec": "Fury",
+      "spec_name": "Fury Warrior",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 65,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 471.0,
+        "percentile": 68,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 73,
+        "output": 72,
+        "survival": 61,
+        "mechanics": 69,
+        "utility": 71,
+        "preparation": 65,
+        "activity": 63
+      },
+      "professions": ["alchemy", "mining"],
+      "account_key": "acct-gorehowl",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "warrior-fury",
+        "gear_gap": 24,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/axebreaker",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Axebreaker",
+      "class": "warrior",
+      "spec": "Fury",
+      "spec_name": "Fury Warrior",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 64,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 488.0,
+        "percentile": 84,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 63,
+        "output": 75,
+        "survival": 66,
+        "mechanics": 75,
+        "utility": 66,
+        "preparation": 59,
+        "activity": 58
+      },
+      "professions": ["herbalism", "mining"],
+      "account_key": "acct-axebreaker",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "warrior-fury",
+        "gear_gap": 12,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/steelmane",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Steelmane",
+      "class": "warrior",
+      "spec": "Arms",
+      "spec_name": "Arms Warrior",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 63,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 523.0,
+        "percentile": 78,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 74,
+        "output": 72,
+        "survival": 85,
+        "mechanics": 65,
+        "utility": 74,
+        "preparation": 73,
+        "activity": 84
+      },
+      "professions": ["leatherworking", "mining"],
+      "account_key": "acct-steelmane",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "warrior-arms",
+        "gear_gap": 14,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/duskfang",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Duskfang",
+      "class": "rogue",
+      "spec": "Combat",
+      "spec_name": "Combat Rogue",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 4,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 4,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 488.0,
+        "percentile": 77,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 73,
+        "output": 62,
+        "survival": 85,
+        "mechanics": 72,
+        "utility": 68,
+        "preparation": 76,
+        "activity": 75
+      },
+      "professions": ["enchanting", "tailoring"],
+      "account_key": "acct-duskfang",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "rogue-combat",
+        "gear_gap": 15,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/thistlepaw",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Thistlepaw",
+      "class": "druid",
+      "spec": "Feral",
+      "spec_name": "Feral Druid",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 64,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 430.0,
+        "percentile": 81,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 62,
+        "output": 56,
+        "survival": 61,
+        "mechanics": 74,
+        "utility": 62,
+        "preparation": 69,
+        "activity": 62
+      },
+      "professions": ["herbalism", "skinning"],
+      "account_key": "acct-thistlepaw",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "druid-feral",
+        "gear_gap": 17,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/ashblade",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Ashblade",
+      "class": "paladin",
+      "spec": "Retribution",
+      "spec_name": "Retribution Paladin",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "melee",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 475.0,
+        "percentile": 92,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 53,
+        "output": 42,
+        "survival": 58,
+        "mechanics": 51,
+        "utility": 58,
+        "preparation": 59,
+        "activity": 61
+      },
+      "professions": ["blacksmithing", "engineering"],
+      "account_key": "acct-ashblade",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "paladin-retribution",
+        "gear_gap": 26,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/rimecaller",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Rimecaller",
+      "class": "mage",
+      "spec": "Frost",
+      "spec_name": "Frost Mage",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 64,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 473.0,
+        "percentile": 69,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 88,
+        "output": 81,
+        "survival": 86,
+        "mechanics": 91,
+        "utility": 90,
+        "preparation": 90,
+        "activity": 89
+      },
+      "professions": ["engineering", "leatherworking"],
+      "account_key": "acct-rimecaller",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "mage-frost",
+        "gear_gap": 5,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/glimmerfrost",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Glimmerfrost",
+      "class": "mage",
+      "spec": "Frost",
+      "spec_name": "Frost Mage",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 63,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 459.0,
+        "percentile": 69,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 53,
+        "output": 65,
+        "survival": 63,
+        "mechanics": 57,
+        "utility": 60,
+        "preparation": 51,
+        "activity": 41
+      },
+      "professions": ["leatherworking"],
+      "account_key": "acct-glimmerfrost",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "mage-frost",
+        "gear_gap": 2,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/felbrand",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Felbrand",
+      "class": "warlock",
+      "spec": "Destruction",
+      "spec_name": "Destruction Warlock",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": false,
+      "logged_at": "2027-01-04T19:30:00Z",
+      "group": "ranged",
+      "item_level": 64,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 4,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 4,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 465.0,
+        "percentile": 85,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 57,
+        "output": 50,
+        "survival": 67,
+        "mechanics": 63,
+        "utility": 55,
+        "preparation": 68,
+        "activity": 56
+      },
+      "professions": ["blacksmithing", "tailoring"],
+      "account_key": "acct-felbrand",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "warlock-destruction",
+        "gear_gap": 2,
+        "build": null,
+        "seen_at": "2027-01-04 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/longshot",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Longshot",
+      "class": "hunter",
+      "spec": "Marksmanship",
+      "spec_name": "Marksmanship Hunter",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": true,
+      "logged_at": "2027-01-09T19:30:00Z",
+      "group": "ranged",
+      "item_level": 64,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 5,
+        "nights": 5
+      },
+      "attendance_30": {
+        "present": 5,
+        "nights": 5
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 423.0,
+        "percentile": 71,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 57,
+        "output": 48,
+        "survival": 53,
+        "mechanics": 68,
+        "utility": 50,
+        "preparation": 58,
+        "activity": 54
+      },
+      "professions": ["blacksmithing", "engineering"],
+      "account_key": "acct-longshot",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "hunter-marksmanship",
+        "gear_gap": 12,
+        "build": null,
+        "seen_at": "2027-01-09 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    },
+    {
+      "character_key": "us/pvp/moonquill",
+      "region": "us",
+      "ruleset": "pvp",
+      "name": "Moonquill",
+      "class": "druid",
+      "spec": "Balance",
+      "spec_name": "Balance Druid",
+      "role": "dps",
+      "rank": "member",
+      "verified": true,
+      "logged_recently": false,
+      "logged_at": "2027-01-06T19:30:00Z",
+      "group": "ranged",
+      "item_level": 62,
+      "level": 60,
+      "consent": "gear_bags",
+      "is_main": true,
+      "attendance": {
+        "present": 3,
+        "nights": 4
+      },
+      "attendance_30": {
+        "present": 3,
+        "nights": 4
+      },
+      "best_parse": {
+        "metric": "dps",
+        "value": 430.0,
+        "percentile": 41,
+        "encounter": "Onyxia",
+        "report_id": "olympusony0106",
+        "fight_index": 4
+      },
+      "rating": {
+        "overall": 54,
+        "output": 66,
+        "survival": 50,
+        "mechanics": 53,
+        "utility": 46,
+        "preparation": 42,
+        "activity": 62
+      },
+      "professions": ["enchanting", "herbalism"],
+      "account_key": "acct-moonquill",
+      "last_report_at": null,
+      "sim_export": true,
+      "may_remove": true,
+      "addon": {
+        "level": 60,
+        "spec": "druid-balance",
+        "gear_gap": 12,
+        "build": null,
+        "seen_at": "2027-01-06 13:30",
+        "snapshot_at": "2027-01-09T19:30:00Z"
+      }
+    }
+  ],
+  "pending": [],
+  "addon_snapshot": {
+    "received_at": "2027-01-09T19:30:00Z",
+    "by_character": "us/pvp/dunmaro",
+    "members": 43
+  },
+  "next_raid": {
+    "id": 45,
+    "zone": "onyxias-lair",
+    "zone_name": "Onyxia's Lair",
+    "zone_kind": "raid",
+    "title": "Onyxia's Lair",
+    "starts_at": "2027-01-14T02:00:00Z",
+    "status": "planned",
+    "size": 40,
+    "guild_timezone": "America/Chicago",
+    "counts": {
+      "in": 27,
+      "late": 2,
+      "tanks": 2,
+      "healers": 6,
+      "dps": 19,
+      "melee": 10,
+      "ranged": 9
+    },
+    "own": {
+      "character_key": "us/pvp/hollowmend",
+      "state": "in",
+      "role": "healer",
+      "note": ""
+    }
+  },
+  "attendance_source": "raids"
+}

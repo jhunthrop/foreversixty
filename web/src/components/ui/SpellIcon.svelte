@@ -32,7 +32,7 @@
 </script>
 
 <span
-  class="ui-spell-icon border-line-warm-strong inline-flex shrink-0 overflow-hidden rounded-[5px] border bg-[var(--color-bg)]"
+  class="ui-spell-icon border-rule-warm inline-flex shrink-0 overflow-hidden rounded-[5px] border bg-[var(--color-bg)]"
   style:width="{size}px"
   style:height="{size}px"
   aria-hidden="true"

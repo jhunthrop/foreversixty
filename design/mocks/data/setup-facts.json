@@ -819,32 +819,6 @@
    }
   ]
  },
- "answer": {
-  "name": "Felsnap",
-  "classSlug": "hunter",
-  "levelLine": "Level 34 Beast Mastery Hunter",
-  "open": {
-   "label": "Open Felsnap",
-   "href": "/character/us/normal/felsnap"
-  },
-  "bis": {
-   "label": "Best in slot",
-   "href": "/bis/hunter/beast-mastery/30-39"
-  }
- },
- "answer_bnet": {
-  "name": "Felsnap",
-  "classSlug": "hunter",
-  "levelLine": "Level 34 Beast Mastery Hunter",
-  "open": {
-   "label": "Open Felsnap",
-   "href": "/character/us/normal/felsnap"
-  },
-  "bis": {
-   "label": "Best in slot",
-   "href": "/bis/hunter/beast-mastery/30-39"
-  }
- },
  "me": {
   "addon": {
    "user": {
@@ -881,7 +855,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -943,7 +917,7 @@
        "chest": 2041,
        "wrist": 897,
        "hands": 7358,
-       "waist": 20090,
+       "waist": 252521,
        "legs": 9509,
        "feet": 10402,
        "finger1": 6748,
@@ -1182,7 +1156,7 @@
   "signedOutLead": "Sign in to connect your companion.",
   "signedOutLeadNamed": "[fn]",
   "codeCheck": "Check that this code matches the one in the companion.",
-  "pendingCodeCheck": "Only press Connect if this code matches the one in the companion window.",
+  "pendingCodeCheck": "Only press Connect if this code matches the one the companion shows.",
   "consent": "Forever Sixty will see your BattleTag and character list. It cannot see your password or play for you.",
   "battlenet": "Continue with Battle.net",
   "checking": "Checking the link.",
@@ -1263,11 +1237,9 @@
   "pasteNeedsRuleset": "Pick the ruleset first.",
   "pasteSaved": "Saved to your account",
   "pageDescription": "The addon brings your character here: gear and talents, bags and bank, your professions, an in-game build guide, and a fresh export the moment you log out.",
-  "pageNoNetwork": "The addon never talks to the network. Everything it knows is generated here and carried in the strings you copy.",
   "installCurseForge": "Install from CurseForge",
   "installWago": "Install from Wago Addons",
   "installZip": "Download the zip",
-  "installDataLead": "Forever Sixty Data carries the Forever Scores and guild standings the addon shows, updated nightly. CurseForge and Wago add it for you; a hand install needs both.",
   "installDataHint": "Forever Sixty Data adds the item scores the addon uses, updated nightly. CurseForge and Wago install it for you.",
   "installDataRelease": "Latest data release",
   "currentDataBuild": "[fn]",
@@ -1290,11 +1262,8 @@
   "setupAddonNote": "Optional. Gear tips on every tooltip, talent marks, bags and bank.",
   "setupImportWait": "Your characters can take up to two minutes to arrive.",
   "setupSignInFailed": "Battle.net sign-in did not finish. Nothing was saved.",
-  "setupLevelLine": "[fn]",
-  "setupOpenCharacter": "[fn]",
-  "setupBis": "Best in slot",
   "setupHandInstall": "Installing by hand",
-  "setupHandInstallBody": "Unzip both into World of Warcraft\\<your Forever game folder>\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.",
+  "setupHandInstallBody": "Unzip both into World of Warcraft\\_forever_\\Interface\\AddOns: the addon zip holds ForeverSixty and ForeverSixtyInbox, the data zip holds ForeverSixtyData.",
   "pasteFieldLabel": "Addon export",
   "setupCompanionLine": "[fn]",
   "setupCompanionWaiting": "No companion signed in yet",
@@ -1321,7 +1290,7 @@
   "setupTryExport": "Try an export",
   "setupTryExportBody": "Paste what the addon saved (type /fs copy in game) to see your character without the companion.",
   "surfacesTitle": "What it does in the game",
-  "surfacesShow": "Show every surface, with pictures from the game",
+  "surfacesShow": "Show the screenshots",
   "surfaces": [
    {
     "section": "4.1",
@@ -1345,7 +1314,7 @@
       "src": "/addon/talent-marks-trees.jpg",
       "width": 504,
       "height": 298,
-      "alt": "A hunter’s talent window, Beast Mastery, Marksmanship and Survival, with small order marks on the planned talents, one ringed in gold in Marksmanship, and the strip along the bottom: “Next: Lethal Attacks (1 of 5) · 12 of 51 points · 3 off plan”, the last part in red."
+      "alt": "A hunter’s talent window, Beast Mastery, Marksmanship and Survival, with small order marks on the planned talents, one ringed in gold in Marksmanship, and the strip along the bottom naming Lethal Attacks (1 of 5) as the next talent, 12 of 51 points spent and 3 off plan, the last part in red."
      }
     ]
    },
@@ -1554,6 +1523,7 @@
  },
  "characters": {
   "heading": "Characters",
+  "itemLevel": "[fn]",
   "empty": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net. Playing in Korea? Install the addon and the companion, or paste an export.",
   "emptyLead": "No Forever characters on this Battle.net account yet. Make one in game, then refresh from Battle.net.",
   "emptyKorea": "Playing in Korea? Install the addon and the companion, or paste an export.",

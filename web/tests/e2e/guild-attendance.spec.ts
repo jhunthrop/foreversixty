@@ -35,6 +35,7 @@ import { gotoHydrated } from './support/hydrated';
 import { expectNoAxeViolations } from './support/officer-tools';
 import { choose } from './support/select';
 import { shortControls } from './support/short-controls';
+import { openRosterAccounts } from './support/guild-roster-accounts';
 
 test.beforeEach(({ page }) => apiUnreachable(page, ...GUILD_OVERVIEW_READS));
 
@@ -471,7 +472,8 @@ test.describe('the roster chip (§3.6)', () => {
   test('raid mode: two windows and No raid nights yet, no footnote', async ({ page }) => {
     await stubGuildAttendance(page, { viewer: 'member', attendanceSource: 'raids' });
     await page.clock.install({ time: NOW });
-    await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-roster-tab');
+    await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-raid-roster');
+    await openRosterAccounts(page);
     const rows = page.getByTestId('guild-roster-rows');
     // The chip reads the bot's words (attendanceChip): `6 of 8 raid nights · 25 of the last 30`.
     await expect(rows).toContainText(/\d of 8 raid nights · \d+ of the last 30/);
@@ -485,7 +487,8 @@ test.describe('the roster chip (§3.6)', () => {
   test('report mode: the nights chip and no footnote', async ({ page }) => {
     await stubGuildAttendance(page, { viewer: 'member', attendanceSource: 'reports' });
     await page.clock.install({ time: NOW });
-    await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-roster-tab');
+    await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-raid-roster');
+    await openRosterAccounts(page);
     await expect(page.getByTestId('guild-roster-rows')).toContainText(/\d of 8 raid nights/);
     await expect(page.getByTestId('guild-roster-rows')).not.toContainText('of the last 30');
     await expect(page.getByTestId('guild-roster-attendance-footnote')).toHaveCount(0);
@@ -514,7 +517,8 @@ test('readiness: Next raid is on by default, its lists are the sign-ups, and off
       );
   const signed = signedKeys(stub);
   await expect.poll(async () => (await listed()).sort()).toEqual([...signed].sort());
-  await expect(page.getByTestId('guild-readiness-read-only')).toContainText('In or Late for Thu 10 Dec');
+  // The board's head names the raid it counts (dense spec 5.3): "N of M ready for Thu 10 Dec".
+  await expect(page.getByTestId('guild-readiness-short')).toContainText('ready for Thu 10 Dec');
   expect(stub.readinessReads).toContain(String(ONYXIA_ID));
   // No export: the raider is listed short of it, and nothing else about their gear.
   const noExport = page.getByTestId(`guild-readiness-row-${keyOf(NO_EXPORT)}`);
@@ -554,7 +558,8 @@ test.describe('axe (§9)', () => {
   test('the roster in raid mode and readiness on the next raid are clean', async ({ page }) => {
     await stubGuildAttendance(page, { viewer: 'officer', attendanceSource: 'raids' });
     await page.clock.install({ time: NOW });
-    await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-roster-tab');
+    await gotoHydrated(page, `${GUILD_URL}#roster`, 'guild-raid-roster');
+    await openRosterAccounts(page);
     // The rows: the sort chips' aria-sort predates this lane (see the report).
     await expectNoAxeViolations(page, '[data-testid="guild-roster-rows"]');
     await gotoHydrated(page, `${GUILD_URL}#readiness`, 'guild-readiness-next-raid');

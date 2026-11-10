@@ -16,6 +16,17 @@ import (
 // specFacts is the catalogue spec a roster row resolves to.
 type specFacts struct {
 	Role, Name, Icon string
+	// Group is the raid group the spec fights in for the row's role (raidspec.Group).
+	Group string
+}
+
+// factsOf is a catalogue spec's words, its group read for the row's role (the spec's own when
+// the row has none): a Fury warrior logged as a tank groups with the tanks.
+func factsOf(s raidspec.Spec, role string) specFacts {
+	if role == "" {
+		role = s.Role
+	}
+	return specFacts{Role: s.Role, Name: fullSpecName(s), Icon: s.Icon, Group: raidspec.Group(s.Class, s.Name, role)}
 }
 
 // fullSpecName is the spec as a player says it, the catalogue's full name ("Holy Paladin",
@@ -30,7 +41,7 @@ func resolveSpec(class, spec *string, role string) (specFacts, bool) {
 		return specFacts{}, false
 	}
 	if s, ok := raidspec.ByKey(strings.TrimSpace(*spec)); ok {
-		return specFacts{Role: s.Role, Name: fullSpecName(s), Icon: s.Icon}, true
+		return factsOf(s, role), true
 	}
 	if class == nil {
 		return specFacts{}, false
@@ -39,7 +50,7 @@ func resolveSpec(class, spec *string, role string) (specFacts, bool) {
 	if !ok {
 		return specFacts{}, false
 	}
-	return specFacts{Role: s.Role, Name: fullSpecName(s), Icon: s.Icon}, true
+	return factsOf(s, role), true
 }
 
 // withRaidSpec is the row with the raid spec its player picked for the guild's raids as its
@@ -62,8 +73,8 @@ func (row RosterRow) withRaidSpec(raidSpec *string) RosterRow {
 	return row
 }
 
-// describeRosterRows fills each roster row's spec_name and spec_icon, and its role when the
-// logs gave none. A row that does not resolve keeps what it had.
+// describeRosterRows fills each roster row's spec_name, spec_icon and group, and its role when
+// the logs gave none. A row that does not resolve keeps what it had.
 func describeRosterRows(rows []RosterRow) {
 	for i := range rows {
 		role := ""
@@ -78,6 +89,7 @@ func describeRosterRows(rows []RosterRow) {
 		if rows[i].Role == nil {
 			rows[i].Role = strp(facts.Role)
 		}
+		rows[i].Group = strp(facts.Group)
 	}
 }
 
