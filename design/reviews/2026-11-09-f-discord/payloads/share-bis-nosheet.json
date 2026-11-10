@@ -35,7 +35,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Beastmaster's Cap**\nHead · Gain not modelled yet\n-# Epic · item level 60 · Quest: Saving the Best for Last · requires level 58"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Beastmaster's Cap**\nHead · Gain not modelled yet\n-# item level 60 · Quest: Saving the Best for Last · requires level 58"
               }
             ],
             "accessory": {
@@ -51,7 +51,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Amulet of the Darkmoon**\nNeck · +0.3 DPS\n-# Epic · item level 65 · Quest: 1200 Tickets - Amulet of the Darkmoon · requires level 55"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Amulet of the Darkmoon**\nNeck · +0.3 DPS\n-# item level 65 · Quest: 1200 Tickets - Amulet of the Darkmoon · requires level 55"
               }
             ],
             "accessory": {
@@ -67,7 +67,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Darkspear Pauldrons**\nShoulder · Same DPS as the next best\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Darkspear Pauldrons**\nShoulder · Same DPS as the next best\n-# item level 65 · Vendor: Creeg Bothunk"
               }
             ],
             "accessory": {
@@ -83,7 +83,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Cape of the Black Baron**\nBack · +0.9 DPS\n-# Rare · item level 63 · Stratholme · Baron Rivendare"
+                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Cape of the Black Baron**\nBack · +0.9 DPS\n-# item level 63 · Stratholme · Baron Rivendare"
               }
             ],
             "accessory": {
@@ -99,7 +99,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Dawn Armor**\nChest · +5.4 DPS\n-# Epic · item level 61 · Crafted: Leatherworking"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Dawn Armor**\nChest · +5.4 DPS\n-# item level 61 · Crafted: Leatherworking"
               }
             ],
             "accessory": {
@@ -115,7 +115,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Beastmaster's Bindings**\nWrist · Same DPS as the next best\n-# Rare · item level 65 · Quest: An Earnest Proposition · requires level 58"
+                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Beastmaster's Bindings**\nWrist · Same DPS as the next best\n-# item level 65 · Quest: An Earnest Proposition · requires level 58"
               }
             ],
             "accessory": {
@@ -131,7 +131,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Raider Gloves**\nHands · Same DPS as the next best\n-# Epic · item level 65 · Vendor: Creeg Bothunk"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Raider Gloves**\nHands · Same DPS as the next best\n-# item level 65 · Vendor: Creeg Bothunk"
               }
             ],
             "accessory": {
@@ -147,7 +147,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Belt of Preserved Heads**\nWaist · +0.4 DPS\n-# Rare · item level 70 · Quest: A Collection of Heads · requires level 58"
+                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Belt of Preserved Heads**\nWaist · +0.4 DPS\n-# item level 70 · Quest: A Collection of Heads · requires level 58"
               }
             ],
             "accessory": {
@@ -163,7 +163,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Sentinel's Chain Leggings**\nLegs · +7.4 DPS\n-# Epic · item level 78 · Vendor: Illiyana Moonblaze"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Sentinel's Chain Leggings**\nLegs · +7.4 DPS\n-# item level 78 · Vendor: Illiyana Moonblaze"
               }
             ],
             "accessory": {

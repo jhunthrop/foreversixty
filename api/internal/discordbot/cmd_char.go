@@ -122,16 +122,15 @@ func (s *Service) answerChar(ctx context.Context, guildID int64, viewer *int64, 
 func (s *Service) charPanel(ctx context.Context, d charData) Message {
 	head := []Node{sectionNode(s.charHeader(d, true), s.crestThumb(d.class)), separatorNode(), textNode(upgradesText(d.card, d.ups))}
 	var rows []panelRow
+	label := lookupCopy.CharacterPage
 	if len(d.card.Gear) > 0 {
 		shown := d.ups.items[:min(len(d.ups.items), maxUpgrades)]
 		for _, u := range shown {
 			rows = append(rows, panelRow{item: pointerTo(s.upgradeRow(d, u))})
 		}
-		if more := moreText(upgradeTotal(d) - len(shown)); more != "" {
-			rows = append(rows, panelRow{text: more})
-		}
+		label = characterPageLabel(len(shown), upgradeTotal(d))
 	}
-	link := Component{Kind: KindButton, Style: StyleLink, Label: lookupCopy.CharacterPage, URL: s.characterURL(d.card.Character.Key)}
+	link := Component{Kind: KindButton, Style: StyleLink, Label: label, URL: s.characterURL(d.card.Character.Key)}
 	body := s.guardedBody(ctx, d.build, head, rows)
 	return Message{ComponentsV2: true, Layout: []Node{charContainer(d.class, body)}, Components: []ActionRow{{link}}}
 }
@@ -248,10 +247,13 @@ func cardLineWith(card rankings.Character, spec specs.Spec, class string, text f
 // figure (the equipped average, else the latest log's, so a healer whose export carries no gear
 // still reads one); otherwise the card's equipped average, by the same rule and rounding.
 func charItemLevel(d charData) (string, bool) {
+	if level, ok := equippedItemLevel(d.card.Gear); ok {
+		return level, true
+	}
 	if d.facts != nil && d.facts.ItemLevel != nil {
 		return fmt.Sprint(*d.facts.ItemLevel), true
 	}
-	return equippedItemLevel(d.card.Gear)
+	return "", false
 }
 
 // equippedItemLevel is upgrades.EquippedItemLevel over the card's worn items: every worn slot

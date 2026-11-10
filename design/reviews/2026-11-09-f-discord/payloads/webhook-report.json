@@ -7,7 +7,7 @@
     "embeds": [
       {
         "title": "Report: Onyxia's Lair · Thursday 10 December",
-        "description": "Kill times, loot and the biggest changes on Forever Sixty. Coach reviews for tonight's pulls are ready; open the report or use /report.",
+        "description": "Coach reviews of tonight's pulls are on the report.",
         "url": "https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7#report",
         "fields": [
           {
@@ -17,12 +17,12 @@
           },
           {
             "name": "Wipes",
-            "value": "1",
+            "value": "3",
             "inline": true
           },
           {
             "name": "Time",
-            "value": "1:14:00",
+            "value": "2 h 41 min",
             "inline": true
           },
           {
@@ -32,16 +32,16 @@
           },
           {
             "name": "Deaths",
-            "value": "6",
+            "value": "14",
             "inline": true
           },
           {
             "name": "Top parses",
-            "value": "Zulmara 812 DPS on Onyxia\nKraggor 776 DPS on Onyxia"
+            "value": "Zulmara 812 DPS on Onyxia\nCorvane 776 DPS on Onyxia\nPyrewisp 741 DPS on Onyxia"
           },
           {
             "name": "Loot",
-            "value": "Head of Onyxia to Thalwyn\nEskhandar's Collar to Zulmara\nOnyxia Tooth Pendant to Kraggor"
+            "value": "Deathbringer to Kraggor\nVis'kag the Bloodletter to Corvane\nEskhandar's Collar to Zulmara\nRing of Binding to Ironvale\nSapphiron Drape to Pyrewisp\n+2 more"
           }
         ],
         "footer": {

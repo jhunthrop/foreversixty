@@ -28,6 +28,8 @@ type officerGuilds struct {
 	done      []guilds.Raid
 	raidReady map[int64]guilds.ReadinessAnswer
 	reports   map[int64]*guilds.ReportAnswer
+	// items answers BuildItem by id; an id it does not hold reads item level 74.
+	items map[int]trees.Item
 }
 
 func (o *officerGuilds) PlannedRaids(ctx context.Context, guildID int64, now time.Time) ([]guilds.Raid, error) {
@@ -95,7 +97,10 @@ func (o *officerGuilds) NextRaidReadiness(context.Context, int64, int64, time.Ti
 }
 
 func (o *officerGuilds) ActiveBuild() (string, bool) { return lookupBuild, true }
-func (o *officerGuilds) BuildItem(string, string, int) (trees.Item, bool) {
+func (o *officerGuilds) BuildItem(_, _ string, id int) (trees.Item, bool) {
+	if it, ok := o.items[id]; ok {
+		return it, true
+	}
 	return trees.Item{ItemLevel: 74}, true
 }
 

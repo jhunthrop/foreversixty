@@ -30,7 +30,7 @@
       },
       {
         "title": "Deathbringer",
-        "description": "Epic · item level 74\nto Kraggor · Onyxia",
+        "description": "Epic · item level 75\nto Kraggor · Onyxia",
         "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=17068-0#report",
         "thumbnail": {
           "url": "https://site.test/data/1.60.1.99999/icons/inv_axe_09.webp"
@@ -48,7 +48,7 @@
       },
       {
         "title": "Eskhandar's Collar",
-        "description": "Epic · item level 74\nto Zulmara · Onyxia",
+        "description": "Epic · item level 71\nto Zulmara · Onyxia",
         "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=18205-2#report",
         "thumbnail": {
           "url": "https://site.test/data/1.60.1.99999/icons/inv_belt_12.webp"
@@ -57,7 +57,7 @@
       },
       {
         "title": "Ring of Binding",
-        "description": "Epic · item level 74\nto Ironvale · Onyxia",
+        "description": "Epic · item level 73\nto Ironvale · Onyxia",
         "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=18813-3#report",
         "thumbnail": {
           "url": "https://site.test/data/1.60.1.99999/icons/inv_jewelry_ring_13.webp"
@@ -66,7 +66,7 @@
       },
       {
         "title": "Sapphiron Drape",
-        "description": "Epic · item level 74\nto Pyrewisp · Onyxia",
+        "description": "Epic · item level 72\nto Pyrewisp · Onyxia",
         "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=17078-4#report",
         "thumbnail": {
           "url": "https://site.test/data/1.60.1.99999/icons/inv_misc_cape_16.webp"
@@ -75,7 +75,7 @@
       },
       {
         "title": "Bloodfang Hood",
-        "description": "Epic · item level 74\nto Duskmantle · Onyxia",
+        "description": "Epic · item level 76\nto Duskmantle · Onyxia",
         "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=16908-5#report",
         "thumbnail": {
           "url": "https://site.test/data/1.60.1.99999/icons/inv_helmet_41.webp"
@@ -84,7 +84,7 @@
       },
       {
         "title": "Netherwind Crown",
-        "description": "Epic · item level 74\nto Frostwhisk · Onyxia",
+        "description": "Epic · item level 76\nto Frostwhisk · Onyxia",
         "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/7?item=16914-6#report",
         "footer": {
           "text": "Olympus XXVII · Forever Sixty",
@@ -105,7 +105,7 @@
             "type": 2,
             "style": 2,
             "label": "Share in channel",
-            "custom_id": "share:_Oj2N4Lkzg3yc9GmH_8XJlq4ndaNv_NBTPgSkic8CYs"
+            "custom_id": "share:ALjpjrQwrr4TPw2QeiZ5iP7O6163UD88II9sst2SKUM"
           },
           {
             "type": 2,
@@ -130,7 +130,7 @@
                 "default": true
               },
               {
-                "label": "Molten Core · Fri 4 Dec",
+                "label": "Onyxia's Lair · Fri 4 Dec",
                 "value": "6",
                 "description": "22 of 23 came · 1 kill · 3 wipes · 14 deaths · 2 h 41 min"
               }

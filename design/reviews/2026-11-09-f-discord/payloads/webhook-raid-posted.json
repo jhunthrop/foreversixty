@@ -12,7 +12,7 @@
         "fields": [
           {
             "name": "When",
-            "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+            "value": "\u003ct:1796954400:t\u003e (\u003ct:1796954400:R\u003e)",
             "inline": true
           },
           {
@@ -24,6 +24,10 @@
             "name": "Signed up",
             "value": "**25 of 40**",
             "inline": true
+          },
+          {
+            "name": "Buffs",
+            "value": "Missing: Windfury Totem\nShort: Blessing of Kings"
           }
         ],
         "footer": {

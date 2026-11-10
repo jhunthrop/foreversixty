@@ -6,12 +6,11 @@
     "embeds": [
       {
         "title": "Onyxia's Lair · Thursday 10 December",
-        "description": "Sign up with the buttons below.",
         "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/1",
         "fields": [
           {
             "name": "When",
-            "value": "\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)",
+            "value": "\u003ct:1796954400:t\u003e (\u003ct:1796954400:R\u003e)",
             "inline": true
           },
           {
@@ -23,6 +22,10 @@
             "name": "Signed up",
             "value": "None yet",
             "inline": true
+          },
+          {
+            "name": "Buffs",
+            "value": "Missing: Battle Shout, Power Word: Fortitude, Arcane Intellect, Mark of the Wild, Blessing of Kings, Blessing of Might, Windfury Totem"
           }
         ],
         "footer": {
@@ -41,25 +44,25 @@
             "type": 2,
             "style": 2,
             "label": "In",
-            "custom_id": "raid:111:in"
+            "custom_id": "raid:153:in"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "raid:111:late"
+            "custom_id": "raid:153:late"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "raid:111:bench"
+            "custom_id": "raid:153:bench"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "raid:111:out"
+            "custom_id": "raid:153:out"
           },
           {
             "type": 2,
@@ -73,7 +76,7 @@
     "allowed_mentions": {
       "parse": []
     },
-    "nonce": "r33.mwa6iafe",
+    "nonce": "r49.mwa7909h",
     "enforce_nonce": true
   }
 }

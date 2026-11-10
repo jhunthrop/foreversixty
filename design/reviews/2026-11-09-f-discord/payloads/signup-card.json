@@ -7,17 +7,21 @@
       {
         "title": "Onyxia's Lair · Saturday 12 December",
         "description": "You have not signed up yet.",
-        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/108",
+        "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/150",
         "fields": [
           {
             "name": "When",
-            "value": "\u003ct:1797112800:F\u003e (\u003ct:1797112800:R\u003e)",
+            "value": "\u003ct:1797112800:t\u003e (\u003ct:1797112800:R\u003e)",
             "inline": true
           },
           {
             "name": "Signed up",
             "value": "None yet",
             "inline": true
+          },
+          {
+            "name": "Buffs",
+            "value": "Missing: Windfury Totem, Grace of Air Totem, Strength of Earth Totem, Mana Spring Totem, Battle Shout, Trueshot Aura, Leader of the Pack, Moonkin Aura, Power Word: Fortitude, Shadow Protection, Divine Spirit, Arcane Intellect, Mark of the Wild, Blessing of Kings, Blessing of Might, Blessing of Wisdom, Sunder Armor, Faerie Fire, Curse of Recklessness, Curse of the Elements, Demoralizing Shout, Thunder Clap, Judgement of Wisdom, Judgement of Light"
           }
         ],
         "footer": {
@@ -33,18 +37,18 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "gsgn:1:raid:108:us/normal/duskstrider",
+            "custom_id": "gsgn:1:raid:150:us/normal/duskstrider",
             "placeholder": "Choose a raid",
             "options": [
               {
                 "label": "Onyxia's Lair · Sat 12 Dec",
-                "value": "108",
+                "value": "150",
                 "description": "0 of 40 signed up",
                 "default": true
               },
               {
                 "label": "Molten Core · Tue 15 Dec",
-                "value": "109",
+                "value": "151",
                 "description": "0 of 40 signed up"
               }
             ]
@@ -56,7 +60,7 @@
         "components": [
           {
             "type": 3,
-            "custom_id": "gsgn:1:char:108:us/normal/duskstrider",
+            "custom_id": "gsgn:1:char:150:us/normal/duskstrider",
             "placeholder": "Choose a character",
             "options": [
               {
@@ -81,31 +85,31 @@
             "type": 2,
             "style": 2,
             "label": "In",
-            "custom_id": "gsgn:1:in:108:us/normal/duskstrider"
+            "custom_id": "gsgn:1:in:150:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Late",
-            "custom_id": "gsgn:1:late:108:us/normal/duskstrider"
+            "custom_id": "gsgn:1:late:150:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Bench",
-            "custom_id": "gsgn:1:bench:108:us/normal/duskstrider"
+            "custom_id": "gsgn:1:bench:150:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 2,
             "label": "Out",
-            "custom_id": "gsgn:1:out:108:us/normal/duskstrider"
+            "custom_id": "gsgn:1:out:150:us/normal/duskstrider"
           },
           {
             "type": 2,
             "style": 5,
             "label": "Raid page",
-            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/108"
+            "url": "https://site.test/guild/us/normal/olympus-xxvii/raids/150"
           }
         ]
       }

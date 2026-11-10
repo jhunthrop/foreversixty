@@ -23,6 +23,7 @@ import (
 	"sync"
 
 	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/sheet"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
@@ -41,6 +42,9 @@ const (
 
 	// The night veil over the art: the site preview's (art_crops.OG_VEIL), the night token at 42%.
 	veilAlpha = 0.42
+	// The scrim under the lines: the night token from y 220 down to 45% at the foot.
+	scrimTop   = 220
+	scrimAlpha = 0.45
 )
 
 // The copy every card carries (web/src/lib/og.ts): the site's name and the fan-made line, so a
@@ -62,16 +66,26 @@ var (
 	inkWipe   = brand.ColorOutcomeWipe
 )
 
-// Input is everything a build card shows. Split is points per tree in client order; Level is
-// the build's level as builds.Describe computes it.
+// Input is everything a build card shows. Split is points per tree in client order and Trees
+// their names in the same order; Level is the build's level as builds.Describe computes it;
+// ClassSlug picks the crest ("" draws none); DPS is the simmed DPS line, "" when unsimmed.
 type Input struct {
 	Title      string
 	Race       string
 	Class      string
+	ClassSlug  string
 	ClassColor string
 	Split      []int
+	Trees      []string
 	Level      int
+	DPS        string
 }
+
+// The build card's crest, the site's ringed HD crest, beside the title and the line under it.
+const (
+	crestPx  = 112
+	crestGap = 28
+)
 
 // faces is one render's set. A font.Face may not be shared across goroutines (opentype's
 // carries a rasteriser every draw overwrites), so each render builds its own from the shared
@@ -120,26 +134,56 @@ func Render(in Input) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	maxW := Width - 2*marginX
 	title := strings.TrimSpace(in.Title)
 	if title == "" {
 		title = copyBuild
 	}
-	y := Height - marginY - 34 // the fan-made line's baseline
-	drawText(img, f.body, inkText, marginX, y, fit(f.body, copyBuild+lineJoin+copyFanLine, maxW))
-	y -= 58
-	who := strings.TrimSpace(in.Race + " " + in.Class)
-	stats := splitText(in.Split) + lineJoin + "Level " + strconv.Itoa(in.Level)
+	// The lines from the foot up: the fan-made line, the trees, the race, class and level, the
+	// title; the crest stands beside the title and the line under it.
+	const fanY, treesY, leadY, titleY = Height - marginY - 34, Height - marginY - 92, Height - marginY - 138, Height - marginY - 204
+	drawText(img, f.body, inkText, marginX, fanY, fit(f.body, copyBuild+lineJoin+copyFanLine, Width-2*marginX))
 	x := marginX
-	if who != "" {
-		who = fit(f.lead, who, maxW/2)
-		x = drawText(img, f.lead, parseHexColor(in.ClassColor), x, y, who)
-		x = drawText(img, f.lead, inkCream2, x, y, lineJoin)
+	if crest, err := sheet.EmbeddedCrest(in.ClassSlug); err == nil {
+		top := (titleY - 54 + leadY - crestPx + 8) / 2
+		brand.PlaceImage(img, image.Pt(marginX, top), crestPx, crestPx, crest, nil)
+		x += crestPx + crestGap
 	}
-	drawText(img, f.lead, inkCream2, x, y, fit(f.lead, stats, Width-marginX-x))
-	y -= 72
-	drawTitle(img, f, marginX, y, title, maxW)
+	maxW := Width - marginX - x
+	drawText(img, f.body, inkCream2, x, treesY, fit(f.body, treesText(in.Split, in.Trees), maxW))
+	who := strings.TrimSpace(in.Race + " " + in.Class)
+	stats := joinNonEmpty(lineJoin, "Level "+strconv.Itoa(in.Level), in.DPS)
+	lx := x
+	if who != "" {
+		lx = drawText(img, f.lead, parseHexColor(in.ClassColor), lx, leadY, fit(f.lead, who, maxW/2))
+		lx = drawText(img, f.lead, inkCream2, lx, leadY, lineJoin)
+	}
+	drawText(img, f.lead, inkCream2, lx, leadY, fit(f.lead, stats, Width-marginX-lx))
+	drawTitle(img, f, x, titleY, title, maxW)
 	return encode(img)
+}
+
+// treesText is the talent split as players read it, each tree named: "31 Arms · 0 Fury · 20
+// Protection"; the bare split ("31/0/20") when the trees are not known.
+func treesText(split []int, trees []string) string {
+	if len(trees) != len(split) || len(split) == 0 {
+		return splitText(split)
+	}
+	parts := make([]string, len(split))
+	for i, n := range split {
+		parts[i] = strconv.Itoa(n) + " " + trees[i]
+	}
+	return strings.Join(parts, lineJoin)
+}
+
+// joinNonEmpty joins the parts that are not empty.
+func joinNonEmpty(sep string, parts ...string) string {
+	kept := parts[:0:0]
+	for _, p := range parts {
+		if p != "" {
+			kept = append(kept, p)
+		}
+	}
+	return strings.Join(kept, sep)
 }
 
 // fallback is rendered once and reused: it is the image served when a card cannot be drawn,
@@ -199,7 +243,18 @@ func background() (*image.RGBA, error) {
 	veil := brand.ColorBaseNight
 	veil.A = uint8(math.Round(veilAlpha * 255))
 	brand.FillRect(img, img.Bounds(), veil)
+	scrim(img)
 	return img, nil
+}
+
+// scrim darkens the art's lower part under the card's lines, from nothing at scrimTop to
+// scrimAlpha at the foot, so the words hold over a bright patch of the road.
+func scrim(img *image.RGBA) {
+	shade := brand.ColorBaseNight
+	for y := scrimTop; y < Height; y++ {
+		shade.A = uint8(math.Round(scrimAlpha * 255 * float64(y-scrimTop) / float64(Height-scrimTop)))
+		brand.FillRect(img, image.Rect(0, y, Width, y+1), shade)
+	}
 }
 
 func drawSeal(img draw.Image, x, y, px int) error {

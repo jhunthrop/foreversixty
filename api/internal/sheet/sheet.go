@@ -45,7 +45,10 @@ type Slot struct {
 	ItemLevel int
 	Meta      string
 	Gain      string
-	Empty     bool
+	// Pick is the /char upgrade's item name for the slot, "" when there is none: the gain line
+	// names it when it fits, and an empty slot shows it as its BiS.
+	Pick  string
+	Empty bool
 	// TwoHandOff marks the empty off hand under a two-handed main hand (set by Sheet.cellFor).
 	TwoHandOff bool `json:"-"`
 }
@@ -75,6 +78,10 @@ type Sheet struct {
 	Guild                string
 	Slots                []Slot
 	TwoHand              bool
+	// UpgradeTotal and UpgradeSlots are the /char summary in the centre column: the modelled
+	// gains summed in their unit ("+73.4 DPS") over how many slots; "" draws none.
+	UpgradeTotal string
+	UpgradeSlots int
 }
 
 // Render draws the sheet as a 1264 x 1792 PNG. It is safe to call concurrently.

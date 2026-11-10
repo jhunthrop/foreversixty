@@ -75,7 +75,7 @@ var officerCopy = struct {
 	ReadinessLeadOne:      "{n} signed In or Late. 1 has something to fix.",
 	ReadinessAllReady:     "Everyone signed In or Late is ready.",
 	ReadinessNobodySigned: "No one has signed In or Late yet.",
-	ToFix:                 "To fix, most checks first",
+	ToFix:                 "To fix, worst first",
 	ReadinessMore:         "+{n} more on the board",
 	Board:                 "Readiness board",
 	NotOfficer:            "Readiness is for officers of {Guild}.",

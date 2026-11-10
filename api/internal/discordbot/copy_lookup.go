@@ -53,12 +53,13 @@ var panelCopy = struct {
 	// UpgradesByLevel heads a healer's or tank's list, never ranked by DPS; LevelGain,
 	// LevelGainOne, LevelEmpty and LevelOnList are its rows' gain words.
 	UpgradesByLevel, LevelGain, LevelGainOne, LevelEmpty, LevelOnList string
-	UpgradesMore, UpgradesMoreOne, UpgradesNone                       string
-	TileAlt, TileAltNoQuality, CrestAlt                               string
+	// AllUpgrades labels the character page link when the panel shows only some of them.
+	AllUpgrades, UpgradesNone           string
+	TileAlt, TileAltNoQuality, CrestAlt string
 	// SheetRange is the /bis sheet's range under its level: the Phase 1 raid, level 60 bare,
 	// and the levels of a lower band.
 	SheetRangeRaid, SheetRangeBare, SheetRangeLevels string
-	SheetUpdated, SheetCharGold                      string
+	SheetUpdated, SheetCharFooter                    string
 }{
 	BisHeadTitle:      "### {Spec} {Class}",
 	BisHeadLine:       "Best in slot · {band label} · {Faction}",
@@ -75,15 +76,14 @@ var panelCopy = struct {
 	Replaces:          "-# Replaces {worn name}, item level {n}",
 	ReplacesNoLevel:   "-# Replaces {worn name}",
 	UpgradesTitle:     "**Top upgrades** · {band label}",
-	UpgradesByDPS:     "-# By DPS gained, against the guide build.",
+	UpgradesByDPS:     "",
 	UpgradesByScore:   "-# By Forever Score gained, against the guide build.",
 	UpgradesByLevel:   "-# By item level gained, against the BiS list. Healers and tanks never rank by DPS.",
 	LevelGain:         "+{n} item levels",
 	LevelGainOne:      "+1 item level",
 	LevelEmpty:        "Fills an empty slot",
 	LevelOnList:       "On the BiS list",
-	UpgradesMore:      "-# {n} more upgrades on the character page.",
-	UpgradesMoreOne:   "-# 1 more upgrade on the character page.",
+	AllUpgrades:       "All {n} upgrades",
 	UpgradesNone:      "Every slot already wears the guide's pick for {band label}.",
 	TileAlt:           "{Item name}, {Quality} {slot} item",
 	TileAltNoQuality:  "{Item name}, {slot} item",
@@ -92,7 +92,7 @@ var panelCopy = struct {
 	SheetRangeBare:    "No buffs or consumables",
 	SheetRangeLevels:  "Levels {n} to {n+9}",
 	SheetUpdated:      "Updated {d Mon yyyy}",
-	SheetCharGold:     "Green: gain over what is worn, {band label}",
+	SheetCharFooter:   "Upgrades for {band label}",
 }
 
 // qualityWords are the item qualities in the game's words, by quality number (spec §6.2).

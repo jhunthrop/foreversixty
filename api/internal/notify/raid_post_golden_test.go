@@ -19,7 +19,7 @@ func TestRaidPostStatesMatchTheCopyTable(t *testing.T) {
 		post RaidPost
 		want string
 	}{
-		"open": {post(PostOpen), `{"title":"Onyxia's Lair · Thursday 10 December","description":"Sign up with the buttons below.",` +
+		"open": {post(PostOpen), `{"title":"Onyxia's Lair · Thursday 10 December",` +
 			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":37810}`},
 		"locked": {post(PostLocked), `{"title":"Onyxia's Lair · Thursday 10 December","description":"` + lockedText + `",` +
 			raidLink + `"fields":[` + raidWhen + `,` + raidGuildTime + `,` + raidSigned + `],` + raidFoot + `"color":9144196}`},

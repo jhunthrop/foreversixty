@@ -4,22 +4,28 @@ import (
 	"fmt"
 	"image/color"
 	"strings"
+	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"golang.org/x/image/font"
 )
 
-// Boss is one encounter on a report card.
+// Boss is one pull of an encounter on a report card: the boss, whether it died, and how long
+// the pull ran.
 type Boss struct {
-	Name string
-	Kill bool
+	Name       string
+	Kill       bool
+	DurationMS int64
 }
 
-// ReportInput is everything a report card shows.
+// ReportInput is everything a report card shows: the pulls in order, the night's length and
+// its deaths.
 type ReportInput struct {
 	Title      string
 	Zone       string
 	Bosses     []Boss
 	DurationMS int64
+	Deaths     int
 }
 
 // The report card's words.
@@ -29,6 +35,11 @@ const (
 	copyNoBosses  = "No boss fights yet"
 	copyLogZone   = "Combat log"
 	copyMoreBoss  = " and %d more"
+	copyWipesOne  = "%s (1 wipe)"
+	copyWipesMany = "%s (%d wipes)"
+	copyKillTime  = "%s %s"
+	copyDeathsOne = "1 death"
+	copyDeaths    = "%d deaths"
 	reportLabelGp = 14 // between "Killed" and the names
 )
 
@@ -50,8 +61,8 @@ func RenderReport(in ReportInput) ([]byte, error) {
 
 	rows := bossRows(f, in.Bosses, maxW)
 	for i := len(rows) - 1; i >= 0; i-- {
-		y -= 42
-		x := marginX
+		y -= 40
+		x := marginX + rows[i].indent
 		if rows[i].label != "" {
 			x = drawText(img, f.label, rows[i].ink, x, y, rows[i].label) + reportLabelGp
 		}
@@ -82,26 +93,27 @@ func summaryLine(in ReportInput) string {
 	killed, wiped := outcomes(in.Bosses)
 	parts := []string{zone, fmt.Sprintf("%d of %d killed", len(killed), len(killed)+len(wiped))}
 	if in.DurationMS > 0 {
-		parts = append(parts, duration(in.DurationMS))
+		parts = append(parts, notify.NightLength(time.Duration(in.DurationMS)*time.Millisecond))
+	}
+	switch {
+	case in.Deaths == 1:
+		parts = append(parts, copyDeathsOne)
+	case in.Deaths > 1:
+		parts = append(parts, fmt.Sprintf(copyDeaths, in.Deaths))
 	}
 	return strings.Join(parts, lineJoin)
 }
 
-// duration renders milliseconds as hours and minutes.
-func duration(ms int64) string {
-	minutes := ms / 60000
-	if minutes < 60 {
-		return fmt.Sprintf("%d min", minutes)
-	}
-	return fmt.Sprintf("%dh %02dm", minutes/60, minutes%60)
-}
-
 // bossRow is one line of bosses: the label in its outcome colour, then the names.
 type bossRow struct {
-	label string
-	ink   color.NRGBA
-	names string
+	label  string
+	ink    color.NRGBA
+	names  string
+	indent int // a continuation line sits under the names, past the label
 }
+
+// reportBossLines is how many lines the bosses take, kills and wipes together.
+const reportBossLines = 3
 
 // bossRows are the kills, then the wipes, a line each, the names in pull order and cut with
 // "and N more" where the line runs out. A report with no fights says so.
@@ -111,36 +123,90 @@ func bossRows(f *faces, bosses []Boss, maxWidth int) []bossRow {
 	}
 	killed, wiped := outcomes(bosses)
 	var rows []bossRow
+	killedWords, wipedWords := make([]string, len(killed)), make([]string, len(wiped))
+	for i, b := range killed {
+		killedWords[i] = fmt.Sprintf(copyKillTime, b.name, notify.KillClock(b.kill))
+	}
+	for i, b := range wiped {
+		wipedWords[i] = fmt.Sprintf(copyWipesMany, b.name, b.wipes)
+		if b.wipes == 1 {
+			wipedWords[i] = fmt.Sprintf(copyWipesOne, b.name)
+		}
+	}
 	for _, g := range []struct {
 		label string
 		ink   color.NRGBA
 		names []string
-	}{{copyKilled, inkKill, killed}, {copyWiped, inkWipe, wiped}} {
+	}{{copyKilled, inkKill, killedWords}, {copyWiped, inkWipe, wipedWords}} {
 		if len(g.names) == 0 {
 			continue
 		}
-		room := maxWidth - measure(f.label, g.label) - reportLabelGp
-		rows = append(rows, bossRow{label: g.label, ink: g.ink, names: nameList(f.body, g.names, room)})
+		indent := measure(f.label, g.label) + reportLabelGp
+		most := 1
+		if g.label == copyKilled {
+			most = reportBossLines - min(len(wipedWords), 1)
+		}
+		for i, line := range nameLines(f.body, g.names, maxWidth-indent, most) {
+			row := bossRow{label: g.label, ink: g.ink, names: line}
+			if i > 0 {
+				row = bossRow{names: line, indent: indent}
+			}
+			rows = append(rows, row)
+		}
 	}
 	return rows
 }
 
-// outcomes are the night's bosses by name in pull order: those killed, and those wiped on and
-// never killed. A boss wiped on and then killed is a kill.
-func outcomes(bosses []Boss) (killed, wiped []string) {
+// nameLines lays names out over at most most lines of maxWidth, joined with " · ", the last
+// line ending in " and N more" when some do not fit.
+func nameLines(face font.Face, names []string, maxWidth, most int) []string {
+	var lines []string
+	for len(names) > 0 {
+		if len(lines) == most-1 {
+			return append(lines, nameList(face, names, maxWidth))
+		}
+		line, used := names[0], 1
+		for used < len(names) && measure(face, line+lineJoin+names[used]) <= maxWidth {
+			line += lineJoin + names[used]
+			used++
+		}
+		lines = append(lines, line)
+		names = names[used:]
+	}
+	return lines
+}
+
+// bossNight is one boss over the night: its kill time, zero when it never died, and the wipes.
+type bossNight struct {
+	name  string
+	kill  time.Duration
+	wipes int
+}
+
+// outcomes are the night's bosses by name in pull order: those killed with the killing pull's
+// time, and those wiped on and never killed with their wipe count. A boss wiped on and then
+// killed is a kill.
+func outcomes(bosses []Boss) (killed, wiped []bossNight) {
 	var order []string
-	kill := map[string]bool{}
+	nights := map[string]*bossNight{}
 	for _, b := range bosses {
-		if _, seen := kill[b.Name]; !seen {
+		n, seen := nights[b.Name]
+		if !seen {
+			n = &bossNight{name: b.Name}
+			nights[b.Name] = n
 			order = append(order, b.Name)
 		}
-		kill[b.Name] = kill[b.Name] || b.Kill
+		if b.Kill {
+			n.kill = max(time.Duration(b.DurationMS)*time.Millisecond, time.Second)
+		} else {
+			n.wipes++
+		}
 	}
 	for _, name := range order {
-		if kill[name] {
-			killed = append(killed, name)
+		if n := nights[name]; n.kill > 0 {
+			killed = append(killed, *n)
 		} else {
-			wiped = append(wiped, name)
+			wiped = append(wiped, *n)
 		}
 	}
 	return killed, wiped

@@ -51,13 +51,14 @@ func TestFitRuleNames(t *testing.T) {
 }
 
 func TestFitRuleMeta(t *testing.T) {
-	// Every meta line leads with the slot's label; the full source first, then the short form.
+	// Every meta line leads with the slot's label; the full source first, then a quest by its
+	// name, then the short form.
 	waist := fit(t, KindBis, fixtureSlot(t, "sheet-bis", "waist"))
-	if strings.Join(waist.meta, " ") != "Waist · Quest: A Collection of Heads · requires level 58" || len(waist.meta) != 2 {
+	if strings.Join(waist.meta, " ") != "Waist · Quest: A Collection of Heads" || len(waist.meta) != 2 {
 		t.Fatalf("waist meta %q", waist.meta)
 	}
 	head := fit(t, KindBis, fixtureSlot(t, "sheet-bis", "head"))
-	if !slices.Equal(head.meta, []string{"Head · Quest", "requires level 58"}) {
+	if !slices.Equal(head.meta, []string{"Head · Quest: Saving the", "Best for Last"}) {
 		t.Fatalf("head meta %q", head.meta)
 	}
 	neck := fit(t, KindBis, fixtureSlot(t, "sheet-bis", "neck"))
@@ -167,12 +168,13 @@ func TestEveryEmptyState(t *testing.T) {
 		slot               Slot
 		wantText, wantGold string
 	}{
-		{"char empty, upgrade", KindChar, Slot{Slot: "trinket2", Empty: true, Gain: CopyUpgrade},
-			"Trinket 2 · Upgrade available", "Upgrade available"},
+		{"char empty, upgrade with its pick", KindChar, Slot{Slot: "trinket2", Empty: true, Gain: CopyUpgrade, Pick: "Hand of Justice"},
+			"Trinket 2 · Empty", "BiS: Hand of Justice"},
+		{"char empty, a pick too long names no pick", KindChar,
+			Slot{Slot: "trinket2", Empty: true, Gain: CopyUpgrade, Pick: "Molten Heart of the Mountain Forged Anew"},
+			"Trinket 2 · Empty", "Upgrade available"},
 		{"char empty, not modelled", KindChar, Slot{Slot: "trinket2", Empty: true, Gain: CopyNotModelled},
-			"Trinket 2 · Gain not modelled yet", "Gain not modelled yet"},
-		{"char empty, measured gain", KindChar, Slot{Slot: "finger1", Empty: true, Gain: "+6.2 DPS"},
-			"Finger 1 · +6.2 DPS", "+6.2 DPS"},
+			"Trinket 2 · Empty", "Gain not modelled yet"},
 		{"char empty, no pick", KindChar, Slot{Slot: "trinket2", Empty: true},
 			"Trinket 2 · Empty", ""},
 		{"bis no pick", KindBis, Slot{Slot: "trinket2", Empty: true},
@@ -182,8 +184,8 @@ func TestEveryEmptyState(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			ct := fit(t, c.kind, c.slot)
 			text, gold := labelText(ct)
-			if text != c.wantText || gold != c.wantGold || ct.name != nil || ct.meta != nil || ct.gold != "" {
-				t.Fatalf("got %q (gold %q), name %q meta %q", text, gold, ct.name, ct.meta)
+			if text != c.wantText || gold != "" || ct.gold != c.wantGold || ct.name != nil || ct.meta != nil {
+				t.Fatalf("got %q (gold %q, line %q), name %q meta %q", text, gold, ct.gold, ct.name, ct.meta)
 			}
 			if len(ct.label) > 3 {
 				t.Fatalf("%d lines overflow the cell", len(ct.label))
@@ -237,10 +239,11 @@ func TestTwoHandDrawsAnEmptyOffHand(t *testing.T) {
 
 func TestCharCentreOmitsAnUnknownItemLevel(t *testing.T) {
 	s := loadFixture(t, "sheet-char")
-	if lines := centreLines(s); len(lines) != 2 || lines[0].text != CopyItemLevel || lines[1].text != "63.5" {
+	if lines := centreLines(s); len(lines) != 6 || lines[0].text != CopyItemLevel || lines[1].text != "63.5" ||
+		lines[2].text != CopyUpgrades || lines[3].text != "+54.2" || lines[4].text != "DPS" || lines[5].text != "6 slots" {
 		t.Fatalf("known item level: %+v", lines)
 	}
-	s.Subtitle = ""
+	s.Subtitle, s.UpgradeTotal = "", ""
 	if lines := centreLines(s); len(lines) != 0 {
 		t.Fatalf("an unknown item level still draws %d centre lines", len(lines))
 	}

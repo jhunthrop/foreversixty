@@ -23,7 +23,7 @@ const (
 	wireTail   = `],"allowed_mentions":{"parse":[]}}`
 	raidLink   = `"url":"https://foreversixty.gg/guild/us/normal/olympus-xxvii/raids/7",`
 	raidFoot   = `"footer":{"text":"Olympus XXVII · Forever Sixty","icon_url":"https://foreversixty.gg/seal-400.png"},"thumbnail":{"url":"https://api.foreversixty.gg/v1/guilds/7/crest.webp?v=abc"},"timestamp":"2026-10-25T18:30:00Z",`
-	raidWhen   = `{"name":"When","value":"\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)","inline":true}`
+	raidWhen   = `{"name":"When","value":"\u003ct:1796954400:t\u003e (\u003ct:1796954400:R\u003e)","inline":true}`
 	raidSigned = `{"name":"Signed up","value":"**23 of 40**","inline":true}`
 )
 
@@ -45,7 +45,7 @@ func TestRaidEmbedsMatchTheCopyTable(t *testing.T) {
 		"moved": {
 			RaidChangedEmbed(moved, fixedFinish),
 			`{"title":"Moved: Onyxia's Lair · Friday 11 December","description":"Sign-ups carry over. Check you can still make it.",` +
-				raidLink + `"fields":[{"name":"When","value":"\u003ct:1797040800:F\u003e (\u003ct:1797040800:R\u003e)","inline":true},` +
+				raidLink + `"fields":[{"name":"When","value":"\u003ct:1797040800:t\u003e (\u003ct:1797040800:R\u003e)","inline":true},` +
 				`{"name":"Was","value":"\u003ct:1796954400:F\u003e","inline":true},` +
 				`{"name":"Guild time","value":"8:00 pm CST","inline":true},` + raidSigned + `],` +
 				raidFoot + `"color":37810}`,
@@ -53,7 +53,7 @@ func TestRaidEmbedsMatchTheCopyTable(t *testing.T) {
 		"cancelled": {
 			RaidChangedEmbed(cancelled, fixedFinish),
 			`{"title":"Cancelled: Onyxia's Lair · Thursday 10 December","description":"This raid was cancelled.",` + raidLink +
-				`"fields":[{"name":"When","value":"~~\u003ct:1796954400:F\u003e (\u003ct:1796954400:R\u003e)~~","inline":true},` +
+				`"fields":[{"name":"When","value":"~~\u003ct:1796954400:t\u003e (\u003ct:1796954400:R\u003e)~~","inline":true},` +
 				raidSigned + `],` + raidFoot + `"color":15758187}`,
 		},
 	}

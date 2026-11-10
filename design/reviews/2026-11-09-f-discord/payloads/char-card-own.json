@@ -32,14 +32,14 @@
           },
           {
             "type": 10,
-            "content": "**Top upgrades** · level 60 Phase 1 raid\n-# By DPS gained, against the guide build."
+            "content": "**Top upgrades** · level 60 Phase 1 raid"
           },
           {
             "type": 9,
             "components": [
               {
                 "type": 10,
-                "content": "**Pick head**\nHead · +9.2 DPS\n-# Epic · item level 61"
+                "content": "**Pick head**\nHead · +9.2 DPS\n-# item level 61"
               }
             ],
             "accessory": {
@@ -59,7 +59,7 @@
             "type": 2,
             "style": 2,
             "label": "Share in channel",
-            "custom_id": "share:ObrgFPg28bEUnou55GXmsOfd5x3P4hv3RSqNGX8OwZE"
+            "custom_id": "share:TrJCkssRXD-Q2tEvEDSm02_0k6WASnsVn5HFnOf4M_E"
           },
           {
             "type": 2,

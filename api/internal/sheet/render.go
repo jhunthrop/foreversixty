@@ -1,6 +1,7 @@
 package sheet
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"strconv"
@@ -20,34 +21,36 @@ const (
 	Width  = sheetW * scale
 	Height = sheetH * scale
 
-	sheetW = edge*2 + inset*2 + cellW*2 + centre // 632
-	sheetH = footerY + footerLH + edge           // 896
+	sheetW = edge*2 + inset*2 + cellW*2 + centre // 660
+	sheetH = footerY + footerLH + edge
 
-	bandH   = 76 // the title band
-	edge    = 12 // the ground around the card
-	inset   = 28 // the card's padding: the corner ornaments sit in it
+	// Discord shows the sheet about 550 px wide on desktop and 350 px on a phone, so the type
+	// is set large against the canvas: a 18 px meta line is about 15 px on desktop.
+	bandH   = 80 // the title band
+	edge    = 10 // the ground around the card
+	inset   = 26 // the card's padding: the corner ornaments sit in it
 	cardTop = bandH + edge
 	cornerW = 44 // the ornaments at the site's small size
 
 	pad    = edge + inset // the slots' left edge
 	row0   = cardTop + inset
-	pitch  = 72
-	cellW  = 240
-	cellH  = 64
+	pitch  = 80
+	cellW  = 256
+	cellH  = 72
 	sockW  = 36
 	sockR  = 4
 	ringW  = 2
 	iconW  = 32
-	gap    = 8
-	textW  = cellW - sockW - gap // 196
-	centre = 72
+	gap    = 10
+	textW  = cellW - sockW - gap - 4 // 206: 4 px clear of the centre column
+	centre = 76
 
-	nameTopNudge = -2 // the name's line box sits 2 px above the cell
-	nameMaxPx    = 20
-	nameMinPx    = 14
-	nameLH       = 24
-	nameTwoLH    = 17
-	metaLH       = 20
+	nameTopNudge = -3 // the name's line box sits 3 px above the cell
+	nameMaxPx    = 23
+	nameMinPx    = 16
+	nameLH       = 27
+	nameTwoLH    = 19
+	metaLH       = 23
 
 	weaponsRow = row0 + pitch*8
 	rangedRow  = row0 + pitch*9
@@ -57,11 +60,11 @@ const (
 	centreX    = (sheetW - centre) / 2
 	centreH    = pitch*7 + cellH
 	footerY    = cardBottom + 10
-	footerLH   = 18
+	footerLH   = 22
 
-	bandCrest = 44 // the class crest leading the band
-	bandSeal  = 40 // the seal closing it, as the site's nav bar draws it
-	bandPadX  = 20
+	bandCrest = 48 // the class crest leading the band
+	bandSeal  = 44 // the seal closing it, as the site's nav bar draws it
+	bandPadX  = 18
 )
 
 // The frame's columns without Shirt and Tabard (spec §B.2), both top-aligned as in the game:
@@ -74,19 +77,20 @@ var (
 // The text styles: Marcellus for the title and the big figure, Open Sans for every other word,
 // with no letter spacing (round 5's tracking.label is 0 on the web).
 var (
-	styleKicker  = style{face: brand.OpenSans400, size: 13, lineHeight: 18}
-	styleTitle   = style{face: brand.Marcellus400, size: 26, lineHeight: 30}
-	styleBrand   = style{face: brand.Marcellus400, size: 17, lineHeight: 20}
-	styleMark    = style{face: brand.OpenSans400, size: 12, lineHeight: 16}
-	styleFooter  = style{face: brand.OpenSans400, size: 13, lineHeight: footerLH}
-	styleMeta    = style{face: brand.OpenSans400, size: 15, lineHeight: metaLH}
-	styleGold    = style{face: brand.OpenSans600, size: 15, lineHeight: metaLH}
+	styleKicker  = style{face: brand.OpenSans400, size: 16, lineHeight: 20}
+	styleTitle   = style{face: brand.Marcellus400, size: 30, lineHeight: 34}
+	styleBrand   = style{face: brand.Marcellus400, size: 19, lineHeight: 22}
+	styleMark    = style{face: brand.OpenSans400, size: 14, lineHeight: 18}
+	styleFooter  = style{face: brand.OpenSans400, size: 16, lineHeight: footerLH}
+	styleMeta    = style{face: brand.OpenSans400, size: 18, lineHeight: metaLH}
+	styleGold    = style{face: brand.OpenSans600, size: 18, lineHeight: metaLH}
 	styleNameTwo = style{face: brand.OpenSans600, size: nameMinPx, lineHeight: nameTwoLH}
-	styleLevel   = style{face: brand.Marcellus400, size: 22, lineHeight: 26}
-	styleRange   = style{face: brand.OpenSans400, size: 12, lineHeight: 16}
-	styleILvlLab = style{face: brand.OpenSans600, size: 12, lineHeight: 16}
-	styleILvl    = style{face: brand.Marcellus400, size: 30, lineHeight: 34}
-	styleFaction = style{face: brand.OpenSans600, size: 13, lineHeight: 16}
+	styleLevel   = style{face: brand.Marcellus400, size: 30, lineHeight: 34}
+	styleRange   = style{face: brand.OpenSans400, size: 14, lineHeight: 18}
+	styleILvlLab = style{face: brand.OpenSans600, size: 14, lineHeight: 18}
+	styleILvl    = style{face: brand.Marcellus400, size: 34, lineHeight: 38}
+	styleGainSum = style{face: brand.Marcellus400, size: 26, lineHeight: 30}
+	styleFaction = style{face: brand.OpenSans600, size: 14, lineHeight: 18}
 )
 
 func nameStyle(px int) style {
@@ -274,17 +278,39 @@ func centreLines(s Sheet) []centreLine {
 		if s.Subtitle != "" {
 			lines = append(lines, centreLine{styleRange, colorText, s.Subtitle, 4})
 		}
-	} else if s.Subtitle != "" {
-		lines = append(lines, centreLine{styleILvlLab, colorMuted, CopyItemLevel, 0}, centreLine{styleILvl, colorGold, s.Subtitle, 0})
+	} else {
+		if s.Subtitle != "" {
+			lines = append(lines, centreLine{styleILvlLab, colorMuted, CopyItemLevel, 0}, centreLine{styleILvl, colorGold, s.Subtitle, 0})
+		}
+		lines = append(lines, upgradeLines(s)...)
 	}
 	return lines
+}
+
+// upgradeLines are the /char summary under the item level: "Upgrades", the summed gain's
+// figure in the gain green, then its unit and the slots it spans ("DPS · 6 slots").
+func upgradeLines(s Sheet) []centreLine {
+	figure, unit, ok := strings.Cut(s.UpgradeTotal, " ")
+	if !ok || s.UpgradeSlots <= 0 {
+		return nil
+	}
+	slots := CopySlotsOne
+	if s.UpgradeSlots > 1 {
+		slots = fmt.Sprintf(CopySlotsMany, s.UpgradeSlots)
+	}
+	return []centreLine{
+		{styleILvlLab, colorMuted, CopyUpgrades, 22},
+		{styleGainSum, colorGain, figure, 0},
+		{styleRange, colorText, unit, 0},
+		{styleRange, colorMuted, slots, 0},
+	}
 }
 
 // centreColumn is the level or the item level over the faction, centred in the column between
 // the slots.
 func (r *renderer) centreColumn(s Sheet) error {
 	lines := centreLines(s)
-	const factionW, factionAbove, wordAbove = 40, 20, 4
+	const factionW, factionAbove, wordAbove = 44, 22, 4
 	total := float64(factionW + wordAbove + styleFaction.lineHeight)
 	if len(lines) > 0 {
 		total += factionAbove
@@ -300,8 +326,8 @@ func (r *renderer) centreColumn(s Sheet) error {
 			return err
 		}
 		y += l.above
-		x, top := at(cx-4, y)
-		t.drawAligned(r.img, l.col, x, d(centre+8), top, alignCentre, l.text)
+		x, top := at(cx-2, y)
+		t.drawAligned(r.img, l.col, x, d(centre+4), top, alignCentre, l.text)
 		y += l.st.lineHeight
 	}
 	if len(lines) > 0 {
@@ -311,7 +337,7 @@ func (r *renderer) centreColumn(s Sheet) error {
 }
 
 func (r *renderer) faction(faction string, cx, y float64) error {
-	const markW, wordAbove = 40, 4
+	const markW, wordAbove = 44, 4
 	mark, err := factionMark(faction)
 	if err != nil {
 		return err

@@ -442,17 +442,17 @@ Strings live in `lookupCopy` and `guideCopy`; tests read each string back from t
 | `bis.offhand.twoHand` | `**Off hand** · none: {main hand name} is two-handed.` |
 | `bis.slot.none` | `**{Slot}** · no pick for this range.` |
 | `item.notModelled` | `Gain not modelled yet` |
-| `item.facts` | `-# {Quality} · item level {n} · {source line}` (each part only when known) |
+| `item.facts` | `-# item level {n} · {source line}` (each part only when known; round 5, 2026-11-09: the dot and the ring carry the quality) |
 | `item.replaces` | `-# Replaces {worn name}, item level {n}`; without a level `-# Replaces {worn name}` |
 | `source.quest` | `Quest: {name} · requires level {min_level}`; with no `min_level` `Quest: {name}` (replaces `Quest: {name} · Level {n}`, here and on the site) |
 | `source.quest.short` | `Quest · requires level {min_level}` (sheet only, fit step 2) |
 | `source.pvp.short` | `PvP rank {n} · {Faction}` (sheet only) |
 | `source.crafted.short` | `Crafted: {Profession}` (sheet only) |
 | `char.upgrades.title` | `**Top upgrades** · {band label}` |
-| `char.upgrades.byDPS` | `-# By DPS gained, against the guide build.` |
+| `char.upgrades.byDPS` | none (round 5, 2026-11-09: the gains say DPS) |
 | `char.upgrades.byScore` | `-# By Forever Score gained, against the guide build.` |
 | `char.upgrades.byLevel` | `-# By item level gained, against the BiS list. Healers and tanks never rank by DPS.`; rows `Fills an empty slot`, `+{n} item levels` (`+1 item level`), `On the BiS list` |
-| `char.upgrades.more` | `-# {n} more upgrades on the character page.`; for one `-# 1 more upgrade on the character page.` |
+| `char.upgrades.more` | the character page link reads `All {n} upgrades` when the panel shows only some (round 5, 2026-11-09) |
 | `char.upgrades.none` | `Every slot already wears the guide's pick for {band label}.` |
 | `char.noGear` | `No gear shared yet. Upgrades show once the character is synced.` (unchanged) |
 | `char.facts` | `-# Item level {ilvl} · Readiness: {word} · Synced <t:{unix}:R>` ({ilvl} is the guild roster's and readiness board's whole-level figure, the equipped mean rounded, else the latest log's; amended 2026-11-05, guild round 3) |
@@ -467,7 +467,7 @@ Strings live in `lookupCopy` and `guideCopy`; tests read each string back from t
 | `sheet.none` | `{Slot} · No pick` |
 | `sheet.mark` | `foreversixty.gg` |
 | `sheet.updated` | `Updated {d Mon yyyy}` |
-| `sheet.char.gold` | `Green: gain over what is worn, {band label}` |
+| `sheet.char.gold` | `Upgrades for {band label}` (round 5, 2026-11-09: each gain reads in the gain green, its pick named when it fits) |
 | `sheet.alt.bis` | `Best in slot sheet, {Spec} {Class}, {band label}, {Faction}. {Slot}: {Item}; …` |
 | `sheet.alt.char` | `Character sheet, {Name}, level {n} {Spec} {Class}, {Guild}. {Slot}: {Item}, {gain} available; …` |
 | `sheet.alt.offhand` | `Off hand: none, two-handed main hand` |

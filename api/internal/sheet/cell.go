@@ -29,6 +29,8 @@ type cellText struct {
 	meta      []string
 	gold      string
 	label     [][]word // an empty slot's "{Slot} · {status}", wrapped
+	goldInk   color.RGBA
+	goldStyle style
 }
 
 // cell is a laid-out cell: its words and its socket.
@@ -50,7 +52,9 @@ func (r *renderer) fitCell(kind string, sl Slot) (cellText, error) {
 	}
 	var candidates []string
 	if kind == KindChar {
-		ct.gold = sl.Gain
+		if ct.gold, ct.goldInk, ct.goldStyle, err = r.gainLine(sl); err != nil {
+			return ct, err
+		}
 		candidates = labelled(SlotLabel(sl.Slot), itemLevelMeta(sl.ItemLevel))
 	} else {
 		candidates = labelled(SlotLabel(sl.Slot), metaCandidates(sl.Meta)...)
@@ -66,36 +70,78 @@ func (r *renderer) fitCell(kind string, sl Slot) (cellText, error) {
 	return ct, err
 }
 
-// fitEmpty is an empty socket's words, the panel's grammar: "{Slot} · Upgrade available" or
-// "{Slot} · Gain not modelled yet" with the status in gold; "{Slot} · Empty" (/char, no pick),
-// "{Slot} · No pick" (/bis) and "Off hand · Two-hand in main hand" all muted.
+// fitEmpty is an empty socket's words, muted: "{Slot} · Empty" (/char), "{Slot} · No pick"
+// (/bis) and "Off hand · Two-hand in main hand". A /char slot with an upgrade waiting adds the
+// pick in gold under it ("BiS: Royal Seal of Eldre'Thalas"), or the panel's status when the pick
+// has no name.
 func (r *renderer) fitEmpty(kind string, sl Slot) (cellText, error) {
-	status, gold := CopyNone, false
+	status := CopyNone
 	if sl.TwoHandOff {
 		status = CopyTwoHand
 	} else if kind == KindChar {
-		status, gold = CopyEmpty, sl.Gain != ""
-		if gold {
-			status = sl.Gain
-		}
+		status = CopyEmpty
 	}
 	lead, err := r.faces.text(styleMeta)
 	if err != nil {
 		return cellText{}, err
 	}
-	tail := lead
-	tailColor := colorMuted
-	if gold {
-		if tail, err = r.faces.text(styleGold); err != nil {
-			return cellText{}, err
-		}
-		tailColor = colorGold
-	}
-	words := append(spanWords(lead, colorMuted, SlotLabel(sl.Slot)+metaJoin), spanWords(tail, tailColor, status)...)
+	words := spanWords(lead, colorMuted, SlotLabel(sl.Slot)+metaJoin+status)
 	if sl.TwoHandOff {
 		words = keepLastTogether(words)
 	}
-	return cellText{label: wrapWords(words, d(textW+fitSlack))}, nil
+	ct := cellText{label: wrapWords(words, d(textW+fitSlack))}
+	if kind == KindChar && sl.Gain != "" && !sl.TwoHandOff {
+		gold, err := r.faces.text(styleGold)
+		if err != nil {
+			return cellText{}, err
+		}
+		ct.gold, ct.goldInk, ct.goldStyle = firstFitting(gold, d(textW+fitSlack), named(CopyBisPick, sl.Pick), sl.Gain), colorGold, styleGold
+	}
+	return ct, nil
+}
+
+// named is prefix+name, or "" without a name.
+func named(prefix, name string) string {
+	if name == "" {
+		return ""
+	}
+	return prefix + name
+}
+
+// firstFitting is the first non-empty line that draws within maxW; the last one when none does.
+// Nothing is cut.
+func firstFitting(t text, maxW float64, lines ...string) string {
+	last := ""
+	for _, l := range lines {
+		if l == "" {
+			continue
+		}
+		if t.width(l) <= maxW {
+			return l
+		}
+		last = l
+	}
+	return last
+}
+
+// gainLine is a worn /char cell's last line, its ink and style: a modelled gain in the gain
+// green, naming the pick when it fits ("+11.0 DPS · Dawn Armor"); a pick with no figure in the
+// meta's muted regular ("Upgrade: Dawn Armor", else "Gain not modelled yet"); "" with no upgrade.
+func (r *renderer) gainLine(sl Slot) (string, color.RGBA, style, error) {
+	if sl.Gain == "" {
+		return "", color.RGBA{}, styleGold, nil
+	}
+	st, ink := styleGold, colorGain
+	lines := []string{named(sl.Gain+metaJoin, sl.Pick), sl.Gain}
+	if !isFigure(sl.Gain) {
+		st, ink = styleMeta, colorMuted
+		lines = []string{named(CopyUpgradePick, sl.Pick), sl.Gain}
+	}
+	t, err := r.faces.text(st)
+	if err != nil {
+		return "", color.RGBA{}, st, err
+	}
+	return firstFitting(t, d(textW+fitSlack), lines...), ink, st, nil
 }
 
 // fitName draws the name on one line at 20 px, shrinking 1 px at a time to 14 px; a name still
@@ -207,7 +253,7 @@ func (r *renderer) layoutCell(kind string, sl Slot) (cell, error) {
 func (r *renderer) drawCell(c cell, x, y int, right bool) error {
 	sockX, textX, a := x, x+sockW+gap, alignLeft
 	if right {
-		sockX, textX, a = x+cellW-sockW, x, alignRight
+		sockX, textX, a = x+cellW-sockW, x+cellW-sockW-gap-textW, alignRight
 	}
 	r.socket(c, sockX, y)
 	top := float64(y + nameTopNudge)
@@ -241,12 +287,12 @@ func (r *renderer) drawMetaAndGold(c cell, textX int, top float64, a align) erro
 	if c.gold == "" {
 		return nil
 	}
-	gold, err := r.faces.text(styleGold)
+	gold, err := r.faces.text(c.goldStyle)
 	if err != nil {
 		return err
 	}
 	tx, ty := at(float64(textX), top)
-	gold.drawAligned(r.img, gainColor(c.gold), tx, d(textW), ty, a, c.gold)
+	gold.drawAligned(r.img, c.goldInk, tx, d(textW), ty, a, c.gold)
 	return nil
 }
 
@@ -277,13 +323,4 @@ func keepLastTogether(words []word) []word {
 	joined := words[n-2]
 	joined.text += " " + words[n-1].text
 	return append(slices.Clone(words[:n-2]), joined)
-}
-
-// gainColor is a /char cell's last line's ink: a modelled gain ("+9.3 DPS") in the gain green, a
-// status the player acts on ("Gain not modelled yet") in gold.
-func gainColor(line string) color.RGBA {
-	if strings.HasPrefix(line, "+") {
-		return colorGain
-	}
-	return colorGold
 }

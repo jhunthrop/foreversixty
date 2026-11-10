@@ -35,7 +35,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Beastmaster's Treads**\nFeet · Gain not modelled yet\n-# Epic · item level 60 · Vendor: Mokvar"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Beastmaster's Treads**\nFeet · Gain not modelled yet\n-# item level 60 · Vendor: Mokvar"
               }
             ],
             "accessory": {
@@ -51,7 +51,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Signet Ring of the Bronze Dragonflight**\nFinger 1 · Gain not modelled yet\n-# Epic · item level 80 · Vendor: Anachronos"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Signet Ring of the Bronze Dragonflight**\nFinger 1 · Gain not modelled yet\n-# item level 80 · Vendor: Anachronos"
               }
             ],
             "accessory": {
@@ -67,7 +67,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Cutthroat's Signet**\nFinger 2 · +0.9 DPS\n-# Rare · item level 65 · Vendor: Pix Xizzix"
+                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Cutthroat's Signet**\nFinger 2 · +0.9 DPS\n-# item level 65 · Vendor: Pix Xizzix"
               }
             ],
             "accessory": {
@@ -83,7 +83,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Frozen Heart of the Mountain**\nTrinket 1 · Nothing else ranked\n-# Rare · item level 55 · Crafted: Enchanting"
+                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Frozen Heart of the Mountain**\nTrinket 1 · Nothing else ranked\n-# item level 55 · Crafted: Enchanting"
               }
             ],
             "accessory": {
@@ -99,7 +99,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Molten Heart of the Mountain**\nTrinket 2 · Same DPS as the next best\n-# Rare · item level 55 · Crafted: Enchanting"
+                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Molten Heart of the Mountain**\nTrinket 2 · Same DPS as the next best\n-# item level 55 · Crafted: Enchanting"
               }
             ],
             "accessory": {
@@ -115,7 +115,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Legionite Glaive**\nMain hand · Same DPS as the next best\n-# Rare · item level 63 · Crafted: Blacksmithing"
+                "content": "\u003c:fs_q_rare:1302600000000000003\u003e **Legionite Glaive**\nMain hand · Same DPS as the next best\n-# item level 63 · Crafted: Blacksmithing"
               }
             ],
             "accessory": {
@@ -135,7 +135,7 @@
             "components": [
               {
                 "type": 10,
-                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Hyper Deluxe Sniper Rifle Mk XVII**\nRanged · Same DPS as the next best\n-# Epic · item level 65 · Crafted: Engineering"
+                "content": "\u003c:fs_q_epic:1302600000000000004\u003e **Hyper Deluxe Sniper Rifle Mk XVII**\nRanged · Same DPS as the next best\n-# item level 65 · Crafted: Engineering"
               }
             ],
             "accessory": {
@@ -155,7 +155,7 @@
             "type": 2,
             "style": 2,
             "label": "Share in channel",
-            "custom_id": "share:mmt9Cnw37dr08ny6F3WRQbiroBsldP9kLgW8UfwBI7U"
+            "custom_id": "share:TTI94f4aPj0m5f7iZhgZ58H7oUQ7zTY3gyU_5Emc56I"
           },
           {
             "type": 2,

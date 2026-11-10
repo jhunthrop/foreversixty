@@ -124,6 +124,8 @@ func reviewRaid() notify.RaidPosted {
 		CrestURL: reviewSite + "/icons/hd/crests/warrior.webp",
 		RaidID:   7, Counts: notify.RaidCounts{In: 23, Late: 2, Bench: 1, Out: 3, Tanks: 3, Healers: 6, DPS: 14},
 		Size: 40, SizeKnown: true,
+		Target:  &notify.RoleTarget{Tanks: 2, Healers: 8, Melee: 10, Ranged: 20},
+		Missing: []string{"Windfury Totem"}, Short: []string{"Blessing of Kings"},
 	}
 }
 
@@ -149,15 +151,19 @@ func webhookPosts() []webhookPost {
 		{"webhook-reminder", "webhook: the day-before reminder", notify.WebhookReminderEmbed(reviewRaid(), at)},
 		{"webhook-report", "webhook: an officer posts the report", notify.ReportReadyEmbed(notify.ReportReady{
 			RaidPosted: reviewRaid(),
-			Kills:      []notify.ReportKill{{Boss: "Onyxia", Duration: 102 * time.Second}},
-			Wipes:      1, Came: 22, Signed: 23, LootItems: 3, Time: 74 * time.Minute, Deaths: 6,
+			// The night /report shows (report-pick): 3 wipes, 14 deaths, 2 h 41 min, its awards.
+			Kills: []notify.ReportKill{{Boss: "Onyxia", Duration: 102 * time.Second}},
+			Wipes: 3, Came: 22, Signed: 23, LootItems: 7, Time: 161 * time.Minute, Deaths: 14,
 			Loot: []notify.ReportLoot{
-				{Item: "Head of Onyxia", Winner: "Thalwyn"}, {Item: "Eskhandar's Collar", Winner: "Zulmara"},
-				{Item: "Onyxia Tooth Pendant", Winner: "Kraggor"},
+				{Item: "Deathbringer", Winner: "Kraggor"}, {Item: "Vis'kag the Bloodletter", Winner: "Corvane"},
+				{Item: "Eskhandar's Collar", Winner: "Zulmara"}, {Item: "Ring of Binding", Winner: "Ironvale"},
+				{Item: "Sapphiron Drape", Winner: "Pyrewisp"}, {Item: "Bloodfang Hood", Winner: "Duskmantle"},
+				{Item: "Netherwind Crown", Winner: "Frostwhisk"},
 			},
 			TopParses: []notify.ReportParse{
 				{Name: "Zulmara", Metric: "DPS", Boss: "Onyxia", Value: 812},
-				{Name: "Kraggor", Metric: "DPS", Boss: "Onyxia", Value: 776},
+				{Name: "Corvane", Metric: "DPS", Boss: "Onyxia", Value: 776},
+				{Name: "Pyrewisp", Metric: "DPS", Boss: "Onyxia", Value: 741},
 			},
 			CoachReady: true,
 		}, at)},
@@ -207,6 +213,10 @@ func dumpRaidAndLinkFrames(d frameDumper) {
 	w.addChar(t, w.gid, w.uid, keyZulmara, "Zulmara", true)
 	w.exec(t, `update guilds set raid_timezone = 'America/Chicago' where id = $1`, w.gid)
 	w.exec(t, `update guild_raids set title = 'Onyxia''s Lair', starts_at = $2 where id = $1`, w.raidID, boardStart)
+	// The post's 33 of 40, so the answer and the post agree.
+	w.exec(t, `insert into guild_raid_signups (raid_id, character_key, name, class, spec, role, state, signed_by, acted_by)
+		select $1, 'us/normal/other' || n, 'Other' || n, 'mage', 'Frost', 'dps', 'in', $2, $2 from generate_series(1, $3) n`,
+		w.raidID, seedUser(t, w.st.Pool), signedUpOfForty)
 	d.reply("raid-answer", "/raid: the next raid, before signing up", w.raidCmdAs(t, pressDiscord))
 
 	h := newLinkHarness(t)

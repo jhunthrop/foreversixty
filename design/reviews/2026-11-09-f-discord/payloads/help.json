@@ -5,8 +5,8 @@
   "message": {
     "embeds": [
       {
-        "title": "Forever Sixty commands",
-        "description": "**/raid** Your guild's next raid. Sign up from the answer.\n**/signup** Sign up for a raid without the post.\n**/char** A character: item level, readiness and the top 3 upgrades.\n**/bis** Best in slot for a class and spec.\n**/report** The last logged raid: kills and loot.\n**/attendance** Your attendance. Officers can name anyone.\n**/readiness** Officers: who is not ready for the next raid.\n**/link** Link this Discord account to Forever Sixty.\n**/help** This list.",
+        "title": "Commands",
+        "description": "**/raid** Your guild's next raid. Sign up from the answer.\n**/signup** Sign up for a raid without the post.\n**/char** A character: item level, readiness and the top 3 upgrades.\n**/bis** Best in slot for a class and spec.\n**/report** The last logged raid: kills and loot.\n**/attendance** Your attendance. Officers can name anyone.\n**/readiness** Officers: who is not ready for the next raid.\n**/link** Link this Discord account to Forever Sixty.",
         "footer": {
           "text": "Forever Sixty",
           "icon_url": "https://site.test/seal-400.png"

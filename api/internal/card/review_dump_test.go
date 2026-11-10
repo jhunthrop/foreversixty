@@ -16,20 +16,22 @@ func TestDumpReviewCards(t *testing.T) {
 	if dir == "" {
 		t.Skip("REVIEW_CARDS_DIR is not set")
 	}
+	kill := func(name string, sec int64) Boss { return Boss{Name: name, Kill: true, DurationMS: sec * 1000} }
+	wipe := func(name string) Boss { return Boss{Name: name, DurationMS: 90_000} }
 	mc := []Boss{
-		{"Lucifron", true}, {"Magmadar", true}, {"Gehennas", true}, {"Garr", true}, {"Baron Geddon", true},
-		{"Shazzrah", true}, {"Sulfuron Harbinger", true}, {"Golemagg the Incinerator", true},
-		{"Majordomo Executus", false}, {"Majordomo Executus", true}, {"Ragnaros", false},
+		kill("Lucifron", 74), kill("Magmadar", 102), kill("Gehennas", 61), kill("Garr", 118), kill("Baron Geddon", 131),
+		kill("Shazzrah", 58), kill("Sulfuron Harbinger", 97), kill("Golemagg the Incinerator", 112),
+		wipe("Majordomo Executus"), kill("Majordomo Executus", 181), wipe("Ragnaros"), wipe("Ragnaros"),
 	}
 	cards := map[string]func() ([]byte, error){
 		"card-build": func() ([]byte, error) { return Render(sample()) },
 		"card-report": func() ([]byte, error) {
 			return RenderReport(ReportInput{Title: "Thursday Onyxia", Zone: "Onyxia's Lair",
-				Bosses: []Boss{{"Onyxia", false}, {"Onyxia", true}}, DurationMS: int64(74 * time.Minute / time.Millisecond)})
+				Bosses: []Boss{wipe("Onyxia"), kill("Onyxia", 102)}, DurationMS: int64(74 * time.Minute / time.Millisecond), Deaths: 6})
 		},
 		"card-report-mc": func() ([]byte, error) {
-			return RenderReport(ReportInput{Title: "Olympus XXVII Molten Core clear", Zone: "Molten Core", Bosses: mc,
-				DurationMS: int64((2*time.Hour + 5*time.Minute) / time.Millisecond)})
+			return RenderReport(ReportInput{Title: "Olympus XXVII Thursday Molten Core", Zone: "Molten Core", Bosses: mc,
+				DurationMS: int64((2*time.Hour + 5*time.Minute) / time.Millisecond), Deaths: 38})
 		},
 		"card-fallback": func() ([]byte, error) { return Fallback(), nil },
 	}

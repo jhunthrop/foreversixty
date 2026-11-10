@@ -8,11 +8,16 @@ import (
 // The sheet's words, verbatim from the spec's copy table (rows sheet.*, tile.alt and the gain
 // words the panel shares). Tests read each one back from the spec.
 const (
-	CopyBisKicker   = "Best in slot"                         // sheet.bis.kicker
-	CopyItemLevel   = "Item level"                           // sheet.char.ilvl
-	CopyLevel       = "Level"                                // sheet.bis.level, over the band's level
-	CopyBrand       = "Forever Sixty"                        // sheet.brand, beside the seal
-	CopyEmpty       = "Empty"                                // sheet.empty
+	CopyBisKicker   = "Best in slot"  // sheet.bis.kicker
+	CopyItemLevel   = "Item level"    // sheet.char.ilvl
+	CopyLevel       = "Level"         // sheet.bis.level, over the band's level
+	CopyBrand       = "Forever Sixty" // sheet.brand, beside the seal
+	CopyEmpty       = "Empty"         // sheet.empty
+	CopyBisPick     = "BiS: "         // an empty /char slot's waiting pick
+	CopyUpgradePick = "Upgrade: "     // a pick whose gain is not modelled
+	CopyUpgrades    = "Upgrades"      // the centre's summary label
+	CopySlotsOne    = "1 slot"
+	CopySlotsMany   = "%d slots"
 	CopyUpgrade     = "Upgrade available"                    // sheet.upgrade
 	CopyNone        = "No pick"                              // sheet.none
 	CopyMark        = "foreversixty.gg"                      // sheet.mark
@@ -75,6 +80,7 @@ var instanceShort = []struct{ long, short string }{
 
 var (
 	questLine   = regexp.MustCompile(`^Quest: .* · (requires level \d+)$`)
+	questTitle  = regexp.MustCompile(`^(Quest: .*) · requires level \d+$`)
 	pvpLine     = regexp.MustCompile(`^PvP rank (\d+) · .* · (Alliance|Horde)$`)
 	craftedLine = regexp.MustCompile(`^(Crafted: [^·]+?) · .*$`)
 )
@@ -124,9 +130,13 @@ func metaCandidates(full string) []string {
 	if full == "" {
 		return nil
 	}
-	short := ShortSource(full)
-	if short == full || short == "" {
-		return []string{full}
+	out := []string{full}
+	// A quest names itself before its level: the quest is what a player looks up.
+	if m := questTitle.FindStringSubmatch(full); m != nil {
+		out = append(out, m[1])
 	}
-	return []string{full, short}
+	if short := ShortSource(full); short != full && short != "" {
+		out = append(out, short)
+	}
+	return out
 }

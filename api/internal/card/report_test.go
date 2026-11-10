@@ -60,15 +60,13 @@ func TestSummaryLineCountsKillsAndTime(t *testing.T) {
 	got := summaryLine(ReportInput{
 		Bosses:     []Boss{{Name: "Lucifron", Kill: true}, {Name: "Magmadar"}, {Name: "Magmadar"}},
 		DurationMS: 95 * 60 * 1000,
+		Deaths:     14,
 	})
-	if got != "Combat log · 1 of 2 killed · 1h 35m" {
+	if got != "Combat log · 1 of 2 killed · 1 h 35 min · 14 deaths" {
 		t.Fatalf("summary = %q", got)
 	}
-	if got := summaryLine(ReportInput{Bosses: []Boss{{Kill: true}}}); !strings.Contains(got, "1 of 1") {
+	if got := summaryLine(ReportInput{Bosses: []Boss{{Kill: true}}, Deaths: 1}); got != "Combat log · 1 of 1 killed · 1 death" {
 		t.Fatalf("summary = %q", got)
-	}
-	if got := duration(45 * 60 * 1000); got != "45 min" {
-		t.Fatalf("duration = %q", got)
 	}
 }
 
@@ -77,10 +75,11 @@ func TestBossRowsSplitKillsFromWipes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	rows := bossRows(f, []Boss{{Name: "Kelthas", Kill: true}, {Name: "Emberdeep"}, {Name: "Emberdeep"},
-		{Name: "Majordomo Executus"}, {Name: "Majordomo Executus", Kill: true}, {Name: "Garr", Kill: true}}, Width-2*marginX)
-	if len(rows) != 2 || rows[0].label != copyKilled || rows[0].names != "Kelthas · Majordomo Executus · Garr" ||
-		rows[1].label != copyWiped || rows[1].names != "Emberdeep" {
+	rows := bossRows(f, []Boss{{Name: "Kelthas", Kill: true, DurationMS: 102_000}, {Name: "Emberdeep"}, {Name: "Emberdeep"},
+		{Name: "Majordomo Executus"}, {Name: "Majordomo Executus", Kill: true, DurationMS: 181_000},
+		{Name: "Garr", Kill: true, DurationMS: 95_000}, {Name: "Ragnaros"}}, Width-2*marginX)
+	if len(rows) != 2 || rows[0].label != copyKilled || rows[0].names != "Kelthas 1:42 · Majordomo Executus 3:01 · Garr 1:35" ||
+		rows[1].label != copyWiped || rows[1].names != "Emberdeep (2 wipes) · Ragnaros (1 wipe)" {
 		t.Fatalf("rows = %+v", rows)
 	}
 	if got := bossRows(f, nil, 100); len(got) != 1 || got[0].names != copyNoBosses {

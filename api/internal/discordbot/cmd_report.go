@@ -197,7 +197,7 @@ func tallyClauses(kills, wipes, deaths int, durationMS int64) []string {
 		}
 	}
 	if durationMS > 0 {
-		parts = append(parts, nightDuration(durationMS))
+		parts = append(parts, notify.NightLength(time.Duration(durationMS)*time.Millisecond))
 	}
 	return parts
 }
@@ -207,20 +207,6 @@ func units(n int, singular string) string {
 		return fmt.Sprintf("%d %s", n, singular)
 	}
 	return fmt.Sprintf("%d %ss", n, singular)
-}
-
-// nightDuration is "2 h 41 min", "2 h" or "41 min"; under a minute reads "1 min".
-func nightDuration(ms int64) string {
-	total := max(1, int((time.Duration(ms)*time.Millisecond+30*time.Second)/time.Minute))
-	hours, minutes := total/60, total%60
-	switch {
-	case hours == 0:
-		return fmt.Sprintf("%d min", minutes)
-	case minutes == 0:
-		return fmt.Sprintf("%d h", hours)
-	default:
-		return fmt.Sprintf("%d h %d min", hours, minutes)
-	}
 }
 
 // killLines are "1. Onyxia 1:42 after 3 wipes", "2. Onyxia 1:42 first pull" or "3. Nefarian
@@ -242,14 +228,8 @@ func killLines(kills []guilds.KillOrderView) []string {
 	return out
 }
 
-// killClock is a kill time as m:ss, or h:mm:ss from an hour up.
-func killClock(ms int64) string {
-	total := int((time.Duration(ms)*time.Millisecond + 500*time.Millisecond) / time.Second)
-	if total >= 3600 {
-		return fmt.Sprintf("%d:%02d:%02d", total/3600, total%3600/60, total%60)
-	}
-	return fmt.Sprintf("%d:%02d", total/60, total%60)
-}
+// killClock is notify.KillClock over milliseconds.
+func killClock(ms int64) string { return notify.KillClock(time.Duration(ms) * time.Millisecond) }
 
 // boundedLines joins lines inside a field value, dropping the tail that does not fit; "" for none.
 func boundedLines(lines []string) string {

@@ -222,7 +222,7 @@ func (s *Service) sendReport(r *http.Request, guildID int64, raid Raid) error {
 	if err != nil {
 		return err
 	}
-	posted, err := s.RaidEvents.ReportReady(ctx, guildID, s.reportReady(g, view, s.coachReady(ctx, view)))
+	posted, err := s.RaidEvents.ReportReady(ctx, guildID, s.reportReady(ctx, g, view, s.coachReady(ctx, view)))
 	if err != nil {
 		return fmt.Errorf("guilds: post report: %w", err)
 	}
@@ -254,8 +254,8 @@ const reportTopParses = 3
 
 // reportReady is the embed input of a done raid's view (an officer's view: every row). It names
 // the best parses and the loot winners, never who died (notify.ReportReady).
-func (s *Service) reportReady(g Guild, v RaidView, coachReady bool) notify.ReportReady {
-	in := notify.ReportReady{RaidPosted: s.raidPost(g, v), Wipes: v.Night.Wipes, Came: v.Night.Came, Signed: v.Night.Signed,
+func (s *Service) reportReady(ctx context.Context, g Guild, v RaidView, coachReady bool) notify.ReportReady {
+	in := notify.ReportReady{RaidPosted: s.raidPost(ctx, g, v), Wipes: v.Night.Wipes, Came: v.Night.Came, Signed: v.Night.Signed,
 		CoachReady: coachReady, Time: time.Duration(v.Night.DurationMS) * time.Millisecond, Deaths: v.Report.Headline.Deaths}
 	in.RaidURL = strings.TrimRight(in.RaidURL, "/")
 	for _, k := range v.Report.KillOrder {
