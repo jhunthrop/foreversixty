@@ -6,7 +6,8 @@
      place this lane names a consumable id -- and the names and icons come from
      simbuffs.json (contract 10.4) rather than from a de-underscored id. -->
 <script lang="ts">
-  import ItemIcon from '../../ui/ItemIcon.svelte';
+  import { iconUrl } from '../../../lib/ui/assets';
+  import SpellIcon from '../../ui/SpellIcon.svelte';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { presetConsumables } from '../../../lib/sim/settings';
   import { buffIcon, buffName, type SimBuffFile } from '../../../lib/sim/sim-buffs';
@@ -45,7 +46,7 @@
             onchange={() => ontoggle(id)}
           />
           {#if buffIcon(buffs, id) !== ''}
-            <ItemIcon icon={buffIcon(buffs, id)} build={treeVersion} size={28} />
+            <SpellIcon url={iconUrl(treeVersion, buffIcon(buffs, id))} size={28} />
           {/if}
           {buffName(buffs, id)}
         </label>

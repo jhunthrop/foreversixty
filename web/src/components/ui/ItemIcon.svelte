@@ -27,7 +27,7 @@
     icon?: string;
     quality?: number;
     build: string;
-    size?: 20 | 28 | 32 | 36 | 40 | 56;
+    size?: 16 | 20 | 24 | 28 | 32 | 36 | 40 | 56;
     badge?: 'upgrade' | 'worn';
     unknown?: boolean;
     /** Above the fold: load at once instead of lazily. */

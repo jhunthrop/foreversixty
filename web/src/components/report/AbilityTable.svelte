@@ -7,6 +7,7 @@
      this only draws them. Icons and rank arrive through `decorate` once their files load, inside a
      fixed box, so nothing moves. Below 1024 the figures join the sub line (StatRow's phone parts). -->
 <script lang="ts" module>
+  import ItemName from '../ui/ItemName.svelte';
   import SpellIcon from '../ui/SpellIcon.svelte';
   import type { AbilityRow } from '../../lib/report/ability-table';
 
@@ -46,7 +47,6 @@
     type AbilityTable,
     type SortColumn,
   } from '../../lib/report/ability-table';
-  import { rarityClassFor } from '../../lib/planner/items';
   import { damageCopy as copy, grouped, oneDecimal } from '../../lib/sim/result-copy';
   import { CRIT_NOTE_TIP } from '../../lib/sim/result-tips';
   import { spellTipKey } from '../../lib/tooltips/game-tip';
@@ -133,12 +133,13 @@
         data-testid="ability-name">{row.name}</span
       >{#if extras.rank > 0}<span class="text-muted ml-1 text-[13px] font-normal"
           >{copy.rank(extras.rank)}</span
-        >{/if}{#if extras.weapon !== null}{SPACE}<!-- svelte-ignore a11y_no_noninteractive_tabindex --><span
-          class={`focus-visible:outline-gold rounded-[2px] text-[14px] font-semibold hover:underline focus-visible:outline-2 ${rarityClassFor(extras.weapon.quality)}`}
-          tabindex="0"
-          data-bis-item={extras.weapon.id}
-          data-testid="ability-weapon">· {extras.weapon.name}</span
-        >{/if}
+        >{/if}{#if extras.weapon !== null}{SPACE}<ItemName
+          name={`· ${extras.weapon.name}`}
+          quality={extras.weapon.quality}
+          id={extras.weapon.id}
+          class="text-[14px] font-semibold"
+          testid="ability-weapon"
+        />{/if}
     {/snippet}
     {#snippet sub()}
       <div data-testid="ability-subline">

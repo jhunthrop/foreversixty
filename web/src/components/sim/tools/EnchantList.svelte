@@ -3,7 +3,8 @@
      checklist design 3.1.4 asks for. "Keep current" and "None" are rows, not a separate
      control, because they are two of the answers to the same question. -->
 <script lang="ts">
-  import ItemIcon from '../../ui/ItemIcon.svelte';
+  import { iconUrl } from '../../../lib/ui/assets';
+  import SpellIcon from '../../ui/SpellIcon.svelte';
   import {
     ENCHANTS_PER_SLOT_CAP,
     KEEP_CURRENT_ENCHANT,
@@ -56,7 +57,7 @@
         data-testid={`sim-enchant-${slot}-${enchant.id}`}
         onclick={() => onpick(enchant.id)}
       >
-        <ItemIcon icon={enchant.icon} build={treeVersion} size={28} />
+        <SpellIcon url={iconUrl(treeVersion, enchant.icon)} size={28} />
         {enchant.name}
       </button>
     </li>

@@ -11,6 +11,7 @@
      character's own side and names each rank's best reward; a kind that has not opened says so in
      one line (lib/sim/source-rows.ts). -->
 <script lang="ts">
+  import ItemName from '../../ui/ItemName.svelte';
   import { SvelteSet } from 'svelte/reactivity';
   import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
   import { sourceGroupVisibility, triedCount } from '../../../lib/sim/drop-picks';
@@ -34,7 +35,6 @@
     sourceItemStats,
     tickedSources,
   } from '../../../lib/sim/source-rows';
-  import { rarityClassFor } from '../../../lib/planner/items';
   import type { Faction } from '../../../lib/bis/types';
   import type { Item } from '../../../lib/planner/types';
   import Disclosure from '../../ui/Disclosure.svelte';
@@ -164,11 +164,11 @@
           />{/if}
         <span class="min-w-0 flex-1 truncate">
           <span class="text-strong font-bold">{sourceLabel(source)}</span>
-          {#if kind === 'pvp' && stats.best !== null}<span
-              class="text-[13px] {rarityClassFor(stats.best.quality)}"
-            >
-              {stats.best.name}</span
-            >{/if}
+          {#if kind === 'pvp' && stats.best !== null}<ItemName
+              name={` ${stats.best.name}`}
+              quality={stats.best.quality}
+              class="text-[13px]"
+            />{/if}
         </span>
       </label>
       {#if kind === 'dungeon' && bossCount > 0}

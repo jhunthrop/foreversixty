@@ -11,7 +11,6 @@
   import { fetchMemberProfile, type MemberProfile } from '../../../lib/guild/recruit-api';
   import { fetchGuildRaid } from '../../../lib/guild/raids-api';
   import { fetchLootNights } from '../../../lib/guild/loot-council-api';
-  import { lootIconOf } from '../../../lib/guild/loot-icon';
   import { percentileToken } from '../../../lib/report/format';
   import { guildPerNight, myNight, streak, type MyNight } from '../../../lib/guild/dense/member-week';
   import Figure from '../../ui/Figure.svelte';
@@ -202,7 +201,7 @@
     {#each profile.loot.items as item (item.item_id + item.awarded_at)}
       <Row title={item.name ?? 'Item'} sub={day(item.awarded_at)} open>
         {#snippet lead()}<ItemIcon
-            icon={item.icon === null ? undefined : (lootIconOf({ icon: item.icon }) ?? undefined)}
+            icon={item.icon ?? undefined}
             quality={item.quality ?? 4}
             {build}
             size={32}
