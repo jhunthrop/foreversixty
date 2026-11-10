@@ -247,7 +247,7 @@
   <Section title={raidCopy.subheads.raidNights} panel testid="guild-raid-nights">
     {#if rows.length === 0}
       <p class="text-muted text-[14px] leading-[22px]" data-testid="guild-raids-empty">
-        {publicView ? NO_PUBLIC_RAID_NIGHTS : 'No raid nights logged yet. Upload a raid log to get started.'}
+        {publicView ? NO_PUBLIC_RAID_NIGHTS : 'No raid nights logged yet.'}
       </p>
     {:else}
       <div class="flex flex-col" data-testid="guild-raids-rows">

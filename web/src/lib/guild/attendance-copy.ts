@@ -156,8 +156,6 @@ export const attendanceCopy = {
     copyFailed: 'Could not copy. Select the report and copy it.',
   },
   liveRegion: "The raid's log was matched.",
-  changelog:
-    "Added attendance and raid-night reports. A raid's log is matched when it is uploaded, and the raid page shows who came, kill times, deaths, loot and the biggest changes since last time.",
 } as const;
 
 /** Nobody signed up beforehand: the joiners are the whole night, so the head counts them. */

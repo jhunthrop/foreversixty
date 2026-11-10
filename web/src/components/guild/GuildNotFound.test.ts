@@ -20,7 +20,7 @@ describe('GuildNotFound', () => {
     const { body } = render(GuildNotFound, {
       props: { path: { region: 'us', ruleset: 'normal', slug: 'knights-of-the-old-forest' } },
     });
-    expect(body).toContain('Then it is not on Forever Sixty yet.');
+    expect(body).toContain('Not on Forever Sixty yet.');
     expect(body).toContain('signs in and imports a character, or syncs the addon.');
     expect(body).toMatch(/href="\/setup"[^>]*>Get set up</);
   });

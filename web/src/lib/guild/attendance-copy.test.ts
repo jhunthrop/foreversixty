@@ -97,7 +97,6 @@ describe('constants, verbatim from spec 6.1', () => {
       str('Loot', 1),
     );
     expect(c.liveRegion).toBe(str('Live region'));
-    expect(c.changelog).toBe(str('Changelog'));
   });
 
   it('errors', () => {

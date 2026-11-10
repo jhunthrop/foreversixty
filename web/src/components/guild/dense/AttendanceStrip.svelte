@@ -89,6 +89,6 @@
     background: var(--color-wipe);
   }
   .att-cell[data-cell='none'] {
-    background: repeating-linear-gradient(45deg, transparent 0 2px, var(--color-line) 2px 3px);
+    background: repeating-linear-gradient(45deg, transparent 0 2px, var(--color-muted) 2px 3px);
   }
 </style>

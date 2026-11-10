@@ -14,7 +14,6 @@ import { enchantSlotLabel as slotWord } from './readiness-view';
 import type {
   AttendanceCell,
   ChecklistItem,
-  ChecklistVerdict,
   GuildChecklist,
   GuildCompRole,
   GuildCompTarget,
@@ -29,14 +28,6 @@ export interface ChecklistRow {
   title: string;
   sub: string;
   fix: { label: string; href: string } | null;
-}
-
-const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-
-/** "two things" in the verdict line; digits from ten. */
-function things(count: number): string {
-  const word = WORDS[count] ?? String(count);
-  return `${word} ${count === 1 ? 'thing' : 'things'}`;
 }
 
 function listWords(items: readonly string[]): string {
@@ -221,28 +212,6 @@ function actionableRow(item: ChecklistItem): ChecklistRow[] {
       { key: item.key, tone: 'warn', title: 'Share your level', sub: 'Your level is not on file yet.', fix },
     ];
   return [];
-}
-
-const VERDICT_WORD: Readonly<Record<ChecklistVerdict, string>> = {
-  ready: 'Ready to raid',
-  almost: 'Almost there',
-  getting_started: 'Getting started',
-};
-
-export function verdictWord(verdict: ChecklistVerdict): string {
-  return VERDICT_WORD[verdict];
-}
-
-/** The member's Notice: "Almost there: two things before Thursday." (`day` is the raid's weekday). */
-export function verdictLine(
-  verdict: ChecklistVerdict,
-  rows: readonly ChecklistRow[],
-  day: string | null,
-): string {
-  const open = rows.filter((row) => row.tone !== 'ok').length;
-  const when = day === null ? 'before the raid' : `before ${day}`;
-  if (verdict === 'ready' || open === 0) return day === null ? 'Ready to raid.' : `Ready to raid on ${day}.`;
-  return `${VERDICT_WORD[verdict]}: ${things(open)} ${when}.`;
 }
 
 export interface ActionRow {

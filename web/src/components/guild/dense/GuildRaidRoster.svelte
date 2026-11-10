@@ -255,7 +255,7 @@
         />
       </div>
       <input
-        class="border-line text-text h-8 w-[200px] rounded-[6px] border bg-transparent px-3 text-[14px]"
+        class="border-muted/50 text-text h-8 w-[200px] rounded-[6px] border bg-transparent px-3 text-[14px]"
         type="search"
         placeholder="Find a raider"
         aria-label="Find a raider"

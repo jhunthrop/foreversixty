@@ -10,7 +10,6 @@ import {
   coverGridRows,
   raidTimeLine,
   raidWeekday,
-  verdictLine,
 } from './overview-role-view';
 
 const checklist = (
@@ -85,7 +84,6 @@ describe('checklistRows', () => {
         fix: { label: 'How', href: '/setup' },
       }),
     ]);
-    expect(verdictLine('almost', rows, 'Thursday')).toBe('Almost there: one thing before Thursday.');
   });
 
   it('asks the member to share quests and bags the export cannot see, each linking the setup', () => {
@@ -180,25 +178,6 @@ describe('checklistRows', () => {
       checklist([{ key: 'enchants', state: 'fail', missing_slots: ['main_hand', 'feet'] }]),
     );
     expect(row).toMatchObject({ title: '2 slots without an enchant', sub: 'Main Hand and Feet.' });
-  });
-});
-
-describe('verdictLine (D12)', () => {
-  const open = checklistRows(
-    checklist([
-      { key: 'gear_gap', state: 'fail', upgrades: 1, slots: ['hands'] },
-      { key: 'enchants', state: 'fail', missing_slots: ['chest'] },
-    ]),
-  );
-
-  it('counts the open checks in words', () => {
-    expect(verdictLine('almost', open, 'Thursday')).toBe('Almost there: two things before Thursday.');
-  });
-
-  it('never says floor, and reads ready when nothing is open', () => {
-    expect(verdictLine('ready', [], 'Thursday')).toBe('Ready to raid on Thursday.');
-    expect(verdictLine('getting_started', open, null)).toBe('Getting started: two things before the raid.');
-    expect(verdictLine('almost', open, null)).not.toMatch(/floor/i);
   });
 });
 
