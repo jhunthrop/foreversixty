@@ -66,7 +66,9 @@ struct RaidFlowPresenter {
     }
 
     /// The guild's pages; a figure the app does not have leaves its row's line out.
-    func pages(guild: String, members: Int?, atCap: Int?, planned: [RaidView], badge: RaidBadge?) -> GuildPagesContent {
+    func pages(
+        guild: String, members: Int?, atCap: Int?, planned: [RaidView], badge: RaidBadge?, lastNight: RaidNightRow? = nil
+    ) -> GuildPagesContent {
         let roster = members.map { n in
             let words = Copy.raidPagesMembers(n: n)
             return atCap.map { Copy.raidPagesMembersAtCap(members: words, n: $0) } ?? words
@@ -78,9 +80,16 @@ struct RaidFlowPresenter {
         return GuildPagesContent(guild: guild, rows: [
             GuildPageRow(page: .roster, sub: roster),
             GuildPageRow(page: .calendar, sub: calendar),
-            GuildPageRow(page: .loot, sub: badge?.lastRaidLoot.map { Copy.raidPagesLootLast(n: $0.count) }),
+            GuildPageRow(page: .loot, sub: lootLine(badge: badge, lastNight: lastNight)),
             GuildPageRow(page: .sims, sub: badge?.simsRank.map { Copy.raidPagesSimsRank(position: $0.position, of: $0.of) }),
         ])
+    }
+
+    /// Loot history's line: `Last: Onyxia's Lair, 1 kill, 2 wipes`, then the last raid's pieces.
+    func lootLine(badge: RaidBadge?, lastNight: RaidNightRow?) -> String? {
+        let night = lastNight.map { Copy.raidPagesLastNight(zone: $0.zone, kills: Copy.raidPagesKills(n: $0.killCount), wipes: Copy.raidPagesWipes(n: $0.wipeCount)) }
+        let parts = [night, badge?.lastRaidLoot.map { Copy.raidPagesLootLast(n: $0.count) }].compactMap(\.self)
+        return parts.isEmpty ? nil : parts.joined(separator: Self.separator)
     }
 
     /// The officer's Needs you (F3): the badge's open count over the unanswered and the applicants.
@@ -109,12 +118,7 @@ struct RaidFlowPresenter {
             (Copy.homeRaidDamage, night.coming.damage, target.map { $0.melee + $0.ranged }),
         ]
         let roles = groups.map { group in
-            let names = Self.names(group.people.map { ($0.name, $0.state, $0.lateMinutes) })
-            let gap = group.want.map { $0 - group.people.count }.flatMap { $0 > 0 ? $0 : nil }
-            return RoleLineContent(
-                role: group.label, have: group.people.count, want: group.want,
-                names: gap.map { Copy.raidTabShort(names: names, n: $0) } ?? names
-            )
+            Self.roleLine(group.label, people: group.people.map { ($0.name, $0.className, $0.state, $0.lateMinutes) }, want: group.want)
         }
         return RaidNightRootContent(live: RaidLiveContent(eyebrow: live.eyebrow, line: live.line), roles: roles)
     }
@@ -137,7 +141,6 @@ struct RaidFlowPresenter {
     /// first, a Late with its minutes), the count against the comp, and the short role's gap.
     func coming(_ raid: RaidView) -> [RoleLineContent] {
         let target = raid.compTarget
-        let short = RaidShortRole.of(raid)
         let coming = raid.signups
             .filter { SignupState(rawValue: $0.state)?.isComing == true }
             .sorted { $0.own && !$1.own }
@@ -149,13 +152,94 @@ struct RaidFlowPresenter {
         return groups.compactMap { group in
             let people = coming.filter { Self.roleGroup($0.role) == group.wire }
             guard !people.isEmpty || group.want != nil else { return nil }
-            let names = Self.names(people.map { ($0.name, $0.state, $0.lateMinutes) })
-            let gap = short.flatMap { $0.role == group.wire ? $0.missing : nil }
-            return RoleLineContent(
-                role: group.label, have: people.count, want: group.want,
-                names: gap.map { Copy.raidTabShort(names: names, n: $0) } ?? names
-            )
+            var line = Self.roleLine(group.label, people: people.map { ($0.name, $0.className, $0.state, $0.lateMinutes) }, want: group.want)
+            if group.wire == "dps", !people.isEmpty {
+                let melee = people.filter { $0.group == Self.meleeGroup }.count
+                line.split = Copy.raidTabDamageSplit(melee: melee, ranged: people.count - melee)
+            }
+            return line
         }
+    }
+
+    static let nameSeparator = ", "
+
+    /// The signup's `group` for a raider who fights in melee.
+    static let meleeGroup = "melee"
+
+    /// One role line (S6): the tally, the names in class colour, a Late's minutes.
+    static func roleLine(
+        _ label: String, people: [(name: String, className: String?, state: String, lateMinutes: Int?)], want: Int?
+    ) -> RoleLineContent {
+        let persons = people.map { person in
+            RolePerson(name: person.name, className: person.className, text: lateText(person.name, state: person.state, minutes: person.lateMinutes))
+        }
+        let long = persons.count > namesInFull
+        return RoleLineContent(
+            role: label, have: people.count, want: want,
+            names: names(people.map { ($0.name, $0.state, $0.lateMinutes) }),
+            people: long ? Array(persons.prefix(namedWhenLong)) : persons,
+            more: long ? persons.count - namedWhenLong : 0
+        )
+    }
+
+    private static func lateText(_ name: String, state: String, minutes: Int?) -> String {
+        guard state == SignupState.late.rawValue, let minutes else { return name }
+        return Copy.raidTabLateNote(name: name, n: minutes)
+    }
+
+    // MARK: The head's facts and Who is coming's foot
+
+    /// `Invites 7:45 pm · 40`, when the raid names both.
+    func invites(_ raid: RaidView) -> String? {
+        guard let invite = raid.inviteAt, let size = raid.size else { return nil }
+        let zone = TimeZone(identifier: raid.guildTimezone) ?? clock.zone
+        return Copy.raidTabInviteSize(time: clock.guildClock(invite, guildZone: zone), n: size)
+    }
+
+    /// `Bench 1 · Out 4 · 14 not answered`; a count the raid leaves out is left out.
+    func answers(_ raid: RaidView) -> String? {
+        let unanswered = raid.notSignedRaiders?.count ?? raid.notSigned.count
+        let parts = [
+            raid.counts.bench.map(Copy.raidTabCountBench),
+            raid.counts.signedOut.map(Copy.raidTabCountOut),
+            unanswered > 0 ? Copy.raidTabCountNotAnswered(n: unanswered) : nil,
+        ].compactMap(\.self)
+        return parts.isEmpty ? nil : parts.joined(separator: Self.separator)
+    }
+
+    /// G4: the cover rows that are missing or short, by name; else the buffs no one brings. Nil
+    /// when all is covered.
+    func cover(_ raid: RaidView) -> String? {
+        let rows = raid.cover ?? []
+        let parts: [String] = rows.isEmpty
+            ? (raid.composition?.buffs ?? []).filter { !$0.present }.map { Copy.raidTabCoverMissing(name: $0.name) }
+            : rows.compactMap { row in
+                switch row.state {
+                case Self.coverMissing: Copy.raidTabCoverMissing(name: row.name)
+                case Self.coverShort: Copy.raidTabCoverShort(name: row.name, have: row.providersIn + row.providersLate, need: row.need)
+                default: nil
+                }
+            }
+        return parts.isEmpty ? nil : parts.joined(separator: Self.separator)
+    }
+
+    static let coverMissing = "missing"
+    static let coverShort = "short"
+    static let separator = " · "
+
+    /// G1, for officers: how many signed In or Late the roster has not seen sync this week.
+    func notSynced(_ raid: RaidView, synced: [String: Bool]?) -> String? {
+        guard let synced else { return nil }
+        let stale = raid.signups.filter { signup in
+            SignupState(rawValue: signup.state)?.isComing == true && synced[signup.characterKey] == false
+        }.count
+        return stale > 0 ? Copy.raidTabNotSynced(n: stale) : nil
+    }
+
+    /// The officers' notes, trimmed; nil when there are none.
+    static func notes(_ raid: RaidView) -> String? {
+        let text = raid.notes.trimmingCharacters(in: .whitespacesAndNewlines)
+        return text.isEmpty ? nil : text
     }
 
     /// Up to five names in full; more read `Thandrel, Kaelra, Thalrin and 8 more`.
@@ -182,7 +266,8 @@ struct RaidFlowPresenter {
             ReadyRowContent(
                 key: item.key, mark: ReadyRowContent.Mark(rawValue: item.state) ?? .warn, title: item.title, line: item.line,
                 fix: item.state == ReadyCheck.okState ? nil : item.whereToGet?.label,
-                link: item.whereToGet?.link.flatMap(URL.init(string:))
+                link: item.whereToGet?.link.flatMap(URL.init(string:)),
+                icon: item.icon.flatMap { $0.isEmpty ? nil : $0 }
             )
         }
         return ReadyListContent(rows: rows, stamp: check.exportedAt.map { Copy.raidReadyStamp(age: RelativeAge(from: $0, to: now).phrase) })

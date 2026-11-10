@@ -80,6 +80,7 @@ object MenuFixtures {
         guilded: Boolean = false,
         avatar: Boolean = true,
         faction: String = "alliance",
+        itemLevel: Int? = null,
     ) = AccountCharacter(
         key = "us/normal/${name.lowercase()}",
         region = "us",
@@ -92,17 +93,18 @@ object MenuFixtures {
         spec = spec,
         avatarUrl = if (avatar) "https://render.worldofwarcraft.com/us/character/forever/${name.lowercase()}-avatar.jpg" else null,
         guild = if (guilded) guild else null,
+        itemLevel = itemLevel,
     )
 
     val thandrel = character("Thandrel", "warrior", "fury", 60, guilded = true)
     val all = listOf(
         thandrel,
-        character("Lightvow", "paladin", "holy", 60, guilded = true),
-        character("Kaelor", "mage", "frost", 47, faction = "horde"),
-        character("Felsnap", "hunter", "beast mastery", 34),
-        character("Brewmist", "shaman", "enhancement", 22, faction = "horde"),
-        character("Ashmantle", "warlock", "affliction", 18, avatar = false),
-        character("Pockets", "rogue", null, 6, avatar = false),
+        character("Lightvow", "paladin", "holy", 60, guilded = true, itemLevel = 61),
+        character("Kaelor", "mage", "frost", 47, faction = "horde", itemLevel = 44),
+        character("Felsnap", "hunter", "beast mastery", 34, itemLevel = 31),
+        character("Brewmist", "shaman", "enhancement", 22, faction = "horde", itemLevel = 19),
+        character("Ashmantle", "warlock", "affliction", 18, avatar = false, itemLevel = 15),
+        character("Pockets", "rogue", null, 6, avatar = false, itemLevel = 5),
         character("Bankalt", "mage", null, 1, avatar = false),
     )
 
@@ -120,6 +122,7 @@ object MenuFixtures {
         notifications = "Raids, gear and sims, logs on",
         plan = "Premium · Founder price",
         devices = 3,
+        newestDevice = "Pixel 9",
         offlineData = "26.6 MB",
         version = "Version 0.1.0 (7) · data 1.60.1.70790",
         year = 2026,

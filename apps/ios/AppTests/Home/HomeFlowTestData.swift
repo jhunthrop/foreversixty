@@ -21,7 +21,7 @@ enum HomeFlowTestData {
     }
 
     static let raidRows = [
-        item("head", "Lionheart Helm", "inv_helmet_36", source: "Head · Blacksmithing", gain: "+14.5"),
+        item("head", "Lionheart Helm", "inv_helmet_36", source: "Head · Blacksmithing · replaces Helm of Valor", gain: "+14.5"),
         item("finger", "Don Julio’s Band", "inv_jewelry_ring_35", source: "Finger · Stormpike Guard, needs revered", gain: "+6.8"),
         item("chest", "Timbermaw Tunic", "inv_chest_fur", source: "Chest · Leatherworking", gain: "+5.3"),
     ]
@@ -32,9 +32,16 @@ enum HomeFlowTestData {
         item("finger", "Ring of Precision", "inv_jewelry_ring_14", quality: 3, source: "Finger · Blackfathom Deeps", gain: "+0.6"),
     ]
 
+    /// Under Next upgrades' head (round 2): the synced stamp.
+    static let stamp = "Synced 2 h ago from the addon"
+
     static func upgrades(bestRun: Bool) -> HomeBlockContent {
         .upgrades(HomeUpgradesContent(
-            rows: raidRows, bestRun: bestRun ? "Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%" : nil, note: nil
+            rows: raidRows,
+            bestRun: bestRun
+                ? HomeBestRunRow(place: "Blackrock Spire", line: "Best run · Blackcrow · 8%", icon: "inv_misc_bone_09", gain: HomeGain(figure: "+1.9", unit: "DPS"))
+                : nil,
+            note: nil, meta: "13 upgrades · +157.6 DPS", stamp: stamp
         ))
     }
 
@@ -48,7 +55,7 @@ enum HomeFlowTestData {
         let state = late ? .late : answered
         let who = "as Thandrel, Damage"
         let answer = state.map { "You are \($0.label), \(who)" } ?? "You have not answered, \(who)"
-        return NextRaidContent(
+        var content = NextRaidContent(
             guildID: 2, raidID: 29, characterKey: "us/normal/thandrel",
             zone: "Onyxia’s Lair",
             place: "Olympus XXVII · Wed 6 Jan, 8:00 pm CST",
@@ -65,6 +72,9 @@ enum HomeFlowTestData {
                 applicants: HomeLine(title: "1 applicant", sub: "Mirelle, Holy Priest 60, 2 min ago")
             ) : nil
         )
+        // The Late card (m-ios-signup) has just saved its 30 minutes.
+        content.status = late ? .saved(Copy.commonSaved) : nil
+        return content
     }
 
     static let now = Date(timeIntervalSince1970: 1_793_988_000)

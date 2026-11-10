@@ -240,8 +240,19 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .ap.home .irow{padding-inline:0}
 /* a row's lines as the Pixel 9 rounds them (420 dpi: a 20 sp line is 54 px, 20.57 dp; 18 sp is 48 px, 18.29 dp) */
 .ap.home section .row .ttl{line-height:20.57px}.ap.home section .row .sub{line-height:18.29px}
-[data-platform=ios] .ap.home .blk .btns{gap:8px;border:0;border-radius:0;overflow:visible}
-[data-platform=ios] .ap.home .blk .btns .btn{height:44px;min-height:44px;border:1px solid var(--line);border-radius:6px}
+/* round 2: iOS answers with its Segmented (brand B1): one connected group, hairline dividers, the chosen one teal, 44 pt */
+[data-platform=ios] .ap.home .blk .btns{border-color:#5a5d70;border-radius:6px;background:#170e09}
+[data-platform=ios] .ap.home .blk .btns .btn{height:44px;min-height:44px;padding:0 4px;font:600 13px/18px var(--font-body);color:var(--text)}
+[data-platform=ios] .ap.home .blk .btns .btn+.btn{border-left:1px solid #5a5d70}
+[data-platform=ios] .ap.home .blk .btns .btn.primary{font-weight:700;color:#fff;background:#0f6064;box-shadow:inset 0 0 0 1px #408076}
+/* round 2 (review backfill): the status line under the answers; the upgrades' synced stamp; the raid line's tally */
+.ap.home .chips .btn.primary{background:#0f6064;border-color:#408076;color:#fff}
+.ap.home .stl{margin:8px 0 0;font:400 13px/20px var(--font-body);color:var(--kill)}
+.ap.home section>.stmp{margin:0;border-top:0!important;background:#170e09;padding:8px 16px 0;font:400 14px/20px var(--font-body);color:var(--muted)}
+[data-platform=android] .ap.home section>.stmp{padding:4px 16px 8px}
+.ap.home .tline{margin:0 0 4px;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.ap.home .tline .ok{color:var(--kill)}.ap.home .tline .lo{color:var(--wipe)}
+.ap.home .blk:not(:has(.cdn)) .tally{margin:0 0 8px}
 [data-platform=ios] .ap.home .blk .row .trail .btn{min-height:44px}
 </style><style>
 /* ---- Page: one column, four layouts ---- */
@@ -531,6 +542,7 @@ right:0;left:0;bottom:0;max-height:88vh;border-radius:16px 16px 0 0}
 .btn.is-off{opacity:.45;pointer-events:none}
 .cap{display:block;position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
 .cap img{display:block;width:100%;height:100%;object-fit:contain}
+.cap picture{display:contents}@media(max-width:639px){.cap.has-narrow{aspect-ratio:var(--ar-n)}}
 .cap-wrap{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
 code.c{font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace;color:var(--strong);letter-spacing:.02em}
 code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}

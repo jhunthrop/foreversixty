@@ -112,6 +112,12 @@ data class ActivityRow(
     @SerialName("read") val read: Boolean,
     /** The row's icon, a name under /data/{build}/icons, always sent, as the app mocks draw them: loot.awarded the item's; raid kinds and report.ready the instance's (inv_misc_head_dragon_black for Onyxia's Lair, inv_misc_book_09 for one with none); sim.finished inv_misc_pocketwatch_01; bis.changed and tier.moved inv_misc_book_09; guildsim.passed the passer's spec icon (ability_warrior_innerrage for a Fury warrior). Any other row, and rows written before icons, its group's: raids inv_misc_book_09, gear inv_misc_bag_10, logs inv_misc_book_11, ladder inv_misc_pocketwatch_01, tiers inv_misc_book_09, officer inv_scroll_08, account inv_misc_gear_01. */
     @SerialName("icon") val icon: String,
+    /** The body styled as the feed's rows are (names in class colour, items with quality and id, strong figures); its texts joined are the body. Absent on a row that has only the plain body: loot.awarded and guildsim.passed carry it. */
+    @SerialName("segments") val segments: List<FeedSegment>? = null,
+    /** The class slug of the other player the row is about (guildsim.passed's passer); absent otherwise. */
+    @SerialName("crest") val crest: String? = null,
+    /** The row's number when it has one: sim.finished's DPS, guildsim.passed's figure. Absent otherwise. */
+    @SerialName("figure") val figure: Double? = null,
 )
 
 @Serializable
@@ -3088,6 +3094,10 @@ data class ReadyItem(
     @SerialName("state") val state: String,
     @SerialName("title") val title: String,
     @SerialName("line") val line: String,
+    /** The item the line is about: the flask or food in the bags, the attunement item, the unenchanted slot's item. Absent when it names none. */
+    @SerialName("item_id") val itemId: Int? = null,
+    /** That item's icon, a name under /data/{build}/icons; absent when the data has none (consumables). */
+    @SerialName("icon") val icon: String? = null,
     @SerialName("where") val whereToGet: ReadyWhere? = null,
 )
 

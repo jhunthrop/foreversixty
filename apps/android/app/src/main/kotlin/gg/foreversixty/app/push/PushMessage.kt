@@ -66,11 +66,14 @@ object PushLanding {
     private val UNANSWERED_KINDS = setOf("raid.short", "roster.pending", "raid.late_change")
 
     fun of(message: PushMessage): DeepLink? {
+        val linked = message.link?.let(DeepLink::parse)
         message.raid?.let { (guild, raid) ->
             // An officer's raid push opens the page filtered to Not answered (spec 2026-11-08 F3).
             val view = RAID_VIEW_UNANSWERED.takeIf { message.kind in UNANSWERED_KINDS }
-            return DeepLink.Raid(guild, raid, view = view)
+            // The ids win; the server's app link still says what to press (`state=`, `spec=ask`).
+            val asks = linked as? DeepLink.Raid
+            return DeepLink.Raid(guild, raid, spec = asks?.spec, state = asks?.state, view = view)
         }
-        return message.link?.let(DeepLink::parse)
+        return linked
     }
 }

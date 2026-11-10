@@ -162,7 +162,7 @@ object PaperdollLayout {
     val columnGap = 8.dp
     val rowGap = 4.dp
     val cellHeight = 48.dp
-    val ground = Color(0xFF14171F)
+    val ground = FsColor.paperdollGround
     const val NAME_LINES = 3
     val name = ScaledType.meta.copy(fontWeight = ScaledType.bodyStrong.fontWeight, fontSize = 13.sp, lineHeight = 16.sp)
     val detail = ScaledType.meta.copy(fontSize = 12.sp, lineHeight = 15.sp)

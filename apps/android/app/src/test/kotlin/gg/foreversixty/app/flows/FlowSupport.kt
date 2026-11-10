@@ -22,7 +22,6 @@ import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.menu.LocalOpenMenu
 import gg.foreversixty.app.menu.LocalPortraitPainter
-import gg.foreversixty.app.menu.PortraitPainterSource
 import gg.foreversixty.app.menu.MenuFixtures
 import gg.foreversixty.app.model.GuildRaids
 import gg.foreversixty.app.model.RaidView
@@ -81,9 +80,14 @@ class EchoRaidService(private val live: RaidService = fixtureRaidService()) : Ra
 
     private val views = mutableMapOf<Long, RaidView>()
 
+    /** The guild raid list's reads: a load, a retry or a pull to refresh. */
+    var raidsReads: Int = 0
+        private set
+
     override suspend fun me() = if (offline) dropped() else live.me()
 
     override suspend fun raids(guild: Long): ApiResult<GuildRaids> {
+        raidsReads += 1
         if (offline) return dropped()
         return live.raids(guild).also { result ->
             if (result is ApiResult.Success) result.data.planned.orEmpty().forEach { views[it.id] = it }
@@ -154,22 +158,12 @@ fun FlowFrame(tab: ForeverTab, content: @Composable () -> Unit) {
                     LocalOpenMenu provides {},
                     LocalRaidIconBuild provides ActivityFixtures.BUILD,
                     LocalItemIconPainter provides gg.foreversixty.app.home.HomeFixtures.repoIcons,
-                    LocalPortraitPainter provides crestPortraits,
+                    LocalPortraitPainter provides MenuFixtures.repoPortraits,
                 ) { content() }
             }
         }
     }
 }
-
-/**
- * The repo's mock portraits, else the warrior crest the app draws for a portrait that fails to load:
- * the fixture character has no picture in the repo, and the network fallback would land at a random frame.
- */
-private val crestPortraits = PortraitPainterSource { url ->
-    MenuFixtures.repoPortraits.painter(url) ?: androidx.compose.ui.res.painterResource(requireNotNull(gg.foreversixty.app.common.crestOf(WARRIOR)))
-}
-
-private const val WARRIOR = "warrior"
 
 /** Longer than a Material ripple's press and fade (225 ms and 150 ms). */
 private const val RIPPLE_SETTLE_MS = 1_000L

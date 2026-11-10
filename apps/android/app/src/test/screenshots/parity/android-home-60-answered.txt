@@ -2,9 +2,10 @@ Open the menu
 Thandrel
 Level 60 Fury Warrior · Olympus XXVII
 Next upgrades
+13 upgrades · +157.6 DPS
 Gear ›
 Lionheart Helm
-Head · Blacksmithing
+Head · Blacksmithing · replaces Helm of Valor
 +14.5 DPS
 Don Julio's Band
 Finger · Stormpike Guard, needs revered
@@ -12,9 +13,13 @@ Finger · Stormpike Guard, needs revered
 Timbermaw Tunic
 Chest · Leatherworking
 +5.3 DPS
-Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%
+Blackcrow
+Best run · Blackrock Spire · 8%
++1.9 DPS
+Synced 2 h ago from the addon
 Onyxia's Lair · Wed 6 Jan, 8:00 pm CST
 You are In, as Thandrel, Damage
+Tanks 2/2 · Healers 5/8 · Damage 11/30
 In
 Late
 Bench

@@ -23,7 +23,8 @@ extension RootView {
                 open: { shell.open($0) },
                 signIn: { Task { await session.signIn(deviceName: UIDevice.current.name) } },
                 help: { openURL(AccountLinks.help) },
-                privacy: { openURL(AccountLinks.privacy) }
+                privacy: { openURL(AccountLinks.privacy) },
+                loadDevices: { [client = environment.client] in try? await client.send(.listDevices) }
             )
         )
         .environment(\.portraitSource, RemotePortraitSource.shared)

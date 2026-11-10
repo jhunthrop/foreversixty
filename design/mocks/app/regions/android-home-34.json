@@ -40,17 +40,17 @@
     14,
     116,
     384,
-    292
+    325
    ],
    "inventory": {
     "row": 4,
-    "image": 3
+    "image": 4
    }
   },
   "section-new-for-you": {
    "box": [
     14,
-    428,
+    461,
     384,
     232
    ],

@@ -24,14 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextLinkStyles
-import androidx.compose.ui.text.withLink
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
@@ -40,12 +40,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsRadius
+import gg.foreversixty.app.designsystem.FsSize
 import gg.foreversixty.app.designsystem.FsSpace
 import gg.foreversixty.app.designsystem.FsTarget
 import gg.foreversixty.app.designsystem.FsType
 import gg.foreversixty.app.designsystem.ParityItemKind
 import gg.foreversixty.app.designsystem.ScaledType
 import gg.foreversixty.app.designsystem.parityItem
+import gg.foreversixty.app.home.LARGE_TEXT_SCALE
 import gg.foreversixty.app.items.GameIconImage
 import gg.foreversixty.app.items.ItemIcon
 import gg.foreversixty.app.items.ItemLook
@@ -59,13 +61,17 @@ sealed interface FlowLead {
     /** A character: the class crest (rosters, the unanswered, the applicant's guildmates). */
     data class Crest(val className: String) : FlowLead
 
-    /** A checklist mark (Ready check): ticked, missing or a warning; a glyph, not an image. */
-    data class Check(val ok: Boolean, val miss: Boolean) : FlowLead
+    /**
+     * A checklist mark (Ready check): ticked, missing or a warning, a glyph; with [icon] the item the
+     * check names beside it (28, in the icon frame), when [build] is known.
+     */
+    data class Check(val ok: Boolean, val miss: Boolean, val icon: String? = null, val build: String? = null) : FlowLead
 }
 
 /**
  * One row (the mock's Row): an optional 40 lead, the title (15/20 bold), its line (13/18) and an optional
- * [meta] line under it, and a
+ * [meta] line under it ([styledSub] in place of [sub] for a line in colours), an optional [value]
+ * at the right in tabular figures (an Activity row's DPS), and a
  * trailing control that drops under the text at phone width. [slim] rows are 6 above and below and at
  * least 44 tall; others are 10. [unread] puts the gold dot in the gutter. A rule follows unless [last].
  */
@@ -82,6 +88,8 @@ fun FlowRow(
     onClick: (() -> Unit)? = null,
     subLink: FlowSubLink? = null,
     meta: String? = null,
+    styledSub: AnnotatedString? = null,
+    value: String? = null,
 ) {
     val unreadLabel = androidx.compose.ui.res.stringResource(gg.foreversixty.app.R.string.activity_unread)
     val tap = onClick?.let { Modifier.clickable(role = Role.Button, onClick = it) } ?: Modifier
@@ -113,12 +121,18 @@ fun FlowRow(
             Column(Modifier.weight(1f)) {
                 Text(title, style = FsType.item, color = titleColor)
                 if (subLink != null) {
-                    Text(subWithLink(sub, subLink), style = SUB, color = FsColor.muted)
+                    FlowLinkLine(sub, subLink, SUB, FsColor.muted, Modifier.fillMaxWidth())
+                } else if (styledSub != null) {
+                    Text(styledSub, style = SUB, color = FsColor.muted)
                 } else if (!sub.isNullOrBlank()) {
                     Text(sub, style = SUB, color = FsColor.muted)
                 }
                 // A third line in the same face (Activity's time: `8 h ago`, `6:02 pm`, `Tue`).
                 if (meta != null) Text(meta, style = SUB, color = FsColor.muted)
+            }
+            if (value != null) {
+                Spacer(Modifier.width(FsSpace.space3))
+                Text(value, style = VALUE, color = FsColor.strong, maxLines = 1)
             }
         }
         if (trail != null) Box(Modifier.padding(top = FsSpace.space2)) { trail() }
@@ -129,12 +143,24 @@ fun FlowRow(
 /** A gold link at the end of a row's line (`None in your bags · Auction house`), round 5's inline fix. */
 data class FlowSubLink(val label: String, val onClick: () -> Unit)
 
-/** A line ending in its gold [link] (`60 raid · Alliance · Change`), for a row's line or any lead line. */
-fun subWithLink(sub: String?, link: FlowSubLink) = buildAnnotatedString {
+/**
+ * A line ending in its gold [link] (`60 raid · Alliance · Change`), for a row's line or any lead line.
+ * The whole line is the control (spec 3.3's padded link): a 13 px link keeps its look and the layout
+ * keeps the line's height, while Compose's minimum touch target takes the tap 48 dp tall around it.
+ */
+@Composable
+fun FlowLinkLine(sub: String?, link: FlowSubLink, style: TextStyle, color: Color, modifier: Modifier = Modifier) {
+    Text(
+        subWithLink(sub, link.label),
+        style = style,
+        color = color,
+        modifier = modifier.clickable(role = Role.Button, onClickLabel = link.label, onClick = link.onClick),
+    )
+}
+
+private fun subWithLink(sub: String?, label: String) = buildAnnotatedString {
     if (!sub.isNullOrBlank()) append("$sub · ")
-    withLink(LinkAnnotation.Clickable(link.label, TextLinkStyles(SpanStyle(color = FsColor.gold, fontWeight = FontWeight.SemiBold))) { link.onClick() }) {
-        append(link.label)
-    }
+    withStyle(SpanStyle(color = FsColor.gold, fontWeight = FontWeight.SemiBold)) { append(label) }
 }
 
 @Composable
@@ -157,8 +183,13 @@ private fun LeadImage(lead: FlowLead) {
                 else -> CHECK_WARN to FsColor.gold
             }
             // The mark on its filled disc (round 5, mock m-android-raid): green, red or amber, the glyph dark.
-            Box(Modifier.size(CHECK).background(color, CircleShape), contentAlignment = Alignment.Center) {
-                Text(mark, style = CHECK_TEXT, color = FsColor.bg)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(FsSpace.space2)) {
+                Box(Modifier.size(CHECK).background(color, CircleShape), contentAlignment = Alignment.Center) {
+                    Text(mark, style = CHECK_TEXT, color = FsColor.bg)
+                }
+                if (lead.icon != null && lead.build != null) {
+                    ItemIcon(lead.icon, null, lead.build, FsSize.icon28, Modifier.parityItem(ParityItemKind.Image))
+                }
             }
         }
     }
@@ -191,18 +222,26 @@ fun FlowItemRow(
     ) {
         ItemIcon(look.icon, look.quality, build, LEAD, Modifier.parityItem(ParityItemKind.Image))
         Spacer(Modifier.width(FsSpace.space3))
+        // From 1.5x a Row's trail moves under its body (spec 3.2), so the name keeps the row's width.
+        val gainUnder = LocalDensity.current.fontScale >= LARGE_TEXT_SCALE
         Column(Modifier.weight(1f)) {
             Text(look.name.orEmpty(), style = FsType.item, color = ItemQuality(look.quality).text)
             Text(source, style = SUB, color = FsColor.muted)
+            if (gain != null && gainUnder) ItemGain(gain, unit, gainNote, Alignment.Start)
         }
-        if (gain != null) {
+        if (gain != null && !gainUnder) {
             Spacer(Modifier.width(FsSpace.space3))
-            // The gain's basis sits under it at the right (the item sheet's `over your worn`).
-            Column(horizontalAlignment = Alignment.End) {
-                Text(gainText(gain, unit), style = FsType.figureSm, color = FsColor.strong)
-                if (gainNote != null) Text(gainNote, style = SUB, color = FsColor.muted)
-            }
+            ItemGain(gain, unit, gainNote, Alignment.End)
         }
+    }
+}
+
+/** The gain and its basis under it (the item sheet's `over your worn`). */
+@Composable
+private fun ItemGain(gain: String, unit: String?, note: String?, align: Alignment.Horizontal) {
+    Column(horizontalAlignment = align) {
+        Text(gainText(gain, unit), style = FsType.figureSm, color = FsColor.strong)
+        if (note != null) Text(note, style = SUB, color = FsColor.muted)
     }
 }
 
@@ -247,23 +286,33 @@ fun FlowButton(
 /**
  * A choice chip (round 5, spec Mobile): the rule's outline, the selected one filled in the teal edge as a
  * selected segment is. Late's minutes (48 tall) and Activity's filters ([minHeight] 36, 48 to the touch).
+ * Not [enabled] it takes [FlowSegmented]'s quiet colours.
  */
 @Composable
-fun FlowChip(label: String, on: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, minHeight: Dp = FsTarget.min, role: Role = Role.Button) {
+fun FlowChip(
+    label: String,
+    on: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    minHeight: Dp = FsTarget.min,
+    role: Role = Role.Button,
+    enabled: Boolean = true,
+) {
     val shape = RoundedCornerShape(CHIP_RADIUS)
+    val colors = ChoiceColors.of(enabled)
     Box(
         modifier
             .heightIn(min = minHeight)
             .parityItem(ParityItemKind.Button)
             .clip(shape)
-            .background(if (on) FsColor.tealEdge else Color.Transparent, shape)
-            .border(1.dp, FsColor.rule, shape)
-            .clickable(role = role, onClick = onClick)
+            .background(if (on) colors.selected else Color.Transparent, shape)
+            .border(1.dp, colors.edge, shape)
+            .clickable(enabled = enabled, role = role, onClick = onClick)
             .semantics { selected = on }
             .padding(horizontal = FsSpace.space4),
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, style = ScaledType.segment, color = FsColor.strong, maxLines = 1)
+        Text(label, style = ScaledType.segment, color = colors.text, maxLines = 1)
     }
 }
 
@@ -288,6 +337,12 @@ fun FlowWideButton(label: String, primary: Boolean, onClick: () -> Unit) {
 fun FlowLink(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Text(text, style = FsType.bodyStrong.copy(lineHeight = 24.sp), color = FsColor.gold, modifier = modifier.clickable(role = Role.Button, onClick = onClick))
 }
+
+/** The small chip's height (Activity's filters, Home's Late minutes); Compose takes the tap 48 tall. */
+val FLOW_CHIP_SMALL: Dp = 36.dp
+
+/** A row's trailing figure (iOS PanelRow's value): 15/20 semibold in tabular figures. */
+private val VALUE = FsType.bodyStrong.copy(lineHeight = 20.sp, fontFeatureSettings = "tnum")
 
 /** The row's line (`.row .sub`, 13/18). */
 val SUB = FsType.small.copy(lineHeight = 18.sp)

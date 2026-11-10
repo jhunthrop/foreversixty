@@ -415,6 +415,15 @@
         <item quantity="one">Last raid: 1 piece</item>
         <item quantity="other">Last raid: %1$d pieces</item>
     </plurals>
+    <string name="raid_pages_lastNight">Last: %1$s, %2$s, %3$s</string>
+    <plurals name="raid_pages_kills">
+        <item quantity="one">1 kill</item>
+        <item quantity="other">%1$d kills</item>
+    </plurals>
+    <plurals name="raid_pages_wipes">
+        <item quantity="one">1 wipe</item>
+        <item quantity="other">%1$d wipes</item>
+    </plurals>
     <string name="raid_pages_simsRank" tools:ignore="PluralsCandidate">#%1$d of %2$d in guild sims</string>
     <string name="raid_noRaid">No raid planned yet. Your officers plan raids on the site; a push tells you the moment one is posted.</string>
     <string name="raid_needsYou">Needs you</string>
@@ -642,6 +651,8 @@
     <string name="push_action_decline">Decline</string>
     <string name="push_late_question">How late?</string>
     <string name="push_late_minutes" tools:ignore="PluralsCandidate">%1$d min</string>
+    <string name="push_applicant_declined">Application declined</string>
+    <string name="push_applicant_failed">Open the application to answer it.</string>
     <string name="push_group_raids">Raids</string>
     <string name="push_group_raids_line">Posted, moved, your answer due, raid night</string>
     <string name="push_group_gear">Gear and sims</string>
@@ -669,9 +680,13 @@
     <string name="menu_character_line" tools:ignore="PluralsCandidate">%1$s · %2$d</string>
     <string name="menu_character_lineGuild" tools:ignore="PluralsCandidate">%1$s · %2$d · %3$s</string>
     <string name="menu_character_main">Main</string>
+    <string name="menu_character_lineRank" tools:ignore="PluralsCandidate">%1$s · %2$d · %3$s</string>
+    <string name="menu_character_itemLevel" tools:ignore="PluralsCandidate">item level %1$d</string>
+    <string name="menu_syncError">Battle.net refresh failed</string>
     <string name="menu_open">Open menu</string>
     <string name="menu_title">Menu</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="menu_refreshFailed">Could not refresh just now. Try again.</string>
     <string name="menu_switch">Switch character</string>
     <string name="menu_lowLevel_show" tools:ignore="PluralsCandidate">Show low-level characters (%1$d)</string>
     <string name="menu_lowLevel_hide">Hide low-level characters</string>
@@ -697,6 +712,7 @@
     <string name="menu_plan">Plan</string>
     <string name="menu_devices">Devices</string>
     <string name="menu_devices_line" tools:ignore="PluralsCandidate">%1$d signed in</string>
+    <string name="menu_devices_lineNewest" tools:ignore="PluralsCandidate">%1$d signed in · newest %2$s</string>
     <string name="menu_offline">Offline data</string>
     <string name="menu_offline_line">%1$s on this phone</string>
     <string name="menu_settings">Settings</string>
@@ -722,7 +738,7 @@
     <string name="notifications_discord">Discord</string>
     <string name="notifications_officerDms">Let officers DM me on Discord</string>
     <string name="notifications_officerDmsLine">When you have not answered a raid; off, they mention you in the channel</string>
-    <string name="gear_onList" tools:ignore="PluralsCandidate">%1$d of %2$d slots on the list</string>
+    <string name="gear_onList" tools:ignore="PluralsCandidate">%1$d of %2$d slots match the list</string>
     <string name="gear_change">Change</string>
     <string name="gear_whereTonight">Where to go tonight</string>
     <string name="gear_everySlot">Every slot</string>
@@ -731,6 +747,9 @@
     <string name="gear_where_boss">%1$s · %2$s</string>
     <string name="gear_where_ask">%1$s · ask a %2$s</string>
     <string name="gear_where_rep">%1$s, needs %2$s</string>
+    <string name="gear_where_figure">%1$s · %2$s %3$s</string>
+    <string name="gear_header_gain">%1$s %2$s from %3$s</string>
+    <string name="gear_header_synced">synced %1$s</string>
     <string name="gear_crafter_blacksmithing">blacksmith</string>
     <string name="gear_crafter_leatherworking">leatherworker</string>
     <string name="gear_crafter_tailoring">tailor</string>
@@ -1673,6 +1692,10 @@
     <string name="home_upgrades_gear">Gear ›</string>
     <string name="home_bestRun">Best run: %1$s, %2$s %3$s</string>
     <string name="home_bestRun_chance">Best run: %1$s, %2$s %3$s, %4$s</string>
+    <string name="home_bestRun_row">Best run · %1$s</string>
+    <string name="home_upgrades_meta">%1$s · %2$s</string>
+    <string name="home_upgrades_replacesWorn">replaces %1$s</string>
+    <string name="home_answer_synced">Synced %1$s</string>
     <string name="home_raid_tonight">%1$s · %2$s tonight</string>
     <string name="home_raid_live">%1$s · %2$s in progress</string>
     <string name="home_raid_hours">hours</string>
@@ -1759,6 +1782,19 @@
     <string name="raid_tab_short" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
     <string name="raid_tab_andMore" tools:ignore="PluralsCandidate">%1$s and %2$d more</string>
     <string name="raid_tab_howLate">How late</string>
+    <string name="raid_tab_tallyShort" tools:ignore="PluralsCandidate">%1$s · %2$d short</string>
+    <string name="raid_tab_tallyCompact" tools:ignore="PluralsCandidate">%1$d/%2$d</string>
+    <string name="raid_tab_damageSplit" tools:ignore="PluralsCandidate">%1$d melee, %2$d ranged</string>
+    <string name="raid_tab_inviteSize" tools:ignore="PluralsCandidate">Invites %1$s · %2$d</string>
+    <string name="raid_tab_countBench" tools:ignore="PluralsCandidate">Bench %1$d</string>
+    <string name="raid_tab_countOut" tools:ignore="PluralsCandidate">Out %1$d</string>
+    <string name="raid_tab_countNotAnswered" tools:ignore="PluralsCandidate">%1$d not answered</string>
+    <plurals name="raid_tab_notSynced">
+        <item quantity="one">1 signed In has not synced this week</item>
+        <item quantity="other">%1$d signed In have not synced this week</item>
+    </plurals>
+    <string name="raid_tab_coverMissing">Missing %1$s</string>
+    <string name="raid_tab_coverShort" tools:ignore="PluralsCandidate">%1$s %2$d of %3$d</string>
     <string name="raid_answer_lateMinutes" tools:ignore="PluralsCandidate">Late · %1$d min</string>
     <string name="raid_na_title">Not answered</string>
     <string name="raid_na_all">All</string>

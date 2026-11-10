@@ -70,6 +70,7 @@ fun FlowPage(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
  * A tab root in the round-5 look (spec Mobile): the painted [band] behind [topBar] (and [head] on
  * Home's hero), then [notice] and the blocks on the ground, 16 under the band, 14 at the sides and 20
  * apart. Parity regions are measured from the bottom of [topBar], as the mocks' are from the nav bar.
+ * [page] carries the scroll a route keeps across a push and its pull to refresh (R12).
  */
 @Composable
 fun FlowBandPage(
@@ -77,20 +78,23 @@ fun FlowBandPage(
     band: BandKind = BandKind.Band,
     head: @Composable () -> Unit = {},
     notice: @Composable () -> Unit = {},
+    page: FlowPageState = FlowPageState(rememberScrollState()),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(Modifier.fillMaxSize().screenGround().verticalScroll(rememberScrollState())) {
-        Column(Modifier.fillMaxWidth().surfaceBand(kind = band)) {
-            topBar()
-            Spacer(Modifier.fillMaxWidth().height(0.dp).parityContent())
-            head()
+    FlowRefreshBox(page.refresh, Modifier.fillMaxSize().screenGround()) {
+        Column(Modifier.fillMaxSize().verticalScroll(page.scroll)) {
+            Column(Modifier.fillMaxWidth().surfaceBand(kind = band)) {
+                topBar()
+                Spacer(Modifier.fillMaxWidth().height(0.dp).parityContent())
+                head()
+            }
+            notice()
+            Column(
+                Modifier.fillMaxWidth().padding(start = BAND_PAGE_SIDE, end = BAND_PAGE_SIDE, top = FsSpace.space4, bottom = BAND_PAGE_BOTTOM),
+                verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
+                content = content,
+            )
         }
-        notice()
-        Column(
-            Modifier.fillMaxWidth().padding(start = BAND_PAGE_SIDE, end = BAND_PAGE_SIDE, top = FsSpace.space4, bottom = BAND_PAGE_BOTTOM),
-            verticalArrangement = Arrangement.spacedBy(FsSpace.space5),
-            content = content,
-        )
     }
 }
 

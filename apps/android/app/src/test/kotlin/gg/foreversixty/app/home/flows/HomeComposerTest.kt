@@ -60,9 +60,32 @@ class HomeComposerTest {
         val upgrades = blocks[0] as HomeBlock.Upgrades
         assertEquals(listOf("Lionheart Helm", "Greenhammer", "Band"), upgrades.rows.map { it.look.name })
         assertEquals("+14.5", upgrades.rows[0].gain)
-        assertEquals("Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%", upgrades.bestRun)
+        // Round 2: Best run is a row (the item, the dungeon and its chance, the gain).
+        val run = requireNotNull(upgrades.bestRun)
+        assertEquals("Blackcrow", run.look.name)
+        assertEquals("Best run · Blackrock Spire · 8%", run.source)
+        assertEquals("+1.9", run.gain)
         assertTrue(blocks[1] is HomeBlock.FindGuild)
         assertEquals(2, blocks.size)
+    }
+
+    @Test fun `the section meta counts the upgrades and their total, the stamp says when gear synced`() {
+        val full = home.copy(totalGain = 157.6, syncedAt = "2026-11-06T16:00:00Z", syncedFrom = "battlenet")
+        assertEquals("4 upgrades · +157.6 DPS", composer.upgradesMeta(full, "DPS"))
+        assertEquals("4 upgrades", composer.upgradesMeta(home, "DPS"))
+        assertEquals(true, composer.syncedStamp(full)?.startsWith("Synced 2"))
+        assertEquals(true, composer.syncedStamp(full.copy(syncedFrom = "addon"))?.endsWith("from the addon"))
+        assertNull(composer.syncedStamp(home))
+    }
+
+    @Test fun `an upgrade's line ends with its drop chance and the worn item it replaces`() {
+        val worn = gg.foreversixty.app.model.HomeWorn(id = 5, name = "Crown of Destruction", known = true, label = "Crown of Destruction")
+        val pick = HomePick(1, "Lionheart Helm", 4, "icon", 60, "Onyxia's Lair", dropChance = 4.2)
+        val upgrades = listOf(HomeUpgrade("head", "Head", pick, worn, 14.5, "+14.5 DPS", true))
+        val one = composer.blocks(
+            HomeInputs(listOf(HomeSection("upgrades")), home.copy(upgrades = upgrades), null, null, null, emptyList(), 0, null),
+        ).first() as HomeBlock.Upgrades
+        assertEquals("Head · Onyxia's Lair · 4% · replaces Crown of Destruction", one.rows.single().source)
     }
 
     @Test fun `the raid day card leaves the Best run line out`() {

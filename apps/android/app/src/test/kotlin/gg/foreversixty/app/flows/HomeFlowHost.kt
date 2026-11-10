@@ -30,6 +30,7 @@ import gg.foreversixty.app.raids.RecordingHaptics
 import gg.foreversixty.app.raids.clock
 import gg.foreversixty.app.raids.logic.NotificationPermission
 import gg.foreversixty.app.raids.logic.RaidsTabModel
+import gg.foreversixty.app.raids.flows.NextRaidSignup
 import gg.foreversixty.app.raids.logic.SignupController
 import gg.foreversixty.app.raids.resources
 import java.time.Instant
@@ -37,8 +38,8 @@ import kotlinx.coroutines.launch
 
 /**
  * Home's raid card as [gg.foreversixty.app.home.flows.HomeFlowContent] wires it, over a fake clock:
- * HomeFlowState over the Raid tab's model, one SignupController per next raid built exactly as the
- * route builds it (no onRaidChanged), and the route's private `homeView` card rule. HomeFlowContent
+ * HomeFlowState over the Raid tab's model, the route's [NextRaidSignup] for the next raid's
+ * controller, and the route's private `homeView` card rule (RaidCardWords.card). HomeFlowContent
  * itself cannot be hosted deterministically: it reads Instant.now() and ZoneId.systemDefault() and
  * needs a RaidsFeature, whose clock and service are fixed.
  */
@@ -48,9 +49,16 @@ class HomeFlow(
     val now: () -> Instant = { FlowTime.now },
 ) {
     val character: HomeCharacter = HomeCharacter.from(requireNotNull(RaidFixture.load(Me.serializer(), "me").mainCharacter))
-    private val tab = RaidsTabModel(service, MemoryRaidCache(), resources(), now)
+    val tab = RaidsTabModel(service, MemoryRaidCache(), resources(), now)
     val state = HomeFlowState(RaidDaySections, tab, null, now)
-    var controller: SignupController? by mutableStateOf(null)
+    val signup = NextRaidSignup(tab, now)
+    val controller: SignupController? get() = signup.controller
+
+    /** HomeFlowContent's load: the sections and raids, then the next raid's controller. */
+    suspend fun load(deps: SignupController.Dependencies) {
+        state.load(character)
+        signup.sync(deps)
+    }
 
     /** The raid-day sections: the card leads. */
     private object RaidDaySections : HomeFlowService {
@@ -64,11 +72,7 @@ class HomeFlow(
         val composer = HomeComposer(res, now(), clock().zone)
         val words = RaidCardWords(res, clock(), now())
         val guild = state.raidContent?.head?.name.orEmpty()
-        val card = state.nextRaid?.let { raid ->
-            val own = raid.signups.firstOrNull { it.own && it.characterKey == character.key }
-            val answer = controller?.takeIf { it.raid.id == raid.id }?.block(character.key)?.shown ?: words.ownAnswer(raid, character.key)
-            words.card(raid, guild, character.key, answer, lateOpen = own?.lateMinutes == null, badge = null)
-        }
+        val card = state.nextRaid?.let { words.card(it, guild, character.key, controller, null) }
         val inputs = HomeInputs(state.sections, null, null, card, null, emptyList(), 0, firstRaids = null)
         return HomeView.Blocks(composer.head(character), composer.blocks(inputs), ActivityFixtures.BUILD)
     }
@@ -78,22 +82,16 @@ class HomeFlow(
 @Composable
 fun HomeFlowRoot(flow: HomeFlow) {
     val scope = rememberCoroutineScope()
-    LaunchedEffect(flow) { flow.state.load(flow.character) }
-    // HomeFlowContent: one controller per raid, the Raid tab's, built in composition.
-    val raid = flow.state.nextRaid
-    val guild = flow.state.raidContent?.head
-    if (raid != null && guild != null && flow.controller?.raid?.id != raid.id) {
-        flow.controller = SignupController(
-            guild.id,
-            raid,
-            SignupController.Dependencies(flow.service, resources(), flow.haptics, NotificationPermission { false }, MemoryAskStore(), flow.now, scope, RaidFlow.HOLD),
-        )
+    val deps = remember(flow) {
+        SignupController.Dependencies(flow.service, resources(), flow.haptics, NotificationPermission { false }, MemoryAskStore(), flow.now, scope, RaidFlow.HOLD)
     }
+    LaunchedEffect(flow) { flow.load(deps) }
     val key = flow.character.key
     val actions = remember(flow) {
         HomeActions(
             onAnswer = { _, answer -> scope.launch { flow.controller?.press(key, answer) } },
             onLate = { _, minutes -> scope.launch { flow.controller?.pressLate(key, minutes) } },
+            onRetryAnswer = { scope.launch { flow.controller?.retry(key) } },
         )
     }
     HomeFlowScreen(flow.view(), actions) { CharacterBar(null) }

@@ -5,7 +5,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import gg.foreversixty.app.activity.ActivityFixtures
+import gg.foreversixty.app.home.flows.AnswerControl
 import gg.foreversixty.app.home.flows.HomeFixtures
+import gg.foreversixty.app.raids.logic.StatusLine
 import gg.foreversixty.app.items.LocalItemIconPainter
 import gg.foreversixty.app.home.flows.OfficerItems
 import gg.foreversixty.app.home.flows.RaidLiveModel
@@ -26,6 +28,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import gg.foreversixty.app.flows.TallyItem
 
 /** The Raid tab's mocked states (design/mocks/ws_app_flows.py `raid`, round 5 on Android) inside the tab shell. */
 @RunWith(AndroidJUnit4::class)
@@ -44,7 +47,7 @@ class RaidTabParityTest {
 
     @Test fun officer() = state("raid-officer", RaidTabFixtures.guild(officer = true), raid = 6)
 
-    @Test fun noRaid() = state("raid-no-raid", RaidTabFixtures.guild().copy(next = null, roles = emptyList(), ready = emptyList(), readyStamp = null))
+    @Test fun noRaid() = state("raid-no-raid", RaidTabFixtures.guild().copy(next = null, roles = emptyList(), foot = emptyList(), notes = null, ready = emptyList(), readyStamp = null))
 
     @Test fun live() = state("raid-live", RaidTabFixtures.live())
 
@@ -91,11 +94,25 @@ object RaidTabFixtures {
         GuildPageRow(GuildPage.Sims, "Guild sims", "You are #7 of 14 DPS"),
     )
 
+    /** A Who is coming row as the presenter builds it: the tally, the names in one class, the rest. */
+    private fun role(label: String, have: Int, want: Int, names: String, more: String? = null, split: String? = null) =
+        RoleLine(TallyItem(label, have, want), names.split(", ").map { RoleName(it, CLASS) }, more, split)
+
     private val coming = listOf(
-        RoleLine("Tanks", 2, 2, "Grunvald, Brakka"),
-        RoleLine("Healers", 5, 8, "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen · 3 short"),
-        RoleLine("Damage", 11, 30, "Thandrel, Kaelra, Thalrin and 8 more"),
+        role("Tanks", 2, 2, "Grunvald, Brakka"),
+        role("Healers", 5, 8, "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late · 15 min)"),
+        role("Damage", 11, 30, "Thandrel, Kaelra, Thalrin", " and 8 more", "5 melee, 6 ranged"),
     )
+
+    /** The lines under Who is coming: the other answers and what the comp misses; officers also see readiness. */
+    private fun foot(officer: Boolean) = listOfNotNull(
+        RoleFoot("Bench 1 · Out 3 · 14 not answered"),
+        RoleFoot("Missing Fortitude · Windfury 1 of 2", warn = true),
+        RoleFoot("4 signed In have not synced this week", warn = true).takeIf { officer },
+    )
+
+    private const val NOTES = "Bring fire resistance gear and flasks. Whelps go to the left wall, the tanks call the deep " +
+        "breath in voice; consumables check at 7:50 pm."
 
     private val ready = listOf(
         ReadyItem(ReadyTone.Ok, "Drakefire Amulet", "Attuned", null),
@@ -104,12 +121,15 @@ object RaidTabFixtures {
         ReadyItem(ReadyTone.Warn, "Boots not enchanted", "Enchant Boots: Greater Agility", "Where to get it"),
     )
 
-    private fun head(answer: SignupState, chip: String, lateMinutes: Int? = null) = HomeFixtures.raid(answer, lateOpen = answer == SignupState.Late).copy(
-        headLine = "8:00 pm CST · pull in 2 h 48 min",
-        who = "As Thandrel, Damage",
-        chip = chip,
-        lateMinutes = lateMinutes,
-    )
+    private fun head(answer: SignupState, chip: String, lateMinutes: Int? = null, control: AnswerControl = AnswerControl()) =
+        HomeFixtures.raid(answer, lateOpen = answer == SignupState.Late).copy(
+            headLine = "8:00 pm CST · pull in 2 h 48 min",
+            facts = "Invites 7:45 pm · 40",
+            who = "As Thandrel, Damage",
+            chip = chip,
+            lateMinutes = lateMinutes,
+            control = control,
+        )
 
     fun guild(officer: Boolean = false) = RaidTabView.Guild(
         guild = "Olympus XXVII",
@@ -118,21 +138,26 @@ object RaidTabFixtures {
         needsCount = 6,
         live = null,
         roles = coming,
+        foot = foot(officer),
+        notes = NOTES,
+        needsFirst = officer,
         ready = ready,
         readyStamp = "From your last log-out, 9 h ago",
         pages = pages,
     )
 
     /** F1 change the answer (mock m-android-signup): Late, 30 min chosen, the minutes open under the answers. */
-    fun signup() = guild().copy(next = head(SignupState.Late, "Late\u00a0·\u00a030\u00a0min", lateMinutes = 30))
+    fun signup() = guild().copy(next = head(SignupState.Late, "Late\u00a0·\u00a030\u00a0min", lateMinutes = 30, control = AnswerControl(status = StatusLine.Saved("Saved."))))
 
     fun live() = guild().copy(
+        foot = emptyList(),
+        notes = null,
         next = null,
         live = RaidLiveModel(41, "Olympus XXVII · Onyxia's Lair in progress", "Pulled 1 h 12 min ago · 18 in, 3 late · you are In as Thandrel, Damage"),
         roles = listOf(
-            RoleLine("Tanks", 2, 2, "Grunvald, Brakka"),
-            RoleLine("Healers", 5, 8, "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late\u00a0·\u00a015\u00a0min) · 3 short"),
-            RoleLine("Damage", 11, 30, "Thandrel, Kaelra, Thalrin and 8 more"),
+            role("Tanks", 2, 2, "Grunvald, Brakka"),
+            role("Healers", 5, 8, "Mirethil, Selka, Hollowmend, Aenwyn, Brightwen (Late\u00a0·\u00a015\u00a0min)"),
+            role("Damage", 11, 30, "Thandrel, Kaelra, Thalrin", " and 8 more", "5 melee, 6 ranged"),
         ),
     )
 
@@ -144,3 +169,6 @@ object RaidTabFixtures {
         ),
     )
 }
+
+/** The mock's Who is coming draws every name in one class colour. */
+private const val CLASS = "warrior"

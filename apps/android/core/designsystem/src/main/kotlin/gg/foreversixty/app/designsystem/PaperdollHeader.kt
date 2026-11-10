@@ -86,8 +86,9 @@ data class PaperdollListSlot(
  * character's [portrait], or the LX seal; the [title]; the set's [figure]) and the slots in two
  * columns on the panel. A tap on a filled slot calls [onSelect]. [icon] draws a slot's item icon
  * (the app's item icon), which sits in the 44 dp socket. [lead] is a line under the strip (Gear's
- * band, faction and Change). A name clamps to two lines; a gain never shares its line with a cut
- * slot word, it drops under it whole. iOS: `PaperdollHeader`.
+ * band, faction and Change). A name wraps and never truncates (spec 3.2), a third line only when its
+ * words need it; a gain never shares its line with a cut slot word, it drops under it whole. iOS:
+ * `PaperdollHeader`.
  */
 @Composable
 fun PaperdollHeader(
@@ -192,8 +193,6 @@ private fun Cell(
                     item.name,
                     style = TextStyle(fontFamily = FsFont.body, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, lineHeight = 16.sp),
                     color = item.quality,
-                    maxLines = NAME_LINES,
-                    overflow = TextOverflow.Ellipsis,
                 )
                 Sub(slot.label, item.detail, item.isGain)
             } else {
@@ -289,7 +288,6 @@ fun PaperdollMedallion(portrait: Painter?, size: Dp, ring: Boolean = false) {
 
 private val MEDALLION_SIZE = 40.dp
 private val MEDALLION_RING = 1.5.dp
-private const val NAME_LINES = 2
 private const val ONE_COLUMN_SCALE = 1.5f
 private const val NBSP = '\u00a0'
 private val CELL_SIZE = 44.dp

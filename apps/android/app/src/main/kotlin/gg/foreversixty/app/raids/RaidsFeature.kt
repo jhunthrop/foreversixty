@@ -29,6 +29,7 @@ import gg.foreversixty.app.guild.GuildExtrasRows
 import gg.foreversixty.app.guild.HistoryRoute
 import gg.foreversixty.app.guild.RosterRoute
 import gg.foreversixty.app.guild.logic.CalendarInput
+import gg.foreversixty.app.guild.logic.Loadable
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.navigation.RAID_VIEW_UNANSWERED
 import gg.foreversixty.app.model.RaidBadge
@@ -70,6 +71,11 @@ import gg.foreversixty.app.raids.flows.ApplicantRoute
 import gg.foreversixty.app.raids.flows.LiveRaidFlowService
 import gg.foreversixty.app.raids.flows.RaidFlowService
 import gg.foreversixty.app.raids.flows.RaidTabExtras
+import gg.foreversixty.app.raids.flows.NextRaidSignup
+import gg.foreversixty.app.raids.push.RaidPushPayload
+import gg.foreversixty.app.flows.FlowPageState
+import gg.foreversixty.app.flows.rememberFlowRefresh
+import androidx.compose.foundation.rememberScrollState
 import gg.foreversixty.app.raids.logic.RaidLinks
 import gg.foreversixty.app.home.flows.HomeFlowState
 import gg.foreversixty.app.model.AccountCharacter
@@ -124,7 +130,8 @@ class RaidsNavigator {
     fun open(link: DeepLink): Boolean {
         val destinations = when (link) {
             is DeepLink.Raid -> {
-                val press = if (link.spec == "ask") SignupState.In else SignupState.of(link.state)
+                // spec=ask presses the link's state once the spec is picked; without one, In (links.json).
+                val press = SignupState.of(link.state) ?: SignupState.In.takeIf { link.spec == RaidPushPayload.SPEC_ASK }
                 if (link.view == RAID_VIEW_UNANSWERED) {
                     listOf(RaidsDestination.NotAnswered(link.guild, link.raid))
                 } else {
@@ -247,7 +254,6 @@ fun RaidsRoute(
         )
     }
     val tab = remember(feature) { RaidsTabModel(feature.service, feature.cache, res, feature.now, connectivity = feature.connectivity) }
-    var next by remember { mutableStateOf<SignupController?>(null) }
     var iconBuild by remember { mutableStateOf<String?>(null) }
 
     val extras = feature.extras
@@ -259,31 +265,14 @@ fun RaidsRoute(
         scope.launch { extras.syncCalendar(CalendarInput(loaded.head.id, loaded.head.name, loaded.planned)) }
     }
 
-    val replaced: (gg.foreversixty.app.model.RaidView) -> Unit = { view ->
-        tab.replace(view)
-        syncCalendar()
-    }
-
-    fun syncNext() {
-        val content = (tab.state as? RaidsTabState.Loaded)?.content
-        val raid = content?.let { PlannedRaids(it.planned, feature.now()).next }
-        val current = next
-        next = when {
-            content == null || raid == null -> null
-            current != null && current.raid.id == raid.id -> current.also {
-                it.replace(raid)
-                it.offline = content.offlineSince != null
-            }
-            else -> SignupController(content.head.id, raid, deps).also {
-                it.offline = content.offlineSince != null
-                it.onRaidChanged = replaced
-            }
-        }
-    }
+    val signup = remember(feature) { NextRaidSignup(tab, feature.now) { syncCalendar() } }
+    val next = signup.controller
+    // The root keeps its place while a page is pushed over it and popped (Roster, a raid).
+    val rootScroll = rememberScrollState()
 
     suspend fun reload() {
         tab.load()
-        syncNext()
+        signup.sync(deps)
         syncCalendar()
         val loaded = (tab.state as? RaidsTabState.Loaded)?.content
         feature.refreshBadge(loaded?.head?.id)
@@ -292,6 +281,7 @@ fun RaidsRoute(
         if (extras != null && loaded != null) extras.roster(loaded.head.id).load()
     }
 
+    val refresh = rememberFlowRefresh { reload() }
     LaunchedEffect(feature) { iconBuild = feature.iconBuild() }
     LaunchedEffect(feature, characterKey) {
         tab.currentKey = characterKey
@@ -302,9 +292,11 @@ fun RaidsRoute(
     CompositionLocalProvider(LocalRaidIconBuild provides iconBuild) {
         when (val top = feature.navigator.stack.lastOrNull()) {
             null -> Column(Modifier.fillMaxSize().background(FsColor.bg)) {
-                val view = RaidTabPresenter(res, clock, feature.now()).view(tab.state, next, feature.badge, extras != null, feature.tabExtras)
+                val home = content?.let { extras?.roster(it.head.id)?.state as? Loadable.Loaded }?.value
+                val view = RaidTabPresenter(res, clock, feature.now()).view(tab.state, next, feature.badge, extras != null, feature.tabExtras.copy(home = home))
                 if (view != null) {
-                    RaidTabScreen(view, raidTabActions(feature, content, next, scope, uri::openUri, signIn), topBar = selector) {
+                    val actions = raidTabActions(feature, content, next, scope, uri::openUri, signIn)
+                    RaidTabScreen(view, actions, topBar = selector, page = FlowPageState(rootScroll, refresh)) {
                         content?.offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, feature.now()), content.stale, { scope.launch { reload() } }) }
                     }
                 } else {
@@ -332,7 +324,7 @@ fun RaidsRoute(
                 }
             }
             is RaidsDestination.Raid -> {
-                val model = remember(top) { RaidPageModel(top.guild, top.raid, deps, feature.cache, top.open, replaced, feature.connectivity) }
+                val model = remember(top) { RaidPageModel(top.guild, top.raid, deps, feature.cache, top.open, signup::replaced, feature.connectivity, characterKey ?: content?.character?.key) }
                 RaidPageScreen(
                     model = model,
                     clock = clock,
@@ -346,7 +338,7 @@ fun RaidsRoute(
                 )
             }
             is RaidsDestination.NotAnswered -> {
-                val model = remember(top) { NotAnsweredModel(top.guild, top.raid, feature.service, feature.flows, res, scope, HOLD, replaced) }
+                val model = remember(top) { NotAnsweredModel(top.guild, top.raid, feature.service, feature.flows, res, scope, HOLD, signup::replaced) }
                 NotAnsweredRoute(model, clock, content?.head?.name.orEmpty(), content?.head?.webUrl, iconBuild, uri::openUri) { feature.navigator.pop() }
             }
             is RaidsDestination.Applicant -> {
@@ -399,6 +391,7 @@ private fun raidTabActions(
         card = HomeActions(
             onAnswer = { _, state -> if (key != null) scope.launch { next?.press(key, state) } },
             onLate = { _, minutes -> if (key != null) scope.launch { next?.pressLate(key, minutes) } },
+            onRetryAnswer = { if (key != null) scope.launch { next?.retry(key) } },
             onRaid = { openRaid(it, false) },
             onReady = { openRaid(it, false) },
             onPreviewMention = { openRaid(it, true) },

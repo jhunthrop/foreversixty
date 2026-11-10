@@ -15,6 +15,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import gg.foreversixty.app.R
+import gg.foreversixty.app.MainActivity
 import gg.foreversixty.app.navigation.DeepLink
 import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.push.PushMessage
@@ -121,6 +122,36 @@ class RaidDeepLinkFlowTest {
     }
 
     @Test
+    fun `a spec=ask link from a Late press saves Late with the spec`() {
+        flow.service.raidOverride = RaidFixture.raid("guild.raid.ask-spec")
+        show()
+        openLink(DeepLink.Raid(FlowPlayer.GUILD, FlowPlayer.RAID, spec = "ask", state = "late"))
+        assertEquals(RaidOpenAction(SignupState.Late), (flow.navigator.stack.single() as RaidsDestination.Raid).open)
+        compose.onNodeWithText(resources().getString(R.string.spec_title).uppercase()).assertExists()
+        assertTrue(flow.service.requests.isEmpty())
+
+        compose.onNodeWithText("Restoration").performClick()
+        compose.waitUntil(SETTLE_MILLIS) { flow.service.requests.isNotEmpty() }
+        compose.settle(flow.service)
+        val request = flow.service.requests.single().second
+        assertEquals("late", request.state)
+        assertEquals("shaman-restoration", request.spec)
+        answer(SignupState.Late).assertIsSelected()
+    }
+
+    @Test
+    fun `a link answers for the session's character when it is on the raid`() {
+        flow.service.raidOverride = RaidFixture.raid("guild.raid.two-characters")
+        flow.currentKey = YELLFURY
+        show()
+        openLink(DeepLink.Raid(FlowPlayer.GUILD, FlowPlayer.RAID, state = "out"))
+        compose.waitUntil(SETTLE_MILLIS) { flow.service.requests.isNotEmpty() }
+        compose.settle(flow.service)
+        assertEquals(YELLFURY, flow.service.requests.single().first)
+        assertEquals("out", flow.service.requests.single().second.state)
+    }
+
+    @Test
     fun `a raid night link pushes the raid then the night, back pops each`() {
         show()
         openLink(DeepLink.RaidNight(FlowPlayer.GUILD, FlowPlayer.RAID))
@@ -154,16 +185,15 @@ class RaidDeepLinkFlowTest {
     }
 
     @Test
-    fun `the ask-spec button opens the raid page asking for the spec`() {
+    fun `the ask-spec button opens the raid page asking for the spec, with no receiver trampoline`() {
         shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
         val message = requireNotNull(PushMessage.parse(raidPush(RaidPushCategory.ASK_SPEC), null, null, collapse = null))
         PushNotifier.show(app, message)
 
         val button = postedNotification().actions.first()
-        assertEquals(RaidPushCategory.ACTION_ASK_SPEC, savedIntent(button.actionIntent).getStringExtra(RaidActionReceiver.EXTRA_ACTION))
-        RaidActionReceiver().onReceive(app, savedIntent(button.actionIntent))
-        val started = requireNotNull(shadowOf(app).nextStartedActivity) { "the ask-spec button opened nothing" }
-        val link = DeepLink.parse(requireNotNull(started.dataString))
+        // Android 12+: an action that opens the app is an activity PendingIntent itself.
+        assertEquals(MainActivity::class.java.name, savedIntent(button.actionIntent).component?.className)
+        val link = DeepLink.parse(requireNotNull(opened(button.actionIntent).dataString))
         assertEquals(DeepLink.Raid(FlowPlayer.GUILD, FlowPlayer.RAID, spec = "ask"), link)
         assertTrue(flow.navigator.open(requireNotNull(link)))
         assertEquals(RaidOpenAction(SignupState.In), (flow.navigator.stack.single() as RaidsDestination.Raid).open)
@@ -210,6 +240,9 @@ class RaidDeepLinkFlowTest {
 
     private companion object {
         const val FLOW = "raid-link"
+
+        /** The fixture account's second verified character on the raid, listed after the main. */
+        const val YELLFURY = "us/pvp/yellfury"
 
         /** The ongoing notification's countdown: 15 min to the invites. */
         const val LIVE_LEAD_SECONDS = 15L * 60

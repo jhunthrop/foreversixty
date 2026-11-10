@@ -27,9 +27,10 @@ Preview mention
 1 applicant
 Mirelle, Holy Priest 60, 2 min ago
 Next upgrades
+13 upgrades · +157.6 DPS
 Gear ›
 Lionheart Helm
-Head · Blacksmithing
+Head · Blacksmithing · replaces Helm of Valor
 +14.5 DPS
 Don Julio's Band
 Finger · Stormpike Guard, needs revered
@@ -37,6 +38,7 @@ Finger · Stormpike Guard, needs revered
 Timbermaw Tunic
 Chest · Leatherworking
 +5.3 DPS
+Synced 2 h ago from the addon
 New for you
 All activity (3) ›
 Unread

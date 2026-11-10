@@ -8,11 +8,15 @@ import gg.foreversixty.app.bis.BisRow
 import gg.foreversixty.app.gear.RunPick
 import gg.foreversixty.app.items.ItemLook
 import gg.foreversixty.app.model.HomeUpgrade
+import gg.foreversixty.app.model.CharacterHome
+import gg.foreversixty.app.auth.session.RelativeAge
+import gg.foreversixty.app.phrase
+import java.time.Instant
 import java.util.Locale
 import kotlin.math.roundToInt
 
-/** One Where to go tonight row: the place, what it gives, the best item's look as its lead. */
-data class GearWhereRow(val title: String, val line: String, val lead: ItemLook)
+/** One Where to go tonight row: the place, what it gives, the best item's look as its lead, `2 upgrades · +20.4 DPS`. */
+data class GearWhereRow(val title: String, val line: String, val lead: ItemLook, val figure: String? = null)
 
 /** One slot of the paperdoll's list: the list's pick (null when the list has none), its gain or Equipped. */
 data class GearSlotRow(
@@ -44,14 +48,16 @@ data class GearContent(
     val where: List<GearWhereRow>,
     val slots: List<GearSlotRow>,
     val unitWord: String,
+    /** `+157.6 DPS from 13 upgrades · synced 2 h ago · 2 gains not modelled yet`, under the band line. */
+    val header: String? = null,
 )
 
 /**
  * Builds Gear from the BiS list on screen, the character's measured upgrades (Home's answer, for the
  * same list) and the picks [gg.foreversixty.app.gear.WhereToGo] placed at their sources.
  */
-class GearComposer(private val res: Resources) {
-    fun content(list: BisList, faction: String, upgrades: List<HomeUpgrade>, picks: List<RunPick>): GearContent {
+class GearComposer(private val res: Resources, private val now: Instant = Instant.now()) {
+    fun content(list: BisList, faction: String, upgrades: List<HomeUpgrade>, picks: List<RunPick>, home: CharacterHome? = null): GearContent {
         val bySlot = upgrades.associateBy { it.slot }
         val slots = list.rows.map { row -> slotRow(row, bySlot[row.slot]) }
         val onList = res.getString(R.string.gear_onList, slots.count { it.worn }, list.rows.size)
@@ -64,7 +70,19 @@ class GearComposer(private val res: Resources) {
             where = where(picks, list),
             slots = slots,
             unitWord = res.getString(list.unit.word),
+            header = home?.let { header(it, res.getString(list.unit.word)) },
         )
+    }
+
+    /** The header line (round 2): the measured total and count, when the gear synced, the gains not modelled. */
+    fun header(home: CharacterHome, unit: String): String? {
+        val upgrades = res.getQuantityString(R.plurals.shared_home_upgradesCount, home.upgradeCount, home.upgradeCount)
+        val gain = home.totalGain?.takeIf { it > 0 }?.let { res.getString(R.string.gear_header_gain, "+" + BisListBuilder.figure(it), unit, upgrades) }
+        val synced = home.syncedAt?.let { runCatching { Instant.parse(it) }.getOrNull() }
+            ?.let { res.getString(R.string.gear_header_synced, RelativeAge.of(it, now).phrase(res)) }
+        val line = listOfNotNull(gain, synced).joinToString(SEPARATOR)
+        val notModelled = home.notModelledCount.takeIf { it > 0 }?.let { res.getQuantityString(R.plurals.home_answer_notModelled, it, it) }.orEmpty()
+        return (line + notModelled).removePrefix(SEPARATOR).ifBlank { null }
     }
 
     private fun slotRow(row: BisRow, upgrade: HomeUpgrade?): GearSlotRow {
@@ -105,8 +123,15 @@ class GearComposer(private val res: Resources) {
                     title = best.source.name,
                     line = whereLine(group),
                     lead = ItemLook(best.itemId, best.itemName, ref?.quality, ref?.icon),
+                    figure = whereFigure(group, res.getString(list.unit.word)),
                 )
             }
+    }
+
+    /** `2 upgrades · +20.4 DPS`: the slots a trip fills and their summed gain. */
+    private fun whereFigure(group: List<RunPick>, unit: String): String {
+        val count = res.getQuantityString(R.plurals.shared_home_upgradesCount, group.size, group.size)
+        return res.getString(R.string.gear_where_figure, count, "+" + BisListBuilder.figure(group.sumOf { it.gain }), unit)
     }
 
     private fun whereLine(group: List<RunPick>): String {

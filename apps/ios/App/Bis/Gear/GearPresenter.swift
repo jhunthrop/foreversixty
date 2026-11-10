@@ -1,3 +1,4 @@
+import Auth
 import Foundation
 import Models
 
@@ -15,6 +16,8 @@ struct GearInputs: Equatable, Sendable {
 /// file's (`WhereToGo`).
 struct GearPresenter {
     let context: BisContext
+    /// The synced stamp's clock.
+    var now = Date()
 
     func content(list: BisList, inputs: GearInputs) -> GearContent {
         let home = ownHome(inputs.home)
@@ -29,6 +32,7 @@ struct GearPresenter {
             figure: list.setFigure,
             unit: unit,
             facts: facts(slots: slots),
+            summary: home.flatMap { Self.summary($0, unit: unit, now: now) },
             tonight: tonight.compactMap { placeRow($0, refs: refs, unit: unit) },
             slots: slots
         )
@@ -52,6 +56,27 @@ struct GearPresenter {
     }
 
     static let separator = " · "
+
+    /// `+157.6 DPS from 13 upgrades · 2 gains not modelled yet · synced 2 h ago`: what the answer adds
+    /// up to, what it could not measure, and how old the gear it read is.
+    static func summary(_ home: CharacterHome, unit: String, now: Date) -> String? {
+        var line = ""
+        if home.upgradeCount > 0, let total = home.totalGain, total > 0 {
+            line = Copy.gearHeaderGain(
+                gain: ItemNumbers.signedTenths(total), unit: unit, upgrades: Copy.homeAnswerUpgrades(n: home.upgradeCount)
+            )
+        }
+        if home.notModelledCount > 0 {
+            // The key carries its own ` · ` lead; alone it starts the line.
+            let words = Copy.homeAnswerNotModelled(n: home.notModelledCount)
+            line += line.isEmpty ? String(words.drop { $0 == " " || $0 == "·" }) : words
+        }
+        if let synced = home.syncedAt {
+            let stamp = Copy.gearHeaderSynced(age: RelativeAge(from: synced, to: now).phrase)
+            line = line.isEmpty ? stamp : line + separator + stamp
+        }
+        return line.isEmpty ? nil : line
+    }
 
     /// `60 raid` for the raid list, the band's words otherwise.
     static func band(_ range: BisRange) -> String {
@@ -92,7 +117,17 @@ struct GearPresenter {
             sub: Self.placeSub(group, names: names),
             icon: ref?.icon,
             quality: ref?.item?.quality,
+            figure: Self.placeFigure(group, unit: unit),
             item: GearItemRef(itemID: top.itemID, slot: top.slot, gain: HomeGain(figure: ItemNumbers.signedTenths(top.gain), unit: unit))
+        )
+    }
+
+    /// `2 upgrades · +20.4 DPS`: the place's upgrades and their gains together.
+    static func placeFigure(_ group: WhereToGo.Group, unit: String) -> String? {
+        guard !group.entries.isEmpty else { return nil }
+        let total = group.entries.reduce(0) { $0 + $1.gain }
+        return Copy.gearWhereFigure(
+            upgrades: Copy.homeAnswerUpgrades(n: group.entries.count), gain: ItemNumbers.signedTenths(total), unit: unit
         )
     }
 

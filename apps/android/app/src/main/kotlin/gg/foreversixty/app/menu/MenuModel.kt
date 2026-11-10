@@ -34,6 +34,22 @@ data class MenuModel(
     }
 }
 
+/** The Battle.net stamp's Refresh: at rest, the call out, or the last one failed. */
+enum class MenuRefresh {
+    Idle,
+    Refreshing,
+    Failed,
+    ;
+
+    companion object {
+        /** Runs [refresh] (true when it read the account) with the stamp showing each step through [show]. */
+        suspend fun run(show: (MenuRefresh) -> Unit, refresh: suspend () -> Boolean) {
+            show(Refreshing)
+            show(if (refresh()) Idle else Failed)
+        }
+    }
+}
+
 /** The menu's rows that push a screen, under the tab the menu was opened on. */
 enum class MenuDestination {
     Guides,

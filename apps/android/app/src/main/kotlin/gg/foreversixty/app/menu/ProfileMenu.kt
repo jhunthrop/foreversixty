@@ -26,13 +26,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.account.AccountCopy
 import gg.foreversixty.app.designsystem.BrandButton
@@ -58,6 +59,8 @@ data class MenuLines(
     val notifications: String? = null,
     val plan: String? = null,
     val devices: Int? = null,
+    /** The most recently used device other than this one (round 2), for `3 signed in · newest Pixel 9`. */
+    val newestDevice: String? = null,
     val offlineData: String? = null,
     val version: String = "",
     /** The operator line's year: the clock's at runtime, fixed in the goldens. */
@@ -88,14 +91,17 @@ fun ProfileMenu(
     modifier: Modifier = Modifier,
     /** The low-level fold open at first (the menu-low capture). */
     lowLevelOpen: Boolean = false,
+    /** Where the Battle.net stamp's Refresh is: at rest, under way or failed. */
+    refresh: MenuRefresh = MenuRefresh.Idle,
 ) {
-    Column(modifier.verticalScroll(rememberScrollState()).parityContent()) {
+    // The status bar's inset sits outside the scroll, so nothing scrolls under the clock.
+    Column(modifier.windowInsetsPadding(WindowInsets.statusBars).verticalScroll(rememberScrollState()).parityContent()) {
         val you = model?.you
         if (model == null || you == null) {
             Band { SignedOutHead(actions.onSignIn) }
             Body { MenuSection(R.string.menu_tools) { ToolRows(MenuDestination.signedOutTools, actions.onOpen) } }
         } else {
-            Band { YouHead(you, model, actions.onRefresh) }
+            Band { YouHead(you, model, refresh, actions.onRefresh) }
             Body {
                 if (model.switchTo.isNotEmpty() || model.lowLevel.isNotEmpty()) SwitchSection(model, lowLevelOpen, actions.onSwitch)
                 MenuSection(R.string.menu_tools) { ToolRows(MenuDestination.tools, actions.onOpen) }
@@ -119,7 +125,6 @@ private fun Band(content: @Composable () -> Unit) {
         Modifier
             .fillMaxWidth()
             .surfaceBand()
-            .windowInsetsPadding(WindowInsets.statusBars)
             .padding(start = SIDE, end = SIDE, top = BAND_TOP, bottom = FsSpace.space3),
     ) { content() }
 }
@@ -131,39 +136,57 @@ private fun Body(content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun YouHead(you: AccountCharacter, model: MenuModel, onRefresh: () -> Unit) {
+private fun YouHead(you: AccountCharacter, model: MenuModel, refresh: MenuRefresh, onRefresh: () -> Unit) {
     Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD)) {
         Row(
             Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD_TITLE),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(FsSpace.space4),
         ) {
-            CharacterPortrait(you.avatarUrl, you.faction, CREST, className = you.className)
+            CharacterPortrait(you.avatarUrl, you.faction, CREST)
             Column(Modifier.weight(1f)) {
                 Text(you.name, style = NAME, color = classColor(you.className), modifier = Modifier.semantics { heading() })
                 Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.HEAD_META)) {
-                    Text(characterLine(you), style = FsType.small, color = FsColor.text)
+                    Text(headLine(you), style = FsType.small, color = FsColor.text)
                     if (model.isMain) MainTag()
                 }
             }
         }
         model.updated?.let { age ->
-            Text(
-                buildAnnotatedString {
-                    append(stringResource(R.string.menu_updated, AccountCopy.age(age)))
-                    append(" · ")
-                    withStyle(SpanStyle(color = FsColor.gold, fontWeight = FsType.bodyStrong.fontWeight)) { append(stringResource(R.string.menu_refresh)) }
-                },
-                style = STAMP,
-                color = FsColor.text,
-                modifier = Modifier
-                    .padding(top = FsSpace.space1)
-                    .heightIn(min = FsTarget.min)
-                    .wrapContentHeight(Alignment.CenterVertically)
-                    .clickable(role = Role.Button, onClick = onRefresh),
-            )
+            BattleNetStamp(stringResource(R.string.menu_updated, AccountCopy.age(age)), you.build?.syncError != null, refresh, onRefresh)
         }
     }
+}
+
+/**
+ * `Updated 11 d ago from Battle.net · Refresh` (spec section 3). A tap says so at once: `Refreshing
+ * from Battle.net` until the call returns, then the new stamp, or the error line under it. After a
+ * failed Battle.net refresh ([syncFailed], the build's `sync_error`) the stamp reads it in wipe red
+ * with Try again.
+ */
+@Composable
+private fun BattleNetStamp(updated: String, syncFailed: Boolean, refresh: MenuRefresh, onRefresh: () -> Unit) {
+    val stampModifier = Modifier
+        .padding(top = FsSpace.space1)
+        .heightIn(min = FsTarget.min)
+        .wrapContentHeight(Alignment.CenterVertically)
+        .semantics { liveRegion = LiveRegionMode.Polite }
+    if (refresh == MenuRefresh.Refreshing) {
+        Text(stringResource(R.string.shared_selector_refreshing), style = STAMP, color = FsColor.muted, modifier = stampModifier)
+        return
+    }
+    Text(
+        buildAnnotatedString {
+            if (syncFailed) withStyle(SpanStyle(color = FsColor.wipe)) { append(stringResource(R.string.menu_syncError)) } else append(updated)
+            append(STAMP_DOT)
+            val action = stringResource(if (syncFailed) R.string.common_tryAgain else R.string.menu_refresh)
+            withStyle(SpanStyle(color = FsColor.gold, fontWeight = FsType.bodyStrong.fontWeight)) { append(action) }
+        },
+        style = STAMP,
+        color = FsColor.text,
+        modifier = stampModifier.clickable(role = Role.Button, onClick = onRefresh),
+    )
+    if (refresh == MenuRefresh.Failed) Text(stringResource(R.string.menu_refreshFailed), style = STAMP, color = FsColor.wipe)
 }
 
 @Composable
@@ -235,7 +258,7 @@ private fun CharacterRow(character: AccountCharacter, last: Boolean, onSwitch: (
         CharacterPortrait(character.avatarUrl, character.faction, PORTRAIT, className = character.className)
         Column {
             Text(character.name, style = FsType.item, color = classColor(character.className))
-            Text(characterLine(character), style = SUB, color = FsColor.muted)
+            Text(switchLine(character), style = SUB, color = FsColor.muted)
         }
     }
     if (!last) FlowRule()
@@ -307,10 +330,29 @@ private fun FooterLink(@StringRes text: Int, onClick: () -> Unit) {
     )
 }
 
+/** The head's line (round 2): `Fury Warrior · 58 · Officer`, the guild rank in place of the guild. */
+@Composable
+private fun headLine(character: AccountCharacter): String {
+    val rank = character.guild?.rank?.takeIf { it.isNotBlank() } ?: return characterLine(character)
+    val kind = kindOf(character) ?: return characterLine(character)
+    val level = character.level ?: return characterLine(character)
+    return stringResource(R.string.menu_character_lineRank, kind, level, AccountCopy.words(rank))
+}
+
+/** A switch row's line: the character's line, then `item level 62` when Battle.net reports it. */
+@Composable
+private fun switchLine(character: AccountCharacter): String {
+    val itemLevel = character.itemLevel?.let { stringResource(R.string.menu_character_itemLevel, it) }
+    return listOfNotNull(characterLine(character), itemLevel).joinToString(LINE_DOT)
+}
+
+private fun kindOf(character: AccountCharacter): String? =
+    listOfNotNull(character.spec, character.className).joinToString(" ") { AccountCopy.words(it) }.takeIf { it.isNotEmpty() }
+
 /** `Holy Paladin · 60 · Olympus XXVII`: spec and class, level, guild, each when known. */
 @Composable
 private fun characterLine(character: AccountCharacter): String = listOfNotNull(
-    listOfNotNull(character.spec, character.className).joinToString(" ") { AccountCopy.words(it) }.takeIf { it.isNotEmpty() },
+    kindOf(character),
     character.level?.toString(),
     character.guild?.name,
 ).joinToString(LINE_DOT)
@@ -335,11 +377,16 @@ private fun labelOf(destination: MenuDestination): Int = when (destination) {
 private fun accountLine(destination: MenuDestination, lines: MenuLines): String? = when (destination) {
     MenuDestination.Notifications -> lines.notifications
     MenuDestination.Plan -> lines.plan
-    MenuDestination.Devices -> lines.devices?.let { stringResource(R.string.menu_devices_line, it) }
+    MenuDestination.Devices -> lines.devices?.let { count ->
+        lines.newestDevice?.let { stringResource(R.string.menu_devices_lineNewest, count, it) } ?: stringResource(R.string.menu_devices_line, count)
+    }
     MenuDestination.OfflineData -> lines.offlineData?.let { stringResource(R.string.menu_offlineData_line, it) }
     MenuDestination.Settings -> stringResource(R.string.menu_settings_line)
     else -> null
 }
+
+/** The Battle.net stamp's break before Refresh: plain spaces, so it can wrap there at large text. */
+private const val STAMP_DOT = " · "
 
 /** The line's separator, held to the word before it so a wrap never starts a line on a dot. */
 private const val LINE_DOT = " · "
@@ -353,13 +400,13 @@ private val SECTION_TOP = 14.dp
 private val SECTION_BOTTOM = 6.dp
 
 /** You's name: the display face at 26 (the mock's `.you h2`). */
-private val NAME = FsType.title.copy(fontSize = 26.sp, lineHeight = 32.sp, letterSpacing = 0.sp)
+private val NAME = FsType.drawerName
 
 /** A section's title: the display face at 16 (`.drawer h3`). */
-private val SECTION = FsType.section.copy(fontSize = 16.sp, lineHeight = 22.sp)
+private val SECTION = FsType.drawerSection
 
 /** The stamp under You (12, `Updated 2 h ago from Battle.net · Refresh`). */
-private val STAMP = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp)
+private val STAMP = FsType.figureUnit
 
 /** The Main tag (12 semibold). */
-private val TAG = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FsType.bodyStrong.fontWeight)
+private val TAG = FsType.tag

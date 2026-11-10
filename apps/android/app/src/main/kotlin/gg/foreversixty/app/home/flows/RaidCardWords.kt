@@ -12,6 +12,7 @@ import gg.foreversixty.app.phrase
 import gg.foreversixty.app.raids.logic.RaidClock
 import gg.foreversixty.app.raids.logic.RaidFacts
 import gg.foreversixty.app.raids.logic.ShortRole
+import gg.foreversixty.app.raids.logic.SignupController
 import gg.foreversixty.app.raids.logic.SignupState
 import java.time.Duration
 import java.time.Instant
@@ -22,6 +23,20 @@ import java.time.ZoneId
  * and an officer's open items. Formats only; the raid view and the badge are the server's.
  */
 class RaidCardWords(private val res: Resources, private val clock: RaidClock, private val now: Instant) {
+    /**
+     * Home's and the Raid tab's card for [raid]: while [controller] holds the raid, its answer (drawn at
+     * once), the minutes its last write stored and its live state; else the raid's own sign-up. Late's
+     * minutes stay open under the answers while Late is the answer, the chosen one selected (F1).
+     */
+    fun card(raid: RaidView, guild: String, characterKey: String?, controller: SignupController?, badge: RaidBadge?): RaidCardModel {
+        val held = controller?.takeIf { it.raid.id == raid.id }
+        val view = held?.raid ?: raid
+        val answer = characterKey?.let { held?.block(it)?.shown } ?: ownAnswer(view, characterKey)
+        val control = held?.let { c -> characterKey?.let { AnswerControl(c.segmentsEnabled(it), c.answerStatus(it), c.canRetry(it)) } }
+        val card = card(view, guild, characterKey, answer, lateOpen = true, badge = badge, lateMinutes = ownLateMinutes(view, characterKey))
+        return control?.let { card.copy(control = it) } ?: card
+    }
+
     /**
      * [answer] is the shown answer (the controller's, else the raid's own sign-up), [lateMinutes] how
      * late a Late answer said; [badge] an officer's counts.
@@ -68,12 +83,13 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
             me = me,
             answer = answer,
             lateOpen = lateOpen && answer == SignupState.Late,
-            tally = tally(raid),
+            tally = roleTally(raid),
             ready = null,
             officer = badge?.takeIf { it.officer }?.let { officer(raid, it) },
             zone = raid.zoneName,
             place = res.getString(R.string.home_raid_place, guild, whenText),
             headLine = headLine(facts.startsAt, zone, whenText),
+            facts = headFacts(raid, zone),
             who = who?.let { res.getString(R.string.raid_tab_as, it.name, role) },
             chip = said,
             lateMinutes = minutes,
@@ -150,14 +166,22 @@ class RaidCardWords(private val res: Resources, private val clock: RaidClock, pr
 
     private fun counts(raid: RaidView) = res.getString(R.string.home_raid_counts, raid.counts.signedIn, raid.counts.late)
 
-    private fun tally(raid: RaidView): List<TallyItem> {
-        val target = raid.compTarget ?: return emptyList()
+    /** Tanks, healers and damage against the comp target (none without one): the one tally model (S6). */
+    fun roleTally(raid: RaidView): List<TallyItem> {
+        val target = raid.compTarget
         val c = raid.counts
         return listOf(
-            TallyItem(res.getString(R.string.raid_group_tanks), c.tanks, target.tanks),
-            TallyItem(res.getString(R.string.raid_group_healers), c.healers, target.healers),
-            TallyItem(res.getString(R.string.raid_group_damage), c.melee + c.ranged, target.melee + target.ranged),
+            TallyItem(res.getString(R.string.raid_group_tanks), c.tanks, target?.tanks),
+            TallyItem(res.getString(R.string.raid_group_healers), c.healers, target?.healers),
+            TallyItem(res.getString(R.string.raid_group_damage), c.melee + c.ranged, target?.let { it.melee + it.ranged }),
         )
+    }
+
+    /** `Invites 7:45 pm · 40` (spec 4.2 head facts); null without an invite time or a size. */
+    fun headFacts(raid: RaidView, zone: ZoneId): String? {
+        val invite = raid.inviteAt?.let { runCatching { Instant.parse(it) }.getOrNull() } ?: return null
+        val size = raid.size ?: return null
+        return res.getString(R.string.raid_tab_inviteSize, clock.guildClock(invite, zone), size)
     }
 
     /** `5 have not answered, 2 of them healers`, `Healers short by 3`, `1 applicant`. */

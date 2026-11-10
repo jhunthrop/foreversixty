@@ -88,12 +88,21 @@ class SessionManager(
     fun currentCharacter(phase: SessionPhase = this.phase.value, pickedKey: String? = mutablePicked.value): AccountCharacter? =
         phase.me?.let { CharacterSelection.current(it, pickedKey) }
 
-    /** Reads `GET /v1/me`. A 401 ends the session; any other failure keeps what is on screen. */
-    suspend fun refresh() {
-        if (!phase.value.isSignedIn) return
-        when (val result = client.send(ApiEndpoints.getMe())) {
-            is ApiResult.Success -> if (phase.value.isSignedIn) mutablePhase.value = SessionPhase.SignedIn(result.data)
-            is ApiResult.Failure -> if ((result.error as? ApiError.Server)?.isUnauthorized == true) tokenDied()
+    /**
+     * Reads `GET /v1/me`. A 401 ends the session; any other failure keeps what is on screen. True when
+     * the account was read (the menu's Refresh says whether it worked).
+     */
+    suspend fun refresh(): Boolean {
+        if (!phase.value.isSignedIn) return false
+        return when (val result = client.send(ApiEndpoints.getMe())) {
+            is ApiResult.Success -> {
+                if (phase.value.isSignedIn) mutablePhase.value = SessionPhase.SignedIn(result.data)
+                true
+            }
+            is ApiResult.Failure -> {
+                if ((result.error as? ApiError.Server)?.isUnauthorized == true) tokenDied()
+                false
+            }
         }
     }
 

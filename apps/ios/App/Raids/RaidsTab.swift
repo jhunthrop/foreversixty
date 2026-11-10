@@ -92,6 +92,8 @@ final class RaidsRouter {
     /// Opens a raid link on a fresh stack, so back goes to the tab's root.
     func open(_ link: DeepLink) {
         switch link {
+        case let .raid(guild, raid, _, _, view) where view == RaidsRouter.unansweredView:
+            path = [.notAnswered(guild: guild, raid: raid)]
         case let .raid(guild, raid, spec, state, _):
             let press = spec == "ask" ? SignupState.signedIn : state.flatMap(SignupState.init)
             path = [.raid(guild: guild, raid: raid, roster: false, open: press.map(RaidOpenAction.init))]
@@ -110,6 +112,9 @@ final class RaidsRouter {
     func open(_ route: RaidsRoute) {
         path = [route]
     }
+
+    /// The raid link's `view=` that opens Not answered (links.json).
+    static let unansweredView = "unanswered"
 
     /// True for the links the Raids tab opens.
     static func handles(_ link: DeepLink) -> Bool {
@@ -150,7 +155,7 @@ struct RaidsTab: View {
             service: dependencies.service, cache: dependencies.cache, now: dependencies.now, connectivity: dependencies.connectivity
         ))
         _loader = State(initialValue: RaidRootLoader(service: dependencies.flow, raids: dependencies.service, now: dependencies.now))
-        _answers = State(initialValue: RaidAnswerModel(service: dependencies.service))
+        _answers = State(initialValue: RaidAnswerModel(service: dependencies.service, haptics: dependencies.haptics))
     }
 
     var body: some View {
@@ -184,8 +189,8 @@ struct RaidsTab: View {
             presenter: RaidFlowPresenter(now: dependencies.now(), clock: dependencies.clock),
             members: roster?.count,
             atCap: roster?.filter { $0.level == RaidFlowPresenter.maxLevel }.count,
-            answer: answers.pending,
-            lateOpen: answers.lateOpen
+            synced: roster.map { rows in Dictionary(rows.map { ($0.characterKey, $0.loggedRecently) }) { first, _ in first } },
+            answering: answers.state
         )
     }
 
@@ -196,6 +201,7 @@ struct RaidsTab: View {
 
     private func reload() async {
         await model.load()
+        if let content { answers.offline = content.offlineSince != nil }
         await loader.load(for: model.state)
         await refreshGuildExtras()
     }
@@ -227,6 +233,7 @@ struct RaidsTab: View {
             raid: NextRaidActions(
                 answer: { state in answer { key, raid, note in await answers.answer(state, guild: raid.0, raid: raid.1, key: key, note: note) } },
                 late: { minutes in answer { key, raid, note in await answers.late(minutes, guild: raid.0, raid: raid.1, key: key, note: note) } },
+                retry: { answer { key, raid, note in await answers.retry(guild: raid.0, raid: raid.1, key: key, note: note) } },
                 openRaid: { push { .raid(guild: $0, raid: $1.id, roster: false, open: nil) } },
                 openReady: { push { _, raid in .night(raid: raid.id) } },
                 previewMention: { push { .notAnswered(guild: $0, raid: $1.id) } },

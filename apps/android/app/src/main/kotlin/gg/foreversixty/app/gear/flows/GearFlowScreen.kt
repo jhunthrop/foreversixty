@@ -1,14 +1,15 @@
 package gg.foreversixty.app.gear.flows
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import gg.foreversixty.app.flows.FlowNote
+import gg.foreversixty.app.designsystem.FsSpace
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import gg.foreversixty.app.R
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.designsystem.FsType
@@ -28,7 +29,7 @@ import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.flows.FlowSection
 import gg.foreversixty.app.flows.FlowSkeleton
 import gg.foreversixty.app.flows.FlowSubLink
-import gg.foreversixty.app.flows.subWithLink
+import gg.foreversixty.app.flows.FlowLinkLine
 import gg.foreversixty.app.items.ItemIcon
 import gg.foreversixty.app.items.ItemQuality
 
@@ -56,7 +57,7 @@ fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, po
             slots = content.slots.map { it.listSlot(content.unitWord, equipped) },
             unit = content.unitWord,
             onSelect = { id -> content.slots.firstOrNull { it.slot == id }?.let(actions.onSlot) },
-            lead = { Lead(content.facts, actions.onChange) },
+            lead = { Lead(content.facts, content.header, actions.onChange) },
         ) { item ->
             val look = looks[item.id]
             ItemIcon(look?.icon, look?.quality, build, SOCKET_ICON, Modifier.parityItem(ParityItemKind.Image))
@@ -68,6 +69,7 @@ fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, po
                         row.title, row.line, FlowLead.Item(row.lead, build),
                         last = i == content.where.lastIndex,
                         onClick = { actions.onWhere(row) },
+                        meta = row.figure,
                     )
                 }
             }
@@ -75,15 +77,16 @@ fun GearFlowScreen(content: GearContent, build: String, actions: GearActions, po
     }
 }
 
-/** The line that names the list, `60 raid · Alliance · 4 of 17 slots on the list · Change`. */
+/**
+ * The line that names the list, `60 raid · Alliance · 4 of 17 slots match the list · Change`, and under
+ * it the measured [header] (`+157.6 DPS from 13 upgrades · synced 2 h ago`).
+ */
 @Composable
-private fun Lead(facts: String, onChange: () -> Unit) {
-    Text(
-        subWithLink(facts, FlowSubLink(stringResource(R.string.gear_change), onChange)),
-        style = LEAD,
-        color = FsColor.text,
-        modifier = Modifier.fillMaxWidth().parityRegion(ParityRegion.CONTROLS),
-    )
+private fun Lead(facts: String, header: String?, onChange: () -> Unit) {
+    Column(Modifier.fillMaxWidth().parityRegion(ParityRegion.CONTROLS)) {
+        FlowLinkLine(facts, FlowSubLink(stringResource(R.string.gear_change), onChange), LEAD, FsColor.text, Modifier.fillMaxWidth())
+        header?.let { FlowNote(it, Modifier.padding(top = FsSpace.space1)) }
+    }
 }
 
 /** A slot as the paperdoll's list draws it: the pick in its quality colour, its gain or Equipped. */
@@ -124,4 +127,4 @@ fun GearSignedOut(classes: List<Pair<String, String>>, onClass: (String) -> Unit
 private val SOCKET_ICON = 38.dp
 
 /** The list's lead line, 14 on 20 (the mock's `.pdl .lead`). */
-private val LEAD = FsType.small.copy(fontSize = 14.sp, lineHeight = 20.sp)
+private val LEAD = FsType.factLine

@@ -35,10 +35,22 @@ struct HomeGain: Equatable {
 
 struct HomeUpgradesContent: Equatable {
     let rows: [HomeUpgradeItem]
-    /// `Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%`; nil on raid day or with no dungeon pick.
-    let bestRun: String?
+    /// Best run as one row (the dungeon, its best drop, the gain and chance); nil on raid day or with no dungeon pick.
+    let bestRun: HomeBestRunRow?
     /// The answer's sentence when there are no rows (all slots match, no gear yet).
     let note: String?
+    /// The section's meta: `13 upgrades · +157.6 DPS` (round 2: Home's figures live here, not in the head).
+    var meta: String?
+    /// `Synced 2 h ago from the addon`, under the meta.
+    var stamp: String?
+}
+
+/// Best run (F5) as a row: `Blackrock Spire` over `Best run · Blackcrow · 8%`, the drop's icon, its gain.
+struct HomeBestRunRow: Equatable {
+    let place: String
+    let line: String
+    let icon: String?
+    let gain: HomeGain
 }
 
 /// The next raid as Home's card (raid day) or line (other days), and the Raid tab's card.
@@ -69,6 +81,14 @@ struct NextRaidContent: Equatable {
     var chip: String?
     /// How late a Late answer said it would be.
     var lateMinutes: Int?
+    /// The line under the answers (F1): `Saved.`, the refusal with Try again, or offline's sentence.
+    var status: StatusLine?
+    /// A write is out: the chosen answer is drawn, a second press waits.
+    var busy = false
+    /// Offline the answers disable (the status line says why).
+    var answersEnabled = true
+    /// The Raid tab head's facts: `Invites 7:45 pm · 40`.
+    var invites: String?
     let tally: [FSTally.Item]
     let ready: HomeLine?
     let officer: OfficerContent?

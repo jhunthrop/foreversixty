@@ -17,7 +17,6 @@ import gg.foreversixty.app.common.SavedAnswerStrip
 import gg.foreversixty.app.designsystem.FsColor
 import gg.foreversixty.app.home.flows.HomeActions
 import gg.foreversixty.app.menu.CharacterBar
-import gg.foreversixty.app.model.RaidView
 import gg.foreversixty.app.raids.MemoryAskStore
 import gg.foreversixty.app.raids.MemoryRaidCache
 import gg.foreversixty.app.raids.RaidsDestination
@@ -27,10 +26,14 @@ import gg.foreversixty.app.raids.clock
 import gg.foreversixty.app.raids.flows.RaidNightRoute
 import gg.foreversixty.app.raids.flows.RaidTabActions
 import gg.foreversixty.app.raids.flows.RaidTabExtras
+import gg.foreversixty.app.raids.flows.NextRaidSignup
+import androidx.compose.foundation.ScrollState
+import androidx.compose.runtime.CompositionLocalProvider
+import gg.foreversixty.app.common.LocalHaptics
+import androidx.compose.foundation.rememberScrollState
 import gg.foreversixty.app.raids.flows.RaidTabPresenter
 import gg.foreversixty.app.raids.flows.RaidTabScreen
 import gg.foreversixty.app.raids.logic.NotificationPermission
-import gg.foreversixty.app.raids.logic.PlannedRaids
 import gg.foreversixty.app.raids.logic.RaidNightModel
 import gg.foreversixty.app.raids.logic.RaidPageModel
 import gg.foreversixty.app.raids.logic.RaidsTabModel
@@ -45,7 +48,7 @@ import kotlinx.coroutines.launch
 
 /**
  * The Raids tab as [gg.foreversixty.app.raids.RaidsRoute] wires it, over a fake clock: the tab model,
- * the next raid's [SignupController] (the route's `syncNext`), the root's answer taps (the route's
+ * the next raid's [SignupController] (the route's [NextRaidSignup]), the root's answer taps (the route's
  * private `raidTabActions`) and the stack's Raid and Night pages. RaidsRoute itself cannot be hosted
  * deterministically: RaidsFeature fixes `now` to Instant::now and builds its own LiveRaidService.
  */
@@ -55,10 +58,24 @@ class RaidFlow(
     val now: () -> Instant = { FlowTime.now },
 ) {
     val navigator = RaidsNavigator()
+
+    /** The session's current character, RaidsRoute's `characterKey`; null follows the tab's. */
+    var currentKey: String? = null
+
+    /** The root's scroll as the screen hoists it, for the push-and-pop flow. */
+    var rootScroll: ScrollState? = null
+        private set
+
+    /** RaidFlowScreen hands over the root's scroll. */
+    fun bindRoot(scroll: ScrollState) {
+        rootScroll = scroll
+    }
     private val cache = MemoryRaidCache()
     val tab = RaidsTabModel(service, cache, resources(), now)
-    var next: SignupController? by mutableStateOf(null)
-        private set
+
+    /** RaidsRoute's NextRaidSignup: the next raid's controller, and the page's writes shared with it. */
+    val signup = NextRaidSignup(tab, now)
+    val next: SignupController? get() = signup.controller
 
     /** The screen's scope and dependencies, once composed. */
     private var bound: Pair<CoroutineScope, SignupController.Dependencies>? = null
@@ -86,25 +103,7 @@ class RaidFlow(
     suspend fun reload(deps: SignupController.Dependencies) {
         tab.currentKey = FlowPlayer.KEY
         tab.load()
-        syncNext(deps)
-    }
-
-    /** RaidsRoute.syncNext: one controller per next raid, offline with the tab. */
-    private fun syncNext(deps: SignupController.Dependencies) {
-        val content = (tab.state as? RaidsTabState.Loaded)?.content
-        val raid = content?.let { PlannedRaids(it.planned, now()).next }
-        val current = next
-        next = when {
-            content == null || raid == null -> null
-            current != null && current.raid.id == raid.id -> current.also {
-                it.replace(raid)
-                it.offline = content.offlineSince != null
-            }
-            else -> SignupController(content.head.id, raid, deps).also {
-                it.offline = content.offlineSince != null
-                it.onRaidChanged = { view: RaidView -> tab.replace(view) }
-            }
-        }
+        signup.sync(deps)
     }
 
     /** RaidsRoute's root taps: the answers through the next raid's controller, the raid pushed. */
@@ -116,6 +115,7 @@ class RaidFlow(
             card = HomeActions(
                 onAnswer = { _, state -> if (key != null) scope.launch { next?.press(key, state) } },
                 onLate = { _, minutes -> if (key != null) scope.launch { next?.pressLate(key, minutes) } },
+                onRetryAnswer = { if (key != null) scope.launch { next?.retry(key) } },
                 onRaid = { raid -> guild?.let { navigator.push(RaidsDestination.Raid(it, raid)) } },
             ),
         )
@@ -130,24 +130,45 @@ class RaidFlow(
 /** The Raids tab and its stack, inside the tab shell. */
 @Composable
 fun RaidFlowScreen(flow: RaidFlow) {
+    // The light tick at the pull's trigger point (R14) lands on the flow's recorder.
+    CompositionLocalProvider(LocalHaptics provides flow.haptics) { RaidFlowBody(flow) }
+}
+
+@Composable
+private fun RaidFlowBody(flow: RaidFlow) {
     val scope = rememberCoroutineScope()
     val deps = remember(flow) { flow.bind(scope) }
     val clock = remember { clock() }
     LaunchedEffect(flow) { flow.reload(deps) }
+    // RaidsRoute hoists the root's scroll above the stack, so a push and pop keep the root's place.
+    val rootScroll = rememberScrollState().also(flow::bindRoot)
+    val refresh = rememberFlowRefresh { flow.reload(deps) }
     BackHandler(enabled = flow.navigator.stack.isNotEmpty()) { flow.navigator.pop() }
+    RaidFlowStack(flow, deps, clock, rootScroll, refresh, scope)
+}
+
+@Composable
+private fun RaidFlowStack(
+    flow: RaidFlow,
+    deps: SignupController.Dependencies,
+    clock: gg.foreversixty.app.raids.logic.RaidClock,
+    rootScroll: ScrollState,
+    refresh: FlowRefresh,
+    scope: CoroutineScope,
+) {
     val content = (flow.tab.state as? RaidsTabState.Loaded)?.content
     when (val top = flow.navigator.stack.lastOrNull()) {
         null -> Column(Modifier.fillMaxSize().background(FsColor.bg)) {
             val view = RaidTabPresenter(resources(), clock, flow.now()).view(flow.tab.state, flow.next, null, false, RaidTabExtras())
             if (view != null) {
-                RaidTabScreen(view, flow.actions(scope), topBar = { CharacterBar(content?.character, "Raid") }) {
+                RaidTabScreen(view, flow.actions(scope), topBar = { CharacterBar(content?.character, "Raid") }, page = FlowPageState(rootScroll, refresh)) {
                     content?.offlineSince?.let { SavedAnswerStrip(clock.stripTime(it, flow.now()), content.stale, flow::reloadNow) }
                 }
             }
         }
         is RaidsDestination.Raid -> {
             val model = remember(top) {
-                RaidPageModel(top.guild, top.raid, deps, MemoryRaidCache(), top.open, { view -> flow.tab.replace(view) })
+                RaidPageModel(top.guild, top.raid, deps, MemoryRaidCache(), top.open, flow.signup::replaced, currentKey = flow.currentKey ?: content?.character?.key)
             }
             RaidPageScreen(
                 model = model,

@@ -118,12 +118,7 @@ struct ActivityView: View {
         return PanelSection(section.day.title, action: markAll ? (Copy.activityMarkAllRead, actions.markAllRead) : nil) {
             ForEach(Array(section.rows.enumerated()), id: \.element.id) { index, item in
                 Button { actions.open(item.row) } label: {
-                    PanelRow(
-                        item.row.title, sub: Text(item.row.body), meta: item.when, unread: item.row.read ? nil : Copy.activityUnread,
-                        last: index == section.rows.count - 1
-                    ) {
-                        ActivityLead(row: item.row, build: build)
-                    }
+                    ActivityRowView(row: item.row, line: item.row.body, meta: item.when, build: build, last: index == section.rows.count - 1)
                 }
                 .buttonStyle(RowPressStyle())
             }
@@ -162,7 +157,7 @@ struct ActivityFilterChips: View {
 
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .font(.custom(FSFont.bodySemibold, size: 14, relativeTo: .subheadline))
+                .type(FSType.chip)
                 .foregroundStyle(FSColor.strong)
                 .padding(.horizontal, FSSpace.space4)
                 .frame(height: ActivityFilterChips.face)

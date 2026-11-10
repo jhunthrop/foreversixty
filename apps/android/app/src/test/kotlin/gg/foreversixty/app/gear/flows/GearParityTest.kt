@@ -108,7 +108,7 @@ class GearParityTest {
         val content = composer.content(GearFixtures.list, "alliance", emptyList(), emptyList())
         assertEquals("Fury Warrior", content.title)
         assertEquals("1004.2", content.figure)
-        assertEquals("60 raid · Alliance · 1 of 3 slots on the list", content.facts)
+        assertEquals("60 raid · Alliance · 1 of 3 slots match the list", content.facts)
     }
 
     @Test fun theSheetNamesWhoNeedsItAndWhoHasIt() {
@@ -199,16 +199,17 @@ object GearFixtures {
     val content = GearContent(
         title = "Fury Warrior",
         figure = "1004.2",
-        facts = "60 raid · Alliance · 4 of 17 slots on the list",
+        facts = "60 raid · Alliance · 4 of 17 slots match the list",
         where = listOf(
-            GearWhereRow("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh'gajin, 8%", ItemLook(1, "Blackcrow", 3, "inv_weapon_crossbow_04")),
-            GearWhereRow("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", ItemLook(2, "Lionheart Helm", 4, "inv_helmet_36")),
-            GearWhereRow("Stormpike Guard", "Don Julio's Band, needs revered", ItemLook(3, "Don Julio's Band", 4, "inv_jewelry_ring_35")),
+            GearWhereRow("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh'gajin, 8%", ItemLook(1, "Blackcrow", 3, "inv_weapon_crossbow_04"), "1 upgrade · +1.9 DPS"),
+            GearWhereRow("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", ItemLook(2, "Lionheart Helm", 4, "inv_helmet_36"), "2 upgrades · +20.4 DPS"),
+            GearWhereRow("Stormpike Guard", "Don Julio's Band, needs revered", ItemLook(3, "Don Julio's Band", 4, "inv_jewelry_ring_35"), "1 upgrade · +6.8 DPS"),
         ),
         slots = doll.mapIndexed { i, d ->
             GearSlotRow(d.slot, d.label, look(i, d), "${d.label} · ${d.source}", d.gain, worn = d.gain == null, row = BisRow(d.slot, d.label, null, null))
         },
         unitWord = "DPS",
+        header = "+157.6 DPS from 13 upgrades · synced 2 h ago · 2 gains not modelled yet",
     )
 
     val classes = listOf("warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid")

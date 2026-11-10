@@ -96,10 +96,12 @@ struct BisSelection: Hashable, Sendable, Codable {
         )
     }
 
-    /// The character's own list, when the catalog knows its class and spec.
+    /// The character's own list, when the catalog knows its class: its spec, else the class's first
+    /// (a character whose spec Battle.net has not reported never keeps the previous character's list).
     static func forCharacter(_ character: AccountCharacter, catalog: SpecCatalog) -> BisSelection? {
-        guard let classSlug = character.className, let specName = character.spec,
-              let spec = catalog.spec(classSlug: classSlug, named: specName),
+        guard let classSlug = character.className,
+              let spec = character.spec.flatMap({ catalog.spec(classSlug: classSlug, named: $0) })
+                  ?? catalog.specs(of: classSlug).first,
               let level = character.level,
               let faction = character.faction, factions.contains(faction)
         else { return nil }

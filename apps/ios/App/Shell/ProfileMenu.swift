@@ -16,8 +16,12 @@ struct ProfileMenuSummary: Equatable {
     /// The selected character; nil signed out.
     let you: AccountCharacter?
     let isMain: Bool
+    /// `Fury Warrior · 58 · Officer`: the kind, the level and the guild rank (the line without a guild).
+    let youLine: String
     /// `Updated 2 h ago from Battle.net`, nil before the first import.
     let stamp: String?
+    /// The last Battle.net refresh failed: this replaces the stamp, in wipe red with Try again.
+    let syncError: String?
     /// The other characters at level 10 and up, then those below it.
     let others: [AccountCharacter]
     let lowLevel: [AccountCharacter]
@@ -35,6 +39,8 @@ struct ProfileMenuSummary: Equatable {
         var plan: String?
         var devices: Int?
         var offlineBytes: Int64?
+        /// The newest signed-in device's name, for `3 signed in · newest iPhone 17`.
+        var newestDevice: String?
     }
 
     init(me: Me?, current: AccountCharacter?, facts: AccountFacts, version: String, now: Date) {
@@ -42,8 +48,10 @@ struct ProfileMenuSummary: Equatable {
         operatorLine = Copy.menuLegalOperator(year: String(Calendar(identifier: .gregorian).component(.year, from: now)))
         guard let me, let current else {
             you = nil
+            youLine = ""
             isMain = false
             stamp = nil
+            syncError = nil
             others = []
             lowLevel = []
             tools = MenuDestination.signedOutTools.map(Self.tool)
@@ -51,8 +59,10 @@ struct ProfileMenuSummary: Equatable {
             return
         }
         you = current
+        youLine = Self.youLine(current)
         isMain = current.key == me.mainCharacterKey
         stamp = me.bnetImportedAt.map { Copy.sharedCharactersUpdatedFrom(ago: RelativeAge(from: $0, to: now).phrase) }
+        syncError = current.build?.syncError.map { _ in Copy.menuSyncError }
         let rest = me.characters.filter { $0.key != current.key }
         others = rest.filter { ($0.level ?? 0) >= Self.switchLevel }
         lowLevel = rest.filter { ($0.level ?? 0) < Self.switchLevel }
@@ -80,12 +90,41 @@ struct ProfileMenuSummary: Equatable {
         case .plan:
             Row(destination: destination, title: Copy.menuPlan, line: facts.plan ?? "")
         case .devices:
-            Row(destination: destination, title: Copy.menuDevices, line: facts.devices.map { Copy.menuDevicesLine(n: $0) } ?? "")
+            Row(destination: destination, title: Copy.menuDevices, line: devicesLine(facts.devices, newest: facts.newestDevice))
         case .offlineData:
             Row(destination: destination, title: Copy.menuOffline, line: facts.offlineBytes.map(offlineLine) ?? "")
         default:
             Row(destination: destination, title: Copy.menuSettings, line: Copy.menuSettingsLine)
         }
+    }
+
+    /// `Fury Warrior · 58 · Officer` with a guild rank, else the character's line.
+    static func youLine(_ character: AccountCharacter) -> String {
+        guard let rank = character.guild?.rank, !rank.isEmpty else { return AccountCopy.characterLine(character) }
+        let kind = [character.spec, character.className].compactMap { $0.map(AccountCopy.words) }.joined(separator: " ")
+        return Copy.menuCharacterLineRank(kind: kind, n: character.level ?? 0, rank: AccountCopy.words(rank))
+    }
+
+    /// A Switch row's line: the character's line, then `item level 63` when the import has it.
+    static func switchLine(_ character: AccountCharacter) -> String {
+        let line = AccountCopy.characterLine(character)
+        guard let itemLevel = character.itemLevel, itemLevel > 0 else { return line }
+        return line + " · " + Copy.menuCharacterItemLevel(n: itemLevel)
+    }
+
+    /// `3 signed in · newest iPhone 17`; the count alone without a name.
+    static func devicesLine(_ count: Int?, newest: String?) -> String {
+        guard let count else { return "" }
+        guard let newest, !newest.isEmpty else { return Copy.menuDevicesLine(n: count) }
+        return Copy.menuDevicesLineNewest(n: count, name: newest)
+    }
+
+    /// The facts the Devices row reads from `GET /v1/devices`: how many, and the newest by sign-in.
+    static func deviceFacts(_ devices: [Device], into facts: AccountFacts) -> AccountFacts {
+        var updated = facts
+        updated.devices = devices.count
+        updated.newestDevice = devices.max { ($0.createdAt ?? .distantPast) < ($1.createdAt ?? .distantPast) }?.name
+        return updated
     }
 
     /// `Raids, gear and sims, logs on`: the groups that are on, in their order, sentence case.
@@ -109,6 +148,8 @@ struct ProfileMenuActions {
     var signIn: () -> Void = {}
     var help: () -> Void = {}
     var privacy: () -> Void = {}
+    /// `GET /v1/devices`, for the Devices row's newest device; nil keeps the summary's line.
+    var loadDevices: () async -> [Device]? = { nil }
 }
 
 /// The profile menu's content in the round-5 look (mocks ios-menu, -one, -low, -out and m-ios-menu):
@@ -121,6 +162,7 @@ struct ProfileMenuView: View {
     var signingIn = false
     var actions = ProfileMenuActions()
     @State private var showsLowLevel = false
+    @State private var devices: [Device]?
 
     static let youPortrait: CGFloat = 56
     static let rowPortrait: CGFloat = 40
@@ -155,7 +197,7 @@ struct ProfileMenuView: View {
                     if summary.you != nil {
                         switchSection
                         rowsSection(Copy.menuTools, summary.tools, lines: false)
-                        rowsSection(Copy.menuAccount, summary.account, lines: true)
+                        rowsSection(Copy.menuAccount, accountRows, lines: true)
                     } else {
                         rowsSection(Copy.menuTools, summary.tools, lines: false)
                     }
@@ -167,6 +209,7 @@ struct ProfileMenuView: View {
         }
         .ignoresSafeArea(edges: .top)
         .background(FSColor.raised)
+        .task { devices = await actions.loadDevices() }
     }
 
     private func youBlock(_ you: AccountCharacter) -> some View {
@@ -179,7 +222,7 @@ struct ProfileMenuView: View {
                         .foregroundStyle(ClassColor.of(you.className))
                         .accessibilityAddTraits(.isHeader)
                     VStack(alignment: .leading, spacing: FSSpace.space1) {
-                        Text(AccountCopy.characterLine(you)).type(MenuType.line).foregroundStyle(FSColor.text)
+                        Text(summary.youLine).type(MenuType.line).foregroundStyle(FSColor.text)
                         if summary.isMain { MainTag() }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -188,16 +231,11 @@ struct ProfileMenuView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .parityRegion(.headTitle)
-            if let stamp = summary.stamp {
-                HStack(spacing: 0) {
-                    Text(stamp + " · ").type(TypeRole(face: FSFont.body, size: 12, lineHeight: 16, scalesWith: .caption))
-                    Button(Copy.menuRefresh, action: actions.refresh)
-                        .font(.custom(FSFont.bodySemibold, size: 12, relativeTo: .caption))
-                        .foregroundStyle(FSColor.gold)
-                }
-                .foregroundStyle(FSColor.text)
-                .frame(minHeight: Self.rowMin)
-                .padding(.top, FSSpace.space1)
+            // The last refresh failed: its line in wipe red with Try again, in place of the stamp.
+            if let error = summary.syncError {
+                MenuStampLine(text: error, color: FSColor.wipe, action: Copy.commonTryAgain, run: actions.refresh)
+            } else if let stamp = summary.stamp {
+                MenuStampLine(text: stamp, color: FSColor.text, action: Copy.menuRefresh, run: actions.refresh)
             }
         }
         .parityRegion(.head)
@@ -231,7 +269,7 @@ struct ProfileMenuView: View {
                 ForEach(Array(shown.enumerated()), id: \.element.key) { index, character in
                     Button { actions.pick(character) } label: {
                         MenuRow(
-                            title: character.name, titleColor: ClassColor.of(character.className), sub: AccountCopy.characterLine(character),
+                            title: character.name, titleColor: ClassColor.of(character.className), sub: ProfileMenuSummary.switchLine(character),
                             last: index == shown.count - 1 && summary.lowLevel.isEmpty
                         ) { CharacterPortrait(character, size: Self.rowPortrait, crestFallback: true) }
                     }
@@ -246,6 +284,17 @@ struct ProfileMenuView: View {
                     .frame(minHeight: Self.rowMin)
                 }
             }
+        }
+    }
+
+    /// The Account rows, the Devices line from the loaded devices once they arrive.
+    private var accountRows: [ProfileMenuSummary.Row] {
+        guard let devices else { return summary.account }
+        let facts = ProfileMenuSummary.deviceFacts(devices, into: .init())
+        return summary.account.map { row in
+            guard row.destination == .devices else { return row }
+            let line = ProfileMenuSummary.devicesLine(facts.devices, newest: facts.newestDevice)
+            return ProfileMenuSummary.Row(destination: row.destination, title: row.title, line: line)
         }
     }
 
@@ -276,6 +325,43 @@ struct ProfileMenuView: View {
             .foregroundStyle(FSColor.gold)
         }
         .padding(.vertical, FSSpace.space6)
+    }
+}
+
+/// The stamp (or the sync error) with its action: on one line, wrapping by words; at the
+/// accessibility sizes the action takes its own line, so nothing breaks mid-word or strands.
+private struct MenuStampLine: View {
+    let text: String
+    let color: Color
+    let action: String
+    let run: () -> Void
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    static var type: TypeRole { TypeRole(face: FSFont.body, size: 12, lineHeight: 16, scalesWith: .caption) }
+
+    var body: some View {
+        Group {
+            if typeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: FSSpace.space1) {
+                    Text(text).type(Self.type).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+                    button.frame(minHeight: FSTarget.min)
+                }
+            } else {
+                HStack(alignment: .firstTextBaseline, spacing: 0) {
+                    Text(text + " · ").type(Self.type).foregroundStyle(color).fixedSize(horizontal: false, vertical: true)
+                    button.fixedSize()
+                }
+                .frame(minHeight: ProfileMenuView.rowMin)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, FSSpace.space1)
+    }
+
+    private var button: some View {
+        Button(action, action: run)
+            .font(.custom(FSFont.bodySemibold, size: 12, relativeTo: .caption))
+            .foregroundStyle(FSColor.gold)
     }
 }
 

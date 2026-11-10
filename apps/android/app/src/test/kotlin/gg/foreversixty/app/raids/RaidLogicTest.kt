@@ -527,7 +527,7 @@ class RaidLogicTest {
         val service = FakeRaidService()
         service.raidAnswer = { ok(RaidFixture.raid("guild.raid.ask-spec")) }
         val outcome = RaidPushAnswerer(service, resources()).answer(payload(mapOf("character_key" to "us/pvp/lightningbolltz")), SignupState.In)
-        assertEquals(RaidPushOutcome.Open(DeepLink.Raid(2, 31, spec = "ask")), outcome)
+        assertEquals(RaidPushOutcome.Open(DeepLink.Raid(2, 31, spec = "ask", state = "in")), outcome)
         assertTrue(service.signups.isEmpty())
     }
 

@@ -79,7 +79,7 @@ fun GearRoute(model: BisModel, deps: GearDeps, owner: GearOwner, onSearch: (() -
             val band = deps.catalog.bis(build, selection.spec)?.band(selection.range, selection.faction)
             val loot = deps.catalog.loot(build)
             val picks = if (band != null && loot != null) WhereToGo.picks(upgrades, band.slots, WhereToGo.sources(loot)) else emptyList()
-            GearComposer(res).content(it, selection.faction, upgrades, picks)
+            GearComposer(res).content(it, selection.faction, upgrades, picks, home)
         }
     }
     var open by remember { mutableStateOf<GearSlotRow?>(null) }

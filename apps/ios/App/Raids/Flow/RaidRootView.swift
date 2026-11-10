@@ -102,10 +102,13 @@ struct RaidGuildView: View {
         if let night = content.night {
             RaidNightBlock(content: night)
         } else if let next = content.next {
-            RaidHeadView(content: next, actions: actions.raid).parityRegion(RaidRootView.nextRaidRegion)
+            RaidHeadView(content: next, notes: content.notes, actions: actions.raid).parityRegion(RaidRootView.nextRaidRegion)
+            // G3: an officer's open items sit directly under the head.
+            needsYou
             if !content.coming.isEmpty {
                 PanelSection(Copy.raidTabComing, action: (Copy.raidTabRosterLink, { actions.openPage(.roster) })) {
                     RoleRowsView(roles: content.coming)
+                    ComingFoot(lines: [content.answers, content.cover, content.notSynced].compactMap(\.self))
                 }
             }
         } else {
@@ -117,10 +120,32 @@ struct RaidGuildView: View {
                 ReadyPanelList(content: ready, open: actions.openLink)
             }
         }
+        if content.next == nil { needsYou }
+        GuildPagesSection(content: content.pages, open: actions.openPage)
+    }
+
+    @ViewBuilder
+    private var needsYou: some View {
         if let needs = content.needsYou {
             PanelSection(Copy.raidTabNeedsYou, meta: needs.meta) { OfficerItemsView(items: needs.items, actions: actions.raid) }
         }
-        GuildPagesSection(content: content.pages, open: actions.openPage)
+    }
+}
+
+/// Who is coming's foot: the other answers' counts, what the cover misses (G4), an officer's
+/// readiness line (G1); one muted line each.
+private struct ComingFoot: View {
+    let lines: [String]
+
+    var body: some View {
+        if !lines.isEmpty {
+            VStack(alignment: .leading, spacing: FSSpace.space2) {
+                ForEach(lines, id: \.self) { Text($0).type(RowType.sub).foregroundStyle(FSColor.muted) }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, FSSpace.rowPadY)
+            .overlay(alignment: .top) { Hairline(FSColor.line) }
+        }
     }
 }
 
@@ -129,26 +154,34 @@ struct RaidGuildView: View {
 /// and with Late the minutes inline, the chosen one selected (F1).
 struct RaidHeadView: View {
     let content: NextRaidContent
+    /// The officers' notes, two lines under the head.
+    var notes: String?
     let actions: NextRaidActions
-    @Environment(\.dynamicTypeSize) private var typeSize
 
+    static let notesLines = 2
     /// How far the head's line may shrink to stay on one line beside the chip.
     static let lineScale: CGFloat = 0.8
+    @Environment(\.dynamicTypeSize) private var typeSize
+
 
     var body: some View {
         PanelBlock {
             VStack(alignment: .leading, spacing: 0) {
                 Button(action: actions.openRaid) { line }.buttonStyle(RowPressStyle())
-                RaidAnswerButtons(selected: content.selected, answer: actions.answer).padding(.top, FSSpace.space3)
-                if content.lateOpen {
-                    LateMinutesRow(chosen: content.lateMinutes, late: actions.late)
-                        .padding(.top, FSSpace.space2)
-                        .accessibilityElement(children: .contain)
-                        .accessibilityLabel(Copy.raidTabHowLate)
+                RaidAnswerControl(content: content, actions: actions).padding(.top, FSSpace.space3)
+                if let notes {
+                    Text((try? AttributedString(markdown: notes)) ?? AttributedString(notes))
+                        .type(RowType.sub).foregroundStyle(FSColor.text)
+                        .lineLimit(Self.notesLines)
+                        .padding(.top, FSSpace.space4)
                 }
             }
             .padding(.vertical, FSSpace.space2)
         }
+    }
+
+    private var headLineText: some View {
+        Text(content.headLine).type(RowType.sub).foregroundStyle(FSColor.muted)
     }
 
     private var line: some View {
@@ -156,9 +189,14 @@ struct RaidHeadView: View {
             ZoneIcon(icon: content.icon)
             VStack(alignment: .leading, spacing: 0) {
                 Text(content.zone).type(FSType.item).foregroundStyle(FSColor.strong).accessibilityAddTraits(.isHeader)
-                // One line beside the chip, as the mock holds it (`.rl .s { white-space: nowrap }`).
-                Text(content.headLine).type(RowType.sub).foregroundStyle(FSColor.muted)
-                    .lineLimit(1).minimumScaleFactor(Self.lineScale)
+                // One line beside the chip, as the mock holds it (shrinking a little for a long chip); at the
+                // accessibility sizes it wraps, since the time carries meaning and never truncates (spec 3.2).
+                if typeSize.isAccessibilitySize {
+                    headLineText.fixedSize(horizontal: false, vertical: true)
+                } else {
+                    headLineText.lineLimit(1).minimumScaleFactor(Self.lineScale)
+                }
+                if let invites = content.invites { Text(invites).type(RowType.sub).foregroundStyle(FSColor.muted) }
                 if let who = content.who { Text(who).type(RowType.sub).foregroundStyle(FSColor.muted) }
                 // At the accessibility sizes the chip drops under the lines, so the raid's name keeps the row.
                 if typeSize.isAccessibilitySize, let chip = content.chip { AnswerChip(text: chip).padding(.top, FSSpace.space1) }
@@ -214,7 +252,7 @@ struct RoleRowsView: View {
     }
 }
 
-/// One role: `Healers 5 of 8` over its names.
+/// One role (S6): `Healers 5 of 8 · 3 short` in tone over its names in class colour; Damage's split.
 private struct RoleRow: View {
     let line: RoleLineContent
     let last: Bool
@@ -222,7 +260,8 @@ private struct RoleRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             title.type(FSType.item)
-            Text(line.names).type(RowType.sub).foregroundStyle(FSColor.muted)
+            names.type(RowType.sub)
+            if let split = line.split { Text(split).type(RowType.sub).foregroundStyle(FSColor.muted) }
         }
         .padding(.vertical, FSSpace.rowPadY)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -232,9 +271,24 @@ private struct RoleRow: View {
     }
 
     private var title: Text {
-        guard let want = line.want else { return Text("\(line.role) \(line.have)").foregroundColor(FSColor.strong) }
-        let count = Text(Copy.raidTabOfWant(have: line.have, want: want)).foregroundColor(line.have >= want ? FSColor.kill : FSColor.wipe)
-        return Text("\(line.role) \(count)").foregroundColor(FSColor.strong)
+        let tone: Color = switch line.tone {
+        case .met: FSColor.kill
+        case .short: FSColor.wipe
+        case .plain: FSColor.strong
+        }
+        let tally = Text(line.tally).foregroundColor(tone)
+        return Text("\(line.role) \(tally)").foregroundColor(FSColor.strong)
+    }
+
+    /// The names in class colour, `, ` between; past five `and N more`.
+    private var names: Text {
+        guard !line.people.isEmpty else { return Text(line.names).foregroundColor(FSColor.muted) }
+        let named = line.people.enumerated().reduce(Text("")) { text, entry in
+            let name = Text(entry.element.text).foregroundColor(ClassColor.of(entry.element.className))
+            return entry.offset == 0 ? name : Text("\(text)\(Text(RaidFlowPresenter.nameSeparator).foregroundColor(FSColor.muted))\(name)")
+        }
+        guard line.more > 0 else { return named }
+        return Text("\(named)\(Text(Copy.raidTabAndMore(names: "", n: line.more)).foregroundColor(FSColor.muted))")
     }
 }
 
@@ -312,6 +366,22 @@ struct GuildPagesSection: View {
 
 /// Before you pull on a panel (round 5): each item's mark on its disc, the fix at the end of its line in
 /// gold (the row opens it), then the export's age.
+/// A check's lead: the mark, and beside it the item's icon when the check names one.
+private struct ReadyLead: View {
+    let mark: ReadyRowContent.Mark
+    let icon: String?
+    @Environment(\.raidIconBuild) private var build
+
+    var body: some View {
+        HStack(spacing: FSSpace.space2) {
+            ReadyMark(mark: mark)
+            if let icon {
+                ItemIconView(icon: icon, quality: nil, build: build ?? "", size: FSSize.icon28).parityItem(.image)
+            }
+        }
+    }
+}
+
 struct ReadyPanelList: View {
     let content: ReadyListContent
     let open: (URL) -> Void
@@ -320,7 +390,7 @@ struct ReadyPanelList: View {
         ForEach(content.rows) { row in
             Button { if let link = row.link { open(link) } } label: {
                 PanelRow(row.title, sub: row.fix.map { Text.line(row.line, link: $0) } ?? Text(row.line)) {
-                    ReadyMark(mark: row.mark)
+                    ReadyLead(mark: row.mark, icon: row.icon)
                 }
             }
             .buttonStyle(RowPressStyle())

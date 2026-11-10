@@ -110,13 +110,13 @@ struct HomeHeroHead: View {
             }
             VStack(alignment: .leading, spacing: 0) {
                 Text(title)
-                    .type(TypeRole(face: FSFont.title, size: 30, lineHeight: 34, scalesWith: .title))
+                    .type(FSType.heroName)
                     .foregroundStyle(className.map { ClassColor.of($0) } ?? FSColor.cream)
                     .shadow(color: .black.opacity(PanelShadow.opacity), radius: PanelShadow.radius, y: PanelShadow.drop)
                     .accessibilityAddTraits(.isHeader)
                 if !facts.isEmpty {
                     Text(facts.joined(separator: HomeHeroHead.factSeparator))
-                        .type(TypeRole(face: FSFont.body, size: 14, lineHeight: 20, scalesWith: .subheadline))
+                        .type(FSType.factLine)
                         .foregroundStyle(FSColor.text)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .parityRegion(.headMeta)
@@ -140,7 +140,12 @@ struct HomeUpgradesSection: View {
     let openGear: () -> Void
 
     var body: some View {
-        PanelSection(Copy.homeUpgradesNext, action: (Copy.homeUpgradesGear, openGear), frame: .plain) {
+        PanelSection(Copy.homeUpgradesNext, meta: content.meta, action: (Copy.homeUpgradesGear, openGear), frame: .plain) {
+            if let stamp = content.stamp {
+                // The panel's own top padding sets it 8 in, as the mock's `.stmp`.
+                Text(stamp).type(FSType.small).foregroundStyle(FSColor.muted)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             ForEach(Array(content.rows.enumerated()), id: \.element.id) { index, row in
                 if index > 0 { Hairline(FSColor.line) }
                 Button { open(row) } label: {
@@ -151,9 +156,19 @@ struct HomeUpgradesSection: View {
                 }
                 .buttonStyle(RowPressStyle())
             }
-            ForEach([content.note, content.bestRun].compactMap { $0 }, id: \.self) { line in
+            if let note = content.note {
                 Hairline(FSColor.line)
-                Button(action: openGear) { PanelRow(line, slim: true, last: true) }.buttonStyle(RowPressStyle())
+                Button(action: openGear) { PanelRow(note, slim: true, last: true) }.buttonStyle(RowPressStyle())
+            }
+            if let run = content.bestRun {
+                Hairline(FSColor.line)
+                Button(action: openGear) {
+                    ItemLineView(
+                        name: run.place, quality: nil, icon: run.icon, source: run.line,
+                        gain: (run.gain.figure, run.gain.unit), build: build, inset: 0
+                    )
+                }
+                .buttonStyle(RowPressStyle())
             }
         }
     }
@@ -238,12 +253,7 @@ struct NewForYouSection: View {
         PanelSection(Copy.homeNewForYou, action: (link, all)) {
             ForEach(Array(content.rows.enumerated()), id: \.element.id) { index, item in
                 Button { open(item.row) } label: {
-                    PanelRow(
-                        item.row.title, sub: Text(item.line), unread: item.row.read ? nil : Copy.activityUnread,
-                        last: index == content.rows.count - 1
-                    ) {
-                        ActivityLead(row: item.row, build: build)
-                    }
+                    ActivityRowView(row: item.row, line: item.line, build: build, last: index == content.rows.count - 1)
                 }
                 .buttonStyle(RowPressStyle())
             }

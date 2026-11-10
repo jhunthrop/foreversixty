@@ -119,7 +119,7 @@ struct BisScreen: View {
             GearListView(
                 content: GearPresenter(context: model.context).content(list: list, inputs: inputs),
                 build: model.build ?? "",
-                portrait: model.context.isYours ? portrait : nil,
+                portrait: portrait,
                 actions: GearActions(openPicker: { model.isPickerPresented = true }, openItem: open)
             )
             .bandBar()

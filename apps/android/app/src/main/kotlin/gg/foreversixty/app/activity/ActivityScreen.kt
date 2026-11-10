@@ -35,13 +35,15 @@ import gg.foreversixty.app.designsystem.ParityRegion
 import gg.foreversixty.app.designsystem.ParityScrollRegion
 import gg.foreversixty.app.designsystem.parityItem
 import gg.foreversixty.app.designsystem.parityRegion
+import gg.foreversixty.app.flows.FLOW_CHIP_SMALL
 import gg.foreversixty.app.flows.FlowBandPage
+import gg.foreversixty.app.flows.FlowPageState
+import gg.foreversixty.app.flows.rememberFlowRefresh
 import gg.foreversixty.app.flows.FlowBlock
 import gg.foreversixty.app.flows.FlowChip
 import gg.foreversixty.app.flows.FlowLink
 import gg.foreversixty.app.flows.FlowNote
 import gg.foreversixty.app.flows.FlowPanel
-import gg.foreversixty.app.flows.FlowRow
 import gg.foreversixty.app.flows.FlowSection
 import gg.foreversixty.app.model.ActivityRow
 import gg.foreversixty.app.phrase
@@ -63,6 +65,7 @@ fun ActivityTab(feature: ActivityFeature, account: AccountDeps?, onOpen: (Activi
         ActivitySignedOut(bar) { account?.let { it.session.beginSignIn(it.browser(context)) } }
         return
     }
+    val refresh = rememberFlowRefresh { feature.load() }
     ActivityScreen(
         state = feature.state,
         filter = feature.filter,
@@ -77,6 +80,7 @@ fun ActivityTab(feature: ActivityFeature, account: AccountDeps?, onOpen: (Activi
             onOpen = { row -> Activity.landing(row)?.let(onOpen) },
         ),
         bar = bar,
+        page = FlowPageState(rememberScrollState(), refresh),
     )
 }
 
@@ -120,11 +124,12 @@ fun ActivityScreen(
     now: Instant,
     zone: ZoneId,
     actions: ActivityActions,
+    page: FlowPageState = FlowPageState(rememberScrollState()),
     bar: @Composable () -> Unit,
 ) {
     // An empty inbox under All has nothing to filter; a filter's own empty page keeps the chips to go back.
     val nothingAtAll = state is ActivityState.Loaded && state.rows.isEmpty() && filter == ActivityFilter.All
-    FlowBandPage(bar, head = { if (!nothingAtAll) Filters(filter, actions.onFilter) }) {
+    FlowBandPage(bar, head = { if (!nothingAtAll) Filters(filter, actions.onFilter) }, page = page) {
         when (state) {
             ActivityState.Loading -> Box(Modifier.fillMaxWidth().padding(FsSpace.space8), Alignment.Center) { CircularProgressIndicator(color = FsColor.gold) }
             ActivityState.Failed -> FlowPanel {
@@ -154,7 +159,7 @@ private fun Filters(current: ActivityFilter, onFilter: (ActivityFilter) -> Unit)
                     option == current,
                     { onFilter(option) },
                     Modifier.minimumInteractiveComponentSize(),
-                    minHeight = FILTER_HEIGHT,
+                    minHeight = FLOW_CHIP_SMALL,
                     role = Role.Tab,
                 )
             }
@@ -176,11 +181,10 @@ private fun Days(state: ActivityState.Loaded, build: String?, now: Instant, zone
         val markAll = if (index == 0 && anyUnread) stringResource(R.string.activity_markAllRead) else null
         FlowSection(stringResource(section.day.label), action = markAll, onAction = actions.onMarkAllRead, top = 0.dp, panel = PanelFrame.None) {
             section.items.forEachIndexed { at, item ->
-                FlowRow(
-                    title = item.row.title,
-                    sub = item.row.body,
-                    lead = activityLead(item.row, build),
-                    unread = !item.row.read,
+                ActivityRowView(
+                    row = item.row,
+                    line = item.row.body,
+                    build = build,
                     last = at == section.items.lastIndex,
                     meta = timeLabel(item.at, section.day, now, zone),
                     onClick = { actions.onOpen(item.row) },
@@ -205,7 +209,6 @@ private val WEEKDAY = DateTimeFormatter.ofPattern("EEE", Locale.UK)
 private val DATE = DateTimeFormatter.ofPattern("d MMM", Locale.UK)
 
 /** A filter chip's face (the mock's `.chips a`, 7 above and below a 20 line), 48 to the touch. */
-private val FILTER_HEIGHT = 36.dp
 
 /** The chips' faces 8 under the bar and the band's foot 14 under them, less the touch target's 6. */
 private val FILTERS_TOP = 2.dp

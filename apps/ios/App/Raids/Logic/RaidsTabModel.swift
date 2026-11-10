@@ -52,7 +52,7 @@ struct RaidsTabContent: Equatable {
         RaidsTabContent(
             head: head, character: character,
             planned: planned.map { $0.id == raid.id ? raid : $0 },
-            nights: nights, waiting: waiting, offlineSince: offlineSince, accountKeys: accountKeys
+            nights: nights, waiting: waiting, offlineSince: offlineSince, staleSince: staleSince, accountKeys: accountKeys
         )
     }
 }

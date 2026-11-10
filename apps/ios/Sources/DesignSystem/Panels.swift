@@ -129,6 +129,9 @@ public struct PanelSection<Content: View>: View {
         self.content = content()
     }
 
+    /// How far a meta may shrink to keep the title's line beside the action.
+    static var metaScale: CGFloat { 0.8 }
+
     public var body: some View {
         VStack(alignment: .leading, spacing: FSSpace.space2) {
             // At the accessibility sizes the meta and the action drop under the title, so no word breaks.
@@ -137,7 +140,11 @@ public struct PanelSection<Content: View>: View {
                 : AnyLayout(HStackLayout(alignment: .center, spacing: FSSpace.space3))
             head {
                 PanelTitle(title)
-                if let meta { Text(meta).type(FSType.small).foregroundStyle(FSColor.muted) }
+                if let meta {
+                    Text(meta).type(FSType.small).foregroundStyle(FSColor.muted)
+                        .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
+                        .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : Self.metaScale)
+                }
                 if !typeSize.isAccessibilitySize { Spacer(minLength: 0) }
                 if let action { PanelAction(action.title, action: action.run) }
             }
@@ -239,6 +246,8 @@ public struct PanelRow<Lead: View, Trail: View>: View {
     private let last: Bool
     /// iOS's disclosure chevron at the right of a row that pushes a screen.
     private let chevron: Bool
+    /// A figure at the row's right in tabular digits (an Activity row's DPS).
+    private let value: String?
     private let lead: Lead
     private let trail: Trail
 
@@ -251,9 +260,11 @@ public struct PanelRow<Lead: View, Trail: View>: View {
         unread: String? = nil,
         last: Bool = false,
         chevron: Bool = false,
+        value: String? = nil,
         @ViewBuilder lead: () -> Lead,
         @ViewBuilder trail: () -> Trail
     ) {
+        self.value = value
         self.title = title
         self.titleColor = titleColor
         self.sub = sub
@@ -277,6 +288,11 @@ public struct PanelRow<Lead: View, Trail: View>: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.trailing, trailCell && !chevron ? FSSpace.space3 : 0)
+                if let value {
+                    Text(value).type(TypeRole(face: FSFont.bodySemibold, size: 15, lineHeight: 20, scalesWith: .subheadline, tabular: true))
+                        .foregroundStyle(FSColor.strong)
+                        .fixedSize()
+                }
                 if chevron {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 13, weight: .semibold))
@@ -307,10 +323,11 @@ public struct PanelRow<Lead: View, Trail: View>: View {
 public extension PanelRow where Trail == EmptyView {
     init(
         _ title: String, titleColor: Color = FSColor.strong, sub: Text? = nil, meta: String? = nil, slim: Bool = false,
-        unread: String? = nil, last: Bool = false, @ViewBuilder lead: () -> Lead
+        unread: String? = nil, last: Bool = false, value: String? = nil, @ViewBuilder lead: () -> Lead
     ) {
         self.init(
-            title, titleColor: titleColor, sub: sub, meta: meta, slim: slim, unread: unread, last: last, lead: lead, trail: { EmptyView() }
+            title, titleColor: titleColor, sub: sub, meta: meta, slim: slim, unread: unread, last: last, value: value, lead: lead,
+            trail: { EmptyView() }
         )
     }
 }

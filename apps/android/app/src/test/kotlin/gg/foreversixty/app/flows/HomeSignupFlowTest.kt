@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -53,13 +54,14 @@ class HomeSignupFlowTest {
 
     private val sent get() = flow.service.requests.map { it.second }
     private val status get() = flow.controller?.block(flow.character.key)?.status
-    private val howLate get() = resources().getString(R.string.push_late_question)
+    private val howLate get() = resources().getString(R.string.raid_tab_howLate)
+    private fun text(id: Int): String = resources().getString(id)
 
     @Test
     fun `In, Late and 30 min from the raid card`() {
         show()
         assertOnly(SignupState.In)
-        compose.onNodeWithText(howLate).assertDoesNotExist()
+        compose.onNodeWithContentDescription(howLate).assertDoesNotExist()
         shots.step(1, "in")
 
         shots.pressed(answer(SignupState.Late), 2, "late-pressed")
@@ -69,7 +71,9 @@ class HomeSignupFlowTest {
         assertNull(sent.single().lateMinutes)
         assertEquals(listOf("selection", "success"), flow.haptics.calls)
         assertTrue(status is StatusLine.Saved)
-        compose.onNodeWithText(howLate).assertExists()
+        compose.onNodeWithText(text(R.string.common_saved)).assertExists()
+        compose.onNodeWithContentDescription(howLate).assertExists()
+        listOf(15, 30, 60).forEach { minutes(it).assertIsNotSelected() }
         shots.step(3, "late-chips")
 
         shots.pressed(minutes(30), 4, "late-30-pressed")
@@ -79,6 +83,12 @@ class HomeSignupFlowTest {
         assertTrue(flow.service.requests.all { it.first == flow.character.key })
         assertEquals(listOf("selection", "success", "selection", "success"), flow.haptics.calls)
         assertOnly(SignupState.Late)
+        // Item 5: the chosen minutes selected, the card's line `Late · 30 min`, the Raid tab's list told.
+        minutes(30).assertIsSelected()
+        listOf(15, 60).forEach { minutes(it).assertIsNotSelected() }
+        compose.onNodeWithText(resources().getString(R.string.raid_answer_lateMinutes, 30), substring = true).assertExists()
+        val own = flow.state.nextRaid?.signups?.first { it.own && it.characterKey == flow.character.key }
+        assertEquals(30, own?.lateMinutes)
         shots.step(5, "late-30")
     }
 
@@ -92,6 +102,7 @@ class HomeSignupFlowTest {
         compose.waitForIdle()
         assertOnly(SignupState.Late)
         assertEquals(1, flow.service.inFlight)
+        compose.onNodeWithText(text(R.string.raids_note_saving)).assertExists()
         shots.step(6, "late-saving")
 
         gate.complete(Unit)
@@ -99,6 +110,8 @@ class HomeSignupFlowTest {
         assertOnly(SignupState.In)
         assertEquals(listOf("selection", "error"), flow.haptics.calls)
         assertEquals(resources().getString(R.string.common_failed), status?.text)
+        compose.onNodeWithText(text(R.string.common_failed)).assertExists()
+        compose.onNodeWithText(text(R.string.common_tryAgain)).assertExists()
         shots.step(7, "late-failed")
     }
 

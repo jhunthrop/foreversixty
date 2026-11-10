@@ -91,9 +91,6 @@ fun Modifier.lineBox(lineHeight: TextUnit): Modifier = layout { measurable, cons
     layout(placeable.width, box) { placeable.place(0, (box - placeable.height) / 2) }
 }
 
-/** One role against its need (`Healers 5/8` over its meter). */
-data class TallyItem(val label: String, val have: Int, val want: Int)
-
 /**
  * Who is coming (the mock's Tally): three roles, 16 apart, each its count coloured by how close it is.
  * At large text the roles go one per line, full width, so no role name is clipped.
@@ -113,19 +110,16 @@ fun FlowTally(items: List<TallyItem>, modifier: Modifier = Modifier) {
 
 @Composable
 private fun TallyRole(item: TallyItem, modifier: Modifier) {
-    val tone = when {
-        item.have >= item.want -> FsColor.kill
-        item.have >= item.want * WARN_SHARE -> FsColor.gold
-        else -> FsColor.wipe
-    }
+    val tone = item.tone.color
+    val want = item.want ?: item.have
     Column(modifier.semantics(mergeDescendants = true) {}) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(item.label, style = FsType.item, color = FsColor.strong, modifier = Modifier.weight(1f), maxLines = 1)
-            Text("${item.have}/${item.want}", style = FsType.item, color = tone)
+            Text("${item.have}/$want", style = FsType.item, color = tone)
         }
-        val share = if (item.want > 0) (item.have.toFloat() / item.want).coerceIn(0f, 1f) else 1f
+        val share = if (want > 0) (item.have.toFloat() / want).coerceIn(0f, 1f) else 1f
         Box(Modifier.padding(top = METER_GAP).fillMaxWidth().height(METER).clip(RoundedCornerShape(METER_RADIUS)).background(FsColor.lineSoft)) {
-            Box(Modifier.fillMaxWidth(share).height(METER).clip(RoundedCornerShape(METER_RADIUS)).background(if (tone == FsColor.kill) FsColor.kill else FsColor.gold))
+            Box(Modifier.fillMaxWidth(share).height(METER).clip(RoundedCornerShape(METER_RADIUS)).background(if (item.tone == TallyTone.Met) FsColor.kill else FsColor.gold))
         }
     }
 }
@@ -139,7 +133,6 @@ private val METER_GAP = 6.dp
 private val METER_RADIUS = 3.dp
 private const val GLOW = 0.1f
 private val GLOW_RADIUS = 300.dp
-private const val WARN_SHARE = 0.75f
 private const val STACK_SCALE = 1.3f
 private val EYEBROW = FsType.small.copy(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)
 private val CLOCK = FsType.figure.copy(fontSize = 40.sp, lineHeight = 42.sp)

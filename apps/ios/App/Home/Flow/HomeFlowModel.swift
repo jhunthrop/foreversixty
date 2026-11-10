@@ -88,16 +88,38 @@ final class HomeFlowModel {
 
     private(set) var phase: Phase = .loading
     private(set) var blocks: [HomeBlock] = []
-    private(set) var inputs: HomeFlowInputs
-    private(set) var answerError: String?
+    private var loaded: HomeFlowInputs
+    /// The raid card's answer (F1), shared with the Raid tab's head.
+    let answers: RaidAnswerModel
 
     private let dependencies: HomeFlowDependencies
     private let home: HomeStore
 
-    init(character: HomeCharacter, home: HomeStore, dependencies: HomeFlowDependencies) {
-        inputs = HomeFlowInputs(character: character)
+    /// `haptics`: the answers' (R14), as the raid page's; `savedHold`: how long `Saved.` stays (nil keeps it).
+    init(
+        character: HomeCharacter, home: HomeStore, dependencies: HomeFlowDependencies,
+        haptics: any Haptics = SystemHaptics(), savedHold: Duration? = .seconds(4)
+    ) {
+        loaded = HomeFlowInputs(character: character)
         self.home = home
         self.dependencies = dependencies
+        answers = RaidAnswerModel(service: dependencies.raids, haptics: haptics, hold: savedHold)
+    }
+
+    /// Everything Home draws from: the loaded data and the raid answer's state.
+    var inputs: HomeFlowInputs {
+        var inputs = loaded
+        inputs.answering = answers.state
+        return inputs
+    }
+
+    /// The failed write's sentence, while it shows.
+    var answerError: String? { answers.error }
+
+    /// Home's answers disable while its answers show from the cache for lack of a connection.
+    var offline: Bool {
+        get { answers.offline }
+        set { answers.offline = newValue }
     }
 
     var character: HomeCharacter { inputs.character }
@@ -116,7 +138,7 @@ final class HomeFlowModel {
                 return
             }
         }
-        inputs.home = home.answer
+        loaded.home = home.answer
         await loadBlockData()
         phase = .loaded
     }
@@ -127,19 +149,19 @@ final class HomeFlowModel {
         async let raids = raids()
         async let firstRaids = blocks.contains(.guildCTA) ? dependencies.firstRaids() : nil
         async let bestRun = bestRun()
-        inputs.activity = await activity
-        inputs.firstRaids = await firstRaids
-        inputs.bestRun = await bestRun
-        let loaded = await raids
-        inputs.raid = loaded.raid
-        inputs.night = loaded.night
+        loaded.activity = await activity
+        loaded.firstRaids = await firstRaids
+        loaded.bestRun = await bestRun
+        let fetched = await raids
+        loaded.raid = fetched.raid
+        loaded.night = fetched.night
         if let guild = character.guildID, let raid = loaded.raid {
             async let badge = try? dependencies.service.badge(guild: guild)
             async let applicants = dependencies.applicants.applicants(guild: guild)
             async let ready = dependencies.ready.ready(character: character.key, raid: raid.id)
-            inputs.badge = await badge
-            inputs.applicants = await applicants
-            inputs.ready = await ready
+            loaded.badge = await badge
+            loaded.applicants = await applicants
+            loaded.ready = await ready
         }
     }
 
@@ -181,32 +203,23 @@ final class HomeFlowModel {
 
     /// In, Late, Bench or Out for the selected character; Late opens its minutes.
     func answer(_ state: SignupState) async {
-        inputs.lateOpen = state == .late
-        await send(state, minutes: nil)
+        await send { [answers] guild, raid, key, note in await answers.answer(state, guild: guild, raid: raid, key: key, note: note) }
     }
 
-    /// Late's minutes (15, 30, 60); the chips close.
+    /// Late's minutes (15, 30, 60), kept open with the chosen one selected.
     func late(_ minutes: Int) async {
-        inputs.lateOpen = false
-        await send(.late, minutes: minutes)
+        await send { [answers] guild, raid, key, note in await answers.late(minutes, guild: guild, raid: raid, key: key, note: note) }
     }
 
-    private func send(_ state: SignupState, minutes: Int?) async {
-        guard let raid = inputs.raid, let guild = inputs.character.guildID else { return }
-        let key = raid.viewer.characters.first { $0.characterKey == inputs.character.key }?.characterKey ?? inputs.character.key
-        let previous = inputs.answer
-        inputs.answer = state
-        answerError = nil
+    /// Try again after a failed write.
+    func retry() async {
+        await send { [answers] guild, raid, key, note in await answers.retry(guild: guild, raid: raid, key: key, note: note) }
+    }
+
+    private func send(_ write: (Int64, Int64, String, String) async -> RaidView?) async {
+        guard let raid = loaded.raid, let guild = loaded.character.guildID else { return }
+        let key = raid.viewer.characters.first { $0.characterKey == loaded.character.key }?.characterKey ?? loaded.character.key
         let note = raid.signups.first { $0.characterKey == key }?.note ?? ""
-        let request = SignupRequest(state: state.rawValue, role: nil, note: note, spec: nil, lateMinutes: minutes)
-        do {
-            let answer = try await dependencies.raids.signup(guild: guild, raid: raid.id, characterKey: key, request)
-            inputs.raid = answer.raid
-            inputs.answer = nil
-            NotificationCenter.default.post(name: .raidSignupSaved, object: nil)
-        } catch {
-            inputs.answer = previous
-            answerError = SignupRefusal.sentence(for: error)
-        }
+        if let view = await write(guild, raid.id, key, note) { loaded.raid = view }
     }
 }

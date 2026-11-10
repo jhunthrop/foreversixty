@@ -40,7 +40,7 @@
     14,
     96,
     365,
-    361
+    363
    ],
    "inventory": {
     "row": 1,
@@ -50,9 +50,9 @@
   "section-next-upgrades": {
    "box": [
     14,
-    477,
+    479,
     365,
-    248
+    278
    ],
    "inventory": {
     "row": 3,
@@ -62,7 +62,7 @@
   "section-new-for-you": {
    "box": [
     14,
-    745,
+    777,
     365,
     232
    ],

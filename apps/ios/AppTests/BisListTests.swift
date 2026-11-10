@@ -139,6 +139,16 @@ struct BisListTests {
         #expect(catalog.specs(of: "shaman").map(\.name) == ["Elemental", "Enhancement", "Restoration"])
     }
 
+    @Test("a character with no reported spec opens on its class's first list")
+    func specLessCharacter() throws {
+        let catalog = try BisTestData.catalog()
+        let hunter = try #require(try BisTestData.me().characters.first { $0.name == "Yellfury" })
+        #expect(hunter.spec == nil)
+        let first = try #require(catalog.specs(of: "hunter").first?.spec)
+        let own = try #require(BisSelection.forCharacter(hunter, catalog: catalog))
+        #expect(own == BisSelection(classSlug: "hunter", spec: first, range: .forLevel(31), faction: "horde"))
+    }
+
     @Test("Yours and the way back follow the character's list")
     func yoursAndBack() throws {
         let own = BisTestData.raid

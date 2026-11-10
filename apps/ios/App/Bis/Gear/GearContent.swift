@@ -12,6 +12,9 @@ struct GearContent: Equatable {
     let unit: String
     /// `60 raid · Alliance · 4 of 17 slots on the list`, ended by Change.
     let facts: String
+    /// Under the line: `+157.6 DPS from 13 upgrades · 2 gains not modelled yet · synced 2 h ago`; nil
+    /// without the character's own answer.
+    var summary: String?
     /// The best place of each kind; empty when the gains or the loot file are unknown.
     let tonight: [GearPlaceRow]
     let slots: [GearSlotRow]
@@ -32,6 +35,8 @@ struct GearPlaceRow: Equatable, Identifiable {
     let sub: String
     let icon: String?
     let quality: Int?
+    /// `2 upgrades · +20.4 DPS`: what the place gives in all.
+    var figure: String?
     /// The place's best upgrade, which a tap opens.
     let item: GearItemRef
 }

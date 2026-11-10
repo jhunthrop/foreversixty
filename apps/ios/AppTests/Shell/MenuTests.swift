@@ -13,25 +13,25 @@ enum MenuTestData {
 
     static func character(
         _ name: String, _ className: String, _ spec: String?, _ level: Int, faction: String,
-        avatar: Bool = true, guild: CharacterGuild? = nil
+        avatar: Bool = true, guild: CharacterGuild? = nil, itemLevel: Int? = nil
     ) -> AccountCharacter {
         let url = avatar ? HomeFixtures.repoRoot.appending(path: "design/mocks/data/avatars/\(name.lowercased()).jpg").absoluteString : nil
         return AccountCharacter(
             key: "us/normal/\(name.lowercased())", region: "us", ruleset: "normal", name: name, source: "bnet",
-            className: className, level: level, faction: faction, avatarUrl: url, spec: spec, guild: guild
+            className: className, level: level, faction: faction, itemLevel: itemLevel, avatarUrl: url, spec: spec, guild: guild
         )
     }
 
     static let thandrel = character("Thandrel", "warrior", "Fury", 60, faction: "alliance", guild: guild)
     static let others = [
-        character("Lightvow", "paladin", "Holy", 60, faction: "alliance", guild: guild),
-        character("Kaelor", "mage", "Frost", 47, faction: "horde"),
-        character("Felsnap", "hunter", "Beast Mastery", 34, faction: "alliance"),
-        character("Brewmist", "shaman", "Enhancement", 22, faction: "horde"),
-        character("Ashmantle", "warlock", "Affliction", 18, faction: "alliance", avatar: false),
+        character("Lightvow", "paladin", "Holy", 60, faction: "alliance", guild: guild, itemLevel: 61),
+        character("Kaelor", "mage", "Frost", 47, faction: "horde", itemLevel: 44),
+        character("Felsnap", "hunter", "Beast Mastery", 34, faction: "alliance", itemLevel: 31),
+        character("Brewmist", "shaman", "Enhancement", 22, faction: "horde", itemLevel: 19),
+        character("Ashmantle", "warlock", "Affliction", 18, faction: "alliance", avatar: false, itemLevel: 15),
     ]
     static let low = [
-        character("Pockets", "rogue", nil, 6, faction: "alliance", avatar: false),
+        character("Pockets", "rogue", nil, 6, faction: "alliance", avatar: false, itemLevel: 5),
         character("Bankalt", "mage", nil, 1, faction: "alliance", avatar: false),
     ]
 
@@ -50,7 +50,8 @@ enum MenuTestData {
     }
 
     static let facts = ProfileMenuSummary.AccountFacts(
-        notificationGroups: ["Raids", "Gear and sims", "Logs"], plan: "Premium · Founder price", devices: 3, offlineBytes: 26_600_000
+        notificationGroups: ["Raids", "Gear and sims", "Logs"], plan: "Premium · Founder price", devices: 3, offlineBytes: 26_600_000,
+        newestDevice: "iPhone 17"
     )
     static let version = "Version 0.1.0 (7) · data 1.60.1.70790"
 
@@ -69,6 +70,48 @@ struct FilePortraitSource: PortraitSource {
 
 @Suite("Profile menu")
 struct ProfileMenuSummaryTests {
+    @Test("You's line names the guild rank; Switch rows add the item level")
+    func lines() {
+        let officer = CharacterGuild(id: 2, name: "Olympus XXVII", rank: "officer", verified: true)
+        let you = MenuTestData.character("Gorvash", "warrior", "Fury", 58, faction: "horde", guild: officer)
+        #expect(ProfileMenuSummary.youLine(you) == "Fury Warrior · 58 · Officer")
+        let alone = MenuTestData.character("Felsnap", "hunter", "Beast Mastery", 34, faction: "alliance")
+        #expect(ProfileMenuSummary.youLine(alone) == AccountCopy.characterLine(alone))
+        let geared = AccountCharacter(
+            key: "us/normal/lightvow", region: "us", ruleset: "normal", name: "Lightvow", source: "bnet",
+            className: "paladin", level: 60, faction: "alliance", itemLevel: 63, spec: "Holy"
+        )
+        #expect(ProfileMenuSummary.switchLine(geared) == AccountCopy.characterLine(geared) + " · item level 63")
+        #expect(ProfileMenuSummary.switchLine(alone) == AccountCopy.characterLine(alone))
+    }
+
+    @Test("a failed Battle.net refresh replaces the stamp")
+    func syncError() {
+        let failing = AccountCharacter(
+            key: MenuTestData.thandrel.key, region: "us", ruleset: "normal", name: "Thandrel", source: "bnet",
+            className: "warrior", level: 60, faction: "alliance", spec: "Fury",
+            build: CharacterBuild(source: "bnet", capturedAt: MenuTestData.now, syncError: "bnet_refresh_failed"),
+            guild: MenuTestData.guild
+        )
+        let summary = ProfileMenuSummary(
+            me: MenuTestData.me([failing]), current: failing, facts: MenuTestData.facts, version: "", now: MenuTestData.now
+        )
+        #expect(summary.syncError == Copy.menuSyncError)
+        #expect(MenuTestData.summary([MenuTestData.thandrel]).syncError == nil)
+    }
+
+    @Test("Devices names the newest device by sign-in; the count alone without devices")
+    func devices() {
+        let old = Device(id: "a", name: "iPad", platform: "ios", createdAt: MenuTestData.now.addingTimeInterval(-86400))
+        let new = Device(id: "b", name: "iPhone 17", platform: "ios", createdAt: MenuTestData.now)
+        let facts = ProfileMenuSummary.deviceFacts([old, new], into: .init())
+        #expect(facts.devices == 2)
+        #expect(facts.newestDevice == "iPhone 17")
+        #expect(ProfileMenuSummary.devicesLine(2, newest: "iPhone 17") == "2 signed in · newest iPhone 17")
+        #expect(ProfileMenuSummary.devicesLine(3, newest: nil) == "3 signed in")
+        #expect(ProfileMenuSummary.devicesLine(nil, newest: nil).isEmpty)
+    }
+
     @Test("You is the selected character; Switch lists the rest at 10 and up, the lower ones fold")
     func characters() {
         let summary = MenuTestData.summary([MenuTestData.thandrel] + MenuTestData.others + MenuTestData.low)
@@ -84,7 +127,7 @@ struct ProfileMenuSummaryTests {
         let summary = MenuTestData.summary([MenuTestData.thandrel])
         #expect(summary.tools.map(\.title) == ["Guides", "Tiers", "Patch notes", "Sims", "Logs and reports", "Planner", "Rankings"])
         #expect(summary.account.map(\.line) == [
-            "Raids, gear and sims, logs on", "Premium · Founder price", "3 signed in", "26.6 MB on this phone", "Sign out, delete account",
+            "Raids, gear and sims, logs on", "Premium · Founder price", "3 signed in · newest iPhone 17", "26.6 MB on this phone", "Sign out, delete account",
         ])
     }
 

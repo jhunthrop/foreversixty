@@ -40,19 +40,19 @@
     14,
     96,
     365,
-    302
+    341
    ],
    "inventory": {
     "row": 4,
-    "image": 3
+    "image": 4
    }
   },
   "countdowns": {
    "box": [
     14,
-    418,
+    457,
     365,
-    168
+    188
    ],
    "inventory": {
     "row": 1,
@@ -63,7 +63,7 @@
   "section-new-for-you": {
    "box": [
     14,
-    606,
+    665,
     365,
     232
    ],

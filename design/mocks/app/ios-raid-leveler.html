@@ -224,10 +224,23 @@ main{min-height:calc(var(--dev-h) - var(--top) - var(--bottom));flex:1 0 auto}
 .r5raid .lvh span{font:600 15px/22.1px var(--font-body);color:#fff}
 .r5raid .lvh+.note{margin:4px 0 8px}
 .r5raid .rule{border-top:1px solid var(--line)}
+/* round 2 (review backfill): the status line under the answers, the officers' notes, Who is coming's closing lines */
+.r5raid .stl{margin:8px 0 0;font:400 13px/20px var(--font-body);color:var(--kill)}
+.r5raid .notes{margin:0;font:400 13px/18.29px var(--font-body);color:var(--text);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.r5raid .notes b{font-weight:700;color:#fff;display:inline}
+.r5raid .rfoot p{margin:0;padding:8px 0;font:400 13px/18.29px var(--font-body);color:var(--muted)}
+.r5raid .rfoot p.warn{color:var(--wipe)}
+.r5raid .row .split{font-weight:400;color:var(--muted)}
+[data-platform=android] .r5raid .blk-r5>.notes{margin-top:8px}
 [data-platform=ios] .r5raid .btn{height:44px;min-height:44px}
-[data-platform=ios] .r5raid .seg{gap:8px;border:0;border-radius:0;overflow:visible}
-[data-platform=ios] .r5raid .seg .btn{border:1px solid #5a5d70;border-radius:6px}
-[data-platform=ios] .r5raid .seg .btn+.btn{border-left:1px solid #5a5d70}
+/* iOS's Segmented (brand B1): one connected group, hairline dividers, the chosen one teal with its edge, 44 pt */
+[data-platform=ios] .r5raid .seg{border:1px solid #5a5d70;border-radius:6px;background:#170e09}
+[data-platform=ios] .r5raid .seg .btn{height:44px;min-height:44px;padding:0 4px;font:600 13px/18px var(--font-body);color:var(--text)}
+[data-platform=ios] .r5raid .seg .btn.on{font-weight:700;color:#fff;box-shadow:inset 0 0 0 1px #408076;background:#0f6064}
+[data-platform=ios] .r5raid .pn .notes{margin-top:12px}
+[data-platform=ios] .r5raid .rfoot{border-top:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:4px}
+[data-platform=ios] .r5raid .rfoot p{padding:0;line-height:18px}
+[data-platform=ios] .r5raid .rfoot p.warn{color:var(--muted)}
 </style><style>
 /* ---- Page: one column, four layouts ---- */
 .layout-split{display:grid;gap:var(--gap);grid-template-columns:minmax(0,1fr);align-items:start}
@@ -516,6 +529,7 @@ right:0;left:0;bottom:0;max-height:88vh;border-radius:16px 16px 0 0}
 .btn.is-off{opacity:.45;pointer-events:none}
 .cap{display:block;position:relative;width:100%;max-width:var(--w);max-height:var(--mh,420px);aspect-ratio:var(--ar);border:1px solid var(--line-soft);border-radius:4px;background:var(--raised);overflow:hidden}
 .cap img{display:block;width:100%;height:100%;object-fit:contain}
+.cap picture{display:contents}@media(max-width:639px){.cap.has-narrow{aspect-ratio:var(--ar-n)}}
 .cap-wrap{display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
 code.c{font:600 14px/20px ui-monospace,'SF Mono',Menlo,monospace;color:var(--strong);letter-spacing:.02em}
 code.c.big{font-size:24px;line-height:30px;letter-spacing:.06em}

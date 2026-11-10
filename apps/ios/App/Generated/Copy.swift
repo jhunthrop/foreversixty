@@ -1378,6 +1378,21 @@ enum Copy {
         format("raid.pages.lootLast", n)
     }
 
+    /// Last: {zone}, {kills}, {wipes}
+    static func raidPagesLastNight(zone: String, kills: String, wipes: String) -> String {
+        format("raid.pages.lastNight", zone, kills, wipes)
+    }
+
+    /// {n} kills
+    static func raidPagesKills(n: Int) -> String {
+        format("raid.pages.kills", n)
+    }
+
+    /// {n} wipes
+    static func raidPagesWipes(n: Int) -> String {
+        format("raid.pages.wipes", n)
+    }
+
     /// #{position} of {of} in guild sims
     static func raidPagesSimsRank(position: Int, of: Int) -> String {
         format("raid.pages.simsRank", position, of)
@@ -2102,6 +2117,12 @@ enum Copy {
         format("push.late.minutes", n)
     }
 
+    /// Application declined
+    static var pushApplicantDeclined: String { text("push.applicant.declined") }
+
+    /// Open the application to answer it.
+    static var pushApplicantFailed: String { text("push.applicant.failed") }
+
     /// Raids
     static var pushGroupRaids: String { text("push.group.raids") }
 
@@ -2189,6 +2210,19 @@ enum Copy {
     /// Main
     static var menuCharacterMain: String { text("menu.character.main") }
 
+    /// {kind} · {n} · {rank}
+    static func menuCharacterLineRank(kind: String, n: Int, rank: String) -> String {
+        format("menu.character.lineRank", kind, n, rank)
+    }
+
+    /// item level {n}
+    static func menuCharacterItemLevel(n: Int) -> String {
+        format("menu.character.itemLevel", n)
+    }
+
+    /// Battle.net refresh failed
+    static var menuSyncError: String { text("menu.syncError") }
+
     /// Open menu
     static var menuOpen: String { text("menu.open") }
 
@@ -2197,6 +2231,9 @@ enum Copy {
 
     /// Refresh
     static var menuRefresh: String { text("menu.refresh") }
+
+    /// Could not refresh just now. Try again.
+    static var menuRefreshFailed: String { text("menu.refreshFailed") }
 
     /// Switch character
     static var menuSwitch: String { text("menu.switch") }
@@ -2277,6 +2314,11 @@ enum Copy {
     /// {n} signed in
     static func menuDevicesLine(n: Int) -> String {
         format("menu.devices.line", n)
+    }
+
+    /// {n} signed in · newest {name}
+    static func menuDevicesLineNewest(n: Int, name: String) -> String {
+        format("menu.devices.lineNewest", n, name)
     }
 
     /// Offline data
@@ -2360,7 +2402,7 @@ enum Copy {
     /// When you have not answered a raid; off, they mention you in the channel
     static var notificationsOfficerDmsLine: String { text("notifications.officerDmsLine") }
 
-    /// {n} of {total} slots on the list
+    /// {n} of {total} slots match the list
     static func gearOnList(n: Int, total: Int) -> String {
         format("gear.onList", n, total)
     }
@@ -2395,6 +2437,21 @@ enum Copy {
     /// {items}, needs {standing}
     static func gearWhereRep(items: String, standing: String) -> String {
         format("gear.where.rep", items, standing)
+    }
+
+    /// {upgrades} · {gain} {unit}
+    static func gearWhereFigure(upgrades: String, gain: String, unit: String) -> String {
+        format("gear.where.figure", upgrades, gain, unit)
+    }
+
+    /// {gain} {unit} from {upgrades}
+    static func gearHeaderGain(gain: String, unit: String, upgrades: String) -> String {
+        format("gear.header.gain", gain, unit, upgrades)
+    }
+
+    /// synced {age}
+    static func gearHeaderSynced(age: String) -> String {
+        format("gear.header.synced", age)
     }
 
     /// blacksmith
@@ -5562,6 +5619,26 @@ enum Copy {
         format("home.bestRun.chance", place, item, gain, chance)
     }
 
+    /// Best run · {item}
+    static func homeBestRunRow(item: String) -> String {
+        format("home.bestRun.row", item)
+    }
+
+    /// {upgrades} · {gain}
+    static func homeUpgradesMeta(upgrades: String, gain: String) -> String {
+        format("home.upgrades.meta", upgrades, gain)
+    }
+
+    /// replaces {item}
+    static func homeUpgradesReplacesWorn(item: String) -> String {
+        format("home.upgrades.replacesWorn", item)
+    }
+
+    /// Synced {age}
+    static func homeAnswerSynced(age: String) -> String {
+        format("home.answer.synced", age)
+    }
+
     /// {guild} · {raid} tonight
     static func homeRaidTonight(guild: String, raid: String) -> String {
         format("home.raid.tonight", guild, raid)
@@ -5875,6 +5952,56 @@ enum Copy {
 
     /// How late
     static var raidTabHowLate: String { text("raid.tab.howLate") }
+
+    /// {tally} · {n} short
+    static func raidTabTallyShort(tally: String, n: Int) -> String {
+        format("raid.tab.tallyShort", tally, n)
+    }
+
+    /// {have}/{want}
+    static func raidTabTallyCompact(have: Int, want: Int) -> String {
+        format("raid.tab.tallyCompact", have, want)
+    }
+
+    /// {melee} melee, {ranged} ranged
+    static func raidTabDamageSplit(melee: Int, ranged: Int) -> String {
+        format("raid.tab.damageSplit", melee, ranged)
+    }
+
+    /// Invites {time} · {n}
+    static func raidTabInviteSize(time: String, n: Int) -> String {
+        format("raid.tab.inviteSize", time, n)
+    }
+
+    /// Bench {n}
+    static func raidTabCountBench(n: Int) -> String {
+        format("raid.tab.countBench", n)
+    }
+
+    /// Out {n}
+    static func raidTabCountOut(n: Int) -> String {
+        format("raid.tab.countOut", n)
+    }
+
+    /// {n} not answered
+    static func raidTabCountNotAnswered(n: Int) -> String {
+        format("raid.tab.countNotAnswered", n)
+    }
+
+    /// {n} signed In have not synced this week
+    static func raidTabNotSynced(n: Int) -> String {
+        format("raid.tab.notSynced", n)
+    }
+
+    /// Missing {name}
+    static func raidTabCoverMissing(name: String) -> String {
+        format("raid.tab.coverMissing", name)
+    }
+
+    /// {name} {have} of {need}
+    static func raidTabCoverShort(name: String, have: Int, need: Int) -> String {
+        format("raid.tab.coverShort", name, have, need)
+    }
 
     /// Late · {n} min
     static func raidAnswerLateMinutes(n: Int) -> String {

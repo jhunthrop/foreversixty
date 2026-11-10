@@ -44,16 +44,19 @@ enum GearTestData {
         slot("ranged", "Ranged", "Blackcrow", "inv_weapon_crossbow_04", 3, "+1.9"),
     ]
 
-    private static func place(_ title: String, _ sub: String, _ icon: String, _ quality: Int) -> GearPlaceRow {
-        GearPlaceRow(id: title, title: title, sub: sub, icon: icon, quality: quality, item: GearItemRef(itemID: 1, slot: "head", gain: nil))
+    private static func place(_ title: String, _ sub: String, _ icon: String, _ quality: Int, _ figure: String) -> GearPlaceRow {
+        GearPlaceRow(
+            id: title, title: title, sub: sub, icon: icon, quality: quality, figure: figure, item: GearItemRef(itemID: 1, slot: "head", gain: nil)
+        )
     }
 
     static let content = GearContent(
-        title: "Fury Warrior", figure: "1004.2", unit: "DPS", facts: "60 raid · Alliance · 4 of 17 slots on the list",
+        title: "Fury Warrior", figure: "1004.2", unit: "DPS", facts: "60 raid · Alliance · 4 of 17 slots match the list",
+        summary: "+157.6 DPS from 13 upgrades · 2 gains not modelled yet · synced 2 h ago",
         tonight: [
-            place("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh’gajin, 8%", "inv_weapon_crossbow_04", 3),
-            place("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", "inv_helmet_36", 4),
-            place("Stormpike Guard", "Don Julio’s Band, needs revered", "inv_jewelry_ring_35", 4),
+            place("Blackrock Spire", "Blackcrow · Shadow Hunter Vosh’gajin, 8%", "inv_weapon_crossbow_04", 3, "1 upgrade · +1.9 DPS"),
+            place("Blacksmithing", "Lionheart Helm, Ironwood Blade · ask a blacksmith", "inv_helmet_36", 4, "2 upgrades · +20.4 DPS"),
+            place("Stormpike Guard", "Don Julio’s Band, needs revered", "inv_jewelry_ring_35", 4, "1 upgrade · +6.8 DPS"),
         ],
         slots: slots
     )
@@ -209,6 +212,28 @@ struct GearLogicTests {
             "Lionheart Helm, Ironwood Blade · ask a blacksmith",
             "Don Julio's Band, needs exalted",
         ])
+    }
+
+    @Test("each place row adds up its upgrades and their gains")
+    func placeFigure() throws {
+        let places = try whereToGo(gains: ["head": 14.5, "finger1": 6.8, "main_hand": 5.9], level: 60)
+        let smith = try #require(places.tonight.first { $0.place.name == "Blacksmithing" })
+        #expect(GearPresenter.placeFigure(smith, unit: "DPS") == "2 upgrades · +20.4 DPS")
+        let rep = try #require(places.tonight.first { $0.place.name == "Stormpike Guard" })
+        #expect(GearPresenter.placeFigure(rep, unit: "DPS") == "1 upgrade · +6.8 DPS")
+    }
+
+    @Test("the header line: the gain from the upgrades, the gains not modelled, the synced age")
+    func headerLine() throws {
+        let home = try HomeFixtures.home()
+        let synced = try #require(home.syncedAt)
+        let line = GearPresenter.summary(home, unit: "DPS", now: synced.addingTimeInterval(2 * 3600))
+        #expect(line == "+102.5 DPS from 12 upgrades · 2 gains not modelled yet · synced 2 h ago")
+    }
+
+    @Test("the counter reads how many slots match the list")
+    func counterWords() {
+        #expect(Copy.gearOnList(n: 0, total: 17) == "0 of 17 slots match the list")
     }
 
     @Test("the summary names the band: 60 raid, or the band's range")

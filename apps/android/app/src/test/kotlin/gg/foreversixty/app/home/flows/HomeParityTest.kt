@@ -19,6 +19,7 @@ import gg.foreversixty.app.navigation.ForeverTab
 import gg.foreversixty.app.navigation.ForeverTabScaffold
 import gg.foreversixty.app.navigation.TabBadges
 import gg.foreversixty.app.raids.logic.SignupState
+import gg.foreversixty.app.raids.logic.StatusLine
 import gg.foreversixty.app.testing.PARITY_PIXEL_9
 import gg.foreversixty.app.testing.ParityCheck
 import org.junit.Rule
@@ -95,6 +96,7 @@ class HomeParityTest {
 object HomeFixtures {
     private const val BUILD = ActivityFixtures.BUILD
     private const val ONY = "inv_misc_head_dragon_black"
+    private const val SYNCED = "Synced 2 h ago from the addon"
 
     val head = HomeHead("Thandrel", "warrior", listOf("Level 60 Fury Warrior", "Olympus XXVII"))
     private val felsnap = HomeHead("Felsnap", "hunter", listOf("Level 34 Beast Mastery Hunter", "6 levels to band 40"))
@@ -103,13 +105,19 @@ object HomeFixtures {
         UpgradeLine(ItemLook(name.hashCode(), name, quality, icon), source, gain, "DPS", "head", null, source)
 
     private val raidUpgrades = listOf(
-        upgrade("Lionheart Helm", 4, "inv_helmet_36", "Head · Blacksmithing", "+14.5"),
+        upgrade("Lionheart Helm", 4, "inv_helmet_36", "Head · Blacksmithing · replaces Helm of Valor", "+14.5"),
         upgrade("Don Julio's Band", 4, "inv_jewelry_ring_35", "Finger · Stormpike Guard, needs revered", "+6.8"),
         upgrade("Timbermaw Tunic", 4, "inv_chest_fur", "Chest · Leatherworking", "+5.3"),
     )
 
     private fun upgrades(bestRun: Boolean) =
-        HomeBlock.Upgrades(raidUpgrades, if (bestRun) "Best run: Blackrock Spire, Blackcrow +1.9 DPS, 8%" else null, BUILD)
+        HomeBlock.Upgrades(
+            raidUpgrades,
+            if (bestRun) upgrade("Blackcrow", 3, "inv_weapon_crossbow_02", "Best run · Blackrock Spire · 8%", "+1.9") else null,
+            BUILD,
+            meta = "13 upgrades · +157.6 DPS",
+            synced = SYNCED,
+        )
 
     private fun act(id: Long, icon: String, title: String, line: String, unread: Boolean) = HomeActivityRow(
         ActivityRow(id = id, kind = "x", group = "gear", title = title, body = "", link = "", occurredAt = "2026-11-06T10:00:00Z", read = !unread, icon = icon),
@@ -143,6 +151,8 @@ object HomeFixtures {
         officer = if (officer) OfficerItems("5 have not answered, 2 of them healers", "Healers short by 3", "1 applicant", "Mirelle, Holy Priest 60, 2 min ago") else null,
         zone = "Onyxia's Lair",
         place = "Olympus XXVII · Wed 6 Jan, 8:00 pm CST",
+        // A Late just answered shows its save under the answers (mock m-android-home-late).
+        control = if (answer == SignupState.Late && lateOpen) AnswerControl(status = StatusLine.Saved("Saved.")) else AnswerControl(),
     )
 
     fun raidDay(answer: SignupState? = null, lateOpen: Boolean = false, officer: Boolean = false) =
@@ -207,8 +217,10 @@ object HomeFixtures {
                     upgrade("Cartilage Shapers", 3, "inv_gauntlets_18", "Hands · quest, Lyn the Ignored", "+0.8"),
                     upgrade("Ring of Precision", 3, "inv_jewelry_ring_14", "Finger · Blackfathom Deeps", "+0.6"),
                 ),
-                "Best run: Blackfathom Deeps, Ring of Precision +0.6 DPS",
+                upgrade("Ring of Precision", 3, "inv_jewelry_ring_14", "Best run · Blackfathom Deeps", "+0.6"),
                 BUILD,
+                meta = "6 upgrades · +3.1 DPS",
+                synced = SYNCED,
             ),
             newForYou(
                 listOf(

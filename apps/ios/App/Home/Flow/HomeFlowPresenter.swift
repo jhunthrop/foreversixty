@@ -33,9 +33,19 @@ struct HomeFlowInputs: Equatable {
     var ready: ReadyCheck?
     var bestRun: BestRun?
     var firstRaids: Date?
+    /// The raid answer's state (F1): the answer just sent, Late's minutes, the status line, offline.
+    var answering = RaidAnswering()
+
     /// The answer just sent, shown before the raid reloads.
-    var answer: SignupState?
-    var lateOpen = false
+    var answer: SignupState? {
+        get { answering.pending }
+        set { answering.pending = newValue }
+    }
+
+    var lateOpen: Bool {
+        get { answering.lateOpen }
+        set { answering.lateOpen = newValue }
+    }
 }
 
 /// Turns the server's blocks and the loaded data into what Home draws (flows spec 4.1). A block
@@ -94,21 +104,69 @@ struct HomeFlowPresenter {
                     id: upgrade.pick.id, name: upgrade.pick.name, quality: upgrade.pick.quality,
                     icon: upgrade.pick.icon, itemLevel: upgrade.pick.itemLevel
                 ),
-                source: "\(upgrade.slotLabel) · \(upgrade.pick.sourceLine)",
+                source: Self.sourceLine(upgrade),
                 gain: upgrade.modelled ? upgrade.gain.map { HomeGain(figure: ItemNumbers.signedTenths($0), unit: unit) } : nil,
                 wornID: upgrade.worn?.id,
                 sourceLine: upgrade.pick.sourceLine
             )
         }
-        let note: String? = rows.isEmpty ? (home.state == "no_gear" ? Copy.homeAnswerNoGear : Copy.homeAnswerAllMatch(band: home.bandLabel ?? "")) : nil
-        return HomeUpgradesContent(rows: Array(rows), bestRun: bestRun.map { bestRunLine($0, unit: unit) }, note: note)
+        let note: String? = rows.isEmpty ? Self.emptyNote(home) : nil
+        var content = HomeUpgradesContent(rows: Array(rows), bestRun: bestRun.map { bestRunRow($0, home: home) }, note: note)
+        content.meta = upgradesMeta(home)
+        content.stamp = syncedStamp(home)
+        return content
     }
 
-    func bestRunLine(_ run: BestRun, unit: String) -> String {
-        let gain = Copy.homeUpgradesGain(figure: ItemNumbers.signedTenths(run.gain), unit: unit)
-        guard let chance = run.chance else { return Copy.homeBestRun(place: run.place, item: run.item, gain: gain) }
-        return Copy.homeBestRunChance(place: run.place, item: run.item, gain: gain, chance: ItemNumbers.percent(chance))
+    static let partSeparator = " · "
+
+    /// `Head · Blacksmithing · replaces Lionheart Helm · 4%`: the worn item when the API names it,
+    /// the drop chance when the source has one.
+    static func sourceLine(_ upgrade: HomeUpgrade) -> String {
+        let worn = upgrade.worn.flatMap { $0.known ? $0.name : nil }.map { Copy.homeUpgradesReplacesWorn(item: $0) }
+        let chance = upgrade.pick.dropChance.map(ItemNumbers.percent)
+        return [upgrade.slotLabel, upgrade.pick.sourceLine, worn, chance].compactMap(\.self).joined(separator: partSeparator)
     }
+
+    /// `13 upgrades · +157.6 DPS`; the count alone without a modelled total.
+    func upgradesMeta(_ home: CharacterHome) -> String? {
+        guard home.upgradeCount > 0 else { return nil }
+        let count = Copy.homeAnswerUpgrades(n: home.upgradeCount)
+        guard let total = home.totalGain, total > 0 else { return count }
+        let gain = Copy.homeUpgradesGain(figure: ItemNumbers.signedTenths(total), unit: home.unitWord ?? "")
+        return Copy.homeUpgradesMeta(upgrades: count, gain: gain)
+    }
+
+    /// `Synced 2 h ago from the addon`; `Synced 2 h ago` from anywhere else.
+    func syncedStamp(_ home: CharacterHome) -> String? {
+        guard let synced = home.syncedAt else { return nil }
+        let age = HomeTime(now: now, calendar: calendar).age(since: synced)
+        return home.syncedFrom == Self.addonSource ? Copy.homeAnswerSyncedAddon(age: age) : Copy.homeAnswerSynced(age: age)
+    }
+
+    static let addonSource = "addon"
+
+    /// Best run as a row: the dungeon over the drop and its chance, the drop's icon when the answer
+    /// names that item, the gain.
+    func bestRunRow(_ run: BestRun, home: CharacterHome) -> HomeBestRunRow {
+        let pick = run.itemID.flatMap { id in home.upgrades.first { $0.pick.id == id }?.pick }
+        let line = [Copy.homeBestRunRow(item: run.item), run.chance.map(ItemNumbers.percent)].compactMap(\.self)
+            .joined(separator: Self.partSeparator)
+        return HomeBestRunRow(
+            place: run.place, line: line, icon: pick?.icon,
+            gain: HomeGain(figure: ItemNumbers.signedTenths(run.gain), unit: home.unitWord ?? "")
+        )
+    }
+
+    /// The line an answer with no rows shows, by the server's state: only `ok` means every slot matches.
+    static func emptyNote(_ home: CharacterHome) -> String {
+        switch home.state {
+        case "no_gear": Copy.homeAnswerNoGear
+        case "no_spec": Copy.homeAnswerPickSpec
+        case "under_20": Copy.homeAnswerUnder20
+        default: Copy.homeAnswerAllMatch(band: home.bandLabel ?? "")
+        }
+    }
+
 
     // MARK: The next raid
 
@@ -131,7 +189,8 @@ struct HomeFlowPresenter {
         }
         let open = named == nil ? Copy.homeRaidLineSubAlone(counts: counts) : Copy.homeRaidLineSub(counts: counts, name: name, role: role)
         let guild = inputs.character.guild ?? ""
-        let minutes = selected == .late ? raid.signups.first { $0.own && $0.characterKey == viewer?.characterKey }?.lateMinutes : nil
+        let saved = raid.signups.first { $0.own && $0.characterKey == viewer?.characterKey }?.lateMinutes
+        let minutes = selected == .late ? (inputs.answer == .late ? inputs.answering.pendingMinutes ?? saved : saved) : nil
         var content = NextRaidContent(
             guildID: inputs.character.guildID ?? 0, raidID: raid.id, characterKey: viewer?.characterKey ?? inputs.character.key,
             zone: raid.zoneName,
@@ -151,6 +210,9 @@ struct HomeFlowPresenter {
         content.who = named.map { Copy.raidTabAs(name: $0.name, role: role) }
         content.chip = selected.map { Self.answerWord($0, lateMinutes: minutes) }
         content.lateMinutes = minutes
+        content.status = inputs.answering.line
+        content.busy = inputs.answering.busy
+        content.answersEnabled = !inputs.answering.offline
         return content
     }
 

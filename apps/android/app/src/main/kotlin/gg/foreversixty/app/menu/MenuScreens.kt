@@ -30,6 +30,7 @@ import gg.foreversixty.app.account.AccountDeps
 import gg.foreversixty.app.account.AccountLinks
 import gg.foreversixty.app.account.AccountPage
 import gg.foreversixty.app.account.AccountRoute
+import gg.foreversixty.app.auth.session.DeviceRow
 import gg.foreversixty.app.auth.session.SessionPhase
 import gg.foreversixty.app.bis.BisSelection
 import gg.foreversixty.app.designsystem.FsColor
@@ -101,9 +102,10 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
     val picked = session?.pickedKey?.collectAsStateWithLifecycle()?.value
     val me = (phase as? SessionPhase.SignedIn)?.me
     val model = me?.let { MenuModel.of(it, session.currentCharacter(phase, picked), Instant.now()) }
-    var devices by remember { mutableStateOf<Int?>(null) }
+    var devices by remember { mutableStateOf<List<DeviceRow>?>(null) }
+    var refresh by remember { mutableStateOf(MenuRefresh.Idle) }
     LaunchedEffect(open, me != null) {
-        if (open && session != null && me != null) devices = (session.devices() as? ApiResult.Success)?.data?.size
+        if (open && session != null && me != null) devices = (session.devices() as? ApiResult.Success)?.data
     }
     val offline = remember(account) { account?.offlineData?.invoke() }
     val offlineSize by produceState<String?>(null, open, offline) {
@@ -114,7 +116,8 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
     }
     val lines = MenuLines(
         plan = me?.let { PlanCopy.line(PlanSummary.of(it, Instant.now()).row) },
-        devices = devices,
+        devices = devices?.size,
+        newestDevice = devices?.firstOrNull { !it.isThisDevice }?.name,
         offlineData = offlineSize,
         version = account?.let { AccountCopy.version(it.versionName, it.versionCode, it.dataBuild()) }.orEmpty(),
         year = Year.now().value,
@@ -124,12 +127,17 @@ private fun MenuContent(account: AccountDeps?, open: Boolean, act: ((((MenuDesti
         lines = lines,
         actions = MenuActions(
             onSwitch = { character -> act { session?.pick(character.key) } },
-            onRefresh = { scope.launch { session?.refresh() } },
+            onRefresh = {
+                if (session != null && refresh != MenuRefresh.Refreshing) {
+                    scope.launch { MenuRefresh.run({ refresh = it }, session::refresh) }
+                }
+            },
             onOpen = { destination -> act { open -> open(destination) } },
             onSignIn = { act { account?.let { it.session.beginSignIn(it.browser(context)) } } },
             onHelp = { act { AccountLinks.open(context, AccountLinks.HELP) } },
             onPrivacy = { act { AccountLinks.open(context, AccountLinks.PRIVACY) } },
         ),
+        refresh = refresh,
     )
 }
 

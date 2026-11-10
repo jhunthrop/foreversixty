@@ -40,12 +40,13 @@ enum PushLanding {
     }
 
     static func destination(kind: String?, link: URL?, data: [String: String]) -> IntentDestination? {
-        if let kind, let byKind = destination(kind: kind, data: data) { return byKind }
-        return link.flatMap(Self.link(from:)).map(IntentDestination.link)
+        let linked = link.flatMap(Self.link(from:))
+        if let kind, let byKind = destination(kind: kind, data: data, linked: linked) { return byKind }
+        return linked.map(IntentDestination.link)
     }
 
     /// The kinds whose answer the payload's data names better than its web link.
-    private static func destination(kind: String, data: [String: String]) -> IntentDestination? {
+    private static func destination(kind: String, data: [String: String], linked: DeepLink?) -> IntentDestination? {
         let guild = data["guild_id"].flatMap(Int64.init)
         let raid = data["raid_id"].flatMap(Int64.init)
         switch kind {
@@ -68,7 +69,11 @@ enum PushLanding {
             return .link(.plan)
         default:
             guard let guild, let raid else { return nil }
-            return .link(.raid(guild: guild, raid: raid))
+            // The ids win; the server's app link for the same raid still says what to press (`state=`, `spec=ask`).
+            guard case let .raid(linkGuild, linkRaid, spec, state, _)? = linked, linkGuild == guild, linkRaid == raid else {
+                return .link(.raid(guild: guild, raid: raid))
+            }
+            return .link(.raid(guild: guild, raid: raid, spec: spec, state: state))
         }
     }
 

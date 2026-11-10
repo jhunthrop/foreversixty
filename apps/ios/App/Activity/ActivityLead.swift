@@ -11,6 +11,8 @@ enum ActivityCrest {
     static let namedSpecKinds: Set<String> = ["tier.moved"]
 
     static func className(_ row: ActivityRow, specs: SpecCatalog) -> String? {
+        // The server names the other player's class when the row is about one.
+        if let crest = row.crest, !crest.isEmpty { return crest }
         if let spec = specs.specs.first(where: { $0.icon == row.icon }) { return spec.classSlug }
         guard namedSpecKinds.contains(row.kind) else { return nil }
         let title = row.title.lowercased()
