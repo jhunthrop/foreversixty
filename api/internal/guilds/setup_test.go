@@ -65,7 +65,7 @@ func TestSetupStartsAtToDoAndIsOfficerOnly(t *testing.T) {
 		}
 	}
 	// Every seeded raider has a verified character and none has synced an export yet.
-	if v.Sync.Accounts != 3 || v.Sync.Synced != 0 || stateOf(v, StepAddonSync) != SetupTodo {
+	if v.Sync.Accounts != 3 || v.Sync.Synced != 0 || len(v.Sync.Missing) != 3 || stateOf(v, StepAddonSync) != SetupTodo {
 		t.Fatalf("sync = %+v", v.Sync)
 	}
 	w.as(w.member)
@@ -167,7 +167,7 @@ func TestSetupPreviewsReadinessWithoutRaidGuild(t *testing.T) {
 	w.as(w.member)
 	w.signup(t, raid.ID, memberKeyA, `{"state":"in"}`)
 	v := w.setup(t)
-	if v.Readiness == nil || v.Readiness.Signed != 1 || v.Readiness.RaidTitle == "" {
+	if v.Readiness == nil || v.Readiness.Signed != 1 || v.Readiness.RaidTitle == "" || v.Readiness.Names == nil {
 		t.Fatalf("preview = %+v", v.Readiness)
 	}
 }

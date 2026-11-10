@@ -111,7 +111,7 @@ function mixedSetup(): GuildSetup {
       wanted: ['Holy Priest', 'Restoration Shaman', 'Protection Warrior'],
       role_set: true,
     },
-    sync: { synced: 21, accounts: 31, window_days: 14 },
+    sync: { synced: 21, accounts: 31, window_days: 14, missing: ['Ashvane', 'Dawnhollow', 'Frostquill'] },
     visibility: 'guild',
     schedule: {
       timezone: 'America/Chicago',
@@ -123,7 +123,12 @@ function mixedSetup(): GuildSetup {
         posted_at: '2026-11-09T21:00:00Z',
       },
     },
-    readiness: { raid_title: "Onyxia's Lair", signed: 18, failing: 7 },
+    readiness: {
+      raid_title: "Onyxia's Lair",
+      signed: 18,
+      failing: 7,
+      names: ['Kraggor', 'Mirelle', 'Sunderfel', 'Brightwell', 'Corvane'],
+    },
   });
 }
 

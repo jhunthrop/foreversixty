@@ -56,10 +56,10 @@ export interface GuildSetup {
     next: { id: number; title: string; starts_at: string; posted_at: string | null } | null;
   };
   invite: { made: boolean; joined: number };
-  sync: { synced: number; accounts: number; window_days: number };
+  sync: { synced: number; accounts: number; window_days: number; missing: string[] };
   visibility: string;
   /** The Raid guild readiness board's counts for the next raid; null with Raid guild or no raid. */
-  readiness: { raid_title: string; signed: number; failing: number } | null;
+  readiness: { raid_title: string; signed: number; failing: number; names: string[] } | null;
 }
 
 function setupPath(guildId: number): string {

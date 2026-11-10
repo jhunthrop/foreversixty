@@ -164,7 +164,7 @@
     {@const current = setup}
     {@const currentSettings = settings}
     {@const id = guildId}
-    <Page layout="split" panels testid="guild-setup-page">
+    <Page layout="split" panels stickyRail testid="guild-setup-page">
       <Section title={setupCopy.heading} panel testid="guild-setup-steps">
         <Steps {items} inlineTrail testid="setup-step">
           {#snippet sub(item)}

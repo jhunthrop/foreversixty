@@ -143,7 +143,26 @@ export function rankLine(line: { rank_index: number; members: number; names: rea
   const head = setupCopy.ranks.line(line.rank_index, line.members);
   if (line.names.length === 0) return head;
   const more = line.members - line.names.length;
-  return `${head}: ${line.names.join(', ')}${more > 0 ? ` +${more}` : ''}`;
+  return `${head}: ${namesWithMore(line.names, more)}`;
+}
+
+/** Names with how many more there are, the count glued to the last name: `A, B, C\u00a0+9`. */
+export function namesWithMore(names: readonly string[], more: number): string {
+  return `${names.join(', ')}${more > 0 ? `\u00a0+${more}` : ''}`;
+}
+
+/** The unsynced members' line, empty when every account synced or no name is known. */
+export function unsyncedLine(s: GuildSetup['sync']): string {
+  if (s.missing.length === 0) return '';
+  return setupCopy.sync.missing(namesWithMore(s.missing, s.accounts - s.synced - s.missing.length));
+}
+
+/** The plan rail's readiness preview: the count, then the first raiders it would flag. */
+export function readinessLine(r: NonNullable<GuildSetup['readiness']>): string {
+  const head = setupCopy.plan.readiness(r.raid_title, r.failing, r.signed);
+  return r.names.length === 0
+    ? `${head}.`
+    : `${head}: ${namesWithMore(r.names, r.failing - r.names.length)}.`;
 }
 
 /** A channel whose name reads as the recruiting channel, for the picker's first choice. */

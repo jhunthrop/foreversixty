@@ -22,6 +22,7 @@
     scheduleLine,
     scheduleParts,
     syncLine,
+    unsyncedLine,
     syncShare,
     visibilityLine,
   } from '../../../lib/guild/setup-model';
@@ -243,6 +244,9 @@
     {/if}
   {:else if step.key === 'addon_sync'}
     <p class="text-muted text-[13px]">{syncLine(setup.sync)}</p>
+    {#if unsyncedLine(setup.sync) !== ''}
+      <p class="text-muted text-[13px]" data-testid="setup-sync-missing">{unsyncedLine(setup.sync)}</p>
+    {/if}
     <div class="max-w-[320px]">
       <Meter
         value={syncShare(setup.sync)}

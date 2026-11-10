@@ -13,6 +13,8 @@ import (
 	"fmt"
 	"slices"
 	"time"
+
+	"github.com/jackc/pgx/v5"
 )
 
 // The steps, in the checklist's order.
@@ -51,6 +53,8 @@ const (
 	syncWindow = 14 * 24 * time.Hour
 	// rankSampleNames is how many names each rank line carries.
 	rankSampleNames = 3
+	// setupNamesShown is how many names the readiness preview and the unsynced list carry.
+	setupNamesShown = 8
 	// plan words for SetupView.Plan.
 	planNone      = "none"
 	planGuild     = "guild"
@@ -88,6 +92,8 @@ type SetupReadiness struct {
 	RaidTitle string `json:"raid_title"`
 	Signed    int    `json:"signed"`
 	Failing   int    `json:"failing"`
+	// Names are the first failing raiders, without what they fail: the board itself is Raid guild.
+	Names []string `json:"names"`
 }
 
 // SetupStepView is one step and its state; Marked is true when the state came from a mark.
@@ -160,6 +166,8 @@ type SetupSync struct {
 	Synced     int `json:"synced"`
 	Accounts   int `json:"accounts"`
 	WindowDays int `json:"window_days"`
+	// Missing names the first accounts with no export inside the window, by a character of theirs.
+	Missing []string `json:"missing"`
 }
 
 // Setup is the checklist for viewerID, a verified officer or leader of guildID.
@@ -219,7 +227,22 @@ func (s *Service) setupReadiness(ctx context.Context, guildID int64) (*SetupRead
 		return nil, err
 	}
 	ans := readinessAnswerOf(raid, view, now)
-	return &SetupReadiness{RaidTitle: raid.Title, Signed: ans.Signed, Failing: ans.Failing}, nil
+	return &SetupReadiness{RaidTitle: raid.Title, Signed: ans.Signed, Failing: ans.Failing,
+		Names: failingNames(view.Rows, setupNamesShown)}, nil
+}
+
+// failingNames is the first n readiness rows with something to fix, by name.
+func failingNames(rows []ReadinessRow, n int) []string {
+	out := []string{}
+	for _, row := range rows {
+		if len(out) == n {
+			break
+		}
+		if row.Failing > 0 || row.NoExport {
+			out = append(out, row.Name)
+		}
+	}
+	return out
 }
 
 // withSteps derives each step's state from the facts and the marks.
@@ -434,7 +457,31 @@ func (s *Store) setupSync(ctx context.Context, guildID int64) (SetupSync, error)
 	if err != nil {
 		return SetupSync{}, fmt.Errorf("guilds: setup sync: %w", err)
 	}
-	return out, nil
+	out.Missing, err = s.unsyncedNames(ctx, guildID)
+	return out, err
+}
+
+// unsyncedNames is one character name per verified account with no addon export inside the
+// window, alphabetical, at most setupNamesShown. An invited account with no character of the
+// guild's own has no name to show and is left out.
+func (s *Store) unsyncedNames(ctx context.Context, guildID int64) ([]string, error) {
+	rows, err := s.Pool.Query(ctx, `
+		select initcap(split_part(min(gc.character_key), '/', 3))
+		from guild_characters gc
+		left join addon_exports ae on ae.character_key = gc.character_key
+		  and ae.updated_at >= now() - make_interval(secs => $2)
+		where gc.guild_id = $1 and gc.verified_at is not null and gc.character_key not like 'account:%'
+		group by gc.user_id
+		having count(ae.character_key) = 0
+		order by 1 limit $3`, guildID, syncWindow.Seconds(), setupNamesShown)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: unsynced names: %w", err)
+	}
+	names, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return nil, fmt.Errorf("guilds: unsynced names: %w", err)
+	}
+	return names, nil
 }
 
 // upcomingRaids counts the guild's planned or locked raids still to start.

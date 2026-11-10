@@ -93,6 +93,7 @@ export const setupCopy = {
     line: (synced: number, accounts: number, days: number): string =>
       `${synced} of ${accounts} members synced in the last ${days} days`,
     needed: (n: number): string => `${n} needed`,
+    missing: (names: string): string => `Not synced: ${names}`,
     pasteLabel: 'Paste in guild chat',
     paste: (setupUrl: string): string =>
       `Get the Forever Sixty addon and companion so your gear and the roster sync: ${setupUrl}`,
@@ -130,7 +131,7 @@ export const setupCopy = {
     ],
     compare: 'Compare plans',
     readiness: (raid: string, failing: number, signed: number): string =>
-      `For ${raid}, the readiness board would flag ${failing} of ${signed} signed raiders.`,
+      `For ${raid}, the readiness board would flag ${failing} of ${signed} signed raiders`,
   },
   settingsRow: {
     label: 'Setup',

@@ -41,7 +41,7 @@ describe('SetupStepBody', () => {
   it('officer ranks: the ranks, the counted officers, the input, Save and Keep', () => {
     const html = body('officer_ranks', setupFixture(), true);
     expect(html).toContain('Rank 0 · 1: Dunmaro');
-    expect(html).toContain('Rank 3 · 12: Dawnhollow, Embersong, Frostquill +9');
+    expect(html).toContain('Rank 3 · 12: Dawnhollow, Embersong, Frostquill\u00a0+9');
     expect(html).toContain('Rank 3 · 12');
     expect(html).toContain('Ranks 0 to 1 count as officers: 3 members');
     expect(html).toContain('data-testid="setup-ranks-input"');

@@ -5,7 +5,7 @@
 <script lang="ts">
   import type { GuildSetup, SetupPlan } from '../../../lib/guild/setup-api';
   import { setupCopy } from '../../../lib/guild/setup-copy';
-  import { planLines, planName } from '../../../lib/guild/setup-model';
+  import { planLines, planName, readinessLine } from '../../../lib/guild/setup-model';
   import { LINK } from '../../../lib/ui/primitives';
   import Section from '../../ui/Section.svelte';
 
@@ -18,15 +18,15 @@
   <dl class="flex flex-col gap-2 text-[13px]" data-testid="setup-plan-lines">
     {#each lines as line (line.label)}
       <div>
-        <dt class="text-strong inline font-semibold">{line.label}:</dt>
+        <dt class="inline font-semibold {line.label === planName(plan) ? 'text-gold' : 'text-strong'}">
+          {line.label}:
+        </dt>
         <dd class="text-text inline">{line.text}</dd>
       </div>
     {/each}
   </dl>
   {#if readiness !== null && readiness.signed > 0}
-    <p class="text-muted pt-3 text-[13px]" data-testid="setup-plan-readiness">
-      {setupCopy.plan.readiness(readiness.raid_title, readiness.failing, readiness.signed)}
-    </p>
+    <p class="text-strong pt-3 text-[13px]" data-testid="setup-plan-readiness">{readinessLine(readiness)}</p>
   {/if}
   <p class="pt-3 text-[14px]"><a class={LINK} href="/premium#guild-leaders">{setupCopy.plan.compare} ›</a></p>
 </Section>
