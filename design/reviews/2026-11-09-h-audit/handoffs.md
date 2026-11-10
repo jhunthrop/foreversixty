@@ -70,3 +70,16 @@ These sit in files another in-flight lane owns tonight, so h-audit lists them in
 - Item level and enchant/gem flags per slot.
 - Per-ability DPS for the BiS benchmark.
 - Respec cost by level, and talent pick rates.
+
+## Left open at the round-12 cap (proposed fixes)
+- guides-spec (ai-slop FAIL; ux SHIP):
+  - Empty squares on Enchants, Consumables and the Races rail. In the fixture build these are the dark socket a missing icon file draws. Check them on the real-data build. If real icons exist, this is closed. If not, use class or race crests.
+  - The Rotation prose repeats the Opener/Priority list. Cut it to the why, about a third.
+  - Stat priority prose explains the obvious. Delete those lines and the "Attack speed: Not on any item" row.
+  - The rail beside Races and Professions is empty. Run that prose full width.
+  - The 390 sticky bar repeats the title band. Show only "Jump to".
+- sim-specs at 390 (ux must-fix): the Healers and tanks grid wraps names. Use one column at 390, name left and role right, in 44 px rows. Healer and tank numbers need a healer/tank ladder (needs data).
+- Reviewer conflict, sim tools: ux (round 11) asked that a disabled Run state its reason; ai-slop (round 12) calls "Pick builds to compare." / "Tick a source." tell 21. Proposed: keep the reason only in the Run button's title/tooltip and drop the visible line.
+- sim-talents: "No saved builds" over "Add a build". Show only "Add a build".
+- Character owner: Coach has no count, because no payload carries one. Needs data: a coach review count on /v1/me or the character answer.
+- Owner product call: History and Coach stay as the only entry to the Premium charts and reviews. They are gold link rows now.
