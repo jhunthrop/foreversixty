@@ -11,7 +11,20 @@ import { DAY_MS, HOUR_MS, MINUTE_MS } from './format/duration';
 import { SITE_LOCALE } from './format/number';
 
 /** The one month table: three letters, every month. */
-export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const;
+export const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+] as const;
 const SHORT_MONTHS = MONTHS;
 
 /** "25 Sep" in UTC, day first (the house date, as every page head's "Updated 6 Nov"); an invalid
@@ -124,7 +137,11 @@ export function formatDayMonthYear(d: Date): string {
 
 /** "19 Oct, 9:40 pm" ("19 Oct, 21:40" for a 24-hour locale), on the zone's calendar and clock:
  *  when a sync from the game arrived. An unreadable date renders as nothing. */
-export function formatSyncStamp(d: Date, zone: string = viewerZone(), locale: string = viewerLocale()): string {
+export function formatSyncStamp(
+  d: Date,
+  zone: string = viewerZone(),
+  locale: string = viewerLocale(),
+): string {
   if (Number.isNaN(d.getTime())) return '';
   return `${dayMonth(d, zone)}, ${clock(d, zone, { locale, alwaysMinutes: true })}`;
 }

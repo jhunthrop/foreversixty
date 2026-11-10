@@ -12,5 +12,8 @@ export function upperFirst(text: string): string {
 /** Every word's first letter raised, the rest as written: `death knight` is `Death Knight`,
  *  `exalted` is `Exalted`; an apostrophe does not start a word (`lady's`). */
 export function titleCase(text: string): string {
-  return text.replace(/(^|[^\p{L}\p{N}'’])(\p{L})/gu, (_, before: string, letter: string) => before + letter.toUpperCase());
+  return text.replace(
+    /(^|[^\p{L}\p{N}'’])(\p{L})/gu,
+    (_, before: string, letter: string) => before + letter.toUpperCase(),
+  );
 }

@@ -46,12 +46,21 @@ interface Formats {
   clock: DateCase[];
   relative: { now: string; compact_ago: Pair<string>[]; relative_day: Pair<string>[] };
   durations: Record<'clock' | 'clock_precise' | 'spoken', { ms: number; out: string }[]>;
-  numbers: { empty: string } & Record<'grouped' | 'one_decimal' | 'compact' | 'percent' | 'ordinal', Pair<number>[]>;
+  numbers: { empty: string } & Record<
+    'grouped' | 'one_decimal' | 'compact' | 'percent' | 'ordinal',
+    Pair<number>[]
+  >;
   parse: { cases: { in: number; out: string; tier: string; label: string }[] };
-  countdown: { now: string; cases: { target: string; parts: { value: string; unit: string }[]; label: string }[] };
+  countdown: {
+    now: string;
+    cases: { target: string; parts: { value: string; unit: string }[]; label: string }[];
+  };
 }
 
-const FIXTURE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../apps/shared/formats.json');
+const FIXTURE = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../../apps/shared/formats.json',
+);
 const formats = JSON.parse(readFileSync(FIXTURE, 'utf8')) as Formats;
 
 function each<T extends { out: string }>(cases: T[], run: (c: T) => string): void {
