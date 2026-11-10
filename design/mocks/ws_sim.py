@@ -25,7 +25,7 @@ from pathlib import Path
 from mocklib import CLASS_COLOR
 from ws_prims import (Button as _Button, Facts, Field, Figure, Figures, FormRow, Histogram, IconList, Lanes, LanesLegend, Link, Meter, Notice,
                       Page, PageHeader, Plate, Row, RowGrid, Rows, Section, Sheet, Skeleton, StatRow, StatTable, TabStrip, Trees, build_page,
-                      control_bar, crest_img, seg, sel, write, Paperdoll)
+                      control_bar, crest_img, seg, sel, write, PaperdollFrame)
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA_ROOT = Path(os.environ.get('FS_DATA_ROOT', ROOT))
@@ -579,20 +579,41 @@ SLOT_LABEL = {'head': 'Head', 'neck': 'Neck', 'shoulder': 'Shoulder', 'back': 'B
               'finger2': 'Finger 2', 'trinket1': 'Trinket 1', 'trinket2': 'Trinket 2'}
 
 
-RARITY_NAME = {0: 'poor', 1: 'common', 2: 'uncommon', 3: 'rare', 4: 'epic', 5: 'legendary'}
+def enchant_names() -> dict[int, str]:
+    """The client's name per enchant id (lib/sim/enchant-names.ts): a row without `display` draws no line."""
+    path = B / 'enchants.json'
+    rows = json.loads(path.read_text()) if path.exists() else []
+    return {r['id']: r['display'] for r in rows if r.get('display')}
 
 
-def doll() -> str:
-    """The shared Paperdoll (ws_prims, the built ui/Paperdoll) in `worn` mode: inputs only, no gain column figures; line 2 the
-    client enchant or the item level (lib/gear/doll-cells.ts). In a Plate on the landing, open under a Section on a result."""
-    def cell(slot):
-        it = gear_item(slot)
-        base = {'label': SLOT_LABEL[slot], 'flag': None, 'stats': '', 'gain': None, 'basis': None}
+RAIL_BAND, RAIL_FACTION, RAIL_PRESETS = 60, 'alliance', ('raid', 'bare')   # lib/sim/bis-set-rail.ts, lib/bis/presets.ts selectBand
+
+
+def rail_gear() -> list[dict]:
+    """The landing's character: the rail's published set (the level 60 alliance band, raid preset first) with its enchants, the
+    set the "Sim a best-in-slot set" link's code carries (lib/bis/sim-link.ts bandGearSlots)."""
+    bands = [b for b in json.loads((B / 'bis' / f'{SPEC}.json').read_text())['bands']
+             if b['band'] == RAIL_BAND and b['faction'] == RAIL_FACTION]
+    band = next((b for p in RAIL_PRESETS for b in bands if b.get('preset', 'bare') == p), bands[0])
+    return [{'slot': s['slot'], 'item_id': s['item_id'], 'enchant': s.get('enchant_id')} for s in band['slots'] if s['item_id'] > 0]
+
+
+def doll(gear: list[dict] | None = None) -> str:
+    """The sim's Gear (SimGearSection on character/GearDoll): the shared PaperdollFrame's list form at every width, headless on
+    the section's panel, `facts` rows "Slot · Item level N" with the client enchant green under it (lib/gear/doll-cells.ts,
+    `worn` mode: no gain without an upgrade). In a Plate on the landing, open under a Section on a result. `gear`: the worn
+    rows, the run's character by default."""
+    names = enchant_names()
+    slots = []
+    for row in CHAR['gear'] if gear is None else gear:
+        it = ITEMS.get(row['item_id'])
         if not it:
-            return {**base, 'state': 'empty', 'name': 'Nothing worn', 'line2': '', 'quality': 'common', 'icon': ''}
-        return {**base, 'state': 'item', 'name': it['name'], 'quality': RARITY_NAME[it['quality']], 'icon': it['icon'],
-                'line2': f"Item level {it['item_level']}"}
-    return Paperdoll('Gear', 'slot', ([cell(s) for s in DOLL_LEFT], [cell(s) for s in DOLL_RIGHT]))
+            continue
+        enchant = names.get(row.get('enchant') or 0)
+        slots.append({'slot': row['slot'], 'label': f"{SLOT_LABEL[row['slot']]}: {it['name']}", 'covered': False, 'selected': False,
+                      'icon': it['icon'], 'quality': it['quality'], 'line2': f"Item level {it['item_level']}",
+                      **({'enchant': enchant} if enchant else {})})
+    return PaperdollFrame(slots, 'Gear by slot', '', None, '', 'Gear by slot', heading='h2', form='list', head=False, facts=True)
 
 
 def ilvl() -> float:
@@ -886,7 +907,7 @@ def Ledger(main: str) -> str:
 # ---- 2. /sim, signed in, the header's character loaded, not run yet
 def landing_you() -> str:
     # Your sims under the talents, so the columns end together (SimPreRun); the rail is the rotation
-    main = Section('Gear', doll(), Link('Upgrades on Best in slot &rsaquo;')) + talents_section() + history_section()
+    main = Section('Gear', doll(rail_gear()), Link('Upgrades on Best in slot &rsaquo;')) + talents_section() + history_section()
     return finish('Simulator', you_header(answer_none()) + run_bar() + Page('split', main, rotation_section(ran=False)), YOU)
 
 

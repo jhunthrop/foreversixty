@@ -1743,6 +1743,13 @@ PRIM_CSS += '''
 .pdf-cell{position:relative;width:44px;height:44px;border-radius:3px;background:#100a06}.pdf-cell .pdf-icon{inset:3px;width:38px;height:38px}
 .pdf-name{display:block;font-size:13px;font-weight:600;line-height:16px;overflow-wrap:anywhere}.pdf-sub{display:block;font-size:12px;line-height:16px;color:#8b8784}
 .pdf-list-centre{margin-top:10px}
+/* The built frame's additive list props (lane h-doll): `form="list"` the list at every width, `head={false}` the slots straight on
+   the page's panel, `facts` "Head · Item level 61" with the enchant green on its own line. */
+.pdf-listonly .pdf-list{display:block}
+.pdf-headless{padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.pdf-facts .pdf-sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pdf-facts .pdf-enchant{white-space:normal;color:#1eff00}
+@container (min-width:360px) and (max-width:559.98px){.pdf-fact-slot{display:none}}
+@container (max-width:359.98px){.pdf-facts{grid-template-columns:minmax(0,1fr)}}
 .itip{display:flex;flex-direction:column;width:100%;font-size:13px;color:#fff;border:1px solid #8b8f9c;border-radius:4px;background:#060914;box-shadow:inset 0 0 0 1px #2b3040}
 .itip .bd{display:flex;flex-direction:column;gap:8px;padding:12px 14px}.itip .nm{font-size:15px;font-weight:700}.itip .ln{font-size:12px}
 .itip .tl{font-size:12px;color:#ffd100}.itip .ft{padding:8px 14px 12px;font-size:12px;line-height:16px;color:#8b8784;border-top:1px solid #2b3040}
@@ -1771,9 +1778,12 @@ def _icon_src(name: str | None) -> str:
 
 
 def PaperdollFrame(slots: list[dict], title: str, meta: str, figure: tuple[str, str] | None, centre: str, label: str,
-                   list_centre: str = '', heading: str = 'h1') -> str:
-    """slots: the filled sockets (slot, label (the button's name), covered, selected, icon, quality). centre: the centre's html.
-    heading: the title bar's heading (the built `heading`): h1 where the bar is the page's title (BiS), h2 under a page title."""
+                   list_centre: str = '', heading: str = 'h1', form: str = 'auto', head: bool = True, facts: bool = False) -> str:
+    """slots: the filled sockets (slot, label (the button's name), covered, selected, icon, quality; with `facts`, line2 and an
+    optional enchant). centre: the centre's html.
+    heading: the title bar's heading (the built `heading`): h1 where the bar is the page's title (BiS), h2 under a page title.
+    form 'list': the list form at every width, the frame never drawn; head False: no strip, the slots on the page's panel; facts:
+    each row's sub line is "Slot · line 2", the enchant green under it (the built `form`, `head`, `facts`)."""
     tag = {'h1': 'h1', 'h2': 'h2'}[heading]
     by = {s['slot']: s for s in slots}
     fig = f'<b class="pdf-figure">{escape(figure[0])} <small>{escape(figure[1])}</small></b>' if figure else ''
@@ -1796,10 +1806,23 @@ def PaperdollFrame(slots: list[dict], title: str, meta: str, figure: tuple[str, 
         slot_word, _, item = s['label'].partition(': ')
         items.append(f'<li><button type="button" class="pdf-item" aria-pressed="{"true" if s["selected"] else "false"}">'
                      f'<span class="pdf-cell">{_pd_icon(s)}</span><span><span class="pdf-name">{escape(item)}</span>'
-                     f'<span class="pdf-sub">{escape(slot_word)}</span></span></button></li>')
-    lst = (f'<div class="pdf-list"><div class="pdf-strip"><img src="{_PD_SEAL}" alt=""><{tag}>{escape(title)}</{tag}>{fig}</div>'
-           f'<ul class="pdf-items">{"".join(items)}</ul>{f"<div class=pdf-list-centre>{list_centre}</div>" if list_centre else ""}</div>')
-    return f'<div class="pdf" role="group" aria-label="{escape(label)}">{frame}{lst}</div>'
+                     f'{_pd_facts(slot_word, s) if facts else f"<span class=pdf-sub>{escape(slot_word)}</span>"}</span></button></li>')
+    strip = f'<div class="pdf-strip"><img src="{_PD_SEAL}" alt=""><{tag}>{escape(title)}</{tag}>{fig}</div>' if head else ''
+    ul_class = 'pdf-items' + ('' if head else ' pdf-headless') + (' pdf-facts' if facts else '')
+    lst = (f'<div class="pdf-list">{strip}'
+           f'<ul class="{ul_class}">{"".join(items)}</ul>{f"<div class=pdf-list-centre>{list_centre}</div>" if list_centre else ""}</div>')
+    list_only = form == 'list'
+    return (f'<div class="pdf{" pdf-listonly" if list_only else ""}" role="group" aria-label="{escape(label)}">'
+            f'{"" if list_only else frame}{lst}</div>')
+
+
+def _pd_facts(slot_word: str, cell: dict) -> str:
+    """A `facts` row's sub lines: "Head · Item level 61" (the slot word hides in a phone's half column), the enchant green."""
+    line2 = cell.get('line2') or ''
+    lead = (f'<span class="pdf-fact-slot">{escape(slot_word)} &middot; </span><span>{escape(line2)}</span>' if line2
+            else escape(slot_word))
+    enchant = f'<span class="pdf-sub pdf-enchant">{escape(cell["enchant"])}</span>' if cell.get('enchant') else ''
+    return f'<span class="pdf-sub">{lead}</span>{enchant}'
 
 
 def ItemTip(name: str, quality: str, lines: list[str], tail: list[str], foot: str) -> str:
