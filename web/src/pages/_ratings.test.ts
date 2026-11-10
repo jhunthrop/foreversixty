@@ -58,7 +58,9 @@ describe('/ratings', () => {
   it('answers with the sample score in its tier colour, out of the five ceilings', () => {
     const answer = /data-region="head-answer"[\s\S]*?<\/header>/.exec(html)?.[0] ?? '';
     expect(text(answer)).toContain(`${scoreCopy.samplePill} · ${scoreCopy.explainerHeading}`);
-    expect(answer).toMatch(/data-testid="ratings-sample-score"[\s\S]*?style="color: var\(--color-rarity-epic\)/);
+    expect(answer).toMatch(
+      /data-testid="ratings-sample-score"[\s\S]*?style="color: var\(--color-rarity-epic\)/,
+    );
     const max = Object.values(COMPONENT_MAX).reduce((sum, n) => sum + n, 0);
     expect(text(answer)).toContain(`of ${max.toLocaleString('en-US')} · Epic`);
     expect(text(answer)).toContain(scoreCopy.mostToGainLead);

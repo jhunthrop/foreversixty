@@ -28,7 +28,9 @@ describe('Header', () => {
     expect(last.hasAttribute('aria-current')).toBe(false);
     expect(last.classList.contains('site-door-premium')).toBe(true);
     expect(last.textContent?.trim()).toBe(PREMIUM_NAV_ITEM.label);
-    expect([...last.querySelectorAll('svg, i')].map((el) => el.getAttribute('data-icon'))).toEqual(['premium']);
+    expect([...last.querySelectorAll('svg, i')].map((el) => el.getAttribute('data-icon'))).toEqual([
+      'premium',
+    ]);
     expect(PREMIUM_NAV_ITEM).toEqual({ label: 'Premium', href: '/premium', icon: 'premium' });
   });
 
