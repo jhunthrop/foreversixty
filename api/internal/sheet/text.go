@@ -1,62 +1,22 @@
 package sheet
 
 import (
-	"embed"
 	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
 	"math"
 	"strings"
-	"sync"
 
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 	"golang.org/x/image/font"
-	"golang.org/x/image/font/opentype"
 	"golang.org/x/image/math/fixed"
 )
-
-// fontFS holds the sheet's three faces, full Latin TTFs from the site's @fontsource packages
-// (`make sheet-fonts`), with their OFL licences beside them.
-//
-//go:embed fonts/*.ttf
-var fontFS embed.FS
-
-// The faces, by the weight the spec names.
-type typeface int
-
-const (
-	barlow400 typeface = iota
-	barlow600
-	cinzel700
-)
-
-var typefaceFiles = [...]string{
-	barlow400: "fonts/Barlow-Regular.ttf",
-	barlow600: "fonts/Barlow-SemiBold.ttf",
-	cinzel700: "fonts/Cinzel-Bold.ttf",
-}
-
-// loadFonts parses the embedded faces once; a parsed font is read-only and shared.
-var loadFonts = sync.OnceValues(func() ([]*opentype.Font, error) {
-	out := make([]*opentype.Font, len(typefaceFiles))
-	for i, name := range typefaceFiles {
-		raw, err := fontFS.ReadFile(name)
-		if err != nil {
-			return nil, fmt.Errorf("sheet: read %s: %w", name, err)
-		}
-		f, err := opentype.Parse(raw)
-		if err != nil {
-			return nil, fmt.Errorf("sheet: parse %s: %w", name, err)
-		}
-		out[i] = f
-	}
-	return out, nil
-})
 
 // style is one text style of the spec, in logical px: face, size, line height, letter
 // spacing (em) and whether it is drawn uppercase.
 type style struct {
-	face       typeface
+	face       brand.Face
 	size       float64
 	lineHeight float64
 	trackingEm float64
@@ -66,22 +26,15 @@ type style struct {
 // faceSet builds faces on demand for one render. A font.Face is not safe for concurrent use
 // (opentype's faces share a rasteriser), so each render owns its set.
 type faceSet struct {
-	fonts []*opentype.Font
 	faces map[faceKey]font.Face
 }
 
 type faceKey struct {
-	face typeface
+	face brand.Face
 	px   float64
 }
 
-func newFaceSet() (*faceSet, error) {
-	fonts, err := loadFonts()
-	if err != nil {
-		return nil, err
-	}
-	return &faceSet{fonts: fonts, faces: map[faceKey]font.Face{}}, nil
-}
+func newFaceSet() *faceSet { return &faceSet{faces: map[faceKey]font.Face{}} }
 
 // get is the face for st at the device scale.
 func (fs *faceSet) get(st style) (font.Face, error) {
@@ -89,9 +42,9 @@ func (fs *faceSet) get(st style) (font.Face, error) {
 	if f, ok := fs.faces[key]; ok {
 		return f, nil
 	}
-	f, err := opentype.NewFace(fs.fonts[st.face], &opentype.FaceOptions{Size: key.px, DPI: 72, Hinting: font.HintingNone})
+	f, err := brand.NewFace(st.face, key.px)
 	if err != nil {
-		return nil, fmt.Errorf("sheet: face at %.0fpx: %w", key.px, err)
+		return nil, fmt.Errorf("sheet: %w", err)
 	}
 	fs.faces[key] = f
 	return f, nil

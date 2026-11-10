@@ -3,15 +3,22 @@ package notify
 import (
 	"fmt"
 	"net/url"
+	"strings"
 	"time"
 	"unicode/utf8"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
+	"github.com/jhunthrop/foreversixty/api/internal/raidspec"
+)
+
+// The raid post's stripe besides the accent: a cancelled raid in the wipe red, a locked or ended
+// one in the card's muted ink.
+var (
+	cancelColor = brand.RGB(brand.ColorOutcomeWipe)
+	mutedColor  = brand.RGB(brand.ColorForeverMutedCard)
 )
 
 const (
-	// cancelColor is #f0736b, the site's wipe red.
-	cancelColor = 15758187
-	// mutedColor is #9a9484, a locked or ended raid.
-	mutedColor = 10130564
 	// guildDateLayout and guildTimeLayout render the raid in the guild's own zone.
 	guildDateLayout = "Monday 2 January"
 	guildTimeLayout = "3:04 pm MST"
@@ -56,8 +63,12 @@ var raidCopy = struct {
 	CameName        string
 	CameOf          string // %d came, %d of
 	KillsName       string
+	BuffsName       string
+	BuffsMissing    string // %s the buffs nobody signed brings
+	BuffsShort      string // %s the buffs with too few bringers
+	BuffsJoin       string
 	// The reminder line (spec 2026-10-28 §P.7).
-	ReminderLead        string // %s the escaped title, %d the unix start, twice
+	ReminderLead        string // %s the escaped title, %d the unix start
 	ReminderCount       string // %d signed up, %d the raid size
 	ReminderCountOpen   string // %d signed up, size unknown
 	ReminderNobody      string
@@ -69,17 +80,17 @@ var raidCopy = struct {
 	DonePrefix:      "Done: ",
 	TomorrowPrefix:  "Tomorrow: ",
 	Descriptions: map[RaidPostState]string{
-		PostOpen:      "Sign up with the buttons below.",
+		PostOpen:      "",
 		PostLocked:    "Sign-ups are locked. An officer can still change yours.",
 		PostMoved:     "Sign-ups carry over. Check you can still make it.",
 		PostCancelled: "This raid was cancelled.",
 		PostEnded:     "This raid has ended.",
 		PostDone:      "Logged as a raid night.",
 		PostWebhook:   "Sign up on Forever Sixty.",
-		PostTomorrow:  "The raid is tomorrow. Sign up with the buttons below.",
+		PostTomorrow:  "",
 	},
 	WhenName:       "When",
-	WhenFormat:     "<t:%d:F> (<t:%d:R>)",
+	WhenFormat:     "<t:%d:t> (<t:%d:R>)",
 	WasName:        "Was",
 	WasFormat:      "<t:%d:F>",
 	StruckFormat:   "~~%s~~",
@@ -91,8 +102,12 @@ var raidCopy = struct {
 	CameName:       "Came",
 	CameOf:         "%d of %d",
 	KillsName:      "Kills",
+	BuffsName:      "Buffs",
+	BuffsMissing:   "Missing: %s",
+	BuffsShort:     "Short: %s",
+	BuffsJoin:      ", ",
 
-	ReminderLead:        "**%s is tomorrow**, <t:%d:F> (<t:%d:R>).",
+	ReminderLead:        "**%s is tomorrow**, <t:%d:t>.",
 	ReminderCount:       "%d of %d signed up so far.",
 	ReminderCountOpen:   "%d signed up so far.",
 	ReminderNobody:      "Nobody has signed up yet.",
@@ -123,6 +138,30 @@ type RaidPosted struct {
 	// NoRoles is a guild event (events spec §3.5): no role groups and no specs, one list of
 	// names and classes grouped In, Late, Bench, Out.
 	NoRoles bool
+	// Target is the raid's comp target per role group; nil for a raid with none. The role
+	// headings read it as "Healers · 6 of 8".
+	Target *RoleTarget
+	// Missing and Short are the raid buffs and debuffs nobody signed can bring, and those with
+	// fewer bringers than the raid needs (the raid page's cover), by name.
+	Missing, Short []string
+}
+
+// RoleTarget is a comp target: how many of each role group the raid wants.
+type RoleTarget struct {
+	Tanks, Healers, Melee, Ranged int
+}
+
+// of is the target for the roster group g (raidspec.Group).
+func (t RoleTarget) of(group string) int {
+	switch group {
+	case raidspec.GroupTank:
+		return t.Tanks
+	case raidspec.GroupHealer:
+		return t.Healers
+	case raidspec.GroupMelee:
+		return t.Melee
+	}
+	return t.Ranged
 }
 
 // RaidChanged is a raid moved (Was set) or cancelled; StartsAt is the current start.
@@ -169,7 +208,7 @@ func RaidPostEmbed(p RaidPost, now time.Time) Embed {
 	e.Description = raidCopy.Descriptions[p.State]
 	e.Fields = postFields(p)
 	if hasRoster(p.State) {
-		e.Fields = append(e.Fields, rosterFields(p.Roster, p.Marks, embedChars(e), p.NoRoles)...)
+		e.Fields = append(e.Fields, rosterFields(p.Roster, p.Marks, p.Target, embedChars(e), p.NoRoles)...)
 	}
 	return e
 }
@@ -228,7 +267,24 @@ func postFields(p RaidPost) []EmbedField {
 	if in.Timezone != "" {
 		fields = append(fields, raidField(raidCopy.GuildTimeName, in.StartsAt.In(guildLocation(in.Timezone)).Format(guildTimeLayout)))
 	}
-	return append(fields, signedField(in))
+	fields = append(fields, signedField(in))
+	if buffs := buffsValue(in); buffs != "" {
+		fields = append(fields, EmbedField{Name: raidCopy.BuffsName, Value: buffs})
+	}
+	return fields
+}
+
+// buffsValue is the cover the officer counts before the pull: what nobody signed brings, then
+// what too few bring; "" when every buff and debuff is covered.
+func buffsValue(in RaidPosted) string {
+	var lines []string
+	if len(in.Missing) > 0 {
+		lines = append(lines, fmt.Sprintf(raidCopy.BuffsMissing, strings.Join(in.Missing, raidCopy.BuffsJoin)))
+	}
+	if len(in.Short) > 0 {
+		lines = append(lines, fmt.Sprintf(raidCopy.BuffsShort, strings.Join(in.Short, raidCopy.BuffsJoin)))
+	}
+	return truncateRunes(strings.Join(lines, "\n"), maxValueRunes)
 }
 
 // raidBaseEmbed is the guild embed every raid post shares: prefix, the escaped title and

@@ -29,7 +29,7 @@ var commandCopy = struct {
 	RaidLateNameless:  "You are Late as {Role}.",
 	RaidBenchNameless: "You are on the Bench.",
 	RaidOutNameless:   "You are Out.",
-	HelpTitle:         "Forever Sixty commands",
+	HelpTitle:         "Commands",
 	HelpLine:          "**/{name}** {description}",
 }
 

@@ -49,7 +49,7 @@ func TestBareBisUnlinked(t *testing.T) {
 	m := w.bisCardOf(t, "d-stranger", nil)
 	e := headOf(t, m)
 	if e.Author != "Best in slot" || e.Title != "Choose a class" || e.Description != guideCopy.BisLeadUnlinked ||
-		e.Color != goldColor || e.Thumbnail != "" {
+		e.Color != accentColor || e.Thumbnail != "" {
 		t.Fatalf("embed = %+v", e)
 	}
 	spec := m.Components[1][0]
@@ -131,7 +131,7 @@ func TestBisPartials(t *testing.T) {
 	})
 	t.Run("slot only", func(t *testing.T) {
 		m := w.bisCardOf(t, "d-stranger", map[string]string{"slot": "head"})
-		if headOf(t, m).Description != "For Head only. Choose a class, a spec and a range, then Show BiS." {
+		if headOf(t, m).Description != "For Head only." {
 			t.Fatalf("lead = %q", headOf(t, m).Description)
 		}
 		for _, row := range m.Components {

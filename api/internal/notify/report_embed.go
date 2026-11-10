@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 )
 
+// reportColor is the site's Done mark, the kill green (spec 2026-10-27-guild-attendance §6.2).
+var reportColor = brand.RGB(brand.ColorOutcomeKill)
+
 const (
-	// reportColor is #7fd48a, the site's Done mark (spec 2026-10-27-guild-attendance §6.2).
-	reportColor = 8377482
 	// reportMaxKills is how many kill lines the embed lists before "+n more".
 	reportMaxKills = 6
 	// maxBossRunes bounds a boss name a kill line carries.
@@ -46,8 +49,8 @@ var reportCopy = struct {
 	ParseLine     string // %s the raider, %d the figure, %s the metric, %s the boss
 }{
 	TitlePrefix:   "Report: ",
-	Description:   "Kill times, loot and the biggest changes on Forever Sixty.",
-	CoachSentence: "Coach reviews for tonight's pulls are ready; open the report or use /report.",
+	Description:   "",
+	CoachSentence: "Coach reviews of tonight's pulls are in the report and /report.",
 	KillsName:     "Kills",
 	KillLine:      "%s %s",
 	MoreKills:     "+%d more",
@@ -119,7 +122,7 @@ func ReportReadyEmbed(in ReportReady, now time.Time) Embed {
 		raidField(reportCopy.WipesName, fmt.Sprint(in.Wipes)),
 	}
 	if in.Time > 0 {
-		e.Fields = append(e.Fields, raidField(reportCopy.TimeName, killClock(in.Time)))
+		e.Fields = append(e.Fields, raidField(reportCopy.TimeName, NightLength(in.Time)))
 	}
 	e.Fields = append(e.Fields,
 		raidField(reportCopy.CameName, fmt.Sprintf(reportCopy.CameOf, in.Came, in.Signed)),
@@ -140,9 +143,11 @@ func parsesValue(parses []ReportParse) string {
 	return strings.Join(lines, "\n")
 }
 
+// reportDescription is the coach sentence when a raider has the log coach, else nothing: the
+// fields are the night (round 5 dropped the line that described them).
 func reportDescription(coachReady bool) string {
 	if coachReady {
-		return reportCopy.Description + " " + reportCopy.CoachSentence
+		return reportCopy.CoachSentence
 	}
 	return reportCopy.Description
 }
@@ -158,7 +163,7 @@ func killsValue(kills []ReportKill) string {
 			break
 		}
 		boss := escapedWithin(collapse(k.Boss), maxBossRunes, maxBossRunes*2)
-		lines = append(lines, fmt.Sprintf(reportCopy.KillLine, boss, killClock(k.Duration)))
+		lines = append(lines, fmt.Sprintf(reportCopy.KillLine, boss, KillClock(k.Duration)))
 	}
 	return strings.Join(lines, "\n")
 }
@@ -182,8 +187,23 @@ func lootValue(in ReportReady) string {
 	return strings.Join(lines, "\n")
 }
 
-// killClock is a kill time as m:ss, or h:mm:ss from an hour up.
-func killClock(d time.Duration) string {
+// NightLength is a night's length as every guild post writes it: "2 h 41 min", "2 h" or
+// "41 min"; under a minute reads "1 min".
+func NightLength(d time.Duration) string {
+	total := max(1, int((d+30*time.Second)/time.Minute))
+	hours, minutes := total/60, total%60
+	switch {
+	case hours == 0:
+		return fmt.Sprintf("%d min", minutes)
+	case minutes == 0:
+		return fmt.Sprintf("%d h", hours)
+	default:
+		return fmt.Sprintf("%d h %d min", hours, minutes)
+	}
+}
+
+// KillClock is a kill time as m:ss, or h:mm:ss from an hour up.
+func KillClock(d time.Duration) string {
 	total := int(d.Round(time.Second) / time.Second)
 	if total >= 3600 {
 		return fmt.Sprintf("%d:%02d:%02d", total/3600, total%3600/60, total%60)

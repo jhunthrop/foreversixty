@@ -6,7 +6,7 @@
  "Title": "Zulmara",
  "Kicker": "Level 60 Beast Mastery Hunter · Olympus XXVII",
  "Subtitle": "63.5",
- "Footer": "Gold: gain over what is worn, level 60 Phase 1 raid",
+ "Footer": "Upgrades for level 60 Phase 1 raid",
  "Level": 60,
  "Band": "level 60 Phase 1 raid",
  "Guild": "Olympus XXVII",
@@ -17,7 +17,8 @@
    "Quality": 4,
    "Icon": "inv_misc_bandana_03",
    "ItemLevel": 65,
-   "Gain": "Gain not modelled yet"
+   "Gain": "Gain not modelled yet",
+   "Pick": "Beastmaster's Cap"
   },
   {
    "Slot": "neck",
@@ -39,7 +40,8 @@
    "Quality": 4,
    "Icon": "inv_misc_cape_20",
    "ItemLevel": 62,
-   "Gain": "+2.0 DPS"
+   "Gain": "+2.0 DPS",
+   "Pick": "Cape of the Black Baron"
   },
   {
    "Slot": "chest",
@@ -47,7 +49,8 @@
    "Quality": 3,
    "Icon": "inv_chest_leather_07",
    "ItemLevel": 63,
-   "Gain": "+11.0 DPS"
+   "Gain": "+11.0 DPS",
+   "Pick": "Dawn Armor"
   },
   {
    "Slot": "wrist",
@@ -55,7 +58,8 @@
    "Quality": 4,
    "Icon": "inv_bracer_12",
    "ItemLevel": 65,
-   "Gain": "+4.7 DPS"
+   "Gain": "+4.7 DPS",
+   "Pick": "Beastmaster's Bindings"
   },
   {
    "Slot": "hands",
@@ -77,7 +81,8 @@
    "Quality": 4,
    "Icon": "inv_pants_mail_17",
    "ItemLevel": 71,
-   "Gain": "+9.3 DPS"
+   "Gain": "+9.3 DPS",
+   "Pick": "Sentinel's Chain Leggings"
   },
   {
    "Slot": "feet",
@@ -85,7 +90,8 @@
    "Quality": 3,
    "Icon": "inv_boots_08",
    "ItemLevel": 59,
-   "Gain": "Gain not modelled yet"
+   "Gain": "Gain not modelled yet",
+   "Pick": "Beastmaster's Treads"
   },
   {
    "Slot": "finger1",
@@ -100,7 +106,8 @@
    "Quality": 3,
    "Icon": "inv_jewelry_ring_03",
    "ItemLevel": 49,
-   "Gain": "+4.1 DPS"
+   "Gain": "+4.1 DPS",
+   "Pick": "Cutthroat's Signet"
   },
   {
    "Slot": "trinket1",
@@ -112,7 +119,8 @@
   {
    "Slot": "trinket2",
    "Empty": true,
-   "Gain": "Upgrade available"
+   "Gain": "Upgrade available",
+   "Pick": "Molten Heart of the Mountain"
   },
   {
    "Slot": "main_hand",
@@ -127,8 +135,11 @@
    "Quality": 3,
    "Icon": "inv_weapon_rifle_08",
    "ItemLevel": 55,
-   "Gain": "+23.1 DPS"
+   "Gain": "+23.1 DPS",
+   "Pick": "Hyper Deluxe Sniper Rifle Mk XVII"
   }
  ],
- "TwoHand": true
+ "TwoHand": true,
+ "UpgradeTotal": "+54.2 DPS",
+ "UpgradeSlots": 6
 }

@@ -6,11 +6,13 @@ import (
 	"slices"
 	"strings"
 	"sync"
+
+	"github.com/jhunthrop/foreversixty/api/internal/brand"
 )
 
 // socketMasks are the socket's outer shape and the icon's clip, drawn once.
 var socketMasks = sync.OnceValues(func() (*image.Alpha, *image.Alpha) {
-	return roundRectMask(int(d(sockW)), int(d(sockW)), d(sockR)), roundRectMask(int(d(iconW)), int(d(iconW)), d(sockR-ringW))
+	return brand.RoundRectMask(int(d(sockW)), int(d(sockW)), d(sockR)), brand.RoundRectMask(int(d(iconW)), int(d(iconW)), d(sockR-ringW))
 })
 
 // fitSlack is how far, in logical px, a line may run past the 196 px text box and still fit:
@@ -27,6 +29,8 @@ type cellText struct {
 	meta      []string
 	gold      string
 	label     [][]word // an empty slot's "{Slot} · {status}", wrapped
+	goldInk   color.RGBA
+	goldStyle style
 }
 
 // cell is a laid-out cell: its words and its socket.
@@ -48,7 +52,9 @@ func (r *renderer) fitCell(kind string, sl Slot) (cellText, error) {
 	}
 	var candidates []string
 	if kind == KindChar {
-		ct.gold = sl.Gain
+		if ct.gold, ct.goldInk, ct.goldStyle, err = r.gainLine(sl); err != nil {
+			return ct, err
+		}
 		candidates = labelled(SlotLabel(sl.Slot), itemLevelMeta(sl.ItemLevel))
 	} else {
 		candidates = labelled(SlotLabel(sl.Slot), metaCandidates(sl.Meta)...)
@@ -64,36 +70,89 @@ func (r *renderer) fitCell(kind string, sl Slot) (cellText, error) {
 	return ct, err
 }
 
-// fitEmpty is an empty socket's words, the panel's grammar: "{Slot} · Upgrade available" or
-// "{Slot} · Gain not modelled yet" with the status in gold; "{Slot} · Empty" (/char, no pick),
-// "{Slot} · No pick" (/bis) and "Off hand · Two-hand in main hand" all muted.
+// fitEmpty is an empty socket's words, muted: "{Slot} · Empty" (/char), "{Slot} · No pick"
+// (/bis) and "Off hand · Two-hand in main hand". A /char slot with an upgrade waiting adds the
+// pick in gold under it ("BiS: Royal Seal of Eldre'Thalas"), or the panel's status when the pick
+// has no name.
 func (r *renderer) fitEmpty(kind string, sl Slot) (cellText, error) {
-	status, gold := CopyNone, false
+	status := CopyNone
 	if sl.TwoHandOff {
 		status = CopyTwoHand
 	} else if kind == KindChar {
-		status, gold = CopyEmpty, sl.Gain != ""
-		if gold {
-			status = sl.Gain
-		}
+		status = CopyEmpty
 	}
 	lead, err := r.faces.text(styleMeta)
 	if err != nil {
 		return cellText{}, err
 	}
-	tail := lead
-	tailColor := colorMuted
-	if gold {
-		if tail, err = r.faces.text(styleGold); err != nil {
-			return cellText{}, err
-		}
-		tailColor = colorGold
-	}
-	words := append(spanWords(lead, colorMuted, SlotLabel(sl.Slot)+metaJoin), spanWords(tail, tailColor, status)...)
+	words := spanWords(lead, colorMuted, SlotLabel(sl.Slot)+metaJoin+status)
 	if sl.TwoHandOff {
 		words = keepLastTogether(words)
 	}
-	return cellText{label: wrapWords(words, d(textW+fitSlack))}, nil
+	ct := cellText{label: wrapWords(words, d(textW+fitSlack))}
+	if kind == KindChar && sl.Gain != "" && !sl.TwoHandOff {
+		ct.gold, ct.goldInk, ct.goldStyle = sl.Gain, colorGold, styleGold
+		if pick := named(CopyBisPick, sl.Pick); pick != "" {
+			fitted, ok, err := r.shrinkToFit(styleGold, pick)
+			if err != nil {
+				return cellText{}, err
+			}
+			if ok {
+				ct.gold, ct.goldStyle = pick, fitted
+			}
+		}
+	}
+	return ct, nil
+}
+
+// named is prefix+name, or "" without a name.
+func named(prefix, name string) string {
+	if name == "" {
+		return ""
+	}
+	return prefix + name
+}
+
+// gainLine is a worn /char cell's last line, its ink and style: a modelled gain in the gain
+// green, naming the pick when it fits ("+11.0 DPS · Dawn Armor"); a pick with no figure in the
+// meta's muted regular ("Upgrade: Dawn Armor", else "Gain not modelled yet"); "" with no upgrade.
+func (r *renderer) gainLine(sl Slot) (string, color.RGBA, style, error) {
+	if sl.Gain == "" {
+		return "", color.RGBA{}, styleGold, nil
+	}
+	st, ink := styleGold, colorGain
+	withPick, bare := named(sl.Gain+metaJoin, sl.Pick), sl.Gain
+	if !isFigure(sl.Gain) {
+		// A pick with no figure names the pick; with none that fits, the line stays empty.
+		st, ink = styleMeta, colorMuted
+		withPick, bare = named(CopyUpgradePick, sl.Pick), ""
+	}
+	if withPick != "" {
+		if fitted, ok, err := r.shrinkToFit(st, withPick); err != nil || ok {
+			return withPick, ink, fitted, err
+		}
+	}
+	return bare, ink, st, nil
+}
+
+// pickMinPx is the smallest a gain line shrinks to so it can name its pick.
+const pickMinPx = 15
+
+// shrinkToFit is st at the largest size from its own down to pickMinPx at which line fits the
+// cell's text box; ok is false when none does.
+func (r *renderer) shrinkToFit(st style, line string) (style, bool, error) {
+	for px := st.size; px >= pickMinPx; px-- {
+		try := st
+		try.size = px
+		t, err := r.faces.text(try)
+		if err != nil {
+			return st, false, err
+		}
+		if t.width(line) <= d(textW+fitSlack) {
+			return try, true, nil
+		}
+	}
+	return st, false, nil
 }
 
 // fitName draws the name on one line at 20 px, shrinking 1 px at a time to 14 px; a name still
@@ -205,7 +264,7 @@ func (r *renderer) layoutCell(kind string, sl Slot) (cell, error) {
 func (r *renderer) drawCell(c cell, x, y int, right bool) error {
 	sockX, textX, a := x, x+sockW+gap, alignLeft
 	if right {
-		sockX, textX, a = x+cellW-sockW, x, alignRight
+		sockX, textX, a = x+cellW-sockW, x+cellW-sockW-gap-textW, alignRight
 	}
 	r.socket(c, sockX, y)
 	top := float64(y + nameTopNudge)
@@ -239,12 +298,12 @@ func (r *renderer) drawMetaAndGold(c cell, textX int, top float64, a align) erro
 	if c.gold == "" {
 		return nil
 	}
-	gold, err := r.faces.text(styleGold)
+	gold, err := r.faces.text(c.goldStyle)
 	if err != nil {
 		return err
 	}
 	tx, ty := at(float64(textX), top)
-	gold.drawAligned(r.img, colorGold, tx, d(textW), ty, a, c.gold)
+	gold.drawAligned(r.img, c.goldInk, tx, d(textW), ty, a, c.gold)
 	return nil
 }
 
@@ -256,13 +315,13 @@ func (r *renderer) socket(c cell, x, y int) {
 	outer, inner := socketMasks()
 	inset := int(d(ringW))
 	if c.empty {
-		fillMask(r.img, p, outer, colorEmptyRing)
-		fillMask(r.img, p.Add(image.Pt(inset, inset)), inner, colorEmptyFill)
+		brand.FillMask(r.img, p, outer, colorEmptyRing)
+		brand.FillMask(r.img, p.Add(image.Pt(inset, inset)), inner, colorEmptyFill)
 		return
 	}
-	fillMask(r.img, p, outer, c.ring)
-	fillMask(r.img, p.Add(image.Pt(inset, inset)), inner, colorBlack)
-	placeImage(r.img, p.Add(image.Pt(inset, inset)), int(d(iconW)), int(d(iconW)), c.icon, inner)
+	brand.FillMask(r.img, p, outer, c.ring)
+	brand.FillMask(r.img, p.Add(image.Pt(inset, inset)), inner, colorBlack)
+	brand.PlaceImage(r.img, p.Add(image.Pt(inset, inset)), int(d(iconW)), int(d(iconW)), c.icon, inner)
 }
 
 // keepLastTogether joins the last two words into one unbreakable word, so "main hand" never

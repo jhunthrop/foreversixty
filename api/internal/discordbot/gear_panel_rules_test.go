@@ -58,7 +58,7 @@ func TestAMissingQualityDotDropsOnlyThatDot(t *testing.T) {
 	ctx := context.Background()
 	epic := w.svc.itemRowText(ctx, itemRow{item: ItemFacts{Name: "A", Quality: 4, ItemLevel: 60}, slot: "head"})
 	rare := w.svc.itemRowText(ctx, itemRow{item: ItemFacts{Name: "B", Quality: 3, ItemLevel: 60}, slot: "head"})
-	if !strings.HasPrefix(epic, "**A**\nHead\n-# Epic") || !strings.HasPrefix(rare, "<:fs_q_rare:1302600000000000003> **B**") {
+	if !strings.HasPrefix(epic, "**A**\nHead\n-# item level 60") || !strings.HasPrefix(rare, "<:fs_q_rare:1302600000000000003> **B**") {
 		t.Fatalf("epic %q rare %q", epic, rare)
 	}
 	if log := w.log.String(); !strings.Contains(log, "emoji_missing") || !strings.Contains(log, "fs_q_epic") {
@@ -67,8 +67,8 @@ func TestAMissingQualityDotDropsOnlyThatDot(t *testing.T) {
 }
 
 func TestCharUpgradeWords(t *testing.T) {
-	if moreText(1) != "-# 1 more upgrade on the character page." || moreText(4) != "-# 4 more upgrades on the character page." || moreText(0) != "" {
-		t.Fatalf("more = %q %q", moreText(1), moreText(4))
+	if characterPageLabel(3, 4) != "All 4 upgrades" || characterPageLabel(3, 3) != lookupCopy.CharacterPage {
+		t.Fatalf("labels = %q %q", characterPageLabel(3, 4), characterPageLabel(3, 3))
 	}
 	geared := upgradesText(gearZulmara(), upgradeList{rank: rankDPS, band: "level 60 Phase 1 raid"})
 	if geared != "**Top upgrades** · level 60 Phase 1 raid\nEvery slot already wears the guide's pick for level 60 Phase 1 raid." {
@@ -383,7 +383,7 @@ func TestTheCharSheetCellsCarryTheGold(t *testing.T) {
 		cells[c.Slot] = c
 	}
 	if model.Kind != sheet.KindChar || model.Title != "Zulmara" || model.Kicker != "Level 60 Beast Mastery Hunter · Olympus XXVII" ||
-		model.Subtitle != "63" || model.Footer != "Gold: gain over what is worn, level 60 Phase 1 raid" || !model.TwoHand {
+		model.Subtitle != "63" || model.Footer != "Upgrades for level 60 Phase 1 raid" || !model.TwoHand {
 		t.Fatalf("sheet = %+v", model)
 	}
 	for slot, want := range map[string]string{"ranged": "+23.1 DPS", "head": panelCopy.NotModelled, "trinket2": sheet.CopyNotModelled, "neck": ""} {

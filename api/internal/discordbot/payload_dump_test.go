@@ -15,6 +15,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 // payloadDirEnv names the folder TestDumpGuidedPayloads writes into. Unset, the test skips, so
@@ -49,7 +50,9 @@ type frameDumper struct {
 
 func (d frameDumper) write(f dumpFrame) {
 	d.t.Helper()
-	f.Clock = boardClock
+	if f.Clock.IsZero() {
+		f.Clock = boardClock
+	}
 	raw, err := json.MarshalIndent(f, "", "  ")
 	if err != nil {
 		d.t.Fatal(err)
@@ -101,19 +104,12 @@ func TestDumpGuidedPayloads(t *testing.T) {
 	dumpSpecFrames(d)
 }
 
-// hunterBeastMasteryBands is a one-slot band so a Show BiS answer exists for the board's spec.
-func hunterBeastMasteryBands() []map[string]any {
-	return []map[string]any{{"band": 60, "faction": "alliance", "slots": []map[string]any{
-		{"slot": "head", "item_id": 100, "item_name": "Pick head", "alternatives": []map[string]any{
-			{"item_id": 200, "item_name": "Worn head", "dps_delta": -9.2}}},
-	}}}
-}
-
 func dumpBisFrames(d frameDumper) {
 	t := d.t
 	w := newBisWorld(t)
 	w.svc.now = func() time.Time { return boardClock }
-	writeBis(t, w.lg.dir, "hunter-beast-mastery", hunterBeastMasteryBands())
+	writeBis(t, w.lg.dir, "hunter-beast-mastery", realHunterBands(t))
+	copyGearLoot(t, w.lg.dir)
 	stranger := "d-stranger"
 	press := func(user, id string, values ...string) Message { return w.pressBis(t, user, id, values...).Message }
 
@@ -171,13 +167,17 @@ func dumpOfficerFrames(d frameDumper) {
 	w.og.readiness = readinessFor(raids[0], 20)
 	w.og.raidReady = map[int64]guilds.ReadinessAnswer{4: readinessFailing(raids[1])}
 	last := onyxiaReport(true, true)
+	last.Report.Loot = onyxiaLoot()
 	older := onyxiaReport(false, false)
-	older.Raid.ID, older.Raid.Title = 6, "Molten Core"
+	older.Report.Loot = onyxiaLoot()
+	// The week before: the same raid, so its kill order and its loot are Onyxia's.
+	older.Raid.ID = 6
+	w.og.items = onyxiaLootLevels()
 	w.og.report = last
 	w.og.reports = map[int64]*guilds.ReportAnswer{7: last, 6: older}
 	w.og.done = []guilds.Raid{
 		{ID: 7, Title: last.Raid.Title, StartsAt: last.Raid.StartsAt},
-		{ID: 6, Title: "Molten Core", StartsAt: last.Raid.StartsAt.Add(-7 * 24 * time.Hour)},
+		{ID: 6, Title: "Onyxia's Lair", StartsAt: last.Raid.StartsAt.Add(-7 * 24 * time.Hour)},
 	}
 	d.reply("attendance-select", "/attendance, an officer: the lowest-attendance select", w.run(t, pressDiscord, "attendance"))
 	d.reply("attendance-modal", "Type a name: the name field", w.attendanceCard(t, attAskID))
@@ -254,4 +254,58 @@ func gearBoardFrames(t *testing.T) map[string]Message {
 	w.lg.readiness[keyZulmara] = guilds.ReadinessFacts{Word: "Not synced", OnRoster: true}
 	out["char-panel-nogear"] = w.command(t, pressDiscord, "char", nil).Message
 	return out
+}
+
+// onyxiaLoot is a real Onyxia night's awards for the boards: the game's items and icons
+// (data/builds 1.60.1.70658), each to the raider who won it.
+func onyxiaLoot() []guilds.ReportLootBoss {
+	award := func(id int, name, icon, winner string) guilds.ReportLootAward {
+		return guilds.ReportLootAward{ItemID: id, ItemName: name, Quality: 4, Icon: icon, Name: winner}
+	}
+	return []guilds.ReportLootBoss{{Boss: "Onyxia", Awards: []guilds.ReportLootAward{
+		award(17068, "Deathbringer", "inv_axe_09", "Kraggor"),
+		award(17075, "Vis'kag the Bloodletter", "inv_sword_18", "Corvane"),
+		award(18205, "Eskhandar's Collar", "inv_belt_12", "Zulmara"),
+		award(18813, "Ring of Binding", "inv_jewelry_ring_13", "Ironvale"),
+		award(17078, "Sapphiron Drape", "inv_misc_cape_16", "Pyrewisp"),
+		award(16908, "Bloodfang Hood", "inv_helmet_41", "Duskmantle"),
+		award(16914, "Netherwind Crown", "inv_helmet_70", "Frostwhisk"),
+	}}}
+}
+
+// realHunterBands are the gear panel's Beast Mastery Hunter bands (testdata/gear-panel), the
+// active build's real picks, so the guided card's result shows real items.
+func realHunterBands(t *testing.T) any {
+	raw, err := os.ReadFile(filepath.Join(gearData, gearBuild, "bis", "hunter-beast-mastery.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var file struct {
+		Bands json.RawMessage `json:"bands"`
+	}
+	if err := json.Unmarshal(raw, &file); err != nil {
+		t.Fatal(err)
+	}
+	return file.Bands
+}
+
+// onyxiaLootLevels are the awards' item levels in the build (data/builds 1.60.1.70658).
+func onyxiaLootLevels() map[int]trees.Item {
+	return map[int]trees.Item{
+		17068: {ID: 17068, ItemLevel: 75}, 17075: {ID: 17075, ItemLevel: 74}, 18205: {ID: 18205, ItemLevel: 71},
+		18813: {ID: 18813, ItemLevel: 73}, 17078: {ID: 17078, ItemLevel: 72}, 16908: {ID: 16908, ItemLevel: 76},
+		16914: {ID: 16914, ItemLevel: 76},
+	}
+}
+
+// copyGearLoot puts the gear panel's loot.json (testdata/gear-panel) beside the bands, so the
+// result's source lines are the page's own ("Quest: ...", "Vendor: ..."), not kind words.
+func copyGearLoot(t *testing.T, dir string) {
+	raw, err := os.ReadFile(filepath.Join(gearData, gearBuild, "loot.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, lookupBuild, "loot.json"), raw, 0o600); err != nil {
+		t.Fatal(err)
+	}
 }

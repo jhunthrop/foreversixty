@@ -139,7 +139,7 @@ func TestReportNightSelect(t *testing.T) {
 }
 
 func readinessFailing(raid guilds.Raid) guilds.ReadinessAnswer {
-	return guilds.ReadinessAnswer{Raid: &raid, Signed: 11, Failing: 2, Rows: []string{"Vexlash · Short", "Thalwyn · Short"}}
+	return guilds.ReadinessAnswer{Raid: &raid, Signed: 11, Failing: 2, Rows: []string{"Vexlash · 2 upgrades · +31 DPS · No enchant: Chest, Main hand · Consumables short", "Thalwyn · Consumables short · Synced 9 days ago"}}
 }
 
 // TestReportShareKeepsTheNightRow: the presser's own copy keeps the select after the Shared

@@ -38,7 +38,10 @@ ART = {
 SEAL_VERSION = 'v4'
 SEAL_SOURCE = f'logo/lx-seal-{SEAL_VERSION}.png'
 SEALS = {'seal-88': (SEAL_SOURCE, 176), 'seal-128': (f'logo/lx-seal-{SEAL_VERSION}-256.png', 256)}
-FAVICONS = {'favicon-32.png': (f'logo/lx-seal-{SEAL_VERSION}-32.png', 32), 'apple-touch-icon.png': (SEAL_SOURCE, 180)}
+# seal-400.png is the Discord webhook avatar and footer icon (api/internal/notify), the Go cards' seal
+# (make sheet-assets copies it into api/internal/brand/art) and the apps' bundled seal.
+FAVICONS = {'favicon-32.png': (f'logo/lx-seal-{SEAL_VERSION}-32.png', 32), 'apple-touch-icon.png': (SEAL_SOURCE, 180),
+            'seal-400.png': (f'logo/lx-seal-{SEAL_VERSION}-512.png', 400)}
 # favicon.ico carries the sized renders, never a downscale of one size.
 FAVICON_ICO = tuple(f'logo/lx-seal-{SEAL_VERSION}-{px}.png' for px in (16, 32, 48))
 OG_SIZE, OG_BOX = (1200, 630), (1180, 480, 2600, 1225)  # art_crops.py: the glow over the pass, the road's head

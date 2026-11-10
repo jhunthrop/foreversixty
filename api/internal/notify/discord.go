@@ -28,8 +28,13 @@ type Embed struct {
 	Fields      []EmbedField
 	URL         string
 	Footer      string
+	// FooterIcon is the small image before the footer, the seal's URL; empty omits it. The
+	// webhook poster fills it with the seal it posts as when a footer has none.
+	FooterIcon string
 	// Author is the small line above the title; empty omits it.
 	Author string
+	// AuthorIcon is the small image before the author line; empty omits it.
+	AuthorIcon string
 	// Thumbnail is an absolute image URL; empty omits it.
 	Thumbnail string
 	// Timestamp is the moment the event finished; the zero time omits it.
@@ -160,7 +165,7 @@ const Username = "Forever Sixty"
 
 func newMessage(avatarURL string, embed Embed) messageJSON {
 	return messageJSON{
-		Username: Username, AvatarURL: avatarURL, Embeds: []embedJSON{embed.wire()},
+		Username: Username, AvatarURL: avatarURL, Embeds: []embedJSON{WithSealFooter(embed, avatarURL).wire()},
 		AllowedMentions: allowedMentions{Parse: []string{}},
 	}
 }
@@ -182,11 +187,13 @@ type fieldJSON struct {
 }
 
 type footerJSON struct {
-	Text string `json:"text"`
+	Text    string `json:"text"`
+	IconURL string `json:"icon_url,omitempty"`
 }
 
 type authorJSON struct {
-	Name string `json:"name"`
+	Name    string `json:"name"`
+	IconURL string `json:"icon_url,omitempty"`
 }
 
 // MarshalJSON writes the webhook wire shape, so a bot message embeds an Embed
@@ -205,10 +212,10 @@ func (e Embed) wire() embedJSON {
 		out.Fields = append(out.Fields, fieldJSON(f))
 	}
 	if e.Footer != "" {
-		out.Footer = &footerJSON{Text: e.Footer}
+		out.Footer = &footerJSON{Text: e.Footer, IconURL: e.FooterIcon}
 	}
 	if e.Author != "" {
-		out.Author = &authorJSON{Name: e.Author}
+		out.Author = &authorJSON{Name: e.Author, IconURL: e.AuthorIcon}
 	}
 	return out
 }
@@ -238,7 +245,7 @@ func (p *HTTPPoster) PostContent(ctx context.Context, webhookURL, content string
 		AllowedMentions: allowedMentions{Parse: []string{}},
 	}
 	for _, e := range embeds {
-		msg.Embeds = append(msg.Embeds, e.wire())
+		msg.Embeds = append(msg.Embeds, WithSealFooter(e, p.avatarURL).wire())
 	}
 	body, err := json.Marshal(msg)
 	if err != nil {
@@ -497,4 +504,13 @@ func (f *FakePoster) Deletes() []string {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	return append([]string(nil), f.deletes...)
+}
+
+// WithSealFooter is e with the seal before its footer: sealURL as the footer icon when e has a
+// footer and no icon of its own (round 5: every footer carries the seal).
+func WithSealFooter(e Embed, sealURL string) Embed {
+	if e.Footer != "" && e.FooterIcon == "" {
+		e.FooterIcon = sealURL
+	}
+	return e
 }

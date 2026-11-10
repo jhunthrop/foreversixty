@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 REPO = Path(__file__).resolve().parents[3]
 LOGO = REPO / 'design/assets/logo'
-FONT = REPO / 'api/internal/sheet/fonts/Barlow-SemiBold.ttf'
+FONT = REPO / 'api/internal/brand/fonts/OpenSans-SemiBold.ttf'
 OUT = REPO / 'design/reviews/2026-11-09-seal-v4/sheet.png'
 SIZES = (512, 128, 64, 32, 16)
 GROUNDS = (('nav #0b2f3b', (11, 47, 59)), ('footer #170e09', (23, 14, 9)), ('light #f3eee2', (243, 238, 226)))

@@ -31,7 +31,8 @@ func (s *Service) itemRowText(ctx context.Context, r itemRow) string {
 	if r.noSource {
 		source = ""
 	}
-	if facts := joinPresent(qualityWord(r.item.Quality), itemLevelText(r.item.ItemLevel), source); facts != "" {
+	// The dot before the name and the tile's ring say the quality; the line does not repeat it.
+	if facts := joinPresent(itemLevelText(r.item.ItemLevel), source); facts != "" {
 		lines = append(lines, subtext(facts))
 	}
 	if r.replaces != "" {
