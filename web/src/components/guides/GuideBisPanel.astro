@@ -21,7 +21,7 @@ const faction = panel.faction === 'alliance' ? guidesCopy.alliancePicksHeading :
   meta={guidesCopy.bisCaption(panel.raceName, faction)}
   testid="guide-bis-panel"
 >
-  <div class="guide-bis-items" data-band={panel.band} data-faction={panel.faction}>
+  <div class="guide-bis-items" data-wrap-list data-band={panel.band} data-faction={panel.faction}>
     {panel.rows.map((row) => (
       <ItemRow
         item={

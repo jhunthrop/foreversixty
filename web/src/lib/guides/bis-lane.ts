@@ -7,6 +7,7 @@ import { specLinkHref } from '../bis/landing-links';
 import { readCurrent } from '../current-character';
 import type { GuideCharacter } from './guide-answer';
 import { bandForLevel, onGuideCharacter } from './guide-character';
+import { rewrapAround } from '../ui/reading-wrap';
 
 /** A stored addon or code build's band (its spent points + 9 is its level), for a visitor whose
  *  pointer names no account character (a pasted export): undefined for another class or a
@@ -41,12 +42,15 @@ export function mountBisLane(root: HTMLElement): void {
   const current = root.querySelector<HTMLElement>('[data-bis-current]');
   if (current === null) return;
   // The band the server drew has no template of its own: keep a copy, so the lane can return to it.
+  // Its rows may have wrapped under the prose (lib/ui/reading-wrap.ts): copy them home first.
   const first = current.dataset.panel ?? '';
   if (root.querySelector(`template[data-bis-panel="${first}"]`) === null) {
-    const keep = document.createElement('template');
-    keep.dataset.bisPanel = first;
-    keep.content.append(...[...current.childNodes].map((node) => node.cloneNode(true)));
-    root.append(keep);
+    rewrapAround(root, () => {
+      const keep = document.createElement('template');
+      keep.dataset.bisPanel = first;
+      keep.content.append(...[...current.childNodes].map((node) => node.cloneNode(true)));
+      root.append(keep);
+    });
   }
   onGuideCharacter((character) => {
     const pointer = character === null ? readCurrent() : null;
@@ -61,9 +65,11 @@ export function mountBisLane(root: HTMLElement): void {
     if (current.dataset.panel === key) return;
     const template = root.querySelector<HTMLTemplateElement>(`template[data-bis-panel="${key}"]`);
     if (template === null) return;
-    current.replaceChildren(template.content.cloneNode(true));
-    current.dataset.panel = key;
-    retargetFullList(root, classSlug, key);
+    rewrapAround(root, () => {
+      current.replaceChildren(template.content.cloneNode(true));
+      current.dataset.panel = key;
+      retargetFullList(root, classSlug, key);
+    });
   });
 }
 

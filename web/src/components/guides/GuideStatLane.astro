@@ -26,7 +26,7 @@ const notes =
 
 <LaneBlock label={guidesCopy.statPriorityRailLabel} testid="guide-stat-table">
   {stats === undefined ? (
-    <div class="guide-stat-rows">
+    <div class="guide-stat-rows" data-wrap-list>
       {fallback.map((label, i) => (
         <Row title={label} rank={String(i + 1)} density="slim" open />
       ))}
@@ -64,14 +64,24 @@ const notes =
           </StatRow>
         ))}
       </StatTable>
-      {notes.map((note) => (
-        <p class="text-small text-muted">{note}</p>
-      ))}
+      {notes.length > 0 && (
+        <div class="guide-stat-notes" data-wrap-list>
+          {notes.map((note) => (
+            <p class="text-small text-muted">{note}</p>
+          ))}
+        </div>
+      )}
     </>
   )}
 </LaneBlock>
 
 <style>
+  /* The notes keep the lane block's 8 px rhythm; they can wrap under the prose (lib/ui/reading-wrap.ts). */
+  .guide-stat-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
   /* The stats read as a list of names, not headings (the mock's plain 16/24 names), and the
      empty lead cell takes no height. */
   :global([data-testid='guide-stat-table'] .ui-st-name) {

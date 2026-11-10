@@ -1,0 +1,1010 @@
+{
+ "warrior/fury@1440": [
+  {
+   "id": "overview",
+   "lane": 112,
+   "prose": 316,
+   "gap": -204
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 889,
+   "prose": 880,
+   "gap": 9
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 1123,
+   "prose": 1150,
+   "gap": -27
+  },
+  {
+   "id": "stat-priority",
+   "lane": 392,
+   "prose": 449,
+   "gap": -57
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1096,
+   "prose": 1142,
+   "gap": -46
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 510,
+   "prose": 530,
+   "gap": -20
+  },
+  {
+   "id": "races",
+   "lane": 767,
+   "prose": 797,
+   "gap": -30
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 130,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 376,
+   "prose": 892,
+   "gap": -516
+  }
+ ],
+ "hunter/beast-mastery@1440": [
+  {
+   "id": "overview",
+   "lane": 184,
+   "prose": 368,
+   "gap": -184
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 722,
+   "prose": 770,
+   "gap": -48
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 1002,
+   "prose": 1664,
+   "gap": -662
+  },
+  {
+   "id": "stat-priority",
+   "lane": 448,
+   "prose": 419,
+   "gap": 29
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1150,
+   "prose": 1136,
+   "gap": 14
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 591,
+   "prose": 637,
+   "gap": -46
+  },
+  {
+   "id": "races",
+   "lane": 577,
+   "prose": 603,
+   "gap": -26
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 182,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 376,
+   "prose": 1742,
+   "gap": -1366
+  }
+ ],
+ "priest/holy@1440": [
+  {
+   "id": "overview",
+   "lane": 136,
+   "prose": 394,
+   "gap": -258
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 595,
+   "prose": 556,
+   "gap": 39
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 1595,
+   "prose": 1585,
+   "gap": 10
+  },
+  {
+   "id": "stat-priority",
+   "lane": 344,
+   "prose": 297,
+   "gap": 47
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1078,
+   "prose": 1090,
+   "gap": -12
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 530,
+   "prose": 481,
+   "gap": 49
+  },
+  {
+   "id": "races",
+   "lane": 575,
+   "prose": 560,
+   "gap": 15
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 78,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 376,
+   "prose": 1558,
+   "gap": -1182
+  }
+ ],
+ "rogue/combat@1440": [
+  {
+   "id": "overview",
+   "lane": 136,
+   "prose": 394,
+   "gap": -258
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 836,
+   "prose": 864,
+   "gap": -28
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 879,
+   "prose": 1622,
+   "gap": -743
+  },
+  {
+   "id": "stat-priority",
+   "lane": 420,
+   "prose": 475,
+   "gap": -55
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1148,
+   "prose": 1136,
+   "gap": 12
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 642,
+   "prose": 605,
+   "gap": 37
+  },
+  {
+   "id": "races",
+   "lane": 562,
+   "prose": 572,
+   "gap": -10
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 156,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 376,
+   "prose": 1022,
+   "gap": -646
+  }
+ ],
+ "mage/frost@1440": [
+  {
+   "id": "overview",
+   "lane": 160,
+   "prose": 394,
+   "gap": -234
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 667,
+   "prose": 668,
+   "gap": -1
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 850,
+   "prose": 1386,
+   "gap": -536
+  },
+  {
+   "id": "stat-priority",
+   "lane": 448,
+   "prose": 503,
+   "gap": -55
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1028,
+   "prose": 1072,
+   "gap": -44
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 439,
+   "prose": 399,
+   "gap": 40
+  },
+  {
+   "id": "races",
+   "lane": 566,
+   "prose": 496,
+   "gap": 70
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 156,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 376,
+   "prose": 1008,
+   "gap": -632
+  }
+ ],
+ "shaman/enhancement@1440": [
+  {
+   "id": "overview",
+   "lane": 136,
+   "prose": 342,
+   "gap": -206
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 778,
+   "prose": 716,
+   "gap": 62
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 778,
+   "prose": 1596,
+   "gap": -818
+  },
+  {
+   "id": "stat-priority",
+   "lane": 524,
+   "prose": 483,
+   "gap": 41
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1168,
+   "prose": 1162,
+   "gap": 6
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 459,
+   "prose": 506,
+   "gap": -47
+  },
+  {
+   "id": "races",
+   "lane": 363,
+   "prose": 442,
+   "gap": -79
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 104,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 376,
+   "prose": 824,
+   "gap": -448
+  }
+ ],
+ "warrior/fury@2000": [
+  {
+   "id": "overview",
+   "lane": 112,
+   "prose": 264,
+   "gap": -152
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 733,
+   "prose": 636,
+   "gap": 97
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 1123,
+   "prose": 942,
+   "gap": 181
+  },
+  {
+   "id": "stat-priority",
+   "lane": 392,
+   "prose": 479,
+   "gap": -87
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1096,
+   "prose": 1085,
+   "gap": 11
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 385,
+   "prose": 398,
+   "gap": -13
+  },
+  {
+   "id": "races",
+   "lane": 664,
+   "prose": 625,
+   "gap": 39
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 130,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 404,
+   "prose": 710,
+   "gap": -306
+  }
+ ],
+ "hunter/beast-mastery@2000": [
+  {
+   "id": "overview",
+   "lane": 184,
+   "prose": 264,
+   "gap": -80
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 644,
+   "prose": 615,
+   "gap": 29
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 1002,
+   "prose": 1404,
+   "gap": -402
+  },
+  {
+   "id": "stat-priority",
+   "lane": 392,
+   "prose": 499,
+   "gap": -107
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1150,
+   "prose": 1100,
+   "gap": 50
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 510,
+   "prose": 513,
+   "gap": -3
+  },
+  {
+   "id": "races",
+   "lane": 577,
+   "prose": 482,
+   "gap": 95
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 182,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 404,
+   "prose": 1404,
+   "gap": -1000
+  }
+ ],
+ "priest/holy@2000": [
+  {
+   "id": "overview",
+   "lane": 136,
+   "prose": 264,
+   "gap": -128
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 457,
+   "prose": 496,
+   "gap": -39
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 1380,
+   "prose": 1396,
+   "gap": -16
+  },
+  {
+   "id": "stat-priority",
+   "lane": 344,
+   "prose": 245,
+   "gap": 99
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1078,
+   "prose": 1059,
+   "gap": 19
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 377,
+   "prose": 405,
+   "gap": -28
+  },
+  {
+   "id": "races",
+   "lane": 537,
+   "prose": 486,
+   "gap": 51
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 78,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 404,
+   "prose": 1272,
+   "gap": -868
+  }
+ ],
+ "rogue/combat@2000": [
+  {
+   "id": "overview",
+   "lane": 136,
+   "prose": 290,
+   "gap": -154
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 740,
+   "prose": 675,
+   "gap": 65
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 879,
+   "prose": 1440,
+   "gap": -561
+  },
+  {
+   "id": "stat-priority",
+   "lane": 420,
+   "prose": 479,
+   "gap": -59
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1148,
+   "prose": 1100,
+   "gap": 48
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 460,
+   "prose": 482,
+   "gap": -22
+  },
+  {
+   "id": "races",
+   "lane": 455,
+   "prose": 435,
+   "gap": 20
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 156,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 404,
+   "prose": 814,
+   "gap": -410
+  }
+ ],
+ "mage/frost@2000": [
+  {
+   "id": "overview",
+   "lane": 160,
+   "prose": 264,
+   "gap": -104
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 547,
+   "prose": 530,
+   "gap": 17
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 850,
+   "prose": 1126,
+   "gap": -276
+  },
+  {
+   "id": "stat-priority",
+   "lane": 448,
+   "prose": 599,
+   "gap": -151
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1028,
+   "prose": 1017,
+   "gap": 11
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 306,
+   "prose": 322,
+   "gap": -16
+  },
+  {
+   "id": "races",
+   "lane": 464,
+   "prose": 444,
+   "gap": 20
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 156,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 404,
+   "prose": 826,
+   "gap": -422
+  }
+ ],
+ "shaman/enhancement@2000": [
+  {
+   "id": "overview",
+   "lane": 136,
+   "prose": 238,
+   "gap": -102
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 604,
+   "prose": 561,
+   "gap": 43
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 778,
+   "prose": 1362,
+   "gap": -584
+  },
+  {
+   "id": "stat-priority",
+   "lane": 468,
+   "prose": 480,
+   "gap": -12
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1168,
+   "prose": 1126,
+   "gap": 42
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 385,
+   "prose": 352,
+   "gap": 33
+  },
+  {
+   "id": "races",
+   "lane": 363,
+   "prose": 348,
+   "gap": 15
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 104,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 404,
+   "prose": 694,
+   "gap": -290
+  }
+ ],
+ "warrior/fury@390": [
+  {
+   "id": "overview",
+   "lane": 112,
+   "prose": 488,
+   "gap": 0
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 1846,
+   "prose": 326,
+   "gap": 0
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 1123,
+   "prose": 1930,
+   "gap": 0
+  },
+  {
+   "id": "stat-priority",
+   "lane": 552,
+   "prose": 390,
+   "gap": 0
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1444,
+   "prose": 156,
+   "gap": 0
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 948,
+   "prose": 78,
+   "gap": 0
+  },
+  {
+   "id": "races",
+   "lane": 1080,
+   "prose": 950,
+   "gap": 0
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 286,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 374,
+   "prose": 1412,
+   "gap": 0
+  }
+ ],
+ "hunter/beast-mastery@390": [
+  {
+   "id": "overview",
+   "lane": 184,
+   "prose": 618,
+   "gap": 0
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 1014,
+   "prose": 886,
+   "gap": 0
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 1020,
+   "prose": 2886,
+   "gap": 0
+  },
+  {
+   "id": "stat-priority",
+   "lane": 532,
+   "prose": 390,
+   "gap": 0
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1428,
+   "prose": 286,
+   "gap": 0
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 762,
+   "prose": 756,
+   "gap": 0
+  },
+  {
+   "id": "races",
+   "lane": 856,
+   "prose": 522,
+   "gap": 0
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 416,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 374,
+   "prose": 2834,
+   "gap": 0
+  }
+ ],
+ "priest/holy@390": [
+  {
+   "id": "overview",
+   "lane": 160,
+   "prose": 566,
+   "gap": 0
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 1183,
+   "prose": 248,
+   "gap": 0
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 1838,
+   "prose": 2180,
+   "gap": 0
+  },
+  {
+   "id": "stat-priority",
+   "lane": 380,
+   "prose": 364,
+   "gap": 0
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1432,
+   "prose": 104,
+   "gap": 0
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 851,
+   "prose": 260,
+   "gap": 0
+  },
+  {
+   "id": "races",
+   "lane": 816,
+   "prose": 652,
+   "gap": 0
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 156,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 374,
+   "prose": 2598,
+   "gap": 0
+  }
+ ],
+ "rogue/combat@390": [
+  {
+   "id": "overview",
+   "lane": 160,
+   "prose": 618,
+   "gap": 0
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 1128,
+   "prose": 1094,
+   "gap": 0
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 879,
+   "prose": 2610,
+   "gap": 0
+  },
+  {
+   "id": "stat-priority",
+   "lane": 620,
+   "prose": 442,
+   "gap": 0
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1428,
+   "prose": 286,
+   "gap": 0
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 1035,
+   "prose": 364,
+   "gap": 0
+  },
+  {
+   "id": "races",
+   "lane": 1029,
+   "prose": 364,
+   "gap": 0
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 312,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 374,
+   "prose": 1646,
+   "gap": 0
+  }
+ ],
+ "mage/frost@390": [
+  {
+   "id": "overview",
+   "lane": 184,
+   "prose": 592,
+   "gap": 0
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 1024,
+   "prose": 638,
+   "gap": 0
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 868,
+   "prose": 2270,
+   "gap": 0
+  },
+  {
+   "id": "stat-priority",
+   "lane": 656,
+   "prose": 416,
+   "gap": 0
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1468,
+   "prose": 0,
+   "gap": 0
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 711,
+   "prose": 156,
+   "gap": 0
+  },
+  {
+   "id": "races",
+   "lane": 862,
+   "prose": 546,
+   "gap": 0
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 338,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 374,
+   "prose": 1684,
+   "gap": 0
+  }
+ ],
+ "shaman/enhancement@390": [
+  {
+   "id": "overview",
+   "lane": 160,
+   "prose": 566,
+   "gap": 0
+  },
+  {
+   "id": "talents-and-builds",
+   "lane": 1207,
+   "prose": 650,
+   "gap": 0
+  },
+  {
+   "id": "rotation-and-priority",
+   "lane": 778,
+   "prose": 2714,
+   "gap": 0
+  },
+  {
+   "id": "stat-priority",
+   "lane": 712,
+   "prose": 416,
+   "gap": 0
+  },
+  {
+   "id": "best-in-slot",
+   "lane": 1446,
+   "prose": 338,
+   "gap": 0
+  },
+  {
+   "id": "enchants-and-consumables",
+   "lane": 813,
+   "prose": 234,
+   "gap": 0
+  },
+  {
+   "id": "races",
+   "lane": 573,
+   "prose": 430,
+   "gap": 0
+  },
+  {
+   "id": "professions",
+   "lane": 0,
+   "prose": 234,
+   "gap": 0
+  },
+  {
+   "id": "leveling",
+   "lane": 374,
+   "prose": 1396,
+   "gap": 0
+  }
+ ]
+}
